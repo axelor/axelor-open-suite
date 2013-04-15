@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MacroEvenements xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<MacroEvenement emetteur="SINAPSE GRD" typeEvt="CYC" numeroEvt="43" envoi="1" dateEnvoi="03/29/2012 14:37:59" statut="V">
+		<PCT reference="15254124375442" type="S" fluide="1" pro="true" segment="C4">
+			<Consommations>
+				<ListeIndex>
+					<Index date="01/03/2012 00:00:00" type="R" sousType="4">
+						<IndexValeur code="EA" cadran="1" passageAZero="false">7566</IndexValeur>
+						<IndexValeur code="EA" cadran="2" passageAZero="false">10757</IndexValeur>
+						<IndexValeur code="EA" cadran="3" passageAZero="false">3696</IndexValeur>
+						<IndexValeur code="EA" cadran="4" passageAZero="false">55</IndexValeur>
+						<IndexValeur code="PM" cadran="2" passageAZero="false">0</IndexValeur>
+						<IndexValeur code="PM" cadran="1" passageAZero="false">20</IndexValeur>
+						<IndexValeur code="DD" cadran="2" passageAZero="false">0</IndexValeur>
+						<IndexValeur code="DD" cadran="1" passageAZero="false">1301</IndexValeur>
+					</Index>
+					<Index date="01/02/2012 00:00:00" type="R" sousType="4">
+						<IndexValeur code="DD" cadran="1" coef="0.000" passageAZero="false">32</IndexValeur>
+						<IndexValeur code="DD" cadran="2" coef="0.000" passageAZero="false">0</IndexValeur>
+						<IndexValeur code="EA" cadran="1" coef="0.000" passageAZero="false">4591</IndexValeur>
+						<IndexValeur code="EA" cadran="2" coef="0.000" passageAZero="false">9558</IndexValeur>
+						<IndexValeur code="EA" cadran="3" coef="0.000" passageAZero="false">3696</IndexValeur>
+						<IndexValeur code="EA" cadran="4" coef="0.000" passageAZero="false">55</IndexValeur>
+						<IndexValeur code="PM" cadran="1" coef="0.000" passageAZero="false">14</IndexValeur>
+						<IndexValeur code="PM" cadran="2" coef="0.000" passageAZero="false">0</IndexValeur>
+					</Index>
+				</ListeIndex>
+				<Consommation debut="02/02/2012" fin="01/03/2012">
+					<CnsValeur code="NRJ_A" periode="1" libellePeriode="HPH">2975</CnsValeur>
+					<CnsValeur code="NRJ_A" periode="2" libellePeriode="HCH">1199</CnsValeur>
+					<CnsValeur code="NRJ_A" periode="3" libellePeriode="HPE">0</CnsValeur>
+					<CnsValeur code="NRJ_A" periode="4" libellePeriode="HCE">0</CnsValeur>
+					<CnsValeur code="DEP_D" periode="1" libellePeriode="Seuil bas">1301</CnsValeur>
+					<CnsValeur code="DEP_D" periode="2" libellePeriode="Seuil haut">0</CnsValeur>
+					<CnsValeur code="RES_PMAX" periode="1" libellePeriode="HPH">20</CnsValeur>
+					<CnsValeur code="RES_PMAX" periode="2" libellePeriode="HCH">0</CnsValeur>
+				</Consommation>
+			</Consommations>
+			<Contrat>
+				<Tarif code="S36LU" dateDebut="10/10/2010 00:00:00" />
+				<RE nom="EDF" codeEic="17X100A100R00182" dateEntreePerimetre="01/01/2000 00:00:00" />
+				<PS date="10/10/2010 00:00:00">
+					<Puissance periode="1">12</Puissance>
+					<Puissance periode="2">12</Puissance>
+					<Puissance periode="3">12</Puissance>
+					<Puissance periode="4">84</Puissance>
+					<Puissance periode="5">84</Puissance>
+				</PS>
+			</Contrat>
+		</PCT>
+	</MacroEvenement>
+</MacroEvenements>

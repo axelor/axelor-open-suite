@@ -1,0 +1,1750 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csv-inputs xmlns="http://apps.axelor.com/xml/ns/data-import"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/data-import http://apps.axelor.com/xml/ns/data-import/data-import_0.8.xsd">
+    
+	<input file="AdministrationGeneral.csv" type="com.axelor.apps.administration.db.General" call="com.axelor.csv.script.ImportGeneral:init">
+ 		<bind to="environment" eval="'grd'"/>
+    </input>
+    
+    <input file="user.csv" type="com.axelor.auth.db.User" />
+	
+    <input file="userInfo.csv" type="com.axelor.apps.user.db.UserInfo" />
+    
+    <input file="domaineracc.csv" type="com.axelor.apps.fluid.db.ElecRange" search="self.koalaId = :domaineracc_id" update="true">
+		<bind to="monthDueOk" eval="(domaineracc_id?.equals('2') || domaineracc_id?.equals('3')) ? true : false"/>
+	</input>
+    
+    <input file="Account.csv" type="com.axelor.apps.account.db.Account" call="com.axelor.csv.script.ImportAccount:ignoreLine">
+		<bind to="reconcileOk" eval="code.startsWith('411')?true:code.startsWith('416')?true:code.startsWith('418')?true:false" />
+	</input>
+	
+	<input file="unite.csv" type="com.axelor.apps.sale.db.Unit">
+   		<bind column="unite_id" to="koalaId" />
+   		<bind column="unite_lib" to="name" />
+   		<bind column="unite_lib" to="code" />
+	</input>
+	
+	<input file="UnitConversion.csv" type="com.axelor.apps.sale.db.UnitConversion">
+		<bind search="self.name = :startUnit" to="startUnit" >
+			<bind to="code" column="startUnit" eval="startUnit.toUpperCase()" />
+			<bind to="name" eval="startUnit.toUpperCase()" /> 
+		</bind>
+		<bind search="self.name = :endUnit" to="endUnit" >
+			<bind to="code" column="endUnit" eval="endUnit.toUpperCase()" />
+			<bind to="name" eval="endUnit.toUpperCase()" /> 
+		</bind>
+		<bind to="coef" column="coef"/>
+	</input>
+	
+	<input file="ConstituentCategory.csv" type="com.axelor.apps.pricing.db.ConstituentCategory"/>
+	
+	<input file="typecontrat.csv" type="com.axelor.apps.contract.db.ContractFormat" >
+		<bind to="importId" column="typecont_id"/>
+		<bind to="code" column="typecont_id" />
+		<bind to="name" column="typecont_libelle" />
+	</input>
+
+	<input file="typecontratparameter.csv" type="com.axelor.apps.contract.db.ContractFormat" search="self.code =:typecont_id" update="true">
+		<bind search="self.name =:parameter_name AND self.parameterType.code = 'formCont'" to="parameter" update="true">
+			<bind column="parameter_name" to="name" />
+		</bind>
+	</input>
+	
+	<input file="statut.csv" type="com.axelor.apps.administration.db.Status">
+		<bind column="statut_id" to="koalaId" />
+		<bind column="statut_libelle" to="name" />
+		<bind column="statut_code" to="code" />
+		<bind column="statut_flag_etatfourn" to="supplyStatusOK" eval="statut_flag_etatfourn == '1'? true : false" />
+		<bind column="statut_flag_facture" to="invoiceStatusOK" eval="statut_flag_facture == '1'? true : false" />
+		<bind column="statut_flag_pct" to="mptStatusOK" eval="statut_flag_pct == '1'? true : false" />
+		<bind column="statut_flag_contgrd" to="contractStatusOK" eval="statut_flag_contgrd == '1'? true : false" />
+		<bind column="statut_flag_ligcontgrd" to="contractLineStatusOK" eval="statut_flag_ligcontgrd == '1'? true : false" />
+	</input>
+	
+	<input file="statutAX.csv" type="com.axelor.apps.administration.db.Status">
+		<bind column="statut_id" to="koalaId" />
+		<bind column="statut_libelle" to="name" />
+		<bind column="statut_code" to="code" />
+		<bind column="statut_flag_etatfourn" to="supplyStatusOK" eval="statut_flag_etatfourn == '1'? true : false" />
+		<bind column="statut_flag_facture" to="invoiceStatusOK" eval="statut_flag_facture == '1'? true : false" />
+	</input>
+
+	<input file="agence.csv" type="com.axelor.apps.contact.db.Agency" search="self.num = :agence_id" update="true">
+		<bind search="self.koalaId = :agence_adresse_id" to="address" update="true">
+			<bind column="agence_adresse_id" to="koalaId" />
+		</bind>
+	</input>
+
+	<input file="motif.csv" type="com.axelor.apps.sale.db.ReasonExemption">
+		<bind column="motif_id" to="koalaId" />
+		<bind column="motif_type" to="name" />
+		<bind column="motif_libelle" to="code" />
+	</input>
+	
+	<input file="motif.csv" type="com.axelor.apps.contract.db.StopReason">
+		<bind column="motif_id" to="koalaId" />
+		<bind column="motif_type" to="code" />
+		<bind column="motif_libelle" to="name" />
+	</input>
+	
+	<input file="structuretarifaire.csv" type="com.axelor.apps.pricing.db.PricingStructure">
+		<bind eval="!structtar_id.empty? 'struct'+structtar_id : ''" to="code"/>
+		<bind column="structtar_id" to="koalaId"/>
+		<bind column="structtar_libelle" to="name"/>
+	</input>
+	
+	<input file="structuretarifaire.csv" type="com.axelor.apps.pricing.db.PricingStructure" search="self.koalaId = :structtar_id" update="true">
+		<bind search="self.koalaId = :strucctar_GIE_id" to="parentPricingStructure" update="true">
+			<bind column="strucctar_GIE_id" to="koalaId" />
+		</bind>
+	</input>
+	
+	<input file="niveaurelance.csv" type="com.axelor.apps.debtRecovery.db.ReminderLevel">
+		<bind column="nivrel_id" to="name" />
+		<bind column="nivrel_libcourt" to="code" />
+		<bind column="nivrel_liblong" to="label" />
+	</input>
+	
+	<input file="MailModel.csv" type="com.axelor.apps.mail.db.MailModel" >
+		<bind column="code" to="code" />
+		<bind column="nom" to="name" />
+		<bind column="type" to="typeSelect" />
+		<bind column="document_concerne" to="objectConcernedSelect" />
+		<bind column="type_de_relance" to="reminderTypeSelect" />
+		<bind column="service_social_concerne" to="reminderSocialServiceSelect" />
+		<bind column="contenu" to="content" />
+		<bind column="sujet" to="subject" />
+		<bind column="chemin_pdf" to="pdfModelPath"/>
+	</input>
+
+	<input file="ReminderMatrixAndLines.csv" type="com.axelor.apps.debtRecovery.db.ReminderMatrix" search="self.code = :matriceRelance_code"  call="com.axelor.csv.script.ImportReminderMatrix:updateLevelLabel">
+		<bind column="matriceRelance_nom" to="name" />
+		<bind column="matriceRelance_code" to="code" />
+		<bind to="reminderMatrixLineList" >
+			<bind to="reminderLevel" search="self.name = :matriceRelance_L_niveau" update="true">
+				<bind to="name" column="matriceRelance_L_niveau" />
+			</bind>
+			<bind to="standardDeadline" column="matriceRelance_L_delaiNormal" eval="!matriceRelance_L_delaiNormal.empty?matriceRelance_L_delaiNormal:null"/>
+			<bind to="socialDeadLine" column="matriceRelance_L_delaiTarifSocial" eval="!matriceRelance_L_delaiTarifSocial.empty?matriceRelance_L_delaiTarifSocial:null"/>
+			<bind to="minThreshold" column="matriceRelance_L_seuilMinimum" eval="!matriceRelance_L_seuilMinimum.empty?matriceRelance_L_seuilMinimum:null"/>
+			<bind to="activeReminderMailModel" search="self.code = :matriceRelance_L_modeleCrNormal" update="true">
+				<bind to="code" column="matriceRelance_L_modeleCrNormal" />
+			</bind>
+			<bind to="socialReminderMailModel" search="self.code = :matriceRelance_L_modeleSocial" update="true">
+				<bind to="code" column="matriceRelance_L_modeleSocial" />
+			</bind>
+			<bind to="municipalReminderMailModel" search="self.code = :matriceRelance_L_emailSsCom" update="true">
+				<bind to="code" column="matriceRelance_L_emailSsCom" />
+			</bind>
+			<bind to="deptReminderMailModel" search="self.code = :matriceRelance_L_emailSsDept" update="true">
+				<bind to="code" column="matriceRelance_L_emailSsDept" />
+			</bind>
+			<bind to="municipalReminderDeadline" column="matriceRelance_L_delaiInfoSsCom" eval="!matriceRelance_L_delaiInfoSsCom.empty?matriceRelance_L_delaiInfoSsCom:null"/>
+			<bind to="deptReminderDeadline" column="matriceRelance_L_delaiInfoSsDept" eval="!matriceRelance_L_delaiInfoSsDept.empty?matriceRelance_L_delaiInfoSsDept:null"/>
+			<bind to="manualValidationOk" eval="matriceRelance_L_validationManuelle == '1' ? true:false" />
+		</bind>
+	</input>
+	
+	<input file="ReminderMethod.csv" type="com.axelor.apps.debtRecovery.db.ReminderMethod">
+		<bind column="methodeRelance_nom" to="name" />
+		<bind column="methodeRelance_code" to="code" />
+		<bind to="partnerConcernedSelect" column="methodeRelance_tiersARelancer" />
+		<bind to="actContReminderMatrix" search="self.code = :methodeRelance_matriceActif" update="true">
+			<bind to="code" column="methodeRelance_matriceActif" />
+		</bind>
+		<bind to="canInTerContReminderMatrix" search="self.code = :methodeRelance_matriceDsTerritoire" update="true">
+			<bind to="code" column="methodeRelance_matriceDsTerritoire" />
+		</bind>
+		<bind to="canOutTerContReminderMatrix" search="self.code = :methodeRelance_matriceHrsTerritoire" update="true">
+			<bind to="code" column="methodeRelance_matriceHrsTerritoire" />
+		</bind>
+	</input>
+	
+	<input file="natcontparnattiers.csv" type="com.axelor.apps.debtRecovery.db.ReminderConfigLine" call="com.axelor.csv.script.ImportReminderConfigLine:updateCompany">
+		<bind to="clientNature" search="self.koalaId = :natcontnattiers_nattiers_id" update="true">
+			<bind to="koalaId" column="natcontnattiers_nattiers_id" />
+		</bind>
+		<bind to="usage" search="self.koalaId = :natcontnattiers_natcont_id" update="true">
+			<bind to="koalaId" column="natcontnattiers_natcont_id" />
+		</bind>
+		<bind to="reminderMethod" search="self.code = :natcontnattiers_methrel_id" update="true">
+			<bind to="code" column="natcontnattiers_methrel_id" eval="!natcontnattiers_methrel_id.empty ? 'MR'+natcontnattiers_methrel_id: null" />
+		</bind>
+		<bind to="invoiceBillReminderMethod" search="self.code = :natcontnattiers_methrelmemPC_id" update="true">
+			<bind to="code" column="natcontnattiers_methrelmemPC_id" eval="!natcontnattiers_methrelmemPC_id.empty ? 'MR'+natcontnattiers_methrelmemPC_id: null" />
+		</bind>
+	</input>
+	
+	<input file="natcontparnattiersAX.csv" type="com.axelor.apps.debtRecovery.db.ReminderConfigLine"
+		call="com.axelor.csv.script.ImportReminderConfigLine:updateCompany">
+		<bind to="clientNature" search="self.koalaId = :natcontnattiers_nattiers_id"
+			update="true">
+			<bind to="koalaId" column="natcontnattiers_nattiers_id" />
+		</bind>
+		<bind to="usage" search="self.koalaId = :natcontnattiers_natcont_id"
+			update="true">
+			<bind to="koalaId" column="natcontnattiers_natcont_id" />
+		</bind>
+		<bind to="reminderMethod" search="self.code = :natcontnattiers_methrel_id"
+			update="true">
+			<bind to="code" column="natcontnattiers_methrel_id"
+				eval="!natcontnattiers_methrel_id.empty ? 'MR'+natcontnattiers_methrel_id: null" />
+		</bind>
+		<bind to="invoiceBillReminderMethod" search="self.code = :natcontnattiers_methrelmemPC_id"
+			update="true">
+			<bind to="code" column="natcontnattiers_methrelmemPC_id"
+				eval="!natcontnattiers_methrelmemPC_id.empty ? 'MR'+natcontnattiers_methrelmemPC_id: null" />
+		</bind>
+	</input>
+	
+	<input file="typejournal.csv" type="com.axelor.apps.account.db.JournalType" >
+		<bind to="koalaId" column="typejnal_id" />
+		<bind to="name" column="typejnal_libelle" />
+		<bind to="code" column="typejnal_code" />
+	</input>
+
+	<input file="journaux.csv" type="com.axelor.apps.account.db.Journal">
+        <bind column="journ_id" to="koalaId" />
+        <bind column="journ_code" to="code" />
+        <bind column="journ_lib" to="name" />
+		<bind column="journ_code_AGRESSO" to="exportCode"/>
+		<bind column="journ_flag_recu" to="editReceiptOk" eval="journ_flag_recu == '1' ? true : false"/>
+		<bind column="journ_flag_trop_percu" to="authorizedPaymentOk" eval="journ_flag_trop_percu == '1' ? true : false"/>
+    	<bind to="type" search="self.koalaId = :journ_typejnal_id" update="true" if="!journ_typejnal_id?.empty">
+    		<bind to="koalaId" column="journ_typejnal_id"/>
+    	</bind>
+    	<bind column="journ_flag_pas_compta" to="notExportOk" eval="journ_flag_pas_compta == '1' ? true : false"/>
+    	<bind column="journ_flag_obsolete" to="inactiveOk" eval="journ_flag_pas_compta == '1' ? true : false"/>
+    </input>
+    
+    <input file="journauxAX.csv" type="com.axelor.apps.account.db.Journal"
+		search="self.koalaId = :koalaId" update="true">
+		<bind column="descriptionModel" to="descriptionModel" />
+		<bind column="descriptionIdentificationOk" to="descriptionIdentificationOk" eval="descriptionIdentificationOk == '1' ? true : false"/>
+	</input>
+    
+    <input file="sequenceGRD_AX.csv" type="com.axelor.apps.administration.db.SequenceGeneric" >
+    	<bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"/>
+    	<bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
+    	<bind to="padding" column="padding" eval="padding?.empty ? '1' : padding"/>
+    	<bind to="toBeAdded" column="toBeAdded" eval="toBeAdded?.empty ? '1' : toBeAdded"/>
+    </input>
+
+    <input file="modereglement.csv" type="com.axelor.apps.payment.db.PaymentMode">
+		<bind column="moderegl_id" to="koalaId" />
+		<bind column="moderegl_libelle" to="name" />
+		<bind column="moderegl_code" to="code" />
+        <bind column="moderegl_flag_prelevt" to="directDebitOk" eval="moderegl_flag_prelevt == '1'? true : false" />
+		<bind to="bankJournal" search="self.koalaId = :moderegl_journal_id" update="true">
+            <bind column="moderegl_journal_id" to="koalaId" />
+        </bind>
+        <bind column="moderegl_flag_contrat" to="contractOk" eval="moderegl_flag_contrat == '1'? true : false"/>
+	</input>
+
+	<!-- Set in modereglement.csv -->
+<!--     <input file="modereglementAX.csv" type="com.axelor.apps.payment.db.PaymentMode" -->
+<!--         search="self.koalaId = :moderegl_id" update="true" > -->
+<!--         <bind column="code" to="code" /> -->
+<!--         <bind column="prelevementok" to="directDebitOk" eval="prelevementok == '1'? true : false" /> -->
+<!--     </input> -->
+    
+    <input file="modereglementcompte.csv" type="com.axelor.apps.payment.db.PaymentMode"
+        search="self.koalaId = :moderegl_id" update="true" call="com.axelor.csv.script.ImportPaymentMode:updateCompanyAccount">
+        <bind column="moderegl_id" to="koalaId" />
+    </input>
+	
+	<input file="tvacode.csv" type="com.axelor.apps.sale.db.Vat">
+		<bind column="tva_id" to="koalaId" />
+		<bind column="tva_code" to="code" />
+		<bind column="tva_lib" to="name" />
+	</input>
+			
+	<input file="tvataux.csv" type="com.axelor.apps.sale.db.VatLine">
+		<bind column="tvataux_id" to="koalaId" />
+		<bind to="vat" search="self.koalaId = :tvataux_tvacode_id" update="true">
+			<bind column="tvataux_tvacode_id" to="koalaId" />
+		</bind>
+		<bind  to="startDate"  eval="!tvataux_datemea?.empty ? tvataux_datemea.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : null"/>
+		<bind column="tvataux_taux" to="value" eval="!tvataux_taux?.empty ? ((tvataux_taux.replace(',','.').replace('.00','.0')).toFloat()/100).round(3) : null"/>
+	</input>
+	
+	<input file="produitgrd.csv" type="com.axelor.apps.sale.db.Product" call="com.axelor.csv.script.ImportProduct:updateProduct">
+		<bind column="produitgrd_id" to="koalaId" />
+		<bind search="self.name = :produitgrd_fluide_nom" to="fluid" update="true">
+			<bind column="produitgrd_fluide_nom" to="name" />
+		</bind>
+		<bind column="produitgrd_code" to="code" />
+		<bind search="self.name = :produitgrd_categprod_libelle" to="productCategory"
+			update="true">
+			<bind column="produitgrd_categprod_libelle" to="name" />
+		</bind>
+		<bind search="self.code = :produitgrd_sousfamprod_code" to="productSubFamily"
+			update="true">
+			<bind column="produitgrd_sousfamprod_code" to="code" />
+		</bind>
+		<bind column="produitgrd_nom" to="name" />
+		<bind to="defaultVat" search="self.code = :produitgrd_codeTVA" update="true">
+			<bind column="produitgrd_codeTVA" to="code" />
+		</bind>
+		<bind column="produitgrd_type_prix" to="priceType" eval="produitgrd_type_prix == '1' ? 'indexed' : (produitgrd_type_prix == '2' ? 'fixedInContract' : null)"/>
+		<bind to="invoiceNatureSelect" eval="produitgrd_typefactusce_id == '1' ? '2' : ( produitgrd_type_prix == '3' ? '0' : '1')"/>
+	</input>
+	
+	<input file="affectationcomptabletvaGRD.csv" type="com.axelor.apps.account.db.AccountManagement"
+		search="self.company.name = :societe AND self.typeSelect = '2' AND self.account.code = :compte_general"
+		call="com.axelor.csv.script.ImportAccountManagement:importAMTaxVat">
+		<bind to="typeSelect" eval="2"/>
+		<bind to="company" search="self.name = :societe" update="true">
+			<bind column="societe" to="name" eval="!societe.empty? societe : 'DEFAULT'" />
+		</bind>
+		<bind to="account" search="self.code = :compte_general AND self.company.name = :societe" update="true">
+			<bind column="compte_general" to="code" />
+		</bind>
+	</input>
+	
+	<input file="configurationcomptableGRD.csv" type="com.axelor.apps.account.db.AccountManagement"
+		call="com.axelor.csv.script.ImportAccountManagement:ignoreLinesAM">
+		<bind column="id" to="importId"/>
+		<bind to="typeSelect" eval="9"/>
+		<bind to="company" search="self.name = :societe">
+			<bind column="societe" to="name"/>
+		</bind>
+		<bind to="customerRoleSelect" eval="role_client == 'CF' ? 2 : role_client == 'COM' ? 1 : role_client == 'FR' ? 0 : ''" />
+		<bind to="companyRoleSelect" eval="role_societe == 'GRD' ? 2 : ''" />
+		<!-- [eVolutis - Feature #813] -->
+		<bind to="userSegment" search="self.code = :segment" if="!segment?.empty">
+			<bind column="segment" to="code" />
+			<bind column="segment" to="name" />
+		</bind>
+		<bind to="userSubSegmentSelect" eval="sous_segment == 'Pro' ? 'professionnal' : (sous_segment == 'Res' ? 'residential' : null)" />
+		<bind to="account" search="self.code = :compte_general AND self.company.name = :societe" update="true">
+			<bind column="compte_general" to="code" />
+		</bind>		
+		<bind to="analyticAccountManagementList" if="!axe_metier.empty">
+			<bind to="analyticAxis" search="self.code = 'METIER'" update="true">
+				<bind eval="'METIER'" to="code" />
+			</bind>
+			<bind to="analyticAccount" search="self.code = :axe_metier" update="true">
+				<bind column="axe_metier" to="code" />
+			</bind>
+		</bind>
+		<bind to="analyticAccountManagementList" if="!axe_activite.empty">
+			<bind to="analyticAxis" search="self.code = 'ACTIVITE'" update="true">
+				<bind eval="'ACTIVITE'" to="code" />
+			</bind>
+			<bind to="analyticAccount" search="self.code = :axe_activite" update="true">
+				<bind column="axe_activite" to="code" />
+			</bind>
+		</bind>
+		<bind to="analyticAccountManagementList" if="!crb?.empty">
+			<bind to="analyticAxis" search="self.code = 'CRB'"  update="true">
+				<bind eval="'CRB'" to="code" />
+			</bind>
+			<bind to="analyticAccount" search="self.code = :crb" update="true">
+				<bind column="crb" to="code" />
+			</bind>
+		</bind>
+	</input>
+
+	<input file="affectationcomptableGRD.csv" type="com.axelor.apps.sale.db.Product" search="self.code = :code_produit" update="true"
+		call="com.axelor.csv.script.ImportAccountManagement:importAMProduct">
+		<bind column="code_produit" to="code" />
+	</input>
+	
+	<input file="prospener.csv" type="com.axelor.apps.contact.db.ProspectEnergy" >
+		<bind search="self.koalaId = :prospener_tiersprosp_id" to="prospectPartner" update="true">
+			<bind column="prospener_tiersprosp_id" to="koalaId" />
+		</bind>
+		<bind search="self.koalaId = :prospener_fluide_id" to="fluid" update="true">
+			<bind column="prospener_fluide_id" to="koalaId" />
+		</bind> 
+		<bind to="estimatedConsumption" eval="!prospener_conso_estimee.empty?prospener_conso_estimee.replace('.',',').replace('.00','.0'):null" />
+		<bind search="self.koalaId = :prospener_tiersfourn_id" to="providerPartner" update="true">
+			<bind column="prospener_tiersfourn_id" to="koalaId" />
+		</bind>
+		<bind to="expirationDate" eval="!prospener_datech_contrat_actuel?.empty ? prospener_datech_contrat_actuel.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : null"/>
+	</input>
+	
+	<input file="prospserv.csv" type="com.axelor.apps.contact.db.ProspectService" >
+		<bind search="self.koalaId = :prospserv_prod_id" to="serviceProduct" update="true">
+			<bind column="prospserv_prod_id" to="koalaId" />
+		</bind> 
+		<bind search="self.koalaId = :prospserv_tiersprosp_id" to="prospectPartner" update="true">
+			<bind column="prospserv_tiersprosp_id" to="koalaId" />
+		</bind>
+	</input>
+	
+	<input file="repbicdps7.csv" type="com.axelor.apps.contact.db.Bic">
+		<bind to="countryCode" column="repBIC_codePays"/>
+		<bind to="bankCode" column="repBIC_codeEtab"/>
+		<bind to="sortCode" column="repBIC_codeGuich"/>
+		<bind to="code" column="repBIC_codeBIC"/>
+		<bind to="bankName" column="repBIC_nometab"/>
+	</input>
+
+	<input file="ribpayeur.csv" type="com.axelor.apps.contact.db.BankDetails"
+		call="com.axelor.csv.script.ImportBankDetails:completIban">
+		<bind column="ribpay_id" to="koalaId" />
+		<bind search="self.koalaId = :ribpay_tierspay_id" to="payerPartner" update="true">
+			<bind column="ribpay_tierspay_id" to="koalaId" />
+		</bind>
+		<bind column="ribpay_titulai" to="ownerName" />
+		<bind column="ribapy_domici" to="bankAddress" />
+		<bind column="ribpay_IBAN" to="iban" />
+	</input>
+	
+	<input file="MatrixStructure.csv" type="com.axelor.apps.pricing.db.MatrixStructure">
+		<bind to="sourceParam1" column="sourceParam1" eval="sourceParam1.empty ? null : sourceParam1" />
+		<bind to="sourceParam2" column="sourceParam2" eval="sourceParam2.empty ? null : sourceParam2" />
+		<bind to="sourceParam3" column="sourceParam3" eval="sourceParam3.empty ? null : sourceParam3" />
+		<bind to="sourceParam4" column="sourceParam4" eval="sourceParam4.empty ? null : sourceParam4" />
+		<bind to="sourceParam5" column="sourceParam5" eval="sourceParam5.empty ? null : sourceParam5" />
+		<bind to="sourceParam6" column="sourceParam6" eval="sourceParam6.empty ? null : sourceParam6" />
+		<bind to="sourceParam7" column="sourceParam7" eval="sourceParam7.empty ? null : sourceParam7" />
+		<bind to="sourceParam8" column="sourceParam8" eval="sourceParam8.empty ? null : sourceParam8" />
+		<bind to="sourceParam9" column="sourceParam9" eval="sourceParam9.empty ? null : sourceParam9" />
+	</input>
+	
+	<input file="posthorosais.csv" type="com.axelor.apps.pricing.db.Parameter">
+		<bind to="parameterId" eval="!posthorosais_id.empty ?  'poste_'+posthorosais_id : '' " />
+		<bind to="name" column="posthorosais_code" />
+		<bind to="description" column="posthorosais_libelle" />
+		<bind to="value" column="posthorosais_sequence" />
+		<bind to="parameterType" search="self.code = 'poste'" >
+			<bind to="code" eval="!posthorosais_id.empty ?  'poste' : '' " />
+		</bind>
+		<bind to="hcPostOk" eval="posthorosais_code == 'HC'?true:false" />
+		<bind to="sinapseCode" column="posthorosais_code_SINAPSE" />
+	</input>
+	
+	<input file="ConstituentGRD.csv" type="com.axelor.apps.pricing.db.Constituent">
+		<bind column="matrixStructureNames" to="matrixStructureSet" search="self.name in :matrixStructureNames" 
+ 			eval="matrixStructureNames.split('\\|') as List"/>
+ 	</input>
+	
+	<input file="PricingStructureLineGRD.csv" type="com.axelor.apps.pricing.db.PricingStructureLine"/>
+			
+	<input file="optiontarifaire.csv" type="com.axelor.apps.pricing.db.PricingOption">
+		<bind column="opttar_id" to="koalaId"/>
+		<bind column="opttar_libelle" to="name"/>
+		<bind column="opttar_code" to="code"/>
+		<bind column="opttar_flag_grandcompte" to="gdCompteOK" eval="opttar_flag_grandcompte == '1'? 'true' : 'false'"/>
+		<bind to="ivsCode" column="opttar_codeSVI"/>
+		<bind column="opttar_mode_saisie_ps" to="powerInputModeSelect" eval="opttar_mode_saisie_ps == '00' ? '1' : opttar_mode_saisie_ps == '99' ? '3' : opttar_mode_saisie_ps == '01' ? '2' : null"/>
+	</input>
+	
+	<input file="opttarparstructtar.csv" type="com.axelor.apps.pricing.db.PricingStructure"
+		search="self.koalaId = :opttarstruct_structtar_id" update="true">
+		<bind search="self.koalaId = :opttarstruct_opttar_id" to="pricingOptionSet" update="true">
+			<bind column="opttarstruct_opttar_id" to="koalaId" />
+		</bind>
+	</input>
+
+	<input file="opttarparametre.csv" type="com.axelor.apps.pricing.db.PricingOption" search="self.koalaId =:opttar_id" update="true">
+		<bind search="self.parameterId = :parametre AND self.parameterType.code = 'optTarifaire'" to="pricingOptionParameter" update="true">
+			<bind column="parametre" to="parameterId" />
+		</bind>
+	</input>
+	
+	<input file="PricingCodeEquivalency.csv" type="com.axelor.apps.pricing.db.PricingCodeEquivalency" />
+	
+	<input file="forfaitparoption.csv" type="com.axelor.apps.pricing.db.FixedAmount">
+   		<bind column="forfopt_id" to="koalaId" />
+   		<bind column="forfopt_libelle" to="name" />
+   		<bind to="pricingOption" search="self.koalaId = :forfopt_opttar_id" update="true">
+   			<bind to="koalaId" column="forfopt_opttar_id" />
+   		</bind>
+	</input>
+	
+	<input file="forfaitparoptionps.csv" type="com.axelor.apps.pricing.db.FixedAmount" search="self.koalaId = :forfoptps_forfopt_id" update="true">
+   		<bind to="gasConsumptionWthHeating" 
+   		eval="forfoptps_PS.empty &amp;&amp; !forfoptps_forfkWh_chaufelec.empty ? forfoptps_forfkWh_chaufelec.replace(',','.').replace('.00','.0') : null"/>
+   		<bind to="gasConsumptionWtoHeating"  
+   		eval="forfoptps_PS.empty &amp;&amp; !forfoptps_forfkWh_chaufnonelec.empty ? forfoptps_forfkWh_chaufnonelec.replace(',','.').replace('.00','.0') : null"/>
+		<bind to="elecConsumptionYearList" if="!forfoptps_PS.empty">
+   			<bind to="powerParameter" search="self.value = :forfoptps_PS and self.parameterType.code = 'puissSous'">
+   				<bind to="value" eval="forfoptps_PS.split(',')[0]" column="forfoptps_PS"/>
+   			</bind>
+   			<bind to="consumptionWthHeating"	 
+   			eval="!forfoptps_forfkWh_chaufelec.empty ? forfoptps_forfkWh_chaufelec.replace(',','.').replace('.00','.0') : ''"/>
+	   		<bind to="consumptionWtoHeating"
+	   		eval="!forfoptps_forfkWh_chaufnonelec.empty ? forfoptps_forfkWh_chaufnonelec.replace(',','.').replace('.00','.0') : ''"/>
+   		</bind>
+   	</input> 
+   	
+   	<input file="postparoption.csv" type="com.axelor.apps.pricing.db.SplitByParameter"
+		call="com.axelor.csv.script.ImportPricing:importSplitByParameter">
+		<bind eval="0" to="importId" />
+		<bind to="pricingOption" search="self.koalaId = :postparoption_optiontarifaire_id" update="true">
+			<bind to="koalaId" column="postparoption_optiontarifaire_id" />
+		</bind>
+		<bind to="powerParameter" search="self.parameterId = :postaparoption_postohorosais_id AND self.parameterType.code = 'poste'" update="true">
+			<bind to="parameterId" column="postaparoption_postohorosais_id" eval="'poste_'+postaparoption_postohorosais_id" />
+		</bind>
+		<bind column="postparoption_ventilforfmensu" to="percent"
+			eval="!postparoption_ventilforfmensu.empty ? postparoption_ventilforfmensu.replace(',','.').replace('.00','.0') : null" />
+	</input>
+	
+	<input file="tarifgrd.csv" type="com.axelor.apps.pricing.db.Pricing" call="com.axelor.csv.script.ImportPricing:importPricing">
+		<bind column="tarifgrd_id" to="koalaId"/>
+		<bind column="tarifgrd_code" to="code"/>
+		<bind column="tarifgrd_libelle" to="name"/>
+		<bind search="self.koalaId = :tarifgrd_fluide_id" to="fluid" update="true">
+			<bind column="tarifgrd_fluide_id" to="koalaId"/>
+		</bind>
+		<bind search="self.koalaId = :tarifgrd_structtar_id" to="pricingStructure" update="true">
+			<bind column="tarifgrd_structtar_id" to="koalaId"/>
+		</bind>
+		<bind search="self.koalaId = :tarifgrd_domaine_racc_id" to="elecRange" update="true">
+			<bind column="tarifgrd_domaine_racc_id" to="koalaId"/>
+		</bind>
+		<bind search="self.koalaId = :tarifgrd_opttar_id" to="pricingOption" update="true">
+			<bind column="tarifgrd_opttar_id" to="koalaId" eval="tarifgrd_opttar_id.replaceFirst ('^0*','')"/>
+		</bind>
+		<bind column="tarifgrd_flag_simu" to="simulationPrincingOk" eval="tarifgrd_flag_simu == '1'? 'true' : 'false'"/>
+		<bind search="self.koalaId = :tarif_natcontrat_id" to="usage" update="true">
+			<bind column="tarif_natcontrat_id" to="koalaId"/>
+		</bind>
+		<bind column="tarifgrd_flag_parent" to="parentPrincingBased" eval="tarifgrd_flag_parent == '1'? 'true' : 'false'"/>
+		<bind search="self.code = :tarifgrd_code_parent" to="parentPrincing" update="true">
+			<bind column="tarifgrd_code_parent" to="code"/>
+		</bind>
+		<bind column="tarifgrd_pourcsurparent_abo" to="percentOnPF" eval="!tarifgrd_pourcsurparent_abo.empty ? tarifgrd_pourcsurparent_abo.replace(',','.').replace('.00','.0') : ''"/>
+		<bind column="tarifgrd_pourcsurparent_conso" to="percentOnPV" eval="!tarifgrd_pourcsurparent_conso.empty ? tarifgrd_pourcsurparent_conso.replace(',','.').replace('.00','.0') : ''" />
+		<bind column="tarifgrd_flag_personnalisable" to="princingCustomizable" eval="tarifgrd_flag_personnalisable == '1'? 'true' : 'false'"/>
+		<bind column="tarifgrd_flag_engcons" to="forcedCommitmentOk" eval="tarifgrd_flag_engcons == '1'? 'true' : 'false'"/>
+		<bind column="tarifgrd_flag_pourc_specifique" to="discountAllowed" eval="tarifgrd_flag_pourc_specifique == '1'? 'true' : 'false'"/>
+		<bind column="tarifgrd_pourcmax_abo" to="maxDiscountOnPF" eval="!tarifgrd_pourcmax_abo.empty ? tarifgrd_pourcmax_abo.replace(',','.').replace('.00','.0') : ''" />
+		<bind column="tarifgrd_pourcmax_conso" to="maxDiscountOnPV" eval="!tarifgrd_pourcmax_conso.empty ? tarifgrd_pourcmax_conso.replace(',','.').replace('.00','.0') : ''" />
+		<bind column="tarifgrd_natoffre_id" to="administeredElected" eval="tarifgrd_natoffre_id.replaceFirst ('^0*','') == '1'? 'admin' : tarifgrd_natoffre_id.replaceFirst ('^0*','') == '2'? 'elu' : 'routing'"/>
+		<bind column="tarifgrd_flag_capacite_journ" to="excessDailyCapacityManagement" eval="tarifgrd_flag_capacite_journ == '1'? 'true' : 'false'"/>
+		<bind to="htaOk" eval="tarifgrd_code == 'HTASANSDT' ? 'true' : 'false' "/>
+		<bind column="tarifgrd_flag_extinction" to="extinctionPricingOk" eval="tarifgrd_flag_extinction == '1' ? true : false"/>
+	</input>
+	
+	<input file="PricingListLineGRD1.csv" type="com.axelor.apps.pricing.db.PricingListLine">
+		<bind to="pricingListVersion" search="self.fromDate = :from_date and self.pricingList.name = :pricing_list_name"> 
+			<bind to="fromDate" column="from_date" eval="!from_date?.empty ? from_date.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$1'.padLeft(2,'0')+'-$2') : null"/>
+			<bind to="toDate" column="to_date" eval="!to_date?.empty ? to_date.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$1'.padLeft(1,'0')+'-$2') : null"/>
+			<bind to="activeOk" eval="'true'" />
+			<bind search="self.name = :pricing_list_name" to="pricingList">
+				<bind column="pricing_list_name" to="name" />
+				<bind search="self.name = :key_pricing_list" to="keyPricingList">
+					<bind column="key_pricing_list" to="name" />
+				</bind>
+			</bind>
+		</bind>
+		<bind search="self.name = :parameter1 and self.parameterType != null and self.parameterType.code = 'formCont'" 
+			to="parameter1" update="true">
+			<bind column="parameter1" to="name" />
+		</bind>
+		<bind to="val1" column="val1" eval="!val1.empty ? val1.replace(',','.') : ''"/>
+	</input>
+	
+	<input file="PricingListLineGRD2.csv" type="com.axelor.apps.pricing.db.PricingListLine">
+		<bind to="pricingListVersion" search="self.fromDate = :from_date and self.pricingList.name = :pricing_list_name"> 
+			<bind to="fromDate" column="from_date" eval="!from_date.empty ? from_date.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$1'.padLeft(2,'0')+'-$2') : null"/>
+			<bind to="toDate" column="to_date" eval="!to_date.empty ? to_date.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$1'.padLeft(2,'0')+'-$2') : null"/>
+			<bind to="activeOk" eval="'true'" />
+			<bind search="self.name = :pricing_list_name" to="pricingList">
+				<bind column="pricing_list_name" to="name" />
+				<bind search="self.name = :key_pricing_list" to="keyPricingList">
+					<bind column="key_pricing_list" to="name" />
+				</bind>
+			</bind>
+		</bind>
+		<bind search="self.name = :parameter1 and self.parameterType != null and self.parameterType.code = 'ctrPuis'" 
+			to="parameter1" update="true">
+			<bind column="parameter1" to="name" />
+		</bind>
+		<bind search="self.name = :parameter2 and self.parameterType != null and self.parameterType.code = 'grandMes'" 
+			to="parameter2" update="true">
+			<bind column="parameter2" to="name" />
+		</bind>
+		<bind search="self.name = :parameter3 and self.parameterType != null and self.parameterType.code = 'locCompt'" 
+			to="parameter3" update="true">
+			<bind column="parameter3" to="name" />
+		</bind>
+		<bind to="val1" column="val1" eval="!val1.empty ? val1.replace(',','.') : ''"/>
+	</input>	
+		 
+	<input file="PricingListLineGRD3.csv" type="com.axelor.apps.pricing.db.PricingListLine">
+		<bind to="pricingListVersion" search="self.fromDate = :from_date and self.pricingList.name = :pricing_list_name"> 
+			<bind to="fromDate" column="from_date" eval="!from_date.empty ? from_date.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$1'.padLeft(2,'0')+'-$2') : null"/>
+			<bind to="toDate" column="to_date" eval="!to_date.empty ? to_date.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$1'.padLeft(2,'0')+'-$2') : null"/>
+			<bind to="activeOk" eval="'true'" />
+			<bind search="self.name = :pricing_list_name" to="pricingList">
+				<bind column="pricing_list_name" to="name" />
+				<bind search="self.name = :key_pricing_list" to="keyPricingList">
+					<bind column="key_pricing_list" to="name" />
+				</bind>
+			</bind>
+		</bind>
+		<bind search="self.name = :parameter1 and self.parameterType != null and self.parameterType.code = 'ctrPuis'" 
+			to="parameter1" update="true">
+			<bind column="parameter1" to="name" />
+		</bind>
+		<bind search="self.name = :parameter2 and self.parameterType != null and self.parameterType.code = 'grandMes'" 
+			to="parameter2" update="true">
+			<bind column="parameter2" to="name" />
+		</bind>
+		<bind search="self.name = :parameter3 and self.parameterType != null and self.parameterType.code = 'locCompt'" 
+			to="parameter3" update="true">
+			<bind column="parameter3" to="name" />
+		</bind>
+		<bind to="parameter9" column="parameter9" eval="!parameter9.empty ? parameter9.replace(',','.') : ''"/>
+		<bind to="parameter10" column="parameter10" eval="!parameter10.empty ? parameter10.replace(',','.') : ''"/>
+		<bind to="val1" column="val1" eval="!val1.empty ? val1.replace(',','.') : ''"/>
+	</input>	
+	
+	<input file="PricingListLineGRD4.csv" type="com.axelor.apps.pricing.db.PricingListLine">
+		<bind to="pricingListVersion" search="self.fromDate = :from_date and self.pricingList.name = :pricing_list_name"> 
+			<bind to="fromDate" column="from_date" eval="!from_date.empty ? from_date.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$1'.padLeft(2,'0')+'-$2') : null"/>
+			<bind to="toDate" column="to_date" eval="!to_date.empty ? to_date.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$1'.padLeft(2,'0')+'-$2') : null"/>
+			<bind to="activeOk" eval="'true'" />
+			<bind search="self.name = :pricing_list_name" to="pricingList">
+				<bind column="pricing_list_name" to="name" />
+				<bind search="self.name = :key_pricing_list" to="keyPricingList">
+					<bind column="key_pricing_list" to="name" />
+				</bind>
+			</bind>
+		</bind>
+		<bind search="self.name = :parameter2 and self.parameterType != null and self.parameterType.code = 'grandMes'" 
+			to="parameter2" update="true">
+			<bind column="parameter2" to="name"/>
+		</bind>
+		<bind to="val1" eval="!val1.empty ? val1 : null" column="val1"/>
+		<bind to="val2" eval="!val2.empty ? val2 : null" column="val2"/>
+		<bind to="val3" eval="!val3.empty ? val3 : null" column="val3"/>
+		<bind to="val4" eval="!val4.empty ? val4 : null" column="val4"/>
+	</input>
+	
+	<input file="PricingListLineGRD5.csv" type="com.axelor.apps.pricing.db.PricingListLine">
+		<bind to="pricingListVersion" search="self.fromDate = :from_date and self.pricingList.name = :pricing_list_name"> 
+			<bind to="fromDate" column="from_date" eval="!from_date.empty ? from_date.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$1'.padLeft(2,'0')+'-$2') : null"/>
+			<bind to="toDate" column="to_date" eval="!to_date.empty ? to_date.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$1'.padLeft(2,'0')+'-$2') : null"/>
+			<bind to="activeOk" eval="'true'" />
+			<bind search="self.name = :pricing_list_name" to="pricingList">
+				<bind column="pricing_list_name" to="name" />
+				<bind search="self.name = :key_pricing_list" to="keyPricingList">
+					<bind column="key_pricing_list" to="name" />
+				</bind>
+			</bind>
+		</bind>
+		<bind search="self.name = :parameter1 and self.parameterType != null and self.parameterType.code = 'poste'" 
+			to="parameter1" update="true">
+			<bind column="parameter1" to="name"/>
+		</bind>
+		<bind search="self.name = :parameter2 and self.parameterType != null and self.parameterType.code = 'grandMes'" 
+			to="parameter2" update="true">
+			<bind column="parameter2" to="name"/>
+		</bind>
+		<bind to="val1" eval="!val1.empty ? val1 : null" column="val1"/>
+		<bind to="val2" eval="!val2.empty ? val2 : null" column="val2"/>
+		<bind to="val3" eval="!val3.empty ? val3 : null" column="val3"/>
+		<bind to="val4" eval="!val4.empty ? val4 : null" column="val4"/>
+	</input>
+	
+	<input file="PricingListLineGRD6.csv" type="com.axelor.apps.pricing.db.PricingListLine">
+		<bind to="pricingListVersion" search="self.fromDate = :from_date and self.pricingList.name = :pricing_list_name"> 
+			<bind to="fromDate" column="from_date" eval="!from_date.empty ? from_date.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$1'.padLeft(2,'0')+'-$2') : null"/>
+			<bind to="toDate" column="to_date" eval="!to_date.empty ? to_date.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$1'.padLeft(2,'0')+'-$2') : null"/>
+			<bind to="activeOk" eval="'true'" />
+			<bind search="self.name = :pricing_list_name" to="pricingList">
+				<bind column="pricing_list_name" to="name" />
+				<bind search="self.name = :key_pricing_list" to="keyPricingList">
+					<bind column="key_pricing_list" to="name" />
+				</bind>
+			</bind>
+		</bind>
+		<bind search="self.name = :parameter1 and self.parameterType != null and self.parameterType.code = 'poste'" 
+			to="parameter1" update="true">
+			<bind column="parameter1" to="name"/>
+		</bind>
+		<bind to="parameter9" column="parameter9" eval="!parameter9.empty ? parameter9.replace(',','.') : ''"/>
+		<bind to="parameter10" column="parameter10" eval="!parameter10.empty ? parameter10.replace(',','.') : ''"/>
+		<bind to="val1" eval="!val1.empty ? val1 : null" column="val1"/>
+		<bind to="val2" eval="!val2.empty ? val2 : null" column="val2"/>
+	</input>
+	
+	<input file="PricingListLineGRD7.csv" type="com.axelor.apps.pricing.db.PricingListLine">
+		<bind to="pricingListVersion" search="self.fromDate = :from_date and self.pricingList.name = :pricing_list_name"> 
+			<bind to="fromDate" column="from_date" eval="!from_date.empty ? from_date.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$1'.padLeft(2,'0')+'-$2') : null"/>
+			<bind to="toDate" column="to_date" eval="!to_date.empty ? to_date.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$1'.padLeft(2,'0')+'-$2') : null"/>
+			<bind to="activeOk" eval="'true'" />
+			<bind search="self.name = :pricing_list_name" to="pricingList">
+				<bind column="pricing_list_name" to="name" />
+				<bind search="self.name = :key_pricing_list" to="keyPricingList">
+					<bind column="key_pricing_list" to="name" />
+				</bind>
+			</bind>
+		</bind>
+		<bind to="val1" eval="!val1.empty ? val1.replace(',','.') : ''"/>
+		<bind to="val2" eval="!val2.empty ? val2.replace(',','.') : ''"/>
+		<bind to="val3" eval="!val3.empty ? val3.replace(',','.') : ''"/>
+		<bind to="val4" eval="!val4.empty ? val4.replace(',','.') : ''"/>
+	</input>
+ 	
+	<input file="PricingListLineGRD8.csv" type="com.axelor.apps.pricing.db.PricingListLine">
+		<bind to="pricingListVersion" search="self.fromDate = :from_date and self.pricingList.name = :pricing_list_name"> 
+			<bind to="fromDate" column="from_date" eval="!from_date.empty ? from_date.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$1'.padLeft(2,'0')+'-$2') : null"/>
+			<bind to="toDate" column="to_date" eval="!to_date.empty ? to_date.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$1'.padLeft(2,'0')+'-$2') : null"/>
+			<bind to="activeOk" eval="'true'" />
+			<bind search="self.name = :pricing_list_name" to="pricingList">
+				<bind column="pricing_list_name" to="name" />
+				<bind search="self.name = :key_pricing_list" to="keyPricingList">
+					<bind column="key_pricing_list" to="name" />
+				</bind>
+			</bind>
+		</bind>
+		<bind to="val1" eval="!val1.empty ? val1.replace(',','.') : ''"/>
+	</input>
+	
+	<input file="PricingListLineGRD9.csv" type="com.axelor.apps.pricing.db.PricingListLine">
+		<bind to="pricingListVersion" search="self.fromDate = :from_date and self.pricingList.name = :pricing_list_name"> 
+			<bind to="fromDate" column="from_date" eval="!from_date.empty ? from_date.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$1'.padLeft(2,'0')+'-$2') : null"/>
+			<bind to="toDate" column="to_date" eval="!to_date.empty ? to_date.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$1'.padLeft(2,'0')+'-$2') : null"/>
+			<bind to="activeOk" eval="'true'" />
+			<bind search="self.name = :pricing_list_name" to="pricingList">
+				<bind column="pricing_list_name" to="name" />
+				<bind search="self.name = :key_pricing_list" to="keyPricingList">
+					<bind column="key_pricing_list" to="name" />
+				</bind>
+			</bind>
+		</bind>
+		<bind to="val1" eval="!val1.empty ? val1.replace(',','.') : ''"/>
+		<bind to="val2" eval="!val2.empty ? val2.replace(',','.') : ''"/>
+	</input>
+	
+	<input file="PricingListLineGRD10.csv" type="com.axelor.apps.pricing.db.PricingListLine">
+		<bind to="pricingListVersion" search="self.fromDate = :from_date and self.pricingList.name = :pricing_list_name"> 
+			<bind to="fromDate" column="from_date" eval="!from_date.empty ? from_date.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$1'.padLeft(2,'0')+'-$2') : null"/>
+			<bind to="toDate" column="to_date" eval="!to_date.empty ? to_date.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$1'.padLeft(2,'0')+'-$2') : null"/>
+			<bind to="activeOk" eval="'true'" />
+			<bind search="self.name = :pricing_list_name" to="pricingList">
+				<bind column="pricing_list_name" to="name" />
+				<bind search="self.name = :key_pricing_list" to="keyPricingList">
+					<bind column="key_pricing_list" to="name" />
+				</bind>
+			</bind>
+		</bind>
+		<bind search="self.name = :parameter1 and self.parameterType != null and self.parameterType.code = 'segtUtilisateur'" 
+			to="parameter1" update="true">
+			<bind column="parameter1" to="name"/>
+		</bind>
+		<bind to="val1" eval="!val1.empty ? val1.replace(',','.') : ''"/>
+		<bind to="val2" eval="!val2.empty ? val2.replace(',','.') : ''"/>
+	</input>
+		
+	
+	<input file="PricingLineGRD.csv" type="com.axelor.apps.pricing.db.PricingLine" 
+ 		search="self.pricingStructureLine.code =:pricingStructureLineCode AND self.pricing.koalaId =:pricingKoalaId" call="com.axelor.csv.script.ImportPricingLine:testLine">
+		<bind search="self.code = :pricingStructureLineCode" to="pricingStructureLine" update="true">
+			<bind column="pricingStructureLineCode" to="code" />
+		</bind>
+		<bind search="self.name = :pricingListName" to="pricingList" update="true">
+			<bind column="pricingListName" to="name" />
+		</bind>
+		<bind search="self.code = :productCode" to="product" update="true">
+			<bind column="productCode" to="code" />
+		</bind>
+		<bind search="self.koalaId = :pricingKoalaId" to="pricing" update="true">
+			<bind column="pricingKoalaId" to="koalaId" />
+		</bind>
+	</input>
+	
+	<input file="tarifgrd.csv" type="com.axelor.apps.pricing.db.Pricing" call="com.axelor.csv.script.ImportPricing:importPricing" search="self.koalaId = :tarifgrd_id" update="true" >
+		<bind to="_flag" eval="tarifgrd_flag_parent == '1' ? true : false" />
+		<bind to="parentPrincing" search="self.code = :tarifgrd_code_parent" update="false" if="_flag"/>
+	</input>
+	
+	<input file="PricingListLine_TaxGRD.csv" type="com.axelor.apps.pricing.db.PricingListLine">
+		<bind to="pricingListVersion" search="self.fromDate = :from_date and self.pricingList.name = :pricing_list_name"> 
+			<bind to="fromDate" column="from_date" eval="!from_date.empty ? from_date.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$1'.padLeft(2,'0')+'-$2') : null"/>
+			<bind to="toDate" column="to_date" eval="!to_date.empty ? to_date.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$1'.padLeft(2,'0')+'-$2') : null"/>
+			<bind to="activeOk" eval="true" />
+			<bind search="self.name = :pricing_list_name" to="pricingList">
+				<bind column="pricing_list_name" to="name" />
+				<bind search="self.name = :key_pricing_list" to="keyPricingList" if="!key_pricing_list?.empty">
+					<bind column="key_pricing_list" to="name" />
+				</bind>
+			</bind>
+		</bind>
+		<bind to="val1" eval="!val1?.empty ? val1.replace(',','.') : ''"/>
+		<bind search="self.parameterId = :parameter1" to="parameter1" if="!parameter1?.empty">
+			<bind column="parameter1" to="parameterId" />
+		</bind>
+	</input>
+		
+	<input file="BaseGRD.csv" type="com.axelor.apps.sale.db.Base" >
+  		<bind column="constituentSet" to="constituentSet" search="self.code in :constituentSet" eval="constituentSet.split('\\|') as List"/>
+	</input>
+		
+	<input file="CalculationRuleGRD.csv" type="com.axelor.apps.sale.db.CalculationRule"/>
+	
+	<input file="typetaxe.csv" type="com.axelor.apps.sale.db.Tax">
+		<bind column="typetaxe_id" to="koalaId" />
+		<bind column="typetaxe_libcourt" to="code" />
+		<bind column="typetaxe_libelle" to="name" />
+	</input>
+	
+	<input file="TaxGRD.csv" type="com.axelor.apps.sale.db.Tax" search="self.code = :code" >
+		<bind column="constituentSet" to="constituentSet" search="self.code in :constituentSet" eval="constituentSet.split('\\|') as List"/>
+	</input>  
+	
+	<input file="affectationcomptabletaxeGRD.csv" type="com.axelor.apps.account.db.AccountManagement"
+		search="self.company.name = :societe AND self.typeSelect = '2' AND self.account.code = :compte_general AND self.companyRoleSelect = :role_societe"
+		call="com.axelor.csv.script.ImportAccountManagement:importAMTaxVat">
+		<bind to="typeSelect" eval="2"/>
+		<bind to="company" search="self.name = :societe" update="true">
+			<bind column="societe" to="name" eval="!societe.empty? societe : 'DEFAULT'" />
+		</bind>
+		<bind to="companyRoleSelect" column="role_societe" eval="role_societe == 'Contrat GRD-F' ? 3 : 4" />
+		<bind to="account" search="self.code = :compte_general AND self.company.name = :societe" update="true">
+			<bind column="compte_general" to="code" />
+		</bind>
+	</input>
+	
+	<input file="TaxLineGRD.csv" type="com.axelor.apps.sale.db.TaxLine">
+		<bind to="fromDate" eval="!date_debut.empty ? date_debut : null" />
+		<bind to="toDate" eval="!date_fin.empty ? date_fin : null"/>
+	</input>
+	
+	<input file="reglefacturationpaiement.csv" type="com.axelor.apps.contract.db.InvoicePaymentRule" >
+		<bind column="regfacpai_id" to="koalaId" />
+		<bind column="regfacpai_libelle" to="description" />
+		<bind search="self.koalaId = :regfacpai_typefaccont_id" to="invoicingType" update="true">
+			<bind column="regfacpai_typefaccont_id" to="koalaId" />
+		</bind>
+		<bind to="invoicingRhythmSelect" eval="regfacpai_rythmefactu!='0'?regfacpai_rythmefactu.replace('0',''):null" />
+		<bind to="invoicingDay" column="regfacpai_jourfacu" />
+		<bind to="monthlyPaymentDebitDaySelect" eval="regfacpai_jourprelmensu.toInteger()" />
+	</input>
+	
+	<input file="reglefacturationpaiement.csv" type="com.axelor.apps.contract.db.InvoicePaymentRule" search="self.koalaId = :regfacpai_id" update="true">
+		<bind if="!regfacpai_entreemensu_id.empty" to="invoicePaymentRule" search="self.koalaId = :regfacpai_entreemensu_id" update="true" >
+			<bind column="regfacpai_entreemensu_id" to="koalaId" />
+		</bind>
+	</input>	
+	
+	<input file="regfacpainattiers.csv" type="com.axelor.apps.contract.db.ClientNatureTime">
+		<bind search="self.koalaId = :regfacpainattiers_regfacpai_id" to="invoicePaymentRule" update="true">
+			<bind column="regfacpainattiers_regfacpai_id" to="koalaId"/>
+		</bind>
+		<bind search="self.koalaId = :regfacpainattiers_nattiers_id" to="clientNature" update="true">
+			<bind column="regfacpainattiers_nattiers_id" to="koalaId"/>
+		</bind>
+		<bind column="regfacpai_delai_paiement" to="paymentTime"/>
+		<bind column="regfacpai_flag_personnalisable" to="customisableOk" eval="regfacpai_flag_personnalisable == '1'? 'true' : 'false'"/>
+		<bind search="self.koalaId = :regfacpai_regfacpaifinmensu_id" to="stopMonthlyInvoicePaymentRule" update="true">
+			<bind column="regfacpai_regfacpaifinmensu_id" to="koalaId"/>
+		</bind>
+	</input>
+	
+	<input file="pct.csv" type="com.axelor.apps.territory.db.Mpt">
+		<bind column="PCT_id" to="koalaId"/>
+		<bind column="PCT_ref" to="name"/>
+		<bind column="PCT_ref" to="code"/>
+		<bind search="self.koalaId = :PCT_fluide_id" to="fluid" update="true">
+			<bind column="PCT_fluide_id" to="koalaId"/>
+		</bind>
+		<bind column="PCT_Date_premiere_MES" to="firstServiceDate" eval="!PCT_Date_premiere_MES.empty ? PCT_Date_premiere_MES.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : null"/>
+		<bind search="self.koalaId = :PCT_tiersprop_id" to="ownerPartner" update="true">
+			<bind column="PCT_tiersprop_id" to="koalaId"/>
+		</bind>
+		<bind search="self.koalaId = :PCT_commune_id" to="commune" update="true">
+			<bind column="PCT_commune_id" to="koalaId"/>
+		</bind>
+		<bind search="self.koalaId = :PCT_territoire_id" to="territory" update="true">
+			<bind column="PCT_territoire_id" to="koalaId"/>
+		</bind>
+		<bind search="self.koalaId = :PCT_adresse_id" to="address" update="true">
+			<bind column="PCT_adresse_id" to="koalaId"/>
+		</bind>
+		<bind search="self.koalaId = :PCT_lieuconso_adresse_id" to="consumptionAddress" update="true">
+			<bind column="PCT_lieuconso_adresse_id" to="koalaId" />
+		</bind>
+		<bind column="PCT_Ancref" to="oldRef"/>
+		<bind column="PCT_Ancref2" to="gasMeterBoxRef" />
+		<bind search="self.koalaId = :PCT_statut_id" to="status" update="true">
+			<bind column="PCT_statut_id" to="koalaId"/>
+		</bind>
+		<bind column="PCT_flag_regroupement" to="groupingMptOk" eval="PCT_flag_regroupement == '1'? 'true' : 'false'"/>
+		<bind search="self.koalaId = :PCT_segment_id" to="userSegment" update="true">
+			<bind column="PCT_segment_id" to="koalaId"/>
+		</bind>
+		<bind search="self.koalaId = :PCT_typeutil_id" to="userType" update="true">
+			<bind column="PCT_typeutil_id" to="koalaId"/>
+		</bind>
+		<bind column="PCT_dateprochainereleve" to="meterReadingNextDate"  eval="!PCT_dateprochainereleve.empty ? PCT_dateprochainereleve.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : null"/>
+		<bind column="PCT_etatfourn_Id" to="supplyStatus" search="self.koalaId = :PCT_etatfourn_Id" update="true">
+			<bind column="PCT_etatfourn_Id" to="koalaId" />
+		</bind>
+		<bind column="PCT_baseorig" to="importOrigin"/>
+		<bind column="PCT_rythmeflux_id" to="flowRate" search="self.importId = :PCT_rythmeflux_id" update="true">
+			<bind column="PCT_rythmeflux_id" to="importId" />
+		</bind>
+	</input>
+	
+	<input file="pdl.csv" type="com.axelor.apps.territory.db.Mpt" search="self.koalaId = :PDL_PCT_id" update="true">
+		<bind search="self.koalaId = :PDL_domaineracc_id" to="elecRange" update="true">
+			<bind column="PDL_domaineracc_id" to="koalaId"/>
+		</bind>
+		<bind column="PDL_flag_sensible" to="criticalClientOk" eval="PDL_flag_sensible == '1'? 'true' : 'false'"/>
+		<bind search="self.koalaId = :PDL_typecpt" to="meterType" update="true">
+			<bind column="PDL_typecpt" to="koalaId"/>
+		</bind>
+		<bind column="PDL_flag_EP" to="publicLightingOk" eval="PDL_flag_EP == '1'? 'true' : 'false'"/>
+		<bind search="self.parameterId = :PDL_typectrlpuiss_id and self.parameterType.code = 'ctrPuis'" to="powerControlParameter" update="true">
+			<bind column="PDL_typectrlpuiss_id" to="parameterId" eval="'ctrPuis_'+PDL_typectrlpuiss_id"/>
+		</bind>
+		<bind search="self.parameterId = :PDL_typemesureenergie_id and self.parameterType.code = 'grandMes'" to="measuredParameter" update="true">
+			<bind column="PDL_typemesureenergie_id" to="parameterId" eval="'mes_'+PDL_typemesureenergie_id"/>
+		</bind>		
+		<bind search="self.parameterId = :PDL_flag_sans_location_cptage and self.parameterType.code = 'locCompt'" to="meterRentalParameter" update="true">
+			<bind column="PDL_flag_sans_location_cptage" to="parameterId" eval="PDL_flag_sans_location_cptage == '1' ? 'sansLoc' : 'avecLoc'"/>
+		</bind>
+		<bind to="meterReadingType" search="self.koalaId = :PDL_typerel" update="true">
+			<bind to="koalaId" column="PDL_typerel" />
+		</bind>
+		<bind to="var1" column="PDL_var1" />
+		<bind to="nb_lep1" column="PDL_nb_lep1" />
+		<bind to="PS_tot1" column="PDL_PS_tot1" />
+		<bind to="var2" column="PDL_var2" />
+		<bind to="nb_lep2" column="PDL_nb_lep2" />
+		<bind to="PS_tot2" column="PDL_PS_tot2" />
+	</input>
+	
+	<input file="pdlc.csv" type="com.axelor.apps.territory.db.Mpt" search="self.koalaId = :PDLC_PCT_id" update="true">
+		<bind to="managementScope" search="self.koalaId = :PDLC_perimgest_id" update="true">
+			<bind to="koalaId" column="PDLC_perimgest_id" />
+		</bind>	
+	</input>
+	
+	<input file="regrouppct.csv" type="com.axelor.apps.territory.db.Mpt" search="self.koalaId = :regrouppct_fils" update="true">
+		<bind to="mptRoleSelect" eval="'grouped'"/>
+		<bind to="groupingMpt" search="self.koalaId = :regrouppct_pere" update="true">
+			<bind column="regrouppct_pere" to="koalaId" />
+		</bind>
+	</input>
+	
+	<input file="regrouppct.csv" type="com.axelor.apps.territory.db.Mpt" search="self.koalaId = :regrouppct_pere" update="true">
+		<bind to="mptRoleSelect" eval="'grouping'"/>
+	</input>
+	
+	<input file="pitd.csv" type="com.axelor.apps.territory.db.Pitd">
+		<bind to="koalaId" column="PITD_ID"/>
+		<bind to="code" column="PITD_code"/>
+		<bind to="name" column="PITD_Nom"/>
+		<bind to="weatherZone" search="self.importId = :PITD_zonemeteo_id" update="true">
+			<bind column="PITD_zonemeteo_id" to="importId" />
+		</bind>
+		<bind column="PITD_NTR" to="regionalTransportLevel"/>
+	</input>
+	
+	<input file="commune.csv" type="com.axelor.apps.territory.db.Commune" search="self.koalaId = :commune_id" update="true">
+		<bind to="pitd" search="self.koalaId = :commune_PITD_id" update="true">
+			 <bind to="koalaId" column="commune_PITD_id"/>
+		</bind>
+	</input>
+	
+	<input file="tiersgrdconfig.csv" type="com.axelor.apps.administration.db.DsoFluidConfiguration">
+		<bind column="tgrdconf_id" to="koalaId" />
+		<bind search="self.koalaId = :tgrdconf_tiersgrd_id" to="dsoPartner" update="true">
+			<bind column="tgrdconf_tiersgrd_id" to="koalaId" />
+		</bind>
+		<bind column="tgrdconf_codeGRD" to="code" />
+		<bind column="tgrdconf_flagconfiance" to="trustworthyDsoOk" eval="tgrdconf_flagconfiance == '1'? true : false" />
+		<bind search="self.koalaId = :tgrdconf_fluide_id" to="fluid" update="true">
+			<bind column="tgrdconf_fluide_id" to="koalaId" />
+		</bind>
+		<bind column="tgrdconf_flagGrandCompte" to="gdCompteOk" eval="tgrdconf_flagGrandCompte == '1'? true : false" />
+		<bind column="tgrdconf_freqflux" to="frequenceMeSelect" eval="(!tgrdconf_freqflux ||  tgrdconf_freqflux?.empty || tgrdconf_freqflux ==~ /^(0|00)$/) ? (tgrdconf_flagGrandCompte == '1' ? 1 : 2) : tgrdconf_freqflux"/>
+		<bind column="tgrdconf_nbjtolerRecep_CYC" to="nbMEWaitDays" />
+		<bind column="tgrdconf_nbjtolerRecep_MES" to="nbDaysToInvoice" />
+		<bind column="tgrdconf_typefactuabo_id" to="routingMatureOk" eval="tgrdconf_typefactuabo_id == '1'? true : false" />
+		<bind column="tgrdconf_rythme_releve_terrain" to="meterReadingFrequencySelect" />
+		<bind to="deltaNextDateInvoice" eval="tgrdconf_nbjcalcul_DAF" /> 
+		<bind to="general" search="self.environment = 'grd'" update="true">
+			<bind eval="'grd'" to="environment"/>
+		</bind>
+		<bind column="tgrdconf_nbjtolerRecep_CYCpourMES" to="nbrLateDaysToInvoiceMESCYC"/>
+	</input>
+	
+	<!-- [Imports et migration eVolutis - Evolution-Confirmation règles #774] -->
+	<input file="typeplanning.csv" type="com.axelor.apps.scheduler.db.Scheduler">
+		<bind column="typeplanning_id" to="koalaId"/>
+		<bind column="typeplanning_libelle" to="name"/>
+		
+		<bind to="daily" eval="typeplanning_periodicite?.equals('D') ? true : false"/>
+		<bind to="dayDaily" eval="typeplanning_periodicite?.equals('D') ? typeplanning_tousles : null" />
+		
+		<bind to="weekly" eval="typeplanning_periodicite?.equals('H') ? true : false"/>
+		<bind to="weekWeekly" eval="typeplanning_periodicite?.equals('H') ? typeplanning_tousles : null"/>
+		<bind to="monday" eval="typeplanning_periodicite?.equals('H') ? (typeplanning_numjoursemaine?.equals('1') ? true : false) : null"/>
+		<bind to="tuesday" eval="typeplanning_periodicite?.equals('H') ? (typeplanning_numjoursemaine?.equals('2') ? true : false) : null"/>
+		<bind to="wednesday" eval="typeplanning_periodicite?.equals('H') ? (typeplanning_numjoursemaine?.equals('3') ? true : false) : null"/>
+		<bind to="thursday" eval="typeplanning_periodicite?.equals('H') ? (typeplanning_numjoursemaine?.equals('4') ? true : false) : null"/>
+		<bind to="friday" eval="typeplanning_periodicite?.equals('H') ? (typeplanning_numjoursemaine?.equals('5') ? true : false) : null"/>
+		<bind to="saturday" eval="typeplanning_periodicite?.equals('H') ? (typeplanning_numjoursemaine?.equals('6') ? true : false) : null"/>
+		<bind to="sunday" eval="typeplanning_periodicite?.equals('H') ? (typeplanning_numjoursemaine?.equals('7') ? true : false) : null"/>
+		
+		<bind to="monthly" eval="(typeplanning_periodicite?.equals('M') || typeplanning_periodicite?.equals('S')) ? true : false"/>
+		<bind to="dayMonthly" eval="(typeplanning_periodicite?.equals('M') || typeplanning_periodicite?.equals('S')) ? typeplanning_numjourmois : null"/>
+		<bind to="monthMonthly" eval="(typeplanning_periodicite?.equals('M') || typeplanning_periodicite?.equals('S')) ? typeplanning_tousles : null" />
+		
+		<bind to="annual" eval="typeplanning_periodicite?.equals('A') ? true : false"/>
+		<bind to="yearAnnual" eval="typeplanning_periodicite?.equals('A') ? typeplanning_tousles : null" />
+		<bind to="dayAnnual" eval="typeplanning_periodicite?.equals('A') ? typeplanning_numjourmois : null" />
+	</input>
+	
+	<!-- [Imports et migration eVolutis - Evolution-Confirmation règles #774] -->
+	<input file="memoiregrd.csv" type="com.axelor.apps.invoice.db.InvoicesBill" 
+		call="com.axelor.csv.script.ImportInvoicePaymentCondition:updateInvoicesBillScheduler">
+		<bind column="memgrd_id" to="koalaId"/>
+		<bind column="memgrd_lib" to="name"/>
+		<bind column="memgrd_code" to="code"/>
+		<bind column="mem_anccode" to="oldCode"/>
+		<bind to="invoicesBillType" search="self.koalaId = :memgrd_typememoire_id" update="true">
+			<bind column="memgrd_typememoire_id" to="koalaId" />
+		</bind>
+		<bind to="status" search="self.code = 'dra'" update="true">
+			<bind eval="'dra'" to="code" />
+		</bind>
+	</input>
+	
+	<input file="memoiregrd.csv" type="com.axelor.apps.invoice.db.InvoicesBill" search="self.koalaId = :memgrd_id" update="true"
+		call="com.axelor.csv.script.ImportSequence:updateInvoicesBillSequence">
+		<bind column="memgrd_id" to="koalaId"/>
+	</input>
+	
+	<input file="contgrd.csv" type="com.axelor.apps.contract.db.Contract"
+		call="com.axelor.csv.script.ImportSequence:updateContractSequence">
+		<bind column="contgrd_id" to="koalaId"/>
+		<bind column="contgrd_ref" to="contractId"/>
+		<bind search="self.koalaId = :contgrd_societe_id" to="company" update="true" >
+			<bind column="contgrd_societe_id" to="koalaId" />
+		</bind>
+		<bind search="self.koalaId = :contgrd_typeutil_id" to="userType" update="true" >
+			<bind column="contgrd_typeutil_id" to="koalaId" />
+		</bind>
+		<bind search="self.koalaId = :contgrd_tierstit_id" to="mainClientPartner" update="true" >
+			<bind column="contgrd_tierstit_id" to="koalaId" />
+		</bind>
+		<bind search="self.koalaId = :contgrd_tiersre_id" to="brePartner" update="true" >
+			<bind column="contgrd_tiersre_id" to="koalaId" />
+		</bind>
+		<bind to="startDate" eval="contgrd_datecre ? contgrd_datecre.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : new org.joda.time.LocalDate()" />
+		<bind to="endDate" eval="contgrd_datefin ? contgrd_datefin.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : null" />
+		<bind to="fromDate" eval="contgrd_datedeb ? contgrd_datedeb.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : new org.joda.time.LocalDate()" />
+		<bind to="signatureDate" eval="contgrd_datesign ? contgrd_datesign.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : new org.joda.time.LocalDate()" />
+		<bind search="self.code = :contgrd_typecont_id" to="contractFormatId" update="true" >
+			<bind column="contgrd_typecont_id" to="code" />
+		</bind>
+		<bind search="self.koalaId = :contgrd_statut_id" to="status" update="true" >
+			<bind column="contgrd_statut_id" to="koalaId" />
+		</bind>
+		<bind eval="contgrd_CA_estimeFR ? contgrd_CA_estimeFR.replaceAll(',','.'):null" to="annualTurnover"/>
+		<bind eval="contgrd_CA_reel ? contgrd_CA_reel.replaceAll(',','.'):null" to="invoicedTurnover"/>
+		<bind column="contgrd_flag_elu" to="electedOk" eval="contgrd_flag_elu == '1' ? 'true' : 'false'"/>
+		<bind column="contgrd_flag_reglemente" to="administredOk" eval="contgrd_flag_reglemente == '1' ? 'true' : 'false'"/>
+	</input>
+
+	<input file="contgrdregroup.csv" type="com.axelor.apps.contract.db.InvoicePaymentCondition" 
+		call="com.axelor.csv.script.ImportInvoicePaymentCondition:updateInvoicePaymentRule">
+		<bind column="contgrdregroup_id" to="koalaId" />
+		<bind column="contgrdregroup_id" to="name" />
+		<bind search="self.koalaId = :contgrdregroup_contgrd_id" to="contract" update="true">
+			<bind column="contgrdregroup_contgrd_id" to="koalaId"/>
+		</bind>
+		<bind search="self.koalaId = :contgrdregroup_tierspay_id" to="payerPartner" update="true">
+				<bind column="contgrdregroup_tierspay_id" to="koalaId"/>
+		</bind>
+		<bind search="self.koalaId = :contgrdregroup_ribpay_id" to="bankDetails" update="true">
+				<bind column="contgrdregroup_ribpay_id" to="koalaId"/>
+		</bind>
+		<bind search="self.koalaId = :contgrdregroup_regfacpai_id" to="invoicePaymentRule" update="true">
+			<bind column="contgrdregroup_regfacpai_id" to="koalaId"/>
+		</bind>
+		<bind search="self.koalaId = :contgrdregroup_modreg_id" to="paymentMode" update="true">
+			<bind column="contgrdregroup_modreg_id" to="koalaId"/>
+		</bind>
+		<bind column="contgrdregroup_flag_delaiperso" to="customisedOk" eval="contgrdregroup_flag_delaiperso == '1'? 'true' : 'false'"/>
+		<bind column="contgrdregroup_delai_perso" to="paymentTime"/>
+		<bind to="invoiceSendingFormatSelect" 
+			eval="contgrdregroup_typeenvoifac_id == '1'?'email':contgrdregroup_typeenvoifac_id == '2' ? 'paper' : contgrdregroup_typeenvoifac_id == '3' ? 'emailpaper' : contgrdregroup_typeenvoifac_id == '4' ? 'xml':null"/>
+	</input>
+	
+	<input file="contgrdregroup.csv" type="com.axelor.apps.contract.db.InvoicePaymentCondition"
+		search="self.koalaId = :contgrdregroup_id" update="true"
+		call="com.axelor.csv.script.ImportSequence:updateIpcSequence">
+		<bind to="koalaId" column="contgrdregroup_id" />
+	</input>
+	
+	<input file="contgrdregroupsegment.csv" type="com.axelor.apps.contract.db.InvoicePaymentCondition" search="self.koalaId = :contgrdrgseg_contgrdregroup_id" update="true">
+		<bind to="userSegmentSet" search="self.koalaId = :contgrdrgseg_segment_id" update="true">
+			<bind column="contgrdrgseg_segment_id" to="koalaId"/>
+		</bind>
+	</input>
+	
+	<input file="ligcontgrd.csv" type="com.axelor.apps.contract.db.ContractLine" 
+		call="com.axelor.csv.script.ImportSequence:updateContractLineSequence">
+		<bind column="ligcontgrd_id" to="koalaId"/>
+		<bind column="ligcontgrd_ref" to="contractLineId"/>
+		<bind column="ligcontgrd_baseorig" to="importOrigin"/>
+		<bind to="annualConsumption" eval="0.0" />
+		<bind column="ligcontgrd_typefactuabo_id" to="matureOk" eval="ligcontgrd_typefactuabo_id == '1' ? 'true' : 'false'"/>
+		<bind search="self.koalaId = :ligcontgrd_tiersutil_id" to="userPartner" update="true">
+			<bind column="ligcontgrd_tiersutil_id" to="koalaId"/>
+		</bind>
+		<bind search="self.koalaId = :ligcontgrd_statut_id" to="status" update="true">
+			<bind column="ligcontgrd_statut_id" to="koalaId"/>
+		</bind>
+		<bind search="self.koalaId = :ligcontgrd_contgrdregroup_id" to="invoicePaymentCondition" update="true">
+			<bind column="ligcontgrd_contgrdregroup_id" to="koalaId"/>
+		</bind>
+		
+		<bind search="self.koalaId = :ligcontgrd_pct_id" to="mpt" update="true">
+			<bind column="ligcontgrd_pct_id" to="koalaId"/>
+		</bind>
+		<bind search="self.koalaId = :ligcontgrd_contgrd_id" to="contract" update="true">
+			<bind column="ligcontgrd_contgrd_id" to="koalaId"/>
+		</bind>
+		<bind to="createDate" eval="ligcontgrd_date_MES ? ligcontgrd_date_MES.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : new org.joda.time.LocalDate()" />
+		<bind to="startDate"  eval="ligcontgrd_date_MES ? ligcontgrd_date_MES.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : new org.joda.time.LocalDate()" />
+		<bind to="terminationDate" eval="ligcontgrd_date_MES ? ligcontgrd_date_MES.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : null" />
+		<bind to="subscriptionInvoicedFromDate" eval="ligcontgrd_derabo_du ? ligcontgrd_derabo_du.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : null" />
+		<bind to="subscriptionInvoicedToDate" eval="ligcontgrd_derabo_au ? ligcontgrd_derabo_au.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : null" />
+		<bind to="consumptionInvoicedFromDate" eval="ligcontgrd_derconso_du ? ligcontgrd_derconso_du.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : null" />
+		<bind to="consumptionInvoicedToDate" eval="ligcontgrd_derconso_au ? ligcontgrd_derconso_au.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : null" />
+		<bind to="nextTheoreticalInvoiceDate" eval="ligcontgrd_datheo_prochfact ? ligcontgrd_datheo_prochfact.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : null" />
+		<bind column="ligcontgrd_typenatres_id" to="residenceNatureSelect" eval="ligcontgrd_typenatres_id == '1' ? 'mainResidence': ligcontgrd_typenatres_id == '2' ? 'secondaryResidence': ligcontgrd_typenatres_id == '3' ? 'secondaryResidenceHoliday': 'closed'"/>
+		<bind to="specificCommitmentList" if="ligcontgrd_dateref != null &amp;&amp; !ligcontgrd_dateref.empty">
+			<bind to="startDate" eval="ligcontgrd_dateref ? ligcontgrd_dateref.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : null" />
+			<bind to="cumulatedQty" column="ligcontgrd_cumconso"/>
+		</bind>
+		<bind column="ligcontgrd_date_anniv" to="anniversaryDate" eval="ligcontgrd_date_anniv ? ligcontgrd_date_anniv.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : null" />
+		<bind column="ligcontgrd_dateref" to="specificCommitmentDate" eval="ligcontgrd_dateref ? ligcontgrd_dateref.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : null" />
+		<bind eval="2" to="companyRoleSelect"/> 
+		<bind to="deliveryAddress" search="self.koalaId = :ligcontgrd_adrinst_id" update="true">
+			<bind to="koalaId" column="ligcontgrd_adrinst_id"/>
+		</bind>
+	</input>
+	
+	<input file="ligcontgrd.csv" type="com.axelor.apps.contract.db.ContractLine" 
+		search="self.koalaId = :ligcontgrd_id" update="true"
+		call="com.axelor.csv.script.ImportContractLine:updateContractLineCustomerRoleSelect">
+		<bind column="ligcontgrd_id" to="koalaId "/>
+	</input>
+	
+	<input file="ligcontgrd.csv" type="com.axelor.apps.contract.db.Amendment" 
+		call="com.axelor.csv.script.ImportAmendment:updateFluid">
+		<bind column="ligcontgrd_id" to="koalaId"/>
+		<bind to="legalOk" eval="true" />
+		<bind search="self.koalaId = :ligcontgrd_segment_id" to="userSegment" update="true">
+			<bind column="ligcontgrd_segment_id" to="koalaId"/>
+		</bind>
+		<bind search="self.parameterId = :ligcontgrd_typeutilisation_id and self.parameterType.code = 'util'" to="subscribedVersionParameter" update="true">
+			<bind column="ligcontgrd_typeutilisation_id" to="parameterId" eval="'util_'+ligcontgrd_typeutilisation_id"/>
+		</bind>
+		<bind search="self.koalaId = :ligcontgrd_segment_id" to="userSegment" update="true">
+			<bind column="ligcontgrd_segment_id" to="koalaId"/>
+		</bind>
+		<bind column="ligcontgrd_res_pro" to="userSubSegmentSelect" eval="ligcontgrd_res_pro == '2' ? 'residential': 'professionnal'"/>
+		<bind search="self.koalaId = :ligcontgrd_tarifCSouCI_id" to="pricing" update="true">
+			<bind column="ligcontgrd_tarifCSouCI_id" to="koalaId"/>
+		</bind>
+		<bind search="self.koalaId = :ligcontgrd_contgrdregroup_id" to="invoicePaymentCondition" update="true">
+			<bind column="ligcontgrd_contgrdregroup_id" to="koalaId"/>
+		</bind>
+		<bind to="fromDate" eval="ligcontgrd_date_MES ? ligcontgrd_date_MES.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : new org.joda.time.LocalDate()" />
+		<bind to="toDate" eval="ligcontgrd_date_resil ? ligcontgrd_date_resil.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : null" />
+		<bind column="ligcontgrd_puiss_inject" to="injectionPower" eval="ligcontgrd_puiss_inject ? ligcontgrd_puiss_inject.replace(',0000','') : null"/>
+		<bind column="ligcontgrd_PCTrgrp_nbkm_sout" to="nbrKmUnderground" eval="ligcontgrd_PCTrgrp_nbkm_sout ? (new BigDecimal(ligcontgrd_PCTrgrp_nbkm_sout.replace(',','.'))).setScale(3, BigDecimal.ROUND_HALF_UP) : null"/>
+		<bind column="ligcontgrd_PCTrgrp_nbkm_aer" to="nbrKmAirRoute" eval="ligcontgrd_PCTrgrp_nbkm_aer ? (new BigDecimal(ligcontgrd_PCTrgrp_nbkm_aer.replace(',','.'))).setScale(3, BigDecimal.ROUND_HALF_UP) : null"/>
+		<bind column="ligcontgrd_flag_alimcompsec" to="subscribedSupplementEmergencyOk" eval="ligcontgrd_flag_alimcompsec == '1'? 'true' : 'false'"/>
+		<bind to="contractLine" search="self.koalaId = :ligcontgrd_id" update="true">
+			<bind to="koalaId" column="ligcontgrd_id" />
+		</bind>
+		<bind to="administeredElectedSelect" eval="'routing'"/>
+		<bind to="status" search="self.code = 'act'" update="true">
+			<bind to="code" eval="'act'"/>
+		</bind>
+	</input>
+	
+	<input file="ligcontgrd.csv" type="com.axelor.apps.contract.db.ContractLine"
+		search="self.koalaId = :ligcontgrd_id" update="true" call="com.axelor.csv.script.ImportContractLine:updateInvoiceAddressContractLineGRD">
+		<bind to="amendment" search="self.koalaId = :ligcontgrd_id" update="true">
+			<bind to="koalaId" column="ligcontgrd_id" />
+		</bind>
+	</input>
+	
+	<input file="ligcontgrdalim.csv" type="com.axelor.apps.contract.db.Amendment" search="self.koalaId = :ligcontgrdalim_ligcontgrd_id" update="true">
+		<bind column="ligcontgrdalim_flag_alimcomp" to="feedSupplementOk" eval="ligcontgrdalim_flag_alimcomp == '1'? 'true' : 'false'"/>
+		<bind column="ligcontgrdalim_nbcell" to="nbrCells" eval="!ligcontgrdalim_nbcell?.empty ? ligcontgrdalim_nbcell.replaceFirst('^0+(?!$)', '').replace(',','.') : null" />
+		<bind column="ligcontgrdalim_nbkm_aer" to="nbrKmAirRouteEmergency" eval="!ligcontgrdalim_nbkm_aer?.empty ? (new BigDecimal(ligcontgrdalim_nbkm_aer.replace(',','.'))).setScale(3, BigDecimal.ROUND_HALF_UP) : null" />
+		<bind column="ligcontgrdalim_nbkm_sout" to="nbrKmUndergroundEmergency" eval="!ligcontgrdalim_nbkm_sout?.empty ? (new BigDecimal(ligcontgrdalim_nbkm_sout.replaceFirst('^0+(?!$)', '').replace(',','.'))).setScale(3, BigDecimal.ROUND_HALF_UP) : null" />
+		<bind column="ligcontgrdalim_flag_transfodiff" to="emergencyPowerFromDiffTransfo" eval="ligcontgrdalim_flag_transfodiff == '1'? 'true' : 'false'"/>
+		<bind column="ligcontgrdalim_coef_CACS" to="cacsCoeff" eval="!ligcontgrdalim_coef_CACS?.empty ? ligcontgrdalim_coef_CACS.replaceFirst('^0+(?!$)', '').replace(',','.') : null" />
+		<bind column="ligcontgrdalim_psreservee" to="nbrKwReservedPower" eval="!ligcontgrdalim_psreservee?.empty ? ligcontgrdalim_psreservee.replaceFirst('^0+(?!$)', '').replace(',','.') : null" />
+	</input>
+	
+	<input file="ligcontgrdps.csv" type="com.axelor.apps.contract.db.SubscribedPower" 
+		call="com.axelor.csv.script.ImportSubscribedPower:updateSubscribedPower">
+		<bind to="subscribedPowerId" column="ligcontgrdps_ordps"/>
+		<bind search="self.koalaId = :ligcontgrdps_ligcontgrd_id" to="amendment" update="true">
+			<bind column="ligcontgrdps_ligcontgrd_id" to="koalaId"/>
+		</bind>
+		<bind search="self.name = :ligcontgrdps_code AND self.parameterType.code = 'poste'" to="parameter" update="true">
+			<bind column="ligcontgrdps_code" to="name"/>
+		</bind>
+		<bind to="subscribedPower" eval="!ligcontgrdps_valeur?.empty ? ligcontgrdps_valeur.replace(',','.').replace('.00','.0') : null"/>
+	</input>
+	
+	<!-- NE PAS IMPORTER -->
+<!-- 	<input file="ligcontgrdpsfr.csv" type="com.axelor.apps.contract.db.SubscribedPower"> -->
+<!-- 		<bind to="subscribedPowerId" column="ligcontgrdpsfr_ordps"/> -->
+<!-- 		<bind search="self.koalaId = :ligcontgrdpsfr_ligcontgrd_id" to="routingAmendment" update="true"> -->
+<!-- 			<bind column="ligcontgrdpsfr_ligcontgrd_id" to="koalaId"/> -->
+<!-- 		</bind> -->
+<!-- 		<bind search="self.name = :ligcontgrdpsfr_code AND self.parameterType.code = 'poste'" to="parameter" update="true"> -->
+<!-- 			<bind column="ligcontgrdpsfr_code" to="name"/> -->
+<!-- 		</bind> -->
+<!-- 		<bind to="subscribedPower" eval="!ligcontgrdpsfr_valeur?.empty ? ligcontgrdpsfr_valeur.replace(',','.').replace('.00','.0') : null"/> -->
+<!-- 	</input> -->
+	
+	<input file="contgrdregroup.csv" type="com.axelor.apps.contract.db.InvoicePaymentCondition"
+		search="self.koalaId = :contgrdregroup_id" update="true"
+		call="com.axelor.csv.script.ImportInvoicePaymentCondition:updateInvoicesBillSchedulerInstance">
+		<bind search="self.koalaId = :contrgrdregroup_mem_id" to="invoicesBill" update="true" if="contgrdregroup_flag_memoire == '1'">
+			<bind column="contrgrdregroup_mem_id" to="koalaId" />
+		</bind>
+	</input>
+	
+	<input file="reglevie.csv" type="com.axelor.apps.sale.db.SalesRule">
+		<bind column="reglevie_id" to="importId"/>
+		<bind column="reglevie_code" to="code"/>
+		<bind to="contractLineTypeSelect" eval="reglevie_typevie == 'CDI' ? 1 : 0"/>
+		<bind column="reglevie_duree" to="contractLineDuration"/>
+		<bind to="tacitRenewalAutoOk" eval="reglevie_flag_tacitereconduction == '1' ? true : false"/>
+		<bind column="reglevie_nbtacitereconduction_max" to="tacitRenewalMaxNbr"/>
+		<bind column="reglevie_nbj_prevenance" to="tacitRenewalNotificationDays"/>
+		<bind column="reglevie_nbj_deadline" to="tacitRenewalDuration"/>
+		<bind column="reglevie_duree_reconduction" to="customerDeadLineDaysNbr"/>
+	</input>
+	
+	<input file="reglevieaction.csv" type="com.axelor.apps.sale.db.SalesRuleAction">
+		<bind to="salesRule" search="self.importId = :reglevieaction_reglevie_id" update="true">
+			<bind to="importId" column="reglevieaction_reglevie_id"/>
+		</bind>
+		<bind to="actionSelect" eval="reglevieaction_typeaction_id == '1' ? 3 : reglevieaction_typeaction_id == '2' ? 4 : reglevieaction_typeaction_id == '3' ? 1 : 0"/>
+		<bind to="recipientSelect" eval="reglevieaction_destin_type == 'GESTCOMM' ? 2 : 0"/>
+	</input>
+	
+	<input file="offregrd.csv" type="com.axelor.apps.sale.db.SalesOffer">
+		<bind to="koalaId" column="offregrd_id"/>
+		<bind to="code" column="offregrd_code"/>
+		<bind to="name" column="offregrd_nom"/>
+		<bind to="startDate" column="offregrd_date_lancement" eval="!offregrd_date_lancement?.empty ? offregrd_date_lancement.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : null"/>
+		<bind to="endDate" column="offregrd_date_peremption" eval="!offregrd_date_peremption?.empty ? offregrd_date_peremption.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : null"/>
+	</input>
+
+	<input file="offretypecontratgrd.csv" type="com.axelor.apps.sale.db.SalesOfferContractFormat">
+		<bind search="self.koalaId = :offretypecontgrd_offre_id" to="salesOffer" update="true">
+			<bind to="koalaId" column="offretypecontgrd_offre_id"/>
+		</bind>
+		<bind search="self.importId = :offretypecontgrd_typecont_id" to="contractFormat" update="true">
+			<bind to="importId" column="offretypecontgrd_typecont_id"/>
+		</bind>
+		<bind to="startDate" column="offretypecontgrd_dateouverture" eval="offretypecontgrd_dateouverture ? offretypecontgrd_dateouverture.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : null"/>
+		<bind to="endDate" column="offretypecontgrd_datefermeture" eval="offretypecontgrd_datefermeture ? offretypecontgrd_datefermeture.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : null"/>
+	</input>
+	
+	<input file="offreservicegrd.csv" type="com.axelor.apps.sale.db.SalesOfferProduct"
+		call="com.axelor.csv.script.ImportSaleOffer:checkSaleOfferService">
+		<bind search="self.koalaId = :offreservicegrd_offregrd_id" to="salesOffer" update="true">
+			<bind to="koalaId" column="offreservicegrd_offregrd_id"/>
+		</bind>
+		<bind search="self.koalaId = :offreservicegrd_produitgrd_id" to="product" update="true">
+			<bind to="koalaId" column="offreservicegrd_produitgrd_id"/>
+		</bind>
+		<bind search="self.importId = :offreservicegrd_reglevie_id" to="salesRule" update="true">
+			<bind to="importId" column="offreservicegrd_reglevie_id"/>
+		</bind>
+		<bind to="startDate" column="offreservicegrd_dateouverture" eval="offreservicegrd_dateouverture ? offreservicegrd_dateouverture.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : null"/>
+		<bind to="endDate" column="offreservicegrd_datefermeture" eval="offreservicegrd_datefermeture ? offreservicegrd_datefermeture.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : null"/>
+	</input>
+	
+	<input file="offresocietegrd.csv" type="com.axelor.apps.sale.db.SalesOfferCompany">
+		<bind search="self.koalaId = :offresocgrd_offregrd_id" to="salesOffer" update="true">
+			<bind to="koalaId" column="offresocgrd_offregrd_id"/>
+		</bind>
+		<bind search="self.name = :offresocgrd_societe_nom" to="company" update="true">
+			<bind to="name" column="offresocgrd_societe_nom"/>
+		</bind>
+		<bind to="startDate" column="offresocgrd_dateouverture" eval="offresocgrd_dateouverture ? offresocgrd_dateouverture.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : null"/>
+		<bind to="endDate" column="offresocgrd_datefermeture" eval="offresocgrd_datefermeture ? offresocgrd_datefermeture.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : null"/>
+	</input>
+	
+	<input file="offretarifgrd.csv" type="com.axelor.apps.sale.db.SalesOfferPricing"
+		call="com.axelor.csv.script.ImportSaleOffer:checkSalesOfferPricing">
+		<bind search="self.koalaId = :offretarifgrd_offregrd_id" to="salesOffer" update="true">
+			<bind to="koalaId" column="offretarifgrd_offregrd_id"/>
+		</bind>
+		<bind search="self.koalaId = :offretarifgrd_tarifgrd_id" to="pricing" update="true">
+			<bind to="koalaId" column="offretarifgrd_tarifgrd_id"/>
+		</bind>
+		<bind search="self.importId = :offretarifgrd_reglevie_id" to="salesRule" update="true">
+			<bind to="importId" column="offretarifgrd_reglevie_id"/>
+		</bind>
+		<bind to="startDate" column="offretarif_dateouverture" eval="offretarifgrd_dateouverture ? offretarifgrd_dateouverture.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : null"/>
+		<bind to="endDate" column="offretarif_datefermeture" eval="offretarifgrd_datefermeture ? offretarifgrd_datefermeture.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : null"/>
+	</input>
+	
+	<input file="ligcontgrdservice.csv" type="com.axelor.apps.contract.db.ServiceAndFee"
+		call="com.axelor.csv.script.ImportContractLine:updateTypeServiceAndFee">
+		<bind search="self.koalaId = :ligcontgrdserv_ligcontgrd_id" to="contractLine" update="true">
+			<bind to="koalaId" column="ligcontgrdserv_ligcontgrd_id"/>
+		</bind>
+		<bind search="self.koalaId = :ligcontgrdserv_produitgrd_id" to="product" update="true">
+			<bind to="koalaId" column="ligcontgrdserv_produitgrd_id"/>
+		</bind>	
+		<bind search="self.koalaId = :ligcontgrdserv_fluide_id" to="fluid" update="true">
+			<bind to="koalaId" column="ligcontgrdserv_fluide_id"/>
+		</bind>
+		<bind column="ligcontgrdserv_datinit" eval="!ligcontgrdserv_datinit?.empty ? ligcontgrdserv_datinit.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : null"  to="startDate"/>
+		<bind column="ligcontgrdserv_derfac_du" eval="!ligcontgrdserv_derfac_du?.empty ? ligcontgrdserv_derfac_du.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : null"  to="invoicedFromDate"/>
+		<bind column="ligcontgrdserv_derfac_au" eval="!ligcontgrdserv_derfac_au?.empty ? ligcontgrdserv_derfac_au.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : null"  to="invoicedToDate"/>
+		<bind to="salesOffer" search="self.koalaId = :ligcontgrdserv_offregrd_id" update="true">
+			<bind to="koalaId" column="ligcontgrdserv_offregrd_id"/>
+		</bind>
+		<bind to="realEndDate" column="ligcontgrdserv_date_fin" eval="ligcontgrdserv_date_fin ? ligcontgrdserv_date_fin.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : null"/>
+		<bind to="anniversaryDate" column="ligcontgrdserv_date_anniv" eval="ligcontgrdserv_date_anniv ? ligcontgrdserv_date_anniv.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : null"/>
+		<bind to="notifyDate" column="ligcontgrdserv_date_prevenance" eval="ligcontgrdserv_date_prevenance ? ligcontgrdserv_date_prevenance.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : null"/>
+		<bind to="customerDeadLineDate" column="ligcontgrdserv_date_deadlineclient" eval="ligcontgrdserv_date_deadlineclient ? ligcontgrdserv_date_deadlineclient.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : null"/>
+		<bind to="tacitRenewalNbr" column="ligcontgrdserv_nb_taciterecond_fait"/>
+	</input>
+	
+	<input file="ligcontgrd.csv" type="com.axelor.apps.contract.db.ContractLine"
+		search="self.koalaId = :ligcontgrd_id" update="true">
+		<bind to="koalaId" column="ligcontgrd_id" />
+		<bind to="realStartDate" column="ligcontgrd_date_debut" eval="ligcontgrd_date_debut ? ligcontgrd_date_debut.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : null"/>
+		<bind to="realEndDate" column="ligcontgrd_date_fin" eval="ligcontgrd_date_fin ? ligcontgrd_date_fin.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : null"/>
+		<bind to="notifyDate" column="ligcontgrd_date_prevenance" eval="ligcontgrd_date_prevenance ? ligcontgrd_date_prevenance.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : null"/>
+		<bind to="customerDeadLineDate" column="ligcontgrd_date_deadlineclient" eval="ligcontgrd_date_deadlineclient ? ligcontgrd_date_deadlineclient.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : null"/>
+		<bind to="tacitRenewalNbr" column="ligcontgrd_nb_taciterecond_fait"/>
+	</input>
+
+	<input file="ligcontgrd.csv" type="com.axelor.apps.contract.db.ContractLine" 
+		search="self.koalaId = :ligcontgrd_id" update="true"  call="com.axelor.csv.script.ImportContractLine:updateContractLineDate">
+		<bind to="koalaId" column="ligcontgrd_id" />
+	</input>
+	
+	<input file="ligcontgrd.csv" type="com.axelor.apps.contract.db.Amendment"
+		search="self.koalaId = :ligcontgrd_id" update="true" call="com.axelor.csv.script.ImportAmendment:updateAmendment">
+		<bind column="cont_id" to="ligcontgrd_id" />
+		<bind to="salesOffer" search="self.koalaId = :ligcontgrd_offregrd_id" update="true">
+			<bind to="koalaId" column="ligcontgrd_offregrd_id"/>
+		</bind>
+	</input>
+
+	<input file="AdministrationGeneralAX.csv" type="com.axelor.apps.administration.db.General" search="self.environment = 'grd'" update="true">
+		<bind to="environment" eval="'grd'"/>
+		<bind to="socialClientNature" search="self.code = :socialClientNature" update="true" >
+			<bind column="socialClientNature" to="code" />
+		</bind>
+		<bind to="socialConsumptionDiscountProduct" search="self.code = :socialConsumptionDiscountProduct" update="true" >
+			<bind column="socialConsumptionDiscountProduct" to="code" />
+		</bind>
+		<bind to="defaultExemptionVat" search="self.code = :defaultExemptionVat" update="true" >
+			<bind column="defaultExemptionVat" to="code" />
+		</bind>
+		<bind to="defaultIegProduct" search="self.code = :defaultIegProduct_code" update="true" >
+			<bind column="defaultIegProduct_code" to="code" />
+		</bind>
+		<bind to="defaultUnit" search="self.code = :defaultUnit_code"  >
+			<bind column="defaultUnit_code" to="code" />
+		</bind>
+		<bind to="enterPaymentMode" search="self.code = :enterPaymentMode_code" update="true" >
+			<bind column="enterPaymentMode_code" to="code" />
+		</bind>
+		<bind to="exitPaymentMode" search="self.code = :exitPaymentMode_code" update="true" >
+			<bind column="exitPaymentMode_code" to="code" />
+		</bind>
+		<bind to="socialSubscriptionDiscountProduct" search="self.code = :socialSubscriptionDiscountProduct" update="true" >
+			<bind column="socialSubscriptionDiscountProduct" to="code" />
+		</bind>
+		<bind to="defaultPowerControlParameter" search="self.parameterType.code = 'ctrPuis' AND self.name = :defaultPowerControlParameter_name" update="true" >
+			<bind to="name" column="defaultPowerControlParameter_name" />
+		</bind>
+		<bind to="defaultMeasuredParameter" search="self.parameterType.code = 'grandMes' AND self.name = :defaultMeasuredParameter_name" update="true" >
+			<bind to="name" column="defaultMeasuredParameter_name" />
+		</bind>
+		<bind to="defaultMeterRentalParameter" search="self.parameterType.code = 'locCompt' AND self.name = :defaultMeterRentalParameter_name" update="true" >
+			<bind to="name" column="defaultMeterRentalParameter_name" />
+		</bind>
+		<bind to="reminderMailModel" search="self.code = :reminderMailModel_code" update="true" >
+			<bind column="reminderMailModel_code" to="code" />
+		</bind>
+		<bind to="tssRenewalMonthNbr" column="tssRenewalMonthNbr"/>
+		<bind to="tssAlarmMonthNbr" column="tssAlarmMonthNbr"/>
+		<bind to="transferAndDirectDebitInterbankCode" search="self.code = :code_interbank_vir" update="true">
+			<bind to="code" column="code_interbank_vir"/>
+		</bind>
+		<bind to="chequeInterbankCode" search="self.code = :code_interbank_chq" update="true">
+			<bind to="code" column="code_interbank_chq"/>
+		</bind>
+		<bind to="majorAccountEndCycleMonth1" column="majorAccountEndCycleMonth1"/>
+		<bind to="majorAccountEndCycleDay1" column="majorAccountEndCycleDay1"/>
+		<bind to="majorAccountEndCycleMonth2" column="majorAccountEndCycleMonth2"/>
+		<bind to="majorAccountEndCycleDay2" column="majorAccountEndCycleDay2"/>
+		<bind to="qasWsdlUrl" column="qas_url"/>
+	</input>
+
+	<input file="GenericFieldEvent.csv" type="com.axelor.apps.event.db.GenericFieldEvent"/>
+
+	<input file="macroevtgrd.csv" type="com.axelor.apps.event.db.MacroEvent" 
+		search="self.useCase =:megrd_usecasegrd_code AND self.sendDate =:megrd_dateme AND self.macroEventType.code = :megrd_typme" >
+		<bind column="megrd_dateme" to="sendDate" eval="!megrd_dateme.empty ? megrd_dateme.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : null" />
+		<bind column="megrd_usecasegrd_code" to="useCase"/>
+		<bind to="meId" eval="megrd_usecasegrd_code+'-'+megrd_id" />
+		<bind search="self.code = :megrd_typme" to="macroEventType" update="true">
+			<bind column="megrd_typme" to="code"/>
+		</bind>
+		<bind search="self.name = :megrd_pct_ref" to="mpt" update="true">
+			<bind column="megrd_pct_ref" to="name"/>
+		</bind>
+		<bind column="megrd_flagexpress" to="expressOk" eval="megrd_flagexpress == '1'? 'true' : 'false'"/>
+		<bind eval="megrd_coutexpress.replaceAll(',','.')" to="expressPrice"/>
+		<bind column="megrd_flagvain" to="vainTravelOk" eval="megrd_flagvain == '1'? 'true' : 'false'"/>
+		<bind eval="megrd_coutvain.replaceAll(',','.')" to="vainTravelPrice"/>
+		<bind column="megrd_flagannu" to="cancelLateOk" eval="megrd_flagannu == '1'? 'true' : 'false'"/>
+		<bind eval="megrd_coutannu.replaceAll(',','.')" to="cancelLatePrice"/>
+		<bind to="variantProduct" search="self.code = :megrd_codecomposante" update="true"
+			 if="megrd_typecomposante == 'PRESTATION' &amp;&amp; !megrd_codecomposante?.empty">
+				<bind to="code" column="megrd_codecomposante"/>
+		</bind>
+		<bind column="megrd_mt" eval="(megrd_mt &amp;&amp; megrd_typecomposante == 'PRESTATION' &amp;&amp; megrd_codecomposante) ? megrd_mt.replace(',','.') : null" to="variantPrice"/>
+		<bind column="megrd_mt" eval="(megrd_mt &amp;&amp; megrd_typecomposante == 'PRESTATION' &amp;&amp; megrd_codecomposante) ? megrd_mt.replace(',','.') : null" to="totalPrice"/>
+		<bind to="indexEventList" search="self.indexEventDate = :megrd_au AND self.macroEvent.useCase =:megrd_usecasegrd_code AND self.macroEvent.sendDate =:megrd_dateme AND self.macroEvent.macroEventType.code = :megrd_typme" 
+			if="!megrd_typecomposante?.empty &amp;&amp; megrd_typecomposante?.equals('INDEX')">
+			<bind column="megrd_au" eval="megrd_au ? Date.parse('dd/MM/yyyy', megrd_au).format('yyyy-MM-dd') : null"  to="indexEventDate"/>
+			<bind to="indexEventLineList">
+				<bind column="megrd_index" to="value"/>
+				<bind to="indexEventCode" search="self.name = :megrd_codeconso AND self.typeSelect = 'code'">
+					<bind column="megrd_codeconso" to="code"/>
+					<bind column="megrd_codeconso" to="name"/>
+					<bind to="typeSelect" eval="'code'"/>
+				</bind>
+			</bind>
+			<bind search="self.code = :megrd_typeindex AND self.typeSelect = 'type'" to="indexEventType" update="true">
+				<bind column="megrd_typeindex" to="code" />
+			</bind>
+		</bind>
+	</input>
+	
+	<input file="macroevtgrd.csv" type="com.axelor.apps.event.db.MacroEvent" 
+		search="self.useCase =:megrd_usecasegrd_code AND self.sendDate =:megrd_dateme AND self.macroEventType.code = :megrd_typme" update="true"
+		call="com.axelor.csv.script.ImportME:addMeterReadingDate">
+		<bind column="megrd_dateme" to="sendDate" eval="!megrd_dateme.empty ? megrd_dateme.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1') : null" />
+		<bind column="megrd_usecasegrd_code" to="useCase"/>
+		<bind to="meId" eval="megrd_usecasegrd_code+'-'+megrd_id" />
+		<bind search="self.code = :megrd_typme" to="macroEventType" update="true">
+			<bind column="megrd_typme" to="code"/>
+		</bind>
+		<bind search="self.name = :megrd_pct_ref" to="mpt" update="true">
+			<bind column="megrd_pct_ref" to="name"/>
+		</bind>
+		<bind column="megrd_flagexpress" to="expressOk" eval="megrd_flagexpress == '1'? 'true' : 'false'"/>
+		<bind eval="megrd_coutexpress.replaceAll(',','.')" to="expressPrice"/>
+		<bind column="megrd_flagvain" to="vainTravelOk" eval="megrd_flagvain == '1'? 'true' : 'false'"/>
+		<bind eval="megrd_coutvain.replaceAll(',','.')" to="vainTravelPrice"/>
+		<bind column="megrd_flagannu" to="cancelLateOk" eval="megrd_flagannu == '1'? 'true' : 'false'"/>
+		<bind eval="megrd_coutannu.replaceAll(',','.')" to="cancelLatePrice"/>
+		<bind to="consumptionEventList" if="!megrd_du?.empty &amp;&amp; !megrd_au?.empty &amp;&amp; megrd_typecomposante == 'CONSO'"
+			search="self.startDate = :megrd_du AND self.endDate = :megrd_au AND self.useCase = :megrd_usecasegrd_code">
+			<bind column="megrd_usecasegrd_code" to="useCase" />
+			<bind column="megrd_du" eval="megrd_du ? Date.parse('dd/MM/yyyy', megrd_du).format('yyyy-MM-dd') : null"  to="startDate"/>
+			<bind column="megrd_au" eval="megrd_au ? Date.parse('dd/MM/yyyy', megrd_au).format('yyyy-MM-dd') : null"  to="endDate"/>
+			<bind to="consumptionEventLineList"> 
+				<bind eval="megrd_qte ? megrd_qte.replaceAll(',','.') : null" to="qty"/>
+				<bind search="self.code = :megrd_uprix" to="unit" >
+					<bind column="megrd_uprix" to="code" eval="megrd_uprix.toUpperCase()"/>
+				</bind>
+				<bind search="self.code = :megrd_uqte" to="qtyUnit" >
+					<bind column="megrd_uqte" to="code" eval="megrd_uqte.toUpperCase()"/>
+				</bind>
+				<bind search="self.parameterId = :megrd_codeconso AND self.parameterType.code = 'typeConso'" to="consumptionCodeParameter" update="true">
+					<bind column="megrd_codeconso" to="parameterId"/>
+				</bind>
+				<bind search="self.name = :megrd_posthorosais_code AND self.parameterType.code = 'poste'" to="postParameter" update="true">
+					<bind column="megrd_posthorosais_code" to="name"/>
+				</bind>
+			</bind>
+		</bind>
+		<bind to="invoiceLineEventList" if="megrd_typecomposante == 'PF' || megrd_typecomposante == 'PV' || (megrd_typecomposante == 'REDEVANCE' &amp;&amp; megrd_codecomposante)">
+			<bind column="megrd_codecomposante" to="articleId"/>
+			<bind column="megrd_du" eval="megrd_du ? Date.parse('dd/MM/yyyy', megrd_du).format('yyyy-MM-dd') : null"  to="startDate"/>
+			<bind column="megrd_au" eval="megrd_au ? Date.parse('dd/MM/yyyy', megrd_au).format('yyyy-MM-dd') : null"  to="endDate"/>
+			<bind eval="megrd_qte.replaceAll(',','.')" to="qty" />
+			<bind eval="megrd_prix.replaceAll(',','.')" to="price"/>
+			<bind if="megrd_typecomposante == 'REDEVANCE'" to="product" search="self.code = :megrd_codecomposante"
+				update="true">
+				<bind column="megrd_codecomposante" to="code" />
+			</bind>
+ 			<bind if="megrd_codecomposante == 'CC'" to="product" search="self.code = 'ACHCC'" update="true">
+ 				<bind eval="'ACHCC'" to="code"/>
+ 			</bind>
+ 			<bind if="megrd_codecomposante == 'CG'" to="product" search="self.code = 'ACHCG'" update="true">
+ 				<bind eval="'ACHCG'" to="code"/>
+ 			</bind>
+ 			<bind if="megrd_codecomposante == 'CSPF'" to="product" search="self.code = 'ACHCSF'" update="true">
+ 				<bind eval="'ACHCSF'" to="code"/>
+ 			</bind>
+ 			<bind if="megrd_codecomposante == 'CACS'" to="product" search="self.code = 'ACHCACS'" update="true">
+ 				<bind eval="'ACHCACS'" to="code"/>
+ 			</bind>
+ 			<bind if="megrd_codecomposante == 'CR'" to="product" search="self.code = 'ACHCR'" update="true">
+ 				<bind eval="'ACHCR'" to="code"/>
+ 			</bind>
+ 			 <bind if="megrd_codecomposante == 'CER'" to="product" search="self.code = 'ACHCER'" update="true">
+ 				<bind eval="'ACHCER'" to="code"/>
+ 			</bind>
+ 			<bind if="megrd_codecomposante == 'CMDPS'" to="product" search="self.code = 'ACHCMDPS'" update="true">
+ 				<bind eval="'ACHCMDPS'" to="code"/>
+ 			</bind>
+ 			<bind if="megrd_codecomposante == 'CSPV'" to="product" search="self.code = 'ACHCSV'" update="true">
+ 				<bind eval="'ACHCSV'" to="code"/>
+ 			</bind>
+ 			<bind search="self.code = :megrd_uprix" to="priceUnit" >
+				<bind column="megrd_uprix" to="code" eval="megrd_uprix.toUpperCase()"/>
+			</bind>
+			<bind search="self.code = :megrd_uqte" to="qtyUnit" >
+				<bind column="megrd_uqte" to="code" eval="megrd_uqte.toUpperCase()"/>
+			</bind>
+			<bind eval="megrd_mt.replaceAll(',','.')" to="amount"/>
+		</bind>
+	</input>
+	
+	<input file="produitcomposante.csv" type="com.axelor.apps.sale.db.Product"
+		search="self.code = :produit_code" update="true" call="com.axelor.csv.script.ImportProduct:setConstituent"/>
+	
+	<input file="Year.csv" type="com.axelor.apps.account.db.Year" call="com.axelor.csv.script.UpdateAll:ignoreYearLine">
+		<bind to="name" column="name"/>
+		<bind to="code" column="code"/>
+		<bind to="toDate" column="toDate"/>
+		<bind to="fromDate" column="fromDate"/>
+		<bind to="company" search="self.name = :company_name" >
+			<bind to="name" column="company_name"/>
+		</bind>
+		<bind to="status" search="self.code = :status_code" >
+			<bind to="code" column="status_code"/>
+		</bind>
+	</input>
+	
+	<input file="societeAX.csv" type="com.axelor.apps.contact.db.Company"
+		search="self.koalaId = :societe_id" call="com.axelor.csv.script.UpdateAll:updatePeriod">
+		<bind column="societe_id" to="koalaId" />
+	</input>
+	
+	<input file="societeAX.csv" type="com.axelor.apps.contact.db.Company"
+		search="self.koalaId = :societe_id" call="com.axelor.csv.script.ImportAmendment:updateAmendmentPricingByConstituent" update="true">
+		<bind column="societe_id" to="koalaId" />
+	</input>
+	
+	<input file="societeAX.csv" type="com.axelor.apps.contact.db.Company"
+		search="self.koalaId = :societe_id" update="true" call="com.axelor.csv.script.ImportCompany:updateCompanyClearanceAccountSet">
+		<bind column="societe_id" to="koalaId" />
+		<bind column="societe_nom" to="name" />
+		<bind search="self.koalaId = :societe_tierscomm_id" to="marketerPartner" update="true">
+			<bind column="societe_tierscomm_id" to="koalaId" />
+		</bind>
+		<bind search="self.koalaId = :societe_tiersfourn_id" to="providerPartner" update="true">
+			<bind column="societe_tiersfourn_id" to="koalaId" />
+		</bind>
+		<bind search="self.koalaId = :societe_tiersGRD_id" to="elecDsoPartner" update="true">
+			<bind column="societe_tiersGRD_id" to="koalaId" />
+		</bind>
+		<bind search="self.koalaId = :societe_tiersRE_id" to="brePartner" update="true">
+			<bind column="societe_tiersRE_id" to="koalaId" />
+		</bind>
+		<bind to="journal" search="self.code = :journal_code" update="true">
+			<bind column="journal_code" to="code" />
+		</bind>
+		<bind to="creditNoteJournal" search="self.code = :creditNoteJournal_code" update="true">
+			<bind column="creditNoteJournal_code" to="code" />
+		</bind>
+		<bind to="customerAccount" search="self.code = :customerAccount_code AND self.company.name = :societe_nom" update="true">
+			<bind column="customerAccount_code" to="code" />
+		</bind>
+		<bind to="bankJournal" search="self.code = :bankJournal_code" update="true">
+			<bind column="bankJournal_code" to="code" />
+		</bind>
+		<bind to="technicalJournal" search="self.code = :technicalJournal_code" update="true">
+			<bind column="technicalJournal_code" to="code" />
+		</bind>
+		<bind to="monthlyPaymentJournal" search="self.code = :monthlyPaymentJournal_code" update="true">
+			<bind column="monthlyPaymentJournal_code" to="code" />
+		</bind>
+		<bind to="majorAccountJournal" search="self.code = :majorAccountJournal_code" update="true">
+			<bind column="majorAccountJournal_code" to="code" />
+		</bind>
+		<bind to="invoiceDirectDebitJournal" search="self.code = :invoiceDirectDebitJournal_code"
+			update="true">
+			<bind column="invoiceDirectDebitJournal_code" to="code" />
+		</bind>
+		<bind to="authorityDirectDebitJournal" search="self.code = :authorityDirectDebitJournal_code"
+			update="true">
+			<bind column="authorityDirectDebitJournal_code" to="code" />
+		</bind>
+		<bind to="accountClearanceJournal" search="self.code = :accountClearanceJournal_code"
+			update="true">
+			<bind column="accountClearanceJournal_code" to="code" />
+		</bind>
+		<bind to="reimbursementClientNature" search="self.code = :reimbursementClientNature_code"
+			update="true">
+			<bind column="reimbursementClientNature_code" to="code" />
+		</bind>
+		<bind to="nbMonthToReg" column="nbMonthToReg_nbr"/>
+	</input>
+	
+	<input file="societeAX.csv" type="com.axelor.apps.contact.db.Company"
+		search="self.koalaId = :societe_id" update="true">
+		<bind to="environmentSelect" eval="'grd'"/>
+		<bind to="rejectJournal" search="self.code = :rejectJournal_code" update="true">
+			<bind column="rejectJournal_code" to="code" />
+		</bind>
+		<bind to="reimbursementJournal" search="self.code = :reimbursementJournal_code" update="true">
+			<bind column="reimbursementJournal_code" to="code" />
+		</bind>
+		<bind to="irrecoverableJournal" search="self.code = :irrecoverableJournal_code"
+			update="true">
+			<bind column="irrecoverableJournal_code" to="code" />
+		</bind>
+		<bind to="miscOperationJournal" search="self.code = :miscOperationJournal_code"
+			update="true">
+			<bind column="miscOperationJournal_code" to="code" />
+		</bind>
+		<bind to="technicalJournal" search="self.code = :technicalJournal_code"
+			update="true">
+			<bind column="technicalJournal_code" to="code" />
+		</bind>
+		<bind to="elecMonthlyPaymentAccount" search="self.code = :elecMonthlyPaymentAccount_code AND self.company.name = :societe_nom"
+			update="true">
+			<bind column="elecMonthlyPaymentAccount_code" to="code" />
+		</bind>
+		<bind to="gazMonthlyPaymentAccount" search="self.code = :gazMonthlyPaymentAccount_code AND self.company.name = :societe_nom" update="true">
+			<bind column="gazMonthlyPaymentAccount_code" to="code" />
+		</bind>
+		<bind to="cableMonthlyPaymentAccount" search="self.code = :cableMonthlyPaymentAccount_code AND self.company.name = :societe_nom" update="true">
+			<bind column="cableMonthlyPaymentAccount_code" to="code" />
+		</bind>
+		<bind to="rejectionPaymentMode" search="self.code = :rejectionPaymentMode_code" update="true">
+			<bind column="rejectionPaymentMode_code" to="code" />
+		</bind>
+		<bind to="rejectionMajorAccountPaymentMode" search="self.code = :rejectionMajorAccountPaymentMode_code"
+			update="true">
+			<bind column="rejectionMajorAccountPaymentMode_code" to="code" />
+		</bind>
+		<bind to="monthlyPaymentRejectNumLimit" column="monthlyPaymentRejectNumLimit" />
+		<bind to="majorAccountRejectNumLimit" column="majorAccountRejectNumLimit" />
+		<bind to="paymentScheduleRejectNumLimit" column="paymentScheduleRejectNumLimit" />
+		<bind to="invoiceRejectNumLimit" column="invoiceRejectNumLimit" />
+		<bind to="rejectImportPathAndFileName" column="invoiceRejectNumLimit" />
+		<bind to="tempImportPathAndFileName" column="invoiceRejectNumLimit" />
+		<bind to="rejectMonthlyPaymentMailModel" search="self.code = :rejectMonthlyPaymentMailModel_code" update="true">
+			<bind column="rejectMonthlyPaymentMailModel_code" to="code" />
+		</bind>
+		<bind to="rejectMajorAccountMailModel" search="self.code = :rejectMajorAccountMailModel_code" update="true">
+			<bind column="rejectMajorAccountMailModel_code" to="code" />
+		</bind>
+		<bind to="rejectPaymentScheduleMailModel" search="self.code = :rejectPaymentScheduleMailModel_code" update="true">
+			<bind column="rejectPaymentScheduleMailModel_code" to="code" />
+		</bind>
+		<bind to="cashPositionVariationAccount" search="self.code = :cashPositionVariationAccount_code AND self.company.name = :societe_nom" update="true">
+			<bind column="cashPositionVariationAccount_code" to="code" />
+		</bind>
+		<bind to="lowerThresholdReimbursement" column="lowerThresholdReimbursement" />
+		<bind to="upperThresholdReimbursement" column="upperThresholdReimbursement" />
+		<bind to="reimbursementAccount" search="self.code = :reimbursementAccount_code AND self.company.name = :societe_nom" update="true">
+			<bind column="reimbursementAccount_code" to="code" />
+		</bind>
+		<bind to="reimbursementMailModel" search="self.code = :reimbursementMailModel_code" update="true">
+			<bind column="reimbursementMailModel_code" to="code" />
+		</bind>
+		<bind to="exportPath" column="exportPath" />
+		<bind to="reimbursementExportFolderPath" column="reimbursementExportFolderPath" />
+		<bind to="cashRegisterMailModel" search="self.code = :cashRegisterMailModel_code" update="true">
+			<bind column="cashRegisterMailModel_code" to="code" />
+		</bind>
+		<bind to="cashRegisterAddressEmail" column="cashRegisterAddressEmail" />
+		<bind to="bankDetails" search="self.koalaId = :rib_koalaId" update="true">
+			<bind to="koalaId" column="rib_koalaId"/>
+		</bind>
+		<bind to="logoPath" column="logoPath" />
+		<bind to="mailTransitTime" column="mailTransitTime" />
+		<bind to="doubtfulCustomerAccount" search="self.code = :doubtfulCustomerAccount_code AND self.company.name = :societe_nom" update="true">
+			<bind column="doubtfulCustomerAccount_code" to="code" />
+		</bind>
+		<bind to="irrecoverableAccount" search="self.code = :irrecoverableAccount_code AND self.company.name = :societe_nom" update="true">
+			<bind column="irrecoverableAccount_code" to="code" />
+		</bind>
+		<bind to="senderNumExportCFONB" column="senderNumExportCFONB" />
+		<bind to="senderNameCodeExportCFONB" column="senderNameCodeExportCFONB" />
+		<bind to="standardRateVat" search="self.code = :standardRateVat_code" update="true">
+			<bind column="standardRateVat_code" to="code" />
+		</bind>
+		<bind to="irrecoverableStandardRateVat" search="self.code = :irrecoverableStandardRateVat_code" update="true">
+			<bind column="irrecoverableStandardRateVat_code" to="code" />
+		</bind>
+		<bind to="eventOlaImportFolderPath" column="eventOlaImportFolderPath" />
+		<bind to="tempEventOlaImportFolderPath" column="tempEventOlaImportFolderPath" />
+		<bind to="emailOlaImportFolderPath" column="emailOlaImportFolderPath" />
+		<bind to="tempEmailOlaImportFolderPath" column="tempEmailOlaImportFolderPath" />
+		<bind to="phoneOlaImportFolderPath" column="phoneOlaImportFolderPath" />
+		<bind to="tempPhoneOlaImportFolderPath" column="tempPhoneOlaImportFolderPath" />
+		<bind to="paymentOlaImportFolderPath" column="paymentOlaImportFolderPath" />
+		<bind to="tempPaymentOlaImportFolderPath" column="tempPaymentOlaImportFolderPath" />
+		<bind to="eventConfigOlaImportFolderPath" column="eventConfigOlaImportFolderPath" />
+		<bind to="emailConfigOlaImportFolderPath" column="emailConfigOlaImportFolderPath" />
+		<bind to="phoneConfigOlaImportFolderPath" column="phoneConfigOlaImportFolderPath" />
+		<bind to="paymentConfigOlaImportFolderPath" column="paymentConfigOlaImportFolderPath" />
+		<bind to="massAccountOlaExportFolderPath" column="massAccountOlaExportFolderPath" />
+		<bind to="majorAccountOlaExportFolderPath" column="majorAccountOlaExportFolderPath" />
+		<bind to="payboxUrl" column="payboxUrl" />
+		<bind to="payboxSite" column="payboxSite" />
+		<bind to="payboxRang" column="payboxRang" />
+		<bind to="payboxDevise" column="payboxDevise" />
+		<bind to="payboxRetour" column="payboxRetour" />
+		<bind to="payboxIdentifiant" column="payboxIdentifiant" />
+		<bind to="payboxHashSelect" column="payboxHashSelect" />
+		<bind to="payboxHmac" column="payboxHmac" />
+		<bind to="payboxRetourUrlEffectue" column="payboxRetourUrlEffectue" />
+		<bind to="payboxRetourUrlRefuse" column="payboxRetourUrlRefuse" />
+		<bind to="payboxRetourUrlAnnule" column="payboxRetourUrlAnnule" />
+		<bind to="generatedMailFilePath" column="generatedMailFilePath" />
+		<bind to="generatedEmailFilePath" column="generatedEmailFilePath" />
+		<bind to="generatedMailFileName" column="generatedMailFileName" />
+		<bind to="generatedEmailFileName" column="generatedEmailFileName" />
+	</input>
+	
+	<input file="AdministrationGeneral.csv" type="com.axelor.apps.administration.db.General"
+		search="self.environment = 'grd'" update="true" call="com.axelor.csv.script.ImportGeneral:generate">
+ 		<bind to="environment" eval="'grd'"/>
+    </input>
+    
+    <input file="Message.csv" type="com.axelor.apps.alarm.db.Message" />
+	
+	<input file="AlarmEngine.csv" type="com.axelor.apps.alarm.db.AlarmEngine" call="com.axelor.csv.script.ImportAlarm:checkAlarmQuery"/>
+    
+   	<input file="MailModelTag.csv" type="com.axelor.apps.mail.db.MailModelTag">
+		<bind to="tag" column="tag"/>
+		<bind to="link" column="lien"/>
+	</input>
+	
+	<input file="payboxAX.csv" type="com.axelor.apps.payment.db.Paybox">
+		<bind to="name" column="name"/>
+	</input>
+	
+</csv-inputs>

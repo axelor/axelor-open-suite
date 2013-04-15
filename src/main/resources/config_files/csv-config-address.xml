@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<csv-inputs xmlns="http://apps.axelor.com/xml/ns/data-import"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/data-import http://apps.axelor.com/xml/ns/data-import/data-import_0.8.xsd">
+
+	<input file="[contact.address]" type="com.axelor.apps.contact.db.Address"
+		separator="|" search="self.koalaId = :koalaId">
+<!-- 		call="com.axelor.csv.script.ImportAddress:ignoreLine" -->
+		<bind column="koalaId" to="koalaId"></bind>
+		<bind column="AddressL2" to="addressL2"></bind>
+		<bind column="AddressL3" to="addressL3"></bind>
+		<bind column="AddressL4" to="addressL4"></bind>
+		<bind column="AddressL5" to="addressL5"></bind>
+		<bind column="AddressL6" to="addressL6"></bind>
+		<bind column="CODE" to="certifiedOk" eval="CODE in ['1', '2']?true:false"></bind>
+	</input>
+ 
+</csv-inputs>

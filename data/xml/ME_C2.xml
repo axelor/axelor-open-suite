@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MacroEvenements xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<MacroEvenement emetteur="SINAPSE GRD" typeEvt="CYC" numeroEvt="51" envoi="1" dateEnvoi="03/30/2012 17:45:09" statut="V">
+		<PCT reference="15254124375442" type="S" fluide="1" pro="true" segment="C1">
+			<Consommations>
+				<ListeIndex>
+					<Index date="30/11/2011 00:00:00" type="R" sousType="5">
+						<IndexValeur code="EA" cadran="1" passageAZero="false">3024</IndexValeur>
+						<IndexValeur code="EA" cadran="2" passageAZero="false">35868</IndexValeur>
+						<IndexValeur code="EA" cadran="3" passageAZero="false">66638</IndexValeur>
+						<IndexValeur code="ER" cadran="1" passageAZero="false">1000</IndexValeur>
+						<IndexValeur code="ER" cadran="2" passageAZero="false">559816</IndexValeur>
+						<IndexValeur code="ER" cadran="3" passageAZero="false">329804</IndexValeur>
+						<IndexValeur code="PM" cadran="1" passageAZero="false">1000</IndexValeur>
+						<IndexValeur code="PM" cadran="2" passageAZero="false">2000</IndexValeur>
+						<IndexValeur code="PM" cadran="3" passageAZero="false">3000</IndexValeur>
+						<IndexValeur code="TFF" cadran="1" coef="1" passageAZero="false">0</IndexValeur>
+						<IndexValeur code="TFF" cadran="2" coef="1" passageAZero="false">420</IndexValeur>
+						<IndexValeur code="TFF" cadran="3" coef="1" passageAZero="false">313</IndexValeur>
+					</Index>
+					<Index date="04/11/2011 00:00:00" type="R" sousType="5">
+						<IndexValeur code="EA" cadran="1" coef="40.000" passageAZero="false">2024</IndexValeur>
+						<IndexValeur code="EA" cadran="2" coef="40.000" passageAZero="false">33868</IndexValeur>
+						<IndexValeur code="EA" cadran="3" coef="40.000" passageAZero="false">63638</IndexValeur>
+						<IndexValeur code="ER" cadran="1" coef="40.000" passageAZero="false">0</IndexValeur>
+						<IndexValeur code="ER" cadran="2" coef="40.000" passageAZero="false">557816</IndexValeur>
+						<IndexValeur code="ER" cadran="3" coef="40.000" passageAZero="false">326804</IndexValeur>
+						<IndexValeur code="PM" cadran="1" coef="0.400" passageAZero="false">0</IndexValeur>
+						<IndexValeur code="PM" cadran="2" coef="0.400" passageAZero="false">0</IndexValeur>
+						<IndexValeur code="PM" cadran="3" coef="0.400" passageAZero="false">0</IndexValeur>
+						<IndexValeur code="TFF" cadran="1" coef="1.000" passageAZero="false">0</IndexValeur>
+						<IndexValeur code="TFF" cadran="2" coef="1.000" passageAZero="false">420</IndexValeur>
+						<IndexValeur code="TFF" cadran="3" coef="1.000" passageAZero="false">313</IndexValeur>
+					</Index>
+				</ListeIndex>
+				<Consommation debut="05/11/2011" fin="30/11/2011">
+					<CnsValeur code="NRJ_A" periode="2" libellePeriode="HPH">120000</CnsValeur>
+					<CnsValeur code="NRJ_A" periode="3" libellePeriode="HCH">120000</CnsValeur>
+					<CnsValeur code="TPS_F" periode="2" libellePeriode="HPH">420</CnsValeur>
+					<CnsValeur code="TPS_F" periode="3" libellePeriode="HCH">313</CnsValeur>
+					<CnsValeur code="NRJ_AFACT" periode="2" libellePeriode="HPH">121288</CnsValeur>
+					<CnsValeur code="NRJ_AFACT" periode="3" libellePeriode="HCH">121266</CnsValeur>
+					<CnsValeur code="NRJ_R" periode="2" libellePeriode="HPH">120000</CnsValeur>
+					<CnsValeur code="NRJ_R" periode="3" libellePeriode="HCH">120000</CnsValeur>
+					<CnsValeur code="TAN_PHI" periode="1" libellePeriode="Tangente phi">10900</CnsValeur>
+					<CnsValeur code="NRJ_RFACT" periode="1" libellePeriode="Energie réactive facturée">83689</CnsValeur>
+					<CnsValeur code="RES_PMAX" periode="2" libellePeriode="HPH">808</CnsValeur>
+					<CnsValeur code="RES_PMAX" periode="3" libellePeriode="HCH">1212</CnsValeur>
+					<CnsValeur code="DEP_IMAX" periode="2" libellePeriode="HPH">658</CnsValeur>
+					<CnsValeur code="DEP_IMAX" periode="3" libellePeriode="HCH">1062</CnsValeur>
+				</Consommation>
+			</Consommations>
+			<Contrat>
+				<Tarif code="H5P" dateDebut="09/01/2011 00:00:00" />
+				<RE nom="EDF" codeEic="17X100A100R00182" dateEntreePerimetre="01/01/2000 00:00:00" />
+				<PS date="09/01/2011 00:00:00">
+					<Puissance periode="1">150</Puissance>
+					<Puissance periode="2">150</Puissance>
+					<Puissance periode="3">150</Puissance>
+					<Puissance periode="4">150</Puissance>
+					<Puissance periode="5">150</Puissance>
+				</PS>
+			</Contrat>
+		</PCT>
+	</MacroEvenement>
+</MacroEvenements>

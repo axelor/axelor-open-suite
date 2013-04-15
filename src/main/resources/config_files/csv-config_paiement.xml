@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<csv-inputs xmlns="http://apps.axelor.com/xml/ns/data-import"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/data-import http://apps.axelor.com/xml/ns/data-import/data-import_0.8.xsd">
+  
+	<input file="Paiement.csv" type="com.axelor.apps.invoice.db.Invoice" separator=";" search="self.invoiceId = :Num_Facture" update="true"
+		call="com.axelor.csv.script.ImportPaymentEal:createPaymentEal" />
+	
+</csv-inputs>

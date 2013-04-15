@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MacroEvenements xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<MacroEvenement emetteur="SINAPSE GRD" typeEvt="CYC" numeroEvt="17" envoi="1" dateEnvoi="03/22/2012 16:23:47" statut="V">
+		<PCT reference="15254124375442" type="S" fluide="1" pro="false" segment="C5">
+			<Consommations>
+				<ListeIndex>
+					<Index date="08/03/2012 00:00:00" type="R" sousType="5">
+						<IndexValeur code="EA" cadran="1" coef="1" passageAZero="false">10525</IndexValeur>
+						<IndexValeur code="EA" cadran="2" coef="1" passageAZero="false">3832</IndexValeur>
+						<IndexValeur code="EA" cadran="3" coef="1" passageAZero="false">45</IndexValeur>
+						<IndexValeur code="EA" cadran="4" coef="1" passageAZero="false">0</IndexValeur>
+						<IndexValeur code="EA" cadran="5" coef="1" passageAZero="false">0</IndexValeur>
+						<IndexValeur code="EA" cadran="6" coef="1" passageAZero="false">0</IndexValeur>
+					</Index>
+					<Index date="28/02/2007 00:00:00" type="R" sousType="3">
+						<IndexValeur code="EA" cadran="1" coef="1.000" passageAZero="false">2420</IndexValeur>
+						<IndexValeur code="EA" cadran="2" coef="1.000" passageAZero="false">916</IndexValeur>
+						<IndexValeur code="EA" cadran="3" coef="1.000" passageAZero="false">12</IndexValeur>
+						<IndexValeur code="EA" cadran="4" coef="1.000" passageAZero="false">0</IndexValeur>
+						<IndexValeur code="EA" cadran="5" coef="1.000" passageAZero="false">0</IndexValeur>
+						<IndexValeur code="EA" cadran="6" coef="1.000" passageAZero="false">0</IndexValeur>
+					</Index>
+				</ListeIndex>
+				<Consommation debut="01/03/2007" fin="08/03/2012">
+					<CnsValeur code="NRJ_A" periode="1" libellePeriode="HP">8138</CnsValeur>
+					<CnsValeur code="NRJ_A" periode="2" libellePeriode="HC">2916</CnsValeur>
+				</Consommation>
+			</Consommations>
+			<Contrat>
+				<Tarif code="MU-DT" dateDebut="11/03/2005 00:00:00" />
+				<RE nom="EDF" codeEic="17X100A100R00182" dateEntreePerimetre="01/01/2000 00:00:00" />
+				<PS date="11/03/2005 00:00:00">
+					<Puissance periode="1">9</Puissance>
+				</PS>
+			</Contrat>
+		</PCT>
+	</MacroEvenement>
+</MacroEvenements>

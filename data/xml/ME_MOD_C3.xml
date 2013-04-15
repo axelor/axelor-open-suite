@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MacroEvenements xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<MacroEvenement emetteur="17X100A100A0404P" typeEvt="MOD" numeroEvt="C3 30" envoi="1" dateEnvoi="10/02/2012 14:05:34" statut="V">
+		<PCT reference="000000159" type="S" fluide="1" pro="true" segment="C3">
+			<ChampsValeurs>
+				<ChampValeur code="PCT_REGROUPEMENT">Non</ChampValeur>
+				<ChampValeur code="PCT_DTPROCHAINEREL">01/10/2011</ChampValeur>
+				<ChampValeur code="PDL_RES_SEC_NB_CELLULES">0</ChampValeur>
+				<ChampValeur code="PDL_RES_SEC_AERIEN">0</ChampValeur>
+				<ChampValeur code="PDL_RES_SEC_SOUTERRAIN">0</ChampValeur>
+				<ChampValeur code="PDL_RES_SEC_TRANSFODIFF">Non</ChampValeur>
+				<ChampValeur code="PDL_RES_SEC_PUIS_RESERV">0</ChampValeur>
+				<ChampValeur code="PDL_RES_SEC_COEF">0,000</ChampValeur>
+				<ChampValeur code="PDL_DISJ_REGLAGE_THERM_C1_C3">160</ChampValeur>
+				<ChampValeur code="PDL_CPT_TYPE_COMPTAGE" valeurCodeChoix="B">TV : Electroméca. sans cpt. horaire et sans cpt. de précision</ChampValeur>
+				<ChampValeur code="PDL_CPT_REGIME_PROP" valeurCodeChoix="P">Propriété de SRD</ChampValeur>
+				<ChampValeur code="PDL_CPT_MATRICULE">12345</ChampValeur>
+				<ChampValeur code="PDL_CPT_TELERELEVE_CDC">Non</ChampValeur>
+			</ChampsValeurs>
+			<Affaire numeroAffaire="128965" dateCreation="29/06/2012 10:17:43" dateDebutRDV="09/07/2012 08:30:00" dateFinRDV="09/07/2012 12:00:00" dateReception="29/06/2012 10:21:04" dateCloture="28/08/2012 16:01:42" dateModif="28/08/2012 16:01:42" statut="3">
+				<Couts coutGlobal="122.2" express="true" deplacementVain="false" annulationTardive="false">
+					<CoutVariante codeFacturation="F180">92.99</CoutVariante>
+					<CoutExpress codeFacturation="F180">29.21</CoutExpress>
+					<CoutAnnulationTardive>0</CoutAnnulationTardive>
+					<CoutDeplacementVain>0</CoutDeplacementVain>
+				</Couts>
+				<Prestations>
+					<Prestation numeroPrestation="1" codePrestation="F180_MODIF_TARIF_PS">
+						<Variante numero="1" cout="122.20" />
+					</Prestation>
+				</Prestations>
+			</Affaire>
+			<Consommations>
+				<ListeIndex>
+					<Index date="01/12/2012" type="P" sousType="8">
+						<IndexValeur code="EA" cadran="1" libelleCadran="P" coef="3" passageAZero="false">0</IndexValeur>
+						<IndexValeur code="EA" cadran="2" libelleCadran="HP" coef="3" passageAZero="false">0</IndexValeur>
+						<IndexValeur code="EA" cadran="3" libelleCadran="HC" coef="3" passageAZero="false">0</IndexValeur>
+						<IndexValeur code="ER" cadran="1" libelleCadran="P" coef="3" passageAZero="false">0</IndexValeur>
+						<IndexValeur code="ER" cadran="2" libelleCadran="HP" coef="3" passageAZero="false">0</IndexValeur>
+						<IndexValeur code="ER" cadran="3" libelleCadran="HC" coef="3" passageAZero="false">0</IndexValeur>
+						<IndexValeur code="PM" cadran="1" libelleCadran="P" coef="0.03" passageAZero="false">0</IndexValeur>
+						<IndexValeur code="PM" cadran="2" libelleCadran="HP" coef="0.03" passageAZero="false">0</IndexValeur>
+						<IndexValeur code="PM" cadran="3" libelleCadran="HC" coef="0.03" passageAZero="false">0</IndexValeur>
+						<IndexValeur code="TFF" cadran="1" libelleCadran="P" coef="1" passageAZero="false">104</IndexValeur>
+						<IndexValeur code="TFF" cadran="2" libelleCadran="HP" coef="1" passageAZero="false">308</IndexValeur>
+						<IndexValeur code="TFF" cadran="3" libelleCadran="HC" coef="1" passageAZero="false">313</IndexValeur>
+					</Index>
+					<Index date="27/03/2012" type="R" sousType="5">
+						<IndexValeur code="EA" cadran="1" libelleCadran="P" coef="3" passageAZero="false">61352</IndexValeur>
+						<IndexValeur code="EA" cadran="2" libelleCadran="HP" coef="3" passageAZero="false">88210</IndexValeur>
+						<IndexValeur code="EA" cadran="3" libelleCadran="HC" coef="3" passageAZero="false">1120</IndexValeur>
+						<IndexValeur code="ER" cadran="1" libelleCadran="P" coef="3" passageAZero="false">0</IndexValeur>
+						<IndexValeur code="ER" cadran="2" libelleCadran="HP" coef="3" passageAZero="false">55366</IndexValeur>
+						<IndexValeur code="ER" cadran="3" libelleCadran="HC" coef="3" passageAZero="false">12644</IndexValeur>
+						<IndexValeur code="PM" cadran="1" libelleCadran="P" coef="0.03" passageAZero="false">3000</IndexValeur>
+						<IndexValeur code="PM" cadran="2" libelleCadran="HP" coef="0.03" passageAZero="false">4500</IndexValeur>
+						<IndexValeur code="PM" cadran="3" libelleCadran="HC" coef="0.03" passageAZero="false">0</IndexValeur>
+						<IndexValeur code="TFF" cadran="1" libelleCadran="P" coef="1" passageAZero="false">0</IndexValeur>
+						<IndexValeur code="TFF" cadran="2" libelleCadran="HP" coef="1" passageAZero="false">420</IndexValeur>
+						<IndexValeur code="TFF" cadran="3" libelleCadran="HC" coef="1" passageAZero="false">313</IndexValeur>
+					</Index>
+				</ListeIndex>
+				<Consommation debut="02/02/2012" fin="01/03/2012">
+					<CnsValeur code="NRJ_A" periode="1" libellePeriode="HPH">2975</CnsValeur>
+					<CnsValeur code="NRJ_A" periode="2" libellePeriode="HCH">1199</CnsValeur>
+					<CnsValeur code="NRJ_A" periode="3" libellePeriode="HPE">0</CnsValeur>
+					<CnsValeur code="NRJ_A" periode="4" libellePeriode="HCE">0</CnsValeur>
+					<CnsValeur code="DEP_D" periode="1" libellePeriode="Seuil bas">1301</CnsValeur>
+					<CnsValeur code="DEP_D" periode="2" libellePeriode="Seuil haut">0</CnsValeur>
+					<CnsValeur code="RES_PMAX" periode="1" libellePeriode="HPH">20</CnsValeur>
+					<CnsValeur code="RES_PMAX" periode="2" libellePeriode="HCH">0</CnsValeur>
+				</Consommation>
+			</Consommations>
+			<RE nom="EDF" dateEntreePerimetre="01/01/2003" codeEic="17X100A100R00182" />
+			<Fournisseur nom="Sorégies" dateEntreePerimetre="01/01/2003" codeEic="17X100A100F0038V" />
+			<UtilisateurReseau nom="Test GPE" />
+			<ContratElec nature="acheminement">
+				<Tarif code="HST" dateDebut="01/01/2003" />
+				<PS date="01/01/2003" psUnique="130" />
+			</ContratElec>
+			<ContratElec nature="fourniture">
+				<Tarif code="A5BMU" dateDebut="01/01/2003" />
+				<PS date="01/01/2003">
+					<Puissance periode="1">130</Puissance>
+					<Puissance periode="2">130</Puissance>
+					<Puissance periode="3">130</Puissance>
+					<Puissance periode="4">130</Puissance>
+					<Puissance periode="5">130</Puissance>
+				</PS>
+			</ContratElec>
+			<Facture dateFacture="01/01/2010" numFacture="1234567">
+				<LigneFacture codeArticle="ACHCC" codeRecap="A01" dateDebut="01/12/2009" dateFin="15/12/2009" quantite="15" prixUnitaire="5" codeUnite="JOUR" debit="1">10</LigneFacture>
+				<LigneFacture codeArticle="ACHCC" codeRecap="A01" dateDebut="16/12/2009" dateFin="01/01/2010" quantite="15" prixUnitaire="6" codeUnite="JOUR" debit="1">10</LigneFacture>
+				<LigneFacture codeArticle="ACHCSF" codeRecap="A02" dateDebut="01/12/2009" dateFin="01/01/2010" quantite="30" prixUnitaire="4" codeUnite="JOUR/KVA" debit="1">20</LigneFacture>
+				<LigneFacture codeArticle="ACHCSV" codeRecap="A03" dateDebut="01/12/2009" dateFin="01/01/2010" quantite="2145" prixUnitaire="1" codeUnite="KWH" debit="1">500</LigneFacture>
+				<LigneFacture codeArticle="ACHCACS" codeRecap="C01" dateDebut="01/12/2009" dateFin="01/01/2010" quantite="12" prixUnitaire="3" codeUnite="KWH" debit="1">1000</LigneFacture>
+				<LigneFacture codeArticle="ACHCG" codeRecap="D01" dateDebut="01/12/2009" dateFin="01/01/2010" quantite="30" prixUnitaire="2" codeUnite="KWH" debit="1">150</LigneFacture>
+				<HistoriqueConsosActif>
+					<TotalActifFacture date="03/2012" type="R">461</TotalActifFacture>
+				</HistoriqueConsosActif>
+			</Facture>
+		</PCT>
+	</MacroEvenement>
+</MacroEvenements>

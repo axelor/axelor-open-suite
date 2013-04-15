@@ -1,0 +1,774 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csv-inputs xmlns="http://apps.axelor.com/xml/ns/data-import"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/data-import http://apps.axelor.com/xml/ns/data-import/data-import_0.8.xsd">
+  
+  	<input file="groups_AX.csv" type="com.axelor.auth.db.Group" />
+
+	<input file="IndexEventParameter.csv" type="com.axelor.apps.event.db.IndexEventParameter" />
+	
+	<input file="Dial.csv" type="com.axelor.apps.event.db.Dial" />
+	
+	<input file="typereleve.csv" type="com.axelor.apps.territory.db.MeterReadingType">
+		<bind to="koalaId" column="typerel_id"/>
+		<bind to="name" column="typerel_lib"/>
+	</input>
+
+	<input file="AnalyticAxis.csv" type="com.axelor.apps.account.db.AnalyticAxis" />
+
+	<input file="AnalyticAccount.csv" type="com.axelor.apps.account.db.AnalyticAccount" />
+	
+	<input file="ParameterType.csv" type="com.axelor.apps.pricing.db.ParameterType"/>
+	
+	<input file="Parameter.csv" type="com.axelor.apps.pricing.db.Parameter"/>
+	
+	<input file="zonemeteo.csv" type="com.axelor.apps.territory.db.WeatherZone">
+		<bind to="importId" column="zonemeteo_id"/>
+		<bind to="code" column="zonemeteo_code"/>
+		<bind to="name" column="zonemeteo_lib"/>
+	</input>
+	
+	<input file="typesectionfacture.csv" type="com.axelor.apps.invoice.db.InvoiceLineType">
+		<bind to="koalaId" column="typesecfac_id"/>
+		<bind to="code" column="typsecfac_libcourt"/>
+		<bind to="name" column="typsecfac_liblong"/>
+		<bind to="orderId" column="typsecfac_ord"/>
+	</input>
+	
+	<input file="activite.csv" type="com.axelor.apps.contact.db.Activity">
+		<bind column="activite_id" to="koalaId" />
+		<bind column="activite_libelle" to="name" />
+	</input>
+
+	<input file="fluide.csv" type="com.axelor.apps.fluid.db.Fluid">
+		<bind column="fluide_id" to="koalaId" />
+		<bind column="fluide_nom" to="name" />
+		<bind column="fluide_code" to="code" />
+		<bind column="fluide_type_id" to="type" eval="fluide_type_id == '1'? 'elec' : fluide_type_id == '2'? 'gas': fluide_type_id == '3'? 'cable' : 'none'" />
+	</input>
+	
+	<input file="rythmeflux.csv" type="com.axelor.apps.territory.db.FlowRate">
+		<bind to="importId" column="rythmeflux_id"/>
+		<bind to="fluid" column="rythmeflux_fluide_id" search="self.koalaId = :rythmeflux_fluide_id" update="true"/>
+		<bind to="name" column="rythmeflux_lib"/>
+	</input>
+
+	<input file="secteuractivite.csv" type="com.axelor.apps.contact.db.NceCode">
+		<bind to="koalaId" column="sectact_id"/>
+		<bind to="code" column="sectact_code"/>
+		<bind to="name" column="sectact_libelle"/>
+	</input>
+	
+	<input file="naturedemande.csv" type="com.axelor.apps.crm.db.CrmRequestNature">
+		<bind column="natdem_id" to="importId"/>
+		<bind column="natdem_libelle" to="name"/>
+	</input>
+
+	<input file="typecompteur.csv" type="com.axelor.apps.territory.db.MeterType">
+		<bind column="typecpt_id" to="koalaId" />
+		<bind column="typecpt_lib" to="name" />
+	</input>
+	
+	<input file="typeutilisateur.csv" type="com.axelor.apps.contract.db.UserType">
+		<bind column="typeutil_lib" to="name" />
+		<bind column="typeutil_id" to="koalaId" />
+		<bind to="code" eval="!typeutil_lib?.empty ? (typeutil_lib.size() > 0 ? ((typeutil_lib.padRight(3))[0..2]).toUpperCase():null) : null" />
+	</input>
+	
+	<input file="typememoire.csv" type="com.axelor.apps.invoice.db.InvoicesBillType">
+		<bind to="koalaId" column="typemem_id"/>
+		<bind to="name" column="typemem_libelle"/>
+		<bind to="typeSelect" eval="typemem_id == '1' ? 'groupingFolder' : 'accountingDoc'"/>
+	</input>
+	
+	<input file="MacroEventType.csv" type="com.axelor.apps.event.db.MacroEventType">
+		<bind to="code" column="code"/>
+		<bind to="name" column="name"/>
+		<bind to="origin" column="origin"/>
+		<bind to="sequence" eval="!code.empty ? (code=='MES' ? 0 : (code=='RES' ?2:1)):1"/>
+		<bind to="description" column="description"/>
+	</input>
+	
+	<input file="canalevt.csv" type="com.axelor.apps.crm.db.ActionEventSource">
+		<bind to="koalaId" column="canevt_id"/>
+		<bind to="name" column="canevt_liblong"/>
+		<bind to="code" column="canevt_libcourt"/>
+	</input>
+	
+	<input file="famevt.csv" type="com.axelor.apps.crm.db.ActionEventFamily">
+		<bind to="koalaId" column="famevt_id"/>
+		<bind to="name" column="famevt_liblong"/>
+		<bind to="code" column="famevt_libcourt"/>
+	</input>
+	
+	<input file="sousfamevt.csv" type="com.axelor.apps.crm.db.ActionEventSubFamily">
+		<bind to="koalaId" column="sousfamevt_id"/>
+		<bind to="actionEventFamily" search="self.koalaId = :sousfamevt_famevt_id" update="true"/>
+		<bind to="name" column="sousfamevt_liblong"/>
+		<bind to="code" column="sousfamevt_libcourt"/>
+	</input>
+
+	<input file="typechauffage.csv" type="com.axelor.apps.contract.db.HeatingType">
+		<bind column="typechauff_id" to="koalaId" />
+		<bind column="typechauff_libelle" to="name" />
+	</input>
+	
+	<input file="typeecheancier.csv" type="com.axelor.apps.account.db.PaymentScheduleType">
+		<bind column="typeech_libcourt" to="code" />
+		<bind column="typeech_liblong" to="name" />
+		<bind column="typeech_id" to="koalaIdType" />
+		<bind to="type" eval="'type'"/>
+	</input>
+	
+	<input file="soustypeecheancier.csv" type="com.axelor.apps.account.db.PaymentScheduleType">
+		<bind column="soustypeech_libcourt" to="code" />
+		<bind column="soustypeech_liblong" to="name" />
+		<bind column="soustypeech_id" to="koalaIdSubType" />
+		<bind to="type" eval="'subtype'"/>
+	</input>
+	
+	<input file="typeecheancierAX.csv" type="com.axelor.apps.account.db.PaymentScheduleType" search="self.code = :code" update="true">
+		<bind column="code" to="code" />
+		<bind column="alertOk" to="alertOk" eval="alertOk == '1' ? 'true' : 'false'" />
+		<bind column="alertMessage" to="alertMessage" />
+	</input>
+	
+	<input file="motifbloquage.csv" type="com.axelor.apps.contract.db.StopReason"/>
+	
+	<input file="pays.csv" type="com.axelor.apps.territory.db.Country">
+		<bind column="pays_id" to="koalaId"/>
+		<bind column="pays_cog" to="cog" />
+		<bind column="pays_nom" to="name" />
+		<bind column="pays_abrev" to="code" />
+		<bind column="pays_indic_tel" to="phonePrefix" />
+	</input>
+
+	<input file="region.csv" type="com.axelor.apps.territory.db.Region">
+		<bind column="region_num" to="code" />
+		<bind column="region_nom" to="name" />
+		<bind search="self.koalaId = :region_pays_id" to="country" update="true"/>
+	</input>
+	
+	<input file="adresse.csv" type="com.axelor.apps.contact.db.Address">
+		<bind column="adresse_id" to="koalaId" />
+		<bind column="adresse_L2" to="addressL2" />
+		<bind column="adresse_L3" to="addressL3" />
+		<bind column="adresse_L4" to="addressL4" />
+		<bind column="adresse_L5" to="addressL5" />
+		<bind column="adresse_L6" to="addressL6" />
+		<bind column="adresse_lieuconso" to="consumptionPlaceOk" eval="adresse_lieuconso == '1'? 'true' : 'false'"/>
+		<bind column="adresse_flag_certif" to="certifiedOk" eval="adresse_flag_certif == '1'? 'true' : 'false'" />
+		<bind search="self.code = :adresse_pays_cod" to="addressL7Country" update="true"/>
+		<bind to="inseeCode" column="adresse_INSEE"/>
+	</input>
+	
+	<input file="civilite.csv" type="com.axelor.apps.contact.db.Title">
+		<bind column="civilite_id" to="koalaId" />
+		<bind column="civilite_libcourt" to="code" />
+		<bind column="civilite_libelle" to="name" />
+		<bind column="civilite_type" to="type" eval="civilite_type == 'F'? '2' : '1'" />
+	</input>
+	
+	<input file="fonctioncontact.csv" type="com.axelor.apps.contact.db.Jobtitle">
+		<bind column="fonction_id" to="koalaId" />
+		<bind column="fonction_code" to="code" />
+		<bind column="fonction_libellé" to="name" />
+	</input>
+	
+	<input file="contact.csv" type="com.axelor.apps.contact.db.Contact">
+		<bind column="contact_id" to="koalaId" />
+		<bind column="contact_L1" to="addressL1" />
+		<bind column="contact_nom" to="name" eval="!contact_nom ? 'Inconnu' : contact_nom"/>
+		<bind column="contact_prenom" to="firstName" />
+		<bind search="self.koalaId = :contact_civilite_id" to="title" update="true"/>
+		<bind search="self.koalaId = :contact_fonction_id" to="jobtitle" update="true"/>
+		<bind column="contact_campagne_flag" to="noCampaignOk" eval="contact_campagne_flag == '1'? 'true' : 'false'" />
+		<bind column="contact_telfixe_perso1" to="fixedPhone1" />
+		<bind column="contact_telfixe_perso2" to="fixedPhone2" />
+		<bind column="contact_telport_perso" to="mobilePhonePerso" />
+		<bind column="contact_telfixe_prof" to="fixedPhonePro" />
+		<bind column="contact_telport_prof" to="mobilePhonePro" />
+		<bind column="contact_fax_prof" to="fax" />
+		<bind column="contact_email" to="email" />
+		<bind search="self.koalaId = :contact_adresse_id" to="address" update="true"/>
+		<bind to="olaPhone" column="contact_tel_AEL"/>
+		<bind to="olaEmail" column="contact_email_AEL"/>
+		<bind to="webSite" column="contact_site_web"/>
+	</input>
+	
+	<input file="accueil.csv" type="com.axelor.apps.contact.db.Agency">
+		<bind column="accueil_id" to="importId" />
+		<bind column="accueil_id" to="num" />
+		<bind column="accueil_libelle_court" to="nameShort" />
+		<bind column="accueil_libelle_long" to="nameLong" />
+		<bind search="self.koalaId = :accueil_adresse_id" to="address" update="true"/>
+		<bind column="accueil_rech1" to="code" />
+		<bind to="openingHours" column="accueil_horaires"/>
+	</input>
+	
+	<input file="accueil.csv" type="com.axelor.apps.contact.db.Agency"
+		search="self.importId = :accueil_id" update="true">
+		<bind column="accueil_id" to="importId" />
+		<bind search="self.importId = :accueil_parent_id" to="parentAgency" update="true"/>
+	</input>
+
+	<input file="centreexploit.csv" type="com.axelor.apps.territory.db.OperationCenter">
+		<bind column="centreexploit_id" to="koalaId" />
+		<bind search="self.koalaId = :centrexploit_adresse_id" to="address" update="true"/>
+		<bind search="self.koalaId = :centreexploit_parent_id" to="parent" update="true"/>
+		<bind column="centreexploit_libcourt" to="code" />
+		<bind column="centreexploit_nom" to="name" />
+	</input>
+	
+	<input file="segment.csv" type="com.axelor.apps.pricing.db.Parameter">
+		<bind to="parameterId" eval="!segment_id?.empty ?  'segtUtilisateur_'+segment_id : '' " />
+		<bind to="name" column="segment_code" />
+		<bind to="description" column="segment_code" />
+		<bind to="parameterType" search="self.code = 'segtUtilisateur'" >
+			<bind to="code" eval="'segtUtilisateur'" />
+		</bind>
+	</input>
+
+	<input file="segment.csv" type="com.axelor.apps.contract.db.UserSegment">
+		<bind column="segment_id" to="koalaId" />
+		<bind column="segment_code" to="code" />
+		<bind column="segment_libelle" to="name" />
+		<bind search="self.koalaId = :segment_typefluide_id" to="fluid" update="true"/>
+		<bind search="self.koalaId = :segment_typeutil_id" to="userType" update="true"/>
+		<bind search="self.parameterId = :segment_typecontrat_id" to="contractFormatParameter" update="true">
+			<bind column="segment_typecontrat_id" to="parameterId" eval="segment_typecontrat_id == '6' ? 'formCont_CARD' : segment_typecontrat_id == '3' ? 'formCont_CU' : null" />
+		</bind>
+		<bind search="self.name = :segment_code and self.parameterType.code = 'segtUtilisateur'" to="userSegmentParameter" update="true"/>
+	</input>
+
+	<input file="typecollectivite.csv" type="com.axelor.apps.contact.db.AuthorityType">
+		<bind column="typecollectivite_id" to="koalaId" />
+		<bind column="typecollectivite_libelle" to="name" />
+	</input>
+
+	<input file="naturetierstit.csv" type="com.axelor.apps.contact.db.ClientNature">
+		<bind column="nattierstit_id" to="koalaId" />
+		<bind column="nattierstit_libelle" to="name" />
+		<bind to="code" eval="nattierstit_libelle.size() > 0 ? ((nattierstit_libelle.padRight(3))[0..2]).toUpperCase():null" />
+		<bind to="agentOk" eval="nattierstit_id=='5'?'true':'false'"/>
+	</input>
+
+	<input file="zoneinfluence.csv" type="com.axelor.apps.contact.db.CatchmentArea">
+		<bind column="zoneinf_id" to="koalaId" />
+		<bind column="zoneinf_nom" to="name" />
+		<bind column="zoneinf_flag_elec" to="elecOk" eval="zoneinf_flag_elec == '1'? 'true' : 'false'" />
+		<bind column="zoneinf_flag_gaz" to="gasOk" eval="zoneinf_flag_gaz == '1'? 'true' : 'false'" />
+	</input>
+	
+	<input file="apenaf.csv" type="com.axelor.apps.contact.db.NafCode">
+		<bind to="koalaId" column="APENAF_id"/>
+		<bind to="code" column="APENAF_code"/>
+		<bind to="name" column="APENAF_libelle"/>
+	</input>
+	
+	<input file="tiers.csv" type="com.axelor.apps.contact.db.Partner">
+		<bind column="tiers_id" to="koalaId" />
+		<bind column="tiers_crit_rech1" to="importKey"/>
+		<bind search="self.koalaId = :tiers_contact1_id" to="mainContact" update="true"/>
+		<bind to="personCategorySelect" eval="tiers_typepersonne_type == 'P' ? 'naturalPerson' : 'legalPerson'" />
+		<bind column="tiers_enseigne" to="corporateBrand" />
+		<bind to="nafCode" search="self.code = :tiers_NAF" update="true" if="!tiers_NAF?.empty"/>
+		<bind to="nceCode" search="self.code = :tiers_NCE" update="true" if="!tiers_NCE?.empty"/>
+		<bind column="tiers_COFACE" to="cofaceNote" />
+		<bind column="tiers_TVA_Intracomm" to="intraCommunityVat" />
+		<bind column="tiers_flag_tit" to="clientOk" eval="tiers_flag_tit == '1'? 'true' : 'false'" />
+		<bind column="tiers_flag_pay" to="payerOk" eval="tiers_flag_pay == '1'? 'true' : 'false'" />
+		<bind column="tiers_flag_prop" to="ownerOk" eval="tiers_flag_prop == '1'? 'true' : 'false'" />
+		<bind column="tiers_flag_tuteur" to="guardianOk" eval="tiers_flag_tuteur == '1'? 'true' : 'false'" />
+		<bind column="tiers_flag_fourn" to="providerOk" eval="tiers_flag_fourn == '1'? 'true' : 'false'" />
+		<bind column="tiers_flag_GRD" to="dsoOk" eval="tiers_flag_GRD == '1'? 'true' : 'false'" />
+		<bind column="tiers_flag_apportaff" to="businessGeneratorOk" eval="tiers_flag_apportaff == '1'? 'true' : 'false'" />
+		<bind column="tiers_flag_prospect" to="prospectOk" eval="tiers_flag_prospect == '1'? 'true' : 'false'" />
+		<bind column="tiers_flag_syndic" to="propertyAgentOk" eval="tiers_flag_syndic == '1'? 'true' : 'false'" />
+		<bind column="tiers_flag_collectivite" to="authorityOk" eval="tiers_flag_collectivite == '1'? 'true' : 'false'" />
+		<bind column="tiers_flag_treso" to="treasuryOk" eval="tiers_flag_treso == '1'? 'true' : 'false'" />
+		<bind column="tiers_flag_RE" to="breOk" eval="tiers_flag_RE == '1'? 'true' : 'false'" />
+		<bind column="tiers_flag_parten" to="partnerOk" eval="tiers_flag_parten == '1'? 'true' : 'false'" />
+		<bind column="tiers_flag_servicesocial" to="socialServiceOk" eval="tiers_flag_servicesocial == '1'? 'true' : 'false'" />
+		<bind column="tiers_flag_concedant" to="assignorOk" eval="tiers_flag_concedant == '1'? 'true' : 'false'" />
+		<bind column="tiers_flag_commercialisateur" to="marketerOk" eval="tiers_flag_commercialisateur == '1'? 'true' : 'false'" />
+		<bind column="tiers_flag_huissier" to="usherOk" eval="tiers_flag_huissier == '1'? 'true' : 'false'" />
+		<bind column="tiers_flag_centreIEG" to="iegOk" eval="tiers_flag_centreIEG == '1'? 'true' : 'false'" />
+		<bind column="tiers_flag_utilGRD" to="userOk" eval="tiers_flag_utilGRD == '1'? 'true' : 'false'" />
+		<bind column="tiers_SIRET" to="longCompanyId" eval="(!tiers_SIRET?.empty &amp;&amp; tiers_SIRET.length() == 14) ? tiers_SIRET : null"/>
+		<bind column="tiers_SIRENE" to="shortCompanyId" eval="(!tiers_SIRENE?.empty &amp;&amp; tiers_SIRENE.length() == 9) ? tiers_SIRENE : null"/>
+	</input>
+	
+	<input file="tiersgrd.csv" type="com.axelor.apps.contact.db.Partner" update="true" search="self.koalaId = :tiersgrd_id">
+		<bind search="self.koalaId = :tiersgrd_contact1_id" to="dsoContact" update="true"/>
+		<bind search="self.koalaId = :tiersgrd_contact2_id" to="dsoContactSet" update="true"/>
+		<bind search="self.koalaId = :tiersgrd_contact3_id" to="dsoContactSet" update="true"/>
+		<bind search="self.koalaId = :tiersgrd_contact4_id" to="dsoContactSet" update="true"/>
+		<bind column="tiersgrd_codeEIC" to="dsoNum" />
+		<bind to="dsoCodeParameter" search="self.name = :tiersgrd_codeGRD and self.parameterType.code = 'grd'" >
+			<bind to="parameterId" eval="!tiersgrd_codeGRD.empty ?  'grd_'+tiersgrd_codeGRD : '' " />
+			<bind to="name" column="tiersgrd_codeGRD" />
+			<bind to="description" column="tiersgrd_codeGRD" />
+			<bind to="parameterType" search="self.code = 'grd'" >
+				<bind to="code" eval="!tiersgrd_codeGRD.empty ?  'grd' : '' " />
+			</bind>
+		</bind>
+	</input>	
+	
+	<input file="tiersappaff.csv" type="com.axelor.apps.contact.db.Partner" update="true" search="self.koalaId = :tiersappaff_id">
+		<bind search="self.koalaId = :tiersappaff_contact1_id" to="businessGetterMainContact" update="true"/>
+		<bind search="self.koalaId = :tiersappaff_zone_influence_id" to="catchmentArea" update="true"/>
+		<bind search="self.koalaId = :tiersappaff_contact2_id" to="businessGetterContactSet" column="tiersappaff_contact2_id" />
+		<bind search="self.koalaId = :tiersappaff_contact3_id" to="businessGetterContactSet" column="tiersappaff_contact3_id" />
+		<bind search="self.koalaId = :tiersappaff_contact4_id" to="businessGetterContactSet" column="tiersappaff_contact4_id" />
+	</input>
+
+	<input file="tierscoll.csv" type="com.axelor.apps.contact.db.Partner" update="true" search="self.koalaId = :tierscoll_id">
+		<bind search="self.koalaId = :tierscoll_typecollectivite_id" to="authorityType" update="true"/>
+		<bind search="self.koalaId = :tierscoll_tierstreso_id" to="treasuryPartner" update="true"/>
+		<bind search="self.koalaId = :tierscoll_contact1_id" to="authorityMainContact" update="true"/>
+		<bind column="tierscoll_flag_conventionEP" to="epConventionOk" eval="tierscoll_flag_conventionEP == '1' ? 'true' : 'false'" />
+		<bind search="self.koalaId = :tierscoll_contact2_id" to="authorityContactSet" column="tierscoll_contact2_id" />
+		<bind search="self.koalaId = :tierscoll_contact3_id" to="authorityContactSet" column="tierscoll_contact3_id" />
+		<bind search="self.koalaId = :tierscoll_contact4_id" to="authorityContactSet" column="tierscoll_contact4_id" />
+		<bind column="tierscoll_codeAGRESSO" to="authorityAccountingCode"/>
+	</input>
+
+	<input file="tierscomm.csv" type="com.axelor.apps.contact.db.Partner" update="true" search="self.koalaId = :tierscomm_id">
+		<bind search="self.koalaId = :tierscomm_contact1_id" to="marketerMainContact" update="true"/>
+		<bind search="self.koalaId = :tierscomm_contact2_id" to="marketerContactSet" column="tierscomm_contact2_id" />
+		<bind search="self.koalaId = :tierscomm_contact3_id" to="marketerContactSet" column="tierscomm_contact3_id" />
+		<bind search="self.koalaId = :tierscomm_contact4_id" to="marketerContactSet" column="tierscomm_contact4_id" />
+		<bind to="marketerSiOk" column="tierscomm_flag_dansSI" eval="tierscomm_flag_dansSI == '1' ? true : false"/>
+	</input>
+
+	<input file="tiersconced.csv" type="com.axelor.apps.contact.db.Partner" update="true" search="self.koalaId = :tiersconced_id">
+		<bind search="self.koalaId = :tiersconced_contact1_id" to="assignorMainContact" update="true"/>
+		<bind search="self.koalaId = :tiersconced_typecollectivite_id" to="assignorAuthorityType" update="true"/>
+		<bind search="self.koalaId = :tiersconced_contact2_id" to="assignorContactSet" column="tiersconced_contact2_id" />
+		<bind search="self.koalaId = :tiersconced_contact3_id" to="assignorContactSet" column="tiersconced_contact3_id" />
+		<bind search="self.koalaId = :tiersconced_contact4_id" to="assignorContactSet" column="tiersconced_contact4_id" />
+		<bind column="tiersconced_code" to="assignorCode"/>
+	</input>
+
+	<input file="tiersieg.csv" type="com.axelor.apps.contact.db.Partner" update="true" search="self.koalaId = :tiersIEG_id">
+		<bind search="self.koalaId = :tiersIEG_contact1_id" to="iegMainContact" update="true"/>
+		<bind to="iegMainOk" eval="'true'" if="tiersIEG_id=='37012'"/><!-- IF tiers SOREGIES -->
+		<bind column="tiersIEG_Code_Centre" to="iegCode" />
+		<bind search="self.koalaId = :tiersIEG_contact2_id" to="iegContactSet" column="tiersIEG_contact2_id" />
+		<bind search="self.koalaId = :tiersIEG_contact3_id" to="iegContactSet" column="tiersIEG_contact3_id" />
+		<bind search="self.koalaId = :tiersIEG_contact4_id" to="iegContactSet" column="tiersIEG_contact4_id" />
+	</input>
+
+	<input file="tierspay.csv" type="com.axelor.apps.contact.db.Partner" update="true" search="self.koalaId = :tierspay_id">
+		<bind search="self.koalaId = :tierspay_tierstreso_id" to="treasuryPartner" update="true"/>
+		<bind search="self.koalaId = :tierspay_contact1_id" to="payerMainContact" update="true"/>
+		<bind column="tierspay_qualite" to="payerQuality" eval="!tierspay_qualite?.empty ? tierspay_qualite.replaceAll(',','.') : null"/>
+		<bind search="self.koalaId = :tierspay_contact2_id" to="payerContactSet" column="tierspay_contact2_id" if="!tierspay_contact2_id?.empty &amp;&amp; !tierspay_contact2_id.equals('0')"/>
+		<bind search="self.koalaId = :tierspay_contact3_id" to="payerContactSet" column="tierspay_contact3_id" if="!tierspay_contact3_id?.empty &amp;&amp; !tierspay_contact3_id.equals('0')"/>
+		<bind search="self.koalaId = :tierspay_contact4_id" to="payerContactSet" column="tierspay_contact4_id" if="!tierspay_contact4_id?.empty &amp;&amp; !tierspay_contact4_id.equals('0')"/>
+		<bind to="representativeOk" eval="tierspay_flag_mandataireRJLJ == '1'? 'true' : 'false'"/>
+		<bind to="importOrigin" column="tierspay_baseorig"/>
+	</input>
+	
+	<input file="tierspayadr.csv" type="com.axelor.apps.contact.db.Partner" update="true" search="self.koalaId = :tierspayadr_tierspay_id">
+		<bind to="addressSet" search="self.koalaId = :tierspayadr_adresse_id" column="tierspayadr_adresse_id"/>
+	</input>
+
+	<input file="tiersprop.csv" type="com.axelor.apps.contact.db.Partner" update="true" search="self.koalaId = :tiersprop_id">
+		<bind search="self.koalaId = :tiersprop_contact1_id" to="ownerContact" update="true"/>
+		<bind search="self.koalaId = :tiersprop_gestimmo_contact_id" to="propertyManagerContact" update="true"/>
+		<bind column="tiersprop_nonmaintienenergie" to="energyMaintainOk" eval="tiersprop_nonmaintienenergie == '1'? 'true' : 'false'" />
+	</input>
+
+	<input file="tiersre.csv" type="com.axelor.apps.contact.db.Partner" update="true" search="self.koalaId = :tiersRE_id">
+		<bind search="self.koalaId = :tiersRE_contact1_id" to="breMainContact" update="true"/>
+		<bind column="tiersRE_code_RE" to="breCode" />
+		<bind search="self.koalaId = :tiersRE_contact2_id" to="breContactSet" column="tiersRE_contact2_id" />
+		<bind search="self.koalaId = :tiersRE_contact3_id" to="breContactSet" column="tiersRE_contact3_id" />
+		<bind search="self.koalaId = :tiersRE_contact4_id" to="breContactSet" column="tiersRE_contact4_id" />
+	</input>
+
+	<input file="tierstit.csv" type="com.axelor.apps.contact.db.Partner" update="true" search="self.koalaId = :tierstit_id">
+		<bind search="self.koalaId = :tierstit_contact1_id" to="clientMainContact" update="true"/>
+		<bind search="self.code = :tierstit_segment_comm" to="commercialSegment" if="!tierstit_segment_comm.empty">
+			<bind column="tierstit_segment_comm" to="code" />
+			<bind column="tierstit_segment_comm" to="name" />
+		</bind>
+		<bind column="tierstit_ancref" to="oldRef" />
+		<bind column="tierstit_refacteur" to="actorRef" />
+		<bind column="tierstit_AEL_longon" to="olaLogin" />
+		<bind column="tierstit_AEL_mdp" to="olaPassword" />
+		<bind search="self.koalaId = :tierstit_nattierstit_id" to="clientNature" update="true"/>
+		<bind search="self.koalaId = :tierstit_contact2_id" to="clientContactSet" column="tierstit_contact2_id" />
+		<bind search="self.koalaId = :tierstit_contact3_id" to="clientContactSet" column="tierstit_contact3_id" />
+		<bind search="self.koalaId = :tierstit_contact4_id" to="clientContactSet" column="tierstit_contact4_id" />
+		<bind to="importOrigin" column="tierstit_baseorig"/>
+	</input>
+
+	<input file="tierstreso.csv" type="com.axelor.apps.contact.db.Partner" update="true" search="self.koalaId = :tierstreso_id">
+		<bind search="self.koalaId = :tierstreso_contact1_id" to="treasuryMainContact" update="true"/>
+		<bind column="tierstreso_code_treso" to="treasuryCode" />
+		<bind search="self.koalaId = :tierstreso_contact2_id" to="treasuryContactSet" column="tierstreso_contact2_id" />
+		<bind search="self.koalaId = :tierstreso_contact3_id" to="treasuryContactSet" column="tierstreso_contact3_id" />
+		<bind search="self.koalaId = :tierstreso_contact4_id" to="treasuryContactSet" column="tierstreso_contact4_id" />
+	</input>
+	
+	<input file="tiersfourn.csv" type="com.axelor.apps.contact.db.Partner" update="true" search="self.koalaId = :tiersfourn_id">
+		<bind search="self.koalaId = :tiersfourn_contact1_id" to="providerMainContact" update="true"/>
+		<bind column="tiersfourn_codeAGRESSO" to="providerCode" />
+		<bind column="tiersfourn_CodeEIC" to="eicCode" />
+		<bind search="self.koalaId = :tiersfourn_contact2_id" to="providerContactSet" column="tiersfourn_contact2_id" />
+		<bind search="self.koalaId = :tiersfourn_contact3_id" to="providerContactSet" column="tiersfourn_contact3_id" />
+		<bind search="self.koalaId = :tiersfourn_contact4_id" to="providerContactSet" column="tiersfourn_contact4_id" />
+		<bind to="providerSiOk" column="tiersfourn_flag_dansSI" eval="tiersfourn_flag_dansSI == '1' ? true : false" />
+	</input>
+	
+	<input file="tiershuiss.csv" type="com.axelor.apps.contact.db.Partner" update="true" search="self.koalaId = :tiershuiss_id">
+		<bind search="self.koalaId = :tiershuiss_contact1_id" to="usherMainContact" update="true"/>
+		<bind column="tiershuiss_nbdoss_max_annuel" to="annualMaxFolderNbr" />
+		<bind eval="tiershuiss_objectif_pourc_recou.empty?tiershuiss_objectif_pourc_recou.replace(',','.'):null" to="recoveryPerc" />
+		<bind search="self.koalaId = :tiershuiss_contact2_id" to="usherContactSet" column="tiershuiss_contact2_id" />
+		<bind search="self.koalaId = :tiershuiss_contact3_id" to="usherContactSet" column="tiershuiss_contact3_id" />
+		<bind search="self.koalaId = :tiershuiss_contact4_id" to="usherContactSet" column="tiershuiss_contact4_id" />
+	</input>
+	
+	<input file="tiersutil.csv" type="com.axelor.apps.contact.db.Partner" update="true" search="self.koalaId = :tiersutil_id">
+		<bind search="self.koalaId = :tiersutil_contact1_id" to="userMainContact" column="tiersutil_contact1_id" />
+		<bind search="self.koalaId = :tiersutil_contact2_id" to="userContactSet" column="tiersutil_contact2_id" />
+		<bind search="self.koalaId = :tiersutil_contact3_id" to="userContactSet" column="tiersutil_contact3_id" />
+		<bind search="self.koalaId = :tiersutil_contact4_id" to="userContactSet" column="tiersutil_contact4_id" />
+	</input>
+	
+	<input file="tiersparten.csv" type="com.axelor.apps.contact.db.Partner" update="true" search="self.koalaId = :tiersparten_id">
+		<bind search="self.koalaId = :tiersparten_contact1_id" to="partnerContactSet" column="tiersparten_contact1_id" />
+		<bind search="self.koalaId = :tiersparten_contact2_id" to="partnerContactSet" column="tiersparten_contact2_id" />
+		<bind search="self.koalaId = :tiersparten_contact3_id" to="partnerContactSet" column="tiersparten_contact3_id" />
+		<bind search="self.koalaId = :tiersparten_contact4_id" to="partnerContactSet" column="tiersparten_contact4_id" />
+	</input>
+	
+	<input file="tiersprosp.csv" type="com.axelor.apps.contact.db.Partner" update="true" search="self.koalaId = :tiersprosp_id">
+		<bind search="self.koalaId = :tiersprosp_contact1_id" to="prospectMainContact" update="true"/>
+		<bind search="self.koalaId = :tiersprosp_contact1_id" to="prospectContactSet" column="tiersprosp_contact1_id" />
+		<bind search="self.koalaId = :tiersprosp_contact2_id" to="prospectContactSet" column="tiersprosp_contact2_id" />
+		<bind search="self.koalaId = :tiersprosp_contact3_id" to="prospectContactSet" column="tiersprosp_contact3_id" />
+	</input>
+	
+	<input file="tiersservsoc.csv" type="com.axelor.apps.contact.db.Partner" update="true" search="self.koalaId = :tiersservsoc_id">
+		<bind search="self.koalaId = :tiersservsoc_contact1_id" to="socialServiceMainContact" update="true"/>
+		<bind search="self.koalaId = :tiersservsoc_contact1_id" to="socialServiceContactSet" column="tiersservsoc_contact1_id" />
+		<bind search="self.koalaId = :tiersservsoc_contact2_id" to="socialServiceContactSet" column="tiersservsoc_contact2_id" />
+		<bind search="self.koalaId = :tiersservsoc_contact3_id" to="socialServiceContactSet" column="tiersservsoc_contact3_id" />
+	</input>
+	
+	<input file="tierssyndic.csv" type="com.axelor.apps.contact.db.Partner" update="true" search="self.koalaId = :tierssyndic_id">
+		<bind search="self.koalaId = :tierssyndic_contact1_id" to="propertyAgentMainContact" update="true"/>
+		<bind search="self.koalaId = :tierssyndic_contact1_id" to="propertyAgentContactSet" column="tierssyndic_contact1_id" />
+		<bind search="self.koalaId = :tierssyndic_contact2_id" to="propertyAgentContactSet" column="tierssyndic_contact2_id" />
+		<bind search="self.koalaId = :tierssyndic_contact3_id" to="propertyAgentContactSet" column="tierssyndic_contact3_id" />
+	</input>
+
+	<input file="tierstuteur.csv" type="com.axelor.apps.contact.db.Partner" update="true" search="self.koalaId = :tierstuteur_id">
+		<bind search="self.koalaId = :tierstuteur_contact1_id" to="guardianMainContact" update="true"/>
+		<bind search="self.koalaId = :tierstuteur_contact1_id" to="guardianContactSet" column="tierstuteur_contact1_id" />
+		<bind search="self.koalaId = :tierstuteur_contact2_id" to="guardianContactSet" column="tierstuteur_contact2_id" />
+		<bind search="self.koalaId = :tierstuteur_contact3_id" to="guardianContactSet" column="tierstuteur_contact3_id" />
+	</input>
+
+	<input file="tierscollbudget.csv" type="com.axelor.apps.contact.db.BudgetCode">
+		<bind column="tierscollbudg_id" to="koalaId" />
+		<bind to="partner" search="self.koalaId = :tierscollbudg_tierscoll_id" update="true"/>
+		<bind column="tierscollbudg_code_budget" to="code" />
+		<bind column="tierscollbudg_lib_code_budget" to="name" />
+	</input>
+	
+	<input file="partenact.csv" type="com.axelor.apps.contact.db.PartnerContactActivity">
+		<bind to="partner" search="self.koalaId = :partenact_tiersparten_id" update="true"/>
+		<bind to="contact" search="self.koalaId = :partenact_contact1_id" update="true"/>
+		<bind to="activity" search="self.koalaId = :partenact_activite_id" update="true"/>
+	</input>
+	
+	<input file="departement.csv" type="com.axelor.apps.territory.db.Department">
+		<bind column="depart_id" to="importId" />
+		<bind column="depart_num" to="code" />
+		<bind search="self.code = :region_num" to="region" update="true"/>
+		<bind column="depart_nom" to="name" />
+		<bind search="self.koalaId = :depart_tiersservsoc_id" to="socialServicePartner" update="true"/>
+		<bind search="self.koalaId = :tierscoll_id" to="authorityPartner" update="true"/>
+		<bind column="depart_flag_multiGRD_elec" to="multiDsoElecOk" eval="depart_flag_multiGRD_elec == '1' ? true : false"/>
+		<bind column="depart_flag_multiGRD_gaz" to="multiDsoGasOk" eval="depart_flag_multiGRD_gaz == '1' ? true : false"/>
+		<bind search="self.name = :depart_num and self.parameterType.code = 'depart'" to="departmentParameter" >
+			<bind to="parameterId" eval="!depart_num?.empty ?  'depart_'+depart_num : '' " />
+			<bind to="name" column="depart_num" />
+			<bind to="description" eval="(depart_num ? depart_num : '') + (depart_nom ? ('-'+depart_nom) : '') " />
+			<bind to="parameterType" search="self.code = 'depart'" >
+				<bind to="code" eval="'depart'" />
+			</bind>
+		</bind>
+	</input>
+
+	<input file="canton.csv" type="com.axelor.apps.territory.db.Canton">
+		<bind column="canton_id" to="importId" />
+		<bind column="canton_num" to="code" />
+		<bind search="self.importId = :canton_depart_id" to="department" update="true"/>
+		<bind column="canton_article" to="artmin" />
+		<bind column="canton_nom" to="name" />
+		<bind column="canton_nbhab" to="inhabitantsNbr" />
+	</input>
+
+	<input file="concession.csv" type="com.axelor.apps.territory.db.Concession">
+		<bind column="concession_id" to="koalaId" />
+		<bind column="concession_nom" to="name" />
+		<bind search="self.koalaId = :concession_fluide_id" to="fluid" update="true"/>
+		<bind search="self.koalaId = :concession_tiersconced_id" to="assignorPartner" update="true"/>
+		<bind column="concession_type" to="typeSelect" eval="concession_type ? (concession_type.equals('C') ?  '1': '2') : 2"/>
+	</input>
+
+	<input file="commune.csv" type="com.axelor.apps.territory.db.Commune">
+		<bind column="commune_id" to="koalaId" />
+		<bind column="commune_INSEE" to="_inseeCode" />
+		<bind eval="_inseeCode" to="inseeCode" />
+		<bind column="commune_nbhab" to="nbInhCommune" if="!commune_nbhab.empty" />
+		<bind search="self.importId = :commune_depart_id" to="department" update="true"/>
+		<bind search="self.importId = :commune_canton_id" to="canton" update="true"/>
+		<bind column="commune_article" to="artmin" />
+		<bind column="commune_nom" to="name" />
+		<bind column="commune_code_postal" to="zip" />
+		<bind eval="'CNE'+_inseeCode" to="_inseeCodeParter" />
+		<bind to="authorityPartner" search="self.importKey = :_inseeCodeParter" update="false"/>
+		<bind search="self.importId = :commune_accueil_id" to="agency" update="true"/>
+		<bind search="self.koalaId = :commune_exploit_id" to="operationCenter" update="true"/>
+		<bind column="commune_flag_GN" to="naturalGasOk" eval="commune_flag_GN == '1'? 'true' : 'false'" />
+		<bind column="commune_flag_GP" to="propaneGasOk" eval="commune_flag_GP == '1'? 'true' : 'false'" />
+		<bind search="self.value = :commune_niveau_gaz and self.parameterType.code = 'niveau'" to="levelParameter" update="true">
+			 <bind eval="commune_niveau_gaz.toInteger()" to="value"/>
+		</bind>
+		<bind search="self.koalaId = :commune_tiersservsoc_id" to="communalSocialServicePartnerSet" update="true"/>
+	</input>
+	
+	<input file="communeconcedee.csv" type="com.axelor.apps.territory.db.Concession" search="self.koalaId = :communeconcedee_concession_id" update="true">
+		<bind to="communeSet" search="self.koalaId = :communeconcedee_commune_id" update="true"/>
+	</input>
+	
+	<input file="zoneinfdetail.csv" type="com.axelor.apps.contact.db.CatchmentArea" update="true" search="self.koalaId = :zoneinfdet_zoneinf_id">
+		<bind column="zoneinfdet_zoneinf_id" to="koalaId"/>
+		<bind search="self.importId = :zoneinfdet_cneoudept_id" to="departmentSet" update="true" if="zoneinfdet_type == '2'"/>
+		<bind search="self.koalaId = :zoneinfdet_cneoudept_id" to="communeSet" update="true" if="zoneinfdet_type == '1'"/>
+		<bind column="zoneinfdet_type" to="areaTypeSelect" eval="zoneinfdet_type ? (zoneinfdet_type.equals('C') ? '1' : '2') : null"/>
+	</input>
+
+	<input file="societe.csv" type="com.axelor.apps.contact.db.Company">
+		<bind column="societe_id" to="koalaId" />
+		<bind column="societe_nom" to="name" />
+		<bind to="code" eval="societe_nom ? (societe_nom.size() > 0 ? ((societe_nom.padRight(3))[0..2]).toUpperCase() : null) : null"  />
+		<bind search="self.koalaId = :societe_tierscomm_id" to="marketerPartner" update="true"/>
+		<bind search="self.koalaId = :societe_tiersfourn_id" to="providerPartner" update="true"/>
+		<bind search="self.koalaId = :societe_tiersGRD_id" to="elecDsoPartner" update="true"/>
+		<bind search="self.koalaId = :societe_tiersRE_id" to="brePartner" update="true"/>
+	</input>
+	
+	<input file="agressofourn.csv" type="com.axelor.apps.contact.db.SupplierCode">
+		<bind column="agrfourn_id" to="koalaId" />
+		<bind column="agrfourn_codeAGRESSO" to="supplierCode" />
+		<bind column="agrfourn_SIRENE" to="sirenCode" />
+		<bind search="self.koalaId = :agrfourn_societe_id" to="company" update="true"/>
+		<bind search="self.koalaId = :agrfourn_tierscoll_id" to="partner" update="true"/>
+	</input>
+
+	<input file="territoire.csv" type="com.axelor.apps.territory.db.Territory" call="com.axelor.csv.script.ImportTerritory:territoryGRD">
+		<bind column="territoire_id" to="koalaId" />
+		<bind column="territoire_nom" to="name" />
+		<bind search="self.inseeCode = :territoire_code_insee" to="commune" update="true"/>
+		<bind search="self.koalaId = :territoire_pays_id" to="country" update="true"/>
+		<bind search="self.koalaId = :territoire_fluide_id" to="fluid" update="true"/>
+		<bind search="self.koalaId = :territoire_tiersGRD_id" to="dsoPartner" update="true"/>
+		<bind search="self.koalaId = :territoire_tiersConcedant_id" to="assignorPartner" update="true"/>
+		<bind search="self.koalaId = :territoire_concession_id" to="concession" update="true"/>
+		<bind  to="territoryParameter" id="territoire_fluide_id == 1">
+			<bind to="parameterId" eval="!territoire_id.empty ?  'terr_'+territoire_id : '' " />
+			<bind to="value" column="territoire_id" />
+			<bind to="description" column="territoire_nom" />
+			<bind to="parameterType" search="self.code = 'terr'" update="true" />
+		</bind>
+		<bind search="self.koalaId = :territoire_tiersCollectivite_id" to="authorityPartner" update="true"/>
+	</input>
+	
+	<!-- Import des config compta analytique -->
+  	<input file="territoire.csv" type="com.axelor.apps.territory.db.Territory" search="self.koalaId = :territoire_id" update="true">
+  		<bind to="territoryConfigurationList" if="territoire_tiersGRD_id == '3'">
+  			<bind to="company" search="self.code = 'SOR'" update="true">
+  				<bind to="code" eval="'SOR'"/>
+  			</bind>
+  			<bind search="self.code = :territoire_SiteChargeGRD" to="debtGrdInvoicedPartnerAnAcc" update="true">
+				<bind column="territoire_SiteChargeGRD" to="code" />
+			</bind>
+  		</bind>
+  		<bind to="territoryConfigurationList" if="territoire_tiersGRD_id == '4'">
+  			<bind to="company" search="self.code = 'SRD'" update="true">
+  				<bind to="code" eval="'SRD'"/>
+  			</bind>
+  			<bind search="self.code = '20'" to="debtGrdInvoicedPartnerAnAcc" update="true">
+				<bind eval="'20'" to="code" />
+			</bind>
+  		</bind>
+  	</input>
+
+	<input file="categorieproduit.csv" type="com.axelor.apps.sale.db.ProductCategory">
+		<bind column="categprod_libelle" to="name" />
+		<bind column="categprod_id" to="koalaId" />
+		<bind column="categprod_code" to="code" />
+		<bind to="type" eval="categprod_id == '1' ? 'provision' : categprod_id == '2' ? 'consumption' : categprod_id == '3' ? 'service' : categprod_id == '4' ? 'subscription' : categprod_id == '5' ? 'fee' : categprod_id == '6' ? 'routing' : categprod_id == '7' ? 'overload' : ''" />
+		<bind eval="true" to="activeOk"/>
+	</input>
+	
+	<input file="familleproduit.csv" type="com.axelor.apps.sale.db.ProductFamily">
+		<bind column="famprod_id" to="importId"/>
+		<bind search="self.koalaId = :famprod_categprod_id" to="productCategory" update="true"/>
+		<bind column="famprod_libelle" to="name" />
+		<bind column="famprod_code" to="code" />
+		<bind to="crmRequestNature" search="self.importId = :famprod_natdem_id" update="true"/>
+	</input>
+	
+	<input file="sousfamilleproduit.csv" type="com.axelor.apps.sale.db.ProductSubFamily">
+		<bind search="self.code = :sousfamprod_famprod_code" to="productFamily" update="true"/>
+		<bind search="self.name = :sousfamprod_typefluide_libelle" to="fluid" update="true"/>
+		<bind column="sousfamprod_code" to="code" />
+		<bind column="sousfamprod_id" to="importId"/>
+		<bind column="sousfamprod_libelle" to="name" />
+		<bind column="sousfamprod_flag_affaire" to="dsoAffairOk" eval="sousfamprod_flag_affaire == '1'? 'true' : 'false'" />
+		<bind column="sousfamprod_flag_newcontrat" to="newContractOk" eval="sousfamprod_flag_newcontrat == '1'? 'true' : 'false'" />
+		<bind column="sousfamprod_flag_avenant" to="newAmendmentOk" eval="sousfamprod_flag_newcontrat == '1'? 'true' : 'false'" />
+		<bind column="sousfamprod_flag_avenant_mineur" to="amendmentContractOk" eval="sousfamprod_flag_avenant_mineur == '1'? 'true' : 'false'" />
+		<bind column="sousfamprod_flag_resil" to="terminationOk" eval="sousfamprod_flag_resil == '1'? 'true' : 'false'" />
+	</input>
+	
+	<input file="sousfamilleproduitsegment.csv" type="com.axelor.apps.sale.db.ProductSubFamily"
+		search="self.importId = :sousfamprodseg_sousfamprod_id" update="true">
+		<bind search="self.koalaId = :sousfamprodseg_segment_id" to="userSegmentSet" update="true"/>
+	</input>
+
+	<input file="domaineracc.csv" type="com.axelor.apps.fluid.db.ElecRange">
+		<bind column="domaineracc_id" to="koalaId" />
+		<bind column="domaineracc_lib" to="fullName" />
+		<bind to="type" eval="domaineracc_lib.replace(' ','')"/>
+		<bind search="self.name = :domaineracc_lib and self.parameterType.code ='domTension'" to="elecRangeParameter" >
+			<bind to="parameterId" eval="!domaineracc_id.empty ?  'domTension_'+domaineracc_lib.replace(' ','') : '' " />
+			<bind to="name" eval="domaineracc_lib.replace(' ','')" />
+			<bind to="description" column="domaineracc_lib" />
+			<bind to="parameterType" search="self.code = 'domTension'" >
+				<bind to="code" eval="'domTension'" />
+			</bind>
+		</bind>
+	</input>
+	
+	<input file="typegestpartachemin.csv" type="com.axelor.apps.pricing.db.RoutingManagement">
+		<bind column="typegestpartachemin_id" to="koalaId" />
+		<bind column="typegestpartachemin_libelle" to="fullName" />
+		<bind to="type" eval="typegestpartachemin_id == '1' ? 'displayRoutingWithoutInvoice' : typegestpartachemin_id == '2' ? 'displayRoutingPercentage' : typegestpartachemin_id == '3' ? 'fullInvoice' : 'noDisplay' " />
+	</input>
+	
+	<input file="natureoffre.csv" type="com.axelor.apps.contract.db.OfferNature">
+		<bind column="natoffre_id" to="importId" />
+		<bind column="natoffre_lib" to="name" />
+		<bind column="natoffre_env" to="environment" eval="natoffre_env == 'F' ? 'fr' : natoffre_env == 'G' ? 'grd' : null"/>
+	</input>
+
+	<input file="naturecontrat.csv" type="com.axelor.apps.contract.db.Usage">
+		<bind column="natcontrat_id" to="koalaId" />
+		<bind search="self.koalaId = :natcontrat_typefluide_id" to="fluid" update="true"/>
+		<bind column="natcontrat_libelle" to="name" />
+		<bind column="natcontrat_flag_res" to="residentialOk" eval="natcontrat_flag_res == '1'? 'true' : 'false'" />
+		<bind column="natcontrat_flag_pro" to="professionalOk" eval="natcontrat_flag_pro == '1'? 'true' : 'false'" />
+		<bind search="self.importId = :natcontrat_natureoffre_id" to="offerNature" update="true"/>
+	</input>
+
+	<input file="typefactucont.csv" type="com.axelor.apps.contract.db.InvoicingType">
+		<bind column="typefactucont_id" to="koalaId" />
+		<bind column="typefactucont_libellé" to="name" />
+		<bind to="typeSelect" eval="typefactucont_id == '1' ? 2 : typefactucont_id == '2' ? 1 : typefactucont_id == '3' ? 4 : typefactucont_id == '4' ? 0 : typefactucont_id == '5' ? 3 : typefactucont_id == '6' ? 5 : 0 " />
+	</input>
+
+	<input file="typectrlpuissance.csv" type="com.axelor.apps.pricing.db.Parameter">
+		<bind to="parameterId" eval="!typectrlpuiss_id.empty ?  'ctrPuis_'+typectrlpuiss_id : '' " />
+		<bind to="name" column="typectrlpuiss_libelle" />
+		<bind to="description" column="typectrlpuiss_libelle" />
+		<bind to="value" column="typectrlpuiss_id" />
+		<bind to="parameterType" search="self.code = 'ctrPuis'" >
+			<bind to="code" eval="!typectrlpuiss_id.empty ?  'ctrPuis' : '' " />
+		</bind>
+	</input>
+	
+	<input file="typemesureenergie.csv" type="com.axelor.apps.pricing.db.Parameter">
+		<bind to="parameterId" eval="!typemesener_id.empty ?  'mes_'+typemesener_id : '' " />
+		<bind to="name" column="typemesener_libelle" />
+		<bind to="description" column="typemesener_libelle" />
+		<bind to="value" column="typemesener_id" />
+		<bind to="parameterType" search="self.code = 'grandMes'" >
+			<bind to="code" eval="!typemesener_id.empty ?  'grandMes' : '' " />
+		</bind>
+	</input>
+	
+	<input file="typeutilisation.csv" type="com.axelor.apps.pricing.db.Parameter">
+		<bind to="parameterId" eval="!typeutilisation_id.empty ?  'util_'+typeutilisation_id : '' " />
+		<bind to="name" column="typeutilisation_code" />
+		<bind to="description" column="typeutilisation_libelle" />
+		<bind to="parameterType" search="self.code = 'util'" >
+			<bind to="code" eval="!typeutilisation_id.empty ?  'util' : '' " />
+		</bind>
+	</input>
+
+	<input file="v_tdcfe.csv" type="com.axelor.apps.pricing.db.PricingListLine"
+		call="com.axelor.csv.script.ImportPricingListLine:updateDate">
+		<bind to="pricingListVersion" search="self.fromDate = :tdcfe_datedeb and self.pricingList.name = 'TDCFE'">
+			<bind to="fromDate" column="tdcfe_datedeb" eval="tdcfe_datedeb.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-01-01')" />
+			<bind to="activeOk" eval="'true'" />
+			<bind search="self.name = 'TDCFE'" to="pricingList">
+				<bind eval="'TDCFE'" to="name" />
+			</bind>
+		</bind>
+		<bind search="self.name = :tdcfe_depart_num and self.parameterType != null and self.parameterType.code = 'depart'" update="true" to="parameter2" />
+		<bind to="val2" eval="tdcfe_taux ? tdcfe_taux.replace(',','.') : ''" />
+	</input>
+
+	<input file="v_tccfe.csv" type="com.axelor.apps.pricing.db.PricingListLine"
+		call="com.axelor.csv.script.ImportPricingListLine:updateDate">
+		<bind to="pricingListVersion" search="self.fromDate = :tccfe_datedeb and self.pricingList.name = 'TCCFE'">
+			<bind to="fromDate" column="tccfe_datedeb" eval="tccfe_datedeb.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})','$3'.padLeft(2,'0')+'-01-01')" />
+			<bind to="activeOk" eval="'true'" />
+			<bind search="self.name = 'TCCFE'" to="pricingList">
+				<bind eval="'TCCFE'" to="name" />
+			</bind>
+		</bind>
+		<bind search="self.value = :tccfe_territoire_id and self.parameterType != null and self.parameterType.code = 'terr'" to="parameter5" update="true"/>
+		<bind to="val2" eval="tccfe_taux ? tccfe_taux.replace(',','.') : ''" />
+	</input>
+	
+	<input file="codes_interbancaires.csv" type="com.axelor.apps.account.db.InterbankCodeLine">
+		<bind column="code_rejet" to="code" />
+		<bind column="libelle_rejet" to="name" />
+		<bind column="description_rejet" to="description" />
+		<bind column="transferCfonbOk" to="transferCfonbOk" eval="transferCfonbOk == 't' ? true : false"/>
+		<bind column="prelevement" to="directDebitAndTipCfonbOk" eval="prelevement == 't' ? true : false"/>
+		<bind column="prelevement_sepa" to="directDebitSepaOk" eval="prelevement_sepa == 't' ? true : false"/>
+		<bind column="lcr_bor" to="lcrBorOk" eval="lcr_bor == 't' ? true : false"/>
+		<bind column="cheque" to="chequeOk" eval="cheque == 't' ? true : false"/>
+		<bind column="rejet_technique" to="technicalRejectOk" eval="rejet_technique == 't' ? true : false"/>
+		<bind to="interbankCode" search="self.code = :code_fichier">
+			<bind column="code_fichier" to="code"/>
+			<bind column="nom_fichier" to="name"/>
+			<bind column="date_fin" to="endDate" eval="date_fin ? date_fin : null"/>
+			<bind column="description_fichier" to="description"/>
+		</bind>
+	</input>
+	
+	<input file="indicateursGroupesAX.csv" type="com.axelor.apps.administration.db.IndicatorGeneratorGrouping">
+	</input>
+	
+	<input file="indicateursAX.csv" type="com.axelor.apps.administration.db.IndicatorGenerator" call="com.axelor.csv.script.ImportIndicator:fillGroupingSet">
+		<bind column="code" to="code" />
+		<bind column="name" to="name" />
+		<bind column="request" to="request" />
+		<bind column="language" to="requestLanguage" />
+	</input>
+ 
+</csv-inputs>

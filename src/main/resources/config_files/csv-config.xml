@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csv-inputs xmlns="http://apps.axelor.com/xml/ns/data-import"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/data-import http://apps.axelor.com/xml/ns/data-import/data-import_0.8.xsd">
+  
+	<input file="repbicdps7.csv" type="com.axelor.apps.contact.db.Bic">
+		<bind to="countryCode" column="repBIC_codePays"/>
+		<bind to="bankCode" column="repBIC_codeEtab"/>
+		<bind to="sortCode" column="repBIC_codeGuich"/>
+		<bind to="code" column="repBIC_codeBIC"/>
+		<bind to="bankName" column="repBIC_nometab"/>
+	</input>
+	
+	<input file="ribpayeur.csv" type="com.axelor.apps.contact.db.BankDetails"
+		call="com.axelor.csv.script.ImportBankDetails:completIban">
+		<bind column="ribpay_id" to="koalaId" />
+		<bind search="self.koalaId = :ribpay_tierspay_id" to="payerPartner"
+			update="true">
+			<bind column="ribpay_tierspay_id" to="koalaId" />
+		</bind>
+		<bind column="ribpay_titulai" to="ownerName" />
+		<bind column="ribapy_domici" to="bankAddress" />
+		<bind column="ribpay_IBAN" to="iban" />
+	</input>	
+  	
+</csv-inputs>

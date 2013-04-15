@@ -1,0 +1,247 @@
+<?xml version="1.0"?>
+<xml-inputs xmlns="http://apps.axelor.com/xml/ns/data-import"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/data-import http://apps.axelor.com/xml/ns/data-import/data-import_0.8.xsd">
+
+	<adapter name="Sinapse" type="com.axelor.data.adapter.JodaAdapter">
+		<option name="type" value="LocalDate" />
+		<option name="format" value="dd/MM/yyyy HH:mm:ss" />
+	</adapter>
+	
+	<adapter name="SinapseDateTime" type="com.axelor.data.adapter.JodaAdapter">
+		<option name="type" value="DateTime" />
+		<option name="format" value="dd/MM/yyyy HH:mm:ss" />
+	</adapter>
+	
+	<adapter name="LocalDateHistoConso" type="com.axelor.data.adapter.JodaAdapter">
+		<option name="type" value="LocalDate" />
+		<option name="format" value="MM/yyyy" />
+	</adapter>
+
+	<input file="[me.id]" root="MacroEvenements" > 
+	
+		<bind node="MacroEvenement" type="com.axelor.apps.event.db.MacroEvent" call="com.axelor.csv.script.ImportSinapseME:importMacroEvent" >
+			
+			<!-- ID Sinapse -->
+			<bind eval="MEV_ERP_ID" to="sinapseId"/>
+		
+			<!-- EN TETE -->
+			<bind node="@typeEvt" 	to="macroEventType" search="self.code = :macroEventType" update="true"/>
+			<bind node="@emetteur"	to="trackingPartner" search="self.dsoNum = :trackingPartner" update="true"/>
+			<bind node="@numeroEvt"	to="useCase" />
+			<bind node="@envoi"		to="trackingMeId" />
+			<bind to="meId" eval="useCase + '-' + trackingMeId" alias="me_id"/>
+			
+			<bind node="@statut" alias="me_status"/>
+			<bind to="meStatus" search="self.code = :meStatus" eval="me_status== 'V' ? 'val' : (me_status == 'A' ? 'ala' : (me_status == 'E' ? 'fai' : ''))" update="true"/>
+			<bind node="@dateEnvoi" to="sendDate" adapter="SinapseDateTime" />
+			
+		  	<bind node="PCT/@reference"	to="mpt" search="self.name = :mpt" update="true" />
+      		<bind node="PCT/@type"		to="mptType" />     			
+			<bind node="PCT/@fluide" 	to="fluidType" eval="fluidType == '1' ? 'elec' : (fluidType == '2' ? 'gas' : fluidType == '4' ? 'cable' : 'none')" />
+			<bind node="PCT/@pro" 		to="proOk" />
+			<bind node="PCT/@segment" 	to="segment" search="self.code = :segment" update="true" />
+			
+		  	<!-- INFORMATION PCT -->
+			<bind node="PCT/ChampsValeurs/ChampValeur" to="mptGenericValueEventList">
+				<bind node="@code" to="genericFieldEvent" search="self.code = :genericFieldEvent" update="true"/>
+				<bind node="text()"	to="value" />
+			</bind>
+      		
+		  	<!-- AFFAIRE -->
+		  	<bind node="PCT/Affaire/@numeroAffaire"	to="affairId" />
+		  	<bind node="PCT/Affaire/@dateCreation"	to="createDate" 	adapter="SinapseDateTime" />
+		  	<bind node="PCT/Affaire/@dateDebutRDV"	to="startMeetingDate" adapter="SinapseDateTime"/>
+		  	<bind node="PCT/Affaire/@dateFinRDV"		to="endMeetingDate" adapter="SinapseDateTime" />
+		  	<bind node="PCT/Affaire/@dateReception"	to="receptionDate" 	adapter="SinapseDateTime"/>
+		  	<bind node="PCT/Affaire/@dateCloture"	to="closeDate" 		adapter="SinapseDateTime"/>
+		  	<bind node="PCT/Affaire/@dateModif"		to="updateDate" 	adapter="SinapseDateTime"/>
+		  	<bind node="PCT/Affaire/@statut" to="affairStatus" search="self.code = :affairStatus" update="true"/>
+		  		
+		  	<bind node="PCT/Affaire/Couts/@coutGlobal"	to="totalPrice" />
+		  	<bind node="PCT/Affaire/Couts/CoutVariante/@codeFacturation"	to="variantProduct"
+		  		search="self.productCodeEquivList.codeProductGRD = :variantProduct and self.productCodeEquivList.grdPartner.dsoNum = :trackingPartner" />
+		  	<bind node="PCT/Affaire/Couts/CoutVariante/text()"	to="variantPrice" />
+		  	
+		  	<bind node="PCT/Affaire/Couts/@express"	to="expressOk" />
+		  	<bind node="PCT/Affaire/Couts/CoutExpress/@codeFacturation"	to="expressProduct" 
+		  		search="self.productCodeEquivList.codeProductGRD = :expressProduct and self.productCodeEquivList.grdPartner.dsoNum = :trackingPartner" />
+		  	<bind node="PCT/Affaire/Couts/CoutExpress/text()"	to="expressPrice" />
+		  	
+		  	<bind node="PCT/Affaire/Couts/@deplacementVain"	to="vainTravelOk" />
+      		<bind node="PCT/Affaire/Couts/CoutDeplacementVain/text()"	to="vainTravelPrice" />
+		  	<bind node="PCT/Affaire/Couts/CoutAnnulationTardive/@codeFacturation" to="vainTravelProduct"
+		  		search="self.productCodeEquivList.codeProductGRD = :vainTravelProduct and self.productCodeEquivList.grdPartner.dsoNum = :trackingPartner" />
+		  	
+		  	<bind node="PCT/Affaire/Couts/@annulationTardive" 	to="cancelLateOk" />
+		  	<bind node="PCT/Affaire/Couts/CoutAnnulationTardive/@codeFacturation" to="cancelLateProduct"
+		  		search="self.productCodeEquivList.codeProductGRD = :cancelLateProduct and self.productCodeEquivList.grdPartner.dsoNum = :trackingPartner" />		  	
+		  	<bind node="PCT/Affaire/Couts/CoutAnnulationTardive/text()"	to="cancelLatePrice" />
+		  	
+<!-- 		  	Ne connaissant pas le fluide mais que le type de fluide => impossible d'importer de suite -->
+			<bind node="PCT/Affaire/Prestations/Prestation/@codePrestation" alias="code_prestation"/>
+		  	
+			<!-- INDEX -->
+			<bind node="PCT/Consommations/ListeIndex/Index" to="indexEventList" > 					 
+				<bind node="@date" 		 	to="indexEventDate" adapter="LocalDate"/>
+				<bind node="@type" 			to="indexEventType" search="self.code = :indexEventType and self.typeSelect = 'type'" update="true" />
+				<bind node="@sousType" 		to="indexEventSubType" search="self.code = :indexEventSubType and self.typeSelect = 'subtype'" update="true" />
+				<bind node="IndexValeur" 	to="indexEventLineList" >
+					<bind node="@code" 			to="indexEventCode" search="self.code = :indexEventCode and self.typeSelect = 'code'" update="true" />
+					<bind node="@libelleCadran" to="dial" search="self.code = :dial" update="true" />
+					<bind node="@coef"			to="coef" />
+					<bind node="@passageAZero" 	to="zeroCrossingOk" adapter="Boolean"/>
+					<bind node="text()" 		to="value"/>
+				</bind>		
+			</bind>
+			 
+			 <!-- CONSOMMATION -->
+			<bind node="PCT/Consommations/Consommation" to="consumptionEventList" >
+				<bind node="@debut" 	to="startDate" 	adapter="LocalDate"/>
+				<bind node="@fin" 		to="endDate" 	adapter="LocalDate"/>
+		  		<bind node="CnsValeur"	to="consumptionEventLineList" >
+		  			<bind node="@code" 	to="consumptionCodeParameter" 	search="self.name = :consumptionCodeParameter and self.parameterType.code = 'typeConso'" update="true" />
+					<bind node="@libellePeriode"	to="postParameter" 	search="self.sinapseCode = :postParameter and self.parameterType.code = 'poste'" update="true" />
+					<bind node="text()" to="qty"/>
+				</bind>
+			</bind> 			
+			
+			<!-- RESPONSABLE D'EQUILIBRE -->
+			<bind node="PCT/RE/@codeEic" to="balanceResponsiblePartner" search="self.dsoNum = :balanceResponsiblePartner and self.breOk = 'true'" update="true"/>
+				
+			<!-- FOURNISSEUR -->
+			<bind node="PCT/Fournisseur/@codeEic" to="providerPartner" search="self.dsoNum = :providerPartner and self.providerOk = 'true'" update="true"/>
+				
+			<!-- UTILISATEUR RESEAU-->
+			<bind node="PCT/UtilisateurReseau/@nom" to="networkUser" />
+			
+			<!-- CONTRAT ELEC -->
+			
+			<bind node="PCT/ContratElec[@nature='fourniture']/PS/@psUnique" alias="ps_unique_four"/>
+			<bind node="PCT/ContratElec[@nature='acheminement']/PS/@psUnique" alias="ps_unique_ach"/>
+			
+			<bind node="PCT/ContratElec[@nature='acheminement']/Tarif/@code"	to="routingPricingCode" />
+			<bind node="PCT/ContratElec[@nature='fourniture']/Tarif/@code"	to="provisionPricingCode" />
+			
+			<bind node="PCT/ContratElec[@nature='acheminement']/Tarif/@dateDebut"	to="routingPricingStartDate" adapter="LocalDate"/>
+			<bind node="PCT/ContratElec[@nature='fourniture']/Tarif/@dateDebut"		to="provisionPricingStartDate" adapter="LocalDate" />
+			
+			<bind node="PCT/ContratElec[@nature='acheminement']/Tarif/@dateFin"     to="routingPricingEndDate" adapter="LocalDate"/>
+            <bind node="PCT/ContratElec[@nature='fourniture']/Tarif/@dateFin"       to="provisionPricingEndDate" adapter="LocalDate" />
+			
+			<bind node="PCT/ContratElec[@nature='acheminement']/PS" to="routingPowerEventList" if="ps_unique_ach != null &amp;&amp; !ps_unique_ach?.empty">
+				<bind node="@psUnique" to="value" alias="ps_unique_ach"/>
+				<bind to="postParameter" search="self.name = 'PS' and self.parameterType.code = 'poste'" update="true"/>
+			</bind>
+			
+			<bind node="PCT/ContratElec[@nature='fourniture']/PS" to="provisionPowerEventList" if="ps_unique_fr != null &amp;&amp; !ps_unique_fr?.empty">
+				<bind node="@psUnique" to="value" alias="ps_unique_fr"/>
+				<bind to="postParameter" search="self.name = 'PS' and self.parameterType.code = 'poste'" /> 
+			</bind>
+			
+			<bind node="PCT/ContratElec[@nature='fourniture']/PS/Puissance"	to="provisionPowerEventList" if="ps_unique_four == null" >
+				<bind node="text()"	to="value" />
+				<bind node="../../Tarif/@code" alias="fr_tarif_code"/>		
+				<bind node="@periode" alias="fr_post_param"/>		
+						
+				<bind to="postParameter" search="self.name = 'HPH' and self.parameterType.code = 'poste'" if="fr_tarif_code == 'JUM' &amp;&amp; fr_post_param == '1'"/>
+				<bind to="postParameter" search="self.name = 'HCH' and self.parameterType.code = 'poste'" if="fr_tarif_code == 'JUM' &amp;&amp; fr_post_param == '2'"/>
+				<bind to="postParameter" search="self.name = 'HPE' and self.parameterType.code = 'poste'" if="fr_tarif_code == 'JUM' &amp;&amp; fr_post_param == '3'"/>
+				<bind to="postParameter" search="self.name = 'HCE' and self.parameterType.code = 'poste'" if="fr_tarif_code == 'JUM' &amp;&amp; fr_post_param == '4'"/>
+				
+				<bind to="postParameter" search="self.name = 'PM' and self.parameterType.code = 'poste'"  if="fr_tarif_code == 'JEJP' &amp;&amp; fr_post_param == '1'"/>
+				<bind to="postParameter" search="self.name = 'HH' and self.parameterType.code = 'poste'"  if="fr_tarif_code == 'JEJP' &amp;&amp; fr_post_param == '2'"/>
+				<bind to="postParameter" search="self.name = 'HPE' and self.parameterType.code = 'poste'" if="fr_tarif_code == 'JEJP' &amp;&amp; fr_post_param == '3'"/>
+				<bind to="postParameter" search="self.name = 'HCE' and self.parameterType.code = 'poste'" if="fr_tarif_code == 'JEJP' &amp;&amp; fr_post_param == '4'"/>
+				
+				<bind to="postParameter" search="self.name = 'P' and self.parameterType.code = 'poste'"   if="(fr_tarif_code == 'A5BCU' || fr_tarif_code == 'A5BMU' || fr_tarif_code == 'A5BLU') &amp;&amp; fr_post_param == '1'"/>
+				<bind to="postParameter" search="self.name = 'HPH' and self.parameterType.code = 'poste'" if="(fr_tarif_code == 'A5BCU' || fr_tarif_code == 'A5BMU' || fr_tarif_code == 'A5BLU') &amp;&amp; fr_post_param == '2'"/>
+				<bind to="postParameter" search="self.name = 'HCH' and self.parameterType.code = 'poste'" if="(fr_tarif_code == 'A5BCU' || fr_tarif_code == 'A5BMU' || fr_tarif_code == 'A5BLU') &amp;&amp; fr_post_param == '3'"/>
+				<bind to="postParameter" search="self.name = 'HPE' and self.parameterType.code = 'poste'" if="(fr_tarif_code == 'A5BCU' || fr_tarif_code == 'A5BMU' || fr_tarif_code == 'A5BLU') &amp;&amp; fr_post_param == '4'"/>
+				<bind to="postParameter" search="self.name = 'HCE' and self.parameterType.code = 'poste'" if="(fr_tarif_code == 'A5BCU' || fr_tarif_code == 'A5BMU' || fr_tarif_code == 'A5BLU') &amp;&amp; fr_post_param == '5'"/>
+				
+				<bind to="postParameter" search="self.name = 'PM' and self.parameterType.code = 'poste'"   if="(fr_tarif_code == 'A5EMU' || fr_tarif_code == 'A5ETU') &amp;&amp; fr_post_param == '1'"/>
+				<bind to="postParameter" search="self.name = 'HH' and self.parameterType.code = 'poste'" if="(fr_tarif_code == 'A5EMU' || fr_tarif_code == 'A5ETU') &amp;&amp; fr_post_param == '2'"/>
+				<bind to="postParameter" search="self.name = 'HPE' and self.parameterType.code = 'poste'" if="(fr_tarif_code == 'A5EMU' || fr_tarif_code == 'A5ETU') &amp;&amp; fr_post_param == '3'"/>
+				<bind to="postParameter" search="self.name = 'HCE' and self.parameterType.code = 'poste'" if="(fr_tarif_code == 'A5EMU' || fr_tarif_code == 'A5ETU') &amp;&amp; fr_post_param == '4'"/>
+				
+				<bind to="postParameter" search="self.name = 'P' and self.parameterType.code = 'poste'"   if="(fr_tarif_code == 'A8BCU' || fr_tarif_code == 'A8BMU' || fr_tarif_code == 'A8BLU') &amp;&amp; fr_post_param == '1'"/>
+				<bind to="postParameter" search="self.name = 'HPH' and self.parameterType.code = 'poste'" if="(fr_tarif_code == 'A8BCU' || fr_tarif_code == 'A8BMU' || fr_tarif_code == 'A8BLU') &amp;&amp; fr_post_param == '2'"/>
+				<bind to="postParameter" search="self.name = 'HPD' and self.parameterType.code = 'poste'" if="(fr_tarif_code == 'A8BCU' || fr_tarif_code == 'A8BMU' || fr_tarif_code == 'A8BLU') &amp;&amp; fr_post_param == '3'"/>
+				<bind to="postParameter" search="self.name = 'HCH' and self.parameterType.code = 'poste'" if="(fr_tarif_code == 'A8BCU' || fr_tarif_code == 'A8BMU' || fr_tarif_code == 'A8BLU') &amp;&amp; fr_post_param == '4'"/>
+				<bind to="postParameter" search="self.name = 'HCD' and self.parameterType.code = 'poste'" if="(fr_tarif_code == 'A8BCU' || fr_tarif_code == 'A8BMU' || fr_tarif_code == 'A8BLU') &amp;&amp; fr_post_param == '5'"/>
+				<bind to="postParameter" search="self.name = 'HPE' and self.parameterType.code = 'poste'" if="(fr_tarif_code == 'A8BCU' || fr_tarif_code == 'A8BMU' || fr_tarif_code == 'A8BLU') &amp;&amp; fr_post_param == '6'"/>
+				<bind to="postParameter" search="self.name = 'HCE' and self.parameterType.code = 'poste'" if="(fr_tarif_code == 'A8BCU' || fr_tarif_code == 'A8BMU' || fr_tarif_code == 'A8BLU') &amp;&amp; fr_post_param == '7'"/>
+				<bind to="postParameter" search="self.name = 'JA' and self.parameterType.code = 'poste'" if="(fr_tarif_code == 'A8BCU' || fr_tarif_code == 'A8BMU' || fr_tarif_code == 'A8BLU') &amp;&amp; fr_post_param == '8'"/>
+				
+				<bind to="postParameter" search="self.name = 'PM' and self.parameterType.code = 'poste'"   if="(fr_tarif_code == 'A8EMU' || fr_tarif_code == 'A8ELU') &amp;&amp; fr_post_param == '1'"/>
+				<bind to="postParameter" search="self.name = 'HH' and self.parameterType.code = 'poste'" if="(fr_tarif_code == 'A8EMU' || fr_tarif_code == 'A8ELU') &amp;&amp; fr_post_param == '2'"/>
+				<bind to="postParameter" search="self.name = 'HD' and self.parameterType.code = 'poste'" if="(fr_tarif_code == 'A8EMU' || fr_tarif_code == 'A8ELU') &amp;&amp; fr_post_param == '3'"/>
+				<bind to="postParameter" search="self.name = 'HPE' and self.parameterType.code = 'poste'" if="(fr_tarif_code == 'A8EMU' || fr_tarif_code == 'A8ELU') &amp;&amp; fr_post_param == '4'"/>
+				<bind to="postParameter" search="self.name = 'HCE' and self.parameterType.code = 'poste'" if="(fr_tarif_code == 'A8EMU' || fr_tarif_code == 'A8ELU') &amp;&amp; fr_post_param == '5'"/>
+				<bind to="postParameter" search="self.name = 'JA' and self.parameterType.code = 'poste'" if="(fr_tarif_code == 'A8EMU' || fr_tarif_code == 'A8ELU') &amp;&amp; fr_post_param == '6'"/>
+				
+			</bind>
+			
+			<bind node="PCT/ContratElec[@nature='acheminement']/PS/Puissance"	to="routingPowerEventList" if="ps_unique_ach == null">
+				<bind node="text()"	to="value" />
+				<bind node="../../Tarif/@code" alias="ach_tarif_code"/>	
+				<bind node="@periode" alias="ach_post_param"/>	
+					
+				<bind to="postParameter" search="self.name = 'HPH' and self.parameterType.code = 'poste'" if="ach_tarif_code == 'S36MU' &amp;&amp; ach_post_param == '1'"/>
+				<bind to="postParameter" search="self.name = 'HCH' and self.parameterType.code = 'poste'" if="ach_tarif_code == 'S36MU' &amp;&amp; ach_post_param == '2'"/>
+				<bind to="postParameter" search="self.name = 'HPE' and self.parameterType.code = 'poste'" if="ach_tarif_code == 'S36MU' &amp;&amp; ach_post_param == '3'"/>
+				<bind to="postParameter" search="self.name = 'HCE' and self.parameterType.code = 'poste'" if="ach_tarif_code == 'S36MU' &amp;&amp; ach_post_param == '4'"/>
+				
+				<bind to="postParameter" search="self.name = 'P' and self.parameterType.code = 'poste'" if="ach_tarif_code == 'S36LU' &amp;&amp; ach_post_param == '1'"/>
+				<bind to="postParameter" search="self.name = 'HPH' and self.parameterType.code = 'poste'" if="ach_tarif_code == 'S36LU' &amp;&amp; ach_post_param == '2'"/>
+				<bind to="postParameter" search="self.name = 'HCH' and self.parameterType.code = 'poste'" if="ach_tarif_code == 'S36LU' &amp;&amp; ach_post_param == '3'"/>
+				<bind to="postParameter" search="self.name = 'HPE' and self.parameterType.code = 'poste'" if="ach_tarif_code == 'S36LU' &amp;&amp; ach_post_param == '4'"/>
+				<bind to="postParameter" search="self.name = 'HCE' and self.parameterType.code = 'poste'" if="ach_tarif_code == 'S36LU' &amp;&amp; ach_post_param == '5'"/>
+				
+				<bind to="postParameter" search="self.name = 'P' and self.parameterType.code = 'poste'" if="ach_tarif_code == 'H5P' &amp;&amp; ach_post_param == '1'"/>
+				<bind to="postParameter" search="self.name = 'HPH' and self.parameterType.code = 'poste'" if="ach_tarif_code == 'H5P' &amp;&amp; ach_post_param == '2'"/>
+				<bind to="postParameter" search="self.name = 'HCH' and self.parameterType.code = 'poste'" if="ach_tarif_code == 'H5P' &amp;&amp; ach_post_param == '3'"/>
+				<bind to="postParameter" search="self.name = 'HPE' and self.parameterType.code = 'poste'" if="ach_tarif_code == 'H5P' &amp;&amp; ach_post_param == '4'"/>
+				<bind to="postParameter" search="self.name = 'HCE' and self.parameterType.code = 'poste'" if="ach_tarif_code == 'H5P' &amp;&amp; ach_post_param == '5'"/>
+				
+				<bind to="postParameter" search="self.name = 'P' and self.parameterType.code = 'poste'" if="ach_tarif_code == 'H5P' &amp;&amp; ach_post_param == '1'"/>
+				<bind to="postParameter" search="self.name = 'HPH' and self.parameterType.code = 'poste'" if="ach_tarif_code == 'H5P' &amp;&amp; ach_post_param == '2'"/>
+				<bind to="postParameter" search="self.name = 'HPD' and self.parameterType.code = 'poste'" if="ach_tarif_code == 'H5P' &amp;&amp; ach_post_param == '3'"/>
+				<bind to="postParameter" search="self.name = 'HCH' and self.parameterType.code = 'poste'" if="ach_tarif_code == 'H5P' &amp;&amp; ach_post_param == '4'"/>
+				<bind to="postParameter" search="self.name = 'HCD' and self.parameterType.code = 'poste'" if="ach_tarif_code == 'H5P' &amp;&amp; ach_post_param == '5'"/>
+				<bind to="postParameter" search="self.name = 'HPE' and self.parameterType.code = 'poste'" if="ach_tarif_code == 'H5P' &amp;&amp; ach_post_param == '6'"/>
+				<bind to="postParameter" search="self.name = 'HCE' and self.parameterType.code = 'poste'" if="ach_tarif_code == 'H5P' &amp;&amp; ach_post_param == '7'"/>
+				<bind to="postParameter" search="self.name = 'JA' and self.parameterType.code = 'poste'" if="ach_tarif_code == 'H5P' &amp;&amp; ach_post_param == '8'"/>
+				
+			</bind>
+			 
+			<!-- FACTURE -->
+			<bind node="PCT/Facture/@dateFacture" to="invoiceDate" adapter="LocalDate"/>
+			<bind node="PCT/Facture/@numFacture"  to="invoiceId" />
+			 
+			<!-- LIGNE DE FACTURE -->
+			<bind node="PCT/Facture/LigneFacture" to="invoiceLineEventList" >
+				<bind node="@codeArticle"	to="product" search="self.code = :product" update="true"/>
+				<bind node="@codeArticle"	to="articleId" />
+				<bind node="@codeRecap"		to="summaryId" />
+				<bind node="@dateDebut"		to="startDate" adapter="LocalDate"/>
+				<bind node="@dateFin" 		to="endDate" adapter="LocalDate" />
+				<bind node="@quantite" 		to="qty"/>
+				<bind node="@prixUnitaire" 	to="price"/>
+				<bind node="@codeUnite" 	to="qtyUnit" search="self.code = :qtyUnit" update="true"/>
+				<bind node="text()" 		to="amount"/>
+			</bind>
+			
+			<!-- HISTORIQUE DE CONSO -->
+			<bind node="PCT/Facture/HistoriqueConsosActif/TotalActifFacture" to="consumptionEventHistoryList" >
+				<bind node="@date"		to="historyDate" adapter="LocalDateHistoConso"/>
+				<bind node="@type" 		to="type"/>
+				<bind node="text()" 	to="value"/>
+			</bind>
+				
+		</bind>
+		
+	</input>
+
+</xml-inputs>
