@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.8.xsd">
+    
+    <grid name="trace-back-grid" title="TraceBack" model="com.axelor.exception.db.TraceBack" orderBy="-id">
+       	<toolbar>
+		    <button name="new" title="" hidden="true"/>
+		    <button name="edit" title="" hidden="true"/>
+		    <button name="save" title="" hidden="true"/>
+		    <button name="delete" title="" hidden="true"/>
+		    <button name="copy" title="" hidden="true"/>
+		    <button name="cancel" title="" hidden="true"/>
+		</toolbar>
+        <field name="id"/>
+        <field name="date"/>
+        <field name="gieUser"/>
+        <field name="origin" />
+        <field name="typeSelect"/>
+        <field name="categorySelect"/>
+        <field name="exception"/>
+    </grid>
+    
+    <form name="trace-back-form" title="TraceBack" model="com.axelor.exception.db.TraceBack" cols="4" onLoad="action-trace-back-load">
+    	<toolbar>
+		    <button name="new" title="" hidden="true"/>
+		    <button name="edit" title="" hidden="true"/>
+		    <button name="save" title="" hidden="true"/>
+		    <button name="delete" title="" hidden="true"/>
+		    <button name="copy" title="" hidden="true"/>
+		    <button name="cancel" title="" hidden="true"/>
+		</toolbar>
+    	<field name="id" />
+        <field name="date"/>
+        <field name="gieUser"/>
+        <field name="origin" />
+        <field name="typeSelect"/>
+        <field name="categorySelect"/>
+        <group name="exceptionGroup" title="Anomalie" colSpan="4" cols="2">
+        	<field name="exception" noLabel="true" colSpan="2"/>
+        </group>
+        <group name="errorGroup" title="Erreur" colSpan="4" cols="2">
+            <field name="error" noLabel="true" colSpan="2"/>
+        </group>
+        <group name="causeGroup" title="Cause" colSpan="4" cols="2">
+            <field name="cause" noLabel="true" colSpan="2"/>
+        </group>
+        <group name="messageGroup" title="Message" colSpan="4" cols="2">
+            <field name="message" noLabel="true" colSpan="2"/>
+        </group>
+        <group name="traceGroup" title="Trace" colSpan="4" cols="2">
+            <field name="trace" noLabel="true" colSpan="2"/>
+        </group>
+    </form>
+    
+    <action-attrs name="action-trace-back-load">
+    	<attribute name="hidden" for="categorySelect" expr="eval: !categorySelect"/>
+    	<attribute name="hidden" for="errorGroup" expr="eval: !error"/>
+    	<attribute name="hidden" for="causeGroup" expr="eval: !cause"/>
+    	<attribute name="hidden" for="messageGroup" expr="eval: !message"/>
+    	<attribute name="hidden" for="traceGroup" expr="eval: !trace"/>
+    </action-attrs>
+    
+</object-views>

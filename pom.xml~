@@ -1,0 +1,33 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <repositories>
+    <repository>
+      <id>axelor-public-repository-group</id>
+      <name>Axelor Public Maven Repository Group</name>
+      <url>http://repository.axelor.com/nexus/content/groups/public/</url>
+    </repository>
+  </repositories>
+
+  <parent>
+    <groupId>com.axelor</groupId>
+    <artifactId>axelor-module-parent</artifactId>
+    <version>0.8.1-SNAPSHOT</version>
+    <relativePath>../axelor-module-parent/pom.xml</relativePath>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>evolutis-exception</artifactId>
+  <name>Axelor :: Exception</name>
+
+  <dependencies>
+  
+    <dependency>
+      <groupId>com.axelor</groupId>
+      <artifactId>axelor-auth</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    
+  </dependencies>
+
+</project>

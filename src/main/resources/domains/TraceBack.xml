@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.8.xsd">
+  
+  <module name="exception" package="com.axelor.exception.db"/>
+  
+  <entity sequential="true" name="TraceBack" lang="java">
+  
+    <string title="Anomalie" name="exception" required="true" large="true"/>
+    <integer title="Type" name="typeSelect" selection="trace.back.type.select"/>
+    <integer title="Catégorie" name="categorySelect" selection="trace.back.category.select"/>
+    <string name="origin" selection="trace.back.origin.select" title="Origine" />
+    <datetime title="Date" tz="true" name="date" required="true"/>
+    <many-to-one ref="com.axelor.auth.db.User" title="Utilistateur" name="gieUser"/>
+    <string title="Erreur" name="error" large="true"/>
+    <string title="Cause" name="cause" large="true"/>
+    <string title="Message" name="message" large="true"/>
+    <string title="Trace" name="trace" large="true"/>
+    <long name="batchId" title="Batch" />
+    
+    <string search="id,date" name="name" namecolumn="true">
+		
+			return this.id + " : " + this.date;  
+		
+    </string>
+    
+  </entity>
+</domain-models>

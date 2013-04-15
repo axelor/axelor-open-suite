@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.8.xsd">
+    
+	<selection name='trace.back.type.select'>
+	  <option value='0'>Anomalie technique</option>
+	  <option value='1'>Anomalie fonctionnelle</option>
+	</selection>
+	
+	<selection name='trace.back.category.select'>
+	  <option value='1'>Champ manquant</option>
+	  <option value='2'>Clef non unique</option>
+	  <option value='3'>Aucune valeur retournée</option>
+	  <option value='4'>Problème de configuration</option>
+	  <option value='5'>Incohérence</option>
+	</selection>
+	
+	<selection name='trace.back.origin.select'>
+	  <option value='invoice'>Facturation</option>
+	  <option value='macroEventImport'>Import des macro-évènement</option>
+  	  <option value='onlineAgencyExport'>Export vers l'agence en ligne</option>
+  	  <option value='onlineAgencyImport'>Import vers l'agence en ligne</option>
+  	  <option value='reminder'>Relance</option>
+  	  <option value='reminderGrd'>Relance GRD</option>
+ 	  <option value='doubtfulCustomer'>Détermination des créances douteuses</option>
+   	  <option value='reimbursement'>Remboursements</option>
+   	  <option value='directDebit'>Prélèvements</option>
+   	  <option value="interbankPaymentOrder">Paiements par TIP et TIP chèque</option>
+   	  
+   	  
+	</selection>
+
+</object-views>
