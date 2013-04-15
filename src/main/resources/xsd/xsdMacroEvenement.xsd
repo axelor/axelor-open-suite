@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="xsdPivotEtMacroEvenement.xsd"/>
+	<xs:element name="MacroEvenements">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="MacroEvenement" type="MacroEvenement"/>
+			</xs:sequence>
+			<xs:attribute name="version" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="MacroEvenement">
+		<xs:sequence>
+			<xs:element name="PCT" type="PCTDansME"/>
+		</xs:sequence>
+		<xs:attribute name="emetteur" type="xs:string" use="required"/>
+		<xs:attribute name="typeEvt" type="eTypeEvt" use="required"/>
+		<xs:attribute name="numeroEvt" type="xs:unsignedInt" use="required">
+			<xs:annotation>
+				<xs:documentation>Numéro de macro-événement</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="envoi" type="xs:unsignedByte" use="required">
+			<xs:annotation>
+				<xs:documentation>Numéro d'envoi</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="dateEnvoi" type="FormatDateHeure" use="required"/>
+		<xs:attribute name="statut" use="required">
+			<xs:annotation>
+				<xs:documentation>Statut de traitement du macro-événement par GIE. Sinapse crée le macro-événement avec un statut Valide, GIE peut modifier ce statut</xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:NMTOKEN">
+					<xs:enumeration value="V">
+						<xs:annotation>
+							<xs:documentation>Valide</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="A">
+						<xs:annotation>
+							<xs:documentation>Alarme</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="E">
+						<xs:annotation>
+							<xs:documentation>Echec</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="traitement" use="optional">
+			<xs:annotation>
+				<xs:documentation>Type de traitement (pour le moment, l'attribut n'est visible que pour un traitement manuel 'Manu' et 'Auto')</xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:NMTOKEN">
+					<xs:enumeration value="Aucun">
+						<xs:annotation>
+							<xs:documentation>Aucun traitement</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="Manu">
+						<xs:annotation>
+							<xs:documentation>Traitement manuel</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="Auto">
+						<xs:annotation>
+							<xs:documentation>Traitement automatique</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="regul" type="eTypeRegularisation" use="optional">
+			<xs:annotation>
+				<xs:documentation>Type de régularisation (intégration directe des consos C1C4, changement de compteur, changement de tarif, changement de relais). Absent si l'évènement n'est pas uen régularisation</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="PCTDansME">
+		<xs:sequence>
+			<xs:element name="ChampsValeurs" type="ChampsValeurs" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Données de PCT ajoutées de manière générique dans le ME. Ces données correspondent toutes à des champs génériques de Sinapse</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Affaire" type="Affaire"/>
+			<xs:element name="Consommations" type="Consommations"/>
+			<xs:element ref="RE">
+				<xs:annotation>
+					<xs:documentation>Responsable d'équilibre du PCT</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element ref="Fournisseur">
+				<xs:annotation>
+					<xs:documentation>Fournisseur du PCT</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element ref="UtilisateurReseau">
+				<xs:annotation>
+					<xs:documentation>Utilisateur du réseau du PCT</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element ref="ContratElec" minOccurs="0" maxOccurs="2">
+				<xs:annotation>
+					<xs:documentation>Contrat éléctrique d'acheminement et de fourniture du PCT</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element ref="ContratGaz" minOccurs="0" maxOccurs="2">
+				<xs:annotation>
+					<xs:documentation>Contrat gaz d'acheminement et de fourniture du PCT</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Facture" type="Facture"/>
+		</xs:sequence>
+		<xs:attribute name="reference" type="xs:string" use="required"/>
+		<xs:attribute name="type" type="ePCTType" use="required"/>
+		<xs:attribute name="fluide" type="xs:unsignedByte" use="required"/>
+		<xs:attribute name="pro" type="xs:boolean" use="required">
+			<xs:annotation>
+				<xs:documentation>0 : particulier, 1 : professionel</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="segment" type="xs:string" use="required"/>
+		<xs:attribute name="tensionRaccordement">
+			<xs:annotation>
+				<xs:documentation>Uniquement pour l'électricité</xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:NMTOKEN">
+					<xs:enumeration value="BT"/>
+					<xs:enumeration value="HTA"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+</xs:schema>

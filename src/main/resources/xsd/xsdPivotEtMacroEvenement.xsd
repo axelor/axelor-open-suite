@@ -1,0 +1,888 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="xsdTaxMacroEvenement.xsd"/>
+	<xs:simpleType name="ePCTType">
+		<xs:annotation>
+			<xs:documentation>Type de PCT</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:NMTOKEN">
+			<xs:enumeration value="S">
+				<xs:annotation>
+					<xs:documentation>Soutireur</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="P">
+				<xs:annotation>
+					<xs:documentation>Producteur</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="PS">
+		<xs:annotation>
+			<xs:documentation>Puissance(s) souscrite(s) du contrat à une date donnée</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Puissance" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Liste des puissances souscrites du contrat</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:unsignedInt">
+							<xs:attribute name="periode" type="xs:unsignedByte" use="required">
+								<xs:annotation>
+									<xs:documentation>Numéro de la période tarifaire</xs:documentation>
+								</xs:annotation>
+							</xs:attribute>
+							<xs:attribute name="libellePeriode" type="xs:string" use="optional">
+								<xs:annotation>
+									<xs:documentation>Libellé de la période tarifaire (P, HP, HC...)</xs:documentation>
+								</xs:annotation>
+							</xs:attribute>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="date" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>Date de début de l'application des/de la puissance(s)) souscrite(s)</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="psUnique" type="xs:float">
+			<xs:annotation>
+				<xs:documentation>Puissance souscrite unique (pour les contrats avec une seule puissance)</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="Facture">
+		<xs:annotation>
+			<xs:documentation>Données de facture sur le PCT</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="LigneFacture" type="LigneFacture" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Les lignes de facture sont crées ou complétées par GIE. Sinapse ne génère pas de ligne de facture.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Taxes" type="Taxes" >
+				<xs:annotation>
+					<xs:documentation>Les lignes de taxe sont crées ou complétées par GIE. Sinapse ne génère pas de ligne de taxe.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Tva" type="Tva" >
+				<xs:annotation>
+					<xs:documentation>Les lignes de taxe sont crées ou complétées par GIE. Sinapse ne génère pas de ligne de taxe.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="HistoriqueConsosActif">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="TotalActifFacture" type="TotalActifFacture" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="dateFacture" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>Date de facture - Donnée renseignée par GIE</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="numFacture" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>Numéro de facture - Donnée renseignée par GIE</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="TotalActifFacture">
+		<xs:simpleContent>
+			<xs:extension base="xs:int">
+				<xs:attribute name="date" type="FormatMois" use="required"/>
+				<xs:attribute name="type" type="eConsoType" use="required"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="LigneFacture">
+		<xs:annotation>
+			<xs:documentation>Données d'une ligne de facture</xs:documentation>
+			<xs:documentation>Montant de la ligne de facture</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="xs:decimal">
+				<xs:attribute name="codeArticle" type="xs:string" use="required">
+					<xs:annotation>
+						<xs:documentation>Code d'articule de ligne de facture</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="codeRecap" type="xs:string" use="required">
+					<xs:annotation>
+						<xs:documentation>Code de récapitulatif de la ligne de facture</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="dateDebut" type="FormatDate" use="required">
+					<xs:annotation>
+						<xs:documentation>Date de début de la facturation de la quantité facturée</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="dateFin" type="FormatDate" use="optional">
+					<xs:annotation>
+						<xs:documentation>Date de fin de la facturation de la quantité facturée</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="quantite" type="xs:decimal" use="optional">
+					<xs:annotation>
+						<xs:documentation>Quantité facturée</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="prixUnitaire" type="xs:decimal" use="optional">
+					<xs:annotation>
+						<xs:documentation>Prix unitaire de la quantité facturée</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="codeUnite" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>Code de l'unité de la quantité facturée</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="debit" type="xs:boolean" use="required">
+					<xs:annotation>
+						<xs:documentation>0 : crédit, 1 : débit</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="Affaire">
+		<xs:annotation>
+			<xs:documentation>Affaire sur un PCT : ensemble de prestations sur le PCT</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Couts">
+				<xs:annotation>
+					<xs:documentation>Coûts associés à l'affaire</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="CoutGlobal" type="xs:decimal">
+							<xs:annotation>
+								<xs:documentation>Coût global de l'affaire</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="CoutExpress" type="xs:decimal">
+							<xs:annotation>
+								<xs:documentation>Coût lié à une affaire "Express"</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="CoutAnnulationTardive" type="xs:decimal">
+							<xs:annotation>
+								<xs:documentation>Coût lié à une annulation tardive</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="CoutDeplacementVain" type="xs:decimal">
+							<xs:annotation>
+								<xs:documentation>Coût lié à un déplacement vain</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Prestations">
+				<xs:annotation>
+					<xs:documentation>Liste des prestations de l'affaire</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Prestation" type="Prestation"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="numeroAffaire" type="xs:unsignedInt" use="required">
+			<xs:annotation>
+				<xs:documentation>Numéro de l'affaire</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="dateCreation" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Date de création de l'affaire</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="dateDebutRDV" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>Date de début de rendez-vous, si un rendez-vous est associé à l'affaire</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="dateFinRDV" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>Date de fin de la plage de rendez-vous, si un rendez-vous est associé à l'affaire</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="dateReception" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>Date de réception de l'affaire</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="dateCloture" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>Date de clôture de l'affaire</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="dateModif" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>Date de dernière modification de l'affaire</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="express" type="xs:boolean" use="required">
+			<xs:annotation>
+				<xs:documentation>0 : affaire standard, 1 : affaire express</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="deplacementVain" type="xs:boolean" default="0">
+			<xs:annotation>
+				<xs:documentation>0 : affaire sans déplacement vain, 1 : affaire avec déplacement vain</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="annulationTardive" type="xs:boolean" default="0">
+			<xs:annotation>
+				<xs:documentation>0 : affaire sans annulation tardive, 1 : affaire avec annulation tardive</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="statut" type="xs:unsignedByte" use="required">
+			<xs:annotation>
+				<xs:documentation>Code de statut de l'affaire</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="Prestation">
+		<xs:annotation>
+			<xs:documentation>Prestation d'une affaire</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Variante">
+				<xs:complexType>
+					<xs:attribute name="numero" type="xs:unsignedByte" use="required">
+						<xs:annotation>
+							<xs:documentation>Numéro de la variante de la prestation sélectionnées dans l'affaire</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+					<xs:attribute name="cout" type="xs:decimal" use="required">
+						<xs:annotation>
+							<xs:documentation>Coût de la prestation</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="ChampsValeurs" type="ChampsValeurs" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Liste de toutes les valeurs de champs saisies dans la demande.
+ATTENTION : il faudra des codes de champ/valeur pour les index qui transitent par les demandes des affaires ou bien un stockage particulier.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="numeroPrestation" type="xs:unsignedByte" use="required">
+			<xs:annotation>
+				<xs:documentation>Numéro de la prestation dans l'affaire</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="codePrestation" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Code de la prestation (code dans le catalogue des prestations)</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="Consommations">
+		<xs:annotation>
+			<xs:documentation>Données de comptage : index et consommations</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ListeIndex">
+				<xs:complexType>
+					<xs:annotation>
+						<xs:documentation>Liste des jeux d'index du PCT</xs:documentation>
+					</xs:annotation>
+					<xs:sequence>
+						<xs:element name="Index" type="JeuIndex" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Consommation" type="JeuConsommation" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="JeuIndex">
+		<xs:annotation>
+			<xs:documentation>Jeu d'index pour une date</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="IndexValeur" type="TypeIndexValeur" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="date" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Date du jeu d'index</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="type" type="eIndexType" use="required">
+			<xs:annotation>
+				<xs:documentation>Code du type d'index (autorelevé, Calculé, Réel, Estimé...)</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="sousType" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Code du sous-type du jeu d'index</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="validite" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>Indicateur de validité du jeu d'index : Valide, Avertissement, Erreur
+											MACRO-EVENEMENT : absent du macro-événement, uniquement pour Pivot
+											</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="codeTarifFR" type="xs:string"/>
+		<xs:attribute name="codeAnomalie" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Code anomalie de relève</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:simpleType name="eIndexType">
+		<xs:annotation>
+			<xs:documentation>Type d'index</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:NMTOKEN">
+			<xs:enumeration value="R">
+				<xs:annotation>
+					<xs:documentation>Index réel : l'index a été obtenu par relève d'un agent ou par télérelève</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="E">
+				<xs:annotation>
+					<xs:documentation>Index estimé : l'index a été estimé en fonction du tarif et des consommations passées par un système externe ou par le service d'estimation</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="A">
+				<xs:annotation>
+					<xs:documentation>Index autorelevé : l'index a été relevé par le client et transmis au gestionnaire de réseau</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="C">
+				<xs:annotation>
+					<xs:documentation>Calculé : l'index a été calculé par le fournisseur</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="D">
+				<xs:annotation>
+					<xs:documentation>Dépose : index réel, relevé lors de la dépose du compteur</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="P">
+				<xs:annotation>
+					<xs:documentation>Pose : index réel, relevé lors de la pose du compteur</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="I">
+				<xs:annotation>
+					<xs:documentation>Switch estimé</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="N">
+				<xs:annotation>
+					<xs:documentation>Consommation nulle</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="S">
+				<xs:annotation>
+					<xs:documentation>Dépose estimée</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="eConsoType">
+		<xs:annotation>
+			<xs:documentation>Type de consommation</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:NMTOKEN">
+			<xs:enumeration value="R">
+				<xs:annotation>
+					<xs:documentation>Index réel : l'index a été obtenu par relève d'un agent ou par télérelève</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="E">
+				<xs:annotation>
+					<xs:documentation>Index estimé : l'index a été estimé en fonction du tarif et des consommations passées par un système externe ou par le service d'estimation</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="C">
+				<xs:annotation>
+					<xs:documentation>Calculé : l'index a été calculé par le fournisseur</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="TypeIndexValeur">
+		<xs:annotation>
+			<xs:documentation>Valeur de l'index</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="xs:unsignedInt">
+				<xs:attribute name="code" type="xs:string" use="required">
+					<xs:annotation>
+						<xs:documentation>Code de l'élément d'index (permet de déterminer le type de donnée : EA : énergie active...)</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="cadran" type="xs:int" use="required">
+					<xs:annotation>
+						<xs:documentation>Numéro de cadran</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="libelleCadran" type="xs:string" use="required">
+					<xs:annotation>
+						<xs:documentation>Libellé de cadran</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="coef" type="xs:decimal">
+					<xs:annotation>
+						<xs:documentation>Coefficient multiplicateur</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="passageAZero" type="xs:boolean" use="required">
+					<xs:annotation>
+						<xs:documentation>Indicateur de passage à zéro</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="JeuConsommation">
+		<xs:annotation>
+			<xs:documentation>Jeu de consommations (pour une date de début et une date de fin)</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="CnsValeur" type="TypeCnsValeur" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="debut" type="xs:string" use="required"/>
+		<xs:attribute name="fin" type="xs:string" use="required"/>
+		<xs:attribute name="validite" type="xs:boolean" default="true">
+			<xs:annotation>
+				<xs:documentation>Indicateur de validité du jeu de consommations (1 : valide, 0 invalide)
+								MACRO-EVENEMENT : absent du macro-événement</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="TypeCnsValeur">
+		<xs:annotation>
+			<xs:documentation>Valeur de la consommation</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="xs:int">
+				<xs:attribute name="code" type="xs:string" use="required">
+					<xs:annotation>
+						<xs:documentation>Code de l'élément de consommation (permet de déterminer le type de donnée : NRJ_A : énergie active...)</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="periode" type="xs:int" use="required">
+					<xs:annotation>
+						<xs:documentation>Numéro de la période</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="libellePeriode" type="xs:string" use="required">
+					<xs:annotation>
+						<xs:documentation>Libellé de la période</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="coefPCS" type="xs:decimal">
+					<xs:annotation>
+						<xs:documentation>Uniquement pour le gaz</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="ChampsValeurs">
+		<xs:annotation>
+			<xs:documentation>Liste d'un ensemble de ChampValeur
+				</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ChampValeur" type="ChampValeur" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="ChampsMultiplesJeux" type="ChampsMultiplesJeux" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Liste de tous les jeux de champs multiples</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ChampsObjetsMultiples" type="ChampsObjetsMultiples" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Liste de tous les champs d'objets multiples</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ChampsMultiplesJeux">
+		<xs:annotation>
+			<xs:documentation>Liste de tous les jeux de champs multiples</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ChampMultipleJeu" type="ChampMultipleJeu" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="codeChampMultiple" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>Code du champ multiple</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ChampMultipleJeu">
+		<xs:sequence>
+			<xs:element name="ChampValeur" type="ChampValeur" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="NA" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>Attibut juste pour que le code génère correctement la liste des ChampMultipleJeu</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ChampsObjetsMultiples">
+		<xs:annotation>
+			<xs:documentation>Liste de tous les champs d'objet multiples</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ChampsObjetMultiple" type="ChampsObjetMultiple" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="codeObjetMultiple" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>Code de l'objet multiple</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ChampsObjetMultiple">
+		<xs:sequence>
+			<xs:element name="ChampValeur" type="ChampValeur" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="codeValeurDistingueMultiple" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>Valeur (sour forme de code) qui distingue l'objet multiple d'un autre objet multiple</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ChampValeur">
+		<xs:annotation>
+			<xs:documentation>Objet de stockage d'une donnée gérée par le paramétrage Générique/ou non : stockage par code+valeur+libellé de la valeur dans le cas de liste de choix</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="code" type="xs:string" use="required">
+					<xs:annotation>
+						<xs:documentation>Code du champ générique (ChampGen) ou d'un champ non générique</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="valeurCodeChoix" type="xs:string">
+					<xs:annotation>
+						<xs:documentation>Code de la valeur dans le cas de liste de choix</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:simpleType name="FormatDate">
+		<xs:annotation>
+			<xs:documentation>Format de date jj/MM/aaaa</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[0-3][0-9]/[0-1][0-9]/[1-2][0-9][0-9][0-9]"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="FormatDateHeure">
+		<xs:annotation>
+			<xs:documentation>Format de date jj/MM/aaaa hh:mm:ss</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[0-3][0-9]/[0-1][0-9]/[1-2][0-9][0-9][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9]"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="FormatMois">
+		<xs:annotation>
+			<xs:documentation>Format de mois MM/aaaa</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[0-1][1-9]/[1-2][0-9][0-9][0-9]"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="CAR">
+		<xs:annotation>
+			<xs:documentation>Consommation annuelle de référence (Gaz)</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:decimal">
+					<xs:attribute name="date" type="xs:string" use="required"/>
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:simpleType name="eTypeEvt">
+		<xs:annotation>
+			<xs:documentation>Type d'évènement</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:NMTOKEN">
+			<xs:enumeration value="ANN">
+				<xs:annotation>
+					<xs:documentation>Annulation</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="ATT">
+				<xs:annotation>
+					<xs:documentation>Index hors période</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="AUT">
+				<xs:annotation>
+					<xs:documentation>Autre</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="CAT">
+				<xs:annotation>
+					<xs:documentation>Prestation seule</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="COU">
+				<xs:annotation>
+					<xs:documentation>Affaire de suspension d’alimentation close  avec coupure effective</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="CYC">
+				<xs:annotation>
+					<xs:documentation>Index cyclique</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="EVT">
+				<xs:annotation>
+					<xs:documentation>Index événementiel</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="HSY">
+				<xs:annotation>
+					<xs:documentation>Hors Système</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="IND">
+				<xs:annotation>
+					<xs:documentation>Contestation d'index par le client</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="LIM">
+				<xs:annotation>
+					<xs:documentation>Affaire de suspension d’alimentation close  avec limitation de PS</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="MAN">
+				<xs:annotation>
+					<xs:documentation>Manuel</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="MES">
+				<xs:annotation>
+					<xs:documentation>Mise en service</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="MOD">
+				<xs:annotation>
+					<xs:documentation>Modification tarifaire</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="REG">
+				<xs:annotation>
+					<xs:documentation>Facture de régularisation</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="RES">
+				<xs:annotation>
+					<xs:documentation>Résiliation</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="RET">
+				<xs:annotation>
+					<xs:documentation>Affaire de rétablissement d’alimentation close</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="STA">
+				<xs:annotation>
+					<xs:documentation>Mise à jour du STAtut d'affaire</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="eNatureContrat">
+		<xs:annotation>
+			<xs:documentation>Nature de contrat</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="acheminement"/>
+			<xs:enumeration value="fourniture"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="ContratBase">
+		<xs:annotation>
+			<xs:documentation>Données contractuelles communes aux contrats électrique et gaz</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Tarif">
+				<xs:complexType>
+					<xs:attribute name="code" type="xs:string" use="required">
+						<xs:annotation>
+							<xs:documentation>Code du tarif</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+					<xs:attribute name="dateDebut" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>Date de début de contrat</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+					<xs:attribute name="dateFin" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>Date de résiliation de contrat</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="idContratGRD" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>Identifiant du contrat GRD</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="contratGRD" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>Libellé du contrat GRD</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="nature" type="eNatureContrat">
+			<xs:annotation>
+				<xs:documentation>Nature du contrat : fourniture ou acheminement</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:element name="Fournisseur">
+		<xs:complexType>
+			<xs:attribute name="nom" type="xs:string" use="required">
+				<xs:annotation>
+					<xs:documentation>Nom du RE</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="codeEic" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Code EIC du RE</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="dateEntreePerimetre" type="xs:string" use="required">
+				<xs:annotation>
+					<xs:documentation>Date d'entrée dans le périmètre du RE</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="dateSortiePerimetre" type="xs:string" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="UtilisateurReseau">
+		<xs:complexType>
+			<xs:attribute name="nom" type="xs:string" use="required">
+				<xs:annotation>
+					<xs:documentation>Nom de l'utilisateur du réseau</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ContratElec">
+		<xs:annotation>
+			<xs:documentation>Contrat électrique</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="ContratBase">
+					<xs:sequence>
+						<xs:element name="PS" type="PS">
+							<xs:annotation>
+								<xs:documentation>Définition des puissances souscrites du contrat.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ContratGaz">
+		<xs:annotation>
+			<xs:documentation>Contrat gaz</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="ContratBase">
+					<xs:sequence>
+						<xs:element ref="CAR" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Consommations annuelles de référence du contrat</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="RE">
+		<xs:annotation>
+			<xs:documentation>Responsable d'équilibre (Identique à l'élément RE de macro-événement)</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="nom" type="xs:string" use="required">
+				<xs:annotation>
+					<xs:documentation>Nom du RE</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="codeEic" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Code EIC du RE</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="dateEntreePerimetre" type="xs:string" use="required">
+				<xs:annotation>
+					<xs:documentation>Date d'entrée dans le périmètre du RE</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:simpleType name="eTypeRegularisation">
+		<xs:annotation>
+			<xs:documentation>Type de régularisation</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:NMTOKEN">
+			<xs:enumeration value="aucune">
+				<xs:annotation>
+					<xs:documentation>Aucune régularisation</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="ChgtCompteur">
+				<xs:annotation>
+					<xs:documentation>Changement de compteur</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="ModifTarif">
+				<xs:annotation>
+					<xs:documentation>Changement de tarif</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="ChgtRelais">
+				<xs:annotation>
+					<xs:documentation>Changement de relais (que pour l'électricité)</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="IntegrationDirecte">
+				<xs:annotation>
+					<xs:documentation>Intégration directe de la régularisation (spécifique à C1-C4)</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="AnnulationAutoEstim">
+				<xs:annotation>
+					<xs:documentation>Annulation automatique des estimations</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>
