@@ -17,7 +17,7 @@
     <relativePath>../axelor-module-parent/pom.xml</relativePath>
   </parent>
 
-  <artifactId>axelor-data</artifactId>
+  <artifactId>axelor-erp-data</artifactId>
   <name>Axelor :: Data</name>
 
   <dependencies>
