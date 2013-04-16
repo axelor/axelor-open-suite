@@ -3,7 +3,7 @@
 
 	<parent>
 		<groupId>com.axelor</groupId>
-		<artifactId>axelor-parent</artifactId>
+		<artifactId>axelor-erp-parent</artifactId>
 		<version>0.8.1-SNAPSHOT</version>
 		<relativePath>../axelor-parent/pom.xml</relativePath>
 	</parent>
