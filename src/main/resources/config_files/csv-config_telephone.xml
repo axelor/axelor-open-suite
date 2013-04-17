@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<csv-inputs xmlns="http://apps.axelor.com/xml/ns/data-import"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://apps.axelor.com/xml/ns/data-import http://apps.axelor.com/xml/ns/data-import/data-import_0.8.xsd">
-  
-	<input file="Telephone.csv" type="com.axelor.apps.contract.db.Contract" search="self.contractId = :Reference_dossier" update="true" call="com.axelor.csv.script.ImportTelephoneEal:updateTelephoneEal"/>
-	
-	
-</csv-inputs>
