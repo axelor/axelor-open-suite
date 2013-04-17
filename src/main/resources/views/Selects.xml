@@ -18,11 +18,7 @@
 	
 	<selection name='trace.back.origin.select'>
 	  <option value='invoice'>Facturation</option>
-	  <option value='macroEventImport'>Import des macro-évènement</option>
-  	  <option value='onlineAgencyExport'>Export vers l'agence en ligne</option>
-  	  <option value='onlineAgencyImport'>Import vers l'agence en ligne</option>
   	  <option value='reminder'>Relance</option>
-  	  <option value='reminderGrd'>Relance GRD</option>
  	  <option value='doubtfulCustomer'>Détermination des créances douteuses</option>
    	  <option value='reimbursement'>Remboursements</option>
    	  <option value='directDebit'>Prélèvements</option>

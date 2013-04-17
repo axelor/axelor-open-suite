@@ -27,11 +27,7 @@ public interface IException {
 	 * Origin select
 	 */
 	public static final String INVOICE_ORIGIN = "invoice";
-	public static final String IMPORT_ME_ORIGIN = "macroEventImport";
-	public static final String ONLINE_AGENCY_EXPORT = "onlineAgencyExport";
-	public static final String ONLINE_AGENCY_IMPORT = "onlineAgencyImport";
 	public static final String REMINDER = "reminder";
-	public static final String REMINDER_GRD = "reminderGrd";
 	public static final String DOUBTFUL_CUSTOMER = "doubtfulCustomer";
 	public static final String REIMBURSEMENT = "reimbursement";
 	public static final String DIRECT_DEBIT = "directDebit";
