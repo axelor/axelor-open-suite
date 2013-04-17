@@ -25,7 +25,7 @@ import com.qas.web_2005_02.QASearchResult
 
 class Client {
 	//stubs generated with:
-	//arye@dm4:~/projects/evolutis/evolutis-tool/src/main/java$ ~/opt/cxf/bin/wsdl2java  -client -frontend jaxws21 http://ip.axelor.com:2021/proweb.wsdl
+	//arye@dm4:~/projects/axelor/axelor-tool/src/main/java$ ~/opt/cxf/bin/wsdl2java  -client -frontend jaxws21 http://ip.axelor.com:2021/proweb.wsdl
 	
 	//http://cxf.apache.org/docs/how-do-i-develop-a-client.html
 	
