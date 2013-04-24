@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csv-inputs xmlns="http://apps.axelor.com/xml/ns/data-import"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/data-import http://apps.axelor.com/xml/ns/data-import/data-import_0.8.xsd">
+  
+    <input file="groups_AX.csv" separator=";" type="com.axelor.auth.db.Group" />
+	
+	<input file="contact_company.csv" separator=";" type="com.axelor.apps.contact.db.Company">
+        <bind to="code" column="code"/>
+        <bind to="name" column="name"/>
+    </input>
+	
+	<input file="territory_country.csv" separator=";" type="com.axelor.apps.territory.db.Country" />
+	
+	<input file="territory_region.csv" separator=";" type="com.axelor.apps.territory.db.Region" />
+	
+	<input file="territory_departement.csv" separator=";" type="com.axelor.apps.territory.db.Department" />
+	
+	<input file="territory_canton.csv" separator=";" type="com.axelor.apps.territory.db.Canton" />
+
+	<input file="territory_commune.csv" separator=";" type="com.axelor.apps.territory.db.Commune" />
+	
+	
+	<input file="contact_address.csv" separator=";" type="com.axelor.apps.contact.db.Address" />
+	
+	
+	<input file="account_currency.csv" separator=";" type="com.axelor.apps.account.db.Currency" />
+	
+	<input file="account_currencyConversionLine.csv" separator=";" type="com.axelor.apps.account.db.CurrencyConversionLine" />
+	
+	<input file="account_analyticAxis.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAxis" />
+	
+	<input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account" />
+	
+	<input file="account_analyticAccount.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAccount" />
+	
+	<input file="account_analyticAccount.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAccount" />
+	
+	<input file="account_journalType.csv" separator=";" type="com.axelor.apps.account.db.JournalType" />
+	
+	<input file="account_journal.csv" separator=";" type="com.axelor.apps.account.db.Journal" />
+	
+	<!-- TO DO : Vérifier que le script créé bien les périodes associées (voir sur dynamicFR ligne 2265) -->
+	<input file="account_year.csv" separator=";" type="com.axelor.apps.account.db.Year" call="com.axelor.csv.script.UpdateAll:ignoreYearLine">
+        <bind to="name" column="name"/>
+        <bind to="code" column="code"/>
+        <bind to="toDate" column="toDate"/>
+        <bind to="fromDate" column="fromDate"/>
+        <bind to="company" search="self.name = :company_name" >
+            <bind to="name" column="company_name"/>
+        </bind>
+        <bind to="status" search="self.code = :status_code" >
+            <bind to="code" column="status_code"/>
+        </bind>
+    </input>
+	
+	<input file="payment_paymentMode.csv" separator=";" type="com.axelor.apps.payment.db.PaymentMode" />
+	
+	
+	<!-- TO DO Remplir le M2O activeVatLine par un update en utilisant le code TVA -->
+	<input file="sale_vat.csv" separator=";" type="com.axelor.apps.sale.db.Vat">
+		<bind column="code" to="code" />
+        <bind column="name" to="name" />
+	</input>
+	
+	<input file="sale_vatLine.csv" separator=";" type="com.axelor.apps.sale.db.VatLine" />
+	
+	
+	<input file="account_interBankCode.csv" separator=";" type="com.axelor.apps.account.db.InterbankCodeLine">
+        <bind column="code_rejet" to="code" />
+        <bind column="libelle_rejet" to="name" />
+        <bind column="description_rejet" to="description" />
+        <bind column="transferCfonbOk" to="transferCfonbOk" eval="transferCfonbOk == 't' ? true : false"/>
+        <bind column="prelevement" to="directDebitAndTipCfonbOk" eval="prelevement == 't' ? true : false"/>
+        <bind column="prelevement_sepa" to="directDebitSepaOk" eval="prelevement_sepa == 't' ? true : false"/>
+        <bind column="lcr_bor" to="lcrBorOk" eval="lcr_bor == 't' ? true : false"/>
+        <bind column="cheque" to="chequeOk" eval="cheque == 't' ? true : false"/>
+        <bind column="rejet_technique" to="technicalRejectOk" eval="rejet_technique == 't' ? true : false"/>
+        <bind to="interbankCode" search="self.code = :code_fichier">
+            <bind column="code_fichier" to="code"/>
+            <bind column="nom_fichier" to="name"/>
+            <bind column="date_fin" to="endDate" eval="date_fin ? date_fin : null"/>
+            <bind column="description_fichier" to="description"/>
+        </bind>
+    </input>
+	
+	<input file="administration_general.csv" separator=";" type="com.axelor.apps.administration.db.General" />
+	
+	<input file="mail_mailModel.csv" separator=";" type="com.axelor.apps.mail.db.mailModel" />
+	
+	<input file="debtRecovery_reminderLevel.csv" separator=";" type="com.axelor.apps.debtRecovery.db.ReminderLevel" />
+	
+	<input file="debtRecovery_reminderMethod.csv" separator=";" type="com.axelor.apps.debtRecovery.db.ReminderMethod" />
+	
+	<input file="debtRecovery_reminderMethodLine.csv" separator=";" type="com.axelor.apps.debtRecovery.db.ReminderMethodLine" />
+	
+	
+	<!-- A BESOIN DE ADDRESS -->
+	<input file="contact_agency.csv" separator=";" type="com.axelor.apps.contact.db.Agency"/>
+	
+	<!-- TODO BIND EN FONCTION DE LA LANGUE -->
+	<input file="contact_partnerCategory.csv" separator=";" type="com.axelor.apps.contact.db.PartnerCategory" />
+	
+	<!-- A BESOIN de paymentMode, fichier vide actuellement, il faudra faire un update -->
+	<input file="contact_partner.csv" separator=";" type="com.axelor.apps.contact.db.Partner" />
+	
+	<!-- A BESOIN DE PARTNER -->
+	<input file="contact_bankDetails.csv" separator=";" type="com.axelor.apps.contact.db.BankDetails" />
+	
+	<!-- A COMPLETER IMPORTE AUPARAVANT -->
+	<input file="contact_company.csv" separator=";" type="com.axelor.apps.contact.db.Company"/>
+
+	<!-- TODO BIND EN FONCTION DE LA LANGUE POUR LES 2 CI-dessous -->
+	<input file="sale_productCategory.csv" separator=";" type="com.axelor.apps.sale.db.ProductCategory"/>
+	<input file="sale_productFamily.csv" separator=";" type="com.axelor.apps.sale.db.ProductFamily"/>
+	
+	<input file="sale_product.csv" separator=";" type="com.axelor.apps.sale.db.Product"/>
+	
+	<input file="account_accountManagement.csv" separator=";" type="com.axelor.apps.account.db.AccountManagement" />
+	
+	<input file="account_analyticAccountManagement.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAccountManagement" />
+	
+	
+	<input file="debtRecovery_reminderConfigLine.csv" separator=";" type="com.axelor.apps.debtRecovery.db.reminderConfigLine" />
+	
+	<input file="user.csv" separator=";" type="com.axelor.auth.db.User" />
+	<input file="user_userInfo.csv" separator=";" type="com.axelor.apps.user.db.UserInfo" />
+	
+	
+	
+	  	
+</csv-inputs>
+
