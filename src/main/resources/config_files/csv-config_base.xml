@@ -30,7 +30,11 @@
 	
 	<input file="account_analyticAxis.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAxis" />
 	
-	<input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account" />
+<!-- 	<input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account" /> -->
+	<input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account" >
+		<bind to="name" column="name_fr_FR"/>
+	</input>
+
 	
 	<input file="account_analyticAccount.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAccount" />
 	
@@ -66,7 +70,7 @@
 	<input file="sale_vatLine.csv" separator=";" type="com.axelor.apps.sale.db.VatLine" />
 	
 	
-	<input file="account_interBankCode.csv" separator=";" type="com.axelor.apps.account.db.InterbankCodeLine">
+	<input file="account_interBankCode.csv" type="com.axelor.apps.account.db.InterbankCodeLine">
         <bind column="code_rejet" to="code" />
         <bind column="libelle_rejet" to="name" />
         <bind column="description_rejet" to="description" />
@@ -121,7 +125,7 @@
 	<input file="account_analyticAccountManagement.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAccountManagement" />
 	
 	
-	<input file="debtRecovery_reminderConfigLine.csv" separator=";" type="com.axelor.apps.debtRecovery.db.reminderConfigLine" />
+	<input file="debtRecovery_reminderConfigLine.csv" separator=";" type="com.axelor.apps.debtRecovery.db.ReminderConfigLine" />
 	
 	<input file="user.csv" separator=";" type="com.axelor.auth.db.User" />
 	<input file="user_userInfo.csv" separator=";" type="com.axelor.apps.user.db.UserInfo" />
