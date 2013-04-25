@@ -1,0 +1,10 @@
+"importId";"name";"code";"accountManagementSet";"bankJournal";"invoiceLabel"
+1;"Autre";"OTH";;;
+2;"Prélèvement";"DD";;;
+3;"TIP";"TIP";;;
+4;"Espèces";"ESP";;;
+5;"Carte bancaire";"CB";;;
+6;"Chèque";"CHQ";;;
+7;"Internet";"INT";;;
+8;"Virement";"VIR";;;
+9;"TIP + Chèque";"TIC";;;

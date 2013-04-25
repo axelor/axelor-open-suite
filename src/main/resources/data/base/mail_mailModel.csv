@@ -1,0 +1,8 @@
+"ImportId";"code";"name";"typeSelect";"objectConcernedSelect";"reminderTypeSelect";"subject";"content";"pdfModelPath"
+1;"EM01";"Email relance";2;1;"standard";"Contenu Email relance";"Contenu Email relance";"EM01.rptdesign"
+2;"LS01";"Lettre relance simple";1;1;"standard";"Objet Lettre relance simple";"Contenu Lettre relance simple";"LS01.rptdesign"
+3;"LRAR01";"Lettre recommandée AR 1";1;1;"standard";"Objet Lettre recommandée AR 1";"Contenu Lettre recommandée AR 1";"LRAR01.rptdesign"
+4;"LRAR02";"Lettre recommandée AR 2";1;1;"standard";"Objet Lettre recommandée AR 2";"Contenu Lettre recommandée AR 2";"LRAR02.rptdesign"
+5;"LSH01";"Lettre menace huissier simple";1;1;"standard";"Objet Lettre menace huissier simple";"Contenu Lettre menace huissier simple";"LSH01.rptdesign"
+6;"LRARH01";"Lettre RAR menace huissier";1;1;"standard";"Objet Lettre RAR menace huissier";"Contenu Lettre RAR menace huissier";"LRARH01.rptdesign"
+7;"LHUISS";"Lettre information huissier";1;1;"standard";"Objet Lettre information huissier";"Contenu Lettre information huissier";"LHUISS.rptdesign"
