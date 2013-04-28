@@ -5,11 +5,6 @@
   
     <input file="groups_AX.csv" separator=";" type="com.axelor.auth.db.Group" />
 	
-	<input file="contact_company.csv" separator=";" type="com.axelor.apps.contact.db.Company">
-        <bind to="code" column="code"/>
-        <bind to="name" column="name"/>
-    </input>
-	
 	<input file="territory_country.csv" separator=";" type="com.axelor.apps.territory.db.Country" />
 	
 	<input file="territory_region.csv" separator=";" type="com.axelor.apps.territory.db.Region" />
@@ -23,26 +18,29 @@
 	
 	<input file="contact_address.csv" separator=";" type="com.axelor.apps.contact.db.Address" />
 	
+	<input file="account_journalType.csv" separator=";" type="com.axelor.apps.account.db.JournalType" />
+	
+	<input file="account_journal.csv" separator=";" type="com.axelor.apps.account.db.Journal" />
+	
+	<!-- 	<input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account" /> -->
+	<input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account" >
+		<bind to="name" column="name_fr_FR"/>
+	</input>
 	
 	<input file="account_currency.csv" separator=";" type="com.axelor.apps.account.db.Currency" />
+	
+	<input file="payment_paymentMode.csv" separator=";" type="com.axelor.apps.payment.db.PaymentMode" />
+	
+	<input file="administration_general.csv" separator=";" type="com.axelor.apps.administration.db.General" />
+	
+	<input file="contact_company.csv" separator=";" type="com.axelor.apps.contact.db.Company"/>
 	
 	<input file="account_currencyConversionLine.csv" separator=";" type="com.axelor.apps.account.db.CurrencyConversionLine" />
 	
 	<input file="account_analyticAxis.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAxis" />
 	
-<!-- 	<input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account" /> -->
-	<input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account" >
-		<bind to="name" column="name_fr_FR"/>
-	</input>
-
-	
 	<input file="account_analyticAccount.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAccount" />
 	
-	<input file="account_analyticAccount.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAccount" />
-	
-	<input file="account_journalType.csv" separator=";" type="com.axelor.apps.account.db.JournalType" />
-	
-	<input file="account_journal.csv" separator=";" type="com.axelor.apps.account.db.Journal" />
 	
 	<!-- TO DO : Vérifier que le script créé bien les périodes associées (voir sur dynamicFR ligne 2265) -->
 	<input file="account_year.csv" separator=";" type="com.axelor.apps.account.db.Year" call="com.axelor.csv.script.UpdateAll:ignoreYearLine">
@@ -58,7 +56,7 @@
         </bind>
     </input>
 	
-	<input file="payment_paymentMode.csv" separator=";" type="com.axelor.apps.payment.db.PaymentMode" />
+	
 	
 	
 	<!-- TO DO Remplir le M2O activeVatLine par un update en utilisant le code TVA -->
@@ -87,8 +85,6 @@
             <bind column="description_fichier" to="description"/>
         </bind>
     </input>
-	
-	<input file="administration_general.csv" separator=";" type="com.axelor.apps.administration.db.General" />
 	
 	<input file="mail_mailModel.csv" separator=";" type="com.axelor.apps.mail.db.mailModel" />
 	
