@@ -42,8 +42,7 @@
 	<input file="account_analyticAccount.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAccount" />
 	
 	
-	<!-- TO DO : Vérifier que le script créé bien les périodes associées (voir sur dynamicFR ligne 2265) -->
-	<input file="account_year.csv" separator=";" type="com.axelor.apps.account.db.Year" call="com.axelor.csv.script.UpdateAll:ignoreYearLine">
+	<input file="account_year.csv" separator=";" type="com.axelor.apps.account.db.Year">
         <bind to="name" column="name"/>
         <bind to="code" column="code"/>
         <bind to="toDate" column="toDate"/>
@@ -56,13 +55,16 @@
         </bind>
     </input>
 	
-	
+	<input file="contact_company.csv" separator=";" type="com.axelor.apps.contact.db.Company" search="self.importId = :importId" update="true" call="com.axelor.csv.script.UpdateAll:updatePeriod">
+		<bind column="importId" to="importId"/>
+	</input>
 	
 	
 	<!-- TO DO Remplir le M2O activeVatLine par un update en utilisant le code TVA -->
 	<input file="sale_vat.csv" separator=";" type="com.axelor.apps.sale.db.Vat">
 		<bind column="code" to="code" />
         <bind column="name" to="name" />
+        <bind column="importId" to="importId" />
 	</input>
 	
 	<input file="sale_vatLine.csv" separator=";" type="com.axelor.apps.sale.db.VatLine" />
@@ -86,7 +88,7 @@
         </bind>
     </input>
 	
-	<input file="mail_mailModel.csv" separator=";" type="com.axelor.apps.mail.db.mailModel" />
+	<input file="mail_mailModel.csv" separator=";" type="com.axelor.apps.mail.db.MailModel" />
 	
 	<input file="debtRecovery_reminderLevel.csv" separator=";" type="com.axelor.apps.debtRecovery.db.ReminderLevel" />
 	
@@ -123,7 +125,7 @@
 	
 	<input file="debtRecovery_reminderConfigLine.csv" separator=";" type="com.axelor.apps.debtRecovery.db.ReminderConfigLine" />
 	
-	<input file="user.csv" separator=";" type="com.axelor.auth.db.User" />
+	<input file="auth_user.csv" separator=";" type="com.axelor.auth.db.User" />
 	<input file="user_userInfo.csv" separator=";" type="com.axelor.apps.user.db.UserInfo" />
 	
 	
