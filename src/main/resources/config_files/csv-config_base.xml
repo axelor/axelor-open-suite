@@ -3,7 +3,14 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://apps.axelor.com/xml/ns/data-import http://apps.axelor.com/xml/ns/data-import/data-import_0.8.xsd">
   
-    <input file="groups_AX.csv" separator=";" type="com.axelor.auth.db.Group" />
+    <input file="administration_group.csv" type="com.axelor.auth.db.Group" />
+    
+    <input file="administration_status.csv" type="com.axelor.apps.administration.db.Status">
+		<bind column="statut_id" to="koalaId" />
+		<bind column="statut_libelle" to="name" />
+		<bind column="statut_code" to="code" />
+		<bind column="statut_flag_facture" to="invoiceStatusOK" eval="statut_flag_facture == '1'? true : false" />
+	</input>
 	
 	<input file="territory_country.csv" separator=";" type="com.axelor.apps.territory.db.Country" />
 	
@@ -55,7 +62,7 @@
         </bind>
     </input>
 	
-	<input file="contact_company.csv" separator=";" type="com.axelor.apps.contact.db.Company" search="self.importId = :importId" update="true" call="com.axelor.csv.script.UpdateAll:updatePeriod">
+	<input file="contact_company.csv" separator=";" type="com.axelor.apps.contact.db.Company" search="self.importId = :importId" call="com.axelor.csv.script.UpdateAll:updatePeriod">
 		<bind column="importId" to="importId"/>
 	</input>
 	
@@ -69,6 +76,12 @@
 	
 	<input file="sale_vatLine.csv" separator=";" type="com.axelor.apps.sale.db.VatLine" />
 	
+	<input file="sale_vat.csv" separator=";" update="true" search="self.importId = :importId" type="com.axelor.apps.sale.db.Vat">
+<!-- 		<bind column="_activeVatLine" to="activeVatLine"/> -->
+		<bind to="activeVatLine" update="true" search="self.importId = :_activeVatLine">
+			<bind column="_activeVatLine" to="importId"/>
+		</bind>
+	</input>
 	
 	<input file="account_interBankCode.csv" type="com.axelor.apps.account.db.InterbankCodeLine">
         <bind column="code_rejet" to="code" />
@@ -108,15 +121,25 @@
 	
 	<!-- A BESOIN DE PARTNER -->
 	<input file="contact_bankDetails.csv" separator=";" type="com.axelor.apps.contact.db.BankDetails" />
-	
-	<!-- A COMPLETER IMPORTE AUPARAVANT -->
-	<input file="contact_company.csv" separator=";" type="com.axelor.apps.contact.db.Company"/>
 
 	<!-- TODO BIND EN FONCTION DE LA LANGUE POUR LES 2 CI-dessous -->
-	<input file="sale_productCategory.csv" separator=";" type="com.axelor.apps.sale.db.ProductCategory"/>
+	<input file="sale_productCategory.csv" separator=";" type="com.axelor.apps.sale.db.ProductCategory">
+		<bind column="code_fr_FR" to="code"/>	
+		<bind column="name_fr_FR" to="name"/>	
+	</input>
+	
+	<input file="sale_productCategory.csv" separator=";" search="self.code = :code_fr_FR and self.name = :name_fr_FR" type="com.axelor.apps.sale.db.ProductCategory">
+		<bind column="code_fr_FR" to="code" update="true"/>	
+		<bind column="name_fr_FR" to="name" update="true"/>	
+	</input>
+
 	<input file="sale_productFamily.csv" separator=";" type="com.axelor.apps.sale.db.ProductFamily"/>
 	
-	<input file="sale_product.csv" separator=";" type="com.axelor.apps.sale.db.Product"/>
+	<input file="sale_product.csv" separator=";" type="com.axelor.apps.sale.db.Product">
+		<bind column="name_fr_FR" to="name"/>
+		<bind column="code_fr_FR" to="code"/>
+		<bind column="description_fr_FR" to="description"/>
+	</input>
 	
 	<input file="account_accountManagement.csv" separator=";" type="com.axelor.apps.account.db.AccountManagement" />
 	

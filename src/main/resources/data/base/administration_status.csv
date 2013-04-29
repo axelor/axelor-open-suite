@@ -1,0 +1,34 @@
+statut_id,statut_libelle,statut_flag_facture,statut_code
+1,Actif,0,act
+2,En création,0,
+3,Improductif,0,imp
+5,Maintenu,0,mai
+9,Déposé,0,dep
+10,Annulé,0,can
+12,Brouillon,1,dra
+13,Modifié,0,
+14,Résilié,0,res
+15,En test,0,
+16,Validé,1,val
+17,Echoué,0,fai
+19,A vérifier,0,
+20,Planifié,0,
+21,En cours résiliation,0,ure
+22,En service,0,ens
+23,Suspendu,1,sus
+24,Ventilé,1,dis
+27,En cours,0,upr
+28,Clôturé,0,clo
+29,Remboursé,0,rei
+30,A valider,0,tov
+31,En alarme,0,ala
+32,Attente de recevabilité,0,atr
+33,En cours de recevabilité,0,ecr
+34,Reçue,0,rec
+35,Rejetée,0,rej
+36,Close sans réalisation,0,csr
+37,Close avec réalisation partielle,0,crp
+38,En cours d'annulation,0,eca
+39,Ouvert,0,ope
+40,Confirmé,1,con
+41,A Confirmer,1,toc
