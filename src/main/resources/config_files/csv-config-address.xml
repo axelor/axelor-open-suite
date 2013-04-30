@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://apps.axelor.com/xml/ns/data-import http://apps.axelor.com/xml/ns/data-import/data-import_0.8.xsd">
 
-	<input file="[contact.address]" type="com.axelor.apps.contact.db.Address"
+	<input file="[contact.address]" type="com.axelor.apps.base.db.Address"
 		separator="|" search="self.koalaId = :koalaId">
 <!-- 		call="com.axelor.csv.script.ImportAddress:ignoreLine" -->
 		<bind column="koalaId" to="koalaId"></bind>

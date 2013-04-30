@@ -24,7 +24,7 @@
 		<bind to="name" column="zonemeteo_lib"/>
 	</input>
 	
-	<input file="typesectionfacture.csv" type="com.axelor.apps.invoice.db.InvoiceLineType">
+	<input file="typesectionfacture.csv" type="com.axelor.apps.account.db.InvoiceLineType">
 		<bind to="koalaId" column="typesecfac_id"/>
 		<bind to="code" column="typsecfac_libcourt"/>
 		<bind to="name" column="typsecfac_liblong"/>
@@ -73,7 +73,7 @@
 		<bind search="self.koalaId = :region_pays_id" to="country" update="true"/>
 	</input>
 	
-	<input file="adresse.csv" type="com.axelor.apps.contact.db.Address">
+	<input file="adresse.csv" type="com.axelor.apps.base.db.Address">
 		<bind column="adresse_id" to="koalaId" />
 		<bind column="adresse_L2" to="addressL2" />
 		<bind column="adresse_L3" to="addressL3" />
@@ -86,20 +86,20 @@
 		<bind to="inseeCode" column="adresse_INSEE"/>
 	</input>
 	
-	<input file="civilite.csv" type="com.axelor.apps.contact.db.Title">
+	<input file="civilite.csv" type="com.axelor.apps.base.db.Title">
 		<bind column="civilite_id" to="koalaId" />
 		<bind column="civilite_libcourt" to="code" />
 		<bind column="civilite_libelle" to="name" />
 		<bind column="civilite_type" to="type" eval="civilite_type == 'F'? '2' : '1'" />
 	</input>
 	
-	<input file="fonctioncontact.csv" type="com.axelor.apps.contact.db.Jobtitle">
+	<input file="fonctioncontact.csv" type="com.axelor.apps.base.db.Jobtitle">
 		<bind column="fonction_id" to="koalaId" />
 		<bind column="fonction_code" to="code" />
 		<bind column="fonction_libellé" to="name" />
 	</input>
 	
-	<input file="contact.csv" type="com.axelor.apps.contact.db.Contact">
+	<input file="contact.csv" type="com.axelor.apps.base.db.Contact">
 		<bind column="contact_id" to="koalaId" />
 		<bind column="contact_L1" to="addressL1" />
 		<bind column="contact_nom" to="name" eval="!contact_nom ? 'Inconnu' : contact_nom"/>
@@ -120,7 +120,7 @@
 		<bind to="webSite" column="contact_site_web"/>
 	</input>
 	
-	<input file="accueil.csv" type="com.axelor.apps.contact.db.Agency">
+	<input file="accueil.csv" type="com.axelor.apps.base.db.Agency">
 		<bind column="accueil_id" to="importId" />
 		<bind column="accueil_id" to="num" />
 		<bind column="accueil_libelle_court" to="nameShort" />
@@ -130,7 +130,7 @@
 		<bind to="openingHours" column="accueil_horaires"/>
 	</input>
 	
-	<input file="accueil.csv" type="com.axelor.apps.contact.db.Agency"
+	<input file="accueil.csv" type="com.axelor.apps.base.db.Agency"
 		search="self.importId = :accueil_id" update="true">
 		<bind column="accueil_id" to="importId" />
 		<bind search="self.importId = :accueil_parent_id" to="parentAgency" update="true"/>
@@ -144,20 +144,20 @@
 		<bind column="centreexploit_nom" to="name" />
 	</input>
 	
-	<input file="zoneinfluence.csv" type="com.axelor.apps.contact.db.CatchmentArea">
+	<input file="zoneinfluence.csv" type="com.axelor.apps.base.db.CatchmentArea">
 		<bind column="zoneinf_id" to="koalaId" />
 		<bind column="zoneinf_nom" to="name" />
 		<bind column="zoneinf_flag_elec" to="elecOk" eval="zoneinf_flag_elec == '1'? 'true' : 'false'" />
 		<bind column="zoneinf_flag_gaz" to="gasOk" eval="zoneinf_flag_gaz == '1'? 'true' : 'false'" />
 	</input>
 	
-	<input file="apenaf.csv" type="com.axelor.apps.contact.db.NafCode">
+	<input file="apenaf.csv" type="com.axelor.apps.base.db.NafCode">
 		<bind to="koalaId" column="APENAF_id"/>
 		<bind to="code" column="APENAF_code"/>
 		<bind to="name" column="APENAF_libelle"/>
 	</input>
 	
-	<input file="tiers.csv" type="com.axelor.apps.contact.db.Partner">
+	<input file="tiers.csv" type="com.axelor.apps.base.db.Partner">
 		<bind column="tiers_id" to="koalaId" />
 		<bind column="tiers_crit_rech1" to="importKey"/>
 		<bind search="self.koalaId = :tiers_contact1_id" to="mainContact" update="true"/>
@@ -245,14 +245,14 @@
 		<bind to="communeSet" search="self.koalaId = :communeconcedee_commune_id" update="true"/>
 	</input>
 	
-	<input file="zoneinfdetail.csv" type="com.axelor.apps.contact.db.CatchmentArea" update="true" search="self.koalaId = :zoneinfdet_zoneinf_id">
+	<input file="zoneinfdetail.csv" type="com.axelor.apps.base.db.CatchmentArea" update="true" search="self.koalaId = :zoneinfdet_zoneinf_id">
 		<bind column="zoneinfdet_zoneinf_id" to="koalaId"/>
 		<bind search="self.importId = :zoneinfdet_cneoudept_id" to="departmentSet" update="true" if="zoneinfdet_type == '2'"/>
 		<bind search="self.koalaId = :zoneinfdet_cneoudept_id" to="communeSet" update="true" if="zoneinfdet_type == '1'"/>
 		<bind column="zoneinfdet_type" to="areaTypeSelect" eval="zoneinfdet_type ? (zoneinfdet_type.equals('C') ? '1' : '2') : null"/>
 	</input>
 
-	<input file="societe.csv" type="com.axelor.apps.contact.db.Company">
+	<input file="societe.csv" type="com.axelor.apps.base.db.Company">
 		<bind column="societe_id" to="koalaId" />
 		<bind column="societe_nom" to="name" />
 		<bind to="code" eval="societe_nom ? (societe_nom.size() > 0 ? ((societe_nom.padRight(3))[0..2]).toUpperCase() : null) : null"  />
@@ -402,10 +402,10 @@
 		</bind>
 	</input>
 	
-	<input file="indicateursGroupesAX.csv" type="com.axelor.apps.administration.db.IndicatorGeneratorGrouping">
+	<input file="indicateursGroupesAX.csv" type="com.axelor.apps.base.db.IndicatorGeneratorGrouping">
 	</input>
 	
-	<input file="indicateursAX.csv" type="com.axelor.apps.administration.db.IndicatorGenerator" call="com.axelor.csv.script.ImportIndicator:fillGroupingSet">
+	<input file="indicateursAX.csv" type="com.axelor.apps.base.db.IndicatorGenerator" call="com.axelor.csv.script.ImportIndicator:fillGroupingSet">
 		<bind column="code" to="code" />
 		<bind column="name" to="name" />
 		<bind column="request" to="request" />

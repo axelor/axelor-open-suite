@@ -3,13 +3,13 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://apps.axelor.com/xml/ns/data-import http://apps.axelor.com/xml/ns/data-import/data-import_0.8.xsd">
 
-	<input file="AdministrationGeneral.csv" type="com.axelor.apps.administration.db.General" call="com.axelor.csv.script.ImportGeneral:init">
+	<input file="AdministrationGeneral.csv" type="com.axelor.apps.base.db.General" call="com.axelor.csv.script.ImportGeneral:init">
  		<bind to="environment" eval="'fr'"/>
     </input>
     
     <input file="user.csv" type="com.axelor.auth.db.User" />
 	
-	<input file="userInfo.csv" type="com.axelor.apps.user.db.UserInfo" />
+	<input file="userInfo.csv" type="com.axelor.apps.base.db.UserInfo" />
     
     <input file="Account.csv" type="com.axelor.apps.account.db.Account" call="com.axelor.csv.script.ImportAccount:ignoreLine">
 		<bind to="reconcileOk" eval="code.startsWith('411')?true:code.startsWith('416')?true:code.startsWith('418')?true:false" />
@@ -39,7 +39,7 @@
 		<bind column="trch_libelle" to="name" />
 	</input>
 
-	<input file="statut.csv" type="com.axelor.apps.administration.db.Status">
+	<input file="statut.csv" type="com.axelor.apps.base.db.Status">
 		<bind column="statut_libelle" to="name" />
 		<bind column="statut_code" to="code" />
 		<bind column="statut_flag_etatfourn" to="supplyStatusOK" eval="statut_flag_etatfourn == '1'? true : false" />
@@ -49,14 +49,14 @@
 		<bind column="statut_flag_contrat" to="contractLineStatusOK" eval="statut_flag_contrat == '1'? true : false" />
 	</input>
 	
-	<input file="statutAX.csv" type="com.axelor.apps.administration.db.Status">
+	<input file="statutAX.csv" type="com.axelor.apps.base.db.Status">
 		<bind column="statut_libelle" to="name" />
 		<bind column="statut_code" to="code" />
 		<bind column="statut_flag_etatfourn" to="supplyStatusOK" eval="statut_flag_etatfourn == '1'? true : false" />
 		<bind column="statut_flag_facture" to="invoiceStatusOK" eval="statut_flag_facture == '1'? true : false" />
 	</input>
 
-	<input file="agence.csv" type="com.axelor.apps.contact.db.Agency"
+	<input file="agence.csv" type="com.axelor.apps.base.db.Agency"
 		search="self.num = :agence_id" update="true">
 		<bind search="self.koalaId = :agence_adresse_id" to="address"
 			update="true">
@@ -186,14 +186,14 @@
 		<bind column="descriptionIdentificationOk" to="descriptionIdentificationOk" eval="descriptionIdentificationOk == '1' ? true : false"/>
 	</input>
     
-    <input file="sequenceFR_AX.csv" type="com.axelor.apps.administration.db.SequenceGeneric" >
+    <input file="sequenceFR_AX.csv" type="com.axelor.apps.base.db.SequenceGeneric" >
     	<bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"/>
     	<bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
     	<bind to="padding" column="padding" eval="padding?.empty ? '1' : padding"/>
     	<bind to="toBeAdded" column="toBeAdded" eval="toBeAdded?.empty ? '1' : toBeAdded"/>
     </input>
     
-    <input file="modereglement.csv" type="com.axelor.apps.payment.db.PaymentMode">
+    <input file="modereglement.csv" type="com.axelor.apps.account.db.PaymentMode">
 		<bind column="moderegl_id" to="koalaId" />
 		<bind column="moderegl_libelle" to="name" />
 		<bind column="moderegl_code" to="code" />
@@ -204,7 +204,7 @@
         <bind column="moderegl_flag_contrat" to="contractOk" eval="moderegl_flag_contrat == '1'? true : false"/>
 	</input>
     
-    <input file="modereglementcompte.csv" type="com.axelor.apps.payment.db.PaymentMode"
+    <input file="modereglementcompte.csv" type="com.axelor.apps.account.db.PaymentMode"
         search="self.koalaId = :moderegl_id" update="true" call="com.axelor.csv.script.ImportPaymentMode:updateCompanyAccount">
         <bind column="moderegl_id" to="koalaId" />
     </input>
@@ -342,7 +342,7 @@
 		</bind>
 	</input>
 	
-	<input file="repbicdps7.csv" type="com.axelor.apps.contact.db.Bic">
+	<input file="repbicdps7.csv" type="com.axelor.apps.base.db.Bic">
 		<bind to="countryCode" column="repBIC_codePays"/>
 		<bind to="bankCode" column="repBIC_codeEtab"/>
 		<bind to="sortCode" column="repBIC_codeGuich"/>
@@ -350,7 +350,7 @@
 		<bind to="bankName" column="repBIC_nometab"/>
 	</input>
 	
-	<input file="ribpayeur.csv" type="com.axelor.apps.contact.db.BankDetails"
+	<input file="ribpayeur.csv" type="com.axelor.apps.base.db.BankDetails"
 		call="com.axelor.csv.script.ImportBankDetails:completIban">
 		<bind column="ribpay_id" to="koalaId" />
 		<bind search="self.koalaId = :ribpay_tierspay_id" to="payerPartner"
@@ -636,7 +636,7 @@
 		<bind to="recipientSelect" eval="reglevieaction_destin_type == 'GESTCOMM' ? 2 : 0"/>
 	</input>
 	
-	<input file="AdministrationGeneralAX.csv" type="com.axelor.apps.administration.db.General"
+	<input file="AdministrationGeneralAX.csv" type="com.axelor.apps.base.db.General"
 		search="self.environment = 'fr'" update="true">
 		<bind to="defaultExemptionVat" search="self.code = :defaultExemptionVat" update="true">
 			<bind column="defaultExemptionVat" to="code" />
@@ -650,7 +650,7 @@
 		<bind to="qasWsdlUrl" column="qas_url"/>
 	</input>
 	
-	<input file="rabescfr.csv" type="com.axelor.apps.invoice.db.DiscountEngineLine"
+	<input file="rabescfr.csv" type="com.axelor.apps.account.db.DiscountEngineLine"
 		call="com.axelor.csv.script.ImportDiscountEngine:updateCode">
 		<bind to="importId" column="rabescfr_id" />
 		<bind to="code" column="rabescfr_id" />
@@ -671,7 +671,7 @@
 		<bind to="referenceDateSelect" eval="0"/>
 	</input>
 	
-	<input file="rabescfrproduit.csv" type="com.axelor.apps.invoice.db.DiscountEngineLine"
+	<input file="rabescfrproduit.csv" type="com.axelor.apps.account.db.DiscountEngineLine"
 		search="self.koalaId = :rabescfrprod_rabescfr_id" update="true">
 		<bind search="self.koalaId = :rabescfr_prodrabesc_id" to="productSet" column="rabescfr_prodrabesc_id"/>
 	</input>
@@ -691,17 +691,17 @@
 		</bind>
 	</input>
 
-	<input file="societeAX.csv" type="com.axelor.apps.contact.db.Company"
+	<input file="societeAX.csv" type="com.axelor.apps.base.db.Company"
 		search="self.koalaId = :societe_id" call="com.axelor.csv.script.UpdateAll:updatePeriod">
 		<bind column="societe_id" to="koalaId" />
 	</input>
 	
-	<input file="societeAX.csv" type="com.axelor.apps.contact.db.Company"
+	<input file="societeAX.csv" type="com.axelor.apps.base.db.Company"
 		search="self.koalaId = :societe_id" call="com.axelor.csv.script.ImportAmendment:updateAmendmentPricingByConstituent" update="true">
 		<bind column="societe_id" to="koalaId" />
 	</input>
 	
-	<input file="societeAX.csv" type="com.axelor.apps.contact.db.Company"
+	<input file="societeAX.csv" type="com.axelor.apps.base.db.Company"
 		search="self.koalaId = :societe_id" update="true" call="com.axelor.csv.script.ImportCompany:updateCompanyClearanceAccountSet">
 		<bind column="societe_id" to="koalaId" />
 		<bind column="societe_nom" to="name" />
@@ -758,7 +758,7 @@
 		</bind>
 	</input>
 	
-	<input file="societeAX.csv" type="com.axelor.apps.contact.db.Company"
+	<input file="societeAX.csv" type="com.axelor.apps.base.db.Company"
 		search="self.koalaId = :societe_id" update="true">
 		<bind to="environmentSelect" eval="'fr'"/>
 		<bind to="rejectJournal" search="self.code = :rejectJournal_code"
@@ -872,7 +872,7 @@
 		<bind to="link" column="lien"/>
 	</input>
 	
-    <input file="payboxAX.csv" type="com.axelor.apps.payment.db.Paybox">
+    <input file="payboxAX.csv" type="com.axelor.apps.account.db.Paybox">
 		<bind to="name" column="name"/>
 	</input>
 	

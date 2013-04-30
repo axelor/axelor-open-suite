@@ -3,11 +3,11 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://apps.axelor.com/xml/ns/data-import http://apps.axelor.com/xml/ns/data-import/data-import_0.8.xsd">
   
-<!-- 	<input file="InvoiceLineType.csv" type="com.axelor.apps.invoice.db.InvoiceLineType" search="self.name = :name"> -->
+<!-- 	<input file="InvoiceLineType.csv" type="com.axelor.apps.account.db.InvoiceLineType" search="self.name = :name"> -->
 <!-- 		<bind to="name" column="name" /> -->
 <!-- 		<bind to="koalaId" column="koala_id"/> -->
 <!-- 	</input> -->
-	<input file="invoice.csv" type="com.axelor.apps.invoice.db.Invoice"
+	<input file="invoice.csv" type="com.axelor.apps.account.db.Invoice"
 		call="com.axelor.csv.script.ImportInvoice:updatePartnerAccountAndPaymentMode">
 		<bind column="inv_id" to="koalaId" />
 		<bind column="inv_ancnumfac" to="oldInvoiceId"/>
@@ -70,7 +70,7 @@
 		
 	</input>
 	
-	<input file="invoiceline.csv" type="com.axelor.apps.invoice.db.InvoiceLine" call="com.axelor.csv.script.ImportInvoice:CompleteInvoiceLine">
+	<input file="invoiceline.csv" type="com.axelor.apps.account.db.InvoiceLine" call="com.axelor.csv.script.ImportInvoice:CompleteInvoiceLine">
 		<bind column="invline_id" to="koalaId" />
 		<bind to="invoice" search="self.koalaId = :invline_inv_id"
 			update="true">
@@ -106,7 +106,7 @@
 		<bind to="exTaxTotal" eval="!invline_mt.empty ? invline_mt.replace(',','.') : null" />
 	</input>
 	
-	<input file="tvaline.csv" type="com.axelor.apps.invoice.db.InvoiceLineVat" call="com.axelor.csv.script.ImportInvoice:CompleteInvoiceLineVat">
+	<input file="tvaline.csv" type="com.axelor.apps.account.db.InvoiceLineVat" call="com.axelor.csv.script.ImportInvoice:CompleteInvoiceLineVat">
 		<bind column="tvaline_id" to="koalaId" />
 <!-- 		<bind to="vat" search="self.koalaId = :tvaline_tvacode_id" update="true"> -->
 <!-- 			<bind column="tvaline_tvacode_id" to="koalaId" /> -->
@@ -120,7 +120,7 @@
 		<bind to="vatTotal" eval="!tvaline_mt.empty ? tvaline_mt.replace(',','.') : null" />
 	</input>
 	
-	<input file="taxline.csv" type="com.axelor.apps.invoice.db.InvoiceLineTax" call="com.axelor.csv.script.ImportInvoice:CompleteInvoiceLineTax">
+	<input file="taxline.csv" type="com.axelor.apps.account.db.InvoiceLineTax" call="com.axelor.csv.script.ImportInvoice:CompleteInvoiceLineTax">
 		<bind column="taxline_id" to="koalaId" />
 		<bind to="invoice" search="self.koalaId = :taxline_invoice_id"
 			update="true">
@@ -142,13 +142,13 @@
 	
 <!-- 	Distinct -->
 	
-	<input file="invoice.csv" type="com.axelor.apps.invoice.db.Invoice" search="self.koalaId = :inv_id" update="true"
+	<input file="invoice.csv" type="com.axelor.apps.account.db.Invoice" search="self.koalaId = :inv_id" update="true"
 			call="com.axelor.csv.script.ImportInvoice:validateInvoice">
 			<bind column="inv_id" to="koalaId" />
 	</input>
 
 	
-	<input file="invoice.csv" type="com.axelor.apps.invoice.db.Invoice"
+	<input file="invoice.csv" type="com.axelor.apps.account.db.Invoice"
 		search="self.koalaId = :inv_id" update="true" call="com.axelor.csv.script.ImportInvoice:updateIgnoreInAccounting">
 		<bind column="inv_id" to="koalaId" />
 	</input>
@@ -156,7 +156,7 @@
 	
 <!-- 	Distinct -->
 	
-	<input file="invoice.csv" type="com.axelor.apps.invoice.db.Invoice"
+	<input file="invoice.csv" type="com.axelor.apps.account.db.Invoice"
 		search="self.koalaId = :inv_id" update="true" call="com.axelor.csv.script.ImportInvoice:createMacroEvent">
 		<bind column="inv_id" to="koalaId" />
 	</input>

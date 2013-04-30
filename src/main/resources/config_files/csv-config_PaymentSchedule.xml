@@ -53,7 +53,7 @@
 	
 	
 	
-	<input file="scheduleinvoice.csv" type="com.axelor.apps.invoice.db.Invoice" search="self.koalaId = :schedinv_invoice_id" update="true">
+	<input file="scheduleinvoice.csv" type="com.axelor.apps.account.db.Invoice" search="self.koalaId = :schedinv_invoice_id" update="true">
 		<bind to="paymentSchedule" search="self.koalaId = :schedinv_sched_id" update="true">
 			<bind column="schedinv_sched_id" to="koalaId" />
 		</bind>
