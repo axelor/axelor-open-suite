@@ -114,7 +114,9 @@
 	<input file="base_agency.csv" separator=";" type="com.axelor.apps.base.db.Agency"/>
 	
 	<!-- TODO BIND EN FONCTION DE LA LANGUE -->
-	<input file="base_partnerCategory.csv" separator=";" type="com.axelor.apps.base.db.PartnerCategory" />
+	<input file="base_partnerCategory.csv" separator=";" type="com.axelor.apps.base.db.PartnerCategory">
+		<bind column="name_fr_FR" to="name"/>	
+	</input>
 	
 	<!-- A BESOIN de paymentMode, fichier vide actuellement, il faudra faire un update -->
 	<input file="base_partner.csv" separator=";" type="com.axelor.apps.base.db.Partner" />
