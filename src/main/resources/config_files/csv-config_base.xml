@@ -123,6 +123,10 @@
 	
 	<!-- A BESOIN DE PARTNER -->
 	<input file="base_bankDetails.csv" separator=";" type="com.axelor.apps.base.db.BankDetails" />
+	
+	<input file="base_partner.csv" separator=";" search="self.importId = :importId" type="com.axelor.apps.base.db.Partner" >
+		<bind column="bankDetails.importId" to="bankDetails" update="true"/>
+	</input>
 
 	<!-- TODO BIND EN FONCTION DE LA LANGUE POUR LES 2 CI-dessous -->
 	<input file="base_productCategory.csv" separator=";" type="com.axelor.apps.base.db.ProductCategory">
