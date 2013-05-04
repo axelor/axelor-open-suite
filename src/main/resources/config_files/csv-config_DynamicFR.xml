@@ -186,7 +186,7 @@
 		<bind column="descriptionIdentificationOk" to="descriptionIdentificationOk" eval="descriptionIdentificationOk == '1' ? true : false"/>
 	</input>
     
-    <input file="sequenceFR_AX.csv" type="com.axelor.apps.base.db.SequenceGeneric" >
+    <input file="base_sequence.csv" type="com.axelor.apps.base.db.SequenceGeneric" >
     	<bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"/>
     	<bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
     	<bind to="padding" column="padding" eval="padding?.empty ? '1' : padding"/>
