@@ -1,4 +1,4 @@
-"ImportId";"partnerTypeSelect";"isContact ";"name";"firstName";"titleSelect";"MainInvoicingAddress.importId";"deliveryAddess.importId";"email";"fixedPhone1";"fixedPhonePro";"mobilePhonePerso";"bankDetails.importId";"invoiceSendingFormatSelect";"paymentMode.code";"paymentTime";"blocking.importId";"rejectCounter"
+"importId";"partnerTypeSelect";"isContact ";"name";"firstName";"titleSelect";"MainInvoicingAddress.importId";"deliveryAddess.importId";"email";"fixedPhone1";"fixedPhonePro";"mobilePhonePerso";"bankDetails.importId";"invoiceSendingFormatSelect";"paymentMode.code";"paymentTime";"blocking.importId";"rejectCounter"
 1;"2";"true";"MARTIN";"Mickaël";;32;32;"m.martin@yahoo.fr";;"01.47.40.45.99";"06.93.73.43.99";;;;;;
 2;"2";"true";"BERNARD";"Henry";;33;33;"h.bernard@gmail.fr";;"01.31.21.92.99";"07.97.77.48.99";;;;;;
 3;"2";"true";"DUBOIS";"Paul";;34;34;"p.dubois@gmail.fr";;;"07.25.80.19.99";;;;;;

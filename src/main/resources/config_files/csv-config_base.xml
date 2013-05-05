@@ -42,7 +42,7 @@
 	
 	<input file="base_currencyConversionLine.csv" separator=";" type="com.axelor.apps.base.db.CurrencyConversionLine" />
 	
-	<input file="sequenceFR_AX.csv" type="com.axelor.apps.base.db.SequenceGeneric" >
+	<input file="base_sequence.csv" type="com.axelor.apps.base.db.SequenceGeneric" >
     	<bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"/>
     	<bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
     	<bind to="padding" column="padding" eval="padding?.empty ? '1' : padding"/>
@@ -62,8 +62,16 @@
 	<!-- A BESOIN DE PARTNER -->
 	<input file="base_bankDetails.csv" separator=";" type="com.axelor.apps.base.db.BankDetails" />
 	
-	<input file="base_partner.csv" separator=";" search="self.importId = :importId" type="com.axelor.apps.base.db.Partner" >
-		<bind column="bankDetails.importId" to="bankDetails" update="true"/>
+	<input file="base_partner.csv" separator=";" search="self.importId = :importId" update="true" type="com.axelor.apps.base.db.Partner" >
+<!-- 		<bind column="bankDetails.importId" to="bankDetails"/> -->
+		<bind to="bankDetails" search="self.importId = :bankDetails.importId" >
+            <bind to="importId" column="bankDetails.importId"/>
+        </bind>
+	</input>
+	
+	<input file="base_unit.csv" separator=";" type="com.axelor.apps.base.db.Unit">
+		<bind column="name_fr_FR" to="name" />
+		<bind column="code_fr_FR" to="code" />
 	</input>
 
 	<!-- TODO BIND EN FONCTION DE LA LANGUE POUR LES 2 CI-dessous -->
@@ -77,7 +85,10 @@
 		<bind column="name_fr_FR" to="name" update="true"/>	
 	</input>
 
-	<input file="base_productFamily.csv" separator=";" type="com.axelor.apps.base.db.ProductFamily"/>
+	<input file="base_productFamily.csv" separator=";" type="com.axelor.apps.base.db.ProductFamily">
+		<bind column="name_fr_FR" to="name"/>
+		<bind column="code_fr_FR" to="code"/>
+	</input>
 	
 	<input file="base_product.csv" separator=";" type="com.axelor.apps.base.db.Product">
 		<bind column="name_fr_FR" to="name"/>
@@ -85,10 +96,10 @@
 		<bind column="description_fr_FR" to="description"/>
 	</input>
 
+	 
 
 <!--     IMPORT DU PACKAGE 'ACCOUNT' -->     
-    
-	
+
 	<input file="account_journalType.csv" separator=";" type="com.axelor.apps.account.db.JournalType" />
 	
 	<input file="account_journal.csv" separator=";" type="com.axelor.apps.account.db.Journal" />
@@ -119,7 +130,7 @@
         </bind>
     </input>
 	
-	<input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company" search="self.importId = :importId" call="com.axelor.csv.script.UpdateAll:updatePeriod">
+	<input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company" search="self.importId = :importId" update="true" call="com.axelor.csv.script.UpdateAll:updatePeriod">
 		<bind column="importId" to="importId"/>
 	</input>
 	
@@ -135,7 +146,7 @@
 	
 	<input file="account_vat.csv" separator=";" update="true" search="self.importId = :importId" type="com.axelor.apps.account.db.Vat">
 <!-- 		<bind column="_activeVatLine" to="activeVatLine"/> -->
-		<bind to="activeVatLine" update="true" search="self.importId = :_activeVatLine">
+		<bind to="activeVatLine" search="self.importId = :_activeVatLine" update="true">
 			<bind column="_activeVatLine" to="importId"/>
 		</bind>
 	</input>
@@ -173,6 +184,25 @@
 	
 	
 	<input file="account_reminderConfigLine.csv" separator=";" type="com.axelor.apps.account.db.ReminderConfigLine" />
+	
+	
+<!-- 	Deuxième passe sur le package 'base' pour prendre en compte les éléments du package account  -->
+
+	<input file="base_general.csv" type="com.axelor.apps.base.db.General"  search="self.importId = :importId" update="true">
+<!-- 		<bind to="defaultExemptionVat" search="self.code = :defaultExemptionVat" update="true"> -->
+<!-- 			<bind column="defaultExemptionVat" to="code" /> -->
+<!-- 		</bind> -->
+		<bind to="defaultUnit" search="self.code = :defaultUnit_code" update="true">
+			<bind column="defaultUnit_code" to="code" />
+		</bind>
+<!-- 		<bind to="chequeInterbankCode" search="self.code = :code_interbank_chq" update="true"> -->
+<!-- 			<bind to="code" column="code_interbank_chq"/> -->
+<!-- 		</bind> -->
+<!-- 		<bind to="transferAndDirectDebitInterbankCode" search="self.code = :code_interbank_debit" update="true"> -->
+<!-- 			<bind to="code" column="code_interbank_debit"/> -->
+<!-- 		</bind> -->
+		<bind to="qasWsdlUrl" column="qas_url"/>
+	</input>
 	
 	
 <!--     IMPORT DU PACKAGE 'CRM' --> 	

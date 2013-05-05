@@ -147,8 +147,8 @@
 "UAH";"Hryvnia";"Ukraine";"₴"
 "UGX";"Uganda Shilling";"Uganda";
 "USD";"US Dollar";"American Samoa, British Indian Ocean Territory, Ecuador, El Salvador, Guam, Haiti, Marshall Islands, Micronesia, Northern Mariana Islands, Palau, Panama, Puerto Rico, East Timor, Turks and Caicos Islands, United States, Virgin Islands";"$"
-"USN";;"United States";
-"USS";;"United States";
+"USN";"USN";"United States";
+"USS";"USS";"United States";
 "UYU";"Peso Uruguayo";"Uruguay";"$U"
 "UZS";"Uzbekistan Som";"Uzbekistan";"лв"
 "VEB";"Venezuelan bolívar";"Venezuela";"Bs"
