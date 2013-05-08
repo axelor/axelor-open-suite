@@ -13,18 +13,10 @@
 "supplierRefund";"Avoir fournisseur AX Bike US";1;7;"AXU_AVF_%Y";;1;1;"AXU";
 "debit";"Prelevement prelevement AX Bike (facture et echeanciers hors mensu)";1;7;"AXB_PREFAC_%Y_";;1;1;"AXB";"ENC_PRE"
 "debit";"Prelevement prelevement AX Bike US (facture et echeanciers hors mensu)";1;7;"AXU_PREFAC_%Y_";;1;1;"AXU";"ENC_PRE"
-"debitExport";"Numero export prélèvements AX Bike";1;7;"AXB_NUMEXP_%Y_";;1;1;"AXB";
-"debitExport";"Numero export prélèvements AX Bike US";1;7;"AXU_NUMEXP_%Y_";;1;1;"AXU";
-"debitImport";"Numero import AX Bike";1;7;"AXB_NUMIMP_%Y_";;1;1;"AXB";
-"debitImport";"Numero import AX Bike US";1;7;"AXU_NUMIMP_%Y_";;1;1;"AXU";
 "debitReject";"Rejet des prélèvements AX Bike";1;7;"AXB_REJPRL_%Y_";;1;1;"AXB";"REJ_BNQ"
 "debitReject";"Rejet des prélèvements AX Bike US";1;7;"AXU_REJPRL_%Y_";;1;1;"AXU";"REJ_BNQ"
 "doubtfulCustomer";"Passage en créance douteuse AX Bike";1;7;"AXB_CREDOU_%Y_";;1;1;"AXB";
 "doubtfulCustomer";"Passage en créance douteuse AX Bike US";1;7;"AXU_CREDOU_%Y_";;1;1;"AXU";
-"interbankPaymentOrderImport";"Import des paiements par TIP et TIP cheque AX Bike";1;7;"AXB_IMPTIP_%Y_";;1;1;"AXB";
-"interbankPaymentOrderImport";"Import des paiements par TIP et TIP cheque AX Bike US";1;7;"AXU_IMPTIP_%Y_";;1;1;"AXU";
-"interbankPaymentOrderRejectImport";"Import des rejets de paiement par TIP et TIP cheque AX Bike";1;7;"AXB_IMPTIPC_%Y_";;1;1;"AXB";
-"interbankPaymentOrderRejectImport";"Import des rejets de paiement par TIP et TIP cheque AX Bike US";1;7;"AXUS_IMPTIPC_%Y_";;1;1;"AXU";
 "irrecoverable";"Passage en irrécouvrable AX Bike";1;7;"AXB_IRRECOUV_%Y_";;1;1;"AXB";
 "irrecoverable";"Passage en irrécouvrable AX Bike US";1;7;"AXUS_IRRECOUV_%Y_";;1;1;"AXU";
 "move";"Ecriture Vente AX Bike";1;7;"AXB_ECRVTE_%Y_";;1;1;"AXB";"VTE"
@@ -102,9 +94,5 @@
 "refundInterface";"Interface avoir AX Bike US";1;10;"AXU_INTAVO_%Y_";;1;1;"AXU";
 "reimbursement";"Proposition remboursement AX Bike";1;10;"AXB_REMB_%Y_";;1;1;"AXB";
 "reimbursement";"Proposition remboursement AX Bike US";1;10;"AXU_REMB_%Y_";;1;1;"AXU";
-"reimbursementExport";"Numero export remboursement AX Bike";1;10;"AXB_EXPREMB_%Y_";;1;1;"AXB";
-"reimbursementExport";"Numero export remboursement AX Bike US";1;10;"AXU_EXPREMB_%Y_";;1;1;"AXU";
-"reimbursementImport";"Import des rejets des remboursements AX Bike";1;10;"AXB_IMPRBT_%Y_";;1;1;"AXB";
-"reimbursementImport";"Import des rejets des remboursements AX Bike US";1;10;"AXU_IMPRBT_%Y_";;1;1;"AXU";
 "salesInterface";"Interface vente AX Bike";1;10;"AXB_INTVEN_%Y_";;1;1;"AXB";
 "salesInterface";"Interface vente AX Bike US";1;10;"AXU_INTVEN_%Y_";;1;1;"AXU";

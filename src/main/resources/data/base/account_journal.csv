@@ -1,4 +1,4 @@
-"ImportId";"code";"name";"type.code";"authorizedPaymentOk";"editReceiptOk";"descriptionModel";"descriptionIdentificationOk";"notExportOk";"exportCode";"inactiveOk"
+"ImportId";"code";"name";"type.code";"excessPaymentOk";"editReceiptOk";"descriptionModel";"descriptionIdentificationOk";"notExportOk";"exportCode";"inactiveOk"
 1;"VTE";"Ventes";"VTE";"false";"false";"Facture client";"true";"false";;"false"
 2;"AVR";"Avoirs";"AVR";"false";"false";"Avoir client";"true";"false";;"false"
 3;"ACH";"Achats";"ACH";"false";"false";"Facture fournisseur";"true";"false";;"false"

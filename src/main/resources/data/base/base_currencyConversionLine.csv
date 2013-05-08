@@ -1,5 +1,5 @@
-"importId";"fromCurrency.code";"toCurrency.code";"conversionRate";"fromDate";"toDate"
-1;"EUR";"USD";"1.3008";2012-05-01;
-2;"EUR";"GBP";"0.8533";2012-05-01;
-3;"EUR";"CNY";"8.0321";2012-05-01;
-4;"EUR";"JPY";"129.167";2012-05-01;
+"importId";"general.importId";"fromCurrency.code";"toCurrency.code";"conversionRate";"fromDate";"toDate"
+1;1;"EUR";"USD";"1.3008";"2012-05-01";
+2;1;"EUR";"GBP";"0.8533";"2012-05-01";
+3;1;"EUR";"CNY";"8.0321";"2012-05-01";
+4;1;"EUR";"JPY";"129.167";"2012-05-01";

@@ -1,4 +1,4 @@
-"importID";"code_fr_FR";"name_fr_FR";"code_fr_EN";"name_en_EN";"_parentProductCategory";"productTypeSelect";"procurementMethodSelect";"isRawMaterial"
+"importID";"code_fr";"name_fr";"code_en";"name_en";"_parentProductCategory";"productTypeSelect";"procurementMethodSelect";"isRawMaterial"
 1;"VEL";"Vélos";"BIKE";"Bikes";;"stockable";"buy";"false"
 2;"RTE";"Route";"ORD";"Road";1;"stockable";"buy";"false"
 3;"CHE";"Chemin";"XRD";"X-Road";1;"stockable";"buy";"false"

@@ -1,4 +1,4 @@
-"importID";"name";"nameLong";"nameShort";"code";"num";"address";"openingHours"
+"importID";"name";"nameLong";"nameShort";"code";"num";"address.importId";"openingHours"
 1;"Paris 1";"Agence Paris 1 Hôtel de ville";"Paris 1";"AGPAR1";1;;"Lundi au Samedi de 9h30 à 12h30, puis de 15h à 19h30"
 2;"Créteil";"Agence Créteil l'Echat";"Créteil";"AGCRE";2;;"Lundi au Samedi de 9h30 à 12h30, puis de 15h à 18h30"
-3;"BOBIGNY";"Agence Bobigny Pablo Picasso";"BOBIGNY";"AGBOB";3;;"Lundi au Samedi de 9h30 à 12h30, puis de 15h à 19h"
+3;"Bobigny";"Agence Bobigny Pablo Picasso";"BOBIGNY";"AGBOB";3;;"Lundi au Samedi de 9h30 à 12h30, puis de 15h à 19h"
