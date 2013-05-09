@@ -20,19 +20,19 @@
     
 <!--     IMPORT DU PACKAGE 'BASE' -->   
     
-  <input file="base_status.csv" type="com.axelor.apps.base.db.Status">
+  <input file="base_status.csv" separator=";" type="com.axelor.apps.base.db.Status">
 		<bind column="statut_id" to="koalaId" />
 		<bind column="statut_libelle" to="name" />
 		<bind column="statut_code" to="code" />
 		<bind column="statut_flag_facture" to="invoiceStatusOK" eval="statut_flag_facture == '1'? true : false" />
 	</input>
 	
-	<input file="base_team.csv" type="com.axelor.apps.base.db.Team">
+	<input file="base_team.csv" separator=";" type="com.axelor.apps.base.db.Team">
 		<bind column="code_fr" to="code"/>
 		<bind column="name_fr" to="name"/>
 	</input>
 	
-	<input file="base_keyword.csv" type="com.axelor.apps.base.db.Keyword">
+	<input file="base_keyword.csv" separator=";" type="com.axelor.apps.base.db.Keyword">
 		<bind column="keyWord_fr" to="keyWord"/>
 	</input>
 	
@@ -227,16 +227,16 @@
 <!-- 	Deuxième passe sur le package 'base' pour prendre en compte les éléments du package account  -->
 
 	<input file="base_general.csv" separator=";" type="com.axelor.apps.base.db.General"  search="self.importId = :importId" update="true">
-      <bind to="defaultExemptionVat" search="self.code = :defaultExemptionVat_code">
-          <bind column="defaultExemptionVat_code" to="code"/>
-      </bind>
-      <bind to="chequeInterbankCode" search="self.code = :chequeInterbankCode.code" update="true">
-        <bind to="code" column="chequeInterbankCode.code"/>
-      </bind>
-      <bind to="transferAndDirectDebitInterbankCode" search="self.code = :transferAndDirectDebitInterbankCode.code" update="true"> -->
-          <bind to="code" column="transferAndDirectDebitInterbankCode.code"/> -->
-      </bind>
-		  <bind to="qasWsdlUrl" column="qas_url"/>
+      	<bind to="defaultExemptionVat" search="self.code = :defaultExemptionVat_code">
+          	<bind column="defaultExemptionVat_code" to="code"/>
+      	</bind>
+<!--       	<bind to="chequeInterbankCode" search="self.code = :chequeInterbankCode.code" update="true"> -->
+<!--         	<bind to="code" column="chequeInterbankCode.code"/> -->
+<!--       	</bind> -->
+<!-- 	    <bind to="transferAndDirectDebitInterbankCode" search="self.code = :transferAndDirectDebitInterbankCode.code" update="true">  -->
+<!-- 	    	<bind to="code" column="transferAndDirectDebitInterbankCode.code"/> -->
+<!-- 	    </bind> -->
+		<bind to="qasWsdlUrl" column="qas_url"/>
 	</input>
 
 	<input file="account_journal.csv" separator=";"  type="com.axelor.apps.account.db.Journal" search="self.importId = :importId" update="true" >
@@ -250,8 +250,9 @@
 	
 <!--     IMPORT DU PACKAGE 'CRM' --> 	
 
-	<input file="crm_leads.csv" separator=";" type="com.axelor.apps.crm.db.Leads">
+	<input file="crm_lead.csv" separator=";" type="com.axelor.apps.crm.db.Lead">
 		<bind column="description_fr_FR" to="description"/>
+		<bind column="jobTitle_fr" to="jobTitle"/>
 	</input>
 	
 	<input file="crm_meetingType.csv" separator=";" type="com.axelor.apps.crm.db.MeetingType">
@@ -262,13 +263,13 @@
 	
 <!--     IMPORT DU PACKAGE 'ORGANISATION' --> 	
 	
-	<input file="organistation_candidate.csv" separator=";" type="com.axelor.apps.organisation.db.Candidate"/>
+	<input file="organisation_candidate.csv" separator=";" type="com.axelor.apps.organisation.db.Candidate"/>
 	
-	<input file="organistation_degree.csv" separator=";" type="com.axelor.apps.organisation.db.Degree"/>
+	<input file="organisation_degree.csv" separator=";" type="com.axelor.apps.organisation.db.Degree"/>
 	
-	<input file="organistation_personalInfo.csv" separator=";" type="com.axelor.apps.organisation.db.PersonalInfo"/>
+	<input file="organisation_personalInfo.csv" separator=";" type="com.axelor.apps.organisation.db.PersonalInfo"/>
 	
-	<input file="organistation_universities.csv" separator=";" type="com.axelor.apps.organisation.db.TrainingCenter"/>
+	<input file="organisation_universities.csv" separator=";" type="com.axelor.apps.organisation.db.TrainingCenter"/>
 	
 	
 <!--     IMPORT DU PACKAGE 'SUPPLY CHAIN' --> 	
