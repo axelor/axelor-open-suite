@@ -1,0 +1,99 @@
+"importId";"keyWord_fr";"keyWord_en";"typeSelect"
+"1";"Access";"Access";0
+"2";"ANSYS";"ANSYS";0
+"3";"ASP.NET";"ASP.NET";0
+"4";"AUTOCAD";"AUTOCAD";0
+"5";"Axelor Platform";"Axelor Platform";0
+"6";"C";"C";0
+"7";"C++";"C++";0
+"8";"CATIA";"CATIA";0
+"9";"COBOL";"COBOL";0
+"10";"DELMIA";"DELMIA";0
+"11";"Delphi";"Delphi";0
+"12";"Eagle";"Eagle";0
+"13";"Fortran";"Fortran";0
+"14";"Groovy";"Groovy";0
+"15";"Hyperlynx";"Hyperlynx";0
+"16";"InCa3D";"InCa3D";0
+"17";"INVENTOR";"INVENTOR";0
+"18";"Java";"Java";0
+"19";"Javascript";"Javascript";0
+"20";"JPQL";"JPQL";0
+"21";"JSP";"JSP";0
+"22";"KiCas";"KiCas";0
+"23";"LabVIEW";"LabVIEW";0
+"24";"Linux";"Linux";0
+"25";"Maple";"Maple";0
+"26";"MATLAB";"MATLAB";0
+"27";"Maxwell";"Maxwell";0
+"28";"Maya";"Maya";0
+"29";"Merise";"Merise";0
+"30";"MySQL";"MySQL";0
+"31";"NoSQL";"NoSQL";0
+"32";"Objective-C";"Objective-C";0
+"33";"Office";"Office";0
+"34";"OpenOffice";"OpenOffice";0
+"35";"Oracle";"Oracle";0
+"36";"Photoshop";"Photoshop";0
+"37";"PHP";"PHP";0
+"38";"PostgreSQL";"PostgreSQL";0
+"39";"ProEngineer";"ProEngineer";0
+"40";"Proteus";"Proteus";0
+"41";"Python";"Python";0
+"42";"Ruby";"Ruby";0
+"43";"Scala";"Scala";0
+"44";"Scilab";"Scilab";0
+"45";"Shell";"Shell";0
+"46";"SolidEdge";"SolidEdge";0
+"47";"SOLIDWORKS";"SOLIDWORKS";0
+"48";"SQL";"SQL";0
+"49";"TopSolid";"TopSolid";0
+"50";"UML";"UML";0
+"51";"VHDL";"VHDL";0
+"52";"VisualBasic";"VisualBasic";0
+"53";"Windows";"Windows";0
+"54";"Aéronautique";"Aeronautics";1
+"55";"Agro-alimentaire";"Agro & Food Industry";1
+"56";"Automobile";"Automotive";1
+"57";"Banque et assurance";"Bank & Insurance";1
+"58";"Défense";"Defense";1
+"59";"Energie";"Utilities";1
+"60";"Pharmacie et Medical";"Pharmaceutics and Medical";1
+"61";"Technicien";;2
+"62";"Technicien en automatismes";;2
+"63";"Technicien SAV";;2
+"64";"Technicien maintenance";;2
+"65";"Dessinateur-Projeteur";;2
+"66";"Technicient Electronicien";;2
+"67";"Electro-technicien";;2
+"68";"Opérateur";;2
+"69";"Agent de fabrication";;2
+"70";"Agent d'ordonnancement";;2
+"71";"Agent de contrôle qualité";;2
+"72";"Agent de production";;2
+"73";"Commercial";;2
+"74";"Assistant commercial";;2
+"75";"Technico-commercial";;2
+"76";"VRP";;2
+"77";"Qualiticien";;2
+"78";"Chargé d'affaires";;2
+"79";"Chef de projet";;2
+"80";"Chef de produit";;2
+"81";"Designer";;2
+"82";"Chef de programme";;2
+"83";"Ingénieur d'Etudes";;2
+"84";"Ingénieur R&D";;2
+"85";"Ingénieur mécanicien";;2
+"86";"Ingénieur généraliste";;2
+"87";"Directeur de projet";;2
+"88";"Chef de service";;2
+"89";"Chef de département";;2
+"90";"Directeur R&D";;2
+"91";"Directeur Achat";;2
+"92";"Directeur commercial";;2
+"93";"Directeur Administratif et financier";;2
+"94";"Directeur d'usine";;2
+"95";"Directeur Marketing";;2
+"96";"Directeur Communication";;2
+"97";"Directeur Qualité";;2
+"98";"Directeur Général";;2
