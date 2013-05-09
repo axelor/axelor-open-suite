@@ -66,7 +66,7 @@
 	
 	<!-- TODO BIND EN FONCTION DE LA LANGUE -->
 	<input file="base_partnerCategory.csv" separator=";" type="com.axelor.apps.base.db.PartnerCategory">
-		<bind column="name_fr" to="name"/>	
+		<bind column="name_fr_FR" to="name"/>	
 	</input>
 	
 	<!-- A BESOIN de paymentMode, fichier vide actuellement, il faudra faire un update -->
@@ -135,7 +135,10 @@
 	
 	<input file="account_paymentMode.csv" separator=";" type="com.axelor.apps.account.db.PaymentMode" />
 	
-	
+	<input file="account_paymentCondition.csv" separator=";" type="com.axelor.apps.account.db.PaymentCondition">
+		<bind column="name_fr_FR" to="name"/>
+		<bind column="code_fr_FR" to="code"/>
+	</input>
 	
 	<input file="account_analyticAxis.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAxis" />
 	
@@ -230,6 +233,8 @@
       <bind to="code" column="journal.code"/>
     </bind>
 	</input>
+	
+	<input file="base_partner.csv" separator=";" type="com.axelor.apps.base.db.Partner" search="self.importId = :importId" update="true" />
 	
 	
 <!--     IMPORT DU PACKAGE 'CRM' --> 	
