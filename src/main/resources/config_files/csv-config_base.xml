@@ -80,8 +80,14 @@
 		<bind column="name_fr_FR" to="name"/>	
 	</input>
 	
+<!-- 	<input file="base_partner.csv" separator=";" type="com.axelor.apps.base.db.AccountingSituation" call="com.axelor.csv.script.ImportPartner:importAccountingSituation"> -->
+<!-- 		<bind column="partner" to="accountingSituationList"/> -->
+<!-- 	</input> -->
+	
 	<!-- A BESOIN de paymentMode, fichier vide actuellement, il faudra faire un update -->
-	<input file="base_partner.csv" separator=";" type="com.axelor.apps.base.db.Partner" />
+	<input file="base_partner.csv" separator=";" type="com.axelor.apps.base.db.Partner" call="com.axelor.csv.script.ImportPartner:importAccountingSituation">
+		<bind column="companySet_code" to="companySet" search="self.code in :companySet_code" eval="companySet_code.split('\\|') as List"/>
+	</input>
 	
 	<!-- A BESOIN DE PARTNER -->
 	<input file="base_bankDetails.csv" separator=";" type="com.axelor.apps.base.db.BankDetails" >
@@ -96,12 +102,6 @@
             <bind to="importId" column="bankDetails.importId"/>
     </bind>
 	</input> -->
-
-  <input file="base_bankDetails.csv" separator=";" search="self.importId = :partner_importId" update="true" type="com.axelor.apps.base.db.Partner" >
-		<bind to="bankDetails" search="self.importId = :importId" >
-            <bind to="importId" column="importId"/>
-    </bind>
-	</input>
 
 	
 	<input file="base_unit.csv" separator=";" type="com.axelor.apps.base.db.Unit">
@@ -230,12 +230,6 @@
       	<bind to="defaultExemptionVat" search="self.code = :defaultExemptionVat_code">
           	<bind column="defaultExemptionVat_code" to="code"/>
       	</bind>
-<!--       	<bind to="chequeInterbankCode" search="self.code = :chequeInterbankCode.code" update="true"> -->
-<!--         	<bind to="code" column="chequeInterbankCode.code"/> -->
-<!--       	</bind> -->
-<!-- 	    <bind to="transferAndDirectDebitInterbankCode" search="self.code = :transferAndDirectDebitInterbankCode.code" update="true">  -->
-<!-- 	    	<bind to="code" column="transferAndDirectDebitInterbankCode.code"/> -->
-<!-- 	    </bind> -->
 		<bind to="qasWsdlUrl" column="qas_url"/>
 	</input>
 
@@ -246,6 +240,12 @@
 	</input>
 	
 	<input file="base_partner.csv" separator=";" type="com.axelor.apps.base.db.Partner" search="self.importId = :importId" update="true" />
+	
+	<input file="base_bankDetails.csv" separator=";" search="self.importId = :partner_importId" update="true" type="com.axelor.apps.base.db.Partner" >
+		<bind to="bankDetails" search="self.importId = :importId" >
+            <bind to="importId" column="importId"/>
+    	</bind>
+	</input>
 	
 	
 <!--     IMPORT DU PACKAGE 'CRM' --> 	
