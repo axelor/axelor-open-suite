@@ -36,7 +36,10 @@
 		<bind column="keyWord_fr" to="keyWord"/>
 	</input>
 	
-	<input file="base_source.csv" separator=";" type="com.axelor.apps.base.db.Source"/>
+	<input file="base_source.csv" separator=";" type="com.axelor.apps.base.db.Source">
+    <bind column="name_fr" to="name"/>
+    <bind column="code_fr" to="code"/>
+  </input>
 	
 	<input file="base_country.csv" separator=";" type="com.axelor.apps.base.db.Country" />
 	
@@ -75,7 +78,6 @@
     
   <input file="base_agency.csv" separator=";" type="com.axelor.apps.base.db.Agency"/>
 	
-	<!-- TODO BIND EN FONCTION DE LA LANGUE -->
 	<input file="base_partnerCategory.csv" separator=";" type="com.axelor.apps.base.db.PartnerCategory">
 		<bind column="name_fr_FR" to="name"/>	
 	</input>
