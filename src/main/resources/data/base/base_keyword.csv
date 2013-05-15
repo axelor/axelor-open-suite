@@ -1,99 +1,140 @@
 "importId";"keyWord_fr";"keyWord_en";"typeSelect"
 "1";"Access";"Access";0
-"2";"ANSYS";"ANSYS";0
-"3";"ASP.NET";"ASP.NET";0
-"4";"AUTOCAD";"AUTOCAD";0
-"5";"Axelor Platform";"Axelor Platform";0
-"6";"C";"C";0
-"7";"C++";"C++";0
-"8";"CATIA";"CATIA";0
-"9";"COBOL";"COBOL";0
-"10";"DELMIA";"DELMIA";0
-"11";"Delphi";"Delphi";0
-"12";"Eagle";"Eagle";0
-"13";"Fortran";"Fortran";0
-"14";"Groovy";"Groovy";0
-"15";"Hyperlynx";"Hyperlynx";0
-"16";"InCa3D";"InCa3D";0
-"17";"INVENTOR";"INVENTOR";0
-"18";"Java";"Java";0
-"19";"Javascript";"Javascript";0
-"20";"JPQL";"JPQL";0
-"21";"JSP";"JSP";0
-"22";"KiCas";"KiCas";0
-"23";"LabVIEW";"LabVIEW";0
-"24";"Linux";"Linux";0
-"25";"Maple";"Maple";0
-"26";"MATLAB";"MATLAB";0
-"27";"Maxwell";"Maxwell";0
-"28";"Maya";"Maya";0
-"29";"Merise";"Merise";0
-"30";"MySQL";"MySQL";0
-"31";"NoSQL";"NoSQL";0
-"32";"Objective-C";"Objective-C";0
-"33";"Office";"Office";0
-"34";"OpenOffice";"OpenOffice";0
-"35";"Oracle";"Oracle";0
-"36";"Photoshop";"Photoshop";0
-"37";"PHP";"PHP";0
-"38";"PostgreSQL";"PostgreSQL";0
-"39";"ProEngineer";"ProEngineer";0
-"40";"Proteus";"Proteus";0
-"41";"Python";"Python";0
-"42";"Ruby";"Ruby";0
-"43";"Scala";"Scala";0
-"44";"Scilab";"Scilab";0
-"45";"Shell";"Shell";0
-"46";"SolidEdge";"SolidEdge";0
-"47";"SOLIDWORKS";"SOLIDWORKS";0
-"48";"SQL";"SQL";0
-"49";"TopSolid";"TopSolid";0
-"50";"UML";"UML";0
-"51";"VHDL";"VHDL";0
-"52";"VisualBasic";"VisualBasic";0
-"53";"Windows";"Windows";0
-"54";"Aéronautique";"Aeronautics";1
-"55";"Agro-alimentaire";"Agro & Food Industry";1
-"56";"Automobile";"Automotive";1
-"57";"Banque et assurance";"Bank & Insurance";1
-"58";"Défense";"Defense";1
-"59";"Energie";"Utilities";1
-"60";"Pharmacie et Medical";"Pharmaceutics and Medical";1
-"61";"Technicien";;2
-"62";"Technicien en automatismes";;2
-"63";"Technicien SAV";;2
-"64";"Technicien maintenance";;2
-"65";"Dessinateur-Projeteur";;2
-"66";"Technicient Electronicien";;2
-"67";"Electro-technicien";;2
-"68";"Opérateur";;2
-"69";"Agent de fabrication";;2
-"70";"Agent d'ordonnancement";;2
-"71";"Agent de contrôle qualité";;2
-"72";"Agent de production";;2
-"73";"Commercial";;2
-"74";"Assistant commercial";;2
-"75";"Technico-commercial";;2
-"76";"VRP";;2
-"77";"Qualiticien";;2
-"78";"Chargé d'affaires";;2
-"79";"Chef de projet";;2
-"80";"Chef de produit";;2
-"81";"Designer";;2
-"82";"Chef de programme";;2
-"83";"Ingénieur d'Etudes";;2
-"84";"Ingénieur R&D";;2
-"85";"Ingénieur mécanicien";;2
-"86";"Ingénieur généraliste";;2
-"87";"Directeur de projet";;2
-"88";"Chef de service";;2
-"89";"Chef de département";;2
-"90";"Directeur R&D";;2
-"91";"Directeur Achat";;2
-"92";"Directeur commercial";;2
-"93";"Directeur Administratif et financier";;2
-"94";"Directeur d'usine";;2
-"95";"Directeur Marketing";;2
-"96";"Directeur Communication";;2
-"97";"Directeur Qualité";;2
-"98";"Directeur Général";;2
+"2";"Achats";"Purchasing";0
+"3";"Administration réseau";"Network Management";0
+"4";"Administration système";"System Management";0
+"5";"ANSYS";"ANSYS";0
+"6";"ASP.NET";"ASP.NET";0
+"7";"Asterisk";"Asterisk";0
+"8";"AUTOCAD";"AUTOCAD";0
+"9";"Axelor Platform";"Axelor Platform";0
+"10";"Business Intelligence";"Business Intelligence";0
+"11";"C";"C";0
+"12";"C++";"C++";0
+"13";"CATIA";"CATIA";0
+"14";"CMMI";"CMMI";0
+"15";"COBOL";"COBOL";0
+"16";"Commerce International";"International Business";0
+"17";"Communication";"Communication";0
+"18";"Comptabilité";"Accounting";0
+"19";"Contrôle qualité";"Quality Control";0
+"20";"DELMIA";"DELMIA";0
+"21";"Delphi";"Delphi";0
+"22";"Droit des affaires";"Business Law";0
+"23";"Eagle";"Eagle";0
+"24";"Electronique";"Electronique";0
+"25";"ERP/CRM";"ERP/CRM";0
+"26";"Flash";"Flash";0
+"27";"Fortran";"Fortran";0
+"28";"GANTT Project";"GANTT Project";0
+"29";"Groovy";"Groovy";0
+"30";"HQSE";"HQSE";0
+"31";"Hyperlynx";"Hyperlynx";0
+"32";"InCa3D";"InCa3D";0
+"33";"INVENTOR";"INVENTOR";0
+"34";"ISO 14001";"ISO 14001";0
+"35";"ISO 9001";"ISO 9001";0
+"36";"Java";"Java";0
+"37";"Javascript";"Javascript";0
+"38";"JPQL";"JPQL";0
+"39";"JSP";"JSP";0
+"40";"Kanban";"Kanban";0
+"41";"KiCas";"KiCas";0
+"42";"LabVIEW";"LabVIEW";0
+"43";"Linux";"Linux";0
+"44";"Maple";"Maple";0
+"45";"Marketing";"Marketing";0
+"46";"MATLAB";"MATLAB";0
+"47";"Maxwell";"Maxwell";0
+"48";"Maya";"Maya";0
+"49";"Merise";"Merise";0
+"50";"Microsoft Office";"Microsoft Office";0
+"51";"Microsoft Project";"Microsoft Project";0
+"52";"Moulage";"Molding";0
+"53";"MySQL";"MySQL";0
+"54";"Négociation";"Negociations";0
+"55";"NoSQL";"NoSQL";0
+"56";"Objective-C";"Objective-C";0
+"57";"OpenOffice";"OpenOffice";0
+"58";"Oracle";"Oracle";0
+"59";"Photoshop";"Photoshop";0
+"60";"PHP";"PHP";0
+"61";"Planication ressources";"Resources Planning";0
+"62";"PostgreSQL";"PostgreSQL";0
+"63";"ProEngineer";"ProEngineer";0
+"64";"Proteus";"Proteus";0
+"65";"Python";"Python";0
+"66";"Rédaction spécifications";"Requirements specification";0
+"67";"Ressources Humaines";"Human Resources";0
+"68";"Ruby";"Ruby";0
+"69";"Scala";"Scala";0
+"70";"Scilab";"Scilab";0
+"71";"Shell";"Shell";0
+"72";"SolidEdge";"SolidEdge";0
+"73";"SOLIDWORKS";"SOLIDWORKS";0
+"74";"Soudage";"Welding";0
+"75";"SQL";"SQL";0
+"76";"Management d'Equipes";"Team Management";0
+"77";"TopSolid";"TopSolid";0
+"78";"UML";"UML";0
+"79";"Usinage";"Machining";0
+"80";"VHDL";"VHDL";0
+"81";"Ventes B2B";"B2B Sales";0
+"82";"Ventes B2C";"B2C Sales";0
+"83";"VisualBasic";"VisualBasic";0
+"84";"Windows";"Windows";0
+"85";"Aéronautique";"Aeronautics";1
+"86";"Agro-alimentaire";"Agro & Food Industry";1
+"87";"Automobile";"Automotive";1
+"88";"Autres industries";"Autres industries";1
+"89";"Banque et assurance";"Bank & Insurance";1
+"90";"Défense";"Defense";1
+"91";"Energie";"Utilities";1
+"92";"Pharmacie et Medical";"Pharmaceutics and Medical";1
+"93";"Secteur publiques et administrations";"Public Sector";1
+"94";"Services";"Services";1
+"95";"Administrateur réseau";"Network supervisor";2
+"96";"Administrateur système";"System Supervisor";2
+"97";"Agent de contrôle qualité";"Quality Control Agent";2
+"98";"Agent de fabrication";"Manufacturing Agent";2
+"99";"Agent de production";"Production Agent";2
+"100";"Agent d'ordonnancement";"Reordering Agent";2
+"101";"Assistant commercial";"Salesman Assistant";2
+"102";"Assistante de Direction";"Manager Assistant";2
+"103";"Chargé d'affaires";"Business Developper";2
+"104";"Chef de département";"Department Manager";2
+"105";"Chef de produit";"Product Manager";2
+"106";"Chef de programme";"Program Manager";2
+"107";"Chef de projet";"Project Manager";2
+"108";"Chef de service";"Division Manager";2
+"109";"Commercial";"Salesman";2
+"110";"Consultant";"Consultant";2
+"111";"Designer";"Designer";2
+"112";"Dessinateur-Projeteur";"Design Drafter";2
+"113";"Directeur Achat";"Purchasing Manager";2
+"114";"Directeur Administratif et financier";"Chief Financial Officer";2
+"115";"Directeur commercial";"Sales Manager";2
+"116";"Directeur Communication";"Communication Manager";2
+"117";"Directeur de projet";"Project Director";2
+"118";"Directeur d'usine";"Factory Manager";2
+"119";"Directeur Général";"General Manager";2
+"120";"Directeur Marketing";"Marketing Manager";2
+"121";"Directeur Qualité";"Quality Manager";2
+"122";"Directeur R&D";"R&D Manager";2
+"123";"Electro-technicien";"Electro-Technician";2
+"124";"Formateur certifié";"Certified trainer";2
+"125";"Ingénieur d'Etudes";"Design Engineer";2
+"126";"Ingénieur généraliste";"General Engineer";2
+"127";"Ingénieur mécanicien";"Mechanical Engineer";2
+"128";"Ingénieur R&D";"R&D Engineer";2
+"129";"Opérateur";"Operator";2
+"130";"Qualiticien";"Qualitician";2
+"131";"Technicien";"Technician";2
+"132";"Technicien Hotline";"Hotline Technician";3
+"133";"Technicien Electronicien";"Technician Electronician";2
+"134";"Technicien en automatismes";"Automation Technician";2
+"135";"Technicien maintenance";"Maintenance Technician";2
+"136";"Technicien SAV";"ASS Technician";2
+"137";"Technico-commercial";"Technical Salesman";2
+"138";"VRP";"Itinerant Salesman";2
+"139";"Directeur Ressources Humaines";"Human Resources Manager";2

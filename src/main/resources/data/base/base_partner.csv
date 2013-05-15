@@ -1,315 +1,340 @@
 "importId";"partnerTypeSelect";"isContact ";"name";"firstName";"titleSelect";"language.code";"mainInvoicingAddress.importId";"deliveryAddess.importId";"email";"fixedPhone1";"fixedPhonePro";"mobilePhonePerso";"bankDetails.importId";"invoiceSendingFormatSelect";"paymentMode.code";"paymentCondition.code";"partnerCategory.code";"currency.code";"blocking.importId";"rejectCounter";"companySet_code";"customerAccount_code";"supplierAccount_code"
-1;1;"false";"MARTIN Industries";;;"FR";1;1;"contact@martin-industries.fr";;"01.47.40.45.99";"06.93.73.43.99";;"email";"IN_CHQ";"15JRNET";"SMB";"EUR";;;"AXB|AXU";;
-2;2;"true";"MARTIN";"Mickaël";;"FR";1;1;"m.martin@martin-industries.fr";;"01.31.21.92.99";"07.97.77.48.99";;"emailpaper";"IN_VIR";"15JRNET";0;"EUR";;;"AXB|AXU";;
-3;2;"true";"BERNARD";"Henry";;"FR";1;1;"h.bernard@martin-industries.fr";;;;;"email";"IN_CHQ";"15JRNET";0;"EUR";;;"AXB|AXU";;
-4;1;"false";"DB Services";;;"FR";20;20;"contact@db-services.fr";;;"07.25.80.19.99";;"emailpaper";"IN_VIR";"15JRNET";"SMB";"EUR";;;"AXB|AXU";;
-5;2;"true";"DUBOIS";"Paul";;"FR";20;20;"p.dubois@db-services.fr";;;;;"email";"IN_CHQ";"15JRNET";0;"EUR";;;"AXB|AXU";;
-6;1;"false";"TM Composants";;;"FR";30;30;"contact@tm-composants.fr";;"01.13.43.43.99";"07.41.97.48.99";;"emailpaper";"IN_VIR";"15JRNET";"SMB";"EUR";;;"AXB|AXU";;
-7;2;"true";"THOMAS";"Maurice";;"FR";30;30;"m.thomas@tm-composants.fr";;"04.39.10.18.99";"07.98.25.23.99";;"email";"IN_CHQ";"15JRNET";0;"EUR";;;"AXB|AXU";;
-8;2;"true";"ROBERT";"Bernard";;"FR";30;30;"b.robert@tm-composants.fr";;;;;"emailpaper";"IN_VIR";"15JRNET";0;"EUR";;;"AXB|AXU";;
-9;1;"false";"Ets RICHARD";;;"FR";40;40;"contact@ets-richard.fr";;;"06.46.34.61.99";;"email";"IN_CHQ";"15JRNET";"SMB";"EUR";;;"AXB|AXU";;
-10;2;"true";"RICHARD";"Louis-Marie";;"FR";40;40;"l.richard@ets-richard.fr";;;"07.14.79.96.99";;"emailpaper";"IN_VIR";"15JRNET";0;"EUR";;;"AXB|AXU";;
-11;2;"true";"PETIT";"Frédéric";;"FR";40;40;"f.petit@ets-richard.fr";;;;;"email";"IN_CHQ";"15JRNET";0;"EUR";;;"AXB|AXU";;
-12;1;"false";"LEROY TRANSPORTS";;;"FR";50;50;"info@leroytransports.fr";;;"07.98.70.84.99";;"emailpaper";"IN_VIR";"15JRNET";"SMB";"EUR";;;"AXB|AXU";;
-13;2;"true";"LEROY";"Vincent";;"FR";50;50;"v.leroy@leroytransports.fr";;;"06.32.88.36.99";;"email";"IN_CHQ";"15JRNET";0;"USD";;;"AXB|AXU";;
-14;2;"true";"MOREAU";"Christian";;"FR";50;50;"c.moreau@leroytransports.fr";;;;;"emailpaper";"IN_VIR";"15JRNET";0;"EUR";;;"AXB|AXU";;
-15;1;"false";"SIMON";;;"FR";60;60;"contact@simon.fr";;;"07.48.59.74.99";;"email";"IN_CHQ";"15JRNET";"SMB";"EUR";;;"AXB|AXU";;
-16;2;"true";"SIMON";"Olivier";;"FR";60;60;"o.simon@simon.fr";;;"06.43.48.39.99";;"emailpaper";"IN_VIR";"15JRNET";0;"EUR";;;"AXB|AXU";;
-17;2;"true";"LAURENT";"Jacques";;"FR";60;60;"j.laurent@simon.fr";;;;;"email";"IN_CHQ";"15JRNET";0;"EUR";;;"AXB|AXU";;
-18;1;"false";"TOP Service";;;"FR";61;61;"info@top-service.fr";;;"06.42.90.93.99";;"emailpaper";"IN_VIR";"15JRNET";"SMB";"EUR";;;"AXB|AXU";;
-19;2;"true";"LEFEBVRE";"Thierry";;"FR";61;61;"t.lefebvre@top-service.fr";;;;;"email";"IN_CHQ";"15JRNET";0;"EUR";;;"AXB|AXU";;
-20;1;"false";"APOLLO";;;"FR";62;62;"contact@apollo.fr";;;"06.41.66.37.99";;"emailpaper";"IN_VIR";"15JRNET";"SMB";"EUR";;;"AXB|AXU";;
-21;2;"true";"MICHEL";"Loic";;"FR";62;62;"l.michel@apollo.fr";;;"06.89.42.54.99";;"email";"IN_CHQ";"15JRNET";0;"EUR";;;"AXB|AXU";;
-22;2;"true";"GARCIA";"Daniel";;"FR";62;62;"d.garcia@apollo.fr";;;"07.95.48.27.99";;"emailpaper";"IN_VIR";"15JRNET";0;"EUR";;;"AXB|AXU";;
-23;2;"true";"DAVID";"Laurent";;"FR";62;62;"l.david@apollo.fr";;;;;"email";"IN_CHQ";"15JRNET";0;"EUR";;;"AXB|AXU";;
-24;1;"false";"SPOUTNIK Communications";;;"FR";70;70;"info@spoutnik.fr";;;"06.62.57.90.99";;"emailpaper";"IN_VIR";"15JRNET";"SMB";"EUR";;;"AXB|AXU";;
-25;2;"true";"BERTRAND";"Philippe";;"FR";70;70;"p.bertrand@spoutnik.fr";;;"06.45.47.21.99";;"email";"IN_CHQ";"15JRNET";0;"EUR";;;"AXB|AXU";;
-26;2;"true";"ROUX";"Jean Philippe";;"FR";70;70;"j.roux@spoutnik.fr";;"05.90.96.16.99";"07.18.51.18.99";;"emailpaper";"IN_VIR";"15JRNET";0;"USD";;;"AXB|AXU";;
-27;2;"true";"VINCENT";"Philippe";;"FR";70;70;"p.vincent@spoutnik.fr";;;;;"email";"IN_CHQ";"15JRNET";0;"USD";;;"AXB|AXU";;
-28;1;"false";"Ets FOURNIER";;;"FR";80;80;"info@ets-fournier.fr";;;"07.77.76.54.99";;"emailpaper";"IN_VIR";"15JRNET";"SMB";"USD";;;"AXB|AXU";;
-29;2;"true";"FOURNIER";"William";;"FR";80;80;"w.fournier@ets-fournier.fr";;;"07.54.89.46.99";;"email";"IN_CHQ";"15JRNET";0;"USD";;;"AXB|AXU";;
-30;2;"true";"MOREL";"Séverine";;"FR";80;80;"s.morel@ets-fournier.fr";;;;;"emailpaper";"IN_VIR";"15JRNET";0;"USD";;;"AXB|AXU";;
-31;1;"false";"GIRARD & ANDRE";;;"FR";90;90;"contact@girardetandre.fr";;"04.78.94.65.99";"07.77.12.30.99";;"email";"IN_CHQ";"15JRNET";"SMB";"USD";;;"AXB|AXU";;
-32;2;"true";"GIRARD";"Denis";;"FR";90;90;"d.girard@girardetandre.fr";;;"07.58.50.46.99";;"emailpaper";"IN_VIR";"15JRNET";0;"USD";;;"AXB|AXU";;
-33;2;"true";"ANDRE";"Jean Pierre";;"FR";90;90;"j.andre@girardetandre.fr";;;;;"email";"IN_CHQ";"15JRNET";0;"USD";;;"AXB|AXU";;
-34;1;"false";"DUPONT & LAMBERT";;;"FR";100;100;"info@dupont-lambert.fr";;;"07.36.86.83.99";;"emailpaper";"IN_VIR";"30JRFDM";"SMB";"USD";;;"AXB|AXU";;
-35;2;"true";"DUPONT";"Albert";;"FR";100;100;"a.dupont@dupont-lambert.fr";;;"07.44.35.22.99";;"email";"IN_CHQ";"30JRFDM";0;"USD";;;"AXB|AXU";;
-36;2;"true";"LAMBERT";"Jérôme";;"FR";100;100;"j.lambert@dupont-lambert.fr";;;;;"emailpaper";"IN_VIR";"30JRFDM";0;"USD";;;"AXB|AXU";;
-37;1;"false";"B&F Conseil";;;"FR";130;130;"info@bfconseil.fr";;"04.58.39.87.99";"06.74.48.23.99";;"email";"IN_CHQ";"30JRFDM";"SMB";"USD";;;"AXB|AXU";;
-38;2;"true";"BONNET";"Françoise";;"FR";130;130;"f.bonnet@bfconseil.fr";;;"06.58.74.71.99";;"emailpaper";"IN_VIR";"30JRFDM";0;"USD";;;"AXB|AXU";;
-39;2;"true";"FRANCOIS";"Nelly";;"FR";130;130;"n.francois@bfconseil.fr";;;;;"email";"IN_CHQ";"30JRFDM";0;"USD";;;"AXB|AXU";;
-40;1;"false";"Ets MARTINEZ";;;"FR";13000;13000;"contact@etsmartinez.fr";;"01.22.26.79.99";"06.76.88.57.99";;"emailpaper";"IN_VIR";"30JRFDM";"SMB";"USD";;;"AXB|AXU";;
-41;2;"true";"MARTINEZ";"Chantal";;"FR";13000;13000;"c.martinez@etsmartinez.fr";;"01.39.56.92.99";"06.31.33.21.99";;"email";"IN_CHQ";"30JRFDM";0;"USD";;;"AXB|AXU";;
-42;2;"true";"LEGRAND";"Fabrice";;"FR";13000;13000;"f.legrand@etsmartinez.fr";;"01.84.95.89.99";"06.39.57.27.99";;"emailpaper";"IN_VIR";"30JRFDM";0;"USD";;;"AXB|AXU";;
-43;2;"true";"GARNIER";"Sébastien";;"FR";13000;13000;"s.garnier@etsmartinez.fr";;;;;"email";"IN_CHQ";"30JRFDM";0;"USD";;;"AXB|AXU";;
-44;1;"false";"BLUEBERRY TELECOM";;;"FR";13001;13001;"info@blueberry-telecom.fr";;"04.25.71.92.99";"06.14.62.29.99";;"emailpaper";"IN_VIR";"30JRFDM";"SMB";"USD";;;"AXB|AXU";;
-45;2;"true";"ROUSSEAU";"Élisabeth";;"FR";13001;13001;"é.rousseau@blueberry-telecom.fr";;"04.91.35.21.99";"07.83.63.98.99";;"email";"IN_CHQ";"30JRFDM";0;"USD";;;"AXB|AXU";;
-46;2;"true";"BLANC";"Bernard";;"FR";13001;13001;"b.blanc@blueberry-telecom.fr";;;;;"emailpaper";"IN_VIR";"30JRFDM";0;"EUR";;;"AXB";;
-47;1;"false";"MULLER & Cie";;;"FR";13002;13002;"contact@muller-cie.fr";;"04.42.38.47.99";"07.19.19.72.99";;"email";"IN_CHQ";"30JRFDM";"SMB";"EUR";;;"AXB";;
-48;2;"true";"GUERIN";"Nathalie";;"FR";13002;13002;"n.guerin@muller-cie.fr";;"04.43.89.93.99";"07.42.56.84.99";;"emailpaper";"IN_VIR";"30JRFDM";0;"EUR";;;"AXB";;
-49;2;"true";"MULLER";"Philippe";;"FR";13002;13002;"p.muller@muller-cie.fr";;;;;"email";"IN_CHQ";"30JRFDM";0;"EUR";;;"AXB";;
-50;1;"false";"HR Technologie";;;"FR";190;190;"info@hrtech.fr";;"04.25.89.33.99";"06.42.42.88.99";;"emailpaper";"IN_VIR";"30JRFDM";"SMB";"EUR";;;"AXB";;
-51;2;"true";"HENRY";"Alain";;"FR";190;190;"a.henry@hrtech.fr";;"01.25.94.24.99";"07.73.88.66.99";;"email";"IN_CHQ";"30JRFDM";0;"EUR";;;"AXB";;
-52;2;"true";"ROUSSEL";"Jean";;"FR";190;190;"j.roussel@hrtech.fr";;;;;"emailpaper";"IN_VIR";"30JRFDM";0;"EUR";;;"AXB";;
-53;1;"false";"NPM Services";;;"FR";210;210;"info@npm-services.fr";;"01.51.12.74.99";"07.36.99.25.99";;"email";"IN_CHQ";"30JRFDM";"SMB";"EUR";;;"AXB";;
-54;2;"true";"NICOLAS";"Nicolas";;"FR";210;210;"n.nicolas@npm-services.fr";;"01.69.44.99.99";"06.24.18.63.99";;"emailpaper";"IN_VIR";"30JRFDM";0;"EUR";;;"AXB";;
-55;2;"true";"PERRIN";"Bertrand";;"FR";210;210;"b.perrin@npm-services.fr";;"01.38.66.37.99";"07.72.97.26.99";;"email";"IN_CHQ";"30JRFDM";0;"EUR";;;"AXB";;
-56;2;"true";"MORIN";"Guillaume";;"FR";210;210;"g.morin@npm-services.fr";;;;;"emailpaper";"IN_VIR";"30JRFDM";0;"EUR";;;"AXB";;
-57;1;"false";"MATHIEU & CLEMENT";;;"FR";220;220;"info@mathieuetclement.fr";;"01.65.89.72.99";"07.80.48.99.99";;"email";"IN_CHQ";"30JRFDM";"SMB";"EUR";;;"AXB";;
-58;2;"true";"MATHIEU";"David";;"FR";220;220;"d.mathieu@mathieuetclement.fr";;"01.92.19.34.99";"07.53.79.67.99";;"emailpaper";"IN_VIR";"30JRFDM";0;"EUR";;;"AXB";;
-59;2;"true";"CLEMENT";"Didier";;"FR";220;220;"d.clement@mathieuetclement.fr";;;;;"email";"IN_CHQ";"30JRFDM";0;"EUR";;;"AXB";;
-60;1;"false";"GDL Industrie";;;"FR";240;240;"contact@gdlindustrie.fr";;"01.64.33.65.99";"06.30.96.91.99";;"emailpaper";"IN_VIR";"30JRFDM";"SMB";"EUR";;;"AXB";;
-61;2;"true";"GAUTHIER";"Jean";;"FR";240;240;"j.gauthier@gdlindustrie.fr";;"01.87.29.32.99";"06.63.56.18.99";;"email";"IN_CHQ";"30JRFDM";0;"EUR";;;"AXB";;
-62;2;"true";"DUMONT";"Jacques";;"FR";240;240;"j.dumont@gdlindustrie.fr";;;;;"emailpaper";"IN_VIR";"30JRFDM";0;"EUR";;;"AXB";;
-63;1;"false";"LOPEZ & Co";;;"FR";250;250;"contact@lopezco.fr";;"01.32.19.94.99";"07.45.26.52.99";;"email";"IN_CHQ";"30JRFDM";"SMB";"EUR";;;"AXB";;
-64;2;"true";"LOPEZ";"Christophe";;"FR";250;250;"c.lopez@lopezco.fr";;;;;"emailpaper";"IN_VIR";"30JRFDM";0;"EUR";;;"AXB";;
-65;1;"false";"Transports FONTAINE";;;"FR";260;260;"contact@transports-fontaine.fr";;"01.44.77.49.99";"07.69.85.86.99";;"email";"IN_CHQ";"30JRFDM";"SMB";"EUR";;;"AXB";;
-66;2;"true";"FONTAINE";"Jean-Luc";;"FR";260;260;"j.fontaine@transports-fontaine.fr";;;;;"emailpaper";"IN_VIR";"30JRFDM";0;"EUR";;;"AXB";;
-67;1;"false";"Transports CHEVALIER";;;"FR";310;310;"contact@transports-chevalier.fr";;"01.30.32.66.99";"07.10.41.47.99";;"email";"IN_CHQ";"30JRFDM";"SMB";"EUR";;;"AXB";;
-68;2;"true";"CHEVALIER";"François";;"FR";310;310;"f.chevalier@transports-chevalier.fr";;"01.16.40.12.99";"06.51.33.86.99";;"emailpaper";"IN_VIR";"30JRFDM";0;"EUR";;;"AXB";;
-69;2;"true";"ROBIN";"René";;"FR";310;310;"r.robin@transports-chevalier.fr";;;;;"email";"IN_CHQ";"30JRFDM";0;"EUR";;;"AXB";;
-70;1;"false";"MASSON Logistics";;;"FR";311;311;"info@masson.fr";;"01.83.89.57.99";"07.76.18.65.99";;"emailpaper";"IN_VIR";"ARFACT";"SMB";"EUR";;;"AXB";;
-71;2;"true";"MASSON";"Xavier";;"FR";311;311;"x.masson@masson.fr";;"01.15.34.30.99";"07.59.17.99.99";;"email";"IN_CHQ";"ARFACT";0;"EUR";;;"AXB";;
-72;2;"true";"SANCHEZ";"Catherine";;"FR";311;311;"c.sanchez@masson.fr";;;;;"emailpaper";"IN_VIR";"ARFACT";0;"EUR";;;"AXB";;
-73;1;"false";"GIRAUD Aviation";;;"FR";312;312;"contact@giraud-aviation.fr";;"01.17.53.28.99";"06.28.89.21.99";;"email";"IN_CHQ";"ARFACT";"SMB";"EUR";;;"AXB";;
-74;2;"true";"GIRAUD";"Arnaud";;"FR";312;312;"a.giraud@giraud-aviation.fr";;"01.16.91.30.99";"06.12.97.12.99";;"emailpaper";"IN_VIR";"ARFACT";0;"EUR";;;"AXB";;
-75;2;"true";"LECLERC";"Alain";;"FR";312;312;"a.leclerc@giraud-aviation.fr";;"01.32.17.84.99";"07.97.65.24.99";;"email";"IN_CHQ";"ARFACT";0;"EUR";;;"AXB";;
-76;2;"true";"VIDAL";"Quentin";;"FR";312;312;"q.vidal@giraud-aviation.fr";;;;;"emailpaper";"IN_VIR";"ARFACT";0;"EUR";;;"AXB";;
-77;1;"false";"GERARD Solutions";;;"FR";330;330;"info@gerard-solutions.fr";;"01.36.37.66.99";"06.90.75.97.99";;"email";"IN_CHQ";"ARFACT";"SMB";"EUR";;;"AXB";;
-78;2;"true";"GERARD";"Fabrice";;"FR";330;330;"f.gerard@gerard-solutions.fr";;"01.58.95.42.99";"06.97.90.53.99";;"emailpaper";"IN_VIR";"ARFACT";0;"EUR";;;"AXB";;
-79;2;"true";"NGUYEN";"Xavier";;"FR";330;330;"x.nguyen@gerard-solutions.fr";;;;;"email";"IN_CHQ";"ARFACT";0;"EUR";;;"AXB";;
-80;1;"false";"BOYER Transports";;;"FR";350;350;"info@boyertransports.fr";;"01.40.15.33.99";"06.29.99.69.99";;"emailpaper";"IN_VIR";"ARFACT";"SMB";"EUR";;;"AXB";;
-81;2;"true";"BOYER";"Joël";;"FR";350;350;"j.boyer@boyertransports.fr";;"01.88.42.65.99";"07.17.46.70.99";;"email";"IN_CHQ";"ARFACT";0;"EUR";;;"AXB";;
-82;2;"true";"DENIS";"Sandrine";;"FR";350;350;"s.denis@boyertransports.fr";;;;;"emailpaper";"IN_VIR";"ARFACT";0;"EUR";;;"AXB";;
-83;1;"false";"LEMAIRE Communications";;;"FR";440;440;"contact@lemairecom.fr";;"01.47.59.13.99";"07.88.62.49.99";;"email";"IN_CHQ";"ARFACT";"SMB";"EUR";;;"AXB";;
-84;2;"true";"LEMAIRE";"Emmanuel";;"FR";440;440;"e.lemaire@lemairecom.fr";;"01.65.61.76.99";"07.17.15.64.99";;"emailpaper";"IN_VIR";"ARFACT";0;"EUR";;;"AXB";;
-85;2;"true";"DUVAL";"Bertrand";;"FR";440;440;"b.duval@lemairecom.fr";;"01.73.11.80.99";"06.10.80.97.99";;"email";"IN_CHQ";"ARFACT";0;"EUR";;;"AXB";;
-86;2;"true";"JOLY";"Herve";;"FR";440;440;"h.joly@lemairecom.fr";;"01.72.34.53.99";"06.40.95.45.99";;"emailpaper";"IN_VIR";"ARFACT";0;"EUR";;;"AXB";;
-87;2;"true";"GAUTIER";"Fabrice";;"FR";440;440;"f.gautier@lemairecom.fr";;;;;"email";"IN_CHQ";"ARFACT";0;"EUR";;;"AXB";;
-88;1;"false";"123 Services";;;"FR";590;590;"info@123-services.fr";;"01.59.43.93.99";"06.75.77.83.99";;"emailpaper";"IN_VIR";"ARFACT";"SMB";"EUR";;;"AXB";;
-89;2;"true";"ROGER";"Jean Marc";;"FR";590;590;"j.roger@123-services.fr";;"01.80.72.87.99";"07.42.32.10.99";;"email";"IN_CHQ";"ARFACT";0;"EUR";;;"AXB";;
-90;2;"true";"ROCHE";"Dominique";;"FR";590;590;"d.roche@123-services.fr";;"01.53.28.57.99";"06.64.23.62.99";;"emailpaper";"IN_VIR";"ARFACT";0;"EUR";;;"AXB";;
-91;2;"true";"ROY";"Thierry";;"FR";590;590;"t.roy@123-services.fr";;;;;"email";"IN_CHQ";"ARFACT";0;"EUR";;;"AXB";;
-92;1;"false";"Pneus LACROIX";;;"FR";630;630;"info@pneus-lacroix.fr";;"04.42.45.22.99";"07.57.37.32.99";;"emailpaper";"IN_VIR";"ARFACT";"SMB";"USD";;;"AXB";;
-93;2;"true";"PHILIPPE";"Sophie";;"FR";630;630;"s.philippe@pneus-lacroix.fr";;"04.81.70.65.99";"07.95.46.56.99";;"email";"IN_CHQ";"ARFACT";0;"USD";;;"AXB";;
-94;2;"true";"LECLERCQ";"Geoffrey";;"EN";630;630;"g.leclercq@pneus-lacroix.fr";;"04.75.61.76.99";"06.71.30.66.99";;"emailpaper";"IN_VIR";"ARFACT";0;"USD";;;"AXB";;
-95;2;"true";"LACROIX";"Cédric";;"EN";630;630;"c.lacroix@pneus-lacroix.fr";;"04.31.28.69.99";"07.18.20.52.99";;"email";"IN_CHQ";"ARFACT";0;"USD";;;"AXB";;
-96;2;"true";"FABRE";"Daniel";;"EN";630;630;"d.fabre@pneus-lacroix.fr";;;;;"emailpaper";"IN_VIR";"ARFACT";0;"USD";;;"AXB";;
-97;1;"false";"EL-FASSI Autos";;;"EN";670;670;"info@elfassiautos.fr";;"01.31.22.72.99";"07.90.25.58.99";;"email";"IN_CHQ";"ARFACT";"SMB";"USD";;;"AXB";;
-98;2;"true";"EL-FASSI";"Meriem";;"EN";670;670;"m.el-fassi@elfassiautos.fr";;"01.82.95.33.99";"06.51.40.78.99";;"emailpaper";"IN_VIR";"ARFACT";0;"USD";;;"AXB";;
-99;2;"true";"BOUBAKER";"Sara";;"EN";670;670;"s.boubaker@elfassiautos.fr";;"01.70.88.43.99";"07.53.73.24.99";;"email";"IN_CHQ";"ARFACT";0;"USD";;;"AXB";;
-100;2;"true";"EL FASSI";"Adelkarim";;"EN";670;670;"a.el fassi@elfassiautos.fr";;;;;"emailpaper";"IN_VIR";"ARFACT";0;"USD";;;"AXB";;
-101;1;"false";"Ets AABASSI";;;"EN";75000;75000;"info@ets-aabassi.fr";;"01.73.48.68.99";"07.99.69.53.99";;"email";"IN_CHQ";"ARFACT";"SMB";"USD";;;"AXB";;
-102;2;"true";"EL AABASSI";"Saïd";;"EN";75000;75000;"s.el aabassi@ets-aabassi.fr";;"01.88.59.87.99";"06.15.58.17.99";;"emailpaper";"IN_VIR";"ARFACT";0;"USD";;;"AXB";;
-103;2;"true";"JEAN";"Guillaume";;"EN";75000;75000;"g.jean@ets-aabassi.fr";;"01.94.45.55.99";"06.20.37.20.99";;"email";"IN_CHQ";"ARFACT";0;"USD";;;"AXB";;
-104;2;"true";"PEREZ";"Françoise";;"EN";75000;75000;"f.perez@ets-aabassi.fr";;"01.70.51.95.99";"06.15.75.92.99";;"emailpaper";"IN_VIR";"ARFACT";0;"USD";;;"AXB";;
-105;2;"true";"MARCHAND";"Laurent";;"EN";75000;75000;"l.marchand@ets-aabassi.fr";;;;;"email";"IN_CHQ";"ARFACT";0;"USD";;;"AXB";;
-106;1;"false";"D&B Consulting";;;"EN";75001;75001;"info@dbconsulting.fr";;"01.49.16.79.99";"06.59.46.56.99";;"emailpaper";"IN_VIR";"ARFACT";"SMB";"USD";;;"AXB";;
-107;2;"true";"DUFOUR";"Albert";;"EN";75001;75001;"a.dufour@dbconsulting.fr";;"01.89.98.19.99";"07.38.40.12.99";;"email";"IN_CHQ";"ARFACT";0;"USD";;;"AXB";;
-108;2;"true";"BLANCHARD";"Clément";;"EN";75001;75001;"c.blanchard@dbconsulting.fr";;"01.47.60.51.99";"07.90.12.10.99";;"emailpaper";"IN_VIR";"ARFACT";0;"USD";;;"AXB";;
-109;2;"true";"MARIE";"Julien";;"EN";75001;75001;"j.marie@dbconsulting.fr";;;;;"email";"IN_CHQ";"ARFACT";0;"USD";;;"AXB";;
-110;1;"false";"OR TECH";;;"EN";75002;75002;"contact@or-tech.fr";;"01.46.86.28.99";"06.99.35.23.99";;"emailpaper";"IN_VIR";"ARFACT";"SMB";"USD";;;"AXB";;
-111;2;"true";"BARBIER";"Sébastien";;"EN";75002;75002;"s.barbier@or-tech.fr";;"01.46.77.81.99";"06.73.96.54.99";;"email";"IN_CHQ";"ARFACT";0;"USD";;;"AXB";;
-112;2;"true";"BRUN";"Laurence";;"EN";75002;75002;"l.brun@or-tech.fr";;"01.69.60.87.99";"06.22.53.16.99";;"emailpaper";"IN_VIR";"ARFACT";0;"USD";;;"AXB";;
-113;2;"true";"DUMAS";"Estelle";;"EN";75002;75002;"e.dumas@or-tech.fr";;;;;"email";"IN_CHQ";"ARFACT";0;"USD";;;"AXB";;
-114;1;"false";"BRUNET Import Export";;;"EN";75003;75003;"contact@brunet-ie.fr";;"01.29.48.86.99";"06.59.29.19.99";;"emailpaper";"IN_VIR";"ARFACT";"SMB";"USD";;;"AXB";;
-115;2;"true";"BRUNET";"Laurent";;"EN";75003;75003;"l.brunet@brunet-ie.fr";;"01.91.60.48.99";"06.51.44.65.99";;"email";"IN_CHQ";"ARFACT";0;"USD";;;"AXB";;
-116;2;"true";"SCHMITT";"Allan";;"EN";75003;75003;"a.schmitt@brunet-ie.fr";;;;;"emailpaper";"IN_VIR";"ARFACT";0;"USD";;;"AXB";;
-117;1;"false";"FERNANDEZ MultiServices";;;"EN";75004;75004;"contact@fernandez-ms.fr";;"01.29.46.14.99";"07.64.95.10.99";;"email";"IN_CHQ";"ARFACT";"SMB";"USD";;;"AXB";;
-118;2;"true";"FERNANDEZ";"Pierre";;"FR";75004;75004;"p.fernandez@fernandez-ms.fr";;"01.99.80.44.99";"06.48.87.52.99";;"emailpaper";"IN_VIR";"ARFACT";0;"USD";;;"AXB";;
-119;2;"true";"PIERRE";"Marie";;"FR";75004;75004;"m.pierre@fernandez-ms.fr";;"01.78.45.41.99";"07.11.94.54.99";;"email";"IN_CHQ";"ARFACT";0;"USD";;;"AXB";;
-120;2;"true";"RENARD";"Baptiste";;"FR";75004;75004;"b.renard@fernandez-ms.fr";;;;;"emailpaper";"IN_VIR";"ARFACT";0;"USD";;;"AXB";;
-121;1;"false";"HL Composants";;;"FR";790;790;"contact@hlcomposants.fr";;"04.11.61.18.99";"06.81.78.68.99";;"email";"IN_CHQ";"ARFACT";"SMB";"EUR";;;"AXB";;
-122;2;"true";"HUBERT";"Laurent";;"FR";790;790;"l.hubert@hlcomposants.fr";;"04.69.55.88.99";"07.27.45.25.99";;"emailpaper";"IN_VIR";"ARFACT";0;"EUR";;;"AXB";;
-123;2;"true";"LOUIS";"Noémie";;"FR";790;790;"n.louis@hlcomposants.fr";;"04.93.84.99.99";"07.42.54.10.99";;"email";"IN_CHQ";"ARFACT";0;"EUR";;;"AXB";;
-124;2;"true";"ADJE";"Younès";;"FR";790;790;"y.adje@hlcomposants.fr";;;;;"emailpaper";"IN_VIR";"ARFACT";0;"EUR";;;"AXB";;
-125;1;"false";"EUROPE GEOLOC";;;"FR";920;920;"info@europe-geoloc.fr";;"04.11.72.22.99";"06.52.19.50.99";;"email";"IN_CHQ";"ARFACT";"SMB";"EUR";;;"AXB";;
-126;2;"true";"ABBES";"Youssef";;"FR";920;920;"y.abbes@europe-geoloc.fr";;"05.79.46.20.99";"07.64.21.91.99";;"emailpaper";"IN_VIR";"ARFACT";0;"EUR";;;"AXB";;
-127;2;"true";"REY";"Pierre";;"FR";920;920;"p.rey@europe-geoloc.fr";;"05.13.22.66.99";"07.33.86.59.99";;"email";"IN_CHQ";"ARFACT";0;"EUR";;;"AXB";;
-128;2;"true";"MOULIN";"Robert";;"FR";920;920;"r.moulin@europe-geoloc.fr";;;;;"emailpaper";"IN_VIR";"ARFACT";0;"EUR";;;"AXB";;
-129;1;"false";"FLEURY Voyages";;;"FR";930;930;"info@fleurvoyages.fr";;"05.86.20.26.99";"06.15.83.72.99";;"email";"IN_CHQ";"ARFACT";"SMB";"EUR";;;"AXB";;
-130;2;"true";"FLEURY";"Jean-Louis";;"FR";930;930;"j.fleury@fleurvoyages.fr";;"05.83.41.55.99";"07.76.89.71.99";;"emailpaper";"IN_VIR";"ARFACT";0;"EUR";;;"AXB";;
-131;2;"true";"DESCHAMPS";"Alexandre";;"FR";930;930;"a.deschamps@fleurvoyages.fr";;;;;"email";"IN_CHQ";"ARFACT";0;"EUR";;;"AXB";;
-132;1;"false";"BOURGEOIS INDUSTRIE";;;"FR";940;940;"info@bourgeois-industries.fr";;"05.34.68.49.99";"06.86.42.41.99";;"emailpaper";"IN_VIR";"ARFACT";"SMB";"EUR";;;"AXB";;
-133;2;"true";"BOURGEOIS";"Luc";;"FR";940;940;"l.bourgeois@bourgeois-industries.fr";;"05.58.10.97.99";"06.43.52.92.99";;"email";"IN_CHQ";"ARFACT";0;"EUR";;;"AXB";;
-134;2;"true";"ARAFI";"Zohra";;"FR";940;940;"z.arafi@bourgeois-industries.fr";;"04.75.16.45.99";"07.72.53.10.99";;"emailpaper";"IN_VIR";"ARFACT";0;"EUR";;;"AXB";;
-135;2;"true";"CHARLES";"Jeannot";;"FR";940;940;"j.charles@bourgeois-industries.fr";;;;;"email";"IN_CHQ";"ARFACT";0;"EUR";;;"AXB";;
-136;1;"false";"Banque GUILLOT";;;"FR";950;950;"contact@banqueguillot.fr";;"04.62.67.48.99";"06.63.55.39.99";;"emailpaper";"IN_VIR";"ARFACT";"SMB";"EUR";;;"AXB";;
-137;2;"true";"GUILLOT";"Kévin";;"FR";950;950;"k.guillot@banqueguillot.fr";;"04.29.60.30.99";"07.44.77.73.99";;"email";"IN_CHQ";"ARFACT";0;"EUR";;;"AXB";;
-138;2;"true";"NOEL";"Jean Nicolas";;"FR";950;950;"j.noel@banqueguillot.fr";;"03.21.42.45.99";"07.67.21.50.99";;"emailpaper";"IN_VIR";"ARFACT";0;"EUR";;;"AXB";;
-139;2;"true";"MEUNIER";"Paul";;"FR";950;950;"p.meunier@banqueguillot.fr";;;;;"email";"IN_CHQ";"ARFACT";0;"EUR";;;"AXB";;
-140;1;"false";"WANG Mechanical Components";;;"FR";2000;2000;"contact@wangmechco.com";;"03.16.73.31.99";"06.42.87.86.99";;"emailpaper";"IN_VIR";"ARFACT";"SMB";"EUR";;;"AXB";;
-141;2;"true";"WANG";"Charles";;"FR";2000;2000;"c.wang@wangmechco.com";;;;;"email";"IN_CHQ";"ARFACT";0;"EUR";;;"AXB";;
-142;1;"false";"Li Bearings";;;"FR";2001;2001;"info@li-bearings.com";;"03.80.33.12.99";"07.99.88.29.99";;"emailpaper";"IN_VIR";"ARFACT";"SMB";"EUR";;;"AXB";;
-143;2;"true";"LI";"Guo Jie";;"FR";2001;2001;"g.li@li-bearings.com";;;;;"email";"IN_CHQ";"ARFACT";0;"EUR";;;"AXB";;
-144;1;"false";"LUO Auto Parts";;;"FR";2002;2002;"contact@luo-autoparts.com";;"03.91.91.83.99";"07.97.17.64.99";;"emailpaper";"IN_VIR";"ARFACT";"SMB";"EUR";;;"AXB";;
-145;2;"true";"LUO";"Han";;"FR";2002;2002;"h.luo@luo-autoparts.com";;;;;"email";"IN_CHQ";"ARFACT";0;"EUR";;;"AXB";;
-146;1;"false";"LIU Welding";;;"FR";2003;2003;"contact@liu-weldings.com";;"03.51.28.59.99";"06.59.61.38.99";;"emailpaper";"IN_VIR";"ARFACT";"SMB";"EUR";;;"AXB";;
-147;2;"true";"LIU";"Chao";;"FR";2003;2003;"c.liu@liu-weldings.com";;;;;"email";"IN_CHQ";"ARFACT";0;"EUR";;;"AXB";;
-148;1;"false";"TOP Components";;;"FR";2004;2004;"info@top-components.com";;"03.51.64.91.99";"06.19.25.67.99";;"emailpaper";"IN_VIR";"ARFACT";"SMB";"EUR";;;"AXB";;
-149;2;"true";"ZHANG";"Annie";;"FR";2004;2004;"a.zhang@top-components.com";;;;;"email";"IN_CHQ";"ARFACT";0;"EUR";;;"AXB";;
-150;1;"false";"GOLD Suppliers";;;"FR";2005;2005;"contact@goldsuppliers.com";;"03.71.13.13.99";"07.70.80.92.99";;"emailpaper";"IN_VIR";"ARFACT";"SMB";"EUR";;;"AXB";;
-151;2;"true";"GUO";"Yang";;"FR";2005;2005;"y.guo@goldsuppliers.com.com";;;;;"email";"IN_CHQ";"ARFACT";0;"EUR";;;"AXB";;
-152;1;"false";"SILVER Electronics";;;"FR";2006;2006;"contact@silverelec.com";;"03.34.25.59.99";"07.80.17.95.99";;"emailpaper";"IN_VIR";"ARFACT";"SMB";"EUR";;;"AXB";;
-153;2;"true";"LI";"Yang";;"FR";2006;2006;"y.li@silverelec.com";;;;;"email";"IN_CHQ";"45JRNET";0;"EUR";;;"AXB";;
-154;1;"false";"J&J Painting and Coatings";;;"FR";2007;2007;"info@jjpandc.com";;"03.31.96.11.99";"06.55.34.87.99";;"emailpaper";"IN_VIR";"45JRNET";"SMB";"EUR";;;"AXB";;
-155;2;"true";"LIU";"Jing Jing";;"FR";2007;2007;"j.liu@jjpandc.com";;"03.31.98.94.99";"06.73.26.83.99";;"email";"IN_CHQ";"45JRNET";0;"EUR";;;"AXB";;
-156;2;"true";"FENG";"Dan";;"FR";2007;2007;"d.feng@jjpandc.com";;;;;"emailpaper";"IN_VIR";"45JRNET";0;"EUR";;;"AXB";;
-157;1;"false";"CHINA Parts";;;"FR";2008;2008;"info@chinaparts.com";;"03.42.34.79.99";"06.75.50.29.99";;"email";"IN_CHQ";"45JRNET";"SMB";"EUR";;;"AXB";;
-158;2;"true";"DONG";"Jie";;"FR";2008;2008;"j.dong@chinaparts.com";;"03.76.16.28.99";"06.89.92.27.99";;"emailpaper";"IN_VIR";"45JRNET";0;"EUR";;;"AXB";;
-159;2;"true";"HU";"Dong Mei";;"FR";2008;2008;"d.hu@chinaparts.com";;;;;"email";"IN_CHQ";"45JRNET";0;"EUR";;;"AXB";;
-160;1;"false";"ROYAL Services";;;"FR";2009;2009;"contact@royalservices.com";;"03.48.79.32.99";"07.73.25.73.99";;"emailpaper";"IN_VIR";"45JRNET";"SMB";"EUR";;;"AXB";;
-161;2;"true";"MA";"Jin Tao";;"FR";2009;2009;"j.ma@royalservices.com";;"03.53.28.61.99";"06.79.71.52.99";;"email";"IN_CHQ";"45JRNET";0;"EUR";;;"AXB";;
-162;2;"true";"HUO";"Xue";;"FR";2009;2009;"x.huo@royalservices.com";;;;;"emailpaper";"IN_VIR";"45JRNET";0;"EUR";;;"AXB";;
-163;1;"false";"WU Bearings";;;"FR";2010;2010;"info@wubearings.com";;"03.77.74.48.99";"07.37.20.33.99";;"email";"IN_CHQ";"45JRNET";"SMB";"EUR";;;"AXB";;
-164;2;"true";"WU";"Tian";;"FR";2010;2010;"t.wu@wubearings.com";;"04.92.65.24.99";"06.15.48.97.99";;"emailpaper";"IN_VIR";"45JRNET";0;"EUR";;;"AXB";;
-165;2;"true";"WANG";"Jing";;"FR";2010;2010;"j.wang@wubearings.com";;;;;"email";"IN_CHQ";"45JRNET";0;"EUR";;;"AXB";;
-166;1;"false";"AN Import Export";;;"FR";2011;2011;"contact@an-ie.com";;"04.71.66.94.99";"07.59.91.38.99";;"emailpaper";"IN_VIR";"45JRNET";"SMB";"EUR";;;"AXB";;
-167;2;"true";"AN";"Da";;"FR";2011;2011;"d.an@an-ie.com";;;;;"email";"IN_CHQ";"45JRNET";0;"EUR";;;"AXB";;
-168;1;"false";"YOSHIDA Electronics";;;"FR";6000;6000;"contact@yoshida-electronics.com";;"04.40.99.16.99";"07.93.95.27.99";;"emailpaper";"IN_VIR";"45JRNET";"SMB";"EUR";;;"AXB";;
-169;2;"true";"YOSHIDA";"Miyuki";;"FR";6000;6000;"m.yoshida@yoshida-electronics.com";;;;;"email";"IN_CHQ";"45JRNET";0;"EUR";;;"AXB";;
-170;1;"false";"SASAKI Components";;;"FR";6001;6001;"contact@sasaki-components.com";;"04.26.94.48.99";"06.65.60.95.99";;"emailpaper";"IN_VIR";"45JRNET";"SMB";"EUR";;;"AXB";;
-171;2;"true";"SASAKI";"Amaya";;"FR";6001;6001;"a.sasaki@sasaki-components.com";;;;;"email";"IN_CHQ";"45JRNET";0;"EUR";;;"AXB";;
-172;1;"false";"MATSU Parts";;;"FR";6002;6002;"contact@matsuparts.com";;"04.31.84.67.99";"06.88.84.92.99";;"emailpaper";"IN_VIR";"45JRNET";"SMB";"EUR";;;"AXB";;
-173;2;"true";"MATSUMOTO";"Chisa";;"FR";6002;6002;"c.matsumoto@matsuparts.com";;"04.42.37.34.99";"06.38.89.10.99";;"email";"IN_CHQ";"45JRNET";0;"EUR";;;"AXB";;
-174;2;"true";"SHIMIZU";"Daigo";;"FR";6002;6002;"d.shimizu@matsuparts.com";;;;;"emailpaper";"IN_VIR";"45JRNET";0;"EUR";;;"AXB";;
-175;1;"false";"MORI MORI Services";;;"FR";6003;6003;"contact@mori-mori.com";;"04.49.22.75.99";"07.32.76.60.99";;"email";"IN_CHQ";"45JRNET";"SMB";"EUR";;;"AXB";;
-176;2;"true";"MORI";"Fuku";;"FR";6003;6003;"f.mori@mori-mori.com";;"02.74.32.14.99";"06.42.84.59.99";;"emailpaper";"IN_VIR";"45JRNET";0;"EUR";;;"AXB";;
-177;2;"true";"ABE";"Kanori";;"FR";6003;6003;"k.abe@mori-mori.com";;;;;"email";"IN_CHQ";"45JRNET";0;"EUR";;;"AXB";;
-178;1;"false";"HASHIMOTO Exports";;;"FR";6004;6004;"info@hashimoto.com";;"02.82.46.38.99";"06.52.57.82.99";;"emailpaper";"IN_VIR";"45JRNET";"SMB";"EUR";;;"AXB";;
-179;2;"true";"HASHIMOTO";"Kae";;"FR";6004;6004;"k.hashimoto@hashimoto.com";;"02.63.58.94.99";"07.58.45.13.99";;"email";"IN_CHQ";"45JRNET";0;"EUR";;;"AXB";;
-180;2;"true";"AOKI";"Misao";;"FR";6004;6004;"m.aoki@hashimoto.com";;;;;"emailpaper";"IN_VIR";"45JRNET";0;"EUR";;;"AXB";;
-181;1;"true";"AELTERS Logistics";;;"FR";1000;1000;"info@aelters-logistics.com.com";;"02.61.97.84.99";"07.53.27.98.99";;"email";"IN_CHQ";"45JRNET";"SMB";"EUR";;;"AXB";;
-182;2;"true";"AELTERS";"Christian";;"FR";1000;1000;"c.aelters@aelters-logistics.com.com";;;;;"emailpaper";"IN_VIR";"45JRNET";0;"EUR";;;"AXB";;
-183;1;"true";"CUYPERS Materials";;;"FR";1001;1001;"info@cuypers-materials.com";;"02.18.35.73.99";"06.46.87.71.99";;"email";"IN_CHQ";"45JRNET";"SMB";"EUR";;;"AXB";;
-184;2;"true";"CUYPERS";"Cornelia";;"FR";1001;1001;"c.cuypers@cuypers-materials.com";;;;;"emailpaper";"IN_VIR";"45JRNET";0;"EUR";;;"AXB";;
-185;1;"false";"DE KIMPE Engineering";;;"FR";1002;1002;"contact@dekimpe-eng.com";;"02.10.16.36.99";"07.63.83.17.99";;"email";"IN_CHQ";"45JRNET";"SMB";"EUR";;;"AXB";;
-186;2;"true";"DE KIMPE";"Joos";;"FR";1002;1002;"j.de kimpe@dekimpe-eng.com";;;;;"emailpaper";"IN_VIR";"45JRNET";0;"EUR";;;"AXB";;
-187;1;"false";"KIEFFER Import Export";;;"FR";7000;7000;"contact@kieffer-ie.com";;"02.44.44.41.99";"06.85.72.17.99";;"email";"IN_CHQ";"45JRNET";"SMB";"EUR";;;"AXB";;
-188;2;"true";"KIEFFER";"Claude";;"FR";7000;7000;"c.kieffer@dekimpe-eng.com";;;;;"emailpaper";"IN_VIR";"45JRNET";0;"EUR";;;"AXB";;
-189;1;"false";"HUBERT Biotechnologies";;;"FR";7001;7001;"info@hubert-biotech.com";;"02.16.97.99.99";"07.82.95.87.99";;"email";"IN_CHQ";"45JRNET";"SMB";"EUR";;;"AXB";;
-190;2;"true";"HUBERT";"Marie";;"FR";7001;7001;"m.hubert@hubert-biotech.com";;;;;"emailpaper";"IN_VIR";"45JRNET";0;"EUR";;;"AXB";;
-191;1;"false";"SCHOTT Multiservices";;;"FR";7002;7002;"contact@schott-multiservices.com";;"02.47.78.13.99";"06.33.78.92.99";;"email";"IN_CHQ";"45JRNET";"SMB";"EUR";;;"AXB";;
-192;2;"true";"SCHOTT";"Edouard";;"FR";7002;7002;"e.schott@schott-multiservices.com";;;;;"emailpaper";"IN_VIR";"45JRNET";0;"EUR";;;"AXB";;
-193;1;"false";"VDB Mechanics";;;"FR";8000;8000;"contact@vdb-consulting.com";;"02.92.49.42.99";"06.97.33.80.99";;"email";"IN_CHQ";"45JRNET";"SMB";"EUR";;;"AXB";;
-194;2;"true";"VAN DER BURG";"Axel";;"FR";8000;8000;"a.van der burg@vdb-consulting.com";;;;;"emailpaper";"IN_VIR";"45JRNET";0;"EUR";;;"AXB";;
-195;1;"false";"KING Electronics";;;"FR";8001;8001;"contact@kingelec.com";;;;;"email";"IN_CHQ";"45JRNET";"SMB";"EUR";;;"AXB";;
-196;2;"true";"MARTENS";"Annette";;"FR";8001;8001;"a.martens@kingelec.com";;;;;"emailpaper";"IN_VIR";"45JRNET";0;"EUR";;;"AXB";;
-197;1;"false";"DG Technologies";;;"FR";8002;8002;"contact@dg-technologies.com";;;;;"email";"IN_CHQ";"45JRNET";"SMB";"EUR";;;"AXB";;
-198;2;"true";"DE GROOT";"Matthijs";;"FR";8002;8002;"m.de groot@dg-technologies.com";;;;;"emailpaper";"IN_VIR";"45JRNET";0;"EUR";;;"AXB";;
-199;1;"false";"VAN Consulting";;;"FR";8003;8003;"contact@van-consulting.com";;;;;"email";"IN_CHQ";"45JRNET";"SMB";"EUR";;;"AXB";;
-200;2;"true";"VAN INGEN";"Marie";;"FR";8003;8003;"m.van ingen@van-consulting.com";;;;;"emailpaper";"IN_VIR";"45JRNET";0;"EUR";;;"AXB";;
-201;1;"false";"SCHWRTZ Material Processing";;;"FR";3000;3000;"info@schwartz-mp.com";;;;;"email";"IN_CHQ";"45JRNET";"SMB";"EUR";;;"AXB";;
-202;2;"true";"SCHWARTZ";"Matthias";;"FR";3000;3000;"m.schwartz@schwartz-mp.com";;;;;"emailpaper";"IN_VIR";"45JRNET";0;"EUR";;;"AXB";;
-203;1;"false";"MECAPARTS";;;"FR";3001;3001;"contact@mecaparts.com";;;;;"email";"IN_CHQ";"45JRNET";"SMB";"EUR";;;"AXB";;
-204;2;"true";"SCHUMACHER";"Jurgen";;"FR";3001;3001;"j.schumacher@mecaparts.com";;;;;"emailpaper";"IN_VIR";"45JRNET";0;"EUR";;;"AXB";;
-205;1;"false";"AZ Inno";;;"FR";3002;3002;"contact@azinno.com";;;;;"email";"IN_CHQ";"45JRNET";"SMB";"EUR";;;"AXB";;
-206;2;"true";"MULLER";"Jan";;"FR";3002;3002;"j.muller@azinno.com";;;;;"emailpaper";"IN_VIR";"45JRNET";0;"EUR";;;"AXB";;
-207;1;"false";"PI Communicazione";;;"FR";5000;5000;"contact@pi-com.com";;;;;"email";"IN_CHQ";"45JRNET";"SMB";"EUR";;;"AXB";;
-208;2;"true";"PIRLO";"Roberto";;"FR";5000;5000;"r.pirlo@pi-com.com";;;;;"emailpaper";"IN_VIR";"45JRNET";0;"EUR";;;"AXB";;
-209;1;"false";"DL Machinery";;;"FR";5001;5001;"info@dlmachinery.com";;;;;"email";"IN_CHQ";"45JRNET";"SMB";"EUR";;;"AXB";;
-210;2;"true";"DI LUCA";"Silvio";;"FR";5001;5001;"s.di luca@dlmachinery.com";;;;;"emailpaper";"IN_VIR";"45JRNET";0;"EUR";;;"AXB";;
-211;1;"false";"SMITH Softwares";;;"FR";10000;10000;"info@smith-softwares.com";;;;;"email";"IN_CHQ";"45JRNET";"SMB";"EUR";;;"AXB";;
-212;2;"true";"SMITH";"James";;"FR";10000;10000;"j.smith@smith-softwares.com";;;;;"emailpaper";"IN_VIR";"45JRNET";0;"EUR";;;"AXB";;
-213;2;"true";"JOHNSON";"John";;"FR";10000;10000;"j.johnson@smith-softwares.com";;;;;"email";"IN_CHQ";"45JRNET";0;"EUR";;;"AXB";;
-214;1;"false";"W&J Telecom";;;"FR";10001;10001;"contact@wj-telecom.com";;;;;"emailpaper";"IN_VIR";"45JRNET";"SMB";"EUR";;;"AXB";;
-215;2;"true";"WILLIAMS";"Robert";;"FR";10001;10001;"r.williams@wj-telecom.com";;;;;"email";"IN_CHQ";"45JRNET";0;"EUR";;;"AXB";;
-216;1;"false";"JONES Engineering";;;"FR";10002;10002;"contact@joneseng.com";;;;;"emailpaper";"IN_VIR";"45JRNET";"SMB";"EUR";;;"AXB";;
-217;2;"true";"JONES";"Michael";;"FR";10002;10002;"m.jones@joneseng.com";;;;;"email";"IN_CHQ";"45JRNET";0;"EUR";;;"AXB";;
-218;1;"false";"BROWN Materials";;;"FR";10003;10003;"info@brown-materials.com";;;;;"emailpaper";"IN_VIR";"45JRNET";"SMB";"EUR";;;"AXB";;
-219;2;"true";"BROWN";"William";;"FR";10003;10003;"w.brown@brown-materials.com";;;;;"email";"IN_CHQ";"45JRNET";0;"EUR";;;"AXB";;
-220;1;"false";"DAVIS Electronics";;;"FR";10005;10005;"contact@davis-electronics.com";;;;;"emailpaper";"IN_VIR";"45JRNET";"SMB";"EUR";;;"AXB";;
-221;2;"true";"DAVIS";"David";;"FR";10005;10005;"d.davis@davis-electronics.com";;;;;"email";"IN_CHQ";"45JRNET";0;"EUR";;;"AXB";;
-222;1;"false";"MILLER Parts";;;"FR";10006;10006;"contact@miller-parts.com";;;;;"emailpaper";"IN_VIR";"45JRNET";"SMB";"EUR";;;"AXB";;
-223;2;"true";"MILLER";"Richard";;"FR";10006;10006;"r.miller@miller-parts.com";;;;;"email";"IN_CHQ";"45JRNET";0;"EUR";;;"AXB";;
-224;1;"false";"WM Cinetics";;;"FR";10010;10011;"contact@wm-cinetics.com";;;;;"emailpaper";"IN_VIR";"45JRNET";"SMB";"EUR";;;"AXB";;
-225;2;"true";"WILSON";"Charles";;"FR";10010;10011;"c.wilson@wm-cinetics.com";;;;;"email";"IN_CHQ";"45JRNET";0;"EUR";;;"AXB";;
-226;1;"false";"MOORE Cosmetics";;;"FR";10011;10019;"contact@moore-cosmetics.com";;;;;"emailpaper";"IN_VIR";"45JRNET";"SMB";"EUR";;;"AXB";;
-227;2;"true";"MOORE";"Joseph";;"FR";10011;10019;"j.moore@moore-cosmetics.com";;;;;"email";"IN_CHQ";"45JRNET";0;"EUR";;;"AXB";;
-228;2;"true";"TAYLOR";"Thomas";;"FR";10011;10019;"t.taylor@moore-cosmetics.com";;;;;"emailpaper";"IN_VIR";"45JRNET";0;"EUR";;;"AXB";;
-229;1;"false";"ATJ Banking";;;"FR";10012;10012;"contact@atjbanking.com";;;;;"email";"IN_CHQ";"45JRNET";"SMB";"EUR";;;"AXB";;
-230;2;"true";"ANDERSON";"Christopher";;"FR";10012;10012;"c.anderson@atjbanking.com";;;;;"emailpaper";"IN_VIR";"45JRNET";0;"EUR";;;"AXB";;
-231;2;"true";"THOMAS";"Daniel";;"FR";10012;10012;"d.thomas@atjbanking.com";;;;;"email";"IN_CHQ";"45JRNET";0;"EUR";;;"AXB";;
-232;2;"true";"JACKSON";"Paul";;"FR";10012;10012;"p.jackson@atjbanking.com";;;;;"emailpaper";"IN_VIR";"45JRNET";0;"EUR";;;"AXB";;
-233;1;"false";"WHITE HARRIS";;;"FR";10017;10017;"0.white harris@white-harris.com";;;;;"email";"IN_CHQ";"45JRNET";"SMB";"EUR";;;"AXB";;
-234;2;"true";"WHITE";"Mark";;"FR";10017;10017;"m.white@white-harris.com";;;;;"emailpaper";"IN_VIR";"45JRNET";0;"EUR";;;"AXB";;
-235;2;"true";"HARRIS";"Donald";;"FR";10017;10017;"d.harris@white-harris.com";;;;;"email";"IN_CHQ";"45JRNET";0;"EUR";;;"AXB";;
-236;2;"true";"MARTIN";"George";;"FR";10017;10017;"g.martin@white-harris.com";;;;;"emailpaper";"IN_VIR";"45JRNET";0;"EUR";;;"AXB";;
-237;1;"false";"TGM Consulting";;;"FR";10019;10019;"contact@tgm-consulting.com";;;;;"email";"IN_CHQ";"45JRNET";"SMB";"EUR";;;"AXB";;
-238;2;"true";"THOMPSON";"Kenneth";;"FR";10019;10019;"k.thompson@tgm-consulting.com";;;;;"emailpaper";"IN_VIR";"45JRNET";0;"EUR";;;"AXB";;
-239;2;"true";"GARCIA";"Steven";;"FR";10019;10019;"s.garcia@tgm-consulting.com";;;;;"email";"IN_CHQ";"45JRNET";0;"EUR";;;"AXB";;
-240;2;"true";"MARTINEZ";"Edward";;"FR";10019;10019;"e.martinez@tgm-consulting.com";;;;;"emailpaper";"IN_VIR";"45JRNET";0;"EUR";;;"AXB";;
-241;1;"false";"RCR Industries";;;"FR";10020;10020;"contact@rcr-industries.com";;;;;"email";"IN_CHQ";"45JRNET";"SMB";"EUR";;;"AXB";;
-242;2;"true";"ROBINSON";"Brian";;"FR";10020;10020;"b.robinson@rcr-industries.com";;;;;"emailpaper";"IN_VIR";"45JRNET";0;"EUR";;;"AXB";;
-243;2;"true";"CLARK";"Ronald";;"FR";10020;10020;"r.clark@rcr-industries.com";;;;;"email";"IN_CHQ";"45JRNET";0;"EUR";;;"AXB";;
-244;2;"true";"RODRIGUEZ";"Anthony";;"FR";10020;10020;"a.rodriguez@rcr-industries.com";;;;;"emailpaper";"IN_VIR";"45JRNET";0;"EUR";;;"AXB";;
-245;1;"false";"LEWIS&LEE";;;"FR";10023;10023;"info@lewisandlee.com";;;;;"email";"IN_CHQ";"45JRNET";"SMB";"EUR";;;"AXB";;
-246;2;"true";"LEWIS";"Kevin";;"FR";10023;10023;"k.lewis@lewisandlee.com";;;;;"emailpaper";"IN_VIR";"45JRNET";0;"EUR";;;"AXB";;
-247;2;"true";"LEE";"Jason";;"FR";10023;10023;"j.lee@lewisandlee.com";;;;;"email";"IN_CHQ";"45JRNET";0;"EUR";;;"AXB";;
-248;2;"true";"WALKER";"Jeff";;"FR";10023;10023;"j.walker@lewisandlee.com";;;;;"emailpaper";"IN_VIR";"45JRNET";0;"EUR";;;"AXB";;
-249;1;"false";"HALL Mecanics";;;"FR";10024;10024;"info@hall-mecanics.com";;;;;"email";"IN_CHQ";"45JRNET";"SMB";"EUR";;;"AXB";;
-250;2;"true";"HALL";"Mary";;"FR";10024;10024;"m.hall@hall-mecanics.com";;;;;"emailpaper";"IN_VIR";"45JRNET";0;"EUR";;;"AXB";;
-251;1;"false";"ALLEN Biotech";;;"FR";10028;10028;"info@allen-biotech.com";;;;;"email";"IN_CHQ";"45JRNET";"SMB";"EUR";;;"AXB";;
-252;2;"true";"ALLEN";"Patricia";;"FR";10028;10028;"p.allen@allen-biotech.com";;;;;"emailpaper";"IN_VIR";"45JRNET";0;"EUR";;;"AXB";;
-253;1;"false";"Y&H Accountants";;;"FR";10030;;"contact@yh-accountants.com";;;;;"email";"IN_CHQ";"45JRNET";"SMB";"EUR";;;"AXB";;
-254;2;"true";"YOUNG";"Linda";;"FR";10030;10030;"l.young@yh-accountants.com";;;;;"emailpaper";"IN_VIR";"45JRNET";0;"EUR";;;"AXB";;
-255;2;"true";"HERNANDEZ";"Barbara";;"FR";10030;10030;"b.hernandez@yh-accountants.com";;;;;"email";"IN_CHQ";"45JRNET";0;"EUR";;;"AXB";;
-256;1;"false";"KING Media";;;"FR";10033;10033;"contact@kingmedia.com";;;;;"emailpaper";"IN_VIR";"45JRNET";"SMB";"EUR";;;"AXB";;
-257;2;"true";"KING";"Elizabeth";;"FR";10033;10033;"e.king@kingmedia.com";;;;;"email";"IN_CHQ";"45JRNET";0;"EUR";;;"AXB";;
-258;2;"true";"WRIGHT";"Jennifer";;"FR";10033;10033;"j.wright@kingmedia.com";;;;;"emailpaper";"IN_VIR";"45JRNET";0;"EUR";;;"AXB";;
-259;1;"false";"LHS Lab";;;"FR";10036;;"contact@lhslab.com";;;;;"email";"IN_CHQ";"45JRNET";"SMB";"EUR";;;"AXB";;
-260;2;"true";"LOPEZ";"Maria";;"FR";10036;10036;"m.lopez@lhslab.com";;;;;"emailpaper";"IN_VIR";"45JRNET";0;"EUR";;;"AXB";;
-261;2;"true";"HILL";"Susan";;"FR";10036;10036;"s.hill@lhslab.com";;;;;"email";"IN_CHQ";"45JRNET";0;"EUR";;;"AXB";;
-262;2;"true";"SCOTT";"Margaret";;"FR";10036;10036;"m.scott@lhslab.com";;;;;"emailpaper";"IN_VIR";"45JRNET";0;"EUR";;;"AXB";;
-263;1;"false";"GA Technologies";;;"FR";10037;10037;"info@ga-tech.com";;;;;"email";"IN_CHQ";"45JRNET";"SMB";"EUR";;;"AXB";;
-264;2;"true";"GREEN";"Dorothy";;"FR";10037;10037;"d.green@ga-tech.com";;;;;"emailpaper";"IN_VIR";"45JRNET";0;"EUR";;;"AXB";;
-265;2;"true";"ADAMS";"Lisa";;"FR";10037;10037;"l.adams@ga-tech.com";;"04.84.11.42.99";"07.89.26.75.99";;"email";"IN_CHQ";"45JRNET";0;"EUR";;;"AXB";;
-1000;2;"false";"DURAND";"Jean-Luc";;"FR";35;35;"j.durand@gmail.com";;;"06.60.53.30.99";;"emailpaper";"IN_VIR";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1001;2;"false";"MERCIER";"Ludovic";;"FR";42;42;"l.mercier@msn.com";;"01.39.77.36.99";"07.67.46.82.99";;"email";"IN_CHQ";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1002;2;"false";"FAURE";"Laurence";;"FR";45;45;"l.faure@yahoo.com";;"01.15.43.62.99";"06.30.85.35.99";;"emailpaper";"IN_VIR";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1003;2;"false";"LEROUX";"Franck";;"FR";64;64;"f.leroux@yahoo.com";;"01.38.22.41.99";"06.23.34.62.99";;"email";"IN_CHQ";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1004;2;"false";"COLIN";"Arnaud";;"FR";64;64;"a.colin@gmail.com";;"01.30.29.30.99";"07.64.42.63.99";;"emailpaper";"IN_VIR";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1005;2;"false";"ARNAUD";"Clothilde";;"FR";65;65;"c.arnaud@yahoo.com";;"01.89.50.17.99";"06.43.62.98.99";;"email";"IN_CHQ";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1006;2;"false";"ROLLAND";"Garry";;"FR";65;65;"g.rolland@gmail.com";;"01.75.85.12.99";"07.41.35.74.99";;"emailpaper";"IN_VIR";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1007;2;"false";"CARON";"Simon";;"FR";65;65;"s.caron@yahoo.com";;"01.60.97.71.99";"07.18.73.54.99";;"email";"IN_CHQ";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1008;2;"false";"AUBERT";"Luc";;"FR";65;65;"l.aubert@foxmail.com";;"01.29.58.49.99";"06.10.99.76.99";;"emailpaper";"IN_VIR";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1009;2;"false";"KOUMASSI";"Rahoua";;"FR";66;66;"r.koumassi@gmail.com";;"04.81.91.59.99";"07.70.61.88.99";;"email";"IN_CHQ";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1010;2;"false";"RENAUD";"Mélanie";;"FR";66;66;"m.renaud@gmail.com";;"04.94.20.73.99";"07.73.23.59.99";;"emailpaper";"IN_VIR";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1011;2;"false";"LEMOINE";"Julie";;"FR";66;66;"j.lemoine@msn.com";;"04.79.67.80.99";"06.45.25.47.99";;"email";"IN_CHQ";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1012;2;"false";"PICARD";"Anna";;"FR";66;66;"a.picard@foxmail.com";;"04.88.94.78.99";"06.62.47.53.99";;"emailpaper";"IN_VIR";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1013;2;"false";"GAILLARD";"François";;"FR";66;66;"f.gaillard@msn.com";;"04.56.28.91.99";"06.15.78.76.99";;"email";"IN_CHQ";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1014;2;"false";"DUPUIS";"Laurence";;"FR";67;67;"l.dupuis@msn.com";;"04.72.46.11.99";"06.66.56.42.99";;"emailpaper";"IN_VIR";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1015;2;"false";"OLIVIER";"Elise";;"FR";67;67;"e.olivier@msn.com";;"04.75.11.10.99";"06.27.67.34.99";;"email";"IN_CHQ";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1016;2;"false";"RODRIGUEZ";"Anna";;"FR";67;67;"a.rodriguez@foxmail.com";;"04.86.70.26.99";"06.91.86.62.99";;"emailpaper";"IN_VIR";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1017;2;"false";"DA SILVA";"Paul";;"FR";67;67;"p.da silva@yahoo.com";;"04.65.59.21.99";"06.63.43.99.99";;"email";"IN_CHQ";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1018;2;"false";"KA";"Salima";;"FR";68;68;"s.ka@gmail.com";;"04.81.30.29.99";"06.85.46.10.99";;"emailpaper";"IN_VIR";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1019;2;"false";"RIVIERE";"Jean-Charles";;"FR";68;68;"j.riviere@foxmail.com";;"04.31.35.26.99";"07.73.55.94.99";;"email";"IN_CHQ";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1020;2;"false";"LE GALL";"Marion";;"FR";68;68;"m.le gall@foxmail.com";;"04.88.98.10.99";"06.70.15.70.99";;"emailpaper";"IN_VIR";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1021;2;"false";"ABBOU";"Mustapha";;"FR";68;68;"m.abbou@yahoo.com";;"05.44.56.40.99";"06.66.54.16.99";;"email";"IN_CHQ";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1022;2;"false";"GONZALEZ";"Luca";;"FR";141;141;"l.gonzalez@yahoo.com";;"05.67.74.60.99";"07.73.41.28.99";;"emailpaper";"IN_VIR";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1023;2;"false";"BERGER";"Grégory";;"FR";141;141;"g.berger@foxmail.com";;"05.89.88.30.99";"07.26.80.30.99";;"email";"IN_CHQ";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1024;2;"false";"LECOMTE";"Arnaud";;"FR";141;141;"a.lecomte@foxmail.com";;"05.49.53.41.99";"07.74.42.90.99";;"emailpaper";"IN_VIR";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1025;2;"false";"MENARD";"Fabrice";;"FR";141;141;"f.menard@msn.com";;"05.38.40.92.99";"06.85.49.95.99";;"email";"IN_CHQ";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1026;2;"false";"CARPENTIER";"Elisa";;"FR";148;148;"e.carpentier@yahoo.com";;"05.54.47.90.99";"07.91.29.15.99";;"emailpaper";"IN_VIR";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1027;2;"false";"ABBAS";"Mohamed";;"FR";151;151;"m.abbas@gmail.com";;"05.88.52.32.99";"07.93.22.82.99";;"email";"IN_CHQ";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1028;2;"false";"GUILLAUME";"Anne-Lise";;"FR";152;152;"a.guillaume@foxmail.com";;"05.78.85.33.99";"06.38.53.47.99";;"emailpaper";"IN_VIR";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1029;2;"false";"ADAM";"Enzo";;"FR";153;153;"e.adam@msn.com";;"05.57.61.56.99";"07.39.35.96.99";;"email";"IN_CHQ";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1030;2;"false";"BA";"Anyssa";;"FR";154;154;"a.ba@yahoo.com";;"04.39.10.31.99";"07.37.59.90.99";;"emailpaper";"IN_VIR";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1031;2;"false";"MENACER";"Brahim";;"FR";157;157;"b.menacer@msn.com";;"04.45.92.15.99";"07.97.10.45.99";;"email";"IN_CHQ";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1032;2;"false";"ABIDI";"Yacoub";;"FR";158;158;"y.abidi@yahoo.com";;"04.52.66.34.99";"07.31.30.96.99";;"emailpaper";"IN_VIR";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1033;2;"false";"MEYER";"Philippe";;"FR";162;162;"p.meyer@foxmail.com";;"03.55.14.49.99";"06.23.65.59.99";;"email";"IN_CHQ";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1034;2;"false";"LUCAS";"Julien";;"FR";163;163;"j.lucas@foxmail.com";;;;;"emailpaper";"IN_VIR";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1035;2;"false";"BAKER";"Nancy";;"FR";240;;"n.baker@msn.com";;;;;"email";"IN_CHQ";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1036;2;"false";"GONZALEZ";"Karen";;"FR";241;;"k.gonzalez@foxmail.com";;;;;"emailpaper";"IN_VIR";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1037;2;"false";"NELSON";"Betty";;"FR";242;;"b.nelson@foxmail.com";;;;;"email";"IN_CHQ";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1038;2;"false";"CARTER";"Helen";;"FR";243;;"h.carter@foxmail.com";;;;;"emailpaper";"IN_VIR";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1039;2;"false";"MITCHELL";"Sandra";;"FR";244;;"s.mitchell@foxmail.com";;;;;"email";"IN_CHQ";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1040;2;"false";"PEREZ";"Donna";;"FR";245;;"d.perez@gmail.com";;;;;"emailpaper";"IN_VIR";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1041;2;"false";"ROBERTS";"Carol";;"FR";246;;"c.roberts@gmail.com";;;;;"email";"IN_CHQ";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1042;2;"false";"TURNER";"Ruth";;"FR";247;;"r.turner@yahoo.com";;;;;"emailpaper";"IN_VIR";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1043;2;"false";"PHILLIPS";"Sharon";;"FR";248;;"s.phillips@gmail.com";;;;;"email";"IN_CHQ";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1044;2;"false";"CAMPBELL";"Michelle";;"FR";249;;"m.campbell@foxmail.com";;;;;"emailpaper";"IN_VIR";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1045;2;"false";"PARKER";"Laura";;"FR";250;;"l.parker@gmail.com";;;;;"email";"IN_CHQ";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1046;2;"false";"EVANS";"Sarah";;"FR";251;;"s.evans@gmail.com";;;;;"emailpaper";"IN_VIR";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1047;2;"false";"EDWARDS";"Kimberly";;"FR";252;;"k.edwards@yahoo.com";;;;;"email";"IN_CHQ";"45JRNET";"INDIV";"EUR";;;"AXB";;
-1048;2;"false";"COLLINS";"Deborah";;"FR";253;;"d.collins@foxmail.com";;;;;"emailpaper";"IN_VIR";"45JRNET";"INDIV";"EUR";;;"AXB";;
+1;1;"false";"MARTIN Industries";;;"FR";1;1;"info@martin-industries.fr";;;;;"emailpaper";"IN_CHQ";"30JRFDM";"SMB";"EUR";;;"AXC|AXI";411100;401100
+2;2;"true";"MARTIN";"Mickaël";1;"FR";1;1;"m.martin@martin-industries.fr";;"01.47.40.45.99";"06.93.73.43.99";;"null";"null";"null";0;"null";;;"AXC|AXI";"null";"null"
+3;2;"true";"BERNARD";"Henry";1;"FR";1;1;"h.bernard@martin-industries.fr";;"01.31.21.92.99";"07.97.77.48.99";;"null";"null";"null";0;"null";;;"AXC|AXI";"null";"null"
+4;1;"false";"DB Services";;;"FR";20;20;"contact@db-services.fr";;;;;"emailpaper";"IN_CHQ";"30JRFDM";"SMB";"EUR";;;"AXC|AXI";411100;401100
+5;2;"true";"DUBOIS";"Paul";1;"FR";20;20;"p.dubois@db-services.fr";;;"07.25.80.19.99";;"null";"null";"null";0;"null";;;"AXC|AXI";"null";"null"
+6;1;"false";"TM Composants";;;"FR";30;30;"info@tm-composants.fr";;;;;"emailpaper";"IN_CHQ";"30JRFDM";"SMB";"EUR";;;"AXC|AXI";411100;401100
+7;2;"true";"THOMAS";"Maurice";1;"FR";30;30;"m.thomas@tm-composants.fr";;"01.13.43.43.99";"07.41.97.48.99";;"null";"null";"null";0;"null";;;"AXC|AXI";"null";"null"
+8;2;"true";"ROBERT";"Bernard";1;"FR";30;30;"b.robert@tm-composants.fr";;"04.39.10.18.99";"07.98.25.23.99";;"null";"null";"null";0;"null";;;"AXC|AXI";"null";"null"
+9;1;"false";"Ets RICHARD";;;"FR";40;40;"contact@ets-richard.fr";;;;;"emailpaper";"IN_CHQ";"30JRFDM";"SMB";"EUR";;;"AXC|AXI";411100;401100
+10;2;"true";"RICHARD";"Louis-Marie";1;"FR";40;40;"l.richard@ets-richard.fr";;;"06.46.34.61.99";;"null";"null";"null";0;"null";;;"AXC|AXI";"null";"null"
+11;2;"true";"PETIT";"Frédéric";1;"FR";40;40;"f.petit@ets-richard.fr";;;"07.14.79.96.99";;"null";"null";"null";0;"null";;;"AXC|AXI";"null";"null"
+12;1;"false";"LEROY TRANSPORTS";;;"FR";50;50;"contact@leroytransports.fr";;;;;"emailpaper";"IN_CHQ";"30JRFDM";"SMB";"EUR";;;"AXC|AXI";411100;401100
+13;2;"true";"LEROY";"Vincent";1;"FR";50;50;"v.leroy@leroytransports.fr";;;"07.98.70.84.99";;"null";"null";"null";0;"null";;;"AXC|AXI";"null";"null"
+14;2;"true";"MOREAU";"Christian";1;"FR";50;50;"c.moreau@leroytransports.fr";;;"06.32.88.36.99";;"null";"null";"null";0;"null";;;"AXC|AXI";"null";"null"
+15;1;"false";"SIMON";;;"FR";60;60;"info@simon.fr";;;;;"emailpaper";"IN_CHQ";"30JRFDM";"SMB";"EUR";;;"AXC|AXI";411100;401100
+16;2;"true";"SIMON";"Olivier";1;"FR";60;60;"o.simon@simon.fr";;;"07.48.59.74.99";;"null";"null";"null";0;"null";;;"AXC|AXI";"null";"null"
+17;2;"true";"LAURENT";"Jacques";1;"FR";60;60;"j.laurent@simon.fr";;;"06.43.48.39.99";;"null";"null";"null";0;"null";;;"AXC|AXI";"null";"null"
+18;1;"false";"TOP Service";;;"FR";61;61;"info@top-service.fr";;;;;"emailpaper";"IN_CHQ";"30JRFDM";"SMB";"EUR";;;"AXC|AXI";411100;401100
+19;2;"true";"LEFEBVRE";"Thierry";1;"FR";61;61;"t.lefebvre@top-service.fr";;;"06.42.90.93.99";;"null";"null";"null";0;"null";;;"AXC|AXI";"null";"null"
+20;1;"false";"APOLLO";;;"FR";62;62;"info@apollo.fr";;;;;"emailpaper";"IN_CHQ";"30JRFDM";"SMB";"EUR";;;"AXC|AXI";411100;401100
+21;2;"true";"MICHEL";"Loic";1;"FR";62;62;"l.michel@apollo.fr";;;"06.41.66.37.99";;"null";"null";"null";0;"null";;;"AXC|AXI";"null";"null"
+22;2;"true";"GARCIA";"Daniel";1;"FR";62;62;"d.garcia@apollo.fr";;;"06.89.42.54.99";;"null";"null";"null";0;"null";;;"AXC|AXI";"null";"null"
+23;2;"true";"DAVID";"Laurent";1;"FR";62;62;"l.david@apollo.fr";;;"07.95.48.27.99";;"null";"null";"null";0;"null";;;"AXC|AXI";"null";"null"
+24;1;"false";"SPOUTNIK Communications";;;"FR";70;70;"info@spoutnik.fr";;;;;"emailpaper";"IN_CHQ";"30JRFDM";"SMB";"EUR";;;"AXC|AXI";411100;401100
+25;2;"true";"BERTRAND";"Philippe";1;"FR";70;70;"p.bertrand@spoutnik.fr";;;"06.62.57.90.99";;"null";"null";"null";0;"null";;;"AXC|AXI";"null";"null"
+26;2;"true";"ROUX";"Jean Philippe";1;"FR";70;70;"j.roux@spoutnik.fr";;;"06.45.47.21.99";;"null";"null";"null";0;"null";;;"AXC|AXI";"null";"null"
+27;2;"true";"VINCENT";"Philippe";1;"FR";70;70;"p.vincent@spoutnik.fr";;"05.90.96.16.99";"07.18.51.18.99";;"null";"null";"null";0;"null";;;"AXC|AXI";"null";"null"
+28;1;"false";"Ets FOURNIER";;;"FR";80;80;"info@ets-fournier.fr";;;;;"emailpaper";"IN_CHQ";"30JRFDM";"SMB";"EUR";;;"AXC|AXI";411100;401100
+29;2;"true";"FOURNIER";"William";1;"FR";80;80;"w.fournier@ets-fournier.fr";;;"07.77.76.54.99";;"null";"null";"null";0;"null";;;"AXC|AXI";"null";"null"
+30;2;"true";"MOREL";"Séverine";2;"FR";80;80;"s.morel@ets-fournier.fr";;;"07.54.89.46.99";;"null";"null";"null";0;"null";;;"AXC|AXI";"null";"null"
+31;1;"false";"GIRARD & ANDRE";;;"FR";90;90;"contact@girardetandre.fr";;;;;"emailpaper";"IN_CHQ";"30JRFDM";"SMB";"EUR";;;"AXC|AXI";411100;401100
+32;2;"true";"GIRARD";"Denis";1;"FR";90;90;"d.girard@girardetandre.fr";;"04.78.94.65.99";"07.77.12.30.99";;"null";"null";"null";0;"null";;;"AXC|AXI";"null";"null"
+33;2;"true";"ANDRE";"Jean Pierre";1;"FR";90;90;"j.andre@girardetandre.fr";;;"07.58.50.46.99";;"null";"null";"null";0;"null";;;"AXC|AXI";"null";"null"
+34;1;"false";"DUPONT & LAMBERT";;;"FR";100;100;"contact@dupont-lambert.fr";;;;;"emailpaper";"IN_CHQ";"30JRFDM";"SMB";"EUR";;;"AXC|AXI";411100;401100
+35;2;"true";"DUPONT";"Albert";1;"FR";100;100;"a.dupont@dupont-lambert.fr";;;"07.36.86.83.99";;"null";"null";"null";0;"null";;;"AXC|AXI";"null";"null"
+36;2;"true";"LAMBERT";"Jérôme";1;"FR";100;100;"j.lambert@dupont-lambert.fr";;;"07.44.35.22.99";;"null";"null";"null";0;"null";;;"AXC|AXI";"null";"null"
+37;1;"false";"B&F Conseil";;;"FR";130;130;"info@bfconseil.fr";;;;;"emailpaper";"IN_CHQ";"30JRFDM";"SMB";"EUR";;;"AXC|AXI";411100;401100
+38;2;"true";"BONNET";"Françoise";2;"FR";130;130;"f.bonnet@bfconseil.fr";;"04.58.39.87.99";"06.74.48.23.99";;"null";"null";"null";0;"null";;;"AXC|AXI";"null";"null"
+39;2;"true";"FRANCOIS";"Nelly";2;"FR";130;130;"n.francois@bfconseil.fr";;;"06.58.74.71.99";;"null";"null";"null";0;"null";;;"AXC|AXI";"null";"null"
+40;1;"false";"Ets MARTINEZ";;;"FR";13000;13000;"contact@etsmartinez.fr";;;;;"emailpaper";"IN_CHQ";"30JRFDM";"SMB";"EUR";;;"AXC|AXI";411100;401100
+41;2;"true";"MARTINEZ";"Chantal";2;"FR";13000;13000;"c.martinez@etsmartinez.fr";;"01.22.26.79.99";"06.76.88.57.99";;"null";"null";"null";0;"null";;;"AXC|AXI";"null";"null"
+42;2;"true";"LEGRAND";"Fabrice";1;"FR";13000;13000;"f.legrand@etsmartinez.fr";;"01.39.56.92.99";"06.31.33.21.99";;"null";"null";"null";0;"null";;;"AXC|AXI";"null";"null"
+43;2;"true";"GARNIER";"Sébastien";1;"FR";13000;13000;"s.garnier@etsmartinez.fr";;"01.84.95.89.99";"06.39.57.27.99";;"null";"null";"null";0;"null";;;"AXC|AXI";"null";"null"
+44;1;"false";"BLUEBERRY TELECOM";;;"FR";13001;13001;"contact@blueberry-telecom.fr";;;;;"emailpaper";"IN_CHQ";"30JRFDM";"SMB";"EUR";;;"AXC|AXI";411100;401100
+45;2;"true";"ROUSSEAU";"Élisabeth";2;"FR";13001;13001;"é.rousseau@blueberry-telecom.fr";;"04.25.71.92.99";"06.14.62.29.99";;"null";"null";"null";0;"null";;;"AXC|AXI";"null";"null"
+46;2;"true";"BLANC";"Bernard";1;"FR";13001;13001;"b.blanc@blueberry-telecom.fr";;"04.91.35.21.99";"07.83.63.98.99";;"null";"null";"null";0;"null";;;"AXC|AXI";"null";"null"
+47;1;"false";"MULLER & Cie";;;"FR";13002;13002;"contact@muller-cie.fr";;;;;"emailpaper";"IN_CHQ";"30JRFDM";"SMB";"EUR";;;"AXC";411100;401100
+48;2;"true";"GUERIN";"Nathalie";2;"FR";13002;13002;"n.guerin@muller-cie.fr";;"04.42.38.47.99";"07.19.19.72.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+49;2;"true";"MULLER";"Philippe";1;"FR";13002;13002;"p.muller@muller-cie.fr";;"04.43.89.93.99";"07.42.56.84.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+50;1;"false";"HR Technologie";;;"FR";190;190;"info@hrtech.fr";;;;;"emailpaper";"IN_CB";"15JRNET";"SMB";"EUR";;;"AXC";411100;401100
+51;2;"true";"HENRY";"Alain";1;"FR";190;190;"a.henry@hrtech.fr";;"04.25.89.33.99";"06.42.42.88.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+52;2;"true";"ROUSSEL";"Jean";1;"FR";190;190;"j.roussel@hrtech.fr";;"01.25.94.24.99";"07.73.88.66.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+53;1;"false";"NPM Services";;;"FR";210;210;"contact@npm-services.fr";;;;;"emailpaper";"IN_CB";"15JRNET";"SMB";"EUR";;;"AXC";411100;401100
+54;2;"true";"NICOLAS";"Nicolas";1;"FR";210;210;"n.nicolas@npm-services.fr";;"01.51.12.74.99";"07.36.99.25.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+55;2;"true";"PERRIN";"Bertrand";1;"FR";210;210;"b.perrin@npm-services.fr";;"01.69.44.99.99";"06.24.18.63.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+56;2;"true";"MORIN";"Guillaume";1;"FR";210;210;"g.morin@npm-services.fr";;"01.38.66.37.99";"07.72.97.26.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+57;1;"false";"MATHIEU & CLEMENT";;;"FR";220;220;"info@mathieuetclement.fr";;;;;"emailpaper";"IN_CB";"15JRNET";"SMB";"EUR";;;"AXC";411100;401100
+58;2;"true";"MATHIEU";"David";1;"FR";220;220;"d.mathieu@mathieuetclement.fr";;"01.65.89.72.99";"07.80.48.99.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+59;2;"true";"CLEMENT";"Didier";1;"FR";220;220;"d.clement@mathieuetclement.fr";;"01.92.19.34.99";"07.53.79.67.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+60;1;"false";"GDL Industrie";;;"FR";240;240;"contact@gdlindustrie.fr";;;;;"emailpaper";"IN_CB";"15JRNET";"SMB";"EUR";;;"AXC";411100;401100
+61;2;"true";"GAUTHIER";"Jean";1;"FR";240;240;"j.gauthier@gdlindustrie.fr";;"01.64.33.65.99";"06.30.96.91.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+62;2;"true";"DUMONT";"Jacques";1;"FR";240;240;"j.dumont@gdlindustrie.fr";;"01.87.29.32.99";"06.63.56.18.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+63;1;"false";"LOPEZ & Co";;;"FR";250;250;"contact@lopezco.fr";;;;;"emailpaper";"IN_CB";"15JRNET";"SMB";"EUR";;;"AXC";411100;401100
+64;2;"true";"LOPEZ";"Christophe";1;"FR";250;250;"c.lopez@lopezco.fr";;"01.32.19.94.99";"07.45.26.52.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+65;1;"false";"Transports FONTAINE";;;"FR";260;260;"info@transports-fontaine.fr";;;;;"emailpaper";"IN_CB";"15JRNET";"SMB";"EUR";;;"AXC";411100;401100
+66;2;"true";"FONTAINE";"Jean-Luc";1;"FR";260;260;"j.fontaine@transports-fontaine.fr";;"01.44.77.49.99";"07.69.85.86.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+67;1;"false";"Transports CHEVALIER";;;"FR";310;310;"info@transports-chevalier.fr";;;;;"emailpaper";"IN_CB";"15JRNET";"SMB";"EUR";;;"AXC";411100;401100
+68;2;"true";"CHEVALIER";"François";1;"FR";310;310;"f.chevalier@transports-chevalier.fr";;"01.30.32.66.99";"07.10.41.47.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+69;2;"true";"ROBIN";"René";1;"FR";310;310;"r.robin@transports-chevalier.fr";;"01.16.40.12.99";"06.51.33.86.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+70;1;"false";"MASSON Logistics";;;"FR";311;311;"info@masson.fr";;;;;"emailpaper";"IN_CB";"15JRNET";"SMB";"EUR";;;"AXC";411100;401100
+71;2;"true";"MASSON";"Xavier";1;"FR";311;311;"x.masson@masson.fr";;"01.83.89.57.99";"07.76.18.65.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+72;2;"true";"SANCHEZ";"Catherine";2;"FR";311;311;"c.sanchez@masson.fr";;"01.15.34.30.99";"07.59.17.99.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+73;1;"false";"GIRAUD Aviation";;;"FR";312;312;"info@giraud-aviation.fr";;;;;"emailpaper";"IN_CB";"15JRNET";"SMB";"EUR";;;"AXC";411100;401100
+74;2;"true";"GIRAUD";"Arnaud";1;"FR";312;312;"a.giraud@giraud-aviation.fr";;"01.17.53.28.99";"06.28.89.21.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+75;2;"true";"LECLERC";"Alain";1;"FR";312;312;"a.leclerc@giraud-aviation.fr";;"01.16.91.30.99";"06.12.97.12.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+76;2;"true";"VIDAL";"Quentin";1;"FR";312;312;"q.vidal@giraud-aviation.fr";;"01.32.17.84.99";"07.97.65.24.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+77;1;"false";"GERARD Solutions";;;"FR";330;330;"contact@gerard-solutions.fr";;;;;"emailpaper";"IN_CB";"15JRNET";"SMB";"EUR";;;"AXC";411100;401100
+78;2;"true";"GERARD";"Fabrice";1;"FR";330;330;"f.gerard@gerard-solutions.fr";;"01.36.37.66.99";"06.90.75.97.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+79;2;"true";"NGUYEN";"Xavier";1;"FR";330;330;"x.nguyen@gerard-solutions.fr";;"01.58.95.42.99";"06.97.90.53.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+80;1;"false";"BOYER Transports";;;"FR";350;350;"info@boyertransports.fr";;;;;"emailpaper";"IN_CB";"15JRNET";"SMB";"EUR";;;"AXC";411100;401100
+81;2;"true";"BOYER";"Joël";1;"FR";350;350;"j.boyer@boyertransports.fr";;"01.40.15.33.99";"06.29.99.69.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+82;2;"true";"DENIS";"Sandrine";2;"FR";350;350;"s.denis@boyertransports.fr";;"01.88.42.65.99";"07.17.46.70.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+83;1;"false";"LEMAIRE Communications";;;"FR";440;440;"info@lemairecom.fr";;;;;"emailpaper";"IN_CB";"15JRNET";"SMB";"EUR";;;"AXC";411100;401100
+84;2;"true";"LEMAIRE";"Emmanuel";1;"FR";440;440;"e.lemaire@lemairecom.fr";;"01.47.59.13.99";"07.88.62.49.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+85;2;"true";"DUVAL";"Bertrand";1;"FR";440;440;"b.duval@lemairecom.fr";;"01.65.61.76.99";"07.17.15.64.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+86;2;"true";"JOLY";"Herve";1;"FR";440;440;"h.joly@lemairecom.fr";;"01.73.11.80.99";"06.10.80.97.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+87;2;"true";"GAUTIER";"Fabrice";1;"FR";440;440;"f.gautier@lemairecom.fr";;"01.72.34.53.99";"06.40.95.45.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+88;1;"false";"123 Services";;;"FR";590;590;"info@123-services.fr";;;;;"emailpaper";"IN_CB";"15JRNET";"SMB";"EUR";;;"AXC";411100;401100
+89;2;"true";"ROGER";"Jean Marc";1;"FR";590;590;"j.roger@123-services.fr";;"01.59.43.93.99";"06.75.77.83.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+90;2;"true";"ROCHE";"Dominique";1;"FR";590;590;"d.roche@123-services.fr";;"01.80.72.87.99";"07.42.32.10.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+91;2;"true";"ROY";"Thierry";1;"FR";590;590;"t.roy@123-services.fr";;"01.53.28.57.99";"06.64.23.62.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+92;1;"false";"Pneus LACROIX";;;"FR";630;630;"info@pneus-lacroix.fr";;;;;"emailpaper";"IN_CB";"15JRNET";"SMB";"EUR";;;"AXC";411100;401100
+93;2;"true";"PHILIPPE";"Sophie";2;"FR";630;630;"s.philippe@pneus-lacroix.fr";;"04.42.45.22.99";"07.57.37.32.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+94;2;"true";"LECLERCQ";"Geoffrey";1;"EN";630;630;"g.leclercq@pneus-lacroix.fr";;"04.81.70.65.99";"07.95.46.56.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+95;2;"true";"LACROIX";"Cédric";1;"EN";630;630;"c.lacroix@pneus-lacroix.fr";;"04.75.61.76.99";"06.71.30.66.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+96;2;"true";"FABRE";"Daniel";1;"EN";630;630;"d.fabre@pneus-lacroix.fr";;"04.31.28.69.99";"07.18.20.52.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+97;1;"false";"EL-FASSI Autos";;;"EN";670;670;"contact@elfassiautos.fr";;;;;"emailpaper";"IN_CB";"15JRNET";"SMB";"EUR";;;"AXC";411100;401100
+98;2;"true";"EL-FASSI";"Meriem";2;"EN";670;670;"m.el-fassi@elfassiautos.fr";;"01.31.22.72.99";"07.90.25.58.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+99;2;"true";"BOUBAKER";"Sara";2;"EN";670;670;"s.boubaker@elfassiautos.fr";;"01.82.95.33.99";"06.51.40.78.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+100;2;"true";"EL FASSI";"Adelkarim";1;"EN";670;670;"a.el fassi@elfassiautos.fr";;"01.70.88.43.99";"07.53.73.24.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+101;1;"false";"Ets AABASSI";;;"EN";75000;75000;"info@ets-aabassi.fr";;;;;"emailpaper";"IN_CB";"15JRNET";"SMB";"EUR";;;"AXC";411100;401100
+102;2;"true";"EL AABASSI";"Saïd";1;"EN";75000;75000;"s.el aabassi@ets-aabassi.fr";;"01.73.48.68.99";"07.99.69.53.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+103;2;"true";"JEAN";"Guillaume";1;"EN";75000;75000;"g.jean@ets-aabassi.fr";;"01.88.59.87.99";"06.15.58.17.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+104;2;"true";"PEREZ";"Françoise";2;"EN";75000;75000;"f.perez@ets-aabassi.fr";;"01.94.45.55.99";"06.20.37.20.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+105;2;"true";"MARCHAND";"Laurent";1;"EN";75000;75000;"l.marchand@ets-aabassi.fr";;"01.70.51.95.99";"06.15.75.92.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+106;1;"false";"D&B Consulting";;;"EN";75001;75001;"contact@dbconsulting.fr";;;;;"emailpaper";"IN_CB";"15JRNET";"SMB";"EUR";;;"AXC";411100;401100
+107;2;"true";"DUFOUR";"Albert";1;"EN";75001;75001;"a.dufour@dbconsulting.fr";;"01.49.16.79.99";"06.59.46.56.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+108;2;"true";"BLANCHARD";"Clément";1;"EN";75001;75001;"c.blanchard@dbconsulting.fr";;"01.89.98.19.99";"07.38.40.12.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+109;2;"true";"MARIE";"Julien";1;"EN";75001;75001;"j.marie@dbconsulting.fr";;"01.47.60.51.99";"07.90.12.10.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+110;1;"false";"OR TECH";;;"EN";75002;75002;"info@or-tech.fr";;;;;"emailpaper";"IN_CB";"15JRNET";"SMB";"EUR";;;"AXC";411100;401100
+111;2;"true";"BARBIER";"Sébastien";1;"EN";75002;75002;"s.barbier@or-tech.fr";;"01.46.86.28.99";"06.99.35.23.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+112;2;"true";"BRUN";"Laurence";2;"EN";75002;75002;"l.brun@or-tech.fr";;"01.46.77.81.99";"06.73.96.54.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+113;2;"true";"DUMAS";"Estelle";2;"EN";75002;75002;"e.dumas@or-tech.fr";;"01.69.60.87.99";"06.22.53.16.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+114;1;"false";"BRUNET Import Export";;;"EN";75003;75003;"info@brunet-ie.fr";;;;;"emailpaper";"IN_CB";"15JRNET";"SMB";"EUR";;;"AXC";411100;401100
+115;2;"true";"BRUNET";"Laurent";1;"EN";75003;75003;"l.brunet@brunet-ie.fr";;"01.29.48.86.99";"06.59.29.19.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+116;2;"true";"SCHMITT";"Allan";1;"EN";75003;75003;"a.schmitt@brunet-ie.fr";;"01.91.60.48.99";"06.51.44.65.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+117;1;"false";"FERNANDEZ MultiServices";;;"EN";75004;75004;"contact@fernandez-ms.fr";;;;;"emailpaper";"IN_CB";"15JRNET";"SMB";"EUR";;;"AXC";411100;401100
+118;2;"true";"FERNANDEZ";"Pierre";1;"FR";75004;75004;"p.fernandez@fernandez-ms.fr";;"01.29.46.14.99";"07.64.95.10.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+119;2;"true";"PIERRE";"Marie";2;"FR";75004;75004;"m.pierre@fernandez-ms.fr";;"01.99.80.44.99";"06.48.87.52.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+120;2;"true";"RENARD";"Baptiste";1;"FR";75004;75004;"b.renard@fernandez-ms.fr";;"01.78.45.41.99";"07.11.94.54.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+121;1;"false";"HL Composants";;;"FR";790;790;"info@hlcomposants.fr";;;;;"emailpaper";"IN_CB";"15JRNET";"SMB";"EUR";;;"AXC";411100;401100
+122;2;"true";"HUBERT";"Laurent";1;"FR";790;790;"l.hubert@hlcomposants.fr";;"04.11.61.18.99";"06.81.78.68.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+123;2;"true";"LOUIS";"Noémie";2;"FR";790;790;"n.louis@hlcomposants.fr";;"04.69.55.88.99";"07.27.45.25.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+124;2;"true";"ADJE";"Younès";1;"FR";790;790;"y.adje@hlcomposants.fr";;"04.93.84.99.99";"07.42.54.10.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+125;1;"false";"EUROPE GEOLOC";;;"FR";920;920;"contact@europe-geoloc.fr";;;;;"emailpaper";"IN_CB";"15JRNET";"SMB";"EUR";;;"AXC";411100;401100
+126;2;"true";"ABBES";"Youssef";1;"FR";920;920;"y.abbes@europe-geoloc.fr";;"04.11.72.22.99";"06.52.19.50.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+127;2;"true";"REY";"Pierre";1;"FR";920;920;"p.rey@europe-geoloc.fr";;"05.79.46.20.99";"07.64.21.91.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+128;2;"true";"MOULIN";"Robert";1;"FR";920;920;"r.moulin@europe-geoloc.fr";;"05.13.22.66.99";"07.33.86.59.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+129;1;"false";"FLEURY Voyages";;;"FR";930;930;"contact@fleurvoyages.fr";;;;;"emailpaper";"IN_CB";"15JRNET";"SMB";"EUR";;;"AXC";411100;401100
+130;2;"true";"FLEURY";"Jean-Louis";1;"FR";930;930;"j.fleury@fleurvoyages.fr";;"05.86.20.26.99";"06.15.83.72.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+131;2;"true";"DESCHAMPS";"Alexandre";1;"FR";930;930;"a.deschamps@fleurvoyages.fr";;"05.83.41.55.99";"07.76.89.71.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+132;1;"false";"BOURGEOIS INDUSTRIE";;;"FR";940;940;"contact@bourgeois-industries.fr";;;;;"emailpaper";"IN_CB";"15JRNET";"SMB";"EUR";;;"AXC";411100;401100
+133;2;"true";"BOURGEOIS";"Luc";1;"FR";940;940;"l.bourgeois@bourgeois-industries.fr";;"05.34.68.49.99";"06.86.42.41.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+134;2;"true";"ARAFI";"Zohra";2;"FR";940;940;"z.arafi@bourgeois-industries.fr";;"05.58.10.97.99";"06.43.52.92.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+135;2;"true";"CHARLES";"Jeannot";1;"FR";940;940;"j.charles@bourgeois-industries.fr";;"04.75.16.45.99";"07.72.53.10.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+136;1;"false";"Banque GUILLOT";;;"FR";950;950;"info@banqueguillot.fr";;;;;"emailpaper";"IN_CB";"15JRNET";"SMB";"EUR";;;"AXC";411100;401100
+137;2;"true";"GUILLOT";"Kévin";1;"FR";950;950;"k.guillot@banqueguillot.fr";;"04.62.67.48.99";"06.63.55.39.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+138;2;"true";"NOEL";"Jean Nicolas";1;"FR";950;950;"j.noel@banqueguillot.fr";;"04.29.60.30.99";"07.44.77.73.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+139;2;"true";"MEUNIER";"Paul";1;"FR";950;950;"p.meunier@banqueguillot.fr";;"03.21.42.45.99";"07.67.21.50.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+140;1;"false";"WANG Mechanical Components";;;"FR";2000;2000;"contact@wangmechco.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+141;2;"true";"WANG";"Charles";1;"FR";2000;2000;"c.wang@wangmechco.com";;"03.16.73.31.99";"06.42.87.86.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+142;1;"false";"Li Bearings";;;"FR";2001;2001;"info@li-bearings.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+143;2;"true";"LI";"Guo Jie";1;"FR";2001;2001;"g.li@li-bearings.com";;"03.80.33.12.99";"07.99.88.29.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+144;1;"false";"LUO Auto Parts";;;"FR";2002;2002;"info@luo-autoparts.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+145;2;"true";"LUO";"Han";1;"FR";2002;2002;"h.luo@luo-autoparts.com";;"03.91.91.83.99";"07.97.17.64.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+146;1;"false";"LIU Welding";;;"FR";2003;2003;"info@liu-weldings.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+147;2;"true";"LIU";"Chao";1;"FR";2003;2003;"c.liu@liu-weldings.com";;"03.51.28.59.99";"06.59.61.38.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+148;1;"false";"TOP Components";;;"FR";2004;2004;"info@top-components.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+149;2;"true";"ZHANG";"Annie";2;"FR";2004;2004;"a.zhang@top-components.com";;"03.51.64.91.99";"06.19.25.67.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+150;1;"false";"GOLD Suppliers";;;"FR";2005;2005;"contact@goldsuppliers.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+151;2;"true";"GUO";"Yang";1;"FR";2005;2005;"y.guo@goldsuppliers.com.com";;"03.71.13.13.99";"07.70.80.92.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+152;1;"false";"SILVER Electronics";;;"FR";2006;2006;"contact@silverelec.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+153;2;"true";"LI";"Yang";1;"FR";2006;2006;"y.li@silverelec.com";;"03.34.25.59.99";"07.80.17.95.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+154;1;"false";"J&J Painting and Coatings";;;"FR";2007;2007;"info@jjpandc.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+155;2;"true";"LIU";"Jing Jing";2;"FR";2007;2007;"j.liu@jjpandc.com";;"03.31.96.11.99";"06.55.34.87.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+156;2;"true";"FENG";"Dan";2;"FR";2007;2007;"d.feng@jjpandc.com";;"03.31.98.94.99";"06.73.26.83.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+157;1;"false";"CHINA Parts";;;"FR";2008;2008;"contact@chinaparts.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+158;2;"true";"DONG";"Jie";1;"FR";2008;2008;"j.dong@chinaparts.com";;"03.42.34.79.99";"06.75.50.29.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+159;2;"true";"HU";"Dong Mei";2;"FR";2008;2008;"d.hu@chinaparts.com";;"03.76.16.28.99";"06.89.92.27.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+160;1;"false";"ROYAL Services";;;"FR";2009;2009;"info@royalservices.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+161;2;"true";"MA";"Jin Tao";1;"FR";2009;2009;"j.ma@royalservices.com";;"03.48.79.32.99";"07.73.25.73.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+162;2;"true";"HUO";"Xue";2;"FR";2009;2009;"x.huo@royalservices.com";;"03.53.28.61.99";"06.79.71.52.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+163;1;"false";"WU Bearings";;;"FR";2010;2010;"info@wubearings.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+164;2;"true";"WU";"Tian";1;"FR";2010;2010;"t.wu@wubearings.com";;"03.77.74.48.99";"07.37.20.33.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+165;2;"true";"WANG";"Jing";2;"FR";2010;2010;"j.wang@wubearings.com";;"04.92.65.24.99";"06.15.48.97.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+166;1;"false";"AN Import Export";;;"FR";2011;2011;"info@an-ie.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+167;2;"true";"AN";"Da";1;"FR";2011;2011;"d.an@an-ie.com";;"04.71.66.94.99";"07.59.91.38.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+168;1;"false";"YOSHIDA Electronics";;;"FR";6000;6000;"contact@yoshida-electronics.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+169;2;"true";"YOSHIDA";"Miyuki";2;"FR";6000;6000;"m.yoshida@yoshida-electronics.com";;"04.40.99.16.99";"07.93.95.27.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+170;1;"false";"SASAKI Components";;;"FR";6001;6001;"contact@sasaki-components.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+171;2;"true";"SASAKI";"Amaya";1;"FR";6001;6001;"a.sasaki@sasaki-components.com";;"04.26.94.48.99";"06.65.60.95.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+172;1;"false";"MATSU Parts";;;"FR";6002;6002;"info@matsuparts.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+173;2;"true";"MATSUMOTO";"Chisa";1;"FR";6002;6002;"c.matsumoto@matsuparts.com";;"04.31.84.67.99";"06.88.84.92.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+174;2;"true";"SHIMIZU";"Daigo";1;"FR";6002;6002;"d.shimizu@matsuparts.com";;"04.42.37.34.99";"06.38.89.10.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+175;1;"false";"MORI MORI Services";;;"FR";6003;6003;"contact@mori-mori.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+176;2;"true";"MORI";"Fuku";1;"FR";6003;6003;"f.mori@mori-mori.com";;"04.49.22.75.99";"07.32.76.60.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+177;2;"true";"ABE";"Kanori";1;"FR";6003;6003;"k.abe@mori-mori.com";;"02.74.32.14.99";"06.42.84.59.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+178;1;"false";"HASHIMOTO Exports";;;"FR";6004;6004;"contact@hashimoto.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+179;2;"true";"HASHIMOTO";"Kae";1;"FR";6004;6004;"k.hashimoto@hashimoto.com";;"02.82.46.38.99";"06.52.57.82.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+180;2;"true";"AOKI";"Misao";2;"FR";6004;6004;"m.aoki@hashimoto.com";;"02.63.58.94.99";"07.58.45.13.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+181;1;"true";"AELTERS Logistics";;;"FR";1000;1000;"info@aelters-logistics.com.com";;;;;"emailpaper";"null";"null";"SMB";"null";;;"AXC";"null";"null"
+182;2;"true";"AELTERS";"Christian";1;"FR";1000;1000;"c.aelters@aelters-logistics.com.com";;"02.61.97.84.99";"07.53.27.98.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+183;1;"true";"CUYPERS Materials";;;"FR";1001;1001;"info@cuypers-materials.com";;;;;"emailpaper";"null";"null";"SMB";"null";;;"AXC";"null";"null"
+184;2;"true";"CUYPERS";"Cornelia";2;"FR";1001;1001;"c.cuypers@cuypers-materials.com";;"02.18.35.73.99";"06.46.87.71.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+185;1;"false";"DE KIMPE Engineering";;;"FR";1002;1002;"contact@dekimpe-eng.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+186;2;"true";"DE KIMPE";"Joos";1;"FR";1002;1002;"j.de kimpe@dekimpe-eng.com";;"02.10.16.36.99";"07.63.83.17.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+187;1;"false";"KIEFFER Import Export";;;"FR";7000;7000;"contact@kieffer-ie.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+188;2;"true";"KIEFFER";"Claude";1;"FR";7000;7000;"c.kieffer@dekimpe-eng.com";;"02.44.44.41.99";"06.85.72.17.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+189;1;"false";"HUBERT Biotechnologies";;;"FR";7001;7001;"contact@hubert-biotech.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+190;2;"true";"HUBERT";"Marie";2;"FR";7001;7001;"m.hubert@hubert-biotech.com";;"02.16.97.99.99";"07.82.95.87.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+191;1;"false";"SCHOTT Multiservices";;;"FR";7002;7002;"contact@schott-multiservices.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+192;2;"true";"SCHOTT";"Edouard";1;"FR";7002;7002;"e.schott@schott-multiservices.com";;"02.47.78.13.99";"06.33.78.92.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+193;1;"false";"VDB Mechanics";;;"FR";8000;8000;"contact@vdb-consulting.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+194;2;"true";"VAN DER BURG";"Axel";1;"FR";8000;8000;"a.van der burg@vdb-consulting.com";;"02.92.49.42.99";"06.97.33.80.99";;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+195;1;"false";"KING Electronics";;;"FR";8001;8001;"contact@kingelec.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+196;2;"true";"MARTENS";"Annette";2;"FR";8001;8001;"a.martens@kingelec.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+197;1;"false";"DG Technologies";;;"FR";8002;8002;"info@dg-technologies.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+198;2;"true";"DE GROOT";"Matthijs";1;"FR";8002;8002;"m.de groot@dg-technologies.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+199;1;"false";"VAN Consulting";;;"FR";8003;8003;"info@van-consulting.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+200;2;"true";"VAN INGEN";"Marie";2;"FR";8003;8003;"m.van ingen@van-consulting.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+201;1;"false";"SCHWRTZ Material Processing";;;"FR";3000;3000;"contact@schwartz-mp.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+202;2;"true";"SCHWARTZ";"Matthias";1;"FR";3000;3000;"m.schwartz@schwartz-mp.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+203;1;"false";"MECAPARTS";;;"FR";3001;3001;"contact@mecaparts.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+204;2;"true";"SCHUMACHER";"Jurgen";1;"FR";3001;3001;"j.schumacher@mecaparts.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+205;1;"false";"AZ Inno";;;"FR";3002;3002;"info@azinno.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+206;2;"true";"MULLER";"Jan";1;"FR";3002;3002;"j.muller@azinno.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+207;1;"false";"PI Communicazione";;;"FR";5000;5000;"contact@pi-com.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+208;2;"true";"PIRLO";"Roberto";1;"FR";5000;5000;"r.pirlo@pi-com.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+209;1;"false";"DL Machinery";;;"FR";5001;5001;"contact@dlmachinery.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+210;2;"true";"DI LUCA";"Silvio";1;"FR";5001;5001;"s.di luca@dlmachinery.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+211;1;"false";"SMITH Softwares";;;"FR";10000;10000;"contact@smith-softwares.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+212;2;"true";"SMITH";"James";1;"FR";10000;10000;"j.smith@smith-softwares.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+213;2;"true";"JOHNSON";"John";1;"FR";10000;10000;"j.johnson@smith-softwares.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+214;1;"false";"W&J Telecom";;;"FR";10001;10001;"info@wj-telecom.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+215;2;"true";"WILLIAMS";"Robert";1;"FR";10001;10001;"r.williams@wj-telecom.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+216;1;"false";"JONES Engineering";;;"FR";10002;10002;"contact@joneseng.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+217;2;"true";"JONES";"Michael";1;"FR";10002;10002;"m.jones@joneseng.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+218;1;"false";"BROWN Materials";;;"FR";10003;10003;"info@brown-materials.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+219;2;"true";"BROWN";"William";1;"FR";10003;10003;"w.brown@brown-materials.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+220;1;"false";"DAVIS Electronics";;;"FR";10005;10005;"info@davis-electronics.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+221;2;"true";"DAVIS";"David";1;"FR";10005;10005;"d.davis@davis-electronics.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+222;1;"false";"MILLER Parts";;;"FR";10006;10006;"contact@miller-parts.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+223;2;"true";"MILLER";"Richard";1;"FR";10006;10006;"r.miller@miller-parts.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+224;1;"false";"WM Cinetics";;;"FR";10010;10010;"contact@wm-cinetics.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+225;2;"true";"WILSON";"Charles";1;"FR";10010;10010;"c.wilson@wm-cinetics.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+226;1;"false";"MOORE Cosmetics";;;"FR";10011;10011;"info@moore-cosmetics.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+227;2;"true";"MOORE";"Joseph";1;"FR";10011;10011;"j.moore@moore-cosmetics.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+228;2;"true";"TAYLOR";"Thomas";1;"FR";10011;10011;"t.taylor@moore-cosmetics.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+229;1;"false";"ATJ Banking";;;"FR";10012;10012;"contact@atjbanking.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+230;2;"true";"ANDERSON";"Christopher";1;"FR";10012;10012;"c.anderson@atjbanking.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+231;2;"true";"THOMAS";"Daniel";1;"FR";10012;10012;"d.thomas@atjbanking.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+232;2;"true";"JACKSON";"Paul";1;"FR";10012;10012;"p.jackson@atjbanking.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+233;1;"false";"WHITE HARRIS";;;"FR";10017;10017;"0.white harris@white-harris.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+234;2;"true";"WHITE";"Mark";1;"FR";10017;10017;"m.white@white-harris.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+235;2;"true";"HARRIS";"Donald";1;"FR";10017;10017;"d.harris@white-harris.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+236;2;"true";"MARTIN";"George";1;"FR";10017;10017;"g.martin@white-harris.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+237;1;"false";"TGM Consulting";;;"FR";10019;10019;"contact@tgm-consulting.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+238;2;"true";"THOMPSON";"Kenneth";1;"FR";10019;10019;"k.thompson@tgm-consulting.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+239;2;"true";"GARCIA";"Steven";1;"FR";10019;10019;"s.garcia@tgm-consulting.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+240;2;"true";"MARTINEZ";"Edward";1;"FR";10019;10019;"e.martinez@tgm-consulting.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+241;1;"false";"RCR Industries";;;"FR";10020;10020;"contact@rcr-industries.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+242;2;"true";"ROBINSON";"Brian";1;"FR";10020;10020;"b.robinson@rcr-industries.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+243;2;"true";"CLARK";"Ronald";1;"FR";10020;10020;"r.clark@rcr-industries.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+244;2;"true";"RODRIGUEZ";"Anthony";1;"FR";10020;10020;"a.rodriguez@rcr-industries.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+245;1;"false";"LEWIS&LEE";;;"FR";10023;10023;"contact@lewisandlee.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+246;2;"true";"LEWIS";"Kevin";1;"FR";10023;10023;"k.lewis@lewisandlee.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+247;2;"true";"LEE";"Jason";1;"FR";10023;10023;"j.lee@lewisandlee.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+248;2;"true";"WALKER";"Jeff";1;"FR";10023;10023;"j.walker@lewisandlee.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+249;1;"false";"HALL Mecanics";;;"FR";10024;10024;"contact@hall-mecanics.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+250;2;"true";"HALL";"Mary";2;"FR";10024;10024;"m.hall@hall-mecanics.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+251;1;"false";"ALLEN Biotech";;;"FR";10028;10028;"info@allen-biotech.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+252;2;"true";"ALLEN";"Patricia";2;"FR";10028;10028;"p.allen@allen-biotech.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+253;1;"false";"Y&H Accountants";;;"FR";10030;10030;"info@yh-accountants.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+254;2;"true";"YOUNG";"Linda";2;"FR";10030;10030;"l.young@yh-accountants.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+255;2;"true";"HERNANDEZ";"Barbara";2;"FR";10030;10030;"b.hernandez@yh-accountants.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+256;1;"false";"KING Media";;;"FR";10033;10033;"info@kingmedia.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+257;2;"true";"KING";"Elizabeth";2;"FR";10033;10033;"e.king@kingmedia.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+258;2;"true";"WRIGHT";"Jennifer";2;"FR";10033;10033;"j.wright@kingmedia.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+259;1;"false";"LHS Lab";;;"FR";10036;10036;"info@lhslab.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+260;2;"true";"LOPEZ";"Maria";2;"FR";10036;10036;"m.lopez@lhslab.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+261;2;"true";"HILL";"Susan";2;"FR";10036;10036;"s.hill@lhslab.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+262;2;"true";"SCOTT";"Margaret";2;"FR";10036;10036;"m.scott@lhslab.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+263;1;"false";"GA Technologies";;;"FR";10037;10037;"info@ga-tech.com";;;;;"emailpaper";"IN_VIR";"15JRFDM";"SMB";"USD";;;"AXC";411100;401100
+264;2;"true";"GREEN";"Dorothy";2;"FR";10037;10037;"d.green@ga-tech.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+265;2;"true";"ADAMS";"Lisa";2;"FR";10037;10037;"l.adams@ga-tech.com";;;;;"null";"null";"null";0;"null";;;"AXC";"null";"null"
+1000;2;"false";"DURAND";"Jean-Luc";1;"FR";35;35;"j.durand@foxmail.com";;"04.84.11.42.99";"07.89.26.75.99";;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1001;2;"false";"MERCIER";"Ludovic";1;"FR";42;42;"l.mercier@msn.com";;;"06.60.53.30.99";;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1002;2;"false";"FAURE";"Laurence";2;"FR";45;45;"l.faure@yahoo.com";;"01.39.77.36.99";"07.67.46.82.99";;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1003;2;"false";"LEROUX";"Franck";1;"FR";64;64;"f.leroux@gmail.com";;"01.15.43.62.99";"06.30.85.35.99";;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1004;2;"false";"COLIN";"Arnaud";1;"FR";64;64;"a.colin@yahoo.com";;"01.38.22.41.99";"06.23.34.62.99";;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1005;2;"false";"ARNAUD";"Clothilde";2;"FR";65;65;"c.arnaud@gmail.com";;"01.30.29.30.99";"07.64.42.63.99";;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1006;2;"false";"ROLLAND";"Garry";1;"FR";65;65;"g.rolland@yahoo.com";;"01.89.50.17.99";"06.43.62.98.99";;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1007;2;"false";"CARON";"Simon";1;"FR";65;65;"s.caron@foxmail.com";;"01.75.85.12.99";"07.41.35.74.99";;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1008;2;"false";"AUBERT";"Luc";1;"FR";65;65;"l.aubert@gmail.com";;"01.60.97.71.99";"07.18.73.54.99";;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1009;2;"false";"KOUMASSI";"Rahoua";2;"FR";66;66;"r.koumassi@yahoo.com";;"01.29.58.49.99";"06.10.99.76.99";;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1010;2;"false";"RENAUD";"Mélanie";2;"FR";66;66;"m.renaud@foxmail.com";;"04.81.91.59.99";"07.70.61.88.99";;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1011;2;"false";"LEMOINE";"Julie";2;"FR";66;66;"j.lemoine@yahoo.com";;"04.94.20.73.99";"07.73.23.59.99";;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1012;2;"false";"PICARD";"Anna";2;"FR";66;66;"a.picard@foxmail.com";;"04.79.67.80.99";"06.45.25.47.99";;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1013;2;"false";"GAILLARD";"François";1;"FR";66;66;"f.gaillard@yahoo.com";;"04.88.94.78.99";"06.62.47.53.99";;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1014;2;"false";"DUPUIS";"Laurence";2;"FR";67;67;"l.dupuis@gmail.com";;"04.56.28.91.99";"06.15.78.76.99";;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1015;2;"false";"OLIVIER";"Elise";2;"FR";67;67;"e.olivier@foxmail.com";;"04.72.46.11.99";"06.66.56.42.99";;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1016;2;"false";"RODRIGUEZ";"Anna";2;"FR";67;67;"a.rodriguez@yahoo.com";;"04.75.11.10.99";"06.27.67.34.99";;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1017;2;"false";"DA SILVA";"Paul";1;"FR";67;67;"p.da silva@yahoo.com";;"04.86.70.26.99";"06.91.86.62.99";;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1018;2;"false";"KA";"Salima";2;"FR";68;68;"s.ka@foxmail.com";;"04.65.59.21.99";"06.63.43.99.99";;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1019;2;"false";"RIVIERE";"Jean-Charles";1;"FR";68;68;"j.riviere@gmail.com";;"04.81.30.29.99";"06.85.46.10.99";;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1020;2;"false";"LE GALL";"Marion";2;"FR";68;68;"m.le gall@foxmail.com";;"04.31.35.26.99";"07.73.55.94.99";;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1021;2;"false";"ABBOU";"Mustapha";1;"FR";68;68;"m.abbou@msn.com";;"04.88.98.10.99";"06.70.15.70.99";;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1022;2;"false";"GONZALEZ";"Luca";1;"FR";141;141;"l.gonzalez@msn.com";;"05.44.56.40.99";"06.66.54.16.99";;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1023;2;"false";"BERGER";"Grégory";1;"FR";141;141;"g.berger@yahoo.com";;"05.67.74.60.99";"07.73.41.28.99";;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1024;2;"false";"LECOMTE";"Arnaud";1;"FR";141;141;"a.lecomte@msn.com";;"05.89.88.30.99";"07.26.80.30.99";;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1025;2;"false";"MENARD";"Fabrice";1;"FR";141;141;"f.menard@foxmail.com";;"05.49.53.41.99";"07.74.42.90.99";;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1026;2;"false";"CARPENTIER";"Elisa";2;"FR";148;148;"e.carpentier@foxmail.com";;"05.38.40.92.99";"06.85.49.95.99";;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1027;2;"false";"ABBAS";"Mohamed";1;"FR";151;151;"m.abbas@msn.com";;"05.54.47.90.99";"07.91.29.15.99";;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1028;2;"false";"GUILLAUME";"Anne-Lise";2;"FR";152;152;"a.guillaume@foxmail.com";;"05.88.52.32.99";"07.93.22.82.99";;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1029;2;"false";"ADAM";"Enzo";1;"FR";153;153;"e.adam@foxmail.com";;"05.78.85.33.99";"06.38.53.47.99";;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1030;2;"false";"BA";"Anyssa";2;"FR";154;154;"a.ba@gmail.com";;"05.57.61.56.99";"07.39.35.96.99";;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1031;2;"false";"MENACER";"Brahim";1;"FR";157;157;"b.menacer@foxmail.com";;"04.39.10.31.99";"07.37.59.90.99";;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1032;2;"false";"ABIDI";"Yacoub";1;"FR";158;158;"y.abidi@msn.com";;"04.45.92.15.99";"07.97.10.45.99";;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1033;2;"false";"MEYER";"Philippe";1;"FR";162;162;"p.meyer@foxmail.com";;"04.52.66.34.99";"07.31.30.96.99";;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1034;2;"false";"LUCAS";"Julien";1;"FR";163;163;"j.lucas@foxmail.com";;"03.55.14.49.99";"06.23.65.59.99";;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1035;2;"false";"BAKER";"Nancy";2;"FR";240;240;"n.baker@foxmail.com";;;;;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1036;2;"false";"GONZALEZ";"Karen";2;"FR";241;241;"k.gonzalez@gmail.com";;;;;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1037;2;"false";"NELSON";"Betty";2;"FR";242;242;"b.nelson@yahoo.com";;;;;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1038;2;"false";"CARTER";"Helen";2;"FR";243;243;"h.carter@msn.com";;;;;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1039;2;"false";"MITCHELL";"Sandra";2;"FR";244;244;"s.mitchell@gmail.com";;;;;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1040;2;"false";"PEREZ";"Donna";2;"FR";245;245;"d.perez@yahoo.com";;;;;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1041;2;"false";"ROBERTS";"Carol";2;"FR";246;246;"c.roberts@gmail.com";;;;;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1042;2;"false";"TURNER";"Ruth";2;"FR";247;247;"r.turner@yahoo.com";;;;;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1043;2;"false";"PHILLIPS";"Sharon";2;"FR";248;248;"s.phillips@yahoo.com";;;;;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1044;2;"false";"CAMPBELL";"Michelle";2;"FR";249;249;"m.campbell@yahoo.com";;;;;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1045;2;"false";"PARKER";"Laura";2;"FR";250;250;"l.parker@foxmail.com";;;;;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1046;2;"false";"EVANS";"Sarah";2;"FR";251;251;"s.evans@gmail.com";;;;;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1047;2;"false";"EDWARDS";"Kimberly";2;"FR";252;252;"k.edwards@yahoo.com";;;;;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+1048;2;"false";"COLLINS";"Deborah";2;"FR";253;253;"d.collins@gmail.com";;;;;"email";"IN_CB";"15JRNET";"Indiv";"EUR";;;"AXC";411100;401100
+90000;1;"false";"AXConsulting";;;"FR";90000;90000;"contact@axconsulting.com";;"01.10.79.99.69";;;"emailpaper";"IN_CHQ";"30JRFDM";"SMB";"EUR";;;"AXC";411100;401100
+90001;2;"true";"MARQUES";"Yoann";1;"FR";90000;90000;"y.marques@axconsulting.com";;"01.10.79.99.70";;;"null";"null";"null";;"null";;;"AXC";"null";"null"
+90002;2;"true";"ROBERT";"Lucy";2;"FR";90000;90000;"l.robert@axconsulting.com";;"01.10.79.99.71";;;"null";"null";"null";;"null";;;"AXC";"null";"null"
+90003;2;"true";"RICHARD";"Lucas";1;"FR";90000;90000;"l.richard@axconsulting.com";;"01.10.79.99.72";;;"null";"null";"null";;"null";;;"AXC";"null";"null"
+90004;2;"true";"HERVE";"Loic";1;"FR";90000;90000;"l.herve@axconsulting.com";;"01.10.79.99.73";;;"null";"null";"null";;"null";;;"AXC";"null";"null"
+90005;2;"true";"CLEMENT";"Arnaud";2;"FR";90000;90000;"a.clement@axconsulting.com";;"01.10.79.99.74";;;"null";"null";"null";;"null";;;"AXC";"null";"null"
+90006;2;"true";"DA";"Jeremy";1;"FR";90000;90000;"j.da@axconsulting.com";;"01.10.79.99.75";;;"null";"null";"null";;"null";;;"AXC";"null";"null"
+90007;2;"true";"SILVA";"Daniel";1;"FR";90000;90000;"k.ferrer@axconsulting.com";;"01.10.79.99.76";;;"null";"null";"null";;"null";;;"AXC";"null";"null"
+90008;2;"true";"MARCHAL";"Greg";1;"FR";90000;90000;"c.ferrand@axconsulting.com";;"01.10.79.99.77";;;"null";"null";"null";;"null";;;"AXC";"null";"null"
+90009;2;"true";"MARTIN";"Charles";1;"FR";90000;90000;"t.raymond@axconsulting.com";;"01.10.79.99.78";;;"null";"null";"null";;"null";;;"AXC";"null";"null"
+90010;2;"true";"FERRER";"Kevin";1;"FR";90000;90000;"k.ferrer@axconsulting.com";;"01.10.79.99.76";;;"null";"null";"null";;"null";;;"AXC";"null";"null"
+90011;2;"true";"FERRAND";"Charles";1;"FR";90000;90000;"c.ferrand@axconsulting.com";;"01.10.79.99.77";;;"null";"null";"null";;"null";;;"AXC";"null";"null"
+90012;2;"true";"RAYMOND";"Tony";1;"FR";90000;90000;"t.raymond@axconsulting.com";;"01.10.79.99.78";;;"null";"null";"null";;"null";;;"AXC";"null";"null"
+90013;2;"true";"LAMY";"Thomas";1;"FR";90000;90000;"t.lamy@axconsulting.com";;"01.10.79.99.79";;;"null";"null";"null";;"null";;;"AXC";"null";"null"
+90014;2;"true";"GIRAULT";"Anne";2;"FR";90000;90000;"a.girault@axconsulting.com";;"01.10.79.99.80";;;"null";"null";"null";;"null";;;"AXC";"null";"null"
+90015;2;"true";"GEOFFROY";"Dimitri";1;"FR";90000;90000;"d.geoffroy@axconsulting.com";;"01.10.79.99.81";;;"null";"null";"null";;"null";;;"AXC";"null";"null"
+90016;2;"true";"DAVID";"Alex";1;"FR";90000;90000;"a.david@axconsulting.com";;"01.10.79.99.82";;;"null";"null";"null";;"null";;;"AXC";"null";"null"
+90017;2;"true";"ANDRE";"William";1;"FR";90000;90000;"w.andre@axconsulting.com";;"01.10.79.99.83";;;"null";"null";"null";;"null";;;"AXC";"null";"null"
+90018;2;"true";"LOUIS";"Victoria";2;"FR";90000;90000;"v.louis@axconsulting.com";;"01.10.79.99.84";;;"null";"null";"null";;"null";;;"AXC";"null";"null"
+90019;2;"true";"RICHARD";"Simon";1;"FR";90000;90000;"s.richard@axconsulting.com";;"01.10.79.99.85";;;"null";"null";"null";;"null";;;"AXC";"null";"null"
+90020;2;"true";"MAURIN";"David";1;"FR";90000;90000;"d.maurin@axconsulting.com";;"01.10.79.99.86";;;"null";"null";"null";;"null";;;"AXC";"null";"null"
+90021;2;"true";"FERNANDES";"Cyril";1;"FR";90000;90000;"c.fernandes@axconsulting.com";;"01.10.79.99.87";;;"null";"null";"null";;"null";;;"AXC";"null";"null"
+90022;2;"true";"COSTA";"Robin";1;"FR";90000;90000;"r.costa@axconsulting.com";;"01.10.79.99.88";;;"null";"null";"null";;"null";;;"AXC";"null";"null"
+90023;2;"true";"COLIN";"Romane";2;"FR";90000;90000;"r.colin@axconsulting.com";;"01.10.79.99.89";;;"null";"null";"null";;"null";;;"AXC";"null";"null"
+90024;2;"true";"COHEN";"Sophie";2;"FR";90000;90000;"s.cohen@axconsulting.com";;"01.10.79.99.90";;;"null";"null";"null";;"null";;;"AXC";"null";"null"
