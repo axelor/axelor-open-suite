@@ -181,9 +181,9 @@
         <bind to="code" column="code"/>
         <bind to="toDate" column="toDate"/>
         <bind to="fromDate" column="fromDate"/>
-        <bind to="company" search="self.name = :company_name" >
-            <bind to="name" column="company_name"/>
-        </bind>
+<!--         <bind to="company" search="self.code = :company_name" > -->
+<!--             <bind to="name" column="company_name"/> -->
+<!--         </bind> -->
         <bind to="status" search="self.code = :status_code" >
             <bind to="code" column="status_code"/>
         </bind>

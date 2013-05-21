@@ -1,4 +1,4 @@
-"name";"code";"fromDate";"toDate";"company_name";"status_code"
+"name";"code";"fromDate";"toDate";"company.code";"status_code"
 "AF 2005 AX Consulting";"2005_AXC";"2005-01-01";"2005-12-31";"AXC";"ope"
 "AF 2006 AX Consulting";"2006_AXC";"2006-01-01";"2006-12-31";"AXC";"ope"
 "AF 2007 AX Consulting";"2007_AXC";"2007-01-01";"2007-12-31";"AXC";"ope"
