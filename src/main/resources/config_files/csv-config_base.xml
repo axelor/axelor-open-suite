@@ -88,12 +88,15 @@
 	
 	<input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company"/>
 	
+	<input file="base_agency.csv" separator=";" type="com.axelor.apps.base.db.Agency"/>
+	
 	<input file="base_userInfo.csv" separator=";" type="com.axelor.apps.base.db.UserInfo">
 <!--       TODO A COMPLETER -->
 		<bind column="firstName" to="name" />
 		<bind column="lastName" to="password"/>
-      <bind to="internalUser" search="self.code = :code_fr" >
-            <bind to="code" column="code_fr"/>
+      	<bind to="internalUser" search="self.code = :code_fr" >
+        <bind to="code" column="code_fr"/>
+        <bind column="companySet_code" to="companySet" search="self.code in :companySet_code" eval="companySet_code.split('\\|') as List"/>
       </bind>
 	</input>  
 
@@ -106,8 +109,6 @@
     	<bind to="toBeAdded" column="toBeAdded" eval="toBeAdded?.empty ? '1' : toBeAdded"/>
     </input>
     
-  	<input file="base_agency.csv" separator=";" type="com.axelor.apps.base.db.Agency"/>
-
  	<input file="base_companyDepartment_Prod.csv" separator=";" type="com.axelor.apps.base.db.Department">
  		<bind column="id" to="importId"/>
  		<bind column="code_fr" to="code"/>
@@ -152,7 +153,9 @@
 		<bind column="description_fr_FR" to="description"/>
 	</input>
 
-	 
+ 	<input file="base_partner.csv" separator=";" search="self.importId = :importId" update="true" type="com.axelor.apps.base.db.Partner">
+		<bind column="companySet_code" to="companySet" search="self.code in :companySet_code" eval="companySet_code.split('\\|') as List"/>
+	</input>
 
 <!--     IMPORT DU PACKAGE 'ACCOUNT' -->     
 
