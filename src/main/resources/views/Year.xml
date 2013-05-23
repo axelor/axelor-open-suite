@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="year-grid" title="Années fiscales" model="com.axelor.apps.account.db.Year">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="fromDate"/>
+        <field name="toDate"/>
+        <field name="reportedBalanceDate"/>
+        <field name="company"/>
+        <field name="status"/>
+    </grid>
+    
+    <form name="year-form" title="Année fiscale" model="com.axelor.apps.account.db.Year" cols="4"
+    onNew="action-year-record-new">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="fromDate"/>
+        <field name="toDate"/>
+        <field name="reportedBalanceDate"/>
+        <field name="company"/>
+<!--         <field name="reportedBalanceLineList" colSpan="4"/> -->
+        <group colSpan="4" cols="4">
+        	<button name="close" title="Cloturer l'exercice" colSpan="2" onClick="action-year-close-method,save"/>
+        	<field name="status"/>
+    	</group>
+    </form>
+    
+    <action-record name="action-year-record-new" model="com.axelor.apps.account.db.Year">
+    	<field name="status" expr="action:action-status-record-ope"/>
+    	<field name="company"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+    </action-record>
+    
+    <action-method name="action-year-close-method">
+    	<call class="com.axelor.apps.account.web.YearController" method="close"/>
+    </action-method>
+    
+    
+</object-views>

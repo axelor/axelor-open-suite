@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="pricing-list-version-grid" title="Versions de barèmes" model="com.axelor.apps.account.db.PricingListVersion">
+        <field name="fromDate"/>
+        <field name="toDate"/>
+        <field name="activeOk"/>
+    </grid>
+    
+    <form name="pricing-list-version-form" title="Version de barème" model="com.axelor.apps.account.db.PricingListVersion" cols="6" 
+    	onLoad="meth-pricingList-initVersion">
+        <field name="fromDate"/>
+        <field name="toDate"/>
+        <field name="activeOk"/>
+        <field name="pricingListLineList" colSpan="6" grid-view="pricing-list-line-grid" form-view="pricing-list-line-form"/>
+    </form>
+    
+    <form name="pricing-list-version-menu-form" title="Version de barème" model="com.axelor.apps.account.db.PricingListVersion" cols="6" 
+    	onLoad="meth-pricingList-initVersion" onSave="meth-pricingList-fixVersionListDates-menu">
+        <field name="pricingList" required="true"/> <break/>
+        <field name="fromDate" required="true"/>
+        <field name="toDate"/>
+        <field name="activeOk"/>
+        <field name="pricingListLineList" colSpan="6" grid-view="pricing-list-line-grid" form-view="pricing-list-line-form"/>
+    </form>
+
+	<!-- ACTION METHOD -->
+    <action-method name="meth-pricingList-initVersion">
+        <call class="com.axelor.apps.account.web.PricingListControllerSimple" method="initVersion"/>
+    </action-method>
+    
+    <action-method name="meth-pricingList-fixVersionListDates-menu">
+        <call class="com.axelor.apps.account.web.PricingListControllerSimple" method="fixVersionListDatesFromPricingListVersion"/>
+    </action-method>
+    
+</object-views>

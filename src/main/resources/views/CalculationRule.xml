@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    <grid name="calculation-rule-grid" title="Les règles de calcul de Taxe" model="com.axelor.apps.account.db.CalculationRule">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="base"/>
+        <field name="unit"/>
+        <field name="calculationRule"/>
+    </grid>
+    <form name="calculation-rule-form" title="Règle de calcul de Taxe" model="com.axelor.apps.account.db.CalculationRule" cols="4">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="base"/>
+        <field name="unit"/>
+        <break/>
+        <group title="Règle de calcul" colSpan="4" cols="4">
+        	<field name="calculationRule" colSpan="4" noLabel="true" widget="CodeEditor[syntax=groovy]"/>
+        </group>
+        <field name="formulaControlList" colSpan="4">
+            <grid title="Contrôles de formule">
+		        <field name="control"/>
+		        <field name="msg"/>
+		    </grid>
+		    <form title="Contrôle de formule" cols="4">
+		        <field name="control" colSpan="4"/>
+		        <field name="msg" colSpan="4"/>
+		    </form>
+        </field>
+    </form>
+</object-views>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="reconcile-grid" title="Reconcile" model="com.axelor.apps.account.db.Reconcile">
+        <field name="lineDebit"/>
+        <field name="debit"/>
+        <field name="lineCredit"/>
+        <field name="credit"/>
+        <field name="amount"/>
+        <field name="state"/>
+    </grid>
+
+    <form name="reconcile-form" title="Reconcile" model="com.axelor.apps.account.db.Reconcile" cols="4" 
+    	onNew="action-reconcile-record-default,action-reconcile-attrs-default"
+    	onLoad="action-reconcile-attrs-default">
+        <field name="lineDebit" domain="self.debit &gt; 0.0" onChange="action-reconcile-attrs-domain-credit"/>
+        <field name="lineCredit" domain="self.credit &gt; 0.0" onChange="action-reconcile-attrs-domain-debit"/>
+        <field name="debit"/>
+        <field name="credit"/>
+        <field name="amount"/>
+        <break/>
+        <button name="reconcile" title="Réconcilier" colSpan="2" onClick="save,action-reconcile-method-reconcile"/>
+        <button name="unreconcile" title="Déréconcilier" colSpan="2" onClick="save,action-reconcile-method-unreconcile"/>
+        <break/>
+        <field name="state"/>
+    </form>
+    
+    <action-record name="action-reconcile-record-default" model="com.axelor.apps.account.db.Reconcile">
+    	<field name="state" expr="1"/>
+    </action-record>
+    
+    <action-attrs name="action-reconcile-attrs-default">
+    	<attribute name="hidden" for="reconcile" expr="eval:true"/>
+    	<attribute name="hidden" for="unreconcile" expr="eval:true"/>
+    	<attribute name="hidden" for="reconcile" expr="eval:false" if="state?.equals('1')"/>
+    	<attribute name="hidden" for="unreconcile" expr="eval:true" if="state?.equals('1')"/>
+    	<attribute name="hidden" for="reconcile" expr="eval:true" if="state?.equals('2')"/>
+    	<attribute name="hidden" for="unreconcile" expr="eval:false" if="state?.equals('2')"/>
+    </action-attrs>
+    
+    <action-attrs name="action-reconcile-attrs-domain-credit">
+		<attribute name="domain" for="lineCredit" if="eval: lineDebit != null" expr="eval: &quot;self.company.id = ${lineDebit?.company?.id} AND self.base.id = ${lineDebit?.partner?.id} AND self.credit &gt; 0.0&quot;"/>
+   		<attribute name="domain" for="lineCredit" if="eval: lineDebit == null" expr="eval: &quot;self.credit &gt; 0.0&quot;"/>
+    </action-attrs>
+    
+    <action-attrs name="action-reconcile-attrs-domain-debit">
+		<attribute name="domain" for="lineDebit" if="eval: lineCredit != null" expr="eval: &quot;self.company.id = ${lineCredit?.company?.id} AND self.base.id = ${lineCredit?.partner?.id} AND self.debit &gt; 0.0&quot;"/>
+ 		<attribute name="domain" for="lineDebit" if="eval: lineCredit == null" expr="eval: &quot;self.debit &gt; 0.0&quot;"/>
+    </action-attrs>
+
+    <action-method name="action-reconcile-method-reconcile">
+    	<call class="com.axelor.apps.account.web.ReconcileController" method="reconcile"/>
+    </action-method>
+    
+    <action-method name="action-reconcile-method-unreconcile">
+    	<call class="com.axelor.apps.account.web.ReconcileController" method="unreconcile"/>
+    </action-method>
+
+    
+</object-views>
