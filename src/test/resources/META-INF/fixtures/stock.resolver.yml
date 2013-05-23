@@ -1,0 +1,14 @@
+# Reference Product
+User: com.axelor.auth.db.User
+Product: com.axelor.apps.sale.db.Product
+Uom: com.axelor.apps.sale.db.Uom
+Account: com.axelor.apps.account.db.Account
+AccountType: com.axelor.apps.account.db.AccountType
+InvoiceLineType: com.axelor.apps.account.db.InvoiceLineType
+
+# Stock Objects
+Location: com.axelor.apps.stock.db.Location
+PurchaseOrder: com.axelor.apps.stock.db.PurchaseOrder
+PurchaseOrderLine: com.axelor.apps.stock.db.PurchaseOrderLine
+PickingMove : com.axelor.apps.stock.db.PickingMove
+Picking : com.axelor.apps.stock.db.Picking
