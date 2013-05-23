@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="call-grid" title="Calls" model="com.axelor.apps.crm.db.Event">
+        <field name="subject"/>
+        <field name="primaryStatusSelect"/>
+        <field name="secondaryStatusSelect"/>
+        <field name="startDateTime"/>
+        <field name="relatedToSelect"/>
+        <field name="reminder"/>
+    </grid>
+    
+    <form name="call-form" title="Call" model="com.axelor.apps.crm.db.Event" cols="2" colWidths="*,400"
+    	onNew="action-call-default-record,action-event-record-type-select">
+        <group title="Informations" cols="4" colSpan="1">
+        	<field name="subject" colSpan="2"/>
+	        <field name="primaryStatusSelect" colSpan="2"/>
+	        <field name="secondaryStatusSelect" noLabel="true" colSpan="1"/>
+	        <spacer/><break/>
+	        <group title="Meeting date" colSpan="4" cols="3" css="groupTitle">
+	        	<field name="startDateTime" colSpan="2"/>
+	         	<field name="durationHours" colSpan="2"/>
+		        <field name="durationMinutesSelect" noLabel="true" colSpan="1"/>
+	        </group>
+	        <spacer/><break/>
+	        <field name="description" widget="TEXT[height=4]" colSpan="4"/>
+	        <field name="reminder"/>
+        </group>
+        <group title="Related to" colSpan="1" cols="2">
+	        <field name="relatedToSelect" widget="RefSelect[related=relatedToSelectId]"/>
+        </group>
+        <group title="Assignment" cols="4" colSpan="2" canCollapse="true">
+	        <field name="userInfo"/>
+	    	<field name="team"/>
+        </group>
+    </form>
+    
+  <calendar name="meeting-calendar" title="Meetings" mode="month" colorBy="typeSelect" 
+    eventStart="startDateTime" 
+    eventStop="endDateTime" 
+    eventLength="1">
+    <field name="subject" />
+  </calendar>
+    
+    
+    <grid name="meeting-grid" title="Meetings" model="com.axelor.apps.crm.db.Event" >
+        <field name="subject"/>
+        <field name="secondaryStatusSelect"/>
+        <field name="startDateTime"/>
+        <field name="relatedToSelect"/>
+        <field name="reminder"/>
+    </grid>
+    
+    <form name="meeting-form" title="Meeting" model="com.axelor.apps.crm.db.Event" cols="2" colWidths="*,400" 
+    	onNew="action-call-default-record,action-event-record-type-select">
+        <group title="Informations" cols="4" colSpan="1">
+        	<field name="subject"/>
+	        <field name="secondaryStatusSelect"/>
+	        <spacer/><break/>
+	        <group title="Meeting date" colSpan="4" cols="4" colWidths="25*" css="groupTitle">
+		        <field name="startDateTime" onChange="action-meeting-method-compute-start-date-time"/>
+		        <field name="endDateTime" onChange="action-meeting-method-compute-end-date-time"/>
+		        <field name="durationHours" onChange="action-meeting-method-compute-duration"/>
+		        <field name="durationMinutesSelect" noLabel="true" colSpan="1"/>
+	        </group>
+	       	<spacer/><break/>
+	        <field name="location"/>
+	        <field name="reminder"/>
+	        <field name="description" widget="TEXT[height=4]" colSpan="4"/>
+        </group>
+        <group title="Related to" colSpan="1" cols="2">
+	        <field name="relatedToSelect" widget="RefSelect[related=relatedToSelectId]"/>
+        </group>
+        <group title="Assignment" cols="4" colSpan="2" canCollapse="true">
+	        <field name="userInfo"/>
+	    	<field name="team"/>
+        </group>
+    </form>
+    
+    <grid name="crm-task-grid" title="Tasks" model="com.axelor.apps.crm.db.Event">
+        <field name="subject"/>
+        <field name="thirdaryStatusSelect"/>
+        <field name="startDateTime"/>
+        <field name="relatedToSelect"/>
+        <field name="reminder"/>
+    </grid>
+    
+    <form name="crm-task-form" title="Task" model="com.axelor.apps.crm.db.Event" cols="2" colWidths="*,400"
+    	onNew="action-call-default-record,action-event-record-type-select">
+        <group title="Informations" cols="4" colSpan="1">
+        	<field name="subject"/>
+	        <field name="thirdaryStatusSelect"/>
+	        <spacer/><break/>
+         	<group title="Task date" colSpan="4" cols="4" colWidths="25*" css="groupTitle">
+		        <field name="startDateTime" onChange="action-meeting-method-compute-start-date-time"/>
+		        <field name="endDateTime" onChange="action-meeting-method-compute-end-date-time"/>
+		        <field name="durationHours" onChange="action-meeting-method-compute-duration"/>
+	        </group>
+	        <spacer/><break/>
+	        <field name="taskPartner"/>
+	        <field name="reminder"/>
+	        <field name="description" widget="TEXT[height=4]" colSpan="4"/>
+        </group>
+        <group title="Related to" colSpan="1" cols="2">
+	        <field name="relatedToSelect" widget="RefSelect[related=relatedToSelectId]"/>
+        </group>
+        <group title="Assignment" cols="4" colSpan="2" canCollapse="true">
+	        <field name="userInfo"/>
+	    	<field name="team"/>
+        </group>
+    </form>
+    
+    <action-record name="action-call-default-record" model="com.axelor.apps.crm.db.Event">
+    	<field name="startDateTime" expr="eval: __time__"/>
+    </action-record>
+    
+    <action-method name="action-meeting-method-compute-start-date-time">
+    	<call class="com.axelor.apps.crm.web.EventController" method="computeStartDateTime"/>
+    </action-method>
+    
+    <action-method name="action-meeting-method-compute-end-date-time">
+    	<call class="com.axelor.apps.crm.web.EventController" method="computeEndDateTime"/>
+    </action-method>
+    
+    <action-method name="action-meeting-method-compute-duration">
+    	<call class="com.axelor.apps.crm.web.EventController" method="computeDuration"/>
+    </action-method>
+    
+    <action-record name="action-event-record-type-select" model="com.axelor.apps.crm.db.Event">
+    	<field name="typeSelect" expr="eval: _typeSelect"/>
+    </action-record>
+    
+</object-views>

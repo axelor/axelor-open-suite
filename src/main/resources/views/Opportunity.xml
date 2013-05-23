@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="opportunity-grid" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity">
+        <field name="name"/>
+        <field name="partner"/>
+        <field name="currency"/>
+        <field name="expectedCloseDate"/>
+        <field name="amount"/>
+    </grid>
+    
+    <form name="opportunity-form" title="Opportunity" model="com.axelor.apps.crm.db.Opportunity" cols="4"
+    	onNew="action-account-record-new">
+         <group title="Informations" colSpan="4">
+	        <field name="name"/>
+	        <field name="partner"/>
+	        <field name="currency"/>
+	        <field name="expectedCloseDate"/>
+	        <field name="amount"/>
+	        <field name="opportunityType"/>
+	        <field name="bestCase"/>
+	        <field name="worstCase"/>
+	        <field name="salesStageSelect"/>
+	        <field name="source"/>
+	        <field name="probability"/>
+	        <field name="campaign"/>
+	        <field name="nextStep"/>
+	        <break/>
+	        <field name="description" colSpan="4"/>
+		</group>
+        <group title="Assignment" canCollapse="true">
+	        <field name="userInfo"/>
+	    	<field name="team"/>
+        </group>
+    </form>
+    
+    <action-record name="action-opportunity-record-new" model="com.axelor.apps.crm.db.Opportunity">
+    	<field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+    </action-record>
+    
+</object-views>

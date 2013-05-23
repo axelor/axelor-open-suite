@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="campaign-grid" title="Campaigns" model="com.axelor.apps.crm.db.Campaign">
+        <field name="name"/>
+        <field name="statusSelect"/>
+        <field name="startDate"/>
+        <field name="endDate"/>
+        <field name="typeSelect"/>
+        <field name="budget"/>
+    </grid>
+    
+    <form name="campaign-form" title="Campaign" model="com.axelor.apps.crm.db.Campaign" cols="4"
+    	onNew="action-account-record-new">
+    	<group title="Informations" colSpan="4">
+	        <field name="name"/>
+	        <field name="statusSelect"/>
+	        <field name="startDate"/>
+	        <field name="endDate"/>
+	        <field name="typeSelect"/>
+	        <field name="currency"/>
+	        <field name="frequencySelect" hideIf="typeSelect != 8"/>
+	        <field name="nbImpressions"/>
+	        <group title="Budgétisation" colSpan="4" css="groupTitle">
+	        	<field name="budget"/>
+		        <field name="expectedCost"/>
+		        <field name="actualCost"/>
+		        <field name="expectedRevenue"/>
+	        </group>
+	        <field name="objective" widget="TEXT[height=3]"/>
+	        <field name="description" widget="TEXT[height=3]"/>
+        </group>
+        <group title="Assignment" canCollapse="true">
+	        <field name="userInfo"/>
+	    	<field name="team"/>
+        </group>
+    </form>
+    
+    <action-record name="action-campaign-record-new" model="com.axelor.apps.crm.db.Campaign">
+    	<field name="company"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+    </action-record>
+    
+</object-views>
