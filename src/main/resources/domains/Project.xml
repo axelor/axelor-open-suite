@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+  <module name="organisation" package="com.axelor.apps.organisation.db"/>
+
+  <entity name="Project" lang="java">
+  
+  	<many-to-one name="holderUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="Titulaire"/>
+  	<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
+  	<many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Contact"/>
+  	<many-to-one name="need" ref="com.axelor.apps.consulting.db.Need" title="Need"/>
+  	<string name="affairName" title="Affair name"/>
+  	<boolean name="isModel" title="Model ?"/>
+  	<boolean name="isTimeSheetImputable" title="Timesheet input required ?"/>
+  	<many-to-one name="defaultTask" ref="com.axelor.apps.organisation.db.Task" title="Default task"/>
+  	<boolean name="isReinvoicingExpense" title="Reinvoicing of travel expense"/>
+  	<boolean name="isReinvoicingTime" title="Reinvoicing time spent"/>
+  	
+  	<decimal name="initialBudgetTurnover" title="Turnover"/>
+  	<decimal name="initialBudgetCost" title="Cost"/>
+  	<decimal name="initialBudgetMargin" title="Margin"/>
+  	<decimal name="realizedTurnover" title="Turnover"/>
+  	<decimal name="realizedBudgetCost" title="Cost"/>
+  	<decimal name="realizedBudgetMargin" title="Margin"/>
+  	<decimal name="remainingTurnover" title="Turnover"/>
+  	<decimal name="remainingBudgetCost" title="Cost"/>
+  	<decimal name="remainingBudgetMargin" title="Margin"/>
+  	<decimal name="expectedFinalTurnover" title="Turnover"/>
+  	<decimal name="expectedFinalCost" title="Cost"/>
+  	<decimal name="expectedFinalMargin" title="Margin"/>
+  	
+  	<decimal name="plannedTime" title="Planned time"/>
+  	<decimal name="spentTime" title="Spent Time"/>
+  	<decimal name="remainingTime" title="Remaining time"/>
+  	  
+ 	<decimal name="budgetedExpenses" title="Budgeted Expenses"/>
+ 	<decimal name="incurredExpenses" title="Incurred expenses"/>
+ 	<decimal name="remainingExpenses" title="Remaining expenses"/>
+ 	
+ 	<decimal name="parentProject" title="Parent project"/>
+  	
+  	<one-to-many name="taskList" ref="com.axelor.apps.organisation.db.Task" title="Tasks"/>
+	  	
+  	<many-to-one name="responsibleUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="Responsible"/>
+  	<many-to-many name="memberUserInfoSet" ref="com.axelor.apps.base.db.UserInfo" title="Members"/>
+  	
+  	<many-to-one name="projectModel" ref="com.axelor.apps.organisation.db.Project" title="Project model"/>
+  	<many-to-many name="taskStatusSet" ref="com.axelor.apps.organisation.db.TaskStatus" title="Task status"/>
+  	
+    
+  </entity>
+
+</domain-models>

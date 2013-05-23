@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+  
+  <module name="account" package="com.axelor.apps.account.db"/>
+  
+  <entity sequential="true" name="Move" lang="java">
+  
+    <many-to-one name="journal" ref="Journal" title="Journal"/>
+    <many-to-one name="period" ref="Period" title="Période" readonly="true"/>
+    <date name="date" title="Date"/> <!--  Only used for Manual Misc. Operations -->
+    <string name="reference" title="Reference" namecolumn="true" readonly="true"/>
+    <one-to-many name="moveLineList" ref="MoveLine" title="Move line" mappedBy="move"/>
+    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+    <many-to-one name="agency" ref="com.axelor.apps.base.db.Agency" title="Agency"/>
+    <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment Mode"/>
+    <many-to-one name="invoice" ref="com.axelor.apps.account.db.Invoice" title="Invoice"/>
+    <string name="state" title="Status" default="draft" readonly="true" selection="move.state.select"/>
+    <boolean name="rejectOk" title="Reject" default="false"/>
+    <boolean name="getInfoFromFirstMoveLineOk" title="Get information from 1st Move line" default="true"/>
+    <string name="exportToAgressoNumber" title="Accounting Export N°"/>
+    <date name="exportToAgressoDate" title="Export Date"/>
+    <boolean name="accountingOk" title="Exported" default="false"/>
+    <many-to-one name="moveLineReport" ref="com.axelor.apps.account.db.MoveLineReport" title="Accounting Export"/>
+    <many-to-one name="paymentVoucher" ref="com.axelor.apps.account.db.PaymentVoucher" title="Payment voucher"/>
+   	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
+    
+    <boolean name="ignoreInAccountingOk" title="Ignore in accounting">
+    	<![CDATA[
+		    if (moveLineList != null && !moveLineList.isEmpty()) return moveLineList.get(0).getIgnoreInAccountingOk();
+		    else return false;
+	     ]]>
+	</boolean>
+    <boolean name="ignoreInReminderOk" title="Ignore in remind process">
+    	<![CDATA[
+		    if (moveLineList != null && !moveLineList.isEmpty()) return moveLineList.get(0).getIgnoreInReminderOk();
+		    else return false;
+	     ]]>
+	</boolean>
+    <boolean name="fromSchedulePaymentOk" title="From schedule payment">
+    	<![CDATA[
+		    if (moveLineList != null && !moveLineList.isEmpty()) return moveLineList.get(0).getFromSchedulePaymentOk();
+		    else return false;
+	     ]]>
+	</boolean>
+    
+  </entity>
+</domain-models>

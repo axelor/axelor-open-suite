@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+  
+  <module name="account" package="com.axelor.apps.account.db"/>
+  
+  <entity name="AccountManagement" lang="java">
+	
+	<integer name="importId"/>
+	<integer name="typeSelect" title="Type" required="true" selection="account.management.type.select" />
+	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
+	<many-to-one name="purchaseAccount" ref="com.axelor.apps.account.db.Account" title="Purchase account"/>
+	<many-to-one name="saleAccount" ref="com.axelor.apps.account.db.Account" title="Sales account"/>
+	<many-to-one name="purchaseVat" ref="com.axelor.apps.account.db.Vat" title="Purchase V.A.T."/>
+	<many-to-one name="saleVat" ref="com.axelor.apps.account.db.Vat" title="Sale V.A.T."/>
+	<many-to-one name="cashAccount" ref="com.axelor.apps.account.db.Account" title="Payment account"/>
+	
+	<one-to-many name="analyticAccountManagementList" ref="AnalyticAccountManagement" mappedBy="accountManagement" title="Analytic accounts"/>
+	
+    <many-to-one  name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+    <many-to-one  name="tax" ref="com.axelor.apps.account.db.Tax" title="Tax"/>
+    <many-to-one  name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode"/>
+    <many-to-one  name="productFamily" ref="com.axelor.apps.base.db.ProductFamily" title="Product family"/>
+    
+  </entity>
+  
+</domain-models>

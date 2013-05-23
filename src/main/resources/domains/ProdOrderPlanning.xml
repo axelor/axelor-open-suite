@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+  <module name="production" package="com.axelor.apps.production.db"/>
+
+  <entity name="ProdOrderPlanning" lang="java">
+  
+  	<string name="prodOrderPlanningSeq" title="Name"/>
+  	<date name="startDate" title="Date de départ"/>
+	<date name="endDate" title="Date de fin"/>
+    <one-to-many name="prodOrderPlanningLineList" ref="com.axelor.apps.production.db.ProdOrderPlanningLine" mappedBy="prodOrderPlanning" title="Production orders"/>
+    <one-to-many name="prodOrderList" ref="com.axelor.apps.production.db.ProdOrder" mappedBy="prodOrderPlanning" title="Simulation production orders planning"/>
+    <boolean name="isValidated" title="Is validated"/>
+    
+  </entity>
+</domain-models>

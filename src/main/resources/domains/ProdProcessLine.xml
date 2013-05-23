@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+  <module name="production" package="com.axelor.apps.production.db"/>
+
+  <entity name="ProdProcessLine" lang="java">
+  
+  	<many-to-one name="prodProcess" ref="com.axelor.apps.production.db.ProdProcess" title="Production process"/>
+    <many-to-one name="prodResource" ref="com.axelor.apps.production.db.ProdResource" title="Resource"/>
+    <decimal name="capacityPerHour" title="Capacity / hours"/>
+    <boolean name="hasStockCheckout" title="Stock checkout ?"/>
+    <integer name="duration" title="Duration (min)"/>
+    <many-to-one name="nextProdProcessLine" ref="com.axelor.apps.production.db.ProdProcessLine" title="Next production process line"/>
+    <many-to-one name="previousProdProcessLine" ref="com.axelor.apps.production.db.ProdProcessLine" title="Previous production process line"/>
+    
+  </entity>
+</domain-models>

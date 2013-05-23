@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="company-grid" title="Sociétés" model="com.axelor.apps.base.db.Company">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="parent"/>
+        <field name="administration"/>
+    </grid>
+    
+    <tree name="company-tree" title="Sociétés" model="com.axelor.apps.base.db.Company">
+        <field name="name"/>
+    </tree>
+    
+    <form name="company-form" title="Société" model="com.axelor.apps.base.db.Company" cols="4">
+	    
+	    <toolbar>
+			<button name="showInvoice" title="Factures" onClick="save,action-company-view-invoice"/>
+		</toolbar>
+		
+        <field name="administration"/>
+        <field name="name"/>
+        <field name="code"/>
+        <field name="parent"/>
+        <field name="logoPath" />
+        <field name="partner"/>
+        <field name="address" colSpan="4"/>
+        <notebook colSpan="4">
+            <page title="Comptabilité" cols="4">
+            	<separator title="Les journaux" colSpan="6"/>
+	                <field name="customerSalesJournal" domain="self.inactiveOk != true"/>
+	                <field name="customerCreditNoteJournal" domain="self.inactiveOk != true"/>
+	                <field name="supplierPurchaseJournal" domain="self.inactiveOk != true"/>
+	                <field name="supplierCreditNoteJournal" domain="self.inactiveOk != true"/>
+	                <field name="technicalJournal"/>
+	                <field name="majorAccountJournal"/>
+	                <field name="invoiceDirectDebitJournal"/>
+	                <field name="rejectJournal"/>
+	                <field name="reimbursementJournal"/>
+	                <field name="accountClearanceJournal"/>
+	                <field name="irrecoverableJournal"/>
+	                <field name="miscOperationJournal"/>
+	                <break/>
+	            <separator title="Les comptes" colSpan="6"/>
+	                <field name="customerAccount" domain="self.company.code = :code"/>
+  	           	 	<field name="doubtfulCustomerAccount" domain="self.company.code = :code"/>
+	                <field name="irrecoverableAccount" domain="self.company.code = :code"/>
+	     			<break/>
+                <separator title="Les écarts de règlements" colSpan="6"/>
+	                <field name="thresholdDistanceFromRegulation"/>
+	                <field name="cashPositionVariationAccount"/>
+	            <separator title="Les exports" colSpan="6"/>
+	            	<field name="exportPath"/>
+	            <separator title="Les caisses" colSpan="6"/>
+	               	<field name="cashRegisterMailModel"/>
+	               	<field name="cashRegisterAddressEmail"/>
+            	<separator title="Export CFONB" colSpan="6"/>
+	            	<field name="senderRecordCodeExportCFONB"/>
+	            	<field name="senderNumExportCFONB"/>
+	            	<field name="senderNameCodeExportCFONB"/>
+	            	<field name="recipientRecordCodeExportCFONB"/>
+	            	<field name="totalRecordCodeExportCFONB"/>
+	            	<field name="transferOperationCodeExportCFONB"/>
+	            	<field name="directDebitOperationCodeExportCFONB"/>
+	            <separator title="Import CFONB" colSpan="6"/>
+	            	<field name="headerRecordCodeImportCFONB"/>
+	            	<field name="detailRecordCodeImportCFONB"/>
+	            	<field name="endingRecordCodeImportCFONB"/>
+	            	<field name="transferOperationCodeImportCFONB"/>
+	            	<field name="directDebitOperationCodeImportCFONB"/>
+	            	<field name="ipoRejectOperationCodeImportCFONB"/>
+	            	<field name="ipoOperationCodeImportCFONB"/>
+	            	<field name="ipoAndChequeOperationCodeImportCFONB"/>
+   	            <separator title="Passage en irrécouvrable" colSpan="6"/>
+   	            	<field name="irrecoverableReasonPassage"/>
+   	            	<field name="irrecoverableStandardRateVat"/>
+   	            <separator title="Reversement des taxes" colSpan="6"/>
+   	            	<field name="payingBackTaxVat"/>
+           		<separator title="Devise" colSpan="6"/>
+           			<field name="currency"/>
+            </page>
+             <page title="Les RIB" cols="4">
+             	<field name="defaultBankDetails" colSpan="2"/>
+                <field name="bankDetailsSet" grid-view="bank-details-grid" form-view="bank-details-form" colSpan="4" noLabel="true"/>
+            </page>
+            <page title="Note" cols="1">
+                <field name="notes" noLabel="true"/>
+            </page>
+            <page title="Recouvrement" cols="4">
+            	<field name="mailTransitTime"/>
+            	<break/>
+                <field name="reminderConfigLineList" noLabel="true" colSpan="4"/>
+            </page>
+            <page title="Remboursement" cols="4">
+            	<separator title="Configuration" colSpan="6"/>
+            	<group title="Les remboursements" colSpan="4">
+	            	<field name="reimbursementExportFolderPath"/>
+    	       		<field name="reimbursementExportFolderPathCFONB"/>
+        	    	<field name="lowerThresholdReimbursement"/>
+            		<field name="upperThresholdReimbursement"/>
+          	  		<field name="reimbursementAccount"/>
+            		<field name="reimbursementMailModel"/>
+            	</group>
+            	<group title="Les rejets de remboursements" colSpan="4">
+            		<field name="reimbursementImportFolderPathCFONB"/>
+            		<field name="tempReimbImportFolderPathCFONB"/>
+           		</group>
+            </page>
+            <page title="Créances douteuses" cols="4">
+           	 	<field name="sixMonthDebtMonthNumber"/>
+           	 	<field name="threeMonthDebtMontsNumber"/>
+           	 	<field name="sixMonthDebtPassReason"/>
+           	 	<field name="threeMonthDebtPassReason"/>
+           	 	<field name="litigationDebtPassReason"/>
+            </page>
+            <page title="Prélèvements" cols="4">
+          		<separator title="Configuration" colSpan="4"/>
+          		<group title="Les prélèvements" colSpan="4">
+          			<field name="paymentScheduleExportFolderPathCFONB"/>
+          		</group>
+          		<group title="Les rejets de prélèvement" colSpan="4">
+          			<field name="rejectionPaymentMode"/>
+          			<field name="rejectionMajorAccountPaymentMode"/>
+	                <field name="majorAccountRejectNumLimit"/>
+	                <field name="paymentScheduleRejectNumLimit"/>
+	                <field name="invoiceRejectNumLimit"/>
+                	<field name="rejectImportPathAndFileName"/>
+                	<field name="tempImportPathAndFileName"/>
+                	<field name="rejectMajorAccountMailModel"/>
+                	<field name="rejectPaymentScheduleMailModel"/>
+          		</group>
+            </page>
+            <page title="Apurement" cols="4">
+             	<field name="clearanceAccountSet" domain="self.reconcileOk = 'true' AND self.company.code = :code" colSpan="4"/>
+             	<field name="profitAccount"/>
+             	<field name="standardRateVat"/>
+            </page>
+            <page title="Paybox" cols="4">
+            	<field name="payboxUrl"/>
+            	<field name="payboxSite"/>
+            	<field name="payboxRang"/>
+            	<field name="payboxDevise"/>
+            	<field name="payboxIdentifiant"/>
+            	<field name="payboxHashSelect"/>
+       			<field name="payboxHmac"/>
+       			<field name="payboxDefaultEmail"/>
+       			<field name="payboxRetour"/>
+            	<field name="payboxRetourUrlEffectue"/>
+            	<field name="payboxRetourUrlRefuse"/>
+            	<field name="payboxRetourUrlAnnule"/>
+       			<field name="payboxPublicKeyPath"/>
+            </page>
+            <page title="Paiements par TIP et TIP chèque" cols="4">
+          		<separator title="Configuration" colSpan="4"/>
+          		<group title="Les paiements par TIP et TIP chèque" colSpan="4">
+          			<field name="interbankPaymentOrderImportPathCFONB"/>
+          			<field name="tempInterbankPaymentOrderImportPathCFONB"/>
+ 				</group>
+          		<group title="Les rejets de paiements par TIP et TIP chèque" colSpan="4">	
+          			<field name="interbankPaymentOrderRejectImportPathCFONB"/>
+          			<field name="tempInterbankPaymentOrderRejectImportPathCFONB"/>
+       			</group>
+            </page>
+            <page title="Courriers / Emails" cols="4">
+            	<field name="generatedMailFilePath" />
+            	<field name="generatedEmailFilePath" />
+            	<field name="generatedMailFileName" />
+            	<field name="generatedEmailFileName" />
+            </page>
+        </notebook>
+    </form>
+	
+	<action-view name="action-company-view-invoice" title="Les factures" model="com.axelor.apps.account.db.Invoice">
+		<view type="grid" name="invoice-grid"/>
+		<view type="form" name="invoice-form"/>
+		<domain>self.company.id = :id</domain>
+		<context name="id" expr="eval: id"/>
+	</action-view>
+	
+</object-views>

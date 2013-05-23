@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    <grid name="mail-grid" title="Liste des mails " model="com.axelor.apps.base.db.Mail">
+        <field name="code"/>
+        <field name="name"/>
+        <field name="typeSelect"/>
+        <field name="subject"/>
+        <field name="company"/>
+        <field name="address"/>
+        <field name="content"/>
+        <field name="sendScheduleDate"/>
+        <field name="sendRealDate"/>
+		<field name="partner"/>
+        <field name="reminderHistory"/>
+
+    </grid>
+    <form name="mail-form" title="Mail" model="com.axelor.apps.base.db.Mail" cols="4" onLoad="action-mail-hidden-attrs">
+    	<group title="Informations" colSpan="4">
+ 			<field name="code"/>
+        	<field name="name"/>
+            <field name="typeSelect" onChange="action-mail-hidden-attrs"/>
+            <field name="objectConcernedSelect" onChange="action-mail-hidden-attrs"/>
+            <field name="mailModel"/>
+            <field name="pdfFilePath"/>
+            <field name="company"/>
+        </group>
+        <group title="Contenu" colSpan="4">
+        	<field name="subject" colSpan="4"/>
+       	 	<field name="content" colSpan="4"/>
+        </group>
+        <group title="Envoi" colSpan="4">
+       	 	<field name="sendScheduleDate"/>
+        	<field name="sendRealDate"/>
+        </group>
+        <group title="Destinataire" colSpan="4">
+        	<field name="address"/>
+        	<field name="addressEmail"/>
+        	<field name="partner" grid-view="partner-grid" form-view="partner-form" colSpan="4"/>
+        </group>
+        <group title="Informations complémentaires" colSpan="4">
+        	<field name="reminderHistory"/>         
+        	<field name="cashRegister"/>
+        	<field name="rejectMoveLine"/>
+        </group> 
+        <button name="printMail" title="Imprimer" colSpan="2" onClick="save,action-mail-method-print-mail"/>
+    </form>
+
+	<action-attrs name="action-mail-hidden-attrs">
+		<attribute name="hidden" for="reminderHistory" expr="eval: objectConcernedSelect != 1"/>
+		<attribute name="hidden" for="cashRegister" expr="eval: objectConcernedSelect != 4"/>
+		<attribute name="hidden" for="addressEmail" expr="eval: objectConcernedSelect != 4"/>
+		<attribute name="hidden" for="address" expr="eval: typeSelect != 1"/>
+		<attribute name="hidden" for="rejectMoveLine" expr="eval: typeSelect != 3"/>
+	</action-attrs>
+	
+	<action-method name="action-mail-method-print-mail">
+		<call class="com.axelor.apps.base.web.MailController" method="printMail"/>
+	</action-method>
+	
+</object-views>

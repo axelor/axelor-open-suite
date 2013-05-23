@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+  
+  <module name="base" package="com.axelor.apps.base.db"/>
+  
+  <entity name="Message" lang="java">
+  
+  	<integer name="typeSelect" title="Status" selection="email.type.select"/>
+  	<many-to-many name="toPartnerSet" ref="com.axelor.apps.base.db.Partner" title="To"/>
+  	<many-to-many name="ccPartnerSet" ref="com.axelor.apps.base.db.Partner" title="Cc" help="Carbon copy"/>
+  	<many-to-many name="bccPartnerSet" ref="com.axelor.apps.base.db.Partner" title="Bcc" help="Blind carbon copy"/>
+  	<string name="subject" title="Subject"/>
+  	<string name="content" title="Content" large="true"/>
+  	<many-to-one name="sender" ref="com.axelor.apps.base.db.Partner" title="Sender"/>
+<!--   	<many-to-many name="fileSet" title="Files enclosed"/> -->
+	<datetime name="sendedDate" title="Sended date"/>
+	<string name="relatedToSelect" title="Related to" selection="base.message.related.to.select"/>
+  	<integer name="relatedToSelectId"/>
+	<integer name="statusSelect" title="Status" selection="email.status.select"/>
+  
+  </entity>
+  
+</domain-models>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="PricingListLine" lang="java" cachable="true">
+  
+    <many-to-one name="pricingListVersion" ref="PricingListVersion" title="Pricing list version"/>
+    
+    <decimal name="val1" precision="20" scale="6" title="Value 1"/>
+    <decimal name="val2" precision="20" scale="6" title="Value 2"/>
+    <decimal name="val3" precision="20" scale="6" title="Value 3"/>
+    <decimal name="val4" precision="20" scale="6" title="Value 4"/>
+    <decimal name="val5" precision="20" scale="6" title="Value 5"/>
+  	
+    <string name="fullName" title="Name" namecolumn="true" search="id">
+	    <![CDATA[
+		    String name = String.format("%05d",id);
+		    if (pricingListVersion != null) name = pricingListVersion.getFullName() + " - " + name;
+		    return name;
+	    ]]>
+    </string>
+  
+  </entity>
+
+</domain-models>

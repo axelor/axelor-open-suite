@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+  
+  <module name="account" package="com.axelor.apps.account.db"/>
+  
+  <entity name="DiscountEngineLine" lang="java" sequential="true" cachable="true">
+  
+  	<!-- Not display -->
+  	<string name="importId" unique="true"/>
+  	<many-to-one name="discountEngine" ref="com.axelor.apps.account.db.DiscountEngine" />
+  
+  	<many-to-one name="discountEngineModel" ref="com.axelor.apps.account.db.DiscountEngineModel" title="Filter"/>
+    <integer name="discountEngineId" title="Sequence" />
+	<string name="code" title="Code" />
+	<boolean name="activeOk" title="Active ?" default="true" />
+    
+    <many-to-many name="productCategorySet" ref="com.axelor.apps.base.db.ProductCategory" title="Product category"/>
+    <boolean name="allCategoriesOk" title="All categories" />
+    
+    <many-to-many name="productSet" ref="com.axelor.apps.base.db.Product" title="Products concerned"/>
+    
+    <integer name="discountTypeSelect" selection="discount.engine.discount.type" title="Discount type"/>
+    <boolean name="newLineOk" title="Additionnal line ?" />
+    <decimal name="discountValue" title="Discount" />
+    <boolean name="priceDiscountOk" title="discounted Net value ?"/>
+    
+    <boolean name="sameProductOk" title="Same product ?" />
+    <many-to-one name="discountProduct" ref="com.axelor.apps.base.db.Product" title="Discount product" help="Select the discount product amoung discount product list. This product will appear on the sales order or invoice unless the checkbox 'Same product' is ticked."/>
+    
+    <date name="fromDate" title="From"/>
+    <date name="toDate" title="To"/>
+    <boolean name="singleApplicationOk" title="Unique usage ?" />
+    <integer name="referenceDateSelect" title="Reference date" default="0" selection="discount.engine.date.type" />
+    
+    <string name="condition" title="Condition" large="true"/>
+    <string name="finalCondition" title="Final Condition" large="true" readonly="true"/>
+        
+  </entity>
+  
+</domain-models>

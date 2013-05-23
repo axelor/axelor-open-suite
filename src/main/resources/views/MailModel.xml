@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    <grid name="mailModel-grid" title="Modèles de Mail" model="com.axelor.apps.base.db.MailModel">
+        <field name="code"/>
+        <field name="name"/>
+        <field name="typeSelect"/>
+        <field name="objectConcernedSelect"/>
+        <field name="subject"/>
+        <field name="content"/>
+    </grid>
+    <form name="mailModel-form" title="Modèle de Mail" model="com.axelor.apps.base.db.MailModel" cols="3"
+    onLoad="action-mail-model-attrs-hidden">
+        <field name="code"/>
+        <field name="name"/>
+        <field name="typeSelect"/>
+        <field name="objectConcernedSelect" onChange="action-mail-model-attrs-hidden"/>
+        <field name="reminderTypeSelect" onChange="action-mail-model-attrs-hidden"/>
+        <field name="subject"/>
+        <field name="content"/>
+        <field name="pdfModelPath"/>
+    </form>
+    
+    <action-attrs name="action-mail-model-attrs-hidden">
+    	<attribute name="hidden" expr="eval: objectConcernedSelect in [2,3,4] " for="reminderTypeSelect"/>
+    	<attribute name="hidden" expr="eval: objectConcernedSelect in [2,3,4] || reminderTypeSelect == 'standard'" for="reminderSocialServiceSelect"/>
+	</action-attrs>
+    
+</object-views>

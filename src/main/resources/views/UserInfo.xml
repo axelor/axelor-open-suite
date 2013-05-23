@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    <grid name="user-info-grid" title="Informations Utilisateurs" model="com.axelor.apps.base.db.UserInfo">
+        <field name="fullName"/>
+        <field name="partner"/>
+        <field name="activeCompany"/>
+        <field name="internalUser"/>
+    </grid>
+    <form name="user-info-form" title="Information Utilisateur" model="com.axelor.apps.base.db.UserInfo" cols="4">
+        <field name="partner" grid-view="partner-grid" form-view="partner-form"/>
+        <field name="activeCompany" />
+        <field name="today"/>
+        <field name="agency"/>
+        <notebook colSpan="4">
+        	<page title="Utilisateur">
+	        	<field widget="NestedEditor" canSelect="false" summary-view="true" name="internalUser">
+	                <form cols="4" title="Utilisateur">
+                      <field name="name"/>
+                      <field name="group"/>
+                      <field name="code"/>
+                      <field widget="password" name="password"/>
+	                </form>
+	             </field>
+        	</page>
+        	<page title="Sociétés">
+        		<field name="companySet" colSpan="4"/>
+        	</page>
+        	<page title="Equipes">
+        		<field name="teamSet" colSpan="4"/>
+        	</page>
+        </notebook>
+    </form>
+</object-views>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+  <module name="production" package="com.axelor.apps.production.db"/>
+
+  <entity name="Machine" lang="java">
+  	
+  	<string name="name" title="Name"/>
+    <string name="serialNumber" title="Serial number"/>
+    <string name="description" title="Description" large="true"/>
+    <many-to-one name="location" ref="com.axelor.apps.supplychain.db.Location" title="Location"/>
+    <integer name="startingDuration" title="Starting duration (min)"/>
+    <integer name="setupDuration" title="Setup duration (min)"/>
+    
+  </entity>
+</domain-models>

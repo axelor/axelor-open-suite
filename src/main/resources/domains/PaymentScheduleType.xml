@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+	<module name="account" package="com.axelor.apps.account.db"/>
+
+	<entity name="PaymentScheduleType" lang="java">
+	
+		<string name="type" title="Type" selection="account.account.schedule.type"/>
+		<string name="code" title="Code" required="true"/>
+		<string name="name" title="Name" namecolumn="true"/>
+	    <boolean name="alertOK" title="Alert if payment occurs"/>
+	    <string name="alertMessage" title="Alert message"/>	
+	    <many-to-one name="parentPaymentScheduleType" ref="com.axelor.apps.account.db.PaymentScheduleType" title="Parent"/>
+    
+    </entity>
+
+</domain-models>

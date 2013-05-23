@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+  <module name="organisation" package="com.axelor.apps.organisation.db"/>
+
+  <entity name="TimesheetInput" lang="java">
+  
+  	<many-to-one name="timesheetLine" ref="com.axelor.apps.organisation.db.TimesheetLine" title="Ligne de feuille de temps"/>
+	
+	<date name="date" title="Date"/>
+	<decimal name="duration" title="Duration"/>
+	<boolean name="isToInvoice" title="To invoice ?"/>
+	<boolean name="isInvoiced" title="Invoiced ?"/>
+
+		
+  </entity>
+
+</domain-models>

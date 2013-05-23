@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+  <module name="organisation" package="com.axelor.apps.organisation.db"/>
+
+  <entity name="ExpenseLine" lang="java">
+  	<many-to-one name="task" ref="com.axelor.apps.organisation.db.Task" title="Tâche"/>
+  
+  	<many-to-one name="expense" title="Expense" ref="com.axelor.apps.organisation.db.Expense" />
+  	<many-to-one name="affair" title="Affair" ref="com.axelor.apps.organisation.db.Project" />
+  	<string name="expenseTypeSelect" title="Type of expense" selection="expense.line.expense.type.select" />
+  	<many-to-one name="product" title="Product" ref="com.axelor.apps.base.db.Product"/>
+  	<many-to-one name="unit" title="UOM" ref="com.axelor.apps.base.db.Unit"/>
+  	<string name="shortDescription" title="Short description" />
+  	<date name="date" title="Date" />
+  	<decimal name="quantity" title="Quantity"/>
+  	<decimal name="unitPrice" title="Unit price"/>
+  	<string name="reference" title="Reference" />
+  	<string name="sequence" title="Sequence" />
+  	<decimal name="total" title="Total"/>
+  	<binary name="file" title="File" />
+  	<string name="fileReceived" title="File received" selection="iadministration.yes.no.select" />
+  	<date name="validationDate" title="Date de validation"/>
+  	<boolean name="istoInvoice" title="A facturer"/>
+  	<boolean name="isInvoiced" title="Facturé" readonly="true"/>
+  </entity>
+  
+</domain-models>

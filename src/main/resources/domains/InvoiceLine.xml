@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+  
+  <module name="account" package="com.axelor.apps.account.db"/>
+  
+  <entity name="InvoiceLine" lang="java">
+  
+    <many-to-one name="invoice" ref="Invoice" title="Invoice"/>
+    <many-to-one name="taxInvoice" ref="Invoice" title="Tax Invoice"/>
+
+	<many-to-one name="task" ref="com.axelor.apps.organisation.db.Task" title="Task"/>
+	
+    <many-to-one name="invoiceLineType" ref="InvoiceLineType" title="Invoice line type"/>
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+    <string name="productName"  title="Product Name"/>
+<!--     <many-to-one ref="com.axelor.apps.sale.db.ProductCategory" title="Catégorie de produit" name="productCategory"/> -->
+    <decimal name="price" title="Unit price" precision="20" scale="6"/>
+<!--     <many-to-one ref="com.axelor.apps.sale.db.Unit" title="Unité" name="unit"/> -->
+    <many-to-one name="pricingListUnit" ref="com.axelor.apps.base.db.Unit" title="Pricinglist unit"/>
+    <decimal name="qty" title="Qty" precision="20" scale="2"/>
+    <decimal name="exTaxTotal" title="Total W.T." precision="20" scale="2" readonly="true"/>
+    <decimal name="accountingExTaxTotal" title="Total W.T. in accounting currency" precision="20" scale="2" hidden="true"/>
+    <many-to-one name="vatLine" ref="com.axelor.apps.account.db.VatLine" title="V.A.T."/>
+    <many-to-many  name="discountEngineLineSet" ref="DiscountEngineLine" title="Discount / Rebates"/>
+    <decimal name="standardPrice" title="Price w/o discount" precision="20" scale="6"/>
+    <decimal name="standardExTaxTotal" title="Total W.T. not discounted" precision="20" scale="2"/>
+    <decimal name="socialDiscountPerc" title="Discount %" precision="20" scale="3"/>
+    <boolean name="excludeQtyBaseOk" title="Exclude bases based on qty ?"/>
+    <boolean name="discountOk" title="Discount ?" />
+    <string name="description" title="Description"/>
+    
+    <string name="note" title="Note" large="true"/>
+    
+    <string name="name" title="Name" search="invoice,taxInvoice,productName">
+   	    <![CDATA[
+   	    	String name = productName;
+	    	
+	    	if (invoice != null) { name = invoice.getInvoiceId() + " - " + name; } 
+	    	else if (taxInvoice != null) { name = taxInvoice.getInvoiceId() + " - " + name; }
+	    	
+	    	return name;
+	    ]]>
+    </string>
+  
+  </entity>
+  
+</domain-models>

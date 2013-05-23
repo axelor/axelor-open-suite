@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+
+    <grid name="product-family-grid" title="Familles de produits" model="com.axelor.apps.base.db.ProductFamily">
+        <field name="name"/>
+        <field name="productCategory"/>
+        <field name="code"/>
+    </grid>
+    
+    <form name="product-family-form" title="Famille de produit" model="com.axelor.apps.base.db.ProductFamily" cols="4">
+        <field name="name"/>
+        <field name="productCategory"/>
+        <field name="code"/>
+        <field name="accountManagementList"  domain="self.typeSelect = 1" colSpan="4"/>
+    </form>
+    
+</object-views>

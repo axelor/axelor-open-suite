@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+	<module name="base" package="com.axelor.apps.base.db"/>
+
+	<entity name="General" lang="java" cachable="true">
+
+		<integer name="importId"/>
+		<datetime name="today" title="Today date" tz="true" help="If empty, the today date will be the server date." />
+		<many-to-one name="formulaGenerator" ref="com.axelor.apps.base.db.FormulaGenerator" title="Formula" />
+		<boolean name="logOk" title="Activate Logs ?" default="true" />
+
+		<!-- Comptabilité -->
+		<boolean name="isInvoiceMoveConsolidated" title="Consolidate invoice movelines ?" default="false"/>
+		<many-to-one name="transferAndDirectDebitInterbankCode" ref="com.axelor.apps.account.db.InterbankCode"
+			title="Code list for rejects/return of Direct debit, Wire Transfers and IPO" />
+		<many-to-one name="chequeInterbankCode" ref="com.axelor.apps.account.db.InterbankCode" title="Code list for rejects/return of Cheques" />
+		<one-to-many name="payerQualityConfigLineList" ref="com.axelor.apps.account.db.PayerQualityConfigLine" title="Weight table (Payer quality)" />
+<!-- 		<one-to-many name="currencyConversionLineList" ref="com.axelor.apps.base.db.CurrencyConversionLine" mappedBy="administration" title="Tableau de conversion des devises"/> -->
+		<one-to-many name="currencyConversionLineList" ref="com.axelor.apps.base.db.CurrencyConversionLine" title="Currency conversion table"/>
+
+		<!-- Exception -->
+		<string name="exceptionDefaultMsg" multiline="true" title="Default Message" required="true" />
+		<string name="exceptionInvoiceMsg" multiline="true" title="Invoicing message" />
+		<string name="exceptionAccountingMsg" multiline="true" title="Accounting message" />
+		<string name="exceptionReminderMsg" multiline="true" title="Debt recovery message" />
+		<string name="exceptionMailMsg" multiline="true" title="Mail and Email message" />
+
+		<!-- TVA -->
+		<many-to-one name="defaultExemptionVat" ref="com.axelor.apps.account.db.Vat" title="VAT 0%" />
+
+
+		<!-- Interfaces QAS et SVI -->
+		<string name="qasWsdlUrl" title="URL to the QAS WSDL" help="http://{serveur}:{port}/proweb.wsdl" />
+		<string name="sviStoredProcedure" title="Query to create stored procedures" large="true" />
+
+	</entity>
+
+</domain-models>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="batch-grid" title="Les batchs" model="com.axelor.apps.base.db.Batch">
+    	<field name="id" />
+		<field name="createdBy" title="Créé par" />
+		<field name="duration" />
+		<field name="startDate" />
+		<field name="endDate" />
+		<field name="done" />
+		<field name="anomaly" />
+    </grid>
+    
+    <form name="batch-form" title="Batch" model="com.axelor.apps.base.db.Batch" cols="4"
+    	onNew="action-batch-attrs" onLoad="action-batch-attrs">
+		<field name="createdBy" title="Créé par" />
+		<field name="duration" />
+		<field name="startDate" />
+		<field name="endDate" />
+		<field name="done" />
+		<field name="anomaly" />
+		<field name="comment" colSpan="4" noLabel="true"/>
+		<button name="showTraceBack" title="Anomalies" onClick="save,action-batch-show-trace-back" colSpan="2"/>
+		<button name="showInvoice" title="Factures" onClick="save,action-batch-show-invoice" colSpan="2"/>
+		<button name="showReimbursement" title="Remboursements" onClick="save,action-batch-show-reimbursement" colSpan="2"/>
+		<button name="showPaymentScheduleLine" title="Echéances" onClick="save,action-batch-show-payment-schedule-line" colSpan="2"/>
+		<button name="showPaymentVoucher" title="Saisies paiement" onClick="save,action-batch-show-payment-voucher" colSpan="2"/>
+    </form>
+    
+    <action-attrs name="action-batch-attrs">
+    	<attribute name="hidden" for="showInvoice" expr="eval: !(_parent?.actionSelect in [0,1,2,12,15,16])"/>
+    	<attribute name="hidden" for="showReimbursement" expr="eval: !(_parent?.actionSelect in [11])"/>
+    	<attribute name="hidden" for="showPaymentScheduleLine" expr="eval: !(_parent?.actionSelect in [12])"/>
+    	<attribute name="hidden" for="showPaymentVoucher" expr="eval: !(_parent?.actionSelect in [13,15])"/>
+    </action-attrs>
+
+	<action-view name="action-batch-show-trace-back" title="Les anomalies"
+		model="com.axelor.exception.db.TraceBack">
+		<view type="grid" />
+		<view type="form" />
+		<domain>self.batchId = :id</domain>
+		<context name="id" expr="eval: id"/>
+	</action-view>
+
+	<action-view name="action-batch-show-invoice" title="Les factures"
+		model="com.axelor.apps.account.db.Invoice">
+		<view type="grid" name="invoice-grid"/>
+		<view type="form" name="invoice-form"/>
+		<domain>:batch MEMBER OF self.batchSet</domain>
+		<context name="batch" expr="eval: id"/>
+	</action-view>
+	
+	<action-view name="action-batch-show-reimbursement" title="Les remboursements"
+		model="com.axelor.apps.account.db.Reimbursement">
+		<view type="grid" name="reimbursement-grid"/>
+		<view type="form" name="reimbursement-form"/>
+		<domain>:batch MEMBER OF self.batchSet</domain>
+		<context name="batch" expr="eval: id"/>
+	</action-view>
+	
+	<action-view name="action-batch-show-payment-schedule-line" title="Les échéances"
+		model="com.axelor.apps.account.db.PaymentScheduleLine">
+		<view type="grid" name="payment-schedule-line-grid"/>
+		<view type="form" name="payment-schedule-line-form"/>
+		<domain>:batch MEMBER OF self.batchSet</domain>
+		<context name="batch" expr="eval: id"/>
+	</action-view>
+
+
+	<action-view name="action-batch-show-payment-voucher" title="Les saisies paiement"
+		model="com.axelor.apps.account.db.PaymentVoucher">
+		<view type="grid" name="payment-voucher-grid"/>
+		<view type="form" name="payment-voucher-form"/>
+		<domain>:batch MEMBER OF self.batchSet</domain>
+		<context name="batch" expr="eval: id"/>
+	</action-view>
+	
+</object-views>

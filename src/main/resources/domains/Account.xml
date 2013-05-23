@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="Account" lang="java">
+  
+    <string name="name" title="Name" required="true"/>
+    <string name="code" title="Code" required="true"/>
+
+    <many-to-one name="parent" ref="Account" title="Parent Account"/>
+    <many-to-one name="accountType" ref="AccountType" title="Account Type"/>
+    <boolean name="reconcileOk" title="Reconcilable ?"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+
+        
+    <string name="label" namecolumn="true" search="code,name,company">
+	    <![CDATA[
+	    if(company != null)
+	    	return code+"_"+ company.getCode() + " - " + name;    
+    	else
+    		return code+" - " + name;
+	    ]]>
+    </string>
+    
+  </entity>
+
+  <!--
+  natureOagl	: String title="Code Nature clé comptable" min=1 max=1 //Used only in Romeo
+  -->
+</domain-models>

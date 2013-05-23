@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="PaymentScheduleLine" lang="java">
+  
+  	<many-to-one name="paymentSchedule" ref="com.axelor.apps.account.db.PaymentSchedule" title="Payment Schedule"/>
+    <many-to-one name="moveLineGenerated" ref="com.axelor.apps.account.db.MoveLine" title="Move line generated"/>
+    <integer name="scheduleLineSeq" title="Schedule line N°" required="true"/>
+    <decimal name="inTaxAmount" title="Amount A.T.I."/>
+    <decimal name="inTaxAmountPaid" title="Amount pais A.T.I."/>
+    <date name="scheduleDate" title="Schedule Date" required="true"/>
+    <boolean name="rejectedOk" title="Rejected" default="false"/>
+    <boolean name="debitBlockingOk" title="Debit blocking" default="false"/>
+    <many-to-one name="status" ref="com.axelor.apps.base.db.Status" title="Status"/>
+    <date name="rejectDate" title="Reject Date"/>
+    <many-to-one name="interbankCodeLine" ref="com.axelor.apps.account.db.InterbankCodeLine" title="Reject reason"/>
+    <many-to-one name="advanceMoveLine" ref="com.axelor.apps.account.db.MoveLine" title="Advance move line"/>
+    <many-to-one name="reverseMove" ref="com.axelor.apps.account.db.Move" title="Monthly payment reverse move"/>
+    <string name="debitNumber" title="Direct debit Nbr"/>
+    <many-to-one name="directDebitManagement" ref="com.axelor.apps.account.db.DirectDebitManagement" title="Direct debit management"/>
+    <many-to-one name="rejectMoveLine" ref="com.axelor.apps.account.db.MoveLine" title="Reject move line"/>
+    <many-to-one name="advanceOrPaymentMove" ref="com.axelor.apps.account.db.Move" title="Advance/Payment move"/>
+    <boolean name="fromReject" title="From reject schedule line" default="false"/>
+    <decimal name="amountRejected" title="Amount rejected"/> 
+   	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
+    
+    
+    <string name="name" namecolumn="true" search="paymentSchedule,scheduleLineSeq">
+	    <![CDATA[
+	    	if (paymentSchedule != null) return paymentSchedule.getScheduleId() + " - " + scheduleLineSeq;
+	    	else if(scheduleLineSeq != null)  return scheduleLineSeq.toString();
+	    	else return " - ";
+	    ]]>
+    </string>
+    <decimal name="amountRemaining" title="Remaining amount to pay">
+    	<![CDATA[
+	    	if (moveLineGenerated != null) return moveLineGenerated.getAmountRemaining();
+	    	else return BigDecimal.ZERO;
+	    	
+	    ]]>
+    </decimal>
+    
+    <decimal name="amountRemainingCurrency" title="Remaining amount to pay in currency">
+    	<![CDATA[
+	    	if (moveLineGenerated != null) return moveLineGenerated.getAmountRemaining();
+	    	else return BigDecimal.ZERO;
+	    	
+	    ]]>
+    </decimal>
+    
+  </entity>
+  
+</domain-models>

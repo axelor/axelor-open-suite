@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+  <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
+
+  <entity name="PurchaseOrderLine" lang="java">
+  
+  	<many-to-one name="purchaseOrder" ref="com.axelor.apps.supplychain.db.PurchaseOrder" title="Purchase order"/>
+  	<integer name="sequence" title="Sequence"/>
+  	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+  	<integer name="qty" title="Qty" default="1"/>
+  	<string name="productName" title="Label"/>
+  	<decimal name="price" title="Unit price"/>
+  	<decimal name="exTaxTotal" title="Subtotal W.T."/>
+  	<decimal name="vatTotal" title="Subtotal V.A.T."/>
+  	<decimal name="inTaxTotal" title="Subtotal A.T.I."/>
+  	
+  	<string name="description" title="Description" large="true"/>
+  	<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
+  	
+  	<decimal name="discountAmount" title="Discount amount"/>
+  	<decimal name="discountTypeSelect" title="Discount type" selection="organisation.sales.order.line.discount.type.select"/>
+  	
+  	<boolean name="isOrdered" title="Ordered ?"/>
+  	<boolean name="isInvoiced" title="Invoiced ?"/>
+  	<decimal name="amountInvoiced" title="Amount invoiced"/>
+  	<decimal name="amountRemainingToBeInvoiced" title="Remaining to invoice"/>
+  	
+<!--   Onglet Historique -->
+  	<many-to-many name="invoiceSet" ref="com.axelor.apps.account.db.Invoice" title="Associated Invoice lines"/>
+  	
+	<date name="deliveryDate" title="Delivery Date"/>
+
+  	
+  </entity>
+
+</domain-models>

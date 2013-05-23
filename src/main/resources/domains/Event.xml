@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+  <module name="crm" package="com.axelor.apps.crm.db"/>
+
+  <entity name="Event" lang="java">
+
+<!-- Commun   -->
+  	<integer name="typeSelect" title="Type" selection="event.type.select" default="2"/>
+  	<string name="subject" namecolumn="true" title="Subject" />
+	<integer name="secondaryStatusSelect" title="Status" selection="crm.event.secondary.status.select"/>  
+  	<datetime name="startDateTime" title="Start Date"/>
+  	<datetime name="endDateTime" title="End Date"/>
+  	<integer name="durationHours" title="Duration" />
+  	
+  	
+  	
+  	<string name="relatedToSelect" title="Related to" selection="crm.event.related.to.select"/>
+  	<integer name="relatedToSelectId"/>
+  	
+  	<boolean name="reminder" title="Reminder"/>
+    <string name="description" large="true" title="Description"/>
+    
+<!-- Call -->
+    <integer name="primaryStatusSelect" title="Status" selection="crm.event.call.primary.status.select"/>  
+    <integer name="durationMinutesSelect" title="Duration" selection="crm.event.call.duration.minutes.select" />
+    
+<!-- Meeting -->
+	<many-to-one name="meetingType" ref="com.axelor.apps.crm.db.MeetingType" title="Meeting type"/>
+	<string name="location" title="Location"/>
+
+<!-- Task -->
+	<integer name="thirdaryStatusSelect" title="Status" selection="crm.event.task.thirdary.status.select"/>
+	<many-to-one name="taskPartner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
+	<integer name="priority" title="Priority" selection="crm.event.task.priority.select"/>
+    
+<!-- 	Ajouter second onglet avec user et team   -->
+  	<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="Assigned to"/>
+  	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team"/>
+  
+  </entity>
+
+</domain-models>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+  <module name="organisation" package="com.axelor.apps.organisation.db"/>
+
+  <entity name="PlanningLine" lang="java">
+  	
+  	<many-to-one name="planning" ref="com.axelor.apps.organisation.db.Planning" title="Plannification"/>
+  	
+  	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Profil"/>
+  	<many-to-one name="employee" ref="com.axelor.apps.organisation.db.Employee" title="RSC"/>
+  	<many-to-one name="task" ref="com.axelor.apps.organisation.db.Task" title="Tâche"/>
+	<date name="fromDate" title="Du"/>
+  	<date name="toDate" title="Au"/>
+	<decimal name="duration" title="Durée"/>
+	<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unité"/>
+	<decimal name="timeSheet" title="Feuille de temps"/>
+
+  </entity>
+
+</domain-models>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+  <module name="organisation" package="com.axelor.apps.organisation.db"/>
+
+  <entity name="Task" lang="java">
+  
+  	<many-to-one name="salesOrderLine" ref="com.axelor.apps.supplychain.db.SalesOrderLine" title="Sale order line (origin)"/>
+  	<string name="name" title="Task name"/>
+  	<many-to-one name="project" ref="com.axelor.apps.organisation.db.Project" title="Project"/>
+  	<decimal name="totalTaskDays" title="Total ordered days (task)"/>
+  	<decimal name="totalTimeSheetDays" title="Total worked days (Timesheet)"/>
+  	<string name="description" title="Description" large="true"/>
+  	<boolean name="isTimesheetAffected" title="Input from timesheet ?"/>
+  	<decimal name="totalPlannedDays" title="Total planned days"/>
+  	<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="Assigned to"/>
+  	<decimal name="progressBar" title="Progress bar"/>
+  	<integer name="statusSelect" title="Status" selection="organisation.task.status.select"/>
+  	<decimal name="totalTask" title="Total task"/>
+  	<boolean name="isToInvoice" title="To invoice ?"/>
+  	<date name="invoicingDate" title="Invoicing Date"/>
+  	<decimal name="amountToInvoice" title="Amount to invoice"/>
+  	<datetime name="startDateT" title="Start Date Time"/>
+  	<datetime name="endDateT" title="End Date Time"/>
+  	
+<!--   	Notebook Planning and execution -->
+	<one-to-many name="planningLineList" ref="com.axelor.apps.organisation.db.PlanningLine" mappedBy="task" title="Resources planning"/>
+		
+<!--   Notebook Additionnal information -->
+	<string name="notes" title="Notes" large="true"/>
+
+  	<decimal name="initialBudgetTurnover" title="Turnover"/>
+  	<decimal name="initialBudgetCost" title="Cost"/>
+  	<decimal name="initialBudgetMargin" title="Margin"/>
+  	<decimal name="realizedTurnover" title="Turnover"/>
+  	<decimal name="realizedBudgetCost" title="Cost"/>
+  	<decimal name="realizedBudgetMargin" title="Margin"/>
+  	<decimal name="remainingTurnover" title="Turnover"/>
+  	<decimal name="remainingBudgetCost" title="Cost"/>
+  	<decimal name="remainingBudgetMargin" title="Margin"/>
+  	<decimal name="expectedFinalTurnover" title="Turnover"/>
+  	<decimal name="expectedFinalCost" title="Cost"/>
+  	<decimal name="expectedFinalMargin" title="Margin"/>
+  	<decimal name="gapBetweenFinalAndInitial" title="Initial/Final Difference"/>
+  	
+<!--   	Onglet Infos financiers -->
+  	<one-to-many name="salesOrderLineList" ref="com.axelor.apps.supplychain.db.SalesOrderLine" mappedBy="task" title="Customer order lines"/>
+  	<one-to-many name="customerInvoiceLineList" ref="com.axelor.apps.account.db.InvoiceLine" mappedBy="task" title="Customer invoice lines"/>
+  	<one-to-many name="supplierOrderLineList" ref="com.axelor.apps.supplychain.db.SalesOrderLine" mappedBy="task" title="Supplier order lines"/>
+  	<one-to-many name="supplierInvoiceLineList" ref="com.axelor.apps.account.db.InvoiceLine" mappedBy="task" title="Supplier invoice lines"/>
+  	<one-to-many name="expenseLineList" ref="com.axelor.apps.organisation.db.ExpenseLine" mappedBy="task" title="Travel expense lines"/>
+  	<one-to-many name="timesheetLineList" ref="com.axelor.apps.organisation.db.TimesheetLine" mappedBy="task" title="Timesheet lines"/>
+  	
+  	<one-to-many name="otherCostTaskProductLine" ref="com.axelor.apps.organisation.db.TaskProductLine" title="Other planned costs"/>
+  	<one-to-many name="otherRevenueTaskProductLine" ref="com.axelor.apps.organisation.db.TaskProductLine" title="Other planned revenue"/>
+  	<one-to-many name="taskUpdateLine" ref="com.axelor.apps.organisation.db.TaskUpdateLine" title="Task update lines"/>
+  	
+  	<decimal name="estimateTime" title="Estimated time"/>
+  	<decimal name="spentTime" title="Spent time"/>
+  	<decimal name="remainingTime" title="Reminaing time"/>
+  	<decimal name="generatedCharge" title="Charge generated"/>
+  	
+  </entity>
+
+</domain-models>

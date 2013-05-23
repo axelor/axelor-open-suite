@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="partner-grid" title="Les Tiers" model="com.axelor.apps.base.db.Partner">
+    	<field name="reference"/>
+        <field name="name"/>
+        <field name="firstName"/>
+        <field name="isContact"/>
+   		<field name="partnerTypeSelect"/>
+        <field name="customerTypeSelect"/>
+        <field name="partnerCategory"/>
+    </grid>
+    
+    <form cols="4" colWidths="25*" name="partner-form" title="Les Tiers" model="com.axelor.apps.base.db.Partner" onLoad="action-partner-attrs-change-name,action-partner-attrs-hide-tabs"
+      	onNew="action-partner-record-partner-type-select">
+    	<group colSpan="1">
+    		<field name="picture"/>
+    	</group>
+    	<group colSpan="3" cols="4">
+    		<field name="partnerCategory" widget="SuggestBox"/>
+       		<field name="partnerTypeSelect" onChange="action-partner-attrs-change-name,action-partner-attrs-hide-tabs"/>
+       		<break/>
+       		<field name="titleSelect" hideIf="partnerTypeSelect != 2"/>
+       		<break/>
+       		<field name="name" css="subtotal-total"/>
+			<field name="firstName" hideIf="partnerTypeSelect != 2" css="subtotal-total"/>
+    	</group>
+    	<field name="customerTypeSelect" hideIf="isContact || partnerTypeSelect == 1"/>
+    	<field name="source" hideIf="isContact"/>
+    	<break/>
+    	<field name="isContact" hideIf="partnerTypeSelect != 2" onChange="action-partner-attrs-hide-tabs"/>
+    	<field name="parentPartner" hideIf="partnerTypeSelect != 1"/>
+    	<field name="reference"/>
+    	<field name="languageSelect" hideIf="isContact || partnerTypeSelect == 1"/>
+    	<field name="contactPartnerSet" colSpan="4" domain="self.isContact = 'true'" hideIf="isContact || partnerTypeSelect == 1"/>
+
+    	<field name="site"/>
+    	<field name="department"/>
+        <notebook colSpan="4">
+        	<page name="information" title="Informations">
+				<group title="Adresses Postales" colSpan="3" cols="4">
+			      	<field name="deliveryAddress" onChange="action-partner-record-main-invoicing-address"/>
+					<field name="mainInvoicingAddress"/>
+				</group>
+				<group title="Contact" colSpan="3" cols="4">
+					<field name="site"/>
+					<field name="department"/>
+					<field name="commune"/>
+					<field name="email"/>
+					<field name="fax"/>
+					<field name="fixedPhone1"/>
+					<field name="fixedPhone2"/>
+					<field name="fixedPhonePro"/>
+					<field name="mobilePhonePerso"/>
+					<field name="mobilePhonePro"/>
+					<field name="webSite"/>
+				</group>
+			</page>
+            <page name="payment" title="Paiement/Facturation" cols="4">
+            	<field name="invoiceSendingFormatSelect"/>
+            	<field name="paymentMode"/>
+            	<field name="paymentCondition"/>
+            	<field name="currency"/>
+                <field name="payerQuality"/>
+                <field name="bankDetails"/>
+                <field name="bankDetailsList" noLabel="true" colSpan="4" form-view="bank-details-form" grid-view="bank-details-grid"/>
+                <button name="showInvoice" title="Voir toutes les factures non payées" colSpan="2" onClick="save,action-partner-method-show-invoice"/>
+            </page>
+            <page title="Société(s)">
+            	<field name="companySet" colSpan="4"/>
+            </page>
+            <page name="compteClient" title="Compte client">
+            	<field name="accountingSituationList" widget="MasterDetail" colSpan="4" onSelect="action-account-accounting-situation-method-update-customer-account"/>
+            </page>
+            <page name="reportedBalance" title="Report à nouveau">
+	            <field name="reportedBalanceList" colSpan="4">
+			        <grid name="reported-balance-grid" title="Les Reports à nouveaux" model="com.axelor.apps.account.db.ReportedBalance">
+				 		<field name="company"/>
+				    </grid>
+				    <form name="reported-balance-form" title="Report à nouveau" model="com.axelor.apps.account.db.ReportedBalance" cols="4">
+				 		<field name="company"/>
+				 		<field name="reportedBalanceLineList" colSpan="4">
+				 			<grid name="reported-balance-line-grid" title="Les Lignes de reports à nouveaux" model="com.axelor.apps.account.db.ReportedBalanceLine">
+				 				<field name="year"/>
+				 				<field name="amount"/>
+				    		</grid>
+				 			<form name="reported-balance-line-form" title="Ligne de report à nouveau" model="com.axelor.apps.account.db.ReportedBalanceLine" cols="4">
+				 				<field name="year"/>
+				 				<field name="amount"/>
+				    		</form>
+				 		</field>
+				    </form>
+		    	</field>
+            </page>
+        </notebook>
+    </form>
+    
+    <action-record name="action-partner-record-main-invoicing-address" model="com.axelor.apps.base.db.Partner">
+    	<field name="deliveryAddress" expr="eval: mainInvoicingAddress"/>
+    </action-record>
+    
+    <action-method name="action-partner-method-show-invoice">
+    	<call class="com.axelor.apps.base.web.PartnerControllerSimple" method="showInvoice"/>
+    </action-method>
+ 	
+ 	<action-attrs name="action-partner-attrs-change-name">
+		<attribute name="title" for="name" expr="Raison sociale" if="partnerTypeSelect != 2"/>
+    	<attribute name="title" for="name" expr="Nom" if="partnerTypeSelect == 2"/>
+		<attribute name="required" for="name" expr="true"/>	
+	</action-attrs>
+	
+	<action-attrs name="action-partner-attrs-hide-tabs">
+		<attribute name="hidden" for="payment" expr="eval:isContact &amp;&amp; partnerTypeSelect == 2"/>	
+		<attribute name="hidden" for="compteClient" expr="eval:isContact &amp;&amp; partnerTypeSelect == 2"/>	
+		<attribute name="hidden" for="reportedBalance" expr="eval:isContact &amp;&amp; partnerTypeSelect == 2"/>
+		<attribute name="required" for="currency" expr="eval:!isContact || partnerTypeSelect != 2"/>
+	</action-attrs>
+
+	<action-record name="action-partner-record-partner-type-select" model="com.axelor.apps.base.db.Partner">
+    	<field name="partnerTypeSelect" expr="eval:_partnerTypeSelect"/>
+    </action-record>
+</object-views>

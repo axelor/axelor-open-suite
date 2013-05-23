@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+ 
+  <module name="base" package="com.axelor.apps.base.db"/>
+ 
+  <entity name="Product" lang="java">
+  
+    <integer name="importId"/>
+    <string name="name" title="Name" required="true" namecolumn="true"/>
+    <string name="code" title="Code" required="true"/>
+    <string name="description" large="true" title="Description"/>
+    <binary name="picture" image="true" title="Picture"/>
+    <many-to-one name="productCategory" ref="ProductCategory" title="Product category" required="true"/>
+    <many-to-one name="productFamily" ref="ProductFamily" title="Family"/>
+    <many-to-one name="unit" ref="Unit" title="Unit"/>
+     
+    <integer name="applicationTypeSelect" title="Application type" selection="product.application.type.select"/>
+     
+    <string name="productTypeSelect" title="Product type" required="true" selection="product.product.type.select"/>
+    <string name="procurementMethodSelect" title="Procurement method" required="true" selection="product.procurement.method.select"/>
+    <boolean name="isRawMaterial" title="Raw material"/>
+    
+    <decimal name="salePrice" title="Sale price W.T." precision="20" scale="5"/>
+    <many-to-one name="saleCurrency" ref="com.axelor.apps.base.db.Currency" title="Sale currency"/>
+    <decimal name="purchasePrice" title="Purchase price W.T." precision="20" scale="5"/>
+    <many-to-one name="purchaseCurrency" ref="com.axelor.apps.base.db.Currency" title="Purchase currency"/>
+    
+    <date name="startDate" title="Product launch Date"/>
+    <date name="endDate" title="Product pulled off market Date"/>
+   
+    
+    <many-to-one name="invoiceLineType" ref="com.axelor.apps.account.db.InvoiceLineType" title="Invoice line type"/>
+    <many-to-one name="vatManagement" ref="com.axelor.apps.account.db.VatManagement" title="V.A.T. Configuration"/>
+        
+    <one-to-many name="accountManagementList" ref="com.axelor.apps.account.db.AccountManagement" mappedBy="product" title="Accounts"/>
+  
+  	<one-to-many name="priceList" ref="com.axelor.apps.base.db.Price" mappedBy="product" title="Prices"/>
+  
+  </entity>
+
+</domain-models>

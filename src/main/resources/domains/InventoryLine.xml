@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+  <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
+
+  <entity name="InventoryLine" lang="java">
+  
+  	<many-to-one name="inventory" ref="com.axelor.apps.supplychain.db.Inventory" title="Inventory"/>
+	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>    
+	<integer name="qty" title="Quantity"/>
+    
+  </entity>
+</domain-models>

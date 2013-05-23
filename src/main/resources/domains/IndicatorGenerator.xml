@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+  
+  <module name="base" package="com.axelor.apps.base.db"/>
+  
+  <entity name="IndicatorGenerator" lang="java">
+  
+  	<string name="code" title="Code" namecolumn="true" unique="true"/>
+  	<string name="name" title="Description"/>
+    <integer name="requestLanguage" title="Query language" default="0" selection="iadministration.indicator.generator.request.type.select" />
+    <string name="request"  title="Query" multiline="true" large="true" formula="true"/>
+    <string name="result" title="Query result" multiline="true" large="true" readonly="true"/>
+    <string name="log" title="Log" multiline="true" large="true" readonly="true"/>
+  
+  </entity>
+
+</domain-models>

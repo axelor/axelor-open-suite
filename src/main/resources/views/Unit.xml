@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    <grid name="unit-grid" title="Unités" model="com.axelor.apps.base.db.Unit">
+        <field name="name"/>
+        <field name="code"/>
+    </grid>
+    <form name="unit-form" title="Unité" model="com.axelor.apps.base.db.Unit" cols="4">
+        <field name="name"/>
+        <field name="code"/>
+    </form>
+</object-views>

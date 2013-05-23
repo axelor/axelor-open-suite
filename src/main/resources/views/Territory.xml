@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+	
+    <grid name="territory-grid" title="Territoires" model="com.axelor.apps.base.db.Territory">
+        <field name="name"/>
+        <field name="commune"/>
+        <field name="concession"/>
+        <field name="dsoPartner"/>
+        <field name="fluid"/>
+    </grid>
+    
+    <form name="territory-form" title="Territoire" model="com.axelor.apps.base.db.Territory" cols="2">
+        <field name="territoryParameter" domain="self.parameterType.code = 'terr'" />
+        <field name="name"/>
+        <field name="country"/>
+        <field name="fluid"/>
+        <field name="dsoPartner" grid-view="partner-grid" form-view="partner-form" domain="self.dsoOk = True"/>
+        <field name="assignorPartner" grid-view="partner-grid" form-view="partner-form" domain="self.assignorOk = True"/>
+        <field name="concession"/>
+        <field name="commune"/>
+        <group title="Fourniture et Commercialisation" colSpan="2" cols="2">
+            <field name="elecCompany"/>
+            <field name="gasCompany"/>
+            <field name="providerPartner" grid-view="partner-grid" form-view="partner-form" domain="self.providerOk = True"/>
+            <field name="marketerPartner" grid-view="partner-grid" form-view="partner-form" domain="self.marketerOk = True"/>
+            <field name="authorityPartner" grid-view="partner-grid" form-view="partner-form" domain="self.authorityOk = True"/>
+        </group>
+        <field name="territoryConfigurationList" grid-view="territory-configuration-grid" form-view="territory-configuration-form" colSpan="2"/>
+    </form>
+    
+</object-views>

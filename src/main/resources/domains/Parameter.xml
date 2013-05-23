@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="Parameter" lang="java" cachable="true">
+  
+    <string name="parameterId" title="Code" unique="true"/>
+    <string name="name" title="Name"/>
+    <string name="description" title="Description" namecolumn="true"/>
+    <integer name="value" title="Value"/>
+    <many-to-one name="parameterType" ref="ParameterType" title="Paramter Type"/>
+    <boolean name="inRunOffOk" title="In run off ?" />
+    <many-to-one name="consumptionCodeUnit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
+ 
+  </entity>
+
+</domain-models>

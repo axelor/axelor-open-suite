@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+  <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
+
+  <entity name="PurchaseOrder" lang="java">
+  
+  	<many-to-one name="supplierPartner" ref="com.axelor.apps.base.db.Partner" title="Supplier"/>
+  	<many-to-one name="affairProject" ref="com.axelor.apps.organisation.db.Project" title="Affair"/>
+	<many-to-one name="purchasingManagerUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="Purchase manager"/>
+	<date name="deliveryDate" title="Delivery Date"/>
+  	<one-to-many name="purchaseOrderLineList"  mappedBy="purchaseOrder" ref="com.axelor.apps.supplychain.db.PurchaseOrderLine" title="Purchase order lines"/>
+  	<integer name="statusSelect" title="Status" selection="supplychain.purchase.order.status.select"/>
+  	
+  </entity>
+
+</domain-models>

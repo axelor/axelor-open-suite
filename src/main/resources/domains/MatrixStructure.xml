@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <!-- 
+  Masque de barème:
+  Il peut contenir jusqu’à 9 paramètres définissant les critères déterminants de la grille de prix. 
+  La valeur saisie des paramètres est une sélection dans une liste de valeurs, et le dernier paramètre permet de définir une plage de valeurs 
+  de décimales. La colonne 9 sera la valeur minimum de la plage et la colonne 10 la valeur maximale.
+  -->
+
+  <entity name="MatrixStructure" lang="java">
+  
+    <string name="name" title="Nom" required="true" unique="true"/>
+    <integer name="nbEntry" title="Nbr of Inputs"/>
+    <integer name="nbRelease" title="Nbr of Outputs"/>
+    <many-to-one name="param1" ref="ParameterType" title="Input Code 1"/>
+    <many-to-one name="param2" ref="ParameterType" title="Input Code 2"/>
+    <many-to-one name="param3" ref="ParameterType" title="Input Code 3"/>
+    <many-to-one name="param4" ref="ParameterType" title="Input Code 4"/>
+    <many-to-one name="param5" ref="ParameterType" title="Input Code 5"/>
+    <many-to-one name="param6" ref="ParameterType" title="Input Code 6"/>
+    <many-to-one name="param7" ref="ParameterType" title="Input Code 7"/>
+    <many-to-one name="param8" ref="ParameterType" title="Input Code 8"/>
+    <string name="param9" title="Input Code 9"/>
+    <string name="param10" title="Input Code 10"/>
+    <boolean name="param9Incl" title="Input 9 included ?"/>
+    <boolean name="param10Incl" title="Input 10 included ?"/>
+    <string name="sourceParam1" title="Input 1"/>
+    <string name="sourceParam2" title="Input 2"/>
+    <string name="sourceParam3" title="Input 3"/>
+    <string name="sourceParam4" title="Input 4"/>
+    <string name="sourceParam5" title="Input 5"/>
+    <string name="sourceParam6" title="Input 6"/>
+    <string name="sourceParam7" title="Input 7"/>
+    <string name="sourceParam8" title="Input 8"/>
+    <string name="sourceParam9" title="Input 9-10"/>
+    <string name="valueName1" title="1"/>
+    <string name="valueName2" title="2"/>
+    <string name="valueName3" title="3"/>
+    <string name="valueName4" title="4"/>
+    <string name="valueName5" title="5"/>
+    <string name="valueCode1" title="1"/>
+    <string name="valueCode2" title="2"/>
+    <string name="valueCode3" title="3"/>
+    <string name="valueCode4" title="4"/>
+    <string name="valueCode5" title="5"/>
+    
+  </entity>
+
+</domain-models>

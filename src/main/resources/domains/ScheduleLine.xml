@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+  <module name="organisation" package="com.axelor.apps.organisation.db"/>
+
+  <entity name="ScheduleLine" lang="java">
+  	
+  	<many-to-one name="schedule" ref="com.axelor.apps.organisation.db.Schedule" title="Shift"/>
+  	<date name="startDate" title="Start date"/>
+  	<one-to-many name="scheduleSubLineList" ref="com.axelor.apps.organisation.db.ScheduleSubLine" mappedBy="scheduleLine" title="Daily periods"/>
+
+  </entity>
+
+</domain-models>

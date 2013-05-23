@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="VatLine" lang="java" cachable="true">
+  
+    <integer name="importId"/>
+    <many-to-one name="vat" ref="Vat" title="V.A.T." />
+    <date name="startDate" title="Application start Date" required="true"/>
+    <date name="endDate" title="Run off Date" />
+    <decimal name="value" title="Rate" scale="3" precision="20"/>
+    
+    <string name="name" namecolumn="true" search="vat,startDate,endDate" title="Name">
+	    <![CDATA[
+	    	String name = "";
+	    	if(vat != null)  { name += vat.getName();  }
+			name += " : " + startDate;
+			if (endDate != null) { name += " - " + endDate; }
+	    	return name;
+	   	]]>
+   	</string>
+  
+  </entity>
+
+</domain-models>

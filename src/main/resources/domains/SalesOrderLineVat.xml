@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+  
+  <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
+
+  <entity sequential="true" name="SalesOrderLineVat" lang="java">
+  
+  	<many-to-one name="salesOrder" ref="SalesOrder" title="Sale order"/>
+  	<many-to-one name="vatLine" ref="com.axelor.apps.account.db.VatLine" title="V.A.T."/>
+    <decimal name="exAllTaxBase" scale="2" precision="20" title="Base W.A.T."/>
+    <decimal name="exTaxBase" scale="2" precision="20" title="Base W.T."/>
+    <decimal name="vatTotal" scale="2" precision="20" title="Amount V.A.T."/>
+    <decimal name="inTaxTotal" scale="2" precision="20" title="Amount A.T.I."/>
+
+  </entity>
+
+</domain-models>

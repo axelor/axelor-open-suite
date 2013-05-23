@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+	<module name="consulting" package="com.axelor.apps.consulting.db"/>
+	
+	<entity name="Need">
+	
+		<many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"/>
+		<many-to-one name="responsibleUserInfo" title="User in charge of the answer" ref="com.axelor.apps.base.db.UserInfo"/>
+		<many-to-one name="partner" title="Partner" ref="com.axelor.apps.base.db.Partner"/>
+		<string name="customerRef" title="Customer ref"/>
+		<string name="title" title="Title"/>
+		<many-to-one name="clientPartner" title="Contact client" ref="com.axelor.apps.base.db.Partner"/>
+		<string name="typeSelect" title="Type" selection="consulting.need.type.select"/>
+		<date name="consultationDate" title="Consultation Date"/>
+		<string name="pricingMode" title="Pricing mode" selection="consulting.need.pricing.mode.select"/>
+		<date name="deadline" title="Deadline"/>
+		<decimal name="plannedBudget" title="Planned budget"/>
+		<string name="complexity" title="Complexity" selection="grade.0.up.to.5.select"/>
+		<decimal name="plannedPrice" title="Planned price"/>
+		<string name="competition" title="Competition" selection="grade.0.up.to.5.select"/>
+		<string name="needDescription" title="Need Description" large="true"/>
+		<binary name="specificationFile" title="Attach specification"/> 
+		<many-to-many name="sectorKeywordSet" ref="com.axelor.apps.base.db.Keyword" title="Keyword segment of activity"/>
+		<many-to-many name="toolKeywordSet" ref="com.axelor.apps.base.db.Keyword" title="Keyword tool"/>
+		<string name="needStatusSelect" title="Need status" selection="consulting.need.status.select"/>
+		<one-to-many name="needLineList" title="Need Line" ref="NeedLine" mappedBy="need" />
+	</entity>
+</domain-models>

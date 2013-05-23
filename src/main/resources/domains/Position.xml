@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+	<module name="organisation" package="com.axelor.apps.organisation.db" />
+
+ 	<entity name="Position" lang="java">
+		<many-to-one name="candidate" ref="Candidate"></many-to-one>
+		<many-to-one name="employee" ref="Employee"></many-to-one>
+		<string name="name" title="Intitulé du poste" />
+		<date name="startDate" title="Date de début"></date>
+		<date name="endDate" title="Date de fin"></date>
+		<many-to-one name="employer" ref="com.axelor.apps.base.db.Partner"
+			title="Société"></many-to-one>
+		<string name="description" title="Description de poste" />
+		<string name="departureCause" title="Raison du départ" />
+		<string name="department" title="Service" />
+
+		<string name="duration" title="Durée" />
+		<string name="referenceTitle" title="Titre de la référence" />
+		<string name="context" title="Contexte" />
+		<string name="goals" title="Objectifs" />
+		<string name="development" title="Déroulement" />
+
+		<string name="result" title="Résultat" />
+		<string name="technicalEnvironment" title="Environnement technique" />
+		<string name="contact" title="Nom contact" />
+		<string name="recommendationSelect" title="Avis contact"
+			selection="organisation.position.recommendation.select" />
+		<string name="comment" title="Commentaire du contact" />
+	</entity>
+
+</domain-models>

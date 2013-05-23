@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+  <module name="crm" package="com.axelor.apps.crm.db"/>
+
+  <entity name="Campaign" lang="java">
+  
+    <string name="name" title="Name" required="true"/>
+   	<integer name="statusSelect" title="Status" selection="crm.campaign.status.select"/>  
+   	<date name="startDate" title="Start date"/>
+   	<date name="endDate" title="End date"/>
+   	<integer name="typeSelect" title="Campaign Type" selection="crm.campaign.type.select"/>  
+    <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
+    <integer name="nbImpressions" title="Printed Quantity"/>
+    <integer name="frequencySelect" title="Frequence" selection="crm.campaign.frequency.select"/>
+    <decimal name="budget" title="Budget"/>
+    <decimal name="expectedCost" title="Expected cost"/>
+	<decimal name="actualCost" title="Current costs"/>
+    <decimal name="expectedRevenue" title="Expected revenue"/>
+    <string name="objective" title="Objectives" large="true"/>
+    <string name="description" title="Description" large="true"/>
+    
+<!-- 	Ajouter second onglet avec user et team   -->
+  	<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="Assigned to"/>
+  	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team"/>
+    
+  </entity>
+
+</domain-models>

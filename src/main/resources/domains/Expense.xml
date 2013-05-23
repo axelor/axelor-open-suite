@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+  <module name="organisation" package="com.axelor.apps.organisation.db"/>
+
+  <entity name="Expense" lang="java">
+  	<many-to-one name="employee" title="Employee" ref="com.axelor.apps.organisation.db.Employee" />
+  	<boolean name="isRecurrentExpense" title="Recurrent expense ?" />
+	<date name="date" title="Date"/>
+	<decimal name="totalAmount" title="Total amount" />   
+    <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" />
+    <one-to-many name="expenseLineList" ref="com.axelor.apps.organisation.db.ExpenseLine" mappedBy="expense" title="Expense lines"/>
+    <string name="validationStatusSelect" title="Validation Status" selection="hr.expense.validation.status.select" />
+    <decimal name="progress" title="Progress" />
+    <date name="validationDate" title="Date de validation"/>
+    <many-to-one name="paymentPeriod" ref="com.axelor.apps.account.db.Period" title="Payment Period" />
+    <string name="statusSelect" title="Status" selection="hr.expense.status.select" />
+  </entity>
+  
+</domain-models>

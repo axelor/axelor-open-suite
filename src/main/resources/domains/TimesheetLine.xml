@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+  <module name="organisation" package="com.axelor.apps.organisation.db"/>
+
+  <entity name="TimesheetLine" lang="java">
+  
+  	<many-to-one name="timesheet" ref="com.axelor.apps.organisation.db.Timesheet" title="Timesheet"/>
+  	<many-to-one name="project" ref="com.axelor.apps.organisation.db.Project" title="Project"/>
+  	<many-to-one name="task" ref="com.axelor.apps.organisation.db.Task" title="Task"/>
+	
+<!-- 	Ajouter type de congé -->
+	
+	<one-to-many name="timesheetInputList" ref="com.axelor.apps.organisation.db.TimesheetInput" mappedBy="timesheetLine" title="Inputs List"/>
+	<boolean name="isToInvoice" title="To invoice ?"/>
+
+		
+  </entity>
+
+</domain-models>

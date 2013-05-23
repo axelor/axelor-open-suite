@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    <grid name="message-grid" title="Emails" model="com.axelor.apps.base.db.Message">
+        <field name="sendedDate"/>
+        <field name="sender"/>
+        <field name="subject"/>
+    </grid>
+    <form name="message-form" title="Email" model="com.axelor.apps.base.db.Message" cols="4">
+    	<group title="Informations" colSpan="4">
+ 			<field name="typeSelect"/>
+            <field name="sendedDate"/>
+            <field name="sender"/>
+            <field name="statusSelect"/>
+        </group>
+        <group title="Content" colSpan="4">
+        	<field name="subject" colSpan="4"/>
+       	 	<field name="content" colSpan="4"/>
+        </group>
+        <group title="Recipients" colSpan="4">
+        	<field name="toPartnerSet" widget="TagSelect[create=name,firstName,email]" colSpan="4"/>
+        	<field name="ccPartnerSet" widget="TagSelect[create=name,firstName,email]" colSpan="4"/>
+        	<field name="bccPartnerSet" widget="TagSelect[create=name,firstName,email]" colSpan="4"/>
+        </group>
+        <group title="Related to" colSpan="1" cols="2">
+	        <field name="relatedToSelect" widget="RefSelect[related=relatedToSelectId]"/>
+        </group>
+<!--         <button name="printMail" title="Imprimer" colSpan="2" onClick="save,action-mail-method-print-mail"/> -->
+    </form>
+    
+
+</object-views>

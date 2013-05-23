@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+	<module name="organisation" package="com.axelor.apps.organisation.db" />
+
+ 	<entity name="TrainingLine" lang="java">
+		<many-to-one name="candidate" ref="Candidate" title="Candidate"></many-to-one>
+		<many-to-one name="degree" ref="com.axelor.apps.organisation.db.Degree"
+			title="Diploma/Degree"></many-to-one>
+		<many-to-one name="trainingCenter" ref="com.axelor.apps.organisation.db.TrainingCenter"
+			title="Training center"></many-to-one>
+		<many-to-many name="topicSet" ref="Topic" title="Technical topics"/>
+		<integer name="completionYear" min="1960" max="2020" title="Year of completion"></integer>
+		<string name="comment" title="Comment" large="true"></string>
+	</entity>
+
+</domain-models>

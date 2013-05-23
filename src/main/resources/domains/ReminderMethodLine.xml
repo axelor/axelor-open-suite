@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="ReminderMethodLine" lang="java">
+  
+    <integer name="importId"/>
+  	<many-to-one name="reminderLevel"  ref="com.axelor.apps.account.db.ReminderLevel" title="Level" />
+  	<string name="reminderLevelLabel" namecolumn="true" title="Label"/>
+  	<integer name="standardDeadline" title="Standard delay (j)"/> 
+  	<decimal name="minThreshold" title="Min. amount (€)"/>
+  	<many-to-one name="reminderMailModel" ref="com.axelor.apps.base.db.MailModel" title="Mail model"/>
+  	<boolean name="manualValidationOk" title="Manual validation"/>
+  	<many-to-one name="reminderMethod" ref="com.axelor.apps.account.db.ReminderMethod" title="Reminder Method"/>
+    
+  </entity>
+
+ 
+</domain-models>

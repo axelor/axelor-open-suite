@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+	
+	<grid name="address-grid" title="Address list" model="com.axelor.apps.base.db.Address">
+		<field name="fullName" />
+		<field name="certifiedOk" />
+	</grid>
+	
+	<form name="address-form" title="Address" model="com.axelor.apps.base.db.Address" cols="4"
+		onNew="default-address-record">
+		<group colSpan="4" cols="2" colWidths="25%,*">
+			<field name="addressL2" />
+			<field name="addressL3" />
+			<field name="addressL4" />
+			<field name="addressL5" />
+			<field name="addressL6" required="true" />
+			<field name="addressL7Country" required="true" />
+			<field name="inseeCode"/>
+		</group>
+		<group colSpan="4" cols="4" title="QAS" >
+			<field name="certifiedOk"/>
+			<field name="pickList" colSpan="4">
+				<grid title="Liste de choix">
+					<field name="partialAddress"/>
+					<field name="postcode"/>
+					<field name="score"/>
+				</grid>
+			</field>
+		</group>
+		<group colSpan="4" cols="2">
+			<button name="select" title="Choose" onClick="com.axelor.apps.base.web.AddressController:select,save" />
+			<button name="validate" title="Validater" onClick="com.axelor.apps.base.web.AddressController:validate,save" />
+		</group>
+	</form>
+
+	<action-record name="default-address-record" model="com.axelor.apps.base.db.Address">
+		<field name="addressL7Country" expr="action:default-address-country-record" />
+	</action-record>
+
+	<action-record name="default-address-country-record"
+		model="com.axelor.apps.base.db.Country" search="('self.code LIKE ?1', 'FRA')">
+		<field name="code" expr="FRA" />
+		<field name="name" expr="FRANCE" />
+	</action-record>
+</object-views>

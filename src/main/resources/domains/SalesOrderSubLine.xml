@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+  <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
+
+  <entity name="SalesOrderSubLine" lang="java">
+  
+  	<many-to-one name="salesOrderLine" ref="com.axelor.apps.supplychain.db.SalesOrderLine" title="Ligne de devis"/>
+  
+  	<integer name="sequence" title="Sequence"/>
+  	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+	<many-to-one name="productCategory" ref="com.axelor.apps.base.db.ProductCategory" title="Category"/>
+  	<string name="productName" title="Label"/>
+	<many-to-one name="employee" ref="com.axelor.apps.organisation.db.Employee" title="Employee"/>
+  	<string name="description" title="Description" large="true"/>
+	<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
+	<decimal name="qty" title="Qty"/>
+	<decimal name="price" title="Unit price"/>
+	<many-to-one name="vatLine" ref="com.axelor.apps.account.db.VatLine" title="V.A.T."/>
+  	<decimal name="exTaxTotal" title="Total W.T."/>
+    
+  </entity>
+
+</domain-models>

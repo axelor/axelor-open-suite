@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="product-grid" title="Produits" model="com.axelor.apps.base.db.Product">
+        <field name="code"/>
+        <field name="name"/>
+        <field name="productCategory"/>
+        <field name="productFamily"/>
+        <field name="unit"/>
+        <field name="startDate"/>
+        <field name="endDate"/>
+        <field name="productTypeSelect"/>
+       	<field name="procurementMethodSelect"/>
+       	<field name="isRawMaterial"/>
+    </grid>
+    
+    <form name="product-form" title="Produit" model="com.axelor.apps.base.db.Product" cols="2" colWidths="*,400">
+	    <group title="Informations" colSpan="1" cols="6">
+	    	<group noLabel="true" colSpan="2">
+	    		<field name="picture"/>
+	    	</group>
+		    <group noLabel="true" colSpan="4" cols="2">
+		    	<field name="name"/>
+	        	<field name="code"/>
+		    </group>
+	        <break/>
+	        <field name="applicationTypeSelect"/>
+	        <field name="productCategory"/>
+	        <field name="productFamily" domain="self.productCategory = :productCategory"/>
+	        <field name="productTypeSelect"/>
+        	<field name="procurementMethodSelect"/>
+        	<field name="isRawMaterial"/>
+	        <field name="invoiceLineType"/>
+	        <group noLabel="true" colSpan="6">
+		        <field name="startDate"/>
+		        <field name="endDate"/>
+	        </group>
+	    </group>
+        <group title="Description" colSpan="1" cols="1">
+        	 <field name="description" noLabel="true" colSpan="1"/>
+        </group>
+        <separator title="Typologie spécifique associée au produit" colSpan="2"/>
+        <notebook colSpan="2">
+        	<page title="Configuration Prix" cols="4" colSpan="2">
+	        	<field name="salePrice"/>
+	        	<field name="saleCurrency"/>
+	        	<field name="purchasePrice"/>
+	        	<field name="purchaseCurrency"/>
+	        	<field name="unit"/>
+        	</page>
+            <page title="Comptabilité" cols="4" colSpan="2">
+                <field name="accountManagementList" grid-view="account-management-product-grid" form-view="account-management-product-form"  domain="self.typeSelect = 1" colSpan="4" />
+            </page>
+            <page title="Bill of material">
+            	<button name="showBillsOfMaterial" title="Show bills of material"/>
+            	 <portlet action="chart:chart.planned.qty.by.location" height="200" colSpan="2"/>
+            </page>
+        </notebook>
+    </form>
+    
+</object-views>

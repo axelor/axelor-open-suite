@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+	
+	<grid name="general-grid" title="Administration Générale" model="com.axelor.apps.base.db.General">
+       	<toolbar>
+		    <button name="edit" title="" hidden="true"/>
+		    <button name="save" title="" hidden="true"/>
+		    <button name="delete" title="" hidden="true"/>
+		    <button name="copy" title="" hidden="true"/>
+		    <button name="cancel" title="" hidden="true"/>
+		    <button name="refresh" title="" hidden="true"/>
+		    <button name="search" title="" hidden="true"/>
+		</toolbar>
+		<field name="today" />
+	</grid>
+	
+	<form name="general-form" title="Administration Générale" model="com.axelor.apps.base.db.General" cols="6" 
+	onSave="action-general-record-get-default-svi-stored-procedure">
+       	<toolbar>
+		    <button name="new" title="" hidden="true"/>
+		    <button name="edit" title="" hidden="true"/>
+		    <button name="delete" title="" hidden="true"/>
+		    <button name="copy" title="" hidden="true"/>
+		    <button name="cancel" title="" hidden="true"/>
+		    <button name="search" title="" hidden="true"/>
+		</toolbar>
+	    <field name="formulaGenerator"/>
+	    <button name="clearFormula" title="Réinitialiser les formules" colSpan="2" onClick="save,action-general-method-clear-formula,save"/>
+	    <field name="today"/>
+	    <field name="logOk"/>
+	    <notebook colSpan="6">
+	        <page title="Comptabilité" cols="4">
+	            <field name="defaultExemptionVat"/>
+	            <field name="isInvoiceMoveConsolidated"/>
+	            <separator title="Listes des codes et motifs de rejets" colSpan="6"/>
+	            <field name="transferAndDirectDebitInterbankCode"/>
+	            <field name="chequeInterbankCode"/>
+	            <separator title="Qualité payeur" colSpan="4"/>
+	            <field name="payerQualityConfigLineList" colSpan="4"/>
+	            <button name="payerQualityProcess" title="Calculer les qualités payeurs" colSpan="2" onClick="action-general-method-payer-quality-process"/>
+	            <separator title="Conversions des devises" colSpan="4"/>
+	            <field name="currencyConversionLineList" colSpan="4"/>
+	        </page>
+	        <page title="Interfaces" cols="4">
+	            <group name="qas" title="La vérification des adresses" colSpan="4">
+	                <field name="qasWsdlUrl"/>
+	                <button name="checkQasWsdl" title="Tester la connection vers le service web QAS" colSpan="2" onClick="com.axelor.apps.base.web.AddressController:check"/>
+	            </group>
+	            <group name="svi" title="Interface SVI" colSpan="4">
+	                <field name="sviStoredProcedure" noLabel="true" colSpan="4" widget="CodeEditor[syntax=sql]'"/>
+	                <break/>
+	                <button name="loadStoredProcedure" title="Charger les procedures" colSpan="2" onClick="save,com.axelor.apps.jdbc.web.JdbcController:runQuery"/>
+	            </group>
+	        </page>
+	        <page title="Les exceptions" cols="4">
+	            <field name="exceptionDefaultMsg" colSpan="4"/>
+	            <field name="exceptionInvoiceMsg" colSpan="4"/>
+	            <field name="exceptionAccountingMsg" colSpan="4"/>
+	            <field name="exceptionReminderMsg" colSpan="4"/>
+	        </page>
+	    </notebook>
+	</form>
+	
+	<!-- ACTION RECORD -->
+	<action-record name="action-general-record-get-default-svi-stored-procedure" model="com.axelor.apps.base.db.General">
+		<field name="sviStoredProcedure" expr="call:com.axelor.apps.base.web.GeneralControllerSimple:getDefaultSviStoredProcedure()" if="!sviStoredProcedure"/>
+	</action-record>
+
+	<!-- ACTION METHOD -->
+	<action-method name="action-general-method-clear-formula">
+		<call class="com.axelor.apps.base.web.GeneralController" method="formulaClear" />
+	</action-method>
+
+	<action-method name="action-general-method-payer-quality-process">
+		<call class="com.axelor.apps.base.web.GeneralController" method="payerQualityProcess" />
+	</action-method>
+	
+</object-views>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+  
+  <module name="base" package="com.axelor.apps.base.db"/>
+  
+  <entity name="Partner" lang="java">
+  
+  	<integer name="importId"/>
+  
+  	<!-- En-tête  -->
+    <many-to-one name="partnerCategory" ref="com.axelor.apps.base.db.PartnerCategory" title="Category"/>
+    <string name="reference" title="Reference"/>
+    
+    <!-- ERP -->
+    <integer name="partnerTypeSelect" title="Partner Type" selection="partner.partner.type.select"/>
+    <string name="titleSelect" title="Civility" selection="partner.title.type.select"/>
+    <string name="name" title="Name/Company Name"/>
+    <string name="firstName" title="First Name"/>
+    <binary name="picture" image="true" title="Photo"/>
+    <integer name="customerTypeSelect" title="Customer Type" selection="partner.customer.type.select"/>
+    <boolean name="isContact" title="Contact ?" default="false"/>
+    <string name="languageSelect" title="Language"/>
+    <many-to-one name="parentPartner" ref="com.axelor.apps.base.db.Partner" title="Mother company"/>
+    <many-to-one name="mainInvoicingAddress" ref="com.axelor.apps.base.db.Address" title="Invoicing Address"/>
+    <many-to-one name="deliveryAddress" ref="com.axelor.apps.base.db.Address" title="Delivery Address"/>
+    <many-to-many name="contactPartnerSet" ref="com.axelor.apps.base.db.Partner" title="Contacts"/>
+    <many-to-one name="source" ref="com.axelor.apps.base.db.Source" title="Source"/>
+    
+    <!-- From contact -->
+    <many-to-one name="commune" ref="com.axelor.apps.base.db.Commune" title="City - Commune"/>
+    <string name="email" title="Email"/>
+    <string name="fax" title="Fax"/>
+    <string name="fixedPhone1" title="Fixed phone 1"/>
+    <string name="fixedPhone2" title="Fixed phone 2"/>
+    <string name="fixedPhonePro" title="Prof. fixed phone"/>
+    <string name="mobilePhonePerso" title="Perso. mobile phone"/>
+    <string name="mobilePhonePro" title="Prof. mobile phone"/>
+    <string name="webSite" title="Website"/>
+    
+    
+    <many-to-one name="site" ref="com.axelor.apps.consulting.db.Site" title="Site"/>
+    <string name="department" title="Department"/>
+    
+    <decimal name="payerQuality" title="Payer quality"/>
+    <one-to-many name="reportedBalanceList" ref="com.axelor.apps.account.db.ReportedBalance" mappedBy="partner" title="Reported Balance"/>
+    
+    <many-to-many name="companySet" ref="com.axelor.apps.base.db.Company" title="Companies associated to"/>
+    <one-to-many name="accountingSituationList" ref="com.axelor.apps.account.db.AccountingSituation" title="Accounting situation"/>
+   
+    <one-to-many name="bankDetailsList" ref="com.axelor.apps.base.db.BankDetails" mappedBy="partner" title="Bank Details list"/>
+   
+    <!--  Page règle de facturation/paiement -->
+    <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank Details"/>
+    <string name="invoiceSendingFormatSelect" title="Invoice sending format" selection="invoice.account.condition.invoice.sending.format.select"/>
+    <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment Mode"/>
+    <many-to-one name="paymentCondition" ref="com.axelor.apps.account.db.PaymentCondition" title="Payment condition"/>
+  	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
+   
+    <!-- PAGE Blocage -->
+	<many-to-one name="blocking" ref="com.axelor.apps.base.db.Blocking" title="Blocking follow-up List"/>
+	
+	 <!-- PAGE Relance -->
+	<many-to-one name="reminder" ref="com.axelor.apps.account.db.Reminder" title="Reminder follow-up list "/>
+   
+    <integer name="rejectCounter" title="Reject counter"/>
+   
+   	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
+   
+   
+  </entity>
+  
+</domain-models>

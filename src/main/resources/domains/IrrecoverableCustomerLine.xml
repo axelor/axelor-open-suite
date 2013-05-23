@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="IrrecoverableCustomerLine" lang="java">
+  
+  	<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Tiers"/>
+  	<many-to-many name="paymentScheduleLineSet" ref="com.axelor.apps.account.db.PaymentScheduleLine" title="Echéances rejetées"/>
+  	<one-to-many name="irrecoverableInvoiceLineList" ref="com.axelor.apps.account.db.IrrecoverableInvoiceLine" mappedBy="irrecoverableCustomerLine" title="Factures"/>
+  	<one-to-many name="irrecoverablePaymentScheduleLineLineList" ref="com.axelor.apps.account.db.IrrecoverablePaymentScheduleLineLine" mappedBy="irrecoverableCustomerLine" title="Factures"/>
+    <many-to-one name="irrecoverable" ref="com.axelor.apps.account.db.Irrecoverable"/>
+ 
+  </entity>
+
+</domain-models>

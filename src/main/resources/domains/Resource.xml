@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+	
+	<module name="consulting" package="com.axelor.apps.consulting.db"/>
+	
+		<entity name="Resource">
+			<many-to-one name="needLine" ref="com.axelor.apps.consulting.db.NeedLine" title="Need line"/>
+			<many-to-one name="employee" title="Employee" ref="com.axelor.apps.organisation.db.Employee"/>
+			<date name="dateOfAvailability" title="Availability date"/>
+			<string name="stepSelect" title="Step" selection="resource.step.select"/>
+			<string name="estimatedProfitability" title="Estimated profitability"/>
+			<string name="priceTargetForReturn" title="Target price for X% of profitability"/>
+			<integer name="statusSelect" title="Status" selection="organisation.resource.status.select"/>
+			<many-to-one name="salesOrder"  title="Sale Order" ref="com.axelor.apps.supplychain.db.SalesOrder"/>
+			<many-to-one name="affair" ref="com.axelor.apps.organisation.db.Project" title="Affair"/>
+			<string name="lostReasonSelect" title="Reason of the lost" selection="resource.lost.reason.select"/>
+			<string name="lostReasonNote" title="Commentary of the lost"/>
+			<many-to-one name="product"  title="Profile" ref="com.axelor.apps.base.db.Product"/>
+			<many-to-one name="candidate" ref="com.axelor.apps.organisation.db.Candidate" title="Candidate"/>
+			
+			
+		</entity>
+</domain-models>

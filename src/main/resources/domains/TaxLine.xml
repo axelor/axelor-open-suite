@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="TaxLine" lang="java" cachable="true">
+  
+    <many-to-one name="tax" ref="Tax" title="Tax"/>
+    <date name="fromDate" title="Application date"/>
+    <date name="toDate" title="Run off date"/>
+    <string name="condition" title="Condition(s)" max="500"/>
+    <many-to-one name="calculationRule" ref="com.axelor.apps.account.db.CalculationRule" title="Calculation rule"/>
+    <boolean name="prorata" title="Prorata ?"/>
+    <many-to-one name="pricingList" ref="com.axelor.apps.account.db.PricingList" title="Pricing list"/>
+    <string name="code" title="Code"/>
+    <many-to-one name="defaultVat" ref="com.axelor.apps.account.db.Vat" title="Default V.A.T." />
+    <many-to-one name="vatManagement" ref="com.axelor.apps.account.db.VatManagement" title="V.A.T. Configuration"/>
+    <one-to-many name="formulaControlList" ref="com.axelor.apps.base.db.FormulaControl" mappedBy="taxLine" title="Formula Controls list" />
+  
+  </entity>
+
+</domain-models>

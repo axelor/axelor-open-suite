@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="AccountingBatch" lang="java">
+  	
+  	<!-- HEADER -->
+  	<string name="code" title="Code" namecolumn="true"/>
+    <integer name="actionSelect" title="Action" required="true" selection="iaccounting.batch.action.select"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" title="Company" />
+    <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="BBAN/IBAN to use"/>
+    
+    <!-- REIMBURSEMENT -->
+    <integer name="reimbursementTypeSelect" title="Reimbursement batch type" selection="ireimbursement.batch.type.select"/>
+    <integer name="reimbursementExportTypeSelect" title="Treatment/Operation type" selection="ireimbursement.batch.export.type.select"/>
+    
+    <!-- REMINDER -->
+    <integer name="reminderTypeSelect" title="Reminder batch type" selection="ireminder.batch.type.select"/>
+    
+    
+    <!--  DIRECT DEBIT -->
+    <integer name="directDebitTypeSelect" title="Direct Debit batch type" selection="iaccount.account.schedule.type.select"/>
+    <integer name="directDebitExportTypeSelect" title="Datatype" selection="iaccount.account.schedule.export.type.select"/>
+    <date name="debitDate" title="Reference Due Date"/>
+  	<string name="authorityMemoryExportTypeSelect" title="Printing type" selection="iadministration.export.type.select"/>
+
+    
+    <!--  INTERBANK PAYMENT ORDER -->
+    <integer name="interbankPaymentOrderTypeSelect" title="Interbank Payment Orders batch type" selection="iinterbank.account.order.batch.type.select"/>
+    
+    <!-- OTHERS INFORMATIONS -->
+    <string name="description" title="Description" large="true" />
+    <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch" mappedBy="accountingBatch" title="Batchs" />
+  
+  </entity>
+
+</domain-models>

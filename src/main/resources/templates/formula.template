@@ -1,0 +1,46 @@
+<%import com.axelor.apps.tool.StringTool%>package com.axelor.apps.formula.service
+
+<% for (klass in klassImport) {%>import  ${klass}
+<%}%>
+import com.axelor.apps.fluid.db.IFluid
+import com.axelor.apps.account.db.InvoiceLineDetail
+
+import com.axelor.apps.base.service.GeneralService
+
+import com.axelor.apps.tool.StringTool
+
+import com.axelor.exception.AxelorException
+import com.axelor.exception.db.IException
+
+import java.math.RoundingMode
+
+@groovy.transform.CompileStatic
+public class $klassName implements Formula${computeParameters.length}Lvl <$computeReturnType,${computeParameters.collect{it}.join(',')}>{
+	<% if (useTransco) { %>
+	private FormulaService fs = new FormulaService()<% } %>
+	<% for (formulaName in formulas?.keySet()) { %>
+	private $computeReturnType $formulaName(${computeParameters.collect{it+" "+StringTool.toFirstLower(it.replaceAll("<|>",""))}.join(',')}) {
+		$computeReturnType res = $computeReturnDefaultValue
+		try {
+			${formulas.get(formulaName)}
+		} catch(Exception e) {
+			def msg = ""
+			<%for (exceptionConditions in exceptionFormulas?.get(formulaName)) { for (exceptionCondition in exceptionConditions) {%>${exceptionCondition}<%}%>
+			<%}%>throw new AxelorException(msg, e, IException.MISSING_FIELD)
+		}
+		return res<%if (scale){%>.setScale(${scale}, RoundingMode.HALF_EVEN)<%}%>
+	}
+	<%}%>
+	public $computeReturnType compute(String key,${computeParameters.collect{res = it+" "+StringTool.toFirstLower(it.replaceAll("<|>","")); if (it != computeParameters[0]) {return res + " = null"} else {return res}}.join(',')}){
+		
+		switch(key.toLowerCase()) {
+			<% for (formulaName in formulas.keySet()) { %>case "${formulaName}": return ${formulaName}(${computeParameters.collect{StringTool.toFirstLower(it.replaceAll("<|>",""))}.join(',')})
+			<%}%>default: return $computeReturnDefaultValue
+		}
+		 
+	}
+	
+	public List<InvoiceLineDetail> getDetails(){ <% if (useTransco) { %>return fs.getDetails();<% } else { %>return null;<% } %> }
+	public void resetDetails(){ <% if (useTransco) { %>fs.resetDetails();<% } else { %><% } %> }
+	
+}
