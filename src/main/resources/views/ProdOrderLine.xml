@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="prod-order-line-grid" title="Production order lines" model="com.axelor.apps.production.db.ProdOrderLine">
+        <field name="resource"/>
+        <field name="plannedStartDateT"/>
+        <field name="plannedEndDateT"/>
+        <field name="status"/>
+        <field name="realStartDateT"/>
+        <field name="realEndDateT"/>
+        <button name="start" title="Start" onClick=""/>
+        <button name="standBy" title="Stand by"/>
+        <button name="end" title="End"/>
+    </grid>
+    
+    <form name="prod-order-line-form" title="Production order line" model="com.axelor.apps.production.db.ProdOrderLine" cols="4">
+        <field name="resource"/>
+        <field name="status"/>
+        <group title="Planned dates">
+        	<field name="plannedStartDateT"/>
+        	<field name="plannedEndDateT"/>
+        </group>
+        <group title="Real Dates">
+        	<field name="realStartDateT"/>
+        	<field name="realEndDateT"/>
+        </group>
+        <group title="Action">
+        	<button name="start" title="Start" onClick=""/>
+	        <button name="standBy" title="Stand by"/>
+	        <button name="end" title="End"/>
+        </group>
+    </form>
+    
+</object-views>

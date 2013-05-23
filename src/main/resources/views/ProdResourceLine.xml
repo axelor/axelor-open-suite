@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="prod-resource-line-grid" title="Human resources" model="com.axelor.apps.production.db.ProdResourceLine">
+        <field name="product"/>
+        <field name="employee"/>
+    </grid>
+    
+    <form name="prod-resource-line-form" title="Human resource" model="com.axelor.apps.production.db.ProdResourceLine" cols="4">
+        <field name="product"/>
+        <field name="employee"/>
+    </form>
+    
+</object-views>

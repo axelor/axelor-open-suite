@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="bill-of-material-line-grid" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterialLine">
+        <field name="priority"/>
+        <field name="billOfMaterial"/>
+    </grid>
+    
+    <form name="bill-of-material-line-form" title="Bill of material" model="com.axelor.apps.production.db.BillOfMaterialLine" cols="4">
+        <field name="priority"/>
+        <field name="billOfMaterial"/>
+    </form>
+    
+</object-views>

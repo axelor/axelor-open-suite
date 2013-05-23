@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="prod-order-grid" title="Production orders" model="com.axelor.apps.production.db.ProdOrder">
+        <field name="productionOrderSeq"/>
+        <field name="billOfMaterial"/>
+        <field name="prodProcess"/>
+        <field name="outStockMove"/>
+        <field name="inLocation"/>
+        <field name="outLocation"/>
+        <field name="startDate"/>
+        <field name="endDate"/>
+        <field name="isSimulation"/>
+    </grid>
+    
+    <form name="prod-order-form" title="Production order" model="com.axelor.apps.production.db.ProdOrder" cols="4">
+        <field name="productionOrderSeq"/>
+        <field name="billOfMaterial"/>
+        <field name="prodProcess"/>
+        <field name="isSimulation"/>
+        <group title="In/Out" colSpan="4">
+	        <field name="inStockMoveList" colSpan="4"/>
+	        <field name="inLocation"/>
+	        <field name="outStockMove"/>
+	        <field name="outLocation"/>
+        </group>
+        <group title="Date" colSpan="2">
+        	<field name="startDate"/>
+        	<field name="endDate"/>
+        </group>
+        <group title="Action" colSpan="2">
+        	<button name="standbyAllLines" title="Stand by all lines"/>
+        	<button name="endAllLines" title="Finish all lines "/>
+        </group>
+        <field name="prodOrderLineList" colSpan="4"/>
+        
+    </form>
+    
+</object-views>
