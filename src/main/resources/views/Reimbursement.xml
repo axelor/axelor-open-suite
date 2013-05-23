@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    <grid name="reimbursement-grid" title="Les Remboursements" model="com.axelor.apps.account.db.Reimbursement">
+    	<field name="ref"/>
+        <field name="contractLine"/>
+        <field name="status"/>
+        <field name="total"/>
+    </grid>
+    <form name="reimbursement-form" title="Remboursement" model="com.axelor.apps.account.db.Reimbursement" cols="4"
+    onNew="action-reimbursement-hidden-button-attrs,action-reimbursement-hidden-reject-field-attrs"
+    onLoad="action-reimbursement-hidden-button-attrs,action-reimbursement-hidden-reject-field-attrs">
+    	<field name="ref"/>
+        <field name="contractLine"/>
+		<field name="bankDetails" grid-view="bank-details-grid" form-view="bank-details-form" onSelect="action-reimbursement-domain-bank-details-attrs"/>
+        <field name="amountToReimburse"/>
+        <field name="amountReimbursed"/>
+        <break/>
+		<separator title="Motif" colSpan="4"/>
+		<field name="description" noLabel="true" colSpan="4" />
+        <group cols="3" colSpan="2">
+                <field name="status"/>
+        		<button name="validateReimbursement" title="Valider" onClick="com.axelor.apps.account.web.ReimbursementController:validateReimbursement,action-reimbursement-hidden-button-attrs,save"/>
+        </group>
+        <field name="moveLineSet" colSpan="4"/>
+        <group cols="3" colSpan="2">
+                <field name="rejectedOk"/>
+        		<group name="rejectInformation" cols="3" colSpan="2">
+                	<field name="interbankCodeLine"/>
+        			<field name="rejectDate"/>
+        			<field name="rejectMoveLine"/>
+        		</group>
+        </group>
+    </form>
+    
+ 	<action-attrs name="action-reimbursement-hidden-button-attrs">
+ 		<attribute name="hidden" for="validateReimbursement" expr="eval: status?.code != 'tov' "/>
+ 	</action-attrs>
+	<action-attrs name="action-reimbursement-domain-bank-details-attrs">
+ 		<attribute name="domain" for="bankDetails" expr="eval: &quot;self.payerPartner.id = ${contractLine?.amendment?.invoicePaymentCondition?.payerPartner.id}&quot;" if="contractLine.amendment != null"/>
+ 		<attribute name="domain" for="bankDetails" expr="eval: &quot;self.payerPartner.id = ${contractLine?.marketerContractLine?.amendment?.invoicePaymentCondition?.payerPartner.id}&quot;" if="contractLine.amendment == null"/>
+ 	</action-attrs>
+ 	
+ 	<action-attrs name="action-reimbursement-hidden-reject-field-attrs">
+ 		<attribute name="hidden" for="rejectInformation" expr="eval: rejectedOk == false"/>
+ 	</action-attrs>
+
+   
+</object-views>

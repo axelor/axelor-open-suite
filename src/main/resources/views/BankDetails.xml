@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="bank-details-grid" title="Les Coordonnées bancaires" model="com.axelor.apps.base.db.BankDetails">
+        <field name="partner"/>
+        <field name="ownerName"/>
+        <field name="bankAddress"/>
+    </grid>
+    
+    <form name="bank-details-form" title="Coordonnées bancaires" model="com.axelor.apps.base.db.BankDetails" cols="4">
+        <group colSpan="4" cols="6" >
+            <field name="partner" grid-view="partner-grid" form-view="partner-form"/>
+            <field name="ownerName"/>
+            <field name="bankAddress"/>
+        </group>
+        <field name="bic"/>
+        <field name="iban" onChange="save,action-method_bank-details-validIban,save"/>
+        <field name="countryCode"/>
+        <break/>
+        <field name="bankCode"/>
+        <field name="sortCode"/>
+        <field name="accountNbr"/>
+        <field name="bbanKey"/>
+        <field name="ibanBic" colSpan="4"/>
+    </form>
+    
+    <action-method name="action-method_bank-details-validIban">
+    	<call class="com.axelor.apps.base.web.BankDetailsController" method="onChangeIban"/>
+    </action-method>
+
+
+</object-views>

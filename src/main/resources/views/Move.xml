@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    <grid name="move-grid" title="Ecritures comptable" model="com.axelor.apps.account.db.Move">
+        <field name="reference"/>
+        <field name="journal"/>
+        <field name="period"/>
+        <field name="date"/>
+        <field name="partner"/>
+        <field name="company"/>
+        <field name="invoice"/>
+        <field name="state"/>
+    </grid>
+    <form name="move-form" title="Ecriture comptable" model="com.axelor.apps.account.db.Move" cols="4" 
+    onLoad="action-move-attrs-status,action-move-attrs-hidden-date,action-move-attrs-hidden-get-info-from-first-move-line-ok"
+    onNew="action-move-attrs-status,default-move-record,action-move-attrs-hidden-get-info-from-first-move-line-ok,action-move-attrs-hidden-date">
+    	<notebook colSpan="4">
+    	<page title="Informations" colSpan="4">
+	        <group title="En-tête de l'écriture" colSpan="4">
+	            <field name="reference"/>
+	            <field name="date" onChange="action-move-method-get-period"/>
+	            <field name="company" widget="SuggestBox" onChange="action-move-method-get-period"/>
+	            <field name="period"/>
+	            <field name="partner" grid-view="partner-grid" form-view="partner-form"/>
+	            <field name="agency"/>
+	            <field name="invoice" grid-view="invoice-grid" form-view="invoice-form"/>
+	            <field name="journal" domain="self.inactiveOk != true"/>
+	            <field name="paymentMode"/>
+	            <field name="paymentVoucher"/>
+	            <field name="getInfoFromFirstMoveLineOk"/>
+	            <field name="moveLineList" colSpan="4">
+	            	<grid title="Lignes d'écriture">
+				        <field name="name"/>
+				        <field name="date"/>
+				        <field name="partner" grid-view="partner-grid" form-view="partner-form"/>
+				        <field name="account"/>
+				        <field name="move.company"/>
+				        <field name="debit"/>
+				        <field name="credit"/>
+				        <field name="amountRemaining"/>
+				    </grid>
+	            	<form title="lignes d'écritures" onNew="action-move-line-attrs-collapse-irrecoverable-group,action-move-line-record-get-move-informations,action-move-line-record-get-first-move-line-informations">
+					    <notebook colSpan="4">
+					    	<page title="Informations" colSpan="4">
+						        <field name="name"/>
+						        <field name="company"/>
+						        <break/>
+						        <field name="date"/>
+						        <field name="dueDate"/>
+						        <field name="partner" grid-view="partner-grid" form-view="partner-form"/>
+						        <break/>
+						        <field name="account" onSelect="action-move-line-attrs-domain-account"/>
+				    		    <break/>
+						        <field name="debit"/>
+						        <field name="credit"/>
+						        <field name="amountPaid"/>
+						        <field name="amountRemaining"/>
+						        <field name="interbankCodeLine"/>
+						        <field name="description"/>
+						        <group name="reconcileLists" title="Les lettrages" colSpan="4" cols="4">
+						            <field name="reconcileList1" colSpan="4"/>
+						            <field name="reconcileList2" colSpan="4"/>
+						        </group>						        
+						        <break/>
+						    </page>
+						    <page title="Analytiques">
+						    	<field name="analyticAccountSet" colSpan="4"/>
+						    </page>
+						    <page title="Autres" colSpan="4">
+						    	<field name="ignoreInAccountingOk"/>
+						        <field name="ignoreInReminderOk"/>
+						        <field name="fromSchedulePaymentOk"/>
+						        <field name="exportedDirectDebitOk"/>
+						    </page>
+						</notebook>	
+	            	</form>
+	            	
+	            </field>
+	        </group>
+	        <group title="Actions" colSpan="4" cols="6">
+	            <field name="state" readonly="true"/>
+	            <button name="validate" title="Valider" colSpan="2" onClick="save,action-move-method-validate,action-move-attrs-status,save"/>
+	        </group>
+        
+        </page>
+        <page title="Export comptable" colSpan="4">
+	    	<field name="exportToAgressoNumber"/>
+	        <field name="exportToAgressoDate"/>
+	        <field name="accountingOk"/>
+	        <field name="moveLineReport" form-view="move-line-report-export-form"/>
+	    </page>
+	    <page title="Autres" colSpan="4">
+	    	<field name="ignoreInAccountingOk"/>
+	        <field name="ignoreInReminderOk"/>
+	        <field name="fromSchedulePaymentOk"/>
+	        <field name="rejectOk"/>
+	    </page>
+	    </notebook>
+   </form>
+   
+   	<!-- ACTION RECORD -->
+    <action-record name="default-move-record" model="com.axelor.apps.account.db.Move">
+        <field name="state" expr="eval: 'draft'"/>
+        <field name="agency" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserAgency()"/>
+		<field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+		<field name="getInfoFromFirstMoveLineOk" expr="eval: true"/>
+    </action-record>
+   
+	<!-- ACTION ATTRS -->
+    <action-attrs name="action-move-attrs-status">
+	    <attribute name="hidden" expr="eval: state in ['validated']" for="validate"/>
+	</action-attrs>
+	
+	<action-attrs name="action-move-attrs-hidden-date">
+		<attribute name="hidden" for="date" expr="eval: state in ['validated']"/>
+	</action-attrs>
+	
+	<action-attrs name="action-move-attrs-hidden-get-info-from-first-move-line-ok">
+		<attribute name="hidden" for="getInfoFromFirstMoveLineOk" expr="eval: state in ['validated']"/>
+	</action-attrs>
+	
+	<!-- ACTION METHOD -->
+	<action-method name="action-move-method-validate">
+		<call class="com.axelor.apps.account.web.MoveController" method="validate"/>
+	</action-method>
+	
+	
+	<action-method name="action-move-method-get-period">
+		<call class="com.axelor.apps.account.web.MoveController" method="getPeriod"/>
+	</action-method>
+	
+   
+   
+   
+</object-views>

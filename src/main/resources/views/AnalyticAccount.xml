@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    <grid name="analytic-account-grid" title="Analytic Accounts" model="com.axelor.apps.account.db.AnalyticAccount">
+        <field name="code"/>
+        <field name="name"/>
+        <field name="analyticAxis"/>
+        <field name="parent"/>
+    </grid>
+    <form name="analytic-account-form" title="Analytic Account" model="com.axelor.apps.account.db.AnalyticAccount" cols="4">
+        <field name="code"/>
+        <field name="name"/>
+        <field name="analyticAxis"/>
+        <field name="parent"/>
+    </form>
+</object-views>

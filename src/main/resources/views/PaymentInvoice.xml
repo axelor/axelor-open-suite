@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    <grid name="payment-invoice-grid" title="Factures à payer" model="com.axelor.apps.account.db.PaymentInvoice">
+        <field name="dueDate"/>
+        <field name="moveLine"/>
+        <field name="invoice"/>
+        <field name="company"/>
+        <field name="invoiceAmount"/>
+        <field name="paidAmount"/>
+        <field name="amountRemaining"/>
+    </grid>
+    <form name="payment-invoice-form" title="Factures à payer" model="com.axelor.apps.account.db.PaymentInvoice" cols="4">
+        <field name="moveLine"/>
+        <field name="invoice" grid-view="invoice-grid" form-view="invoice-form"/>
+        <field name="dueDate"/>
+        <field name="company"/>
+        <field name="invoiceAmount"/>
+        <field name="paidAmount"/>
+        <field name="amountRemaining"/>
+        <field name="paymentScheduleLine"/>
+    </form>
+</object-views>

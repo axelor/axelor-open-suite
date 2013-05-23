@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="account-grid" title="Accounts" model="com.axelor.apps.account.db.Account">
+        <field name="code"/>
+        <field name="name"/>
+        <field name="type"/>
+        <field name="reconcileOk"/>
+        <field name="parent"/>
+        <field name="company"/>
+    </grid>
+    
+    <tree name="account-tree" title="Chart of account" model="com.axelor.apps.account.db.Account">
+        <field name="name"/>
+    </tree>
+    
+    <form name="account-form" title="Account" model="com.axelor.apps.account.db.Account" cols="4"
+    	onNew="action-account-record-new">
+        <field name="code"/>
+        <field name="name"/>
+        <field name="type"/>
+        <field name="company"/>
+        <field name="parent"/>
+        <field name="reconcileOk"/>
+    </form>
+    
+    <action-record name="action-account-record-new" model="com.axelor.apps.account.db.Account">
+    	<field name="company"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+    </action-record>
+    
+</object-views>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    <grid name="discount-threshold-line-grid" title="Les lignes de seuils" model="com.axelor.apps.account.db.DiscountThresholdLine">
+        <field name="fromDate"/>
+        <field name="toDate"/>
+        <field name="discountPrice"/>
+    </grid>
+    <form name="discount-threshold-line-form" title="Ligne de seuil" model="com.axelor.apps.account.db.DiscountThresholdLine" cols="6">
+    	<field name="fromDate"/>
+        <field name="toDate"/>
+        <field name="discountPrice"/>
+    </form>
+    
+</object-views>

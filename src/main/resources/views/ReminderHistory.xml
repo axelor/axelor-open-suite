@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+	
+	
+    <grid name="reminder-history-line-grid" title="Historique des relances" model="com.axelor.apps.account.db.ReminderHistory">
+    	<field name="reminder"/>
+    	<field name="reminder.accountingSituation.partner"/>
+    	<field name="reminderMethod"/>
+    	<field name="setToIrrecoverableOK"/>
+    	<field name="unknownAddressOK"/>
+    	<field name="balanceDue"/>
+    	<field name="balanceDueReminder"/>
+    	<field name="referenceDate"/>
+        <field name="userReminder"/>
+        <field name="reminderMail"/>
+    	<field name="reminderDate"/>
+        <field name="reminderMethodLine"/>
+    </grid>
+    
+	<form cols="4" name="reminder-history-form" title="Historique des relances" model="com.axelor.apps.account.db.ReminderHistory">
+		<field name="reminder"/>
+		<field name="reminder.accountingSituation.partner"/>
+        <field name="reminderMethod" widget="SuggestBox"/>
+        <field name="referenceDate"/>
+        <field name="balanceDue"/>
+        <field name="setToIrrecoverableOK"/>
+        <field name="balanceDueReminder"/>
+        <field name="unknownAddressOK"/>
+        <field name="userReminder"/>
+        <field name="reminderDate"/>
+        <field name="reminderMethodLine"/>
+        <field name="reminderMail"/>
+	</form>
+    
+    <grid name="reminder-history-contract-line-grid" title="Historique des relances" model="com.axelor.apps.account.db.ReminderHistory">
+       	<field name="reminderMethod"/>
+    	<field name="setToIrrecoverableOK"/>
+    	<field name="unknownAddressOK"/>
+    	<field name="balanceDue"/>
+    	<field name="balanceDueReminder"/>
+    	<field name="referenceDate"/>
+        <field name="userReminder"/>
+        <field name="reminderMail"/>
+    	<field name="reminderDate"/>
+        <field name="reminderMethodLine"/>
+    </grid>
+    <form name="reminder-history-contract-line-form" title="Historique des relances" model="com.axelor.apps.account.db.ReminderHistory" cols="4">
+	    <field name="reminderMethod" widget="SuggestBox"/>
+        <field name="referenceDate"/>
+        <field name="balanceDue"/>
+        <field name="setToIrrecoverableOK"/>
+        <field name="balanceDueReminder"/>
+        <field name="unknownAddressOK"/>
+        <field name="userReminder"/>
+        <field name="reminderDate"/>
+        <field name="reminderMethodLine"/>
+        <field name="reminderMail"/>
+    </form>
+    
+</object-views>

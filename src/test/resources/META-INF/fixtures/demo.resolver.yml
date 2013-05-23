@@ -1,0 +1,5 @@
+Circle: com.axelor.apps.contacts.domain.Circle
+Title: com.axelor.apps.contacts.domain.Title
+Contact: com.axelor.apps.contacts.domain.Contact
+Address: com.axelor.apps.contacts.domain.Address
+Country: com.axelor.apps.contacts.domain.Country

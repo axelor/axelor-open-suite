@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    <grid name="tax-grid" title="Taxes" model="com.axelor.apps.account.db.Tax">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="account"/>
+    </grid>
+    <form name="tax-form" title="Taxe" model="com.axelor.apps.account.db.Tax" cols="4">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="orderId"/>
+        <notebook colSpan="4">
+            <page title="Général" cols="4">
+                <field name="account" domain="self.type.name='Taxe'"/>
+				<separator title="Condition d'application" colSpan="4" />
+                <field name="condition" colSpan="4" noLabel="true" widget="CodeEditor[syntax=groovy]"/>
+                <field name="taxLineList" grid-view="tax-line-grid" form-view="tax-line-form" colSpan="4" />
+            </page>
+            <page title="Comptabilité">
+            	<field name="managementFeeRate"/>
+                <field name="accountManagementSet" grid-view="account-management-tax-grid" form-view="account-management-tax-form"  
+        		domain="self.typeSelect = 2" colSpan="4" />
+            </page>
+            <page title="Complément" cols="4">
+                <field name="constituentSet" colSpan="4"/>
+		        <field name="formulaControlList" colSpan="4">
+		            <grid title="Contrôles de formule">
+				        <field name="control"/>
+				        <field name="msg"/>
+				    </grid>
+				    <form title="Contrôle de formule" cols="4">
+				        <field name="control" colSpan="4"/>
+				        <field name="msg" colSpan="4"/>
+				    </form>
+		        </field>
+            </page>
+        </notebook>
+    </form>
+</object-views>

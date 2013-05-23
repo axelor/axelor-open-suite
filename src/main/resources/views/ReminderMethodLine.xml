@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    <grid name="reminder-method-line-grid" title="Lignes de la methode de relance" model="com.axelor.apps.account.db.ReminderMethodLine">
+        <field name="reminderLevel"/>
+        <field name="standardDeadline"/>
+        <field name="minThreshold"/>
+        <field name="reminderMailModel"/>
+        <field name="manualValidationOk"/>
+    </grid>
+    <form name="reminder-method-line-form" title="Ligne de la methode de relance" model="com.axelor.apps.account.db.ReminderMethodLine" colWidths="*,400" cols="4">
+        <group title="Niveau de relance" cols="2" colSpan="2">
+        	 <field onChange="action-reminder-level-selected" widget="NestedEditor" canSelect="true" summary-view="true" form-view="matrix-line-reminder-form" edit-window="self" name="reminderLevel" >
+	            <form title="ReminderLevel" name="matrix-line-reminder-form">
+	                <field readonly="true" name="label"/>
+	            </form>
+	        </field>
+        </group>
+	    <group title="Conditions" cols="2" colSpan="2">
+	        <field name="standardDeadline"/>
+	        <field name="minThreshold"/>
+	        <field name="manualValidationOk"/>
+	    </group>
+	    <group title="Actions" cols="4" colSpan="4">
+	     	<field name="reminderMailModel"/>
+	    </group>
+    </form>
+    
+    <action-record name="action-reminder-level-selected" model="com.axelor.apps.account.db.ReminderMatrixLine">
+        <field name="reminderLevelLabel" expr="eval: reminderLevel.label"/>
+    </action-record>
+  
+</object-views>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    <grid name="reported-balance-grid" title="Les A nouveaux" model="com.axelor.apps.account.db.ReportedBalance">
+ 		<field name="company"/>
+  		<field name="partner"/>		
+    </grid>
+    <form name="reported-balance-form" title="A nouveau" model="com.axelor.apps.account.db.ReportedBalance" cols="4">
+ 		<field name="company"/>
+ 		<field name="partner" grid-view="partner-grid" form-view="partner-form"/>
+ 		<field name="reportedBalanceLineList" colSpan="4">
+ 			<grid name="reported-balance-line-grid" title="Les Lignes de reports à nouveaux" model="com.axelor.apps.account.db.ReportedBalanceLine">
+ 				<field name="year"/>
+ 				<field name="amount"/>
+    		</grid>
+ 			<form name="reported-balance-line-form" title="Ligne de report à nouveau" model="com.axelor.apps.account.db.ReportedBalanceLine" cols="4">
+ 				<field name="year"/>
+ 				<field name="amount"/>
+    		</form>
+ 		</field>
+    </form>
+        
+</object-views>

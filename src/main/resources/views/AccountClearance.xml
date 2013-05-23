@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="account-clearance-grid" title="Account clearance operations" model="com.axelor.apps.account.db.AccountClearance">
+        <field name="name"/>
+        <field name="dateTime"/>
+        <field name="userInfo"/>
+        <field name="amountThreshold"/>
+        <field name="dateThreshold"/>
+        <field name="company"/>
+        <field name="status"/>
+    </grid>
+    
+    <form name="account-clearance-form" title="Account clearance" model="com.axelor.apps.account.db.AccountClearance" cols="4"
+    	onNew="action-account-clearance-record-default"
+    	onLoad="action-account-clearance-attrs-hidden-buttons">
+    	<field name="name"/>
+        <field name="dateTime"/>
+        <field name="userInfo"/>
+        <field name="company"/>
+        <field name="amountThreshold"/>
+        <field name="dateThreshold"/>
+        <button name="getExcessPayment" title="Get overdue payments" colSpan="2" onClick="save,com.axelor.apps.account.web.AccountClearanceController:getExcessPayment,save"/>
+        <field name="moveLineSet" colSpan="4"/>
+        <button name="validateAccountClearance" title="Validate account clearances" colSpan="2" onClick="save,com.axelor.apps.account.web.AccountClearanceController:validateAccountClearance,action-account-clearance-attrs-hidden-buttons,save"/>
+        <button name="showAccountClearanceMoveLines" title="Move lines generated" colSpan="2" onClick="com.axelor.apps.account.web.AccountClearanceControllerSimple:showAccountClearanceMoveLines"/>
+        <field name="status"/>
+    </form>
+    
+	<action-attrs name="action-account-clearance-attrs-hidden-buttons">
+	    <attribute name="hidden" expr="eval: status.code == 'val'" for="getExcessPayment"/>
+   	    <attribute name="hidden" expr="eval: status.code == 'val'" for="validateAccountClearance"/>
+	</action-attrs>
+    
+    <action-record name="action-account-clearance-record-default" model="com.axelor.apps.account.db.AccountClearance">
+        <field name="status" expr="action:action-status-record-dra"/>
+        <field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+   		<field name="company"   expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+    </action-record>
+    
+</object-views>

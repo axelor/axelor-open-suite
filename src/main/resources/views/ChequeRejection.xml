@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+
+    <grid name="cheque-rejection-grid" title="ChequeRejection" model="com.axelor.apps.account.db.ChequeRejection">
+        <field name="name"/>
+        <field name="company"/>
+        <field name="dateTime"/>
+        <field name="payerPartner"/>
+        <field name="moveLine"/>
+        <field name="rejectionDate"/>
+        <field name="interbankCodeLine"/>
+        <field name="status"/>
+    </grid>
+    
+    <form name="cheque-rejection-form" title="ChequeRejection" model="com.axelor.apps.account.db.ChequeRejection" cols="4"
+     onNew="default-cheque-rejection-record, action-cheque-rejection-attrs-hidden-after-validated"
+     onLoad="action-cheque-rejection-attrs-hidden-after-validated">
+        <field name="name"/>
+        <field name="dateTime"/>
+        <field name="company"/>
+        <field name="paymentMode"/>
+        <break/>
+        <break/><spacer/><break/>
+        <field name="payerPartner"/>
+        <break/><spacer/><break/>
+        <field name="paymentVoucher" domain="self.company=:company" onSelect="action-cheque-rejection-attrs-domain-payment-voucher" onChange="action-cheque-rejection-record-amount-rejected,action-cheque-rejection-record-partner">
+        	<grid title="Saisie paiement" orderBy="-paymentDateTime">
+	     	    <field name="ref"/>
+		        <field name="userInfo"/>
+		        <field name="paymentMode"/>
+		        <field name="paymentDateTime"/>
+		        <field name="payerPartner"/>
+		        <field name="paidAmount"/>
+		        <field name="generatedMove"/>
+		        <field name="state"/>
+			</grid>
+        </field>
+        <field name="amountRejected"/>
+        <field name="rejectionDate"/>
+        <field name="interbankCodeLine" domain="self.chequeOk = 't'"/>
+        <field name="description"/>
+        <break/>
+        <button name="validateChequeRejection" title="Valider le rejet" colSpan="2" onClick="save,com.axelor.apps.account.web.ChequeRejectionController:validateChequeRejection"/>
+        <break/><spacer/><break/>
+        <field name="status"/>
+        <field name="move"/>
+    </form>
+    
+    <action-attrs name="action-cheque-rejection-attrs-domain-payment-voucher">
+      	<attribute name="domain" for="paymentVoucher" expr="eval: &quot;self.company.id = ${company?.id} and self.paidAmount > 0 and self.paymentMode.id = ${paymentMode?.id} and self.base.id = ${partner?.id}&quot;" if="eval: partner != null"/>
+    </action-attrs>
+    
+    
+    <action-attrs name="action-cheque-rejection-attrs-hidden-after-validated"> 
+    	<attribute name="hidden" for="validateChequeRejection" expr="eval: status?.code == 'val'"/>
+    	<attribute name="hidden" for="move" expr="eval: status?.code != 'val'"/>
+    </action-attrs>
+    
+     <action-record name="default-cheque-rejection-record" model="com.axelor.apps.account.db.ChequeRejection">
+        <field name="status" expr="action:action-status-record-dra"/>
+		<field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+   		<field name="dateTime" expr="action:action-payment-voucher-getDateTime"/>
+   		<field name="paymentMode" expr="action:action-payment-mode-record-cheque"/>
+    </action-record>
+    
+    <action-record name="action-cheque-rejection-record-amount-rejected" model="com.axelor.apps.account.db.ChequeRejection">
+    	<field name="amountRejected" expr="eval: paymentVoucher?.paidAmount" if="eval: paymentVoucher != null"/>
+    </action-record>
+    
+    <action-record name="action-cheque-rejection-record-partner" model="com.axelor.apps.account.db.ChequeRejection">
+    	<field name="partner" expr="eval: paymentVoucher?.partner" if="eval: paymentVoucher != null"/>
+    </action-record>
+    
+</object-views>

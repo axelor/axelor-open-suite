@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+
+	<selection name="discount.engine.discount.type">
+		<option value="0">Pourcentage</option>
+		<option value="1">Prix</option>
+	</selection>
+
+	<selection name="discount.engine.date.type">
+		<option value="0">Aucune</option>
+		<option value="1">Période abo/conso/service</option>
+		<option value="2">Souscription du contrat</option>
+		<option value="3">Fin du contrat</option>
+		<option value="4">Mise en service du contrat</option>
+		<option value="5">Résiliation du contrat</option>
+		<option value="6">Souscription du service</option>
+		<option value="7">Fin du service</option>
+	</selection>
+
+	<grid name="discount-engine-grid" title="Les moteurs de remise"
+		model="com.axelor.apps.account.db.DiscountEngine">
+		<field name="code" />
+		<field name="name" />
+		<field name="createdOn" title="Créé le" />
+		<field name="activeOk" />
+	</grid>
+
+	<form name="discount-engine-form" title="Moteur de remise"
+		model="com.axelor.apps.account.db.DiscountEngine" cols="4"
+		onSave="save,discount-engine-method-reset">
+		<field name="createdOn" title="Créé le" />
+		<field name="activeOk" />
+		<field name="name" />
+		<field name="code" />
+		<separator title="Condition d'application" colSpan="4" />
+		<field name="condition" colSpan="4" noLabel="true"  widget="CodeEditor[syntax=groovy]"/>
+		<field name="discountEngineLineList" grid-view="discount-engine-line-grid"
+			form-view="discount-engine-line-form" colSpan="4" domain="self.amendment IS NULL AND self.discountEngineModel IS NULL"/>
+	</form>
+
+	<grid name="discount-engine-line-grid" title="Les remises"
+		model="com.axelor.apps.account.db.DiscountEngineLine" editable="true" expandable="true">
+		<field name="code" required="true"/>
+		<field name="discountEngineId" required="true"/>
+		<field name="discountTypeSelect" />
+		<field name="discountValue" />
+		<field name="newLineOk" />
+		<field name="priceDiscountOk" />
+	</grid>
+
+	<form name="discount-engine-line-form" title="Remise"
+		model="com.axelor.apps.account.db.DiscountEngineLine" cols="4"
+		onLoad="discount-engine-attrs-all-category,discount-engine-attrs-product-category,discount-engine-attrs-same-category,discount-engine-attrs-product-reference-date,discount-engine-attrs-single-application,discount-engine-attrs-new-line"
+		onNew="discount-engine-record-all-category,discount-engine-attrs-all-category,discount-engine-attrs-same-category,discount-engine-attrs-product-category,discount-engine-attrs-product-reference-date,discount-engine-attrs-single-application,discount-engine-attrs-new-line">
+		<field name="code" required="true"/>
+		<field name="activeOk" />
+		<field name="discountEngineId" />
+		<field name="singleApplicationOk"
+			onChange="discount-engine-attrs-single-application,discount-engine-method-final-condition" />
+		<field name="discountTypeSelect" onChange="discount-engine-record-discount-type,discount-engine-attrs-discount-type"/>
+		<field name="newLineOk" onChange="discount-engine-attrs-new-line"/>
+		<field name="discountValue" />
+		<field name="priceDiscountOk" />
+		<field name="discountProduct" />
+		<field name="sameProductOk" onChange="discount-engine-attrs-same-category" />
+		<notebook colSpan="4">
+			<page title="Configuration">
+				<field name="referenceDateSelect"
+					onChange="discount-engine-attrs-product-reference-date,discount-engine-method-final-condition" />
+				<field name="allCategoriesOk"
+					onChange="discount-engine-attrs-all-category,discount-engine-method-final-condition" />
+				<group name="dateGroup" colSpan="4">
+					<field name="fromDate" onChange="discount-engine-method-final-condition" />
+					<field name="toDate" onChange="discount-engine-method-final-condition" />
+				</group>
+				<field name="productCategorySet"
+					onChange="discount-engine-attrs-product-category,discount-engine-method-final-condition"
+					colSpan="4" />
+				<field name="productSet" onChange="discount-engine-method-final-condition"
+					colSpan="2" />
+				<field name="postParameterSet" domain="self.parameterType.code = 'poste'" onChange="discount-engine-method-final-condition"
+					colSpan="2" />
+			</page>
+			<page title="Condition d'application">
+				<field name="condition" noLabel="true"
+					onChange="discount-engine-method-final-condition" colSpan="4" widget="CodeEditor[syntax=groovy]" />
+			</page>
+			<page name="contractLinePage" title="Les contrats">
+				<field name="contractLineSet" colSpan="4" />
+			</page>
+			<page title="Condition d'application finale">
+				<field name="finalCondition" noLabel="true" colSpan="4" widget="CodeEditor[syntax=groovy]" />
+			</page>
+		</notebook>
+	</form>
+
+	<!-- ACTION RECORD -->
+	<action-record name="discount-engine-record-all-category"
+		model="com.axelor.apps.account.db.DiscountEngineLine">
+		<field name="allCategoriesOk" expr="true" />
+	</action-record>
+	
+	<action-record name="discount-engine-record-discount-type"
+		model="com.axelor.apps.account.db.DiscountEngineLine">
+		<field name="priceDiscountOk" expr="eval: discountTypeSelect == 1" />
+	</action-record>
+
+	<!-- ACTION ATTRS -->
+	<action-attrs name="discount-engine-attrs-product-category">
+		<attribute name="readonly" for="postParameterSet"
+			expr="eval: productCategorySet?.find{it.type == 'consumption'} == null" />
+	</action-attrs>
+
+	<action-attrs name="discount-engine-attrs-all-category">
+		<attribute name="readonly" for="productSet" expr="eval: allCategoriesOk" />
+	</action-attrs>
+
+	<action-attrs name="discount-engine-attrs-same-category">
+		<attribute name="readonly" for="discountProduct" expr="eval: sameProductOk" />
+	</action-attrs>
+
+	<action-attrs name="discount-engine-attrs-product-reference-date">
+		<attribute name="hidden" for="dateGroup"
+			expr="eval: !referenceDateSelect || referenceDateSelect == 0" />
+		<attribute name="required" for="fromDate"
+			expr="eval: referenceDateSelect || referenceDateSelect != 0" />
+	</action-attrs>
+
+	<action-attrs name="discount-engine-attrs-single-application">
+		<attribute name="hidden" for="contractLinePage" expr="eval: !singleApplicationOk" />
+	</action-attrs>
+	
+	<action-attrs name="discount-engine-attrs-discount-type">
+		<attribute name="readonly" for="priceDiscountOk" expr="eval: discountTypeSelect == 1" />
+	</action-attrs>
+	
+	<action-attrs name="discount-engine-attrs-new-line">
+		<attribute name="hidden" for="discountProduct" expr="eval: !newLineOk" />
+		<attribute name="hidden" for="sameProductOk" expr="eval: !newLineOk" />
+	</action-attrs>
+
+	<!-- ACTION METHOD -->
+	<action-method name="discount-engine-method-final-condition">
+		<call class="com.axelor.apps.account.web.DiscountEngineControllerSimple"
+			method="finalCondition" />
+	</action-method>
+
+	<action-method name="discount-engine-method-reset">
+		<call class="com.axelor.apps.account.web.DiscountEngineControllerSimple"
+			method="resetDiscountEngine" />
+	</action-method>
+
+</object-views>

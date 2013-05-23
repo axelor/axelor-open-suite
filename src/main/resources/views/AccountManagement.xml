@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="account-management-grid" title="Account management list" model="com.axelor.apps.account.db.AccountManagement">
+    	<field name="typeSelect" />
+        <field name="company"/>
+        <field name="account"/>
+    </grid>
+    
+    <form name="account-management-form" title="Account management" model="com.axelor.apps.account.db.AccountManagement" cols="4"
+    onNew="action-account-management-record-default"
+    onLoad="action-account-management-attrs-type">
+    	<field name="typeSelect" onChange="action-account-management-attrs-type"/>
+        <field name="company"/>
+        <field name="purchaseAccount"/>
+        <field name="saleAccount"/>
+        <field name="cashAccount"/>
+        <notebook colSpan="4">
+        	<page name="analyticAccountManagementPage" title="Analytic account" cols="2">
+        		<field name="analyticAccountManagementList" colSpan="2"/>
+        	</page>
+        	<page name="productPage" title="Product" cols="4">
+        		<field name="product"/>
+       		</page>
+        	<page name="taxePage" title="Tax" cols="2">
+		     	<field name="tax" colSpan="2"/>
+        	</page>
+        	<page name="vatPage" title="VAT" cols="2">
+		     	<field name="purchaseVat"/>
+		     	<field name="saleVat"/>
+        	</page>
+        	<page name="paymentModePage" title="Payment mode" cols="2">
+     			<field name="paymentMode" colSpan="2"/>
+        	</page>
+        </notebook>
+    </form>
+    
+    <grid name="account-management-product-grid" title="Account management" model="com.axelor.apps.account.db.AccountManagement">
+        <field name="saleVat"/>
+        <field name="company"/>
+        <field name="saleAccount"/>
+        <field name="purchaseAccount"/>
+        <field name="purchaseVat"/>
+    </grid>
+    
+    <form name="account-management-product-form" title="Gestion de compte comptable" model="com.axelor.apps.account.db.AccountManagement" cols="4"
+    onNew="action-account-management-record-product">
+    	<field name="typeSelect" onChange="action-account-management-attrs-type" hidden="true"/>
+        <field name="company"/>
+        <field name="purchaseAccount"/>
+        <field name="saleAccount"/>
+        <notebook colSpan="4">
+        	<page name="analyticAccountManagementPage" title="Comptes analytiques" cols="2">
+        		<field name="analyticAccountManagementList" colSpan="2"/>
+        	</page>
+        	<page name="taxePage" title="Taxes" cols="2">
+		     	<field name="tax" colSpan="2"/>
+        	</page>
+        	<page name="vatPage" title="TVA" cols="2">
+		     	<field name="purchaseVat"/>
+		     	<field name="saleVat"/>
+        	</page>
+        </notebook>
+    </form>
+    
+    <grid name="account-management-tax-grid" title="Les gestions de compte comptable" model="com.axelor.apps.account.db.AccountManagement">
+        <field name="company"/>
+        <field name="account"/>
+    </grid>
+    
+    <form name="account-management-tax-form" title="Gestion de compte comptable" model="com.axelor.apps.account.db.AccountManagement" cols="4"
+    onNew="action-account-management-record-tax">
+    	<field name="typeSelect" hidden="true"/>
+        <field name="company"/>
+        <field name="account"/>
+    </form>
+    
+    <grid name="account-management-payment-mode-grid" title="Les gestions de compte comptable" model="com.axelor.apps.account.db.AccountManagement">
+        <field name="company"/>
+        <field name="cashAccount"/>
+    </grid>
+    
+    <form name="account-management-payment-mode-form" title="Gestion de compte comptable" model="com.axelor.apps.account.db.AccountManagement" cols="4"
+    onNew="action-account-management-record-payment">
+    	<field name="typeSelect" onChange="action-account-management-attrs-type" hidden="true"/>
+        <field name="company"/>
+        <field name="cashAccount"/>
+    </form>
+    
+    <!-- ACTION RECORD -->
+    <action-record name="action-account-management-record-default" model="com.axelor.apps.account.db.AccountManagement">
+        <field name="company"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+    </action-record>
+    
+	<action-record name="action-account-management-record-product" model="com.axelor.apps.account.db.AccountManagement">
+        <field name="typeSelect" expr="eval: 1"/>
+        <field name="company"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+    </action-record>
+    
+	<action-record name="action-account-management-record-tax" model="com.axelor.apps.account.db.AccountManagement">
+        <field name="typeSelect" expr="eval: 2"/>
+        <field name="company"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+    </action-record>
+    
+	<action-record name="action-account-management-record-payment" model="com.axelor.apps.account.db.AccountManagement">
+        <field name="typeSelect" expr="eval: 3"/>
+        <field name="company"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+    </action-record>
+    
+</object-views>

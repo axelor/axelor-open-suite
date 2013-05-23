@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+   
+    <grid name="reminder-config-line-grid" title="Lignes de configuration de la méthode de relance" model="com.axelor.apps.account.db.ReminderConfigLine">
+        <field name="partnerCategory"/>
+        <field name="reminderMethod"/>
+    </grid>
+    
+    <form name="reminder-config-line-form" title="Ligne de configuration de la méthode de relance" model="com.axelor.apps.account.db.ReminderConfigLine" cols="6">
+        <field name="partnerCategory"/>
+        <field name="reminderMethod"/>
+    </form>
+    
+</object-views>

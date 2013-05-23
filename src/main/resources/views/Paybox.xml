@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="paybox-grid" title="Paybox" model="com.axelor.apps.account.db.Paybox">
+		<field name="name"/>
+    </grid>
+    
+    <form name="paybox-form" title="Paybox" model="com.axelor.apps.account.db.Paybox" cols="4" onLoad="action-payment-voucher-checkIfPaidByPaybox">
+    	<field name="name" hidden="true"/>
+    	<label title="Vous pouvez fermer cet onglet et revenir sur la saisie paiement. Pensez à actualiser la saisie paiement."/>
+    </form> 
+  
+	        	
+	<action-method name="action-payment-voucher-checkIfPaidByPaybox">
+    	<call class="com.axelor.apps.account.web.PayboxController" method="checkIfPaidByPaybox"/>
+   	</action-method>
+	
+	
+	
+	
+</object-views>

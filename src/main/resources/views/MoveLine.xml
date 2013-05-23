@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="move-line-grid" orderBy="-date" title="Lignes d'écriture" model="com.axelor.apps.account.db.MoveLine">
+        <field name="name"/>
+        <field name="date"/>
+        <field name="partner"/>
+        <field name="account"/>
+		<field name="move.company"/>
+        <field name="debit"/>
+        <field name="credit"/>
+        <field name="amountRemaining"/>
+    </grid>
+    
+    <form name="move-line-form" title="Ligne d'écriture" model="com.axelor.apps.account.db.MoveLine" cols="4"
+    onLoad="action-move-line-attrs-collapse-irrecoverable-group" 
+    onNew="action-move-line-attrs-collapse-irrecoverable-group,action-move-line-attrs-contractLine-readonly,action-move-line-record-get-move-informations,action-move-line-record-get-first-move-line-informations">
+    	<notebook colSpan="4">
+    	<page title="Informations" colSpan="4">
+	        <field name="name"/>
+	        <field name="move"/>
+   	        <field name="move.company"/>
+   	        <break/>
+	        <field name="date"/>
+	        <field name="dueDate"/>
+	        <field name="partner" grid-view="partner-grid" form-view="partner-form"/>
+	        <field name="customer"/>
+	        <break/>
+	        <field name="account" onSelect="action-move-line-attrs-domain-account"/>
+   	        <break/>
+	        <field name="debit"/>
+	        <field name="credit"/>
+	        <field name="amountPaid"/>
+	        <field name="amountRemaining"/>
+	        <field name="interbankCodeLine"/>
+	        <field name="passageReason"/>
+	        <field name="usherPassageOk" onChange="save,com.axelor.apps.account.web.MoveLineController:usherProcess"/>
+	        <field name="description"/>
+	        <field name="mailSelect"/>
+	        <field name="reimbursementStateSelect"/>
+	        <group name="irrecoverable" title="Irrécouvrable" colSpan="4" canCollapse="true" >
+	        	<field name="irrecoverableStateSelect"/>
+        		<field name="managementObject"/>
+        		<button name="passInIrrecoverable" title="Passage en irrécouvrable" colSpan="2" onClick="com.axelor.apps.account.web.MoveLineController:passInIrrecoverable"/>
+        		<button name="notPassInIrrecoverable" title="Ne pas passer en irrécouvrable" colSpan="2" onClick="com.axelor.apps.account.web.MoveLineController:notPassInIrrecoverable"/>
+	        </group>
+	        <group name="reconcileLists" title="Les lettrages" colSpan="4" cols="4">
+	            <field name="reconcileList1" colSpan="4"/>
+	            <field name="reconcileList2" colSpan="4"/>
+	        </group>
+	    </page>
+	    <page title="Analytiques">
+	    	<field name="analyticAccountSet" colSpan="4"/>
+	    </page>
+	    <page title="Autres" colSpan="4">
+	        <field name="vatLine"/>
+	        <break/>
+	    	<field name="ignoreInAccountingOk"/>
+	        <field name="ignoreInReminderOk"/>
+	        <field name="fromSchedulePaymentOk"/>
+	        <field name="exportedDirectDebitOk"/>
+	    </page>
+        </notebook>
+    </form>
+    
+    <action-attrs name="action-move-line-attrs-collapse-irrecoverable-group">
+		<attribute name="collapse" for="irrecoverable" expr="eval: irrecoverableStateSelect == null || irrecoverableStateSelect == 0"/>
+	</action-attrs>
+	
+	<action-record name="action-move-line-record-get-move-informations" model="com.axelor.apps.account.db.MoveLine">
+		<field name="partner" expr="eval: _parent?.partner"/>
+		<field name="date" expr="eval: _parent?.date"/>
+		<field name="dueDate" expr="eval: _parent?.date"/>
+	</action-record>
+	
+	<action-record name="action-move-line-record-get-first-move-line-informations" model="com.axelor.apps.account.db.MoveLine">
+		<field name="interbankCodeLine" expr="eval: _parent?.moveLineList.get(0).interbankCodeLine" if="eval: _parent?.getInfoFromFirstMoveLineOk == true &amp;&amp; _parent?.moveLineList != null &amp;&amp; _parent?.moveLineList.size() != 0"/>
+		<field name="description" expr="eval: _parent?.moveLineList.get(0).description" if="eval: _parent?.getInfoFromFirstMoveLineOk == true &amp;&amp; _parent?.moveLineList != null &amp;&amp; _parent?.moveLineList.size() != 0"/>
+		<field name="ignoreInAccountingOk" expr="eval: _parent?.moveLineList.get(0).ignoreInAccountingOk" if="eval: _parent?.getInfoFromFirstMoveLineOk == true &amp;&amp; _parent?.moveLineList != null &amp;&amp; _parent?.moveLineList.size() != 0"/>
+		<field name="ignoreInReminderOk" expr="eval: _parent?.moveLineList.get(0).ignoreInReminderOk" if="eval: _parent?.getInfoFromFirstMoveLineOk == true &amp;&amp; _parent?.moveLineList != null &amp;&amp; _parent?.moveLineList.size() != 0"/>
+		<field name="fromSchedulePaymentOk" expr="eval: _parent?.moveLineList.get(0).fromSchedulePaymentOk" if="eval: _parent?.getInfoFromFirstMoveLineOk == true &amp;&amp; _parent?.moveLineList != null &amp;&amp; _parent?.moveLineList.size() != 0"/>
+		<field name="exportedDirectDebitOk" expr="eval: _parent?.moveLineList.get(0).exportedDirectDebitOk" if="eval: _parent?.getInfoFromFirstMoveLineOk == true &amp;&amp; _parent?.moveLineList != null &amp;&amp; _parent?.moveLineList.size() != 0"/>
+		<field name="partner" expr="eval: _parent?.moveLineList.get(0).partner" if="eval: _parent?.getInfoFromFirstMoveLineOk == true &amp;&amp; _parent?.moveLineList != null &amp;&amp; _parent?.moveLineList.size() != 0"/>
+	</action-record>
+	
+	<action-attrs name="action-move-line-attrs-domain-account">
+    	<attribute name="domain" for="account" expr="eval: &quot; self.company.id = ${_parent?.company?.id}&quot;" if="eval: _parent?.company != null"/>
+	</action-attrs>
+	
+</object-views>

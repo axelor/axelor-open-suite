@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="accounting-situation-grid" title="Les situations comptables" model="com.axelor.apps.account.db.AccountingSituation">
+    	<field name="company" />
+    	<field name="customerAccount"/>
+       	<field name="supplierAccount"/>
+        <field name="balanceCustAccount"/>
+        <field name="balanceDueCustAccount"/>
+        <field name="balanceDueReminderCustAccount"/>
+    </grid>
+    
+    <form name="accounting-situation-form" title="Accounting situation" model="com.axelor.apps.account.db.AccountingSituation" onLoad="action-account-accounting-situation-method-update-customer-account" cols="4">
+    	<field name="company"/>
+    	<field name="customerAccount"/>
+       	<field name="supplierAccount"/>
+    	<separator title="Customer balance" colSpan="4"/>
+        <field name="moveLineSet" colSpan="4"/>
+        <field name="balanceCustAccount"/>
+        <field name="balanceDueCustAccount"/>
+        <field name="balanceDueReminderCustAccount"/>
+        <separator title="Reminder process" colSpan="4"/>
+        <field name="reminder"/>
+    </form>
+    
+  	<action-method name="action-account-accounting-situation-method-update-customer-account">
+		<call class="com.axelor.apps.account.web.AccountingSituationController" method="updateCustomerAccount"/>
+	</action-method>
+    
+ </object-views>

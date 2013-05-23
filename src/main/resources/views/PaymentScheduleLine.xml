@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+
+	<grid name="payment-schedule-line-grid" title="Ligne d échéancier"
+		model="com.axelor.apps.account.db.PaymentScheduleLine" orderBy="scheduleDate">
+		<field name="paymentSchedule" />
+		<field name="move" />
+		<field name="moveLineGenerated" />
+		<field name="scheduleLineSeq" />
+		<field name="inTaxAmount" />
+		<field name="inTaxAmountPaid" />
+		<field name="amountRemaining" />
+		<field name="scheduleDate" />
+		<field name="socialServicePartner" />
+		<field name="requestedAmount" />
+		<field name="agreementOk" />
+		<field name="allocatedAmount" />
+		<field name="debitBlockingOk" />
+		<field name="rejectDate" />
+		<field name="interbankCodeLine" />
+		<field name="status" />
+		<field name="debitNumber" />
+		<field name="fromReject" />
+	</grid>
+
+	<form name="payment-schedule-line-form" title="Ligne d échéancier"
+		model="com.axelor.apps.account.db.PaymentScheduleLine" cols="4">
+		<field name="paymentSchedule" />
+		<field name="move" />
+		<field name="moveLineGenerated" />
+		<field name="scheduleLineSeq" />
+		<field name="inTaxAmount" />
+		<field name="inTaxAmountPaid" />
+		<field name="amountRemaining" />
+		<field name="scheduleDate" />
+		<field name="socialServicePartner" grid-view="partner-grid" form-view="partner-form"/>
+		<field name="requestedAmount" />
+		<field name="agreementOk" />
+		<field name="allocatedAmount" />
+		<field name="debitBlockingOk" />
+		<field name="rejectDate" />
+		<field name="interbankCodeLine" />
+		<field name="status" />
+		<field name="debitNumber" />
+		<field name="directDebitManagement" form-view="direct-debit-management-form-payment-schedule-line"/>
+		<field name="rejectMoveLine" />
+		<field name="advanceOrPaymentMove" />
+		<field name="advanceMoveLine" />
+		<field name="reverseMove" />
+		<field name="fromReject" />
+	</form>
+
+	<grid name="payment-schedule-line-payment-schedule-grid" title="Lignes d échéancier"
+		model="com.axelor.apps.account.db.PaymentScheduleLine" orderBy="scheduleDate">
+		<field name="scheduleLineSeq" />
+		<field name="inTaxAmount" />
+		<field name="amountRemaining" />
+		<field name="move" />
+		<field name="scheduleDate" />
+		<field name="socialServicePartner" />
+		<field name="requestedAmount" />
+		<field name="agreementOk" />
+		<field name="allocatedAmount" />
+		<field name="debitBlockingOk" />
+		<field name="rejectDate" />
+		<field name="interbankCodeLine" />
+		<field name="fromReject" />
+		<field name="status" />
+	</grid>
+
+	<form name="payment-schedule-line-payment-schedule-form" title="Ligne d échéancier"
+		model="com.axelor.apps.account.db.PaymentScheduleLine" cols="4">
+		<field name="invoice" grid-view="invoice-grid" form-view="invoice-form"/>
+		<field name="scheduleLineSeq" />
+		<field name="inTaxAmount" />
+		<field name="amountRemaining" />
+		<field name="move" />
+		<field name="moveLineGenerated" />
+		<field name="scheduleDate" />
+		<field name="socialServicePartner" grid-view="partner-grid" form-view="partner-form"/>
+		<field name="requestedAmount" />
+		<field name="agreementOk" />
+		<field name="allocatedAmount" />
+		<field name="debitBlockingOk" />
+		<field name="rejectDate" />
+		<field name="interbankCodeLine" />
+		<field name="debitNumber" />
+		<field name="directDebitManagement" form-view="direct-debit-management-form-payment-schedule-line"/>
+		<field name="rejectMoveLine" />
+		<field name="advanceOrPaymentMove" />
+		<field name="advanceMoveLine" />
+		<field name="reverseMove" />
+		<field name="fromReject" />
+		<field name="status" readonly="true" />
+	</form>
+
+</object-views>

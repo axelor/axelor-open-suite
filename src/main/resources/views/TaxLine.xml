@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    <grid name="tax-line-grid" title="Lignes de taxe" model="com.axelor.apps.account.db.TaxLine">
+        <field name="code"/>
+        <field name="fromDate"/>
+        <field name="toDate"/>
+        <field name="condition"/>
+        <field name="calculationRule"/>
+        <field name="prorata"/>
+        <field name="pricingList"/>
+    </grid>
+    <form name="tax-line-form" title="Ligne de taxe" model="com.axelor.apps.account.db.TaxLine" cols="4">
+        <field name="code"/>
+       	<field name="prorata"/>
+        <field name="fromDate"/>
+        <field name="toDate"/>
+		<separator title="Condition d'application" colSpan="4" />
+        <field name="condition" noLabel="true" colSpan="4" widget="CodeEditor[syntax=groovy]" />
+        <field name="calculationRule"/>
+        <field name="pricingList"/>
+        <field name="defaultVat"/>
+        <field name="vatManagement"/>
+        <field name="formulaControlList" colSpan="4">
+            <grid title="Contrôles de formule">
+		        <field name="control"/>
+		        <field name="msg"/>
+		    </grid>
+		    <form title="Contrôle de formule" cols="4">
+		        <field name="control" colSpan="4"/>
+		        <field name="msg" colSpan="4"/>
+		    </form>
+        </field>
+    </form>
+</object-views>
