@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="purchase-order-grid" title="Devis/commandes fournisseurs" model="com.axelor.apps.supplychain.db.PurchaseOrder">
+        <field name="supplierPartner"/>
+        <field name="affairProject"/>
+        <field name="purchaseManagerUserInfo"/>
+        <field name="statusSelect"/>
+    </grid>
+    
+    <form name="purchase-order-form" title="Devis/commande fournisseur" model="com.axelor.apps.supplychain.db.PurchaseOrder" cols="4">
+   	 	<field name="supplierPartner"/>
+        <field name="affairProject"/>
+        <field name="purchasingManagerUserInfo"/>
+		<field name="purchaseOrderLineList" colSpan="4" grid-view="purchase-order-sales-order-line-grid" form-view="purchase-order-sales-order-line-form"/>
+        <field name="statusSelect"/>
+    	<button name="validate" title="Valider" colSpan="2"/>
+    	<button name="generateDeliveryOrder" title="Générer bon de livraison" colSpan="2"/>
+    	<button name="showSupplierInvoice" title="Factures fournisseurs" colSpan="2" onClick="action-purchase-order-show-supplier-invoice"/>
+    </form>
+    
+    <action-view name="action-purchase-order-show-supplier-invoice" title="Les factures"
+		model="com.axelor.apps.account.db.Invoice">
+		<view type="grid" name="invoice-grid"/>
+		<view type="form" name="invoice-form"/>
+		<domain>self.operationTypeSelect = 1</domain>
+		<context name="operationTypeSelect" expr="1"/>
+	</action-view>
+    
+</object-views>

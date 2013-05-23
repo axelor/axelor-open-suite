@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="delivery-order-grid" title="Devis/commandes fournisseurs" model="com.axelor.apps.supplychain.db.DeliveryOrder">
+        <field name="supplierPartner"/>
+        <field name="affair"/>
+        <field name="statusSelect"/>
+    </grid>
+    
+    <form name="delivery-order-form" title="Devis/commande fournisseur" model="com.axelor.apps.supplychain.db.DeliveryOrder" cols="4">
+    	 <field name="supplierPartner"/>
+        <field name="affair"/>
+		<field name="deliveryOrderLineList" colSpan="4"/>
+        <field name="statusSelect"/>
+    	<button name="validate" title="Valider" colSpan="2"/>
+    	<button name="generateInvoice" title="Générer facture fournisseur de contrôle" colSpan="2"/>
+    </form>
+    
+</object-views>

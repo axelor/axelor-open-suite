@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="min-stock-rules-grid" title="Minimum stock rules" model="com.axelor.apps.supplychain.db.MinStockRules">
+        <field name="event"/>
+        <field name="product"/>
+        <field name="minQty"/>
+        <field name="typeSelect"/>
+        <field name="orderAlertSelect"/>
+    </grid>
+    
+    <form name="min-stock-rules-form" title="Minimum stock rules" model="com.axelor.apps.supplychain.db.MinStockRules" cols="4">
+        <field name="event"/>
+        <field name="product"/>
+        <field name="minQty"/>
+        <field name="typeSelect"/>
+        <field name="orderAlertSelect"/>
+    </form>
+    
+</object-views>

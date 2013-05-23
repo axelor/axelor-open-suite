@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="sales-order-line-grid" title="Lignes de devis" model="com.axelor.apps.supplychain.db.SalesOrderLine">
+    	<field name="sequence"/>
+        <field name="description"/>
+        <field name="qty"/>
+        <field name="unit"/>
+        <field name="price"/>
+        <field name="vatLine.vat"/>
+        <field name="exTaxTotal"/>
+        <field name="task"/>
+        <field name="hasToCreateTask"/>
+    	<field name="hasToBuy"/>
+    	<field name="discountAmount"/>
+    	<field name="discountTypeSelect"/>
+    </grid>
+    
+    <form name="sales-order-line-form" title="Ligne de devis" model="com.axelor.apps.supplychain.db.SalesOrderLine" cols="4">
+   		<field name="sequence"/>
+    	<field name="product" onChange="action-sales-order-line-method-get-product-information,action-sales-order-line-method-compute"/>
+    	<field name="product.productCategory"/>
+    	<field name="productName"/>
+    	<field name="qty" onChange="action-sales-order-line-method-compute"/>
+    	<field name="unit"/>
+    	<field name="price" onChange="action-sales-order-line-method-compute"/>
+    	<field name="vatLine"/>
+		<field name="vatLine.vat.name"/>
+		<field name="vatLine.value"/>
+    	<field name="exTaxTotal"/>
+    	<field name="task"/>
+    	<field name="isToPrintLineSubTotal"/>
+    	<field name="employeeSet" colSpan="4"/>
+    	<field name="candidateSet" colSpan="4"/>
+    	<field name="hasToCreateTask"/>
+    	<field name="hasToBuy"/>
+    	<field name="discountAmount"/>
+    	<field name="discountTypeSelect"/>
+		<field name="description"/>    	
+		
+		<field name="isOrdered"/>
+        <notebook colSpan="4">
+        	<page title="Détail de la ligne de devis">
+        		<field name="salesOrderSubLineList" colSpan="4"/>
+        	</page>
+        	<page title="Suivi facturation">
+        		<field name="invoicingDate"/>
+				<field name="isToInvoice"/>
+				<field name="isInvoiced"/>
+				<field name="amountInvoiced"/>
+				<field name="amountRemainingToBeInvoiced"/>
+        	</page>
+        	<page title="Historique">
+        		<field name="invoiceSet" colSpan="4"/>
+        	</page>
+        </notebook>
+    </form>
+    
+   
+   	<!-- ACTION METHOD -->
+	<action-method name="action-sales-order-line-method-compute">
+		<call class="com.axelor.apps.supplychain.web.SalesOrderLineController" method="compute"/>
+	</action-method>
+	
+	<action-method name="action-sales-order-line-method-get-product-information">
+		<call class="com.axelor.apps.supplychain.web.SalesOrderLineController" method="getProductInformation"/>
+	</action-method>
+	
+	
+	 <grid name="purchase-order-sales-order-line-grid" title="Lignes de devis" model="com.axelor.apps.supplychain.db.SalesOrderLine">
+    	<field name="product"/>
+        <field name="qty"/>
+        <field name="price"/>
+        <field name="unit"/>
+        <field name="exTaxTotal"/>
+    	<field name="vatTotal"/>
+    	<field name="inTaxTotal"/>
+        <field name="deliveryDate"/>
+    </grid>
+    
+    <form name="purchase-order-sales-order-line-form" title="Ligne de devis" model="com.axelor.apps.supplychain.db.SalesOrderLine" cols="4">
+    	<field name="product"/>
+    	<field name="qty"/>
+    	<field name="price"/>
+    	<field name="unit"/>
+    	<field name="exTaxTotal"/>
+    	<field name="vatTotal"/>
+    	<field name="inTaxTotal"/>
+		<field name="deliveryDate"/>
+    </form>
+    
+    <grid name="delivery-order-sales-order-line-grid" title="Lignes de devis" model="com.axelor.apps.supplychain.db.SalesOrderLine">
+    	<field name="product"/>
+    	<field name="deliveryDate"/>
+        <field name="qty"/>
+        <field name="price"/>
+        <field name="unit"/>
+        <field name="exTaxTotal"/>
+    	<field name="vatTotal"/>
+    	<field name="inTaxTotal"/>
+        <field name="isInvoiceControlled"/>
+    </grid>
+    
+    <form name="delivery-order-supplier-sales-order-line-form" title="Ligne de devis" model="com.axelor.apps.supplychain.db.SalesOrderLine" cols="4">
+   		<field name="product"/>
+    	<field name="deliveryDate"/>
+        <field name="qty"/>
+        <field name="price"/>
+        <field name="unit"/>
+        <field name="exTaxTotal"/>
+    	<field name="vatTotal"/>
+    	<field name="inTaxTotal"/>
+        <field name="isInvoiceControlled"/>
+    </form>
+    
+</object-views>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="sales-order-sub-line-grid" title="Sous-lignes de devis" model="com.axelor.apps.supplychain.db.SalesOrderSubLine">
+        <field name="sequence"/>
+        <field name="product"/>
+        <field name="productCategory"/>
+        <field name="employee"/>
+    	<field name="description"/>
+    	<field name="unit"/>
+		<field name="qty"/>    	
+		<field name="price"/>
+		<field name="vatLine.vat"/>
+		<field name="exTaxTotal"/>
+    </grid>
+    
+    <form name="sales-order-sub-line-form" title="Sous-ligne de devis" model="com.axelor.apps.supplychain.db.SalesOrderSubLine" cols="4">
+    	<field name="sequence"/>
+    	<field name="product" onChange="action-sales-order-sub-line-method-get-product-information,action-sales-order-sub-line-method-compute"/>
+    	<field name="productCategory"/>
+    	<field name="productName"/>
+    	<field name="employee"/>
+    	<field name="description" colSpan="4"/>
+		<field name="qty" onChange="action-sales-order-sub-line-method-compute"/>    	
+		<field name="unit"/>
+		<field name="price" onChange="action-sales-order-sub-line-method-compute"/>
+		<field name="vatLine"/>
+		<field name="vatLine.vat.name"/>
+		<field name="vatLine.value"/>
+		<field name="exTaxTotal"/>
+    </form>
+    
+    <!-- ACTION METHOD -->
+	<action-method name="action-sales-order-sub-line-method-compute">
+		<call class="com.axelor.apps.supplychain.web.SalesOrderSubLineController" method="compute"/>
+	</action-method>
+	
+	<action-method name="action-sales-order-sub-line-method-get-product-information">
+		<call class="com.axelor.apps.supplychain.web.SalesOrderSubLineController" method="getProductInformation"/>
+	</action-method>
+    
+</object-views>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="inventory-line-grid" title="Inventory lines" model="com.axelor.apps.supplychain.db.InventoryLine">
+        <field name="product"/>
+        <field name="qty"/>
+    </grid>
+    
+    <form name="inventory-line-form" title="Inventory line" model="com.axelor.apps.supplychain.db.InventoryLine" cols="4">
+        <field name="product"/>
+        <field name="qty"/>
+    </form>
+    
+</object-views>
