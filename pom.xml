@@ -24,7 +24,7 @@
 
     <dependency>
     	<groupId>com.axelor</groupId>
-    	<artifactId>axelor-model</artifactId>
+    	<artifactId>axelor-base</artifactId>
       <version>${project.version}</version>
     </dependency>
     
