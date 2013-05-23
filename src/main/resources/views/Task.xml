@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <calendar name="task-calendar" title="Les tâches" mode="month" colorBy="userInfo" 
+	    eventStart="startDateT" 
+	    eventStop="endDateT" 
+	    eventLength="1">
+	    <field name="name" />
+ 	 </calendar>
+    
+    
+    <grid name="task-grid" title="Les tâches" model="com.axelor.apps.organisation.db.Task">
+        <field name="salesOrderLine"/>
+        <field name="name"/>
+        <field name="project"/>
+        <field name="totalTaskDays"/>
+        <field name="totalTimeSheetDays"/>
+    </grid>
+    
+    <form cols="4" name="task-form" title="Tâche" model="com.axelor.apps.organisation.db.Task">
+	    <field name="name"/>
+	    <field name="statusSelect"  widget="NavSelect" colSpan="2" noLabel="true"/>
+	    <field name="salesOrderLine"/>
+	    
+	    <field name="project"/>
+	    <field name="startDateT"/>
+	    <field name="endDateT"/>
+	    <field name="totalTaskDays"/>
+	    <field name="totalTimeSheetDays" title="Total worked days"/>
+	    
+	    <field name="totalPlannedDays"/>
+	    <field name="userInfo"/>
+	    
+	    <field name="totalTask"/>
+	    <field name="isToInvoice"/>
+	    <field name="isTimesheetAffected"/>
+	    <field name="invoicingDate"/>
+	    <field name="amountToInvoice"/>
+	    <button name="backup" title="Backup" colSpan="2"/>
+	    <break/>
+	    <notebook colSpan="4">
+	        <page title="Planification et réalisation">
+	            <field name="planningLineList" colSpan="4" form-view="planning-line-task-form" grid-view="planning-line-task-grid"/>
+	        </page>
+	        <page title="Informations complémentaires">
+	            <field name="notes" colSpan="4"/>
+	        </page>
+	        <page title="Informations financières" colSpan="4">
+	            <group title="Budget initial" colSpan="4" cols="6">
+	                <field name="initialBudgetTurnover"/>
+	                <field name="initialBudgetCost"/>
+	                <field name="initialBudgetMargin"/>
+	            </group>
+	            <group title="Réalisé" colSpan="4" cols="6">
+	                <field name="realizedTurnover"/>
+	                <field name="realizedBudgetCost"/>
+	                <field name="realizedBudgetMargin"/>
+	            </group>
+	            <group title="Reste à faire" colSpan="4" cols="6">
+	                <field name="remainingTurnover"/>
+	                <field name="remainingBudgetCost"/>
+	                <field name="remainingBudgetMargin"/>
+	            </group>
+	            <group title="Final estimé" colSpan="4" cols="6">
+	                <field name="expectedFinalTurnover"/>
+	                <field name="expectedFinalCost"/>
+	                <field name="expectedFinalMargin"/>
+	                <field name="gapBetweenFinalAndInitial"/>
+	            </group>
+	            <field name="estimateTime"/>
+	            <field name="spentTime"/>
+	            <field name="remainingTime"/>
+	            <field name="generatedCharge"/>
+	        </page>
+	        <page title="Reportings" colSpan="4">
+	            <field name="salesOrderLineList" colSpan="4"/>
+	            <field name="customerInvoiceLineList" colSpan="4"/>
+	            <field name="supplierOrderLineList" colSpan="4"/>
+	            <field name="supplierInvoiceLineList" colSpan="4"/>
+	            <field name="expenseLineList" colSpan="4"/>
+	            <field name="timesheetLineList" colSpan="4"/>
+	            <field name="otherCostTaskProductLine" colSpan="4"/>
+	            <field name="otherRevenueTaskProductLine" colSpan="4"/>
+	            <field name="otherRevenueTaskProductLine" colSpan="4"/>
+	        </page>
+	        <page title="Description" colSpan="4">
+	            <field name="description" colSpan="4" noLabel="true"/>
+	        </page>
+	    </notebook>
+	</form>
+    
+    
+</object-views>

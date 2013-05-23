@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="schedule-grid" title="Les horaires" model="com.axelor.apps.organisation.db.Schedule">
+        <field name="name"/>
+        <field name="publicHolidays"/>
+    </grid>
+    
+    <form name="schedule-form" title="Horaires" model="com.axelor.apps.organisation.db.Schedule" cols="4" >
+        <field name="name"/>
+        <field name="publicHolidays"/>
+        <field name="scheduleLineList" colSpan="4"/>
+    </form>
+    
+    
+</object-views>

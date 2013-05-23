@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="planning-line-grid" title="Les lignes de plannification" model="com.axelor.apps.organisation.db.PlanningLine">
+        <field name="product"/>
+        <field name="employee"/>
+        <field name="task"/>
+        <field name="fromDate"/>
+        <field name="toDate"/>
+        <field name="duration"/>
+        <field name="unit"/>
+        <field name="timeSheet"/>
+    </grid>
+    
+    <form name="planning-line-form" title="Ligne de plannification" model="com.axelor.apps.organisation.db.PlanningLine" cols="4" >
+        <field name="product"/>
+        <field name="employee"/>
+        <field name="task"/>
+        <field name="fromDate"/>
+        <field name="toDate"/>
+        <field name="duration"/>
+        <field name="unit"/>
+        <field name="timeSheet"/>
+    </form>
+    
+    <grid name="planning-line-task-grid" title="Les lignes de plannification" model="com.axelor.apps.organisation.db.PlanningLine">
+        <field name="product"/>
+        <field name="employee"/>
+        <field name="fromDate"/>
+        <field name="toDate"/>
+        <field name="duration"/>
+        <field name="unit"/>
+        <field name="timeSheet"/>
+        <field name="planning"/>
+    </grid>
+    
+    <form name="planning-line-tast-form" title="Ligne de plannification" model="com.axelor.apps.organisation.db.PlanningLine" cols="4" >
+        <field name="product"/>
+        <field name="employee"/>
+        <field name="fromDate"/>
+        <field name="toDate"/>
+        <field name="duration"/>
+        <field name="unit"/>
+        <field name="timeSheet"/>
+        <field name="planning"/>
+    </form>
+    
+    
+</object-views>
