@@ -1,0 +1,90 @@
+- !Country: &IN
+  code: IN
+  name: India
+  
+- !Country: &FR
+  code: FR
+  name: France
+  
+- !Country: &UK
+  code: UK
+  name: United Kingdom
+  
+- !Country: &US
+  code: US
+  name: United States
+  
+- !Country: &DE
+  code: DE
+  name: Germany
+
+- !Circle: &family
+  name: family
+  code: fa
+
+- !Circle: &friends
+  name: friends
+  code: fr
+  
+- !Circle: &business
+  name: business
+  code: bu
+  
+- !Title: &mr
+  code: mr
+  name: Mr.
+  
+- !Title: &mrs
+  code: mrs
+  name: Mrs.
+  
+- !Title: &miss
+  code: miss
+  name: Miss
+  
+- !Address: &james_addr_home
+  street: 12, some street
+  street2: near my home
+  city: Paris
+  zip: 21312312
+  country: *FR
+  
+- !Address: &james_addr_office
+  street: 21, some street
+  street2: near my office
+  city: Paris
+  zip: 21312343
+  country: *FR
+
+- !Contact:
+  title:
+    !Title:
+      code: dr
+      name: Dr.
+  firstName: James
+  lastName: Taylor
+  email: jtaylor@gmail.com
+  #dateOfBirth: [2000,12,1]
+  #salary: 5000
+#  circles:
+#    - *family
+  
+- !Contact:
+  title: *mr
+  firstName: John
+  lastName: Smith
+  email: jsmith@gmail.com
+  #dateOfBirth: [1979,11,01]
+  #salary: 5000.00
+#  circles:
+#    - *friends
+#    - *business
+- !Contact:
+  title: *mr
+  firstName: Mark
+  lastName: Ram
+  email: ram@markram.com
+  #dateOfBirth: [1975,03,23]
+  #salary: 5000.00
+#  circles:
+#    - *business

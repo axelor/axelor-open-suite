@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    
+    <calendar name="leave-request-calendar" title="Les demandes de congés" mode="month" colorBy="employee" 
+	    eventStart="startDateT" 
+	    eventStop="endDateT" 
+	    eventLength="1">
+	    <field name="employee" />
+ 	 </calendar>
+    
+    <grid name="leave-request-grid" title="Les demandes de congés" model="com.axelor.apps.organisation.db.LeaveRequest">
+        <field name="employee"/>
+        <field name="requestDate"/>
+        <field name="startDateT"/>
+        <field name="endDateT"/>
+        <field name="nbrOfDayOff"/>
+        <field name="leaveRequestReason"/>
+        <field name="managerUserInfo"/>
+        <field name="approvalDate"/>
+        <field name="remainingDaysOnPeriod"/>
+        <field name="statusSelect"/>
+    </grid>
+    
+    <form name="leave-request-form" title="Demande de congé" model="com.axelor.apps.organisation.db.LeaveRequest" cols="4"
+    	onNew="action-leave-request-record-new">
+		
+		<field name="employee"/>
+        <field name="requestDate"/>
+        <field name="leaveRequestReason"/>
+        <separator colSpan="4"/>
+        <group title="Période de congé" colSpan="3" cols="6">
+        	<field name="startDateT"/>
+        	<field name="endDateT"/>
+        	<field name="nbrOfDayOff"/>
+        </group>
+        <field name="remainingDaysOnPeriod"/>
+        <separator colSpan="4"/>
+        <group colSpan="4" cols="6">
+	        <field name="managerUserInfo"/>
+	        <field name="approvalDate"/>
+	        <field name="statusSelect"/>
+        </group>
+        <button name="confirm" title="Confirmer" colSpan="2" showIf="statusSelect == 1 || statusSelect == 4" onClick="save,action-leave-request-record-confirm,save"/>
+        <button name="cancel" title="Annuler" colSpan="2" showIf="statusSelect == 2" onClick="save,action-leave-request-record-cancel,save"/>
+        <button name="validate" title="Valider" colSpan="2" showIf="statusSelect == 2" onClick="save,action-leave-request-method-validate,action-leave-request-record-validate,save"/>
+    </form>
+    
+    
+    <action-record name="action-leave-request-record-new" model="com.axelor.apps.organisation.db.LeaveRequest">
+    	<field name="requestDate" expr="eval: __date__"/>
+    	<field name="statusSelect" expr="eval: 1"/>
+    </action-record>
+    
+     <action-record name="action-leave-request-record-confirm" model="com.axelor.apps.organisation.db.LeaveRequest">
+    	<field name="statusSelect" expr="2"/>
+    </action-record>
+    
+     <action-record name="action-leave-request-record-cancel" model="com.axelor.apps.organisation.db.LeaveRequest">
+    	<field name="statusSelect" expr="4"/>
+    </action-record>
+    
+    <action-record name="action-leave-request-record-validate" model="com.axelor.apps.organisation.db.LeaveRequest">
+    	<field name="approvalDate" expr="eval: __date__"/>
+    	<field name="statusSelect" expr="3"/>
+    </action-record>
+    
+    <action-method name="action-leave-request-method-validate">
+    	<call class="com.axelor.apps.organisation.web.LeaveRequestController" method="validate"/>
+    </action-method>
+    
+
+</object-views>

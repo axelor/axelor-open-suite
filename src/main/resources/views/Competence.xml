@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.8.xsd">
+
+	<grid name="skill-line-edit-grid" title="Compétences"
+		model="com.axelor.apps.organisation.db.SkillLine" editable="true">
+		<field name="name" />
+		<field name="value" />
+	</grid>
+		
+	<form name="skill-set-edit-form" title="Compétence"
+		model="com.axelor.apps.organisation.db.SkillSet">
+		<field name="skillLineList" grid-view="skill-line-edit-grid" noLabel="true"/>
+		<field name="languageSet" grid-view="language-grid" noLabel="true"/>
+	</form>
+
+
+	<form name="competence-edit-form" title="Compétence"
+		model="com.axelor.apps.organisation.db.Competence">
+		<field name="name" title="Intitulé du Profil"/>
+		<field name="subTitle" />
+		<field name="interventionTypeSet" colSpan="2"/>
+		<field name="competenceAreaSet" colSpan="2"/>
+		<notebook colSpan="4">
+			<page title="Expertises">
+				<field name="expertSkillSet" widget="NestedEditor" summary-view="true" noLabel="true" form-view="skill-set-edit-form"></field>
+			</page>
+			<page title="Compétences Maîtrisées">
+				<field name="masteredSkillSet" widget="NestedEditor" summary-view="true" noLabel="true" form-view="skill-set-edit-form"></field>
+			</page>
+			<page title="Connaissances">
+				<field name="awareSkillSet" widget="NestedEditor" summary-view="true" noLabel="true" form-view="skill-set-edit-form"></field>
+			</page>
+		</notebook>
+	</form>
+	<grid name="competence-edit-grid" title="Compétence"
+		model="com.axelor.apps.organisation.db.Competence">
+		<field name="name" />
+		<field name="subTitle" />
+		<field name="interventionTypeSet"/>
+		<field name="competenceAreaSet"/>
+		<field name="expertSkillSet"/>
+	</grid>
+
+</object-views>

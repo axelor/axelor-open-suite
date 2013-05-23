@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="overtime-grid" title="Overtime" model="com.axelor.apps.organisation.db.Overtime">
+        <field name="employee"/>
+        <field name="date"/>
+        <field name="totalAmount"/>
+        <field name="currency"/>
+        <field name="statusSelect"/>
+        <field name="validationDate"/>
+        <field name="period"/>
+    </grid>
+    
+    <form name="overtime-form" title="Overtime" model="com.axelor.apps.organisation.db.Overtime" cols="6">
+        <field name="employee"/>
+        <break />
+        <field name="date"/>
+        <field name="totalAmount"/>
+        <field name="currency"/>
+        <field name="overtimeLineList" colSpan="6"/>
+        <field name="statusSelect"/>
+        <field name="validationDate"/>
+        <break />
+        <field name="period"/>
+    </form>
+    
+</object-views>

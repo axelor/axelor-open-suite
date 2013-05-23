@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+
+	<grid name="expense-edit-line-grid" editable="true" title="Expense Line"
+		model="com.axelor.apps.organisation.db.ExpenseLine">
+		<field name="product" />
+		<field name="quantity" />
+		<field name="unit" />
+		<field name="unitPrice" />
+		<field name="total" />
+	</grid>
+
+
+	<grid name="expense-line-grid" title="Expense Line"
+		model="com.axelor.apps.organisation.db.ExpenseLine">
+		<field name="product" />
+		<field name="shortDescription" />
+		<field name="expenseTypeSelect" />
+		<field name="affair" />
+		<field name="quantity" />
+		<field name="unit" />
+		<field name="unitPrice" />
+		<field name="total" />
+		<field name="file" />
+		<field name="fileReceived" />
+		<field name="validationDate" />
+	</grid>
+
+	<form name="expense-line-form" title="Expense Line"
+		model="com.axelor.apps.organisation.db.ExpenseLine" cols="4">
+		<field name="affair" />
+		<field name="expenseTypeSelect" />
+		<field name="product" />
+		<field name="unit" />
+		<field name="quantity" />
+		<field name="unitPrice" />
+		<field name="reference" />
+		<field name="sequence" />
+		<field name="total" />
+		<break />
+		<group title="Proof" colSpan="4">
+			<field name="file" />
+			<field name="fileReceived" />
+		</group>
+		<field name="validationDate" />
+		<field name="isToInvoice"/>
+		<field name="isInvoiced"/>
+	</form>
+
+
+</object-views>

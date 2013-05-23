@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+
+
+	<grid name="candidate-grid" title="Candidats" model="com.axelor.apps.organisation.db.Candidate">
+		<field name="name" />
+		<field name="firstName" />
+		<field name="mobilePhone" />
+		<field name="avalabilitySelect" />
+		<field name="availabilityDate" />
+		<field name="salaryExpectation" />
+	</grid>
+
+
+	<form name="candidate-form" title="Candidat" model="com.axelor.apps.organisation.db.Candidate" 
+	 	onSave="action-organisation-candidate-save-record"
+		onNew="action-method-candidate-default-record">
+		<group name="header" cols="6" colSpan="4">
+			<field name="createdBy" title="Titulaire" />
+			<break />
+			<field name="titleSelect" />
+			<field name="name" />
+			<field name="firstName" />
+			<field name="mobilePhone" />
+			<field name="fixedPhone" />
+			<field name="email" />
+			<field name="recruitmentType" />
+			<button name="recruit" title="Transformer en employé" colSpan="2" onClick="" />
+		</group>
+		<notebook>
+			<page title="Principal" cols="6" colSpan="4">
+				<field name="address" />
+				<break />
+				<field name="createdOn" readonly="true" title="Date d'Ajout à la Base" />
+				<field name="avalabilitySelect" />
+				<field name="availabilityDate" />
+				<field name="decisionDate" />
+				<field name="salaryExpectation" />
+				<field name="relocationSelect" />
+				<field name="globalEvaluation" />
+				<field name="resume" />
+				<field name="coverLetter" />
+				<break />
+				<field name="macroCategorySelect" />
+				<field name="categorySelect" />
+				<break />
+				<field name="recruitmentProcessAdvancementList" colSpan="4">
+					<form title="Avancement Processus de Recrutement">
+						<field name="stateSelect"/>
+						<field name="dateTime"/>
+						<field name="comment"/>
+					</form>
+					<grid title="Avancement Processus de Recrutement" editable="true">
+						<hilite color="#3333FF" background="#CDEB8B" condition="stateSelect = 0" />
+						<field name="stateSelect"/>
+						<field name="dateTime"/>
+						<field name="comment"/>
+					</grid>
+				</field>
+			</page>
+			<page title="Mots clés">
+				<field name="toolKeywordSet" colSpan="2" grid-view="keyword-grid"/>
+				<field name="fieldKeywordSet" colSpan="2" grid-view="keyword-grid"/>
+				<field name="jobKeywordSet" colSpan="2" grid-view="keyword-grid"/>
+				<field name="partnerSet" colSpan="2" grid-view="company-grid" domain="self.isContact = 'true'"/>
+			</page>
+			<page title="Parcours professionel">
+				<field name="positionList"/>
+			</page>
+			<page title="Formation">
+				<field name="degree"/>
+				<!-- TODO set domain domain="self.id IN (1, 2, 3)" -->
+				<button name="assign" title="Affectation Vivier"
+					help="copie l'ensemble des champs nécessaires (dont Parcours pro, …)"
+					colSpan="2" />
+				<field name="trainingLineList" colSpan="4"/>
+			</page>
+			<page title="Evaluation">
+				<field name="evaluationLineList" colSpan="4" onChange="action-organisation-candidate-evaluation-record"
+					form-view="evaluation-line-form" grid-view="evaluation-line-grid"/>
+				<field name="evaluationGrade" readonly="true"/>
+			</page>
+			<page title="Information complémentaire">
+				<field name="personalInfo" widget="NestedEditor" summary-view="true"
+					form-view="personal-info-edit-form"/>
+			</page>
+			<page title="Compétence">
+				<field name="competence" widget="NestedEditor" summary-view="true"
+					form-view="competence-edit-form"/>
+			</page>
+			<page title="Autres pistes">
+				<field name="candidateOtherOpportunityList" grid-view="candidate-other-opportunity-grid" form-view="candidate-other-opportunity-form"/>
+			</page>
+<!-- 			<page title="Suivi du placement des besoins" hidden="true"> -->
+<!-- 				<field name="placementFollowUpList" grid-view="placement-follow-up-edit-grid" form-view="placement-follow-up-edit-list"></field> -->
+<!-- 			</page> -->
+		</notebook>
+	</form>
+
+	<action-record name="action-organisation-candidate-evaluation-record" model="com.axelor.apps.organisation.db.Candidate">
+		<field name="evaluationGrade" expr="eval: evaluationLineList.sum { it.gradeSelect?it.coefficient * it.gradeSelect:0.0} / evaluationLineList.sum { it.gradeSelect?it.coefficient:0.0}" />
+	</action-record>
+
+	<action-record name="action-organisation-candidate-save-record" model="com.axelor.apps.organisation.db.Candidate">
+		<field name="toolKeywordSet" expr="eval: toolKeywordSet*.typeSelect = '0';toolKeywordSet" />
+		<field name="fieldKeywordSet" expr="eval: fieldKeywordSet*.typeSelect = '1';fieldKeywordSet" />
+		<field name="jobKeywordSet"	expr="eval: jobKeywordSet*.typeSelect = '2';jobKeywordSet" />
+	</action-record>
+
+	<action-method name="action-method-candidate-default-record">
+		<call class="com.axelor.apps.organisation.web.CandidateController" method="onNew" />
+	</action-method>
+
+
+</object-views>

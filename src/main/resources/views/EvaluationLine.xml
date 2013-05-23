@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+
+
+	<form name="evaluation-line-form" title="Ligne d'évaluation"
+		model="com.axelor.apps.organisation.db.EvaluationLine">
+		<field name="label" readonly="true" title="Libellé" />
+		<field name="coefficient" readonly="true"/>
+		<field name="gradeSelect"/>
+	</form>
+
+
+	<grid name="evaluation-line-grid" title="Lignes d'évaluation"
+		model="com.axelor.apps.organisation.db.EvaluationLine" editable="true">
+		<field name="label" readonly="true" />
+		<field name="coefficient" readonly="true"/>
+		<field name="gradeSelect"/>
+	</grid>
+
+
+</object-views>

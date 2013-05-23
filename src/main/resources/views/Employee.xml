@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+
+	<grid name="employee-grid" title="Employee"
+		model="com.axelor.apps.organisation.db.Employee">
+		<field name="name" />
+		<field name="firstName" />
+	</grid>
+
+	<form name="employee-form" title="Employee"
+		model="com.axelor.apps.organisation.db.Employee">
+		<group name="header" cols="6" colSpan="4">
+			<field name="createdBy" title="Titulaire" />
+			<break />
+			<field name="titleSelect" />
+			<field name="name" />
+			<field name="firstName" />
+			<field name="entryDate" />
+			<field name="exitDate" />
+			<field name="phoneAtCustomer" />
+			<field name="internalContact" />
+			<field name="dailySalaryCost" />
+			<field name="macroCategorySelect" />
+			<field name="categorySelect" />
+			<field name="companyDepartment"/>
+		</group>
+		<notebook>
+			<page title="Information complémentaire">
+				<field name="emergencyContact" domain="self.isContact = True"/>
+				<field name="emergencyNumber"/>
+				<field name="personalInfo" widget="NestedEditor" summary-view="true"
+					form-view="personal-info-edit-form"/>
+				<field name="candidate"/>
+			</page>
+			<page title="Parcours professionel">
+				<field name="positionList"/>
+			</page>
+			<page title="Mots clés">
+				<field name="toolKeywordSet" colSpan="2" grid-view="keyword-grid"/>
+				<field name="fieldKeywordSet" colSpan="2" grid-view="keyword-grid"/>
+				<field name="jobKeywordSet" colSpan="2" grid-view="keyword-grid"/>
+				<field name="partnerSet" colSpan="2" grid-view="company-name-grid"
+					domain="self.isContact = True"/>
+			</page>
+			<page title="Rém/Frais/congés">
+				<notebook>
+					<page title="rém-position">
+						<field name="bonusList" grid-view="bonus-grid" colSpan="2"/>
+						<field name="advanceList" grid-view="advance-grid"
+							colSpan="2"/>
+						<field name="vehicleFiscalPower"/>
+						<group title="Salaire fixe">
+							<field name="salaryFromDate"/>
+							<field name="salaryAmount"/>
+						</group>
+					</page>
+					<page title="notes de frais ">
+						<group title="Abonnement train">
+							<field name="commuteFee"/>
+							<field name="commuteFeeRefundPerc"/>
+						</group>
+						<field name="expenseList" colSpan="4" grid-view="expense-edit-grid"/>
+					</page>
+				</notebook>
+			</page>
+			<page title="Congés">
+			</page>
+			<page title="Compétence">
+				<field name="competence" widget="NestedEditor" summary-view="true"
+					form-view="competence-edit-form"></field>
+			</page>
+			<!-- <page title="Suivi du placement des besoins" hidden="true"> -->
+			<!-- <field name="placementFollowUpList" grid-view="placement-follow-up-edit-grid" 
+				form-view="placement-follow-up-edit-list"></field> -->
+			<!-- </page> -->
+			<page title="Prépa paie">
+			</page>
+		</notebook>
+
+	</form>
+</object-views>
+  

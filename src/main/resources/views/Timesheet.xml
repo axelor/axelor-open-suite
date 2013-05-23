@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="timesheet-grid" title="Les feuilles de temps" model="com.axelor.apps.organisation.db.Timesheet">
+        <field name="employee"/>
+        <field name="period"/>
+        <field name="fromDate"/>
+        <field name="toDate"/>
+    </grid>
+    
+    <form name="timesheet-form" title="Feuille de temps" model="com.axelor.apps.organisation.db.Timesheet" cols="8">
+        <field name="employee"/>
+        <field name="period"/>
+        <field name="fromDate"/>
+        <field name="toDate"/>
+        <group title="Satisfaction" cols="4" colSpan="8" colWidths="10%,10%,10%,70%">
+        	<separator colSpan="8" title="Projet"/>
+	        <field name="projectSatisfactionSelect"/>
+	        <field name="projectComment"/>
+	        <separator colSpan="8" title="Société"/>
+	        <field name="companySatisfactionSelect"/>
+        	<field name="companyComment"/>
+        </group>
+        <group title="Unité" colSpan="8">
+         	<field name="unit"/>
+        	<field name="timeUnitSelect"/>
+        </group>
+        <spacer/>
+        <separator colSpan="8" title="Lignes de temps passé sur les projets/tâche"/>
+        <field name="timesheetLineList" colSpan="8"/>
+        <field name="timesheetInputTotal"/>
+        <field name="timesheetTotalByTypeList" colSpan="8"/>
+    </form>
+    
+</object-views>
