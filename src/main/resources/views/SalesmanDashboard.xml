@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+	
+	<portal title="Dashboard" name="salesman.dashboard.portal" cols="2">
+		<portlet action="salesman.dashboard.portal.orders" height="350" canSearch="true" />
+		<portlet action="chart:chart.salesman.dashboard.total.turnover" height="350" />
+		<portlet action="salesman.dashboard.portal.leads" canSearch="true" height="350" />
+		<portlet action="salesman.dashboard.portal.activities" canSearch="true" height="350" />
+	</portal>
+
+	<action-view name="salesman.dashboard.portal.orders" title="My Sales Orders"
+		model="com.axelor.apps.supplychain.db.SalesOrder">
+		<view type="grid" name="sales-order-grid" />
+		<view type="form" name="sales-order-form" />
+		<domain>self.salesmanUserInfo.internalUser = :_user and self.statusSelect in (1, 2)</domain>
+	</action-view>
+
+	<action-view name="salesman.dashboard.portal.leads" title="My Current Leads"
+		model="com.axelor.apps.crm.db.Lead">
+		<view type="grid" name="lead-grid" />
+		<view type="form" name="lead-form" />
+		<domain>self.userInfo.internalUser = :_user and self.statusSelect in (1, 2)</domain>
+	</action-view>
+
+	<action-view name="salesman.dashboard.portal.activities" title="Today Activities"
+		model="com.axelor.apps.crm.db.Event">
+		<view type="grid" name="call-grid" />
+		<view type="form" name="call-form" />
+		<view type="grid" name="meeting-grid" />
+		<view type="form" name="meeting-form" />
+		<view type="grid" name="crm-task-grid" />
+		<view type="form" name="crm-task-form" />
+	    <domain>self.startDateTime between :_today and :_tomorrow</domain>
+	    <context name="_tomorrow" expr="eval: __date__.plusDays(1).toDateTimeAtStartOfDay()"/>
+	    <context name="_today" expr="eval: __date__.toDateTimeAtStartOfDay()"/>
+	</action-view>
+
+
+</object-views>

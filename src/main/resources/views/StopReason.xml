@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    <grid name="stop-reason-grid" title="Raisons de blocage" model="com.axelor.apps.base.db.StopReason">
+        <field name="name"/>
+        <field name="code"/>
+    </grid>
+    <form name="stop-reason-form" title="Raison de blocage" model="com.axelor.apps.base.db.StopReason" cols="4">
+        <field name="name"/>
+        <field name="code"/>
+    </form>
+</object-views>

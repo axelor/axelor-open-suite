@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    <grid name="formula-generator-grid" title="Générateur de formules" model="com.axelor.apps.base.db.FormulaGenerator">
+    	<field name="name" />
+        <field name="dateGeneration"/>
+    </grid>
+    <form name="formula-generator-form" title="Générateur de formules" model="com.axelor.apps.base.db.FormulaGenerator" cols="4"
+    onLoad="action-formula-attrs-log"
+    onNew="action-formula-attrs-log"
+    onSave="action-formula-method-validate,action-formula-attrs-log,action-formula-alert">
+    	<field name="name" />
+        <field name="dateGeneration" readonly="true"/>
+        <button name="generate" title="Générer" colSpan="2" onClick="action-formula-method-generate,action-formula-attrs-log,action-formula-alert,save"/>
+        <button name="validate" title="Valider" colSpan="2" onClick="save,action-formula-method-validate,action-formula-attrs-log,action-formula-alert,save"/>
+        <notebook colSpan="4">
+	        <page title="Formule">
+     	       	<group title="Logs" name="groupFormulaLog" colSpan="4" cols="2" canCollapse="true">
+		        	<field name="formulaLog" noLabel="true" colSpan="2"/>
+	        	</group>
+	        	<field name="formula" widget="CodeEditor[syntax=groovy]" colSpan="4" noLabel="true"/>
+	        </page>
+	        <page title="Formule d'affichage">
+     	       	<group title="Logs" name="groupDisplayFormulaLog" colSpan="4" cols="2" canCollapse="true">
+		        	<field name="displayFormulaLog" noLabel="true" colSpan="2"/>
+	        	</group>
+	        	<field name="displayFormula" widget="CodeEditor[syntax=groovy]" colSpan="4" noLabel="true"/>
+        	</page>
+	        <page title="Formule des coefficients de quantité">
+     	       	<group title="Logs" name="groupQtyFormulaLog" colSpan="4" cols="2" canCollapse="true">
+		        	<field name="qtyFormulaLog" noLabel="true" colSpan="2"/>
+	        	</group>
+	        	<field name="qtyFormula" widget="CodeEditor[syntax=groovy]" colSpan="4" noLabel="true"/>
+	        </page>
+        	<page title="Condition sur les formules">
+     	       	<group title="Logs" name="groupConditionFormulaLog" colSpan="4" cols="2" canCollapse="true">
+		        	<field name="conditionFormulaLog" noLabel="true" colSpan="2"/>
+	        	</group>
+        		<field name="conditionFormula" widget="CodeEditor[syntax=groovy]" colSpan="4" noLabel="true"/>
+        	</page>
+	        <page title="Formule des taxes">
+     	       	<group title="Logs" name="groupCalculationRuleTaxLog" colSpan="4" cols="2" canCollapse="true">
+		        	<field name="calculationRuleTaxLog" noLabel="true" colSpan="2"/>
+	        	</group>
+	        	<field name="calculationRuleTax" widget="CodeEditor[syntax=groovy]" colSpan="4" noLabel="true"/>
+	        </page>
+	        <page title="Condition sur les formules de taxes">
+     	       	<group title="Logs" name="groupConditionCalculationRuleTaxLog" colSpan="4" cols="2" canCollapse="true">
+		        	<field name="conditionCalculationRuleTaxLog" noLabel="true" colSpan="2"/>
+	        	</group>
+	        	<field name="conditionCalculationRuleTax" widget="CodeEditor[syntax=groovy]" colSpan="4" noLabel="true"/>
+	        </page>
+	        <page title="Conditions sur les taxes">
+     	       	<group title="Logs" name="groupConditionTaxLog" colSpan="4" cols="2" canCollapse="true">
+		        	<field name="conditionTaxLog" noLabel="true" colSpan="2"/>
+	        	</group>
+	        	<field name="conditionTax" widget="CodeEditor[syntax=groovy]" colSpan="4" noLabel="true"/>
+        	</page>
+	        <page title="Formule des TVA">
+     	       	<group title="Logs" name="groupVatFormulaLog" colSpan="4" cols="2" canCollapse="true">
+		        	<field name="vatFormulaLog" noLabel="true" colSpan="2"/>
+	        	</group>
+	        	<field name="vatFormula" widget="CodeEditor[syntax=groovy]" colSpan="4" noLabel="true"/>
+	        </page>
+        </notebook>
+    </form>
+    
+	<!-- ACTION METHOD -->
+	<action-method name="action-formula-method-generate">
+		<call class="com.axelor.apps.base.web.FormulaGeneratorController" method="generate"/>
+	</action-method>
+	
+	<action-method name="action-formula-method-validate">
+		<call class="com.axelor.apps.base.web.FormulaGeneratorController" method="validate"/>
+	</action-method>
+	
+	<!-- ACTION ATTRS -->
+    <action-attrs name="action-formula-attrs-log">
+    	<attribute name="collapse" for="groupFormulaLog" expr="eval: !formulaLog"/>
+    	<attribute name="collapse" for="groupDisplayFormulaLog" expr="eval: !displayFormulaLog"/>
+    	<attribute name="collapse" for="groupConditionFormulaLog" expr="eval: !conditionFormulaLog"/>
+    	<attribute name="collapse" for="groupCalculationRuleTaxLog" expr="eval: !calculationRuleTaxLog"/>
+    	<attribute name="collapse" for="groupConditionCalculationRuleTaxLog" expr="eval: !conditionCalculationRuleTaxLog"/>
+    	<attribute name="collapse" for="groupConditionTaxLog" expr="eval: !conditionTaxLog"/>
+    	<attribute name="collapse" for="groupQtyFormulaLog" expr="eval: !resultingLog"/>
+    	<attribute name="collapse" for="groupVatFormulaLog" expr="eval: !vatFormulaLog"/>
+	</action-attrs>
+	
+	<!-- ACTION ALERT -->
+	<action-validate name="action-formula-alert">
+    	<error 
+    		message="Vos formules ne sont pas valides"
+    	 	if="formulaLog||displayFormulaLog||conditionFormulaLog||calculationRuleTaxLog||conditionCalculationRuleTaxLog||conditionTaxLog||resultingLog||vatFormulaLog"
+   	 	/>
+    </action-validate>
+	
+	
+</object-views>

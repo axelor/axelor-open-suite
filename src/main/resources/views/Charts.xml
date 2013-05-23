@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+	  
+	  
+	  <chart name="chart.planned.qty.by.location" title="Stock prévisionnel">
+	    <dataset type="jpql">
+	    <![CDATA[
+		SELECT
+	    SUM(_stockMoveLine.qty) AS qty,
+	    MONTH(_stockMove.estimatedDate) as month,
+	    _to_location.name AS location
+		FROM
+		    StockMoveLine _stockMoveLine
+		LEFT JOIN
+		    _stockMoveLine.product AS _product
+		LEFT JOIN
+		    _stockMoveLine.stockMove as _stockMove
+		LEFT JOIN
+		    _stockMove.fromLocation AS _from_location
+		LEFT JOIN
+		    _stockMove.toLocation AS _to_location
+		WHERE
+		    _product.id = :id AND _stockMoveLine.product.id = _product.id AND (_from_location.typeSelect = 1 OR _to_location.typeSelect = 1 ) AND _stockMove.estimatedDate > current_date
+		GROUP BY
+		    _from_location.id,
+		    _to_location.id,
+		    MONTH(_stockMove.estimatedDate)
+		ORDER BY
+		    MONTH(_stockMove.estimatedDate)
+
+
+	
+	    ]]>
+	    </dataset>
+	    <category key="month" type="month"/>
+	    <series key="qty" groupBy="location" type="bar" aggregate="sum"/>
+	  </chart>
+	  
+	  
+	  <chart name="chart.salesman.dashboard.total.turnover" title="Turnover over past 6 months">
+	    <dataset type="sql">
+	    <![CDATA[
+		SELECT
+		    SUM(self.ex_tax_total) AS amount,
+		    concat(date_part('year',self.creation_date),'/',date_part('month',self.creation_date)) AS month_year,
+		    self.status_select AS slct
+		FROM
+		    supplychain_sales_order self
+		LEFT JOIN
+		    base_user_info ON base_user_info.id = self.salesman_user_info
+		WHERE
+		    self.creation_date >= current_date - INTERVAL '6 month' AND self.creation_date <= current_date
+		AND
+		    self.status_select > 0 AND self.status_select < 4
+		AND
+		    base_user_info.internal_user = :_user_id
+		GROUP BY
+		    concat(date_part('year',self.creation_date),'/',date_part('month',self.creation_date)),
+		    self.status_select
+		ORDER BY
+		    concat(date_part('year',self.creation_date),'/',date_part('month',self.creation_date))
+	    ]]>
+	    </dataset>
+	    <category key="month_year" type="text"/>
+    	<series key="amount" groupBy="slct" type="bar"/>
+	  </chart>
+	  
+	  
+	  <chart name="chart.sales.manager.dashboard.team.turnover" title="Turnover per team over past 30 days">
+	    <dataset type="jpql">
+	    <![CDATA[
+		SELECT
+            SUM(self.exTaxTotal) AS amount,
+		    _team.name AS _team_name,
+            self.statusSelect AS slct
+		FROM
+		    SalesOrder self
+		LEFT JOIN
+		    self.salesmanUserInfo AS _sales_man_user_info
+		LEFT JOIN
+		    self.team AS _team
+		WHERE
+		    self.creationDate >= :_past_month AND self.creationDate <= current_date
+		AND
+		    _sales_man_user_info.internalUser = :_user
+		AND
+			self.statusSelect > 0 AND self.statusSelect < 4
+		GROUP BY
+            self.statusSelect,
+		    _team.name
+		ORDER BY
+		    _team.name
+	    ]]>
+	    </dataset>
+	    <category key="_team_name" type="text"/>
+    	<series key="amount" groupBy="slct" type="bar"/>
+	  </chart>
+	  
+	  
+	  <chart name="chart.sales.manager.dashboard.family.product.sales" title="Sales per product family over past 12 months">	    
+	    <dataset type="sql">
+	    <![CDATA[
+		SELECT * FROM (
+		    SELECT
+		        SUM(supplychain_sales_order_line.ex_tax_total) AS amount,
+		        base_currency.name AS currency,
+		        base_product_family.name AS _product_family
+		    FROM
+		        supplychain_sales_order self
+		    LEFT JOIN
+		        base_user_info ON base_user_info.id = self.salesman_user_info
+		    LEFT JOIN
+		        supplychain_sales_order_line ON supplychain_sales_order_line.sales_order = self.id
+		    LEFT JOIN
+		        base_product ON base_product.id = supplychain_sales_order_line.product
+		    LEFT JOIN
+		        base_product_family ON base_product_family.id = base_product.product_family
+		    LEFT JOIN
+		        base_currency ON base_currency.id = self.currency
+		    WHERE
+		        self.creation_date >= current_date - INTERVAL '12 month' AND self.creation_date <= current_date
+		    AND
+		        base_user_info.internal_user = :_user_id
+		    AND
+		        self.status_select = 3
+		    AND
+		    	supplychain_sales_order_line.id NOT IN (SELECT sales_order_line FROM supplychain_sales_order_sub_line)
+		    GROUP BY
+		        base_product_family.name,
+		        base_currency.name
+		    ORDER BY
+		        base_product_family.name
+		)s1
+		UNION
+		SELECT * FROM (    
+		    SELECT
+		        SUM(supplychain_sales_order_sub_line.ex_tax_total) AS amount,
+		        base_currency.name AS currency,
+		        base_product_family.name AS _product_family
+		    FROM
+		        supplychain_sales_order self
+		    LEFT JOIN
+		        base_user_info ON base_user_info.id = self.salesman_user_info
+		    LEFT JOIN
+		        supplychain_sales_order_line ON supplychain_sales_order_line.sales_order = self.id
+		    RIGHT JOIN
+		        supplychain_sales_order_sub_line ON supplychain_sales_order_sub_line.sales_order_line = supplychain_sales_order_line.id
+		    LEFT JOIN
+		        base_product ON base_product.id = supplychain_sales_order_sub_line.product
+		    LEFT JOIN
+		        base_product_family ON base_product_family.id = base_product.product_family
+		    LEFT JOIN
+		        base_currency ON base_currency.id = self.currency
+		    WHERE
+		        self.creation_date >= current_date - INTERVAL '12 month' AND self.creation_date <= current_date
+		    AND
+		        base_user_info.internal_user = :_user_id
+		    AND
+		        self.status_select = 3
+		    GROUP BY
+		        base_product_family.name,
+		        base_currency.name
+		    ORDER BY
+		        base_product_family.name
+		)s2
+	    ]]>
+	    </dataset>
+	    <category key="_product_family" type="text"/>
+		<series key="amount" groupBy="currency" type="bar"/>
+	  </chart>
+	  
+	  
+	  <chart name="chart.sales.manager.dashboard.category.product.sales" title="Sales per product category over past 12 months in volume">
+	    <dataset type="sql">
+	    <![CDATA[
+		SELECT * FROM (
+			SELECT
+		        SUM(supplychain_sales_order_line.qty) AS amount,
+		        base_product_category.name AS _product_category
+		    FROM
+		        supplychain_sales_order self
+		    LEFT JOIN
+		        base_user_info ON base_user_info.id = self.salesman_user_info
+		    LEFT JOIN
+		        supplychain_sales_order_line ON supplychain_sales_order_line.sales_order = self.id
+		    LEFT JOIN
+		        base_product ON base_product.id = supplychain_sales_order_line.product
+		    LEFT JOIN
+		        base_product_category ON base_product_category.id = base_product.product_category
+		    WHERE
+		        self.creation_date >= current_date - INTERVAL '12 month' AND self.creation_date <= current_date
+		    AND
+		        base_user_info.internal_user = :_user_id
+		    AND
+		        self.status_select = 3
+		    AND
+		        supplychain_sales_order_line.product is not NULL
+		    GROUP BY
+		        base_product_category.name
+		    ORDER BY	
+		        base_product_category.name
+		)s1
+		UNION
+		SELECT * FROM (    
+		    SELECT
+		        SUM(supplychain_sales_order_sub_line.qty) AS amount,
+		        base_product_category.name AS _product_category
+		    FROM
+		        supplychain_sales_order self
+		    LEFT JOIN
+		        base_user_info ON base_user_info.id = self.salesman_user_info
+		    LEFT JOIN
+		        supplychain_sales_order_line ON supplychain_sales_order_line.sales_order = self.id
+		    RIGHT JOIN
+		        supplychain_sales_order_sub_line ON supplychain_sales_order_sub_line.sales_order_line = supplychain_sales_order_line.id
+		    LEFT JOIN
+		        base_product ON base_product.id = supplychain_sales_order_sub_line.product
+		    LEFT JOIN
+		        base_product_category ON base_product_category.id = base_product.product_category
+		    WHERE
+		        self.creation_date >= current_date - INTERVAL '12 month' AND self.creation_date <= current_date
+		    AND
+		        base_user_info.internal_user = :_user_id
+		    AND
+		        self.status_select = 3
+		    GROUP BY
+		        base_product_category.name
+		    ORDER BY
+		        base_product_category.name
+		)s2
+	    ]]>
+	    </dataset>
+	    <category key="_product_category" type="text"/>
+    	<series key="amount" type="pie"/>
+	  </chart>
+	  
+	  
+	  <chart name="chart.sales.manager.dashboard.country.sales" title="Sales per country over past 12 months">
+	    <dataset type="sql">
+	    <![CDATA[
+		SELECT
+		    SUM(self.ex_tax_total) AS amount,
+		    base_country.name AS _country_sale
+		FROM
+		    supplychain_sales_order self
+		LEFT JOIN
+		    base_user_info ON base_user_info.id = self.salesman_user_info
+		LEFT JOIN
+		    base_address ON base_address.id = self.delivery_address
+		LEFT JOIN
+		    base_country ON base_country.id = base_address.addressl7country
+		WHERE
+		    self.creation_date >= current_date - INTERVAL '1 year' AND self.creation_date <= current_date
+		AND
+		    base_user_info.internal_user = :_user_id
+		AND
+		    self.status_select = 3
+		GROUP BY
+		    base_country.name
+		ORDER BY
+		    base_country.name
+	    ]]>
+	    </dataset>
+	    <category key="_country_sale" type="text"/>
+    	<series key="amount" type="pie"/>
+	  </chart>
+	  
+	  
+	  <chart name="chart.sales.manager.dashboard.salesman.turnover" title="Turnover per salesman over past 30 days">
+	    <dataset type="sql">
+	    <![CDATA[
+		SELECT
+		    SUM(self.ex_tax_total) AS amount,
+		    base_user_info.full_name AS _salesman_name,
+		    self.status_select AS slct
+		FROM
+		    supplychain_sales_order self
+		LEFT JOIN
+		    base_user_info ON base_user_info.id = self.salesman_user_info
+		WHERE
+		    self.creation_date >= current_date - INTERVAL '1 month' AND self.creation_date <= current_date
+		AND
+		    self.status_select > 0 AND self.status_select < 4
+		GROUP BY
+		    self.status_select,
+		    base_user_info.full_name
+		ORDER BY
+		    base_user_info.full_name
+	    ]]>
+	    </dataset>
+	    <category key="_salesman_name" type="text"/>
+    	<series key="amount" groupBy="slct" type="bar"/>
+	  </chart>
+</object-views>

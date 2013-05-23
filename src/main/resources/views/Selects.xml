@@ -1,0 +1,884 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+
+
+	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
+
+	<selection name="partner.base.type.select">
+		<option value="1">Company</option>
+		<option value="2">Individual</option>
+	</selection>
+
+	<selection name="partner.title.type.select">
+		<option value="1">M.</option>
+		<option value="2">Mme</option>
+		<option value="3">Mlle</option>
+		<option value="4">Dr</option>
+		<option value="5">Prof.</option>
+	</selection>
+
+	<selection name="partner.customer.type.select">
+		<option value="1">None.</option>
+		<option value="2">Prospect</option>
+		<option value="3">Client</option>
+	</selection>
+
+	<selection name="partner.partner.type.select">
+		<option value="1">Company</option>
+		<option value="2">Individual</option>
+	</selection>
+
+	<selection name="account.account.schedule.type">
+		<option value='type'>Type</option>
+		<option value='subtype'>Sous type</option>
+	</selection>
+
+	<selection name='mail.model.object.concerned.select'>
+		<option value='1'>Recouvrement</option>
+		<option value='2'>Remboursement</option>
+		<option value='3'>Import des rejets</option>
+		<option value='4'>Caisse</option>
+	</selection>
+
+	<selection name='iadministration.yes.no.select'>
+		<option value='1'>Oui</option>
+		<option value='0'>Non</option>
+	</selection>
+
+	<selection name='iinvoice.operation.type.select'>
+		<option value='1'>Achat fournisseur</option>
+		<option value='2'>Avoir fournisseur</option>
+		<option value='3'>Vente client</option>
+		<option value='4'>Avoir client</option>
+	</selection>
+
+	<selection name='ipayment.operation.type.select'>
+		<option value='1'>Fournisseur</option>
+		<option value='2'>Client</option>
+	</selection>
+
+	<selection name='iterritory.artmin.select'>
+		<option value='(AUX)'>(AUX)</option>
+		<option value='(L)'>(L')</option>
+		<option value='(LA)'>(LA)</option>
+		<option value='(LE)'>(LE)</option>
+		<option value='(LES)'>(LES)</option>
+		<option value='(LOS)'>(LOS)</option>
+	</selection>
+
+	<selection name='partner.person.category.select'>
+		<option value='legalPerson'>Personne morale</option>
+		<option value='naturalPerson'>Personne physique</option>
+	</selection>
+
+	<selection name='partner.assignor.type.select'>
+		<option value='syndicate'>Syndicat</option>
+		<option value='authority'>Collectivité</option>
+	</selection>
+
+	<selection name='product.product.type.select'>
+		<option value='service'>Service</option>
+		<option value='stockable'>Stockable</option>
+	</selection>
+
+	<selection name='product.procurement.method.select'>
+		<option value='buy'>Buy</option>
+		<option value='produce'>Produce</option>
+	</selection>
+
+	<selection name="product.application.type.select">
+		<option value="1">Produit</option>
+		<option value="2">Profil</option>
+		<option value="3">NDF</option>
+	</selection>
+
+
+	<selection name='ialarm.type.select'>
+		<option value='invoice'>Facture</option>
+		<option value='payment'>Echéancier de paiement</option>
+		<option value='reject'>Rejet</option>
+	</selection>
+
+	<selection name='payment.voucher.state.select'>
+		<option value='1'>Brouillon</option>
+		<option value='2'>Confirmée</option>
+	</selection>
+
+	<selection name='invoice.account.condition.invoice.sending.format.select'>
+		<option value='email'>Email</option>
+		<option value='paper'>Papier</option>
+		<option value='emailpaper'>Email et papier</option>
+		<option value='xml'>XML</option>
+	</selection>
+
+	<selection name='iimport.type.select'>
+		<option value='csv'>Fichiers CSV</option>
+		<option value='xml'>Fichiers XML</option>
+		<option value='bdd'>Base de donnée</option>
+	</selection>
+
+	<selection name='iadministration.month.select'>
+		<option value='1'>Janvier</option>
+		<option value='2'>Février</option>
+		<option value='3'>Mars</option>
+		<option value='4'>Avril</option>
+		<option value='5'>Mai</option>
+		<option value='6'>Juin</option>
+		<option value='7'>Juillet</option>
+		<option value='8'>Aout</option>
+		<option value='9'>Septembre</option>
+		<option value='10'>Octobre</option>
+		<option value='11'>Novembre</option>
+		<option value='12'>Décembre</option>
+	</selection>
+
+	<selection name='mail.type.select'>
+		<option value='0'>Email</option>
+		<option value='1'>Courrier</option>
+	</selection>
+
+	<selection name='mail.object.concerned.select'>
+		<option value='1'>Recouvrement</option>
+		<option value='2'>Remboursement</option>
+		<option value='3'>Import des rejets</option>
+		<option value='4'>Caisse</option>
+	</selection>
+
+	<selection name='iaccount.reject.import.state.select'>
+		<option value='0'>Brouillon</option>
+		<option value='1'>Validé</option>
+	</selection>
+
+	<selection name='iaccount.reject.import.type.select'>
+		<option value='0'>Prélèvement</option>
+		<option value='1'>Remboursement</option>
+		<option value='2'>Paiement par TIP et TIP chèque</option>
+	</selection>
+
+	<selection name='iaccount.interbank.account.order.import.state.select'>
+		<option value='0'>Brouillon</option>
+		<option value='1'>Validé</option>
+	</selection>
+
+	<selection name='title.type.select'>
+		<option value='1'>Civilité</option>
+		<option value='2'>Forme juridique</option>
+	</selection>
+
+	<selection name='move.line.mail.select'>
+		<option value='1'>Ne pas envoyé de courrier</option>
+		<option value='2'>Courrier à envoyer</option>
+		<option value='3'>Courrier envoyé</option>
+	</selection>
+
+	<selection name='move.line.reimbursement.state.select'>
+		<option value='0'></option>
+		<option value='1'>En cours de remboursement</option>
+		<option value='2'>Remboursé</option>
+	</selection>
+
+	<selection name='reimbursement.export.state.select'>
+		<option value='1'>A rembourser</option>
+		<option value='2'>Remboursé</option>
+	</selection>
+
+	<selection name='reconcile.state.select'>
+		<option value='1'>Brouillon</option>
+		<option value='2'>Confirmée</option>
+		<option value='3'>Annulée</option>
+	</selection>
+
+	<selection name='provision.service.processing.way.select'>
+		<option value='immediate'>Facturation immédiate</option>
+		<option value='intoAccount'>Mise en compte</option>
+	</selection>
+
+	<selection name='reminder.method.base.concerned.select'>
+		<option value='0'>Titulaire</option>
+		<option value='1'>Payeur</option>
+	</selection>
+
+	<selection name='iaccount.account.schedule.export.state.select'>
+		<option value='0'>Brouillon</option>
+		<option value='1'>Validé</option>
+	</selection>
+
+	<selection name='iaccount.account.schedule.export.type.select'>
+		<option value='0'>Echéanciers de Mensu (PRLVT)</option>
+		<option value='1'>Factures / Echéancier de paiement (PRLVT)</option>
+	</selection>
+
+	<selection name='payment.schedule.state.select'>
+		<option value='1'>Brouillon</option>
+		<option value='2'>Confirmé</option>
+		<option value='3'>Cloturé</option>
+		<option value='4'>Annulé</option>
+	</selection>
+
+	<selection name='iaccount.account.schedule.nature.select'>
+		<option value='0'>Paiement</option>
+		<option value='1'>Mensu Masse</option>
+		<option value='2'>Mensu Grand Compte</option>
+	</selection>
+
+	<selection name='base.base.on.select'>
+		<option value='amount'>Montant</option>
+		<option value='quantity'>Quantité réelle</option>
+	</selection>
+
+	<selection name='pricing.list.type.select'>
+		<option value='0'></option>
+		<option value='1'>Personnalisé</option>
+	</selection>
+
+	<selection name='iadministration.export.type.select'>
+		<option value="pdf">Pdf</option>
+		<option value="xls">Excel</option>
+	</selection>
+
+	<selection name='move.line.report.type.select'>
+		<option value="1">Journal des encaissements</option>
+		<option value="2">Grand livre</option>
+		<option value="3">Balance</option>
+		<option value="4">Balance agée</option>
+		<option value="5">Bordereau de remise de chèque</option>
+		<option value="10">Récap. reçus espèces</option>
+		<option value="11">Journal</option>
+		<option value="13">Ecart de règlement</option>
+		<option value="12">Déclaration de TVA</option>
+	</selection>
+
+	<selection name='move.line.report.type.select.export'>
+		<option value="6">Export vente -> Agresso</option>
+		<option value="7">Export avoir -> Agresso</option>
+		<option value="8">Export trésorerie -> Agresso</option>
+		<option value="9">Export achat -> Agresso</option>
+	</selection>
+
+	<selection name='move.state.select'>
+		<option value='draft'>Brouillon</option>
+		<option value='simulated'>Simulée</option>
+		<option value='validated'>Validée</option>
+		<option value='canceled'>Annulé</option>
+	</selection>
+
+	<selection name='cash.register.state.select'>
+		<option value='0'>Brouillon</option>
+		<option value='1'>Fermée</option>
+	</selection>
+
+	<selection name='payer.quality.config.line.incident.type.select'>
+		<option value='0'>Relance</option>
+		<option value='1'>Rejet</option>
+	</selection>
+
+	<selection name='iaccount.account.schedule.irrecoverable.state.select'>
+		<option value="0"></option>
+		<option value="1">A passer en irrécouvrable</option>
+		<option value="2">Passé en irrécouvrable</option>
+	</selection>
+
+	<selection name="sequence.generic.code.select">
+		<option value="partner">Tiers</option>
+		<option value="move">Ecriture comptable</option>
+		<option value="customerInvoice">Facture client</option>
+		<option value="supplierInvoice">Facture fournisseur</option>
+		<option value="customerRefund">Avoir client</option>
+		<option value="supplierRefund">Avoir fournisseur</option>
+		<option value="paymentSchedule">Echéancier</option>
+		<option value="paymentVoucher">Saisie paiement</option>
+		<option value="debit">Numéro de prélèvement</option>
+		<option value="debitReject">Rejet des prélèvements</option>
+		<option value="moveLineReport">Reporting comptable</option>
+		<option value="reimbursement">Remboursements</option>
+		<option value="paymentVoucherReceiptNo">Numéro de reçu (Saisie paiement)</option>
+		<option value="accountClearance">Apurement des trop-perçus</option>
+		<option value="irrecoverable">Passage en irrécouvrable</option>
+		<option value="chequeReject">Rejet de chèque</option>
+		<option value="salesInterface">Interface vente</option>
+		<option value="refundInterface">Interface avoir</option>
+		<option value="treasuryInterface">Interface trésorerie</option>
+		<option value="purchaseInterface">Interface achat</option>
+		<option value="moveLineExport">Export comptable</option>
+		<option value="doubtfulCustomer">Passage en créance douteuse</option>
+	</selection>
+
+	<selection name="index.input.source.select">
+		<option value="ivs">SVI</option>
+		<option value="crm">CRM</option>
+	</selection>
+
+	<selection name="company.paybox.hash.select">
+		<option value="SHA512">SHA512</option>
+		<option value="SHA256">SHA256</option>
+		<option value="RIPEMD160">RIPEMD160</option>
+		<option value="SHA384">SHA384</option>
+		<option value="SHA224">SHA224</option>
+		<option value="MDC2">MDC2</option>
+	</selection>
+
+	<!-- TODO à modifier, produit, taxe, paiement dans le code java ou les vues -->
+	<selection name="account.management.type.select">
+		<option value="1">Produit</option>
+		<option value="2">Taxe</option>
+		<option value="3">Paiement</option>
+	</selection>
+
+	<selection name="iinvoice.batch.action.select">
+		<option value="0">Facturation</option>
+		<option value="1">Statut</option>
+		<option value="2">Alarme</option>
+		<option value="3">Facturation des mémoires</option>
+		<option value="4">Confirmation des mémoire bordereau</option>
+	</selection>
+
+	<selection name="iaccounting.batch.action.select">
+		<option value="11">Reimbursement</option>
+		<option value="12">Direct debit</option>
+		<option value="14">Reminder</option>
+		<option value="15">Payments by IPO et IPO cheque</option>
+		<option value="16">Doubtful Customers</option>
+	</selection>
+
+	<selection name="ionlineagency.batch.type.select">
+		<option value="1">Export vers l'agence en ligne</option>
+		<option value="2">Import depuis l'agence en ligne</option>
+	</selection>
+
+	<selection name="ireimbursement.batch.type.select">
+		<option value="1">Export des remboursements</option>
+		<option value="2">Import des rejets de remboursements</option>
+	</selection>
+
+	<selection name="ireimbursement.batch.export.type.select">
+		<option value="1">Générer les remboursements</option>
+		<option value="2">Exporter les remboursements</option>
+	</selection>
+
+	<selection name="iaccount.account.schedule.type.select">
+		<option value="1">Export des prélèvements</option>
+		<option value="2">Import des rejets de prélèvements</option>
+	</selection>
+
+	<selection name="ireminder.batch.type.select">
+		<option value="1">Relance classique</option>
+	</selection>
+
+	<selection name="iinterbank.account.order.batch.type.select">
+		<option value="1">Import des paiements par TIP et TIP chèque</option>
+		<option value="2">Import des rejets de paiement par TIP et TIP chèque</option>
+	</selection>
+
+	<selection name="iinvoice.batch.to.status.select">
+		<option value="tov">Valider</option>
+		<option value="val">Ventiler</option>
+	</selection>
+
+	<selection name="iinvoice.batch.from.status.select">
+		<option value="dra">Brouillon</option>
+		<option value="tov">A valider</option>
+		<option value="val">Valider</option>
+		<option value="ala">En alarme</option>
+	</selection>
+
+	<selection name='journal.description.type.select'>
+		<option value="0">Libre</option>
+		<option value="1">Paiement</option>
+		<option value="2">Facture/Avoir</option>
+		<option value="3">Libellé uniquement</option>
+		<option value="4">Rejet</option>
+		<option value="5">Echéance</option>
+	</selection>
+
+	<selection name="isale.sales.rule.action.select">
+		<option value="1">Prise de rendez-vous</option>
+		<option value="2">Construction d'une offre personnalisée</option>
+		<option value="3">E-mail</option>
+		<option value="4">Courrier</option>
+		<option value="5">Alarme</option>
+	</selection>
+
+	<selection name="iadministration.indicator.generator.request.type.select">
+		<option value="0">SQL</option>
+		<option value="1">JPQL</option>
+	</selection>
+
+	<selection name='iialarm.batch.action.select'>
+		<option value='0'>Date d'anniversaire</option>
+		<option value='1'>Notification</option>
+		<option value='3'>Blocage en facturation</option>
+	</selection>
+
+	<selection name="base.message.related.to.select">
+		<option value="com.axelor.apps.base.db.Partner">Partner / Contact</option>
+		<option value="com.axelor.apps.crm.db.Lead">Lead</option>
+		<option value="com.axelor.apps.crm.db.Opportunity">Opportunity</option>
+		<option value="com.axelor.apps.base.db.Product">Product</option>
+		<option value="com.axelor.apps.crm.db.Event">Event</option>
+		<option value="com.axelor.apps.supplychain.db.SalesOrder">Quote / Order</option>
+		<option value="com.axelor.apps.organisation.db.Project">Project / Affair</option>
+		<option value="com.axelor.apps.organisation.db.Task">Task (Project)</option>
+	</selection>
+
+	<selection name="email.type.select">
+		<option value="1">Received</option>
+		<option value="2">Sended</option>
+	</selection>
+
+	<selection name="email.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Sended</option>
+		<option value="3">Canceled</option>
+	</selection>
+
+	<selection name="event.type.select">
+		<option value="1">Call</option>
+		<option value="2">Meeting</option>
+		<option value="3">Task</option>
+		<option value="4">Holiday</option>
+	</selection>
+
+	<!-- <selection name="crm.event.call.primary.status.select"> -->
+	<!-- <option value="1">Inboud</option> -->
+	<!-- <option value="2">Outbound</option> -->
+	<!-- </selection> -->
+
+	<!-- <selection name="crm.event.secondary.status.select"> -->
+	<!-- <option value="1">Planned</option> -->
+	<!-- <option value="2">Held</option> -->
+	<!-- <option value="3">Not held</option> -->
+	<!-- </selection> -->
+
+	<!-- <selection name="crm.event.task.thirdary.status.select"> -->
+	<!-- <option value="1">Not started</option> -->
+	<!-- <option value="2">In progress</option> -->
+	<!-- <option value="3">Completed</option> -->
+	<!-- <option value="4">Pending input</option> -->
+	<!-- <option value="5">Deferred</option> -->
+	<!-- </selection> -->
+
+<!-- 	<selection name="crm.event.related.to.select"> -->
+<!-- 		<option value="1">Partner</option> -->
+<!-- 		<option value="2">Contact</option> -->
+<!-- 		<option value="3">Lead</option> -->
+<!-- 		<option value="4">Opportunity</option> -->
+<!-- 		<option value="5">Product</option> -->
+<!-- 		<option value="6">Task</option> -->
+<!-- 		<option value="7">Affair</option> -->
+<!-- 		<option value="8">Quote</option> -->
+<!-- 		<option value="9">Order</option> -->
+<!-- 		<option value="10">Project</option> -->
+<!-- 		<option value="11">Task (Project)</option> -->
+<!-- 	</selection> -->
+	
+	<selection name="crm.event.related.to.select">
+		<option value="com.axelor.apps.base.db.Partner">Partner / Contact</option>
+		<option value="com.axelor.apps.crm.db.Lead">Lead</option>
+		<option value="com.axelor.apps.crm.db.Opportunity">Opportunity</option>
+		<option value="com.axelor.apps.base.db.Product">Product</option>
+		<option value="com.axelor.apps.crm.db.Event">Event</option>
+		<option value="com.axelor.apps.supplychain.db.SalesOrder">Quote / Order</option>
+		<option value="com.axelor.apps.organisation.db.Project">Project / Affair</option>
+		<option value="com.axelor.apps.organisation.db.Task">Task (Project)</option>
+	</selection>
+	
+	<selection name="crm.event.call.duration.minutes.select">
+		<option value="0">00</option>
+		<option value="15">15</option>
+		<option value="30">30</option>
+		<option value="45">45</option>
+	</selection>
+
+	<selection name="hr.expense.validation.status.select">
+		<option value="verified">Verified</option>
+		<option value="waiting">Waiting validation</option>
+	</selection>
+
+	<selection name="hr.expense.status.select">
+		<option value="draft">Draft</option>
+		<option value="submited">Submited</option>
+		<option value="validated">Validated</option>
+		<option value="paid">Paid</option>
+	</selection>
+
+	<selection name="expense.line.expense.type.select">
+		<option value="reinvoiceable">Reinvoiceable</option>
+		<option value="notReinvoiceable">Not reinvoiceable</option>
+	</selection>
+
+	<selection name="training.experience.type.select">
+		<option value="internal">Internal</option>
+		<option value="previousJob">Previous job</option>
+	</selection>
+
+	<selection name="sales.order.invoice.type.select">
+		<option value="1">Par commande</option>
+		<option value="2">A echéancier</option>
+		<option value="3">Par tâche</option>
+		<option value="4">En fonction nb de jours</option>
+		<option value="5">Par expédition</option>
+		<option value="6">Libre</option>
+	</selection>
+
+	<selection name="default.status.select">
+		<option value="1">Bouillon</option>
+		<option value="2">Confirmé</option>
+		<option value="3">Validé</option>
+		<option value="4">Annulé</option>
+	</selection>
+
+
+	<selection name="crm.opportunity.type.select">
+		<option value="1">Toiture</option>
+		<option value="2">Chauffage, ventilation et climatisation</option>
+		<option value="3">Peinture</option>
+		<option value="4">Maçonnerie</option>
+	</selection>
+
+	<selection name="crm.opportunity.sales.stage.select">
+		<option value="1">Prospection</option>
+		<option value="2">Qualification</option>
+		<option value="3">Analyse des besoins</option>
+		<option value="4">Proposition</option>
+		<option value="5">Identification des décideurs</option>
+		<option value="6">Analyse</option>
+		<option value="7">Proposition / Demande de prix</option>
+		<option value="8">Négociation</option>
+		<option value="9">Fermé Gagné</option>
+		<option value="10">Fermé Perdu</option>
+	</selection>
+
+	<selection name="crm.campaign.status.select">
+		<option value="1">Prospection</option>
+		<option value="2">Actif</option>
+		<option value="3">Inactive</option>
+		<option value="4">Compléte</option>
+		<option value="5">En attente</option>
+		<option value="6">Envoyé</option>
+	</selection>
+
+	<selection name="crm.campaign.type.select">
+		<option value="1">Télévente</option>
+		<option value="2">Courrier</option>
+		<option value="3">EMail</option>
+		<option value="4">Impression</option>
+		<option value="5">Internet</option>
+		<option value="6">Radio</option>
+		<option value="7">Télévision</option>
+		<option value="8">Jounaux</option>
+	</selection>
+
+	<selection name="crm.event.call.primary.status.select">
+		<option value="1">Entrant</option>
+		<option value="2">Sortant</option>
+	</selection>
+
+	<selection name="crm.event.secondary.status.select">
+		<option value="1">Planifié</option>
+		<option value="2">Réalisé</option>
+		<option value="3">Annulé</option>
+	</selection>
+
+	<selection name="crm.event.task.thirdary.status.select">
+		<option value="1">Non démarrée</option>
+		<option value="2">En cours</option>
+		<option value="3">Terminée</option>
+		<option value="4">En attente</option>
+		<option value="5">Reportée</option>
+	</selection>
+
+	<selection name="crm.event.task.priority.select">
+		<option value="1">Faible</option>
+		<option value="2">Moyen</option>
+		<option value="3">Elevé</option>
+	</selection>
+
+	<selection name="consulting.need.type.select">
+		<option value="1">Forfait</option>
+		<option value="2">Régie</option>
+		<option value="3">Backup</option>
+		<option value="4">TMA</option>
+	</selection>
+
+	<selection name="consulting.need.pricing.mode.select">
+		<option value="1">Journalier</option>
+		<option value="2">Fixe mensuel</option>
+		<option value="3">Mensuel régularisé</option>
+	</selection>
+
+	<selection name="grade.0.up.to.5.select">
+		<option value="1">1</option>
+		<option value="2">2</option>
+		<option value="3">3</option>
+		<option value="4">4</option>
+		<option value="5">5</option>
+	</selection>
+	
+	<selection name="grade.0.up.to.10.select">
+		<option value="1">1</option>
+		<option value="2">2</option>
+		<option value="3">3</option>
+		<option value="4">4</option>
+		<option value="5">5</option>
+		<option value="6">6</option>
+		<option value="7">7</option>
+		<option value="8">8</option>
+		<option value="9">9</option>
+		<option value="10">10</option>
+	</selection>
+	
+	<selection name="organisation.timesheet.time.unit.select">
+		<option value="1">Jour</option>
+		<option value="2">Heure</option>
+	</selection>
+	
+
+	<selection name="consulting.need.status.select">
+		<option value="1">Waiting for acceptation</option>
+		<option value="2">Refused</option>
+		<option value="3">Open</option>
+		<option value="4">Lost</option>
+		<option value="5">Canceled</option>
+		<option value="6">Converted</option>
+		<option value="7">Win</option>
+	</selection>
+
+	<!-- Organisation -->
+
+	<selection name="organisation.candidate.availability.select">
+		<option value="1">Immédiate</option>
+		<option value="2">1 mois</option>
+		<option value="3">2 mois</option>
+		<option value="4">3 mois</option>
+		<option value="5">1 mois négociable</option>
+		<option value="6">2 mois négociable</option>
+		<option value="7">3 mois négociable</option>
+	</selection>
+
+	<selection name="organisation.candidate.relocation.select">
+		<option value="1">National</option>
+		<option value="2">International</option>
+		<option value="3">Réduite</option>
+	</selection>
+
+	<selection name="organisation.candidate.category.select">
+		<option value="1">Junior</option>
+		<option value="2">Senior</option>
+		<option value="3">Expert</option>
+	</selection>
+
+	<selection name="organisation.candidate.macroCategory.select">
+		<option value="1">Cadre Junior (0 - 5 ans)</option>
+		<option value="2">Cadre Confirmé (5 - 10 ans)</option>
+		<option value="3">Cadre Senior ( > 10 ans)</option>
+		<option value="4">Non-Cadre Junior (0 - 5 ans)</option>
+		<option value="5">Non-Cadre Confirmé (5 - 10 ans)</option>
+		<option value="6">Non-Cadre Senior ( > 10 ans)</option>
+	</selection>
+
+	<selection name="organisation.recruitmentProcessAdvancement.status.select">
+		<option value="1">1er RDV (vert)</option>
+		<option value="2">2éme RDV (vert)</option>
+		<option value="3">3éme RDV (orange)</option>
+		<option value="4">Proposition (rouge)</option>
+		<option value="5">Signature (rouge)</option>
+		<option value="6">OK (rouge)</option>
+		<option value="7">NDPS (orange)</option>
+		<option value="8">Négatif (vert)</option>
+	</selection>
+
+	<selection name="organisation.candidate.recruitmentType.select">
+		<option value="1">Embauche directe</option>
+		<option value="2">Embauche projet</option>
+	</selection>
+
+	<selection name="base.keyword.type.select">
+		<option value="1">Outils</option>
+		<option value="2">Secteurs</option>
+		<option value="3">Metiers</option>
+	</selection>
+
+	<selection name="organisation.position.recommendation.select">
+		<option value="1">Très favorable (afficher la ligne en vert)</option>
+		<option value="2">Favorable  (afficher la ligne en vert)</option>
+		<option value="3">Mitigé  (afficher la ligne en orange)</option>
+		<option value="4">Défavorable  (afficher la ligne en rouge)</option>
+	</selection>
+
+	<selection name="grade.0.up.to.20.select">
+		<option value="0">0</option>
+		<option value="1">1</option>
+		<option value="2">2</option>
+		<option value="3">3</option>
+		<option value="4">4</option>
+		<option value="5">5</option>
+		<option value="6">6</option>
+		<option value="7">7</option>
+		<option value="8">8</option>
+		<option value="9">9</option>
+		<option value="10">10</option>
+		<option value="11">11</option>
+		<option value="12">12</option>
+		<option value="13">13</option>
+		<option value="14">14</option>
+		<option value="15">15</option>
+		<option value="16">16</option>
+		<option value="17">17</option>
+		<option value="18">18</option>
+		<option value="19">19</option>
+		<option value="20">20</option>
+	</selection>
+
+	<selection name="organisation.personal.info.accreditation.select">
+		<option value="1"></option>
+		<option value="2">CD</option>
+		<option value="3">SD</option>
+		<option value="4">OTAN</option>
+		<option value="5">CEA</option>
+	</selection>
+
+	<selection name="organisation.personal.info.marital.status.select">
+		<option value="1">Célibataire</option>
+		<option value="2">Marié</option>
+	</selection>
+
+	<selection name="organisation.candidate.other.opportunity.state.select">
+		<option value="1">1er RDV (vert)</option>
+		<option value="2">2éme RDV (vert)</option>
+		<option value="3">3éme RDV (otange)</option>
+		<option value="4">Proposition (rouge)</option>
+		<option value="5">Signature (rouge)</option>
+		<option value="6">OK (rouge)</option>
+		<option value="7">NDPS (orange)</option>
+		<option value="8">Négatif (vert)</option>
+	</selection>
+
+	<selection name="organisation.candidate.other.opportunity.interest.select">
+		<option value="1">Fort</option>
+		<option value="2">Moyen</option>
+		<option value="3">Faible</option>
+	</selection>
+
+	<selection name="organisation.sales.order.line.discount.type.select">
+		<option value="1">En %</option>
+		<option value="2">Fixe</option>
+	</selection>
+	
+	<selection name="organisation.task.status.select">
+		<option value="1">Bouillon</option>
+		<option value="2">Confirmé</option>
+		<option value="3">Validé</option>
+		<option value="4">Annulé</option>
+	</selection>
+
+	<selection name="supplychain.invoicing.moment.select">
+		<option value="1">Lorsqu'une tâche est terminée</option>
+		<option value="2">Facture brouillons N jours après validation de la commande</option>
+	</selection>
+	
+	<selection name="organisation.schedule.line.day.select">
+		<option value="1">Lundi</option>
+		<option value="2">Mardi</option>
+		<option value="3">Mercredi</option>
+		<option value="4">Jeudi</option>
+		<option value="5">Vendredi</option>
+		<option value="6">Samedi</option>
+		<option value="7">Dimanche</option>
+	</selection>
+	
+	<selection name="organisation.resource.status.select">
+		<option value="1">En cours</option>
+		<option value="2">En attente confirmation candidat</option>
+		<option value="3">Ok</option>
+		<option value="4">Ko</option>
+		<option value="5">Annulé</option>
+	</selection>
+	
+	<selection name="supplychain.location.type.select">
+		<option value="1">Internal</option>
+		<option value="2">Supplier</option>
+		<option value="3">Client</option>
+		<option value="4">Virtual</option>
+	</selection>
+	
+	<selection name="supplychain.default.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Confirmed</option>
+		<option value="3">Realized</option>
+		<option value="4">Canceled</option>
+	</selection>
+	
+	<selection name="supplychain.min.stock.rules.type.select">
+		<option value="1">Current</option>
+		<option value="2">Future</option>
+	</selection>
+	
+	<selection name="supplychain.min.stock.rules.order.alert.select">
+		<option value="1">Alert</option>
+		<option value="2">PO/Production</option>
+	</selection>
+	
+	<selection name="supplychain.purchase.order.status.select">
+		<option value="1">Brouillon</option>
+		<option value="2">Demandé</option>
+		<option value="3">Receptionné</option>
+		<option value="4">Validé</option>
+		<option value="5">Cloturé</option>
+	</selection>
+
+	<selection name="production.prod.order.line.status">
+		<option value="1">Draft</option>
+		<option value="2">Standby</option>
+		<option value="3">Planned</option>
+		<option value="4">Finished</option>
+	</selection>
+
+	<selection name="crm.marketing.type.select">
+		<option value="1">Email</option>
+		<option value="2">Mail</option>
+		<option value="3">Phone</option>
+	</selection>
+	
+	<selection name="crm.marketing.follow.up.type.select">
+		<option value="1">Calls</option>
+		<option value="2">Meeting</option>
+	</selection>
+
+	<selection name="consulting.needline.profile.category.select">
+		<option value="1">Junior</option>
+		<option value="2">Senior</option>
+		<option value="3">Expert</option>
+	</selection>
+	
+	<selection name="consulting.resource.lost.reason.select">
+		<option value="1">Too expensive</option>
+		<option value="2">Availability issue</option>
+		<option value="3">Postponed</option>
+		<option value="4">Internal solution</option>
+		<option value="5">No budget</option>
+	</selection>
+
+	<selection name="consulting.price.list.based.on.select">
+		<option value="1">Prix de revient</option>
+		<option value="2">Prix de vente</option>
+	</selection>
+
+	<selection name="consulting.price.list.type.select">
+		<option value="1">Vente</option>
+		<option value="2">Achat</option>
+	</selection>
+
+	<selection name="consulting.price.list.discount.line.type.select">
+		<option value="1">Remise</option>
+		<option value="2">Ajout</option>
+	</selection>
+	
+	<selection name="consulting.price.list.discount.line.price.type.select">
+		<option value="1">Prix unitaire</option>
+		<option value="2">Remise</option>
+	</selection>
+
+
+</object-views>
