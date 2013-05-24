@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.IEvent;
-import com.axelor.apps.organisation.db.Employee;
 import com.axelor.apps.organisation.db.LeaveRequest;
 import com.google.inject.persist.Transactional;
 
@@ -63,9 +62,10 @@ public class EventService {
 		event.setTypeSelect(IEvent.HOLIDAY);
 		event.setStartDateTime(leaveRequest.getStartDateT());
 		event.setEndDateTime(leaveRequest.getEndDateT());
-		
-		Employee employee = leaveRequest.getEmployee();
-		event.setDescription(employee.getName()+" "+employee.getFirstName());
+		event.setUserInfo(leaveRequest.getEmployeeUserInfo());
+		if(leaveRequest.getLeaveRequestReason()!= null)  {
+			event.setDescription(leaveRequest.getLeaveRequestReason().getName());
+		}
 		return event.save();
 		
 	}

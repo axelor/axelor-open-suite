@@ -10,8 +10,9 @@
   	<many-to-one name="salesOrderLine" ref="com.axelor.apps.supplychain.db.SalesOrderLine" title="Sale order line (origin)"/>
   	<string name="name" title="Task name"/>
   	<many-to-one name="project" ref="com.axelor.apps.organisation.db.Project" title="Project"/>
-  	<decimal name="totalTaskDays" title="Total ordered days (task)"/>
-  	<decimal name="totalTimeSheetDays" title="Total worked days (Timesheet)"/>
+  	<decimal name="totalTaskDays" title="Total ordered days"/>
+  	<decimal name="totalTimeSheetDays" title="Total worked days"/>
+  	<decimal name="taskProgress" title="Task Progress"/>
   	<string name="description" title="Description" large="true"/>
   	<boolean name="isTimesheetAffected" title="Input from timesheet ?"/>
   	<decimal name="totalPlannedDays" title="Total planned days"/>

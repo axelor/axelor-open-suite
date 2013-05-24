@@ -8,6 +8,7 @@
 	<entity name="Candidate" lang="java">
 		<string name="importId"/>
 		<integer name="titleSelect" title="Civility" selection="partner.title.type.select"/>
+		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="Titulaire"/>
 		<string name="name" title="Family Name" required="true"/>
 		<string name="firstName" title="First Name" required="true"/>
 		<string name="mobilePhone" title="Mobile N°"/>

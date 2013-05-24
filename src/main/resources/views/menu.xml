@@ -161,264 +161,9 @@
 	</action-view>
 	
 
-	<menuitem name="crm-root" title="CRM"
-		icon="img/icons/crm.png" />
-
-	<menuitem name="crm-root-task" parent="crm-root"
-		title="My Tasks" action="crm.root.task" />
-
-	<action-view name="crm.root.task" title="My Tasks"
-		model="com.axelor.apps.crm.db.Event" icon="img/icons/crm_small.png">
-		<view type="grid" name="crm-task-grid"/>
-		<view type="form" name="crm-task-form"/>
-		<domain>self.typeSelect = 3 and self.userInfo.internalUser.id = :_internalUser</domain>
-		<context name="_typeSelect" expr="3"/>
-		<context name="_internalUser" expr="eval: __user__.id"/>
-	</action-view>
-	
-	
-	<menuitem name="crm-root-meeting" parent="crm-root"
-		title="My Meetings" action="crm.root.meeting" />
-
-	<action-view name="crm.root.meeting" title="My Meetings"
-		model="com.axelor.apps.crm.db.Event" icon="img/icons/crm_small.png">
-		<view type="grid" name="meeting-grid"/>
-		<view type="form" name="meeting-form"/>
-		<view type="calendar" name="meeting-calendar"/>
-		<domain>self.typeSelect = 2 and self.userInfo.internalUser.id = :_internalUser</domain>
-		<context name="_typeSelect" expr="2"/>
-		<context name="_internalUser" expr="eval: __user__.id"/>
-	</action-view>
-	
-	<menuitem name="crm-root-call" parent="crm-root"
-		title="My Calls" action="crm.root.call" />
-
-	<action-view name="crm.root.call" title="My Calls"
-		model="com.axelor.apps.crm.db.Event" icon="img/icons/crm_small.png">
-		<view type="grid" name="call-grid"/>
-		<view type="form" name="call-form"/>
-		<domain>self.typeSelect = 1 and self.userInfo.internalUser.id = :_internalUser</domain>
-		<context name="_typeSelect" expr="1"/>
-		<context name="_internalUser" expr="eval: __user__.id"/>
-	</action-view>
-	
-	<menuitem name="crm-root-lead" parent="crm-root"
-		title="My Leads" action="crm.root.lead" />
-
-	<action-view name="crm.root.lead" title="My Leads"
-		model="com.axelor.apps.crm.db.Lead" icon="img/icons/crm_small.png">
-		<view type="grid" />
-		<view type="form" />
-		<domain>self.userInfo IS NOT NULL and self.userInfo.internalUser.id = :_internalUser</domain>
-		<context name="_internalUser" expr="eval: __user__.id"/>
-	</action-view>
-	
-	<menuitem name="crm-root-unassigned-lead" parent="crm-root"
-		title="Unassigned Leads" action="crm.root.unassigned.lead" />
-
-	<action-view name="crm.root.unassigned.lead" title="Unassigned Leads"
-		model="com.axelor.apps.crm.db.Lead" icon="img/icons/crm_small.png">
-		<view type="grid" />
-		<view type="form" />
-		<domain>self.userInfo IS NULL</domain>
-	</action-view>
-	
-	<menuitem name="crm-root-opportunity" parent="crm-root"
-		title="My Opportunities" action="crm.root.opportunity" />
-
-	<action-view name="crm.root.opportunity" title="My Opportunities"
-		model="com.axelor.apps.crm.db.Opportunity" icon="img/icons/crm_small.png">
-		<view type="grid" />
-		<view type="form" />
-		<domain>self.userInfo IS NOT NULL and self.userInfo.internalUser.id = :_internalUser</domain>
-		<context name="_internalUser" expr="eval: __user__.id"/>
-	</action-view>
-	
-	<menuitem name="crm-root-unassigned-opportunity" parent="crm-root"
-		title="Unassigned Opportunities" action="crm.root.unassigned.opportunity" />
-
-	<action-view name="crm.root.unassigned.opportunity" title="Unassigned Opportunities"
-		model="com.axelor.apps.crm.db.Opportunity" icon="img/icons/crm_small.png">
-		<view type="grid" />
-		<view type="form" />
-		<domain>self.userInfo IS NULL</domain>
-	</action-view>
-
-	<menuitem name="crm-root-team" parent="crm-root"
-		title="Team"/>
-
-	<menuitem name="crm-root-team-tasks" parent="crm-root-team"
-		title="My Team Tasks" action="crm.root.team.tasks" />
-
-	<action-view name="crm.root.team.tasks" title="My Team Tasks"
-		model="com.axelor.apps.crm.db.Event" icon="img/icons/crm_small.png">
-		<view type="grid" name="crm-task-grid"/>
-		<view type="form" name="crm-task-form"/>
-		<domain>self.typeSelect = 3 and self.team IN self.userInfo.teamSet</domain>
-		<context name="_typeSelect" expr="3"/>
-	</action-view>
-	
-	<menuitem name="crm-root-team-meeting" parent="crm-root-team"
-		title="My Team Meetings" action="crm.root.team.meeting" />
-
-	<action-view name="crm.root.team.meeting" title="My Team Meetings"
-		model="com.axelor.apps.crm.db.Event" icon="img/icons/crm_small.png">
-		<view type="grid" name="meeting-grid"/>
-		<view type="form" name="meeting-form"/>
-		<view type="calendar" name="meeting-calendar"/>
-		<domain>self.typeSelect = 2 and self.team IN self.userInfo.teamSet</domain>
-		<context name="_typeSelect" expr="2"/>
-	</action-view>
-	
-	<menuitem name="crm-root-team-call" parent="crm-root-team"
-		title="My Team Calls" action="crm.root.team.call" />
-
-	<action-view name="crm.root.team.call" title="My Team Calls"
-		model="com.axelor.apps.crm.db.Event" icon="img/icons/crm_small.png">
-		<view type="grid" name="call-grid"/>
-		<view type="form" name="call-form"/>
-		<domain>self.typeSelect = 1 and self.team IN self.userInfo.teamSet</domain>
-		<context name="_typeSelect" expr="1"/>
-	</action-view>
-	
-	<menuitem name="crm-root-team-lead" parent="crm-root-team"
-		title="My Team Leads" action="crm.root.team.lead" />
-
-	<action-view name="crm.root.team.lead" title="My Team Leads"
-		model="com.axelor.apps.crm.db.Lead" icon="img/icons/crm_small.png">
-		<view type="grid" />
-		<view type="form" />
-		<domain>self.team IN self.userInfo.teamSet</domain>
-	</action-view>
-	
-	<menuitem name="crm-root-team-opportunity" parent="crm-root-team"
-		title="My Team Opportunities" action="crm.root.team.opportunity" />
-
-	<action-view name="crm.root.team.opportunity" title="My Team Opportunities"
-		model="com.axelor.apps.crm.db.Opportunity" icon="img/icons/crm_small.png">
-		<view type="grid" />
-		<view type="form" />
-		<domain>self.team IN self.userInfo.teamSet</domain>
-	</action-view>
-	
-	<menuitem name="crm-root-allcrm" parent="crm-root"
-	title="All CRM activities" />
-	
-	<menuitem name="crm-root-allcrm-task" parent="crm-root-allcrm"
-		title="All Tasks" action="crm.root.allcrm.tasks" />
-
-	<action-view name="crm.root.allcrm.tasks" title="All Tasks"
-		model="com.axelor.apps.crm.db.Event" icon="img/icons/crm_small.png">
-		<view type="grid" name="crm-task-grid"/>
-		<view type="form" name="crm-task-form"/>
-		<domain>self.typeSelect = 3</domain>
-		<context name="_typeSelect" expr="3"/>
-	</action-view>
-	
-	<menuitem name="crm-root-allcrm-meeting" parent="crm-root-allcrm"
-		title="All Meetings" action="crm.root.allcrm.meeting" />
-
-	<action-view name="crm.root.allcrm.meeting" title="All Meetings"
-		model="com.axelor.apps.crm.db.Event" icon="img/icons/crm_small.png">
-		<view type="grid" name="meeting-grid"/>
-		<view type="form" name="meeting-form"/>
-		<view type="calendar" name="meeting-calendar"/>
-		<domain>self.typeSelect = 2</domain>
-		<context name="_typeSelect" expr="2"/>
-	</action-view>
-	
-	<menuitem name="crm-root-allcrm-call" parent="crm-root-allcrm"
-		title="All Calls" action="crm.root.allcrm.call" />
-
-	<action-view name="crm.root.allcrm.call" title="All Calls"
-		model="com.axelor.apps.crm.db.Event" icon="img/icons/crm_small.png">
-		<view type="grid" name="call-grid"/>
-		<view type="form" name="call-form"/>
-		<domain>self.typeSelect = 1</domain>
-		<context name="_typeSelect" expr="1"/>
-	</action-view>
-	
-	<menuitem name="crm-root-allcrm-lead" parent="crm-root-allcrm"
-		title="All Leads" action="crm.root.allcrm.lead" />
-
-	<action-view name="crm.root.allcrm.lead" title="All Leads"
-		model="com.axelor.apps.crm.db.Lead" icon="img/icons/crm_small.png">
-		<view type="grid" />
-		<view type="form" />
-	</action-view>
-	
-	<menuitem name="crm-root-allcrm-opportunity" parent="crm-root-allcrm"
-		title="All Opportunities" action="crm.root.allcrm.opportunity" />
-
-	<action-view name="crm.root.allcrm.opportunity" title="All Opportunities"
-		model="com.axelor.apps.crm.db.Opportunity" icon="img/icons/crm_small.png">
-		<view type="grid" />
-		<view type="form" />
-	</action-view>
-	
-	<menuitem name="crm-root-allcrm-marketings" parent="crm-root-allcrm"
-	title="Marketings" />
-	
-	<menuitem name="crm-root-allcrm-campaign" parent="crm-root-allcrm-marketings"
-		title="Campaigns" action="crm.root.allcrm.compaign" />
-
-	<action-view name="crm.root.allcrm.compaign" title="Campaigns"
-		model="com.axelor.apps.crm.db.Campaign" icon="img/icons/crm_small.png">
-		<view type="grid" />
-		<view type="form" />
-	</action-view>
-	
-	<menuitem name="crm-root-allcrm-marketing" parent="crm-root-allcrm-marketings"
-		title="Marketings" action="crm.root.allcrm.marketing" />
-
-	<action-view name="crm.root.allcrm.marketing" title="Marketings"
-		model="com.axelor.apps.crm.db.Marketing" icon="img/icons/crm_small.png">
-		<view type="grid" />
-		<view type="form" />
-	</action-view>
 
 	
-	<menuitem name="crm-conf" parent="crm-root" title="Configuration"
-		icon="img/icons/parameter.png" />
-	
-	<menuitem name="crm-root-lead-source" parent="crm-conf"
-		title="Leads source" action="crm.conf.lead.source" />
-		
-	<action-view name="crm.conf.lead.source" title="Leads source"
-		model="com.axelor.apps.base.db.Source" icon="img/icons/parameter_small.png">
-		<view type="grid" />
-		<view type="form" />
-	</action-view>
-
-	<menuitem name="crm-root-meeting-type" parent="crm-conf"
-		title="Meeting types" action="crm.conf.meeting.type" />
-
-	<action-view name="crm.conf.meeting.type" title="Meeting types"
-		model="com.axelor.apps.crm.db.MeetingType" icon="img/icons/parameter_small.png">
-		<view type="grid" />
-		<view type="form" />
-	</action-view>
-	
-	<menuitem name="crm-root-participant" parent="crm-conf"
-		title="Participants" action="crm.conf.participant" />
-
-	<action-view name="crm.conf.participant" title="Participants"
-		model="com.axelor.apps.crm.db.Participant" icon="img/icons/parameter_small.png">
-		<view type="grid" />
-		<view type="form" />
-	</action-view>
-	
-	<menuitem name="crm-root-category" parent="crm-conf"
-		title="Event categories" action="crm.conf.event.category" />
-
-	<action-view name="crm.conf.event.category" title="Event categories"
-		model="com.axelor.apps.crm.db.EventCategory" icon="img/icons/parameter_small.png">
-		<view type="grid" />
-		<view type="form" />
-	</action-view>
-	
-	
-	<menuitem name="product-root" title="Products"
+	<menuitem name="product-root" title="Products" priority="50"
 		icon="img/icons/product.png" />
 
  
@@ -429,7 +174,7 @@
 		model="com.axelor.apps.base.db.Product" icon="img/icons/product_small.png">
 		<view type="grid" />
 		<view type="form" />
-		<domain>self.endDate IS NOT NULL and CURRENT_DATE &lt; self.endDate</domain>
+		<domain>self.endDate IS NULL or CURRENT_DATE &lt; self.endDate</domain>
 	</action-view>
 
 	<menuitem name="product-root-filters" parent="product-root"
@@ -648,7 +393,7 @@
 		model="com.axelor.apps.supplychain.db.PurchaseOrder" icon="img/icons/order_small.png">
 		<view type="grid" name="purchase-order-grid" />
 		<view type="form" name="purchase-order-form" />
-		<domain>self.statusSelect = 1 and self.purchasingManagerUserInfo.internalUser.id = :_internalUser</domain>
+		<domain>self.statusSelect = 1 and self.buyerUserInfo.internalUser.id = :_internalUser</domain>
 		<context name="_internalUser" expr="eval: __user__.id"/>
 	</action-view>
 	
@@ -659,7 +404,7 @@
 		model="com.axelor.apps.supplychain.db.PurchaseOrder" icon="img/icons/order_small.png">
 		<view type="grid" name="purchase-order-grid" />
 		<view type="form" name="purchase-order-form" />
-		<domain>self.statusSelect = 2 and self.purchasingManagerUserInfo.internalUser.id = :_internalUser</domain>
+		<domain>self.statusSelect = 2 and self.buyerUserInfo.internalUser.id = :_internalUser</domain>
 		<context name="_internalUser" expr="eval: __user__.id"/>
 	</action-view>
 	
@@ -670,7 +415,7 @@
 		model="com.axelor.apps.supplychain.db.PurchaseOrder" icon="img/icons/order_small.png">
 		<view type="grid" name="purchase-order-grid" />
 		<view type="form" name="purchase-order-form" />
-		<domain>self.statusSelect = 3 and self.purchasingManagerUserInfo.internalUser.id = :_internalUser</domain>
+		<domain>self.statusSelect = 3 and self.buyerUserInfo.internalUser.id = :_internalUser</domain>
 		<context name="_internalUser" expr="eval: __user__.id"/>
 	</action-view>
 	
@@ -681,7 +426,7 @@
 		model="com.axelor.apps.supplychain.db.PurchaseOrder" icon="img/icons/order_small.png">
 		<view type="grid" name="purchase-order-grid" />
 		<view type="form" name="purchase-order-form" />
-		<domain>self.statusSelect = 4 and self.purchasingManagerUserInfo.internalUser.id = :_internalUser</domain>
+		<domain>self.statusSelect = 4 and self.buyerUserInfo.internalUser.id = :_internalUser</domain>
 		<context name="_internalUser" expr="eval: __user__.id"/>
 	</action-view>
 	
@@ -863,6 +608,35 @@
 	<menuitem name="hr-root" title="Humain Resources"
 		icon="img/icons/organisation.png" />
 
+	<menuitem name="hr-root-employee" parent="hr-root"
+		title="Employees" action="hr.root.employee" />
+
+	<action-view name="hr.root.employee" title="Employees"
+		model="com.axelor.apps.organisation.db.Employee" icon="img/evo-icons/organisation_small.png">
+		<view type="grid" name="employee-grid" />
+		<view type="form" name="employee-form" />
+	</action-view>	
+	
+	<menuitem name="hr-root-allmanagers" parent="hr-root"
+		title="All managers" action="hr.root.allmanagers" />
+
+	<action-view name="hr.root.allmanagers" title="All managers"
+		model="com.axelor.apps.organisation.db.Employee" icon="img/evo-icons/organisation_small.png">
+		<view type="grid" name="employee-grid" />
+		<view type="form" name="employee-form" />
+		<domain>self.macroCategorySelect in (1,2,3)</domain>
+	</action-view>	
+	
+	<menuitem name="hr-root-allworkers" parent="hr-root"
+		title="All workers" action="hr.root.allworkers" />
+
+	<action-view name="hr.root.allworkers" title="All workers"
+		model="com.axelor.apps.organisation.db.Employee" icon="img/evo-icons/organisation_small.png">
+		<view type="grid" name="employee-grid" />
+		<view type="form" name="employee-form" />
+		<domain>self.macroCategorySelect in (4,5,6)</domain>
+	</action-view>	
+	
 	<menuitem name="hr-root-recruitment" title="Recruitment" parent="hr-root"/>
 		
 	<menuitem name="hr-root-recruitment-candidate" parent="hr-root-recruitment"
@@ -990,9 +764,83 @@
 		<domain>self.statusSelect = 'paid'</domain>
 	</action-view>	
 	
+	<menuitem name="hr-root-conf" parent="hr-root" title="Configuration"
+		icon="img/icons/parameter.png" />
+
+	<menuitem name="hr-root-expense" parent="hr-root-conf"
+		title="Les notes de frais" action="hr.root.expense" />
+
+	<action-view name="hr.root.expense" title="Les notes de frais"
+		model="com.axelor.apps.organisation.db.Expense" icon="img/evo-icons/organisation_small.png">
+		<view type="grid" name="expense-grid" />
+		<view type="form" name="expense-form" />
+	</action-view>	
 	
+	<menuitem name="hr-root-leave-request" parent="hr-root-conf"
+		title="Les demandes de congés" action="hr.root.leave.request" />
 
+	<action-view name="hr.root.leave.request" title="Les demandes de congés"
+		model="com.axelor.apps.organisation.db.LeaveRequest" icon="img/evo-icons/organisation_small.png">
+		<view type="grid" name="leave-request-grid" />
+		<view type="form" name="leave-request-form" />
+		<view type="calendar" name="leave-request-calendar" />
+	</action-view>
 
+	<menuitem name="hr-root-overtime" parent="hr-root-conf"
+		title="Les heures supplémentaires" action="hr.root.overtime" />
+
+	<action-view name="hr.root.overtime" title="Les heures supplémentaires"
+		model="com.axelor.apps.organisation.db.Overtime" icon="img/evo-icons/organisation_small.png">
+		<view type="grid" name="overtime-grid" />
+		<view type="form" name="overtime-form" />
+	</action-view>	
+	
+	<menuitem name="hr-root-training" parent="hr-root-conf"
+		title="Les formations" action="hr.root.training" />
+
+	<action-view name="hr.root.training" title="Les formations"
+		model="com.axelor.apps.organisation.db.Training" icon="img/evo-icons/organisation_small.png">
+		<view type="grid" name="training-grid" />
+		<view type="form" name="training-form" />
+	</action-view>	
+	
+	<menuitem name="hr-root-timesheet" parent="hr-root-conf"
+		title="Les feuilles de temps" action="hr.root.timesheet" />
+
+	<action-view name="hr.root.timesheet" title="Les feuilles de temps"
+		model="com.axelor.apps.organisation.db.Timesheet" icon="img/evo-icons/organisation_small.png">
+		<view type="grid" name="timesheet-grid" />
+		<view type="form" name="timesheet-form" />
+	</action-view>	
+	
+	<menuitem name="hr-root-planning" parent="hr-root-conf"
+		title="Les plannings" action="hr.root.planning" />
+
+	<action-view name="hr.root.planning" title="Les plannings"
+		model="com.axelor.apps.organisation.db.Planning" icon="img/evo-icons/organisation_small.png">
+		<view type="grid" name="planning-grid" />
+		<view type="form" name="planning-form" />
+	</action-view>	
+	
+	<menuitem name="hr-root-schedule" parent="hr-root-conf"
+		title="Les horaires" action="hr.root.schedule" />
+
+	<action-view name="hr.root.schedule" title="Les horaires"
+		model="com.axelor.apps.organisation.db.Schedule" icon="img/evo-icons/organisation_small.png">
+		<view type="grid" name="schedule-grid" />
+		<view type="form" name="schedule-form" />
+	</action-view>	
+	
+	<menuitem name="hr-root-config-public-holidays" parent="hr-root-conf"
+		title="Les jours fériés" action="hr.root.config.public.holidays" />
+		
+	<action-view name="hr.root.config.public.holidays" title="Les jours fériés"
+		model="com.axelor.apps.organisation.db.PublicHolidays" icon="img/evo-icons/parameter_small.png">
+		<view type="grid" name="public-holidays-grid" />
+		<view type="form" name="public-holidays-form" />
+	</action-view>	
+
+	
 	
 	<menuitem name="affair-root" title="Affair"
 		icon="img/icons/affair.png" />
