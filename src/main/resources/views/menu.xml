@@ -415,7 +415,7 @@
 		model="com.axelor.apps.base.db.Product" icon="img/icons/product_small.png">
 		<view type="grid" />
 		<view type="form" />
-		<domain>self.endDate IS NOT NULL and CURRENT_DATE &lt; self.endDate</domain>
+		<domain>self.endDate IS NULL or CURRENT_DATE &lt; self.endDate</domain>
 	</action-view>
 
 	<menuitem name="product-root-filters" parent="product-root"
