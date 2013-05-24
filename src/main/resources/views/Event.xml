@@ -37,7 +37,7 @@
         </group>
     </form>
     
-  <calendar name="meeting-calendar" title="Meetings" mode="month" colorBy="typeSelect" 
+  <calendar name="meeting-calendar" title="Meetings" mode="month" colorBy="userInfo" 
     eventStart="startDateTime" 
     eventStop="endDateTime" 
     eventLength="1">
