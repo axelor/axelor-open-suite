@@ -9,7 +9,7 @@
   
   	<many-to-one name="supplierPartner" ref="com.axelor.apps.base.db.Partner" title="Supplier"/>
   	<many-to-one name="affairProject" ref="com.axelor.apps.organisation.db.Project" title="Affair"/>
-	<many-to-one name="purchasingManagerUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="Purchase manager"/>
+	<many-to-one name="buyerUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="Buyer"/>
 	<date name="deliveryDate" title="Delivery Date"/>
   	<one-to-many name="purchaseOrderLineList"  mappedBy="purchaseOrder" ref="com.axelor.apps.supplychain.db.PurchaseOrderLine" title="Purchase order lines"/>
   	<integer name="statusSelect" title="Status" selection="supplychain.purchase.order.status.select"/>

@@ -49,7 +49,7 @@
 		title="All enterprises" action="contact.root.enterprises" />
 
 	<action-view name="contact.root.enterprises" title="All enterprises"
-		model="com.axelor.apps.base.db.Partner" icon="img/evo-icons/partner_small.png">
+		model="com.axelor.apps.base.db.Partner" icon="img/icons/partner_small.png">
 		<view type="grid" name="partner-grid" />
 		<view type="form" name="partner-form" />
 		<domain>self.partnerTypeSelect = 1</domain>
@@ -465,7 +465,7 @@
 		title="All travel expenses products" action="product.root.filters.travelexpenses" />
 		
 	<action-view name="product.root.filters.travelexpenses" title="All travel expenses products"
-		model="com.axelor.apps.base.db.Product" icon="img/evo-icons/product_small.png">
+		model="com.axelor.apps.base.db.Product" icon="img/icons/product_small.png">
 		<view type="grid" />
 		<view type="form" />
 		<domain>self.applicationTypeSelect = 3</domain>
@@ -475,7 +475,7 @@
 		title="All obsolete products" action="product.root.filters.obsoleteproducts" />
 		
 	<action-view name="product.root.filters.obsoleteproducts" title="All obsolete products"
-		model="com.axelor.apps.base.db.Product" icon="img/evo-icons/product_small.png">
+		model="com.axelor.apps.base.db.Product" icon="img/icons/product_small.png">
 		<view type="grid" />
 		<view type="form" />
 		<domain>self.endDate IS NOT NULL and CURRENT_DATE &gt; self.endDate</domain>
@@ -488,7 +488,7 @@
 		title="Product categories" action="product.conf.product.category" />
 
 	<action-view name="product.conf.product.category" title="Product categories"
-		model="com.axelor.apps.base.db.ProductCategory" icon="img/evo-icons/parameter_small.png">
+		model="com.axelor.apps.base.db.ProductCategory" icon="img/icons/parameter_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
@@ -497,10 +497,50 @@
 		title="Product families" action="product.conf.product.family" />
 
 	<action-view name="product.conf.product.family" title="Product families"
-		model="com.axelor.apps.base.db.ProductFamily" icon="img/evo-icons/parameter_small.png">
+		model="com.axelor.apps.base.db.ProductFamily" icon="img/icons/parameter_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
+	
+	<menuitem name="stock-root" title="Gestion des stocks"/>
+	
+	<menuitem name="stock-root-location" parent="stock-root"
+		title="Locations" action="stock.root.location" />
+	
+	<action-view name="stock.root.location" title="Locations"
+		model="com.axelor.apps.supplychain.db.Location" icon="img/icons/product_small.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
+	
+	<menuitem name="stock-root-stock-move" parent="stock-root"
+		title="Stock moves" action="stock.root.stock.move" />
+	
+	<action-view name="stock.root.stock.move" title="Stock moves"
+		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/product_small.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
+	
+	<menuitem name="stock-root-inventory" parent="stock-root"
+		title="Inventories" action="stock.root.inventory" />
+	
+	<action-view name="stock.root.inventory" title="Inventories"
+		model="com.axelor.apps.supplychain.db.Inventory" icon="img/icons/product_small.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
+	
+	<menuitem name="stock-root-min-stock-rules" parent="stock-root"
+		title="Minimum stock rules" action="stock.root.min.Stock.rules" />
+	
+	<action-view name="stock.root.min.Stock.rules" title="Minimum stock rules"
+		model="com.axelor.apps.supplychain.db.MinStockRules" icon="img/icons/product_small.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
+
+
 
 <!-- 	<menuitem name="pricing-root" title="Tarifs" -->
 <!-- 		icon="img/icons/pricing.png" /> -->
@@ -807,7 +847,7 @@
 	
 
 	<menuitem name="hr-root" title="Humain Resources"
-		icon="img/evo-icons/organisation.png" />
+		icon="img/icons/organisation.png" />
 
 	<menuitem name="hr-root-recruitment" title="Recruitment" parent="hr-root"/>
 		
@@ -815,7 +855,7 @@
 		title="All candidates" action="hr.root.recruitment.candidate" />
 
 	<action-view name="hr.root.recruitment.candidate" title="All candidates"
-		model="com.axelor.apps.organisation.db.Candidate" icon="img/evo-icons/organisation_small.png">
+		model="com.axelor.apps.organisation.db.Candidate" icon="img/icons/organisation_small.png">
 		<view type="grid" name="candidate-grid" />
 		<view type="form" name="candidate-form" />
 	</action-view>
@@ -824,7 +864,7 @@
 		title="All managers candidates" action="hr.root.recruitment.managers" />
 
 	<action-view name="hr.root.recruitment.managers" title="All managers candidates"
-		model="com.axelor.apps.organisation.db.Candidate" icon="img/evo-icons/organisation_small.png">
+		model="com.axelor.apps.organisation.db.Candidate" icon="img/icons/organisation_small.png">
 		<view type="grid" name="candidate-grid" />
 		<view type="form" name="candidate-form" />
 		<domain>self.macroCategorySelect in (1,2,3)</domain>
@@ -834,7 +874,7 @@
 		title="All workers candidates" action="hr.root.recruitment.workers" />
 
 	<action-view name="hr.root.recruitment.workers" title="All workers candidates"
-		model="com.axelor.apps.organisation.db.Candidate" icon="img/evo-icons/organisation_small.png">
+		model="com.axelor.apps.organisation.db.Candidate" icon="img/icons/organisation_small.png">
 		<view type="grid" name="candidate-grid" />
 		<view type="form" name="candidate-form" />
 		<domain>self.macroCategorySelect in (4,5,6)</domain>
@@ -847,7 +887,7 @@
 		title="My time sheet" action="hr.root.inputforms.timesheet"/>
 		
 	<action-view name="hr.root.inputforms.timesheet" title="My time sheet"
-		model="com.axelor.apps.organisation.db.Timesheet" icon="img/evo-icons/organisation_small.png">
+		model="com.axelor.apps.organisation.db.Timesheet" icon="img/icons/organisation_small.png">
 		<view type="grid" name="timesheet-grid" />
 		<view type="form" name="timesheet-form" />
 	</action-view>
@@ -856,7 +896,7 @@
 		title="My travel expenses" action="hr.root.inputforms.travelexpenses"/>
 		
 	<action-view name="hr.root.inputforms.travelexpenses" title="My travel expenses"
-		model="com.axelor.apps.organisation.db.Expense" icon="img/evo-icons/organisation_small.png">
+		model="com.axelor.apps.organisation.db.Expense" icon="img/icons/organisation_small.png">
 		<view type="grid" name="expense-grid" />
 		<view type="form" name="expense-form" />
 		<domain>self.statusSelect = 'submited'</domain>
@@ -866,7 +906,7 @@
 		title="My overtimes" action="hr.root.inputforms.overtimes"/>
 		
 	<action-view name="hr.root.inputforms.overtimes" title="My overtimes"
-		model="com.axelor.apps.organisation.db.Overtime" icon="img/evo-icons/organisation_small.png">
+		model="com.axelor.apps.organisation.db.Overtime" icon="img/icons/organisation_small.png">
 		<view type="grid" name="overtime-grid" />
 		<view type="form" name="overtime-form" />
 		<domain>self.statusSelect = 'submited'</domain>
@@ -879,7 +919,7 @@
 		title="Time sheet to validate" action="hr.root.validationforms.timesheet"/>
 		
 	<action-view name="hr.root.validationforms.timesheet" title="Time sheet to validate"
-		model="com.axelor.apps.organisation.db.Timesheet" icon="img/evo-icons/organisation_small.png">
+		model="com.axelor.apps.organisation.db.Timesheet" icon="img/icons/organisation_small.png">
 		<view type="grid" name="timesheet-grid" />
 		<view type="form" name="timesheet-form" />
 	</action-view>
@@ -888,7 +928,7 @@
 		title="Travel expenses to validate" action="hr.root.validationforms.travelexpenses"/>
 		
 	<action-view name="hr.root.validationforms.travelexpenses" title="Travel expenses to validate"
-		model="com.axelor.apps.organisation.db.Expense" icon="img/evo-icons/organisation_small.png">
+		model="com.axelor.apps.organisation.db.Expense" icon="img/icons/organisation_small.png">
 		<view type="grid" name="expense-grid" />
 		<view type="form" name="expense-form" />
 		<domain>self.statusSelect = 'validated'</domain>
@@ -898,7 +938,7 @@
 		title="Overtimes to validate" action="hr.root.validationforms.overtimes"/>
 		
 	<action-view name="hr.root.validationforms.overtimes" title="Overtimes to validate"
-		model="com.axelor.apps.organisation.db.Overtime" icon="img/evo-icons/organisation_small.png">
+		model="com.axelor.apps.organisation.db.Overtime" icon="img/icons/organisation_small.png">
 		<view type="grid" name="overtime-grid" />
 		<view type="form" name="overtime-form" />
 		<domain>self.statusSelect = 'validated'</domain>
@@ -911,7 +951,7 @@
 		title="Time sheet to be paid" action="hr.root.paymentforms.timesheet"/>
 		
 	<action-view name="hr.root.paymentforms.timesheet" title="Time sheet to be paid"
-		model="com.axelor.apps.organisation.db.Timesheet" icon="img/evo-icons/organisation_small.png">
+		model="com.axelor.apps.organisation.db.Timesheet" icon="img/icons/organisation_small.png">
 		<view type="grid" name="timesheet-grid" />
 		<view type="form" name="timesheet-form" />
 	</action-view>
@@ -920,7 +960,7 @@
 		title="Travel expenses to be paid" action="hr.root.paymentforms.travelexpenses"/>
 		
 	<action-view name="hr.root.paymentforms.travelexpenses" title="Travel expenses to be paid"
-		model="com.axelor.apps.organisation.db.Expense" icon="img/evo-icons/organisation_small.png">
+		model="com.axelor.apps.organisation.db.Expense" icon="img/icons/organisation_small.png">
 		<view type="grid" name="expense-grid" />
 		<view type="form" name="expense-form" />
 		<domain>self.statusSelect = 'paid'</domain>
@@ -930,7 +970,7 @@
 		title="Overtimes to be paid" action="hr.root.paymentforms.overtimes"/>
 		
 	<action-view name="hr.root.paymentforms.overtimes" title="Overtimes to be paid"
-		model="com.axelor.apps.organisation.db.Overtime" icon="img/evo-icons/organisation_small.png">
+		model="com.axelor.apps.organisation.db.Overtime" icon="img/icons/organisation_small.png">
 		<view type="grid" name="overtime-grid" />
 		<view type="form" name="overtime-form" />
 		<domain>self.statusSelect = 'paid'</domain>
@@ -941,7 +981,7 @@
 
 	
 	<menuitem name="affair-root" title="Affair"
-		icon="img/evo-icons/affair.png" />
+		icon="img/icons/affair.png" />
 	
 	<menuitem name="affair-root-need" parent="affair-root"
 		title="Les besoins" action="affair.root.need" />
@@ -990,7 +1030,7 @@
 	</action-view>	
 
 	<menuitem name="project-root" title="Project"
-		icon="img/evo-icons/project.png" />
+		icon="img/icons/project.png" />
 
 	<menuitem name="menu-gant1" parent="project-root"
     title="Gantt Diagram" action="demo.gantt1"/>
@@ -1021,7 +1061,7 @@
 
 
 	<menuitem name="invoice-root" title="Invoice"
-		icon="img/evo-icons/invoice.png" />
+		icon="img/icons/invoice.png" />
 
 	<menuitem name="invoice-root-sales" parent="invoice-root"
 		title="Sales" />
@@ -1030,7 +1070,7 @@
 		title="Cust. Invoices" action="invoice.root.sales.custinvoices" />
 
 	<action-view name="invoice.root.sales.custinvoices" title="Cust. Invoices"
-		model="com.axelor.apps.account.db.Invoice" icon="img/evo-icons/invoice_small.png">
+		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
 		<domain>self.operationTypeSelect = 3</domain>
@@ -1040,7 +1080,7 @@
 		title="Cust. Refunds" action="invoice.root.sales.custrefunds" />
 
 	<action-view name="invoice.root.sales.custrefunds" title="Cust. Refunds"
-		model="com.axelor.apps.account.db.Invoice" icon="img/evo-icons/invoice_small.png">
+		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
 		<domain>self.operationTypeSelect = 4</domain>
@@ -1053,7 +1093,7 @@
 		title="Draft Cust. invoices" action="invoice.root.sales.filters.draftcustinvoice" />
 
 	<action-view name="invoice.root.sales.filters.draftcustinvoice" title="Draft Cust. invoices"
-		model="com.axelor.apps.account.db.Invoice" icon="img/evo-icons/invoice_small.png">
+		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
 		<domain>self.operationTypeSelect = 3 and self.status.code = 'dra'</domain>
@@ -1063,7 +1103,7 @@
 		title="Confirmed Cust. invoices" action="invoice.root.sales.filters.confcustinvoice" />
 
 	<action-view name="invoice.root.sales.filters.confcustinvoice" title="Confirmed Cust. invoices"
-		model="com.axelor.apps.account.db.Invoice" icon="img/evo-icons/invoice_small.png">
+		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
 		<domain>self.operationTypeSelect = 3 and self.status.code = 'con'</domain>
@@ -1073,7 +1113,7 @@
 		title="Validated Cust. invoices" action="invoice.root.sales.filters.valcustinvoice" />
 
 	<action-view name="invoice.root.sales.filters.valcustinvoice" title="Validated Cust. invoices"
-		model="com.axelor.apps.account.db.Invoice" icon="img/evo-icons/invoice_small.png">
+		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
 		<domain>self.operationTypeSelect = 3 and self.status.code = 'val'</domain>
@@ -1083,7 +1123,7 @@
 		title="Unpaid Due invoices" action="invoice.root.sales.filters.unpaiddueinvoice" />
 
 	<action-view name="invoice.root.sales.filters.unpaiddueinvoice" title="Unpaid due invoices"
-		model="com.axelor.apps.account.db.Invoice" icon="img/evo-icons/invoice_small.png">
+		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
 		<domain>self.operationTypeSelect = 3 and CURRENT_DATE &gt; self.dueDate and self.inTaxTotalRemaining &gt; 0</domain>
@@ -1094,7 +1134,7 @@
 		title="Draft Cust. refunds" action="invoice.root.sales.filters.draftcustrefunds" />
 
 	<action-view name="invoice.root.sales.filters.draftcustrefunds" title="Draft Cust. refunds"
-		model="com.axelor.apps.account.db.Invoice" icon="img/evo-icons/invoice_small.png">
+		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
 		<domain>self.operationTypeSelect = 4 and self.status.code = 'dra'</domain>
@@ -1104,7 +1144,7 @@
 		title="Confirmed Cust. refunds" action="invoice.root.sales.filters.confcustrefunds" />
 
 	<action-view name="invoice.root.sales.filters.confcustrefunds" title="Confirmed Cust. refunds"
-		model="com.axelor.apps.account.db.Invoice" icon="img/evo-icons/invoice_small.png">
+		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
 		<domain>self.operationTypeSelect = 4 and self.status.code = 'con'</domain>
@@ -1114,7 +1154,7 @@
 		title="Validated Cust. refunds" action="invoice.root.sales.filters.valcustrefunds" />
 
 	<action-view name="invoice.root.sales.filters.valcustrefunds" title="Validated Cust. refunds"
-		model="com.axelor.apps.account.db.Invoice" icon="img/evo-icons/invoice_small.png">
+		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
 		<domain>self.operationTypeSelect = 4 and self.status.code = 'val'</domain>
@@ -1124,7 +1164,7 @@
 		title="Due Cust. refunds" action="invoice.root.sales.filters.duecustrefunds" />
 
 	<action-view name="invoice.root.sales.filters.duecustrefunds" title="Due Cust. refunds"
-		model="com.axelor.apps.account.db.Invoice" icon="img/evo-icons/invoice_small.png">
+		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
 		<domain>self.operationTypeSelect = 4 and CURRENT_DATE &gt; self.dueDate</domain>
@@ -1138,7 +1178,7 @@
 		title="Sup. Invoices" action="invoice.root.purchases.supinvoices" />
 
 	<action-view name="invoice.root.purchases.supinvoices" title="Sup. Invoices"
-		model="com.axelor.apps.account.db.Invoice" icon="img/evo-icons/invoice_small.png">
+		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
 		<domain>self.operationTypeSelect = 1</domain>
@@ -1148,7 +1188,7 @@
 		title="Sup. Refunds" action="invoice.root.purchases.suprefunds" />
 
 	<action-view name="invoice.root.purchases.suprefunds" title="Sup. Refunds"
-		model="com.axelor.apps.account.db.Invoice" icon="img/evo-icons/invoice_small.png">
+		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
 		<domain>self.operationTypeSelect = 2</domain>
@@ -1161,7 +1201,7 @@
 		title="Draft Sup. invoices" action="invoice.root.purchases.filters.draftsupinvoice" />
 
 	<action-view name="invoice.root.purchases.filters.draftsupinvoice" title="Draft Sup. invoices"
-		model="com.axelor.apps.account.db.Invoice" icon="img/evo-icons/invoice_small.png">
+		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
 		<domain>self.operationTypeSelect = 1 and self.status.code = 'dra'</domain>
@@ -1171,7 +1211,7 @@
 		title="Confirmed Sup. invoices" action="invoice.root.purchases.filters.confsupinvoice" />
 
 	<action-view name="invoice.root.purchases.filters.confsupinvoice" title="Confirmed Sup. invoices"
-		model="com.axelor.apps.account.db.Invoice" icon="img/evo-icons/invoice_small.png">
+		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
 		<domain>self.operationTypeSelect = 1 and self.status.code = 'con'</domain>
@@ -1181,7 +1221,7 @@
 		title="Validated Sup. invoices" action="invoice.root.purchases.filters.valsupinvoice" />
 
 	<action-view name="invoice.root.purchases.filters.valsupinvoice" title="Validated Sup. invoices"
-		model="com.axelor.apps.account.db.Invoice" icon="img/evo-icons/invoice_small.png">
+		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
 		<domain>self.operationTypeSelect = 1 and self.status.code = 'val'</domain>
@@ -1191,7 +1231,7 @@
 		title="Unpaid Due invoices" action="invoice.root.purchases.filters.unpaiddueinvoice" />
 
 	<action-view name="invoice.root.purchases.filters.unpaiddueinvoice" title="Unpaid due invoices"
-		model="com.axelor.apps.account.db.Invoice" icon="img/evo-icons/invoice_small.png">
+		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
 		<domain>self.operationTypeSelect = 1 and CURRENT_DATE &gt; self.dueDate and self.inTaxTotalRemaining &gt; 0</domain>
@@ -1202,7 +1242,7 @@
 		title="Draft Sup. refunds" action="invoice.root.purchases.filters.draftsuprefunds" />
 
 	<action-view name="invoice.root.purchases.filters.draftsuprefunds" title="Draft Sup. refunds"
-		model="com.axelor.apps.account.db.Invoice" icon="img/evo-icons/invoice_small.png">
+		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
 		<domain>self.operationTypeSelect = 2 and self.status.code = 'dra'</domain>
@@ -1212,7 +1252,7 @@
 		title="Confirmed Sup. refunds" action="invoice.root.purchases.filters.confsuprefunds" />
 
 	<action-view name="invoice.root.purchases.filters.confsuprefunds" title="Confirmed Sup. refunds"
-		model="com.axelor.apps.account.db.Invoice" icon="img/evo-icons/invoice_small.png">
+		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
 		<domain>self.operationTypeSelect = 2 and self.status.code = 'con'</domain>
@@ -1222,7 +1262,7 @@
 		title="Validated Sup. refunds" action="invoice.root.purchases.filters.valsuprefunds" />
 
 	<action-view name="invoice.root.purchases.filters.valsuprefunds" title="Validated Sup. refunds"
-		model="com.axelor.apps.account.db.Invoice" icon="img/evo-icons/invoice_small.png">
+		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
 		<domain>self.operationTypeSelect = 2 and self.status.code = 'val'</domain>
@@ -1232,7 +1272,7 @@
 		title="Due Sup. refunds" action="invoice.root.purchases.filters.duesuprefunds" />
 
 	<action-view name="invoice.root.purchases.filters.duesuprefunds" title="Due Sup. refunds"
-		model="com.axelor.apps.account.db.Invoice" icon="img/evo-icons/invoice_small.png">
+		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
 		<domain>self.operationTypeSelect = 2 and CURRENT_DATE &gt; self.dueDate</domain>
