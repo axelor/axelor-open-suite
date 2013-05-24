@@ -609,6 +609,17 @@
 		<context name="_internalUser" expr="eval: __user__.id"/>
 	</action-view>
 	
+	<menuitem name="supply-chain-root-purchases-mywaitingpo" parent="supply-chain-root-purchases"
+		title="My PO waiting confirmation" action="supply.chain.root.purchases.mywaitingpo" />
+
+	<action-view name="supply.chain.root.purchases.mywaitingpo" title="My PO waiting confirmation"
+		model="com.axelor.apps.supplychain.db.PurchaseOrder" icon="img/icons/order_small.png">
+		<view type="grid" name="purchase-order-grid" />
+		<view type="form" name="purchase-order-form" />
+		<domain>self.statusSelect = 3 and self.purchasingManagerUserInfo.internalUser.id = :_internalUser</domain>
+		<context name="_internalUser" expr="eval: __user__.id"/>
+	</action-view>
+	
 	<menuitem name="supply-chain-root-purchases-myvalidatedpo" parent="supply-chain-root-purchases"
 		title="My validated PO" action="supply.chain.root.purchases.myvalidatedpo" />
 
@@ -642,6 +653,16 @@
 		<domain>self.statusSelect = 2</domain>
 	</action-view>
 	
+	<menuitem name="supply-chain-root-purchases-allpowaiting" parent="supply-chain-root-purchases-allpurchases"
+		title="All PO waiting confirmation" action="supply.chain.root.purchases.allpowaiting" />
+
+	<action-view name="supply.chain.root.purchases.allpowaiting" title="All PO waiting confirmation"
+		model="com.axelor.apps.supplychain.db.PurchaseOrder" icon="img/icons/order_small.png">
+		<view type="grid" name="purchase-order-grid" />
+		<view type="form" name="purchase-order-form" />
+		<domain>self.statusSelect = 3</domain>
+	</action-view>
+	
 	<menuitem name="supply-chain-root-purchases-allpo" parent="supply-chain-root-purchases-allpurchases"
 		title="All purchase order" action="supply.chain.root.purchases.allpo" />
 
@@ -657,30 +678,30 @@
 	
 	<menuitem name="supply-chain-root-sales-my" title="My Team" parent="supply-chain-root-sales"/>	
 		
-	<menuitem name="supply-chain-root-mydraftquotation" parent="supply-chain-root-sales-my"
-		title="My team draft quotation" action="supply.chain.root.mydraftquotation" />
+	<menuitem name="supply-chain-root-sales-mydraftquotation" parent="supply-chain-root-sales-my"
+		title="My team draft quotation" action="supply.chain.root.sales.mydraftquotation" />
 
-	<action-view name="supply.chain.root.mydraftquotation" title="My team draft quotation"
+	<action-view name="supply.chain.root.sales.mydraftquotation" title="My team draft quotation"
 		model="com.axelor.apps.supplychain.db.SalesOrder" icon="img/icons/order_small.png">
 		<view type="grid" name="sales-order-grid" />
 		<view type="form" name="sales-order-form" />
 		<domain>self.statusSelect = 1 and self.team IN self.salesmanUserInfo.teamSet</domain>
 	</action-view>
 	
-	<menuitem name="supply-chain-root-myconfirmedquotation" parent="supply-chain-root-sales-my"
-		title="My team confirmed quotation" action="supply.chain.root.myconfirmedquotation" />
+	<menuitem name="supply-chain-root-sales-myconfirmedquotation" parent="supply-chain-root-sales-my"
+		title="My team confirmed quotation" action="supply.chain.root.sales.myconfirmedquotation" />
 
-	<action-view name="supply.chain.root.myconfirmedquotation" title="My team confirmed quotation"
+	<action-view name="supply.chain.root.sales.myconfirmedquotation" title="My team confirmed quotation"
 		model="com.axelor.apps.supplychain.db.SalesOrder" icon="img/icons/order_small.png">
 		<view type="grid" name="sales-order-grid" />
 		<view type="form" name="sales-order-form" />
 		<domain>self.statusSelect = 2 and self.team IN self.salesmanUserInfo.teamSet</domain>
 	</action-view>
 	
-	<menuitem name="supply-chain-root-myso" parent="supply-chain-root-sales-my"
-		title="My team sale order" action="supply.chain.root.myso" />
+	<menuitem name="supply-chain-root-sales-myso" parent="supply-chain-root-sales-my"
+		title="My team sale order" action="supply.chain.root.sales.myso" />
 
-	<action-view name="supply.chain.root.myso" title="My team sale order"
+	<action-view name="supply.chain.root.sales.myso" title="My team sale order"
 		model="com.axelor.apps.supplychain.db.SalesOrder" icon="img/icons/order_small.png">
 		<view type="grid" name="sales-order-grid" />
 		<view type="form" name="sales-order-form" />
@@ -690,30 +711,30 @@
 	
 	<menuitem name="supply-chain-root-sales-all" title="All sales" parent="supply-chain-root-sales"/>
 	
-	<menuitem name="supply-chain-root-alldraftquotation" parent="supply-chain-root-sales-all"
-		title="All draft quotation" action="supply.chain.root.alldraftquotation" />
+	<menuitem name="supply-chain-root-sales-alldraftquotation" parent="supply-chain-root-sales-all"
+		title="All draft quotation" action="supply.chain.root.sales.alldraftquotation" />
 
-	<action-view name="supply.chain.root.alldraftquotation" title="All draft quotation"
+	<action-view name="supply.chain.root.sales.alldraftquotation" title="All draft quotation"
 		model="com.axelor.apps.supplychain.db.SalesOrder" icon="img/icons/order_small.png">
 		<view type="grid" name="sales-order-grid" />
 		<view type="form" name="sales-order-form" />
 		<domain>self.statusSelect = 1</domain>
 	</action-view>
 	
-	<menuitem name="supply-chain-root-allconfirmedquotation" parent="supply-chain-root-sales-all"
-		title="All confirmed quotation" action="supply.chain.root.allconfirmedquotation" />
+	<menuitem name="supply-chain-root-sales-allconfirmedquotation" parent="supply-chain-root-sales-all"
+		title="All confirmed quotation" action="supply.chain.root.sales.allconfirmedquotation" />
 
-	<action-view name="supply.chain.root.allconfirmedquotation" title="All confirmed quotation"
+	<action-view name="supply.chain.root.sales.allconfirmedquotation" title="All confirmed quotation"
 		model="com.axelor.apps.supplychain.db.SalesOrder" icon="img/icons/order_small.png">
 		<view type="grid" name="sales-order-grid" />
 		<view type="form" name="sales-order-form" />
 		<domain>self.statusSelect = 2</domain>
 	</action-view>
 	
-	<menuitem name="supply-chain-root-allso" parent="supply-chain-root-sales-all"
-		title="All sale order" action="supply.chain.root.allso" />
+	<menuitem name="supply-chain-root-sales-allso" parent="supply-chain-root-sales-all"
+		title="All sale order" action="supply.chain.root.sales.allso" />
 
-	<action-view name="supply.chain.root.allso" title="All sale order"
+	<action-view name="supply.chain.root.sales.allso" title="All sale order"
 		model="com.axelor.apps.supplychain.db.SalesOrder" icon="img/icons/order_small.png">
 		<view type="grid" name="sales-order-grid" />
 		<view type="form" name="sales-order-form" />
