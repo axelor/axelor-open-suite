@@ -634,7 +634,7 @@
 		model="com.axelor.apps.supplychain.db.PurchaseOrder" icon="img/icons/order_small.png">
 		<view type="grid" name="purchase-order-grid" />
 		<view type="form" name="purchase-order-form" />
-		<domain>self.statusSelect = 1 and self.purchasingManagerUserInfo.internalUser.id = :_internalUser</domain>
+		<domain>self.statusSelect = 1 and self.buyerUserInfo.internalUser.id = :_internalUser</domain>
 		<context name="_internalUser" expr="eval: __user__.id"/>
 	</action-view>
 	
@@ -645,7 +645,7 @@
 		model="com.axelor.apps.supplychain.db.PurchaseOrder" icon="img/icons/order_small.png">
 		<view type="grid" name="purchase-order-grid" />
 		<view type="form" name="purchase-order-form" />
-		<domain>self.statusSelect = 2 and self.purchasingManagerUserInfo.internalUser.id = :_internalUser</domain>
+		<domain>self.statusSelect = 2 and self.buyerUserInfo.internalUser.id = :_internalUser</domain>
 		<context name="_internalUser" expr="eval: __user__.id"/>
 	</action-view>
 	
@@ -656,7 +656,7 @@
 		model="com.axelor.apps.supplychain.db.PurchaseOrder" icon="img/icons/order_small.png">
 		<view type="grid" name="purchase-order-grid" />
 		<view type="form" name="purchase-order-form" />
-		<domain>self.statusSelect = 3 and self.purchasingManagerUserInfo.internalUser.id = :_internalUser</domain>
+		<domain>self.statusSelect = 3 and self.buyerUserInfo.internalUser.id = :_internalUser</domain>
 		<context name="_internalUser" expr="eval: __user__.id"/>
 	</action-view>
 	
@@ -667,7 +667,7 @@
 		model="com.axelor.apps.supplychain.db.PurchaseOrder" icon="img/icons/order_small.png">
 		<view type="grid" name="purchase-order-grid" />
 		<view type="form" name="purchase-order-form" />
-		<domain>self.statusSelect = 4 and self.purchasingManagerUserInfo.internalUser.id = :_internalUser</domain>
+		<domain>self.statusSelect = 4 and self.buyerUserInfo.internalUser.id = :_internalUser</domain>
 		<context name="_internalUser" expr="eval: __user__.id"/>
 	</action-view>
 	
@@ -849,6 +849,35 @@
 	<menuitem name="hr-root" title="Humain Resources"
 		icon="img/icons/organisation.png" />
 
+	<menuitem name="hr-root-employee" parent="hr-root"
+		title="Employees" action="hr.root.employee" />
+
+	<action-view name="hr.root.employee" title="Employees"
+		model="com.axelor.apps.organisation.db.Employee" icon="img/evo-icons/organisation_small.png">
+		<view type="grid" name="employee-grid" />
+		<view type="form" name="employee-form" />
+	</action-view>	
+	
+	<menuitem name="hr-root-allmanagers" parent="hr-root"
+		title="All managers" action="hr.root.allmanagers" />
+
+	<action-view name="hr.root.allmanagers" title="All managers"
+		model="com.axelor.apps.organisation.db.Employee" icon="img/evo-icons/organisation_small.png">
+		<view type="grid" name="employee-grid" />
+		<view type="form" name="employee-form" />
+		<domain>self.macroCategorySelect in (1,2,3)</domain>
+	</action-view>	
+	
+	<menuitem name="hr-root-allworkers" parent="hr-root"
+		title="All workers" action="hr.root.allworkers" />
+
+	<action-view name="hr.root.allworkers" title="All workers"
+		model="com.axelor.apps.organisation.db.Employee" icon="img/evo-icons/organisation_small.png">
+		<view type="grid" name="employee-grid" />
+		<view type="form" name="employee-form" />
+		<domain>self.macroCategorySelect in (4,5,6)</domain>
+	</action-view>	
+	
 	<menuitem name="hr-root-recruitment" title="Recruitment" parent="hr-root"/>
 		
 	<menuitem name="hr-root-recruitment-candidate" parent="hr-root-recruitment"
@@ -976,9 +1005,83 @@
 		<domain>self.statusSelect = 'paid'</domain>
 	</action-view>	
 	
+	<menuitem name="hr-root-conf" parent="hr-root" title="Configuration"
+		icon="img/icons/parameter.png" />
+
+	<menuitem name="hr-root-expense" parent="hr-root-conf"
+		title="Les notes de frais" action="hr.root.expense" />
+
+	<action-view name="hr.root.expense" title="Les notes de frais"
+		model="com.axelor.apps.organisation.db.Expense" icon="img/evo-icons/organisation_small.png">
+		<view type="grid" name="expense-grid" />
+		<view type="form" name="expense-form" />
+	</action-view>	
 	
+	<menuitem name="hr-root-leave-request" parent="hr-root-conf"
+		title="Les demandes de congés" action="hr.root.leave.request" />
 
+	<action-view name="hr.root.leave.request" title="Les demandes de congés"
+		model="com.axelor.apps.organisation.db.LeaveRequest" icon="img/evo-icons/organisation_small.png">
+		<view type="grid" name="leave-request-grid" />
+		<view type="form" name="leave-request-form" />
+		<view type="calendar" name="leave-request-calendar" />
+	</action-view>
 
+	<menuitem name="hr-root-overtime" parent="hr-root-conf"
+		title="Les heures supplémentaires" action="hr.root.overtime" />
+
+	<action-view name="hr.root.overtime" title="Les heures supplémentaires"
+		model="com.axelor.apps.organisation.db.Overtime" icon="img/evo-icons/organisation_small.png">
+		<view type="grid" name="overtime-grid" />
+		<view type="form" name="overtime-form" />
+	</action-view>	
+	
+	<menuitem name="hr-root-training" parent="hr-root-conf"
+		title="Les formations" action="hr.root.training" />
+
+	<action-view name="hr.root.training" title="Les formations"
+		model="com.axelor.apps.organisation.db.Training" icon="img/evo-icons/organisation_small.png">
+		<view type="grid" name="training-grid" />
+		<view type="form" name="training-form" />
+	</action-view>	
+	
+	<menuitem name="hr-root-timesheet" parent="hr-root-conf"
+		title="Les feuilles de temps" action="hr.root.timesheet" />
+
+	<action-view name="hr.root.timesheet" title="Les feuilles de temps"
+		model="com.axelor.apps.organisation.db.Timesheet" icon="img/evo-icons/organisation_small.png">
+		<view type="grid" name="timesheet-grid" />
+		<view type="form" name="timesheet-form" />
+	</action-view>	
+	
+	<menuitem name="hr-root-planning" parent="hr-root-conf"
+		title="Les plannings" action="hr.root.planning" />
+
+	<action-view name="hr.root.planning" title="Les plannings"
+		model="com.axelor.apps.organisation.db.Planning" icon="img/evo-icons/organisation_small.png">
+		<view type="grid" name="planning-grid" />
+		<view type="form" name="planning-form" />
+	</action-view>	
+	
+	<menuitem name="hr-root-schedule" parent="hr-root-conf"
+		title="Les horaires" action="hr.root.schedule" />
+
+	<action-view name="hr.root.schedule" title="Les horaires"
+		model="com.axelor.apps.organisation.db.Schedule" icon="img/evo-icons/organisation_small.png">
+		<view type="grid" name="schedule-grid" />
+		<view type="form" name="schedule-form" />
+	</action-view>	
+	
+	<menuitem name="hr-root-config-public-holidays" parent="hr-root-conf"
+		title="Les jours fériés" action="hr.root.config.public.holidays" />
+		
+	<action-view name="hr.root.config.public.holidays" title="Les jours fériés"
+		model="com.axelor.apps.organisation.db.PublicHolidays" icon="img/evo-icons/parameter_small.png">
+		<view type="grid" name="public-holidays-grid" />
+		<view type="form" name="public-holidays-form" />
+	</action-view>	
+
+	
 	
 	<menuitem name="affair-root" title="Affair"
 		icon="img/icons/affair.png" />
