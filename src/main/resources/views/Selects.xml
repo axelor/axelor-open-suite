@@ -767,7 +767,7 @@
 	</selection>
 	
 	<selection name="organisation.task.status.select">
-		<option value="1">Bouillon</option>
+		<option value="1">Brouillon</option>
 		<option value="2">Confirmé</option>
 		<option value="3">Validé</option>
 		<option value="4">Annulé</option>

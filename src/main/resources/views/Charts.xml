@@ -29,14 +29,13 @@
 		    MONTH(_stockMove.estimatedDate)
 		ORDER BY
 		    MONTH(_stockMove.estimatedDate)
-
-
-	
 	    ]]>
 	    </dataset>
 	    <category key="month" type="month"/>
 	    <series key="qty" groupBy="location" type="bar" aggregate="sum"/>
 	  </chart>
+	  
+	  
 	  
 	  
 	  <chart name="chart.salesman.dashboard.total.turnover" title="Turnover over past 6 months">
@@ -53,7 +52,7 @@
 		WHERE
 		    self.creation_date >= current_date - INTERVAL '6 month' AND self.creation_date <= current_date
 		AND
-		    self.status_select > 0 AND self.status_select < 4
+		    self.status_select = 3
 		AND
 		    base_user_info.internal_user = :_user_id
 		GROUP BY
@@ -64,8 +63,11 @@
 	    ]]>
 	    </dataset>
 	    <category key="month_year" type="text"/>
-    	<series key="amount" groupBy="slct" type="bar"/>
+    	<series key="amount" type="bar"/>
 	  </chart>
+	  
+	  
+	  
 	  
 	  
 	  <chart name="chart.sales.manager.dashboard.team.turnover" title="Turnover per team over past 30 days">
@@ -78,13 +80,9 @@
 		FROM
 		    SalesOrder self
 		LEFT JOIN
-		    self.salesmanUserInfo AS _sales_man_user_info
-		LEFT JOIN
 		    self.team AS _team
 		WHERE
 		    self.creationDate >= :_past_month AND self.creationDate <= current_date
-		AND
-		    _sales_man_user_info.internalUser = :_user
 		AND
 			self.statusSelect > 0 AND self.statusSelect < 4
 		GROUP BY
@@ -110,8 +108,6 @@
 		    FROM
 		        supplychain_sales_order self
 		    LEFT JOIN
-		        base_user_info ON base_user_info.id = self.salesman_user_info
-		    LEFT JOIN
 		        supplychain_sales_order_line ON supplychain_sales_order_line.sales_order = self.id
 		    LEFT JOIN
 		        base_product ON base_product.id = supplychain_sales_order_line.product
@@ -121,8 +117,6 @@
 		        base_currency ON base_currency.id = self.currency
 		    WHERE
 		        self.creation_date >= current_date - INTERVAL '12 month' AND self.creation_date <= current_date
-		    AND
-		        base_user_info.internal_user = :_user_id
 		    AND
 		        self.status_select = 3
 		    AND
@@ -142,8 +136,6 @@
 		    FROM
 		        supplychain_sales_order self
 		    LEFT JOIN
-		        base_user_info ON base_user_info.id = self.salesman_user_info
-		    LEFT JOIN
 		        supplychain_sales_order_line ON supplychain_sales_order_line.sales_order = self.id
 		    RIGHT JOIN
 		        supplychain_sales_order_sub_line ON supplychain_sales_order_sub_line.sales_order_line = supplychain_sales_order_line.id
@@ -155,8 +147,6 @@
 		        base_currency ON base_currency.id = self.currency
 		    WHERE
 		        self.creation_date >= current_date - INTERVAL '12 month' AND self.creation_date <= current_date
-		    AND
-		        base_user_info.internal_user = :_user_id
 		    AND
 		        self.status_select = 3
 		    GROUP BY
@@ -182,8 +172,6 @@
 		    FROM
 		        supplychain_sales_order self
 		    LEFT JOIN
-		        base_user_info ON base_user_info.id = self.salesman_user_info
-		    LEFT JOIN
 		        supplychain_sales_order_line ON supplychain_sales_order_line.sales_order = self.id
 		    LEFT JOIN
 		        base_product ON base_product.id = supplychain_sales_order_line.product
@@ -191,8 +179,6 @@
 		        base_product_category ON base_product_category.id = base_product.product_category
 		    WHERE
 		        self.creation_date >= current_date - INTERVAL '12 month' AND self.creation_date <= current_date
-		    AND
-		        base_user_info.internal_user = :_user_id
 		    AND
 		        self.status_select = 3
 		    AND
@@ -210,8 +196,6 @@
 		    FROM
 		        supplychain_sales_order self
 		    LEFT JOIN
-		        base_user_info ON base_user_info.id = self.salesman_user_info
-		    LEFT JOIN
 		        supplychain_sales_order_line ON supplychain_sales_order_line.sales_order = self.id
 		    RIGHT JOIN
 		        supplychain_sales_order_sub_line ON supplychain_sales_order_sub_line.sales_order_line = supplychain_sales_order_line.id
@@ -221,8 +205,6 @@
 		        base_product_category ON base_product_category.id = base_product.product_category
 		    WHERE
 		        self.creation_date >= current_date - INTERVAL '12 month' AND self.creation_date <= current_date
-		    AND
-		        base_user_info.internal_user = :_user_id
 		    AND
 		        self.status_select = 3
 		    GROUP BY
@@ -246,15 +228,11 @@
 		FROM
 		    supplychain_sales_order self
 		LEFT JOIN
-		    base_user_info ON base_user_info.id = self.salesman_user_info
-		LEFT JOIN
 		    base_address ON base_address.id = self.delivery_address
 		LEFT JOIN
 		    base_country ON base_country.id = base_address.addressl7country
 		WHERE
 		    self.creation_date >= current_date - INTERVAL '1 year' AND self.creation_date <= current_date
-		AND
-		    base_user_info.internal_user = :_user_id
 		AND
 		    self.status_select = 3
 		GROUP BY
@@ -293,4 +271,137 @@
 	    <category key="_salesman_name" type="text"/>
     	<series key="amount" groupBy="slct" type="bar"/>
 	  </chart>
+	  
+	  
+	  
+	  
+	  
+	  <chart name="chart.purchase.buyer.dashboard.family.product.purchase.volume" title="My purchases orders per product family over past month in volume">
+	    <dataset type="sql">
+	    <![CDATA[
+		SELECT
+            SUM(supplychain_purchase_order_line.qty) AS amount,
+	        base_product_family.name AS _product_family
+	    FROM
+	        supplychain_purchase_order self
+	    LEFT JOIN
+	        supplychain_purchase_order_line ON supplychain_purchase_order_line.purchase_order = self.id
+	    LEFT JOIN
+	        base_product ON base_product.id = supplychain_purchase_order_line.product
+	    LEFT JOIN
+	        base_product_family ON base_product_family.id = base_product.product_family
+	    LEFT JOIN
+	        base_user_info ON base_user_info.id = self.buyer_user_info
+	    WHERE
+	        self.created_on >= current_timestamp - INTERVAL '1 month' AND self.created_on <= current_timestamp
+	    AND
+	        self.status_select > 3 AND self.status_select < 6
+		AND
+		    base_user_info.internal_user = :_user_id
+	    GROUP BY
+	        base_product_family.name
+	    ORDER BY
+	        base_product_family.name
+	    ]]>
+	    </dataset>
+	    <category key="_product_family" type="text"/>
+    	<series key="amount" type="pie"/>
+	  </chart>
+	  
+	  
+	  <chart name="chart.purchase.buyer.dashboard.family.product.purchase.turnover" title="My purchases orders per product family over past month">
+	    <dataset type="sql">
+	    <![CDATA[
+		SELECT
+            SUM(supplychain_purchase_order_line.ex_tax_total) AS amount,
+	        base_product_family.name AS _product_family,
+	        base_product_category.name AS _product_category
+	    FROM
+	        supplychain_purchase_order self
+	    LEFT JOIN
+	        supplychain_purchase_order_line ON supplychain_purchase_order_line.purchase_order = self.id
+	    LEFT JOIN
+	        base_product ON base_product.id = supplychain_purchase_order_line.product
+	    LEFT JOIN
+	        base_product_family ON base_product_family.id = base_product.product_family
+	    LEFT JOIN
+	        base_product_category ON base_product_category.id = base_product.product_category
+	    LEFT JOIN
+	        base_user_info ON base_user_info.id = self.buyer_user_info
+	    WHERE
+	        self.created_on >= current_timestamp - INTERVAL '1 month' AND self.created_on <= current_timestamp
+	    AND
+	        self.status_select > 3 AND self.status_select < 6
+		AND
+		    base_user_info.internal_user = :_user_id
+	    GROUP BY
+	        base_product_family.name,
+	        base_product_category.name
+	    ORDER BY
+	        base_product_family.name
+	    ]]>
+	    </dataset>
+	    <category key="_product_family" type="text"/>
+    	<series key="amount" groupBy="_product_category" type="bar"/>
+	  </chart>
+	  
+	  
+	  
+	  
+	  
+	  <chart name="chart.purchase.manager.dashboard.buyer.purchase.volume" title="Purchases orders per buyer over past month in volume">
+	    <dataset type="sql">
+	    <![CDATA[
+		SELECT
+            SUM(supplychain_purchase_order_line.qty) AS amount,
+	        base_user_info.full_name AS _buyer
+	    FROM
+	        supplychain_purchase_order self
+	    LEFT JOIN
+	        supplychain_purchase_order_line ON supplychain_purchase_order_line.purchase_order = self.id
+	    LEFT JOIN
+	        base_user_info ON base_user_info.id = self.buyer_user_info
+	    WHERE
+	        self.created_on >= current_timestamp - INTERVAL '1 month' AND self.created_on <= current_timestamp
+	    AND
+	        self.status_select > 3 AND self.status_select < 6
+	    GROUP BY
+	        base_user_info.full_name
+	    ORDER BY
+	        base_user_info.full_name
+	    ]]>
+	    </dataset>
+	    <category key="_buyer" type="text"/>
+    	<series key="amount" type="bar"/>
+	  </chart>
+	  
+	  
+	  <chart name="chart.purchase.manager.dashboard.family.product.purchase.turnover" title="Purchases orders per family product over six month">
+	    <dataset type="sql">
+	    <![CDATA[
+		SELECT
+            SUM(supplychain_purchase_order_line.ex_tax_total) AS amount,
+	        base_product_family.name AS _family_product
+	    FROM
+	        supplychain_purchase_order self
+	    LEFT JOIN
+	        supplychain_purchase_order_line ON supplychain_purchase_order_line.purchase_order = self.id
+	    LEFT JOIN
+	        base_product ON base_product.id = supplychain_purchase_order_line.product
+	    LEFT JOIN
+	        base_product_family ON base_product_family.id = base_product.product_family
+	    WHERE
+	        self.created_on >= current_timestamp - INTERVAL '6 month' AND self.created_on <= current_timestamp
+	    AND
+	        self.status_select > 3 AND self.status_select < 6
+	    GROUP BY
+	        base_product_family.name
+	    ORDER BY
+	        base_product_family.name
+	    ]]>
+	    </dataset>
+	    <category key="_family_product" type="text"/>
+    	<series key="amount" type="bar"/>
+	  </chart>
+	  
 </object-views>
