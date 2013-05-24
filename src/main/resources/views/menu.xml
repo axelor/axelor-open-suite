@@ -247,13 +247,13 @@
 		<view type="form" />
 	</action-view>
 	
-	<menuitem name="stock-root" title="Gestion des stocks"/>
+	<menuitem name="stock-root" title="Gestion des stocks" icon="img/icons/baggage-cart-box.png"/>
 	
 	<menuitem name="stock-root-location" parent="stock-root"
 		title="Locations" action="stock.root.location" />
 	
 	<action-view name="stock.root.location" title="Locations"
-		model="com.axelor.apps.supplychain.db.Location" icon="img/icons/product_small.png">
+		model="com.axelor.apps.supplychain.db.Location" icon="img/icons/baggage-cart-box.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
@@ -262,16 +262,16 @@
 		title="Stock moves" action="stock.root.stock.move" />
 	
 	<action-view name="stock.root.stock.move" title="Stock moves"
-		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/product_small.png">
+		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/baggage-cart-box.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 	
 	<menuitem name="stock-root-inventory" parent="stock-root"
-		title="Inventories" action="stock.root.inventory" />
+		title="Inventories" action="stock.root.inventory" icon="img/icons/inventory.png"/>
 	
 	<action-view name="stock.root.inventory" title="Inventories"
-		model="com.axelor.apps.supplychain.db.Inventory" icon="img/icons/product_small.png">
+		model="com.axelor.apps.supplychain.db.Inventory" icon="img/icons/inventory.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
@@ -280,7 +280,7 @@
 		title="Minimum stock rules" action="stock.root.min.Stock.rules" />
 	
 	<action-view name="stock.root.min.Stock.rules" title="Minimum stock rules"
-		model="com.axelor.apps.supplychain.db.MinStockRules" icon="img/icons/product_small.png">
+		model="com.axelor.apps.supplychain.db.MinStockRules" icon="img/icons/baggage-cart-box.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
