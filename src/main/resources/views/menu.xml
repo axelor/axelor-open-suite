@@ -18,7 +18,6 @@
 		<view type="portal" name="salesman.dashboard.portal" />
     	<context name="_user" expr="eval:__user__"/>
     	<context name="_user_id" expr="eval:__user__.id"/>
-    	<context name="_past_six_months" expr="eval: __date__.minusMonths(6)"/>
 	</action-view>
 		
 	<menuitem name="menu-sales-manager-dashboard" parent="menu-crm-dashboard"
@@ -27,10 +26,25 @@
 	<action-view name="portal.sales.manager.dashboard.view" title="Sales Manager Dashboard"
 		icon="img/icons/crm_small.png">
 		<view type="portal" name="sales.manager.dashboard.portal" />
+    	<context name="_past_month" expr="eval: __date__.minusMonths(1)"/>
+	</action-view>
+		
+	<menuitem name="menu-purchase-buyer-dashboard" parent="menu-crm-dashboard"
+		title="Purchase Buyer Dashboard" action="portal.purchase.buyer.dashboard.view" />	
+
+	<action-view name="portal.purchase.buyer.dashboard.view" title="Purchase Buyer Dashboard"
+		icon="img/icons/crm_small.png">
+		<view type="portal" name="purchase.buyer.dashboard.portal" />
     	<context name="_user" expr="eval:__user__"/>
     	<context name="_user_id" expr="eval:__user__.id"/>
-    	<context name="_past_month" expr="eval: __date__.minusMonths(1)"/>
-    	<context name="_past_twelve_months" expr="eval: __date__.minusYears(1)"/>
+	</action-view>
+	
+	<menuitem name="menu-purchase-manager-dashboard" parent="menu-crm-dashboard"
+		title="Purchase Manager Dashboard" action="portal.purchase.manager.dashboard.view" />	
+
+	<action-view name="portal.purchase.manager.dashboard.view" title="Purchase Manager Dashboard"
+		icon="img/icons/crm_small.png">
+		<view type="portal" name="purchase.manager.dashboard.portal" />
 	</action-view>
 
 	<menuitem name="contact-root" title="Companies/Contacts"
