@@ -18,7 +18,7 @@
 	 	onSave="action-organisation-candidate-save-record"
 		onNew="action-method-candidate-default-record">
 		<group name="header" cols="6" colSpan="4">
-			<field name="createdBy" title="Titulaire" />
+			<field name="userInfo"/>
 			<break />
 			<field name="titleSelect" />
 			<field name="name" />

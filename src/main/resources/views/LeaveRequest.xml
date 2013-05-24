@@ -4,15 +4,15 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
     
-    <calendar name="leave-request-calendar" title="Les demandes de congés" mode="month" colorBy="employee" 
+    <calendar name="leave-request-calendar" title="Les demandes de congés" mode="month" colorBy="employeeUserInfo" 
 	    eventStart="startDateT" 
 	    eventStop="endDateT" 
 	    eventLength="1">
-	    <field name="employee" />
+	    <field name="leaveRequestReason" />
  	 </calendar>
     
     <grid name="leave-request-grid" title="Les demandes de congés" model="com.axelor.apps.organisation.db.LeaveRequest">
-        <field name="employee"/>
+        <field name="employeeUserInfo"/>
         <field name="requestDate"/>
         <field name="startDateT"/>
         <field name="endDateT"/>
@@ -27,7 +27,7 @@
     <form name="leave-request-form" title="Demande de congé" model="com.axelor.apps.organisation.db.LeaveRequest" cols="4"
     	onNew="action-leave-request-record-new">
 		
-		<field name="employee"/>
+		<field name="employeeUserInfo"/>
         <field name="requestDate"/>
         <field name="leaveRequestReason"/>
         <separator colSpan="4"/>

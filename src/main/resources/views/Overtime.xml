@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
     <grid name="overtime-grid" title="Overtime" model="com.axelor.apps.organisation.db.Overtime">
-        <field name="employee"/>
+        <field name="userInfo"/>
         <field name="date"/>
         <field name="totalAmount"/>
         <field name="currency"/>
@@ -14,7 +14,7 @@
     </grid>
     
     <form name="overtime-form" title="Overtime" model="com.axelor.apps.organisation.db.Overtime" cols="6">
-        <field name="employee"/>
+        <field name="userInfo"/>
         <break />
         <field name="date"/>
         <field name="totalAmount"/>
