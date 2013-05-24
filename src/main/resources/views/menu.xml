@@ -502,9 +502,111 @@
 		<view type="form" />
 	</action-view>
 	
-	<menuitem name="stock-root" title="Gestion des stocks"/>
+	<menuitem name="stock-root" title="Stocks management"/>
 	
-	<menuitem name="stock-root-location" parent="stock-root"
+	<menuitem name="stock-root-custdeliveries" parent="stock-root"
+		title="Customer Deliveries"/>
+	
+	<menuitem name="stock-root-custdeliveries-all" parent="stock-root-custdeliveries"
+		title="All Deliveries" action="stock.root.custdeliveries.all" />
+
+	<action-view name="stock.root.custdeliveries.all" title="All deliveries"
+		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/product_small.png">
+		<view type="grid" />
+		<view type="form" />
+		<domain>self.toLocation.typeSelect = 3</domain>
+	</action-view>
+		
+	<menuitem name="stock-root-custdeliveries-draft" parent="stock-root-custdeliveries"
+		title="Cust. Deliveries to prepare" action="stock.root.custdeliveries.draft" />
+
+	<action-view name="stock.root.custdeliveries.draft" title="Cust. deliveries to prepare"
+		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/product_small.png">
+		<view type="grid" />
+		<view type="form" />
+		<domain>self.toLocation.typeSelect = 3 and self.statusSelect = 1</domain>
+	</action-view>	
+		
+	<menuitem name="stock-root-custdeliveries-confirmed" parent="stock-root-custdeliveries"
+		title="Sent Cust. Deliveries" action="stock.root.custdeliveries.confirmed" />
+
+	<action-view name="stock.root.custdeliveries.confirmed" title="Sent Cust. Deliveries"
+		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/product_small.png">
+		<view type="grid" />
+		<view type="form" />
+		<domain>self.toLocation.typeSelect = 3 and self.statusSelect = 2</domain>
+	</action-view>		
+		
+	<menuitem name="stock-root-custdeliveries-cancel" parent="stock-root-custdeliveries"
+		title="Canceled Cust. Deliveries" action="stock.root.custdeliveries.cancel" />
+
+	<action-view name="stock.root.custdeliveries.cancel" title="Canceled Cust. Deliveries"
+		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/product_small.png">
+		<view type="grid" />
+		<view type="form" />
+		<domain>self.toLocation.typeSelect = 3 and self.statusSelect = 4</domain>
+	</action-view>			
+		
+	<menuitem name="stock-root-suparrivals" parent="stock-root"
+		title="Supplier arrivals"/>
+	
+	<menuitem name="stock-root-suparrivals-all" parent="stock-root-suparrivals"
+		title="All goods arrivals" action="stock.root.suparrivals.all" />
+
+	<action-view name="stock.root.suparrivals.all" title="All goods arrivals"
+		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/product_small.png">
+		<view type="grid" />
+		<view type="form" />
+		<domain>self.fromLocation.typeSelect = 2</domain>
+	</action-view>	
+		
+	<menuitem name="stock-root-suparrivals-today" parent="stock-root-suparrivals"
+		title="Today arrivals" action="stock.root.suparrivals.today" />
+
+	<action-view name="stock.root.suparrivals.today" title="Today arrivals"
+		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/product_small.png">
+		<view type="grid" />
+		<view type="form" />
+		<domain>self.fromLocation.typeSelect = 2 and CURRENT_DATE = self.estimatedDate</domain>
+	</action-view>	
+		
+	<menuitem name="stock-root-suparrivals-upcoming" parent="stock-root-suparrivals"
+		title="Upcoming arrivals" action="stock.root.suparrivals.upcoming" />
+
+	<action-view name="stock.root.suparrivals.upcoming" title="Upcoming arrivals"
+		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/product_small.png">
+		<view type="grid" />
+		<view type="form" />
+		<domain>self.fromLocation.typeSelect = 2 and self.estimatedDate &lt; :_newDate</domain>
+		<context name="_newDate" expr="eval: __date__.plusWeeks(1)"/>
+	</action-view>		
+		
+	<menuitem name="stock-root-suparrivals-previous" parent="stock-root-suparrivals"
+		title="Previous arrivals" action="stock.root.suparrivals.previous" />
+
+	<action-view name="stock.root.suparrivals.previous" title="Previous arrivals"
+		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/product_small.png">
+		<view type="grid" />
+		<view type="form" />
+		<domain>self.fromLocation.typeSelect = 2 and self.statusSelect = 3</domain>
+	</action-view>		
+		
+	<menuitem name="stock-root-suparrivals-canceled" parent="stock-root-suparrivals"
+		title="Canceled arrivals" action="stock.root.suparrivals.canceled" />
+
+	<action-view name="stock.root.suparrivals.canceled" title="Canceled arrivals"
+		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/product_small.png">
+		<view type="grid" />
+		<view type="form" />
+		<domain>self.fromLocation.typeSelect = 2 and self.statusSelect = 4</domain>
+	</action-view>		
+		
+		
+		
+	<menuitem name="stock-root-conf" parent="stock-root" title="Configuration"
+		icon="img/icons/parameter.png" />
+		
+	<menuitem name="stock-root-location" parent="stock-root-conf"
 		title="Locations" action="stock.root.location" />
 	
 	<action-view name="stock.root.location" title="Locations"
@@ -513,6 +615,16 @@
 		<view type="form" />
 	</action-view>
 	
+	<menuitem name="stock-root-min-stock-rules" parent="stock-root-conf"
+		title="Minimum stock rules" action="stock.root.min.Stock.rules" />
+	
+	<action-view name="stock.root.min.Stock.rules" title="Minimum stock rules"
+		model="com.axelor.apps.supplychain.db.MinStockRules" icon="img/icons/product_small.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
+	
+	<!--  
 	<menuitem name="stock-root-stock-move" parent="stock-root"
 		title="Stock moves" action="stock.root.stock.move" />
 	
@@ -530,18 +642,8 @@
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
+	-->
 	
-	<menuitem name="stock-root-min-stock-rules" parent="stock-root"
-		title="Minimum stock rules" action="stock.root.min.Stock.rules" />
-	
-	<action-view name="stock.root.min.Stock.rules" title="Minimum stock rules"
-		model="com.axelor.apps.supplychain.db.MinStockRules" icon="img/icons/product_small.png">
-		<view type="grid" />
-		<view type="form" />
-	</action-view>
-
-
-
 <!-- 	<menuitem name="pricing-root" title="Tarifs" -->
 <!-- 		icon="img/icons/pricing.png" /> -->
 
