@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    <grid name="cash-register-grid" title="Cash register" model="com.axelor.apps.account.db.CashRegister">
+    <grid name="cash-register-grid" title="Caisses" model="com.axelor.apps.account.db.CashRegister">
         <field name="userInfo"/>
         <field name="agency"/>
         <field name="createDateTime"/>
@@ -13,7 +13,7 @@
         <field name="stateSelect"/>
     </grid>
     
-    <form name="cash-register-form" title="Cash register" model="com.axelor.apps.account.db.CashRegister" cols="4"
+    <form name="cash-register-form" title="Caisse" model="com.axelor.apps.account.db.CashRegister" cols="4"
     onNew="action-cash-register-record-new,action-cash-register-attrs-hidden-button"
     onLoad="action-cash-register-attrs-hidden-button,action-cash-register-attrs-readonly">
         <field name="userInfo"/>
@@ -24,8 +24,8 @@
         <field name="depositedAmount"/>
         <field name="stateSelect"/>
         <field name="emailSendedOk"/>
-        <button name="closeCashRegister" title="Close cashier" colSpan="2" onClick="save,com.axelor.apps.account.web.CashRegisterController:closeCashRegister,action-cash-register-attrs-hidden-button,save"/>
-    	<button name="openCashRegister" title="Open cashier" colSpan="2" onClick="save,com.axelor.apps.account.web.CashRegisterController:openCashRegister,action-cash-register-attrs-hidden-button,save"/>
+        <button name="closeCashRegister" title="Fermer caisse" colSpan="2" onClick="save,com.axelor.apps.account.web.CashRegisterController:closeCashRegister,action-cash-register-attrs-hidden-button,save"/>
+    	<button name="openCashRegister" title="Ouvrir caisse" colSpan="2" onClick="save,com.axelor.apps.account.web.CashRegisterController:openCashRegister,action-cash-register-attrs-hidden-button,save"/>
     </form>
     
     <action-record name="action-cash-register-record-new" model="com.axelor.apps.account.db.CashRegister">

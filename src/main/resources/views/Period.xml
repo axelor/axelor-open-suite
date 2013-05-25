@@ -26,8 +26,8 @@
         <field name="status"/>
         <break/>
         <group colSpan="4" cols="4">
-        	<button name="close" title="Close period" colSpan="2" onClick="action-period-record-close,action-period-attrs-button,save"/>
-        	<button name="reopen" title="Reopen period" colSpan="2" onClick="action-period-record-open,action-period-attrs-button,save"/>
+        	<button name="close" title="Cloturer la période" colSpan="2" onClick="action-period-record-close,action-period-attrs-button,save"/>
+        	<button name="reopen" title="Rouvrir la période" colSpan="2" onClick="action-period-record-open,action-period-attrs-button,save"/>
         </group>
     </form>
     

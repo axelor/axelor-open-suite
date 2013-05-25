@@ -2,18 +2,18 @@
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
-    <grid name="vat-management-grid" title="VAT Management List" model="com.axelor.apps.account.db.VatManagement">
+    <grid name="vat-management-grid" title="Les gestions de TVA" model="com.axelor.apps.account.db.VatManagement">
         <field name="code"/>
     </grid>
-    <form name="vat-management-form" title="VAT Management" model="com.axelor.apps.account.db.VatManagement" cols="4">
+    <form name="vat-management-form" title="Gestion de la TVA" model="com.axelor.apps.account.db.VatManagement" cols="4">
         <field name="code"/>
         <field name="vatManagementLineList" colSpan="4" />
         <field name="formulaControlList" colSpan="4">
-            <grid title="Formula controls">
+            <grid title="Contrôles de formule">
 		        <field name="control"/>
 		        <field name="msg"/>
 		    </grid>
-		    <form title="Formula control" cols="4">
+		    <form title="Contrôle de formule" cols="4">
 		        <field name="control" colSpan="4"/>
 		        <field name="msg" colSpan="4"/>
 		    </form>

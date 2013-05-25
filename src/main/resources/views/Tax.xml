@@ -7,30 +7,30 @@
         <field name="code"/>
         <field name="account"/>
     </grid>
-    <form name="tax-form" title="Tax" model="com.axelor.apps.account.db.Tax" cols="4">
+    <form name="tax-form" title="Taxe" model="com.axelor.apps.account.db.Tax" cols="4">
         <field name="name"/>
         <field name="code"/>
         <field name="orderId"/>
         <notebook colSpan="4">
-            <page title="General" cols="4">
+            <page title="Général" cols="4">
                 <field name="account" domain="self.type.name='Taxe'"/>
 				<separator title="Condition d'application" colSpan="4" />
                 <field name="condition" colSpan="4" noLabel="true" widget="CodeEditor[syntax=groovy]"/>
                 <field name="taxLineList" grid-view="tax-line-grid" form-view="tax-line-form" colSpan="4" />
             </page>
-            <page title="Accounting">
+            <page title="Comptabilité">
             	<field name="managementFeeRate"/>
                 <field name="accountManagementSet" grid-view="account-management-tax-grid" form-view="account-management-tax-form"  
         		domain="self.typeSelect = 2" colSpan="4" />
             </page>
-            <page title="Complementary information" cols="4">
+            <page title="Complément" cols="4">
                 <field name="constituentSet" colSpan="4"/>
 		        <field name="formulaControlList" colSpan="4">
-		            <grid title="Formula controls">
+		            <grid title="Contrôles de formule">
 				        <field name="control"/>
 				        <field name="msg"/>
 				    </grid>
-				    <form title="Formula control" cols="4">
+				    <form title="Contrôle de formule" cols="4">
 				        <field name="control" colSpan="4"/>
 				        <field name="msg" colSpan="4"/>
 				    </form>

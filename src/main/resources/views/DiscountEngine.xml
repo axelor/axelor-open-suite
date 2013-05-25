@@ -4,22 +4,22 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
 
 	<selection name="discount.engine.discount.type">
-		<option value="0">Percentage</option>
-		<option value="1">Price</option>
+		<option value="0">Pourcentage</option>
+		<option value="1">Prix</option>
 	</selection>
 
 	<selection name="discount.engine.date.type">
-		<option value="0">None</option>
-		<option value="1">Period abo/cons/service</option>
-		<option value="2">Contract subscription</option>
-		<option value="3">End of contract</option>
-		<option value="4">Opening contract</option>
-		<option value="5">Contract resilation</option>
-		<option value="6">Contract subscription</option>
-		<option value="7">End of service</option>
+		<option value="0">Aucune</option>
+		<option value="1">Période abo/conso/service</option>
+		<option value="2">Souscription du contrat</option>
+		<option value="3">Fin du contrat</option>
+		<option value="4">Mise en service du contrat</option>
+		<option value="5">Résiliation du contrat</option>
+		<option value="6">Souscription du service</option>
+		<option value="7">Fin du service</option>
 	</selection>
 
-	<grid name="discount-engine-grid" title="Discount engines"
+	<grid name="discount-engine-grid" title="Les moteurs de remise"
 		model="com.axelor.apps.account.db.DiscountEngine">
 		<field name="code" />
 		<field name="name" />
@@ -27,20 +27,20 @@
 		<field name="activeOk" />
 	</grid>
 
-	<form name="discount-engine-form" title="Discount engine"
+	<form name="discount-engine-form" title="Moteur de remise"
 		model="com.axelor.apps.account.db.DiscountEngine" cols="4"
 		onSave="save,discount-engine-method-reset">
 		<field name="createdOn" title="Créé le" />
 		<field name="activeOk" />
 		<field name="name" />
 		<field name="code" />
-		<separator title="Applying conditions" colSpan="4" />
+		<separator title="Condition d'application" colSpan="4" />
 		<field name="condition" colSpan="4" noLabel="true"  widget="CodeEditor[syntax=groovy]"/>
 		<field name="discountEngineLineList" grid-view="discount-engine-line-grid"
 			form-view="discount-engine-line-form" colSpan="4" domain="self.amendment IS NULL AND self.discountEngineModel IS NULL"/>
 	</form>
 
-	<grid name="discount-engine-line-grid" title="Discounts"
+	<grid name="discount-engine-line-grid" title="Les remises"
 		model="com.axelor.apps.account.db.DiscountEngineLine" editable="true" expandable="true">
 		<field name="code" required="true"/>
 		<field name="discountEngineId" required="true"/>
@@ -50,7 +50,7 @@
 		<field name="priceDiscountOk" />
 	</grid>
 
-	<form name="discount-engine-line-form" title="Discount"
+	<form name="discount-engine-line-form" title="Remise"
 		model="com.axelor.apps.account.db.DiscountEngineLine" cols="4"
 		onLoad="discount-engine-attrs-all-category,discount-engine-attrs-product-category,discount-engine-attrs-same-category,discount-engine-attrs-product-reference-date,discount-engine-attrs-single-application,discount-engine-attrs-new-line"
 		onNew="discount-engine-record-all-category,discount-engine-attrs-all-category,discount-engine-attrs-same-category,discount-engine-attrs-product-category,discount-engine-attrs-product-reference-date,discount-engine-attrs-single-application,discount-engine-attrs-new-line">
@@ -83,14 +83,14 @@
 				<field name="postParameterSet" domain="self.parameterType.code = 'poste'" onChange="discount-engine-method-final-condition"
 					colSpan="2" />
 			</page>
-			<page title="Applying conditions">
+			<page title="Condition d'application">
 				<field name="condition" noLabel="true"
 					onChange="discount-engine-method-final-condition" colSpan="4" widget="CodeEditor[syntax=groovy]" />
 			</page>
-			<page name="contractLinePage" title="Contracts">
+			<page name="contractLinePage" title="Les contrats">
 				<field name="contractLineSet" colSpan="4" />
 			</page>
-			<page title="Final applying conditions">
+			<page title="Condition d'application finale">
 				<field name="finalCondition" noLabel="true" colSpan="4" widget="CodeEditor[syntax=groovy]" />
 			</page>
 		</notebook>

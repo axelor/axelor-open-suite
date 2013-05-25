@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    <grid name="move-line-report-grid" title="Accounting reports" model="com.axelor.apps.account.db.MoveLineReport">
+    <grid name="move-line-report-grid" title="Reportings comptables" model="com.axelor.apps.account.db.MoveLineReport">
         <field name="ref"/>
         <field name="date"/>
 		<field name="company"/>
@@ -21,12 +21,12 @@
 		<field name="publicationDateTime"/>
     </grid>
     
-    <form name="move-line-report-form" title="Accounting report" model="com.axelor.apps.account.db.MoveLineReport" cols="4" 
+    <form name="move-line-report-form" title="Reporting comptable" model="com.axelor.apps.account.db.MoveLineReport" cols="4" 
 	    onNew="action-move-line-report-default-record,action-move-line-report-hidden,action-move-line-report-ref-readonly,action-move-line-report-date-readonly"
 	    onLoad="action-move-line-report-hidden,action-move-line-report-ref-readonly,action-move-line-report-button-hidden,action-move-line-report-date-readonly"
 	    onSave="action-move-line-report-ref-readonly,com.axelor.apps.account.web.MoveLineReportController:getSequence">
     	<notebook colSpan="4">
-	    	<page title="Search" colSpan="4">
+	    	<page title="Recherche" colSpan="4">
 		    	<field name="ref" readonly="true"/>
 		    	<field name="date"/>
 		    	<field name="typeSelect" selection="move.line.report.type.select" onChange="action-move-line-report-record,action-move-line-report-hidden,action-move-line-report-method-get-journal-type,action-move-line-report-account-domain,action-move-line-report-record-default,action-move-line-report-method-get-account"/>
@@ -46,8 +46,8 @@
 		        <field name="fromPartner" grid-view="partner-grid" form-view="partner-form"/>
 		        <field name="toPartner" grid-view="partner-grid" form-view="partner-form"/>
 		        <break/>
-		        <button name="search" title="Search" onClick="save,com.axelor.apps.account.web.MoveLineReportController:searchMoveLine,save" colSpan="2"/>
-		        <button name="export" title="Print" onClick="save,com.axelor.apps.account.web.MoveLineReportController:printExportMoveLine,com.axelor.apps.account.web.MoveLineReportController:getReload,action-move-line-report-button-hidden,action-move-line-report-date-readonly" colSpan="2"/>
+		        <button name="search" title="Rechercher" onClick="save,com.axelor.apps.account.web.MoveLineReportController:searchMoveLine,save" colSpan="2"/>
+		        <button name="export" title="Imprimer" onClick="save,com.axelor.apps.account.web.MoveLineReportController:printExportMoveLine,com.axelor.apps.account.web.MoveLineReportController:getReload,action-move-line-report-button-hidden,action-move-line-report-date-readonly" colSpan="2"/>
 				<field name="status"/>
 				<field name="publicationDateTime"/>
 				<break/>
@@ -56,7 +56,7 @@
 				<field name="totalDebit"/>
 				<field name="totalCredit"/>
 				<field name="balance"/>
-				<group canCollapse="true" title="Printing informations" colSpan="2">
+				<group canCollapse="true" title="Informations d'impression" colSpan="2">
 		        	<field name="global"/>
 		        	<field name="globalByPost"/>
 		        	<field name="globalByDate"/>
@@ -67,7 +67,7 @@
         </notebook>
     </form>
     
-    <grid name="move-line-report-export-grid" title="Accounting exports" model="com.axelor.apps.account.db.MoveLineReport">
+    <grid name="move-line-report-export-grid" title="Exports comptables" model="com.axelor.apps.account.db.MoveLineReport">
         <field name="ref"/>
         <field name="date"/>
 		<field name="company"/>
@@ -82,12 +82,12 @@
 		<field name="status"/>
     </grid>
     
-    <form name="move-line-report-export-form" title="Accounting export" model="com.axelor.apps.account.db.MoveLineReport" cols="4" 
+    <form name="move-line-report-export-form" title="Export comptable" model="com.axelor.apps.account.db.MoveLineReport" cols="4" 
 	    onNew="action-move-line-report-default-record,action-move-line-report-hidden,action-move-line-report-ref-readonly,action-move-line-report-button-hidden,action-move-line-report-date-readonly"
 	    onLoad="action-move-line-report-hidden,action-move-line-report-ref-readonly,action-move-line-report-button-hidden,action-move-line-report-date-readonly"
 	    onSave="action-move-line-report-ref-readonly,com.axelor.apps.account.web.MoveLineReportController:getSequence">
     	<notebook colSpan="4">
-	    	<page title="Search" colSpan="4">
+	    	<page title="Recherche" colSpan="4">
 		    	<field name="ref" readonly="true"/>
 		    	<field name="date"/>
 		    	<field name="typeSelect" selection="move.line.report.type.select.export" onChange="action-move-line-report-record,action-move-line-report-hidden,action-move-line-report-method-get-journal-type,action-move-line-report-account-domain,action-move-line-report-record-default,action-move-line-report-method-get-account"/>
@@ -98,10 +98,10 @@
 		        <field name="period" onSelect="action-move-line-report-attrs-period-domain" onChange="action-move-line-report-record-year,action-move-line-report-record-date-from-and-date-to"/>
 		        <field name="journal"/>
 		        <break/>
-		        <button name="search" title="Search" onClick="save,com.axelor.apps.account.web.MoveLineReportController:searchMoveLine,save" colSpan="2"/>
-		        <button name="export" title="Export" onClick="save,com.axelor.apps.account.web.MoveLineReportController:printExportMoveLine,com.axelor.apps.account.web.MoveLineReportController:getReload,action-move-line-report-button-hidden,action-move-line-report-date-readonly" colSpan="2"/>
-        		<button name="showMoveExported" title="Exported moves" onClick="save,com.axelor.apps.account.web.MoveLineReportControllerSimple:showMoveExported" colSpan="2"/>
-	       		<button name="replayExport" title="Run export again" onClick="save,com.axelor.apps.account.web.MoveLineReportController:replayExport" colSpan="2"/>
+		        <button name="search" title="Rechercher" onClick="save,com.axelor.apps.account.web.MoveLineReportController:searchMoveLine,save" colSpan="2"/>
+		        <button name="export" title="Exporter" onClick="save,com.axelor.apps.account.web.MoveLineReportController:printExportMoveLine,com.axelor.apps.account.web.MoveLineReportController:getReload,action-move-line-report-button-hidden,action-move-line-report-date-readonly" colSpan="2"/>
+        		<button name="showMoveExported" title="Ecritures exportées" onClick="save,com.axelor.apps.account.web.MoveLineReportControllerSimple:showMoveExported" colSpan="2"/>
+	       		<button name="replayExport" title="Rejouer l'export" onClick="save,com.axelor.apps.account.web.MoveLineReportController:replayExport" colSpan="2"/>
 				<field name="status"/>
 				<break/>
 		        <field name="moveLineSet" colSpan="4"/>

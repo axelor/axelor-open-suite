@@ -3,11 +3,11 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    <grid name="irrecoverable-customer-line-grid" title="Customers" model="com.axelor.apps.account.db.IrrecoverableCustomerLine">
+    <grid name="irrecoverable-customer-line-grid" title="Clients" model="com.axelor.apps.account.db.IrrecoverableCustomerLine">
         <field name="partner"/>
     </grid>
     
-    <form name="irrecoverable-customer-line-form" title="Customer" model="com.axelor.apps.account.db.IrrecoverableCustomerLine" cols="4">
+    <form name="irrecoverable-customer-line-form" title="Client" model="com.axelor.apps.account.db.IrrecoverableCustomerLine" cols="4">
         <field name="partner" grid-view="partner-grid" form-view="partner-form"/>
         <field name="irrecoverablePaymentScheduleLineLineList" colSpan="4"/>
         <field name="irrecoverableInvoiceLineList" colSpan="4"/>

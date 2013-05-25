@@ -3,17 +3,17 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
 
-    <grid name="invoice-batch-grid" title="Invoice batches" model="com.axelor.apps.account.db.InvoiceBatch">
+    <grid name="invoice-batch-grid" title="Les batchs de facturation" model="com.axelor.apps.account.db.InvoiceBatch">
     	<field name="actionSelect" />
     	<field name="code" />
 		<field name="company" />
     	<field name="usage" />
 		<field name="pricingOption" />
-		<field name="createdOn" title="Created on"/>
-		<field name="createdBy" title="Created by" />
+		<field name="createdOn" title="Créé le"/>
+		<field name="createdBy" title="Créé par" />
     </grid>
  
-    <form name="invoice-batch-form" title="Invoice batch" model="com.axelor.apps.account.db.InvoiceBatch" cols="4"
+    <form name="invoice-batch-form" title="Batch de facturation" model="com.axelor.apps.account.db.InvoiceBatch" cols="4"
     onLoad="action-invoice-batch-attrs-action-select,action-invoice-batch-attrs-on-select-ok" 
     onNew="action-invoice-batch-record-on-new,action-invoice-batch-attrs-action-select,action-invoice-batch-attrs-on-select-ok">
     	<field name="actionSelect" onChange="action-invoice-batch-attrs-action-select"/>
@@ -35,17 +35,17 @@
 				<field name="invoiceSet" colSpan="4" onSelect="action-invoice-batch-method-invoice-set-domain" grid-view="invoice-grid" form-view="invoice-form"/>
     		</page>
     		<page title="Informations" cols="4">
-    			<field name="createdOn" title="Created on"/>
-				<field name="createdBy" title="Created by" />
+    			<field name="createdOn" title="Créé le"/>
+				<field name="createdBy" title="Créé par" />
 		    	<field name="description" noLabel="true" colSpan="4" />
 		    	<field name="batchList" colSpan="4" />
     		</page>
     	</notebook>
-    	<button name="invoiceBatch" title="Run" colSpan="3" onClick="save,action-invoice-batch-method-action-invoice" />
-    	<button name="statusBatch" title="Run" colSpan="3" onClick="save,action-invoice-batch-method-action-status" />
-    	<button name="alarmBatch" title="Run" colSpan="3" onClick="save,action-invoice-batch-method-action-alarm" />
-    	<button name="memoryBatch" title="Run" colSpan="3" onClick="save,action-invoice-batch-method-action-memory" />
-    	<button name="confirmMemoryBatch" title="Run" colSpan="3" onClick="save,action-invoice-batch-method-action-confirm-memory" />
+    	<button name="invoiceBatch" title="Lancer" colSpan="3" onClick="save,action-invoice-batch-method-action-invoice" />
+    	<button name="statusBatch" title="Lancer" colSpan="3" onClick="save,action-invoice-batch-method-action-status" />
+    	<button name="alarmBatch" title="Lancer" colSpan="3" onClick="save,action-invoice-batch-method-action-alarm" />
+    	<button name="memoryBatch" title="Lancer" colSpan="3" onClick="save,action-invoice-batch-method-action-memory" />
+    	<button name="confirmMemoryBatch" title="Lancer" colSpan="3" onClick="save,action-invoice-batch-method-action-confirm-memory" />
     </form>
     
     <!-- ACTION RECORD -->

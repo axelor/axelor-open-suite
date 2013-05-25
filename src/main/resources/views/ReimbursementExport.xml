@@ -2,7 +2,7 @@
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
-    <grid name="reimbursement-export-grid" title="Reimbursement exports" model="com.axelor.apps.account.db.ReimbursementExport">
+    <grid name="reimbursement-export-grid" title="Export des remboursement" model="com.axelor.apps.account.db.ReimbursementExport">
 		<field name="name"/>
 		<field name="company"/>
 		<field name="createReimbursementDateTime"/>
@@ -11,20 +11,20 @@
 		<field name="runReimbursementUserInfo"/>
 		<field name="stateSelect"/>
     </grid>
-    <form name="reimbursement-export-form" title="Reimbursement export" model="com.axelor.apps.account.db.ReimbursementExport" cols="4">
+    <form name="reimbursement-export-form" title="Export des remboursement" model="com.axelor.apps.account.db.ReimbursementExport" cols="4">
     	<field name="name"/>
 		<field name="company"/>
-		<separator title="Create reimbursements" colSpan="4"/>
+		<separator title="Création des remboursement" colSpan="4"/>
 		<field name="createReimbursementDateTime"/>
 		<field name="createReimbursementUserInfo"/>
-		<separator title="Validate reimbursements" colSpan="4"/>
+		<separator title="Validation des remboursement" colSpan="4"/>
 		<field name="runReimbursementDateTime"/>
 		<field name="runReimbursementUserInfo"/>
 		<field name="stateSelect"/>
 		<break/>
-        <button name="showReimbursement" title="Reimbursements" colSpan="2" onClick="action-reimbursement-export-method-show-reimbursement"/>
-        <button name="exportSepa" title="SEPA Export" colSpan="2" onClick="action-reimbursement-export-method-export-sepa"/>
-        <button name="exportCfonb" title="CFONB Export" colSpan="2" onClick="action-reimbursement-export-method-export-cfonb"/>
+        <button name="showReimbursement" title="Remboursements" colSpan="2" onClick="action-reimbursement-export-method-show-reimbursement"/>
+        <button name="exportSepa" title="Export SEPA" colSpan="2" onClick="action-reimbursement-export-method-export-sepa"/>
+        <button name="exportCfonb" title="Export CFONB" colSpan="2" onClick="action-reimbursement-export-method-export-cfonb"/>
     </form>
     
 	<!-- ACTION METHOD -->

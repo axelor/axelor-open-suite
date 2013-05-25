@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
 
-	<grid name="payment-schedule-line-grid" title="Schedule lines"
+	<grid name="payment-schedule-line-grid" title="Ligne d échéancier"
 		model="com.axelor.apps.account.db.PaymentScheduleLine" orderBy="scheduleDate">
 		<field name="paymentSchedule" />
 		<field name="move" />
@@ -25,7 +25,7 @@
 		<field name="fromReject" />
 	</grid>
 
-	<form name="payment-schedule-line-form" title="Schedule line"
+	<form name="payment-schedule-line-form" title="Ligne d échéancier"
 		model="com.axelor.apps.account.db.PaymentScheduleLine" cols="4">
 		<field name="paymentSchedule" />
 		<field name="move" />
@@ -52,7 +52,7 @@
 		<field name="fromReject" />
 	</form>
 
-	<grid name="payment-schedule-line-payment-schedule-grid" title="Schedule lines"
+	<grid name="payment-schedule-line-payment-schedule-grid" title="Lignes d échéancier"
 		model="com.axelor.apps.account.db.PaymentScheduleLine" orderBy="scheduleDate">
 		<field name="scheduleLineSeq" />
 		<field name="inTaxAmount" />
@@ -70,7 +70,7 @@
 		<field name="status" />
 	</grid>
 
-	<form name="payment-schedule-line-payment-schedule-form" title="Schedule line"
+	<form name="payment-schedule-line-payment-schedule-form" title="Ligne d échéancier"
 		model="com.axelor.apps.account.db.PaymentScheduleLine" cols="4">
 		<field name="invoice" grid-view="invoice-grid" form-view="invoice-form"/>
 		<field name="scheduleLineSeq" />

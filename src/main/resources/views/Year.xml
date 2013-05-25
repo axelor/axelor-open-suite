@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    <grid name="year-grid" title="Fiscal years" model="com.axelor.apps.account.db.Year">
+    <grid name="year-grid" title="Années fiscales" model="com.axelor.apps.account.db.Year">
         <field name="name"/>
         <field name="code"/>
         <field name="fromDate"/>
@@ -13,7 +13,7 @@
         <field name="status"/>
     </grid>
     
-    <form name="year-form" title="Fiscal year" model="com.axelor.apps.account.db.Year" cols="4"
+    <form name="year-form" title="Année fiscale" model="com.axelor.apps.account.db.Year" cols="4"
     onNew="action-year-record-new">
         <field name="name"/>
         <field name="code"/>
@@ -23,7 +23,7 @@
         <field name="company"/>
 <!--         <field name="reportedBalanceLineList" colSpan="4"/> -->
         <group colSpan="4" cols="4">
-        	<button name="close" title="Close fiscal year" colSpan="2" onClick="action-year-close-method,save"/>
+        	<button name="close" title="Cloturer l'exercice" colSpan="2" onClick="action-year-close-method,save"/>
         	<field name="status"/>
     	</group>
     </form>

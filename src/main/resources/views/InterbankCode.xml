@@ -2,12 +2,12 @@
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
-    <grid name="interbank-code-grid" title="Blocking reason/reject codes lists" model="com.axelor.apps.account.db.InterbankCode">
+    <grid name="interbank-code-grid" title="Listes des codes motifs de rejet/retour" model="com.axelor.apps.account.db.InterbankCode">
         <field name="code"/>
         <field name="name"/>
         <field name="description"/>
     </grid>
-    <form name="interbank-code-form" title="Blocking reason/reject codes lists" model="com.axelor.apps.account.db.InterbankCode" cols="6">
+    <form name="interbank-code-form" title="Liste des codes motifs de rejet/retour" model="com.axelor.apps.account.db.InterbankCode" cols="6">
         <group colSpan="6" cols="6">
             <field name="code"/>
             <field name="name"/>
@@ -17,13 +17,13 @@
             <field name="description" noLabel="true" colSpan="6"/>
         </group>
         <field name="interbankCodeLineList" colSpan="6">
-	        <grid title="Blocking reason/reject codes lists">
+	        <grid title="Listes des codes motifs de rejet/retour">
 		        <field name="code"/>
 		        <field name="name"/>
 		        <field name="description"/>
 		        <field name="technicalRejectOk"/>
 	    	</grid>
-	    	<form title="Blocking reason/reject codes lists">
+	    	<form title="Liste des codes motifs de rejet/retour">
 		        <group colSpan="4" cols="6">
 		            <field name="code"/>
 		            <field name="name"/>
@@ -32,7 +32,7 @@
 		            <field name="description" noLabel="true" colSpan="4"/>
 		            <field name="technicalRejectOk"/>
 		        </group>
-		        <group title="Domain of use" colSpan="4" cols="6">
+		        <group title="Application" colSpan="4" cols="6">
 		            <field name="transferCfonbOk"/>
 		            <field name="directDebitAndTipCfonbOk"/>
 		            <field name="directDebitSepaOk"/>

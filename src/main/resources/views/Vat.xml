@@ -3,31 +3,31 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
 	
-    <grid name="vat-grid" title="VAT" model="com.axelor.apps.account.db.Vat">
+    <grid name="vat-grid" title="TVA" model="com.axelor.apps.account.db.Vat">
         <field name="code"/>
         <field name="name"/>
     </grid>
     
-    <form name="vat-form" title="VAT" model="com.axelor.apps.account.db.Vat" cols="4">
+    <form name="vat-form" title="TVA" model="com.axelor.apps.account.db.Vat" cols="4">
         <field name="code"/>
         <field name="name"/>
         <notebook colSpan="4">
-        	<page title="VAT rate list">
+        	<page title="Version de TVA">
         		<field name="activeVatLine"/>
 		        <field name="vatLineList" colSpan="4">
-		            <grid title="VAT rate lines">
+		            <grid title="Les lignes de TVA">
 		                <field name="startDate"/>
 		                <field name="endDate"/>
 		                <field name="value"/>
 		            </grid>
-		            <form title="VAT rate" cols="6">
+		            <form title="Ligne de TVA" cols="6">
 		                <field name="value"/>
 		                <field name="startDate"/>
 		                <field name="endDate"/>
 		            </form>
 		        </field>
         	</page>
-        	<page title="Accounting configuration">
+        	<page title="Comptabilité">
 				<field name="vatAccountList" colSpan="4"/>
         	</page>
         </notebook>

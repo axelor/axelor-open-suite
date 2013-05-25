@@ -2,10 +2,10 @@
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
-    <grid name="key-pricing-list-grid" title="Pricing list keys" model="com.axelor.apps.account.db.KeyPricingList">
+    <grid name="key-pricing-list-grid" title="Clés de barème" model="com.axelor.apps.account.db.KeyPricingList">
         <field name="name"/>
     </grid>
-    <form name="key-pricing-list-form" title="Pricing list key" model="com.axelor.apps.account.db.KeyPricingList" cols="4">
+    <form name="key-pricing-list-form" title="Clé de barème" model="com.axelor.apps.account.db.KeyPricingList" cols="4">
         <field name="name"/>
         <break/>
         <field name="level1" colSpan="2"/>

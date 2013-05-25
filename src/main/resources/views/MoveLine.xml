@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    <grid name="move-line-grid" orderBy="-date" title="Move lines" model="com.axelor.apps.account.db.MoveLine">
+    <grid name="move-line-grid" orderBy="-date" title="Lignes d'écriture" model="com.axelor.apps.account.db.MoveLine">
         <field name="name"/>
         <field name="date"/>
         <field name="partner"/>
@@ -14,7 +14,7 @@
         <field name="amountRemaining"/>
     </grid>
     
-    <form name="move-line-form" title="Move line" model="com.axelor.apps.account.db.MoveLine" cols="4"
+    <form name="move-line-form" title="Ligne d'écriture" model="com.axelor.apps.account.db.MoveLine" cols="4"
     onLoad="action-move-line-attrs-collapse-irrecoverable-group" 
     onNew="action-move-line-attrs-collapse-irrecoverable-group,action-move-line-attrs-contractLine-readonly,action-move-line-record-get-move-informations,action-move-line-record-get-first-move-line-informations">
     	<notebook colSpan="4">
@@ -40,21 +40,21 @@
 	        <field name="description"/>
 	        <field name="mailSelect"/>
 	        <field name="reimbursementStateSelect"/>
-	        <group name="irrecoverable" title="Irrecoverable" colSpan="4" canCollapse="true" >
+	        <group name="irrecoverable" title="Irrécouvrable" colSpan="4" canCollapse="true" >
 	        	<field name="irrecoverableStateSelect"/>
         		<field name="managementObject"/>
-        		<button name="passInIrrecoverable" title="Shift to irrecoverable" colSpan="2" onClick="com.axelor.apps.account.web.MoveLineController:passInIrrecoverable"/>
-        		<button name="notPassInIrrecoverable" title="Do not shift to irrecoverable" colSpan="2" onClick="com.axelor.apps.account.web.MoveLineController:notPassInIrrecoverable"/>
+        		<button name="passInIrrecoverable" title="Passage en irrécouvrable" colSpan="2" onClick="com.axelor.apps.account.web.MoveLineController:passInIrrecoverable"/>
+        		<button name="notPassInIrrecoverable" title="Ne pas passer en irrécouvrable" colSpan="2" onClick="com.axelor.apps.account.web.MoveLineController:notPassInIrrecoverable"/>
 	        </group>
-	        <group name="reconcileLists" title="Reconcile list" colSpan="4" cols="4">
+	        <group name="reconcileLists" title="Les lettrages" colSpan="4" cols="4">
 	            <field name="reconcileList1" colSpan="4"/>
 	            <field name="reconcileList2" colSpan="4"/>
 	        </group>
 	    </page>
-	    <page title="Analytics">
+	    <page title="Analytiques">
 	    	<field name="analyticAccountSet" colSpan="4"/>
 	    </page>
-	    <page title="Others" colSpan="4">
+	    <page title="Autres" colSpan="4">
 	        <field name="vatLine"/>
 	        <break/>
 	    	<field name="ignoreInAccountingOk"/>

@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
 
-    <grid name="accounting-batch-grid" title="Accounting batches" model="com.axelor.apps.account.db.AccountingBatch">
+    <grid name="accounting-batch-grid" title="Les batchs de comptabilité" model="com.axelor.apps.account.db.AccountingBatch">
     	<field name="actionSelect" />
     	<field name="code" />
 		<field name="company" />
@@ -43,18 +43,18 @@
     		</page>
     		
     		<page title="Information" cols="4">
-    			<field name="createdOn" title="Created on"/>
-				<field name="createdBy" title="Created by" />
+    			<field name="createdOn" title="Créé le"/>
+				<field name="createdBy" title="Créé par" />
 		    	<field name="description" noLabel="true" colSpan="4" />
 		    	<field name="batchList" colSpan="4" />
     		</page>
     	</notebook>
-    	<button name="reimbursementBatch" title="Run" colSpan="3" onClick="save,action-accounting-batch-method-action-reimbursement" />
-    	<button name="directDebitBatch" title="Run" colSpan="3" onClick="save,action-accounting-batch-method-action-direct-debit" />
-    	<button name="onlineAgencyBatch" title="Run" colSpan="3" onClick="save,action-accounting-batch-method-action-online-agency" />
-    	<button name="reminderBatch" title="Run" colSpan="3" onClick="save,action-accounting-batch-method-action-reminder" />
-    	<button name="interbankPaymentOrderBatch" title="Run" colSpan="3" onClick="save,action-accounting-batch-method-action-interbank-payment-order" />
-    	<button name="doubtfulCustomerBatch" title="Run" colSpan="3" onClick="save,action-accounting-batch-method-action-doubtful-customer" />
+    	<button name="reimbursementBatch" title="Lancer" colSpan="3" onClick="save,action-accounting-batch-method-action-reimbursement" />
+    	<button name="directDebitBatch" title="Lancer" colSpan="3" onClick="save,action-accounting-batch-method-action-direct-debit" />
+    	<button name="onlineAgencyBatch" title="Lancer" colSpan="3" onClick="save,action-accounting-batch-method-action-online-agency" />
+    	<button name="reminderBatch" title="Lancer" colSpan="3" onClick="save,action-accounting-batch-method-action-reminder" />
+    	<button name="interbankPaymentOrderBatch" title="Lancer" colSpan="3" onClick="save,action-accounting-batch-method-action-interbank-payment-order" />
+    	<button name="doubtfulCustomerBatch" title="Lancer" colSpan="3" onClick="save,action-accounting-batch-method-action-doubtful-customer" />
     </form>
     
     <!-- ACTION RECORD -->

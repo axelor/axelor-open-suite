@@ -2,13 +2,13 @@
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
-    <grid name="vat-management-line-grid" title="VAT Management lines" model="com.axelor.apps.account.db.VatManagementLine">
+    <grid name="vat-management-line-grid" title="Les lignes de gestions de TVA" model="com.axelor.apps.account.db.VatManagementLine">
         <field name="vat"/>
         <field name="condition"/>
     </grid>
-    <form name="vat-management-line-form" title="VAT Management line" model="com.axelor.apps.account.db.VatManagementLine" cols="4">
+    <form name="vat-management-line-form" title="Ligne de gestion de la TVA" model="com.axelor.apps.account.db.VatManagementLine" cols="4">
 		<field name="vat"/>
-		<separator title="Context of use" colSpan="4" />
+		<separator title="Condition d'application" colSpan="4" />
 		<field name="condition" noLabel="true" colSpan="4" widget="CodeEditor[syntax=groovy]"/>
     </form>
 </object-views>

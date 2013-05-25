@@ -3,13 +3,13 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    <grid name="pricing-list-version-grid" title="Pricing list versions" model="com.axelor.apps.account.db.PricingListVersion">
+    <grid name="pricing-list-version-grid" title="Versions de barèmes" model="com.axelor.apps.account.db.PricingListVersion">
         <field name="fromDate"/>
         <field name="toDate"/>
         <field name="activeOk"/>
     </grid>
     
-    <form name="pricing-list-version-form" title="Pricing list version" model="com.axelor.apps.account.db.PricingListVersion" cols="6" 
+    <form name="pricing-list-version-form" title="Version de barème" model="com.axelor.apps.account.db.PricingListVersion" cols="6" 
     	onLoad="meth-pricingList-initVersion">
         <field name="fromDate"/>
         <field name="toDate"/>
@@ -17,7 +17,7 @@
         <field name="pricingListLineList" colSpan="6" grid-view="pricing-list-line-grid" form-view="pricing-list-line-form"/>
     </form>
     
-    <form name="pricing-list-version-menu-form" title="Pricing list version" model="com.axelor.apps.account.db.PricingListVersion" cols="6" 
+    <form name="pricing-list-version-menu-form" title="Version de barème" model="com.axelor.apps.account.db.PricingListVersion" cols="6" 
     	onLoad="meth-pricingList-initVersion" onSave="meth-pricingList-fixVersionListDates-menu">
         <field name="pricingList" required="true"/> <break/>
         <field name="fromDate" required="true"/>

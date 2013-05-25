@@ -21,8 +21,8 @@
         <field name="credit"/>
         <field name="amount"/>
         <break/>
-        <button name="reconcile" title="Reconcile" colSpan="2" onClick="save,action-reconcile-method-reconcile"/>
-        <button name="unreconcile" title="Unreconcile" colSpan="2" onClick="save,action-reconcile-method-unreconcile"/>
+        <button name="reconcile" title="Réconcilier" colSpan="2" onClick="save,action-reconcile-method-reconcile"/>
+        <button name="unreconcile" title="Déréconcilier" colSpan="2" onClick="save,action-reconcile-method-unreconcile"/>
         <break/>
         <field name="state"/>
     </form>
