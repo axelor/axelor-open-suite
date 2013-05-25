@@ -37,7 +37,7 @@
         </group>
     </form>
     
-  <calendar name="meeting-calendar" title="Meetings" mode="month" colorBy="userInfo" 
+  <calendar name="meeting-calendar" title="Meetings" mode="month" colorBy="typeSelect" 
     eventStart="startDateTime" 
     eventStop="endDateTime" 
     eventLength="1">
@@ -73,7 +73,7 @@
         <group title="Related to" colSpan="1" cols="2">
 	        <field name="relatedToSelect" widget="RefSelect[related=relatedToSelectId]"/>
         </group>
-        <group title="Assignment" cols="4" colSpan="2" canCollapse="true">
+        <group title="Assigned to" cols="4" colSpan="2" canCollapse="true">
 	        <field name="userInfo"/>
 	    	<field name="team"/>
         </group>
@@ -106,7 +106,7 @@
         <group title="Related to" colSpan="1" cols="2">
 	        <field name="relatedToSelect" widget="RefSelect[related=relatedToSelectId]"/>
         </group>
-        <group title="Assignment" cols="4" colSpan="2" canCollapse="true">
+        <group title="Assigned to" cols="4" colSpan="2" canCollapse="true">
 	        <field name="userInfo"/>
 	    	<field name="team"/>
         </group>

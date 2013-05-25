@@ -30,7 +30,7 @@
 	        <break/>
 	        <field name="description" colSpan="4"/>
 		</group>
-        <group title="Assignment" canCollapse="true">
+        <group title="Assigned to" canCollapse="true">
 	        <field name="userInfo"/>
 	    	<field name="team"/>
         </group>

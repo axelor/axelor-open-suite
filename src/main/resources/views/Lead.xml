@@ -28,11 +28,11 @@
 	        <field name="email"/>
 	        <field name="description" widget="TEXT[height=3]"/>
 	        <field name="contactDate"/>
-	        <group title="Détails Status" colSpan="2" cols="2" css="groupTitle">
+	        <group title="Status details" colSpan="2" cols="2" css="groupTitle">
 	        	<field name="statusSelect"/>
 	        	<field name="statusDescription"/>
 	        </group>
-	        <group title="Détails Description" colSpan="2" cols="2" css="groupTitle">
+	        <group title="Source details" colSpan="2" cols="2" css="groupTitle">
 	        	<field name="source"/>
 	        	<field name="sourceDescription"/>
 	        </group>
@@ -41,7 +41,7 @@
 	        <field name="isDoNotCall"/>
 	        <button name="convertLead" title="Convert lead" onClick="action-lead-method-convert-lead"/>
         </group>
-        <group title="Assignment" canCollapse="true">
+        <group title="Assigned to" canCollapse="true">
 	        <field name="userInfo"/>
 	    	<field name="team"/>
         </group>

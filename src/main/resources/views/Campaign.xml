@@ -23,7 +23,7 @@
 	        <field name="currency"/>
 	        <field name="frequencySelect" hideIf="typeSelect != 8"/>
 	        <field name="nbImpressions"/>
-	        <group title="Budgétisation" colSpan="4" css="groupTitle">
+	        <group title="Budget" colSpan="4" css="groupTitle">
 	        	<field name="budget"/>
 		        <field name="expectedCost"/>
 		        <field name="actualCost"/>
@@ -32,7 +32,7 @@
 	        <field name="objective" widget="TEXT[height=3]"/>
 	        <field name="description" widget="TEXT[height=3]"/>
         </group>
-        <group title="Assignment" canCollapse="true">
+        <group title="Assigned to" canCollapse="true">
 	        <field name="userInfo"/>
 	    	<field name="team"/>
         </group>
