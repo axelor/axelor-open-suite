@@ -72,6 +72,9 @@
 	                <field name="expectedFinalMargin"/>
 	                <field name="gapBetweenFinalAndInitial"/>
 	            </group>
+	            <field name="otherCostTaskProductLine" colSpan="4"/>
+	            <field name="otherRevenueTaskProductLine" colSpan="4"/>
+	            <field name="taskUpdateLineList" colSpan="4"/>
 	            <field name="estimateTime"/>
 	            <field name="spentTime"/>
 	            <field name="remainingTime"/>
@@ -84,9 +87,7 @@
 	            <field name="supplierInvoiceLineList" colSpan="4"/>
 	            <field name="expenseLineList" colSpan="4"/>
 	            <field name="timesheetLineList" colSpan="4"/>
-	            <field name="otherCostTaskProductLine" colSpan="4"/>
-	            <field name="otherRevenueTaskProductLine" colSpan="4"/>
-	            <field name="otherRevenueTaskProductLine" colSpan="4"/>
+	            
 	        </page>
 	        <page title="Description" colSpan="4">
 	            <field name="description" colSpan="4" noLabel="true"/>
