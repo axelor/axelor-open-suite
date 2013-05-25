@@ -2,7 +2,7 @@
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
-    <grid name="mail-grid" title="Liste des mails " model="com.axelor.apps.base.db.Mail">
+    <grid name="mail-grid" title="Mails list " model="com.axelor.apps.base.db.Mail">
         <field name="code"/>
         <field name="name"/>
         <field name="typeSelect"/>
@@ -26,25 +26,25 @@
             <field name="pdfFilePath"/>
             <field name="company"/>
         </group>
-        <group title="Contenu" colSpan="4">
+        <group title="Content" colSpan="4">
         	<field name="subject" colSpan="4"/>
        	 	<field name="content" colSpan="4"/>
         </group>
-        <group title="Envoi" colSpan="4">
+        <group title="Sending dates" colSpan="4">
        	 	<field name="sendScheduleDate"/>
         	<field name="sendRealDate"/>
         </group>
-        <group title="Destinataire" colSpan="4">
+        <group title="Recipient" colSpan="4">
         	<field name="address"/>
         	<field name="addressEmail"/>
         	<field name="partner" grid-view="partner-grid" form-view="partner-form" colSpan="4"/>
         </group>
-        <group title="Informations complémentaires" colSpan="4">
+        <group title="Complementary information" colSpan="4">
         	<field name="reminderHistory"/>         
         	<field name="cashRegister"/>
         	<field name="rejectMoveLine"/>
         </group> 
-        <button name="printMail" title="Imprimer" colSpan="2" onClick="save,action-mail-method-print-mail"/>
+        <button name="printMail" title="Print" colSpan="2" onClick="save,action-mail-method-print-mail"/>
     </form>
 
 	<action-attrs name="action-mail-hidden-attrs">

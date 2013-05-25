@@ -6,9 +6,9 @@
 	<selection name="alarm.engine.manager.type">
 		<option value="0"></option>
 		<option value="1">Invoicing Management</option>
-		<option value="2">Gestionnaire de contrat</option>
-		<option value="3">Gestionnaire commercial</option>
-		<option value="4">Gestionnaire technique</option>
+		<option value="2">Contract Manager</option>
+		<option value="3">Sales Manager</option>
+		<option value="4">Technical manager</option>
 	</selection>
 
     <grid name="alarm-engine-grid" title="Alarm engines" model="com.axelor.apps.base.db.AlarmEngine">

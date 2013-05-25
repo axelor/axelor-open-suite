@@ -2,7 +2,7 @@
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
-    <grid name="agency-grid" title="Agences" model="com.axelor.apps.base.db.Agency">
+    <grid name="agency-grid" title="Agencies" model="com.axelor.apps.base.db.Agency">
         <field name="name"/>
         <field name="num"/>
         <field name="nameLong"/>

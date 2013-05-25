@@ -3,12 +3,12 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    <grid name="nce-code-grid" title="Les codes NCE" model="com.axelor.apps.base.db.NceCode">
+    <grid name="nce-code-grid" title="NCE Code" model="com.axelor.apps.base.db.NceCode">
         <field name="code"/>
         <field name="name"/>
     </grid>
     
-    <form name="nce-code-form" title="Code NCE" model="com.axelor.apps.base.db.NceCode" cols="2">
+    <form name="nce-code-form" title="NCE Code" model="com.axelor.apps.base.db.NceCode" cols="2">
         <field name="code"/>
         <field name="name"/>
     </form>

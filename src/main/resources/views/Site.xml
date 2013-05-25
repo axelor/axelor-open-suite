@@ -18,11 +18,11 @@
 	    <field name="commercialLevelSelect"/>
 	    <field name="geographicalArea"/>
 	    <break/>
-		<notebook colSpan="1" title="Notebook key words">
-			<page title="Keyword tool">
+		<notebook colSpan="1" title="Notebook keywords">
+			<page title="Tool Keywords">
 				<field name="toolKeyWordSet" />
 			</page>
-			<page title="Keyword sector">
+			<page title="Sector Keywords">
 				<field name="sectorKeyWordSet" />
 			</page>
 		</notebook>

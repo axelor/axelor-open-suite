@@ -3,58 +3,58 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
 	
-	<grid name="general-grid" title="Administration Générale" model="com.axelor.apps.base.db.General">
+	<grid name="general-grid" title="General admin" model="com.axelor.apps.base.db.General">
        	<toolbar>
-		    <button name="edit" title="" hidden="true"/>
-		    <button name="save" title="" hidden="true"/>
-		    <button name="delete" title="" hidden="true"/>
-		    <button name="copy" title="" hidden="true"/>
-		    <button name="cancel" title="" hidden="true"/>
-		    <button name="refresh" title="" hidden="true"/>
-		    <button name="search" title="" hidden="true"/>
+		    <button name="edit" title="New" hidden="true"/>
+		    <button name="save" title="Edit" hidden="true"/>
+		    <button name="delete" title="Delete" hidden="true"/>
+		    <button name="copy" title="Copy" hidden="true"/>
+		    <button name="cancel" title="Cancel" hidden="true"/>
+		    <button name="refresh" title="Refresh" hidden="true"/>
+		    <button name="search" title="Search" hidden="true"/>
 		</toolbar>
 		<field name="today" />
 	</grid>
 	
-	<form name="general-form" title="Administration Générale" model="com.axelor.apps.base.db.General" cols="6" 
+	<form name="general-form" title="General admin" model="com.axelor.apps.base.db.General" cols="6" 
 	onSave="action-general-record-get-default-svi-stored-procedure">
        	<toolbar>
-		    <button name="new" title="" hidden="true"/>
-		    <button name="edit" title="" hidden="true"/>
-		    <button name="delete" title="" hidden="true"/>
-		    <button name="copy" title="" hidden="true"/>
-		    <button name="cancel" title="" hidden="true"/>
-		    <button name="search" title="" hidden="true"/>
+		    <button name="new" title="New" hidden="true"/>
+		    <button name="edit" title="Edit" hidden="true"/>
+		    <button name="delete" title="Delete" hidden="true"/>
+		    <button name="copy" title="Copy" hidden="true"/>
+		    <button name="cancel" title="Cancel" hidden="true"/>
+		    <button name="search" title="Search" hidden="true"/>
 		</toolbar>
 	    <field name="formulaGenerator"/>
-	    <button name="clearFormula" title="Réinitialiser les formules" colSpan="2" onClick="save,action-general-method-clear-formula,save"/>
+	    <button name="clearFormula" title="Reinitialise formulas" colSpan="2" onClick="save,action-general-method-clear-formula,save"/>
 	    <field name="today"/>
 	    <field name="logOk"/>
 	    <notebook colSpan="6">
-	        <page title="Comptabilité" cols="4">
+	        <page title="Accounting" cols="4">
 	            <field name="defaultExemptionVat"/>
 	            <field name="isInvoiceMoveConsolidated"/>
-	            <separator title="Listes des codes et motifs de rejets" colSpan="6"/>
+	            <separator title="Rejects reasons and codes list" colSpan="6"/>
 	            <field name="transferAndDirectDebitInterbankCode"/>
 	            <field name="chequeInterbankCode"/>
-	            <separator title="Qualité payeur" colSpan="4"/>
+	            <separator title="Payer quality" colSpan="4"/>
 	            <field name="payerQualityConfigLineList" colSpan="4"/>
-	            <button name="payerQualityProcess" title="Calculer les qualités payeurs" colSpan="2" onClick="action-general-method-payer-quality-process"/>
-	            <separator title="Conversions des devises" colSpan="4"/>
+	            <button name="payerQualityProcess" title="Compute payers quality" colSpan="2" onClick="action-general-method-payer-quality-process"/>
+	            <separator title="Currency conversion" colSpan="4"/>
 	            <field name="currencyConversionLineList" colSpan="4"/>
 	        </page>
 	        <page title="Interfaces" cols="4">
-	            <group name="qas" title="La vérification des adresses" colSpan="4">
+	            <group name="qas" title="Addresses validation" colSpan="4">
 	                <field name="qasWsdlUrl"/>
-	                <button name="checkQasWsdl" title="Tester la connection vers le service web QAS" colSpan="2" onClick="com.axelor.apps.base.web.AddressController:check"/>
+	                <button name="checkQasWsdl" title="Test connection to QAS webservice" colSpan="2" onClick="com.axelor.apps.base.web.AddressController:check"/>
 	            </group>
-	            <group name="svi" title="Interface SVI" colSpan="4">
+	            <group name="svi" title="IVS Interface" colSpan="4">
 	                <field name="sviStoredProcedure" noLabel="true" colSpan="4" widget="CodeEditor[syntax=sql]'"/>
 	                <break/>
-	                <button name="loadStoredProcedure" title="Charger les procedures" colSpan="2" onClick="save,com.axelor.apps.jdbc.web.JdbcController:runQuery"/>
+	                <button name="loadStoredProcedure" title="Load procedures" colSpan="2" onClick="save,com.axelor.apps.jdbc.web.JdbcController:runQuery"/>
 	            </group>
 	        </page>
-	        <page title="Les exceptions" cols="4">
+	        <page title="Exceptions" cols="4">
 	            <field name="exceptionDefaultMsg" colSpan="4"/>
 	            <field name="exceptionInvoiceMsg" colSpan="4"/>
 	            <field name="exceptionAccountingMsg" colSpan="4"/>

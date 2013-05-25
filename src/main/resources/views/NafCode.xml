@@ -2,11 +2,11 @@
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
-    <grid name="naf-code-grid" title="Les codes NAF" model="com.axelor.apps.base.db.NafCode">
+    <grid name="naf-code-grid" title="NAF Codes" model="com.axelor.apps.base.db.NafCode">
         <field name="code"/>
         <field name="name"/>
     </grid>
-    <form name="naf-code-form" title="Code NAF" model="com.axelor.apps.base.db.NafCode" cols="4">
+    <form name="naf-code-form" title="NAF Code" model="com.axelor.apps.base.db.NafCode" cols="4">
         <field name="code"/>
         <field name="name"/>
     </form>

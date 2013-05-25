@@ -13,14 +13,14 @@
 
 	<selection name="partner.title.type.select">
 		<option value="1">M.</option>
-		<option value="2">Mme</option>
-		<option value="3">Mlle</option>
+		<option value="2">Ms.</option>
+		<option value="3">Mss.</option>
 		<option value="4">Dr</option>
 		<option value="5">Prof.</option>
 	</selection>
 
 	<selection name="partner.customer.type.select">
-		<option value="1">None.</option>
+		<option value="1">None</option>
 		<option value="2">Prospect</option>
 		<option value="3">Client</option>
 	</selection>
@@ -32,31 +32,31 @@
 
 	<selection name="account.account.schedule.type">
 		<option value='type'>Type</option>
-		<option value='subtype'>Sous type</option>
+		<option value='subtype'>Subtype</option>
 	</selection>
 
 	<selection name='mail.model.object.concerned.select'>
-		<option value='1'>Recouvrement</option>
-		<option value='2'>Remboursement</option>
-		<option value='3'>Import des rejets</option>
-		<option value='4'>Caisse</option>
+		<option value='1'>Debt Recovery</option>
+		<option value='2'>Reimbursement</option>
+		<option value='3'>Reject import</option>
+		<option value='4'>Cashier</option>
 	</selection>
 
 	<selection name='iadministration.yes.no.select'>
-		<option value='1'>Oui</option>
-		<option value='0'>Non</option>
+		<option value='1'>Yes</option>
+		<option value='0'>No</option>
 	</selection>
 
 	<selection name='iinvoice.operation.type.select'>
-		<option value='1'>Achat fournisseur</option>
-		<option value='2'>Avoir fournisseur</option>
-		<option value='3'>Vente client</option>
-		<option value='4'>Avoir client</option>
+		<option value='1'>Supplier purchase</option>
+		<option value='2'>Supplier refund</option>
+		<option value='3'>Customer sale</option>
+		<option value='4'>Customer refund</option>
 	</selection>
 
 	<selection name='ipayment.operation.type.select'>
-		<option value='1'>Fournisseur</option>
-		<option value='2'>Client</option>
+		<option value='1'>Supplier</option>
+		<option value='2'>Customer</option>
 	</selection>
 
 	<selection name='iterritory.artmin.select'>
@@ -69,8 +69,8 @@
 	</selection>
 
 	<selection name='partner.person.category.select'>
-		<option value='legalPerson'>Personne morale</option>
-		<option value='naturalPerson'>Personne physique</option>
+		<option value='legalPerson'>Company</option>
+		<option value='naturalPerson'>Individual</option>
 	</selection>
 
 	<selection name='partner.assignor.type.select'>
@@ -767,7 +767,7 @@
 	</selection>
 	
 	<selection name="organisation.task.status.select">
-		<option value="1">Brouillon</option>
+		<option value="1">Bouillon</option>
 		<option value="2">Confirmé</option>
 		<option value="3">Validé</option>
 		<option value="4">Annulé</option>

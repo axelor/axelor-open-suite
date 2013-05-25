@@ -2,10 +2,10 @@
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
-    <grid name="object-list-grid" title="Objets GIE" model="com.axelor.apps.base.db.ObjectList">
+    <grid name="object-list-grid" title="Application Objects" model="com.axelor.apps.base.db.ObjectList">
         <field name="name"/>
     </grid>
-    <form name="object-list-form" title="Objet GIE" model="com.axelor.apps.base.db.ObjectList" cols="4">
+    <form name="object-list-form" title="Application Object" model="com.axelor.apps.base.db.ObjectList" cols="4">
         <field name="name"/>
     </form>
 </object-views>

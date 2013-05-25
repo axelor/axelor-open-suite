@@ -22,7 +22,7 @@
 		<group colSpan="4" cols="4" title="QAS" >
 			<field name="certifiedOk"/>
 			<field name="pickList" colSpan="4">
-				<grid title="Liste de choix">
+				<grid title="Pick list">
 					<field name="partialAddress"/>
 					<field name="postcode"/>
 					<field name="score"/>
@@ -31,7 +31,7 @@
 		</group>
 		<group colSpan="4" cols="2">
 			<button name="select" title="Choose" onClick="com.axelor.apps.base.web.AddressController:select,save" />
-			<button name="validate" title="Validater" onClick="com.axelor.apps.base.web.AddressController:validate,save" />
+			<button name="validate" title="Validate" onClick="com.axelor.apps.base.web.AddressController:validate,save" />
 		</group>
 	</form>
 

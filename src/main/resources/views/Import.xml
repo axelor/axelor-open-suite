@@ -16,7 +16,7 @@
 		<field name="date" />
 		<field name="path" colSpan="4" />
 		<field name="configPath" colSpan="4" />
-		<button name="import" title="Importer" colSpan="4"
+		<button name="import" title="Import" colSpan="4"
 			onClick="save,com.axelor.apps.base.web.ImportController:launchImport" />
 		<field name="log" colSpan="4" />
 	</form>

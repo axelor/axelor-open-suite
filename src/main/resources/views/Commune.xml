@@ -2,11 +2,11 @@
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
-    <grid name="commune-grid" title="Les communes" model="com.axelor.apps.base.db.Commune">
+    <grid name="commune-grid" title="Cities-Communes" model="com.axelor.apps.base.db.Commune">
         <field name="name"/>
         <field name="inseeCode"/>
     </grid>
-    <form name="commune-form" title="Commune" model="com.axelor.apps.base.db.Commune" cols="4">
+    <form name="commune-form" title="City-Commune" model="com.axelor.apps.base.db.Commune" cols="4">
         <field name="name"/>
         <field name="internalId"/>
         <field name="inseeCode"/>

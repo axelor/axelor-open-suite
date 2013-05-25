@@ -3,13 +3,13 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
    
-    <grid name="status-grid" title="Les statuts" model="com.axelor.apps.base.db.Status">
+    <grid name="status-grid" title="All status" model="com.axelor.apps.base.db.Status">
         <field name="name"/>
         <field name="code"/>
         <field name="invoiceStatusOK"/>
     </grid>
     
-    <form name="status-form" title="Statut" model="com.axelor.apps.base.db.Status" cols="4"
+    <form name="status-form" title="Status" model="com.axelor.apps.base.db.Status" cols="4"
     	onLoad="action-status-attrs-default">
         <field name="name"/>
         <field name="code"/>

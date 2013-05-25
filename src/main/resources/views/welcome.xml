@@ -15,19 +15,19 @@
     <view type="html" name="samples/chart1.html" />
   </action-view>
   
- <action-view name="portal.opportunity" title="Les opportunités"
+ <action-view name="portal.opportunity" title="Opportunities"
 		model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="opportunity-grid"/>
 		<view type="form" name="opportunity-form" />
 	</action-view>
 
-	<action-view name="portal.meeting" title="Les réunions"
+	<action-view name="portal.meeting" title="Meetings"
 		model="com.axelor.apps.crm.db.Event">
 		<view type="grid" name="meeting-grid" />
 		<view type="form" name="meeting-form" />
 	</action-view>
 
-	<action-view name="portal.task" title="Les tâches"
+	<action-view name="portal.task" title="Tasks"
 		model="com.axelor.apps.organisation.db.Project">
 		<view type="grid" name="task-grid" />
 		<view type="form" name="task-form" />

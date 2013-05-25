@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    <grid name="currency-conversion-line-grid" title="Lignes de conversion de devise" model="com.axelor.apps.base.db.CurrencyConversionLine">
+    <grid name="currency-conversion-line-grid" title="Currency conversion lines" model="com.axelor.apps.base.db.CurrencyConversionLine">
         <field name="startCurrency"/>
         <field name="endCurrency"/>
         <field name="conversionRate"/>
@@ -11,7 +11,7 @@
         <field name="toDate"/>
     </grid>
     
-    <form name="currency-conversion-line-form" title="Ligne de conversion de devise" model="com.axelor.apps.base.db.CurrencyConversionLine" cols="4">
+    <form name="currency-conversion-line-form" title="Currency conversion line" model="com.axelor.apps.base.db.CurrencyConversionLine" cols="4">
         <field name="startCurrency"/>
         <field name="endCurrency"/>
         <field name="conversionRate"/>

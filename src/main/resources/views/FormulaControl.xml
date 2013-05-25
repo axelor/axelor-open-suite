@@ -2,7 +2,7 @@
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
-    <grid name="formula-control-grid" title="Contrôles de formule" model="com.axelor.apps.base.db.FormulaControl">
+    <grid name="formula-control-grid" title="Formula controls" model="com.axelor.apps.base.db.FormulaControl">
         <field name="constituent"/>
         <field name="pricingStructure"/>
         <field name="tax"/>
@@ -12,7 +12,7 @@
         <field name="control"/>
         <field name="msg"/>
     </grid>
-    <form name="formula-control-form" title="Contrôle de formule" model="com.axelor.apps.base.db.FormulaControl" cols="4">
+    <form name="formula-control-form" title="Formula control" model="com.axelor.apps.base.db.FormulaControl" cols="4">
         <field name="constituent"/>
         <field name="pricingStructure"/>
         <field name="tax"/>

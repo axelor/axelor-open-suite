@@ -13,21 +13,21 @@
     </form>
     
     <!-- Outils -->
-    <form name="keyword-tool-form" title="Mot Clé Outil"
+    <form name="keyword-tool-form" title="Tool Keyword"
 		model="com.axelor.apps.base.db.Keyword" onNew="action-keyword-tool-record-new">
 		<field name="keyWord" />
 		<field name="typeSelect" />
 	</form>
 
 	<!-- Secteurs -->
-	<form name="keyword-area-form" title="Mot Clé Secteur"
+	<form name="keyword-area-form" title="Sector Keyword"
 		model="com.axelor.apps.base.db.Keyword" onNew="action-keyword-area-record-new">
 		<field name="keyWord" />
 		<field name="typeSelect" />
 	</form>
 	
 	<!-- Métiers -->
-	<form name="keyword-profession-form" title="Mot Clé Métier"
+	<form name="keyword-profession-form" title="Jobtitle Keyword"
 		model="com.axelor.apps.base.db.Keyword" onNew="action-keyword-profession-record-new">
 		<field name="keyWord" />
 		<field name="typeSelect" />

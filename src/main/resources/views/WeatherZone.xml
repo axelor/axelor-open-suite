@@ -3,12 +3,12 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    <grid name="weather-zone-grid" title="Zones météo" model="com.axelor.apps.base.db.WeatherZone">
+    <grid name="weather-zone-grid" title="Weather zones" model="com.axelor.apps.base.db.WeatherZone">
         <field name="name"/>
         <field name="code"/>
     </grid>
     
-    <form name="weather-zone-form" title="Zone météo" model="com.axelor.apps.base.db.WeatherZone" cols="4">
+    <form name="weather-zone-form" title="Weather zone" model="com.axelor.apps.base.db.WeatherZone" cols="4">
         <field name="name"/>
         <field name="code"/>
     </form>

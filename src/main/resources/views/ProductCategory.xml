@@ -2,12 +2,12 @@
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
-    <grid name="product-category-grid" title="Catégories de produit" model="com.axelor.apps.base.db.ProductCategory">
+    <grid name="product-category-grid" title="Product categories" model="com.axelor.apps.base.db.ProductCategory">
         <field name="name"/>
         <field name="code"/>
         <field name="parentProductCategory"/>
     </grid>
-    <form name="product-category-form" title="Catégorie de produit" model="com.axelor.apps.base.db.ProductCategory" cols="6">
+    <form name="product-category-form" title="Product category" model="com.axelor.apps.base.db.ProductCategory" cols="6">
         <field name="name"/>
         <field name="code"/>
         <field name="parentProductCategory"/>

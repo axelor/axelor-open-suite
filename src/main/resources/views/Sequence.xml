@@ -3,9 +3,9 @@
 xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
   
-    <grid name="sequence-grid" title="Les séquences" model="com.axelor.apps.base.db.Sequence">
+    <grid name="sequence-grid" title="Sequences" model="com.axelor.apps.base.db.Sequence">
     	<toolbar>
-    		<button name="reset" title="Réinitialiser" onClick="action-sequence-method-reset-all"/>
+    		<button name="reset" title="Reset" onClick="action-sequence-method-reset-all"/>
     	</toolbar>
         <field name="name"/>
         <field name="code" />
@@ -17,11 +17,11 @@ xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelo
         <field name="nextNum"/>
     </grid>
     
-    <form name="sequence-form" title="Séquence" model="com.axelor.apps.base.db.Sequence" cols="4" 
+    <form name="sequence-form" title="Sequence" model="com.axelor.apps.base.db.Sequence" cols="4" 
     	onNew="action-sequence-default,action-sequence-generic-attrs-tool-bar,action-sequence-attrs"
     	onLoad="action-sequence-attrs-tool-bar,action-sequence-attrs">
     	<toolbar>
-    		<button name="reset" title="Réinitialiser" onClick="save,action-sequence-method-reset,save"/>
+    		<button name="reset" title="Reset" onClick="save,action-sequence-method-reset,save"/>
     	</toolbar>
         <field name="name"/>
         <field name="code" onChange="action-sequence-attrs"/>
@@ -33,12 +33,12 @@ xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelo
         <field name="padding"/>
         <field name="toBeAdded"/>
         <field name="nextNum"/>
-        <label title="Légende :" colSpan="4"/>
-        <label title="Vous pouvez utiliser les combinaisons ci-dessous dans les champs préfixe et suffixe" colSpan="4"/>
-        <label title="%Y : Pour l'année" colSpan="4"/>
-        <label title="%M : Pour le mois" colSpan="4"/>
-        <label title="%D : Pour le jour" colSpan="4"/>
-        <label title="%WY : Pour le numéro de la semaine" colSpan="4"/>
+        <label title="Tips :" colSpan="4"/>
+        <label title="The tags below can be used as a prefix or a suffix :" colSpan="4"/>
+        <label title="%Y : Year" colSpan="4"/>
+        <label title="%M : Month" colSpan="4"/>
+        <label title="%D : Day" colSpan="4"/>
+        <label title="%WY : Week number" colSpan="4"/>
     </form>
     
     <!-- ACTION RECORD -->
