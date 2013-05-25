@@ -1,9 +1,9 @@
 package com.axelor.apps.account.web
 
 import com.axelor.apps.account.db.AccountingBatch
+import com.axelor.apps.account.db.IAccount
 import com.axelor.apps.account.service.generator.batch.AccountingBatchService
 import com.axelor.apps.base.db.Batch
-import com.axelor.meta.views.Action.Context
 import com.axelor.rpc.ActionRequest
 import com.axelor.rpc.ActionResponse
 import com.google.inject.Inject
@@ -12,29 +12,6 @@ class AccountingBatchController {
 	@Inject
 	private AccountingBatchService accountingBatchService
 	
-	/**
-	 * Lancer le batch Agence en ligne.
-	 *
-	 * @param request
-	 * @param response
-	 */
-	def void actionOnlineAgency(ActionRequest request, ActionResponse response){
-		
-		AccountingBatch accountingBatch = request.context as AccountingBatch
-		
-		Batch batch = null;
-		
-		if(accountingBatch.getOnlineAgencyTypeSelect() == IAccount.ONLINE_AGENCY_EXPORT)  {
-			batch = accountingBatchService.onlineAgencyExport(AccountingBatch.find(accountingBatch.id))
-		}
-		else if(accountingBatch.getOnlineAgencyTypeSelect() == IAccount.ONLINE_AGENCY_IMPORT)  {
-			batch = accountingBatchService.onlineAgencyImport(AccountingBatch.find(accountingBatch.id))
-		}
-		
-		response.flash = "${batch?.comment}"
-		response.reload = true
-		
-	}
 	
 	
 	/**
@@ -49,7 +26,7 @@ class AccountingBatchController {
 		
 		Batch batch = null;
 		
-		if(accountingBatch.getReminderTypeSelect() == IDebtRecovery.REMINDER)  {
+		if(accountingBatch.getReminderTypeSelect() == IAccount.REMINDER)  {
 			batch = accountingBatchService.reminder(AccountingBatch.find(accountingBatch.id))
 		}
 		
@@ -162,15 +139,11 @@ class AccountingBatchController {
 	 * @param request
 	 * @param response
 	 */
-	def void run(ActionRequest request, ActionResponse response){
-		
-	   Context context = request.context
-			   
-	   Batch batch = accountingBatchService.run(context.code)
-	   response.data = [
-		   "anomaly":batch.anomaly
-	   ]
-				
-	}
+	 def void run(ActionRequest request, ActionResponse response){
+    
+       Batch batch = accountingBatchService.run( request.context["code"] as String )
+       response.setData(["anomaly" : batch.anomaly])
+                
+    }
 	
 }
