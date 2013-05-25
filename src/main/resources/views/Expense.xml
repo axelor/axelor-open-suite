@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
 
-	<grid name="expense-edit-grid" title="Ndf" editable="true"
+	<grid name="expense-edit-grid" title="Travel expenses" editable="true"
 		model="com.axelor.apps.organisation.db.Expense">
 		<field name="date" />
 		<field name="expenseLineList" grid-view="expense-line-edit-grid" />
@@ -11,8 +11,8 @@
 	</grid>
 
     
-    <grid name="expense-grid" title="Les notes de frais" model="com.axelor.apps.organisation.db.Expense">
-        <field name="userInfo"/>
+    <grid name="expense-grid" title="Travel expenses" model="com.axelor.apps.organisation.db.Expense">
+        <field name="employee"/>
         <field name="isRecurrentExpense"/>
         <field name="date"/>
         <field name="totalAmount"/>
@@ -21,8 +21,8 @@
         <field name="statusSelect"/>
     </grid>
     
-    <form name="expense-form" title="Note de frais" model="com.axelor.apps.organisation.db.Expense" cols="4">
-		<field name="userInfo" colSpan="4"/>
+    <form name="expense-form" title="Travel expense" model="com.axelor.apps.organisation.db.Expense" cols="4">
+		<field name="employee" colSpan="4"/>
         <field name="isRecurrentExpense" colSpan="2"/>
         <field name="date" />
         <field name="totalAmount"/>

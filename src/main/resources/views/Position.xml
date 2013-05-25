@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
 
 
-	<form name="position-form" title="Poste"
+	<form name="position-form" title="Professional background"
 		model="com.axelor.apps.organisation.db.Position">
 		<field name="name" />
 		<field name="startDate" />
@@ -25,7 +25,7 @@
 		<field name="comment" />
 	</form>
 
-	<grid name="position-grid" title="Parcours professionel"
+	<grid name="position-grid" title="Professional background"
 		model="com.axelor.apps.organisation.db.Position" editable="true">
 		<field name="startDate" />
 		<field name="endDate" />

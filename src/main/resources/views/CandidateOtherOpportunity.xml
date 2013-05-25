@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
 
 
-	<form name="candidate-other-opportunity-form" title="Autre piste" model="com.axelor.apps.organisation.db.CandidateOtherOpportunity">
+	<form name="candidate-other-opportunity-form" title="Other opportunities" model="com.axelor.apps.organisation.db.CandidateOtherOpportunity">
 		<field name="ets" domain="self.isContact != True"/>
 		<field name="opportunity" />
 		<field name="contact" domain="self.isContact = True" />
@@ -12,7 +12,7 @@
 		<field name="interestSelect" />
 	</form>
 
-	<grid name="candidate-other-opportunity-grid" title="Autre piste" model="com.axelor.apps.organisation.db.CandidateOtherOpportunity" editable="true">
+	<grid name="candidate-other-opportunity-grid" title="Other opportunity" model="com.axelor.apps.organisation.db.CandidateOtherOpportunity" editable="true">
 		<field name="ets" domain="self.isContact != True" />
 		<field name="opportunity" />
 		<field name="contact" domain="self.isContact = True" />

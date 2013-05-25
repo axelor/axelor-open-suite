@@ -3,14 +3,14 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    <grid name="task-product-line-grid" title="Autres planifications" model="com.axelor.apps.organisation.db.TaskProductLine">
+    <grid name="task-product-line-grid" title="Task product line" model="com.axelor.apps.organisation.db.TaskProductLine">
         <field name="date"/>
         <field name="userInfo"/>
         <field name="revenue"/>
         <field name="cost"/>
     </grid>
     
-    <form name="task-product-line-form" title="Autre planification" model="com.axelor.apps.organisation.db.TaskProductLine" cols="4" >
+    <form name="task-product-line-form" title="Task product line" model="com.axelor.apps.organisation.db.TaskProductLine" cols="4" >
         <field name="date"/>
         <field name="userInfo"/>
         <field name="revenue"/>

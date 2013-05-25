@@ -3,14 +3,14 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    <grid name="timesheet-line-grid" title="Les lignes de feuille de temps" model="com.axelor.apps.organisation.db.TimesheetLine">
+    <grid name="timesheet-line-grid" title="Timesheet project/task time inputs" model="com.axelor.apps.organisation.db.TimesheetLine">
         <field name="project"/>
         <field name="task"/>
         <!-- 	Ajouter type de congé -->
         <field name="isToInvoice"/>
     </grid>
     
-    <form name="timesheet-line-form" title="Ligne de feuille de temps" model="com.axelor.apps.organisation.db.TimesheetLine" cols="4">
+    <form name="timesheet-line-form" title="Timesheet project/task time input" model="com.axelor.apps.organisation.db.TimesheetLine" cols="4">
         <field name="project"/>
         <field name="task"/>
         <!-- 	Ajouter type de congé -->

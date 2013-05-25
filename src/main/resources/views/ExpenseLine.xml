@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
 
-	<grid name="expense-edit-line-grid" editable="true" title="Expense Line"
+	<grid name="expense-edit-line-grid" editable="true" title="Expense Lines"
 		model="com.axelor.apps.organisation.db.ExpenseLine">
 		<field name="product" />
 		<field name="quantity" />
@@ -40,7 +40,7 @@
 		<field name="sequence" />
 		<field name="total" />
 		<break />
-		<group title="Proof" colSpan="4">
+		<group title="Proofs" colSpan="4">
 			<field name="file" />
 			<field name="fileReceived" />
 		</group>

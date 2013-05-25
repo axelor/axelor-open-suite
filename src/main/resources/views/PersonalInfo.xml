@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
 
 
-	<form name="personal-info-edit-form" title="Informations Complémentaires"
+	<form name="personal-info-edit-form" title="Additionnal information"
 		model="com.axelor.apps.organisation.db.PersonalInfo">
 		<field name="dob" />
 		<field name="citizenshipCountry"/>

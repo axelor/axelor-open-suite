@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    <grid name="project-grid" title="Affaires / Projets" model="com.axelor.apps.organisation.db.Project">
+    <grid name="project-grid" title="Affairs/Projects" model="com.axelor.apps.organisation.db.Project">
         <field name="holderUserInfo"/>
         <field name="clientPartner"/>
         <field name="contactPartner"/>
@@ -12,7 +12,7 @@
         <field name="isModel"/>
     </grid>
     
-    <form name="project-form" title="Affaire / Projet" model="com.axelor.apps.organisation.db.Project" cols="6" >
+    <form name="project-form" title="Affair/Project" model="com.axelor.apps.organisation.db.Project" cols="6" >
     	<group noLabel="true" colSpan="4">
     		<field name="holderUserInfo"/>
 	        <field name="clientPartner"/>
@@ -26,29 +26,29 @@
 	        <field name="defaultTask" hideIf="!isTimeSheetImputable"/>
     	</group>
     	<group noLabel="true" colSpan="2" title="Actions">
-    		<button name="createSalesOrder" title="Créer devis"/>
-    		<button name="generateNewInstanceOfProject" title="Générer nouvelle instance du projet" hideIf="!isModel"/>
-    		<button name="generateDraftInvoice" title="Générer facture brouillon"/>
+    		<button name="createSalesOrder" title="Create quote"/>
+    		<button name="generateNewInstanceOfProject" title="Generate new project instance" hideIf="!isModel"/>
+    		<button name="generateDraftInvoice" title="Generate draft invoice"/>
     	</group>
-    	<field name="customerSaleOrders" title="Les commandes clients" widget="MANY_TO_MANY[type=MANY_TO_MANY|target=com.axelor.apps.supplychain.db.SalesOrder|targetName=name|title=Les commandes clients]" colSpan="6"/>
-    	<field name="customerInvoices" title="Les factures clients" widget="MANY_TO_MANY[type=MANY_TO_MANY|target=com.axelor.apps.account.db.Invoice|targetName=invoiceId|title=Les factures clients]" colSpan="6"/>
-		<separator title="Informations financières" colSpan="6"/>
-		<group title="Budget initial" colSpan="6" cols="6">
+    	<field name="customerSaleOrders" title="Customer sale orders" widget="MANY_TO_MANY[type=MANY_TO_MANY|target=com.axelor.apps.supplychain.db.SalesOrder|targetName=name|title=Les commandes clients]" colSpan="6"/>
+    	<field name="customerInvoices" title="Customer invoices" widget="MANY_TO_MANY[type=MANY_TO_MANY|target=com.axelor.apps.account.db.Invoice|targetName=invoiceId|title=Les factures clients]" colSpan="6"/>
+		<separator title="Financial information" colSpan="6"/>
+		<group title="Initial Budget" colSpan="6" cols="6">
 			<field name="initialBudgetTurnover"/>
 			<field name="initialBudgetCost"/>
 			<field name="initialBudgetMargin"/>
 		</group>
-		<group title="Réalisé" colSpan="6" cols="6">
+		<group title="Realized" colSpan="6" cols="6">
 			<field name="realizedTurnover"/>
 			<field name="realizedBudgetCost"/>
 			<field name="realizedBudgetMargin"/>
 		</group>
-		<group title="Reste à faire" colSpan="6" cols="6">
+		<group title="Remaining to do" colSpan="6" cols="6">
 			<field name="remainingTurnover"/>
 			<field name="remainingBudgetCost"/>
 			<field name="remainingBudgetMargin"/>
 		</group>
-		<group title="Final estimé" colSpan="6" cols="6">
+		<group title="Estimated final" colSpan="6" cols="6">
 			<field name="expectedFinalTurnover"/>
 			<field name="expectedFinalCost"/>
 			<field name="expectedFinalMargin"/>

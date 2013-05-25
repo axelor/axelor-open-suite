@@ -4,15 +4,15 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
     
-    <calendar name="leave-request-calendar" title="Les demandes de congés" mode="month" colorBy="employeeUserInfo" 
+    <calendar name="leave-request-calendar" title="Leave requests" mode="month" colorBy="employee" 
 	    eventStart="startDateT" 
 	    eventStop="endDateT" 
 	    eventLength="1">
-	    <field name="leaveRequestReason" />
+	    <field name="employee" />
  	 </calendar>
     
-    <grid name="leave-request-grid" title="Les demandes de congés" model="com.axelor.apps.organisation.db.LeaveRequest">
-        <field name="employeeUserInfo"/>
+    <grid name="leave-request-grid" title="Leave requests" model="com.axelor.apps.organisation.db.LeaveRequest">
+        <field name="employee"/>
         <field name="requestDate"/>
         <field name="startDateT"/>
         <field name="endDateT"/>
@@ -24,14 +24,14 @@
         <field name="statusSelect"/>
     </grid>
     
-    <form name="leave-request-form" title="Demande de congé" model="com.axelor.apps.organisation.db.LeaveRequest" cols="4"
+    <form name="leave-request-form" title="Leave request" model="com.axelor.apps.organisation.db.LeaveRequest" cols="4"
     	onNew="action-leave-request-record-new">
 		
-		<field name="employeeUserInfo"/>
+		<field name="employee"/>
         <field name="requestDate"/>
         <field name="leaveRequestReason"/>
         <separator colSpan="4"/>
-        <group title="Période de congé" colSpan="3" cols="6">
+        <group title="Leave period" colSpan="3" cols="6">
         	<field name="startDateT"/>
         	<field name="endDateT"/>
         	<field name="nbrOfDayOff"/>
@@ -43,9 +43,9 @@
 	        <field name="approvalDate"/>
 	        <field name="statusSelect"/>
         </group>
-        <button name="confirm" title="Confirmer" colSpan="2" showIf="statusSelect == 1 || statusSelect == 4" onClick="save,action-leave-request-record-confirm,save"/>
-        <button name="cancel" title="Annuler" colSpan="2" showIf="statusSelect == 2" onClick="save,action-leave-request-record-cancel,save"/>
-        <button name="validate" title="Valider" colSpan="2" showIf="statusSelect == 2" onClick="save,action-leave-request-method-validate,action-leave-request-record-validate,save"/>
+        <button name="confirm" title="Confirm" colSpan="2" showIf="statusSelect == 1 || statusSelect == 4" onClick="save,action-leave-request-record-confirm,save"/>
+        <button name="cancel" title="Cancel" colSpan="2" showIf="statusSelect == 2" onClick="save,action-leave-request-record-cancel,save"/>
+        <button name="validate" title="Validate" colSpan="2" showIf="statusSelect == 2" onClick="save,action-leave-request-method-validate,action-leave-request-record-validate,save"/>
     </form>
     
     

@@ -27,37 +27,37 @@
 			<field name="companyDepartment"/>
 		</group>
 		<notebook>
-			<page title="Information complémentaire">
+			<page title="Additionnal information">
 				<field name="emergencyContact" domain="self.isContact = True"/>
 				<field name="emergencyNumber"/>
 				<field name="personalInfo" widget="NestedEditor" summary-view="true"
 					form-view="personal-info-edit-form"/>
 				<field name="candidate"/>
 			</page>
-			<page title="Parcours professionel">
+			<page title="Professionnal background">
 				<field name="positionList"/>
 			</page>
-			<page title="Mots clés">
+			<page title="Keywords">
 				<field name="toolKeywordSet" colSpan="2" grid-view="keyword-grid"/>
 				<field name="fieldKeywordSet" colSpan="2" grid-view="keyword-grid"/>
 				<field name="jobKeywordSet" colSpan="2" grid-view="keyword-grid"/>
 				<field name="partnerSet" colSpan="2" grid-view="company-name-grid"
 					domain="self.isContact = True"/>
 			</page>
-			<page title="Rém/Frais/congés">
+			<page title="Salary/Expenses/Holidays">
 				<notebook>
-					<page title="rém-position">
+					<page title="Salary">
 						<field name="bonusList" grid-view="bonus-grid" colSpan="2"/>
 						<field name="advanceList" grid-view="advance-grid"
 							colSpan="2"/>
 						<field name="vehicleFiscalPower"/>
-						<group title="Salaire fixe">
+						<group title="Fixed salary">
 							<field name="salaryFromDate"/>
 							<field name="salaryAmount"/>
 						</group>
 					</page>
-					<page title="notes de frais ">
-						<group title="Abonnement train">
+					<page title="Travel expense">
+						<group title="Commute expenses">
 							<field name="commuteFee"/>
 							<field name="commuteFeeRefundPerc"/>
 						</group>
@@ -65,9 +65,9 @@
 					</page>
 				</notebook>
 			</page>
-			<page title="Congés">
+			<page title="Holidays">
 			</page>
-			<page title="Compétence">
+			<page title="Competences">
 				<field name="competence" widget="NestedEditor" summary-view="true"
 					form-view="competence-edit-form"></field>
 			</page>
@@ -75,8 +75,6 @@
 			<!-- <field name="placementFollowUpList" grid-view="placement-follow-up-edit-grid" 
 				form-view="placement-follow-up-edit-list"></field> -->
 			<!-- </page> -->
-			<page title="Prépa paie">
-			</page>
 		</notebook>
 
 	</form>

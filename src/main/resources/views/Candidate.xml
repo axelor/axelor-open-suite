@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
 
 
-	<grid name="candidate-grid" title="Candidats" model="com.axelor.apps.organisation.db.Candidate">
+	<grid name="candidate-grid" title="Candidates" model="com.axelor.apps.organisation.db.Candidate">
 		<field name="name" />
 		<field name="firstName" />
 		<field name="mobilePhone" />
@@ -14,11 +14,11 @@
 	</grid>
 
 
-	<form name="candidate-form" title="Candidat" model="com.axelor.apps.organisation.db.Candidate" 
+	<form name="candidate-form" title="Candidate" model="com.axelor.apps.organisation.db.Candidate" 
 	 	onSave="action-organisation-candidate-save-record"
 		onNew="action-method-candidate-default-record">
 		<group name="header" cols="6" colSpan="4">
-			<field name="userInfo"/>
+			<field name="createdBy" title="Created by" />
 			<break />
 			<field name="titleSelect" />
 			<field name="name" />
@@ -27,13 +27,13 @@
 			<field name="fixedPhone" />
 			<field name="email" />
 			<field name="recruitmentType" />
-			<button name="recruit" title="Transformer en employé" colSpan="2" onClick="" />
+			<button name="recruit" title="Transform into employee" colSpan="2" onClick="" />
 		</group>
 		<notebook>
-			<page title="Principal" cols="6" colSpan="4">
+			<page title="General" cols="6" colSpan="4">
 				<field name="address" />
 				<break />
-				<field name="createdOn" readonly="true" title="Date d'Ajout à la Base" />
+				<field name="createdOn" readonly="true" title="Creation date" />
 				<field name="avalabilitySelect" />
 				<field name="availabilityDate" />
 				<field name="decisionDate" />
@@ -47,12 +47,12 @@
 				<field name="categorySelect" />
 				<break />
 				<field name="recruitmentProcessAdvancementList" colSpan="4">
-					<form title="Avancement Processus de Recrutement">
+					<form title="Recruitment process progress">
 						<field name="stateSelect"/>
 						<field name="dateTime"/>
 						<field name="comment"/>
 					</form>
-					<grid title="Avancement Processus de Recrutement" editable="true">
+					<grid title="Recruitment process progresses" editable="true">
 						<hilite color="#3333FF" background="#CDEB8B" condition="stateSelect = 0" />
 						<field name="stateSelect"/>
 						<field name="dateTime"/>
@@ -60,20 +60,20 @@
 					</grid>
 				</field>
 			</page>
-			<page title="Mots clés">
+			<page title="Keywords">
 				<field name="toolKeywordSet" colSpan="2" grid-view="keyword-grid"/>
 				<field name="fieldKeywordSet" colSpan="2" grid-view="keyword-grid"/>
 				<field name="jobKeywordSet" colSpan="2" grid-view="keyword-grid"/>
 				<field name="partnerSet" colSpan="2" grid-view="company-grid" domain="self.isContact = 'true'"/>
 			</page>
-			<page title="Parcours professionel">
+			<page title="Professionnal background">
 				<field name="positionList"/>
 			</page>
-			<page title="Formation">
+			<page title="Education/Trainings">
 				<field name="degree"/>
 				<!-- TODO set domain domain="self.id IN (1, 2, 3)" -->
-				<button name="assign" title="Affectation Vivier"
-					help="copie l'ensemble des champs nécessaires (dont Parcours pro, …)"
+				<button name="assign" title="Affect to recruitment pool"
+					help="Copy all necessary fields (including Professionnal Background …)"
 					colSpan="2" />
 				<field name="trainingLineList" colSpan="4"/>
 			</page>
@@ -82,15 +82,15 @@
 					form-view="evaluation-line-form" grid-view="evaluation-line-grid"/>
 				<field name="evaluationGrade" readonly="true"/>
 			</page>
-			<page title="Information complémentaire">
+			<page title="Additionnal information">
 				<field name="personalInfo" widget="NestedEditor" summary-view="true"
 					form-view="personal-info-edit-form"/>
 			</page>
-			<page title="Compétence">
+			<page title="Competences">
 				<field name="competence" widget="NestedEditor" summary-view="true"
 					form-view="competence-edit-form"/>
 			</page>
-			<page title="Autres pistes">
+			<page title="Other opportunities">
 				<field name="candidateOtherOpportunityList" grid-view="candidate-other-opportunity-grid" form-view="candidate-other-opportunity-form"/>
 			</page>
 <!-- 			<page title="Suivi du placement des besoins" hidden="true"> -->

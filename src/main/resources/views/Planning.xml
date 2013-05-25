@@ -3,15 +3,15 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    <grid name="planning-grid" title="Les plannifications" model="com.axelor.apps.organisation.db.Planning">
+    <grid name="planning-grid" title="Planning" model="com.axelor.apps.organisation.db.Planning">
         <field name="period"/>
-        <field name="userInfo"/>
+        <field name="employee"/>
         <field name="date"/>
     </grid>
     
-    <form name="planning-form" title="Plannification" model="com.axelor.apps.organisation.db.Planning" cols="6" >
+    <form name="planning-form" title="Planning" model="com.axelor.apps.organisation.db.Planning" cols="6" >
         <field name="period"/>
-        <field name="userInfo"/>
+        <field name="employee"/>
         <field name="date"/>
         <field name="planningLineList" colSpan="6" grid-view="planning-line-grid" form-view="planning-line-form"/>
     </form>

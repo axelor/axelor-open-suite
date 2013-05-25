@@ -3,11 +3,11 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    <grid name="public-holidays-grid" title="Les jours fériés" model="com.axelor.apps.organisation.db.PublicHolidays">
+    <grid name="public-holidays-grid" title="Public holidays" model="com.axelor.apps.organisation.db.PublicHolidays">
         <field name="name"/>
     </grid>
     
-    <form name="public-holidays-form" title="Les jours fériés" model="com.axelor.apps.organisation.db.PublicHolidays" cols="4" >
+    <form name="public-holidays-form" title="Public holidays" model="com.axelor.apps.organisation.db.PublicHolidays" cols="4" >
         <field name="name"/>
         <field name="publicHolidaysLineList" colSpan="4"/>
     </form>

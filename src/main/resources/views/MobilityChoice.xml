@@ -4,13 +4,13 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
 
 		
-	<form name="mobility-choice-form" title="Mobilité Géographique"
+	<form name="mobility-choice-form" title="Geographical mobility"
 		model="com.axelor.apps.organisation.db.MobilityChoice">
 		<field name="name" />
 		<field name="code" />
 	</form>
 
-	<grid name="mobility-choice-grid" title="Mobilité Géographique"
+	<grid name="mobility-choice-grid" title="Geographical mobility"
 		editable="true" model="com.axelor.apps.organisation.db.MobilityChoice">
 		<field name="name" />
 		<field name="code" />
