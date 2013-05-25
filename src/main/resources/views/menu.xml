@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+
+	
+	
+	<menuitem name="production-root" title="Production"
+		icon="img/icons/wheel.png" />
+		
+	
+	<menuitem name="production-root-bill-of-material" parent="production-root"
+		title="Les nomenclatures" action="production.root.bill.of.material" />
+
+	<action-view name="production.root.bill.of.material" title="Les nomenclatures"
+		model="com.axelor.apps.production.db.BillOfMaterial" icon="img/icons/wheel.png">
+		<view type="grid" name="bill-of-material-grid" />
+		<view type="form" name="bill-of-material-form" />
+	</action-view>	
+	
+	<menuitem name="production-root-prod-process" parent="production-root"
+		title="Les gammes" action="production.root.prod.process" />
+
+	<action-view name="production.root.prod.process" title="Les gammes"
+		model="com.axelor.apps.production.db.ProdProcess" icon="img/icons/wheel.png">
+		<view type="grid" name="prod-process-grid" />
+		<view type="form" name="prod-process-form" />
+	</action-view>
+		
+	<menuitem name="production-root-prod-order" parent="production-root"
+		title="Les Ordres de fabrication" action="production.root.prod.order" />
+
+	<action-view name="production.root.prod.order" title="Les Ordres de fabrication"
+		model="com.axelor.apps.production.db.ProdOrder" icon="img/icons/wheel.png">
+		<view type="grid" name="prod-order-grid" />
+		<view type="form" name="prod-order-form" />
+	</action-view>	
+		
+	<menuitem name="production-root-prod-order-planning" parent="production-root"
+		title="Les plannifications d'OF" action="production.root.prod.order.planning" />
+
+	<action-view name="production.root.prod.order.planning" title="Les plannifications d'OF"
+		model="com.axelor.apps.production.db.ProdOrderPlanning" icon="img/icons/wheel.png">
+		<view type="grid" name="prod-order-planning-grid" />
+		<view type="form" name="prod-order-planning-form" />
+	</action-view>
+
+	<menuitem name="production-root-conf" parent="production-root" title="Configuration"
+		icon="img/icons/parameter.png" />
+
+	<menuitem name="production-root-conf-prod-resource" parent="production-root-conf"
+		title="Les ressources" action="production.root.conf.prod.resource" />
+
+	<action-view name="production.root.conf.prod.resource" title="Les ressources"
+		model="com.axelor.apps.production.db.ProdResource" icon="img/icons/parameter_small.png">
+		<view type="grid" name="prod-resource-grid" />
+		<view type="form" name="prod-resource-form" />
+	</action-view>
+	
+	<menuitem name="production-root-conf-machine" parent="production-root-conf"
+		title="Les machines" action="production.root.conf.machine" />
+
+	<action-view name="production.root.conf.machine" title="Les machines"
+		model="com.axelor.apps.production.db.Machine" icon="img/icons/parameter_small.png">
+		<view type="grid" name="machine-grid" />
+		<view type="form" name="machine-form" />
+	</action-view>
+	
+
+</object-views>
