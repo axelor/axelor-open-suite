@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    <grid name="pricing-list-line-grid" title="Lignes de barème" model="com.axelor.apps.account.db.PricingListLine">
+    <grid name="pricing-list-line-grid" title="Pricing list lines" model="com.axelor.apps.account.db.PricingListLine">
         <field name="parameter1" domain="self.inRunOffOk = false"/>
         <field name="parameter2" domain="self.inRunOffOk = false"/>
         <field name="parameter3" domain="self.inRunOffOk = false"/>
@@ -21,7 +21,7 @@
         <field name="val5"/>
     </grid>
     
-    <form name="pricing-list-line-form" title="Ligne de barème" model="com.axelor.apps.account.db.PricingListLine" cols="4" onLoad="meth-pricingList-initLine">
+    <form name="pricing-list-line-form" title="Pricing list lines" model="com.axelor.apps.account.db.PricingListLine" cols="4" onLoad="meth-pricingList-initLine">
 	   	<group title="Paramètres" colSpan="4" cols="4">
 	        <field name="parameter1" domain="self.inRunOffOk = false"/>
 	        <field name="parameter2" domain="self.inRunOffOk = false"/>

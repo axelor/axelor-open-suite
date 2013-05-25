@@ -9,7 +9,7 @@
     
     <form name="paybox-form" title="Paybox" model="com.axelor.apps.account.db.Paybox" cols="4" onLoad="action-payment-voucher-checkIfPaidByPaybox">
     	<field name="name" hidden="true"/>
-    	<label title="Vous pouvez fermer cet onglet et revenir sur la saisie paiement. Pensez à actualiser la saisie paiement."/>
+    	<label title="Please close this notebook to go back to the payment voucher. Please refresh the payment voucher to see the changes."/>
     </form> 
   
 	        	

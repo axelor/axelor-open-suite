@@ -3,13 +3,13 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    <grid name="tax-report-grid" title="Rapports de taxes" model="com.axelor.apps.account.db.TaxReport">
+    <grid name="tax-report-grid" title="Taxes reports" model="com.axelor.apps.account.db.TaxReport">
         <field name="date"/>
         <field name="company"/>
         <field name="comments"/>
     </grid>
     
-    <form name="tax-report-form" title="Rapport de taxe" model="com.axelor.apps.account.db.TaxReport" cols="4">
+    <form name="tax-report-form" title="Tax report" model="com.axelor.apps.account.db.TaxReport" cols="4">
         <field name="company"/>
         <field name="date"/>
         <field name="periods" colSpan="2"/>
@@ -17,7 +17,7 @@
         <group title="Descrition" colSpan="4" cols="2">
         	<field name="comments" noLabel="true" colSpan="2"/>
         </group>
-        <button name="printTaxReport" title="Imprimer le rapport de taxes" colSpan="2" onClick="save,com.axelor.apps.account.web.TaxReportController:printTaxReport"/>
+        <button name="printTaxReport" title="Print tax report" colSpan="2" onClick="save,com.axelor.apps.account.web.TaxReportController:printTaxReport"/>
     </form>
     
 </object-views>

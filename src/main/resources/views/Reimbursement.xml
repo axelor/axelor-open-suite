@@ -2,13 +2,13 @@
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
-    <grid name="reimbursement-grid" title="Les Remboursements" model="com.axelor.apps.account.db.Reimbursement">
+    <grid name="reimbursement-grid" title="Reimbursements" model="com.axelor.apps.account.db.Reimbursement">
     	<field name="ref"/>
         <field name="contractLine"/>
         <field name="status"/>
         <field name="total"/>
     </grid>
-    <form name="reimbursement-form" title="Remboursement" model="com.axelor.apps.account.db.Reimbursement" cols="4"
+    <form name="reimbursement-form" title="Reimbursement" model="com.axelor.apps.account.db.Reimbursement" cols="4"
     onNew="action-reimbursement-hidden-button-attrs,action-reimbursement-hidden-reject-field-attrs"
     onLoad="action-reimbursement-hidden-button-attrs,action-reimbursement-hidden-reject-field-attrs">
     	<field name="ref"/>
@@ -17,11 +17,11 @@
         <field name="amountToReimburse"/>
         <field name="amountReimbursed"/>
         <break/>
-		<separator title="Motif" colSpan="4"/>
+		<separator title="Reason" colSpan="4"/>
 		<field name="description" noLabel="true" colSpan="4" />
         <group cols="3" colSpan="2">
                 <field name="status"/>
-        		<button name="validateReimbursement" title="Valider" onClick="com.axelor.apps.account.web.ReimbursementController:validateReimbursement,action-reimbursement-hidden-button-attrs,save"/>
+        		<button name="validateReimbursement" title="Validate" onClick="com.axelor.apps.account.web.ReimbursementController:validateReimbursement,action-reimbursement-hidden-button-attrs,save"/>
         </group>
         <field name="moveLineSet" colSpan="4"/>
         <group cols="3" colSpan="2">

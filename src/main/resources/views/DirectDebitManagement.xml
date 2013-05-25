@@ -3,17 +3,17 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
 	
-    <grid name="direct-debit-management-grid" title="Les gestions de prélèvement" model="com.axelor.apps.account.db.DirectDebitManagement">
+    <grid name="direct-debit-management-grid" title="Direct debits management" model="com.axelor.apps.account.db.DirectDebitManagement">
         <field name="debitNumber"/>
     </grid>
     
-    <form name="direct-debit-management-form-payment-schedule-line" title="Gestion de prélèvement" model="com.axelor.apps.account.db.DirectDebitManagement" cols="4">
+    <form name="direct-debit-management-form-payment-schedule-line" title="Direct debits management" model="com.axelor.apps.account.db.DirectDebitManagement" cols="4">
         <field name="company"/>
         <field name="debitNumber"/>
         <field name="paymentScheduleLineList" colSpan="4"/>
     </form>
     
-    <form name="direct-debit-management-form-invoice" title="Gestion de prélèvement" model="com.axelor.apps.account.db.DirectDebitManagement" cols="4">
+    <form name="direct-debit-management-form-invoice" title="Direct debit management" model="com.axelor.apps.account.db.DirectDebitManagement" cols="4">
         <field name="company"/>
         <field name="debitNumber"/>
         <field name="invoiceSet" colSpan="4" grid-view="invoice-grid" form-view="invoice-form"/>

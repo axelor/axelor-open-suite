@@ -3,14 +3,14 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
 
-	<grid name="discount-engine-model-grid" title="Les modèles de remise"
+	<grid name="discount-engine-model-grid" title="Discount engine models"
 		model="com.axelor.apps.account.db.DiscountEngineModel">
 	  	<field name="fluid" />
 	  	<field name="elecRange" />
 	  	<field name="pricingOption" />
 	</grid>
 
-	<form name="discount-engine-model-form" title="Modèle de remise"
+	<form name="discount-engine-model-form" title="Discount engine model"
 		model="com.axelor.apps.account.db.DiscountEngineModel" cols="6">
 	  	<field name="fluid" />
 	  	<field name="elecRange" />
@@ -18,7 +18,7 @@
 	  	<field name="discountEngineLineList" grid-view="discount-engine-line-model-internal-grid" form-view="discount-engine-line-model-internal-form" colSpan="6"/>
 	</form>
 
-	<grid name="discount-engine-line-model-internal-grid" title="Les remises"
+	<grid name="discount-engine-line-model-internal-grid" title="Discounts"
 		model="com.axelor.apps.account.db.DiscountEngineLine">
 		<field name="discountTypeSelect" />
 		<field name="discountValue" />
@@ -28,7 +28,7 @@
 		<field name="toDate" />
 	</grid>
 
-	<form name="discount-engine-line-model-internal-form" title="Remise"
+	<form name="discount-engine-line-model-internal-form" title="Discount"
 		model="com.axelor.apps.account.db.DiscountEngineLine" cols="4"
 		onLoad="discount-engine-attrs-all-category,discount-engine-attrs-product-category,discount-engine-attrs-same-category,discount-engine-attrs-product-reference-date,discount-engine-attrs-single-application,discount-engine-attrs-new-line"
 		onNew="discount-engine-record-all-category,discount-engine-attrs-all-category,discount-engine-attrs-same-category,discount-engine-attrs-product-category,discount-engine-attrs-product-reference-date,discount-engine-attrs-single-application,discount-engine-attrs-new-line">
@@ -59,16 +59,16 @@
 				<field name="postParameterSet" domain="self.parameterType.code = 'poste'" onChange="discount-engine-method-final-condition"
 					colSpan="2" />
 			</page>
-			<page name="contractLinePage" title="Les contrats">
+			<page name="contractLinePage" title="Contracts">
 				<field name="contractLineSet" colSpan="4" />
 			</page>
-			<page title="Condition d'application finale" >
+			<page title="Final applying condition" >
 				<field name="finalCondition" noLabel="true" colSpan="4" widget="CodeEditor[syntax=groovy]" />
 			</page>
 		</notebook>
 	</form>
 
-	<form name="discount-engine-line-contract-line-form" title="Remise"
+	<form name="discount-engine-line-contract-line-form" title="Discount"
 		model="com.axelor.apps.account.db.DiscountEngineLine" cols="4"
 		onLoad="discount-engine-attrs-all-category,discount-engine-attrs-product-category,discount-engine-attrs-same-category,discount-engine-attrs-product-reference-date,discount-engine-attrs-single-application,discount-engine-attrs-new-line"
 		onNew="discount-engine-record-all-category,discount-engine-attrs-all-category,discount-engine-attrs-same-category,discount-engine-attrs-product-category,discount-engine-attrs-product-reference-date,discount-engine-attrs-single-application,discount-engine-attrs-new-line">
@@ -101,10 +101,10 @@
 				<field name="postParameterSet" domain="self.parameterType.code = 'poste'" onChange="discount-engine-method-final-condition"
 					colSpan="2" />
 			</page>
-			<page name="contractLinePage" title="Les contrats">
+			<page name="contractLinePage" title="Contracts">
 				<field name="contractLineSet" colSpan="4" />
 			</page>
-			<page title="Condition d'application finale" >
+			<page title="Final applying condition" >
 				<field name="finalCondition" noLabel="true" colSpan="4" widget="CodeEditor[syntax=groovy]" />
 			</page>
 		</notebook>

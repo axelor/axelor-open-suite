@@ -2,17 +2,17 @@
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
-    <grid name="matrix-structure-grid" title="Masques de barème" model="com.axelor.apps.account.db.MatrixStructure">
+    <grid name="matrix-structure-grid" title="Pricing list masks" model="com.axelor.apps.account.db.MatrixStructure">
         <field name="name"/>
         <field name="nbEntry"/>
         <field name="nbRelease"/>
     </grid>
-    <form name="matrix-structure-form" title="Masques de barème" model="com.axelor.apps.account.db.MatrixStructure" cols="6">
+    <form name="matrix-structure-form" title="Pricing list mask" model="com.axelor.apps.account.db.MatrixStructure" cols="6">
         <field name="name"/>
         <field name="nbEntry"/>
         <field name="nbRelease"/>
         <notebook colSpan="6">
-            <page title="Paramètres" cols="4">
+            <page title="Parameters" cols="4">
                 <group title="Sources" colSpan="4">
                      <field name="sourceParam1"/>
                      <field name="param1"/>
@@ -30,7 +30,7 @@
                      <field name="param7"/>
                      <field name="sourceParam8"/>
                      <field name="param8"/>
-                    <group title="Plage" colSpan="4">
+                    <group title="Range" colSpan="4">
                         <field name="sourceParam9"/>
                         <break/>
                         <field name="param9Incl"/>
@@ -40,7 +40,7 @@
                     </group>
                 </group>
             </page>
-            <page title="Valeurs" cols="4">
+            <page title="Values" cols="4">
                 <group title="Nom" colSpan="2">
                     <field name="valueName1" colSpan="4"/>
                     <field name="valueName2" colSpan="4"/>

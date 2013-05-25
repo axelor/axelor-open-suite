@@ -3,12 +3,12 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
    
-	<grid name="pricing-list-grid" title="Barèmes" model="com.axelor.apps.account.db.PricingList">
+	<grid name="pricing-list-grid" title="Pricing lists" model="com.axelor.apps.account.db.PricingList">
         <field name="name"/>
         <field name="keyPricingList"/>
     </grid>
     
-    <form name="pricing-list-form" title="Barème" model="com.axelor.apps.account.db.PricingList" cols="6">
+    <form name="pricing-list-form" title="Pricing list" model="com.axelor.apps.account.db.PricingList" cols="6">
         <field name="name"/>
         <field name="typeSelect"/>
         <field name="keyPricingList"/>

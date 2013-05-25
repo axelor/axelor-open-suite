@@ -3,12 +3,12 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
    
-    <grid name="irrecoverable-payment-schedule-line-line-grid" title="Factures" model="com.axelor.apps.account.db.IrrecoverablePaymentScheduleLineLine">
+    <grid name="irrecoverable-payment-schedule-line-line-grid" title="Payment schedule lines" model="com.axelor.apps.account.db.IrrecoverablePaymentScheduleLineLine">
         <field name="name"/>
         <field name="paymentScheduleLine"/>
     </grid>
    
-    <form name="irrecoverable-payment-schedule-line-line-form" title="Facture" model="com.axelor.apps.account.db.IrrecoverablePaymentScheduleLineLine" cols="4">
+    <form name="irrecoverable-payment-schedule-line-line-form" title="Payment schedue line" model="com.axelor.apps.account.db.IrrecoverablePaymentScheduleLineLine" cols="4">
         <field name="name"/>
         <field name="paymentScheduleLine"/>
         <field name="irrecoverableReportLineList" colSpan="4"/>
