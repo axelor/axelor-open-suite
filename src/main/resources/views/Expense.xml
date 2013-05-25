@@ -12,7 +12,7 @@
 
     
     <grid name="expense-grid" title="Travel expenses" model="com.axelor.apps.organisation.db.Expense">
-        <field name="employee"/>
+        <field name="userInfo"/>
         <field name="isRecurrentExpense"/>
         <field name="date"/>
         <field name="totalAmount"/>
@@ -22,7 +22,7 @@
     </grid>
     
     <form name="expense-form" title="Travel expense" model="com.axelor.apps.organisation.db.Expense" cols="4">
-		<field name="employee" colSpan="4"/>
+		<field name="userInfo"/>
         <field name="isRecurrentExpense" colSpan="2"/>
         <field name="date" />
         <field name="totalAmount"/>

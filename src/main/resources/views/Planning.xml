@@ -5,13 +5,13 @@
     
     <grid name="planning-grid" title="Planning" model="com.axelor.apps.organisation.db.Planning">
         <field name="period"/>
-        <field name="employee"/>
+        <field name="userInfo"/>
         <field name="date"/>
     </grid>
     
     <form name="planning-form" title="Planning" model="com.axelor.apps.organisation.db.Planning" cols="6" >
         <field name="period"/>
-        <field name="employee"/>
+        <field name="userInfo"/>
         <field name="date"/>
         <field name="planningLineList" colSpan="6" grid-view="planning-line-grid" form-view="planning-line-form"/>
     </form>
