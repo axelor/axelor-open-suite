@@ -261,6 +261,10 @@
 		<view type="form" />
 	</action-view>
 	
+	
+	
+	
+	
 	<menuitem name="stock-root" title="Stocks management" icon="img/icons/baggage-cart-box.png"/>
 	
 	<menuitem name="stock-root-custdeliveries" parent="stock-root"
@@ -361,6 +365,15 @@
 	</action-view>		
 		
 		
+	<menuitem name="stock-root-inventory" parent="stock-root"
+		title="Inventories" action="stock.root.inventory" icon="img/icons/inventory.png"/>
+	
+	<action-view name="stock.root.inventory" title="Inventories"
+		model="com.axelor.apps.supplychain.db.Inventory" icon="img/icons/inventory.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>	
+		
 		
 	<menuitem name="stock-root-conf" parent="stock-root" title="Configuration"
 		icon="img/icons/parameter.png" />
@@ -374,128 +387,19 @@
 		<view type="form" />
 	</action-view>
 	
-	<menuitem name="stock-root-min-stock-rules" parent="stock-root-conf"
-		title="Minimum stock rules" action="stock.root.min.Stock.rules" />
+	<menuitem name="stock-root-conf-min-stock-rules" parent="stock-root-conf"
+		title="Minimum stock rules" action="stock.root.conf.min.Stock.rules" />
 	
-	<action-view name="stock.root.min.Stock.rules" title="Minimum stock rules"
-		model="com.axelor.apps.supplychain.db.MinStockRules" icon="img/icons/product_small.png">
-		<view type="grid" />
-		<view type="form" />
-	</action-view>
-	
-	<!--  
-	<menuitem name="stock-root-stock-move" parent="stock-root"
-		title="Stock moves" action="stock.root.stock.move" />
-	
-	<action-view name="stock.root.stock.move" title="Stock moves"
-		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/baggage-cart-box.png">
-		<view type="grid" />
-		<view type="form" />
-	</action-view>
-	
-	<menuitem name="stock-root-inventory" parent="stock-root"
-		title="Inventories" action="stock.root.inventory" icon="img/icons/inventory.png"/>
-	
-	<action-view name="stock.root.inventory" title="Inventories"
-		model="com.axelor.apps.supplychain.db.Inventory" icon="img/icons/inventory.png">
-		<view type="grid" />
-		<view type="form" />
-	</action-view>
-	-->
-	
-<<<<<<< HEAD
-	<menuitem name="stock-root-min-stock-rules" parent="stock-root"
-		title="Minimum stock rules" action="stock.root.min.Stock.rules" />
-	
-	<action-view name="stock.root.min.Stock.rules" title="Minimum stock rules"
+	<action-view name="stock.root.conf.min.Stock.rules" title="Minimum stock rules"
 		model="com.axelor.apps.supplychain.db.MinStockRules" icon="img/icons/baggage-cart-box.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
+	
 
 
 
-=======
->>>>>>> 520a83cfc7020272d1b04b02625930eaabdc1cd4
-<!-- 	<menuitem name="pricing-root" title="Tarifs" -->
-<!-- 		icon="img/icons/pricing.png" /> -->
 
-<!-- 	<menuitem name="pricing-root-pricing-list" parent="pricing-root" -->
-<!-- 		title="Les Barèmes" action="pricing.root.pricing.list" /> -->
-
-<!-- 	<action-view name="pricing.root.pricing.list" title="Les Barèmes" -->
-<!-- 		model="com.axelor.apps.account.db.PricingList"> -->
-<!-- 		<view type="grid" /> -->
-<!-- 		<view type="form"/> -->
-<!-- 		<domain>self.typeSelect = 0</domain> -->
-<!-- 	</action-view> -->
-
-<!-- 	<menuitem name="pricing-conf" parent="pricing-root" title="Configuration" -->
-<!-- 		icon="img/icons/parameter.png" /> -->
-
-<!-- 	<menuitem name="pricing-conf-pricing-list" parent="pricing-conf" -->
-<!-- 		title="Barème" /> -->
-
-<!-- 	<menuitem name="pricing-conf-pricing-list-pricing-list-version" -->
-<!-- 		parent="pricing-conf-pricing-list" title="Les versions de barème" -->
-<!-- 		action="pricing.conf.pricing.list.pricing.list.version" /> -->
-
-<!-- 	<action-view name="pricing.conf.pricing.list.pricing.list.version" -->
-<!-- 		title="Les versions de barème" model="com.axelor.apps.account.db.PricingListVersion"> -->
-<!-- 		<view type="grid" name="pricing-list-version-grid"/> -->
-<!-- 		<view type="form" name="pricing-list-version-menu-form"/> -->
-<!-- 	</action-view> -->
-
-<!-- 	<menuitem name="pricing-conf-pricing-list-pricing-list-line" -->
-<!-- 		parent="pricing-conf-pricing-list" title="Les lignes de barême" -->
-<!-- 		action="pricing.conf.pricing.list.pricing.list.line" /> -->
-
-<!-- 	<action-view name="pricing.conf.pricing.list.pricing.list.line" -->
-<!-- 		title="Les lignes de barême" model="com.axelor.apps.account.db.PricingListLine"> -->
-<!-- 		<view type="grid" /> -->
-<!-- 		<view type="form" /> -->
-<!-- 	</action-view> -->
-
-<!-- 	<menuitem name="pricing-conf-pricing-list-key-pricing-list" -->
-<!-- 		parent="pricing-conf-pricing-list" title="Les clés de barème" -->
-<!-- 		action="pricing.conf.pricing.list.key.pricing.list" /> -->
-
-<!-- 	<action-view name="pricing.conf.pricing.list.key.pricing.list" -->
-<!-- 		title="Les clés de barème" model="com.axelor.apps.account.db.KeyPricingList"> -->
-<!-- 		<view type="grid" /> -->
-<!-- 		<view type="form" /> -->
-<!-- 	</action-view> -->
-
-<!-- 	<menuitem name="pricing-conf-pricing-list-matrix-structure" -->
-<!-- 		parent="pricing-conf-pricing-list" title="Les masques de barème" -->
-<!-- 		action="pricing.conf.pricing.list.matrix.structure" /> -->
-
-<!-- 	<action-view name="pricing.conf.pricing.list.matrix.structure" -->
-<!-- 		title="Les masques de barème" model="com.axelor.apps.account.db.MatrixStructure"> -->
-<!-- 		<view type="grid" /> -->
-<!-- 		<view type="form" /> -->
-<!-- 	</action-view> -->
-
-<!-- 	<menuitem name="pricing-conf-parameter" parent="pricing-conf" -->
-<!-- 		title="Paramètre" /> -->
-
-<!-- 	<menuitem name="pricing-conf-parameter-parameter" parent="pricing-conf-parameter" -->
-<!-- 		title="Les paramètres" action="pricing.conf.parameter.parameter" /> -->
-
-<!-- 	<action-view name="pricing.conf.parameter.parameter" title="Les paramètres" -->
-<!-- 		model="com.axelor.apps.account.db.Parameter"> -->
-<!-- 		<view type="grid" /> -->
-<!-- 		<view type="form" /> -->
-<!-- 	</action-view> -->
-
-<!-- 	<menuitem name="pricing-conf-parameter-parameter-type" parent="pricing-conf-parameter" -->
-<!-- 		title="Les types de paramètres" action="pricing.conf.parameter.parameter.type" /> -->
-
-<!-- 	<action-view name="pricing.conf.parameter.parameter.type" -->
-<!-- 		title="Les types de paramètres" model="com.axelor.apps.account.db.ParameterType"> -->
-<!-- 		<view type="grid" /> -->
-<!-- 		<view type="form" /> -->
-<!-- 	</action-view> -->
 
 	<menuitem name="supply-chain-root" title="Purchases/Sales"
 		icon="img/icons/order.png" />
