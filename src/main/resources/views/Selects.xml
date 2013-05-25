@@ -187,7 +187,7 @@
 	<selection name='reconcile.state.select'>
 		<option value='1'>Draft</option>
 		<option value='2'>Confirmed</option>
-		<option value='3'>Cancelled</option>
+		<option value='3'>Canceled</option>
 	</selection>
 
 	<selection name='provision.service.processing.way.select'>
@@ -214,7 +214,7 @@
 		<option value='1'>Draft</option>
 		<option value='2'>Confirmed</option>
 		<option value='3'>Closed</option>
-		<option value='4'>Cancelled</option>
+		<option value='4'>Canceled</option>
 	</selection>
 
 	<selection name='iaccount.account.schedule.nature.select'>
@@ -261,7 +261,7 @@
 		<option value='draft'>Draft</option>
 		<option value='simulated'>Simulated</option>
 		<option value='validated'>Validated</option>
-		<option value='canceled'>Cancelled</option>
+		<option value='canceled'>Canceled</option>
 	</selection>
 
 	<selection name='cash.register.state.select'>
@@ -768,7 +768,7 @@
 		<option value="1">Draft</option>
 		<option value="2">Confirmed</option>
 		<option value="3">Validated</option>
-		<option value="4">Cancelled</option>
+		<option value="4">Canceled</option>
 	</selection>
 
 	<selection name="supplychain.invoicing.moment.select">
@@ -871,7 +871,7 @@
 	</selection>
 
 	<selection name="consulting.price.list.discount.line.type.select">
-		<option value="1">Discunt</option>
+		<option value="1">Discount</option>
 		<option value="2">Additionnal</option>
 	</selection>
 	
