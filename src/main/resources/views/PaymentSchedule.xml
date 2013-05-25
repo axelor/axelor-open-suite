@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    <grid name="payment-schedule-grid" title="Echéancier" model="com.axelor.apps.account.db.PaymentSchedule">
+    <grid name="payment-schedule-grid" title="Payment schedule" model="com.axelor.apps.account.db.PaymentSchedule">
         <field name="scheduleId"/>
         <field name="natureSelect"/>
         <field name="creationDate"/>
@@ -16,7 +16,7 @@
         <field name="state"/>
     </grid>
     
-    <form name="payment-schedule-form" title="Echéancier" model="com.axelor.apps.account.db.PaymentSchedule" cols="4"
+    <form name="payment-schedule-form" title="Payment schedule" model="com.axelor.apps.account.db.PaymentSchedule" cols="4"
      onSave="action-payment-schedule-payment-schedule-id"
      onLoad="action-payment-schedule-attrs-state,action-payment-schedule-attrs-invoice-group,action-payment-schedule-attrs-hidden-and-readonly,action-payment-schedule-attrs-collapse-irrecoverable-group,action-payment-schedule-attrs-nature-select"
      onNew="default-payment-schedule-record,action-payment-schedule-attrs-state,action-payment-schedule-attrs-invoice-group,action-payment-schedule-attrs-hidden-and-readonly,action-payment-schedule-attrs-collapse-irrecoverable-group,action-payment-schedule-attrs-nature-select">
@@ -40,20 +40,20 @@
         </group>
         <group name="invoiceGroup" colSpan="4" cols="4">
        	 	<field name="invoiceSet" colSpan="4" domain="self.contractLine = :contractLine and self.schedulePaymentOk = 'f' and self.company=:company and self.status.code = 'dis' and self.inTaxTotalRemaining > 0.0 " grid-view="invoice-account-grid" form-view="invoice-form"/>
-        	<button name="createPaymentScheduleLines" title="Créer les lignes d'échéancier" colSpan="2" onClick="save,action-payment-schedule-create-payment-schedule-lines,save"/>
+        	<button name="createPaymentScheduleLines" title="Create schedule lines" colSpan="2" onClick="save,action-payment-schedule-create-payment-schedule-lines,save"/>
        	</group>
         <field name="paymentScheduleLineList" colSpan="4" grid-view="payment-schedule-line-payment-schedule-grid" form-view="payment-schedule-line-payment-schedule-form" />
         <group colSpan="4" cols="6">
-            <button name="validate" title="Valider" colSpan="2" onClick="save,action-payment-schedule-payment-schedule-id,action-payment-schedule-method-validate,action-payment-schedule-attrs-state,action-payment-schedule-attrs-invoice-group,action-payment-schedule-attrs-hidden-and-readonly,save"/>
-            <button name="cancel" title="Annuler" colSpan="2" onClick="action-payment-schedule-method-cancel,action-payment-schedule-attrs-invoice-group,action-payment-schedule-attrs-hidden-and-readonly,save"/>
+            <button name="validate" title="Validate" colSpan="2" onClick="save,action-payment-schedule-payment-schedule-id,action-payment-schedule-method-validate,action-payment-schedule-attrs-state,action-payment-schedule-attrs-invoice-group,action-payment-schedule-attrs-hidden-and-readonly,save"/>
+            <button name="cancel" title="Cancel" colSpan="2" onClick="action-payment-schedule-method-cancel,action-payment-schedule-attrs-invoice-group,action-payment-schedule-attrs-hidden-and-readonly,save"/>
             <field name="state" readonly="true"/>
             <field name="generatedMove"/>
         </group>
-        <group name="irrecoverable" title="Irrécouvrable" colSpan="4" canCollapse="true" >
+        <group name="irrecoverable" title="Irrecoverable" colSpan="4" canCollapse="true" >
         	<field name="irrecoverableStateSelect"/>
        		<field name="managementObject"/>
-       		<button name="passInIrrecoverable" title="Passage en irrécouvrable" colSpan="2" onClick="com.axelor.apps.account.web.PaymentScheduleController:passInIrrecoverable"/>
-       		<button name="notPassInIrrecoverable" title="Ne pas passer en irrécouvrable" colSpan="2" onClick="com.axelor.apps.account.web.PaymentScheduleController:notPassInIrrecoverable"/>
+       		<button name="passInIrrecoverable" title="Shift to irrecoverablePassage en irrécouvrable" colSpan="2" onClick="com.axelor.apps.account.web.PaymentScheduleController:passInIrrecoverable"/>
+       		<button name="notPassInIrrecoverable" title="Do not shift to irrecoverable" colSpan="2" onClick="com.axelor.apps.account.web.PaymentScheduleController:notPassInIrrecoverable"/>
         </group>
     </form>
     

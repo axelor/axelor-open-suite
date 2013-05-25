@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
    
-    <grid name="invoice-line-grid" title="Lignes de factures" model="com.axelor.apps.account.db.InvoiceLine" orderBy="invoiceLineType.name,qty" >
+    <grid name="invoice-line-grid" title="Invoice lines" model="com.axelor.apps.account.db.InvoiceLine" orderBy="invoiceLineType.name,qty" >
         <field name="invoiceLineType"/>
         <field name="productName"/>
         <field name="qty"/>
@@ -13,7 +13,7 @@
         <field name="vatLine.vat"/>
     </grid>
     
-    <form name="invoice-line-form" title="Ligne de factures" model="com.axelor.apps.account.db.InvoiceLine" cols="4" 
+    <form name="invoice-line-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine" cols="4" 
     onLoad="action-invoice-line-method-product-management">
     	<notebook>
     		<page title="Informations">
@@ -32,18 +32,18 @@
 	<!--             <field name="discountEngineLineSet" grid-view="discount-engine-line-grid" form-view="discount-engine-line-form" colSpan="4"/> -->
 	<!--         	<field name="discountOk" /> -->
 	<!--         </group> -->
-		        <group title="Autres" colSpan="4" cols="4">
+		        <group title="Others" colSpan="4" cols="4">
 		        	<field name="excludeQtyBaseOk" />
 		        </group>
     		</page>
-    		<page title="Note">
+    		<page title="Notes">
     			<field name="note"/>
     		</page>
     	</notebook>
         
     </form>
     
-    <grid name="tax-invoice-line-grid" title="Lignes de factures" model="com.axelor.apps.account.db.InvoiceLine" orderBy="invoiceLineType.name,qty">
+    <grid name="tax-invoice-line-grid" title="Invoice lines" model="com.axelor.apps.account.db.InvoiceLine" orderBy="invoiceLineType.name,qty">
         <field name="invoiceLineType"/>
         <field name="productName"/>
         <field name="qty"/>
@@ -53,7 +53,7 @@
         <field name="vatLine.vat"/>
     </grid>
     
-    <form name="tax-invoice-line-form" title="Ligne de factures" model="com.axelor.apps.account.db.InvoiceLine" cols="4" 
+    <form name="tax-invoice-line-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine" cols="4" 
     onLoad="action-invoice-line-method-product-management">
         <field name="invoiceLineType" required="true"/>
         <field name="product" onChange="action-invoice-line-method-get-product-information,action-invoice-line-method-compute"/>

@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    <grid name="payment-schedule-type-grid" title="Echéancier" model="com.axelor.apps.account.db.PaymentScheduleType">
+    <grid name="payment-schedule-type-grid" title="Payment schedule types" model="com.axelor.apps.account.db.PaymentScheduleType">
         <field name="name"/>
         <field name="code"/>
         <field name="type"/>
@@ -11,7 +11,7 @@
         <field name="alertMessage"/>
     </grid>
     
-    <form name="payment-schedule-type-form" title="Type d'échéancier" model="com.axelor.apps.account.db.PaymentScheduleType" cols="4"
+    <form name="payment-schedule-type-form" title="Payment schedule types" model="com.axelor.apps.account.db.PaymentScheduleType" cols="4"
     	onLoad="action-payment-schedule-attrs" onNew="action-payment-schedule-attrs">
 		<field name="name"/>
 		<field name="code"/>
