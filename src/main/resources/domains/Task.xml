@@ -56,7 +56,7 @@
   	
   	<one-to-many name="otherCostTaskProductLine" ref="com.axelor.apps.organisation.db.TaskProductLine" title="Other planned costs"/>
   	<one-to-many name="otherRevenueTaskProductLine" ref="com.axelor.apps.organisation.db.TaskProductLine" title="Other planned revenue"/>
-  	<one-to-many name="taskUpdateLine" ref="com.axelor.apps.organisation.db.TaskUpdateLine" title="Task update lines"/>
+  	<one-to-many name="taskUpdateLineList" ref="com.axelor.apps.organisation.db.TaskUpdateLine" title="Task update lines"/>
   	
   	<decimal name="estimateTime" title="Estimated time"/>
   	<decimal name="spentTime" title="Spent time"/>
