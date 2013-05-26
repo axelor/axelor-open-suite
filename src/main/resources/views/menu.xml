@@ -3,9 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
 	
-	
-	
-	<menuitem name="stock-root" title="Stocks management"  priority="160"
+	<menuitem name="stock-root" title="Stock management"  priority="160"
 	icon="img/icons/baggage-cart-box.png"/>
 	
 	<menuitem name="stock-root-custdeliveries" parent="stock-root"
@@ -109,9 +107,9 @@
 		icon="img/icons/parameter.png" />
 		
 	<menuitem name="stock-root-location" parent="stock-root-conf"
-		title="Locations" action="stock.root.location" />
+		title="Stock Locations" action="stock.root.location" />
 	
-	<action-view name="stock.root.location" title="Locations"
+	<action-view name="stock.root.location" title="Stock Locations"
 		model="com.axelor.apps.supplychain.db.Location" icon="img/icons/baggage-cart-box.png">
 		<view type="grid" />
 		<view type="form" />
@@ -135,11 +133,6 @@
 		<view type="form" />
 	</action-view>
 	
-
-
-
-
-
 	<menuitem name="supply-chain-root" title="Purchases/Sales" priority="150"
 		icon="img/icons/order.png" />
 
@@ -222,9 +215,9 @@
 	</action-view>
 	
 	<menuitem name="supply-chain-root-purchases-allpo" parent="supply-chain-root-purchases-allpurchases"
-		title="All purchase order" action="supply.chain.root.purchases.allpo" />
+		title="All purchase orders" action="supply.chain.root.purchases.allpo" />
 
-	<action-view name="supply.chain.root.purchases.allpo" title="All purchase order"
+	<action-view name="supply.chain.root.purchases.allpo" title="All purchase orders"
 		model="com.axelor.apps.supplychain.db.PurchaseOrder" icon="img/icons/order_small.png">
 		<view type="grid" name="purchase-order-grid" />
 		<view type="form" name="purchase-order-form" />
@@ -237,9 +230,9 @@
 	<menuitem name="supply-chain-root-sales-my" title="My Team" parent="supply-chain-root-sales"/>	
 		
 	<menuitem name="supply-chain-root-sales-mydraftquotation" parent="supply-chain-root-sales-my"
-		title="My team draft quotation" action="supply.chain.root.sales.mydraftquotation" />
+		title="My team draft quotes" action="supply.chain.root.sales.mydraftquotation" />
 
-	<action-view name="supply.chain.root.sales.mydraftquotation" title="My team draft quotation"
+	<action-view name="supply.chain.root.sales.mydraftquotation" title="My team draft quotes"
 		model="com.axelor.apps.supplychain.db.SalesOrder" icon="img/icons/order_small.png">
 		<view type="grid" name="sales-order-grid" />
 		<view type="form" name="sales-order-form" />
@@ -247,9 +240,9 @@
 	</action-view>
 	
 	<menuitem name="supply-chain-root-sales-myconfirmedquotation" parent="supply-chain-root-sales-my"
-		title="My team confirmed quotation" action="supply.chain.root.sales.myconfirmedquotation" />
+		title="My team confirmed quotes" action="supply.chain.root.sales.myconfirmedquotation" />
 
-	<action-view name="supply.chain.root.sales.myconfirmedquotation" title="My team confirmed quotation"
+	<action-view name="supply.chain.root.sales.myconfirmedquotation" title="My team confirmed quotes"
 		model="com.axelor.apps.supplychain.db.SalesOrder" icon="img/icons/order_small.png">
 		<view type="grid" name="sales-order-grid" />
 		<view type="form" name="sales-order-form" />
@@ -257,9 +250,9 @@
 	</action-view>
 	
 	<menuitem name="supply-chain-root-sales-myso" parent="supply-chain-root-sales-my"
-		title="My team sale order" action="supply.chain.root.sales.myso" />
+		title="My team sale orders" action="supply.chain.root.sales.myso" />
 
-	<action-view name="supply.chain.root.sales.myso" title="My team sale order"
+	<action-view name="supply.chain.root.sales.myso" title="My team sale orders"
 		model="com.axelor.apps.supplychain.db.SalesOrder" icon="img/icons/order_small.png">
 		<view type="grid" name="sales-order-grid" />
 		<view type="form" name="sales-order-form" />
@@ -270,9 +263,9 @@
 	<menuitem name="supply-chain-root-sales-all" title="All sales" parent="supply-chain-root-sales"/>
 	
 	<menuitem name="supply-chain-root-sales-alldraftquotation" parent="supply-chain-root-sales-all"
-		title="All draft quotation" action="supply.chain.root.sales.alldraftquotation" />
+		title="All draft quotations" action="supply.chain.root.sales.alldraftquotation" />
 
-	<action-view name="supply.chain.root.sales.alldraftquotation" title="All draft quotation"
+	<action-view name="supply.chain.root.sales.alldraftquotation" title="All draft quotations"
 		model="com.axelor.apps.supplychain.db.SalesOrder" icon="img/icons/order_small.png">
 		<view type="grid" name="sales-order-grid" />
 		<view type="form" name="sales-order-form" />
@@ -280,9 +273,9 @@
 	</action-view>
 	
 	<menuitem name="supply-chain-root-sales-allconfirmedquotation" parent="supply-chain-root-sales-all"
-		title="All confirmed quotation" action="supply.chain.root.sales.allconfirmedquotation" />
+		title="All confirmed quotations" action="supply.chain.root.sales.allconfirmedquotation" />
 
-	<action-view name="supply.chain.root.sales.allconfirmedquotation" title="All confirmed quotation"
+	<action-view name="supply.chain.root.sales.allconfirmedquotation" title="All confirmed quotations"
 		model="com.axelor.apps.supplychain.db.SalesOrder" icon="img/icons/order_small.png">
 		<view type="grid" name="sales-order-grid" />
 		<view type="form" name="sales-order-form" />
@@ -290,9 +283,9 @@
 	</action-view>
 	
 	<menuitem name="supply-chain-root-sales-allso" parent="supply-chain-root-sales-all"
-		title="All sale order" action="supply.chain.root.sales.allso" />
+		title="All sale orders" action="supply.chain.root.sales.allso" />
 
-	<action-view name="supply.chain.root.sales.allso" title="All sale order"
+	<action-view name="supply.chain.root.sales.allso" title="All sale orders"
 		model="com.axelor.apps.supplychain.db.SalesOrder" icon="img/icons/order_small.png">
 		<view type="grid" name="sales-order-grid" />
 		<view type="form" name="sales-order-form" />
