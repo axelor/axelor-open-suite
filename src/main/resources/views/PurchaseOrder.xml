@@ -3,25 +3,25 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    <grid name="purchase-order-grid" title="Devis/commandes fournisseurs" model="com.axelor.apps.supplychain.db.PurchaseOrder">
+    <grid name="purchase-order-grid" title="Supplier RFQs/POs" model="com.axelor.apps.supplychain.db.PurchaseOrder">
         <field name="supplierPartner"/>
         <field name="affairProject"/>
         <field name="buyerUserInfo"/>
         <field name="statusSelect"/>
     </grid>
     
-    <form name="purchase-order-form" title="Devis/commande fournisseur" model="com.axelor.apps.supplychain.db.PurchaseOrder" cols="4">
+    <form name="purchase-order-form" title="Supplier RFQ/PO" model="com.axelor.apps.supplychain.db.PurchaseOrder" cols="4">
    	 	<field name="supplierPartner"/>
         <field name="affairProject"/>
         <field name="buyerUserInfo"/>
 		<field name="purchaseOrderLineList" colSpan="4" grid-view="purchase-order-sales-order-line-grid" form-view="purchase-order-sales-order-line-form"/>
         <field name="statusSelect"/>
-    	<button name="validate" title="Valider" colSpan="2"/>
-    	<button name="generateDeliveryOrder" title="Générer bon de livraison" colSpan="2"/>
-    	<button name="showSupplierInvoice" title="Factures fournisseurs" colSpan="2" onClick="action-purchase-order-show-supplier-invoice"/>
+    	<button name="validate" title="Validate" colSpan="2"/>
+    	<button name="generateDeliveryOrder" title="Generate delivery" colSpan="2"/>
+    	<button name="showSupplierInvoice" title="Show invoice" colSpan="2" onClick="action-purchase-order-show-supplier-invoice"/>
     </form>
     
-    <action-view name="action-purchase-order-show-supplier-invoice" title="Les factures"
+    <action-view name="action-purchase-order-show-supplier-invoice" title="Supplier invoices"
 		model="com.axelor.apps.account.db.Invoice">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>

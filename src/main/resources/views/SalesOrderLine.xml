@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    <grid name="sales-order-line-grid" title="Lignes de devis" model="com.axelor.apps.supplychain.db.SalesOrderLine">
+    <grid name="sales-order-line-grid" title="SO lines" model="com.axelor.apps.supplychain.db.SalesOrderLine">
     	<field name="sequence"/>
         <field name="description"/>
         <field name="qty"/>
@@ -18,7 +18,7 @@
     	<field name="discountTypeSelect"/>
     </grid>
     
-    <form name="sales-order-line-form" title="Ligne de devis" model="com.axelor.apps.supplychain.db.SalesOrderLine" cols="4">
+    <form name="sales-order-line-form" title="SO line" model="com.axelor.apps.supplychain.db.SalesOrderLine" cols="4">
    		<field name="sequence"/>
     	<field name="product" onChange="action-sales-order-line-method-get-product-information,action-sales-order-line-method-compute"/>
     	<field name="product.productCategory"/>
@@ -42,17 +42,17 @@
 		
 		<field name="isOrdered"/>
         <notebook colSpan="4">
-        	<page title="Détail de la ligne de devis">
+        	<page title="SO line details">
         		<field name="salesOrderSubLineList" colSpan="4"/>
         	</page>
-        	<page title="Suivi facturation">
+        	<page title="Invoicing follow-up">
         		<field name="invoicingDate"/>
 				<field name="isToInvoice"/>
 				<field name="isInvoiced"/>
 				<field name="amountInvoiced"/>
 				<field name="amountRemainingToBeInvoiced"/>
         	</page>
-        	<page title="Historique">
+        	<page title="History">
         		<field name="invoiceSet" colSpan="4"/>
         	</page>
         </notebook>
@@ -69,7 +69,7 @@
 	</action-method>
 	
 	
-	 <grid name="purchase-order-sales-order-line-grid" title="Lignes de devis" model="com.axelor.apps.supplychain.db.SalesOrderLine">
+	 <grid name="purchase-order-sales-order-line-grid" title="SO lines" model="com.axelor.apps.supplychain.db.SalesOrderLine">
     	<field name="product"/>
         <field name="qty"/>
         <field name="price"/>
@@ -80,7 +80,7 @@
         <field name="deliveryDate"/>
     </grid>
     
-    <form name="purchase-order-sales-order-line-form" title="Ligne de devis" model="com.axelor.apps.supplychain.db.SalesOrderLine" cols="4">
+    <form name="purchase-order-sales-order-line-form" title="SO line" model="com.axelor.apps.supplychain.db.SalesOrderLine" cols="4">
     	<field name="product"/>
     	<field name="qty"/>
     	<field name="price"/>
@@ -91,7 +91,7 @@
 		<field name="deliveryDate"/>
     </form>
     
-    <grid name="delivery-order-sales-order-line-grid" title="Lignes de devis" model="com.axelor.apps.supplychain.db.SalesOrderLine">
+    <grid name="delivery-order-sales-order-line-grid" title="SO lines" model="com.axelor.apps.supplychain.db.SalesOrderLine">
     	<field name="product"/>
     	<field name="deliveryDate"/>
         <field name="qty"/>
@@ -103,7 +103,7 @@
         <field name="isInvoiceControlled"/>
     </grid>
     
-    <form name="delivery-order-supplier-sales-order-line-form" title="Ligne de devis" model="com.axelor.apps.supplychain.db.SalesOrderLine" cols="4">
+    <form name="delivery-order-supplier-sales-order-line-form" title="SO line" model="com.axelor.apps.supplychain.db.SalesOrderLine" cols="4">
    		<field name="product"/>
     	<field name="deliveryDate"/>
         <field name="qty"/>

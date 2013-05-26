@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    <grid name="sales-order-sub-line-grid" title="Sous-lignes de devis" model="com.axelor.apps.supplychain.db.SalesOrderSubLine">
+    <grid name="sales-order-sub-line-grid" title="SO sublines" model="com.axelor.apps.supplychain.db.SalesOrderSubLine">
         <field name="sequence"/>
         <field name="product"/>
         <field name="productCategory"/>
@@ -16,7 +16,7 @@
 		<field name="exTaxTotal"/>
     </grid>
     
-    <form name="sales-order-sub-line-form" title="Sous-ligne de devis" model="com.axelor.apps.supplychain.db.SalesOrderSubLine" cols="4">
+    <form name="sales-order-sub-line-form" title="SO subline" model="com.axelor.apps.supplychain.db.SalesOrderSubLine" cols="4">
     	<field name="sequence"/>
     	<field name="product" onChange="action-sales-order-sub-line-method-get-product-information,action-sales-order-sub-line-method-compute"/>
     	<field name="productCategory"/>

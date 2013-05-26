@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    <grid name="sales-order-grid" title="Devis" model="com.axelor.apps.supplychain.db.SalesOrder">
+    <grid name="sales-order-grid" title="Sale orders" model="com.axelor.apps.supplychain.db.SalesOrder">
         <field name="reference"/>
         <field name="company"/>
         <field name="currency"/>
@@ -12,7 +12,7 @@
         <field name="inTaxTotal"/>
     </grid>
     
-    <form name="sales-order-form" title="Devis" model="com.axelor.apps.supplychain.db.SalesOrder" cols="4" onNew="action-sales-order-record-default">
+    <form name="sales-order-form" title="Sale order" model="com.axelor.apps.supplychain.db.SalesOrder" cols="4" onNew="action-sales-order-record-default">
     	<group colSpan="3" cols="4" colWidths="17%,33%,17%,33%">
 	    	<field name="salesOrderSeq"/>
 			<field name="company"/>
@@ -20,14 +20,14 @@
 	    	<field name="currency"/>
 	    	<field name="externalReference"/>
 	    	<field name="creationDate"/>
-	    	<field name="Récuperer les informations de l'affaire"/>
+<!--  	    	<field name="Récuperer les informations de l'affaire"/>-->
         </group>
         <group colSpan="1" cols="1" >
-       	 	<button name="print" title="Imprimer" colSpan="1"/>
-  			<button name="generateProject" title="Générer projet" colSpan="1"/>
+       	 	<button name="print" title="Print" colSpan="1"/>
+  			<button name="generateProject" title="Generate project" colSpan="1"/>
         </group>
         <notebook colSpan="4">
-        	<page title="Coordonnées client">
+        	<page title="Customer information">
         		<field name="clientPartner" domain="self.isContact = 'false'" onChange="action-sales-order-record-partner"/>
         		<field name="contactPartner" domain="self.isContact = 'true'"/>
         		<field name="mainInvoicingAddress"/>
@@ -39,15 +39,15 @@
 				<field name="project" hideIf="!hastToCreateProject"/>
         		<field name="invoicingTypeSelect"/>
         		<break/>
-        		<separator title="Lignes de devis" colSpan="4"/>
+        		<separator title="Sale order content" colSpan="4"/>
         		<field name="hasToCreateTaskByLine"/>
         		<field name="hasToCreateProposal"/>
         		<field name="salesOrderLineList" colSpan="4"/>
         		<field name="salesOrderLineVatList" colSpan="4"/>
         		<group colSpan="3" cols="2">
-	        		<button name="compute" title="Calculer" colSpan="2" onClick="save,action-sales-order-method-compute,save"/>
-	        		<button name="confirm" title="Confirmer le devis" colSpan="2" onClick="save,action-sales-order-record-confirm,save"/>
-	        		<button name="cancel" title="Annuler le devis" colSpan="2" onClick="save,action-sales-order-record-cancel"/>
+	        		<button name="compute" title="Compute" colSpan="2" onClick="save,action-sales-order-method-compute,save"/>
+	        		<button name="confirm" title="Confirm" colSpan="2" onClick="save,action-sales-order-record-confirm,save"/>
+	        		<button name="cancel" title="Cancel" colSpan="2" onClick="save,action-sales-order-record-cancel"/>
 	        		<field name="statusSelect" colSpan="2"/>
 	        		<field name="validatedByUserInfo" colSpan="2"/>
         		</group>
@@ -58,24 +58,24 @@
         			<field name="amountRemainingToBeInvoiced"/>
         		</group>
         	</page>
-        	<page title="Autres informations">
+        	<page title="Other informations">
         		<field name="salesmanUserInfo"/>
         		<field name="team"/>
         		<field name="paymentMode"/>
         		<field name="paymentCondition"/>
         		<field name="source"/>
         	</page>
-        	<page title="Echéancier">
+        	<page title="Payment schedule">
         		<field name="invoicingMomentSelect" colSpan="3"/>
         		<field name="salesOrderScheduleLineList" colSpan="4"/>
         	</page>
-        	<page title="Historique">
+        	<page title="Invoicing">
         		<field name="invoiceSet" colSpan="4"/>
         	</page>
-        	<page title="Commande client">
+        	<page title="Customer order">
         		<field name="orderDate"/>
         		<field name="orderNumber"/>
-        		<button name="generateInvoice" title="Générer facture" onClick="save,action-sales-order-method-generate-invoice"/>
+        		<button name="generateInvoice" title="Generate invoice" onClick="save,action-sales-order-method-generate-invoice" colSpan="4"/>
         	</page>
         
         </notebook>
