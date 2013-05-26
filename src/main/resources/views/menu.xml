@@ -5,7 +5,8 @@
 	
 	
 	
-	<menuitem name="stock-root" title="Stocks management" icon="img/icons/baggage-cart-box.png"/>
+	<menuitem name="stock-root" title="Stocks management"  priority="160"
+	icon="img/icons/baggage-cart-box.png"/>
 	
 	<menuitem name="stock-root-custdeliveries" parent="stock-root"
 		title="Customer Deliveries"/>
@@ -139,7 +140,7 @@
 
 
 
-	<menuitem name="supply-chain-root" title="Purchases/Sales"
+	<menuitem name="supply-chain-root" title="Purchases/Sales" priority="150"
 		icon="img/icons/order.png" />
 
 	<menuitem name="supply-chain-root-purchases" title="Purchases" parent="supply-chain-root"/>
