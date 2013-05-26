@@ -20,6 +20,9 @@
   	<integer name="relatedToSelectId"/>
 	<integer name="statusSelect" title="Status" selection="email.status.select"/>
   
+<!--   	Not displayed, used for ticket event -->
+	<many-to-one name="event" ref="com.axelor.apps.crm.db.Event" title="Event"/>
+
   </entity>
   
 </domain-models>

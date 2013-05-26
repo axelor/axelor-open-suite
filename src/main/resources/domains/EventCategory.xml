@@ -9,6 +9,7 @@
 
 	<string name="name" title="Name"/>
   	<string name="code" title="Code"/>
+  	<integer name="typeSelect" title="Type" selection="crm.event.type.select" default="2"/>
   	
   </entity>
 

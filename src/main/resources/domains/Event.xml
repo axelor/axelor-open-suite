@@ -8,13 +8,13 @@
   <entity name="Event" lang="java">
 
 <!-- Commun   -->
-  	<integer name="typeSelect" title="Type" selection="event.type.select" default="2"/>
+  	<integer name="typeSelect" title="Type" selection="crm.event.type.select" default="2"/>
   	<string name="subject" namecolumn="true" title="Subject" />
 	<integer name="secondaryStatusSelect" title="Status" selection="crm.event.secondary.status.select"/>  
   	<datetime name="startDateTime" title="Start Date"/>
   	<datetime name="endDateTime" title="End Date"/>
   	<integer name="durationHours" title="Duration" />
-  	
+  	<many-to-one name="eventCategory" ref="com.axelor.apps.crm.db.EventCategory" title="Category"/>
   	
   	
   	<string name="relatedToSelect" title="Related to" selection="crm.event.related.to.select"/>
@@ -22,6 +22,10 @@
   	
   	<boolean name="reminder" title="Reminder"/>
     <string name="description" large="true" title="Description"/>
+    
+    <many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="Assigned to"/>
+  	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team"/>
+  	
     
 <!-- Call -->
     <integer name="primaryStatusSelect" title="Status" selection="crm.event.call.primary.status.select"/>  
@@ -32,13 +36,21 @@
 	<string name="location" title="Location"/>
 
 <!-- Task -->
-	<integer name="thirdaryStatusSelect" title="Status" selection="crm.event.task.thirdary.status.select"/>
+	<integer name="tertiaryStatusSelect" title="Status" selection="crm.event.task.tertiary.status.select"/>
 	<many-to-one name="taskPartner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
 	<integer name="priority" title="Priority" selection="crm.event.task.priority.select"/>
     
-<!-- 	Ajouter second onglet avec user et team   -->
-  	<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="Assigned to"/>
-  	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team"/>
+<!-- Ticket -->
+	<integer name="quaternaryStatusSelect" title="Status" selection="crm.event.task.quaternary.status.select"/>
+    <integer name="prioritySelect" title="Priority" selection="crm.event.ticket.priority.select"/>
+    <integer name="progressSelect" title="Progress" selection="crm.event.ticket.progress.select"/>
+    <string name="ticketNumberSeq" title="Ticket number"/>
+    <many-to-many name="userInfoSet" ref="com.axelor.apps.base.db.UserInfo" title="Watchers"/>
+    <many-to-one name="responsibleUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="User in charge of the issue"/>
+  	<boolean name="isTimesheetAffected" title="Timesheet affected ?"/>
+  	<one-to-many name="messageList" ref="com.axelor.apps.base.db.Message" mappedBy="event" title="Comments"/>
+  	<many-to-one name="project" ref="com.axelor.apps.organisation.db.Project" title="Project"/>
+	<many-to-one name="task" ref="com.axelor.apps.organisation.db.Task" title="Task"/>
   
   </entity>
 
