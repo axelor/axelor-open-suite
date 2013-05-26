@@ -16,7 +16,7 @@
     	onNew="action-account-record-new">
     	<group title="Informations" colSpan="4">
 	        <field name="name"/>
-	        <field name="statusSelect"/>
+	        <field name="statusSelect" widget=""/>
 	        <field name="startDate"/>
 	        <field name="endDate"/>
 	        <field name="typeSelect"/>
@@ -32,10 +32,65 @@
 	        <field name="objective" widget="TEXT[height=3]"/>
 	        <field name="description" widget="TEXT[height=3]"/>
         </group>
-        <group title="Assigned to" canCollapse="true">
+        <group title="Assigned to" canCollapse="true" colSpan="4">
 	        <field name="userInfo"/>
 	    	<field name="team"/>
         </group>
+        <group colSpan="3" cols="4" colWidths="25%,25%,25%,25%">
+	        <field name="hasForceEmailSending"/>
+	        <field name="hasListGenerated"/>
+	        <field name="followUpTypeSelect"/>
+	        <field name="eventCategory"/>
+    	</group>
+        <group title="Actions" colSpan="1" cols="1">
+        	<button name="showEvents" title="Show events"/>
+	        <button name="showMailsAndEmails" title="Show mails/emails"/>
+	        <button name="generateRequest" title="Generate request"/>
+	        <button name="generateFollowUp" title="Generate follow up"/>
+        </group>
+        <notebook colSpan="4">
+        	<page title="Recipients">
+        		<field name="sendingTypeSelect" colSpan="2"/>
+        		<break/>
+        		<group title="Lists / Queries" colSpan="4" cols="4">
+        			<field name="partnerListSet" widget="TagSelect[create=code,name]" colSpan="2"/>
+		        	<field name="jpqlQuerySet" widget="TagSelect[create=code,description]" colSpan="2"/>
+        		</group>
+        		<group title="Contacts / Leads" colSpan="4" cols="4">
+	        		<field name="partnerSet" widget="TagSelect[create=name,firstname]" colSpan="2" domain="self.isContact = 'true'"/>
+			        <field name="leadSet" widget="TagSelect[create=name]" colSpan="2"/>
+		        </group>
+        	</page>
+        	<page title="Content">
+        		<field name="htmlTemplate" noLabel="true" widget="NestedEditor" summary-view="true" canSelect="true">
+        			<form name="html-template-form" title="Html  template" model="com.axelor.apps.base.db.HtmlTemplate" cols="4">
+				        <field name="name"/>
+				        <field name="code"/>
+				<!--         <field name="typeSelect"/> -->
+				        <field name="metaModel"/>
+				        <notebook colSpan="4">
+				        	<page title="Content">
+				        		<field name="content" noLabel="true" widget="html" colSpan="4"/>
+				        	</page>
+				        	<page title="Trackers">
+				        		<field name="trackerList" noLabel="true" colSpan="4"/>
+				        	</page>
+				        	<page title="Explanation">
+				<!--         		<label title="Campaing :" showIf="typeSelect = 2"/> -->
+				<!-- 				<label title="$ : Contact" showIf="typeSelect = 2"/> -->
+				<!-- 				<label title="£ : Lead" showIf="typeSelect = 2"/> -->
+				<!-- 				<label title="$ : Current object" hideIf="typeSelect = 2"/> -->
+								
+								<label title="Campaing :" showIf="metaModel.name = 'Campaign'"/>
+								<label title="$ : Contact" showIf="metaModel.name = 'Campaign'"/>
+								<label title="£ : Lead" showIf="metaModel.name = 'Campaign'"/>
+								<label title="$ : Current object" hideIf="metaModel.name = 'Campaign'"/>
+				        	</page>
+				        </notebook>
+				    </form>
+        		</field>
+        	</page>
+        </notebook>
     </form>
     
     <action-record name="action-campaign-record-new" model="com.axelor.apps.crm.db.Campaign">

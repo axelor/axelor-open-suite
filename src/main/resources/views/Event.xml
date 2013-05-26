@@ -121,7 +121,7 @@
         <field name="prioritySelect"/>
         <field name="userInfo"/>
         <field name="description"/>
-        <field name="progressSelect" widget="progress"/>
+        <field name="progressSelect" widget="Progress"/>
     </grid>
     
     <form name="ticket-form" title="Task" model="com.axelor.apps.crm.db.Event" cols="6" colWidths="*,400"
