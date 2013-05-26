@@ -16,7 +16,7 @@
 <!--     <many-to-many name="teamSet" ref="com.axelor.apps.base.db.Team" mappedBy="userInfoSet" title="Equipes"/> -->
     <many-to-many name="teamSet" ref="com.axelor.apps.base.db.Team"  title="Teams"/>
     <many-to-one name="employee" ref="com.axelor.apps.organisation.db.Employee" title="Employee"/>
-    
+    <many-to-many name="projectSet" ref="com.axelor.apps.organisation.db.Project" title="Projects"/>
     
     <string name="fullName" namecolumn="true" search="partner" title="Partner name">
     	<![CDATA[

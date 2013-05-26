@@ -17,7 +17,10 @@
     <string name="name" title="Name/Company Name"/>
     <string name="firstName" title="First Name"/>
     <binary name="picture" image="true" title="Photo"/>
+    <boolean name="isCustomer" title="Customer ?"/>
+    <boolean name="isSupplier" title="Supplier ?"/>
     <integer name="customerTypeSelect" title="Customer Type" selection="partner.customer.type.select"/>
+    <integer name="supplierTypeSelect" title="Supplier Type" selection="partner.supplier.type.select"/>
     <boolean name="isContact" title="Contact ?" default="false"/>
     <string name="languageSelect" title="Language"/>
     <many-to-one name="parentPartner" ref="com.axelor.apps.base.db.Partner" title="Mother company"/>

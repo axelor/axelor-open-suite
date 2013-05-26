@@ -25,10 +25,13 @@
 	             </field>
         	</page>
         	<page title="Internal companies">
-        		<field name="companySet" colSpan="4"/>
+        		<field name="companySet" noLabel="true" colSpan="4"/>
         	</page>
         	<page title="Teams">
-        		<field name="teamSet" colSpan="4"/>
+        		<field name="teamSet" noLabel="true" colSpan="4"/>
+        	</page>
+        	<page title="Projects">
+        		<field name="projectSet" noLabel="true" colSpan="4"/>
         	</page>
         </notebook>
     </form>

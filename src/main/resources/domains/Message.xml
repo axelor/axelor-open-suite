@@ -16,9 +16,12 @@
   	<many-to-one name="sender" ref="com.axelor.apps.base.db.Partner" title="Sender"/>
 <!--   	<many-to-many name="fileSet" title="Files enclosed"/> -->
 	<datetime name="sendedDate" title="Sended date"/>
-	<string name="relatedToSelect" title="Related to" selection="base.message.related.to.select"/>
-  	<integer name="relatedToSelectId"/>
+	<string name="relatedTo1Select" title="Related to" selection="base.message.related.to.select"/>
+  	<integer name="relatedTo1SelectId"/>
+  	<string name="relatedTo2Select" title="Related to" selection="base.message.related.to.select"/>
+  	<integer name="relatedTo2SelectId"/>
 	<integer name="statusSelect" title="Status" selection="email.status.select"/>
+  	<boolean name="sentByEmail" title="Sent by email"/>
   
 <!--   	Not displayed, used for ticket event -->
 	<many-to-one name="event" ref="com.axelor.apps.crm.db.Event" title="Event"/>

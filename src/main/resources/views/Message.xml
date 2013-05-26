@@ -13,6 +13,7 @@
             <field name="sendedDate"/>
             <field name="sender"/>
             <field name="statusSelect"/>
+            <field name="sentByEmail"/>
         </group>
         <group title="Content" colSpan="4">
         	<field name="subject" colSpan="4"/>
@@ -24,7 +25,8 @@
         	<field name="bccPartnerSet" widget="TagSelect[create=name,firstName,email]" colSpan="4"/>
         </group>
         <group title="Related to" colSpan="1" cols="2">
-	        <field name="relatedToSelect" widget="RefSelect[related=relatedToSelectId]"/>
+	        <field name="relatedTo1Select" widget="RefSelect[related=relatedTo1SelectId]"/>
+	        <field name="relatedTo2Select" widget="RefSelect[related=relatedTo2SelectId]"/>
         </group>
 <!--         <button name="printMail" title="Imprimer" colSpan="2" onClick="save,action-mail-method-print-mail"/> -->
     </form>
