@@ -270,10 +270,10 @@
 	<menuitem name="alarm-root" title="Alarmes" priority="80"
 		icon="img/icons/alert.png" />
 
-	<menuitem name="alarm-root-alarm-other" parent="alarm-root" title="Les Alarmes"
+	<menuitem name="alarm-root-alarm-other" parent="alarm-root" title="All Alarms"
 		action="alarm.root.alarm.other" />
 
-	<action-view name="alarm.root.alarm.other" title="Les Alarmes"
+	<action-view name="alarm.root.alarm.other" title="All Alarms"
 		model="com.axelor.apps.base.db.Alarm" icon="img/icons/alert_small.png">
 		<view type="grid" name="alarm-grid" />
 		<view type="form" name="alarm-form" />
@@ -283,27 +283,27 @@
 		icon="img/icons/parameter.png" />
 	
 	<menuitem name="alarm-conf-alarm-engine" parent="alarm-conf"
-		title="Le Moteur d'Alarme" action="alarm.conf.alarm.engine" />
+		title="Alarm engines" action="alarm.conf.alarm.engine" />
 
-	<action-view name="alarm.conf.alarm.engine" title="Le Moteur d'Alarme"
+	<action-view name="alarm.conf.alarm.engine" title="Alarm engines"
 		model="com.axelor.apps.base.db.AlarmEngine" icon="img/icons/parameter_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 
-	<menuitem name="alarm-conf-message" parent="alarm-conf" title="Les Messages"
+	<menuitem name="alarm-conf-message" parent="alarm-conf" title="All Messages"
 		action="alarm.conf.message" />
 
-	<action-view name="alarm.conf.message" title="Les Messages"
+	<action-view name="alarm.conf.message" title="All Messages"
 		model="com.axelor.apps.base.db.AlarmMessage" icon="img/icons/parameter_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 	
 	<menuitem name="alarm-conf-alarm-engine-batch" parent="alarm-conf"
-		title="Les Batchs d'Alarme" action="alarm.conf.alarm.engine.batch" />
+		title="Alarm batches" action="alarm.conf.alarm.engine.batch" />
 
-	<action-view name="alarm.conf.alarm.engine.batch" title="Les Batchs d'Alarme"
+	<action-view name="alarm.conf.alarm.engine.batch" title="Alarm batches"
 		model="com.axelor.apps.base.db.AlarmEngineBatch" icon="img/icons/parameter_small.png">
 		<view type="grid" />
 		<view type="form" />
@@ -311,17 +311,17 @@
 	
 	
 
-	<menuitem name="mail-root" title="Emails / Courriers" priority="70"
+	<menuitem name="mail-root" title="Emails/Mails" priority="70"
 		icon="img/icons/mail.png" />
 
 <!-- 	title-f="Messagerie" -->
 	<menuitem name="mail-root-email-box" parent="mail-root" title="Email box"/>
 		
 <!-- 	title-f="Nouveau message" -->
-	<menuitem name="mail-root-email-new" parent="mail-root-email-box" title="New" action="mail.root.email.new"/>	
+	<menuitem name="mail-root-email-new" parent="mail-root-email-box" title="New email" action="mail.root.email.new"/>	
 		
 <!-- 	title-f="Nouveau message -->
-	<action-view name="mail.root.email.new" title="New"
+	<action-view name="mail.root.email.new" title="New email"
 		model="com.axelor.apps.base.db.Message" icon="img/icons/mail_small.png">
 		<view type="form" />
 		<domain>self.statusSelect = 1</domain>
@@ -329,10 +329,10 @@
 	</action-view>	
 		
 <!-- 	title-f="Brouillons" -->
-	<menuitem name="mail-root-email-draft" parent="mail-root-email-box" title="Drafts" action="mail.root.email.draft" />
+	<menuitem name="mail-root-email-draft" parent="mail-root-email-box" title="Draft emails" action="mail.root.email.draft" />
 		
 <!-- 	title-f="Brouillons" -->
-	<action-view name="mail.root.email.draft" title="Drafts" 
+	<action-view name="mail.root.email.draft" title="Draft emails" 
 		model="com.axelor.apps.base.db.Message" icon="img/icons/mail_small.png">
 		<view type="grid" />
 		<view type="form" />
@@ -353,10 +353,10 @@
 	</action-view>
 		
 <!-- 	title-f="Messages envoyés" -->
-	<menuitem name="mail-root-email-sended" parent="mail-root-email-box" title="Sended" action="mail.root.email.sended" />	
+	<menuitem name="mail-root-email-sended" parent="mail-root-email-box" title="Sentbox" action="mail.root.email.sended" />	
 		
 <!-- 	title-f="Messages envoyés" -->
-	<action-view name="mail.root.email.sended" title="Sended" 
+	<action-view name="mail.root.email.sended" title="Sentbox" 
 		model="com.axelor.apps.base.db.Message" icon="img/icons/mail_small.png">
 		<view type="grid" />
 		<view type="form" />
@@ -378,10 +378,10 @@
 
 	<menuitem name="mail-root-email" parent="mail-root" title="Les Emails"/>
 
-	<menuitem name="mail-root-email-all" title="Tous les Emails"
+	<menuitem name="mail-root-email-all" title="All Emails"
 		parent="mail-root-email" action="mail.root.email.all" />
 
-	<action-view name="mail.root.email.all" title="Tous les Emails"
+	<action-view name="mail.root.email.all" title="All Emails"
 		model="com.axelor.apps.base.db.Mail" icon="img/icons/mail_small.png">
 		<view type="grid" />
 		<view type="form" />
@@ -393,10 +393,10 @@
 
 	<menuitem name="mail-root-mail" parent="mail-root" title="Les Courriers" />
 
-	<menuitem name="mail-root-mail-all" title="Tous les Courriers"
+	<menuitem name="mail-root-mail-all" title="All mails"
 		parent="mail-root-mail" action="mail.root.mail.all" />
 
-	<action-view name="mail.root.mail.all" title="Tous les Courriers"
+	<action-view name="mail.root.mail.all" title="All mails"
 		model="com.axelor.apps.base.db.Mail" icon="img/icons/mail_small.png">
 		<view type="grid" />
 		<view type="form" />
@@ -407,10 +407,10 @@
 	<menuitem name="mail-conf" parent="mail-root"
 		title="Configuration" icon="img/icons/parameter.png" />
 
-	<menuitem name="mail-conf-email-model" title="Les modèles d'email"
+	<menuitem name="mail-conf-email-model" title="Email models"
 		parent="mail-conf" action="mail.conf.email.model" />
 
-	<action-view name="mail.conf.email.model" title="Les modèles d'email"
+	<action-view name="mail.conf.email.model" title="Email models"
 		model="com.axelor.apps.base.db.MailModel" icon="img/icons/parameter_small.png">
 		<view type="grid" />
 		<view type="form" />
@@ -418,10 +418,10 @@
 		<context name="typeSelect" expr="0" />
 	</action-view>
 
-	<menuitem name="mail-conf-mail-model" title="Les modèles de courrier"
+	<menuitem name="mail-conf-mail-model" title="Mail models"
 		parent="mail-conf" action="mail.conf.mail.model" />
 
-	<action-view name="mail.conf.mail.model" title="Les modèles de courrier"
+	<action-view name="mail.conf.mail.model" title="Mail models"
 		model="com.axelor.apps.base.db.MailModel" icon="img/icons/parameter_small.png">
 		<view type="grid" />
 		<view type="form" />
@@ -429,7 +429,7 @@
 		<context name="typeSelect" expr="1" />
 	</action-view>
 	
-	<menuitem name="mail-conf-mail-model-tag" title="Les balises de modèles de courrier"
+	<menuitem name="mail-conf-mail-model-tag" title="Email/Mail model tags"
 		parent="mail-conf" action="mail.conf.mail.model.tag" />
 
 	<action-view name="mail.conf.mail.model.tag" title="Les balises de modèles de courrier"
@@ -438,7 +438,7 @@
 		<view type="form" />
 	</action-view>
 	
-	<menuitem name="mail-conf-email." title="Emails lists"
+	<menuitem name="mail-conf-email-list" title="Emails lists"
 		parent="mail-conf" action="mail.conf.email.list" />
 
 	<action-view name="mail.conf.email.list" title="Emails lists"
@@ -449,133 +449,130 @@
 
 
 
-	<menuitem name="evo-admin-root" title="Administration Axelor" priority="60"
+	<menuitem name="evo-admin-root" title="ERP Administration" priority="60"
 		icon="img/icons/organisation.png" />
 
-	<menuitem name="evo-admin-root-organisation" parent="evo-admin-root" title="Organisation"/>
+	<menuitem name="evo-admin-root-organisation" parent="evo-admin-root" title="Organization"/>
 
-	<menuitem name="evo-admin-root-organisation-territory" parent="evo-admin-root-organisation"
-		title="Communes, départements, territoires" />
+	<menuitem name="evo-admin-root-organisation-territory"
+		parent="evo-admin-root-organisation" title="Les territoires"
+		action="evo.admin.root.organisation.territory" />
 
-	<menuitem name="evo-admin-root-organisation-territory-territory"
-		parent="evo-admin-root-organisation-territory" title="Les territoires"
-		action="evo.admin.root.organisation.territory.territory" />
-
-	<action-view name="evo.admin.root.organisation.territory.territory"
-		title="Les territoires" model="com.axelor.apps.base.db.Territory" icon="img/icons/organisation_small.png" >
+	<action-view name="evo.admin.root.organisation.territory"
+		title="Territories" model="com.axelor.apps.base.db.Territory" icon="img/icons/organisation_small.png" >
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 
 	<menuitem name="evo-admin-root-organisation-territory-commune"
-		parent="evo-admin-root-organisation-territory" title="Les communes"
+		parent="evo-admin-root-organisation" title="Cities/Communes"
 		action="evo.admin.root.organisation.territory.commune" />
 
 	<action-view name="evo.admin.root.organisation.territory.commune"
-		title="Les communes" model="com.axelor.apps.base.db.Commune" icon="img/icons/organisation_small.png">
+		title="Cities/Communes" model="com.axelor.apps.base.db.Commune" icon="img/icons/organisation_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 
 	<menuitem name="evo-admin-root-organisation-territory-department"
-		parent="evo-admin-root-organisation-territory" title="Les départements"
+		parent="evo-admin-root-organisation-territory" title="Departments"
 		action="evo.admin.root.organisation.territory.department" />
 
 	<action-view name="evo.admin.root.organisation.territory.department"
-		title="Les départements" model="com.axelor.apps.base.db.Department" icon="img/icons/organisation_small.png">
+		title="Departments" model="com.axelor.apps.base.db.Department" icon="img/icons/organisation_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 
-	<menuitem name="evo-admin-root-organisation-territory-region"
-		parent="evo-admin-root-organisation-territory" title="Les régions"
+	<menuitem name="evo-admin-root-organisation-region"
+		parent="evo-admin-root-organisation" title="Regions"
 		action="evo.admin.root.organisation.territory.region" />
 
-	<action-view name="evo.admin.root.organisation.territory.region"
-		title="Les régions" model="com.axelor.apps.base.db.Region" icon="img/icons/organisation_small.png">
+	<action-view name="evo.admin.root.organisation.region"
+		title="Regions" model="com.axelor.apps.base.db.Region" icon="img/icons/organisation_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 
-	<menuitem name="evo-admin-root-organisation-territory-country"
-		parent="evo-admin-root-organisation-territory" title="Les pays"
-		action="evo.admin.root.organisation.territory.country" />
+	<menuitem name="evo-admin-root-organisation-country"
+		parent="evo-admin-root-organisation" title="Countries"
+		action="evo.admin.root.organisation.country" />
 
-	<action-view name="evo.admin.root.organisation.territory.country"
-		title="Les pays" model="com.axelor.apps.base.db.Country" icon="img/icons/organisation_small.png">
+	<action-view name="evo.admin.root.organisation.country"
+		title="Countries" model="com.axelor.apps.base.db.Country" icon="img/icons/organisation_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 
 	<menuitem name="evo-admin-root-organisation-territory-canton"
-		parent="evo-admin-root-organisation-territory" title="Les cantons"
+		parent="evo-admin-root-organisation-territory" title="Cantons"
 		action="evo.admin.root.organisation.territory.canton" />
 
 	<action-view name="evo.admin.root.organisation.territory.canton"
-		title="Les cantons" model="com.axelor.apps.base.db.Canton" icon="img/icons/organisation_small.png">
+		title="Cantons" model="com.axelor.apps.base.db.Canton" icon="img/icons/organisation_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 
 	<menuitem name="evo-admin-root-user" parent="evo-admin-root"
-		title="Utilisateurs/Sociétés" />
+		title="Users/Companies" />
 
 	<menuitem name="evo-admin-root-user-user-info" parent="evo-admin-root-user"
-		title="Les informations utilisateurs" action="evo.admin.root.base.user.info" />
+		title="Users" action="evo.admin.root.base.user.info" />
 
-	<action-view name="evo.admin.root.base.user.info" title="Les informations utilisateurs"
+	<action-view name="evo.admin.root.base.user.info" title="Users"
 		model="com.axelor.apps.base.db.UserInfo" icon="img/icons/organisation_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 	
 	<menuitem name="evo-admin-root-user-team" parent="evo-admin-root-user"
-		title="Les équipes" action="evo.admin.root.base.team" />
+		title="Teams" action="evo.admin.root.base.team" />
 
-	<action-view name="evo.admin.root.base.team" title="Les équipes"
+	<action-view name="evo.admin.root.base.team" title="Teams"
 		model="com.axelor.apps.base.db.Team" icon="img/icons/organisation_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 	
 	<menuitem name="evo-admin-root-user-agency" parent="evo-admin-root-user"
-		title="Les agences" action="evo.admin.root.base.agency" />
+		title="Agencies" action="evo.admin.root.base.agency" />
 
-	<action-view name="evo.admin.root.base.agency" title="Les agences"
+	<action-view name="evo.admin.root.base.agency" title="Agencies"
 		model="com.axelor.apps.base.db.Agency" icon="img/icons/organisation_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 
 	<menuitem name="evo-admin-root-user-company" parent="evo-admin-root-user"
-		title="Les sociétés" action="evo.admin.root.base.company" />
+		title="Companies" action="evo.admin.root.base.company" />
 
-	<action-view name="evo.admin.root.base.company" title="Les sociétés"
+	<action-view name="evo.admin.root.base.company" title="Companies"
 		model="com.axelor.apps.base.db.Company" icon="img/icons/organisation_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 
 	<menuitem name="evo-admin-root-formula" parent="evo-admin-root"
-		title="Formule"/>
+		title="Formula"/>
 
 	<menuitem name="evo-admin-root-formula-formula-generator"
-		parent="evo-admin-root-formula" title="Les générations de formules"
+		parent="evo-admin-root-formula" title="Generations of Formula"
 		action="evo.admin.root.formula.formula.generator" />
 
 	<action-view name="evo.admin.root.formula.formula.generator"
-		title="Les générations de formules" model="com.axelor.apps.base.db.FormulaGenerator" icon="img/icons/organisation_small.png">
+		title="Generations of Formula" model="com.axelor.apps.base.db.FormulaGenerator" icon="img/icons/organisation_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 
 	<menuitem name="evo-admin-root-general" parent="evo-admin-root"
-		title="Générale"/>
+		title="General"/>
 
 	<menuitem name="evo-admin-root-general-general" parent="evo-admin-root-general"
-		title="L'administration Générale" action="evo.admin.root.general.general" />
+		title="General admin" action="evo.admin.root.general.general" />
 
-	<action-view name="evo.admin.root.general.general" title="L'administration Générale"
+	<action-view name="evo.admin.root.general.general" title="General admin"
 		model="com.axelor.apps.base.db.General" icon="img/icons/organisation_small.png">
 		<view type="grid" />
 		<view type="form" />
@@ -586,18 +583,18 @@
 		title="Configuration" icon="img/icons/parameter.png" />
 
 	<menuitem name="evo-admin-conf-general-status" parent="evo-admin-conf-general"
-		title="Les statuts" action="evo.admin.conf.general.status" />
+		title="All Status" action="evo.admin.conf.general.status" />
 
-	<action-view name="evo.admin.conf.general.status" title="Les statuts"
+	<action-view name="evo.admin.conf.general.status" title="All Status"
 		model="com.axelor.apps.base.db.Status" icon="img/icons/parameter_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 
 	<menuitem name="evo-admin-conf-general-unit" parent="evo-admin-conf-general"
-		title="Les unités" action="evo.admin.conf.general.unit" />
+		title="Units" action="evo.admin.conf.general.unit" />
 
-	<action-view name="evo.admin.conf.general.unit" title="Les unités"
+	<action-view name="evo.admin.conf.general.unit" title="Units"
 		model="com.axelor.apps.base.db.Unit" icon="img/icons/parameter_small.png">
 		<view type="grid" />
 		<view type="form" />
@@ -605,71 +602,71 @@
 
 
 	<menuitem name="evo-admin-conf-general-currency" parent="evo-admin-conf-general"
-		title="Les devises" action="evo.admin.conf.general.currency" />
+		title="Currencies" action="evo.admin.conf.general.currency" />
 
 	<action-view name="evo.admin.conf.general.currency"
-		title="Les devises" model="com.axelor.apps.base.db.Currency" icon="img/icons/parameter_small.png">
+		title="Currencies" model="com.axelor.apps.base.db.Currency" icon="img/icons/parameter_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 
 
 	<menuitem name="evo-admin-conf-general-unit-conversion"
-		parent="evo-admin-conf-general" title="Les conversions d'unités"
+		parent="evo-admin-conf-general" title="Unit conversions"
 		action="evo.admin.conf.general.unit.conversion" />
 
 	<action-view name="evo.admin.conf.general.unit.conversion"
-		title="Les conversions d'unités" model="com.axelor.apps.base.db.UnitConversion" icon="img/icons/parameter_small.png">
+		title="Unit conversions" model="com.axelor.apps.base.db.UnitConversion" icon="img/icons/parameter_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 
 	<menuitem name="evo-admin-conf-general-sequence-generic"
-		parent="evo-admin-conf-general" title="Les séquences"
+		parent="evo-admin-conf-general" title="Sequences"
 		action="evo.admin.conf.general.sequence.generic" />
 
 	<action-view name="evo.admin.conf.general.sequence.generic"
-		title="Les séquences" model="com.axelor.apps.base.db.Sequence" icon="img/icons/parameter_small.png">
+		title="Sequences" model="com.axelor.apps.base.db.Sequence" icon="img/icons/parameter_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 	
 	<menuitem name="evo-admin-conf-general-keyword"
-		parent="evo-admin-conf-general" title="Les mots-clés"
+		parent="evo-admin-conf-general" title="Keywords"
 		action="evo.admin.conf.general.keyword" />
 
 	<action-view name="evo.admin.conf.general.keyword"
-		title="Les mots-clés" model="com.axelor.apps.base.db.Keyword" icon="img/icons/parameter_small.png">
+		title="Keywords" model="com.axelor.apps.base.db.Keyword" icon="img/icons/parameter_small.png">
 		<view type="grid" name="keyword-grid"/>
 		<view type="form" name="keyword-form"/>
 	</action-view>
 	
 	<menuitem name="evo-admin-conf-general-source"
-		parent="evo-admin-conf-general" title="Les sources"
+		parent="evo-admin-conf-general" title="Sources"
 		action="evo.admin.conf.general.source" />
 
 	<action-view name="evo.admin.conf.general.source"
-		title="Les sources" model="com.axelor.apps.base.db.Source" icon="img/icons/parameter_small.png">
+		title="Sources" model="com.axelor.apps.base.db.Source" icon="img/icons/parameter_small.png">
 		<view type="grid" name="source-grid"/>
 		<view type="form" name="source-form"/>
 	</action-view>
 
 	<menuitem name="evo-admin-root-maintenance" parent="evo-admin-root"
-		title="Maintenance applicative" />
+		title="Technical maintenance" />
 
 	<menuitem name="evo-admin-root-maintenance-trace-back" parent="evo-admin-root-maintenance"
-		title="Les tracebacks" action="evo.admin.root.maintenance.trace.back" />
+		title="Tracebacks" action="evo.admin.root.maintenance.trace.back" />
 
 	<action-view name="evo.admin.root.maintenance.trace.back"
-		title="Les tracebacks" model="com.axelor.exception.db.TraceBack" icon="img/icons/organisation_small.png">
+		title="Tracebacks" model="com.axelor.exception.db.TraceBack" icon="img/icons/organisation_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 
 	<menuitem name="evo-admin-root-import" parent="evo-admin-root-maintenance"
-		title="Les imports" action="evo.admin.root.import" />
+		title="Imports" action="evo.admin.root.import" />
 
-	<action-view name="evo.admin.root.import" title="Les Imports"
+	<action-view name="evo.admin.root.import" title="Imports"
 		model="com.axelor.apps.base.db.Import" icon="img/icons/organisation_small.png">
 		<view type="grid" name="import-grid" />
 		<view type="form" name="import-form" />
@@ -678,19 +675,19 @@
 
 	
 	<menuitem name="evo-admin-root-indicator-generator-grouping" parent="evo-admin-root-maintenance"
-		title="Les groupements d'indicateurs" action="evo.admin.root.indicator.generator.grouping" />
+		title="Indicators groups" action="evo.admin.root.indicator.generator.grouping" />
 
 	<action-view name="evo.admin.root.indicator.generator.grouping"
-		title="Les groupements d'indicateurs" model="com.axelor.apps.base.db.IndicatorGeneratorGrouping" icon="img/icons/organisation_small.png">
+		title="Indicators groups" model="com.axelor.apps.base.db.IndicatorGeneratorGrouping" icon="img/icons/organisation_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 	
 	<menuitem name="evo-admin-root-indicator-generator" parent="evo-admin-root-maintenance"
-		title="Les générateurs d'indicateurs" action="evo.admin.root.indicator.generator" />
+		title="Indicators generators" action="evo.admin.root.indicator.generator" />
 
 	<action-view name="evo.admin.root.indicator.generator"
-		title="Les générateurs d'indicateurs" model="com.axelor.apps.base.db.IndicatorGenerator" icon="img/icons/organisation_small.png">
+		title="Indicators generators" model="com.axelor.apps.base.db.IndicatorGenerator" icon="img/icons/organisation_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
