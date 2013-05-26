@@ -17,6 +17,7 @@
 		<field name="purchaseOrderLineList" colSpan="4" grid-view="purchase-order-sales-order-line-grid" form-view="purchase-order-sales-order-line-form"/>
         <field name="statusSelect"/>
     	<button name="validate" title="Valider" colSpan="2"/>
+    	<button name="sendByEmail" title="Send by email" colSpan="2"/>
     	<button name="generateDeliveryOrder" title="Générer bon de livraison" colSpan="2"/>
     	<button name="showSupplierInvoice" title="Factures fournisseurs" colSpan="2" onClick="action-purchase-order-show-supplier-invoice"/>
     </form>

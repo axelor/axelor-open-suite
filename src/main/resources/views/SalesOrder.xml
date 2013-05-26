@@ -48,6 +48,7 @@
 	        		<button name="compute" title="Calculer" colSpan="2" onClick="save,action-sales-order-method-compute,save"/>
 	        		<button name="confirm" title="Confirmer le devis" colSpan="2" onClick="save,action-sales-order-record-confirm,save"/>
 	        		<button name="cancel" title="Annuler le devis" colSpan="2" onClick="save,action-sales-order-record-cancel"/>
+	        		<button name="sendByEmail" title="Send by email" colSpan="2"/>
 	        		<field name="statusSelect" colSpan="2"/>
 	        		<field name="validatedByUserInfo" colSpan="2"/>
         		</group>
