@@ -5,7 +5,7 @@
 
 
 
-	<menuitem name="crm-root" title="CRM" priority="70"
+	<menuitem name="crm-root" title="CRM" priority="180"
 		icon="img/icons/crm.png" />
 
 	<menuitem name="crm-root-task" parent="crm-root"
