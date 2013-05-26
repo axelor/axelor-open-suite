@@ -5,11 +5,11 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="Request" lang="java">
+  <entity name="PartnerList" lang="java">
   	
   	<string name="code" namecolumn="true" title="Code"/>
-  	<string name="request" title="Request" formula="true"/>
-  	<string name="description" title="Description"/>
+  	<string name="description" title="Description" large="true"/>
+  	<many-to-many name="partnerSet" ref="com.axelor.apps.base.db.Partner" title="Partners"/>
   	
   </entity>
   

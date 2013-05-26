@@ -3,11 +3,11 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
 
-  <module name="crm" package="com.axelor.apps.crm.db"/>
+  <module name="crm" package="com.axelor.apps.base.db"/>
 
-  <entity name="MarketingTracker" lang="java">
+  <entity name="Tracker" lang="java">
 	
-	<many-to-one name="marketing" ref="com.axelor.apps.crm.db.Marketing" title="Marketing"/>
+	<many-to-one name="htmlTemplate" ref="com.axelor.apps.base.db.HtmlTemplate" title="HtmlTemplate"/>
 	<string name="url" title="Url"/>
 	<string name="code" title="Code"/>
 	<string name="label" title="Label"/>

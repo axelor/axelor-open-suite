@@ -644,24 +644,24 @@
 	</selection>
 
 	<selection name="grade.0.up.to.5.select">
-		<option value="1">1</option>
-		<option value="2">2</option>
-		<option value="3">3</option>
-		<option value="4">4</option>
-		<option value="5">5</option>
+		<option value="20">1</option>
+		<option value="40">2</option>
+		<option value="60">3</option>
+		<option value="80">4</option>
+		<option value="100">5</option>
 	</selection>
 	
 	<selection name="grade.0.up.to.10.select">
-		<option value="1">1</option>
-		<option value="2">2</option>
-		<option value="3">3</option>
-		<option value="4">4</option>
-		<option value="5">5</option>
-		<option value="6">6</option>
-		<option value="7">7</option>
-		<option value="8">8</option>
-		<option value="9">9</option>
-		<option value="10">10</option>
+		<option value="10">1</option>
+		<option value="20">2</option>
+		<option value="30">3</option>
+		<option value="40">4</option>
+		<option value="50">5</option>
+		<option value="60">6</option>
+		<option value="70">7</option>
+		<option value="80">8</option>
+		<option value="90">9</option>
+		<option value="100">10</option>
 	</selection>
 	
 	<selection name="organisation.timesheet.time.unit.select">
@@ -872,15 +872,15 @@
 		<option value="5">Canceled</option>
 	</selection>
 
-	<selection name="crm.marketing.type.select">
-		<option value="1">Email</option>
-		<option value="2">Mail</option>
-		<option value="3">Phone</option>
-	</selection>
-	
-	<selection name="crm.marketing.follow.up.type.select">
+	<selection name="crm.campaign.follow.up.type.select">
 		<option value="1">Calls</option>
 		<option value="2">Meeting</option>
+	</selection>
+
+	<selection name="crm.campaign.sending.type.select">
+		<option value="1">Lists / Queries</option>
+		<option value="2">Contacts / Leads</option>
+		<option value="3">Lists / Queries &amp; Contacts / Leads</option>
 	</selection>
 
 	<selection name="consulting.needline.profile.category.select">
@@ -915,6 +915,14 @@
 	<selection name="consulting.price.list.discount.line.price.type.select">
 		<option value="1">Unit price</option>
 		<option value="2">Discount</option>
+	</selection>
+
+	<selection name="base.html.template.type.select">
+		<option value="1">Contact</option>
+		<option value="2">Campaign</option>
+		<option value="3">Purchase order</option>
+		<option value="4">Sales order</option>
+		<option value="5">Client invoice</option>
 	</selection>
 
 

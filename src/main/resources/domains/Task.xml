@@ -17,7 +17,6 @@
   	<boolean name="isTimesheetAffected" title="Input from timesheet ?"/>
   	<decimal name="totalPlannedDays" title="Total planned days"/>
   	<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="Assigned to"/>
-  	<decimal name="progressBar" title="Progress bar"/>
   	<integer name="statusSelect" title="Status" selection="organisation.task.status.select"/>
   	<decimal name="totalTask" title="Total task"/>
   	<boolean name="isToInvoice" title="To invoice ?"/>

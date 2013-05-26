@@ -22,6 +22,23 @@
     <string name="objective" title="Objectives" large="true"/>
     <string name="description" title="Description" large="true"/>
     
+    
+	<boolean name="hasForceEmailSending" title="Ne pas prendre en compte les refus d'emailing"/>
+  	<many-to-many name="partnerListSet" ref="com.axelor.apps.base.db.PartnerList" title="Contact lists"/>
+  	<many-to-many name="jpqlQuerySet" ref="com.axelor.apps.base.db.JpqlQuery" title="Queries"/>
+  	<many-to-many name="partnerSet" ref="com.axelor.apps.base.db.Partner" title="Contacts"/>
+  	<many-to-many name="leadSet" ref="com.axelor.apps.crm.db.Lead" title="Leads"/>
+  	
+  	<boolean name="hasListGenerated" title="List generated ?"/>
+  	
+  	<integer name="followUpTypeSelect" title="Follow Up type" selection="crm.campaign.follow.up.type.select"/>
+  	
+  	<many-to-one name="eventCategory" ref="com.axelor.apps.crm.db.EventCategory" title="Event category"/>
+  	
+    <integer name="sendingTypeSelect" title="Sending type" selection="crm.campaign.sending.type.select"/>
+    
+    <many-to-one name="htmlTemplate" ref="com.axelor.apps.base.db.HtmlTemplate" title="Content"/>
+    
 <!-- 	Ajouter second onglet avec user et team   -->
   	<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="Assigned to"/>
   	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team"/>

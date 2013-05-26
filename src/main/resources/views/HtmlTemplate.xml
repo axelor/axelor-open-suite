@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="html-template-grid" title="Html templates" model="com.axelor.apps.base.db.HtmlTemplate">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="typeSelect"/>
+    </grid>
+    
+    <form name="html-template-form" title="Html  template" model="com.axelor.apps.base.db.HtmlTemplate" cols="4">
+        <field name="name"/>
+        <field name="code"/>
+<!--         <field name="typeSelect"/> -->
+        <field name="metaModel"/>
+        <notebook colSpan="4">
+        	<page title="Content">
+        		<field name="content" noLabel="true" widget="html" colSpan="4"/>
+        	</page>
+        	<page title="Trackers">
+        		<field name="trackerList" noLabel="true" colSpan="4"/>
+        	</page>
+        	<page title="Explanation">
+<!--         		<label title="Campaing :" showIf="typeSelect = 2"/> -->
+<!-- 				<label title="$ : Contact" showIf="typeSelect = 2"/> -->
+<!-- 				<label title="£ : Lead" showIf="typeSelect = 2"/> -->
+<!-- 				<label title="$ : Current object" hideIf="typeSelect = 2"/> -->
+				
+				<label title="Campaing :" showIf="metaModel.name = 'Campaign'"/>
+				<label title="$ : Contact" showIf="metaModel.name = 'Campaign'"/>
+				<label title="£ : Lead" showIf="metaModel.name = 'Campaign'"/>
+				<label title="$ : Current object" hideIf="metaModel.name = 'Campaign'"/>
+        	</page>
+        </notebook>
+        
+        
+    </form>
+    
+</object-views>

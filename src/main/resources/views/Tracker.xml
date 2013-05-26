@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="tracker-grid" title="Trackers" model="com.axelor.apps.base.db.Tracker">
+        <field name="url"/>
+        <field name="code"/>
+        <field name="label"/>
+        <field name="meter"/>
+    </grid>
+    
+    <form name="tracker-form" title="Tracker" model="com.axelor.apps.base.db.Tracker" cols="3" colWidths="*,400">
+       	<group colSpan="3" cols="2" colWidths="13%,87%">
+   			<field name="url" colSpan="3"/>
+   		</group>
+   		<group colSpan="2" cols="2">
+        	<field name="code"/>
+        	<field name="label"/>
+        	<field name="meter" colSpan="1"/>
+   		</group>
+        <group title="Actions" colSpan="1" cols="1">
+         	<button name="showContact" title="Show contacts"/>
+        	<button name="showLeads" title="Show leads"/>
+        </group>
+    </form>
+    
+</object-views>
