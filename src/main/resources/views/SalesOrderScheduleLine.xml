@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    <grid name="sales-order-schedule-line-grid" title="Lignes d'échéances de devis" model="com.axelor.apps.supplychain.db.SalesOrderScheduleLine">
+    <grid name="sales-order-schedule-line-grid" title="SO schedule lines" model="com.axelor.apps.supplychain.db.SalesOrderScheduleLine">
         <field name="sequence"/>
         <field name="amountToBeInvoiced"/>
         <field name="invoicingPercentage"/>
@@ -13,7 +13,7 @@
 		<field name="invoice"/>    	
     </grid>
     
-    <form name="sales-order-schedule-line-form" title="Ligne d'échéance de devis" model="com.axelor.apps.supplychain.db.SalesOrderScheduleLine" cols="4">
+    <form name="sales-order-schedule-line-form" title="SO schedule line" model="com.axelor.apps.supplychain.db.SalesOrderScheduleLine" cols="4">
     	<field name="sequence"/>
         <field name="amountToBeInvoiced"/>
         <field name="invoicingPercentage"/>
