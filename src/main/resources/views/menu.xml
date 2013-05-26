@@ -10,9 +10,9 @@
 		
 	
 	<menuitem name="production-root-bill-of-material" parent="production-root"
-		title="Bill of materials" action="production.root.bill.of.material" />
+		title="Bills of materials" action="production.root.bill.of.material" />
 
-	<action-view name="production.root.bill.of.material" title="Bill of materials"
+	<action-view name="production.root.bill.of.material" title="Bills of materials"
 		model="com.axelor.apps.production.db.BillOfMaterial" icon="img/icons/wheel.png">
 		<view type="grid" name="bill-of-material-grid" />
 		<view type="form" name="bill-of-material-form" />
