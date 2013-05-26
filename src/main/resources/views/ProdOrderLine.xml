@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    <grid name="prod-order-line-grid" title="Production order lines" model="com.axelor.apps.production.db.ProdOrderLine">
+    <grid name="prod-order-line-grid" title="PO lines" model="com.axelor.apps.production.db.ProdOrderLine">
         <field name="resource"/>
         <field name="plannedStartDateT"/>
         <field name="plannedEndDateT"/>
@@ -15,7 +15,7 @@
         <button name="end" title="End"/>
     </grid>
     
-    <form name="prod-order-line-form" title="Production order line" model="com.axelor.apps.production.db.ProdOrderLine" cols="4">
+    <form name="prod-order-line-form" title="PO line" model="com.axelor.apps.production.db.ProdOrderLine" cols="4">
         <field name="resource"/>
         <field name="status"/>
         <group title="Planned dates">

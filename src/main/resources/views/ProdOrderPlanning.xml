@@ -3,13 +3,13 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    <grid name="prod-order-planning-grid" title="Production order plannings" model="com.axelor.apps.production.db.ProdOrderPlanning">
+    <grid name="prod-order-planning-grid" title="PO plannings" model="com.axelor.apps.production.db.ProdOrderPlanning">
         <field name="prodOrderPlanningSeq"/>
         <field name="startDate"/>
    		<field name="endDate"/>
     </grid>
     
-    <form name="prod-order-planning-form" title="Production order planning" model="com.axelor.apps.production.db.ProdOrderPlanning" cols="4">
+    <form name="prod-order-planning-form" title="PO planning" model="com.axelor.apps.production.db.ProdOrderPlanning" cols="4">
     	<field name="prodOrderPlanningSeq" />
     	<field name="isValidated"/>
     	<group title="Dates" colSpan="2" cols="2">

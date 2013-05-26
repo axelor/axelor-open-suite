@@ -20,7 +20,7 @@
         <field name="billOfMaterial"/>
         <field name="prodProcess"/>
         <field name="isSimulation"/>
-        <group title="In/Out" colSpan="4">
+        <group title="Moves In/Out" colSpan="4">
 	        <field name="inStockMoveList" colSpan="4"/>
 	        <field name="inLocation"/>
 	        <field name="outStockMove"/>
