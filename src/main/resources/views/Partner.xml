@@ -58,42 +58,42 @@
 					<field name="webSite"/>
 				</group>
 			</page>
-            <page name="payment" title="Invoicing/Payment" cols="4">
-            	<field name="invoiceSendingFormatSelect"/>
-            	<field name="paymentMode"/>
-            	<field name="paymentCondition"/>
-            	<field name="currency"/>
-                <field name="payerQuality"/>
-                <field name="bankDetails"/>
-                <field name="bankDetailsList" noLabel="true" colSpan="4" form-view="bank-details-form" grid-view="bank-details-grid"/>
-                <button name="showInvoice" title="View all unpaid invoices" colSpan="2" onClick="save,action-partner-method-show-invoice"/>
-            </page>
+<!--             <page name="payment" title="Invoicing/Payment" cols="4"> -->
+<!--             	<field name="invoiceSendingFormatSelect"/> -->
+<!--             	<field name="paymentMode"/> -->
+<!--             	<field name="paymentCondition"/> -->
+<!--             	<field name="currency"/> -->
+<!--                 <field name="payerQuality"/> -->
+<!--                 <field name="bankDetails"/> -->
+<!--                 <field name="bankDetailsList" noLabel="true" colSpan="4" form-view="bank-details-form" grid-view="bank-details-grid"/> -->
+<!--                 <button name="showInvoice" title="View all unpaid invoices" colSpan="2" onClick="save,action-partner-method-show-invoice"/> -->
+<!--             </page> -->
             <page title="ERP Companies associated to">
             	<field name="companySet" colSpan="4"/>
             </page>
-            <page name="compteClient" title="Customer balance">
-            	<field name="accountingSituationList" widget="MasterDetail" colSpan="4" onSelect="action-account-accounting-situation-method-update-customer-account"/>
-            </page>
-            <page name="reportedBalance" title="Reported balance">
-	            <field name="reportedBalanceList" colSpan="4">
-			        <grid name="reported-balance-grid" title="Reported balances" model="com.axelor.apps.account.db.ReportedBalance">
-				 		<field name="company"/>
-				    </grid>
-				    <form name="reported-balance-form" title="Reported balance" model="com.axelor.apps.account.db.ReportedBalance" cols="4">
-				 		<field name="company"/>
-				 		<field name="reportedBalanceLineList" colSpan="4">
-				 			<grid name="reported-balance-line-grid" title="Reported balance lines" model="com.axelor.apps.account.db.ReportedBalanceLine">
-				 				<field name="year"/>
-				 				<field name="amount"/>
-				    		</grid>
-				 			<form name="reported-balance-line-form" title="Reported balance line" model="com.axelor.apps.account.db.ReportedBalanceLine" cols="4">
-				 				<field name="year"/>
-				 				<field name="amount"/>
-				    		</form>
-				 		</field>
-				    </form>
-		    	</field>
-            </page>
+<!--             <page name="compteClient" title="Customer balance"> -->
+<!--             	<field name="accountingSituationList" widget="MasterDetail" colSpan="4" onSelect="action-account-accounting-situation-method-update-customer-account"/> -->
+<!--             </page> -->
+<!--             <page name="reportedBalance" title="Reported balance"> -->
+<!-- 	            <field name="reportedBalanceList" colSpan="4"> -->
+<!-- 			        <grid name="reported-balance-grid" title="Reported balances" model="com.axelor.apps.account.db.ReportedBalance"> -->
+<!-- 				 		<field name="company"/> -->
+<!-- 				    </grid> -->
+<!-- 				    <form name="reported-balance-form" title="Reported balance" model="com.axelor.apps.account.db.ReportedBalance" cols="4"> -->
+<!-- 				 		<field name="company"/> -->
+<!-- 				 		<field name="reportedBalanceLineList" colSpan="4"> -->
+<!-- 				 			<grid name="reported-balance-line-grid" title="Reported balance lines" model="com.axelor.apps.account.db.ReportedBalanceLine"> -->
+<!-- 				 				<field name="year"/> -->
+<!-- 				 				<field name="amount"/> -->
+<!-- 				    		</grid> -->
+<!-- 				 			<form name="reported-balance-line-form" title="Reported balance line" model="com.axelor.apps.account.db.ReportedBalanceLine" cols="4"> -->
+<!-- 				 				<field name="year"/> -->
+<!-- 				 				<field name="amount"/> -->
+<!-- 				    		</form> -->
+<!-- 				 		</field> -->
+<!-- 				    </form> -->
+<!-- 		    	</field> -->
+<!--             </page> -->
         </notebook>
     </form>
     

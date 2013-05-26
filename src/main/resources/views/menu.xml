@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
 
 
-	<menuitem name="menu-dashboards" priority="101"
+	<menuitem name="menu-dashboards" priority="200"
     	title="Dashboards" icon="img/icons/chart.png"/> 	
 
 	<menuitem name="menu-crm-dashboard" parent="menu-dashboards"
@@ -47,7 +47,7 @@
 		<view type="portal" name="purchase.manager.dashboard.portal" />
 	</action-view>
 
-	<menuitem name="contact-root" title="Companies/Contacts"
+	<menuitem name="contact-root" title="Companies/Contacts" priority="190"
 		icon="img/icons/partner.png" />
 
 	<menuitem name="contact-root-partner" parent="contact-root"
@@ -163,7 +163,7 @@
 
 
 	
-	<menuitem name="product-root" title="Products" priority="50"
+	<menuitem name="product-root" title="Products" priority="170"
 		icon="img/icons/product.png" />
 
  
@@ -263,49 +263,11 @@
 	
 
 
-	<menuitem name="affair-root" title="Affair"
-		icon="img/icons/affair.png" />
-	
-	<menuitem name="affair-root-need" parent="affair-root"
-		title="Les besoins" action="affair.root.need" />
-
-	<action-view name="affair.root.need" title="Les besoins"
-		model="com.axelor.apps.consulting.db.Need" icon="img/icons/affair_small.png">
-		<view type="grid" name="need-grid" />
-		<view type="form" name="need-form" />
-	</action-view>	
-
-	<menuitem name="affair-root-price-list" parent="affair-root"
-		title="Les listes de tarifs" action="affair.root.price.list" />
-
-	<action-view name="affair.root.price.list" title="Les listes de tarifs"
-		model="com.axelor.apps.consulting.db.PriceList" icon="img/icons/affair_small.png">
-		<view type="grid" name="price-list-grid" />
-		<view type="form" name="price-list-form" />
-	</action-view>	
 	
 	
-	<menuitem name="affair-root-geographical-area" parent="affair-root"
-		title="Les zones géographiques" action="affair.root.geographical.area" />
-
-	<action-view name="affair.root.geographical.area" title="Les zones géographiques"
-		model="com.axelor.apps.base.db.GeographicalArea" icon="img/icons/affair_small.png">
-		<view type="grid" name="geographical-area-grid" />
-		<view type="form" name="geographical-area-form" />
-	</action-view>	
-	
-	<menuitem name="affair-root-site" parent="affair-root"
-		title="Les sites" action="affair.root.site" />
-
-	<action-view name="affair.root.site" title="Les sites"
-		model="com.axelor.apps.consulting.db.Site" icon="img/icons/affair_small.png">
-		<view type="grid" name="site-grid" />
-		<view type="form" name="site-form" />
-	</action-view>	
 
 
-
-	<menuitem name="alarm-root" title="Alarmes"
+	<menuitem name="alarm-root" title="Alarmes" priority="80"
 		icon="img/icons/alert.png" />
 
 	<menuitem name="alarm-root-alarm-other" parent="alarm-root" title="Les Alarmes"
@@ -346,8 +308,10 @@
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
+	
+	
 
-	<menuitem name="mail-root" title="Emails / Courriers"
+	<menuitem name="mail-root" title="Emails / Courriers" priority="70"
 		icon="img/icons/mail.png" />
 
 <!-- 	title-f="Messagerie" -->
@@ -483,7 +447,9 @@
 		<view type="form" />
 	</action-view>
 
-	<menuitem name="evo-admin-root" title="Administration Axelor"
+
+
+	<menuitem name="evo-admin-root" title="Administration Axelor" priority="60"
 		icon="img/icons/organisation.png" />
 
 	<menuitem name="evo-admin-root-organisation" parent="evo-admin-root" title="Organisation"/>
