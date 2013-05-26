@@ -5,7 +5,7 @@
 
 	
 
-	<menuitem name="hr-root" title="Humain Resources" priority="130"
+	<menuitem name="hr-root" title="Human Resources" priority="130"
 		icon="img/icons/organisation.png" />
 
 	<menuitem name="hr-root-employee" parent="hr-root"
@@ -18,9 +18,9 @@
 	</action-view>	
 	
 	<menuitem name="hr-root-allmanagers" parent="hr-root"
-		title="All managers" action="hr.root.allmanagers" />
+		title="Managers" action="hr.root.allmanagers" />
 
-	<action-view name="hr.root.allmanagers" title="All managers"
+	<action-view name="hr.root.allmanagers" title="Managers"
 		model="com.axelor.apps.organisation.db.Employee" icon="img/evo-icons/organisation_small.png">
 		<view type="grid" name="employee-grid" />
 		<view type="form" name="employee-form" />
@@ -28,9 +28,9 @@
 	</action-view>	
 	
 	<menuitem name="hr-root-allworkers" parent="hr-root"
-		title="All workers" action="hr.root.allworkers" />
+		title="Workers" action="hr.root.allworkers" />
 
-	<action-view name="hr.root.allworkers" title="All workers"
+	<action-view name="hr.root.allworkers" title="Workers"
 		model="com.axelor.apps.organisation.db.Employee" icon="img/evo-icons/organisation_small.png">
 		<view type="grid" name="employee-grid" />
 		<view type="form" name="employee-form" />
@@ -49,9 +49,9 @@
 	</action-view>
 
 	<menuitem name="hr-root-recruitment-managers" parent="hr-root-recruitment"
-		title="All managers candidates" action="hr.root.recruitment.managers" />
+		title="Manager candidates" action="hr.root.recruitment.managers" />
 
-	<action-view name="hr.root.recruitment.managers" title="All managers candidates"
+	<action-view name="hr.root.recruitment.managers" title="Managers candidates"
 		model="com.axelor.apps.organisation.db.Candidate" icon="img/icons/organisation_small.png">
 		<view type="grid" name="candidate-grid" />
 		<view type="form" name="candidate-form" />
@@ -59,9 +59,9 @@
 	</action-view>
 	
 	<menuitem name="hr-root-recruitment-workers" parent="hr-root-recruitment"
-		title="All workers candidates" action="hr.root.recruitment.workers" />
+		title="Workers candidates" action="hr.root.recruitment.workers" />
 
-	<action-view name="hr.root.recruitment.workers" title="All workers candidates"
+	<action-view name="hr.root.recruitment.workers" title="Workers candidates"
 		model="com.axelor.apps.organisation.db.Candidate" icon="img/icons/organisation_small.png">
 		<view type="grid" name="candidate-grid" />
 		<view type="form" name="candidate-form" />
@@ -72,9 +72,9 @@
 		title="Input forms" />
 
 	<menuitem name="hr-root-inputforms-timesheet" parent="hr-root-inputforms"
-		title="My time sheet" action="hr.root.inputforms.timesheet"/>
+		title="My timesheet" action="hr.root.inputforms.timesheet"/>
 		
-	<action-view name="hr.root.inputforms.timesheet" title="My time sheet"
+	<action-view name="hr.root.inputforms.timesheet" title="My timesheet"
 		model="com.axelor.apps.organisation.db.Timesheet" icon="img/icons/organisation_small.png">
 		<view type="grid" name="timesheet-grid" />
 		<view type="form" name="timesheet-form" />
@@ -104,9 +104,9 @@
 		title="Validation forms" />
 		
 	<menuitem name="hr-root-validationforms-timesheet" parent="hr-root-validationforms"
-		title="Time sheet to validate" action="hr.root.validationforms.timesheet"/>
+		title="Timesheets to validate" action="hr.root.validationforms.timesheet"/>
 		
-	<action-view name="hr.root.validationforms.timesheet" title="Time sheet to validate"
+	<action-view name="hr.root.validationforms.timesheet" title="Timesheets to validate"
 		model="com.axelor.apps.organisation.db.Timesheet" icon="img/icons/organisation_small.png">
 		<view type="grid" name="timesheet-grid" />
 		<view type="form" name="timesheet-form" />
@@ -136,9 +136,9 @@
 		title="Payment forms" />
 	
 	<menuitem name="hr-root-paymentforms-timesheet" parent="hr-root-paymentforms"
-		title="Time sheet to be paid" action="hr.root.paymentforms.timesheet"/>
+		title="Timesheets to be paid" action="hr.root.paymentforms.timesheet"/>
 		
-	<action-view name="hr.root.paymentforms.timesheet" title="Time sheet to be paid"
+	<action-view name="hr.root.paymentforms.timesheet" title="Timesheets to be paid"
 		model="com.axelor.apps.organisation.db.Timesheet" icon="img/icons/organisation_small.png">
 		<view type="grid" name="timesheet-grid" />
 		<view type="form" name="timesheet-form" />
@@ -168,18 +168,18 @@
 		icon="img/icons/parameter.png" />
 
 	<menuitem name="hr-root-expense" parent="hr-root-conf"
-		title="Les notes de frais" action="hr.root.expense" />
+		title="Travel expenses" action="hr.root.expense" />
 
-	<action-view name="hr.root.expense" title="Les notes de frais"
+	<action-view name="hr.root.expense" title="Travel expenses"
 		model="com.axelor.apps.organisation.db.Expense" icon="img/evo-icons/organisation_small.png">
 		<view type="grid" name="expense-grid" />
 		<view type="form" name="expense-form" />
 	</action-view>	
 	
 	<menuitem name="hr-root-leave-request" parent="hr-root-conf"
-		title="Les demandes de congés" action="hr.root.leave.request" />
+		title="Leave requests" action="hr.root.leave.request" />
 
-	<action-view name="hr.root.leave.request" title="Les demandes de congés"
+	<action-view name="hr.root.leave.request" title="Leave requests"
 		model="com.axelor.apps.organisation.db.LeaveRequest" icon="img/evo-icons/organisation_small.png">
 		<view type="grid" name="leave-request-grid" />
 		<view type="form" name="leave-request-form" />
@@ -187,54 +187,54 @@
 	</action-view>
 
 	<menuitem name="hr-root-overtime" parent="hr-root-conf"
-		title="Les heures supplémentaires" action="hr.root.overtime" />
+		title="Work Overtimes" action="hr.root.overtime" />
 
-	<action-view name="hr.root.overtime" title="Les heures supplémentaires"
+	<action-view name="hr.root.overtime" title="Work overtimes"
 		model="com.axelor.apps.organisation.db.Overtime" icon="img/evo-icons/organisation_small.png">
 		<view type="grid" name="overtime-grid" />
 		<view type="form" name="overtime-form" />
 	</action-view>	
 	
 	<menuitem name="hr-root-training" parent="hr-root-conf"
-		title="Les formations" action="hr.root.training" />
+		title="Trainings" action="hr.root.training" />
 
-	<action-view name="hr.root.training" title="Les formations"
+	<action-view name="hr.root.training" title="Trainings"
 		model="com.axelor.apps.organisation.db.Training" icon="img/evo-icons/organisation_small.png">
 		<view type="grid" name="training-grid" />
 		<view type="form" name="training-form" />
 	</action-view>	
 	
 	<menuitem name="hr-root-timesheet" parent="hr-root-conf"
-		title="Les feuilles de temps" action="hr.root.timesheet" />
+		title="Timesheets" action="hr.root.timesheet" />
 
-	<action-view name="hr.root.timesheet" title="Les feuilles de temps"
+	<action-view name="hr.root.timesheet" title="Timesheets"
 		model="com.axelor.apps.organisation.db.Timesheet" icon="img/evo-icons/organisation_small.png">
 		<view type="grid" name="timesheet-grid" />
 		<view type="form" name="timesheet-form" />
 	</action-view>	
 	
 	<menuitem name="hr-root-planning" parent="hr-root-conf"
-		title="Les plannings" action="hr.root.planning" />
+		title="Plannings" action="hr.root.planning" />
 
-	<action-view name="hr.root.planning" title="Les plannings"
+	<action-view name="hr.root.planning" title="Plannings"
 		model="com.axelor.apps.organisation.db.Planning" icon="img/evo-icons/organisation_small.png">
 		<view type="grid" name="planning-grid" />
 		<view type="form" name="planning-form" />
 	</action-view>	
 	
 	<menuitem name="hr-root-schedule" parent="hr-root-conf"
-		title="Les horaires" action="hr.root.schedule" />
+		title="Working hours" action="hr.root.schedule" />
 
-	<action-view name="hr.root.schedule" title="Les horaires"
+	<action-view name="hr.root.schedule" title="Working hours"
 		model="com.axelor.apps.organisation.db.Schedule" icon="img/evo-icons/organisation_small.png">
 		<view type="grid" name="schedule-grid" />
 		<view type="form" name="schedule-form" />
 	</action-view>	
 	
 	<menuitem name="hr-root-config-public-holidays" parent="hr-root-conf"
-		title="Les jours fériés" action="hr.root.config.public.holidays" />
+		title="Public holidays" action="hr.root.config.public.holidays" />
 		
-	<action-view name="hr.root.config.public.holidays" title="Les jours fériés"
+	<action-view name="hr.root.config.public.holidays" title="Public holidays"
 		model="com.axelor.apps.organisation.db.PublicHolidays" icon="img/evo-icons/parameter_small.png">
 		<view type="grid" name="public-holidays-grid" />
 		<view type="form" name="public-holidays-form" />
@@ -246,9 +246,9 @@
 <!-- 		icon="img/icons/affair.png" /> -->
 	
 	<menuitem name="affair-root-project" parent="affair-root"
-		title="Les affaires" action="affair.root.project" />
+		title="Affairs" action="affair.root.project" />
 
-	<action-view name="affair.root.project" title="Les affaires"
+	<action-view name="affair.root.project" title="Affairs"
 		model="com.axelor.apps.organisation.db.Project" icon="img/icons/affair_small.png">
 		<view type="grid" name="project-grid" />
 		<view type="form" name="project-form" />
@@ -261,7 +261,7 @@
 	<menuitem name="menu-gant1" parent="project-root"
     title="Gantt Diagram" action="demo.gantt1"/>
     
-	<action-view name="demo.gantt1" title="Diagramme de Gantt" icon="img/icons/project_small.png">
+	<action-view name="demo.gantt1" title="Gantt Diagram" icon="img/icons/project_small.png">
     	<view type="html" name="samples/gantt1.html" />
   	</action-view>
 
@@ -269,7 +269,7 @@
 	<menuitem name="project-root-project" parent="project-root"
 		title="Projects" action="project.root.project" />
 
-	<action-view name="project.root.project" title="Les projets"
+	<action-view name="project.root.project" title="Projects"
 		model="com.axelor.apps.organisation.db.Project" icon="img/icons/project_small.png">
 		<view type="grid" name="project-grid" />
 		<view type="form" name="project-form" />
@@ -278,7 +278,7 @@
 	<menuitem name="project-root-task" parent="project-root"
 		title="Tasks" action="project.root.task" />
 
-	<action-view name="project.root.task" title="Les tâches"
+	<action-view name="project.root.task" title="Tasks"
 		model="com.axelor.apps.organisation.db.Task" icon="img/icons/project_small.png">
 		<view type="grid" name="task-grid" />
 		<view type="form" name="task-form" />
