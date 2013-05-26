@@ -113,13 +113,15 @@
     </form>
     
     
-     <grid name="ticket-grid" title="Tasks" model="com.axelor.apps.crm.db.Event">
+     <grid name="ticket-grid" title="Tasks" model="com.axelor.apps.crm.db.Event" orderBy="ticketNumberSeq">
      	<field name="ticketNumberSeq"/>
         <field name="subject"/>
         <field name="eventCategory"/>
         <field name="startDateTime"/>
+        <field name="prioritySelect"/>
         <field name="userInfo"/>
         <field name="description"/>
+        <field name="progressSelect" widget="progress"/>
     </grid>
     
     <form name="ticket-form" title="Task" model="com.axelor.apps.crm.db.Event" cols="6" colWidths="*,400"
