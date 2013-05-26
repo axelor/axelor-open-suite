@@ -114,15 +114,16 @@
     
     
      <grid name="ticket-grid" title="Tasks" model="com.axelor.apps.crm.db.Event">
+     	<field name="ticketNumberSeq"/>
         <field name="subject"/>
-        <field name="thirdaryStatusSelect"/>
+        <field name="eventCategory"/>
         <field name="startDateTime"/>
-        <field name="relatedToSelect"/>
-        <field name="reminder"/>
+        <field name="userInfo"/>
+        <field name="description"/>
     </grid>
     
     <form name="ticket-form" title="Task" model="com.axelor.apps.crm.db.Event" cols="6" colWidths="*,400"
-    	onNew="action-call-default-record,action-event-record-type-select">
+    	onNew="action-call-default-record,action-event-record-type-select,action-ticket-record-new">
     	<group colSpan="6" cols="6"  colWidths="16%,17%,16%,17%,16%,18%">
 	    	<field name="ticketNumberSeq"/>
 	       	<field name="subject"/>
@@ -179,6 +180,11 @@
     
     <action-record name="action-event-record-type-select" model="com.axelor.apps.crm.db.Event">
     	<field name="typeSelect" expr="eval: _typeSelect"/>
+    </action-record>
+    
+    <action-record name="action-ticket-record-new" model="com.axelor.apps.crm.db.Event">
+    	<field name="quaternaryStatusSelect" expr="1"/>
+    	<field name="ticketNumberSeq" expr="eval: com.axelor.apps.crm.db.Event.all().filter('self.typeSelect = 5').count() + 1"/>
     </action-record>
     
 </object-views>
