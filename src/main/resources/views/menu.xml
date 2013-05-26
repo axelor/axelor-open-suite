@@ -242,8 +242,8 @@
 
 	
 	
-	<menuitem name="affair-root" title="Affair" priority="120"
-		icon="img/icons/affair.png" />
+<!-- 	<menuitem name="affair-root" title="Affair" priority="120" -->
+<!-- 		icon="img/icons/affair.png" /> -->
 	
 	<menuitem name="affair-root-project" parent="affair-root"
 		title="Les affaires" action="affair.root.project" />
