@@ -5,7 +5,7 @@
 
 
 
-	<menuitem name="invoice-root" title="Invoice"
+	<menuitem name="invoice-root" title="Invoice" priority="100"
 		icon="img/icons/invoice.png" />
 
 	<menuitem name="invoice-root-sales" parent="invoice-root"
@@ -225,7 +225,7 @@
 	
 
 
-	<menuitem name="account-root" title="Comptabilité"
+	<menuitem name="account-root" title="Comptabilité" priority="90"
 		icon="img/icons/account.png" />
 
 	<menuitem name="account-root-tax" parent="account-root" title="Taxes"/>

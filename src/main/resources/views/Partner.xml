@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="partner-grid" title="Partners" model="com.axelor.apps.base.db.Partner">
+    	<field name="reference"/>
+        <field name="name"/>
+        <field name="firstName"/>
+        <field name="isContact"/>
+   		<field name="partnerTypeSelect"/>
+        <field name="customerTypeSelect"/>
+        <field name="partnerCategory"/>
+    </grid>
+    
+    <form cols="4" colWidths="25*" name="partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" onLoad="action-partner-attrs-change-name,action-partner-attrs-hide-tabs"
+      	onNew="action-partner-record-partner-type-select">
+    	<group colSpan="1">
+    		<field name="picture"/>
+    	</group>
+    	<group colSpan="3" cols="4">
+    		<field name="partnerCategory" widget="SuggestBox"/>
+       		<field name="partnerTypeSelect" onChange="action-partner-attrs-change-name,action-partner-attrs-hide-tabs"/>
+       		<break/>
+       		<field name="titleSelect" hideIf="partnerTypeSelect != 2"/>
+       		<break/>
+       		<field name="name" css="subtotal-total"/>
+			<field name="firstName" hideIf="partnerTypeSelect != 2" css="subtotal-total"/>
+    	</group>
+    	<field name="customerTypeSelect" hideIf="isContact || partnerTypeSelect == 1"/>
+    	<field name="source" hideIf="isContact"/>
+    	<break/>
+    	<field name="isContact" hideIf="partnerTypeSelect != 2" onChange="action-partner-attrs-hide-tabs"/>
+    	<field name="parentPartner" hideIf="partnerTypeSelect != 1"/>
+    	<field name="reference"/>
+    	<field name="languageSelect" hideIf="isContact || partnerTypeSelect == 1"/>
+    	<field name="contactPartnerSet" colSpan="4" domain="self.isContact = 'true'" hideIf="isContact || partnerTypeSelect == 1"/>
+
+    	<field name="site"/>
+    	<field name="department"/>
+        <notebook colSpan="4">
+        	<page name="information" title="Informations">
+				<group title="Postal addresses" colSpan="3" cols="4">
+			      	<field name="deliveryAddress" onChange="action-partner-record-main-invoicing-address"/>
+					<field name="mainInvoicingAddress"/>
+				</group>
+				<group title="Contact" colSpan="3" cols="4">
+					<field name="site"/>
+					<field name="department"/>
+					<field name="commune"/>
+					<field name="email"/>
+					<field name="fax"/>
+					<field name="fixedPhone1"/>
+					<field name="fixedPhone2"/>
+					<field name="fixedPhonePro"/>
+					<field name="mobilePhonePerso"/>
+					<field name="mobilePhonePro"/>
+					<field name="webSite"/>
+				</group>
+			</page>
+            <page name="payment" title="Invoicing/Payment" cols="4">
+            	<field name="invoiceSendingFormatSelect"/>
+            	<field name="paymentMode"/>
+            	<field name="paymentCondition"/>
+            	<field name="currency"/>
+                <field name="payerQuality"/>
+                <field name="bankDetails"/>
+                <field name="bankDetailsList" noLabel="true" colSpan="4" form-view="bank-details-form" grid-view="bank-details-grid"/>
+                <button name="showInvoice" title="View all unpaid invoices" colSpan="2" onClick="save,action-partner-method-show-invoice"/>
+            </page>
+            <page title="ERP Companies associated to">
+            	<field name="companySet" colSpan="4"/>
+            </page>
+            <page name="compteClient" title="Customer balance">
+            	<field name="accountingSituationList" widget="MasterDetail" colSpan="4" onSelect="action-account-accounting-situation-method-update-customer-account"/>
+            </page>
+            <page name="reportedBalance" title="Reported balance">
+	            <field name="reportedBalanceList" colSpan="4">
+			        <grid name="reported-balance-grid" title="Reported balances" model="com.axelor.apps.account.db.ReportedBalance">
+				 		<field name="company"/>
+				    </grid>
+				    <form name="reported-balance-form" title="Reported balance" model="com.axelor.apps.account.db.ReportedBalance" cols="4">
+				 		<field name="company"/>
+				 		<field name="reportedBalanceLineList" colSpan="4">
+				 			<grid name="reported-balance-line-grid" title="Reported balance lines" model="com.axelor.apps.account.db.ReportedBalanceLine">
+				 				<field name="year"/>
+				 				<field name="amount"/>
+				    		</grid>
+				 			<form name="reported-balance-line-form" title="Reported balance line" model="com.axelor.apps.account.db.ReportedBalanceLine" cols="4">
+				 				<field name="year"/>
+				 				<field name="amount"/>
+				    		</form>
+				 		</field>
+				    </form>
+		    	</field>
+            </page>
+        </notebook>
+    </form>
+    
+</object-views>
