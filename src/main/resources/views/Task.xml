@@ -17,6 +17,7 @@
         <field name="project"/>
         <field name="totalTaskDays"/>
         <field name="totalTimeSheetDays"/>
+        <field name="taskProgress" widget="Progress"/>
     </grid>
     
     <form cols="4" name="task-form" title="Task" model="com.axelor.apps.organisation.db.Task">

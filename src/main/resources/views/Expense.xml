@@ -19,6 +19,7 @@
         <field name="currency"/>
         <field name="paymentPeriod"/>
         <field name="statusSelect"/>
+        <field name="progress" widget="Progress"/>
     </grid>
     
     <form name="expense-form" title="Travel expense" model="com.axelor.apps.organisation.db.Expense" cols="4">
@@ -30,7 +31,7 @@
    	 	<field name="expenseLineList" colSpan="4"/>
    	 	<break/>
    	 	<field name="validationStatusSelect"/>
-   	 	<field name="progress"/>
+   	 	<field name="progress" widget="progress"/>
    	 	<field name="validationDate"/>
    	 	<field name="paymentPeriod"/>
    	 	<break/>

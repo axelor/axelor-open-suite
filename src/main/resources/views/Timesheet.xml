@@ -17,10 +17,10 @@
         <field name="toDate"/>
         <group title="Satisfaction" cols="4" colSpan="8" colWidths="10%,10%,10%,70%">
         	<separator colSpan="8" title="Project"/>
-	        <field name="projectSatisfactionSelect"/>
+	        <field name="projectSatisfactionSelect" widget="progress"/>
 	        <field name="projectComment"/>
 	        <separator colSpan="8" title="Company"/>
-	        <field name="companySatisfactionSelect"/>
+	        <field name="companySatisfactionSelect" widget="progress"/>
         	<field name="companyComment"/>
         </group>
         <group title="Unité" colSpan="8">
