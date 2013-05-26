@@ -91,7 +91,7 @@
     	onNew="action-call-default-record,action-event-record-type-select">
         <group title="Informations" cols="4" colSpan="1">
         	<field name="subject"/>
-	        <field name="thirdaryStatusSelect"/>
+	        <field name="tertiaryStatusSelect"/>
 	        <spacer/><break/>
          	<group title="Task date" colSpan="4" cols="4" colWidths="25*" css="groupTitle">
 		        <field name="startDateTime" onChange="action-meeting-method-compute-start-date-time"/>
@@ -110,6 +110,55 @@
 	        <field name="userInfo"/>
 	    	<field name="team"/>
         </group>
+    </form>
+    
+    
+     <grid name="ticket-grid" title="Tasks" model="com.axelor.apps.crm.db.Event">
+        <field name="subject"/>
+        <field name="thirdaryStatusSelect"/>
+        <field name="startDateTime"/>
+        <field name="relatedToSelect"/>
+        <field name="reminder"/>
+    </grid>
+    
+    <form name="ticket-form" title="Task" model="com.axelor.apps.crm.db.Event" cols="6" colWidths="*,400"
+    	onNew="action-call-default-record,action-event-record-type-select">
+    	<group colSpan="6" cols="6"  colWidths="16%,17%,16%,17%,16%,18%">
+	    	<field name="ticketNumberSeq"/>
+	       	<field name="subject"/>
+	       	<field name="eventCategory" domain="self.typeSelect = :typeSelect"/>
+	       	<field name="quaternaryStatusSelect"/>
+	       	<field name="prioritySelect"/>
+	        <field name="progressSelect" widget="progress"/>
+	        <break/>
+    	</group>
+    	<group colSpan="6" cols="6">
+   			<group title="Ticket date" colSpan="2" cols="2" colWidths="40%,60%">
+		        <field name="startDateTime"/>
+		        <field name="endDateTime" title="DeadLine"/>
+		        <field name="durationHours"/>
+	        </group>
+	        <group title="Related to" colSpan="2" cols="2"  colWidths="40%,60%">
+	        	<field name="project"/>
+	        	<field name="task"/>
+	        	<field name="isTimesheetAffected"/>
+	        </group>
+	        <group colSpan="2" cols="2"  colWidths="40%,60%">
+	        	<field name="userInfo"/>
+	        	<field name="responsibleUserInfo"/>
+	        </group>
+    	</group>
+        <notebook colSpan="6">
+        	<page title="Description" >
+        		<field name="description" widget="TEXT[height=4]" noLabel="true" colSpan="6"/>
+        	</page>
+        	<page title="Comments">
+        		<field name="messageList" noLabel="true" colSpan="6"/>
+        	</page>
+        	<page title="Watchers">
+        		<field name="userInfoSet" noLabel="true" colSpan="6"/>
+        	</page>
+        </notebook>
     </form>
     
     <action-record name="action-call-default-record" model="com.axelor.apps.crm.db.Event">

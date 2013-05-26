@@ -46,6 +46,18 @@
 		<context name="_internalUser" expr="eval: __user__.id"/>
 	</action-view>
 	
+	<menuitem name="crm-root-ticket" parent="crm-root"
+		title="My Tickets" action="crm.root.ticket" />
+
+	<action-view name="crm.root.ticket" title="My Tickets"
+		model="com.axelor.apps.crm.db.Event" icon="img/icons/crm_small.png">
+		<view type="grid" name="ticket-grid"/>
+		<view type="form" name="ticket-form"/>
+		<domain>self.typeSelect = 5 and self.userInfo.internalUser.id = :_internalUser</domain>
+		<context name="_typeSelect" expr="5"/>
+		<context name="_internalUser" expr="eval: __user__.id"/>
+	</action-view>
+	
 	<menuitem name="crm-root-lead" parent="crm-root"
 		title="My Leads" action="crm.root.lead" />
 
@@ -125,6 +137,18 @@
 		<context name="_typeSelect" expr="1"/>
 	</action-view>
 	
+	<menuitem name="crm-root-team-ticket" parent="crm-root-team"
+		title="My Team Tickets" action="crm.root.team.ticket" />
+
+	<action-view name="crm.root.team.ticket" title="My Team Tickets"
+		model="com.axelor.apps.crm.db.Event" icon="img/icons/crm_small.png">
+		<view type="grid" name="ticket-grid"/>
+		<view type="form" name="ticket-form"/>
+		<domain>self.typeSelect = 5 and self.team IN :_internalUser.teamSet</domain>
+		<context name="_typeSelect" expr="5"/>
+		<context name="_internalUser" expr="eval: __user__"/>
+	</action-view>
+	
 	<menuitem name="crm-root-team-lead" parent="crm-root-team"
 		title="My Team Leads" action="crm.root.team.lead" />
 
@@ -180,6 +204,17 @@
 		<view type="form" name="call-form"/>
 		<domain>self.typeSelect = 1</domain>
 		<context name="_typeSelect" expr="1"/>
+	</action-view>
+	
+	<menuitem name="crm-root-allcrm-ticket" parent="crm-root-allcrm"
+		title="All Tickets" action="crm.root.allcrm.ticket" />
+
+	<action-view name="crm.root.allcrm.ticket" title="All Tickets"
+		model="com.axelor.apps.crm.db.Event" icon="img/icons/crm_small.png">
+		<view type="grid" name="ticket-grid"/>
+		<view type="form" name="ticket-form"/>
+		<domain>self.typeSelect = 5</domain>
+		<context name="_typeSelect" expr="5"/>
 	</action-view>
 	
 	<menuitem name="crm-root-allcrm-lead" parent="crm-root-allcrm"
