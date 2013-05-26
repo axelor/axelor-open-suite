@@ -5,7 +5,7 @@
 
 	
 
-	<menuitem name="hr-root" title="Humain Resources" priority="400"
+	<menuitem name="hr-root" title="Humain Resources" priority="130"
 		icon="img/icons/organisation.png" />
 
 	<menuitem name="hr-root-employee" parent="hr-root"
@@ -242,7 +242,7 @@
 
 	
 	
-	<menuitem name="affair-root" title="Affair"
+	<menuitem name="affair-root" title="Affair" priority="120"
 		icon="img/icons/affair.png" />
 	
 	<menuitem name="affair-root-project" parent="affair-root"
@@ -254,7 +254,8 @@
 		<view type="form" name="project-form" />
 	</action-view>	
 	
-	<menuitem name="project-root" title="Project"
+	
+	<menuitem name="project-root" title="Project" priority="110"
 		icon="img/icons/project.png" />
 
 	<menuitem name="menu-gant1" parent="project-root"
