@@ -18,10 +18,10 @@
     
     <form name="prod-order-form" title="Production order" model="com.axelor.apps.production.db.ProdOrder" cols="4">
         <field name="productionOrderSeq"/>
+        <field name="statusSelect" widget="NavSelect"/>
         <field name="billOfMaterial"/>
         <field name="prodProcess"/>
-        <field name="isSimulation"/>
-        <field name="statusSelect"/>
+        <field name="isSimulation"/> 
         <group title="Moves In/Out" colSpan="4">
 	        <field name="inStockMoveList" colSpan="4"/>
 	        <field name="inLocation"/>
