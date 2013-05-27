@@ -46,6 +46,23 @@
 		icon="img/icons/crm_small.png">
 		<view type="portal" name="purchase.manager.dashboard.portal" />
 	</action-view>
+	
+	<menuitem name="menu-human-resources-dashboard" parent="menu-crm-dashboard"
+		title="Human Resources Dashboard" action="portal.human.resources.dashboard.view" />	
+
+	<action-view name="portal.human.resources.dashboard.view" title="Human Resources Dashboard"
+		icon="img/icons/crm_small.png">
+		<view type="portal" name="human.resources.dashboard.portal" />
+	</action-view>
+	
+	<menuitem name="menu-manufacturing-dashboard" parent="menu-crm-dashboard"
+		title="Manufacturing Dashboard" action="portal.manufacturing.dashboard.view" />	
+
+	<action-view name="portal.manufacturing.dashboard.view" title="Manufacturing Dashboard"
+		icon="img/icons/crm_small.png">
+		<view type="portal" name="manufacturing.dashboard.portal" />
+	    <context name="_today" expr="eval: __date__.toDate()"/>
+	</action-view>
 
 	<menuitem name="contact-root" title="Companies/Contacts" priority="190"
 		icon="img/icons/partner.png" />

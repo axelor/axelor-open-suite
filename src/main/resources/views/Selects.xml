@@ -452,7 +452,7 @@
 		<option value="2">Normal</option>
 		<option value="3">High</option>
 		<option value="4">Urgent</option>
-		<option value="4">Immediate</option>
+		<option value="5">Immediate</option>
 	</selection>
 	
 	<selection name="crm.event.ticket.progress.select">
