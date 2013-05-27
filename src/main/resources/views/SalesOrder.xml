@@ -48,6 +48,7 @@
 	        		<button name="compute" title="Compute" colSpan="2" onClick="save,action-sales-order-method-compute,save"/>
 	        		<button name="confirm" title="Confirm" colSpan="2" onClick="save,action-sales-order-record-confirm,save"/>
 	        		<button name="cancel" title="Cancel" colSpan="2" onClick="save,action-sales-order-record-cancel"/>
+	        		<button name="showSalesOrder" title="Print" colSpan="2" onClick="save,action-sales-order-method-show-sales-order"/>
 	        		<button name="sendByEmail" title="Send by email" colSpan="2"/>
 	        		<field name="statusSelect" colSpan="2"/>
 	        		<field name="validatedByUserInfo" colSpan="2"/>
@@ -82,7 +83,9 @@
         </notebook>
     </form>
     
-    
+    <action-method name="action-sales-order-method-show-sales-order">
+		<call class="com.axelor.apps.supplychain.web.SalesOrderController" method="showSalesOrder"/>
+	</action-method>
     
     <action-record name="action-sales-order-record-confirm" model="com.axelor.apps.supplychain.db.SalesOrder">
     	<field name="statusSelect" expr="eval: 2"/>
