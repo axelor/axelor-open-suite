@@ -8,6 +8,7 @@
         <field name="period"/>
         <field name="fromDate"/>
         <field name="toDate"/>
+        <field name="statusSelect"/>
     </grid>
     
     <form name="timesheet-form" title="Timesheet" model="com.axelor.apps.organisation.db.Timesheet" cols="8">
@@ -15,6 +16,7 @@
         <field name="period"/>
         <field name="fromDate"/>
         <field name="toDate"/>
+        <field name="statusSelect"/>
         <group title="Satisfaction" cols="4" colSpan="8" colWidths="10%,10%,10%,70%">
         	<separator colSpan="8" title="Project"/>
 	        <field name="projectSatisfactionSelect" widget="progress"/>

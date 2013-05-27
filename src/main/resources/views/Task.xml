@@ -81,7 +81,7 @@
 	            <field name="remainingTime"/>
 	            <field name="generatedCharge"/>
 	        </page>
-	        <page title="Reportings" colSpan="4">
+	        <page title="Links" colSpan="4">
 	            <field name="salesOrderLineList" colSpan="4"/>
 	            <field name="customerInvoiceLineList" colSpan="4"/>
 	            <field name="supplierOrderLineList" colSpan="4"/>

@@ -38,10 +38,10 @@
 				<field name="positionList"/>
 			</page>
 			<page title="Keywords">
-				<field name="toolKeywordSet" colSpan="2" grid-view="keyword-grid"/>
-				<field name="fieldKeywordSet" colSpan="2" grid-view="keyword-grid"/>
-				<field name="jobKeywordSet" colSpan="2" grid-view="keyword-grid"/>
-				<field name="partnerSet" colSpan="2" grid-view="company-name-grid"
+				<field name="toolKeywordSet" widget="TagSelect[create=keyWord]" colSpan="2" grid-view="keyword-grid"/>
+				<field name="fieldKeywordSet" widget="TagSelect[create=keyWord]" colSpan="2" grid-view="keyword-grid"/>
+				<field name="jobKeywordSet" widget="TagSelect[create=keyWord]" colSpan="2" grid-view="keyword-grid"/>
+				<field name="partnerSet" widget="TagSelect[create=name,firstName,email]" colSpan="2" grid-view="company-name-grid"
 					domain="self.isContact = True"/>
 			</page>
 			<page title="Salary/Expenses/Holidays">
