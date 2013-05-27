@@ -103,6 +103,63 @@
 		<domain>self.fromLocation.typeSelect = 2 and self.statusSelect = 4</domain>
 	</action-view>		
 		
+	<menuitem name="stock-root-internal" parent="stock-root"
+		title="Internal stock moves"/>	
+		
+	<menuitem name="stock-root-internal-toprepare" parent="stock-root-internal"
+		title="Stock move to prepare" action="stock.root.internal.toprepare" />
+
+	<action-view name="stock.root.internal.toprepare" title="Stock move to prepare"
+		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/product_small.png">
+		<view type="grid" />
+		<view type="form" />
+		<domain>self.toLocation.typeSelect = 1 and self.statusSelect = 1</domain>
+	</action-view>		
+		
+	<menuitem name="stock-root-internal-history" parent="stock-root-internal"
+		title="Stock move history" action="stock.root.internal.history" />
+
+	<action-view name="stock.root.internal.history" title="Stock move history"
+		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/product_small.png">
+		<view type="grid" />
+		<view type="form" />
+		<domain>self.toLocation.typeSelect = 1 and self.statusSelect = 3</domain>
+	</action-view>			
+		
+	<menuitem name="stock-root-internal-canceled" parent="stock-root-internal"
+		title="Stock move canceled" action="stock.root.internal.canceled" />
+
+	<action-view name="stock.root.internal.canceled" title="Stock move canceled"
+		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/product_small.png">
+		<view type="grid" />
+		<view type="form" />
+		<domain>self.toLocation.typeSelect = 1 and self.statusSelect = 4</domain>
+	</action-view>		
+		
+	<menuitem name="stock-root-inventories" parent="stock-root"
+		title="Periodical processing"/>		
+		
+	<menuitem name="stock-root-inventories-draft" parent="stock-root-inventories"
+		title="Draft Inventories" action="stock.root.inventories.draft" icon="img/icons/inventory.png"/>
+	
+	<action-view name="stock.root.inventories.draft" title="Draft Inventories"
+		model="com.axelor.apps.supplychain.db.Inventory" icon="img/icons/inventory.png">
+		<view type="grid" />
+		<view type="form" />
+		<domain>self.statusSelect = 1</domain>
+	</action-view>
+	
+	<menuitem name="stock-root-inventories-confirmed" parent="stock-root-inventories"
+		title="Confirmed Inventories" action="stock.root.inventories.confirmed" icon="img/icons/inventory.png"/>
+	
+	<action-view name="stock.root.inventories.confirmed" title="Confirmed Inventories"
+		model="com.axelor.apps.supplychain.db.Inventory" icon="img/icons/inventory.png">
+		<view type="grid" />
+		<view type="form" />
+		<domain>self.statusSelect = 2</domain>
+	</action-view>
+		
+		
 	<menuitem name="stock-root-conf" parent="stock-root" title="Configuration"
 		icon="img/icons/parameter.png" />
 		

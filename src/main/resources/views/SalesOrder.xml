@@ -23,7 +23,7 @@
 <!--  	    	<field name="Récuperer les informations de l'affaire"/>-->
         </group>
         <group colSpan="1" cols="1" >
-       	 	<button name="print" title="Print" colSpan="1"/>
+        	<field name="statusSelect" widget="NavSelect"/>
   			<button name="generateProject" title="Generate project" colSpan="1"/>
         </group>
         <notebook colSpan="4">
@@ -49,7 +49,6 @@
 	        		<button name="confirm" title="Confirm" colSpan="2" onClick="save,action-sales-order-record-confirm,save"/>
 	        		<button name="cancel" title="Cancel" colSpan="2" onClick="save,action-sales-order-record-cancel"/>
 	        		<button name="sendByEmail" title="Send by email" colSpan="2"/>
-	        		<field name="statusSelect" colSpan="2"/>
 	        		<field name="validatedByUserInfo" colSpan="2"/>
         		</group>
         		<group readonly="true" colSpan="1" css="subtotal" cols="2" colWidths="50%,50%">
