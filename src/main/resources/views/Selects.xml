@@ -926,9 +926,9 @@
 	</selection>
 	
 	<selection name="base.routing.rule.type.select">
-		<option value="1">Contient</option>
-		<option value="2">Ne contient pas</option>
-		<option value="3">Egale</option>
+		<option value="1">Contains</option>
+		<option value="2">Not contains</option>
+		<option value="3">Equal</option>
 	</selection>
 
 

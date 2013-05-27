@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 3.7.2.v20120213 Build &lt;3.7.2.v20120214-1408></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.2.2.v201301221637 Build &lt;4.2.2.v20130206-1509></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -16,6 +16,18 @@
             <property name="name">odaPassword</property>
             <property name="id">209</property>
             <expression name="value" type="javascript">params["Password"].value</expression>
+        </structure>
+        <structure>
+            <property name="name">queryText</property>
+            <property name="id">3678</property>
+        </structure>
+        <structure>
+            <property name="name">queryTimeOut</property>
+            <property name="id">3678</property>
+        </structure>
+        <structure>
+            <property name="name">rowFetchSize</property>
+            <property name="id">3678</property>
         </structure>
     </list-property>
     <property name="units">cm</property>
@@ -91,7 +103,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor_erp</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-erp</property>
             <property name="odaUser">axelor</property>
             <encrypted-property name="odaPassword" encryptionID="base64">bG1kcGRsYWE=</encrypted-property>
         </oda-data-source>
@@ -329,7 +341,18 @@
                     <text-property name="heading">external_reference</text-property>
                 </structure>
             </list-property>
-            <list-property name="parameters"/>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="paramName">SalesOrderId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">1</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
                     <structure>
@@ -824,10 +847,32 @@ left outer join public.base_address as DeliveryAddress on (SalesOrder.delivery_a
 left outer join public.base_country as DeliveryCountry on (DeliveryAddress.addressl7country = DeliveryCountry.id)
 left outer join public.base_bank_details as DefBankDetail on (Company.default_bank_details = DefBankDetail.id)
 left outer join public.base_currency as Currency on (SalesOrder.currency = Currency.id)
-where SalesOrder.id = 3
+where SalesOrder.id = ?
 ]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>2.0</Version>
+  <DataSetParameters>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>1</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+  </DataSetParameters>
+</model:DesignValues>]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="OrderLineDS" id="3678">
+            <property name="nullsOrdering">nulls lowest</property>
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">id</property>
@@ -914,12 +959,6 @@ where SalesOrder.id = 3
                     <text-property name="heading">CurrencyCode</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">vat_sub_total</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">vat_sub_total</text-property>
-                    <text-property name="heading">vat_sub_total</text-property>
-                </structure>
-                <structure>
                     <property name="columnName">vatLine</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">vatLine</text-property>
@@ -934,6 +973,7 @@ where SalesOrder.id = 3
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
                     <property name="position">1</property>
+                    <property name="isOptional">false</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -958,7 +998,7 @@ where SalesOrder.id = 3
                     <structure>
                         <property name="position">4</property>
                         <property name="name">subQty</property>
-                        <property name="dataType">integer</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">5</property>
@@ -983,7 +1023,7 @@ where SalesOrder.id = 3
                     <structure>
                         <property name="position">9</property>
                         <property name="name">quantity</property>
-                        <property name="dataType">integer</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">10</property>
@@ -1012,11 +1052,6 @@ where SalesOrder.id = 3
                     </structure>
                     <structure>
                         <property name="position">15</property>
-                        <property name="name">vat_sub_total</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">16</property>
                         <property name="name">vatLine</property>
                         <property name="dataType">decimal</property>
                     </structure>
@@ -1049,8 +1084,8 @@ where SalesOrder.id = 3
                     <property name="position">4</property>
                     <property name="name">subQty</property>
                     <property name="nativeName">subQty</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
@@ -1084,8 +1119,8 @@ where SalesOrder.id = 3
                     <property name="position">9</property>
                     <property name="name">quantity</property>
                     <property name="nativeName">quantity</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
@@ -1124,26 +1159,19 @@ where SalesOrder.id = 3
                 </structure>
                 <structure>
                     <property name="position">15</property>
-                    <property name="name">vat_sub_total</property>
-                    <property name="nativeName">vat_sub_total</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
-                </structure>
-                <structure>
-                    <property name="position">16</property>
                     <property name="name">vatLine</property>
                     <property name="nativeName">vatLine</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select SOLine.id,SOSubLine.id as "subId", SOSubLine.product_name as "subProductName",  
+            <xml-property name="queryText"><![CDATA[select SOLine.id, SOSubLine.id as "subId", SOSubLine.product_name as "subProductName",  
 SOSubLine.qty as "subQty", SubUnit.code as "subUnitCode", SOSubLine.price as "subPrice", 
-SOSubLine.ex_tax_total as "subExTaxTotal", SOLine.description, SOLine.quantity, Unit.code as "UnitCode", 
-Product.name as "ProductName", SOLine.unit_price, SOLine.ex_tax_total, Currency.code as "CurrencyCode", 
-SOLine.vat_sub_total, VatLine.value as "vatLine"
+SOSubLine.ex_tax_total as "subExTaxTotal", SOLine.description, SOLine.qty as "quantity", Unit.code as "UnitCode", 
+Product.name as "ProductName", SOLine.price as "unit_price", SOLine.ex_tax_total, Currency.code as "CurrencyCode",
+ VatLine.value as "vatLine"
 from public.supplychain_sales_order as SalesOrder
-inner join public.supplychain_sales_order_line as SOLine on (SOLine.sales_order = SalesOrder.id)
+left outer join public.supplychain_sales_order_line as SOLine on (SOLine.sales_order = SalesOrder.id)
 left outer join public.supplychain_sales_order_sub_line as SOSubLine on (SOSubLine.sales_order_line = SOLine.id)
 left outer join public.base_product as Product on (SOLine.product = Product.id)
 left outer join public.base_unit as Unit on (Product.unit = Unit.id)
@@ -1417,8 +1445,7 @@ where SOrder.id = ?
             <xml-property name="queryText"><![CDATA[select LangTranslate.key, LangTranslate.translation
 from public.supplychain_sales_order as SalesOrder
 left outer join public.base_partner as Partner on (SalesOrder.client_partner = Partner.id)
-left outer join public.base_language as Languages on (Partner.language = Languages.id)
-left outer join meta_translation as LangTranslate on (LangTranslate.language = Languages.code)
+left outer join meta_translation as LangTranslate on (LangTranslate.language = Partner.language_select)
 where LangTranslate.key = ? and SalesOrder.id = ? ]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -2341,12 +2368,6 @@ row["ClientPartFirstName"]
                     <text-property name="displayName">CurrencyCode</text-property>
                     <expression name="expression" type="javascript">dataSetRow["CurrencyCode"]</expression>
                     <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">vat_sub_total</property>
-                    <text-property name="displayName">vat_sub_total</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["vat_sub_total"]</expression>
-                    <property name="dataType">decimal</property>
                 </structure>
                 <structure>
                     <property name="name">vatLine</property>
