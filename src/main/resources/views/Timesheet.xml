@@ -19,10 +19,16 @@
         <field name="statusSelect"/>
         <group title="Satisfaction" cols="4" colSpan="8" colWidths="10%,10%,10%,70%">
         	<separator colSpan="8" title="Project"/>
-	        <field name="projectSatisfactionSelect" widget="progress"/>
+        	<group colSpan="2">
+				<field name="projectSatisfactionSelect" widget="Progress" showIf="$readonly()"/>
+				<field name="projectSatisfactionSelect" hideIf="$readonly()"/>
+			</group>
 	        <field name="projectComment"/>
 	        <separator colSpan="8" title="Company"/>
-	        <field name="companySatisfactionSelect" widget="progress"/>
+	        <group colSpan="2">
+				<field name="companySatisfactionSelect" widget="Progress" showIf="$readonly()"/>
+				<field name="companySatisfactionSelect" hideIf="$readonly()"/>
+			</group>
         	<field name="companyComment"/>
         </group>
         <group title="Unité" colSpan="8">
