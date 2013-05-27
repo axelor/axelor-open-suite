@@ -38,7 +38,7 @@
     	<field name="parentPartner" hideIf="partnerTypeSelect != 1"/>
     	<field name="reference"/>
     	<field name="languageSelect" hideIf="isContact || partnerTypeSelect == 1"/>
-    	<field name="contactPartnerSet" colSpan="4" domain="self.isContact = 'true'" hideIf="isContact || partnerTypeSelect == 2"/>
+    	<field name="contactPartnerSet" widget="TagSelect[create=name]" colSpan="4" domain="self.isContact = 'true'" hideIf="isContact || partnerTypeSelect == 2"/>
 
     	<field name="site"/>
     	<field name="department"/>
@@ -73,7 +73,7 @@
                 <button name="showInvoice" title="View all unpaid invoices" colSpan="2" onClick="save,action-partner-method-show-invoice"/>
             </page>
             <page title="ERP Companies associated to">
-            	<field name="companySet" colSpan="4"/>
+            	<field name="companySet" widget="TagSelect[create=name]" colSpan="4"/>
             </page>
             <page name="compteClient" title="Customer balance">
             	<field name="accountingSituationList" widget="MasterDetail" colSpan="4" onSelect="action-account-accounting-situation-method-update-customer-account"/>
