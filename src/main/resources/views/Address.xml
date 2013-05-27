@@ -5,7 +5,6 @@
 	
 	<grid name="address-grid" title="Address list" model="com.axelor.apps.base.db.Address">
 		<field name="fullName" />
-		<field name="certifiedOk" />
 	</grid>
 	
 	<form name="address-form" title="Address" model="com.axelor.apps.base.db.Address" cols="4"
