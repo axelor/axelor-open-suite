@@ -111,7 +111,9 @@
 		<view type="grid" name="crm-task-grid"/>
 		<view type="form" name="crm-task-form"/>
 		<domain>self.typeSelect = 3 and self.team IN self.userInfo.teamSet</domain>
+		<!--  <domain>self.typeSelect = 3 and self.team IN :_internalUserTeam</domain> -->
 		<context name="_typeSelect" expr="3"/>
+		<!-- <context name="_internalUserTeam" expr="eval: team?.userInfoSet?.find{ it.internalUser.id ==  __user__.id }?.teamSet"/>  --> 
 	</action-view>
 	
 	<menuitem name="crm-root-team-meeting" parent="crm-root-team"
