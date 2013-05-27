@@ -16,7 +16,7 @@
     	onNew="action-account-record-new">
     	<group title="Informations" colSpan="4">
 	        <field name="name"/>
-	        <field name="statusSelect" widget=""/>
+	        <field name="statusSelect" widget="NavSelect"/>
 	        <field name="startDate"/>
 	        <field name="endDate"/>
 	        <field name="typeSelect"/>
