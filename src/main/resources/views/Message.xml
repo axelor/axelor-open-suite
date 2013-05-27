@@ -17,7 +17,7 @@
         </group>
         <group title="Content" colSpan="4">
         	<field name="subject" colSpan="4"/>
-       	 	<field name="content" widget="html" colSpan="4"/>
+       	 	<field name="content" colSpan="4" noLabel="true" widget="html"/>
         </group>
         <group title="Recipients" colSpan="4">
         	<field name="toPartnerSet" widget="TagSelect[create=name,firstName,email]" colSpan="4"/>

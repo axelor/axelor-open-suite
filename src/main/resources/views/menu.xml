@@ -7,10 +7,7 @@
 	<menuitem name="menu-dashboards" priority="200"
     	title="Dashboards" icon="img/icons/chart.png"/> 	
 
-	<menuitem name="menu-crm-dashboard" parent="menu-dashboards"
-		title="CRM Dashboards" icon="img/icons/crm.png" />
-		
-	<menuitem name="menu-salesman-dashboard" parent="menu-crm-dashboard"
+	<menuitem name="menu-salesman-dashboard" parent="menu-dashboards"
 		title="Salesman Dashboard" action="portal.salesman.dashboard.view" />
 		
 	<action-view name="portal.salesman.dashboard.view" title="Salesman Dashboard"
@@ -20,7 +17,7 @@
     	<context name="_user_id" expr="eval:__user__.id"/>
 	</action-view>
 		
-	<menuitem name="menu-sales-manager-dashboard" parent="menu-crm-dashboard"
+	<menuitem name="menu-sales-manager-dashboard" parent="menu-dashboards"
 		title="Sales Manager Dashboard" action="portal.sales.manager.dashboard.view" />	
 
 	<action-view name="portal.sales.manager.dashboard.view" title="Sales Manager Dashboard"
@@ -29,7 +26,7 @@
     	<context name="_past_month" expr="eval: __date__.minusMonths(1)"/>
 	</action-view>
 		
-	<menuitem name="menu-purchase-buyer-dashboard" parent="menu-crm-dashboard"
+	<menuitem name="menu-purchase-buyer-dashboard" parent="menu-dashboards"
 		title="Purchase Buyer Dashboard" action="portal.purchase.buyer.dashboard.view" />	
 
 	<action-view name="portal.purchase.buyer.dashboard.view" title="Purchase Buyer Dashboard"
@@ -39,7 +36,7 @@
     	<context name="_user_id" expr="eval:__user__.id"/>
 	</action-view>
 	
-	<menuitem name="menu-purchase-manager-dashboard" parent="menu-crm-dashboard"
+	<menuitem name="menu-purchase-manager-dashboard" parent="menu-dashboards"
 		title="Purchase Manager Dashboard" action="portal.purchase.manager.dashboard.view" />	
 
 	<action-view name="portal.purchase.manager.dashboard.view" title="Purchase Manager Dashboard"
@@ -47,7 +44,7 @@
 		<view type="portal" name="purchase.manager.dashboard.portal" />
 	</action-view>
 	
-	<menuitem name="menu-human-resources-dashboard" parent="menu-crm-dashboard"
+	<menuitem name="menu-human-resources-dashboard" parent="menu-dashboards"
 		title="Human Resources Dashboard" action="portal.human.resources.dashboard.view" />	
 
 	<action-view name="portal.human.resources.dashboard.view" title="Human Resources Dashboard"
@@ -55,7 +52,7 @@
 		<view type="portal" name="human.resources.dashboard.portal" />
 	</action-view>
 	
-	<menuitem name="menu-manufacturing-dashboard" parent="menu-crm-dashboard"
+	<menuitem name="menu-manufacturing-dashboard" parent="menu-dashboards"
 		title="Manufacturing Dashboard" action="portal.manufacturing.dashboard.view" />	
 
 	<action-view name="portal.manufacturing.dashboard.view" title="Manufacturing Dashboard"

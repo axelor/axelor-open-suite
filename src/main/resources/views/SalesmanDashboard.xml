@@ -26,7 +26,7 @@
 
 	<action-view name="salesman.dashboard.portal.activities" title="Today Activities"
 		model="com.axelor.apps.crm.db.Event">
-		<view type="grid" />
+		<view type="grid" name="event-grid"/>
 		<view type="form" />
 	    <domain>self.startDateTime between :_today and :_tomorrow</domain>
 	    <context name="_tomorrow" expr="eval: __date__.plusDays(1).toDateTimeAtStartOfDay()"/>
