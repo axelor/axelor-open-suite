@@ -98,7 +98,7 @@ public class AccountCustomerService {
 					"SELECT moveline.amount_remaining as sum_remaining, moveline.id as moveline_id "+
 					"FROM public.account_move_line as moveline "+
 					"left outer join public.account_move as move on (moveline.move = move.id) "+
-					"left outer join public.invoice_invoice as iinvoice on (move.invoice = iinvoice.id) "+
+					"left outer join public.account_invoice as iinvoice on (move.invoice = iinvoice.id) "+
 					"WHERE moveline.debit > 0 AND moveline.due_date <= ?1 " +
 					"AND ( iinvoice.schedule_payment_ok in ('false', null) " +
 						"OR ( iinvoice IS NULL " +
@@ -150,7 +150,7 @@ public class AccountCustomerService {
 					"SELECT moveline.amount_remaining as sum_remaining, moveline.id as moveline_id "+
 					"FROM public.account_move_line as moveline "+
 					"left outer join public.account_move as move on (moveline.move = move.id) "+
-					"left outer join public.invoice_invoice as iinvoice on (move.invoice = iinvoice.id) "+
+					"left outer join public.account_invoice as iinvoice on (move.invoice = iinvoice.id) "+
 					"WHERE moveline.debit > 0 AND moveline.due_date <= ?2 " +
 					"AND (( iinvoice.reminder_blocking_ok IN ('false', null) AND iinvoice.schedule_payment_ok IN ('false', null) AND (iinvoice.invoice_date + ?1 ) < ?2 ) " +
 						"OR ( iinvoice IS NULL " +
