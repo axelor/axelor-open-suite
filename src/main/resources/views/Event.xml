@@ -3,6 +3,16 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
+    <grid name="event-grid" title="Events" model="com.axelor.apps.crm.db.Event">
+        <field name="typeSelect"/>
+        <field name="subject"/>
+        <field name="startDateTime"/>
+        <field name="durationHours"/>
+        <field name="userInfo"/>
+        <field name="team"/>
+    </grid>
+    
+    
     <grid name="call-grid" title="Calls" model="com.axelor.apps.crm.db.Event">
         <field name="subject"/>
         <field name="primaryStatusSelect"/>
