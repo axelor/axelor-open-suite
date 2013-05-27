@@ -32,7 +32,7 @@
 	    <field name="totalTimeSheetDays" title="Total worked days"/>
 	    
 	    <!-- 	    TODO READ ONLY -->
-	    <field name="taskProgress" widget="progress"/>
+	    <field name="taskProgress" widget="Progress"/>
 	    
 	    <field name="totalPlannedDays"/>
 	    <field name="userInfo"/>
