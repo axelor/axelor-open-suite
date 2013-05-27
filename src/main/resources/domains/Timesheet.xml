@@ -24,7 +24,7 @@
 	<decimal name="timesheetInputTotal" title="Total input time" readonly="true"/>
 	
 	<one-to-many name="timesheetTotalByTypeList" ref="com.axelor.apps.organisation.db.TimesheetTotalByType" mappedBy="timesheet" title="Total per type" readonly="true"/>
-	
+	<integer name="statusSelect" title="Status" selection="default.status.select" />
   </entity>
 
 </domain-models>
