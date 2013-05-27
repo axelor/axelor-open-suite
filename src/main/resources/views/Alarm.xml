@@ -7,8 +7,8 @@
 	    <field name="date"/>
 	    <field name="partner"/>
         <field name="invoice" />
-	    <field name="alarmEngine.message"/>
-	    <field name="alarmEngine.message.typeSelect"/>
+	    <field name="alarmEngine.alarmMessage"/>
+	    <field name="alarmEngine.alarmMessage.typeSelect"/>
 	    <field name="acquitOk"/>
 	</grid>
     
@@ -16,7 +16,7 @@
         <field name="date"/>
         <field name="partner"/>
         <field name="invoice" />
-        <field name="alarmEngine.message" />
+        <field name="alarmEngine.alarmMessage" />
         <field name="acquitOk"/>
     </grid>
     
