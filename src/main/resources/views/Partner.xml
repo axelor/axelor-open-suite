@@ -17,16 +17,15 @@
     		<field name="picture"/>
     	</group>
     	<group colSpan="3" cols="4">
+       		<field name="name" css="subtotal-total"/>
 			<field name="firstName" hideIf="partnerTypeSelect != 2" css="subtotal-total"/>
        		<break/>
     		<field name="partnerCategory" widget="SuggestBox"/>
        		<field name="partnerTypeSelect" onChange="action-partner-attrs-change-name,action-partner-attrs-hide-tabs"/>
        		<field name="isCustomer"/>
-    		<field name="isSupplier"/>
-       		<break/>
        		<field name="titleSelect" hideIf="partnerTypeSelect != 2"/>
+    		<field name="isSupplier" hideIf="partnerTypeSelect == 2"/>
        		<break/>
-       		<field name="name" css="subtotal-total"/>
     	</group>
 <!--     	<field name="customerTypeSelect" hideIf="isContact || partnerTypeSelect == 1"/> -->
 <!--     	<field name="supplierTypeSelect" hideIf="isContact/> -->
