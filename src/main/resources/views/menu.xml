@@ -235,7 +235,7 @@
 		<view type="form" />
 	</action-view>
 	
-	<menuitem name="crm-root-allcrm-campaign" parent="crm-root-allcrm-marketings"
+	<menuitem name="crm-root-allcrm-campaign" parent="crm-root-allcrm"
 		title="Campaigns" action="crm.root.allcrm.compaign" />
 
 	<action-view name="crm.root.allcrm.compaign" title="Campaigns"
