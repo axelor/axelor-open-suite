@@ -11,7 +11,7 @@
   	<many-to-one name="resource" ref="com.axelor.apps.production.db.ProdResource" title="Resource"/>
   	<datetime name="plannedStartDateT" title="Planned start date"/>
   	<datetime name="plannedEndDateT" title="Planned end date"/>
-  	<integer name="status" title="Status" selection="production.prod.order.line.status"/>
+  	<integer name="statusSelect" title="Status" selection="production.prod.order.status.select"/>
     
     <datetime name="realStartDateT" title="Real start date"/>
   	<datetime name="realEndDateT" title="Real end date"/>

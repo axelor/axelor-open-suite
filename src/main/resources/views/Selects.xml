@@ -864,14 +864,6 @@
 		<option value="6">Canceled</option>
 	</selection>
 
-	<selection name="production.prod.order.line.status">
-		<option value="1">Draft</option>
-		<option value="2">Standby</option>
-		<option value="3">Planned</option>
-		<option value="4">Finished</option>
-		<option value="5">Canceled</option>
-	</selection>
-
 	<selection name="crm.campaign.follow.up.type.select">
 		<option value="1">Calls</option>
 		<option value="2">Meeting</option>
@@ -923,6 +915,14 @@
 		<option value="3">Purchase order</option>
 		<option value="4">Sales order</option>
 		<option value="5">Client invoice</option>
+	</selection>
+	
+	<selection name="production.prod.order.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Standby</option>
+		<option value="3">Planned</option>
+		<option value="4">Finished</option>
+		<option value="5">Canceled</option>
 	</selection>
 
 

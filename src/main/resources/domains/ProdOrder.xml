@@ -26,5 +26,7 @@
     
     <one-to-many name="prodOrderLineList" ref="com.axelor.apps.production.db.ProdOrderLine" mappedBy="prodOrder" title="Production order lines"/>
     
+    <integer name="statusSelect" title="Status" selection="production.prod.order.status.select"/>
+    
   </entity>
 </domain-models>
