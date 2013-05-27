@@ -22,7 +22,7 @@
     <integer name="customerTypeSelect" title="Customer Type" selection="partner.customer.type.select"/>
     <integer name="supplierTypeSelect" title="Supplier Type" selection="partner.supplier.type.select"/>
     <boolean name="isContact" title="Contact ?" default="false"/>
-    <string name="languageSelect" title="Language"/>
+    <string name="languageSelect" title="Language" selection="auth.user.language.selection"/>
     <many-to-one name="parentPartner" ref="com.axelor.apps.base.db.Partner" title="Mother company"/>
     <many-to-one name="mainInvoicingAddress" ref="com.axelor.apps.base.db.Address" title="Invoicing Address"/>
     <many-to-one name="deliveryAddress" ref="com.axelor.apps.base.db.Address" title="Delivery Address"/>

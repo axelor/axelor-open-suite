@@ -91,7 +91,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor_erp</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-erp</property>
             <property name="odaUser">axelor</property>
             <encrypted-property name="odaPassword" encryptionID="base64">bG1kcGRsYWE=</encrypted-property>
         </oda-data-source>
@@ -3253,11 +3253,15 @@ where Invoice.id = ?
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">key</property>
+                    <property name="analysis">dimension</property>
                     <text-property name="displayName">key</text-property>
+                    <text-property name="heading">key</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">translation</property>
+                    <property name="analysis">dimension</property>
                     <text-property name="displayName">translation</text-property>
+                    <text-property name="heading">translation</text-property>
                 </structure>
             </list-property>
             <list-property name="parameters">
@@ -3267,6 +3271,7 @@ where Invoice.id = ?
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                     <property name="position">1</property>
+                    <expression name="defaultValue" type="constant">History</expression>
                     <property name="isOptional">false</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
@@ -3283,13 +3288,41 @@ where Invoice.id = ?
                     <property name="isOutput">false</property>
                 </structure>
             </list-property>
-            <structure name="cachedMetaData"/>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">key</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">translation</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
             <property name="dataSource">Data Source</property>
-            <list-property name="resultSet"/>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">key</property>
+                    <property name="nativeName">key</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">translation</property>
+                    <property name="nativeName">translation</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+            </list-property>
             <xml-property name="queryText"><![CDATA[select LangTranslate.key, LangTranslate.translation
 from public.account_invoice as Invoice
 left outer join public.base_partner as Partner on (Invoice.partner = Partner.id)
-left outer join meta_translation as LangTranslate on (LangTranslate.language = Partner.languageSelect)
+left outer join meta_translation as LangTranslate on (LangTranslate.language = Partner.language_select)
 where LangTranslate.key = ? and Invoice.id = ? ]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -3308,9 +3341,6 @@ where LangTranslate.key = ? and Invoice.id = ? ]]></xml-property>
           <design:scale>0</design:scale>
           <design:nullability>Unknown</design:nullability>
         </design:attributes>
-        <design:inputAttributes>
-          <design:elementAttributes/>
-        </design:inputAttributes>
       </design:ParameterDefinition>
     </parameter>
     <parameter>
@@ -3326,9 +3356,6 @@ where LangTranslate.key = ? and Invoice.id = ? ]]></xml-property>
           <design:scale>0</design:scale>
           <design:nullability>Unknown</design:nullability>
         </design:attributes>
-        <design:inputAttributes>
-          <design:elementAttributes/>
-        </design:inputAttributes>
       </design:ParameterDefinition>
     </parameter>
   </DataSetParameters>

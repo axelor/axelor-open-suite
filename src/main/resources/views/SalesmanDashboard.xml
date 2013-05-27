@@ -26,12 +26,8 @@
 
 	<action-view name="salesman.dashboard.portal.activities" title="Today Activities"
 		model="com.axelor.apps.crm.db.Event">
-		<view type="grid" name="call-grid" />
-		<view type="form" name="call-form" />
-		<view type="grid" name="meeting-grid" />
-		<view type="form" name="meeting-form" />
-		<view type="grid" name="crm-task-grid" />
-		<view type="form" name="crm-task-form" />
+		<view type="grid" />
+		<view type="form" />
 	    <domain>self.startDateTime between :_today and :_tomorrow</domain>
 	    <context name="_tomorrow" expr="eval: __date__.plusDays(1).toDateTimeAtStartOfDay()"/>
 	    <context name="_today" expr="eval: __date__.toDateTimeAtStartOfDay()"/>

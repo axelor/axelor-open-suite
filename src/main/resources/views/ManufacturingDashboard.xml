@@ -23,7 +23,7 @@
 		<domain>self.startDate &lt;= :_today and self.endDate &gt;= :_today</domain>
 	</action-view>
 
-	<action-view name="manufacturing.dashboard.portal.production.orders.plannings" title="All Production Orders Plannings"
+	<action-view name="manufacturing.dashboard.portal.production.orders.plannings" title="All Production Order Plannings"
 		model="com.axelor.apps.production.db.ProdOrderPlanning">
 		<view type="grid" name="prod-order-planning-grid" />
 		<view type="form" name="prod-order-planning-form" />
