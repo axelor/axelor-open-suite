@@ -13,6 +13,7 @@
         <field name="startDate"/>
         <field name="endDate"/>
         <field name="isSimulation"/>
+        <field name="statusSelect"/>
     </grid>
     
     <form name="prod-order-form" title="Production order" model="com.axelor.apps.production.db.ProdOrder" cols="4">
@@ -20,6 +21,7 @@
         <field name="billOfMaterial"/>
         <field name="prodProcess"/>
         <field name="isSimulation"/>
+        <field name="statusSelect"/>
         <group title="Moves In/Out" colSpan="4">
 	        <field name="inStockMoveList" colSpan="4"/>
 	        <field name="inLocation"/>

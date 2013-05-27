@@ -7,7 +7,7 @@
         <field name="resource"/>
         <field name="plannedStartDateT"/>
         <field name="plannedEndDateT"/>
-        <field name="status"/>
+        <field name="statusSelect"/>
         <field name="realStartDateT"/>
         <field name="realEndDateT"/>
         <button name="start" title="Start" onClick=""/>
@@ -17,7 +17,7 @@
     
     <form name="prod-order-line-form" title="PO line" model="com.axelor.apps.production.db.ProdOrderLine" cols="4">
         <field name="resource"/>
-        <field name="status"/>
+        <field name="statusSelect"/>
         <group title="Planned dates">
         	<field name="plannedStartDateT"/>
         	<field name="plannedEndDateT"/>
