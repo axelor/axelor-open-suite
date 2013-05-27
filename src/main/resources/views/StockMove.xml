@@ -18,6 +18,7 @@
     
     <form name="stock-move-form" title="Stock move" model="com.axelor.apps.supplychain.db.StockMove" cols="4">
         <field name="name"/>
+        <field name="statusSelect" widget="NavSelect"/>
         <field name="fromLocation"/>
         <field name="toLocation"/>
         <field name="estimatedDate"/>
@@ -26,7 +27,6 @@
         <field name="toAddress"/>
         <field name="company"/>
         <field name="partner"/>
-        <field name="statusSelect"/>
         <field name="stockMoveLineList" colSpan="4"/>
     </form>
     

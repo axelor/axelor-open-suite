@@ -12,10 +12,10 @@
     
     <form name="purchase-order-form" title="Supplier RFQ/PO" model="com.axelor.apps.supplychain.db.PurchaseOrder" cols="4">
    	 	<field name="supplierPartner"/>
+   	 	<field name="statusSelect" widget="NavSelect"/>
         <field name="affairProject"/>
         <field name="buyerUserInfo"/>
 		<field name="purchaseOrderLineList" colSpan="4" grid-view="purchase-order-sales-order-line-grid" form-view="purchase-order-sales-order-line-form"/>
-        <field name="statusSelect"/>
     	<button name="validate" title="Validate" colSpan="2"/>
     	<button name="sendByEmail" title="Send by email" colSpan="2"/>
     	<button name="generateDeliveryOrder" title="Generate delivery" colSpan="2"/>
