@@ -376,6 +376,17 @@
 		<context name="statusSelect" expr="3" />
 	</action-view>
 
+	<menuitem name="mail-root-email-conf" parent="mail-root-email-box" title="Configuration"/>
+	
+	<menuitem name="mail-root-email-conf-routing" parent="mail-root-email-conf" title="Routings" action="mail.root.email.conf.routing" />	
+		
+	<action-view name="mail.root.email.conf.routing" title="Routings" 
+		model="com.axelor.apps.base.db.Routing" icon="img/icons/parameter_small.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
+	
+
 	<menuitem name="mail-root-email" parent="mail-root" title="Les Emails"/>
 
 	<menuitem name="mail-root-email-all" title="All Emails"

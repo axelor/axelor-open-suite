@@ -924,6 +924,12 @@
 		<option value="4">Finished</option>
 		<option value="5">Canceled</option>
 	</selection>
+	
+	<selection name="base.routing.rule.type.select">
+		<option value="1">Contient</option>
+		<option value="2">Ne contient pas</option>
+		<option value="3">Egale</option>
+	</selection>
 
 
 </object-views>

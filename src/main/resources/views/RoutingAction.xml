@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+	
+	<grid name="routing-action-grid" title="Routing actions" model="com.axelor.apps.base.db.RoutingAction">
+		<field name="relatedToFilter1"/>
+		<field name="relatedToFilter2"/>
+		<field name="routingActionCreate"/>
+	</grid>
+	
+	<form name="routing-action-form" title="Routing action" model="com.axelor.apps.base.db.RoutingAction" cols="2">
+		<field name="relatedToFilter1"/>
+		<field name="relatedToFilter2"/>
+		<field name="routingActionCreate"/>
+	</form>
+
+</object-views>
