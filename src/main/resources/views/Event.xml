@@ -132,7 +132,10 @@
 	       	<field name="eventCategory" domain="self.typeSelect = :typeSelect"/>
 	       	<field name="quaternaryStatusSelect"/>
 	       	<field name="prioritySelect"/>
-	        <field name="progressSelect" widget="progress"/>
+	       	<group colSpan="2">
+				<field name="progressSelect" widget="Progress" showIf="$readonly()"/>
+				<field name="progressSelect" hideIf="$readonly()"/>
+			</group>
 	        <break/>
     	</group>
     	<group colSpan="6" cols="6">
