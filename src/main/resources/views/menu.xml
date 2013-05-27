@@ -483,7 +483,7 @@
 	<menuitem name="evo-admin-root-organisation" parent="evo-admin-root" title="Organization"/>
 
 	<menuitem name="evo-admin-root-organisation-territory"
-		parent="evo-admin-root-organisation" title="Les territoires"
+		parent="evo-admin-root-organisation" title="Territories"
 		action="evo.admin.root.organisation.territory" />
 
 	<action-view name="evo.admin.root.organisation.territory"
