@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+	
+	<portal title="Dashboard" name="human.resources.dashboard.portal" cols="2">
+		<portlet action="human.resources.dashboard.portal.upcoming.holidays" height="350" canSearch="true" />
+		<portlet action="human.resources.dashboard.portal.candidates" canSearch="true" height="350" />
+		<portlet action="human.resources.dashboard.portal.timesheets" canSearch="true" height="350" />
+		<portlet action="human.resources.dashboard.portal.travel.expenses" canSearch="true" height="350" />
+		<portlet action="human.resources.dashboard.portal.overtimes" canSearch="true" height="350" />
+	</portal>
+
+	<action-view name="human.resources.dashboard.portal.upcoming.holidays" title="All Upcoming Holidays"
+		model="com.axelor.apps.crm.db.Event">
+		<view type="grid" name="crm-task-grid"/>
+		<view type="form" name="crm-task-form"/>
+		<domain>self.endDateTime &gt;= :_today and self.typeSelect = 4</domain>
+	    <context name="_today" expr="eval: __date__.toDateTimeAtStartOfDay()"/>
+	</action-view>
+	
+	<action-view name="human.resources.dashboard.portal.candidates" title="All Candidates"
+		model="com.axelor.apps.organisation.db.Candidate">
+		<view type="grid" name="candidate-grid" />
+		<view type="form" name="candidate-form" />
+	</action-view>
+
+	<action-view name="human.resources.dashboard.portal.timesheets" title="All Timesheets"
+		model="com.axelor.apps.organisation.db.Timesheet">
+		<view type="grid" name="timesheet-grid" />
+		<view type="form" name="timesheet-form" />
+	</action-view>
+
+	<action-view name="human.resources.dashboard.portal.travel.expenses" title="All Travel Expenses"
+		model="com.axelor.apps.organisation.db.Expense">
+		<view type="grid" name="expense-grid" />
+		<view type="form" name="expense-form" />
+	</action-view>
+
+	<action-view name="human.resources.dashboard.portal.overtimes" title="All Overtimes"
+		model="com.axelor.apps.organisation.db.Overtime">
+		<view type="grid" name="overtime-grid" />
+		<view type="form" name="overtime-form" />
+	</action-view>
+
+
+</object-views>

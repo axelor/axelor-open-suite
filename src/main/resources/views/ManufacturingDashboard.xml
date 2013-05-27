@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+	
+	<portal title="Dashboard" name="manufacturing.dashboard.portal" cols="2">
+		<portlet action="manufacturing.dashboard.portal.upcoming.production.orders" height="350" canSearch="true" />
+		<portlet action="manufacturing.dashboard.portal.current.production.orders" canSearch="true" height="350" />
+		<portlet action="manufacturing.dashboard.portal.production.orders.plannings" canSearch="true" height="350" />
+	</portal>
+
+	<action-view name="manufacturing.dashboard.portal.upcoming.production.orders" title="All Upcoming Production Orders"
+		model="com.axelor.apps.production.db.ProdOrder">
+		<view type="grid" name="prod-order-grid"/>
+		<view type="form" name="prod-order-form"/>
+		<domain>self.startDate &gt;= :_today</domain>
+	</action-view>
+	
+	<action-view name="manufacturing.dashboard.portal.current.production.orders" title="All Current Production Orders"
+		model="com.axelor.apps.production.db.ProdOrder">
+		<view type="grid" name="prod-order-grid"/>
+		<view type="form" name="prod-order-form"/>
+		<domain>self.startDate &lt;= :_today and self.endDate &gt;= :_today</domain>
+	</action-view>
+
+	<action-view name="manufacturing.dashboard.portal.production.orders.plannings" title="All Production Orders Plannings"
+		model="com.axelor.apps.production.db.ProdOrderPlanning">
+		<view type="grid" name="prod-order-planning-grid" />
+		<view type="form" name="prod-order-planning-form" />
+	</action-view>
+
+
+</object-views>
