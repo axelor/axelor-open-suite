@@ -237,10 +237,7 @@
 		<view type="form" />
 	</action-view>
 	
-	<menuitem name="crm-root-allcrm-marketings" parent="crm-root-allcrm"
-	title="Marketings" />
-	
-	<menuitem name="crm-root-allcrm-campaign" parent="crm-root-allcrm-marketings"
+	<menuitem name="crm-root-allcrm-campaign" parent="crm-root-allcrm"
 		title="Campaigns" action="crm.root.allcrm.compaign" />
 
 	<action-view name="crm.root.allcrm.compaign" title="Campaigns"
@@ -248,16 +245,6 @@
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
-	
-	<menuitem name="crm-root-allcrm-marketing" parent="crm-root-allcrm-marketings"
-		title="Marketings" action="crm.root.allcrm.marketing" />
-
-	<action-view name="crm.root.allcrm.marketing" title="Marketings"
-		model="com.axelor.apps.crm.db.Marketing" icon="img/icons/crm_small.png">
-		<view type="grid" />
-		<view type="form" />
-	</action-view>
-
 	
 	<menuitem name="crm-conf" parent="crm-root" title="Configuration"
 		icon="img/icons/parameter.png" />
