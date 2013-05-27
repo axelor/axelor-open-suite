@@ -9,7 +9,6 @@
         <field name="firstName"/>
         <field name="isContact"/>
    		<field name="partnerTypeSelect"/>
-        <field name="customerTypeSelect"/>
         <field name="partnerCategory"/>
     </grid>
     
@@ -19,16 +18,16 @@
     		<field name="picture"/>
     	</group>
     	<group colSpan="3" cols="4">
-    		<field name="partnerCategory" widget="SuggestBox"/>
-       		<field name="partnerTypeSelect" onChange="action-partner-attrs-change-name,action-partner-attrs-hide-tabs"/>
-       		<break/>
-       		<field name="titleSelect" hideIf="partnerTypeSelect != 2"/>
-       		<break/>
        		<field name="name" css="subtotal-total"/>
 			<field name="firstName" hideIf="partnerTypeSelect != 2" css="subtotal-total"/>
+       		<break/>
+    		<field name="partnerCategory" widget="SuggestBox"/>
+       		<field name="partnerTypeSelect" onChange="action-partner-attrs-change-name,action-partner-attrs-hide-tabs"/>
+       		<field name="isCustomer"/>
+       		<field name="titleSelect" hideIf="partnerTypeSelect != 2"/>
+    		<field name="isSupplier" hideIf="partnerTypeSelect == 2"/>
+       		<break/>
     	</group>
-    	<field name="isCustomer"/>
-    	<field name="isSupplier"/>
     	<field name="customerTypeSelect" hideIf="isContact || !isCustomer"/>
     	<field name="supplierTypeSelect" hideIf="isContact || !isSupplier"/>
     	<field name="source" hideIf="isContact"/>
@@ -37,7 +36,7 @@
     	<field name="parentPartner" hideIf="partnerTypeSelect != 1"/>
     	<field name="partnerSeq"/>
     	<field name="languageSelect" hideIf="isContact || partnerTypeSelect == 1"/>
-    	<field name="contactPartnerSet" widget="TagSelect[create=name]" colSpan="4" domain="self.isContact = 'true'" hideIf="isContact || partnerTypeSelect == 1"/>
+    	<field name="contactPartnerSet" widget="TagSelect[create=name]" colSpan="4" domain="self.isContact = 'true'" hideIf="isContact || partnerTypeSelect == 2"/>
 
     	<field name="site"/>
     	<field name="department"/>

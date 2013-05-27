@@ -4,9 +4,10 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
     <grid name="bank-details-grid" title="Bank details" model="com.axelor.apps.base.db.BankDetails">
-        <field name="partner"/>
         <field name="ownerName"/>
         <field name="bankAddress"/>
+	    <field name="bic"/>
+	    <field name="iban"/>
     </grid>
     
     <form name="bank-details-form" title="Bank details" model="com.axelor.apps.base.db.BankDetails" cols="4">
