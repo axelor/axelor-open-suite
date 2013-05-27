@@ -9,11 +9,8 @@
         <field name="productCategory"/>
         <field name="productFamily"/>
         <field name="unit"/>
-        <field name="startDate"/>
-        <field name="endDate"/>
         <field name="productTypeSelect"/>
        	<field name="procurementMethodSelect"/>
-       	<field name="isRawMaterial"/>
     </grid>
     
     <form name="product-form" title="Product" model="com.axelor.apps.base.db.Product" cols="2" colWidths="*,400">

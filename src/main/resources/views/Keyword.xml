@@ -13,24 +13,30 @@
     </form>
     
     <!-- Outils -->
+    <grid name="keyword-tool-grid" title="Tool Keywords" model="com.axelor.apps.base.db.Keyword">
+        <field name="keyword"/>
+    </grid>
     <form name="keyword-tool-form" title="Tool Keyword"
 		model="com.axelor.apps.base.db.Keyword" onNew="action-keyword-tool-record-new">
 		<field name="keyWord" />
-		<field name="typeSelect" />
 	</form>
 
 	<!-- Secteurs -->
+	<grid name="keyword-area-grid" title="Sector Keywords" model="com.axelor.apps.base.db.Keyword">
+        <field name="keyword"/>
+    </grid>
 	<form name="keyword-area-form" title="Sector Keyword"
 		model="com.axelor.apps.base.db.Keyword" onNew="action-keyword-area-record-new">
 		<field name="keyWord" />
-		<field name="typeSelect" />
 	</form>
 	
 	<!-- Métiers -->
+	<grid name="keyword-profession-grid" title="Jobtitle Keywords" model="com.axelor.apps.base.db.Keyword">
+        <field name="keyword"/>
+    </grid>
 	<form name="keyword-profession-form" title="Jobtitle Keyword"
 		model="com.axelor.apps.base.db.Keyword" onNew="action-keyword-profession-record-new">
 		<field name="keyWord" />
-		<field name="typeSelect" />
 	</form>
 
 	<!-- Outils -->

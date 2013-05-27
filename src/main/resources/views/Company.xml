@@ -6,8 +6,7 @@
     <grid name="company-grid" title="Companies" model="com.axelor.apps.base.db.Company">
         <field name="name"/>
         <field name="code"/>
-        <field name="parent"/>
-        <field name="administration"/>
+        <field name="address"/>
     </grid>
     
     <tree name="company-tree" title="Companies" model="com.axelor.apps.base.db.Company">
