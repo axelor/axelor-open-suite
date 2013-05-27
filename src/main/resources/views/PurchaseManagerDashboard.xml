@@ -8,6 +8,7 @@
 		<portlet action="purchase.manager.dashboard.portal.order.to.validate" canSearch="true" height="350" />
 	    <portlet action="chart:chart.purchase.manager.dashboard.buyer.purchase.volume" height="350"/>
 	    <portlet action="chart:chart.purchase.manager.dashboard.family.product.purchase.turnover" height="350"/>
+	    <portlet action="chart:chart.purchase.manager.dashboard.family.product.purchase.percent" height="350"/>
 	</portal>
 
 	<action-view name="purchase.manager.dashboard.portal.validated.orders" title="Current Purchase Orders"

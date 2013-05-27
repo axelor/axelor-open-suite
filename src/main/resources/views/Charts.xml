@@ -404,4 +404,43 @@
     	<series key="amount" type="bar"/>
 	  </chart>
 	  
+	  
+	  <chart name="chart.purchase.manager.dashboard.family.product.purchase.percent" title="Purchases orders per family product over six month">
+	    <dataset type="sql">
+	    <![CDATA[
+		SELECT
+             
+	        base_product_family.name AS _family_product,
+	        TRUNC((SUM(supplychain_purchase_order_line.ex_tax_total) * 100)/(SELECT
+		        	SUM(supplychain_purchase_order_line.ex_tax_total)
+		        FROM
+		        	supplychain_purchase_order self
+		        LEFT JOIN
+		        	supplychain_purchase_order_line ON supplychain_purchase_order_line.purchase_order = self.id
+		        WHERE
+			        self.created_on >= current_timestamp - INTERVAL '6 month' AND self.created_on <= current_timestamp
+			    AND
+			        self.status_select > 3 AND self.status_select < 6),2) AS _percent
+	    FROM
+	        supplychain_purchase_order self
+	    LEFT JOIN
+	        supplychain_purchase_order_line ON supplychain_purchase_order_line.purchase_order = self.id
+	    LEFT JOIN
+	        base_product ON base_product.id = supplychain_purchase_order_line.product
+	    LEFT JOIN
+	        base_product_family ON base_product_family.id = base_product.product_family
+	    WHERE
+	        self.created_on >= current_timestamp - INTERVAL '6 month' AND self.created_on <= current_timestamp
+	    AND
+	        self.status_select > 3 AND self.status_select < 6
+	    GROUP BY
+	        base_product_family.name
+	    ORDER BY
+	        base_product_family.name
+	    ]]>
+	    </dataset>
+	    <category key="_family_product" type="text"/>
+    	<series key="_percent" type="pie"/>
+	  </chart>
+	  
 </object-views>
