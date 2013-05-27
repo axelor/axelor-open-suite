@@ -49,14 +49,14 @@ class SalesOrderController {
 		StringBuilder url = new StringBuilder()
 		AxelorSettings axelorSettings = AxelorSettings.get()
 		
-		url.append("${axelorSettings.get('axelor.report.engine', '')}/frameset?__report=report/SalesOrder.rptdesign&__format=pdf&InvoiceId=${salesOrder.id}&__locale=fr_FR${axelorSettings.get('axelor.report.engine.datasource')}")
+		url.append("${axelorSettings.get('axelor.report.engine', '')}/frameset?__report=report/SalesOrder.rptdesign&__format=pdf&SalesOrderId=${salesOrder.id}&__locale=fr_FR${axelorSettings.get('axelor.report.engine.datasource')}")
 
 		log.debug("URL : {}", url)
 		
 		String urlNotExist = URLService.notExist(url.toString())
 		if (urlNotExist == null){
 		
-			log.debug("Impression de la facture ${salesOrder.salesOrderSeq} : ${url.toString()}")
+			log.debug("Impression du devis ${salesOrder.salesOrderSeq} : ${url.toString()}")
 			
 			response.view = [
 				"title": "Devis ${salesOrder.salesOrderSeq}",
