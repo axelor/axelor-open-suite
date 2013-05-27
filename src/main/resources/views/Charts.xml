@@ -405,7 +405,7 @@
 	  </chart>
 	  
 	  
-	  <chart name="chart.purchase.manager.dashboard.family.product.purchase.percent" title="Purchases orders per family product over six month">
+	  <chart name="chart.purchase.manager.dashboard.family.product.purchase.percent" title="Purchases orders per family product over six month in percentage">
 	    <dataset type="sql">
 	    <![CDATA[
 		SELECT
