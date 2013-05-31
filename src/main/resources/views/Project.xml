@@ -64,7 +64,6 @@
 		<field name="responsibleUserInfo"/>
 		<field name="memberUserInfoSet" colSpan="6"/>
 		<field name="projectModel"/>
-		<field name="taskStatusSet" colSpan="6"/>
     </form>
     
 </object-views>
