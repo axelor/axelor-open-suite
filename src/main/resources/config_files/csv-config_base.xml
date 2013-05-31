@@ -148,9 +148,9 @@
 	</input>
 	
 	<input file="base_product.csv" separator=";" type="com.axelor.apps.base.db.Product">
-		<bind column="name_fr_FR" to="name"/>
-		<bind column="code_fr_FR" to="code"/>
-		<bind column="description_fr_FR" to="description"/>
+		<bind column="name_fr" to="name"/>
+		<bind column="code_fr" to="code"/>
+		<bind column="description_fr" to="description"/>
 	</input>
 
  	<input file="base_partner.csv" separator=";" search="self.importId = :importId" update="true" type="com.axelor.apps.base.db.Partner">
@@ -247,6 +247,12 @@
 	
 	<input file="account_reminderConfigLine.csv" separator=";" type="com.axelor.apps.account.db.ReminderConfigLine" />
 	
+	<input file="account_invoiceLineType.csv" separator=";" type="com.axelor.apps.account.db.InvoiceLineType">
+		<bind column="importId" to="importId"/>
+		<bind column="code_fr" to="code"/>
+		<bind column="name_fr" to="name"/>
+	</input>
+	
 	
 <!-- 	Deuxième passe sur le package 'base' pour prendre en compte les éléments du package account  -->
 
@@ -300,17 +306,17 @@
 		<bind column="jobKeywordSet_importId" to="jobKeywordSet" search="self.importId in :jobKeywordSet_importId" eval="jobKeywordSet_importId.split('\\|') as List"/>
 	</input>
 	
-<!-- 	<input file="organisation_employee_Prod.csv" separator=";" type="com.axelor.apps.organisation.db.Employee"> -->
-<!-- 		<bind column="toolKeywordSet_importId" to="toolKeywordSet" search="self.importId in :toolKeywordSet_importId" eval="toolKeywordSet_importId.split('\\|') as List"/> -->
-<!-- 		<bind column="fieldKeywordSet_importId" to="fieldKeywordSet" search="self.importId in :fieldKeywordSet_importId" eval="fieldKeywordSet_importId.split('\\|') as List"/> -->
-<!-- 		<bind column="jobKeywordSet_importId" to="jobKeywordSet" search="self.importId in :jobKeywordSet_importId" eval="jobKeywordSet_importId.split('\\|') as List"/> -->
-<!-- 	</input> -->
-	
-	<input file="organisation_employee_Serv.csv" separator=";" type="com.axelor.apps.organisation.db.Employee">
+	<input file="organisation_employee_Prod.csv" separator=";" type="com.axelor.apps.organisation.db.Employee">
 		<bind column="toolKeywordSet_importId" to="toolKeywordSet" search="self.importId in :toolKeywordSet_importId" eval="toolKeywordSet_importId.split('\\|') as List"/>
 		<bind column="fieldKeywordSet_importId" to="fieldKeywordSet" search="self.importId in :fieldKeywordSet_importId" eval="fieldKeywordSet_importId.split('\\|') as List"/>
 		<bind column="jobKeywordSet_importId" to="jobKeywordSet" search="self.importId in :jobKeywordSet_importId" eval="jobKeywordSet_importId.split('\\|') as List"/>
 	</input>
+	
+<!-- 	<input file="organisation_employee_Serv.csv" separator=";" type="com.axelor.apps.organisation.db.Employee"> -->
+<!-- 		<bind column="toolKeywordSet_importId" to="toolKeywordSet" search="self.importId in :toolKeywordSet_importId" eval="toolKeywordSet_importId.split('\\|') as List"/> -->
+<!-- 		<bind column="fieldKeywordSet_importId" to="fieldKeywordSet" search="self.importId in :fieldKeywordSet_importId" eval="fieldKeywordSet_importId.split('\\|') as List"/> -->
+<!-- 		<bind column="jobKeywordSet_importId" to="jobKeywordSet" search="self.importId in :jobKeywordSet_importId" eval="jobKeywordSet_importId.split('\\|') as List"/> -->
+<!-- 	</input> -->
 	
 <!--     IMPORT DU PACKAGE 'SUPPLY CHAIN' --> 	
 	  	
