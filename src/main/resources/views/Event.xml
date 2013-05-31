@@ -47,7 +47,7 @@
         </group>
     </form>
     
-  <calendar name="meeting-calendar" title="Meetings" mode="month" colorBy="typeSelect" 
+  <calendar name="meeting-calendar" title="Meetings" mode="month" colorBy="userInfo" 
     eventStart="startDateTime" 
     eventStop="endDateTime" 
     eventLength="1">
@@ -178,7 +178,7 @@
     </form>
     
     <action-record name="action-call-default-record" model="com.axelor.apps.crm.db.Event">
-    	<field name="startDateTime" expr="eval: __time__"/>
+    	<field name="startDateTime" expr="eval: __time__" if="startDateTime == null"/>
     </action-record>
     
     <action-method name="action-meeting-method-compute-start-date-time">
