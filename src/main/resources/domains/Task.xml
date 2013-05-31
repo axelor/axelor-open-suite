@@ -46,12 +46,12 @@
   	<decimal name="gapBetweenFinalAndInitial" title="Initial/Final Difference"/>
   	
 <!--   	Onglet Infos financiers -->
-  	<many-to-many name="salesOrderLineList" ref="com.axelor.apps.supplychain.db.SalesOrderLine" mappedBy="task" title="Customer order lines"/>
-  	<many-to-many name="customerInvoiceLineList" ref="com.axelor.apps.account.db.InvoiceLine" mappedBy="task" title="Customer invoice lines"/>
-  	<many-to-many name="supplierOrderLineList" ref="com.axelor.apps.supplychain.db.PurchaseOrderLine" mappedBy="task" title="Supplier order lines"/>
-  	<many-to-many name="supplierInvoiceLineList" ref="com.axelor.apps.account.db.InvoiceLine" mappedBy="task" title="Supplier invoice lines"/>
-  	<many-to-many name="expenseLineList" ref="com.axelor.apps.organisation.db.ExpenseLine" mappedBy="task" title="Travel expense lines"/>
-  	<many-to-many name="timesheetLineList" ref="com.axelor.apps.organisation.db.TimesheetLine" mappedBy="task" title="Timesheet lines"/>
+  	<many-to-many name="salesOrderLineList" ref="com.axelor.apps.supplychain.db.SalesOrderLine" title="Customer order lines"/>
+  	<many-to-many name="customerInvoiceLineList" ref="com.axelor.apps.account.db.InvoiceLine" title="Customer invoice lines"/>
+  	<many-to-many name="supplierOrderLineList" ref="com.axelor.apps.supplychain.db.PurchaseOrderLine" title="Supplier order lines"/>
+  	<many-to-many name="supplierInvoiceLineList" ref="com.axelor.apps.account.db.InvoiceLine" title="Supplier invoice lines"/>
+  	<many-to-many name="expenseLineList" ref="com.axelor.apps.organisation.db.ExpenseLine" title="Travel expense lines"/>
+  	<many-to-many name="timesheetLineList" ref="com.axelor.apps.organisation.db.TimesheetLine" title="Timesheet lines"/>
   	
   	<one-to-many name="otherCostTaskProductLine" ref="com.axelor.apps.organisation.db.TaskProductLine" title="Other planned costs"/>
   	<one-to-many name="otherRevenueTaskProductLine" ref="com.axelor.apps.organisation.db.TaskProductLine" title="Other planned revenue"/>
