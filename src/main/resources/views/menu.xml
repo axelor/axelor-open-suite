@@ -190,6 +190,15 @@
 		<view type="form" />
 		<domain>self.endDate IS NULL or CURRENT_DATE &lt; self.endDate</domain>
 	</action-view>
+	
+	<menuitem name="affair-root-price-list" parent="product-root"
+		title="Pricelists" action="affair.root.price.list" />
+
+	<action-view name="affair.root.price.list" title="Pricelists"
+		model="com.axelor.apps.consulting.db.PriceList" icon="img/icons/affair_small.png">
+		<view type="grid" name="price-list-grid" />
+		<view type="form" name="price-list-form" />
+	</action-view>	
 
 	<menuitem name="product-root-filters" parent="product-root"
 		title="All filters"/>
@@ -275,7 +284,6 @@
 		<view type="form" />
 	</action-view>
 	
-
 
 	
 	

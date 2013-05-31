@@ -34,7 +34,7 @@
 	 	<boolean name="defaultEmailOk" title="Default mail address" default="false"/>
 	 	<decimal name="payboxAmountPaid" title="Paybox transaction Amount" hidden="true"/>
  	   	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
-	  	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
+	  	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" required="true" title="Currency"/>
 	  	<decimal name="paidAmountInCurrency"  title="Amount paid in currency"/>
 	 	
 <!-- 	 	<integer name="operationTypeSelect" title="Type de saisie paiement" required="true" selection="ipayment.operation.type.select"/> -->

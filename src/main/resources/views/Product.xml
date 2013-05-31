@@ -52,7 +52,7 @@
             </page>
             <page title="Related BOMs">
             	<button name="showBillsOfMaterial" title="Show bills of material"/>
-            	 <portlet action="chart:chart.planned.qty.by.location" height="200" colSpan="2"/>
+<!--             	 <portlet action="chart:chart.planned.qty.by.location" height="200" colSpan="2"/> -->
             </page>
         </notebook>
     </form>

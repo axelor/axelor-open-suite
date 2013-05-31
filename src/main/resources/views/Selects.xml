@@ -642,6 +642,11 @@
 		<option value="2">Monthly fix</option>
 		<option value="3">Monthly regulated</option>
 	</selection>
+	
+	<selection name="consulting.price.list.discount.line.amount.type.select">
+		<option value="1">Fixe</option>
+		<option value="2">%</option>
+	</selection>
 
 	<selection name="grade.0.up.to.5.select">
 		<option value="20">1</option>

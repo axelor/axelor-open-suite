@@ -10,7 +10,8 @@
 			<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Profil"/>
 			<many-to-one name="productCategory" ref="com.axelor.apps.base.db.ProductCategory" title="Product category"/>
 			<integer name="typeSelect" title="Remise/ajout" selection="consulting.price.list.discount.line.type.select"/>
-			<decimal name="amount" title="Fixe/%"/>
+			<decimal name="amountTypeSelect" title="Fixe/%" selection="consulting.price.list.discount.line.amount.type.select"/>
+			<decimal name="amount" title="Montant"/>
 			<integer name="priceTypeSelect" title="Prix unitaire / Remise" selection="consulting.price.list.discount.line.price.type.select"/>
 		
 		</entity>
