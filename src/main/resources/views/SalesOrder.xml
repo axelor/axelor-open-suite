@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
     <grid name="sales-order-grid" title="Sale orders" model="com.axelor.apps.supplychain.db.SalesOrder">
-        <field name="reference"/>
+        <field name="salesOrderSeq"/>
         <field name="company"/>
         <field name="currency"/>
         <field name="clientReference"/>
