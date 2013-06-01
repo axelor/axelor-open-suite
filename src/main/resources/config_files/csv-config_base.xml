@@ -301,6 +301,7 @@
 	<input file="organisation_universities.csv" separator=";" type="com.axelor.apps.organisation.db.TrainingCenter"/>
 	
 	<input file="organisation_candidate.csv" separator=";" type="com.axelor.apps.organisation.db.Candidate">
+		<bind column="address" to="address" search="self.importId = :address" update="true"/>
 		<bind column="toolKeywordSet_importId" to="toolKeywordSet" search="self.importId in :toolKeywordSet_importId" eval="toolKeywordSet_importId.split('\\|') as List"/>
 		<bind column="fieldKeywordSet_importId" to="fieldKeywordSet" search="self.importId in :fieldKeywordSet_importId" eval="fieldKeywordSet_importId.split('\\|') as List"/>
 		<bind column="jobKeywordSet_importId" to="jobKeywordSet" search="self.importId in :jobKeywordSet_importId" eval="jobKeywordSet_importId.split('\\|') as List"/>
