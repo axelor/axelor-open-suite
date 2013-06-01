@@ -6,8 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -34,27 +32,19 @@ public final class URLService {
 	 * 
 	 * @return
 	 */
-	public static String notExist(String url){
+	public static String notExist(String url) {
 		
-		try{
+		try {
 			URL fileURL = new URL(url);
 			fileURL.openConnection().connect();
 			return null;
 		}
-		catch(java.net.MalformedURLException ex)
-		{
-			StringWriter sw = new StringWriter();
-			ex.printStackTrace(new PrintWriter(sw));
-		
-			LOG.error(sw.toString());
+		catch(java.net.MalformedURLException ex) {
+			ex.printStackTrace();
 			return "Problème de format de l'URL";
 		}
-		catch(java.io.IOException ex)
-		{
-			StringWriter sw = new StringWriter();
-			ex.printStackTrace(new PrintWriter(sw));
-			
-			LOG.error(sw.toString());
+		catch(java.io.IOException ex) {
+			ex.printStackTrace();
 			return "Ce document n'existe pas";
 		}
 		
@@ -62,28 +52,22 @@ public final class URLService {
 	 
 	
 	public static void fileUrl(String fAddress, String localFileName, String destinationDir) throws IOException {
-		OutputStream outStream = null;
-		URLConnection uCon = null;
-
-		InputStream is = null;
-		File file = FileTool.create(destinationDir, localFileName);
-
-		URL Url;
-		byte[] buf;
 		int ByteRead, ByteWritten = 0;
-		Url = new URL(fAddress);
-		outStream = new BufferedOutputStream(new FileOutputStream(file));
-		uCon = Url.openConnection();
-
-		is = uCon.getInputStream();
-		buf = new byte[size];
+		byte[] buf = new byte[size];
+		
+		URL Url = new URL(fAddress);
+		File file = FileTool.create(destinationDir, localFileName);
+		OutputStream outStream = new BufferedOutputStream(new FileOutputStream(file));
+		URLConnection uCon = Url.openConnection();
+		InputStream is = uCon.getInputStream();
+		
 		while ((ByteRead = is.read(buf)) != -1) {
 			outStream.write(buf, 0, ByteRead);
 			ByteWritten += ByteRead;
 		}
+		
 		LOG.info("Downloaded Successfully.");
-		LOG.debug("File name:\"" + localFileName
-				+ "\"\nNo ofbytes :" + ByteWritten);
+		LOG.debug("No of bytes :" + ByteWritten);
 	
 		if(is != null)  {
 			is.close();
@@ -98,17 +82,13 @@ public final class URLService {
 
 		int slashIndex = fAddress.lastIndexOf('/');
 		int periodIndex = fAddress.lastIndexOf('.');
-		LOG.debug("fAddress = {}" , fAddress);
-		LOG.debug("destinationDir = {}" , destinationDir);
-		LOG.debug("fileName = {}" , fileName);
-	//	String fileName = fAddress.substring(slashIndex + 1);
 
-		if (periodIndex >= 1 && slashIndex >= 0
-				&& slashIndex < fAddress.length() - 1) {
+		if (periodIndex >= 1 && slashIndex >= 0 && slashIndex < fAddress.length() - 1) {
+			LOG.debug("Downloading file {} from {} to {}", fileName, fAddress, destinationDir);
 			fileUrl(fAddress, fileName, destinationDir);
-		} else {
-			if(LOG.isErrorEnabled())
-			LOG.error("path or file name.");
+		} 
+		else {
+			LOG.error("Destination path or filename is not well formatted.");
 		}
 	}
 	
