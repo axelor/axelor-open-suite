@@ -36,7 +36,7 @@ public class CsvMain extends Launcher {
 	 */
 	public static void main(String[] args) throws IOException {
 		CsvMain launcher = new CsvMain();
-		launcher.run("-c", "src/main/resources/config_files/csv-config.xml", "-d", "src/main/resources/data/koala/");
+		launcher.run("-c", "src/main/resources/config_files/csv-config.xml", "-d", "src/main/resources/data/base/");
 	}
 	
 }

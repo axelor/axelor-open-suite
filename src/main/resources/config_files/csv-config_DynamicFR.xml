@@ -259,7 +259,6 @@
 		</bind>
 		<bind to="companyRoleSelect" eval="role_societe == 'FR' ? 0 : (role_societe == 'COM' ? 1 : '')" />
 		<bind to="customerRoleSelect" eval="role_client == 'CF' ? 2 : (role_client == 'COM' ? 1 : (role_client == 'FR' ? 0 : ''))" />
-		<!-- [eVolutis - Feature #813]  -->
 		<bind to="userSegment" search="self.code = :segment" if="!segment?.empty">
 			<bind column="segment" to="code" />
 			<bind column="segment" to="name" />

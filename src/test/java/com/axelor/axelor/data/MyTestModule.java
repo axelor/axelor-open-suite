@@ -1,4 +1,4 @@
-package com.axelor.evolutis.data;
+package com.axelor.axelor.data;
 
 import net.sf.ehcache.CacheManager;
 
@@ -10,16 +10,11 @@ public class MyTestModule extends AbstractModule {
     
     @Override
     protected void configure() {   	
-    	// shutdown the cache manager if running
+    	// shutdown the cache manager if running : Breaking the test
 		if (CacheManager.ALL_CACHE_MANAGERS.size() > 0) {
 			CacheManager.getInstance().shutdown();
 		}
         install(new JpaModule("testUnit", true, true));
         install(new AuthModule.Simple());
-        configureImport();
-    }
-    
-    protected void configureImport() {
-        
     }
 }

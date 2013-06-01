@@ -14,7 +14,7 @@ import com.google.inject.name.Names;
 
 /**
  * Main importer class. 
- * Can be launched by the script evolutis-data.sh
+ * Can be launched by the script axelor-data.sh
  * 
  * Use to import only CSV files.
  * 
@@ -25,7 +25,7 @@ public class Main {
 
 	/**
 	 * Main method.
-	 * Can be launched by the script evolutis-data.sh
+	 * Can be launched by the script axelor-data.sh
 	 * 
 	 * @param args
 	 * 		Arguments

@@ -1,4 +1,4 @@
-package com.axelor.evolutis.data;
+package com.axelor.axelor.data;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -36,8 +36,7 @@ public class XmlTest {
 			
 			@Override
 			public void configure() throws IOException {
-				input("[me.id]", new File("data/xml/ME_MOD_C3.xml"));
-				
+				input("[me.id]", new File("data/xml/test.xml"));
 			}
 			
 			@Override

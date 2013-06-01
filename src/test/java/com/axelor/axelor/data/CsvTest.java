@@ -1,4 +1,4 @@
-package com.axelor.evolutis.data;
+package com.axelor.axelor.data;
 
 import java.io.IOException;
 
@@ -31,7 +31,7 @@ public class CsvTest {
 	@Test
 	public void test() throws IOException {
 		MyLauncher launcher = new MyLauncher();
-		launcher.run("-c", "src/main/resources/config_files/csv-config.xml", "-d", "src/main/resources/data/migration/");
+		launcher.run("-c", "src/main/resources/config_files/csv-config.xml", "-d", "src/main/resources/data/base/");
 	}
 
 }
