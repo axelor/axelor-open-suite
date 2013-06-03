@@ -13,16 +13,16 @@
             <field name="sendedDate"/>
             <field name="sender"/>
             <field name="statusSelect"/>
-            <field name="sentByEmail"/>
-        </group>
-        <group title="Content" colSpan="4">
-        	<field name="subject" colSpan="4"/>
-       	 	<field name="content" colSpan="4" noLabel="true" widget="html"/>
+<!--             <field name="sentByEmail"/> -->
         </group>
         <group title="Recipients" colSpan="4">
         	<field name="toPartnerSet" widget="TagSelect[create=name,firstName,email]" colSpan="4"/>
         	<field name="ccPartnerSet" widget="TagSelect[create=name,firstName,email]" colSpan="4"/>
         	<field name="bccPartnerSet" widget="TagSelect[create=name,firstName,email]" colSpan="4"/>
+        </group>
+        <group title="Content" colSpan="4">
+        	<field name="subject" colSpan="4"/>
+       	 	<field name="content" colSpan="4" noLabel="true" widget="html"/>
         </group>
         <group title="Related to" colSpan="1" cols="2">
 	        <field name="relatedTo1Select" widget="RefSelect[related=relatedTo1SelectId]"/>

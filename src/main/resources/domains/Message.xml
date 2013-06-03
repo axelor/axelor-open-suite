@@ -7,7 +7,7 @@
   
   <entity name="Message" lang="java">
   
-  	<integer name="typeSelect" title="Status" selection="email.type.select"/>
+  	<integer name="typeSelect" title="Type" selection="email.type.select"/>
   	<many-to-many name="toPartnerSet" ref="com.axelor.apps.base.db.Partner" title="To"/>
   	<many-to-many name="ccPartnerSet" ref="com.axelor.apps.base.db.Partner" title="Cc" help="Carbon copy"/>
   	<many-to-many name="bccPartnerSet" ref="com.axelor.apps.base.db.Partner" title="Bcc" help="Blind carbon copy"/>
