@@ -43,7 +43,7 @@
         </group>
         <group title="Assignment" cols="4" colSpan="2" canCollapse="true">
 	        <field name="userInfo"/>
-	    	<field name="team"/>
+	    	<field name="team" readonlyIf="!userInfo" onSelect="action-event-attrs-team-domain"/>
         </group>
     </form>
     
@@ -85,7 +85,7 @@
         </group>
         <group title="Assigned to" cols="4" colSpan="2" canCollapse="true">
 	        <field name="userInfo"/>
-	    	<field name="team"/>
+	    	<field name="team" readonlyIf="!userInfo" onSelect="action-event-attrs-team-domain"/>
         </group>
     </form>
     
@@ -118,7 +118,7 @@
         </group>
         <group title="Assigned to" cols="4" colSpan="2" canCollapse="true">
 	        <field name="userInfo"/>
-	    	<field name="team"/>
+	    	<field name="team" readonlyIf="!userInfo" onSelect="action-event-attrs-team-domain"/>
         </group>
     </form>
     
@@ -183,6 +183,9 @@
    		<field name="team" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
     </action-record>
     
+    <action-attrs name="action-event-attrs-team-domain">
+    	<attribute name="domain" for="team" expr="eval: &quot;self.id IN (${userInfo?.teamSet?.collect{it.id}.join(',')})&quot;"/>
+    </action-attrs>
     
     <action-record name="action-event-default-record" model="com.axelor.apps.crm.db.Event">
     	<field name="startDateTime" expr="eval: __time__" if="startDateTime == null"/>
