@@ -82,6 +82,80 @@
 		</dependency>
 		<!-- END SN DEPENDENCIES -->
 		
+		<!--Google Apps dependency -->
+		
+		<!-- Google API client -->
+		<dependency>
+			<groupId>com.google.api-client</groupId>
+			<artifactId>google-api-client</artifactId>
+			<version>1.15.0-rc</version>
+		</dependency>
+		
+		<!-- apache apache POI for creating files (specially for docx) on local 
+			machine -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>3.9</version>
+		</dependency>
+		<!-- apache POI for creating files (specially for docx) on local machine -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-scratchpad</artifactId>
+			<version>3.9</version>
+		</dependency>
+		<!-- apache ODFDOM API for creating and reading ODT documents -->
+
+		<dependency>
+			<groupId>org.odftoolkit</groupId>
+			<artifactId>odfdom-java</artifactId>
+			<version>0.8.7</version>
+		</dependency>
+		
+		<!-- Google Drive Service -->
+		<dependency>
+			<groupId>com.google.apis</groupId>
+			<artifactId>google-api-services-drive</artifactId>
+			<version>v2-rev76-1.15.0-rc</version>
+		</dependency>
+		
+		<!-- google http client jackson2 -->
+		<dependency>
+			<groupId>com.google.http-client</groupId>
+			<artifactId>google-http-client-jackson2</artifactId>
+			<version>1.15.0-rc</version>
+		</dependency>
+		
+		<!--     Google Http Client -->
+          <dependency>
+		       <groupId>com.google.http-client</groupId>
+		       <artifactId>google-http-client</artifactId>
+		       <version>1.15.0-rc</version>
+		</dependency>
+            
+		<!-- Google Oauth client -->
+		<dependency>
+			<groupId>com.google.oauth-client</groupId>
+			<artifactId>google-oauth-client</artifactId>
+			<version>1.15.0-rc</version>
+		</dependency>
+		
+		<!-- google oauth client jetty -->
+		<dependency>
+			<groupId>com.google.oauth-client</groupId>
+			<artifactId>google-oauth-client-jetty</artifactId>
+			<version>1.15.0-rc</version>
+		</dependency>
+		
+		<!-- Itext Api To deal with creating pdf and converting document to pdf -->
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>itextpdf</artifactId>
+			<version>5.0.6</version>
+		</dependency>
+		
+		<!--End Google Apps dependency -->
+				
 	</dependencies>
 
 </project>
