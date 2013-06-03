@@ -16,7 +16,8 @@
         <field name="statusSelect"/>
     </grid>
     
-    <form name="stock-move-form" title="Stock move" model="com.axelor.apps.supplychain.db.StockMove" cols="4">
+    <form name="stock-move-form" title="Stock move" model="com.axelor.apps.supplychain.db.StockMove" cols="4"
+    	onNew="action-stock-move-record-new">
         <field name="name"/>
         <field name="statusSelect" widget="NavSelect"/>
         <field name="fromLocation"/>
@@ -29,5 +30,10 @@
         <field name="partner"/>
         <field name="stockMoveLineList" colSpan="4"/>
     </form>
+    
+    <action-record name="action-stock-move-record-new" model="com.axelor.apps.supplychain.db.StockMove">
+    	<field name="company"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+	    <field name="statusSelect" expr="1"/>
+	</action-record>
     
 </object-views>
