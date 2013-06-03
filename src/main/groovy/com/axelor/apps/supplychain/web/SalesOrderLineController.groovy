@@ -57,7 +57,8 @@ class SalesOrderLineController {
 			try  {
 				response.values = ["vatLine" : salesOrderLineService.getVatLine(salesOrder, salesOrderLine),
 					"price" : salesOrderLineService.getUnitPrice(salesOrder, salesOrderLine),
-					"productName" : salesOrderLine?.product?.name]
+					"productName" : salesOrderLine?.product?.name,
+					"unit" : salesOrderLine?.product?.unit]
 			}
 			catch(Exception e)  {
 				response.flash = e

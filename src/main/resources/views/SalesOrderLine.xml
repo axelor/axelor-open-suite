@@ -18,7 +18,7 @@
     	<field name="discountTypeSelect"/>
     </grid>
     
-    <form name="sales-order-line-form" title="SO line" model="com.axelor.apps.supplychain.db.SalesOrderLine" cols="4">
+    <form name="sales-order-line-form" title="SO line" model="com.axelor.apps.supplychain.db.SalesOrderLine" cols="4" onNew="action-sales-order-line-record-new">
    		<field name="sequence"/>
     	<field name="product" domain="self.endDate = null or self.endDate &gt; :__date__" onChange="action-sales-order-line-method-get-product-information,action-sales-order-line-method-compute"/>
     	<field name="product.productCategory"/>
@@ -58,6 +58,9 @@
         </notebook>
     </form>
     
+    <action-record name="action-sales-order-line-record-new" model="com.axelor.apps.supplychain.db.SalesOrderLine">
+    	<field name="qty" expr="eval: 1"/>
+    </action-record>
    
    	<!-- ACTION METHOD -->
 	<action-method name="action-sales-order-line-method-compute">

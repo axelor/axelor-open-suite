@@ -16,21 +16,25 @@
 		<field name="exTaxTotal"/>
     </grid>
     
-    <form name="sales-order-sub-line-form" title="SO subline" model="com.axelor.apps.supplychain.db.SalesOrderSubLine" cols="4">
+    <form name="sales-order-sub-line-form" title="SO subline" model="com.axelor.apps.supplychain.db.SalesOrderSubLine" cols="4" onNew="action-sales-order-sub-line-record-new">
     	<field name="sequence"/>
-    	<field name="product" onChange="action-sales-order-sub-line-method-get-product-information,action-sales-order-sub-line-method-compute"/>
-    	<field name="productCategory"/>
+    	<field name="product" domain="self.endDate = null or self.endDate &gt; :__date__" onChange="action-sales-order-sub-line-method-get-product-information,action-sales-order-sub-line-method-compute"/>
+    	<field name="product.productCategory"/>
     	<field name="productName"/>
     	<field name="employee"/>
     	<field name="description" colSpan="4"/>
 		<field name="qty" onChange="action-sales-order-sub-line-method-compute"/>    	
 		<field name="unit"/>
 		<field name="price" onChange="action-sales-order-sub-line-method-compute"/>
-		<field name="vatLine"/>
+		<field name="vatLine" domain="self.endDate = null or self.endDate &gt; :__date__"/>
 		<field name="vatLine.vat.name"/>
 		<field name="vatLine.value"/>
 		<field name="exTaxTotal"/>
     </form>
+    
+    <action-record name="action-sales-order-sub-line-record-new" model="com.axelor.apps.supplychain.db.SalesOrderLine">
+    	<field name="qty" expr="eval: 1"/>
+    </action-record>
     
     <!-- ACTION METHOD -->
 	<action-method name="action-sales-order-sub-line-method-compute">
