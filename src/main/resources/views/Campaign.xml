@@ -76,7 +76,7 @@
     	<field name="team" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
     </action-record>
     
-    <action-record name="action-campaign-record-currency" model="com.axelor.apps.crm.db.Opportunity">
+    <action-record name="action-campaign-record-currency" model="com.axelor.apps.crm.db.Campaign">
 	    <field name="currency" expr="eval: company?.currency"/>
 	</action-record>
     
