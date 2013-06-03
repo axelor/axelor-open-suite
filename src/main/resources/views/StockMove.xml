@@ -33,7 +33,8 @@
     
     <action-record name="action-stock-move-record-new" model="com.axelor.apps.supplychain.db.StockMove">
     	<field name="company"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
-	    <field name="statusSelect" expr="1"/>
+	    <field name="statusSelect" expr="eval: 1"/>
+	    <field name="estimatedDate" expr="eval: __date__"/>
 	</action-record>
     
 </object-views>
