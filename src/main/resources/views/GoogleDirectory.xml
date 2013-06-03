@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+
+	<grid name="googledirectory-grid" title="Google Directories" editable="false">
+		<toolbar>
+			<button name="trash" title="Move To Trash" prompt="It will trash directory(s) with whole hierarchy, Are You Sure ?"
+			 	onClick="com.axelor.googleapps.directory.DirectoryController:trashDirectoriesFromGrid" />
+			<button name="deleteDirectory" title="Delete" prompt="It will remove directory(s) permanently with whole hierarchy, Are You Sure ?" 
+			 	onClick="com.axelor.googleapps.directory.DirectoryController:removeDirectories" />
+			<button name="delete" hidden="true" title="Delete"/>
+			<button name="syncdrive" title="Sync" prompt=" &lt;img src='http://s10.postimg.org/iggyctyed/synchronize.png ' width='20px' &gt; &lt;/img&gt; It will Synchronize with Google Drive, Are You Sure ?"
+				onClick="com.axelor.googleapps.syncDrive.SynchronizeGoogleDriveController:sychronization" />
+		</toolbar>
+		<field name="directoryName" title="Directory Name" />
+		<field name="parent" title="Parent Directory" ></field>
+		<field name="googleFiles" title="Directory files" >
+			<grid title="Google Files" editable="true">
+				<field name="fileName" title="File Name"></field>
+				<field name="filePermissions" title="Shared To">
+					<grid title="Shared To">					
+						<field name="sharingUser">						
+							<grid title="User">
+								<field name="name" title="Name"/>	
+							</grid>						
+						</field>
+					</grid>
+				</field>
+			</grid>
+		</field>
+	</grid>
+	
+	<form name="googledirectory-form" title="Google Directory" cols="2" colWidths="*,400" 
+			onNew="action-current-user-of-directory-creator,action-show-hide-Files,action-show-dirOptions" onLoad="action-show-hide-Files,action-hide-dirOptions"
+			onSave="com.axelor.googleapps.directory.DirectoryController:saveDirectory,action-showFiles"  >
+		<group title="Google Drive Directory">
+							<group title="Directory Details">
+									<field name="directoryName" title="Directory Name" /> <break/>
+									<field name="useRoot" title="Create Directory In Root" widget="[type=BOOLEAN]" onChange="action-parentShow" /><break/>
+									<field name="driveUser" title="Drive User" hidden="true"/>
+									<field name="parent" domain="self.driveUser=:driveUser" title="Parent Directory" required="true" />
+							</group>
+							<break/><break/>
+		</group>
+		<break/><break/>
+		<field name="googleFiles" hidden="true" title="Directory Files" domain="self.driveUser= :driveUser"
+				onChange="com.axelor.googleapps.document.DocumentController:saveDocumentInDirectory,save" 
+				form-view="document-form" >
+				<grid title="Google Files" >				
+					<field name="fileName" title="File Name" ></field>
+					<field name="fileSize" title="File Size"></field>
+					<field name="lastModified" title="Last Modified"></field>
+				</grid>						
+		</field>		
+	</form>
+
+    <action-record name="action-current-user-of-directory-creator" model="com.axelor.apps.base.db.GoogleFile">
+		<field name="driveUser" expr="eval:__user__"/>
+	</action-record>
+
+	<action-attrs name="action-parentShow">
+		<attribute name="hidden" for="parent" expr="eval: useRoot" />
+		<attribute name="required" for="parent" expr="eval: !useRoot" />	
+	</action-attrs>
+
+	<action-attrs name="action-show-hide-Files">
+		<attribute name="hidden" for="googleFiles" expr="eval: directoryId == null"/>
+		<attribute name="hidden" for="useRoot" expr="eval: directoryId != null"/>
+	</action-attrs>
+
+	<action-attrs name="action-hide-dirOptions">
+		<attribute name="hidden" for="useRoot" expr="true"/>
+		<attribute name="hidden" for="parent" expr="true"/>
+	</action-attrs>	
+
+	<action-attrs name="action-show-dirOptions">
+		<attribute name="hidden" for="useRoot" expr="false"/>
+		<attribute name="hidden" for="parent" expr="false"/>
+	</action-attrs>	
+
+</object-views>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.0.xsd">
+	<module name="base" package="com.axelor.apps.base.db" />
+		<entity name="GoogleAppsConfig" sequential="true" lang="groovy">
+					<string name="clientEmail"  required="true" title="Client Email Id" help="Client Email Id in Api Console"/>
+					<string name="clientId" required="true" title="Client Id" help="Cliend Id in Api Console " />
+					<string name="clientSecret" required="true" title="Client Secret" help="Client Secret in Api Console" />
+					<string name="redirectURI" required="true" title="Redirect Uri" help="Redirect Url to get auth code"></string>
+		</entity>
+</domain-models>
