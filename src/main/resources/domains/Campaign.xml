@@ -13,6 +13,7 @@
    	<date name="endDate" title="End date"/>
    	<integer name="typeSelect" title="Campaign Type" selection="crm.campaign.type.select"/>  
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <integer name="nbImpressions" title="Printed Quantity"/>
     <integer name="frequencySelect" title="Frequence" selection="crm.campaign.frequency.select"/>
     <decimal name="budget" title="Budget"/>
