@@ -15,7 +15,6 @@
         <structure>
             <property name="name">odaPassword</property>
             <property name="id">209</property>
-            <expression name="value" type="javascript">params["Password"].value</expression>
         </structure>
         <structure>
             <property name="name">queryText</property>
@@ -28,6 +27,30 @@
         <structure>
             <property name="name">rowFetchSize</property>
             <property name="id">3678</property>
+        </structure>
+        <structure>
+            <property name="name">odaDriverClass</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">odaAutoCommit</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">odaIsolationMode</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">odaJndiName</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileName</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileStorePath</property>
+            <property name="id">209</property>
         </structure>
     </list-property>
     <property name="units">cm</property>
@@ -1877,7 +1900,7 @@ where LangTranslate.key = ? and SalesOrder.id = ? ]]></xml-property>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row._outer["salesOrderSeq"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[Devis n° </VALUE-OF><VALUE-OF>row._outer["salesOrderSeq"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="3366"/>
@@ -1926,7 +1949,7 @@ where LangTranslate.key = ? and SalesOrder.id = ? ]]></xml-property>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[Client]]></text-property>
                     </text>
                 </cell>
             </row>
@@ -1977,7 +2000,7 @@ where LangTranslate.key = ? and SalesOrder.id = ? ]]></xml-property>
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF format="dd/MM/yyyy">row._outer["creation_date"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[Date du devis : <VALUE-OF format="dd/MM/yyyy">row._outer["creation_date"]</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                         </row>
@@ -2009,7 +2032,7 @@ where LangTranslate.key = ? and SalesOrder.id = ? ]]></xml-property>
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row._outer["PaymentCondName"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[Condition de paiement : </VALUE-OF><VALUE-OF>row._outer["PaymentCondName"]</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                         </row>
@@ -2041,7 +2064,7 @@ where LangTranslate.key = ? and SalesOrder.id = ? ]]></xml-property>
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row._outer["PaymentMode"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[Mode de paiement : </VALUE-OF><VALUE-OF>row._outer["PaymentMode"]</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                         </row>
@@ -2073,7 +2096,7 @@ where LangTranslate.key = ? and SalesOrder.id = ? ]]></xml-property>
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row._outer["external_reference"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[Référence client : </VALUE-OF><VALUE-OF>row._outer["external_reference"]</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                         </row>
@@ -2140,7 +2163,7 @@ row["ClientPartFirstName"]
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                        <text-property name="content"><![CDATA[Adresse de facturation :]]></text-property>
                     </text>
                     <text id="3679">
                         <property name="fontSize">9pt</property>
@@ -2208,7 +2231,7 @@ row["ClientPartFirstName"]
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : ]]></text-property>
+                        <text-property name="content"><![CDATA[Adresse de livraison : ]]></text-property>
                     </text>
                     <text id="3685">
                         <property name="fontSize">9pt</property>
@@ -2462,7 +2485,7 @@ row["ClientPartFirstName"]
                                 </structure>
                             </list-property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[Description produit]]></text-property>
                         </text>
                     </cell>
                     <cell id="3430">
@@ -2508,7 +2531,7 @@ row["ClientPartFirstName"]
                                 </structure>
                             </list-property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[TVA]]></text-property>
                         </text>
                     </cell>
                     <cell id="3431">
@@ -2554,7 +2577,7 @@ row["ClientPartFirstName"]
                                 </structure>
                             </list-property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[Unité]]></text-property>
                         </text>
                     </cell>
                     <cell id="3432">
@@ -2600,7 +2623,7 @@ row["ClientPartFirstName"]
                                 </structure>
                             </list-property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[Prix unitaire]]></text-property>
                         </text>
                     </cell>
                     <cell id="3433">
@@ -2648,7 +2671,7 @@ row["ClientPartFirstName"]
                                 </structure>
                             </list-property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[Prix HT]]></text-property>
                         </text>
                     </cell>
                 </row>
@@ -2806,7 +2829,7 @@ row["ClientPartFirstName"]
                                     </structure>
                                 </list-property>
                                 <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                <text-property name="content"><![CDATA[Description de produit]]></text-property>
                             </text>
                         </cell>
                         <cell id="3744">
@@ -2865,7 +2888,7 @@ row["ClientPartFirstName"]
                                     </structure>
                                 </list-property>
                                 <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                <text-property name="content"><![CDATA[TVA]]></text-property>
                             </text>
                         </cell>
                         <cell id="3745">
@@ -2924,7 +2947,7 @@ row["ClientPartFirstName"]
                                     </structure>
                                 </list-property>
                                 <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                <text-property name="content"><![CDATA[Unité]]></text-property>
                             </text>
                         </cell>
                         <cell id="3746">
@@ -2983,7 +3006,7 @@ row["ClientPartFirstName"]
                                     </structure>
                                 </list-property>
                                 <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                <text-property name="content"><![CDATA[Prix unitaire]]></text-property>
                             </text>
                         </cell>
                         <cell id="3747">
@@ -3044,7 +3067,7 @@ row["ClientPartFirstName"]
                                     </structure>
                                 </list-property>
                                 <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                <text-property name="content"><![CDATA[Prix HT]]></text-property>
                             </text>
                         </cell>
                         <cell id="3791">
@@ -3608,7 +3631,7 @@ row["ClientPartFirstName"]
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[TVA]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="3496">
@@ -3652,7 +3675,7 @@ row["ClientPartFirstName"]
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[Base]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="3497">
@@ -3696,7 +3719,7 @@ row["ClientPartFirstName"]
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[Montant TVA]]></text-property>
                                     </text>
                                 </cell>
                             </row>
@@ -3818,7 +3841,7 @@ row["ClientPartFirstName"]
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                                    <text-property name="content"><![CDATA[Total HT : ]]></text-property>
                                 </text>
                             </cell>
                             <cell id="3518">
@@ -3891,7 +3914,7 @@ row["ClientPartFirstName"]
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                                    <text-property name="content"><![CDATA[Total TVA :]]></text-property>
                                 </text>
                             </cell>
                             <cell id="3522">
@@ -3976,7 +3999,7 @@ row["ClientPartFirstName"]
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                                    <text-property name="content"><![CDATA[Total TTC :]]></text-property>
                                 </text>
                             </cell>
                             <cell id="3526">
@@ -4060,7 +4083,7 @@ row["ClientPartFirstName"]
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[Note]]></text-property>
                     </text>
                 </cell>
                 <cell id="3491">
@@ -4124,7 +4147,7 @@ row["ClientPartFirstName"]
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[Coordonnées bancaires]]></text-property>
                     </text>
                 </cell>
                 <cell id="3552">
