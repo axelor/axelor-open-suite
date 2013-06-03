@@ -23,7 +23,7 @@
     </grid>
     
     <form name="call-form" title="Call" model="com.axelor.apps.crm.db.Event" cols="2" colWidths="*,400"
-    	onNew="action-call-default-record,action-event-record-type-select">
+    	onNew="action-call-default-record,action-event-record-type-select,action-event-default-record-userinfo,action-event-record-primary-status-select,action-event-record-secondary-status-select">
         <group title="Informations" cols="4" colSpan="1">
         	<field name="subject" colSpan="2"/>
 	        <field name="primaryStatusSelect" colSpan="2"/>
@@ -64,7 +64,7 @@
     </grid>
     
     <form name="meeting-form" title="Meeting" model="com.axelor.apps.crm.db.Event" cols="2" colWidths="*,400" 
-    	onNew="action-call-default-record,action-event-record-type-select">
+    	onNew="action-call-default-record,action-event-record-type-select,action-event-default-record-userinfo,action-event-record-secondary-status-select">
         <group title="Informations" cols="4" colSpan="1">
         	<field name="subject"/>
 	        <field name="secondaryStatusSelect"/>
@@ -98,7 +98,7 @@
     </grid>
     
     <form name="crm-task-form" title="Task" model="com.axelor.apps.crm.db.Event" cols="2" colWidths="*,400"
-    	onNew="action-call-default-record,action-event-record-type-select">
+    	onNew="action-call-default-record,action-event-record-type-select,action-event-default-record-userinfo,action-task-record-tertiary-status-select">
         <group title="Informations" cols="4" colSpan="1">
         	<field name="subject"/>
 	        <field name="tertiaryStatusSelect"/>
@@ -135,7 +135,7 @@
     </grid>
     
     <form name="ticket-form" title="Task" model="com.axelor.apps.crm.db.Event" cols="6" colWidths="*,400"
-    	onNew="action-call-default-record,action-event-record-type-select,action-ticket-record-new">
+    	onNew="action-call-default-record,action-event-record-type-select,action-ticket-record-new,action-event-default-record-userinfo">
     	<group colSpan="6" cols="6"  colWidths="16%,17%,16%,17%,16%,18%">
 	    	<field name="ticketNumberSeq"/>
 	       	<field name="subject"/>
@@ -177,6 +177,16 @@
         </notebook>
     </form>
     
+    <action-record name="action-event-default-record-userinfo" model="com.axelor.apps.crm.db.Event">
+    	<field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" if="typeSelect == 1 || typeSelect == 2 || typeSelect == 3 || typeSelect == 5"/>
+    	<field name="responsibleUserInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" if="typeSelect == 5"/>
+    </action-record>
+    
+    <!-- 
+    <action-record name="action-event-default-record-team" model="com.axelor.apps.crm.db.Event">
+    	<field name="team" expr="eval: userInfo?.teamSet?.toList()[0]"/>
+    </action-record>
+     -->
     <action-record name="action-call-default-record" model="com.axelor.apps.crm.db.Event">
     	<field name="startDateTime" expr="eval: __time__" if="startDateTime == null"/>
     </action-record>
@@ -197,9 +207,22 @@
     	<field name="typeSelect" expr="eval: _typeSelect"/>
     </action-record>
     
+    <action-record name="action-task-record-tertiary-status-select" model="com.axelor.apps.crm.db.Event">
+    	<field name="tertiaryStatusSelect" expr="1" if="typeSelect == 3"/>
+    </action-record>
+    
+    <action-record name="action-event-record-secondary-status-select" model="com.axelor.apps.crm.db.Event">
+    	<field name="secondaryStatusSelect" expr="1" if="typeSelect == 1 || typeSelect == 2"/>
+    </action-record>
+    
+    <action-record name="action-event-record-primary-status-select" model="com.axelor.apps.crm.db.Event">
+    	<field name="primaryStatusSelect" expr="eval: _callAllCrm"/>
+    </action-record>
+    
     <action-record name="action-ticket-record-new" model="com.axelor.apps.crm.db.Event">
     	<field name="quaternaryStatusSelect" expr="1"/>
     	<field name="ticketNumberSeq" expr="eval: com.axelor.apps.crm.db.Event.all().filter('self.typeSelect = 5').count() + 1"/>
+    	<field name="prioritySelect" expr="eval: _prioritySelect"/>
     </action-record>
     
 </object-views>

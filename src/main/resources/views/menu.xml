@@ -55,6 +55,7 @@
 		<view type="form" name="ticket-form"/>
 		<domain>self.typeSelect = 5 and self.userInfo.internalUser.id = :_internalUser</domain>
 		<context name="_typeSelect" expr="5"/>
+		<context name="_prioritySelect" expr="2"/>
 		<context name="_internalUser" expr="eval: __user__.id"/>
 	</action-view>
 	
@@ -67,6 +68,7 @@
 		<view type="form" />
 		<domain>self.userInfo IS NOT NULL and self.userInfo.internalUser.id = :_internalUser</domain>
 		<context name="_internalUser" expr="eval: __user__.id"/>
+		<context name="_statusSelect" expr="1"/>
 	</action-view>
 	
 	<menuitem name="crm-root-unassigned-lead" parent="crm-root"
@@ -77,6 +79,7 @@
 		<view type="grid" />
 		<view type="form" />
 		<domain>self.userInfo IS NULL</domain>
+		<context name="_statusSelect" expr="1"/>
 	</action-view>
 	
 	<menuitem name="crm-root-opportunity" parent="crm-root"
@@ -148,6 +151,7 @@
 		<view type="form" name="ticket-form"/>
 		<domain>self.typeSelect = 5 and self.team IN :_internalUser.teamSet</domain>
 		<context name="_typeSelect" expr="5"/>
+		<context name="_prioritySelect" expr="2"/>
 		<context name="_internalUser" expr="eval: __user__"/>
 	</action-view>
 	
@@ -159,6 +163,7 @@
 		<view type="grid" />
 		<view type="form" />
 		<domain>self.team IN self.userInfo.teamSet</domain>
+		<context name="_statusSelect" expr="1"/>
 	</action-view>
 	
 	<menuitem name="crm-root-team-opportunity" parent="crm-root-team"
@@ -206,6 +211,7 @@
 		<view type="form" name="call-form"/>
 		<domain>self.typeSelect = 1</domain>
 		<context name="_typeSelect" expr="1"/>
+		<context name="_callAllCrm" expr="2"/>
 	</action-view>
 	
 	<menuitem name="crm-root-allcrm-ticket" parent="crm-root-allcrm"
@@ -217,6 +223,7 @@
 		<view type="form" name="ticket-form"/>
 		<domain>self.typeSelect = 5</domain>
 		<context name="_typeSelect" expr="5"/>
+		<context name="_prioritySelect" expr="2"/>
 	</action-view>
 	
 	<menuitem name="crm-root-allcrm-lead" parent="crm-root-allcrm"
@@ -226,6 +233,7 @@
 		model="com.axelor.apps.crm.db.Lead" icon="img/icons/crm_small.png">
 		<view type="grid" />
 		<view type="form" />
+		<context name="_statusSelect" expr="1"/>
 	</action-view>
 	
 	<menuitem name="crm-root-allcrm-opportunity" parent="crm-root-allcrm"

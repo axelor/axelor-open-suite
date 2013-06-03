@@ -12,7 +12,7 @@
         <field name="campaign"/>
     </grid>
     
-    <form cols="4" onNew="action-account-record-new" name="lead-form" title="Lead" model="com.axelor.apps.crm.db.Lead">
+    <form cols="4" onNew="action-account-record-new,action-lead-default-record-new" name="lead-form" title="Lead" model="com.axelor.apps.crm.db.Lead">
     <group title="Informations" colSpan="4">
         <field name="titleSelect"/>
         <field name="name"/>
@@ -52,6 +52,12 @@
     
     <action-record name="action-lead-record-new" model="com.axelor.apps.crm.db.Lead">
     	<field name="company"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+    </action-record>
+    
+    <action-record name="action-lead-default-record-new" model="com.axelor.apps.crm.db.Lead">
+    	<field name="statusSelect" expr="eval: _statusSelect"/>
+    	<field name="contactDate" expr="eval: __date__" if="contactDate == null"/>
+    	<field name="userInfo"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
     </action-record>
     
     <action-method name="action-lead-method-convert-lead">
