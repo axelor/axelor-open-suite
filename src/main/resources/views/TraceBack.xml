@@ -14,7 +14,7 @@
 		</toolbar>
         <field name="id"/>
         <field name="date"/>
-        <field name="gieUser"/>
+        <field name="internalUser"/>
         <field name="origin" />
         <field name="typeSelect"/>
         <field name="categorySelect"/>
@@ -30,9 +30,8 @@
 		    <button name="copy" title="" hidden="true"/>
 		    <button name="cancel" title="" hidden="true"/>
 		</toolbar>
-    	<field name="id" />
         <field name="date"/>
-        <field name="gieUser"/>
+        <field name="internalUser"/>
         <field name="origin" />
         <field name="typeSelect"/>
         <field name="categorySelect"/>

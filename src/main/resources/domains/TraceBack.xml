@@ -10,7 +10,7 @@
     <integer title="Catégorie" name="categorySelect" selection="trace.back.category.select"/>
     <string name="origin" selection="trace.back.origin.select" title="Origine" />
     <datetime title="Date" tz="true" name="date" required="true"/>
-    <many-to-one ref="com.axelor.auth.db.User" title="Utilistateur" name="gieUser"/>
+    <many-to-one ref="com.axelor.auth.db.User" title="Utilistateur" name="internalUser"/>
     <string title="Erreur" name="error" large="true"/>
     <string title="Cause" name="cause" large="true"/>
     <string title="Message" name="message" large="true"/>

@@ -50,7 +50,7 @@ public class TraceBackService {
 		traceBack.setCategorySelect(categorySelect);
 		traceBack.setBatchId(batchId);
 
-		if (AuthUtils.getSubject() != null) { traceBack.setGieUser(AuthUtils.getUser()); }
+		if (AuthUtils.getSubject() != null) { traceBack.setInternalUser(AuthUtils.getUser()); }
 		if (e.getCause() != null) { traceBack.setCause(e.getCause().toString()); }
 		if (e.getMessage() != null) { traceBack.setMessage(e.getMessage()); }
 		

@@ -23,8 +23,6 @@
    	  <option value='reimbursement'>Remboursements</option>
    	  <option value='directDebit'>Prélèvements</option>
    	  <option value="interbankPaymentOrder">Paiements par TIP et TIP chèque</option>
-   	  
-   	  
 	</selection>
 
 </object-views>
