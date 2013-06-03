@@ -23,7 +23,7 @@
     </grid>
     
     <form name="call-form" title="Call" model="com.axelor.apps.crm.db.Event" cols="2" colWidths="*,400"
-    	onNew="action-call-default-record,action-event-record-type-select,action-event-default-record-userinfo,action-event-record-primary-status-select,action-event-record-secondary-status-select">
+    	onNew="action-call-default-record,action-event-record-type-select,action-event-default-record-userinfo,action-event-default-record-team,action-event-record-primary-status-select,action-event-record-secondary-status-select">
         <group title="Informations" cols="4" colSpan="1">
         	<field name="subject" colSpan="2"/>
 	        <field name="primaryStatusSelect" colSpan="2"/>
@@ -64,7 +64,7 @@
     </grid>
     
     <form name="meeting-form" title="Meeting" model="com.axelor.apps.crm.db.Event" cols="2" colWidths="*,400" 
-    	onNew="action-call-default-record,action-event-record-type-select,action-event-default-record-userinfo,action-event-record-secondary-status-select">
+    	onNew="action-call-default-record,action-event-record-type-select,action-event-default-record-userinfo,action-event-default-record-team,action-event-record-secondary-status-select">
         <group title="Informations" cols="4" colSpan="1">
         	<field name="subject"/>
 	        <field name="secondaryStatusSelect"/>
@@ -98,7 +98,7 @@
     </grid>
     
     <form name="crm-task-form" title="Task" model="com.axelor.apps.crm.db.Event" cols="2" colWidths="*,400"
-    	onNew="action-call-default-record,action-event-record-type-select,action-event-default-record-userinfo,action-task-record-tertiary-status-select">
+    	onNew="action-call-default-record,action-event-record-type-select,action-event-default-record-userinfo,action-event-default-record-team,action-task-record-tertiary-status-select">
         <group title="Informations" cols="4" colSpan="1">
         	<field name="subject"/>
 	        <field name="tertiaryStatusSelect"/>
@@ -134,8 +134,8 @@
         <field name="progressSelect" widget="Progress"/>
     </grid>
     
-    <form name="ticket-form" title="Task" model="com.axelor.apps.crm.db.Event" cols="6" colWidths="*,400"
-    	onNew="action-call-default-record,action-event-record-type-select,action-ticket-record-new,action-event-default-record-userinfo">
+    <form name="ticket-form" title="Ticket" model="com.axelor.apps.crm.db.Event" cols="6" colWidths="*,400"
+    	onNew="action-call-default-record,action-event-record-type-select,action-ticket-record-new,action-event-default-record-userinfo,action-event-default-record-team">
     	<group colSpan="6" cols="6"  colWidths="16%,17%,16%,17%,16%,18%">
 	    	<field name="ticketNumberSeq"/>
 	       	<field name="subject"/>
@@ -182,11 +182,10 @@
     	<field name="responsibleUserInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" if="typeSelect == 5"/>
     </action-record>
     
-    <!-- 
     <action-record name="action-event-default-record-team" model="com.axelor.apps.crm.db.Event">
-    	<field name="team" expr="eval: userInfo?.teamSet?.toList()[0]"/>
+    	<field name="team" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
     </action-record>
-     -->
+    
     <action-record name="action-call-default-record" model="com.axelor.apps.crm.db.Event">
     	<field name="startDateTime" expr="eval: __time__" if="startDateTime == null"/>
     </action-record>
