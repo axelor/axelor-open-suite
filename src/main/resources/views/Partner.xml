@@ -4,12 +4,23 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
     <grid name="partner-grid" title="Partners" model="com.axelor.apps.base.db.Partner">
-    	<field name="partnerSeq"/>
         <field name="name"/>
         <field name="firstName"/>
+        <field name="mainInvoicingAddress"/>
         <field name="isContact"/>
    		<field name="partnerTypeSelect"/>
         <field name="partnerCategory"/>
+    </grid>
+    
+    <grid name="partner-contact-grid" title="Contacts" model="com.axelor.apps.base.db.Partner">
+        <field name="name"/>
+        <field name="firstName"/>
+        <field name="mainInvoicingAddress"/>
+        <field name="fixedPhone1"/>
+		<field name="fixedPhonePro"/>
+		<field name="mobilePhonePerso"/>
+		<field name="mobilePhonePro"/>
+        <field name="email"/>
     </grid>
     
     <form cols="4" colWidths="25*" name="partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" onLoad="action-partner-attrs-change-name,action-partner-attrs-hide-tabs"
@@ -36,7 +47,7 @@
     	<field name="parentPartner" hideIf="partnerTypeSelect != 1"/>
     	<field name="partnerSeq"/>
     	<field name="languageSelect" hideIf="isContact || partnerTypeSelect == 1"/>
-    	<field name="contactPartnerSet" widget="TagSelect[create=name]" colSpan="4" domain="self.isContact = 'true'" hideIf="isContact || partnerTypeSelect == 2"/>
+    	<field name="contactPartnerSet" colSpan="4" grid-view="partner-contact-grid" domain="self.isContact = 'true'" hideIf="isContact || partnerTypeSelect == 2"/>
 
     	<field name="site"/>
     	<field name="department"/>
