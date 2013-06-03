@@ -39,7 +39,7 @@
  	<decimal name="incurredExpenses" title="Incurred expenses"/>
  	<decimal name="remainingExpenses" title="Remaining expenses"/>
  	
- 	<decimal name="parentProject" title="Parent project"/>
+ 	<many-to-one name="parentProject" ref="com.axelor.apps.organisation.db.Project" title="Parent project"/>
   	
   	<one-to-many name="taskList" ref="com.axelor.apps.organisation.db.Task" title="Tasks"/>
 	  	

@@ -13,7 +13,8 @@
        	<field name="procurementMethodSelect"/>
     </grid>
     
-    <form name="product-form" title="Product" model="com.axelor.apps.base.db.Product" cols="2" colWidths="*,400">
+    <form name="product-form" title="Product" model="com.axelor.apps.base.db.Product" cols="2" colWidths="*,400"
+    onNew="action-product-record-default-new">
 	    <group title="Informations" colSpan="1" cols="6">
 	    	<group noLabel="true" colSpan="2">
 	    		<field name="picture"/>
@@ -56,5 +57,16 @@
             </page>
         </notebook>
     </form>
+    
+    <action-record name="action-product-record-default-new" model="com.axelor.apps.base.db.Product">
+    	<field name="applicationTypeSelect" expr="1"/>
+    	<field name="productTypeSelect" expr="stockable"/>
+    	<field name="procurementMethodSelect" expr="buy"/>
+    	<field name="startDate" expr="eval: __date__"/>
+    	<field name="salePrice" expr="1"/>
+    	<field name="purchasePrice" expr="1"/>
+    	<field name="saleCurrency" expr="eval: _activeCompany.currency"/>
+    	<field name="purchaseCurrency" expr="eval: _activeCompany.currency"/>
+    </action-record>
     
 </object-views>

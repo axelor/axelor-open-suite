@@ -32,7 +32,7 @@
 	<string name="description" title="Description" large="true"/>
 	<date name="contactDate" title="Contact date"/>
 	
-	<integer name="statusSelect" title="Status" selection="default.status.select"/>  
+	<integer name="statusSelect" title="Status" selection="default.status.select" default="1"/>  
 	<many-to-one name="source" ref="com.axelor.apps.base.db.Source" title="Source"/>
   	<string name="statusDescription" title="Status description" large="true"/>
     <decimal name="opportunityAmount" title="Opportunity amount"/>
