@@ -29,6 +29,7 @@
         		<field name="companySet" noLabel="true" colSpan="4"/>
         	</page>
         	<page title="Teams">
+        		<field name="activeTeam" colSpan="2"/>
         		<field name="teamSet" noLabel="true" colSpan="4"/>
         	</page>
         	<page title="Projects">
