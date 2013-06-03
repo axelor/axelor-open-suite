@@ -36,7 +36,8 @@
         <field name="planning"/>
     </grid>
     
-    <form name="planning-line-tast-form" title="Planning line" model="com.axelor.apps.organisation.db.PlanningLine" cols="4" >
+    <form name="planning-line-tast-form" title="Planning line" model="com.axelor.apps.organisation.db.PlanningLine" cols="4" 
+    onNew="action-planningline-default-record">
         <field name="product"/>
         <field name="employee"/>
         <field name="fromDate"/>
@@ -47,5 +48,8 @@
         <field name="planning"/>
     </form>
     
+    <action-record name="action-planningline-default-record" model="com.axelor.apps.organisation.db.PlanningLine">
+    	<field name="fromDate" expr="eval: __date__" if="fromDate == null"/>
+    </action-record>
     
 </object-views>

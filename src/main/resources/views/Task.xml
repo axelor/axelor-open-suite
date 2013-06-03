@@ -19,7 +19,8 @@
         <field name="taskProgress" widget="Progress"/>
     </grid>
     
-    <form cols="4" name="task-form" title="Task" model="com.axelor.apps.organisation.db.Task">
+    <form cols="4" name="task-form" title="Task" model="com.axelor.apps.organisation.db.Task"
+    onNew="action-task-default-record">
 	    <field name="name"/>
 	    <field name="statusSelect"  widget="NavSelect" colSpan="2" noLabel="true"/>
 	    <field name="salesOrderLine"/>
@@ -95,5 +96,10 @@
 	    </notebook>
 	</form>
     
+    <action-record name="action-task-default-record" model="com.axelor.apps.organisation.db.Task">
+    	<field name="startDateT" expr="eval: __time__" if="startDateT == null"/>
+    	<field name="statusSelect" expr="eval: _statusSelect"/>
+    	<field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+    </action-record>
     
 </object-views>
