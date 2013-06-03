@@ -9,11 +9,16 @@
         <field name="statusSelect"/>
     </grid>
     
-    <form name="inventory-form" title="Inventory" model="com.axelor.apps.supplychain.db.Inventory" cols="4">
+    <form name="inventory-form" title="Inventory" model="com.axelor.apps.supplychain.db.Inventory" cols="4"
+    	onNew="action-inventory-record-new">
         <field name="name"/>
         <field name="statusSelect" widget="NavSelect"/>
         <field name="location"/>
         <field name="inventoryLineList" colSpan="4"/>
     </form>
+    
+    <action-record name="action-inventory-record-new" model="com.axelor.apps.supplychain.db.Inventory">
+	    <field name="statusSelect" expr="1"/>
+	</action-record>
     
 </object-views>
