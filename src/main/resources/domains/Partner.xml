@@ -39,7 +39,9 @@
     <string name="mobilePhonePerso" title="Perso. mobile phone"/>
     <string name="mobilePhonePro" title="Prof. mobile phone"/>
     <string name="webSite" title="Website"/>
-    
+    <string name="snUserId" title="Social Networking User ID"></string>
+    <many-to-one name="curUser" title="Current ERP User" ref="com.axelor.auth.db.User"></many-to-one>
+    <many-to-one name="snType" title="Social Networking Type" ref="com.axelor.apps.base.db.SocialNetworking"></many-to-one>
     
     <many-to-one name="site" ref="com.axelor.apps.consulting.db.Site" title="Site"/>
     <string name="department" title="Department"/>

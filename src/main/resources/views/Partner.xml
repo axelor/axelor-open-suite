@@ -4,12 +4,21 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
     <grid name="partner-grid" title="Partners" model="com.axelor.apps.base.db.Partner">
+    	<toolbar>
+			<button name="fbContact" title="Facebook Contact" icon="img/facebook.jpg"
+			onClick="com.axelor.apps.base.web.PartnerControllerSimple:importFBContacts" />
+			<button name="twtContact" title="Twitter Contact" icon="img/twitterLogo.png"
+			onClick="com.axelor.apps.base.web.PartnerControllerSimple:importTWTContacts" />
+			<button name="linContact" title="LinkedIn Contact" icon="img/linkedin-icon-vector.jpg"
+			onClick="com.axelor.apps.base.web.PartnerControllerSimple:importLINContacts" />
+		</toolbar>
     	<field name="partnerSeq"/>
         <field name="name"/>
         <field name="firstName"/>
         <field name="isContact"/>
    		<field name="partnerTypeSelect"/>
         <field name="partnerCategory"/>
+        <field name="snType"></field>
     </grid>
     
     <form cols="4" colWidths="25*" name="partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" onLoad="action-partner-attrs-change-name,action-partner-attrs-hide-tabs"
@@ -58,6 +67,9 @@
 					<field name="mobilePhonePerso"/>
 					<field name="mobilePhonePro"/>
 					<field name="webSite"/>
+					<field name="snType" hidden="true"></field>
+					<field name="snUserId" hidden="true"></field>
+					<field name="curUser" hidden="true"></field>
 				</group>
 			</page>
 			<page title="Links">
@@ -111,6 +123,14 @@
 <!-- 				    </form> -->
 <!-- 		    	</field> -->
 <!--             </page> -->
+			<page title="Social Networking">
+				<portlet action="action-fetch-all-sn-mail" colSpan="4" />
+
+				<break />
+
+				<portlet action="action-fetch-all-sn-update" colSpan="4" />
+
+			</page>
         </notebook>
     </form>
     
@@ -202,4 +222,14 @@
     	<field name="invoiceSendingFormatSelect" expr="eval:null" if="!isContact"/>
     </action-record>
     
+    <action-view name="action-fetch-all-sn-update" title="Recents Update of User" model="com.axelor.apps.base.db.FBNewsFeed"> 
+		<view type="grid" name="fb-news-feed" />
+		<domain>self.snUserId = :snUserId</domain>
+	</action-view>
+
+	<action-view name="action-fetch-all-sn-mail" title="Inbox"
+		model="com.axelor.apps.base.db.MsgInbox">
+		<view type="grid" name="sn-msg-inbox-grid" />
+		<domain>self.messageFromID = :snUserId</domain>
+	</action-view>
 </object-views>
