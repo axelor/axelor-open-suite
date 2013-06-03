@@ -2,7 +2,7 @@ package com.axelor.apps.organisation.web
 
 import groovy.util.logging.Slf4j
 
-import com.axelor.apps.crm.service.EventService
+import com.axelor.apps.organisation.service.LeaveRequestService
 import com.axelor.apps.organisation.db.LeaveRequest
 import com.axelor.exception.service.TraceBackService
 import com.axelor.rpc.ActionRequest
@@ -13,7 +13,7 @@ import com.google.inject.Inject
 class LeaveRequestController {
 	
 @Inject
-private EventService eventService
+private LeaveRequestService leaveRequestService
 
 	def void validate(ActionRequest request, ActionResponse response)  {
 		
@@ -21,7 +21,9 @@ private EventService eventService
 		
 		try {
 
-			eventService.createHolidayEvent(leaveRequest)
+				
+			// TODO à placer dans un package intermédiaire
+			leaveRequestService.createHolidayEvent(leaveRequest)
 			
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e) }
