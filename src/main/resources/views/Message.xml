@@ -29,6 +29,26 @@
 	        <field name="relatedTo2Select" widget="RefSelect[related=relatedTo2SelectId]"/>
         </group>
 <!--         <button name="printMail" title="Imprimer" colSpan="2" onClick="save,action-mail-method-print-mail"/> -->
+<!--         <button name="reply" title="Reply" showIf="!canReply" onClick="com.axelor.dyndemo.web.DynController:showReply"/> -->
+        <button name="send" title="Send" onClick="save"/>
+<!--         <button name="cancel" title="Cancel" onClick=""/> -->
+    </form>
+    
+    
+    <form name="message-inbox-form" title="Email" model="com.axelor.apps.base.db.Message" cols="4">
+    	<group title="Informations" colSpan="4" readonly="true">
+            <field name="sendedDate"/>
+            <field name="sender"/>
+            <field name="statusSelect"/>
+        </group>
+        <group title="Content" colSpan="4" readonly="true">
+       	 	<field name="content" colSpan="4" noLabel="true" widget="html"/>
+        </group>
+        <group title="Recipients" colSpan="4" readonly="true">
+        	<field name="toPartnerSet" widget="TagSelect[create=name,firstName,email]" colSpan="4"/>
+        	<field name="ccPartnerSet" widget="TagSelect[create=name,firstName,email]" colSpan="4"/>
+        	<field name="bccPartnerSet" widget="TagSelect[create=name,firstName,email]" colSpan="4"/>
+        </group>
     </form>
     
 

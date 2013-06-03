@@ -380,12 +380,14 @@
 	<menuitem name="mail-root-email-inbox" parent="mail-root-email-box" title="Inbox" action="mail.root.email.inbox" />
 		
 <!-- 	title-f="Boite de réception" -->
-	<action-view name="mail.root.email.inbox" title="Inbox" 
-		model="com.axelor.apps.base.db.Message" icon="img/icons/mail_small.png">
-		<view type="grid" />
-		<view type="form" />
-		<domain>self.typeSelect = 1</domain>
-		<context name="typeSelect" expr="1" />
+	<action-view title="Inbox" icon="img/icons/mail_small.png" model="com.axelor.apps.base.db.Message" name="mail.root.email.inbox">
+	    <view type="trail"/>
+	    <view type="form" name="message-form"/>
+	    <view-param name="trail-width" value="1000"/>
+	    <view-param name="trail-edit-form" value="message-edit-form"/>
+	    <view-param name="trail-order" value="-createdOn"/>
+	    <domain>self.typeSelect = 1</domain>
+	    <context name="typeSelect" expr="1"/>
 	</action-view>
 		
 <!-- 	title-f="Messages envoyés" -->
