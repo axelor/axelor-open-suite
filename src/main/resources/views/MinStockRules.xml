@@ -11,12 +11,19 @@
         <field name="orderAlertSelect"/>
     </grid>
     
-    <form name="min-stock-rules-form" title="Minimum stock rule" model="com.axelor.apps.supplychain.db.MinStockRules" cols="4">
+    <form name="min-stock-rules-form" title="Minimum stock rule" model="com.axelor.apps.supplychain.db.MinStockRules" cols="4"
+    	onNew="action-min-stock-rules-record-new">
         <field name="event"/>
         <field name="product"/>
         <field name="minQty"/>
         <field name="typeSelect"/>
         <field name="orderAlertSelect"/>
     </form>
+    
+    <action-record name="action-min-stock-rules-record-new" model="com.axelor.apps.supplychain.db.MinStockRules">
+	    <field name="minQty" expr="1"/>
+	    <field name="orderAlertSelect" expr="1"/>
+	    <field name="typeSelect" expr="2"/>
+	</action-record>
     
 </object-views>
