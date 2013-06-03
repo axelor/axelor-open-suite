@@ -13,7 +13,7 @@
     </grid>
     
     <form name="campaign-form" title="Campaign" model="com.axelor.apps.crm.db.Campaign" cols="4"
-    	onNew="action-account-record-new">
+    	onNew="action-campaign-record-new,action-campaign-record-currency">
     	<group title="Informations" colSpan="4">
 	        <field name="name"/>
 	        <field name="statusSelect" widget="NavSelect"/>
@@ -69,6 +69,14 @@
     
     <action-record name="action-campaign-record-new" model="com.axelor.apps.crm.db.Campaign">
     	<field name="company"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+    	<field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+    	<field name="statusSelect" expr="1"/>
+    	<field name="typeSelect" expr="3"/>
+    	<field name="team" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
     </action-record>
+    
+    <action-record name="action-campaign-record-currency" model="com.axelor.apps.crm.db.Opportunity">
+	    <field name="currency" expr="eval: company?.currency"/>
+	</action-record>
     
 </object-views>
