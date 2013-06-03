@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+	<module name="base" package="com.axelor.apps.base.db" />
+
+	<entity name="FBSearchPerson" lang="java">
+		<string name="searchparam" help="Search Keyword"></string>
+		<many-to-one name="curUser" ref="com.axelor.auth.db.User" help="Currently Active ERP User"></many-to-one>
+		<one-to-many name="resultSearch" ref="com.axelor.apps.base.db.FBSearchResult" mappedBy="searchPerson" help="Search Result of The Entered Keyword"/>
+	</entity>
+</domain-models>
+

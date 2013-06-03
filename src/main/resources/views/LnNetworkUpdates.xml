@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+	<grid name="network-update-grid" title="Network Updates"
+		model="com.axelor.apps.base.db.LnNetworkUpdates" orderBy="-networkUpdateTime">
+		<toolbar>
+			<button name="new" title="" hidden="true" />
+			<button name="edit" title="" hidden="true" />
+			<button name="search" title="" hidden="true" />
+			<button name="sync" title="Synchronise" onClick="action-get-network-updates" />
+		</toolbar>
+		<field name="networkUpdateContent" title="Status Updates" />
+		<field name="networkUpdateTime" title="Time"/>
+		<field name="fromUser" title="By User"/>
+	</grid>
+	<form name="network-update-form" title="Update" cols="4"
+		model="com.axelor.apps.base.db.LnNetworkUpdates">
+		<field name="networkUpdateId" title="Status ID" readonly="true" />
+		<break />
+		<field name="networkUpdateContent" title="Status Update" colSpan="3"
+			readonly="true" />
+		<break />
+		<field name="fromUser" title="By" readonly="true" colSpan="3" />
+		<break />
+		<field name="networkUpdateTime" title="Time" readonly="true" colSpan="3" />
+	</form>
+
+	<action-method name="action-get-network-updates">
+		<call class="com.axelor.sn.web.LnController" method="getNetworkUpdates" />
+	</action-method>
+</object-views>

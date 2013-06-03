@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+
+	<grid name="spreadsheet-grid" title="SpreadSheets" editable="false" model="com.axelor.apps.base.db.GoogleFile" >
+		 	<toolbar>		 
+		 		<button name="delete" title="Delete" hidden="true" />
+		 		<button name="downloadSpreadSheet" title="Download" onClick="com.axelor.googleapps.spreadsheet.SpreadSheetController:downloadSpreadSheetFileFromGrid" />
+		 		<button name="openInDrive" title="Open" help="Opens the spreadsheet in Drive view"
+					onClick="com.axelor.googleapps.spreadsheet.SpreadSheetController:readSpreadSheetInDriveFromGrid"	 />
+		 		<button name="trash" title="Move To Trash" prompt="It will move selected file(s) to trash, Are You Sure ?" 
+		 			onClick="com.axelor.googleapps.document.DocumentController:trashDocumentsFromGrid"  />
+		 		<button name="deleteFiles" title="Delete" prompt="It will remove selected file(s) permanently, Are You Sure ?" 
+		 			onClick="com.axelor.googleapps.document.DocumentController:deleteFilesFromGrid" />
+		 	</toolbar>
+		 	<field name="fileName" canSelect="true" onSelect="com.axelor.googleapss.spreadsheet.SpreadSheetController:openFile" ></field>
+			<field name="fileSize"></field>
+			<field name="lastModified" title="Last Modified" ></field>
+			<field name="googleDirectory" title="Parent Directory" ></field>
+			<field name="filePermissions" title="Shared To" ></field>		
+	</grid>
+
+	<selection name="sheetTypeSelection" >				
+		<option value="application/vnd.google-apps.spreadsheet">Google Spreadsheet</option>
+	</selection>
+
+	<form name="spreadsheet-form" title="Google Spreadsheet" cols="2" colWidths="*,200" 
+				 onNew="com.axelor.googleapps.spreadsheet.SpreadSheetController:onNewCheckRootExistance,action-current-user-create-directory,action-setmodel-required-true,action-enable-filType-onnew"
+				 onSave="com.axelor.googleapps.spreadsheet.SpreadSheetController:saveSpreadSheet"
+				 onLoad="action-setmodel-required-false,com.axelor.googleapps.spreadsheet.SpreadSheetController:checkSharingList,action-disable-filType-onload"
+				 model="com.axelor.apps.base.db.GoogleFile" >
+		<toolbar>
+					<button name="refresh"  title="Refresh" />
+					<button title="Cancel" name="cancel" />
+			        <button name="search" title="Search" />
+			        <button name="delete" hidden="true" title="Delete" />
+			        <button name="copy" title="Copy"  hidden="true"/>
+					<button name="downloadSpreadSheet" title="Download" onClick="com.axelor.googleapps.spreadsheet.SpreadSheetController:downloadSpreadSheetFile" />
+					<button name="openSpreadSheetinDrive" title="Open" onClick="com.axelor.googleapps.spreadsheet.SpreadSheetController:readSpreadSheetInDrive"/>
+		</toolbar>
+	<group title="Google SpreadSheet" cols="2">
+				<field name="driveUser" hidden="true" /><break/>
+				<group title="SpreadSheet File Details" canCollapse="true" colSpan="2" >
+					<field name="fileName" title="File Name" required="true" />
+					<field name="fileType" selection="sheetTypeSelection" title="File Type" required="true" />
+					<field name="googleDirectory" title="Directory" domain="self.driveUser =:driveUser">
+						<grid title="Directory Selection">
+							<field name="directoryName" title="Directory Name"></field>
+						</grid>
+					</field>
+				</group><break/>
+				<group title="Create Spreadsheet in Drive View" cols="4" colWidths="80,80,120,*" canCollapse="false" name="groupCreateInDrive" >
+				            <field name="chk_create_spreadsheet_in_drive" title="Use Drive" widget="[type=BOOLEAN]" onChange="action-showhide-template"/>
+				            <button name="btnOpenDrive" title="&lt;font color='#228B22' &gt; Create In Drive &lt;/font&gt;" prompt="Do you want to a Create Spreadsheet in Google Drive View ?" onClick="com.axelor.googleapps.spreadsheet.SpreadSheetController:createSpreadSheetInDrive"/>
+       			</group><break/>
+				<group title="Template Selection" colSpan="2" name="group_template" >
+					<field name="templateSpreadSheet" title="Template" required="true" widget="MasterDetail[type=MANY_TO_ONE|target=com.axelor.apps.base.db.TemplateSpreadSheet|targetName=templateName]"  >
+						<grid title="Select Template">
+							<field name="templateName"></field>
+						</grid>
+					</field>
+				</group>
+				 <group title="Sharing Permissions" colSpan="2">        
+		 			<field name="filePermissions" colSpan="2"/>       
+		       </group>
+			</group>
+				<group title="Actions" canCollapse="true">
+				<button name="exportSpreadsheetPdf" title="Export Pdf"
+					onClick="com.axelor.googleapps.document.DocumentController:exportFileInPdf" />
+			</group><break/>
+	
+</form>
+
+    <action-record name="action-current-user-create-directory"		model="com.axelor.apps.base.db.GoogleFile">
+		<field name="driveUser" expr="eval:__user__" />
+	</action-record>
+	
+	<action-attrs name="action-showhide-template">
+		<attribute name="hidden" for="group_template" expr="eval: chk_create_spreadsheet_in_drive"/>
+		<attribute name="required" for="templateSpreadSheet" expr="eval: !chk_create_spreadsheet_in_drive"/>		
+	</action-attrs>
+	
+	<action-attrs name="action-setmodel-required-true" >
+		<attribute name="hidden" for="downloadSpreadSheet" expr="true"/>
+		<attribute name="hidden" for="openSpreadSheetinDrive" expr="true"/>
+		<attribute name="required" for="templateSpreadSheet" expr="true"/>
+		<attribute name="hidden" for="group_template" expr="false"/>
+	</action-attrs>
+	
+	<action-attrs name="action-setmodel-required-false" >		
+		<attribute name="hidden" for="downloadSpreadSheet" expr="false"/>
+		<attribute name="hidden" for="openSpreadSheetinDrive" expr="false"/>
+		<attribute name="required" for="templateSpreadSheet" expr="false"/>
+		<attribute name="hidden" for="group_template" expr="true"/>
+	</action-attrs>
+</object-views>

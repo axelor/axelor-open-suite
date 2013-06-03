@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+
+	<grid name="comment-grid" title="CommentGrid" model="com.axelor.apps.base.db.FBComment">
+
+		<toolbar>
+			<button name="edit" title="Edit" hidden="true" />
+			<button name="save" title="Save" hidden="true" />
+		</toolbar>
+		<field name="contentid"></field>
+		<field name="from_user" readonly="true"></field>
+		<field name="comment" readonly="true"></field>
+		<field name="commentTime" readonly="true"></field>
+		<field name="commentLikes" readonly="true"></field>
+		<field name="curUser"></field>
+	</grid>
+
+	<form name="comment-form" title="CommentForm" model="com.axelor.apps.base.db.FBComment">
+		<field name="contentid" onChange="com.axelor.sn.web.FBController:getCommentsOfStatus">
+		</field>
+		<break />
+		<field name="commentField" grid-view="comment-grid">
+			<grid title="Comment's Content" editable="true">
+				<field name="contentid" hidden="false"></field>
+				<field name="from_user" readonly="true"></field>
+				<field name="comment" readonly="true"></field>
+				<field name="commentTime" readonly="true"></field>
+				<field name="commentLikes" readonly="true"></field>
+			</grid>
+		</field>
+	</form>
+
+	<action-record name="action-content-data" model="com.axelor.apps.base.db..FBPostMessage">
+		<field name="acknowledgment" expr="" />
+	</action-record>
+
+	<action-record name="action-user-comment-user" model="com.axelor.apps.base.db..FBComment">
+		<field name="curUser" expr="eval:__user__" />
+	</action-record>
+</object-views>

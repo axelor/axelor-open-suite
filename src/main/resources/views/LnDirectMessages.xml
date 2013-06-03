@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+	<grid name="direct-message-grid" title="Messages"
+		model="com.axelor.apps.base.db.LnDirectMessages">
+		<toolbar>
+			<button name="edit" title="" hidden="true" />
+			<button name="search" title="" hidden="true" />
+		</toolbar>
+		<field name="userid" title="To" colSpan="1" />
+		<field name="subject" title="Subject" />
+		<field name="msgcontent" title="Message" colSpan="3" />
+		<field name="date" title="Time Stamp" />
+	</grid>
+	
+	<form name="direct-message-form" title="Message" cols="4"
+		model="com.axelor.apps.base.db.LnDirectMessages"
+		onNew="action-network,action-current-user,action-attribute-direct-messages"
+		onSave="action-date-time,action-send-message,save,action-attribute-direct-messages"
+		onLoad="action-attribute-direct-messages">
+		
+		<toolbar>
+			<button name="search" title="" hidden="true" />
+		</toolbar>
+		<field name="curUser" readonly="true" hidden="true" />
+		<field name="snType" hidden="true" widget="MANY_TO_ONE[target=com.axelor.apps.base.db.SocialNetworking|targetName=name]" />
+		<field name="userid" title="To" colSpan="3"
+			domain="self.curUser = :curUser AND self.snType= :snType">
+			<grid title="To User">
+				<field name="snUserId" title="User-ID"/>
+				<field name="name" title="Name"/>
+			</grid>
+		</field>
+		<break />
+		<separator colSpan="4" />
+		<break />
+		<field name="subject" title="Subject" colSpan="3" />
+		<break />
+		<field name="msgcontent" title="Message" colSpan="3" widget="html"/>
+		<break />
+		<field name="date" title="Time Stamp" readonly="true" />
+	</form>
+
+	<action-attrs name="action-attribute-direct-messages">
+		<attribute name="readonly" for="userid" expr="eval: id!=null" />
+		<attribute name="readonly" for="subject" expr="eval: id!=null" />
+		<attribute name="hidden" for="date" expr="eval: id==null" />
+		<attribute name="readonly" for="msgcontent" expr="eval: id!=null" />
+	</action-attrs>
+	<action-record name="action-current-user" model="com.axelor.apps.base.db.LnDirectMessages">
+		<field name="curUser" expr="eval:__user__" />
+	</action-record>
+	<action-record name="action-date-time" model="com.axelor.apps.base.db.LnDirectMessages">
+		<field name="date" expr="eval:__datetime__" />
+	</action-record>
+	<action-method name="action-send-message">
+		<call class="com.axelor.sn.web.LnController" method="sendMessage" />
+	</action-method>
+	<action-method name="action-network">
+		<call class="com.axelor.sn.web.LnController" method="networkType" />
+	</action-method>
+	
+</object-views>

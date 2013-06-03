@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+	<module name="base" package="com.axelor.apps.base.db" />
+
+	<entity name="LnDirectMessages">
+		<many-to-one name="userid" ref="com.axelor.apps.base.db.Partner"	required="true" />
+		<string name="subject" title="Subject" required="true" max="150" />
+		<string name="msgcontent" multiline="true" title="Message Content" required="true" max="4000" />
+		<many-to-one name="curUser" ref="com.axelor.auth.db.User" />
+		<datetime name="date" tz="true" />
+	</entity>
+
+</domain-models>

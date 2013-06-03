@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+	<module name="base" package="com.axelor.apps.base.db" />
+	<entity name="FBComment">
+	<string name="commentid" title="Comment id"></string>
+		<!-- <string name="commentType" title="Comments Type"></string> -->
+		<many-to-one name="contentid" ref="com.axelor.apps.base.db.FBPostMessage" title="Please Select Message" orphan = "true"></many-to-one>
+		<many-to-one name="from_user" title="From::User"
+			ref="com.axelor.apps.base.db.Partner" orphan="true" help="Who Made Comment"></many-to-one>
+		<string name="commentTime" title="Comment Time" help="Comment Made On"></string>
+		<string name="comment" title="Comment" help="Comment's Content"></string>
+		<string name="commentLikes" title="Likes" help="Like Count of Comment"></string>
+		<many-to-one name="curUser" ref="com.axelor.auth.db.User" help="Currently Active ERP User"></many-to-one>
+	</entity>
+</domain-models>

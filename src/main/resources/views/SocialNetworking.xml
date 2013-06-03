@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+	<grid name="sn-grid" title="Social Networking Details" model="com.axelor.apps.base.db.SocialNetworking">
+		<field name="name"></field>
+		<field name="website"></field>
+	</grid>
+
+	<form name="sn-form" title="Social Networking Details" cols="1" model="com.axelor.apps.base.db.SocialNetworking"
+		onSave="com.axelor.sn.web.ViewRestrictionController:lowerSnName">
+		<group title="Social Networking Details">
+			<field name="name"></field>
+			<field name="website"></field>
+		</group>
+	</form>
+</object-views>

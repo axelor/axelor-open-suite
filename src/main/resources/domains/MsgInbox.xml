@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.8.xsd">
+	<module name="base" package="com.axelor.apps.base.db" />
+	<entity name="MsgInbox">
+		<string name="messageId" />
+		<string name="messageFromID" />
+		<string name="messageFrom" />
+		<string name="messageContent" multiline="true" max="5000"/>
+		<string name="messageDate" max="50"/>
+		<many-to-one name="curUser" ref="com.axelor.auth.db.User" />
+		<many-to-one name="snType" ref="com.axelor.apps.base.db.SocialNetworking"/>
+	</entity>
+</domain-models>
+

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+	<module name="base" package="com.axelor.apps.base.db" />
+
+	<entity name="LnStatusComments">
+		<many-to-one name="updateId" ref="com.axelor.apps.base.db.LnStatusUpdates" />
+		<string name="commentId" title="Comment ID" />
+		<string name="commentText" title="Comment" multiline="true" max="700" />
+		<datetime name="commentTime" title="Time" tz="true" />
+		<many-to-one name="curUser" ref="com.axelor.auth.db.User" />
+		<many-to-one name="fromUser" ref="com.axelor.apps.base.db.Partner" />
+	</entity>
+
+</domain-models>

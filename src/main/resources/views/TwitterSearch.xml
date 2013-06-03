@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+
+	<form title="Search Grid" name="twt-search-form" model="com.axelor.apps.base.db.TwitterSearch">
+		<field name="tweetSearch" title="Search Keyword"></field>
+		<field name="curUser" hidden="true"></field>
+		<break />
+		<button name="searchFire" title="Search"
+			onClick="com.axelor.sn.web.TWTController:getSearchResult" />
+		<break />
+		<field name="tweetSeachResult" title="Searching.." colSpan="3">
+			<grid title="Result">
+				<field name="screenName"></field>
+				<field name="textContent"></field>
+			</grid>
+		</field>
+	</form>
+</object-views>

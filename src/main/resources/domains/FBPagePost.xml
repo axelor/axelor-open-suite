@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+	<module name="base" package="com.axelor.apps.base.db" />
+	<entity name="FBPagePost">
+		<many-to-one name="page" title="Page" ref="com.axelor.apps.base.db.FBPages"
+			orphan="true" help="Page on Which Post need to Create" />
+		<string name="content" title="Content" max="1000" multiline="true" help="Content To post on Page"></string>
+		<string name="acknowledgment" title="Acknowledgment" help="Unique ID return by FB on Successfull Post"></string>
+		<many-to-one name="curUser" ref="com.axelor.auth.db.User" help="Currently Active ERP User" />
+		<datetime name="postedTime" tz="true" help="Date and Time of Post"></datetime>
+		<one-to-many name="postedComments" ref="com.axelor.apps.base.db.FBPageComment"
+			mappedBy="contentid" help="Comments Received on Posted Content" />
+	</entity>
+</domain-models>

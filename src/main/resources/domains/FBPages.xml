@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+	<module name="base" package="com.axelor.apps.base.db" />
+	<entity name="FBPages">
+		<string name="pageId" help="Unique Facebook Page ID"></string>
+		<string name="name" title="Page Name" help="Facebook Registered Page Name"></string>
+		<string name="username" title="User Name of Page" help="Facebook Registered Page USername"></string>
+		<string name="pageUrl" title="URL of Page" help="Global Link of the Facebook Page"></string>
+		<one-to-many name="postcontent" ref="com.axelor.apps.base.db.FBPagePost" title="Post Content" orphan="true" help="Content Posted on Page"/>		
+		<many-to-one name="curUser" ref="com.axelor.auth.db.User" help="Currently Active ERP User"/>
+	</entity>
+</domain-models>

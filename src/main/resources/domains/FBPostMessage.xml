@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+	<module name="base" package="com.axelor.apps.base.db" />
+	<entity name="FBPostMessage">
+		<string name="content" multiline="true" namecolumn="true" help="Content To Post Onto Facebook"></string>
+		<string name="privacy" help="Privacy Parameter means Who can see The Posted Content"></string>
+		<string name="acknowledgment" help="Facebook Generated ID on successfull Post"></string>
+		<datetime name="postedTime" tz="true" help="Posted Content's Date and Time"></datetime>
+		<many-to-one name="curUser" ref="com.axelor.auth.db.User" help="Currently Active User of ERP"></many-to-one>
+		<one-to-many name="comments" ref="com.axelor.apps.base.db.FBComment" orphan="true"  help="Comments Made on Posted Content"
+			mappedBy="contentid"/>
+<!-- 		<one-to-many name="saleProduct" ref="com.axelor.sale.db.Product" mappedBy="fbPost"/> -->
+	</entity>
+</domain-models>

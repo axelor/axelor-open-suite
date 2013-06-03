@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+
+	<grid name="twt-comment-grid" title="Tweet Grid" orderBy="contentid" model="com.axelor.apps.base.db.TwitterComment">
+
+		<field name="contentid"></field>
+		<field name="tweetFrom"></field>
+		<field name="tweetContent"></field>
+		<field name="tweetTime"></field>
+		<field name="tweetFevourite"></field>
+
+	</grid>
+	<form name="twt-comment-form" title="Tweet Form" model="com.axelor.apps.base.db.TwitterComment">
+		<field name="contentid" onChange="com.axelor.sn.web.TWTController:getComments">
+		</field>
+		<break />
+	</form>
+</object-views>

@@ -18,7 +18,7 @@
 	    <field name="commercialLevelSelect"/>
 	    <field name="geographicalArea"/>
 	    <break/>
-		<notebook colSpan="1" title="Notebook keywords">
+		<notebook colSpan="2" title="Notebook keywords">
 			<page title="Tool Keywords">
 				<field name="toolKeyWordSet" grid-view="keyword-tool-grid" form-view="keyword-tool-form" />
 			</page>

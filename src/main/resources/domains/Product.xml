@@ -35,6 +35,9 @@
     <one-to-many name="accountManagementList" ref="com.axelor.apps.account.db.AccountManagement" mappedBy="product" title="Accounts"/>
   
   	<one-to-many name="priceList" ref="com.axelor.apps.base.db.Price" mappedBy="product" title="Prices"/>
+  	
+  	<!-- SOCIAL NETWORKING INTEGRATION FOR PRODUCT -->
+    <many-to-one name="fbPost" ref="com.axelor.apps.base.db.FBPostMessage" required="false" orphan="true" default="null"/>
   
   </entity>
 

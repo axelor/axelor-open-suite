@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+	<module name="base" package="com.axelor.apps.base.db" />
+	<entity name="TwitterDirectMessage">
+		<many-to-one name="userId" ref="com.axelor.apps.base.db.Partner" title="To"></many-to-one>
+		<string name="msgcontent" multiline="true" title="Message Content"></string>
+		<string name="acknowledgment" title="Sent Message ID" readonly="true"></string>
+		<datetime name="postedDate" tz="true" title="Sent Date"></datetime>
+		<many-to-one name="curUser" ref="com.axelor.auth.db.User" hidden="true"></many-to-one>
+		<many-to-one name="snType" ref="com.axelor.apps.base.db.SocialNetworking"></many-to-one>
+	</entity>
+</domain-models>

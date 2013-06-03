@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+	<selection name="select-count">
+		<option value="10">10</option>
+		<option value="15">15</option>
+		<option value="25">25</option>
+		<option value="50">50</option>
+		<option value="75">75</option>
+		<option value="100">100</option>
+	</selection>
+	
+	<selection name="select-days">
+		<option value="2">2</option>
+		<option value="3">3</option>
+		<option value="5">5</option>
+		<option value="7">7</option>
+		<option value="10">10</option>
+	</selection>
+	
+	<grid title="Parameter Configration" name="LINparam-config-grid" model="com.axelor.apps.base.db.LinkedinParameters">
+		<field name="recordNumbers" />
+		<field name="days" />
+	</grid>
+	<form title="Parameter Configration" name="LINparam-config-form" model="com.axelor.apps.base.db.LinkedinParameters"
+		onNew="action-network,action-current-user" onLoad="action-network">
+		<field name="snType" readonly="true" widget="SocialNetworking[type=MANY_TO_ONE|target=com.axelor.apps.base.db.SocialNetworking|targetName=name]" />
+		<break />
+		<field name="recordNumbers" min="0" max="100" />
+		<label title="&lt;Font Size='0.75' Color='#ff0000'&gt;Max:100&lt;/Font&gt;" />
+		<break />
+		<field name="days" min="0" max="15" />
+		<label title="&lt;Font Size='0.75' Color='#ff0000'&gt;Max:15&lt;/Font&gt;" />
+		<break />
+		<field name="curUser" readonly="true" hidden="true"/>
+	</form>
+</object-views>

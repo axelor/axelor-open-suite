@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+	<grid name="googleappsconfig-grid" title="Google Apps Configuration" editable="false">
+		<field name="clientEmail" title="Client Emails Address" />
+		<field name="clientId" title="Client ID" />
+		<field name="clientSecret" title="Cleint Secret" />
+		<field name="redirectURI" title="Redirect URI" />
+	</grid>
+
+	<form name="googleappsconfig-form" title="Google Apps Configuration" cols="2" colWidths="*,300"
+		onNew="com.axelor.googleapps.googleappsconfig.GoogleAppsConfigController:onNewGoogleAppsConfig">
+		<group title="Google Apps Configuration Details" cols="2">
+			<field name="clientEmail" title="Client Email Address" />
+			<field name="clientId" title="Client ID" />
+			<field name="clientSecret" title="Cleint Secret" />
+			<field name="redirectURI" title="Redirect URI" />
+		</group>
+		<group title="Instruction">
+			<label title="This view contain details related to the Google Drive API Credentials and Keys, So there should be only one unique record of Google API Key " />
+		</group>
+	</form>
+</object-views>
