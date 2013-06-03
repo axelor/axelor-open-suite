@@ -13,6 +13,10 @@
     </grid>
     
     <form name="sales-order-form" title="Sale order" model="com.axelor.apps.supplychain.db.SalesOrder" cols="4" onNew="action-sales-order-record-default">
+    <toolbar>
+	    <!--  Use this button to create document for the current entity using the template, u have to define the controller for it... -->
+	    <button name="createDocument" title="Create Document" onClick="com.axelor.apps.supplychain.web.SalesOrderController:saveDocumentForOrder" />
+	</toolbar>
     	<group colSpan="3" cols="4" colWidths="17%,33%,17%,33%">
 	    	<field name="salesOrderSeq"/>
 			<field name="company"/>
