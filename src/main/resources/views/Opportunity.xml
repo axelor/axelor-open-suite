@@ -27,13 +27,13 @@
 	        <field name="probability"/>
 	        <field name="campaign"/>
 	        <field name="nextStep"/>
-	        <field name="company"/>
 	        <break/>
 	        <field name="description" colSpan="4"/>
 		</group>
         <group title="Assigned to" canCollapse="true">
 	        <field name="userInfo"/>
 	    	<field name="team"/>
+	        <field name="company"/>
         </group>
     </form>
     

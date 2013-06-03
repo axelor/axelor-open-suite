@@ -35,6 +35,7 @@
         <group title="Assigned to" canCollapse="true" colSpan="4">
 	        <field name="userInfo"/>
 	    	<field name="team"/>
+	        <field name="company"/>
         </group>
         <group colSpan="3" cols="4" colWidths="25%,25%,25%,25%">
 	        <field name="hasForceEmailSending"/>
