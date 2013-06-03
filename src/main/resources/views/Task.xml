@@ -97,7 +97,7 @@
 	</form>
     
     <action-record name="action-task-default-record" model="com.axelor.apps.organisation.db.Task">
-    	<field name="startDateT" expr="eval: __date__" if="startDateT == null"/>
+    	<field name="startDateT" expr="eval: __time__" if="startDateT == null"/>
     	<field name="statusSelect" expr="eval: _statusSelect"/>
     	<field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
     </action-record>

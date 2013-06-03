@@ -32,7 +32,7 @@
 		model="com.axelor.apps.organisation.db.ExpenseLine" cols="4" onNew="action-expenseline-default-record">
 		<field name="affair" />
 		<field name="expenseTypeSelect" />
-		<field name="product" onChange="action-expenseline-product"/>
+		<field name="product" domain="self.applicationTypeSelect = 3 and self.endDate IS NULL or CURRENT_DATE &lt; self.endDate" onChange="action-expenseline-product,action-expenseline-compute-total"/>
 		<field name="unit" />
 		<field name="qty" onChange="action-expenseline-compute-total"/>
 		<field name="price" onChange="action-expenseline-compute-total"/>
@@ -60,8 +60,8 @@
     
     <action-record name="action-expenseline-product" model="com.axelor.apps.organisation.db.ExpenseLine">
     	<field name="shortDescription" expr="product.name"/>
-    	<field name="unit" expr="product.unit"/>
-    	<field name="price" expr="product.purchasePrice"/>
-    	<field name="total" expr="eval:qty*price" if="qty != null &amp;&amp; price != null"/>
+    	<field name="unit" expr="eval: product?.unit"/>
+    	<field name="price" expr="eval: product?.purchasePrice"/>
     </action-record>
+    
 </object-views>

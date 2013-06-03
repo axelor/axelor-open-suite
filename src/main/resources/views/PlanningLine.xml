@@ -50,7 +50,6 @@
     
     <action-record name="action-planningline-default-record" model="com.axelor.apps.organisation.db.PlanningLine">
     	<field name="fromDate" expr="eval: __date__" if="fromDate == null"/>
-    	<!--  <field name="duration" expr="eval: _statusSelect"/> -->
     </action-record>
     
 </object-views>
