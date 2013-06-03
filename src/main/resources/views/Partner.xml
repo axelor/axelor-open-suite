@@ -13,7 +13,7 @@
     </grid>
     
     <form cols="4" colWidths="25*" name="partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" onLoad="action-partner-attrs-change-name,action-partner-attrs-hide-tabs"
-      	onNew="action-partner-record-partner-type-select">
+      	onNew="action-partner-record-partner-type-select,action-partner-record-set-default">
     	<group colSpan="1">
     		<field name="picture"/>
     	</group>
@@ -32,7 +32,7 @@
     	<field name="supplierTypeSelect" hideIf="isContact || !isSupplier"/>
     	<field name="source" hideIf="isContact"/>
     	<break/>
-    	<field name="isContact" hideIf="partnerTypeSelect != 2" onChange="action-partner-attrs-hide-tabs"/>
+    	<field name="isContact" hideIf="partnerTypeSelect != 2" onChange="action-partner-set-non-contact-fields,action-partner-attrs-hide-tabs"/>
     	<field name="parentPartner" hideIf="partnerTypeSelect != 1"/>
     	<field name="partnerSeq"/>
     	<field name="languageSelect" hideIf="isContact || partnerTypeSelect == 1"/>
