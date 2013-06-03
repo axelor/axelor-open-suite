@@ -21,6 +21,7 @@
     <string name="nextStep" title="Next step"/>
     <string name="description" large="true" title="Description"/>
    	<many-to-one name="source" ref="com.axelor.apps.base.db.Source" title="Source"/>
+   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     
     
     
