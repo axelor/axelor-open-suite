@@ -80,6 +80,7 @@
 		<view type="form" name="timesheet-form" />
 		<domain>self.userInfo.internalUser.id = :_internalUserId</domain>
 		<context name="_internalUserId" expr="eval: __user__.id"/>
+		<context name="_statusSelect" expr="1"/>
 	</action-view>
 	
 	<menuitem name="hr-root-inputforms-travelexpenses" parent="hr-root-inputforms"
@@ -91,6 +92,7 @@
 		<view type="form" name="expense-form" />
 		<domain>self.statusSelect = 'draft' and self.userInfo.internalUser.id = :_internalUserId</domain>
 		<context name="_internalUserId" expr="eval: __user__.id"/>
+		<context name="_activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
 	</action-view>
 	
 	<menuitem name="hr-root-inputforms-overtimes" parent="hr-root-inputforms"
@@ -102,6 +104,7 @@
 		<view type="form" name="overtime-form" />
 		<domain>self.statusSelect = 'draft' and self.userInfo.internalUser.id = :_internalUserId</domain>
 		<context name="_internalUserId" expr="eval: __user__.id"/>
+		<context name="_activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
 	</action-view>
 	
 	<menuitem name="hr-root-validationforms" parent="hr-root"
@@ -114,6 +117,7 @@
 		model="com.axelor.apps.organisation.db.Timesheet" icon="img/icons/organisation_small.png">
 		<view type="grid" name="timesheet-grid" />
 		<view type="form" name="timesheet-form" />
+		<context name="_statusSelect" expr="1"/>
 	</action-view>
 	
 	<menuitem name="hr-root-validationforms-travelexpenses" parent="hr-root-validationforms"
@@ -124,6 +128,7 @@
 		<view type="grid" name="expense-grid" />
 		<view type="form" name="expense-form" />
 		<domain>self.statusSelect = 'submited'</domain>
+		<context name="_activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
 	</action-view>
 	
 	<menuitem name="hr-root-validationforms-overtimes" parent="hr-root-validationforms"
@@ -134,6 +139,7 @@
 		<view type="grid" name="overtime-grid" />
 		<view type="form" name="overtime-form" />
 		<domain>self.statusSelect = 'submited'</domain>
+		<context name="_activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
 	</action-view>	
 		
 	<menuitem name="hr-root-paymentforms" parent="hr-root"
@@ -146,6 +152,7 @@
 		model="com.axelor.apps.organisation.db.Timesheet" icon="img/icons/organisation_small.png">
 		<view type="grid" name="timesheet-grid" />
 		<view type="form" name="timesheet-form" />
+		<context name="_statusSelect" expr="1"/>
 	</action-view>
 	
 	<menuitem name="hr-root-paymentforms-travelexpenses" parent="hr-root-paymentforms"
@@ -156,6 +163,7 @@
 		<view type="grid" name="expense-grid" />
 		<view type="form" name="expense-form" />
 		<domain>self.statusSelect = 'validated'</domain>
+		<context name="_activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
 	</action-view>
 	
 	<menuitem name="hr-root-paymentforms-overtimes" parent="hr-root-paymentforms"
@@ -166,6 +174,7 @@
 		<view type="grid" name="overtime-grid" />
 		<view type="form" name="overtime-form" />
 		<domain>self.statusSelect = 'validated'</domain>
+		<context name="_activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
 	</action-view>	
 	
 	<menuitem name="hr-root-conf" parent="hr-root" title="Configuration"
@@ -178,6 +187,7 @@
 		model="com.axelor.apps.organisation.db.Expense" icon="img/icons/parameter_small.png">
 		<view type="grid" name="expense-grid" />
 		<view type="form" name="expense-form" />
+		<context name="_activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
 	</action-view>	
 	
 	<menuitem name="hr-root-leave-request" parent="hr-root-conf"
@@ -197,6 +207,7 @@
 		model="com.axelor.apps.organisation.db.Overtime" icon="img/icons/parameter_small.png">
 		<view type="grid" name="overtime-grid" />
 		<view type="form" name="overtime-form" />
+		<context name="_activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
 	</action-view>	
 	
 	<menuitem name="hr-root-training" parent="hr-root-conf"
@@ -215,6 +226,7 @@
 		model="com.axelor.apps.organisation.db.Timesheet" icon="img/icons/parameter_small.png">
 		<view type="grid" name="timesheet-grid" />
 		<view type="form" name="timesheet-form" />
+		<context name="_statusSelect" expr="1"/>
 	</action-view>	
 	
 	<menuitem name="hr-root-planning" parent="hr-root-conf"
@@ -287,6 +299,7 @@
 		<view type="grid" name="task-grid" />
 		<view type="form" name="task-form" />
 		<view type="calendar" name="task-calendar"/>
+		<context name="_statusSelect" expr="1"/>
 	</action-view>
 
 

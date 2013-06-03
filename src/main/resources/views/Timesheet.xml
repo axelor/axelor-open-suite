@@ -11,7 +11,8 @@
         <field name="statusSelect"/>
     </grid>
     
-    <form name="timesheet-form" title="Timesheet" model="com.axelor.apps.organisation.db.Timesheet" cols="8">
+    <form name="timesheet-form" title="Timesheet" model="com.axelor.apps.organisation.db.Timesheet" cols="8"
+    onNew="action-timesheet-default-record">
         <field name="userInfo"/>
         <field name="period"/>
         <field name="fromDate"/>
@@ -41,5 +42,12 @@
         <field name="timesheetInputTotal"/>
         <field name="timesheetTotalByTypeList" colSpan="8"/>
     </form>
+    
+    <action-record name="action-timesheet-default-record" model="com.axelor.apps.organisation.db.Timesheet">
+    	<field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+    	<field name="fromDate" expr="eval: __date__"/>
+    	<field name="toDate" expr="eval: __date__"/>
+    	<field name="statusSelect" expr="eval: _statusSelect"/> 	
+    </action-record>
     
 </object-views>

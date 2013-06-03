@@ -19,9 +19,9 @@
 		<field name="shortDescription" />
 		<field name="expenseTypeSelect" />
 		<field name="affair" />
-		<field name="quantity" />
+		<field name="qty" />
 		<field name="unit" />
-		<field name="unitPrice" />
+		<field name="price" />
 		<field name="total" />
 		<field name="file" />
 		<field name="fileReceived" />
@@ -29,16 +29,16 @@
 	</grid>
 
 	<form name="expense-line-form" title="Expense Line"
-		model="com.axelor.apps.organisation.db.ExpenseLine" cols="4">
+		model="com.axelor.apps.organisation.db.ExpenseLine" cols="4" onNew="action-expenseline-default-record">
 		<field name="affair" />
 		<field name="expenseTypeSelect" />
-		<field name="product" />
+		<field name="product" onChange="action-expenseline-product"/>
 		<field name="unit" />
-		<field name="quantity" />
-		<field name="unitPrice" />
+		<field name="qty" onChange="action-expenseline-compute-total"/>
+		<field name="price" onChange="action-expenseline-compute-total"/>
 		<field name="reference" />
 		<field name="sequence" />
-		<field name="total" />
+		<field name="total"/>
 		<break />
 		<group title="Proofs" colSpan="4">
 			<field name="file" />
@@ -49,5 +49,19 @@
 		<field name="isInvoiced"/>
 	</form>
 
-
+	<action-record name="action-expenseline-default-record" model="com.axelor.apps.organisation.db.ExpenseLine">
+    	<field name="expenseTypeSelect" expr="notReinvoiceable"/>
+    	<field name="qty" expr="1"/>
+    </action-record>
+    
+    <action-record name="action-expenseline-compute-total" model="com.axelor.apps.organisation.db.ExpenseLine">
+    	<field name="total" expr="eval:qty*price" if="qty != null &amp;&amp; price != null"/>
+    </action-record>
+    
+    <action-record name="action-expenseline-product" model="com.axelor.apps.organisation.db.ExpenseLine">
+    	<field name="shortDescription" expr="product.name"/>
+    	<field name="unit" expr="product.unit"/>
+    	<field name="price" expr="product.purchasePrice"/>
+    	<field name="total" expr="eval:qty*price" if="qty != null &amp;&amp; price != null"/>
+    </action-record>
 </object-views>

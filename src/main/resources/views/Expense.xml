@@ -22,7 +22,8 @@
         <field name="progress" widget="Progress"/>
     </grid>
     
-    <form name="expense-form" title="Travel expense" model="com.axelor.apps.organisation.db.Expense" cols="4">
+    <form name="expense-form" title="Travel expense" model="com.axelor.apps.organisation.db.Expense" cols="4"
+    onNew="action-expense-default-record">
 		<field name="userInfo"/>
         <field name="isRecurrentExpense" colSpan="2"/>
         <field name="date" />
@@ -41,5 +42,10 @@
         <button name="refuse" title="Refuse" colSpan="2" onClick="save"/>
     </form>
     
-
+	<action-record name="action-expense-default-record" model="com.axelor.apps.organisation.db.Expense">
+    	<field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+    	<field name="date" expr="eval: __date__"/>
+    	<field name="currency" expr="eval: _activeCompany.currency"/>	
+    	<field name="statusSelect" expr="draft"/>
+    </action-record>
 </object-views>
