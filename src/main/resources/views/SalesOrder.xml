@@ -12,7 +12,7 @@
         <field name="inTaxTotal"/>
     </grid>
     
-    <form name="sales-order-form" title="Sale order" model="com.axelor.apps.supplychain.db.SalesOrder" cols="4" onNew="action-sales-order-record-default">
+    <form name="sales-order-form" title="Sale order" model="com.axelor.apps.supplychain.db.SalesOrder" cols="4" onNew="action-sales-order-record-default,action-sales-order-record-currency">
     	<group colSpan="3" cols="4" colWidths="17%,33%,17%,33%">
 	    	<field name="salesOrderSeq"/>
 			<field name="company"/>
@@ -61,7 +61,7 @@
         	</page>
         	<page title="Other informations">
         		<field name="salesmanUserInfo"/>
-        		<field name="team"/>
+        		<field name="team" onSelect="action-sales-order-domain-on-team"/>
         		<field name="paymentMode"/>
         		<field name="paymentCondition"/>
         		<field name="source"/>
@@ -82,6 +82,10 @@
         </notebook>
     </form>
     
+    <action-attrs name="action-sales-order-domain-on-team">
+    	<attribute name="domain" for="team" expr="eval: &quot;self.id IN (${salesmanUserInfo?.teamSet.collect{it.id}?.join(',')})&quot;"/>
+    </action-attrs>
+    
     <action-method name="action-sales-order-method-show-sales-order">
 		<call class="com.axelor.apps.supplychain.web.SalesOrderController" method="showSalesOrder"/>
 	</action-method>
@@ -94,9 +98,17 @@
     	<field name="statusSelect" expr="eval: 4"/>
     </action-record>
     
+    <action-record name="action-sales-order-record-currency" model="com.axelor.apps.supplychain.db.SalesOrder">
+	    <field name="currency" expr="eval: company?.currency"/>
+	</action-record>
+    
     <action-record name="action-sales-order-record-default" model="com.axelor.apps.supplychain.db.SalesOrder">
     	<field name="creationDate" expr="eval: __date__"/>
     	<field name="statusSelect" expr="eval: 1"/>
+    	<field name="company"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+    	<field name="invoicingTypeSelect" expr="eval: 6"/>
+    	<field name="salesmanUserInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+    	<field name="team" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
     </action-record>
     
     <action-record name="action-sales-order-record-partner" model="com.axelor.apps.supplychain.db.SalesOrder">
