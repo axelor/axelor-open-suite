@@ -120,7 +120,7 @@
 		title="Create Task" action="crm.root.create.task" />
 
 	<action-view name="crm.root.create.task" title="Create Task"
-		model="com.axelor.apps.crm.db.Event" icon="img/icons/crm_small.png">
+		model="com.axelor.apps.crm.db.Event" icon="img/icons/new.png">
 		<view type="form" name="crm-task-form"/>
 		<view type="grid" name="crm-task-grid"/>
 		<domain>self.typeSelect = 3 and self.userInfo.internalUser.id = :_internalUser</domain>
@@ -132,7 +132,7 @@
 		title="Create Meeting" action="crm.root.create.meeting" />
 
 	<action-view name="crm.root.create.meeting" title="Create Meeting"
-		model="com.axelor.apps.crm.db.Event" icon="img/icons/crm_small.png">
+		model="com.axelor.apps.crm.db.Event" icon="img/icons/new.png">
 		<view type="form" name="meeting-form"/>
 		<view type="grid" name="meeting-grid"/>
 		<domain>self.typeSelect = 2 and self.userInfo.internalUser.id = :_internalUser</domain>
@@ -144,7 +144,7 @@
 		title="Create Call" action="crm.root.create.call" />
 
 	<action-view name="crm.root.create.call" title="Create Call"
-		model="com.axelor.apps.crm.db.Event" icon="img/icons/crm_small.png">
+		model="com.axelor.apps.crm.db.Event" icon="img/icons/new.png">
 		<view type="form" name="call-form"/>
 		<view type="grid" name="call-grid"/>
 		<domain>self.typeSelect = 1 and self.userInfo.internalUser.id = :_internalUser</domain>
@@ -156,7 +156,7 @@
 		title="Create Ticket" action="crm.root.create.ticket" />
 
 	<action-view name="crm.root.create.ticket" title="Create Ticket"
-		model="com.axelor.apps.crm.db.Event" icon="img/icons/crm_small.png">
+		model="com.axelor.apps.crm.db.Event" icon="img/icons/new.png">
 		<view type="form" name="ticket-form"/>
 		<view type="grid" name="ticket-grid"/>
 		<domain>self.typeSelect = 5 and self.userInfo.internalUser.id = :_internalUser</domain>
