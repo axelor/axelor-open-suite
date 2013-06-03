@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+	<grid name="ln-status-update-grid" title="Updates" orderBy="-updateTime" model="com.axelor.apps.base.db.LnStatusUpdates">
+		<toolbar>
+			<button name="edit" title="" hidden="true" />
+			<button name="save" title="" hidden="true" />
+			<button name="search" title="" hidden="true" />
+		</toolbar>
+		<field name="updateContent" title="Content" />
+		<field name="updateTime" />
+		<field name="commentList" title="Comments">
+			<grid title="Comment List">
+				<field name="commentText" title="Comment" />
+				<field name="fromUser" title="By" />
+				<field name="commentTime" title="Time" />
+			</grid>
+		</field>
+	</grid>
+
+	<form name="ln-status-update-form" title="Status Update" cols="4" colWidths="15%,*,25%"
+		onLoad="action-post-attributes,action-refresh-comments" onSave="action-status-update,save,action-post-attributes"
+		onNew="status-update-curUser,action-post-attributes" model="com.axelor.apps.base.db.LnStatusUpdates">
+		<group colSpan="4" cols="4">
+			<field name="updateId" title="Id" colSpan="3" readonly="true" />
+			<break />
+			<field name="updateContent" title="Content" colSpan="3" widget="html"/>
+			<break />
+			<field name="curUser" title="User" hidden="true" />
+			<break />
+			<field name="updateTime" hidden="true" colSpan="3" readonly="true" title="Time"/>
+		</group>
+		<break />
+		<group colSpan="1" cols="3" colWidths="15%">
+			<button name="getComments" title="Get Comments" hidden="true"
+				onClick="action-get-comments,action-refresh-comments" colSpan="1" />
+			<button name="addComment" title="Add Comment" hidden="true"
+				onClick="unhideCommentsfield" colSpan="1" />
+			<spacer colSpan="1" />
+		</group>
+		<break />
+		<group name="commentgroup" title="Comment" hidden="true"
+			colSpan="4" cols="4">
+			<field name="commentText" title="Comment" colSpan="3" />
+			<group cols="2" colSpan="1">
+				<button name="addStatusComment" title="Add"
+					onClick="action-status-comment,hideCommentsfield,action-refresh-comments,action-comment-clear" />
+				<button name="cancel" title="Cancel"
+					onClick="action-comment-clear,hideCommentsfield" />
+			</group>
+		</group>
+		<break />
+		<notebook name="notebook" hidden="true" colSpan="4">
+			<page title="Comments">
+				<field name="commentList" colSpan="3" readonly="true">
+					<grid title="" orderBy="-commentTime">
+						<field name="commentText" title="Comments" />
+						<field name="commentTime" title="Time" />
+						<field name="fromUser" title="By" />
+					</grid>
+					<form title="Comments">
+						<field name="commentText" title="Comments" colSpan="4" readonly="true" />
+						<break />
+						<field name="commentTime" title="Time" colSpan="4" readonly="true" />
+						<break />
+						<field name="fromUser" title="By" readonly="true" />
+					</form>
+				</field>
+			</page>
+		</notebook>
+	</form>
+
+	<action-attrs name="hideCommentsfield">
+		<attribute name="hidden" for="addComment" expr="false" />
+		<attribute name="hidden" for="commentgroup" expr="true" />
+		<attribute name="required" for="commentText" expr="false" />
+	</action-attrs>
+
+	<action-attrs name="unhideCommentsfield">
+		<attribute name="hidden" for="addComment" expr="true" />
+		<attribute name="hidden" for="commentgroup" expr="false" />
+		<attribute name="required" for="commentText" expr="true" />
+	</action-attrs>
+
+	<action-attrs name="action-post-attributes">
+		<attribute name="hidden" for="notebook" expr="eval: id==null" />
+		<attribute name="hidden" for="updateTime" expr="eval: id==null" />
+		<attribute name="hidden" for="getComments" expr="eval: id==null" />
+		<attribute name="hidden" for="addComment" expr="eval: id==null" />
+		<attribute name="readonly" for="updateContent" expr="eval: id!=null" />
+	</action-attrs>
+
+	<action-method name="action-comment-clear">
+		<call class="com.axelor.sn.web.LnController" method="clearCommentfield" />
+	</action-method>
+
+	<action-method name="action-status-update">
+		<call class="com.axelor.sn.web.LnController" method="updateStatus" />
+	</action-method>
+
+	<action-method name="action-status-comment">
+		<call class="com.axelor.sn.web.LnController" method="addStatusComment" />
+	</action-method>
+
+	<action-method name="action-refresh-comments">
+		<call class="com.axelor.sn.web.LnController" method="refreshComments" />
+	</action-method>
+
+	<action-method name="action-get-comments">
+		<call class="com.axelor.sn.web.LnController" method="getComments" />
+	</action-method>
+	
+	<action-record name="status-update-curUser" model="com.axelor.apps.base.db.LnStatusUpdates">
+		<field name="curUser" expr="eval: __user__"/>
+	</action-record>
+</object-views>

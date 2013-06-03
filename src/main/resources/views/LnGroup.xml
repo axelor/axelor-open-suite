@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+	<grid title="Groups" name="linkedin-group-membership-grid" model="com.axelor.apps.base.db.LnGroup" orderBy="groupName">
+		<toolbar>
+			<button name="memberships" title="Memberships" onClick="action-get-membership" />
+			<button name="new" title="" hidden="true" />
+		</toolbar>
+		<field name="groupName" title="Name" />
+		<field name="membershipState" title="Membership State" />
+	</grid>
+	<form title="Group Discussions" name="linkedin-group-membership-form"
+		cols="4" onNew="action-view-discussion" onLoad="action-view-discussion" model="com.axelor.apps.base.db.LnGroup">
+		<toolbar>
+			<button name="new" title="" hidden="true" />
+		</toolbar>
+		<field name="groupId" title="Group ID" readonly="true" colSpan="3" />
+		<break />
+		<field name="groupName" title="Name" readonly="true" colSpan="3" />
+		<break />
+		<field name="membershipState" title="Membership State" readonly="true"
+			colSpan="3" />
+		<separator colSpan="4" />
+		<button name="getDiscussions" title="Get Discussions" hidden="true"
+			onClick="action-get-discussions,action-refresh-discussions" />
+		<notebook colSpan="4" name="notebook">
+			<page title="Discussions" name="discussion">
+				<field name="discussionList" readonly="true">
+					<grid title="Discussions" orderBy="-discussionTime">
+						<field name="discussionTitle" title="Title" />
+						<field name="discussionSummary" title="Summary" />
+						<field name="discussionFrom" title="From" />
+						<field name="discussionTime" title="Time" />
+					</grid>
+				</field>
+			</page>
+		</notebook>
+	</form>
+	<action-method name="action-get-membership">
+		<call class="com.axelor.sn.web.LnController" method="getMembership" />
+	</action-method>
+	
+	<action-method name="action-refresh-discussions">
+		<call class="com.axelor.sn.web.LnController" method="refreshDiscussions" />
+	</action-method>
+	
+	<action-method name="action-get-discussions">
+		<call class="com.axelor.sn.web.LnController" method="getDiscussions" />
+	</action-method>
+	
+	<action-method name="action-post-discussions">
+		<call class="com.axelor.sn.web.LnController" method="postDiscussions" />
+	</action-method>
+	
+	<action-attrs name="action-view-discussion">
+		<attribute name="hidden" for="notebook" expr="eval: id==null" />
+		<attribute name="hidden" for="getDiscussions" expr="eval: id==null" />
+	</action-attrs>
+
+</object-views>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+
+	<grid title="Post Event Grid" name="post-event-grid" model="com.axelor.apps.base.db.FBPostEvent"
+		orderBy="-postedTime">
+		<toolbar>
+			<button name="edit" title="Edit" hidden="true" />
+			<button name="save" title="Save" hidden="true" />
+			<button name="delete" title="Delete" hidden="true" />
+			<button name="btnfbdel" title="Delete"
+				onClick="com.axelor.sn.web.FBController:getDeleteEvent"
+				prompt="It will delete record(s) from Facebook and Database would you like to Continue?" />
+		</toolbar>
+		<field name="postedTime" readonly="true" title="Posted On"></field>
+		<field name="occession" title="Occession"></field>
+		<field name="location" title="Location"></field>
+		<field name="startdate" title="Start Date"></field>
+		<field name="enddate" title="End Date"></field>
+		<field name="acknowledgment" title="Acknowledgment" hidden="true"></field>
+		<field name="curUser" hidden="true"></field>
+	</grid>
+
+	<selection name="privacy-param-event">
+		<option value="OPEN">Open</option>
+		<option value="SECRET">Secret</option>
+		<option value="FRIENDS">Friends</option>
+	</selection>
+
+	<form title="Post Event Form1" name="post-event-form1" onNew="action-user-post-event-user"
+		onSave="com.axelor.sn.web.FBController:postEvent" model="com.axelor.apps.base.db.FBPostEvent">
+
+		<toolbar>
+			<button name="edit" title="Edit" hidden="true" />
+		</toolbar>
+		<field name="startdate" title="Start Date" required="true"></field>
+		<field name="enddate" title="End Date" required="true"></field>
+		<field name="occession" title="Occasion" required="true" widget="html"></field>
+		<field name="location" title="Location"></field>
+		<field name="privacy" canSelect="true" selection="privacy-param-event"
+			required="true"></field>
+		<field name="acknowledgment" title="Acknowledgment" readonly="true"
+			hidden="true"></field>
+		<field name="postedTime" readonly="true"></field>
+		<break />
+		<field name="curUser" readonly="true" hidden="true"></field>
+	</form>
+
+	<action-record name="action-user-post-event-user" model="com.axelor.apps.base.db.FBPostEvent">
+		<field name="curUser" expr="eval:__user__" />
+		<field name="postedTime" expr="eval:__datetime__" />
+	</action-record>
+
+</object-views>

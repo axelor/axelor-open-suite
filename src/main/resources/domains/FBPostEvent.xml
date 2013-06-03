@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+	<module name="base" package="com.axelor.apps.base.db" />
+	<entity name="FBPostEvent">
+		<string name="occession" help="Event Name for Facebbok to Publish" ></string>
+		<string name="location" help="Location for Event to Publish"></string>
+		<datetime name="startdate" tz="true" help="Start Date and Time of Event For Facebook"></datetime>
+		<datetime name="enddate" tz="true" help="End Date and Time of Event for Facebook"></datetime>
+		<string name="privacy" help="Privacy Option for Posting Content"></string>
+		<string name="acknowledgment" help="Facebook Generated Unique ID for Posted Content on Successful Post "></string>
+		<many-to-one name="curUser" ref="com.axelor.auth.db.User" help="Currently Active ERP User"></many-to-one>
+		<datetime name="postedTime" tz="true" help="Posted Content Date and Time of Facebook"></datetime>
+	</entity>
+</domain-models>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+	<module name="base" package="com.axelor.apps.base.db" />
+	<entity name="FBNotification">
+		<string name="notifId" title="Notification ID" help="Unique Notification ID"></string>
+		<string name="title" title="Content of Update" help="Content of Notification"></string>
+		<string name="link" title="Direct Link To Update" help="Link To Content"></string>
+		<string name="updateTime" title="Time of Update" help="Time of Notification Creation"></string>
+		<many-to-one name="curUser" ref="com.axelor.auth.db.User" help="Currently Active ERP User"></many-to-one>
+	</entity>
+</domain-models>

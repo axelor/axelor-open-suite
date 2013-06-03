@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+	<grid title="Sent Messages" name="direct-msg-grid" orderBy="-postedDate"
+		model="com.axelor.apps.base.db.TwitterDirectMessage">
+		<field name="userId" domain="self.curUser=:curUser and self.snType=:snType" />
+		<field name="msgcontent" />
+		<field name="postedDate"></field>
+	</grid>
+
+	<form name="direct-msg-form" title="Twitter Direct Message"
+		onLoad="action-control-display" model="com.axelor.apps.base.db.TwitterDirectMessage"
+		onNew="com.axelor.sn.web.TWTController:saySNType,action-control-display,action-say-date,action-val-fie"
+		onSave="com.axelor.sn.web.TWTController:directMessage">
+		<toolbar>
+			<button name="edit" title="Edit" hidden="true" />
+			<button name="delete" title="Delete" hidden="true" />
+		</toolbar>
+		<group title="Send Direct Message">
+			<field name="snType"></field>
+			<field name="curUser" hidden="true" />
+			<break />
+			
+			<field name="userId" domain="self.curUser=:curUser AND self.snType=:snType" />
+			<break />
+			<field name="msgcontent" widget="html"/>
+			<break />
+			<field name="postedDate" hidden="true"></field>
+			<field name="acknowledgment" hidden="true" />
+			<break />
+
+		</group>
+	</form>
+
+
+	<action-attrs name="action-control-display">
+		<attribute name="readonly" for="userId" expr="eval:id!=null" />
+		<attribute name="readonly" for="msgcontent" expr="eval:id!=null" />
+	</action-attrs>
+	<action-record model="com.axelor.apps.base.db.TwitterDirectMessage"
+		name="action-val-fie">
+		<field name="curUser" expr="eval:__user__" />
+	</action-record>
+
+	<action-record name="action-say-date"
+		model="com.axelor.apps.base.db.TwitterDirectMessage">
+		<field name="postedDate" expr="eval:__datetime__" />
+	</action-record>
+	<action-view name="action-view-all-msg" model="com.axelor.apps.base.db.TwitterInbox"
+		title="Inbox!!">
+		<view type="grid" name="twt-inbox-grid" />
+	</action-view>
+</object-views>

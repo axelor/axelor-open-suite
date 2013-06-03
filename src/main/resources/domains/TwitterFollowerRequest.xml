@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+	<module name="base" package="com.axelor.apps.base.db" />
+	<entity name="TwitterFollowerRequest">
+		<string name="userId" title="Twitter ID"></string>
+		<string name="screenName" title="Screen Name"></string>
+		<string name="name" title="Real Name"></string>
+		<string name="link" title="Profile Link"></string>
+		<string name="sendedOn" title="Sended On"></string>
+		<many-to-one name="curUser" ref="com.axelor.auth.db.User"></many-to-one>
+	</entity>
+</domain-models>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+
+	<selection name="select-functionality">
+
+		<option value="retrive">Retrive</option>
+
+	</selection>
+
+	<grid title="Parameter Configration" name="param-config-grid"
+		model="com.axelor.apps.base.db.FBConfigParameter">
+		<field name="paramLimit"></field>
+		<field name="paramSince"></field>
+		<field name="paramUntil"></field>
+		<field name="curUser" hidden="true"></field>
+	</grid>
+
+	<form title="Parameter Configration" name="param-config-form"
+		onNew="action-tell-user,com.axelor.sn.web.FBController:saySNType"
+		model="com.axelor.apps.base.db.FBConfigParameter">
+		<group canCollapse="true" title="Help" colSpan="3">
+			<label colSpan="3"
+				title="This Parameter Can only set at once although it can be Editable as well as it will used to Retrive Data From Facebook for NEWS FEED(s) and NOTIFICATIONS Only" />
+		</group>
+		<field name="paramLimit"></field>
+		<label title="&lt;Font Size='0.75' Color='#ff0000'&gt;Max:200 Records&lt;/Font&gt;" />
+		<break />
+		<field name="paramSince"></field>
+		<label title="&lt;Font Size='0.75' Color='#ff0000'&gt;Max:15 Days&lt;/Font&gt;" />
+		<break />
+		<field name="paramUntil"></field>
+		<label title="&lt;Font Size='0.75' Color='#ff0000'&gt;Max:2 Days&lt;/Font&gt;" />
+		<break />
+		<field name="curUser" readonly="true"></field>
+	</form>
+
+	<action-record name="action-tell-user" model="com.axelor.apps.base.db.FBConfigParameter">
+		<field name="curUser" expr="eval:__user__" />
+	</action-record>
+</object-views>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+	<grid title="Notifications" name="fb-notif-grid"
+		model="com.axelor.apps.base.db.FBNotification" orderBy="-notifId">
+		<toolbar>
+			<button name="new" title="New" hidden="true" />
+			<button name="edit" title="Edit" hidden="true" />
+			<button name="save" title="Save" hidden="true" />
+			<button name="fire-notif" title="Notification"
+				onClick="com.axelor.sn.web.FBController:getNotificationsFromFB" />
+		</toolbar>
+		<field name="notifId"></field>
+		<field name="title"></field>
+		<field name="link"></field>
+		<field name="updateTime"></field>
+		<field name="curUser" hidden="true"></field>
+	</grid>
+</object-views>
+
