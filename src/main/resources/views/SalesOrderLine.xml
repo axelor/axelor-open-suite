@@ -20,19 +20,19 @@
     
     <form name="sales-order-line-form" title="SO line" model="com.axelor.apps.supplychain.db.SalesOrderLine" cols="4">
    		<field name="sequence"/>
-    	<field name="product" onChange="action-sales-order-line-method-get-product-information,action-sales-order-line-method-compute"/>
+    	<field name="product" domain="self.endDate = null or self.endDate &gt; :__date__" onChange="action-sales-order-line-method-get-product-information,action-sales-order-line-method-compute"/>
     	<field name="product.productCategory"/>
     	<field name="productName"/>
     	<field name="qty" onChange="action-sales-order-line-method-compute"/>
     	<field name="unit"/>
     	<field name="price" onChange="action-sales-order-line-method-compute"/>
-    	<field name="vatLine"/>
+    	<field name="vatLine" domain="self.endDate = null or self.endDate &gt; :__date__"/>
 		<field name="vatLine.vat.name"/>
 		<field name="vatLine.value"/>
     	<field name="exTaxTotal"/>
     	<field name="task"/>
     	<field name="isToPrintLineSubTotal"/>
-    	<field name="employeeSet" colSpan="4"/>
+    	<field name="employeeSet" colSpan="4" domain="self.exitDate = null or self.exitDate &gt; :__date__"/>
     	<field name="candidateSet" colSpan="4"/>
     	<field name="hasToCreateTask"/>
     	<field name="hasToBuy"/>
