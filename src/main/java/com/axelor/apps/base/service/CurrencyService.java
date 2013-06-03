@@ -1,4 +1,4 @@
-package com.axelor.apps.account.service;
+package com.axelor.apps.base.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
