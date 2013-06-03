@@ -24,46 +24,62 @@
 	        <field name="isReinvoicingTime"/>
 	        <field name="isTimeSheetImputable"/>
 	        <field name="defaultTask" hideIf="!isTimeSheetImputable"/>
+	        <field name="parentProject"/>
+			<field name="projectModel"/>
     	</group>
     	<group noLabel="true" colSpan="2" title="Actions">
-    		<button name="createSalesOrder" title="Create quote"/>
-    		<button name="generateNewInstanceOfProject" title="Generate new project instance" hideIf="!isModel"/>
-    		<button name="generateDraftInvoice" title="Generate draft invoice"/>
+    		<button name="createSalesOrder" title="Create quote" colSpan="2"/>
+    		<button name="generateNewInstanceOfProject" title="Generate new project instance" hideIf="!isModel" colSpan="2"/>
+    		<button name="generateDraftInvoice" title="Generate draft invoice" colSpan="2"/>
+    		<button name="showTask" title="Voir les tâches" onClick="action-project-view-task"/>
     	</group>
-    	<field name="customerSaleOrders" title="Customer sale orders" widget="MANY_TO_MANY[type=MANY_TO_MANY|target=com.axelor.apps.supplychain.db.SalesOrder|targetName=name|title=Les commandes clients]" colSpan="6"/>
-    	<field name="customerInvoices" title="Customer invoices" widget="MANY_TO_MANY[type=MANY_TO_MANY|target=com.axelor.apps.account.db.Invoice|targetName=invoiceId|title=Les factures clients]" colSpan="6"/>
-		<separator title="Financial information" colSpan="6"/>
-		<group title="Initial Budget" colSpan="6" cols="6">
-			<field name="initialBudgetTurnover"/>
-			<field name="initialBudgetCost"/>
-			<field name="initialBudgetMargin"/>
-		</group>
-		<group title="Realized" colSpan="6" cols="6">
-			<field name="realizedTurnover"/>
-			<field name="realizedBudgetCost"/>
-			<field name="realizedBudgetMargin"/>
-		</group>
-		<group title="Remaining to do" colSpan="6" cols="6">
-			<field name="remainingTurnover"/>
-			<field name="remainingBudgetCost"/>
-			<field name="remainingBudgetMargin"/>
-		</group>
-		<group title="Estimated final" colSpan="6" cols="6">
-			<field name="expectedFinalTurnover"/>
-			<field name="expectedFinalCost"/>
-			<field name="expectedFinalMargin"/>
-		</group>
-		<field name="plannedTime"/>
-		<field name="spentTime"/>
-		<field name="remainingTime"/>
-		<field name="budgetedExpenses"/>
-		<field name="incurredExpenses"/>
-		<field name="remainingExpenses"/>
-		<field name="parentProject"/>
-		<field name="taskList" colSpan="6"/>
-		<field name="responsibleUserInfo"/>
-		<field name="memberUserInfoSet" colSpan="6"/>
-		<field name="projectModel"/>
+		<notebook colSpan="6">
+	        <page title="Les tâches">
+	            <field name="taskList" colSpan="6"/>
+	        </page>
+	        <page title="Financial information" colSpan="4">
+	            <group title="Initial Budget" colSpan="6" cols="6">
+					<field name="initialBudgetTurnover"/>
+					<field name="initialBudgetCost"/>
+					<field name="initialBudgetMargin"/>
+				</group>
+				<group title="Realized" colSpan="6" cols="6">
+					<field name="realizedTurnover"/>
+					<field name="realizedBudgetCost"/>
+					<field name="realizedBudgetMargin"/>
+				</group>
+				<group title="Remaining to do" colSpan="6" cols="6">
+					<field name="remainingTurnover"/>
+					<field name="remainingBudgetCost"/>
+					<field name="remainingBudgetMargin"/>
+				</group>
+				<group title="Estimated final" colSpan="6" cols="6">
+					<field name="expectedFinalTurnover"/>
+					<field name="expectedFinalCost"/>
+					<field name="expectedFinalMargin"/>
+				</group>
+				<group colSpan="6" cols="6">
+					<field name="plannedTime"/>
+					<field name="spentTime"/>
+					<field name="remainingTime"/>
+					<field name="budgetedExpenses"/>
+					<field name="incurredExpenses"/>
+					<field name="remainingExpenses"/>
+				</group>
+	        </page>
+	        <page title="Responsable / Membres" colSpan="4">
+	            <field name="responsibleUserInfo"/>
+				<field name="memberUserInfoSet" colSpan="6"/>
+	        </page>
+	    </notebook>
     </form>
+    
+    
+    <action-view name="action-project-view-task" title="Les tâches" model="com.axelor.apps.organisation.db.Task">
+		<view type="grid" name="task-grid"/>
+		<view type="form" name="task-form"/>
+		<domain>self.project = :id</domain>
+	</action-view>
+    
     
 </object-views>
