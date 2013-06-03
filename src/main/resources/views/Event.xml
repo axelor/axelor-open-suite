@@ -137,7 +137,7 @@
     <form name="ticket-form" title="Ticket" model="com.axelor.apps.crm.db.Event" cols="6" colWidths="*,400"
     	onNew="action-event-new-record">
     	<group colSpan="6" cols="6"  colWidths="16%,17%,16%,17%,16%,18%">
-	    	<field name="ticketNumberSeq"/>
+	    	<field name="ticketNumberSeq" readonly="true"/>
 	       	<field name="subject"/>
 	       	<field name="eventCategory" domain="self.typeSelect = :typeSelect"/>
 	       	<field name="quaternaryStatusSelect"/>
@@ -160,6 +160,7 @@
 	        	<field name="isTimesheetAffected"/>
 	        </group>
 	        <group colSpan="2" cols="2"  colWidths="40%,60%">
+	        	<field name="createdBy" readonly="true"/>
 	        	<field name="userInfo"/>
 	        	<field name="responsibleUserInfo"/>
 	        </group>
