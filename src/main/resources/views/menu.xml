@@ -117,9 +117,9 @@
 		title="Create"/>
 		
 	<menuitem name="crm-root-create-task" parent="crm-root-create"
-		title="Create Task" action="crm.root.create.task" />
+		title="Task" action="crm.root.create.task" />
 
-	<action-view name="crm.root.create.task" title="Create Task"
+	<action-view name="crm.root.create.task" title="Task"
 		model="com.axelor.apps.crm.db.Event" icon="img/icons/new.png">
 		<view type="form" name="crm-task-form"/>
 		<view type="grid" name="crm-task-grid"/>
@@ -129,9 +129,9 @@
 	</action-view>
 	
 	<menuitem name="crm-root-create-meeting" parent="crm-root-create"
-		title="Create Meeting" action="crm.root.create.meeting" />
+		title="Meeting" action="crm.root.create.meeting" />
 
-	<action-view name="crm.root.create.meeting" title="Create Meeting"
+	<action-view name="crm.root.create.meeting" title="Meeting"
 		model="com.axelor.apps.crm.db.Event" icon="img/icons/new.png">
 		<view type="form" name="meeting-form"/>
 		<view type="grid" name="meeting-grid"/>
@@ -143,7 +143,7 @@
 	<menuitem name="crm-root-create-call" parent="crm-root-create"
 		title="Create Call" action="crm.root.create.call" />
 
-	<action-view name="crm.root.create.call" title="Create Call"
+	<action-view name="crm.root.create.call" title="Call"
 		model="com.axelor.apps.crm.db.Event" icon="img/icons/new.png">
 		<view type="form" name="call-form"/>
 		<view type="grid" name="call-grid"/>
@@ -153,9 +153,9 @@
 	</action-view>
 	
 	<menuitem name="crm-root-create-ticket" parent="crm-root-create"
-		title="Create Ticket" action="crm.root.create.ticket" />
+		title="Ticket" action="crm.root.create.ticket" />
 
-	<action-view name="crm.root.create.ticket" title="Create Ticket"
+	<action-view name="crm.root.create.ticket" title="Ticket"
 		model="com.axelor.apps.crm.db.Event" icon="img/icons/new.png">
 		<view type="form" name="ticket-form"/>
 		<view type="grid" name="ticket-grid"/>
@@ -166,14 +166,11 @@
 	</action-view>
 	
 	<menuitem name="crm-root-meeting-team-calendar" parent="crm-root"
-		title="My Team Meetings Calendar" action="crm.root.meeting.team.calendar" />
+		title="Shared calendar" action="crm.root.meeting.team.calendar" />
 
-	<action-view name="crm.root.meeting.team.calendar" title="My Team Meetings Calendar"
+	<action-view name="crm.root.meeting.team.calendar" title="Shared calendar"
 		model="com.axelor.apps.crm.db.Event" icon="img/icons/calendar-task.png">
 		<view type="calendar" name="meeting-calendar"/>
-		<domain>self.typeSelect = 2 and self.team = :_myActiveTeam</domain>
-		<context name="_typeSelect" expr="2"/>
-		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
 	</action-view>
 
 	<menuitem name="crm-root-team" parent="crm-root"
