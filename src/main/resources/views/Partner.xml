@@ -13,7 +13,7 @@
     </grid>
     
     <form cols="4" colWidths="25*" name="partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" onLoad="action-partner-attrs-change-name,action-partner-attrs-hide-tabs"
-      	onNew="action-partner-record-partner-type-select">
+      	onNew="action-partner-record-partner-type-select,action-partner-record-set-default">
     	<group colSpan="1">
     		<field name="picture"/>
     	</group>
@@ -32,7 +32,7 @@
     	<field name="supplierTypeSelect" hideIf="isContact || !isSupplier"/>
     	<field name="source" hideIf="isContact"/>
     	<break/>
-    	<field name="isContact" hideIf="partnerTypeSelect != 2" onChange="action-partner-attrs-hide-tabs"/>
+    	<field name="isContact" hideIf="partnerTypeSelect != 2" onChange="action-partner-set-non-contact-fields,action-partner-attrs-hide-tabs"/>
     	<field name="parentPartner" hideIf="partnerTypeSelect != 1"/>
     	<field name="partnerSeq"/>
     	<field name="languageSelect" hideIf="isContact || partnerTypeSelect == 1"/>
@@ -191,4 +191,15 @@
 	<action-record name="action-partner-record-partner-type-select" model="com.axelor.apps.base.db.Partner">
     	<field name="partnerTypeSelect" expr="eval:_partnerTypeSelect"/>
     </action-record>
+    <action-record name="action-partner-record-set-default" model="com.axelor.apps.base.db.Partner">
+    	<field name="isCustomer" expr="eval:true" />
+    	<field name="isSupplier" expr="eval:partnerTypeSelect != 2"/>
+    	<field name="currency" expr="eval:com.axelor.apps.base.db.UserInfo.all().filter('internalUser = ?1',__user__).fetchOne().activeCompany?.currency" if="!isContact"/>
+    	<field name="invoiceSendingFormatSelect" expr="eval:'emailpaper'" if="!isContact"/>
+    </action-record>
+     <action-record name="action-partner-set-non-contact-fields" model="com.axelor.apps.base.db.Partner">
+    	<field name="currency" expr="eval:null" if="!isContact"/>
+    	<field name="invoiceSendingFormatSelect" expr="eval:null" if="!isContact"/>
+    </action-record>
+    
 </object-views>
