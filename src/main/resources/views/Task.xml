@@ -12,7 +12,6 @@
     
     
     <grid name="task-grid" title="Tasks" model="com.axelor.apps.organisation.db.Task">
-        <field name="salesOrderLine"/>
         <field name="name"/>
         <field name="project"/>
         <field name="totalTaskDays"/>
