@@ -27,7 +27,6 @@
 	        <field name="statusSelect"/>
         <break/>
 	        <field name="affair"/>
-	        <field name="quote"/>
 	        <field name="lostReasonSelect"/>
 	        <break/>
 	        <field name="lostReasonNote"/>

@@ -6,7 +6,7 @@
   <entity name="Import" lang="java">
   
     <string name="typeSelect" title="Import type" default="csv" required="true" selection="iimport.type.select"/>
-    <datetime name="date" title="Import Date"/>
+    <string name="name" title="Name"/>
     <string name="path" title="Folder path containing files to import" max="2048"/>
     <string name="configPath" title="Path to XML import mapping file" help="Complete path to the XML import mapping file (example : /home/ERP/csv-config.xml)" max="2048" />
     <string name="log" title="Log" multiline="true"  large="true"/>

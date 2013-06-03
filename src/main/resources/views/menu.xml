@@ -174,7 +174,14 @@
 		<view type="form" />
 	</action-view>
 	
+	<menuitem name="contact-conf-geographical-area" parent="contact-conf"
+		title="Geographical zones" action="contact.conf.geographical.area" />
 
+	<action-view name="contact.conf.geographical.area" title="Geographical zones"
+		model="com.axelor.apps.base.db.GeographicalArea" icon="img/icons/parameter_small.png">
+		<view type="grid" name="geographical-area-grid" />
+		<view type="form" name="geographical-area-form" />
+	</action-view>
 
 	
 	<menuitem name="product-root" title="Products" priority="170"
@@ -189,6 +196,7 @@
 		<view type="grid" />
 		<view type="form" />
 		<domain>self.endDate IS NULL or CURRENT_DATE &lt; self.endDate</domain>
+		<context name="_activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
 	</action-view>
 	
 	<menuitem name="affair-root-price-list" parent="product-root"
@@ -211,6 +219,7 @@
 		<view type="grid" />
 		<view type="form" />
 		<domain>self.productTypeSelect = 'stockable'</domain>
+		<context name="_activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
 	</action-view>
 	
 	<menuitem name="product-root-filters-service" parent="product-root-filters"
@@ -221,6 +230,7 @@
 		<view type="grid" />
 		<view type="form" />
 		<domain>self.productTypeSelect = 'service'</domain>
+		<context name="_activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
 	</action-view>
 	
 	<menuitem name="product-root-filters-rawmaterials" parent="product-root-filters"
@@ -231,6 +241,7 @@
 		<view type="grid" />
 		<view type="form" />
 		<domain>self.isRawMaterial = true</domain>
+		<context name="_activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
 	</action-view>
 	
 	<menuitem name="product-root-filters-profiles" parent="product-root-filters"
@@ -241,6 +252,7 @@
 		<view type="grid" />
 		<view type="form" />
 		<domain>self.applicationTypeSelect = 2</domain>
+		<context name="_activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
 	</action-view>
 	
 	<menuitem name="product-root-filters-travelexpenses" parent="product-root-filters"
@@ -251,6 +263,7 @@
 		<view type="grid" />
 		<view type="form" />
 		<domain>self.applicationTypeSelect = 3</domain>
+		<context name="_activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
 	</action-view>
 	
 	<menuitem name="product-root-filters-obsoleteproducts" parent="product-root-filters"
@@ -261,6 +274,7 @@
 		<view type="grid" />
 		<view type="form" />
 		<domain>self.endDate IS NOT NULL and CURRENT_DATE &gt; self.endDate</domain>
+		<context name="_activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
 	</action-view>
 	
 	<menuitem name="product-conf" parent="product-root" title="Configuration"

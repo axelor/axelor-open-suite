@@ -8,7 +8,7 @@
 	<entity name="NeedLine" lang="groovy">
 		<many-to-one name="need" ref="com.axelor.apps.consulting.db.Need"></many-to-one>
 		<many-to-one name="product"	ref="com.axelor.apps.base.db.Product" title="Product"/>
-		<string name="profileCategorySelect" selection="needline.profile.category.select"/>
+		<string name="profileCategorySelect" selection="consulting.needline.profile.category.select"/>
 		<many-to-one name="costLine" ref="com.axelor.apps.consulting.db.PriceListLine" title="Cost Line"/>
 		<decimal name="price" title="Price"/>
 <!-- 		 <![CDATA[ -->

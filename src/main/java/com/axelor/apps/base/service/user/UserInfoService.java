@@ -2,6 +2,7 @@ package com.axelor.apps.base.service.user;
 
 import com.axelor.apps.base.db.Agency;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Team;
 import com.axelor.apps.base.db.UserInfo;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -66,6 +67,23 @@ public class UserInfoService {
 		UserInfo userInfo = getUserInfo();
 		if (userInfo != null && userInfo.getActiveCompany() != null){
 			return userInfo.getActiveCompany();
+		}
+	
+		return null;
+	}
+    
+	
+	/**
+	 * Méthode qui retourne l'équipe active de l'utilisateur connecté
+	 * 
+	 * @return Team
+	 * 		L'équipe
+	 */
+	public Team getUserActiveTeam() {
+		
+		UserInfo userInfo = getUserInfo();
+		if (userInfo != null && userInfo.getActiveTeam() != null){
+			return userInfo.getActiveTeam();
 		}
 	
 		return null;
