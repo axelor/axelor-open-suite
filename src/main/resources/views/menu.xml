@@ -174,7 +174,14 @@
 		<view type="form" />
 	</action-view>
 	
+	<menuitem name="contact-conf-geographical-area" parent="contact-conf"
+		title="Geographical zones" action="contact.conf.geographical.area" />
 
+	<action-view name="contact.conf.geographical.area" title="Geographical zones"
+		model="com.axelor.apps.base.db.GeographicalArea" icon="img/icons/parameter_small.png">
+		<view type="grid" name="geographical-area-grid" />
+		<view type="form" name="geographical-area-form" />
+	</action-view>
 
 	
 	<menuitem name="product-root" title="Products" priority="170"
