@@ -1015,7 +1015,7 @@
     
     <!-- Axelor - GoogleApps module menu views -->
 
-    <menuitem name="menu-googleAppsMenu-all" title="Google Apps" icon="img/axelor-googleapps/googleDrive.png" />
+    <menuitem name="menu-googleAppsMenu-all" title="Google Apps" icon="img/axelor-googleapps/googleDrive.png" groups="axelordemo"/>
                 
     <menuitem name="menu-googledocument" title="Document" parent="menu-googleAppsMenu-all" action="googledocument.all" icon="img/axelor-googleapps/docs.png" />
                       
