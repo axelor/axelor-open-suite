@@ -1,4 +1,4 @@
-"id";"titleSelect";"name";"firstName";"entryDate";"CompanyDepartment.id";"internalContact.id";"dailySalaryCost";"macroCategorySelect";"categorySelect";"personalInfo.importId";"toolKeywordSet_importId";"fieldKeywordSet_importId";"jobKeywordSet_importId";"partnerSet";"competence";"emergencyContact";"emergencyNumber";"candidate.id"
+"id";"titleSelect";"firstName";"name";"entryDate";"CompanyDepartment.id";"internalContact.id";"dailySalaryCost";"macroCategorySelect";"categorySelect";"personalInfo.importId";"toolKeywordSet_importId";"fieldKeywordSet_importId";"jobKeywordSet_importId";"partnerSet";"competence";"emergencyContact";"emergencyNumber";"candidate.id"
 1;1;"Yoann";"MARQUES";"2013-05-15";1;90001;;3;3;90001;"17|54|61";70;119;;;"M. MARQUES";"06.38.80.71.99";
 2;2;"Lucy";"ROBERT";"2013-05-15";1;90002;;5;2;90002;"17|35";"70|8";102;;;"M. ROBERT";"06.45.71.73.99";
 3;1;"Lucas";"RICHARD";"2013-05-15";2;90003;;2;2;90003;"61|35|14";70;"108";;;"M. RICHARD";"06.72.59.59.99";

@@ -311,17 +311,17 @@
 		<bind column="jobKeywordSet_importId" to="jobKeywordSet" search="self.importId in :jobKeywordSet_importId" eval="jobKeywordSet_importId.split('\\|') as List"/>
 	</input>
 	
-	<input file="organisation_employee_Prod.csv" separator=";" type="com.axelor.apps.organisation.db.Employee">
-		<bind column="toolKeywordSet_importId" to="toolKeywordSet" search="self.importId in :toolKeywordSet_importId" eval="toolKeywordSet_importId.split('\\|') as List"/>
-		<bind column="fieldKeywordSet_importId" to="fieldKeywordSet" search="self.importId in :fieldKeywordSet_importId" eval="fieldKeywordSet_importId.split('\\|') as List"/>
-		<bind column="jobKeywordSet_importId" to="jobKeywordSet" search="self.importId in :jobKeywordSet_importId" eval="jobKeywordSet_importId.split('\\|') as List"/>
-	</input>
-	
-<!-- 	<input file="organisation_employee_Serv.csv" separator=";" type="com.axelor.apps.organisation.db.Employee"> -->
+<!-- 	<input file="organisation_employee_Prod.csv" separator=";" type="com.axelor.apps.organisation.db.Employee"> -->
 <!-- 		<bind column="toolKeywordSet_importId" to="toolKeywordSet" search="self.importId in :toolKeywordSet_importId" eval="toolKeywordSet_importId.split('\\|') as List"/> -->
 <!-- 		<bind column="fieldKeywordSet_importId" to="fieldKeywordSet" search="self.importId in :fieldKeywordSet_importId" eval="fieldKeywordSet_importId.split('\\|') as List"/> -->
 <!-- 		<bind column="jobKeywordSet_importId" to="jobKeywordSet" search="self.importId in :jobKeywordSet_importId" eval="jobKeywordSet_importId.split('\\|') as List"/> -->
 <!-- 	</input> -->
+	
+	<input file="organisation_employee_Serv.csv" separator=";" type="com.axelor.apps.organisation.db.Employee">
+		<bind column="toolKeywordSet_importId" to="toolKeywordSet" search="self.importId in :toolKeywordSet_importId" eval="toolKeywordSet_importId.split('\\|') as List"/>
+		<bind column="fieldKeywordSet_importId" to="fieldKeywordSet" search="self.importId in :fieldKeywordSet_importId" eval="fieldKeywordSet_importId.split('\\|') as List"/>
+		<bind column="jobKeywordSet_importId" to="jobKeywordSet" search="self.importId in :jobKeywordSet_importId" eval="jobKeywordSet_importId.split('\\|') as List"/>
+	</input>
 	
 <!--     IMPORT DU PACKAGE 'SUPPLY CHAIN' --> 	
 	  	
