@@ -33,7 +33,7 @@
     </grid>
     
     <form cols="4" colWidths="25*" name="partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" onLoad="action-partner-attrs-change-name,action-partner-attrs-hide-tabs"
-      	onNew="action-partner-record-partner-type-select,action-partner-record-set-default">
+      	onNew="action-partner-record-partner-type-select,action-partner-record-set-default" onSave="action-set-partner-seq">
     	<group colSpan="1">
     		<field name="picture"/>
     	</group>

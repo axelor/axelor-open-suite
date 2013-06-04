@@ -27,6 +27,7 @@
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
 		<domain>self.operationTypeSelect = 3</domain>
+		<context name="operationTypeSelect" expr="eval:3"/>
 	</action-view>
 
 	<menuitem name="invoice-root-sales-custrefunds" parent="invoice-root-sales"
@@ -37,6 +38,7 @@
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
 		<domain>self.operationTypeSelect = 4</domain>
+		<context name="operationTypeSelect" expr="eval:4"/>
 	</action-view>
 	
 	<menuitem name="invoice-root-sales-filters" parent="invoice-root-sales"
@@ -135,6 +137,7 @@
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
 		<domain>self.operationTypeSelect = 1</domain>
+		<context name="operationTypeSelect" expr="eval:1"/>
 	</action-view>
 
 	<menuitem name="invoice-root-purchases-suprefunds" parent="invoice-root-purchases"
@@ -145,6 +148,7 @@
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
 		<domain>self.operationTypeSelect = 2</domain>
+		<context name="operationTypeSelect" expr="eval:2"/>
 	</action-view>	
 		
 	<menuitem name="invoice-root-purchases-filters" parent="invoice-root-purchases"
