@@ -15,7 +15,7 @@
         <field name="userInfo"/>
         <field name="revenue"/>
         <field name="cost"/>
-        <button name="update" title="Ajouter"/>
+        <button name="update" title="Add"/>
     </form>
     
     

@@ -6,7 +6,7 @@
 
 	<form name="evaluation-line-form" title="Evaluation lines"
 		model="com.axelor.apps.organisation.db.EvaluationLine">
-		<field name="label" readonly="true" title="Libellé" />
+		<field name="label" readonly="true" />
 		<field name="coefficient" readonly="true"/>
 		<field name="gradeSelect"/>
 	</form>
