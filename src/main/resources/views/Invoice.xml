@@ -185,7 +185,7 @@
             </group>
             <group name="stateGroup" title="Status" colSpan="4" cols="4">
 	            <group colSpan="2" cols="2">
-	                <button name="showInvoice" title="Print" colSpan="2" onClick="action-invoice-method-show-invoice"/>
+	                <button name="showInvoice" title="Print" icon="img/icons/print.png" colSpan="2" onClick="action-invoice-method-show-invoice"/>
 	            </group>
 	            <group colSpan="2" cols="2">
 	                <field name="status" domain="self.invoiceStatusOK = true"/>
