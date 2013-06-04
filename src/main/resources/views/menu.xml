@@ -6,7 +6,7 @@
 
 
 	<menuitem name="invoice-root" title="Invoice" priority="100"
-		icon="img/icons/invoice.png" />
+		icon="img/icons/invoice.png" groups="admins"/>
 		
 	<menuitem name="invoice-root-invoice" parent="invoice-root"
 		title="New invoice" action="invoice.root.invoice" />
@@ -27,6 +27,7 @@
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
 		<domain>self.operationTypeSelect = 3</domain>
+		<context name="operationTypeSelect" expr="eval:3"/>
 	</action-view>
 
 	<menuitem name="invoice-root-sales-custrefunds" parent="invoice-root-sales"
@@ -37,6 +38,7 @@
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
 		<domain>self.operationTypeSelect = 4</domain>
+		<context name="operationTypeSelect" expr="eval:4"/>
 	</action-view>
 	
 	<menuitem name="invoice-root-sales-filters" parent="invoice-root-sales"
@@ -135,6 +137,7 @@
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
 		<domain>self.operationTypeSelect = 1</domain>
+		<context name="operationTypeSelect" expr="eval:1"/>
 	</action-view>
 
 	<menuitem name="invoice-root-purchases-suprefunds" parent="invoice-root-purchases"
@@ -145,6 +148,7 @@
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
 		<domain>self.operationTypeSelect = 2</domain>
+		<context name="operationTypeSelect" expr="eval:2"/>
 	</action-view>	
 		
 	<menuitem name="invoice-root-purchases-filters" parent="invoice-root-purchases"
@@ -256,7 +260,7 @@
 
 
 	<menuitem name="account-root" title="Accounting" priority="90"
-		icon="img/icons/account.png" />
+		icon="img/icons/account.png" groups="admins"/>
 
 	<menuitem name="account-root-tax" parent="account-root" title="Taxes"/>
 

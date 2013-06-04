@@ -220,5 +220,10 @@ class InvoiceController {
 		}
 		
 	}
+	
+	def void setOperationTypeSelect(ActionRequest request, ActionResponse response)  {
+		Invoice invoice = request.context as Invoice
+		response.values = ["operationTypeSelect" : invoice.operationTypeSelect]
+	}
 }
 

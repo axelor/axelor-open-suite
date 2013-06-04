@@ -32,103 +32,106 @@
         <field name="email"/>
     </grid>
     
-    <form cols="4" colWidths="25*" onLoad="action-partner-attrs-change-name,action-partner-attrs-hide-tabs" onNew="action-partner-record-partner-type-select,action-partner-record-set-default" name="partner-form" title="Partner" model="com.axelor.apps.base.db.Partner">
-    <group colSpan="1">
-        <field name="picture"/>
-    </group>
-    <group colSpan="3" cols="6">
-        <field name="name" css="subtotal-total"/>
-        <field name="firstName" hideIf="partnerTypeSelect != 2" css="subtotal-total"/>
-        <field name="titleSelect" hideIf="partnerTypeSelect != 2" css="subtotal-total"/>
-        <break/>
-        <field name="partnerCategory" widget="SuggestBox"/>
-        <field name="partnerTypeSelect" onChange="action-partner-attrs-change-name,action-partner-attrs-hide-tabs"/>
-        <field name="parentPartner" hideIf="partnerTypeSelect != 1"/>
-        <field name="isContact" hideIf="partnerTypeSelect != 2" onChange="action-partner-set-non-contact-fields,action-partner-attrs-hide-tabs"/>
-        <field name="isCustomer"/>
-        <field name="customerTypeSelect" hideIf="isContact || !isCustomer"/>        
-        <field name="isSupplier" hideIf="partnerTypeSelect == 2"/>
-        <field name="supplierTypeSelect" hideIf="isContact || !isSupplier"/>
-        <break/>
-    </group>
-    <field name="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2" colSpan="4" domain="self.isContact = 'true'" grid-view="partner-contact-grid"/>
-    <break/>
-    <notebook colSpan="4">
-        <page name="information" title="Informations">
-            <group title="Partner details" colSpan="3" cols="4">
-                <field name="site"/>
-                <field name="department"/>
-                <field name="source" hideIf="isContact"/>
-            </group>
-            <group title="Postal addresses" colSpan="3" cols="4">
-                <field name="deliveryAddress" onChange="action-partner-record-main-invoicing-address"/>
-                <field name="mainInvoicingAddress"/>
-            </group>
-            <group title="Contact" colSpan="3" cols="4">
-                <field name="email"/>
-                <field name="fax"/>
-                <field name="fixedPhone1"/>
-                <field name="fixedPhone2"/>
-                <field name="fixedPhonePro"/>
-                <field name="mobilePhonePerso"/>
-                <field name="mobilePhonePro"/>
-                <field name="webSite"/>
-            </group>
-        </page>
-        <page title="Links">
-            <group colSpan="4" cols="6">
-                <button name="showSalesOrder1" title="Voir les devis" hideIf="isContact" colSpan="2" onClick="save,action-partner-view-partner-sales-order"/>
-                <button name="showInvoice1" title="Voir les factures" hideIf="isContact" colSpan="2" onClick="save,action-partner-view-partner-invoice"/>
-                <button name="showProject1" title="Voir les projets" hideIf="isContact" colSpan="2" onClick="save,action-partner-view-partner-project"/>
-            </group>
-            <group colSpan="4" cols="6">
-                <button name="showSalesOrder2" title="Voir les devis" showIf="isContact" colSpan="2" onClick="save,action-partner-view-contact-sales-order"/>
-                <button name="showInvoice2" title="Voir les factures" showIf="isContact" colSpan="2" onClick="save,action-partner-view-contact-invoice"/>
-                <button name="showProject2" title="Voir les projets" showIf="isContact" colSpan="2" onClick="save,action-partner-view-contact-project"/>
-            </group>
-            <portlet colSpan="2" action="action-partner-view-partner-event"/>
-            <portlet colSpan="2" action="action-partner-view-partner-opportunities"/>
-        </page>
-        <page name="payment" title="Invoicing/Payment" cols="4">
-            <field name="invoiceSendingFormatSelect"/>
-            <field name="paymentMode"/>
-            <field name="paymentCondition"/>
-            <field name="currency"/>
-            <field name="payerQuality"/>
-            <field name="bankDetails"/>
-            <field name="bankDetailsList" noLabel="true" colSpan="4" form-view="bank-details-form" grid-view="bank-details-grid"/>
-            <button name="showInvoice" title="View all unpaid invoices" colSpan="2" onClick="save,action-partner-method-show-invoice"/>
-        </page>
-        <page title="Settings">
-            <field name="companySet" colSpan="4" widget="TagSelect[create=name]"/>
-            <field name="partnerSeq"/>
-            <field name="languageSelect" hideIf="isContact || partnerTypeSelect == 1"/>
-            
-        </page>
-        <page name="compteClient" title="Customer balance">
-            <field name="accountingSituationList" colSpan="4" widget="MasterDetail" onSelect="action-account-accounting-situation-method-update-customer-account"/>
-        </page>
-        <page name="reportedBalance" title="Reported balance">
-            <field name="reportedBalanceList" colSpan="4">
-                <grid name="reported-balance-grid" title="Reported balances" model="com.axelor.apps.account.db.ReportedBalance">
-                    <field name="company"/>
-                </grid>
-                <form cols="4" name="reported-balance-form" title="Reported balance" model="com.axelor.apps.account.db.ReportedBalance">
-                    <field name="company"/>
-                    <field name="reportedBalanceLineList" colSpan="4">
-                        <grid name="reported-balance-line-grid" title="Reported balance lines" model="com.axelor.apps.account.db.ReportedBalanceLine">
-                            <field name="year"/>
-                            <field name="amount"/>
-                        </grid>
-                        <form cols="4" name="reported-balance-line-form" title="Reported balance line" model="com.axelor.apps.account.db.ReportedBalanceLine">
-                            <field name="year"/>
-                            <field name="amount"/>
-                        </form>
-                    </field>
-                </form>
-            </field>
-        </page>
-    </notebook>
-</form>
+    <form cols="4" colWidths="25*" name="partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" 
+	    onLoad="action-partner-attrs-change-name,action-partner-attrs-hide-tabs" 
+	    onNew="action-partner-record-partner-type-select,action-partner-record-set-default" 
+	    onSave="action-set-partner-seq">
+	    <group colSpan="1">
+	        <field name="picture"/>
+	    </group>
+	    <group colSpan="3" cols="6">
+	        <field name="name" css="subtotal-total"/>
+	        <field name="firstName" hideIf="partnerTypeSelect != 2" css="subtotal-total"/>
+	        <field name="titleSelect" hideIf="partnerTypeSelect != 2" css="subtotal-total"/>
+	        <break/>
+	        <field name="partnerCategory" widget="SuggestBox"/>
+	        <field name="partnerTypeSelect" onChange="action-partner-attrs-change-name,action-partner-attrs-hide-tabs"/>
+	        <field name="parentPartner" hideIf="partnerTypeSelect != 1"/>
+	        <field name="isContact" hideIf="partnerTypeSelect != 2" onChange="action-partner-set-non-contact-fields,action-partner-attrs-hide-tabs"/>
+	        <field name="isCustomer"/>
+	        <field name="customerTypeSelect" hideIf="isContact || !isCustomer"/>        
+	        <field name="isSupplier" hideIf="partnerTypeSelect == 2"/>
+	        <field name="supplierTypeSelect" hideIf="isContact || !isSupplier"/>
+	        <break/>
+	    </group>
+	    <field name="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2" colSpan="4" domain="self.isContact = 'true'" grid-view="partner-contact-grid"/>
+	    <break/>
+	    <notebook colSpan="4">
+	        <page name="information" title="Informations">
+	            <group title="Partner details" colSpan="3" cols="4">
+	                <field name="site"/>
+	                <field name="department"/>
+	                <field name="source" hideIf="isContact"/>
+	            </group>
+	            <group title="Postal addresses" colSpan="3" cols="4">
+	                <field name="deliveryAddress" onChange="action-partner-record-main-invoicing-address"/>
+	                <field name="mainInvoicingAddress"/>
+	            </group>
+	            <group title="Contact" colSpan="3" cols="4">
+	                <field name="email"/>
+	                <field name="fax"/>
+	                <field name="fixedPhone1"/>
+	                <field name="fixedPhone2"/>
+	                <field name="fixedPhonePro"/>
+	                <field name="mobilePhonePerso"/>
+	                <field name="mobilePhonePro"/>
+	                <field name="webSite"/>
+	            </group>
+	        </page>
+	        <page title="Links">
+	            <group colSpan="4" cols="6">
+	                <button name="showSalesOrder1" title="Voir les devis" hideIf="isContact" colSpan="2" onClick="save,action-partner-view-partner-sales-order"/>
+	                <button name="showInvoice1" title="Voir les factures" hideIf="isContact" colSpan="2" onClick="save,action-partner-view-partner-invoice"/>
+	                <button name="showProject1" title="Voir les projets" hideIf="isContact" colSpan="2" onClick="save,action-partner-view-partner-project"/>
+	            </group>
+	            <group colSpan="4" cols="6">
+	                <button name="showSalesOrder2" title="Voir les devis" showIf="isContact" colSpan="2" onClick="save,action-partner-view-contact-sales-order"/>
+	                <button name="showInvoice2" title="Voir les factures" showIf="isContact" colSpan="2" onClick="save,action-partner-view-contact-invoice"/>
+	                <button name="showProject2" title="Voir les projets" showIf="isContact" colSpan="2" onClick="save,action-partner-view-contact-project"/>
+	            </group>
+	            <portlet colSpan="2" action="action-partner-view-partner-event"/>
+	            <portlet colSpan="2" action="action-partner-view-partner-opportunities"/>
+	        </page>
+	        <page name="payment" title="Invoicing/Payment" cols="4">
+	            <field name="invoiceSendingFormatSelect"/>
+	            <field name="paymentMode"/>
+	            <field name="paymentCondition"/>
+	            <field name="currency"/>
+	            <field name="payerQuality"/>
+	            <field name="bankDetails"/>
+	            <field name="bankDetailsList" noLabel="true" colSpan="4" form-view="bank-details-form" grid-view="bank-details-grid"/>
+	            <button name="showInvoice" title="View all unpaid invoices" colSpan="2" onClick="save,action-partner-method-show-invoice"/>
+	        </page>
+	        <page title="Settings">
+	            <field name="companySet" colSpan="4" widget="TagSelect[create=name]"/>
+	            <field name="partnerSeq"/>
+	            <field name="languageSelect" hideIf="isContact || partnerTypeSelect == 1"/>
+	            
+	        </page>
+	        <page name="compteClient" title="Customer balance">
+	            <field name="accountingSituationList" colSpan="4" widget="MasterDetail" onSelect="action-account-accounting-situation-method-update-customer-account"/>
+	        </page>
+	        <page name="reportedBalance" title="Reported balance">
+	            <field name="reportedBalanceList" colSpan="4">
+	                <grid name="reported-balance-grid" title="Reported balances" model="com.axelor.apps.account.db.ReportedBalance">
+	                    <field name="company"/>
+	                </grid>
+	                <form cols="4" name="reported-balance-form" title="Reported balance" model="com.axelor.apps.account.db.ReportedBalance">
+	                    <field name="company"/>
+	                    <field name="reportedBalanceLineList" colSpan="4">
+	                        <grid name="reported-balance-line-grid" title="Reported balance lines" model="com.axelor.apps.account.db.ReportedBalanceLine">
+	                            <field name="year"/>
+	                            <field name="amount"/>
+	                        </grid>
+	                        <form cols="4" name="reported-balance-line-form" title="Reported balance line" model="com.axelor.apps.account.db.ReportedBalanceLine">
+	                            <field name="year"/>
+	                            <field name="amount"/>
+	                        </form>
+	                    </field>
+	                </form>
+	            </field>
+	        </page>
+	    </notebook>
+	</form>
     
 </object-views>

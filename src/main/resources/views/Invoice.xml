@@ -18,20 +18,20 @@
     </grid>
     
     <form name="invoice-form" title="Invoice" model="com.axelor.apps.account.db.Invoice" cols="4" 
-    	onLoad="action-invoice-attrs-status,action-invoice-attrs-debit-blocking,action-invoice-attrs-reminder-blocking,
+    	onLoad="action-invoice-attrs-status,action-invoice-attrs-debit-blocking,action-invoice-attrs-reminder-blocking,action-set-partner-domain,
     	action-invoice-attrs-collapse-irrecoverable-group"
-    	onNew="default-invoice-record,action-invoice-attrs-status,action-invoice-attrs-debit-blocking,action-invoice-attrs-reminder-blocking,
-    	action-invoice-attrs-collapse-irrecoverable-group">
+    	onNew="default-invoice-record,action-invoice-set-operationTypeSelect,action-invoice-attrs-status,action-invoice-attrs-debit-blocking,action-invoice-attrs-reminder-blocking,
+    	action-invoice-attrs-collapse-irrecoverable-group,action-set-partner-domain">
         <field name="endOfCycleOk"/>
         <field name="invoiceId"/>
-        <field name="operationTypeSelect" onChange="action-invoice-method-get-journal,action-invoice-record-partner-change"/>
+        <field name="operationTypeSelect" onChange="action-invoice-method-get-journal,action-invoice-record-partner-change,action-set-partner-domain"/>
         <group name="partnerGroup" title="Invoicing informations" colSpan="4" cols="4" canCollapse="true">
             <field name="company" widget="SuggestBox" onChange="action-invoice-method-get-journal,action-invoice-record-company-change"/>
-            <field name="partner" grid-view="partner-grid" form-view="partner-form" onChange="action-invoice-record-partner-change"/>
+            <field name="partner" grid-view="partner-grid" form-view="partner-form" onChange="action-invoice-record-partner-change"  />
        		<field name="contactPartner" domain="self.isContact = 'true'"/>
             <field name="paymentMode" widget="SuggestBox"/>
             <field name="paymentCondition" widget="SuggestBox"/>
-            <field name="bankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" hideIf="operationTypeSelect >= 3"/>
+            <field name="bankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" hideIf="operationTypeSelect >= 3" domain="self.partner = :partner"/>
             <field name="partnerAccount" onSelect="action-invoice-partner-account-domain"/>
             <field name="address" colSpan="4"/>
         </group>
@@ -133,7 +133,7 @@
 	            <group colSpan="2" cols="2">
             		<button name="compute" title="Compute" colSpan="2" onClick="save,action-invoice-method-compute,save"/>
 	                <button name="computeFooter" title="Compute invoice footer" colSpan="2" onClick="save,action-invoice-method-compute-footer,save"/>
-	                <button name="showInvoice" title="Print" colSpan="2" onClick="save,action-invoice-method-show-invoice"/>
+	                <button name="showInvoice" title="Print" icon="img/icons/print.png" colSpan="2" onClick="save,action-invoice-method-show-invoice"/>
 	                <button name="exportInvoice" title="Export" colSpan="2" onClick="save,invoice-export"/>
 	                <button name="sendByEmail" title="Send by email" colSpan="2" showIf="operationTypeSelect = 3 || operationTypeSelect = 4"/>
 	            </group>
@@ -238,6 +238,7 @@
         <field name="invoiceDate" expr="eval: __date__"/>
         <field name="status" expr="action:action-status-record-dra"/>
         <field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+        <field name="currency" expr="eval:com.axelor.apps.base.db.UserInfo.all().filter('internalUser = ?1',__user__).fetchOne()?.activeCompany?.currency" />
     </action-record>
     
     <action-record name="action-invoice-record-company-change" model="com.axelor.apps.account.db.Invoice">
@@ -275,6 +276,14 @@
     <action-attrs name="action-invoice-attrs-reminder-blocking">
 	    <attribute name="hidden" expr="eval: !reminderBlockingOk" for="reminderBlockingGroup"/>
 	</action-attrs>
+	
+	<action-attrs name="action-set-partner-domain">
+		<attribute name="domain" for="partner" expr="eval:'self.isCustomer = true'" if="__this__.operationTypeSelect == 1"/>
+		<attribute name="domain" for="partner" expr="eval:'self.isCustomer = true'" if="__this__.operationTypeSelect == 2"/>
+		<attribute name="domain" for="partner" expr="eval:'self.isSupplier = true'" if="__this__.operationTypeSelect == 3"/>
+		<attribute name="domain" for="partner" expr="eval:'self.isSupplier = true'" if="__this__.operationTypeSelect == 4"/>
+	</action-attrs>
+	
 	
 	<action-attrs name="action-invoice-attrs-collapse-irrecoverable-group">
 		<attribute name="collapse" for="irrecoverableGroup" expr="eval: irrecoverableStateSelect == null || irrecoverableStateSelect == 0"/>
@@ -353,6 +362,10 @@
     <action-method name="action-invoice-method-get-journal">
         <call class="com.axelor.apps.account.web.InvoiceController" method="getJournal"/>
     </action-method>
+    <action-method name="action-invoice-set-operationTypeSelect" >
+    	<call class="com.axelor.apps.account.web.InvoiceController" method="setOperationTypeSelect"/>
+    </action-method>
+    
 
 	<!-- ACTION EXPORT -->
 
