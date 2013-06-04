@@ -15,6 +15,7 @@
         <field name="inTaxTotal"/>
         <field name="inTaxTotalRemaining"/>
         <field name="status"/>
+<!--         <button name="showInvoice" title="Print" onClick="action-invoice-method-show-invoice"/> -->
     </grid>
     
     <form name="invoice-form" title="Invoice" model="com.axelor.apps.account.db.Invoice" cols="4" 
@@ -114,19 +115,19 @@
         <group colSpan="4" cols="6">
             <group title="Totals" colSpan="2" cols="4">
 				<group name="accountingTotalGroup" title="Totals in accounting currency" colSpan="2" cols="2">
-<!--                 <field name="exAllTaxTotal"/> -->
+<!--                <field name="exAllTaxTotal"/> -->
 	                <field name="exTaxTotal"/>
 	                <field name="vatTotal"/>
 	                <field name="inTaxTotal"/>
 	                <field name="inTaxTotalRemaining"/>
 	            </group>
-	            <group name="invoiceTotalGroup" title="Totals in invoice currency" colSpan="2" cols="2">
+<!-- 	            <group name="invoiceTotalGroup" title="Totals in invoice currency" colSpan="2" cols="2"> -->
 	<!--                 <field name="invoiceExAllTaxTotal"/> -->
-	                <field name="invoiceExTaxTotal"/>
-	                <field name="invoiceVatTotal"/>
-	                <field name="invoiceInTaxTotal"/>
-	                <field name="invoiceAmountPaid"/>
-	            </group>
+<!-- 	                <field name="invoiceExTaxTotal"/> -->
+<!-- 	                <field name="invoiceVatTotal"/> -->
+<!-- 	                <field name="invoiceInTaxTotal"/> -->
+<!-- 	                <field name="invoiceAmountPaid"/> -->
+<!-- 	            </group> -->
             </group>
             <group name="stateGroup" title="Status" colSpan="4" cols="4">
 	            <group colSpan="2" cols="2">
@@ -146,6 +147,46 @@
             </group>
         </group>
     </form>
+    
+    
+    
+    <form name="invoice-client-form" title="Invoice" model="com.axelor.apps.account.db.Invoice" cols="4">
+        <field name="invoiceId" readonly="true"/>
+        <group name="partnerGroup" title="Invoicing informations" colSpan="4" cols="4" canCollapse="true" readonly="true">
+            <field name="company" widget="SuggestBox"/>
+            <field name="paymentMode" widget="SuggestBox"/>
+        </group>
+        <group name="dateGroup" title="Dates" colSpan="4" cols="4" canCollapse="true" readonly="true">
+            <field name="invoiceDate"/>
+            <field name="dueDate"/>
+        </group>
+        <notebook colSpan="4" readonly="true">
+            <page title="Invoice content" cols="4">
+	    		<field name="invoiceLineList" grid-view="invoice-line-grid" form-view="invoice-line-form" colSpan="4"/>
+                <field name="invoiceLineVatList" grid-view="invoice-line-vat-grid" form-view="invoice-line-vat-form" colSpan="4" />
+            </page>
+        </notebook>
+        <group colSpan="4" cols="6" readonly="true">
+            <group title="Totals" colSpan="2" cols="4">
+				<group name="accountingTotalGroup" title="Totals in accounting currency" colSpan="2" cols="2">
+	                <field name="exTaxTotal"/>
+	                <field name="vatTotal"/>
+	                <field name="inTaxTotal"/>
+	                <field name="inTaxTotalRemaining"/>
+	            </group>
+            </group>
+            <group name="stateGroup" title="Status" colSpan="4" cols="4">
+	            <group colSpan="2" cols="2">
+	                <button name="showInvoice" title="Print" colSpan="2" onClick="action-invoice-method-show-invoice"/>
+	            </group>
+	            <group colSpan="2" cols="2">
+	                <field name="status" domain="self.invoiceStatusOK = true"/>
+	            </group>
+            </group>
+        </group>
+    </form>
+    
+    
     
     
     <!-- invoice-account  -->

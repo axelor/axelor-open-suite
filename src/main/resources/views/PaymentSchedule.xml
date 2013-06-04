@@ -34,9 +34,6 @@
         <group cols="4" colSpan="4" >
 	        <field name="inTaxAmount" colSpan="2"/>
 	        <field name="totalToPayAmount" colSpan="2"/>
-	        <field name="invoicesAmount" colSpan="2"/>
-	        <field name="invoicesAmountRemaining" colSpan="2"/>
-	        <field name="amountRemaining" colSpan="2"/>
         </group>
         <group name="invoiceGroup" colSpan="4" cols="4">
        	 	<field name="invoiceSet" colSpan="4" domain="self.contractLine = :contractLine and self.schedulePaymentOk = 'f' and self.company=:company and self.status.code = 'dis' and self.inTaxTotalRemaining > 0.0 " grid-view="invoice-account-grid" form-view="invoice-form"/>
