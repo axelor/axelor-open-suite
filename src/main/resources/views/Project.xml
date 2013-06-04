@@ -24,11 +24,11 @@
 	        <field name="parentProject"/>
 			<field name="projectModel"/>
     	</group>
-    	<group noLabel="true" colSpan="2" title="Actions">
-    		<button name="createSalesOrder" title="Create quote" colSpan="2"/>
-    		<button name="generateNewInstanceOfProject" title="Generate new project instance" hideIf="!isModel" colSpan="2"/>
-    		<button name="generateDraftInvoice" title="Generate draft invoice" colSpan="2"/>
-    		<button name="showTask" title="Voir les tâches" onClick="action-project-view-task"/>
+    	<group noLabel="true" colSpan="2" cols="1" title="Actions">
+    		<button name="createSalesOrder" title="Create quote" colSpan="1"/>
+    		<button name="generateNewInstanceOfProject" title="Generate new project instance" hideIf="!isModel" colSpan="1"/>
+    		<button name="generateDraftInvoice" title="Generate draft invoice" colSpan="1"/>
+    		<button name="showTask" title="Voir les tâches" onClick="action-project-view-task" colSpan="1"/>
     	</group>
 		<notebook colSpan="6">
 	        <page title="Les tâches">

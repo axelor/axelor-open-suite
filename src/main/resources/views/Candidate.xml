@@ -26,7 +26,7 @@
 			<field name="mobilePhone" />
 			<field name="fixedPhone" />
 			<field name="email" />
-			<field name="recruitmentType" />
+			<field name="recruitmentTypeSelect" />
 			<button name="recruit" title="Transform into employee" colSpan="2" onClick="" />
 		</group>
 		<notebook>
