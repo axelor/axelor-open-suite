@@ -240,7 +240,11 @@
 	<input file="account_reminderMethodLine.csv" separator=";" type="com.axelor.apps.account.db.ReminderMethodLine" />
 	
 	
-	<input file="account_accountManagement.csv" separator=";" type="com.axelor.apps.account.db.AccountManagement" />
+	<input file="account_accountManagement.csv" separator=";" type="com.axelor.apps.account.db.AccountManagement" >
+		<bind search="self.code = :cashAccount_code and self.company.code = :company.code" to="cashAccount"/>
+		<bind search="self.code = :saleAccount_code and self.company.code = :company.code" to="saleAccount"/>
+		<bind search="self.code = :purchaseAccount_code and self.company.code = :company.code" to="purchaseAccount_code"/>
+	</input>
 	
 	<input file="account_analyticAccountManagement.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAccountManagement" />
 	
