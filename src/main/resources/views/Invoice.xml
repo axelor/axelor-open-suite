@@ -151,6 +151,11 @@
     
     
     <form name="invoice-client-form" title="Invoice" model="com.axelor.apps.account.db.Invoice" cols="4">
+    	<toolbar>
+    		<button name="new" title="" hidden="true"/>
+    		<button name="save" title="" hidden="true"/>
+    		<button name="copy" title="" hidden="true"/>
+    	</toolbar>
         <field name="invoiceId" readonly="true"/>
         <group name="partnerGroup" title="Invoicing informations" colSpan="4" cols="4" canCollapse="true" readonly="true">
             <field name="company" widget="SuggestBox"/>
@@ -219,6 +224,12 @@
     
 	<!-- VIEW LITE  -->
     <grid name="invoice-lite-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice">
+    	<toolbar>
+        	<button name="new" title="" hidden="true"/>
+    		<button name="save" title="" hidden="true"/>
+    		<button name="copy" title="" hidden="true"/>
+    		<button name="delete" title="" hidden="true"/>
+		</toolbar>
         <field name="invoiceTypeSelect"/>
         <field name="invoiceId"/>
         <field name="invoiceDate"/>
