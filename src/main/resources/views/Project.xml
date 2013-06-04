@@ -4,20 +4,17 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
     <grid name="project-grid" title="Affairs/Projects" model="com.axelor.apps.organisation.db.Project">
-        <field name="holderUserInfo"/>
         <field name="clientPartner"/>
         <field name="contactPartner"/>
-        <field name="need"/>
         <field name="affairName"/>
         <field name="isModel"/>
     </grid>
     
     <form name="project-form" title="Affair/Project" model="com.axelor.apps.organisation.db.Project" cols="6" >
     	<group noLabel="true" colSpan="4">
-    		<field name="holderUserInfo"/>
+    	 	<field name="responsibleUserInfo"/>
 	        <field name="clientPartner"/>
 	        <field name="contactPartner"/>
-	        <field name="need"/>
 	        <field name="affairName"/>
 	        <field name="isModel"/>
 	        <field name="isReinvoicingExpense"/>
@@ -68,7 +65,6 @@
 				</group>
 	        </page>
 	        <page title="Responsable / Membres" colSpan="4">
-	            <field name="responsibleUserInfo"/>
 				<field name="memberUserInfoSet" colSpan="6"/>
 	        </page>
 	    </notebook>
