@@ -675,7 +675,7 @@
 
 	<selection name="consulting.need.status.select">
 		<option value="1">New</option>
-		<option value="2">Commercially validated </option>
+		<option value="2">Commercially validated</option>
 		<option value="3">Technically validated</option>
 		<option value="4">Proposed customer</option>
 		<option value="5">Converted</option>
