@@ -35,10 +35,10 @@
         <field name="origin" />
         <field name="typeSelect"/>
         <field name="categorySelect"/>
-        <group name="exceptionGroup" title="Anomalie" colSpan="4" cols="2">
+        <group name="exceptionGroup" title="Anomaly" colSpan="4" cols="2">
         	<field name="exception" noLabel="true" colSpan="2"/>
         </group>
-        <group name="errorGroup" title="Erreur" colSpan="4" cols="2">
+        <group name="errorGroup" title="Error" colSpan="4" cols="2">
             <field name="error" noLabel="true" colSpan="2"/>
         </group>
         <group name="causeGroup" title="Cause" colSpan="4" cols="2">
