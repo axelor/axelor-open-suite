@@ -10,7 +10,7 @@
         <field name="duration"/>
     </grid>
     
-    <form name="training-form" title="Training" model="com.axelor.apps.organisation.db.Training">
+    <form name="training-form" title="Training" model="com.axelor.apps.organisation.db.Training" cols="4">
         <field name="experienceTypeSelect"/>
         <field name="startDate"/>
         <label title=" " colSpan="2" />
@@ -29,8 +29,8 @@
 		<field name="result" />
 		<break/>
 <!-- 		<field name="business" /> -->
-		<field name="toolKeywordSet"/>
-        <field name="sectorKeywordSet"/>
+		<field name="toolKeywordSet" widget="TagSelect[create=keyWord]"/>
+        <field name="sectorKeywordSet" widget="TagSelect[create=keyWord]"/>
         
     </form>
 

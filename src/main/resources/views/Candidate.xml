@@ -61,10 +61,10 @@
 				</field>
 			</page>
 			<page title="Keywords">
-				<field name="toolKeywordSet" colSpan="2" grid-view="keyword-grid"/>
-				<field name="fieldKeywordSet" colSpan="2" grid-view="keyword-grid"/>
-				<field name="jobKeywordSet" colSpan="2" grid-view="keyword-grid"/>
-				<field name="partnerSet" colSpan="2" grid-view="company-grid" domain="self.isContact = 'true'"/>
+				<field name="toolKeywordSet" colSpan="2" grid-view="keyword-grid" widget="TagSelect[create=keyWord]"/>
+				<field name="fieldKeywordSet" colSpan="2" grid-view="keyword-grid" widget="TagSelect[create=keyWord]"/>
+				<field name="jobKeywordSet" colSpan="2" grid-view="keyword-grid" widget="TagSelect[create=keyWord]"/>
+				<field name="partnerSet" colSpan="4" grid-view="company-grid" domain="self.isContact = 'true'"/>
 			</page>
 			<page title="Professionnal background">
 				<field name="positionList"/>
