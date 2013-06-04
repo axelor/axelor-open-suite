@@ -353,6 +353,18 @@
 <!-- 	title-f="Messagerie" -->
 	<menuitem name="mail-root-email-box" parent="mail-root" title="Email box"/>
 		
+<!-- 	title-f="Boite de réception" -->
+	<menuitem name="mail-root-email-inbox" parent="mail-root-email-box" title="Inbox" action="mail.root.email.inbox" />
+		
+<!-- 	title-f="Boite de réception" -->
+	<action-view name="mail.root.email.inbox" title="Inbox" 
+		model="com.axelor.apps.base.db.Message" icon="img/icons/mail_small.png">
+		<view type="grid" name="message-grid"/>
+		<view type="form" name="message-form"/>
+		<domain>self.typeSelect = 1</domain>
+		<context name="typeSelect" expr="1" />
+	</action-view>	
+		
 <!-- 	title-f="Nouveau message" -->
 	<menuitem name="mail-root-email-new" parent="mail-root-email-box" title="New email" action="mail.root.email.new"/>	
 		
@@ -375,18 +387,6 @@
 		<domain>self.statusSelect = 1</domain>
 		<context name="statusSelect" expr="1" />
 	</action-view>	
-		
-<!-- 	title-f="Boite de réception" -->
-	<menuitem name="mail-root-email-inbox" parent="mail-root-email-box" title="Inbox" action="mail.root.email.inbox" />
-		
-<!-- 	title-f="Boite de réception" -->
-	<action-view name="mail.root.email.inbox" title="Inbox" 
-		model="com.axelor.apps.base.db.Message" icon="img/icons/mail_small.png">
-		<view type="grid" name="message-grid"/>
-		<view type="form" name="message-form"/>
-		<domain>self.typeSelect = 1</domain>
-		<context name="typeSelect" expr="1" />
-	</action-view>
 		
 <!-- 	title-f="Messages envoyés" -->
 	<menuitem name="mail-root-email-sended" parent="mail-root-email-box" title="Sentbox" action="mail.root.email.sended" />	
