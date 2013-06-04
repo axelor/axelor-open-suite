@@ -22,7 +22,6 @@
                       <field name="group"/>
                       <field name="code"/>
                       <field widget="password" name="password"/>
-                      <field name="language"/>
 	                </form>
 	             </field>
         	</page>

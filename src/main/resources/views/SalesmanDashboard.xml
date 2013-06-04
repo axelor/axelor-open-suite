@@ -4,10 +4,16 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
 	
 	<portal title="Dashboard" name="salesman.dashboard.portal" cols="2">
-		<portlet action="salesman.dashboard.portal.orders" height="350" canSearch="true" />
 		<portlet action="chart:chart.salesman.dashboard.total.turnover" height="350" />
-		<portlet action="salesman.dashboard.portal.leads" canSearch="true" height="350" />
+		<portlet action="chart:chart.sales.manager.dashboard.team.turnover" height="350" />
+		<portlet action="chart:chart.sales.manager.dashboard.salesman.turnover" height="350" />
+		<portlet action="chart:chart.sales.manager.dashboard.family.product.sales" height="350" />
+		
+		<portlet action="salesman.dashboard.portal.opportunities" canSearch="true" height="350" />
 		<portlet action="salesman.dashboard.portal.activities" canSearch="true" height="350" />
+		<portlet action="salesman.dashboard.portal.orders" height="350" canSearch="true" />
+		<portlet action="salesman.dashboard.portal.leads" canSearch="true" height="350" />
+		
 	</portal>
 
 	<action-view name="salesman.dashboard.portal.orders" title="My Sales Orders"
@@ -33,5 +39,11 @@
 	    <context name="_today" expr="eval: __date__.toDateTimeAtStartOfDay()"/>
 	</action-view>
 
+	<action-view name="salesman.dashboard.portal.opportunities" title="My Opportunities"
+		model="com.axelor.apps.crm.db.Opportunity">
+		<view type="grid" name="opportunity-grid" />
+		<view type="form" name="opportunity-form" />
+		<domain>self.userInfo.internalUser = :_user</domain>
+	</action-view>
 
 </object-views>

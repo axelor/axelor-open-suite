@@ -70,6 +70,7 @@ class PartnerControllerSimple {
 		}
 		response.setValues(values);
 	}
+	
 //	def showActionEvent(ActionRequest request, ActionResponse response) {
 //		
 //	   Partner partner = request.context as Partner
