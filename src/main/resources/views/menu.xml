@@ -181,16 +181,6 @@
 		<view type="form" name="training-form" />
 	</action-view>	
 	
-	<menuitem name="hr-root-timesheet" parent="hr-root-conf"
-		title="Timesheets" action="hr.root.timesheet" />
-
-	<action-view name="hr.root.timesheet" title="Timesheets"
-		model="com.axelor.apps.organisation.db.Timesheet" icon="img/icons/parameter_small.png">
-		<view type="grid" name="timesheet-grid" />
-		<view type="form" name="timesheet-form" />
-		<context name="_statusSelect" expr="1"/>
-	</action-view>	
-	
 	<menuitem name="hr-root-planning" parent="hr-root-conf"
 		title="Plannings" action="hr.root.planning" />
 
