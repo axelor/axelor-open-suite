@@ -2,6 +2,7 @@ package com.axelor.apps.base.service.user;
 
 import com.axelor.apps.base.db.Agency;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Team;
 import com.axelor.apps.base.db.UserInfo;
 import com.axelor.auth.AuthUtils;
@@ -84,6 +85,22 @@ public class UserInfoService {
 		UserInfo userInfo = getUserInfo();
 		if (userInfo != null && userInfo.getActiveTeam() != null){
 			return userInfo.getActiveTeam();
+		}
+	
+		return null;
+	}
+	
+	/**
+	 * Méthode qui retourne le tiers de l'utilisateur connecté
+	 * 
+	 * @return Partner
+	 * 		Le tiers
+	 */
+	public Partner getUserPartner() {
+		
+		UserInfo userInfo = getUserInfo();
+		if (userInfo != null && userInfo.getPartner() != null){
+			return userInfo.getPartner();
 		}
 	
 		return null;

@@ -85,14 +85,14 @@
 			</page>
 			<page title="Links">
 				<group colSpan="4" cols="6">
-					<button name="showSalesOrder1" title="Voir les devis" onClick="save,action-partner-view-partner-sales-order" colSpan="2" hideIf="isContact"/>
-					<button name="showInvoice1" title="Voir les factures" onClick="save,action-partner-view-partner-invoice" colSpan="2" hideIf="isContact"/>
-					<button name="showProject1" title="Voir les projets" onClick="save,action-partner-view-partner-project" colSpan="2" hideIf="isContact"/>
+					<button name="showSalesOrder1" title="Show sales order" onClick="save,action-partner-view-partner-sales-order" colSpan="2" hideIf="isContact"/>
+					<button name="showInvoice1" title="Show invoices" onClick="save,action-partner-view-partner-invoice" colSpan="2" hideIf="isContact"/>
+					<button name="showProject1" title="Show project" onClick="save,action-partner-view-partner-project" colSpan="2" hideIf="isContact"/>
 				</group>
 				<group colSpan="4" cols="6">
-					<button name="showSalesOrder2" title="Voir les devis" onClick="save,action-partner-view-contact-sales-order" colSpan="2" showIf="isContact"/>
-					<button name="showInvoice2" title="Voir les factures" onClick="save,action-partner-view-contact-invoice" colSpan="2" showIf="isContact"/>
-					<button name="showProject2" title="Voir les projets" onClick="save,action-partner-view-contact-project" colSpan="2" showIf="isContact"/>
+					<button name="showSalesOrder2" title="Show sales order" onClick="save,action-partner-view-contact-sales-order" colSpan="2" showIf="isContact"/>
+					<button name="showInvoice2" title="Show invoices" onClick="save,action-partner-view-contact-invoice" colSpan="2" showIf="isContact"/>
+					<button name="showProject2" title="Show project" onClick="save,action-partner-view-contact-project" colSpan="2" showIf="isContact"/>
 				</group>
 				<portlet action="action-partner-view-partner-event" colSpan="2"/>
 				<portlet action="action-partner-view-partner-opportunities" colSpan="2"/>

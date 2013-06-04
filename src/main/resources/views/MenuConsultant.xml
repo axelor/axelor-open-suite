@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+	
+	<menuitem name="menu-consultant-dashbord" title="My DashBord" groups="consultant" 
+		action="menu.consultant.dashbord" icon="img/icons/chart.png"/>
+	
+	<action-view name="menu.consultant.dashbord" title="My DashBord"
+		icon="img/icons/chart.png">
+		<view type="portal" name="consultant.dashboard.portal" />
+    	<context name="_user" expr="eval:__user__"/>
+	</action-view>
+	
+	<portal name="consultant.dashboard.portal" title="Dashboard">
+		<portlet action="consultant.dashbord.portal.time.sheet" canSearch="true" height="400" />
+		<portlet action="consultant.dashboard.portal.travel.expense" canSearch="true" height="400" />
+		<portlet action="consultant.dashboard.portal.tasks" canSearch="true" height="400" />
+		<portlet action="consultant.dashboard.portal.leave.request" canSearch="true" height="400" />
+	</portal>
+	
+	<action-view name="consultant.dashbord.portal.time.sheet" title="My Timesheets to complete"
+		model="com.axelor.apps.organisation.db.Timesheet">
+		<view type="grid" name="timesheet-grid" />
+		<view type="form" name="timesheet-form" />
+		<domain>self.userInfo = :_userInfo and self.statusSelect = 1</domain>
+		<context name="_userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+	</action-view>	
+	
+	<action-view name="consultant.dashboard.portal.travel.expense" title="My expenses to complete"
+		model="com.axelor.apps.organisation.db.Expense">
+		<view type="grid" name="expense-grid" />
+		<view type="form" name="expense-form" />
+		<domain>self.userInfo = :_userInfo and self.statusSelect = 'draft'</domain>
+		<context name="_userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+	</action-view>
+	
+	<action-view name="consultant.dashboard.portal.tasks" title="My Tasks"
+		model="com.axelor.apps.crm.db.Event">
+		<view type="grid" name="crm-task-grid"/>
+		<view type="form" name="crm-task-form"/>
+		<domain>self.typeSelect = 3 and self.userInfo.internalUser.id = :_internalUser</domain>
+		<context name="_typeSelect" expr="3"/>
+		<context name="_internalUser" expr="eval: __user__.id"/>
+	</action-view>	
+	
+	<action-view name="consultant.dashboard.portal.leave.request" title="My leave requests"
+		model="com.axelor.apps.organisation.db.LeaveRequest">
+		<view type="grid" name="leave-request-grid" />
+		<view type="form" name="leave-request-form" />
+		<domain>self.userInfo = :_userInfo and self.statusSelect = 2</domain>
+		<context name="_userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+	</action-view>	
+	
+	
+
+	<menuitem name="menu-consultant-timesheet" title="My Timesheets" groups="consultant" 
+		action="menu.consultant.timesheet"/>	
+	
+	<action-view name="menu.consultant.timesheet" title="My  Timesheets"
+		model="com.axelor.apps.organisation.db.Timesheet">
+		<view type="grid" name="timesheet-grid" />
+		<view type="form" name="timesheet-form" />
+		<domain>self.userInfo = :_userInfo</domain>
+		<context name="_userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+	</action-view>	
+	
+	<menuitem name="menu-consultant-create-timesheet" title="Create Timesheet" groups="consultant" 
+		action="menu.consultant.create.timesheet" icon="img/icons/new.png"/>	
+	
+	<action-view name="menu.consultant.create.timesheet" title="Timesheets"
+		model="com.axelor.apps.organisation.db.Timesheet" icon="img/icons/new.png">
+		<view type="form" name="timesheet-form" />
+	</action-view>
+	
+	
+	
+	
+	<menuitem name="menu-consultant-expense" title="My Expenses" groups="consultant" 
+		action="menu.consultant.expense" />	
+	
+	<action-view name="menu.consultant.expense" title="My Travel expenses"
+		model="com.axelor.apps.organisation.db.Expense" >
+		<view type="grid" name="expense-grid" />
+		<view type="form" name="expense-form" />
+		<domain>self.userInfo = :_userInfo</domain>
+		<context name="_userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+	</action-view>
+	
+	<menuitem name="menu-consultant-create-expense" title="Create Expense" groups="consultant" 
+		action="menu.consultant.create.expense" icon="img/icons/new.png"/>	
+	
+	<action-view name="menu.consultant.create.expense" title="Expenses"
+		model="com.axelor.apps.organisation.db.Expense" icon="img/icons/new.png">
+		<view type="form" name="expense-form" />
+	</action-view>
+	
+	
+	
+	
+	<menuitem name="menu-consultant-leave-request" title="My Leave requests" groups="consultant" 
+		action="menu.consultant.leave.request"/>	
+	
+	<action-view name="menu.consultant.leave.request" title="My Leave request"
+		model="com.axelor.apps.organisation.db.LeaveRequest" >
+		<view type="grid" name="leave-request-grid" />
+		<view type="form" name="leave-request-form" />
+		<domain>self.userInfo = :_userInfo</domain>
+		<context name="_userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+	</action-view>
+	
+	<menuitem name="menu-consultant-create-leave-request" title="Create Leave request" groups="consultant" 
+		action="menu.consultant.create.leave.request" icon="img/icons/new.png"/>	
+	
+	<action-view name="menu.consultant.create.leave.request" title="Leave request"
+		model="com.axelor.apps.organisation.db.LeaveRequest" icon="img/icons/new.png">
+		<view type="form" name="leave-request-form" />
+	</action-view>	
+	
+	<menuitem name="menu-consultant-leave-request-calendar" title="My Leave request calendar" groups="consultant" 
+		action="menu.consultant.create.leave.request.calendar" icon="img/icons/calendar-task.png"/>	
+	
+	<action-view name="menu.consultant.create.leave.request.calendar" title="Leave request calendar"
+		model="com.axelor.apps.organisation.db.LeaveRequest" icon="img/icons/calendar-task.png">
+		<view type="calendar" name="leave-request-calendar" />
+		<domain>self.userInfo = :_userInfo</domain>
+		<context name="_userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+	</action-view>	
+	
+	
+	<menuitem name="menu-consultant-my-task" title="My Tasks" groups="consultant" 
+		action="menu.consultant.my.task"/>	
+		
+	<action-view name="menu.consultant.my.task" title="My Tasks"
+		model="com.axelor.apps.crm.db.Event">
+		<view type="grid" name="crm-task-grid"/>
+		<view type="form" name="crm-task-form"/>
+		<domain>self.typeSelect = 3 and self.userInfo.internalUser.id = :_internalUser</domain>
+		<context name="_typeSelect" expr="3"/>
+		<context name="_internalUser" expr="eval: __user__.id"/>
+	</action-view>	
+	
+	
+	<menuitem name="menu-consultant-my-tickets" title="My Tickets" groups="consultant" 
+		action="menu.consultant.my.tickets"/>	
+		
+	<action-view name="menu.consultant.my.tickets" title="My Tickets"
+		model="com.axelor.apps.crm.db.Event">
+		<view type="grid" name="ticket-grid"/>
+		<view type="form" name="ticket-form"/>
+		<domain>self.typeSelect = :_typeSelect and self.userInfo.internalUser.id = :_internalUser</domain>
+		<context name="_typeSelect" expr="5"/>
+		<context name="_internalUser" expr="eval: __user__.id"/>
+	</action-view>	
+
+</object-views>
