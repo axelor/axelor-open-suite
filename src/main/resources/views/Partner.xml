@@ -33,7 +33,7 @@
     </grid>
     
     <form cols="4" colWidths="25*" name="partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" onLoad="action-partner-attrs-change-name,action-partner-attrs-hide-tabs"
-      	onNew="action-partner-record-partner-type-select,action-partner-record-set-default">
+      	onNew="action-partner-record-partner-type-select,action-partner-record-set-default" onSave="action-set-partner-seq">
     	<group colSpan="1">
     		<field name="picture"/>
     	</group>
@@ -225,7 +225,7 @@
     <action-record name="action-partner-record-set-default" model="com.axelor.apps.base.db.Partner">
     	<field name="isCustomer" expr="eval:true" />
     	<field name="isSupplier" expr="eval:partnerTypeSelect != 2"/>
-    	<field name="currency" expr="eval:com.axelor.apps.base.db.UserInfo.all().filter('internalUser = ?1',__user__).fetchOne().activeCompany?.currency" if="!isContact"/>
+    	<field name="currency" expr="eval:com.axelor.apps.base.db.UserInfo.all().filter('internalUser = ?1',__user__).fetchOne()?.activeCompany?.currency" if="!isContact"/>
     	<field name="invoiceSendingFormatSelect" expr="eval:'emailpaper'" if="!isContact"/>
     </action-record>
      <action-record name="action-partner-set-non-contact-fields" model="com.axelor.apps.base.db.Partner">
@@ -243,4 +243,8 @@
 		<view type="grid" name="sn-msg-inbox-grid" />
 		<domain>self.messageFromID = :snUserId</domain>
 	</action-view>
+	
+	<action-method name="action-set-partner-seq" >
+		<call class="com.axelor.apps.base.web.PartnerControllerSimple" method="setPartnerSequence"/>
+	</action-method>
 </object-views>

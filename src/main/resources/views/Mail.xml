@@ -59,4 +59,5 @@
 		<call class="com.axelor.apps.base.web.MailController" method="printMail"/>
 	</action-method>
 	
+
 </object-views>
