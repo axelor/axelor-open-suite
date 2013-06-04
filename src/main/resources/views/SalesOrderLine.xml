@@ -5,7 +5,7 @@
     
     <grid name="sales-order-line-grid" title="SO lines" model="com.axelor.apps.supplychain.db.SalesOrderLine">
     	<field name="sequence"/>
-        <field name="description"/>
+        <field name="productName"/>
         <field name="qty"/>
         <field name="unit"/>
         <field name="price"/>

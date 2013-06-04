@@ -4,6 +4,7 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
     <grid name="purchase-order-grid" title="Supplier RFQs/POs" model="com.axelor.apps.supplychain.db.PurchaseOrder">
+    	<field name="purchaseOrderSeq"/>
         <field name="supplierPartner"/>
         <field name="affairProject"/>
         <field name="buyerUserInfo"/>
@@ -11,6 +12,8 @@
     </grid>
     
     <form name="purchase-order-form" title="Supplier RFQ/PO" model="com.axelor.apps.supplychain.db.PurchaseOrder" cols="4">
+    	<field name="purchaseOrderSeq"/>
+    	<field name="company"/>
    	 	<field name="supplierPartner"/>
    	 	<field name="statusSelect" widget="NavSelect"/>
         <field name="affairProject"/>

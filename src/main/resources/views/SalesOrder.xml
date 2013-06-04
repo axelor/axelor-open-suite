@@ -28,7 +28,7 @@
         </group>
         <group colSpan="1" cols="1" >
         	<field name="statusSelect" widget="NavSelect"/>
-  			<button name="generateProject" title="Generate project" colSpan="1"/>
+        	<button name="showInvoice" title="Les factures" colSpan="1" onClick="action-sales-order-view-invoice"/>
         </group>
         <notebook colSpan="4">
         	<page title="Customer information">
@@ -48,19 +48,29 @@
         		<field name="hasToCreateProposal"/>
         		<field name="salesOrderLineList" colSpan="4"/>
         		<field name="salesOrderLineVatList" colSpan="4"/>
-        		<group colSpan="3" cols="2">
-	        		<button name="compute" title="Compute" colSpan="2" onClick="save,action-sales-order-method-compute,save"/>
-	        		<button name="confirm" title="Confirm" colSpan="2" onClick="save,action-sales-order-record-confirm,save"/>
-	        		<button name="cancel" title="Cancel" colSpan="2" onClick="save,action-sales-order-record-cancel"/>
-	        		<button name="showSalesOrder" title="Print" colSpan="2" onClick="save,action-sales-order-method-show-sales-order"/>
-	        		<button name="sendByEmail" title="Send by email" colSpan="2"/>
-	        		<field name="validatedByUserInfo" colSpan="2"/>
-        		</group>
-        		<group readonly="true" colSpan="1" css="subtotal" cols="2" colWidths="50%,50%">
-        			<field name="exTaxTotal"/>
-        			<field name="vatTotal"/>
-        			<field name="inTaxTotal" css="subtotal-total"/>
-        			<field name="amountRemainingToBeInvoiced"/>
+        		<group colSpan="4" cols="3" noLabel="true">
+	        		<group colSpan="2" cols="2" title="Action(s)">
+	        			<group colSpan="1" cols="1">
+	        				<button name="compute" title="Compute" colSpan="1" onClick="save,action-sales-order-method-compute,save" hideIf="statusSelect == 3"/>
+			                <button name="confirm" title="Confirm" colSpan="1" onClick="save,action-sales-order-record-confirm,save" showIf="statusSelect == 1 || statusSelect == 4"/>
+			                <button name="validate" title="Validate" colSpan="1" onClick="save,action-sales-order-record-validate,save" showIf="statusSelect == 2"/>
+			                <button name="cancel" title="Cancel" colSpan="1" onClick="save,action-sales-order-record-cancel" showIf="statusSelect == 1 || statusSelect == 2"/>
+			                <button name="showSalesOrder" title="Print" colSpan="1" onClick="save,action-sales-order-method-show-sales-order" showIf="statusSelect == 3"/>
+			                <button name="sendByEmail" title="Send by email" colSpan="1" showIf="statusSelect == 3"/>
+	        			</group>
+	        			<group colSpan="1" cols="2" readonly="true">
+	        				<field name="validatedByUserInfo" colSpan="1"/>
+		                	<field name="validationDate" colSpan="1"/>
+	        			</group>
+        			</group>
+        			<group colSpan="1" cols="1" title="Totaux">
+		        		<group colSpan="1" css="subtotal" cols="2" colWidths="50%,50%" readonly="true">
+		        			<field name="exTaxTotal"/>
+		        			<field name="vatTotal"/>
+		        			<field name="inTaxTotal" css="subtotal-total"/>
+		        			<field name="amountRemainingToBeInvoiced"/>
+		        		</group>
+	        		</group>
         		</group>
         	</page>
         	<page title="Other informations">
@@ -80,7 +90,8 @@
         	<page title="Customer order">
         		<field name="orderDate"/>
         		<field name="orderNumber"/>
-        		<button name="generateInvoice" title="Generate invoice" onClick="save,action-sales-order-method-generate-invoice" colSpan="4"/>
+        		<button name="generateInvoice" title="Generate invoice" onClick="save,action-sales-order-method-generate-invoice" colSpan="2"/>
+        		<button name="generateProject" title="Generate project" colSpan="2"/>
         	</page>
         
         </notebook>
@@ -96,6 +107,11 @@
     
     <action-record name="action-sales-order-record-confirm" model="com.axelor.apps.supplychain.db.SalesOrder">
     	<field name="statusSelect" expr="eval: 2"/>
+    </action-record>
+    
+    <action-record name="action-sales-order-record-validate" model="com.axelor.apps.supplychain.db.SalesOrder">
+    	<field name="statusSelect" expr="eval: 3"/>
+    	<field name="validationDate" expr="eval: __date__"/>
     </action-record>
     
      <action-record name="action-sales-order-record-cancel" model="com.axelor.apps.supplychain.db.SalesOrder">
@@ -130,5 +146,11 @@
     <action-method name="action-sales-order-method-generate-invoice">
  		<call class="com.axelor.apps.supplychain.web.SalesOrderInvoiceController" method="generateInvoice"/>
 	</action-method>
+	
+	 <action-view name="action-sales-order-view-invoice" title="Invoices" model="com.axelor.apps.account.db.Invoice">
+		<view type="grid" name="invoice-grid"/>
+		<view type="form" name="invoice-form"/>
+		<domain>self.id IN :invoiceSet</domain>
+	</action-view>
     
 </object-views>
