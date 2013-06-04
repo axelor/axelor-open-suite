@@ -37,6 +37,7 @@
 		<view type="form" name="ticket-form"/>
 		<domain>self.createdBy = :_userr</domain>
     	<context name="_user" expr="eval:__user__"/>
+    	<context name="_clientView" expr="eval: true"/>
 	</action-view>
 	
 </object-views>
