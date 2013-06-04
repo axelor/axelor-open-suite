@@ -5,20 +5,18 @@
 
 	<module name="consulting" package="com.axelor.apps.consulting.db"/>
 	
-	<entity name="NeedLine" lang="groovy">
-		<many-to-one name="need" ref="com.axelor.apps.consulting.db.Need"></many-to-one>
-		<many-to-one name="product"	ref="com.axelor.apps.base.db.Product" title="Product"/>
-		<string name="profileCategorySelect" selection="consulting.needline.profile.category.select"/>
-		<many-to-one name="costLine" ref="com.axelor.apps.consulting.db.PriceListLine" title="Cost Line"/>
+	<entity name="NeedLine">
+		<many-to-one name="need" ref="com.axelor.apps.consulting.db.Need"/>
+		<many-to-one name="product"	ref="com.axelor.apps.base.db.Product" title="Profil"/>
 		<decimal name="price" title="Price"/>
 <!-- 		 <![CDATA[ -->
 <!-- 		 	return costLine != null? costLine.price : product.salePrice -->
 <!-- 	    ]]>	</string> -->
 		<string name="workLoad" title="Charge(%)" default="%"/>
-		<date name="startDate" title="Start date"/>
-		<date name="endDate" title="End date"/>
+		<datetime name="startDateTime" title="Start date"/>
+		<datetime name="endDateTime" title="End date"/>
 		<integer name="duration" title="Duration (Qty)"/>
-		<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Uom"/>
+		<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
 		<one-to-many name="resourceList" ref="com.axelor.apps.consulting.db.Resource" mappedBy="needLine" title="Ressources"/>
 	</entity>
 </domain-models>
