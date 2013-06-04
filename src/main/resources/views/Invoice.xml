@@ -214,7 +214,7 @@
     
     <!-- ACTION ALERT -->
     <action-validate name="action-invoice-alarm-alert">
-	    <error if="status?.code == 'val' &amp;&amp; validatedByUserInfo.internalUser != __user__" message="Vous ne pouvez suspendre une facture que vous n'avez pas validée"/>
+	    <error if="status?.code == 'val' &amp;&amp; validatedByUserInfo.internalUser != __user__" message="You cannot suspend an invoice which you did not validate"/>
 	</action-validate>
 	
     <!-- ACTION ATTRS -->
