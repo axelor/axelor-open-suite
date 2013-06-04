@@ -47,7 +47,7 @@
     	<field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
     	<field name="fromDate" expr="eval: __date__"/>
     	<field name="toDate" expr="eval: __date__"/>
-    	<field name="statusSelect" expr="eval: _statusSelect"/> 	
+    	<field name="statusSelect" expr="eval: _statusSelect ? _statusSelect : 1"/> 	
     </action-record>
     
 </object-views>
