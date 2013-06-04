@@ -33,17 +33,6 @@
 		<context name="_internalUser" expr="eval: __user__.id"/>
 	</action-view>
 	
-	<menuitem name="crm-root-meeting-my-calendar" parent="crm-root"
-		title="My Meetings Calendar" action="crm.root.meeting.my.calendar" />
-
-	<action-view name="crm.root.meeting.my.calendar" title="My Meetings Calendar"
-		model="com.axelor.apps.crm.db.Event" icon="img/icons/calendar-task.png">
-		<view type="calendar" name="meeting-calendar"/>
-		<domain>self.typeSelect = 2 and self.userInfo.internalUser.id = :_internalUser</domain>
-		<context name="_typeSelect" expr="2"/>
-		<context name="_internalUser" expr="eval: __user__.id"/>
-	</action-view>
-	
 	<menuitem name="crm-root-call" parent="crm-root"
 		title="My Calls" action="crm.root.call" />
 
@@ -113,6 +102,24 @@
 		<domain>self.userInfo IS NULL</domain>
 	</action-view>
 	
+	<menuitem name="crm-root-meeting-my-calendar" parent="crm-root"
+		title="My Calendar" action="crm.root.meeting.my.calendar" icon="img/icons/calendar-task.png"/>
+
+	<action-view name="crm.root.meeting.my.calendar" title="My Meetings Calendar"
+		model="com.axelor.apps.crm.db.Event" icon="img/icons/calendar-task.png">
+		<view type="calendar" name="meeting-calendar"/>
+		<domain>self.userInfo.internalUser.id = :_internalUser</domain>
+		<context name="_internalUser" expr="eval: __user__.id"/>
+	</action-view>
+	
+	<menuitem name="crm-root-meeting-team-calendar" parent="crm-root"
+		title="Shared calendar" action="crm.root.meeting.team.calendar" icon="img/icons/calendar-task.png"/>
+
+	<action-view name="crm.root.meeting.team.calendar" title="Shared calendar"
+		model="com.axelor.apps.crm.db.Event" icon="img/icons/calendar-task.png">
+		<view type="calendar" name="meeting-calendar"/>
+	</action-view>
+	
 	<menuitem name="crm-root-create" parent="crm-root"
 		title="Create"/>
 		
@@ -141,7 +148,7 @@
 	</action-view>
 	
 	<menuitem name="crm-root-create-call" parent="crm-root-create"
-		title="Create Call" action="crm.root.create.call" />
+		title="Call" action="crm.root.create.call" />
 
 	<action-view name="crm.root.create.call" title="Call"
 		model="com.axelor.apps.crm.db.Event" icon="img/icons/new.png">
@@ -163,14 +170,6 @@
 		<context name="_typeSelect" expr="5"/>
 		<context name="_prioritySelect" expr="2"/>
 		<context name="_internalUser" expr="eval: __user__.id"/>
-	</action-view>
-	
-	<menuitem name="crm-root-meeting-team-calendar" parent="crm-root"
-		title="Shared calendar" action="crm.root.meeting.team.calendar" />
-
-	<action-view name="crm.root.meeting.team.calendar" title="Shared calendar"
-		model="com.axelor.apps.crm.db.Event" icon="img/icons/calendar-task.png">
-		<view type="calendar" name="meeting-calendar"/>
 	</action-view>
 
 	<menuitem name="crm-root-team" parent="crm-root"
