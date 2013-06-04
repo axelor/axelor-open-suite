@@ -17,14 +17,14 @@
     	<context name="_user_id" expr="eval:__user__.id"/>
 	</action-view>
 		
-	<menuitem name="menu-sales-manager-dashboard" parent="menu-dashboards"
-		title="Sales Manager Dashboard" action="portal.sales.manager.dashboard.view" />	
+<!-- 	<menuitem name="menu-sales-manager-dashboard" parent="menu-dashboards" -->
+<!-- 		title="Sales Manager Dashboard" action="portal.sales.manager.dashboard.view" />	 -->
 
-	<action-view name="portal.sales.manager.dashboard.view" title="Sales Manager Dashboard"
-		icon="img/icons/crm_small.png">
-		<view type="portal" name="sales.manager.dashboard.portal" />
-    	<context name="_past_month" expr="eval: __date__.minusMonths(1)"/>
-	</action-view>
+<!-- 	<action-view name="portal.sales.manager.dashboard.view" title="Sales Manager Dashboard" -->
+<!-- 		icon="img/icons/crm_small.png"> -->
+<!-- 		<view type="portal" name="sales.manager.dashboard.portal" /> -->
+<!--     	<context name="_past_month" expr="eval: __date__.minusMonths(1)"/> -->
+<!-- 	</action-view> -->
 		
 	<menuitem name="menu-purchase-buyer-dashboard" parent="menu-dashboards"
 		title="Purchase Buyer Dashboard" action="portal.purchase.buyer.dashboard.view" />	
@@ -485,11 +485,11 @@
 		<view type="form" />
 	</action-view>
 	
-	<menuitem name="mail-conf-email-list" title="Emails lists"
-		parent="mail-conf" action="mail.conf.email.list" />
+	<menuitem name="mail-conf-email-list" title="Partners lists"
+		parent="mail-conf" action="mail.conf.partner.list" />
 
-	<action-view name="mail.conf.email.list" title="Emails lists"
-		model="com.axelor.apps.base.db.EmailList" icon="img/icons/parameter_small.png">
+	<action-view name="mail.conf.partner.list" title="Partners lists"
+		model="com.axelor.apps.base.db.PartnerList" icon="img/icons/parameter_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
@@ -533,7 +533,7 @@
 
 	<menuitem name="evo-admin-root-organisation-region"
 		parent="evo-admin-root-organisation" title="Regions"
-		action="evo.admin.root.organisation.territory.region" />
+		action="evo.admin.root.organisation.region" />
 
 	<action-view name="evo.admin.root.organisation.region"
 		title="Regions" model="com.axelor.apps.base.db.Region" icon="img/icons/organisation_small.png">

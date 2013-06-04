@@ -158,7 +158,7 @@
 	    ]]>
 	    </dataset>
 	    <category key="_product_family" type="text"/>
-		<series key="amount" groupBy="currency" type="bar"/>
+		<series key="amount" groupBy="currency" type="pie"/>
 	  </chart>
 	  
 	  
@@ -269,7 +269,7 @@
 	    ]]>
 	    </dataset>
 	    <category key="_salesman_name" type="text"/>
-    	<series key="amount" groupBy="slct" type="bar"/>
+    	<series key="amount" groupBy="slct" type="pie"/>
 	  </chart>
 	  
 	  
