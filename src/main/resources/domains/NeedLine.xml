@@ -5,7 +5,7 @@
 
 	<module name="consulting" package="com.axelor.apps.consulting.db"/>
 	
-	<entity name="NeedLine" lang="groovy">
+	<entity name="NeedLine">
 		<many-to-one name="need" ref="com.axelor.apps.consulting.db.Need"/>
 		<many-to-one name="product"	ref="com.axelor.apps.base.db.Product" title="Profil"/>
 		<decimal name="price" title="Price"/>
