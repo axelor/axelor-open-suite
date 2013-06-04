@@ -193,6 +193,22 @@
 	<menuitem name="supply-chain-root" title="Sales/Purchases" priority="150"
 		icon="img/icons/order.png" groups="admins"/>
 		
+	<menuitem name="supply-chain-root-sales-order" parent="supply-chain-root"
+		title="New sales order" action="supply.chain.root.sales.order" />
+
+	<action-view name="supply.chain.root.sales.order" title="New sales order"
+		model="com.axelor.apps.supplychain.db.SalesOrder" icon="img/icons/order_small.png">
+		<view type="form" name="sales-order-form" />
+	</action-view>	
+	
+	<menuitem name="supply-chain-root-purchases-order" parent="supply-chain-root"
+		title="New purchases order" action="supply.chain.root.purchases.order" />
+
+	<action-view name="supply.chain.root.purchases.order" title="New purchases order"
+		model="com.axelor.apps.supplychain.db.PurchaseOrder" icon="img/icons/order_small.png">
+		<view type="form" name="purchase-order-form" />
+	</action-view>	
+		
 	<menuitem name="supply-chain-root-sales" title="Sales" parent="supply-chain-root"/>
 	
 	<menuitem name="supply-chain-root-sales-my" title="My Team" parent="supply-chain-root-sales"/>	

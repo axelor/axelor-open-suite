@@ -12,7 +12,7 @@
     <form name="delivery-order-form" title="Delivery order" model="com.axelor.apps.supplychain.db.DeliveryOrder" cols="4">
     	 <field name="supplierPartner"/>
         <field name="affair"/>
-		<field name="deliveryOrderLineList" colSpan="4"/>
+		<field name="deliveryOrderLineList" colSpan="4" grid-view="delivery-order-line-grid" form-view="delivery-order-line-form"/>
         <field name="statusSelect"/>
     	<button name="validate" title="Validate" colSpan="2"/>
     	<button name="generateInvoice" title="Generate supplier invoice for control" colSpan="2"/>

@@ -5,7 +5,7 @@
     
     <grid name="sales-order-line-grid" title="SO lines" model="com.axelor.apps.supplychain.db.SalesOrderLine">
     	<field name="sequence"/>
-        <field name="description"/>
+        <field name="productName"/>
         <field name="qty"/>
         <field name="unit"/>
         <field name="price"/>
@@ -71,7 +71,7 @@
 		<call class="com.axelor.apps.supplychain.web.SalesOrderLineController" method="getProductInformation"/>
 	</action-method>
 	
-	
+	<!-- 
 	 <grid name="purchase-order-sales-order-line-grid" title="SO lines" model="com.axelor.apps.supplychain.db.SalesOrderLine">
     	<field name="product"/>
         <field name="qty"/>
@@ -116,6 +116,6 @@
     	<field name="vatTotal"/>
     	<field name="inTaxTotal"/>
         <field name="isInvoiceControlled"/>
-    </form>
+    </form> -->
     
 </object-views>

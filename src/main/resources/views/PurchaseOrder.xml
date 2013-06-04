@@ -4,23 +4,44 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
     <grid name="purchase-order-grid" title="Supplier RFQs/POs" model="com.axelor.apps.supplychain.db.PurchaseOrder">
+    	<field name="purchaseOrderSeq"/>
         <field name="supplierPartner"/>
         <field name="affairProject"/>
         <field name="buyerUserInfo"/>
         <field name="statusSelect"/>
     </grid>
     
-    <form name="purchase-order-form" title="Supplier RFQ/PO" model="com.axelor.apps.supplychain.db.PurchaseOrder" cols="4">
-   	 	<field name="supplierPartner"/>
+    <form name="purchase-order-form" title="Supplier RFQ/PO" model="com.axelor.apps.supplychain.db.PurchaseOrder" cols="4" onNew="action-purchase-order-record-new,action-purchase-order-record-currency">
+    	<field name="purchaseOrderSeq"/>
+    	<field name="company"/>
+   	 	<field name="supplierPartner" domain="self.partnerTypeSelect = 1" onChange="action-purchase-order-record-partner"/>
    	 	<field name="statusSelect" widget="NavSelect"/>
         <field name="affairProject"/>
         <field name="buyerUserInfo"/>
-		<field name="purchaseOrderLineList" colSpan="4" grid-view="purchase-order-sales-order-line-grid" form-view="purchase-order-sales-order-line-form"/>
+        <field name="orderDate"/>
+        <field name="deliveryDate"/>
+        <field name="currency"/>
+		<field name="purchaseOrderLineList" colSpan="4" grid-view="purchase-order-line-grid" form-view="purchase-order-line-form"/>
     	<button name="validate" title="Validate" colSpan="2"/>
     	<button name="sendByEmail" title="Send by email" colSpan="2"/>
     	<button name="generateDeliveryOrder" title="Generate delivery" colSpan="2"/>
     	<button name="showSupplierInvoice" title="Show invoice" colSpan="2" onClick="action-purchase-order-show-supplier-invoice"/>
     </form>
+    
+    <action-record name="action-purchase-order-record-new" model="com.axelor.apps.supplychain.db.PurchaseOrder">
+    	<field name="statusSelect" expr="1"/>
+    	<field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+    	<field name="buyerUserInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+    	<field name="orderDate" expr="eval: __date__"/>
+    </action-record>
+    
+    <action-record name="action-purchase-order-record-currency" model="com.axelor.apps.supplychain.db.PurchaseOrder">
+	    <field name="currency" expr="eval: company?.currency"/>
+	</action-record>
+	
+    <action-record name="action-purchase-order-record-partner" model="com.axelor.apps.supplychain.db.PurchaseOrder">
+ 		<field name="currency" expr="eval: supplierPartner?.currency"/>
+ 	</action-record>
     
     <action-view name="action-purchase-order-show-supplier-invoice" title="Supplier invoices"
 		model="com.axelor.apps.account.db.Invoice">
