@@ -135,7 +135,8 @@
     </grid>
     
     <form name="ticket-form" title="Ticket" model="com.axelor.apps.crm.db.Event" cols="6" colWidths="*,400"
-    	onNew="action-event-new-record">
+    	onNew="action-event-new-record,action-event-ticket-attrs-default"
+    	onLoad="action-event-ticket-attrs-default">
     	<group colSpan="6" cols="6"  colWidths="16%,17%,16%,17%,16%,18%">
 	    	<field name="ticketNumberSeq" readonly="true"/>
 	       	<field name="subject"/>
@@ -231,5 +232,10 @@
     	<action name="action-event-record-secondary-status-select" if="typeSelect == 2 || typeSelect == 1"/>
     	<action name="action-task-record-tertiary-status-select" if="typeSelect == 3"/>
     </action-group>
+    
+    <action-attrs name="action-event-ticket-attrs-default">
+    	<attribute name="hidden" for="isTimesheetAffected" expr="eval: true" if="_clientView"/>
+    	<attribute name="hidden" for="responsibleUserInfo" expr="eval: true" if="_clientView"/>
+    </action-attrs>
     
 </object-views>
