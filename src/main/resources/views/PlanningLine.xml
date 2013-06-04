@@ -14,13 +14,14 @@
         <field name="timeSheet"/>
     </grid>
     
-    <form name="planning-line-form" title="Planning line" model="com.axelor.apps.organisation.db.PlanningLine" cols="4" >
+    <form name="planning-line-form" title="Planning line" model="com.axelor.apps.organisation.db.PlanningLine" cols="4" 
+    onNew="action-planningline-default-record">
         <field name="product"/>
         <field name="employee"/>
         <field name="task"/>
-        <field name="fromDate"/>
-        <field name="toDate"/>
-        <field name="duration"/>
+        <field name="fromDateTime" onChange="action-planning-line-method-compute-start-date-time"/>
+        <field name="toDateTime" onChange="action-planning-line-method-compute-end-date-time"/>
+        <field name="duration" onChange="action-planning-line-method-compute-duration"/>
         <field name="unit"/>
         <field name="timeSheet"/>
     </form>
@@ -40,16 +41,28 @@
     onNew="action-planningline-default-record">
         <field name="product"/>
         <field name="employee"/>
-        <field name="fromDate"/>
-        <field name="toDate"/>
-        <field name="duration"/>
+        <field name="fromDateTime" />
+        <field name="toDateTime" />
+        <field name="duration" />
         <field name="unit"/>
         <field name="timeSheet"/>
         <field name="planning"/>
     </form>
     
     <action-record name="action-planningline-default-record" model="com.axelor.apps.organisation.db.PlanningLine">
-    	<field name="fromDate" expr="eval: __date__" if="fromDate == null"/>
+    	<field name="fromDateTime" expr="eval: __time__.plusHours(8)" if="fromDate == null"/>
     </action-record>
+    
+    <action-method name="action-planning-line-method-compute-start-date-time">
+    	<call class="com.axelor.apps.organisation.web.PlanningLineController" method="computeStartDateTime"/>
+    </action-method>
+    
+    <action-method name="action-planning-line-method-compute-end-date-time">
+    	<call class="com.axelor.apps.organisation.web.PlanningLineController" method="computeEndDateTime"/>
+    </action-method>
+    
+    <action-method name="action-planning-line-method-compute-duration">
+    	<call class="com.axelor.apps.organisation.web.PlanningLineController" method="computeDuration"/>
+    </action-method>
     
 </object-views>

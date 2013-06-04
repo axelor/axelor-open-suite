@@ -26,7 +26,6 @@
     
     <form name="leave-request-form" title="Leave request" model="com.axelor.apps.organisation.db.LeaveRequest" cols="4"
     	onNew="action-leave-request-record-new">
-		
 		<field name="employeeUserInfo"/>
         <field name="requestDate"/>
         <field name="leaveRequestReason"/>
@@ -50,6 +49,7 @@
     
     
     <action-record name="action-leave-request-record-new" model="com.axelor.apps.organisation.db.LeaveRequest">
+    	<field name="employeeUserInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
     	<field name="requestDate" expr="eval: __date__"/>
     	<field name="statusSelect" expr="eval: 1"/>
     </action-record>
