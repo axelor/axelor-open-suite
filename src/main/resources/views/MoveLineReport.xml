@@ -47,7 +47,7 @@
 		        <field name="toPartner" grid-view="partner-grid" form-view="partner-form"/>
 		        <break/>
 		        <button name="search" title="Search" onClick="save,com.axelor.apps.account.web.MoveLineReportController:searchMoveLine,save" colSpan="2"/>
-		        <button name="export" title="Print" onClick="save,com.axelor.apps.account.web.MoveLineReportController:printExportMoveLine,com.axelor.apps.account.web.MoveLineReportController:getReload,action-move-line-report-button-hidden,action-move-line-report-date-readonly" colSpan="2"/>
+		        <button name="export" title="Print" icon="img/icons/print.png" onClick="save,com.axelor.apps.account.web.MoveLineReportController:printExportMoveLine,com.axelor.apps.account.web.MoveLineReportController:getReload,action-move-line-report-button-hidden,action-move-line-report-date-readonly" colSpan="2"/>
 				<field name="status"/>
 				<field name="publicationDateTime"/>
 				<break/>

@@ -21,7 +21,7 @@
         <button name="createIrrecoverableReport" title="Generate irrecoverable report" colSpan="2" onClick="save,com.axelor.apps.account.web.IrrecoverableController:createIrrecoverableReport"/>
         <field name="irrecoverableCustomerLineList" colSpan="4"/>
         <field name="exportTypeSelect"/>
-        <button name="printReport" title="Print" colSpan="2" onClick="save,com.axelor.apps.account.web.IrrecoverableController:printIrrecoverable"/>
+        <button name="printReport" title="Print" colSpan="2" icon="img/icons/print.png" onClick="save,com.axelor.apps.account.web.IrrecoverableController:printIrrecoverable"/>
         <button name="passInIrrecoverable" title="Shift to irrecoverable" colSpan="2" onClick="save,com.axelor.apps.account.web.IrrecoverableController:passInIrrecoverable,action-irrecoverable-attrs-hidden"/>
         <field name="status"/>
         <field name="moveSet" colSpan="4"/>
