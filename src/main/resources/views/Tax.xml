@@ -20,7 +20,7 @@
             </page>
             <page title="Accounting">
             	<field name="managementFeeRate"/>
-                <field name="accountManagementSet" grid-view="account-management-tax-grid" form-view="account-management-tax-form"  
+                <field name="accountManagementList" grid-view="account-management-tax-grid" form-view="account-management-tax-form"  
         		domain="self.typeSelect = 2" colSpan="4" />
             </page>
             <page title="Complementary information" cols="4">

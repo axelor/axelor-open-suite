@@ -6,8 +6,17 @@
         <field name="company"/>
         <field name="account"/>
     </grid>
-    <form name="vat-account-form" title="VAT accounting configuration" model="com.axelor.apps.account.db.VatAccount" cols="4">
+    <form name="vat-account-form" title="VAT accounting configuration" model="com.axelor.apps.account.db.VatAccount" cols="4"
+    onNew="action-vat-account-record-new">
         <field name="company"/>
-        <field name="account"/>
+        <field name="account" onSelect="action-vat-account-domain-on-company-code"/>
     </form>
+    
+    <action-attrs name="action-vat-account-domain-on-company-code">
+    	<attribute name="domain" for="account" expr="eval: &quot;self.company.code = '${company?.code}'&quot;"/>
+    </action-attrs>
+    
+    <action-record name="action-vat-account-record-new" model="com.axelor.apps.account.db.VatAccount">
+    	<field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+    </action-record>
 </object-views>
