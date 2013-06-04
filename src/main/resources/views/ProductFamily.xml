@@ -13,7 +13,8 @@
         <field name="name"/>
         <field name="productCategory"/>
         <field name="code"/>
-        <field name="accountManagementList"  domain="self.typeSelect = 1" colSpan="4"/>
+        <field name="accountManagementList" grid-view="account-management-product-grid" form-view="account-management-product-form"
+        domain="self.typeSelect = 1" colSpan="4"/>
     </form>
     
 </object-views>

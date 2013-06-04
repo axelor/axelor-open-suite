@@ -12,7 +12,7 @@
   	<many-to-one name="project" ref="com.axelor.apps.organisation.db.Project" title="Project"/>
   	<decimal name="totalTaskDays" title="Total ordered days"/>
   	<decimal name="totalTimeSheetDays" title="Total worked days"/>
-  	<decimal name="taskProgress" title="Task Progress"/>
+  	<integer name="taskProgress" title="Task Progress"/>
   	<string name="description" title="Description" large="true"/>
   	<boolean name="isTimesheetAffected" title="Input from timesheet ?"/>
   	<decimal name="totalPlannedDays" title="Total planned days"/>
