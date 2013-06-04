@@ -15,8 +15,8 @@
 <!-- 		 	return costLine != null? costLine.price : product.salePrice -->
 <!-- 	    ]]>	</string> -->
 		<string name="workLoad" title="Charge(%)" default="%"/>
-		<date name="startDate" title="Start date"/>
-		<date name="endDate" title="End date"/>
+		<datetime name="startDateTime" title="Start date"/>
+		<datetime name="endDateTime" title="End date"/>
 		<integer name="duration" title="Duration (Qty)"/>
 		<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Uom"/>
 		<one-to-many name="resourceList" ref="com.axelor.apps.consulting.db.Resource" mappedBy="needLine" title="Ressources"/>
