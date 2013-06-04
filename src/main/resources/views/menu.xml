@@ -17,26 +17,6 @@
 		<view type="form" name="employee-form" />
 	</action-view>	
 	
-	<menuitem name="hr-root-allmanagers" parent="hr-root"
-		title="Managers" action="hr.root.allmanagers" />
-
-	<action-view name="hr.root.allmanagers" title="Managers"
-		model="com.axelor.apps.organisation.db.Employee" icon="img/icons/organisation_small.png">
-		<view type="grid" name="employee-grid" />
-		<view type="form" name="employee-form" />
-		<domain>self.macroCategorySelect in (1,2,3)</domain>
-	</action-view>	
-	
-	<menuitem name="hr-root-allworkers" parent="hr-root"
-		title="Workers" action="hr.root.allworkers" />
-
-	<action-view name="hr.root.allworkers" title="Workers"
-		model="com.axelor.apps.organisation.db.Employee" icon="img/icons/organisation_small.png">
-		<view type="grid" name="employee-grid" />
-		<view type="form" name="employee-form" />
-		<domain>self.macroCategorySelect in (4,5,6)</domain>
-	</action-view>	
-	
 	<menuitem name="hr-root-recruitment" title="Recruitment" parent="hr-root"/>
 		
 	<menuitem name="hr-root-recruitment-candidate" parent="hr-root-recruitment"
@@ -48,25 +28,25 @@
 		<view type="form" name="candidate-form" />
 	</action-view>
 
-	<menuitem name="hr-root-recruitment-managers" parent="hr-root-recruitment"
-		title="Manager candidates" action="hr.root.recruitment.managers" />
+<!-- 	<menuitem name="hr-root-recruitment-managers" parent="hr-root-recruitment" -->
+<!-- 		title="Manager candidates" action="hr.root.recruitment.managers" /> -->
 
-	<action-view name="hr.root.recruitment.managers" title="Managers candidates"
-		model="com.axelor.apps.organisation.db.Candidate" icon="img/icons/organisation_small.png">
-		<view type="grid" name="candidate-grid" />
-		<view type="form" name="candidate-form" />
-		<domain>self.macroCategorySelect in (1,2,3)</domain>
-	</action-view>
+<!-- 	<action-view name="hr.root.recruitment.managers" title="Managers candidates" -->
+<!-- 		model="com.axelor.apps.organisation.db.Candidate" icon="img/icons/organisation_small.png"> -->
+<!-- 		<view type="grid" name="candidate-grid" /> -->
+<!-- 		<view type="form" name="candidate-form" /> -->
+<!-- 		<domain>self.macroCategorySelect in (1,2,3)</domain> -->
+<!-- 	</action-view> -->
 	
-	<menuitem name="hr-root-recruitment-workers" parent="hr-root-recruitment"
-		title="Workers candidates" action="hr.root.recruitment.workers" />
+<!-- 	<menuitem name="hr-root-recruitment-workers" parent="hr-root-recruitment" -->
+<!-- 		title="Workers candidates" action="hr.root.recruitment.workers" /> -->
 
-	<action-view name="hr.root.recruitment.workers" title="Workers candidates"
-		model="com.axelor.apps.organisation.db.Candidate" icon="img/icons/organisation_small.png">
-		<view type="grid" name="candidate-grid" />
-		<view type="form" name="candidate-form" />
-		<domain>self.macroCategorySelect in (4,5,6)</domain>
-	</action-view>
+<!-- 	<action-view name="hr.root.recruitment.workers" title="Workers candidates" -->
+<!-- 		model="com.axelor.apps.organisation.db.Candidate" icon="img/icons/organisation_small.png"> -->
+<!-- 		<view type="grid" name="candidate-grid" /> -->
+<!-- 		<view type="form" name="candidate-form" /> -->
+<!-- 		<domain>self.macroCategorySelect in (4,5,6)</domain> -->
+<!-- 	</action-view> -->
 	
 	<menuitem name="hr-root-inputforms" parent="hr-root"
 		title="Input forms" />
@@ -90,7 +70,7 @@
 		model="com.axelor.apps.organisation.db.Expense" icon="img/icons/organisation_small.png">
 		<view type="grid" name="expense-grid" />
 		<view type="form" name="expense-form" />
-		<domain>self.statusSelect = 'draft' and self.userInfo.internalUser.id = :_internalUserId</domain>
+		<domain>self.userInfo.internalUser.id = :_internalUserId</domain>
 		<context name="_internalUserId" expr="eval: __user__.id"/>
 		<context name="_activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
 	</action-view>
@@ -102,9 +82,20 @@
 		model="com.axelor.apps.organisation.db.Overtime" icon="img/icons/organisation_small.png">
 		<view type="grid" name="overtime-grid" />
 		<view type="form" name="overtime-form" />
-		<domain>self.statusSelect = 'draft' and self.userInfo.internalUser.id = :_internalUserId</domain>
+		<domain>self.userInfo.internalUser.id = :_internalUserId</domain>
 		<context name="_internalUserId" expr="eval: __user__.id"/>
 		<context name="_activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+	</action-view>
+	
+	<menuitem name="hr-root-inputforms-leave-request" parent="hr-root-inputforms"
+		title="My leave requests" action="hr.root.inputforms.leave.request" />
+
+	<action-view name="hr.root.inputforms.leave.request" title="My leave requests"
+		model="com.axelor.apps.organisation.db.LeaveRequest" icon="img/icons/organisation_small.png">
+		<view type="grid" name="leave-request-grid" />
+		<view type="form" name="leave-request-form" />
+		<view type="calendar" name="leave-request-calendar" />
+		<domain>self.employeeUserInfo.internalUser.id = :_internalUserId</domain>
 	</action-view>
 	
 	<menuitem name="hr-root-validationforms" parent="hr-root"
@@ -141,19 +132,20 @@
 		<domain>self.statusSelect = 'submited'</domain>
 		<context name="_activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
 	</action-view>	
+	
+	<menuitem name="hr-root-validationforms-leave-request" parent="hr-root-validationforms"
+		title="Leave requests to validate" action="hr.root.validationforms.leave.request" />
+
+	<action-view name="hr.root.validationforms.leave.request" title="Leave requests to validate"
+		model="com.axelor.apps.organisation.db.LeaveRequest" icon="img/icons/organisation_small.png">
+		<view type="grid" name="leave-request-grid" />
+		<view type="form" name="leave-request-form" />
+		<view type="calendar" name="leave-request-calendar" />
+		<domain>self.statusSelect = 2</domain>
+	</action-view>
 		
 	<menuitem name="hr-root-paymentforms" parent="hr-root"
 		title="Payment forms" />
-	
-	<menuitem name="hr-root-paymentforms-timesheet" parent="hr-root-paymentforms"
-		title="Timesheets to be paid" action="hr.root.paymentforms.timesheet"/>
-		
-	<action-view name="hr.root.paymentforms.timesheet" title="Timesheets to be paid"
-		model="com.axelor.apps.organisation.db.Timesheet" icon="img/icons/organisation_small.png">
-		<view type="grid" name="timesheet-grid" />
-		<view type="form" name="timesheet-form" />
-		<context name="_statusSelect" expr="1"/>
-	</action-view>
 	
 	<menuitem name="hr-root-paymentforms-travelexpenses" parent="hr-root-paymentforms"
 		title="Travel expenses to be paid" action="hr.root.paymentforms.travelexpenses"/>
@@ -180,36 +172,6 @@
 	<menuitem name="hr-root-conf" parent="hr-root" title="Configuration"
 		icon="img/icons/parameter.png" />
 
-	<menuitem name="hr-root-expense" parent="hr-root-conf"
-		title="Travel expenses" action="hr.root.expense" />
-
-	<action-view name="hr.root.expense" title="Travel expenses"
-		model="com.axelor.apps.organisation.db.Expense" icon="img/icons/parameter_small.png">
-		<view type="grid" name="expense-grid" />
-		<view type="form" name="expense-form" />
-		<context name="_activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
-	</action-view>	
-	
-	<menuitem name="hr-root-leave-request" parent="hr-root-conf"
-		title="Leave requests" action="hr.root.leave.request" />
-
-	<action-view name="hr.root.leave.request" title="Leave requests"
-		model="com.axelor.apps.organisation.db.LeaveRequest" icon="img/icons/parameter_small.png">
-		<view type="grid" name="leave-request-grid" />
-		<view type="form" name="leave-request-form" />
-		<view type="calendar" name="leave-request-calendar" />
-	</action-view>
-
-	<menuitem name="hr-root-overtime" parent="hr-root-conf"
-		title="Work Overtimes" action="hr.root.overtime" />
-
-	<action-view name="hr.root.overtime" title="Work overtimes"
-		model="com.axelor.apps.organisation.db.Overtime" icon="img/icons/parameter_small.png">
-		<view type="grid" name="overtime-grid" />
-		<view type="form" name="overtime-form" />
-		<context name="_activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
-	</action-view>	
-	
 	<menuitem name="hr-root-training" parent="hr-root-conf"
 		title="Trainings" action="hr.root.training" />
 
@@ -258,8 +220,8 @@
 
 	
 	
-<!-- 	<menuitem name="affair-root" title="Affair" priority="120" -->
-<!-- 		icon="img/icons/affair.png" /> -->
+	<menuitem name="affair-root" title="Affair" priority="120"
+		icon="img/icons/affair.png" />
 	
 	<menuitem name="affair-root-project" parent="affair-root"
 		title="Affairs" action="affair.root.project" />

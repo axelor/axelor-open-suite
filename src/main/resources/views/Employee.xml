@@ -3,14 +3,12 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
 
-	<grid name="employee-grid" title="Employee"
-		model="com.axelor.apps.organisation.db.Employee">
+	<grid name="employee-grid" title="Employee"	model="com.axelor.apps.organisation.db.Employee">
 		<field name="name" />
 		<field name="firstName" />
 	</grid>
 
-	<form name="employee-form" title="Employee"
-		model="com.axelor.apps.organisation.db.Employee">
+	<form name="employee-form" title="Employee"	model="com.axelor.apps.organisation.db.Employee" cols="4">
 		<group name="header" cols="6" colSpan="4">
 			<field name="createdBy" title="Titulaire" />
 			<break />
@@ -26,7 +24,7 @@
 			<field name="categorySelect" />
 			<field name="companyDepartment"/>
 		</group>
-		<notebook>
+		<notebook colSpan="4">
 			<page title="Additionnal information">
 				<field name="emergencyContact" domain="self.isContact = True"/>
 				<field name="emergencyNumber"/>
@@ -37,12 +35,11 @@
 			<page title="Professionnal background">
 				<field name="positionList"/>
 			</page>
-			<page title="Keywords">
-				<field name="toolKeywordSet" widget="TagSelect[create=keyWord]" colSpan="2" grid-view="keyword-grid"/>
-				<field name="fieldKeywordSet" widget="TagSelect[create=keyWord]" colSpan="2" grid-view="keyword-grid"/>
-				<field name="jobKeywordSet" widget="TagSelect[create=keyWord]" colSpan="2" grid-view="keyword-grid"/>
-				<field name="partnerSet" widget="TagSelect[create=name,firstName,email]" colSpan="2" grid-view="company-name-grid"
-					domain="self.isContact = True"/>
+			<page title="Keywords" cols="4">
+				<field name="toolKeywordSet" widget="TagSelect[create=keyWord]" colSpan="4"/>
+				<field name="fieldKeywordSet" widget="TagSelect[create=keyWord]" colSpan="4"/>
+				<field name="jobKeywordSet" widget="TagSelect[create=keyWord]" colSpan="4"/>
+				<field name="partnerSet" colSpan="4" grid-view="company-name-grid" domain="self.isContact = True"/>
 			</page>
 			<page title="Salary/Expenses/Holidays">
 				<notebook>
@@ -65,8 +62,8 @@
 					</page>
 				</notebook>
 			</page>
-			<page title="Holidays">
-			</page>
+<!-- 			<page title="Holidays"> -->
+<!-- 			</page> -->
 			<page title="Competences">
 				<field name="competence" widget="NestedEditor" summary-view="true"
 					form-view="competence-edit-form"></field>
