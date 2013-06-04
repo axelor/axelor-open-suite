@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    
+    <grid name="delivery-order-line-grid" title="DO lines" model="com.axelor.apps.supplychain.db.DeliveryOrderLine">
+   		<field name="product"/>
+    	<field name="deliveryDate"/>
+        <field name="qty"/>
+    	<field name="inTaxTotal"/>
+        <field name="isInvoiceControlled"/>
+        <field name="isOrdered"/>
+    </grid>
+    
+    <form name="delivery-order-line-form" title="DO line" model="com.axelor.apps.supplychain.db.DeliveryOrderLine" cols="4" onNew="action-delivery-order-line-record-new">
+   		<field name="product" domain="self.endDate = null or self.endDate &gt; :__date__" onChange="action-delivery-order-line-method-get-product-information"/>
+    	<field name="product.productCategory"/>
+    	<field name="productName"/>
+    	<field name="deliveryDate"/>
+        <field name="qty"/>
+    	<field name="inTaxTotal"/>
+        <field name="isInvoiceControlled"/>
+        <field name="isOrdered"/>
+    </form>
+    
+    <action-record name="action-delivery-order-line-record-new" model="com.axelor.apps.supplychain.db.DeliveryOrderLine">
+    	<field name="qty" expr="eval: 1"/>
+    </action-record>
+	
+	<action-method name="action-delivery-order-line-method-get-product-information">
+		<call class="com.axelor.apps.supplychain.web.DeliveryOrderLineController" method="getProductInformation"/>
+	</action-method>
+    
+</object-views>

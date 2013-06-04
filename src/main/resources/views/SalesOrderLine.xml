@@ -71,7 +71,7 @@
 		<call class="com.axelor.apps.supplychain.web.SalesOrderLineController" method="getProductInformation"/>
 	</action-method>
 	
-	
+	<!-- 
 	 <grid name="purchase-order-sales-order-line-grid" title="SO lines" model="com.axelor.apps.supplychain.db.SalesOrderLine">
     	<field name="product"/>
         <field name="qty"/>
@@ -116,6 +116,6 @@
     	<field name="vatTotal"/>
     	<field name="inTaxTotal"/>
         <field name="isInvoiceControlled"/>
-    </form>
+    </form> -->
     
 </object-views>
