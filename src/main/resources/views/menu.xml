@@ -224,9 +224,21 @@
 		icon="img/icons/affair.png" />
 	
 	<menuitem name="affair-root-project" parent="affair-root"
-		title="Affairs" action="affair.root.project" />
+		title="Affairs" />
+		
+	<menuitem name="affair-root-project-new-affair" parent="affair-root-project"
+		title="New Affair" action="affair.root.project.new.affair" />
 
-	<action-view name="affair.root.project" title="Affairs"
+	<action-view name="affair.root.project.new.affair" title="New Affair"
+		model="com.axelor.apps.organisation.db.Project" icon="img/icons/affair_small.png">
+		<view type="form" name="project-form" />
+		<view type="grid" name="project-grid" />
+	</action-view>	
+		
+	<menuitem name="affair-root-project-all-affair" parent="affair-root-project"
+		title="All Affairs" action="affair.root.project.all.affair" />
+
+	<action-view name="affair.root.project.all.affair" title="All Affairs"
 		model="com.axelor.apps.organisation.db.Project" icon="img/icons/affair_small.png">
 		<view type="grid" name="project-grid" />
 		<view type="form" name="project-form" />
