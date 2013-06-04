@@ -191,7 +191,7 @@
 	</action-view>
 	
 	<menuitem name="supply-chain-root" title="Sales/Purchases" priority="150"
-		icon="img/icons/order.png" />
+		icon="img/icons/order.png" groups="admins"/>
 		
 	<menuitem name="supply-chain-root-sales" title="Sales" parent="supply-chain-root"/>
 	
