@@ -5,7 +5,7 @@
 
 
 	<menuitem name="menu-dashboards" priority="200"
-    	title="Dashboards" icon="img/icons/chart.png"/> 	
+    	title="Dashboards" icon="img/icons/chart.png" groups="admins"/> 	
 
 	<menuitem name="menu-salesman-dashboard" parent="menu-dashboards"
 		title="Salesman Dashboard" action="portal.salesman.dashboard.view" />
@@ -62,7 +62,7 @@
 	</action-view>
 
 	<menuitem name="contact-root" title="Companies/Contacts" priority="190"
-		icon="img/icons/partner.png" />
+		icon="img/icons/partner.png" groups="admins"/>
 
 	<menuitem name="contact-root-partner" parent="contact-root"
 		title="Show all" action="contact.root.partner" />
@@ -185,7 +185,7 @@
 
 	
 	<menuitem name="product-root" title="Products" priority="170"
-		icon="img/icons/product.png" />
+		icon="img/icons/product.png" groups="admins"/>
 
  
 	<menuitem name="product-root-product" parent="product-root"
@@ -304,7 +304,7 @@
 
 
 	<menuitem name="alarm-root" title="Alarmes" priority="80"
-		icon="img/icons/alert.png" />
+		icon="img/icons/alert.png" groups="admins"/>
 
 	<menuitem name="alarm-root-alarm-other" parent="alarm-root" title="All Alarms"
 		action="alarm.root.alarm.other" />
@@ -348,7 +348,7 @@
 	
 
 	<menuitem name="mail-root" title="Emails/Mails" priority="70"
-		icon="img/icons/mail.png" />
+		icon="img/icons/mail.png" groups="admins"/>
 
 <!-- 	title-f="Messagerie" -->
 	<menuitem name="mail-root-email-box" parent="mail-root" title="Email box"/>
@@ -497,7 +497,7 @@
 
 
 	<menuitem name="evo-admin-root" title="ERP Administration" priority="60"
-		icon="img/icons/organisation.png" />
+		icon="img/icons/organisation.png" groups="admins"/>
 
 	<menuitem name="evo-admin-root-organisation" parent="evo-admin-root" title="Organization"/>
 
@@ -743,7 +743,7 @@
 	   <!-- SOCIAL NETWORKING -->
 
     <menuitem name="menu-sn" title="Social Networking" priority="65"
-        icon="img/socialnw.jpeg" />
+        icon="img/socialnw.jpeg" groups="admins" />
     <menuitem name="menu-msg-inbox" title="Inbox" action="action-msg-inbox"
         parent="menu-sn" icon="img/fbinbox.jpg" />
     <action-view name="action-msg-inbox" model="com.axelor.apps.base.db.MsgInbox"
