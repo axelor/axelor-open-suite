@@ -7,11 +7,10 @@
 
   <entity name="Project" lang="java">
   
-  	<many-to-one name="holderUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="Titulaire"/>
   	<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
   	<many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Contact"/>
-  	<many-to-one name="need" ref="com.axelor.apps.consulting.db.Need" title="Need"/>
   	<string name="affairName" title="Affair name"/>
+  	<string name="affairDescription" title="Affair description"/>
   	<boolean name="isModel" title="Model ?"/>
   	<boolean name="isTimeSheetImputable" title="Timesheet input required ?"/>
   	<many-to-one name="defaultTask" ref="com.axelor.apps.organisation.db.Task" title="Default task"/>
