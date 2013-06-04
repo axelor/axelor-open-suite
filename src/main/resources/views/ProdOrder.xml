@@ -16,7 +16,8 @@
         <field name="statusSelect"/>
     </grid>
     
-    <form name="prod-order-form" title="Production order" model="com.axelor.apps.production.db.ProdOrder" cols="4">
+    <form name="prod-order-form" title="Production order" model="com.axelor.apps.production.db.ProdOrder" cols="4"
+    onNew="action-prod-order-default-record">
         <field name="productionOrderSeq"/>
         <field name="statusSelect" widget="NavSelect"/>
         <field name="billOfMaterial"/>
@@ -39,5 +40,10 @@
         <field name="prodOrderLineList" colSpan="4"/>
         
     </form>
+    
+    <action-record name="action-prod-order-default-record" model="com.axelor.apps.production.db.ProdOrder">
+    	<field name="statusSelect" expr="eval: 1"/>
+    	<field name="startDate" expr="eval: __date__"/>
+    </action-record>
     
 </object-views>

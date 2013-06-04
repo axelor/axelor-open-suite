@@ -10,11 +10,16 @@
         <field name="billOfMaterialLineList"/>
     </grid>
     
-    <form name="bill-of-material-form" title="Bill of material" model="com.axelor.apps.production.db.BillOfMaterial" cols="4">
+    <form name="bill-of-material-form" title="Bill of material" model="com.axelor.apps.production.db.BillOfMaterial" cols="4"
+    onNew="action-bill-default-record">
         <field name="product"/>
         <field name="qty"/>
         <field name="prodProcess"/>
         <field name="billOfMaterialLineList" colSpan="4"/>
     </form>
+    
+    <action-record name="action-bill-default-record" model="com.axelor.apps.production.db.BillOfMaterial">
+    	<field name="qty" expr="1"/>
+    </action-record>
     
 </object-views>

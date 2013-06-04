@@ -8,9 +8,14 @@
         <field name="prodOrderPlanningLineSeq"/>
     </grid>
     
-    <form name="prod-order-planning-line-form" title="PO planning line" model="com.axelor.apps.production.db.ProdOrderPlanningLine" cols="4">
+    <form name="prod-order-planning-line-form" title="PO planning line" model="com.axelor.apps.production.db.ProdOrderPlanningLine" cols="4"
+    onNew="action-prod-order-planning-line-default-record">
         <field name="prodOrder"/>
         <field name="prodOrderPlanningLineSeq"/>
     </form>
+    
+    <action-record name="action-prod-order-planning-line-default-record" model="com.axelor.apps.production.db.ProdOrderPlanningLine">
+    	<field name="prodOrderPlanningLineSeq" expr="0"/>
+    </action-record>
     
 </object-views>

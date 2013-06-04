@@ -9,7 +9,8 @@
    		<field name="endDate"/>
     </grid>
     
-    <form name="prod-order-planning-form" title="PO planning" model="com.axelor.apps.production.db.ProdOrderPlanning" cols="4">
+    <form name="prod-order-planning-form" title="PO planning" model="com.axelor.apps.production.db.ProdOrderPlanning" cols="4"
+    onNew="action-prod-order-planning-default-record">
     	<field name="prodOrderPlanningSeq" />
     	<field name="isValidated"/>
     	<group title="Dates" colSpan="2" cols="2">
@@ -23,5 +24,9 @@
         <field name="prodOrderPlanningLineList" canSelect="true" colSpan="4"/>
         <field name="prodOrderList" canSelect="true" colSpan="4"/>
     </form>
+    
+    <action-record name="action-prod-order-planning-default-record" model="com.axelor.apps.production.db.ProdOrderPlanning">
+    	<field name="startDate" expr="eval: __date__" if="startDate == null"/>
+    </action-record>
     
 </object-views>
