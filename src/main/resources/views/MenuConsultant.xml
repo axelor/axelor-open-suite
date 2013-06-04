@@ -126,5 +126,31 @@
 		<domain>self.userInfo = :_userInfo</domain>
 		<context name="_userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
 	</action-view>	
+	
+	
+	<menuitem name="menu-consultant-my-task" title="My Tasks" groups="consultant" 
+		action="menu.consultant.my.task"/>	
+		
+	<action-view name="menu.consultant.my.task" title="My Tasks"
+		model="com.axelor.apps.crm.db.Event">
+		<view type="grid" name="crm-task-grid"/>
+		<view type="form" name="crm-task-form"/>
+		<domain>self.typeSelect = 3 and self.userInfo.internalUser.id = :_internalUser</domain>
+		<context name="_typeSelect" expr="3"/>
+		<context name="_internalUser" expr="eval: __user__.id"/>
+	</action-view>	
+	
+	
+	<menuitem name="menu-consultant-my-tickets" title="My Tickets" groups="consultant" 
+		action="menu.consultant.my.tickets"/>	
+		
+	<action-view name="menu.consultant.my.tickets" title="My Tickets"
+		model="com.axelor.apps.crm.db.Event">
+		<view type="grid" name="ticket-grid"/>
+		<view type="form" name="ticket-form"/>
+		<domain>self.typeSelect = :_typeSelect and self.userInfo.internalUser.id = :_internalUser</domain>
+		<context name="_typeSelect" expr="5"/>
+		<context name="_internalUser" expr="eval: __user__.id"/>
+	</action-view>	
 
 </object-views>
