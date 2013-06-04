@@ -13,6 +13,7 @@
 	<many-to-one name="purchaseVat" ref="com.axelor.apps.account.db.Vat" title="Purchase V.A.T."/>
 	<many-to-one name="saleVat" ref="com.axelor.apps.account.db.Vat" title="Sale V.A.T."/>
 	<many-to-one name="cashAccount" ref="com.axelor.apps.account.db.Account" title="Payment account"/>
+	<many-to-one name="taxAccount" ref="com.axelor.apps.account.db.Account" title="Tax account"/>
 	
 	<one-to-many name="analyticAccountManagementList" ref="AnalyticAccountManagement" mappedBy="accountManagement" title="Analytic accounts"/>
 	

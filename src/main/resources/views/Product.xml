@@ -50,7 +50,7 @@
 	        	<field name="unit"/>
         	</page>
             <page title="Accounting" cols="4" colSpan="2">
-                <field name="accountManagementList" grid-view="account-management-product-grid" form-view="account-management-product-form"  domain="self.typeSelect = 1" colSpan="4" />
+                <field name="accountManagementList" grid-view="account-management-product-grid" form-view="account-management-product-form" domain="self.typeSelect = 1" colSpan="4" />
             </page>
             <page title="Related BOMs">
             	<button name="showBillsOfMaterial" title="Show bills of material"/>
