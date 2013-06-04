@@ -53,7 +53,7 @@
 	</action-view>
 	
 	<menuitem name="menu-manufacturing-dashboard" parent="menu-dashboards"
-		title="Manufacturing Dashboard" action="portal.manufacturing.dashboard.view" />	
+		title="Manufacturing Dashboard" action="portal.manufacturing.dashboard.view" groups="axelordemo"/>	
 
 	<action-view name="portal.manufacturing.dashboard.view" title="Manufacturing Dashboard"
 		icon="img/icons/crm_small.png">
@@ -742,7 +742,7 @@
 	
 	   <!-- SOCIAL NETWORKING -->
 
-    <menuitem name="menu-sn" title="Social Networking" priority="100"
+    <menuitem name="menu-sn" title="Social Networking" priority="65"
         icon="img/socialnw.jpeg" />
     <menuitem name="menu-msg-inbox" title="Inbox" action="action-msg-inbox"
         parent="menu-sn" icon="img/fbinbox.jpg" />
@@ -821,7 +821,7 @@
         <domain>self.curUser=:u_ser</domain>
         <context name="u_ser" expr="eval:__user__" />
     </action-view>
-    <menuitem name="menu-fb-sn-page-post" title="Post" icon="img/status.png"
+    <menuitem name="menu-fb-sn-page-post" title="Post" icon="img/postfb.png"
         parent="menu-fb-sn-pages-main" action="action-fb-page-post" />
     <action-view name="action-fb-page-post" model="com.axelor.apps.base.db.FBPagePost"
         title="Page Post">
@@ -1015,7 +1015,7 @@
     
     <!-- Axelor - GoogleApps module menu views -->
 
-    <menuitem name="menu-googleAppsMenu-all" title="Google Apps" icon="img/axelor-googleapps/googleDrive.png" groups="axelordemo"/>
+    <menuitem name="menu-googleAppsMenu-all" title="Google Apps" icon="img/axelor-googleapps/googleDrive.png" groups="axelordemo" priority="70"/>
                 
     <menuitem name="menu-googledocument" title="Document" parent="menu-googleAppsMenu-all" action="googledocument.all" icon="img/axelor-googleapps/docs.png" />
                       

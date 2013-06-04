@@ -13,9 +13,10 @@
        	<field name="procurementMethodSelect"/>
     </grid>
     
-    <form name="product-form" title="Product" model="com.axelor.apps.base.db.Product" cols="2" colWidths="*,400"
-    onNew="action-product-record-default-new, action-showing-seen,action-main-cntrl,action-check-values"
-    onLoad="action-showing-seen,action-main-cntrl,action-check-values,action-clear-lbl-value">
+    <form name="product-form" title="Product" model="com.axelor.apps.base.db.Product" cols="2" colWidths="*,400" onNew="action-product-record-default-new">
+<!--     onNew="action-product-record-default-new, action-showing-seen,action-main-cntrl,action-check-values" -->
+<!--     onLoad="action-showing-seen,action-main-cntrl,action-check-values,action-clear-lbl-value"> -->
+    
 	    <group title="Informations" colSpan="1" cols="6">
 	    	<group noLabel="true" colSpan="2">
 	    		<field name="picture"/>
@@ -52,40 +53,40 @@
             <page title="Accounting" cols="4" colSpan="2">
                 <field name="accountManagementList" grid-view="account-management-product-grid" form-view="account-management-product-form"  domain="self.typeSelect = 1" colSpan="4" />
             </page>
-            <page title="Related BOMs">
-            	<button name="showBillsOfMaterial" title="Show bills of material"/>
+<!--             <page title="Related BOMs"> -->
+<!--             	<button name="showBillsOfMaterial" title="Show bills of material"/> -->
 <!--             	 <portlet action="chart:chart.planned.qty.by.location" height="200" colSpan="2"/> -->
-            </page>
-            <page title="Social Networking">
-				<group title="Social Networking Integration" colSpan="5" cols="5">
-					<group colSpan="1" cols="2">
-						<button name="showing" title="Facebook"
-							onClick="save,action-showing,com.axelor.sn.web.FBController:sayParent" />
-						<button name="retriveCmnt" title="Get Comments"
-							onClick="com.axelor.sn.web.FBController:getComments,action-fill-values" />
-					</group>
-					<spacer colSpan="4" />
-					<break />
-					<group cols="5" colSpan="5">
-						<field name="fbPost" title="Discussion" help="Click on First Symbol to See Detail" readonly="true" colSpan="5" canView="true" edit-window="self" form-view="msg-comment-so" summary-view="msg-comment-so"/>
-						<break />
-						<field name="postfb" title="Post To Facebook" hidden="true"
-							colSpan="4" />
-						<group colSpan="1" cols="2">
-							<button name="postit" title="Post" hidden="true"
-								onClick="action-showing-seen,com.axelor.sn.web.FBController:postOnFB" />
-							<button name="cancle" title="Cancle" onClick="action-showing-seen"
-								hidden="true" />
-						</group>
-					</group>
-				</group>
-				<break />
-				<group cols="3">
-					<label name="lblUser" />
-				</group>
-				<break />
-				<field name="txtUser" hidden="true" />
-			</page>
+<!--             </page> -->
+<!--             <page title="Social Networking"> -->
+<!-- 				<group title="Social Networking Integration" colSpan="5" cols="5"> -->
+<!-- 					<group colSpan="1" cols="2"> -->
+<!-- 						<button name="showing" title="Facebook" -->
+<!-- 							onClick="save,action-showing,com.axelor.sn.web.FBController:sayParent" /> -->
+<!-- 						<button name="retriveCmnt" title="Get Comments" -->
+<!-- 							onClick="com.axelor.sn.web.FBController:getComments,action-fill-values" /> -->
+<!-- 					</group> -->
+<!-- 					<spacer colSpan="4" /> -->
+<!-- 					<break /> -->
+<!-- 					<group cols="5" colSpan="5"> -->
+<!-- 						<field name="fbPost" title="Discussion" help="Click on First Symbol to See Detail" readonly="true" colSpan="5" canView="true" edit-window="self" form-view="msg-comment-so" summary-view="msg-comment-so"/> -->
+<!-- 						<break /> -->
+<!-- 						<field name="postfb" title="Post To Facebook" hidden="true" -->
+<!-- 							colSpan="4" /> -->
+<!-- 						<group colSpan="1" cols="2"> -->
+<!-- 							<button name="postit" title="Post" hidden="true" -->
+<!-- 								onClick="action-showing-seen,com.axelor.sn.web.FBController:postOnFB" /> -->
+<!-- 							<button name="cancle" title="Cancle" onClick="action-showing-seen" -->
+<!-- 								hidden="true" /> -->
+<!-- 						</group> -->
+<!-- 					</group> -->
+<!-- 				</group> -->
+<!-- 				<break /> -->
+<!-- 				<group cols="3"> -->
+<!-- 					<label name="lblUser" /> -->
+<!-- 				</group> -->
+<!-- 				<break /> -->
+<!-- 				<field name="txtUser" hidden="true" /> -->
+<!-- 			</page> -->
         </notebook>
     </form>
     

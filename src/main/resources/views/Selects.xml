@@ -225,8 +225,7 @@
 
 	<selection name='iaccount.account.schedule.nature.select'>
 		<option value='0'>Payment</option>
-		<option value='1'>Mensu Masse</option>
-		<option value='2'>Mensu Grand Compte</option>
+		<option value='2'>Lissage de paiement</option>
 	</selection>
 
 	<selection name='base.base.on.select'>
