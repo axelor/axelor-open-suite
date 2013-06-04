@@ -15,8 +15,8 @@
     onNew="action-timesheet-default-record">
         <field name="userInfo"/>
         <field name="period"/>
-        <field name="fromDate"/>
-        <field name="toDate"/>
+        <field name="fromDate" onChange="action-timesheet-getPeriod"/>
+        <field name="toDate" onChange="action-timesheet-getPeriod"/>
         <field name="statusSelect"/>
         <group title="Satisfaction" cols="4" colSpan="8" colWidths="10%,10%,10%,70%">
         	<separator colSpan="8" title="Project"/>
@@ -49,5 +49,9 @@
     	<field name="toDate" expr="eval: __date__"/>
     	<field name="statusSelect" expr="eval: _statusSelect ? _statusSelect : 1"/> 	
     </action-record>
+    
+    <action-method name="action-timesheet-getPeriod">
+    	<call class="com.axelor.apps.organisation.web.TimeSheetController" method="getPeriod"/>
+    </action-method>
     
 </object-views>
