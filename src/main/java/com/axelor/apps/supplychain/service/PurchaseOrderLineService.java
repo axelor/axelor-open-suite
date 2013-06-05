@@ -51,7 +51,7 @@ private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderLineServi
 		Product product = purchaseOrderLine.getProduct();
 		
 		return currencyService.getAmountCurrencyConverted(
-			product.getSaleCurrency(), purchaseOrder.getCurrency(), product.getSalePrice(), purchaseOrder.getOrderDate());  
+			product.getPurchaseCurrency(), purchaseOrder.getCurrency(), product.getPurchasePrice(), purchaseOrder.getOrderDate());  
 		
 	}
 	
@@ -59,7 +59,7 @@ private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderLineServi
 	public VatLine getVatLine(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException  {
 		
 		return accountManagementService.getVatLine(
-				purchaseOrder.getOrderDate(), purchaseOrderLine.getProduct(), purchaseOrder.getCompany(), false);
+				purchaseOrder.getOrderDate(), purchaseOrderLine.getProduct(), purchaseOrder.getCompany(), true);
 		
 	}
 	

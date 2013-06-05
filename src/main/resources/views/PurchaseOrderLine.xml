@@ -10,8 +10,6 @@
         <field name="price"/>
         <field name="unit"/>
         <field name="exTaxTotal"/>
-    	<field name="vatTotal"/>
-    	<field name="inTaxTotal"/>
         <field name="deliveryDate"/>
     </grid>
     
@@ -26,8 +24,6 @@
 		<field name="vatLine.value"/>
     	<field name="unit"/>
     	<field name="exTaxTotal"/>
-    	<field name="vatTotal"/>
-    	<field name="inTaxTotal"/>
 		<field name="deliveryDate"/>
     </form>
     

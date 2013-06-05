@@ -23,10 +23,31 @@
         <field name="deliveryDate"/>
         <field name="currency"/>
 		<field name="purchaseOrderLineList" colSpan="4" grid-view="purchase-order-line-grid" form-view="purchase-order-line-form"/>
-    	<button name="validate" title="Validate" colSpan="2"/>
-    	<button name="sendByEmail" title="Send by email" colSpan="2"/>
-    	<button name="generateDeliveryOrder" title="Generate delivery" colSpan="2"/>
-    	<button name="showSupplierInvoice" title="Show invoice" colSpan="2" onClick="action-purchase-order-show-supplier-invoice"/>
+        <field name="purchaseOrderLineVatList" colSpan="4"/>
+      	<group colSpan="4" cols="3" noLabel="true">
+       		<group colSpan="2" cols="2" title="Action(s)">
+       			<group colSpan="1" cols="1">
+       				<button name="compute" title="Compute" colSpan="1" onClick="save,action-purchase-order-method-compute,save" hideIf="statusSelect == 4"/>
+	                <button name="validate" title="Validate" colSpan="1" onClick="save,action-purchase-order-record-validate,save" showIf="statusSelect == 3"/>
+	                <button name="cancel" title="Cancel" colSpan="1" onClick="save,action-purchase-order-record-cancel" showIf="statusSelect == 1 || statusSelect == 2"/>
+	                <button name="sendByEmail" title="Send by email" colSpan="1" showIf="statusSelect == 4"/>
+			    	<button name="generateDeliveryOrder" title="Generate delivery" colSpan="1"/>
+			    	<button name="showSupplierInvoice" title="Show invoice" colSpan="1" onClick="action-purchase-order-show-supplier-invoice"/>
+       			</group>
+       			<group colSpan="1" cols="2" readonly="true">
+       				<field name="validatedByUserInfo" colSpan="1"/>
+                	<field name="validationDate" colSpan="1"/>
+       			</group>
+      			</group>
+      			<group colSpan="1" cols="1" title="Totaux">
+        		<group colSpan="1" css="subtotal" cols="2" colWidths="50%,50%" readonly="true">
+        			<field name="exTaxTotal"/>
+        			<field name="vatTotal"/>
+        			<field name="inTaxTotal" css="subtotal-total"/>
+		        	<field name="amountRemainingToBeInvoiced"/>
+        		</group>
+       		</group>
+      	</group>
     </form>
     
     <action-record name="action-purchase-order-record-new" model="com.axelor.apps.supplychain.db.PurchaseOrder">
@@ -43,6 +64,20 @@
     <action-record name="action-purchase-order-record-partner" model="com.axelor.apps.supplychain.db.PurchaseOrder">
  		<field name="currency" expr="eval: supplierPartner?.currency"/>
  	</action-record>
+    
+    <action-record name="action-purchase-order-record-validate" model="com.axelor.apps.supplychain.db.PurchaseOrder">
+    	<field name="statusSelect" expr="eval: 4"/>
+    	<field name="validationDate" expr="eval: __date__"/>
+    	<field name="validatedByUserInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+    </action-record>
+    
+     <action-record name="action-purchase-order-record-cancel" model="com.axelor.apps.supplychain.db.PurchaseOrder">
+    	<field name="statusSelect" expr="eval: 6"/>
+    </action-record>
+    
+    <action-method name="action-purchase-order-method-compute">
+    	<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="compute"/>
+    </action-method>
  	
  	<action-method name="action-purchase-order-set-sequence">
  		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="setSequence"/>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+   
+    <grid name="purchase-order-line-vat-grid" title="SO VAT lines" model="com.axelor.apps.supplychain.db.PurchaseOrderLineVat">
+		<field name="vatLine.vat"/>
+		<field name="vatLine.value"/>
+		<field name="exTaxBase"/>
+		<field name="vatTotal"/>
+		<field name="inTaxTotal"/>
+    </grid>
+    
+    <form name="purchase-order-line-vat-form" title="SO VAT line" model="com.axelor.apps.supplychain.db.PurchaseOrderLineVat" cols="4">
+    	<field name="vatLine"/>
+    	<break/>
+		<field name="vatLine.vat.name"/>
+		<field name="vatLine.value"/>
+		<field name="exTaxBase"/>
+		<field name="vatTotal"/>
+		<field name="inTaxTotal"/>
+    </form>
+    
+</object-views>
