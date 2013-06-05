@@ -11,12 +11,19 @@
         <field name="toDate"/>
     </grid>
     
-    <form name="currency-conversion-line-form" title="Currency conversion line" model="com.axelor.apps.base.db.CurrencyConversionLine" cols="4">
+    <form name="currency-conversion-line-form" title="Currency conversion line" model="com.axelor.apps.base.db.CurrencyConversionLine" cols="4"
+    onNew="action-currency-conversion-line-default-record">
         <field name="startCurrency"/>
         <field name="endCurrency"/>
         <field name="conversionRate"/>
         <field name="fromDate"/>
         <field name="toDate"/>
     </form>
+    
+    <action-record name="action-currency-conversion-line-default-record" model="com.axelor.apps.base.db.CurrencyConversionLine">
+    	<!--  <field name="startCurrency" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()?.currency"/> -->
+    	<field name="conversionRate" expr="1"/>
+    	
+    </action-record>
     
 </object-views>
