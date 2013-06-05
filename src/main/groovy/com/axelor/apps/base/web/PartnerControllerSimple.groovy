@@ -27,7 +27,7 @@ class PartnerControllerSimple {
 	LnService linService;
 	
 	@Inject
-	SequenceService ss;
+	SequenceService sequenceService;
 	
 	def void showInvoice(ActionRequest request, ActionResponse response)  {
 		
@@ -61,9 +61,9 @@ class PartnerControllerSimple {
 		Partner partner = request.context as Partner
 		Map<String,String> values = new HashMap<String,String>();
 		if(partner.partnerSeq ==  null){
-			def ref = ss.getSequence(IAdministration.PARTNER,false);
+			def ref = sequenceService.getSequence(IAdministration.PARTNER,false);
 			if (ref == null || ref.isEmpty())  
-				throw new AxelorException(String.format("Aucune séquence configurée pour les tiers"),
+				throw new AxelorException("Aucune séquence configurée pour les tiers",
 								IException.CONFIGURATION_ERROR);
 			else
 				values.put("partnerSeq",ref);
