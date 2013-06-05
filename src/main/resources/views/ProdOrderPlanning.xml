@@ -26,7 +26,7 @@
     </form>
     
     <action-record name="action-prod-order-planning-default-record" model="com.axelor.apps.production.db.ProdOrderPlanning">
-    	<field name="startDate" expr="eval: __date__" if="startDate == null"/>
+    	<field name="startDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="startDate == null"/>
     </action-record>
     
 </object-views>
