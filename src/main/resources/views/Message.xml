@@ -53,8 +53,8 @@
     </form>
 
 	<action-record name="action-message-default-record" model="com.axelor.apps.base.db.Message">
-    	<field name="sendedDate" expr="eval: __time__" if="sendedDate == null"/>
+    	<field name="sendedDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()" if="sendedDate == null"/>
     	<field name="statusSelect" expr="eval: 2"/>
-    	<field name="typeSelect" expr="eval: 1"/>
+    	<field name="typeSelect" expr="eval: 2"/>
     </action-record>
 </object-views>
