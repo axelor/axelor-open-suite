@@ -36,6 +36,9 @@
 		<view type="grid" name="ticket-grid"/>
 		<view type="form" name="ticket-form"/>
 		<domain>self.createdBy = :_user</domain>
+		<context name="_typeSelect" expr="5"/>
+		<context name="_prioritySelect" expr="2"/>
+		<context name="_internalUser" expr="eval: __user__.id"/>
     	<context name="_user" expr="eval:__user__"/>
     	<context name="_clientView" expr="eval: true"/>
 	</action-view>
