@@ -49,7 +49,7 @@
 	     			<break/>
                 <separator title="Payment differences" colSpan="6"/>
 	                <field name="thresholdDistanceFromRegulation"/>
-	                <field name="cashPositionVariationAccount"/>
+	                <field name="cashPositionVariationAccount" domain="self.company.code = :code"/>
 	            <separator title="Exports" colSpan="6"/>
 	            	<field name="exportPath"/>
 	            <separator title="Cashiers" colSpan="6"/>
@@ -99,7 +99,7 @@
     	       		<field name="reimbursementExportFolderPathCFONB"/>
         	    	<field name="lowerThresholdReimbursement"/>
             		<field name="upperThresholdReimbursement"/>
-          	  		<field name="reimbursementAccount"/>
+          	  		<field name="reimbursementAccount" domain="self.company.code = :code"/>
             		<field name="reimbursementMailModel"/>
             	</group>
             	<group title="Reimbursement rejects" colSpan="4">
@@ -133,7 +133,7 @@
             </page>
             <page title="Acc. Clearance" cols="4">
              	<field name="clearanceAccountSet" domain="self.reconcileOk = 'true' AND self.company.code = :code" colSpan="4"/>
-             	<field name="profitAccount"/>
+             	<field name="profitAccount" domain="self.company.code = :code"/>
              	<field name="standardRateVat"/>
             </page>
             <page title="Paybox" cols="4">
