@@ -7,8 +7,8 @@
         <field name="product"/>
         <field name="employee"/>
         <field name="task"/>
-        <field name="fromDate"/>
-        <field name="toDate"/>
+        <field name="fromDateTime"/>
+        <field name="toDateTime"/>
         <field name="duration"/>
         <field name="unit"/>
         <field name="timeSheet"/>
@@ -29,8 +29,8 @@
     <grid name="planning-line-task-grid" title="Planning lines" model="com.axelor.apps.organisation.db.PlanningLine">
         <field name="product"/>
         <field name="employee"/>
-        <field name="fromDate"/>
-        <field name="toDate"/>
+        <field name="fromDateTime"/>
+        <field name="toDateTime"/>
         <field name="duration"/>
         <field name="unit"/>
         <field name="timeSheet"/>
@@ -50,7 +50,7 @@
     </form>
     
     <action-record name="action-planningline-default-record" model="com.axelor.apps.organisation.db.PlanningLine">
-    	<field name="fromDateTime" expr="eval: __time__.plusHours(8)" if="fromDate == null"/>
+    	<field name="fromDateTime" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()" if="fromDateTime == null"/>
     </action-record>
     
     <action-method name="action-planning-line-method-compute-start-date-time">

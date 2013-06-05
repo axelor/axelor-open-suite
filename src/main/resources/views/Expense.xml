@@ -45,7 +45,7 @@
     
 	<action-record name="action-expense-default-record" model="com.axelor.apps.organisation.db.Expense">
     	<field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
-    	<field name="date" expr="eval: __date__"/>
+    	<field name="date" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="date == null"/>
     	<field name="currency" expr="eval: _activeCompany?.currency"/>	
     	<field name="statusSelect" expr="draft"/>
     </action-record>
