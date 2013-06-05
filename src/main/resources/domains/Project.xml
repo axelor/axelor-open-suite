@@ -9,7 +9,7 @@
   
   	<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
   	<many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Contact"/>
-  	<string name="affairName" title="Affair name"/>
+  	<string name="affairName" title="Affair name" namecolumn="true"/>
   	<string name="affairDescription" title="Affair description"/>
   	<boolean name="isModel" title="Model ?"/>
   	<boolean name="isTimeSheetImputable" title="Timesheet input required ?"/>
@@ -40,7 +40,7 @@
  	
  	<many-to-one name="parentProject" ref="com.axelor.apps.organisation.db.Project" title="Parent project"/>
   	
-  	<one-to-many name="taskList" ref="com.axelor.apps.organisation.db.Task" title="Tasks"/>
+  	<one-to-many name="taskList" ref="com.axelor.apps.organisation.db.Task" mappedBy="task" title="Tasks"/>
 	  	
   	<many-to-one name="responsibleUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="Responsible"/>
   	<many-to-many name="memberUserInfoSet" ref="com.axelor.apps.base.db.UserInfo" title="Members"/>

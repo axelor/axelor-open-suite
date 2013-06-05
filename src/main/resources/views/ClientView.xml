@@ -20,22 +20,22 @@
 		model="com.axelor.apps.supplychain.db.SalesOrder" icon="img/icons/order_small.png">
 		<view type="form" name="sales-order-form" />
 		<domain>self.clientPartner = :_myPartner</domain>
-		<context name="_myPartner" expr="call:call:com.axelor.apps.base.service.user.UserInfoService:getUserPartner()"/>
+		<context name="_myPartner" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserPartner()"/>
 	</action-view>
 	
 	<action-view name="wizard-client-form-open-my-invoices" title="My invoices"
 		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
-		<view type="grid" name="invoice-lite-grid"/>
+		<view type="grid" name="invoice-client-grid"/>
     	<view type="form" name="invoice-client-form"/>
 		<domain>self.partner = :_myPartner</domain>
-		<context name="_myPartner" expr="call:call:com.axelor.apps.base.service.user.UserInfoService:getUserPartner()"/>
+		<context name="_myPartner" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserPartner()"/>
 	</action-view>
 	
 	<action-view name="wizard-client-form-open-my-tickets" title="My tickets"
 		model="com.axelor.apps.crm.db.Event" icon="img/icons/crm_small.png">
 		<view type="grid" name="ticket-grid"/>
 		<view type="form" name="ticket-form"/>
-		<domain>self.createdBy = :_userr</domain>
+		<domain>self.createdBy = :_user</domain>
     	<context name="_user" expr="eval:__user__"/>
     	<context name="_clientView" expr="eval: true"/>
 	</action-view>
