@@ -11,7 +11,8 @@
         <field name="statusSelect"/>
     </grid>
     
-    <form name="purchase-order-form" title="Supplier RFQ/PO" model="com.axelor.apps.supplychain.db.PurchaseOrder" cols="4" onNew="action-purchase-order-record-new,action-purchase-order-record-currency">
+    <form name="purchase-order-form" title="Supplier RFQ/PO" model="com.axelor.apps.supplychain.db.PurchaseOrder" cols="4" onNew="action-purchase-order-record-new,action-purchase-order-record-currency"
+    onSave="action-purchase-order-set-sequence">
     	<field name="purchaseOrderSeq"/>
     	<field name="company"/>
    	 	<field name="supplierPartner" domain="self.partnerTypeSelect = 1" onChange="action-purchase-order-record-partner"/>
@@ -42,6 +43,10 @@
     <action-record name="action-purchase-order-record-partner" model="com.axelor.apps.supplychain.db.PurchaseOrder">
  		<field name="currency" expr="eval: supplierPartner?.currency"/>
  	</action-record>
+ 	
+ 	<action-method name="action-purchase-order-set-sequence">
+ 		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="setSequence"/>
+ 	</action-method>
     
     <action-view name="action-purchase-order-show-supplier-invoice" title="Supplier invoices"
 		model="com.axelor.apps.account.db.Invoice">

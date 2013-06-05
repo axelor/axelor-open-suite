@@ -5,6 +5,8 @@ import groovy.util.logging.Slf4j
 import com.axelor.apps.AxelorSettings
 import com.axelor.apps.supplychain.db.SalesOrder
 import com.axelor.apps.supplychain.service.SalesOrderService
+import com.axelor.exception.AxelorException
+import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService
 import com.axelor.apps.tool.net.URLService
 
@@ -14,6 +16,8 @@ import com.google.inject.Inject
 
 import com.axelor.auth.db.User
 import com.axelor.apps.base.db.GoogleFile
+import com.axelor.apps.base.db.IAdministration;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.googleapps.document.DocumentService
 import com.axelor.googleapps.userutils.Utils
 
@@ -23,6 +27,9 @@ class SalesOrderController {
 	
 	@Inject
 	private SalesOrderService salesOrderService
+	
+	@Inject
+	SequenceService sequenceService;
 	
 	@Inject DocumentService documentSeriveObj
 	@Inject Utils userUtils
@@ -97,5 +104,19 @@ class SalesOrderController {
 		else {
 			response.flash = urlNotExist
 		}
+	}
+	
+	def void setSequence(ActionRequest request, ActionResponse response) {
+		SalesOrder salesOrder = request.context as SalesOrder
+		Map<String,String> values = new HashMap<String,String>();
+		if(salesOrder.salesOrderSeq ==  null){
+			def ref = sequenceService.getSequence(IAdministration.SALES_ORDER,salesOrder.company,false);
+			if (ref == null || ref.isEmpty())
+				throw new AxelorException(String.format("La société %s n'a pas de séquence de configurée pour les devis",salesOrder.company?.name),
+								IException.CONFIGURATION_ERROR);
+			else
+				values.put("salesOrderSeq",ref);
+		}
+		response.setValues(values);
 	}
 }

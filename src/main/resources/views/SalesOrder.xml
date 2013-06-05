@@ -12,7 +12,8 @@
         <field name="inTaxTotal"/>
     </grid>
     
-	<form name="sales-order-form" title="Sale order" model="com.axelor.apps.supplychain.db.SalesOrder" cols="4" onNew="action-sales-order-record-default,action-sales-order-record-currency">
+	<form name="sales-order-form" title="Sale order" model="com.axelor.apps.supplychain.db.SalesOrder" cols="4" onNew="action-sales-order-record-default,action-sales-order-record-currency"
+	onSave="action-sales-order-set-sequence">
 		<toolbar>
 		    <!--  Use this button to create document for the current entity using the template, u have to define the controller for it... -->
 		    <button name="createDocument" title="Create Document" onClick="com.axelor.apps.supplychain.web.SalesOrderController:saveDocumentForOrder" />
@@ -146,7 +147,9 @@
     <action-method name="action-sales-order-method-generate-invoice">
  		<call class="com.axelor.apps.supplychain.web.SalesOrderInvoiceController" method="generateInvoice"/>
 	</action-method>
-	
+	<action-method name="action-sales-order-set-sequence">
+		<call class="com.axelor.apps.supplychain.web.SalesOrderController" method="setSequence"/>
+	</action-method>
 	 <action-view name="action-sales-order-view-invoice" title="Invoices" model="com.axelor.apps.account.db.Invoice">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
