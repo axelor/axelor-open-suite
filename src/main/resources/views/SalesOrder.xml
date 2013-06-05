@@ -99,7 +99,7 @@
     </form>
     
     <action-attrs name="action-sales-order-domain-on-team">
-    	<attribute name="domain" for="team" expr="eval: &quot;self.id IN (${salesmanUserInfo?.teamSet?.collect{it.id}?.join(',')})&quot;" if="salesmanUserInfo?.teamSet?.collect{it.id}?.size() > 0"/>
+    	<attribute name="domain" for="team" expr="eval: salesmanUserInfo?.teamSet?.collect{it.id}?.size() > 0 ? &quot;self.id IN (${salesmanUserInfo?.teamSet?.collect{it.id}?.join(',')})&quot; : null"/>
     </action-attrs>
     
     <action-method name="action-sales-order-method-show-sales-order">
