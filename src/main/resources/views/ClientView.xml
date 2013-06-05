@@ -3,7 +3,8 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
 	
-	<action-view name="wizard-client-view" title="My space">
+	<action-view name="wizard-client-view" title="My space"
+		model="com.axelor.apps.base.db.Wizard">
 		<view type="form" name="wizard-client-form"/>
 		<view-param name="show-toolbar" value="false"/>
 	</action-view>
@@ -13,11 +14,12 @@
 	    <break/>
 		<button name="mySaleOrder" colSpan="1" title="My sales orders" onClick="wizard-client-form-open-my-sale-order" css="img-button client-img-menu" icon="img/icons/client-menu-so.jpg"/>
 	    <button name="myInvoices" colSpan="1" title="My invoices" onClick="wizard-client-form-open-my-invoices" css="img-button client-img-menu" icon="img/icons/client-menu-invoice.png"/>
-		<button name="myTickets" colSpan="1" title="My tickets" onClick="wizard-client-form-open-my-tickets" css="img-button client-img-menu" icon="img/icons/client-menu-ticket.jpg"/>	    
+		<button name="myTickets" colSpan="1" title="My tickets" onClick="wizard-client-form-open-my-tickets" css="img-button client-img-menu" icon="img/icons/client-menu-ticket.jpg"/>
 	</form>
 	
 	<action-view name="wizard-client-form-open-my-sale-order" title="My sales orders"
 		model="com.axelor.apps.supplychain.db.SalesOrder" icon="img/icons/order_small.png">
+		<view type="grid" name="sales-order-grid"/>
 		<view type="form" name="sales-order-form" />
 		<domain>self.clientPartner = :_myPartner</domain>
 		<context name="_myPartner" expr="call:call:com.axelor.apps.base.service.user.UserInfoService:getUserPartner()"/>
@@ -25,7 +27,7 @@
 	
 	<action-view name="wizard-client-form-open-my-invoices" title="My invoices"
 		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
-		<view type="grid" name="invoice-lite-grid"/>
+		<view type="grid" name="invoice-client-grid"/>
     	<view type="form" name="invoice-client-form"/>
 		<domain>self.partner = :_myPartner</domain>
 		<context name="_myPartner" expr="call:call:com.axelor.apps.base.service.user.UserInfoService:getUserPartner()"/>
