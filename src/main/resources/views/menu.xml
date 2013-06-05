@@ -15,6 +15,7 @@
 		<view type="portal" name="salesman.dashboard.portal" />
     	<context name="_user" expr="eval:__user__"/>
     	<context name="_user_id" expr="eval:__user__.id"/>
+    	<context name="_past_month" expr="eval: __date__.minusMonths(1)"/>
 	</action-view>
 		
 <!-- 	<menuitem name="menu-sales-manager-dashboard" parent="menu-dashboards" -->
