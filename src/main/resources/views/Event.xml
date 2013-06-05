@@ -136,7 +136,8 @@
     
     <form name="ticket-form" title="Ticket" model="com.axelor.apps.crm.db.Event" cols="6" colWidths="*,400"
     	onNew="action-event-new-record,action-event-ticket-attrs-default"
-    	onLoad="action-event-ticket-attrs-default">
+    	onLoad="action-event-ticket-attrs-default"
+    	onSave="action-event-set-sequence">
     	<group colSpan="6" cols="6"  colWidths="16%,17%,16%,17%,16%,18%">
 	    	<field name="ticketNumberSeq" readonly="true"/>
 	       	<field name="subject"/>
@@ -213,12 +214,16 @@
     	<call class="com.axelor.apps.crm.web.EventController" method="computeStartDateTime"/>
     </action-method>
     
+    <action-method name="action-event-set-sequence">
+		<call class="com.axelor.apps.supplychain.web.SalesOrderController" method="setSequence" />
+	</action-method>
+	
     <action-method name="action-meeting-method-compute-end-date-time">
     	<call class="com.axelor.apps.crm.web.EventController" method="computeEndDateTime"/>
     </action-method>
     
     <action-method name="action-meeting-method-compute-duration">
-    	<call class="com.axelor.apps.crm.web.EventController" method="computeDuration"/>
+    	<call class="com.axelor.apps.crm.web.EventController" method="computeDuration" />
     </action-method>
     
     <action-record name="action-task-record-tertiary-status-select" model="com.axelor.apps.crm.db.Event">

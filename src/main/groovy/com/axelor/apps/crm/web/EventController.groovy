@@ -3,9 +3,14 @@ package com.axelor.apps.crm.web
 import groovy.util.logging.Slf4j
 import org.joda.time.Duration
 
+import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.crm.db.Event
+import com.axelor.apps.crm.db.IEvent;
 import com.axelor.apps.crm.service.EventService
+import com.axelor.exception.AxelorException
+import com.axelor.exception.db.IException;
 import com.axelor.rpc.ActionRequest
 import com.axelor.rpc.ActionResponse
 import com.google.inject.Inject
@@ -16,6 +21,9 @@ public class EventController {
 
 	@Inject
 	private EventService eventService
+	
+	@Inject
+	SequenceService sequenceService;
 	
 	def computeStartDateTime(ActionRequest request, ActionResponse response) {
 		
@@ -63,4 +71,17 @@ public class EventController {
 		}
 	}
   
+	def void setSequence(ActionRequest request, ActionResponse response) {
+		Event event = request.context as Event
+		Map<String,String> values = new HashMap<String,String>();
+		if(event.ticketNumberSeq ==  null && event.typeSelect == IEvent.TICKET){
+			def ref = sequenceService.getSequence(IAdministration.EVENT_TICKET,false);
+			if (ref == null || ref.isEmpty())
+				throw new AxelorException("Aucune séquence configurée pour les tickets",
+								IException.CONFIGURATION_ERROR);
+			else
+				values.put("ticketNumberSeq",ref);
+		}
+		response.setValues(values);
+	}
 }
