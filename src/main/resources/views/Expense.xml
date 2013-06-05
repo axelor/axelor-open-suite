@@ -40,6 +40,7 @@
    	 	<break/>
         <button name="confirm" title="Confirm" colSpan="2" onClick="save"/>
         <button name="refuse" title="Refuse" colSpan="2" onClick="save"/>
+        <button name="sum" title="Calculer" colSpan="2" onClick="action-expense-sum-expense-line"/>
     </form>
     
 	<action-record name="action-expense-default-record" model="com.axelor.apps.organisation.db.Expense">
@@ -47,5 +48,9 @@
     	<field name="date" expr="eval: __date__"/>
     	<field name="currency" expr="eval: _activeCompany?.currency"/>	
     	<field name="statusSelect" expr="draft"/>
+    </action-record>
+    
+    <action-record name="action-expense-sum-expense-line" model="com.axelor.apps.organisation.db.Expense">
+    	<field name="totalAmount" expr="eval:expenseLineList?.collect(){it?.total}?.sum()"/>
     </action-record>
 </object-views>
