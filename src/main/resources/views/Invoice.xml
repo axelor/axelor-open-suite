@@ -149,6 +149,10 @@
     </form>
     
     <grid name="invoice-client-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice">
+    	<toolbar>
+    		<button name="delete" title="" hidden="true"/>
+    		<button name="new" title="" hidden="true"/>
+    	</toolbar>
         <field name="invoiceId"/>
         <field name="partner"/>
         <field name="paymentMode" />
@@ -165,6 +169,7 @@
     		<button name="new" title="" hidden="true"/>
     		<button name="save" title="" hidden="true"/>
     		<button name="copy" title="" hidden="true"/>
+    		<button name="edit" title="" hidden="true"/>
     	</toolbar>
         <field name="invoiceId" readonly="true"/>
         <group name="partnerGroup" title="Invoicing informations" colSpan="4" cols="4" canCollapse="true" readonly="true">
