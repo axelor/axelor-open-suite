@@ -12,11 +12,11 @@
     </grid>
     
     <form name="timesheet-form" title="Timesheet" model="com.axelor.apps.organisation.db.Timesheet" cols="8"
-    onNew="action-timesheet-default-record">
+    onNew="action-timesheet-default-record,action-timesheet-getPeriod">
         <field name="userInfo"/>
         <field name="period"/>
         <field name="fromDate" onChange="action-timesheet-getPeriod"/>
-        <field name="toDate" onChange="action-timesheet-getPeriod"/>
+        <field name="toDate"/>
         <field name="statusSelect"/>
         <group title="Satisfaction" cols="4" colSpan="8" colWidths="10%,10%,10%,70%">
         	<separator colSpan="8" title="Project"/>
