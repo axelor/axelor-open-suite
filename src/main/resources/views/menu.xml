@@ -108,8 +108,10 @@
 	<action-view name="crm.root.meeting.my.calendar" title="My Meetings Calendar"
 		model="com.axelor.apps.crm.db.Event" icon="img/icons/calendar-task.png">
 		<view type="calendar" name="meeting-calendar"/>
+		<view type="form" name="meeting-form"/>
 		<domain>self.userInfo.internalUser.id = :_internalUser</domain>
 		<context name="_internalUser" expr="eval: __user__.id"/>
+		<context name="_typeSelect" expr="2"/>
 	</action-view>
 	
 	<menuitem name="crm-root-meeting-team-calendar" parent="crm-root"
@@ -118,6 +120,8 @@
 	<action-view name="crm.root.meeting.team.calendar" title="Shared calendar"
 		model="com.axelor.apps.crm.db.Event" icon="img/icons/calendar-task.png">
 		<view type="calendar" name="meeting-calendar"/>
+		<view type="form" name="meeting-form"/>
+		<context name="_typeSelect" expr="2"/>
 	</action-view>
 	
 	<menuitem name="crm-root-create" parent="crm-root"

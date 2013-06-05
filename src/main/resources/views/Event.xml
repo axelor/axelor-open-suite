@@ -186,7 +186,7 @@
     </action-record>
     
     <action-attrs name="action-event-attrs-team-domain">
-    	<attribute name="domain" for="team" expr="eval: &quot;self.id IN (${userInfo?.teamSet?.collect{it.id}.join(',')})&quot;"/>
+    	<attribute name="domain" for="team" expr="eval: &quot;self.id IN (${userInfo?.teamSet?.collect{it.id}.join(',')})&quot;" if="userInfo?.teamSet?.collect{it.id}?.size() > 0"/>
     </action-attrs>
     
     <action-record name="action-event-default-record" model="com.axelor.apps.crm.db.Event">
