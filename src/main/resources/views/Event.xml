@@ -171,7 +171,22 @@
         		<field name="description" widget="TEXT[height=4]" noLabel="true" colSpan="6"/>
         	</page>
         	<page title="Comments">
-        		<field name="messageList" noLabel="true" colSpan="6"/>
+        		<field name="messageList" noLabel="true" colSpan="6">
+        			<form title="Comment">
+        				<group title="Informations" colSpan="4" readonly="true">
+				            <field name="sendedDate"/>
+				            <field name="sender"/>
+				        </group>
+				        <group title="Content" colSpan="4" readonly="true">
+				       	 	<field name="content" colSpan="4" noLabel="true" widget="html"/>
+				        </group>
+        			</form>
+        			<grid title="Comments">
+			            <field name="sendedDate"/>
+			            <field name="sender"/>
+			       	 	<field name="content" colSpan="4" noLabel="true" widget="html"/>
+        			</grid>
+        		</field>
         	</page>
         	<page title="Watchers">
         		<field name="userInfoSet" noLabel="true" colSpan="6"/>
