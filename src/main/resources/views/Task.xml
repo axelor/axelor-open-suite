@@ -11,7 +11,7 @@
  	 </calendar>
     
     
-    <grid name="task-grid" title="Tasks" model="com.axelor.apps.organisation.db.Task">
+    <grid name="task-grid" title="Tasks" model="com.axelor.apps.organisation.db.Task" orderBy="taskProgress">
         <field name="name"/>
         <field name="project"/>
         <field name="totalTaskDays"/>
