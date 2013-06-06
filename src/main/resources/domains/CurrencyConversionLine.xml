@@ -9,10 +9,10 @@
   
     <integer name="importId"/>
     <many-to-one name="general" ref="com.axelor.apps.base.db.General" title="Administration"/>
-    <many-to-one name="startCurrency" ref="com.axelor.apps.base.db.Currency" title="Source Currency"/>
-    <many-to-one name="endCurrency" ref="com.axelor.apps.base.db.Currency" title="Destination Currency"/>
+    <many-to-one name="startCurrency" ref="com.axelor.apps.base.db.Currency" title="Source Currency" required="true"/>
+    <many-to-one name="endCurrency" ref="com.axelor.apps.base.db.Currency" title="Destination Currency" required="true"/>
     <decimal name="conversionRate" scale="4" precision="20" title="Exchange rate"/>
-    <date name="fromDate" title="From Date"/>
+    <date name="fromDate" title="From Date" required="true"/>
     <date name="toDate" title="To Date"/>
    
     
