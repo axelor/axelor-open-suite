@@ -29,7 +29,7 @@
         </group>
         <group colSpan="1" cols="1" >
         	<field name="statusSelect" widget="NavSelect"/>
-        	<button name="showInvoice" title="Les factures" colSpan="1" onClick="action-sales-order-view-invoice"/>
+        	<button name="showInvoice" title="Show invoices" colSpan="1" onClick="action-sales-order-view-invoice"/>
         </group>
         <notebook colSpan="4">
         	<page title="Customer information">
@@ -64,7 +64,7 @@
 		                	<field name="validationDate" colSpan="1"/>
 	        			</group>
         			</group>
-        			<group colSpan="1" cols="1" title="Totaux">
+        			<group colSpan="1" cols="1" title="Totals">
 		        		<group colSpan="1" css="subtotal" cols="2" colWidths="50%,50%" readonly="true">
 		        			<field name="exTaxTotal"/>
 		        			<field name="vatTotal"/>
@@ -94,7 +94,6 @@
         		<button name="generateInvoice" title="Generate invoice" onClick="save,action-sales-order-method-generate-invoice" colSpan="2"/>
         		<button name="generateProject" title="Generate project" colSpan="2"/>
         	</page>
-        
         </notebook>
     </form>
     
@@ -147,9 +146,11 @@
     <action-method name="action-sales-order-method-generate-invoice">
  		<call class="com.axelor.apps.supplychain.web.SalesOrderInvoiceController" method="generateInvoice"/>
 	</action-method>
+	
 	<action-method name="action-sales-order-set-sequence">
 		<call class="com.axelor.apps.supplychain.web.SalesOrderController" method="setSequence"/>
 	</action-method>
+	
 	 <action-view name="action-sales-order-view-invoice" title="Invoices" model="com.axelor.apps.account.db.Invoice">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>

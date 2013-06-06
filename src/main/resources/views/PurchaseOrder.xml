@@ -39,7 +39,7 @@
                 	<field name="validationDate" colSpan="1"/>
        			</group>
       			</group>
-      			<group colSpan="1" cols="1" title="Totaux">
+      			<group colSpan="1" cols="1" title="Totals">
         		<group colSpan="1" css="subtotal" cols="2" colWidths="50%,50%" readonly="true">
         			<field name="exTaxTotal"/>
         			<field name="vatTotal"/>
