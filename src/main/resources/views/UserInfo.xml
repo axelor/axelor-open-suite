@@ -8,7 +8,8 @@
         <field name="activeCompany"/>
         <field name="internalUser"/>
     </grid>
-    <form name="user-info-form" title="User" model="com.axelor.apps.base.db.UserInfo" cols="4">
+    <form name="user-info-form" title="User" model="com.axelor.apps.base.db.UserInfo" cols="4"
+    onNew="action-user-language-record">
         <field name="partner" grid-view="partner-grid" form-view="partner-form"/>
         <field name="activeCompany" />
         <field name="today"/>
@@ -21,7 +22,6 @@
                       <field name="group"/>
                       <field name="code"/>
                       <field widget="password" name="password"/>
-                      <field name="language"/>
 	                </form>
 	             </field>
         	</page>
@@ -37,4 +37,9 @@
         	</page>
         </notebook>
     </form>
+    
+    <action-record name="action-user-language-record" model="com.axelor.apps.base.db.UserInfo">
+    	<field name="language" expr="fr"/>
+    </action-record>
+    
 </object-views>

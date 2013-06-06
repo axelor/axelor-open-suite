@@ -7,29 +7,54 @@
         <field name="sender"/>
         <field name="subject"/>
     </grid>
-    <form name="message-form" title="Email" model="com.axelor.apps.base.db.Message" cols="4">
+    <form name="message-form" title="Email" model="com.axelor.apps.base.db.Message" cols="4"
+    onNew="action-message-default-record">
     	<group title="Informations" colSpan="4">
  			<field name="typeSelect"/>
             <field name="sendedDate"/>
             <field name="sender"/>
             <field name="statusSelect"/>
-            <field name="sentByEmail"/>
-        </group>
-        <group title="Content" colSpan="4">
-        	<field name="subject" colSpan="4"/>
-       	 	<field name="content" colSpan="4" noLabel="true" widget="html"/>
+<!--             <field name="sentByEmail"/> -->
         </group>
         <group title="Recipients" colSpan="4">
         	<field name="toPartnerSet" widget="TagSelect[create=name,firstName,email]" colSpan="4"/>
         	<field name="ccPartnerSet" widget="TagSelect[create=name,firstName,email]" colSpan="4"/>
         	<field name="bccPartnerSet" widget="TagSelect[create=name,firstName,email]" colSpan="4"/>
         </group>
+        <group title="Content" colSpan="4">
+        	<field name="subject" colSpan="4"/>
+       	 	<field name="content" colSpan="4" noLabel="true" widget="html"/>
+        </group>
         <group title="Related to" colSpan="1" cols="2">
 	        <field name="relatedTo1Select" widget="RefSelect[related=relatedTo1SelectId]"/>
 	        <field name="relatedTo2Select" widget="RefSelect[related=relatedTo2SelectId]"/>
         </group>
 <!--         <button name="printMail" title="Imprimer" colSpan="2" onClick="save,action-mail-method-print-mail"/> -->
+<!--         <button name="reply" title="Reply" showIf="!canReply" onClick="com.axelor.dyndemo.web.DynController:showReply"/> -->
+        <button name="send" title="Send" onClick="save"/>
+<!--         <button name="cancel" title="Cancel" onClick=""/> -->
     </form>
     
+    
+    <form name="message-inbox-form" title="Email" model="com.axelor.apps.base.db.Message" cols="4">
+    	<group title="Informations" colSpan="4" readonly="true">
+            <field name="sendedDate"/>
+            <field name="sender"/>
+            <field name="statusSelect"/>
+        </group>
+        <group title="Content" colSpan="4" readonly="true">
+       	 	<field name="content" colSpan="4" noLabel="true" widget="html"/>
+        </group>
+        <group title="Recipients" colSpan="4" readonly="true">
+        	<field name="toPartnerSet" widget="TagSelect[create=name,firstName,email]" colSpan="4"/>
+        	<field name="ccPartnerSet" widget="TagSelect[create=name,firstName,email]" colSpan="4"/>
+        	<field name="bccPartnerSet" widget="TagSelect[create=name,firstName,email]" colSpan="4"/>
+        </group>
+    </form>
 
+	<action-record name="action-message-default-record" model="com.axelor.apps.base.db.Message">
+    	<field name="sendedDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()" if="sendedDate == null"/>
+    	<field name="statusSelect" expr="eval: 2"/>
+    	<field name="typeSelect" expr="eval: 2"/>
+    </action-record>
 </object-views>

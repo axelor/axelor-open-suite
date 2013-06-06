@@ -7,11 +7,12 @@
 	
 	<entity name="Need">
 	
+		<string name="name" title="Name" namecolumn="true"/>
+		<many-to-one name="affair" ref="com.axelor.apps.organisation.db.Project" title="Affair"/>
 		<many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"/>
 		<many-to-one name="responsibleUserInfo" title="User in charge of the answer" ref="com.axelor.apps.base.db.UserInfo"/>
 		<many-to-one name="partner" title="Partner" ref="com.axelor.apps.base.db.Partner"/>
 		<string name="customerRef" title="Customer ref"/>
-		<string name="title" title="Title"/>
 		<many-to-one name="clientPartner" title="Contact client" ref="com.axelor.apps.base.db.Partner"/>
 		<string name="typeSelect" title="Type" selection="consulting.need.type.select"/>
 		<date name="consultationDate" title="Consultation Date"/>
@@ -19,13 +20,14 @@
 		<date name="deadline" title="Deadline"/>
 		<decimal name="plannedBudget" title="Planned budget"/>
 		<string name="complexity" title="Complexity" selection="grade.0.up.to.5.select"/>
-		<decimal name="plannedPrice" title="Planned price"/>
 		<string name="competition" title="Competition" selection="grade.0.up.to.5.select"/>
 		<string name="needDescription" title="Need Description" large="true"/>
 		<binary name="specificationFile" title="Attach specification"/> 
 		<many-to-many name="sectorKeywordSet" ref="com.axelor.apps.base.db.Keyword" title="Keyword segment of activity"/>
 		<many-to-many name="toolKeywordSet" ref="com.axelor.apps.base.db.Keyword" title="Keyword tool"/>
-		<string name="needStatusSelect" title="Need status" selection="consulting.need.status.select"/>
+		<integer name="needStatusSelect" title="Need status" selection="consulting.need.status.select"/>
+		<integer name="needEndStatusSelect" title="Need status" selection="consulting.need.end.status.select"/>
 		<one-to-many name="needLineList" title="Need Line" ref="NeedLine" mappedBy="need" />
+		
 	</entity>
 </domain-models>

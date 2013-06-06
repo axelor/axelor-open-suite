@@ -11,7 +11,6 @@
   
   	<integer name="sequence" title="Sequence"/>
   	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
-	<many-to-one name="productCategory" ref="com.axelor.apps.base.db.ProductCategory" title="Category"/>
   	<string name="productName" title="Label"/>
 	<many-to-one name="employee" ref="com.axelor.apps.organisation.db.Employee" title="Employee"/>
   	<string name="description" title="Description" large="true"/>

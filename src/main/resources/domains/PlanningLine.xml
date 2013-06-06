@@ -12,8 +12,8 @@
   	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Profil"/>
   	<many-to-one name="employee" ref="com.axelor.apps.organisation.db.Employee" title="RSC"/>
   	<many-to-one name="task" ref="com.axelor.apps.organisation.db.Task" title="Tâche"/>
-	<date name="fromDate" title="Du"/>
-  	<date name="toDate" title="Au"/>
+	<datetime name="fromDateTime" title="Du"/>
+  	<datetime name="toDateTime" title="Au"/>
 	<decimal name="duration" title="Durée"/>
 	<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unité"/>
 	<decimal name="timeSheet" title="Feuille de temps"/>

@@ -225,8 +225,7 @@
 
 	<selection name='iaccount.account.schedule.nature.select'>
 		<option value='0'>Payment</option>
-		<option value='1'>Mensu Masse</option>
-		<option value='2'>Mensu Grand Compte</option>
+		<option value='2'>Lissage de paiement</option>
 	</selection>
 
 	<selection name='base.base.on.select'>
@@ -673,16 +672,19 @@
 		<option value="1">Day</option>
 		<option value="2">Hour</option>
 	</selection>
-	
 
 	<selection name="consulting.need.status.select">
-		<option value="1">Waiting for acceptation</option>
-		<option value="2">Refused</option>
-		<option value="3">Open</option>
-		<option value="4">Lost</option>
-		<option value="5">Canceled</option>
-		<option value="6">Converted</option>
-		<option value="7">Win</option>
+		<option value="1">New</option>
+		<option value="2">Commercially validated</option>
+		<option value="3">Technically validated</option>
+		<option value="4">Proposed customer</option>
+		<option value="5">Converted</option>
+	</selection>
+	
+	<selection name="consulting.need.end.status.select">
+		<option value="1">Win</option>
+		<option value="2">Lost</option>
+		<option value="3">Canceled</option>
 	</selection>
 
 	<!-- Organisation -->

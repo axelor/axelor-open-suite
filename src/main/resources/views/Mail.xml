@@ -44,7 +44,7 @@
         	<field name="cashRegister"/>
         	<field name="rejectMoveLine"/>
         </group> 
-        <button name="printMail" title="Print" colSpan="2" onClick="save,action-mail-method-print-mail"/>
+        <button name="printMail" title="Print" colSpan="2" icon="img/icons/print.png" onClick="save,action-mail-method-print-mail"/>
     </form>
 
 	<action-attrs name="action-mail-hidden-attrs">
@@ -59,4 +59,5 @@
 		<call class="com.axelor.apps.base.web.MailController" method="printMail"/>
 	</action-method>
 	
+
 </object-views>
