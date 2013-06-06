@@ -21,7 +21,7 @@
     </form>
     
     <action-record name="action-currency-conversion-line-default-record" model="com.axelor.apps.base.db.CurrencyConversionLine">
-    	<!--  <field name="startCurrency" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()?.currency"/> -->
+    	<field name="startCurrency" expr="eval:com.axelor.apps.base.db.UserInfo.all().filter('internalUser = ?1',__user__).fetchOne()?.activeCompany?.currency"/>
     	<field name="conversionRate" expr="1"/>
     	
     </action-record>
