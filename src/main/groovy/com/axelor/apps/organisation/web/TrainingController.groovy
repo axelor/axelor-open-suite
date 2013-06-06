@@ -22,4 +22,19 @@ class TrainingController {
 			response.values = [ "duration" : null]
 		}
 	}
+	
+	def computeDate(ActionRequest request, ActionResponse response) {
+		
+		Training training = request.context as Training
+		int duration = training.duration.toInteger()
+		
+		if (duration >= 0) {
+			if (training.startDate) {
+				response.values = [ "endDate" : training.startDate.plusDays(duration) ]
+			}
+			else if (training.endDate) {
+				response.values = [ "startDate" : training.endDate.minusDays(duration) ]
+			}
+		}
+	}
 }

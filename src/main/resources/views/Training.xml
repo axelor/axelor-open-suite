@@ -18,7 +18,7 @@
         <field name="jobTitle"/>
         <break/>
         <field name="service"/>
-        <field name="duration"/>
+        <field name="duration" onChange="action-training-method-compute-date,action-training-method-compute-duration"/>
         <field name="jobDescription" colSpan="4"/>
         <field name="referencePosition" />
         <break/>
@@ -36,6 +36,10 @@
     
     <action-method name="action-training-method-compute-duration">
     	<call class="com.axelor.apps.organisation.web.TrainingController" method="computeDuration"/>
+    </action-method>
+    
+    <action-method name="action-training-method-compute-date">
+    	<call class="com.axelor.apps.organisation.web.TrainingController" method="computeDate"/>
     </action-method>
 
 </object-views>
