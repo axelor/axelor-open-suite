@@ -100,7 +100,7 @@
 	</form>
 
 	<action-record name="action-organisation-candidate-evaluation-record" model="com.axelor.apps.organisation.db.Candidate">
-		<field name="evaluationGrade" expr="eval: evaluationLineList.sum { it.gradeSelect?it.coefficient * it.gradeSelect:0.0} / evaluationLineList.sum { it.gradeSelect?it.coefficient:0.0}" />
+		<field name="evaluationGrade" expr="eval: evaluationLineList?.collect(){ it?.coefficient * it?.gradeSelect }?.sum() / evaluationLineList?.collect(){ it?.coefficient }?.sum()" />
 	</action-record>
 
 	<action-record name="action-organisation-candidate-save-record" model="com.axelor.apps.organisation.db.Candidate">
