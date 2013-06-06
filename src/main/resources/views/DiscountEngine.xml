@@ -23,14 +23,14 @@
 		model="com.axelor.apps.account.db.DiscountEngine">
 		<field name="code" />
 		<field name="name" />
-		<field name="createdOn" title="Créé le" />
+		<field name="createdOn" title="Created on" />
 		<field name="activeOk" />
 	</grid>
 
 	<form name="discount-engine-form" title="Discount engine"
 		model="com.axelor.apps.account.db.DiscountEngine" cols="4"
 		onSave="save,discount-engine-method-reset">
-		<field name="createdOn" title="Créé le" />
+		<field name="createdOn" title="Created on" />
 		<field name="activeOk" />
 		<field name="name" />
 		<field name="code" />
