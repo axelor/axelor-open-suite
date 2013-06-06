@@ -22,12 +22,12 @@ public class PlanningLineController {
 		
 		PlanningLine planningline = request.context as PlanningLine
 		
-		if(planningline.fromDateTime != null)  {
-			if(planningline.toDateTime != null)  {
+		if(planningline && planningline?.fromDateTime)  {
+			if(planningline?.toDateTime)  {
 				Duration duration =  planningLineService.computeDuration(planningline.fromDateTime, planningline.toDateTime)
 				response.values = [ "duration" : planningLineService.getDaysDuration(planningLineService.getHoursDuration(duration))]
 			}
-			else if(planningline.duration != null)  {
+			else if(planningline?.duration)  {
 				response.values = [ "toDateTime" : planningLineService.computeEndDateTime(planningline.fromDateTime, planningline.duration)]
 			}
 		}
@@ -37,12 +37,12 @@ public class PlanningLineController {
 		
 		PlanningLine planningline = request.context as PlanningLine
 		
-		if(planningline.toDateTime != null)  {
-			if(planningline.fromDateTime != null)  {
+		if(planningline && planningline?.toDateTime)  {
+			if(planningline?.fromDateTime)  {
 				Duration duration =  planningLineService.computeDuration(planningline.fromDateTime, planningline.toDateTime)
 				response.values = [ "duration" : planningLineService.getDaysDuration(planningLineService.getHoursDuration(duration))]
 			}
-			else if(planningline.duration != null)  {
+			else if(planningline?.duration)  {
 				response.values = [ "fromDateTime" : planningLineService.computeStartDateTime(planningline.duration, planningline.toDateTime)]
 			}
 		}
@@ -52,11 +52,11 @@ public class PlanningLineController {
 		
 		PlanningLine planningline = request.context as PlanningLine
 		
-		if(planningline.duration != null)  {
-			if(planningline.fromDateTime != null)  {
+		if(planningline && planningline?.duration)  {
+			if(planningline?.fromDateTime)  {
 				response.values = [ "toDateTime" : planningLineService.computeEndDateTime(planningline.fromDateTime, planningline.duration)]
 			}
-			else if(planningline.toDateTime != null)  {
+			else if(planningline?.toDateTime)  {
 				response.values = [ "fromDateTime" : planningLineService.computeStartDateTime(planningline.duration, planningline.toDateTime)]
 			}
 		}

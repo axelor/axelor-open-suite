@@ -43,15 +43,15 @@ public class PlanningLineService {
 		
 	}
 
-	public LocalDateTime computeStartDateTime(int duration, LocalDateTime endDateTime)  {
+	public LocalDateTime computeStartDateTime(double durationDay, LocalDateTime endDateTime)  {
 			
-		return endDateTime.minusHours(duration*24);	
+		return endDateTime.minusHours((int)durationDay*24);	
 		
 	}
 	
-	public LocalDateTime computeEndDateTime(LocalDateTime startDateTime, int durationDay)  {
+	public LocalDateTime computeEndDateTime(LocalDateTime startDateTime, double durationDay)  {
 		
-		return startDateTime.plusHours(durationDay*24);
+		return startDateTime.plusHours((int)durationDay*24);
 		
 	}
 	
