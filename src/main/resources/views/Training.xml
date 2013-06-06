@@ -12,9 +12,9 @@
     
     <form name="training-form" title="Training" model="com.axelor.apps.organisation.db.Training" cols="4">
         <field name="experienceTypeSelect"/>
-        <field name="startDate"/>
+        <field name="startDate" onChange="action-training-method-compute-duration"/>
         <label title=" " colSpan="2" />
-        <field name="endDate"/>
+        <field name="endDate" onChange="action-training-method-compute-duration"/>
         <field name="jobTitle"/>
         <break/>
         <field name="service"/>
@@ -33,5 +33,9 @@
         <field name="sectorKeywordSet" widget="TagSelect[create=keyWord]"/>
         
     </form>
+    
+    <action-method name="action-training-method-compute-duration">
+    	<call class="com.axelor.apps.organisation.web.TrainingController" method="computeDuration"/>
+    </action-method>
 
 </object-views>

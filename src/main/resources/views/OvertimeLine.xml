@@ -16,12 +16,16 @@
     <form name="overtime-line-form" title="Overtime line" model="com.axelor.apps.organisation.db.OvertimeLine" cols="4">
         <field name="description"/>
         <field name="affair"/>
-        <field name="quantity"/>
+        <field name="quantity" onChange="action-overtime-line-method-compute-total"/>
         <field name="unit"/>
-        <field name="unitPrice"/>
+        <field name="unitPrice" onChange="action-overtime-line-method-compute-total"/>
         <field name="total"/>
         <button name="validate" title="Validate" colSpan="2"/>
         <field name="validationDate"/>
     </form>
+    
+    <action-method name="action-overtime-line-method-compute-total">
+    	<call class="com.axelor.apps.organisation.web.OvertimeLineController" method="computeTotal"/>
+    </action-method>
     
 </object-views>
