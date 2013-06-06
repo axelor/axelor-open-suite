@@ -10,7 +10,7 @@
 
 	<form name="employee-form" title="Employee"	model="com.axelor.apps.organisation.db.Employee" cols="4">
 		<group name="header" cols="6" colSpan="4">
-			<field name="createdBy" title="Titulaire" />
+			<field name="createdBy" title="Holder" />
 			<break />
 			<field name="titleSelect" />
 			<field name="name" />
@@ -28,8 +28,7 @@
 			<page title="Additionnal information">
 				<field name="emergencyContact" domain="self.isContact = True"/>
 				<field name="emergencyNumber"/>
-				<field name="personalInfo" widget="NestedEditor" summary-view="true"
-					form-view="personal-info-edit-form"/>
+				<field name="personalInfo" widget="NestedEditor" summary-view="true" form-view="personal-info-edit-form"/>
 				<field name="candidate"/>
 			</page>
 			<page title="Professionnal background">
@@ -45,8 +44,7 @@
 				<notebook>
 					<page title="Salary">
 						<field name="bonusList" grid-view="bonus-grid" colSpan="2"/>
-						<field name="advanceList" grid-view="advance-grid"
-							colSpan="2"/>
+						<field name="advanceList" grid-view="advance-grid" colSpan="2"/>
 						<field name="vehicleFiscalPower"/>
 						<group title="Fixed salary">
 							<field name="salaryFromDate"/>
@@ -65,8 +63,7 @@
 <!-- 			<page title="Holidays"> -->
 <!-- 			</page> -->
 			<page title="Competences">
-				<field name="competence" widget="NestedEditor" summary-view="true"
-					form-view="competence-edit-form"></field>
+				<field name="competence" widget="NestedEditor" summary-view="true" form-view="competence-edit-form"/>
 			</page>
 			<!-- <page title="Suivi du placement des besoins" hidden="true"> -->
 			<!-- <field name="placementFollowUpList" grid-view="placement-follow-up-edit-grid" 

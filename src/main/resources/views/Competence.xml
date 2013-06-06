@@ -3,23 +3,19 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.8.xsd">
 
-	<grid name="skill-line-edit-grid" title="Skills"
-		model="com.axelor.apps.organisation.db.SkillLine" editable="true">
+	<grid name="skill-line-edit-grid" title="Skills" model="com.axelor.apps.organisation.db.SkillLine" editable="true">
 		<field name="name" />
 		<field name="value" />
 	</grid>
 		
-	<form name="skill-set-edit-form" title="Skill"
-		model="com.axelor.apps.organisation.db.SkillSet">
+	<form name="skill-set-edit-form" title="Skill" model="com.axelor.apps.organisation.db.SkillSet">
 		<field name="skillLineList" grid-view="skill-line-edit-grid" noLabel="true"/>
 		<field name="languageSet" grid-view="language-grid" noLabel="true"/>
 	</form>
 
-
-	<form name="competence-edit-form" title="Competences"
-		model="com.axelor.apps.organisation.db.Competence">
-		<field name="name" title="Intitulé du Profil"/>
-		<field name="subTitle" />
+	<form name="competence-edit-form" title="Competences" model="com.axelor.apps.organisation.db.Competence">
+		<field name="name"/>
+		<field name="subTitle"/>
 		<field name="interventionTypeSet" colSpan="2"/>
 		<field name="competenceAreaSet" colSpan="2"/>
 		<notebook colSpan="4">
@@ -34,8 +30,7 @@
 			</page>
 		</notebook>
 	</form>
-	<grid name="competence-edit-grid" title="Competences"
-		model="com.axelor.apps.organisation.db.Competence">
+	<grid name="competence-edit-grid" title="Competences" model="com.axelor.apps.organisation.db.Competence">
 		<field name="name" />
 		<field name="subTitle" />
 		<field name="interventionTypeSet"/>
