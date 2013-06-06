@@ -12,7 +12,7 @@
     <date name="endDate" title="End date"/>
     <string name="jobTitle" title="Job position"/>
     <string name="service" title="Service"/>
-    <string name="duration" title="Duration"/>
+    <string name="duration" title="Duration (days)"/>
     <string name="jobDescription" title="Job description" large="true" />
     <string name="referencePosition" title="Reference position"/>
     <string name="context" title="Context" large="true" />
