@@ -121,13 +121,10 @@
           		</group>
           		<group title="Direct debit rejects" colSpan="4">
           			<field name="rejectionPaymentMode"/>
-          			<field name="rejectionMajorAccountPaymentMode"/>
-	                <field name="majorAccountRejectNumLimit"/>
 	                <field name="paymentScheduleRejectNumLimit"/>
 	                <field name="invoiceRejectNumLimit"/>
                 	<field name="rejectImportPathAndFileName"/>
                 	<field name="tempImportPathAndFileName"/>
-                	<field name="rejectMajorAccountMailModel"/>
                 	<field name="rejectPaymentScheduleMailModel"/>
           		</group>
             </page>
