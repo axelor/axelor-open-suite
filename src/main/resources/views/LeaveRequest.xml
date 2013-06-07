@@ -50,7 +50,7 @@
     
     <action-record name="action-leave-request-record-new" model="com.axelor.apps.organisation.db.LeaveRequest">
     	<field name="employeeUserInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
-    	<field name="requestDate" expr="eval: __date__"/>
+    	<field name="requestDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
     	<field name="statusSelect" expr="eval: 1"/>
     </action-record>
     
@@ -63,7 +63,7 @@
     </action-record>
     
     <action-record name="action-leave-request-record-validate" model="com.axelor.apps.organisation.db.LeaveRequest">
-    	<field name="approvalDate" expr="eval: __date__"/>
+    	<field name="approvalDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
     	<field name="statusSelect" expr="3"/>
     </action-record>
     
