@@ -18,7 +18,7 @@ class CurrencyConversionLineController {
 			response.values = [ "fromDate" : "" ]
 		
 		}
-		else if (CurrencyConversionLine.all().filter("self.startCurrency = ?1 and self.endCurrency = ?2 and self.toDate > current_date",ccl.startCurrency,ccl.endCurrency)?.count() > 0) {
+		else if (CurrencyConversionLine.all().filter("self.startCurrency = ?1 and self.endCurrency = ?2 and self.toDate >= ?3",ccl.startCurrency,ccl.endCurrency,ccl.fromDate)?.count() > 0) {
 			def msg = "Last conversion rate period has not ended"
 			response.flash = msg
 			response.values = [ "fromDate" : "" ]
