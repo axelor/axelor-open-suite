@@ -6,10 +6,16 @@
 	<grid name="expense-edit-line-grid" editable="true" title="Expense Lines"
 		model="com.axelor.apps.organisation.db.ExpenseLine">
 		<field name="product" />
+		<field name="shortDescription" />
+		<field name="expenseTypeSelect" />
+		<field name="affair" />
 		<field name="qty" />
 		<field name="unit" />
 		<field name="price" />
 		<field name="total" />
+		<field name="file" />
+		<field name="fileReceived" />
+		<field name="validationDate" />
 	</grid>
 
 
@@ -50,7 +56,8 @@
 	</form>
 
 	<action-record name="action-expenseline-default-record" model="com.axelor.apps.organisation.db.ExpenseLine">
-    	<field name="expenseTypeSelect" expr="notReinvoiceable"/>
+    	<field name="expenseTypeSelect" expr="eval: 2"/>
+    	<field name="fileReceived" expr="eval: 2"/>
     	<field name="qty" expr="1"/>
     </action-record>
     
