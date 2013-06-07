@@ -141,7 +141,8 @@
 		<view type="grid" name="leave-request-grid" />
 		<view type="form" name="leave-request-form" />
 		<view type="calendar" name="leave-request-calendar" />
-		<domain>self.statusSelect = 2</domain>
+		<domain>self.statusSelect = 2 and self.managerUserInfo.internalUser.id = :_userId or self.employeeUserInfo.internalUser.id = :_userId and self.statusSelect = 2</domain>
+		<context name="_userId" expr="eval: __user__.id"/>
 	</action-view>
 		
 	<menuitem name="hr-root-paymentforms" parent="hr-root"
