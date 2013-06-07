@@ -24,7 +24,9 @@
 	<decimal name="timesheetInputTotal" title="Total input time" readonly="true"/>
 	
 	<one-to-many name="timesheetTotalByTypeList" ref="com.axelor.apps.organisation.db.TimesheetTotalByType" mappedBy="timesheet" title="Total per type" readonly="true"/>
-	<integer name="statusSelect" title="Status" selection="default.status.select" />
+	<integer name="statusSelect" title="Status" selection="default.status.select" readonly="true"/>
+    <many-to-one name="validatedByUserInfo" ref="com.axelor.apps.base.db.UserInfo" readonly="true" title="Validated by"/> 
+  	<date name="validationDate" title="Validation date" readonly="true"/>
   </entity>
 
 </domain-models>

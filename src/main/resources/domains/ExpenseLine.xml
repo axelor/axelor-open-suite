@@ -21,8 +21,8 @@
   	<string name="sequence" title="Sequence" />
   	<decimal name="total" title="Total"/>
   	<binary name="file" title="File" />
-  	<string name="fileReceived" title="File received" selection="iadministration.yes.no.select" />
-  	<date name="validationDate" title="Date de validation"/>
+  	<string name="fileReceived" title="File received" selection="hr.expense.line.file.received.select" readonly="true"/>
+  	<date name="validationDate" title="Date de validation" readonly="true"/>
   	<boolean name="istoInvoice" title="A facturer"/>
   	<boolean name="isInvoiced" title="Facturé" readonly="true"/>
   </entity>
