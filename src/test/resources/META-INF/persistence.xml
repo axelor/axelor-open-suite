@@ -3,10 +3,10 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.0"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
 	<persistence-unit name="testUnit" transaction-type="RESOURCE_LOCAL">
-   		<provider>org.hibernate.ejb.HibernatePersistence</provider>
-        <shared-cache-mode>NONE</shared-cache-mode>
-        <properties>
-        
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<shared-cache-mode>NONE</shared-cache-mode>
+		<properties>
+		
 			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
 			<property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
 			<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/axelor-test" />
@@ -20,11 +20,11 @@
 	            value="create-drop" means the same as "create" but also drops tables when Hibernate closes; 
 	            value="validate" makes no changes to the database
 	        -->
-			<property name="hibernate.hbm2ddl.auto" value="none" />
+			<property name="hibernate.hbm2ddl.auto" value="update" />
 		
 			<!-- 			
 			<property name="hibernate.show_sql" value="true"/> 
 			-->
-        </properties>
+		</properties>
 	</persistence-unit>
 </persistence> 
