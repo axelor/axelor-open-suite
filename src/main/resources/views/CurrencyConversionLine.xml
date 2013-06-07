@@ -12,18 +12,22 @@
     </grid>
     
     <form name="currency-conversion-line-form" title="Currency conversion line" model="com.axelor.apps.base.db.CurrencyConversionLine" cols="4"
-    onNew="action-currency-conversion-line-default-record">
+    onNew="action-currency-conversion-line-default-record,action-currency-conversion-line-method-check-date">
         <field name="startCurrency"/>
-        <field name="endCurrency"/>
+        <field name="endCurrency" onChange="action-currency-conversion-line-method-check-date"/>
         <field name="conversionRate"/>
-        <field name="fromDate"/>
+        <field name="fromDate" onChange="action-currency-conversion-line-method-check-date"/>
         <field name="toDate"/>
     </form>
     
     <action-record name="action-currency-conversion-line-default-record" model="com.axelor.apps.base.db.CurrencyConversionLine">
-    	<!--  <field name="startCurrency" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()?.currency"/> -->
+    	<field name="startCurrency" expr="eval:com.axelor.apps.base.db.UserInfo.all().filter('internalUser = ?1',__user__).fetchOne()?.activeCompany?.currency"/>
     	<field name="conversionRate" expr="1"/>
-    	
+    	<field name="fromDate" expr="eval: __date__"/>
     </action-record>
+    
+    <action-method name="action-currency-conversion-line-method-check-date">
+    	<call class="com.axelor.apps.base.web.CurrencyConversionLineController" method="checkDate"/>
+    </action-method>
     
 </object-views>

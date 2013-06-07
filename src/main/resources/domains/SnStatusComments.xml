@@ -5,13 +5,15 @@
 
 	<module name="base" package="com.axelor.apps.base.db" />
 
-	<entity name="LnStatusComments">
-		<many-to-one name="updateId" ref="com.axelor.apps.base.db.LnStatusUpdates" />
+	<entity name="SnStatusComments">
+		<many-to-one name="updateId" ref="com.axelor.apps.base.db.SnStatusUpdates" orphan="true" />
 		<string name="commentId" title="Comment ID" />
 		<string name="commentText" title="Comment" multiline="true" max="700" />
 		<datetime name="commentTime" title="Time" tz="true" />
-		<many-to-one name="curUser" ref="com.axelor.auth.db.User" />
-		<many-to-one name="fromUser" ref="com.axelor.apps.base.db.Partner" />
+		<many-to-one name="fromUser" ref="com.axelor.apps.base.db.Partner" orphan="true" />
+		<boolean name="isFacebook"/>
+		<boolean name="isLinkedin"/>		
+		<boolean name="isTwitter"/>
 	</entity>
 
 </domain-models>

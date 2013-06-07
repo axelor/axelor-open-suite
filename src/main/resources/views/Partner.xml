@@ -6,11 +6,11 @@
     <grid name="partner-grid" title="Partners" model="com.axelor.apps.base.db.Partner">
     	<toolbar>
 			<button name="fbContact" title="Facebook Contact" icon="img/facebook.jpg"
-			onClick="com.axelor.apps.base.web.PartnerControllerSimple:importFBContacts" />
+				onClick="com.axelor.sn.web.PartnerImportController:importFBContacts" />
 			<button name="twtContact" title="Twitter Contact" icon="img/twitterLogo.png"
-			onClick="com.axelor.apps.base.web.PartnerControllerSimple:importTWTContacts" />
+				onClick="com.axelor.sn.web.PartnerImportController:importTWTContacts" />
 			<button name="linContact" title="LinkedIn Contact" icon="img/linkedin-icon-vector.jpg"
-			onClick="com.axelor.apps.base.web.PartnerControllerSimple:importLINContacts" />
+				onClick="com.axelor.sn.web.PartnerImportController:importLINContacts" />
 		</toolbar>
         <field name="name"/>
         <field name="firstName"/>
@@ -55,6 +55,9 @@
 	        <break/>
 	    </group>
 	    <field name="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2" colSpan="4" domain="self.isContact = 'true'" grid-view="partner-contact-grid"/>
+	    <field name="snUserId" hidden="true" />
+		<field name="snType" hidden="true" />
+		<field name="curUser" hidden="true" />
 	    <break/>
 	    <notebook colSpan="4">
 	        <page name="information" title="Informations">
@@ -108,6 +111,51 @@
 	            <field name="languageSelect" hideIf="isContact || partnerTypeSelect == 1"/>
 	            
 	        </page>
+	        <page title="Social Networking" colSpan="4" name="socialNetworkingTab"
+				hideIf="snType == null">
+				<notebook>
+					<page title="Inbox Message">
+						<portlet action="action-fetch-all-sn-mail" colSpan="4" />
+					</page>
+					<page title="Recent Updates">
+						<portlet action="action-fetch-all-sn-update" colSpan="4" />
+					</page>
+
+					<page title="Send Personal Message" name="snPersonalMessage"
+						hideIf="snType.name == 'facebook'">
+						<field name="snDirectMessage" title="Personal Messages"><!-- 
+								onChange="com.axelor.sn.web.TWTController:directMessageO2M"> -->
+							<grid title="All Sent Messages">
+								<field name="snType" title="Social Networking Type"
+									hidden="true"></field>
+								<field name="userId" title="To"></field>
+								<field name="messageText"></field>
+								<field name="messageDate" title="Date and Time" hidden="true"></field>
+								<field name="messageId" />
+							</grid>
+
+							<form title="Compose New Message" onNew="action-fill-direct-message">
+								<field name="snType" title="Social Networking Type"
+									hidden="true"></field>
+								<field name="curUser" title="Current User" hidden="true"></field>
+								<field name="userId" title="To" readonly="true"></field>
+								<break />
+								<field name="subject" hideIf="snType.name != 'linkedin'"></field>
+								<break />
+								<field name="messageText" required="true"
+									/> <!--  onChange="com.axelor.sn.web.SNCommonController:sendMessage"></field>-->
+								<break/>
+								<spacer colSpan="1"/>
+								<button name="firePersonalMsg"
+									onClick="com.axelor.sn.web.SNCommonController:sendMessage"
+									title="Send" />
+								<field name="messageDate" title="Date and Time" hidden="true"></field>
+								<field name="messageId" hidden="true" />
+							</form>
+						</field>
+					</page>
+				</notebook>
+			</page>
 	<!--         <page name="compteClient" title="Customer balance"> -->
 	<!--             <field name="accountingSituationList" colSpan="4" widget="MasterDetail" onSelect="action-account-accounting-situation-method-update-customer-account"/> -->
 	<!--         </page> -->
@@ -222,17 +270,27 @@
     	<field name="currency" expr="eval:null" if="!isContact"/>
     	<field name="invoiceSendingFormatSelect" expr="eval:null" if="!isContact"/>
     </action-record>
-    
+
+	<!--SN Actions -->    
     <action-view name="action-fetch-all-sn-update" title="Recents Update of User" model="com.axelor.apps.base.db.FBNewsFeed"> 
 		<view type="grid" name="fb-news-feed" />
 		<domain>self.snUserId = :snUserId</domain>
 	</action-view>
+
+	<action-record name="action-fill-direct-message"
+		model="com.axelor.apps.base.db.SnSendMessage">
+		<field name="snType" expr="eval:_parent.snType" />
+		<field name="curUser" expr="eval:__user__" />
+		<field name="userId" expr="eval:_parent" />
+		<field name="messageDate" expr="eval:__datetime__" />
+	</action-record>
 
 	<action-view name="action-fetch-all-sn-mail" title="Inbox"
 		model="com.axelor.apps.base.db.MsgInbox">
 		<view type="grid" name="sn-msg-inbox-grid" />
 		<domain>self.messageFromID = :snUserId</domain>
 	</action-view>
+	<!--END SN Actions -->
 	
 	<action-method name="action-set-partner-seq" >
 		<call class="com.axelor.apps.base.web.PartnerControllerSimple" method="setPartnerSequence"/>
