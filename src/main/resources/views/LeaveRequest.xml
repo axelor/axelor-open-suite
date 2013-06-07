@@ -72,7 +72,7 @@
     </action-method>
     
     <action-validate name="action-leave-request-button-cancel">
-    	<error message="The holiday period already started you can not cancel this holiday." if="statusSelect == 3 &amp;&amp; startDateT &lt; __time__"/>
+    	<error message="The holiday period already started you can not cancel this holiday." if="statusSelect == 3 &amp;&amp; startDateT &lt; __time__"/>    	
 	</action-validate> 
 
 	<action-validate name="action-leave-request-button-validation">
@@ -80,7 +80,7 @@
     	<error message="Holiday requests duration must always be greater than 0." if="nbrOfDayOff == 0"/>
     	<error message="The holiday end date must be after the start date." if="endDateT &lt; startDateT"/>
 		<error message="The holiday request duration is greater than the remaining holidays. Please contact your supervisor to be credited with advance holidays permission." if="nbrOfDayOff &gt; remainingDaysOnPeriod"/>	
-		<!-- <error message="You are not allowed to validate this holiday request, please refer to your supervisor (the supervisor is listed in the employee hierarchy notebook)." if="employeeUserInfo?.internalUser.id != managerUserInfo?.internalUser.id"/>  -->
+		<error message="You are not allowed to validate this holiday request, please refer to your supervisor (the supervisor is listed in the employee hierarchy notebook)." if="__user__.id != managerUserInfo?.internalUser.id"/>
 	</action-validate> 
 	
 	<action-validate name="action-leave-request-button-confirmation">
