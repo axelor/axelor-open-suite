@@ -13,11 +13,12 @@
 	<decimal name="totalAmount" title="Total amount" />   
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" />
     <one-to-many name="expenseLineList" ref="com.axelor.apps.organisation.db.ExpenseLine" mappedBy="expense" title="Expense lines"/>
-    <string name="validationStatusSelect" title="Validation Status" selection="hr.expense.validation.status.select" />
+    <string name="validationStatusSelect" title="Validation Status" selection="hr.expense.validation.status.select" readonly="true"/>
     <decimal name="progress" title="Progress" />
-    <date name="validationDate" title="Date de validation"/>
     <many-to-one name="paymentPeriod" ref="com.axelor.apps.account.db.Period" title="Payment Period" />
-    <string name="statusSelect" title="Status" selection="hr.expense.status.select" />
+    <string name="statusSelect" title="Status" selection="hr.expense.status.select" readonly="true"/>
+    <many-to-one name="validatedByUserInfo" ref="com.axelor.apps.base.db.UserInfo" readonly="true" title="Validated by"/> 
+  	<date name="validationDate" title="Validation date" readonly="true"/>
   </entity>
   
 </domain-models>

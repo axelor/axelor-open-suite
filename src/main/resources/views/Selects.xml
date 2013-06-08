@@ -520,20 +520,26 @@
 	</selection>
 
 	<selection name="hr.expense.validation.status.select">
-		<option value="verified">Verified</option>
-		<option value="waiting">Waiting validation</option>
+		<option value="1">Verified</option>
+		<option value="2">Waiting validation</option>
+	</selection>
+
+	<selection name='hr.expense.line.file.received.select'>
+		<option value='1'>Yes</option>
+		<option value='2'>No</option>
 	</selection>
 
 	<selection name="hr.expense.status.select">
-		<option value="draft">Draft</option>
-		<option value="submited">Submited</option>
-		<option value="validated">Validated</option>
-		<option value="paid">Paid</option>
+		<option value="1">Draft</option>
+		<option value="2">Submited</option>
+		<option value="3">Validated</option>
+		<option value="4">Paid</option>
+		<option value="5">Refused</option>
 	</selection>
 
 	<selection name="expense.line.expense.type.select">
-		<option value="reinvoiceable">Reinvoiceable</option>
-		<option value="notReinvoiceable">Not reinvoiceable</option>
+		<option value="1">Reinvoiceable</option>
+		<option value="2">Not reinvoiceable</option>
 	</selection>
 
 	<selection name="training.experience.type.select">
