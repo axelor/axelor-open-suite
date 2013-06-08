@@ -15,7 +15,7 @@
     </grid>
     
     <form name="planning-line-form" title="Planning line" model="com.axelor.apps.organisation.db.PlanningLine" cols="4" 
-    onNew="action-planningline-default-record">
+    onNew="action-planningline-default-record,action-planningline-set-datetime">
         <field name="product"/>
         <field name="employee"/>
         <field name="task"/>
@@ -38,7 +38,7 @@
     </grid>
     
     <form name="planning-line-tast-form" title="Planning line" model="com.axelor.apps.organisation.db.PlanningLine" cols="4" 
-    onNew="action-planningline-default-record">
+    onNew="action-planningline-default-record,action-planningline-set-datetime">
         <field name="product"/>
         <field name="employee"/>
         <field name="fromDateTime" />
@@ -50,7 +50,11 @@
     </form>
     
     <action-record name="action-planningline-default-record" model="com.axelor.apps.organisation.db.PlanningLine">
-    	<field name="fromDateTime" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()" if="fromDateTime == null"/>
+    	<field name="fromDateTime" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()" if="fromDateTime == null"/> 	
+    </action-record>
+    
+    <action-record name="action-planningline-set-datetime" model="com.axelor.apps.organisation.db.PlanningLine">
+    	<field name="fromDateTime" expr="call:com.axelor.apps.organisation.service.PlanningLineService:getSpecificDateTime(fromDateTime,8,0,0,0)" if="fromDateTime != null" />
     </action-record>
     
     <action-method name="action-planning-line-method-compute-start-date-time">

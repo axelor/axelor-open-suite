@@ -55,5 +55,9 @@ public class PlanningLineService {
 		
 	}
 	
-	
+	public LocalDateTime getSpecificDateTime(LocalDateTime dateTime, int hour, int minute, int second, int millissecond)  {
+		
+		return dateTime.withTime(hour, minute, second, millissecond);		
+	}
+
 }

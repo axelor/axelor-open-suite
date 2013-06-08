@@ -75,5 +75,4 @@ public class LeaveRequestService {
 		return startDateTime.plusHours((int)durationDay*24);
 		
 	}
-	
 }

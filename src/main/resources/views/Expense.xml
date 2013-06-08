@@ -9,8 +9,7 @@
 		<field name="expenseLineList" grid-view="expense-line-edit-grid" />
 		<field name="statusSelect"/>
 	</grid>
-	
-	
+
     <grid name="expense-grid" title="Travel expenses" model="com.axelor.apps.organisation.db.Expense">
         <field name="userInfo"/>
         <field name="isRecurrentExpense"/>
