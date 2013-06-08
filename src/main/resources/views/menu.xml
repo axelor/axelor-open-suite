@@ -236,24 +236,24 @@
 	</action-view>
 	
 	<menuitem name="account-root-payment-schedule" parent="invoice-root"
-        title="Echéanciers" />
+        title="Payment Schedule" />
 
     <menuitem name="account-root-payment-schedule-payment-schedule"
-        parent="account-root-payment-schedule" title="Les échéanciers"
+        parent="account-root-payment-schedule" title="All Payments Schedule"
         action="account.root.account.schedule.account.schedule" />
 
     <action-view name="account.root.account.schedule.account.schedule"
-        title="Les échéanciers" model="com.axelor.apps.account.db.PaymentSchedule" icon="img/evo-icons/invoice_small.png">
+        title="All Payments Schedule" model="com.axelor.apps.account.db.PaymentSchedule" icon="img/evo-icons/invoice_small.png">
         <view type="grid" />
         <view type="form" />
     </action-view>
 
     <menuitem name="account-root-payment-schedule-payment-schedule-line"
-        parent="account-root-payment-schedule" title="Les lignes d'échéanciers"
+        parent="account-root-payment-schedule" title="Payment schedule line"
         action="account.root.account.schedule.account.schedule.line" />
 
     <action-view name="account.root.account.schedule.account.schedule.line"
-        title="Les lignes d'échéanciers" model="com.axelor.apps.account.db.PaymentScheduleLine" icon="img/evo-icons/invoice_small.png">
+        title="Payment schedule line" model="com.axelor.apps.account.db.PaymentScheduleLine" icon="img/evo-icons/invoice_small.png">
         <view type="grid" />
         <view type="form" />
     </action-view>
