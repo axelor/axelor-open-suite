@@ -15,9 +15,10 @@
     onNew="action-timesheet-default-record,action-timesheet-getPeriod">
         <field name="userInfo"/>
         <field name="period"/>
+        <field name="statusSelect" widget="NavSelect"/>
+        <break/>
         <field name="fromDate" onChange="action-timesheet-getPeriod"/>
         <field name="toDate"/>
-        <field name="statusSelect"/>
         <group title="Satisfaction" cols="4" colSpan="8" colWidths="10%,10%,10%,70%">
         	<separator colSpan="8" title="Project"/>
         	<group colSpan="2">
@@ -41,6 +42,17 @@
         <field name="timesheetLineList" colSpan="8"/>
         <field name="timesheetInputTotal"/>
         <field name="timesheetTotalByTypeList" colSpan="8"/>
+       	<group title="Action(s)" colSpan="4">
+   			<group colSpan="1" cols="1">
+	         	<button name="confirm" title="Confirm" colSpan="1" onClick="save,action-timesheet-record-confirm,save" hideIf="statusSelect == 3"/>
+	            <button name="validate" title="Validate" colSpan="1" onClick="save,action-timesheet-record-validate,save" showIf="statusSelect == 2"/>
+	            <button name="cancel" title="Cancel" colSpan="1" onClick="save,action-timesheet-record-cancel" showIf="statusSelect == 1 || statusSelect == 2"/>
+	        </group>
+   			<group colSpan="1" cols="2" readonly="true">
+   				<field name="validatedByUserInfo" colSpan="1"/>
+             	<field name="validationDate" colSpan="1"/>
+   			</group>
+        </group>
     </form>
     
     <action-record name="action-timesheet-default-record" model="com.axelor.apps.organisation.db.Timesheet">
@@ -53,5 +65,19 @@
     <action-method name="action-timesheet-getPeriod">
     	<call class="com.axelor.apps.organisation.web.TimeSheetController" method="getPeriod"/>
     </action-method>
+    
+    <action-record name="action-timesheet-record-confirm" model="com.axelor.apps.organisation.db.Timesheet">
+    	<field name="statusSelect" expr="eval: 2"/>
+    </action-record>
+    
+    <action-record name="action-timesheet-record-validate" model="com.axelor.apps.organisation.db.Timesheet">
+    	<field name="statusSelect" expr="eval: 3"/>
+    	<field name="validationDate" expr="eval: __date__"/>
+    	<field name="validatedByUserInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+    </action-record>
+    
+     <action-record name="action-timesheet-record-cancel" model="com.axelor.apps.organisation.db.Timesheet">
+    	<field name="statusSelect" expr="eval: 4"/>
+    </action-record>
     
 </object-views>

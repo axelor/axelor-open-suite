@@ -16,21 +16,50 @@
     <form name="overtime-form" title="Overtime" model="com.axelor.apps.organisation.db.Overtime" cols="6"
     onNew="action-overtime-default-record">
         <field name="userInfo"/>
-        <break />
         <field name="date"/>
+        <field name="statusSelect" widget="NavSelect"/>
+        <break />
         <field name="totalAmount"/>
         <field name="currency"/>
         <field name="overtimeLineList" colSpan="6"/>
-        <field name="statusSelect"/>
-        <field name="validationDate"/>
         <break />
         <field name="period"/>
+        <break />
+       	<group title="Action(s)" colSpan="4">
+   			<group colSpan="1" cols="1">
+        		<button name="submit" title="Submit" colSpan="2" onClick="save,action-overtime-record-submit,save" hideIf="statusSelect == 3 || statusSelect == 4"/>
+	            <button name="validate" title="Validate" colSpan="1" onClick="save,action-overtime-record-validate,save" showIf="statusSelect == 2"/>
+	         	<button name="confirm" title="Confirm" colSpan="1" onClick="save,action-overtime-record-confirm,save" showIf="statusSelect == 3"/>
+	            <button name="refuse" title="Refuse" colSpan="1" onClick="save,action-overtime-record-refuse" showIf="statusSelect == 1 || statusSelect == 2"/>
+	        </group>
+   			<group colSpan="1" cols="2" readonly="true">
+   				<field name="validatedByUserInfo" colSpan="1"/>
+             	<field name="validationDate" colSpan="1"/>
+   			</group>
+        </group>
     </form>
     
     <action-record name="action-overtime-default-record" model="com.axelor.apps.organisation.db.Overtime">
     	<field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
     	<field name="date" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="date == null"/>
     	<field name="currency" expr="eval: _activeCompany.currency"/>	
-    	<field name="statusSelect" expr="draft"/>
+    	<field name="statusSelect" expr="eval: 1"/>
     </action-record>
+    
+    <action-record name="action-overtime-record-submit" model="com.axelor.apps.organisation.db.Overtime">
+    	<field name="statusSelect" expr="eval: 2"/>
+    </action-record>
+    
+    <action-record name="action-overtime-record-validate" model="com.axelor.apps.organisation.db.Overtime">
+    	<field name="statusSelect" expr="eval: 3"/>
+    </action-record>
+    
+    <action-record name="action-overtime-record-confirm" model="com.axelor.apps.organisation.db.Overtime">
+    	<field name="statusSelect" expr="eval: 4"/>
+    </action-record>
+    
+     <action-record name="action-overtime-record-refuse" model="com.axelor.apps.organisation.db.Overtime">
+    	<field name="statusSelect" expr="eval: 5"/>
+    </action-record>
+    
 </object-views>

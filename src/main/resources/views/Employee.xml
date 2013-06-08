@@ -65,6 +65,12 @@
 			<page title="Competences">
 				<field name="competence" widget="NestedEditor" summary-view="true" form-view="competence-edit-form"/>
 			</page>
+			<page title="Hierarchy">
+				<field name="supervisedBySelect" />
+				<field name="managerUserInfo" showIf="supervisedBySelect == 1"/>
+				<field name="managerProfileProduct" domain="self.applicationTypeSelect = 2"/>
+				<field name="profileProduct" domain="self.applicationTypeSelect = 2"/>
+			</page>
 			<!-- <page title="Suivi du placement des besoins" hidden="true"> -->
 			<!-- <field name="placementFollowUpList" grid-view="placement-follow-up-edit-grid" 
 				form-view="placement-follow-up-edit-list"></field> -->
