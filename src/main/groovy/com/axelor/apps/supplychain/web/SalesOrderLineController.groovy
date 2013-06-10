@@ -66,5 +66,46 @@ class SalesOrderLineController {
 		}
 	}
 	
-	
+	def void setBooleans(ActionRequest request, ActionResponse response){
+		
+		SalesOrderLine salesOrderLine = request.context as SalesOrderLine
+		
+		SalesOrder salesOrder = salesOrderLine.salesOrder
+		
+		if(salesOrder == null)  {
+			salesOrder = request.context.parentContext as SalesOrder
+		}
+			
+		if(salesOrder != null)  {
+			
+			def values = [ : ]
+			
+			try  {
+				if(salesOrder.getHasToCreateTaskByLine()) {
+					values.put("hasToCreateTask", true)
+				}
+				else {
+					values.put("hasToCreateTask", false)
+				}
+				
+				if(salesOrder.getHasToCreateProposal()) {
+					values.put("hasToBuy", true)
+				}
+				else {
+					values.put("hasToBuy", false)
+				}
+				
+				if(salesOrder.getIsToPrintLineSubTotal()){
+					values.put("isToPrintLineSubTotal", true)
+				}
+				else {
+					values.put("isToPrintLineSubTotal", false)
+				}
+				response.setValues(values)
+			}
+			catch(Exception e)  {
+				response.flash = e
+			}
+		}
+	}
 }

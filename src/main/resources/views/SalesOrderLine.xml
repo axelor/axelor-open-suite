@@ -15,7 +15,7 @@
         <field name="exTaxTotal"/>
     </grid>
     
-    <form name="sales-order-line-form" title="SO line" model="com.axelor.apps.supplychain.db.SalesOrderLine" cols="4" onNew="action-sales-order-line-record-new">
+    <form name="sales-order-line-form" title="SO line" model="com.axelor.apps.supplychain.db.SalesOrderLine" cols="4" onNew="action-sales-order-line-record-new,action-sales-order-line-method-new">
 	    <field name="sequence"/>
 	    <field name="isOrdered"/>
 	    <field name="product" onChange="action-sales-order-line-method-get-product-information,action-sales-order-line-method-compute" domain="self.endDate = null or self.endDate &gt; :__date__"/>
@@ -55,6 +55,7 @@
     
     <action-record name="action-sales-order-line-record-new" model="com.axelor.apps.supplychain.db.SalesOrderLine">
     	<field name="qty" expr="eval: 1"/>
+    	<field name="isOrdered" expr="true"/>
     </action-record>
    
    	<!-- ACTION METHOD -->
@@ -66,6 +67,10 @@
 		<call class="com.axelor.apps.supplychain.web.SalesOrderLineController" method="getProductInformation"/>
 	</action-method>
 	
+	<action-method name="action-sales-order-line-method-new">
+    	<call class="com.axelor.apps.supplychain.web.SalesOrderLineController" method="setBooleans"/>
+    </action-method>
+    
 	<!-- 
 	 <grid name="purchase-order-sales-order-line-grid" title="SO lines" model="com.axelor.apps.supplychain.db.SalesOrderLine">
     	<field name="product"/>
