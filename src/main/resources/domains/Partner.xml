@@ -16,6 +16,13 @@
     <string name="titleSelect" title="Civility" selection="partner.title.type.select"/>
     <string name="name" title="Name/Company Name"/>
     <string name="firstName" title="First Name"/>
+    <string name="fullName" title="Nom du Contact" namecolumn="true">
+    <![CDATA[
+    if (partnerTypeSelect == 1) return name;
+    else if (partnerTypeSelect == 2 && firstName == null) return name;
+    else return firstName + ' ' + name;
+    ]]>
+    </string>
     <binary name="picture" image="true" title="Photo"/>
     <boolean name="isCustomer" title="Customer ?"/>
     <boolean name="isSupplier" title="Supplier ?"/>
