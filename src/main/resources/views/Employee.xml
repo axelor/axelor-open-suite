@@ -8,7 +8,8 @@
 		<field name="firstName" />
 	</grid>
 
-	<form name="employee-form" title="Employee"	model="com.axelor.apps.organisation.db.Employee" cols="4">
+	<form name="employee-form" title="Employee"	model="com.axelor.apps.organisation.db.Employee" cols="4"
+	onNew="action-employee-default-record">
 		<group name="header" cols="6" colSpan="4">
 			<field name="createdBy" title="Holder" />
 			<break />
@@ -78,5 +79,12 @@
 		</notebook>
 
 	</form>
+	
+	<action-record name="action-employee-default-record" model="com.axelor.apps.organisation.db.Employee">
+    	<field name="entryDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="entryDate == null"/>
+    	<field name="categorySelect" expr="1"/>
+    	<field name="macroCategorySelect" expr="4"/>
+    </action-record>
+    
 </object-views>
   
