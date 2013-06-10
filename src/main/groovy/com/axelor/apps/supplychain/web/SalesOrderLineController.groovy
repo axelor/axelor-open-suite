@@ -108,4 +108,37 @@ class SalesOrderLineController {
 			}
 		}
 	}
+	
+	def void setSequence(ActionRequest request, ActionResponse response){
+		
+		SalesOrderLine salesOrderLine = request.context as SalesOrderLine
+		
+		SalesOrder salesOrder = salesOrderLine.salesOrder
+		
+		if(salesOrder == null)  {
+			salesOrder = request.context.parentContext as SalesOrder
+		}
+			
+		if(salesOrder != null)  {
+			
+			try  {
+				int sizeList = 0
+				
+				if(salesOrder.getSalesOrderLineList() != null) {
+					sizeList = salesOrder.getSalesOrderLineList().size()
+				}
+				if(sizeList == 0) {
+					
+					response.values = ["sequence" : 1]
+				}
+				else if(sizeList > 0) {
+					
+					response.values = ["sequence" : sizeList+1]
+				}
+			}
+			catch(Exception e)  {
+				response.flash = e
+			}
+		}
+	}
 }
