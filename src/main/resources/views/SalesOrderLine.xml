@@ -9,53 +9,48 @@
         <field name="qty"/>
         <field name="unit"/>
         <field name="price"/>
-        <field name="vatLine.vat"/>
+        <field name="vatLine.value"/>
+        <field name="discountTypeSelect"/>
+        <field name="discountAmount"/>
         <field name="exTaxTotal"/>
-        <field name="task"/>
-        <field name="hasToCreateTask"/>
-    	<field name="hasToBuy"/>
-    	<field name="discountAmount"/>
-    	<field name="discountTypeSelect"/>
     </grid>
     
     <form name="sales-order-line-form" title="SO line" model="com.axelor.apps.supplychain.db.SalesOrderLine" cols="4" onNew="action-sales-order-line-record-new">
-   		<field name="sequence"/>
-    	<field name="product" domain="self.endDate = null or self.endDate &gt; :__date__" onChange="action-sales-order-line-method-get-product-information,action-sales-order-line-method-compute"/>
-    	<field name="product.productCategory"/>
-    	<field name="productName"/>
-    	<field name="qty" onChange="action-sales-order-line-method-compute"/>
-    	<field name="unit"/>
-    	<field name="price" onChange="action-sales-order-line-method-compute"/>
-    	<field name="vatLine" domain="self.endDate = null or self.endDate &gt; :__date__"/>
-		<field name="vatLine.vat.name"/>
-		<field name="vatLine.value"/>
-    	<field name="exTaxTotal"/>
-    	<field name="task"/>
-    	<field name="isToPrintLineSubTotal"/>
-    	<field name="employeeSet" colSpan="4" domain="self.exitDate = null or self.exitDate &gt; :__date__"/>
-    	<field name="candidateSet" colSpan="4"/>
-    	<field name="hasToCreateTask"/>
-    	<field name="hasToBuy"/>
-    	<field name="discountAmount"/>
-    	<field name="discountTypeSelect"/>
-		<field name="description"/>    	
-		
-		<field name="isOrdered"/>
-        <notebook colSpan="4">
-        	<page title="SO line details">
-        		<field name="salesOrderSubLineList" colSpan="4"/>
-        	</page>
-        	<page title="Invoicing follow-up">
-        		<field name="invoicingDate"/>
-				<field name="isToInvoice"/>
-				<field name="isInvoiced"/>
-				<field name="amountInvoiced"/>
-				<field name="amountRemainingToBeInvoiced"/>
-        	</page>
-        	<page title="History">
-        		<field name="invoiceSet" colSpan="4"/>
-        	</page>
-        </notebook>
+	    <field name="sequence"/>
+	    <field name="isOrdered"/>
+	    <field name="product" onChange="action-sales-order-line-method-get-product-information,action-sales-order-line-method-compute" domain="self.endDate = null or self.endDate &gt; :__date__"/>
+	    <field name="productName"/>
+	    <field name="qty" onChange="action-sales-order-line-method-compute"/>
+	    <field name="unit"/>
+	    <field name="price" onChange="action-sales-order-line-method-compute"/>
+	    <field name="vatLine" domain="self.endDate = null or self.endDate &gt; :__date__"/>
+	    <field name="vatLine.vat.name"/>
+	    <field name="vatLine.value"/>
+	    <field name="discountTypeSelect"/>
+	    <field name="discountAmount"/>
+	    <field name="exTaxTotal"/>
+	    <group title="Ressources Planning" colSpan="4" cols="4">
+	        <field name="employeeSet" colSpan="4" domain="self.exitDate = null or self.exitDate &gt; :__date__"/>
+	        <field name="candidateSet" colSpan="4"/>
+	    </group>    
+	    <field name="hasToCreateTask"/>
+	    <field name="task"/>
+	    <field name="hasToBuy"/>
+	    <field name="isToPrintLineSubTotal"/>
+	    <field name="description" colSpan="4"/>
+	    <notebook colSpan="6">
+	        <page title="SO line details">
+	            <field name="salesOrderSubLineList" colSpan="6"/>
+	        </page>
+	        <page title="Invoicing follow-up">
+	            <field name="isToInvoice"/>
+	            <field name="isInvoiced"/>
+	            <field name="invoicingDate"/>
+	            <field name="amountInvoiced"/>
+	            <field name="amountRemainingToBeInvoiced"/>
+	            <field name="invoiceSet" colSpan="6"/>
+	        </page>
+	    </notebook>
     </form>
     
     <action-record name="action-sales-order-line-record-new" model="com.axelor.apps.supplychain.db.SalesOrderLine">
