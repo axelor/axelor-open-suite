@@ -37,6 +37,10 @@
 		<decimal name="commuteFee" title="Commute Fee" scale="2" precision="5"/>
 		<decimal name="commuteFeeRefundPerc" title="Commute Fee Refund %" scale="2" precision="5"/>
 		
+		<integer name="supervisedBySelect" title="Supervised by" selection="organisation.employee.supervised.by.select" />
+		<many-to-one name="managerUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="Manager"/>
+		<many-to-one name="managerProfileProduct" ref="com.axelor.apps.base.db.Product" title="Manager Profile"/>
+		<many-to-one name="profileProduct" ref="com.axelor.apps.base.db.Product" title="Profile"/>
 	</entity>
 
 </domain-models>

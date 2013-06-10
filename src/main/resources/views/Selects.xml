@@ -726,6 +726,11 @@
 		<option value="6">Senior Worker ( > 10 ans)</option>
 	</selection>
 
+	<selection name="organisation.employee.supervised.by.select">
+		<option value="1">Manager</option>
+		<option value="2">Profile</option>
+	</selection>
+	
 	<selection name="organisation.recruitmentProcessAdvancement.status.select">
 		<option value="1">1st RDV (green)</option>
 		<option value="2">2nd RDV (green)</option>
