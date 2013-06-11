@@ -45,7 +45,7 @@
   	<many-to-one name="responsibleUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="Responsible"/>
   	<many-to-many name="memberUserInfoSet" ref="com.axelor.apps.base.db.UserInfo" title="Members"/>
   	
-  	<many-to-one name="projectModel" ref="com.axelor.apps.organisation.db.Project" title="Project model"/>
+  	<many-to-one name="modelProject" ref="com.axelor.apps.organisation.db.Project" title="Project model"/>
   	
     
   </entity>
