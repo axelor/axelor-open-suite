@@ -54,7 +54,7 @@
 	    <break/>
 	    <group title="Proofs" colSpan="4">
 	        <field name="file"/>
-	        <field name="fileReceived"/>
+	        <field name="fileReceived" onChange="action-expenseline-record-validation-date"/>
 	    </group>
 	    <group title="Validation/Invoicing" colSpan="6">
 	        <field name="validationDate"/>
