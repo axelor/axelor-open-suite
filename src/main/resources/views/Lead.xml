@@ -34,7 +34,7 @@
         </group>
         <group title="Source details" colSpan="2" css="groupTitle" cols="2">
             <field name="source"/>
-            <field name="ourceDescription"/>
+            <field name="sourceDescription"/>
         </group>
         <field name="campaign"/>
         <field name="referredBy"/>
