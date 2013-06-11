@@ -51,7 +51,7 @@
 					<field name="avalabilitySelect" />
 					<field name="availabilityDate" />
 					<field name="decisionDate" />
-					<field name="recruitmentProcessAdvancementList" cols="6" colSpan="6">
+					<field name="recruitmentProcessAdvancementList" colSpan="6">
 					<form title="Recruitment process progress">
 						<field name="stateSelect"/>
 						<field name="dateTime"/>
@@ -91,6 +91,7 @@
 				<field name="evaluationLineList" colSpan="4" onChange="action-organisation-candidate-evaluation-record"
 					form-view="evaluation-line-form" grid-view="evaluation-line-grid"/>
 				<field name="evaluationGrade" readonly="true"/>
+				<button name="compute" title="Calculer" onClick="action-organisation-candidate-evaluation-record"/>
 			</page>
 			<page title="Additionnal information">
 				<field name="personalInfo" widget="NestedEditor" summary-view="true"

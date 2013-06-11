@@ -74,7 +74,8 @@
     <action-view name="action-project-view-task" title="Tasks" model="com.axelor.apps.organisation.db.Task">
 		<view type="grid" name="task-grid"/>
 		<view type="form" name="task-form"/>
-		<domain>self.project = :id</domain>
+		<domain>self.project.id = :_projectId</domain>
+		<context name="_projectId" expr="__this__.id"/>
 	</action-view>
     
     
