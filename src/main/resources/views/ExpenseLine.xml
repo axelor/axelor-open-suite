@@ -79,7 +79,7 @@
     </action-record>
     
     <action-record name="action-expenseline-product" model="com.axelor.apps.organisation.db.ExpenseLine">
-    	<field name="shortDescription" expr="product?.name" if="product"/>
+    	<field name="shortDescription" expr="eval: product?.name" if="product"/>
     	<field name="unit" expr="eval: product?.unit" if="product"/>
     	<field name="price" expr="eval: product?.purchasePrice" if="product"/>
     </action-record>
