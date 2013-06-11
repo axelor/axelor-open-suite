@@ -27,7 +27,7 @@
         <break />
        	<group title="Action(s)" colSpan="4">
    			<group colSpan="1" cols="1">
-        		<button name="submit" title="Submit" colSpan="2" onClick="save,action-overtime-record-submit,save" hideIf="statusSelect == 3 || statusSelect == 4"/>
+        		<button name="submit" title="Submit" colSpan="2" onClick="save,action-overtime-record-submit,save" showIf="statusSelect == 1"/>
 	            <button name="validate" title="Validate" colSpan="1" onClick="save,action-overtime-record-validate,save" showIf="statusSelect == 2"/>
 	         	<button name="confirm" title="Confirm" colSpan="1" onClick="save,action-overtime-record-confirm,save" showIf="statusSelect == 3"/>
 	            <button name="refuse" title="Refuse" colSpan="1" onClick="save,action-overtime-record-refuse" showIf="statusSelect == 1 || statusSelect == 2"/>
@@ -52,6 +52,8 @@
     
     <action-record name="action-overtime-record-validate" model="com.axelor.apps.organisation.db.Overtime">
     	<field name="statusSelect" expr="eval: 3"/>
+    	<field name="validationDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+    	<field name="validatedByUserInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
     </action-record>
     
     <action-record name="action-overtime-record-confirm" model="com.axelor.apps.organisation.db.Overtime">

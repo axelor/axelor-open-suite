@@ -44,7 +44,7 @@
         <field name="timesheetTotalByTypeList" colSpan="8"/>
        	<group title="Action(s)" colSpan="4">
    			<group colSpan="1" cols="1">
-	         	<button name="confirm" title="Confirm" colSpan="1" onClick="save,action-timesheet-record-confirm,save" hideIf="statusSelect == 3"/>
+	         	<button name="confirm" title="Confirm" colSpan="1" onClick="save,action-timesheet-record-confirm,save" showIf="statusSelect == 1 || statusSelect == 4"/>
 	            <button name="validate" title="Validate" colSpan="1" onClick="save,action-timesheet-record-validate,save" showIf="statusSelect == 2"/>
 	            <button name="cancel" title="Cancel" colSpan="1" onClick="save,action-timesheet-record-cancel" showIf="statusSelect == 1 || statusSelect == 2"/>
 	        </group>
@@ -72,7 +72,7 @@
     
     <action-record name="action-timesheet-record-validate" model="com.axelor.apps.organisation.db.Timesheet">
     	<field name="statusSelect" expr="eval: 3"/>
-    	<field name="validationDate" expr="eval: __date__"/>
+    	<field name="validationDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
     	<field name="validatedByUserInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
     </action-record>
     
