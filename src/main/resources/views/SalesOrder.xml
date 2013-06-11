@@ -12,8 +12,8 @@
         <field name="inTaxTotal"/>
     </grid>
     
-	<form name="sales-order-form" title="Sale order" model="com.axelor.apps.supplychain.db.SalesOrder" cols="4" onNew="action-sales-order-record-default,action-sales-order-record-currency"
-	onSave="action-sales-order-set-sequence">
+	<form name="sales-order-form" title="Sale order" model="com.axelor.apps.supplychain.db.SalesOrder" cols="4" onNew="action-sales-order-record-default,action-sales-order-record-currency,action-sales-order-attrs-collapse-specific-settings-group"
+	onSave="action-sales-order-set-sequence" onLoad="action-sales-order-attrs-collapse-specific-settings-group">
 	    <toolbar>
 	        <button name="createDocument" title="Create Document" onClick="com.axelor.apps.supplychain.web.SalesOrderController:saveDocumentForOrder"/>
 	    </toolbar>
@@ -27,7 +27,7 @@
 	    </group>
 	    <group colSpan="1" cols="1">
 	        <field name="statusSelect" widget="NavSelect"/>
-	        <button name="showInvoice" title="Les factures" colSpan="1" onClick="action-sales-order-view-invoice"/>
+	        <button name="showInvoice" title="Les factures" colSpan="1" onClick="action-sales-order-view-invoice" showIf="statusSelect == 3"/>
 	    </group>
 	    <notebook colSpan="4">
 	        <page title="Customer information">
@@ -37,7 +37,7 @@
 	            <field name="deliveryAddress"/>
 	            <field name="invoicingTypeSelect"/>
 	            <field name="priceList"/>
-	            <group title="Specific settings" canCollapse="true" colSpan="4">
+	            <group title="Specific settings" name="specificSettings" canCollapse="true" colSpan="4">
 	                <separator title="Sale order Settings" colSpan="4"/>
 	                    <field name="isToPrintLineSubTotal"/>
 	                    <field name="hasToCreateProject"/>
@@ -95,7 +95,7 @@
 	            <field name="invoicingMomentSelect" colSpan="3"/>
 	            <field name="salesOrderScheduleLineList" colSpan="4"/>
 	        </page>
-	        <page title="Invoicing">
+	        <page title="Invoicing" showIf="statusSelect == 3">
 	            <field name="invoiceSet" colSpan="4"/>
 	        </page>
 	        <page title="Customer order">
@@ -166,5 +166,9 @@
 		<view type="form" name="invoice-form"/>
 		<domain>self.id IN :invoiceSet</domain>
 	</action-view>
+	
+	<action-attrs name="action-sales-order-attrs-collapse-specific-settings-group">
+		<attribute name="collapse" for="specificSettings" expr="eval: true"/>
+	</action-attrs>
     
 </object-views>

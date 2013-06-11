@@ -34,7 +34,7 @@
 	        <field name="candidateSet" colSpan="4"/>
 	    </group>    
 	    <field name="hasToCreateTask"/>
-	    <field name="task"/>
+	    <field name="task" showIf="hasToCreateTask"/>
 	    <field name="hasToBuy"/>
 	    <field name="isToPrintLineSubTotal"/>
 	    <field name="description" colSpan="4"/>
@@ -74,52 +74,6 @@
     <action-method name="action-sales-order-line-method-setSequence">
     	<call class="com.axelor.apps.supplychain.web.SalesOrderLineController" method="setSequence"/>
     </action-method>
-    
-	<!-- 
-	 <grid name="purchase-order-sales-order-line-grid" title="SO lines" model="com.axelor.apps.supplychain.db.SalesOrderLine">
-    	<field name="product"/>
-        <field name="qty"/>
-        <field name="price"/>
-        <field name="unit"/>
-        <field name="exTaxTotal"/>
-    	<field name="vatTotal"/>
-    	<field name="inTaxTotal"/>
-        <field name="deliveryDate"/>
-    </grid>
-    
-    <form name="purchase-order-sales-order-line-form" title="SO line" model="com.axelor.apps.supplychain.db.SalesOrderLine" cols="4">
-    	<field name="product"/>
-    	<field name="qty"/>
-    	<field name="price"/>
-    	<field name="unit"/>
-    	<field name="exTaxTotal"/>
-    	<field name="vatTotal"/>
-    	<field name="inTaxTotal"/>
-		<field name="deliveryDate"/>
-    </form>
-    
-    <grid name="delivery-order-sales-order-line-grid" title="SO lines" model="com.axelor.apps.supplychain.db.SalesOrderLine">
-    	<field name="product"/>
-    	<field name="deliveryDate"/>
-        <field name="qty"/>
-        <field name="price"/>
-        <field name="unit"/>
-        <field name="exTaxTotal"/>
-    	<field name="vatTotal"/>
-    	<field name="inTaxTotal"/>
-        <field name="isInvoiceControlled"/>
-    </grid>
-    
-    <form name="delivery-order-supplier-sales-order-line-form" title="SO line" model="com.axelor.apps.supplychain.db.SalesOrderLine" cols="4">
-   		<field name="product"/>
-    	<field name="deliveryDate"/>
-        <field name="qty"/>
-        <field name="price"/>
-        <field name="unit"/>
-        <field name="exTaxTotal"/>
-    	<field name="vatTotal"/>
-    	<field name="inTaxTotal"/>
-        <field name="isInvoiceControlled"/>
-    </form> -->
+  	
     
 </object-views>
