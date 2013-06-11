@@ -79,8 +79,8 @@
     </action-record>
     
     <action-record name="action-expenseline-record-validation-date" model="com.axelor.apps.organisation.db.ExpenseLine">
-    	<field name="validationDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="fileReceived == '1'"/>
-    	<field name="validationDate" expr="" if="fileReceived == '2'"/>
+    	<field name="validationDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="fileReceived == 1"/>
+    	<field name="validationDate" expr="" if="fileReceived == 2"/>
     </action-record>
     
 </object-views>
