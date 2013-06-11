@@ -41,7 +41,7 @@
 	        <field name="sequence"/>
 	        <field name="reference"/>
 	        <field name="expenseTypeSelect"/>
-	        <field name="affair"/>
+	        <field name="project" onChange="action-expenseline-expense-type-select"/>
 	    </group>
 	    <group title="Details" colSpan="4">
 	        <field name="product" colSpan="2" onChange="action-expenseline-product,action-expenseline-compute-total" domain="self.applicationTypeSelect = 3 and self.endDate IS NULL or CURRENT_DATE &lt; self.endDate"/>
@@ -67,6 +67,11 @@
     	<field name="expenseTypeSelect" expr="eval: 2"/>
     	<field name="fileReceived" expr="eval: 2"/>
     	<field name="qty" expr="1"/>
+    </action-record>
+    
+    <action-record name="action-expenseline-expense-type-select" model="com.axelor.apps.organisation.db.ExpenseLine">
+    	<field name="expenseTypeSelect" expr="1" if="project?.isReinvoicingExpense == true"/>
+    	<field name="expenseTypeSelect" expr="2" if="project?.isReinvoicingExpense == false"/>
     </action-record>
     
     <action-record name="action-expenseline-compute-total" model="com.axelor.apps.organisation.db.ExpenseLine">
