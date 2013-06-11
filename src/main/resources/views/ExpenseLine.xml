@@ -8,7 +8,7 @@
 		<field name="product" />
 		<field name="shortDescription" />
 		<field name="expenseTypeSelect" />
-		<field name="affair" />
+		<field name="project" />
 		<field name="qty" />
 		<field name="unit" />
 		<field name="price" />
@@ -24,7 +24,7 @@
 		<field name="product" />
 		<field name="shortDescription" />
 		<field name="expenseTypeSelect" />
-		<field name="affair" />
+		<field name="project" />
 		<field name="qty" />
 		<field name="unit" />
 		<field name="price" />
@@ -36,7 +36,7 @@
 
 	<form name="expense-line-form" title="Expense Line"
 		model="com.axelor.apps.organisation.db.ExpenseLine" cols="4" onNew="action-expenseline-default-record">
-		<field name="affair" />
+		<field name="project" />
 		<field name="expenseTypeSelect" />
 		<field name="product" domain="self.applicationTypeSelect = 3 and self.endDate IS NULL or CURRENT_DATE &lt; self.endDate" onChange="action-expenseline-product,action-expenseline-compute-total"/>
 		<field name="unit" />
