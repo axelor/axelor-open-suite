@@ -264,7 +264,6 @@
 		<view type="grid" name="task-grid" />
 		<view type="form" name="task-form" />
 		<view type="calendar" name="task-calendar"/>
-		<context name="_statusSelect" expr="1"/>
 	</action-view>
 
 
