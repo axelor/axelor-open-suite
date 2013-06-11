@@ -19,7 +19,7 @@
 	        <field name="currency"/>
 	        <field name="expectedCloseDate"/>
 	        <field name="amount"/>
-	        <field name="opportunityType"/>
+	        <field name="opportunityType" widget="TagSelect[create=name,code]"/>
 	        <field name="bestCase"/>
 	        <field name="worstCase"/>
 	        <field name="salesStageSelect"/>
