@@ -22,7 +22,7 @@
 	        <field name="isTimeSheetImputable"/>
 	        <field name="defaultTask" hideIf="!isTimeSheetImputable"/>
 	        <field name="parentProject"/>
-			<field name="projectModel"/>
+			<field name="modelProject" hideIf="isModel" domain="self.isModel = true"/>
     	</group>
     	<group noLabel="true" colSpan="2" cols="1" title="Actions">
     		<button name="createSalesOrder" title="Create quote" colSpan="1"/>
