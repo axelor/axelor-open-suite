@@ -36,23 +36,31 @@
 
 	<form name="expense-line-form" title="Expense Line"
 		model="com.axelor.apps.organisation.db.ExpenseLine" cols="4" onNew="action-expenseline-default-record">
-		<field name="project" />
-		<field name="expenseTypeSelect" />
-		<field name="product" domain="self.applicationTypeSelect = 3 and self.endDate IS NULL or CURRENT_DATE &lt; self.endDate" onChange="action-expenseline-product,action-expenseline-compute-total"/>
-		<field name="unit" />
-		<field name="qty" onChange="action-expenseline-compute-total"/>
-		<field name="price" onChange="action-expenseline-compute-total"/>
-		<field name="reference" />
-		<field name="sequence" />
-		<field name="total"/>
-		<break />
-		<group title="Proofs" colSpan="4">
-			<field name="file" />
-			<field name="fileReceived" onChange="action-expenseline-record-validation-date"/>
-		</group>
-		<field name="validationDate" />
-		<field name="istoInvoice"/>
-		<field name="isInvoiced"/>
+
+	    <group title="Context" colSpan="4">
+	        <field name="sequence"/>
+	        <field name="reference"/>
+	        <field name="expenseTypeSelect"/>
+	        <field name="affair"/>
+	    </group>
+	    <group title="Details" colSpan="4">
+	        <field name="product" colSpan="2" onChange="action-expenseline-product,action-expenseline-compute-total" domain="self.applicationTypeSelect = 3 and self.endDate IS NULL or CURRENT_DATE &lt; self.endDate"/>
+	        <field name="shortDescription" colSpan="4"/>
+	        <field name="qty" onChange="action-expenseline-compute-total"/>
+	        <field name="unit"/>
+	        <field name="price" onChange="action-expenseline-compute-total"/>
+	        <field name="total"/>
+	    </group>
+	    <break/>
+	    <group title="Proofs" colSpan="4">
+	        <field name="file"/>
+	        <field name="fileReceived"/>
+	    </group>
+	    <group title="Validation/Invoicing" colSpan="6">
+	        <field name="validationDate"/>
+	        <field name="istoInvoice"/>
+	        <field name="isInvoiced"/>
+	    </group>
 	</form>
 
 	<action-record name="action-expenseline-default-record" model="com.axelor.apps.organisation.db.ExpenseLine">

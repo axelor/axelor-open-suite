@@ -13,7 +13,7 @@
 		<field name="childrenNbr"/>
 		<field name="spouseProfession"/>
 		<break />
-		<field name="mobilitySet" widget="TagSelect[create=name,code]" colSpan="2" grid-view="mobility-choice-grid"
+		<field name="mobilityChoiceSet" colSpan="2" widget="TagSelect[create=name]" grid-view="mobility-choice-grid"
 			form-view="mobility-choice-form"/>
 	</form>
 

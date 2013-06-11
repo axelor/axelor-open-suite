@@ -8,6 +8,7 @@
 		<field name="name" />
 		<field name="firstName" />
 		<field name="mobilePhone" />
+		<field name="email" />
 		<field name="avalabilitySelect" />
 		<field name="availabilityDate" />
 		<field name="salaryExpectation" />
@@ -17,36 +18,40 @@
 	<form name="candidate-form" title="Candidate" model="com.axelor.apps.organisation.db.Candidate" 
 	 	onSave="action-organisation-candidate-save-record"
 		onNew="action-method-candidate-default-record">
-		<group name="header" cols="6" colSpan="4">
-			<field name="userInfo"/>
-			<break />
+		<toolbar>
+			<button name="recruit" title="Transform into employee" onClick="" />
+		</toolbar>
+		<group name="header" cols="6" colSpan="6">
 			<field name="titleSelect" />
 			<field name="name" />
 			<field name="firstName" />
-			<field name="mobilePhone" />
-			<field name="fixedPhone" />
-			<field name="email" />
-			<field name="recruitmentTypeSelect" />
-			<button name="recruit" title="Transform into employee" colSpan="2" onClick="" />
+			<group title="Coordonnées" cols="6" colSpan="6">
+				<field name="mobilePhone" />
+				<field name="fixedPhone" />
+				<field name="email" />
+				<field name="address" />
+			</group>
+			<group title="Recruitment Type" cols="6" colSpan="6">	
+				<field name="recruitmentTypeSelect" />
+				<field name="macroCategorySelect" />
+				<field name="categorySelect" />
+			</group>
 		</group>
 		<notebook>
-			<page title="General" cols="6" colSpan="4">
-				<field name="address" />
-				<break />
-				<field name="createdOn" readonly="true" title="Creation date" />
-				<field name="avalabilitySelect" />
-				<field name="availabilityDate" />
-				<field name="decisionDate" />
-				<field name="salaryExpectation" />
+			<page title="General" cols="6" colSpan="6">
 				<field name="relocationSelect" />
+				<field name="salaryExpectation" />
 				<field name="globalEvaluation" />
 				<field name="resume" />
 				<field name="coverLetter" />
-				<break />
-				<field name="macroCategorySelect" />
-				<field name="categorySelect" />
-				<break />
-				<field name="recruitmentProcessAdvancementList" colSpan="4">
+				<group title="Candidate Follow up" cols="6" colSpan="6">	
+					<field name="userInfo"/>
+					<field name="createdOn" readonly="true"/>
+					<break/>
+					<field name="avalabilitySelect" />
+					<field name="availabilityDate" />
+					<field name="decisionDate" />
+					<field name="recruitmentProcessAdvancementList" colSpan="6">
 					<form title="Recruitment process progress">
 						<field name="stateSelect"/>
 						<field name="dateTime"/>
@@ -59,23 +64,28 @@
 						<field name="comment"/>
 					</grid>
 				</field>
+				</group>
 			</page>
-			<page title="Keywords">
-				<field name="toolKeywordSet" colSpan="2" grid-view="keyword-grid" widget="TagSelect[create=keyWord]"/>
-				<field name="fieldKeywordSet" colSpan="2" grid-view="keyword-grid" widget="TagSelect[create=keyWord]"/>
-				<field name="jobKeywordSet" colSpan="2" grid-view="keyword-grid" widget="TagSelect[create=keyWord]"/>
-				<field name="partnerSet" colSpan="4" grid-view="company-grid" domain="self.isContact = 'true'"/>
-			</page>
-			<page title="Professionnal background">
-				<field name="positionList"/>
-			</page>
-			<page title="Education/Trainings">
-				<field name="degree"/>
-				<!-- TODO set domain domain="self.id IN (1, 2, 3)" -->
-				<button name="assign" title="Affect to recruitment pool"
-					help="Copy all necessary fields (including Professionnal Background …)"
-					colSpan="2" />
-				<field name="trainingLineList" colSpan="4"/>
+			<page title="Profile">
+				<group title="-" cols="4" colSpan="6">
+					<group title="Keywords" colSpan="2">
+						<field name="toolKeywordSet" colSpan="2" grid-view="keyword-grid" widget="TagSelect[create=keyWord]"/>
+						<field name="fieldKeywordSet" colSpan="2" grid-view="keyword-grid" widget="TagSelect[create=keyWord]"/>
+						<field name="jobKeywordSet" colSpan="2" grid-view="keyword-grid" widget="TagSelect[create=keyWord]"/>
+					</group>
+					<group title="Companies" colSpan="2">
+						<field name="partnerSet" colSpan="4" grid-view="company-grid" domain="self.isContact = 'true'"/>
+					</group>
+				</group>
+				<field name="positionList" colSpan="4"/>	
+				<group title="Education/Trainings" cols="4" colSpan="4">	
+					<field name="degree"/>
+					<!-- TODO set domain domain="self.id IN (1, 2, 3)" -->
+					<button name="assign" title="Affect to recruitment pool"
+						help="Copy all necessary fields (including Professionnal Background …)"
+						colSpan="2" />
+					<field name="trainingLineList" colSpan="4"/>
+				</group>
 			</page>
 			<page title="Evaluation">
 				<field name="evaluationLineList" colSpan="4" onChange="action-organisation-candidate-evaluation-record"
