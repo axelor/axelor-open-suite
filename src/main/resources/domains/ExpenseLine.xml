@@ -9,7 +9,7 @@
   	<many-to-one name="task" ref="com.axelor.apps.organisation.db.Task" title="Tâche"/>
   
   	<many-to-one name="expense" title="Expense" ref="com.axelor.apps.organisation.db.Expense" />
-  	<many-to-one name="affair" title="Affair" ref="com.axelor.apps.organisation.db.Project" />
+  	<many-to-one name="project" title="Affair" ref="com.axelor.apps.organisation.db.Project" />
   	<string name="expenseTypeSelect" title="Type of expense" selection="expense.line.expense.type.select" />
   	<many-to-one name="product" title="Product" ref="com.axelor.apps.base.db.Product"/>
   	<many-to-one name="unit" title="UOM" ref="com.axelor.apps.base.db.Unit"/>
@@ -21,7 +21,7 @@
   	<string name="sequence" title="Sequence" />
   	<decimal name="total" title="Total"/>
   	<binary name="file" title="File" />
-  	<string name="fileReceived" title="File received" selection="hr.expense.line.file.received.select"/>
+  	<integer name="fileReceived" title="File received" selection="hr.expense.line.file.received.select"/>
   	<date name="validationDate" title="Date de validation" readonly="true"/>
   	<boolean name="istoInvoice" title="A facturer"/>
   	<boolean name="isInvoiced" title="Facturé" readonly="true"/>
