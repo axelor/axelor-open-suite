@@ -88,7 +88,7 @@
 				</group>
 			</page>
 			<page title="Evaluation">
-				<field name="evaluationLineList" colSpan="4" onChange="action-organisation-candidate-evaluation-record"
+				<field name="evaluationLineList" colSpan="4"
 					form-view="evaluation-line-form" grid-view="evaluation-line-grid"/>
 				<field name="evaluationGrade" readonly="true"/>
 				<button name="compute" title="Calculer" onClick="action-organisation-candidate-evaluation-record"/>
