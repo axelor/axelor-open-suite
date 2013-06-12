@@ -14,7 +14,7 @@
     	<group noLabel="true" colSpan="4">
     	 	<field name="responsibleUserInfo"/>
 	        <field name="clientPartner"/>
-	        <field name="contactPartner"/>
+	        <field name="contactPartner" domain="self.isContact = true"/>
 	        <field name="affairName"/>
 	        <field name="isModel"/>
 	        <field name="isReinvoicingExpense"/>
