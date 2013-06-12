@@ -36,7 +36,7 @@
 	            <field name="mainInvoicingAddress"/>
 	            <field name="deliveryAddress"/>
 	            <field name="invoicingTypeSelect"/>
-	            <field name="priceList"/>
+	            <field name="priceList" domain="self.typeSelect = 1 and (self.partner = null or self.partner = :clientPartner)"/>
 	            <group title="Specific settings" name="specificSettings" canCollapse="true" colSpan="4">
 	                <separator title="Sale order Settings" colSpan="4"/>
 	                    <field name="isToPrintLineSubTotal"/>
