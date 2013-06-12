@@ -25,8 +25,10 @@ public class LeadController {
 		if(partner != null)  {
 			response.flash = "Lead converted"
 		}	
+		else  {
+			response.flash = "Lead not converted"
+		}
 		
-		response.flash = "Lead not converted"
 	}
   
 }

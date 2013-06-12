@@ -18,7 +18,7 @@
         <field name="name"/>
         <field name="firstName"/>
         <field name="officeName"/>
-        <field name="title"/>
+        <field name="jobTitle"/>
         <field name="mobile"/>
         <field name="department"/>
         <field name="fax"/>
@@ -40,7 +40,8 @@
         <field name="referredBy"/>
         <group colSpan="4">
             <field name="isDoNotCall" colSpan="2"/>
-        	<button name="convertLead" title="Convert lead" onClick="action-lead-method-convert-lead" colSpan="1"/>
+        	<button name="convertLead" title="Convert lead" onClick="action-lead-method-convert-lead" colSpan="1" hideIf="statusSelect == "/>
+        	<field name="partner"/>
         </group>
         
     </group>
