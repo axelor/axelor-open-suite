@@ -133,6 +133,13 @@
 	                </form>
 	            </field>
 	        </page>
+			<page title="Reporting">
+				<group title="Action(s)" colSpan="2" cols="2">
+                    <group colSpan="1" cols="1">
+                        <button name="showPartnerInfo" title="Print Informations" colSpan="1" icon="img/icons/print.png" onClick="save,action-partner-method-show-partner-info"/>
+                    </group>
+                </group>
+			</page>
 	    </notebook>
 	</form>
     
