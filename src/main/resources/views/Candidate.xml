@@ -22,9 +22,9 @@
 			<button name="recruit" title="Transform into employee" onClick="" />
 		</toolbar>
 		<group name="header" cols="6" colSpan="6">
-			<field name="titleSelect" />
 			<field name="name" />
 			<field name="firstName" />
+			<field name="titleSelect" />
 			<group title="Coordonnées" cols="6" colSpan="6">
 				<field name="mobilePhone" />
 				<field name="fixedPhone" />

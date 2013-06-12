@@ -10,36 +10,42 @@
 
 	<form name="employee-form" title="Employee"	model="com.axelor.apps.organisation.db.Employee" cols="4"
 	onNew="action-employee-default-record">
-		<group name="header" cols="6" colSpan="4">
-			<field name="createdBy" title="Holder" />
-			<break />
-			<field name="titleSelect" />
+		<group name="header" cols="6" colSpan="6">
 			<field name="name" />
 			<field name="firstName" />
-			<field name="entryDate" />
-			<field name="exitDate" />
-			<field name="phoneAtCustomer" />
-			<field name="internalContact" />
-			<field name="dailySalaryCost" />
-			<field name="macroCategorySelect" />
-			<field name="categorySelect" />
-			<field name="companyDepartment"/>
+			<field name="titleSelect" />
+			<group title="Contract Details" cols="6" colSpan="6">
+				<field name="dailySalaryCost" />
+				<field name="entryDate" />
+				<field name="exitDate" />
+				<field name="companyDepartment"/>
+				<field name="macroCategorySelect" />
+				<field name="categorySelect" />
+			</group>
 		</group>
 		<notebook colSpan="4">
 			<page title="Additionnal information">
+				<field name="internalContact" />
+				<field name="phoneAtCustomer" />
 				<field name="emergencyContact" domain="self.isContact = True"/>
 				<field name="emergencyNumber"/>
+				<spacer/>
+				<break/>
 				<field name="personalInfo" widget="NestedEditor" summary-view="true" form-view="personal-info-edit-form"/>
 				<field name="candidate"/>
 			</page>
-			<page title="Professionnal background">
-				<field name="positionList"/>
-			</page>
-			<page title="Keywords" cols="4">
-				<field name="toolKeywordSet" widget="TagSelect[create=keyWord]" colSpan="4"/>
-				<field name="fieldKeywordSet" widget="TagSelect[create=keyWord]" colSpan="4"/>
-				<field name="jobKeywordSet" widget="TagSelect[create=keyWord]" colSpan="4"/>
-				<field name="partnerSet" colSpan="4" grid-view="company-name-grid" domain="self.isContact = True"/>
+			<page title="Profile">
+				<group title="-" cols="4" colSpan="4">
+					<group title="Keywords" colSpan="2">
+						<field name="toolKeywordSet" colSpan="2" grid-view="keyword-grid" widget="TagSelect[create=keyWord]"/>
+						<field name="fieldKeywordSet" colSpan="2" grid-view="keyword-grid" widget="TagSelect[create=keyWord]"/>
+						<field name="jobKeywordSet" colSpan="2" grid-view="keyword-grid" widget="TagSelect[create=keyWord]"/>
+					</group>
+					<group title="Companies" colSpan="2">
+						<field name="partnerSet" colSpan="4" grid-view="company-grid" domain="self.isContact = 'true'"/>
+					</group>
+				</group>
+				<field name="positionList" colSpan="4"/>	
 			</page>
 			<page title="Salary/Expenses/Holidays">
 				<notebook>
@@ -59,6 +65,8 @@
 						</group>
 						<field name="expenseList" colSpan="4" grid-view="expense-edit-grid"/>
 					</page>
+					<page title="Holidays">	
+					</page>
 				</notebook>
 			</page>
 <!-- 			<page title="Holidays"> -->
@@ -77,7 +85,6 @@
 				form-view="placement-follow-up-edit-list"></field> -->
 			<!-- </page> -->
 		</notebook>
-
 	</form>
 	
 	<action-record name="action-employee-default-record" model="com.axelor.apps.organisation.db.Employee">
