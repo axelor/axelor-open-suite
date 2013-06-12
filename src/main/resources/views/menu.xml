@@ -67,7 +67,6 @@
 		<view type="form" />
 		<domain>self.userInfo IS NOT NULL and self.userInfo.internalUser.id = :_internalUser</domain>
 		<context name="_internalUser" expr="eval: __user__.id"/>
-		<context name="_statusSelect" expr="1"/>
 	</action-view>
 	
 	<menuitem name="crm-root-unassigned-lead" parent="crm-root"
@@ -78,7 +77,6 @@
 		<view type="grid" />
 		<view type="form" />
 		<domain>self.userInfo IS NULL</domain>
-		<context name="_statusSelect" expr="1"/>
 	</action-view>
 	
 	<menuitem name="crm-root-opportunity" parent="crm-root"
@@ -238,7 +236,6 @@
 		<view type="grid" />
 		<view type="form" />
 		<domain>self.team = :_myActiveTeam</domain>
-		<context name="_statusSelect" expr="1"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
 	</action-view>
 	
@@ -310,7 +307,6 @@
 		model="com.axelor.apps.crm.db.Lead" icon="img/icons/crm_small.png">
 		<view type="grid" />
 		<view type="form" />
-		<context name="_statusSelect" expr="1"/>
 	</action-view>
 	
 	<menuitem name="crm-root-allcrm-opportunity" parent="crm-root-allcrm"

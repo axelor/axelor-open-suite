@@ -21,7 +21,9 @@ public class LeadController {
 		Lead lead = request.context as Lead
 		
 		Partner partner = leadService.convertLead(lead);
-	
+		
+		response.reload = true
+		
 		if(partner != null)  {
 			response.flash = "Lead converted"
 		}	

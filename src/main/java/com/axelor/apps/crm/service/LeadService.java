@@ -8,6 +8,7 @@ import com.axelor.apps.base.db.IPartner;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserInfoService;
+import com.axelor.apps.crm.db.ILead;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -31,7 +32,7 @@ public class LeadService {
 		
 		Partner partner = this.createPartner(lead);
 		lead.setPartner(partner);
-		lead.setIsConvertedInPartner(true);
+		lead.setStatusSelect(ILead.STATUS_CONVERTED);
 		lead.save();
 		
 		return partner;
@@ -63,6 +64,7 @@ public class LeadService {
 		
 		partner.setPartnerSeq(this.getSequence());
 		
+		this.setPartnerCompany(partner);
 		
 		if(lead.getEnterpriseName()!=null && !lead.getEnterpriseName().isEmpty())  {
 			

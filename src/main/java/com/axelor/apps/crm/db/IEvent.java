@@ -1,7 +1,7 @@
 package com.axelor.apps.crm.db;
 
 /**
- * Interface of Event package. Enum all static variable of packages.
+ * Interface of Event object. Enum all static variable of object.
  * 
  * @author dubaux
  * 

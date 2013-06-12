@@ -63,7 +63,7 @@
     </action-record>
     
     <action-record name="action-lead-default-record-new" model="com.axelor.apps.crm.db.Lead">
-    	<field name="statusSelect" expr="eval: _statusSelect"/>
+    	<field name="statusSelect" expr="2"/>
     	<field name="contactDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="contactDate == null"/>
     	<field name="userInfo"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
     	<field name="team"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
