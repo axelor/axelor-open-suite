@@ -16,7 +16,7 @@
          <group title="Informations" colSpan="4" cols="6">
 	        <group title="Context" colSpan="4" cols="6">
 		        <field name="name"/>
-		        <field name="partner"/>
+		        <field name="partner" domain="self.isContact = false"/>
 		        <field name="opportunityType" widget="TagSelect[create=name,code]"/>
 	        </group>
 	        <group title="Follow-up" colSpan="4" cols="6">
