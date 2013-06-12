@@ -10,9 +10,9 @@
   	<many-to-one name="salesOrderLine" ref="com.axelor.apps.supplychain.db.SalesOrderLine" title="Sale order line (origin)"/>
   	<string name="name" title="Task name"/>
   	<many-to-one name="project" ref="com.axelor.apps.organisation.db.Project" title="Project"/>
-  	<decimal name="totalTaskQty" title="Total ordered quantity"/>
-  	<decimal name="totalTimeSheetQty" title="Total worked quantity"/>
-  	<decimal name="totalPlannedQty" title="Total planned quantity"/>
+  	<decimal name="totalTaskQty" title="Total ordered"/>
+  	<decimal name="totalTimeSheetQty" title="Total worked"/>
+  	<decimal name="totalPlannedQty" title="Total planned"/>
   	<many-to-one name="totalTaskUnit" title="Total ordered unit" ref="com.axelor.apps.base.db.Unit"/>
   	<many-to-one name="totalTimeSheetUnit" title="Total worked unit" ref="com.axelor.apps.base.db.Unit"/>
   	<many-to-one name="totalPlannedUnit" title="Total planned unit" ref="com.axelor.apps.base.db.Unit"/>
