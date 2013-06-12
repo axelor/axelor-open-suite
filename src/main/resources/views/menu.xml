@@ -366,8 +366,8 @@
 
 	<action-view name="crm.conf.event.category" title="Event categories"
 		model="com.axelor.apps.crm.db.EventCategory" icon="img/icons/parameter_small.png">
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="event-category-conf-grid"/>
+		<view type="form" name="event-category-form"/>
 	</action-view>
 	
 

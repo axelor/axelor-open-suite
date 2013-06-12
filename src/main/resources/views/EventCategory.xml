@@ -5,6 +5,10 @@
     
     <grid name="event-category-grid" title="Event categories" model="com.axelor.apps.crm.db.EventCategory">
         <field name="name"/>
+    </grid>
+    
+    <grid name="event-category-conf-grid" title="Event configuration categories" model="com.axelor.apps.crm.db.EventCategory">
+        <field name="name"/>
         <field name="code"/>
         <field name="typeSelect"/>
     </grid>
