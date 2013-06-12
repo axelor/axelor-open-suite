@@ -167,6 +167,25 @@
 		<option value='0'>Draft</option>
 		<option value='1'>Validated</option>
 	</selection>
+	
+	<selection name='account.account.type.select'>
+		<option value='asset'>Asset</option>
+		<option value='cash'>Cash</option>
+		<option value='commitment'>Commitment</option>
+		<option value='currentAsset'>Current Asset</option>
+		<option value='debt'>Debt</option>
+		<option value='equity'>Equity</option>
+		<option value='expense'>Expense</option>
+		<option value='immobilisation'>Immobilisation</option>
+		<option value='income'>Income</option>
+		<option value='payable'>Payable</option>
+		<option value='provision'>Provision</option>
+		<option value='receivable'>Receivable</option>
+		<option value='special'>Special</option>
+		<option value='tax'>Tax</option>
+		<option value='view'>View</option>
+	</selection>
+	
 
 	<selection name='title.type.select'>
 		<option value='1'>Civility</option>
