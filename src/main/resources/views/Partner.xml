@@ -73,7 +73,7 @@
 	                <field name="mainInvoicingAddress"/>
 	            </group>
 	            <group title="Contact" colSpan="3" cols="4">
-	                <field name="email"/>
+	                <field name="email" widget="Email"/>
 	                <field name="fax"/>
 	                <field name="fixedPhone1"/>
 	                <field name="fixedPhone2"/>

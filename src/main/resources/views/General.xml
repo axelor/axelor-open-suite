@@ -30,6 +30,7 @@
 	    <button name="clearFormula" title="Reinitialise formulas" colSpan="2" onClick="save,action-general-method-clear-formula,save"/>
 	    <field name="today"/>
 	    <field name="logOk"/>
+	    <field name="defaultProjectUnit"/>
 	    <notebook colSpan="6">
 	        <page title="Accounting" cols="4">
 	            <field name="defaultExemptionVat"/>
