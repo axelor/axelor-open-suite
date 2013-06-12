@@ -16,7 +16,7 @@
         <field name="name"/>
         <field name="parent"/>
         <field name="company"/>
-        <field name="partner"/>
+        <field name="partner" domain="self.isContact = false"/>
         <field name="typeSelect"/>
         <field name="locationLineList" colSpan="4"/>
     </form>
