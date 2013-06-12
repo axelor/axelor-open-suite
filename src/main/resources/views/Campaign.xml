@@ -53,11 +53,11 @@
         	<page title="Recipients">
         		<field name="sendingTypeSelect" colSpan="2"/>
         		<break/>
-        		<group title="Lists / Queries" colSpan="4" cols="4">
+        		<group title="Lists / Queries" colSpan="4" cols="4" hideIf="sendingTypeSelect == 2 || sendingTypeSelect == null">
         			<field name="partnerListSet" widget="TagSelect[create=code,name]" colSpan="2"/>
 		        	<field name="jpqlQuerySet" widget="TagSelect[create=code,description]" colSpan="2"/>
         		</group>
-        		<group title="Contacts / Leads" colSpan="4" cols="4">
+        		<group title="Contacts / Leads" colSpan="4" cols="4" hideIf="sendingTypeSelect == 1 || sendingTypeSelect == null">
 	        		<field name="partnerSet" widget="TagSelect[create=name,firstname]" colSpan="2" domain="self.isContact = 'true'"/>
 			        <field name="leadSet" widget="TagSelect[create=name]" colSpan="2"/>
 		        </group>
