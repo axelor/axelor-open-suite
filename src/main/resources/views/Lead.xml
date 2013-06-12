@@ -25,7 +25,7 @@
 	        <field name="firstName"/>
 	        <field name="enterpriseName"/>
 	        <field name="jobTitle"/>
-	        <field name="email"/>
+	        <field name="email" widget="Email"/>
     	</group>
         <group title="Extra information" colSpan="4" css="groupTitle" cols="6">
 	        <field name="officeName"/>
