@@ -10,7 +10,8 @@
         <field name="isModel"/>
     </grid>
     
-    <form name="project-form" title="Affair/Project" model="com.axelor.apps.organisation.db.Project" cols="6" >
+    <form name="project-form" title="Affair/Project" model="com.axelor.apps.organisation.db.Project" cols="6" 
+    onNew="action-project-unit">
     	<group noLabel="true" colSpan="4">
     	 	<field name="responsibleUserInfo"/>
 	        <field name="clientPartner"/>
@@ -21,7 +22,8 @@
 	        <field name="isReinvoicingTime"/>
 	        <field name="isTimeSheetImputable"/>
 	        <field name="defaultTask" hideIf="!isTimeSheetImputable"/>
-	        <field name="parentProject"/>
+	        <field name="parentProject" onChange="action-project-unit"/>
+	        <field name="projectUnit"/>
 			<field name="modelProject" hideIf="isModel" domain="self.isModel = true"/>
     	</group>
     	<group noLabel="true" colSpan="2" cols="1" title="Actions">
@@ -78,5 +80,8 @@
 		<context name="_projectId" expr="eval: __this__.id"/>
 	</action-view>
     
-    
+    <action-record name="action-project-unit" model="com.axelor.apps.organisation.db.Project">
+		<field name="projectUnit" expr="eval: parentProject?.projectUnit" if="parentProject &amp;&amp; parentProject.projectUnit"/>
+		<field name="projectUnit" expr="call:com.axelor.apps.base.service.administration.GeneralService:getUnit()" if="!parentProject || parentProject.projectUnit == null"/>
+	</action-record>
 </object-views>
