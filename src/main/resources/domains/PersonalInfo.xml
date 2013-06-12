@@ -15,7 +15,7 @@
 		<integer name="maritalStatusSelect" title="Marital status" selection="organisation.personal.info.marital.status.select"/>
 		<integer name="childrenNbr" title="Nbr of children"/>
 		<string name="spouseProfession" title="Spouse occupation"/>
-		<many-to-many name="mobilitySet" ref="MobilityChoice" title="Geographical mobility"/>
+		<many-to-many name="mobilityChoiceSet" ref="MobilityChoice" title="Geographical mobility"/>
 	</entity>
 
 </domain-models>
