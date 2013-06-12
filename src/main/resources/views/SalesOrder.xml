@@ -40,8 +40,7 @@
 	            <group title="Specific settings" name="specificSettings" canCollapse="true" colSpan="4">
 	                <separator title="Sale order Settings" colSpan="4"/>
 	                    <field name="isToPrintLineSubTotal"/>
-	                    <field name="hasToCreateProject"/>
-	                    <field name="project" hideIf="!hastToCreateProject"/>
+	                    <field name="project" showIf="hasToCreateTaskByLine"/>
 	                <separator title="Sale order lines Settings" colSpan="4"/>
 	                    <field name="hasToCreateTaskByLine"/>
 	                    <field name="hasToCreateMoByLine"/>

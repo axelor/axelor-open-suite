@@ -2,6 +2,7 @@ package com.axelor.apps.supplychain.web
 
 import groovy.util.logging.Slf4j
 
+import com.axelor.apps.base.db.Product
 import com.axelor.apps.supplychain.db.SalesOrder
 import com.axelor.apps.supplychain.db.SalesOrderLine
 import com.axelor.apps.supplychain.service.SalesOrderLineService
@@ -79,20 +80,43 @@ class SalesOrderLineController {
 		if(salesOrder != null)  {
 			
 			def values = [ : ]
+			Product product = salesOrderLine.getProduct()
 			
 			try  {
-				if(salesOrder.getHasToCreateTaskByLine()) {
-					values.put("hasToCreateTask", true)
+				if(salesOrder.getHasToCreateTaskByLine() && product) {
+					if(product.getProductTypeSelect() == 'service' && product.getProcurementMethodSelect() == 'produce') {
+						values.put("hasToCreateTask", true)
+					}
+					else {
+						values.put("hasToCreateTask", false)
+					}
 				}
 				else {
 					values.put("hasToCreateTask", false)
 				}
 				
-				if(salesOrder.getHasToCreateProposal()) {
-					values.put("hasToBuy", true)
+				if(salesOrder.getHasToCreateProposal() && product) {
+					if(product.getProductTypeSelect() == 'stockable' && product.getProcurementMethodSelect() == 'buy') {
+						values.put("hasToBuy", true)
+					}
+					else {
+						values.put("hasToBuy", false)
+					}
 				}
 				else {
 					values.put("hasToBuy", false)
+				}
+				
+				if(salesOrder.getHasToCreateMoByLine() && product) {
+					if(product.getProductTypeSelect() == 'stockable' && product.getProcurementMethodSelect() == 'produce') {
+						values.put("hasToCreateMo", true)
+					}
+					else {
+						values.put("hasToCreateMo", false)
+					}
+				}
+				else {
+					values.put("hasToCreateMo", false)
 				}
 				
 				if(salesOrder.getIsToPrintLineSubTotal()){

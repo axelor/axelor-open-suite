@@ -18,7 +18,7 @@
     <form name="sales-order-line-form" title="SO line" model="com.axelor.apps.supplychain.db.SalesOrderLine" cols="4" onNew="action-sales-order-line-record-new,action-sales-order-line-method-setBooleans,action-sales-order-line-method-setSequence">
 	    <field name="sequence"/>
 	    <field name="isOrdered"/>
-	    <field name="product" onChange="action-sales-order-line-method-get-product-information,action-sales-order-line-method-compute" domain="self.endDate = null or self.endDate &gt; :__date__"/>
+	    <field name="product" onChange="action-sales-order-line-method-get-product-information,action-sales-order-line-method-compute,action-sales-order-line-method-setBooleans" domain="self.endDate = null or self.endDate &gt; :__date__"/>
 	    <field name="productName"/>
 	    <field name="qty" onChange="action-sales-order-line-method-compute"/>
 	    <field name="unit"/>
@@ -29,17 +29,19 @@
 	    <field name="discountTypeSelect"/>
 	    <field name="discountAmount"/>
 	    <field name="exTaxTotal"/>
+	    <field name="supplierPartner" domain="self.partnerTypeSelect = 2"/>
 	    <group title="Ressources Planning" colSpan="4" cols="4">
 	        <field name="employeeSet" colSpan="4" domain="self.exitDate = null or self.exitDate &gt; :__date__"/>
 	        <field name="candidateSet" colSpan="4"/>
-	    </group>    
-	    <field name="hasToCreateTask"/>
+	    </group>  
+	    <field name="hasToCreateMo"/>    
+	    <field name="hasToCreateTask"/>    
 	    <field name="task" showIf="hasToCreateTask"/>
 	    <field name="hasToBuy"/>
 	    <field name="isToPrintLineSubTotal"/>
 	    <field name="description" colSpan="4"/>
 	    <notebook colSpan="6">
-	        <page title="SO line details">
+	        <page title="SO line details"> 
 	            <field name="salesOrderSubLineList" colSpan="6"/>
 	        </page>
 	        <page title="Invoicing follow-up">
@@ -53,11 +55,12 @@
 	    </notebook>
     </form>
     
+    <!-- ACTION RECORD -->
     <action-record name="action-sales-order-line-record-new" model="com.axelor.apps.supplychain.db.SalesOrderLine">
     	<field name="qty" expr="eval: 1"/>
     	<field name="isOrdered" expr="true"/>
     </action-record>
-   
+   	
    	<!-- ACTION METHOD -->
 	<action-method name="action-sales-order-line-method-compute">
 		<call class="com.axelor.apps.supplychain.web.SalesOrderLineController" method="compute"/>
