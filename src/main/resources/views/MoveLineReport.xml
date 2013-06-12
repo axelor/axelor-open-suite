@@ -41,7 +41,7 @@
 		        <field name="journal"/>
 		        <field name="account"/>
 		        <field name="paymentMode"/>
-		        <field name="partner" grid-view="partner-grid" form-view="partner-form"/>
+		        <field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form"/>
 		        <break/>
 		        <field name="fromPartner" grid-view="partner-grid" form-view="partner-form"/>
 		        <field name="toPartner" grid-view="partner-grid" form-view="partner-form"/>

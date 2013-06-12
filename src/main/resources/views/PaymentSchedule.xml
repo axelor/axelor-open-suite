@@ -27,7 +27,7 @@
         <field name="creationDate"/>
         <field name="startDate" required="true"/>
         <field name="nbrTerm"/>
-        <field name="partner" onChange="action-record-payment-schedule-partner" grid-view="partner-grid" form-view="partner-form"/>
+        <field name="partner" domain="self.isContact = false" onChange="action-record-payment-schedule-partner" grid-view="partner-grid" form-view="partner-form"/>
         <field name="company"/>
         <field name="bankDetails" grid-view="bank-details-grid" form-view="bank-details-form"/>
         <field name="paymentMode"/>

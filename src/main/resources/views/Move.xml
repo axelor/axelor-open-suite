@@ -22,7 +22,7 @@
 	            <field name="date" onChange="action-move-method-get-period"/>
 	            <field name="company" widget="SuggestBox" onChange="action-move-method-get-period"/>
 	            <field name="period"/>
-	            <field name="partner" grid-view="partner-grid" form-view="partner-form"/>
+	            <field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form"/>
 	            <field name="agency"/>
 	            <field name="invoice" grid-view="invoice-grid" form-view="invoice-form"/>
 	            <field name="journal" domain="self.inactiveOk != true"/>
@@ -33,7 +33,7 @@
 	            	<grid title="Move lines">
 				        <field name="name"/>
 				        <field name="date"/>
-				        <field name="partner" grid-view="partner-grid" form-view="partner-form"/>
+				        <field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form"/>
 				        <field name="account"/>
 				        <field name="move.company"/>
 				        <field name="debit"/>
@@ -48,7 +48,7 @@
 						        <break/>
 						        <field name="date"/>
 						        <field name="dueDate"/>
-						        <field name="partner" grid-view="partner-grid" form-view="partner-form"/>
+						        <field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form"/>
 						        <break/>
 						        <field name="account" onSelect="action-move-line-attrs-domain-account"/>
 				    		    <break/>

@@ -12,7 +12,7 @@
     
     <form name="bank-details-form" title="Bank details" model="com.axelor.apps.base.db.BankDetails" cols="4">
         <group colSpan="4" cols="6" >
-            <field name="partner" grid-view="partner-grid" form-view="partner-form"/>
+            <field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form"/>
             <field name="ownerName"/>
             <field name="bankAddress"/>
         </group>

@@ -50,7 +50,7 @@
 					onChange="action-pv-hide-invoiceToPay,action-paymentVoucherRejectToPay-onChange,action-pv-moveLine-domain-3,action-payment-voucher-company-onChange"/>
 			</group>
 	        <group title="Payer" colSpan="2" cols="2" colWidths="20%,80%">
-	                <field name="partner" onChange="action-pv-moveLine-domain-4" form-view="partner-form" grid-view="partner-grid"/>
+	                <field name="partner" domain="self.isContact = false" onChange="action-pv-moveLine-domain-4" form-view="partner-form" grid-view="partner-grid"/>
 	                <field name="paymentMode" widget="SuggestBox" onChange="action-pv-attrs-hidden-bankCardTransactionNumber,action-pv-hide-confirm-button,action-attrs-payment-voucher-hidden-receipt,action-attrs-payment-voucher-readonly-status"/>
 	       			<field name="currency"/>
 	        </group>

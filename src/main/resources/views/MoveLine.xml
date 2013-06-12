@@ -25,7 +25,7 @@
    	        <break/>
 	        <field name="date"/>
 	        <field name="dueDate"/>
-	        <field name="partner" grid-view="partner-grid" form-view="partner-form"/>
+	        <field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form"/>
 	        <field name="customer"/>
 	        <break/>
 	        <field name="account" onSelect="action-move-line-attrs-domain-account"/>
