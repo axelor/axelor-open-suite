@@ -27,7 +27,7 @@
         <field name="fromAddress"/>
         <field name="toAddress"/>
         <field name="company"/>
-        <field name="partner"/>
+        <field name="partner" domain="self.isContact = false"/>
         <field name="stockMoveLineList" colSpan="4"/>
     </form>
     
