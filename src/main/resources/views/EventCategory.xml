@@ -9,7 +9,7 @@
         <field name="typeSelect"/>
     </grid>
     
-    <form name="event-category-form" title="Event category" model="com.axelor.apps.crm.db.EventCategory" cols="2" colWidths="*,400">
+    <form name="event-category-form" title="Event category" model="com.axelor.apps.crm.db.EventCategory" cols="2">
         <field name="name"/>
         <field name="code"/>
         <field name="typeSelect"/>

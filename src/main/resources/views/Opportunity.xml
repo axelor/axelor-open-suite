@@ -13,23 +13,32 @@
     
     <form name="opportunity-form" title="Opportunity" model="com.axelor.apps.crm.db.Opportunity" cols="4"
     	onNew="action-opportunity-record-new,action-opportunity-record-currency">
-         <group title="Informations" colSpan="4">
-	        <field name="name"/>
-	        <field name="partner"/>
-	        <field name="currency"/>
-	        <field name="expectedCloseDate"/>
-	        <field name="amount"/>
-	        <field name="opportunityType" widget="TagSelect[create=name,code]"/>
-	        <field name="bestCase"/>
-	        <field name="worstCase"/>
-	        <field name="salesStageSelect"/>
-	        <field name="source"/>
-	        <field name="probability"/>
-	        <field name="campaign"/>
-	        <field name="nextStep"/>
-	        <break/>
-	        <field name="description" colSpan="4"/>
-		</group>
+         <group title="Informations" colSpan="4" cols="6">
+	        <group title="Context" colSpan="4" cols="6">
+		        <field name="name"/>
+		        <field name="partner"/>
+		        <field name="opportunityType" widget="TagSelect[create=name,code]"/>
+	        </group>
+	        <group title="Follow-up" colSpan="4" cols="6">
+				<field name="salesStageSelect"/>
+				<field name="source"/>
+				<field name="expectedCloseDate"/>
+				<field name="nextStep"/>
+				<field name="probability"/>
+				<field name="campaign"/>	
+	        </group>
+	        <group colSpan="4" cols="6">
+                <group title="Financial terms" colSpan="2" cols="4">
+        	        <field name="amount"/>
+    		        <field name="currency"/>
+    		        <field name="bestCase"/>
+    		        <field name="worstCase"/>
+    		    </group>
+    	        <group colSpan="2">
+                    <field name="description" colSpan="2"/>
+                </group>
+	        </group>
+	    </group>    
         <group title="Assigned to" canCollapse="true">
 	        <field name="userInfo"/>
 	    	<field name="team"/>
