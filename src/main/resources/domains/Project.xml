@@ -39,6 +39,7 @@
  	<decimal name="remainingExpenses" title="Remaining expenses"/>
  	
  	<many-to-one name="parentProject" ref="com.axelor.apps.organisation.db.Project" title="Parent project"/>
+ 	<many-to-one name="projectUnit" title="Project unit" ref="com.axelor.apps.base.db.Unit"/>
   	
   	<one-to-many name="taskList" ref="com.axelor.apps.organisation.db.Task" mappedBy="project" title="Tasks"/>
 	  	

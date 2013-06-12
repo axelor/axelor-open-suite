@@ -12,6 +12,7 @@ import com.axelor.apps.account.db.Vat;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.FormulaGenerator;
 import com.axelor.apps.base.db.General;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.UserInfo;
 import com.axelor.apps.base.service.user.UserInfoService;
 import com.axelor.exception.AxelorException;
@@ -111,6 +112,15 @@ public final class GeneralService {
 		}
 		
 		return false;
+	}
+	
+	public static Unit getUnit(){
+		
+		if (getGeneral() != null){
+			return getGeneral().getDefaultProjectUnit();
+		}
+		
+		return null;
 	}
 
 // Formules

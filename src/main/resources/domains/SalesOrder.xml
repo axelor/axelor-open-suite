@@ -15,7 +15,6 @@
   	<string name="externalReference" title="Customer reference"/>
   	<date name="creationDate" title="Creation date" required="true"/>
   	<date name="validationDate" title="Validation date" readonly="true"/>
-  	<boolean name="hasToCreateProject" title="Create project/task ?"/>
   	<many-to-one name="project" ref="com.axelor.apps.organisation.db.Project" title="Select project"/>
 	
 <!--   	Onglet Coordonnées client -->

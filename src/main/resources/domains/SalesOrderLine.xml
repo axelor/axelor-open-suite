@@ -24,6 +24,8 @@
   	<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
   	<date name="invoicingDate" title="Invoicing Date"/>
   	
+  	<many-to-one name="supplierPartner" ref="com.axelor.apps.base.db.Partner" title="Supplier"/>
+  	<boolean name="hasToCreateMo" title="Create M.O" default="false"/>
   	<boolean name="hasToCreateTask" title="Créer tâche/OF ?"/>
   	<boolean name="hasToBuy" title="Acheter ?"/>
   	<decimal name="discountAmount" title="Remise"/>

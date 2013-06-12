@@ -329,11 +329,6 @@
 		<option value="doubtfulCustomer">Shift to doubtful receivables</option>
 	</selection>
 
-	<selection name="index.input.source.select">
-		<option value="ivs">VIS</option>
-		<option value="crm">CRM</option>
-	</selection>
-
 	<selection name="company.paybox.hash.select">
 		<option value="SHA512">SHA512</option>
 		<option value="SHA256">SHA256</option>
@@ -455,6 +450,15 @@
 		<option value="1">Draft</option>
 		<option value="2">Sent</option>
 		<option value="3">Canceled</option>
+	</selection>
+
+	<selection name="crm.lead.status.select">
+		<option value="1">New</option>
+		<option value="2">Assigned</option>
+		<option value="3">In process</option>
+		<option value="4">Converted</option>
+		<option value="5">Recycled</option>
+		<option value="6">Dead</option>
 	</selection>
 
 	<selection name="crm.event.type.select">
