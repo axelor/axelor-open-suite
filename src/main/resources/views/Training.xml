@@ -29,8 +29,8 @@
 		<field name="result" />
 		<break/>
 <!-- 		<field name="business" /> -->
-		<field name="toolKeywordSet" widget="TagSelect[create=keyWord]"/>
-        <field name="sectorKeywordSet" widget="TagSelect[create=keyWord]"/>
+		<field name="toolKeywordSet" widget="TagSelect[create=keyWord]" domain="self.typeSelect = '1'"/>
+        <field name="sectorKeywordSet" widget="TagSelect[create=keyWord]" domain="self.typeSelect = '2'"/>
         
     </form>
     
