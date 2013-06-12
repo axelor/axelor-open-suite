@@ -44,6 +44,7 @@
 	                    <field name="project" hideIf="!hastToCreateProject"/>
 	                <separator title="Sale order lines Settings" colSpan="4"/>
 	                    <field name="hasToCreateTaskByLine"/>
+	                    <field name="hasToCreateMoByLine"/>
 	                    <field name="hasToCreateProposal"/>
 	            </group>
 	            <break/>
