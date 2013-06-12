@@ -14,8 +14,8 @@
     <grid name="task-grid" title="Tasks" model="com.axelor.apps.organisation.db.Task" orderBy="taskProgress">
         <field name="name"/>
         <field name="project"/>
-        <field name="totalTaskDays"/>
-        <field name="totalTimeSheetDays"/>
+        <field name="totalTaskQty"/>
+        <field name="totalTimeSheetQty"/>
         <field name="taskProgress" widget="Progress"/>
     </grid>
     
@@ -28,13 +28,17 @@
 	    <field name="project"/>
 	    <field name="startDateT"/>
 	    <field name="endDateT"/>
-	    <field name="totalTaskDays"/>
-	    <field name="totalTimeSheetDays" title="Total worked days"/>
+	    <field name="totalTaskQty"/>
+	    <field name="totalTimeSheetQty" title="Total worked quantity"/>
+	    
+	    <field name="totalTaskUnit"/>
+	    <field name="totalTimeSheetUnit" title="Total worked unit"/>
 	    
 	    <!-- 	    TODO READ ONLY -->
 	    <field name="taskProgress" widget="Progress"/>
 	    
-	    <field name="totalPlannedDays"/>
+	    <field name="totalPlannedQty"/>
+	    <field name="totalPlannedUnit"/>
 	    <field name="userInfo"/>
 	    
 	    <field name="totalTask"/>
