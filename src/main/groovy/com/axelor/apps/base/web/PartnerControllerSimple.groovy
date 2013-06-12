@@ -17,18 +17,6 @@ class PartnerControllerSimple {
 	@Inject
 	SequenceService sequenceService;
 	
-	def void showInvoice(ActionRequest request, ActionResponse response)  {
-		
-		Partner partner = request.context as Partner
-		
-		response.view = [
-			title : "Factures",
-			resource : Invoice.class.name,
-			domain : "self.payerPartner.id = ${partner.id} AND self.inTaxTotalRemaining != 0"
-		]
-		
-	}
-		
 	void setPartnerSequence(ActionRequest request, ActionResponse response) {
 		Partner partner = request.context as Partner
 		Map<String,String> values = new HashMap<String,String>();
@@ -42,18 +30,5 @@ class PartnerControllerSimple {
 		}
 		response.setValues(values);
 	}
-	
-//	def showActionEvent(ActionRequest request, ActionResponse response) {
-//		
-//	   Partner partner = request.context as Partner
-//	
-//	   response.view = [
-//		   title : "Evènements : ${partner.mainContact?.name}",
-//		   resource : ActionEvent.class.name,
-//		   domain : "self.base.id = ${partner.id}"
-//	   ]
-//	
-//   }
-	
 	
 }
