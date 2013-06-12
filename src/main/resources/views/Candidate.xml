@@ -8,7 +8,7 @@
 		<field name="name" />
 		<field name="firstName" />
 		<field name="mobilePhone" />
-		<field name="email" />
+		<field name="email"/>
 		<field name="avalabilitySelect" />
 		<field name="availabilityDate" />
 		<field name="salaryExpectation" />
@@ -28,7 +28,7 @@
 			<group title="Coordonnées" cols="6" colSpan="6">
 				<field name="mobilePhone" />
 				<field name="fixedPhone" />
-				<field name="email" />
+				<field name="email" widget="Email"/>
 				<field name="address" />
 			</group>
 			<group title="Recruitment Type" cols="6" colSpan="6">	
