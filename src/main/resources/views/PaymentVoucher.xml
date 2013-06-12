@@ -84,7 +84,7 @@
 		<group name="payboxGroup" title="Paybox" colSpan="4" cols="4">
 			<group name="payboxEmail" title="Add an email for payment through Paybox" hidden="true" colSpan="4" cols="4" canCollapse="true">
 				<label title="The payer doesn't have email attached. Please input/provide the email to use." />
-				<field name="email" />
+				<field name="email" widget="Email"/>
 				<field name="toSaveEmailOk" />
 				<button name="validateEmail" title="Validate" colSpan="2" onClick="save,com.axelor.apps.account.web.PayboxController:addPayboxEmail,save" />
 				<field name="defaultEmailOk" />
