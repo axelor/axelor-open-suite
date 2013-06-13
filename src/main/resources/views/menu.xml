@@ -6,7 +6,7 @@
 	
 	
 	<menuitem name="production-root" title="Manufacturing" priority="140"
-		icon="img/icons/wheel.png" groups="axelordemo"/>
+		icon="img/icons/wheel.png" />
 		
 	
 	<menuitem name="production-root-bill-of-material" parent="production-root"
