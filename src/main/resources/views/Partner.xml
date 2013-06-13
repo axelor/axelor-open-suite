@@ -42,9 +42,9 @@
 	        <field name="picture"/>
 	    </group>
 	    <group colSpan="3" cols="6">
-	        <field name="name" css="subtotal-total"/>
-	        <field name="firstName" hideIf="partnerTypeSelect != 2" css="subtotal-total"/>
-	        <field name="titleSelect" hideIf="partnerTypeSelect != 2" css="subtotal-total"/>
+	    	<field name="titleSelect" hideIf="partnerTypeSelect != 2" css="highlight"/>
+	        <field name="name" css="highlight"/>
+	        <field name="firstName" hideIf="partnerTypeSelect != 2" css="highlight"/>
 	        <break/>
 	        <field name="partnerCategory" widget="SuggestBox"/>
 	        <field name="partnerTypeSelect" onChange="action-partner-attrs-change-name,action-partner-attrs-hide-tabs"/>
