@@ -9,7 +9,9 @@
   
   	<many-to-one name="inventory" ref="com.axelor.apps.supplychain.db.Inventory" title="Inventory"/>
 	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>    
-	<integer name="qty" title="Quantity"/>
+	<integer name="currentQty" title="Quantity"/>
+	<integer name="realQty" title="Quantity"/>
+	<string name="description" title="Description"/>
     
   </entity>
 </domain-models>
