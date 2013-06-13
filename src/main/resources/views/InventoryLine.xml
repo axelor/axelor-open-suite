@@ -5,17 +5,21 @@
     
     <grid name="inventory-line-grid" title="Inventory lines" model="com.axelor.apps.supplychain.db.InventoryLine">
         <field name="product"/>
-        <field name="qty"/>
+        <field name="currentQty"/>
+        <field name="realQty"/>
+        <field name="description"/>
     </grid>
     
     <form name="inventory-line-form" title="Inventory line" model="com.axelor.apps.supplychain.db.InventoryLine" cols="4"
     	onNew="action-inventory-line-record-new">
         <field name="product" domain="self.applicationTypeSelect = 1 and self.productTypeSelect = 'stockable'"/>
-        <field name="qty"/>
+        <field name="currentQty"/>
+        <field name="realQty"/>
+        <field name="description"/>
     </form>
     
     <action-record name="action-inventory-line-record-new" model="com.axelor.apps.supplychain.db.InventoryLine">
-	    <field name="qty" expr="1"/>
+	    <field name="realQty" expr="1"/>
 	</action-record>
     
 </object-views>
