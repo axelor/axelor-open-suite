@@ -116,10 +116,10 @@
 	        <page title="Social Networking" colSpan="4" name="socialNetworkingTab"
 				hideIf="snType == null">
 				<notebook>
-					<page title="Inbox Message">
+					<page title="Inbox Message" hideIf="snType.name == 'linkedin'">
 						<portlet action="action-fetch-all-sn-mail" colSpan="4" />
 					</page>
-					<page title="Recent Updates">
+					<page title="Recent Updates" hideIf="snType.name != 'facebook'">
 						<portlet action="action-fetch-all-sn-update" colSpan="4" />
 					</page>
 
@@ -274,8 +274,10 @@
     </action-record>
 
 	<!--SN Actions -->    
-    <action-view name="action-fetch-all-sn-update" title="Recents Update of User" model="com.axelor.apps.base.db.FBNewsFeed"> 
-		<view type="grid" name="fb-news-feed" />
+	
+    <action-view name="action-fetch-all-sn-update" title="Recents Update of This User" model="com.axelor.apps.base.db.FBNewsFeed"> 
+		<view type="grid" name="fb-news-feed-grid1" />
+		<view type="form" name="fb-news-feed-form"/>
 		<domain>self.snUserId = :snUserId</domain>
 	</action-view>
 
@@ -289,7 +291,8 @@
 
 	<action-view name="action-fetch-all-sn-mail" title="Inbox"
 		model="com.axelor.apps.base.db.MsgInbox">
-		<view type="grid" name="sn-msg-inbox-grid" />
+		<view type="grid" name="sn-msg-inbox-grid1" />
+		<view type="form" name="sn-msg-inbox-form" />
 		<domain>self.messageFromID = :snUserId</domain>
 	</action-view>
 	<!--END SN Actions -->
