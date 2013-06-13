@@ -27,7 +27,7 @@
     
     
     <string name="email" title="Email address"/>
-<!-- 	<string name="picture" ></string> -->
+	<binary name="picture" title="Picture" />
 	
 	<string name="description" title="Description" large="true"/>
 	<date name="contactDate" title="Contact date"/>
