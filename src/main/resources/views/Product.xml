@@ -62,7 +62,7 @@
 					<group colSpan="3" cols="2" name="snIntegrationInit">
 						<button name="showing" title="Post Message"
 							onClick="action-showing,com.axelor.sn.web.SNCommonController:sayProduct" />
-						<button name="retriveCmnt" hidden="true" title="Comments/Replies"
+						<button name="retriveCmnt" hideIf="snPost == null" title="Comments/Replies"
 							onClick="com.axelor.sn.web.SNCommonController:getComments" />
 						<spacer colSpan="1" />
 					</group>
@@ -85,7 +85,7 @@
 								colSpan="2" widget="Text" />
 							<group colSpan="1" cols="2">
 								<button name="postit" title="Post" hidden="true"
-									onClick="com.axelor.sn.web.SNCommonController:postOnSN,action-showing-seen,com.axelor.sn.web.SNCommonController:refreshSnPostComments" />
+									onClick="com.axelor.sn.web.SNCommonController:postOnSN,action-showing-seen, save, com.axelor.sn.web.SNCommonController:refreshSnPostComments" />
 								<button name="cancle" title="Cancle" hidden="true"
 									onClick="action-showing-seen" />
 							</group>
