@@ -14,7 +14,6 @@
 		</toolbar>
         <field name="name"/>
         <field name="firstName"/>
-        <field name="fullName"/>
         <field name="mainInvoicingAddress"/>
         <field name="isContact"/>
    		<field name="partnerTypeSelect"/>
@@ -25,7 +24,6 @@
     <grid name="partner-contact-grid" title="Contacts" model="com.axelor.apps.base.db.Partner">
         <field name="name"/>
         <field name="firstName"/>
-        <field name="fullName"/>
         <field name="mainInvoicingAddress"/>
         <field name="fixedPhone1"/>
 		<field name="fixedPhonePro"/>
@@ -73,7 +71,7 @@
 	                <field name="mainInvoicingAddress"/>
 	            </group>
 	            <group title="Contact" colSpan="3" cols="4">
-	                <field name="email"/>
+	                <field name="email" widget="Email"/>
 	                <field name="fax"/>
 	                <field name="fixedPhone1"/>
 	                <field name="fixedPhone2"/>
@@ -158,6 +156,13 @@
 					</page>
 				</notebook>
 			</page>
+			<page title="Reporting">
+				<group title="Action(s)" colSpan="2" cols="2">
+                    <group colSpan="1" cols="1">
+                        <button name="showPartnerInfo" title="Print Informations" colSpan="1" icon="img/icons/print.png" onClick="save,action-partner-method-show-partner-info"/>
+                    </group>
+                </group>
+			</page>
 	<!--         <page name="compteClient" title="Customer balance"> -->
 	<!--             <field name="accountingSituationList" colSpan="4" widget="MasterDetail" onSelect="action-account-accounting-situation-method-update-customer-account"/> -->
 	<!--         </page> -->
@@ -183,7 +188,11 @@
 	<!--         </page> -->
 	    </notebook>
 	</form>
-
+	
+    
+    <action-method name="action-partner-method-show-partner-info">
+		<call class="com.axelor.apps.base.web.PartnerControllerSimple" method="showPartnerInfo"/>
+	</action-method>
     
     <action-view name="action-partner-view-partner-invoice" title="Invoices" model="com.axelor.apps.account.db.Invoice">
 		<view type="grid" name="invoice-grid"/>

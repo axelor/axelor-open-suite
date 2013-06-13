@@ -10,7 +10,8 @@
 		<datetime name="today" title="Today date" tz="true" help="If empty, the today date will be the server date." />
 		<many-to-one name="formulaGenerator" ref="com.axelor.apps.base.db.FormulaGenerator" title="Formula" />
 		<boolean name="logOk" title="Activate Logs ?" default="true" />
-
+		<many-to-one name="defaultProjectUnit" title="Project unit" ref="com.axelor.apps.base.db.Unit"/>
+		
 		<!-- Comptabilité -->
 		<boolean name="isInvoiceMoveConsolidated" title="Consolidate invoice movelines ?" default="false"/>
 		<many-to-one name="transferAndDirectDebitInterbankCode" ref="com.axelor.apps.account.db.InterbankCode"

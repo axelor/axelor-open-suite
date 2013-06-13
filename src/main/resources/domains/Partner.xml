@@ -18,7 +18,9 @@
     <string name="firstName" title="First Name"/>
     <string name="fullName" title="Nom du Contact" namecolumn="true">
     <![CDATA[
-    if (partnerTypeSelect == 1) return name;
+    if (partnerTypeSelect == 0 && firstName == null) return name;
+    else if (partnerTypeSelect == 0 && firstName != null) return firstName + ' ' + name;
+    else if (partnerTypeSelect == 1) return name;
     else if (partnerTypeSelect == 2 && firstName == null) return name;
     else return firstName + ' ' + name;
     ]]>

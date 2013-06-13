@@ -167,6 +167,25 @@
 		<option value='0'>Draft</option>
 		<option value='1'>Validated</option>
 	</selection>
+	
+	<selection name='account.account.type.select'>
+		<option value='asset'>Asset</option>
+		<option value='cash'>Cash</option>
+		<option value='commitment'>Commitment</option>
+		<option value='currentAsset'>Current Asset</option>
+		<option value='debt'>Debt</option>
+		<option value='equity'>Equity</option>
+		<option value='expense'>Expense</option>
+		<option value='immobilisation'>Immobilisation</option>
+		<option value='income'>Income</option>
+		<option value='payable'>Payable</option>
+		<option value='provision'>Provision</option>
+		<option value='receivable'>Receivable</option>
+		<option value='special'>Special</option>
+		<option value='tax'>Tax</option>
+		<option value='view'>View</option>
+	</selection>
+	
 
 	<selection name='title.type.select'>
 		<option value='1'>Civility</option>
@@ -310,11 +329,6 @@
 		<option value="doubtfulCustomer">Shift to doubtful receivables</option>
 	</selection>
 
-	<selection name="index.input.source.select">
-		<option value="ivs">VIS</option>
-		<option value="crm">CRM</option>
-	</selection>
-
 	<selection name="company.paybox.hash.select">
 		<option value="SHA512">SHA512</option>
 		<option value="SHA256">SHA256</option>
@@ -438,6 +452,15 @@
 		<option value="3">Canceled</option>
 	</selection>
 
+	<selection name="crm.lead.status.select">
+		<option value="1">New</option>
+		<option value="2">Assigned</option>
+		<option value="3">In process</option>
+		<option value="4">Converted</option>
+		<option value="5">Recycled</option>
+		<option value="6">Dead</option>
+	</selection>
+
 	<selection name="crm.event.type.select">
 		<option value="1">Call</option>
 		<option value="2">Meeting</option>
@@ -455,16 +478,16 @@
 	</selection>
 	
 	<selection name="crm.event.ticket.progress.select">
-		<option value="10">10</option>
-		<option value="20">20</option>
-		<option value="30">30</option>
-		<option value="40">40</option>
-		<option value="50">50</option>
-		<option value="60">60</option>
-		<option value="70">70</option>
-		<option value="80">80</option>
-		<option value="90">90</option>
-		<option value="100">100</option>
+		<option value="10">10 %</option>
+		<option value="20">20 %</option>
+		<option value="30">30 %</option>
+		<option value="40">40 %</option>
+		<option value="50">50 %</option>
+		<option value="60">60 %</option>
+		<option value="70">70 %</option>
+		<option value="80">80 %</option>
+		<option value="90">90 %</option>
+		<option value="100">100 %</option>
 	</selection>
 	
 

@@ -37,7 +37,7 @@
         <group title="Recipient" colSpan="4">
         	<field name="address"/>
         	<field name="addressEmail"/>
-        	<field name="partner" grid-view="partner-grid" form-view="partner-form" colSpan="4"/>
+        	<field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form" colSpan="4"/>
         </group>
         <group title="Complementary information" colSpan="4">
         	<field name="reminderHistory"/>         

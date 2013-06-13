@@ -10,9 +10,9 @@
 	    <field name="geographicalArea"/>
 	</grid>
 	
-    <form name="site-form" title="Site" model="com.axelor.apps.consulting.db.Site" >
+    <form name="site-form" title="Site" model="com.axelor.apps.consulting.db.Site" cols="4" >
 		<field name="name"/>
-	    <field name="partner"/>
+	    <field name="partner" domain="self.isContact = false"/>
 	    <field name="siretNumber"/>
 	    <field name="address"/>
 	    <field name="commercialLevelSelect"/>

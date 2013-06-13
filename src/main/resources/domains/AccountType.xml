@@ -6,7 +6,7 @@
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity name="AccountType" lang="java">
-    <string name="nameSelect" title="Type" required="true" unique="true" selection=""/>
+    <string name="nameSelect" title="Type" required="true" unique="true" selection="account.account.type.select"/>
   </entity>
 
 </domain-models>
