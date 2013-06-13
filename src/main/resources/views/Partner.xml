@@ -14,7 +14,6 @@
 		</toolbar>
         <field name="name"/>
         <field name="firstName"/>
-        <field name="fullName"/>
         <field name="mainInvoicingAddress"/>
         <field name="isContact"/>
    		<field name="partnerTypeSelect"/>
@@ -25,7 +24,6 @@
     <grid name="partner-contact-grid" title="Contacts" model="com.axelor.apps.base.db.Partner">
         <field name="name"/>
         <field name="firstName"/>
-        <field name="fullName"/>
         <field name="mainInvoicingAddress"/>
         <field name="fixedPhone1"/>
 		<field name="fixedPhonePro"/>
@@ -42,9 +40,9 @@
 	        <field name="picture"/>
 	    </group>
 	    <group colSpan="3" cols="6">
-	        <field name="name" css="subtotal-total"/>
-	        <field name="firstName" hideIf="partnerTypeSelect != 2" css="subtotal-total"/>
-	        <field name="titleSelect" hideIf="partnerTypeSelect != 2" css="subtotal-total"/>
+	        <field name="titleSelect" hideIf="partnerTypeSelect != 2" css="highlight"/>
+	        <field name="name" css="highlight"/>
+	        <field name="firstName" hideIf="partnerTypeSelect != 2" css="highlight"/>
 	        <break/>
 	        <field name="partnerCategory" widget="SuggestBox"/>
 	        <field name="partnerTypeSelect" onChange="action-partner-attrs-change-name,action-partner-attrs-hide-tabs"/>
@@ -116,10 +114,10 @@
 	        <page title="Social Networking" colSpan="4" name="socialNetworkingTab"
 				hideIf="snType == null">
 				<notebook>
-					<page title="Inbox Message">
+					<page title="Inbox Message" hideIf="snType.name == 'linkedin'">
 						<portlet action="action-fetch-all-sn-mail" colSpan="4" />
 					</page>
-					<page title="Recent Updates">
+					<page title="Recent Updates" hideIf="snType.name != 'facebook'">
 						<portlet action="action-fetch-all-sn-update" colSpan="4" />
 					</page>
 
@@ -285,8 +283,10 @@
     </action-record>
 
 	<!--SN Actions -->    
-    <action-view name="action-fetch-all-sn-update" title="Recents Update of User" model="com.axelor.apps.base.db.FBNewsFeed"> 
-		<view type="grid" name="fb-news-feed" />
+	
+    <action-view name="action-fetch-all-sn-update" title="Recents Update of This User" model="com.axelor.apps.base.db.FBNewsFeed"> 
+		<view type="grid" name="fb-news-feed-grid1" />
+		<view type="form" name="fb-news-feed-form"/>
 		<domain>self.snUserId = :snUserId</domain>
 	</action-view>
 
@@ -300,7 +300,8 @@
 
 	<action-view name="action-fetch-all-sn-mail" title="Inbox"
 		model="com.axelor.apps.base.db.MsgInbox">
-		<view type="grid" name="sn-msg-inbox-grid" />
+		<view type="grid" name="sn-msg-inbox-grid1" />
+		<view type="form" name="sn-msg-inbox-form" />
 		<domain>self.messageFromID = :snUserId</domain>
 	</action-view>
 	<!--END SN Actions -->
