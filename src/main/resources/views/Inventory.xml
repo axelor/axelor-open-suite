@@ -17,11 +17,18 @@
         <field name="location"/>
         <field name="dateT"/>
         <field name="description" colSpan="4"/>
+        <button name="showInventory" title="Print" colSpan="1" icon="img/icons/print.png" onClick="save,action-inventory-method-show-inventory"/>
+        
         <field name="inventoryLineList" colSpan="4"/>
     </form>
+    
     
     <action-record name="action-inventory-record-new" model="com.axelor.apps.supplychain.db.Inventory">
 	    <field name="statusSelect" expr="1"/>
 	</action-record>
+	
+	<action-method name="action-inventory-method-show-inventory">
+		<call class="com.axelor.apps.supplychain.web.InventoryController" method="showInventory"/>
+	</action-method>
     
 </object-views>
