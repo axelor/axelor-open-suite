@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
 	
 	<menuitem name="stock-root" title="Stock management"  priority="160"
-	icon="img/icons/baggage-cart-box.png"/>
+	icon="img/icons/baggage-cart-box.png" groups="admins,erp"/>
 	
 	<menuitem name="stock-root-custdeliveries" parent="stock-root"
 		title="Customer Deliveries"/>
@@ -191,7 +191,7 @@
 	</action-view>
 	
 	<menuitem name="supply-chain-root" title="Sales/Purchases" priority="150"
-		icon="img/icons/order.png" groups="admins"/>
+		icon="img/icons/order.png" groups="admins,erp"/>
 		
 	<menuitem name="supply-chain-root-sales-order" parent="supply-chain-root"
 		title="New sales order" action="supply.chain.root.sales.order" />
