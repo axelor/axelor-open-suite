@@ -6,7 +6,7 @@
 
 
 	<menuitem name="invoice-root" title="Invoice" priority="100"
-		icon="img/icons/invoice.png" groups="admins"/>
+		icon="img/icons/invoice.png" groups="admins,erp"/>
 		
 	<menuitem name="invoice-root-invoice" parent="invoice-root"
 		title="New invoice" action="invoice.root.invoice" />
@@ -260,7 +260,7 @@
 
 
 	<menuitem name="account-root" title="Accounting" priority="90"
-		icon="img/icons/account.png" groups="admins"/>
+		icon="img/icons/account.png" groups="admins,erp"/>
 
 	<menuitem name="account-root-tax" parent="account-root" title="Taxes"/>
 
