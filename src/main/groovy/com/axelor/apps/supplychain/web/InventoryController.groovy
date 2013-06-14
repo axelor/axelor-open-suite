@@ -12,6 +12,8 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.axelor.apps.tool.net.URLService
+
+@Slf4j
 class InventoryController {
 	
 	
@@ -29,23 +31,18 @@ class InventoryController {
 
 		StringBuilder url = new StringBuilder()
 		AxelorSettings axelorSettings = AxelorSettings.get()
-		User user = request.context.get("__user__")
-		MetaUser metaUser = MetaUser.findByUser(user)
+		
+		MetaUser metaUser = MetaUser.findByUser(request.context.get("__user__"))
 		url.append("${axelorSettings.get('axelor.report.engine', '')}/frameset?__report=report/Inventory.rptdesign&__format=pdf&InventoryId=${inventory.id}&Locale=${metaUser.language}${axelorSettings.get('axelor.report.engine.datasource')}")
-
+		
 		log.debug("URL : {}", url)
-		print(url)
 		String urlNotExist = URLService.notExist(url.toString())
 		if (urlNotExist == null){
-		
-			
-			
 			response.view = [
 				"title": "Inventory ${inventory.name}",
 				"resource": url,
 				"viewType": "html"
 			]
-		
 		}
 		else {
 			response.flash = urlNotExist
