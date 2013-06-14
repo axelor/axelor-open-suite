@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
 	
-	<menuitem name="stock-root" title="Stock management"  priority="160"
+	<menuitem name="stock-root" title="Stock management"  priority="85"
 	icon="img/icons/baggage-cart-box.png" groups="admins,erp"/>
 	
 	<menuitem name="stock-root-custdeliveries" parent="stock-root"
