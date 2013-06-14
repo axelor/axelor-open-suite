@@ -126,7 +126,7 @@
 		title="Create"/>
 		
 	<menuitem name="crm-root-create-task" parent="crm-root-create"
-		title="Task" action="crm.root.create.task" />
+		title="Task" action="crm.root.create.task" icon="img/icons/new.png"/>
 
 	<action-view name="crm.root.create.task" title="Task"
 		model="com.axelor.apps.crm.db.Event" icon="img/icons/new.png">
@@ -138,7 +138,7 @@
 	</action-view>
 	
 	<menuitem name="crm-root-create-meeting" parent="crm-root-create"
-		title="Meeting" action="crm.root.create.meeting" />
+		title="Meeting" action="crm.root.create.meeting" icon="img/icons/new.png"/>
 
 	<action-view name="crm.root.create.meeting" title="Meeting"
 		model="com.axelor.apps.crm.db.Event" icon="img/icons/new.png">
@@ -150,7 +150,7 @@
 	</action-view>
 	
 	<menuitem name="crm-root-create-call" parent="crm-root-create"
-		title="Call" action="crm.root.create.call" />
+		title="Call" action="crm.root.create.call" icon="img/icons/new.png"/>
 
 	<action-view name="crm.root.create.call" title="Call"
 		model="com.axelor.apps.crm.db.Event" icon="img/icons/new.png">
@@ -162,7 +162,7 @@
 	</action-view>
 	
 	<menuitem name="crm-root-create-ticket" parent="crm-root-create"
-		title="Ticket" action="crm.root.create.ticket" />
+		title="Ticket" action="crm.root.create.ticket" icon="img/icons/new.png"/>
 
 	<action-view name="crm.root.create.ticket" title="Ticket"
 		model="com.axelor.apps.crm.db.Event" icon="img/icons/new.png">
