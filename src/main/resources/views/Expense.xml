@@ -70,7 +70,7 @@
     </action-record>
     
     <action-validate name="action-expense-alert-validate">
-    	<alert message="Tous les fichiers justificatifs n'ont pas été fourni" if="validationStatusSelect == 2"/>
+    	<alert message="All supporting files have not been provided" if="validationStatusSelect == 2"/>
     </action-validate>
     
     <action-record name="action-expense-record-validation-info" model="com.axelor.apps.organisation.db.Expense">

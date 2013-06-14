@@ -91,7 +91,7 @@
 				<field name="evaluationLineList" colSpan="4"
 					form-view="evaluation-line-form" grid-view="evaluation-line-grid"/>
 				<field name="evaluationGrade" readonly="true"/>
-				<button name="compute" title="Calculer" onClick="action-organisation-candidate-evaluation-record"/>
+				<button name="compute" title="Compute" onClick="action-organisation-candidate-evaluation-record"/>
 			</page>
 			<page title="Additionnal information">
 				<field name="personalInfo" widget="NestedEditor" summary-view="true"
