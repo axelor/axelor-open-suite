@@ -3111,17 +3111,17 @@
 "training.experience.type.select","internal","select","Internal","Interne"
 "training.experience.type.select","previousJob","select","Previous job","Antérieur"
 "chart.planned.qty.by.location","chart.planned.qty.by.location","chart","Stock prévisionnel",
-"chart.purchase.buyer.dashboard.family.product.purchase.turnover","chart.purchase.buyer.dashboard.family.product.purchase.turnover","chart","My purchases orders per product family over past month",
-"chart.purchase.buyer.dashboard.family.product.purchase.volume","chart.purchase.buyer.dashboard.family.product.purchase.volume","chart","My purchases orders per product family over past month in volume",
-"chart.purchase.manager.dashboard.buyer.purchase.volume","chart.purchase.manager.dashboard.buyer.purchase.volume","chart","Purchases orders per buyer over past month in volume",
-"chart.purchase.manager.dashboard.family.product.purchase.percent","chart.purchase.manager.dashboard.family.product.purchase.percent","chart","Purchases orders per family product over six month in percentage",
-"chart.purchase.manager.dashboard.family.product.purchase.turnover","chart.purchase.manager.dashboard.family.product.purchase.turnover","chart","Purchases orders per family product over six month",
-"chart.sales.manager.dashboard.category.product.sales","chart.sales.manager.dashboard.category.product.sales","chart","Sales per product category over past 12 months in volume",
-"chart.sales.manager.dashboard.country.sales","chart.sales.manager.dashboard.country.sales","chart","Sales per country over past 12 months",
-"chart.sales.manager.dashboard.family.product.sales","chart.sales.manager.dashboard.family.product.sales","chart","Sales per product family over past 12 months",
-"chart.sales.manager.dashboard.salesman.turnover","chart.sales.manager.dashboard.salesman.turnover","chart","Turnover per salesman over past 30 days",
-"chart.sales.manager.dashboard.team.turnover","chart.sales.manager.dashboard.team.turnover","chart","Turnover per team over past 30 days",
-"chart.salesman.dashboard.total.turnover","chart.salesman.dashboard.total.turnover","chart","Turnover over past 6 months",
+"chart.purchase.buyer.dashboard.family.product.purchase.turnover","chart.purchase.buyer.dashboard.family.product.purchase.turnover","chart","My purchases orders per product family over past month","Mes achats par famille de produit sur le mois passé"
+"chart.purchase.buyer.dashboard.family.product.purchase.volume","chart.purchase.buyer.dashboard.family.product.purchase.volume","chart","My purchases orders per product family over past month in volume","Mes achats par famille de produit sur le mois passé (en volume)"
+"chart.purchase.manager.dashboard.buyer.purchase.volume","chart.purchase.manager.dashboard.buyer.purchase.volume","chart","Purchases orders per buyer over past month in volume","Achats par responsable sur le mois passé (en volume)"
+"chart.purchase.manager.dashboard.family.product.purchase.percent","chart.purchase.manager.dashboard.family.product.purchase.percent","chart","Purchases orders per family product over six month in percentage","Achats par famille de produit sur le mois passé (en %)"
+"chart.purchase.manager.dashboard.family.product.purchase.turnover","chart.purchase.manager.dashboard.family.product.purchase.turnover","chart","Purchases orders per family product over six month","Achats par famille de produit sur les 6 derniers mois"
+"chart.sales.manager.dashboard.category.product.sales","chart.sales.manager.dashboard.category.product.sales","chart","Sales per product category over past 12 months in volume","Ventes par catégorie de produit sur les 12 derniers mois (en volume)"
+"chart.sales.manager.dashboard.country.sales","chart.sales.manager.dashboard.country.sales","chart","Sales per country over past 12 months","Ventes par pays sur les 12 derniers mois"
+"chart.sales.manager.dashboard.family.product.sales","chart.sales.manager.dashboard.family.product.sales","chart","Sales per product family over past 12 months","Ventes par famille de produit sur les 30 derniers jours"
+"chart.sales.manager.dashboard.salesman.turnover","chart.sales.manager.dashboard.salesman.turnover","chart","Turnover per salesman over past 30 days","Chiffres d'affaire par commercial sur les 30 derniers jours"
+"chart.sales.manager.dashboard.team.turnover","chart.sales.manager.dashboard.team.turnover","chart","Turnover per team over past 30 days","Chiffres d'affaire par équipe sur les 30 derniers jours"
+"chart.salesman.dashboard.total.turnover","chart.salesman.dashboard.total.turnover","chart","Turnover over past 6 months","Chiffre d'affaire sur les 6 derniers mois"
 "com.axelor.apps.base.db.AddressExport","address-export-form","form","Export Address","Exporter l'adresse"
 "address-export-form","export","button","Export","Export"
 "com.axelor.apps.base.db.AddressExport","address-export-grid","grid","Export addresses","Exporter les adresses"
