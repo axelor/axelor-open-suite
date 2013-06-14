@@ -27,7 +27,7 @@
 	    </group>
 	    <group colSpan="1" cols="1">
 	        <field name="statusSelect" widget="NavSelect"/>
-	        <button name="showInvoice" title="Les factures" colSpan="1" onClick="action-sales-order-view-invoice" showIf="statusSelect == 3"/>
+	        <button name="showInvoice" title="Show Invoices" colSpan="1" onClick="action-sales-order-view-invoice" showIf="statusSelect == 3"/>
 	    </group>
 	    <notebook colSpan="4">
 	        <page title="Customer information">
