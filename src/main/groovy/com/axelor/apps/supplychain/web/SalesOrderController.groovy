@@ -119,4 +119,14 @@ class SalesOrderController {
 		}
 		response.setValues(values);
 	}
+	
+	def void createTaskByLines(ActionRequest request, ActionResponse response) {
+		
+		SalesOrder salesOrder = request.context as SalesOrder
+		
+		if(salesOrder) {
+			
+			salesOrderService.createTasks(salesOrder)
+		}
+	}
 }

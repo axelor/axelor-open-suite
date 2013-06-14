@@ -71,7 +71,7 @@
 	</action-method>
 	
 	<action-method name="action-sales-order-line-method-setBooleans">
-    	<call class="com.axelor.apps.supplychain.web.SalesOrderLineController" method="setBooleans"/>
+    	<call class="com.axelor.apps.supplychain.web.SalesOrderLineController" method="setBooleans" if="product"/>
     </action-method>
     
     <action-method name="action-sales-order-line-method-setSequence">
