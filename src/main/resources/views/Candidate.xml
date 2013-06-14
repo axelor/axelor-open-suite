@@ -104,6 +104,13 @@
 			<page title="Other opportunities">
 				<field name="candidateOtherOpportunityList" grid-view="candidate-other-opportunity-grid" form-view="candidate-other-opportunity-form"/>
 			</page>
+			<page title="Reporting">
+				<group title="Action(s)" colSpan="2" cols="2">
+                    <group colSpan="1" cols="1">
+                        <button name="showCandidate" title="Print CV" colSpan="1" icon="img/icons/print.png" onClick="save,action-partner-method-show-candidate"/>
+                    </group>
+                </group>
+			</page>
 <!-- 			<page title="Suivi du placement des besoins" hidden="true"> -->
 <!-- 				<field name="placementFollowUpList" grid-view="placement-follow-up-edit-grid" form-view="placement-follow-up-edit-list"></field> -->
 <!-- 			</page> -->
@@ -123,6 +130,9 @@
 	<action-method name="action-method-candidate-default-record">
 		<call class="com.axelor.apps.organisation.web.CandidateController" method="onNew" />
 	</action-method>
-
+	
+	<action-method name="action-partner-method-show-candidate">
+		<call class="com.axelor.apps.organisation.web.CandidateController" method="showCandidate" />
+	</action-method>
 
 </object-views>

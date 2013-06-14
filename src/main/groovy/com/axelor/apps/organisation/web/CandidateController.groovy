@@ -4,7 +4,13 @@ import groovy.util.logging.Slf4j
 
 import com.axelor.apps.organisation.db.Candidate
 import com.axelor.apps.organisation.db.EvaluationLine
+import com.axelor.apps.AxelorSettings
+import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.exception.AxelorException
+import com.axelor.apps.tool.net.URLService
 import com.axelor.exception.service.TraceBackService
+import com.axelor.meta.db.MetaUser
+import com.axelor.auth.db.User
 import com.axelor.rpc.ActionRequest
 import com.axelor.rpc.ActionResponse
 
@@ -59,5 +65,39 @@ class CandidateController {
 		
 	}
 
-	
+	/**
+	 * Fonction appeler par le bouton imprimer
+	 *
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	def void showCandidate(ActionRequest request, ActionResponse response) {
+
+		Candidate candidate = request.context as Candidate
+
+		StringBuilder url = new StringBuilder()
+		AxelorSettings axelorSettings = AxelorSettings.get()
+		
+		MetaUser metaUser = MetaUser.findByUser(request.context.get("__user__"))
+		url.append("${axelorSettings.get('axelor.report.engine', '')}/frameset?__report=report/Candidate.rptdesign&__format=pdf&CandidateId=${candidate.id}&Locale=${metaUser.language}${axelorSettings.get('axelor.report.engine.datasource')}")
+
+		log.debug("URL : {}", url)
+		
+		String urlNotExist = URLService.notExist(url.toString())
+		if (urlNotExist == null){
+		
+			log.debug("Impression des informations sur le candidat ${candidate.name} ${candidate.firstName} : ${url.toString()}")
+			
+			response.view = [
+				"title": "Candidat ${candidate.name} ${candidate.firstName}",
+				"resource": url,
+				"viewType": "html"
+			]
+		
+		}
+		else {
+			response.flash = urlNotExist
+		}
+	}
 }
