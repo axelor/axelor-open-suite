@@ -2,14 +2,23 @@ package com.axelor.apps.supplychain.service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 
+import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.UnitConversion;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.organisation.db.PlanningLine;
+import com.axelor.apps.organisation.db.Task;
 import com.axelor.apps.supplychain.db.SalesOrder;
 import com.axelor.apps.supplychain.db.SalesOrderLine;
 import com.axelor.apps.supplychain.db.SalesOrderLineVat;
+import com.axelor.apps.supplychain.db.SalesOrderSubLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -123,6 +132,130 @@ public class SalesOrderService {
 		
 	}
 
+	public BigDecimal computeDuration(List<SalesOrderSubLine> SalesOrderSubLineList) {
+		
+		BigDecimal sum = new BigDecimal(0);
+		
+		for(SalesOrderSubLine salesOrderSubLine : SalesOrderSubLineList)  {
+			
+			sum = sum.add(salesOrderSubLine.getQty());
+		}
+		return sum;
+	}
+	
+	public boolean checkSameUnitPlanningLineList(List<PlanningLine> planningLineList) {
+		
+		int iteration = 0;
+		long id = -1;
+		
+		for(PlanningLine planningLine : planningLineList)  {
+			
+			if (iteration == 0 && id == -1) {
+				id = planningLine.getUnit().getId();
+				iteration++;
+			}
+			else {		
+				if(id != planningLine.getUnit().getId()) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	public void setUnitPlanningLineList(List<PlanningLine> planningLineList, Task task) {
+		
+		UnitConversionService ucs = new UnitConversionService();
+		BigDecimal sum = new BigDecimal(0);
+		boolean sameUnit = checkSameUnitPlanningLineList(planningLineList);
+		Unit projectUnit = task.getProject().getProjectUnit();
+		List<UnitConversion> unitConversionList = UnitConversion.all().fetch();
+		LocalDateTime laterDate = task.getEndDateT();
+		
+		for(PlanningLine planningLine : planningLineList)  {
+			
+			if(sameUnit) {
+				sum = sum.add(planningLine.getDuration());
+			}
+			else {
+				BigDecimal qtyConverted = ucs.convert(unitConversionList, planningLine.getUnit(), projectUnit, planningLine.getDuration());
+				sum = sum.add(qtyConverted);
+			}
+			
+			if(laterDate == null || laterDate.compareTo(planningLine.getToDateTime()) < 0) {
+				laterDate = planningLine.getToDateTime();
+			}
+		}
+		
+		if(sameUnit) {
+			if(planningLineList.get(0) != null) {
+				task.setTotalTaskUnit(planningLineList.get(0).getUnit());
+			}
+			task.setTotalTaskQty(sum);
+		}
+		else {
+			task.setTotalTaskQty(sum);
+			task.setTotalTaskUnit(projectUnit);
+		}
+		task.setEndDateT(laterDate);
+	}
+
+	@Transactional
+	public void createTasks(SalesOrder salesOrder)  {
+		
+		if(salesOrder.getSalesOrderLineList() != null)  {
+			for(SalesOrderLine salesOrderLine : salesOrder.getSalesOrderLineList())  {
+				if(salesOrderLine.getHasToCreateTask()) {
+					
+					Task task = new Task();
+					task.setProject(salesOrder.getProject());
+					task.setSalesOrderLine(salesOrderLine);
+					task.setName(salesOrderLine.getProductName());
+					task.setDescription(salesOrderLine.getDescription());
+					task.setStartDateT(new LocalDateTime(GeneralService.getTodayDateTime()));
+					
+					task.setIsTimesheetAffected(true);
+					task.setIsToInvoice(salesOrderLine.getIsToInvoice());
+					task.setInvoicingDate(salesOrderLine.getInvoicingDate());
+					task.setAmountToInvoice(salesOrderLine.getAmountRemainingToBeInvoiced());
+					task.setStatusSelect(1); // 1 = draft
+					
+					if(salesOrderLine.getTask() != null && salesOrderLine.getTask().getPlanningLineList() != null) {
+						
+						setUnitPlanningLineList(salesOrderLine.getTask().getPlanningLineList(), task);
+					}
+					else {
+						task.setTotalTaskQty(salesOrderLine.getQty());
+						task.setTotalTaskUnit(salesOrderLine.getUnit());
+					}
+						
+					
+					if(salesOrderLine.getSalesOrderSubLineList() != null) {
+						
+						task.setPlanningLineList(new ArrayList<PlanningLine>());
+						BigDecimal duration = computeDuration(salesOrderLine.getSalesOrderSubLineList());
+						
+						for(SalesOrderSubLine salesOrderSubLine : salesOrderLine.getSalesOrderSubLineList())  {
+							
+							PlanningLine pl = new PlanningLine();
+							
+							pl.setTask(task);
+							pl.setEmployee(salesOrderSubLine.getEmployee());
+							pl.setProduct(salesOrderSubLine.getProduct());
+							pl.setFromDateTime(new LocalDateTime(GeneralService.getTodayDateTime()));
+							pl.setDuration(duration);
+							pl.setUnit(salesOrderSubLine.getUnit());
+							pl.setToDateTime(pl.getFromDateTime().plusDays(duration.intValue()));
+							
+							task.getPlanningLineList().add(pl);
+							pl.save();
+						}
+					}
+					task.save();
+				}
+			}
+		}		
+	}
 }
 
 
