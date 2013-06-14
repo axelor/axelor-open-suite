@@ -85,7 +85,7 @@
 	                <button name="showProject1" title="Show projects" hideIf="isContact" colSpan="2" onClick="save,action-partner-view-partner-project"/>
 	            </group>
 	            <group colSpan="4" cols="6">
-	                <button name="showSalesOrder2" title="Voir les devis" showIf="isContact" colSpan="2" onClick="save,action-partner-view-contact-sales-order"/>
+	                <button name="showSalesOrder2" title="Show sales order" showIf="isContact" colSpan="2" onClick="save,action-partner-view-contact-sales-order"/>
 	                <button name="showInvoice2" title="Show invoices" showIf="isContact" colSpan="2" onClick="save,action-partner-view-contact-invoice"/>
 	                <button name="showProject2" title="Show projects" showIf="isContact" colSpan="2" onClick="save,action-partner-view-contact-project"/>
 	            </group>
