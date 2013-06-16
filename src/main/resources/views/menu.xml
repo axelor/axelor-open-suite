@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+
+	
+	
+
+	<menuitem name="mail-root" title="Emails/Mails" priority="70"
+		icon="img/icons/mail.png" groups="admins,erp"/>
+
+<!-- 	title-f="Messagerie" -->
+	<menuitem name="mail-root-email-box" parent="mail-root" title="Email box"/>
+		
+<!-- 	title-f="Boite de réception" -->
+	<menuitem name="mail-root-email-inbox" parent="mail-root-email-box" title="Inbox" action="mail.root.email.inbox" />
+		
+<!-- 	title-f="Boite de réception" -->
+	<action-view name="mail.root.email.inbox" title="Inbox" 
+		model="com.axelor.apps.message.db.Message" icon="img/icons/mail_small.png">
+		<view type="grid" name="message-grid"/>
+		<view type="form" name="message-form"/>
+		<domain>self.typeSelect = 1</domain>
+		<context name="typeSelect" expr="1" />
+	</action-view>	
+		
+<!-- 	title-f="Nouveau message" -->
+	<menuitem name="mail-root-email-new" parent="mail-root-email-box" title="New email" action="mail.root.email.new"/>	
+		
+<!-- 	title-f="Nouveau message -->
+	<action-view name="mail.root.email.new" title="New email"
+		model="com.axelor.apps.message.db.Message" icon="img/icons/mail_small.png">
+		<view type="form" />
+		<domain>self.statusSelect = 1</domain>
+		<context name="statusSelect" expr="1" />
+	</action-view>	
+		
+<!-- 	title-f="Brouillons" -->
+	<menuitem name="mail-root-email-draft" parent="mail-root-email-box" title="Draft emails" action="mail.root.email.draft" />
+		
+<!-- 	title-f="Brouillons" -->
+	<action-view name="mail.root.email.draft" title="Draft emails" 
+		model="com.axelor.apps.message.db.Message" icon="img/icons/mail_small.png">
+		<view type="grid" />
+		<view type="form" />
+		<domain>self.statusSelect = 1</domain>
+		<context name="statusSelect" expr="1" />
+	</action-view>	
+		
+<!-- 	title-f="Messages envoyés" -->
+	<menuitem name="mail-root-email-sended" parent="mail-root-email-box" title="Sentbox" action="mail.root.email.sended" />	
+		
+<!-- 	title-f="Messages envoyés" -->
+	<action-view name="mail.root.email.sended" title="Sentbox" 
+		model="com.axelor.apps.message.db.Message" icon="img/icons/mail_small.png">
+		<view type="grid" />
+		<view type="form" />
+		<domain>self.typeSelect = 2</domain>
+		<context name="typeSelect" expr="2" />
+	</action-view>
+		
+<!-- 	title-f="Messages supprimés" -->
+	<menuitem name="mail-root-email-trash" parent="mail-root-email-box" title="Trash" action="mail.root.email.trash" />	
+		
+<!-- 	title-f="Messages supprimés" -->
+	<action-view name="mail.root.email.trash" title="Trash" 
+		model="com.axelor.apps.message.db.Message" icon="img/icons/mail_small.png">
+		<view type="grid" />
+		<view type="form" />
+		<domain>self.statusSelect = 3</domain>
+		<context name="statusSelect" expr="3" />
+	</action-view>
+
+	<menuitem name="mail-root-email-conf" parent="mail-root-email-box" title="Configuration"/>
+	
+	<menuitem name="mail-root-email-conf-routing" parent="mail-root-email-conf" title="Routings" action="mail.root.email.conf.routing" />	
+		
+	<action-view name="mail.root.email.conf.routing" title="Routings" 
+		model="com.axelor.apps.base.db.Routing" icon="img/icons/parameter_small.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
+	
+	<menuitem name="mail-root-email-conf-email-address" parent="mail-root-email-conf" title="Email addresses" action="mail.root.email.conf.email.address" />	
+		
+	<action-view name="mail.root.email.conf.email.address" title="Email addresses" 
+		model="com.axelor.apps.base.db.Routing" icon="img/icons/parameter_small.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
+	
+
+
+</object-views>
