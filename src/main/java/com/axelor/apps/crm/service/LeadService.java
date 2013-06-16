@@ -4,7 +4,6 @@ import java.util.HashSet;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
-import com.axelor.apps.base.db.IPartner;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserInfoService;
@@ -28,9 +27,12 @@ public class LeadService {
 	 * @throws AxelorException
 	 */
 	@Transactional
-	public Partner convertLead(Lead lead) throws AxelorException  {
+	public Partner convertLead(Lead lead, Partner partner) throws AxelorException  {
 		
-		Partner partner = this.createPartner(lead);
+		
+//		Partner partner = this.createPartner(lead, context);
+		partner.setPartnerSeq(this.getSequence());
+		
 		lead.setPartner(partner);
 		lead.setStatusSelect(ILead.STATUS_CONVERTED);
 		lead.save();
@@ -46,31 +48,41 @@ public class LeadService {
 	 * @return
 	 * @throws AxelorException
 	 */
-	public Partner createPartner(Lead lead) throws AxelorException  {
+	public Partner createPartner(Partner partner) throws AxelorException  {
 		
-		Partner partner = new Partner();
-		partner.setFirstName(lead.getFirstName());
-		partner.setName(lead.getName());
-		partner.setTitleSelect(lead.getTitleSelect());
-		partner.setCustomerTypeSelect(2);
-		partner.setPartnerTypeSelect(IPartner.PARTNER_TYPE_SELECT_INDIVIDUAL);
-		partner.setIsContact(true);
-		partner.setEmail(lead.getEmail());
-		partner.setFax(lead.getFax());
-		partner.setWebSite(lead.getWebSite());
-		partner.setMobilePhonePro(lead.getMobile());
-		partner.setSource(lead.getSource());
-		partner.setDepartment(lead.getDepartment());
 		
-		partner.setPartnerSeq(this.getSequence());
 		
-		this.setPartnerCompany(partner);
 		
-		if(lead.getEnterpriseName()!=null && !lead.getEnterpriseName().isEmpty())  {
-			
-			//TODO : create partner ?
-		}
 		
+		
+		
+		
+		
+//		Partner partner = new Partner();
+//		partner = (Partner) context.get("partner");
+		
+//		partner.setFirstName(((Partner) context.get("partner")).getName());
+//		partner.setName(lead.getName());
+//		partner.setTitleSelect(lead.getTitleSelect());
+//		partner.setCustomerTypeSelect(2);
+//		partner.setPartnerTypeSelect(IPartner.PARTNER_TYPE_SELECT_INDIVIDUAL);
+//		partner.setIsContact(true);
+//		partner.setEmail(lead.getEmail());
+//		partner.setFax(lead.getFax());
+//		partner.setWebSite(lead.getWebSite());
+//		partner.setMobilePhonePro(lead.getMobile());
+//		partner.setSource(lead.getSource());
+//		partner.setDepartment(lead.getDepartment());
+//		
+//		partner.setPartnerSeq(this.getSequence());
+//		
+//		this.setPartnerCompany(partner);
+//		
+//		if(lead.getEnterpriseName()!=null && !lead.getEnterpriseName().isEmpty())  {
+//			
+//			//TODO : create partner ?
+//		}
+//		
 		// add others
 		return partner;
 	}

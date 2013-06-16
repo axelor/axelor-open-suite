@@ -14,49 +14,75 @@
     </grid>
     
     <form cols="4" onNew="action-account-record-new,action-lead-default-record-new" name="lead-form" title="Lead" model="com.axelor.apps.crm.db.Lead">
-    <toolbar>
-    	<button name="convertLead" title="Convert lead" onClick="action-lead-method-convert-lead" colSpan="1" hideIf="statusSelect == 4"/>
-    </toolbar>
- 
-    <group title="Informations" colSpan="4">
-    	<group title="Key information" colSpan="4" css="groupTitle" cols="6">
-	    	<field name="titleSelect"/>
-	        <field name="name"/>
-	        <field name="firstName"/>
-	        <field name="enterpriseName"/>
-	        <field name="jobTitle"/>
-	        <field name="email" widget="Email"/>
-	        <field name="partner" showIf="statusSelect == 4"/>
-    	</group>
-        <group title="Extra information" colSpan="4" css="groupTitle" cols="6">
-	        <field name="officeName"/>
-	        <field name="department"/>
-	        <field name="fax"/>
-	        <field name="mobile"/>
-	        <field name="webSite"/>
-	       	<field name="contactDate"/>
-	        <field name="description" widget="TEXT[height=3]" colSpan="6"/>
-        </group>
-        <break/>
-        <group title="Status details" colSpan="2" css="groupTitle" cols="2">
-            <field name="statusSelect"/>
-            <field name="statusDescription"/>
-        </group>
-        <group title="Source details" colSpan="2" css="groupTitle" cols="2">
-            <field name="source"/>
-            <field name="sourceDescription"/>
-        </group>
-        <group title="Marketing" colSpan="4" css="groupTitle" cols="6">
-	        <field name="campaign"/>
-	       	<field name="referredBy"/>
-	        <field name="isDoNotCall" colSpan="2"/>
-        </group>
-    </group>
-    <group title="Assigned to" canCollapse="true">
-        <field name="userInfo"/>
-        <field name="team"/>
-    </group>
-</form>
+    	<toolbar>
+    		<button name="convertLead" title="Convert lead" onClick="action-lead-view-convert-lead" colSpan="1" hideIf="statusSelect == 4"/>
+    	</toolbar>
+    
+ 		<group title="Header" colSpan="4">
+ 			<group noLabel="true" colSpan="1">
+	            <field name="picture" widget="image"/>
+	        </group>
+	        <group noLabel="true" colSpan="2" css="highlight">
+	        	<field name="titleSelect" colSpan="1" noLabel="true" readonly="true"/>
+	            <field name="name" colSpan="1" noLabel="true" readonly="true" />
+		        <field name="firstName" colSpan="1" noLabel="true" readonly="true"/>
+	        </group>
+<!-- 	    	<group title="Actions" colSpan="1" cols="1" canCollapse="true" collapseIf="true"> -->
+<!-- 	    		<button name="convertLead" title="Convert lead" colSpan="1" onClick="action-lead-method-convert-lead"  hideIf="statusSelect == 4"/> -->
+<!-- 	    		<button name="scheduleMeeting" title="Schedule meeting" colSpan="1"/> -->
+<!-- 	    		<button name="createTask" title="Create task" colSpan="1"/> -->
+<!-- 	    		<button name="composeMessage" title="Compose email" colSpan="1"/> -->
+<!-- 	    		<button name="createCall" title="Create call" colSpan="1"/> -->
+<!-- 	    	</group> -->
+	    	<group title="Links" colSpan="1" cols="1" canCollapse="true" collapseIf="true">
+	    		<button name="showPartner" title="Show partner/contact"  colSpan="1"/>
+	    		<button name="showMeetings" title="Show meetings"  colSpan="1"/>
+	    		<button name="showTasks" title="Show tasks"  colSpan="1"/>
+	    		<button name="showMessages" title="Show messages"  colSpan="1"/>
+	    		<button name="showCalls" title="Show calls"  colSpan="1"/>
+	    	</group>
+ 		</group>
+ 		
+	    <group title="Informations" colSpan="4">
+	    	<group title="Key information" colSpan="4" css="groupTitle" cols="6">
+		    	<field name="titleSelect"/>
+		        <field name="name"/>
+		        <field name="firstName"/>
+		        <field name="enterpriseName"/>
+		        <field name="jobTitle"/>
+		        <field name="email" widget="Email"/>
+		        <field name="partner" showIf="statusSelect == 4"/>
+	    	</group>
+	        <group title="Extra information" colSpan="4" css="groupTitle" cols="6">
+		        <field name="officeName"/>
+		        <field name="department"/>
+		        <field name="fax"/>
+		        <field name="mobile"/>
+		        <field name="webSite"/>
+		       	<field name="contactDate"/>
+		        <field name="description" widget="TEXT[height=3]" colSpan="6"/>
+	        </group>
+	        <break/>
+	        <group title="Status details" colSpan="2" css="groupTitle" cols="2">
+	            <field name="statusSelect"/>
+	            <field name="statusDescription"/>
+	        </group>
+	        <group title="Source details" colSpan="2" css="groupTitle" cols="2">
+	            <field name="source"/>
+	            <field name="sourceDescription"/>
+	        </group>
+	        <group title="Marketing" colSpan="4" css="groupTitle" cols="6">
+		        <field name="campaign"/>
+		       	<field name="referredBy"/>
+		        <field name="isDoNotCall" colSpan="2"/>
+	        </group>
+	    </group>
+	    
+	    <group title="Assigned to" canCollapse="true">
+	        <field name="userInfo"/>
+	        <field name="team"/>
+	    </group>
+	</form>
     
     <action-record name="action-lead-record-new" model="com.axelor.apps.crm.db.Lead">
     	<field name="company"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
@@ -69,8 +95,9 @@
     	<field name="team"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
     </action-record>
     
-    <action-method name="action-lead-method-convert-lead">
-		<call class="com.axelor.apps.crm.web.LeadController" method="convertLead"/>
-    </action-method>
+    <action-view name="action-lead-view-convert-lead" title="Convert lead" model="com.axelor.apps.base.db.Wizard">
+		<view type="form" name="convert-lead-wizard-form"/>
+		<context name="_lead" expr="eval: id"/>
+	</action-view>
     
 </object-views>
