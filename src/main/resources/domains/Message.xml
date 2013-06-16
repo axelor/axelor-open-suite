@@ -21,12 +21,12 @@
   	<many-to-many name="toEmailAddressSet" ref="com.axelor.apps.message.db.EmailAddress" title="To"/>
   	<many-to-many name="ccEmailAddressSet" ref="com.axelor.apps.message.db.EmailAddress" title="Cc" help="Carbon copy"/>
   	<many-to-many name="bccEmailAddressSet" ref="com.axelor.apps.message.db.EmailAddress" title="Bcc" help="Blind carbon copy"/>
-  	<many-to-one name="fromEmailAddress" ref="com.axelor.apps.message.db.EmailAddress" title="Sender"/>
+  	<many-to-one name="fromEmailAddress" ref="com.axelor.apps.message.db.EmailAddress" title="Sender (Email)" readonly="true"/>
   	<boolean name="sentByEmail" title="Sent by email"/>
   	
 <!--   	Intern message -->
-  	<many-to-one name="senderUserInfo" ref="com.axelor.apps.base.db.UserInfo"/>
-  	<many-to-one name="receiverUserInfo" ref="com.axelor.apps.base.db.UserInfo"/>
+  	<many-to-one name="senderUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="Sender (User)" readonly="true"/>
+  	<many-to-one name="recipientUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="Recipient"/>
   
   
 <!--   	Not displayed, used for ticket event -->
