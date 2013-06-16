@@ -9,7 +9,7 @@
     
     <form name="email-address-form" title="Email address" model="com.axelor.apps.message.db.EmailAddress" cols="2">
 		<field name="partner"/>
-		<field name="emailAddress"/>
+		<field name="address"/>
     </form>
     
 </object-views>
