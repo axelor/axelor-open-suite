@@ -3,25 +3,31 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
   
-  <module name="base" package="com.axelor.apps.base.db"/>
+  <module name="message" package="com.axelor.apps.message.db"/>
   
   <entity name="Message" lang="java">
   
   	<integer name="typeSelect" title="Type" selection="email.type.select"/>
-  	<many-to-many name="toPartnerSet" ref="com.axelor.apps.base.db.Partner" title="To"/>
-  	<many-to-many name="ccPartnerSet" ref="com.axelor.apps.base.db.Partner" title="Cc" help="Carbon copy"/>
-  	<many-to-many name="bccPartnerSet" ref="com.axelor.apps.base.db.Partner" title="Bcc" help="Blind carbon copy"/>
   	<string name="subject" title="Subject"/>
   	<string name="content" title="Content" large="true"/>
-  	<many-to-one name="sender" ref="com.axelor.apps.base.db.Partner" title="Sender"/>
-<!--   	<many-to-many name="fileSet" title="Files enclosed"/> -->
 	<datetime name="sendedDate" title="Sended date"/>
 	<string name="relatedTo1Select" title="Related to" selection="base.message.related.to.select"/>
   	<integer name="relatedTo1SelectId"/>
   	<string name="relatedTo2Select" title="Related to" selection="base.message.related.to.select"/>
   	<integer name="relatedTo2SelectId"/>
 	<integer name="statusSelect" title="Status" selection="email.status.select"/>
+  	
+  <!--   	Email -->
+  	<many-to-many name="toEmailAddressSet" ref="com.axelor.apps.message.db.EmailAddress" title="To"/>
+  	<many-to-many name="ccEmailAddressSet" ref="com.axelor.apps.message.db.EmailAddress" title="Cc" help="Carbon copy"/>
+  	<many-to-many name="bccEmailAddressSet" ref="com.axelor.apps.message.db.EmailAddress" title="Bcc" help="Blind carbon copy"/>
+  	<many-to-one name="fromEmailAddress" ref="com.axelor.apps.message.db.EmailAddress" title="Sender"/>
   	<boolean name="sentByEmail" title="Sent by email"/>
+  	
+<!--   	Intern message -->
+  	<many-to-one name="senderUserInfo" ref="com.axelor.apps.base.db.UserInfo"/>
+  	<many-to-one name="receiverUserInfo" ref="com.axelor.apps.base.db.UserInfo"/>
+  
   
 <!--   	Not displayed, used for ticket event -->
 	<many-to-one name="event" ref="com.axelor.apps.crm.db.Event" title="Event"/>
