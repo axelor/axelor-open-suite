@@ -35,6 +35,13 @@
 			<version>${project.version}</version>
 		</dependency>
 		
+		<!-- Axelor-message -->
+		<dependency>
+			<groupId>com.axelor</groupId>
+			<artifactId>axelor-message</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
 	</dependencies>
 
 </project>
