@@ -15,6 +15,7 @@ import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.organisation.db.PlanningLine;
 import com.axelor.apps.organisation.db.Task;
+import com.axelor.apps.supplychain.db.ISalesOrder;
 import com.axelor.apps.supplychain.db.SalesOrder;
 import com.axelor.apps.supplychain.db.SalesOrderLine;
 import com.axelor.apps.supplychain.db.SalesOrderLineVat;
@@ -132,9 +133,14 @@ public class SalesOrderService {
 		
 	}
 
+	/**
+	 * Permet de faire la somme des durées des sous-lignes du salesOrderLine.
+	 * @param SalesOrderSubLineList Liste des sous-lignes du salesOrderLine
+	 * @return La somme des durées
+	 */
 	public BigDecimal computeDuration(List<SalesOrderSubLine> SalesOrderSubLineList) {
 		
-		BigDecimal sum = new BigDecimal(0);
+		BigDecimal sum = BigDecimal.ZERO;
 		
 		for(SalesOrderSubLine salesOrderSubLine : SalesOrderSubLineList)  {
 			
@@ -143,18 +149,24 @@ public class SalesOrderService {
 		return sum;
 	}
 	
+	/**
+	 * Permet de vérifier si l'objet Unit est le même pour toutes les lignes de la liste planningLineList.
+	 * @param planningLineList La liste de PlanningLine
+	 * @return Vrai si les lignes de planning ont le même Unit, faux sinon 
+	 */
 	public boolean checkSameUnitPlanningLineList(List<PlanningLine> planningLineList) {
 		
 		int iteration = 0;
 		long id = -1;
 		
 		for(PlanningLine planningLine : planningLineList)  {
-			
+			/* Save the first unit of the planning line list */
 			if (iteration == 0 && id == -1) {
 				id = planningLine.getUnit().getId();
 				iteration++;
 			}
 			else {		
+				/* Compare the unit saved with the others unit of the list */
 				if(id != planningLine.getUnit().getId()) {
 					return false;
 				}
@@ -163,7 +175,14 @@ public class SalesOrderService {
 		return true;
 	}
 	
-	public void setUnitPlanningLineList(List<PlanningLine> planningLineList, Task task) {
+	/**
+	 * Méthode permettant de calculer la somme des durées de la liste de planning et 
+	 * d'assigner la quantité, l'unité, et la date de fin à la tâche courante.
+	 * @param planningLineList La liste des lignes de planning
+	 * @param task La tâche courante
+	 * @throws AxelorException Les unités demandés ne se trouvent pas dans la liste de conversion
+	 */
+	public void setUnitPlanningLineList(List<PlanningLine> planningLineList, Task task) throws AxelorException {
 		
 		UnitConversionService ucs = new UnitConversionService();
 		BigDecimal sum = new BigDecimal(0);
@@ -173,21 +192,23 @@ public class SalesOrderService {
 		LocalDateTime laterDate = task.getEndDateT();
 		
 		for(PlanningLine planningLine : planningLineList)  {
-			
+			/* If all lines of the planningLineList have the same unit we do the sum of the duration of all planning lines */
 			if(sameUnit) {
 				sum = sum.add(planningLine.getDuration());
 			}
 			else {
+				/* Call the convert method of the UnitConversionService object to convert to the right unit */
 				BigDecimal qtyConverted = ucs.convert(unitConversionList, planningLine.getUnit(), projectUnit, planningLine.getDuration());
 				sum = sum.add(qtyConverted);
 			}
-			
+
 			if(laterDate == null || laterDate.compareTo(planningLine.getToDateTime()) < 0) {
 				laterDate = planningLine.getToDateTime();
 			}
 		}
-		
+		/* If sameUnit is true so all lines of the planning line list have the same unit */
 		if(sameUnit) {
+			/* Set the unit to the task by taking the unit of the first element of the planning line list */
 			if(planningLineList.get(0) != null) {
 				task.setTotalTaskUnit(planningLineList.get(0).getUnit());
 			}
@@ -200,13 +221,19 @@ public class SalesOrderService {
 		task.setEndDateT(laterDate);
 	}
 
-	@Transactional
-	public void createTasks(SalesOrder salesOrder)  {
+	/**
+	 * Méthode permettant de créer une tâche.
+	 * @param salesOrder L'object SaleOrder courant
+	 * @throws AxelorException Les unités demandés ne se trouvent pas dans la liste de conversion
+	 */
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void createTasks(SalesOrder salesOrder) throws AxelorException  {
 		
 		if(salesOrder.getSalesOrderLineList() != null)  {
+			/* Loop of the salesOrderLineList */
 			for(SalesOrderLine salesOrderLine : salesOrder.getSalesOrderLineList())  {
 				if(salesOrderLine.getHasToCreateTask()) {
-					
+					/* Create a new Task */
 					Task task = new Task();
 					task.setProject(salesOrder.getProject());
 					task.setSalesOrderLine(salesOrderLine);
@@ -218,10 +245,10 @@ public class SalesOrderService {
 					task.setIsToInvoice(salesOrderLine.getIsToInvoice());
 					task.setInvoicingDate(salesOrderLine.getInvoicingDate());
 					task.setAmountToInvoice(salesOrderLine.getAmountRemainingToBeInvoiced());
-					task.setStatusSelect(1); // 1 = draft
-					
+					task.setStatusSelect(ISalesOrder.DRAFT); // 1 = draft
+					/* Check if there is a planning line list in the salesOrderLine task */
 					if(salesOrderLine.getTask() != null && salesOrderLine.getTask().getPlanningLineList() != null) {
-						
+						/* Call the method to set the unit of the task */
 						setUnitPlanningLineList(salesOrderLine.getTask().getPlanningLineList(), task);
 					}
 					else {
@@ -229,14 +256,14 @@ public class SalesOrderService {
 						task.setTotalTaskUnit(salesOrderLine.getUnit());
 					}
 						
-					
+					/* If the subline list of the salesOrderLine is not empty */
 					if(salesOrderLine.getSalesOrderSubLineList() != null) {
 						
 						task.setPlanningLineList(new ArrayList<PlanningLine>());
 						BigDecimal duration = computeDuration(salesOrderLine.getSalesOrderSubLineList());
-						
+						/* Loop of the salesOrderSubLineList */
 						for(SalesOrderSubLine salesOrderSubLine : salesOrderLine.getSalesOrderSubLineList())  {
-							
+							/* Create a new PlanningLine */
 							PlanningLine pl = new PlanningLine();
 							
 							pl.setTask(task);
