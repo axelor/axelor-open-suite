@@ -49,9 +49,9 @@
 			<page title="Profile">
 				<group title="-" cols="4" colSpan="4">
 					<group title="Keywords" colSpan="2">
-						<field name="toolKeywordSet" colSpan="2" grid-view="keyword-grid" widget="TagSelect[create=keyWord]"/>
-						<field name="fieldKeywordSet" colSpan="2" grid-view="keyword-grid" widget="TagSelect[create=keyWord]"/>
-						<field name="jobKeywordSet" colSpan="2" grid-view="keyword-grid" widget="TagSelect[create=keyWord]"/>
+						<field name="toolKeywordSet" domain="self.typeSelect = '1'" colSpan="2" grid-view="keyword-tool-grid" form-view="keyword-tool-form" widget="TagSelect[create=keyWord]"/>
+						<field name="fieldKeywordSet" domain="self.typeSelect = '2'" colSpan="2" grid-view="keyword-area-grid" form-view="keyword-area-form" widget="TagSelect[create=keyWord]"/>
+						<field name="jobKeywordSet" domain="self.typeSelect = '3'" colSpan="2" grid-view="keyword-profession-grid" form-view="keyword-profession-form" widget="TagSelect[create=keyWord]"/>
 					</group>
 					<group title="Companies" colSpan="2">
 						<field name="partnerSet" colSpan="4" grid-view="company-grid" domain="self.isContact = 'true'"/>
