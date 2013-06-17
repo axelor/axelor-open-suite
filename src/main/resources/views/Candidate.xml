@@ -22,9 +22,21 @@
 			<button name="recruit" title="Transform into employee" onClick="" />
 		</toolbar>
 		<group name="header" cols="6" colSpan="6">
-			<field name="name" />
-			<field name="firstName" />
-			<field name="titleSelect" />
+			<group colSpan="1">
+				<field name="picture" widget="image"/>
+			</group>
+			<group colSpan="3" cols="6" noLabel="true" css="highlight">
+				<field name="titleSelect" noLabel="true" readonly="true"/>
+				<field name="name" noLabel="true" readonly="true"/>
+				<field name="firstName" noLabel="true" readonly="true"/>
+			</group>
+			<break/>
+			<group colSpan="3" cols="6">
+				<field name="titleSelect" hideIf="$readonly()"/>
+				<field name="name" hideIf="$readonly()"/>
+				<field name="firstName" hideIf="$readonly()"/>
+			</group>
+			<break/>
 			<group title="Coordonnées" cols="6" colSpan="6">
 				<field name="mobilePhone" />
 				<field name="fixedPhone" />
