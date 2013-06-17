@@ -20,10 +20,10 @@
 	    <break/>
 		<notebook colSpan="2" title="Notebook keywords">
 			<page title="Tool Keywords">
-				<field name="toolKeyWordSet" grid-view="keyword-tool-grid" form-view="keyword-tool-form" />
+				<field name="toolKeyWordSet" domain="self.typeSelect = '1'" grid-view="keyword-tool-grid" form-view="keyword-tool-form" />
 			</page>
 			<page title="Sector Keywords">
-				<field name="sectorKeyWordSet" grid-view="keyword-area-grid" form-view="keyword-area-form"/>
+				<field name="sectorKeyWordSet" domain="self.typeSelect = '2'" grid-view="keyword-area-grid" form-view="keyword-area-form"/>
 			</page>
 		</notebook>
     </form>

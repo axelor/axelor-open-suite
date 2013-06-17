@@ -43,19 +43,19 @@
 	<!-- Outils -->
 	<action-record name="action-keyword-tool-record-new"
 		model="com.axelor.apps.base.db.Keyword">
-		<field name="typeSelect" expr="0" />
+		<field name="typeSelect" expr="1" />
 	</action-record>
 	
 	<!-- Secteurs -->
 	<action-record name="action-keyword-area-record-new"
 		model="com.axelor.apps.base.db.Keyword">
-		<field name="typeSelect" expr="1" />
+		<field name="typeSelect" expr="2" />
 	</action-record>
 	
 	<!-- Métiers -->
 	<action-record name="action-keyword-profession-record-new"
 		model="com.axelor.apps.base.db.Keyword">
-		<field name="typeSelect" expr="2" />
+		<field name="typeSelect" expr="3" />
 	</action-record>
 	
 </object-views>
