@@ -9,6 +9,7 @@
 		<integer name="titleSelect" title="Civility" selection="partner.title.type.select" />
 		<string name="name" title="Surname" required="true" />
 		<string name="firstName" title="First Name" required="true" />
+    	<binary name="picture" image="true" title="Photo"/>
 		<date name="entryDate" title="Entry Date"/>
 		<date name="exitDate" title="Departure Date"/>
 		<many-to-one name="companyDepartment" ref="com.axelor.apps.base.db.CompanyDepartment" title="Department"/>

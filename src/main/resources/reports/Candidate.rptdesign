@@ -123,7 +123,86 @@
     <data-sets>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="CandidateDS" id="9">
             <property name="nullsOrdering">nulls lowest</property>
-            <list-property name="columnHints"/>
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">name</text-property>
+                    <text-property name="heading">name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">first_name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">first_name</text-property>
+                    <text-property name="heading">first_name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">mobile_phone</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">mobile_phone</text-property>
+                    <text-property name="heading">mobile_phone</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">fixed_phone</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">fixed_phone</text-property>
+                    <text-property name="heading">fixed_phone</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">email</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">email</text-property>
+                    <text-property name="heading">email</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">addressl4</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">addressl4</text-property>
+                    <text-property name="heading">addressl4</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">addressl6</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">addressl6</text-property>
+                    <text-property name="heading">addressl6</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">title</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">title</text-property>
+                    <text-property name="heading">title</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">start_date</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">start_date</text-property>
+                    <text-property name="heading">start_date</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">end_date</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">end_date</text-property>
+                    <text-property name="heading">end_date</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">position_name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">position_name</text-property>
+                    <text-property name="heading">position_name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">partner_name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">partner_name</text-property>
+                    <text-property name="heading">partner_name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">description</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">description</text-property>
+                    <text-property name="heading">description</text-property>
+                </structure>
+            </list-property>
             <list-property name="parameters">
                 <structure>
                     <property name="name">param_1</property>
@@ -199,6 +278,11 @@
                         <property name="name">partner_name</property>
                         <property name="dataType">string</property>
                     </structure>
+                    <structure>
+                        <property name="position">13</property>
+                        <property name="name">description</property>
+                        <property name="dataType">string</property>
+                    </structure>
                 </list-property>
             </structure>
             <property name="dataSource">Data Source</property>
@@ -208,77 +292,96 @@
                     <property name="name">name</property>
                     <property name="nativeName">name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">first_name</property>
                     <property name="nativeName">first_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">mobile_phone</property>
                     <property name="nativeName">mobile_phone</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">fixed_phone</property>
                     <property name="nativeName">fixed_phone</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">email</property>
                     <property name="nativeName">email</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">addressl4</property>
                     <property name="nativeName">addressl4</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">addressl6</property>
                     <property name="nativeName">addressl6</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">title</property>
                     <property name="nativeName">title</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">start_date</property>
                     <property name="nativeName">start_date</property>
                     <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
                     <property name="name">end_date</property>
                     <property name="nativeName">end_date</property>
                     <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
                     <property name="name">position_name</property>
                     <property name="nativeName">position_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">12</property>
                     <property name="name">partner_name</property>
                     <property name="nativeName">partner_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">13</property>
+                    <property name="name">description</property>
+                    <property name="nativeName">description</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select Candidate.name, Candidate.first_name, Candidate.mobile_phone, Candidate.fixed_phone, Candidate.email,
 Address.addressl4, Address.addressl6, SlctItem.title, Pos.start_date, Pos.end_date, Pos.name as position_name,
-Partner.name as partner_name
+Partner.name as partner_name, Pos.description
 from organisation_candidate as Candidate
 left join base_address as Address on Candidate.address = Address.id
 left join meta_select_item as SlctItem on SlctItem.value = cast(Candidate.title_select as text)
@@ -1316,6 +1419,161 @@ where Candidate.id = ?]]></xml-property>
             <design:label>evaluation_grade</design:label>
             <design:formattingHints>
               <design:displaySize>7</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+      </design:resultSetColumns>
+      <design:criteria/>
+    </design:resultSetDefinitions>
+  </design:ResultSets>
+</model:DesignValues>]]></xml-property>
+        </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="NoDomainTranslationDS" id="4262">
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">key</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">key</text-property>
+                    <text-property name="heading">key</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">translation</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">translation</text-property>
+                    <text-property name="heading">translation</text-property>
+                </structure>
+            </list-property>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                    <property name="position">1</property>
+                    <property name="isInput">true</property>
+                </structure>
+                <structure>
+                    <property name="name">param_2</property>
+                    <property name="paramName">Locale</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                    <property name="position">2</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">key</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">translation</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">key</property>
+                    <property name="nativeName">key</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">translation</property>
+                    <property name="nativeName">translation</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[select LangTranslate.key, LangTranslate.translation
+from meta_translation as LangTranslate
+where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>2.0</Version>
+  <DataSetParameters>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>1</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>2</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+  </DataSetParameters>
+  <design:ResultSets derivedMetaData="true">
+    <design:resultSetDefinitions>
+      <design:resultSetColumns>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>key</design:name>
+              <design:position>1</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>255</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>key</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>key</design:label>
+            <design:formattingHints>
+              <design:displaySize>255</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>translation</design:name>
+              <design:position>2</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>2147483647</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>translation</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>translation</design:label>
+            <design:formattingHints>
+              <design:displaySize>2147483647</design:displaySize>
             </design:formattingHints>
           </design:usageHints>
         </design:resultColumnDefinitions>
@@ -2555,6 +2813,18 @@ where Candidate.id = ?]]></xml-property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
+                    <property name="name">description</property>
+                    <text-property name="displayName">description</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["description"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">Description</property>
+                    <expression name="expression" type="javascript">dataSetRow["description"]</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
                     <property name="name">Start date</property>
                     <expression name="expression" type="javascript">dataSetRow["start_date"]</expression>
                     <property name="dataType">date</property>
@@ -2903,6 +3173,10 @@ where Candidate.id = ?]]></xml-property>
                             <data id="4249">
                                 <property name="resultSetColumn">Position name</property>
                             </data>
+                            <data id="4270">
+                                <property name="fontStyle">italic</property>
+                                <property name="resultSetColumn">Description</property>
+                            </data>
                         </cell>
                     </row>
                 </header>
@@ -3028,7 +3302,15 @@ where Candidate.id = ?]]></xml-property>
                         <property name="paddingBottom">1pt</property>
                         <property name="paddingRight">1pt</property>
                         <property name="textAlign">left</property>
-                        <property name="dataSet">TranslationDS</property>
+                        <property name="dataSet">NoDomainTranslationDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'Education/Trainings'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
                         <list-property name="boundDataColumns">
                             <structure>
                                 <property name="name">key</property>
@@ -3044,7 +3326,7 @@ where Candidate.id = ?]]></xml-property>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[Education/Trainings]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
             </row>
@@ -3092,7 +3374,7 @@ where Candidate.id = ?]]></xml-property>
                             </structure>
                             <structure>
                                 <property name="name">Significant Degree</property>
-                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["translation"] + " :"</expression>
                                 <property name="dataType">string</property>
                                 <property name="allowExport">true</property>
                             </structure>
@@ -3947,7 +4229,7 @@ where Candidate.id = ?]]></xml-property>
                                 </structure>
                                 <structure>
                                     <property name="name">Global grade / 20</property>
-                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"] + " :"</expression>
                                     <property name="dataType">string</property>
                                     <property name="allowExport">true</property>
                                 </structure>
