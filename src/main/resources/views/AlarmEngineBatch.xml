@@ -17,7 +17,7 @@
         		<field name="alarmEngineSet" colSpan="2" onSelect="alarm-engine-batch-attrs-alarm-engine-domain"/>
         	</page>
         	<page title="Batches" cols="4">
-		    	<field name="description" noLabel="true" colSpan="4" />
+		    	<field name="description" showTitle="false" colSpan="4" />
         		<field name="batchList" colSpan="4" grid-view="batch-grid" form-view="batch-form"/>
         	</page>
         </notebook>

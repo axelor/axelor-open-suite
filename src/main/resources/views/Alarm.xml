@@ -24,7 +24,7 @@
         <field name="date"/>
         <field name="acquitOk"/>
         <field name="alarmEngine" summary-view="alarm-message-form" form-view="alarm-message-form" edit-window="self" />
-        <field name="content" colSpan="6" noLabel="true" />
+        <field name="content" colSpan="6" showTitle="false" />
         <group title="Details" canCollapse="true" colSpan="6" cols="4">
 	        <field name="partner" domain="self.isContact = false"/>
 	        <field name="invoice" grid-view="invoice-grid" form-view="invoice-form"/>
@@ -36,7 +36,7 @@
         <field name="date"/>
         <field name="acquitOk"/>
         <field name="alarmEngine" summary-view="alarm-message-form" form-view="alarm-message-form" edit-window="self" colSpan="4"/>
-        <field name="content" colSpan="4" noLabel="true" />
+        <field name="content" colSpan="4" showTitle="false" />
         <group title="Details" canCollapse="true" colSpan="4" cols="4">
 	        <field name="invoice" grid-view="invoice-grid" form-view="invoice-form"/>
 	        <field name="balanceDueReminder"/>
@@ -47,7 +47,7 @@
         <field name="date"/>
         <field name="acquitOk" onChange="save,action-alarm-method-acquit-invoice" />
         <field name="alarmEngine" summary-view="alarm-message-form" form-view="alarm-message-form" edit-window="self" />
-        <field name="content" colSpan="6" noLabel="true" />
+        <field name="content" colSpan="6" showTitle="false" />
     </form>
     
     <action-method name="action-alarm-method-acquit-invoice">

@@ -82,15 +82,15 @@
             </page>
              <page title="Bank details" cols="4">
              	<field name="defaultBankDetails" colSpan="2"/>
-                <field name="bankDetailsSet" grid-view="bank-details-grid" form-view="bank-details-form" colSpan="4" noLabel="true"/>
+                <field name="bankDetailsSet" grid-view="bank-details-grid" form-view="bank-details-form" colSpan="4" showTitle="false"/>
             </page>
             <page title="Notes" cols="1">
-                <field name="notes" noLabel="true"/>
+                <field name="notes" showTitle="false"/>
             </page>
             <page title="Receivables recovery" cols="4">
             	<field name="mailTransitTime"/>
             	<break/>
-                <field name="reminderConfigLineList" noLabel="true" colSpan="4"/>
+                <field name="reminderConfigLineList" showTitle="false" colSpan="4"/>
             </page>
             <page title="Reimbursement" cols="4">
             	<separator title="Configuration" colSpan="6"/>

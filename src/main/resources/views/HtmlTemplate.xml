@@ -16,10 +16,10 @@
         <field name="metaModel"/>
         <notebook colSpan="4">
         	<page title="Content">
-        		<field name="content" noLabel="true" widget="html" colSpan="4"/>
+        		<field name="content" showTitle="false" widget="html" colSpan="4"/>
         	</page>
         	<page title="Trackers">
-        		<field name="trackerList" noLabel="true" colSpan="4"/>
+        		<field name="trackerList" showTitle="false" colSpan="4"/>
         	</page>
         	<page title="Explanation">
 <!--         		<label title="Campaing :" showIf="typeSelect = 2"/> -->

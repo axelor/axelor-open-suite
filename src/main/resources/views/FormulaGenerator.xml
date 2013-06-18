@@ -17,51 +17,51 @@
         <notebook colSpan="4">
 	        <page title="Formula">
      	       	<group title="Logs" name="groupFormulaLog" colSpan="4" cols="2" canCollapse="true">
-		        	<field name="formulaLog" noLabel="true" colSpan="2"/>
+		        	<field name="formulaLog" showTitle="false" colSpan="2"/>
 	        	</group>
-	        	<field name="formula" widget="CodeEditor[syntax=groovy]" colSpan="4" noLabel="true"/>
+	        	<field name="formula" widget="CodeEditor[syntax=groovy]" colSpan="4" showTitle="false"/>
 	        </page>
 	        <page title="Display formula">
      	       	<group title="Logs" name="groupDisplayFormulaLog" colSpan="4" cols="2" canCollapse="true">
-		        	<field name="displayFormulaLog" noLabel="true" colSpan="2"/>
+		        	<field name="displayFormulaLog" showTitle="false" colSpan="2"/>
 	        	</group>
-	        	<field name="displayFormula" widget="CodeEditor[syntax=groovy]" colSpan="4" noLabel="true"/>
+	        	<field name="displayFormula" widget="CodeEditor[syntax=groovy]" colSpan="4" showTitle="false"/>
         	</page>
 	        <page title="Formula for qty coefficients">
      	       	<group title="Logs" name="groupQtyFormulaLog" colSpan="4" cols="2" canCollapse="true">
-		        	<field name="qtyFormulaLog" noLabel="true" colSpan="2"/>
+		        	<field name="qtyFormulaLog" showTitle="false" colSpan="2"/>
 	        	</group>
-	        	<field name="qtyFormula" widget="CodeEditor[syntax=groovy]" colSpan="4" noLabel="true"/>
+	        	<field name="qtyFormula" widget="CodeEditor[syntax=groovy]" colSpan="4" showTitle="false"/>
 	        </page>
         	<page title="Formula conditions of use">
      	       	<group title="Logs" name="groupConditionFormulaLog" colSpan="4" cols="2" canCollapse="true">
-		        	<field name="conditionFormulaLog" noLabel="true" colSpan="2"/>
+		        	<field name="conditionFormulaLog" showTitle="false" colSpan="2"/>
 	        	</group>
-        		<field name="conditionFormula" widget="CodeEditor[syntax=groovy]" colSpan="4" noLabel="true"/>
+        		<field name="conditionFormula" widget="CodeEditor[syntax=groovy]" colSpan="4" showTitle="false"/>
         	</page>
 	        <page title="Tax formulas">
      	       	<group title="Logs" name="groupCalculationRuleTaxLog" colSpan="4" cols="2" canCollapse="true">
-		        	<field name="calculationRuleTaxLog" noLabel="true" colSpan="2"/>
+		        	<field name="calculationRuleTaxLog" showTitle="false" colSpan="2"/>
 	        	</group>
-	        	<field name="calculationRuleTax" widget="CodeEditor[syntax=groovy]" colSpan="4" noLabel="true"/>
+	        	<field name="calculationRuleTax" widget="CodeEditor[syntax=groovy]" colSpan="4" showTitle="false"/>
 	        </page>
 	        <page title="Tax calculation formula conditions of use">
      	       	<group title="Logs" name="groupConditionCalculationRuleTaxLog" colSpan="4" cols="2" canCollapse="true">
-		        	<field name="conditionCalculationRuleTaxLog" noLabel="true" colSpan="2"/>
+		        	<field name="conditionCalculationRuleTaxLog" showTitle="false" colSpan="2"/>
 	        	</group>
-	        	<field name="conditionCalculationRuleTax" widget="CodeEditor[syntax=groovy]" colSpan="4" noLabel="true"/>
+	        	<field name="conditionCalculationRuleTax" widget="CodeEditor[syntax=groovy]" colSpan="4" showTitle="false"/>
 	        </page>
 	        <page title="Tax formula conditions of use">
      	       	<group title="Logs" name="groupConditionTaxLog" colSpan="4" cols="2" canCollapse="true">
-		        	<field name="conditionTaxLog" noLabel="true" colSpan="2"/>
+		        	<field name="conditionTaxLog" showTitle="false" colSpan="2"/>
 	        	</group>
-	        	<field name="conditionTax" widget="CodeEditor[syntax=groovy]" colSpan="4" noLabel="true"/>
+	        	<field name="conditionTax" widget="CodeEditor[syntax=groovy]" colSpan="4" showTitle="false"/>
         	</page>
 	        <page title="VAT formulas">
      	       	<group title="Logs" name="groupVatFormulaLog" colSpan="4" cols="2" canCollapse="true">
-		        	<field name="vatFormulaLog" noLabel="true" colSpan="2"/>
+		        	<field name="vatFormulaLog" showTitle="false" colSpan="2"/>
 	        	</group>
-	        	<field name="vatFormula" widget="CodeEditor[syntax=groovy]" colSpan="4" noLabel="true"/>
+	        	<field name="vatFormula" widget="CodeEditor[syntax=groovy]" colSpan="4" showTitle="false"/>
 	        </page>
         </notebook>
     </form>
