@@ -63,7 +63,7 @@
 				<field name="contractLineSet" colSpan="4" />
 			</page>
 			<page title="Final applying condition" >
-				<field name="finalCondition" noLabel="true" colSpan="4" widget="CodeEditor[syntax=groovy]" />
+				<field name="finalCondition" showTitle="false" colSpan="4" widget="CodeEditor[syntax=groovy]" />
 			</page>
 		</notebook>
 	</form>
@@ -105,7 +105,7 @@
 				<field name="contractLineSet" colSpan="4" />
 			</page>
 			<page title="Final applying condition" >
-				<field name="finalCondition" noLabel="true" colSpan="4" widget="CodeEditor[syntax=groovy]" />
+				<field name="finalCondition" showTitle="false" colSpan="4" widget="CodeEditor[syntax=groovy]" />
 			</page>
 		</notebook>
 	</form>

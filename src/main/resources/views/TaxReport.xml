@@ -15,7 +15,7 @@
         <field name="periods" colSpan="2"/>
         <field name="accounts" colSpan="2" domain="self.type.name = 'Taxe'"/>
         <group title="Descrition" colSpan="4" cols="2">
-        	<field name="comments" noLabel="true" colSpan="2"/>
+        	<field name="comments" showTitle="false" colSpan="2"/>
         </group>
         <button name="printTaxReport" title="Print tax report" colSpan="2" onClick="save,com.axelor.apps.account.web.TaxReportController:printTaxReport"/>
     </form>

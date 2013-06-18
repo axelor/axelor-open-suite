@@ -14,7 +14,7 @@
             <field name="endDate"/>
         </group>
         <group title="Description" colSpan="6" cols="6">
-            <field name="description" noLabel="true" colSpan="6"/>
+            <field name="description" showTitle="false" colSpan="6"/>
         </group>
         <field name="interbankCodeLineList" colSpan="6">
 	        <grid title="Blocking reason/reject codes lists">
@@ -29,7 +29,7 @@
 		            <field name="name"/>
 		        </group>
 		        <group title="Description" colSpan="4" cols="4">
-		            <field name="description" noLabel="true" colSpan="4"/>
+		            <field name="description" showTitle="false" colSpan="4"/>
 		            <field name="technicalRejectOk"/>
 		        </group>
 		        <group title="Domain of use" colSpan="4" cols="6">

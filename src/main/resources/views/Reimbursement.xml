@@ -18,7 +18,7 @@
         <field name="amountReimbursed"/>
         <break/>
 		<separator title="Reason" colSpan="4"/>
-		<field name="description" noLabel="true" colSpan="4" />
+		<field name="description" showTitle="false" colSpan="4" />
         <group cols="3" colSpan="2">
                 <field name="status"/>
         		<button name="validateReimbursement" title="Validate" onClick="com.axelor.apps.account.web.ReimbursementController:validateReimbursement,action-reimbursement-hidden-button-attrs,save"/>
