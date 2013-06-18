@@ -24,23 +24,23 @@
  		</group>
  		
  		<group title="Partner" colSpan="4" showIf="hasConvertIntoContact">
- 			<field name="partner" widget="NestedEditor[type=MANY_TO_ONE|target=com.axelor.apps.base.db.Partner]" summary-view="true" form-view="partner-lead-converted-form" edit-window="self" noLabel="true">
+ 			<field name="partner" widget="NestedEditor[type=MANY_TO_ONE|target=com.axelor.apps.base.db.Partner]" summary-view="true" form-view="partner-lead-converted-form" edit-window="self" showTitle="false">
  			</field>
  		</group>
  		<group title="Partner" colSpan="4" showIf="hasConvertIntoPartner">
- 			<field name="partner" widget="NestedEditor[type=MANY_TO_ONE|target=com.axelor.apps.base.db.Partner]" summary-view="true" form-view="partner-lead-converted-form" edit-window="self" noLabel="true">
+ 			<field name="partner" widget="NestedEditor[type=MANY_TO_ONE|target=com.axelor.apps.base.db.Partner]" summary-view="true" form-view="partner-lead-converted-form" edit-window="self" showTitle="false">
  			</field>
  		</group>
  		<group title="Opportunity" colSpan="4" showIf="hasConvertIntoOpportunity">
- 			<field name="opportunity" widget="NestedEditor[type=MANY_TO_ONE|target=com.axelor.apps.crm.db.Opportunity]" summary-view="true" form-view="opportunity-form" edit-window="self" noLabel="true">
+ 			<field name="opportunity" widget="NestedEditor[type=MANY_TO_ONE|target=com.axelor.apps.crm.db.Opportunity]" summary-view="true" form-view="opportunity-form" edit-window="self" showTitle="false">
  			</field>
  		</group>
  		<group title="Call" colSpan="4" showIf="hasConvertIntoCall">
- 			<field name="call" widget="NestedEditor[type=MANY_TO_ONE|target=com.axelor.apps.crm.db.Event]" summary-view="true" form-view="event-call-form" edit-window="self" noLabel="true">
+ 			<field name="call" widget="NestedEditor[type=MANY_TO_ONE|target=com.axelor.apps.crm.db.Event]" summary-view="true" form-view="event-call-form" edit-window="self" showTitle="false">
  			</field>
  		</group>
  		<group title="Meeting" colSpan="4" showIf="hasConvertIntoMeeting">
- 			<field name="meeting" widget="NestedEditor[type=MANY_TO_ONE|target=com.axelor.apps.crm.db.Event]" canNew="true" canRemove="false" canView="true" canSelect="false"  summary-view="true" form-view="event-meeting-form"  edit-window="self" noLabel="true" >
+ 			<field name="meeting" widget="NestedEditor[type=MANY_TO_ONE|target=com.axelor.apps.crm.db.Event]" canNew="true" canRemove="false" canView="true" canSelect="false"  summary-view="true" form-view="event-meeting-form"  edit-window="self" showTitle="false" >
  			</field>
  		</group>
  		
