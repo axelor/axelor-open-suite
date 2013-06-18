@@ -22,7 +22,7 @@
     <form cols="4" name="task-form" title="Task" model="com.axelor.apps.organisation.db.Task"
     onNew="action-task-default-record">
 	    <field name="name"/>
-	    <field name="statusSelect"  widget="NavSelect" colSpan="2" noLabel="true"/>
+	    <field name="statusSelect"  widget="NavSelect" colSpan="2" showTitle="false"/>
 	    <field name="salesOrderLine"/>
 	    
 	    <field name="project"/>
@@ -95,7 +95,7 @@
 	            
 	        </page>
 	        <page title="Description" colSpan="4">
-	            <field name="description" colSpan="4" noLabel="true"/>
+	            <field name="description" colSpan="4" showTitle="false"/>
 	        </page>
 	    </notebook>
 	</form>

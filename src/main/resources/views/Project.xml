@@ -12,7 +12,7 @@
     
     <form name="project-form" title="Affair/Project" model="com.axelor.apps.organisation.db.Project" cols="6" 
     onNew="action-project-unit">
-    	<group noLabel="true" colSpan="4">
+    	<group showTitle="false" colSpan="4">
     	 	<field name="responsibleUserInfo"/>
 	        <field name="clientPartner"/>
 	        <field name="contactPartner" domain="self.isContact = true"/>
@@ -26,7 +26,7 @@
 	        <field name="projectUnit"/>
 			<field name="modelProject" hideIf="isModel" domain="self.isModel = true"/>
     	</group>
-    	<group noLabel="true" colSpan="2" cols="1" title="Actions">
+    	<group showTitle="false" colSpan="2" cols="1" title="Actions">
     		<button name="createSalesOrder" title="Create quote" colSpan="1"/>
     		<button name="generateNewInstanceOfProject" title="Generate new project instance" hideIf="!isModel" colSpan="1"/>
     		<button name="generateDraftInvoice" title="Generate draft invoice" colSpan="1"/>

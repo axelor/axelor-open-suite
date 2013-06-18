@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.8.xsd">
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
 
 	<grid name="skill-line-edit-grid" title="Skills" model="com.axelor.apps.organisation.db.SkillLine" editable="true">
 		<field name="name" />
@@ -14,8 +14,8 @@
 	</form>
 		
 	<form name="skill-set-edit-form" title="Skill" model="com.axelor.apps.organisation.db.SkillSet">
-		<field name="skillLineList" grid-view="skill-line-edit-grid" form-view="skill-line-edit-form" noLabel="true"/>
-		<field name="languageSet" grid-view="language-grid" form-view="language-form" noLabel="true"/>
+		<field name="skillLineList" grid-view="skill-line-edit-grid" form-view="skill-line-edit-form" showTitle="false"/>
+		<field name="languageSet" grid-view="language-grid" form-view="language-form" showTitle="false"/>
 	</form>
 
 	<form name="competence-edit-form" title="Competences" model="com.axelor.apps.organisation.db.Competence">
@@ -25,13 +25,13 @@
 		<field name="competenceAreaSet" colSpan="2"/>
 		<notebook colSpan="4">
 			<page title="Expertises">
-				<field name="expertSkillSet" widget="NestedEditor" summary-view="true" noLabel="true" form-view="skill-set-edit-form"></field>
+				<field name="expertSkillSet" widget="NestedEditor" summary-view="true" showTitle="false" form-view="skill-set-edit-form"></field>
 			</page>
 			<page title="Mastered Skills">
-				<field name="masteredSkillSet" widget="NestedEditor" summary-view="true" noLabel="true" form-view="skill-set-edit-form"></field>
+				<field name="masteredSkillSet" widget="NestedEditor" summary-view="true" showTitle="false" form-view="skill-set-edit-form"></field>
 			</page>
 			<page title="Awareness">
-				<field name="awareSkillSet" widget="NestedEditor" summary-view="true" noLabel="true" form-view="skill-set-edit-form"></field>
+				<field name="awareSkillSet" widget="NestedEditor" summary-view="true" showTitle="false" form-view="skill-set-edit-form"></field>
 			</page>
 		</notebook>
 	</form>
