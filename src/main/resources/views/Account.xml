@@ -12,9 +12,9 @@
         <field name="company"/>
     </grid>
     
-    <tree name="account-tree" title="Chart of account" model="com.axelor.apps.account.db.Account">
-        <field name="name"/>
-    </tree>
+<!--     <tree name="account-tree" title="Chart of account" model="com.axelor.apps.account.db.Account"> -->
+<!--         <field name="name"/> -->
+<!--     </tree> -->
     
     <form name="account-form" title="Account" model="com.axelor.apps.account.db.Account" cols="4"
     	onNew="action-account-record-new">
@@ -22,12 +22,12 @@
         <field name="name"/>
         <field name="type"/>
         <field name="company"/>
-        <field name="parent"/>
+		<field name="parent" domain="self.company = :company"/>
         <field name="reconcileOk"/>
     </form>
     
     <action-record name="action-account-record-new" model="com.axelor.apps.account.db.Account">
     	<field name="company"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
     </action-record>
-    
+         
 </object-views>

@@ -59,7 +59,7 @@
 	    <notebook colSpan="4">
 	        <page name="information" title="Informations">
 	            <group title="Partner details" colSpan="3" cols="4">
-	                <field name="site"/>
+	                <field name="site" domain="self.partner.id = :id"/>
 	                <field name="department"/>
 	                <field name="source" hideIf="isContact"/>
 	            </group>
