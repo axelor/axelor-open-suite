@@ -24,7 +24,7 @@
         <field name="currency"/>
 		<field name="purchaseOrderLineList" colSpan="4" grid-view="purchase-order-line-grid" form-view="purchase-order-line-form"/>
         <field name="purchaseOrderLineVatList" colSpan="4"/>
-      	<group colSpan="4" cols="3" noLabel="true">
+      	<group colSpan="4" cols="3" showTitle="false">
        		<group colSpan="2" cols="2" title="Action(s)">
        			<group colSpan="1" cols="1">
        				<button name="compute" title="Compute" colSpan="1" onClick="save,action-purchase-order-method-compute,save" hideIf="statusSelect == 4"/>
