@@ -99,7 +99,7 @@
 	            <field name="currency"/>
 	            <field name="payerQuality"/>
 	            <field name="bankDetails"/>
-	            <field name="bankDetailsList" noLabel="true" colSpan="4" form-view="bank-details-form" grid-view="bank-details-grid"/>
+	            <field name="bankDetailsList" showTitle="false" colSpan="4" form-view="bank-details-form" grid-view="bank-details-grid"/>
 	            <button name="showInvoice" title="View all unpaid invoices" colSpan="2" onClick="save,action-partner-method-show-invoice"/>
 	        </page>
 	        <page title="Settings">

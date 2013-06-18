@@ -16,7 +16,7 @@
         <field name="unit"/>
         <break/>
         <group title="Calculation rule" colSpan="4" cols="4">
-        	<field name="calculationRule" colSpan="4" noLabel="true" widget="CodeEditor[syntax=groovy]"/>
+        	<field name="calculationRule" colSpan="4" showTitle="false" widget="CodeEditor[syntax=groovy]"/>
         </group>
         <field name="formulaControlList" colSpan="4">
             <grid title="Formula controls">

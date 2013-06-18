@@ -15,7 +15,7 @@
 <!--     <tree name="account-tree" title="Chart of account" model="com.axelor.apps.account.db.Account"> -->
 <!--         <field name="name"/> -->
 <!--     </tree> -->
-    
+
     <form name="account-form" title="Account" model="com.axelor.apps.account.db.Account" cols="4"
     	onNew="action-account-record-new">
         <field name="code"/>

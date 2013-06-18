@@ -35,7 +35,7 @@
 		<field name="name" />
 		<field name="code" />
 		<separator title="Applying conditions" colSpan="4" />
-		<field name="condition" colSpan="4" noLabel="true"  widget="CodeEditor[syntax=groovy]"/>
+		<field name="condition" colSpan="4" showTitle="false"  widget="CodeEditor[syntax=groovy]"/>
 		<field name="discountEngineLineList" grid-view="discount-engine-line-grid"
 			form-view="discount-engine-line-form" colSpan="4" domain="self.amendment IS NULL AND self.discountEngineModel IS NULL"/>
 	</form>
@@ -84,14 +84,14 @@
 					colSpan="2" />
 			</page>
 			<page title="Applying conditions">
-				<field name="condition" noLabel="true"
+				<field name="condition" showTitle="false"
 					onChange="discount-engine-method-final-condition" colSpan="4" widget="CodeEditor[syntax=groovy]" />
 			</page>
 			<page name="contractLinePage" title="Contracts">
 				<field name="contractLineSet" colSpan="4" />
 			</page>
 			<page title="Final applying conditions">
-				<field name="finalCondition" noLabel="true" colSpan="4" widget="CodeEditor[syntax=groovy]" />
+				<field name="finalCondition" showTitle="false" colSpan="4" widget="CodeEditor[syntax=groovy]" />
 			</page>
 		</notebook>
 	</form>

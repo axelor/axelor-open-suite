@@ -17,7 +17,7 @@
         <field name="fromDate"/>
         <field name="toDate"/>
 		<separator title="Context of use" colSpan="4" />
-        <field name="condition" noLabel="true" colSpan="4" widget="CodeEditor[syntax=groovy]" />
+        <field name="condition" showTitle="false" colSpan="4" widget="CodeEditor[syntax=groovy]" />
         <field name="calculationRule"/>
         <field name="pricingList"/>
         <field name="defaultVat"/>

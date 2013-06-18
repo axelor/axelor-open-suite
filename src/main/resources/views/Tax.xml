@@ -15,7 +15,7 @@
             <page title="General" cols="4">
                 <field name="account" domain="self.type.name='Taxe'"/>
 				<separator title="Condition d'application" colSpan="4" />
-                <field name="condition" colSpan="4" noLabel="true" widget="CodeEditor[syntax=groovy]"/>
+                <field name="condition" colSpan="4" showTitle="false" widget="CodeEditor[syntax=groovy]"/>
                 <field name="taxLineList" grid-view="tax-line-grid" form-view="tax-line-form" colSpan="4" />
             </page>
             <page title="Accounting">

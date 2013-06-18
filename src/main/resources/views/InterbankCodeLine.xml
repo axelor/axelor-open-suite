@@ -16,7 +16,7 @@
         </group>
         <field name="interbankCode"/>
         <group title="Description" colSpan="4" cols="4">
-            <field name="description" noLabel="true" colSpan="4"/>
+            <field name="description" showTitle="false" colSpan="4"/>
             <field name="technicalRejectOk"/>
         </group>
         <group title="Domain of use" colSpan="4" cols="6">
