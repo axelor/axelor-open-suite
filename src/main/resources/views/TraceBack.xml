@@ -36,19 +36,19 @@
         <field name="typeSelect"/>
         <field name="categorySelect"/>
         <group name="exceptionGroup" title="Anomaly" colSpan="4" cols="2">
-        	<field name="exception" noLabel="true" colSpan="2"/>
+        	<field name="exception" showTitle="false" colSpan="2"/>
         </group>
         <group name="errorGroup" title="Error" colSpan="4" cols="2">
-            <field name="error" noLabel="true" colSpan="2"/>
+            <field name="error" showTitle="false" colSpan="2"/>
         </group>
         <group name="causeGroup" title="Cause" colSpan="4" cols="2">
-            <field name="cause" noLabel="true" colSpan="2"/>
+            <field name="cause" showTitle="false" colSpan="2"/>
         </group>
         <group name="messageGroup" title="Message" colSpan="4" cols="2">
-            <field name="message" noLabel="true" colSpan="2"/>
+            <field name="message" showTitle="false" colSpan="2"/>
         </group>
         <group name="traceGroup" title="Trace" colSpan="4" cols="2">
-            <field name="trace" noLabel="true" colSpan="2"/>
+            <field name="trace" showTitle="false" colSpan="2"/>
         </group>
     </form>
     
