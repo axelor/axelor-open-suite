@@ -3035,6 +3035,12 @@ where Candidate.id = ?]]></xml-property>
                     <expression name="expression" type="javascript">dataSetRow["name_join_select"]</expression>
                     <property name="dataType">string</property>
                 </structure>
+                <structure>
+                    <property name="name">Name</property>
+                    <expression name="expression" type="javascript">" " + dataSetRow["name"] + " " + dataSetRow["first_name"]</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <column id="4691">
                 <property name="width">0.22916666666666666in</property>
@@ -3052,8 +3058,10 @@ where Candidate.id = ?]]></xml-property>
                 <cell id="4683">
                     <property name="colSpan">2</property>
                     <property name="rowSpan">1</property>
+                    <property name="fontSize">10pt</property>
                     <data id="4692">
-                        <property name="display">block</property>
+                        <property name="paddingRight">3pt</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">NoDomainTranslationDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -3078,12 +3086,16 @@ where Candidate.id = ?]]></xml-property>
                             </structure>
                             <structure>
                                 <property name="name">Title</property>
-                                <expression name="expression" type="javascript">dataSetRow["translation"] + " " + row._outer["name"] + " " + row._outer["first_name"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
                                 <property name="dataType">string</property>
                                 <property name="allowExport">true</property>
                             </structure>
                         </list-property>
                         <property name="resultSetColumn">Title</property>
+                    </data>
+                    <data id="4698">
+                        <property name="display">inline</property>
+                        <property name="resultSetColumn">Name</property>
                     </data>
                 </cell>
                 <cell id="44"/>
