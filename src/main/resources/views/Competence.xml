@@ -7,10 +7,15 @@
 		<field name="name" />
 		<field name="value" />
 	</grid>
+	
+	<form name="skill-line-edit-form" title="Skills" model="com.axelor.apps.organisation.db.SkillLine">
+		<field name="name" />
+		<field name="value" />
+	</form>
 		
 	<form name="skill-set-edit-form" title="Skill" model="com.axelor.apps.organisation.db.SkillSet">
-		<field name="skillLineList" grid-view="skill-line-edit-grid" noLabel="true"/>
-		<field name="languageSet" grid-view="language-grid" noLabel="true"/>
+		<field name="skillLineList" grid-view="skill-line-edit-grid" form-view="skill-line-edit-form" noLabel="true"/>
+		<field name="languageSet" grid-view="language-grid" form-view="language-form" noLabel="true"/>
 	</form>
 
 	<form name="competence-edit-form" title="Competences" model="com.axelor.apps.organisation.db.Competence">
