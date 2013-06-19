@@ -44,6 +44,7 @@
 	                <break/>
 	            <separator title="Accounts" colSpan="6"/>
 	                <field name="customerAccount" domain="self.company.code = :code"/>
+	                <field name="supplierAccount" domain="self.company.code = :code"/>
   	           	 	<field name="doubtfulCustomerAccount" domain="self.company.code = :code"/>
 	                <field name="irrecoverableAccount" domain="self.company.code = :code"/>
 	     			<break/>

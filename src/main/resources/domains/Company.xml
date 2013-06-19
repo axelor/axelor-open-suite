@@ -19,6 +19,7 @@
     <many-to-one name="parent" ref="Company" title="Parent company"/>
     <many-to-one name="administration" ref="com.axelor.apps.base.db.General" title="Administration"/>
     <many-to-one name="customerAccount" ref="com.axelor.apps.account.db.Account" title="Customer account"/>
+    <many-to-one name="supplierAccount" ref="com.axelor.apps.account.db.Account" title="Supplier account"/>
     <many-to-one name="doubtfulCustomerAccount" ref="com.axelor.apps.account.db.Account" title="Doubtful customers account" help="Utiliser pour le passage en client douteux"/>    
     <many-to-one name="irrecoverableAccount" ref="com.axelor.apps.account.db.Account" title="Irrecoverable account"/>
     
