@@ -16,7 +16,7 @@
         <field name="company" onChange="action-account-management-clean-company,action-account-management-product-validate"/>
         <field name="purchaseAccount" domain="self.company = :company" onChange="action-account-management-clean-company,action-account-management-product-validate"/>
         <field name="saleAccount" domain="self.company = :company" onChange="action-account-management-clean-company,action-account-management-product-validate"/>
-        <field name="cashAccount"/>
+        <field name="cashAccount" domain="self.company = :company" onChange="action-account-management-clean-company,action-account-management-product-validate"/>
         <notebook colSpan="4">
         	<page name="analyticAccountManagementPage" title="Analytic account" cols="2">
         		<field name="analyticAccountManagementList" colSpan="2"/>
@@ -112,10 +112,13 @@
     <action-validate name="action-account-management-product-validate">
      	<error message="The sale account or the purchase account are associated to another company. Please make sure to select the right account in the company chart before changing the company." if="saleAccount != null &amp;&amp; company != null &amp;&amp; saleAccount?.company?.id != company?.id"/>
     	<error message="The sale account or the purchase account are associated to another company. Please make sure to select the right account in the company chart before changing the company." if="purchaseAccount != null &amp;&amp; company != null &amp;&amp; purchaseAccount?.company?.id != company?.id"/>
+    	<error message="The sale account or the purchase account or the cash account are associated to another company. Please make sure to select the right account in the company chart before changing the company." if="cashAccount != null &amp;&amp; company != null &amp;&amp; cashAccount?.company?.id != company?.id"/>
     </action-validate>
     
     <action-record name="action-account-management-clean-company" model="com.axelor.apps.account.db.AccountManagement">
-        <field name="company"  expr="eval:null" if="(saleAccount != null &amp;&amp; company != null &amp;&amp; saleAccount?.company?.id != company?.id) || (purchaseAccount != null &amp;&amp; company != null &amp;&amp; purchaseAccount?.company?.id != company?.id)"/>
+        <field name="company"  expr="eval:null" if="saleAccount != null &amp;&amp; company != null &amp;&amp; saleAccount?.company?.id != company?.id"/>
+        <field name="company"  expr="eval:null" if="purchaseAccount != null &amp;&amp; company != null &amp;&amp; purchaseAccount?.company?.id != company?.id"/>
+        <field name="company"  expr="eval:null" if="cashAccount != null &amp;&amp; company != null &amp;&amp; cashAccount?.company?.id != company?.id"/>
     </action-record>
     
 </object-views>

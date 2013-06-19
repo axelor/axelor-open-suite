@@ -21,8 +21,8 @@
         <field name="code"/>
         <field name="name"/>
         <field name="type"/>
-        <field name="company"/>
-		<field name="parent" domain="self.company = :company"/>
+        <field name="company" onChange="action-account-clean-company,action-account-validate"/>
+		<field name="parent" domain="self.company = :company" onChange="action-account-clean-company,action-account-validate"/>
         <field name="reconcileOk"/>
     </form>
     
@@ -30,4 +30,12 @@
     	<field name="company"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
     </action-record>
          
+    <action-validate name="action-account-validate">
+     	<error message="The parent is associated to another company. Please make sure to select the right parent in the company chart before changing the company." if="parent != null &amp;&amp; company != null &amp;&amp; parent?.company?.id != company?.id"/>
+    </action-validate>
+    
+    <action-record name="action-account-clean-company" model="com.axelor.apps.account.db.Account">
+        <field name="company"  expr="eval:null" if="parent != null &amp;&amp; company != null &amp;&amp; parent?.company?.id != company?.id"/>
+    </action-record>
+    
 </object-views>
