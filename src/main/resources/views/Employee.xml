@@ -92,6 +92,11 @@
 				<field name="managerProfileProduct" domain="self.applicationTypeSelect = 2"/>
 				<field name="profileProduct" domain="self.applicationTypeSelect = 2"/>
 			</page>
+			<page title="Reporting">
+				<group title="Action(s)" colSpan="4" cols="4">
+					<button name="showEmployee" title="Print" colSpan="1" icon="img/icons/print.png" onClick="save,action-partner-method-show-employee"/>
+				</group>
+			</page>
 			<!-- <page title="Suivi du placement des besoins" hidden="true"> -->
 			<!-- <field name="placementFollowUpList" grid-view="placement-follow-up-edit-grid" 
 				form-view="placement-follow-up-edit-list"></field> -->
@@ -104,6 +109,10 @@
     	<field name="categorySelect" expr="1"/>
     	<field name="macroCategorySelect" expr="4"/>
     </action-record>
+	
+	<action-method name="action-partner-method-show-employee">
+		<call class="com.axelor.apps.organisation.web.EmployeeController" method="showEmployee" />
+	</action-method>
     
 </object-views>
   
