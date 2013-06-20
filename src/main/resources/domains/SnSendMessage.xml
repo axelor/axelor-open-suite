@@ -10,6 +10,6 @@
  		<string name="subject" />
  		<datetime name="messageDate" tz="true" />
  		<many-to-one name="curUser" ref="com.axelor.auth.db.User" />
- 		<many-to-one name="snType" ref="com.axelor.apps.base.db.SocialNetworking" orphan="true" />
+ 		<many-to-one name="socialNet" ref="com.axelor.apps.base.db.SocialNet" orphan="true" />
  	</entity>
  </domain-models>
