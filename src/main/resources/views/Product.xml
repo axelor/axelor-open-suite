@@ -24,10 +24,10 @@
 		onLoad="action-sn-integration-init,action-showing-seen,action-main-cntrl,com.axelor.sn.web.SNCommonController:refreshSnPostComments">
     
 	    <group title="Informations" colSpan="1" cols="6">
-	    	<group noLabel="true" colSpan="2">
+	    	<group showTitle="false" colSpan="2">
 	    		<field name="picture"/>
 	    	</group>
-		    <group noLabel="true" colSpan="4" cols="2">
+		    <group showTitle="false" colSpan="4" cols="2">
 		    	<field name="name"/>
 	        	<field name="code"/>
 		    </group>
@@ -39,13 +39,13 @@
         	<field name="procurementMethodSelect"/>
         	<field name="isRawMaterial"/>
 	        <field name="invoiceLineType"/>
-	        <group noLabel="true" colSpan="6">
+	        <group showTitle="false" colSpan="6">
 		        <field name="startDate"/>
 		        <field name="endDate"/>
 	        </group>
 	    </group>
         <group title="Description" colSpan="1" cols="1">
-        	 <field name="description" noLabel="true" colSpan="1"/>
+        	 <field name="description" showTitle="false" colSpan="1"/>
         </group>
         <separator title="Product specific attributes" colSpan="2"/>
         <notebook colSpan="2">
@@ -87,7 +87,7 @@
 							hideIf="snPost == null" />
 						<break />
 						<group colSpan="3" cols="3" colWidths="70%,*">
-							<field name="postToSN" noLabel="true" hidden="true"
+							<field name="postToSN" showTitle="false" hidden="true"
 								colSpan="2" widget="Text" />
 							<group colSpan="1" cols="2">
 								<button name="postit" title="Post" hidden="true"

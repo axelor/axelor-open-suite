@@ -14,9 +14,13 @@
     <string name="addressL5" title="Specific information"/>
     <string name="addressL6" title="Zip/City"/>
     <many-to-one name="addressL7Country" ref="com.axelor.apps.base.db.Country" title="Country"/>
+    <decimal name="latit" title="Latitude" scale="10" precision="20"/>
+    <decimal name="longit" title="Longitude" scale="10" precision="20"/>
+    <integer name="zoom" title="Default zoom"/>
     <string name="inseeCode" title="INSEE Code" readonly="true"/>
     <boolean name="certifiedOk" title="Adress certified by QAS engine" default="false" readonly="true"/>
     <one-to-many name="pickList" ref="com.axelor.apps.base.db.PickListEntry" title="QAS Proposal lists" mappedBy="address"/>
+    
     
     <string name="fullName" namecolumn="true" search="addressL2,addressL3,addressL4,addressL5,addressL6" title="Address">
 	    <![CDATA[

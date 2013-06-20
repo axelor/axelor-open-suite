@@ -8,9 +8,9 @@
 		<entity name="PriceListLine"  lang="java">
 			<integer name="minExperience" title="Minimum experience"/>
 			<integer name="maxExperience" title="Maximum experience"/>
-			<integer name="price" title="Prix" />
+			<decimal name="price" title="Prix" precision="20" scale="5"/>
 			<many-to-one name="product" ref="com.axelor.apps.base.db.Product"/>
-			<many-to-one name="udm" ref="com.axelor.apps.base.db.Unit" title="Udm"/>
+			<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
 			<many-to-one name="priceList" ref="PriceList" title="Price List"/>
 		</entity>
 		

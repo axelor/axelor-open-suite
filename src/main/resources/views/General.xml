@@ -50,7 +50,7 @@
 	                <button name="checkQasWsdl" title="Test connection to QAS webservice" colSpan="2" onClick="com.axelor.apps.base.web.AddressController:check"/>
 	            </group>
 	            <group name="svi" title="IVS Interface" colSpan="4">
-	                <field name="sviStoredProcedure" noLabel="true" colSpan="4" widget="CodeEditor[syntax=sql]'"/>
+	                <field name="sviStoredProcedure" showTitle="false" colSpan="4" widget="CodeEditor[syntax=sql]'"/>
 	                <break/>
 	                <button name="loadStoredProcedure" title="Load procedures" colSpan="2" onClick="save,com.axelor.apps.jdbc.web.JdbcController:runQuery"/>
 	            </group>

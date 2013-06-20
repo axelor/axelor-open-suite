@@ -35,7 +35,7 @@
     <form cols="4" colWidths="25*"   name="partner-form" title="Partner" model="com.axelor.apps.base.db.Partner"
 	    onNew="action-partner-record-partner-type-select,action-partner-record-set-default" 
 	    onLoad="action-partner-attrs-change-name,action-partner-attrs-hide-tabs" 
-	    onSave="action-set-partner-seq">
+	    onSave="action-set-partner-seq,action-create-accounting-situation">
 	    <group colSpan="1">
 	        <field name="picture"/>
 	    </group>
@@ -62,7 +62,7 @@
 	    <notebook colSpan="4">
 	        <page name="information" title="Informations">
 	            <group title="Partner details" colSpan="3" cols="4">
-	                <field name="site"/>
+	                <field name="site" domain="self.partner.id = :id"/>
 	                <field name="department"/>
 	                <field name="source" hideIf="isContact"/>
 	            </group>
@@ -102,11 +102,11 @@
 	<!--             <field name="currency"/> -->
 	<!--             <field name="payerQuality"/> -->
 	<!--             <field name="bankDetails"/> -->
-	<!--             <field name="bankDetailsList" noLabel="true" colSpan="4" form-view="bank-details-form" grid-view="bank-details-grid"/> -->
+	<!--             <field name="bankDetailsList" showTitle="false" colSpan="4" form-view="bank-details-form" grid-view="bank-details-grid"/> -->
 	<!--             <button name="showInvoice" title="View all unpaid invoices" colSpan="2" onClick="save,action-partner-method-show-invoice"/> -->
 	<!--         </page> -->
 	        <page title="Settings">
-	            <field name="companySet" colSpan="4" widget="TagSelect[create=name]"/>
+	            <field name="companySet" colSpan="4" widget="TagSelect[create=name]" onChange="action-partner-company-set-validate"/>
 	            <field name="partnerSeq"/>
 	            <field name="languageSelect" hideIf="isContact || partnerTypeSelect == 1"/>
 	            
@@ -163,29 +163,29 @@
                     </group>
                 </group>
 			</page>
-	<!--         <page name="compteClient" title="Customer balance"> -->
-	<!--             <field name="accountingSituationList" colSpan="4" widget="MasterDetail" onSelect="action-account-accounting-situation-method-update-customer-account"/> -->
-	<!--         </page> -->
-	<!--         <page name="reportedBalance" title="Reported balance"> -->
-	<!--             <field name="reportedBalanceList" colSpan="4"> -->
-	<!--                 <grid name="reported-balance-grid" title="Reported balances" model="com.axelor.apps.account.db.ReportedBalance"> -->
-	<!--                     <field name="company"/> -->
-	<!--                 </grid> -->
-	<!--                 <form cols="4" name="reported-balance-form" title="Reported balance" model="com.axelor.apps.account.db.ReportedBalance"> -->
-	<!--                     <field name="company"/> -->
-	<!--                     <field name="reportedBalanceLineList" colSpan="4"> -->
-	<!--                         <grid name="reported-balance-line-grid" title="Reported balance lines" model="com.axelor.apps.account.db.ReportedBalanceLine"> -->
-	<!--                             <field name="year"/> -->
-	<!--                             <field name="amount"/> -->
-	<!--                         </grid> -->
-	<!--                         <form cols="4" name="reported-balance-line-form" title="Reported balance line" model="com.axelor.apps.account.db.ReportedBalanceLine"> -->
-	<!--                             <field name="year"/> -->
-	<!--                             <field name="amount"/> -->
-	<!--                         </form> -->
-	<!--                     </field> -->
-	<!--                 </form> -->
-	<!--             </field> -->
-	<!--         </page> -->
+	        <page name="compteClient" title="Customer balance" hideIf="isContact">
+	            <field name="accountingSituationList" colSpan="4" widget="MasterDetail" onSelect="action-account-accounting-situation-method-update-customer-account"/>
+	        </page>
+	        <page name="reportedBalance" title="Reported balance" hideIf="isContact">
+	            <field name="reportedBalanceList" colSpan="4">
+	                <grid name="reported-balance-grid" title="Reported balances" model="com.axelor.apps.account.db.ReportedBalance">
+	                    <field name="company"/>
+	                </grid>
+	                <form cols="4" name="reported-balance-form" title="Reported balance" model="com.axelor.apps.account.db.ReportedBalance">
+	                    <field name="company"/>
+	                    <field name="reportedBalanceLineList" colSpan="4">
+	                        <grid name="reported-balance-line-grid" title="Reported balance lines" model="com.axelor.apps.account.db.ReportedBalanceLine">
+	                            <field name="year"/>
+	                            <field name="amount"/>
+	                        </grid>
+	                        <form cols="4" name="reported-balance-line-form" title="Reported balance line" model="com.axelor.apps.account.db.ReportedBalanceLine">
+	                            <field name="year"/>
+	                            <field name="amount"/>
+	                        </form>
+	                    </field>
+	                </form>
+	            </field>
+	        </page>
 	    </notebook>
 	</form>
 	
@@ -220,7 +220,7 @@
 	    <notebook colSpan="4">
 	        <page name="information" title="Informations">
 	            <group title="Partner details" colSpan="3" cols="4">
-	                <field name="site"/>
+	                <field name="site" domain="self.partner.id = :id"/>
 	                <field name="department"/>
 	                <field name="source" hideIf="isContact"/>
 	            </group>
@@ -246,7 +246,7 @@
 	            <field name="currency"/>
 	            <field name="payerQuality"/>
 	            <field name="bankDetails"/>
-	            <field name="bankDetailsList" noLabel="true" colSpan="4" form-view="bank-details-form" grid-view="bank-details-grid"/>
+	            <field name="bankDetailsList" showTitle="false" colSpan="4" form-view="bank-details-form" grid-view="bank-details-grid"/>
 	            <button name="showInvoice" title="View all unpaid invoices" colSpan="2" onClick="save,action-partner-method-show-invoice"/>
 	        </page>
 	        <page title="Settings">
@@ -380,4 +380,13 @@
 	<action-method name="action-set-partner-seq" >
 		<call class="com.axelor.apps.base.web.PartnerControllerSimple" method="setPartnerSequence"/>
 	</action-method>
+    
+    <action-validate name="action-partner-company-set-validate">
+   		<alert message="Some company settings are missing. On the company settings, in the account tab, please fill in the 2 fields Customer account and supplier account. This field will be used by default for the accounting situation for each company."/>
+	</action-validate>
+	
+	<action-method name="action-create-accounting-situation" >
+		<call class="com.axelor.apps.base.web.PartnerControllerSimple" method="createAccountingSituations"/>
+	</action-method>
+	
 </object-views>
