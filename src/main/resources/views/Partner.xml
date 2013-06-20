@@ -163,10 +163,10 @@
                     </group>
                 </group>
 			</page>
-	        <page name="compteClient" title="Customer balance">
+	        <page name="compteClient" title="Customer balance" hideIf="isContact">
 	            <field name="accountingSituationList" colSpan="4" widget="MasterDetail" onSelect="action-account-accounting-situation-method-update-customer-account"/>
 	        </page>
-	        <page name="reportedBalance" title="Reported balance">
+	        <page name="reportedBalance" title="Reported balance" hideIf="isContact">
 	            <field name="reportedBalanceList" colSpan="4">
 	                <grid name="reported-balance-grid" title="Reported balances" model="com.axelor.apps.account.db.ReportedBalance">
 	                    <field name="company"/>
