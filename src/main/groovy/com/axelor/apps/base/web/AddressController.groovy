@@ -1,15 +1,19 @@
 package com.axelor.apps.base.web
 
 import groovy.util.logging.Slf4j
+import wslite.rest.ContentType
+import wslite.rest.RESTClient
 
 import com.axelor.apps.base.db.Address
 import com.axelor.apps.base.db.AddressExport
 import com.axelor.apps.base.db.General
 import com.axelor.apps.base.db.Import
 import com.axelor.apps.base.db.PickListEntry
+import com.axelor.apps.base.service.administration.GeneralService
 import com.axelor.data.Importer
 import com.axelor.data.csv.CSVImporter
 import com.axelor.data.xml.XMLImporter
+import com.axelor.exception.service.TraceBackService
 import com.axelor.rpc.ActionRequest
 import com.axelor.rpc.ActionResponse
 import com.google.inject.Inject
@@ -224,4 +228,68 @@ class AddressController {
 			response.flash = "Import terminé."
 		}
 	}
+	
+	def void viewMap(ActionRequest request, ActionResponse response)  {
+		
+		Address address = request.context as Address
+		def qString = "${address.addressL4} ,${address.addressL6}"
+		log.debug("qString = {}", qString)
+		
+		try {
+
+			def restClient = new RESTClient("http://nominatim.openstreetmap.org/")
+			def restResponse = restClient.get( path:'/search',
+									   accept: ContentType.JSON,
+									   query:[q: qString,
+											format:'xml',
+											polygon: true,
+											addressdetails: true],
+									   headers:["HTTP referrer":"axelor"],
+									   connectTimeout: 5000,
+									   readTimeout: 10000,
+									   followRedirects: false,
+									   useCaches: false,
+									   sslTrustAllCerts: true )
+			
+			print restResponse.parsedResponseContent.text
+			def searchresults = new XmlSlurper().parseText(restResponse.parsedResponseContent.text)
+			def places = searchresults.place
+			log.debug("places.size() = {}", places.size())
+			if (places.size() > 1) {
+				response.flash = "<B>$qString</B> matches multiple locations. First selected."
+			}
+			def firstPlaceFound = places[0]
+			log.debug("firstPlaceFound = {}", firstPlaceFound)
+			
+			if (firstPlaceFound) {
+				log.debug("firstPlaceFound.@lat = {}", firstPlaceFound.@lat)
+				log.debug("firstPlaceFound.@lat.text() = {}", firstPlaceFound.@lat.text())
+				log.debug("firstPlaceFound.@lon = {}", firstPlaceFound.@lon)
+				log.debug("firstPlaceFound.@lon.text() = {}", firstPlaceFound.@lon.text())
+				def latit = new BigDecimal(firstPlaceFound.@lat.text())
+				def longit = new BigDecimal(firstPlaceFound.@lon.text())
+				
+				
+		
+				String url = "http://localhost/Leaflet/examples/oneMarker.html?x=$latit&y=$longit&z=18"
+				response.view = [
+					"title": "Map",
+					"resource": url,
+					"viewType": "html"
+				]
+				response.values = [
+					latit: latit,
+					longit: longit
+				]
+			}
+			else {
+				response.flash = "<B>$qString</B> not found"
+			}
+
+		}
+		catch(Exception e)  {
+			TraceBackService.trace(response, e) 
+		}
+	}
+	
 }

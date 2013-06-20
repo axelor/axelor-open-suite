@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<searchresults timestamp='Wed, 19 Jun 13 19:37:15 +0000'
+	attribution='Data © OpenStreetMap contributors, ODbL 1.0. http://www.openstreetmap.org/copyright'
+	querystring='135 pilkington avenue,birmingham' polygon='true'
+	exclude_place_ids='62311100'
+	more_url='http://nominatim.openstreetmap.org/search?format=xml&amp;exclude_place_ids=62311100&amp;polygon=1&amp;addressdetails=1&amp;q=135+pilkington+avenue%2Cbirmingham'>
+	<place place_id='62311100' osm_type='way' osm_id='90394480'
+		place_rank='30'
+		boundingbox="52.5487442016602,52.5488510131836,-1.81651306152344,-1.81634628772736"
+		polygonpoints='[["-1.816513","52.5487566"],["-1.8164913","52.548824"],["-1.8164685","52.5488213"],["-1.8164599","52.5488481"],["-1.8163464","52.5488346"],["-1.8163717","52.5487561"],["-1.816429","52.5487629"],["-1.816434","52.5487473"],["-1.816513","52.5487566"]]'
+		lat='52.5487977' lon='-1.81642903005944'
+		display_name='135, Pilkington Avenue, Castle Vale, Birmingham, West Midlands, England, B72 1LH, United Kingdom, European Union'
+		class='place' type='house' importance='0.701'>
+		<house_number>135</house_number>
+		<road>Pilkington Avenue</road>
+		<suburb>Castle Vale</suburb>
+		<city>Birmingham</city>
+		<county>West Midlands</county>
+		<state_district>West Midlands</state_district>
+		<state>England</state>
+		<postcode>B72 1LH</postcode>
+		<country>United Kingdom</country>
+		<country_code>gb</country_code>
+		<continent>European Union</continent>
+	</place>
+</searchresults>
