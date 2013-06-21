@@ -45,6 +45,10 @@
 	            <field name="currencyConversionLineList" colSpan="4"/>
 	        </page>
 	        <page title="Interfaces" cols="4">
+	            <group name="map" title="Mapping" colSpan="4">
+	                <field name="mapApiSelect"/>
+	                <button name="checkMapApi" title="Test mapping service connection" colSpan="2" onClick="com.axelor.apps.base.web.AddressController:checkMapApi"/>
+	            </group>
 	            <group name="qas" title="Addresses validation" colSpan="4">
 	                <field name="qasWsdlUrl"/>
 	                <button name="checkQasWsdl" title="Test connection to QAS webservice" colSpan="2" onClick="com.axelor.apps.base.web.AddressController:check"/>
