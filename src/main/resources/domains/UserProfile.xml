@@ -4,9 +4,11 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
 	<module name="base" package="com.axelor.apps.base.db" />
 	<entity name="UserProfile" sequential="true" >
-		<many-to-one name="driveUser" ref="com.axelor.auth.db.User" title="Drive User" orphan="true"  ></many-to-one>
+	
+		<many-to-one name="driveUser" ref="com.axelor.auth.db.User" title="Drive User" orphan="true" />
 		<string name="emailId" title="Email Id" />
 		<string name="name" title="Name" namecolumn="true" />		
-		<string name="permissionId" title="Account Id" hidden="true" help="Google Account Id/Permission Id to share File"></string>
+		<string name="permissionId" title="Account Id" hidden="true" help="Google Account Id/Permission Id to share File"/>
+	
 	</entity>
 </domain-models>
