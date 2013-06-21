@@ -24,7 +24,7 @@
 	            <field name="period"/>
 	            <field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form"/>
 	            <field name="agency"/>
-	            <field name="invoice" grid-view="invoice-grid" form-view="invoice-form"/>
+	            <field name="invoice" domain="self.company = :company" grid-view="invoice-grid" form-view="invoice-form"/>
 	            <field name="journal" domain="self.inactiveOk != true"/>
 	            <field name="paymentMode"/>
 	            <field name="paymentVoucher"/>
@@ -34,17 +34,16 @@
 				        <field name="name"/>
 				        <field name="date"/>
 				        <field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form"/>
-				        <field name="account"/>
+				        <field name="account" onSelect="action-move-line-attrs-domain-account"/>
 				        <field name="move.company"/>
 				        <field name="debit"/>
 				        <field name="credit"/>
 				        <field name="amountRemaining"/>
 				    </grid>
-	            	<form title="Move line" onNew="action-move-line-attrs-collapse-irrecoverable-group,action-move-line-record-get-move-informations,action-move-line-record-get-first-move-line-informations">
+	            	<form title="Move line" onNew="action-move-line-attrs-collapse-irrecoverable-group,action-move-line-record-get-move-informations,action-move-line-record-get-first-move-line-informations,action-move-line-attrs-hidden-reconcileLists">
 					    <notebook colSpan="4">
 					    	<page title="Informations" colSpan="4">
 						        <field name="name"/>
-						        <field name="company"/>
 						        <break/>
 						        <field name="date"/>
 						        <field name="dueDate"/>
@@ -52,8 +51,8 @@
 						        <break/>
 						        <field name="account" onSelect="action-move-line-attrs-domain-account"/>
 				    		    <break/>
-						        <field name="debit"/>
-						        <field name="credit"/>
+						        <field name="debit" onChange="action-move-line-debit-credit-clean,action-move-line-debit-credit-validate"/>
+						        <field name="credit" onChange="action-move-line-debit-credit-clean,action-move-line-debit-credit-validate"/>
 						        <field name="amountPaid"/>
 						        <field name="amountRemaining"/>
 						        <field name="interbankCodeLine"/>
@@ -105,6 +104,7 @@
         <field name="agency" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserAgency()"/>
 		<field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
 		<field name="getInfoFromFirstMoveLineOk" expr="eval: true"/>
+		<field name="date" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="date == null"/>
     </action-record>
    
 	<!-- ACTION ATTRS -->

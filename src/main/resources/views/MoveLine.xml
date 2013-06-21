@@ -8,7 +8,7 @@
         <field name="date"/>
         <field name="partner"/>
         <field name="account"/>
-		<field name="move.company"/>
+        <field name="move.company"/>
         <field name="debit"/>
         <field name="credit"/>
         <field name="amountRemaining"/>
@@ -16,12 +16,12 @@
     
     <form name="move-line-form" title="Move line" model="com.axelor.apps.account.db.MoveLine" cols="4"
     onLoad="action-move-line-attrs-collapse-irrecoverable-group" 
-    onNew="action-move-line-attrs-collapse-irrecoverable-group,action-move-line-attrs-contractLine-readonly,action-move-line-record-get-move-informations,action-move-line-record-get-first-move-line-informations">
+    onNew="action-move-line-attrs-collapse-irrecoverable-group,action-move-line-attrs-contractLine-readonly,action-move-line-record-get-move-informations,action-move-line-record-get-first-move-line-informations,action-move-line-attrs-hidden-reconcileLists">
     	<notebook colSpan="4">
     	<page title="Informations" colSpan="4">
 	        <field name="name"/>
 	        <field name="move"/>
-   	        <field name="move.company"/>
+	        <field name="move.company"/>
    	        <break/>
 	        <field name="date"/>
 	        <field name="dueDate"/>
@@ -30,8 +30,8 @@
 	        <break/>
 	        <field name="account" onSelect="action-move-line-attrs-domain-account"/>
    	        <break/>
-	        <field name="debit"/>
-	        <field name="credit"/>
+	        <field name="debit" onChange="action-move-line-debit-credit-clean,action-move-line-debit-credit-validate"/>
+	        <field name="credit" onChange="action-move-line-debit-credit-clean,action-move-line-debit-credit-validate"/>
 	        <field name="amountPaid"/>
 	        <field name="amountRemaining"/>
 	        <field name="interbankCodeLine"/>
@@ -71,7 +71,7 @@
 	
 	<action-record name="action-move-line-record-get-move-informations" model="com.axelor.apps.account.db.MoveLine">
 		<field name="partner" expr="eval: _parent?.partner"/>
-		<field name="date" expr="eval: _parent?.date"/>
+		<field name="date" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="date == null"/>
 		<field name="dueDate" expr="eval: _parent?.date"/>
 	</action-record>
 	
@@ -86,7 +86,21 @@
 	</action-record>
 	
 	<action-attrs name="action-move-line-attrs-domain-account">
-    	<attribute name="domain" for="account" expr="eval: &quot; self.company.id = ${_parent?.company?.id}&quot;" if="eval: _parent?.company != null"/>
+    	<attribute name="domain" for="account" expr="eval: &quot;self.company.id = ${_parent?.company.id}&quot;" if="_parent?.company"/>
 	</action-attrs>
+	
+	<action-attrs name="action-move-line-attrs-hidden-reconcileLists">
+    	<attribute name="hidden" for="reconcileLists" expr="eval: _parent?.state == 'draft'" if="eval: _parent?.state != null"/>
+	</action-attrs>
+	
+	<action-validate name="action-move-line-debit-credit-validate">
+		<alert message="An accounting moveline must have higher a credit value or a debit value." if="debit != null &amp;&amp; credit != null &amp;&amp; ((debit &gt; 0 &amp;&amp; credit == 0) || (credit &gt; 0 &amp;&amp; debit == 0))"/>
+		<alert message="Debit and credit value cannot be negative." if="(debit &lt; 0)||(credit &lt; 0)"/>
+	</action-validate> 
+
+	<action-record name="action-move-line-debit-credit-clean" model="com.axelor.apps.account.db.MoveLine">
+		<field name="debit" expr="0" if="debit &lt; 0"/>
+		<field name="credit" expr="0" if="credit &lt; 0"/>
+	</action-record>
 	
 </object-views>
