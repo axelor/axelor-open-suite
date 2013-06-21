@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
 	<module name="base" package="com.axelor.apps.base.db" />
-	<entity name="SocialNetworking">
+	<entity name="SocialNet">
 		<string name="name" title="Name" help="Name of Social Networking"></string>
 		<string name="website" title="Website" help="Website for Social Networking"></string>
 	</entity>

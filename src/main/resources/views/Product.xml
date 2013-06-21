@@ -92,7 +92,7 @@
 							<group colSpan="1" cols="2">
 								<button name="postit" title="Post" hidden="true"
 									onClick="com.axelor.sn.web.SNCommonController:postOnSN,action-showing-seen, save, com.axelor.sn.web.SNCommonController:refreshSnPostComments" />
-								<button name="cancle" title="Cancle" hidden="true"
+								<button name="cancel" title="Cancel" hidden="true"
 									onClick="action-showing-seen" />
 							</group>
 						</group>
