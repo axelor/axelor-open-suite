@@ -44,7 +44,7 @@ class ProductControllerSimple {
 		if(!productIds.equals("")){
 			productIds = "&ProductIds="+productIds.substring(0, productIds.size()-1)	
 		}
-		
+		print("Context.."+request.context)
 		url.append("${axelorSettings.get('axelor.report.engine', '')}/frameset?__report=report/ProductCatalog_PGQL.rptdesign&__format=pdf${productIds}&UserId=${user.id}&CurrYear=${currentYear}&__locale=fr_FR${axelorSettings.get('axelor.report.engine.datasource')}")
 		log.debug("URL : {}", url)
 		String urlNotExist = URLService.notExist(url.toString())

@@ -27,7 +27,6 @@
         <structure>
             <property name="name">odaPassword</property>
             <property name="id">209</property>
-            <expression name="value" type="javascript">params["Password"].value</expression>
         </structure>
         <structure>
             <property name="name">odaJndiName</property>
@@ -48,7 +47,7 @@
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">96</property>
     <parameters>
-        <scalar-parameter name="ProductId" id="211">
+        <scalar-parameter name="ProductIds" id="211">
             <property name="hidden">false</property>
             <text-property name="promptText">Product ID</text-property>
             <property name="valueType">static</property>
@@ -218,11 +217,11 @@
             <list-property name="filter">
                 <structure>
                     <property name="operator">in</property>
-                    <expression name="expr" type="javascript">if(params["ProductId"].value != null){
+                    <expression name="expr" type="javascript">if(params["ProductIds"].value != null){
 row["id"]}</expression>
                     <simple-property-list name="value1">
-                        <value>if(params["ProductId"].value != null){
-params["ProductId"].value.split(",")
+                        <value>if(params["ProductIds"].value != null){
+params["ProductIds"].value.split(",")
 }</value>
                     </simple-property-list>
                     <property name="updateAggregation">true</property>
