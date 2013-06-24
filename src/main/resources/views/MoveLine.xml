@@ -30,8 +30,8 @@
 	        <break/>
 	        <field name="account" onSelect="action-move-line-attrs-domain-account"/>
    	        <break/>
-	        <field name="debit" onChange="action-move-line-debit-credit-clean,action-move-line-debit-credit-validate"/>
-	        <field name="credit" onChange="action-move-line-debit-credit-clean,action-move-line-debit-credit-validate"/>
+	        <field name="debit" onChange="action-move-line-debit-credit-validate,action-move-line-debit-credit-clean"/>
+	        <field name="credit" onChange="action-move-line-debit-credit-validate,action-move-line-debit-credit-clean"/>
 	        <field name="amountPaid"/>
 	        <field name="amountRemaining"/>
 	        <field name="interbankCodeLine"/>
@@ -94,8 +94,8 @@
 	</action-attrs>
 	
 	<action-validate name="action-move-line-debit-credit-validate">
-		<alert message="An accounting moveline must have higher a credit value or a debit value." if="debit != null &amp;&amp; credit != null &amp;&amp; ((debit &gt; 0 &amp;&amp; credit == 0) || (credit &gt; 0 &amp;&amp; debit == 0))"/>
-		<alert message="Debit and credit value cannot be negative." if="(debit &lt; 0)||(credit &lt; 0)"/>
+		<alert message="An accounting moveline must have higher a credit value or a debit value." if="(debit &gt; 0 &amp;&amp; credit == 0) || (credit &gt; 0 &amp;&amp; debit == 0)"/>
+		<alert message="Debit and credit value cannot be negative." if="(debit != null &amp;&amp; debit &lt; 0)||(credit != null &amp;&amp; credit &lt; 0)"/>
 	</action-validate> 
 
 	<action-record name="action-move-line-debit-credit-clean" model="com.axelor.apps.account.db.MoveLine">

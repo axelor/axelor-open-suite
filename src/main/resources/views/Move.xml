@@ -51,8 +51,8 @@
 						        <break/>
 						        <field name="account" onSelect="action-move-line-attrs-domain-account"/>
 				    		    <break/>
-						        <field name="debit" onChange="action-move-line-debit-credit-clean,action-move-line-debit-credit-validate"/>
-						        <field name="credit" onChange="action-move-line-debit-credit-clean,action-move-line-debit-credit-validate"/>
+						        <field name="debit" onChange="action-move-line-debit-credit-validate,action-move-line-debit-credit-clean"/>
+						        <field name="credit" onChange="action-move-line-debit-credit-validate,action-move-line-debit-credit-clean"/>
 						        <field name="amountPaid"/>
 						        <field name="amountRemaining"/>
 						        <field name="interbankCodeLine"/>
