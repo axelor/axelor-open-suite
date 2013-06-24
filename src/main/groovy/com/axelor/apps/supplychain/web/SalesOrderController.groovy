@@ -17,6 +17,7 @@ import com.google.inject.Inject
 import com.axelor.auth.db.User
 import com.axelor.apps.base.db.GoogleFile
 import com.axelor.apps.base.db.IAdministration;
+import com.axelor.apps.base.db.UserInfo
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.googleapps.document.DocumentService
 import com.axelor.googleapps.userutils.Utils
@@ -45,8 +46,9 @@ class SalesOrderController {
 	   // in this line change the Class as per the Module requirement i.e SalesOrder class here used
 	   SalesOrder dataObject = request.context as SalesOrder
 	   User currentUser=request.context.get("__user__")
+	   UserInfo currentUserInfo = UserInfo.all().filter("self.internalUser = ?1", currentUser).fetchOne();
 	   
-	   GoogleFile documentData = documentSeriveObj.createDocumentWithTemplate(currentUser,dataObject);
+	   GoogleFile documentData = documentSeriveObj.createDocumentWithTemplate(currentUserInfo,dataObject);
 	   if(documentData == null){
 			   response.flash = "The Document Can't be created because the template for this type of Entity not Found..!"
 			return
