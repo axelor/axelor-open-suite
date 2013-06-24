@@ -107,11 +107,11 @@
 			</page>
 			<page title="Additionnal information">
 				<field name="personalInfo" widget="NestedEditor" summary-view="true"
-					form-view="personal-info-edit-form"/>
+					form-view="personal-info-edit-form" hidden="true"/>
 			</page>
 			<page title="Competences">
 				<field name="competence" widget="NestedEditor" summary-view="true"
-					form-view="competence-edit-form"/>
+					form-view="competence-edit-form" hidden="true"/>
 			</page>
 			<page title="Other opportunities">
 				<field name="candidateOtherOpportunityList" grid-view="candidate-other-opportunity-grid" form-view="candidate-other-opportunity-form"/>

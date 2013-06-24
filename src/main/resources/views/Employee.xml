@@ -84,7 +84,7 @@
 <!-- 			<page title="Holidays"> -->
 <!-- 			</page> -->
 			<page title="Competences">
-				<field name="competence" widget="NestedEditor" summary-view="true" form-view="competence-edit-form"/>
+				<field name="competence" widget="NestedEditor" summary-view="true" form-view="competence-edit-form" hidden="true"/>
 			</page>
 			<page title="Hierarchy">
 				<field name="supervisedBySelect" />
