@@ -128,7 +128,7 @@
 							<grid title="All Sent Messages">
 								<field name="socialNet" title="Social Networking Type"
 									hidden="true"></field>
-								<field name="userId" title="To"></field>
+								<field name="partner" title="To"></field>
 								<field name="messageText"></field>
 								<field name="messageDate" title="Date and Time" hidden="true"></field>
 								<field name="messageId" />
@@ -137,8 +137,8 @@
 							<form title="Compose New Message" onNew="action-fill-direct-message">
 								<field name="socialNet" title="Social Networking Type"
 									hidden="true"></field>
-								<field name="curUser" title="Current User" hidden="true"></field>
-								<field name="userId" title="To" readonly="true"></field>
+								<field name="userInfo" title="Current User" hidden="true"></field>
+								<field name="partner" title="To" readonly="true"></field>
 								<break />
 								<field name="subject" hideIf="socialNet.name != 'linkedin'"></field>
 								<break />
@@ -365,7 +365,7 @@
 		model="com.axelor.apps.base.db.SnSendMessage">
 		<field name="socialNet" expr="eval:_parent.socialNet" />
 		<field name="curUser" expr="eval:__user__" />
-		<field name="userId" expr="eval:_parent" />
+		<field name="partner" expr="eval:_parent" />
 		<field name="messageDate" expr="eval:__datetime__" />
 	</action-record>
 

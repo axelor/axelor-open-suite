@@ -4,12 +4,12 @@
  	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
  	<module name="base" package="com.axelor.apps.base.db" />
  	<entity name="SnSendMessage">
- 		<many-to-one name="userId" ref="com.axelor.apps.base.db.Partner" orphan="true" />
+ 		<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" orphan="true" />
  		<string name="messageText" multiline="true" max="140"/>
  		<string name="messageId" />
  		<string name="subject" />
  		<datetime name="messageDate" tz="true" />
- 		<many-to-one name="curUser" ref="com.axelor.auth.db.User" />
+ 		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" />
  		<many-to-one name="socialNet" ref="com.axelor.apps.base.db.SocialNet" orphan="true" />
  	</entity>
  </domain-models>

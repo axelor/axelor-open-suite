@@ -8,6 +8,6 @@
 	<entity name="LinkedinParameters">
 		<integer name="recordNumbers" title="Number of Records" min="0" max="100" />
 		<integer name="days" title="Number of Days" min="0" max="15" />
-		<many-to-one name="curUser" ref="com.axelor.auth.db.User" unique="true"/>
+		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" unique="true"/>
 	</entity>
 </domain-models>

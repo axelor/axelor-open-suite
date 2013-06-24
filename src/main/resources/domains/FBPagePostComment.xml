@@ -11,7 +11,7 @@
 		<string name="commentTime" title="Comment Time" help="Comments Date and Time"></string>
 		<string name="comment" title="Comment" help="Comments Content"></string>
 		<string name="commentLikes" title="Likes" help="Likes on Comment"></string>
-		<many-to-one name="curUser" ref="com.axelor.auth.db.User" help="Currently Active ERP User"></many-to-one>
+		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" help="Currently Active ERP User"></many-to-one>
 	</entity>
 </domain-models>
 
