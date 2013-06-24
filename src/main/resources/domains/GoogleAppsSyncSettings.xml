@@ -7,7 +7,7 @@
 		
 		<integer name="filesModifiedWithin"  required="true" title="Get Files Modified Within" />
 		<boolean name="getSharedWithMeFiles" required="true" title="Get Files Shared With Me"  />
-		<many-to-one name="driveUser" ref="com.axelor.auth.db.User" orphan="true"  />
+		<many-to-one name="driveUserInfo" ref="com.axelor.apps.base.db.UserInfo" orphan="true"  />
 		
 	</entity>
 </domain-models>

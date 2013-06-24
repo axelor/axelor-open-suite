@@ -20,7 +20,7 @@
 		<boolean name="writable" default="true" help="set if file is shared With me"/>
 		<string name="sharedBy"  help="name of user who has shared file"/>
 				
-		<many-to-one name="driveUser" ref="com.axelor.auth.db.User" orphan="true" help="Google apps User"/>
+		<many-to-one name="driveUserInfo" ref="com.axelor.apps.base.db.UserInfo" orphan="true" help="Google apps User"/>
 		<many-to-one name="googleDirectory" ref="GoogleDirectory" orphan="true" help="Google Directory"/>
 		<!-- used for representing set of templates uses this file as template to associate to model  -->
 		<one-to-many name="templates" ref="com.axelor.apps.base.db.TemplateFile" mappedBy="googleFile" help="Template to create Document"/>
