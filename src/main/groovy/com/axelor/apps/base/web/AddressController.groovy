@@ -8,6 +8,7 @@ import java.math.RoundingMode
 import wslite.rest.ContentType
 import wslite.rest.RESTClient
 
+import com.axelor.apps.account.db.Invoice
 import com.axelor.apps.base.db.Address
 import com.axelor.apps.base.db.AddressExport
 import com.axelor.apps.base.db.General
@@ -406,13 +407,15 @@ class AddressController {
 		// Only allowed for google maps to prevent overloading OSM
 		if (GeneralService.getGeneral().mapApiSelect == "1") {
 			PartnerList partnerList = request.context as PartnerList
+			
 			def file = new File("/home/arye/DEV/HTML/latlng_${partnerList.id}.csv")
-			file.write("latitude,longitude,fullName\n")
+			file.write("latitude,longitude,fullName,turnover\n")
 			
 
 			for (partner in partnerList.partnerSet) {
 				//def address = partner.mainInvoicingAddress
 				if (partner.mainInvoicingAddress) {
+					
 					def address = Address.find(partner.mainInvoicingAddress.id)
 					if (!(address?.latit && address?.longit)) {
 						def qString = "${address.addressL4} ,${address.addressL6}"
@@ -424,15 +427,22 @@ class AddressController {
 						address.save()
 					}
 					if (address?.latit && address?.longit) {
-						log.debug("appending = {}", "${address.latit},${address?.longit},${partner.fullName}\n")
+						//def turnover = Invoice.all().filter("self.partner.id = ? AND self.status.code = 'val'", partner.id).fetch().sum{ it.inTaxTotal }
+						def turnover = Invoice.all().filter("self.partner.id = ?", partner.id).fetch().sum{ it.inTaxTotal }
+						log.debug("appending = {}", "${address.latit},${address?.longit},${partner.fullName},${turnover?:0.0}\n")
 						file.withWriterAppend('UTF-8') {
-							it.write("${address.latit},${address?.longit},${partner.fullName}\n")
+							it.write("${address.latit},${address?.longit},${partner.fullName},${turnover?:0.0}\n")
 						}
 					}
 				}
 			}
 			//response.values = [partnerList : partnerList]
-			String url = "http://localhost/HTML/gmaps_xhr.html?file=latlng_${partnerList.id}.csv"
+			String url = ""
+			if (partnerList.isCluster)
+				url = "http://localhost/HTML/cluster_gmaps_xhr.html?file=latlng_${partnerList.id}.csv"
+			else
+				url = "http://localhost/HTML/gmaps_xhr.html?file=latlng_${partnerList.id}.csv"
+			
 			response.view = [
 				"title": "Sales map",
 				"resource": url,
