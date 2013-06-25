@@ -9,8 +9,8 @@
 		<string name="messageFrom" />
 		<string name="messageContent" multiline="true" max="5000"/>
 		<string name="messageDate" max="50"/>
-		<many-to-one name="curUser" ref="com.axelor.auth.db.User" />
-		<many-to-one name="snType" ref="com.axelor.apps.base.db.SocialNetworking"/>
+		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" />
+		<many-to-one name="socialNet" ref="com.axelor.apps.base.db.SocialNet"/>
 	</entity>
 </domain-models>
 

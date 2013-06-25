@@ -8,6 +8,6 @@
 		<string name="title" title="Content of Update" help="Content of Notification"></string>
 		<string name="link" title="Direct Link To Update" help="Link To Content"></string>
 		<string name="updateTime" title="Time of Update" help="Time of Notification Creation"></string>
-		<many-to-one name="curUser" ref="com.axelor.auth.db.User" help="Currently Active ERP User"></many-to-one>
+		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" help="Currently Active ERP User"></many-to-one>
 	</entity>
 </domain-models>

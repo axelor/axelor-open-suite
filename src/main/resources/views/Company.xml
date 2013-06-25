@@ -8,10 +8,10 @@
         <field name="code"/>
         <field name="address"/>
     </grid>
-    
-    <tree name="company-tree" title="Companies" model="com.axelor.apps.base.db.Company">
-        <field name="name"/>
-    </tree>
+
+<!--     <tree name="company-tree" title="Companies" model="com.axelor.apps.base.db.Company"> -->
+<!--         <field name="name"/> -->
+<!--     </tree> -->
     
     <form name="company-form" title="Company" model="com.axelor.apps.base.db.Company" cols="4">
 	    
@@ -33,17 +33,18 @@
 	                <field name="customerCreditNoteJournal" domain="self.inactiveOk != true"/>
 	                <field name="supplierPurchaseJournal" domain="self.inactiveOk != true"/>
 	                <field name="supplierCreditNoteJournal" domain="self.inactiveOk != true"/>
-	                <field name="technicalJournal"/>
-	                <field name="majorAccountJournal"/>
-	                <field name="invoiceDirectDebitJournal"/>
-	                <field name="rejectJournal"/>
-	                <field name="reimbursementJournal"/>
-	                <field name="accountClearanceJournal"/>
-	                <field name="irrecoverableJournal"/>
-	                <field name="miscOperationJournal"/>
+	                <field name="technicalJournal" domain="self.inactiveOk != true"/>
+	                <field name="majorAccountJournal" domain="self.inactiveOk != true"/>
+	                <field name="invoiceDirectDebitJournal" domain="self.inactiveOk != true"/>
+	                <field name="rejectJournal" domain="self.inactiveOk != true"/>
+	                <field name="reimbursementJournal" domain="self.inactiveOk != true"/>
+	                <field name="accountClearanceJournal" domain="self.inactiveOk != true"/>
+	                <field name="irrecoverableJournal" domain="self.inactiveOk != true"/>
+	                <field name="miscOperationJournal" domain="self.inactiveOk != true"/>
 	                <break/>
 	            <separator title="Accounts" colSpan="6"/>
 	                <field name="customerAccount" domain="self.company.code = :code"/>
+	                <field name="supplierAccount" domain="self.company.code = :code"/>
   	           	 	<field name="doubtfulCustomerAccount" domain="self.company.code = :code"/>
 	                <field name="irrecoverableAccount" domain="self.company.code = :code"/>
 	     			<break/>
@@ -82,15 +83,15 @@
             </page>
              <page title="Bank details" cols="4">
              	<field name="defaultBankDetails" colSpan="2"/>
-                <field name="bankDetailsSet" grid-view="bank-details-grid" form-view="bank-details-form" colSpan="4" noLabel="true"/>
+                <field name="bankDetailsSet" grid-view="bank-details-grid" form-view="bank-details-form" colSpan="4" showTitle="false"/>
             </page>
             <page title="Notes" cols="1">
-                <field name="notes" noLabel="true"/>
+                <field name="notes" showTitle="false"/>
             </page>
             <page title="Receivables recovery" cols="4">
             	<field name="mailTransitTime"/>
             	<break/>
-                <field name="reminderConfigLineList" noLabel="true" colSpan="4"/>
+                <field name="reminderConfigLineList" showTitle="false" colSpan="4"/>
             </page>
             <page title="Reimbursement" cols="4">
             	<separator title="Configuration" colSpan="6"/>

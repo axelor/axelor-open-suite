@@ -4,12 +4,14 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
 	<module name="base" package="com.axelor.apps.base.db" />
 	<entity name="TwitterHomeTimeline">
-		<long name="timelineContentId" title="Content ID" hidden="true"></long>
-		<string name="screenName" title="Screen Name of User"></string>
-		<string name="actualName" title="Name of User"></string>
-		<string name="actualContent" multiline="true" title="Content of Tweet"></string>
-		<string name="contentDate" title="Created Date"></string>	
-		<many-to-one name="curUser" ref="com.axelor.auth.db.User" hidden="true"></many-to-one>
+		<long name="timelineContentId" title="Content ID" hidden="true"/>
+		<string name="account" title="Account"/>
+		<string name="screenName" title="From"/>
+		<string name="actualName" title="Name of User"/>
+		<string name="toScreenName" title="To"/>
+		<string name="content" multiline="true" title="Content of Tweet"/>
+		<string name="contentDate" title="Created Date"/>
+		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" hidden="true"/>
 	</entity>
 	</domain-models>
 	 

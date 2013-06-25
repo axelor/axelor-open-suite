@@ -11,6 +11,7 @@
 		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="Titulaire"/>
 		<string name="name" title="Family Name" required="true"/>
 		<string name="firstName" title="First Name" required="true"/>
+		<binary name="picture" image="true" title="Photo"/>
 		<string name="mobilePhone" title="Mobile N°"/>
 		<string name="fixedPhone" title="Fixed phone N°"/>
 		<string name="email" title="E-mail" />

@@ -5,25 +5,27 @@
 
 	<module name="base" package="com.axelor.apps.base.db" />
 	<entity name="GoogleFile">
-				<string name="fileId" title="File Id" help="Google File Id"></string>
-				<string name="fileName" title="File Name" namecolumn="true" help="File name"> </string>
-				<string name="fileType" title="File Type" help="File type" ></string>
-				<string name="fileSize" title="File Size" help="File Size in bytes"></string>
-				<string name="lastModified" title="Last Modified" help="Last modified Time of File" ></string>
-				<string name="fileContent" multiline="true" large="true" help="File Content, Not storing"></string>	
-				<boolean name="trashed" default="false" help="Check File is Trahsed or not"/>
+	
+		<string name="fileId" title="File Id" help="Google File Id"/>
+		<string name="fileName" title="File Name" namecolumn="true" help="File name"/>
+		<string name="fileType" title="File Type" help="File type"/>
+		<string name="fileSize" title="File Size" help="File Size in bytes"/>
+		<string name="lastModified" title="Last Modified" help="Last modified Time of File"/>
+		<string name="fileContent" multiline="true" large="true" help="File Content, Not storing"/>	
+		<boolean name="trashed" default="false" help="Check File is Trahsed or not"/>
 				
-				<!-- following three attributes used for only inserting the files meta data as shared with me files not used in form of google file
-						and they are helpful in filtering the shared with me files for current user	 -->
-				<boolean name="sharedWithMe" default="false" help="set if File is shared With me file" />
-				<boolean name="writable" default="true" help="set if file is shared With me" ></boolean>
-				<string name="sharedBy"  help="name of user who has shared file"/>
+		<!-- following three attributes used for only inserting the files meta data as shared with me files not used in form of google file
+		and they are helpful in filtering the shared with me files for current user	 -->
+		<boolean name="sharedWithMe" default="false" help="set if File is shared With me file" />
+		<boolean name="writable" default="true" help="set if file is shared With me"/>
+		<string name="sharedBy"  help="name of user who has shared file"/>
 				
-				<many-to-one name="driveUser" ref="com.axelor.auth.db.User" orphan="true" help="Google apps User"/>
-				<many-to-one name="googleDirectory" ref="GoogleDirectory" orphan="true" help="Google Directory"></many-to-one>
-				<!-- used for representing set of templates uses this file as template to associate to model  -->
-				<one-to-many name="templates" ref="com.axelor.apps.base.db.TemplateFile" mappedBy="googleFile" help="Template to create Document"/>
-				<one-to-many name="filePermissions" ref="com.axelor.apps.base.db.FilePermission" mappedBy="googleFile" help="File permission to share File" />
+		<many-to-one name="driveUserInfo" ref="com.axelor.apps.base.db.UserInfo" orphan="true" help="Google apps User"/>
+		<many-to-one name="googleDirectory" ref="GoogleDirectory" orphan="true" help="Google Directory"/>
+		<!-- used for representing set of templates uses this file as template to associate to model  -->
+		<one-to-many name="templates" ref="com.axelor.apps.base.db.TemplateFile" mappedBy="googleFile" help="Template to create Document"/>
+		<one-to-many name="filePermissionsList" ref="com.axelor.apps.base.db.FilePermission" mappedBy="googleFile" help="File permission to share File" />
+				
 	</entity>     
 </domain-models>   
 

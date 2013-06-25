@@ -8,7 +8,7 @@
 			orphan="true" help="Page on Which Post need to Create" />
 		<string name="content" title="Content" max="1000" multiline="true" help="Content To post on Page"></string>
 		<string name="acknowledgment" title="Acknowledgment" help="Unique ID return by FB on Successfull Post"></string>
-		<many-to-one name="curUser" ref="com.axelor.auth.db.User" help="Currently Active ERP User" />
+		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" help="Currently Active ERP User" />
 		<datetime name="postedTime" tz="true" help="Date and Time of Post"></datetime>
 		<one-to-many name="postedComments" ref="com.axelor.apps.base.db.FBPageComment"
 			mappedBy="contentid" help="Comments Received on Posted Content" />

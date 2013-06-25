@@ -12,7 +12,7 @@
 		<string name="discussionFrom" title="From" />
 		<datetime name="discussionTime" tz="true" title="Time" />
 		<many-to-one name="groupId" ref="com.axelor.apps.base.db.LnGroup" />
-		<many-to-one name="curUser" ref="com.axelor.auth.db.User" title="User" />
+		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="User" />
 		<one-to-many name="discussionCommentsList" ref="com.axelor.apps.base.db.LnGroupDiscussionComments" mappedBy="discussionId" />
 		<boolean name="isByUser" default="true" />
 	</entity>

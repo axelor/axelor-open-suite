@@ -972,5 +972,10 @@
 		<option value="3">Equal</option>
 	</selection>
 
+	<selection name="base.general.map.api.select">
+		<option value="1">Google</option>
+		<option value="2">OSM</option>
+	</selection>
+
 
 </object-views>

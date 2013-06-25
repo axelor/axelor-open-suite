@@ -4,10 +4,12 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
 	<module name="base" package="com.axelor.apps.base.db" />
 		<entity name="FilePermission">	
-				<boolean name="editable"  help="Reder and Writer Role"></boolean>
-				<boolean name="notifyEmail" default="false" help="Notify email to user" ></boolean>
-				<many-to-one name="sharingUser" ref="com.axelor.apps.base.db.UserProfile"  orphan="true" help="Sharing User Profile"/>
-				<many-to-one name="googleFile" ref="com.axelor.apps.base.db.GoogleFile" orphan="true" help="Google File to share" ></many-to-one>
-				<string name="shareToEmail" ></string>
+		
+			<boolean name="editable"  help="Reder and Writer Role"/>
+			<boolean name="notifyEmail" default="false" help="Notify email to user"/>
+			<many-to-one name="sharingUser" ref="com.axelor.apps.base.db.UserProfile"  orphan="true" help="Sharing User Profile"/>
+			<many-to-one name="googleFile" ref="com.axelor.apps.base.db.GoogleFile" orphan="true" help="Google File to share"/>
+			<string name="shareToEmail"/>
+			
 		</entity>
 </domain-models>

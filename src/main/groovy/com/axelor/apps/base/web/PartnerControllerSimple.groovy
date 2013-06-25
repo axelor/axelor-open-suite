@@ -1,9 +1,13 @@
 package com.axelor.apps.base.web
 
+import java.util.List;
+
 import com.axelor.apps.AxelorSettings
+import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner
+import com.axelor.apps.base.service.PartnerService
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException
 import com.axelor.apps.tool.net.URLService
@@ -19,6 +23,9 @@ class PartnerControllerSimple {
 	
 	@Inject
 	SequenceService sequenceService;
+	
+	@Inject
+	PartnerService partnerService;
 	
 	void setPartnerSequence(ActionRequest request, ActionResponse response) {
 		Partner partner = request.context as Partner
@@ -70,4 +77,18 @@ class PartnerControllerSimple {
 		}
 	}
 	
+	
+	def void createAccountingSituations(ActionRequest request, ActionResponse response) {
+		
+		Partner partner = request.context as Partner
+		
+		if(partner) {
+			List<AccountingSituation> accountingSituationList = partnerService.createAccountingSituation(partner)
+			
+			if(accountingSituationList) {
+				
+				response.values = ["accountingSituationList": accountingSituationList]
+			}
+		}
+	}
 }

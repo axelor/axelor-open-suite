@@ -9,7 +9,7 @@
 	<string name="commentId" title="Comment id" />
 	<string name="commentText" title="Comment" multiline="true" max="4000" />
 	<datetime name="commentTime" title="Time" tz="true" />
-	<many-to-one name="curUser" ref="com.axelor.auth.db.User" />
+	<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" />
 	<string name="fromUser" title="From"/> 
   </entity>
   

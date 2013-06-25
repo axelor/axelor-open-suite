@@ -17,6 +17,8 @@
 			<field name="addressL6" required="true" />
 			<field name="addressL7Country" required="true" />
 			<field name="inseeCode"/>
+			<field name="latit" />
+			<field name="longit" />
 		</group>
 		<group colSpan="4" cols="4" title="QAS" >
 			<field name="certifiedOk"/>
@@ -31,6 +33,7 @@
 		<group colSpan="4" cols="2">
 			<button name="select" title="Choose" onClick="com.axelor.apps.base.web.AddressController:select,save" />
 			<button name="validate" title="Validate" onClick="com.axelor.apps.base.web.AddressController:validate,save" />
+			<button name="map" title="View map" onClick="com.axelor.apps.base.web.AddressController:viewMap,save" />
 		</group>
 	</form>
 
