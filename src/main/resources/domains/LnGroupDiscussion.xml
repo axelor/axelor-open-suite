@@ -10,10 +10,10 @@
 		<string name="discussionSummary" title="Summary" max="4000" multiline="true" />
 		<string name="discussionTitle" title="Title" max="200" />
 		<string name="discussionFrom" title="From" />
-		<datetime name="discussionTime" tz="true" title="Time" />
-		<many-to-one name="groupId" ref="com.axelor.apps.base.db.LnGroup" />
+		<datetime name="discussionDateT" tz="true" title="Time" />
+		<many-to-one name="lnGroup" ref="com.axelor.apps.base.db.LnGroup" />
 		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="User" />
-		<one-to-many name="discussionCommentsList" ref="com.axelor.apps.base.db.LnGroupDiscussionComments" mappedBy="discussionId" />
+		<one-to-many name="lnGroupDiscussionCommentsList" ref="com.axelor.apps.base.db.LnGroupDiscussionComments" mappedBy="lnGroupDiscussion" />
 		<boolean name="isByUser" default="true" />
 	</entity>
 </domain-models>
