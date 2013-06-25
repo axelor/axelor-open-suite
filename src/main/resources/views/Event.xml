@@ -27,12 +27,12 @@
         <group title="Informations" cols="4" colSpan="1">
         	<field name="subject" colSpan="2"/>
 	        <field name="primaryStatusSelect" colSpan="2"/>
-	        <field name="secondaryStatusSelect" noLabel="true" colSpan="1"/>
+	        <field name="secondaryStatusSelect" showTitle="false" colSpan="1"/>
 	        <spacer/><break/>
 	        <group title="Meeting date" colSpan="4" cols="3" css="groupTitle">
 	        	<field name="startDateTime" colSpan="2"/>
 	         	<field name="durationHours" colSpan="2"/>
-		        <field name="durationMinutesSelect" noLabel="true" colSpan="1"/>
+		        <field name="durationMinutesSelect" showTitle="false" colSpan="1"/>
 	        </group>
 	        <spacer/><break/>
 	        <field name="description" widget="TEXT[height=4]" colSpan="4"/>
@@ -73,7 +73,7 @@
 		        <field name="startDateTime" onChange="action-meeting-method-compute-start-date-time"/>
 		        <field name="endDateTime" onChange="action-meeting-method-compute-end-date-time"/>
 		        <field name="durationHours" onChange="action-meeting-method-compute-duration"/>
-		        <field name="durationMinutesSelect" noLabel="true" colSpan="1"/>
+		        <field name="durationMinutesSelect" showTitle="false" colSpan="1"/>
 	        </group>
 	       	<spacer/><break/>
 	        <field name="location"/>
@@ -169,28 +169,28 @@
     	</group>
         <notebook colSpan="6">
         	<page title="Description" >
-        		<field name="description" widget="TEXT[height=4]" noLabel="true" colSpan="6"/>
+        		<field name="description" widget="TEXT[height=4]" showTitle="false" colSpan="6"/>
         	</page>
         	<page title="Comments">
-        		<field name="messageList" noLabel="true" colSpan="6">
+        		<field name="messageList" showTitle="false" colSpan="6">
         			<form title="Comment">
         				<group title="Informations" colSpan="4" readonly="true">
 				            <field name="sendedDate"/>
 				            <field name="sender"/>
 				        </group>
 				        <group title="Content" colSpan="4" readonly="true">
-				       	 	<field name="content" colSpan="4" noLabel="true" widget="html"/>
+				       	 	<field name="content" colSpan="4" showTitle="false" widget="html"/>
 				        </group>
         			</form>
         			<grid title="Comments">
 			            <field name="sendedDate"/>
 			            <field name="sender"/>
-			       	 	<field name="content" colSpan="4" noLabel="true" widget="html"/>
+			       	 	<field name="content" colSpan="4" showTitle="false" widget="html"/>
         			</grid>
         		</field>
         	</page>
         	<page title="Watchers">
-        		<field name="userInfoSet" noLabel="true" colSpan="6"/>
+        		<field name="userInfoSet" showTitle="false" colSpan="6"/>
         	</page>
         </notebook>
     </form>

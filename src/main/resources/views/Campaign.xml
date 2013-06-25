@@ -63,7 +63,7 @@
 		        </group>
         	</page>
         	<page title="Content">
-        		 <field name="htmlTemplate" noLabel="true" widget="NestedEditor" summary-view="true" edit-window="popup" form-view="html-template-form" canSelect="true"/>
+        		 <field name="htmlTemplate" showTitle="false" widget="NestedEditor" summary-view="true" edit-window="popup" form-view="html-template-form" canSelect="true"/>
         	</page>
         </notebook>
     </form>

@@ -19,13 +19,13 @@
     	</toolbar>
     
  		<group title="Header" colSpan="4">
- 			<group noLabel="true" colSpan="1">
+ 			<group showTitle="false" colSpan="1">
 	            <field name="picture" widget="image"/>
 	        </group>
-	        <group noLabel="true" colSpan="2" css="highlight">
-	        	<field name="titleSelect" colSpan="1" noLabel="true" readonly="true"/>
-	            <field name="name" colSpan="1" noLabel="true" readonly="true" />
-		        <field name="firstName" colSpan="1" noLabel="true" readonly="true"/>
+	        <group showTitle="false" colSpan="2" css="highlight">
+	        	<field name="titleSelect" colSpan="1" showTitle="false" readonly="true"/>
+	            <field name="name" colSpan="1" showTitle="false" readonly="true" />
+		        <field name="firstName" colSpan="1" showTitle="false" readonly="true"/>
 	        </group>
 <!-- 	    	<group title="Actions" colSpan="1" cols="1" canCollapse="true" collapseIf="true"> -->
 <!-- 	    		<button name="convertLead" title="Convert lead" colSpan="1" onClick="action-lead-method-convert-lead"  hideIf="statusSelect == 4"/> -->
