@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
 	<module name="base" package="com.axelor.apps.base.db" />
 	<entity name="TwitterSearch">
-		<many-to-one name="curUser" ref="com.axelor.auth.db.User"></many-to-one>
+		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo"></many-to-one>
 		<string name="tweetSource"></string>
 		<one-to-many name="tweetSeachResult" ref="com.axelor.apps.base.db.TwitterSearchResult" mappedBy="searchWord"/>
 	</entity>

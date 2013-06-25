@@ -7,6 +7,6 @@
 		<integer name="paramLimit" title="Limit" min="0" max="200" help="Number of Records to Retrive From Facebook" />
 		<integer name="paramSince" title="Since" min="0" max="15" help="Values in Days"></integer>
 		<integer name="paramUntil" title="Until" min="0" max="2" help="Values in Days"></integer>
-		<many-to-one name="curUser" ref="com.axelor.auth.db.User" unique="true" help="Values in Days"></many-to-one>
+		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" unique="true" help="Values in Days"></many-to-one>
 	</entity>
 </domain-models>

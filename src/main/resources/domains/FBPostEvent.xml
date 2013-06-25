@@ -10,7 +10,7 @@
 		<datetime name="enddate" tz="true" help="End Date and Time of Event for Facebook"></datetime>
 		<string name="privacy" help="Privacy Option for Posting Content"></string>
 		<string name="acknowledgment" help="Facebook Generated Unique ID for Posted Content on Successful Post "></string>
-		<many-to-one name="curUser" ref="com.axelor.auth.db.User" help="Currently Active ERP User"></many-to-one>
+		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" help="Currently Active ERP User"></many-to-one>
 		<datetime name="postedTime" tz="true" help="Posted Content Date and Time of Facebook"></datetime>
 	</entity>
 </domain-models>

@@ -9,6 +9,6 @@
 		<string name="name" title="Real Name"></string>
 		<string name="link" title="Profile Link"></string>
 		<string name="sendedOn" title="Sended On"></string>
-		<many-to-one name="curUser" ref="com.axelor.auth.db.User"></many-to-one>
+		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo"></many-to-one>
 	</entity>
 </domain-models>

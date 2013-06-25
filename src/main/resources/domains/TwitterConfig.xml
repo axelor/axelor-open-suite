@@ -8,6 +8,6 @@
 		<integer name="content" min="0" max="100" help="1 to 100 Number Content Per page"></integer>
 		<boolean name="since" default="false" title="Only Latest Updates"></boolean>
 <!-- 		<many-to-one name="since" ref="com.axelor.sn.db.TwitterHomeTimeline" orphan="true" ></many-to-one> -->
-		<many-to-one name="curUser" ref="com.axelor.auth.db.User" unique="true"></many-to-one>
+		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" unique="true"></many-to-one>
 	</entity>
 </domain-models>
