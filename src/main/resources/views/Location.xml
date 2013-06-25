@@ -11,14 +11,21 @@
         <field name="typeSelect"/>
     </grid>
     
-    <form name="location-form" title="Stock Location" model="com.axelor.apps.supplychain.db.Location" cols="4"
+    <form name="location-form" title="Stock Location" model="com.axelor.apps.supplychain.db.Location" cols="6"
     	onNew="action-location-record-new">
         <field name="name"/>
-        <field name="parent"/>
+        <field name="parent"/>        
+        <field name="typeSelect"/>
         <field name="company"/>
         <field name="partner" domain="self.isContact = false"/>
-        <field name="typeSelect"/>
-        <field name="locationLineList" colSpan="4"/>
+        <break/>
+        <spacer/>
+        <break/>
+        <button name="viewContent" title="View location content" colSpan="6"/>
+        <break/>
+        <spacer/>
+        <break/>
+        <field name="locationLineList" colSpan="6"/>
     </form>
     
     <action-record name="action-location-record-new" model="com.axelor.apps.supplychain.db.Location">

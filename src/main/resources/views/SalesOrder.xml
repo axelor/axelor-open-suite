@@ -36,7 +36,7 @@
 	            <field name="mainInvoicingAddress"/>
 	            <field name="deliveryAddress"/>
 	            <field name="invoicingTypeSelect"/>
-	            <field name="priceList" domain="self.typeSelect = 1 and (self.partner = null or self.partner = :clientPartner)"/>
+	            <field name="priceList" domain="self.typeSelect = 1 and (self.partner = null or self.partner = :clientPartner) and  :__date__ &lt; self.validTo"/>
 	            <group title="Specific settings" name="specificSettings" canCollapse="true" colSpan="4">
 	                <separator title="Sale order Settings" colSpan="4"/>
 	                    <field name="isToPrintLineSubTotal"/>
@@ -50,9 +50,9 @@
 	            <separator title="Sale order content" colSpan="4"/>
 	            <field name="salesOrderLineList" colSpan="4"/>
 	            
-	            <group noLabel="true" colSpan="4" cols="3">
+	            <group showTitle="false" colSpan="4" cols="3">
 	                <group title="-" colSpan="2" cols="2">
-	                    <field name="salesOrderLineVatList" noLabel="true" colSpan="2"/>
+	                    <field name="salesOrderLineVatList" showTitle="false" colSpan="2"/>
 	                    <group title="Action(s)" colSpan="2" cols="2">
 	                        <group colSpan="1" cols="1">
 	                            <button name="compute" title="Compute" hideIf="statusSelect == 3" colSpan="1" onClick="save,action-sales-order-method-compute,save"/>
