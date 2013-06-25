@@ -66,20 +66,16 @@ public class SalesOrderService {
 	/**
 	 * Peupler un devis.
 	 * <p>
-	 * Cette fonction permet de déterminer les tva d'un devis à partir des lignes de factures passées en paramètres. 
+	 * Cette fonction permet de déterminer les tva d'un devis. 
 	 * </p>
 	 * 
-	 * @param invoice
-	 * @param contractLine
-	 * @param invoiceLines
-	 * @param invoiceLineTaxes
-	 * @param standard
+	 * @param salesOrder
 	 * 
 	 * @throws AxelorException
 	 */
 	public void _populateSalesOrder(SalesOrder salesOrder) throws AxelorException {
 		
-		LOG.debug("Peupler une facture => lignes de devis: {} ", new Object[] { salesOrder.getSalesOrderLineList().size() });
+		LOG.debug("Peupler un devis => lignes de devis: {} ", new Object[] { salesOrder.getSalesOrderLineList().size() });
 		
 		// create Tva lines
 		salesOrder.getSalesOrderLineVatList().addAll(salesOrderLineVatService.createsSalesOrderLineVat(salesOrder, salesOrder.getSalesOrderLineList()));
