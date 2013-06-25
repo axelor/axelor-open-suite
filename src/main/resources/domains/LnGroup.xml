@@ -9,6 +9,6 @@
 		<string name="groupName" title="Name" namecolumn="true" />
 		<string name="membershipState" title="Membership" />
 		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="User" />
-		<one-to-many name="discussionList" ref="com.axelor.apps.base.db.LnGroupDiscussion" mappedBy="groupId" />
+		<one-to-many name="lnGroupDiscussionList" ref="com.axelor.apps.base.db.LnGroupDiscussion" mappedBy="lnGroup" />
 	</entity>
 </domain-models>

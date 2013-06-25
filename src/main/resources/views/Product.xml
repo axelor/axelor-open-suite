@@ -105,9 +105,9 @@
 						readonly="true"
 						widget="SnStatusComments[type=ONE_TO_MANY|target=com.axelor.apps.base.db.SnStatusComments]">
 						<grid title="Comments">
-							<field name="fromUser" title="By" width="100" />
+							<field name="partner" title="By" width="100" />
 							<field name="commentText" title="Comment" />
-							<field name="commentTime" title="Time" width="125" />
+							<field name="commentDateT" title="Time" width="125" />
 							<field name="isFacebook" title="Facebook" width="35" />
 							<field name="isLinkedin" title="Linkedin" width="35" />
 							<field name="isTwitter" title="Twitter" width="35" />
