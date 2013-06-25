@@ -7,8 +7,10 @@ import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserInfoService;
+import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.ILead;
 import com.axelor.apps.crm.db.Lead;
+import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
@@ -27,17 +29,17 @@ public class LeadService {
 	 * @throws AxelorException
 	 */
 	@Transactional
-	public Partner convertLead(Lead lead, Partner partner) throws AxelorException  {
+	public Lead convertLead(Lead lead, Partner partner, Partner contactPartner, Opportunity opportunity, Event callEvent, Event meetingEvent) throws AxelorException  {
 		
-		
-//		Partner partner = this.createPartner(lead, context);
-		partner.setPartnerSeq(this.getSequence());
-		
+//		lead.setEvent(meeting);
+//		lead.setCall(call);
+//		lead.setOpportunity(opportunity);
+//		lead.setContactPartner(contact);
 		lead.setPartner(partner);
 		lead.setStatusSelect(ILead.STATUS_CONVERTED);
 		lead.save();
 		
-		return partner;
+		return lead;
 		
 	}
 	

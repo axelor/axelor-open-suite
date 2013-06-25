@@ -4,15 +4,15 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
     
-    <form cols="4" name="convert-lead-wizard-form" title="Convert lead" model="com.axelor.apps.base.db.Wizard">
+    <form cols="4" name="convert-lead-wizard-form" title="Convert lead" model="com.axelor.apps.base.db.Wizard" onNew="action-convert-lead-wizard-default">
  		<group title="Header" colSpan="4"  colWidths="25%,25%,25%,25%">
  			<group colSpan="4" cols="4" colWidths="25%,25%,25%,25%">
  				<field name="hasConvertIntoContact" widget="BOOLEAN[type=BOOLEAN]" title="Convert into Contact ?"/>
- 				<field name="contact" widget="MANY_TO_ONE[type=MANY_TO_ONE|target=com.axelor.apps.base.db.Partner]" title="Or Select Contact" domain="self.isContact = 'true'"/>
+ 				<field name="selectContactPartner" widget="MANY_TO_ONE[type=MANY_TO_ONE|target=com.axelor.apps.base.db.Partner]" title="Or Select Contact" domain="self.isContact = 'true'"/>
  			</group>
  			<group colSpan="4" cols="4" colWidths="25%,25%,25%,25%">
- 				<field name="hasConvertIntoPartner" widget="BOOLEAN[type=BOOLEAN]" title="Convert into Partner ?" onChange="action-convert-lead-wizard-default-partner"/>
- 				<field name="partner" widget="MANY_TO_ONE[type=MANY_TO_ONE|target=com.axelor.apps.base.db.Partner]" title="Or Select Partner" domain="self.isContact = 'false'"/>
+ 				<field name="hasConvertIntoPartner" widget="BOOLEAN[type=BOOLEAN]" title="Convert into Partner ?"/>
+ 				<field name="selectPartner" widget="MANY_TO_ONE[type=MANY_TO_ONE|target=com.axelor.apps.base.db.Partner]" title="Or Select Partner" domain="self.isContact = 'false'"/>
  			</group>
  			
  			<field name="hasConvertIntoOpportunity" widget="BOOLEAN[type=BOOLEAN]" title="Create into Opportunity ?"/>
@@ -23,8 +23,8 @@
  			
  		</group>
  		
- 		<group title="Partner" colSpan="4" showIf="hasConvertIntoContact">
- 			<field name="partner" widget="NestedEditor[type=MANY_TO_ONE|target=com.axelor.apps.base.db.Partner]" summary-view="true" form-view="partner-lead-converted-form" edit-window="self" noLabel="true">
+ 		<group title="Contact" colSpan="4" showIf="hasConvertIntoContact">
+ 			<field name="contactPartner" widget="NestedEditor[type=MANY_TO_ONE|target=com.axelor.apps.base.db.Partner]" summary-view="true" form-view="contact-lead-converted-form" edit-window="self" noLabel="true">
  			</field>
  		</group>
  		<group title="Partner" colSpan="4" showIf="hasConvertIntoPartner">
@@ -36,27 +36,54 @@
  			</field>
  		</group>
  		<group title="Call" colSpan="4" showIf="hasConvertIntoCall">
- 			<field name="call" widget="NestedEditor[type=MANY_TO_ONE|target=com.axelor.apps.crm.db.Event]" summary-view="true" form-view="event-call-form" edit-window="self" noLabel="true">
+ 			<field name="callEvent" widget="NestedEditor[type=MANY_TO_ONE|target=com.axelor.apps.crm.db.Event]" summary-view="true" form-view="event-call-form" edit-window="self" noLabel="true">
  			</field>
  		</group>
  		<group title="Meeting" colSpan="4" showIf="hasConvertIntoMeeting">
- 			<field name="meeting" widget="NestedEditor[type=MANY_TO_ONE|target=com.axelor.apps.crm.db.Event]" canNew="true" canRemove="false" canView="true" canSelect="false"  summary-view="true" form-view="event-meeting-form"  edit-window="self" noLabel="true" >
+ 			<field name="meetingEvent" widget="NestedEditor[type=MANY_TO_ONE|target=com.axelor.apps.crm.db.Event]" canNew="true" canRemove="false" canView="true" canSelect="false"  summary-view="true" form-view="event-meeting-form"  edit-window="self" noLabel="true" >
  			</field>
  		</group>
  		
  		
 	</form>
     
-    <action-record name="action-convert-lead-wizard-default-partner" model="com.axelor.apps.base.db.Wizard">
+    <action-record name="action-convert-lead-wizard-default" model="com.axelor.apps.base.db.Wizard">
     
-    	<field name="partner" expr="call: action-convert-lead-wizard-record-opportunity,save"/>
+    	<field name="partner" expr="action: action-convert-lead-wizard-default-partner"/>
+    	<field name="contact" expr="action: action-convert-lead-wizard-default-partner"/>
+    	<field name="opportunity" expr="action: action-convert-lead-wizard-default-opportunity"/>
     	
     </action-record>
     
+    <action-record name="action-convert-lead-wizard-default-partner" model="com.axelor.apps.base.db.Partner">
     
+    	<field name="name" expr="eval: _lead.name"/>
+    	<field name="firstName" expr="eval: _lead.firstName"/>
+    	<field name="titleSelect" expr="eval: _lead.titleSelect"/>
+    	<field name="email" expr="eval: _lead.email"/>
+    	<field name="fax" expr="eval: _lead.fax"/>
+    	<field name="mobilePhonePerso" expr="eval: _lead.mobile"/>
+    	<field name="webSite" expr="eval: _lead.website"/>
+    	<field name="source" expr="eval: _lead.source"/>
+    	<field name="department" expr="eval: _lead.department"/>
+    	<field name="mainInvoicingAddress" expr="action: action-convert-lead-wizard-default-partner-main-invoicing-address"/>
+    	<field name="deliveryAddress" expr="action: action-convert-lead-wizard-default-partner-delivery-address"/>
+    </action-record>
+    
+    <action-record name="action-convert-lead-wizard-default-partner-main-invoicing-address" model="com.axelor.apps.base.db.Address">
+    	<field name="addressL4" expr="eval: _lead.primaryAddress"/>
+    	<field name="addressL6" expr="eval: _lead.primaryPostalCode+' '+_lead.primaryCity+' '+_lead.primaryState"/>
+    	<field name="addressL7Country" expr="eval: _lead.primaryCountry"/>
+    </action-record>
+    
+    <action-record name="action-convert-lead-wizard-default-partner-delivery-address" model="com.axelor.apps.base.db.Address">
+    	<field name="addressL4" expr="eval: _lead.otherAddress"/>
+    	<field name="addressL6" expr="eval: _lead.otherPostalCode+' '+_lead.otherCity+' '+_lead.otherState"/>
+    	<field name="addressL7Country" expr="eval: _lead.otherCountry"/>
+    </action-record>
     
     <action-method name="action-lead-method-convert-lead">
-		<call class="com.axelor.apps.crm.web.LeadController" method="convertLead"/>
+		<call class="com.axelor.apps.crm.web.ConvertLeadWizardController" method="convertLead"/>
     </action-method>
     
 </object-views>
