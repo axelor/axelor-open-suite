@@ -5,10 +5,10 @@
  	<module name="base" package="com.axelor.apps.base.db" />
  	<entity name="SnSendMessage">
  		<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" orphan="true" />
- 		<string name="messageText" multiline="true" max="140"/>
+ 		<string name="content" multiline="true" max="140"/>
  		<string name="messageId" />
  		<string name="subject" />
- 		<datetime name="messageDate" tz="true" />
+ 		<datetime name="messageDateT" tz="true" title="Message date" />
  		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" />
  		<many-to-one name="socialNet" ref="com.axelor.apps.base.db.SocialNet" orphan="true" />
  	</entity>
