@@ -129,8 +129,8 @@
 								<field name="socialNet" title="Social Networking Type"
 									hidden="true"></field>
 								<field name="partner" title="To"></field>
-								<field name="messageText"></field>
-								<field name="messageDate" title="Date and Time" hidden="true"></field>
+								<field name="content"></field>
+								<field name="messageDateT" title="Date and Time" hidden="true"></field>
 								<field name="messageId" />
 							</grid>
 
@@ -142,14 +142,14 @@
 								<break />
 								<field name="subject" hideIf="socialNet.name != 'linkedin'"></field>
 								<break />
-								<field name="messageText" required="true"
+								<field name="content" required="true"
 									/> <!--  onChange="com.axelor.sn.web.SNCommonController:sendMessage"></field>-->
 								<break/>
 								<spacer colSpan="1"/>
 								<button name="firePersonalMsg"
 									onClick="com.axelor.sn.web.SNCommonController:sendMessage"
 									title="Send" />
-								<field name="messageDate" title="Date and Time" hidden="true"></field>
+								<field name="messageDateT" title="Date and Time" hidden="true"></field>
 								<field name="messageId" hidden="true" />
 							</form>
 						</field>
@@ -361,7 +361,7 @@
 		<field name="socialNet" expr="eval:_parent.socialNet" />
 		<field name="curUser" expr="eval:__user__" />
 		<field name="partner" expr="eval:_parent" />
-		<field name="messageDate" expr="eval:__datetime__" />
+		<field name="messageDateT" expr="eval:__datetime__" />
 	</action-record>
 
 	<action-view name="action-fetch-all-sn-mail" title="Inbox"
