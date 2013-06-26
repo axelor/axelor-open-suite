@@ -10,6 +10,6 @@
 		<string name="lastname" help="Last Name of Person" />
 		<string name="gender" />
 		<string name="link" help="Profile Link of Person" />
-		<many-to-one name="curUser" ref="com.axelor.auth.db.User"></many-to-one>
+		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo"></many-to-one>
 	</entity>
 </domain-models>

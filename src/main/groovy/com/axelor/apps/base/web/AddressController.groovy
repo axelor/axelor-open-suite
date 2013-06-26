@@ -2,13 +2,18 @@ package com.axelor.apps.base.web
 
 import groovy.json.JsonSlurper
 import groovy.util.logging.Slf4j
+
+import java.math.RoundingMode
+
 import wslite.rest.ContentType
 import wslite.rest.RESTClient
 
+import com.axelor.apps.account.db.Invoice
 import com.axelor.apps.base.db.Address
 import com.axelor.apps.base.db.AddressExport
 import com.axelor.apps.base.db.General
 import com.axelor.apps.base.db.Import
+import com.axelor.apps.base.db.PartnerList
 import com.axelor.apps.base.db.PickListEntry
 import com.axelor.apps.base.service.administration.GeneralService
 import com.axelor.data.Importer
@@ -19,6 +24,7 @@ import com.axelor.rpc.ActionRequest
 import com.axelor.rpc.ActionResponse
 import com.google.inject.Inject
 import com.google.inject.Injector
+import com.google.inject.persist.Transactional
 
 
 @Slf4j
@@ -295,6 +301,56 @@ class AddressController {
 	}
 
 	
+	def geocodeGoogle(String qString) {
+		def response = [:] 
+		//http://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&sensor=true_or_false
+		
+		// TODO inject the rest client, or better, run it in the browser
+		def restClient = new RESTClient("https://maps.googleapis.com")
+		def restResponse = restClient.get( path:'/maps/api/geocode/json',
+								   accept: ContentType.JSON,
+								   query:[address: qString,
+										sensor: 'false'],
+								   connectTimeout: 5000,
+								   readTimeout: 10000,
+								   followRedirects: false,
+								   useCaches: false,
+								   sslTrustAllCerts: true )
+		/*
+		log.debug("restResponse = {}", restResponse)
+		log.debug("restResponse.parsedResponseContent.text = {}", restResponse.parsedResponseContent.text)
+		*/
+		def searchresults = new JsonSlurper().parseText(restResponse.parsedResponseContent.text)
+		
+		log.debug("searchresults.status = {}", searchresults.status)
+		if (searchresults.status == 'OK') {
+			/*
+			log.debug("searchresults.results.size() = {}", searchresults.results.size())
+			log.debug("searchresults.results[0] = {}", searchresults.results[0])
+			log.debug("searchresults.results[0].address_components = {}", searchresults.results[0].address_components)
+			log.debug("searchresults.results[0].geometry.location = {}", searchresults.results[0].geometry.location)
+			*/
+	
+			def results = searchresults.results
+	
+			if (results.size() > 1) {
+				response += [multiple : true]
+				
+			}
+			def firstPlaceFound = results[0]
+			
+			if (firstPlaceFound) {
+				def lat = new BigDecimal(firstPlaceFound.geometry.location.lat)
+				def lng = new BigDecimal(firstPlaceFound.geometry.location.lng)
+				
+				
+				response += [lat : lat.setScale(10, RoundingMode.HALF_EVEN),
+					 lng : lng.setScale(10, RoundingMode.HALF_EVEN)]
+			}
+		}
+		return response
+	}
+	
 	def void viewMapGoogle(ActionRequest request, ActionResponse response)  {
 		
 		Address address = request.context as Address
@@ -303,56 +359,22 @@ class AddressController {
 		
 		try {
 			
-			//http://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&sensor=true_or_false
-
-			def restClient = new RESTClient("https://maps.googleapis.com")
-			def restResponse = restClient.get( path:'/maps/api/geocode/json',
-									   accept: ContentType.JSON,
-									   query:[address: qString,
-											sensor: 'false'],
-									   connectTimeout: 5000,
-									   readTimeout: 10000,
-									   followRedirects: false,
-									   useCaches: false,
-									   sslTrustAllCerts: true )
-			
-			log.debug("restResponse = {}", restResponse)
-			log.debug("restResponse.parsedResponseContent.text = {}", restResponse.parsedResponseContent.text)
-			
-			def searchresults = new JsonSlurper().parseText(restResponse.parsedResponseContent.text)
-			
-			//assert searchresults.status == 'OK'
-			log.debug("searchresults.status = {}", searchresults.status)
-			log.debug("searchresults.results.size() = {}", searchresults.results.size())
-			log.debug("searchresults.results[0] = {}", searchresults.results[0])
-			log.debug("searchresults.results[0].address_components = {}", searchresults.results[0].address_components)
-			log.debug("searchresults.results[0].geometry.location = {}", searchresults.results[0].geometry.location)
-
-			def results = searchresults.results
-
-			if (results.size() > 1) {
+			def googleResponse = geocodeGoogle(qString)
+			if (googleResponse?.multiple) {
 				response.flash = "<B>$qString</B> matches multiple locations. First selected."
 			}
-			def firstPlaceFound = results[0]
-			log.debug("firstPlaceFound = {}", firstPlaceFound)
-			
-			if (firstPlaceFound) {
-				log.debug("firstPlaceFound.geometry.location.lat = {}", firstPlaceFound.geometry.location.lat)
-				log.debug("firstPlaceFound.geometry.location.lng = {}", firstPlaceFound.geometry.location.lng)
-				def latit = new BigDecimal(firstPlaceFound.geometry.location.lat)
-				def longit = new BigDecimal(firstPlaceFound.geometry.location.lng)
-				
-				
-		
-				String url = "http://localhost/HTML/gmaps.html?x=$latit&y=$longit&z=18"
+			def lat = googleResponse?.lat
+			def lng = googleResponse?.lng
+			if (lat && lng) {
+				String url = "http://localhost/HTML/gmaps.html?x=$lat&y=$lng&z=18"
 				response.view = [
 					"title": "Map",
 					"resource": url,
 					"viewType": "html"
 				]
 				response.values = [
-					latit: latit,
-					longit: longit
+					latit: lat,
+					longit: lng
 				]
 			}
 			else {
@@ -380,5 +402,58 @@ class AddressController {
 	}
 	
 
-		
+	@Transactional
+	def void viewSalesMap(ActionRequest request, ActionResponse response)  {
+		// Only allowed for google maps to prevent overloading OSM
+		if (GeneralService.getGeneral().mapApiSelect == "1") {
+			PartnerList partnerList = request.context as PartnerList
+			
+			def file = new File("/home/arye/DEV/HTML/latlng_${partnerList.id}.csv")
+			file.write("latitude,longitude,fullName,turnover\n")
+			
+
+			for (partner in partnerList.partnerSet) {
+				//def address = partner.mainInvoicingAddress
+				if (partner.mainInvoicingAddress) {
+					
+					def address = Address.find(partner.mainInvoicingAddress.id)
+					if (!(address?.latit && address?.longit)) {
+						def qString = "${address.addressL4} ,${address.addressL6}"
+						log.debug("qString = {}", qString)
+				
+						def googleResponse = geocodeGoogle(qString)
+						address.latit = googleResponse?.lat?:null
+						address.longit = googleResponse?.lng?:null
+						address.save()
+					}
+					if (address?.latit && address?.longit) {
+						//def turnover = Invoice.all().filter("self.partner.id = ? AND self.status.code = 'val'", partner.id).fetch().sum{ it.inTaxTotal }
+						def turnover = Invoice.all().filter("self.partner.id = ?", partner.id).fetch().sum{ it.inTaxTotal }
+						log.debug("appending = {}", "${address.latit},${address?.longit},${partner.fullName},${turnover?:0.0}\n")
+						file.withWriterAppend('UTF-8') {
+							it.write("${address.latit},${address?.longit},${partner.fullName},${turnover?:0.0}\n")
+						}
+					}
+				}
+			}
+			//response.values = [partnerList : partnerList]
+			String url = ""
+			if (partnerList.isCluster)
+				url = "http://localhost/HTML/cluster_gmaps_xhr.html?file=latlng_${partnerList.id}.csv"
+			else
+				url = "http://localhost/HTML/gmaps_xhr.html?file=latlng_${partnerList.id}.csv"
+			
+			response.view = [
+				"title": "Sales map",
+				"resource": url,
+				"viewType": "html"
+			]
+			//response.reload = true
+			
+		} else {
+			response.flash = "Not implemented for OSM"
+		}
+	}
+
+
 }

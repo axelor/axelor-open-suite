@@ -10,9 +10,9 @@
   	<string name="facebookUpdateId"/>
   	<string name="twitterUpdateId"/>
     <string name="updateContent" namecolumn="true" multiline="true" max="600"/>
-    <datetime name="updateTime" tz="true"/>
-    <many-to-one name="curUser" ref="com.axelor.auth.db.User"/>
-    <one-to-many name="commentList" ref="com.axelor.apps.base.db.SnStatusComments" orphan="true" mappedBy="updateId"/>
+    <datetime name="updateDateT" tz="true"/>
+    <many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo"/>
+    <one-to-many name="snStatusCommentsList" ref="com.axelor.apps.base.db.SnStatusComments" orphan="true" mappedBy="snStatusUpdates"/>
  </entity>
  
 </domain-models>

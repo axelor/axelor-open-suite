@@ -7,6 +7,6 @@
 		<string name="name" title="Person Name" help="Name Of Person Who sent Request"></string>
 		<string name="gender" title="Gender" help="Gender Of Person Who sent Request"></string>
 		<string name="link" title="Profile Link" help="Profile Link Of Person Who sent Request"></string>		
-		<many-to-one name="curUser" ref="com.axelor.auth.db.User"></many-to-one>
+		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo"></many-to-one>
 	</entity>
 	</domain-models>

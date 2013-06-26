@@ -186,6 +186,15 @@
 		<view type="form" name="geographical-area-form" />
 	</action-view>
 
+	<menuitem name="contact-conf-partner-list-map" parent="contact-conf"
+		title="Sales map" action="contact.conf.partner.list.map" />
+
+	<action-view name="contact.conf.partner.list.map" title="Sales map"
+		model="com.axelor.apps.base.db.PartnerList" icon="img/icons/parameter_small.png">
+		<view type="grid" name="partner-list-map-grid" />
+		<view type="form" name="partner-list-map-form" />
+	</action-view>
+
 	
 	<menuitem name="product-root" title="Products" priority="170"
 		icon="img/icons/product.png" groups="admins,erp"/>

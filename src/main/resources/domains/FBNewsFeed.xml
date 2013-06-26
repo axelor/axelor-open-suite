@@ -12,6 +12,6 @@
 		<string name="link" multiline="true"  title="Link (If Available)" max="1000" help="Link of Feed Content"></string>
 		<string name="message"  title="Message (If Available)" max="10000" multiline="true" help="Message of Feed Update"></string>
 		<boolean name="contentLike" title="Like..?" default="false" help="You Can Like Feed Content From Here"></boolean>
-		<many-to-one name="curUser" ref="com.axelor.auth.db.User" help="Currently Active User of ERP" />
+		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" help="Current Active User of ERP" />
 	</entity>
 </domain-models>

@@ -11,7 +11,7 @@
 		<string name="toScreenName" title="To"/>
 		<string name="content" multiline="true" title="Content of Tweet"/>
 		<string name="contentDate" title="Created Date"/>
-		<many-to-one name="curUser" ref="com.axelor.auth.db.User" hidden="true"/>
+		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" hidden="true"/>
 	</entity>
 	</domain-models>
 	 

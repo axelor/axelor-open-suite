@@ -5,11 +5,11 @@
   <module name="base" package="com.axelor.apps.base.db" />
 
   <entity name="LnGroupDiscussionComments">
-	<many-to-one name="discussionId" ref="com.axelor.apps.base.db.LnGroupDiscussion"/>
+	<many-to-one name="lnGroupDiscussion" ref="com.axelor.apps.base.db.LnGroupDiscussion"/>
 	<string name="commentId" title="Comment id" />
 	<string name="commentText" title="Comment" multiline="true" max="4000" />
-	<datetime name="commentTime" title="Time" tz="true" />
-	<many-to-one name="curUser" ref="com.axelor.auth.db.User" />
+	<datetime name="commentDateT" title="Time" tz="true" />
+	<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" />
 	<string name="fromUser" title="From"/> 
   </entity>
   
