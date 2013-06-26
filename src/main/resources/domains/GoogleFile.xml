@@ -22,8 +22,6 @@
 				
 		<many-to-one name="driveUserInfo" ref="com.axelor.apps.base.db.UserInfo" orphan="true" help="Google apps User"/>
 		<many-to-one name="googleDirectory" ref="GoogleDirectory" orphan="true" help="Google Directory"/>
-		<!-- used for representing set of templates uses this file as template to associate to model  -->
-		<one-to-many name="templates" ref="com.axelor.apps.base.db.TemplateFile" mappedBy="googleFile" help="Template to create Document"/>
 		<one-to-many name="filePermissionsList" ref="com.axelor.apps.base.db.FilePermission" mappedBy="googleFile" help="File permission to share File" />
 				
 	</entity>     
