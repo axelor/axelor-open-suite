@@ -7,33 +7,42 @@
 		<field name="fullName" />
 	</grid>
 	
-	<form name="address-form" title="Address" model="com.axelor.apps.base.db.Address" cols="4"
+	<form name="address-form" title="Address" model="com.axelor.apps.base.db.Address"
+		cols="2" colWidths="*,200"
 		onNew="default-address-record">
-		<group colSpan="4" cols="2" colWidths="25%,*">
-			<field name="addressL2" />
-			<field name="addressL3" />
-			<field name="addressL4" />
-			<field name="addressL5" />
-			<field name="addressL6" required="true" />
-			<field name="addressL7Country" required="true" />
-			<field name="inseeCode"/>
-			<field name="latit" />
-			<field name="longit" />
+		<group name="main" title="Address details" cols="1" colSpan="1">
+			<group colSpan="4" cols="2" colWidths="25%,*">
+				<field name="addressL2" />
+				<field name="addressL3" />
+				<field name="addressL4" />
+				<field name="addressL5" />
+				<field name="addressL6" required="true" />
+				<field name="addressL7Country" required="true" />
+				<field name="inseeCode"/>
+				<field name="latit" />
+				<field name="longit" />
+			</group>
 		</group>
-		<group colSpan="4" cols="4" title="QAS" >
+		<group name="actions" title="Actions" cols="1" colSpan="1" hideIf="$popup()">
+			<button name="map" title="View map" 
+				onClick="com.axelor.apps.base.web.AddressController:viewMap,save" />
+			<button name="directions" title="Get directions" 
+				onClick="com.axelor.apps.base.web.AddressController:directionsMap" />
+		</group>
+		<group colSpan="2" cols="4" title="QAS certification" >
 			<field name="certifiedOk"/>
-			<field name="pickList" colSpan="4">
+			<break/>
+			<button name="validate" title="Validate" colSpan="2" 
+				onClick="com.axelor.apps.base.web.AddressController:validate,save" />
+			<button name="select" title="Choose" colSpan="2" 
+				onClick="com.axelor.apps.base.web.AddressController:select,save" />
+			<field name="pickList" colSpan="4" showTitle="false">
 				<grid title="Pick list">
 					<field name="partialAddress"/>
 					<field name="postcode"/>
 					<field name="score"/>
 				</grid>
 			</field>
-		</group>
-		<group colSpan="4" cols="2">
-			<button name="select" title="Choose" onClick="com.axelor.apps.base.web.AddressController:select,save" />
-			<button name="validate" title="Validate" onClick="com.axelor.apps.base.web.AddressController:validate,save" />
-			<button name="map" title="View map" onClick="com.axelor.apps.base.web.AddressController:viewMap,save" />
 		</group>
 	</form>
 
