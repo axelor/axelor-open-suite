@@ -15,7 +15,7 @@ import com.axelor.rpc.ActionResponse
 import com.google.inject.Inject
 
 import com.axelor.auth.db.User
-import com.axelor.apps.base.db.GoogleFile
+import com.axelor.apps.googleapps.db.GoogleFile
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.UserInfo
 import com.axelor.apps.base.service.administration.SequenceService;
