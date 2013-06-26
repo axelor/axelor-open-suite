@@ -13,9 +13,11 @@ import com.axelor.apps.base.db.Address
 import com.axelor.apps.base.db.AddressExport
 import com.axelor.apps.base.db.General
 import com.axelor.apps.base.db.Import
+import com.axelor.apps.base.db.Partner
 import com.axelor.apps.base.db.PartnerList
 import com.axelor.apps.base.db.PickListEntry
 import com.axelor.apps.base.service.administration.GeneralService
+import com.axelor.apps.base.service.user.UserInfoService
 import com.axelor.data.Importer
 import com.axelor.data.csv.CSVImporter
 import com.axelor.data.xml.XMLImporter
@@ -35,6 +37,9 @@ class AddressController {
 	
 	@Inject
 	private AddressService ads
+	
+	@Inject 
+	private UserInfoService uis
 	
 	def check(ActionRequest request, ActionResponse response) {
 
@@ -397,6 +402,74 @@ class AddressController {
 	
 	}
 
+
+	def void directionsMapGoogle(ActionRequest request, ActionResponse response)  {
+		
+		Address arrivalAddress = request.context as Address
+		def arrivalString = "${arrivalAddress.addressL4} ,${arrivalAddress.addressL6}"
+		log.debug("arrivalString = {}", arrivalString)
+
+		Partner currPartner = uis.getUserPartner()
+		Address departureAddress = currPartner.deliveryAddress
+		def departureString = "${departureAddress.addressL4} ,${departureAddress.addressL6}"
+		log.debug("departureString = {}", departureString)
+
+		try {
+			response.flash = ""
+			def depLat = departureAddress.latit
+			def depLng = departureAddress.longit
+			def arrLat = arrivalAddress.latit
+			def arrLng =  arrivalAddress.longit
+
+			if ( !(depLat && depLng)) {
+				def googleResponse = geocodeGoogle(departureString)
+				if (googleResponse?.multiple) {
+					response.flash = "<B>$departureString</B> matches multiple locations. First selected."
+				}
+				depLat = googleResponse?.lat
+				depLng = googleResponse?.lng
+			}
+			if ( !(arrLat && arrLng)) {
+				def googleResponse = geocodeGoogle(arrivalString)
+				if (googleResponse?.multiple) {
+					response.flash = "<B>$arrivalString</B> matches multiple locations. First selected."
+				}
+				arrLat = googleResponse?.lat
+				arrLng = googleResponse?.lng
+			}
+			if (arrLat && arrLng) {
+				String url = "http://localhost/HTML/directions.html?dx=$depLat&dy=$depLng&ax=$arrLat&ay=$arrLng"
+				response.view = [
+					"title": "Directions",
+					"resource": url,
+					"viewType": "html"
+				]
+				response.values = [
+					latit: arrLat,
+					longit: arrLng
+				]
+			}
+			else {
+				response.flash = "<B>$arrivalString</B> not found"
+			}
+
+		}
+		catch(Exception e)  {
+			TraceBackService.trace(response, e)
+		}
+	}
+
+
+	def void directionsMap(ActionRequest request, ActionResponse response)  {
+		if (GeneralService.getGeneral().mapApiSelect == "1") {
+			directionsMapGoogle(request, response)
+		} else {
+			response.flash = "Not implemented yet for OSM! Please select the google service"
+		}
+	
+	}
+
+	
 	def void checkMapApi(ActionRequest request, ActionResponse response)  {
 		response.flash = "Not implemented yet!"
 	}

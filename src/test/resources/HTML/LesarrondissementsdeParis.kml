@@ -1,0 +1,966 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://earth.google.com/kml/2.2">
+<Document>
+  <name>Les arrondissements de Paris</name>
+  <description><![CDATA[Une petite carte des arrondissements de Paris.]]></description>
+  <Style id="style17">
+    <LineStyle>
+      <color>40000000</color>
+      <width>3</width>
+    </LineStyle>
+    <PolyStyle>
+      <color>4DFF0000</color>
+      <fill>1</fill>
+      <outline>1</outline>
+    </PolyStyle>
+  </Style>
+  <Style id="style6">
+    <LineStyle>
+      <color>40000000</color>
+      <width>3</width>
+    </LineStyle>
+    <PolyStyle>
+      <color>4D009900</color>
+      <fill>1</fill>
+      <outline>1</outline>
+    </PolyStyle>
+  </Style>
+  <Style id="style5">
+    <LineStyle>
+      <color>40000000</color>
+      <width>3</width>
+    </LineStyle>
+    <PolyStyle>
+      <color>4D0000CC</color>
+      <fill>1</fill>
+      <outline>1</outline>
+    </PolyStyle>
+  </Style>
+  <Style id="style15">
+    <LineStyle>
+      <color>40000000</color>
+      <width>3</width>
+    </LineStyle>
+    <PolyStyle>
+      <color>4D00FFFF</color>
+      <fill>1</fill>
+      <outline>1</outline>
+    </PolyStyle>
+  </Style>
+  <Style id="style11">
+    <LineStyle>
+      <color>40000000</color>
+      <width>3</width>
+    </LineStyle>
+    <PolyStyle>
+      <color>4DFF3366</color>
+      <fill>1</fill>
+      <outline>1</outline>
+    </PolyStyle>
+  </Style>
+  <Style id="style18">
+    <LineStyle>
+      <color>40000000</color>
+      <width>3</width>
+    </LineStyle>
+    <PolyStyle>
+      <color>4D009900</color>
+      <fill>1</fill>
+      <outline>1</outline>
+    </PolyStyle>
+  </Style>
+  <Style id="style1">
+    <LineStyle>
+      <color>40000000</color>
+      <width>3</width>
+    </LineStyle>
+    <PolyStyle>
+      <color>4D00FFFF</color>
+      <fill>1</fill>
+      <outline>1</outline>
+    </PolyStyle>
+  </Style>
+  <Style id="style16">
+    <LineStyle>
+      <color>40000000</color>
+      <width>3</width>
+    </LineStyle>
+    <PolyStyle>
+      <color>4D0000CC</color>
+      <fill>1</fill>
+      <outline>1</outline>
+    </PolyStyle>
+  </Style>
+  <Style id="style9">
+    <LineStyle>
+      <color>40000000</color>
+      <width>3</width>
+    </LineStyle>
+    <PolyStyle>
+      <color>4D993399</color>
+      <fill>1</fill>
+      <outline>1</outline>
+    </PolyStyle>
+  </Style>
+  <Style id="style3">
+    <LineStyle>
+      <color>40000000</color>
+      <width>3</width>
+    </LineStyle>
+    <PolyStyle>
+      <color>4D0066FF</color>
+      <fill>1</fill>
+      <outline>1</outline>
+    </PolyStyle>
+  </Style>
+  <Style id="style13">
+    <LineStyle>
+      <color>40000000</color>
+      <width>3</width>
+    </LineStyle>
+    <PolyStyle>
+      <color>4DFF3333</color>
+      <fill>1</fill>
+      <outline>1</outline>
+    </PolyStyle>
+  </Style>
+  <Style id="style20">
+    <LineStyle>
+      <color>40000000</color>
+      <width>3</width>
+    </LineStyle>
+    <PolyStyle>
+      <color>4D00CC33</color>
+      <fill>1</fill>
+      <outline>1</outline>
+    </PolyStyle>
+  </Style>
+  <Style id="style12">
+    <LineStyle>
+      <color>40000000</color>
+      <width>3</width>
+    </LineStyle>
+    <PolyStyle>
+      <color>4D0000FF</color>
+      <fill>1</fill>
+      <outline>1</outline>
+    </PolyStyle>
+  </Style>
+  <Style id="style2">
+    <LineStyle>
+      <color>40000000</color>
+      <width>3</width>
+    </LineStyle>
+    <PolyStyle>
+      <color>4D0066FF</color>
+      <fill>1</fill>
+      <outline>1</outline>
+    </PolyStyle>
+  </Style>
+  <Style id="style7">
+    <LineStyle>
+      <color>40000000</color>
+      <width>3</width>
+    </LineStyle>
+    <PolyStyle>
+      <color>4DCC33CC</color>
+      <fill>1</fill>
+      <outline>1</outline>
+    </PolyStyle>
+  </Style>
+  <Style id="style8">
+    <LineStyle>
+      <color>40000000</color>
+      <width>3</width>
+    </LineStyle>
+    <PolyStyle>
+      <color>4D009900</color>
+      <fill>1</fill>
+      <outline>1</outline>
+    </PolyStyle>
+  </Style>
+  <Style id="style10">
+    <LineStyle>
+      <color>40000000</color>
+      <width>3</width>
+    </LineStyle>
+    <PolyStyle>
+      <color>4DFF3333</color>
+      <fill>1</fill>
+      <outline>1</outline>
+    </PolyStyle>
+  </Style>
+  <Style id="style19">
+    <LineStyle>
+      <color>40000000</color>
+      <width>3</width>
+    </LineStyle>
+    <PolyStyle>
+      <color>4D00FFFF</color>
+      <fill>1</fill>
+      <outline>1</outline>
+    </PolyStyle>
+  </Style>
+  <Style id="style4">
+    <LineStyle>
+      <color>40000000</color>
+      <width>3</width>
+    </LineStyle>
+    <PolyStyle>
+      <color>4D000099</color>
+      <fill>1</fill>
+      <outline>1</outline>
+    </PolyStyle>
+  </Style>
+  <Style id="style14">
+    <LineStyle>
+      <color>40000000</color>
+      <width>3</width>
+    </LineStyle>
+    <PolyStyle>
+      <color>4D993399</color>
+      <fill>1</fill>
+      <outline>1</outline>
+    </PolyStyle>
+  </Style>
+  <Placemark>
+    <name>1er : Louvre</name>
+    <description><![CDATA[<A href="http://flickr.com/photos/absolutwade/191883836/" target="_blank"><IMG width="240" height="180" src="http://farm1.static.flickr.com/63/191883836_3f15c4fb6c_m.jpg"></A> <BR>Le 1<SUP>er</SUP> arrondissement <BR> <I>Photo : absolutwade</I><BR>]]></description>
+    <styleUrl>#style17</styleUrl>
+    <Polygon>
+      <outerBoundaryIs>
+        <LinearRing>
+          <tessellate>1</tessellate>
+          <coordinates>
+            2.320769,48.863037,0.000000
+            2.325229,48.868938,0.000000
+            2.325149,48.869419,0.000000
+            2.328018,48.869949,0.000000
+            2.330302,48.868286,0.000000
+            2.350944,48.863407,0.000000
+            2.347351,48.857124,0.000000
+            2.346910,48.856972,0.000000
+            2.345966,48.855373,0.000000
+            2.344529,48.854012,0.000000
+            2.342400,48.855247,0.000000
+            2.340469,48.856800,0.000000
+            2.337250,48.858467,0.000000
+            2.331459,48.859680,0.000000
+            2.320769,48.863037,0.000000
+          </coordinates>
+        </LinearRing>
+      </outerBoundaryIs>
+    </Polygon>
+  </Placemark>
+  <Placemark>
+    <name>2ème : Bourse</name>
+    <description><![CDATA[<A href="http://en.wikipedia.org/wiki/Op%C3%A9ra-Comique" target="_blank"><IMG src="http://upload.wikimedia.org/wikipedia/en/thumb/2/2a/SalleFavart_1840.jpg/300px-SalleFavart_1840.jpg" width="300" height="204"></A><BR>Opéra-Comique <br>
+<i>Photo : Wikipedia</i>]]></description>
+    <styleUrl>#style6</styleUrl>
+    <Polygon>
+      <outerBoundaryIs>
+        <LinearRing>
+          <tessellate>1</tessellate>
+          <coordinates>
+            2.339999,48.871960,0.000000
+            2.347890,48.870689,0.000000
+            2.354330,48.869308,0.000000
+            2.350979,48.863411,0.000000
+            2.330292,48.868294,0.000000
+            2.328211,48.869720,0.000000
+            2.328072,48.869923,0.000000
+            2.339999,48.871960,0.000000
+          </coordinates>
+        </LinearRing>
+      </outerBoundaryIs>
+    </Polygon>
+  </Placemark>
+  <Placemark>
+    <name>3ème : Temple</name>
+    <description><![CDATA[<a href="http://flickr.com/photos/nouknouk/318001380/" target="_blank"><img src="http://farm1.static.flickr.com/140/318001380_8998b34252_m.jpg" width="240" height="159"></a><br>
+Place des Vosges
+<br><i>Photo : nouknouk</i>]]></description>
+    <styleUrl>#style5</styleUrl>
+    <Polygon>
+      <outerBoundaryIs>
+        <LinearRing>
+          <tessellate>1</tessellate>
+          <coordinates>
+            2.362360,48.867905,0.000000
+            2.364764,48.866436,0.000000
+            2.366694,48.863190,0.000000
+            2.368454,48.855820,0.000000
+            2.364335,48.856441,0.000000
+            2.361631,48.857262,0.000000
+            2.358626,48.858757,0.000000
+            2.356825,48.860111,0.000000
+            2.353391,48.861214,0.000000
+            2.350172,48.862034,0.000000
+            2.354249,48.869286,0.000000
+            2.362360,48.867905,0.000000
+          </coordinates>
+        </LinearRing>
+      </outerBoundaryIs>
+    </Polygon>
+  </Placemark>
+  <Placemark>
+    <name>4ème : Hôtel-de-Ville</name>
+    <description><![CDATA[<A href="http://flickr.com/photos/sheta/14926917/" target="_blank"><IMG src="http://farm1.static.flickr.com/12/14926917_916d085620_m.jpg" width="240" height="180"></A><BR>
+Île de la Cité<BR>
+ <I>Photo : Sheta</I>]]></description>
+    <styleUrl>#style15</styleUrl>
+    <Polygon>
+      <outerBoundaryIs>
+        <LinearRing>
+          <tessellate>1</tessellate>
+          <coordinates>
+            2.364650,48.845989,0.000000
+            2.366299,48.846958,0.000000
+            2.369200,48.852810,0.000000
+            2.368360,48.855869,0.000000
+            2.364329,48.856407,0.000000
+            2.361670,48.857258,0.000000
+            2.358579,48.858749,0.000000
+            2.356780,48.860161,0.000000
+            2.353299,48.861240,0.000000
+            2.350169,48.862030,0.000000
+            2.347329,48.857147,0.000000
+            2.346986,48.856964,0.000000
+            2.345966,48.855396,0.000000
+            2.344551,48.854027,0.000000
+            2.346950,48.853298,0.000000
+            2.350130,48.851978,0.000000
+            2.354670,48.850849,0.000000
+            2.360899,48.848640,0.000000
+            2.364650,48.845989,0.000000
+          </coordinates>
+        </LinearRing>
+      </outerBoundaryIs>
+    </Polygon>
+  </Placemark>
+  <Placemark>
+    <name>5ème : Panthéon</name>
+    <description><![CDATA[<a href="http://flickr.com/photos/antizim/178599118/" target="_blank"><img width="203" height="240" src="http://farm1.static.flickr.com/58/178599118_93d9fd5449_m.jpg"></a>
+<br>Le Panthéon
+dans le 5<sup>e</sup> arrondissement<br> <i>Photo : The Anti-ZIM</i>
+]]></description>
+    <styleUrl>#style11</styleUrl>
+    <Polygon>
+      <outerBoundaryIs>
+        <LinearRing>
+          <tessellate>1</tessellate>
+          <coordinates>
+            2.351799,48.836750,0.000000
+            2.361839,48.840000,0.000000
+            2.364930,48.844379,0.000000
+            2.366000,48.844997,0.000000
+            2.360980,48.848610,0.000000
+            2.354800,48.850788,0.000000
+            2.350169,48.851997,0.000000
+            2.346859,48.853298,0.000000
+            2.344500,48.854038,0.000000
+            2.344199,48.853760,0.000000
+            2.342576,48.850258,0.000000
+            2.336462,48.839622,0.000000
+            2.345489,48.837601,0.000000
+            2.351799,48.836750,0.000000
+          </coordinates>
+        </LinearRing>
+      </outerBoundaryIs>
+    </Polygon>
+  </Placemark>
+  <Placemark>
+    <name>6ème : Luxembourg</name>
+    <description><![CDATA[<a href="http://flickr.com/photos/areta/271640802/" target="_blank"><img width="180" height="240" src="http://farm1.static.flickr.com/106/271640802_ad83a726d8_m.jpg"></a><br>
+Saint-Germain-Des-Prés <br>
+<i>Photo : Areta</i>]]></description>
+    <styleUrl>#style18</styleUrl>
+    <Polygon>
+      <outerBoundaryIs>
+        <LinearRing>
+          <tessellate>1</tessellate>
+          <coordinates>
+            2.316469,48.846851,0.000000
+            2.319040,48.847851,0.000000
+            2.324120,48.850311,0.000000
+            2.327040,48.851608,0.000000
+            2.328660,48.851952,0.000000
+            2.331599,48.856339,0.000000
+            2.333860,48.859180,0.000000
+            2.337499,48.858490,0.000000
+            2.340592,48.856750,0.000000
+            2.342512,48.855247,0.000000
+            2.344465,48.853992,0.000000
+            2.344250,48.853767,0.000000
+            2.342639,48.850349,0.000000
+            2.336520,48.839630,0.000000
+            2.319990,48.845100,0.000000
+            2.316469,48.846851,0.000000
+          </coordinates>
+        </LinearRing>
+      </outerBoundaryIs>
+    </Polygon>
+  </Placemark>
+  <Placemark>
+    <name>7ème : Palais-Bourbon</name>
+    <description><![CDATA[<a href="http://en.wikipedia.org/wiki/Tour_Montparnasse" target="_blank"><img width="280" height="190" src="http://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Paris.wiki.800pix.eiffelview.jpg/280px-Paris.wiki.800pix.eiffelview.jpg"></a>
+<br>Le 7<sup>e</sup> arrondissement vu de la Tour Montparnasse<br> <i>Photo : Adrian Pingstone</i>]]></description>
+    <styleUrl>#style1</styleUrl>
+    <Polygon>
+      <outerBoundaryIs>
+        <LinearRing>
+          <tessellate>1</tessellate>
+          <coordinates>
+            2.309531,48.845810,0.000000
+            2.307342,48.847153,0.000000
+            2.289877,48.858192,0.000000
+            2.294769,48.861862,0.000000
+            2.300219,48.863499,0.000000
+            2.318330,48.863838,0.000000
+            2.331462,48.859676,0.000000
+            2.333844,48.859180,0.000000
+            2.331590,48.856258,0.000000
+            2.330410,48.854424,0.000000
+            2.329295,48.852673,0.000000
+            2.328479,48.851826,0.000000
+            2.327106,48.851601,0.000000
+            2.319274,48.847801,0.000000
+            2.313651,48.845909,0.000000
+            2.311355,48.845215,0.000000
+            2.309531,48.845810,0.000000
+          </coordinates>
+        </LinearRing>
+      </outerBoundaryIs>
+    </Polygon>
+  </Placemark>
+  <Placemark>
+    <name>8ème : Élysée</name>
+    <description><![CDATA[<a href="http://flickr.com/photos/62904109@N00/312463080/" target="_blank"><img width="240" height="144" src="http://farm1.static.flickr.com/100/312463080_af21b52771_m.jpg"></a><br>
+L'Arc de Triomphe<br>
+<i>Photo : Palindrome6996</i>]]></description>
+    <styleUrl>#style16</styleUrl>
+    <Polygon>
+      <outerBoundaryIs>
+        <LinearRing>
+          <tessellate>1</tessellate>
+          <coordinates>
+            2.301550,48.864601,0.000000
+            2.299869,48.865131,0.000000
+            2.298799,48.868690,0.000000
+            2.297299,48.871151,0.000000
+            2.295539,48.873260,0.000000
+            2.294570,48.873192,0.000000
+            2.294029,48.873669,0.000000
+            2.294399,48.874290,0.000000
+            2.295409,48.874317,0.000000
+            2.297769,48.877750,0.000000
+            2.297639,48.878029,0.000000
+            2.298049,48.878460,0.000000
+            2.298799,48.878250,0.000000
+            2.309009,48.880459,0.000000
+            2.316609,48.881340,0.000000
+            2.327210,48.883450,0.000000
+            2.326849,48.875908,0.000000
+            2.326611,48.875404,0.000000
+            2.326976,48.873825,0.000000
+            2.326869,48.873329,0.000000
+            2.326290,48.872597,0.000000
+            2.326505,48.872471,0.000000
+            2.325819,48.869534,0.000000
+            2.325152,48.869392,0.000000
+            2.325260,48.869019,0.000000
+            2.320769,48.863098,0.000000
+            2.318280,48.863811,0.000000
+            2.301670,48.863522,0.000000
+            2.301550,48.864601,0.000000
+          </coordinates>
+        </LinearRing>
+      </outerBoundaryIs>
+    </Polygon>
+  </Placemark>
+  <Placemark>
+    <name>9ème : Opéra</name>
+    <description><![CDATA[<a href="http://flickr.com/photos/denislander/8902214/" target="_blank"><img width="180" height="240" src="http://farm1.static.flickr.com/4/8902214_5cf241296a_m.jpg"></a><br>
+Le boulevard Haussmann<br>
+<i>Photo : denisparis</i>
+]]></description>
+    <styleUrl>#style9</styleUrl>
+    <Polygon>
+      <outerBoundaryIs>
+        <LinearRing>
+          <tessellate>1</tessellate>
+          <coordinates>
+            2.339599,48.882011,0.000000
+            2.349520,48.883781,0.000000
+            2.349870,48.880692,0.000000
+            2.349209,48.878880,0.000000
+            2.349000,48.877220,0.000000
+            2.348139,48.875660,0.000000
+            2.347850,48.873871,0.000000
+            2.347890,48.870689,0.000000
+            2.340040,48.871960,0.000000
+            2.325790,48.869572,0.000000
+            2.326519,48.872471,0.000000
+            2.326309,48.872589,0.000000
+            2.326880,48.873341,0.000000
+            2.326979,48.873779,0.000000
+            2.326630,48.875439,0.000000
+            2.326820,48.875950,0.000000
+            2.327170,48.883419,0.000000
+            2.327929,48.883621,0.000000
+            2.329480,48.884651,0.000000
+            2.337406,48.882271,0.000000
+            2.339599,48.882011,0.000000
+          </coordinates>
+        </LinearRing>
+      </outerBoundaryIs>
+    </Polygon>
+  </Placemark>
+  <Placemark>
+    <name>10ème : Enclos-St-Laurent</name>
+    <description><![CDATA[<a href="http://flickr.com/photos/celesteh/396428858/" target="_blank"><img width="240" height="180" src="http://farm1.static.flickr.com/172/396428858_044efcd130_m.jpg"></a><br>
+La gare du Nord dans le 10<sup>e</sup> arrondissement<br>
+<i>Photo : celesteh</i>]]></description>
+    <styleUrl>#style3</styleUrl>
+    <Polygon>
+      <outerBoundaryIs>
+        <LinearRing>
+          <tessellate>1</tessellate>
+          <coordinates>
+            2.368755,48.884079,0.000000
+            2.369142,48.883289,0.000000
+            2.370213,48.882637,0.000000
+            2.370257,48.878632,0.000000
+            2.370814,48.878124,0.000000
+            2.370601,48.877560,0.000000
+            2.376952,48.872108,0.000000
+            2.372917,48.870644,0.000000
+            2.364205,48.867790,0.000000
+            2.363477,48.867226,0.000000
+            2.362404,48.867905,0.000000
+            2.354293,48.869286,0.000000
+            2.347941,48.870728,0.000000
+            2.347812,48.873943,0.000000
+            2.348155,48.875751,0.000000
+            2.348971,48.877277,0.000000
+            2.349272,48.879223,0.000000
+            2.349873,48.880692,0.000000
+            2.349486,48.883797,0.000000
+            2.359227,48.884472,0.000000
+            2.364806,48.884361,0.000000
+            2.368755,48.884079,0.000000
+          </coordinates>
+        </LinearRing>
+      </outerBoundaryIs>
+    </Polygon>
+  </Placemark>
+  <Placemark>
+    <name>11ème : Popincourt</name>
+    <description><![CDATA[<a href="http://en.wikipedia.org/wiki/XIe_arrondissement" target="_blank"><img width="280" height="210" src="http://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Le_cirque_d%27hiver_Paris_01.jpg/280px-Le_cirque_d%27hiver_Paris_01.jpg"></a><br>
+Le Cirque d'hiver de Paris<br>
+<i>Photo : Pol</i>]]></description>
+    <styleUrl>#style13</styleUrl>
+    <Polygon>
+      <outerBoundaryIs>
+        <LinearRing>
+          <tessellate>1</tessellate>
+          <coordinates>
+            2.383175,48.867115,0.000000
+            2.383776,48.866070,0.000000
+            2.387465,48.862823,0.000000
+            2.389654,48.858444,0.000000
+            2.392230,48.857571,0.000000
+            2.394321,48.856548,0.000000
+            2.398398,48.851330,0.000000
+            2.399214,48.848709,0.000000
+            2.399064,48.848103,0.000000
+            2.395899,48.848351,0.000000
+            2.384291,48.850170,0.000000
+            2.379999,48.850483,0.000000
+            2.371544,48.852459,0.000000
+            2.370257,48.853222,0.000000
+            2.369184,48.853081,0.000000
+            2.366737,48.863190,0.000000
+            2.364720,48.866409,0.000000
+            2.363477,48.867256,0.000000
+            2.364205,48.867790,0.000000
+            2.376866,48.872108,0.000000
+            2.383175,48.867115,0.000000
+          </coordinates>
+        </LinearRing>
+      </outerBoundaryIs>
+    </Polygon>
+  </Placemark>
+  <Placemark>
+    <name>12ème : Reuilly</name>
+    <description><![CDATA[<a href="http://en.wikipedia.org/wiki/XIIe_arrondissement" target="_blank"><img width="280" height="154" src="http://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Opera_Bastille_en_gr%C3%A8ve_2371.JPG/280px-Opera_Bastille_en_gr%C3%A8ve_2371.JPG"></a><br>
+L’Opéra de la Bastille<br>
+<i>Photo : Lalupa</i>]]></description>
+    <styleUrl>#style20</styleUrl>
+    <Polygon>
+      <outerBoundaryIs>
+        <LinearRing>
+          <tessellate>1</tessellate>
+          <coordinates>
+            2.414499,48.846809,0.000000
+            2.412520,48.836529,0.000000
+            2.409609,48.834270,0.000000
+            2.414070,48.833698,0.000000
+            2.422140,48.835850,0.000000
+            2.420249,48.840588,0.000000
+            2.419299,48.842060,0.000000
+            2.419989,48.843590,0.000000
+            2.421790,48.844547,0.000000
+            2.424450,48.841778,0.000000
+            2.438359,48.840588,0.000000
+            2.439220,48.844547,0.000000
+            2.440850,48.844440,0.000000
+            2.440760,48.845959,0.000000
+            2.446600,48.845901,0.000000
+            2.446340,48.844940,0.000000
+            2.455519,48.844097,0.000000
+            2.463340,48.842232,0.000000
+            2.469770,48.836529,0.000000
+            2.469090,48.834148,0.000000
+            2.465219,48.831497,0.000000
+            2.464280,48.827599,0.000000
+            2.466000,48.827259,0.000000
+            2.464789,48.822968,0.000000
+            2.462559,48.819458,0.000000
+            2.458870,48.817150,0.000000
+            2.453889,48.816978,0.000000
+            2.448570,48.818157,0.000000
+            2.437500,48.818439,0.000000
+            2.437330,48.819630,0.000000
+            2.431919,48.822628,0.000000
+            2.427630,48.824150,0.000000
+            2.421959,48.824211,0.000000
+            2.419729,48.824100,0.000000
+            2.417330,48.824600,0.000000
+            2.411070,48.825001,0.000000
+            2.406690,48.826981,0.000000
+            2.403509,48.829300,0.000000
+            2.401110,48.829689,0.000000
+            2.395620,48.828049,0.000000
+            2.390719,48.827198,0.000000
+            2.388580,48.826469,0.000000
+            2.364539,48.846130,0.000000
+            2.366429,48.847031,0.000000
+            2.369180,48.853130,0.000000
+            2.370379,48.853130,0.000000
+            2.371544,48.852417,0.000000
+            2.380170,48.850368,0.000000
+            2.384459,48.850079,0.000000
+            2.395960,48.848328,0.000000
+            2.414499,48.846809,0.000000
+          </coordinates>
+        </LinearRing>
+      </outerBoundaryIs>
+    </Polygon>
+  </Placemark>
+  <Placemark>
+    <name>13ème : Gobelins</name>
+    <description><![CDATA[<a href="http://en.wikipedia.org/wiki/XIIIe_arrondissement" target="_blank"><img width="280" height="181" src="http://upload.wikimedia.org/wikipedia/commons/a/a9/Bibliotheque_nationale_de_France_%28MAE%29.jpg"></a><br>
+La Bibliothèque Nationale de France<br>
+<i>Photo : Ministère des Affaires Étrangères</i>]]></description>
+    <styleUrl>#style12</styleUrl>
+    <Polygon>
+      <outerBoundaryIs>
+        <LinearRing>
+          <tessellate>1</tessellate>
+          <coordinates>
+            2.342039,48.838322,0.000000
+            2.341110,48.831947,0.000000
+            2.341310,48.831429,0.000000
+            2.341650,48.826408,0.000000
+            2.341460,48.823658,0.000000
+            2.342420,48.821461,0.000000
+            2.343939,48.820278,0.000000
+            2.344590,48.819382,0.000000
+            2.344100,48.817631,0.000000
+            2.344050,48.816441,0.000000
+            2.346839,48.816410,0.000000
+            2.351669,48.817989,0.000000
+            2.354400,48.817501,0.000000
+            2.356799,48.816441,0.000000
+            2.363339,48.816132,0.000000
+            2.378810,48.821480,0.000000
+            2.385269,48.825298,0.000000
+            2.388560,48.826481,0.000000
+            2.365959,48.844997,0.000000
+            2.364930,48.844379,0.000000
+            2.361930,48.840031,0.000000
+            2.351890,48.836731,0.000000
+            2.348927,48.837067,0.000000
+            2.345431,48.837605,0.000000
+            2.342039,48.838322,0.000000
+          </coordinates>
+        </LinearRing>
+      </outerBoundaryIs>
+    </Polygon>
+  </Placemark>
+  <Placemark>
+    <name>14ème : Observatoire</name>
+    <description><![CDATA[<a href="http://flickr.com/photos/robertpaulyoung/297156437/" target="_blank"><img width="240" height="180" src="http://farm1.static.flickr.com/108/297156437_a7391ebaef_m.jpg"></a><br>
+La Tour Maine-Montparnasse<br>
+<i>Photo : Robert Paul Young</i>
+]]></description>
+    <styleUrl>#style2</styleUrl>
+    <Polygon>
+      <outerBoundaryIs>
+        <LinearRing>
+          <tessellate>1</tessellate>
+          <coordinates>
+            2.301464,48.825428,0.000000
+            2.321032,48.841503,0.000000
+            2.321547,48.840996,0.000000
+            2.324594,48.843651,0.000000
+            2.336396,48.839695,0.000000
+            2.342105,48.838284,0.000000
+            2.341117,48.831982,0.000000
+            2.341504,48.828793,0.000000
+            2.341632,48.825600,0.000000
+            2.341504,48.823254,0.000000
+            2.342490,48.821304,0.000000
+            2.344036,48.820118,0.000000
+            2.344551,48.819355,0.000000
+            2.344164,48.817574,0.000000
+            2.344078,48.816502,0.000000
+            2.335710,48.816811,0.000000
+            2.332878,48.818478,0.000000
+            2.301464,48.825428,0.000000
+          </coordinates>
+        </LinearRing>
+      </outerBoundaryIs>
+    </Polygon>
+  </Placemark>
+  <Placemark>
+    <name>15ème : Vaugirard</name>
+    <description><![CDATA[<a href="http://flickr.com/photos/ivalladt/151174636/" target="_blank"><img width="240" height="180" src="http://farm1.static.flickr.com/46/151174636_76bdfca9a1_m.jpg"></a><br>
+Rue de Vaugirard<br>
+<i>Photo : ivalladt</i>]]></description>
+    <styleUrl>#style7</styleUrl>
+    <Polygon>
+      <outerBoundaryIs>
+        <LinearRing>
+          <tessellate>1</tessellate>
+          <coordinates>
+            2.292365,48.827492,0.000000
+            2.277001,48.833763,0.000000
+            2.274255,48.830429,0.000000
+            2.275027,48.829807,0.000000
+            2.272797,48.828960,0.000000
+            2.270564,48.828114,0.000000
+            2.267818,48.828171,0.000000
+            2.267303,48.831108,0.000000
+            2.270650,48.833591,0.000000
+            2.269191,48.835342,0.000000
+            2.266188,48.834724,0.000000
+            2.264127,48.835175,0.000000
+            2.278204,48.849014,0.000000
+            2.287644,48.855679,0.000000
+            2.289963,48.858276,0.000000
+            2.309274,48.845852,0.000000
+            2.311335,48.845287,0.000000
+            2.316483,48.846813,0.000000
+            2.320003,48.845173,0.000000
+            2.324552,48.843594,0.000000
+            2.321633,48.841049,0.000000
+            2.320948,48.841618,0.000000
+            2.301464,48.825512,0.000000
+            2.292365,48.827492,0.000000
+          </coordinates>
+        </LinearRing>
+      </outerBoundaryIs>
+    </Polygon>
+  </Placemark>
+  <Placemark>
+    <name>16ème : Passy</name>
+    <description><![CDATA[<a href="http://en.wikipedia.org/wiki/XVIe_arrondissement" target="_blank"><img width="250" height="188" src="http://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Parc_des_Princes.jpg/250px-Parc_des_Princes.jpg"></a><br>
+Le Parc des Princes<br>
+<i>Photo : El Mostrito</i>]]></description>
+    <styleUrl>#style8</styleUrl>
+    <Polygon>
+      <outerBoundaryIs>
+        <LinearRing>
+          <tessellate>1</tessellate>
+          <coordinates>
+            2.280070,48.878292,0.000000
+            2.294939,48.873859,0.000000
+            2.297387,48.871193,0.000000
+            2.299039,48.868427,0.000000
+            2.299910,48.865269,0.000000
+            2.301571,48.864574,0.000000
+            2.301800,48.863361,0.000000
+            2.294080,48.861660,0.000000
+            2.288930,48.857590,0.000000
+            2.286010,48.854321,0.000000
+            2.277429,48.847988,0.000000
+            2.264040,48.835121,0.000000
+            2.257859,48.835678,0.000000
+            2.253909,48.839298,0.000000
+            2.254770,48.845398,0.000000
+            2.250300,48.845509,0.000000
+            2.241719,48.848328,0.000000
+            2.227300,48.848560,0.000000
+            2.225929,48.855450,0.000000
+            2.231590,48.866520,0.000000
+            2.239320,48.870468,0.000000
+            2.246700,48.876339,0.000000
+            2.255110,48.874199,0.000000
+            2.258199,48.880520,0.000000
+            2.280070,48.878292,0.000000
+          </coordinates>
+        </LinearRing>
+      </outerBoundaryIs>
+    </Polygon>
+  </Placemark>
+  <Placemark>
+    <name>17ème : Batignolles-Monceau</name>
+    <description><![CDATA[<a href="http://flickr.com/photos/daquellamanera/194371541/" target="_blank"><img width="240" height="180" src="http://farm1.static.flickr.com/63/194371541_754ad04093_m.jpg"></a><br>
+Palais des Congrès<br>
+<i>Photo : Daquella manera</i>]]></description>
+    <styleUrl>#style10</styleUrl>
+    <Polygon>
+      <outerBoundaryIs>
+        <LinearRing>
+          <tessellate>1</tessellate>
+          <coordinates>
+            2.279999,48.878368,0.000000
+            2.283259,48.882771,0.000000
+            2.291850,48.888420,0.000000
+            2.297680,48.889660,0.000000
+            2.305750,48.895081,0.000000
+            2.321889,48.900612,0.000000
+            2.330131,48.900810,0.000000
+            2.325625,48.887592,0.000000
+            2.327210,48.883450,0.000000
+            2.316910,48.881310,0.000000
+            2.308670,48.880402,0.000000
+            2.298074,48.878151,0.000000
+            2.295027,48.873917,0.000000
+            2.279999,48.878368,0.000000
+          </coordinates>
+        </LinearRing>
+      </outerBoundaryIs>
+    </Polygon>
+  </Placemark>
+  <Placemark>
+    <name>18ème : Butte-Montmartre</name>
+    <description><![CDATA[<a href="http://flickr.com/photos/burge5000/104914508/" target="_blank"><img width="240" height="180" src="http://farm1.static.flickr.com/37/104914508_0045d191b7_m.jpg"></a><br>
+Basilique du Sacré Cœur<br>
+<i>Photo : burge5000</i>]]></description>
+    <styleUrl>#style19</styleUrl>
+    <Polygon>
+      <outerBoundaryIs>
+        <LinearRing>
+          <tessellate>1</tessellate>
+          <coordinates>
+            2.370379,48.900719,0.000000
+            2.370379,48.896709,0.000000
+            2.371840,48.895359,0.000000
+            2.370289,48.894459,0.000000
+            2.367081,48.887592,0.000000
+            2.366630,48.886604,0.000000
+            2.364720,48.884411,0.000000
+            2.358789,48.884411,0.000000
+            2.349520,48.883678,0.000000
+            2.339739,48.881870,0.000000
+            2.337254,48.882286,0.000000
+            2.329530,48.884430,0.000000
+            2.327920,48.883526,0.000000
+            2.327192,48.883415,0.000000
+            2.325603,48.887619,0.000000
+            2.330210,48.900829,0.000000
+            2.353209,48.901279,0.000000
+            2.370379,48.900719,0.000000
+          </coordinates>
+        </LinearRing>
+      </outerBoundaryIs>
+    </Polygon>
+  </Placemark>
+  <Placemark>
+    <name>19ème : Buttes-Chaumont</name>
+    <description><![CDATA[<a href="http://flickr.com/photos/omaromar/11735609/" target="_blank"><img width="240" height="180" src="http://farm1.static.flickr.com/8/11735609_3ee4cb8135_m.jpg"></a><br>
+Le bassin de la Villette<br>
+<i>Photo : Omar Omar</i>]]></description>
+    <styleUrl>#style4</styleUrl>
+    <Polygon>
+      <outerBoundaryIs>
+        <LinearRing>
+          <tessellate>1</tessellate>
+          <coordinates>
+            2.408749,48.877857,0.000000
+            2.402309,48.875999,0.000000
+            2.395255,48.875259,0.000000
+            2.390210,48.875549,0.000000
+            2.387719,48.874531,0.000000
+            2.386519,48.874649,0.000000
+            2.384720,48.873859,0.000000
+            2.376819,48.872219,0.000000
+            2.370379,48.878090,0.000000
+            2.370210,48.882771,0.000000
+            2.368920,48.883339,0.000000
+            2.368669,48.884132,0.000000
+            2.364742,48.884403,0.000000
+            2.366781,48.886688,0.000000
+            2.368348,48.890202,0.000000
+            2.370289,48.894508,0.000000
+            2.371750,48.895470,0.000000
+            2.370279,48.896648,0.000000
+            2.370379,48.900780,0.000000
+            2.376900,48.900269,0.000000
+            2.388490,48.900661,0.000000
+            2.392009,48.899818,0.000000
+            2.393810,48.898239,0.000000
+            2.397250,48.885880,0.000000
+            2.401879,48.881760,0.000000
+            2.406600,48.880119,0.000000
+            2.408749,48.877857,0.000000
+          </coordinates>
+        </LinearRing>
+      </outerBoundaryIs>
+    </Polygon>
+  </Placemark>
+  <Placemark>
+    <name>20ème : Ménilmontant</name>
+    <description><![CDATA[<a href="http://flickr.com/photos/damouns/28517043/" target="_blank"><img width="180" height="240" src="http://farm1.static.flickr.com/23/28517043_6321c5f918_m.jpg"></a><br>
+La rue de Ménilmontant dans le 20<sup>e</sup> arrondissement<br><i>Photo : Damouns</i>
+]]></description>
+    <styleUrl>#style14</styleUrl>
+    <Polygon>
+      <outerBoundaryIs>
+        <LinearRing>
+          <tessellate>1</tessellate>
+          <coordinates>
+            2.413300,48.865269,0.000000
+            2.414149,48.859058,0.000000
+            2.413980,48.853809,0.000000
+            2.415270,48.851040,0.000000
+            2.414410,48.846809,0.000000
+            2.399049,48.848110,0.000000
+            2.399309,48.848789,0.000000
+            2.398359,48.851269,0.000000
+            2.394410,48.856522,0.000000
+            2.389654,48.858475,0.000000
+            2.387379,48.862961,0.000000
+            2.383509,48.866180,0.000000
+            2.383195,48.867142,0.000000
+            2.376822,48.872238,0.000000
+            2.384970,48.873970,0.000000
+            2.386519,48.874699,0.000000
+            2.387890,48.874531,0.000000
+            2.390379,48.875549,0.000000
+            2.395297,48.875217,0.000000
+            2.402219,48.875950,0.000000
+            2.408580,48.877857,0.000000
+            2.410979,48.874310,0.000000
+            2.413380,48.871090,0.000000
+            2.413300,48.865269,0.000000
+          </coordinates>
+        </LinearRing>
+      </outerBoundaryIs>
+    </Polygon>
+  </Placemark>
+</Document>
+</kml>
