@@ -32,7 +32,7 @@
             <field name="paymentMode" widget="SuggestBox"/>
             <field name="paymentCondition" widget="SuggestBox"/>
             <field name="bankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" hideIf="operationTypeSelect >= 3" domain="self.partner = :partner"/>
-            <field name="partnerAccount" onSelect="action-invoice-partner-account-domain"/>
+            <field name="partnerAccount" domain="self.company = :company" onSelect="action-invoice-partner-account-domain"/>
             <field name="address" colSpan="4"/>
         </group>
         <group title="Reference documents" cols="4" colSpan="4">

@@ -7,7 +7,7 @@
         <field name="name"/>
         <field name="company"/>
         <field name="dateTime"/>
-        <field name="payerPartner"/>
+        <field name="partner"/>
         <field name="moveLine"/>
         <field name="rejectionDate"/>
         <field name="interbankCodeLine"/>
@@ -23,7 +23,7 @@
         <field name="paymentMode"/>
         <break/>
         <break/><spacer/><break/>
-        <field name="payerPartner"/>
+        <field name="partner"/>
         <break/><spacer/><break/>
         <field name="paymentVoucher" domain="self.company=:company" onSelect="action-cheque-rejection-attrs-domain-payment-voucher" onChange="action-cheque-rejection-record-amount-rejected,action-cheque-rejection-record-partner">
         	<grid title="Payment voucher" orderBy="-paymentDateTime">
