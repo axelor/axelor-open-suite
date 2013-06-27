@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
 	<module name="socialnetwork" package="com.axelor.apps.socialnetwork.db" />
 	<entity name="TwitterFollowerRequest">
-		<string name="userId" title="Twitter ID"/>
+		<string name="snUserRef" title="Twitter ID"/>
 		<string name="screenName" title="Screen Name"/>
 		<string name="name" title="Real Name"/>
 		<string name="link" title="Profile Link"/>

@@ -37,7 +37,7 @@
   	<one-to-many name="priceList" ref="com.axelor.apps.base.db.Price" mappedBy="product" title="Prices"/>
   	
   	<!-- SOCIAL NETWORKING INTEGRATION FOR PRODUCT -->
-    <many-to-one name="snPost" ref="com.axelor.apps.socialnetwork.db.SnStatusUpdates" required="false" orphan="true" default="null"/>
+    <many-to-one name="snStatusUpdates" ref="com.axelor.apps.socialnetwork.db.SnStatusUpdates" required="false" orphan="true" default="null"/>
   
   </entity>
 

@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
 	<module name="socialnetwork" package="com.axelor.apps.socialnetwork.db" />
 	<entity name="FBPages">
-		<string name="pageId" help="Unique Facebook Page ID"/>
+		<string name="pageRef" help="Unique Facebook Page ID"/>
 		<string name="name" title="Page Name" help="Facebook Registered Page Name"/>
 		<string name="username" title="User Name" help="Facebook Registered Page Username"/>
 		<string name="pageUrl" title="URL of Page" help="Global Link of the Facebook Page"/>

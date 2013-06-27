@@ -5,7 +5,7 @@
 	<module name="socialnetwork" package="com.axelor.apps.socialnetwork.db" />
 	<entity name="FBSearchResult">
 		<many-to-one name="fbSearchPerson" ref="com.axelor.apps.socialnetwork.db.FBSearchPerson"/>
-		<string name="userid" help="Facebook Generated Unique User's ID"/>
+		<string name="userRef" help="Facebook Generated Unique User's ID"/>
 		<string name="firstname" help="First Name of Person" />
 		<string name="lastname" help="Last Name of Person" />
 		<string name="gender" />

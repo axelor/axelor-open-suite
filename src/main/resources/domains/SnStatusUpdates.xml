@@ -6,10 +6,10 @@
   <module name="socialnetwork" package="com.axelor.apps.socialnetwork.db"/>
 
   <entity name="SnStatusUpdates">
-  	<string name="linkedinUpdateId"/>
-  	<string name="facebookUpdateId"/>
-  	<string name="twitterUpdateId"/>
-    <string name="updateContent" namecolumn="true" multiline="true" max="600"/>
+  	<string name="linkedinUpdateRef"/>
+  	<string name="facebookUpdateRef"/>
+  	<string name="twitterUpdateRef"/>
+    <string name="content" namecolumn="true" multiline="true" max="600"/>
     <datetime name="updateDateT" tz="true"/>
     <many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo"/>
     <one-to-many name="snStatusCommentsList" ref="com.axelor.apps.socialnetwork.db.SnStatusComments" orphan="true" mappedBy="snStatusUpdates"/>
