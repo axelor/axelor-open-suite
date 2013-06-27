@@ -7,7 +7,7 @@
 	
 	<entity name="LnGroupDiscussion">
 		<string name="discussionId" title="Id" />
-		<string name="discussionSummary" title="Summary" max="4000" multiline="true" />
+		<string name="discussionSummary" title="Summary" large="true"/>
 		<string name="discussionTitle" title="Title" max="200" />
 		<string name="discussionFrom" title="From" />
 		<datetime name="discussionDateT" tz="true" title="Time" />

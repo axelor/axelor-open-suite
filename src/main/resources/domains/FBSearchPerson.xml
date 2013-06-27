@@ -6,9 +6,9 @@
 	<module name="base" package="com.axelor.apps.base.db" />
 
 	<entity name="FBSearchPerson" lang="java">
-		<string name="searchparam" help="Search Keyword"></string>
-		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" help="Currently Active ERP User"></many-to-one>
-		<one-to-many name="resultSearch" ref="com.axelor.apps.base.db.FBSearchResult" mappedBy="searchPerson" help="Search Result of The Entered Keyword"/>
+		<string name="searchparam" help="Search Keyword"/>
+		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" help="Currently Active ERP User"/>
+		<one-to-many name="fbSearchResultList" ref="com.axelor.apps.base.db.FBSearchResult" mappedBy="fbSearchPerson" help="Search Result of The Entered Keyword"/>
 	</entity>
 </domain-models>
 

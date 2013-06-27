@@ -123,7 +123,7 @@
 
 					<page title="Send Personal Message" name="snPersonalMessage"
 						hideIf="socialNet.name == 'facebook'">
-						<field name="snDirectMessage" title="Personal Messages"><!-- 
+						<field name="snSendMessageList" title="Personal Messages"><!-- 
 								onChange="com.axelor.sn.web.TWTController:directMessageO2M"> -->
 							<grid title="All Sent Messages">
 								<field name="socialNet" title="Social Networking Type"

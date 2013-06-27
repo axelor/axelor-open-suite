@@ -6,11 +6,11 @@
 	<entity name="FBPostEvent">
 		<string name="occession" help="Event Name for Facebbok to Publish" ></string>
 		<string name="location" help="Location for Event to Publish"></string>
-		<datetime name="startdate" tz="true" help="Start Date and Time of Event For Facebook"></datetime>
-		<datetime name="enddate" tz="true" help="End Date and Time of Event for Facebook"></datetime>
+		<datetime name="startDateT" tz="true" help="Start Date and Time of Event For Facebook"></datetime>
+		<datetime name="endDateT" tz="true" help="End Date and Time of Event for Facebook"></datetime>
 		<string name="privacy" help="Privacy Option for Posting Content"></string>
 		<string name="acknowledgment" help="Facebook Generated Unique ID for Posted Content on Successful Post "></string>
 		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" help="Currently Active ERP User"></many-to-one>
-		<datetime name="postedTime" tz="true" help="Posted Content Date and Time of Facebook"></datetime>
+		<datetime name="postedDateT" tz="true" help="Posted Content Date and Time of Facebook"></datetime>
 	</entity>
 </domain-models>

@@ -5,7 +5,7 @@
 	<module name="base" package="com.axelor.apps.base.db" />
 	<entity name="FBPageComment">
 		<string name="commentid" title="Comment id" help="Facebook Unique ID for Comment "></string>
-		<many-to-one name="contentid" ref="com.axelor.apps.base.db.FBPagePost"
+		<many-to-one name="fbPagePost" ref="com.axelor.apps.base.db.FBPagePost"
 			title="Please Select Message" help="Posted Content Association on which Comment is Being Received"></many-to-one>
 		<string name="from_user" title="From::User" help="Comment Made by User" />
 		<string name="commentTime" title="Comment Time" help="Comments Date and Time"></string>
