@@ -103,7 +103,7 @@
 				<group name="snStatusComment" colSpan="3" cols="3">
 					<field name="comments" title="Comments" hideIf="snPost == null"
 						readonly="true"
-						widget="SnStatusComments[type=ONE_TO_MANY|target=com.axelor.apps.base.db.SnStatusComments]">
+						widget="SnStatusComments[type=ONE_TO_MANY|target=com.axelor.apps.socialnetwork.db.SnStatusComments]">
 						<grid title="Comments">
 							<field name="partner" title="By" width="100" />
 							<field name="commentText" title="Comment" />

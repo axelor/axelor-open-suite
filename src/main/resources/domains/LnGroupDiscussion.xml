@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
 	
-	<module name="base" package="com.axelor.apps.base.db"/>
+	<module name="socialnetwork" package="com.axelor.apps.socialnetwork.db"/>
 	
 	<entity name="LnGroupDiscussion">
 		<string name="discussionId" title="Id" />
@@ -11,9 +11,9 @@
 		<string name="discussionTitle" title="Title" max="200" />
 		<string name="discussionFrom" title="From" />
 		<datetime name="discussionDateT" tz="true" title="Time" />
-		<many-to-one name="lnGroup" ref="com.axelor.apps.base.db.LnGroup" />
+		<many-to-one name="lnGroup" ref="com.axelor.apps.socialnetwork.db.LnGroup" />
 		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="User" />
-		<one-to-many name="lnGroupDiscussionCommentsList" ref="com.axelor.apps.base.db.LnGroupDiscussionComments" mappedBy="lnGroupDiscussion" />
+		<one-to-many name="lnGroupDiscussionCommentsList" ref="com.axelor.apps.socialnetwork.db.LnGroupDiscussionComments" mappedBy="lnGroupDiscussion" />
 		<boolean name="isByUser" default="true" />
 	</entity>
 </domain-models>

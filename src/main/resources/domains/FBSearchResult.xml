@@ -2,9 +2,9 @@
 <domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
-	<module name="base" package="com.axelor.apps.base.db" />
+	<module name="socialnetwork" package="com.axelor.apps.socialnetwork.db" />
 	<entity name="FBSearchResult">
-		<many-to-one name="fbSearchPerson" ref="com.axelor.apps.base.db.FBSearchPerson"/>
+		<many-to-one name="fbSearchPerson" ref="com.axelor.apps.socialnetwork.db.FBSearchPerson"/>
 		<string name="userid" help="Facebook Generated Unique User's ID"/>
 		<string name="firstname" help="First Name of Person" />
 		<string name="lastname" help="Last Name of Person" />

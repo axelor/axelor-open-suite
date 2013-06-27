@@ -55,7 +55,7 @@
 	        <break/>
 	    </group>
 	    <field name="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2" colSpan="4" domain="self.isContact = 'true'" grid-view="partner-contact-grid"/>
-	    <field name="snUserId" hidden="true" />
+	    <field name="snUserRef" hidden="true" />
 		<field name="socialNet" hidden="true" />
 		<field name="curUser" hidden="true" />
 	    <break/>
@@ -131,7 +131,7 @@
 								<field name="partner" title="To"></field>
 								<field name="content"></field>
 								<field name="messageDateT" title="Date and Time" hidden="true"></field>
-								<field name="messageId" />
+								<field name="snMessageRef" />
 							</grid>
 
 							<form title="Compose New Message" onNew="action-fill-direct-message">
@@ -150,7 +150,7 @@
 									onClick="com.axelor.sn.web.SNCommonController:sendMessage"
 									title="Send" />
 								<field name="messageDateT" title="Date and Time" hidden="true"></field>
-								<field name="messageId" hidden="true" />
+								<field name="snMessageRef" hidden="true" />
 							</form>
 						</field>
 					</page>
@@ -213,7 +213,7 @@
 	        <break/>
 	    </group>
 	    <field name="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2" colSpan="4" domain="self.isContact = 'true'" grid-view="partner-contact-grid"/>
-	    <field name="snUserId" hidden="true" />
+	    <field name="snUserRef" hidden="true" />
 		<field name="socialNet" hidden="true" />
 		<field name="curUser" hidden="true" />
 	    <break/>
@@ -355,14 +355,14 @@
 
 	<!--SN Actions -->    
 	
-    <action-view name="action-fetch-all-sn-update" title="Recents Update of This User" model="com.axelor.apps.base.db.FBNewsFeed"> 
+    <action-view name="action-fetch-all-sn-update" title="Recents Update of This User" model="com.axelor.apps.socialnetwork.db.FBNewsFeed"> 
 		<view type="grid" name="fb-news-feed-grid1" />
 		<view type="form" name="fb-news-feed-form"/>
-		<domain>self.snUserId = :snUserId</domain>
+		<domain>self.snUserRef = :snUserRef</domain>
 	</action-view>
 
 	<action-record name="action-fill-direct-message"
-		model="com.axelor.apps.base.db.SnSendMessage">
+		model="com.axelor.apps.socialnetwork.db.SnSendMessage">
 		<field name="socialNet" expr="eval:_parent.socialNet" />
 		<field name="curUser" expr="eval:__user__" />
 		<field name="partner" expr="eval:_parent" />
@@ -370,10 +370,10 @@
 	</action-record>
 
 	<action-view name="action-fetch-all-sn-mail" title="Inbox"
-		model="com.axelor.apps.base.db.MsgInbox">
+		model="com.axelor.apps.socialnetwork.db.MsgInbox">
 		<view type="grid" name="sn-msg-inbox-grid1" />
 		<view type="form" name="sn-msg-inbox-form" />
-		<domain>self.messageFromID = :snUserId</domain>
+		<domain>self.messageFromID = :snUserRef</domain>
 	</action-view>
 	<!--END SN Actions -->
 	
