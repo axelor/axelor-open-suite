@@ -2,13 +2,13 @@
 <domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd" >
 	
-	<module name="base" package="com.axelor.apps.base.db" />
+	<module name="socialnetwork" package="com.axelor.apps.socialnetwork.db" />
 	
 	<entity name="LnGroup">
 		<string name="groupId" title="Id" />
 		<string name="groupName" title="Name" namecolumn="true" />
 		<string name="membershipState" title="Membership" />
 		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="User" />
-		<one-to-many name="discussionList" ref="com.axelor.apps.base.db.LnGroupDiscussion" mappedBy="groupId" />
+		<one-to-many name="lnGroupDiscussionList" ref="com.axelor.apps.socialnetwork.db.LnGroupDiscussion" mappedBy="lnGroup" />
 	</entity>
 </domain-models>

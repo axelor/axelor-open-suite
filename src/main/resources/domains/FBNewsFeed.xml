@@ -2,16 +2,16 @@
 <domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
-	<module name="base" package="com.axelor.apps.base.db" />
+	<module name="socialnetwork" package="com.axelor.apps.socialnetwork.db" />
 	<entity name="FBNewsFeed">
 		<string name="feedid" help="Facebook unique Feed ID"/>
-		<string name="snUserId" title="Name of User" help="Facebook User ID who Made Feed Update"></string>
-		<string name="name" title="Name of User" help="Facebook User Name who Made Feed Update"></string>
-		<string name="contentdate" title="Date and Time" help="Date and Time of Feed Update"></string>
-		<string name="type" title="Type of Content" help="Type of Update of Feed"></string>
-		<string name="link" multiline="true"  title="Link (If Available)" max="1000" help="Link of Feed Content"></string>
-		<string name="message"  title="Message (If Available)" max="10000" multiline="true" help="Message of Feed Update"></string>
-		<boolean name="contentLike" title="Like..?" default="false" help="You Can Like Feed Content From Here"></boolean>
+		<string name="snUserRef" title="Name of User" help="Facebook User ID who Made Feed Update"/>
+		<string name="name" title="Name of User" help="Facebook User Name who Made Feed Update"/>
+		<string name="contentdate" title="Date and Time" help="Date and Time of Feed Update"/>
+		<string name="type" title="Type of Content" help="Type of Update of Feed"/>
+		<string name="link" multiline="true"  title="Link (If Available)" max="1000" help="Link of Feed Content"/>
+		<string name="message"  title="Message (If Available)" max="10000" multiline="true" help="Message of Feed Update"/>
+		<boolean name="contentLike" title="Like..?" default="false" help="You Can Like Feed Content From Here"/>
 		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" help="Current Active User of ERP" />
 	</entity>
 </domain-models>

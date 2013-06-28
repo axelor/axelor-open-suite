@@ -8,13 +8,16 @@ import java.math.RoundingMode
 import wslite.rest.ContentType
 import wslite.rest.RESTClient
 
+import com.axelor.apps.account.db.Invoice
 import com.axelor.apps.base.db.Address
 import com.axelor.apps.base.db.AddressExport
 import com.axelor.apps.base.db.General
 import com.axelor.apps.base.db.Import
+import com.axelor.apps.base.db.Partner
 import com.axelor.apps.base.db.PartnerList
 import com.axelor.apps.base.db.PickListEntry
 import com.axelor.apps.base.service.administration.GeneralService
+import com.axelor.apps.base.service.user.UserInfoService
 import com.axelor.data.Importer
 import com.axelor.data.csv.CSVImporter
 import com.axelor.data.xml.XMLImporter
@@ -34,6 +37,9 @@ class AddressController {
 	
 	@Inject
 	private AddressService ads
+	
+	@Inject 
+	private UserInfoService uis
 	
 	def check(ActionRequest request, ActionResponse response) {
 
@@ -396,6 +402,80 @@ class AddressController {
 	
 	}
 
+
+	def void directionsMapGoogle(ActionRequest request, ActionResponse response)  {
+		
+		Address arrivalAddress = request.context as Address
+		def arrivalString = "${arrivalAddress.addressL4} ,${arrivalAddress.addressL6}"
+		log.debug("arrivalString = {}", arrivalString)
+
+		Partner currPartner = uis.getUserPartner()
+		Address departureAddress = currPartner.deliveryAddress
+		def departureString = "${departureAddress.addressL4} ,${departureAddress.addressL6}"
+		log.debug("departureString = {}", departureString)
+
+		try {
+			response.flash = ""
+			def depLat = departureAddress.latit
+			def depLng = departureAddress.longit
+			def arrLat = arrivalAddress.latit
+			def arrLng =  arrivalAddress.longit
+
+			if ( !(depLat && depLng)) {
+				def googleResponse = geocodeGoogle(departureString)
+				if (googleResponse?.multiple) {
+					response.flash = "<B>$departureString</B> matches multiple locations. First selected."
+				}
+				depLat = googleResponse?.lat
+				depLng = googleResponse?.lng
+			}
+			if ( !(arrLat && arrLng)) {
+				def googleResponse = geocodeGoogle(arrivalString)
+				if (googleResponse?.multiple) {
+					response.flash = "<B>$arrivalString</B> matches multiple locations. First selected."
+				}
+				arrLat = googleResponse?.lat
+				arrLng = googleResponse?.lng
+			}
+			if (arrLat && arrLng) {
+				String url = "http://localhost/HTML/directions.html?dx=$depLat&dy=$depLng&ax=$arrLat&ay=$arrLng"
+				response.view = [
+					"title": "Directions",
+					"resource": url,
+					"viewType": "html"
+				]
+				response.values = [
+					latit: arrLat,
+					longit: arrLng
+				]
+			}
+			else {
+				response.flash = "<B>$arrivalString</B> not found"
+			}
+
+		}
+		catch(Exception e)  {
+			TraceBackService.trace(response, e)
+		}
+	}
+
+
+	def void directionsMap(ActionRequest request, ActionResponse response)  {
+		Partner currPartner = uis.getUserPartner()
+		Address departureAddress = currPartner.deliveryAddress
+		if (departureAddress) {
+			if (GeneralService.getGeneral().mapApiSelect == "1") {
+				directionsMapGoogle(request, response)
+			} else {
+				response.flash = "Not implemented yet for OSM! Please select the google service"
+			}
+		} else {
+			response.flash = "Current user's partner delivery address not set"
+		}
+	
+	}
+
+	
 	def void checkMapApi(ActionRequest request, ActionResponse response)  {
 		response.flash = "Not implemented yet!"
 	}
@@ -406,13 +486,15 @@ class AddressController {
 		// Only allowed for google maps to prevent overloading OSM
 		if (GeneralService.getGeneral().mapApiSelect == "1") {
 			PartnerList partnerList = request.context as PartnerList
-			def file = new File("/home/arye/DEV/HTML/latlng_${partnerList.id}.csv")
-			file.write("latitude,longitude,fullName\n")
+
+			def file = new File("/home/axelor/www/HTML/latlng_${partnerList.id}.csv")
+			file.write("latitude,longitude,fullName,turnover\n")
 			
 
 			for (partner in partnerList.partnerSet) {
 				//def address = partner.mainInvoicingAddress
 				if (partner.mainInvoicingAddress) {
+					
 					def address = Address.find(partner.mainInvoicingAddress.id)
 					if (!(address?.latit && address?.longit)) {
 						def qString = "${address.addressL4} ,${address.addressL6}"
@@ -424,15 +506,22 @@ class AddressController {
 						address.save()
 					}
 					if (address?.latit && address?.longit) {
-						log.debug("appending = {}", "${address.latit},${address?.longit},${partner.fullName}\n")
+						//def turnover = Invoice.all().filter("self.partner.id = ? AND self.status.code = 'val'", partner.id).fetch().sum{ it.inTaxTotal }
+						def turnover = Invoice.all().filter("self.partner.id = ?", partner.id).fetch().sum{ it.inTaxTotal }
+						log.debug("appending = {}", "${address.latit},${address?.longit},${partner.fullName},${turnover?:0.0}\n")
 						file.withWriterAppend('UTF-8') {
-							it.write("${address.latit},${address?.longit},${partner.fullName}\n")
+							it.write("${address.latit},${address?.longit},${partner.fullName},${turnover?:0.0}\n")
 						}
 					}
 				}
 			}
 			//response.values = [partnerList : partnerList]
-			String url = "http://localhost/HTML/gmaps_xhr.html?file=latlng_${partnerList.id}.csv"
+			String url = ""
+			if (partnerList.isCluster)
+				url = "http://localhost/HTML/cluster_gmaps_xhr.html?file=latlng_${partnerList.id}.csv"
+			else
+				url = "http://localhost/HTML/gmaps_xhr.html?file=latlng_${partnerList.id}.csv"
+			
 			response.view = [
 				"title": "Sales map",
 				"resource": url,

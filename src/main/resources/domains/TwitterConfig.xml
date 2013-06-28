@@ -2,12 +2,11 @@
 <domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
-	<module name="base" package="com.axelor.apps.base.db" />
+	<module name="socialnetwork" package="com.axelor.apps.socialnetwork.db" />
 	<entity name="TwitterConfig">
-		<integer name="page" min="0" max="10" help="Minimum 1st Page and Maximum 10th Page"></integer>
-		<integer name="content" min="0" max="100" help="1 to 100 Number Content Per page"></integer>
-		<boolean name="since" default="false" title="Only Latest Updates"></boolean>
-<!-- 		<many-to-one name="since" ref="com.axelor.sn.db.TwitterHomeTimeline" orphan="true" ></many-to-one> -->
-		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" unique="true"></many-to-one>
+		<integer name="page" min="0" max="10" help="Minimum 1st Page and Maximum 10th Page"/>
+		<integer name="content" min="0" max="100" help="1 to 100 Number Content Per page"/>
+		<boolean name="since" default="false" title="Only Latest Updates"/>
+		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" unique="true"/>
 	</entity>
 </domain-models>

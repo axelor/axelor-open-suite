@@ -3,16 +3,16 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
 
-  <module name="base" package="com.axelor.apps.base.db"/>
+  <module name="socialnetwork" package="com.axelor.apps.socialnetwork.db"/>
 
   <entity name="SnStatusUpdates">
-  	<string name="linkedinUpdateId"/>
-  	<string name="facebookUpdateId"/>
-  	<string name="twitterUpdateId"/>
-    <string name="updateContent" namecolumn="true" multiline="true" max="600"/>
-    <datetime name="updateTime" tz="true"/>
+  	<string name="linkedinUpdateRef"/>
+  	<string name="facebookUpdateRef"/>
+  	<string name="twitterUpdateRef"/>
+    <string name="content" namecolumn="true" multiline="true" max="600"/>
+    <datetime name="updateDateT" tz="true"/>
     <many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo"/>
-    <one-to-many name="commentList" ref="com.axelor.apps.base.db.SnStatusComments" orphan="true" mappedBy="updateId"/>
+    <one-to-many name="snStatusCommentsList" ref="com.axelor.apps.socialnetwork.db.SnStatusComments" orphan="true" mappedBy="snStatusUpdates"/>
  </entity>
  
 </domain-models>
