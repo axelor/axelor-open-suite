@@ -193,74 +193,9 @@
 	</form>
 	
 	
-	
-	
-	<form cols="4" colWidths="25*"   name="partner-lead-converted-form" title="Partner" model="com.axelor.apps.base.db.Partner"
-	    onNew="action-partner-record-partner-type-select,action-partner-record-set-default,action-partner-record-get-lead-converted-context">
-	    <group colSpan="1">
-	        <field name="picture"/>
-	    </group>
-	    <group colSpan="3" cols="6">
-	        <field name="titleSelect" hideIf="partnerTypeSelect != 2" css="highlight"/>
-	        <field name="name" css="highlight"/>
-	        <field name="firstName" hideIf="partnerTypeSelect != 2" css="highlight"/>
-	        <break/>
-	        <field name="partnerCategory" widget="SuggestBox"/>
-	        <field name="partnerTypeSelect" onChange="action-partner-attrs-change-name,action-partner-attrs-hide-tabs"/>
-	        <field name="parentPartner" hideIf="partnerTypeSelect != 1"/>
-	        <field name="isContact" hideIf="partnerTypeSelect != 2" onChange="action-partner-set-non-contact-fields,action-partner-attrs-hide-tabs"/>
-	        <field name="isCustomer"/>
-	        <field name="customerTypeSelect" hideIf="isContact || !isCustomer"/>        
-	        <field name="isSupplier" hideIf="partnerTypeSelect == 2"/>
-	        <field name="supplierTypeSelect" hideIf="isContact || !isSupplier"/>
-	        <break/>
-	    </group>
-	    <field name="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2" colSpan="4" domain="self.isContact = 'true'" grid-view="partner-contact-grid"/>
-	    <field name="snUserRef" hidden="true" />
-		<field name="socialNet" hidden="true" />
-		<field name="curUser" hidden="true" />
-	    <break/>
-	    <notebook colSpan="4">
-	        <page name="information" title="Informations">
-	            <group title="Partner details" colSpan="3" cols="4">
-	                <field name="site" domain="self.partner.id = :id"/>
-	                <field name="department"/>
-	                <field name="source" hideIf="isContact"/>
-	            </group>
-	            <group title="Postal addresses" colSpan="3" cols="4">
-	                <field name="deliveryAddress" onChange="action-partner-record-main-invoicing-address"/>
-	                <field name="mainInvoicingAddress"/>
-	            </group>
-	            <group title="Contact" colSpan="3" cols="4">
-	                <field name="email" widget="Email"/>
-	                <field name="fax"/>
-	                <field name="fixedPhone1"/>
-	                <field name="fixedPhone2"/>
-	                <field name="fixedPhonePro"/>
-	                <field name="mobilePhonePerso"/>
-	                <field name="mobilePhonePro"/>
-	                <field name="webSite"/>
-	            </group>
-	        </page>
-	        <page name="payment" title="Invoicing/Payment" cols="4">
-	            <field name="invoiceSendingFormatSelect"/>
-	            <field name="paymentMode"/>
-	            <field name="paymentCondition"/>
-	            <field name="currency"/>
-	            <field name="payerQuality"/>
-	            <field name="bankDetails"/>
-	            <field name="bankDetailsList" showTitle="false" colSpan="4" form-view="bank-details-form" grid-view="bank-details-grid"/>
-	            <button name="showInvoice" title="View all unpaid invoices" colSpan="2" onClick="save,action-partner-method-show-invoice"/>
-	        </page>
-	        <page title="Settings">
-	            <field name="companySet" colSpan="4" widget="TagSelect[create=name]"/>
-	            <field name="languageSelect" hideIf="isContact || partnerTypeSelect == 1"/>
-	        </page>
-	    </notebook>
-	</form>
-	
+
 	<action-record name="action-partner-record-get-lead-converted-context" model="com.axelor.apps.base.db.Partner">
-		<field name="name" expr="eval: com.axelor.apps.crm.db.Lead.find(__parent._lead).name"/>
+		<field name="name" expr="eval: com.axelor.apps.crm.db.Lead.find(_parent._lead).name"/>
 	</action-record>
 	
     
@@ -387,9 +322,5 @@
     <action-validate name="action-partner-company-set-validate">
    		<alert message="Some company settings are missing. On the company settings, in the account tab, please fill in the 2 fields Customer account and supplier account. This field will be used by default for the accounting situation for each company."/>
 	</action-validate>
-	
-	<action-method name="action-create-accounting-situation" >
-		<call class="com.axelor.apps.base.web.PartnerControllerSimple" method="createAccountingSituations"/>
-	</action-method>
 	
 </object-views>

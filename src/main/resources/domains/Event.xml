@@ -15,7 +15,7 @@
   	<datetime name="endDateTime" title="End Date"/>
   	<integer name="durationHours" title="Duration" />
   	<many-to-one name="eventCategory" ref="com.axelor.apps.crm.db.EventCategory" title="Category"/>
-  	
+  	<integer name="prioritySelect" title="Priority" selection="crm.event.ticket.priority.select"/>
   	
   	<string name="relatedToSelect" title="Related to" selection="crm.event.related.to.select"/>
   	<integer name="relatedToSelectId"/>
@@ -38,11 +38,9 @@
 <!-- Task -->
 	<integer name="tertiaryStatusSelect" title="Status" selection="crm.event.task.tertiary.status.select"/>
 	<many-to-one name="taskPartner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
-	<integer name="priority" title="Priority" selection="crm.event.task.priority.select"/>
     
 <!-- Ticket -->
 	<integer name="quaternaryStatusSelect" title="Status" selection="crm.event.task.quaternary.status.select"/>
-    <integer name="prioritySelect" title="Priority" selection="crm.event.ticket.priority.select"/>
     <integer name="progressSelect" title="Progress" selection="crm.event.ticket.progress.select"/>
     <string name="ticketNumberSeq" title="Ticket number"/>
     <many-to-many name="userInfoSet" ref="com.axelor.apps.base.db.UserInfo" title="Watchers"/>
