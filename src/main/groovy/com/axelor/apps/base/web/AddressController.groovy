@@ -461,10 +461,16 @@ class AddressController {
 
 
 	def void directionsMap(ActionRequest request, ActionResponse response)  {
-		if (GeneralService.getGeneral().mapApiSelect == "1") {
-			directionsMapGoogle(request, response)
+		Partner currPartner = uis.getUserPartner()
+		Address departureAddress = currPartner.deliveryAddress
+		if (departureAddress) {
+			if (GeneralService.getGeneral().mapApiSelect == "1") {
+				directionsMapGoogle(request, response)
+			} else {
+				response.flash = "Not implemented yet for OSM! Please select the google service"
+			}
 		} else {
-			response.flash = "Not implemented yet for OSM! Please select the google service"
+			response.flash = "Current user's partner delivery address not set"
 		}
 	
 	}
@@ -480,8 +486,8 @@ class AddressController {
 		// Only allowed for google maps to prevent overloading OSM
 		if (GeneralService.getGeneral().mapApiSelect == "1") {
 			PartnerList partnerList = request.context as PartnerList
-			
-			def file = new File("/home/arye/DEV/HTML/latlng_${partnerList.id}.csv")
+
+			def file = new File("/home/axelor/www/HTML/latlng_${partnerList.id}.csv")
 			file.write("latitude,longitude,fullName,turnover\n")
 			
 
