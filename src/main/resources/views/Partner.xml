@@ -114,6 +114,9 @@
 	        <page title="Social Networking" colSpan="4" name="socialNetworkingTab"
 				hideIf="socialNet == null">
 				<notebook>
+					<page title="Personal Credentials">
+						<field name="personalCredentialSet"/>
+					</page>
 					<page title="Inbox Message" hideIf="socialNet.name == 'linkedin'">
 						<portlet action="action-fetch-all-sn-mail" colSpan="4" />
 					</page>

@@ -81,6 +81,8 @@
    
    	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
    
+   	<many-to-many name="personalCredentialSet" ref="com.axelor.apps.socialnetwork.db.PersonalCredential"/>
+   
    
   </entity>
   

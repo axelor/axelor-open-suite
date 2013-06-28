@@ -11,5 +11,6 @@
  		<datetime name="messageDateT" tz="true" title="Message date" />
  		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" />
  		<many-to-one name="socialNet" ref="com.axelor.apps.socialnetwork.db.SocialNet" orphan="true" />
+ 		<many-to-one name="personalCredential" ref="com.axelor.apps.socialnetwork.db.PersonalCredential" />
  	</entity>
  </domain-models>
