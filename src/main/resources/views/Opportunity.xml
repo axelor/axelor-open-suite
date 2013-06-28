@@ -46,10 +46,6 @@
         </group>
     </form>
     
-    <action-record name="action-convert-lead-wizard-record-opportunity" model="com.axelor.apps.crm.db.Opportunity">
-    	<field name="name" expr="eval: _name"/>
-    </action-record>
-    
     <action-record name="action-opportunity-record-new" model="com.axelor.apps.crm.db.Opportunity">
     	<field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
     	<field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>

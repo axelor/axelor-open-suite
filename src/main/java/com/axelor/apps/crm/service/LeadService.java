@@ -29,12 +29,44 @@ public class LeadService {
 	 * @throws AxelorException
 	 */
 	@Transactional
-	public Lead convertLead(Lead lead, Partner partner, Partner contactPartner, Opportunity opportunity, Event callEvent, Event meetingEvent) throws AxelorException  {
+	public Lead convertLead(Lead lead, Partner partner, Partner contactPartner, Opportunity opportunity, Event callEvent, Event meetingEvent, Event taskEvent) throws AxelorException  {
 		
 //		lead.setEvent(meeting);
 //		lead.setCall(call);
 //		lead.setOpportunity(opportunity);
 //		lead.setContactPartner(contact);
+		
+		if(partner != null && contactPartner != null)  {
+			if(partner.getContactPartnerSet()==null)  {
+				partner.setContactPartnerSet(new HashSet<Partner>());
+			}
+			partner.getContactPartnerSet().add(contactPartner);
+		}
+		
+		if(opportunity != null && partner != null)  {
+			opportunity.setPartner(partner);
+		}
+		
+		if(partner != null)  {
+			lead.setPartner(partner);
+			partner.save();
+		}
+		if(contactPartner!=null)  {
+			contactPartner.save();
+		}
+		if(opportunity!=null)  {
+			opportunity.save();
+		}
+		if(callEvent!=null)  {
+			callEvent.save();
+		}
+		if(meetingEvent!=null)  {
+			meetingEvent.save();
+		}
+		if(taskEvent!=null)  {
+			taskEvent.save();
+		}
+		
 		lead.setPartner(partner);
 		lead.setStatusSelect(ILead.STATUS_CONVERTED);
 		lead.save();
@@ -42,6 +74,16 @@ public class LeadService {
 		return lead;
 		
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	/**

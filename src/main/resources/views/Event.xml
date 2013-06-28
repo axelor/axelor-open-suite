@@ -111,6 +111,7 @@
 	        <spacer/><break/>
 	        <field name="taskPartner"/>
 	        <field name="reminder"/>
+	        <field name="prioritySelect"/>
 	        <field name="description" widget="TEXT[height=4]" colSpan="4"/>
         </group>
         <group title="Related to" colSpan="1" cols="2">
@@ -178,7 +179,7 @@
 				            <field name="sendedDate"/>
 				            <field name="sender"/>
 				        </group>
-				        <group title="Content" colSpan="4" readonly="true">
+				        <group title="Content" colSpan="4">
 				       	 	<field name="content" colSpan="4" showTitle="false" widget="html"/>
 				        </group>
         			</form>
@@ -215,7 +216,7 @@
     </action-method>
     
     <action-method name="action-event-set-sequence">
-		<call class="com.axelor.apps.supplychain.web.SalesOrderController" method="setSequence" />
+		<call class="com.axelor.apps.supplychain.web.EventController" method="setSequence" />
 	</action-method>
 	
     <action-method name="action-meeting-method-compute-end-date-time">

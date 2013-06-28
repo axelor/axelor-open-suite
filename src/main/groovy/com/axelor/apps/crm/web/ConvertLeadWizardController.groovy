@@ -43,32 +43,36 @@ public class ConvertLeadWizardController {
 		Opportunity opportunity = null
 		Event callEvent = null
 		Event meetingEvent = null
+		Event taskEvent = null
 		
 		if(context.hasConvertIntoContact)  {
-			contactPartner = this.createPartner(context, true)
+			contactPartner = this.createPartner(context.contactPartner)
 		}
 		else  if(context.selectContact)  {
 			contactPartner =  Partner.find(context.selectContactPartner)
 		}
 		
 		if(context.hasConvertIntoPartner)  {
-			partner = this.createPartner(context, false)
+			partner = this.createPartner(context.partner)
 		}
 		else  if(context.selectPartner)  {
 			partner = Partner.find(context.selectPartner)
 		}
 		
 		if(context.hasConvertIntoOpportunity)  {
-			opportunity = this.createOpportunity(context)
+			opportunity = this.createOpportunity( context.opportunity)
 		}
 		if(context.hasConvertIntoCall)  {
-			callEvent = this.createEvent(context, false)
+			callEvent = this.createEvent(context.callEvent, 1)
 		}
 		if(context.hasConvertIntoMeeting)  {
-			meetingEvent = this.createEvent(context, true)
+			meetingEvent = this.createEvent(context.meetingEvent, 2)
+		}
+		if(context.hasConvertIntoTask)  {
+			taskEvent = this.createEvent(context.taskEvent, 3)
 		}
 		
-		leadService.convertLead(lead, partner, contactPartner, opportunity, callEvent, meetingEvent);
+		leadService.convertLead(lead, partner, contactPartner, opportunity, callEvent, meetingEvent, taskEvent);
 		
 //		response.reload = true
 		
@@ -89,38 +93,31 @@ public class ConvertLeadWizardController {
 	 * @return
 	 * @throws AxelorException
 	 */
-	public Partner createPartner(Context context, boolean isContact) throws AxelorException  {
+	public Partner createPartner(def context) throws AxelorException  {
 		
 		Partner partner = new Partner();
 		
-		def contextPartner = null
-		if(isContact)  {
-			contextPartner = context.contactPartner
-		}
-		else  {
-			contextPartner = context.partner
-		}
-		if(contextPartner != null)  {
-		log.debug("ContextPartner"+contextPartner)
-		log.debug("partnerTypeSelect"+contextPartner.partnerTypeSelect)
-			partner.firstName = contextPartner.firstName;
-			partner.name = contextPartner.name;
-			partner.titleSelect = contextPartner.titleSelect;
-			partner.customerTypeSelect = contextPartner.customerTypeSelect;
-			partner.partnerTypeSelect = contextPartner.partnerTypeSelect
-			partner.isContact = contextPartner.isContact;
-			partner.email = contextPartner.email;
-			partner.fax = contextPartner.fax;
-			partner.webSite = contextPartner.webSite;
-			partner.mobilePhonePro = contextPartner.mobilePhonePro;
-			partner.source = contextPartner.source;
-			partner.department = contextPartner.department;
-			partner.picture = contextPartner.picture
-			partner.mainInvoicingAddress = contextPartner.mainInvoicingAddress
-			partner.deliveryAddress = contextPartner.deliverymainInvoicingAddress
-			Address deliveryAddress = new Address()
-			deliveryAddress.addressL4 = contextPartner.deliveryAddress.addressL4
-			partner.deliveryAddress = deliveryAddress
+		if(context != null)  {
+		log.debug("ContextPartner"+context)
+		log.debug("partnerTypeSelect"+context.partnerTypeSelect)
+			partner.firstName = context.firstName;
+			partner.name = context.name;
+			partner.titleSelect = context.titleSelect;
+			partner.customerTypeSelect = context.customerTypeSelect;
+			partner.partnerTypeSelect = context.partnerTypeSelect
+			partner.isContact = context.isContact;
+			partner.email = context.email;
+			partner.fax = context.fax;
+			partner.webSite = context.webSite;
+			partner.mobilePhonePro = context.mobilePhonePro;
+			partner.source = context.source;
+			partner.department = context.department;
+			partner.picture = context.picture
+//			partner.mainInvoicingAddress = context.mainInvoicingAddress
+//			partner.deliveryAddress = context.deliverymainInvoicingAddress
+//			Address deliveryAddress = new Address()
+//			deliveryAddress.addressL4 = context.deliveryAddress.addressL4
+//			partner.deliveryAddress = deliveryAddress
 			partner.bankDetails = context.bankDetails
 			partner.setPartnerSeq(leadService.getSequence());
 		}
@@ -136,30 +133,28 @@ public class ConvertLeadWizardController {
 	 * @return
 	 * @throws AxelorException
 	 */
-	public Opportunity createOpportunity(Context context) throws AxelorException  {
+	public Opportunity createOpportunity(def context) throws AxelorException  {
 
-		def contextOpportunity = context.opportunity
-				
-		if(contextOpportunity)  {
+		if(context)  {
 			Opportunity opportunity = new Opportunity();
 			
-			opportunity.amount = contextOpportunity.amount
-			opportunity.campaign = contextOpportunity.campaign
-			opportunity.company = contextOpportunity.company
-			opportunity.bestCase = contextOpportunity.bestCase
-			opportunity.currency = contextOpportunity.currency
-			opportunity.description = contextOpportunity.description
-			opportunity.expectedCloseDate = contextOpportunity.expectedCloseDate
-			opportunity.name = contextOpportunity.name
-			opportunity.nextStep = contextOpportunity.nextStep
-			opportunity.opportunityType = contextOpportunity.opportunityType
-			opportunity.partner = contextOpportunity.partner
-			opportunity.probability = contextOpportunity.probability
-			opportunity.salesStageSelect = contextOpportunity.salesStageSelect
-			opportunity.source = contextOpportunity.source
-			opportunity.team = contextOpportunity.team
-			opportunity.userInfo = contextOpportunity.userInfo
-			opportunity.worstCase = contextOpportunity.worstCase
+			opportunity.amount = new BigDecimal(context.amount)
+			opportunity.campaign = context.campaign
+			opportunity.company = context.company
+			opportunity.bestCase = context.bestCase
+			opportunity.currency = context.currency
+			opportunity.description = context.description
+			opportunity.expectedCloseDate = context.expectedCloseDate
+			opportunity.name = context.name
+			opportunity.nextStep = context.nextStep
+			opportunity.opportunityType = context.opportunityType
+			opportunity.partner = context.partner
+			opportunity.probability = context.probability
+			opportunity.salesStageSelect = context.salesStageSelect
+			opportunity.source = context.source
+			opportunity.team = context.team
+			opportunity.userInfo = context.userInfo
+			opportunity.worstCase = context.worstCase
 			return opportunity;
 		}
 		// add others
@@ -173,17 +168,10 @@ public class ConvertLeadWizardController {
 	 * @return
 	 * @throws AxelorException
 	 */
-	public Event createEvent(Context context, boolean isMeeting) throws AxelorException  {
+	public Event createEvent(def context, int type) throws AxelorException  {
 		
-		def contextEvent = null
-		if(isMeeting)  {
-			contextEvent = context.meetingEvent
-		}
-		else  {
-			contextEvent = context.callEvent
-		}
 				
-		if(contextEvent)  {
+		if(context)  {
 			Event event = new Event();
 			
 			event.description = context.description
@@ -195,7 +183,6 @@ public class ConvertLeadWizardController {
 			event.location = context.location
 			event.meetingType = context.meetingType
 			event.primaryStatusSelect = context.primaryStatusSelect
-			event.priority = context.priority
 			event.prioritySelect = context.prioritySelect
 			event.progressSelect = context.progressSelect
 			event.project = context.project
@@ -214,6 +201,8 @@ public class ConvertLeadWizardController {
 			event.ticketNumberSeq = context.ticketNumberSeq
 			event.typeSelect = context.typeSelect
 			event.userInfo = context.userInfo
+			event.typeSelect = type
+			
 			return event;
 		}
 		// add others

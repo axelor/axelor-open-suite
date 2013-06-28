@@ -13,9 +13,10 @@
         <field name="statusSelect"/>
     </grid>
     
-    <form cols="4" onNew="action-account-record-new,action-lead-default-record-new" name="lead-form" title="Lead" model="com.axelor.apps.crm.db.Lead">
+    <form name="lead-form" title="Lead" cols="4" onNew="action-account-record-new,action-lead-default-record-new" model="com.axelor.apps.crm.db.Lead">
     	<toolbar>
     		<button name="convertLead" title="Convert lead" onClick="action-lead-view-convert-lead" colSpan="1" hideIf="statusSelect == 4"/>
+    		<button name="exportCalendar" title="Export calendar" onClick="call: com.axelor.apps.crm.web.CalendarController:exportCalendar" colSpan="1"/>
     	</toolbar>
     
  		<group title="Header" colSpan="4">
@@ -91,6 +92,7 @@
 		       	<field name="referredBy"/>
 		        <field name="isDoNotCall" colSpan="2"/>
 	        </group>
+	        <field name="opportunityAmount"/>
 	    </group>
 	    
 	    <group title="Assigned to" canCollapse="true">
