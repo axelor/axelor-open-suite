@@ -52,6 +52,7 @@
     <many-to-one name="curUser" title="Current ERP User" ref="com.axelor.auth.db.User"/>
     <many-to-one name="socialNet" title="Social Networking Type" ref="com.axelor.apps.socialnetwork.db.SocialNet"/>
     <one-to-many name="snSendMessageList" ref="com.axelor.apps.socialnetwork.db.SnSendMessage" orphan="true" mappedBy="partner" />
+   	<many-to-many name="personalCredentialSet" ref="com.axelor.apps.socialnetwork.db.PersonalCredential"/>
     
     <many-to-one name="site" ref="com.axelor.apps.consulting.db.Site" title="Site"/>
     <string name="department" title="Department"/>
@@ -81,7 +82,6 @@
    
    	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
    
-   	<many-to-many name="personalCredentialSet" ref="com.axelor.apps.socialnetwork.db.PersonalCredential"/>
    
    
   </entity>
