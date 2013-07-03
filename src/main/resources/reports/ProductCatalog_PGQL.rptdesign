@@ -46,6 +46,11 @@
     <property name="layoutPreference">auto layout</property>
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">96</property>
+    <list-property name="cssStyleSheets">
+        <structure>
+            <property name="fileName">border.css</property>
+        </structure>
+    </list-property>
     <parameters>
         <scalar-parameter name="ProductIds" id="211">
             <property name="hidden">false</property>
@@ -554,51 +559,19 @@ where Users.id = ?]]></xml-property>
 </model:DesignValues>]]></xml-property>
         </oda-data-set>
     </data-sets>
-    <styles>
-        <style name="report" id="4">
-            <property name="fontFamily">sans-serif</property>
-            <property name="fontSize">10pt</property>
-        </style>
-        <style name="crosstab-cell" id="5">
-            <property name="borderBottomColor">#CCCCCC</property>
-            <property name="borderBottomStyle">solid</property>
-            <property name="borderBottomWidth">1pt</property>
-            <property name="borderLeftColor">#CCCCCC</property>
-            <property name="borderLeftStyle">solid</property>
-            <property name="borderLeftWidth">1pt</property>
-            <property name="borderRightColor">#CCCCCC</property>
-            <property name="borderRightStyle">solid</property>
-            <property name="borderRightWidth">1pt</property>
-            <property name="borderTopColor">#CCCCCC</property>
-            <property name="borderTopStyle">solid</property>
-            <property name="borderTopWidth">1pt</property>
-        </style>
-        <style name="crosstab" id="6">
-            <property name="borderBottomColor">#CCCCCC</property>
-            <property name="borderBottomStyle">solid</property>
-            <property name="borderBottomWidth">1pt</property>
-            <property name="borderLeftColor">#CCCCCC</property>
-            <property name="borderLeftStyle">solid</property>
-            <property name="borderLeftWidth">1pt</property>
-            <property name="borderRightColor">#CCCCCC</property>
-            <property name="borderRightStyle">solid</property>
-            <property name="borderRightWidth">1pt</property>
-            <property name="borderTopColor">#CCCCCC</property>
-            <property name="borderTopStyle">solid</property>
-            <property name="borderTopWidth">1pt</property>
-        </style>
-    </styles>
     <page-setup>
         <simple-master-page name="BlankMP" id="2">
             <property name="topMargin">0.4375in</property>
             <property name="leftMargin">0.49in</property>
+            <property name="rightMargin">0.13541666666666666in</property>
             <property name="showHeaderOnFirst">true</property>
             <property name="showFooterOnLast">true</property>
             <property name="headerHeight">0in</property>
+            <property name="footerHeight">0.2in</property>
             <page-footer>
                 <grid id="292">
-                    <property name="height">0.4479166666666667in</property>
-                    <property name="width">7.666666666666667in</property>
+                    <property name="height">0.40625in</property>
+                    <property name="width">7.6875in</property>
                     <property name="dataSet">CompanyDS</property>
                     <list-property name="boundDataColumns">
                         <structure>
@@ -627,22 +600,49 @@ where Users.id = ?]]></xml-property>
                         <property name="width">1.84375in</property>
                     </column>
                     <column id="295">
-                        <property name="width">4.09375in</property>
+                        <property name="width">3.9479166666666665in</property>
+                    </column>
+                    <column id="3726">
+                        <property name="width">0.16666666666666666in</property>
                     </column>
                     <row id="296">
-                        <property name="height">0.020833333333333332in</property>
-                        <property name="borderTopColor">#68B022</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <cell id="297"/>
-                        <cell id="298"/>
-                        <cell id="299"/>
+                        <property name="height">0.03125in</property>
+                        <property name="fontSize">3pt</property>
+                        <cell id="297">
+                            <property name="borderBottomColor">#68B022</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">4px</property>
+                            <property name="borderTopColor">#68B022</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                        </cell>
+                        <cell id="298">
+                            <property name="borderBottomColor">#68B022</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">4px</property>
+                            <property name="borderTopColor">#68B022</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                        </cell>
+                        <cell id="299">
+                            <property name="borderBottomColor">#68B022</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">4px</property>
+                            <property name="borderTopColor">#68B022</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                        </cell>
+                        <cell id="3724"/>
+                    </row>
+                    <row id="3727">
+                        <property name="height">0.07291666666666667in</property>
+                        <cell id="3728"/>
+                        <cell id="3729"/>
+                        <cell id="3730"/>
+                        <cell id="3731"/>
                     </row>
                     <row id="300">
-                        <property name="height">0.4270833333333333in</property>
-                        <property name="borderTopColor">#68B022</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">6px</property>
+                        <property name="height">0.3020833333333333in</property>
                         <cell id="301">
                             <text id="308">
                                 <property name="contentType">html</property>
@@ -651,19 +651,22 @@ where Users.id = ?]]></xml-property>
                         </cell>
                         <cell id="302"/>
                         <cell id="303">
+                            <property name="colSpan">2</property>
+                            <property name="rowSpan">1</property>
                             <grid id="318">
+                                <property name="marginRight">-5pt</property>
                                 <property name="width">4.010416666666667in</property>
                                 <column id="330">
-                                    <property name="width">3.5104166666666665in</property>
+                                    <property name="width">3.40625in</property>
                                 </column>
                                 <column id="319">
-                                    <property name="width">0.21875in</property>
+                                    <property name="width">0.2708333333333333in</property>
                                 </column>
                                 <column id="320">
-                                    <property name="width">0.0625in</property>
+                                    <property name="width">0.08333333333333333in</property>
                                 </column>
                                 <column id="321">
-                                    <property name="width">0.21875in</property>
+                                    <property name="width">0.25in</property>
                                 </column>
                                 <row id="322">
                                     <cell id="329">
@@ -700,6 +703,7 @@ where Users.id = ?]]></xml-property>
             </page-footer>
         </simple-master-page>
         <simple-master-page name="NewSimpleMasterPage" id="3695">
+            <property name="headerHeight">0in</property>
             <property name="footerHeight">0in</property>
         </simple-master-page>
     </page-setup>
@@ -707,7 +711,7 @@ where Users.id = ?]]></xml-property>
         <grid id="3421">
             <property name="masterPage">NewSimpleMasterPage</property>
             <property name="pageBreakAfter">auto</property>
-            <property name="height">8.916666666666666in</property>
+            <property name="height">10.072916666666666in</property>
             <property name="width">7.697916666666667in</property>
             <property name="dataSet">CompanyDS</property>
             <list-property name="boundDataColumns">
@@ -758,6 +762,13 @@ where Users.id = ?]]></xml-property>
                         <property name="width">6.138333333333333cm</property>
                         <property name="source">url</property>
                         <expression name="uri" type="javascript">row["logo_path"]</expression>
+                        <list-property name="action">
+                            <structure>
+                                <property name="linkType">hyperlink</property>
+                                <expression name="uri" type="javascript">row["web_site"]</expression>
+                                <property name="targetWindow">_parent</property>
+                            </structure>
+                        </list-property>
                     </image>
                 </cell>
                 <cell id="3441"/>
@@ -774,31 +785,26 @@ where Users.id = ?]]></xml-property>
                 </cell>
             </row>
             <row id="3455">
-                <property name="height">2.9166666666666665in</property>
+                <property name="height">3.28125in</property>
                 <cell id="3456">
                     <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
                     <property name="backgroundColor">#FFFFFF</property>
                 </cell>
             </row>
-            <row id="3687">
-                <property name="height">0.19791666666666666in</property>
-                <property name="borderBottomColor">#313131</property>
-                <property name="borderBottomStyle">solid</property>
-                <cell id="3688">
+            <row id="3738">
+                <property name="height">0.14583333333333334in</property>
+                <cell id="3739">
                     <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
-                    <property name="backgroundColor">#313131</property>
-                    <property name="borderBottomColor">#606062</property>
+                    <property name="backgroundColor">#2B2B2B</property>
+                    <property name="borderBottomColor">#2B2B2B</property>
                     <property name="borderBottomStyle">solid</property>
                     <property name="borderBottomWidth">thin</property>
-                    <property name="borderLeftColor">#606062</property>
+                    <property name="borderLeftColor">#2B2B2B</property>
                     <property name="borderLeftStyle">solid</property>
                     <property name="borderLeftWidth">thin</property>
-                    <property name="borderRightColor">#606062</property>
-                    <property name="borderRightStyle">solid</property>
-                    <property name="borderRightWidth">thin</property>
-                    <property name="borderTopColor">#606062</property>
+                    <property name="borderTopColor">#2B2B2B</property>
                     <property name="borderTopStyle">solid</property>
                     <property name="borderTopWidth">thin</property>
                 </cell>
@@ -808,24 +814,24 @@ where Users.id = ?]]></xml-property>
                 <cell id="3430">
                     <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
-                    <property name="backgroundColor">#313131</property>
-                    <property name="borderLeftColor">#606062</property>
+                    <property name="backgroundColor">#2B2B2B</property>
+                    <property name="borderBottomColor">#2B2B2B</property>
+                    <property name="borderBottomStyle">solid</property>
+                    <property name="borderLeftColor">#2B2B2B</property>
                     <property name="borderLeftStyle">solid</property>
-                    <property name="borderLeftWidth">thin</property>
-                    <property name="borderTopColor">#606062</property>
+                    <property name="borderTopColor">#2B2B2B</property>
                     <property name="borderTopStyle">solid</property>
-                    <property name="borderTopWidth">thin</property>
                     <text id="3439">
                         <property name="fontSize">27pt</property>
                         <property name="fontWeight">bold</property>
-                        <property name="color">#68B022</property>
-                        <property name="borderBottomColor">#313131</property>
+                        <property name="color">#FFFFFF</property>
+                        <property name="borderBottomColor">#2B2B2B</property>
                         <property name="borderBottomStyle">solid</property>
-                        <property name="borderLeftColor">#313131</property>
+                        <property name="borderLeftColor">#2B2B2B</property>
                         <property name="borderLeftStyle">solid</property>
-                        <property name="borderRightColor">#313131</property>
+                        <property name="borderRightColor">#2B2B2B</property>
                         <property name="borderRightStyle">solid</property>
-                        <property name="borderTopColor">#313131</property>
+                        <property name="borderTopColor">#2B2B2B</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="textAlign">center</property>
                         <property name="contentType">html</property>
@@ -840,7 +846,7 @@ where Users.id = ?]]></xml-property>
                 <cell id="3678">
                     <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
-                    <property name="backgroundColor">#FFFFFF</property>
+                    <property name="backgroundColor">#606062</property>
                     <property name="borderBottomColor">#FFFFFF</property>
                     <property name="borderBottomStyle">solid</property>
                     <property name="borderBottomWidth">thick</property>
@@ -851,8 +857,9 @@ where Users.id = ?]]></xml-property>
                         <property name="marginTop">-5pt</property>
                         <property name="marginLeft">-5pt</property>
                         <property name="marginBottom">-7pt</property>
+                        <property name="marginRight">-5pt</property>
                         <property name="height">91px</property>
-                        <property name="width">5.083333333333333in</property>
+                        <property name="width">499px</property>
                         <property name="source">embed</property>
                         <property name="imageName">images (1).jpg</property>
                     </image>
@@ -868,7 +875,7 @@ where Users.id = ?]]></xml-property>
                 </cell>
             </row>
             <row id="3450">
-                <property name="height">3.0729166666666665in</property>
+                <property name="height">2.78125in</property>
                 <property name="backgroundColor">#1A1A1A</property>
                 <property name="pageBreakAfter">auto</property>
                 <cell id="3451">
@@ -890,14 +897,15 @@ where Users.id = ?]]></xml-property>
                         <property name="fontSize">13pt</property>
                         <property name="fontWeight">bold</property>
                         <property name="color">#FFFFFF</property>
-                        <property name="marginTop">6.2cm</property>
+                        <property name="marginTop">9.8cm</property>
+                        <property name="marginBottom">0pt</property>
                         <property name="textAlign">center</property>
                         <property name="resultSetColumn">Address</property>
                     </data>
                 </cell>
             </row>
             <row id="3460">
-                <property name="height">0.5104166666666666in</property>
+                <property name="height">0.3125in</property>
                 <property name="backgroundColor">#1A1A1A</property>
                 <property name="borderBottomColor">#FFFFFF</property>
                 <property name="borderBottomStyle">solid</property>
@@ -916,6 +924,8 @@ where Users.id = ?]]></xml-property>
                         <property name="fontSize">17pt</property>
                         <property name="fontWeight">bold</property>
                         <property name="color">#68B022</property>
+                        <property name="marginTop">2.95cm</property>
+                        <property name="marginRight">-5pt</property>
                         <property name="textAlign">center</property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["web_site"]</VALUE-OF>]]></text-property>
@@ -944,17 +954,15 @@ where Users.id = ?]]></xml-property>
                         <property name="fontSize">20pt</property>
                         <property name="fontWeight">bold</property>
                         <property name="color">#68B022</property>
+                        <property name="display">inline</property>
+                        <structure name="toc"/>
                         <property name="contentType">auto</property>
                         <text-property name="content"><![CDATA[Sommaire]]></text-property>
                     </text>
                 </cell>
             </row>
             <row id="3704">
-                <cell id="3705">
-                    <text id="391">
-                        <property name="fontSize">14pt</property>
-                    </text>
-                </cell>
+                <cell id="3705"/>
                 <cell id="3706"/>
                 <cell id="3707"/>
             </row>
@@ -1129,6 +1137,12 @@ where Users.id = ?]]></xml-property>
                                             <property name="fontSize">13pt</property>
                                             <property name="fontWeight">bold</property>
                                             <property name="resultSetColumn">ProductFamily</property>
+                                            <list-property name="action">
+                                                <structure>
+                                                    <property name="linkType">bookmark-link</property>
+                                                    <expression name="targetBookmark" type="javascript">BirtStr.toUpper(row["ProductFamily"])</expression>
+                                                </structure>
+                                            </list-property>
                                         </data>
                                     </cell>
                                     <cell id="360">
@@ -1148,6 +1162,70 @@ where Users.id = ?]]></xml-property>
                                             <property name="fontSize">13pt</property>
                                             <property name="fontWeight">bold</property>
                                             <property name="textAlign">right</property>
+                                            <property name="dataSet">ProductDS</property>
+                                            <list-property name="boundDataColumns">
+                                                <structure>
+                                                    <property name="name">id</property>
+                                                    <text-property name="displayName">id</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["id"]</expression>
+                                                    <property name="dataType">decimal</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">picture</property>
+                                                    <text-property name="displayName">picture</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["picture"]</expression>
+                                                    <property name="dataType">decimal</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">ProductName</property>
+                                                    <text-property name="displayName">ProductName</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["ProductName"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">ProductCode</property>
+                                                    <text-property name="displayName">ProductCode</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["ProductCode"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">sale_price</property>
+                                                    <text-property name="displayName">sale_price</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["sale_price"]</expression>
+                                                    <property name="dataType">decimal</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">currency</property>
+                                                    <text-property name="displayName">currency</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">description</property>
+                                                    <text-property name="displayName">description</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["description"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">ProductFamily</property>
+                                                    <text-property name="displayName">ProductFamily</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["ProductFamily"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">ProductCategory</property>
+                                                    <text-property name="displayName">ProductCategory</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["ProductCategory"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">Unit</property>
+                                                    <text-property name="displayName">Unit</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["Unit"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                            </list-property>
+                                            <structure name="toc"/>
                                             <property name="contentType">html</property>
                                             <text-property name="content"><![CDATA[<VALUE-OF>BirtMath.roundDown(BirtMath.divide(row["Column Binding"], 5),0)+3</VALUE-OF>]]></text-property>
                                         </text>
@@ -1176,6 +1254,12 @@ where Users.id = ?]]></xml-property>
                                             <property name="fontSize">11pt</property>
                                             <property name="marginLeft">20pt</property>
                                             <property name="resultSetColumn">ProductCategory</property>
+                                            <list-property name="action">
+                                                <structure>
+                                                    <property name="linkType">bookmark-link</property>
+                                                    <expression name="targetBookmark" type="javascript">row["ProductCategory"]</expression>
+                                                </structure>
+                                            </list-property>
                                         </data>
                                     </cell>
                                     <cell id="371">
@@ -1270,8 +1354,9 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                 <structure>
                     <property name="name">ProductFamily</property>
                     <text-property name="displayName">ProductFamily</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["ProductFamily"]</expression>
+                    <expression name="expression" type="javascript">BirtStr.toUpper(dataSetRow["ProductFamily"])</expression>
                     <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
                 </structure>
                 <structure>
                     <property name="name">ProductCategory</property>
@@ -1289,14 +1374,10 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
             <column id="238">
                 <property name="width">7.625in</property>
             </column>
-            <header>
-                <row id="232">
-                    <cell id="233"/>
-                </row>
-            </header>
             <group id="273">
                 <property name="groupName">ProductFamily</property>
                 <expression name="keyExpr" type="javascript">row["ProductFamily"]</expression>
+                <expression name="bookmark" type="javascript">row["ProductFamily"]</expression>
                 <structure name="toc">
                     <expression name="expressionValue" type="javascript">row["ProductFamily"]</expression>
                 </structure>
@@ -1306,7 +1387,7 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                         <property name="height">0.3020833333333333in</property>
                         <cell id="275">
                             <data id="278">
-                                <property name="fontSize">16pt</property>
+                                <property name="fontSize">16.5pt</property>
                                 <property name="fontWeight">bold</property>
                                 <property name="color">#68B022</property>
                                 <property name="textAlign">center</property>
@@ -1319,16 +1400,17 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
             <group id="279">
                 <property name="groupName">productCategory</property>
                 <expression name="keyExpr" type="javascript">row["ProductCategory"]</expression>
+                <expression name="bookmark" type="javascript">row["ProductCategory"]</expression>
                 <structure name="toc">
                     <expression name="expressionValue" type="javascript">row["ProductCategory"]</expression>
                 </structure>
                 <property name="hideDetail">false</property>
                 <header>
                     <row id="280">
-                        <property name="height">0.2708333333333333in</property>
+                        <property name="height">0.3020833333333333in</property>
                         <cell id="281">
                             <data id="284">
-                                <property name="fontSize">15pt</property>
+                                <property name="fontSize">14.5pt</property>
                                 <property name="fontWeight">bold</property>
                                 <property name="color">#68B022</property>
                                 <property name="resultSetColumn">ProductCategory</property>
@@ -1339,38 +1421,33 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
             </group>
             <detail>
                 <row id="234">
-                    <property name="height">1.5520833333333333in</property>
+                    <property name="height">1.6354166666666667in</property>
                     <cell id="235">
                         <grid id="239">
-                            <property name="height">1.4791666666666667in</property>
+                            <property name="height">1.4895833333333333in</property>
                             <property name="width">7.875in</property>
                             <column id="240">
-                                <property name="width">1.6145833333333333in</property>
+                                <property name="width">2.5625in</property>
                             </column>
                             <column id="241">
-                                <property name="width">3.6354166666666665in</property>
+                                <property name="width">2.6875in</property>
                             </column>
                             <column id="242">
                                 <property name="width">2.625in</property>
                             </column>
                             <row id="243">
-                                <property name="height">1.15625in</property>
+                                <property name="height">1.0729166666666667in</property>
                                 <property name="backgroundColor">#F5F5F5</property>
-                                <property name="borderTopColor">#606062</property>
-                                <property name="borderTopStyle">dashed</property>
-                                <property name="borderTopWidth">thin</property>
                                 <cell id="244">
                                     <property name="colSpan">3</property>
                                     <property name="rowSpan">1</property>
+                                    <property name="textAlign">left</property>
                                     <grid id="256">
-                                        <property name="marginTop">15pt</property>
-                                        <property name="marginLeft">4cm</property>
+                                        <property name="marginTop">10pt</property>
+                                        <property name="marginLeft">6.4cm</property>
                                         <property name="width">4.927083333333333in</property>
                                         <column id="257">
                                             <property name="width">4.458333333333333in</property>
-                                        </column>
-                                        <column id="258">
-                                            <property name="width">0.46875in</property>
                                         </column>
                                         <row id="259">
                                             <cell id="260">
@@ -1380,7 +1457,6 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                                                     <text-property name="content"><![CDATA[<B>Nom :</B> <VALUE-OF>row["ProductName"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
-                                            <cell id="261"/>
                                         </row>
                                         <row id="262">
                                             <cell id="263">
@@ -1390,7 +1466,6 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                                                     <text-property name="content"><![CDATA[<B>Référence :</B> <VALUE-OF>row["ProductCode"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
-                                            <cell id="264"/>
                                         </row>
                                         <row id="265">
                                             <cell id="266">
@@ -1400,17 +1475,13 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                                                     <text-property name="content"><![CDATA[<B>Description : </B><VALUE-OF>row["description"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
-                                            <cell id="267"/>
                                         </row>
                                     </grid>
                                 </cell>
                             </row>
                             <row id="285">
-                                <property name="height">0.3229166666666667in</property>
+                                <property name="height">0.4166666666666667in</property>
                                 <property name="backgroundColor">#F5F5F5</property>
-                                <property name="borderBottomColor">#606062</property>
-                                <property name="borderBottomStyle">dashed</property>
-                                <property name="borderBottomWidth">thin</property>
                                 <cell id="286"/>
                                 <cell id="287">
                                     <text id="289">
@@ -1430,7 +1501,7 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
         <grid id="393">
             <property name="marginTop">0in</property>
             <property name="masterPage">NewSimpleMasterPage</property>
-            <property name="height">8.395833333333334in</property>
+            <property name="height">10.364583333333334in</property>
             <property name="width">7.71875in</property>
             <property name="dataSet">CompanyDS</property>
             <list-property name="boundDataColumns">
@@ -1470,6 +1541,12 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                     <expression name="expression" type="javascript">dataSetRow["fixed_phone1"]</expression>
                     <property name="dataType">string</property>
                 </structure>
+                <structure>
+                    <property name="name">Address</property>
+                    <expression name="expression" type="javascript">dataSetRow["full_name"]</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <column id="394">
                 <property name="width">2.0416666666666665in</property>
@@ -1486,15 +1563,17 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
             <row id="397">
                 <property name="height">3.40625in</property>
                 <property name="pageBreakBefore">always</property>
-                <cell id="398"/>
-                <cell id="399"/>
-                <cell id="3719"/>
+                <cell id="398">
+                    <property name="colSpan">3</property>
+                    <property name="rowSpan">2</property>
+                    <property name="backgroundColor">#FFFFFF</property>
+                </cell>
                 <cell id="400">
                     <property name="colSpan">1</property>
                     <property name="rowSpan">2</property>
                     <property name="backgroundColor">#68B022</property>
                     <image id="3419">
-                        <property name="marginTop">18.5cm</property>
+                        <property name="marginTop">22cm</property>
                         <property name="marginLeft">8pt</property>
                         <property name="height">2.169583333333333cm</property>
                         <property name="width">6.138333333333333cm</property>
@@ -1502,25 +1581,32 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                         <expression name="uri" type="javascript">row["logo_path"]</expression>
                     </image>
                     <text id="3723"/>
+                    <data id="3732">
+                        <property name="fontSize">10pt</property>
+                        <property name="fontWeight">bold</property>
+                        <property name="color">#FFFFFF</property>
+                        <property name="marginTop">0cm</property>
+                        <property name="marginBottom">0pt</property>
+                        <property name="textAlign">center</property>
+                        <property name="resultSetColumn">Address</property>
+                    </data>
                     <text id="3420">
                         <property name="fontSize">10pt</property>
+                        <property name="fontWeight">bold</property>
+                        <property name="color">#FFFFFF</property>
                         <property name="marginTop">0cm</property>
                         <property name="marginLeft">0px</property>
-                        <property name="marginBottom">0px</property>
+                        <property name="marginBottom">1px</property>
                         <property name="textAlign">center</property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["full_name"]</VALUE-OF><br>
-Tél : <VALUE-OF>row["fixed_phone1"]</VALUE-OF><br>
+                        <text-property name="content"><![CDATA[Tél : <VALUE-OF>row["fixed_phone1"]</VALUE-OF><br>
 Fax : <VALUE-OF>row["fax"]</VALUE-OF><br>
 Email : <VALUE-OF>row["email"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
             </row>
             <row id="401">
-                <property name="height">6.25in</property>
-                <cell id="402"/>
-                <cell id="403"/>
-                <cell id="3720"/>
+                <property name="height">6.958333333333333in</property>
             </row>
         </grid>
     </body>

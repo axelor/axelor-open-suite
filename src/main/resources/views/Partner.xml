@@ -18,7 +18,7 @@
         <field name="isContact"/>
    		<field name="partnerTypeSelect"/>
         <field name="partnerCategory"/>
-        <field name="socialNet"/>
+        <field name="socialNetUserAccountList"/>
     </grid>
     
     <grid name="partner-contact-grid" title="Contacts" model="com.axelor.apps.base.db.Partner">
@@ -55,9 +55,9 @@
 	        <break/>
 	    </group>
 	    <field name="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2" colSpan="4" domain="self.isContact = 'true'" grid-view="partner-contact-grid"/>
-	    <field name="snUserId" hidden="true" />
-		<field name="socialNet" hidden="true" />
-		<field name="curUser" hidden="true" />
+	    <!-- <field name="snUserRef" hidden="true" /> -->
+		<field name="socialNetUserAccountList" hidden="true" />
+		<!-- <field name="curUser" hidden="true" /> -->
 	    <break/>
 	    <notebook colSpan="4">
 	        <page name="information" title="Informations">
@@ -112,45 +112,52 @@
 	            
 	        </page>
 	        <page title="Social Networking" colSpan="4" name="socialNetworkingTab"
-				hideIf="socialNet == null">
+				hideIf="socialNetUserAccountList == null || id == null">
 				<notebook>
-					<page title="Inbox Message" hideIf="socialNet.name == 'linkedin'">
+					<page title="Personal Credentials">
+						<field name="personalCredentialSet"/>
+					</page>
+					<page title="Social Net Accounts">
+						<field name="socialNetUserAccountList"/>
+					</page>
+					<page title="Inbox Message"> <!-- hideIf="socialNet.name == 'linkedin'"> -->
 						<portlet action="action-fetch-all-sn-mail" colSpan="4" />
 					</page>
-					<page title="Recent Updates" hideIf="socialNet.name != 'facebook'">
+					<page title="Recent Updates"> <!-- hideIf="socialNet.name != 'facebook'"> -->
 						<portlet action="action-fetch-all-sn-update" colSpan="4" />
 					</page>
 
-					<page title="Send Personal Message" name="snPersonalMessage"
-						hideIf="socialNet.name == 'facebook'">
-						<field name="snDirectMessage" title="Personal Messages"><!-- 
+					<page title="Send Personal Message" name="snPersonalMessage">
+						<!-- hideIf="socialNet.name == 'facebook'"> -->
+						<field name="snSendMessageList" title="Personal Messages"><!-- 
 								onChange="com.axelor.sn.web.TWTController:directMessageO2M"> -->
 							<grid title="All Sent Messages">
-								<field name="socialNet" title="Social Networking Type"
-									hidden="true"></field>
-								<field name="userId" title="To"></field>
-								<field name="messageText"></field>
-								<field name="messageDate" title="Date and Time" hidden="true"></field>
-								<field name="messageId" />
+								<field name="socialNet" title="Social Networking Type"/>
+								<field name="partner" title="To"/>
+								<field name="content"/>
+								<field name="messageDateT" title="Date and Time" hidden="true"/>
+								<field name="snMessageRef" title="Message reference" />
 							</grid>
 
 							<form title="Compose New Message" onNew="action-fill-direct-message">
-								<field name="socialNet" title="Social Networking Type"
-									hidden="true"></field>
-								<field name="curUser" title="Current User" hidden="true"></field>
-								<field name="userId" title="To" readonly="true"></field>
+								<field name="socialNet" title="Social Networking Type" 
+									onChange="action-send-message-attrs-set-personal-credential-domain"
+									domain="self.name != 'facebook'"/>
+	        					<field name="personalCredential" title="Personal Credential" hideIf="socialNet == null" required="true"/>
+								<field name="userInfo" title="Current User" hidden="true"/>
+								<field name="partner" title="To" readonly="true"/>
+								<field name="socialNetUserAccount" hideIf="partner == null" widget="SuggestBox" required="true" readonlyIf="id != null"/>
 								<break />
-								<field name="subject" hideIf="socialNet.name != 'linkedin'"></field>
+								<field name="subject" hideIf="socialNet.name !='linkedin'" requiredIf="socialNet.name =='linkedin'"/>
 								<break />
-								<field name="messageText" required="true"
-									/> <!--  onChange="com.axelor.sn.web.SNCommonController:sendMessage"></field>-->
+								<field name="content" required="true"/>
 								<break/>
 								<spacer colSpan="1"/>
 								<button name="firePersonalMsg"
 									onClick="com.axelor.sn.web.SNCommonController:sendMessage"
 									title="Send" />
-								<field name="messageDate" title="Date and Time" hidden="true"></field>
-								<field name="messageId" hidden="true" />
+								<field name="messageDateT" title="Date and Time" hidden="true"/>
+								<field name="snMessageRef" hidden="true" />
 							</form>
 						</field>
 					</page>
@@ -190,74 +197,9 @@
 	</form>
 	
 	
-	
-	
-	<form cols="4" colWidths="25*"   name="partner-lead-converted-form" title="Partner" model="com.axelor.apps.base.db.Partner"
-	    onNew="action-partner-record-partner-type-select,action-partner-record-set-default,action-partner-record-get-lead-converted-context">
-	    <group colSpan="1">
-	        <field name="picture"/>
-	    </group>
-	    <group colSpan="3" cols="6">
-	        <field name="titleSelect" hideIf="partnerTypeSelect != 2" css="highlight"/>
-	        <field name="name" css="highlight"/>
-	        <field name="firstName" hideIf="partnerTypeSelect != 2" css="highlight"/>
-	        <break/>
-	        <field name="partnerCategory" widget="SuggestBox"/>
-	        <field name="partnerTypeSelect" onChange="action-partner-attrs-change-name,action-partner-attrs-hide-tabs"/>
-	        <field name="parentPartner" hideIf="partnerTypeSelect != 1"/>
-	        <field name="isContact" hideIf="partnerTypeSelect != 2" onChange="action-partner-set-non-contact-fields,action-partner-attrs-hide-tabs"/>
-	        <field name="isCustomer"/>
-	        <field name="customerTypeSelect" hideIf="isContact || !isCustomer"/>        
-	        <field name="isSupplier" hideIf="partnerTypeSelect == 2"/>
-	        <field name="supplierTypeSelect" hideIf="isContact || !isSupplier"/>
-	        <break/>
-	    </group>
-	    <field name="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2" colSpan="4" domain="self.isContact = 'true'" grid-view="partner-contact-grid"/>
-	    <field name="snUserId" hidden="true" />
-		<field name="socialNet" hidden="true" />
-		<field name="curUser" hidden="true" />
-	    <break/>
-	    <notebook colSpan="4">
-	        <page name="information" title="Informations">
-	            <group title="Partner details" colSpan="3" cols="4">
-	                <field name="site" domain="self.partner.id = :id"/>
-	                <field name="department"/>
-	                <field name="source" hideIf="isContact"/>
-	            </group>
-	            <group title="Postal addresses" colSpan="3" cols="4">
-	                <field name="deliveryAddress" onChange="action-partner-record-main-invoicing-address"/>
-	                <field name="mainInvoicingAddress"/>
-	            </group>
-	            <group title="Contact" colSpan="3" cols="4">
-	                <field name="email" widget="Email"/>
-	                <field name="fax"/>
-	                <field name="fixedPhone1"/>
-	                <field name="fixedPhone2"/>
-	                <field name="fixedPhonePro"/>
-	                <field name="mobilePhonePerso"/>
-	                <field name="mobilePhonePro"/>
-	                <field name="webSite"/>
-	            </group>
-	        </page>
-	        <page name="payment" title="Invoicing/Payment" cols="4">
-	            <field name="invoiceSendingFormatSelect"/>
-	            <field name="paymentMode"/>
-	            <field name="paymentCondition"/>
-	            <field name="currency"/>
-	            <field name="payerQuality"/>
-	            <field name="bankDetails"/>
-	            <field name="bankDetailsList" showTitle="false" colSpan="4" form-view="bank-details-form" grid-view="bank-details-grid"/>
-	            <button name="showInvoice" title="View all unpaid invoices" colSpan="2" onClick="save,action-partner-method-show-invoice"/>
-	        </page>
-	        <page title="Settings">
-	            <field name="companySet" colSpan="4" widget="TagSelect[create=name]"/>
-	            <field name="languageSelect" hideIf="isContact || partnerTypeSelect == 1"/>
-	        </page>
-	    </notebook>
-	</form>
-	
+
 	<action-record name="action-partner-record-get-lead-converted-context" model="com.axelor.apps.base.db.Partner">
-		<field name="name" expr="eval: com.axelor.apps.crm.db.Lead.find(__parent._lead).name"/>
+		<field name="name" expr="eval: com.axelor.apps.crm.db.Lead.find(_parent._lead).name"/>
 	</action-record>
 	
     
@@ -355,25 +297,26 @@
 
 	<!--SN Actions -->    
 	
-    <action-view name="action-fetch-all-sn-update" title="Recents Update of This User" model="com.axelor.apps.base.db.FBNewsFeed"> 
+    <action-view name="action-fetch-all-sn-update" title="Recents Update of This User" model="com.axelor.apps.socialnetwork.db.FBNewsFeed"> 
 		<view type="grid" name="fb-news-feed-grid1" />
 		<view type="form" name="fb-news-feed-form"/>
-		<domain>self.snUserId = :snUserId</domain>
+		<domain>self.snUserRef in :_partnerUserRefList</domain>
+		<context name="_partnerUserRefList" expr="eval: (socialNetUserAccountList?.collect{it.snUserRef}?.size() &gt; 0) ? &quot;(${socialNetUserAccountList?.collect{it.snUserRef}?.join(',')})&quot; : &quot;(null)&quot;"/>
 	</action-view>
 
 	<action-record name="action-fill-direct-message"
-		model="com.axelor.apps.base.db.SnSendMessage">
-		<field name="socialNet" expr="eval:_parent.socialNet" />
-		<field name="curUser" expr="eval:__user__" />
-		<field name="userId" expr="eval:_parent" />
-		<field name="messageDate" expr="eval:__datetime__" />
+		model="com.axelor.apps.socialnetwork.db.SnSendMessage">
+		<!-- <field name="curUser" expr="eval:__user__" /> -->
+		<field name="partner" expr="eval:_parent" />
+		<field name="messageDateT" expr="eval:__datetime__" />
 	</action-record>
 
 	<action-view name="action-fetch-all-sn-mail" title="Inbox"
-		model="com.axelor.apps.base.db.MsgInbox">
+		model="com.axelor.apps.socialnetwork.db.MsgInbox">
 		<view type="grid" name="sn-msg-inbox-grid1" />
 		<view type="form" name="sn-msg-inbox-form" />
-		<domain>self.messageFromID = :snUserId</domain>
+		<domain>self.snUserRef in :_partnerUserRefList</domain>
+		<context name="_partnerUserRefList" expr="eval: (socialNetUserAccountList?.collect{it.snUserRef}?.size() &gt; 0) ? &quot;(${socialNetUserAccountList?.collect{it.snUserRef}?.join(',')})&quot; : &quot;(null)&quot;"/>
 	</action-view>
 	<!--END SN Actions -->
 	
@@ -384,9 +327,5 @@
     <action-validate name="action-partner-company-set-validate">
    		<alert message="Some company settings are missing. On the company settings, in the account tab, please fill in the 2 fields Customer account and supplier account. This field will be used by default for the accounting situation for each company."/>
 	</action-validate>
-	
-	<action-method name="action-create-accounting-situation" >
-		<call class="com.axelor.apps.base.web.PartnerControllerSimple" method="createAccountingSituations"/>
-	</action-method>
 	
 </object-views>

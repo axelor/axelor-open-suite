@@ -72,7 +72,7 @@
 		model="com.axelor.apps.base.db.Partner" icon="img/icons/partner_small.png">
 		<view type="grid" name="partner-grid" />
 		<view type="form" name="partner-form" />
-		<domain>self.curUser = null OR self.curUser = :user_id</domain>
+		<!-- <domain>self.curUser = null OR self.curUser = :user_id</domain> -->
 		<context name="user_id" expr="eval:__user__" />
 	</action-view>
 
@@ -184,6 +184,15 @@
 		model="com.axelor.apps.base.db.GeographicalArea" icon="img/icons/parameter_small.png">
 		<view type="grid" name="geographical-area-grid" />
 		<view type="form" name="geographical-area-form" />
+	</action-view>
+
+	<menuitem name="contact-conf-partner-list-map" parent="contact-conf"
+		title="Sales map" action="contact.conf.partner.list.map" />
+
+	<action-view name="contact.conf.partner.list.map" title="Sales map"
+		model="com.axelor.apps.base.db.PartnerList" icon="img/icons/parameter_small.png">
+		<view type="grid" name="partner-list-map-grid" />
+		<view type="form" name="partner-list-map-form" />
 	</action-view>
 
 	

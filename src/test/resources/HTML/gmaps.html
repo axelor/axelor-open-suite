@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+      html { height: 100% }
+      body { height: 100%; margin: 0; padding: 0 }
+      #map-canvas { height: 100% }
+    </style>
+	<script>
+		function getQueryVariable(variable)
+		{
+		  var query = window.location.search.substring(1);
+		  var vars = query.split("&");
+		  for (var i=0;i<vars.length;i++) {
+		    var pair = vars[i].split("=");
+		    if(pair[0] == variable){return pair[1];}
+		  }
+		  return(false);
+		}
+	</script>
+
+    <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8gJZgJCUFJYAkUuFBR9C6qw-I100wA3w&sensor=false&region=FR">
+    </script>
+    <script type="text/javascript">
+      function initialize() {
+
+	var x = getQueryVariable("x");
+	var y = getQueryVariable("y");
+	var z = getQueryVariable("z");
+	var id = getQueryVariable("id");
+
+	var myLatlng = new google.maps.LatLng(x, y);
+
+
+        var mapOptions = {
+          center: myLatlng,
+          zoom: parseInt(z),
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        var map = new google.maps.Map(document.getElementById("map-canvas"),
+            mapOptions);
+
+	var marker = new google.maps.Marker({
+	      position: myLatlng,
+	      map: map,
+	      title:"Here!"
+	  });
+
+      }
+      google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+  </head>
+  <body>
+    <div id="map-canvas"/>
+  </body>
+</html>

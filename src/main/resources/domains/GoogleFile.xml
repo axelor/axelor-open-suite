@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
 
-	<module name="base" package="com.axelor.apps.base.db" />
+	<module name="googleapps" package="com.axelor.apps.googleapps.db" />
 	<entity name="GoogleFile">
 	
 		<string name="fileId" title="File Id" help="Google File Id"/>
@@ -20,11 +20,9 @@
 		<boolean name="writable" default="true" help="set if file is shared With me"/>
 		<string name="sharedBy"  help="name of user who has shared file"/>
 				
-		<many-to-one name="driveUser" ref="com.axelor.auth.db.User" orphan="true" help="Google apps User"/>
+		<many-to-one name="driveUserInfo" ref="com.axelor.apps.base.db.UserInfo" orphan="true" help="Google apps User"/>
 		<many-to-one name="googleDirectory" ref="GoogleDirectory" orphan="true" help="Google Directory"/>
-		<!-- used for representing set of templates uses this file as template to associate to model  -->
-		<one-to-many name="templates" ref="com.axelor.apps.base.db.TemplateFile" mappedBy="googleFile" help="Template to create Document"/>
-		<one-to-many name="filePermissionsList" ref="com.axelor.apps.base.db.FilePermission" mappedBy="googleFile" help="File permission to share File" />
+		<one-to-many name="filePermissionsList" ref="com.axelor.apps.googleapps.db.FilePermission" mappedBy="googleFile" help="File permission to share File" />
 				
 	</entity>     
 </domain-models>   

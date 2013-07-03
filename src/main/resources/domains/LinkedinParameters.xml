@@ -3,11 +3,11 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
 	
-	<module name="base" package="com.axelor.apps.base.db" />
+	<module name="socialnetwork" package="com.axelor.apps.socialnetwork.db" />
 	
 	<entity name="LinkedinParameters">
 		<integer name="recordNumbers" title="Number of Records" min="0" max="100" />
 		<integer name="days" title="Number of Days" min="0" max="15" />
-		<many-to-one name="curUser" ref="com.axelor.auth.db.User" unique="true"/>
+		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" unique="true"/>
 	</entity>
 </domain-models>

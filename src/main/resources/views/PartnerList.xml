@@ -11,4 +11,24 @@
         <field name="description" colSpan="4"/>
         <field name="partnerSet" colSpan="4"/>
     </form>
+
+	<!--  Mapping -->
+    <grid name="partner-list-map-grid" title="Sales maps" model="com.axelor.apps.base.db.PartnerList">
+         <field name="code"/>
+        <field name="description" colSpan="4"/>
+    </grid>
+	<form cols="2" colWidths="*,200" name="partner-list-map-form" title="Sales map">
+	    <group title="" colSpan="1" cols="2" colWidths="140,*">
+	        <field name="code"/>
+	        <field name="description" colSpan="2"/>
+	        <field name="partnerSet" colSpan="2" domain="self.partnerTypeSelect = 1" showTitle="false"/>
+	    </group>
+	    <group name="action_buttons" title="Actions" hideIf="$popup()" colSpan="1" cols="2" >
+	        <button name="map" title="Sales map" onClick="save,com.axelor.apps.base.web.AddressController:viewSalesMap" colSpan="2"/>
+	        <field name="isCluster" />
+	    </group>
+	</form>
 </object-views>
+
+
+

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+      html { height: 100% }
+      body { height: 100%; margin: 0; padding: 0 }
+      #map-canvas { height: 100% }
+    </style>
+	<script>
+		function getQueryVariable(variable)
+		{
+		  var query = window.location.search.substring(1);
+		  var vars = query.split("&");
+		  for (var i=0;i<vars.length;i++) {
+		    var pair = vars[i].split("=");
+		    if(pair[0] == variable){return pair[1];}
+		  }
+		  return(false);
+		}
+	</script>
+    <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8gJZgJCUFJYAkUuFBR9C6qw-I100wA3w&sensor=false&region=FR">
+    </script>
+
+    <script>
+function initialize() {
+  var paris = new google.maps.LatLng(46.85975, 2.33768);
+  var mapOptions = {
+    zoom: 6,
+    center: paris,
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  }
+
+  var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+
+  var arrLayer = new google.maps.KmlLayer({
+    url: 'http://ah.axelor.fr/HTML/LesarrondissementsdeParis.kml'
+  });
+  arrLayer.setMap(map);
+
+
+  var depLayer = new google.maps.KmlLayer({
+    url: 'http://ah.axelor.fr/HTML/dep/78.kml'
+  });
+  depLayer.setMap(map);
+
+  var depLayer1 = new google.maps.KmlLayer({
+    url: 'http://ah.axelor.fr/HTML/dep/77.kml'
+  });
+  depLayer1.setMap(map);
+
+}
+
+google.maps.event.addDomListener(window, 'load', initialize);
+
+    </script>
+  </head>
+  <body>
+    <div id="map-canvas"></div>
+  </body>
+</html>

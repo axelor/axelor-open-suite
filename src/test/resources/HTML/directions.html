@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+      html { height: 100% }
+      body { height: 100%; margin: 0; padding: 0 }
+      #map-canvas { height: 100% }
+    </style>
+	<script>
+		function getQueryVariable(variable)
+		{
+		  var query = window.location.search.substring(1);
+		  var vars = query.split("&");
+		  for (var i=0;i<vars.length;i++) {
+		    var pair = vars[i].split("=");
+		    if(pair[0] == variable){return pair[1];}
+		  }
+		  return(false);
+		}
+	</script>
+
+    <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8gJZgJCUFJYAkUuFBR9C6qw-I100wA3w&sensor=false&region=FR">
+    </script>
+    <script type="text/javascript">
+var directionsDisplay;
+var directionsService = new google.maps.DirectionsService();
+var map;
+var dx = getQueryVariable("dx");
+var dy = getQueryVariable("dy");
+var ax = getQueryVariable("ax");
+var ay = getQueryVariable("ay");
+
+
+function computeTotalDistance(result) {
+  var total = 0;
+  var myroute = result.routes[0];
+  for (var i = 0; i < myroute.legs.length; i++) {
+    total += myroute.legs[i].distance.value;
+  }
+  total = total / 1000.
+  document.getElementById('total').innerHTML = total + ' km';
+}
+
+
+
+function initialize() {
+
+  var rendererOptions = {
+    draggable: true
+  };
+
+  directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
+  var start = new google.maps.LatLng(dx, dy);
+  var end = new google.maps.LatLng(ax, ay);
+  var request = {
+      origin:start,
+      destination:end,
+      travelMode: google.maps.DirectionsTravelMode.DRIVING
+  };
+  directionsService.route(request, function(response, status) {
+    if (status == google.maps.DirectionsStatus.OK) {
+      directionsDisplay.setDirections(response);
+    }
+  });
+  var mapOptions = {
+    zoom:7,
+    mapTypeId: google.maps.MapTypeId.ROADMAP,
+    center: start
+  }
+  map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+  directionsDisplay.setMap(map);
+  directionsDisplay.setPanel(document.getElementById('directionsPanel'));
+
+  google.maps.event.addListener(directionsDisplay, 'directions_changed', function() {
+    computeTotalDistance(directionsDisplay.directions);
+  });
+
+}
+
+
+google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+  </head>
+  <body>
+    <div id="map-canvas" style="float:left;width:70%; height:100%"></div>
+    <div id="directionsPanel" style="float:right;width:30%;height 100%">
+    <p>Distance: <span id="total"></span></p>
+    </div>
+  </body>
+</html>

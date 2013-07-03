@@ -10,6 +10,7 @@
   	<string name="code" namecolumn="true" title="Code"/>
   	<string name="description" title="Description" large="true"/>
   	<many-to-many name="partnerSet" ref="com.axelor.apps.base.db.Partner" title="Partners"/>
+  	<boolean name="isCluster"  title="Cluster?" default="true"/>
   	
   </entity>
   
