@@ -131,4 +131,15 @@ class SalesOrderController {
 			salesOrderService.createTasks(salesOrder)
 		}
 	}
+	
+	def void createStockMoves(ActionRequest request, ActionResponse response) {
+		
+		SalesOrder salesOrder = request.context as SalesOrder
+		
+		if(salesOrder) {
+			
+			salesOrderService.createStocksMoves(salesOrder)
+		}
+	}
+	
 }

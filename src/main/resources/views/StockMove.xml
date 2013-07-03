@@ -4,6 +4,7 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
     <grid name="stock-move-grid" title="Stock moves" model="com.axelor.apps.supplychain.db.StockMove">
+        <field name="stockMoveSeq"/>
         <field name="name"/>
         <field name="fromLocation"/>
         <field name="toLocation"/>
@@ -18,8 +19,9 @@
     
     <form name="stock-move-form" title="Stock move" model="com.axelor.apps.supplychain.db.StockMove" cols="4"
     	onNew="action-stock-move-record-new">
-        <field name="name"/>
+        <field name="stockMoveSeq"/>
         <field name="statusSelect" widget="NavSelect"/>
+        <field name="name"/>
         <field name="fromLocation"/>
         <field name="toLocation"/>
         <field name="estimatedDate"/>
@@ -29,12 +31,36 @@
         <field name="company"/>
         <field name="partner" domain="self.isContact = false"/>
         <field name="stockMoveLineList" colSpan="4"/>
+        <group title="Action(s)" colSpan="2" cols="2">
+			<button name="confirm" title="Confirm" showIf="statusSelect == 1 || statusSelect == 4" colSpan="1" onClick="save,action-stock-move-record-confirm,save"/>
+			<button name="realize" title="Realize" showIf="statusSelect == 2" colSpan="1" onClick="save,action-stock-move-record-realize,save"/>
+			<button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3" colSpan="1" onClick="save,action-stock-move-record-cancel,save"/>
+		 </group>
     </form>
     
     <action-record name="action-stock-move-record-new" model="com.axelor.apps.supplychain.db.StockMove">
     	<field name="company"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
 	    <field name="statusSelect" expr="eval: 1"/>
-	    <field name="estimatedDate" expr="eval: __date__"/>
+	    <field name="estimatedDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+	</action-record>
+	
+	<action-record name="action-stock-move-record-confirm" model="com.axelor.apps.supplychain.db.StockMove">
+	    <field name="statusSelect" expr="2"/>
+	    <field name="realDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
 	</action-record>
     
+    <action-record name="action-stock-move-record-realize" model="com.axelor.apps.supplychain.db.StockMove">
+	    <field name="statusSelect" expr="3"/>
+	    <field name="realDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+	</action-record>
+	
+	<action-record name="action-stock-move-record-cancel" model="com.axelor.apps.supplychain.db.StockMove">
+	    <field name="statusSelect" expr="4"/>
+	    <field name="realDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+	</action-record>
+	
+	<action-record name="action-stock-move-record-stockMoveSeq" model="com.axelor.apps.supplychain.db.StockMove">
+	    <field name="stockMoveSeq" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="stockMoveSeq == null"/>
+	</action-record>
+	
 </object-views>

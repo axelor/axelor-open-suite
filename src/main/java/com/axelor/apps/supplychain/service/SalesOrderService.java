@@ -4,22 +4,28 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.base.db.IProduct;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.UnitConversion;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.organisation.db.PlanningLine;
 import com.axelor.apps.organisation.db.Task;
 import com.axelor.apps.supplychain.db.ISalesOrder;
+import com.axelor.apps.supplychain.db.IStockMove;
 import com.axelor.apps.supplychain.db.SalesOrder;
 import com.axelor.apps.supplychain.db.SalesOrderLine;
 import com.axelor.apps.supplychain.db.SalesOrderLineVat;
 import com.axelor.apps.supplychain.db.SalesOrderSubLine;
+import com.axelor.apps.supplychain.db.StockMove;
+import com.axelor.apps.supplychain.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -36,6 +42,9 @@ public class SalesOrderService {
 	
 	@Inject
 	private SalesOrderLineVatService salesOrderLineVatService;
+	
+	@Inject
+	SequenceService sequenceService;
 	
 	public SalesOrder _computeSalesOrderLines(SalesOrder salesOrder)  {
 		
@@ -278,6 +287,43 @@ public class SalesOrderService {
 				}
 			}
 		}		
+	}
+	
+	@Transactional
+	public void createStocksMoves(SalesOrder salesOrder) {
+		
+		StockMove stockMove = new StockMove();
+		
+		String ref = sequenceService.getSequence(IStockMove.INTERNAL, salesOrder.getCompany(), null, false);
+		if(ref.equals("")) {
+			ref = sequenceService.getSequence(IStockMove.OUTGOING, salesOrder.getCompany(), null, false);
+			if(ref.equals(""))  {
+				ref = sequenceService.getSequence(IStockMove.INCOMING, salesOrder.getCompany(), null, false);			
+			}
+		}
+		stockMove.setStockMoveSeq(ref);
+		stockMove.setName(ref);
+		stockMove.setToAddress(salesOrder.getDeliveryAddress());
+		stockMove.setCompany(salesOrder.getCompany());
+		stockMove.setStatusSelect(IStockMove.CONFIRMED);
+		stockMove.setRealDate(new LocalDate());
+		stockMove.setEstimatedDate(new LocalDate());
+		
+		if(salesOrder.getSalesOrderLineList() != null) {
+			stockMove.setStockMoveLineList(new ArrayList<StockMoveLine>());
+			for(SalesOrderLine salesOrderLine: salesOrder.getSalesOrderLineList()) {
+				if(salesOrderLine.getProduct() != null && salesOrderLine.getProduct().getApplicationTypeSelect() == IProduct.PRODUCT_TYPE && salesOrderLine.getProduct().getProductTypeSelect().equals(IProduct.STOCKABLE)) {
+					StockMoveLine stockMoveLine = new StockMoveLine();
+					stockMoveLine.setStockMove(stockMove);
+					stockMoveLine.setProduct(salesOrderLine.getProduct());
+					stockMoveLine.setQty(salesOrderLine.getQty().intValue());
+					
+					stockMove.getStockMoveLineList().add(stockMoveLine);
+					stockMoveLine.save();
+				}
+			}
+		}
+		stockMove.save();
 	}
 }
 

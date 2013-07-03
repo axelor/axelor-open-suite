@@ -57,7 +57,7 @@
 	                        <group colSpan="1" cols="1">
 	                            <button name="compute" title="Compute" hideIf="statusSelect == 3" colSpan="1" onClick="save,action-sales-order-method-compute,save"/>
 	                            <button name="confirm" title="Confirm" showIf="statusSelect == 1 || statusSelect == 4" colSpan="1" onClick="save,action-sales-order-record-confirm,save"/>
-	                            <button name="validate" title="Validate" showIf="statusSelect == 2" colSpan="1" onClick="action-sales-order-button-validation,save,action-sales-order-record-validate,save,action-sales-order-create-tasks"/>
+	                            <button name="validate" title="Validate" showIf="statusSelect == 2" colSpan="1" onClick="action-sales-order-button-validation,save,action-sales-order-record-validate,save,action-sales-order-create-tasks,action-sales-order-create-stock-move"/>
 	                            <button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2" colSpan="1" onClick="save,action-sales-order-record-cancel"/>
 	                            <button name="showSalesOrder" title="Print" showIf="statusSelect == 3" colSpan="1" icon="img/icons/print.png" onClick="save,action-sales-order-method-show-sales-order"/>
 	                            <button name="sendByEmail" title="Send by email" showIf="statusSelect == 3" colSpan="1"/>
@@ -177,6 +177,10 @@
 	
 	<action-method name="action-sales-order-create-tasks">
 		<call class="com.axelor.apps.supplychain.web.SalesOrderController" method="createTaskByLines"/>
+	</action-method>
+	
+	<action-method name="action-sales-order-create-stock-move">
+		<call class="com.axelor.apps.supplychain.web.SalesOrderController" method="createStockMoves"/>
 	</action-method>
 	
 </object-views>
