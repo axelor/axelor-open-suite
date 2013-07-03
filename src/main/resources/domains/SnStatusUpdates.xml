@@ -12,6 +12,7 @@
   	<many-to-one name="fbPersonalCredential" ref="com.axelor.apps.socialnetwork.db.PersonalCredential"/>
   	<many-to-one name="twtPersonalCredential" ref="com.axelor.apps.socialnetwork.db.PersonalCredential"/>
   	<many-to-one name="lnPersonalCredential" ref="com.axelor.apps.socialnetwork.db.PersonalCredential"/>
+  	<many-to-one name="commentPersonalCredential" ref="com.axelor.apps.socialnetwork.db.PersonalCredential"/>
     <string name="content" namecolumn="true" multiline="true" max="600"/>
     <datetime name="updateDateT" tz="true"/>
     <many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo"/>

@@ -18,7 +18,7 @@
         <field name="isContact"/>
    		<field name="partnerTypeSelect"/>
         <field name="partnerCategory"/>
-        <field name="socialNet"/>
+        <field name="socialNetUserAccountList"/>
     </grid>
     
     <grid name="partner-contact-grid" title="Contacts" model="com.axelor.apps.base.db.Partner">
@@ -55,9 +55,9 @@
 	        <break/>
 	    </group>
 	    <field name="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2" colSpan="4" domain="self.isContact = 'true'" grid-view="partner-contact-grid"/>
-	    <field name="snUserRef" hidden="true" />
-		<field name="socialNet" hidden="true" />
-		<field name="curUser" hidden="true" />
+	    <!-- <field name="snUserRef" hidden="true" /> -->
+		<field name="socialNetUserAccountList" hidden="true" />
+		<!-- <field name="curUser" hidden="true" /> -->
 	    <break/>
 	    <notebook colSpan="4">
 	        <page name="information" title="Informations">
@@ -112,47 +112,51 @@
 	            
 	        </page>
 	        <page title="Social Networking" colSpan="4" name="socialNetworkingTab"
-				hideIf="socialNet == null">
+				hideIf="socialNetUserAccountList == null || id == null">
 				<notebook>
 					<page title="Personal Credentials">
 						<field name="personalCredentialSet"/>
 					</page>
-					<page title="Inbox Message" hideIf="socialNet.name == 'linkedin'">
+					<page title="Social Net Accounts">
+						<field name="socialNetUserAccountList"/>
+					</page>
+					<page title="Inbox Message"> <!-- hideIf="socialNet.name == 'linkedin'"> -->
 						<portlet action="action-fetch-all-sn-mail" colSpan="4" />
 					</page>
-					<page title="Recent Updates" hideIf="socialNet.name != 'facebook'">
+					<page title="Recent Updates"> <!-- hideIf="socialNet.name != 'facebook'"> -->
 						<portlet action="action-fetch-all-sn-update" colSpan="4" />
 					</page>
 
-					<page title="Send Personal Message" name="snPersonalMessage"
-						hideIf="socialNet.name == 'facebook'">
+					<page title="Send Personal Message" name="snPersonalMessage">
+						<!-- hideIf="socialNet.name == 'facebook'"> -->
 						<field name="snSendMessageList" title="Personal Messages"><!-- 
 								onChange="com.axelor.sn.web.TWTController:directMessageO2M"> -->
 							<grid title="All Sent Messages">
-								<field name="socialNet" title="Social Networking Type"
-									hidden="true"></field>
-								<field name="partner" title="To"></field>
-								<field name="content"></field>
-								<field name="messageDateT" title="Date and Time" hidden="true"></field>
-								<field name="snMessageRef" />
+								<field name="socialNet" title="Social Networking Type"/>
+								<field name="partner" title="To"/>
+								<field name="content"/>
+								<field name="messageDateT" title="Date and Time" hidden="true"/>
+								<field name="snMessageRef" title="Message reference" />
 							</grid>
 
 							<form title="Compose New Message" onNew="action-fill-direct-message">
-								<field name="socialNet" title="Social Networking Type"
-									hidden="true"></field>
-								<field name="userInfo" title="Current User" hidden="true"></field>
-								<field name="partner" title="To" readonly="true"></field>
+								<field name="socialNet" title="Social Networking Type" 
+									onChange="action-send-message-attrs-set-personal-credential-domain"
+									domain="self.name != 'facebook'"/>
+	        					<field name="personalCredential" title="Personal Credential" hideIf="socialNet == null" required="true"/>
+								<field name="userInfo" title="Current User" hidden="true"/>
+								<field name="partner" title="To" readonly="true"/>
+								<field name="socialNetUserAccount" hideIf="partner == null" widget="SuggestBox" required="true" readonlyIf="id != null"/>
 								<break />
-								<field name="subject" hideIf="socialNet.name != 'linkedin'"></field>
+								<field name="subject" hideIf="socialNet.name !='linkedin'" requiredIf="socialNet.name =='linkedin'"/>
 								<break />
-								<field name="content" required="true"
-									/> <!--  onChange="com.axelor.sn.web.SNCommonController:sendMessage"></field>-->
+								<field name="content" required="true"/>
 								<break/>
 								<spacer colSpan="1"/>
 								<button name="firePersonalMsg"
 									onClick="com.axelor.sn.web.SNCommonController:sendMessage"
 									title="Send" />
-								<field name="messageDateT" title="Date and Time" hidden="true"></field>
+								<field name="messageDateT" title="Date and Time" hidden="true"/>
 								<field name="snMessageRef" hidden="true" />
 							</form>
 						</field>
@@ -296,13 +300,13 @@
     <action-view name="action-fetch-all-sn-update" title="Recents Update of This User" model="com.axelor.apps.socialnetwork.db.FBNewsFeed"> 
 		<view type="grid" name="fb-news-feed-grid1" />
 		<view type="form" name="fb-news-feed-form"/>
-		<domain>self.snUserRef = :snUserRef</domain>
+		<domain>self.snUserRef in :_partnerUserRefList</domain>
+		<context name="_partnerUserRefList" expr="eval: (socialNetUserAccountList?.collect{it.snUserRef}?.size() &gt; 0) ? &quot;(${socialNetUserAccountList?.collect{it.snUserRef}?.join(',')})&quot; : &quot;(null)&quot;"/>
 	</action-view>
 
 	<action-record name="action-fill-direct-message"
 		model="com.axelor.apps.socialnetwork.db.SnSendMessage">
-		<field name="socialNet" expr="eval:_parent.socialNet" />
-		<field name="curUser" expr="eval:__user__" />
+		<!-- <field name="curUser" expr="eval:__user__" /> -->
 		<field name="partner" expr="eval:_parent" />
 		<field name="messageDateT" expr="eval:__datetime__" />
 	</action-record>
@@ -311,7 +315,8 @@
 		model="com.axelor.apps.socialnetwork.db.MsgInbox">
 		<view type="grid" name="sn-msg-inbox-grid1" />
 		<view type="form" name="sn-msg-inbox-form" />
-		<domain>self.messageFromID = :snUserRef</domain>
+		<domain>self.snUserRef in :_partnerUserRefList</domain>
+		<context name="_partnerUserRefList" expr="eval: (socialNetUserAccountList?.collect{it.snUserRef}?.size() &gt; 0) ? &quot;(${socialNetUserAccountList?.collect{it.snUserRef}?.join(',')})&quot; : &quot;(null)&quot;"/>
 	</action-view>
 	<!--END SN Actions -->
 	
