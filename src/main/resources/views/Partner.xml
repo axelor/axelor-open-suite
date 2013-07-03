@@ -18,7 +18,7 @@
         <field name="isContact"/>
    		<field name="partnerTypeSelect"/>
         <field name="partnerCategory"/>
-        <field name="snType"/>
+        <field name="socialNet"/>
     </grid>
     
     <grid name="partner-contact-grid" title="Contacts" model="com.axelor.apps.base.db.Partner">
@@ -56,7 +56,7 @@
 	    </group>
 	    <field name="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2" colSpan="4" domain="self.isContact = 'true'" grid-view="partner-contact-grid"/>
 	    <field name="snUserId" hidden="true" />
-		<field name="snType" hidden="true" />
+		<field name="socialNet" hidden="true" />
 		<field name="curUser" hidden="true" />
 	    <break/>
 	    <notebook colSpan="4">
@@ -112,21 +112,21 @@
 	            
 	        </page>
 	        <page title="Social Networking" colSpan="4" name="socialNetworkingTab"
-				hideIf="snType == null">
+				hideIf="socialNet == null">
 				<notebook>
-					<page title="Inbox Message" hideIf="snType.name == 'linkedin'">
+					<page title="Inbox Message" hideIf="socialNet.name == 'linkedin'">
 						<portlet action="action-fetch-all-sn-mail" colSpan="4" />
 					</page>
-					<page title="Recent Updates" hideIf="snType.name != 'facebook'">
+					<page title="Recent Updates" hideIf="socialNet.name != 'facebook'">
 						<portlet action="action-fetch-all-sn-update" colSpan="4" />
 					</page>
 
 					<page title="Send Personal Message" name="snPersonalMessage"
-						hideIf="snType.name == 'facebook'">
+						hideIf="socialNet.name == 'facebook'">
 						<field name="snDirectMessage" title="Personal Messages"><!-- 
 								onChange="com.axelor.sn.web.TWTController:directMessageO2M"> -->
 							<grid title="All Sent Messages">
-								<field name="snType" title="Social Networking Type"
+								<field name="socialNet" title="Social Networking Type"
 									hidden="true"></field>
 								<field name="userId" title="To"></field>
 								<field name="messageText"></field>
@@ -135,12 +135,12 @@
 							</grid>
 
 							<form title="Compose New Message" onNew="action-fill-direct-message">
-								<field name="snType" title="Social Networking Type"
+								<field name="socialNet" title="Social Networking Type"
 									hidden="true"></field>
 								<field name="curUser" title="Current User" hidden="true"></field>
 								<field name="userId" title="To" readonly="true"></field>
 								<break />
-								<field name="subject" hideIf="snType.name != 'linkedin'"></field>
+								<field name="subject" hideIf="socialNet.name != 'linkedin'"></field>
 								<break />
 								<field name="messageText" required="true"
 									/> <!--  onChange="com.axelor.sn.web.SNCommonController:sendMessage"></field>-->
@@ -163,10 +163,10 @@
                     </group>
                 </group>
 			</page>
-	        <page name="compteClient" title="Customer balance">
+	        <page name="compteClient" title="Customer balance" hideIf="isContact">
 	            <field name="accountingSituationList" colSpan="4" widget="MasterDetail" onSelect="action-account-accounting-situation-method-update-customer-account"/>
 	        </page>
-	        <page name="reportedBalance" title="Reported balance">
+	        <page name="reportedBalance" title="Reported balance" hideIf="isContact">
 	            <field name="reportedBalanceList" colSpan="4">
 	                <grid name="reported-balance-grid" title="Reported balances" model="com.axelor.apps.account.db.ReportedBalance">
 	                    <field name="company"/>
@@ -214,7 +214,7 @@
 	    </group>
 	    <field name="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2" colSpan="4" domain="self.isContact = 'true'" grid-view="partner-contact-grid"/>
 	    <field name="snUserId" hidden="true" />
-		<field name="snType" hidden="true" />
+		<field name="socialNet" hidden="true" />
 		<field name="curUser" hidden="true" />
 	    <break/>
 	    <notebook colSpan="4">
@@ -363,7 +363,7 @@
 
 	<action-record name="action-fill-direct-message"
 		model="com.axelor.apps.base.db.SnSendMessage">
-		<field name="snType" expr="eval:_parent.snType" />
+		<field name="socialNet" expr="eval:_parent.socialNet" />
 		<field name="curUser" expr="eval:__user__" />
 		<field name="userId" expr="eval:_parent" />
 		<field name="messageDate" expr="eval:__datetime__" />

@@ -1,5 +1,6 @@
 package com.axelor.apps.base.web
 
+import groovy.json.JsonSlurper
 import groovy.util.logging.Slf4j
 import wslite.rest.ContentType
 import wslite.rest.RESTClient
@@ -229,7 +230,7 @@ class AddressController {
 		}
 	}
 	
-	def void viewMap(ActionRequest request, ActionResponse response)  {
+	def void viewMapOsm(ActionRequest request, ActionResponse response)  {
 		
 		Address address = request.context as Address
 		def qString = "${address.addressL4} ,${address.addressL6}"
@@ -251,7 +252,8 @@ class AddressController {
 									   useCaches: false,
 									   sslTrustAllCerts: true )
 			
-			print restResponse.parsedResponseContent.text
+			log.debug("restResponse.parsedResponseContent.text = {}", restResponse.parsedResponseContent.text)
+			
 			def searchresults = new XmlSlurper().parseText(restResponse.parsedResponseContent.text)
 			def places = searchresults.place
 			log.debug("places.size() = {}", places.size())
@@ -291,5 +293,92 @@ class AddressController {
 			TraceBackService.trace(response, e) 
 		}
 	}
+
 	
+	def void viewMapGoogle(ActionRequest request, ActionResponse response)  {
+		
+		Address address = request.context as Address
+		def qString = "${address.addressL4} ,${address.addressL6}"
+		log.debug("qString = {}", qString)
+		
+		try {
+			
+			//http://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&sensor=true_or_false
+
+			def restClient = new RESTClient("https://maps.googleapis.com")
+			def restResponse = restClient.get( path:'/maps/api/geocode/json',
+									   accept: ContentType.JSON,
+									   query:[address: qString,
+											sensor: 'false'],
+									   connectTimeout: 5000,
+									   readTimeout: 10000,
+									   followRedirects: false,
+									   useCaches: false,
+									   sslTrustAllCerts: true )
+			
+			log.debug("restResponse = {}", restResponse)
+			log.debug("restResponse.parsedResponseContent.text = {}", restResponse.parsedResponseContent.text)
+			
+			def searchresults = new JsonSlurper().parseText(restResponse.parsedResponseContent.text)
+			
+			//assert searchresults.status == 'OK'
+			log.debug("searchresults.status = {}", searchresults.status)
+			log.debug("searchresults.results.size() = {}", searchresults.results.size())
+			log.debug("searchresults.results[0] = {}", searchresults.results[0])
+			log.debug("searchresults.results[0].address_components = {}", searchresults.results[0].address_components)
+			log.debug("searchresults.results[0].geometry.location = {}", searchresults.results[0].geometry.location)
+
+			def results = searchresults.results
+
+			if (results.size() > 1) {
+				response.flash = "<B>$qString</B> matches multiple locations. First selected."
+			}
+			def firstPlaceFound = results[0]
+			log.debug("firstPlaceFound = {}", firstPlaceFound)
+			
+			if (firstPlaceFound) {
+				log.debug("firstPlaceFound.geometry.location.lat = {}", firstPlaceFound.geometry.location.lat)
+				log.debug("firstPlaceFound.geometry.location.lng = {}", firstPlaceFound.geometry.location.lng)
+				def latit = new BigDecimal(firstPlaceFound.geometry.location.lat)
+				def longit = new BigDecimal(firstPlaceFound.geometry.location.lng)
+				
+				
+		
+				String url = "http://localhost/HTML/gmaps.html?x=$latit&y=$longit&z=18"
+				response.view = [
+					"title": "Map",
+					"resource": url,
+					"viewType": "html"
+				]
+				response.values = [
+					latit: latit,
+					longit: longit
+				]
+			}
+			else {
+				response.flash = "<B>$qString</B> not found"
+			}
+
+		}
+		catch(Exception e)  {
+			TraceBackService.trace(response, e)
+		}
+	}
+
+	
+	def void viewMap(ActionRequest request, ActionResponse response)  {
+		if (GeneralService.getGeneral().mapApiSelect == "1") {
+			viewMapGoogle(request, response)
+		} else {
+			viewMapOsm(request, response)
+		}
+	
+	}
+
+	def void checkMapApi(ActionRequest request, ActionResponse response)  {
+		response.flash = "Not implemented yet!"
+	}
+	
+
+		
 }

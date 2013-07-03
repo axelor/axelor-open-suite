@@ -10,7 +10,7 @@
     <date name="dueDate" title="Due Date"/>
     <decimal name="debit" title="Debit"/>
     <decimal name="credit" title="Credit"/>
-    <many-to-one name="account" ref="Account" title="Account"/>
+    <many-to-one name="account" ref="Account" required="true" title="Account"/>
     <one-to-many name="reconcileList1" ref="Reconcile" title="Debit Reconcile list" mappedBy="lineDebit" readonly="false"/>
     <one-to-many name="reconcileList2" ref="Reconcile" title="Credit Reconcile List" mappedBy="lineCredit" readonly="false"/>
     <decimal name="amountPaid" title="Amount paid/reconciled" default="0.0" readonly="true"/>

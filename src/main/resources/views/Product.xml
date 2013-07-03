@@ -3,7 +3,13 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
+    
+        
+    
     <grid name="product-grid" title="Products" model="com.axelor.apps.base.db.Product">
+    <toolbar>
+		<button name="catelog" title="Catelog" onClick="action-print-product-catelog"/>
+    </toolbar>    
         <field name="code"/>
         <field name="name"/>
         <field name="productCategory"/>
@@ -86,7 +92,7 @@
 							<group colSpan="1" cols="2">
 								<button name="postit" title="Post" hidden="true"
 									onClick="com.axelor.sn.web.SNCommonController:postOnSN,action-showing-seen, save, com.axelor.sn.web.SNCommonController:refreshSnPostComments" />
-								<button name="cancle" title="Cancle" hidden="true"
+								<button name="cancel" title="Cancel" hidden="true"
 									onClick="action-showing-seen" />
 							</group>
 						</group>
@@ -149,6 +155,9 @@
 		<attribute name="hidden" expr="true" for="cancle" />
 	</action-attrs>
 	
+	<action-method name="action-print-product-catelog" >
+		<call class="com.axelor.apps.base.web.ProductControllerSimple" method="printProductCatelog"/>
+	</action-method>
 	<!-- END OF ACTIONS FOR SOCIAL NETWORKING INTEGRATION -->
     
 </object-views>
