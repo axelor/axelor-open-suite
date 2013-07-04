@@ -7,6 +7,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.supplychain.db.IStockMove;
+import com.axelor.apps.supplychain.db.Location;
 import com.axelor.apps.supplychain.db.StockMove;
 import com.axelor.apps.supplychain.db.StockMoveLine;
 
@@ -23,7 +24,7 @@ public class StockMoveService {
 	 * @return l'objet StockMove
 	 */
 	@Transactional
-	public StockMove createStocksMoves(Address toAddress, Company company, Partner clientPartner, String refSequence) {
+	public StockMove createStocksMoves(Address toAddress, Company company, Partner clientPartner, String refSequence, Location location) {
 
 		StockMove stockMove = new StockMove();
 
@@ -35,7 +36,12 @@ public class StockMoveService {
 		stockMove.setRealDate(GeneralService.getTodayDate());
 		stockMove.setEstimatedDate(GeneralService.getTodayDate());
 		stockMove.setPartner(clientPartner);
+		stockMove.setFromLocation(location);
 
+		Location findLocation = Location.all().filter("partner = ?", clientPartner).fetchOne();
+		if(findLocation != null) {
+			stockMove.setToLocation(findLocation);
+		}
 		stockMove.save();
 		return stockMove;
 	}
