@@ -138,7 +138,7 @@ class SalesOrderController {
 		
 		if(salesOrder) {
 			
-			salesOrderService.createStocksMoves(salesOrder)
+			salesOrderService.createStocksMovesFromSalesOrder(salesOrder)
 		}
 	}
 	

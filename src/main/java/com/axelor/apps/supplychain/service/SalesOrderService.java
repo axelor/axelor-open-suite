@@ -9,7 +9,11 @@ import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IProduct;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.UnitConversion;
 import com.axelor.apps.base.service.CurrencyService;
@@ -27,6 +31,7 @@ import com.axelor.apps.supplychain.db.SalesOrderSubLine;
 import com.axelor.apps.supplychain.db.StockMove;
 import com.axelor.apps.supplychain.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -36,43 +41,43 @@ public class SalesOrderService {
 
 	@Inject
 	private SalesOrderLineService salesOrderLineService;
-	
+
 	@Inject
 	private CurrencyService currencyService;
-	
+
 	@Inject
 	private SalesOrderLineVatService salesOrderLineVatService;
-	
+
 	@Inject
 	SequenceService sequenceService;
-	
+
 	public SalesOrder _computeSalesOrderLines(SalesOrder salesOrder)  {
-		
+
 		if(salesOrder.getSalesOrderLineList() != null)  {
 			for(SalesOrderLine salesOrderLine : salesOrder.getSalesOrderLineList())  {
 				salesOrderLine.setExTaxTotal(salesOrderLineService.computeSalesOrderLine(salesOrderLine));
 			}
 		}
-		
+
 		return salesOrder;
 	}
 
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void computeSalesOrder(SalesOrder salesOrder) throws AxelorException  {
-		
+
 		this.initSalesOrderLineVats(salesOrder);
-		
+
 		this._computeSalesOrderLines(salesOrder);
-		
+
 		this._populateSalesOrder(salesOrder);
-		
+
 		this._computeSalesOrder(salesOrder);
-		
+
 		salesOrder.save();
 	}
-	
-	
+
+
 	/**
 	 * Peupler un devis.
 	 * <p>
@@ -84,14 +89,14 @@ public class SalesOrderService {
 	 * @throws AxelorException
 	 */
 	public void _populateSalesOrder(SalesOrder salesOrder) throws AxelorException {
-		
+
 		LOG.debug("Peupler un devis => lignes de devis: {} ", new Object[] { salesOrder.getSalesOrderLineList().size() });
-		
+
 		// create Tva lines
 		salesOrder.getSalesOrderLineVatList().addAll(salesOrderLineVatService.createsSalesOrderLineVat(salesOrder, salesOrder.getSalesOrderLineList()));
-		
+
 	}
-	
+
 	/**
 	 * Calculer le montant d'une facture.
 	 * <p> 
@@ -103,39 +108,39 @@ public class SalesOrderService {
 	 * @throws AxelorException 
 	 */
 	public void _computeSalesOrder(SalesOrder salesOrder) throws AxelorException {
-		
+
 		salesOrder.setExTaxTotal(BigDecimal.ZERO);
 		salesOrder.setVatTotal(BigDecimal.ZERO);
 		salesOrder.setInTaxTotal(BigDecimal.ZERO);
-		
+
 		for (SalesOrderLineVat salesOrderLineVat : salesOrder.getSalesOrderLineVatList()) {
-			
+
 			// Dans la devise de la comptabilité du tiers
 			salesOrder.setExTaxTotal(salesOrder.getExTaxTotal().add( salesOrderLineVat.getExTaxBase() ));
 			salesOrder.setVatTotal(salesOrder.getVatTotal().add( salesOrderLineVat.getVatTotal() ));
 			salesOrder.setInTaxTotal(salesOrder.getInTaxTotal().add( salesOrderLineVat.getInTaxTotal() ));
-			
+
 		}
-		
+
 		salesOrder.setAmountRemainingToBeInvoiced(salesOrder.getInTaxTotal());
-		
+
 		LOG.debug("Montant de la facture: HTT = {},  HT = {}, TVA = {}, TTC = {}",
-			new Object[] { salesOrder.getExTaxTotal(), salesOrder.getVatTotal(), salesOrder.getInTaxTotal() });
-		
+				new Object[] { salesOrder.getExTaxTotal(), salesOrder.getVatTotal(), salesOrder.getInTaxTotal() });
+
 	}
 
-	
+
 	/**
 	 * Permet de réinitialiser la liste des lignes de TVA
 	 * @param salesOrder
 	 * 			Un devis
 	 */
 	public void initSalesOrderLineVats(SalesOrder salesOrder) {
-		
+
 		if (salesOrder.getSalesOrderLineVatList() == null) { salesOrder.setSalesOrderLineVatList(new ArrayList<SalesOrderLineVat>()); }
-		
+
 		else { salesOrder.getSalesOrderLineVatList().clear(); }
-		
+
 	}
 
 	/**
@@ -144,26 +149,26 @@ public class SalesOrderService {
 	 * @return La somme des durées
 	 */
 	public BigDecimal computeDuration(List<SalesOrderSubLine> SalesOrderSubLineList) {
-		
+
 		BigDecimal sum = BigDecimal.ZERO;
-		
+
 		for(SalesOrderSubLine salesOrderSubLine : SalesOrderSubLineList)  {
-			
+
 			sum = sum.add(salesOrderSubLine.getQty());
 		}
 		return sum;
 	}
-	
+
 	/**
 	 * Permet de vérifier si l'objet Unit est le même pour toutes les lignes de la liste planningLineList.
 	 * @param planningLineList La liste de PlanningLine
 	 * @return Vrai si les lignes de planning ont le même Unit, faux sinon 
 	 */
 	public boolean checkSameUnitPlanningLineList(List<PlanningLine> planningLineList) {
-		
+
 		int iteration = 0;
 		long id = -1;
-		
+
 		for(PlanningLine planningLine : planningLineList)  {
 			/* Save the first unit of the planning line list */
 			if (iteration == 0 && id == -1) {
@@ -179,7 +184,7 @@ public class SalesOrderService {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Méthode permettant de calculer la somme des durées de la liste de planning et 
 	 * d'assigner la quantité, l'unité, et la date de fin à la tâche courante.
@@ -188,14 +193,14 @@ public class SalesOrderService {
 	 * @throws AxelorException Les unités demandés ne se trouvent pas dans la liste de conversion
 	 */
 	public void setUnitPlanningLineList(List<PlanningLine> planningLineList, Task task) throws AxelorException {
-		
+
 		UnitConversionService ucs = new UnitConversionService();
 		BigDecimal sum = new BigDecimal(0);
 		boolean sameUnit = checkSameUnitPlanningLineList(planningLineList);
 		Unit projectUnit = task.getProject().getProjectUnit();
 		List<UnitConversion> unitConversionList = UnitConversion.all().fetch();
 		LocalDateTime laterDate = task.getEndDateT();
-		
+
 		for(PlanningLine planningLine : planningLineList)  {
 			/* If all lines of the planningLineList have the same unit we do the sum of the duration of all planning lines */
 			if(sameUnit) {
@@ -233,7 +238,7 @@ public class SalesOrderService {
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void createTasks(SalesOrder salesOrder) throws AxelorException  {
-		
+
 		if(salesOrder.getSalesOrderLineList() != null)  {
 			/* Loop of the salesOrderLineList */
 			for(SalesOrderLine salesOrderLine : salesOrder.getSalesOrderLineList())  {
@@ -245,7 +250,7 @@ public class SalesOrderService {
 					task.setName(salesOrderLine.getProductName());
 					task.setDescription(salesOrderLine.getDescription());
 					task.setStartDateT(new LocalDateTime(GeneralService.getTodayDateTime()));
-					
+
 					task.setIsTimesheetAffected(true);
 					task.setIsToInvoice(salesOrderLine.getIsToInvoice());
 					task.setInvoicingDate(salesOrderLine.getInvoicingDate());
@@ -260,17 +265,17 @@ public class SalesOrderService {
 						task.setTotalTaskQty(salesOrderLine.getQty());
 						task.setTotalTaskUnit(salesOrderLine.getUnit());
 					}
-						
+
 					/* If the subline list of the salesOrderLine is not empty */
 					if(salesOrderLine.getSalesOrderSubLineList() != null) {
-						
+
 						task.setPlanningLineList(new ArrayList<PlanningLine>());
 						BigDecimal duration = computeDuration(salesOrderLine.getSalesOrderSubLineList());
 						/* Loop of the salesOrderSubLineList */
 						for(SalesOrderSubLine salesOrderSubLine : salesOrderLine.getSalesOrderSubLineList())  {
 							/* Create a new PlanningLine */
 							PlanningLine pl = new PlanningLine();
-							
+
 							pl.setTask(task);
 							pl.setEmployee(salesOrderSubLine.getEmployee());
 							pl.setProduct(salesOrderSubLine.getProduct());
@@ -278,7 +283,7 @@ public class SalesOrderService {
 							pl.setDuration(duration);
 							pl.setUnit(salesOrderSubLine.getUnit());
 							pl.setToDateTime(pl.getFromDateTime().plusDays(duration.intValue()));
-							
+
 							task.getPlanningLineList().add(pl);
 							pl.save();
 						}
@@ -288,43 +293,99 @@ public class SalesOrderService {
 			}
 		}		
 	}
-	
-	@Transactional
-	public void createStocksMoves(SalesOrder salesOrder) {
+
+	/**
+	 * Méthode permettant d'obtenir la séquence du StockMove.
+	 * @param company la société
+	 * @return la chaine contenant la séquence du StockMove
+	 */
+	public String getSequenceStockMove(Company company) {
 		
-		StockMove stockMove = new StockMove();
-		
-		String ref = sequenceService.getSequence(IStockMove.INTERNAL, salesOrder.getCompany(), null, false);
+		String ref = sequenceService.getSequence(IStockMove.INTERNAL, company, null, false);
 		if(ref.equals("")) {
-			ref = sequenceService.getSequence(IStockMove.OUTGOING, salesOrder.getCompany(), null, false);
+			ref = sequenceService.getSequence(IStockMove.OUTGOING, company, null, false);
 			if(ref.equals(""))  {
-				ref = sequenceService.getSequence(IStockMove.INCOMING, salesOrder.getCompany(), null, false);			
+				ref = sequenceService.getSequence(IStockMove.INCOMING, company, null, false);			
 			}
 		}
-		stockMove.setStockMoveSeq(ref);
-		stockMove.setName(ref);
-		stockMove.setToAddress(salesOrder.getDeliveryAddress());
-		stockMove.setCompany(salesOrder.getCompany());
-		stockMove.setStatusSelect(IStockMove.CONFIRMED);
-		stockMove.setRealDate(new LocalDate());
-		stockMove.setEstimatedDate(new LocalDate());
+		return ref;
+	}
+	
+	/**
+	 * Méthode permettant de créer un StockMove à partir d'un SalesOrder.
+	 * @param salesOrder l'objet salesOrder
+	 * @throws AxelorException Aucune séquence de StockMove (Livraison) n'a été configurée
+	 */
+	@Transactional
+	public void createStocksMovesFromSalesOrder(SalesOrder salesOrder) throws AxelorException {
+
+		String ref = getSequenceStockMove(salesOrder.getCompany());
+		
+		if (ref == null || ref.isEmpty() || ref.equals(""))
+			throw new AxelorException("Aucune séquence configurée pour les livraisons.", IException.CONFIGURATION_ERROR);
+		
+		StockMove stockMove = createStocksMoves(salesOrder.getDeliveryAddress(), salesOrder.getCompany(), salesOrder.getClientPartner(), ref);
 		
 		if(salesOrder.getSalesOrderLineList() != null) {
 			stockMove.setStockMoveLineList(new ArrayList<StockMoveLine>());
 			for(SalesOrderLine salesOrderLine: salesOrder.getSalesOrderLineList()) {
-				if(salesOrderLine.getProduct() != null && salesOrderLine.getProduct().getApplicationTypeSelect() == IProduct.PRODUCT_TYPE && salesOrderLine.getProduct().getProductTypeSelect().equals(IProduct.STOCKABLE)) {
-					StockMoveLine stockMoveLine = new StockMoveLine();
-					stockMoveLine.setStockMove(stockMove);
-					stockMoveLine.setProduct(salesOrderLine.getProduct());
-					stockMoveLine.setQty(salesOrderLine.getQty().intValue());
-					
+				
+				StockMoveLine stockMoveLine = createStocksMovesLines(salesOrderLine.getProduct(), salesOrderLine.getQty().intValue(), stockMove);
+				if(stockMoveLine != null) {
 					stockMove.getStockMoveLineList().add(stockMoveLine);
-					stockMoveLine.save();
 				}
 			}
+			stockMove.save();
 		}
+	}
+
+	/**
+	 * Méthode générique permettant de créer un StockMove.
+	 * @param toAddress l'adresse destination
+	 * @param company la société
+	 * @param clientPartner le tier client
+	 * @param refSequence la séquence du StockMove
+	 * @return l'objet StockMove
+	 */
+	@Transactional
+	public StockMove createStocksMoves(Address toAddress, Company company, Partner clientPartner, String refSequence) {
+
+		StockMove stockMove = new StockMove();
+
+		stockMove.setStockMoveSeq(refSequence);
+		stockMove.setName(refSequence);
+		stockMove.setToAddress(toAddress);
+		stockMove.setCompany(company);
+		stockMove.setStatusSelect(IStockMove.CONFIRMED);
+		stockMove.setRealDate(GeneralService.getTodayDate());
+		stockMove.setEstimatedDate(GeneralService.getTodayDate());
+		stockMove.setPartner(clientPartner);
+
 		stockMove.save();
+		return stockMove;
+	}
+
+	/**
+	 * Méthode générique permettant de créer un StockMoveLine.
+	 * @param product le produit
+	 * @param quantity la quantité
+	 * @param parent le StockMove parent
+	 * @return l'objet StockMoveLine
+	 */
+	@Transactional
+	public StockMoveLine createStocksMovesLines(Product product, int quantity, StockMove parent) {
+
+		if(product != null && product.getApplicationTypeSelect() == IProduct.PRODUCT_TYPE && product.getProductTypeSelect().equals(IProduct.STOCKABLE)) {
+			
+			StockMoveLine stockMoveLine = new StockMoveLine();
+			stockMoveLine.setStockMove(parent);
+			stockMoveLine.setProduct(product);
+			stockMoveLine.setQty(quantity);
+
+			stockMoveLine.save();
+			return stockMoveLine;
+		}
+		return null;
 	}
 }
-
 
