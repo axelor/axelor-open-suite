@@ -328,7 +328,7 @@ public class SalesOrderService {
 		if (ref == null || ref.isEmpty() || ref.equals(""))
 			throw new AxelorException("Aucune séquence configurée pour les livraisons de la société "+salesOrder.getCompany().getName(), IException.CONFIGURATION_ERROR);
 		
-		StockMove stockMove = stockMoveService.createStocksMoves(salesOrder.getDeliveryAddress(), salesOrder.getCompany(), salesOrder.getClientPartner(), ref);
+		StockMove stockMove = stockMoveService.createStocksMoves(salesOrder.getDeliveryAddress(), salesOrder.getCompany(), salesOrder.getClientPartner(), ref, salesOrder.getLocation());
 		
 		if(salesOrder.getSalesOrderLineList() != null) {
 			stockMove.setStockMoveLineList(new ArrayList<StockMoveLine>());

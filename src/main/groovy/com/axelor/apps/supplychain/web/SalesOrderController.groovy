@@ -4,6 +4,7 @@ import groovy.util.logging.Slf4j
 
 import com.axelor.apps.AxelorSettings
 import com.axelor.apps.supplychain.db.SalesOrder
+import com.axelor.apps.supplychain.db.Location
 import com.axelor.apps.supplychain.service.SalesOrderService
 import com.axelor.exception.AxelorException
 import com.axelor.exception.db.IException;
@@ -142,4 +143,17 @@ class SalesOrderController {
 		}
 	}
 	
+	def void getLocation(ActionRequest request, ActionResponse response) {
+		
+		SalesOrder salesOrder = request.context as SalesOrder
+		
+		if(salesOrder) {
+			
+			Location location = Location.all().filter("company = ? and isDefaultLocation = ? and typeSelect = ?", salesOrder.getCompany(), true, 1).fetchOne()
+			
+			if(location) {
+				response.values = [ "location" : location]
+			}
+		}
+	}
 }

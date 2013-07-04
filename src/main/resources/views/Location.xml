@@ -9,15 +9,18 @@
         <field name="company"/>
         <field name="partner"/>
         <field name="typeSelect"/>
+        <field name="isDefaultLocation"/>
     </grid>
     
     <form name="location-form" title="Stock Location" model="com.axelor.apps.supplychain.db.Location" cols="6"
-    	onNew="action-location-record-new">
+    	onNew="action-location-record-new"
+    	onSave="action-location-is-default-location">
         <field name="name"/>
         <field name="parent"/>        
         <field name="typeSelect"/>
         <field name="company"/>
         <field name="partner" domain="self.isContact = false"/>
+        <field name="isDefaultLocation" onChange="action-location-is-default-location"/>
         <break/>
         <spacer/>
         <break/>
@@ -32,4 +35,8 @@
 	    <field name="typeSelect" expr="1"/>
 	</action-record>
     
+    <action-method name="action-location-is-default-location">
+   		<call class="com.axelor.apps.supplychain.web.LocationController" method="checkIsDefaultLocation"/>
+	</action-method>
+
 </object-views>

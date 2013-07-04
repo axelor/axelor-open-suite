@@ -12,7 +12,7 @@
         <field name="inTaxTotal"/>
     </grid>
     
-	<form name="sales-order-form" title="Sale order" model="com.axelor.apps.supplychain.db.SalesOrder" cols="4" onNew="action-sales-order-record-default,action-sales-order-record-currency,action-sales-order-attrs-collapse-specific-settings-group"
+	<form name="sales-order-form" title="Sale order" model="com.axelor.apps.supplychain.db.SalesOrder" cols="4" onNew="action-sales-order-record-default,action-sales-order-method-get-location,action-sales-order-record-currency,action-sales-order-attrs-collapse-specific-settings-group"
 	onSave="action-sales-order-set-sequence" onLoad="action-sales-order-attrs-collapse-specific-settings-group">
 	    <toolbar>
 	        <button name="createDocument" title="Create Document" onClick="com.axelor.apps.supplychain.web.SalesOrderController:saveDocumentForOrder"/>
@@ -20,6 +20,7 @@
 	    <group colSpan="3" cols="4" colWidths="17%,33%,17%,33%">
 	        <field name="salesOrderSeq"/>
 	        <field name="company"/>
+	        <field name="location" domain="self.company = :company and (self.typeSelect = 1 or self.typeSelect = 4)"/>
 	        <field name="affairProject"/>
 	        <field name="currency"/>
 	        <field name="externalReference"/>
@@ -57,7 +58,7 @@
 	                        <group colSpan="1" cols="1">
 	                            <button name="compute" title="Compute" hideIf="statusSelect == 3" colSpan="1" onClick="save,action-sales-order-method-compute,save"/>
 	                            <button name="confirm" title="Confirm" showIf="statusSelect == 1 || statusSelect == 4" colSpan="1" onClick="save,action-sales-order-record-confirm,save"/>
-	                            <button name="validate" title="Validate" showIf="statusSelect == 2" colSpan="1" onClick="action-sales-order-button-validation,save,action-sales-order-record-validate,save,action-sales-order-create-tasks,action-sales-order-create-stock-move"/>
+	                            <button name="validate" title="Validate" showIf="statusSelect == 2" colSpan="1" onClick="action-sales-order-button-validation,save,action-sales-order-record-validate,save,action-sales-order-create-tasks,action-sale-order-validate-check-location,action-sales-order-create-stock-move"/>
 	                            <button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2" colSpan="1" onClick="save,action-sales-order-record-cancel"/>
 	                            <button name="showSalesOrder" title="Print" showIf="statusSelect == 3" colSpan="1" icon="img/icons/print.png" onClick="save,action-sales-order-method-show-sales-order"/>
 	                            <button name="sendByEmail" title="Send by email" showIf="statusSelect == 3" colSpan="1"/>
@@ -149,6 +150,10 @@
 		<field name="deliveryAddress" expr="eval: clientPartner?.deliveryAddress"/>
     </action-record>
     
+    <action-method name="action-sales-order-method-get-location">
+    	<call class="com.axelor.apps.supplychain.web.SalesOrderController" method="getLocation"/>
+    </action-method>
+    
     <action-method name="action-sales-order-method-compute">
     	<call class="com.axelor.apps.supplychain.web.SalesOrderController" method="compute"/>
     </action-method>
@@ -183,4 +188,8 @@
 		<call class="com.axelor.apps.supplychain.web.SalesOrderController" method="createStockMoves"/>
 	</action-method>
 	
+	<action-validate name="action-sale-order-validate-check-location">
+		<error message="The location must be filled." if="location == null"/>
+	</action-validate> 
+
 </object-views>
