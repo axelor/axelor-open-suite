@@ -17,6 +17,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.UnitConversion;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.StockMoveService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -47,6 +48,9 @@ public class SalesOrderService {
 
 	@Inject
 	private SalesOrderLineVatService salesOrderLineVatService;
+	
+	@Inject
+	private StockMoveService stockMoveService;
 
 	@Inject
 	SequenceService sequenceService;
@@ -322,70 +326,21 @@ public class SalesOrderService {
 		String ref = getSequenceStockMove(salesOrder.getCompany());
 		
 		if (ref == null || ref.isEmpty() || ref.equals(""))
-			throw new AxelorException("Aucune séquence configurée pour les livraisons.", IException.CONFIGURATION_ERROR);
+			throw new AxelorException("Aucune séquence configurée pour les livraisons de la société "+salesOrder.getCompany().getName(), IException.CONFIGURATION_ERROR);
 		
-		StockMove stockMove = createStocksMoves(salesOrder.getDeliveryAddress(), salesOrder.getCompany(), salesOrder.getClientPartner(), ref);
+		StockMove stockMove = stockMoveService.createStocksMoves(salesOrder.getDeliveryAddress(), salesOrder.getCompany(), salesOrder.getClientPartner(), ref);
 		
 		if(salesOrder.getSalesOrderLineList() != null) {
 			stockMove.setStockMoveLineList(new ArrayList<StockMoveLine>());
 			for(SalesOrderLine salesOrderLine: salesOrder.getSalesOrderLineList()) {
 				
-				StockMoveLine stockMoveLine = createStocksMovesLines(salesOrderLine.getProduct(), salesOrderLine.getQty().intValue(), stockMove);
+				StockMoveLine stockMoveLine = stockMoveService.createStocksMovesLines(salesOrderLine.getProduct(), salesOrderLine.getQty().intValue(), stockMove);
 				if(stockMoveLine != null) {
 					stockMove.getStockMoveLineList().add(stockMoveLine);
 				}
 			}
 			stockMove.save();
 		}
-	}
-
-	/**
-	 * Méthode générique permettant de créer un StockMove.
-	 * @param toAddress l'adresse destination
-	 * @param company la société
-	 * @param clientPartner le tier client
-	 * @param refSequence la séquence du StockMove
-	 * @return l'objet StockMove
-	 */
-	@Transactional
-	public StockMove createStocksMoves(Address toAddress, Company company, Partner clientPartner, String refSequence) {
-
-		StockMove stockMove = new StockMove();
-
-		stockMove.setStockMoveSeq(refSequence);
-		stockMove.setName(refSequence);
-		stockMove.setToAddress(toAddress);
-		stockMove.setCompany(company);
-		stockMove.setStatusSelect(IStockMove.CONFIRMED);
-		stockMove.setRealDate(GeneralService.getTodayDate());
-		stockMove.setEstimatedDate(GeneralService.getTodayDate());
-		stockMove.setPartner(clientPartner);
-
-		stockMove.save();
-		return stockMove;
-	}
-
-	/**
-	 * Méthode générique permettant de créer un StockMoveLine.
-	 * @param product le produit
-	 * @param quantity la quantité
-	 * @param parent le StockMove parent
-	 * @return l'objet StockMoveLine
-	 */
-	@Transactional
-	public StockMoveLine createStocksMovesLines(Product product, int quantity, StockMove parent) {
-
-		if(product != null && product.getApplicationTypeSelect() == IProduct.PRODUCT_TYPE && product.getProductTypeSelect().equals(IProduct.STOCKABLE)) {
-			
-			StockMoveLine stockMoveLine = new StockMoveLine();
-			stockMoveLine.setStockMove(parent);
-			stockMoveLine.setProduct(product);
-			stockMoveLine.setQty(quantity);
-
-			stockMoveLine.save();
-			return stockMoveLine;
-		}
-		return null;
 	}
 }
 
