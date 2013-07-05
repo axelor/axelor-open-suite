@@ -9,9 +9,9 @@
   	<string name="linkedinUpdateRef"/>
   	<string name="facebookUpdateRef"/>
   	<string name="twitterUpdateRef"/>
-  	<many-to-one name="fbPersonalCredential" ref="com.axelor.apps.socialnetwork.db.PersonalCredential"/>
-  	<many-to-one name="twtPersonalCredential" ref="com.axelor.apps.socialnetwork.db.PersonalCredential"/>
-  	<many-to-one name="lnPersonalCredential" ref="com.axelor.apps.socialnetwork.db.PersonalCredential"/>
+  	<many-to-one name="fbPersonalCredential" title="Facebook account" ref="com.axelor.apps.socialnetwork.db.PersonalCredential"/>
+  	<many-to-one name="twtPersonalCredential" title="Twitter account" ref="com.axelor.apps.socialnetwork.db.PersonalCredential"/>
+  	<many-to-one name="lnPersonalCredential" title="LinkedIn account" ref="com.axelor.apps.socialnetwork.db.PersonalCredential"/>
   	<many-to-one name="commentPersonalCredential" ref="com.axelor.apps.socialnetwork.db.PersonalCredential"/>
     <string name="content" namecolumn="true" multiline="true" max="600"/>
     <datetime name="updateDateT" tz="true"/>

@@ -6,7 +6,7 @@
 	<entity name="SocialNetUserAccount">
 		<many-to-one name="socialNet" ref="com.axelor.apps.socialnetwork.db.SocialNet" title="Social Network Type"/>
 		<string name="snUserRef" title="Social Network User ID"/>
-		<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner"/>
+		<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" orphan="true" />
 		<string name="name" title="User Name"/>
 		<string name="link" title="Link to profile website"/>
 	</entity>
