@@ -875,6 +875,12 @@
 		<option value="5">Canceled</option>
 	</selection>
 	
+	<selection name="supplychain.sale.supply.type.select">
+		<option value="1">FromStock</option>
+		<option value="2">Purchase</option>
+		<option value="3">Produce</option>
+	</selection>
+	
 	<selection name="supplychain.location.type.select">
 		<option value="1">Internal</option>
 		<option value="2">Supplier</option>
@@ -890,9 +896,9 @@
 	</selection>
 	
 	<selection name="supplychain.stock.move.type.select">
-		<option value="intStockMove">Internal move</option>
-		<option value="outStockMove">Outgoing move</option>
-		<option value="inStockMove">Incoming move</option>
+		<option value="1">Internal move</option>
+		<option value="2">Outgoing move</option>
+		<option value="3">Incoming move</option>
 	</selection>
 	
 	<selection name="supplychain.min.stock.rules.type.select">

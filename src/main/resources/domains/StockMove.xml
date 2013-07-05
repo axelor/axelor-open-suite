@@ -16,7 +16,7 @@
     <date name="realDate" title="Move date"/>
     
     <integer name="statusSelect" title="Status" selection="supplychain.default.status.select"/>
-    <string name="typeSelect" title="Type Status" selection="supplychain.stock.move.type.select"/>
+    <integer name="typeSelect" title="Type Status" selection="supplychain.stock.move.type.select"/>
     
     <many-to-one name="fromAddress" ref="com.axelor.apps.base.db.Address" title="From address"/>
     <many-to-one name="toAddress" ref="com.axelor.apps.base.db.Address" title="To address"/>
