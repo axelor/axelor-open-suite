@@ -16,9 +16,10 @@
     </grid>
     
     <form name="sales-order-line-form" title="SO line" model="com.axelor.apps.supplychain.db.SalesOrderLine" cols="4" onNew="action-sales-order-line-record-new,action-sales-order-line-method-setBooleans,action-sales-order-line-method-setSequence">
-	    <field name="sequence"/>
+	    <field name="sequence"/>  
 	    <field name="isOrdered"/>
-	    <field name="product" onChange="action-sales-order-line-method-get-product-information,action-sales-order-line-method-compute,action-sales-order-line-method-setBooleans" domain="self.endDate = null or self.endDate &gt; :__date__"/>
+	    <field name="saleSupplySelect"/>
+	    <field name="product" onChange="action-sales-order-line-method-get-product-information,action-sales-order-line-method-compute,action-sales-order-line-method-setBooleans,action-sales-order-line-attrs-ressources-planning" domain="self.endDate = null or self.endDate &gt; :__date__"/>
 	    <field name="productName"/>
 	    <field name="qty" onChange="action-sales-order-line-method-compute"/>
 	    <field name="unit"/>
@@ -30,14 +31,11 @@
 	    <field name="discountAmount"/>
 	    <field name="exTaxTotal"/>
 	    <field name="supplierPartner" domain="self.partnerTypeSelect = 2"/>
-	    <group title="Ressources Planning" colSpan="4" cols="4">
+	    <group name="ressourcesPlanning" title="Ressources Planning" colSpan="4" cols="4">
 	        <field name="employeeSet" colSpan="4" domain="self.exitDate = null or self.exitDate &gt; :__date__"/>
 	        <field name="candidateSet" colSpan="4"/>
-	    </group>  
-	    <field name="hasToCreateMo"/>    
-	    <field name="hasToCreateTask"/>    
-	    <field name="task" showIf="hasToCreateTask"/>
-	    <field name="hasToBuy"/>
+	    </group>    
+	    <field name="task"/>
 	    <field name="isToPrintLineSubTotal"/>
 	    <field name="description" colSpan="4"/>
 	    <notebook colSpan="6">
@@ -78,5 +76,9 @@
     	<call class="com.axelor.apps.supplychain.web.SalesOrderLineController" method="setSequence"/>
     </action-method>
   	
+  	<!-- ACTION ATTRS -->
+    <action-attrs name="action-sales-order-line-attrs-ressources-planning">
+    	<attribute name="hidden" for="ressourcesPlanning" expr="product?.applicationTypeSelect == 2" if="product != null"/>
+    </action-attrs>
     
 </object-views>

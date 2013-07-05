@@ -59,6 +59,7 @@ class SalesOrderLineController {
 				response.values = ["vatLine" : salesOrderLineService.getVatLine(salesOrder, salesOrderLine),
 					"price" : salesOrderLineService.getUnitPrice(salesOrder, salesOrderLine),
 					"productName" : salesOrderLine?.product?.name,
+					"saleSupplySelect" : salesOrderLine?.product?.saleSupplySelect,
 					"unit" : salesOrderLine?.product?.unit]
 			}
 			catch(Exception e)  {
@@ -82,43 +83,7 @@ class SalesOrderLineController {
 			def values = [ : ]
 			Product product = salesOrderLine.getProduct()
 			
-			try  {
-				if(salesOrder.getHasToCreateTaskByLine() && product) {
-					if(product.getProductTypeSelect() == 'service' && product.getProcurementMethodSelect() == 'produce') {
-						values.put("hasToCreateTask", true)
-					}
-					else {
-						values.put("hasToCreateTask", false)
-					}
-				}
-				else {
-					values.put("hasToCreateTask", false)
-				}
-				
-				if(salesOrder.getHasToCreateProposal() && product) {
-					if(product.getProductTypeSelect() == 'stockable' && product.getProcurementMethodSelect() == 'buy') {
-						values.put("hasToBuy", true)
-					}
-					else {
-						values.put("hasToBuy", false)
-					}
-				}
-				else {
-					values.put("hasToBuy", false)
-				}
-				
-				if(salesOrder.getHasToCreateMoByLine() && product) {
-					if(product.getProductTypeSelect() == 'stockable' && product.getProcurementMethodSelect() == 'produce') {
-						values.put("hasToCreateMo", true)
-					}
-					else {
-						values.put("hasToCreateMo", false)
-					}
-				}
-				else {
-					values.put("hasToCreateMo", false)
-				}
-				
+			try  {				
 				if(salesOrder.getIsToPrintLineSubTotal()){
 					values.put("isToPrintLineSubTotal", true)
 				}

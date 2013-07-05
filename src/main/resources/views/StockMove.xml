@@ -19,15 +19,16 @@
     
     <form name="stock-move-form" title="Stock move" model="com.axelor.apps.supplychain.db.StockMove" cols="4"
     	onNew="action-stock-move-record-new">
-        <field name="stockMoveSeq"/>
+        <field name="typeSelect"/>
         <field name="statusSelect" widget="NavSelect"/>
+        <field name="stockMoveSeq"/>
         <field name="name"/>
         <field name="fromLocation"/>
         <field name="toLocation"/>
         <field name="estimatedDate"/>
         <field name="realDate"/>
-        <field name="fromAddress"/>
-        <field name="toAddress"/>
+        <field name="fromAddress" showIf="typeSelect == 3"/>
+        <field name="toAddress" showIf="typeSelect == 2"/>
         <field name="company"/>
         <field name="partner" domain="self.isContact = false"/>
         <field name="stockMoveLineList" colSpan="4"/>

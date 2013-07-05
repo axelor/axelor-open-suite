@@ -48,7 +48,7 @@ public class SalesOrderService {
 
 	@Inject
 	private SalesOrderLineVatService salesOrderLineVatService;
-	
+
 	@Inject
 	private StockMoveService stockMoveService;
 
@@ -246,22 +246,24 @@ public class SalesOrderService {
 		if(salesOrder.getSalesOrderLineList() != null)  {
 			/* Loop of the salesOrderLineList */
 			for(SalesOrderLine salesOrderLine : salesOrder.getSalesOrderLineList())  {
-				if(salesOrderLine.getHasToCreateTask()) {
+				Product salesOrderLineProduct = salesOrderLine.getProduct();
+
+				if(salesOrderLineProduct != null && salesOrderLineProduct.getProductTypeSelect().equals("service") && salesOrderLineProduct.getSaleSupplySelect() == 3) {
 					/* Create a new Task */
 					Task task = new Task();
+
 					task.setProject(salesOrder.getProject());
 					task.setSalesOrderLine(salesOrderLine);
 					task.setName(salesOrderLine.getProductName());
 					task.setDescription(salesOrderLine.getDescription());
 					task.setStartDateT(new LocalDateTime(GeneralService.getTodayDateTime()));
-
 					task.setIsTimesheetAffected(true);
 					task.setIsToInvoice(salesOrderLine.getIsToInvoice());
 					task.setInvoicingDate(salesOrderLine.getInvoicingDate());
 					task.setAmountToInvoice(salesOrderLine.getAmountRemainingToBeInvoiced());
 					task.setStatusSelect(ISalesOrder.DRAFT); // 1 = draft
 					/* Check if there is a planning line list in the salesOrderLine task */
-					if(salesOrderLine.getTask() != null && salesOrderLine.getTask().getPlanningLineList() != null) {
+					if(salesOrderLine.getTask() != null && salesOrderLine.getTask().getPlanningLineList() != null && salesOrderLine.getTask().getPlanningLineList().size() > 0) {
 						/* Call the method to set the unit of the task */
 						setUnitPlanningLineList(salesOrderLine.getTask().getPlanningLineList(), task);
 					}
@@ -272,14 +274,12 @@ public class SalesOrderService {
 
 					/* If the subline list of the salesOrderLine is not empty */
 					if(salesOrderLine.getSalesOrderSubLineList() != null) {
-
 						task.setPlanningLineList(new ArrayList<PlanningLine>());
 						BigDecimal duration = computeDuration(salesOrderLine.getSalesOrderSubLineList());
 						/* Loop of the salesOrderSubLineList */
 						for(SalesOrderSubLine salesOrderSubLine : salesOrderLine.getSalesOrderSubLineList())  {
 							/* Create a new PlanningLine */
 							PlanningLine pl = new PlanningLine();
-
 							pl.setTask(task);
 							pl.setEmployee(salesOrderSubLine.getEmployee());
 							pl.setProduct(salesOrderSubLine.getProduct());
@@ -287,7 +287,6 @@ public class SalesOrderService {
 							pl.setDuration(duration);
 							pl.setUnit(salesOrderSubLine.getUnit());
 							pl.setToDateTime(pl.getFromDateTime().plusDays(duration.intValue()));
-
 							task.getPlanningLineList().add(pl);
 							pl.save();
 						}
@@ -304,7 +303,7 @@ public class SalesOrderService {
 	 * @return la chaine contenant la séquence du StockMove
 	 */
 	public String getSequenceStockMove(Company company) {
-		
+
 		String ref = sequenceService.getSequence(IStockMove.INTERNAL, company, null, false);
 		if(ref.equals("")) {
 			ref = sequenceService.getSequence(IStockMove.OUTGOING, company, null, false);
@@ -314,7 +313,7 @@ public class SalesOrderService {
 		}
 		return ref;
 	}
-	
+
 	/**
 	 * Méthode permettant de créer un StockMove à partir d'un SalesOrder.
 	 * @param salesOrder l'objet salesOrder
@@ -324,19 +323,21 @@ public class SalesOrderService {
 	public void createStocksMovesFromSalesOrder(SalesOrder salesOrder) throws AxelorException {
 
 		String ref = getSequenceStockMove(salesOrder.getCompany());
-		
+
 		if (ref == null || ref.isEmpty() || ref.equals(""))
 			throw new AxelorException("Aucune séquence configurée pour les livraisons de la société "+salesOrder.getCompany().getName(), IException.CONFIGURATION_ERROR);
-		
+
 		StockMove stockMove = stockMoveService.createStocksMoves(salesOrder.getDeliveryAddress(), salesOrder.getCompany(), salesOrder.getClientPartner(), ref, salesOrder.getLocation());
-		
+
 		if(salesOrder.getSalesOrderLineList() != null) {
 			stockMove.setStockMoveLineList(new ArrayList<StockMoveLine>());
 			for(SalesOrderLine salesOrderLine: salesOrder.getSalesOrderLineList()) {
-				
-				StockMoveLine stockMoveLine = stockMoveService.createStocksMovesLines(salesOrderLine.getProduct(), salesOrderLine.getQty().intValue(), stockMove);
-				if(stockMoveLine != null) {
-					stockMove.getStockMoveLineList().add(stockMoveLine);
+				Product salesOrderLineProduct = salesOrderLine.getProduct();
+				if(salesOrderLineProduct != null && salesOrderLineProduct.getProductTypeSelect().equals("stockable")) {
+					StockMoveLine stockMoveLine = stockMoveService.createStocksMovesLines(salesOrderLine.getProduct(), salesOrderLine.getQty().intValue(), stockMove);
+					if(stockMoveLine != null) {
+						stockMove.getStockMoveLineList().add(stockMoveLine);
+					}
 				}
 			}
 			stockMove.save();

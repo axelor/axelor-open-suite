@@ -92,7 +92,7 @@
 		            <field name="source"/>
 	            </group>
 	        </page>
-	        <page title="Payment schedule">
+	        <page title="Payment schedule" showIf="invoicingTypeSelect == 2">
 	            <field name="invoicingMomentSelect" colSpan="3"/>
 	            <field name="salesOrderScheduleLineList" colSpan="4"/>
 	        </page>
@@ -102,8 +102,8 @@
 	        <page title="Customer order">
 	            <field name="orderDate"/>
 	            <field name="orderNumber"/>
-	            <button name="generateInvoice" title="Generate invoice" colSpan="2" onClick="save,action-sales-order-method-generate-invoice"/>
-	            <button name="generateProject" title="Generate project" colSpan="2"/>
+	            <button name="generateInvoice" title="Generate invoice" showIf="statusSelect == 3" colSpan="2" onClick="save,action-sales-order-method-generate-invoice"/>
+	            <button name="generateProject" title="Generate project" showIf="statusSelect == 3" colSpan="2"/>
 	        </page>
 	    </notebook>
     </form>
@@ -181,7 +181,7 @@
 	</action-validate> 
 	
 	<action-method name="action-sales-order-create-tasks">
-		<call class="com.axelor.apps.supplychain.web.SalesOrderController" method="createTaskByLines"/>
+		<call class="com.axelor.apps.supplychain.web.SalesOrderController" method="createTaskByLines" if="hasToCreateTaskByLine &amp;&amp; project != null"/>
 	</action-method>
 	
 	<action-method name="action-sales-order-create-stock-move">
