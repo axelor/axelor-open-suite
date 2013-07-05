@@ -33,8 +33,8 @@
     </grid>
     
     <form cols="4" colWidths="25*" name="partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" 
-	    onLoad="action-partner-attrs-change-name,action-partner-attrs-hide-tabs" 
-	    onNew="action-partner-record-partner-type-select,action-partner-record-set-default" 
+	    onLoad="action-partner-attrs-change-name,action-partner-attrs-hide-tabs,action-partner-search-nested-default" 
+	    onNew="action-partner-record-partner-type-select,action-partner-record-set-default,action-partner-attrs-hide-send-message,action-partner-search-nested-default" 
 	    onSave="action-set-partner-seq,action-create-accounting-situation">
 	    <group colSpan="1">
 	        <field name="picture"/>
@@ -108,6 +108,64 @@
 	            <field name="languageSelect" hideIf="isContact || partnerTypeSelect == 1"/>
 	            
 	        </page>
+	        <page title="Social Networking" colSpan="4" name="socialNetworkingTab"
+				hideIf="id == null" onSelect="action-partner-attrs-hide-send-message">
+				<notebook>
+					<page title="Social Net Accounts">
+						<field name="hasSearchPartner" widget="BOOLEAN[type=BOOLEAN]" title="Search Partner on Social Network ?"/>
+						<break/>
+						<field name="fbSearch" widget="NestedEditor[type=MANY_TO_ONE|target=com.axelor.apps.socialnetwork.db.FBSearch]" summary-view="true" 
+						form-view="partner-fb-search-nested-form" edit-window="self" canSelect="false" showTitle="false" showIf="hasSearchPartner"/>
+						<break/>
+	                    <spacer/>
+	                    <break/>
+						<field name="socialNetUserAccountList" colSpan="4"/>
+					</page>
+					<page title="Inbox Message"> <!-- hideIf="socialNet.name == 'linkedin'"> -->
+						<portlet action="action-fetch-all-sn-mail" colSpan="4" />
+					</page>
+					<page title="Recent Updates"> <!-- hideIf="socialNet.name != 'facebook'"> -->
+						<portlet action="action-fetch-all-sn-update" colSpan="4" />
+					</page>
+
+					<page title="Send Personal Message" name="snPersonalMessage">
+						<!-- hideIf="socialNet.name == 'facebook'"> -->
+						<field name="snSendMessageList" title="Personal Messages"><!-- 
+								onChange="com.axelor.sn.web.TWTController:directMessageO2M"> -->
+							<grid title="All Sent Messages">
+								<field name="socialNet" title="Social Networking Type"/>
+								<field name="partner" title="To"/>
+								<field name="content"/>
+								<field name="messageDateT" title="Date and Time" hidden="true"/>
+								<field name="snMessageRef" title="Message reference" />
+							</grid>
+
+							<form title="Compose New Message" onNew="action-fill-direct-message">
+								<field name="socialNet" title="Social Networking Type" 
+									onChange="action-send-message-attrs-set-personal-credential-domain"
+									domain="self.name != 'facebook'"/>
+								<break/>
+	        					<field name="personalCredential" title="Personal Credential" hideIf="socialNet == null" required="true"/>
+								<field name="userInfo" title="Current User" hidden="true"/>
+								<field name="partner" title="To" readonly="true"/>
+								<break/>
+								<field name="socialNetUserAccount" hideIf="partner == null" widget="SuggestBox" required="true" readonlyIf="id != null"/>
+								<break />
+								<field name="subject" hideIf="socialNet.name !='linkedin'" requiredIf="socialNet.name =='linkedin'"/>
+								<break />
+								<field name="content" required="true"/>
+								<break/>
+								<spacer colSpan="1"/>
+								<button name="firePersonalMsg"
+									onClick="com.axelor.sn.web.SNCommonController:sendMessage"
+									title="Send" />
+								<field name="messageDateT" title="Date and Time" hidden="true"/>
+								<field name="snMessageRef" hidden="true" />
+							</form>
+						</field>
+					</page>
+				</notebook>
+			</page>
 	        <page name="compteClient" title="Customer balance" hideIf="isContact">
 	            <field name="accountingSituationList" colSpan="4" widget="MasterDetail" onSelect="action-account-accounting-situation-method-update-customer-account"/>
 	        </page>
