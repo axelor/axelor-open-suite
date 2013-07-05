@@ -733,7 +733,7 @@
 "com.axelor.apps.socialnetwork.db.FBNewsFeed";"type";"field";"Type of Content";;"Type of Update of Feed";;;
 "com.axelor.apps.socialnetwork.db.FBNewsFeed";"link";"field";"Link (If Available)";;"Link of Feed Content";;;
 "com.axelor.apps.socialnetwork.db.FBNewsFeed";"message";"field";"Message (If Available)";;"Message of Feed Update";;;
-"com.axelor.apps.socialnetwork.db.FBNewsFeed";"contentLike";"field";"Like..?";"Aimez-vous.. ?";"You Can Like Feed Content From Here";;;
+"com.axelor.apps.socialnetwork.db.FBNewsFeed";"isLiked";"field";"Like..?";"Aimez-vous.. ?";"You Can Like Feed Content From Here";;;
 "com.axelor.apps.socialnetwork.db.FBNewsFeed";"userInfo";"field";;;"Currently Active User of ERP";;;
 "com.axelor.apps.socialnetwork.db.FBNotification";"notificationRef";"field";"Notification ID";;"Unique Notification ID";;;
 "com.axelor.apps.socialnetwork.db.FBNotification";"title";"field";"Content of Update";;"Content of Notification";;;
@@ -1163,8 +1163,8 @@
 "com.axelor.apps.socialnetwork.db.LnGroupDiscussionComments";"commentDateT";"field";"Time";;;;;
 "com.axelor.apps.socialnetwork.db.LnGroupDiscussionComments";"userInfo";"field";;;;;;
 "com.axelor.apps.socialnetwork.db.LnGroupDiscussionComments";"fromUser";"field";"From";;;;;
-"com.axelor.apps.socialnetwork.db.LnNetworkUpdates";"networkUpdateId";"field";"ID";;;;;
-"com.axelor.apps.socialnetwork.db.LnNetworkUpdates";"networkUpdateContent";"field";"Content";;;;;
+"com.axelor.apps.socialnetwork.db.LnNetworkUpdates";"networkUpdateRef";"field";"ID";;;;;
+"com.axelor.apps.socialnetwork.db.LnNetworkUpdates";"content";"field";"Content";;;;;
 "com.axelor.apps.socialnetwork.db.LnNetworkUpdates";"networkUpdateDateT";"field";"Time";;;;;
 "com.axelor.apps.socialnetwork.db.LnNetworkUpdates";"userInfo";"field";;;;;;
 "com.axelor.apps.socialnetwork.db.LnNetworkUpdates";"partner";"field";;;;;;

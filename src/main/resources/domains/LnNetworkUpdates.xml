@@ -5,8 +5,8 @@
   <module name="socialnetwork" package="com.axelor.apps.socialnetwork.db" />
 
   <entity name="LnNetworkUpdates">
-	<string name="networkUpdateId" title="ID" />
-	<string name="networkUpdateContent" title="Content" multiline="true" max="10000" />
+	<string name="networkUpdateRef" title="ID" />
+	<string name="content" title="Content" multiline="true" max="10000" />
 	<datetime name="networkUpdateDateT" title="Time" tz="true" />
 	<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" />
 	<many-to-one name="socialNetUserAccount" ref="com.axelor.apps.socialnetwork.db.SocialNetUserAccount" />

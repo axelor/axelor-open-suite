@@ -11,7 +11,7 @@
 		<string name="type" title="Type of Content" help="Type of Update of Feed"/>
 		<string name="link" multiline="true"  title="Link (If Available)" max="1000" help="Link of Feed Content"/>
 		<string name="message"  title="Message (If Available)" max="10000" multiline="true" help="Message of Feed Update"/>
-		<boolean name="contentLike" title="Like..?" default="false" help="You Can Like Feed Content From Here"/>
+		<boolean name="isLiked" title="Like..?" default="false" help="You Can Like Feed Content From Here"/>
 		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" help="Current Active User of ERP" />
 	</entity>
 </domain-models>
