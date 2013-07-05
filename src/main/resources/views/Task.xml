@@ -10,7 +10,6 @@
 	    <field name="name" />
  	 </calendar>
     
-    
     <grid name="task-grid" title="Tasks" model="com.axelor.apps.organisation.db.Task" orderBy="taskProgress">
         <field name="name"/>
         <field name="project"/>
@@ -19,38 +18,43 @@
         <field name="taskProgress" widget="Progress"/>
     </grid>
     
-    <form cols="4" name="task-form" title="Task" model="com.axelor.apps.organisation.db.Task"
-    onNew="action-task-default-record">
-	    <field name="name"/>
-	    <field name="statusSelect"  widget="NavSelect" colSpan="2" showTitle="false"/>
-	    <field name="salesOrderLine"/>
-	    
-	    <field name="project"/>
-	    <field name="startDateT"/>
-	    <field name="endDateT"/>
-	    <field name="totalTaskQty"/>
-	    <field name="totalTimeSheetQty" title="Total worked quantity"/>
-	    
-	    <field name="totalTaskUnit"/>
-	    <field name="totalTimeSheetUnit" title="Total worked unit"/>
-	    
-	    <!-- 	    TODO READ ONLY -->
-	    <field name="taskProgress" widget="Progress"/>
-	    
-	    <field name="totalPlannedQty"/>
-	    <field name="totalPlannedUnit"/>
-	    <field name="userInfo"/>
-	    
-	    <field name="totalTask"/>
-	    <field name="isToInvoice"/>
-	    <field name="isTimesheetAffected"/>
-	    <field name="invoicingDate"/>
-	    <field name="amountToInvoice"/>
+    <form cols="4" onNew="action-task-default-record" name="task-form" title="Task" model="com.axelor.apps.organisation.db.Task">
+    	<field name="name"/>
+    	<field name="statusSelect" showTitle="false" colSpan="2" widget="NavSelect"/>
+    	<group title="Context" colSpan="4" cols="6">
+       		<field name="project"/>
+        	<field name="userInfo"/>
+        	<field name="taskProgress" widget="Progress"/>
+        	<field name="startDateT"/>
+        	<field name="endDateT"/>    
+        	<field name="totalTask"/>
+    	</group>
+	    <group colSpan="4" cols="6">
+	        <group title="Total" colSpan="2" cols="2">
+	            <field name="totalTaskQty"/>
+	            <field name="totalTaskUnit"/>
+	        </group>
+	        <group title="Planned" colSpan="2" cols="2">
+	            <field name="totalPlannedQty"/>
+	            <field name="totalPlannedUnit"/>
+	        </group>
+	        <group title="Real" colSpan="2" cols="2">
+	            <field name="totalTimeSheetQty" title="Total worked quantity"/>
+	            <field name="totalTimeSheetUnit" title="Total worked unit"/>
+	        </group>
+	    </group>
 	    <button name="backup" title="Backup" colSpan="2"/>
 	    <break/>
 	    <notebook colSpan="4">
 	        <page title="Planification and realization">
 	            <field name="planningLineList" colSpan="4" form-view="planning-line-task-form" grid-view="planning-line-task-grid"/>
+	        </page>
+	        <page title="Suivi Facturation">
+	            <field name="salesOrderLine"/>
+	            <field name="isToInvoice"/>
+	            <field name="isTimesheetAffected"/>
+	            <field name="invoicingDate"/>
+	            <field name="amountToInvoice"/>  
 	        </page>
 	        <page title="Notes">
 	            <field name="notes" colSpan="4"/>
@@ -92,10 +96,9 @@
 	            <field name="supplierInvoiceLineList" colSpan="4"/>
 	            <field name="expenseLineList" colSpan="4"/>
 	            <field name="timesheetLineList" colSpan="4"/>
-	            
 	        </page>
 	        <page title="Description" colSpan="4">
-	            <field name="description" colSpan="4" showTitle="false"/>
+	            <field name="description" showTitle="false" colSpan="4"/>
 	        </page>
 	    </notebook>
 	</form>
