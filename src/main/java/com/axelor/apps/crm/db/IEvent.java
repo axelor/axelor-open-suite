@@ -19,5 +19,5 @@ public interface IEvent {
 	static final int HOLIDAY = 4;
 	static final int TICKET = 5;
 
-	
+
 }

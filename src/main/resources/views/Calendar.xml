@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="calendar-grid" title="Calendars" model="com.axelor.apps.crm.db.Calendar">
+        <field name="name"/>
+    </grid>
+    
+    <form name="calendar-form" title="Calendar" cols="4" model="com.axelor.apps.crm.db.Calendar">
+    	<field name="title"/>
+        <field name="url"/>
+        <field name="typeSelect"/>
+        <field name="isSslConnection"/>
+        <field name="port"/>
+        <field name="login"/>
+        <field name="password" widget="password"/>
+	</form>
+    
+   	 
+</object-views>
