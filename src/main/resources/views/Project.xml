@@ -30,7 +30,7 @@
 	    <group title="Actions" showTitle="false" colSpan="2" cols="1">
 	        <button name="createSalesOrder" title="Create quote" colSpan="1"/>
 	        <button name="generateNewInstanceOfProject" title="Generate new project instance" hideIf="!isModel" colSpan="1"/>
-	        <button name="generateDraftInvoice" title="Generate draft invoice" colSpan="1"/>
+	        <button name="generateDraftInvoice" title="Generate draft invoice" colSpan="1" onClick="action-project-method-create-invoices"/>
 	        <button name="showTask" title="Show tasks" colSpan="1" onClick="action-project-view-task"/>
 	    </group>
 	    <notebook colSpan="6">
@@ -85,4 +85,9 @@
 		<field name="projectUnit" expr="eval: parentProject?.projectUnit" if="parentProject &amp;&amp; parentProject.projectUnit"/>
 		<field name="projectUnit" expr="call:com.axelor.apps.base.service.administration.GeneralService:getUnit()" if="!parentProject || parentProject.projectUnit == null"/>
 	</action-record>
+	
+	<action-method name="action-project-method-create-invoices">
+		<call class="com.axelor.apps.organisation.web.ProjectController" method="createInvoices"/>
+	</action-method>
+	
 </object-views>
