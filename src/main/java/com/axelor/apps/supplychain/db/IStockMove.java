@@ -10,9 +10,12 @@ public interface IStockMove {
 	static final int CONFIRMED = 2;
 	static final int REALIZED = 3;
 	static final int CANCELED = 4;
+
+	/**
+	 * Static StockMove type select
+	 */
 	
-	// TYPE SELECT
-	static final String INTERNAL = "intStockMove";
-	static final String OUTGOING = "outStockMove";
-	static final String INCOMING = "inStockMove";
+	static final int INTERNAL = 1;
+	static final int OUTGOING = 2;
+	static final int INCOMING = 3;
 }
