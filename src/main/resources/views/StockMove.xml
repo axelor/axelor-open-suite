@@ -48,7 +48,7 @@
 	<action-record name="action-stock-move-record-confirm" model="com.axelor.apps.supplychain.db.StockMove">
 	    <field name="statusSelect" expr="2"/>
 	    <field name="realDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
-	    <field name="stockMoveSeq" expr="call:com.axelor.apps.supplychain.service.SalesOrderService:getSequenceStockMove(company)" if="stockMoveSeq == null"/>
+	    <field name="stockMoveSeq" expr="call:com.axelor.apps.base.service.StockMoveService:getSequenceStockMove(fromLocation,toLocation,company)" if="stockMoveSeq == null"/>
 	</action-record>
     
     <action-record name="action-stock-move-record-realize" model="com.axelor.apps.supplychain.db.StockMove">
