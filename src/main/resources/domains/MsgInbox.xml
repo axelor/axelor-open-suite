@@ -5,7 +5,7 @@
 	<module name="socialnetwork" package="com.axelor.apps.socialnetwork.db" />
 	<entity name="MsgInbox">
 		<string name="messageRef" />
-		<string name="messageFromID" />
+		<string name="snUserRef" />
 		<string name="messageFrom" />
 		<string name="messageContent" multiline="true" max="5000"/>
 		<datetime name="messageDateT" tz="true" title="Message date" />

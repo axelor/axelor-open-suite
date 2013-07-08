@@ -35,6 +35,9 @@
         	<page title="Projects">
         		<field name="projectSet" showTitle="false" colSpan="4"/>
         	</page>
+        	<page title="Social Network">
+        		<field name="personalCredentialSet" colSpan="4"/>
+        	</page>
         </notebook>
     </form>
     

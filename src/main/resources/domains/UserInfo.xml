@@ -18,6 +18,7 @@
     <many-to-one name="employee" ref="com.axelor.apps.organisation.db.Employee" title="Employee"/>
     <many-to-many name="projectSet" ref="com.axelor.apps.organisation.db.Project" title="Projects"/>
     <many-to-one name="activeTeam" ref="com.axelor.apps.base.db.Team"  title="Active Team"/>
+   	<many-to-many name="personalCredentialSet" ref="com.axelor.apps.socialnetwork.db.PersonalCredential"/>
     
     <string name="fullName" namecolumn="true" search="partner" title="Partner name">
     	<![CDATA[

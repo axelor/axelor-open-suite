@@ -5,10 +5,11 @@
 
 	<module name="socialnetwork" package="com.axelor.apps.socialnetwork.db" />
 
-	<entity name="FBSearchPerson" lang="java">
+	<entity name="FBSearch" lang="java">
+		<boolean name="isCompany" title="Company ?"/>
 		<string name="searchparam" help="Search Keyword"/>
 		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" help="Currently Active ERP User"/>
-		<one-to-many name="fbSearchResultList" ref="com.axelor.apps.socialnetwork.db.FBSearchResult" mappedBy="fbSearchPerson" help="Search Result of The Entered Keyword"/>
+		<one-to-many name="fbSearchResultList" ref="com.axelor.apps.socialnetwork.db.FBSearchResult" mappedBy="fbSearch" help="Search Result of The Entered Keyword"/>
 	</entity>
 </domain-models>
 

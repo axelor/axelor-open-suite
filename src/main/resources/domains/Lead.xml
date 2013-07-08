@@ -21,9 +21,19 @@
   	<string name="webSite" title="Website"/>
   	
 <!--   Primary address group -->
-  
+	<string name="primaryAddress" title="Address"/>
+	<string name="primaryCity" title="City"/>
+	<string name="primaryState" title="State"/>
+	<string name="primaryPostalCode" title="Postal code"/>
+  	<many-to-one name="primaryCountry" ref="com.axelor.apps.base.db.Country" title="Country"/>
   
 <!--   Others address group -->
+	<string name="otherAddress" title="Address"/>
+	<string name="otherCity" title="City"/>
+	<string name="otherState" title="State"/>
+	<string name="otherPostalCode" title="Postal code"/>
+  	<many-to-one name="otherCountry" ref="com.axelor.apps.base.db.Country" title="Country"/>
+  	<boolean name="isCopyAddress" title="Copy primary address"/>
     
     
     <string name="email" title="Email address"/>

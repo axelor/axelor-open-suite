@@ -10,12 +10,12 @@
 <!-- Commun   -->
   	<integer name="typeSelect" title="Type" selection="crm.event.type.select" default="2"/>
   	<string name="subject" namecolumn="true" title="Subject" />
-	<integer name="secondaryStatusSelect" title="Status" selection="crm.event.secondary.status.select"/>  
+	<integer name="statusSelect" title="Status" selection="crm.event.status.select"/>  
   	<datetime name="startDateTime" title="Start Date"/>
   	<datetime name="endDateTime" title="End Date"/>
   	<integer name="durationHours" title="Duration" />
   	<many-to-one name="eventCategory" ref="com.axelor.apps.crm.db.EventCategory" title="Category"/>
-  	
+  	<integer name="prioritySelect" title="Priority" selection="crm.event.ticket.priority.select"/>
   	
   	<string name="relatedToSelect" title="Related to" selection="crm.event.related.to.select"/>
   	<integer name="relatedToSelectId"/>
@@ -26,9 +26,14 @@
     <many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="Assigned to"/>
   	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team"/>
   	
+  	<one-to-many name="contactEventAttendeeList" ref="com.axelor.apps.crm.db.EventAttendee" mappedBy="contactEvent" title="Contacts"/>
+  	<one-to-many name="leadEventAttendeeList" ref="com.axelor.apps.crm.db.EventAttendee" mappedBy="leadEvent" title="Leads"/>
+	
+	<many-to-one name="calendar" ref="com.axelor.apps.crm.db.Calendar" title="Calendar" />
+	<string name="calendarEventUid" title="UID (Calendar)"/>
     
 <!-- Call -->
-    <integer name="primaryStatusSelect" title="Status" selection="crm.event.call.primary.status.select"/>  
+    <integer name="callStatusSelect" title="Status" selection="crm.event.call.status.select"/>  
     <integer name="durationMinutesSelect" title="Duration" selection="crm.event.call.duration.minutes.select" />
     
 <!-- Meeting -->
@@ -36,13 +41,11 @@
 	<string name="location" title="Location"/>
 
 <!-- Task -->
-	<integer name="tertiaryStatusSelect" title="Status" selection="crm.event.task.tertiary.status.select"/>
+	<integer name="taskStatusSelect" title="Status" selection="crm.event.task.status.select"/>
 	<many-to-one name="taskPartner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
-	<integer name="priority" title="Priority" selection="crm.event.task.priority.select"/>
     
 <!-- Ticket -->
-	<integer name="quaternaryStatusSelect" title="Status" selection="crm.event.task.quaternary.status.select"/>
-    <integer name="prioritySelect" title="Priority" selection="crm.event.ticket.priority.select"/>
+	<integer name="ticketStatusSelect" title="Status" selection="crm.event.ticket.status.select"/>
     <integer name="progressSelect" title="Progress" selection="crm.event.ticket.progress.select"/>
     <string name="ticketNumberSeq" title="Ticket number"/>
     <many-to-many name="userInfoSet" ref="com.axelor.apps.base.db.UserInfo" title="Watchers"/>
@@ -51,6 +54,9 @@
   	<one-to-many name="messageList" ref="com.axelor.apps.message.db.Message" mappedBy="event" title="Comments"/>
   	<many-to-one name="project" ref="com.axelor.apps.organisation.db.Project" title="Project"/>
 	<many-to-one name="task" ref="com.axelor.apps.organisation.db.Task" title="Task"/>
+  
+<!--   Event -->
+	<integer name="eventStatusSelect" title="" selection="crm.event.event.status.select"/>
   
   </entity>
 

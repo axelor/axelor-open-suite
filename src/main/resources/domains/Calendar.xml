@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+  <module name="crm" package="com.axelor.apps.crm.db"/>
+
+  <entity name="Calendar" lang="java">
+  
+    <string name="title" title="Title"/>
+	<string name="url" title="Url"/>
+	<string name="login" title="Login"/>
+	<string name="password" title="Password"/>
+	<integer name="typeSelect" title="Type" selection="crm.calendar.type.select"/>
+	<boolean name="isSslConnection" title="SSL ?"/>
+	<integer name="port" title="Port"/>
+    
+    <string name="name" search="title,url">
+	    <![CDATA[
+	    String name = "";
+	    if(title != null)  {
+	    	name += title;    
+    	}
+    	if(url != null)  {
+    		name += "["+url+"]";
+		}
+		return name;
+	    ]]>
+    </string>
+    
+  </entity>
+
+</domain-models>
