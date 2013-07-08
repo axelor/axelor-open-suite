@@ -1,4 +1,4 @@
-package com.axelor.apps.account-organisation.service;
+package com.axelor.apps.accountorganisation.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

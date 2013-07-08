@@ -1,7 +1,7 @@
-package com.axelor.apps.account-organisation.web
+package com.axelor.apps.accountorganisation.web
 
 import groovy.util.logging.Slf4j
-import com.axelor.apps.account-organisation.service.TaskInvoiceService
+import com.axelor.apps.accountorganisation.service.TaskInvoiceService
 import com.axelor.exception.service.TraceBackService
 import com.axelor.rpc.ActionRequest
 import com.axelor.rpc.ActionResponse
