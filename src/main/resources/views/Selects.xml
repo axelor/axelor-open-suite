@@ -467,6 +467,7 @@
 		<option value="3">Task</option>
 		<option value="4">Holiday</option>
 		<option value="5">Ticket</option>
+		<option value="6">Event</option>
 	</selection>
 	
 	<selection name="crm.event.ticket.priority.select">
@@ -540,6 +541,16 @@
 		<option value="15">15</option>
 		<option value="30">30</option>
 		<option value="45">45</option>
+	</selection>
+
+	<selection name="crm.calendar.type.select">
+		<option value="1">ICAL_SERVER</option>
+		<option value="2">CALENDAR_SERVER</option>
+		<option value="3">GCAL</option>
+		<option value="4">ZIMBRA</option>
+		<option value="5">KMS</option>
+		<option value="6">CGP</option>
+		<option value="7">CHANDLER</option>
 	</selection>
 
 	<selection name="hr.expense.validation.status.select">
@@ -625,7 +636,7 @@
 		<option value="8">Newspaper</option>
 	</selection>
 
-	<selection name="crm.event.call.primary.status.select">
+	<selection name="crm.event.call.status.select">
 		<option value="1">Incoming</option>
 		<option value="2">Outgoing</option>
 	</selection>
@@ -635,8 +646,13 @@
 		<option value="2">Realized</option>
 		<option value="3">Canceled</option>
 	</selection>
+	
+	<selection name="crm.event.primary.status.select">
+		<option value="1">Tentative</option>
+		<option value="2">Confirmed</option>
+	</selection>
 
-	<selection name="crm.event.task.tertiary.status.select">
+	<selection name="crm.event.task.status.select">
 		<option value="1">Not started</option>
 		<option value="2">On going</option>
 		<option value="3">Finished</option>
@@ -644,7 +660,7 @@
 		<option value="5">Reported</option>
 	</selection>
 	
-	<selection name="crm.event.task.quaternary.status.select">
+	<selection name="crm.event.ticket.status.select">
 		<option value="1">New</option>
 		<option value="2">In progress</option>
 		<option value="3">Resolved</option>
@@ -975,6 +991,12 @@
 	<selection name="base.general.map.api.select">
 		<option value="1">Google</option>
 		<option value="2">OSM</option>
+	</selection>
+
+	<selection name="crm.event.attendee.status.select">
+		<option value="1">Non-participant</option>
+		<option value="2">Optional participant</option>
+		<option value="3">Required participant</option>
 	</selection>
 
 
