@@ -50,7 +50,10 @@
 	            <field name="planningLineList" colSpan="4" form-view="planning-line-task-form" grid-view="planning-line-task-grid"/>
 	        </page>
 	        <page title="Suivi Facturation">
-	            <field name="salesOrderLine"/>
+	            <field name="salesOrderLine" onChange="action-task-salesOrderLine-on-change"/>
+	            <field name="product"/>
+	            <field name="qty"/>
+	            <field name="price"/> 
 	            <field name="isToInvoice"/>
 	            <field name="isTimesheetAffected"/>
 	            <field name="invoicingDate"/>
@@ -107,6 +110,12 @@
     	<field name="startDateT" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()" if="startDateT == null"/>
     	<field name="statusSelect" expr="eval: 1"/>
     	<field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+    </action-record>
+    
+    <action-record name="action-task-salesOrderLine-on-change" model="com.axelor.apps.organisation.db.Task">
+    	<field name="product" expr="eval:salesOrderLine?.product" if="salesOrderLine"/>
+    	<field name="qty" expr="eval:salesOrderLine?.qty" if="salesOrderLine"/>
+    	<field name="price" expr="eval:salesOrderLine?.price" if="salesOrderLine"/>
     </action-record>
     
 </object-views>
