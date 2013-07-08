@@ -13,6 +13,7 @@
   	<decimal name="qty" title="Qty" default="1"/>
   	<boolean name="isToPrintLineSubTotal" title="Print subtotal per line"/>
   	<string name="productName" title="Product name"/>
+  	<integer name="saleSupplySelect" title="Sale supply" selection="supplychain.sale.supply.type.select"/>
   	<decimal name="price" title="Unit price"/>
   	<many-to-one name="vatLine" ref="com.axelor.apps.account.db.VatLine" title="V.A.T."/>
   	<decimal name="exTaxTotal" title="Total W.T."/>
@@ -25,9 +26,6 @@
   	<date name="invoicingDate" title="Invoicing Date"/>
   	
   	<many-to-one name="supplierPartner" ref="com.axelor.apps.base.db.Partner" title="Supplier"/>
-  	<boolean name="hasToCreateMo" title="Create M.O" default="false"/>
-  	<boolean name="hasToCreateTask" title="Créer tâche/OF ?"/>
-  	<boolean name="hasToBuy" title="Acheter ?"/>
   	<decimal name="discountAmount" title="Remise"/>
   	<decimal name="discountTypeSelect" title="En % / fixe" selection="organisation.sales.order.line.discount.type.select"/>
   	

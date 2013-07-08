@@ -327,6 +327,9 @@
 		<option value="purchaseInterface">Purchase interface</option>
 		<option value="moveLineExport">Accounting export</option>
 		<option value="doubtfulCustomer">Shift to doubtful receivables</option>
+		<option value="intStockMove">Mouvement Interne</option>
+		<option value="outStockMove">Mvt Stock Livraison</option>
+		<option value="inStockMove">Mvt Stock Reception</option>
 	</selection>
 
 	<selection name="company.paybox.hash.select">
@@ -888,6 +891,12 @@
 		<option value="5">Canceled</option>
 	</selection>
 	
+	<selection name="supplychain.sale.supply.type.select">
+		<option value="1">FromStock</option>
+		<option value="2">Purchase</option>
+		<option value="3">Produce</option>
+	</selection>
+	
 	<selection name="supplychain.location.type.select">
 		<option value="1">Internal</option>
 		<option value="2">Supplier</option>
@@ -900,6 +909,12 @@
 		<option value="2">Confirmed</option>
 		<option value="3">Realized</option>
 		<option value="4">Canceled</option>
+	</selection>
+	
+	<selection name="supplychain.stock.move.type.select">
+		<option value="1">Internal move</option>
+		<option value="2">Outgoing move</option>
+		<option value="3">Incoming move</option>
 	</selection>
 	
 	<selection name="supplychain.min.stock.rules.type.select">

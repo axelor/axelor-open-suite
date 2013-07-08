@@ -20,7 +20,7 @@
     </grid>
     
     <form name="product-form" title="Product" model="com.axelor.apps.base.db.Product" cols="2" colWidths="*,400"
-		onNew="action-product-record-default-new,action-sn-integration-init,action-showing-seen,action-main-cntrl"
+		onNew="action-product-record-default-new,action-product-record-sale-supply-select,action-sn-integration-init,action-showing-seen,action-main-cntrl"
 		onLoad="action-sn-integration-init,action-showing-seen,action-main-cntrl,com.axelor.sn.web.SNCommonController:refreshSnStatusUpdatesComments">
     
 	    <group title="Informations" colSpan="1" cols="6">
@@ -32,11 +32,12 @@
 	        	<field name="code"/>
 		    </group>
 	        <break/>
-	        <field name="applicationTypeSelect"/>
+	        <field name="applicationTypeSelect"/>    
 	        <field name="productCategory"/>
 	        <field name="productFamily" domain="self.productCategory = :productCategory"/>
-	        <field name="productTypeSelect"/>
+	        <field name="productTypeSelect" onChange="action-product-record-sale-supply-select,action-product-validate-sale-supply-select"/>
         	<field name="procurementMethodSelect"/>
+        	<field name="saleSupplySelect" onChange="action-product-validate-sale-supply-select"/>
         	<field name="isRawMaterial"/>
 	        <field name="invoiceLineType"/>
 	        <group showTitle="false" colSpan="6">
@@ -129,6 +130,15 @@
     	<field name="purchaseCurrency" expr="eval: _activeCompany.currency"/>
     </action-record>
     
+    <action-record name="action-product-record-sale-supply-select" model="com.axelor.apps.base.db.Product">
+    	<field name="saleSupplySelect" expr="1" if="productTypeSelect == 'stockable'"/>
+    	<field name="saleSupplySelect" expr="3" if="productTypeSelect == 'service'"/>
+    </action-record>
+    
+    <action-validate name="action-product-validate-sale-supply-select">
+   		<alert message="A product of type service can't be procured from stock." if="saleSupplySelect == 1 &amp;&amp; productTypeSelect == 'service'"/>
+	</action-validate> 
+
     <!-- ACTIONS FOR SOCIAL NETWORKING INTEGRATION -->
 
 	<action-attrs name="action-sn-integration-init">

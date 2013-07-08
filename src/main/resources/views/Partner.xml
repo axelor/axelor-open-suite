@@ -18,7 +18,7 @@
         <field name="isContact"/>
    		<field name="partnerTypeSelect"/>
         <field name="partnerCategory"/>
-        <field name="socialNet"/>
+        <field name="socialNetUserAccountList"/>
     </grid>
     
     <grid name="partner-contact-grid" title="Contacts" model="com.axelor.apps.base.db.Partner">
@@ -33,8 +33,8 @@
     </grid>
     
     <form cols="4" colWidths="25*"   name="partner-form" title="Partner" model="com.axelor.apps.base.db.Partner"
-	    onNew="action-partner-record-partner-type-select,action-partner-record-set-default" 
-	    onLoad="action-partner-attrs-change-name,action-partner-attrs-hide-tabs" 
+	    onNew="action-partner-record-partner-type-select,action-partner-record-set-default,action-partner-search-nested-default" 
+	    onLoad="action-partner-attrs-change-name,action-partner-attrs-hide-tabs,action-partner-attrs-hide-send-message,action-partner-search-nested-default" 
 	    onSave="action-set-partner-seq,action-create-accounting-situation">
 	    <group colSpan="1">
 	        <field name="picture"/>
@@ -55,9 +55,9 @@
 	        <break/>
 	    </group>
 	    <field name="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2" colSpan="4" domain="self.isContact = 'true'" grid-view="partner-contact-grid"/>
-	    <field name="snUserRef" hidden="true" />
-		<field name="socialNet" hidden="true" />
-		<field name="curUser" hidden="true" />
+	    <!-- <field name="snUserRef" hidden="true" /> -->
+		<field name="socialNetUserAccountList" hidden="true" />
+		<!-- <field name="curUser" hidden="true" /> -->
 	    <break/>
 	    <notebook colSpan="4">
 	        <page name="information" title="Informations">
@@ -112,47 +112,57 @@
 	            
 	        </page>
 	        <page title="Social Networking" colSpan="4" name="socialNetworkingTab"
-				hideIf="socialNet == null">
+				hideIf="id == null" onSelect="action-partner-attrs-hide-send-message">
 				<notebook>
-					<page title="Personal Credentials">
-						<field name="personalCredentialSet"/>
+					<page title="Social Net Accounts">
+						<field name="hasSearchPartner" widget="BOOLEAN[type=BOOLEAN]" title="Search Partner on Social Network ?"/>
+						<break/>
+						<field name="fbSearch" widget="NestedEditor[type=MANY_TO_ONE|target=com.axelor.apps.socialnetwork.db.FBSearch]" summary-view="true" 
+						form-view="partner-fb-search-nested-form" edit-window="self" canSelect="false" showTitle="false" showIf="hasSearchPartner"/>
+						<break/>
+	                    <spacer/>
+	                    <break/>
+						<field name="socialNetUserAccountList" colSpan="4"/>
 					</page>
-					<page title="Inbox Message" hideIf="socialNet.name == 'linkedin'">
+					<page title="Inbox Message"> <!-- hideIf="socialNet.name == 'linkedin'"> -->
 						<portlet action="action-fetch-all-sn-mail" colSpan="4" />
 					</page>
-					<page title="Recent Updates" hideIf="socialNet.name != 'facebook'">
+					<page title="Recent Updates"> <!-- hideIf="socialNet.name != 'facebook'"> -->
 						<portlet action="action-fetch-all-sn-update" colSpan="4" />
 					</page>
 
-					<page title="Send Personal Message" name="snPersonalMessage"
-						hideIf="socialNet.name == 'facebook'">
+					<page title="Send Personal Message" name="snPersonalMessage">
+						<!-- hideIf="socialNet.name == 'facebook'"> -->
 						<field name="snSendMessageList" title="Personal Messages"><!-- 
 								onChange="com.axelor.sn.web.TWTController:directMessageO2M"> -->
 							<grid title="All Sent Messages">
-								<field name="socialNet" title="Social Networking Type"
-									hidden="true"></field>
-								<field name="partner" title="To"></field>
-								<field name="content"></field>
-								<field name="messageDateT" title="Date and Time" hidden="true"></field>
-								<field name="snMessageRef" />
+								<field name="socialNet" title="Social Networking Type"/>
+								<field name="partner" title="To"/>
+								<field name="content"/>
+								<field name="messageDateT" title="Date and Time" hidden="true"/>
+								<field name="snMessageRef" title="Message reference" />
 							</grid>
 
 							<form title="Compose New Message" onNew="action-fill-direct-message">
-								<field name="socialNet" title="Social Networking Type"
-									hidden="true"></field>
-								<field name="userInfo" title="Current User" hidden="true"></field>
-								<field name="partner" title="To" readonly="true"></field>
+								<field name="socialNet" title="Social Networking Type" 
+									onChange="action-send-message-attrs-set-personal-credential-domain"
+									domain="self.name != 'facebook'"/>
+								<break/>
+	        					<field name="personalCredential" title="Personal Credential" hideIf="socialNet == null" required="true"/>
+								<field name="userInfo" title="Current User" hidden="true"/>
+								<field name="partner" title="To" readonly="true"/>
+								<break/>
+								<field name="socialNetUserAccount" hideIf="partner == null" widget="SuggestBox" required="true" readonlyIf="id != null"/>
 								<break />
-								<field name="subject" hideIf="socialNet.name != 'linkedin'"></field>
+								<field name="subject" hideIf="socialNet.name !='linkedin'" requiredIf="socialNet.name =='linkedin'"/>
 								<break />
-								<field name="content" required="true"
-									/> <!--  onChange="com.axelor.sn.web.SNCommonController:sendMessage"></field>-->
+								<field name="content" required="true"/>
 								<break/>
 								<spacer colSpan="1"/>
 								<button name="firePersonalMsg"
 									onClick="com.axelor.sn.web.SNCommonController:sendMessage"
 									title="Send" />
-								<field name="messageDateT" title="Date and Time" hidden="true"></field>
+								<field name="messageDateT" title="Date and Time" hidden="true"/>
 								<field name="snMessageRef" hidden="true" />
 							</form>
 						</field>
@@ -192,6 +202,66 @@
 	    </notebook>
 	</form>
 	
+	<form title="Search" name="partner-fb-search-nested-form" 
+		onNew="action-partner-search-nested-default-fb-search-record-iscompany,action-partner-search-nested-default-fb-search-record-param"
+		onLoad="action-partner-search-nested-default-fb-search-record-iscompany,action-partner-search-nested-default-fb-search-record-param">
+		<notebook title="Search On Facebook">
+			<page title="Search">
+				<field name="isCompany" readonly="true" hidden="true"/>
+				<break/>
+				<field name="searchparam" title="Please Enter Search Keywords"/>
+				<break />
+				<button name="submit" title="Search"
+					onClick="com.axelor.sn.web.FBController:search" />
+				<break />
+				<break />
+				<field name="fbSearchResultList" title="Result" colSpan="5">
+					<grid title="Result" editable="true">
+						<field name="userRef" readonly="true"/>
+						<field name="firstName" readonly="true" hideIf="isCompany"/>
+						<field name="lastName" readonly="true" hideIf="isCompany"/>
+						<field name="gender" readonly="true" hideIf="isCompany"/>
+						<field name="companyName" showIf="isCompany"/>
+						<field name="link" readonly="true"/>
+					</grid>
+					<form title="Result" onNew="action-fb-search-attrs-hide-result-fields" onLoad="action-fb-search-attrs-hide-result-fields">
+						<field name="userRef" readonly="true"/>
+						<field name="gender" readonly="true"/>
+						<break/>
+						<field name="firstName" readonly="true"/>
+						<field name="lastName" readonly="true"/>
+						<field name="companyName" readonly="true"/>
+						<break/>
+						<field name="link" readonly="true" colSpan="4"/>
+						<break/>
+						<spacer/>
+						<break/>
+						<field name="partner"/>
+	                    <break/>
+	                    <spacer/>
+						<button name="associate" title="Associate to partner" onClick="com.axelor.sn.web.FBController:associateToPartner"/>
+					</form>
+				</field>
+			</page>
+		</notebook>
+	</form>
+	
+	<action-attrs name="action-partner-attrs-hide-send-message">
+		<attribute name="hidden" for="snPersonalMessage" expr="eval: !socialNetUserAccountList || socialNetUserAccountList?.collect{it.snUserRef}?.size() &gt; 0"/>
+	</action-attrs>
+	
+	<action-record name="action-partner-search-nested-default" model="com.axelor.apps.base.db.Partner">
+    	<field name="fbSearch" expr="action: action-partner-search-nested-default-fb-search-record-iscompany,action-partner-search-nested-default-fb-search-record-param"/>
+    </action-record>
+    
+    <action-record name="action-partner-search-nested-default-fb-search-record-iscompany" model="com.axelor.apps.socialnetwork.db.FBSearch">
+		<field name="isCompany" expr="eval: _parent.partnerTypeSelect == 1"/>
+    </action-record>
+    
+    <action-record name="action-partner-search-nested-default-fb-search-record-param" model="com.axelor.apps.socialnetwork.db.FBSearch">
+		<field name="searchparam" expr="eval: _parent.name" if="isCompany"/>
+    	<field name="searchparam" expr="eval: _parent.firstName+' '+_parent.name" if="!isCompany"/>
+    </action-record>
 	
 
 	<action-record name="action-partner-record-get-lead-converted-context" model="com.axelor.apps.base.db.Partner">
@@ -296,13 +366,13 @@
     <action-view name="action-fetch-all-sn-update" title="Recents Update of This User" model="com.axelor.apps.socialnetwork.db.FBNewsFeed"> 
 		<view type="grid" name="fb-news-feed-grid1" />
 		<view type="form" name="fb-news-feed-form"/>
-		<domain>self.snUserRef = :snUserRef</domain>
+		<domain>self.snUserRef in :_partnerUserRefList</domain>
+		<context name="_partnerUserRefList" expr="eval: (socialNetUserAccountList?.collect{it.snUserRef}?.size() &gt; 0) ? &quot;(${socialNetUserAccountList?.collect{it.snUserRef}?.join(',')})&quot; : &quot;(null)&quot;"/>
 	</action-view>
 
 	<action-record name="action-fill-direct-message"
 		model="com.axelor.apps.socialnetwork.db.SnSendMessage">
-		<field name="socialNet" expr="eval:_parent.socialNet" />
-		<field name="curUser" expr="eval:__user__" />
+		<!-- <field name="curUser" expr="eval:__user__" /> -->
 		<field name="partner" expr="eval:_parent" />
 		<field name="messageDateT" expr="eval:__datetime__" />
 	</action-record>
@@ -311,7 +381,8 @@
 		model="com.axelor.apps.socialnetwork.db.MsgInbox">
 		<view type="grid" name="sn-msg-inbox-grid1" />
 		<view type="form" name="sn-msg-inbox-form" />
-		<domain>self.messageFromID = :snUserRef</domain>
+		<domain>self.snUserRef in :_partnerUserRefList</domain>
+		<context name="_partnerUserRefList" expr="eval: (socialNetUserAccountList?.collect{it.snUserRef}?.size() &gt; 0) ? &quot;(${socialNetUserAccountList?.collect{it.snUserRef}?.join(',')})&quot; : &quot;(null)&quot;"/>
 	</action-view>
 	<!--END SN Actions -->
 	
