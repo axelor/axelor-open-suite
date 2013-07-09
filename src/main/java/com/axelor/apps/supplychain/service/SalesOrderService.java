@@ -301,7 +301,7 @@ public class SalesOrderService {
 			for(SalesOrderLine salesOrderLine: salesOrder.getSalesOrderLineList()) {
 				Product salesOrderLineProduct = salesOrderLine.getProduct();
 				if(salesOrderLineProduct != null && salesOrderLineProduct.getProductTypeSelect().equals("stockable")) {
-					StockMoveLine stockMoveLine = stockMoveService.createStocksMovesLines(salesOrderLine.getProduct(), salesOrderLine.getQty().intValue(), stockMove);
+					StockMoveLine stockMoveLine = stockMoveService.createStocksMovesLines(salesOrderLine.getProduct(), salesOrderLine.getQty().intValue(), salesOrderLine.getUnit(), salesOrderLine.getPrice(), stockMove);
 					if(stockMoveLine != null) {
 						stockMove.getStockMoveLineList().add(stockMoveLine);
 					}
