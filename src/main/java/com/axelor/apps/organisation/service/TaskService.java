@@ -1,92 +1,24 @@
 package com.axelor.apps.organisation.service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-
-import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountingSituation;
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.VatLine;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.organisation.db.Task;
-import com.axelor.apps.supplychain.db.SalesOrder;
-import com.axelor.apps.supplychain.db.SalesOrderLine;
-import com.google.inject.persist.Transactional;
+import java.math.RoundingMode;
 
 public class TaskService {
 
-	@Transactional
-	public void createInvoice(Task task) {
-
-		// Check if the field task.isToInvoice = true
-		if(task.getIsToInvoice()) {
-			SalesOrderLine salesOrderLine = task.getSalesOrderLine();
-			// Check if task.salesOrderLine and task.salesOrderLine.salesOrder are not empty
-			if(salesOrderLine != null && salesOrderLine.getSalesOrder() != null) {
-				SalesOrder salesOrder = salesOrderLine.getSalesOrder();
-
-				Invoice invoice = new Invoice();
-				invoice.setCompany(salesOrder.getCompany());
-				invoice.setClientPartner(salesOrder.getClientPartner());
-				invoice.setPaymentMode(salesOrder.getPaymentMode());
-				invoice.setPaymentCondition(salesOrder.getPaymentCondition());
-				invoice.setPartnerAccount(getCustomerAccount(salesOrder.getClientPartner(), salesOrder.getCompany()));
-				invoice.setInvoiceDate(GeneralService.getTodayDate());
-				invoice.setOperationTypeSelect(3); // 3 = Customer sale
-				invoice.setJournal(salesOrder.getCompany().getCustomerSalesJournal());
-				invoice.setCurrency(salesOrder.getCurrency());
-
-				// Create InvoiceLine
-				invoice.setInvoiceLineList(new ArrayList<InvoiceLine>());
-				InvoiceLine invoiceLine = createInvoiceLine(task.getProduct(), task.getQty(), salesOrderLine.getVatLine(), invoice);
-				invoice.getInvoiceLineList().add(invoiceLine);
-				invoice.save();
-			}
+	public BigDecimal computeMargin(BigDecimal ca, BigDecimal cost) {
+		
+		BigDecimal marginBrut = ca.subtract(cost);
+		
+		if(marginBrut.compareTo(BigDecimal.ZERO) > 0) {
+			
+			return marginBrut.multiply(new BigDecimal(100)).setScale(6, RoundingMode.HALF_EVEN).divide(ca, 6, RoundingMode.HALF_EVEN);
 		}
-	}
-
-	@Transactional
-	public InvoiceLine createInvoiceLine(Product product, BigDecimal qty, VatLine vatLine, Invoice parentInvoice) {
-
-		InvoiceLine invoiceLine = new InvoiceLine();
-
-		invoiceLine.setInvoice(parentInvoice);
-		invoiceLine.setInvoiceLineType(product.getInvoiceLineType());
-		invoiceLine.setProduct(product);
-		invoiceLine.setQty(qty);
-		invoiceLine.setVatLine(vatLine);
-		invoiceLine.setProductName(product.getName());
-
-		invoiceLine.save();
-
-		return invoiceLine;
-	}
-
-
-	public Account getCustomerAccount(Partner partner, Company company)  {
-
-		Account partnerAccount = null;
-
-		for(AccountingSituation accountingSituation : partner.getAccountingSituationList())  {
-
-			if(accountingSituation.getCompany().equals(company))  {
-				partnerAccount = accountingSituation.getCustomerAccount();
-			}
+		else if(marginBrut.compareTo(BigDecimal.ZERO) == 0)
+			return marginBrut;
+		else {
+			BigDecimal absMarginBrut = marginBrut.abs();
+			BigDecimal absMargin = absMarginBrut.multiply(new BigDecimal(100)).setScale(6, RoundingMode.HALF_EVEN).divide(cost, 6, RoundingMode.HALF_EVEN);
+			return absMargin.negate();
 		}
-
-		if(partnerAccount == null)  {
-			partnerAccount = company.getCustomerAccount();
-		}
-
-		if(partnerAccount == null)  {
-
-			// TODO ajouter message d'erreur configuration manquante dans la société
-
-		}
-		return partnerAccount;
 	}
 }
