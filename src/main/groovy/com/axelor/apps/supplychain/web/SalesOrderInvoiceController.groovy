@@ -25,7 +25,7 @@ class SalesOrderInvoiceController {
 			
 			salesOrder = SalesOrder.find(salesOrder.getId())
 			
-			Invoice invoice = salesOrdeInvoicerService.createInvoice(salesOrder)
+			Invoice invoice = salesOrdeInvoicerService.generateInvoice(salesOrder)
 			
 			if(invoice != null)  {
 				response.reload = true

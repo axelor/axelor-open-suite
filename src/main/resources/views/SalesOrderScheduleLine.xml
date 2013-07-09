@@ -7,7 +7,7 @@
         <field name="sequence"/>
         <field name="amountToBeInvoiced"/>
         <field name="invoicingPercentage"/>
-        <field name="task"/>
+        <field name="salesOrderLine"/>
     	<field name="accumulatedInvoicingPercentage"/>
     	<field name="nbOfDay"/>
 		<field name="invoice"/>    	
@@ -17,10 +17,15 @@
     	<field name="sequence"/>
         <field name="amountToBeInvoiced"/>
         <field name="invoicingPercentage"/>
-        <field name="task"/>
+        <field name="salesOrderLine" domain="self.salesOrder = :salesOrder and self."/>
     	<field name="accumulatedInvoicingPercentage"/>
     	<field name="nbOfDay"/>
 		<field name="invoice"/> 
     </form>
+    
+    <action-attrs name="action-sales-order-schedule-line-attrs-sales-order-line-domain">
+    	<attribute name="domain" for="salesorderLine" expr="eval: self.salesOrder = :salesOrder "/>
+    
+    </action-attrs>
     
 </object-views>

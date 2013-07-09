@@ -1,5 +1,6 @@
 package com.axelor.apps.supplychain.service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -8,20 +9,19 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.IInvoice;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.InvoiceLineVat;
-import com.axelor.apps.account.db.PaymentCondition;
+import com.axelor.apps.account.db.VatLine;
+import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
+import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.organisation.db.Task;
 import com.axelor.apps.supplychain.db.SalesOrder;
 import com.axelor.apps.supplychain.db.SalesOrderLine;
-import com.axelor.apps.supplychain.db.SalesOrderLineVat;
 import com.axelor.apps.supplychain.db.SalesOrderSubLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -51,13 +51,9 @@ public class SalesOrderInvoiceService {
 	}
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Invoice createInvoice(SalesOrder salesOrder)  {
+	public Invoice generateInvoice(SalesOrder salesOrder) throws AxelorException  {
 		
-		Invoice invoice = this.createInvoiceHeader(salesOrder);
-		
-		invoice.setInvoiceLineList(this.createInvoiceLines(invoice, salesOrder.getSalesOrderLineList()));
-		
-		invoice.setInvoiceLineVatList(this.createInvoiceVatLines(invoice, salesOrder.getSalesOrderLineVatList()));
+		Invoice invoice = this.createInvoice(salesOrder);
 		
 		this.assignInvoice(salesOrder, invoice);
 		
@@ -93,68 +89,32 @@ public class SalesOrderInvoiceService {
 	}
 	
 	
-	public Invoice createInvoiceHeader(SalesOrder salesOrder)  {
+	public Invoice createInvoice(SalesOrder salesOrder) throws AxelorException  {
 		
-		Invoice invoice = new Invoice();
 		
-		invoice.setOperationTypeSelect(IInvoice.CLIENT_SALE);
-		
-		invoice.setInvoiceDate(this.today);
-		
-		PaymentCondition paymentCondition = salesOrder.getPaymentCondition();
-		invoice.setPaymentCondition(paymentCondition);
-		invoice.setDueDate(this.today.plusDays(paymentCondition.getPaymentTime()));
-		
-		invoice.setPaymentMode(salesOrder.getPaymentMode());
-		invoice.setAddress(salesOrder.getMainInvoicingAddress());
-		invoice.setContactPartner(salesOrder.getContactPartner());
-		invoice.setCurrency(salesOrder.getCurrency());
-		
-		Company company = salesOrder.getCompany();
-		invoice.setCompany(company);
-		invoice.setJournal(company.getCustomerSalesJournal()); // TODO ajouter un controle sur le remplissage du champs
-		
-		Partner partner = salesOrder.getClientPartner();
-		invoice.setPartner(partner);
-		invoice.setPartnerAccount(this.getCustomerAccount(partner, company));
-		
-		return invoice;
-	}
-	
-	
-	public Account getCustomerAccount(Partner partner, Company company)  {
-		
-		Account partnerAccount = null;
-		
-		for(AccountingSituation accountingSituation : partner.getAccountingSituationList())  {
+		InvoiceGenerator invoiceGenerator = new InvoiceGenerator(IInvoice.CLIENT_SALE, salesOrder.getCompany(),salesOrder.getPaymentCondition(), 
+				salesOrder.getPaymentMode(), salesOrder.getMainInvoicingAddress(), salesOrder.getClientPartner(), salesOrder.getContactPartner(), salesOrder.getCurrency()) {
 			
-			if(accountingSituation.getCompany().equals(company))  {
+			@Override
+			public Invoice generate() throws AxelorException {
 				
-				partnerAccount = accountingSituation.getCustomerAccount();
-				
+				return super.createInvoiceHeader();
 			}
-			
-		}
+		};
 		
-		if(partnerAccount == null)  {
-			
-			partnerAccount = company.getCustomerAccount();
-			
-		}
-		
-		if(partnerAccount == null)  {
-			
-			// TODO ajouter message d'erreur configuration manquante dans la société
-			
-		}
-		
-		return partnerAccount;
+		Invoice invoice = invoiceGenerator.generate();
+		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, salesOrder.getSalesOrderLineList()));
+		invoiceGenerator.computeInvoice(invoice);
+		return invoice;
 		
 	}
+	
+	
+	
 	
 	
 	// TODO ajouter tri sur les séquences
-	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<SalesOrderLine> salesOrderLineList)  {
+	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<SalesOrderLine> salesOrderLineList) throws AxelorException  {
 		
 		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
 		
@@ -181,71 +141,40 @@ public class SalesOrderInvoiceService {
 	}
 	
 	
-	//TODO ajouter conversion en devise de la comptabilité du tiers
-	public InvoiceLine createInvoiceLine(Invoice invoice, SalesOrderLine salesOrderLine)  {
+	public InvoiceLine createInvoiceLine(Invoice invoice, BigDecimal exTaxTotal, Product product, String productName, BigDecimal price, String description, BigDecimal qty,
+			Unit unit, VatLine vatLine, Task task) throws AxelorException  {
 		
-		InvoiceLine invoiceLine = new InvoiceLine();
-		invoiceLine.setInvoice(invoice);
-		invoiceLine.setExTaxTotal(salesOrderLine.getExTaxTotal());
-		invoiceLine.setProduct(salesOrderLine.getProduct());
-		invoiceLine.setProductName(salesOrderLine.getProductName());
-		invoiceLine.setPrice(salesOrderLine.getPrice());
-		invoiceLine.setDescription(salesOrderLine.getDescription());
-		invoiceLine.setQty(salesOrderLine.getQty());
-		invoiceLine.setPricingListUnit(salesOrderLine.getUnit());
-		invoiceLine.setVatLine(salesOrderLine.getVatLine());
-		invoiceLine.setTask(salesOrderLine.getTask());
+		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, productName, price, description, qty, unit, vatLine, task, false)  {
+			@Override
+			public List<InvoiceLine> creates() throws AxelorException {
+				
+				InvoiceLine invoiceLine = this.createInvoiceLine(vatLine);
+				
+				List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
+				invoiceLines.add(invoiceLine);
+				
+				return invoiceLines;
+			}
+		};
 		
-		return invoiceLine;
-		
+		return invoiceLineGenerator.createInvoiceLine(vatLine);
 	}
 	
-	//TODO ajouter conversion en devise de la comptabilité du tiers
-	public InvoiceLine createInvoiceLine(Invoice invoice, SalesOrderSubLine salesOrderSubLine)  {
+	
+	public InvoiceLine createInvoiceLine(Invoice invoice, SalesOrderLine salesOrderLine) throws AxelorException  {
 		
-		InvoiceLine invoiceLine = new InvoiceLine();
-		invoiceLine.setInvoice(invoice);
-		invoiceLine.setExTaxTotal(salesOrderSubLine.getExTaxTotal());
-		invoiceLine.setProduct(salesOrderSubLine.getProduct());
-		invoiceLine.setProductName(salesOrderSubLine.getProductName());
-		invoiceLine.setPrice(salesOrderSubLine.getPrice());
-		invoiceLine.setDescription(salesOrderSubLine.getDescription());
-		invoiceLine.setQty(salesOrderSubLine.getQty());
-		invoiceLine.setPricingListUnit(salesOrderSubLine.getUnit());
-		invoiceLine.setVatLine(salesOrderSubLine.getVatLine());
-		invoiceLine.setTask(salesOrderSubLine.getSalesOrderLine().getTask());
+		return this.createInvoiceLine(invoice, salesOrderLine.getExTaxTotal(), salesOrderLine.getProduct(), salesOrderLine.getProductName(), 
+				salesOrderLine.getPrice(), salesOrderLine.getDescription(), salesOrderLine.getQty(), salesOrderLine.getUnit(), salesOrderLine.getVatLine(), salesOrderLine.getTask());
 		
-		return invoiceLine;
 		
 	}
 	
 	
-	public List<InvoiceLineVat> createInvoiceVatLines(Invoice invoice, List<SalesOrderLineVat> salesOrderLineVatList)  {
+	public InvoiceLine createInvoiceLine(Invoice invoice, SalesOrderSubLine salesOrderSubLine) throws AxelorException  {
 		
-		List<InvoiceLineVat> invoiceLineVatList = new ArrayList<InvoiceLineVat>();
-		
-		for(SalesOrderLineVat salesOrderLineVat : salesOrderLineVatList)  {
-			
-			invoiceLineVatList.add(this.createInvoiceLineVat(invoice, salesOrderLineVat));
-			
-		}
-		
-		return invoiceLineVatList;
-		
-	}
-	
-	//TODO ajouter conversion en devise de la comptabilité du tiers
-	public InvoiceLineVat createInvoiceLineVat(Invoice invoice, SalesOrderLineVat salesOrderLineVat)  {
-		
-		InvoiceLineVat invoiceLineVat = new InvoiceLineVat();
-		invoiceLineVat.setInvoice(invoice);
-		invoiceLineVat.setExAllTaxBase(salesOrderLineVat.getExAllTaxBase());
-		invoiceLineVat.setExTaxBase(salesOrderLineVat.getExTaxBase());
-		invoiceLineVat.setInTaxTotal(salesOrderLineVat.getInTaxTotal());
-		invoiceLineVat.setVatTotal(salesOrderLineVat.getVatTotal());
-		invoiceLineVat.setVatLine(salesOrderLineVat.getVatLine());
-		
-		return invoiceLineVat;
+		return this.createInvoiceLine(invoice, salesOrderSubLine.getExTaxTotal(), salesOrderSubLine.getProduct(), salesOrderSubLine.getProductName(), 
+				salesOrderSubLine.getPrice(), salesOrderSubLine.getDescription(), salesOrderSubLine.getQty(), salesOrderSubLine.getUnit(), 
+				salesOrderSubLine.getVatLine(), salesOrderSubLine.getSalesOrderLine().getTask());
 		
 	}
 	
