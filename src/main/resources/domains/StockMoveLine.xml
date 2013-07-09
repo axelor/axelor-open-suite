@@ -11,6 +11,8 @@
   
 	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>    
 	<integer name="qty" title="Qty"/>
+    <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
+    <decimal name="price" title="Unit price"/>
     
   </entity>
 </domain-models>
