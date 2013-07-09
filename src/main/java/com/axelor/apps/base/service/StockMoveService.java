@@ -1,5 +1,7 @@
 package com.axelor.apps.base.service;
 
+import java.math.BigDecimal;
+
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
@@ -7,6 +9,7 @@ import com.axelor.apps.base.db.ILocation;
 import com.axelor.apps.base.db.IProduct;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 
@@ -105,7 +108,7 @@ public class StockMoveService {
 	 * @return l'objet StockMoveLine
 	 */
 	@Transactional
-	public StockMoveLine createStocksMovesLines(Product product, int quantity, StockMove parent) {
+	public StockMoveLine createStocksMovesLines(Product product, int quantity, Unit unit, BigDecimal price, StockMove parent) {
 
 		if(product != null && product.getApplicationTypeSelect() == IProduct.PRODUCT_TYPE && product.getProductTypeSelect().equals(IProduct.STOCKABLE)) {
 			
@@ -113,7 +116,8 @@ public class StockMoveService {
 			stockMoveLine.setStockMove(parent);
 			stockMoveLine.setProduct(product);
 			stockMoveLine.setQty(quantity);
-
+			stockMoveLine.setUnit(unit);
+			stockMoveLine.setPrice(price);
 			stockMoveLine.save();
 			return stockMoveLine;
 		}
