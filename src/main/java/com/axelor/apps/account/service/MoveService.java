@@ -160,7 +160,7 @@ public class MoveService {
 			
 			Journal journal = invoice.getJournal();
 			Company company = invoice.getCompany();
-			Partner partner = invoice.getPartner();
+			Partner partner = invoice.getClientPartner();
 			Account account = invoice.getPartnerAccount();
 			
 			LOG.debug("Création d'une écriture comptable spécifique à la facture {} (Société : {}, Journal : {})", new Object[]{invoice.getInvoiceId(), company.getName(), journal.getCode()});
@@ -319,7 +319,7 @@ public class MoveService {
 			if(creditMoveLineList != null && creditMoveLineList.size() != 0)  {
 				
 				Company company = invoice.getCompany();
-				Partner partner = invoice.getPartner();
+				Partner partner = invoice.getClientPartner();
 				Account account = invoice.getPartnerAccount();
 				MoveLine invoiceCustomerMoveLine = mls.getCustomerMoveLine(invoice);
 				
@@ -466,7 +466,7 @@ public class MoveService {
 	
 	public Move createMoveUseDebit(Invoice invoice, List<MoveLine> debitMoveLines, MoveLine invoiceCustomerMoveLine) throws AxelorException{
 		Company company = invoice.getCompany();
-		Partner partner = invoice.getPartner();
+		Partner partner = invoice.getClientPartner();
 		Account account = invoice.getPartnerAccount();
 		
 		if (company.getMiscOperationJournal() == null){

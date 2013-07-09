@@ -133,8 +133,8 @@ public class IrrecoverableService {
 		List<Partner> partnerList = new ArrayList<Partner>();
 		
 		for(Invoice invoice : invoiceList)  {
-			if(!partnerList.contains(invoice.getPartner()))  {
-				partnerList.add(invoice.getPartner());
+			if(!partnerList.contains(invoice.getClientPartner()))  {
+				partnerList.add(invoice.getClientPartner());
 			}
 		}
 		return partnerList;
@@ -188,7 +188,7 @@ public class IrrecoverableService {
 		List<Invoice> invoiceList = new ArrayList<Invoice>();
 		
 		for(Invoice invoice : allInvoiceList)  {
-			if(invoice.getPartner().equals(partner))  {
+			if(invoice.getClientPartner().equals(partner))  {
 				invoiceList.add(invoice);
 			}
 		}
@@ -775,7 +775,7 @@ public class IrrecoverableService {
 	 */
 	public Move createIrrecoverableMove(Invoice invoice, BigDecimal prorataRate, boolean isInvoiceReject) throws AxelorException  {
 		Company company = invoice.getCompany();
-		Partner payerPartner = invoice.getPartner();
+		Partner payerPartner = invoice.getClientPartner();
 		
 		// Move
 		Move move = ms.createMove(company.getIrrecoverableJournal(), company, null, payerPartner, null, false);

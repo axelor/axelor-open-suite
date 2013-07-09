@@ -45,7 +45,7 @@ public class VentilateState extends WorkflowInvoice {
 	@Override
 	public void process( ) throws AxelorException {
 		
-		Preconditions.checkNotNull(invoice.getPartner());
+		Preconditions.checkNotNull(invoice.getClientPartner());
 		if (updateInvoiceDate) { setInvoiceDate( ); }
 		
 		setInvoiceId( );

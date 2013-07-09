@@ -578,7 +578,7 @@ public class PaymentScheduleService {
 		LOG.debug("Begin CreatePaymentSchedule");
 			
 		PaymentSchedule paymentScheduleReference = invoice.getPaymentSchedule();
-		Partner partner = invoice.getPartner();
+		Partner partner = invoice.getClientPartner();
 		Company company = invoice.getCompany();
 
 		if(paymentScheduleReference != null)  {

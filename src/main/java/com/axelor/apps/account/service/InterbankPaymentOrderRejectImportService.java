@@ -77,7 +77,7 @@ public class InterbankPaymentOrderRejectImportService {
 						GeneralService.getExceptionAccountingMsg(), refReject, company.getName()), IException.INCONSISTENCY);
 			}
 			
-			Partner partner = invoice.getPartner();
+			Partner partner = invoice.getClientPartner();
 			if(invoice.getPaymentMode() == null)  {
 				throw new AxelorException(String.format("%s - Aucun mode de paiement configuré pour la facture %s",
 						GeneralService.getExceptionAccountingMsg(), refReject), IException.INCONSISTENCY);

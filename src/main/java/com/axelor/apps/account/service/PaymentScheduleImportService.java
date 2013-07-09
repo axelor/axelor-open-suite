@@ -584,7 +584,7 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 					
 			// Mise à jour du nombre de rejet sur le tiers si ce n'est pas un rejet technique
 			if(!interbankCodeLine.getTechnicalRejectOk()) {
-				invoice.getPartner().setRejectCounter(invoice.getPartner().getRejectCounter()+1);
+				invoice.getClientPartner().setRejectCounter(invoice.getClientPartner().getRejectCounter()+1);
 			}
 			
 			// Si le nombre de rejet limite est atteint :
@@ -616,7 +616,7 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 	 */
 	public MoveLine createRejectMoveLine(Invoice invoice, Company company, Account customerAccount, Move moveGenerated, int ref)  {
 		
-		MoveLine rejectMoveLine = mls.createMoveLine(moveGenerated, invoice.getPartner(), customerAccount, invoice.getAmountRejected(), true, false, 
+		MoveLine rejectMoveLine = mls.createMoveLine(moveGenerated, invoice.getClientPartner(), customerAccount, invoice.getAmountRejected(), true, false, 
 				invoice.getRejectDate(), invoice.getRejectDate(), ref, false, false, false, invoice.getInvoiceId());
 		
 		moveGenerated.getMoveLineList().add(rejectMoveLine);
@@ -735,12 +735,12 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 	 */
 	public void rejectLimitExceeded(Invoice invoice) throws AxelorException  {
 		LOG.debug("Action suite à un rejet sur une facture");
-		Partner partner = invoice.getPartner();
+		Partner partner = invoice.getClientPartner();
 		Company company = invoice.getCompany();
 		if(partner.getRejectCounter()>=company.getInvoiceRejectNumLimit())  {
 			// Génération du COURRIER
 			LOG.debug("COURRIER Facture");
-			mas.createImportRejectMail(invoice.getPartner(), company, company.getRejectPaymentScheduleMailModel(), invoice.getRejectMoveLine()).save();
+			mas.createImportRejectMail(invoice.getClientPartner(), company, company.getRejectPaymentScheduleMailModel(), invoice.getRejectMoveLine()).save();
 			// Mise à jour de la date de la dernière relance sur le contrat
 			partner.getReminder().setReminderDate(today);
 			// Changement du mode de paiement de la facture, du contrat, et de l'avenant en cours
@@ -758,7 +758,7 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 	 * 			Une facture
 	 */
 	public void setPaymentMode(Invoice invoice)  {
-		Partner partner = invoice.getPartner();
+		Partner partner = invoice.getClientPartner();
 		Company company = invoice.getCompany();
 		PaymentMode paymentMode = company.getRejectionPaymentMode();
 		invoice.setPaymentMode(paymentMode);

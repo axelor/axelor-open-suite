@@ -49,7 +49,7 @@ public class RefundInvoice extends InvoiceGenerator implements InvoiceStrategy {
 	}
 	
 	@Override
-	protected void populate(Invoice invoice, List<InvoiceLine> invoiceLines) throws AxelorException {
+	public void populate(Invoice invoice, List<InvoiceLine> invoiceLines) throws AxelorException {
 		
 		super.populate(invoice, invoiceLines);
 	}

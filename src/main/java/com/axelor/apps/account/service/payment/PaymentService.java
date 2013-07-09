@@ -73,7 +73,7 @@ public class PaymentService {
 		 // Récupérer la ligne en débit de la facture
 		 MoveLine invoiceLineDebit = null;
 		 for (MoveLine moveLineDebit : move.getMoveLineList()){
-			 if (moveLineDebit.getDebit().compareTo(BigDecimal.ZERO) == 1 && moveLineDebit.getPartner().equals(invoice.getPartner()) &&
+			 if (moveLineDebit.getDebit().compareTo(BigDecimal.ZERO) == 1 && moveLineDebit.getPartner().equals(invoice.getClientPartner()) &&
 				 moveLineDebit.getAmountRemaining().compareTo(BigDecimal.ZERO) == 1){
 				 invoiceLineDebit = moveLineDebit;
 				 break;
@@ -117,7 +117,7 @@ public class PaymentService {
 		 .filter("move.company = ?1 and move.state = ?2 and fromSchedulePaymentOk = false" +
 		 " and account.reconcileOk = ?3 and credit > 0 and amountRemaining > 0 " +
 		 "and partner = ?4 and account = ?5 ORDER by date asc ",
-		 company, "validated", true, invoice.getPartner(), account).fetch();
+		 company, "validated", true, invoice.getClientPartner(), account).fetch();
 		 
 		 LOG.debug("Nombre de trop-perçus à imputer sur la facture récupéré : {}", creditMoveLines.size());
 
@@ -127,7 +127,7 @@ public class PaymentService {
 	
 	public List<MoveLine> getInvoiceDue(Invoice invoice, boolean useOthersInvoiceDue) throws AxelorException {
 		Company company = invoice.getCompany();
-		Partner partner = invoice.getPartner();
+		Partner partner = invoice.getClientPartner();
 
 		// Récupérer les dûs du tiers pour le même compte que celui de l'avoir
 		List<MoveLine> debitMoveLines = ms.getOrignalInvoiceFromRefund(invoice);

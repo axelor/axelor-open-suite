@@ -8,7 +8,7 @@
     <grid name="invoice-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice">
         <field name="invoiceId"/>
         <field name="operationTypeSelect" />
-        <field name="partner"/>
+        <field name="clientPartner"/>
         <field name="paymentMode" />
         <field name="invoiceDate"/>
         <field name="dueDate"/>
@@ -27,11 +27,11 @@
         <field name="operationTypeSelect" onChange="action-invoice-method-get-journal,action-invoice-record-partner-change,action-set-partner-domain"/>
         <group name="partnerGroup" title="Invoicing informations" colSpan="4" cols="4" canCollapse="true">
             <field name="company" widget="SuggestBox" onChange="action-invoice-method-get-journal,action-invoice-record-company-change"/>
-            <field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form" onChange="action-invoice-record-partner-change"  />
+            <field name="clientPartner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form" onChange="action-invoice-record-partner-change"  />
        		<field name="contactPartner" domain="self.isContact = 'true'"/>
             <field name="paymentMode" widget="SuggestBox"/>
             <field name="paymentCondition" widget="SuggestBox"/>
-            <field name="bankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" hideIf="operationTypeSelect >= 3" domain="self.partner = :partner"/>
+            <field name="bankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" hideIf="operationTypeSelect >= 3" domain="self.partner = :clientPartner"/>
             <field name="partnerAccount" domain="self.company = :company" onSelect="action-invoice-partner-account-domain"/>
             <field name="address" colSpan="4"/>
         </group>
@@ -154,7 +154,7 @@
     		<button name="new" title="" hidden="true"/>
     	</toolbar>
         <field name="invoiceId"/>
-        <field name="partner"/>
+        <field name="clientPartner"/>
         <field name="paymentMode" />
         <field name="invoiceDate"/>
         <field name="dueDate"/>
@@ -212,7 +212,7 @@
     	<field name="invoiceTypeSelect"/>
 		<field name="invoiceId"/>
 		<field name="contractLine"/>
-		<field name="partner"/>
+		<field name="clientPartner"/>
 		<field name="paymentMode" />
 		<field name="invoiceDate"/>
 		<field name="dueDate"/>
@@ -226,7 +226,7 @@
     	<field name="invoiceTypeSelect"/>
 		<field name="invoiceId"/>
 		<field name="contractLine"/>
-		<field name="partner"/>
+		<field name="clientPartner"/>
 		<field name="paymentMode" />
 		<field name="invoiceDate"/>
 		<field name="dueDate"/>
@@ -262,12 +262,12 @@
     </action-record>
     
     <action-record name="action-invoice-record-partner-change" model="com.axelor.apps.account.db.Invoice">
-    	<field name="paymentMode" expr="eval: partner?.paymentMode"/>
-    	<field name="address" expr="eval: partner?.mainInvoicingAddress "/>
+    	<field name="paymentMode" expr="eval: clientPartner?.paymentMode"/>
+    	<field name="address" expr="eval: clientPartner?.mainInvoicingAddress "/>
     	<field name="dueDate" expr="eval: __date__"/>
-    	<field name="currency" expr="eval: partner?.currency"/>
-    	<field name="partnerAccount" expr="eval: partner?.supplierAccount"  if="operationTypeSelect == 1 || operationTypeSelect == 2" />
-    	<field name="partnerAccount" expr="eval: partner?.customerAccount"  if="operationTypeSelect == 3 || operationTypeSelect == 4" />
+    	<field name="currency" expr="eval: clientPartner?.currency"/>
+    	<field name="partnerAccount" expr="eval: clientPartner?.supplierAccount"  if="operationTypeSelect == 1 || operationTypeSelect == 2" />
+    	<field name="partnerAccount" expr="eval: clientPartner?.customerAccount"  if="operationTypeSelect == 3 || operationTypeSelect == 4" />
     </action-record>
     
     <action-record name="alarm-invoice-record" model="com.axelor.apps.account.db.Invoice">
@@ -294,10 +294,10 @@
 	</action-attrs>
 	
 	<action-attrs name="action-set-partner-domain">
-		<attribute name="domain" for="partner" expr="eval:'self.isCustomer = true'" if="__this__.operationTypeSelect == 1"/>
-		<attribute name="domain" for="partner" expr="eval:'self.isCustomer = true'" if="__this__.operationTypeSelect == 2"/>
-		<attribute name="domain" for="partner" expr="eval:'self.isSupplier = true'" if="__this__.operationTypeSelect == 3"/>
-		<attribute name="domain" for="partner" expr="eval:'self.isSupplier = true'" if="__this__.operationTypeSelect == 4"/>
+		<attribute name="domain" for="clientPartner" expr="eval:'self.isCustomer = true'" if="__this__.operationTypeSelect == 1"/>
+		<attribute name="domain" for="clientPartner" expr="eval:'self.isCustomer = true'" if="__this__.operationTypeSelect == 2"/>
+		<attribute name="domain" for="clientPartner" expr="eval:'self.isSupplier = true'" if="__this__.operationTypeSelect == 3"/>
+		<attribute name="domain" for="clientPartner" expr="eval:'self.isSupplier = true'" if="__this__.operationTypeSelect == 4"/>
 	</action-attrs>
 	
 	
@@ -335,7 +335,7 @@
 	
 	<action-attrs name="action-invoice-attrs-change-total-title">
 		<attribute name="title" for="accountingTotalGroup" expr="eval: 'Totaux en devise comptable (${:self.currency.symbol})'"/>
-		<attribute name="title" for="invoiceTotalGroup" expr="eval: 'Totaux en devise de la facture (${:self.partner.currency.symbol})'"/>
+		<attribute name="title" for="invoiceTotalGroup" expr="eval: 'Totaux en devise de la facture (${:self.clientPartner.currency.symbol})'"/>
 	</action-attrs>
 	
 	<!-- DOMAIN -->

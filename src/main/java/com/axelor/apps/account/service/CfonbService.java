@@ -440,9 +440,9 @@ public class CfonbService {
 		String partnerName = "";
 		if(isForInvoice)  {
 			Invoice invoice = (Invoice) directDebitManagement.getInvoiceSet().toArray()[0];
-			Partner partner = invoice.getPartner();
+			Partner partner = invoice.getClientPartner();
 			bankDetails = partner.getBankDetails();
-			partnerName = this.getPayeurPartnerName(invoice.getPartner());			// Nom/Raison sociale du débiteur
+			partnerName = this.getPayeurPartnerName(invoice.getClientPartner());			// Nom/Raison sociale du débiteur
 			if(bankDetails == null) {
 				throw new AxelorException(String.format("%s :\n Veuillez configurer un RIB pour le tiers %s",
 						GeneralService.getExceptionAccountingMsg(), partner.getName()), IException.CONFIGURATION_ERROR);
@@ -509,7 +509,7 @@ public class CfonbService {
 	 * @throws AxelorException
 	 */
 	public String createRecipientCFONB(Company company, Invoice invoice) throws AxelorException  {
-		Partner partner = invoice.getPartner();
+		Partner partner = invoice.getClientPartner();
 		BankDetails bankDetails = partner.getBankDetails();
 		if(bankDetails == null)  {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un RIB pour le tiers %s",
@@ -744,7 +744,7 @@ public class CfonbService {
 	 */
 	public String getPayeurPartnerName(Invoice memory)  {
 
-		return this.getPayeurPartnerName(memory.getPartner());
+		return this.getPayeurPartnerName(memory.getClientPartner());
 		
 	}
 

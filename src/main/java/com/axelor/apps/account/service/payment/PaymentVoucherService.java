@@ -89,13 +89,13 @@ public class PaymentVoucherService  {
 		if (LOG.isDebugEnabled())  {  LOG.debug("Création d'une saisie paiement par TIP ou TIP chèque - facture : {}",invoice.getInvoiceId());  }
 		if (LOG.isDebugEnabled())  {  LOG.debug("Création d'une saisie paiement par TIP ou TIP chèque - mode de paiement : {}",paymentMode.getCode());  }
 		if (LOG.isDebugEnabled())  {  LOG.debug("Création d'une saisie paiement par TIP ou TIP chèque - société : {}",invoice.getCompany().getName());  }
-		if (LOG.isDebugEnabled())  {  LOG.debug("Création d'une saisie paiement par TIP ou TIP chèque - tiers payeur : {}",invoice.getPartner().getName());  }
+		if (LOG.isDebugEnabled())  {  LOG.debug("Création d'une saisie paiement par TIP ou TIP chèque - tiers payeur : {}",invoice.getClientPartner().getName());  }
 		
 		PaymentVoucher paymentVoucher = this.createPaymentVoucher(invoice.getCompany(), 
 				null, 
 				paymentMode, 
 				dateTime, 
-				invoice.getPartner(), 
+				invoice.getClientPartner(), 
 				amount, 
 				null,
 				invoice,

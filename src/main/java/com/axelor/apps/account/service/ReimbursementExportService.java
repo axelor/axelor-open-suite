@@ -539,7 +539,7 @@ public class ReimbursementExportService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void createReimbursementInvoice(Invoice invoice) throws AxelorException  {
 		Company company = invoice.getCompany();
-		Partner partner = invoice.getPartner();
+		Partner partner = invoice.getClientPartner();
 		
 		// récupération des trop-perçus du contrat
 		List<MoveLine> moveLineList = MoveLine.all().filter("self.account.reconcileOk = 'true' AND self.fromSchedulePaymentOk = 'false' " +

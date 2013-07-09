@@ -117,11 +117,11 @@ public class PaymentScheduleExportService {
 	
 	
 	public void testBankDetails(Invoice invoice) throws AxelorException  {
-		BankDetails bankDetails = invoice.getPartner().getBankDetails();
+		BankDetails bankDetails = invoice.getClientPartner().getBankDetails();
 		
 		if(bankDetails == null) {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un RIB pour le tiers %s",
-					GeneralService.getExceptionAccountingMsg(), invoice.getPartner().getName()), IException.CONFIGURATION_ERROR);
+					GeneralService.getExceptionAccountingMsg(), invoice.getClientPartner().getName()), IException.CONFIGURATION_ERROR);
 		}
 		else  {
 			cs.testBankDetailsField(bankDetails);

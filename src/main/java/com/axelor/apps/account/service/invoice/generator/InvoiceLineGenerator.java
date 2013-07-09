@@ -6,23 +6,27 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.db.IInvoice;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.VatLine;
 import com.axelor.apps.account.service.AccountManagementService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.db.Alarm;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.UnitConversion;
+import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.organisation.db.Task;
 import com.axelor.apps.tool.date.Period;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.google.inject.Inject;
 
 /**
  * Classe de création de ligne de facture abstraite.
@@ -35,13 +39,22 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 	// Logger
 	private static final Logger LOG = LoggerFactory.getLogger(InvoiceLineGenerator.class);
 	
-	@Inject
-	private AccountManagementService acs;
-	
-	
+	protected AccountManagementService accountManagementService;
+	protected CurrencyService currencyService;
 	
 	protected Invoice invoice;
 	protected int type;
+	protected Product product;
+	protected String productName; 
+	protected BigDecimal price;
+	protected String description; 
+	protected BigDecimal qty;
+	protected Unit unit; 
+	protected VatLine vatLine; 
+	protected Task task; 
+	protected LocalDate today;
+	protected boolean isTaxInvoice; 
+	
 	
 	protected InvoiceLineGenerator() { }
 	
@@ -64,6 +77,43 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
         
     }
 	
+	protected InvoiceLineGenerator( Invoice invoice, Product product, String productName, BigDecimal price, String description, BigDecimal qty,
+			Unit unit, VatLine vatLine, Task task, boolean isTaxInvoice ) {
+
+        this.invoice = invoice;
+        this.product = product;
+        this.productName = productName;
+        this.price = price;
+        this.description = description;
+        this.qty = qty;
+        this.unit = unit;
+        this.vatLine = vatLine;
+        this.task = task;
+        this.isTaxInvoice = isTaxInvoice;
+        this.today = GeneralService.getTodayDate();
+        this.currencyService = new CurrencyService(this.today);
+        
+        
+    }
+	
+	protected InvoiceLineGenerator( Invoice invoice, Product product, String productName, BigDecimal price, String description, BigDecimal qty,
+			Unit unit, Task task, boolean isTaxInvoice ) {
+
+        this.invoice = invoice;
+        this.product = product;
+        this.productName = productName;
+        this.price = price;
+        this.description = description;
+        this.qty = qty;
+        this.unit = unit;
+        this.task = task;
+        this.isTaxInvoice = isTaxInvoice;
+        this.today = GeneralService.getTodayDate();
+        this.currencyService = new CurrencyService(this.today);
+        this.accountManagementService = new AccountManagementService();
+        
+    }
+	
 	public Invoice getInvoice() {
 		return invoice;
 	}
@@ -82,35 +132,74 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
 	abstract public List<InvoiceLine> creates() throws AxelorException ;
 	
-	protected InvoiceLine createLine(Company company, Product product, 
-			BigDecimal qty, BigDecimal price, Unit unit, Unit pricingListUnit, 
-			boolean isTaxInvoice, boolean isPurchase) throws AxelorException {
+	
+	/**
+	 * Version de TVA récupéré re-déterminé
+	 * @param company
+	 * @param product
+	 * @param qty
+	 * @param price
+	 * @param unit
+	 * @param isTaxInvoice
+	 * @param type
+	 * @param isPurchase
+	 * @return
+	 * @throws AxelorException
+	 */
+	protected InvoiceLine createInvoiceLine() throws AxelorException {
 		
-		return createLine(company, product, qty, price, unit, pricingListUnit, isTaxInvoice, type, isPurchase);
+		boolean isPurchase = false;
+		if(invoice.getOperationTypeSelect() == IInvoice.SUPPLIER_PURCHASE || invoice.getOperationTypeSelect() == IInvoice.SUPPLIER_REFUND)  {
+			isPurchase = true;
+		}
 		
+		return this.createInvoiceLine(	accountManagementService.getVatLine(invoice.getInvoiceDate(), product, invoice.getCompany(), isPurchase));
 	}
-
-	protected InvoiceLine createLine(Company company, Product product,  
-			BigDecimal qty, BigDecimal price, Unit unit, Unit pricingListUnit, 
-			boolean isTaxInvoice, int type, boolean isPurchase) throws AxelorException {
+	
+	
+	/**
+	 * En passant tout les paramètres
+	 * @param invoice
+	 * @param exTaxTotal
+	 * @param product
+	 * @param productName
+	 * @param price
+	 * @param description
+	 * @param qty
+	 * @param unit
+	 * @param vatLine
+	 * @param task
+	 * @param isTaxInvoice
+	 * @return
+	 * @throws AxelorException 
+	 */
+	public InvoiceLine createInvoiceLine(VatLine vatLine) throws AxelorException  {
 		
 		InvoiceLine invoiceLine = new InvoiceLine();
-
+		
 		if (isTaxInvoice) { invoiceLine.setTaxInvoice(invoice); }
 		else { invoiceLine.setInvoice(invoice); }
 
 		invoiceLine.setProduct(product);
-		invoiceLine.setProductName(product.getName());
-		invoiceLine.setInvoiceLineType(product.getInvoiceLineType());
-		invoiceLine.setQty(qty);
+		invoiceLine.setProductName(productName);
+		invoiceLine.setDescription(description);
 		invoiceLine.setPrice(price);
-		invoiceLine.setPricingListUnit(pricingListUnit);
-		invoiceLine.setExTaxTotal(computeAmount(qty, price));
-
-		invoiceLine.setVatLine(acs.getVatLine(invoice.getInvoiceDate(), product, company, isPurchase));
-
+		invoiceLine.setQty(qty);
+		
+		BigDecimal exTaxTotal = computeAmount(qty, price);
+		invoiceLine.setExTaxTotal(exTaxTotal);
+		invoiceLine.setAccountingExTaxTotal(
+				currencyService.getAmountCurrencyConverted(
+						invoice.getCurrency(), invoice.getClientPartner().getCurrency(), exTaxTotal, invoice.getInvoiceDate()));  
+		
+		invoiceLine.setPricingListUnit(unit);
+		invoiceLine.setVatLine(vatLine);
+		invoiceLine.setTask(task);
+		
 		return invoiceLine;
+		
 	}
+	
 	
 	/**
 	 * Rembourser une ligne de facture.

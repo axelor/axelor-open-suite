@@ -58,7 +58,7 @@ public class InvoiceLineService {
 	public BigDecimal getAccountingExTaxTotal(BigDecimal exTaxTotal, Invoice invoice) throws AxelorException  {
 		
 		return currencyService.getAmountCurrencyConverted(
-				invoice.getCurrency(), invoice.getPartner().getCurrency(), exTaxTotal, invoice.getInvoiceDate());  
+				invoice.getCurrency(), invoice.getClientPartner().getCurrency(), exTaxTotal, invoice.getInvoiceDate());  
 	}
 	
 	

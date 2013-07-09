@@ -30,7 +30,7 @@ public class JournalService {
 	 */
 	public Journal getJournal(Invoice invoice) throws AxelorException  {
 		
-		if(invoice.getJournal() != null)  {  return invoice.getJournal();  }
+//		if(invoice.getJournal() != null)  {  return invoice.getJournal();  }
 		
 		Company company = invoice.getCompany();
 		

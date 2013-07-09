@@ -8,14 +8,21 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.InvoiceLineTaxHistory;
 import com.axelor.apps.account.db.InvoiceLineVat;
+import com.axelor.apps.account.db.PaymentCondition;
+import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.invoice.generator.tax.TaxLine;
 import com.axelor.apps.account.service.invoice.generator.tax.VatInvoiceLine;
+import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Status;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -30,73 +37,149 @@ public abstract class InvoiceGenerator {
 
 	protected String exceptionMsg;
 	protected SequenceService sequenceService;
+	protected JournalService journalService;
 	
 	protected boolean months30days;
-	protected int invoiceType;
-	protected Partner partner;
+	protected int operationType;
 	protected Company company;
-	protected LocalDate date;
+	protected PaymentCondition paymentCondition;
+	protected PaymentMode paymentMode;
+	protected Address mainInvoicingAddress;
+	protected Partner clientPartner;
+	protected Partner contactPartner;
+	protected  Currency currency;
+	protected LocalDate today;
 	
-	protected InvoiceGenerator(Partner partner, int invoiceType, Company company) throws AxelorException {
+	protected InvoiceGenerator(int operationType, Company company,PaymentCondition paymentCondition, PaymentMode paymentMode, Address mainInvoicingAddress, 
+			Partner clientPartner, Partner contactPartner, Currency currency) throws AxelorException {
 		
-		this.partner = partner;
+		this.operationType = operationType;
 		this.company = company;
-		this.invoiceType = invoiceType;
+		this.paymentCondition = paymentCondition;
+		this.paymentMode = paymentMode;
+		this.mainInvoicingAddress = mainInvoicingAddress;
+		this.clientPartner = clientPartner;
+		this.contactPartner = contactPartner;
+		this.currency = currency;
 		
-		this.date = GeneralService.getTodayDate();
+		this.today = GeneralService.getTodayDate();
 		this.exceptionMsg = GeneralService.getExceptionInvoiceMsg();
-		this.sequenceService = new SequenceService(date);
+		this.sequenceService = new SequenceService(today);
+		this.journalService = new JournalService();
+		
+	}
+	
+	protected InvoiceGenerator(Partner clientPartner, int operationType, Company company) throws AxelorException {
+		
+		this.clientPartner = clientPartner;
+		this.company = company;
+		this.operationType = operationType;
+		
+		this.today = GeneralService.getTodayDate();
+		this.exceptionMsg = GeneralService.getExceptionInvoiceMsg();
+		this.sequenceService = new SequenceService(today);
 		
 	}
 	
 	
-	protected InvoiceGenerator(int invoiceType) {
+	protected InvoiceGenerator(int operationType) {
 		
-		this.invoiceType = invoiceType;
+		this.operationType = operationType;
 		
-		this.date = GeneralService.getTodayDate();
+		this.today = GeneralService.getTodayDate();
 		this.exceptionMsg = GeneralService.getExceptionInvoiceMsg();
-		this.sequenceService = new SequenceService(date);
+		this.sequenceService = new SequenceService(today);
 		
 	}
+	
 	
 	abstract public Invoice generate() throws AxelorException;
 	
-	protected Invoice createInvoice() throws AxelorException {
+	
+	protected Invoice createInvoiceHeader() throws AxelorException  {
 		
 		Invoice invoice = new Invoice();
-
-		invoice.setInvoiceDate(date);
+		
+		invoice.setOperationTypeSelect(operationType);
+		
+		invoice.setInvoiceDate(this.today);
+		
+		if(clientPartner == null)  {
+			throw new AxelorException(String.format("%s :\nAucun tiers selectionné %s", 
+					GeneralService.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
+		}
+		invoice.setClientPartner(clientPartner);
+		
+		if(paymentCondition == null)  {
+			paymentCondition = clientPartner.getPaymentCondition();
+		}
+		if(paymentCondition == null)  {
+			throw new AxelorException(String.format("%s :\nCondition de paiement absent", 
+					GeneralService.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
+		}
+		invoice.setPaymentCondition(paymentCondition);
+		
+		invoice.setDueDate(this.today.plusDays(paymentCondition.getPaymentTime()));
+		
+		if(paymentMode == null)  {
+			paymentMode = clientPartner.getPaymentMode();
+		}
+		if(paymentMode == null)  {
+			throw new AxelorException(String.format("%s :\nMode de paiement absent", 
+					GeneralService.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
+		}
+		invoice.setPaymentMode(paymentMode);
+		invoice.setAddress(mainInvoicingAddress);
+		invoice.setContactPartner(contactPartner);
+		invoice.setCurrency(currency);
+		
+		invoice.setCompany(company);
+		
+		invoice.setPartnerAccount(this.getCustomerAccount(clientPartner, company));
+		
+		invoice.setJournal(journalService.getJournal(invoice)); 
 		
 		invoice.setStatus(Status.all().filter("code = 'dra'").fetchOne());
-		
-		updateInvoice(invoice, partner, company);
 		
 		initCollections(invoice);
 		
 		return invoice;
 	}
 	
-	protected void updateInvoice(Invoice invoice, Partner partner, Company company) throws AxelorException{
 
-		invoice.setPartner(partner);
-		invoice.setAddress(partner.getMainInvoicingAddress());
-		invoice.setCompany(company);
-		invoice.setPartnerAccount(company.getCustomerAccount());
-		if (invoice.getPartnerAccount() == null) {
-			throw new AxelorException(String.format("%s :\nCompte comptable manquant pour la société %s", exceptionMsg, company.getName()), IException.MISSING_FIELD);			
-		}
-		invoice.setPaymentMode(partner.getPaymentMode());
-//		if (partner.getPaymentTime() != null) {
-//			invoice.setDueDate(date.plusDays(partner.getPaymentTime()));
-//		}
+	public Account getCustomerAccount(Partner partner, Company company) throws AxelorException  {
+			
+		Account partnerAccount = null;
 		
-		if (invoice.getPaymentCondition() != null && invoice.getPaymentCondition().getPaymentTime() != null) {
-			invoice.setDueDate(date.plusDays(invoice.getPaymentCondition().getPaymentTime()));
+		for(AccountingSituation accountingSituation : partner.getAccountingSituationList())  {
+			
+			if(accountingSituation.getCompany().equals(company))  {
+				
+				partnerAccount = accountingSituation.getCustomerAccount();
+				
+			}
 		}
+		
+		if(partnerAccount == null)  {
+			
+			partnerAccount = company.getCustomerAccount();
+			
+		}
+		
+		if(partnerAccount == null)  {
+			
+			throw new AxelorException(String.format("%s :\nCompte comptable manquant pour la société %s", 
+					GeneralService.getExceptionInvoiceMsg(), company.getName()), IException.MISSING_FIELD);			
+			
+		}
+		
+		return partnerAccount;
+			
 	}
 	
-
+	
+	
+	
 	/**
 	 * Peupler une facture.
 	 * <p>
@@ -112,7 +195,7 @@ public abstract class InvoiceGenerator {
 	 * 
 	 * @throws AxelorException
 	 */
-	protected void populate(Invoice invoice, List<InvoiceLine> invoiceLines) throws AxelorException {
+	public void populate(Invoice invoice, List<InvoiceLine> invoiceLines) throws AxelorException {
 		
 		LOG.debug("Peupler une facture => lignes de factures: {} ", new Object[] { invoiceLines.size() });
 		
