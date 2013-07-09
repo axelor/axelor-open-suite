@@ -35,7 +35,7 @@
 	    </group>
 	    <notebook colSpan="6">
 	        <page title="Tasks">
-	            <field name="taskList" colSpan="6"/>
+	            <field name="taskList" grid-view="task-project-grid" form-view="task-form" colSpan="6"/>
 	        </page>
 	        <page title="Financial information" colSpan="4">
 	            <group title="Initial Budget" colSpan="6" cols="6">

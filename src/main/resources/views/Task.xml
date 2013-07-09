@@ -18,7 +18,15 @@
         <field name="taskProgress" widget="Progress"/>
     </grid>
     
-    <form cols="4" onNew="action-task-default-record" name="task-form" title="Task" model="com.axelor.apps.organisation.db.Task">
+    <grid name="task-project-grid" title="Tasks" model="com.axelor.apps.organisation.db.Task" orderBy="taskProgress">
+        <field name="name"/>
+        <field name="userInfo"/>
+        <field name="totalPlannedQty"/>
+        <field name="totalTimeSheetQty"/>
+    </grid>
+    
+    <form cols="4" onNew="action-task-default-record" name="task-form" title="Task" model="com.axelor.apps.organisation.db.Task"
+    onSave="action-task-compute-margin">
     	<field name="name"/>
     	<field name="statusSelect" showTitle="false" colSpan="2" widget="NavSelect"/>
     	<group title="Context" colSpan="4" cols="6">
@@ -47,7 +55,7 @@
 	    <break/>
 	    <notebook colSpan="4">
 	        <page title="Planification and realization">
-	            <field name="planningLineList" colSpan="4" form-view="planning-line-task-form" grid-view="planning-line-task-grid"/>
+	            <field name="planningLineList" onChange="action-task-compute-total-planned-qty" colSpan="4" form-view="planning-line-task-form" grid-view="planning-line-task-grid"/>
 	        </page>
 	        <page title="Suivi Facturation">
 	            <field name="salesOrderLine" onChange="action-task-salesOrderLine-on-change"/>
@@ -64,23 +72,23 @@
 	        </page>
 	        <page title="Financial information" colSpan="4">
 	            <group title="Budget initial" colSpan="4" cols="6">
-	                <field name="initialBudgetTurnover"/>
-	                <field name="initialBudgetCost"/>
+	                <field name="initialBudgetTurnover" onChange="action-task-compute-margin"/>
+	                <field name="initialBudgetCost" onChange="action-task-compute-margin"/>
 	                <field name="initialBudgetMargin"/>
 	            </group>
 	            <group title="Reaslized" colSpan="4" cols="6">
-	                <field name="realizedTurnover"/>
-	                <field name="realizedBudgetCost"/>
+	                <field name="realizedTurnover" onChange="action-task-compute-margin"/>
+	                <field name="realizedBudgetCost" onChange="action-task-compute-margin"/>
 	                <field name="realizedBudgetMargin"/>
 	            </group>
 	            <group title="Remaining to do" colSpan="4" cols="6">
-	                <field name="remainingTurnover"/>
-	                <field name="remainingBudgetCost"/>
+	                <field name="remainingTurnover" onChange="action-task-compute-margin"/>
+	                <field name="remainingBudgetCost" onChange="action-task-compute-margin"/>
 	                <field name="remainingBudgetMargin"/>
 	            </group>
 	            <group title="Estimated final" colSpan="4" cols="6">
-	                <field name="expectedFinalTurnover"/>
-	                <field name="expectedFinalCost"/>
+	                <field name="expectedFinalTurnover" onChange="action-task-compute-margin"/>
+	                <field name="expectedFinalCost" onChange="action-task-compute-margin"/>
 	                <field name="expectedFinalMargin"/>
 	                <field name="gapBetweenFinalAndInitial"/>
 	            </group>
@@ -116,6 +124,21 @@
     	<field name="product" expr="eval:salesOrderLine?.product" if="salesOrderLine"/>
     	<field name="qty" expr="eval:salesOrderLine?.qty" if="salesOrderLine"/>
     	<field name="price" expr="eval:salesOrderLine?.price" if="salesOrderLine"/>
+    </action-record>
+    
+    <action-record name="action-task-compute-total-planned-qty" model="com.axelor.apps.organisation.db.Task">
+    	<field name="totalPlannedQty" expr="eval: planningLineList?.collect(){it?.duration}?.sum()" if="planningLineList != null"/>
+    </action-record>
+    
+    <action-record name="action-task-compute-margin" model="com.axelor.apps.organisation.db.Task">
+<!--     	<field name="initialBudgetMargin" expr="eval: (1-initialBudgetCost)/(initialBudgetTurnover)" if="initialBudgetCost != null &amp;&amp; initialBudgetTurnover != null"/> -->
+<!--     	<field name="realizedBudgetMargin" expr="eval: (1-realizedBudgetCost)/(realizedTurnover)" if="realizedBudgetCost != null &amp;&amp; realizedTurnover != null"/> -->
+<!--     	<field name="remainingBudgetMargin" expr="eval: (1-remainingBudgetCost)/(remainingTurnover)" if="remainingBudgetCost != null &amp;&amp; remainingTurnover != null"/> -->
+<!--     	<field name="expectedFinalMargin" expr="eval: (1-expectedFinalCost)/(expectedFinalTurnover)" if="expectedFinalCost != null &amp;&amp; expectedFinalTurnover != null"/> -->
+		<field name="initialBudgetMargin" expr="call:com.axelor.apps.organisation.service.TaskService:computeMargin(initialBudgetTurnover,initialBudgetCost)" if="initialBudgetCost != null &amp;&amp; initialBudgetTurnover != null"/>
+		<field name="realizedBudgetMargin" expr="call:com.axelor.apps.organisation.service.TaskService:computeMargin(realizedTurnover,realizedBudgetCost)" if="realizedBudgetCost != null &amp;&amp; realizedTurnover != null"/>
+		<field name="remainingBudgetMargin" expr="call:com.axelor.apps.organisation.service.TaskService:computeMargin(remainingTurnover,remainingBudgetCost)" if="remainingBudgetCost != null &amp;&amp; remainingTurnover != null"/>
+		<field name="expectedFinalMargin" expr="call:com.axelor.apps.organisation.service.TaskService:computeMargin(expectedFinalTurnover,expectedFinalCost)" if="expectedFinalCost != null &amp;&amp; expectedFinalTurnover != null"/>
     </action-record>
     
 </object-views>
