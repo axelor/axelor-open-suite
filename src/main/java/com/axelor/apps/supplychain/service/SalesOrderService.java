@@ -12,7 +12,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.UnitConversion;
 import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.StockMoveService;
+import com.axelor.apps.supplychain.service.StockMoveService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.organisation.db.PlanningLine;
@@ -301,7 +301,7 @@ public class SalesOrderService {
 			for(SalesOrderLine salesOrderLine: salesOrder.getSalesOrderLineList()) {
 				Product salesOrderLineProduct = salesOrderLine.getProduct();
 				if(salesOrderLineProduct != null && salesOrderLineProduct.getProductTypeSelect().equals("stockable")) {
-					StockMoveLine stockMoveLine = stockMoveService.createStocksMovesLines(salesOrderLine.getProduct(), salesOrderLine.getQty().intValue(), stockMove);
+					StockMoveLine stockMoveLine = stockMoveService.createStocksMovesLines(salesOrderLine.getProduct(), salesOrderLine.getQty().intValue(), salesOrderLine.getUnit(), salesOrderLine.getPrice(), stockMove);
 					if(stockMoveLine != null) {
 						stockMove.getStockMoveLineList().add(stockMoveLine);
 					}
