@@ -33,11 +33,21 @@
         <field name="partner" domain="self.isContact = false"/>
         <field name="stockMoveLineList" colSpan="4"/>
         <group title="Action(s)" colSpan="2" cols="2">
-			<button name="confirm" title="Confirm" showIf="statusSelect == 1 || statusSelect == 4" colSpan="1" onClick="save,action-stock-move-record-confirm,save"/>
+			<button name="plan" title="Plan" showIf="statusSelect == 1" colSpan="1" onClick="save,action-stock-move-record-plan,save"/>
 			<button name="realize" title="Realize" showIf="statusSelect == 2" colSpan="1" onClick="save,action-stock-move-record-realize,save"/>
 			<button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3" colSpan="1" onClick="save,action-stock-move-record-cancel,save"/>
+        	<button name="draft" title="Draft" showIf="statusSelect == 4" onClick="save,action-stock-move-record-draft,save"/>
 		 </group>
     </form>
+    
+    <!-- <action-attrs name="action-stock-move-attrs-title-realize-button">
+    	<attribute name="title" for="realize" expr="eval: (fromLocation) ? ((fromLocation?.typeSelect != 1 &amp;&amp; toLocation?.typeSelect == 1) ? 'Receive' : 'Send') : ((toLocation?.typeSelect == 1) ? 'Receive' : 'Send')"/>
+    </action-attrs> -->
+    
+    <action-record name="action-stock-move-record-draft" model="com.axelor.apps.supplychain.db.StockMove">
+    	<field name="statusSelect" expr="eval: 1"/>
+	    <field name="realDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+    </action-record>
     
     <action-record name="action-stock-move-record-new" model="com.axelor.apps.supplychain.db.StockMove">
     	<field name="company"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
@@ -45,10 +55,10 @@
 	    <field name="estimatedDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
 	</action-record>
 	
-	<action-record name="action-stock-move-record-confirm" model="com.axelor.apps.supplychain.db.StockMove">
+	<action-record name="action-stock-move-record-plan" model="com.axelor.apps.supplychain.db.StockMove">
 	    <field name="statusSelect" expr="2"/>
 	    <field name="realDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
-	    <field name="stockMoveSeq" expr="call:com.axelor.apps.supplychain.service.SalesOrderService:getSequenceStockMove(company)" if="stockMoveSeq == null"/>
+	    <field name="stockMoveSeq" expr="call:com.axelor.apps.supplychain.service.StockMoveService:getSequenceStockMove(fromLocation,toLocation,company)" if="stockMoveSeq == null"/>
 	</action-record>
     
     <action-record name="action-stock-move-record-realize" model="com.axelor.apps.supplychain.db.StockMove">

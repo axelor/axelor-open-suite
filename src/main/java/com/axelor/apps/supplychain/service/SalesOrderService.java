@@ -4,27 +4,20 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.base.db.Address;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.IProduct;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.UnitConversion;
 import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.StockMoveService;
+import com.axelor.apps.supplychain.service.StockMoveService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.organisation.db.PlanningLine;
 import com.axelor.apps.organisation.db.Task;
 import com.axelor.apps.supplychain.db.ISalesOrder;
-import com.axelor.apps.supplychain.db.IStockMove;
 import com.axelor.apps.supplychain.db.SalesOrder;
 import com.axelor.apps.supplychain.db.SalesOrderLine;
 import com.axelor.apps.supplychain.db.SalesOrderLineVat;
@@ -32,7 +25,6 @@ import com.axelor.apps.supplychain.db.SalesOrderSubLine;
 import com.axelor.apps.supplychain.db.StockMove;
 import com.axelor.apps.supplychain.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -51,9 +43,6 @@ public class SalesOrderService {
 
 	@Inject
 	private StockMoveService stockMoveService;
-
-	@Inject
-	SequenceService sequenceService;
 
 	public SalesOrder _computeSalesOrderLines(SalesOrder salesOrder)  {
 
@@ -298,23 +287,6 @@ public class SalesOrderService {
 	}
 
 	/**
-	 * Méthode permettant d'obtenir la séquence du StockMove.
-	 * @param company la société
-	 * @return la chaine contenant la séquence du StockMove
-	 */
-	public String getSequenceStockMove(Company company) {
-
-		String ref = sequenceService.getSequence(IStockMove.INTERNAL, company, null, false);
-		if(ref.equals("")) {
-			ref = sequenceService.getSequence(IStockMove.OUTGOING, company, null, false);
-			if(ref.equals(""))  {
-				ref = sequenceService.getSequence(IStockMove.INCOMING, company, null, false);			
-			}
-		}
-		return ref;
-	}
-
-	/**
 	 * Méthode permettant de créer un StockMove à partir d'un SalesOrder.
 	 * @param salesOrder l'objet salesOrder
 	 * @throws AxelorException Aucune séquence de StockMove (Livraison) n'a été configurée
@@ -322,19 +294,14 @@ public class SalesOrderService {
 	@Transactional
 	public void createStocksMovesFromSalesOrder(SalesOrder salesOrder) throws AxelorException {
 
-		String ref = getSequenceStockMove(salesOrder.getCompany());
-
-		if (ref == null || ref.isEmpty() || ref.equals(""))
-			throw new AxelorException("Aucune séquence configurée pour les livraisons de la société "+salesOrder.getCompany().getName(), IException.CONFIGURATION_ERROR);
-
-		StockMove stockMove = stockMoveService.createStocksMoves(salesOrder.getDeliveryAddress(), salesOrder.getCompany(), salesOrder.getClientPartner(), ref, salesOrder.getLocation());
-
+		StockMove stockMove = stockMoveService.createStocksMoves(salesOrder.getDeliveryAddress(), salesOrder.getCompany(), salesOrder.getClientPartner(), salesOrder.getLocation());
+		
 		if(salesOrder.getSalesOrderLineList() != null) {
 			stockMove.setStockMoveLineList(new ArrayList<StockMoveLine>());
 			for(SalesOrderLine salesOrderLine: salesOrder.getSalesOrderLineList()) {
 				Product salesOrderLineProduct = salesOrderLine.getProduct();
 				if(salesOrderLineProduct != null && salesOrderLineProduct.getProductTypeSelect().equals("stockable")) {
-					StockMoveLine stockMoveLine = stockMoveService.createStocksMovesLines(salesOrderLine.getProduct(), salesOrderLine.getQty().intValue(), stockMove);
+					StockMoveLine stockMoveLine = stockMoveService.createStocksMovesLines(salesOrderLine.getProduct(), salesOrderLine.getQty().intValue(), salesOrderLine.getUnit(), salesOrderLine.getPrice(), stockMove);
 					if(stockMoveLine != null) {
 						stockMove.getStockMoveLineList().add(stockMoveLine);
 					}

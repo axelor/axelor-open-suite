@@ -15,4 +15,17 @@
         <field name="futureQty"/>
     </form>
     
+    <grid name="location-line-product-grid" title="Stock Locations content" model="com.axelor.apps.supplychain.db.LocationLine">
+        <field name="location"/>
+        <field name="currentQty"/>
+        <field name="futureQty"/>
+        <field name="lastFutureStockMoveDate"/>
+    </grid>
+    
+    <form name="location-line-product-form" title="Stock Location content" model="com.axelor.apps.supplychain.db.LocationLine" cols="4">
+        <field name="location"/>
+        <field name="currentQty"/>
+        <field name="futureQty"/>
+        <field name="lastFutureStockMoveDate"/>
+    </form>
 </object-views>
