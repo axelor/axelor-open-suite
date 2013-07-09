@@ -12,7 +12,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.UnitConversion;
 import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.StockMoveService;
+import com.axelor.apps.supplychain.service.StockMoveService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.organisation.db.PlanningLine;
