@@ -72,6 +72,8 @@ public interface IAdministration {
 	static final String SALES_ORDER = "salesOrder";
 	static final String PURCHASE_ORDER = "purchaseOrder";
 	static final String EVENT_TICKET = "eventTicket";
-
+	static final String INTERNAL = "intStockMove";
+	static final String OUTGOING = "outStockMove";
+	static final String INCOMING = "inStockMove";
 	
 }

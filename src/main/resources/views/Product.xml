@@ -64,6 +64,9 @@
 <!--             	<button name="showBillsOfMaterial" title="Show bills of material"/> -->
 <!--             	 <portlet action="chart:chart.planned.qty.by.location" height="200" colSpan="2"/> -->
 <!--             </page> -->
+			<page title="Stock" cols="4" colSpan="2">
+				<portlet action="action-product-view-stock" colSpan="4"/>
+			</page>
 			<page title="Social Networking" cols="6" hideIf="id == null">
 				<group title="Social Networking Integration" colSpan="3">
 					<group colSpan="3" cols="2" name="snIntegrationInit">
@@ -119,6 +122,13 @@
         </notebook>
     </form>
     
+    <action-view name="action-product-view-stock" title="Stock" model="com.axelor.apps.supplychain.db.LocationLine">
+    	<view type="grid" name="location-line-product-grid"/>
+    	<view type="form" name="location-line-product-form"/>
+    	<domain>self.product.id = :id</domain>
+    	<context name="id" expr="eval: id"/>
+    </action-view>
+    
     <action-record name="action-product-record-default-new" model="com.axelor.apps.base.db.Product">
     	<field name="applicationTypeSelect" expr="1"/>
     	<field name="productTypeSelect" expr="stockable"/>
@@ -155,14 +165,14 @@
 		<attribute name="hidden" expr="false" for="postToSN" />
 		<attribute name="hidden" expr="false" for="postit" />
 		<attribute name="hidden" expr="true" for="showing" />
-		<attribute name="hidden" expr="false" for="cancle" />
+		<attribute name="hidden" expr="false" for="cancel" />
 	</action-attrs>
 
 	<action-attrs name="action-showing-seen">
 		<attribute name="hidden" expr="false" for="showing" />		
 		<attribute name="hidden" expr="true" for="postToSN" />
 		<attribute name="hidden" expr="true" for="postit" />
-		<attribute name="hidden" expr="true" for="cancle" />
+		<attribute name="hidden" expr="true" for="cancel" />
 	</action-attrs>
 	
 	<action-method name="action-print-product-catelog" >

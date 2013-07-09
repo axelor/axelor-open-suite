@@ -2927,6 +2927,9 @@
 "supplychain.default.status.select";"2";"select";"Confirmed";"Confirmé";;;;
 "supplychain.default.status.select";"3";"select";"Realized";"Réalisé";;;;
 "supplychain.default.status.select";"4";"select";"Canceled";"Annulé";;;;
+"supplychain.sale.supply.type.select";"1";"select";"fromstock";"Du Stock";;;;
+"supplychain.sale.supply.type.select";"2";"select";"purchase";"Acheter";;;;
+"supplychain.sale.supply.type.select";"3";"select";"produce";"Produire";;;;
 "supplychain.invoicing.moment.select";"1";"select";"When a task is over";"Lorsqu'une tâche est terminée";;;;
 "supplychain.invoicing.moment.select";"2";"select";"Draft invoice N days after order validation";"Facture brouillons N jours après validation de la commande";;;;
 "supplychain.location.type.select";"1";"select";"Internal";"Interne";;;;
