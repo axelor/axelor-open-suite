@@ -31,7 +31,7 @@ public class TaskService {
 
 				Invoice invoice = new Invoice();
 				invoice.setCompany(salesOrder.getCompany());
-				invoice.setPartner(salesOrder.getClientPartner());
+				invoice.setClientPartner(salesOrder.getClientPartner());
 				invoice.setPaymentMode(salesOrder.getPaymentMode());
 				invoice.setPaymentCondition(salesOrder.getPaymentCondition());
 				invoice.setPartnerAccount(getCustomerAccount(salesOrder.getClientPartner(), salesOrder.getCompany()));
