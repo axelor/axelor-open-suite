@@ -56,6 +56,10 @@ public class StockMoveService {
 	public String getSequenceStockMove(Location fromLocation, Location toLocation, Company company) throws AxelorException {
 
 		String ref = "";
+		
+		if(fromLocation == null || toLocation == null)
+			return ref;
+		
 		String code = getCodeSequence(fromLocation, toLocation);
 		
 		if(code.equals(IAdministration.INTERNAL)) {
