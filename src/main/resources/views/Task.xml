@@ -51,7 +51,8 @@
 	            <field name="totalTimeSheetUnit" title="Total worked unit"/>
 	        </group>
 	    </group>
-	    <button name="backup" title="Backup" colSpan="2"/>
+	    <button name="backup" title="Backup" colSpan="1"/>
+	    <button name="generateDraftInvoice" title="Generate draft invoice" showIf="isToInvoice == true &amp;&amp; statusSelect == 3" colSpan="1" onClick="save,action-task-validate-generate-invoice,action-task-method-create-invoice"/>
 	    <break/>
 	    <notebook colSpan="4">
 	        <page title="Planification and realization">
@@ -141,4 +142,12 @@
 		<field name="expectedFinalMargin" expr="call:com.axelor.apps.organisation.service.TaskService:computeMargin(expectedFinalTurnover,expectedFinalCost)" if="expectedFinalCost != null &amp;&amp; expectedFinalTurnover != null"/>
     </action-record>
     
+    <action-method name="action-task-method-create-invoice">
+		<call class="com.axelor.apps.accountorganisation.web.TaskInvoiceController" method="createInvoice"/>
+	</action-method>
+	
+	<action-validate name="action-task-validate-generate-invoice">
+   		<alert message="Generating invoice is impossible, Please link the task to a saleOrderLine to do so." if="salesOrderLine == null"/>
+	</action-validate> 
+	
 </object-views>

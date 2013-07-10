@@ -30,7 +30,7 @@
 	    <group title="Actions" showTitle="false" colSpan="2" cols="1">
 	        <button name="createSalesOrder" title="Create quote" colSpan="1"/>
 	        <button name="generateNewInstanceOfProject" title="Generate new project instance" hideIf="!isModel" colSpan="1"/>
-	        <button name="generateDraftInvoice" title="Generate draft invoice" colSpan="1" onClick="save,action-project-method-create-invoices"/>
+	        <button name="generateDraftInvoice" title="Generate draft invoice" colSpan="1" onClick="save,action-project-validate-generate-invoices,action-project-method-create-invoices"/>
 	        <button name="showTask" title="Show tasks" colSpan="1" onClick="action-project-view-task"/>
 	    </group>
 	    <notebook colSpan="6">
@@ -90,4 +90,8 @@
 		<call class="com.axelor.apps.accountorganisation.web.ProjectInvoiceController" method="createInvoices"/>
 	</action-method>
 	
+	<action-validate name="action-project-validate-generate-invoices">
+   		<alert message="Generating invoice is impossible, Please link the task to a saleOrderLine to do so." if="eval: taskList?.collect(){ it?.salesOrderLine }?.contains(null) == true"/>
+	</action-validate> 
+		
 </object-views>
