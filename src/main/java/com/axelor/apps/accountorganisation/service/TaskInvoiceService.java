@@ -2,95 +2,123 @@ package com.axelor.apps.accountorganisation.service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.IInvoice;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.VatLine;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
+import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.organisation.db.Task;
 import com.axelor.apps.supplychain.db.SalesOrder;
 import com.axelor.apps.supplychain.db.SalesOrderLine;
+import com.axelor.exception.AxelorException;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class TaskInvoiceService {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(TaskInvoiceService.class);
 	
-	@Transactional
-	public void createInvoice(Task task) {
-
+	@Inject
+	private CurrencyService currencyService;
+	
+	private LocalDate today;
+	
+	
+	public TaskInvoiceService() {
+		this.today = GeneralService.getTodayDate();
+	}
+	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public Invoice generateInvoice(Task task) throws AxelorException {
+		
 		// Check if the field task.isToInvoice = true
 		if(task.getIsToInvoice()) {
+			
 			SalesOrderLine salesOrderLine = task.getSalesOrderLine();
 			// Check if task.salesOrderLine and task.salesOrderLine.salesOrder are not empty
 			if(salesOrderLine != null && salesOrderLine.getSalesOrder() != null) {
-				SalesOrder salesOrder = salesOrderLine.getSalesOrder();
-				Invoice invoice = new Invoice();
-				invoice.setCompany(salesOrder.getCompany());
-				invoice.setPartner(salesOrder.getClientPartner());
-				invoice.setPaymentMode(salesOrder.getPaymentMode());
-				invoice.setPaymentCondition(salesOrder.getPaymentCondition());
-				invoice.setPartnerAccount(getCustomerAccount(salesOrder.getClientPartner(), salesOrder.getCompany()));
-				invoice.setInvoiceDate(GeneralService.getTodayDate());
-				invoice.setOperationTypeSelect(IInvoice.CLIENT_SALE);
-				invoice.setJournal(salesOrder.getCompany().getCustomerSalesJournal());
-				invoice.setCurrency(salesOrder.getCurrency());
-				// Create InvoiceLine
-				invoice.setInvoiceLineList(new ArrayList<InvoiceLine>());
-				// Need to check if product is empty or not ?
-				InvoiceLine invoiceLine = createInvoiceLine(task.getProduct(), task.getQty(), salesOrderLine.getVatLine(), invoice);
-				invoice.getInvoiceLineList().add(invoiceLine);
+				
+				Invoice invoice = this.createInvoice(task);
 				invoice.save();
+				return invoice;
 			}
 		}
+		return null;
 	}
-
-	@Transactional
-	public InvoiceLine createInvoiceLine(Product product, BigDecimal qty, VatLine vatLine, Invoice parentInvoice) {
-
-		InvoiceLine invoiceLine = new InvoiceLine();
-		invoiceLine.setInvoice(parentInvoice);
-		invoiceLine.setInvoiceLineType(product.getInvoiceLineType());
-		invoiceLine.setProduct(product);
-		invoiceLine.setQty(qty);
-		invoiceLine.setVatLine(vatLine);
-		invoiceLine.setProductName(product.getName());
-		invoiceLine.save();
-		return invoiceLine;
-	}
-
-
-	public Account getCustomerAccount(Partner partner, Company company)  {
-
-		Account partnerAccount = null;
-
-		for(AccountingSituation accountingSituation : partner.getAccountingSituationList())  {
-
-			if(accountingSituation.getCompany().equals(company))  {
-				partnerAccount = accountingSituation.getCustomerAccount();
-			}
-		}
-
-		if(partnerAccount == null)  {
-			partnerAccount = company.getCustomerAccount();
-		}
-
-		if(partnerAccount == null)  {
-
-			// TODO ajouter message d'erreur configuration manquante dans la société
-
-		}
-		return partnerAccount;
-	}
+			
+	public Invoice createInvoice(Task task) throws AxelorException {
 		
+		SalesOrder salesOrder = task.getSalesOrderLine().getSalesOrder();
+		
+		InvoiceGenerator invoiceGenerator = new InvoiceGenerator(IInvoice.CLIENT_SALE, salesOrder.getCompany(),salesOrder.getPaymentCondition(), 
+				salesOrder.getPaymentMode(), salesOrder.getMainInvoicingAddress(), salesOrder.getClientPartner(), salesOrder.getContactPartner(), salesOrder.getCurrency()) {
+			
+			@Override
+			public Invoice generate() throws AxelorException {
+				
+				return super.createInvoiceHeader();
+			}
+		};
+		
+		Invoice invoice = invoiceGenerator.generate();
+		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, task));
+		invoiceGenerator.computeInvoice(invoice);
+		return invoice;
+	}
+	
+	@Transactional
+	public List<InvoiceLine> createInvoiceLines(Invoice invoice, Task task) throws AxelorException  {
+		
+		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
+		
+		InvoiceLine invoiceLine = this.createInvoiceLine(invoice, task);
+		invoiceLine.save();
+
+		invoiceLineList.add(invoiceLine);	
+		
+		return invoiceLineList;	
+	}
+	
+	public InvoiceLine createInvoiceLine(Invoice invoice, BigDecimal exTaxTotal, Product product, String productName, BigDecimal price, String description, BigDecimal qty,
+			Unit unit, VatLine vatLine, Task task) throws AxelorException  {
+		
+		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, productName, price, description, qty, unit, vatLine, task, false, product.getInvoiceLineType()) {
+			@Override
+			public List<InvoiceLine> creates() throws AxelorException {
+				
+				InvoiceLine invoiceLine = this.createInvoiceLine(vatLine);
+				
+				List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
+				invoiceLines.add(invoiceLine);
+				
+				return invoiceLines;
+			}
+		};
+		
+		return invoiceLineGenerator.createInvoiceLine(vatLine);
+	}
+	
+	public InvoiceLine createInvoiceLine(Invoice invoice, Task task) throws AxelorException  {
+		
+		SalesOrderLine salesOrderLine = task.getSalesOrderLine();
+		
+		if(task.getProduct() != null) {
+			return this.createInvoiceLine(invoice, salesOrderLine.getExTaxTotal(), task.getProduct(), task.getProduct().getName(), 
+					task.getPrice(), salesOrderLine.getDescription(), task.getQty(), salesOrderLine.getUnit(), salesOrderLine.getVatLine(), salesOrderLine.getTask());
+		}
+		return this.createInvoiceLine(invoice, salesOrderLine.getExTaxTotal(), salesOrderLine.getProduct(), salesOrderLine.getProductName(), 
+				salesOrderLine.getPrice(), salesOrderLine.getDescription(), salesOrderLine.getQty(), salesOrderLine.getUnit(), salesOrderLine.getVatLine(), salesOrderLine.getTask());
+	}
 	
 }
