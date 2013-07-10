@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    
+    <form cols="4" name="create-inventory-wizard-form" title="Create inventory" model="com.axelor.apps.base.db.Wizard" onNew="action-location-record-on-new">
+ 		<group title="Header" colSpan="4"  colWidths="25%,25%,25%,25%">
+ 			<button name="validate" title="Validate" onClick="action-location-method-create-inventory,action-location-view-inventory"/>
+ 		</group>
+    	<group colSpan="4" cols="4" colWidths="25%,25%,25%,25%">
+    		<field name="inventoryDate" widget="DATE[type=DATE]" title="Inventory date"/>
+    		<break/>
+    		<field name="description" max="600" title="Description"/>
+    		<break/>
+			<field name="excludeOutOfStock" widget="BOOLEAN[type=BOOLEAN]" title="Exclude out of stock products ?"/>
+			<field name="includeObsolete" widget="BOOLEAN[type=BOOLEAN]" title="Include obsolete products ?"/>
+			<break/>
+			<field name="productFamily" widget="MANY_TO_ONE[type=MANY_TO_ONE|target=com.axelor.apps.base.db.ProductFamily]" title="Product family"/>
+			<field name="productCategory" widget="MANY_TO_ONE[type=MANY_TO_ONE|target=com.axelor.apps.base.db.ProductCategory]" title="Product category"/>
+		</group>
+    </form>
+    
+    <action-record name="action-location-record-on-new" model="com.axelor.apps.base.db.Wizard">
+    	<!-- <field name="inventoryDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()"/> -->
+    	<field name="inventoryDate" expr="eval: __date__"/>
+    </action-record>
+    
+    <action-method name="action-location-method-create-inventory">
+    	<call class="com.axelor.apps.supplychain.web.LocationController" method="createInventory"/>
+    </action-method>
+    
+    <action-view name="action-location-view-inventory" title="Inventaire généré" model="com.axelor.apps.supplychain.db.Inventory">
+    	<view type="form" name="inventory-form"/>
+    	<context name="_showRecord" expr="eval: inventoryId"/>
+    </action-view>
+    
+</object-views>
