@@ -330,6 +330,7 @@
 		<option value="intStockMove">Mouvement Interne</option>
 		<option value="outStockMove">Mvt Stock Livraison</option>
 		<option value="inStockMove">Mvt Stock Reception</option>
+		<option value="inventory">Inventory</option>
 	</selection>
 
 	<selection name="company.paybox.hash.select">

@@ -6,7 +6,6 @@ import java.util.List;
 
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.UnitConversion;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 
