@@ -9,6 +9,7 @@
   
   	<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
   	<many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Contact"/>
+  	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" readonly="true" title="Société"/>
   	<string name="affairName" title="Affair name" namecolumn="true"/>
   	<string name="affairDescription" title="Affair description"/>
   	<boolean name="isModel" title="Model ?"/>

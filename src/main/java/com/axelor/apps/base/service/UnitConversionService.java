@@ -6,7 +6,9 @@ import java.util.List;
 
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.UnitConversion;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 
 public class UnitConversionService {
 
@@ -41,7 +43,7 @@ public class UnitConversionService {
 			
 		}
 		/* If there is no startUnit and endUnit in the UnitConversion list so we throw an exception */
-		throw new AxelorException();
+		throw new AxelorException("Veuillez configurer les unités de conversions de "+startUnit.getName()+" et de "+endUnit.getName()+".", IException.CONFIGURATION_ERROR);
 	}
 	
 	/**
@@ -65,7 +67,7 @@ public class UnitConversionService {
 	public BigDecimal convert(List<UnitConversion> unitConversionList, Unit startUnit, Unit endUnit, BigDecimal value) throws AxelorException {
 		 
 		if (startUnit == null || endUnit == null)
-			throw new AxelorException();
+			throw new AxelorException("Veuillez configurer les unités de conversions.", IException.CONFIGURATION_ERROR);
 			
 		if (startUnit.equals(endUnit))
 			return value; 
@@ -95,7 +97,7 @@ public class UnitConversionService {
 	public BigDecimal convert(Unit startUnit, Unit endUnit, BigDecimal value) throws AxelorException {
 		 
 		if (startUnit == null || endUnit == null)
-			throw new AxelorException();
+			throw new AxelorException("Veuillez configurer les unités de conversions.", IException.CONFIGURATION_ERROR);
 			
 		if (startUnit.equals(endUnit))
 			return value; 
