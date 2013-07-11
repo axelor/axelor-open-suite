@@ -43,7 +43,7 @@ public class UnitConversionService {
 			
 		}
 		/* If there is no startUnit and endUnit in the UnitConversion list so we throw an exception */
-		throw new AxelorException("Veuillez configurer les unités de conversions de "+startUnit.getName()+" et de "+endUnit.getName()+".", IException.CONFIGURATION_ERROR);
+		throw new AxelorException("Veuillez configurer les conversions d'unités de '"+startUnit.getName()+"' à '"+endUnit.getName()+"'.", IException.CONFIGURATION_ERROR);
 	}
 	
 	/**
@@ -67,7 +67,7 @@ public class UnitConversionService {
 	public BigDecimal convert(List<UnitConversion> unitConversionList, Unit startUnit, Unit endUnit, BigDecimal value) throws AxelorException {
 		 
 		if (startUnit == null || endUnit == null)
-			throw new AxelorException("Veuillez configurer les unités de conversions.", IException.CONFIGURATION_ERROR);
+			throw new AxelorException("Veuillez configurer les conversions d'unités.", IException.CONFIGURATION_ERROR);
 			
 		if (startUnit.equals(endUnit))
 			return value; 
@@ -97,7 +97,7 @@ public class UnitConversionService {
 	public BigDecimal convert(Unit startUnit, Unit endUnit, BigDecimal value) throws AxelorException {
 		 
 		if (startUnit == null || endUnit == null)
-			throw new AxelorException("Veuillez configurer les unités de conversions.", IException.CONFIGURATION_ERROR);
+			throw new AxelorException("Veuillez configurer les conversions d'unités.", IException.CONFIGURATION_ERROR);
 			
 		if (startUnit.equals(endUnit))
 			return value; 
