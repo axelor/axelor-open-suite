@@ -1,19 +1,24 @@
 package com.axelor.apps.supplychain.service;
 
 import java.math.BigDecimal;
+import java.util.List;
+
+import org.joda.time.LocalDate;
 
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
-import com.axelor.apps.base.db.ILocation;
 import com.axelor.apps.base.db.IProduct;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.supplychain.db.ILocation;
 import com.axelor.apps.supplychain.db.IStockMove;
 import com.axelor.apps.supplychain.db.Location;
+import com.axelor.apps.supplychain.db.LocationLine;
 import com.axelor.apps.supplychain.db.StockMove;
 import com.axelor.apps.supplychain.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
@@ -24,56 +29,61 @@ import com.google.inject.persist.Transactional;
 public class StockMoveService {
 
 	@Inject
-	SequenceService sequenceService;
+	private SequenceService sequenceService;
 	
-	/**
-	 * Méthode permettant d'obtenir le code de la séquence du StockMove en fonction des Locations.
-	 * @param fromLocation Location de départ
-	 * @param toLocation Location d'arrivée
-	 * @return code de la séquence
-	 */
-	public String getCodeSequence(Location fromLocation, Location toLocation) {
-		if(fromLocation.getTypeSelect() == ILocation.INTERNAL && toLocation.getTypeSelect() == ILocation.INTERNAL) {
-			return IAdministration.INTERNAL;
-		}
-		else if(fromLocation.getTypeSelect() == ILocation.SUPPLIER && toLocation.getTypeSelect() == ILocation.INTERNAL) {	
-			return IAdministration.INCOMING;
-		}
-		else if(fromLocation.getTypeSelect() == ILocation.INTERNAL && toLocation.getTypeSelect() == ILocation.CUSTOMER) {
-			return IAdministration.OUTGOING;
-		}
-		return "";
+	private LocalDate today;
+	private String exceptionMsg;
+	
+	@Inject
+	public StockMoveService() {
+
+		this.today = GeneralService.getTodayDate();
+		this.exceptionMsg = GeneralService.getExceptionAccountingMsg();
+		
 	}
 	
 	/**
 	 * Méthode permettant d'obtenir la séquence du StockMove.
-	 * @param fromLocation Location de départ
-	 * @param toLocation Location d'arrivée
+	 * @param stockMoveType Type de mouvement de stock
 	 * @param company la société
 	 * @return la chaine contenant la séquence du StockMove
-	 * @throws AxelorException Aucune séquence de StockMove (Livraison) n'a été configurée
+	 * @throws AxelorException Aucune séquence de StockMove n'a été configurée
 	 */
-	public String getSequenceStockMove(Location fromLocation, Location toLocation, Company company) throws AxelorException {
+	public String getSequenceStockMove(int stockMoveType, Company company) throws AxelorException {
 
 		String ref = "";
 		
-		if(fromLocation == null || toLocation == null)
-			return ref;
+		switch(stockMoveType)  {
+			case IStockMove.INTERNAL:
+				ref = sequenceService.getSequence(IAdministration.INTERNAL, company, false);
+				if (ref == null || ref.isEmpty() || ref.equals(""))  {
+					throw new AxelorException(String.format("%s Aucune séquence configurée pour les livraisons de stock pour la société ",
+							exceptionMsg, company.getName()), IException.CONFIGURATION_ERROR);
+				}
+				break;
+				
+			case IStockMove.INCOMING:
+				ref = sequenceService.getSequence(IAdministration.INCOMING, company, false);
+				if (ref == null || ref.isEmpty() || ref.equals(""))  {
+					throw new AxelorException(String.format("%s Aucune séquence configurée pour les livraisons de stock pour la société ",
+							exceptionMsg, company.getName()), IException.CONFIGURATION_ERROR);
+				}
+				break;
+				
+			case IStockMove.OUTGOING:
+				ref = sequenceService.getSequence(IAdministration.OUTGOING, company, false);
+				if (ref == null || ref.isEmpty() || ref.equals(""))  {
+					throw new AxelorException(String.format("%s Aucune séquence configurée pour les livraisons de stock pour la société ",
+							exceptionMsg, company.getName()), IException.CONFIGURATION_ERROR);
+				}
+				break;
+			
+			default:
+				throw new AxelorException(String.format("%s Type de mouvement de stock non déterminé ",
+						exceptionMsg, company.getName()), IException.CONFIGURATION_ERROR);
 		
-		String code = getCodeSequence(fromLocation, toLocation);
-		
-		if(code.equals(IAdministration.INTERNAL)) {
-			ref = sequenceService.getSequence(IAdministration.INTERNAL, company, null, false);
-		}
-		else if(code.equals(IAdministration.INCOMING)) {	
-			ref = sequenceService.getSequence(IAdministration.INCOMING, company, null, false);
-		}
-		else if(code.equals(IAdministration.OUTGOING)) {
-			ref = sequenceService.getSequence(IAdministration.OUTGOING, company, null, false);
 		}
 		
-		if (ref == null || ref.isEmpty() || ref.equals(""))
-			throw new AxelorException("Aucune séquence configurée pour les livraisons de la société "+company.getName()+" avec le code "+code, IException.CONFIGURATION_ERROR);
 		return ref;
 	}
 	
@@ -86,45 +96,46 @@ public class StockMoveService {
 	 * @return l'objet StockMove
 	 * @throws AxelorException Aucune séquence de StockMove (Livraison) n'a été configurée
 	 */
-	@Transactional
-	public StockMove createStocksMoves(Address toAddress, Company company, Partner clientPartner, Location location) throws AxelorException {
+	public StockMove createStocksMoves(Address toAddress, Company company, Partner clientPartner, Location fromLocation, Location toLocation) throws AxelorException {
 
 		StockMove stockMove = new StockMove();
 		stockMove.setToAddress(toAddress);
 		stockMove.setCompany(company);
-		stockMove.setStatusSelect(IStockMove.CONFIRMED);
-		stockMove.setRealDate(GeneralService.getTodayDate());
-		stockMove.setEstimatedDate(GeneralService.getTodayDate());
+		stockMove.setStatusSelect(IStockMove.DRAFT);
+		stockMove.setRealDate(this.today);
+		stockMove.setEstimatedDate(this.today);
 		stockMove.setPartner(clientPartner);
-		stockMove.setFromLocation(location);
-		// Find the location depending on the partner
-		Location findLocation = Location.all().filter("partner = ?", clientPartner).fetchOne();
-		if(findLocation != null) {
-			stockMove.setToLocation(findLocation);
-		}
+		stockMove.setFromLocation(fromLocation);
+		stockMove.setToLocation(toLocation);
 		
-		Location fromLocation = stockMove.getFromLocation();
-		Location toLocation = stockMove.getToLocation();
-		// Set the sequence
-		String refSequence = getSequenceStockMove(fromLocation, toLocation, company);
-		stockMove.setStockMoveSeq(refSequence);
-		stockMove.setName(refSequence);
-		// Set the type select
-		String codeSequence = getCodeSequence(fromLocation, toLocation);
-		if(toLocation != null && codeSequence.equals(IAdministration.INTERNAL)) {
-			stockMove.setTypeSelect(IStockMove.INTERNAL);
-		}
-		else if(toLocation != null && codeSequence.equals(IAdministration.INCOMING)) {	
-			stockMove.setTypeSelect(IStockMove.INCOMING);
-		}
-		else if(toLocation != null && codeSequence.equals(IAdministration.OUTGOING)) {
-			stockMove.setTypeSelect(IStockMove.OUTGOING);
-		}
-
-		stockMove.save();
 		return stockMove;
 	}
+	
+	
+	public int getStockMoveType(Location fromLocation, Location toLocation)  {
+		
+		if(fromLocation.getTypeSelect() == ILocation.INTERNAL && toLocation.getTypeSelect() == ILocation.INTERNAL) {
+			return IStockMove.INTERNAL;
+		}
+		else if(fromLocation.getTypeSelect() != ILocation.INTERNAL && toLocation.getTypeSelect() == ILocation.INTERNAL) {	
+			return IStockMove.INCOMING;
+		}
+		else if(fromLocation.getTypeSelect() == ILocation.INTERNAL && toLocation.getTypeSelect() != ILocation.INTERNAL) {
+			return IStockMove.OUTGOING;
+		}
+		return 0;
+	}
 
+	
+	public void validate(StockMove stockMove) throws AxelorException  {
+		
+		this.plan(stockMove);
+		this.realize(stockMove);
+		
+	}
+ 	
+	
+	
 	/**
 	 * Méthode générique permettant de créer un StockMoveLine.
 	 * @param product le produit
@@ -132,8 +143,7 @@ public class StockMoveService {
 	 * @param parent le StockMove parent
 	 * @return l'objet StockMoveLine
 	 */
-	@Transactional
-	public StockMoveLine createStocksMovesLines(Product product, int quantity, Unit unit, BigDecimal price, StockMove parent) {
+	public StockMoveLine createStocksMovesLines(Product product, BigDecimal quantity, Unit unit, BigDecimal price, StockMove parent) {
 
 		if(product != null && product.getApplicationTypeSelect() == IProduct.PRODUCT_TYPE && product.getProductTypeSelect().equals(IProduct.STOCKABLE)) {
 			
@@ -143,9 +153,212 @@ public class StockMoveService {
 			stockMoveLine.setQty(quantity);
 			stockMoveLine.setUnit(unit);
 			stockMoveLine.setPrice(price);
-			stockMoveLine.save();
 			return stockMoveLine;
 		}
 		return null;
 	}
+	
+	
+	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void plan(StockMove stockMove) throws AxelorException  {
+		
+		Location fromLocation = stockMove.getFromLocation();
+		Location toLocation = stockMove.getToLocation();
+		
+		if(fromLocation == null)  {
+			throw new AxelorException(String.format("%s Aucun emplacement source selectionné pour le mouvement de stock %s",
+					exceptionMsg, stockMove.getName()), IException.CONFIGURATION_ERROR);
+		}
+		if(toLocation == null)  {
+			throw new AxelorException(String.format("%s Aucun emplacement destination selectionné pour le mouvement de stock %s",
+					exceptionMsg, stockMove.getName()), IException.CONFIGURATION_ERROR);
+		}
+		
+		// Set the type select
+		if(stockMove.getTypeSelect() == null || stockMove.getTypeSelect() == 0)  {
+			stockMove.setTypeSelect(this.getStockMoveType(fromLocation, toLocation));
+		}
+
+		// Set the sequence
+		if(stockMove.getStockMoveSeq() == null || stockMove.getStockMoveSeq().isEmpty())  {
+			String refSequence = this.getSequenceStockMove(stockMove.getTypeSelect(), stockMove.getCompany());
+			stockMove.setStockMoveSeq(refSequence);
+			stockMove.setName(refSequence); // ???
+		}
+		
+		
+		
+		this.updateLocations(
+				fromLocation, 
+				toLocation, 
+				stockMove.getStatusSelect(), 
+				IStockMove.PLANNED, 
+				stockMove.getStockMoveLineList(),
+				stockMove.getEstimatedDate());
+		
+		stockMove.setStatusSelect(IStockMove.PLANNED);
+		if(stockMove.getEstimatedDate() == null)  {
+			stockMove.setEstimatedDate(this.today);
+		}
+		stockMove.save();
+		
+	}
+	
+	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void realize(StockMove stockMove) throws AxelorException  {
+	
+		this.updateLocations(
+				stockMove.getFromLocation(), 
+				stockMove.getToLocation(), 
+				stockMove.getStatusSelect(), 
+				IStockMove.REALIZED, 
+				stockMove.getStockMoveLineList(),
+				stockMove.getEstimatedDate());
+		
+		stockMove.setStatusSelect(IStockMove.REALIZED);
+		stockMove.setRealDate(this.today);
+		stockMove.save();
+	}
+	
+	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void cancel(StockMove stockMove) throws AxelorException  {
+	
+		this.updateLocations(
+				stockMove.getFromLocation(), 
+				stockMove.getToLocation(), 
+				stockMove.getStatusSelect(), 
+				IStockMove.CANCELED, 
+				stockMove.getStockMoveLineList(),
+				stockMove.getEstimatedDate());
+		
+		stockMove.setStatusSelect(IStockMove.CANCELED);
+		stockMove.setRealDate(this.today);
+		stockMove.save();
+	}
+	
+	
+	public void updateLocations(Location fromLocation, Location toLocation, int fromStatus, int toStatus, List<StockMoveLine> stockMoveLineList, LocalDate lastFutureStockMoveDate) throws AxelorException  {
+		
+		for(StockMoveLine stockMoveLine : stockMoveLineList)  {
+			
+			Unit productUnit = stockMoveLine.getProduct().getUnit();
+			Unit stockMoveLineUnit = stockMoveLine.getUnit();
+			
+			BigDecimal qty = stockMoveLine.getQty();
+			if(!productUnit.equals(stockMoveLineUnit))  {
+				qty = new UnitConversionService().convert(stockMoveLineUnit, productUnit, qty);
+			}
+			
+			this.updateLocations(fromLocation, toLocation, stockMoveLine.getProduct(), qty, fromStatus, IStockMove.CANCELED, lastFutureStockMoveDate);
+			
+		}
+		
+	}
+	
+	
+	public void updateLocations(Location fromLocation, Location toLocation, Product product, BigDecimal qty, int fromStatus, int toStatus, LocalDate lastFutureStockMoveDate)  {
+		
+		switch(fromStatus)  {
+			case IStockMove.PLANNED:
+				this.updateLocation(fromLocation, product, qty, false, true, true, null);
+				this.updateLocation(toLocation, product, qty, false, true, false, null);
+				break;
+				
+			case IStockMove.REALIZED:
+				this.updateLocation(fromLocation, product, qty, true, true, true, null);
+				this.updateLocation(toLocation, product, qty, true, true, false, null);
+				break;
+			
+			default:
+				break;
+		}
+		
+		switch(toStatus)  {
+			case IStockMove.PLANNED:
+				this.updateLocation(fromLocation, product, qty, false, true, false, lastFutureStockMoveDate);
+				this.updateLocation(toLocation, product, qty, false, true, true, lastFutureStockMoveDate);
+				break;
+				
+			case IStockMove.REALIZED:
+				this.updateLocation(fromLocation, product, qty, true, true, false, null);
+				this.updateLocation(toLocation, product, qty, true, true, true, null);
+				break;
+			
+			default:
+				break;
+		}
+		
+	}
+	
+	
+	
+	public void updateLocation(Location location, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement, LocalDate lastFutureStockMoveDate)  {
+		
+		LocationLine locationLine = this.getLocationLine(location, product);
+		
+		if(current)  {
+			if(isIncrement)  {
+				locationLine.setCurrentQty(locationLine.getCurrentQty().add(qty));
+			}
+			else  {
+				locationLine.setCurrentQty(locationLine.getCurrentQty().subtract(qty));
+			}
+			
+		}
+		if(future)  {
+			if(isIncrement)  {
+				locationLine.setFutureQty(locationLine.getFutureQty().add(qty));
+			}
+			else  {
+				locationLine.setFutureQty(locationLine.getFutureQty().subtract(qty));
+			}
+			locationLine.setLastFutureStockMoveDate(lastFutureStockMoveDate);
+		}
+		
+	}
+	
+	
+	public LocationLine getLocationLine(Location location, Product product)  {
+		
+		LocationLine locationLine = this.getLocationLine(location.getLocationLineList(), product);
+		
+		if(locationLine == null)  {
+			locationLine = this.createLocationLine(location, product);
+		}
+		return locationLine;
+	}
+	
+	
+	public LocationLine getLocationLine(List<LocationLine> locationLineList, Product product)  {
+		
+		for(LocationLine locationLine : locationLineList)  {
+			
+			if(locationLine.getProduct().equals(product))  {
+				return locationLine;
+			}
+			
+		}
+		
+		return null;
+	}
+	
+	
+	public LocationLine createLocationLine(Location location, Product product)  {
+		
+		LocationLine locationLine = new LocationLine();
+		
+		locationLine.setLocation(location);
+		locationLine.setProduct(product);
+		locationLine.setCurrentQty(BigDecimal.ZERO);
+		locationLine.setFutureQty(BigDecimal.ZERO);
+		
+		return locationLine;
+		
+	}
+	
+	
+	
 }

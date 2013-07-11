@@ -144,7 +144,7 @@ public class SalesOrderInvoiceService {
 	public InvoiceLine createInvoiceLine(Invoice invoice, BigDecimal exTaxTotal, Product product, String productName, BigDecimal price, String description, BigDecimal qty,
 			Unit unit, VatLine vatLine, Task task) throws AxelorException  {
 		
-		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, productName, price, description, qty, unit, vatLine, task, false)  {
+		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, productName, price, description, qty, unit, vatLine, task, product.getInvoiceLineType(), false)  {
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
 				
