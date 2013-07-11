@@ -16,7 +16,10 @@
 	    <field name="statusSelect" widget="NavSelect"/>
 	    <field name="location"/>
 	    <spacer/>
-	    <button name="showInventory" title="Print" colSpan="1" icon="img/icons/print.png" onClick="save,action-inventory-method-show-inventory"/>
+	    <group title="Export" colSpan="1">
+	    	<field name="formatSelect"/>
+	    	<button name="showInventory" title="Print" colSpan="1" icon="img/icons/print.png" onClick="save,action-inventory-method-show-inventory" showIf="formatSelect != null"/>
+	    </group>
 	    <field name="dateT"/>
 	    <field name="description" colSpan="4"/>
 	    <spacer/>

@@ -28,12 +28,13 @@ class InventoryController {
 	def void showInventory(ActionRequest request, ActionResponse response) {
 
 		Inventory inventory = request.context as Inventory
+		int format = inventory.formatSelect
 
 		StringBuilder url = new StringBuilder()
 		AxelorSettings axelorSettings = AxelorSettings.get()
 		
 		MetaUser metaUser = MetaUser.findByUser(request.context.get("__user__"))
-		url.append("${axelorSettings.get('axelor.report.engine', '')}/frameset?__report=report/Inventory.rptdesign&__format=pdf&InventoryId=${inventory.id}&Locale=${metaUser.language}${axelorSettings.get('axelor.report.engine.datasource')}")
+		url.append("${axelorSettings.get('axelor.report.engine', '')}/frameset?__report=report/Inventory.rptdesign&__format="+((format == 1) ? "pdf":(format == 2) ? "xls":"pdf")+"&InventoryId=${inventory.id}&Locale=${metaUser.language}${axelorSettings.get('axelor.report.engine.datasource')}")
 		
 		log.debug("URL : {}", url)
 		String urlNotExist = URLService.notExist(url.toString())
