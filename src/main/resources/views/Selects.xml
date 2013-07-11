@@ -904,6 +904,11 @@
 		<option value="4">Virtual</option>
 	</selection>
 	
+	<selection name="supplychain.inventory.format.select">
+		<option value="1">PDF</option>
+		<option value="2">XLS</option>
+	</selection>
+	
 	<selection name="supplychain.default.status.select">
 		<option value="1">Draft</option>
 		<option value="2">Planned</option>

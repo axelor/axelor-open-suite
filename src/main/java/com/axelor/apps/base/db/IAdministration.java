@@ -44,6 +44,7 @@ public interface IAdministration {
 	 */
 
 	// TYPE
+	static final String INVENTORY = "inventory";
 	static final String PARTNER = "partner";
 	static final String MOVE = "move";
 	static final String CUSTOMER_INVOICE = "customerInvoice";
