@@ -8,16 +8,18 @@ import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.db.UnitConversion;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.supplychain.service.StockMoveService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.organisation.db.PlanningLine;
 import com.axelor.apps.organisation.db.Task;
+import com.axelor.apps.supplychain.db.ILocation;
 import com.axelor.apps.supplychain.db.ISalesOrder;
+import com.axelor.apps.supplychain.db.Location;
 import com.axelor.apps.supplychain.db.SalesOrder;
 import com.axelor.apps.supplychain.db.SalesOrderLine;
 import com.axelor.apps.supplychain.db.SalesOrderLineVat;
@@ -25,6 +27,7 @@ import com.axelor.apps.supplychain.db.SalesOrderSubLine;
 import com.axelor.apps.supplychain.db.StockMove;
 import com.axelor.apps.supplychain.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -191,7 +194,6 @@ public class SalesOrderService {
 		BigDecimal sum = new BigDecimal(0);
 		boolean sameUnit = checkSameUnitPlanningLineList(planningLineList);
 		Unit projectUnit = task.getProject().getProjectUnit();
-		List<UnitConversion> unitConversionList = UnitConversion.all().fetch();
 		LocalDateTime laterDate = task.getEndDateT();
 
 		for(PlanningLine planningLine : planningLineList)  {
@@ -201,7 +203,7 @@ public class SalesOrderService {
 			}
 			else {
 				/* Call the convert method of the UnitConversionService object to convert to the right unit */
-				BigDecimal qtyConverted = ucs.convert(unitConversionList, planningLine.getUnit(), projectUnit, planningLine.getDuration());
+				BigDecimal qtyConverted = ucs.convert(planningLine.getUnit(), projectUnit, planningLine.getDuration());
 				sum = sum.add(qtyConverted);
 			}
 
@@ -295,23 +297,34 @@ public class SalesOrderService {
 	 * @param salesOrder l'objet salesOrder
 	 * @throws AxelorException Aucune séquence de StockMove (Livraison) n'a été configurée
 	 */
-	@Transactional
 	public void createStocksMovesFromSalesOrder(SalesOrder salesOrder) throws AxelorException {
-
-		StockMove stockMove = stockMoveService.createStocksMoves(salesOrder.getDeliveryAddress(), salesOrder.getCompany(), salesOrder.getClientPartner(), salesOrder.getLocation());
 		
 		if(salesOrder.getSalesOrderLineList() != null) {
+			
+			Company company = salesOrder.getCompany();
+			
+			Location toLocation = Location.all().filter("self.isDefaultLocation = true and self.company = ?1 and self.typeSelect = ?2", company, ILocation.CUSTOMER).fetchOne();
+			
+			if(toLocation == null)  {
+				toLocation = company.getCustomerVirtualLocation();
+			}
+			if(toLocation == null)  {
+				throw new AxelorException(String.format("%s Veuillez configurer un entrepot virtuel client pour la société %s ",
+						GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
+			}
+			
+			StockMove stockMove = stockMoveService.createStocksMoves(salesOrder.getDeliveryAddress(), company, salesOrder.getClientPartner(), salesOrder.getLocation(), toLocation);
+
 			stockMove.setStockMoveLineList(new ArrayList<StockMoveLine>());
 			for(SalesOrderLine salesOrderLine: salesOrder.getSalesOrderLineList()) {
-				Product salesOrderLineProduct = salesOrderLine.getProduct();
-				if(salesOrderLineProduct != null && salesOrderLineProduct.getProductTypeSelect().equals("stockable")) {
-					StockMoveLine stockMoveLine = stockMoveService.createStocksMovesLines(salesOrderLine.getProduct(), salesOrderLine.getQty().intValue(), salesOrderLine.getUnit(), salesOrderLine.getPrice(), stockMove);
-					if(stockMoveLine != null) {
-						stockMove.getStockMoveLineList().add(stockMoveLine);
-					}
+				StockMoveLine stockMoveLine = stockMoveService.createStocksMovesLines(salesOrderLine.getProduct(), salesOrderLine.getQty(), salesOrderLine.getUnit(), salesOrderLine.getPrice(), stockMove);
+				if(stockMoveLine != null) {
+					stockMove.getStockMoveLineList().add(stockMoveLine);
 				}
 			}
-			stockMove.save();
+			if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
+				stockMoveService.validate(stockMove);
+			}
 		}
 	}
 }

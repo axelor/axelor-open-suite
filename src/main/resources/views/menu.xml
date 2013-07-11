@@ -16,7 +16,8 @@
 		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/product_small.png">
 		<view type="grid" />
 		<view type="form" />
-		<domain>self.toLocation.typeSelect = 3</domain>
+		<domain>self.typeSelect = 2</domain>
+		<context name="_typeSelect" expr="2"/>
 	</action-view>
 		
 	<menuitem name="stock-root-custdeliveries-draft" parent="stock-root-custdeliveries"
@@ -26,7 +27,8 @@
 		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/product_small.png">
 		<view type="grid" />
 		<view type="form" />
-		<domain>self.toLocation.typeSelect = 3 and self.statusSelect = 1</domain>
+		<domain>self.typeSelect = 2 and self.statusSelect = 1</domain>
+		<context name="_typeSelect" expr="2"/>
 	</action-view>	
 		
 	<menuitem name="stock-root-custdeliveries-confirmed" parent="stock-root-custdeliveries"
@@ -36,7 +38,8 @@
 		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/product_small.png">
 		<view type="grid" />
 		<view type="form" />
-		<domain>self.toLocation.typeSelect = 3 and self.statusSelect = 2</domain>
+		<domain>self.typeSelect = 2 and self.statusSelect = 2</domain>
+		<context name="_typeSelect" expr="2"/>
 	</action-view>		
 		
 	<menuitem name="stock-root-custdeliveries-cancel" parent="stock-root-custdeliveries"
@@ -46,7 +49,8 @@
 		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/product_small.png">
 		<view type="grid" />
 		<view type="form" />
-		<domain>self.toLocation.typeSelect = 3 and self.statusSelect = 4</domain>
+		<domain>self.typeSelect = 2 and self.statusSelect = 4</domain>
+		<context name="_typeSelect" expr="2"/>
 	</action-view>			
 		
 	<menuitem name="stock-root-suparrivals" parent="stock-root"
@@ -59,7 +63,8 @@
 		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/product_small.png">
 		<view type="grid" />
 		<view type="form" />
-		<domain>self.fromLocation.typeSelect = 2</domain>
+		<domain>self.typeSelect = 3</domain>
+		<context name="_typeSelect" expr="3"/>
 	</action-view>	
 		
 	<menuitem name="stock-root-suparrivals-today" parent="stock-root-suparrivals"
@@ -69,7 +74,8 @@
 		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/product_small.png">
 		<view type="grid" />
 		<view type="form" />
-		<domain>self.fromLocation.typeSelect = 2 and CURRENT_DATE = self.estimatedDate</domain>
+		<domain>self.typeSelect = 3 and CURRENT_DATE = self.estimatedDate</domain>
+		<context name="_typeSelect" expr="3"/>
 	</action-view>	
 		
 	<menuitem name="stock-root-suparrivals-upcoming" parent="stock-root-suparrivals"
@@ -79,8 +85,9 @@
 		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/product_small.png">
 		<view type="grid" />
 		<view type="form" />
-		<domain>self.fromLocation.typeSelect = 2 and self.estimatedDate &lt; :_newDate</domain>
+		<domain>self.typeSelect = 3 and self.estimatedDate &lt; :_newDate</domain>
 		<context name="_newDate" expr="eval: __date__.plusWeeks(1)"/>
+		<context name="_typeSelect" expr="3"/>
 	</action-view>		
 		
 	<menuitem name="stock-root-suparrivals-previous" parent="stock-root-suparrivals"
@@ -90,7 +97,8 @@
 		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/product_small.png">
 		<view type="grid" />
 		<view type="form" />
-		<domain>self.fromLocation.typeSelect = 2 and self.statusSelect = 3</domain>
+		<domain>self.typeSelect = 3 and self.statusSelect = 3</domain>
+		<context name="_typeSelect" expr="3"/>
 	</action-view>		
 		
 	<menuitem name="stock-root-suparrivals-canceled" parent="stock-root-suparrivals"
@@ -100,7 +108,8 @@
 		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/product_small.png">
 		<view type="grid" />
 		<view type="form" />
-		<domain>self.fromLocation.typeSelect = 2 and self.statusSelect = 4</domain>
+		<domain>self.typeSelect = 3 and self.statusSelect = 4</domain>
+		<context name="_typeSelect" expr="3"/>
 	</action-view>		
 		
 	<menuitem name="stock-root-internal" parent="stock-root"
@@ -113,7 +122,8 @@
 		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/product_small.png">
 		<view type="grid" />
 		<view type="form" />
-		<domain>self.toLocation.typeSelect = 1 and self.statusSelect = 1</domain>
+		<domain>self.typeSelect = 1 and self.statusSelect = 1</domain>
+		<context name="_typeSelect" expr="1"/>
 	</action-view>		
 		
 	<menuitem name="stock-root-internal-history" parent="stock-root-internal"
@@ -123,7 +133,8 @@
 		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/product_small.png">
 		<view type="grid" />
 		<view type="form" />
-		<domain>self.toLocation.typeSelect = 1 and self.statusSelect = 3</domain>
+		<domain>self.typeSelect = 1 and self.statusSelect = 3</domain>
+		<context name="_typeSelect" expr="1"/>
 	</action-view>			
 		
 	<menuitem name="stock-root-internal-canceled" parent="stock-root-internal"
@@ -133,7 +144,8 @@
 		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/product_small.png">
 		<view type="grid" />
 		<view type="form" />
-		<domain>self.toLocation.typeSelect = 1 and self.statusSelect = 4</domain>
+		<domain>self.typeSelect = 1 and self.statusSelect = 4</domain>
+		<context name="_typeSelect" expr="1"/>
 	</action-view>		
 		
 	<menuitem name="stock-root-inventories" parent="stock-root"
