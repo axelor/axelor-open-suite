@@ -240,9 +240,13 @@ public class SalesOrderService {
 				if(salesOrderLineProduct != null && salesOrderLineProduct.getProductTypeSelect().equals("service") && salesOrderLineProduct.getSaleSupplySelect() == 3) {
 					/* Create a new Task */
 					Task task = new Task();
-
+					// Update the field company of the project
+					salesOrder.getProject().setCompany(salesOrder.getCompany());
 					task.setProject(salesOrder.getProject());
 					task.setSalesOrderLine(salesOrderLine);
+					task.setProduct(salesOrderLine.getProduct());
+					task.setQty(salesOrderLine.getQty());
+					task.setPrice(salesOrderLine.getPrice());
 					task.setName(salesOrderLine.getProductName());
 					task.setDescription(salesOrderLine.getDescription());
 					task.setStartDateT(new LocalDateTime(GeneralService.getTodayDateTime()));
