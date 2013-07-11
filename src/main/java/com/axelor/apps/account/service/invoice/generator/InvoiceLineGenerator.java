@@ -78,8 +78,9 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
         
     }
 	
+
 	protected InvoiceLineGenerator( Invoice invoice, Product product, String productName, BigDecimal price, String description, BigDecimal qty,
-			Unit unit, VatLine vatLine, Task task, boolean isTaxInvoice, InvoiceLineType invoiceLineType ) {
+			Unit unit, VatLine vatLine, Task task, InvoiceLineType invoiceLineType, boolean isTaxInvoice) {
 
         this.invoice = invoice;
         this.product = product;
@@ -90,15 +91,16 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
         this.unit = unit;
         this.vatLine = vatLine;
         this.task = task;
+        this.invoiceLineType = invoiceLineType;
         this.isTaxInvoice = isTaxInvoice;
         this.today = GeneralService.getTodayDate();
         this.currencyService = new CurrencyService(this.today);
-        this.invoiceLineType = invoiceLineType;
+        
         
     }
 	
 	protected InvoiceLineGenerator( Invoice invoice, Product product, String productName, BigDecimal price, String description, BigDecimal qty,
-			Unit unit, Task task, boolean isTaxInvoice, InvoiceLineType invoiceLineType ) {
+			Unit unit, Task task, InvoiceLineType invoiceLineType, boolean isTaxInvoice) {
 
         this.invoice = invoice;
         this.product = product;
@@ -108,11 +110,11 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
         this.qty = qty;
         this.unit = unit;
         this.task = task;
+        this.invoiceLineType = invoiceLineType;
         this.isTaxInvoice = isTaxInvoice;
         this.today = GeneralService.getTodayDate();
         this.currencyService = new CurrencyService(this.today);
         this.accountManagementService = new AccountManagementService();
-        this.invoiceLineType = invoiceLineType;
     }
 	
 	public Invoice getInvoice() {

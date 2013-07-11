@@ -108,7 +108,7 @@
         		</group>
             </page>
             <page title="Notes" cols="4" colSpan="4">
-    			<field name="note"/>
+    			<field name="note" colSpan="4" showTitle="false"/>
     		</page>
         </notebook>
         <group colSpan="4" cols="6">

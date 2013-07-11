@@ -163,7 +163,8 @@ class PaymentVoucherController {
 		response.view = [
 			"title": "Reçu saisie paiement ${paymentVoucher.receiptNo}",
 			"resource": url,
-			"viewType": "html"
+			"viewType": "html",
+			_showRecord : 6
 		]
 	
 	}

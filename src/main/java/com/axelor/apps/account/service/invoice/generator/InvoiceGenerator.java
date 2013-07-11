@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingSituation;
+import com.axelor.apps.account.db.IInvoice;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceLineTax;
@@ -36,7 +37,6 @@ public abstract class InvoiceGenerator {
 	private static final Logger LOG = LoggerFactory.getLogger(InvoiceGenerator.class);
 
 	protected String exceptionMsg;
-	protected SequenceService sequenceService;
 	protected JournalService journalService;
 	
 	protected boolean months30days;
@@ -47,7 +47,7 @@ public abstract class InvoiceGenerator {
 	protected Address mainInvoicingAddress;
 	protected Partner clientPartner;
 	protected Partner contactPartner;
-	protected  Currency currency;
+	protected Currency currency;
 	protected LocalDate today;
 	
 	protected InvoiceGenerator(int operationType, Company company,PaymentCondition paymentCondition, PaymentMode paymentMode, Address mainInvoicingAddress, 
@@ -64,21 +64,20 @@ public abstract class InvoiceGenerator {
 		
 		this.today = GeneralService.getTodayDate();
 		this.exceptionMsg = GeneralService.getExceptionInvoiceMsg();
-		this.sequenceService = new SequenceService(today);
 		this.journalService = new JournalService();
 		
 	}
 	
 	
 	/**
-	 * PaymentCondition, Paymentmode, MainInvoicingAddress, Currency récupéré du tiers
+	 * PaymentCondition, Paymentmode, MainInvoicingAddress, Currency récupérés du tiers
 	 * @param operationType
 	 * @param company
 	 * @param clientPartner
 	 * @param contactPartner
 	 * @throws AxelorException
 	 */
-	protected InvoiceGenerator(int operationType, Company company,Partner clientPartner, Partner contactPartner) throws AxelorException {
+	protected InvoiceGenerator(int operationType, Company company, Partner clientPartner, Partner contactPartner) throws AxelorException {
 		
 		this.operationType = operationType;
 		this.company = company;
@@ -87,31 +86,33 @@ public abstract class InvoiceGenerator {
 		
 		this.today = GeneralService.getTodayDate();
 		this.exceptionMsg = GeneralService.getExceptionInvoiceMsg();
-		this.sequenceService = new SequenceService(today);
 		this.journalService = new JournalService();
 		
 	}
 	
-	protected InvoiceGenerator(Partner clientPartner, int operationType, Company company) throws AxelorException {
-		
-		this.clientPartner = clientPartner;
-		this.company = company;
-		this.operationType = operationType;
+	
+	protected InvoiceGenerator() {
 		
 		this.today = GeneralService.getTodayDate();
 		this.exceptionMsg = GeneralService.getExceptionInvoiceMsg();
-		this.sequenceService = new SequenceService(today);
 		
 	}
 	
-	
-	protected InvoiceGenerator(int operationType) {
+	protected int inverseOperationType(int operationType) throws AxelorException  {
+
+		switch(operationType)  {
 		
-		this.operationType = operationType;
-		
-		this.today = GeneralService.getTodayDate();
-		this.exceptionMsg = GeneralService.getExceptionInvoiceMsg();
-		this.sequenceService = new SequenceService(today);
+			case IInvoice.SUPPLIER_PURCHASE:
+				return IInvoice.SUPPLIER_REFUND;
+			case IInvoice.SUPPLIER_REFUND:
+				return IInvoice.SUPPLIER_PURCHASE;
+			case IInvoice.CLIENT_SALE:
+				return IInvoice.CLIENT_REFUND;
+			case IInvoice.CLIENT_REFUND:
+				return IInvoice.CLIENT_SALE;
+			default:
+				throw new AxelorException(String.format("%s :\nLe type de facture n'est pas rempli %s", GeneralService.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
+		}
 		
 	}
 	
@@ -128,8 +129,7 @@ public abstract class InvoiceGenerator {
 		invoice.setInvoiceDate(this.today);
 		
 		if(clientPartner == null)  {
-			throw new AxelorException(String.format("%s :\nAucun tiers selectionné %s", 
-					GeneralService.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
+			throw new AxelorException(String.format("%s :\nAucun tiers selectionné %s", GeneralService.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
 		}
 		invoice.setClientPartner(clientPartner);
 		
@@ -137,8 +137,7 @@ public abstract class InvoiceGenerator {
 			paymentCondition = clientPartner.getPaymentCondition();
 		}
 		if(paymentCondition == null)  {
-			throw new AxelorException(String.format("%s :\nCondition de paiement absent", 
-					GeneralService.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
+			throw new AxelorException(String.format("%s :\nCondition de paiement absent", GeneralService.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
 		}
 		invoice.setPaymentCondition(paymentCondition);
 		
@@ -148,8 +147,7 @@ public abstract class InvoiceGenerator {
 			paymentMode = clientPartner.getPaymentMode();
 		}
 		if(paymentMode == null)  {
-			throw new AxelorException(String.format("%s :\nMode de paiement absent", 
-					GeneralService.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
+			throw new AxelorException(String.format("%s :\nMode de paiement absent", GeneralService.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
 		}
 		invoice.setPaymentMode(paymentMode);
 		
@@ -157,12 +155,10 @@ public abstract class InvoiceGenerator {
 			mainInvoicingAddress = clientPartner.getMainInvoicingAddress();
 		}
 		if(mainInvoicingAddress == null)  {
-			throw new AxelorException(String.format("%s :\nAdresse de facturation absente", 
-					GeneralService.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
+			throw new AxelorException(String.format("%s :\nAdresse de facturation absente", GeneralService.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
 		}
 		
 		invoice.setAddress(mainInvoicingAddress);
-		
 		
 		invoice.setContactPartner(contactPartner);
 		
@@ -170,11 +166,9 @@ public abstract class InvoiceGenerator {
 			currency = clientPartner.getCurrency();
 		}
 		if(currency == null)  {
-			throw new AxelorException(String.format("%s :\nDevise absente", 
-					GeneralService.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
+			throw new AxelorException(String.format("%s :\nDevise absente", GeneralService.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
 		}
 		invoice.setCurrency(currency);
-		
 		
 		invoice.setCompany(company);
 		

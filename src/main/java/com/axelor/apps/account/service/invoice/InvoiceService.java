@@ -97,9 +97,7 @@ public class InvoiceService {
 
 		LOG.debug("Calcule de la facture");
 		
-		int invoiceType = 1; // en fonction type de facture achat vente fournisseur ou client
-		
-		InvoiceGenerator invoiceGenerator = new InvoiceGenerator(invoice.getClientPartner(), invoiceType, invoice.getCompany()) {
+		InvoiceGenerator invoiceGenerator = new InvoiceGenerator() {
 			
 			@Override
 			public Invoice generate() throws AxelorException {
@@ -124,9 +122,7 @@ public class InvoiceService {
 
 		LOG.debug("Calcule du pied de facture");
 		
-		int invoiceType = 1; // en fonction type de facture achat vente fournisseur ou client
-		
-		InvoiceGenerator invoiceGenerator = new InvoiceGenerator(invoice.getClientPartner(), invoiceType, invoice.getCompany()) {
+		InvoiceGenerator invoiceGenerator = new InvoiceGenerator() {
 			
 			@Override
 			public Invoice generate() throws AxelorException {

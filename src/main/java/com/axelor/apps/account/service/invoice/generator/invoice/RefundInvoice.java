@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
-import com.axelor.apps.base.db.IAdministration;
+import com.axelor.apps.base.db.Status;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 
@@ -20,8 +20,7 @@ public class RefundInvoice extends InvoiceGenerator implements InvoiceStrategy {
 	
 	public RefundInvoice(Invoice invoice) {
 		
-//		super( invoice.getInvoiceTypeSelect() ); // mettre un type (client/fournisseur, achat, vente)
-		super( 0 ); // mettre un type (client/fournisseur, achat, vente)
+		super();
 
 		this.invoice = invoice;
 		
@@ -34,15 +33,20 @@ public class RefundInvoice extends InvoiceGenerator implements InvoiceStrategy {
 		
 		Invoice refund = JPA.copy(invoice, true);
 		
-		List<InvoiceLine> refundLines = new ArrayList<InvoiceLine>();
-		refundLines.addAll( refund.getInvoiceLineList() );
-		refundLines.addAll( refund.getTaxInvoiceLineList() );
+		refund.setOperationTypeSelect(this.inverseOperationType(refund.getOperationTypeSelect()));
 		
-		refundInvoiceLines(refundLines);
+		List<InvoiceLine> refundLines = new ArrayList<InvoiceLine>();
+		if(refund.getInvoiceLineList() != null)  {
+			refundLines.addAll( refund.getInvoiceLineList() );
+		}
+		if(refund.getTaxInvoiceLineList() != null)  {
+			refundLines.addAll( refund.getTaxInvoiceLineList() );
+		}
 		
 		populate( refund, refundLines );
-		refund.setInvoiceId( sequenceService.getSequence(IAdministration.CUSTOMER_REFUND_DRAFT, refund.getCompany(), false) );
 		refund.setMove(null);
+		
+		refund.setStatus(Status.all().filter("self.code = 'dra'").fetchOne());
 		
 		return refund;
 		
@@ -61,6 +65,7 @@ public class RefundInvoice extends InvoiceGenerator implements InvoiceStrategy {
 	 * 
 	 * @param invoiceLines
 	 */
+	@Deprecated
 	protected void refundInvoiceLines(List<InvoiceLine> invoiceLines){
 		
 		for (InvoiceLine invoiceLine : invoiceLines){
