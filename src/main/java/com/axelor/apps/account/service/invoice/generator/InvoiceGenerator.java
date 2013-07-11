@@ -69,6 +69,29 @@ public abstract class InvoiceGenerator {
 		
 	}
 	
+	
+	/**
+	 * PaymentCondition, Paymentmode, MainInvoicingAddress, Currency récupéré du tiers
+	 * @param operationType
+	 * @param company
+	 * @param clientPartner
+	 * @param contactPartner
+	 * @throws AxelorException
+	 */
+	protected InvoiceGenerator(int operationType, Company company,Partner clientPartner, Partner contactPartner) throws AxelorException {
+		
+		this.operationType = operationType;
+		this.company = company;
+		this.clientPartner = clientPartner;
+		this.contactPartner = contactPartner;
+		
+		this.today = GeneralService.getTodayDate();
+		this.exceptionMsg = GeneralService.getExceptionInvoiceMsg();
+		this.sequenceService = new SequenceService(today);
+		this.journalService = new JournalService();
+		
+	}
+	
 	protected InvoiceGenerator(Partner clientPartner, int operationType, Company company) throws AxelorException {
 		
 		this.clientPartner = clientPartner;
@@ -129,9 +152,29 @@ public abstract class InvoiceGenerator {
 					GeneralService.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
 		}
 		invoice.setPaymentMode(paymentMode);
+		
+		if(mainInvoicingAddress == null)  {
+			mainInvoicingAddress = clientPartner.getMainInvoicingAddress();
+		}
+		if(mainInvoicingAddress == null)  {
+			throw new AxelorException(String.format("%s :\nAdresse de facturation absente", 
+					GeneralService.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
+		}
+		
 		invoice.setAddress(mainInvoicingAddress);
+		
+		
 		invoice.setContactPartner(contactPartner);
+		
+		if(currency == null)  {
+			currency = clientPartner.getCurrency();
+		}
+		if(currency == null)  {
+			throw new AxelorException(String.format("%s :\nDevise absente", 
+					GeneralService.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
+		}
 		invoice.setCurrency(currency);
+		
 		
 		invoice.setCompany(company);
 		
