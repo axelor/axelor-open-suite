@@ -75,4 +75,34 @@ public class UnitConversionService {
 			return value.multiply(coefficient).setScale(6, RoundingMode.HALF_EVEN);		
 		}	
 	}
+	
+	
+	/**
+	 * Convertir la valeur passée en paramètre en fonction des unités.
+	 * 
+	 * @param startUnit
+	 * 				L'unité de départ.
+	 * 
+	 * @param endUnit
+	 * 				L'unité d'arrivée.
+	 * 
+	 * @param value
+	 * 				La valeur à convertir.
+	 * 
+	 * @return Le coefficient de conversion.
+	 * @throws AxelorException Les unités demandés ne se trouvent pas dans la liste de conversion
+	 */
+	public BigDecimal convert(Unit startUnit, Unit endUnit, BigDecimal value) throws AxelorException {
+		 
+		if (startUnit == null || endUnit == null)
+			throw new AxelorException();
+			
+		if (startUnit.equals(endUnit))
+			return value; 
+		else { 		
+			BigDecimal coefficient = this.getCoefficient(UnitConversion.all().fetch(), startUnit, endUnit);		
+			
+			return value.multiply(coefficient).setScale(6, RoundingMode.HALF_EVEN);		
+		}	
+	}
 }

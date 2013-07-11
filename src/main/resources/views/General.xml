@@ -64,6 +64,8 @@
 	            <field name="exceptionInvoiceMsg" colSpan="4"/>
 	            <field name="exceptionAccountingMsg" colSpan="4"/>
 	            <field name="exceptionReminderMsg" colSpan="4"/>
+	            <field name="exceptionMailMsg" colSpan="4"/>
+	            <field name="exceptionSupplychainMsg" colSpan="4"/>
 	        </page>
 	    </notebook>
 	</form>

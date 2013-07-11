@@ -10,8 +10,8 @@
   	<many-to-one name="location" ref="com.axelor.apps.supplychain.db.Location" title="Location"/>
   	
 	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>    
-	<integer name="currentQty" title="Current quantity"/>
-	<integer name="futureQty" title="Future quantity"/>
+	<decimal name="currentQty" title="Current quantity"/>
+	<decimal name="futureQty" title="Future quantity"/>
 	<date name="lastFutureStockMoveDate" title="Last Future Stock Move"/>
 	
   </entity>

@@ -142,6 +142,9 @@
     <string name="generatedEmailFilePath" title="Filepath to export generated emails" help="example : /home/axelor/email/"/>
     <string name="generatedMailFileName" title="Generated mail files name prefix" help="exemple : letter_"/>
     <string name="generatedEmailFileName" title="Generated email files name prefix" help="exemple : email_"/>
+    
+    <many-to-one name="customerVirtualLocation" ref="com.axelor.apps.supplychain.db.Location" title="Customer virtual location"/>
+    <many-to-one name="supplierVirtualLocation" ref="com.axelor.apps.supplychain.db.Location" title="Supplier virtual location"/>
   </entity>
   
 </domain-models>

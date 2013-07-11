@@ -231,6 +231,29 @@ public final class GeneralService {
 		}
 		
 	}
+	
+	/**
+	 * Obtenir le message d'erreur pour les achats/ventes.
+	 * 
+	 * @return
+	 */
+	public static String getExceptionSupplychainMsg(){
+		
+		if (getGeneral() != null) {
+			
+			if (getGeneral().getExceptionSupplychainMsg() != null ) {
+				return getGeneral().getExceptionSupplychainMsg();
+			}
+			else {
+				return getGeneral().getExceptionDefaultMsg();
+			}
+		}
+		else {
+			return EXCEPTION;
+		}
+		
+	}
+
 
 
 // TVA 

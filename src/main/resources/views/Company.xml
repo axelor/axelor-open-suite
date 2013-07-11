@@ -166,6 +166,10 @@
             	<field name="generatedMailFileName" />
             	<field name="generatedEmailFileName" />
             </page>
+            <page title="Supply chain" cols="4">
+            	<field name="customerVirtualLocation" />
+            	<field name="supplierVirtualLocation" />
+            </page>
         </notebook>
     </form>
 	
