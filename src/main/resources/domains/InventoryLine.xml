@@ -9,8 +9,8 @@
   
   	<many-to-one name="inventory" ref="com.axelor.apps.supplychain.db.Inventory" title="Inventory"/>
 	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>    
-	<integer name="currentQty" title="Quantity"/>
-	<integer name="realQty" title="Quantity"/>
+	<decimal name="currentQty" title="Quantity"/>
+	<decimal name="realQty" title="Quantity"/>
 	<string name="description" title="Description"/>
     
   </entity>
