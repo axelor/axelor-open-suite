@@ -15,6 +15,9 @@
     <form name="location-form" title="Stock Location" model="com.axelor.apps.supplychain.db.Location" cols="6"
     	onNew="action-location-record-new"
     	onSave="action-location-is-default-location">
+    	<toolbar>
+    		<button name="createInventory" title="Create inventory" onClick="action-location-view-create-inventory" colSpan="1"/>
+    	</toolbar>
         <field name="name"/>
         <field name="parent"/>        
         <field name="typeSelect"/>
@@ -38,5 +41,10 @@
     <action-method name="action-location-is-default-location">
    		<call class="com.axelor.apps.supplychain.web.LocationController" method="checkIsDefaultLocation"/>
 	</action-method>
+	
+    <action-view name="action-location-view-create-inventory" title="Create inventory" model="com.axelor.apps.base.db.Wizard">
+		<view type="form" name="create-inventory-wizard-form"/>
+		<context name="_location" expr="eval: __self__"/>
+	</action-view>
 
 </object-views>
