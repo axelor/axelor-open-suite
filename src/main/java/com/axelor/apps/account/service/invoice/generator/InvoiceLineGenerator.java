@@ -18,6 +18,7 @@ import com.axelor.apps.account.db.VatLine;
 import com.axelor.apps.account.service.AccountManagementService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.db.Alarm;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
@@ -28,6 +29,7 @@ import com.axelor.apps.organisation.db.Task;
 import com.axelor.apps.tool.date.Period;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 
 /**
  * Classe de création de ligne de facture abstraite.
@@ -133,50 +135,15 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		this.type = type;
 	}
 
+	
 	abstract public List<InvoiceLine> creates() throws AxelorException ;
 	
 	
 	/**
-	 * Version de TVA récupéré re-déterminé
-	 * @param company
-	 * @param product
-	 * @param qty
-	 * @param price
-	 * @param unit
-	 * @param isTaxInvoice
-	 * @param type
-	 * @param isPurchase
-	 * @return
-	 * @throws AxelorException
-	 */
-	protected InvoiceLine createInvoiceLine() throws AxelorException {
-		
-		boolean isPurchase = false;
-		if(invoice.getOperationTypeSelect() == IInvoice.SUPPLIER_PURCHASE || invoice.getOperationTypeSelect() == IInvoice.SUPPLIER_REFUND)  {
-			isPurchase = true;
-		}
-		
-		return this.createInvoiceLine(	accountManagementService.getVatLine(invoice.getInvoiceDate(), product, invoice.getCompany(), isPurchase));
-	}
-	
-	
-	/**
-	 * En passant tout les paramètres
-	 * @param invoice
-	 * @param exTaxTotal
-	 * @param product
-	 * @param productName
-	 * @param price
-	 * @param description
-	 * @param qty
-	 * @param unit
-	 * @param vatLine
-	 * @param task
-	 * @param isTaxInvoice
 	 * @return
 	 * @throws AxelorException 
 	 */
-	public InvoiceLine createInvoiceLine(VatLine vatLine) throws AxelorException  {
+	protected InvoiceLine createInvoiceLine() throws AxelorException  {
 		
 		InvoiceLine invoiceLine = new InvoiceLine();
 		
@@ -191,12 +158,32 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		
 		BigDecimal exTaxTotal = computeAmount(qty, price);
 		invoiceLine.setExTaxTotal(exTaxTotal);
+		
+		Partner clientPartner = invoice.getClientPartner();
+		Currency partnerCurrency = clientPartner.getCurrency();
+		
+		if(partnerCurrency == null)  {
+			throw new AxelorException(String.format("Veuillez selectionner une devise pour le tiers %s (%s)", 
+					clientPartner.getFullName(), clientPartner.getPartnerSeq()), IException.CONFIGURATION_ERROR);
+		}
+		
 		invoiceLine.setAccountingExTaxTotal(
 				currencyService.getAmountCurrencyConverted(
-						invoice.getCurrency(), invoice.getClientPartner().getCurrency(), exTaxTotal, invoice.getInvoiceDate()));  
+						invoice.getCurrency(), partnerCurrency, exTaxTotal, invoice.getInvoiceDate()));  
 		
 		invoiceLine.setPricingListUnit(unit);
+		
+		if(vatLine == null)  {
+			boolean isPurchase = false;
+			if(invoice.getOperationTypeSelect() == IInvoice.SUPPLIER_PURCHASE || invoice.getOperationTypeSelect() == IInvoice.SUPPLIER_REFUND)  {
+				isPurchase = true;
+			}
+			vatLine = accountManagementService.getVatLine(invoice.getInvoiceDate(), product, invoice.getCompany(), isPurchase);
+		}
 		invoiceLine.setVatLine(vatLine);
+		
+		
+		
 		invoiceLine.setTask(task);
 		invoiceLine.setInvoiceLineType(invoiceLineType);
 		
