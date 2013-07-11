@@ -41,7 +41,7 @@
 	            <group title="Specific settings" name="specificSettings" canCollapse="true" colSpan="4">
 	                <separator title="Sale order Settings" colSpan="4"/>
 	                    <field name="isToPrintLineSubTotal"/>
-	                    <field name="project" showIf="hasToCreateTaskByLine"/>
+	                    <field name="project" domain="self.company = :company or self.company = null" showIf="hasToCreateTaskByLine"/>
 	                <separator title="Sale order lines Settings" colSpan="4"/>
 	                    <field name="hasToCreateTaskByLine"/>
 	                    <field name="hasToCreateMoByLine"/>
@@ -178,6 +178,7 @@
     
     <action-validate name="action-sales-order-button-validation">
    		<error message="Project must be filled if create task by line is check." if="hasToCreateTaskByLine &amp;&amp; project == null"/>
+   		<error message="The company of the sale order and the company of the project must be the same." if="eval: hasToCreateTaskByLine == true &amp;&amp; company != null &amp;&amp; project != null &amp;&amp; project.company != null &amp;&amp; company.id != project.company.id"/>
 	</action-validate> 
 	
 	<action-method name="action-sales-order-create-tasks">
@@ -191,5 +192,5 @@
 	<action-validate name="action-sale-order-validate-check-location">
 		<error message="The location must be filled." if="location == null"/>
 	</action-validate> 
-
+	
 </object-views>
