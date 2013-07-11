@@ -240,10 +240,12 @@ public class SalesOrderService {
 				Product salesOrderLineProduct = salesOrderLine.getProduct();
 
 				if(salesOrderLineProduct != null && salesOrderLineProduct.getProductTypeSelect().equals("service") && salesOrderLineProduct.getSaleSupplySelect() == 3) {
+					
+					// Update the field company of the project
+					if(salesOrder.getProject().getCompany() == null)
+						salesOrder.getProject().setCompany(salesOrder.getCompany());
 					/* Create a new Task */
 					Task task = new Task();
-					// Update the field company of the project
-					salesOrder.getProject().setCompany(salesOrder.getCompany());
 					task.setProject(salesOrder.getProject());
 					task.setSalesOrderLine(salesOrderLine);
 					task.setProduct(salesOrderLine.getProduct());
