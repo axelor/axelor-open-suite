@@ -82,22 +82,19 @@ public class TaskInvoiceService {
 		
 		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
 		
-		InvoiceLine invoiceLine = this.createInvoiceLine(invoice, task);
-		invoiceLine.save();
-
-		invoiceLineList.add(invoiceLine);	
+		invoiceLineList.addAll(this.createInvoiceLine(invoice, task));	
 		
 		return invoiceLineList;	
 	}
 	
-	public InvoiceLine createInvoiceLine(Invoice invoice, BigDecimal exTaxTotal, Product product, String productName, BigDecimal price, String description, BigDecimal qty,
+	public List<InvoiceLine> createInvoiceLine(Invoice invoice, BigDecimal exTaxTotal, Product product, String productName, BigDecimal price, String description, BigDecimal qty,
 			Unit unit, VatLine vatLine, Task task) throws AxelorException  {
 		
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, productName, price, description, qty, unit, vatLine, task, product.getInvoiceLineType(), false) {
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
 				
-				InvoiceLine invoiceLine = this.createInvoiceLine(vatLine);
+				InvoiceLine invoiceLine = this.createInvoiceLine();
 				
 				List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
 				invoiceLines.add(invoiceLine);
@@ -106,10 +103,10 @@ public class TaskInvoiceService {
 			}
 		};
 		
-		return invoiceLineGenerator.createInvoiceLine(vatLine);
+		return invoiceLineGenerator.creates();
 	}
 	
-	public InvoiceLine createInvoiceLine(Invoice invoice, Task task) throws AxelorException  {
+	public List<InvoiceLine> createInvoiceLine(Invoice invoice, Task task) throws AxelorException  {
 		
 		SalesOrderLine salesOrderLine = task.getSalesOrderLine();
 		
