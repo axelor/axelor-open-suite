@@ -6,6 +6,7 @@
     <grid name="project-grid" title="Affairs/Projects" model="com.axelor.apps.organisation.db.Project">
         <field name="clientPartner"/>
         <field name="contactPartner"/>
+        <field name="company"/>
         <field name="affairName"/>
         <field name="isModel"/>
     </grid>
@@ -18,6 +19,7 @@
 	        <field name="projectUnit"/>
 	        <field name="clientPartner"/>
 	        <field name="contactPartner" domain="self.isContact = true"/>
+	        <field name="company"/>
 	        <group name="specificSettings" title="Specific settings" colSpan="4" canCollapse="true">
 	            <field name="isModel"/>
 	            <field name="modelProject" hideIf="isModel" domain="self.isModel = true"/>
@@ -30,7 +32,7 @@
 	    <group title="Actions" showTitle="false" colSpan="2" cols="1">
 	        <button name="createSalesOrder" title="Create quote" colSpan="1"/>
 	        <button name="generateNewInstanceOfProject" title="Generate new project instance" hideIf="!isModel" colSpan="1"/>
-	        <button name="generateDraftInvoice" title="Generate draft invoice" colSpan="1" onClick="save,action-project-validate-generate-invoices,action-project-method-create-invoices"/>
+	        <button name="generateDraftInvoice" title="Generate draft invoice" colSpan="1" onClick="save,action-project-validate-generate-invoice,action-project-method-create-invoice"/>
 	        <button name="showTask" title="Show tasks" colSpan="1" onClick="action-project-view-task"/>
 	    </group>
 	    <notebook colSpan="6">
@@ -86,11 +88,12 @@
 		<field name="projectUnit" expr="call:com.axelor.apps.base.service.administration.GeneralService:getUnit()" if="!parentProject || parentProject.projectUnit == null"/>
 	</action-record>
 	
-	<action-method name="action-project-method-create-invoices">
-		<call class="com.axelor.apps.accountorganisation.web.ProjectInvoiceController" method="createInvoices"/>
+	<action-method name="action-project-method-create-invoice">
+		<call class="com.axelor.apps.accountorganisation.web.ProjectInvoiceController" method="createInvoice"/>
 	</action-method>
 	
-	<action-validate name="action-project-validate-generate-invoices">
+	<action-validate name="action-project-validate-generate-invoice">
+		<alert message="Generating invoice is impossible, the fields clientPartner and contactPartner must be filled." if="clientPartner == null || contactPartner == null"/>
    		<alert message="Generating invoice is impossible, Please link the task to a saleOrderLine to do so." if="eval: taskList?.collect(){ it?.salesOrderLine }?.contains(null) == true"/>
 	</action-validate> 
 		
