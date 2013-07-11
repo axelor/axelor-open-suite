@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.joda.time.LocalDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
@@ -27,6 +29,8 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class StockMoveService {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(StockMoveService.class); 
 
 	@Inject
 	private SequenceService sequenceService;
@@ -163,6 +167,8 @@ public class StockMoveService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void plan(StockMove stockMove) throws AxelorException  {
 		
+		LOG.debug("Plannification du mouvement de stock : {} ", new Object[] { stockMove.getName() });
+		
 		Location fromLocation = stockMove.getFromLocation();
 		Location toLocation = stockMove.getToLocation();
 		
@@ -187,8 +193,6 @@ public class StockMoveService {
 			stockMove.setName(refSequence); // ???
 		}
 		
-		
-		
 		this.updateLocations(
 				fromLocation, 
 				toLocation, 
@@ -197,10 +201,12 @@ public class StockMoveService {
 				stockMove.getStockMoveLineList(),
 				stockMove.getEstimatedDate());
 		
-		stockMove.setStatusSelect(IStockMove.PLANNED);
 		if(stockMove.getEstimatedDate() == null)  {
 			stockMove.setEstimatedDate(this.today);
 		}
+		
+		stockMove.setStatusSelect(IStockMove.PLANNED);
+		
 		stockMove.save();
 		
 	}
@@ -209,6 +215,8 @@ public class StockMoveService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void realize(StockMove stockMove) throws AxelorException  {
 	
+		LOG.debug("Réalisation du mouvement de stock : {} ", new Object[] { stockMove.getName() });
+		
 		this.updateLocations(
 				stockMove.getFromLocation(), 
 				stockMove.getToLocation(), 
@@ -226,6 +234,8 @@ public class StockMoveService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void cancel(StockMove stockMove) throws AxelorException  {
 	
+		LOG.debug("Annulation du mouvement de stock : {} ", new Object[] { stockMove.getName() });
+		
 		this.updateLocations(
 				stockMove.getFromLocation(), 
 				stockMove.getToLocation(), 
@@ -294,10 +304,12 @@ public class StockMoveService {
 	}
 	
 	
-	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void updateLocation(Location location, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement, LocalDate lastFutureStockMoveDate)  {
 		
 		LocationLine locationLine = this.getLocationLine(location, product);
+		
+		LOG.debug("Mise à jour du stock : {} ", new Object[] { location.getName(), product.getName(), qty, current, future, isIncrement, lastFutureStockMoveDate });
 		
 		if(current)  {
 			if(isIncrement)  {
@@ -317,6 +329,7 @@ public class StockMoveService {
 			}
 			locationLine.setLastFutureStockMoveDate(lastFutureStockMoveDate);
 		}
+		locationLine.save();
 		
 	}
 	
@@ -328,6 +341,10 @@ public class StockMoveService {
 		if(locationLine == null)  {
 			locationLine = this.createLocationLine(location, product);
 		}
+		
+		LOG.debug("Récupération ligne de stock: {} ", new Object[] { locationLine.getLocation().getName(), product.getName(), 
+				locationLine.getCurrentQty(), locationLine.getFutureQty(), locationLine.getLastFutureStockMoveDate() });
+		
 		return locationLine;
 	}
 	
@@ -347,6 +364,8 @@ public class StockMoveService {
 	
 	
 	public LocationLine createLocationLine(Location location, Product product)  {
+		
+		LOG.debug("Création d'une ligne de stock : {} ", new Object[] { location.getName(), product.getName() });
 		
 		LocationLine locationLine = new LocationLine();
 		

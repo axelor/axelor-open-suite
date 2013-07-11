@@ -24,6 +24,7 @@ import com.axelor.apps.supplychain.db.SalesOrder;
 import com.axelor.apps.supplychain.db.SalesOrderLine;
 import com.axelor.apps.supplychain.db.SalesOrderSubLine;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -53,6 +54,8 @@ public class SalesOrderInvoiceService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice generateInvoice(SalesOrder salesOrder) throws AxelorException  {
 		
+		this.checkIfSalesOrderIsCompletelyInvoiced(salesOrder);
+		
 		Invoice invoice = this.createInvoice(salesOrder);
 		
 		this.assignInvoice(salesOrder, invoice);
@@ -60,6 +63,23 @@ public class SalesOrderInvoiceService {
 		this.fillSalesOrder(salesOrder, invoice).save();
 		
 		return invoice;
+	}
+	
+	
+	public void checkIfSalesOrderIsCompletelyInvoiced(SalesOrder salesOrder) throws AxelorException  {
+		
+		BigDecimal total = BigDecimal.ZERO;
+		
+		for(Invoice invoice : salesOrder.getInvoiceSet())  {
+			if(invoice.getStatus().getCode().equals("dis"))  {
+				total = total.add(invoice.getInTaxTotal());
+			}
+		}
+		
+		if(total.compareTo(salesOrder.getInTaxTotal()) == 0)  {
+			throw new AxelorException(String.format("Le devis %s est déjà complêtement facturé", salesOrder.getSalesOrderSeq()), IException.CONFIGURATION_ERROR);
+		}
+		
 	}
 	
 	
@@ -91,6 +111,9 @@ public class SalesOrderInvoiceService {
 	
 	public Invoice createInvoice(SalesOrder salesOrder) throws AxelorException  {
 		
+		if(salesOrder.getCurrency() == null)  {
+			throw new AxelorException(String.format("Veuillez selectionner une devise pour le devis %s ", salesOrder.getSalesOrderSeq()), IException.CONFIGURATION_ERROR);
+		}
 		
 		InvoiceGenerator invoiceGenerator = new InvoiceGenerator(IInvoice.CLIENT_SALE, salesOrder.getCompany(),salesOrder.getPaymentCondition(), 
 				salesOrder.getPaymentMode(), salesOrder.getMainInvoicingAddress(), salesOrder.getClientPartner(), salesOrder.getContactPartner(), salesOrder.getCurrency()) {
@@ -124,14 +147,14 @@ public class SalesOrderInvoiceService {
 				
 				for(SalesOrderSubLine salesOrderSubLine : salesOrderLine.getSalesOrderSubLineList())  {
 					
-					invoiceLineList.add(this.createInvoiceLine(invoice, salesOrderSubLine));
+					invoiceLineList.addAll(this.createInvoiceLine(invoice, salesOrderSubLine));
 					
 				}
 			
 			}
 			else  {
 				
-				invoiceLineList.add(this.createInvoiceLine(invoice, salesOrderLine));
+				invoiceLineList.addAll(this.createInvoiceLine(invoice, salesOrderLine));
 				
 			}
 		}
@@ -141,14 +164,14 @@ public class SalesOrderInvoiceService {
 	}
 	
 	
-	public InvoiceLine createInvoiceLine(Invoice invoice, BigDecimal exTaxTotal, Product product, String productName, BigDecimal price, String description, BigDecimal qty,
+	public List<InvoiceLine> createInvoiceLine(Invoice invoice, BigDecimal exTaxTotal, Product product, String productName, BigDecimal price, String description, BigDecimal qty,
 			Unit unit, VatLine vatLine, Task task) throws AxelorException  {
 		
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, productName, price, description, qty, unit, vatLine, task, product.getInvoiceLineType(), false)  {
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
 				
-				InvoiceLine invoiceLine = this.createInvoiceLine(vatLine);
+				InvoiceLine invoiceLine = this.createInvoiceLine();
 				
 				List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
 				invoiceLines.add(invoiceLine);
@@ -157,11 +180,11 @@ public class SalesOrderInvoiceService {
 			}
 		};
 		
-		return invoiceLineGenerator.createInvoiceLine(vatLine);
+		return invoiceLineGenerator.creates();
 	}
 	
 	
-	public InvoiceLine createInvoiceLine(Invoice invoice, SalesOrderLine salesOrderLine) throws AxelorException  {
+	public List<InvoiceLine> createInvoiceLine(Invoice invoice, SalesOrderLine salesOrderLine) throws AxelorException  {
 		
 		return this.createInvoiceLine(invoice, salesOrderLine.getExTaxTotal(), salesOrderLine.getProduct(), salesOrderLine.getProductName(), 
 				salesOrderLine.getPrice(), salesOrderLine.getDescription(), salesOrderLine.getQty(), salesOrderLine.getUnit(), salesOrderLine.getVatLine(), salesOrderLine.getTask());
@@ -170,7 +193,7 @@ public class SalesOrderInvoiceService {
 	}
 	
 	
-	public InvoiceLine createInvoiceLine(Invoice invoice, SalesOrderSubLine salesOrderSubLine) throws AxelorException  {
+	public List<InvoiceLine> createInvoiceLine(Invoice invoice, SalesOrderSubLine salesOrderSubLine) throws AxelorException  {
 		
 		return this.createInvoiceLine(invoice, salesOrderSubLine.getExTaxTotal(), salesOrderSubLine.getProduct(), salesOrderSubLine.getProductName(), 
 				salesOrderSubLine.getPrice(), salesOrderSubLine.getDescription(), salesOrderSubLine.getQty(), salesOrderSubLine.getUnit(), 

@@ -25,6 +25,8 @@ class StockMoveController {
 			
 			stockMoveService.plan(StockMove.find(stockMove.id))
 			
+			response.reload = true
+			
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e) }
 	}
@@ -38,6 +40,8 @@ class StockMoveController {
 			
 			stockMoveService.realize(StockMove.find(stockMove.id))
 			
+			response.reload = true
+			
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e) }
 	}
@@ -49,6 +53,8 @@ class StockMoveController {
 		try {
 			
 			stockMoveService.cancel(StockMove.find(stockMove.id))
+			
+			response.reload = true
 			
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e) }
