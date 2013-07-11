@@ -27,6 +27,9 @@ class ProjectInvoiceController {
 					response.reload = true
 					response.flash = "Facture créée"
 				}
+				else {
+					response.flash = "Aucune facture générée. Veuillez vérifier que les champs Client, Contact et Société sont bien remplis."
+				}
 			}
 			catch(Exception e)  { TraceBackService.trace(response, e) }
 		}
