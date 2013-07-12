@@ -145,10 +145,12 @@
     
     <many-to-one name="customerVirtualLocation" ref="com.axelor.apps.supplychain.db.Location" title="Customer virtual location"/>
     <many-to-one name="supplierVirtualLocation" ref="com.axelor.apps.supplychain.db.Location" title="Supplier virtual location"/>
-    
+   
     <!-- Onglet Facturation -->
     <boolean name="showDetailsInInvoice" title="Show details in invoice"/>
-    
+   
+    <many-to-one name="inventoryVirtualLocation" ref="com.axelor.apps.supplychain.db.Location" title="Inventory virtual location"/>
+  
   </entity>
   
 </domain-models>

@@ -169,6 +169,7 @@
             <page title="Supply chain" cols="4">
             	<field name="customerVirtualLocation" />
             	<field name="supplierVirtualLocation" />
+            	<field name="inventoryVirtualLocation" />
             </page>
             <page title="Invoicing" cols="4">
             	<field name="showDetailsInInvoice"/>
