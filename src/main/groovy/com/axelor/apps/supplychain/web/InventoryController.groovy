@@ -6,6 +6,9 @@ import com.axelor.apps.supplychain.db.DeliveryOrder
 import com.axelor.apps.supplychain.db.DeliveryOrderLine
 import com.axelor.apps.supplychain.db.InventoryLine
 import com.axelor.apps.supplychain.service.InventoryService
+import com.axelor.exception.AxelorException
+import com.axelor.apps.base.db.IAdministration;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.service.TraceBackService
 import com.axelor.apps.AxelorSettings
 import com.axelor.meta.db.MetaUser
@@ -22,6 +25,9 @@ class InventoryController {
 	
 	@Inject
 	InventoryService inventoryService
+	
+	@Inject
+	SequenceService sequenceService
 	
 	
 	/**
@@ -56,13 +62,25 @@ class InventoryController {
 		}
 	}
 	
-	@Transactional
 	def void importFile(ActionRequest request, ActionResponse response) {
 		
 		Inventory inventory = request.context as Inventory
 		String filePath = inventory.importFilePath
 		char separator = ','
-		inventory = inventoryService.importFile(filePath, separator, inventory)
-		inventory.save()
+		
+		if (!inventory.name) {
+			def ref = sequenceService.getSequence(IAdministration.INVENTORY, inventory.location.getCompany(),false)
+			if (ref == null || ref.isEmpty())
+				throw new AxelorException("Aucune séquence configurée pour les inventaires pour la société "+inventory.location.getCompany().getName(),
+								IException.CONFIGURATION_ERROR);
+			inventory.setName(ref)
+		}
+		inventoryService.importFile(filePath, separator, inventory)
+	}
+	
+	def void generateStockMove(ActionRequest request, ActionResponse response) {
+		
+		Inventory inventory = request.context as Inventory
+		inventoryService.generateStockMove(inventory)
 	}
 }

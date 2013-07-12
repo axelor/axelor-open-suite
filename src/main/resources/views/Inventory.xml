@@ -16,31 +16,27 @@
 	    <field name="statusSelect" widget="NavSelect"/>
 	    <field name="location"/>
 	    <spacer/>
-	    <group title="Export" colSpan="1">
+	    <group title="Export" colSpan="1" showIf="statusSelect == 2 || statusSelect == 3">
 	    	<field name="formatSelect"/>
 	    	<button name="showInventory" title="Print" colSpan="1" icon="img/icons/print.png" onClick="save,action-inventory-method-show-inventory" showIf="formatSelect != null"/>
 	    </group>
 	    <field name="dateT"/>
 	    <spacer/>
-	    <group title="Import" colSpan="1">
+	    <group title="Import" colSpan="1" hideIf="statusSelect != 2">
 	    	<field name="importFilePath"/><break/>
 	    	<button name="importFile" title="Import" colSpan="1" onClick="save,action-inventory-method-import-file,save" showIf="importFilePath != null"/>
 	    </group>
 	    <field name="description" colSpan="4"/>
 	    <spacer/>
 	    <break/>
-	    <button name="fillInventory" title="Fill inventory" colSpan="4" onClick=""/>
-	    <spacer/>
-	    <break/>
-	    <field name="inventoryLineList" colSpan="4"/>
+	    <field name="inventoryLineList" colSpan="4" readonlyIf="statusSelect == 3"/>
 	    <group title="Actions" colSpan="4">
-	        <button name="plan" title="Plan" showIf="statusSelect == 1" colSpan="1" onClick="save,action-inventory-record-plan,save"/>
-			<button name="realize" title="Realize" showIf="statusSelect == 2" colSpan="1" onClick="save,action-inventory-record-realize,save"/>
-			<button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3" colSpan="1" onClick="save,action-inventory-record-cancel,save"/>
+	        <button name="plan" title="Plan" showIf="statusSelect == 1 &amp;&amp; location != null" colSpan="1" onClick="save,action-inventory-record-plan,save"/><break/>
+			<button name="realize" title="Realize" showIf="statusSelect == 2" colSpan="1" onClick="save,action-inventory-method-generate-stock-move,action-inventory-record-realize,save"/><break/>
+			<button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3" colSpan="1" onClick="save,action-inventory-record-cancel,save"/><break/>
         	<button name="draft" title="Draft" showIf="statusSelect == 4" onClick="save,action-inventory-record-draft,save"/>
 	    </group> 
     </form>
-    
     
     <action-record name="action-inventory-record-new" model="com.axelor.apps.supplychain.db.Inventory">
 	    <field name="statusSelect" expr="1"/>
@@ -69,6 +65,10 @@
 	
 	<action-method name="action-inventory-method-import-file">
 		<call class="com.axelor.apps.supplychain.web.InventoryController" method="importFile"/>
+	</action-method>
+	
+	<action-method name="action-inventory-method-generate-stock-move">
+		<call class="com.axelor.apps.supplychain.web.InventoryController" method="generateStockMove"/>
 	</action-method>
     
 </object-views>

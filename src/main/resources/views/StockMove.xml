@@ -31,7 +31,7 @@
         <field name="toAddress" showIf="typeSelect == 2"/>
         <field name="company"/>
         <field name="partner" domain="self.isContact = false"/>
-        <field name="stockMoveLineList" colSpan="4"/>
+        <field name="stockMoveLineList" colSpan="4" readonlyIf="statusSelect == 3"/>
         <group title="Action(s)" colSpan="2" cols="2">
 			<button name="plan" title="Plan" showIf="statusSelect == 1" colSpan="1" onClick="save,action-stock-move-method-plan,save"/>
 			<button name="realize" title="Realize" showIf="statusSelect == 2" colSpan="1" onClick="save,action-stock-move-method-realize,save"/>
@@ -43,6 +43,8 @@
     <!-- <action-attrs name="action-stock-move-attrs-title-realize-button">
     	<attribute name="title" for="realize" expr="eval: (fromLocation) ? ((fromLocation?.typeSelect != 1 &amp;&amp; toLocation?.typeSelect == 1) ? 'Receive' : 'Send') : ((toLocation?.typeSelect == 1) ? 'Receive' : 'Send')"/>
     </action-attrs> -->
+    
+    
     
     <action-record name="action-stock-move-record-draft" model="com.axelor.apps.supplychain.db.StockMove">
     	<field name="statusSelect" expr="eval: 1"/>
