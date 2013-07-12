@@ -14,6 +14,7 @@
   	<string name="description" title="Description" large="true"/>
   	<one-to-many name="inventoryLineList" ref="com.axelor.apps.supplychain.db.InventoryLine" mappedBy="inventory" title="Inventory lines"/>
   	<integer name="formatSelect" title="Format" selection="supplychain.inventory.format.select"/>
+  	<string name="importFilePath" title="File Path"/>
   	
   </entity>
 </domain-models>
