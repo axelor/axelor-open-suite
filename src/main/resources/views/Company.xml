@@ -170,6 +170,9 @@
             	<field name="customerVirtualLocation" />
             	<field name="supplierVirtualLocation" />
             </page>
+            <page title="Invoicing" cols="4">
+            	<field name="showDetailsInInvoice"/>
+            </page>
         </notebook>
     </form>
 	

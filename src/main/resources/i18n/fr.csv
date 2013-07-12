@@ -2025,6 +2025,7 @@
 "com.axelor.apps.supplychain.db.SalesOrder";"isToPrintLineSubTotal";"field";"Print subtotal per line";"Imprimer un sous-total par ligne";;;;
 "com.axelor.apps.supplychain.db.SalesOrder";"hasSubLineDefaultValue";"field";"Default value for sublines";"Valeur par défaut des sous-lignes";;;;
 "com.axelor.apps.supplychain.db.SalesOrder";"invoicingTypeSelect";"field";"Invoicing type";"Type de facturation";;;;
+"com.axelor.apps.supplychain.db.SalesOrder";"showDetailsInInvoice";"field";"Show details in invoice";"Voir détail sur facture";;;;
 "com.axelor.apps.supplychain.db.SalesOrder";"hasToCreateTaskByLine";"field";"Create a task per line ?";"créer une tache/OF par ligne de commande ?";;;;
 "com.axelor.apps.supplychain.db.SalesOrder";"hasToCreateMoByLine";"field";"Create a M.O. per line ?";;;;;
 "com.axelor.apps.supplychain.db.SalesOrder";"hasToCreateProposal";"field";"Create purchase orders ?";"créer des propositions d'achat ?";;;;

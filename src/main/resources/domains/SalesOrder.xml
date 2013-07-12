@@ -51,7 +51,8 @@
 	<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode"/>
     <many-to-one name="paymentCondition" ref="com.axelor.apps.account.db.PaymentCondition" title="Payment condition"/>
     <many-to-one name="source" ref="com.axelor.apps.base.db.Source" title="Source"/>
-
+	
+	<boolean name="showDetailsInInvoice" title="Show details in invoice"/>
 	<integer name="invoicingMomentSelect" title="Invoicing trigger" selection="supplychain.invoicing.moment.select"/>
 <!-- 	Onglet échéancier -->
 	<one-to-many name="salesOrderScheduleLineList" ref="com.axelor.apps.supplychain.db.SalesOrderScheduleLine" mappedBy="salesOrder" title="Schedule line list"/>
