@@ -234,11 +234,11 @@ public class SalesOrderService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void createTasks(SalesOrder salesOrder) throws AxelorException  {
 
-		if(salesOrder.getSalesOrderLineList() != null)  {
+		if(salesOrder.getSalesOrderLineList() != null && salesOrder.getProject() != null)  {
 			/* Loop of the salesOrderLineList */
 			for(SalesOrderLine salesOrderLine : salesOrder.getSalesOrderLineList())  {
 				Product salesOrderLineProduct = salesOrderLine.getProduct();
-
+				
 				if(salesOrderLineProduct != null && salesOrderLineProduct.getProductTypeSelect().equals("service") && salesOrderLineProduct.getSaleSupplySelect() == 3) {
 					
 					// Update the field company of the project

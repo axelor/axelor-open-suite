@@ -126,7 +126,7 @@ public class SalesOrderInvoiceService {
 		};
 		
 		Invoice invoice = invoiceGenerator.generate();
-		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, salesOrder.getSalesOrderLineList()));
+		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, salesOrder.getSalesOrderLineList(), salesOrder.getShowDetailsInInvoice()));
 		invoiceGenerator.computeInvoice(invoice);
 		return invoice;
 		
@@ -137,13 +137,13 @@ public class SalesOrderInvoiceService {
 	
 	
 	// TODO ajouter tri sur les séquences
-	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<SalesOrderLine> salesOrderLineList) throws AxelorException  {
+	public List<InvoiceLine> createInvoiceLines(Invoice invoice, List<SalesOrderLine> salesOrderLineList, boolean showDetailsInInvoice) throws AxelorException  {
 		
 		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
 		
 		for(SalesOrderLine salesOrderLine : salesOrderLineList)  {
 			
-			if(salesOrderLine.getSalesOrderSubLineList() != null && !salesOrderLine.getSalesOrderSubLineList().isEmpty())  {
+			if(showDetailsInInvoice == true && salesOrderLine.getSalesOrderSubLineList() != null && !salesOrderLine.getSalesOrderSubLineList().isEmpty())  {
 				
 				for(SalesOrderSubLine salesOrderSubLine : salesOrderLine.getSalesOrderSubLineList())  {
 					
