@@ -8,7 +8,7 @@
   <entity name="Inventory" lang="java">
   
   	<string name="name" title="Name"/>
-  	<many-to-one name="location" ref="com.axelor.apps.supplychain.db.Location" title="Location"/>
+  	<many-to-one name="location" ref="com.axelor.apps.supplychain.db.Location" title="Location" required="true"/>
     <integer name="statusSelect" title="Status" selection="supplychain.default.status.select" readonly="true"/>
   	<datetime name="dateT" title="Date" required="true" tz="true"/>
   	<string name="description" title="Description" large="true"/>
