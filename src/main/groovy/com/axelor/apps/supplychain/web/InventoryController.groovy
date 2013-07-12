@@ -4,18 +4,24 @@ import groovy.util.logging.Slf4j
 import com.axelor.apps.supplychain.db.Inventory
 import com.axelor.apps.supplychain.db.DeliveryOrder
 import com.axelor.apps.supplychain.db.DeliveryOrderLine
+import com.axelor.apps.supplychain.db.InventoryLine
+import com.axelor.apps.supplychain.service.InventoryService
 import com.axelor.exception.service.TraceBackService
 import com.axelor.apps.AxelorSettings
 import com.axelor.meta.db.MetaUser
 import com.axelor.auth.db.User
+import com.axelor.exception.db.IException
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional
 import com.axelor.apps.tool.net.URLService
 
 @Slf4j
 class InventoryController {
 	
+	@Inject
+	InventoryService inventoryService
 	
 	
 	/**
@@ -50,5 +56,13 @@ class InventoryController {
 		}
 	}
 	
-	
+	@Transactional
+	def void importFile(ActionRequest request, ActionResponse response) {
+		
+		Inventory inventory = request.context as Inventory
+		String filePath = inventory.importFilePath
+		char separator = ','
+		inventory = inventoryService.importFile(filePath, separator, inventory)
+		inventory.save()
+	}
 }

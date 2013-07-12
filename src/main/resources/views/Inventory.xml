@@ -21,6 +21,11 @@
 	    	<button name="showInventory" title="Print" colSpan="1" icon="img/icons/print.png" onClick="save,action-inventory-method-show-inventory" showIf="formatSelect != null"/>
 	    </group>
 	    <field name="dateT"/>
+	    <spacer/>
+	    <group title="Import" colSpan="1">
+	    	<field name="importFilePath"/><break/>
+	    	<button name="importFile" title="Import" colSpan="1" onClick="save,action-inventory-method-import-file,save" showIf="importFilePath != null"/>
+	    </group>
 	    <field name="description" colSpan="4"/>
 	    <spacer/>
 	    <break/>
@@ -39,6 +44,7 @@
     
     <action-record name="action-inventory-record-new" model="com.axelor.apps.supplychain.db.Inventory">
 	    <field name="statusSelect" expr="1"/>
+	    <field name="dateT" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()"/>
 	</action-record>
 	
 	<action-record name="action-inventory-record-draft" model="com.axelor.apps.supplychain.db.Inventory">
@@ -59,6 +65,10 @@
 	
 	<action-method name="action-inventory-method-show-inventory">
 		<call class="com.axelor.apps.supplychain.web.InventoryController" method="showInventory"/>
+	</action-method>
+	
+	<action-method name="action-inventory-method-import-file">
+		<call class="com.axelor.apps.supplychain.web.InventoryController" method="importFile"/>
 	</action-method>
     
 </object-views>
