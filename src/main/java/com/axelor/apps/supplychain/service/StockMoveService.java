@@ -188,9 +188,12 @@ public class StockMoveService {
 
 		// Set the sequence
 		if(stockMove.getStockMoveSeq() == null || stockMove.getStockMoveSeq().isEmpty())  {
-			String refSequence = this.getSequenceStockMove(stockMove.getTypeSelect(), stockMove.getCompany());
-			stockMove.setStockMoveSeq(refSequence);
-			stockMove.setName(refSequence); // ???
+			stockMove.setStockMoveSeq(
+					this.getSequenceStockMove(stockMove.getTypeSelect(), stockMove.getCompany()));
+		}
+		
+		if(stockMove.getName() == null || stockMove.getName().isEmpty())  {
+			stockMove.setName(stockMove.getStockMoveSeq());
 		}
 		
 		this.updateLocations(
