@@ -21,16 +21,16 @@
     	onNew="action-stock-move-record-new,action-stock-move-attrs-hide-button-generate-invoice">
         <field name="typeSelect"/>
         <field name="statusSelect" widget="NavSelect"/>
-        <group title="Stock move reference" cols="2">
+      	<group title="Stock move reference" cols="2">
         	<field name="stockMoveSeq"/>
         	<field name="name"/>
         	<field name="company"/>
         	<field name="partner" domain="self.isContact = false"/>
         	<group title="Action(s)" colSpan="2" cols="2">
             	<button name="plan" title="Plan" showIf="statusSelect == 1" colSpan="1" onClick="save,action-stock-move-method-plan,save"/>
-            	<button name="realize" title="Realize" showIf="statusSelect == 2" colSpan="1" onClick="save,action-stock-move-method-realize,save"/>
-            	<button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3" colSpan="1" onClick="save,action-stock-move-method-cancel,save"/>
-            	<button name="draft" title="Draft" showIf="statusSelect == 4" onClick="save,action-stock-move-record-draft,save"/>
+				<button name="realize" title="Realize" showIf="statusSelect == 2" colSpan="1" onClick="save,action-stock-move-method-realize,save"/>
+				<button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3" colSpan="1" onClick="save,action-stock-move-method-cancel,save"/>
+	        	<button name="draft" title="Draft" showIf="statusSelect == 4" onClick="save,action-stock-move-record-draft,save"/>
             	<button name="generateInvoice" title="Generate invoice"/>
         	</group>
     	</group>
@@ -45,7 +45,7 @@
     	<break/>
     	<notebook colSpan="4">
         	<page title="Stock move details">
-            	<field name="stockMoveLineList" colSpan="4"/>
+            	<field name="stockMoveLineList" colSpan="4" readonlyIf="statusSelect == 3"/>
         	</page>
         	<page title="Configuration">
            		<field name="salesOrder" onChange="action-stock-move-attrs-hide-button-generate-invoice"/>
@@ -57,6 +57,8 @@
     <!-- <action-attrs name="action-stock-move-attrs-title-realize-button">
     	<attribute name="title" for="realize" expr="eval: (fromLocation) ? ((fromLocation?.typeSelect != 1 &amp;&amp; toLocation?.typeSelect == 1) ? 'Receive' : 'Send') : ((toLocation?.typeSelect == 1) ? 'Receive' : 'Send')"/>
     </action-attrs> -->
+    
+    
     
     <action-record name="action-stock-move-record-draft" model="com.axelor.apps.supplychain.db.StockMove">
     	<field name="statusSelect" expr="eval: 1"/>

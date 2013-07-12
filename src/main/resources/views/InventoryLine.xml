@@ -3,23 +3,18 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    <grid name="inventory-line-grid" title="Inventory lines" model="com.axelor.apps.supplychain.db.InventoryLine">
+    <grid name="inventory-line-grid" title="Inventory lines" model="com.axelor.apps.supplychain.db.InventoryLine" editable="true">
         <field name="product"/>
         <field name="currentQty"/>
         <field name="realQty"/>
         <field name="description"/>
     </grid>
     
-    <form name="inventory-line-form" title="Inventory line" model="com.axelor.apps.supplychain.db.InventoryLine" cols="4"
-    	onNew="action-inventory-line-record-new">
+    <form name="inventory-line-form" title="Inventory line" model="com.axelor.apps.supplychain.db.InventoryLine" cols="4">
         <field name="product" domain="self.applicationTypeSelect = 1 and self.productTypeSelect = 'stockable'"/>
         <field name="currentQty"/>
         <field name="realQty"/>
         <field name="description"/>
     </form>
-    
-    <action-record name="action-inventory-line-record-new" model="com.axelor.apps.supplychain.db.InventoryLine">
-	    <field name="realQty" expr="1"/>
-	</action-record>
     
 </object-views>
