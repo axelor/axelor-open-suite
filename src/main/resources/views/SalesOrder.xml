@@ -102,7 +102,7 @@
 	        <page title="Customer order">
 	            <field name="orderDate"/>
 	            <field name="orderNumber"/>
-	            <button name="generateInvoice" title="Generate invoice" showIf="statusSelect == 3" colSpan="2" onClick="save,action-sales-order-method-generate-invoice"/>
+	            <button name="generateInvoice" title="Generate invoice" showIf="statusSelect == 3 &amp;&amp; invoicingTypeSelect != 5" colSpan="2" onClick="save,action-sales-order-method-generate-invoice"/>
 	            <button name="generateProject" title="Generate project" showIf="statusSelect == 3" colSpan="2"/>
 	        </page>
 	    </notebook>
