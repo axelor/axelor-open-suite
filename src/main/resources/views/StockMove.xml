@@ -18,7 +18,7 @@
     </grid>
     
     <form name="stock-move-form" title="Stock move" model="com.axelor.apps.supplychain.db.StockMove" cols="4"
-    	onNew="action-stock-move-record-new">
+    	onNew="action-stock-move-record-new,action-stock-move-attrs-hide-button-generate-invoice">
         <field name="typeSelect"/>
         <field name="statusSelect" widget="NavSelect"/>
         <group title="Stock move reference" cols="2">
@@ -31,7 +31,7 @@
             	<button name="realize" title="Realize" showIf="statusSelect == 2" colSpan="1" onClick="save,action-stock-move-method-realize,save"/>
             	<button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3" colSpan="1" onClick="save,action-stock-move-method-cancel,save"/>
             	<button name="draft" title="Draft" showIf="statusSelect == 4" onClick="save,action-stock-move-record-draft,save"/>
-            	<button name="generateInvoice" title="Generate invoice" showIf="salesOrder != null &amp;&amp; salesOrder.invoicingTypeSelect == 5"/>
+            	<button name="generateInvoice" title="Generate invoice"/>
         	</group>
     	</group>
     	<group title="Stock move informations"  colSpan="3" cols="2">
@@ -48,7 +48,7 @@
             	<field name="stockMoveLineList" colSpan="4"/>
         	</page>
         	<page title="Configuration">
-           		<field name="salesOrder"/>
+           		<field name="salesOrder" onChange="action-stock-move-attrs-hide-button-generate-invoice"/>
             	<field name="invoice"/>
         	</page>
     	</notebook>
@@ -82,4 +82,7 @@
 		<call class="com.axelor.apps.supplychain.web.StockMoveController" method="cancel"/>
 	</action-method>
 	
+	<action-attrs name="action-stock-move-attrs-hide-button-generate-invoice">
+		<attribute name="hidden" for="generateInvoice" expr="eval: salesOrder == null || salesOrder?.invoicingTypeSelect != 5"/>
+	</action-attrs>
 </object-views>
