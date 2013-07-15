@@ -100,7 +100,12 @@
 		<option value="3">Expense</option>
 	</selection>
 
-
+	<selection name="product.sale.supply.select">
+		<option value="1">FromStock</option>
+		<option value="2">Purchase</option>
+		<option value="3">Produce</option>
+	</selection>
+	
 	<selection name='ialarm.type.select'>
 		<option value='invoice'>Invoice</option>
 		<option value='payment'>Payment Schedule</option>
@@ -251,7 +256,7 @@
 		<option value='amount'>Amount</option>
 		<option value='quantity'>Qty</option>
 	</selection>
-
+	
 	<selection name='pricing.list.type.select'>
 		<option value='0'></option>
 		<option value='1'>Specific</option>
@@ -892,7 +897,7 @@
 		<option value="5">Canceled</option>
 	</selection>
 	
-	<selection name="supplychain.sale.supply.type.select">
+	<selection name="supplychain.sales.order.line.sale.supply.select">
 		<option value="1">FromStock</option>
 		<option value="2">Purchase</option>
 		<option value="3">Produce</option>
