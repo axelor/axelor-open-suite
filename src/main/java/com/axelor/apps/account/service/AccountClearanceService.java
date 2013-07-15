@@ -223,7 +223,7 @@ public class AccountClearanceService {
 		}
 			
 		String seq = sgs.getSequence(IAdministration.ACCOUNT_CLEARANCE, company, true);
-		if(seq == null || seq.isEmpty()) {
+		if(seq == null) {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer une séquence Apurement des trop-perçus pour la société %s",
 					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
 		}

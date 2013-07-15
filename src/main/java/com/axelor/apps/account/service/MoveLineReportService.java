@@ -171,7 +171,7 @@ public class MoveLineReportService {
 			if(moveLineReport.getTypeSelect() <= 5 || moveLineReport.getTypeSelect() >= 10 )  {
 				
 				String seq = sgs.getSequence(IAdministration.MOVE_LINE_REPORT, moveLineReport.getCompany(), false);
-				if(seq != null && !seq.isEmpty())  {  
+				if(seq != null)  {  
 					return seq;
 				}
 				else  {  
@@ -181,7 +181,7 @@ public class MoveLineReportService {
 			}
 			else  {
 				String seq = sgs.getSequence(IAdministration.MOVE_LINE_EXPORT, moveLineReport.getCompany(), false);
-				if(seq != null && !seq.isEmpty())  {  
+				if(seq != null)  {  
 					return seq;
 				}
 				else  {  

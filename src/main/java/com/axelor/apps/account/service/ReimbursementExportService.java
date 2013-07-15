@@ -242,7 +242,7 @@ public class ReimbursementExportService {
 		}
 		
 		String seq = sgs.getSequence(IAdministration.REIMBOURSEMENT, company, true);
-		if(seq == null || seq.isEmpty()) {
+		if(seq == null) {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer une séquence Remboursement pour la société %s",
 					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
 		}

@@ -142,7 +142,7 @@ public class ChequeRejectionService {
 	 */
 	public void setSequence(ChequeRejection chequeRejection) throws AxelorException  {
 		String seq = sgs.getSequence(IAdministration.CHEQUE_REJECT, chequeRejection.getCompany(), false);
-		if(seq == null || seq.isEmpty())   {
+		if(seq == null)   {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer une séquence Rejet de chèque pour la société %s",
 					GeneralService.getExceptionAccountingMsg(),chequeRejection.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}

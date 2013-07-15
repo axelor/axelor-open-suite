@@ -191,7 +191,7 @@ public class MoveLineExportService {
 						if(moveLines.size() > 0) {
 							
 							String exportToAgressoNumber = sgs.getSequence(IAdministration.SALES_INTERFACE, mlr.getCompany(), false);
-							if(exportToAgressoNumber == null || exportToAgressoNumber.isEmpty())  {  
+							if(exportToAgressoNumber == null)  {  
 								throw new AxelorException(String.format("%s :\n Erreur : Veuillez configurer une séquence Interface Vente pour la société %s",
 										GeneralService.getExceptionAccountingMsg(), mlr.getCompany().getName()), IException.CONFIGURATION_ERROR);
 							}
@@ -364,7 +364,7 @@ public class MoveLineExportService {
 						if(moveLines.size() > 0) {
 							
 							String exportToAgressoNumber = sgs.getSequence(IAdministration.REFUND_INTERFACE, mlr.getCompany(), false);
-							if(exportToAgressoNumber == null || exportToAgressoNumber.isEmpty())  {  
+							if(exportToAgressoNumber == null)  {  
 								throw new AxelorException(String.format("%s :\n Erreur : Veuillez configurer une séquence Interface Avoir pour la société %s",
 										GeneralService.getExceptionAccountingMsg(), mlr.getCompany().getName()), IException.CONFIGURATION_ERROR);
 							}
@@ -533,7 +533,7 @@ public class MoveLineExportService {
 						if(moveLines.size() > 0) {
 							
 							String exportToAgressoNumber = sgs.getSequence(IAdministration.TREASURY_INTERFACE, mlr.getCompany(), false);
-							if(exportToAgressoNumber == null || exportToAgressoNumber.isEmpty())  {  
+							if(exportToAgressoNumber == null)  {  
 								throw new AxelorException(String.format("%s :\n Erreur : Veuillez configurer une séquence Interface Trésorerie pour la société %s",
 										GeneralService.getExceptionAccountingMsg(), mlr.getCompany().getName()), IException.CONFIGURATION_ERROR);
 							}
@@ -697,7 +697,7 @@ public class MoveLineExportService {
 							if(moveLines.size() > 0) {
 								
 								String exportToAgressoNumber = sgs.getSequence(IAdministration.PURCHASE_INTERFACE, mlr.getCompany(), false);
-								if(exportToAgressoNumber == null || exportToAgressoNumber.isEmpty())  {  
+								if(exportToAgressoNumber == null)  {  
 									throw new AxelorException(String.format("%s :\n Erreur : Veuillez configurer une séquence Interface Achat pour la société %s",
 											GeneralService.getExceptionAccountingMsg(), mlr.getCompany().getName()), IException.CONFIGURATION_ERROR);
 								}

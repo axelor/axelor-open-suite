@@ -115,7 +115,7 @@ public class MoveService {
 			}
 			
 			String ref = sgs.getSequence(code, company, journal, false);
-			if (ref == null || ref.isEmpty())  {
+			if (ref == null)  {
 				throw new AxelorException(String.format("La société %s n'a pas de séquence d'écriture comptable configurée pour le journal %s", company.getName(), journal.getName()),
 						IException.CONFIGURATION_ERROR);
 			}
@@ -597,7 +597,7 @@ public class MoveService {
 		}
 		
 		String ref = sgs.getSequence(IAdministration.MOVE, company, journal, false);
-		if (ref == null || ref.isEmpty())  {
+		if (ref == null)  {
 			throw new AxelorException(String.format("La société %s n'a pas de séquence d'écriture comptable configurée pour le journal %s", company.getName(), journal.getName()),
 					IException.CONFIGURATION_ERROR);
 		}

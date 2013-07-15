@@ -407,7 +407,7 @@ public class PaymentScheduleExportService {
 	 */
 	public String getDirectDebitSequence(Company company, Journal journal) throws AxelorException  {
 		String seq = sgs.getSequence(IAdministration.DEBIT,company,journal, false);
-		if(seq == null  || seq.isEmpty())  {
+		if(seq == null)  {
 			throw new AxelorException(String.format(
 							"%s :\n Veuillez configurer une séquence Numéro de prélèvement pour la société %s pour le journal %s ",
 							GeneralService.getExceptionAccountingMsg(),company.getName(),journal.getName()), IException.CONFIGURATION_ERROR);
@@ -785,7 +785,7 @@ public class PaymentScheduleExportService {
 		// Mise à jour du Numéro de prélèvement sur la facture
 		LOG.debug("Mise à jour du Numéro de prélèvement sur la facture");
 		String seqInvoice = sgs.getSequence(IAdministration.DEBIT,company,company.getInvoiceDirectDebitJournal(), false);
-		if(seqInvoice == null  || seqInvoice.isEmpty())  {
+		if(seqInvoice == null)  {
 			throw new AxelorException(String.format(
 							"%s :\n Erreur : Veuillez configurer une séquence Numéro de prélèvement pour la société %s et le journal %s",
 							GeneralService.getExceptionAccountingMsg(),company.getName(),company.getInvoiceDirectDebitJournal().getName()), IException.CONFIGURATION_ERROR);

@@ -121,7 +121,7 @@ public class VentilateState extends WorkflowInvoice {
 			invoice.setInvoiceId(SequenceService.getSequence(IAdministration.CUSTOMER_INVOICE, invoice.getCompany(), false));
 		}
 		
-		if (invoice.getInvoiceId() == null || invoice.getInvoiceId().isEmpty()) {
+		if (invoice.getInvoiceId() == null) {
 			throw new AxelorException(String.format("La société %s n'a pas de séquence de facture ou d'avoir", invoice.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		

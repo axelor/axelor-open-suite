@@ -104,7 +104,7 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 							,GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
 		}
 		String seq = sgs.getSequence(IAdministration.DEBIT_REJECT,company,company.getRejectJournal(), true);
-		if(seq == null || seq.isEmpty())  {
+		if(seq == null)  {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer une séquence de rejet des prélèvements\n pour la société %s pour le journal %s", 
 					GeneralService.getExceptionAccountingMsg(),company.getName(),company.getRejectJournal().getName()), IException.CONFIGURATION_ERROR);
 		}

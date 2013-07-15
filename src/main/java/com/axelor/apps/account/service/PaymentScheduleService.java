@@ -169,7 +169,7 @@ public class PaymentScheduleService {
 	 */
 	public String getPaymentScheduleSequence(Company company) throws AxelorException  {
 		String seq = sgs.getSequence(IAdministration.PAYMENT_SCHEDULE, company, null, false);
-		if(seq == null  || seq.isEmpty())  {
+		if(seq == null)  {
 			throw new AxelorException(String.format(
 							"%s :\n Veuillez configurer une séquence Echéancier pour la société %s ",
 							GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);

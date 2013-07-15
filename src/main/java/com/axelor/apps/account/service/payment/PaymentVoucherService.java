@@ -173,7 +173,7 @@ public class PaymentVoucherService  {
 				}
 				
 				String sequence = sgs.getSequence(IAdministration.PAYMENT_VOUCHER, company, pm.getBankJournal(), false);
-				if(sequence != null && !sequence.equals(""))  {
+				if(sequence != null)  {
 					pv.setRef(sequence);
 				}
 				else  {
@@ -341,7 +341,7 @@ public class PaymentVoucherService  {
 			}
 			
 			String sequence = sgs.getSequence(IAdministration.PAYMENT_VOUCHER, paymentVoucher.getCompany(), paymentMode.getBankJournal(), false);
-			if(sequence != null && !sequence.equals(""))  {
+			if(sequence != null)  {
 				paymentVoucher.setRef(sequence);
 			}
 			else  {
@@ -935,7 +935,7 @@ public class PaymentVoucherService  {
 		
 		if(journal.getEditReceiptOk())  {
 			String seq = sgs.getSequence(IAdministration.PAYMENT_VOUCHER_RECEIPT_NUMBER, company, true);
-			if(seq == null || seq.isEmpty())  {
+			if(seq == null)  {
 				throw new AxelorException(String.format("%s :\n Veuillez configurer une séquence Numéro de reçu (Saisie paiement) pour la société %s",
 						GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
 			}

@@ -107,7 +107,7 @@ public class IrrecoverableService {
 		
 		if(irrecoverable.getName() == null)  {
 			String seq = sGeneralService.getSequence(IAdministration.IRRECOVERABLE, company, false);
-			if(seq == null || seq.isEmpty())  {
+			if(seq == null)  {
 				throw new AxelorException(String.format("%s :\n Veuillez configurer une séquence Passage en irrécouvrable pour la société %s",
 						GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
 			}
@@ -919,7 +919,7 @@ public class IrrecoverableService {
 					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
 		}
 		String seq = sGeneralService.getSequence(IAdministration.IRRECOVERABLE, company, true);
-		if(seq == null || seq.isEmpty()) {
+		if(seq == null) {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer une séquence de Passage en irrécouvrable pour la société %s",
 					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
 		}
