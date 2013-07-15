@@ -14,7 +14,7 @@
     </grid>
     
     <form name="sales-order-schedule-line-form" title="SO schedule line" model="com.axelor.apps.supplychain.db.SalesOrderScheduleLine" cols="4"
-    onNew="action-sales-order-schedule-line-record-sequence">
+    onNew="action-sales-order-schedule-line-record-sequence,action-sales-order-schedule-line-attrs-hide-nb-of-day">
     	<field name="sequence"/>
         <field name="amountToBeInvoiced"/>
         <field name="invoicingPercentage"/>
@@ -26,7 +26,10 @@
     
     <action-attrs name="action-sales-order-schedule-line-attrs-sales-order-line-domain">
     	<attribute name="domain" for="salesorderLine" expr="eval: self.salesOrder = :salesOrder "/>
+    </action-attrs>
     
+    <action-attrs name="action-sales-order-schedule-line-attrs-hide-nb-of-day">
+    	<attribute name="hidden" for="nbOfDay" expr="eval: _parent?.invoicingMomentSelect == 1"/>
     </action-attrs>
     
     <action-record name="action-sales-order-schedule-line-record-sequence" model="com.axelor.apps.supplychain.db.SalesOrderScheduleLine">
