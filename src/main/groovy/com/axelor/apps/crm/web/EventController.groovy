@@ -76,7 +76,7 @@ public class EventController {
 		Map<String,String> values = new HashMap<String,String>();
 		if(event.ticketNumberSeq ==  null && event.typeSelect == IEvent.TICKET){
 			def ref = sequenceService.getSequence(IAdministration.EVENT_TICKET,false);
-			if (ref == null || ref.isEmpty())
+			if (ref == null)
 				throw new AxelorException("Aucune séquence configurée pour les tickets",
 								IException.CONFIGURATION_ERROR);
 			else
