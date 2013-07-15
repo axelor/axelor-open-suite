@@ -81,7 +81,7 @@ public class InventoryService {
 		for (InventoryLine inventoryLine : inventoryLineList) {
 			BigDecimal currentQty = inventoryLine.getCurrentQty();
 			BigDecimal realQty = inventoryLine.getRealQty();
-			if (currentQty != realQty) {
+			if (currentQty.compareTo(realQty) != 0) {
 				BigDecimal diff = realQty.subtract(currentQty);
 				
 				if (inventory.getLocation() == null || inventory.getLocation().getCompany() == null || inventoryLine.getProduct() == null ) {
