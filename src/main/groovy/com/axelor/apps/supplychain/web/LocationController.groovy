@@ -66,7 +66,7 @@ class LocationController {
 			productCategory = ProductCategory.find(context.productCategory.id)
 			
 		def ref = sequenceService.getSequence(IAdministration.INVENTORY, location.getCompany(),false)
-		if (ref == null || ref.isEmpty())
+		if (ref == null)
 			throw new AxelorException("Aucune séquence configurée pour les inventaires pour la société "+location.getCompany().getName(),
 							IException.CONFIGURATION_ERROR);
 		

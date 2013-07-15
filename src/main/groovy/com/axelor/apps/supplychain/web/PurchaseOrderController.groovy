@@ -27,7 +27,7 @@ class PurchaseOrderController {
 		Map<String,String> values = new HashMap<String,String>();
 		if(purchaseOrder.purchaseOrderSeq ==  null){
 			def ref = sequenceService.getSequence(IAdministration.PURCHASE_ORDER,purchaseOrder.company,false);
-			if (ref == null || ref.isEmpty())
+			if (ref == null)
 				throw new AxelorException(String.format("La société %s n'a pas de séquence de configurée pour les commandes fournisseur",purchaseOrder.company?.name),
 								IException.CONFIGURATION_ERROR);
 			else
