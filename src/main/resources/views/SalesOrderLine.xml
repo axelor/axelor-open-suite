@@ -15,7 +15,7 @@
         <field name="exTaxTotal"/>
     </grid>
     
-    <form name="sales-order-line-form" title="SO line" model="com.axelor.apps.supplychain.db.SalesOrderLine" cols="4" onNew="action-sales-order-line-record-new,action-sales-order-line-method-setBooleans,action-sales-order-line-method-setSequence">
+    <form name="sales-order-line-form" title="SO line" model="com.axelor.apps.supplychain.db.SalesOrderLine" cols="4" onNew="action-sales-order-line-record-new,action-sales-order-line-record-sequence">
 	    <field name="sequence"/>  
 	    <field name="isOrdered"/>
 	    <field name="saleSupplySelect"/>
@@ -57,6 +57,12 @@
     <action-record name="action-sales-order-line-record-new" model="com.axelor.apps.supplychain.db.SalesOrderLine">
     	<field name="qty" expr="eval: 1"/>
     	<field name="isOrdered" expr="true"/>
+    	<field name="isToPrintLineSubTotal" expr="true" if="eval: _parent?.isToPrintLineSubTotal == true"/>
+    </action-record>
+    
+	<action-record name="action-sales-order-line-record-sequence" model="com.axelor.apps.supplychain.db.SalesOrderLine">
+    	<field name="sequence" expr="1" if="eval: _parent?.salesOrderLineList == null"/>
+    	<field name="sequence" expr="eval: _parent?.salesOrderLineList.size()+1" if="eval: _parent?.salesOrderLineList != null"/>
     </action-record>
    	
    	<!-- ACTION METHOD -->
@@ -67,15 +73,7 @@
 	<action-method name="action-sales-order-line-method-get-product-information">
 		<call class="com.axelor.apps.supplychain.web.SalesOrderLineController" method="getProductInformation"/>
 	</action-method>
-	
-	<action-method name="action-sales-order-line-method-setBooleans">
-    	<call class="com.axelor.apps.supplychain.web.SalesOrderLineController" method="setBooleans" if="product"/>
-    </action-method>
-    
-    <action-method name="action-sales-order-line-method-setSequence">
-    	<call class="com.axelor.apps.supplychain.web.SalesOrderLineController" method="setSequence"/>
-    </action-method>
-  	
+        
   	<!-- ACTION ATTRS -->
     <action-attrs name="action-sales-order-line-attrs-ressources-planning">
     	<attribute name="hidden" for="ressourcesPlanning" expr="product?.applicationTypeSelect == 2" if="product != null"/>
