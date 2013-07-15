@@ -331,6 +331,7 @@
 		<option value="outStockMove">Mvt Stock Livraison</option>
 		<option value="inStockMove">Mvt Stock Reception</option>
 		<option value="inventory">Inventory</option>
+		<option value="productTrackingNumber">Product tracking number</option>
 	</selection>
 
 	<selection name="company.paybox.hash.select">

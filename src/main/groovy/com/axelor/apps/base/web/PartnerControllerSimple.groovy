@@ -32,7 +32,7 @@ class PartnerControllerSimple {
 		Map<String,String> values = new HashMap<String,String>();
 		if(partner.partnerSeq ==  null){
 			def ref = sequenceService.getSequence(IAdministration.PARTNER,false);
-			if (ref == null || ref.isEmpty())  
+			if (ref == null)  
 				throw new AxelorException("Aucune séquence configurée pour les tiers",
 								IException.CONFIGURATION_ERROR);
 			else

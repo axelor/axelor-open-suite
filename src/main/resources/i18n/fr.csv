@@ -2924,6 +2924,7 @@
 "sequence.generic.code.select";"purchaseInterface";"select";"Purchase interface";"Interface achat";;;;
 "sequence.generic.code.select";"moveLineExport";"select";"Accounting export";"Export comptable";;;;
 "sequence.generic.code.select";"doubtfulCustomer";"select";"Shift to doubtful receivables";"Passage en créance douteuse";;;;
+"sequence.generic.code.select";"productTrackingNumber";"select";"Product tracking number";"Numéro de suivi produit";;;;
 "supplychain.default.status.select";"1";"select";"Draft";"Brouillon";;;;
 "supplychain.default.status.select";"2";"select";"Confirmed";"Confirmé";;;;
 "supplychain.default.status.select";"3";"select";"Realized";"Réalisé";;;;
