@@ -67,7 +67,7 @@
   	
   	<!--   	Onglet facturation -->
   	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
-  	<decimal name="qty" title="Qty" default="1"/>
+  	<decimal name="qty" title="Quantity" default="1"/>
   	<decimal name="price" title="Unit price"/>
   	
   </entity>

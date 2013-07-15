@@ -15,7 +15,7 @@
     <many-to-one name="unit" ref="Unit" title="Unit"/>
      
     <integer name="applicationTypeSelect" title="Application type" selection="product.application.type.select"/>
-    <integer name="saleSupplySelect" title="Méthode d'appro. des ventes" selection="supplychain.sale.supply.type.select"/>
+    <integer name="saleSupplySelect" title="Méthode d'appro. des ventes" selection="product.sale.supply.select"/>
      
     <string name="productTypeSelect" title="Product type" required="true" selection="product.product.type.select"/>
     <string name="procurementMethodSelect" title="Procurement method" required="true" selection="product.procurement.method.select"/>
