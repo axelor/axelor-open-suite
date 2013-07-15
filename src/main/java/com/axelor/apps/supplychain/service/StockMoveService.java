@@ -60,7 +60,7 @@ public class StockMoveService {
 		switch(stockMoveType)  {
 			case IStockMove.INTERNAL:
 				ref = sequenceService.getSequence(IAdministration.INTERNAL, company, false);
-				if (ref == null || ref.isEmpty() || ref.equals(""))  {
+				if (ref == null)  {
 					throw new AxelorException(String.format("%s Aucune séquence configurée pour les livraisons de stock pour la société ",
 							exceptionMsg, company.getName()), IException.CONFIGURATION_ERROR);
 				}
@@ -68,7 +68,7 @@ public class StockMoveService {
 				
 			case IStockMove.INCOMING:
 				ref = sequenceService.getSequence(IAdministration.INCOMING, company, false);
-				if (ref == null || ref.isEmpty() || ref.equals(""))  {
+				if (ref == null)  {
 					throw new AxelorException(String.format("%s Aucune séquence configurée pour les livraisons de stock pour la société ",
 							exceptionMsg, company.getName()), IException.CONFIGURATION_ERROR);
 				}
@@ -76,7 +76,7 @@ public class StockMoveService {
 				
 			case IStockMove.OUTGOING:
 				ref = sequenceService.getSequence(IAdministration.OUTGOING, company, false);
-				if (ref == null || ref.isEmpty() || ref.equals(""))  {
+				if (ref == null)  {
 					throw new AxelorException(String.format("%s Aucune séquence configurée pour les livraisons de stock pour la société ",
 							exceptionMsg, company.getName()), IException.CONFIGURATION_ERROR);
 				}

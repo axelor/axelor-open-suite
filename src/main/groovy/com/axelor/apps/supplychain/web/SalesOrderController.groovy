@@ -114,7 +114,7 @@ class SalesOrderController {
 		Map<String,String> values = new HashMap<String,String>();
 		if(salesOrder.salesOrderSeq ==  null){
 			def ref = sequenceService.getSequence(IAdministration.SALES_ORDER,salesOrder.company,false);
-			if (ref == null || ref.isEmpty())
+			if (ref == null)
 				throw new AxelorException(String.format("La société %s n'a pas de séquence de configurée pour les devis",salesOrder.company?.name),
 								IException.CONFIGURATION_ERROR);
 			else

@@ -70,7 +70,7 @@ class InventoryController {
 		
 		if (!inventory.name) {
 			def ref = sequenceService.getSequence(IAdministration.INVENTORY, inventory.location.getCompany(),false)
-			if (ref == null || ref.isEmpty())
+			if (ref == null)
 				throw new AxelorException("Aucune séquence configurée pour les inventaires pour la société "+inventory.location.getCompany().getName(),
 								IException.CONFIGURATION_ERROR);
 			inventory.setName(ref)
