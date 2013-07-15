@@ -13,7 +13,8 @@
 		<field name="invoice"/>    	
     </grid>
     
-    <form name="sales-order-schedule-line-form" title="SO schedule line" model="com.axelor.apps.supplychain.db.SalesOrderScheduleLine" cols="4">
+    <form name="sales-order-schedule-line-form" title="SO schedule line" model="com.axelor.apps.supplychain.db.SalesOrderScheduleLine" cols="4"
+    onNew="action-sales-order-schedule-line-record-sequence">
     	<field name="sequence"/>
         <field name="amountToBeInvoiced"/>
         <field name="invoicingPercentage"/>
@@ -27,5 +28,9 @@
     	<attribute name="domain" for="salesorderLine" expr="eval: self.salesOrder = :salesOrder "/>
     
     </action-attrs>
+    
+    <action-record name="action-sales-order-schedule-line-record-sequence" model="com.axelor.apps.supplychain.db.SalesOrderScheduleLine">
+    	<field name="sequence" expr="eval: com.axelor.apps.supplychain.db.SalesOrderScheduleLine.all().filter('self.salesOrder = ${salesOrder}').count()+1"/>
+    </action-record>
     
 </object-views>
