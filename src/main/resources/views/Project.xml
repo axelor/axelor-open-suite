@@ -11,7 +11,7 @@
         <field name="isModel"/>
     </grid>
     
-    <form cols="6" onNew="action-project-unit" name="project-form" title="Affair/Project" model="com.axelor.apps.organisation.db.Project">
+    <form cols="6" onNew="action-project-record-default,action-project-unit" name="project-form" title="Affair/Project" model="com.axelor.apps.organisation.db.Project">
 	    <group showTitle="false" colSpan="4">
 	        <field name="affairName"/>
 	        <field name="responsibleUserInfo"/>
@@ -83,6 +83,10 @@
 		<context name="_projectId" expr="eval: __this__.id"/>
 	</action-view>
     
+    <action-record name="action-project-record-default" model="com.axelor.apps.organisation.db.Project">
+		<field name="isTimeSheetImputable" expr="true"/>
+	</action-record>
+	
     <action-record name="action-project-unit" model="com.axelor.apps.organisation.db.Project">
 		<field name="projectUnit" expr="eval: parentProject?.projectUnit" if="parentProject &amp;&amp; parentProject.projectUnit"/>
 		<field name="projectUnit" expr="call:com.axelor.apps.base.service.administration.GeneralService:getUnit()" if="!parentProject || parentProject.projectUnit == null"/>
@@ -93,8 +97,9 @@
 	</action-method>
 	
 	<action-validate name="action-project-validate-generate-invoice">
-		<alert message="Generating invoice is impossible, the fields clientPartner and contactPartner must be filled." if="clientPartner == null || contactPartner == null"/>
-   		<alert message="Generating invoice is impossible, Please link the task to a saleOrderLine to do so." if="eval: taskList?.collect(){ it?.salesOrderLine }?.contains(null) == true"/>
+		<error message="Generating invoice is impossible, the fields clientPartner and contactPartner must be filled." if="clientPartner == null || contactPartner == null"/>
+   		<error message="Generating invoice is impossible, please link the task to a saleOrderLine to do so." if="eval: taskList?.collect(){ it?.salesOrderLine }?.contains(null) == true"/>
+   		<error message="There is currently no task to invoice. If you need to generate an invoice from a task, please tick the checkbox 'To invoice' and make sure all necessary informations are filled in." if="eval: taskList?.collect(){ it?.isToInvoice }?.contains(true) == false"/>
 	</action-validate> 
 		
 </object-views>

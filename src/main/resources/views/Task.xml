@@ -119,6 +119,7 @@
     	<field name="startDateT" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()" if="startDateT == null"/>
     	<field name="statusSelect" expr="eval: 1"/>
     	<field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+    	<field name="isTimesheetAffected" expr="true"/>
     </action-record>
     
     <action-record name="action-task-salesOrderLine-on-change" model="com.axelor.apps.organisation.db.Task">
