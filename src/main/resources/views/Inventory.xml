@@ -22,9 +22,9 @@
 	    </group>
 	    <field name="dateT"/>
 	    <spacer/>
-	    <group title="Import" colSpan="1" hideIf="statusSelect != 2">
+	    <group title="Import" colSpan="1" hideIf="statusSelect != 2" cols="2">
 	    	<field name="importFilePath"/><break/>
-	    	<button name="importFile" title="Import" colSpan="1" onClick="save,action-inventory-method-import-file,save" showIf="importFilePath != null"/>
+	    	<button name="importFile" title="Import" colSpan="2" onClick="save,action-inventory-method-import-file,save" showIf="importFilePath != null"/>
 	    </group>
 	    <field name="description" colSpan="4"/>
 	    <spacer/>

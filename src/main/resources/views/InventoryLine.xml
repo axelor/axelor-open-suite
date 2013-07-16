@@ -11,10 +11,16 @@
     </grid>
     
     <form name="inventory-line-form" title="Inventory line" model="com.axelor.apps.supplychain.db.InventoryLine" cols="4">
-        <field name="product" domain="self.applicationTypeSelect = 1 and self.productTypeSelect = 'stockable'"/>
+        <field name="product" domain="self.applicationTypeSelect = 1 and self.productTypeSelect = 'stockable'" onChange="action-inventory-line-attrs-tracking-number"/>
         <field name="currentQty"/>
         <field name="realQty"/>
         <field name="description"/>
+        <field name="trackingNumber" readonly="true"/>
     </form>
+    
+    <action-attrs name="action-inventory-line-attrs-tracking-number">
+    	<attribute name="required" for="trackingNumber" expr="eval: product?.trackingNumberConfiguration?.isPurchaseTrackingManaged || product?.trackingNumberConfiguration?.isProductionTrackingManaged || product?.trackingNumberConfiguration?.isSaleTrackingManaged"/>
+    	<attribute name="readonly" for="trackingNumber" expr="eval: !product?.trackingNumberConfiguration?.isPurchaseTrackingManaged &amp;&amp; !product?.trackingNumberConfiguration?.isProductionTrackingManaged &amp;&amp; !product?.trackingNumberConfiguration?.isSaleTrackingManaged"/>
+    </action-attrs>
     
 </object-views>

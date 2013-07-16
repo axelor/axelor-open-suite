@@ -31,7 +31,14 @@
         <break/>
         <spacer/>
         <break/>
-        <field name="locationLineList" colSpan="6"/>
+        <notebook title="Location Lines" colSpan="6">
+        	<page title="Stock">
+        		<field name="locationLineList" colSpan="6" grid-view="location-line-grid" form-view="location-line-form"/>
+        	</page>
+        	<page title="Stock Details">
+        		<field name="detailsLocationLineList" colSpan="6" grid-view="location-line-details-grid" form-view="location-line-details-form"/>
+        	</page>
+        </notebook>
     </form>
     
     <action-record name="action-location-record-new" model="com.axelor.apps.supplychain.db.Location">

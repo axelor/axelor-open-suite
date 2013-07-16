@@ -12,10 +12,11 @@
     
     <form name="stock-move-line-form" title="Stock move line" model="com.axelor.apps.supplychain.db.StockMoveLine" cols="4"
     	onNew="action-stock-move-line-record-new">
-        <field name="product" domain="self.applicationTypeSelect = 1"/>
+        <field name="product" domain="self.applicationTypeSelect = 1" onChange="action-inventory-line-attrs-tracking-number"/>
         <field name="qty"/>
         <field name="unit"/>
         <field name="price"/>
+        <field name="trackingNumber" readonly="true"/>
     </form>
     
     <action-record name="action-stock-move-line-record-new" model="com.axelor.apps.supplychain.db.StockMoveLine">
