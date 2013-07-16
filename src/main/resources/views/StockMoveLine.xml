@@ -8,6 +8,7 @@
         <field name="qty"/>
         <field name="unit"/>
         <field name="price"/>
+        <field name="trackingNumber" readonly="true"/>
     </grid>
     
     <form name="stock-move-line-form" title="Stock move line" model="com.axelor.apps.supplychain.db.StockMoveLine" cols="4"

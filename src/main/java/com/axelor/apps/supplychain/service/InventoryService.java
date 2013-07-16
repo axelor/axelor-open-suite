@@ -125,7 +125,7 @@ public class InventoryService {
 					stockMove.setName(inventory.getName());
 				}
 				
-				StockMoveLine stockMoveLine = stockMoveService.createStocksMovesLines(product, diff, product.getUnit(), null, stockMove);
+				StockMoveLine stockMoveLine = stockMoveService.createStocksMovesLines(product, diff, product.getUnit(), null, stockMove, 0);
 				
 				if (stockMoveLine == null)
 					throw new AxelorException("Produit incorrect dans la ligne de l'inventaire "+inventory.getName(), IException.CONFIGURATION_ERROR);
