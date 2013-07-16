@@ -14,5 +14,7 @@
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
     <decimal name="price" title="Unit price"/>
     
+    <many-to-one name="trackingNumber" ref="com.axelor.apps.base.db.TrackingNumber" title="Tracking Number"/>
+    
   </entity>
 </domain-models>

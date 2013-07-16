@@ -67,6 +67,16 @@
 			<page title="Stock" cols="4" colSpan="2">
 				<portlet action="action-product-view-stock" colSpan="4"/>
 			</page>
+			<page title="Tracking number" cols="4" colSpan="2">
+				<field name="hasWarranty" colSpan="4"/>
+				<field name="warrantyNbrOfMonths" showIf="hasWarranty"/>
+				<break/>
+				<field name="isPerishable" colSpan="4"/>
+				<field name="perishableNbrOfMonths" showIf="isPerishable"/>
+				<break/>
+				<field name="trackingNumberConfiguration" colSpan="2"/>
+            	<spacer colSpan="2"/>
+			</page>
 			<page title="Social Networking" cols="6" hideIf="id == null">
 				<group title="Social Networking Integration" colSpan="3">
 					<group colSpan="3" cols="2" name="snIntegrationInit">

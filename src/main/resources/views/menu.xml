@@ -309,6 +309,15 @@
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
+
+	<menuitem name="product-conf-tracking-number-config" parent="product-conf"
+		title="Tracking number configuration" action="product.conf.tracking.number.config" />
+
+	<action-view name="product.conf.tracking.number.config" title="Tracking number configuration"
+		model="com.axelor.apps.base.db.TrackingNumberConfiguration" icon="img/icons/parameter_small.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
 	
 
 	

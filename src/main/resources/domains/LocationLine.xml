@@ -14,5 +14,8 @@
 	<decimal name="futureQty" title="Future quantity"/>
 	<date name="lastFutureStockMoveDate" title="Last Future Stock Move"/>
 	
+	<many-to-one name="trackingNumber" ref="com.axelor.apps.base.db.TrackingNumber" title="TrackingNumber"/>
+	<many-to-one name="detailsLocation" ref="com.axelor.apps.supplychain.db.Location" title="Location Details"/>
+	
   </entity>
 </domain-models>

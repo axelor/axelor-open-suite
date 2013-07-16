@@ -40,6 +40,12 @@
   	<!-- SOCIAL NETWORKING INTEGRATION FOR PRODUCT -->
     <many-to-one name="snStatusUpdates" ref="com.axelor.apps.socialnetwork.db.SnStatusUpdates" required="false" orphan="true" default="null"/>
   
+    <many-to-one name="trackingNumberConfiguration" ref="com.axelor.apps.base.db.TrackingNumberConfiguration" title="Tracking Number Configuration"/>
+    <boolean name="hasWarranty" title="Warranty ?"/>
+    <boolean name="isPerishable" title="Perishable ?"/>
+    <integer name="warrantyNbrOfMonths" title="Warranty length (in months)"/>
+    <integer name="perishableNbrOfMonths" title="Time before expiry (in months)"/>
+  
   </entity>
 
 </domain-models>

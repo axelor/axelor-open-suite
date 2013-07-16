@@ -1025,6 +1025,11 @@
 		<option value="2">Optional participant</option>
 		<option value="3">Required participant</option>
 	</selection>
+	
+	<selection name="base.tracking.number.configuration.sale.tracking.order.select">
+		<option value="1">FIFO</option>
+		<option value="2">LIFO</option>
+	</selection>
 
 
 </object-views>
