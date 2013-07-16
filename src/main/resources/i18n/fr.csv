@@ -155,3 +155,4 @@
 "supply.chain.root.sales.mydraftquotation","supply.chain.root.sales.mydraftquotation","action","My team draft quotes","Devis brouillons","",""
 "supply.chain.root.sales.myso","supply.chain.root.sales.myso","action","My team sale orders","Devis clients","",""
 "supply.chain.root.sales.order","supply.chain.root.sales.order","action","New sales order","Nouveau devis","",""
+"action-sale-order-validate-check-location","action-sale-order-validate-check-location","action","The location must be filled.","Merci de remplir le champ 'Location' afin de générer les mouvements de stocks.","",""
