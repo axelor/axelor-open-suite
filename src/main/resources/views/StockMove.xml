@@ -18,7 +18,8 @@
     </grid>
     
     <form name="stock-move-form" title="Stock move" model="com.axelor.apps.supplychain.db.StockMove" cols="4"
-    	onNew="action-stock-move-record-new,action-stock-move-attrs-hide-button-generate-invoice">
+    	onNew="action-stock-move-record-new,action-stock-move-attrs-hide-button-generate-invoice"
+    	onLoad="action-stock-move-attrs-hide-button-generate-invoice">
         <field name="typeSelect"/>
         <field name="statusSelect" widget="NavSelect"/>
       	<group title="Stock move reference" cols="2">
@@ -87,4 +88,5 @@
 	<action-attrs name="action-stock-move-attrs-hide-button-generate-invoice">
 		<attribute name="hidden" for="generateInvoice" expr="eval: salesOrder == null || salesOrder?.invoicingTypeSelect != 5"/>
 	</action-attrs>
+	
 </object-views>
