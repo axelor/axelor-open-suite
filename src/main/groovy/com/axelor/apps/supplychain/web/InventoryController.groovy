@@ -76,6 +76,7 @@ class InventoryController {
 			inventory.setName(ref)
 		}
 		inventoryService.importFile(filePath, separator, inventory)
+		response.flash = filePath+" succefully imported."
 	}
 	
 	def void generateStockMove(ActionRequest request, ActionResponse response) {
