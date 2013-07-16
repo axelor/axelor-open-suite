@@ -16,7 +16,7 @@ import com.google.inject.persist.Transactional;
 public class LocationService {
 	
 	@Transactional
-	public Inventory createInventory(String name, LocalDate date, String description, Location location, 
+	public Inventory createInventory(String ref, LocalDate date, String description, Location location, 
 			boolean excludeOutOfStock, boolean includeObsolete, ProductFamily productFamily,
 			ProductCategory productCategory) throws Exception {
 			
@@ -25,8 +25,8 @@ public class LocationService {
 		
 		inventory.setStatusSelect(1);
 		
-		if (name != null)
-			inventory.setName(name);
+		if (ref != null)
+			inventory.setInventorySeq(ref);
 			
 		if (date != null)
 			inventory.setDateT(date.toDateTimeAtStartOfDay());

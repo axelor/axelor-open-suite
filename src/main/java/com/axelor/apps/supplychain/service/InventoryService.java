@@ -115,20 +115,20 @@ public class InventoryService {
 				BigDecimal diff = realQty.subtract(currentQty);
 				
 				if (toLocation == null || company == null || product == null ) {
-					throw new AxelorException("Informations manquantes dans l'inventaire "+inventory.getName(), IException.CONFIGURATION_ERROR);
+					throw new AxelorException("Informations manquantes dans l'inventaire "+inventory.getInventorySeq(), IException.CONFIGURATION_ERROR);
 				}
 				
 				if (stockMove == null) {
 					
 					stockMove = stockMoveService.createStocksMoves(null, company, null, fromLocation, toLocation, inventoryDate, inventoryDate);
 					stockMove.setTypeSelect(IStockMove.INTERNAL);
-					stockMove.setName(inventory.getName());
+					stockMove.setName(inventory.getInventorySeq());
 				}
 				
 				StockMoveLine stockMoveLine = stockMoveService.createStocksMovesLines(product, diff, product.getUnit(), null, stockMove, 0);
 				
 				if (stockMoveLine == null)
-					throw new AxelorException("Produit incorrect dans la ligne de l'inventaire "+inventory.getName(), IException.CONFIGURATION_ERROR);
+					throw new AxelorException("Produit incorrect dans la ligne de l'inventaire "+inventory.getInventorySeq(), IException.CONFIGURATION_ERROR);
 				
 				if (stockMoveLineList == null)
 					stockMoveLineList = new ArrayList<StockMoveLine>();

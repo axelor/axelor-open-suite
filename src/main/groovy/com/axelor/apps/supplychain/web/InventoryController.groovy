@@ -52,7 +52,7 @@ class InventoryController {
 		String urlNotExist = URLService.notExist(url.toString())
 		if (urlNotExist == null){
 			response.view = [
-				"title": "Inventory ${inventory.name}",
+				"title": "Inventory ${inventory.inventorySeq}",
 				"resource": url,
 				"viewType": "html"
 			]
@@ -68,12 +68,12 @@ class InventoryController {
 		String filePath = inventory.importFilePath
 		char separator = ','
 		
-		if (!inventory.name) {
+		if (!inventory.inventorySeq) {
 			def ref = sequenceService.getSequence(IAdministration.INVENTORY, inventory.location.getCompany(),false)
 			if (ref == null)
 				throw new AxelorException("Aucune séquence configurée pour les inventaires pour la société "+inventory.location.getCompany().getName(),
 								IException.CONFIGURATION_ERROR);
-			inventory.setName(ref)
+			inventory.setInventorySeq(ref)
 		}
 		inventoryService.importFile(filePath, separator, inventory)
 		response.flash = "File "+filePath+" successfully imported."
