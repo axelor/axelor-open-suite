@@ -13,7 +13,7 @@
     </grid>
     
 	<form name="sales-order-form" title="Sale order" model="com.axelor.apps.supplychain.db.SalesOrder" cols="4" onNew="action-sales-order-record-default,action-sales-order-record-show-detail-invoice,action-sales-order-method-get-location,action-sales-order-record-currency,action-sales-order-attrs-collapse-specific-settings-group"
-	onSave="action-sales-order-set-sequence" onLoad="action-sales-order-attrs-collapse-specific-settings-group">
+	onSave="action-sales-order-set-sequence" onLoad="action-sales-order-attrs-collapse-specific-settings-group,action-sales-order-group-validated-read-only">
 	    <toolbar>
 	        <button name="createDocument" title="Create Document" onClick="com.axelor.apps.supplychain.web.SalesOrderController:saveDocumentForOrder"/>
 	    </toolbar>
@@ -58,7 +58,7 @@
 	                        <group colSpan="1" cols="1">
 	                            <button name="compute" title="Compute" hideIf="statusSelect == 3" colSpan="1" onClick="save,action-sales-order-method-compute,save"/>
 	                            <button name="confirm" title="Confirm" showIf="statusSelect == 1 || statusSelect == 4" colSpan="1" onClick="save,action-sales-order-method-compute,action-sales-order-record-confirm,save"/>
-	                            <button name="validate" title="Validate" showIf="statusSelect == 2" colSpan="1" onClick="save,action-sales-order-button-validation,save,action-sales-order-create-tasks,action-sale-order-validate-check-location,action-sales-order-create-stock-move,action-sales-order-record-validate,save"/>
+	                            <button name="validate" title="Validate" showIf="statusSelect == 2" colSpan="1" onClick="save,action-sales-order-button-validation,save,action-sales-order-create-tasks,action-sale-order-validate-check-location,action-sales-order-create-stock-move,action-sales-order-record-validate,action-sales-order-group-validated-read-only,save"/>
 	                            <button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2" colSpan="1" onClick="save,action-sales-order-record-cancel"/>
 	                            <button name="showSalesOrder" title="Print" showIf="statusSelect == 3" colSpan="1" icon="img/icons/print.png" onClick="save,action-sales-order-method-show-sales-order"/>
 	                            <button name="sendByEmail" title="Send by email" showIf="statusSelect == 3" colSpan="1"/>
@@ -113,6 +113,25 @@
     
     <action-attrs name="action-sales-order-domain-on-team">
     	<attribute name="domain" for="team" expr="eval: salesmanUserInfo?.teamSet?.collect{it.id}?.size() > 0 ? &quot;self.id IN (${salesmanUserInfo?.teamSet?.collect{it.id}?.join(',')})&quot; : null"/>
+    </action-attrs>
+    
+    <action-group name="action-sales-order-group-validated-read-only">
+    	<action name="action-sales-order-attrs-validated-read-only" if="statusSelect == 3"/>
+    </action-group>
+    
+    <action-attrs name="action-sales-order-attrs-validated-read-only">
+    	<attribute name="readonly" for="salesOrderLineList" expr="true"/>
+    	<attribute name="readonly" for="salesOrderLineVatList" expr="true"/>
+    	<attribute name="readonly" for="currency" expr="true"/>
+    	<attribute name="readonly" for="location" expr="true"/>
+    	<attribute name="readonly" for="company" expr="true"/>
+    	<attribute name="readonly" for="clientPartner" expr="true"/>
+    	<attribute name="readonly" for="invoicingTypeSelect" expr="true"/>
+    	<attribute name="readonly" for="hasToCreateTaskByLine" expr="true"/>
+    	<attribute name="readonly" for="hasToCreateMoByLine" expr="true"/>
+    	<attribute name="readonly" for="hasToCreateProposal" expr="true"/>
+    	<attribute name="readonly" for="project" expr="true"/>
+    	<attribute name="readonly" for="priceList" expr="true"/>
     </action-attrs>
     
     <action-method name="action-sales-order-method-show-sales-order">
