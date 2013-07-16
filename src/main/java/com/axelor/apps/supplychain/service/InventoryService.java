@@ -33,10 +33,15 @@ public class InventoryService {
 		
 		List<InventoryLine> inventoryLineList = inventory.getInventoryLineList();
 		
-		List<String[]> data = CsvTool.cSVFileReader(filePath, separator);
+		List<String[]> data = null;
+		try {
+			data = CsvTool.cSVFileReader(filePath, separator);
+		}catch(Exception e) {
+			throw new AxelorException("There is currently no such file in the specified folder or the folder may not exists.", IException.CONFIGURATION_ERROR);
+		}
 		
 		if (data == null || data.isEmpty())
-			throw new AxelorException("L'importation du fichier "+filePath+" a échouée", IException.CONFIGURATION_ERROR);
+			throw new AxelorException("An error occurred while importing the file data. Please contact your application administrator to check Traceback logs.", IException.CONFIGURATION_ERROR);
 		
 		HashMap<String,InventoryLine> inventoryLineMap = new HashMap<String,InventoryLine>();
 		
@@ -47,9 +52,17 @@ public class InventoryService {
 		
 		for (String[] line : data) {
 			if (line.length < 6)
-				throw new AxelorException("Données importées invalides", IException.CONFIGURATION_ERROR);
+				throw new AxelorException("An error occurred while importing the file data. Please contact your application administrator to check Traceback logs.", IException.CONFIGURATION_ERROR);
+			
 			String code = line[1].replace("\"", "");
-			Integer realQty = Integer.valueOf(line[4].replace("\"", ""));
+			
+			Integer realQty = 0;
+			try {
+				realQty = Integer.valueOf(line[4].replace("\"", ""));
+			}catch(NumberFormatException e) {
+				throw new AxelorException("An error occurred while importing the file data. Please contact your application administrator to check Traceback logs.", IException.CONFIGURATION_ERROR);
+			}
+			
 			String description = line[5].replace("\"", "");
 			
 			if (inventoryLineMap.containsKey(code)) {
@@ -57,11 +70,17 @@ public class InventoryService {
 				inventoryLineMap.get(code).setDescription(description);
 			}
 			else {
-				Integer currentQty = Integer.valueOf(line[2].replace("\"", ""));
+				Integer currentQty = 0;
+				try {
+					currentQty = Integer.valueOf(line[2].replace("\"", ""));
+				}catch(NumberFormatException e) {
+					throw new AxelorException("An error occurred while importing the file data. Please contact your application administrator to check Traceback logs.", IException.CONFIGURATION_ERROR);
+				}
+				
 				InventoryLine inventoryLine = new InventoryLine();
 				Product product = Product.findByCode(code);
 				if (product == null || product.getApplicationTypeSelect() != IProduct.PRODUCT_TYPE || !product.getProductTypeSelect().equals(IProduct.STOCKABLE))
-					throw new AxelorException("Produit "+code+" invalide", IException.CONFIGURATION_ERROR);
+					throw new AxelorException("An error occurred while importing the file data, product not found with code : "+code, IException.CONFIGURATION_ERROR);
 				inventoryLine.setProduct(product);
 				inventoryLine.setInventory(inventory);
 				inventoryLine.setCurrentQty(new BigDecimal(currentQty));
