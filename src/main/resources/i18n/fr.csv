@@ -891,7 +891,7 @@
 "com.axelor.apps.account.db.InterbankCodeLine","chequeOk","field","Cheque","Chèque",,,,
 "com.axelor.apps.account.db.InterbankCodeLine","interbankCode","field","Rejects/Return reason code list","Liste des codes motifs de rejet/retour",,,,
 "com.axelor.apps.account.db.InterbankCodeLine","technicalRejectOk","field","Technical Rejection","Rejet technique",,,,
-"com.axelor.apps.supplychain.db.Inventory","name","field","Name","Nom",,,,
+"com.axelor.apps.supplychain.db.Inventory","inventorySeq","field","Inventory number","Numéro d'inventaire",,,,
 "com.axelor.apps.supplychain.db.Inventory","location","field","Location","Emplacement",,,,
 "com.axelor.apps.supplychain.db.Inventory","statusSelect","field","Status","Etat",,,,
 "com.axelor.apps.supplychain.db.Inventory","dateT","field","Date",,,,,
