@@ -111,6 +111,20 @@ public class SalesOrderInvoiceService {
 	
 	public Invoice createInvoice(SalesOrder salesOrder) throws AxelorException  {
 		
+		InvoiceGenerator invoiceGenerator = this.createInvoiceGenerator(salesOrder);
+		
+		Invoice invoice = invoiceGenerator.generate();
+		
+		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, salesOrder.getSalesOrderLineList(), salesOrder.getShowDetailsInInvoice()));
+		invoiceGenerator.computeInvoice(invoice);
+		return invoice;
+		
+	}
+	
+	
+
+	public InvoiceGenerator createInvoiceGenerator(SalesOrder salesOrder) throws AxelorException  {
+		
 		if(salesOrder.getCurrency() == null)  {
 			throw new AxelorException(String.format("Veuillez selectionner une devise pour le devis %s ", salesOrder.getSalesOrderSeq()), IException.CONFIGURATION_ERROR);
 		}
@@ -125,14 +139,9 @@ public class SalesOrderInvoiceService {
 			}
 		};
 		
-		Invoice invoice = invoiceGenerator.generate();
-		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, salesOrder.getSalesOrderLineList(), salesOrder.getShowDetailsInInvoice()));
-		invoiceGenerator.computeInvoice(invoice);
-		return invoice;
+		return invoiceGenerator;
 		
 	}
-	
-	
 	
 	
 	
