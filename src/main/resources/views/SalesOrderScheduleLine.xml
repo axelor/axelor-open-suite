@@ -18,7 +18,7 @@
     	<field name="sequence"/>
         <field name="amountToBeInvoiced"/>
         <field name="invoicingPercentage"/>
-        <field name="salesOrderLine" domain="self.salesOrder = :salesOrder and self."/>
+        <field name="salesOrderLine" domain="self.salesOrder = :salesOrder"/>
     	<field name="accumulatedInvoicingPercentage"/>
     	<field name="nbOfDay"/>
 		<field name="invoice"/> 
@@ -33,7 +33,8 @@
     </action-attrs>
     
     <action-record name="action-sales-order-schedule-line-record-sequence" model="com.axelor.apps.supplychain.db.SalesOrderScheduleLine">
-    	<field name="sequence" expr="eval: com.axelor.apps.supplychain.db.SalesOrderScheduleLine.all().filter('self.salesOrder = ${salesOrder}').count()+1"/>
+    	<field name="sequence" expr="eval: _parent.salesOrderScheduleLineList.size()+1" if="_parent.salesOrderScheduleLineList != null" />
+    	<field name="sequence" expr="eval: 1" if="_parent.salesOrderScheduleLineList == null" />
     </action-record>
     
 </object-views>

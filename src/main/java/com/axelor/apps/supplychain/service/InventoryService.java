@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.joda.time.LocalDate;
+
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IProduct;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.supplychain.db.IStockMove;
@@ -97,27 +100,33 @@ public class InventoryService {
 		StockMove stockMove = null;
 		List<StockMoveLine> stockMoveLineList = null;
 		
+		LocalDate inventoryDate = inventory.getDateT().toLocalDate();
+		
+		Location toLocation = inventory.getLocation();
+		Company company = toLocation.getCompany();
+		Location fromLocation = company.getInventoryVirtualLocation();
+		
 		for (InventoryLine inventoryLine : inventoryLineList) {
 			BigDecimal currentQty = inventoryLine.getCurrentQty();
 			BigDecimal realQty = inventoryLine.getRealQty();
+			Product product = inventoryLine.getProduct();
+			
 			if (currentQty.compareTo(realQty) != 0) {
 				BigDecimal diff = realQty.subtract(currentQty);
 				
-				if (inventory.getLocation() == null || inventory.getLocation().getCompany() == null || inventoryLine.getProduct() == null ) {
+				if (toLocation == null || company == null || product == null ) {
 					throw new AxelorException("Informations manquantes dans l'inventaire "+inventory.getName(), IException.CONFIGURATION_ERROR);
 				}
 				
 				if (stockMove == null) {
-					Location fromLocation = inventory.getLocation().getCompany().getInventoryVirtualLocation();
-					Location toLocation = inventory.getLocation();
-					stockMove = stockMoveService.createStocksMoves(null, toLocation.getCompany(), null, fromLocation, toLocation);
+					
+					stockMove = stockMoveService.createStocksMoves(null, company, null, fromLocation, toLocation, inventoryDate, inventoryDate);
 					stockMove.setTypeSelect(IStockMove.INTERNAL);
 					stockMove.setName(inventory.getName());
-					stockMove.setStockMoveSeq(inventory.getName());
 				}
 				
-				StockMoveLine stockMoveLine = stockMoveService.createStocksMovesLines(inventoryLine.getProduct(), diff, 
-						inventoryLine.getProduct().getUnit(), null, stockMove);
+				StockMoveLine stockMoveLine = stockMoveService.createStocksMovesLines(product, diff, 
+						product.getUnit(), null, stockMove);
 				
 				if (stockMoveLine == null)
 					throw new AxelorException("Produit incorrect dans la ligne de l'inventaire "+inventory.getName(), IException.CONFIGURATION_ERROR);

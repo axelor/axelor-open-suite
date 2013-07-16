@@ -102,12 +102,27 @@ public class StockMoveService {
 	 */
 	public StockMove createStocksMoves(Address toAddress, Company company, Partner clientPartner, Location fromLocation, Location toLocation) throws AxelorException {
 
+		return this.createStocksMoves(toAddress, company, clientPartner, fromLocation, toLocation, this.today, this.today);
+	}
+	
+	
+	/**
+	 * Méthode générique permettant de créer un StockMove.
+	 * @param toAddress l'adresse destination
+	 * @param company la société
+	 * @param clientPartner le tier client
+	 * @param refSequence la séquence du StockMove
+	 * @return l'objet StockMove
+	 * @throws AxelorException Aucune séquence de StockMove (Livraison) n'a été configurée
+	 */
+	public StockMove createStocksMoves(Address toAddress, Company company, Partner clientPartner, Location fromLocation, Location toLocation, LocalDate realDate, LocalDate estimatedDate) throws AxelorException {
+
 		StockMove stockMove = new StockMove();
 		stockMove.setToAddress(toAddress);
 		stockMove.setCompany(company);
 		stockMove.setStatusSelect(IStockMove.DRAFT);
-		stockMove.setRealDate(this.today);
-		stockMove.setEstimatedDate(this.today);
+		stockMove.setRealDate(realDate);
+		stockMove.setEstimatedDate(estimatedDate);
 		stockMove.setPartner(clientPartner);
 		stockMove.setFromLocation(fromLocation);
 		stockMove.setToLocation(toLocation);
