@@ -8,13 +8,12 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
-import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.Vat;
 import com.axelor.apps.account.db.VatLine;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.supplychain.db.SalesOrder;
+import com.axelor.apps.base.db.ProductFamily;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
@@ -26,22 +25,51 @@ public class AccountManagementService {
 	@Inject
 	private VatService vs;
 	
-	
+
 	/**
-	 * Obtenir la bonne configuration comptable en fonction de la société.
+	 * Obtenir la bonne configuration comptable en fonction du produit et de la société.
 	 * 
-	 * @param accountManagements
+	 * @param product
 	 * @param company
 	 * @return
 	 * @throws AxelorException 
 	 */
 	public AccountManagement getAccountManagement(Product product, Company company) throws AxelorException{
 		
+		AccountManagement accountManagement = null;
 		
-		if (product.getAccountManagementList() == null || product.getAccountManagementList().isEmpty())  {
-			throw new AxelorException(String.format("Configuration comptable absente du produit : %s (société : %s)", product.getName(), company.getName()), IException.CONFIGURATION_ERROR);
+		if (product.getAccountManagementList() != null && !product.getAccountManagementList().isEmpty())  {
+			accountManagement = this.getAccountManagement(product.getAccountManagementList(), company);
 		}
-		return this.getProductAccountManagement(product.getAccountManagementList(), company);
+		
+		if (accountManagement == null && product.getProductFamily() != null) {
+			accountManagement = this.getAccountManagement(product.getProductFamily(), company);
+		}
+		
+		if (accountManagement == null)  {
+			throw new AxelorException(String.format("Configuration comptable absente du produit : %s (société : %s)", product.getCode(), company.getName()), IException.CONFIGURATION_ERROR);
+		}
+		
+		return accountManagement;
+		
+	}
+	
+	
+	/**
+	 * Obtenir la bonne configuration comptable en fonction de la famille de produit et de la société
+	 * 
+	 * @param productFamily
+	 * @param company
+	 * @return
+	 * @throws AxelorException 
+	 */
+	public AccountManagement getAccountManagement(ProductFamily productFamily, Company company) throws AxelorException{
+		
+		if(productFamily.getAccountManagementList() != null && !productFamily.getAccountManagementList().isEmpty())  {
+			return this.getAccountManagement(productFamily.getAccountManagementList(), company);
+		}
+		
+		return null;
 		
 	}
 	
@@ -54,32 +82,16 @@ public class AccountManagementService {
 	 * @param company
 	 * @return
 	 */
-	public AccountManagement getProductAccountManagement(List<AccountManagement> accountManagements, Company company){
+	public AccountManagement getAccountManagement(List<AccountManagement> accountManagements, Company company){
 		
 		for (AccountManagement accountManagement : accountManagements){
 			if (accountManagement.getCompany().equals(company)){
-				LOG.debug("Obtention de la configuration comptable {} => société: {}",
-							new Object[] { accountManagement.getProduct().getCode(), company.getName() });
+				LOG.debug("Obtention de la configuration comptable {} => société: {}",	company.getName());
 				
 				return accountManagement;
 			}
 		}
 		return null;
-		
-	}
-	
-	
-	public AccountManagement getProductAccountManagement(Product product, Company company){
-		
-		AccountManagement accountManagement = null;
-		
-		if(product.getAccountManagementList()!=null)  {
-			accountManagement = this.getProductAccountManagement(product.getAccountManagementList(), company);
-		}
-		if(accountManagement == null && product.getProductFamily()!=null && product.getProductFamily().getAccountManagementList()!=null) {
-			accountManagement = this.getProductAccountManagement(product.getProductFamily().getAccountManagementList(), company);
-		}
-		return accountManagement;
 		
 	}
 	
@@ -99,14 +111,9 @@ public class AccountManagementService {
 		LOG.debug("Obtention du compte comptable pour le produit {} (société : {}, achat ? {})",
 			new Object[]{product, company, isPurchase});
 		
-		AccountManagement accountManagement = this.getProductAccountManagement(product.getAccountManagementList(), company);
-		
-		if (accountManagement == null)  {
-			throw new AxelorException(String.format("Configuration comptable absente du produit : %s (société : %s)", product.getName(), company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		
-		if(isPurchase)  { return accountManagement.getPurchaseAccount(); }
-		else { return accountManagement.getSaleAccount(); }
+		return this.getProductAccount(
+				this.getAccountManagement(product, company), 
+				isPurchase);
 			
 	}
 	
@@ -139,17 +146,12 @@ public class AccountManagementService {
 	 */
 	public Vat getProductVat(Product product, Company company, boolean isPurchase) throws AxelorException{
 		
-		LOG.debug("Obtention du compte comptable pour la TVA {} (société : {}, achat ? {})",
-			new Object[]{product, company, isPurchase});
+		LOG.debug("Obtention du compte comptable pour le produit {} (société : {}, achat ? {})",
+			new Object[]{product.getCode(), company, isPurchase});
 		
-		AccountManagement accountManagement = this.getProductAccountManagement(product.getAccountManagementList(), company);
-		
-		if (accountManagement == null)  {
-			throw new AxelorException(String.format("Configuration comptable absente du produit : %s (société : %s)", product.getName(), company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		
-		if(isPurchase)  { return accountManagement.getPurchaseVat(); }
-		else { return accountManagement.getSaleVat(); }
+		return this.getProductVat(
+				this.getAccountManagement(product, company), 
+				isPurchase);
 			
 	}
 	
@@ -186,7 +188,7 @@ public class AccountManagementService {
 			return vatLine;
 		}
 
-		throw new AxelorException(String.format("Aucune TVA trouvée pour le produit %s", product.getName()), IException.CONFIGURATION_ERROR);
+		throw new AxelorException(String.format("Aucune TVA trouvée pour le produit %s", product.getCode()), IException.CONFIGURATION_ERROR);
 		
 	}
 	
@@ -205,14 +207,13 @@ public class AccountManagementService {
 		LOG.debug("Obtention du compte comptable pour la taxe {} (société : {}, achat ? {})",
 			new Object[]{tax, company, isPurchase});
 		
-		AccountManagement accountManagement = this.getTaxAccountManagement(tax.getAccountManagementList(), company);
+		AccountManagement accountManagement = this.getAccountManagement(tax.getAccountManagementList(), company);
 		
 		if (accountManagement == null)  {
 			throw new AxelorException(String.format("Configuration comptable absente de la taxe : %s (société : %s)", tax.getName(), company.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
-		if(isPurchase)  { return accountManagement.getPurchaseAccount(); }
-		else { return accountManagement.getSaleAccount(); }
+		return this.getProductAccount(accountManagement, isPurchase);
 			
 	}
 	
@@ -230,34 +231,11 @@ public class AccountManagementService {
 		
 		
 		if (tax.getAccountManagementList() == null || tax.getAccountManagementList().isEmpty())  {
-			throw new AxelorException(String.format("Configuration comptable absente du produit : %s (société : %s)", tax.getName(), company.getName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format("Configuration comptable absente de la taxe : %s (société : %s)", tax.getName(), company.getName()), IException.CONFIGURATION_ERROR);
 		}
-		return this.getTaxAccountManagement(tax.getAccountManagementList(), company);
+		return this.getAccountManagement(tax.getAccountManagementList(), company);
 		
 	}
-	
-	
-	/**
-	 * Obtenir la bonne configuration comptable en fonction de la société.
-	 * 
-	 * @param accountManagements
-	 * @param company
-	 * @return
-	 */
-	public AccountManagement getTaxAccountManagement(List<AccountManagement> accountManagements, Company company){
-		
-		for (AccountManagement accountManagement : accountManagements){
-			if (accountManagement.getCompany().equals(company)){
-				LOG.debug("Obtention de la configuration comptable {} => société: {}",
-							new Object[] { accountManagement.getTax().getCode(), company.getName() });
-				
-				return accountManagement;
-			}
-		}
-		return null;
-		
-	}
-	
 	
 	
 }

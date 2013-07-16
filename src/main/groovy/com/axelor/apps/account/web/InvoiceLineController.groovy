@@ -22,7 +22,7 @@ class InvoiceLineController {
 		BigDecimal exTaxTotal = 0.0
 		BigDecimal accountingExTaxTotal = 0.0
 		
-		try{
+//		try{
 		
 			if (invoiceLine.price != null && invoiceLine.qty != null){
 				
@@ -44,10 +44,10 @@ class InvoiceLineController {
 		
 			response.values = ["exTaxTotal": exTaxTotal,
 								"accountingExTaxTotal" : accountingExTaxTotal]
-		}
-		catch(Exception e)  {
-			response.flash = e
-		}
+//		}
+//		catch(Exception e)  {
+//			response.flash = e
+//		}
 	
 	}
 	
@@ -64,16 +64,16 @@ class InvoiceLineController {
 			
 		if(invoice != null && invoiceLine.product != null)  {
 			
-			try  {
+//			try  {
 				boolean isPurchase = invoiceLineService.isPurchase(invoice)
 				
 				response.values = ["vatLine" : invoiceLineService.getVatLine(invoice, invoiceLine, isPurchase),
 					"price" : invoiceLineService.getUnitPrice(invoice, invoiceLine, isPurchase),
 					"productName" : invoiceLine?.product?.name]
-			}
-			catch(Exception e)  {
-				response.flash = e
-			}
+//			}
+//			catch(Exception e)  {
+//				response.flash = e
+//			}
 		}
 	}
 	

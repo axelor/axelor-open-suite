@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Vat;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -321,16 +322,14 @@ public class MoveLineService {
 
 			analyticAccounts.clear();
 			
-			if(invoiceLine.getProduct() == null)  {
+			Product product = invoiceLine.getProduct();
+			
+			if(product == null)  {
 				throw new AxelorException(String.format("Produit absent de la ligne de facture, facture : %s (société : %s)", invoice.getInvoiceId(), company.getName()), IException.CONFIGURATION_ERROR);
 			}
 			
-			accountManagement = accountManagementService.getAccountManagement(invoiceLine.getProduct(), company);
+			accountManagement = accountManagementService.getAccountManagement(product, company);
 			
-			if (accountManagement == null)  {
-				throw new AxelorException(String.format("Configuration comptable absente du produit : %s (société : %s)", invoiceLine.getProduct().getName(), company.getName()), IException.CONFIGURATION_ERROR);
-			}
-				
 			account2 = accountManagementService.getProductAccount(accountManagement, isPurchase);
 			
 			for (AnalyticAccountManagement analyticAccountManagement : accountManagement.getAnalyticAccountManagementList()){
