@@ -3434,3 +3434,4 @@
 "wizard-client-form-open-my-sale-order","wizard-client-form-open-my-sale-order","action","My sales orders","Mes devis clients",,,,
 "wizard-client-form-open-my-tickets","wizard-client-form-open-my-tickets","action","My tickets","Mes tickets",,,,
 "wizard-client-view","wizard-client-view","action","My space","Mon espace",,,,
+"action-product-validate-sale-supply-select","action-product-validate-sale-supply-select","action","A product of type service can't be procured from stock.","Un produit de type service ne peut pas être déstocké.",,,,
