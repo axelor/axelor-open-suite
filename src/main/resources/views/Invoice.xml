@@ -138,7 +138,7 @@
 	                <button name="sendByEmail" title="Send by email" colSpan="2" showIf="operationTypeSelect = 3 || operationTypeSelect = 4"/>
 	            </group>
 	            <group colSpan="2" cols="2">
-	                <button name="validate" title="Validate" colSpan="2" onClick="save,action-invoice-method-validate,action-invoice-attrs-status,save"/>
+	                <button name="validate" title="Validate" colSpan="2" onClick="save,action-invoice-method-compute,action-invoice-method-validate,action-invoice-attrs-status,save"/>
    	                <button name="ventilate" title="Ventilate" colSpan="2" onClick="save,action-invoice-method-ventilate,action-invoice-attrs-status,save"/>
 	                <button name="cancel" title="Cancel" colSpan="2" onClick="save,action-invoice-method-cancel,action-invoice-attrs-status,save"/>
 	                <field name="status" domain="self.invoiceStatusOK = true"/>
