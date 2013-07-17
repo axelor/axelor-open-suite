@@ -307,6 +307,11 @@ public class StockMoveService {
 			stockMove.setTypeSelect(this.getStockMoveType(fromLocation, toLocation));
 		}
 
+		
+		if(stockMove.getTypeSelect() == IStockMove.OUTGOING)  {
+			
+		}
+		
 		// Set the sequence
 		if(stockMove.getStockMoveSeq() == null || stockMove.getStockMoveSeq().isEmpty())  {
 			stockMove.setStockMoveSeq(
