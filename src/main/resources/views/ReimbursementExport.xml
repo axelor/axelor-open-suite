@@ -13,7 +13,7 @@
     </grid>
     <form name="reimbursement-export-form" title="Reimbursement export" model="com.axelor.apps.account.db.ReimbursementExport" cols="4">
     	<field name="name"/>
-		<field name="company"/>
+		<field name="company" widget="SuggestBox"/>
 		<separator title="Create reimbursements" colSpan="4"/>
 		<field name="createReimbursementDateTime"/>
 		<field name="createReimbursementUserInfo"/>

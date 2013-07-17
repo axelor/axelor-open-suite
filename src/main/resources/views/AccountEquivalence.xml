@@ -11,7 +11,7 @@
     </grid>
 
     <form name="account-equivalence-form" title="Account equivalence" model="com.axelor.apps.base.db.AccountEquivalence" cols="4">
-        <field name="company"/>
+        <field name="company" widget="SuggestBox"/>
         <field name="providerPartner" grid-view="partner-grid" form-view="partner-form" domain="self.supplierOk = True"/>
         <field name="account" domain="self.type.name ='Fournisseur'"/>
         <field name="accountingSoftwareCode"/>

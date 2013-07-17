@@ -8,13 +8,13 @@
     </grid>
     
     <form name="direct-debit-management-form-payment-schedule-line" title="Direct debits management" model="com.axelor.apps.account.db.DirectDebitManagement" cols="4">
-        <field name="company"/>
+        <field name="company" widget="SuggestBox"/>
         <field name="debitNumber"/>
         <field name="paymentScheduleLineList" colSpan="4"/>
     </form>
     
     <form name="direct-debit-management-form-invoice" title="Direct debit management" model="com.axelor.apps.account.db.DirectDebitManagement" cols="4">
-        <field name="company"/>
+        <field name="company" widget="SuggestBox"/>
         <field name="debitNumber"/>
         <field name="invoiceSet" colSpan="4" grid-view="invoice-grid" form-view="invoice-form"/>
     </form>

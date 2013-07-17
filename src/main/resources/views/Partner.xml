@@ -98,7 +98,7 @@
 	            <field name="paymentCondition"/>
 	            <field name="currency"/>
 	            <field name="payerQuality"/>
-	            <field name="bankDetails"/>
+	            <field name="bankDetails" widget="SuggestBox" domain="self.partner.id = :id"/>
 	            <field name="bankDetailsList" showTitle="false" colSpan="4" form-view="bank-details-form" grid-view="bank-details-grid"/>
 	            <button name="showInvoice" title="View all unpaid invoices" colSpan="2" onClick="save,action-partner-method-show-invoice"/>
 	        </page>
@@ -175,7 +175,7 @@
 	                    <field name="company"/>
 	                </grid>
 	                <form cols="4" name="reported-balance-form" title="Reported balance" model="com.axelor.apps.account.db.ReportedBalance">
-	                    <field name="company"/>
+	                    <field name="company" widget="SuggestBox"/>
 	                    <field name="reportedBalanceLineList" colSpan="4">
 	                        <grid name="reported-balance-line-grid" title="Reported balance lines" model="com.axelor.apps.account.db.ReportedBalanceLine">
 	                            <field name="year"/>
@@ -198,8 +198,7 @@
 			</page>
 	    </notebook>
 	</form>
-    
-
+	
 	<action-method name="action-create-accounting-situation" >
 		<call class="com.axelor.apps.base.web.PartnerControllerSimple" method="createAccountingSituations"/>
 	</action-method>

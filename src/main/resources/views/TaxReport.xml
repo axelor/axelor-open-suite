@@ -10,7 +10,7 @@
     </grid>
     
     <form name="tax-report-form" title="Tax report" model="com.axelor.apps.account.db.TaxReport" cols="4">
-        <field name="company"/>
+        <field name="company" widget="SuggestBox"/>
         <field name="date"/>
         <field name="periods" colSpan="2"/>
         <field name="accounts" colSpan="2" domain="self.type.name = 'Taxe'"/>

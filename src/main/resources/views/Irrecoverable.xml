@@ -14,7 +14,7 @@
         <field name="name"/>
         <field name="userInfo"/>
         <field name="dateTime"/>
-        <field name="company"/>
+        <field name="company" widget="SuggestBox"/>
         <button name="getIrrecoverable" title="Get invoices and schedule lines to set as irrecoverable" colSpan="2" onClick="save,com.axelor.apps.account.web.IrrecoverableController:getIrrecoverable"/>
         <field name="invoiceSet" colSpan="4"  grid-view="invoice-grid" form-view="invoice-form"/>
         <field name="paymentScheduleLineSet" colSpan="4"/>

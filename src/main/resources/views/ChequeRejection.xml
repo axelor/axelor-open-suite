@@ -19,7 +19,7 @@
      onLoad="action-cheque-rejection-attrs-hidden-after-validated">
         <field name="name"/>
         <field name="dateTime"/>
-        <field name="company"/>
+        <field name="company" widget="SuggestBox"/>
         <field name="paymentMode"/>
         <break/>
         <break/><spacer/><break/>
