@@ -19,29 +19,31 @@
     
     <form name="stock-move-form" title="Stock move" model="com.axelor.apps.supplychain.db.StockMove" cols="4"
     	onNew="action-stock-move-record-new,action-stock-move-attrs-hide-button-generate-invoice"
-    	onLoad="action-stock-move-attrs-hide-button-generate-invoice">
+    	onLoad="action-stock-move-attrs-hide-button-generate-invoice,action-stock-move-attrs-canceled-read-only,action-stock-move-group-read-only">
         <field name="typeSelect"/>
         <field name="statusSelect" widget="NavSelect"/>
-      	<group title="Stock move reference" cols="2">
-        	<field name="stockMoveSeq"/>
-        	<field name="name"/>
-        	<field name="company"/>
-        	<field name="partner" domain="self.isContact = false"/>
-        	<group title="Action(s)" colSpan="2" cols="2">
-            	<button name="plan" title="Plan" showIf="statusSelect == 1" colSpan="1" onClick="save,action-stock-move-method-plan,save"/>
-				<button name="realize" title="Realize" showIf="statusSelect == 2" colSpan="1" onClick="save,action-stock-move-method-realize,save"/>
-				<button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3" colSpan="1" onClick="save,action-stock-move-method-cancel,save"/>
+        <group colSpan="4" cols="6">
+      		<group title="Stock move reference" colSpan="2" cols="2">
+        		<field name="stockMoveSeq"/>
+        		<field name="name"/>
+        		<field name="company"/>
+        		<field name="partner" domain="self.isContact = false"/>       	
+    		</group>
+    		<group title="Stock move informations"  colSpan="2" cols="2">
+        		<field name="fromLocation"/>
+        		<field name="toLocation"/>
+        		<field name="estimatedDate"/>
+        		<field name="realDate"/>
+        		<field name="fromAddress" showIf="typeSelect == 3"/>
+        		<field name="toAddress" showIf="typeSelect == 2"/>
+    		</group>
+    		<group title="Action(s)" colSpan="2" cols="2">
+            	<button name="plan" title="Plan" showIf="statusSelect == 1" colSpan="1" onClick="save,action-stock-move-method-plan,action-stock-move-group-read-only,save"/>
+				<button name="realize" title="Realize" showIf="statusSelect == 2" colSpan="1" onClick="save,action-stock-move-method-realize,action-stock-move-group-read-only,action-stock-move-attrs-hide-button-generate-invoice,save"/>
+				<button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3" colSpan="1" onClick="save,action-stock-move-method-cancel,action-stock-move-attrs-canceled-read-only,save"/>
 	        	<button name="draft" title="Draft" showIf="statusSelect == 4" onClick="save,action-stock-move-record-draft,save"/>
             	<button name="generateInvoice" title="Generate invoice"/>
         	</group>
-    	</group>
-    	<group title="Stock move informations"  colSpan="3" cols="2">
-        	<field name="fromLocation"/>
-        	<field name="toLocation"/>
-        	<field name="estimatedDate"/>
-        	<field name="realDate"/>
-        	<field name="fromAddress" showIf="typeSelect == 3"/>
-        	<field name="toAddress" showIf="typeSelect == 2"/>
     	</group>
     	<break/>
     	<notebook colSpan="4">
@@ -49,7 +51,7 @@
             	<field name="stockMoveLineList" colSpan="4" readonlyIf="statusSelect == 3"/>
         	</page>
         	<page title="Configuration">
-           		<field name="salesOrder" onChange="action-stock-move-attrs-hide-button-generate-invoice"/>
+           		<field name="salesOrder"/>
             	<field name="invoice"/>
         	</page>
     	</notebook>
@@ -59,7 +61,37 @@
     	<attribute name="title" for="realize" expr="eval: (fromLocation) ? ((fromLocation?.typeSelect != 1 &amp;&amp; toLocation?.typeSelect == 1) ? 'Receive' : 'Send') : ((toLocation?.typeSelect == 1) ? 'Receive' : 'Send')"/>
     </action-attrs> -->
     
+    <action-group name="action-stock-move-group-read-only">
+    	<action name="action-stock-move-attrs-planned-read-only" if="statusSelect == 2 || statusSelect == 3"/>
+    	<action name="action-stock-move-attrs-validated-read-only" if="statusSelect == 3"/>
+    </action-group>
     
+    <action-attrs name="action-stock-move-attrs-planned-read-only">
+    	<attribute name="readonly" for="typeSelect" expr="true"/>
+    	<attribute name="readonly" for="company" expr="true"/>
+    	<attribute name="readonly" for="partner" expr="true"/>
+    	<attribute name="readonly" for="fromLocation" expr="true"/>
+    	<attribute name="readonly" for="toLocation" expr="true"/>
+    	<attribute name="readonly" for="estimatedDate" expr="true"/>
+    </action-attrs>
+    
+    <action-attrs name="action-stock-move-attrs-validated-read-only">
+    	<attribute name="readonly" for="toAddress" expr="true"/>
+    	<attribute name="readonly" for="salesOrder" expr="true"/>
+    	<attribute name="readonly" for="invoice" expr="true"/>
+    </action-attrs>
+    
+    <action-attrs name="action-stock-move-attrs-canceled-read-only">
+    	<attribute name="readonly" for="typeSelect" expr="false"/>
+    	<attribute name="readonly" for="company" expr="false"/>
+    	<attribute name="readonly" for="partner" expr="false"/>
+    	<attribute name="readonly" for="fromLocation" expr="false"/>
+    	<attribute name="readonly" for="toLocation" expr="false"/>
+    	<attribute name="readonly" for="estimatedDate" expr="false"/>
+    	<attribute name="readonly" for="toAddress" expr="false"/>
+    	<attribute name="readonly" for="salesOrder" expr="false"/>
+    	<attribute name="readonly" for="invoice" expr="false"/>
+    </action-attrs>
     
     <action-record name="action-stock-move-record-draft" model="com.axelor.apps.supplychain.db.StockMove">
     	<field name="statusSelect" expr="eval: 1"/>
@@ -86,7 +118,7 @@
 	</action-method>
 	
 	<action-attrs name="action-stock-move-attrs-hide-button-generate-invoice">
-		<attribute name="hidden" for="generateInvoice" expr="eval: salesOrder == null || salesOrder?.invoicingTypeSelect != 5"/>
+		<attribute name="hidden" for="generateInvoice" expr="eval: salesOrder == null || salesOrder?.invoicingTypeSelect != 5 || invoice != null || statusSelect != 3"/>
 	</action-attrs>
 	
 </object-views>
