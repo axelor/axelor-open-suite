@@ -17,7 +17,7 @@
 	<date name="orderDate" title="Order Date"/>
   	<one-to-many name="purchaseOrderLineList"  mappedBy="purchaseOrder" ref="com.axelor.apps.supplychain.db.PurchaseOrderLine" title="Purchase order lines"/>
   	<integer name="statusSelect" title="Status" selection="supplychain.purchase.order.status.select" readonly="true"/>
-  	
+  	<integer name="invoicingTypeSelect" title="Type de facturation" selection="supplychain.purchase.order.invoicing.type.select"/>
   	
 <!--   	Ligne de TVA -->	
 	<one-to-many name="purchaseOrderLineVatList" ref="com.axelor.apps.supplychain.db.PurchaseOrderLineVat" mappedBy="purchaseOrder" title="V.A.T. Lines"/>

@@ -27,7 +27,7 @@
         <field name="partner" domain="self.isContact = false"/>
         <field name="address" colSpan="4"/>
         <notebook colSpan="4">
-            <page title="Accounting" cols="4">
+            <page title="Accounting" cols="4" >
             	<separator title="Journals" colSpan="6"/>
 	                <field name="customerSalesJournal" domain="self.inactiveOk != true"/>
 	                <field name="customerCreditNoteJournal" domain="self.inactiveOk != true"/>
@@ -95,7 +95,7 @@
             </page>
             <page title="Reimbursement" cols="4">
             	<separator title="Configuration" colSpan="6"/>
-            	<group title="Reimbursements" colSpan="4">
+            	<group title="Reimbursements" colSpan="4" >
 	            	<field name="reimbursementExportFolderPath"/>
     	       		<field name="reimbursementExportFolderPathCFONB"/>
         	    	<field name="lowerThresholdReimbursement"/>
@@ -166,11 +166,23 @@
             	<field name="generatedMailFileName" />
             	<field name="generatedEmailFileName" />
             </page>
-            <page title="Supply chain" cols="4">
-            	<field name="customerVirtualLocation" />
-            	<field name="supplierVirtualLocation" />
-            	<field name="inventoryVirtualLocation" />
-            </page>
+            <page title="Supply chain" cols="2">
+				<group title="Virtual locations informations" colWidths="30%,30%,30%,30%">    
+					<field name="customerVirtualLocation" />
+					<field name="supplierVirtualLocation" />
+					<field name="inventoryVirtualLocation" />
+				</group>
+            	<group title="Stock move informations" colWidths="30%,30%,30%,30%">	
+					<field name="hasOutStockMoveForStorableProduct" />
+					<field name="hasOutStockMoveForNonStorableProduct" />
+					<field name="hasInStockMoveForStorableProduct" />
+					<field name="hasInStockMoveForNonStorableProduct" />
+				</group>
+				<group title="Invoicing informations" colWidths="30%,30%,30%,30%">	
+					<field name="salesOrderInvoicingTypeSelect" />
+					<field name="purchaseOrderInvoicingTypeSelect" />
+				</group>
+        	</page>
             <page title="Invoicing" cols="4">
             	<field name="showDetailsInInvoice"/>
             </page>
