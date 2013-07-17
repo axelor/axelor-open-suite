@@ -19,7 +19,7 @@
 	    </toolbar>
 	    <group colSpan="3" cols="4" colWidths="17%,33%,17%,33%">
 	        <field name="salesOrderSeq"/>
-	        <field name="company" onChange="action-sales-order-record-show-detail-invoice"/>
+	        <field name="company" widget="SuggestBox" onChange="action-sales-order-record-show-detail-invoice"/>
 	        <field name="location" domain="self.company = :company and (self.typeSelect = 1 or self.typeSelect = 4)"/>
 	        <field name="affairProject"/>
 	        <field name="currency"/>

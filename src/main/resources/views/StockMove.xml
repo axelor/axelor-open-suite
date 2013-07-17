@@ -26,7 +26,7 @@
       		<group title="Stock move reference" colSpan="2" cols="2">
         		<field name="stockMoveSeq"/>
         		<field name="name"/>
-        		<field name="company"/>
+        		<field name="company" widget="SuggestBox"/>
         		<field name="partner" domain="self.isContact = false"/>       	
     		</group>
     		<group title="Stock move informations"  colSpan="2" cols="2">
