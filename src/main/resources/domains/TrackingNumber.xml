@@ -11,6 +11,7 @@
 	<date name="warrantyExpirationDate" title="Warranty expiration date" readonly="true"/>
 	<date name="perishableExpirationDate" title="Perishable expiration date" readonly="true"/>
 	<string name="trackingNumberSeq" namecolumn="true" title="Tracking number"/>
+	<integer name="counter" title="Compteur"/>
 	
   </entity>
 

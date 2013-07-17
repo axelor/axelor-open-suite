@@ -76,5 +76,6 @@ public interface IAdministration {
 	static final String INTERNAL = "intStockMove";
 	static final String OUTGOING = "outStockMove";
 	static final String INCOMING = "inStockMove";
+	static final String PRODUCT_TRACKING_NUMBER = "productTrackingNumber";
 	
 }
