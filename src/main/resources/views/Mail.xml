@@ -24,7 +24,7 @@
             <field name="objectConcernedSelect" onChange="action-mail-hidden-attrs"/>
             <field name="mailModel"/>
             <field name="pdfFilePath"/>
-            <field name="company"/>
+            <field name="company" widget="SuggestBox"/>
         </group>
         <group title="Content" colSpan="4">
         	<field name="subject" colSpan="4"/>
