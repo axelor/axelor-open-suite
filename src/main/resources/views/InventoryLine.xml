@@ -4,13 +4,15 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
     <grid name="inventory-line-grid" title="Inventory lines" model="com.axelor.apps.supplychain.db.InventoryLine" editable="true">
-        <field name="product"/>
+        <field name="product" onChange="action-inventory-line-attrs-tracking-number"/>
         <field name="currentQty"/>
         <field name="realQty"/>
         <field name="description"/>
+        <field name="trackingNumber"/>
     </grid>
     
-    <form name="inventory-line-form" title="Inventory line" model="com.axelor.apps.supplychain.db.InventoryLine" cols="4">
+    <form name="inventory-line-form" title="Inventory line" model="com.axelor.apps.supplychain.db.InventoryLine" cols="4"
+    	onLoad="action-inventory-line-attrs-tracking-number">
         <field name="product" domain="self.applicationTypeSelect = 1 and self.productTypeSelect = 'stockable'" onChange="action-inventory-line-attrs-tracking-number"/>
         <field name="currentQty"/>
         <field name="realQty"/>
