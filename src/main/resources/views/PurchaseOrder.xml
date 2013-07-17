@@ -22,6 +22,7 @@
         <field name="orderDate"/>
         <field name="deliveryDate"/>
         <field name="currency"/>
+        <field name="invoicingTypeSelect"/>
 		<field name="purchaseOrderLineList" colSpan="4" grid-view="purchase-order-line-grid" form-view="purchase-order-line-form"/>
         <field name="purchaseOrderLineVatList" colSpan="4"/>
       	<group colSpan="4" cols="3" showTitle="false">
