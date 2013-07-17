@@ -7,13 +7,13 @@
 
   <entity name="StockMove" lang="java">
   
-  	<string name="stockMoveSeq" namecolumn="true" title="Reference"/>
+  	<string name="stockMoveSeq" namecolumn="true" title="Reference" readonly="true"/>
     <string name="name" title="Name" required="true"/>
     <many-to-one name="fromLocation" ref="com.axelor.apps.supplychain.db.Location" title="From location"/>
     <many-to-one name="toLocation" ref="com.axelor.apps.supplychain.db.Location" title="To location"/>
     
     <date name="estimatedDate" title="Estimated date"/>
-    <date name="realDate" title="Move date"/>
+    <date name="realDate" title="Move date" readonly="true"/>
     
     <integer name="statusSelect" title="Status" selection="supplychain.default.status.select" readonly="true"/>
     <integer name="typeSelect" title="Type Status" selection="supplychain.stock.move.type.select"/>
