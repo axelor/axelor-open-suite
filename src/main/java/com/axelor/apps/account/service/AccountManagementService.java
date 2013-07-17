@@ -25,6 +25,12 @@ public class AccountManagementService {
 	@Inject
 	private VatService vs;
 	
+	public AccountManagementService() {
+		
+		this.vs = new VatService();
+		
+	}	
+	
 
 	/**
 	 * Obtenir la bonne configuration comptable en fonction du produit et de la société.
