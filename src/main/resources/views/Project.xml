@@ -19,7 +19,7 @@
 	        <field name="projectUnit"/>
 	        <field name="clientPartner"/>
 	        <field name="contactPartner" domain="self.isContact = true"/>
-	        <field name="company"/>
+	        <field name="company" widget="SuggestBox"/>
 	        <group name="specificSettings" title="Specific settings" colSpan="4" canCollapse="true">
 	            <field name="isModel"/>
 	            <field name="modelProject" hideIf="isModel" domain="self.isModel = true"/>
