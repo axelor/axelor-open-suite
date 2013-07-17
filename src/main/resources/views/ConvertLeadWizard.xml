@@ -267,7 +267,7 @@
         <group title="Assigned to" canCollapse="true">
 	        <field name="userInfo"/>
 	    	<field name="team"/>
-	        <field name="company"/>
+	        <field name="company" widget="SuggestBox"/>
         </group>
     </form>
 	
