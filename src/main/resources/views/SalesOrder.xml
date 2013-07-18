@@ -12,14 +12,15 @@
         <field name="inTaxTotal"/>
     </grid>
     
-	<form name="sales-order-form" title="Sale order" model="com.axelor.apps.supplychain.db.SalesOrder" cols="4" onNew="action-sales-order-record-default,action-sales-order-record-show-detail-invoice,action-sales-order-method-get-location,action-sales-order-record-currency,action-sales-order-attrs-collapse-specific-settings-group"
+	<form name="sales-order-form" title="Sale order" model="com.axelor.apps.supplychain.db.SalesOrder" cols="4" 
+	onNew="action-sales-order-record-default,action-sales-order-record-company-configuration,action-sales-order-method-get-location,action-sales-order-record-currency,action-sales-order-attrs-collapse-specific-settings-group"
 	onSave="action-sales-order-set-sequence" onLoad="action-sales-order-attrs-collapse-specific-settings-group,action-sales-order-group-validated-read-only">
 	    <toolbar>
 	        <button name="createDocument" title="Create Document" onClick="com.axelor.apps.supplychain.web.SalesOrderController:saveDocumentForOrder"/>
 	    </toolbar>
 	    <group colSpan="3" cols="4" colWidths="17%,33%,17%,33%">
 	        <field name="salesOrderSeq"/>
-	        <field name="company" widget="SuggestBox" onChange="action-sales-order-record-show-detail-invoice"/>
+	        <field name="company" widget="SuggestBox" onChange="action-sales-order-record-company-configuration"/>
 	        <field name="location" domain="self.company = :company and (self.typeSelect = 1 or self.typeSelect = 4)"/>
 	        <field name="affairProject"/>
 	        <field name="currency"/>
@@ -164,8 +165,9 @@
     	<field name="team" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
     </action-record>
     
-    <action-record name="action-sales-order-record-show-detail-invoice" model="com.axelor.apps.supplychain.db.SalesOrder">
+    <action-record name="action-sales-order-record-company-configuration" model="com.axelor.apps.supplychain.db.SalesOrder">
     	<field name="showDetailsInInvoice" expr="eval: company?.showDetailsInInvoice" if="company"/>
+    	<field name="invoicingTypeSelect" expr="eval: company?.salesOrderInvoicingTypeSelect" if="eval: company?.salesOrderInvoicingTypeSelect != 0"/>
     </action-record>
     
     <action-record name="action-sales-order-record-partner" model="com.axelor.apps.supplychain.db.SalesOrder">
