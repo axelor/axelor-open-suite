@@ -31,18 +31,18 @@
 		title="Production orders" action="production.root.prod.order" />
 
 	<action-view name="production.root.prod.order" title="Production orders"
-		model="com.axelor.apps.production.db.ProdOrder" icon="img/icons/wheel.png">
-		<view type="grid" name="prod-order-grid" />
-		<view type="form" name="prod-order-form" />
+		model="com.axelor.apps.production.db.ManufOrder" icon="img/icons/wheel.png">
+		<view type="grid" name="manuf-order-grid" />
+		<view type="form" name="manuf-order-form" />
 	</action-view>	
 		
 	<menuitem name="production-root-prod-order-planning" parent="production-root"
 		title="PO plannings" action="production.root.prod.order.planning" />
 
 	<action-view name="production.root.prod.order.planning" title="PO plannings"
-		model="com.axelor.apps.production.db.ProdOrderPlanning" icon="img/icons/wheel.png">
-		<view type="grid" name="prod-order-planning-grid" />
-		<view type="form" name="prod-order-planning-form" />
+		model="com.axelor.apps.production.db.ManufOrderPlanning" icon="img/icons/wheel.png">
+		<view type="grid" name="manuf-order-planning-grid" />
+		<view type="form" name="manuf-order-planning-form" />
 	</action-view>
 
 	<menuitem name="production-root-conf" parent="production-root" title="Configurations"

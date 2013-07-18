@@ -3,15 +3,15 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    <grid name="prod-order-planning-grid" title="PO plannings" model="com.axelor.apps.production.db.ProdOrderPlanning">
-        <field name="prodOrderPlanningSeq"/>
+    <grid name="manuf-order-planning-grid" title="MO plannings" model="com.axelor.apps.production.db.ManufOrderPlanning">
+        <field name="manufOrderPlanningSeq"/>
         <field name="startDate"/>
    		<field name="endDate"/>
     </grid>
     
-    <form name="prod-order-planning-form" title="PO planning" model="com.axelor.apps.production.db.ProdOrderPlanning" cols="4"
+    <form name="manuf-order-planning-form" title="MO planning" model="com.axelor.apps.production.db.ManufOrderPlanning" cols="4"
     onNew="action-prod-order-planning-default-record">
-    	<field name="prodOrderPlanningSeq" />
+    	<field name="manufOrderPlanningSeq" />
     	<field name="isValidated"/>
     	<group title="Dates" colSpan="2" cols="2">
     		<field name="startDate"/>
@@ -21,11 +21,11 @@
     		<button name="runSimulation" title="Run simulation"/>
        	 	<button name="validateChanges" title="Validate changes"/>
     	</group>
-        <field name="prodOrderPlanningLineList" canSelect="true" colSpan="4"/>
-        <field name="prodOrderList" canSelect="true" colSpan="4"/>
+        <field name="manufOrderPlanningLineList" canSelect="true" colSpan="4"/>
+        <field name="manufOrderList" canSelect="true" colSpan="4"/>
     </form>
     
-    <action-record name="action-prod-order-planning-default-record" model="com.axelor.apps.production.db.ProdOrderPlanning">
+    <action-record name="action-prod-order-planning-default-record" model="com.axelor.apps.production.db.ManufOrderPlanning">
     	<field name="startDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="startDate == null"/>
     </action-record>
     

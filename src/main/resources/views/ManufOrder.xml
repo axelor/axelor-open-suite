@@ -3,8 +3,8 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    <grid name="prod-order-grid" title="Production orders" model="com.axelor.apps.production.db.ProdOrder">
-        <field name="productionOrderSeq"/>
+    <grid name="manuf-order-grid" title="Manufacturing orders" model="com.axelor.apps.production.db.ManufOrder">
+        <field name="manufOrderSeq"/>
         <field name="billOfMaterial"/>
         <field name="prodProcess"/>
         <field name="outStockMove"/>
@@ -16,9 +16,9 @@
         <field name="statusSelect"/>
     </grid>
     
-    <form name="prod-order-form" title="Production order" model="com.axelor.apps.production.db.ProdOrder" cols="4"
+    <form name="manuf-order-form" title="Manufacturing order" model="com.axelor.apps.production.db.ManufOrder" cols="4"
     onNew="action-prod-order-default-record">
-        <field name="productionOrderSeq"/>
+        <field name="manufOrderSeq"/>
         <field name="statusSelect" widget="NavSelect"/>
         <field name="billOfMaterial"/>
         <field name="prodProcess"/>
@@ -37,11 +37,11 @@
         	<button name="standbyAllLines" title="Stand by all lines"/>
         	<button name="endAllLines" title="Finish all lines "/>
         </group>
-        <field name="prodOrderLineList" colSpan="4"/>
+        <field name="manufOrderLineList" colSpan="4"/>
         
     </form>
     
-    <action-record name="action-prod-order-default-record" model="com.axelor.apps.production.db.ProdOrder">
+    <action-record name="action-prod-order-default-record" model="com.axelor.apps.production.db.ManufOrder">
     	<field name="statusSelect" expr="eval: 1"/>
     	<field name="startDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="startDate == null"/>
     </action-record>
