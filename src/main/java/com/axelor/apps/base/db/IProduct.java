@@ -16,4 +16,8 @@ public interface IProduct {
 	// PRODUCT TYPE SELECT
 	static final String SERVICE = "service";
 	static final String STOCKABLE = "stockable";
+	
+	// PRODUCT TYPE SELECT
+	static final int FIFO = 1;
+	static final int LIFO = 2;
 }

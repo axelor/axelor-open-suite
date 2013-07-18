@@ -66,9 +66,9 @@
 	                <field name="department"/>
 	                <field name="source" hideIf="isContact"/>
 	            </group>
-	            <group title="Postal addresses" colSpan="3" cols="4">
-	                <field name="deliveryAddress" onChange="action-partner-record-main-invoicing-address"/>
-	                <field name="mainInvoicingAddress"/>
+	            <group title="Postal addresses" hideIf="isContact" colSpan="3" cols="4">
+	                <field name="mainInvoicingAddress" onChange="action-partner-record-main-invoicing-address"/>
+	                <field name="deliveryAddress"/>
 	            </group>
 	            <group title="Contact" colSpan="3" cols="4">
 	                <field name="email" widget="Email"/>
