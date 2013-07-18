@@ -317,12 +317,12 @@ public class SalesOrderService {
 			}
 			
 			StockMove stockMove = stockMoveService.createStocksMoves(salesOrder.getDeliveryAddress(), company, salesOrder.getClientPartner(), salesOrder.getLocation(), toLocation);
-
 			stockMove.setStockMoveLineList(new ArrayList<StockMoveLine>());
+			
 			for(SalesOrderLine salesOrderLine: salesOrder.getSalesOrderLineList()) {
+				
 				Product product = salesOrderLine.getProduct();
 				// Check if the company field 'hasOutStockMoveForStorableProduct' = true and productTypeSelect = 'stockable' or 'hasOutStockMoveForNonStorableProduct' = true and productTypeSelect = 'service' or productTypeSelect = 'other'
-
 				if(product != null && ((company.getHasOutSmForStorableProduct() && product.getProductTypeSelect().equals(IProduct.STOCKABLE)) || (company.getHasOutSmForNonStorableProduct() && !product.getProductTypeSelect().equals(IProduct.STOCKABLE)))) {
 					
 					StockMoveLine stockMoveLine = stockMoveService.createStockMoveLine(product, salesOrderLine.getQty(), salesOrderLine.getUnit(), salesOrderLine.getPrice(), stockMove, 1);
