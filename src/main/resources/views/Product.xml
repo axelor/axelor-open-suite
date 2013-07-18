@@ -77,6 +77,10 @@
 				<field name="trackingNumberConfiguration" colSpan="2"/>
             	<spacer colSpan="2"/>
 			</page>
+			<page title="Variants">
+				<field name="productVariantConfiguration" widget="NestedEditor" summary-view="true" 
+						form-view="product-variant-configuration-form" edit-window="self" canSelect="true" showTitle="false"/>
+			</page>
 			<page title="Social Networking" cols="6" hideIf="id == null">
 				<group title="Social Networking Integration" colSpan="3">
 					<group colSpan="3" cols="2" name="snIntegrationInit">

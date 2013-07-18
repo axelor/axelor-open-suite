@@ -951,6 +951,12 @@
 		<option value="6">Canceled</option>
 	</selection>
 
+	<selection name="supplychain.purchase.order.invoicing.type.select">
+		<option value="1">Free</option>
+		<option value="2">By receipt</option>
+		<option value="3">Per order</option>
+	</selection>
+	
 	<selection name="crm.campaign.follow.up.type.select">
 		<option value="1">Calls</option>
 		<option value="2">Meeting</option>

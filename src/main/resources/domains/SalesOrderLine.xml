@@ -48,6 +48,7 @@
 <!-- Bon de livraison -->
   	<boolean name="isInvoiceControlled" title="Facture controllée"/>
   	
+  	<many-to-one name="productVariant" ref="com.axelor.apps.base.db.ProductVariant"/>
   	
   </entity>
 
