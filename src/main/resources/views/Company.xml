@@ -173,10 +173,10 @@
 					<field name="inventoryVirtualLocation" />
 				</group>
             	<group title="Stock move informations" colWidths="30%,30%,30%,30%">	
-					<field name="hasOutStockMoveForStorableProduct" />
-					<field name="hasOutStockMoveForNonStorableProduct" />
-					<field name="hasInStockMoveForStorableProduct" />
-					<field name="hasInStockMoveForNonStorableProduct" />
+					<field name="hasOutSmForStorableProduct" />
+					<field name="hasOutSmForNonStorableProduct" />
+					<field name="hasInSmForStorableProduct" />
+					<field name="hasInSmForNonStorableProduct" />
 				</group>
 				<group title="Invoicing informations" colWidths="30%,30%,30%,30%">	
 					<field name="salesOrderInvoicingTypeSelect" />
