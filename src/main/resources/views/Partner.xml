@@ -92,7 +92,7 @@
 	            <portlet colSpan="2" action="action-partner-view-partner-event"/>
 	            <portlet colSpan="2" action="action-partner-view-partner-opportunities"/>
 	        </page>
-	        <page name="payment" title="Invoicing/Payment" cols="4">
+	        <page name="payment" title="Invoicing/Payment" cols="4" hideIf="isContact">
 	            <field name="invoiceSendingFormatSelect"/>
 	            <field name="paymentMode"/>
 	            <field name="paymentCondition"/>
