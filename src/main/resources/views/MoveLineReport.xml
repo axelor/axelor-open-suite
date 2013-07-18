@@ -31,7 +31,7 @@
 		    	<field name="date"/>
 		    	<field name="typeSelect" selection="move.line.report.type.select" onChange="action-move-line-report-record,action-move-line-report-hidden,action-move-line-report-method-get-journal-type,action-move-line-report-account-domain,action-move-line-report-record-default,action-move-line-report-method-get-account"/>
 				<field name="exportTypeSelect"/>
-				<field name="company" onChange="action-move-line-report-method-get-account"/>
+				<field name="company" widget="SuggestBox" onChange="action-move-line-report-method-get-account"/>
 				<field name="agency"/>
 				<break/>
 		        <field name="dateFrom"/>
@@ -91,7 +91,7 @@
 		    	<field name="ref" readonly="true"/>
 		    	<field name="date"/>
 		    	<field name="typeSelect" selection="move.line.report.type.select.export" onChange="action-move-line-report-record,action-move-line-report-hidden,action-move-line-report-method-get-journal-type,action-move-line-report-account-domain,action-move-line-report-record-default,action-move-line-report-method-get-account"/>
-				<field name="company" onChange="action-move-line-report-method-get-account"/>
+				<field name="company" widget="SuggestBox" onChange="action-move-line-report-method-get-account"/>
 				<break/>
 		        <field name="dateFrom"/>
 		        <field name="dateTo"/>

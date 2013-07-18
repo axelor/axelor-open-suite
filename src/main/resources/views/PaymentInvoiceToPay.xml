@@ -19,7 +19,7 @@
 <!--         <field name="invoice" grid-view="invoice-grid" form-view="invoice-form"/> -->
         <field name="paymentScheduleLine"/>
         <field name="moveLine"/>
-        <field name="company"/>
+        <field name="company" widget="SuggestBox"/>
         <field name="currency"/>
         <field name="totalAmount"/>
         <field name="remainingAmount"/>

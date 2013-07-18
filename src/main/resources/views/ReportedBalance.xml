@@ -7,7 +7,7 @@
   		<field name="partner"/>		
     </grid>
     <form name="reported-balance-form" title="Reported balance" model="com.axelor.apps.account.db.ReportedBalance" cols="4">
- 		<field name="company"/>
+ 		<field name="company" widget="SuggestBox"/>
  		<field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form"/>
  		<field name="reportedBalanceLineList" colSpan="4">
  			<grid name="reported-balance-line-grid" title="Reported balance lines" model="com.axelor.apps.account.db.ReportedBalanceLine">

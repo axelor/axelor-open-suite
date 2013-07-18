@@ -8,7 +8,7 @@
     </grid>
     <form name="vat-account-form" title="VAT accounting configuration" model="com.axelor.apps.account.db.VatAccount" cols="4"
     onNew="action-vat-account-record-new">
-        <field name="company" onChange="action-vat-account-clean-company,action-vat-account-validate"/>
+        <field name="company" widget="SuggestBox" onChange="action-vat-account-clean-company,action-vat-account-validate"/>
         <field name="account" domain="self.company = :company" onChange="action-vat-account-clean-company,action-vat-account-validate"/>
     </form>
     

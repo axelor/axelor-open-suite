@@ -19,7 +19,7 @@
     	<field name="name"/>
         <field name="dateTime"/>
         <field name="userInfo"/>
-        <field name="company"/>
+        <field name="company" widget="SuggestBox"/>
         <field name="amountThreshold"/>
         <field name="dateThreshold"/>
         <button name="getExcessPayment" title="Get overdue payments" colSpan="2" onClick="save,com.axelor.apps.account.web.AccountClearanceController:getExcessPayment,save"/>

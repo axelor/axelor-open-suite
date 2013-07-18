@@ -18,7 +18,7 @@
     onNew="action-invoice-batch-record-on-new,action-invoice-batch-attrs-action-select,action-invoice-batch-attrs-on-select-ok">
     	<field name="actionSelect" onChange="action-invoice-batch-attrs-action-select"/>
     	<field name="code" />
-    	<field name="company" />
+    	<field name="company" widget="SuggestBox"/>
     	<break/>
     	<field name="usage" />
     	<field name="pricingOption" />

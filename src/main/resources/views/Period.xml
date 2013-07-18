@@ -22,7 +22,7 @@
         <break/>
         <field name="fromDate"/>
         <field name="toDate"/>
-        <field name="company"/>
+        <field name="company" widget="SuggestBox"/>
         <field name="status"/>
         <break/>
         <group colSpan="4" cols="4">

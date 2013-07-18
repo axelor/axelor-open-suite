@@ -15,7 +15,7 @@
         <field name="moveLine"/>
         <field name="invoice" grid-view="invoice-grid" form-view="invoice-form"/>
         <field name="dueDate"/>
-        <field name="company"/>
+        <field name="company" widget="SuggestBox"/>
         <field name="invoiceAmount"/>
         <field name="paidAmount"/>
         <field name="amountRemaining"/>

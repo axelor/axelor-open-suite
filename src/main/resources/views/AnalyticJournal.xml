@@ -10,6 +10,6 @@
     <form name="analytic-journal-form" title="Analytic Journal" model="com.axelor.apps.account.db.AnalyticJournal" cols="4">
         <field name="name"/>
         <field name="type"/>
-        <field name="company"/>
+        <field name="company" widget="SuggestBox"/>
     </form>
 </object-views>
