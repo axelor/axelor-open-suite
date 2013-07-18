@@ -14,7 +14,7 @@
     </grid>
     
     <form name="purchase-order-line-form" title="PO line" model="com.axelor.apps.supplychain.db.PurchaseOrderLine" cols="4" onNew="action-purchase-order-line-record-new">
-    	<field name="product" domain="self.endDate = null or self.endDate &gt; :__date__" onChange="action-purchase-order-line-method-get-product-information,action-purchase-order-line-method-compute"/>
+    	<field name="product" domain="self.endDate = null or self.endDate &gt; :__date__" onChange="action-purchase-order-line-method-get-product-information,action-purchase-order-line-method-compute,action-purchase-order-line-record-product-variant"/>
     	<field name="product.productCategory"/>
     	<field name="productName"/>
     	<field name="qty" onChange="action-purchase-order-line-method-compute"/>
@@ -25,10 +25,17 @@
     	<field name="unit"/>
     	<field name="exTaxTotal"/>
 		<field name="deliveryDate"/>
+	    <group title="Product Variants" colSpan="4" cols="4">
+	        <field name="productVariant" widget="NestedEditor" summary-view="true" form-view="product-variant-form" edit-window="self" canSelect="false" showTitle="false"/>
+	    </group>    
     </form>
     
     <action-record name="action-purchase-order-line-record-new" model="com.axelor.apps.supplychain.db.PurchaseOrderLine">
     	<field name="qty" expr="eval: 1"/>
+    </action-record>
+    
+    <action-record name="action-purchase-order-line-record-product-variant" model="com.axelor.apps.supplychain.db.PurchaseOrderLine">
+    	<field name="productVariant" expr="action:action-product-variant-record-on-new"/>
     </action-record>
    
    	<!-- ACTION METHOD -->
