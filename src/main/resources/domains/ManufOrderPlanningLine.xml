@@ -5,11 +5,11 @@
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
-  <entity name="ProdOrderPlanningLine" lang="java">
+  <entity name="ManufOrderPlanningLine" lang="java">
   
-  	<many-to-one name="prodOrderPlanning" ref="com.axelor.apps.production.db.ProdOrderPlanning" title="Production order planning"/>
-  	<many-to-one name="prodOrder" ref="com.axelor.apps.production.db.ProdOrder" title="Production order"/>
-    <string name="prodOrderPlanningLineSeq" title="Sequence"/>
+  	<many-to-one name="manufOrderPlanning" ref="com.axelor.apps.production.db.ManufOrderPlanning" title="Manufacturing order planning"/>
+  	<many-to-one name="manufOrder" ref="com.axelor.apps.production.db.ManufOrder" title="Manufacturing order"/>
+    <string name="manufOrderPlanningLineSeq" title="Sequence"/>
     	
   </entity>
 </domain-models>

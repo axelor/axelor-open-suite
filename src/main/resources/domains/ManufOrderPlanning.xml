@@ -5,13 +5,13 @@
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
-  <entity name="ProdOrderPlanning" lang="java">
+  <entity name="ManufOrderPlanning" lang="java">
   
-  	<string name="prodOrderPlanningSeq" title="Name"/>
+  	<string name="manufOrderPlanningSeq" title="Name"/>
   	<date name="startDate" title="Date de départ"/>
 	<date name="endDate" title="Date de fin"/>
-    <one-to-many name="prodOrderPlanningLineList" ref="com.axelor.apps.production.db.ProdOrderPlanningLine" mappedBy="prodOrderPlanning" title="Production orders"/>
-    <one-to-many name="prodOrderList" ref="com.axelor.apps.production.db.ProdOrder" mappedBy="prodOrderPlanning" title="Simulation production orders planning"/>
+    <one-to-many name="manufOrderPlanningLineList" ref="com.axelor.apps.production.db.ManufOrderPlanningLine" mappedBy="manufOrderPlanning" title="Manufacturing orders"/>
+    <one-to-many name="manufOrderList" ref="com.axelor.apps.production.db.ManufOrder" mappedBy="manufOrderPlanning" title="Simulation manufacturing orders planning"/>
     <boolean name="isValidated" title="Is validated"/>
     
   </entity>
