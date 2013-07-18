@@ -26,7 +26,7 @@
       		<group title="Stock move reference" colSpan="2" cols="2">
         		<field name="stockMoveSeq"/>
         		<field name="name"/>
-        		<field name="company"/>
+        		<field name="company" widget="SuggestBox"/>
         		<field name="partner" domain="self.isContact = false"/>       	
     		</group>
     		<group title="Stock move informations"  colSpan="2" cols="2">
@@ -42,7 +42,7 @@
 				<button name="realize" title="Realize" showIf="statusSelect == 2" colSpan="1" onClick="save,action-stock-move-method-realize,action-stock-move-group-read-only,action-stock-move-attrs-hide-button-generate-invoice,save"/>
 				<button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3" colSpan="1" onClick="save,action-stock-move-method-cancel,action-stock-move-attrs-canceled-read-only,save"/>
 	        	<button name="draft" title="Draft" showIf="statusSelect == 4" onClick="save,action-stock-move-record-draft,save"/>
-            	<button name="generateInvoice" title="Generate invoice"/>
+            	<button name="generateInvoice" title="Generate invoice" onClick="save,action-stock-move-method-generate-invoice"/>
         	</group>
     	</group>
     	<break/>
@@ -115,6 +115,10 @@
 	
 	<action-method name="action-stock-move-method-cancel">
 		<call class="com.axelor.apps.supplychain.web.StockMoveController" method="cancel"/>
+	</action-method>
+	
+	<action-method name="action-stock-move-method-generate-invoice">
+		<call class="com.axelor.apps.supplychain.web.StockMoveInvoiceController" method="generateInvoice"/>
 	</action-method>
 	
 	<action-attrs name="action-stock-move-attrs-hide-button-generate-invoice">

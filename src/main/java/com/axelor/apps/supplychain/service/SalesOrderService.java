@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.IProduct;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.CurrencyService;
@@ -301,7 +302,7 @@ public class SalesOrderService {
 	 */
 	public void createStocksMovesFromSalesOrder(SalesOrder salesOrder) throws AxelorException {
 		
-		if(salesOrder.getSalesOrderLineList() != null) {
+		if(salesOrder.getSalesOrderLineList() != null && salesOrder.getCompany() != null) {
 			
 			Company company = salesOrder.getCompany();
 			
@@ -319,10 +320,14 @@ public class SalesOrderService {
 
 			stockMove.setStockMoveLineList(new ArrayList<StockMoveLine>());
 			for(SalesOrderLine salesOrderLine: salesOrder.getSalesOrderLineList()) {
-				StockMoveLine stockMoveLine = stockMoveService.createStockMoveLine(salesOrderLine.getProduct(), salesOrderLine.getQty(), salesOrderLine.getUnit(), salesOrderLine.getPrice(), stockMove, 1);
-				if(stockMoveLine != null) {
-					stockMove.getStockMoveLineList().add(stockMoveLine);
-				}
+				Product product = salesOrderLine.getProduct();
+				// Check if the company field 'hasOutStockMoveForStorableProduct' = true and productTypeSelect = 'stockable' or 'hasOutStockMoveForNonStorableProduct' = true and productTypeSelect = 'service' or productTypeSelect = 'other'
+				if(product != null && ((company.getHasOutStockMoveForStorableProduct() && product.getProductTypeSelect().equals(IProduct.STOCKABLE)) || (company.getHasOutStockMoveForNonStorableProduct() && !product.getProductTypeSelect().equals(IProduct.STOCKABLE)))) {
+					StockMoveLine stockMoveLine = stockMoveService.createStockMoveLine(product, salesOrderLine.getQty(), salesOrderLine.getUnit(), salesOrderLine.getPrice(), stockMove, 1);
+					if(stockMoveLine != null) {
+						stockMove.getStockMoveLineList().add(stockMoveLine);
+					}
+				}	
 			}
 			if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
 				stockMoveService.validate(stockMove);

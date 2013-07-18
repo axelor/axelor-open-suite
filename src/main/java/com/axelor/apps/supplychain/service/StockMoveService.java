@@ -172,7 +172,7 @@ public class StockMoveService {
 	 */
 	public StockMoveLine createStockMoveLine(Product product, BigDecimal quantity, Unit unit, BigDecimal price, StockMove stockMove, int type ) throws AxelorException {
 
-		if(product != null && product.getApplicationTypeSelect() == IProduct.PRODUCT_TYPE && product.getProductTypeSelect().equals(IProduct.STOCKABLE)) {
+		if(product.getApplicationTypeSelect() == IProduct.PRODUCT_TYPE) {
 			
 			StockMoveLine stockMoveLine = this.createStockMoveLine(product, quantity, unit, price, stockMove, null);
 			

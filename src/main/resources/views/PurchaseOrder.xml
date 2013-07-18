@@ -11,10 +11,10 @@
         <field name="statusSelect"/>
     </grid>
     
-    <form name="purchase-order-form" title="Supplier RFQ/PO" model="com.axelor.apps.supplychain.db.PurchaseOrder" cols="4" onNew="action-purchase-order-record-new,action-purchase-order-record-currency"
+    <form name="purchase-order-form" title="Supplier RFQ/PO" model="com.axelor.apps.supplychain.db.PurchaseOrder" cols="4" onNew="action-purchase-order-record-new,action-purchase-order-record-company-configuration"
     onSave="action-purchase-order-set-sequence">
     	<field name="purchaseOrderSeq"/>
-    	<field name="company"/>
+    	<field name="company" widget="SuggestBox" onChange="action-purchase-order-record-company-configuration"/>
    	 	<field name="supplierPartner" domain="self.partnerTypeSelect = 1" onChange="action-purchase-order-record-partner"/>
    	 	<field name="statusSelect" widget="NavSelect"/>
         <field name="affairProject"/>
@@ -22,6 +22,7 @@
         <field name="orderDate"/>
         <field name="deliveryDate"/>
         <field name="currency"/>
+        <field name="invoicingTypeSelect"/>
 		<field name="purchaseOrderLineList" colSpan="4" grid-view="purchase-order-line-grid" form-view="purchase-order-line-form"/>
         <field name="purchaseOrderLineVatList" colSpan="4"/>
       	<group colSpan="4" cols="3" showTitle="false">
@@ -57,8 +58,9 @@
     	<field name="orderDate" expr="eval: __date__"/>
     </action-record>
     
-    <action-record name="action-purchase-order-record-currency" model="com.axelor.apps.supplychain.db.PurchaseOrder">
+    <action-record name="action-purchase-order-record-company-configuration" model="com.axelor.apps.supplychain.db.PurchaseOrder">
 	    <field name="currency" expr="eval: company?.currency"/>
+	    <field name="invoicingTypeSelect" expr="eval: company?.purchaseOrderInvoicingTypeSelect"/>
 	</action-record>
 	
     <action-record name="action-purchase-order-record-partner" model="com.axelor.apps.supplychain.db.PurchaseOrder">

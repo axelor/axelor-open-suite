@@ -19,7 +19,7 @@
 	    <field name="sequence"/>  
 	    <field name="isOrdered"/>
 	    <field name="saleSupplySelect"/>
-	    <field name="product" onChange="action-sales-order-line-method-get-product-information,action-sales-order-line-method-compute,action-sales-order-line-method-setBooleans,action-sales-order-line-attrs-ressources-planning" domain="self.endDate = null or self.endDate &gt; :__date__"/>
+	    <field name="product" onChange="action-sales-order-line-method-get-product-information,action-sales-order-line-method-compute,action-sales-order-line-method-setBooleans,action-sales-order-line-attrs-ressources-planning,action-sales-order-line-record-product-variant" domain="self.endDate = null or self.endDate &gt; :__date__"/>
 	    <field name="productName"/>
 	    <field name="qty" onChange="action-sales-order-line-method-compute"/>
 	    <field name="unit"/>
@@ -31,9 +31,8 @@
 	    <field name="discountAmount"/>
 	    <field name="exTaxTotal"/>
 	    <field name="supplierPartner" domain="self.partnerTypeSelect = 2"/>
-	    <group name="ressourcesPlanning" title="Ressources Planning" colSpan="4" cols="4">
-	        <field name="employeeSet" colSpan="4" domain="self.exitDate = null or self.exitDate &gt; :__date__"/>
-	        <field name="candidateSet" colSpan="4"/>
+	    <group title="Product Variants" colSpan="4" cols="4">
+	        <field name="productVariant" widget="NestedEditor" summary-view="true" form-view="product-variant-form" edit-window="self" canSelect="false" showTitle="false"/>
 	    </group>    
 	    <field name="task"/>
 	    <field name="isToPrintLineSubTotal"/>
@@ -50,6 +49,10 @@
 	            <field name="amountRemainingToBeInvoiced"/>
 	            <field name="invoiceSet" colSpan="6"/>
 	        </page>
+	        <page name="ressourcesPlanning" title="Ressources Planning">
+	        	<field name="employeeSet" colSpan="4" domain="self.exitDate = null or self.exitDate &gt; :__date__"/>
+	        	<field name="candidateSet" colSpan="4"/>
+	        </page>
 	    </notebook>
     </form>
     
@@ -63,6 +66,10 @@
 	<action-record name="action-sales-order-line-record-sequence" model="com.axelor.apps.supplychain.db.SalesOrderLine">
     	<field name="sequence" expr="1" if="eval: _parent?.salesOrderLineList == null"/>
     	<field name="sequence" expr="eval: _parent?.salesOrderLineList.size()+1" if="eval: _parent?.salesOrderLineList != null"/>
+    </action-record>
+    
+    <action-record name="action-sales-order-line-record-product-variant" model="com.axelor.apps.supplychain.db.SalesOrderLine">
+    	<field name="productVariant" expr="action:action-product-variant-record-on-new"/>
     </action-record>
    	
    	<!-- ACTION METHOD -->
