@@ -322,7 +322,7 @@ public class SalesOrderService {
 			for(SalesOrderLine salesOrderLine: salesOrder.getSalesOrderLineList()) {
 				
 				Product product = salesOrderLine.getProduct();
-				// Check if the company field 'hasOutStockMoveForStorableProduct' = true and productTypeSelect = 'stockable' or 'hasOutStockMoveForNonStorableProduct' = true and productTypeSelect = 'service' or productTypeSelect = 'other'
+				// Check if the company field 'hasOutSmForStorableProduct' = true and productTypeSelect = 'stockable' or 'hasOutSmForNonStorableProduct' = true and productTypeSelect = 'service' or productTypeSelect = 'other'
 				if(product != null && ((company.getHasOutSmForStorableProduct() && product.getProductTypeSelect().equals(IProduct.STOCKABLE)) || (company.getHasOutSmForNonStorableProduct() && !product.getProductTypeSelect().equals(IProduct.STOCKABLE)))) {
 					
 					StockMoveLine stockMoveLine = stockMoveService.createStockMoveLine(product, salesOrderLine.getQty(), salesOrderLine.getUnit(), salesOrderLine.getPrice(), stockMove, 1);
