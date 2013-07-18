@@ -319,7 +319,7 @@ public class SalesOrderService {
 
 			stockMove.setStockMoveLineList(new ArrayList<StockMoveLine>());
 			for(SalesOrderLine salesOrderLine: salesOrder.getSalesOrderLineList()) {
-				StockMoveLine stockMoveLine = stockMoveService.createStocksMovesLines(salesOrderLine.getProduct(), salesOrderLine.getQty(), salesOrderLine.getUnit(), salesOrderLine.getPrice(), stockMove, 1);
+				StockMoveLine stockMoveLine = stockMoveService.createStockMoveLine(salesOrderLine.getProduct(), salesOrderLine.getQty(), salesOrderLine.getUnit(), salesOrderLine.getPrice(), stockMove, 1);
 				if(stockMoveLine != null) {
 					stockMove.getStockMoveLineList().add(stockMoveLine);
 				}
