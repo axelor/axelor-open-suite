@@ -13,6 +13,8 @@ import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.IProduct;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.TrackingNumber;
+import com.axelor.apps.base.db.TrackingNumberConfiguration;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -61,7 +63,7 @@ public class StockMoveService {
 			case IStockMove.INTERNAL:
 				ref = sequenceService.getSequence(IAdministration.INTERNAL, company, false);
 				if (ref == null)  {
-					throw new AxelorException(String.format("%s Aucune séquence configurée pour les livraisons de stock pour la société ",
+					throw new AxelorException(String.format("%s Aucune séquence configurée pour les livraisons de stock pour la société %s",
 							exceptionMsg, company.getName()), IException.CONFIGURATION_ERROR);
 				}
 				break;
@@ -69,7 +71,7 @@ public class StockMoveService {
 			case IStockMove.INCOMING:
 				ref = sequenceService.getSequence(IAdministration.INCOMING, company, false);
 				if (ref == null)  {
-					throw new AxelorException(String.format("%s Aucune séquence configurée pour les livraisons de stock pour la société ",
+					throw new AxelorException(String.format("%s Aucune séquence configurée pour les livraisons de stock pour la société %s",
 							exceptionMsg, company.getName()), IException.CONFIGURATION_ERROR);
 				}
 				break;
@@ -77,7 +79,7 @@ public class StockMoveService {
 			case IStockMove.OUTGOING:
 				ref = sequenceService.getSequence(IAdministration.OUTGOING, company, false);
 				if (ref == null)  {
-					throw new AxelorException(String.format("%s Aucune séquence configurée pour les livraisons de stock pour la société ",
+					throw new AxelorException(String.format("%s Aucune séquence configurée pour les livraisons de stock pour la société %s",
 							exceptionMsg, company.getName()), IException.CONFIGURATION_ERROR);
 				}
 				break;
@@ -160,21 +162,125 @@ public class StockMoveService {
 	 * @param product le produit
 	 * @param quantity la quantité
 	 * @param parent le StockMove parent
+	 * @param type
+	 * 1 : Sales
+	 * 2 : Purchases
+	 * 3 : Productions
+	 * 
 	 * @return l'objet StockMoveLine
+	 * @throws AxelorException 
 	 */
-	public StockMoveLine createStocksMovesLines(Product product, BigDecimal quantity, Unit unit, BigDecimal price, StockMove parent) {
+	public StockMoveLine createStocksMovesLines(Product product, BigDecimal quantity, Unit unit, BigDecimal price, StockMove stockMove, int type ) throws AxelorException {
 
 		if(product != null && product.getApplicationTypeSelect() == IProduct.PRODUCT_TYPE && product.getProductTypeSelect().equals(IProduct.STOCKABLE)) {
 			
 			StockMoveLine stockMoveLine = new StockMoveLine();
-			stockMoveLine.setStockMove(parent);
+			stockMoveLine.setStockMove(stockMove);
 			stockMoveLine.setProduct(product);
 			stockMoveLine.setQty(quantity);
 			stockMoveLine.setUnit(unit);
 			stockMoveLine.setPrice(price);
+			
+			TrackingNumberConfiguration trackingNumberConfiguration = product.getTrackingNumberConfiguration();
+			if(trackingNumberConfiguration != null)  {
+				
+				TrackingNumber trackingNumber = null;
+				
+				if(type == 1 && trackingNumberConfiguration.getIsSaleTrackingManaged())  {
+					trackingNumber = this.getTrackingNumber(product, trackingNumberConfiguration.getSaleQtyByTracking(), stockMove.getCompany(), stockMove.getEstimatedDate());
+				}
+				else if(type == 2 && trackingNumberConfiguration.getIsPurchaseTrackingManaged())  {
+					trackingNumber = this.getTrackingNumber(product, trackingNumberConfiguration.getPurchaseQtyByTracking(), stockMove.getCompany(), stockMove.getEstimatedDate());
+				}
+				else if(type == 3 && trackingNumberConfiguration.getIsProductionTrackingManaged())  {
+					trackingNumber = this.getTrackingNumber(product, trackingNumberConfiguration.getProductionQtyByTracking(), stockMove.getCompany(), stockMove.getEstimatedDate());
+				}
+				
+				if(trackingNumber != null)  {
+					trackingNumber.setCounter(trackingNumber.getCounter()+1);
+					stockMoveLine.setTrackingNumber(trackingNumber);
+				}
+			}
+			
 			return stockMoveLine;
 		}
 		return null;
+	}
+	
+	
+	
+	public TrackingNumber getTrackingNumber(Product product, int sizeOfLot, Company company, LocalDate date) throws AxelorException  {
+		
+		TrackingNumber trackingNumber = TrackingNumber.all().filter("self.product = ?1 and self.counter < ?2", product, sizeOfLot).fetchOne();
+	
+		if(trackingNumber == null)  {
+			trackingNumber = this.createTrackingNumber(product, company, date);
+		}
+		
+		return trackingNumber;
+		
+	}
+	
+	
+	
+
+	/**
+	 * 
+	 * @param product
+	 * @param type
+	 * 1 : Sales
+	 * 2 : Purchases
+	 * 3 : Productions
+	 * 
+	 * @return
+	 */
+//	public TrackingNumber getTrackingNumber(Product product, int type)  {
+//		
+//		TrackingNumberConfiguration trackingNumberConfiguration = product.getTrackingNumberConfiguration();
+//		
+//		switch (type) {
+//			case 1:
+//				return TrackingNumber.all().filter("self.product = ?1 and self.counter < ?2", product, trackingNumberConfiguration.getSaleQtyByTracking()).fetchOne();
+//			
+//			case 2:
+//				return TrackingNumber.all().filter("self.product = ?1 and self.counter < ?2", product, trackingNumberConfiguration.getPurchaseQtyByTracking()).fetchOne();
+//			
+//			case 3:
+//				return TrackingNumber.all().filter("self.product = ?1 and self.counter < ?2", product, trackingNumberConfiguration.getProductionQtyByTracking()).fetchOne();
+//	
+//			default:
+//				return null;
+//		}		
+//		
+//		
+//	}
+	
+	
+	
+	
+	public TrackingNumber createTrackingNumber(Product product, Company company, LocalDate date) throws AxelorException  {
+		
+		TrackingNumber trackingNumber = new TrackingNumber();
+		
+		if(product.getIsPerishable())  {
+			trackingNumber.setPerishableExpirationDate(date.plusMonths(product.getPerishableNbrOfMonths()));
+		}
+		if(product.getHasWarranty())  {
+			trackingNumber.setWarrantyExpirationDate(date.plusMonths(product.getWarrantyNbrOfMonths()));
+		}
+		
+		trackingNumber.setProduct(product);
+		trackingNumber.setCounter(0);
+		
+		String seq = sequenceService.getSequence(IAdministration.PRODUCT_TRACKING_NUMBER, product, company, false);
+		if (seq == null)  {
+			throw new AxelorException(String.format("%s Aucune séquence configurée pour les Numéros de suivi pour la société %s et le produit %s ",
+					exceptionMsg, company.getName(), product.getCode()), IException.CONFIGURATION_ERROR);
+		}
+		
+		trackingNumber.setTrackingNumberSeq(seq);
+		
+		return trackingNumber;
 	}
 	
 	
@@ -201,6 +307,11 @@ public class StockMoveService {
 			stockMove.setTypeSelect(this.getStockMoveType(fromLocation, toLocation));
 		}
 
+		
+		if(stockMove.getTypeSelect() == IStockMove.OUTGOING)  {
+			
+		}
+		
 		// Set the sequence
 		if(stockMove.getStockMoveSeq() == null || stockMove.getStockMoveSeq().isEmpty())  {
 			stockMove.setStockMoveSeq(
@@ -280,24 +391,25 @@ public class StockMoveService {
 				qty = new UnitConversionService().convert(stockMoveLineUnit, productUnit, qty);
 			}
 			
-			this.updateLocations(fromLocation, toLocation, stockMoveLine.getProduct(), qty, fromStatus, IStockMove.CANCELED, lastFutureStockMoveDate);
+			this.updateLocations(fromLocation, toLocation, stockMoveLine.getProduct(), qty, fromStatus, IStockMove.CANCELED, lastFutureStockMoveDate, stockMoveLine.getTrackingNumber());
 			
 		}
 		
 	}
 	
 	
-	public void updateLocations(Location fromLocation, Location toLocation, Product product, BigDecimal qty, int fromStatus, int toStatus, LocalDate lastFutureStockMoveDate)  {
+	public void updateLocations(Location fromLocation, Location toLocation, Product product, BigDecimal qty, int fromStatus, int toStatus, LocalDate 
+			lastFutureStockMoveDate, TrackingNumber trackingNumber)  {
 		
 		switch(fromStatus)  {
 			case IStockMove.PLANNED:
-				this.updateLocation(fromLocation, product, qty, false, true, true, null);
-				this.updateLocation(toLocation, product, qty, false, true, false, null);
+				this.updateLocation(fromLocation, product, qty, false, true, true, null, trackingNumber);
+				this.updateLocation(toLocation, product, qty, false, true, false, null, trackingNumber);
 				break;
 				
 			case IStockMove.REALIZED:
-				this.updateLocation(fromLocation, product, qty, true, true, true, null);
-				this.updateLocation(toLocation, product, qty, true, true, false, null);
+				this.updateLocation(fromLocation, product, qty, true, true, true, null, trackingNumber);
+				this.updateLocation(toLocation, product, qty, true, true, false, null, trackingNumber);
 				break;
 			
 			default:
@@ -306,17 +418,31 @@ public class StockMoveService {
 		
 		switch(toStatus)  {
 			case IStockMove.PLANNED:
-				this.updateLocation(fromLocation, product, qty, false, true, false, lastFutureStockMoveDate);
-				this.updateLocation(toLocation, product, qty, false, true, true, lastFutureStockMoveDate);
+				this.updateLocation(fromLocation, product, qty, false, true, false, lastFutureStockMoveDate, trackingNumber);
+				this.updateLocation(toLocation, product, qty, false, true, true, lastFutureStockMoveDate, trackingNumber);
 				break;
 				
 			case IStockMove.REALIZED:
-				this.updateLocation(fromLocation, product, qty, true, true, false, null);
-				this.updateLocation(toLocation, product, qty, true, true, true, null);
+				this.updateLocation(fromLocation, product, qty, true, true, false, null, trackingNumber);
+				this.updateLocation(toLocation, product, qty, true, true, true, null, trackingNumber);
 				break;
 			
 			default:
 				break;
+		}
+		
+	}
+	
+	
+	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void updateLocation(Location location, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement, 
+			LocalDate lastFutureStockMoveDate, TrackingNumber trackingNumber)  {
+		
+		this.updateLocation(location, product, qty, current, future, isIncrement, lastFutureStockMoveDate);
+		
+		if(trackingNumber != null)  {
+			this.updateDetailLocation(location, product, qty, current, future, isIncrement, lastFutureStockMoveDate, trackingNumber);
 		}
 		
 	}
@@ -328,6 +454,32 @@ public class StockMoveService {
 		LocationLine locationLine = this.getLocationLine(location, product);
 		
 		LOG.debug("Mise à jour du stock : {} ", new Object[] { location.getName(), product.getName(), qty, current, future, isIncrement, lastFutureStockMoveDate });
+		
+		locationLine = this.updateLocation(locationLine, qty, current, future, isIncrement, lastFutureStockMoveDate);
+		
+		locationLine.save();
+		
+	}
+	
+	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void updateDetailLocation(Location location, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement, 
+			LocalDate lastFutureStockMoveDate, TrackingNumber trackingNumber)  {
+		
+		LocationLine detailLocationLine = this.getDetailLocationLine(location, product, trackingNumber);
+		
+		LOG.debug("Mise à jour du detail du stock : {} ", 
+				new Object[] { location.getName(), product.getName(), qty, current, future, isIncrement, lastFutureStockMoveDate, trackingNumber});
+		
+		detailLocationLine = this.updateLocation(detailLocationLine, qty, current, future, isIncrement, lastFutureStockMoveDate);
+		
+		detailLocationLine.save();
+		
+	}
+	
+	
+	public LocationLine updateLocation(LocationLine locationLine, BigDecimal qty, boolean current, boolean future, boolean isIncrement, 
+			LocalDate lastFutureStockMoveDate)  {
 		
 		if(current)  {
 			if(isIncrement)  {
@@ -347,8 +499,8 @@ public class StockMoveService {
 			}
 			locationLine.setLastFutureStockMoveDate(lastFutureStockMoveDate);
 		}
-		locationLine.save();
 		
+		return locationLine;
 	}
 	
 	
@@ -367,12 +519,41 @@ public class StockMoveService {
 	}
 	
 	
+	public LocationLine getDetailLocationLine(Location detailLocation, Product product, TrackingNumber trackingNumber)  {
+		
+		LocationLine detailLocationLine = this.getDetailLocationLine(detailLocation.getDetailsLocationLineList(), product, trackingNumber);
+		
+		if(detailLocationLine == null)  {
+			detailLocationLine = this.createLocationLine(detailLocation, product);
+		}
+		
+		LOG.debug("Récupération ligne de détail de stock: {} ", new Object[] { detailLocationLine.getLocation().getName(), product.getName(), 
+				detailLocationLine.getCurrentQty(), detailLocationLine.getFutureQty(), detailLocationLine.getLastFutureStockMoveDate(), detailLocationLine.getTrackingNumber() });
+		
+		return detailLocationLine;
+	}
+	
+	
 	public LocationLine getLocationLine(List<LocationLine> locationLineList, Product product)  {
 		
 		for(LocationLine locationLine : locationLineList)  {
 			
 			if(locationLine.getProduct().equals(product))  {
 				return locationLine;
+			}
+			
+		}
+		
+		return null;
+	}
+	
+	
+	public LocationLine getDetailLocationLine(List<LocationLine> detailLocationLineList, Product product, TrackingNumber trackingNumber)  {
+		
+		for(LocationLine detailLocationLine : detailLocationLineList)  {
+			
+			if(detailLocationLine.getProduct().equals(product) && detailLocationLine.getTrackingNumber().equals(trackingNumber))  {
+				return detailLocationLine;
 			}
 			
 		}
@@ -396,6 +577,22 @@ public class StockMoveService {
 		
 	}
 	
+	
+	public LocationLine createDetailLocationLine(Location location, Product product, TrackingNumber trackingNumber)  {
+		
+		LOG.debug("Création d'une ligne de stock : {} ", new Object[] { location.getName(), product.getName() });
+		
+		LocationLine detailLocationLine = new LocationLine();
+		
+		detailLocationLine.setDetailsLocation(location);
+		detailLocationLine.setProduct(product);
+		detailLocationLine.setCurrentQty(BigDecimal.ZERO);
+		detailLocationLine.setFutureQty(BigDecimal.ZERO);
+		detailLocationLine.setTrackingNumber(trackingNumber);
+		
+		return detailLocationLine;
+		
+	}
 	
 	
 }
