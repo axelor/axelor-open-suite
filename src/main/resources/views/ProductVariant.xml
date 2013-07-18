@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+   
+    <grid name="product-variant-grid" title="Product variants" model="com.axelor.apps.base.db.ProductVariant">
+        <field name="productVariantAttribute1"/>
+        <field name="productVariantAttribute2"/>
+        <field name="productVariantAttribute3"/>
+        <field name="productVariantAttribute4"/>
+        <field name="productVariantValue1"/>
+        <field name="productVariantValue2"/>
+        <field name="productVariantValue3"/>
+        <field name="productVariantValue4"/>
+    </grid>
+    
+    <form name="product-variant-form" title="Product variant" model="com.axelor.apps.base.db.ProductVariant" cols="4"
+    	onLoad="action-product-variant-record-on-new,action-product-variant-attrs-domain" onNew="action-product-variant-record-on-new,action-product-variant-attrs-domain">
+        <field name="productVariantAttribute1" showTitle="false"/>
+        <field name="productVariantValue1" showTitle="false"/>
+        <break/>
+        <field name="productVariantAttribute2" showTitle="false"/>
+        <field name="productVariantValue2" showTitle="false"/>
+        <break/>
+        <field name="productVariantAttribute3" showTitle="false"/>
+        <field name="productVariantValue3" showTitle="false"/>
+        <break/>
+        <field name="productVariantAttribute4" showTitle="false"/>
+        <field name="productVariantValue4" showTitle="false"/>
+    </form>
+    
+    <!-- ACTION ATTRS -->
+    
+    <action-attrs name="action-product-variant-attrs-domain">
+    	<attribute name="domain" for="productVariantValue1" expr="eval: (_parent?.product?.productVariantConfiguration?.productVariantValue1Set?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${_parent?.product?.productVariantConfiguration?.productVariantValue1Set?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
+    	<attribute name="domain" for="productVariantValue2" expr="eval: (_parent?.product?.productVariantConfiguration?.productVariantValue2Set?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${_parent?.product?.productVariantConfiguration?.productVariantValue1Set?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
+    	<attribute name="domain" for="productVariantValue3" expr="eval: (_parent?.product?.productVariantConfiguration?.productVariantValue3Set?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${_parent?.product?.productVariantConfiguration?.productVariantValue1Set?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
+    	<attribute name="domain" for="productVariantValue4" expr="eval: (_parent?.product?.productVariantConfiguration?.productVariantValue4Set?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${_parent?.product?.productVariantConfiguration?.productVariantValue1Set?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
+    </action-attrs>
+    
+    <!-- ACTION RECORD -->
+    
+    <action-record name="action-product-variant-record-on-new" model="com.axelor.apps.base.db.ProductVariant">
+    	<field name="productVariantAttribute1" expr="eval: _parent?.product?.productVariantConfiguration?.productVariantAttribute1"/>
+    	<field name="productVariantAttribute2" expr="eval: _parent?.product?.productVariantConfiguration?.productVariantAttribute2"/>
+    	<field name="productVariantAttribute3" expr="eval: _parent?.product?.productVariantConfiguration?.productVariantAttribute3"/>
+    	<field name="productVariantAttribute4" expr="eval: _parent?.product?.productVariantConfiguration?.productVariantAttribute4"/>
+    </action-record>
+
+</object-views>

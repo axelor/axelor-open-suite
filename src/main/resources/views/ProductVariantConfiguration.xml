@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+   
+    <grid name="product-variant-configuration-grid" title="Product variant configurations" model="com.axelor.apps.base.db.ProductVariantConfiguration">
+        <field name="productVariantAttribute1"/>
+        <field name="productVariantAttribute2"/>
+        <field name="productVariantAttribute3"/>
+        <field name="productVariantAttribute4"/>
+        <field name="productVariantValue1Set"/>
+        <field name="productVariantValue2Set"/>
+        <field name="productVariantValue3Set"/>
+        <field name="productVariantValue4Set"/>
+    </grid>
+    
+    <form name="product-variant-configuration-form" title="Product variant configuration" model="com.axelor.apps.base.db.ProductVariantConfiguration" cols="4"
+    	onLoad="action-product-variant-configuration-attrs-domain" onNew="action-product-variant-configuration-attrs-domain">
+        <field name="productVariantAttribute1" onChange="action-product-variant-configuration-attrs-domain"/>
+        <field name="productVariantValue1Set" widget="TagSelect[create=name,code,priceExtra]"/>
+        <break/>
+        <field name="productVariantAttribute2" onChange="action-product-variant-configuration-attrs-domain"/>
+        <field name="productVariantValue2Set" widget="TagSelect[create=name,code,priceExtra]"/>
+        <break/>
+        <field name="productVariantAttribute3" onChange="action-product-variant-configuration-attrs-domain"/>
+        <field name="productVariantValue3Set" widget="TagSelect[create=name,code,priceExtra]"/>
+        <break/>
+        <field name="productVariantAttribute4" onChange="action-product-variant-configuration-attrs-domain"/>
+        <field name="productVariantValue4Set" widget="TagSelect[create=name,code,priceExtra]"/>
+    </form>
+    
+    <!-- ACTION ATTRS -->
+    
+    <action-attrs name="action-product-variant-configuration-attrs-domain">
+    	<attribute name="domain" for="productVariantValue1Set" expr="eval: (productVariantAttribute1?.productVariantValueList?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${productVariantAttribute1?.productVariantValueList?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
+    	<attribute name="domain" for="productVariantValue2Set" expr="eval: (productVariantAttribute2?.productVariantValueList?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${productVariantAttribute2?.productVariantValueList?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
+    	<attribute name="domain" for="productVariantValue3Set" expr="eval: (productVariantAttribute3?.productVariantValueList?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${productVariantAttribute3?.productVariantValueList?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
+    	<attribute name="domain" for="productVariantValue4Set" expr="eval: (productVariantAttribute4?.productVariantValueList?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${productVariantAttribute4?.productVariantValueList?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
+    </action-attrs>
+    
+    
+
+</object-views>

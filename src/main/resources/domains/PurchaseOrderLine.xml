@@ -32,6 +32,7 @@
   	
 	<date name="deliveryDate" title="Delivery Date"/>
 
+	<many-to-one name="productVariant" ref="com.axelor.apps.base.db.ProductVariant"/>
   	
   </entity>
 

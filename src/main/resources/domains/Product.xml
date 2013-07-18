@@ -45,6 +45,8 @@
     <boolean name="isPerishable" title="Perishable ?"/>
     <integer name="warrantyNbrOfMonths" title="Warranty length (in months)"/>
     <integer name="perishableNbrOfMonths" title="Time before expiry (in months)"/>
+    
+    <many-to-one name="productVariantConfiguration" ref="com.axelor.apps.base.db.ProductVariantConfiguration"/>
   
   </entity>
 

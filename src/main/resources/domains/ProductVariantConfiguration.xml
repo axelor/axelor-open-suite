@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="ProductVariantConfiguration" lang="java">
+	
+	<many-to-one name="productVariantAttribute1" ref="com.axelor.apps.base.db.ProductVariantAttribute"/>
+	<many-to-one name="productVariantAttribute2" ref="com.axelor.apps.base.db.ProductVariantAttribute"/>
+	<many-to-one name="productVariantAttribute3" ref="com.axelor.apps.base.db.ProductVariantAttribute"/>
+	<many-to-one name="productVariantAttribute4" ref="com.axelor.apps.base.db.ProductVariantAttribute"/>
+	<many-to-many name="productVariantValue1Set" ref="com.axelor.apps.base.db.ProductVariantValue"/>
+	<many-to-many name="productVariantValue2Set" ref="com.axelor.apps.base.db.ProductVariantValue"/>
+	<many-to-many name="productVariantValue3Set" ref="com.axelor.apps.base.db.ProductVariantValue"/>
+	<many-to-many name="productVariantValue4Set" ref="com.axelor.apps.base.db.ProductVariantValue"/>
+	
+  </entity>
+
+</domain-models>
