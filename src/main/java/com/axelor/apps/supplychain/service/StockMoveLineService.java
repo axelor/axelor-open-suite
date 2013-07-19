@@ -185,7 +185,7 @@ public class StockMoveLineService {
 				qty = new UnitConversionService().convert(stockMoveLineUnit, productUnit, qty);
 			}
 			
-			this.updateLocations(fromLocation, toLocation, stockMoveLine.getProduct(), qty, fromStatus, toStatus, lastFutureStockMoveDate, stockMoveLine.getTrackingNumber());
+			this.updateLocations(fromLocation, toLocation, stockMoveLine.getProduct(), qty, fromStatus, toStatus, lastFutureStockMoveDate, stockMoveLine.getProductVariant(), stockMoveLine.getTrackingNumber());
 			
 		}
 		
@@ -193,7 +193,7 @@ public class StockMoveLineService {
 	
 	
 	public void updateLocations(Location fromLocation, Location toLocation, Product product, BigDecimal qty, int fromStatus, int toStatus, LocalDate 
-			lastFutureStockMoveDate, TrackingNumber trackingNumber, ProductVariant productVariant)  {
+			lastFutureStockMoveDate, ProductVariant productVariant, TrackingNumber trackingNumber )  {
 		
 		switch(fromStatus)  {
 			case IStockMove.PLANNED:
