@@ -12,7 +12,7 @@
     
     <form name="bill-of-material-form" title="Bill of material" model="com.axelor.apps.production.db.BillOfMaterial" cols="4"
     onNew="action-bill-default-record">
-        <field name="product" domain="self.productTypeSelect = 'stockable'"/>
+        <field name="product" domain="self.productTypeSelect = 'storable'"/>
         <field name="qty"/>
         <field name="prodProcess"/>
         <field name="billOfMaterialLineList" colSpan="4"/>
