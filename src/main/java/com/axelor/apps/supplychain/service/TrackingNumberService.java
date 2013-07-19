@@ -8,6 +8,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.IProduct;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.TrackingNumber;
 import com.axelor.apps.base.db.TrackingNumberConfiguration;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -33,12 +34,12 @@ public class TrackingNumberService {
 	}
 	
 	
-	public TrackingNumber getTrackingNumber(Product product, int sizeOfLot, Company company, LocalDate date) throws AxelorException  {
+	public TrackingNumber getTrackingNumber(Product product, ProductVariant productVariant, int sizeOfLot, Company company, LocalDate date) throws AxelorException  {
 		
-		TrackingNumber trackingNumber = TrackingNumber.all().filter("self.product = ?1 and self.counter < ?2", product, sizeOfLot).fetchOne();
+		TrackingNumber trackingNumber = TrackingNumber.all().filter("self.product = ?1 and self.productVariant = ?2 AND self.counter < ?3", product, productVariant, sizeOfLot).fetchOne();
 	
 		if(trackingNumber == null)  {
-			trackingNumber = this.createTrackingNumber(product, company, date);
+			trackingNumber = this.createTrackingNumber(product, productVariant, company, date);
 		}
 		
 		trackingNumber.setCounter(trackingNumber.getCounter()+1);
@@ -64,7 +65,7 @@ public class TrackingNumberService {
 	
 	
 
-	public TrackingNumber createTrackingNumber(Product product, Company company, LocalDate date) throws AxelorException  {
+	public TrackingNumber createTrackingNumber(Product product, ProductVariant productVariant, Company company, LocalDate date) throws AxelorException  {
 		
 		TrackingNumber trackingNumber = new TrackingNumber();
 		
@@ -76,6 +77,7 @@ public class TrackingNumberService {
 		}
 		
 		trackingNumber.setProduct(product);
+		trackingNumber.setProductVariant(productVariant);
 		trackingNumber.setCounter(0);
 		
 		String seq = sequenceService.getSequence(IAdministration.PRODUCT_TRACKING_NUMBER, product, company, false);

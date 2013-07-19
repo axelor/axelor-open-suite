@@ -328,7 +328,7 @@ public class SalesOrderService {
 				// Check if the company field 'hasOutSmForStorableProduct' = true and productTypeSelect = 'storable' or 'hasOutSmForNonStorableProduct' = true and productTypeSelect = 'service' or productTypeSelect = 'other'
 				if(product != null && ((company.getHasOutSmForStorableProduct() && product.getProductTypeSelect().equals(IProduct.STORABLE)) || (company.getHasOutSmForNonStorableProduct() && !product.getProductTypeSelect().equals(IProduct.STORABLE)))) {
 					
-					StockMoveLine stockMoveLine = stockMoveLineService.createStockMoveLine(product, salesOrderLine.getQty(), salesOrderLine.getUnit(), salesOrderLine.getPrice(), stockMove, 1);
+					StockMoveLine stockMoveLine = stockMoveLineService.createStockMoveLine(product, salesOrderLine.getQty(), salesOrderLine.getUnit(), salesOrderLine.getPrice(), stockMove, salesOrderLine.getProductVariant(), 1);
 					if(stockMoveLine != null) {
 						stockMove.getStockMoveLineList().add(stockMoveLine);
 					}

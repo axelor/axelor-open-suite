@@ -10,9 +10,11 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.TrackingNumber;
+import com.axelor.apps.base.service.ProductVariantService;
 import com.axelor.apps.supplychain.db.Location;
 import com.axelor.apps.supplychain.db.LocationLine;
 import com.axelor.exception.AxelorException;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 
@@ -20,6 +22,8 @@ public class LocationLineService {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(LocationLineService.class); 
 	
+	@Inject
+	private ProductVariantService productVariantService;
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -28,7 +32,7 @@ public class LocationLineService {
 		
 		this.updateLocation(location, product, qty, current, future, isIncrement, lastFutureStockMoveDate);
 		
-		if(trackingNumber != null)  {
+		if(trackingNumber != null || productVariant != null)  {
 			this.updateDetailLocation(location, product, qty, current, future, isIncrement, lastFutureStockMoveDate, productVariant, trackingNumber);
 		}
 		
@@ -113,7 +117,12 @@ public class LocationLineService {
 		LocationLine detailLocationLine = this.getDetailLocationLine(detailLocation.getDetailsLocationLineList(), product, productVariant, trackingNumber);
 		
 		if(detailLocationLine == null)  {
-			detailLocationLine = this.createDetailLocationLine(detailLocation, product, productVariant, trackingNumber);
+			
+			ProductVariant stockProductVariant = productVariant;
+			if(productVariant != null && !productVariant.getUsedforStock())  {
+				stockProductVariant = productVariantService.getStockProductVariant(productVariant);
+			}
+			detailLocationLine = this.createDetailLocationLine(detailLocation, product, stockProductVariant, trackingNumber);
 		}
 		
 		LOG.debug("Récupération ligne de détail de stock: Entrepot? {}, Produit? {}, Qté actuelle? {}, Qté future? {}, Date? {}, Variante? {}, Num de suivi? {} ", 
@@ -144,7 +153,7 @@ public class LocationLineService {
 		for(LocationLine detailLocationLine : detailLocationLineList)  {
 			
 			if(detailLocationLine.getProduct().equals(product) 
-					&& detailLocationLine.getProductVariant().equals(productVariant)
+					&& productVariantService.equals(detailLocationLine.getProductVariant(),productVariant)
 					&& detailLocationLine.getTrackingNumber().equals(trackingNumber))  {
 				return detailLocationLine;
 			}

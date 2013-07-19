@@ -44,7 +44,7 @@ public class LocationService {
 			throw new Exception("Invalid location");
 		
 		
-		String query = "self.location = ?";
+		String query = "self.detailLocation = ?";
 		List<Object> params = new ArrayList<Object>();
 		params.add(location);
 		
@@ -76,6 +76,8 @@ public class LocationService {
 				inventoryLine.setProduct(locationLine.getProduct());
 				inventoryLine.setCurrentQty(locationLine.getCurrentQty());
 				inventoryLine.setInventory(inventory);
+				inventoryLine.setTrackingNumber(locationLine.getTrackingNumber());
+				inventoryLine.setProductVariant(locationLine.getProductVariant());
 				inventoryLineList.add(inventoryLine);
 			}
 			

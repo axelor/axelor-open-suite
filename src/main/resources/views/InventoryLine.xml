@@ -8,6 +8,7 @@
         <field name="currentQty"/>
         <field name="realQty"/>
         <field name="description"/>
+        <field name="productVariant"/>
         <field name="trackingNumber"/>
     </grid>
     
@@ -17,7 +18,10 @@
         <field name="currentQty"/>
         <field name="realQty"/>
         <field name="description"/>
-        <field name="trackingNumber" readonly="true"/>
+        <group title="Product Variants" colSpan="4" cols="4">
+	        <field name="productVariant" widget="NestedEditor" summary-view="true" form-view="product-variant-form" edit-window="self" canSelect="false" showTitle="false"/>
+	    </group>
+	    <field name="trackingNumber" readonly="true"/>
     </form>
     
     <action-attrs name="action-inventory-line-attrs-tracking-number">
