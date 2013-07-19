@@ -206,17 +206,17 @@
 		icon="img/icons/order.png" groups="admins,erp"/>
 		
 	<menuitem name="supply-chain-root-sales-order" parent="supply-chain-root"
-		title="New sales order" action="supply.chain.root.sales.order" />
+		title="New client sales order" action="supply.chain.root.sales.order" />
 
-	<action-view name="supply.chain.root.sales.order" title="New sales order"
+	<action-view name="supply.chain.root.sales.order" title="New client sales order"
 		model="com.axelor.apps.supplychain.db.SalesOrder" icon="img/icons/order_small.png">
 		<view type="form" name="sales-order-form" />
 	</action-view>	
 	
 	<menuitem name="supply-chain-root-purchases-order" parent="supply-chain-root"
-		title="New purchases order" action="supply.chain.root.purchases.order" />
+		title="New supplier purchases order" action="supply.chain.root.purchases.order" />
 
-	<action-view name="supply.chain.root.purchases.order" title="New purchases order"
+	<action-view name="supply.chain.root.purchases.order" title="New supplier purchases order"
 		model="com.axelor.apps.supplychain.db.PurchaseOrder" icon="img/icons/order_small.png">
 		<view type="form" name="purchase-order-form" />
 	</action-view>	
