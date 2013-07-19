@@ -7,8 +7,8 @@
 
   <entity name="Tracker" lang="java">
 	
-	<string name="targetUrl" title="Target URL"/>
-	<string name="code" title="Code"/>
+	<string name="targetUrl" title="Target URL" required="true"/>
+	<string name="code" title="Code" required="true" unique="true"/>
 	<string name="label" title="Label" multiline="true"/>
 	<integer name="counter"  readonly="true" title="Number of hits"/>
 	
