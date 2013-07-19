@@ -4,15 +4,20 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
     <grid name="tracking-number-grid" title="Tracking Number" model="com.axelor.apps.base.db.TrackingNumber">
-        <field name="trackingNumberSeq"/>
+    	<field name="trackingNumberSeq"/>
+    	<field name="product"/>
+    	<field name="productVariant"/>
         <field name="warrantyExpirationDate"/>
         <field name="perishableExpirationDate"/>
     </grid>
     
     <form name="tracking-number-form" title="Tracking Number" model="com.axelor.apps.base.db.TrackingNumber" cols="4"
     	onLoad="action-tracking-number-attrs-hide-fields" >
+    	<field name="trackingNumberSeq"/>
         <field name="product" hidden="true" onChange="action-tracking-number-attrs-hide-fields"/>
-        <field name="trackingNumberSeq"/>
+        <group title="Product Variants" colSpan="4" cols="4" readonly="true">
+	        <field name="productVariant" widget="NestedEditor" summary-view="true" form-view="product-variant-form" edit-window="self" canSelect="false" showTitle="false"/>
+	    </group>
         <field name="warrantyExpirationDate"/>
         <field name="perishableExpirationDate"/>
         <field name="counter"/>
