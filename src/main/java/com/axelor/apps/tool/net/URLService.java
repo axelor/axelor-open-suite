@@ -13,16 +13,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.tool.file.FileTool;
+import com.google.common.base.Strings;
 
 public final class URLService {
 	
 	final static int size = 1024;
 	
 	private static final Logger LOG = LoggerFactory.getLogger(URLService.class);
-	
-	private URLService(){
-		
-	}
 	
 	/**
 	 * Test la validité d'une url.
@@ -33,7 +30,11 @@ public final class URLService {
 	 * @return
 	 */
 	public static String notExist(String url) {
-		
+
+		if(Strings.isNullOrEmpty(url)) {
+			return "Can not opening the connection to a empty URL.";
+		}
+
 		try {
 			URL fileURL = new URL(url);
 			fileURL.openConnection().connect();
@@ -41,11 +42,11 @@ public final class URLService {
 		}
 		catch(java.net.MalformedURLException ex) {
 			ex.printStackTrace();
-			return "Problème de format de l'URL";
+			return "Url " + url + " is malformed.";
 		}
 		catch(java.io.IOException ex) {
 			ex.printStackTrace();
-			return "Ce document n'existe pas";
+			return "An error occurs while opening the connection. Please verify the following URL : " + url;
 		}
 		
 	}
