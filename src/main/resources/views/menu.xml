@@ -223,14 +223,14 @@
 	<menuitem name="product-root-filters" parent="product-root"
 		title="All filters"/>
 	
-	<menuitem name="product-root-filters-stockable" parent="product-root-filters"
-		title="All stockable products" action="product.root.filters.stockable" />
+	<menuitem name="product-root-filters-storable" parent="product-root-filters"
+		title="All storable products" action="product.root.filters.storable" />
 		
-	<action-view name="product.root.filters.stockable" title="All stockable products"
+	<action-view name="product.root.filters.storable" title="All storable products"
 		model="com.axelor.apps.base.db.Product" icon="img/icons/product_small.png">
 		<view type="grid" />
 		<view type="form" />
-		<domain>self.productTypeSelect = 'stockable'</domain>
+		<domain>self.productTypeSelect = 'storable'</domain>
 		<context name="_activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
 	</action-view>
 	

@@ -5,9 +5,9 @@
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
-  <entity name="ProdOrderLine" lang="java">
+  <entity name="ManufOrderLine" lang="java">
   
-  	<many-to-one name="prodOrder" ref="com.axelor.apps.production.db.ProdOrder" title="Production order"/>
+  	<many-to-one name="manufOrder" ref="com.axelor.apps.production.db.ManufOrder" title="Manufacturing order"/>
   	<many-to-one name="resource" ref="com.axelor.apps.production.db.ProdResource" title="Resource"/>
   	<datetime name="plannedStartDateT" title="Planned start date"/>
   	<datetime name="plannedEndDateT" title="Planned end date"/>

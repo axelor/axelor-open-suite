@@ -5,12 +5,12 @@
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
-  <entity name="ProdOrder" lang="java">
+  <entity name="ManufOrder" lang="java">
   
 <!--   	Not display -->
-	<many-to-one name="prodOrderPlanning" ref="com.axelor.apps.production.db.ProdOrderPlanning" title="Production order planning"/>
+	<many-to-one name="manufOrderPlanning" ref="com.axelor.apps.production.db.ManufOrderPlanning" title="Manufacturing order planning"/>
   
-    <string name="productionOrderSeq" title="PO Sequence"/>
+    <string name="manufOrderSeq" title="MO Sequence"/>
     <many-to-one name="billOfMaterial" ref="com.axelor.apps.production.db.BillOfMaterial" title="BOM"/>
     <many-to-one name="prodProcess" ref="com.axelor.apps.production.db.ProdProcess" title="Production process"/>
     <one-to-many name="inStockMoveList" ref="com.axelor.apps.supplychain.db.StockMove" title="Stock moves in"/>
@@ -24,7 +24,7 @@
     
     <boolean name="isSimulation" readonly="true" title="Simulation ?"/>
     
-    <one-to-many name="prodOrderLineList" ref="com.axelor.apps.production.db.ProdOrderLine" mappedBy="prodOrder" title="Production order lines"/>
+    <one-to-many name="manufOrderLineList" ref="com.axelor.apps.production.db.ManufOrderLine" mappedBy="manufOrder" title="Manufacturing order lines"/>
     
     <integer name="statusSelect" title="Status" selection="production.prod.order.status.select"/>
     
