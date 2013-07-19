@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+  <module name="marketing" package="com.axelor.apps.marketing.db"/>
+
+  <entity name="MailingList" lang="java">
+  
+	<string name="name" title="Name" required="true" unique="true"/>
+	<many-to-many name="partnerSet" ref="com.axelor.apps.base.db.Partner" title="Contacts"/>
+	<many-to-many name="leadSet" ref="com.axelor.apps.crm.db.Lead" title="Leads"/>
+	<many-to-many name="requestSet" ref="com.axelor.apps.marketing.db.Request" title="Requests"/>
+  
+  </entity>
+
+ 
+</domain-models>

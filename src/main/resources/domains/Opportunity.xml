@@ -17,7 +17,7 @@
     <string name="worstCase" title="Worst case"/>
     <integer name="salesStageSelect" title="Sales stage" selection="crm.opportunity.sales.stage.select"/>
     <decimal name="probability" title="Probability (%)"/>
-    <many-to-one name="campaign" ref="com.axelor.apps.crm.db.Campaign" title="Campaign"/> 
+    <many-to-one name="campaign" ref="com.axelor.apps.marketing.db.Campaign" title="Campaign"/> 
     <string name="nextStep" title="Next step"/>
     <string name="description" large="true" title="Description"/>
    	<many-to-one name="source" ref="com.axelor.apps.base.db.Source" title="Source"/>

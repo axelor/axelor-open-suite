@@ -7,7 +7,7 @@
 
   <entity name="PurchaseOrder" lang="java">
   
-  	<string name="purchaseOrderSeq" title="Reference"/>
+  	<string name="purchaseOrderSeq" title="Reference" readonly="true"/>
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
   	<many-to-one name="supplierPartner" ref="com.axelor.apps.base.db.Partner" title="Supplier"/>
   	<many-to-one name="affairProject" ref="com.axelor.apps.organisation.db.Project" title="Affair"/>
@@ -18,6 +18,7 @@
   	<one-to-many name="purchaseOrderLineList"  mappedBy="purchaseOrder" ref="com.axelor.apps.supplychain.db.PurchaseOrderLine" title="Purchase order lines"/>
   	<integer name="statusSelect" title="Status" selection="supplychain.purchase.order.status.select" readonly="true"/>
   	<integer name="invoicingTypeSelect" title="Type de facturation" selection="supplychain.purchase.order.invoicing.type.select"/>
+  	<many-to-one name="invoice" ref="com.axelor.apps.account.db.Invoice" title="Invoice" readonly="true"/>
   	
 <!--   	Ligne de TVA -->	
 	<one-to-many name="purchaseOrderLineVatList" ref="com.axelor.apps.supplychain.db.PurchaseOrderLineVat" mappedBy="purchaseOrder" title="V.A.T. Lines"/>
