@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.IProduct;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.TrackingNumber;
 import com.axelor.apps.base.db.TrackingNumberConfiguration;
 import com.axelor.apps.base.db.Unit;
@@ -192,17 +193,17 @@ public class StockMoveLineService {
 	
 	
 	public void updateLocations(Location fromLocation, Location toLocation, Product product, BigDecimal qty, int fromStatus, int toStatus, LocalDate 
-			lastFutureStockMoveDate, TrackingNumber trackingNumber)  {
+			lastFutureStockMoveDate, TrackingNumber trackingNumber, ProductVariant productVariant)  {
 		
 		switch(fromStatus)  {
 			case IStockMove.PLANNED:
-				locationLineService.updateLocation(fromLocation, product, qty, false, true, true, null, trackingNumber);
-				locationLineService.updateLocation(toLocation, product, qty, false, true, false, null, trackingNumber);
+				locationLineService.updateLocation(fromLocation, product, qty, false, true, true, null, trackingNumber, productVariant);
+				locationLineService.updateLocation(toLocation, product, qty, false, true, false, null, trackingNumber, productVariant);
 				break;
 				
 			case IStockMove.REALIZED:
-				locationLineService.updateLocation(fromLocation, product, qty, true, true, true, null, trackingNumber);
-				locationLineService.updateLocation(toLocation, product, qty, true, true, false, null, trackingNumber);
+				locationLineService.updateLocation(fromLocation, product, qty, true, true, true, null, trackingNumber, productVariant);
+				locationLineService.updateLocation(toLocation, product, qty, true, true, false, null, trackingNumber, productVariant);
 				break;
 			
 			default:
@@ -211,13 +212,13 @@ public class StockMoveLineService {
 		
 		switch(toStatus)  {
 			case IStockMove.PLANNED:
-				locationLineService.updateLocation(fromLocation, product, qty, false, true, false, lastFutureStockMoveDate, trackingNumber);
-				locationLineService.updateLocation(toLocation, product, qty, false, true, true, lastFutureStockMoveDate, trackingNumber);
+				locationLineService.updateLocation(fromLocation, product, qty, false, true, false, lastFutureStockMoveDate, trackingNumber, productVariant);
+				locationLineService.updateLocation(toLocation, product, qty, false, true, true, lastFutureStockMoveDate, trackingNumber, productVariant);
 				break;
 				
 			case IStockMove.REALIZED:
-				locationLineService.updateLocation(fromLocation, product, qty, true, true, false, null, trackingNumber);
-				locationLineService.updateLocation(toLocation, product, qty, true, true, true, null, trackingNumber);
+				locationLineService.updateLocation(fromLocation, product, qty, true, true, false, null, trackingNumber, productVariant);
+				locationLineService.updateLocation(toLocation, product, qty, true, true, true, null, trackingNumber, productVariant);
 				break;
 			
 			default:
