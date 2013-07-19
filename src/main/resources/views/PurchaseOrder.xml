@@ -23,6 +23,7 @@
         <field name="deliveryDate"/>
         <field name="currency"/>
         <field name="invoicingTypeSelect"/>
+        <field name="invoice" hideIf="invoicingTypeSelect == 2"/>
 		<field name="purchaseOrderLineList" colSpan="4" grid-view="purchase-order-line-grid" form-view="purchase-order-line-form"/>
         <field name="purchaseOrderLineVatList" colSpan="4"/>
       	<group colSpan="4" cols="3" showTitle="false">
@@ -34,6 +35,7 @@
 	                <button name="sendByEmail" title="Send by email" colSpan="1" showIf="statusSelect == 4"/>
 			    	<button name="generateDeliveryOrder" title="Generate delivery" colSpan="1"/>
 			    	<button name="showSupplierInvoice" title="Show invoice" colSpan="1" onClick="action-purchase-order-show-supplier-invoice"/>
+			    	<button name="generateControlInvoice" title="Generate control invoice" onClick="action-purchase-order-validate-generate-control-invoice,save,action-purchase-order-method-generate-control-invoice" colSpan="1" />
        			</group>
        			<group colSpan="1" cols="2" readonly="true">
        				<field name="validatedByUserInfo" colSpan="1"/>
@@ -85,6 +87,10 @@
  		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="setSequence"/>
  	</action-method>
     
+    <action-method name="action-purchase-order-method-generate-control-invoice">
+ 		<call class="com.axelor.apps.supplychain.web.PurchaseOrderInvoiceController" method="generateInvoice"/>
+	</action-method>
+	
     <action-view name="action-purchase-order-show-supplier-invoice" title="Supplier invoices"
 		model="com.axelor.apps.account.db.Invoice">
 		<view type="grid" name="invoice-grid"/>
@@ -93,4 +99,8 @@
 		<context name="operationTypeSelect" expr="1"/>
 	</action-view>
     
+    <action-validate name="action-purchase-order-validate-generate-control-invoice">
+   		<error message="Generating invoice is impossible, the fields 'Supplier' and 'Company' must be filled." if="supplierPartner == null || company == null"/>
+	</action-validate> 
+
 </object-views>
