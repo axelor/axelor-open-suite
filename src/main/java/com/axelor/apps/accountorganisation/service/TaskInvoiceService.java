@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,29 +14,18 @@ import com.axelor.apps.account.db.VatLine;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.organisation.db.Task;
 import com.axelor.apps.supplychain.db.SalesOrder;
 import com.axelor.apps.supplychain.db.SalesOrderLine;
 import com.axelor.exception.AxelorException;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class TaskInvoiceService {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(TaskInvoiceService.class);
 	
-	@Inject
-	private CurrencyService currencyService;
-	
-	private LocalDate today;
-	
-	
-	public TaskInvoiceService() {
-		this.today = GeneralService.getTodayDate();
-	}
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice generateInvoice(Task task) throws AxelorException {
@@ -87,10 +75,12 @@ public class TaskInvoiceService {
 		return invoiceLineList;	
 	}
 	
+	
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, BigDecimal exTaxTotal, Product product, String productName, BigDecimal price, String description, BigDecimal qty,
-			Unit unit, VatLine vatLine, Task task) throws AxelorException  {
+			Unit unit, VatLine vatLine, Task task, ProductVariant productVariant) throws AxelorException  {
 		
-		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, productName, price, description, qty, unit, vatLine, task, product.getInvoiceLineType(), false) {
+		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, productName, price, description, qty, unit, vatLine, task, 
+				product.getInvoiceLineType(), productVariant, false) {
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
 				
@@ -112,10 +102,12 @@ public class TaskInvoiceService {
 		
 		if(task.getProduct() != null) {
 			return this.createInvoiceLine(invoice, salesOrderLine.getExTaxTotal(), task.getProduct(), task.getProduct().getName(), 
-					task.getPrice(), salesOrderLine.getDescription(), task.getQty(), salesOrderLine.getUnit(), salesOrderLine.getVatLine(), salesOrderLine.getTask());
+					task.getPrice(), salesOrderLine.getDescription(), task.getQty(), salesOrderLine.getUnit(), salesOrderLine.getVatLine(), 
+					task, salesOrderLine.getProductVariant());
 		}
 		return this.createInvoiceLine(invoice, salesOrderLine.getExTaxTotal(), salesOrderLine.getProduct(), salesOrderLine.getProductName(), 
-				salesOrderLine.getPrice(), salesOrderLine.getDescription(), salesOrderLine.getQty(), salesOrderLine.getUnit(), salesOrderLine.getVatLine(), salesOrderLine.getTask());
+				salesOrderLine.getPrice(), salesOrderLine.getDescription(), salesOrderLine.getQty(), salesOrderLine.getUnit(), salesOrderLine.getVatLine(), 
+				task, salesOrderLine.getProductVariant());
 	}
 	
 }
