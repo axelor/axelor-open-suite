@@ -332,15 +332,6 @@
 		<view type="form" />
 	</action-view>
 	
-	<menuitem name="crm-root-allcrm-campaign" parent="crm-root-allcrm"
-		title="Campaigns" action="crm.root.allcrm.compaign" />
-
-	<action-view name="crm.root.allcrm.compaign" title="Campaigns"
-		model="com.axelor.apps.crm.db.Campaign" icon="img/icons/crm_small.png">
-		<view type="grid" />
-		<view type="form" />
-	</action-view>
-	
 	<menuitem name="crm-conf" parent="crm-root" title="Configuration"
 		icon="img/icons/parameter.png" />
 	
