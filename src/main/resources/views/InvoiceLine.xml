@@ -32,6 +32,9 @@
 	<!--             <field name="discountEngineLineSet" grid-view="discount-engine-line-grid" form-view="discount-engine-line-form" colSpan="4"/> -->
 	<!--         	<field name="discountOk" /> -->
 	<!--         </group> -->
+				<group title="Product Variants" colSpan="4" cols="4">
+			        <field name="productVariant" widget="NestedEditor" summary-view="true" form-view="product-variant-form" edit-window="self" canSelect="false" showTitle="false"/>
+			    </group>
 		        <group title="Others" colSpan="4" cols="4">
 		        	<field name="excludeQtyBaseOk" />
 		        </group>

@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.UnitConversion;
 import com.axelor.apps.base.service.CurrencyService;
@@ -58,6 +59,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 	protected LocalDate today;
 	protected boolean isTaxInvoice; 
 	protected InvoiceLineType invoiceLineType;
+	protected ProductVariant productVariant;
 	
 	protected InvoiceLineGenerator() { }
 	
@@ -82,7 +84,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 	
 
 	protected InvoiceLineGenerator( Invoice invoice, Product product, String productName, BigDecimal price, String description, BigDecimal qty,
-			Unit unit, VatLine vatLine, Task task, InvoiceLineType invoiceLineType, boolean isTaxInvoice) {
+			Unit unit, VatLine vatLine, Task task, InvoiceLineType invoiceLineType, ProductVariant productVariant, boolean isTaxInvoice) {
 
         this.invoice = invoice;
         this.product = product;
@@ -94,14 +96,14 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
         this.vatLine = vatLine;
         this.task = task;
         this.invoiceLineType = invoiceLineType;
+        this.productVariant = productVariant;
         this.isTaxInvoice = isTaxInvoice;
         this.today = GeneralService.getTodayDate();
         this.currencyService = new CurrencyService(this.today);
-            
     }
 	
 	protected InvoiceLineGenerator( Invoice invoice, Product product, String productName, BigDecimal price, String description, BigDecimal qty,
-			Unit unit, Task task, InvoiceLineType invoiceLineType, boolean isTaxInvoice) {
+			Unit unit, Task task, InvoiceLineType invoiceLineType, ProductVariant productVariant, boolean isTaxInvoice) {
 
         this.invoice = invoice;
         this.product = product;
@@ -112,6 +114,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
         this.unit = unit;
         this.task = task;
         this.invoiceLineType = invoiceLineType;
+        this.productVariant = productVariant;
         this.isTaxInvoice = isTaxInvoice;
         this.today = GeneralService.getTodayDate();
         this.currencyService = new CurrencyService(this.today);
@@ -181,10 +184,10 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		}
 		invoiceLine.setVatLine(vatLine);
 		
-		
-		
 		invoiceLine.setTask(task);
 		invoiceLine.setInvoiceLineType(invoiceLineType);
+		
+		invoiceLine.setProductVariant(productVariant);
 		
 		return invoiceLine;
 		
