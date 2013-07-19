@@ -246,6 +246,61 @@
 		</notebook>
 	</form>
 	
+	<grid name="partner-light-grid" title="Contacts" model="com.axelor.apps.base.db.Partner">
+        <field name="name"/>
+        <field name="firstName"/>
+        <field name="mainInvoicingAddress"/>
+        <field name="fixedPhone1"/>
+		<field name="fixedPhonePro"/>
+		<field name="mobilePhonePerso"/>
+		<field name="mobilePhonePro"/>
+        <field name="email"/>
+        <field name="partnerTypeSelect"/>
+        <field name="isContact"/>
+    </grid>
+    
+    <form cols="4" colWidths="25*" name="partner-light-form" title="Partner" model="com.axelor.apps.base.db.Partner"
+	    onNew="action-partner-record-partner-type-select" 
+	    onLoad="action-partner-attrs-change-namet" 
+	    onSave="action-set-partner-seq">
+	    <group colSpan="1">
+	        <field name="picture"/>
+	    </group>
+	    <group colSpan="3" cols="6">
+	        <field name="titleSelect" hideIf="partnerTypeSelect != 2" css="highlight"/>
+	        <field name="name" css="highlight"/>
+	        <field name="firstName" hideIf="partnerTypeSelect != 2" css="highlight"/>
+	        <break/>
+	        <field name="partnerCategory" widget="SuggestBox"/>
+	        <field name="partnerTypeSelect" onChange="action-partner-attrs-change-name"/>
+	        <field name="isContact" hideIf="partnerTypeSelect != 2"/>
+	        <break/>
+	    </group>
+	    <notebook colSpan="4">
+	        <page name="information" title="Informations">
+	            <group title="Partner details" colSpan="3" cols="4">
+	                <field name="site" domain="self.partner.id = :id"/>
+	                <field name="department"/>
+	                <field name="source" hideIf="isContact"/>
+	            </group>
+	            <group title="Postal addresses" hideIf="isContact" colSpan="3" cols="4">
+	                <field name="mainInvoicingAddress" onChange="action-partner-record-main-invoicing-address"/>
+	                <field name="deliveryAddress"/>
+	            </group>
+	            <group title="Contact" colSpan="3" cols="4">
+	                <field name="email" widget="Email"/>
+	                <field name="fax"/>
+	                <field name="fixedPhone1"/>
+	                <field name="fixedPhone2"/>
+	                <field name="fixedPhonePro"/>
+	                <field name="mobilePhonePerso"/>
+	                <field name="mobilePhonePro"/>
+	                <field name="webSite"/>
+	            </group>
+	        </page>
+	    </notebook>
+    </form>
+	
 	<action-attrs name="action-partner-attrs-hide-send-message">
 		<attribute name="hidden" for="snPersonalMessage" expr="eval: !socialNetUserAccountList || socialNetUserAccountList?.collect{it.snUserRef}?.size() &gt; 0"/>
 	</action-attrs>
