@@ -79,7 +79,7 @@ public class InventoryService {
 				
 				InventoryLine inventoryLine = new InventoryLine();
 				Product product = Product.findByCode(code);
-				if (product == null || product.getApplicationTypeSelect() != IProduct.PRODUCT_TYPE || !product.getProductTypeSelect().equals(IProduct.STOCKABLE))
+				if (product == null || product.getApplicationTypeSelect() != IProduct.PRODUCT_TYPE || !product.getProductTypeSelect().equals(IProduct.STORABLE))
 					throw new AxelorException("An error occurred while importing the file data, product not found with code : "+code, IException.CONFIGURATION_ERROR);
 				inventoryLine.setProduct(product);
 				inventoryLine.setInventory(inventory);
