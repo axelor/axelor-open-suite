@@ -55,6 +55,7 @@
     
     <action-record name="action-purchase-order-record-new" model="com.axelor.apps.supplychain.db.PurchaseOrder">
     	<field name="statusSelect" expr="1"/>
+    	<field name="invoicingTypeSelect" expr="1"/>
     	<field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
     	<field name="buyerUserInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
     	<field name="orderDate" expr="eval: __date__"/>
@@ -62,7 +63,7 @@
     
     <action-record name="action-purchase-order-record-company-configuration" model="com.axelor.apps.supplychain.db.PurchaseOrder">
 	    <field name="currency" expr="eval: company?.currency"/>
-	    <field name="invoicingTypeSelect" expr="eval: company?.purchaseOrderInvoicingTypeSelect"/>
+	    <field name="invoicingTypeSelect" expr="eval: company?.purchaseOrderInvoicingTypeSelect" if="eval: company?.purchaseOrderInvoicingTypeSelect != 0"/>
 	</action-record>
 	
     <action-record name="action-purchase-order-record-partner" model="com.axelor.apps.supplychain.db.PurchaseOrder">
