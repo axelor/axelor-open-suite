@@ -28,6 +28,7 @@
     <boolean name="excludeQtyBaseOk" title="Exclude bases based on qty ?"/>
     <boolean name="discountOk" title="Discount ?" />
     <string name="description" title="Description"/>
+    <many-to-one name="productVariant" ref="com.axelor.apps.base.db.ProductVariant" title="Variants"/>
     
     <string name="note" title="Note" large="true"/>
     
