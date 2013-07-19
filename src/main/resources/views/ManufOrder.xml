@@ -17,7 +17,7 @@
     </grid>
     
     <form name="manuf-order-form" title="Manufacturing order" model="com.axelor.apps.production.db.ManufOrder" cols="4"
-    onNew="action-prod-order-default-record">
+    onNew="action-manuf-order-default-record">
         <field name="manufOrderSeq"/>
         <field name="statusSelect" widget="NavSelect"/>
         <field name="billOfMaterial"/>
@@ -41,7 +41,7 @@
         
     </form>
     
-    <action-record name="action-prod-order-default-record" model="com.axelor.apps.production.db.ManufOrder">
+    <action-record name="action-manuf-order-default-record" model="com.axelor.apps.production.db.ManufOrder">
     	<field name="statusSelect" expr="eval: 1"/>
     	<field name="startDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="startDate == null"/>
     </action-record>

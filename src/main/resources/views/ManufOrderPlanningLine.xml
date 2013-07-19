@@ -9,12 +9,12 @@
     </grid>
     
     <form name="manuf-order-planning-line-form" title="MO planning line" model="com.axelor.apps.production.db.ManufOrderPlanningLine" cols="4"
-    onNew="action-prod-order-planning-line-default-record">
+    onNew="action-manuf-order-planning-line-default-record">
         <field name="manufOrder"/>
         <field name="manufOrderPlanningLineSeq"/>
     </form>
     
-    <action-record name="action-prod-order-planning-line-default-record" model="com.axelor.apps.production.db.ManufOrderPlanningLine">
+    <action-record name="action-manuf-order-planning-line-default-record" model="com.axelor.apps.production.db.ManufOrderPlanningLine">
     	<field name="manufOrderPlanningLineSeq" expr="0"/>
     </action-record>
     
