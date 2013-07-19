@@ -19,7 +19,7 @@ import com.google.inject.persist.Transactional;
 public class StockMoveInvoiceService {
 	
 	@Inject
-	SalesOrderInvoiceService salesOrderInvoiceService;
+	private SalesOrderInvoiceService salesOrderInvoiceService;
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice createInvoice(StockMove stockMove, SalesOrder salesOrder) throws AxelorException  {
@@ -50,15 +50,15 @@ public class StockMoveInvoiceService {
 		return invoiceLineList;
 	}
 
-	private List<InvoiceLine> createInvoiceLine(
-			Invoice invoice, StockMoveLine stockMoveLine) throws AxelorException {
+	private List<InvoiceLine> createInvoiceLine(Invoice invoice, StockMoveLine stockMoveLine) throws AxelorException {
 		
 		Product product = stockMoveLine.getProduct();
 		
 		if (product == null)
 			throw new AxelorException(String.format("Produit incorrect dans le mouvement de stock %s ", stockMoveLine.getStockMove().getStockMoveSeq()), IException.CONFIGURATION_ERROR);
 		
-		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), stockMoveLine.getPrice(), product.getDescription(), stockMoveLine.getQty(), stockMoveLine.getUnit(), null, product.getInvoiceLineType(), false)  {
+		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), stockMoveLine.getPrice(), 
+				product.getDescription(), stockMoveLine.getQty(), stockMoveLine.getUnit(), null, product.getInvoiceLineType(), stockMoveLine.getProductVariant(), false)  {
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
 				

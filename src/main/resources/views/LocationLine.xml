@@ -34,6 +34,7 @@
         <field name="currentQty"/>
         <field name="futureQty"/>
         <field name="trackingNumber"/>
+        <field name="productVariant"/>
     </grid>
     
     <form name="location-line-details-form" title="Stock Location content" model="com.axelor.apps.supplychain.db.LocationLine" cols="4">
@@ -41,5 +42,6 @@
         <field name="currentQty"/>
         <field name="futureQty"/>
         <field name="trackingNumber"/>
+        <field name="productVariant"/>
     </form>
 </object-views>

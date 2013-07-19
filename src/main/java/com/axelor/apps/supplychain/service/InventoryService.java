@@ -28,6 +28,9 @@ public class InventoryService {
 	@Inject
 	StockMoveService stockMoveService;
 	
+	@Inject
+	StockMoveLineService stockMoveLineService;
+	
 	@Transactional
 	public void importFile(String filePath, char separator, Inventory inventory) throws IOException, AxelorException {
 		
@@ -120,12 +123,12 @@ public class InventoryService {
 				
 				if (stockMove == null) {
 					
-					stockMove = stockMoveService.createStocksMoves(null, company, null, fromLocation, toLocation, inventoryDate, inventoryDate);
+					stockMove = stockMoveService.createStockMove(null, company, null, fromLocation, toLocation, inventoryDate, inventoryDate);
 					stockMove.setTypeSelect(IStockMove.INTERNAL);
 					stockMove.setName(inventory.getInventorySeq());
 				}
 				
-				StockMoveLine stockMoveLine = stockMoveService.createStockMoveLine(product, diff, product.getUnit(), null, stockMove, 0);
+				StockMoveLine stockMoveLine = stockMoveLineService.createStockMoveLine(product, diff, product.getUnit(), null, stockMove, 0);
 				
 				if (stockMoveLine == null)
 					throw new AxelorException("Produit incorrect dans la ligne de l'inventaire "+inventory.getInventorySeq(), IException.CONFIGURATION_ERROR);

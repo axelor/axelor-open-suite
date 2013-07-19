@@ -15,11 +15,13 @@
         <field name="exTaxTotal"/>
     </grid>
     
-    <form name="sales-order-line-form" title="SO line" model="com.axelor.apps.supplychain.db.SalesOrderLine" cols="4" onNew="action-sales-order-line-record-new,action-sales-order-line-record-sequence">
+    <form name="sales-order-line-form" title="SO line" model="com.axelor.apps.supplychain.db.SalesOrderLine" cols="4" 
+    onNew="action-sales-order-line-record-new,action-sales-order-line-record-sequence"
+    onLoad="action-sales-order-line-attrs-ressources-planning,action-sales-order-line-attrs-hide-product-variant">
 	    <field name="sequence"/>  
 	    <field name="isOrdered"/>
 	    <field name="saleSupplySelect"/>
-	    <field name="product" onChange="action-sales-order-line-method-get-product-information,action-sales-order-line-method-compute,action-sales-order-line-method-setBooleans,action-sales-order-line-attrs-ressources-planning,action-sales-order-line-record-product-variant" domain="self.endDate = null or self.endDate &gt; :__date__"/>
+	    <field name="product" onChange="action-sales-order-line-record-product-variant,action-sales-order-line-method-get-product-information,action-sales-order-line-method-compute,action-sales-order-line-method-setBooleans,action-sales-order-line-attrs-ressources-planning,action-sales-order-line-attrs-hide-product-variant" domain="self.endDate = null or self.endDate &gt; :__date__"/>
 	    <field name="productName"/>
 	    <field name="qty" onChange="action-sales-order-line-method-compute"/>
 	    <field name="unit"/>
@@ -84,6 +86,10 @@
   	<!-- ACTION ATTRS -->
     <action-attrs name="action-sales-order-line-attrs-ressources-planning">
     	<attribute name="hidden" for="ressourcesPlanning" expr="product?.applicationTypeSelect == 2" if="product != null"/>
+    </action-attrs>
+    
+    <action-attrs name="action-sales-order-line-attrs-hide-product-variant">
+    	<attribute name="hidden" for="productVariant" expr="product?.productVariantConfiguration != null"/>
     </action-attrs>
     
 </object-views>

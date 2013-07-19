@@ -18,6 +18,7 @@
         <field name="unit"/>
         <field name="price"/>
         <field name="trackingNumber" readonly="true"/>
+        <field name="productVariant" readonly="true"/>
     </form>
     
     <action-record name="action-stock-move-line-record-new" model="com.axelor.apps.supplychain.db.StockMoveLine">

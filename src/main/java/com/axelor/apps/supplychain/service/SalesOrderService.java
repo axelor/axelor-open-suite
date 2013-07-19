@@ -47,6 +47,9 @@ public class SalesOrderService {
 
 	@Inject
 	private StockMoveService stockMoveService;
+	
+	@Inject
+	private StockMoveLineService stockMoveLineService;
 
 	public SalesOrder _computeSalesOrderLines(SalesOrder salesOrder)  {
 
@@ -316,7 +319,7 @@ public class SalesOrderService {
 						GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
 			}
 			
-			StockMove stockMove = stockMoveService.createStocksMoves(salesOrder.getDeliveryAddress(), company, salesOrder.getClientPartner(), salesOrder.getLocation(), toLocation);
+			StockMove stockMove = stockMoveService.createStockMove(salesOrder.getDeliveryAddress(), company, salesOrder.getClientPartner(), salesOrder.getLocation(), toLocation);
 			stockMove.setStockMoveLineList(new ArrayList<StockMoveLine>());
 			
 			for(SalesOrderLine salesOrderLine: salesOrder.getSalesOrderLineList()) {
@@ -325,7 +328,7 @@ public class SalesOrderService {
 				// Check if the company field 'hasOutSmForStorableProduct' = true and productTypeSelect = 'stockable' or 'hasOutSmForNonStorableProduct' = true and productTypeSelect = 'service' or productTypeSelect = 'other'
 				if(product != null && ((company.getHasOutSmForStorableProduct() && product.getProductTypeSelect().equals(IProduct.STOCKABLE)) || (company.getHasOutSmForNonStorableProduct() && !product.getProductTypeSelect().equals(IProduct.STOCKABLE)))) {
 					
-					StockMoveLine stockMoveLine = stockMoveService.createStockMoveLine(product, salesOrderLine.getQty(), salesOrderLine.getUnit(), salesOrderLine.getPrice(), stockMove, 1);
+					StockMoveLine stockMoveLine = stockMoveLineService.createStockMoveLine(product, salesOrderLine.getQty(), salesOrderLine.getUnit(), salesOrderLine.getPrice(), stockMove, 1);
 					if(stockMoveLine != null) {
 						stockMove.getStockMoveLineList().add(stockMoveLine);
 					}
