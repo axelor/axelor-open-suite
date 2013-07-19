@@ -16,6 +16,27 @@
 	<many-to-one name="productVariantValue3" ref="com.axelor.apps.base.db.ProductVariantValue"/>
 	<many-to-one name="productVariantValue4" ref="com.axelor.apps.base.db.ProductVariantValue"/>
 	
+	<string name="name" title="Name">
+		<![CDATA[
+		String name = "";
+		if(productVariantAttribute1 != null && productVariantValue1 != null)  {  name += productVariantAttribute1.getName()+" : "+productVariantValue1.getName();  }
+		if(productVariantAttribute2 != null && productVariantValue2 != null)  { 
+			if(!name.equals(""))  {  name += ", ";  }
+		 	name += productVariantAttribute2.getName()+" : "+productVariantValue2.getName();
+		}
+		if(productVariantAttribute3 != null && productVariantValue3 != null)  { 
+			if(!name.equals(""))  {  name += ", ";  }
+		 	name += productVariantAttribute3.getName()+" : "+productVariantValue3.getName();
+		}
+		if(productVariantAttribute4 != null && productVariantValue4 != null)  { 
+			if(!name.equals(""))  {  name += ", ";  }
+		 	name += productVariantAttribute4.getName()+" : "+productVariantValue4.getName();
+		}
+		return name;
+	    ]]>
+	
+	</string>
+	
   </entity>
 
 </domain-models>

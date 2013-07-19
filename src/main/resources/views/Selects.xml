@@ -86,7 +86,7 @@
 
 	<selection name='product.product.type.select'>
 		<option value='service'>Service</option>
-		<option value='stockable'>Stockable</option>
+		<option value='storable'>Storable</option>
 	</selection>
 
 	<selection name='product.procurement.method.select'>

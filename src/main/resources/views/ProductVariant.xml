@@ -16,27 +16,28 @@
     
     <form name="product-variant-form" title="Product variant" model="com.axelor.apps.base.db.ProductVariant" cols="4"
     	onLoad="action-product-variant-record-on-new,action-product-variant-attrs-domain" onNew="action-product-variant-record-on-new,action-product-variant-attrs-domain">
-        <field name="productVariantAttribute1" showTitle="false"/>
-        <field name="productVariantValue1" showTitle="false"/>
+        <field name="productVariantAttribute1" showTitle="false" readonly="true"/>
+        <field name="productVariantValue1" showTitle="false" widget="SuggestBox" showIf="productVariantAttribute1"/>
         <break/>
-        <field name="productVariantAttribute2" showTitle="false"/>
-        <field name="productVariantValue2" showTitle="false"/>
+        <field name="productVariantAttribute2" showTitle="false" readonly="true"/>
+        <field name="productVariantValue2" showTitle="false" widget="SuggestBox" showIf="productVariantAttribute2"/>
         <break/>
-        <field name="productVariantAttribute3" showTitle="false"/>
-        <field name="productVariantValue3" showTitle="false"/>
+        <field name="productVariantAttribute3" showTitle="false" readonly="true"/>
+        <field name="productVariantValue3" showTitle="false" widget="SuggestBox" showIf="productVariantAttribute3"/>
         <break/>
-        <field name="productVariantAttribute4" showTitle="false"/>
-        <field name="productVariantValue4" showTitle="false"/>
+        <field name="productVariantAttribute4" showTitle="false" readonly="true"/>
+        <field name="productVariantValue4" showTitle="false" widget="SuggestBox" showIf="productVariantAttribute4"/>
     </form>
     
     <!-- ACTION ATTRS -->
     
     <action-attrs name="action-product-variant-attrs-domain">
     	<attribute name="domain" for="productVariantValue1" expr="eval: (_parent?.product?.productVariantConfiguration?.productVariantValue1Set?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${_parent?.product?.productVariantConfiguration?.productVariantValue1Set?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
-    	<attribute name="domain" for="productVariantValue2" expr="eval: (_parent?.product?.productVariantConfiguration?.productVariantValue2Set?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${_parent?.product?.productVariantConfiguration?.productVariantValue1Set?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
-    	<attribute name="domain" for="productVariantValue3" expr="eval: (_parent?.product?.productVariantConfiguration?.productVariantValue3Set?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${_parent?.product?.productVariantConfiguration?.productVariantValue1Set?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
-    	<attribute name="domain" for="productVariantValue4" expr="eval: (_parent?.product?.productVariantConfiguration?.productVariantValue4Set?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${_parent?.product?.productVariantConfiguration?.productVariantValue1Set?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
+    	<attribute name="domain" for="productVariantValue2" expr="eval: (_parent?.product?.productVariantConfiguration?.productVariantValue2Set?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${_parent?.product?.productVariantConfiguration?.productVariantValue2Set?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
+    	<attribute name="domain" for="productVariantValue3" expr="eval: (_parent?.product?.productVariantConfiguration?.productVariantValue3Set?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${_parent?.product?.productVariantConfiguration?.productVariantValue3Set?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
+    	<attribute name="domain" for="productVariantValue4" expr="eval: (_parent?.product?.productVariantConfiguration?.productVariantValue4Set?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${_parent?.product?.productVariantConfiguration?.productVariantValue4Set?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
     </action-attrs>
+    
     
     <!-- ACTION RECORD -->
     

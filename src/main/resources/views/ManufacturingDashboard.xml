@@ -9,24 +9,24 @@
 		<portlet action="manufacturing.dashboard.portal.production.orders.plannings" canSearch="true" height="350" />
 	</portal>
 
-	<action-view name="manufacturing.dashboard.portal.upcoming.production.orders" title="All Upcoming Production Orders"
-		model="com.axelor.apps.production.db.ProdOrder">
-		<view type="grid" name="prod-order-grid"/>
-		<view type="form" name="prod-order-form"/>
+	<action-view name="manufacturing.dashboard.portal.upcoming.production.orders" title="All Upcoming Manufacturing Orders"
+		model="com.axelor.apps.production.db.ManufOrder">
+		<view type="grid" name="manuf-order-grid"/>
+		<view type="form" name="manuf-order-form"/>
 		<domain>self.startDate &gt;= :_today</domain>
 	</action-view>
 	
-	<action-view name="manufacturing.dashboard.portal.current.production.orders" title="All Current Production Orders"
-		model="com.axelor.apps.production.db.ProdOrder">
-		<view type="grid" name="prod-order-grid"/>
-		<view type="form" name="prod-order-form"/>
+	<action-view name="manufacturing.dashboard.portal.current.production.orders" title="All Current Manufacturing Orders"
+		model="com.axelor.apps.production.db.ManufOrder">
+		<view type="grid" name="manuf-order-grid"/>
+		<view type="form" name="manuf-order-form"/>
 		<domain>self.startDate &lt;= :_today and self.endDate &gt;= :_today</domain>
 	</action-view>
 
-	<action-view name="manufacturing.dashboard.portal.production.orders.plannings" title="All Production Order Plannings"
-		model="com.axelor.apps.production.db.ProdOrderPlanning">
-		<view type="grid" name="prod-order-planning-grid" />
-		<view type="form" name="prod-order-planning-form" />
+	<action-view name="manufacturing.dashboard.portal.production.orders.plannings" title="All Manufacturing Order Plannings"
+		model="com.axelor.apps.production.db.ManufOrderPlanning">
+		<view type="grid" name="manuf-order-planning-grid" />
+		<view type="form" name="manuf-order-planning-form" />
 	</action-view>
 
 

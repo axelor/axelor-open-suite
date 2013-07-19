@@ -7,7 +7,7 @@
 
   <entity name="ProductVariantAttribute" lang="java">
 	
-	<string name="name" namecolumn="true" title="Name"/>
+	<string name="name" required="true" title="Name"/>
 	<one-to-many name="productVariantValueList" ref="com.axelor.apps.base.db.ProductVariantValue" mappedBy="productVariantAttribute"/>
 	
   </entity>

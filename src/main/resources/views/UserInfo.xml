@@ -11,7 +11,7 @@
     <form name="user-info-form" title="User" model="com.axelor.apps.base.db.UserInfo" cols="4"
     onNew="action-user-language-record">
         <field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form"/>
-        <field name="activeCompany" />
+        <field name="activeCompany" widget="SuggestBox"/>
         <field name="today"/>
         <field name="agency"/>
         <notebook colSpan="4">
