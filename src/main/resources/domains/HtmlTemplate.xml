@@ -12,7 +12,7 @@
 <!--   	<integer name="typeSelect" title="Type" selection="base.html.template.type.select"/> -->
   	<many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Object concerned"/>
     <string name="content" title="Content" large="true"/>
-    <one-to-many name="trackerList" ref="com.axelor.apps.base.db.Tracker" title="Trackers"/>
+    <one-to-many name="trackerList" ref="com.axelor.apps.marketing.db.Tracker" title="Trackers"/>
     
   </entity>
 

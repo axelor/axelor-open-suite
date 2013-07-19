@@ -27,7 +27,7 @@
 <!-- 				<label title="£ : Lead" showIf="typeSelect = 2"/> -->
 <!-- 				<label title="$ : Current object" hideIf="typeSelect = 2"/> -->
 				
-				<label title="Campaing :" showIf="metaModel.name = 'Campaign'"/>
+				<label title="Campaign :" showIf="metaModel.name = 'Campaign'"/>
 				<label title="$ : Contact" showIf="metaModel.name = 'Campaign'"/>
 				<label title="£ : Lead" showIf="metaModel.name = 'Campaign'"/>
 				<label title="$ : Current object" hideIf="metaModel.name = 'Campaign'"/>

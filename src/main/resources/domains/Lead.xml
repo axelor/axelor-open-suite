@@ -47,7 +47,7 @@
   	<string name="statusDescription" title="Status description" large="true"/>
     <decimal name="opportunityAmount" title="Opportunity amount"/>
  	<string name="sourceDescription" title="Source description" large="true"/>
-  	<many-to-one name="campaign" ref="com.axelor.apps.crm.db.Campaign" title="Marketing Campaign"/> 
+  	<many-to-one name="campaign" ref="com.axelor.apps.marketing.db.Campaign" title="Marketing Campaign"/> 
     <string name="referredBy" title="Referred by"/>
     <boolean name="isDoNotCall" title="Do not call ?"/>
     
