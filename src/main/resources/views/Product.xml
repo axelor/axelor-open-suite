@@ -145,7 +145,7 @@
     
     <action-record name="action-product-record-default-new" model="com.axelor.apps.base.db.Product">
     	<field name="applicationTypeSelect" expr="1"/>
-    	<field name="productTypeSelect" expr="stockable"/>
+    	<field name="productTypeSelect" expr="storable"/>
     	<field name="procurementMethodSelect" expr="buy"/>
     	<field name="startDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="startDate == null"/>
     	<field name="salePrice" expr="1"/>
@@ -155,7 +155,7 @@
     </action-record>
     
     <action-record name="action-product-record-sale-supply-select" model="com.axelor.apps.base.db.Product">
-    	<field name="saleSupplySelect" expr="1" if="productTypeSelect == 'stockable'"/>
+    	<field name="saleSupplySelect" expr="1" if="productTypeSelect == 'storable'"/>
     	<field name="saleSupplySelect" expr="3" if="productTypeSelect == 'service'"/>
     </action-record>
     
