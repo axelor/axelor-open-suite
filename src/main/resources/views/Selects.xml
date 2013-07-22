@@ -898,9 +898,8 @@
 	
 	<selection name="supplychain.location.type.select">
 		<option value="1">Internal</option>
-		<option value="2">Supplier</option>
-		<option value="3">Customer</option>
-		<option value="4">Virtual</option>
+		<option value="2">External</option>
+		<option value="3">Virtual</option>
 	</selection>
 	
 	<selection name="supplychain.inventory.format.select">
