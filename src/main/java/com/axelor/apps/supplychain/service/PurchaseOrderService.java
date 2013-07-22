@@ -6,11 +6,19 @@ import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.IProduct;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.supplychain.db.Location;
 import com.axelor.apps.supplychain.db.PurchaseOrder;
 import com.axelor.apps.supplychain.db.PurchaseOrderLineVat;
 import com.axelor.apps.supplychain.db.PurchaseOrderLine;
+import com.axelor.apps.supplychain.db.StockMove;
+import com.axelor.apps.supplychain.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -26,6 +34,12 @@ public class PurchaseOrderService {
 	
 	@Inject
 	private PurchaseOrderLineVatService purchaseOrderLineVatService;
+	
+	@Inject
+	private StockMoveService stockMoveService;
+	
+	@Inject
+	private StockMoveLineService stockMoveLineService;
 	
 	public PurchaseOrder _computePurchaseOrderLines(PurchaseOrder purchaseOrder)  {
 		
@@ -115,5 +129,47 @@ public class PurchaseOrderService {
 		
 		else { purchaseOrder.getPurchaseOrderLineVatList().clear(); }
 		
+	}
+	
+	/**
+	 * Méthode permettant de créer un StockMove à partir d'un PurchaseOrder.
+	 * @param purchaseOrder une commande
+	 * @throws AxelorException Aucune séquence de StockMove n'a été configurée
+	 */
+	public void createStocksMoves(PurchaseOrder purchaseOrder) throws AxelorException {
+		
+		if(purchaseOrder.getPurchaseOrderLineList() != null && purchaseOrder.getCompany() != null) {
+
+			Company company = purchaseOrder.getCompany();
+			
+			Location startLocation = Location.all().filter("self.partner = ?1", purchaseOrder.getSupplierPartner()).fetchOne();
+			
+			if(startLocation == null)  {
+				startLocation = company.getSupplierVirtualLocation();
+			}
+			if(startLocation == null)  {
+				throw new AxelorException(String.format("%s Veuillez configurer un entrepot virtuel fournisseur pour la société %s ",
+						GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
+			}
+
+			StockMove stockMove = stockMoveService.createStockMove(null, company, purchaseOrder.getSupplierPartner(), startLocation, purchaseOrder.getLocation());
+			stockMove.setStockMoveLineList(new ArrayList<StockMoveLine>());
+			
+			for(PurchaseOrderLine purchaseOrderLine: purchaseOrder.getPurchaseOrderLineList()) {
+				
+				Product product = purchaseOrderLine.getProduct();
+				// Check if the company field 'hasInSmForStorableProduct' = true and productTypeSelect = 'storable' or 'hasInSmForNonStorableProduct' = true and productTypeSelect = 'service' or productTypeSelect = 'other'
+				if(product != null && ((company.getHasInSmForStorableProduct() && product.getProductTypeSelect().equals(IProduct.STORABLE)) || (company.getHasInSmForNonStorableProduct() && !product.getProductTypeSelect().equals(IProduct.STORABLE)))) {
+
+					StockMoveLine stockMoveLine = stockMoveLineService.createStockMoveLine(product, new BigDecimal(purchaseOrderLine.getQty()), purchaseOrderLine.getUnit(), purchaseOrderLine.getPrice(), stockMove, purchaseOrderLine.getProductVariant(), 2);
+					if(stockMoveLine != null) {
+						stockMove.getStockMoveLineList().add(stockMoveLine);
+					}
+				}	
+			}
+			if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
+				stockMoveService.validate(stockMove);
+			}
+		}
 	}
 }

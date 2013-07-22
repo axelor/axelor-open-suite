@@ -3,6 +3,7 @@ package com.axelor.apps.supplychain.web
 import groovy.util.logging.Slf4j
 
 import com.axelor.apps.AxelorSettings
+import com.axelor.apps.supplychain.db.ILocation;
 import com.axelor.apps.supplychain.db.SalesOrder
 import com.axelor.apps.supplychain.db.Location
 import com.axelor.apps.supplychain.service.SalesOrderService
@@ -149,7 +150,7 @@ class SalesOrderController {
 		
 		if(salesOrder) {
 			
-			Location location = Location.all().filter("company = ? and isDefaultLocation = ? and typeSelect = ?", salesOrder.getCompany(), true, 1).fetchOne()
+			Location location = Location.all().filter("company = ? and isDefaultLocation = ? and typeSelect = ?", salesOrder.getCompany(), true, ILocation.INTERNAL).fetchOne()
 			
 			if(location) {
 				response.values = [ "location" : location]

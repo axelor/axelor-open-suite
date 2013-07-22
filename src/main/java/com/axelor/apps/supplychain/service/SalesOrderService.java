@@ -309,7 +309,7 @@ public class SalesOrderService {
 			
 			Company company = salesOrder.getCompany();
 			
-			Location toLocation = Location.all().filter("self.isDefaultLocation = true and self.company = ?1 and self.typeSelect = ?2", company, ILocation.CUSTOMER).fetchOne();
+			Location toLocation = Location.all().filter("self.isDefaultLocation = true and self.company = ?1 and self.typeSelect = ?2", company, ILocation.EXTERNAL).fetchOne();
 			
 			if(toLocation == null)  {
 				toLocation = company.getCustomerVirtualLocation();
