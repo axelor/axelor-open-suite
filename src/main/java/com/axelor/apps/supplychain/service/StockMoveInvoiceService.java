@@ -8,6 +8,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.supplychain.db.PurchaseOrder;
 import com.axelor.apps.supplychain.db.SalesOrder;
 import com.axelor.apps.supplychain.db.StockMove;
 import com.axelor.apps.supplychain.db.StockMoveLine;
@@ -21,8 +22,11 @@ public class StockMoveInvoiceService {
 	@Inject
 	private SalesOrderInvoiceService salesOrderInvoiceService;
 	
+	@Inject
+	private PurchaseOrderInvoiceService purchaseOrderInvoiceService;
+	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Invoice createInvoice(StockMove stockMove, SalesOrder salesOrder) throws AxelorException  {
+	public Invoice createInvoiceFromSalesOrder(StockMove stockMove, SalesOrder salesOrder) throws AxelorException  {
 		
 		InvoiceGenerator invoiceGenerator = salesOrderInvoiceService.createInvoiceGenerator(salesOrder);
 		
@@ -38,6 +42,22 @@ public class StockMoveInvoiceService {
 		
 	}
 
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public Invoice createInvoiceFromPurchaseOrder(StockMove stockMove, PurchaseOrder purchaseOrder) throws AxelorException  {
+		
+		InvoiceGenerator invoiceGenerator = purchaseOrderInvoiceService.createInvoiceGenerator(purchaseOrder);
+		
+		Invoice invoice = invoiceGenerator.generate();
+		
+		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, stockMove.getStockMoveLineList()));
+		invoiceGenerator.computeInvoice(invoice);
+		if (invoice != null) {
+			stockMove.setInvoice(invoice);
+			stockMove.save();
+		}
+		return invoice;	
+	}
+	
 	private List<InvoiceLine> createInvoiceLines(Invoice invoice,
 			List<StockMoveLine> stockMoveLineList) throws AxelorException {
 		
