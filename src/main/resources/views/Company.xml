@@ -168,9 +168,9 @@
             </page>
             <page title="Supply chain" cols="2">
 				<group title="Virtual locations informations" colWidths="30%,30%,30%,30%">    
-					<field name="customerVirtualLocation" />
-					<field name="supplierVirtualLocation" />
-					<field name="inventoryVirtualLocation" />
+					<field name="customerVirtualLocation" domain="self.typeSelect = 3"/>
+					<field name="supplierVirtualLocation" domain="self.typeSelect = 3"/>
+					<field name="inventoryVirtualLocation" domain="self.typeSelect = 3"/>
 				</group>
             	<group title="Stock move informations" colWidths="30%,30%,30%,30%">	
 					<field name="hasOutSmForStorableProduct" />

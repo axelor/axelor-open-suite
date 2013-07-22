@@ -8,6 +8,8 @@
   <entity name="MailingList" lang="java">
   
 	<string name="name" title="Name" required="true" unique="true"/>
+	<integer name="typeSelect" default="1" required="true" selection="imarketing.mailing.list.type.select"/>
+	
 	<many-to-many name="partnerSet" ref="com.axelor.apps.base.db.Partner" title="Contacts"/>
 	<many-to-many name="leadSet" ref="com.axelor.apps.crm.db.Lead" title="Leads"/>
 	<many-to-many name="querieSet" ref="com.axelor.apps.marketing.db.Querie" title="Queries"/>
