@@ -252,11 +252,7 @@
         <field name="mainInvoicingAddress"/>
         <field name="fixedPhone1"/>
 		<field name="fixedPhonePro"/>
-		<field name="mobilePhonePerso"/>
-		<field name="mobilePhonePro"/>
         <field name="email"/>
-        <field name="partnerTypeSelect"/>
-        <field name="isContact"/>
     </grid>
     
     <form cols="4" colWidths="25*" name="partner-light-form" title="Partner" model="com.axelor.apps.base.db.Partner"
