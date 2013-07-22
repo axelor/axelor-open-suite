@@ -5,10 +5,13 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="BirtTemplate" lang="java">
+  <entity name="Template" lang="java">
   	
   	<string name="name" title="Name"/>
-  	<string name="templateLink" title="File"/>
+  	<string name="content" large="true" multiline="true" title="Content"/>
+  	<many-to-one name="birtTemplate" ref="com.axelor.apps.base.db.BirtTemplate" title="Birt Template"/>
+	<!-- <many-to-many name="fileSet" ref="com.axelor.apps.marketing.db.File" title="Files"/> -->
+	<many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Model"/>
     
   </entity>
 

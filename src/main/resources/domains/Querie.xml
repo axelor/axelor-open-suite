@@ -5,7 +5,7 @@
 
   <module name="marketing" package="com.axelor.apps.marketing.db"/>
 
-  <entity name="Request" lang="java">
+  <entity name="Querie" lang="java">
 	<string name="type" title="Type" required="true"/>
 	<string name="name" title="Name" required="true"/>
 	<string name="content" title="Content" required="true"/>
