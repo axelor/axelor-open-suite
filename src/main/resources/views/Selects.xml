@@ -638,7 +638,7 @@
 		<option value="6">Web</option>
 	</selection>
 
-	<selection name="marketing.campaign.target.select">
+	<selection name="imarketing.type.select">
 		<option value="1">Contact</option>
 		<option value="2">Lead</option>
 	</selection>

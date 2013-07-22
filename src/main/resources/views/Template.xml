@@ -14,7 +14,7 @@
         <field name="name"/>
         <field name="metaModel"/>
         <break/>
-        <field name="content" colSpan="4"/>
+        <field name="content" colSpan="4" widget="html"/>
         <break/>
         <field name="birtTemplate"/>
     </form>
