@@ -638,6 +638,11 @@
 		<option value="6">Web</option>
 	</selection>
 
+	<selection name="imarketing.type.select">
+		<option value="1">Contact</option>
+		<option value="2">Lead</option>
+	</selection>
+
 	<selection name="crm.event.call.status.select">
 		<option value="1">Incoming</option>
 		<option value="2">Outgoing</option>
@@ -898,9 +903,8 @@
 	
 	<selection name="supplychain.location.type.select">
 		<option value="1">Internal</option>
-		<option value="2">Supplier</option>
-		<option value="3">Customer</option>
-		<option value="4">Virtual</option>
+		<option value="2">External</option>
+		<option value="3">Virtual</option>
 	</selection>
 	
 	<selection name="supplychain.inventory.format.select">

@@ -5,10 +5,12 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="BirtTemplate" lang="java">
+  <entity name="TemplateRuleLine" lang="java">
   	
-  	<string name="name" title="Name"/>
-  	<string name="templateLink" title="File"/>
+  	<integer name="sequence" title="Sequence"/>
+  	<many-to-one name="template" ref="com.axelor.apps.base.db.Template" title="Template"/>
+  	<many-to-one name="templateRule" ref="com.axelor.apps.base.db.TemplateRule" title="Template rule"/>
+  	<many-to-one name="metaAction" ref="com.axelor.meta.db.MetaAction" title="Action"/>
     
   </entity>
 
