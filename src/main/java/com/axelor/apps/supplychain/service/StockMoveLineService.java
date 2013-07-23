@@ -59,9 +59,9 @@ public class StockMoveLineService {
 			if(productVariant != null && !productVariant.getUsedforStock())  {
 				stockProductVariant = productVariantService.getStockProductVariant(productVariant);
 			}
-
+			
 			StockMoveLine stockMoveLine = this.createStockMoveLine(product, quantity, unit, price, stockMove, stockProductVariant, null);
-
+			
 			TrackingNumberConfiguration trackingNumberConfiguration = product.getTrackingNumberConfiguration();
 			if(trackingNumberConfiguration != null)  {
 

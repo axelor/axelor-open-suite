@@ -34,7 +34,7 @@
        				<button name="draft" title="Draft" colSpan="1" onClick="action-purchase-order-record-draft,save" showIf="statusSelect == 6"/>
        				<button name="requested" title="Requested" colSpan="1" onClick="action-purchase-order-record-requested,save" showIf="statusSelect == 1"/>
        				<button name="receipt" title="Receipt" colSpan="1" onClick="action-purchase-order-record-receipt,save" showIf="statusSelect == 2"/>
-	                <button name="validate" title="Validate" colSpan="1" onClick="save,action-purchase-order-create-stock-move,action-purchase-order-record-validate,save" showIf="statusSelect == 3"/>
+	                <button name="validate" title="Validate" colSpan="1" onClick="action-purchase-order-validate-location,save,action-purchase-order-create-stock-move,action-purchase-order-record-validate,save" showIf="statusSelect == 3"/>
 	                <button name="completed" title="Completed" colSpan="1" onClick="action-purchase-order-record-completed,save" showIf="statusSelect == 4"/>
 	                <button name="cancel" title="Cancel" colSpan="1" onClick="save,action-purchase-order-record-cancel" showIf="statusSelect == 1 || statusSelect == 2"/>
 	                <button name="sendByEmail" title="Send by email" colSpan="1" showIf="statusSelect == 4"/>
@@ -129,4 +129,8 @@
 		<context name="operationTypeSelect" expr="1"/>
 	</action-view>
   
+  	<action-validate name="action-purchase-order-validate-location">
+   		<error message="The field 'Location' must be filled." if="location == null"/>
+	</action-validate> 
+
 </object-views>

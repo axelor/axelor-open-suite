@@ -42,7 +42,7 @@
     </action-record>
     
     <action-record name="action-sales-order-sub-line-record-product-variant" model="com.axelor.apps.supplychain.db.SalesOrderSubLine">
-    	<field name="productVariant" expr="action:action-product-variant-record-on-new"/>
+    	<field name="productVariant" expr="action:action-product-variant-record-on-new" if="product?.productVariantConfiguration != null"/>
     </action-record>
     
     <!-- ACTION METHOD -->
