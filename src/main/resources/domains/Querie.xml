@@ -6,9 +6,9 @@
   <module name="marketing" package="com.axelor.apps.marketing.db"/>
 
   <entity name="Querie" lang="java">
-	<string name="type" title="Type" required="true"/>
+	<integer name="type" title="Type" required="true" default="0" selection="imarketing.request.type.select" />
 	<string name="name" title="Name" required="true"/>
-	<string name="content" title="Content" required="true"/>
+	<string name="query" title="Query" required="true" large="true" multiline="true"/>
   
   </entity>
 
