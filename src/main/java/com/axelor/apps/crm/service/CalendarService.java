@@ -79,6 +79,39 @@ public class CalendarService {
     }
 	
 	
+	public static class GenericPathResolver extends PathResolver {
+		 
+         private String principalPath;
+         private String userPath;
+         
+         public String principalPath() {
+             return principalPath;
+         }
+         
+         public void setPrincipalPath(String principalPath) {
+             this.principalPath = principalPath;
+         }
+         
+         @Override
+         public String getPrincipalPath(String username) {
+           return principalPath + "/" + username + "/";
+         }
+ 
+         public String userPath() {
+             return userPath;
+         }
+         
+         public void setUserPath(String userPath) {
+             this.userPath = userPath;
+         }
+         
+         @Override
+         public String getUserPath(String username) {
+             return userPath + "/" + username;
+         }
+     }
+	
+	
 	public PathResolver getPathResolver(int typeSelect)  {
 		switch (typeSelect) {
 		case ICalendar.ICAL_SERVER :
@@ -174,6 +207,7 @@ public class CalendarService {
 	  		store.connect();
 	  	}
 	  	
+
 	  	
 	  	List<CalDavCalendarCollection> collections = store.getCollections();
 	
@@ -195,6 +229,8 @@ public class CalendarService {
 	  
 		List<VEvent> vEventList = new ArrayList<VEvent>();
 		
+		CalDavCalendarCollection calDavCalendarCollection2 = null;
+		
 		for(CalDavCalendarCollection calDavCalendarCollection : collections)  {
 		  
 //			  Calendar calendar = calDavCalendarCollection.getCalendar("g.dubaux@axelor.com");
@@ -206,6 +242,10 @@ public class CalendarService {
 				System.out.print("CALENDAR - "+calendar.getProductId());
 				if (calendar != null) { 
 				  
+					if(calDavCalendarCollection2 == null)  {
+						calDavCalendarCollection2 = calDavCalendarCollection;
+					}
+					
 				  	vEventList.addAll(calendar.getComponents(Component.VEVENT));
 				  	for(Event event : eventList)  {
 				  		calendar.getComponents(Component.VEVENT).add(this.createVEvent(event));
@@ -213,6 +253,7 @@ public class CalendarService {
 				  	
 			  	}
 			}
+			
 //			store.merge(calDavCalendarCollection.getId(), calDavCalendarCollection);
 		}
 		
@@ -231,6 +272,9 @@ public class CalendarService {
 //			}
 //		}
 		
+//		calDavCalendarCollection2.getCalendar(uid)
+//		store.getCollections().add(calDavCalendarCollection2);
+//		store.merge(calDavCalendarCollection2.getId(), calDavCalendarCollection2);
 		
 		store.disconnect();
 		

@@ -380,5 +380,23 @@
 		<view type="form" name="calendar-form"/>
 	</action-view>
 	
+	<menuitem name="crm-root-calendar-configuration" parent="crm-conf"
+		title="Calendar configurations" action="crm.conf.calendar.configuration" />
+
+	<action-view name="crm.conf.calendar.configuration" title="Calendar configurations"
+		model="com.axelor.apps.crm.db.CalendarConfiguration" icon="img/icons/parameter_small.png">
+		<view type="grid" name="calendar-configuration-grid"/>
+		<view type="form" name="calendar-configuration-form"/>
+	</action-view>
+
+
+<!-- <action-view title="Calendrier de Geoffrey" icon="img/icons/calendar-task.png" model="com.axelor.apps.crm.db.Event" name="crm.root.event.calendar.1">  -->
+<!-- <view type="calendar" name="event-calendar"/> -->
+<!-- <view type="grid" name="event-grid"/> -->
+<!-- <view type="form" name="event-form"/> -->
+<!-- <domain>self.calendar in :_calendarSet</domain> -->
+<!-- <context name="_typeSelect" expr="2"/> -->
+<!-- <context name="_calendarSet" expr="eval: com.axelor.apps.crm.db.CalendarConfiguration.find(1).calendarSet"/> -->
+<!-- </action-view> -->
 
 </object-views>
