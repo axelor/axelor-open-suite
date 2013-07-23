@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="affair-grid" title="Affairs" model="com.axelor.apps.organisation.db.Project">
+        <field name="clientPartner"/>
+        <field name="contactPartner"/>
+        <field name="company"/>
+        <field name="affairName"/>
+        <field name="isModel"/>
+    </grid>
+    
+    <form cols="6" onNew="action-affair-record-default" name="affair-form" title="Affair" model="com.axelor.apps.organisation.db.Project">
+	    <group showTitle="false" colSpan="4">
+	        <field name="affairName"/>
+	        <field name="responsibleUserInfo"/>
+	        <field name="parentProject"/>
+	        <field name="clientPartner"/>
+	        <field name="contactPartner" domain="self.isContact = true"/>
+	        <field name="company" widget="SuggestBox"/>
+	       	<field name="typeDurationSelect"/>
+	        <field name="plannedDuration"/>
+	        <field name="description" colSpan="4" widget="html"/>
+	        <group name="specificSettings" title="Specific settings" colSpan="4" canCollapse="true">
+	        	<field name="isProject"/>
+	        	<field name="isAffair"/>
+	            <field name="isModel"/>
+	            <field name="modelProject" hideIf="isModel" domain="self.isModel = true"/>
+	            <field name="defaultTask" hideIf="!isTimeSheetImputable"/>
+	            <field name="isReinvoicingExpense"/>
+	            <field name="isReinvoicingTime"/>
+	            <field name="isTimeSheetImputable"/> 
+	        </group>
+	    </group>
+	    <group title="Actions" showTitle="false" colSpan="2" cols="1">
+	        <button name="createSalesOrder" title="Create quote" colSpan="1"/>
+	        <button name="generateNewInstanceOfProject" title="Generate new project instance" hideIf="!isModel" colSpan="1"/>
+	        <button name="transformToProject" title="Transform to project" showIf="isProject == true" colSpan="1"/>
+	    </group>
+	    <notebook colSpan="6">
+	        <page title="Tasks">
+	            <field name="taskList" grid-view="task-project-grid" form-view="task-form" colSpan="6"/>
+	        </page>
+	        <page title="Financial information" colSpan="4">
+	            <group title="Initial Budget" colSpan="6" cols="6">
+	                <field name="initialBudgetTurnover" onChange="action-affair-record-compute-margin-fields"/>
+	                <field name="initialBudgetCost" onChange="action-affair-record-compute-margin-fields"/>
+	                <field name="initialBudgetMargin"/>
+	            </group>
+	            <group title="Realized" colSpan="6" cols="6">
+	                <field name="realizedTurnover" onChange="action-affair-record-compute-margin-fields"/>
+	                <field name="realizedBudgetCost" onChange="action-affair-record-compute-margin-fields"/>
+	                <field name="realizedBudgetMargin"/>
+	            </group>
+	            <group title="Remaining to do" colSpan="6" cols="6">
+	                <field name="remainingTurnover" onChange="action-affair-record-compute-margin-fields"/>
+	                <field name="remainingBudgetCost" onChange="action-affair-record-compute-margin-fields"/>
+	                <field name="remainingBudgetMargin"/>
+	            </group>
+	            <group title="Estimated final" colSpan="6" cols="6">
+	                <field name="expectedFinalTurnover" onChange="action-affair-record-compute-margin-fields"/>
+	                <field name="expectedFinalCost" onChange="action-affair-record-compute-margin-fields"/>
+	                <field name="expectedFinalMargin"/>
+	            </group>
+	            <group colSpan="6" cols="6">
+	                <field name="plannedTime"/>
+	                <field name="spentTime"/>
+	                <field name="remainingTime"/>
+	                <field name="budgetedExpenses"/>
+	                <field name="incurredExpenses"/>
+	                <field name="remainingExpenses"/>
+	            </group>
+	        </page>
+	        <page title="Membres" colSpan="4">
+	            <field name="memberUserInfoSet" colSpan="6"/>
+	        </page>
+	        <page title="Need">
+	            <field name="typeSelect"/>
+	            <field name="marketTypeSelect"/>
+	            <field name="consultationDate"/>
+	            <field name="deadline"/>
+	            <field name="complexity"/>
+	            <field name="competition"/>
+	            <field name="plannedBudget"/>     
+	            <field name="answerDate"/>
+	            <field name="candidateSet"/>
+	            <field name="employeeSet"/>
+	            <field name="specificationFile"/>
+	            <field name="needDescription"/>
+	        </page>
+	    </notebook>
+	</form>
+	
+    
+    <action-record name="action-affair-record-default" model="com.axelor.apps.organisation.db.Project">
+		<field name="isTimeSheetImputable" expr="true"/>
+	</action-record>
+		
+	<action-record name="action-affair-record-compute-margin-fields" model="com.axelor.apps.organisation.db.Project">
+		<field name="initialBudgetMargin" expr="eval: initialBudgetTurnover - initialBudgetCost" if="initialBudgetTurnover &amp;&amp; initialBudgetCost"/>
+		<field name="realizedBudgetMargin" expr="eval: realizedTurnover - realizedBudgetCost" if="realizedTurnover &amp;&amp; realizedBudgetCost"/>
+		<field name="remainingBudgetMargin" expr="eval: remainingTurnover - remainingBudgetCost" if="remainingTurnover &amp;&amp; remainingBudgetCost"/>
+		<field name="expectedFinalMargin" expr="eval: expectedFinalTurnover - expectedFinalCost" if="expectedFinalTurnover &amp;&amp; expectedFinalCost"/>
+	</action-record>
+		
+</object-views>

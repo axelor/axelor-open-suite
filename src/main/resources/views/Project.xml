@@ -20,7 +20,12 @@
 	        <field name="clientPartner"/>
 	        <field name="contactPartner" domain="self.isContact = true"/>
 	        <field name="company" widget="SuggestBox"/>
+	        <field name="typeDurationSelect"/>
+	        <field name="plannedDuration"/>
+	        <field name="description" colSpan="4" widget="html"/>
 	        <group name="specificSettings" title="Specific settings" colSpan="4" canCollapse="true">
+	        	<field name="isProject"/>
+	        	<field name="isAffair"/>
 	            <field name="isModel"/>
 	            <field name="modelProject" hideIf="isModel" domain="self.isModel = true"/>
 	            <field name="defaultTask" hideIf="!isTimeSheetImputable"/>
@@ -30,7 +35,6 @@
 	        </group>
 	    </group>
 	    <group title="Actions" showTitle="false" colSpan="2" cols="1">
-	        <button name="createSalesOrder" title="Create quote" colSpan="1"/>
 	        <button name="generateNewInstanceOfProject" title="Generate new project instance" hideIf="!isModel" colSpan="1"/>
 	        <button name="generateDraftInvoice" title="Generate draft invoice" colSpan="1" onClick="save,action-project-validate-generate-invoice,action-project-method-create-invoice"/>
 	        <button name="showTask" title="Show tasks" colSpan="1" onClick="action-project-view-task"/>
@@ -39,43 +43,13 @@
 	        <page title="Tasks">
 	            <field name="taskList" grid-view="task-project-grid" form-view="task-form" colSpan="6"/>
 	        </page>
-	        <page title="Financial information" colSpan="4">
-	            <group title="Initial Budget" colSpan="6" cols="6">
-	                <field name="initialBudgetTurnover"/>
-	                <field name="initialBudgetCost"/>
-	                <field name="initialBudgetMargin"/>
-	            </group>
-	            <group title="Realized" colSpan="6" cols="6">
-	                <field name="realizedTurnover"/>
-	                <field name="realizedBudgetCost"/>
-	                <field name="realizedBudgetMargin"/>
-	            </group>
-	            <group title="Remaining to do" colSpan="6" cols="6">
-	                <field name="remainingTurnover"/>
-	                <field name="remainingBudgetCost"/>
-	                <field name="remainingBudgetMargin"/>
-	            </group>
-	            <group title="Estimated final" colSpan="6" cols="6">
-	                <field name="expectedFinalTurnover"/>
-	                <field name="expectedFinalCost"/>
-	                <field name="expectedFinalMargin"/>
-	            </group>
-	            <group colSpan="6" cols="6">
-	                <field name="plannedTime"/>
-	                <field name="spentTime"/>
-	                <field name="remainingTime"/>
-	                <field name="budgetedExpenses"/>
-	                <field name="incurredExpenses"/>
-	                <field name="remainingExpenses"/>
-	            </group>
-	        </page>
-	        <page title="Responsable / Membres" colSpan="4">
+	        <page title="Membres" colSpan="4">
 	            <field name="memberUserInfoSet" colSpan="6"/>
 	        </page>
 	    </notebook>
 	</form>
-    
-    
+
+	
     <action-view name="action-project-view-task" title="Tasks" model="com.axelor.apps.organisation.db.Task">
 		<view type="grid" name="task-grid"/>
 		<view type="form" name="task-form"/>
