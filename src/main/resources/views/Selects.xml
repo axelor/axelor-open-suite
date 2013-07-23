@@ -642,6 +642,12 @@
 		<option value="1">Contact</option>
 		<option value="2">Lead</option>
 	</selection>
+	
+	<selection name="imarketing.request.type.select">
+		<option value="1">SQL</option>
+		<option value="2">JPQL</option>
+		<option value="3">FILTER</option>
+	</selection>
 
 	<selection name="crm.event.call.status.select">
 		<option value="1">Incoming</option>
