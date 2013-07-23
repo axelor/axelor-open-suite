@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+  <module name="crm" package="com.axelor.apps.crm.db"/>
+
+  <entity name="CalendarConfiguration" lang="java">
+
+	<string name="name" title="Name" required="true"/>  
+    <many-to-one name="metaAction" ref="com.axelor.meta.db.MetaAction" title="Action"/>
+    <many-to-one name="calendarUser" ref="com.axelor.auth.db.User" title="User"/>
+    <many-to-one name="calendarGroup" ref="com.axelor.auth.db.Group" title="Group"/>
+    
+    <many-to-many name="calendarSet" ref="com.axelor.apps.crm.db.Calendar" title="Calendars"/>
+    
+  </entity>
+
+</domain-models>
