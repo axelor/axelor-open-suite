@@ -3235,6 +3235,8 @@
 "product-form",,"group","Social Networking Integration",,,,,
 "product-form","showing","button","Post Message",,,,,
 "product-form","retriveCmnt","button","Comments/Replies",,,,,
+"purchase-order-form","receipt","button","Receipt","Reçu",,,,
+"purchase-order-form","completed","button","Completed","Terminer",,,,
 "com.axelor.apps.base.db.Product","Facebook","viewField","Facebook",,,,,
 "com.axelor.apps.base.db.Product","Linkedin","viewField","Linkedin",,,,,
 "com.axelor.apps.base.db.Product","Twitter","viewField","Twitter",,,,,
