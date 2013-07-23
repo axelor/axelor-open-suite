@@ -18,7 +18,7 @@
     	<notebook>
     		<page title="Informations">
 	    		<field name="invoiceLineType" required="true"/>
-		        <field name="product" onChange="action-invoice-line-method-get-product-information,action-invoice-line-method-compute"/>
+		        <field name="product" onChange="action-invoice-line-method-get-product-information,action-invoice-line-record-product-variant,action-invoice-line-method-compute"/>
 		        <field name="product.productCategory"/>
 		        <field name="productName"/>
 		        <field name="qty" onChange="action-invoice-line-method-compute"/>
@@ -71,6 +71,9 @@
 		<field name="vatLine.value"/>
     </form>
     
+    <action-record name="action-invoice-line-record-product-variant" model="com.axelor.apps.account.db.InvoiceLine">
+    	<field name="productVariant" expr="action:action-product-variant-record-on-new" if="product?.productVariantConfiguration != null"/>
+    </action-record>
     
 	<!-- ACTION METHOD -->
 	<action-method name="action-invoice-line-method-compute">
