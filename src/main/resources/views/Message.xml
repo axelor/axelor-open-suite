@@ -24,7 +24,7 @@
         	<field name="ccEmailAddressSet" widget="TagSelect[create=emailAddress]" colSpan="4"/>
         	<field name="bccEmailAddressSet" widget="TagSelect[create=emailAddress]" colSpan="4"/>
         	<separator title="" colSpan="4"/>
-        	<field name="receiverUserInfo" widget="TagSelect[create=name]" colSpan="4" help="Internal Message"/>
+        	<field name="recipientUserInfo" widget="TagSelect[create=name]" colSpan="4" help="Internal Message"/>
         </group>
         <group title="Content" colSpan="4">
         	<field name="subject" colSpan="4"/>
