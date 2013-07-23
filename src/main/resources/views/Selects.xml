@@ -684,8 +684,7 @@
 	<selection name="consulting.need.type.select">
 		<option value="1">Fixed fee</option>
 		<option value="2">Onsite</option>
-		<option value="3">Backup</option>
-		<option value="4">TMA</option>
+		<option value="3">TMA</option>
 	</selection>
 
 	<selection name="consulting.need.pricing.mode.select">
@@ -872,6 +871,18 @@
 		<option value="4">Canceled</option>
 	</selection>
 
+	<selection name="organisation.project.type.duration.select">
+		<option value="1">Day</option>
+		<option value="2">Month</option>
+		<option value="3">Year</option>
+	</selection>
+	
+	<selection name="organisation.affair.market.type.select">
+		<option value="1">Market</option>
+		<option value="2">Order form market</option>
+		<option value="3">Other</option>
+	</selection>
+	
 	<selection name="supplychain.invoicing.moment.select">
 		<option value="1">When a task is over</option>
 		<option value="2">Draft invoice N days after order validation</option>
