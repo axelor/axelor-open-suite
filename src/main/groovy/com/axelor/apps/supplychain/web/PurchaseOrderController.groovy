@@ -2,6 +2,8 @@ package com.axelor.apps.supplychain.web
 
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.supplychain.db.ILocation;
+import com.axelor.apps.supplychain.db.Location
 import com.axelor.apps.supplychain.db.PurchaseOrder;
 import com.axelor.apps.supplychain.service.PurchaseOrderService;
 import com.axelor.exception.AxelorException
@@ -51,5 +53,29 @@ class PurchaseOrderController {
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e) }
 		
+	}
+	
+	def void createStockMoves(ActionRequest request, ActionResponse response) {
+		
+		PurchaseOrder purchaseOrder = request.context as PurchaseOrder
+		
+		if(purchaseOrder) {
+
+			purchaseOrderService.createStocksMoves(purchaseOrder)
+		}
+	}
+	
+	def void getLocation(ActionRequest request, ActionResponse response) {
+		
+		PurchaseOrder purchaseOrder = request.context as PurchaseOrder
+		
+		if(purchaseOrder) {
+			
+			Location location = Location.all().filter("company = ? and isDefaultLocation = ? and typeSelect = ?", purchaseOrder.getCompany(), true, ILocation.INTERNAL).fetchOne()
+			
+			if(location) {
+				response.values = [ "location" : location]
+			}
+		}
 	}
 }

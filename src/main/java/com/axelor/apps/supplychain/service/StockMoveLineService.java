@@ -54,17 +54,17 @@ public class StockMoveLineService {
 	public StockMoveLine createStockMoveLine(Product product, BigDecimal quantity, Unit unit, BigDecimal price, StockMove stockMove, ProductVariant productVariant, int type ) throws AxelorException {
 
 		if(product != null && product.getApplicationTypeSelect() == IProduct.PRODUCT_TYPE) {
-			
+
 			ProductVariant stockProductVariant = productVariant;
 			if(productVariant != null && !productVariant.getUsedforStock())  {
 				stockProductVariant = productVariantService.getStockProductVariant(productVariant);
 			}
-			
+
 			StockMoveLine stockMoveLine = this.createStockMoveLine(product, quantity, unit, price, stockMove, stockProductVariant, null);
-			
+
 			TrackingNumberConfiguration trackingNumberConfiguration = product.getTrackingNumberConfiguration();
 			if(trackingNumberConfiguration != null)  {
-				
+
 				switch (type) {
 					case 1:
 						if(trackingNumberConfiguration.getIsSaleTrackingManaged())  {

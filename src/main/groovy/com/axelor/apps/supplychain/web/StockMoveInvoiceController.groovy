@@ -20,16 +20,30 @@ class StockMoveInvoiceController {
 	def void generateInvoice(ActionRequest request, ActionResponse response)  {
 		
 		StockMove stockMove = request.context as StockMove
-		
+		Invoice invoice = null
+		int numInvoice = 0
 		try {
 			
 			stockMove = StockMove.find(stockMove.getId())
 			
-			Invoice invoice = stockMoveInvoiceService.createInvoice(stockMove, stockMove.salesOrder)
+			if(stockMove.salesOrder) {
+				invoice = stockMoveInvoiceService.createInvoiceFromSalesOrder(stockMove, stockMove.salesOrder)
+				if(invoice)
+					numInvoice++
+			}
 			
-			if(invoice != null)  {
+			if(stockMove.purchaseOrder) {
+				invoice = stockMoveInvoiceService.createInvoiceFromPurchaseOrder(stockMove, stockMove.purchaseOrder)
+				if(invoice)
+					numInvoice++
+			}
+			
+			if(numInvoice > 0)  {
 				response.reload = true
-				response.flash = "Facture créée"
+				if(numInvoice == 1)
+					response.flash = "$numInvoice Facture créée"
+				else
+					response.flash = "$numInvoice Factures créées"
 			}
 			
 		}

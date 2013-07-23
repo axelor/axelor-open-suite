@@ -7,7 +7,6 @@ public interface ILocation {
 	 */
 
 	static final int INTERNAL = 1;
-	static final int SUPPLIER = 2;
-	static final int CUSTOMER = 3;
-	static final int VIRTUAL = 4;
+	static final int EXTERNAL = 2;
+	static final int VIRTUAL = 3;
 }

@@ -52,6 +52,7 @@
         	</page>
         	<page title="Configuration">
            		<field name="salesOrder"/>
+           		<field name="purchaseOrder"/>
             	<field name="invoice"/>
         	</page>
     	</notebook>
@@ -78,6 +79,7 @@
     <action-attrs name="action-stock-move-attrs-validated-read-only">
     	<attribute name="readonly" for="toAddress" expr="true"/>
     	<attribute name="readonly" for="salesOrder" expr="true"/>
+    	<attribute name="readonly" for="purchaseOrder" expr="true"/>
     	<attribute name="readonly" for="invoice" expr="true"/>
     </action-attrs>
     
@@ -90,6 +92,7 @@
     	<attribute name="readonly" for="estimatedDate" expr="false"/>
     	<attribute name="readonly" for="toAddress" expr="false"/>
     	<attribute name="readonly" for="salesOrder" expr="false"/>
+    	<attribute name="readonly" for="purchaseOrder" expr="false"/>
     	<attribute name="readonly" for="invoice" expr="false"/>
     </action-attrs>
     
@@ -122,7 +125,7 @@
 	</action-method>
 	
 	<action-attrs name="action-stock-move-attrs-hide-button-generate-invoice">
-		<attribute name="hidden" for="generateInvoice" expr="eval: salesOrder == null || salesOrder?.invoicingTypeSelect != 5 || invoice != null || statusSelect != 3"/>
+		<attribute name="hidden" for="generateInvoice" expr="eval: (salesOrder == null &amp;&amp; purchaseOrder == null) || (salesOrder != null &amp;&amp; salesOrder?.invoicingTypeSelect != 5) || (purchaseOrder != null &amp;&amp; purchaseOrder.invoicingTypeSelect != 3) || invoice != null || statusSelect != 3"/>
 	</action-attrs>
 	
 </object-views>

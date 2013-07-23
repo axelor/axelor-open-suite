@@ -160,4 +160,3 @@
 "supply.chain.root.sales.myso","supply.chain.root.sales.myso","action","My team sale orders","Devis clients","",""
 "supply.chain.root.sales.order","supply.chain.root.sales.order","action","New client sales order","Nouveau devis client","",""
 "action-sale-order-validate-check-location","action-sale-order-validate-check-location","action","The location must be filled.","Merci de remplir le champ 'Location' afin de générer les mouvements de stocks.","",""
-"action-purchase-order-validate-generate-control-invoice","action-purchase-order-validate-generate-control-invoice","action","Generating invoice is impossible, the fields 'Supplier' and 'Company' must be filled.","Merci de remplir les champs 'Fournisseur' et 'Société' pour générer une facture.","",""
