@@ -25,12 +25,12 @@
         <field name="totalTimeSheetQty"/>
     </grid>
     
-    <form cols="4" onNew="action-task-default-record" name="task-form" title="Task" model="com.axelor.apps.organisation.db.Task"
+    <form cols="4" onNew="action-task-default-record,action-task-attrs-hide-financial" name="task-form" title="Task" model="com.axelor.apps.organisation.db.Task"
     onSave="action-task-compute-margin">
     	<field name="name"/>
     	<field name="statusSelect" showTitle="false" colSpan="2" widget="NavSelect"/>
     	<group title="Context" colSpan="4" cols="6">
-       		<field name="project"/>
+       		<field name="project" onChange="action-task-attrs-project-title,action-task-attrs-hide-financial"/>
         	<field name="userInfo"/>
         	<field name="taskProgress" widget="Progress"/>
         	<field name="startDateT"/>
@@ -71,7 +71,7 @@
 	        <page title="Notes">
 	            <field name="notes" colSpan="4"/>
 	        </page>
-	        <page title="Financial information" colSpan="4">
+	        <page name="financialInformation" title="Financial information" colSpan="4">
 	            <group title="Budget initial" colSpan="4" cols="6">
 	                <field name="initialBudgetTurnover" onChange="action-task-record-compute-margin-fields"/>
 	                <field name="initialBudgetCost" onChange="action-task-record-compute-margin-fields"/>
@@ -146,5 +146,15 @@
 	<action-validate name="action-task-validate-generate-invoice">
    		<alert message="Generating invoice is impossible, Please link the task to a saleOrderLine to do so." if="salesOrderLine == null"/>
 	</action-validate> 
+	
+	<action-attrs name="action-task-attrs-project-title">
+		<attribute name="title" for="project" expr="Projet" if="project?.isProject == true &amp;&amp; project?.isAffair == false"/>
+		<attribute name="title" for="project" expr="Affaire" if="project?.isProject == false &amp;&amp; project?.isAffair == true"/>
+		<attribute name="title" for="project" expr="Projet/Affaire" if="project?.isProject == true &amp;&amp; project?.isAffair == true"/>
+	</action-attrs>
+	
+	<action-attrs name="action-task-attrs-hide-financial">
+		<attribute name="hidden" for="financialInformation" expr="true" if="project == null || project?.isAffair == false"/>
+	</action-attrs>
 	
 </object-views>

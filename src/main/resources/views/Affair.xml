@@ -21,7 +21,7 @@
 	        <field name="company" widget="SuggestBox"/>
 	       	<field name="typeDurationSelect"/>
 	        <field name="plannedDuration"/>
-	        <field name="description" colSpan="4" widget="html"/>
+	        <field name="description" widget="html"/>
 	        <group name="specificSettings" title="Specific settings" colSpan="4" canCollapse="true">
 	        	<field name="isProject"/>
 	        	<field name="isAffair"/>
@@ -38,6 +38,8 @@
 	        <button name="generateNewInstanceOfProject" title="Generate new project instance" hideIf="!isModel" colSpan="1"/>
 	        <button name="transformToProject" title="Transform to project" showIf="isProject == true" colSpan="1"/>
 	    </group>
+	    <field name="candidateSet" colSpan="4"/>
+	    <field name="employeeSet" colSpan="4"/>
 	    <notebook colSpan="6">
 	        <page title="Tasks">
 	            <field name="taskList" grid-view="task-project-grid" form-view="task-form" colSpan="6"/>
@@ -84,12 +86,10 @@
 	            <field name="competition"/>
 	            <field name="plannedBudget"/>     
 	            <field name="answerDate"/>
-	            <field name="candidateSet"/>
-	            <field name="employeeSet"/>
 	            <field name="specificationFile"/>
 	            <field name="needDescription"/>
 	        </page>
-	    </notebook>
+	    </notebook>    
 	</form>
 	
     
