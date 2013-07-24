@@ -12,7 +12,7 @@
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" readonly="true" title="Société"/>
   	<string name="affairName" title="Affair name" namecolumn="true"/>
   	<string name="affairDescription" title="Affair description"/>
-  	<string name="description" title="Description"/>
+  	<string name="description" max="1000" multiline="true" title="Description"/>
   	<boolean name="isModel" title="Model ?"/>
   	<boolean name="isProject" title="Project ?"/>
   	<boolean name="isAffair" title="Affair ?"/>
