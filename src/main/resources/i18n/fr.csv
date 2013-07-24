@@ -280,6 +280,7 @@
 "com.axelor.apps.account.db.InvoiceLine","invoice-line-form","form","Invoice line","Ligne de facture","",""
 "invoice-line-form","","page","Informations","Informations","",""
 "invoice-line-form","","group","Others","Autres","",""
+"invoice-line-form","","group","V.A.T informations","Informations TVA","",""
 "invoice-line-form","","page","Notes","Remarques","",""
 "com.axelor.apps.account.db.InvoiceLine","invoice-line-grid","grid","Invoice lines","Lignes de facture","",""
 "com.axelor.apps.account.db.InvoiceLineTax","invoice-line-tax-form","form","Tax line","Ligne de taxe","",""

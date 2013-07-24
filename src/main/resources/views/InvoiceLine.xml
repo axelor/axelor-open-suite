@@ -25,9 +25,11 @@
 		        <field name="price" onChange="action-invoice-line-method-compute"/>
 		        <field name="product.unit"/>
 		        <field name="exTaxTotal"/>
-		    	<field name="vatLine"/>
-				<field name="vatLine.vat.name"/>
-				<field name="vatLine.value"/>
+		        <group title="V.A.T informations" colSpan="4" cols="4">
+		    		<field name="vatLine"/>
+					<field name="vatLine.vat.name"/>
+					<field name="vatLine.value"/>
+				</group>
 	<!--         <group name="discountGroup" title="Rabais / Remise" colSpan="4" cols="4"> -->
 	<!--             <field name="discountEngineLineSet" grid-view="discount-engine-line-grid" form-view="discount-engine-line-form" colSpan="4"/> -->
 	<!--         	<field name="discountOk" /> -->
