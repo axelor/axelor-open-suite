@@ -161,7 +161,7 @@ public class PurchaseOrderService {
 				// Check if the company field 'hasInSmForStorableProduct' = true and productTypeSelect = 'storable' or 'hasInSmForNonStorableProduct' = true and productTypeSelect = 'service' or productTypeSelect = 'other'
 				if(product != null && ((company.getHasInSmForStorableProduct() && product.getProductTypeSelect().equals(IProduct.STORABLE)) || (company.getHasInSmForNonStorableProduct() && !product.getProductTypeSelect().equals(IProduct.STORABLE)))) {
 
-					StockMoveLine stockMoveLine = stockMoveLineService.createStockMoveLine(product, new BigDecimal(purchaseOrderLine.getQty()), purchaseOrderLine.getUnit(), purchaseOrderLine.getPrice(), stockMove, purchaseOrderLine.getProductVariant(), 2);
+					StockMoveLine stockMoveLine = stockMoveLineService.createStockMoveLine(product, purchaseOrderLine.getQty(), purchaseOrderLine.getUnit(), purchaseOrderLine.getPrice(), stockMove, purchaseOrderLine.getProductVariant(), 2);
 					if(stockMoveLine != null) {
 						stockMove.getStockMoveLineList().add(stockMoveLine);
 					}

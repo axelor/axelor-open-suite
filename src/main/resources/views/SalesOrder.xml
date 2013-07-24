@@ -63,12 +63,12 @@
 	                            <button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2" colSpan="1" onClick="save,action-sales-order-record-cancel"/>
 	                            <button name="showSalesOrder" title="Print" showIf="statusSelect == 3" colSpan="1" icon="img/icons/print.png" onClick="save,action-sales-order-method-show-sales-order"/>
 	                            <button name="sendByEmail" title="Send by email" showIf="statusSelect == 3" colSpan="1"/>
-	                    </group>
-	                    <group readonly="true" colSpan="1" cols="2">
-	                        <field name="validatedByUserInfo" colSpan="1"/>
-	                        <field name="validationDate" colSpan="1"/>
-	                    </group>
-	                </group>
+	                    	</group>
+	                    	<group readonly="true" colSpan="1" cols="2">
+	                        	<field name="validatedByUserInfo" colSpan="1"/>
+	                        	<field name="validationDate" colSpan="1"/>
+	                    	</group>
+	                	</group>
 	                </group>
 	                <group title="Totaux" colSpan="1" cols="1">
 	                    <group readonly="true" colSpan="1" css="subtotal" cols="2" colWidths="50%,50%">

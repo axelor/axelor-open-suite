@@ -21,12 +21,14 @@
     	<field name="productName"/>
     	<field name="qty" onChange="action-purchase-order-line-method-compute"/>
     	<field name="price" onChange="action-purchase-order-line-method-compute"/>
-    	<field name="vatLine" domain="self.endDate = null or self.endDate &gt; :__date__"/>
-		<field name="vatLine.vat.name"/>
-		<field name="vatLine.value"/>
     	<field name="unit"/>
     	<field name="exTaxTotal"/>
 		<field name="deliveryDate"/>
+		<group title="V.A.T informations" colSpan="4" cols="4">
+    		<field name="vatLine" domain="self.endDate = null or self.endDate &gt; :__date__"/>
+			<field name="vatLine.vat.name"/>
+			<field name="vatLine.value"/>
+		</group>
 	    <group title="Product Variants" colSpan="4" cols="4">
 	        <field name="productVariant" widget="NestedEditor" summary-view="true" form-view="product-variant-form" edit-window="self" canSelect="false" showTitle="false"/>
 	    </group>    

@@ -46,6 +46,10 @@ public class PurchaseOrderInvoiceService {
 		Invoice invoice = this.createInvoice(purchaseOrder);
 		invoice.save();
 		
+		if(invoice != null) {
+			purchaseOrder.setInvoice(invoice);
+			purchaseOrder.save();
+		}
 		return invoice;
 	}
 
@@ -111,7 +115,7 @@ public class PurchaseOrderInvoiceService {
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, PurchaseOrderLine purchaseOrderLine) throws AxelorException {
 		
 		return this.createInvoiceLine(invoice, purchaseOrderLine.getExTaxTotal(), purchaseOrderLine.getProduct(), purchaseOrderLine.getProductName(), 
-				purchaseOrderLine.getPrice(), purchaseOrderLine.getDescription(), new BigDecimal(purchaseOrderLine.getQty()), purchaseOrderLine.getUnit(), purchaseOrderLine.getVatLine(), purchaseOrderLine.getProductVariant());
+				purchaseOrderLine.getPrice(), purchaseOrderLine.getDescription(), purchaseOrderLine.getQty(), purchaseOrderLine.getUnit(), purchaseOrderLine.getVatLine(), purchaseOrderLine.getProductVariant());
 	}
 			
 }
