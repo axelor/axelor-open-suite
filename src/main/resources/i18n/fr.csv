@@ -1,53 +1,116 @@
-"domain","name","type","title","title_t","help","help_t"
-"production-root","Manufacturing","menu","Manufacturing","Production","",""
-"production-root-bill-of-material","Bills of materials","menu","Bills of materials","Les nomenclatures","",""
-"production-root-conf","Configurations","menu","Configurations","Configurations","",""
-"production-root-conf-machine","Machines","menu","Machines","Machines","",""
-"production-root-conf-prod-resource","Resources","menu","Resources","Les Ressources","",""
-"production-root-prod-order","Production orders","menu","Production orders","Les Ordres de fabrication","",""
-"production-root-prod-order-planning","PO plannings","menu","PO plannings","Planification des OF","",""
-"production-root-prod-process","Manufacturing processes","menu","Manufacturing processes","Les Processus de production","",""
-"com.axelor.apps.production.db.BillOfMaterial","bill-of-material-form","form","Bill of material","Nomenclatures","",""
-"com.axelor.apps.production.db.BillOfMaterial","bill-of-material-grid","grid","Bills of material","Les nomenclatures","",""
-"com.axelor.apps.production.db.BillOfMaterialLine","bill-of-material-line-form","form","Bill of material line","Ligne de nomenclature","",""
-"com.axelor.apps.production.db.BillOfMaterialLine","bill-of-material-line-grid","grid","Bills of material line","Les lignes de nomenclature","",""
-"com.axelor.apps.production.db.ManufOrder","manuf-order-form","form","Manufacturing order","Ordre de fabrication","",""
-"manuf-order-form","","group","Moves In/Out","Entrées/Sorties","",""
-"manuf-order-form","","group","Date","Date","",""
-"manuf-order-form","","group","Action","Action","",""
-"manuf-order-form","standbyAllLines","button","Stand by all lines","Suspendre toutes les lignes","",""
-"manuf-order-form","endAllLines","button","Finish all lines ","Terminer toutes les lignes","",""
-"com.axelor.apps.production.db.ManufOrder","manuf-order-grid","grid","Manufacturing orders","Les Ordres de fabrication","",""
-"com.axelor.apps.production.db.ManufOrderLine","manuf-order-line-form","form","MO line","Ligne de commande fournisseur","",""
-"manuf-order-line-form","","group","Planned dates","Dates planifiées","",""
-"manuf-order-line-form","","group","Real Dates","Dates réelles","",""
-"manuf-order-line-form","","group","Action","Action","",""
-"manuf-order-line-form","start","button","Start","Démarrer","",""
-"manuf-order-line-form","standBy","button","Stand by","Suspendre","",""
-"manuf-order-line-form","end","button","End","Fin","",""
-"com.axelor.apps.production.db.ManufOrderLine","manuf-order-line-grid","grid","MO lines","Les lignes de commande fournisseur","",""
-"manuf-order-line-grid","start","button","Start","Démarrer","",""
-"manuf-order-line-grid","standBy","button","Stand by","Suspendre","",""
-"manuf-order-line-grid","end","button","End","Fin","",""
-"com.axelor.apps.production.db.ManufOrderPlanning","manuf-order-planning-form","form","MO planning","Planification d'OF","",""
-"manuf-order-planning-form","","group","Dates","Dates","",""
-"manuf-order-planning-form","","group","Action","Action","",""
-"manuf-order-planning-form","runSimulation","button","Run simulation","Lancer la simulation","",""
-"manuf-order-planning-form","validateChanges","button","Validate changes","Valider les changements","",""
-"com.axelor.apps.production.db.ManufOrderPlanning","manuf-order-planning-grid","grid","MO plannings","Planification des OF","",""
-"com.axelor.apps.production.db.ManufOrderPlanningLine","manuf-order-planning-line-form","form","MO planning line","Ligne de planification d'OF","",""
-"com.axelor.apps.production.db.ManufOrderPlanningLine","manuf-order-planning-line-grid","grid","MO planning lines","Les lignes de planification d'OF","",""
-"com.axelor.apps.production.db.ProdProcess","prod-process-form","form","Production process","Les Ordres de fabrication","",""
-"com.axelor.apps.production.db.ProdProcess","prod-process-grid","grid","Production process","Les Ordres de fabrication","",""
-"com.axelor.apps.production.db.ProdProcessLine","prod-process-line-form","form","Prod. process line","Ligne d'OF","",""
-"com.axelor.apps.production.db.ProdProcessLine","prod-process-line-grid","grid","Prod. process lines","Les lignes d'OF","",""
-"com.axelor.apps.production.db.ProdResource","prod-resource-form","form","Resource","Ressource","",""
-"com.axelor.apps.production.db.ProdResource","prod-resource-grid","grid","Resources","Les Ressources","",""
-"com.axelor.apps.production.db.ProdResourceLine","prod-resource-line-form","form","Prod. Human resource","Ressource","",""
-"com.axelor.apps.production.db.ProdResourceLine","prod-resource-line-grid","grid","Prod. Human resources","Les ressources","",""
-"production.root.bill.of.material","production.root.bill.of.material","action","Bills of materials","Les nomenclatures","",""
-"production.root.conf.machine","production.root.conf.machine","action","Machines","Machines","",""
-"production.root.conf.prod.resource","production.root.conf.prod.resource","action","Resources","Les Ressources","",""
-"production.root.prod.order","production.root.prod.order","action","Production orders","Les Ordres de fabrication","",""
-"production.root.prod.order.planning","production.root.prod.order.planning","action","PO plannings","Planification des OF","",""
-"production.root.prod.process","production.root.prod.process","action","Manufacturing processes","Les Processus de production","",""
+"domain","name","type","title","title_t","help","help_t","doc","doc_t"
+"production-root","Manufacturing","menu","Manufacturing","Production",,,,
+"production-root-bill-of-material","Bills of materials","menu","Bills of materials","Les nomenclatures",,,,
+"production-root-conf","Configurations","menu","Configurations","Configurations",,,,
+"production-root-conf-machine","Machines","menu","Machines","Machines",,,,
+"production-root-conf-prod-resource","Resources","menu","Resources","Les Ressources",,,,
+"production-root-prod-order","Production orders","menu","Production orders","Les Ordres de fabrication",,,,
+"production-root-prod-order-planning","PO plannings","menu","PO plannings","Planification des OF",,,,
+"production-root-prod-process","Manufacturing processes","menu","Manufacturing processes","Les Processus de production",,,,
+"com.axelor.apps.production.db.BillOfMaterial","bill-of-material-form","form","Bill of material","Nomenclatures",,,,
+"com.axelor.apps.production.db.BillOfMaterial","bill-of-material-grid","grid","Bills of material","Les nomenclatures",,,,
+"com.axelor.apps.production.db.BillOfMaterial","product","field","Product","Produit",,,,
+"com.axelor.apps.production.db.BillOfMaterial","qty","field","Quantity","Quantité",,,,
+"com.axelor.apps.production.db.BillOfMaterial","billOfMaterialLineList","field","BOMs","Nomenclatures",,,,
+"com.axelor.apps.production.db.BillOfMaterial","prodProcess","field","Production process","Gamme",,,,
+"com.axelor.apps.production.db.BillOfMaterialLine","parentBillOfMaterial","field","Parent BOM","Gamme parente",,,,
+"com.axelor.apps.production.db.BillOfMaterialLine","priority","field","Priority","Priorité",,,,
+"com.axelor.apps.production.db.BillOfMaterialLine","billOfMaterial","field","BOM","Nomenclature",,,,
+"com.axelor.apps.production.db.BillOfMaterialLine","bill-of-material-line-form","form","Bill of material line","Ligne de nomenclature",,,,
+"com.axelor.apps.production.db.BillOfMaterialLine","bill-of-material-line-grid","grid","Bills of material line","Les lignes de nomenclature",,,,
+"com.axelor.apps.production.db.Machine","name","field","Name","Nom",,,,
+"com.axelor.apps.production.db.Machine","serialNumber","field","Serial number","N° série",,,,
+"com.axelor.apps.production.db.Machine","description","field","Description","Description",,,,
+"com.axelor.apps.production.db.Machine","location","field","Location","Emplacement",,,,
+"com.axelor.apps.production.db.Machine","startingDuration","field","Starting duration (min)","Temps démarrage (min)",,,,
+"com.axelor.apps.production.db.Machine","setupDuration","field","Setup duration (min)","Temps mise en place (min)",,,,
+"com.axelor.apps.production.db.ManufOrder","manuf-order-form","form","Manufacturing order","Ordre de fabrication",,,,
+"manuf-order-form","","group","Moves In/Out","Entrées/Sorties",,,,
+"manuf-order-form","","group","Date","Date",,,,
+"manuf-order-form","","group","Action","Action",,,,
+"manuf-order-form","standbyAllLines","button","Stand by all lines","Suspendre toutes les lignes",,,,
+"manuf-order-form","endAllLines","button","Finish all lines ","Terminer toutes les lignes",,,,
+"com.axelor.apps.production.db.ManufOrder","manuf-order-grid","grid","Manufacturing orders","Les Ordres de fabrication",,,,
+"com.axelor.apps.production.db.ManufOrder","manufOrderPlanning","field","Manufacturing order planning","Production order planning",,,,
+"com.axelor.apps.production.db.ManufOrder","manufOrderSeq","field","MO Sequence","Sequence OF",,,,
+"com.axelor.apps.production.db.ManufOrder","billOfMaterial","field","BOM","Nomenclature",,,,
+"com.axelor.apps.production.db.ManufOrder","prodProcess","field","Production process","Gamme",,,,
+"com.axelor.apps.production.db.ManufOrder","inStockMoveList","field","Stock moves in","Mouvements entrée",,,,
+"com.axelor.apps.production.db.ManufOrder","outStockMove","field","Stock moves out","Mouvement sortie",,,,
+"com.axelor.apps.production.db.ManufOrder","inLocation","field","Location in","Emplacement source",,,,
+"com.axelor.apps.production.db.ManufOrder","outLocation","field","Location out","Emplacement sortie",,,,
+"com.axelor.apps.production.db.ManufOrder","startDate","field","Start date","Date début",,,,
+"com.axelor.apps.production.db.ManufOrder","endDate","field","End date","Date de fin",,,,
+"com.axelor.apps.production.db.ManufOrder","isSimulation","field","Simulation ?","Simulation ?",,,,
+"com.axelor.apps.production.db.ManufOrder","manufOrderLineList","field","Manufacturing order lines","Détail de fabrication",,,,
+"com.axelor.apps.production.db.ManufOrder","statusSelect","field","Status","Etat",,,,
+"com.axelor.apps.production.db.ManufOrderLine","manuf-order-line-form","form","MO line","Ligne de commande fournisseur",,,,
+"com.axelor.apps.production.db.ManufOrderLine","manufOrder","field","Manufacturing order","Ordre de fabrication",,,,
+"com.axelor.apps.production.db.ManufOrderLine","resource","field","Resource","Ressource",,,,
+"com.axelor.apps.production.db.ManufOrderLine","plannedStartDateT","field","Planned start date","Date de début prévue",,,,
+"com.axelor.apps.production.db.ManufOrderLine","plannedEndDateT","field","Planned end date","Date de fin prévue",,,,
+"com.axelor.apps.production.db.ManufOrderLine","statusSelect","field","Status","Etat",,,,
+"com.axelor.apps.production.db.ManufOrderLine","realStartDateT","field","Real start date","Date de début réelle",,,,
+"com.axelor.apps.production.db.ManufOrderLine","realEndDateT","field","Real end date","Date de fin réelle",,,,
+"manuf-order-line-form","","group","Planned dates","Dates planifiées",,,,
+"manuf-order-line-form","","group","Real Dates","Dates réelles",,,,
+"manuf-order-line-form","","group","Action","Action",,,,
+"manuf-order-line-form","start","button","Start","Démarrer",,,,
+"manuf-order-line-form","standBy","button","Stand by","Suspendre",,,,
+"manuf-order-line-form","end","button","End","Fin",,,,
+"com.axelor.apps.production.db.ManufOrderLine","manuf-order-line-grid","grid","MO lines","Les lignes de commande fournisseur",,,,
+"manuf-order-line-grid","start","button","Start","Démarrer",,,,
+"manuf-order-line-grid","standBy","button","Stand by","Suspendre",,,,
+"manuf-order-line-grid","end","button","End","Fin",,,,
+"com.axelor.apps.production.db.ManufOrderPlanning","manuf-order-planning-form","form","MO planning","Planification d'OF",,,,
+"manuf-order-planning-form","","group","Dates","Dates",,,,
+"manuf-order-planning-form","","group","Action","Action",,,,
+"manuf-order-planning-form","runSimulation","button","Run simulation","Lancer la simulation",,,,
+"manuf-order-planning-form","validateChanges","button","Validate changes","Valider les changements",,,,
+"com.axelor.apps.production.db.ManufOrderPlanning","manuf-order-planning-grid","grid","MO plannings","Planification des OF",,,,
+"com.axelor.apps.production.db.ManufOrderPlanning","manufOrderPlanningSeq","field","Name","Nom",,,,
+"com.axelor.apps.production.db.ManufOrderPlanning","startDate","field","Date de départ","Date de début",,,,
+"com.axelor.apps.production.db.ManufOrderPlanning","endDate","field","Date de fin","Date de fin",,,,
+"com.axelor.apps.production.db.ManufOrderPlanning","manufOrderPlanningLineList","field","Manufacturing orders","Ordres de fabrication",,,,
+"com.axelor.apps.production.db.ManufOrderPlanning","manufOrderList","field","Simulation manufacturing orders planning","Simulation planification des Ofs",,,,
+"com.axelor.apps.production.db.ManufOrderPlanning","isValidated","field","Is validated","Est validé",,,,
+"com.axelor.apps.production.db.ManufOrderPlanningLine","manuf-order-planning-line-form","form","MO planning line","Ligne de planification d'OF",,,,
+"com.axelor.apps.production.db.ManufOrderPlanningLine","manuf-order-planning-line-grid","grid","MO planning lines","Les lignes de planification d'OF",,,,
+"com.axelor.apps.production.db.ManufOrderPlanningLine","manufOrderPlanning","field","Manufacturing order planning","Planification des OF",,,,
+"com.axelor.apps.production.db.ManufOrderPlanningLine","manufOrder","field","Manufacturing order","Ordre de fabrication",,,,
+"com.axelor.apps.production.db.ManufOrderPlanningLine","manufOrderPlanningLineSeq","field","Sequence","Séquence",,,,
+"com.axelor.apps.production.db.ProdProcess","prod-process-form","form","Production process","Les Ordres de fabrication",,,,
+"com.axelor.apps.production.db.ProdProcess","prod-process-grid","grid","Production process","Les Ordres de fabrication",,,,
+"com.axelor.apps.production.db.ProdProcess","prodProcessSeq","field","Name","Nom",,,,
+"com.axelor.apps.production.db.ProdProcess","prodProcessLineList","field","Production process","Détail de la gamme",,,,
+"com.axelor.apps.production.db.ProdProcessLine","prod-process-line-form","form","Prod. process line","Ligne d'OF",,,,
+"com.axelor.apps.production.db.ProdProcessLine","prod-process-line-grid","grid","Prod. process lines","Les lignes d'OF",,,,
+"com.axelor.apps.production.db.ProdProcessLine","prodProcess","field","Production process","Gamme",,,,
+"com.axelor.apps.production.db.ProdProcessLine","prodResource","field","Resource","Ressources",,,,
+"com.axelor.apps.production.db.ProdProcessLine","capacityPerHour","field","Capacity / hours","Capacité / Heure",,,,
+"com.axelor.apps.production.db.ProdProcessLine","hasStockCheckout","field","Stock checkout ?","Vérifié stock ?",,,,
+"com.axelor.apps.production.db.ProdProcessLine","duration","field","Duration (min)","Durée (min)",,,,
+"com.axelor.apps.production.db.ProdProcessLine","nextProdProcessLine","field","Next production process line","Processus de fabrication suivant",,,,
+"com.axelor.apps.production.db.ProdProcessLine","previousProdProcessLine","field","Previous production process line","Processus de fabrication précédent",,,,
+"com.axelor.apps.production.db.ProdResource","prod-resource-form","form","Resource","Ressource",,,,
+"com.axelor.apps.production.db.ProdResource","prod-resource-grid","grid","Resources","Les Ressources",,,,
+"com.axelor.apps.production.db.ProdResource","label","field","Label","Libellé",,,,
+"com.axelor.apps.production.db.ProdResource","machine","field","Machine","Machine",,,,
+"com.axelor.apps.production.db.ProdResource","planning","field","Planning","Planning",,,,
+"com.axelor.apps.production.db.ProdResource","prodResouceLineList","field","Human resources","Ressources humaines",,,,
+"com.axelor.apps.production.db.ProdResourceLine","prod-resource-line-form","form","Prod. Human resource","Ressource",,,,
+"com.axelor.apps.production.db.ProdResourceLine","prod-resource-line-grid","grid","Prod. Human resources","Les ressources",,,,
+"com.axelor.apps.production.db.ProdResourceLine","prodResource","field","Resource","Ressource",,,,
+"com.axelor.apps.production.db.ProdResourceLine","product","field","Profil","Profil",,,,
+"com.axelor.apps.production.db.ProdResourceLine","employee","field","Employee","Employé",,,,
+"production.prod.order.status.select","1","select","Draft","Brouillon",,,,
+"production.prod.order.status.select","2","select","Standby","En pause",,,,
+"production.prod.order.status.select","3","select","Planned","Planifié",,,,
+"production.prod.order.status.select","4","select","Finished","Terminé",,,,
+"production.prod.order.status.select","5","select","Canceled","Annulé",,,,
+"production.root.bill.of.material","production.root.bill.of.material","action","Bills of materials","Les nomenclatures",,,,
+"production.root.conf.machine","production.root.conf.machine","action","Machines","Machines",,,,
+"production.root.conf.prod.resource","production.root.conf.prod.resource","action","Resources","Les Ressources",,,,
+"production.root.prod.order","production.root.prod.order","action","Production orders","Les Ordres de fabrication",,,,
+"production.root.prod.order.planning","production.root.prod.order.planning","action","PO plannings","Planification des OF",,,,
+"production.root.prod.process","production.root.prod.process","action","Manufacturing processes","Les Processus de production",,,,
