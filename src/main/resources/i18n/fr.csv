@@ -1722,6 +1722,7 @@
 "com.axelor.apps.base.db.UserInfo","projectSet","field","Projects","Projets",,,,
 "com.axelor.apps.base.db.UserInfo","activeTeam","field","Active Team","Equipe active",,,,
 "com.axelor.apps.base.db.UserInfo","fullName","field","Partner name","Nom du tiers",,,,
+"com.axelor.apps.base.db.UserInfo","timesheetPeriodConfig","field","Timesheet period config","Configuration période feuille de temps",,,,
 "com.axelor.apps.googleapps.db.UserProfile","driveUser","field","Drive User",,,,,
 "com.axelor.apps.googleapps.db.UserProfile","emailId","field","Email Id",,,,,
 "com.axelor.apps.googleapps.db.UserProfile","name","field","Name",,,,,
