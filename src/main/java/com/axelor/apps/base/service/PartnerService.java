@@ -15,10 +15,11 @@ public class PartnerService {
 
 	public boolean checkAccountingSituationList(List<AccountingSituation> accountingSituationList, Company company) {
 
-		for(AccountingSituation accountS : accountingSituationList) {
+		for(AccountingSituation accountingSituation : accountingSituationList) {
 
-			if(accountS.getCompany().getId() == company.getId()) 
+			if(accountingSituation.getCompany().equals(company))  { 
 				return true;
+			}
 		}
 		return false;
 	}

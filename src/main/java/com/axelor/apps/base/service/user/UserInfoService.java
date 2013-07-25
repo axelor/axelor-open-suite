@@ -1,6 +1,6 @@
 package com.axelor.apps.base.service.user;
 
-import com.axelor.apps.base.db.Agency;
+import com.axelor.apps.account.db.CashRegister;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Team;
@@ -43,14 +43,14 @@ public class UserInfoService {
 	 /**
      * Méthode qui retourne l'agence de l'utilisateur connecté
      * 
-     * @return Agency
-     *      L'agence
+     * @return CashRegister
+     *      La caisse
      */
-    public Agency getUserAgency() {
+    public CashRegister getUserCashRegister() {
         
         UserInfo userInfo = getUserInfo();
-        if (userInfo != null && userInfo.getAgency() != null){
-            return userInfo.getAgency();
+        if (userInfo != null && userInfo.getActiveCashRegister() != null){
+            return userInfo.getActiveCashRegister();
         }
     
         return null;

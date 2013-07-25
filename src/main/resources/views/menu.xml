@@ -530,15 +530,6 @@
 		<view type="form" />
 	</action-view>
 	
-	<menuitem name="evo-admin-root-user-agency" parent="evo-admin-root-user"
-		title="Agencies" action="evo.admin.root.base.agency" />
-
-	<action-view name="evo.admin.root.base.agency" title="Agencies"
-		model="com.axelor.apps.base.db.Agency" icon="img/icons/organisation_small.png">
-		<view type="grid" />
-		<view type="form" />
-	</action-view>
-
 	<menuitem name="evo-admin-root-user-company" parent="evo-admin-root-user"
 		title="Companies" action="evo.admin.root.base.company" />
 

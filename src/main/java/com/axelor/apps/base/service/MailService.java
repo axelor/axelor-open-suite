@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.AxelorSettings;
 import com.axelor.apps.account.db.CashRegister;
+import com.axelor.apps.account.db.CashRegisterLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.ReminderHistory;
 import com.axelor.apps.account.db.ReminderMethodLine;
@@ -108,14 +109,14 @@ public class MailService {
 	 * 			Une société
 	 * @throws AxelorException 
 	 */
-	public Mail createCashRegisterMail(String address, Company company, CashRegister cashRegister) throws AxelorException  {
+	public Mail createCashRegisterLineMail(String address, Company company, CashRegisterLine cashRegisterLine) throws AxelorException  {
 		LOG.debug("In createCashRegisterMail");
 		if(company.getCashRegisterMailModel() == null)  {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un model d'email Caisses pour la société %s", 
 					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
 		}
 		Mail mail = createGenericMail(company.getCashRegisterMailModel(), this.today, company, null);
-		mail.setCashRegister(cashRegister);
+		mail.setCashRegisterLine(cashRegisterLine);
 		mail.setAddressEmail(address);
 		
 		return this.replaceTag(mail);

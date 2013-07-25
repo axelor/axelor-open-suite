@@ -374,11 +374,6 @@
 		<option value="16">Doubtful Customers</option>
 	</selection>
 
-	<selection name="ionlineagency.batch.type.select">
-		<option value="1">Export to online agency</option>
-		<option value="2">Import from online agency</option>
-	</selection>
-
 	<selection name="ireimbursement.batch.type.select">
 		<option value="1">Reimbursement Export</option>
 		<option value="2">Rejected Reimbursements Import</option>

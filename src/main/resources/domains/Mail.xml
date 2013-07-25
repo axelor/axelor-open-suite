@@ -19,7 +19,7 @@
     <date name="sendRealDate" title="Sent Date"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Recipient"/>
     <many-to-one name="reminderHistory" ref="com.axelor.apps.account.db.ReminderHistory" title="Reminder line"/>
-    <many-to-one name="cashRegister" ref="com.axelor.apps.account.db.CashRegister" title="Cashier"/>
+    <many-to-one name="cashRegisterLine" ref="com.axelor.apps.account.db.CashRegisterLine" title="Cashier"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <many-to-one name="rejectMoveLine" ref="com.axelor.apps.account.db.MoveLine" title="Reject move line"/>
     <string name="pdfFilePath" title="Generated PDF file path"/>
