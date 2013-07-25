@@ -58,7 +58,7 @@
 		model="com.axelor.apps.organisation.db.Timesheet" icon="img/icons/organisation_small.png">
 		<view type="grid" name="timesheet-grid" />
 		<view type="form" name="timesheet-form" />
-		<domain>self.userInfo.internalUser.id = :_internalUserId</domain>
+		<domain>self.userInfo.internalUser.id = :_internalUserId and self.statusSelect = 1</domain>
 		<context name="_internalUserId" expr="eval: __user__.id"/>
 		<context name="_statusSelect" expr="1"/>
 	</action-view>
@@ -108,6 +108,7 @@
 		model="com.axelor.apps.organisation.db.Timesheet" icon="img/icons/organisation_small.png">
 		<view type="grid" name="timesheet-grid" />
 		<view type="form" name="timesheet-form" />
+		<domain>self.statusSelect = 2</domain>
 		<context name="_statusSelect" expr="1"/>
 	</action-view>
 	
@@ -170,6 +171,20 @@
 		<context name="_activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
 	</action-view>	
 	
+	<menuitem name="hr-root-history" parent="hr-root"
+		title="History" />
+		
+	<menuitem name="hr-root-history-olds-timesheets" parent="hr-root-history"
+		title="Olds timesheets" action="hr.root.history.olds.timesheets"/>
+		
+	<action-view name="hr.root.history.olds.timesheets" title="Olds timesheets"
+		model="com.axelor.apps.organisation.db.Timesheet" icon="img/icons/organisation_small.png">
+		<view type="grid" name="timesheet-grid" />
+		<view type="form" name="timesheet-form" />
+		<domain>self.statusSelect = 3</domain>
+		<context name="_statusSelect" expr="1"/>
+	</action-view>	
+		
 	<menuitem name="hr-root-conf" parent="hr-root" title="Configuration"
 		icon="img/icons/parameter.png" />
 

@@ -5,7 +5,6 @@
     
     <grid name="timesheet-grid" title="Timesheets" model="com.axelor.apps.organisation.db.Timesheet">
         <field name="userInfo"/>
-        <field name="period"/>
         <field name="fromDate"/>
         <field name="toDate"/>
         <field name="statusSelect"/>
@@ -14,7 +13,6 @@
     <form name="timesheet-form" title="Timesheet" model="com.axelor.apps.organisation.db.Timesheet" cols="8"
     onNew="action-timesheet-default-record,action-timesheet-getPeriod">
         <field name="userInfo"/>
-        <field name="period"/>
         <field name="statusSelect" widget="NavSelect"/>
         <break/>
         <field name="fromDate" onChange="action-timesheet-getPeriod"/>
