@@ -12,24 +12,61 @@
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" readonly="true" title="Société"/>
   	<string name="affairName" title="Affair name" namecolumn="true"/>
   	<string name="affairDescription" title="Affair description"/>
+  	<string name="description" max="1000" multiline="true" title="Description"/>
   	<boolean name="isModel" title="Model ?"/>
+  	<boolean name="isProject" title="Project ?"/>
+  	<boolean name="isAffair" title="Affair ?"/>
   	<boolean name="isTimeSheetImputable" title="Timesheet input required ?"/>
   	<many-to-one name="defaultTask" ref="com.axelor.apps.organisation.db.Task" title="Default task"/>
   	<boolean name="isReinvoicingExpense" title="Reinvoicing of travel expense"/>
   	<boolean name="isReinvoicingTime" title="Reinvoicing time spent"/>
   	
+  	<integer name="typeDurationSelect" title="Type duration" selection="organisation.project.type.duration.select"/>
+  	<integer name="plannedDuration" title="Planned duration"/>
   	<decimal name="initialBudgetTurnover" title="Turnover"/>
   	<decimal name="initialBudgetCost" title="Cost"/>
-  	<decimal name="initialBudgetMargin" title="Margin"/>
+  	<decimal name="initialBudgetMargin" title="Margin">
+  		<![CDATA[
+  			if (initialBudgetTurnover != null && initialBudgetCost != null) {
+  				initialBudgetMargin = initialBudgetTurnover.subtract(initialBudgetCost);
+  				return initialBudgetMargin;
+  			}
+  			return null;
+  		]]>
+  	</decimal>
   	<decimal name="realizedTurnover" title="Turnover"/>
   	<decimal name="realizedBudgetCost" title="Cost"/>
-  	<decimal name="realizedBudgetMargin" title="Margin"/>
+  	<decimal name="realizedBudgetMargin" title="Margin">
+  		<![CDATA[
+  			if (realizedTurnover != null && realizedBudgetCost != null) {
+  				realizedBudgetMargin = realizedTurnover.subtract(realizedBudgetCost);
+  				return realizedBudgetMargin;
+  			}
+  			return null;
+  		]]>
+  	</decimal>
   	<decimal name="remainingTurnover" title="Turnover"/>
   	<decimal name="remainingBudgetCost" title="Cost"/>
-  	<decimal name="remainingBudgetMargin" title="Margin"/>
+  	<decimal name="remainingBudgetMargin" title="Margin">
+  		<![CDATA[
+  			if (remainingTurnover != null && remainingBudgetCost != null) {
+  				remainingBudgetMargin = remainingTurnover.subtract(remainingBudgetCost);
+  				return remainingBudgetMargin;
+  			}
+  			return null;
+  		]]>
+  	</decimal>
   	<decimal name="expectedFinalTurnover" title="Turnover"/>
   	<decimal name="expectedFinalCost" title="Cost"/>
-  	<decimal name="expectedFinalMargin" title="Margin"/>
+  	<decimal name="expectedFinalMargin" title="Margin">
+  		<![CDATA[
+  			if (expectedFinalTurnover != null && expectedFinalCost != null) {
+  				expectedFinalMargin = expectedFinalTurnover.subtract(expectedFinalCost);
+  				return expectedFinalMargin;
+  			}
+  			return null;
+  		]]>
+  	</decimal>
   	
   	<decimal name="plannedTime" title="Planned time"/>
   	<decimal name="spentTime" title="Spent Time"/>
@@ -49,6 +86,19 @@
   	
   	<many-to-one name="modelProject" ref="com.axelor.apps.organisation.db.Project" title="Project model"/>
   	
+    <!-- Need -->
+    <date name="consultationDate" title="Consultation Date"/>
+    <string name="typeSelect" title="Type" selection="consulting.need.type.select"/>
+    <date name="deadline" title="Deadline"/>
+    <string name="complexity" title="Complexity" selection="grade.0.up.to.5.select"/>
+	<string name="competition" title="Competition" selection="grade.0.up.to.5.select"/>
+    <decimal name="plannedBudget" title="Planned budget"/>
+    <string name="needDescription" title="Need Description" large="true"/>
+    <binary name="specificationFile" title="Attach specification"/> 
+    <datetime name="answerDate" title="Answer Date"/>
+    <many-to-many name="candidateSet" title="Candidates" ref="com.axelor.apps.organisation.db.Candidate"/>
+    <many-to-many name="employeeSet" title="Employees" ref="com.axelor.apps.organisation.db.Employee"/>
+    <integer name="marketTypeSelect" title="Market Type" selection="organisation.affair.market.type.select"/>
     
   </entity>
 

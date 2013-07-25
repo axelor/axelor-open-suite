@@ -19,6 +19,7 @@
     <many-to-many name="projectSet" ref="com.axelor.apps.organisation.db.Project" title="Projects"/>
     <many-to-one name="activeTeam" ref="com.axelor.apps.base.db.Team"  title="Active Team"/>
    	<many-to-many name="personalCredentialSet" ref="com.axelor.apps.socialnetwork.db.PersonalCredential"/>
+    <many-to-one name="timesheetPeriodConfig" ref="com.axelor.apps.organisation.db.TimesheetPeriodConfig" title="Timesheet period config"/>
     
     <string name="fullName" namecolumn="true" search="partner" title="Partner name">
     	<![CDATA[

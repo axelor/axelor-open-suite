@@ -14,7 +14,7 @@
     <form name="tracking-number-form" title="Tracking Number" model="com.axelor.apps.base.db.TrackingNumber" cols="4"
     	onLoad="action-tracking-number-attrs-hide-fields" >
     	<field name="trackingNumberSeq"/>
-        <field name="product" hidden="true" onChange="action-tracking-number-attrs-hide-fields"/>
+        <field name="product" hidden="true" onChange="action-tracking-number-attrs-hide-fields,action-tracking-number-record-product-variant"/>
         <group title="Product Variants" colSpan="4" cols="4" readonly="true">
 	        <field name="productVariant" widget="NestedEditor" summary-view="true" form-view="product-variant-form" edit-window="self" canSelect="false" showTitle="false"/>
 	    </group>
@@ -27,5 +27,9 @@
     	<attribute name="hidden" for="warrantyExpirationDate" expr="eval: !product?.hasWarranty"/>
     	<attribute name="hidden" for="perishableExpirationDate" expr="eval: !product?.isPerishable"/>
     </action-attrs>
+    
+    <action-record name="action-tracking-number-record-product-variant" model="com.axelor.apps.base.db.TrackingNumber">
+    	<field name="productVariant" expr="action:action-product-variant-record-on-new" if="product?.productVariantConfiguration != null"/>
+    </action-record>
     
 </object-views>
