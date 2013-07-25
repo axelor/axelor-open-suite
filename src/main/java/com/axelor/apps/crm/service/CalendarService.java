@@ -21,6 +21,7 @@ import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Component;
+import net.fortuna.ical4j.model.ConstraintViolationException;
 import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.TimeZone;
@@ -141,7 +142,7 @@ public class CalendarService {
 	}
 	
 	
-	public void synchronizeCalendars(UserInfo userInfo) throws MalformedURLException, ObjectStoreException, ObjectNotFoundException, SocketException  {
+	public void synchronizeCalendars(UserInfo userInfo) throws MalformedURLException, ObjectStoreException, ObjectNotFoundException, SocketException, ConstraintViolationException  {
 	
 		for(Calendar internalCalendar : this.getInternalCalendarList())  {
 			
@@ -187,7 +188,7 @@ public class CalendarService {
 	
 		
 	
-	public List<VEvent> getExternalCalendar(PathResolver pathResolver, String url, Protocol protocol, int port, String login, String password, Calendar internalCalendar) throws MalformedURLException, ObjectStoreException, ObjectNotFoundException, SocketException  {
+	public List<VEvent> getExternalCalendar(PathResolver pathResolver, String url, Protocol protocol, int port, String login, String password, Calendar internalCalendar) throws MalformedURLException, ObjectStoreException, ObjectNotFoundException, SocketException, ConstraintViolationException  {
 		
 		String PRODID = "-//Ben Fortuna//iCal4j Connector 1.0//EN";
 	
@@ -250,9 +251,10 @@ public class CalendarService {
 				  	for(Event event : eventList)  {
 				  		calendar.getComponents(Component.VEVENT).add(this.createVEvent(event));
 					}
-				  	
+				  	calDavCalendarCollection.addCalendar(calendar);
 			  	}
 			}
+			
 			
 //			store.merge(calDavCalendarCollection.getId(), calDavCalendarCollection);
 		}
@@ -275,6 +277,8 @@ public class CalendarService {
 //		calDavCalendarCollection2.getCalendar(uid)
 //		store.getCollections().add(calDavCalendarCollection2);
 //		store.merge(calDavCalendarCollection2.getId(), calDavCalendarCollection2);
+		
+//		store.
 		
 		store.disconnect();
 		

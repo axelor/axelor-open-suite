@@ -7,6 +7,7 @@
     	<toolbar>
     		<button name="exportCalendar" title="Export calendar" onClick="com.axelor.apps.crm.web.CalendarController:exportCalendar" colSpan="1"/>
     		<button name="importCalendar" title="Import calendar" onClick="com.axelor.apps.crm.web.CalendarController:importCalendar" colSpan="1"/>
+    		<button name="synchronizeCalendars" title="Synchronize calendar" onClick="com.axelor.apps.crm.web.CalendarController:synchronizeCalendars" colSpan="1"/>
     	</toolbar>
         <field name="typeSelect"/>
         <field name="subject"/>
