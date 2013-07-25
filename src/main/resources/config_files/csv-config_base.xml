@@ -88,8 +88,6 @@
 	
 	<input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company"/>
 	
-	<input file="base_agency.csv" separator=";" type="com.axelor.apps.base.db.Agency"/>
-	
 	<input file="base_userInfo.csv" separator=";" type="com.axelor.apps.base.db.UserInfo">
 <!--       TODO A COMPLETER -->
 		<bind column="firstName" to="name" />
@@ -212,6 +210,8 @@
 			<bind column="_activeVatLine" to="importId"/>
 		</bind>
 	</input>
+	
+	<input file="account_cashRegister.csv" separator=";" type="com.axelor.apps.account.db.CashRegister"/>
 	
 	<input file="account_interBankCode.csv" separator=";" type="com.axelor.apps.account.db.InterbankCodeLine">
         <bind column="code_rejet" to="code" />
