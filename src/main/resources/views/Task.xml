@@ -73,23 +73,23 @@
 	        </page>
 	        <page name="financialInformation" title="Financial information" colSpan="4">
 	            <group title="Budget initial" colSpan="4" cols="6">
-	                <field name="initialBudgetTurnover" onChange="action-task-record-compute-margin-fields"/>
-	                <field name="initialBudgetCost" onChange="action-task-record-compute-margin-fields"/>
+	                <field name="initialBudgetTurnover"/>
+	                <field name="initialBudgetCost"/>
 	                <field name="initialBudgetMargin"/>
 	            </group>
 	            <group title="Reaslized" colSpan="4" cols="6">
-	                <field name="realizedTurnover" onChange="action-task-record-compute-margin-fields"/>
-	                <field name="realizedBudgetCost" onChange="action-task-record-compute-margin-fields"/>
+	                <field name="realizedTurnover"/>
+	                <field name="realizedBudgetCost"/>
 	                <field name="realizedBudgetMargin"/>
 	            </group>
 	            <group title="Remaining to do" colSpan="4" cols="6">
-	                <field name="remainingTurnover" onChange="action-task-record-compute-margin-fields"/>
-	                <field name="remainingBudgetCost" onChange="action-task-record-compute-margin-fields"/>
+	                <field name="remainingTurnover"/>
+	                <field name="remainingBudgetCost"/>
 	                <field name="remainingBudgetMargin"/>
 	            </group>
 	            <group title="Estimated final" colSpan="4" cols="6">
-	                <field name="expectedFinalTurnover" onChange="action-task-record-compute-margin-fields"/>
-	                <field name="expectedFinalCost" onChange="action-task-record-compute-margin-fields"/>
+	                <field name="expectedFinalTurnover"/>
+	                <field name="expectedFinalCost"/>
 	                <field name="expectedFinalMargin"/>
 	                <field name="gapBetweenFinalAndInitial"/>
 	            </group>
@@ -131,14 +131,7 @@
     <action-record name="action-task-compute-total-planned-qty" model="com.axelor.apps.organisation.db.Task">
     	<field name="totalPlannedQty" expr="eval: planningLineList?.collect(){it?.duration}?.sum()" if="planningLineList != null"/>
     </action-record>
-    
-    <action-record name="action-task-record-compute-margin-fields" model="com.axelor.apps.organisation.db.Task">
-		<field name="initialBudgetMargin" expr="eval: initialBudgetTurnover - initialBudgetCost" if="initialBudgetTurnover &amp;&amp; initialBudgetCost"/>
-		<field name="realizedBudgetMargin" expr="eval: realizedTurnover - realizedBudgetCost" if="realizedTurnover &amp;&amp; realizedBudgetCost"/>
-		<field name="remainingBudgetMargin" expr="eval: remainingTurnover - remainingBudgetCost" if="remainingTurnover &amp;&amp; remainingBudgetCost"/>
-		<field name="expectedFinalMargin" expr="eval: expectedFinalTurnover - expectedFinalCost" if="expectedFinalTurnover &amp;&amp; expectedFinalCost"/>
-	</action-record>
-	
+    	
     <action-method name="action-task-method-create-invoice">
 		<call class="com.axelor.apps.accountorganisation.web.TaskInvoiceController" method="createInvoice"/>
 	</action-method>
