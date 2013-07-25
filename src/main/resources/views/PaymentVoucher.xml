@@ -6,7 +6,7 @@
     <grid name="payment-voucher-grid" title="Payment vouchers" model="com.axelor.apps.account.db.PaymentVoucher">
         <field name="ref"/>
         <field name="operationTypeSelect"/>
-        <field name="agency"/>
+        <field name="cashRegister"/>
         <field name="userInfo"/>
         <field name="paymentMode"/>
         <field name="paymentDateTime"/>
@@ -20,14 +20,14 @@
 	<form cols="4" name="payment-voucher-form" title="Payment voucher" model="com.axelor.apps.account.db.PaymentVoucher"
     	onLoad="action-payment-voucher-attrs-hidden-paybox-email,action-pv-hide-confirm-button,action-pv-hide-rejectToPay,action-pv-hide-invoiceToPay,action-record-fill-date-time-pv,action-pv-attrs-hidden-bankCardTransactionNumber,action-attrs-payment-voucher-hidden-receipt,action-attrs-payment-voucher-readonly-status,action-payment-voucher-hidden-fields-if-purchase"
 		onSave="com.axelor.apps.account.web.PaymentVoucherController:paymentVoucherSetNum"
-		onNew="action-payment-voucher-attrs-hidden-paybox-email,action-record-payment-voucher-default-record,action-record-payment-voucher-agency-record,action-pv-hide-confirm-button,action-pv-hide-rejectToPay,action-pv-hide-invoiceToPay,action-record-fill-date-time-pv,action-pv-attrs-hidden-bankCardTransactionNumber,action-attrs-payment-voucher-hidden-receipt,action-attrs-payment-voucher-readonly-status,action-payment-voucher-hidden-fields-if-purchase">
+		onNew="action-payment-voucher-attrs-hidden-paybox-email,action-record-payment-voucher-default-record,action-record-payment-voucher-cash-register-record,action-pv-hide-confirm-button,action-pv-hide-rejectToPay,action-pv-hide-invoiceToPay,action-record-fill-date-time-pv,action-pv-attrs-hidden-bankCardTransactionNumber,action-attrs-payment-voucher-hidden-receipt,action-attrs-payment-voucher-readonly-status,action-payment-voucher-hidden-fields-if-purchase">
 		<group name="header" colSpan="3" cols="4">
 			<field name="ref" readonly="true" />
 			<field name="operationTypeSelect" onChange="action-payment-voucher-hidden-fields-if-purchase"/>
 			<field name="userInfo" />
 			<field name="paymentDateTime" />
 			<field name="company" widget="SuggestBox" />
-			<field name="agency" />
+			<field name="cashRegister" />
 			<field name="autoOk" />
 		</group>
         <group title="Actions" colSpan="1" cols="1">
@@ -219,13 +219,13 @@
 	
 	<action-record name="action-record-payment-voucher-default-record" model="com.axelor.apps.account.db.PaymentVoucher">
 		<field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
-       	<field name="agency" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserAgency()"/>
+       	<field name="cashRegister" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserCashRegister()"/>
 		<field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
 		<field name="operationTypeSelect" expr="eval: _operationTypeSelect"/>
 	</action-record>
 	
-	<action-record name="action-record-payment-voucher-agency-record" model="com.axelor.apps.account.db.PaymentVoucher">
-		<field name="agency" expr="eval: userInfo?.agency"/>
+	<action-record name="action-record-payment-voucher-cash-register-record" model="com.axelor.apps.account.db.PaymentVoucher">
+		<field name="cashRegister" expr="eval: userInfo?.activeCashRegister"/>
 	</action-record>
 	
 	<action-method name="action-payment-voucher-getDateTime">

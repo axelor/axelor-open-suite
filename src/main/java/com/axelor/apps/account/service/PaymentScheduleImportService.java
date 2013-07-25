@@ -68,7 +68,7 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 	
 	private LocalDate today;
 	
-	private List<PaymentScheduleLine> pslListGC = new ArrayList<PaymentScheduleLine>();   				// liste des échéances mensu grand compte rejetées
+	private List<PaymentScheduleLine> pslListGC = new ArrayList<PaymentScheduleLine>();   				// liste des échéances de lissage de paiement rejetées
 	private List<PaymentScheduleLine> pslListPayment = new ArrayList<PaymentScheduleLine>();  			// liste des échéances de paiement rejetées
 	private List<Invoice> invoiceList = new ArrayList<Invoice>();										// liste des factures rejetées
 
@@ -90,6 +90,16 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 	public List<Invoice> getInvoiceList()  {
 		return this.invoiceList;
 	}
+	
+	
+	public void initialiseCollection()  {
+		
+		pslListPayment = new ArrayList<PaymentScheduleLine>();  			// liste des échéances de paiement rejetées
+		pslListGC = new ArrayList<PaymentScheduleLine>();   				// liste des échéances de lissage de paiement rejetées
+		invoiceList = new ArrayList<Invoice>();	
+		
+	}
+	
 	
 	public void checkCompanyFields(Company company) throws AxelorException  {
 		// Test si les champs d'import sont configurés dans la société
@@ -168,7 +178,9 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 	}
 	
 	
-	public List<PaymentScheduleLine> importRejectPaymentScheduleLine(String dateReject, String refDebitReject, BigDecimal amountReject, InterbankCodeLine causeReject, Company company) throws AxelorException  {
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public List<PaymentScheduleLine> importRejectPaymentScheduleLine(LocalDate dateReject, String refDebitReject, BigDecimal amountReject, InterbankCodeLine causeReject, Company company) throws AxelorException  {
+		
 		List<PaymentScheduleLine> paymentScheduleLineRejectedList = new ArrayList<PaymentScheduleLine>();
 		
 		List<PaymentScheduleLine> paymentScheduleLinesToRejectList = this.getPaymentScheduleLinesToReject(refDebitReject, company);
@@ -262,7 +274,7 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 	}
 	
 	
-	public List<Invoice> importRejectInvoice(String dateReject, String refDebitReject, BigDecimal amountReject, InterbankCodeLine causeReject, Company company)  {
+	public List<Invoice> importRejectInvoice(LocalDate dateReject, String refDebitReject, BigDecimal amountReject, InterbankCodeLine causeReject, Company company)  {
 		List<Invoice> invoiceRejectedList = new ArrayList<Invoice>();
 		
 		List<Invoice> invoicesToRejectList = this.getInvoicesToReject(refDebitReject, company);
@@ -275,8 +287,10 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 			amountReject = this.setAmountRejected(invoice, amountReject, cs.getAmountRemainingFromPaymentMove(invoice));
 			
 			if(invoice.getAmountRejected().compareTo(BigDecimal.ZERO) == 1)  {
-				invoice.setRejectDate(ris.createRejectDate(dateReject));
+				invoice.setRejectDate(dateReject);
 				invoice.setInterbankCodeLine(causeReject);
+				
+				invoice.save();
 			
 				invoiceList.add(invoice);
 				invoiceRejectedList.add(invoice);
@@ -842,13 +856,11 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 	 * @param statusClo
 	 * 				Un status 'clo' ie cloturé
 	 */
-	public void setRejectOnPaymentScheduleLine(PaymentScheduleLine paymentScheduleLine, String dateReject, InterbankCodeLine causeReject, Status statusClo)  {
+	public void setRejectOnPaymentScheduleLine(PaymentScheduleLine paymentScheduleLine, LocalDate dateReject, InterbankCodeLine causeReject, Status statusClo)  {
 		// Maj de la ligne originale en rejet
 		paymentScheduleLine.setRejectedOk(true);
 
-		LocalDate localDate = ris.createRejectDate(dateReject);
-		
-		paymentScheduleLine.setRejectDate(localDate);
+		paymentScheduleLine.setRejectDate(dateReject);
 		paymentScheduleLine.setInterbankCodeLine(causeReject);
 		paymentScheduleLine.setStatus(statusClo);
 	}

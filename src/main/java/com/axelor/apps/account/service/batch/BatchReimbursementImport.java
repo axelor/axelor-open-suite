@@ -1,7 +1,8 @@
-package com.axelor.apps.account.service.generator.batch;
+package com.axelor.apps.account.service.batch;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -27,12 +28,14 @@ public class BatchReimbursementImport extends BatchStrategy {
 	private boolean stop = false;
 	
 	private BigDecimal totalAmount = BigDecimal.ZERO;
+	
+	private String updateCustomerAccountLog = "";
 
 	
 	@Inject
-	public BatchReimbursementImport(ReimbursementImportService reimbursementImportService, RejectImportService rejectImportService) {
+	public BatchReimbursementImport(ReimbursementImportService reimbursementImportService, RejectImportService rejectImportService, BatchAccountCustomer batchAccountCustomer) {
 		
-		super(reimbursementImportService, rejectImportService);
+		super(reimbursementImportService, rejectImportService, batchAccountCustomer);
 		
 	}
 
@@ -64,20 +67,11 @@ public class BatchReimbursementImport extends BatchStrategy {
 			
 			company = Company.find(company.getId());
 			
-			Move move = null;
+			Map<List<String[]>,String> data = null;
 			
-			LocalDate rejectDate = null;
-			
-			List<String[]> rejectList = null;
 			try  {
-				rejectList = rejectImportService.getCFONBFile(company.getReimbursementImportFolderPathCFONB(), company.getTempReimbImportFolderPathCFONB(),company, 0);
-	
-				if(rejectList != null && !rejectList.isEmpty())  {
-					
-					rejectDate = rejectImportService.createRejectDate(rejectList.get(0)[0]);
-					
-					move = reimbursementImportService.createMoveReject(Company.find(company.getId()), rejectDate);
-				}	
+				data = rejectImportService.getCFONBFileByLot(company.getReimbursementImportFolderPathCFONB(), company.getTempReimbImportFolderPathCFONB(),company, 0);
+
 				
 			} catch (AxelorException e) {
 				
@@ -102,12 +96,17 @@ public class BatchReimbursementImport extends BatchStrategy {
 			
 			int i = 0;
 			
-			if(move != null)  {
+			for(List<String[]> rejectList : data.keySet())  {
+
+				LocalDate rejectDate = rejectImportService.createRejectDate(data.get(rejectList));
+								
+				Move move = this.createMove(company, rejectDate);
+				
 				for(String[] reject : rejectList)  {
 					
 					try  {
 						
-						Reimbursement reimbursement = reimbursementImportService.createReimbursementRejectMoveLine(reject, Company.find(company.getId()), seq, Move.find(move.getId()));
+						Reimbursement reimbursement = reimbursementImportService.createReimbursementRejectMoveLine(reject, Company.find(company.getId()), seq, Move.find(move.getId()), rejectDate);
 						if(reimbursement != null)  {
 							LOG.debug("Remboursement n° {} traité", reimbursement.getRef());
 							seq++;
@@ -135,31 +134,70 @@ public class BatchReimbursementImport extends BatchStrategy {
 					}	
 				}
 				
-				try  {
-					if(seq != 1)  {
-						MoveLine oppositeMoveLine = reimbursementImportService.createOppositeRejectMoveLine(Move.find(move.getId()), seq, rejectDate);
-						reimbursementImportService.validateMove(Move.find(move.getId()));
-						this.totalAmount = this.totalAmount.add(MoveLine.find(oppositeMoveLine.getId()).getDebit());
-					}
-					else {
-						reimbursementImportService.deleteMove(Move.find(move.getId()));
-					}
-				} catch (AxelorException e) {
-					
-					TraceBackService.trace(new AxelorException(String.format("Batch d'import des remboursements %s", batch.getId()), e, e.getcategory()), IException.REIMBURSEMENT, batch.getId());
-					
-					incrementAnomaly();
-					
-				} catch (Exception e) {
-					
-					TraceBackService.trace(new Exception(String.format("Batch d'import des remboursements %s", batch.getId()), e), IException.REIMBURSEMENT, batch.getId());
-					
-					incrementAnomaly();
-					
-					LOG.error("Bug(Anomalie) généré(e) pour le batch d'import des remboursements {}", batch.getId());
+				this.validateMove(move, rejectDate, seq);
 				
-				}
 			}
+				
+			updateCustomerAccountLog += batchAccountCustomer.updateAccountingSituationMarked(company);
+		}
+	}
+	
+	
+	public Move createMove(Company company, LocalDate rejectDate)  {
+		
+		Move move = null;
+		
+		try  {
+			move = reimbursementImportService.createMoveReject(Company.find(company.getId()), rejectDate);
+			
+			
+		} catch (AxelorException e) {
+			
+			TraceBackService.trace(new AxelorException(String.format("Batch d'import des remboursements %s", batch.getId()), e, e.getcategory()), IException.REIMBURSEMENT, batch.getId());
+			
+			incrementAnomaly();
+			
+			stop();
+			
+		} catch (Exception e) {
+			
+			TraceBackService.trace(new Exception(String.format("Batch d'import des remboursements %s", batch.getId()), e), IException.REIMBURSEMENT, batch.getId());
+			
+			incrementAnomaly();
+			
+			LOG.error("Bug(Anomalie) généré(e) pour le batch d'import des remboursements {}", batch.getId());
+		
+			stop();
+		}	
+		
+		return move;
+	}
+	
+	
+	public void validateMove(Move move, LocalDate rejectDate, int seq)  {
+		try  {
+			if(seq != 1)  {
+				MoveLine oppositeMoveLine = reimbursementImportService.createOppositeRejectMoveLine(Move.find(move.getId()), seq, rejectDate);
+				reimbursementImportService.validateMove(Move.find(move.getId()));
+				this.totalAmount = this.totalAmount.add(MoveLine.find(oppositeMoveLine.getId()).getDebit());
+			}
+			else {
+				reimbursementImportService.deleteMove(Move.find(move.getId()));
+			}
+		} catch (AxelorException e) {
+			
+			TraceBackService.trace(new AxelorException(String.format("Batch d'import des remboursements %s", batch.getId()), e, e.getcategory()), IException.REIMBURSEMENT, batch.getId());
+			
+			incrementAnomaly();
+			
+		} catch (Exception e) {
+			
+			TraceBackService.trace(new Exception(String.format("Batch d'import des remboursements %s", batch.getId()), e), IException.REIMBURSEMENT, batch.getId());
+			
+			incrementAnomaly();
+			
+			LOG.error("Bug(Anomalie) généré(e) pour le batch d'import des remboursements {}", batch.getId());
+		
 		}
 	}
 	
@@ -177,6 +215,9 @@ public class BatchReimbursementImport extends BatchStrategy {
 		comment += String.format("\t* Montant total : %s \n", this.totalAmount);
 		comment += String.format("\t* %s anomalie(s)", batch.getAnomaly());
 
+		comment += String.format("\t* ------------------------------- \n");
+		comment += String.format("\t* %s ", updateCustomerAccountLog);
+		
 		super.stop();
 		addComment(comment);
 		

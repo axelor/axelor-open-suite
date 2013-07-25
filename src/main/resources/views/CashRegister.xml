@@ -2,50 +2,16 @@
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
-    
-    <grid name="cash-register-grid" title="Cash register" model="com.axelor.apps.account.db.CashRegister">
-        <field name="userInfo"/>
-        <field name="agency"/>
-        <field name="createDateTime"/>
-        <field name="cashRegisterDate"/>
-        <field name="cashRegisterAmount"/>
-        <field name="depositedAmount"/>
-        <field name="stateSelect"/>
+    <grid name="cash-register-grid" title="Cash registers" model="com.axelor.apps.account.db.CashRegister">
+        <field name="name"/>
+        <field name="num"/>
+        <field name="company"/>
     </grid>
-    
-    <form name="cash-register-form" title="Cash register" model="com.axelor.apps.account.db.CashRegister" cols="4"
-    onNew="action-cash-register-record-new,action-cash-register-attrs-hidden-button"
-    onLoad="action-cash-register-attrs-hidden-button,action-cash-register-attrs-readonly">
-        <field name="userInfo"/>
-        <field name="agency"/>
-        <field name="createDateTime"/>
-        <field name="cashRegisterDate"/>
-        <field name="cashRegisterAmount"/>
-        <field name="depositedAmount"/>
-        <field name="stateSelect"/>
-        <field name="emailSendedOk"/>
-        <button name="closeCashRegister" title="Close cashier" colSpan="2" onClick="save,com.axelor.apps.account.web.CashRegisterController:closeCashRegister,action-cash-register-attrs-hidden-button,save"/>
-    	<button name="openCashRegister" title="Open cashier" colSpan="2" onClick="save,com.axelor.apps.account.web.CashRegisterController:openCashRegister,action-cash-register-attrs-hidden-button,save"/>
+    <form name="cash-register-form" title="Cash register" model="com.axelor.apps.account.db.CashRegister" cols="4">
+        <field name="name"/>
+        <field name="num"/>
+        <field name="company"/>
+        <field name="address"/>
+        <break/>
     </form>
-    
-    <action-record name="action-cash-register-record-new" model="com.axelor.apps.account.db.CashRegister">
-    	<field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
-    	<field name="agency"   expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserAgency()"/>
-    	<field name="createDateTime" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()"/>
-    	<field name="cashRegisterDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
-    	<field name="stateSelect" expr="0"/>
-    </action-record>
-    
-    <action-attrs name="action-cash-register-attrs-hidden-button">
-    	<attribute name="hidden" for="closeCashRegister" expr="eval: emailSendedOk || (stateSelect == 1)"/>
-      	<attribute name="hidden" for="openCashRegister" expr="eval: emailSendedOk || (stateSelect == 0)"/>	
-    </action-attrs>
-
-	<action-attrs name="action-cash-register-attrs-readonly">
-		<attribute name="readonly" for="agency" expr="eval: emailSendedOK "/>
-		<attribute name="readonly" for="cashRegisterDate" expr="eval: emailSendedOK "/>
-		<attribute name="readonly" for="cashRegisterAmount" expr="eval: emailSendedOK "/>
-		<attribute name="readonly" for="depositedAmount" expr="eval: emailSendedOK "/>
-	</action-attrs>
-
 </object-views>

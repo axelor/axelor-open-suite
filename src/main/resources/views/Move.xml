@@ -23,7 +23,7 @@
 	            <field name="company" widget="SuggestBox" onChange="action-move-method-get-period"/>
 	            <field name="period"/>
 	            <field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form"/>
-	            <field name="agency"/>
+	            <field name="cashRegister"/>
 	            <field name="invoice" domain="self.company = :company" grid-view="invoice-grid" form-view="invoice-form"/>
 	            <field name="journal" domain="self.inactiveOk != true"/>
 	            <field name="paymentMode"/>
@@ -101,7 +101,7 @@
    	<!-- ACTION RECORD -->
     <action-record name="default-move-record" model="com.axelor.apps.account.db.Move">
         <field name="state" expr="eval: 'draft'"/>
-        <field name="agency" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserAgency()"/>
+        <field name="cashRegister" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserCashRegister()"/>
 		<field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
 		<field name="getInfoFromFirstMoveLineOk" expr="eval: true"/>
 		<field name="date" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="date == null"/>

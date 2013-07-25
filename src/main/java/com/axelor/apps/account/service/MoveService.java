@@ -9,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountingSituation;
+import com.axelor.apps.account.db.CashRegister;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
@@ -191,6 +193,29 @@ public class MoveService {
 		
 		return move;
 		
+	}
+	
+	
+	/**
+	 * Créer une écriture comptable de toute pièce spécifique à une saisie paiement.
+	 * 
+	 * @param journal
+	 * @param period
+	 * @param company
+	 * @param invoice
+	 * @param partner
+	 * @param isReject
+	 * 		<code>true = écriture de rejet avec séquence spécifique</code>
+	 * @param agency
+	 * 		L'agence dans laquelle s'effectue le paiement
+	 * @return
+	 * @throws AxelorException 
+	 */
+	public Move createMove(Journal journal, Company company, Invoice invoice, Partner partner, LocalDate date, PaymentMode paymentMode, boolean isReject, CashRegister cashRegister) throws AxelorException{
+		
+		Move move = this.createMove(journal, company, invoice, partner, date, paymentMode, isReject);
+		move.setCashRegister(cashRegister);
+		return move;
 	}
 	
 	
@@ -491,7 +516,7 @@ public class MoveService {
 			oDmove.getMoveLineList().add(debitMoveLine);
 			
 			// Emploie des dûs sur les lignes de credit qui seront créées au fil de l'eau
-			pas.createExcessPaymentWithAmount(debitMoveLines, amount, oDmove, 2, partner, company, null, account);
+			pas.createExcessPaymentWithAmount(debitMoveLines, amount, oDmove, 2, partner, company, null, account, toDay);
 			
 			this.validateMove(oDmove);
 			
@@ -631,7 +656,23 @@ public class MoveService {
 	 * 
 	 * @throws AxelorException
 	 */
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void validateMove(Move move) throws AxelorException {
+		
+		this.validateMove(move, true);
+		
+	}
+	
+	
+	
+	/**
+	 * Valider une écriture comptable.
+	 * 
+	 * @param move
+	 * 
+	 * @throws AxelorException
+	 */
+	public void validateMove(Move move, boolean updateCustomerAccount) throws AxelorException {
 
 		LOG.debug("Validation de l'écriture comptable {}", move.getReference());
 
@@ -639,9 +680,37 @@ public class MoveService {
 		
 		move.save();
 		
-		// Mise à jour du compte client
-		acs.updatePartnerAccountingSituation(acs.getPartnerOfMove(move), move.getCompany());
+		if(updateCustomerAccount)  {
+			this.updateCustomerAccount(move);
+		}
+		else  {
+			this.flagPartners(move);
+		}
 	}
+	
+	
+	
+	public void flagPartners(Move move)  {
+		
+		acs.flagPartners(acs.getPartnerOfMove(move), move.getCompany());
+		
+	}
+	
+	
+	
+	/**
+	 * Mise à jour du compte client
+	 * 
+	 * @param move
+	 * 
+	 * @throws AxelorException
+	 */
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void updateCustomerAccount(Move move)  {
+		
+		acs.updatePartnerAccountingSituation(acs.getPartnerOfMove(move), move.getCompany(), true, true, false);
+	}
+	
 	
 	
 	/**

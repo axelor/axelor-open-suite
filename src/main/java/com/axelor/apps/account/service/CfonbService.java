@@ -5,7 +5,9 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -1054,6 +1056,29 @@ public class CfonbService {
 	
 	
 	/**
+	 * Récupération par lots
+	 * @param fileName
+	 * @param company
+	 * @param operation
+	 * 	 	Le type d'opération :
+	 * 		<ul>
+     *      <li>0 = Virement</li>
+     *      <li>1 = Prélèvement</li>
+     *      <li>2 = TIP impayé</li>
+     *      <li>3 = TIP</li>
+     *      <li>4 = TIP + chèque</li>
+     *  	</ul>
+	 * @return
+	 * @throws AxelorException
+	 * @throws IOException
+	 */
+	public Map<List<String[]>,String> importCFONBByLot(String fileName, Company company, int operation) throws AxelorException, IOException  {
+		return this.importCFONBByLot(fileName, company, operation, 999);
+	}
+	
+	
+	
+	/**
 	 * 
 	 * @param fileName
 	 * @param company
@@ -1121,6 +1146,80 @@ public class CfonbService {
 			this.testLength(headerCFONB, multiDetailsCFONB, endingCFONB, company);
 			
 			importDataList.addAll(this.getDetailDataAndCheckAmount(operation, headerCFONB, multiDetailsCFONB, endingCFONB, fileName));
+		}
+		return importDataList;
+	}
+	
+	
+	
+	/**
+	 * Récupération par lots
+	 * @param fileName
+	 * @param company
+	 * @param operation
+	 * 	 	Le type d'opération :
+	 * 		<ul>
+     *      <li>0 = Virement</li>
+     *      <li>1 = Prélèvement</li>
+     *      <li>2 = TIP impayé</li>
+     *      <li>3 = TIP</li>
+     *      <li>4 = TIP + chèque</li>
+     *  	</ul>
+	 * @return
+	 * @throws AxelorException
+	 * @throws IOException
+	 */
+	public Map<List<String[]>,String> importCFONBByLot(String fileName, Company company, int operation, int optionalOperation) throws AxelorException, IOException  {
+		
+		//		un enregistrement "en-tête" (code 31)
+		// 		un enregistrement "détail" (code 34)
+		// 		un enregistrement "fin" (code 39)
+		
+		this.importFile = FileTool.reader(fileName);
+				
+		this.testCompanyImportCFONBField(company);
+		
+		if(GeneralService.getGeneral().getTransferAndDirectDebitInterbankCode() == null)  {
+			throw new AxelorException(String.format("%s :\n Veuillez configurer une Liste des codes motifs de rejet/retour relatifs aux Virements, Prélèvements et TIP dans l'administration générale",
+					GeneralService.getExceptionAccountingMsg()), IException.CONFIGURATION_ERROR);	
+		}
+		
+		String headerCFONB = null;
+		List<String> multiDetailsCFONB = null;
+		String endingCFONB = null;
+		Map<List<String[]>,String> importDataList = new HashMap<List<String[]>,String>();
+
+		
+		// Pour chaque sequence, on récupère les enregistrements, et on les vérifie.
+		// Ensuite on supprime les lignes traitées du fichier chargé en mémoire
+		// Et on recommence l'opération jusqu'à ne plus avoir de ligne à traiter
+		while(this.importFile != null && this.importFile.size() != 0)  {
+			headerCFONB = this.getHeaderCFONB(this.importFile, company, operation, optionalOperation);
+			if(headerCFONB == null)  {
+				throw new AxelorException(String.format("%s :\n Il manque un enregistrement en-tête dans le fichier %s",
+						GeneralService.getExceptionAccountingMsg(),fileName), IException.CONFIGURATION_ERROR);
+			}
+			this.importFile.remove(headerCFONB);
+			
+			multiDetailsCFONB = this.getDetailsCFONB(this.importFile, company, operation, optionalOperation);
+			if(multiDetailsCFONB.isEmpty())  {
+				throw new AxelorException(String.format("%s :\n Il manque un ou plusieurs enregistrements détail dans le fichier %s",
+						GeneralService.getExceptionAccountingMsg(),fileName), IException.CONFIGURATION_ERROR);
+			}
+			for(String detail : multiDetailsCFONB)  {
+				this.importFile.remove(detail);
+			}
+			
+			endingCFONB = this.getEndingCFONB(this.importFile, company, operation, optionalOperation);
+			if(endingCFONB == null)  {
+				throw new AxelorException(String.format("%s :\n Il manque un enregistrement fin dans le fichier %s",
+						GeneralService.getExceptionAccountingMsg(),fileName), IException.CONFIGURATION_ERROR);
+			}
+			this.importFile.remove(endingCFONB);
+			
+			this.testLength(headerCFONB, multiDetailsCFONB, endingCFONB, company);
+			
+			importDataList.put(this.getDetailDataAndCheckAmount(operation, headerCFONB, multiDetailsCFONB, endingCFONB, fileName),this.getHeaderDate(headerCFONB));
 		}
 		return importDataList;
 	}
@@ -1243,6 +1342,21 @@ public class CfonbService {
 		
 		return detailData;
 	}
+	
+	
+	/**
+	 * Fonction permettant de récupérer la date de rejet de l'en-tête d'un lot de rejet de prélèvement ou virement
+	 * @param detailCFONB
+	 * 			Un enregistrement 'détail' d'un rejet de prélèvement au format CFONB
+	 * @param isRejectTIP
+	 * 			Est ce que cela concerne les rejets de TIP ?
+	 * @return
+	 * 			Les infos de rejet d'un prélèvement ou virement
+	 */
+	public String getHeaderDate(String headerCFONB)  {
+		return headerCFONB.substring(10, 16);
+	}
+	
 	
 	
 	/**

@@ -241,7 +241,7 @@ public class PaymentScheduleExportService {
 				PaymentScheduleLine rejectedPaymentScheduleLine = this.getPaymentScheduleLineRejectOrigin(paymentScheduleLine);
 				if(rejectedPaymentScheduleLine.getRejectMoveLine() != null 
 						&& rejectedPaymentScheduleLine.getRejectMoveLine().getAmountRemaining().compareTo(BigDecimal.ZERO) == 1)  {
-					rcs.reconcile(rejectedPaymentScheduleLine.getRejectMoveLine(), moveLine);
+					rcs.reconcile(rejectedPaymentScheduleLine.getRejectMoveLine(), moveLine, false);
 				}
 			}
 			else  {
@@ -693,19 +693,19 @@ public class PaymentScheduleExportService {
 	 * 			Un Export des prélèvement
 	 * @throws AxelorException
 	 */
-	public Move createPaymentMove(Company company, MoveLine moveLine, PaymentMode pm) throws AxelorException  {
+	public Move createPaymentMove(Company company, MoveLine moveLine, PaymentMode paymentMode) throws AxelorException  {
 
 		LOG.debug("generateAllExportInvoice - Création de l'écriture");
 		
-		Move paymentMove = ms.createMove(company.getInvoiceDirectDebitJournal(), company, null, null, pm, false);
+		Move paymentMove = ms.createMove(company.getInvoiceDirectDebitJournal(), company, null, null, paymentMode, false);
 			
 		BigDecimal amountExported = moveLine.getAmountRemaining();
 		
-		this.createPaymentMoveLine(paymentMove, moveLine, pm);
+		this.createPaymentMoveLine(paymentMove, moveLine, 1);
 		
 		LOG.debug("generateAllExportInvoice - Création de la seconde ligne d'écriture");
 		
-		Account paymentModeAccount = pms.getCompanyAccount(pm, company);
+		Account paymentModeAccount = pms.getCompanyAccount(paymentMode, company);
 		
 		String invoiceName = "";
 		if(moveLine.getMove().getInvoice()!=null)  {
@@ -713,8 +713,6 @@ public class PaymentScheduleExportService {
 		}
 		MoveLine moveLineGenerated2 = mls.createMoveLine(paymentMove, null, paymentModeAccount, amountExported,
 				true, false, today, 2, false, false, false, invoiceName);
-				
-		
 		
 		paymentMove.getMoveLineList().add(moveLineGenerated2);
 		moveLineGenerated2.save();
@@ -726,7 +724,7 @@ public class PaymentScheduleExportService {
 	}
 	
 	
-	public void createPaymentMoveLine(Move paymentMove, MoveLine moveLine, PaymentMode pm) throws AxelorException  {
+	public void createPaymentMoveLine(Move paymentMove, MoveLine moveLine, int ref) throws AxelorException  {
 		BigDecimal amountExported = moveLine.getAmountRemaining();
 		
 		// On assigne le montant exporté pour pouvoir l'utiliser lors de la création du fichier d'export CFONB
@@ -740,7 +738,7 @@ public class PaymentScheduleExportService {
 			invoiceName = moveLine.getMove().getInvoice().getInvoiceId();
 		}
 		MoveLine moveLineGenerated = mls.createMoveLine(paymentMove, moveLine.getPartner(), moveLine.getAccount(),
-				amountExported, false, false, today, 1, false, false, false, invoiceName);
+				amountExported, false, false, today, ref, false, false, false, invoiceName);
 	
 		paymentMove.getMoveLineList().add(moveLineGenerated);
 
@@ -749,12 +747,11 @@ public class PaymentScheduleExportService {
 		// Lettrage de la ligne 411 avec la ligne 411 de la facture
 		LOG.debug("Creation du lettrage de la ligne 411 avec la ligne 411 de la facture");
 		
-		rcs.reconcile(moveLine, moveLineGenerated);
+		rcs.reconcile(moveLine, moveLineGenerated, false);
 		
 		LOG.debug("generateAllExportInvoice - Sauvegarde de l'écriture");
 		
 		paymentMove.save();
-		
 		
 	}
 	
@@ -820,8 +817,8 @@ public class PaymentScheduleExportService {
 	 * @throws AxelorException
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void createPaymentScheduleMove(PaymentScheduleLine psl, PaymentMode paymentMode, Partner payerPartner, MoveLine moveLineToPay, BigDecimal amount, Company company, Journal journal) throws AxelorException {
-		PaymentSchedule paymentSchedule = psl.getPaymentSchedule();
+	public void createPaymentScheduleMove(PaymentScheduleLine paymentScheduleLine, PaymentMode paymentMode, Partner payerPartner, MoveLine moveLineToPay, BigDecimal amount, Company company, Journal journal) throws AxelorException {
+		PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
 		
 		Move move = ms.createMove(journal,
 				company,
@@ -831,9 +828,11 @@ public class PaymentScheduleExportService {
 				false);
 			
 		int moveLineNo = pvs.toPayPaymentScheduleLine(null, paymentSchedule, payerPartner, 1, 
-				amount, company, psl, moveLineToPay, paymentMode, move);
+				amount, company, paymentScheduleLine, moveLineToPay, paymentMode, move, this.today, false);
 		
-		MoveLine debitMoveLine = mls.createMoveLine(move,payerPartner,pms.getCompanyAccount(paymentMode, company),amount,true,false,this.today,moveLineNo,false,false,false, psl.getName());
+		MoveLine debitMoveLine = mls.createMoveLine(move,payerPartner,pms.getCompanyAccount(paymentMode, company),
+				amount,true,false,this.today,moveLineNo,false,false,false, paymentScheduleLine.getName());
+		
 		move.getMoveLineList().add(debitMoveLine);
 		debitMoveLine.save(); 
 		
@@ -842,14 +841,14 @@ public class PaymentScheduleExportService {
 			for(MoveLine moveLine : move.getMoveLineList())  {
 				if(moveLine.getAccount().getReconcileOk())  {
 					LOG.debug("Creation du lettrage de la ligne 411 de rejet avec la ligne 411 de paiement");
-					rcs.reconcile(moveLineToPay, moveLine);
+					rcs.reconcile(moveLineToPay, moveLine, false);
 					break;
 				}
 			}
 		}
 		
 		ms.validateMove(move);
-		psl.setAdvanceOrPaymentMove(move);
+		paymentScheduleLine.setAdvanceOrPaymentMove(move);
 	}
 	
 	

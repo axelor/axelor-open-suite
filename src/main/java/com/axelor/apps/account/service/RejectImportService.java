@@ -2,6 +2,7 @@ package com.axelor.apps.account.service;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -98,6 +99,34 @@ public class RejectImportService {
 		
 		return cs.importCFONB(dest, company, operation);
 	}
+	
+	
+	
+	/**
+	 * 
+	 * @param src
+	 * @param temp
+	 * @param company
+	 * @param operation
+	 * 	 	Le type d'opération :
+	 * 		<ul>
+     *      <li>0 = Virement</li>
+     *      <li>1 = Prélèvement</li>
+     *      <li>2 = TIP impayé</li>
+     *      <li>3 = TIP</li>
+     *      <li>4 = TIP + chèque</li>
+     *  	</ul>
+	 * @return
+	 * @throws AxelorException
+	 * @throws IOException
+	 */
+	public Map<List<String[]>,String> getCFONBFileByLot(String src, String temp, Company company, int operation) throws AxelorException, IOException  {
+		
+		String dest = this.getDestCFONBFile(src, temp);
+		
+		return cs.importCFONBByLot(dest, company, operation);
+	}
+	
 	
 	
 	/**

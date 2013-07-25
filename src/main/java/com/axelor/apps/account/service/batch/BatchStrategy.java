@@ -1,13 +1,17 @@
-package com.axelor.apps.account.service.generator.batch;
+package com.axelor.apps.account.service.batch;
 
 import com.axelor.apps.account.db.AccountingBatch;
+import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.MoveLineReport;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.Reimbursement;
+import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.CfonbService;
 import com.axelor.apps.account.service.InterbankPaymentOrderImportService;
 import com.axelor.apps.account.service.InterbankPaymentOrderRejectImportService;
+import com.axelor.apps.account.service.MoveLineExportService;
 import com.axelor.apps.account.service.PaymentScheduleExportService;
 import com.axelor.apps.account.service.PaymentScheduleImportService;
 import com.axelor.apps.account.service.ReimbursementExportService;
@@ -38,6 +42,9 @@ public abstract class BatchStrategy extends AbstractBatch {
 	protected PaymentModeService paymentModeService;
 	protected InterbankPaymentOrderImportService interbankPaymentOrderImportService;
 	protected InterbankPaymentOrderRejectImportService interbankPaymentOrderRejectImportService;
+	protected AccountCustomerService accountCustomerService;
+	protected MoveLineExportService moveLineExportService;
+	protected BatchAccountCustomer batchAccountCustomer;
 
 
 	
@@ -47,50 +54,67 @@ public abstract class BatchStrategy extends AbstractBatch {
 		this.mailService = mailService;
 	}
 	
-	protected BatchStrategy(DoubtfulCustomerService doubtfulCustomerService) {
+	protected BatchStrategy(DoubtfulCustomerService doubtfulCustomerService, BatchAccountCustomer batchAccountCustomer) {
 		super();
 		this.doubtfulCustomerService = doubtfulCustomerService;
+		this.batchAccountCustomer = batchAccountCustomer;
 	}
 	
-	protected BatchStrategy(ReimbursementExportService reimbursementExportService, CfonbService cfonbService) {
+	protected BatchStrategy(ReimbursementExportService reimbursementExportService, CfonbService cfonbService, BatchAccountCustomer batchAccountCustomer) {
 		super();
 		this.reimbursementExportService = reimbursementExportService;
 		this.cfonbService = cfonbService;
+		this.batchAccountCustomer = batchAccountCustomer;
 	}
 	
-	protected BatchStrategy(ReimbursementImportService reimbursementImportService, RejectImportService rejectImportService) {
+	protected BatchStrategy(ReimbursementImportService reimbursementImportService, RejectImportService rejectImportService, BatchAccountCustomer batchAccountCustomer) {
 		super();
 		this.reimbursementImportService = reimbursementImportService;
 		this.rejectImportService = rejectImportService;
+		this.batchAccountCustomer = batchAccountCustomer;
 	}
 	
 	
 	
-	protected BatchStrategy(PaymentScheduleExportService paymentScheduleExportService, PaymentModeService paymentModeService, CfonbService cfonbService) {
+	protected BatchStrategy(PaymentScheduleExportService paymentScheduleExportService, PaymentModeService paymentModeService, CfonbService cfonbService, BatchAccountCustomer batchAccountCustomer) {
 		super();
 		this.paymentScheduleExportService = paymentScheduleExportService;
 		this.cfonbService = cfonbService;
 		this.paymentModeService = paymentModeService;
+		this.batchAccountCustomer = batchAccountCustomer;
 	}
 	
-	protected BatchStrategy(PaymentScheduleImportService paymentScheduleImportService, RejectImportService rejectImportService) {
+	protected BatchStrategy(PaymentScheduleImportService paymentScheduleImportService, RejectImportService rejectImportService, BatchAccountCustomer batchAccountCustomer) {
 		super();
 		this.paymentScheduleImportService = paymentScheduleImportService;
 		this.rejectImportService = rejectImportService;
+		this.batchAccountCustomer = batchAccountCustomer;
 	}
 	
-	protected BatchStrategy(InterbankPaymentOrderImportService interbankPaymentOrderImportService, CfonbService cfonbService, RejectImportService rejectImportService) {
+	protected BatchStrategy(InterbankPaymentOrderImportService interbankPaymentOrderImportService, CfonbService cfonbService, RejectImportService rejectImportService, BatchAccountCustomer batchAccountCustomer) {
 		super();
 		this.interbankPaymentOrderImportService = interbankPaymentOrderImportService;
 		this.cfonbService = cfonbService;
 		this.rejectImportService = rejectImportService;
+		this.batchAccountCustomer = batchAccountCustomer;
 	}
 	
-	protected BatchStrategy(InterbankPaymentOrderRejectImportService interbankPaymentOrderRejectImportService, CfonbService cfonbService, RejectImportService rejectImportService) {
+	protected BatchStrategy(InterbankPaymentOrderRejectImportService interbankPaymentOrderRejectImportService, CfonbService cfonbService, RejectImportService rejectImportService, BatchAccountCustomer batchAccountCustomer) {
 		super();
 		this.interbankPaymentOrderRejectImportService = interbankPaymentOrderRejectImportService;
 		this.cfonbService = cfonbService;
 		this.rejectImportService = rejectImportService;
+		this.batchAccountCustomer = batchAccountCustomer;
+	}
+	
+	protected BatchStrategy(AccountCustomerService accountCustomerService) {
+		super();
+		this.accountCustomerService = accountCustomerService;
+	}
+	
+	protected BatchStrategy(MoveLineExportService moveLineExportService) {
+		super();
+		this.moveLineExportService = moveLineExportService;
 	}
 	
 	protected void updateInvoice( Invoice invoice ){
@@ -124,6 +148,20 @@ public abstract class BatchStrategy extends AbstractBatch {
 	protected void updatePartner( Partner partner ){
 		
 		partner.addBatchSetItem( Batch.find( batch.getId() ) );
+			
+		incrementDone();
+	}
+	
+	protected void updateAccountingSituation( AccountingSituation accountingSituation ){
+		
+		accountingSituation.addBatchSetItem( Batch.find( batch.getId() ) );
+			
+		incrementDone();
+	}
+	
+	protected void updateMoveLineReport( MoveLineReport moveLineReport){
+		
+		moveLineReport.addBatchSetItem( Batch.find( batch.getId() ) );
 			
 		incrementDone();
 	}

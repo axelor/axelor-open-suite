@@ -86,11 +86,11 @@ public interface IAccount {
 	// see PaymentSchedule
 
 	/**
-	 * Static select in CashRegister
+	 * Static select in CashRegisterLine
 	 */
 	// STATE
-	static final int DRAFT_CASHREGISTER = 0;
-	static final int CLOSED_CASHREGISTER = 1;
+	static final int DRAFT_CASHREGISTERLINE = 0;
+	static final int CLOSED_CASHREGISTERLINE = 1;
 
 	/**
 	 * Static select in AccountClearance
@@ -133,14 +133,9 @@ public interface IAccount {
 	// ACTION TYPE
 	static final int BATCH_REIMBURSEMENT = 11;
 	static final int BATCH_DIRECT_DEBIT = 12;
-	static final int BATCH_ONLINE_AGENCY = 13;
 	static final int BATCH_REMINDER = 14;
 	static final int BATCH_INTERBANK_PAYMENT_ORDER = 15;
 	static final int BATCH_DOUBTFUL_CUSTOMER = 16;
-	
-	// ONLINE AGENCY TYPE
-	static final int ONLINE_AGENCY_EXPORT = 1;
-	static final int ONLINE_AGENCY_IMPORT = 2;
 	
 	// REIMBURSEMENT TYPE
 	static final int BATCH_REIMBURSEMENT_EXPORT = 1;

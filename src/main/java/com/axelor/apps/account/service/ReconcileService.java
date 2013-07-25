@@ -2,6 +2,8 @@ package com.axelor.apps.account.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
@@ -169,6 +171,25 @@ public class ReconcileService {
 	
 	
 	
+
+	/**
+	 * Permet de confirmer une  réconciliation
+	 * On ne peut réconcilier que des moveLine ayant le même compte
+	 * @param reconcile
+	 * 			Une reconciliation
+	 * @return
+	 * 			L'etat de la reconciliation
+	 * @throws AxelorException 
+	 */
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})  // TODO a réactiver
+	public String confirmReconcile(Reconcile reconcile) throws AxelorException  {
+	
+		return this.confirmReconcile(reconcile, true);
+		
+	}	
+	
+	
+	
 	/**
 	 * Permet de confirmer une  réconciliation
 	 * On ne peut réconcilier que des moveLine ayant le même compte
@@ -179,7 +200,7 @@ public class ReconcileService {
 	 * @throws AxelorException 
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public String confirmReconcile(Reconcile reconcile) throws AxelorException  {
+	public String confirmReconcile(Reconcile reconcile, boolean updateCustomerAccount) throws AxelorException  {
 		
 		LOG.debug("In confirmReconcile ....");
 		if (reconcile != null)  {
@@ -223,8 +244,8 @@ public class ReconcileService {
 							reconcile.getLineCredit().getMove().getInvoice().setInTaxTotalRemaining(
 									ms.getInTaxTotalRemaining(reconcile.getLineCredit().getMove().getInvoice(), reconcile.getLineCredit().getMove().getInvoice().getPartnerAccount()));
 						}
-						
-						acs.updatePartnerAccountingSituation(reconcile);
+					
+						this.updatePartnerAccountingSituation(reconcile, updateCustomerAccount);
 						
 						// Change the state
 						reconcile.setState("2");
@@ -253,6 +274,43 @@ public class ReconcileService {
 	}
 	
 	
+	
+	public void updatePartnerAccountingSituation(Reconcile reconcile, boolean updateCustomerAccount)  {
+		Company company = null;
+		List<Partner> partnerList = new ArrayList<Partner>();
+		
+		MoveLine debitMoveLine = reconcile.getLineDebit();
+		MoveLine creditMoveLine = reconcile.getLineCredit();
+		Partner debitPartner = debitMoveLine.getPartner();
+		Partner creditPartner = creditMoveLine.getPartner();
+		
+		if(debitPartner != null)  {
+			Move move = debitMoveLine.getMove();
+			if(move != null && move.getCompany() != null)  { 
+				partnerList.add(debitPartner);	
+				company = move.getCompany();
+			}
+		}
+		if(creditPartner != null)  { 
+			Move move = creditMoveLine.getMove();
+			if(move != null && move.getCompany() != null)  { 
+				partnerList.add(creditPartner);	
+				company = move.getCompany();
+			}
+		}
+		
+		if(partnerList != null && !partnerList.isEmpty() && company != null)  {
+			if(updateCustomerAccount)  {
+				acs.updatePartnerAccountingSituation(partnerList, company, true, true, false);
+			}
+			else  {
+				acs.flagPartners(partnerList, company);
+			}
+		}
+	}
+	
+	
+	
 	/**
 	 * Procédure permettant de récupérer l'écriture d'avoir d'un trop-perçu généré par un avoir
 	 * @param moveLine
@@ -277,11 +335,11 @@ public class ReconcileService {
 	 * @param creditMoveLine
 	 * @throws AxelorException
 	 */
-	public void reconcile(MoveLine debitMoveLine, MoveLine creditMoveLine) throws AxelorException  {
+	public void reconcile(MoveLine debitMoveLine, MoveLine creditMoveLine, boolean updateCustomerAccount) throws AxelorException  {
 		
 		BigDecimal amount = debitMoveLine.getAmountRemaining().min(creditMoveLine.getAmountRemaining());
 		Reconcile reconcile = this.createReconcile(debitMoveLine, creditMoveLine, amount);
-		this.confirmReconcile(reconcile);
+		this.confirmReconcile(reconcile, updateCustomerAccount);
 		
 	}
 	
@@ -348,7 +406,7 @@ public class ReconcileService {
 	 * @param company
 	 * @throws AxelorException
 	 */
-	public void balanceCredit(MoveLine creditMoveLine, Company company) throws AxelorException  {
+	public void balanceCredit(MoveLine creditMoveLine, Company company, boolean updateCustomerAccount) throws AxelorException  {
 		if(creditMoveLine != null)  {
 			BigDecimal creditAmountRemaining = creditMoveLine.getAmountRemaining();
 			LOG.debug("Montant à payer / à lettrer au crédit : {}", creditAmountRemaining);
@@ -379,12 +437,12 @@ public class ReconcileService {
 					
 					newMove.getMoveLineList().add(newCreditMoveLine);
 					newMove.getMoveLineList().add(newDebitMoveLine);
-					ms.validateMove(newMove);
+					ms.validateMove(newMove, updateCustomerAccount);
 					newMove.save();
 					
 					//Création de la réconciliation
 					Reconcile newReconcile = this.createReconcile(newDebitMoveLine, creditMoveLine, creditAmountRemaining);
-					this.confirmReconcile(newReconcile);
+					this.confirmReconcile(newReconcile, updateCustomerAccount);
 					newReconcile.save();
 				}
 			}

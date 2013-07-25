@@ -1,4 +1,4 @@
-package com.axelor.apps.account.service.generator.batch;
+package com.axelor.apps.account.service.batch;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -25,12 +25,15 @@ public class BatchInterbankPaymentOrderImport extends BatchStrategy {
 	private boolean stop = false;
 	
 	private BigDecimal totalAmount = BigDecimal.ZERO;
+	
+	private String updateCustomerAccountLog = "";
 
 	
 	@Inject
-	public BatchInterbankPaymentOrderImport(InterbankPaymentOrderImportService interbankPaymentOrderImportService, CfonbService cfonbService, RejectImportService rejectImportService) {
+	public BatchInterbankPaymentOrderImport(InterbankPaymentOrderImportService interbankPaymentOrderImportService, CfonbService cfonbService, 
+			RejectImportService rejectImportService, BatchAccountCustomer batchAccountCustomer) {
 		
-		super(interbankPaymentOrderImportService, cfonbService, rejectImportService);
+		super(interbankPaymentOrderImportService, cfonbService, rejectImportService, batchAccountCustomer);
 		
 	}
 
@@ -88,6 +91,8 @@ public class BatchInterbankPaymentOrderImport extends BatchStrategy {
 				LOG.error("Bug(Anomalie) généré(e) pour le batch d'import des paiements par TIP et TIP chèque {}", batch.getId());
 				
 			}
+			
+			updateCustomerAccountLog += batchAccountCustomer.updateAccountingSituationMarked(Company.find(company.getId()));
 		}
 	}
 	
@@ -141,6 +146,9 @@ public class BatchInterbankPaymentOrderImport extends BatchStrategy {
 		comment += String.format("\t* Montant total : %s \n", this.totalAmount);
 		comment += String.format("\t* %s anomalie(s)", batch.getAnomaly());
 
+		comment += String.format("\t* ------------------------------- \n");
+		comment += String.format("\t* %s ", updateCustomerAccountLog);
+		
 		super.stop();
 		addComment(comment);
 		

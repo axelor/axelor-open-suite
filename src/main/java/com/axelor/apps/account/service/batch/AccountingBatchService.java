@@ -1,4 +1,4 @@
-package com.axelor.apps.account.service.generator.batch;
+package com.axelor.apps.account.service.batch;
 
 import javax.inject.Inject;
 import javax.inject.Provider;

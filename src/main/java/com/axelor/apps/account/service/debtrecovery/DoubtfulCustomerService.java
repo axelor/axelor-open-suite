@@ -173,7 +173,7 @@ public class DoubtfulCustomerService {
 		newMove.save();
 		
 		for(Reconcile reconcile : reconcileList)  {
-			rs.confirmReconcile(reconcile);
+			rs.confirmReconcile(reconcile, false);
 		}
 
 		Invoice invoice = this.invoiceProcess(newMove, doubtfulCustomerAccount, debtPassReason);
@@ -225,7 +225,7 @@ public class DoubtfulCustomerService {
 		
 		Reconcile reconcile = rs.createReconcile(moveLine, creditMoveLine, amountRemaining);
 		reconcileList.add(reconcile);
-		rs.confirmReconcile(reconcile);
+		rs.confirmReconcile(reconcile, false);
 		
 		// Ecriture au débit sur le 416 (client douteux)
 		MoveLine debitMoveLine = mls.createMoveLine(newMove , newMove.getPartner(), doubtfulCustomerAccount, amountRemaining, true, false, 

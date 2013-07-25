@@ -156,7 +156,7 @@ public class PaymentService {
 		return debitMoveLines;
 	}
 	
-
+	
 	/**
 	 * Utiliser le trop perçu entre deux listes de lignes d'écritures (une en débit, une en crédit)
 	 * Si cette methode doit être utilisée, penser à ordonner les listes qui lui sont passées par date croissante
@@ -169,6 +169,24 @@ public class PaymentService {
 	 * @throws AxelorException 
 	 */
 	public void useExcessPaymentOnMoveLines(List<MoveLine> debitMoveLines, List<MoveLine> creditMoveLines) throws AxelorException {
+		
+		this.useExcessPaymentOnMoveLines(debitMoveLines, creditMoveLines, true);
+		
+	}
+	
+
+	/**
+	 * Utiliser le trop perçu entre deux listes de lignes d'écritures (une en débit, une en crédit)
+	 * Si cette methode doit être utilisée, penser à ordonner les listes qui lui sont passées par date croissante
+	 * Ceci permet de payer les facture de manière chronologique.
+	 * 
+	 * @param debitMoveLines = dûs
+	 * @param creditMoveLines = trop-perçu
+	 * 
+	 * @return
+	 * @throws AxelorException 
+	 */
+	public void useExcessPaymentOnMoveLines(List<MoveLine> debitMoveLines, List<MoveLine> creditMoveLines, boolean updateCustomerAccount) throws AxelorException {
 		
 		if(debitMoveLines != null && creditMoveLines != null){
 
@@ -222,7 +240,7 @@ public class PaymentService {
 							}
 							// End gestion du passage en 580
 							
-							rcs.confirmReconcile(reconcile);
+							rcs.confirmReconcile(reconcile, updateCustomerAccount);
 
 							debitTotalRemaining= debitTotalRemaining.subtract(amount);
 							creditTotalRemaining = creditTotalRemaining.subtract(amount);
@@ -253,7 +271,29 @@ public class PaymentService {
 	 * @throws AxelorException
 	 */
 	public int createExcessPaymentWithAmount(List<MoveLine> debitMoveLines, BigDecimal remainingPaidAmount, Move move, int moveLineNo, Partner partner,
-			Company company, PaymentInvoiceToPay paymentInvoiceToPay, Account account) throws AxelorException  {
+			Company company, PaymentInvoiceToPay paymentInvoiceToPay, Account account, LocalDate paymentDate) throws AxelorException  {
+
+		return this.createExcessPaymentWithAmount(debitMoveLines, remainingPaidAmount, move, moveLineNo, partner, company, paymentInvoiceToPay, account, paymentDate, true);
+	}
+	
+	
+	/**
+	 * Il crée des écritures de trop percu avec des montants exacts pour chaque débitMoveLines 
+	 * avec le compte du débitMoveLines.
+	 * A la fin, si il reste un trop-percu alors créer un trop-perçu classique.
+	 * @param debitMoveLines
+	 * 					Les lignes d'écriture à payer
+	 * @param remainingPaidAmount
+	 * 					Le montant restant à payer
+	 * @param move	
+	 * 					Une écriture
+	 * @param moveLineNo
+	 * 					Un numéro de ligne d'écriture
+	 * @return 
+	 * @throws AxelorException
+	 */
+	public int createExcessPaymentWithAmount(List<MoveLine> debitMoveLines, BigDecimal remainingPaidAmount, Move move, int moveLineNo, Partner partner,
+			Company company, PaymentInvoiceToPay paymentInvoiceToPay, Account account, LocalDate paymentDate, boolean updateCustomerAccount) throws AxelorException  {
 		LOG.debug("In createExcessPaymentWithAmount");
 		int moveLineNo2 = moveLineNo;
 		BigDecimal remainingPaidAmount2 = remainingPaidAmount;
@@ -324,7 +364,7 @@ public class PaymentService {
 		}
 		
 		for(Reconcile reconcile : reconcileList)  {
-			rs.confirmReconcile(reconcile);
+			rs.confirmReconcile(reconcile, updateCustomerAccount);
 		}
 		
 		// Si il y a un restant à payer, alors on crée un trop-perçu.
@@ -346,7 +386,7 @@ public class PaymentService {
 			move.getMoveLineList().add(moveLine);
 			moveLineNo2++;
 			// Gestion du passage en 580
-			rs.balanceCredit(moveLine, company);
+			rs.balanceCredit(moveLine, company, updateCustomerAccount);
 		}
 		LOG.debug("End createExcessPaymentWithAmount");
 		return moveLineNo2;
@@ -429,7 +469,7 @@ public class PaymentService {
 			move.getMoveLineList().add(debitmoveLine);
 			moveLineNo2++;
 			// Gestion du passage en 580
-			rs.balanceCredit(debitmoveLine, company);
+			rs.balanceCredit(debitmoveLine, company, true);
 		}
 		LOG.debug("End useExcessPaymentWithAmount");
 		

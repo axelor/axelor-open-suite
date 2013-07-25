@@ -389,12 +389,12 @@
 		<view type="form" />
 	</action-view>
 
-	<menuitem name="account-root-periodic-processing-cash-register"
+	<menuitem name="account-root-periodic-processing-cash-register-line"
 		parent="account-root-periodic-processing" title="Cash register closure"
-		action="account.root.periodic.processing.cash.register" />
+		action="account.root.periodic.processing.cash.register.line" />
 
-	<action-view name="account.root.periodic.processing.cash.register"
-		title="Cash register closure" model="com.axelor.apps.account.db.CashRegister" icon="img/icons/account_small.png">
+	<action-view name="account.root.periodic.processing.cash.register.line"
+		title="Cash register closure" model="com.axelor.apps.account.db.CashRegisterLine" icon="img/icons/account_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
@@ -675,6 +675,16 @@
 
 	<action-view name="account.conf.tax.conf.vat.management.line"
 		title="V.A.T. Conditions" model="com.axelor.apps.account.db.VatManagementLine" icon="img/icons/parameter_small.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
+	
+	<menuitem name="account-conf-cash-register"
+		parent="account-conf" title="Cash registers"
+		action="account.conf.cash.register" />
+
+	<action-view name="account.conf.cash.register"
+		title="Cash registers" model="com.axelor.apps.account.db.CashRegister" icon="img/icons/account_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>

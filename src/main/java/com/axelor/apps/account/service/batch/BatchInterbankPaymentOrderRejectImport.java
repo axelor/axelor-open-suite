@@ -1,4 +1,4 @@
-package com.axelor.apps.account.service.generator.batch;
+package com.axelor.apps.account.service.batch;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -25,12 +25,15 @@ public class BatchInterbankPaymentOrderRejectImport extends BatchStrategy {
 	private boolean stop = false;
 	
 	private BigDecimal totalAmount = BigDecimal.ZERO;
+	
+	private String updateCustomerAccountLog = "";
 
 	
 	@Inject
-	public BatchInterbankPaymentOrderRejectImport(InterbankPaymentOrderRejectImportService interbankPaymentOrderRejectImportService, CfonbService cfonbService, RejectImportService rejectImportService) {
+	public BatchInterbankPaymentOrderRejectImport(InterbankPaymentOrderRejectImportService interbankPaymentOrderRejectImportService, CfonbService cfonbService, 
+			RejectImportService rejectImportService, BatchAccountCustomer batchAccountCustomer) {
 		
-		super(interbankPaymentOrderRejectImportService, cfonbService, rejectImportService);
+		super(interbankPaymentOrderRejectImportService, cfonbService, rejectImportService, batchAccountCustomer);
 		
 	}
 
@@ -57,6 +60,8 @@ public class BatchInterbankPaymentOrderRejectImport extends BatchStrategy {
 	protected void process() {
 		if(!stop)  {
 			this.runInterbankPaymentOrderRejectImport(batch.getAccountingBatch().getCompany());
+			
+			updateCustomerAccountLog += batchAccountCustomer.updateAccountingSituationMarked(null);
 		}
 	}
 	
@@ -145,6 +150,9 @@ public class BatchInterbankPaymentOrderRejectImport extends BatchStrategy {
 		comment += String.format("\t* Montant total : %s \n", this.totalAmount);
 		comment += String.format("\t* %s anomalie(s)", batch.getAnomaly());
 
+		comment += String.format("\t* ------------------------------- \n");
+		comment += String.format("\t* %s ", updateCustomerAccountLog);
+		
 		super.stop();
 		addComment(comment);
 		

@@ -1,607 +1,879 @@
-"domain","name","type","title","title_t","help","help_t"
-"account-conf","Configuration","menu","Configuration","Configuration","",""
-"account-conf-analytic","Analytic","menu","Analytic","Analytique","",""
-"account-conf-analytic-account","Analytic accounts","menu","Analytic accounts","Les comptes analytiques","",""
-"account-conf-analytic-axis","Analytic axis","menu","Analytic axis","Les axes analytiques","",""
-"account-conf-analytic-journal","Analytic journals","menu","Analytic journals","Les journaux analytiques","",""
-"account-conf-export","Reportings/Exports","menu","Reportings/Exports","Rapports / Exports","",""
-"account-conf-export-accounting-category","Account categories","menu","Account categories","Les catégories de comptes","",""
-"account-conf-export-accounting-category-line","Accounting report category line","menu","Accounting report category line","Les lignes de catégories de rapports comptables","",""
-"account-conf-export-interbank-code","Reject/Return reason codes","menu","Reject/Return reason codes","Listes des codes motifs de rejet/retour ","",""
-"account-conf-financial","Financial","menu","Financial","Financière","",""
-"account-conf-financial-account","Financial Accounts","menu","Financial Accounts","Les comptes comptables","",""
-"account-conf-financial-accounting-plan","Chart of accounts","menu","Chart of accounts","Le plan comptable","",""
-"account-conf-financial-account-management","Financial accounts management","menu","Financial accounts management","Les gestions de compte comptable","",""
-"account-conf-financial-account-type","Account types","menu","Account types","Les types de compte","",""
-"account-conf-financial-journal","Journals","menu","Journals","Les journaux","",""
-"account-conf-financial-journal-type","Journal types","menu","Journal types","Les types de journaux","",""
-"account-conf-financial-period","Periods","menu","Periods","Les périodes comptables","",""
-"account-conf-financial-year","Fiscal years","menu","Fiscal years","Les années fiscales","",""
-"account-conf-payment","Payment","menu","Payment","Paiement","",""
-"account-conf-payment-paybox","Paybox","menu","Paybox","Paybox","",""
-"account-conf-payment-payment-mode","Payment modes","menu","Payment modes","Les modes de paiements","",""
-"account-root","Accounting","menu","Accounting","Comptabilité","",""
-"account-root-accounting-batch","Accounting batches","menu","Accounting batches","Les batchs de comptabilité","",""
-"account-root-export","Accounting Exports/Reports","menu","Accounting Exports/Reports","Exports/Rapports comptables","",""
-"account-root-export-reimbursement","Reimbursements","menu","Reimbursements","Remboursements","",""
-"account-root-move","Accounting Moves","menu","Accounting Moves","Écritures","",""
-"account-root-move-move","Accounting Moves","menu","Accounting Moves","Écritures","",""
-"account-root-move-move-All","All accounting moves (including technical moves)","menu","All accounting moves (including technical moves)","Les Écritures (pièces techniques incluses)","",""
-"account-root-move-move-line","Accounting Move lines","menu","Accounting Move lines","Les Lignes d'écritures","",""
-"account-root-move-move-line-All","All accounting move lines (including technical move lines)","menu","All accounting move lines (including technical move lines)","Les Lignes d'écritures (Lignes techniques incluses)","",""
-"account-root-payment-schedule","Payment Schedule","menu","Payment Schedule","Echéanciers","",""
-"account-root-payment-schedule-payment-schedule","All Payments Schedule","menu","All Payments Schedule","Les échéanciers","",""
-"account-root-payment-schedule-payment-schedule-line","Payment schedule line","menu","Payment schedule line","Les lignes d'échéanciers","",""
-"account-root-periodic-processing","Periodical processing","menu","Periodical processing","Les Traitements Périodiques","",""
-"account-root-periodic-processing-account-clearance","Overpayments clearances","menu","Overpayments clearances","Les Apurements de trop-perçu","",""
-"account-root-periodic-processing-cash-register","Cash register closure","menu","Cash register closure","Les Fermetures Caisses","",""
-"account-root-periodic-processing-cheque-rejection","Rejects of cheque","menu","Rejects of cheque","Les Rejets de chèque","",""
-"account-root-periodic-processing-irrecoverable","Shift to irrecoverable","menu","Shift to irrecoverable","Passage en irrécouvrable","",""
-"account-root-periodic-processing-payment-voucher","Payment vouchers","menu","Payment vouchers","Les Saisies paiements","",""
-"account-root-periodic-processing-reconcile","Reconcilations","menu","Reconcilations","Les Réconciliations","",""
-"account-root-reporting-moveLineExport","Accounting exports","menu","Accounting exports","Les Exports comptables","",""
-"account-root-reporting-moveLineReport","Accounting reports","menu","Accounting reports","Rapports comptables","",""
-"account-root-tax","Taxes","menu","Taxes","Taxes","",""
-"account-root-tax-base","Tax bases","menu","Tax bases","Les assiettes de taxes","",""
-"account-root-tax-calculation-rule","Tax calculation rules","menu","Tax calculation rules","Les règles de calculs des taxes","",""
-"account-root-tax-conf","Configuration","menu","Configuration","Configuration","",""
-"account-root-tax-conf-vat-management","V.A.T. management","menu","V.A.T. management","Gestion de la TVA","",""
-"account-root-tax-conf-vat-management-line","V.A.T. Conditions","menu","V.A.T. Conditions","Condition sur TVA","",""
-"account-root-tax-exemption-from-tax","Tax exemptions","menu","Tax exemptions","Les exonérations de taxes","",""
-"account-root-tax-reason-exemption","Tax exemption reasons","menu","Tax exemption reasons","Les motifs d'exonérations","",""
-"account-root-tax-tax","Taxes","menu","Taxes","Taxes","",""
-"account-root-tax-vat","VATs","menu","VATs","Les TVA","",""
-"account-tech","Administration","menu","Administration","Administration","",""
-"debtRecovery-conf-reminder","Configuration","menu","Configuration","Configuration","",""
-"debtRecovery-conf-reminder-reminder-level","Reminder levels","menu","Reminder levels","Les niveaux de relance","",""
-"debtRecovery-conf-reminder-reminder-mail-model","Reminder mail models","menu","Reminder mail models","Les modèles de courrier","",""
-"debtRecovery-conf-reminder-reminder-method","Reminder methods","menu","Reminder methods","Les méthodes de relance","",""
-"debtRecovery-root","Debt recoveries","menu","Debt recoveries","Recouvrement","",""
-"debtRecovery-root-reminder","Debt recoveries","menu","Debt recoveries","Recouvrement","",""
-"debtRecovery-root-reminder-reminder-history","Reminders history","menu","Reminders history","L'historique des relances","",""
-"invoice-root","Invoice","menu","Invoice","Facture","",""
-"invoice-root-invoice","New invoice","menu","New invoice","Nouvelle facture","",""
-"invoice-root-purchases","Purchases","menu","Purchases","Les Achats","",""
-"invoice-root-purchases-filters","Filters","menu","Filters","Filtres","",""
-"invoice-root-purchases-filters-confsupinvoice","Confirmed Suppl. invoices","menu","Confirmed Suppl. invoices","Factures fournisseur confirmées","",""
-"invoice-root-purchases-filters-confsuprefunds","Confirmed Suppl. refunds","menu","Confirmed Suppl. refunds","Avoirs fournisseur confirmés","",""
-"invoice-root-purchases-filters-draftcustrefunds","Draft Suppl. refunds","menu","Draft Suppl. refunds","Avoirs fournisseur brouillons","",""
-"invoice-root-purchases-filters-draftsupinvoice","Draft Suppl. invoices","menu","Draft Suppl. invoices","Factures fournisseur brouillons","",""
-"invoice-root-purchases-filters-duesuprefunds","Due Suppl. refunds","menu","Due Suppl. refunds","Avoirs fournisseur dus","",""
-"invoice-root-purchases-filters-unpaiddueinvoice","Unpaid Due invoices","menu","Unpaid Due invoices","Les factures client échues","",""
-"invoice-root-purchases-filters-valsupinvoice","Validated Suppl. invoices","menu","Validated Suppl. invoices","Factures fournisseur validées","",""
-"invoice-root-purchases-filters-valsuprefunds","Validated Suppl. refunds","menu","Validated Suppl. refunds","Avoirs fournisseur validés","",""
-"invoice-root-purchases-supinvoices","Suppl. Invoices","menu","Suppl. Invoices","Les factures fournisseur","",""
-"invoice-root-purchases-suprefunds","Suppl. Refunds","menu","Suppl. Refunds","Les avoirs fournisseur","",""
-"invoice-root-sales","Sales","menu","Sales","Les Ventes","",""
-"invoice-root-sales-custinvoices","Cust. Invoices","menu","Cust. Invoices","Les factures client","",""
-"invoice-root-sales-custrefunds","Cust. Refunds","menu","Cust. Refunds","Les avoirs client","",""
-"invoice-root-sales-filters","Filters","menu","Filters","Filtres","",""
-"invoice-root-sales-filters-confcustinvoice","Confirmed Cust. invoices","menu","Confirmed Cust. invoices","Les factures client confirmées","",""
-"invoice-root-sales-filters-confcustrefunds","Confirmed Cust. refunds","menu","Confirmed Cust. refunds","Les avoirs client confirmés","",""
-"invoice-root-sales-filters-draftcustinvoice","Draft Cust. invoices","menu","Draft Cust. invoices","Les factures client brouillon","",""
-"invoice-root-sales-filters-draftcustrefunds","Draft Cust. refunds","menu","Draft Cust. refunds","Les avoirs client brouillon","",""
-"invoice-root-sales-filters-duecustrefunds","Due Cust. refunds","menu","Due Cust. refunds","Les avoirs client échus","",""
-"invoice-root-sales-filters-unpaiddueinvoice","Unpaid Due invoices","menu","Unpaid Due invoices","Les factures client échues","",""
-"invoice-root-sales-filters-valcustinvoice","Validated Cust. invoices","menu","Validated Cust. invoices","Les factures client validées","",""
-"invoice-root-sales-filters-valcustrefunds","Validated Cust. refunds","menu","Validated Cust. refunds","Les avoirs client validés","",""
-"mail-root-email-cash-register","Cash register emails","menu","Cash register emails","Les emails de caisse","",""
-"mail-root-email-debtrecovery","Reminder emails","menu","Reminder emails","Les emails de relance","",""
-"mail-root-email-reimboursement","Reimbursement emails","menu","Reimbursement emails","Les emails de remboursement","",""
-"mail-root-email-reject-import","Reject emails","menu","Reject emails","Les emails de rejet","",""
-"mail-root-mail-cash-register","Cash register mails","menu","Cash register mails","Les courriers de caisse","",""
-"mail-root-mail-debtrecovery","Reminder mails","menu","Reminder mails","Les courriers de relance","",""
-"mail-root-mail-reimboursement","Reimbursement mails","menu","Reimbursement mails","Les courriers de remboursement","",""
-"mail-root-mail-reject-import","Bank Rejects mails","menu","Bank Rejects mails","Les courriers de rejet","",""
-"discount.engine.date.type","0","select","None","Aucun","",""
-"discount.engine.date.type","1","select","Period abo/cons/service","Période abo/conso/service","",""
-"discount.engine.date.type","2","select","Contract subscription","Souscription du contrat","",""
-"discount.engine.date.type","3","select","End of contract","Fin du contrat","",""
-"discount.engine.date.type","4","select","Opening contract","Mise en service du contrat","",""
-"discount.engine.date.type","5","select","Contract resilation","Résiliation du contrat","",""
-"discount.engine.date.type","6","select","Contract subscription","Souscription du contrat","",""
-"discount.engine.date.type","7","select","End of service","Fin du service","",""
-"discount.engine.discount.type","0","select","Percentage","Pourcentage","",""
-"discount.engine.discount.type","1","select","Price","Prix","",""
-"com.axelor.apps.account.db.AccountCategory","account-category-form","form","Account Category","Catégorie de compte","",""
-"com.axelor.apps.account.db.AccountCategory","account-category-grid","grid","Account Category","Catégorie de compte","",""
-"com.axelor.apps.account.db.AccountCategoryLine","account-category-line-form","form","Account Category Line","Ligne de catégorie de compte","",""
-"com.axelor.apps.account.db.AccountCategoryLine","account-category-line-grid","grid","Account Category Lines","Ligne de catégorie de compte","",""
-"com.axelor.apps.account.db.AccountClearance","account-clearance-form","form","Account clearance","Apurement des comptes","",""
-"account-clearance-form","getExcessPayment","button","Get overdue payments","Récupérer les trop perçus","",""
-"account-clearance-form","validateAccountClearance","button","Validate account clearances","Valider l'apurement des comptes","",""
-"account-clearance-form","showAccountClearanceMoveLines","button","Move lines generated","Lignes d'écriture générées","",""
-"com.axelor.apps.account.db.AccountClearance","account-clearance-grid","grid","Account clearance operations","Opérations d'apurement des comptes","",""
-"com.axelor.apps.base.db.AccountEquivalence","account-equivalence-form","form","Account equivalence","Équivalence des comptes","",""
-"com.axelor.apps.base.db.AccountEquivalence","account-equivalence-grid","grid","Account equivalences","Équivalences des comptes","",""
-"com.axelor.apps.account.db.Account","account-form","form","Account","Compte comptable","",""
-"com.axelor.apps.account.db.Account","account-grid","grid","Account","Compte comptable","",""
-"com.axelor.apps.account.db.AccountingBatch","accounting-batch-form","form","Accounting Batch","Routine comptable","",""
-"accounting-batch-form","reimbursementPage","page","Reimbursement configuration","Configuration de remboursement","",""
-"accounting-batch-form","directDebitPage","page","Direct debit configuration","Configuration de débit direct","",""
-"accounting-batch-form","reminderPage","page","Reminder configuration","Configuration de relance","",""
-"accounting-batch-form","interbankPaymentOrderPage","page","Payments by IPO and IPO Cheque configuration","Les paiements par IPO et par chèque IPO","",""
-"accounting-batch-form","","page","Information","Information","",""
-"com.axelor.apps.account.db.AccountingBatch","Created on","viewField","Created on","Créé le","",""
-"com.axelor.apps.account.db.AccountingBatch","Created by","viewField","Created by","Crée par","",""
-"accounting-batch-form","reimbursementBatch","button","Run","Lancer","",""
-"accounting-batch-form","directDebitBatch","button","Run","Lancer","",""
-"accounting-batch-form","onlineAgencyBatch","button","Run","Lancer","",""
-"accounting-batch-form","reminderBatch","button","Run","Lancer","",""
-"accounting-batch-form","interbankPaymentOrderBatch","button","Run","Lancer","",""
-"accounting-batch-form","doubtfulCustomerBatch","button","Run","Lancer","",""
-"com.axelor.apps.account.db.AccountingBatch","accounting-batch-grid","grid","Accounting batches","Les batchs de comptabilité","",""
-"com.axelor.apps.account.db.AccountingSituation","accounting-situation-form","form","Accounting situation","Situations comptables","",""
-"accounting-situation-form","","separator","Customer balance","Solde client","",""
-"accounting-situation-form","","separator","Reminder process","Processus de relance","",""
-"com.axelor.apps.account.db.AccountingSituation","accounting-situation-grid","grid","Accounting situations","Les situations comptables","",""
-"com.axelor.apps.account.db.AccountManagement","account-management-form","form","Account management","Gestion de compte de comptable","",""
-"account-management-form","analyticAccountManagementPage","page","Analytic account","Compte analytique","",""
-"account-management-form","productPage","page","Product","Produit","",""
-"account-management-form","taxePage","page","Tax","Taxe","",""
-"account-management-form","vatPage","page","VAT","TVA","",""
-"account-management-form","paymentModePage","page","Payment mode","Mode de paiement","",""
-"com.axelor.apps.account.db.AccountManagement","account-management-grid","grid","Account management list","Liste des gestions comptables","",""
-"com.axelor.apps.account.db.AccountManagement","account-management-payment-mode-form","form","Gestion de compte comptable","Gestion de compte comptable","",""
-"com.axelor.apps.account.db.AccountManagement","account-management-payment-mode-grid","grid","Les gestions de compte comptable","Les gestions de compte comptable","",""
-"com.axelor.apps.account.db.AccountManagement","account-management-product-form","form","Gestion de compte comptable","Gestion de compte comptable","",""
-"account-management-product-form","analyticAccountManagementPage","page","Comptes analytiques","Comptes Analytiques","",""
-"account-management-product-form","taxePage","page","Taxes","Taxes","",""
-"account-management-product-form","vatPage","page","TVA","TVA","",""
-"com.axelor.apps.account.db.AccountManagement","account-management-product-grid","grid","Account management","Gestion de compte de comptable","",""
-"com.axelor.apps.account.db.AccountManagement","account-management-tax-form","form","Gestion de compte comptable","Gestion de compte comptable","",""
-"com.axelor.apps.account.db.AccountManagement","account-management-tax-grid","grid","Les gestions de compte comptable","Les gestions de compte comptable","",""
-"com.axelor.apps.account.db.AccountType","account-type-form","form","Account type","Type de compte","",""
-"com.axelor.apps.account.db.AccountType","account-type-grid","grid","Account types","Les types de compte","",""
-"com.axelor.apps.account.db.AnalyticAccount","analytic-account-form","form","Analytic Account","Compte analytique","",""
-"com.axelor.apps.account.db.AnalyticAccount","analytic-account-grid","grid","Analytic Accounts","Les Comptes analytiques","",""
-"com.axelor.apps.account.db.AnalyticAccountManagement","analytic-account-management-form","form","Analytic Acc. Mngmt","Gestion des comptes analytiques","",""
-"com.axelor.apps.account.db.AnalyticAccountManagement","analytic-account-management-grid","grid","Analytic Acc. Mngmt List","Liste des comptes analytiques","",""
-"com.axelor.apps.account.db.AnalyticAxis","analytic-axis-form","form","Analytic Axis","Axe analytique","",""
-"com.axelor.apps.account.db.AnalyticAxis","analytic-axis-grid","grid","Analytic Axis","Axe analytique","",""
-"com.axelor.apps.account.db.AnalyticJournal","analytic-journal-form","form","Analytic Journal","Journal analytique","",""
-"com.axelor.apps.account.db.AnalyticJournal","analytic-journal-grid","grid","Analytic Journal","Journal analytique","",""
-"com.axelor.apps.account.db.AnalyticJournalType","analytic-journal-type-form","form","Analytic Journal Type","Type journal analytique","",""
-"com.axelor.apps.account.db.AnalyticJournalType","analytic-journal-type-grid","grid","Analytic Journal Type","Type journal analytique","",""
-"com.axelor.apps.base.db.BankDetails","bank-details-form","form","Bank details","Coordonnées bancaires","",""
-"com.axelor.apps.base.db.BankDetails","bank-details-grid","grid","Bank details","Coordonnées bancaires","",""
-"com.axelor.apps.account.db.Base","base-form","form","Base","Assiette","",""
-"com.axelor.apps.account.db.Base","base-grid","grid","Bases","Les assiettes","",""
-"com.axelor.apps.account.db.CalculationRule","calculation-rule-form","form","Tax calculation rule","Les règles de calcul de Taxe","",""
-"calculation-rule-form","","group","Calculation rule","Règle de calcul","",""
-"com.axelor.apps.base.db.FormulaControl","","grid","Formula controls","Contrôle de formule","",""
-"com.axelor.apps.base.db.FormulaControl","","form","Formula control","Règle de calcul de Taxe","",""
-"com.axelor.apps.account.db.CalculationRule","calculation-rule-grid","grid","Tax calculation rules","Les règles de calculs des taxes","",""
-"com.axelor.apps.account.db.CashRegister","cash-register-form","form","Cash register","Caisse","",""
-"cash-register-form","closeCashRegister","button","Close cashier","Fermer caisse","",""
-"cash-register-form","openCashRegister","button","Open cashier","Ouvrir caisse","",""
-"com.axelor.apps.account.db.CashRegister","cash-register-grid","grid","Cash register","Caisse","",""
-"com.axelor.apps.account.db.ChequeRejection","cheque-rejection-form","form","Cheque Rejection","Rejet du chèque","",""
-"com.axelor.apps.account.db.PaymentVoucher","","grid","Payment voucher","Saisie paiement","",""
-"cheque-rejection-form","validateChequeRejection","button","Validate reject","Valider le rejet","",""
-"com.axelor.apps.account.db.ChequeRejection","cheque-rejection-grid","grid","Cheque Rejections","Rejets chèque","",""
-"com.axelor.apps.account.db.DirectDebitManagement","direct-debit-management-form-invoice","form","Direct debit management","Gestion des prélèvement","",""
-"com.axelor.apps.account.db.DirectDebitManagement","direct-debit-management-form-payment-schedule-line","form","Direct debits management","Gestion des prélèvement","",""
-"com.axelor.apps.account.db.DirectDebitManagement","direct-debit-management-grid","grid","Direct debits management","Gestion des prélèvement","",""
-"com.axelor.apps.account.db.DiscountEngine","discount-engine-form","form","Discount engine","Moteur de remise","",""
-"discount-engine-form","","separator","Applying conditions","Condition d'application","",""
-"com.axelor.apps.account.db.DiscountEngine","discount-engine-grid","grid","Discount engines","Les moteurs de remise","",""
-"com.axelor.apps.account.db.DiscountEngineLine","discount-engine-line-contract-line-form","form","Discount","Remise","",""
-"discount-engine-line-contract-line-form","","page","Configuration","Configuration","",""
-"discount-engine-line-contract-line-form","contractLinePage","page","Contracts","Contrats","",""
-"discount-engine-line-contract-line-form","","page","Final applying condition","Condition d'application finale","",""
-"com.axelor.apps.account.db.DiscountEngineLine","discount-engine-line-form","form","Discount","Remise","",""
-"discount-engine-line-form","","page","Configuration","Configuration","",""
-"discount-engine-line-form","","page","Applying conditions","Condition d'application","",""
-"discount-engine-line-form","contractLinePage","page","Contracts","Contrats","",""
-"discount-engine-line-form","","page","Final applying conditions","Conditions d'application finales","",""
-"com.axelor.apps.account.db.DiscountEngineLine","discount-engine-line-grid","grid","Discounts","Les remises","",""
-"com.axelor.apps.account.db.DiscountEngineLine","discount-engine-line-model-internal-form","form","Discount","Remise","",""
-"discount-engine-line-model-internal-form","","page","Configuration","Configuration","",""
-"discount-engine-line-model-internal-form","contractLinePage","page","Contracts","Contrats","",""
-"discount-engine-line-model-internal-form","","page","Final applying condition","Condition d'application finale","",""
-"com.axelor.apps.account.db.DiscountEngineLine","discount-engine-line-model-internal-grid","grid","Discounts","Les remises","",""
-"com.axelor.apps.account.db.DiscountEngineModel","discount-engine-model-form","form","Discount engine model","Modèle de remise","",""
-"com.axelor.apps.account.db.DiscountEngineModel","discount-engine-model-grid","grid","Discount engine models","Les modèles de remise","",""
-"com.axelor.apps.account.db.DiscountThreshold","discount-threshold-form","form","Discount threshold","Seuil","",""
-"com.axelor.apps.account.db.DiscountThreshold","discount-threshold-grid","grid","Discount thresholds","Les seuils","",""
-"com.axelor.apps.account.db.DiscountThresholdLine","discount-threshold-line-form","form","Discount threshold line","Ligne de seuil","",""
-"com.axelor.apps.account.db.DiscountThresholdLine","discount-threshold-line-grid","grid","Discount threshold lines","Les lignes de seuils","",""
-"com.axelor.apps.account.db.ExemptionFromTax","exemption-from-tax-form","form","Tax exemption","Exonération de Taxe","",""
-"com.axelor.apps.account.db.ExemptionFromTax","exemption-from-tax-grid","grid","Tax exemptions","Les exonérations de taxes","",""
-"com.axelor.apps.account.db.InterbankCode","interbank-code-form","form","Blocking reason/reject codes lists","Listes des codes motifs de rejet/retour","",""
-"interbank-code-form","","group","Description","Description","",""
-"com.axelor.apps.account.db.InterbankCodeLine","","grid","Blocking reason/reject codes lists","Listes des codes motifs de rejet/retour","",""
-"com.axelor.apps.account.db.InterbankCodeLine","","form","Blocking reason/reject codes lists","Listes des codes motifs de rejet/retour","",""
-"","","group","Description","Description","",""
-"","","group","Domain of use","Domaine d'utilisation","",""
-"com.axelor.apps.account.db.InterbankCode","interbank-code-grid","grid","Blocking reason/reject codes lists","Listes des codes motifs de rejet/retour","",""
-"com.axelor.apps.account.db.InterbankCodeLine","interbank-code-line-form","form","Blocking reason/reject codes list","Liste des codes motifs de rejet/retour","",""
-"interbank-code-line-form","","group","Description","Description","",""
-"interbank-code-line-form","","group","Domain of use","Domaine d'utilisation","",""
-"com.axelor.apps.account.db.InterbankCodeLine","interbank-code-line-grid","grid","Blocking reason/reject codes lists","Listes des codes motifs de rejet/retour","",""
-"com.axelor.apps.account.db.Invoice","invoice-account-grid","grid","Invoices","Factures","",""
-"com.axelor.apps.account.db.InvoiceBatch","invoice-batch-form","form","Invoice batch","Batch de facturation","",""
-"invoice-batch-form","statusOptionPage","page","Options","Options","",""
-"invoice-batch-form","","page","Informations","Informations","",""
-"com.axelor.apps.account.db.InvoiceBatch","Created on","viewField","Created on","Crée le","",""
-"com.axelor.apps.account.db.InvoiceBatch","Created by","viewField","Created by","Crée par","",""
-"invoice-batch-form","invoiceBatch","button","Run","Lancer","",""
-"invoice-batch-form","statusBatch","button","Run","Lancer","",""
-"invoice-batch-form","alarmBatch","button","Run","Lancer","",""
-"invoice-batch-form","memoryBatch","button","Run","Lancer","",""
-"invoice-batch-form","confirmMemoryBatch","button","Run","Lancer","",""
-"com.axelor.apps.account.db.InvoiceBatch","invoice-batch-grid","grid","Invoice batches","Les batchs de facturation","",""
-"com.axelor.apps.account.db.InvoiceBatch","Created on","viewField","Created on","Crée le","",""
-"com.axelor.apps.account.db.InvoiceBatch","Created by","viewField","Created by","Crée par","",""
-"com.axelor.apps.account.db.Invoice","invoice-client-form","form","Invoice","Facture","",""
-"invoice-client-form","partnerGroup","group","Invoicing informations","Informations de facturation","",""
-"invoice-client-form","dateGroup","group","Dates","Dates","",""
-"invoice-client-form","","page","Invoice content","Contenu de la facture","",""
-"invoice-client-form","","group","Totals","Totaux","",""
-"invoice-client-form","stateGroup","group","Status","Statut","",""
-"invoice-client-form","showInvoice","button","Print","Imprimer","",""
-"com.axelor.apps.account.db.Invoice","invoice-client-grid","grid","Invoices","Factures","",""
-"invoice-client-grid","showInvoice","button","Print","Imprimer","",""
-"com.axelor.apps.account.db.Invoice","invoice-direct-debit-grid","grid","Debited invoices","Les Factures prélevées","",""
-"com.axelor.apps.account.db.Invoice","invoice-form","form","Invoice","Facture","",""
-"invoice-form","partnerGroup","group","Invoicing informations","Informations de facturation","",""
-"invoice-form","","group","Reference documents","Documents de référence","",""
-"invoice-form","dateGroup","group","Dates","Dates","",""
-"invoice-form","accountGroup","group","Accounting details","Informations comptables","",""
-"invoice-form","","page","Invoice content","Contenu de la facture","",""
-"invoice-form","","page","Details","Détails","",""
-"invoice-form","","page","Configuration","Configuration","",""
-"invoice-form","","separator","Refund","Avoir","",""
-"invoice-form","createRefund","button","Generate refund","Générer un avoir","",""
-"invoice-form","","page","Blockings","Blocages","",""
-"invoice-form","","separator","Direct debit blocking","Blocages prélèvements","",""
-"invoice-form","","separator","Reminder blocking","Blocages relances","",""
-"invoice-form","paymentPage","page","Payment","Paiement","",""
-"invoice-form","directDebitGroup","group","Direct debit","Prélèvement","",""
-"invoice-form","rejectGroup","group","Reject","Rejet","",""
-"invoice-form","irrecoverableGroup","group","Irrecoverable","Irrécouvrable","",""
-"invoice-form","passInIrrecoverable","button","Shift to irrecoverable","Passage en irrécouvrable","",""
-"invoice-form","notPassInIrrecoverable","button","Do not shit into irrecoverable","Ne pas passer en irrécouvrable","",""
-"invoice-form","","page","Notes","Remarques","",""
-"invoice-form","","group","Totals","Totaux","",""
-"invoice-form","stateGroup","group","Status","Statut","",""
-"invoice-form","compute","button","Compute","Calculer","",""
-"invoice-form","computeFooter","button","Compute invoice footer","Calculer pied de facture","",""
-"invoice-form","showInvoice","button","Print","Imprimer","",""
-"invoice-form","exportInvoice","button","Export","Export","",""
-"invoice-form","sendByEmail","button","Send by email","Envoyer par email","",""
-"invoice-form","validate","button","Validate","Valider","",""
-"invoice-form","ventilate","button","Ventilate","Ventiler","",""
-"invoice-form","cancel","button","Cancel","Annuler","",""
-"com.axelor.apps.account.db.Invoice","invoice-grid","grid","Invoices","Factures","",""
-"com.axelor.apps.account.db.InvoiceLineEvent","invoice-line-event-form","form","Invoice line","Ligne de facture","",""
-"com.axelor.apps.account.db.InvoiceLineEvent","invoice-line-event-grid","grid","Invoice lines","Lignes de facture","",""
-"com.axelor.apps.account.db.InvoiceLine","invoice-line-form","form","Invoice line","Ligne de facture","",""
-"invoice-line-form","","page","Informations","Informations","",""
-"invoice-line-form","","group","Others","Autres","",""
-"invoice-line-form","","page","Notes","Remarques","",""
-"com.axelor.apps.account.db.InvoiceLine","invoice-line-grid","grid","Invoice lines","Lignes de facture","",""
-"com.axelor.apps.account.db.InvoiceLineTax","invoice-line-tax-form","form","Tax line","Ligne de taxe","",""
-"com.axelor.apps.account.db.InvoiceLineTax","invoice-line-tax-grid","grid","Tax lines","Lignes de taxes","",""
-"com.axelor.apps.account.db.InvoiceLineTaxHistory","invoice-line-tax-history-form","form","Tax line history","Ligne d'historiques de taxes","",""
-"com.axelor.apps.account.db.InvoiceLineTaxHistory","invoice-line-tax-history-grid","grid","Tax lines history","Lignes d'historiques de taxes","",""
-"com.axelor.apps.account.db.InvoiceLineType","invoice-line-type-form","form","InvoiceLineType","Types de ligne de facture","",""
-"com.axelor.apps.account.db.InvoiceLineType","invoice-line-type-grid","grid","InvoiceLineType","Types de ligne de facture","",""
-"com.axelor.apps.account.db.InvoiceLineVat","invoice-line-vat-form","form","VAT Line","Ligne de TVA","",""
-"com.axelor.apps.account.db.InvoiceLineVat","invoice-line-vat-grid","grid","VAT Lines","Les lignes de TVA","",""
-"com.axelor.apps.account.db.Invoice","invoice-lite-grid","grid","Invoices","Factures","",""
-"com.axelor.apps.account.db.IrrecoverableCustomerLine","irrecoverable-customer-line-form","form","Customer","Client","",""
-"com.axelor.apps.account.db.IrrecoverableCustomerLine","irrecoverable-customer-line-grid","grid","Customers","Clients","",""
-"com.axelor.apps.account.db.Irrecoverable","irrecoverable-form","form","Irrecoverable","Irrécouvrable","",""
-"irrecoverable-form","getIrrecoverable","button","Get invoices and schedule lines to set as irrecoverable","Récupérer les factures et échéances à passer en irrécouvrable","",""
-"irrecoverable-form","createIrrecoverableReport","button","Generate irrecoverable report","Générer le report irrécouvrable","",""
-"irrecoverable-form","printReport","button","Print","Imprimer","",""
-"irrecoverable-form","passInIrrecoverable","button","Shift to irrecoverable","Passage en irrécouvrable","",""
-"com.axelor.apps.account.db.Irrecoverable","irrecoverable-grid","grid","Irrecoverables","Irrécouvrables","",""
-"com.axelor.apps.account.db.IrrecoverableInvoiceLine","irrecoverable-invoice-line-form","form","Invoice","Facture","",""
-"com.axelor.apps.account.db.IrrecoverableInvoiceLine","irrecoverable-invoice-line-grid","grid","Invoices","Factures","",""
-"com.axelor.apps.account.db.IrrecoverablePaymentScheduleLineLine","irrecoverable-payment-schedule-line-line-form","form","Payment schedue line","Ligne d'échéancier","",""
-"com.axelor.apps.account.db.IrrecoverablePaymentScheduleLineLine","irrecoverable-payment-schedule-line-line-grid","grid","Payment schedule lines","Les lignes d'échéanciers","",""
-"com.axelor.apps.account.db.IrrecoverableReportLine","irrecoverable-report-form","form","Reporting","Rapport","",""
-"com.axelor.apps.account.db.IrrecoverableReportLine","irrecoverable-report-grid","grid","Reportings","Rapports","",""
-"com.axelor.apps.account.db.Journal","journal-form","form","Journal","Journal","",""
-"com.axelor.apps.account.db.Journal","journal-grid","grid","Journal","Journal","",""
-"com.axelor.apps.account.db.JournalType","journal-type-form","form","Journal Type","Types de journal","",""
-"com.axelor.apps.account.db.JournalType","journal-type-grid","grid","Journal Type","Types de journal","",""
-"com.axelor.apps.account.db.KeyPricingList","key-pricing-list-form","form","Pricing list key","Clé de barème","",""
-"com.axelor.apps.account.db.KeyPricingList","key-pricing-list-grid","grid","Pricing list keys","Clés de barème","",""
-"com.axelor.apps.account.db.ManagementObject","management-object-form","form","Management","Gestion","",""
-"com.axelor.apps.account.db.ManagementObject","management-object-grid","grid","Managements","Gestions","",""
-"com.axelor.apps.account.db.MatrixStructure","matrix-structure-form","form","Pricing list mask","Masques de barème","",""
-"matrix-structure-form","","page","Parameters","Paramètres","",""
-"matrix-structure-form","","group","Sources","Les sources","",""
-"matrix-structure-form","","group","Range","Gamme","",""
-"matrix-structure-form","","page","Values","Valeurs","",""
-"matrix-structure-form","","group","Nom","Nom","",""
-"matrix-structure-form","","group","Code","Code","",""
-"com.axelor.apps.account.db.MatrixStructure","matrix-structure-grid","grid","Pricing list masks","Masques de barème","",""
-"com.axelor.apps.account.db.Move","move-form","form","Account move","Écriture comptable","",""
-"move-form","","page","Informations","Informations","",""
-"move-form","","group","Move header","En tête","",""
-"com.axelor.apps.account.db.MoveLine","","grid","Move lines","Lignes d'écriture","",""
-"com.axelor.apps.account.db.MoveLine","","form","Move line","Lignes d'écritures","",""
-"","","page","Informations","Informations","",""
-"","reconcileLists","group","Reconcile list","Liste des réconciliations","",""
-"","","page","Analytics","Analytiques","",""
-"","","page","Others","Autres","",""
-"move-form","","group","Actions","Actions","",""
-"move-form","validate","button","Validate","Valider","",""
-"move-form","","page","Accounting export","Export comptable","",""
-"move-form","","page","Others","Autres","",""
-"com.axelor.apps.account.db.Move","move-grid","grid","Account moves","Écritures comptable","",""
-"com.axelor.apps.account.db.MoveLine","move-line-form","form","Move line","Lignes d'écritures","",""
-"move-line-form","","page","Informations","Informations","",""
-"move-line-form","irrecoverable","group","Irrecoverable","Irrécouvrable","",""
-"move-line-form","passInIrrecoverable","button","Shift to irrecoverable","Passage en irrécouvrable","",""
-"move-line-form","notPassInIrrecoverable","button","Do not shift to irrecoverable","Ne pas passer en irrécouvrable","",""
-"move-line-form","reconcileLists","group","Reconcile list","Liste des réconciliations","",""
-"move-line-form","","page","Analytics","Analytiques","",""
-"move-line-form","","page","Others","Autres","",""
-"com.axelor.apps.account.db.MoveLine","move-line-grid","grid","Move lines","Lignes d'écriture","",""
-"com.axelor.apps.account.db.MoveLineReport","move-line-report-export-form","form","Accounting export","Export comptable","",""
-"move-line-report-export-form","","page","Search","Recherche","",""
-"move-line-report-export-form","search","button","Search","Recherche","",""
-"move-line-report-export-form","export","button","Export","Export","",""
-"move-line-report-export-form","showMoveExported","button","Exported moves","Écritures exportées","",""
-"move-line-report-export-form","replayExport","button","Run export again","Rejouer l'export","",""
-"com.axelor.apps.account.db.MoveLineReport","move-line-report-export-grid","grid","Accounting exports","Les Exports comptables","",""
-"com.axelor.apps.account.db.MoveLineReport","move-line-report-form","form","Accounting report","Rapport comptable","",""
-"move-line-report-form","","page","Search","Recherche","",""
-"move-line-report-form","search","button","Search","Recherche","",""
-"move-line-report-form","export","button","Print","Imprimer","",""
-"move-line-report-form","","group","Printing informations","Informations d'impression","",""
-"com.axelor.apps.account.db.MoveLineReport","move-line-report-grid","grid","Accounting reports","Rapports comptables","",""
-"com.axelor.apps.account.db.Parameter","parameter-form","form","Parameter","Paramètres","",""
-"com.axelor.apps.account.db.Parameter","parameter-grid","grid","Parameter","Paramètres","",""
-"com.axelor.apps.account.db.ParameterType","parameter-type-form","form","ParameterType","Types de paramètre","",""
-"com.axelor.apps.account.db.ParameterType","parameter-type-grid","grid","ParameterType","Types de paramètre","",""
-"com.axelor.apps.base.db.Partner","partner-contact-grid","grid","Contacts","Les contacts","",""
-"com.axelor.apps.base.db.Partner","partner-form","form","Partner","Les Tiers","",""
-"partner-form","information","page","Informations","Informations","",""
-"partner-form","","group","Partner details","Détails du tiers","",""
-"partner-form","","group","Postal addresses","Les adresses postales","",""
-"partner-form","","group","Contact","Contact","",""
-"partner-form","","page","Links","Liens","",""
-"partner-form","showSalesOrder1","button","Show sales order","Voir les devis","",""
-"partner-form","showInvoice1","button","Show invoices","Les factures","",""
-"partner-form","showProject1","button","Show projects","Voir les projets","",""
-"partner-form","showSalesOrder2","button","Show sales order","Voir les devis","",""
-"partner-form","showInvoice2","button","Show invoices","Les factures","",""
-"partner-form","showProject2","button","Show projects","Voir les projets","",""
-"partner-form","payment","page","Invoicing/Payment","Facturation/Paiement","",""
-"partner-form","showInvoice","button","View all unpaid invoices","Voir toutes les factures impayées","",""
-"partner-form","","page","Settings","Paramètres","",""
-"partner-form","compteClient","page","Customer balance","Solde client","",""
-"partner-form","reportedBalance","page","Reported balance","A nouveau","",""
-"com.axelor.apps.account.db.ReportedBalance","reported-balance-grid","grid","Reported balances","A nouveaux","",""
-"com.axelor.apps.account.db.ReportedBalance","reported-balance-form","form","Reported balance","A nouveau","",""
-"com.axelor.apps.account.db.ReportedBalanceLine","reported-balance-line-grid","grid","Reported balance lines","Les Lignes de reports à nouveaux","",""
-"com.axelor.apps.account.db.ReportedBalanceLine","reported-balance-line-form","form","Reported balance line","Ligne de report à nouveau","",""
-"partner-form","","page","Reporting","Rapport","",""
-"partner-form","","group","Action(s)","Action(s)","",""
-"partner-form","showPartnerInfo","button","Print Informations","","",""
-"partner-grid","fbContact","button","Facebook Contact","Les contacts de Facebook","",""
-"partner-grid","twtContact","button","Twitter Contact","Les contactes de Twitter","",""
-"partner-grid","linContact","button","LinkedIn Contact","Les contactes de LinkedIn","",""
-"com.axelor.apps.base.db.Partner","partner-grid","grid","Partners","Les Tiers","",""
-"com.axelor.apps.account.db.Paybox","paybox-form","form","Paybox","Paybox","",""
-"paybox-form","","label","Please close this notebook to go back to the payment voucher. Please refresh the payment voucher to see the changes.","Vous pouvez fermer cet onglet et revenir sur la saisie paiement. Pensez à actualiser la saisie paiement.","",""
-"com.axelor.apps.account.db.Paybox","paybox-grid","grid","Paybox","Paybox","",""
-"com.axelor.apps.account.db.PayerQualityConfigLine","payer-quality-config-line-form","form","Payer quality configuration line","Ligne de configuration de la qualité payeur","",""
-"com.axelor.apps.account.db.PayerQualityConfigLine","payer-quality-config-line-grid","grid","Payer quality configuration lines","Lignes de configuration de la qualité payeur","",""
-"com.axelor.apps.account.db.PaymentCondition","payment-condition-form","form","Payment Condition","Conditions de paiement","",""
-"com.axelor.apps.account.db.PaymentCondition","payment-condition-grid","grid","Payment Condition","Conditions de paiement","",""
-"com.axelor.apps.account.db.PaymentInvoice","payment-invoice-form","form","Invoices to pay","Factures à payer","",""
-"com.axelor.apps.account.db.PaymentInvoice","payment-invoice-grid","grid","Invoices to pay","Factures à payer","",""
-"com.axelor.apps.account.db.PaymentInvoiceToPay","payment-invoice-to-pay-form","form","Payment voucher invoices to pay","Paiement des factures","",""
-"com.axelor.apps.account.db.PaymentInvoiceToPay","payment-invoice-to-pay-grid","grid","Payment voucher invoices to pay","Paiement des factures","",""
-"com.axelor.apps.account.db.PaymentMode","payment-mode-form-2","form","Payment Mode","Modes de paiement","",""
-"com.axelor.apps.account.db.PaymentMode","payment-mode-grid-2","grid","Payment Mode","Modes de paiement","",""
-"com.axelor.apps.account.db.PaymentSchedule","payment-schedule-form","form","Payment schedule","Échéancier","",""
-"payment-schedule-form","createPaymentScheduleLines","button","Create schedule lines","Créer les lignes d'échéancier","",""
-"payment-schedule-form","validate","button","Validate","Valider","",""
-"payment-schedule-form","cancel","button","Cancel","Annuler","",""
-"payment-schedule-form","irrecoverable","group","Irrecoverable","Irrécouvrable","",""
-"payment-schedule-form","passInIrrecoverable","button","Shift to irrecoverablePassage en irrécouvrable","Passage en irrécouvrable","",""
-"payment-schedule-form","notPassInIrrecoverable","button","Do not shift to irrecoverable","Ne pas passer en irrécouvrable","",""
-"com.axelor.apps.account.db.PaymentSchedule","payment-schedule-grid","grid","Payment schedule","Échéancier","",""
-"com.axelor.apps.account.db.PaymentScheduleLine","payment-schedule-line-form","form","Schedule line","Échéance","",""
-"com.axelor.apps.account.db.PaymentScheduleLine","payment-schedule-line-grid","grid","Schedule lines","Échéances","",""
-"com.axelor.apps.account.db.PaymentScheduleLine","payment-schedule-line-payment-schedule-form","form","Schedule line","Échéance","",""
-"com.axelor.apps.account.db.PaymentScheduleLine","payment-schedule-line-payment-schedule-grid","grid","Schedule lines","Échéances","",""
-"com.axelor.apps.account.db.PaymentScheduleType","payment-schedule-type-form","form","Payment schedule types","Type d'échéancier","",""
-"com.axelor.apps.account.db.PaymentScheduleType","payment-schedule-type-grid","grid","Payment schedule types","Type d'échéancier","",""
-"com.axelor.apps.account.db.PaymentVoucher","payment-voucher-form","form","Payment voucher","Saisie paiement","",""
-"payment-voucher-form","","group","Actions","Actions","",""
-"payment-voucher-form","confirmPaymentVoucher","button","Confirm payment","Confirmer le paiement","",""
-"payment-voucher-form","showMoveLines","button","Show move lines","Lignes d'écriture","",""
-"payment-voucher-form","printPaymentVoucher","button","Print receipt","Imprimer reçu","",""
-"payment-voucher-form","","group","To pay","A payer","",""
-"payment-voucher-form","","label","<font color=#953B39> OR </font>","<font color=#953B39> OU </font>","",""
-"payment-voucher-form","","label","<font color=#953B39> OR </font>","<font color=#953B39> OU </font>","",""
-"com.axelor.apps.account.db.PaymentVoucher","Reject to pay","viewField","Reject to pay","Rejet à payer","",""
-"payment-voucher-form","","group","Payer","Payeur","",""
-"payment-voucher-form","","label","<font color=#953B39> OR </font>","<font color=#953B39> OU </font>","",""
-"payment-voucher-form","loadMoveLines","button","Load invoice and display other invoices to pay","Charger facture et afficher les autres factures à payer","",""
-"com.axelor.apps.account.db.PaymentInvoice","","grid","Invoices to pay","Factures à payer","",""
-"payment-voucher-form","loadSelectedLines","button","Load selected lines","Charger les lignes sélectionnées","",""
-"payment-voucher-form","payboxGroup","group","Paybox","Paybox","",""
-"payment-voucher-form","payboxEmail","group","Add an email for payment through Paybox","Ajoutez un email pour le paiement par Paybox","",""
-"payment-voucher-form","","label","The payer doesn't have email attached. Please input/provide the email to use.","Le tiers payeur ne possède pas d'email. Veuillez préciser l'email à utiliser","",""
-"payment-voucher-form","validateEmail","button","Validate","Valider","",""
-"payment-voucher-form","paybox","button","Paybox","Paybox","",""
-"com.axelor.apps.account.db.PaymentVoucher","payment-voucher-grid","grid","Payment vouchers","Les Saisies paiements","",""
-"com.axelor.apps.account.db.Period","period-form","form","Period","Périodes","",""
-"period-form","close","button","Close period","Clôturer la période","",""
-"period-form","reopen","button","Reopen period","Rouvrir la période","",""
-"com.axelor.apps.account.db.Period","period-grid","grid","Period","Périodes","",""
-"com.axelor.apps.account.db.PricingList","pricing-list-form","form","Pricing list","Barème","",""
-"com.axelor.apps.account.db.PricingList","pricing-list-grid","grid","Pricing lists","Barèmes","",""
-"com.axelor.apps.account.db.PricingListLine","pricing-list-line-form","form","Pricing list lines","Lignes de barème","",""
-"pricing-list-line-form","","group","Paramètres","Paramètres","",""
-"pricing-list-line-form","","group","Valeurs","Valeurs","",""
-"com.axelor.apps.account.db.PricingListLine","pricing-list-line-grid","grid","Pricing list lines","Lignes de barème","",""
-"com.axelor.apps.account.db.PricingListVersion","pricing-list-version-form","form","Pricing list version","Version de barème","",""
-"com.axelor.apps.account.db.PricingListVersion","pricing-list-version-grid","grid","Pricing list versions","Versions de barèmes","",""
-"com.axelor.apps.account.db.PricingListVersion","pricing-list-version-menu-form","form","Pricing list version","Version de barème","",""
-"com.axelor.apps.account.db.ReasonExemption","reason-exemption-form","form","Exemption reason","Motifs d'exonération","",""
-"com.axelor.apps.account.db.ReasonExemption","reason-exemption-grid","grid","Exemption reasons","Motifs d'exonération","",""
-"com.axelor.apps.account.db.Reconcile","reconcile-form","form","Reconcile","Réconciliations","",""
-"reconcile-form","reconcile","button","Reconcile","Réconciliations","",""
-"reconcile-form","unreconcile","button","Unreconcile","Déréconcilier","",""
-"com.axelor.apps.account.db.Reconcile","reconcile-grid","grid","Reconcile","Réconciliations","",""
-"com.axelor.apps.account.db.ReimbursementExport","reimbursement-export-form","form","Reimbursement export","Export des remboursement","",""
-"reimbursement-export-form","","separator","Create reimbursements","Création des remboursement","",""
-"reimbursement-export-form","","separator","Validate reimbursements","Validation des remboursement","",""
-"reimbursement-export-form","showReimbursement","button","Reimbursements","Remboursements","",""
-"reimbursement-export-form","exportSepa","button","SEPA Export","Export SEPA","",""
-"reimbursement-export-form","exportCfonb","button","CFONB Export","Export CFONB","",""
-"com.axelor.apps.account.db.ReimbursementExport","reimbursement-export-grid","grid","Reimbursement exports","Export des remboursement","",""
-"com.axelor.apps.account.db.Reimbursement","reimbursement-form","form","Reimbursement","Remboursement","",""
-"reimbursement-form","","separator","Reason","Motif","",""
-"reimbursement-form","validateReimbursement","button","Validate","Valider","",""
-"com.axelor.apps.account.db.Reimbursement","reimbursement-grid","grid","Reimbursements","Remboursements","",""
-"com.axelor.apps.account.db.ReminderConfigLine","reminder-config-line-form","form","Reminder method configuration line","Ligne de configuration de la méthode de relance","",""
-"com.axelor.apps.account.db.ReminderConfigLine","reminder-config-line-grid","grid","Reminder method configuration lines","Lignes de configuration de la méthode de relance","",""
-"com.axelor.apps.account.db.Reminder","reminder-form","form","Reminder","Relance","",""
-"com.axelor.apps.account.db.Reminder","reminder-grid","grid","Reminder","Relance","",""
-"com.axelor.apps.account.db.ReminderHistory","reminder-history-contract-line-form","form","Reminders history","L'historique des relances","",""
-"com.axelor.apps.account.db.ReminderHistory","reminder-history-contract-line-grid","grid","Reminders history","L'historique des relances","",""
-"com.axelor.apps.account.db.ReminderHistory","reminder-history-form","form","Reminder history","L'historique des relances","",""
-"com.axelor.apps.account.db.ReminderHistory","reminder-history-line-grid","grid","Reminders history","L'historique des relances","",""
-"com.axelor.apps.account.db.ReminderLevel","reminderLevel-form","form","Reminder level","Niveau de relance","",""
-"com.axelor.apps.account.db.ReminderLevel","reminderLevel-grid","grid","Reminder levels","Les niveaux de relance","",""
-"com.axelor.apps.account.db.ReminderMethod","reminderMethod-form","form","Reminder method","Méthode de relance","",""
-"com.axelor.apps.account.db.ReminderMethod","reminderMethod-grid","grid","Reminder methods","Les méthodes de relance","",""
-"com.axelor.apps.account.db.ReminderMethodLine","reminder-method-line-form","form","Reminder method line","Ligne de la méthode de relance","",""
-"reminder-method-line-form","","group","Reminder level","Niveau de relance","",""
-"com.axelor.apps.account.db.ReminderLevel","matrix-line-reminder-form","form","ReminderLevel","Niveau de relance","",""
-"reminder-method-line-form","","group","Conditions","Conditions","",""
-"reminder-method-line-form","","group","Actions","Actions","",""
-"com.axelor.apps.account.db.ReminderMethodLine","reminder-method-line-grid","grid","Reminder method lines","Lignes de la méthode de relance","",""
-"com.axelor.apps.account.db.ReportedBalance","reported-balance-form","form","Reported balance","A nouveau","",""
-"com.axelor.apps.account.db.ReportedBalanceLine","reported-balance-line-grid","grid","Reported balance lines","Les Lignes de reports à nouveaux","",""
-"com.axelor.apps.account.db.ReportedBalanceLine","reported-balance-line-form","form","Reported balance line","Ligne de report à nouveau","",""
-"com.axelor.apps.account.db.ReportedBalance","reported-balance-grid","grid","Reported balance list","Liste de report à nouveau","",""
-"com.axelor.apps.account.db.ReportedBalanceLine","reported-balance-line-form","form","Reported balance line","Ligne de report à nouveau","",""
-"com.axelor.apps.account.db.ReportedBalanceLine","reported-balance-line-grid","grid","Reported balance lines","Les Lignes de reports à nouveaux","",""
-"com.axelor.apps.account.db.Tax","tax-form","form","Tax","Taxe","",""
-"tax-form","","page","General","Général","",""
-"tax-form","","separator","Condition d'application","Condition d'application","",""
-"tax-form","","page","Accounting","Comptabilité","",""
-"tax-form","","page","Complementary information","Informations complémentaires","",""
-"com.axelor.apps.base.db.FormulaControl","","grid","Formula controls","Contrôle de formule","",""
-"com.axelor.apps.base.db.FormulaControl","","form","Formula control","Règle de calcul de Taxe","",""
-"com.axelor.apps.account.db.Tax","tax-grid","grid","Taxes","Taxes","",""
-"com.axelor.apps.account.db.InvoiceLine","tax-invoice-line-form","form","Invoice line","Ligne de facture","",""
-"com.axelor.apps.account.db.InvoiceLine","tax-invoice-line-grid","grid","Invoice lines","Lignes de facture","",""
-"com.axelor.apps.account.db.TaxLine","tax-line-form","form","Tax line","Ligne de taxe","",""
-"tax-line-form","","separator","Context of use","Condition d'application","",""
-"com.axelor.apps.base.db.FormulaControl","","grid","Formula controls","Contrôle de formule","",""
-"com.axelor.apps.base.db.FormulaControl","","form","Formula control","Règle de calcul de Taxe","",""
-"com.axelor.apps.account.db.TaxLine","tax-line-grid","grid","Tax lines","Lignes de taxes","",""
-"com.axelor.apps.account.db.TaxReport","tax-report-form","form","Tax report","Rapport de taxe","",""
-"tax-report-form","","group","Descrition","Descrition","",""
-"tax-report-form","printTaxReport","button","Print tax report","Imprimer le rapport de taxes","",""
-"com.axelor.apps.account.db.TaxReport","tax-report-grid","grid","Taxes reports","Rapports de taxes","",""
-"com.axelor.apps.account.db.VatAccount","vat-account-form","form","VAT accounting configuration","Configuration de compte de TVA","",""
-"com.axelor.apps.account.db.VatAccount","vat-account-grid","grid","VAT accounting configurations","Les configurations de compte de TVA","",""
-"com.axelor.apps.account.db.Vat","vat-form","form","VAT","TVA","",""
-"vat-form","","page","VAT rate list","Liste des taux de TVA","",""
-"com.axelor.apps.account.db.VatLine","","grid","VAT rate lines","Ligne de TVA","",""
-"com.axelor.apps.account.db.VatLine","","form","VAT rate","Les lignes de TVA","",""
-"vat-form","","page","Accounting configuration","Configuration comptable","",""
-"com.axelor.apps.account.db.Vat","vat-grid","grid","VAT","TVA","",""
-"com.axelor.apps.account.db.VatLine","vat-line-form","form","VAT Rate","Ligne de TVA","",""
-"com.axelor.apps.account.db.VatLine","vat-line-grid","grid","VAT Rates","Les lignes de TVA","",""
-"com.axelor.apps.account.db.VatManagement","vat-management-form","form","VAT Management","Gestion de la TVA","",""
-"com.axelor.apps.base.db.FormulaControl","","grid","Formula controls","Contrôle de formule","",""
-"com.axelor.apps.base.db.FormulaControl","","form","Formula control","Règle de calcul de Taxe","",""
-"com.axelor.apps.account.db.VatManagement","vat-management-grid","grid","VAT Management List","Les gestions de TVA","",""
-"com.axelor.apps.account.db.VatManagementLine","vat-management-line-form","form","VAT Management line","Ligne de gestion de la TVA","",""
-"vat-management-line-form","","separator","Context of use","Condition d'application","",""
-"com.axelor.apps.account.db.VatManagementLine","vat-management-line-grid","grid","VAT Management lines","Les lignes de gestions de TVA","",""
-"com.axelor.apps.account.db.Year","year-form","form","Fiscal year","Année fiscale","",""
-"year-form","close","button","Close fiscal year","Clôturer l'exercice","",""
-"com.axelor.apps.account.db.Year","year-grid","grid","Fiscal years","Les années fiscales","",""
-"account.conf.account.payment.mode","account.conf.account.payment.mode","action","Payment modes","Les modes de paiements","",""
-"account.conf.analytic.account","account.conf.analytic.account","action","Analytic accounts","Les comptes analytiques","",""
-"account.conf.analytic.axis","account.conf.analytic.axis","action","Analytic axis","Les axes analytiques","",""
-"account.conf.analytic.journal","account.conf.analytic.journal","action","Analytic journals","Les journaux analytiques","",""
-"account.conf.export.accounting.category","account.conf.export.accounting.category","action","Account categories","Les catégories de comptes","",""
-"account.conf.export.accounting.category.line","account.conf.export.accounting.category.line","action","Accounting report category line","Les lignes de catégories de rapports comptables","",""
-"account.conf.export.interbank.code","account.conf.export.interbank.code","action","Reject/Return reason codes","Listes des codes motifs de rejet/retour ","",""
-"account.conf.financial.account","account.conf.financial.account","action","Financial Accounts","Les comptes comptables","",""
-"account.conf.financial.accounting.plan","account.conf.financial.accounting.plan","action","Chart of accounts","Le plan comptable","",""
-"account.conf.financial.account.management","account.conf.financial.account.management","action","Financial accounts management","Les gestions de compte comptable","",""
-"account.conf.financial.account.type","account.conf.financial.account.type","action","Account types","Les types de compte","",""
-"account.conf.financial.journal","account.conf.financial.journal","action","Journals","Les journaux","",""
-"account.conf.financial.journal.type","account.conf.financial.journal.type","action","Journal types","Les types de journaux","",""
-"account.conf.financial.period","account.conf.financial.period","action","Periods","Les périodes comptables","",""
-"account.conf.financial.year","account.conf.financial.year","action","Fiscal years","Les années fiscales","",""
-"account.root.accounting.batch","account.root.accounting.batch","action","Accounting batches","Les batchs de comptabilité","",""
-"account.root.account.paybox","account.root.account.paybox","action","Paybox","Paybox","",""
-"account.root.account.schedule.account.schedule","account.root.account.schedule.account.schedule","action","All Payments Schedule","Les échéanciers","",""
-"account.root.account.schedule.account.schedule.line","account.root.account.schedule.account.schedule.line","action","Payment schedule line","Les lignes d'échéanciers","",""
-"account.root.export.reimbursement","account.root.export.reimbursement","action","Reimbursements","Remboursements","",""
-"account.root.move.move","account.root.move.move","action","Accounting Moves","Écritures","",""
-"account.root.move.move.All","account.root.move.move.All","action","All accounting moves (including technical moves)","Les Écritures (pièces techniques incluses)","",""
-"account.root.move.move.line","account.root.move.move.line","action","Accounting Move lines","Les Lignes d'écritures","",""
-"account.root.move.move.line.All","account.root.move.move.line.All","action","All accounting move lines (including technical move lines)","Les Lignes d'écritures (Lignes techniques incluses)","",""
-"account.root.periodic.processing.account.clearance","account.root.periodic.processing.account.clearance","action","Overpayments clearances","Les Apurements de trop-perçu","",""
-"account.root.periodic.processing.account.voucher.paybox.email","account.root.periodic.processing.account.voucher.paybox.email","action","Email used by Paybox","Email utilisé par Paybox","",""
-"account.root.periodic.processing.cash.register","account.root.periodic.processing.cash.register","action","Cash register closure","Les Fermetures Caisses","",""
-"account.root.periodic.processing.cheque-rejection","account.root.periodic.processing.cheque-rejection","action","Rejects of cheque","Les Rejets de chèque","",""
-"account.root.periodic.processing.irrecoverable","account.root.periodic.processing.irrecoverable","action","Shift to irrecoverable","Passage en irrécouvrable","",""
-"account.root.periodic.processing.payment.voucher","account.root.periodic.processing.payment.voucher","action","Payment vouchers","Les Saisies paiements","",""
-"account.root.periodic.processing.reconcile","account.root.periodic.processing.reconcile","action","Reconcilations","Les Réconciliations","",""
-"account.root.reporting.moveLineExport","account.root.reporting.moveLineExport","action","Accounting exports","Les Exports comptables","",""
-"account.root.reporting.moveLineReport","account.root.reporting.moveLineReport","action","Accounting reports","Rapports comptables","",""
-"account.root.tax.base","account.root.tax.base","action","Tax bases","Les assiettes de taxes","",""
-"account.root.tax.calculation.rule","account.root.tax.calculation.rule","action","Tax calculation rules","Les règles de calculs des taxes","",""
-"account.root.tax.conf.vat.management","account.root.tax.conf.vat.management","action","V.A.T. management","Gestion de la TVA","",""
-"account.root.tax.conf.vat.management.line","account.root.tax.conf.vat.management.line","action","V.A.T. Conditions","Condition sur TVA","",""
-"account.root.tax.exemption.from.tax","account.root.tax.exemption.from.tax","action","Tax exemptions","Les exonérations de taxes","",""
-"account.root.tax.reason.exemption","account.root.tax.reason.exemption","action","Tax exemption reasons","Les motifs d'exonérations","",""
-"account.root.tax.tax","account.root.tax.tax","action","Taxes","Taxes","",""
-"account.root.tax.vat","account.root.tax.vat","action","VATs","Les TVA","",""
-"action-invoice-alarm-alert","action-invoice-alarm-alert","action","You cannot suspend an invoice which you did not validate","Vous ne pouvez pas suspendre une facture que vous n'avez pas validé","",""
-"debtRecovery.conf.reminder.reminder.level","debtRecovery.conf.reminder.reminder.level","action","Reminder levels","Les niveaux de relance","",""
-"debtRecovery.conf.reminder.reminder.mail.model","debtRecovery.conf.reminder.reminder.mail.model","action","Reminder mail models","Les modèles de courrier","",""
-"debtRecovery.conf.reminder.reminder.method","debtRecovery.conf.reminder.reminder.method","action","Reminder methods","Les méthodes de relance","",""
-"debtRecovery.root.reminder.reminder.history","debtRecovery.root.reminder.reminder.history","action","Reminders history","L'historique des relances","",""
-"invoice.root.invoice","invoice.root.invoice","action","New invoice","Nouvelle facture","",""
-"invoice.root.purchases.filters.confsupinvoice","invoice.root.purchases.filters.confsupinvoice","action","Confirmed Suppl. invoices","Factures fournisseur confirmées","",""
-"invoice.root.purchases.filters.confsuprefunds","invoice.root.purchases.filters.confsuprefunds","action","Confirmed Suppl. refunds","Avoirs fournisseur confirmés","",""
-"invoice.root.purchases.filters.draftsupinvoice","invoice.root.purchases.filters.draftsupinvoice","action","Draft Suppl. invoices","Factures fournisseur brouillons","",""
-"invoice.root.purchases.filters.draftsuprefunds","invoice.root.purchases.filters.draftsuprefunds","action","Draft Suppl. refunds","Avoirs fournisseur brouillons","",""
-"invoice.root.purchases.filters.duesuprefunds","invoice.root.purchases.filters.duesuprefunds","action","Due Suppl. refunds","Avoirs fournisseur dus","",""
-"invoice.root.purchases.filters.unpaiddueinvoice","invoice.root.purchases.filters.unpaiddueinvoice","action","Unpaid due invoices","Facture à payer arrivées à échéance","",""
-"invoice.root.purchases.filters.valsupinvoice","invoice.root.purchases.filters.valsupinvoice","action","Validated Suppl. invoices","Factures fournisseur validées","",""
-"invoice.root.purchases.filters.valsuprefunds","invoice.root.purchases.filters.valsuprefunds","action","Validated Suppl. refunds","Avoirs fournisseur validés","",""
-"invoice.root.purchases.supinvoices","invoice.root.purchases.supinvoices","action","Suppl. Invoices","Les factures fournisseur","",""
-"invoice.root.purchases.suprefunds","invoice.root.purchases.suprefunds","action","Suppl. Refunds","Les avoirs fournisseur","",""
-"invoice.root.sales.custinvoices","invoice.root.sales.custinvoices","action","Cust. Invoices","Les factures client","",""
-"invoice.root.sales.custrefunds","invoice.root.sales.custrefunds","action","Cust. Refunds","Les avoirs client","",""
-"invoice.root.sales.filters.confcustinvoice","invoice.root.sales.filters.confcustinvoice","action","Confirmed Cust. invoices","Les factures client confirmées","",""
-"invoice.root.sales.filters.confcustrefunds","invoice.root.sales.filters.confcustrefunds","action","Confirmed Cust. refunds","Les avoirs client confirmés","",""
-"invoice.root.sales.filters.draftcustinvoice","invoice.root.sales.filters.draftcustinvoice","action","Draft Cust. invoices","Les factures client brouillon","",""
-"invoice.root.sales.filters.draftcustrefunds","invoice.root.sales.filters.draftcustrefunds","action","Draft Cust. refunds","Les avoirs client brouillon","",""
-"invoice.root.sales.filters.duecustrefunds","invoice.root.sales.filters.duecustrefunds","action","Due Cust. refunds","Les avoirs client échus","",""
-"invoice.root.sales.filters.unpaiddueinvoice","invoice.root.sales.filters.unpaiddueinvoice","action","Unpaid due invoices","Facture à payer arrivées à échéance","",""
-"invoice.root.sales.filters.valcustinvoice","invoice.root.sales.filters.valcustinvoice","action","Validated Cust. invoices","Les factures client validées","",""
-"invoice.root.sales.filters.valcustrefunds","invoice.root.sales.filters.valcustrefunds","action","Validated Cust. refunds","Les avoirs client validés","",""
-"mail.root.email.cash.register","mail.root.email.cash.register","action","Cash register emails","Les emails de caisse","",""
-"mail.root.email.debtrecovery","mail.root.email.debtrecovery","action","Reminder emails","Les emails de relance","",""
-"mail.root.email.reimboursement","mail.root.email.reimboursement","action","Reimbursement emails","Les emails de remboursement","",""
-"mail.root.email.reject.import","mail.root.email.reject.import","action","Reject emails","Les emails de rejet","",""
-"mail.root.mail.cash.register","mail.root.mail.cash.register","action","Cash register mails","Les courriers de caisse","",""
-"mail.root.mail.debtrecovery","mail.root.mail.debtrecovery","action","Reminder mails","Les courriers de relance","",""
-"mail.root.mail.reimboursement","mail.root.mail.reimboursement","action","Reimbursement mails","Les courriers de remboursement","",""
-"mail.root.mail.reject.import","mail.root.mail.reject.import","action","Bank Rejects mails","Les courriers de rejet","",""
+"domain","name","type","title","title_t","help","help_t","doc","doc_t"
+"account-conf","Configuration","menu","Configuration","Configuration",,,,
+"account-conf-analytic","Analytic","menu","Analytic","Analytique",,,,
+"account-conf-analytic-account","Analytic accounts","menu","Analytic accounts","Les comptes analytiques",,,,
+"account-conf-analytic-axis","Analytic axis","menu","Analytic axis","Les axes analytiques",,,,
+"account-conf-analytic-journal","Analytic journals","menu","Analytic journals","Les journaux analytiques",,,,
+"account-conf-export","Reportings/Exports","menu","Reportings/Exports","Rapports / Exports",,,,
+"account-conf-export-accounting-category","Account categories","menu","Account categories","Les catégories de comptes",,,,
+"account-conf-export-accounting-category-line","Accounting report category line","menu","Accounting report category line","Les lignes de catégories de rapports comptables",,,,
+"account-conf-export-interbank-code","Reject/Return reason codes","menu","Reject/Return reason codes","Listes des codes motifs de rejet/retour ",,,,
+"account-conf-financial","Financial","menu","Financial","Financière",,,,
+"account-conf-financial-account","Financial Accounts","menu","Financial Accounts","Les comptes comptables",,,,
+"account-conf-financial-accounting-plan","Chart of accounts","menu","Chart of accounts","Le plan comptable",,,,
+"account-conf-financial-account-management","Financial accounts management","menu","Financial accounts management","Les gestions de compte comptable",,,,
+"account-conf-financial-account-type","Account types","menu","Account types","Les types de compte",,,,
+"account-conf-financial-journal","Journals","menu","Journals","Les journaux",,,,
+"account-conf-financial-journal-type","Journal types","menu","Journal types","Les types de journaux",,,,
+"account-conf-financial-period","Periods","menu","Periods","Les périodes comptables",,,,
+"account-conf-financial-year","Fiscal years","menu","Fiscal years","Les années fiscales",,,,
+"account-conf-payment","Payment","menu","Payment","Paiement",,,,
+"account-conf-payment-paybox","Paybox","menu","Paybox","Paybox",,,,
+"account-conf-payment-payment-mode","Payment modes","menu","Payment modes","Les modes de paiements",,,,
+"account-root","Accounting","menu","Accounting","Comptabilité",,,,
+"account-root-accounting-batch","Accounting batches","menu","Accounting batches","Les batchs de comptabilité",,,,
+"account-root-export","Accounting Exports/Reports","menu","Accounting Exports/Reports","Exports/Rapports comptables",,,,
+"account-root-export-reimbursement","Reimbursements","menu","Reimbursements","Remboursements",,,,
+"account-root-move","Accounting Moves","menu","Accounting Moves","Écritures",,,,
+"account-root-move-move","Accounting Moves","menu","Accounting Moves","Écritures",,,,
+"account-root-move-move-All","All accounting moves (including technical moves)","menu","All accounting moves (including technical moves)","Les Écritures (pièces techniques incluses)",,,,
+"account-root-move-move-line","Accounting Move lines","menu","Accounting Move lines","Les Lignes d'écritures",,,,
+"account-root-move-move-line-All","All accounting move lines (including technical move lines)","menu","All accounting move lines (including technical move lines)","Les Lignes d'écritures (Lignes techniques incluses)",,,,
+"account-root-payment-schedule","Payment Schedule","menu","Payment Schedule","Echéanciers",,,,
+"account-root-payment-schedule-payment-schedule","All Payments Schedule","menu","All Payments Schedule","Les échéanciers",,,,
+"account-root-payment-schedule-payment-schedule-line","Payment schedule line","menu","Payment schedule line","Les lignes d'échéanciers",,,,
+"account-root-periodic-processing","Periodical processing","menu","Periodical processing","Les Traitements Périodiques",,,,
+"account-root-periodic-processing-account-clearance","Overpayments clearances","menu","Overpayments clearances","Les Apurements de trop-perçu",,,,
+"account-root-periodic-processing-cash-register","Cash register closure","menu","Cash register closure","Les Fermetures Caisses",,,,
+"account-root-periodic-processing-cheque-rejection","Rejects of cheque","menu","Rejects of cheque","Les Rejets de chèque",,,,
+"account-root-periodic-processing-irrecoverable","Shift to irrecoverable","menu","Shift to irrecoverable","Passage en irrécouvrable",,,,
+"account-root-periodic-processing-payment-voucher","Payment vouchers","menu","Payment vouchers","Les Saisies paiements",,,,
+"account-root-periodic-processing-reconcile","Reconcilations","menu","Reconcilations","Les Réconciliations",,,,
+"account-root-reporting-moveLineExport","Accounting exports","menu","Accounting exports","Les Exports comptables",,,,
+"account-root-reporting-moveLineReport","Accounting reports","menu","Accounting reports","Rapports comptables",,,,
+"account-root-tax","Taxes","menu","Taxes","Taxes",,,,
+"account-root-tax-base","Tax bases","menu","Tax bases","Les assiettes de taxes",,,,
+"account-root-tax-calculation-rule","Tax calculation rules","menu","Tax calculation rules","Les règles de calculs des taxes",,,,
+"account-root-tax-conf","Configuration","menu","Configuration","Configuration",,,,
+"account-root-tax-conf-vat-management","V.A.T. management","menu","V.A.T. management","Gestion de la TVA",,,,
+"account-root-tax-conf-vat-management-line","V.A.T. Conditions","menu","V.A.T. Conditions","Condition sur TVA",,,,
+"account-root-tax-exemption-from-tax","Tax exemptions","menu","Tax exemptions","Les exonérations de taxes",,,,
+"account-root-tax-reason-exemption","Tax exemption reasons","menu","Tax exemption reasons","Les motifs d'exonérations",,,,
+"account-root-tax-tax","Taxes","menu","Taxes","Taxes",,,,
+"account-root-tax-vat","VATs","menu","VATs","Les TVA",,,,
+"account-tech","Administration","menu","Administration","Administration",,,,
+"debtRecovery-conf-reminder","Configuration","menu","Configuration","Configuration",,,,
+"debtRecovery-conf-reminder-reminder-level","Reminder levels","menu","Reminder levels","Les niveaux de relance",,,,
+"debtRecovery-conf-reminder-reminder-mail-model","Reminder mail models","menu","Reminder mail models","Les modèles de courrier",,,,
+"debtRecovery-conf-reminder-reminder-method","Reminder methods","menu","Reminder methods","Les méthodes de relance",,,,
+"debtRecovery-root","Debt recoveries","menu","Debt recoveries","Recouvrement",,,,
+"debtRecovery-root-reminder","Debt recoveries","menu","Debt recoveries","Recouvrement",,,,
+"debtRecovery-root-reminder-reminder-history","Reminders history","menu","Reminders history","L'historique des relances",,,,
+"invoice-root","Invoice","menu","Invoice","Facture",,,,
+"invoice-root-invoice","New invoice","menu","New invoice","Nouvelle facture",,,,
+"invoice-root-purchases","Purchases","menu","Purchases","Les Achats",,,,
+"invoice-root-purchases-filters","Filters","menu","Filters","Filtres",,,,
+"invoice-root-purchases-filters-confsupinvoice","Confirmed Suppl. invoices","menu","Confirmed Suppl. invoices","Factures fournisseur confirmées",,,,
+"invoice-root-purchases-filters-confsuprefunds","Confirmed Suppl. refunds","menu","Confirmed Suppl. refunds","Avoirs fournisseur confirmés",,,,
+"invoice-root-purchases-filters-draftcustrefunds","Draft Suppl. refunds","menu","Draft Suppl. refunds","Avoirs fournisseur brouillons",,,,
+"invoice-root-purchases-filters-draftsupinvoice","Draft Suppl. invoices","menu","Draft Suppl. invoices","Factures fournisseur brouillons",,,,
+"invoice-root-purchases-filters-duesuprefunds","Due Suppl. refunds","menu","Due Suppl. refunds","Avoirs fournisseur dus",,,,
+"invoice-root-purchases-filters-unpaiddueinvoice","Unpaid Due invoices","menu","Unpaid Due invoices","Les factures client échues",,,,
+"invoice-root-purchases-filters-valsupinvoice","Validated Suppl. invoices","menu","Validated Suppl. invoices","Factures fournisseur validées",,,,
+"invoice-root-purchases-filters-valsuprefunds","Validated Suppl. refunds","menu","Validated Suppl. refunds","Avoirs fournisseur validés",,,,
+"invoice-root-purchases-supinvoices","Suppl. Invoices","menu","Suppl. Invoices","Les factures fournisseur",,,,
+"invoice-root-purchases-suprefunds","Suppl. Refunds","menu","Suppl. Refunds","Les avoirs fournisseur",,,,
+"invoice-root-sales","Sales","menu","Sales","Les Ventes",,,,
+"invoice-root-sales-custinvoices","Cust. Invoices","menu","Cust. Invoices","Les factures client",,,,
+"invoice-root-sales-custrefunds","Cust. Refunds","menu","Cust. Refunds","Les avoirs client",,,,
+"invoice-root-sales-filters","Filters","menu","Filters","Filtres",,,,
+"invoice-root-sales-filters-confcustinvoice","Confirmed Cust. invoices","menu","Confirmed Cust. invoices","Les factures client confirmées",,,,
+"invoice-root-sales-filters-confcustrefunds","Confirmed Cust. refunds","menu","Confirmed Cust. refunds","Les avoirs client confirmés",,,,
+"invoice-root-sales-filters-draftcustinvoice","Draft Cust. invoices","menu","Draft Cust. invoices","Les factures client brouillon",,,,
+"invoice-root-sales-filters-draftcustrefunds","Draft Cust. refunds","menu","Draft Cust. refunds","Les avoirs client brouillon",,,,
+"invoice-root-sales-filters-duecustrefunds","Due Cust. refunds","menu","Due Cust. refunds","Les avoirs client échus",,,,
+"invoice-root-sales-filters-unpaiddueinvoice","Unpaid Due invoices","menu","Unpaid Due invoices","Les factures client échues",,,,
+"invoice-root-sales-filters-valcustinvoice","Validated Cust. invoices","menu","Validated Cust. invoices","Les factures client validées",,,,
+"invoice-root-sales-filters-valcustrefunds","Validated Cust. refunds","menu","Validated Cust. refunds","Les avoirs client validés",,,,
+"mail-root-email-cash-register","Cash register emails","menu","Cash register emails","Les emails de caisse",,,,
+"mail-root-email-debtrecovery","Reminder emails","menu","Reminder emails","Les emails de relance",,,,
+"mail-root-email-reimboursement","Reimbursement emails","menu","Reimbursement emails","Les emails de remboursement",,,,
+"mail-root-email-reject-import","Reject emails","menu","Reject emails","Les emails de rejet",,,,
+"mail-root-mail-cash-register","Cash register mails","menu","Cash register mails","Les courriers de caisse",,,,
+"mail-root-mail-debtrecovery","Reminder mails","menu","Reminder mails","Les courriers de relance",,,,
+"mail-root-mail-reimboursement","Reimbursement mails","menu","Reimbursement mails","Les courriers de remboursement",,,,
+"mail-root-mail-reject-import","Bank Rejects mails","menu","Bank Rejects mails","Les courriers de rejet",,,,
+"discount.engine.date.type","0","select","None","Aucun",,,,
+"discount.engine.date.type","1","select","Period abo/cons/service","Période abo/conso/service",,,,
+"discount.engine.date.type","2","select","Contract subscription","Souscription du contrat",,,,
+"discount.engine.date.type","3","select","End of contract","Fin du contrat",,,,
+"discount.engine.date.type","4","select","Opening contract","Mise en service du contrat",,,,
+"discount.engine.date.type","5","select","Contract resilation","Résiliation du contrat",,,,
+"discount.engine.date.type","6","select","Contract subscription","Souscription du contrat",,,,
+"discount.engine.date.type","7","select","End of service","Fin du service",,,,
+"discount.engine.discount.type","0","select","Percentage","Pourcentage",,,,
+"discount.engine.discount.type","1","select","Price","Prix",,,,
+"com.axelor.apps.account.db.AccountCategory","account-category-form","form","Account Category","Catégorie de compte",,,,
+"com.axelor.apps.account.db.AccountCategory","account-category-grid","grid","Account Category","Catégorie de compte",,,,
+"com.axelor.apps.account.db.AccountCategoryLine","account-category-line-form","form","Account Category Line","Ligne de catégorie de compte",,,,
+"com.axelor.apps.account.db.AccountCategoryLine","account-category-line-grid","grid","Account Category Lines","Ligne de catégorie de compte",,,,
+"com.axelor.apps.account.db.AccountClearance","account-clearance-form","form","Account clearance","Apurement des comptes",,,,
+"account-clearance-form","getExcessPayment","button","Get overdue payments","Récupérer les trop perçus",,,,
+"account-clearance-form","validateAccountClearance","button","Validate account clearances","Valider l'apurement des comptes",,,,
+"account-clearance-form","showAccountClearanceMoveLines","button","Move lines generated","Lignes d'écriture générées",,,,
+"com.axelor.apps.account.db.AccountClearance","account-clearance-grid","grid","Account clearance operations","Opérations d'apurement des comptes",,,,
+"com.axelor.apps.base.db.AccountEquivalence","account-equivalence-form","form","Account equivalence","Équivalence des comptes",,,,
+"com.axelor.apps.base.db.AccountEquivalence","account-equivalence-grid","grid","Account equivalences","Équivalences des comptes",,,,
+"com.axelor.apps.account.db.Account","account-form","form","Account","Compte comptable",,,,
+"com.axelor.apps.account.db.Account","account-grid","grid","Account","Compte comptable",,,,
+"com.axelor.apps.account.db.AccountingBatch","accounting-batch-form","form","Accounting Batch","Routine comptable",,,,
+"accounting-batch-form","reimbursementPage","page","Reimbursement configuration","Configuration de remboursement",,,,
+"accounting-batch-form","directDebitPage","page","Direct debit configuration","Configuration de débit direct",,,,
+"accounting-batch-form","reminderPage","page","Reminder configuration","Configuration de relance",,,,
+"accounting-batch-form","interbankPaymentOrderPage","page","Payments by IPO and IPO Cheque configuration","Les paiements par IPO et par chèque IPO",,,,
+"accounting-batch-form",,"page","Information","Information",,,,
+"com.axelor.apps.account.db.AccountingBatch","Created on","viewField","Created on","Créé le",,,,
+"com.axelor.apps.account.db.AccountingBatch","Created by","viewField","Created by","Crée par",,,,
+"accounting-batch-form","reimbursementBatch","button","Run","Lancer",,,,
+"accounting-batch-form","directDebitBatch","button","Run","Lancer",,,,
+"accounting-batch-form","reminderBatch","button","Run","Lancer",,,,
+"accounting-batch-form","interbankPaymentOrderBatch","button","Run","Lancer",,,,
+"accounting-batch-form","doubtfulCustomerBatch","button","Run","Lancer",,,,
+"com.axelor.apps.account.db.AccountingBatch","accounting-batch-grid","grid","Accounting batches","Les batchs de comptabilité",,,,
+"com.axelor.apps.account.db.AccountingSituation","accounting-situation-form","form","Accounting situation","Situations comptables",,,,
+"accounting-situation-form",,"separator","Customer balance","Solde client",,,,
+"accounting-situation-form",,"separator","Reminder process","Processus de relance",,,,
+"com.axelor.apps.account.db.AccountingSituation","accounting-situation-grid","grid","Accounting situations","Les situations comptables",,,,
+"com.axelor.apps.account.db.AccountManagement","account-management-form","form","Account management","Gestion de compte de comptable",,,,
+"account-management-form","analyticAccountManagementPage","page","Analytic account","Compte analytique",,,,
+"account-management-form","productPage","page","Product","Produit",,,,
+"account-management-form","taxePage","page","Tax","Taxe",,,,
+"account-management-form","vatPage","page","VAT","TVA",,,,
+"account-management-form","paymentModePage","page","Payment mode","Mode de paiement",,,,
+"com.axelor.apps.account.db.AccountManagement","account-management-grid","grid","Account management list","Liste des gestions comptables",,,,
+"com.axelor.apps.account.db.AccountManagement","account-management-payment-mode-form","form","Gestion de compte comptable","Gestion de compte comptable",,,,
+"com.axelor.apps.account.db.AccountManagement","account-management-payment-mode-grid","grid","Les gestions de compte comptable","Les gestions de compte comptable",,,,
+"com.axelor.apps.account.db.AccountManagement","account-management-product-form","form","Gestion de compte comptable","Gestion de compte comptable",,,,
+"account-management-product-form","analyticAccountManagementPage","page","Comptes analytiques","Comptes Analytiques",,,,
+"account-management-product-form","taxePage","page","Taxes","Taxes",,,,
+"account-management-product-form","vatPage","page","TVA","TVA",,,,
+"com.axelor.apps.account.db.AccountManagement","account-management-product-grid","grid","Account management","Gestion de compte de comptable",,,,
+"com.axelor.apps.account.db.AccountManagement","account-management-tax-form","form","Gestion de compte comptable","Gestion de compte comptable",,,,
+"com.axelor.apps.account.db.AccountManagement","account-management-tax-grid","grid","Les gestions de compte comptable","Les gestions de compte comptable",,,,
+"com.axelor.apps.account.db.AccountType","account-type-form","form","Account type","Type de compte",,,,
+"com.axelor.apps.account.db.AccountType","account-type-grid","grid","Account types","Les types de compte",,,,
+"com.axelor.apps.account.db.AnalyticAccount","analytic-account-form","form","Analytic Account","Compte analytique",,,,
+"com.axelor.apps.account.db.AnalyticAccount","analytic-account-grid","grid","Analytic Accounts","Les Comptes analytiques",,,,
+"com.axelor.apps.account.db.AnalyticAccountManagement","analytic-account-management-form","form","Analytic Acc. Mngmt","Gestion des comptes analytiques",,,,
+"com.axelor.apps.account.db.AnalyticAccountManagement","analytic-account-management-grid","grid","Analytic Acc. Mngmt List","Liste des comptes analytiques",,,,
+"com.axelor.apps.account.db.AnalyticAxis","analytic-axis-form","form","Analytic Axis","Axe analytique",,,,
+"com.axelor.apps.account.db.AnalyticAxis","analytic-axis-grid","grid","Analytic Axis","Axe analytique",,,,
+"com.axelor.apps.account.db.AnalyticJournal","analytic-journal-form","form","Analytic Journal","Journal analytique",,,,
+"com.axelor.apps.account.db.AnalyticJournal","analytic-journal-grid","grid","Analytic Journal","Journal analytique",,,,
+"com.axelor.apps.account.db.AnalyticJournalType","analytic-journal-type-form","form","Analytic Journal Type","Type journal analytique",,,,
+"com.axelor.apps.account.db.AnalyticJournalType","analytic-journal-type-grid","grid","Analytic Journal Type","Type journal analytique",,,,
+"com.axelor.apps.base.db.BankDetails","bank-details-form","form","Bank details","Coordonnées bancaires",,,,
+"com.axelor.apps.base.db.BankDetails","bank-details-grid","grid","Bank details","Coordonnées bancaires",,,,
+"com.axelor.apps.account.db.Base","base-form","form","Base","Assiette",,,,
+"com.axelor.apps.account.db.Base","base-grid","grid","Bases","Les assiettes",,,,
+"com.axelor.apps.account.db.CalculationRule","calculation-rule-form","form","Tax calculation rule","Les règles de calcul de Taxe",,,,
+"calculation-rule-form",,"group","Calculation rule","Règle de calcul",,,,
+"com.axelor.apps.base.db.FormulaControl",,"grid","Formula controls","Contrôle de formule",,,,
+"com.axelor.apps.base.db.FormulaControl",,"form","Formula control","Règle de calcul de Taxe",,,,
+"com.axelor.apps.account.db.CalculationRule","calculation-rule-grid","grid","Tax calculation rules","Les règles de calculs des taxes",,,,
+"com.axelor.apps.account.db.CashRegisterLine","cash-register-line-form","form","Cash register","Caisse",,,,
+"cash-register-form","closeCashRegister","button","Close cashier","Fermer caisse",,,,
+"cash-register-form","openCashRegister","button","Open cashier","Ouvrir caisse",,,,
+"com.axelor.apps.account.db.CashRegisterLine","cash-register-line-grid","grid","Cash register","Caisse",,,,
+"com.axelor.apps.account.db.ChequeRejection","cheque-rejection-form","form","Cheque Rejection","Rejet du chèque",,,,
+"com.axelor.apps.account.db.PaymentVoucher",,"grid","Payment voucher","Saisie paiement",,,,
+"cheque-rejection-form","validateChequeRejection","button","Validate reject","Valider le rejet",,,,
+"com.axelor.apps.account.db.ChequeRejection","cheque-rejection-grid","grid","Cheque Rejections","Rejets chèque",,,,
+"com.axelor.apps.account.db.DirectDebitManagement","direct-debit-management-form-invoice","form","Direct debit management","Gestion des prélèvement",,,,
+"com.axelor.apps.account.db.DirectDebitManagement","direct-debit-management-form-payment-schedule-line","form","Direct debits management","Gestion des prélèvement",,,,
+"com.axelor.apps.account.db.DirectDebitManagement","direct-debit-management-grid","grid","Direct debits management","Gestion des prélèvement",,,,
+"com.axelor.apps.account.db.DiscountEngine","discount-engine-form","form","Discount engine","Moteur de remise",,,,
+"discount-engine-form",,"separator","Applying conditions","Condition d'application",,,,
+"com.axelor.apps.account.db.DiscountEngine","discount-engine-grid","grid","Discount engines","Les moteurs de remise",,,,
+"com.axelor.apps.account.db.DiscountEngineLine","discount-engine-line-contract-line-form","form","Discount","Remise",,,,
+"discount-engine-line-contract-line-form",,"page","Configuration","Configuration",,,,
+"discount-engine-line-contract-line-form","contractLinePage","page","Contracts","Contrats",,,,
+"discount-engine-line-contract-line-form",,"page","Final applying condition","Condition d'application finale",,,,
+"com.axelor.apps.account.db.DiscountEngineLine","discount-engine-line-form","form","Discount","Remise",,,,
+"discount-engine-line-form",,"page","Configuration","Configuration",,,,
+"discount-engine-line-form",,"page","Applying conditions","Condition d'application",,,,
+"discount-engine-line-form","contractLinePage","page","Contracts","Contrats",,,,
+"discount-engine-line-form",,"page","Final applying conditions","Conditions d'application finales",,,,
+"com.axelor.apps.account.db.DiscountEngineLine","discount-engine-line-grid","grid","Discounts","Les remises",,,,
+"com.axelor.apps.account.db.DiscountEngineLine","discount-engine-line-model-internal-form","form","Discount","Remise",,,,
+"discount-engine-line-model-internal-form",,"page","Configuration","Configuration",,,,
+"discount-engine-line-model-internal-form","contractLinePage","page","Contracts","Contrats",,,,
+"discount-engine-line-model-internal-form",,"page","Final applying condition","Condition d'application finale",,,,
+"com.axelor.apps.account.db.DiscountEngineLine","discount-engine-line-model-internal-grid","grid","Discounts","Les remises",,,,
+"com.axelor.apps.account.db.DiscountEngineModel","discount-engine-model-form","form","Discount engine model","Modèle de remise",,,,
+"com.axelor.apps.account.db.DiscountEngineModel","discount-engine-model-grid","grid","Discount engine models","Les modèles de remise",,,,
+"com.axelor.apps.account.db.DiscountThreshold","discount-threshold-form","form","Discount threshold","Seuil",,,,
+"com.axelor.apps.account.db.DiscountThreshold","discount-threshold-grid","grid","Discount thresholds","Les seuils",,,,
+"com.axelor.apps.account.db.DiscountThresholdLine","discount-threshold-line-form","form","Discount threshold line","Ligne de seuil",,,,
+"com.axelor.apps.account.db.DiscountThresholdLine","discount-threshold-line-grid","grid","Discount threshold lines","Les lignes de seuils",,,,
+"com.axelor.apps.account.db.ExemptionFromTax","exemption-from-tax-form","form","Tax exemption","Exonération de Taxe",,,,
+"com.axelor.apps.account.db.ExemptionFromTax","exemption-from-tax-grid","grid","Tax exemptions","Les exonérations de taxes",,,,
+"com.axelor.apps.account.db.InterbankCode","interbank-code-form","form","Blocking reason/reject codes lists","Listes des codes motifs de rejet/retour",,,,
+"interbank-code-form",,"group","Description","Description",,,,
+"com.axelor.apps.account.db.InterbankCodeLine",,"grid","Blocking reason/reject codes lists","Listes des codes motifs de rejet/retour",,,,
+"com.axelor.apps.account.db.InterbankCodeLine",,"form","Blocking reason/reject codes lists","Listes des codes motifs de rejet/retour",,,,
+,,"group","Description","Description",,,,
+,,"group","Domain of use","Domaine d'utilisation",,,,
+"com.axelor.apps.account.db.InterbankCode","interbank-code-grid","grid","Blocking reason/reject codes lists","Listes des codes motifs de rejet/retour",,,,
+"com.axelor.apps.account.db.InterbankCodeLine","interbank-code-line-form","form","Blocking reason/reject codes list","Liste des codes motifs de rejet/retour",,,,
+"interbank-code-line-form",,"group","Description","Description",,,,
+"interbank-code-line-form",,"group","Domain of use","Domaine d'utilisation",,,,
+"com.axelor.apps.account.db.InterbankCodeLine","interbank-code-line-grid","grid","Blocking reason/reject codes lists","Listes des codes motifs de rejet/retour",,,,
+"com.axelor.apps.account.db.Invoice","invoice-account-grid","grid","Invoices","Factures",,,,
+"com.axelor.apps.account.db.InvoiceBatch","invoice-batch-form","form","Invoice batch","Batch de facturation",,,,
+"invoice-batch-form","statusOptionPage","page","Options","Options",,,,
+"invoice-batch-form",,"page","Informations","Informations",,,,
+"com.axelor.apps.account.db.InvoiceBatch","Created on","viewField","Created on","Crée le",,,,
+"com.axelor.apps.account.db.InvoiceBatch","Created by","viewField","Created by","Crée par",,,,
+"invoice-batch-form","invoiceBatch","button","Run","Lancer",,,,
+"invoice-batch-form","statusBatch","button","Run","Lancer",,,,
+"invoice-batch-form","alarmBatch","button","Run","Lancer",,,,
+"invoice-batch-form","memoryBatch","button","Run","Lancer",,,,
+"invoice-batch-form","confirmMemoryBatch","button","Run","Lancer",,,,
+"com.axelor.apps.account.db.InvoiceBatch","invoice-batch-grid","grid","Invoice batches","Les batchs de facturation",,,,
+"com.axelor.apps.account.db.InvoiceBatch","Created on","viewField","Created on","Crée le",,,,
+"com.axelor.apps.account.db.InvoiceBatch","Created by","viewField","Created by","Crée par",,,,
+"com.axelor.apps.account.db.Invoice","invoice-client-form","form","Invoice","Facture",,,,
+"invoice-client-form","partnerGroup","group","Invoicing informations","Informations de facturation",,,,
+"invoice-client-form","dateGroup","group","Dates","Dates",,,,
+"invoice-client-form",,"page","Invoice content","Contenu de la facture",,,,
+"invoice-client-form",,"group","Totals","Totaux",,,,
+"invoice-client-form","stateGroup","group","Status","Statut",,,,
+"invoice-client-form","showInvoice","button","Print","Imprimer",,,,
+"com.axelor.apps.account.db.Invoice","invoice-client-grid","grid","Invoices","Factures",,,,
+"invoice-client-grid","showInvoice","button","Print","Imprimer",,,,
+"com.axelor.apps.account.db.Invoice","invoice-direct-debit-grid","grid","Debited invoices","Les Factures prélevées",,,,
+"com.axelor.apps.account.db.Invoice","invoice-form","form","Invoice","Facture",,,,
+"invoice-form","partnerGroup","group","Invoicing informations","Informations de facturation",,,,
+"invoice-form",,"group","Reference documents","Documents de référence",,,,
+"invoice-form","dateGroup","group","Dates","Dates",,,,
+"invoice-form","accountGroup","group","Accounting details","Informations comptables",,,,
+"invoice-form",,"page","Invoice content","Contenu de la facture",,,,
+"invoice-form",,"page","Details","Détails",,,,
+"invoice-form",,"page","Configuration","Configuration",,,,
+"invoice-form",,"separator","Refund","Avoir",,,,
+"invoice-form","createRefund","button","Generate refund","Générer un avoir",,,,
+"invoice-form",,"page","Blockings","Blocages",,,,
+"invoice-form",,"separator","Direct debit blocking","Blocages prélèvements",,,,
+"invoice-form",,"separator","Reminder blocking","Blocages relances",,,,
+"invoice-form","paymentPage","page","Payment","Paiement",,,,
+"invoice-form","directDebitGroup","group","Direct debit","Prélèvement",,,,
+"invoice-form","rejectGroup","group","Reject","Rejet",,,,
+"invoice-form","irrecoverableGroup","group","Irrecoverable","Irrécouvrable",,,,
+"invoice-form","passInIrrecoverable","button","Shift to irrecoverable","Passage en irrécouvrable",,,,
+"invoice-form","notPassInIrrecoverable","button","Do not shit into irrecoverable","Ne pas passer en irrécouvrable",,,,
+"invoice-form",,"page","Notes","Remarques",,,,
+"invoice-form",,"group","Totals","Totaux",,,,
+"invoice-form","stateGroup","group","Status","Statut",,,,
+"invoice-form","compute","button","Compute","Calculer",,,,
+"invoice-form","computeFooter","button","Compute invoice footer","Calculer pied de facture",,,,
+"invoice-form","showInvoice","button","Print","Imprimer",,,,
+"invoice-form","exportInvoice","button","Export","Export",,,,
+"invoice-form","sendByEmail","button","Send by email","Envoyer par email",,,,
+"invoice-form","validate","button","Validate","Valider",,,,
+"invoice-form","ventilate","button","Ventilate","Ventiler",,,,
+"invoice-form","cancel","button","Cancel","Annuler",,,,
+"com.axelor.apps.account.db.Invoice","invoice-grid","grid","Invoices","Factures",,,,
+"com.axelor.apps.account.db.InvoiceLineEvent","invoice-line-event-form","form","Invoice line","Ligne de facture",,,,
+"com.axelor.apps.account.db.InvoiceLineEvent","invoice-line-event-grid","grid","Invoice lines","Lignes de facture",,,,
+"com.axelor.apps.account.db.InvoiceLine","invoice-line-form","form","Invoice line","Ligne de facture",,,,
+"invoice-line-form",,"page","Informations","Informations",,,,
+"invoice-line-form",,"group","Others","Autres",,,,
+"invoice-line-form",,"page","Notes","Remarques",,,,
+"com.axelor.apps.account.db.InvoiceLine","invoice-line-grid","grid","Invoice lines","Lignes de facture",,,,
+"com.axelor.apps.account.db.InvoiceLineTax","invoice-line-tax-form","form","Tax line","Ligne de taxe",,,,
+"com.axelor.apps.account.db.InvoiceLineTax","invoice-line-tax-grid","grid","Tax lines","Lignes de taxes",,,,
+"com.axelor.apps.account.db.InvoiceLineTaxHistory","invoice-line-tax-history-form","form","Tax line history","Ligne d'historiques de taxes",,,,
+"com.axelor.apps.account.db.InvoiceLineTaxHistory","invoice-line-tax-history-grid","grid","Tax lines history","Lignes d'historiques de taxes",,,,
+"com.axelor.apps.account.db.InvoiceLineType","invoice-line-type-form","form","InvoiceLineType","Types de ligne de facture",,,,
+"com.axelor.apps.account.db.InvoiceLineType","invoice-line-type-grid","grid","InvoiceLineType","Types de ligne de facture",,,,
+"com.axelor.apps.account.db.InvoiceLineVat","invoice-line-vat-form","form","VAT Line","Ligne de TVA",,,,
+"com.axelor.apps.account.db.InvoiceLineVat","invoice-line-vat-grid","grid","VAT Lines","Les lignes de TVA",,,,
+"com.axelor.apps.account.db.Invoice","invoice-lite-grid","grid","Invoices","Factures",,,,
+"com.axelor.apps.account.db.IrrecoverableCustomerLine","irrecoverable-customer-line-form","form","Customer","Client",,,,
+"com.axelor.apps.account.db.IrrecoverableCustomerLine","irrecoverable-customer-line-grid","grid","Customers","Clients",,,,
+"com.axelor.apps.account.db.Irrecoverable","irrecoverable-form","form","Irrecoverable","Irrécouvrable",,,,
+"irrecoverable-form","getIrrecoverable","button","Get invoices and schedule lines to set as irrecoverable","Récupérer les factures et échéances à passer en irrécouvrable",,,,
+"irrecoverable-form","createIrrecoverableReport","button","Generate irrecoverable report","Générer le report irrécouvrable",,,,
+"irrecoverable-form","printReport","button","Print","Imprimer",,,,
+"irrecoverable-form","passInIrrecoverable","button","Shift to irrecoverable","Passage en irrécouvrable",,,,
+"com.axelor.apps.account.db.Irrecoverable","irrecoverable-grid","grid","Irrecoverables","Irrécouvrables",,,,
+"com.axelor.apps.account.db.IrrecoverableInvoiceLine","irrecoverable-invoice-line-form","form","Invoice","Facture",,,,
+"com.axelor.apps.account.db.IrrecoverableInvoiceLine","irrecoverable-invoice-line-grid","grid","Invoices","Factures",,,,
+"com.axelor.apps.account.db.IrrecoverablePaymentScheduleLineLine","irrecoverable-payment-schedule-line-line-form","form","Payment schedue line","Ligne d'échéancier",,,,
+"com.axelor.apps.account.db.IrrecoverablePaymentScheduleLineLine","irrecoverable-payment-schedule-line-line-grid","grid","Payment schedule lines","Les lignes d'échéanciers",,,,
+"com.axelor.apps.account.db.IrrecoverableReportLine","irrecoverable-report-form","form","Reporting","Rapport",,,,
+"com.axelor.apps.account.db.IrrecoverableReportLine","irrecoverable-report-grid","grid","Reportings","Rapports",,,,
+"com.axelor.apps.account.db.Journal","journal-form","form","Journal","Journal",,,,
+"com.axelor.apps.account.db.Journal","journal-grid","grid","Journal","Journal",,,,
+"com.axelor.apps.account.db.JournalType","journal-type-form","form","Journal Type","Types de journal",,,,
+"com.axelor.apps.account.db.JournalType","journal-type-grid","grid","Journal Type","Types de journal",,,,
+"com.axelor.apps.account.db.KeyPricingList","key-pricing-list-form","form","Pricing list key","Clé de barème",,,,
+"com.axelor.apps.account.db.KeyPricingList","key-pricing-list-grid","grid","Pricing list keys","Clés de barème",,,,
+"com.axelor.apps.account.db.ManagementObject","management-object-form","form","Management","Gestion",,,,
+"com.axelor.apps.account.db.ManagementObject","management-object-grid","grid","Managements","Gestions",,,,
+"com.axelor.apps.account.db.MatrixStructure","matrix-structure-form","form","Pricing list mask","Masques de barème",,,,
+"matrix-structure-form",,"page","Parameters","Paramètres",,,,
+"matrix-structure-form",,"group","Sources","Les sources",,,,
+"matrix-structure-form",,"group","Range","Gamme",,,,
+"matrix-structure-form",,"page","Values","Valeurs",,,,
+"matrix-structure-form",,"group","Nom","Nom",,,,
+"matrix-structure-form",,"group","Code","Code",,,,
+"com.axelor.apps.account.db.MatrixStructure","matrix-structure-grid","grid","Pricing list masks","Masques de barème",,,,
+"com.axelor.apps.account.db.Move","move-form","form","Account move","Écriture comptable",,,,
+"move-form",,"page","Informations","Informations",,,,
+"move-form",,"group","Move header","En tête",,,,
+"com.axelor.apps.account.db.MoveLine",,"grid","Move lines","Lignes d'écriture",,,,
+"com.axelor.apps.account.db.MoveLine",,"form","Move line","Lignes d'écritures",,,,
+,,"page","Informations","Informations",,,,
+,"reconcileLists","group","Reconcile list","Liste des réconciliations",,,,
+,,"page","Analytics","Analytiques",,,,
+,,"page","Others","Autres",,,,
+"move-form",,"group","Actions","Actions",,,,
+"move-form","validate","button","Validate","Valider",,,,
+"move-form",,"page","Accounting export","Export comptable",,,,
+"move-form",,"page","Others","Autres",,,,
+"com.axelor.apps.account.db.Move","move-grid","grid","Account moves","Écritures comptable",,,,
+"com.axelor.apps.account.db.MoveLine","move-line-form","form","Move line","Lignes d'écritures",,,,
+"move-line-form",,"page","Informations","Informations",,,,
+"move-line-form","irrecoverable","group","Irrecoverable","Irrécouvrable",,,,
+"move-line-form","passInIrrecoverable","button","Shift to irrecoverable","Passage en irrécouvrable",,,,
+"move-line-form","notPassInIrrecoverable","button","Do not shift to irrecoverable","Ne pas passer en irrécouvrable",,,,
+"move-line-form","reconcileLists","group","Reconcile list","Liste des réconciliations",,,,
+"move-line-form",,"page","Analytics","Analytiques",,,,
+"move-line-form",,"page","Others","Autres",,,,
+"com.axelor.apps.account.db.MoveLine","move-line-grid","grid","Move lines","Lignes d'écriture",,,,
+"com.axelor.apps.account.db.MoveLineReport","move-line-report-export-form","form","Accounting export","Export comptable",,,,
+"move-line-report-export-form",,"page","Search","Recherche",,,,
+"move-line-report-export-form","search","button","Search","Recherche",,,,
+"move-line-report-export-form","export","button","Export","Export",,,,
+"move-line-report-export-form","showMoveExported","button","Exported moves","Écritures exportées",,,,
+"move-line-report-export-form","replayExport","button","Run export again","Rejouer l'export",,,,
+"com.axelor.apps.account.db.MoveLineReport","move-line-report-export-grid","grid","Accounting exports","Les Exports comptables",,,,
+"com.axelor.apps.account.db.MoveLineReport","move-line-report-form","form","Accounting report","Rapport comptable",,,,
+"move-line-report-form",,"page","Search","Recherche",,,,
+"move-line-report-form","search","button","Search","Recherche",,,,
+"move-line-report-form","export","button","Print","Imprimer",,,,
+"move-line-report-form",,"group","Printing informations","Informations d'impression",,,,
+"com.axelor.apps.account.db.MoveLineReport","move-line-report-grid","grid","Accounting reports","Rapports comptables",,,,
+"com.axelor.apps.account.db.Parameter","parameter-form","form","Parameter","Paramètres",,,,
+"com.axelor.apps.account.db.Parameter","parameter-grid","grid","Parameter","Paramètres",,,,
+"com.axelor.apps.account.db.ParameterType","parameter-type-form","form","ParameterType","Types de paramètre",,,,
+"com.axelor.apps.account.db.ParameterType","parameter-type-grid","grid","ParameterType","Types de paramètre",,,,
+"com.axelor.apps.base.db.Partner","partner-contact-grid","grid","Contacts","Les contacts",,,,
+"com.axelor.apps.base.db.Partner","partner-form","form","Partner","Les Tiers",,,,
+"partner-form","information","page","Informations","Informations",,,,
+"partner-form",,"group","Partner details","Détails du tiers",,,,
+"partner-form",,"group","Postal addresses","Les adresses postales",,,,
+"partner-form",,"group","Contact","Contact",,,,
+"partner-form",,"page","Links","Liens",,,,
+"partner-form","showSalesOrder1","button","Show sales order","Voir les devis",,,,
+"partner-form","showInvoice1","button","Show invoices","Les factures",,,,
+"partner-form","showProject1","button","Show projects","Voir les projets",,,,
+"partner-form","showSalesOrder2","button","Show sales order","Voir les devis",,,,
+"partner-form","showInvoice2","button","Show invoices","Les factures",,,,
+"partner-form","showProject2","button","Show projects","Voir les projets",,,,
+"partner-form","payment","page","Invoicing/Payment","Facturation/Paiement",,,,
+"partner-form","showInvoice","button","View all unpaid invoices","Voir toutes les factures impayées",,,,
+"partner-form",,"page","Settings","Paramètres",,,,
+"partner-form","compteClient","page","Customer balance","Solde client",,,,
+"partner-form","reportedBalance","page","Reported balance","A nouveau",,,,
+"com.axelor.apps.account.db.ReportedBalance","reported-balance-grid","grid","Reported balances","A nouveaux",,,,
+"com.axelor.apps.account.db.ReportedBalance","reported-balance-form","form","Reported balance","A nouveau",,,,
+"com.axelor.apps.account.db.ReportedBalanceLine","reported-balance-line-grid","grid","Reported balance lines","Les Lignes de reports à nouveaux",,,,
+"com.axelor.apps.account.db.ReportedBalanceLine","reported-balance-line-form","form","Reported balance line","Ligne de report à nouveau",,,,
+"partner-form",,"page","Reporting","Rapport",,,,
+"partner-form",,"group","Action(s)","Action(s)",,,,
+"partner-form","showPartnerInfo","button","Print Informations",,,,,
+"partner-grid","fbContact","button","Facebook Contact","Les contacts de Facebook",,,,
+"partner-grid","twtContact","button","Twitter Contact","Les contactes de Twitter",,,,
+"partner-grid","linContact","button","LinkedIn Contact","Les contactes de LinkedIn",,,,
+"com.axelor.apps.base.db.Partner","partner-grid","grid","Partners","Les Tiers",,,,
+"com.axelor.apps.account.db.Paybox","paybox-form","form","Paybox","Paybox",,,,
+"paybox-form",,"label","Please close this notebook to go back to the payment voucher. Please refresh the payment voucher to see the changes.","Vous pouvez fermer cet onglet et revenir sur la saisie paiement. Pensez à actualiser la saisie paiement.",,,,
+"com.axelor.apps.account.db.Paybox","paybox-grid","grid","Paybox","Paybox",,,,
+"com.axelor.apps.account.db.PayerQualityConfigLine","payer-quality-config-line-form","form","Payer quality configuration line","Ligne de configuration de la qualité payeur",,,,
+"com.axelor.apps.account.db.PayerQualityConfigLine","payer-quality-config-line-grid","grid","Payer quality configuration lines","Lignes de configuration de la qualité payeur",,,,
+"com.axelor.apps.account.db.PaymentCondition","payment-condition-form","form","Payment Condition","Conditions de paiement",,,,
+"com.axelor.apps.account.db.PaymentCondition","payment-condition-grid","grid","Payment Condition","Conditions de paiement",,,,
+"com.axelor.apps.account.db.PaymentInvoice","payment-invoice-form","form","Invoices to pay","Factures à payer",,,,
+"com.axelor.apps.account.db.PaymentInvoice","payment-invoice-grid","grid","Invoices to pay","Factures à payer",,,,
+"com.axelor.apps.account.db.PaymentInvoiceToPay","payment-invoice-to-pay-form","form","Payment voucher invoices to pay","Paiement des factures",,,,
+"com.axelor.apps.account.db.PaymentInvoiceToPay","payment-invoice-to-pay-grid","grid","Payment voucher invoices to pay","Paiement des factures",,,,
+"com.axelor.apps.account.db.PaymentMode","payment-mode-form-2","form","Payment Mode","Modes de paiement",,,,
+"com.axelor.apps.account.db.PaymentMode","payment-mode-grid-2","grid","Payment Mode","Modes de paiement",,,,
+"com.axelor.apps.account.db.PaymentSchedule","payment-schedule-form","form","Payment schedule","Échéancier",,,,
+"payment-schedule-form","createPaymentScheduleLines","button","Create schedule lines","Créer les lignes d'échéancier",,,,
+"payment-schedule-form","validate","button","Validate","Valider",,,,
+"payment-schedule-form","cancel","button","Cancel","Annuler",,,,
+"payment-schedule-form","irrecoverable","group","Irrecoverable","Irrécouvrable",,,,
+"payment-schedule-form","passInIrrecoverable","button","Shift to irrecoverablePassage en irrécouvrable","Passage en irrécouvrable",,,,
+"payment-schedule-form","notPassInIrrecoverable","button","Do not shift to irrecoverable","Ne pas passer en irrécouvrable",,,,
+"com.axelor.apps.account.db.PaymentSchedule","payment-schedule-grid","grid","Payment schedule","Échéancier",,,,
+"com.axelor.apps.account.db.PaymentScheduleLine","payment-schedule-line-form","form","Schedule line","Échéance",,,,
+"com.axelor.apps.account.db.PaymentScheduleLine","payment-schedule-line-grid","grid","Schedule lines","Échéances",,,,
+"com.axelor.apps.account.db.PaymentScheduleLine","payment-schedule-line-payment-schedule-form","form","Schedule line","Échéance",,,,
+"com.axelor.apps.account.db.PaymentScheduleLine","payment-schedule-line-payment-schedule-grid","grid","Schedule lines","Échéances",,,,
+"com.axelor.apps.account.db.PaymentScheduleType","payment-schedule-type-form","form","Payment schedule types","Type d'échéancier",,,,
+"com.axelor.apps.account.db.PaymentScheduleType","payment-schedule-type-grid","grid","Payment schedule types","Type d'échéancier",,,,
+"com.axelor.apps.account.db.PaymentVoucher","payment-voucher-form","form","Payment voucher","Saisie paiement",,,,
+"payment-voucher-form",,"group","Actions","Actions",,,,
+"payment-voucher-form","confirmPaymentVoucher","button","Confirm payment","Confirmer le paiement",,,,
+"payment-voucher-form","showMoveLines","button","Show move lines","Lignes d'écriture",,,,
+"payment-voucher-form","printPaymentVoucher","button","Print receipt","Imprimer reçu",,,,
+"payment-voucher-form",,"group","To pay","A payer",,,,
+"payment-voucher-form",,"label","<font color=#953B39> OR </font>","<font color=#953B39> OU </font>",,,,
+"payment-voucher-form",,"label","<font color=#953B39> OR </font>","<font color=#953B39> OU </font>",,,,
+"com.axelor.apps.account.db.PaymentVoucher","Reject to pay","viewField","Reject to pay","Rejet à payer",,,,
+"payment-voucher-form",,"group","Payer","Payeur",,,,
+"payment-voucher-form",,"label","<font color=#953B39> OR </font>","<font color=#953B39> OU </font>",,,,
+"payment-voucher-form","loadMoveLines","button","Load invoice and display other invoices to pay","Charger facture et afficher les autres factures à payer",,,,
+"com.axelor.apps.account.db.PaymentInvoice",,"grid","Invoices to pay","Factures à payer",,,,
+"payment-voucher-form","loadSelectedLines","button","Load selected lines","Charger les lignes sélectionnées",,,,
+"payment-voucher-form","payboxGroup","group","Paybox","Paybox",,,,
+"payment-voucher-form","payboxEmail","group","Add an email for payment through Paybox","Ajoutez un email pour le paiement par Paybox",,,,
+"payment-voucher-form",,"label","The payer doesn't have email attached. Please input/provide the email to use.","Le tiers payeur ne possède pas d'email. Veuillez préciser l'email à utiliser",,,,
+"payment-voucher-form","validateEmail","button","Validate","Valider",,,,
+"payment-voucher-form","paybox","button","Paybox","Paybox",,,,
+"com.axelor.apps.account.db.PaymentVoucher","payment-voucher-grid","grid","Payment vouchers","Les Saisies paiements",,,,
+"com.axelor.apps.account.db.Period","period-form","form","Period","Périodes",,,,
+"period-form","close","button","Close period","Clôturer la période",,,,
+"period-form","reopen","button","Reopen period","Rouvrir la période",,,,
+"com.axelor.apps.account.db.Period","period-grid","grid","Period","Périodes",,,,
+"com.axelor.apps.account.db.PricingList","pricing-list-form","form","Pricing list","Barème",,,,
+"com.axelor.apps.account.db.PricingList","pricing-list-grid","grid","Pricing lists","Barèmes",,,,
+"com.axelor.apps.account.db.PricingListLine","pricing-list-line-form","form","Pricing list lines","Lignes de barème",,,,
+"pricing-list-line-form",,"group","Paramètres","Paramètres",,,,
+"pricing-list-line-form",,"group","Valeurs","Valeurs",,,,
+"com.axelor.apps.account.db.PricingListLine","pricing-list-line-grid","grid","Pricing list lines","Lignes de barème",,,,
+"com.axelor.apps.account.db.PricingListVersion","pricing-list-version-form","form","Pricing list version","Version de barème",,,,
+"com.axelor.apps.account.db.PricingListVersion","pricing-list-version-grid","grid","Pricing list versions","Versions de barèmes",,,,
+"com.axelor.apps.account.db.PricingListVersion","pricing-list-version-menu-form","form","Pricing list version","Version de barème",,,,
+"com.axelor.apps.account.db.ReasonExemption","reason-exemption-form","form","Exemption reason","Motifs d'exonération",,,,
+"com.axelor.apps.account.db.ReasonExemption","reason-exemption-grid","grid","Exemption reasons","Motifs d'exonération",,,,
+"com.axelor.apps.account.db.Reconcile","reconcile-form","form","Reconcile","Réconciliations",,,,
+"reconcile-form","reconcile","button","Reconcile","Réconciliations",,,,
+"reconcile-form","unreconcile","button","Unreconcile","Déréconcilier",,,,
+"com.axelor.apps.account.db.Reconcile","reconcile-grid","grid","Reconcile","Réconciliations",,,,
+"com.axelor.apps.account.db.ReimbursementExport","reimbursement-export-form","form","Reimbursement export","Export des remboursement",,,,
+"reimbursement-export-form",,"separator","Create reimbursements","Création des remboursement",,,,
+"reimbursement-export-form",,"separator","Validate reimbursements","Validation des remboursement",,,,
+"reimbursement-export-form","showReimbursement","button","Reimbursements","Remboursements",,,,
+"reimbursement-export-form","exportSepa","button","SEPA Export","Export SEPA",,,,
+"reimbursement-export-form","exportCfonb","button","CFONB Export","Export CFONB",,,,
+"com.axelor.apps.account.db.ReimbursementExport","reimbursement-export-grid","grid","Reimbursement exports","Export des remboursement",,,,
+"com.axelor.apps.account.db.Reimbursement","reimbursement-form","form","Reimbursement","Remboursement",,,,
+"reimbursement-form",,"separator","Reason","Motif",,,,
+"reimbursement-form","validateReimbursement","button","Validate","Valider",,,,
+"com.axelor.apps.account.db.Reimbursement","reimbursement-grid","grid","Reimbursements","Remboursements",,,,
+"com.axelor.apps.account.db.ReminderConfigLine","reminder-config-line-form","form","Reminder method configuration line","Ligne de configuration de la méthode de relance",,,,
+"com.axelor.apps.account.db.ReminderConfigLine","reminder-config-line-grid","grid","Reminder method configuration lines","Lignes de configuration de la méthode de relance",,,,
+"com.axelor.apps.account.db.Reminder","reminder-form","form","Reminder","Relance",,,,
+"com.axelor.apps.account.db.Reminder","reminder-grid","grid","Reminder","Relance",,,,
+"com.axelor.apps.account.db.ReminderHistory","reminder-history-contract-line-form","form","Reminders history","L'historique des relances",,,,
+"com.axelor.apps.account.db.ReminderHistory","reminder-history-contract-line-grid","grid","Reminders history","L'historique des relances",,,,
+"com.axelor.apps.account.db.ReminderHistory","reminder-history-form","form","Reminder history","L'historique des relances",,,,
+"com.axelor.apps.account.db.ReminderHistory","reminder-history-line-grid","grid","Reminders history","L'historique des relances",,,,
+"com.axelor.apps.account.db.ReminderLevel","reminderLevel-form","form","Reminder level","Niveau de relance",,,,
+"com.axelor.apps.account.db.ReminderLevel","reminderLevel-grid","grid","Reminder levels","Les niveaux de relance",,,,
+"com.axelor.apps.account.db.ReminderMethod","reminderMethod-form","form","Reminder method","Méthode de relance",,,,
+"com.axelor.apps.account.db.ReminderMethod","reminderMethod-grid","grid","Reminder methods","Les méthodes de relance",,,,
+"com.axelor.apps.account.db.ReminderMethodLine","reminder-method-line-form","form","Reminder method line","Ligne de la méthode de relance",,,,
+"reminder-method-line-form",,"group","Reminder level","Niveau de relance",,,,
+"com.axelor.apps.account.db.ReminderLevel","matrix-line-reminder-form","form","ReminderLevel","Niveau de relance",,,,
+"reminder-method-line-form",,"group","Conditions","Conditions",,,,
+"reminder-method-line-form",,"group","Actions","Actions",,,,
+"com.axelor.apps.account.db.ReminderMethodLine","reminder-method-line-grid","grid","Reminder method lines","Lignes de la méthode de relance",,,,
+"com.axelor.apps.account.db.ReportedBalance","reported-balance-form","form","Reported balance","A nouveau",,,,
+"com.axelor.apps.account.db.ReportedBalanceLine","reported-balance-line-grid","grid","Reported balance lines","Les Lignes de reports à nouveaux",,,,
+"com.axelor.apps.account.db.ReportedBalanceLine","reported-balance-line-form","form","Reported balance line","Ligne de report à nouveau",,,,
+"com.axelor.apps.account.db.ReportedBalance","reported-balance-grid","grid","Reported balance list","Liste de report à nouveau",,,,
+"com.axelor.apps.account.db.ReportedBalanceLine","reported-balance-line-form","form","Reported balance line","Ligne de report à nouveau",,,,
+"com.axelor.apps.account.db.ReportedBalanceLine","reported-balance-line-grid","grid","Reported balance lines","Les Lignes de reports à nouveaux",,,,
+"com.axelor.apps.account.db.Tax","tax-form","form","Tax","Taxe",,,,
+"tax-form",,"page","General","Général",,,,
+"tax-form",,"separator","Condition d'application","Condition d'application",,,,
+"tax-form",,"page","Accounting","Comptabilité",,,,
+"tax-form",,"page","Complementary information","Informations complémentaires",,,,
+"com.axelor.apps.base.db.FormulaControl",,"grid","Formula controls","Contrôle de formule",,,,
+"com.axelor.apps.base.db.FormulaControl",,"form","Formula control","Règle de calcul de Taxe",,,,
+"com.axelor.apps.account.db.Tax","tax-grid","grid","Taxes","Taxes",,,,
+"com.axelor.apps.account.db.InvoiceLine","tax-invoice-line-form","form","Invoice line","Ligne de facture",,,,
+"com.axelor.apps.account.db.InvoiceLine","tax-invoice-line-grid","grid","Invoice lines","Lignes de facture",,,,
+"com.axelor.apps.account.db.TaxLine","tax-line-form","form","Tax line","Ligne de taxe",,,,
+"tax-line-form",,"separator","Context of use","Condition d'application",,,,
+"com.axelor.apps.base.db.FormulaControl",,"grid","Formula controls","Contrôle de formule",,,,
+"com.axelor.apps.base.db.FormulaControl",,"form","Formula control","Règle de calcul de Taxe",,,,
+"com.axelor.apps.account.db.TaxLine","tax-line-grid","grid","Tax lines","Lignes de taxes",,,,
+"com.axelor.apps.account.db.TaxReport","tax-report-form","form","Tax report","Rapport de taxe",,,,
+"tax-report-form",,"group","Descrition","Descrition",,,,
+"tax-report-form","printTaxReport","button","Print tax report","Imprimer le rapport de taxes",,,,
+"com.axelor.apps.account.db.TaxReport","tax-report-grid","grid","Taxes reports","Rapports de taxes",,,,
+"com.axelor.apps.account.db.VatAccount","vat-account-form","form","VAT accounting configuration","Configuration de compte de TVA",,,,
+"com.axelor.apps.account.db.VatAccount","vat-account-grid","grid","VAT accounting configurations","Les configurations de compte de TVA",,,,
+"com.axelor.apps.account.db.Vat","vat-form","form","VAT","TVA",,,,
+"vat-form",,"page","VAT rate list","Liste des taux de TVA",,,,
+"com.axelor.apps.account.db.VatLine",,"grid","VAT rate lines","Ligne de TVA",,,,
+"com.axelor.apps.account.db.VatLine",,"form","VAT rate","Les lignes de TVA",,,,
+"vat-form",,"page","Accounting configuration","Configuration comptable",,,,
+"com.axelor.apps.account.db.Vat","vat-grid","grid","VAT","TVA",,,,
+"com.axelor.apps.account.db.VatLine","vat-line-form","form","VAT Rate","Ligne de TVA",,,,
+"com.axelor.apps.account.db.VatLine","vat-line-grid","grid","VAT Rates","Les lignes de TVA",,,,
+"com.axelor.apps.account.db.VatManagement","vat-management-form","form","VAT Management","Gestion de la TVA",,,,
+"com.axelor.apps.base.db.FormulaControl",,"grid","Formula controls","Contrôle de formule",,,,
+"com.axelor.apps.base.db.FormulaControl",,"form","Formula control","Règle de calcul de Taxe",,,,
+"com.axelor.apps.account.db.VatManagement","vat-management-grid","grid","VAT Management List","Les gestions de TVA",,,,
+"com.axelor.apps.account.db.VatManagementLine","vat-management-line-form","form","VAT Management line","Ligne de gestion de la TVA",,,,
+"vat-management-line-form",,"separator","Context of use","Condition d'application",,,,
+"com.axelor.apps.account.db.VatManagementLine","vat-management-line-grid","grid","VAT Management lines","Les lignes de gestions de TVA",,,,
+"com.axelor.apps.account.db.Year","year-form","form","Fiscal year","Année fiscale",,,,
+"year-form","close","button","Close fiscal year","Clôturer l'exercice",,,,
+"com.axelor.apps.account.db.Year","year-grid","grid","Fiscal years","Les années fiscales",,,,
+"account.conf.account.payment.mode","account.conf.account.payment.mode","action","Payment modes","Les modes de paiements",,,,
+"account.conf.analytic.account","account.conf.analytic.account","action","Analytic accounts","Les comptes analytiques",,,,
+"account.conf.analytic.axis","account.conf.analytic.axis","action","Analytic axis","Les axes analytiques",,,,
+"account.conf.analytic.journal","account.conf.analytic.journal","action","Analytic journals","Les journaux analytiques",,,,
+"account.conf.export.accounting.category","account.conf.export.accounting.category","action","Account categories","Les catégories de comptes",,,,
+"account.conf.export.accounting.category.line","account.conf.export.accounting.category.line","action","Accounting report category line","Les lignes de catégories de rapports comptables",,,,
+"account.conf.export.interbank.code","account.conf.export.interbank.code","action","Reject/Return reason codes","Listes des codes motifs de rejet/retour ",,,,
+"account.conf.financial.account","account.conf.financial.account","action","Financial Accounts","Les comptes comptables",,,,
+"account.conf.financial.accounting.plan","account.conf.financial.accounting.plan","action","Chart of accounts","Le plan comptable",,,,
+"account.conf.financial.account.management","account.conf.financial.account.management","action","Financial accounts management","Les gestions de compte comptable",,,,
+"account.conf.financial.account.type","account.conf.financial.account.type","action","Account types","Les types de compte",,,,
+"account.conf.financial.journal","account.conf.financial.journal","action","Journals","Les journaux",,,,
+"account.conf.financial.journal.type","account.conf.financial.journal.type","action","Journal types","Les types de journaux",,,,
+"account.conf.financial.period","account.conf.financial.period","action","Periods","Les périodes comptables",,,,
+"account.conf.financial.year","account.conf.financial.year","action","Fiscal years","Les années fiscales",,,,
+"account.root.accounting.batch","account.root.accounting.batch","action","Accounting batches","Les batchs de comptabilité",,,,
+"account.root.account.paybox","account.root.account.paybox","action","Paybox","Paybox",,,,
+"account.root.account.schedule.account.schedule","account.root.account.schedule.account.schedule","action","All Payments Schedule","Les échéanciers",,,,
+"account.root.account.schedule.account.schedule.line","account.root.account.schedule.account.schedule.line","action","Payment schedule line","Les lignes d'échéanciers",,,,
+"account.root.export.reimbursement","account.root.export.reimbursement","action","Reimbursements","Remboursements",,,,
+"account.root.move.move","account.root.move.move","action","Accounting Moves","Écritures",,,,
+"account.root.move.move.All","account.root.move.move.All","action","All accounting moves (including technical moves)","Les Écritures (pièces techniques incluses)",,,,
+"account.root.move.move.line","account.root.move.move.line","action","Accounting Move lines","Les Lignes d'écritures",,,,
+"account.root.move.move.line.All","account.root.move.move.line.All","action","All accounting move lines (including technical move lines)","Les Lignes d'écritures (Lignes techniques incluses)",,,,
+"account.root.periodic.processing.account.clearance","account.root.periodic.processing.account.clearance","action","Overpayments clearances","Les Apurements de trop-perçu",,,,
+"account.root.periodic.processing.account.voucher.paybox.email","account.root.periodic.processing.account.voucher.paybox.email","action","Email used by Paybox","Email utilisé par Paybox",,,,
+"account.root.periodic.processing.cash.register","account.root.periodic.processing.cash.register","action","Cash register closure","Les Fermetures Caisses",,,,
+"account.root.periodic.processing.cheque-rejection","account.root.periodic.processing.cheque-rejection","action","Rejects of cheque","Les Rejets de chèque",,,,
+"account.root.periodic.processing.irrecoverable","account.root.periodic.processing.irrecoverable","action","Shift to irrecoverable","Passage en irrécouvrable",,,,
+"account.root.periodic.processing.payment.voucher","account.root.periodic.processing.payment.voucher","action","Payment vouchers","Les Saisies paiements",,,,
+"account.root.periodic.processing.reconcile","account.root.periodic.processing.reconcile","action","Reconcilations","Les Réconciliations",,,,
+"account.root.reporting.moveLineExport","account.root.reporting.moveLineExport","action","Accounting exports","Les Exports comptables",,,,
+"account.root.reporting.moveLineReport","account.root.reporting.moveLineReport","action","Accounting reports","Rapports comptables",,,,
+"account.root.tax.base","account.root.tax.base","action","Tax bases","Les assiettes de taxes",,,,
+"account.root.tax.calculation.rule","account.root.tax.calculation.rule","action","Tax calculation rules","Les règles de calculs des taxes",,,,
+"account.root.tax.conf.vat.management","account.root.tax.conf.vat.management","action","V.A.T. management","Gestion de la TVA",,,,
+"account.root.tax.conf.vat.management.line","account.root.tax.conf.vat.management.line","action","V.A.T. Conditions","Condition sur TVA",,,,
+"account.root.tax.exemption.from.tax","account.root.tax.exemption.from.tax","action","Tax exemptions","Les exonérations de taxes",,,,
+"account.root.tax.reason.exemption","account.root.tax.reason.exemption","action","Tax exemption reasons","Les motifs d'exonérations",,,,
+"account.root.tax.tax","account.root.tax.tax","action","Taxes","Taxes",,,,
+"account.root.tax.vat","account.root.tax.vat","action","VATs","Les TVA",,,,
+"action-invoice-alarm-alert","action-invoice-alarm-alert","action","You cannot suspend an invoice which you did not validate","Vous ne pouvez pas suspendre une facture que vous n'avez pas validé",,,,
+"debtRecovery.conf.reminder.reminder.level","debtRecovery.conf.reminder.reminder.level","action","Reminder levels","Les niveaux de relance",,,,
+"debtRecovery.conf.reminder.reminder.mail.model","debtRecovery.conf.reminder.reminder.mail.model","action","Reminder mail models","Les modèles de courrier",,,,
+"debtRecovery.conf.reminder.reminder.method","debtRecovery.conf.reminder.reminder.method","action","Reminder methods","Les méthodes de relance",,,,
+"debtRecovery.root.reminder.reminder.history","debtRecovery.root.reminder.reminder.history","action","Reminders history","L'historique des relances",,,,
+"invoice.root.invoice","invoice.root.invoice","action","New invoice","Nouvelle facture",,,,
+"invoice.root.purchases.filters.confsupinvoice","invoice.root.purchases.filters.confsupinvoice","action","Confirmed Suppl. invoices","Factures fournisseur confirmées",,,,
+"invoice.root.purchases.filters.confsuprefunds","invoice.root.purchases.filters.confsuprefunds","action","Confirmed Suppl. refunds","Avoirs fournisseur confirmés",,,,
+"invoice.root.purchases.filters.draftsupinvoice","invoice.root.purchases.filters.draftsupinvoice","action","Draft Suppl. invoices","Factures fournisseur brouillons",,,,
+"invoice.root.purchases.filters.draftsuprefunds","invoice.root.purchases.filters.draftsuprefunds","action","Draft Suppl. refunds","Avoirs fournisseur brouillons",,,,
+"invoice.root.purchases.filters.duesuprefunds","invoice.root.purchases.filters.duesuprefunds","action","Due Suppl. refunds","Avoirs fournisseur dus",,,,
+"invoice.root.purchases.filters.unpaiddueinvoice","invoice.root.purchases.filters.unpaiddueinvoice","action","Unpaid due invoices","Facture à payer arrivées à échéance",,,,
+"invoice.root.purchases.filters.valsupinvoice","invoice.root.purchases.filters.valsupinvoice","action","Validated Suppl. invoices","Factures fournisseur validées",,,,
+"invoice.root.purchases.filters.valsuprefunds","invoice.root.purchases.filters.valsuprefunds","action","Validated Suppl. refunds","Avoirs fournisseur validés",,,,
+"invoice.root.purchases.supinvoices","invoice.root.purchases.supinvoices","action","Suppl. Invoices","Les factures fournisseur",,,,
+"invoice.root.purchases.suprefunds","invoice.root.purchases.suprefunds","action","Suppl. Refunds","Les avoirs fournisseur",,,,
+"invoice.root.sales.custinvoices","invoice.root.sales.custinvoices","action","Cust. Invoices","Les factures client",,,,
+"invoice.root.sales.custrefunds","invoice.root.sales.custrefunds","action","Cust. Refunds","Les avoirs client",,,,
+"invoice.root.sales.filters.confcustinvoice","invoice.root.sales.filters.confcustinvoice","action","Confirmed Cust. invoices","Les factures client confirmées",,,,
+"invoice.root.sales.filters.confcustrefunds","invoice.root.sales.filters.confcustrefunds","action","Confirmed Cust. refunds","Les avoirs client confirmés",,,,
+"invoice.root.sales.filters.draftcustinvoice","invoice.root.sales.filters.draftcustinvoice","action","Draft Cust. invoices","Les factures client brouillon",,,,
+"invoice.root.sales.filters.draftcustrefunds","invoice.root.sales.filters.draftcustrefunds","action","Draft Cust. refunds","Les avoirs client brouillon",,,,
+"invoice.root.sales.filters.duecustrefunds","invoice.root.sales.filters.duecustrefunds","action","Due Cust. refunds","Les avoirs client échus",,,,
+"invoice.root.sales.filters.unpaiddueinvoice","invoice.root.sales.filters.unpaiddueinvoice","action","Unpaid due invoices","Facture à payer arrivées à échéance",,,,
+"invoice.root.sales.filters.valcustinvoice","invoice.root.sales.filters.valcustinvoice","action","Validated Cust. invoices","Les factures client validées",,,,
+"invoice.root.sales.filters.valcustrefunds","invoice.root.sales.filters.valcustrefunds","action","Validated Cust. refunds","Les avoirs client validés",,,,
+"mail.root.email.cash.register","mail.root.email.cash.register","action","Cash register emails","Les emails de caisse",,,,
+"mail.root.email.debtrecovery","mail.root.email.debtrecovery","action","Reminder emails","Les emails de relance",,,,
+"mail.root.email.reimboursement","mail.root.email.reimboursement","action","Reimbursement emails","Les emails de remboursement",,,,
+"mail.root.email.reject.import","mail.root.email.reject.import","action","Reject emails","Les emails de rejet",,,,
+"mail.root.mail.cash.register","mail.root.mail.cash.register","action","Cash register mails","Les courriers de caisse",,,,
+"mail.root.mail.debtrecovery","mail.root.mail.debtrecovery","action","Reminder mails","Les courriers de relance",,,,
+"mail.root.mail.reimboursement","mail.root.mail.reimboursement","action","Reimbursement mails","Les courriers de remboursement",,,,
+"mail.root.mail.reject.import","mail.root.mail.reject.import","action","Bank Rejects mails","Les courriers de rejet",,,,
+"com.axelor.apps.account.db.CashRegister","importId","field",,,,,,
+"com.axelor.apps.account.db.CashRegister","name","field","Name","Nom",,,,
+"com.axelor.apps.account.db.CashRegister","num","field","Cash register N°","N° de caisse",,,,
+"com.axelor.apps.account.db.CashRegister","address","field","Address","Adresse",,,,
+"com.axelor.apps.account.db.CashRegisterLine","name","field",,"Nom",,,,
+"com.axelor.apps.account.db.CashRegisterLine","userInfo","field","Cashier Agent","Utilisateur",,,,
+"com.axelor.apps.account.db.CashRegisterLine","cashRegister","field","Cash register","Cash register",,,,
+"com.axelor.apps.account.db.CashRegisterLine","createDateTime","field","Creation Date","Date de création",,,,
+"com.axelor.apps.account.db.CashRegisterLine","cashRegisterDate","field","Cash register date","Date de la caisse",,,,
+"com.axelor.apps.account.db.CashRegisterLine","depositedAmount","field","Deposited Amount","Dépot du jour",,,,
+"com.axelor.apps.account.db.CashRegisterLine","cashRegisterAmount","field","Cash Regsiter Amount","Solde de la caisse",,,,
+"com.axelor.apps.account.db.CashRegisterLine","stateSelect","field","Status","Etat",,,,
+"com.axelor.apps.account.db.CashRegisterLine","emailSendedOk","field","Email sent ?","Email envoyé",,,,
+"com.axelor.apps.account.db.ChequeRejection","name","field","Reference","Référence",,,,
+"com.axelor.apps.account.db.ChequeRejection","company","field","Company","Société",,,,
+"com.axelor.apps.account.db.ChequeRejection","dateTime","field","Date","Date",,,,
+"com.axelor.apps.account.db.ChequeRejection","partner","field","Customer","Tiers",,,,
+"com.axelor.apps.account.db.ChequeRejection","paymentVoucher","field","Payment vouvher","Encaissement par chèque",,,,
+"com.axelor.apps.account.db.ChequeRejection","amountRejected","field","Rejected amount","Montant rejeté",,,,
+"com.axelor.apps.account.db.ChequeRejection","rejectionDate","field","Reject Date","Date du rejet",,,,
+"com.axelor.apps.account.db.ChequeRejection","interbankCodeLine","field","Rejection reason","Motif du rejet",,,,
+"com.axelor.apps.account.db.ChequeRejection","status","field","Status","Statut",,,,
+"com.axelor.apps.account.db.ChequeRejection","move","field","Rejection MoveLine","Ecriture de rejet générée",,,,
+"com.axelor.apps.account.db.ChequeRejection","paymentMode","field","Payment Mode","Mode de paiement",,,,
+"com.axelor.apps.account.db.ChequeRejection","description","field","Description","Descriptif",,,,
+"com.axelor.apps.account.db.ManagementObject","code","field","Code","Code",,,,
+"com.axelor.apps.account.db.ManagementObject","name","field","Name","Nom",,,,
+"com.axelor.apps.account.db.MatrixStructure","name","field","Nom","Nom",,,,
+"com.axelor.apps.account.db.MatrixStructure","nbEntry","field","Nbr of Inputs","Nombre d'entrées",,,,
+"com.axelor.apps.account.db.MatrixStructure","nbRelease","field","Nbr of Outputs","Nombre de sorties",,,,
+"com.axelor.apps.account.db.MatrixStructure","param1","field","Input Code 1","Code source 1",,,,
+"com.axelor.apps.account.db.MatrixStructure","param2","field","Input Code 2","Code source 2",,,,
+"com.axelor.apps.account.db.MatrixStructure","param3","field","Input Code 3","Code source 3",,,,
+"com.axelor.apps.account.db.MatrixStructure","param4","field","Input Code 4","Code source 4",,,,
+"com.axelor.apps.account.db.MatrixStructure","param5","field","Input Code 5","Code source 5",,,,
+"com.axelor.apps.account.db.MatrixStructure","param6","field","Input Code 6","Code source 6",,,,
+"com.axelor.apps.account.db.MatrixStructure","param7","field","Input Code 7","Code source 7",,,,
+"com.axelor.apps.account.db.MatrixStructure","param8","field","Input Code 8","Code source 8",,,,
+"com.axelor.apps.account.db.MatrixStructure","param9","field","Input Code 9","Code source 9",,,,
+"com.axelor.apps.account.db.MatrixStructure","param10","field","Input Code 10","Code source 10",,,,
+"com.axelor.apps.account.db.MatrixStructure","param9Incl","field","Input 9 included ?","Source 9 incluse ?",,,,
+"com.axelor.apps.account.db.MatrixStructure","param10Incl","field","Input 10 included ?","Source 10 incluse ?",,,,
+"com.axelor.apps.account.db.MatrixStructure","sourceParam1","field","Input 1","Source 1",,,,
+"com.axelor.apps.account.db.MatrixStructure","sourceParam2","field","Input 2","Source 2",,,,
+"com.axelor.apps.account.db.MatrixStructure","sourceParam3","field","Input 3","Source 3",,,,
+"com.axelor.apps.account.db.MatrixStructure","sourceParam4","field","Input 4","Source 4",,,,
+"com.axelor.apps.account.db.MatrixStructure","sourceParam5","field","Input 5","Source 5",,,,
+"com.axelor.apps.account.db.MatrixStructure","sourceParam6","field","Input 6","Source 6",,,,
+"com.axelor.apps.account.db.MatrixStructure","sourceParam7","field","Input 7","Source 7",,,,
+"com.axelor.apps.account.db.MatrixStructure","sourceParam8","field","Input 8","Source 8",,,,
+"com.axelor.apps.account.db.MatrixStructure","sourceParam9","field","Input 9-10","Source 9-10",,,,
+"com.axelor.apps.account.db.MatrixStructure","valueName1","field","1","1",,,,
+"com.axelor.apps.account.db.MatrixStructure","valueName2","field","2","2",,,,
+"com.axelor.apps.account.db.MatrixStructure","valueName3","field","3","3",,,,
+"com.axelor.apps.account.db.MatrixStructure","valueName4","field","4","4",,,,
+"com.axelor.apps.account.db.MatrixStructure","valueName5","field","5","5",,,,
+"com.axelor.apps.account.db.MatrixStructure","valueCode1","field","1","1",,,,
+"com.axelor.apps.account.db.MatrixStructure","valueCode2","field","2","2",,,,
+"com.axelor.apps.account.db.MatrixStructure","valueCode3","field","3","3",,,,
+"com.axelor.apps.account.db.MatrixStructure","valueCode4","field","4","4",,,,
+"com.axelor.apps.account.db.MatrixStructure","valueCode5","field","5","5",,,,
+"com.axelor.apps.account.db.Move","journal","field","Journal","Journal",,,,
+"com.axelor.apps.account.db.Move","period","field","Période","Période",,,,
+"com.axelor.apps.account.db.Move","date","field","Date","Date",,,,
+"com.axelor.apps.account.db.Move","reference","field","Reference","Référence",,,,
+"com.axelor.apps.account.db.Move","moveLineList","field","Move line","Lignes d'écriture",,,,
+"com.axelor.apps.account.db.Move","partner","field","Partner","Tiers",,,,
+"com.axelor.apps.account.db.Move","company","field","Company","Société",,,,
+"com.axelor.apps.account.db.Move","cashRegister","field","Cash register","Caisse",,,,
+"com.axelor.apps.account.db.Move","paymentMode","field","Payment Mode","Mode de paiement",,,,
+"com.axelor.apps.account.db.Move","invoice","field","Invoice","Facture",,,,
+"com.axelor.apps.account.db.Move","state","field","Status","Etat",,,,
+"com.axelor.apps.account.db.Move","rejectOk","field","Reject","Rejet",,,,
+"com.axelor.apps.account.db.Move","getInfoFromFirstMoveLineOk","field","Get information from 1st Move line","Récupérer informations de la première ligne",,,,
+"com.axelor.apps.account.db.Move","exportToAgressoNumber","field","Accounting Export N°","Numéro d'export comptable",,,,
+"com.axelor.apps.account.db.Move","exportToAgressoDate","field","Export Date","Date d'export comptable",,,,
+"com.axelor.apps.account.db.Move","accountingOk","field","Exported","Comptabilisé",,,,
+"com.axelor.apps.account.db.Move","moveLineReport","field","Accounting Export","Export comptable",,,,
+"com.axelor.apps.account.db.Move","paymentVoucher","field","Payment voucher","Saisie paiement",,,,
+"com.axelor.apps.account.db.Move","currency","field","Currency","Devise",,,,
+"com.axelor.apps.account.db.Move","ignoreInAccountingOk","field","Ignore in accounting","Ne pas tenir compte en compta",,,,
+"com.axelor.apps.account.db.Move","ignoreInReminderOk","field","Ignore in remind process","Ne pas tenir compte en relance",,,,
+"com.axelor.apps.account.db.Move","fromSchedulePaymentOk","field","From schedule payment","Provient d'un échéancier",,,,
+"com.axelor.apps.account.db.MoveLine","move","field","Move","Ecriture",,,,
+"com.axelor.apps.account.db.MoveLine","date","field","Input Date","Date de saisie",,,,
+"com.axelor.apps.account.db.MoveLine","dueDate","field","Due Date","Date d'échéance",,,,
+"com.axelor.apps.account.db.MoveLine","debit","field","Debit","Débit",,,,
+"com.axelor.apps.account.db.MoveLine","credit","field","Credit","Crédit",,,,
+"com.axelor.apps.account.db.MoveLine","account","field","Account","Compte",,,,
+"com.axelor.apps.account.db.MoveLine","reconcileList1","field","Debit Reconcile list","Lettrages en Débit",,,,
+"com.axelor.apps.account.db.MoveLine","reconcileList2","field","Credit Reconcile List","Lettrages en crédit",,,,
+"com.axelor.apps.account.db.MoveLine","amountPaid","field","Amount paid/reconciled","Montant payé/lettré",,,,
+"com.axelor.apps.account.db.MoveLine","partner","field","Partner","Tiers",,,,
+"com.axelor.apps.account.db.MoveLine","counter","field","Line Nbr.","Référence ligne","This sequence is unique per Move, automatically reset to 1 for a new moveline",,,
+"com.axelor.apps.account.db.MoveLine","invoiceReject","field","Invoice rejected","Facture rejetée",,,,
+"com.axelor.apps.account.db.MoveLine","ignoreInAccountingOk","field","Ignore in accounting","Ne pas tenir compte en compta",,,,
+"com.axelor.apps.account.db.MoveLine","ignoreInReminderOk","field","Ignore in remind process","Ne pas tenir compte en relance",,,,
+"com.axelor.apps.account.db.MoveLine","fromSchedulePaymentOk","field","From Schedule payment","Provient d'un échéancier",,,,
+"com.axelor.apps.account.db.MoveLine","exportedDirectDebitOk","field","Exported Direct Debit","Prélèvement exporté",,,,
+"com.axelor.apps.account.db.MoveLine","interbankCodeLine","field","Reject reason","Motif rejet",,,,
+"com.axelor.apps.account.db.MoveLine","description","field","Description","Descriptif",,,,
+"com.axelor.apps.account.db.MoveLine","analyticAccountSet","field","Analytic account","Comptes analytiques",,,,
+"com.axelor.apps.account.db.MoveLine","mailSelect","field","Mail status","Etat du courrier",,,,
+"com.axelor.apps.account.db.MoveLine","reimbursementStateSelect","field","Reimbursement status","Etat remboursement",,,,
+"com.axelor.apps.account.db.MoveLine","unrecocileMoveOk","field","Unreconciled move line","Ligne d'écriture non lettrée",,,,
+"com.axelor.apps.account.db.MoveLine","passageReason","field","Irrecoverable Shift Reason","Motif de passage",,,,
+"com.axelor.apps.account.db.MoveLine","usherPassageOk","field","Transfer(ed) to Usher ","Passage à l'huissier",,,,
+"com.axelor.apps.account.db.MoveLine","vatLine","field","VAT","TVA",,,,
+"com.axelor.apps.account.db.MoveLine","currencyRate","field","Currency Rate","Taux d'origine de conversion de devise",,,,
+"com.axelor.apps.account.db.MoveLine","currencyAmount","field","Amount in Currency","Montant en devise",,,,
+"com.axelor.apps.account.db.MoveLine","maxAmountToReconcile","field","Max Amount to reconcile","Montant max. à réconcilier",,,,
+"com.axelor.apps.account.db.MoveLine","paymentScheduleLine","field","Payment Schedule line","Echéance",,,,
+"com.axelor.apps.account.db.MoveLine","amountExportedInDirectDebit","field","Amount exported for direct debit","montant exporté en prélèvement",,,,
+"com.axelor.apps.account.db.MoveLine","accountClearance","field","Account clearance","Apurement",,,,
+"com.axelor.apps.account.db.MoveLine","irrecoverableStateSelect","field","Irrecoverable status","Etat Irrécouvrable",,,,
+"com.axelor.apps.account.db.MoveLine","managementObject","field","Irrecoverable shift reason","Motif de passage en irrécouvrable",,,,
+"com.axelor.apps.account.db.MoveLine","name","field","Name","Nom",,,,
+"com.axelor.apps.account.db.MoveLine","amountRemaining","field","To pay / To use","A payer / A utiliser",,,,
+"com.axelor.apps.account.db.MoveLine","invoice","field","Invoice","Facture",,,,
+"com.axelor.apps.account.db.MoveLineReport","ref","field","Ref.","Ref.",,,,
+"com.axelor.apps.account.db.MoveLineReport","dateFrom","field","From","Du",,,,
+"com.axelor.apps.account.db.MoveLineReport","dateTo","field","To","Au",,,,
+"com.axelor.apps.account.db.MoveLineReport","company","field","Company","Société",,,,
+"com.axelor.apps.account.db.MoveLineReport","period","field","Period","Période",,,,
+"com.axelor.apps.account.db.MoveLineReport","journal","field","Journal","Journal",,,,
+"com.axelor.apps.account.db.MoveLineReport","paymentMode","field","Payment Mode","Mode de règlement",,,,
+"com.axelor.apps.account.db.MoveLineReport","account","field","Account","Compte",,,,
+"com.axelor.apps.account.db.MoveLineReport","exportTypeSelect","field","Export type","Type d'export",,,,
+"com.axelor.apps.account.db.MoveLineReport","typeSelect","field","Printing output","Type d'impression",,,,
+"com.axelor.apps.account.db.MoveLineReport","partner","field","Partner","Tiers",,,,
+"com.axelor.apps.account.db.MoveLineReport","fromPartner","field","From Partner","Du tiers",,,,
+"com.axelor.apps.account.db.MoveLineReport","toPartner","field","To Partner","Au tiers",,,,
+"com.axelor.apps.account.db.MoveLineReport","cashRegister","field","Cash register","Caisse",,,,
+"com.axelor.apps.account.db.MoveLineReport","year","field","Fiscal year","Année fiscale",,,,
+"com.axelor.apps.account.db.MoveLineReport","date","field","Creation Date","Date de création",,,,
+"com.axelor.apps.account.db.MoveLineReport","publicationDateTime","field","Date de dernière édition","Date de dernière édition",,,,
+"com.axelor.apps.account.db.MoveLineReport","global","field","Global","Global",,,,
+"com.axelor.apps.account.db.MoveLineReport","globalByPartner","field","Subtotal by partner","Sous total par tiers",,,,
+"com.axelor.apps.account.db.MoveLineReport","globalByPost","field","Subtotal by post","Sous total par poste de saisie",,,,
+"com.axelor.apps.account.db.MoveLineReport","globalByDate","field","Subtotal by date","Sous total par date",,,,
+"com.axelor.apps.account.db.MoveLineReport","detailed","field","Detailed","Détaillé",,,,
+"com.axelor.apps.account.db.MoveLineReport","moveLineSet","field","Move Lines","Lignes d'écritures",,,,
+"com.axelor.apps.account.db.MoveLineReport","status","field","Status","Statut",,,,
+"com.axelor.apps.account.db.MoveLineReport","totalDebit","field","Total Debit","Total au débit",,,,
+"com.axelor.apps.account.db.MoveLineReport","totalCredit","field","Total Credit","Total au crédit",,,,
+"com.axelor.apps.account.db.MoveLineReport","balance","field","Balance","Solde",,,,
+"com.axelor.apps.account.db.Paybox","name","field","Name","Nom",,,,
+"com.axelor.apps.account.db.PayerQualityConfigLine","incidentTypeSelect","field","Incident type","Type d'incident",,,,
+"com.axelor.apps.account.db.PayerQualityConfigLine","reminderLevel","field","Reminder level","Niveau de relance",,,,
+"com.axelor.apps.account.db.PayerQualityConfigLine","rejectType","field","Reject type","Type de Rejet",,,,
+"com.axelor.apps.account.db.PayerQualityConfigLine","name","field","Label","Libellé",,,,
+"com.axelor.apps.account.db.PayerQualityConfigLine","burden","field","Burden (weight)","Poids",,,,
+"com.axelor.apps.account.db.PayerQualityConfigLine","description","field","Description","Remarque",,,,
+"com.axelor.apps.account.db.PaymentCondition","name","field","Name","Nom",,,,
+"com.axelor.apps.account.db.PaymentCondition","code","field","Code","Code",,,,
+"com.axelor.apps.account.db.PaymentCondition","paymentTime","field","Payment period","Délai de paiement",,,,
+"com.axelor.apps.account.db.PaymentInvoice","dueDate","field","Due date","Échéance",,,,
+"com.axelor.apps.account.db.PaymentInvoice","moveLine","field","Move Line","Ligne d'écriture",,,,
+"com.axelor.apps.account.db.PaymentInvoice","invoiceAmount","field","Invoice Amount","Montant facture",,,,
+"com.axelor.apps.account.db.PaymentInvoice","paidAmount","field","Amount already paid","Déjà payé",,,,
+"com.axelor.apps.account.db.PaymentInvoice","paymentVoucher","field","Payment","Paiement",,,,
+"com.axelor.apps.account.db.PaymentInvoice","paymentScheduleLine","field","Schedule line","Echéance",,,,
+"com.axelor.apps.account.db.PaymentInvoice","currency","field","Currency","Devise",,,,
+"com.axelor.apps.account.db.PaymentInvoice","invoice","field","Invoice","Facture",,,,
+"com.axelor.apps.account.db.PaymentInvoice","amountRemaining","field","Amount remaining","Solde facture",,,,
+"com.axelor.apps.account.db.PaymentInvoice","company","field","Company","Société",,,,
+"com.axelor.apps.account.db.PaymentInvoiceToPay","sequence","field","Sequence","Séquence",,,,
+"com.axelor.apps.account.db.PaymentInvoiceToPay","moveLine","field","Move line","Ligne écriture",,,,
+"com.axelor.apps.account.db.PaymentInvoiceToPay","totalAmount","field","Total amount","Montant total",,,,
+"com.axelor.apps.account.db.PaymentInvoiceToPay","remainingAmount","field","Amount remaining before cashing","Restant à payer avant l'encaissement",,,,
+"com.axelor.apps.account.db.PaymentInvoiceToPay","amountToPay","field","Amount charged","Montant imputé",,,,
+"com.axelor.apps.account.db.PaymentInvoiceToPay","moveLineGenerated","field","Move Line generated","Ligne d'écriture comptable générée",,,,
+"com.axelor.apps.account.db.PaymentInvoiceToPay","paymentVoucher","field","Payment","Paiement",,,,
+"com.axelor.apps.account.db.PaymentInvoiceToPay","paymentScheduleLine","field","Schedule line","Echéance",,,,
+"com.axelor.apps.account.db.PaymentInvoiceToPay","currency","field","Currency","Devise",,,,
+"com.axelor.apps.account.db.PaymentInvoiceToPay","company","field","Company","Société",,,,
+"com.axelor.apps.account.db.PaymentInvoiceToPay","remainingAmountAfterPayment","field","Remaining to pay after cashing","Restant à payer après l'encaissement",,,,
+"com.axelor.apps.account.db.PaymentMode","importId","field",,,,,,
+"com.axelor.apps.account.db.PaymentMode","name","field","Label","Intitulé",,,,
+"com.axelor.apps.account.db.PaymentMode","code","field","Code","Code",,,,
+"com.axelor.apps.account.db.PaymentMode","accountManagementList","field","Accounts by paymentMode","Comptes comptables",,,,
+"com.axelor.apps.account.db.PaymentMode","bankJournal","field","Journal","Journal",,,,
+"com.axelor.apps.account.db.PaymentMode","invoiceLabel","field","Invoice label","Libellé facture","Label to be displayed on invoice PDF",,,
+"com.axelor.apps.account.db.PaymentSchedule","scheduleId","field","Reference","Référence",,,,
+"com.axelor.apps.account.db.PaymentSchedule","creationDate","field","Creation Date","Date de création",,,,
+"com.axelor.apps.account.db.PaymentSchedule","startDate","field","Schedule start Date","Date de début des échéances",,,,
+"com.axelor.apps.account.db.PaymentSchedule","invoice","field","Invoice","Facture",,,,
+"com.axelor.apps.account.db.PaymentSchedule","nbrTerm","field","Nbr. of terms","Nombre d'échéances",,,,
+"com.axelor.apps.account.db.PaymentSchedule","bankDetails","field","Bank Details","RIB",,,,
+"com.axelor.apps.account.db.PaymentSchedule","paymentMode","field","Payment Mode","Mode de règlement",,,,
+"com.axelor.apps.account.db.PaymentSchedule","paymentScheduleLineList","field","Schedule lines","Ligne d'échéancier",,,,
+"com.axelor.apps.account.db.PaymentSchedule","state","field","Status","Etat",,,,
+"com.axelor.apps.account.db.PaymentSchedule","partner","field","Partner","Tiers",,,,
+"com.axelor.apps.account.db.PaymentSchedule","company","field","Company","Société",,,,
+"com.axelor.apps.account.db.PaymentSchedule","generatedMove","field","Technical move","Pièce technique",,,,
+"com.axelor.apps.account.db.PaymentSchedule","invoiceSet","field","Select invoices to include in the payment schedule","Sélection des Factures à mettre dans l'échéancier",,,,
+"com.axelor.apps.account.db.PaymentSchedule","natureSelect","field","Schedule nature","Nature d'échéancier",,,,
+"com.axelor.apps.account.db.PaymentSchedule","rejectCounter","field","Reject counter","Compteur de rejet",,,,
+"com.axelor.apps.account.db.PaymentSchedule","paymentScheduleType","field","Schedule type","Type d'échéancier",,,,
+"com.axelor.apps.account.db.PaymentSchedule","subPaymentScheduleType","field","Schedule subType","Sous-type d'échéancier",,,,
+"com.axelor.apps.account.db.PaymentSchedule","irrecoverableStateSelect","field","Irrecoverable status","Etat Irrecouvrable",,,,
+"com.axelor.apps.account.db.PaymentSchedule","managementObject","field","Irrecoverable shift reason","Motif de passage en irrécouvrable",,,,
+"com.axelor.apps.account.db.PaymentSchedule","inTaxAmount","field","Total amount A.T.I. remaining to pay on selected invoices","Montant total restant à payer des factures selectionnées",,,,
+"com.axelor.apps.account.db.PaymentSchedule","totalToPayAmount","field","Total amount for generated schedule lines","Montant total des échéances générées",,,,
+"com.axelor.apps.account.db.PaymentScheduleLine","paymentSchedule","field","Payment Schedule","Echéancier",,,,
+"com.axelor.apps.account.db.PaymentScheduleLine","moveLineGenerated","field","Move line generated","Ligne d'écriture comptable générée",,,,
+"com.axelor.apps.account.db.PaymentScheduleLine","scheduleLineSeq","field","Schedule line N°","Numéro échéance",,,,
+"com.axelor.apps.account.db.PaymentScheduleLine","inTaxAmount","field","Amount A.T.I.","Montant (TTC)",,,,
+"com.axelor.apps.account.db.PaymentScheduleLine","inTaxAmountPaid","field","Amount pais A.T.I.","Montant payé",,,,
+"com.axelor.apps.account.db.PaymentScheduleLine","scheduleDate","field","Schedule Date","Date échéance",,,,
+"com.axelor.apps.account.db.PaymentScheduleLine","rejectedOk","field","Rejected","Rejetée",,,,
+"com.axelor.apps.account.db.PaymentScheduleLine","debitBlockingOk","field","Debit blocking","Blocage prélèvement",,,,
+"com.axelor.apps.account.db.PaymentScheduleLine","status","field","Status","Etat",,,,
+"com.axelor.apps.account.db.PaymentScheduleLine","rejectDate","field","Reject Date","Date rejet",,,,
+"com.axelor.apps.account.db.PaymentScheduleLine","interbankCodeLine","field","Reject reason","Motif de rejet",,,,
+"com.axelor.apps.account.db.PaymentScheduleLine","advanceMoveLine","field","Advance move line","Ligne d'acompte",,,,
+"com.axelor.apps.account.db.PaymentScheduleLine","reverseMove","field","Monthly payment reverse move","Extourne écriture mensu",,,,
+"com.axelor.apps.account.db.PaymentScheduleLine","debitNumber","field","Direct debit Nbr","Numéro de prélèvement",,,,
+"com.axelor.apps.account.db.PaymentScheduleLine","directDebitManagement","field","Direct debit management","Gestion de prélèvement",,,,
+"com.axelor.apps.account.db.PaymentScheduleLine","rejectMoveLine","field","Reject move line","Ligne d'écriture de rejet",,,,
+"com.axelor.apps.account.db.PaymentScheduleLine","advanceOrPaymentMove","field","Advance/Payment move","Ecriture d'acompte / de paiement",,,,
+"com.axelor.apps.account.db.PaymentScheduleLine","fromReject","field","From reject schedule line","Provient d'une échéance rejetée",,,,
+"com.axelor.apps.account.db.PaymentScheduleLine","amountRejected","field","Amount rejected","Montant rejeté",,,,
+"com.axelor.apps.account.db.PaymentScheduleLine","batchSet","field","Batchs","Batchs",,,,
+"com.axelor.apps.account.db.PaymentScheduleLine","name","field",,"Nom",,,,
+"com.axelor.apps.account.db.PaymentScheduleLine","amountRemaining","field","Remaining amount to pay","Montant restant à payer",,,,
+"com.axelor.apps.account.db.PaymentScheduleLine","amountRemainingCurrency","field","Remaining amount to pay in currency","Montant restant à payer en devise",,,,
+"com.axelor.apps.account.db.PaymentScheduleType","type","field","Type","Type",,,,
+"com.axelor.apps.account.db.PaymentScheduleType","code","field","Code","Code",,,,
+"com.axelor.apps.account.db.PaymentScheduleType","name","field","Name","Nom",,,,
+"com.axelor.apps.account.db.PaymentScheduleType","alertOK","field","Alert if payment occurs","Alerter en cas de paiement",,,,
+"com.axelor.apps.account.db.PaymentScheduleType","alertMessage","field","Alert message","Message d'alerte",,,,
+"com.axelor.apps.account.db.PaymentScheduleType","parentPaymentScheduleType","field","Parent","Parent",,,,
+"com.axelor.apps.account.db.PaymentVoucher","ref","field","Reference","Référence",,,,
+"com.axelor.apps.account.db.PaymentVoucher","partner","field","Partner","Tiers",,,,
+"com.axelor.apps.account.db.PaymentVoucher","account","field","Partner accountCompte du tiers","Compte du tiers",,,,
+"com.axelor.apps.account.db.PaymentVoucher","paymentMode","field","Payment mode","Mode de règlement",,,,
+"com.axelor.apps.account.db.PaymentVoucher","paymentDateTime","field","Payment date","Date de paiement",,,,
+"com.axelor.apps.account.db.PaymentVoucher","paidAmount","field","Amount paid","Montant réglé",,,,
+"com.axelor.apps.account.db.PaymentVoucher","userInfo","field","User","Utilisateur",,,,
+"com.axelor.apps.account.db.PaymentVoucher","cashRegister","field","Cash register","Caisse",,,,
+"com.axelor.apps.account.db.PaymentVoucher","moveLine","field","Overdue moveline","Trop-perçu",,,,
+"com.axelor.apps.account.db.PaymentVoucher","remainingAllocatedAmount","field","Amount Remaining to allocate","Montant restant à affecter",,,,
+"com.axelor.apps.account.db.PaymentVoucher","allocatedAmount","field","Allocated amount","Montant affecté",,,,
+"com.axelor.apps.account.db.PaymentVoucher","paymentInvoiceList","field","List of invoices/schedule lines with remaining amount to pay","Liste des factures/échéances non soldées",,,,
+"com.axelor.apps.account.db.PaymentVoucher","paymentInvoiceToPayList","field","List of invoices to pay","Liste des factures à régler",,,,
+"com.axelor.apps.account.db.PaymentVoucher","state","field","Status","Etat",,,,
+"com.axelor.apps.account.db.PaymentVoucher","generatedMove","field","Generated move","Pièce comptable générée",,,,
+"com.axelor.apps.account.db.PaymentVoucher","invoiceToPay","field","Invoice","Facture",,,,
+"com.axelor.apps.account.db.PaymentVoucher","scheduleToPay","field","Schedule line","Echéance",,,,
+"com.axelor.apps.account.db.PaymentVoucher","paymentScheduleToPay","field","Payment schedule","Echéancier",,,,
+"com.axelor.apps.account.db.PaymentVoucher","rejectToPay","field","Reject","Rejet à payer",,,,
+"com.axelor.apps.account.db.PaymentVoucher","autoOk","field","Auto","Auto","Indicates if the voucher has been manually or automatically input. This has an impact on overdue management.",,,
+"com.axelor.apps.account.db.PaymentVoucher","company","field","Company","Société",,,,
+"com.axelor.apps.account.db.PaymentVoucher","bankCardTransactionNumber","field","CC Transaction N°","N° transaction CB",,,,
+"com.axelor.apps.account.db.PaymentVoucher","receiptNo","field","Receipt N°","Numéro de reçu",,,,
+"com.axelor.apps.account.db.PaymentVoucher","payboxPaidOk","field","Paid through paybox","Payé via paybox",,,,
+"com.axelor.apps.account.db.PaymentVoucher","email","field","Email to use","Email à utiliser",,,,
+"com.axelor.apps.account.db.PaymentVoucher","toSaveEmailOk","field","Save mail sent to contact ?","A Sauvegarder Pour Le Contact ?",,,,
+"com.axelor.apps.account.db.PaymentVoucher","defaultEmailOk","field","Default mail address","Adresse mail par défaut",,,,
+"com.axelor.apps.account.db.PaymentVoucher","payboxAmountPaid","field","Paybox transaction Amount","Montant de la transaction paybox",,,,
+"com.axelor.apps.account.db.PaymentVoucher","batchSet","field","Batchs","Batchs",,,,
+"com.axelor.apps.account.db.PaymentVoucher","currency","field","Currency","Devise",,,,
+"com.axelor.apps.account.db.PaymentVoucher","paidAmountInCurrency","field","Amount paid in currency","Montant réglé en devise",,,,
+"com.axelor.apps.account.db.PaymentVoucher","operationTypeSelect","field","Payment type","Type de saisie paiement",,,,
+"com.axelor.apps.account.db.PaymentVoucher","remainingAmount","field","Amount remaining to allocate","Montant restant à utiliser",,,,
+"com.axelor.apps.account.db.Period","name","field","Name","Nom",,,,
+"com.axelor.apps.account.db.Period","code","field","Code","Code",,,,
+"com.axelor.apps.account.db.Period","year","field","Year","Année",,,,
+"com.axelor.apps.account.db.Period","company","field","Company","Société",,,,
+"com.axelor.apps.account.db.Period","fromDate","field","From","De",,,,
+"com.axelor.apps.account.db.Period","toDate","field","To","A",,,,
+"com.axelor.apps.account.db.Period","status","field","Status","Statut",,,,

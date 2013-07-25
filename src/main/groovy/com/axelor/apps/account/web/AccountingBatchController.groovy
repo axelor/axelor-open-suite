@@ -2,7 +2,7 @@ package com.axelor.apps.account.web
 
 import com.axelor.apps.account.db.AccountingBatch
 import com.axelor.apps.account.db.IAccount
-import com.axelor.apps.account.service.generator.batch.AccountingBatchService
+import com.axelor.apps.account.service.batch.AccountingBatchService
 import com.axelor.apps.base.db.Batch
 import com.axelor.rpc.ActionRequest
 import com.axelor.rpc.ActionResponse

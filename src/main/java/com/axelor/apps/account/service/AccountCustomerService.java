@@ -15,11 +15,11 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.db.JPA;
+import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -206,34 +206,13 @@ public class AccountCustomerService {
 	 * @param company
 	 * 				Une société
 	 */
-	@Transactional
-	public void updatePartnerAccountingSituation(List<Partner> partnerList, Company company)  {
+	public void updatePartnerAccountingSituation(List<Partner> partnerList, Company company, boolean updateCustAccount, boolean updateDueCustAccount, boolean updateDueReminderCustAccount)  {
 		for(Partner partner : partnerList)  {
 			AccountingSituation accountingSituation = this.getAccountingSituation(partner, company);
 			if(accountingSituation != null)  {
-				accountingSituation.setBalanceCustAccount(this.getBalance(partner, company));
-				accountingSituation.setBalanceDueCustAccount(this.getBalanceDue(partner, company));
-				accountingSituation.setBalanceDueReminderCustAccount(this.getBalanceDueReminder(partner, company));
-				accountingSituation.save();
+				this.updateAccountingSituationCustomerAccount(accountingSituation, updateCustAccount, updateDueCustAccount, updateDueReminderCustAccount);
 			}
 		}
-	}
-	
-	
-	public void updatePartnerAccountingSituation(Reconcile reconcile)  {
-		Company company = null;
-		List<Partner> partnerList = new ArrayList<Partner>();
-		if(reconcile.getLineDebit().getPartner() != null && reconcile.getLineDebit().getMove() != null && reconcile.getLineDebit().getMove().getCompany() != null)  { 
-			partnerList.add(reconcile.getLineDebit().getPartner());	
-			company = reconcile.getLineDebit().getMove().getCompany();
-		}
-		if(reconcile.getLineCredit().getPartner() != null && reconcile.getLineCredit().getMove() != null && reconcile.getLineCredit().getMove().getCompany() != null)  { 
-			partnerList.add(reconcile.getLineCredit().getPartner());	
-			company = reconcile.getLineCredit().getMove().getCompany();
-		}
-		
-		if(partnerList != null && !partnerList.isEmpty() && company != null)
-		this.updatePartnerAccountingSituation(partnerList, company);
 	}
 	
 	
@@ -265,6 +244,16 @@ public class AccountCustomerService {
 	}
 	
 	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void flagPartners(List<Partner> partnerList, Company company)  {
+		for(Partner partner : partnerList)  {
+			AccountingSituation accountingSituation = this.getAccountingSituation(partner, company);
+			accountingSituation.setCustAccountMustBeUpdateOk(true);
+			accountingSituation.save();
+		}
+	}
+	
+	
 	/**
 	 * Méthode permettant de mettre à jour le M2M MoveLineSet du contrat avec toutes 
 	 * les lignes d'écritures dont le contrat correspond et qui ne sont pas ignorées en compta.
@@ -292,6 +281,26 @@ public class AccountCustomerService {
 		accountingSituation.save();
 		
 		LOG.debug("End updateMoveLineSet service");
+	}
+	
+	
+	@Transactional
+	public AccountingSituation updateAccountingSituationCustomerAccount(AccountingSituation accountingSituation, boolean updateCustAccount, boolean updateDueCustAccount, boolean updateDueReminderCustAccount)  {
+		Partner partner = accountingSituation.getPartner();
+		Company company = accountingSituation.getCompany();
+		
+		if(updateCustAccount)  {
+			accountingSituation.setBalanceCustAccount(this.getBalance(partner, company));
+		}
+		if(updateDueCustAccount)  {	
+			accountingSituation.setBalanceDueCustAccount(this.getBalanceDue(partner, company));
+		}
+		if(updateDueReminderCustAccount)  {	
+			accountingSituation.setBalanceDueReminderCustAccount(this.getBalanceDueReminder(partner, company));
+		}	
+		accountingSituation.setCustAccountMustBeUpdateOk(false);
+		accountingSituation.save();
+		return accountingSituation;
 	}
 	
 	

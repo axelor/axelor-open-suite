@@ -65,7 +65,7 @@ public class ReimbursementImportService {
 			Move move = this.createMoveReject(company, rejectDate);
 			for(String[] reject : rejectList)  {
 				
-				this.createReimbursementRejectMoveLine(reject, company, seq, move);
+				this.createReimbursementRejectMoveLine(reject, company, seq, move, rejectDate);
 				seq++;
 			}
 			if(move != null)  {
@@ -79,7 +79,7 @@ public class ReimbursementImportService {
 	}
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Reimbursement createReimbursementRejectMoveLine(String[] reject, Company company, int seq, Move move) throws AxelorException  {
+	public Reimbursement createReimbursementRejectMoveLine(String[] reject, Company company, int seq, Move move, LocalDate rejectDate) throws AxelorException  {
 			
 		String dateReject = reject[0];
 		String refReject = reject[1];
@@ -97,7 +97,7 @@ public class ReimbursementImportService {
 		
 		// Création de la ligne au crédit
 		MoveLine creditMoveLine = mls.createMoveLine(move , partner, company.getCustomerAccount(), amount, false, false, 
-				ris.createRejectDate(dateReject), seq, false, false, false, refReject);
+				rejectDate, seq, false, false, false, refReject);
 		move.getMoveLineList().add(creditMoveLine);	
 		
 		creditMoveLine.save(); 
@@ -106,7 +106,7 @@ public class ReimbursementImportService {
 		creditMoveLine.setInterbankCodeLine(causeReject);
 		
 		reimbursement.setRejectedOk(true);
-		reimbursement.setRejectDate(ris.createRejectDate(dateReject));
+		reimbursement.setRejectDate(rejectDate);
 		reimbursement.setRejectMoveLine(creditMoveLine);
 		reimbursement.setInterbankCodeLine(causeReject);
 		reimbursement.save();

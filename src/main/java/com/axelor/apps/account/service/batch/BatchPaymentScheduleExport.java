@@ -1,4 +1,4 @@
-package com.axelor.apps.account.service.generator.batch;
+package com.axelor.apps.account.service.batch;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -37,10 +37,12 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 	
 	private BigDecimal totalAmount = BigDecimal.ZERO;
 	
+	private String updateCustomerAccountLog = "";
+	
 	@Inject
-	public BatchPaymentScheduleExport(PaymentScheduleExportService paymentScheduleExportService, PaymentModeService paymentModeService, CfonbService cfonbService) {
+	public BatchPaymentScheduleExport(PaymentScheduleExportService paymentScheduleExportService, PaymentModeService paymentModeService, CfonbService cfonbService, BatchAccountCustomer batchAccountCustomer) {
 		
-		super(paymentScheduleExportService, paymentModeService, cfonbService);
+		super(paymentScheduleExportService, paymentModeService, cfonbService, batchAccountCustomer);
 		
 	}
 
@@ -113,6 +115,7 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 					break;	
 			}	
 				
+			updateCustomerAccountLog += batchAccountCustomer.updateAccountingSituationMarked(Company.find(company.getId()));
 		}	
 		
 	}
@@ -471,6 +474,9 @@ public void exportMonthlyPaymentBatch(Company company)  {
 	            break;	
 				
 		}
+		
+		comment += String.format("\t* ------------------------------- \n");
+		comment += String.format("\t* %s ", updateCustomerAccountLog);
 		
 		addComment(comment);
 		super.stop();

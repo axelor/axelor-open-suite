@@ -1,7 +1,8 @@
-package com.axelor.apps.account.service.generator.batch;
+package com.axelor.apps.account.service.batch;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -34,10 +35,12 @@ public class BatchPaymentScheduleImport extends BatchStrategy {
 	
 	private BigDecimal totalAmount = BigDecimal.ZERO;
 	
+	private String updateCustomerAccountLog = "";
+	
 	@Inject
-	public BatchPaymentScheduleImport(PaymentScheduleImportService paymentScheduleImportService, RejectImportService rejectImportService) {
+	public BatchPaymentScheduleImport(PaymentScheduleImportService paymentScheduleImportService, RejectImportService rejectImportService, BatchAccountCustomer batchAccountCustomer) {
 		
-		super(paymentScheduleImportService, rejectImportService);
+		super(paymentScheduleImportService, rejectImportService, batchAccountCustomer);
 		
 	}
 
@@ -66,6 +69,8 @@ public class BatchPaymentScheduleImport extends BatchStrategy {
 		if(!stop)  {
 			
 			this.runImportProcess(batch.getAccountingBatch().getCompany());
+			
+			updateCustomerAccountLog += batchAccountCustomer.updateAccountingSituationMarked(null);
 		}
 		
 	}
@@ -73,11 +78,11 @@ public class BatchPaymentScheduleImport extends BatchStrategy {
 	
 	public void runImportProcess(Company company)  {
 		
-		List<String[]> data = null;
+		Map<List<String[]>,String> data = null;
 		
 		try {
 			company = Company.find(company.getId());
-			data = rejectImportService.getCFONBFile(company.getRejectImportPathAndFileName(), company.getTempImportPathAndFileName(), company, 1);
+			data = rejectImportService.getCFONBFileByLot(company.getRejectImportPathAndFileName(), company.getTempImportPathAndFileName(), company, 1);
 			
 		} catch (AxelorException e) {
 			
@@ -101,62 +106,63 @@ public class BatchPaymentScheduleImport extends BatchStrategy {
 		
 		int i=0;
 		
-		String moveDate = "";
 		boolean isMoveDate = true;
 		
 		if(!stop)  {
-			for(String[] reject : data)  {
-				try {
-					
-					String dateReject = reject[0];
-					
-					if(isMoveDate)  {  moveDate = dateReject;  }
-					
-					String refDebitReject = reject[1];
-					BigDecimal amountReject = new BigDecimal(reject[2]);
-					InterbankCodeLine causeReject = rejectImportService.getInterbankCodeLine(reject[3], 1);
-					
-					List<PaymentScheduleLine> paymentScheduleLineRejectedList = paymentScheduleImportService.importRejectPaymentScheduleLine(dateReject, refDebitReject, amountReject, InterbankCodeLine.find(causeReject.getId()), Company.find(company.getId()));
-					
-					List<Invoice> invoiceRejectedList = paymentScheduleImportService.importRejectInvoice(dateReject, refDebitReject, amountReject, InterbankCodeLine.find(causeReject.getId()), Company.find(company.getId()));
-					
-					/***  Aucun échéancier ou facture trouvé(e) pour le numéro de prélèvement  ***/
-					if((invoiceRejectedList == null || invoiceRejectedList.isEmpty()) && (paymentScheduleLineRejectedList == null || paymentScheduleLineRejectedList.isEmpty()))  {
-						throw new AxelorException(String.format("%s :\n Aucun échéancier ou facture trouvé(e) pour le numéro de prélèvement : %s", 
-								GeneralService.getExceptionAccountingMsg(),refDebitReject), IException.NO_VALUE);
+			
+			for(List<String[]> rejectList : data.keySet())  {
+
+				LocalDate rejectDate = rejectImportService.createRejectDate(data.get(rejectList));
+				
+				paymentScheduleImportService.initialiseCollection(); 
+				
+				for(String[] reject : rejectList)  {
+					try {
+						
+						String refDebitReject = reject[1].replaceAll(" ", "_");
+						BigDecimal amountReject = new BigDecimal(reject[2]);
+						InterbankCodeLine causeReject = rejectImportService.getInterbankCodeLine(reject[3], 1);
+						
+						List<PaymentScheduleLine> paymentScheduleLineRejectedList = paymentScheduleImportService.importRejectPaymentScheduleLine(rejectDate, refDebitReject, amountReject, InterbankCodeLine.find(causeReject.getId()), Company.find(company.getId()));
+						
+						List<Invoice> invoiceRejectedList = paymentScheduleImportService.importRejectInvoice(rejectDate, refDebitReject, amountReject, InterbankCodeLine.find(causeReject.getId()), Company.find(company.getId()));
+						
+						/***  Aucun échéancier ou facture trouvé(e) pour le numéro de prélèvement  ***/
+						if((invoiceRejectedList == null || invoiceRejectedList.isEmpty()) && (paymentScheduleLineRejectedList == null || paymentScheduleLineRejectedList.isEmpty()))  {
+							throw new AxelorException(String.format("%s :\n Aucun échéancier ou facture trouvé(e) pour le numéro de prélèvement : %s", 
+									GeneralService.getExceptionAccountingMsg(),refDebitReject), IException.NO_VALUE);
+						}
+						else  {
+							i++;
+						}
+						
+					} catch (AxelorException e) {
+						
+						TraceBackService.trace(new AxelorException(String.format("Rejet %s", reject[1]), e, e.getcategory()), IException.DIRECT_DEBIT, batch.getId());
+						
+						incrementAnomaly();
+						
+					} catch (Exception e) {
+						
+						TraceBackService.trace(new Exception(String.format("Rejet %s", reject[1]), e), IException.DIRECT_DEBIT, batch.getId());
+						
+						incrementAnomaly();
+						
+						LOG.error("Bug(Anomalie) généré(e) pour l'import du rejet {}", reject[1]);
+						
+					} finally {
+						
+						if (i % 10 == 0) { JPA.clear(); }
+			
 					}
-					else  {
-						i++;
-					}
-					
-				} catch (AxelorException e) {
-					
-					TraceBackService.trace(new AxelorException(String.format("Rejet %s", reject[1]), e, e.getcategory()), IException.DIRECT_DEBIT, batch.getId());
-					
-					incrementAnomaly();
-					
-				} catch (Exception e) {
-					
-					TraceBackService.trace(new Exception(String.format("Rejet %s", reject[1]), e), IException.DIRECT_DEBIT, batch.getId());
-					
-					incrementAnomaly();
-					
-					LOG.error("Bug(Anomalie) généré(e) pour l'import du rejet {}", reject[1]);
-					
-				} finally {
-					
-					if (i % 10 == 0) { JPA.clear(); }
-		
 				}
-			}
-		}
 		
-		if(!stop)  {
-			this.createRejectMove(Company.find(company.getId()), 
-					paymentScheduleImportService.getPaymentScheduleLinePaymentList(), 
-					paymentScheduleImportService.getPaymentScheduleLineMajorAccountList(), 
-					paymentScheduleImportService.getInvoiceList(), 
-					paymentScheduleImportService.getStatusUpr(), moveDate);
+				this.createRejectMove(Company.find(company.getId()), 
+						paymentScheduleImportService.getPaymentScheduleLinePaymentList(), 
+						paymentScheduleImportService.getPaymentScheduleLineMajorAccountList(), 
+						paymentScheduleImportService.getInvoiceList(), 
+						paymentScheduleImportService.getStatusUpr(), rejectDate);
+			}
 		}
 	}
 	
@@ -181,10 +187,9 @@ public class BatchPaymentScheduleImport extends BatchStrategy {
 	 * @throws AxelorException
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Move createRejectMove(Company company, List<PaymentScheduleLine> pslListGC, List<PaymentScheduleLine> pslListPayment, List<Invoice> invoiceList, Status statusUpr, String moveDate)  {
+	public Move createRejectMove(Company company, List<PaymentScheduleLine> pslListGC, List<PaymentScheduleLine> pslListPayment, 
+			List<Invoice> invoiceList, Status statusUpr, LocalDate rejectDate)  {
 	
-		LocalDate rejectDate = rejectImportService.createRejectDate(moveDate);
-		
 		// Création de l'écriture d'extourne par société
 		Move move = this.createRejectMove(company, rejectDate);
 		
@@ -454,6 +459,9 @@ public class BatchPaymentScheduleImport extends BatchStrategy {
 		comment += String.format("\t* %s prélèvement(s) rejeté(s)\n", batch.getDone());
 		comment += String.format("\t* Montant total : %s \n", this.totalAmount);
 		comment += String.format("\t* %s anomalie(s)", batch.getAnomaly());
+		
+		comment += String.format("\t* ------------------------------- \n");
+		comment += String.format("\t* %s ", updateCustomerAccountLog);
 
 		super.stop();
 		addComment(comment);

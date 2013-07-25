@@ -1,4 +1,4 @@
-package com.axelor.apps.account.service.generator.batch;
+package com.axelor.apps.account.service.batch;
 
 import java.util.List;
 
@@ -23,10 +23,12 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
 
 	private boolean stop = false;
 	
+	private String updateCustomerAccountLog = "";
+	
 	@Inject
-	public BatchDoubtfulCustomer(DoubtfulCustomerService doubtfulCustomerService) {
+	public BatchDoubtfulCustomer(DoubtfulCustomerService doubtfulCustomerService, BatchAccountCustomer batchAccountCustomer) {
 		
-		super(doubtfulCustomerService);
+		super(doubtfulCustomerService, batchAccountCustomer);
 	}
 	
 	
@@ -81,6 +83,7 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
 			LOG.debug("Nombre de lignes d'écriture de rejet concernées (Créance de + 3 mois) au 411 : {} ",moveLineList.size());
 			this.createDoubtFulCustomerRejectMove(moveLineList, doubtfulCustomerAccount, threeMonthDebtPassReason);
 	
+			updateCustomerAccountLog += batchAccountCustomer.updateAccountingSituationMarked(Company.find(company.getId()));
 		}
 		
 	}
@@ -190,6 +193,9 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
 		String comment = "Compte rendu de la détermination des créances douteuses :\n";
 		comment += String.format("\t* %s Facture(s) traitée(s)\n", batch.getDone());
 		comment += String.format("\t* %s anomalie(s)", batch.getAnomaly());
+		
+		comment += String.format("\t* ------------------------------- \n");
+		comment += String.format("\t* %s ", updateCustomerAccountLog);
 
 		super.stop();
 		addComment(comment);

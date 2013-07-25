@@ -1,4 +1,4 @@
-package com.axelor.apps.account.service.generator.batch;
+package com.axelor.apps.account.service.batch;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -35,10 +35,12 @@ public class BatchReimbursementExport extends BatchStrategy {
 	
 	private BigDecimal totalAmount = BigDecimal.ZERO;
 	
+	private String updateCustomerAccountLog = "";
+	
 	@Inject
-	public BatchReimbursementExport(ReimbursementExportService reimbursementExportService, CfonbService cfonbService) {
+	public BatchReimbursementExport(ReimbursementExportService reimbursementExportService, CfonbService cfonbService, BatchAccountCustomer batchAccountCustomer) {
 		
-		super(reimbursementExportService, cfonbService);
+		super(reimbursementExportService, cfonbService, batchAccountCustomer);
 		this.today = GeneralService.getTodayDate();
 		
 	}
@@ -99,6 +101,8 @@ public class BatchReimbursementExport extends BatchStrategy {
 			case IAccount.REIMBURSEMNT_EXPORT_EXPORT:
 				
 				this.runReimbursementExportProcess(company);
+				
+				updateCustomerAccountLog += batchAccountCustomer.updateAccountingSituationMarked(Company.find(company.getId()));
 				
 				break;
 			
@@ -282,6 +286,9 @@ public class BatchReimbursementExport extends BatchStrategy {
 			comment += String.format("\t* %s remboursement(s) traité(s)\n", batch.getDone());
 			comment += String.format("\t* Montant total : %s \n", this.totalAmount);
 
+			comment += String.format("\t* ------------------------------- \n");
+			comment += String.format("\t* %s ", updateCustomerAccountLog);
+			
 			break;
 		
 		default:
