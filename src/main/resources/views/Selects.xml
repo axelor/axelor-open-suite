@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+
+
+	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
+	
+	<selection name="supplychain.sales.order.line.sale.supply.select">
+		<option value="1">FromStock</option>
+		<option value="2">Purchase</option>
+		<option value="3">Produce</option>
+	</selection>
+	
+	<selection name="supplychain.location.type.select">
+		<option value="1">Internal</option>
+		<option value="2">External</option>
+		<option value="3">Virtual</option>
+	</selection>
+	
+	<selection name="supplychain.inventory.format.select">
+		<option value="1">PDF</option>
+		<option value="2">XLS</option>
+	</selection>
+	
+	<selection name="supplychain.default.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Planned</option>
+		<option value="3">Realized</option>
+		<option value="4">Canceled</option>
+	</selection>
+	
+	<selection name="supplychain.stock.move.type.select">
+		<option value="1">Internal move</option>
+		<option value="2">Outgoing move</option>
+		<option value="3">Incoming move</option>
+	</selection>
+	
+	<selection name="supplychain.min.stock.rules.type.select">
+		<option value="1">Current</option>
+		<option value="2">Future</option>
+	</selection>
+	
+	<selection name="supplychain.min.stock.rules.order.alert.select">
+		<option value="1">Alert</option>
+		<option value="2">PO/Production</option>
+	</selection>
+	
+	<selection name="supplychain.purchase.order.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Requested</option>
+		<option value="3">Received</option>
+		<option value="4">Validated</option>
+		<option value="5">Finished</option>
+		<option value="6">Canceled</option>
+	</selection>
+
+	<selection name="supplychain.invoicing.moment.select">
+		<option value="1">When a task is over</option>
+		<option value="2">Draft invoice N days after order validation</option>
+	</selection>
+	
+</object-views>
