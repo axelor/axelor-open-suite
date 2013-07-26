@@ -24,6 +24,6 @@ public class SequenceController {
 		sequenceService.resetSequence(sequence);
 				
 		response.setValue("nextNum", sequence.getNextNum());
-		
+
 	}
 }
