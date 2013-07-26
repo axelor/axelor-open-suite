@@ -1,145 +1,296 @@
-"domain","name","type","title","title_t","help","help_t"
-"crm-conf","Configuration","menu","Configuration","Configuration","",""
-"crm-root","CRM","menu","CRM","CRM","",""
-"crm-root-allcrm","All CRM activities","menu","All CRM activities","Les activités CRM","",""
-"crm-root-allcrm-call","All Calls","menu","All Calls","Les Appels","",""
-"crm-root-allcrm-lead","All Leads","menu","All Leads","Les prospects","",""
-"crm-root-allcrm-meeting","All Meetings","menu","All Meetings","Tous les rendez-vous","",""
-"crm-root-allcrm-opportunity","All Opportunities","menu","All Opportunities","Toutes les opportunités","",""
-"crm-root-allcrm-task","All Tasks","menu","All Tasks","Toutes les tâches","",""
-"crm-root-allcrm-ticket","All Tickets","menu","All Tickets","Tous les tickets","",""
-"crm-root-call","My Calls","menu","My Calls","Mes appels","",""
-"crm-root-category","Event categories","menu","Event categories","Catégories d’événements","",""
-"crm-root-create","Create","menu","Create","Créer","",""
-"crm-root-create-call","Call","menu","Call","Appel","",""
-"crm-root-create-meeting","Meeting","menu","Meeting","Rendez-vous","",""
-"crm-root-create-task","Task","menu","Task","Tâche","",""
-"crm-root-create-ticket","Ticket","menu","Ticket","Ticket","",""
-"crm-root-lead","My Leads","menu","My Leads","Mes prospects","",""
-"crm-root-lead-source","Leads source","menu","Leads source","Les provenances des prospects","",""
-"crm-root-meeting","My Meetings","menu","My Meetings","Mes rendez-vous","",""
-"crm-root-meeting-my-calendar","My Calendar","menu","My Calendar","Mon Calendrier","",""
-"crm-root-meeting-team-calendar","Shared calendar","menu","Shared calendar","Calendrier partagé","",""
-"crm-root-meeting-type","Meeting types","menu","Meeting types","Type de rendez-vous","",""
-"crm-root-opportunity","My Opportunities","menu","My Opportunities","Mes opportunités","",""
-"crm-root-participant","Participants","menu","Participants","Participants","",""
-"crm-root-task","My Tasks","menu","My Tasks","Mes Tâches","",""
-"crm-root-team","Team","menu","Team","Équipe","",""
-"crm-root-team-call","My Team Calls","menu","My Team Calls","Les Appels de mon équipe","",""
-"crm-root-team-lead","My Team Leads","menu","My Team Leads","Les Prospects de mon équipe","",""
-"crm-root-team-meeting","My Team Meetings","menu","My Team Meetings","Les Rendez-vous de mon équipe","",""
-"crm-root-team-opportunity","My Team Opportunities","menu","My Team Opportunities","Les Opportunités de mon équipe","",""
-"crm-root-team-tasks","My Team Tasks","menu","My Team Tasks","Les Tâches de mon équipe","",""
-"crm-root-team-ticket","My Team Tickets","menu","My Team Tickets","Les Tickets de mon équipe","",""
-"crm-root-ticket","My Tickets","menu","My Tickets","Mes tickets","",""
-"crm-root-unassigned-lead","Unassigned Leads","menu","Unassigned Leads","Les Prospects non assignés","",""
-"crm-root-unassigned-opportunity","Unassigned Opportunities","menu","Unassigned Opportunities","Les Opportunités non assignées","",""
-"com.axelor.apps.crm.db.Event","call-form","form","Call","Appel","",""
-"call-form","","group","Informations","Informations","",""
-"call-form","","group","Meeting date","Date du rendez-vous","",""
-"call-form","","group","Related to","Relatif à","",""
-"call-form","","group","Assignment","Assignation","",""
-"com.axelor.apps.crm.db.Event","call-grid","grid","Calls","Appels","",""
-"com.axelor.apps.base.db.Wizard","convert-lead-wizard-form","form","Convert lead","Convertir le prospect","",""
-"convert-lead-wizard-form","","group","Header","","",""
-"com.axelor.apps.base.db.Wizard","Convert into Contact ?","viewField","Convert into Contact ?","","",""
-"com.axelor.apps.base.db.Wizard","Or Select Contact","viewField","Or Select Contact","","",""
-"com.axelor.apps.base.db.Wizard","Convert into Partner ?","viewField","Convert into Partner ?","","",""
-"com.axelor.apps.base.db.Wizard","Or Select Partner","viewField","Or Select Partner","","",""
-"com.axelor.apps.base.db.Wizard","Create into Opportunity ?","viewField","Create into Opportunity ?","","",""
-"com.axelor.apps.base.db.Wizard","Log a call ?","viewField","Log a call ?","","",""
-"com.axelor.apps.base.db.Wizard","Schedule a meeting ?","viewField","Schedule a meeting ?","","",""
-"convert-lead-wizard-form","validate","button","Validate","Valider","",""
-"convert-lead-wizard-form","","group","Partner","Les Tiers","",""
-"convert-lead-wizard-form","","group","Partner","Les Tiers","",""
-"convert-lead-wizard-form","","group","Opportunity","Opportunité","",""
-"convert-lead-wizard-form","","group","Call","Appel","",""
-"convert-lead-wizard-form","","group","Meeting","Rendez-vous","",""
-"com.axelor.apps.crm.db.Event","crm-task-form","form","Task","Tâche","",""
-"crm-task-form","","group","Informations","Informations","",""
-"crm-task-form","","group","Task date","Date de tâches","",""
-"crm-task-form","","group","Related to","Relatif à","",""
-"crm-task-form","","group","Assigned to","Assigné à","",""
-"com.axelor.apps.crm.db.Event","crm-task-grid","grid","Tasks","Tâches","",""
-"com.axelor.apps.crm.db.EventCategory","event-category-conf-grid","grid","Event configuration categories","Les configuration de catégories d'événement","",""
-"com.axelor.apps.crm.db.EventCategory","event-category-form","form","Event category","Catégorie d’événements","",""
-"com.axelor.apps.crm.db.EventCategory","event-category-grid","grid","Event categories","Catégories d’événements","",""
-"com.axelor.apps.crm.db.Event","event-grid","grid","Events","Événements","",""
-"lead-form","convertLead","button","Convert lead","Convertir le prospect","",""
-"com.axelor.apps.crm.db.Lead","lead-form","form","Lead","Prospect","",""
-"lead-form","","group","Header","","",""
-"lead-form","","group","Links","Liens","",""
-"lead-form","showPartner","button","Show partner/contact","","",""
-"lead-form","showMeetings","button","Show meetings","","",""
-"lead-form","showTasks","button","Show tasks","Voir les tâches","",""
-"lead-form","showMessages","button","Show messages","","",""
-"lead-form","showCalls","button","Show calls","","",""
-"lead-form","","group","Informations","Informations","",""
-"lead-form","","group","Key information","Information clé","",""
-"lead-form","","group","Extra information","Autres informations","",""
-"lead-form","","group","Status details","État","",""
-"lead-form","","group","Source details","Sources","",""
-"lead-form","","group","Marketing","Marketing","",""
-"lead-form","","group","Assigned to","Assigné à","",""
-"com.axelor.apps.crm.db.Lead","lead-grid","grid","Leads","Prospects","",""
-"com.axelor.apps.crm.db.Event","meeting-calendar","calendar","Meetings","Les rendez-vous","",""
-"com.axelor.apps.crm.db.Event","meeting-form","form","Meeting","Rendez-vous","",""
-"meeting-form","","group","Informations","Informations","",""
-"meeting-form","","group","Meeting date","Date du rendez-vous","",""
-"meeting-form","","group","Related to","Relatif à","",""
-"meeting-form","","group","Assigned to","Assigné à","",""
-"com.axelor.apps.crm.db.Event","meeting-grid","grid","Meetings","Les rendez-vous","",""
-"com.axelor.apps.crm.db.MeetingType","meeting-type-form","form","Meeting type","Type de rendez-vous","",""
-"com.axelor.apps.crm.db.MeetingType","meeting-type-grid","grid","Meeting types","Type de rendez-vous","",""
-"com.axelor.apps.crm.db.Opportunity","opportunity-form","form","Opportunity","Opportunité","",""
-"opportunity-form","","group","Informations","Informations","",""
-"opportunity-form","","group","Context","Context","",""
-"opportunity-form","","group","Follow-up","Suivi","",""
-"opportunity-form","","group","Financial terms","Termes financier","",""
-"opportunity-form","","group","Assigned to","Assigné à","",""
-"com.axelor.apps.crm.db.Opportunity","opportunity-grid","grid","Opportunities","Opportunités","",""
-"com.axelor.apps.crm.db.OpportunityType","opportunity-type-form","form","Opportunity type","Type d'opportunité","",""
-"com.axelor.apps.crm.db.OpportunityType","opportunity-type-grid","grid","Opportunity types","Types d'opportunité","",""
-"com.axelor.apps.crm.db.Event","ticket-form","form","Ticket","Ticket","",""
-"ticket-form","","group","Ticket date","Date de billets","",""
-"com.axelor.apps.crm.db.Event","DeadLine","viewField","DeadLine","Date limite","",""
-"ticket-form","","group","Related to","Relatif à","",""
-"ticket-form","","page","Description","Description","",""
-"ticket-form","","page","Comments","Commentaires","",""
-"com.axelor.apps.message.db.Message","","form","Comment","Commentaire","",""
-"","","group","Informations","Informations","",""
-"","","group","Content","Contenu","",""
-"com.axelor.apps.message.db.Message","","grid","Comments","Commentaires","",""
-"ticket-form","","page","Watchers","Observateurs","",""
-"com.axelor.apps.crm.db.Event","ticket-grid","grid","Ticket","Ticket","",""
-"action-lead-view-convert-lead","action-lead-view-convert-lead","action","Convert lead","Convertir le prospect","",""
-"crm.conf.event.category","crm.conf.event.category","action","Event categories","Catégories d’événements","",""
-"crm.conf.lead.source","crm.conf.lead.source","action","Leads source","Les provenances des prospects","",""
-"crm.conf.meeting.type","crm.conf.meeting.type","action","Meeting types","Type de rendez-vous","",""
-"crm.conf.participant","crm.conf.participant","action","Participants","Participants","",""
-"crm.root.allcrm.call","crm.root.allcrm.call","action","All Calls","Les Appels","",""
-"crm.root.allcrm.lead","crm.root.allcrm.lead","action","All Leads","Les prospects","",""
-"crm.root.allcrm.meeting","crm.root.allcrm.meeting","action","All Meetings","Tous les rendez-vous","",""
-"crm.root.allcrm.opportunity","crm.root.allcrm.opportunity","action","All Opportunities","Toutes les opportunités","",""
-"crm.root.allcrm.tasks","crm.root.allcrm.tasks","action","All Tasks","Toutes les tâches","",""
-"crm.root.allcrm.ticket","crm.root.allcrm.ticket","action","All Tickets","Tous les tickets","",""
-"crm.root.call","crm.root.call","action","My Calls","Mes appels","",""
-"crm.root.create.call","crm.root.create.call","action","Call","Appel","",""
-"crm.root.create.meeting","crm.root.create.meeting","action","Meeting","Rendez-vous","",""
-"crm.root.create.task","crm.root.create.task","action","Task","Tâche","",""
-"crm.root.create.ticket","crm.root.create.ticket","action","Ticket","Ticket","",""
-"crm.root.lead","crm.root.lead","action","My Leads","Mes prospects","",""
-"crm.root.meeting","crm.root.meeting","action","My Meetings","Mes rendez-vous","",""
-"crm.root.meeting.my.calendar","crm.root.meeting.my.calendar","action","My Meetings Calendar","Mon Calendrier","",""
-"crm.root.meeting.team.calendar","crm.root.meeting.team.calendar","action","Shared calendar","Calendrier partagé","",""
-"crm.root.opportunity","crm.root.opportunity","action","My Opportunities","Mes opportunités","",""
-"crm.root.task","crm.root.task","action","My Tasks","Mes Tâches","",""
-"crm.root.team.call","crm.root.team.call","action","My Team Calls","Les Appels de mon équipe","",""
-"crm.root.team.lead","crm.root.team.lead","action","My Team Leads","Les Prospects de mon équipe","",""
-"crm.root.team.meeting","crm.root.team.meeting","action","My Team Meetings","Les Rendez-vous de mon équipe","",""
-"crm.root.team.opportunity","crm.root.team.opportunity","action","My Team Opportunities","Les Opportunités de mon équipe","",""
-"crm.root.team.tasks","crm.root.team.tasks","action","My Team Tasks","Les Tâches de mon équipe","",""
-"crm.root.team.ticket","crm.root.team.ticket","action","My Team Tickets","Les Tickets de mon équipe","",""
-"crm.root.ticket","crm.root.ticket","action","My Tickets","Mes tickets","",""
-"crm.root.unassigned.lead","crm.root.unassigned.lead","action","Unassigned Leads","Les Prospects non assignés","",""
-"crm.root.unassigned.opportunity","crm.root.unassigned.opportunity","action","Unassigned Opportunities","Les Opportunités non assignées","",""
+"domain","name","type","title","title_t","help","help_t","doc","doc_t"
+"crm-conf","Configuration","menu","Configuration","Configuration",,,,
+"crm-root","CRM","menu","CRM","CRM",,,,
+"crm-root-allcrm","All CRM activities","menu","All CRM activities","Les activités CRM",,,,
+"crm-root-allcrm-call","All Calls","menu","All Calls","Les Appels",,,,
+"crm-root-allcrm-lead","All Leads","menu","All Leads","Les prospects",,,,
+"crm-root-allcrm-meeting","All Meetings","menu","All Meetings","Tous les rendez-vous",,,,
+"crm-root-allcrm-opportunity","All Opportunities","menu","All Opportunities","Toutes les opportunités",,,,
+"crm-root-allcrm-task","All Tasks","menu","All Tasks","Toutes les tâches",,,,
+"crm-root-allcrm-ticket","All Tickets","menu","All Tickets","Tous les tickets",,,,
+"crm-root-call","My Calls","menu","My Calls","Mes appels",,,,
+"crm-root-category","Event categories","menu","Event categories","Catégories d’événements",,,,
+"crm-root-create","Create","menu","Create","Créer",,,,
+"crm-root-create-call","Call","menu","Call","Appel",,,,
+"crm-root-create-meeting","Meeting","menu","Meeting","Rendez-vous",,,,
+"crm-root-create-task","Task","menu","Task","Tâche",,,,
+"crm-root-create-ticket","Ticket","menu","Ticket","Ticket",,,,
+"crm-root-lead","My Leads","menu","My Leads","Mes prospects",,,,
+"crm-root-lead-source","Leads source","menu","Leads source","Les provenances des prospects",,,,
+"crm-root-meeting","My Meetings","menu","My Meetings","Mes rendez-vous",,,,
+"crm-root-meeting-my-calendar","My Calendar","menu","My Calendar","Mon Calendrier",,,,
+"crm-root-meeting-team-calendar","Shared calendar","menu","Shared calendar","Calendrier partagé",,,,
+"crm-root-meeting-type","Meeting types","menu","Meeting types","Type de rendez-vous",,,,
+"crm-root-opportunity","My Opportunities","menu","My Opportunities","Mes opportunités",,,,
+"crm-root-participant","Participants","menu","Participants","Participants",,,,
+"crm-root-task","My Tasks","menu","My Tasks","Mes Tâches",,,,
+"crm-root-team","Team","menu","Team","Équipe",,,,
+"crm-root-team-call","My Team Calls","menu","My Team Calls","Les Appels de mon équipe",,,,
+"crm-root-team-lead","My Team Leads","menu","My Team Leads","Les Prospects de mon équipe",,,,
+"crm-root-team-meeting","My Team Meetings","menu","My Team Meetings","Les Rendez-vous de mon équipe",,,,
+"crm-root-team-opportunity","My Team Opportunities","menu","My Team Opportunities","Les Opportunités de mon équipe",,,,
+"crm-root-team-tasks","My Team Tasks","menu","My Team Tasks","Les Tâches de mon équipe",,,,
+"crm-root-team-ticket","My Team Tickets","menu","My Team Tickets","Les Tickets de mon équipe",,,,
+"crm-root-ticket","My Tickets","menu","My Tickets","Mes tickets",,,,
+"crm-root-unassigned-lead","Unassigned Leads","menu","Unassigned Leads","Les Prospects non assignés",,,,
+"crm-root-unassigned-opportunity","Unassigned Opportunities","menu","Unassigned Opportunities","Les Opportunités non assignées",,,,
+"com.axelor.apps.crm.db.Event","call-form","form","Call","Appel",,,,
+"call-form","","group","Informations","Informations",,,,
+"call-form","","group","Meeting date","Date du rendez-vous",,,,
+"call-form","","group","Related to","Relatif à",,,,
+"call-form","","group","Assignment","Assignation",,,,
+"com.axelor.apps.crm.db.Event","call-grid","grid","Calls","Appels",,,,
+"com.axelor.apps.base.db.Wizard","convert-lead-wizard-form","form","Convert lead","Convertir le prospect",,,,
+"convert-lead-wizard-form","","group","Header",,,,,""
+"com.axelor.apps.base.db.Wizard","Convert into Contact ?","viewField","Convert into Contact ?",,,,,""
+"com.axelor.apps.base.db.Wizard","Or Select Contact","viewField","Or Select Contact",,,,,""
+"com.axelor.apps.base.db.Wizard","Convert into Partner ?","viewField","Convert into Partner ?",,,,,""
+"com.axelor.apps.base.db.Wizard","Or Select Partner","viewField","Or Select Partner",,,,,""
+"com.axelor.apps.base.db.Wizard","Create into Opportunity ?","viewField","Create into Opportunity ?",,,,,""
+"com.axelor.apps.base.db.Wizard","Log a call ?","viewField","Log a call ?",,,,,""
+"com.axelor.apps.base.db.Wizard","Schedule a meeting ?","viewField","Schedule a meeting ?",,,,,""
+"convert-lead-wizard-form","validate","button","Validate","Valider",,,,
+"convert-lead-wizard-form","","group","Partner","Les Tiers",,,,
+"convert-lead-wizard-form","","group","Partner","Les Tiers",,,,
+"convert-lead-wizard-form","","group","Opportunity","Opportunité",,,,
+"convert-lead-wizard-form","","group","Call","Appel",,,,
+"convert-lead-wizard-form","","group","Meeting","Rendez-vous",,,,
+"crm-task-form","","group","Informations","Informations",,,,
+"crm-task-form","","group","Task date","Date de tâches",,,,
+"crm-task-form","","group","Related to","Relatif à",,,,
+"crm-task-form","","group","Assigned to","Assigné à",,,,
+"com.axelor.apps.crm.db.Event","crm-task-form","form","Task","Tâche",,,,
+"com.axelor.apps.crm.db.Event","crm-task-grid","grid","Tasks","Tâches",,,,
+"com.axelor.apps.crm.db.EventCategory","event-category-conf-grid","grid","Event configuration categories","Les configuration de catégories d'événement",,,,
+"com.axelor.apps.crm.db.EventCategory","event-category-form","form","Event category","Catégorie d’événements",,,,
+"com.axelor.apps.crm.db.EventCategory","event-category-grid","grid","Event categories","Catégories d’événements",,,,
+"com.axelor.apps.crm.db.Event","event-grid","grid","Events","Événements",,,,
+"com.axelor.apps.crm.db.Event","typeSelect","field","Type","Type",,,,
+"com.axelor.apps.crm.db.Event","subject","field","Subject","Libellé",,,,
+"com.axelor.apps.crm.db.Event","secondaryStatusSelect","field","Status","Statut",,,,
+"com.axelor.apps.crm.db.Event","startDateTime","field","Start Date","Date début",,,,
+"com.axelor.apps.crm.db.Event","endDateTime","field","End Date","Date de fin",,,,
+"com.axelor.apps.crm.db.Event","durationHours","field","Duration","Durée",,,,
+"com.axelor.apps.crm.db.Event","eventCategory","field","Category","Catégorie",,,,
+"com.axelor.apps.crm.db.Event","relatedToSelect","field","Related to","Relatif à",,,,
+"com.axelor.apps.crm.db.Event","relatedToSelectId","field",,,,,,
+"com.axelor.apps.crm.db.Event","reminder","field","Reminder","Relance",,,,
+"com.axelor.apps.crm.db.Event","description","field","Description","Description",,,,
+"com.axelor.apps.crm.db.Event","userInfo","field","Assigned to","Assigné à",,,,
+"com.axelor.apps.crm.db.Event","team","field","Team","Equipe",,,,
+"com.axelor.apps.crm.db.Event","primaryStatusSelect","field","Status","Etat",,,,
+"com.axelor.apps.crm.db.Event","durationMinutesSelect","field","Duration","Durée",,,,
+"com.axelor.apps.crm.db.Event","meetingType","field","Meeting type","Type rendez-vous",,,,
+"com.axelor.apps.crm.db.Event","location","field","Location","Lieu",,,,
+"com.axelor.apps.crm.db.Event","tertiaryStatusSelect","field","Status","Etat",,,,
+"com.axelor.apps.crm.db.Event","taskPartner","field","Partner","Tiers",,,,
+"com.axelor.apps.crm.db.Event","priority","field","Priority","Priorité",,,,
+"com.axelor.apps.crm.db.Event","quaternaryStatusSelect","field","Status","Etat",,,,
+"com.axelor.apps.crm.db.Event","prioritySelect","field","Priority","Priorité",,,,
+"com.axelor.apps.crm.db.Event","progressSelect","field","Progress","Avancement",,,,
+"com.axelor.apps.crm.db.Event","ticketNumberSeq","field","Ticket number","N° ticket",,,,
+"com.axelor.apps.crm.db.Event","userInfoSet","field","Watchers","Observateurs",,,,
+"com.axelor.apps.crm.db.Event","responsibleUserInfo","field","User in charge of the issue","Utilisateur responsable",,,,
+"com.axelor.apps.crm.db.Event","isTimesheetAffected","field","Timesheet affected ?","Affecté à une feuille de tps ?",,,,
+"com.axelor.apps.crm.db.Event","messageList","field","Comments","Commentaires",,,,
+"com.axelor.apps.crm.db.Event","project","field","Project","Projet",,,,
+"com.axelor.apps.crm.db.Event","task","field","Task","Tâche",,,,
+"com.axelor.apps.crm.db.EventCategory","name","field","Name","Nom",,,,
+"com.axelor.apps.crm.db.EventCategory","code","field","Code","Code",,,,
+"com.axelor.apps.crm.db.EventCategory","typeSelect","field","Type","Type",,,,
+"lead-form","","group","Header",,,,,""
+"lead-form","","group","Links","Liens",,,,
+"lead-form","showPartner","button","Show partner/contact",,,,,""
+"lead-form","showMeetings","button","Show meetings",,,,,""
+"lead-form","showTasks","button","Show tasks","Voir les tâches",,,,
+"lead-form","showMessages","button","Show messages",,,,,""
+"lead-form","showCalls","button","Show calls",,,,,""
+"lead-form","","group","Informations","Informations",,,,
+"lead-form","","group","Key information","Information clé",,,,
+"lead-form","","group","Extra information","Autres informations",,,,
+"lead-form","","group","Status details","État",,,,
+"lead-form","","group","Source details","Sources",,,,
+"lead-form","","group","Marketing","Marketing",,,,
+"lead-form","","group","Assigned to","Assigné à",,,,
+"lead-form","convertLead","button","Convert lead","Convertir le prospect",,,,
+"com.axelor.apps.crm.db.Lead","lead-form","form","Lead","Prospect",,,,
+"com.axelor.apps.crm.db.Lead","lead-grid","grid","Leads","Prospects",,,,
+"com.axelor.apps.crm.db.Lead","importId","field",,,,,,
+"com.axelor.apps.crm.db.Lead","titleSelect","field","Title","Civilité",,,,
+"com.axelor.apps.crm.db.Lead","name","field","Last name","Nom",,,,
+"com.axelor.apps.crm.db.Lead","firstName","field","First name","Prénom",,,,
+"com.axelor.apps.crm.db.Lead","enterpriseName","field","Enterprise name","Entreprise",,,,
+"com.axelor.apps.crm.db.Lead","officeName","field","Office name","Nom bureau",,,,
+"com.axelor.apps.crm.db.Lead","jobTitle","field","Job Title","Fonction",,,,
+"com.axelor.apps.crm.db.Lead","mobile","field","Mobile N°","Portable",,,,
+"com.axelor.apps.crm.db.Lead","department","field","Department/Division","Département",,,,
+"com.axelor.apps.crm.db.Lead","fax","field","Fax","Fax",,,,
+"com.axelor.apps.crm.db.Lead","webSite","field","Website","Site web",,,,
+"com.axelor.apps.crm.db.Lead","email","field","Email address","Adresse email",,,,
+"com.axelor.apps.crm.db.Lead","picture","field","Picture",,,,,
+"com.axelor.apps.crm.db.Lead","description","field","Description","Description",,,,
+"com.axelor.apps.crm.db.Lead","contactDate","field","Contact date","Date contact",,,,
+"com.axelor.apps.crm.db.Lead","statusSelect","field","Status","Etat",,,,
+"com.axelor.apps.crm.db.Lead","source","field","Source","Source",,,,
+"com.axelor.apps.crm.db.Lead","statusDescription","field","Status description","Détail Etat",,,,
+"com.axelor.apps.crm.db.Lead","opportunityAmount","field","Opportunity amount","Montant opportunité",,,,
+"com.axelor.apps.crm.db.Lead","sourceDescription","field","Source description",,,,,
+"com.axelor.apps.crm.db.Lead","campaign","field","Marketing Campaign","Campagne",,,,
+"com.axelor.apps.crm.db.Lead","referredBy","field","Referred by","Cité par",,,,
+"com.axelor.apps.crm.db.Lead","isDoNotCall","field","Do not call ?","Ne pas appeler",,,,
+"com.axelor.apps.crm.db.Lead","partner","field","Contact",,,,,
+"com.axelor.apps.crm.db.Lead","userInfo","field","Assigned to","Assigné à ",,,,
+"com.axelor.apps.crm.db.Lead","team","field","Team","Equipe",,,,
+"com.axelor.apps.crm.db.Event","meeting-calendar","calendar","Meetings","Les rendez-vous",,,,
+"com.axelor.apps.crm.db.Event","meeting-form","form","Meeting","Rendez-vous",,,,
+"meeting-form","","group","Informations","Informations",,,,
+"meeting-form","","group","Meeting date","Date du rendez-vous",,,,
+"meeting-form","","group","Related to","Relatif à",,,,
+"meeting-form","","group","Assigned to","Assigné à",,,,
+"com.axelor.apps.crm.db.MeetingType","meeting-type-form","form","Meeting type","Type de rendez-vous",,,,
+"com.axelor.apps.crm.db.MeetingType","meeting-type-grid","grid","Meeting types","Type de rendez-vous",,,,
+"com.axelor.apps.crm.db.MeetingType","importId","field",,,,,,
+"com.axelor.apps.crm.db.MeetingType","name","field","Name","Nom",,,,
+"com.axelor.apps.crm.db.MeetingType","code","field","Code","Code",,,,
+"com.axelor.apps.crm.db.Event","meeting-grid","grid","Meetings","Les rendez-vous",,,,
+"com.axelor.apps.crm.db.Opportunity","opportunity-form","form","Opportunity","Opportunité",,,,
+"opportunity-form","","group","Informations","Informations",,,,
+"opportunity-form","","group","Context","Context",,,,
+"opportunity-form","","group","Follow-up","Suivi",,,,
+"opportunity-form","","group","Financial terms","Termes financier",,,,
+"opportunity-form","","group","Assigned to","Assigné à",,,,
+"com.axelor.apps.crm.db.Opportunity","opportunity-grid","grid","Opportunities","Opportunités",,,,
+"com.axelor.apps.crm.db.Opportunity","name","field","Name","Nom",,,,
+"com.axelor.apps.crm.db.Opportunity","partner","field","Partner","Tiers",,,,
+"com.axelor.apps.crm.db.Opportunity","currency","field","Currency","Devise",,,,
+"com.axelor.apps.crm.db.Opportunity","expectedCloseDate","field","Expected close date","Date prévue clôture",,,,
+"com.axelor.apps.crm.db.Opportunity","amount","field","Amount","Montant",,,,
+"com.axelor.apps.crm.db.Opportunity","opportunityType","field","Type","Type",,,,
+"com.axelor.apps.crm.db.Opportunity","bestCase","field","Best case","Au mieux",,,,
+"com.axelor.apps.crm.db.Opportunity","worstCase","field","Worst case","Au pire",,,,
+"com.axelor.apps.crm.db.Opportunity","salesStageSelect","field","Sales stage","Etape vente",,,,
+"com.axelor.apps.crm.db.Opportunity","probability","field","Probability (%)","Probabilité (%)",,,,
+"com.axelor.apps.crm.db.Opportunity","campaign","field","Campaign","Campagne",,,,
+"com.axelor.apps.crm.db.Opportunity","nextStep","field","Next step","Etape suivante",,,,
+"com.axelor.apps.crm.db.Opportunity","description","field","Description","Description",,,,
+"com.axelor.apps.crm.db.Opportunity","source","field","Source","Source",,,,
+"com.axelor.apps.crm.db.Opportunity","company","field","Company","Société",,,,
+"com.axelor.apps.crm.db.Opportunity","userInfo","field","Assigned to","Assignée à ",,,,
+"com.axelor.apps.crm.db.Opportunity","team","field","Team","Equipe",,,,
+"com.axelor.apps.crm.db.OpportunityType","opportunity-type-form","form","Opportunity type","Type d'opportunité",,,,
+"com.axelor.apps.crm.db.OpportunityType","opportunity-type-grid","grid","Opportunity types","Types d'opportunité",,,,
+"com.axelor.apps.crm.db.OpportunityType","name","field","Name","Nom",,,,
+"com.axelor.apps.crm.db.OpportunityType","code","field","Code","Code",,,,
+"com.axelor.apps.crm.db.Participant","partner","field","Partner","Tiers",,,,
+"com.axelor.apps.crm.db.Participant","isComing","field","Present ?","Présent ?",,,,
+"com.axelor.apps.crm.db.Event","ticket-form","form","Ticket","Ticket",,,,
+"ticket-form","","group","Ticket date","Date de billets",,,,
+"com.axelor.apps.crm.db.Event","DeadLine","viewField","DeadLine","Date limite",,,,
+"ticket-form","","group","Related to","Relatif à",,,,
+"ticket-form","","page","Description","Description",,,,
+"ticket-form","","page","Comments","Commentaires",,,,
+"com.axelor.apps.message.db.Message","","form","Comment","Commentaire",,,,
+"","","group","Informations","Informations",,,,
+"","","group","Content","Contenu",,,,
+"com.axelor.apps.message.db.Message","","grid","Comments","Commentaires",,,,
+"ticket-form","","page","Watchers","Observateurs",,,,
+"com.axelor.apps.crm.db.Event","ticket-grid","grid","Ticket","Ticket",,,,
+"crm.event.call.duration.minutes.select","0","select","00",,,,,
+"crm.event.call.duration.minutes.select","15","select","15","15",,,,
+"crm.event.call.duration.minutes.select","30","select","30","30",,,,
+"crm.event.call.duration.minutes.select","45","select","45","45",,,,
+"crm.event.call.primary.status.select","1","select","Incoming","Entrant",,,,
+"crm.event.call.primary.status.select","2","select","Outgoing","Sortant",,,,
+"crm.event.related.to.select","com.axelor.apps.base.db.Partner","select","Partner/Contact","Tiers/Contact",,,,
+"crm.event.related.to.select","com.axelor.apps.crm.db.Lead","select","Lead","Prospect",,,,
+"crm.event.related.to.select","com.axelor.apps.crm.db.Opportunity","select","Opportunity","Opportunité",,,,
+"crm.event.related.to.select","com.axelor.apps.base.db.Product","select","Product","Produit",,,,
+"crm.event.related.to.select","com.axelor.apps.crm.db.Event","select","Event","Événement",,,,
+"crm.event.related.to.select","com.axelor.apps.supplychain.db.SalesOrder","select","Quote/Order","Devis/Commande",,,,
+"crm.event.related.to.select","com.axelor.apps.organisation.db.Project","select","Project/Affair","Projet/Affaire",,,,
+"crm.event.related.to.select","com.axelor.apps.organisation.db.Task","select","Task (Project)","Tâche (Projet)",,,,
+"crm.event.secondary.status.select","1","select","Planified","Planifié",,,,
+"crm.event.secondary.status.select","2","select","Realized","Réalisé",,,,
+"crm.event.secondary.status.select","3","select","Canceled","Annulé",,,,
+"crm.event.task.priority.select","1","select","Low","Faible",,,,
+"crm.event.task.priority.select","2","select","Medium","Moyen",,,,
+"crm.event.task.priority.select","3","select","High","Élevé",,,,
+"crm.event.task.quaternary.status.select","1","select","New","Nouveau",,,,
+"crm.event.task.quaternary.status.select","2","select","In progress","En cours",,,,
+"crm.event.task.quaternary.status.select","3","select","Resolved","Résolut",,,,
+"crm.event.task.quaternary.status.select","4","select","Feedback","Retour",,,,
+"crm.event.task.quaternary.status.select","5","select","Closed","Fermé",,,,
+"crm.event.task.tertiary.status.select","1","select","Not started","Non démarré",,,,
+"crm.event.task.tertiary.status.select","2","select","On going","En cours",,,,
+"crm.event.task.tertiary.status.select","3","select","Finished","Terminé",,,,
+"crm.event.task.tertiary.status.select","4","select","Pending","En attente",,,,
+"crm.event.task.tertiary.status.select","5","select","Reported","Reporté",,,,
+"crm.event.ticket.priority.select","1","select","Low","Faible",,,,
+"crm.event.ticket.priority.select","2","select","Normal","Moyen",,,,
+"crm.event.ticket.priority.select","3","select","High","Élevé",,,,
+"crm.event.ticket.priority.select","4","select","Urgent","Urgent",,,,
+"crm.event.ticket.priority.select","5","select","Immediate","Immédiat",,,,
+"crm.event.ticket.progress.select","10","select","10 %",,,,,
+"crm.event.ticket.progress.select","20","select","20 %",,,,,
+"crm.event.ticket.progress.select","30","select","30 %",,,,,
+"crm.event.ticket.progress.select","40","select","40 %",,,,,
+"crm.event.ticket.progress.select","50","select","50 %",,,,,
+"crm.event.ticket.progress.select","60","select","60 %",,,,,
+"crm.event.ticket.progress.select","70","select","70 %",,,,,
+"crm.event.ticket.progress.select","80","select","80 %",,,,,
+"crm.event.ticket.progress.select","90","select","90 %",,,,,
+"crm.event.ticket.progress.select","100","select","100 %",,,,,
+"crm.event.type.select","1","select","Call","Appel",,,,
+"crm.event.type.select","2","select","Meeting","Rendez-vous",,,,
+"crm.event.type.select","3","select","Task","Tâche",,,,
+"crm.event.type.select","4","select","Holiday","Congés",,,,
+"crm.event.type.select","5","select","Ticket","Ticket",,,,
+"crm.lead.status.select","1","select","New","Nouveau",,,,
+"crm.lead.status.select","2","select","Assigned",,,,,
+"crm.lead.status.select","3","select","In process",,,,,
+"crm.lead.status.select","4","select","Converted","Converti",,,,
+"crm.lead.status.select","5","select","Recycled",,,,,
+"crm.lead.status.select","6","select","Dead",,,,,
+"crm.opportunity.sales.stage.select","1","select","Prospection","Prospection",,,,
+"crm.opportunity.sales.stage.select","2","select","Qualification","Qualification",,,,
+"crm.opportunity.sales.stage.select","3","select","Needs analysis","Analyse des besoins",,,,
+"crm.opportunity.sales.stage.select","4","select","Proposition","Proposition",,,,
+"crm.opportunity.sales.stage.select","5","select","Identify deciders","Identification des décideurs",,,,
+"crm.opportunity.sales.stage.select","6","select","Analysis","Analyse",,,,
+"crm.opportunity.sales.stage.select","7","select","Proposal/Quote","Proposition / Demande de prix",,,,
+"crm.opportunity.sales.stage.select","8","select","Negociation","Négociation",,,,
+"crm.opportunity.sales.stage.select","9","select","Closed won","Fermé Gagné",,,,
+"crm.opportunity.sales.stage.select","10","select","Closed lost","Fermé Perdu",,,,
+"crm.opportunity.type.select","1","select","Existing business","Client existant",,,,
+"crm.opportunity.type.select","2","select","New business","Nouveau marché",,,,
+"action-lead-view-convert-lead","action-lead-view-convert-lead","action","Convert lead","Convertir le prospect",,,,
+"crm.conf.event.category","crm.conf.event.category","action","Event categories","Catégories d’événements",,,,
+"crm.conf.lead.source","crm.conf.lead.source","action","Leads source","Les provenances des prospects",,,,
+"crm.conf.meeting.type","crm.conf.meeting.type","action","Meeting types","Type de rendez-vous",,,,
+"crm.conf.participant","crm.conf.participant","action","Participants","Participants",,,,
+"crm.root.allcrm.call","crm.root.allcrm.call","action","All Calls","Les Appels",,,,
+"crm.root.allcrm.lead","crm.root.allcrm.lead","action","All Leads","Les prospects",,,,
+"crm.root.allcrm.meeting","crm.root.allcrm.meeting","action","All Meetings","Tous les rendez-vous",,,,
+"crm.root.allcrm.opportunity","crm.root.allcrm.opportunity","action","All Opportunities","Toutes les opportunités",,,,
+"crm.root.allcrm.tasks","crm.root.allcrm.tasks","action","All Tasks","Toutes les tâches",,,,
+"crm.root.allcrm.ticket","crm.root.allcrm.ticket","action","All Tickets","Tous les tickets",,,,
+"crm.root.call","crm.root.call","action","My Calls","Mes appels",,,,
+"crm.root.create.call","crm.root.create.call","action","Call","Appel",,,,
+"crm.root.create.meeting","crm.root.create.meeting","action","Meeting","Rendez-vous",,,,
+"crm.root.create.task","crm.root.create.task","action","Task","Tâche",,,,
+"crm.root.create.ticket","crm.root.create.ticket","action","Ticket","Ticket",,,,
+"crm.root.lead","crm.root.lead","action","My Leads","Mes prospects",,,,
+"crm.root.meeting","crm.root.meeting","action","My Meetings","Mes rendez-vous",,,,
+"crm.root.meeting.my.calendar","crm.root.meeting.my.calendar","action","My Meetings Calendar","Mon Calendrier",,,,
+"crm.root.meeting.team.calendar","crm.root.meeting.team.calendar","action","Shared calendar","Calendrier partagé",,,,
+"crm.root.opportunity","crm.root.opportunity","action","My Opportunities","Mes opportunités",,,,
+"crm.root.task","crm.root.task","action","My Tasks","Mes Tâches",,,,
+"crm.root.team.call","crm.root.team.call","action","My Team Calls","Les Appels de mon équipe",,,,
+"crm.root.team.lead","crm.root.team.lead","action","My Team Leads","Les Prospects de mon équipe",,,,
+"crm.root.team.meeting","crm.root.team.meeting","action","My Team Meetings","Les Rendez-vous de mon équipe",,,,
+"crm.root.team.opportunity","crm.root.team.opportunity","action","My Team Opportunities","Les Opportunités de mon équipe",,,,
+"crm.root.team.tasks","crm.root.team.tasks","action","My Team Tasks","Les Tâches de mon équipe",,,,
+"crm.root.team.ticket","crm.root.team.ticket","action","My Team Tickets","Les Tickets de mon équipe",,,,
+"crm.root.ticket","crm.root.ticket","action","My Tickets","Mes tickets",,,,
+"crm.root.unassigned.lead","crm.root.unassigned.lead","action","Unassigned Leads","Les Prospects non assignés",,,,
+"crm.root.unassigned.opportunity","crm.root.unassigned.opportunity","action","Unassigned Opportunities","Les Opportunités non assignées",,,,
