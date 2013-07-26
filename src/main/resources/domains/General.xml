@@ -27,6 +27,7 @@
 		<string name="exceptionAccountingMsg" multiline="true" title="Accounting message" />
 		<string name="exceptionReminderMsg" multiline="true" title="Debt recovery message" />
 		<string name="exceptionMailMsg" multiline="true" title="Mail and Email message" />
+		<string name="exceptionSupplychainMsg" multiline="true" title="Supply chain message" />
 
 		<!-- TVA -->
 		<many-to-one name="defaultExemptionVat" ref="com.axelor.apps.account.db.Vat" title="VAT 0%" />

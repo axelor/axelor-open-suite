@@ -44,6 +44,7 @@ public interface IAdministration {
 	 */
 
 	// TYPE
+	static final String INVENTORY = "inventory";
 	static final String PARTNER = "partner";
 	static final String MOVE = "move";
 	static final String CUSTOMER_INVOICE = "customerInvoice";
@@ -72,6 +73,9 @@ public interface IAdministration {
 	static final String SALES_ORDER = "salesOrder";
 	static final String PURCHASE_ORDER = "purchaseOrder";
 	static final String EVENT_TICKET = "eventTicket";
-
+	static final String INTERNAL = "intStockMove";
+	static final String OUTGOING = "outStockMove";
+	static final String INCOMING = "inStockMove";
+	static final String PRODUCT_TRACKING_NUMBER = "productTrackingNumber";
 	
 }

@@ -31,6 +31,14 @@
     <!--  INTERBANK PAYMENT ORDER -->
     <integer name="interbankPaymentOrderTypeSelect" title="Interbank Payment Orders batch type" selection="iinterbank.account.order.batch.type.select"/>
     
+    <!--  CUSTOMER ACCOUNT -->
+    <boolean name="updateCustAccountOk" title="Solde client"/>
+    <boolean name="updateDueCustAccountOk" title="Solde exigible"/>
+    <boolean name="updateDueReminderCustAccountOk" title="Solde exigible relançable"/>
+    
+    <!--     MOVE LINE EXPORT -->
+    <integer title="Type d'export" name="moveLineExportTypeSelect" selection="move.line.report.type.select.export"/>
+    
     <!-- OTHERS INFORMATIONS -->
     <string name="description" title="Description" large="true" />
     <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch" mappedBy="accountingBatch" title="Batchs" />

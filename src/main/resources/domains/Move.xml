@@ -12,7 +12,7 @@
     <one-to-many name="moveLineList" ref="MoveLine" title="Move line" mappedBy="move"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
-    <many-to-one name="agency" ref="com.axelor.apps.base.db.Agency" title="Agency"/>
+    <many-to-one name="cashRegister" ref="com.axelor.apps.account.db.CashRegister" title="Cash register"/>
     <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment Mode"/>
     <many-to-one name="invoice" ref="com.axelor.apps.account.db.Invoice" title="Invoice"/>
     <string name="state" title="Status" default="draft" readonly="true" selection="move.state.select"/>

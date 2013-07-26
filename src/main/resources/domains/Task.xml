@@ -36,16 +36,48 @@
 
   	<decimal name="initialBudgetTurnover" title="Turnover"/>
   	<decimal name="initialBudgetCost" title="Cost"/>
-  	<decimal name="initialBudgetMargin" title="Margin"/>
+  	<decimal name="initialBudgetMargin" title="Margin">
+  		<![CDATA[
+  			if (initialBudgetTurnover != null && initialBudgetCost != null) {
+  				initialBudgetMargin = initialBudgetTurnover.subtract(initialBudgetCost);
+  				return initialBudgetMargin;
+  			}
+  			return null;
+  		]]>
+  	</decimal>
   	<decimal name="realizedTurnover" title="Turnover"/>
   	<decimal name="realizedBudgetCost" title="Cost"/>
-  	<decimal name="realizedBudgetMargin" title="Margin"/>
+  	<decimal name="realizedBudgetMargin" title="Margin">
+  		<![CDATA[
+  			if (realizedTurnover != null && realizedBudgetCost != null) {
+  				realizedBudgetMargin = realizedTurnover.subtract(realizedBudgetCost);
+  				return realizedBudgetMargin;
+  			}
+  			return null;
+  		]]>
+  	</decimal>
   	<decimal name="remainingTurnover" title="Turnover"/>
   	<decimal name="remainingBudgetCost" title="Cost"/>
-  	<decimal name="remainingBudgetMargin" title="Margin"/>
+  	<decimal name="remainingBudgetMargin" title="Margin">
+  		<![CDATA[
+  			if (remainingTurnover != null && remainingBudgetCost != null) {
+  				remainingBudgetMargin = remainingTurnover.subtract(remainingBudgetCost);
+  				return remainingBudgetMargin;
+  			}
+  			return null;
+  		]]>
+  	</decimal>
   	<decimal name="expectedFinalTurnover" title="Turnover"/>
   	<decimal name="expectedFinalCost" title="Cost"/>
-  	<decimal name="expectedFinalMargin" title="Margin"/>
+  	<decimal name="expectedFinalMargin" title="Margin">
+  		<![CDATA[
+  			if (expectedFinalTurnover != null && expectedFinalCost != null) {
+  				expectedFinalMargin = expectedFinalTurnover.subtract(expectedFinalCost);
+  				return expectedFinalMargin;
+  			}
+  			return null;
+  		]]>
+  	</decimal>
   	<decimal name="gapBetweenFinalAndInitial" title="Initial/Final Difference"/>
   	
 <!--   	Onglet Infos financiers -->
@@ -67,7 +99,7 @@
   	
   	<!--   	Onglet facturation -->
   	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
-  	<decimal name="qty" title="Qty" default="1"/>
+  	<decimal name="qty" title="Quantity" default="1"/>
   	<decimal name="price" title="Unit price"/>
   	
   </entity>

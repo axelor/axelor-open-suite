@@ -11,7 +11,7 @@
   	<string name="sequence" title="Sequence"/>
   	<decimal name="amountToBeInvoiced" title="Montant à facturer"/>
   	<decimal name="invoicingPercentage" title="%"/>
-  	<many-to-one name="task" ref="com.axelor.apps.organisation.db.Task" title="Tâche" help="Si facturation à la tâche"/>
+  	<many-to-one name="salesOrderLine" ref="com.axelor.apps.supplychain.db.SalesOrderLine" title="Tâche" help="Si facturation à la tâche"/>
   	<decimal name="accumulatedInvoicingPercentage" title="% cumulé de facturation"/>
   	<integer name="nbOfDay" title="Nombre de jours" help="Si facturation en fonction de nb de jours"/>
   	<many-to-one name="invoice" ref="com.axelor.apps.account.db.Invoice" title="Facture"/>

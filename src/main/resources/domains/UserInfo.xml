@@ -11,7 +11,7 @@
     <many-to-many name="companySet" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <many-to-one name="activeCompany" ref="com.axelor.apps.base.db.Company" title="Active company"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
-    <many-to-one name="agency" ref="com.axelor.apps.base.db.Agency" title="Agency"/>
+    <many-to-one name="activeCashRegister" ref="com.axelor.apps.account.db.CashRegister" title="Cash register"/>
     <datetime name="today" title="Today date" tz="true" />
 <!--     <many-to-many name="teamSet" ref="com.axelor.apps.base.db.Team" mappedBy="userInfoSet" title="Equipes"/> -->
     <many-to-many name="teamSet" ref="com.axelor.apps.base.db.Team"  title="Teams"/>
@@ -19,6 +19,7 @@
     <many-to-many name="projectSet" ref="com.axelor.apps.organisation.db.Project" title="Projects"/>
     <many-to-one name="activeTeam" ref="com.axelor.apps.base.db.Team"  title="Active Team"/>
    	<many-to-many name="personalCredentialSet" ref="com.axelor.apps.socialnetwork.db.PersonalCredential"/>
+    <many-to-one name="timesheetPeriodConfig" ref="com.axelor.apps.organisation.db.TimesheetPeriodConfig" title="Timesheet period config"/>
     
     <string name="fullName" namecolumn="true" search="partner" title="Partner name">
     	<![CDATA[

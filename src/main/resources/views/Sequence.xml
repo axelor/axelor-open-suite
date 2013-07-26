@@ -27,6 +27,7 @@ xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelo
         <field name="code" onChange="action-sequence-attrs"/>
         <field name="company" widget="SuggestBox"/>
         <field name="journal"/>
+        <field name="product" requiredIf="code == 'productTrackingNumber'" showIf="code == 'productTrackingNumber'"/>
         <field name="yearlyResetOk" onChange="action-sequence-attrs-tool-bar"/>
         <field name="prefixe"/>
         <field name="suffixe"/>
@@ -39,6 +40,7 @@ xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelo
         <label title="%M : Month" colSpan="4"/>
         <label title="%D : Day" colSpan="4"/>
         <label title="%WY : Week number" colSpan="4"/>
+        <label title="%PC : Product code" colSpan="4" showIf="code == 'productTrackingNumber'"/>
     </form>
     
     <!-- ACTION RECORD -->

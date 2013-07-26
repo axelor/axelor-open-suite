@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="template-rule-grid" title="Template rules" model="com.axelor.apps.base.db.TemplateRule">
+        <field name="name"/>
+        <field name="templateRuleLineList"/>
+        <field name="metaModel"/>
+    </grid>
+    
+    <form name="template-rule-form" title="Template rule" model="com.axelor.apps.base.db.TemplateRule" cols="4" onNew="action-template-rule-record-new">
+        <field name="name"/>
+        <break/>
+        <field name="templateRuleLineList" colSpan="4"/>
+        <field name="metaModel"/>
+    </form>
+    
+    <action-record name="action-template-rule-record-new" model="com.axelor.apps.base.db.TemplateRule">
+    	<field name="metaModel" expr="eval: (_parent?.targetSelect) ? ((_parent?.targetSelect == 1) ? com.axelor.meta.db.MetaModel.all().filter('self.name = \'Partner\'').fetchOne() : com.axelor.meta.db.MetaModel.all().filter('self.name = \'Lead\'').fetchOne()) : null"/>
+    </action-record>
+    
+</object-views>

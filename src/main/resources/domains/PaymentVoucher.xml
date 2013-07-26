@@ -12,7 +12,7 @@
 	    <datetime name="paymentDateTime" title="Payment date" tz="true"/>
 		<decimal name="paidAmount" title="Amount paid" />
 		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="User" readonly="true"/>
-        <many-to-one name="agency" ref="com.axelor.apps.base.db.Agency" title="Agency"/>
+        <many-to-one name="cashRegister" ref="com.axelor.apps.account.db.CashRegister" title="Cash register"/>
 		<many-to-one name="moveLine" ref="com.axelor.apps.account.db.MoveLine" title="Overdue moveline" />
 		<decimal name="remainingAllocatedAmount" title="Amount Remaining to allocate" />
 		<decimal name="allocatedAmount" title="Allocated amount" />

@@ -10,7 +10,7 @@
   	<many-to-one name="purchaseOrder" ref="com.axelor.apps.supplychain.db.PurchaseOrder" title="Purchase order"/>
   	<integer name="sequence" title="Sequence"/>
   	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
-  	<integer name="qty" title="Qty" default="1"/>
+  	<decimal name="qty" title="Qty" default="1"/>
   	<string name="productName" title="Label"/>
   	<decimal name="price" title="Unit price"/>
   	<many-to-one name="vatLine" ref="com.axelor.apps.account.db.VatLine" title="V.A.T."/>
@@ -32,6 +32,7 @@
   	
 	<date name="deliveryDate" title="Delivery Date"/>
 
+	<many-to-one name="productVariant" ref="com.axelor.apps.base.db.ProductVariant"/>
   	
   </entity>
 

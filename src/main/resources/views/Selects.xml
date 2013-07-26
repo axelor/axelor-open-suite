@@ -86,7 +86,7 @@
 
 	<selection name='product.product.type.select'>
 		<option value='service'>Service</option>
-		<option value='stockable'>Stockable</option>
+		<option value='storable'>Storable</option>
 	</selection>
 
 	<selection name='product.procurement.method.select'>
@@ -100,7 +100,12 @@
 		<option value="3">Expense</option>
 	</selection>
 
-
+	<selection name="product.sale.supply.select">
+		<option value="1">FromStock</option>
+		<option value="2">Purchase</option>
+		<option value="3">Produce</option>
+	</selection>
+	
 	<selection name='ialarm.type.select'>
 		<option value='invoice'>Invoice</option>
 		<option value='payment'>Payment Schedule</option>
@@ -251,7 +256,7 @@
 		<option value='amount'>Amount</option>
 		<option value='quantity'>Qty</option>
 	</selection>
-
+	
 	<selection name='pricing.list.type.select'>
 		<option value='0'></option>
 		<option value='1'>Specific</option>
@@ -327,9 +332,14 @@
 		<option value="purchaseInterface">Purchase interface</option>
 		<option value="moveLineExport">Accounting export</option>
 		<option value="doubtfulCustomer">Shift to doubtful receivables</option>
+		<option value="salesOrder">Sales order</option>
+		<option value="purchaseOrder">Purchase order</option>
+		<option value="eventTicket">Ticket</option>
 		<option value="intStockMove">Mouvement Interne</option>
 		<option value="outStockMove">Mvt Stock Livraison</option>
 		<option value="inStockMove">Mvt Stock Reception</option>
+		<option value="inventory">Inventory</option>
+		<option value="productTrackingNumber">Product tracking number</option>
 	</selection>
 
 	<selection name="company.paybox.hash.select">
@@ -362,11 +372,6 @@
 		<option value="14">Reminder</option>
 		<option value="15">Payments by IPO et IPO cheque</option>
 		<option value="16">Doubtful Customers</option>
-	</selection>
-
-	<selection name="ionlineagency.batch.type.select">
-		<option value="1">Export to online agency</option>
-		<option value="2">Import from online agency</option>
 	</selection>
 
 	<selection name="ireimbursement.batch.type.select">
@@ -619,24 +624,24 @@
 		<option value="10">Closed lost</option>
 	</selection>
 
-	<selection name="crm.campaign.status.select">
-		<option value="1">Prospection</option>
-		<option value="2">Active</option>
-		<option value="3">Inactive</option>
-		<option value="4">Complete</option>
-		<option value="5">Pending</option>
-		<option value="6">Sent</option>
+	<selection name="marketing.campaign.type.select">
+		<option value="1">Email</option>
+		<option value="2">Mail</option>
+		<option value="3">Phone</option>
+		<option value="4">Sms</option>
+		<option value="5">Mms</option>
+		<option value="6">Web</option>
 	</selection>
 
-	<selection name="crm.campaign.type.select">
-		<option value="1">Phone</option>
-		<option value="2">Mail</option>
-		<option value="3">Email</option>
-		<option value="4">Impression</option>
-		<option value="5">Internet</option>
-		<option value="6">Radio</option>
-		<option value="7">TV</option>
-		<option value="8">Newspaper</option>
+	<selection name="imarketing.type.select">
+		<option value="1">Contact</option>
+		<option value="2">Lead</option>
+	</selection>
+	
+	<selection name="imarketing.querie.type.select">
+		<option value="1">SQL</option>
+		<option value="2">JPQL</option>
+		<option value="3">FILTER</option>
 	</selection>
 
 	<selection name="crm.event.call.status.select">
@@ -680,8 +685,7 @@
 	<selection name="consulting.need.type.select">
 		<option value="1">Fixed fee</option>
 		<option value="2">Onsite</option>
-		<option value="3">Backup</option>
-		<option value="4">TMA</option>
+		<option value="3">TMA</option>
 	</selection>
 
 	<selection name="consulting.need.pricing.mode.select">
@@ -868,6 +872,92 @@
 		<option value="4">Canceled</option>
 	</selection>
 
+	<selection name="organisation.timesheet.period.config.type.select">
+		<option value="1">Weekly</option>
+		<option value="2">Monthly</option>
+	</selection>
+	
+	<selection name="organisation.timesheet.period.config.day.week.select">
+		<option value="1">Monday</option>
+		<option value="2">Tuesday</option>
+		<option value="3">Wednesday</option>
+		<option value="4">Thursday</option>
+		<option value="5">Friday</option>
+		<option value="6">Saturday</option>
+		<option value="7">Sunday</option>
+	</selection>
+	
+	<selection name="organisation.timesheet.period.config.day.month.select">
+		<option value="0">00</option>
+		<option value="1">01</option>
+		<option value="2">02</option>
+		<option value="3">03</option>
+		<option value="4">04</option>
+		<option value="5">05</option>
+		<option value="6">06</option>
+		<option value="7">07</option>
+		<option value="8">08</option>
+		<option value="9">09</option>
+		<option value="10">10</option>
+		<option value="11">11</option>
+		<option value="12">12</option>
+		<option value="13">13</option>
+		<option value="14">14</option>
+		<option value="15">15</option>
+		<option value="16">16</option>
+		<option value="17">17</option>
+		<option value="18">18</option>
+		<option value="19">19</option>
+		<option value="20">20</option>
+		<option value="21">21</option>
+		<option value="22">22</option>
+		<option value="23">23</option>
+		<option value="24">24</option>
+		<option value="25">25</option>
+		<option value="26">26</option>
+		<option value="27">27</option>
+		<option value="28">28</option>
+	</selection>
+	
+	<selection name="organisation.timesheet.period.config.hour.day.select">
+		<option value="0">00</option>
+		<option value="1">01</option>
+		<option value="2">02</option>
+		<option value="3">03</option>
+		<option value="4">04</option>
+		<option value="5">05</option>
+		<option value="6">06</option>
+		<option value="7">07</option>
+		<option value="8">08</option>
+		<option value="9">09</option>
+		<option value="10">10</option>
+		<option value="11">11</option>
+		<option value="12">12</option>
+		<option value="13">13</option>
+		<option value="14">14</option>
+		<option value="15">15</option>
+		<option value="16">16</option>
+		<option value="17">17</option>
+		<option value="18">18</option>
+		<option value="19">19</option>
+		<option value="20">20</option>
+		<option value="21">21</option>
+		<option value="22">22</option>
+		<option value="23">23</option>
+	</selection>
+	
+	<selection name="organisation.project.type.duration.select">
+		<option value="1">Day</option>
+		<option value="2">Month</option>
+		<option value="3">Year</option>
+	</selection>
+	
+	<selection name="organisation.affair.market.type.select">
+		<option value="1">Market</option>
+		<option value="2">Order form market</option>
+		<option value="3">Other</option>
+	</selection>
+	
 	<selection name="supplychain.invoicing.moment.select">
 		<option value="1">When a task is over</option>
 		<option value="2">Draft invoice N days after order validation</option>
@@ -891,7 +981,7 @@
 		<option value="5">Canceled</option>
 	</selection>
 	
-	<selection name="supplychain.sale.supply.type.select">
+	<selection name="supplychain.sales.order.line.sale.supply.select">
 		<option value="1">FromStock</option>
 		<option value="2">Purchase</option>
 		<option value="3">Produce</option>
@@ -899,14 +989,18 @@
 	
 	<selection name="supplychain.location.type.select">
 		<option value="1">Internal</option>
-		<option value="2">Supplier</option>
-		<option value="3">Customer</option>
-		<option value="4">Virtual</option>
+		<option value="2">External</option>
+		<option value="3">Virtual</option>
+	</selection>
+	
+	<selection name="supplychain.inventory.format.select">
+		<option value="1">PDF</option>
+		<option value="2">XLS</option>
 	</selection>
 	
 	<selection name="supplychain.default.status.select">
 		<option value="1">Draft</option>
-		<option value="2">Confirmed</option>
+		<option value="2">Planned</option>
 		<option value="3">Realized</option>
 		<option value="4">Canceled</option>
 	</selection>
@@ -936,15 +1030,10 @@
 		<option value="6">Canceled</option>
 	</selection>
 
-	<selection name="crm.campaign.follow.up.type.select">
-		<option value="1">Calls</option>
-		<option value="2">Meeting</option>
-	</selection>
-
-	<selection name="crm.campaign.sending.type.select">
-		<option value="1">Lists / Queries</option>
-		<option value="2">Contacts / Leads</option>
-		<option value="3">Lists / Queries &amp; Contacts / Leads</option>
+	<selection name="supplychain.purchase.order.invoicing.type.select">
+		<option value="1">Free</option>
+		<option value="2">By delivery</option>
+		<option value="3">Per order</option>
 	</selection>
 
 	<selection name="consulting.needline.profile.category.select">
@@ -1012,6 +1101,11 @@
 		<option value="1">Non-participant</option>
 		<option value="2">Optional participant</option>
 		<option value="3">Required participant</option>
+	</selection>
+	
+	<selection name="base.tracking.number.configuration.sale.tracking.order.select">
+		<option value="1">FIFO</option>
+		<option value="2">LIFO</option>
 	</selection>
 
 

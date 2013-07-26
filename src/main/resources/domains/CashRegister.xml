@@ -1,26 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
-  
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
   <module name="account" package="com.axelor.apps.account.db"/>
-  
+
   <entity name="CashRegister" lang="java">
-    
-    <string name="name">
-		<![CDATA[
-		if (agency != null && cashRegisterDate != null)
-			return agency.getName() + " " + cashRegisterDate.toString();
-		else  return "-";
-		]]>
- 	</string>
-    <many-to-one ref="com.axelor.apps.base.db.UserInfo" title="Cashier Agent" name="userInfo" readonly="true"/>
-    <many-to-one ref="com.axelor.apps.base.db.Agency" title="Agency" name="agency" required="true"/>
-    <datetime title="Creation Date" tz="true" name="createDateTime" readonly="true"/>
-    <date title="Cash register date" name="cashRegisterDate" required="true"/>
-    <decimal title="Deposited Amount" name="depositedAmount"/>
-    <decimal title="Cash Regsiter Amount" name="cashRegisterAmount"/>
-    <integer title="Status" name="stateSelect" readonly="true" selection="cash.register.state.select"/>
-    <boolean title="Email sent ?" default="false" name="emailSendedOk" readonly="true"/>
   
+    <integer name="importId"/>
+    <string name="name" title="Name"/>
+    <string name="num" title="Cash register N°" unique="true" />
+    <many-to-one name="address" ref="com.axelor.apps.base.db.Address" title="Address"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+ 
   </entity>
   
 </domain-models>

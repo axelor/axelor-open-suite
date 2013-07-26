@@ -3,46 +3,36 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
 
-  <module name="crm" package="com.axelor.apps.crm.db"/>
+  <module name="marketing" package="com.axelor.apps.marketing.db"/>
 
   <entity name="Campaign" lang="java">
-  
-    <string name="name" title="Name" required="true"/>
-   	<integer name="statusSelect" title="Status" selection="crm.campaign.status.select"/>  
-   	<date name="startDate" title="Start date"/>
-   	<date name="endDate" title="End date"/>
-   	<integer name="typeSelect" title="Campaign Type" selection="crm.campaign.type.select"/>  
-    <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
-    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
-    <integer name="nbImpressions" title="Printed Quantity"/>
-    <integer name="frequencySelect" title="Frequence" selection="crm.campaign.frequency.select"/>
-    <decimal name="budget" title="Budget"/>
-    <decimal name="expectedCost" title="Expected cost"/>
-	<decimal name="actualCost" title="Current costs"/>
-    <decimal name="expectedRevenue" title="Expected revenue"/>
-    <string name="objective" title="Objectives" large="true"/>
-    <string name="description" title="Description" large="true"/>
-    
-    
-	<boolean name="hasForceEmailSending" title="Ne pas prendre en compte les refus d'emailing"/>
-  	<many-to-many name="partnerListSet" ref="com.axelor.apps.base.db.PartnerList" title="Contact lists"/>
-  	<many-to-many name="jpqlQuerySet" ref="com.axelor.apps.base.db.JpqlQuery" title="Queries"/>
-  	<many-to-many name="partnerSet" ref="com.axelor.apps.base.db.Partner" title="Contacts"/>
-  	<many-to-many name="leadSet" ref="com.axelor.apps.crm.db.Lead" title="Leads"/>
   	
-  	<boolean name="hasListGenerated" title="List generated ?"/>
+  	<string name="name" title="Name" required="true" unique="true"/>
+  	<string name="code" title="Code" required="true" unique="true"/>
+  	<integer name="typeSelect" title="Type" required="true" selection="marketing.campaign.type.select"/>
+  	<integer name="targetSelect" title="Target" required="true" selection="imarketing.type.select"/>
+	<many-to-one name="status" ref="com.axelor.apps.base.db.Status" readonly="true" title="Status"/>
+	<boolean name="createMessage" default="false" title="Generate message object for each email ?"/>
+	<datetime name="sendFrom" title="Send campaign from"/>
+	
+	<many-to-many name="mailingListSet" ref="com.axelor.apps.marketing.db.MailingList" title="Mailing lists"/>
+	
+	<many-to-many name="partnerSet" ref="com.axelor.apps.base.db.Partner" title="Contacts"/>
+	<many-to-many name="leadSet" ref="com.axelor.apps.crm.db.Lead" title="Leads"/>
+  	<many-to-many name="querieSet" ref="com.axelor.apps.base.db.Querie" title="Queries"/>
+  	<boolean name="hasListGenerated" default="false" title="Generated list ?"/>
   	
-  	<integer name="followUpTypeSelect" title="Follow Up type" selection="crm.campaign.follow.up.type.select"/>
+  	<many-to-one name="template" ref="com.axelor.apps.base.db.Template" title="Template"/>
+  	<many-to-one name="templateRule" ref="com.axelor.apps.base.db.TemplateRule" title="Template rule"/>
   	
-  	<many-to-one name="eventCategory" ref="com.axelor.apps.crm.db.EventCategory" title="Event category"/>
-  	
-    <integer name="sendingTypeSelect" title="Sending type" selection="crm.campaign.sending.type.select"/>
-    
-    <many-to-one name="htmlTemplate" ref="com.axelor.apps.base.db.HtmlTemplate" title="Content"/>
-    
-<!-- 	Ajouter second onglet avec user et team   -->
-  	<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="Assigned to"/>
-  	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team"/>
+	<one-to-many name="trackerList" ref="com.axelor.apps.marketing.db.Tracker" mappedBy="campaign" title="Trackers"/>
+	
+	<boolean name="followedCampaign" default="false" title="Follow ?"/>
+	<many-to-one name="eventCategory" ref="com.axelor.apps.crm.db.EventCategory" title="Event category"/>
+	<date name="eventDate" title="Event date"/>
+	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team"/>
+	
+	<boolean name="hasForceEmailSending" default="false" title="Ignore mailing rejection ?"/>
     
   </entity>
 

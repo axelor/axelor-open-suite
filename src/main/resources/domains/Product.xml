@@ -15,7 +15,7 @@
     <many-to-one name="unit" ref="Unit" title="Unit"/>
      
     <integer name="applicationTypeSelect" title="Application type" selection="product.application.type.select"/>
-    <integer name="saleSupplySelect" title="Méthode d'appro. des ventes" selection="supplychain.sale.supply.type.select"/>
+    <integer name="saleSupplySelect" title="Méthode d'appro. des ventes" selection="product.sale.supply.select"/>
      
     <string name="productTypeSelect" title="Product type" required="true" selection="product.product.type.select"/>
     <string name="procurementMethodSelect" title="Procurement method" required="true" selection="product.procurement.method.select"/>
@@ -39,6 +39,14 @@
   	
   	<!-- SOCIAL NETWORKING INTEGRATION FOR PRODUCT -->
     <many-to-one name="snStatusUpdates" ref="com.axelor.apps.socialnetwork.db.SnStatusUpdates" required="false" orphan="true" default="null"/>
+  
+    <many-to-one name="trackingNumberConfiguration" ref="com.axelor.apps.base.db.TrackingNumberConfiguration" title="Tracking Number Configuration"/>
+    <boolean name="hasWarranty" title="Warranty ?"/>
+    <boolean name="isPerishable" title="Perishable ?"/>
+    <integer name="warrantyNbrOfMonths" title="Warranty length (in months)"/>
+    <integer name="perishableNbrOfMonths" title="Time before expiry (in months)"/>
+    
+    <many-to-one name="productVariantConfiguration" ref="com.axelor.apps.base.db.ProductVariantConfiguration"/>
   
   </entity>
 

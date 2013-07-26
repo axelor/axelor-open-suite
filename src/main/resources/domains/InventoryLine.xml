@@ -8,10 +8,13 @@
   <entity name="InventoryLine" lang="java">
   
   	<many-to-one name="inventory" ref="com.axelor.apps.supplychain.db.Inventory" title="Inventory"/>
-	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>    
-	<integer name="currentQty" title="Quantity"/>
-	<integer name="realQty" title="Quantity"/>
+	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>    
+	<decimal name="currentQty" title="Current Quantity"/>
+	<decimal name="realQty" title="Real Quantity"/>
 	<string name="description" title="Description"/>
+	
+	<many-to-one name="productVariant" ref="com.axelor.apps.base.db.ProductVariant" title="Variants"/>
+	<many-to-one name="trackingNumber" ref="com.axelor.apps.base.db.TrackingNumber" title="TrackingNumber"/>
     
   </entity>
 </domain-models>

@@ -7,12 +7,14 @@
 
   <entity name="Inventory" lang="java">
   
-  	<string name="name" title="Name"/>
-  	<many-to-one name="location" ref="com.axelor.apps.supplychain.db.Location" title="Location"/>
-    <integer name="statusSelect" title="Status" selection="supplychain.default.status.select"/>
+  	<string name="inventorySeq" title="Inventory number"/>
+  	<many-to-one name="location" ref="com.axelor.apps.supplychain.db.Location" title="Location" required="true"/>
+    <integer name="statusSelect" title="Status" selection="supplychain.default.status.select" readonly="true"/>
   	<datetime name="dateT" title="Date" required="true" tz="true"/>
   	<string name="description" title="Description" large="true"/>
   	<one-to-many name="inventoryLineList" ref="com.axelor.apps.supplychain.db.InventoryLine" mappedBy="inventory" title="Inventory lines"/>
+  	<integer name="formatSelect" title="Format" selection="supplychain.inventory.format.select"/>
+  	<string name="importFilePath" title="File Path"/>
   	
   </entity>
 </domain-models>

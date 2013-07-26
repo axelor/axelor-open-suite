@@ -14,6 +14,7 @@
     <integer name="typeSelect" title="Type" selection="supplychain.location.type.select"/>
     <boolean name="isDefaultLocation" title="Default location"/>
     <one-to-many name="locationLineList" ref="com.axelor.apps.supplychain.db.LocationLine" mappedBy="location" title="Location lines"/>
+    <one-to-many name="detailsLocationLineList" ref="com.axelor.apps.supplychain.db.LocationLine" mappedBy="detailsLocation" title="Details Location lines"/>
     
   </entity>
 </domain-models>

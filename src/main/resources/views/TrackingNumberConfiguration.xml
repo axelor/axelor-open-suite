@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="tracking-number-configuration-grid" title="Tracking Number Configuration" model="com.axelor.apps.base.db.TrackingNumberConfiguration">
+        <field name="isPurchaseTrackingManaged"/>
+        <field name="isProductionTrackingManaged"/>
+        <field name="isSaleTrackingManaged"/>
+        <field name="generatePurchaseAutoTrackingNbr"/>
+        <field name="generateProductionAutoTrackingNbr"/>
+        <field name="generateSaleAutoTrackingNbr"/>
+        <field name="hasSaleAutoSelectTrackingNbr"/>
+        <field name="saleAutoTrackingNbrOrderSelect"/>
+        <field name="saleQtyByTracking"/>
+        <field name="purchaseQtyByTracking"/>
+        <field name="productionQtyByTracking"/>
+    </grid>
+    
+    <form name="tracking-number-configuration-form" title="Tracking Number Configuration" model="com.axelor.apps.base.db.TrackingNumberConfiguration" cols="4"
+    	onNew="action-tracking-number-config-record-default">
+        <field name="isPurchaseTrackingManaged" colSpan="4"/>
+	    <break/>
+	    <group title="Purchase tracking management" showIf="isPurchaseTrackingManaged" colSpan="4" cols="2" colWidths="40%,*">
+	        <field name="generatePurchaseAutoTrackingNbr" colSpan="2"/>
+	        <field name="purchaseQtyByTracking" help="0 --&gt; infinite" colSpan="2"/>
+	    </group>
+	    <break/>
+	    <field name="isProductionTrackingManaged"/>
+	    <break/>
+	    <group title="Production tracking management" showIf="isProductionTrackingManaged" colSpan="4" cols="2" colWidths="40%,*">
+	        <field name="generateProductionAutoTrackingNbr" colSpan="2"/>
+	        <field name="productionQtyByTracking" help="0 --&gt; infinite" colSpan="2"/>
+	    </group>
+	    <break/>
+	    <field name="isSaleTrackingManaged"/>
+	    <break/>
+	    <group title="Sale tracking management" showIf="isSaleTrackingManaged" colSpan="4" cols="2" colWidths="40%,*">
+	        <field name="generateSaleAutoTrackingNbr" colSpan="2"/>
+	        <field name="hasSaleAutoSelectTrackingNbr" showIf="isSaleTrackingManaged"/>
+	        <field name="saleAutoTrackingNbrOrderSelect" showIf="hasSaleAutoSelectTrackingNbr"/>
+	        <break/>
+	        <field name="saleQtyByTracking" help="0 --&gt; infinite" colSpan="2" readonlyIf="hasSaleAutoSelectTrackingNbr"/>
+	    </group>
+    </form>
+    
+    <action-record name="action-tracking-number-config-record-default" model="com.axelor.apps.base.db.TrackingNumberConfiguration">
+    	<field name="saleAutoTrackingNbrOrderSelect" expr="eval: 1"/>
+    	<field name="saleQtyByTracking" expr="0"/>
+    	<field name="purchaseQtyByTracking" expr="0"/>
+    	<field name="productionQtyByTracking" expr="0"/>
+    </action-record>
+    
+</object-views>

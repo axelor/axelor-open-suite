@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="TrackingNumber" lang="java">
+	
+	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+	<many-to-one name="productVariant" ref="com.axelor.apps.base.db.ProductVariant" title="Variants"/>
+	<date name="warrantyExpirationDate" title="Warranty expiration date" readonly="true"/>
+	<date name="perishableExpirationDate" title="Perishable expiration date" readonly="true"/>
+	<string name="trackingNumberSeq" namecolumn="true" title="Tracking number"/>
+	<integer name="counter" title="Compteur"/>
+	
+  </entity>
+
+</domain-models>

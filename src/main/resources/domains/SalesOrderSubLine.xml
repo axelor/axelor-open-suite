@@ -20,6 +20,8 @@
 	<many-to-one name="vatLine" ref="com.axelor.apps.account.db.VatLine" title="V.A.T."/>
   	<decimal name="exTaxTotal" title="Total W.T."/>
     
+    <many-to-one name="productVariant" ref="com.axelor.apps.base.db.ProductVariant"/>
+    
   </entity>
 
 </domain-models>

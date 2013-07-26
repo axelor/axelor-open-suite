@@ -10,8 +10,13 @@
   	<many-to-one name="location" ref="com.axelor.apps.supplychain.db.Location" title="Location"/>
   	
 	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>    
-	<integer name="currentQty" title="Current quantity"/>
-	<integer name="futureQty" title="Future quanity"/>
+	<decimal name="currentQty" title="Current quantity"/>
+	<decimal name="futureQty" title="Future quantity"/>
+	<date name="lastFutureStockMoveDate" title="Last Future Stock Move"/>
+	
+	<many-to-one name="trackingNumber" ref="com.axelor.apps.base.db.TrackingNumber" title="TrackingNumber"/>
+    <many-to-one name="productVariant" ref="com.axelor.apps.base.db.ProductVariant" title="Variants"/>
+	<many-to-one name="detailsLocation" ref="com.axelor.apps.supplychain.db.Location" title="Location Details"/>
 	
   </entity>
 </domain-models>

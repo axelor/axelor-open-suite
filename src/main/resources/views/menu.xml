@@ -223,14 +223,14 @@
 	<menuitem name="product-root-filters" parent="product-root"
 		title="All filters"/>
 	
-	<menuitem name="product-root-filters-stockable" parent="product-root-filters"
-		title="All stockable products" action="product.root.filters.stockable" />
+	<menuitem name="product-root-filters-storable" parent="product-root-filters"
+		title="All storable products" action="product.root.filters.storable" />
 		
-	<action-view name="product.root.filters.stockable" title="All stockable products"
+	<action-view name="product.root.filters.storable" title="All storable products"
 		model="com.axelor.apps.base.db.Product" icon="img/icons/product_small.png">
 		<view type="grid" />
 		<view type="form" />
-		<domain>self.productTypeSelect = 'stockable'</domain>
+		<domain>self.productTypeSelect = 'storable'</domain>
 		<context name="_activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
 	</action-view>
 	
@@ -306,6 +306,15 @@
 
 	<action-view name="product.conf.product.family" title="Product families"
 		model="com.axelor.apps.base.db.ProductFamily" icon="img/icons/parameter_small.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
+
+	<menuitem name="product-conf-tracking-number-config" parent="product-conf"
+		title="Tracking number configuration" action="product.conf.tracking.number.config" />
+
+	<action-view name="product.conf.tracking.number.config" title="Tracking number configuration"
+		model="com.axelor.apps.base.db.TrackingNumberConfiguration" icon="img/icons/parameter_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
@@ -521,15 +530,6 @@
 		<view type="form" />
 	</action-view>
 	
-	<menuitem name="evo-admin-root-user-agency" parent="evo-admin-root-user"
-		title="Agencies" action="evo.admin.root.base.agency" />
-
-	<action-view name="evo.admin.root.base.agency" title="Agencies"
-		model="com.axelor.apps.base.db.Agency" icon="img/icons/organisation_small.png">
-		<view type="grid" />
-		<view type="form" />
-	</action-view>
-
 	<menuitem name="evo-admin-root-user-company" parent="evo-admin-root-user"
 		title="Companies" action="evo.admin.root.base.company" />
 

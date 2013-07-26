@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="template-grid" title="Templates" model="com.axelor.apps.base.db.Template">
+        <field name="name"/>
+        <field name="subject"/>
+        <field name="target"/>
+        <field name="metaModel"/>
+    </grid>
+    
+    <form name="template-form" title="Template" model="com.axelor.apps.base.db.Template" cols="4">
+        <field name="name"/>
+        <field name="metaModel"/>
+        <field name="target"/>
+        <field name="birtTemplate"/>
+        <break/>
+        <field name="subject" colSpan="4" widget="html"/>
+        <field name="content" colSpan="4" widget="html"/>
+        <break/>
+        <field name="templateContext" colSpan="4"/>
+    </form>
+    
+</object-views>

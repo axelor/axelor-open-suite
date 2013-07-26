@@ -24,7 +24,7 @@
             <field name="objectConcernedSelect" onChange="action-mail-hidden-attrs"/>
             <field name="mailModel"/>
             <field name="pdfFilePath"/>
-            <field name="company"/>
+            <field name="company" widget="SuggestBox"/>
         </group>
         <group title="Content" colSpan="4">
         	<field name="subject" colSpan="4"/>
@@ -41,7 +41,7 @@
         </group>
         <group title="Complementary information" colSpan="4">
         	<field name="reminderHistory"/>         
-        	<field name="cashRegister"/>
+        	<field name="cashRegisterLine"/>
         	<field name="rejectMoveLine"/>
         </group> 
         <button name="printMail" title="Print" colSpan="2" icon="img/icons/print.png" onClick="save,action-mail-method-print-mail"/>
@@ -49,7 +49,7 @@
 
 	<action-attrs name="action-mail-hidden-attrs">
 		<attribute name="hidden" for="reminderHistory" expr="eval: objectConcernedSelect != 1"/>
-		<attribute name="hidden" for="cashRegister" expr="eval: objectConcernedSelect != 4"/>
+		<attribute name="hidden" for="cashRegisterLine" expr="eval: objectConcernedSelect != 4"/>
 		<attribute name="hidden" for="addressEmail" expr="eval: objectConcernedSelect != 4"/>
 		<attribute name="hidden" for="address" expr="eval: typeSelect != 1"/>
 		<attribute name="hidden" for="rejectMoveLine" expr="eval: typeSelect != 3"/>

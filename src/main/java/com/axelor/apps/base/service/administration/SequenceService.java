@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -104,12 +105,50 @@ public class SequenceService {
 			}
 			else{
 				LOG.debug("End getSequence : : : : NO SEQUENCE.");	
-				return "";
+				return null;
 			}
 		}
 		else{
 			LOG.debug("End getSequence : : : : NO code");	
-			return "";
+			return null;
+		}
+			
+	}
+	
+	/**
+	 * Retourne une sequence en fonction du code, de la sté et du produit 
+	 * Le paramètre check permet de faire une vérification sans que la séquence ne soit incrémentée
+	 * 
+	 * @return
+	 */
+	public String getSequence(String code, Product product, Company company, boolean check) {
+		if (code != null){
+			Sequence seq = null;
+			if (company == null){
+				seq = Sequence.all().filter("code = ?1",code).fetchOne();
+			}
+			else if (product == null){
+				seq = Sequence.all().filter("company = ?1 and code = ?2",company,code).fetchOne();
+			}
+			else{
+				 seq = Sequence.all().filter("company = ?1 and code = ?2 and product = ?3",company,code,product).fetchOne();
+			}
+			if (seq != null)  {
+				if (!check)  {
+					return getSequence(seq, today.getYearOfCentury(), today.getMonthOfYear(), today.getDayOfMonth(), today.getWeekOfWeekyear());
+				}
+				else  {
+					return "true";
+				}
+			}
+			else{
+				LOG.debug("End getSequence : : : : NO SEQUENCE.");	
+				return null;
+			}
+		}
+		else{
+			LOG.debug("End getSequence : : : : NO code");	
+			return null;
 		}
 			
 	}
@@ -134,6 +173,8 @@ public class SequenceService {
 					.replaceAll("%M",String.format("%s",todayMoy)))
 					.replaceAll("%D",String.format("%s",todayDom)))
 					.replaceAll("%WY",String.format("%s",todayWoy)));
+			if (seq.getProduct() != null)
+				seqPrefixe = seqPrefixe.replaceAll("%PC", seq.getProduct().getCode());
 		}	
 		if (seq.getSuffixe() != null){
 			seqSuffixe = ((((seq.getSuffixe()
@@ -141,6 +182,8 @@ public class SequenceService {
 					.replaceAll("%M",String.format("%s",todayMoy)))
 					.replaceAll("%D",String.format("%s",todayDom)))
 					.replaceAll("%WY",String.format("%s",todayWoy)));
+			if (seq.getProduct() != null)
+				seqSuffixe = seqSuffixe.replaceAll("%PC", seq.getProduct().getCode());
 		}
 		
 		String padLeft = StringUtils.leftPad(seq.getNextNum().toString(), seq.getPadding(), "0");

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="TemplateRuleLine" lang="java">
+  	
+  	<integer name="sequence" title="Sequence"/>
+  	
+  	<many-to-one name="template" ref="com.axelor.apps.base.db.Template" title="Template"/>
+  	<many-to-one name="metaAction" ref="com.axelor.meta.db.MetaAction" title="Action"/>
+  	
+  	<!-- back reference -->
+  	<many-to-one name="templateRule" ref="com.axelor.apps.base.db.TemplateRule" title="Template rule"/>
+    
+  </entity>
+
+</domain-models>
