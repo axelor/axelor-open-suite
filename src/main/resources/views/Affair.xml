@@ -15,7 +15,7 @@
 	    <group showTitle="false" colSpan="4">
 	        <field name="affairName"/>
 	        <field name="responsibleUserInfo"/>
-	        <field name="parentProject"/>
+	        <field name="defaultTask" hideIf="!isTimeSheetImputable"/>
 	        <field name="clientPartner"/>
 	        <field name="contactPartner" domain="self.isContact = true"/>
 	        <field name="company" widget="SuggestBox"/>
@@ -27,7 +27,9 @@
 	        	<field name="isAffair"/>
 	            <field name="isModel"/>
 	            <field name="modelProject" hideIf="isModel" domain="self.isModel = true"/>
-	            <field name="defaultTask" hideIf="!isTimeSheetImputable"/>
+	            <field name="parentProject"/>
+	            <field name="imputExpense"/>
+	            <field name="typeProjectSelect" showIf="imputExpense == true"/>
 	            <field name="isReinvoicingExpense"/>
 	            <field name="isReinvoicingTime"/>
 	            <field name="isTimeSheetImputable"/> 
@@ -37,11 +39,13 @@
 	        <button name="createSalesOrder" title="Create quote" colSpan="1"/>
 	        <button name="generateNewInstanceOfProject" title="Generate new project instance" hideIf="!isModel" colSpan="1"/>
 	        <button name="transformToProject" title="Transform to project" showIf="isProject == true" colSpan="1"/>
+	        <button name="createTask" title="Create task" colSpan="1"/>
 	    </group>
 	    <field name="candidateSet" colSpan="4"/>
 	    <field name="employeeSet" colSpan="4"/>
 	    <notebook colSpan="6">
 	        <page title="Tasks">
+	        	<field name="task"/>
 	            <field name="taskList" grid-view="task-project-grid" form-view="task-form" colSpan="6"/>
 	        </page>
 	        <page title="Financial information" colSpan="4">

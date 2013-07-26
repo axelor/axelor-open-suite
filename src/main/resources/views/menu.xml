@@ -112,14 +112,25 @@
 		<context name="_statusSelect" expr="1"/>
 	</action-view>
 	
-	<menuitem name="hr-root-validationforms-travelexpenses" parent="hr-root-validationforms"
-		title="Travel expenses to validate" action="hr.root.validationforms.travelexpenses"/>
+	<menuitem name="hr-root-validationforms-travelexpenses-manager" parent="hr-root-validationforms"
+		title="Travel expenses to validate by RSC Manager" action="hr.root.validationforms.travelexpenses.manager"/>
 		
-	<action-view name="hr.root.validationforms.travelexpenses" title="Travel expenses to validate"
+	<action-view name="hr.root.validationforms.travelexpenses.manager" title="Travel expenses to validate by RSC Manager"
 		model="com.axelor.apps.organisation.db.Expense" icon="img/icons/organisation_small.png">
 		<view type="grid" name="expense-grid" />
 		<view type="form" name="expense-form" />
-		<domain>self.statusSelect = 'submited'</domain>
+		<domain>self.statusSelect = '3'</domain>
+		<context name="_activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+	</action-view>
+	
+	<menuitem name="hr-root-validationforms-travelexpenses-commercial" parent="hr-root-validationforms"
+		title="Travel expenses to validate by commercial" action="hr.root.validationforms.travelexpenses.commercial"/>
+		
+	<action-view name="hr.root.validationforms.travelexpenses.commercial" title="Travel expenses to validate by commercial"
+		model="com.axelor.apps.organisation.db.Expense" icon="img/icons/organisation_small.png">
+		<view type="grid" name="expense-grid" />
+		<view type="form" name="expense-form" />
+		<domain>self.statusSelect = '4'</domain>
 		<context name="_activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
 	</action-view>
 	
@@ -130,7 +141,7 @@
 		model="com.axelor.apps.organisation.db.Overtime" icon="img/icons/organisation_small.png">
 		<view type="grid" name="overtime-grid" />
 		<view type="form" name="overtime-form" />
-		<domain>self.statusSelect = 'submited'</domain>
+		<domain>self.statusSelect = '2'</domain>
 		<context name="_activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
 	</action-view>	
 	
@@ -156,7 +167,7 @@
 		model="com.axelor.apps.organisation.db.Expense" icon="img/icons/organisation_small.png">
 		<view type="grid" name="expense-grid" />
 		<view type="form" name="expense-form" />
-		<domain>self.statusSelect = 'validated'</domain>
+		<domain>self.statusSelect = '4'</domain>
 		<context name="_activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
 	</action-view>
 	
@@ -167,7 +178,7 @@
 		model="com.axelor.apps.organisation.db.Overtime" icon="img/icons/organisation_small.png">
 		<view type="grid" name="overtime-grid" />
 		<view type="form" name="overtime-form" />
-		<domain>self.statusSelect = 'validated'</domain>
+		<domain>self.statusSelect = '4'</domain>
 		<context name="_activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
 	</action-view>	
 	

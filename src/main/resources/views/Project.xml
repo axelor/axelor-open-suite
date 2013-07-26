@@ -15,7 +15,7 @@
 	    <group showTitle="false" colSpan="4">
 	        <field name="affairName"/>
 	        <field name="responsibleUserInfo"/>
-	        <field name="parentProject" onChange="action-project-unit"/>
+	        <field name="defaultTask" hideIf="!isTimeSheetImputable"/>
 	        <field name="projectUnit"/>
 	        <field name="clientPartner"/>
 	        <field name="contactPartner" domain="self.isContact = true"/>
@@ -28,7 +28,9 @@
 	        	<field name="isAffair"/>
 	            <field name="isModel"/>
 	            <field name="modelProject" hideIf="isModel" domain="self.isModel = true"/>
-	            <field name="defaultTask" hideIf="!isTimeSheetImputable"/>
+	            <field name="parentProject" onChange="action-project-unit"/>
+	            <field name="imputExpense"/>
+	            <field name="typeProjectSelect" showIf="imputExpense == true"/>
 	            <field name="isReinvoicingExpense"/>
 	            <field name="isReinvoicingTime"/>
 	            <field name="isTimeSheetImputable"/> 

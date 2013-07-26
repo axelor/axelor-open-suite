@@ -38,8 +38,6 @@
 		model="com.axelor.apps.organisation.db.ExpenseLine" cols="4" onNew="action-expenseline-default-record">
 
 	    <group title="Context" colSpan="4">
-	        <field name="sequence"/>
-	        <field name="reference"/>
 	        <field name="expenseTypeSelect"/>
 	        <field name="project" onChange="action-expenseline-expense-type-select"/>
 	    </group>

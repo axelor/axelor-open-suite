@@ -12,7 +12,6 @@
 
     <grid name="expense-grid" title="Travel expenses" model="com.axelor.apps.organisation.db.Expense">
         <field name="userInfo"/>
-        <field name="isRecurrentExpense"/>
         <field name="date"/>
         <field name="totalAmount"/>
         <field name="currency"/>
@@ -26,26 +25,28 @@
 		<field name="userInfo"/>
    	 	<field name="statusSelect" widget="NavSelect"/>
         <field name="date" />
-        <field name="isRecurrentExpense" colSpan="2"/>
         <field name="totalAmount"/>
        	<field name="currency" />
    	 	<field name="expenseLineList" colSpan="4"/>
    	 	<break/>
    	 	<field name="progress" widget="progress"/>
    	 	<field name="paymentPeriod"/>
+   	 	<field name="motif" showIf="statusSelect == 6"/>
    	 	<break/>
        	<group title="Action(s)" colSpan="4">
    			<group colSpan="1" cols="1">
+   				<button name="draft" title="Draft" colSpan="2" onClick="save,action-expense-record-draft,save" showIf="statusSelect == 6"/>
         		<button name="submit" title="Submit" colSpan="2" onClick="save,action-expense-record-submit,action-expense-method-check-validation-status,save" showIf="statusSelect == 1"/>
-	            <button name="validate" title="Validate" colSpan="1" onClick="save,action-expense-method-check-validation-status,action-expense-record-validate,action-expense-alert-validate,action-expense-record-validation-info,save" showIf="statusSelect == 2"/>
-	         	<button name="confirm" title="Confirm" colSpan="1" onClick="save,action-expense-record-confirm,save" showIf="statusSelect == 3"/>
+	            <button name="validateManager" title="Validate" colSpan="1" onClick="save,action-expense-method-check-validation-status,action-expense-record-validate-manager,action-expense-alert-validate,action-expense-record-validation-info,save" showIf="statusSelect == 2"/>
+	            <button name="validateCommercial" title="Validate" colSpan="1" onClick="save,action-expense-record-validate-commercial,action-expense-record-validation-info,save" showIf="statusSelect == 3"/>
+	         	<button name="confirm" title="Confirm" colSpan="1" onClick="save,action-expense-record-confirm,save" showIf="statusSelect == 4"/>
 	            <button name="refuse" title="Refuse" colSpan="1" onClick="save,action-expense-record-refuse" showIf="statusSelect == 1 || statusSelect == 2"/>
         		<button name="sum" title="Compute" colSpan="2" onClick="action-expense-sum-expense-line"/>
 	        </group>
    			<group colSpan="1" cols="2" readonly="true">
    				<field name="validatedByUserInfo" colSpan="1"/>
              	<field name="validationDate" colSpan="1"/>
-   	 			<field name="validationStatusSelect" hideIf="statusSelect == 1 || statusSelect == 5"/>
+   	 			<field name="validationStatusSelect" hideIf="statusSelect == 1 || statusSelect == 6"/>
    			</group>
         </group>
     </form>
@@ -65,8 +66,12 @@
     	<field name="statusSelect" expr="eval: 2"/>
     </action-record>
     
-    <action-record name="action-expense-record-validate" model="com.axelor.apps.organisation.db.Expense">
+    <action-record name="action-expense-record-validate-manager" model="com.axelor.apps.organisation.db.Expense">
     	<field name="statusSelect" expr="eval: 3" if="validationStatusSelect == 1"/>
+    </action-record>
+    
+    <action-record name="action-expense-record-validate-commercial" model="com.axelor.apps.organisation.db.Expense">
+    	<field name="statusSelect" expr="eval: 4"/>
     </action-record>
     
     <action-validate name="action-expense-alert-validate">
@@ -79,11 +84,15 @@
     </action-record>
     
     <action-record name="action-expense-record-confirm" model="com.axelor.apps.organisation.db.Expense">
-    	<field name="statusSelect" expr="eval: 4"/>
+    	<field name="statusSelect" expr="eval: 5"/>
     </action-record>
     
      <action-record name="action-expense-record-refuse" model="com.axelor.apps.organisation.db.Expense">
-    	<field name="statusSelect" expr="eval: 5"/>
+    	<field name="statusSelect" expr="eval: 6"/>
+    </action-record>
+    
+    <action-record name="action-expense-record-draft" model="com.axelor.apps.organisation.db.Expense">
+    	<field name="statusSelect" expr="eval: 1"/>
     </action-record>
     
     <action-method name="action-expense-method-check-validation-status">
