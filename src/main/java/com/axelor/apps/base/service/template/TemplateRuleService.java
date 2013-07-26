@@ -1,4 +1,4 @@
-package com.axelor.apps.base.service.templateRule;
+package com.axelor.apps.base.service.template;
 
 import java.util.Collections;
 import java.util.Comparator;

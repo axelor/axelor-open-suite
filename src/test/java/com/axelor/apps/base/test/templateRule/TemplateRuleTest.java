@@ -8,7 +8,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Template;
 import com.axelor.apps.base.db.TemplateRule;
 import com.axelor.apps.base.db.TemplateRuleLine;
-import com.axelor.apps.base.service.templateRule.TemplateRuleService;
+import com.axelor.apps.base.service.template.TemplateRuleService;
 import com.axelor.apps.base.test.TestModule;
 import com.axelor.db.Model;
 import com.axelor.meta.db.MetaModel;
