@@ -3,12 +3,15 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
 
-  <module name="marketing" package="com.axelor.apps.marketing.db"/>
+  <module name="marketing" package="com.axelor.apps.base.db"/>
 
   <entity name="Querie" lang="java">
-	<integer name="type" title="Type" required="true" default="0" selection="imarketing.request.type.select" />
-	<string name="name" title="Name" required="true"/>
+  
+  	<string name="name" title="Name" required="true" namecolumn="true"/>
+	<integer name="type" title="Type" required="true" default="0" selection="imarketing.querie.type.select" />
 	<string name="query" title="Query" required="true" large="true" multiline="true"/>
+	
+	<many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Model"/>
   
   </entity>
 

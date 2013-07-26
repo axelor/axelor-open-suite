@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="template-context-line-grid" title="Template Context Lines" model="com.axelor.apps.base.db.TemplateContextline">
+        <field name="name"/>
+        <field name="key"/>
+        <field name="query"/>
+    </grid>
+    
+    <form name="template-context-line-form" title="Template Context Line" model="com.axelor.apps.base.db.TemplateContextLine" cols="4">
+        <field name="name"/>
+        <field name="key"/>
+        <field name="query" colSpan="4" widget="CodeEditor[syntax=sql]"/>
+    </form>
+    
+</object-views>

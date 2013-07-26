@@ -5,22 +5,21 @@
     
     <grid name="template-grid" title="Templates" model="com.axelor.apps.base.db.Template">
         <field name="name"/>
-        <field name="content"/>
-        <field name="birtTemplate"/>
+        <field name="subject"/>
+        <field name="target"/>
         <field name="metaModel"/>
     </grid>
     
-    <form name="template-form" title="Template" model="com.axelor.apps.base.db.Template" cols="4" onNew="action-template-record-new">
+    <form name="template-form" title="Template" model="com.axelor.apps.base.db.Template" cols="4">
         <field name="name"/>
         <field name="metaModel"/>
+        <field name="target"/>
+        <field name="birtTemplate"/>
         <break/>
+        <field name="subject" colSpan="4" widget="html"/>
         <field name="content" colSpan="4" widget="html"/>
         <break/>
-        <field name="birtTemplate"/>
+        <field name="templateContext" colSpan="4"/>
     </form>
-    
-    <action-record name="action-template-record-new" model="com.axelor.apps.base.db.Template">
-    	<field name="metaModel" expr="eval: (_parent?.targetSelect) ? ((_parent?.targetSelect == 1) ? com.axelor.meta.db.MetaModel.all().filter('self.name = \'Partner\'').fetchOne() : com.axelor.meta.db.MetaModel.all().filter('self.name = \'Lead\'').fetchOne()) : ((_parent?._parent?.metaModel) ? _parent?._parent?.metaModel : null)"/>
-    </action-record>
     
 </object-views>

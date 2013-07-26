@@ -5,12 +5,11 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="TemplateRule" lang="java">
+  <entity name="TemplateContext" lang="java">
+  
+ 	<string name="name" title="Name"/>
   	
-  	<string name="name" title="Name" namecolumn="true"/>
-  	
-  	<many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Model"/>
-  	<one-to-many name="templateRuleLineList" ref="com.axelor.apps.base.db.TemplateRuleLine" orderBy="sequence" mappedBy="templateRule"/>
+  	<one-to-many name="templateContextLine" ref="com.axelor.apps.base.db.TemplateContextLine" title="Template Context Line" mappedBy="templateContext"/>
     
   </entity>
 
