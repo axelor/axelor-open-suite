@@ -19,7 +19,7 @@
 	
 	<many-to-many name="partnerSet" ref="com.axelor.apps.base.db.Partner" title="Contacts"/>
 	<many-to-many name="leadSet" ref="com.axelor.apps.crm.db.Lead" title="Leads"/>
-  	<many-to-many name="querieSet" ref="com.axelor.apps.marketing.db.Querie" title="Queries"/>
+  	<many-to-many name="querieSet" ref="com.axelor.apps.base.db.Querie" title="Queries"/>
   	<boolean name="hasListGenerated" default="false" title="Generated list ?"/>
   	
   	<many-to-one name="template" ref="com.axelor.apps.base.db.Template" title="Template"/>
