@@ -638,7 +638,7 @@
 		<option value="2">Lead</option>
 	</selection>
 	
-	<selection name="imarketing.request.type.select">
+	<selection name="imarketing.querie.type.select">
 		<option value="1">SQL</option>
 		<option value="2">JPQL</option>
 		<option value="3">FILTER</option>

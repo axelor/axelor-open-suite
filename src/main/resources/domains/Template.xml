@@ -7,10 +7,13 @@
 
   <entity name="Template" lang="java">
   	
-  	<string name="name" title="Name"/>
+  	<string name="name" title="Name" namecolumn="true"/>
   	<string name="content" large="true" multiline="true" title="Content"/>
+  	<string name="suject" large="true" multiline="true" title="Suject"/>
+  	<string name="target" title="Target receptor"/>
+  	
+  	<many-to-one name="templateContext" ref="com.axelor.apps.base.db.TemplateContext" />
   	<many-to-one name="birtTemplate" ref="com.axelor.apps.base.db.BirtTemplate" title="Birt Template"/>
-	<!-- <many-to-many name="fileSet" ref="com.axelor.apps.marketing.db.File" title="Files"/> -->
 	<many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Model"/>
     
   </entity>
