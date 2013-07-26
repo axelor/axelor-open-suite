@@ -85,6 +85,9 @@
   	<many-to-many name="memberUserInfoSet" ref="com.axelor.apps.base.db.UserInfo" title="Members"/>
   	
   	<many-to-one name="modelProject" ref="com.axelor.apps.organisation.db.Project" title="Project model"/>
+  	<many-to-one name="task" ref="com.axelor.apps.organisation.db.Task" title="Task"/>
+  	<boolean name="imputExpense" title="Imputation note de frais"/>
+  	<integer name="typeProjectSelect" title="Type select" selection="organisation.project.type.project.select"/>
   	
     <!-- Need -->
     <date name="consultationDate" title="Consultation Date"/>

@@ -17,8 +17,6 @@
   	<date name="date" title="Date" />
   	<decimal name="qty" title="Quantity"/>
   	<decimal name="price" title="Unit price"/>
-  	<string name="reference" title="Reference" />
-  	<string name="sequence" title="Sequence" />
   	<decimal name="total" title="Total"/>
   	<binary name="file" title="File" />
   	<integer name="fileReceived" title="File received" selection="hr.expense.line.file.received.select"/>
