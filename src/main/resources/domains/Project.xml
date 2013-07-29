@@ -10,7 +10,7 @@
   	<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
   	<many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Contact"/>
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" readonly="true" title="Société"/>
-  	<string name="affairName" title="Affair name" namecolumn="true"/>
+  	<string name="affairName" title="Affair name" required="true" namecolumn="true"/>
   	<string name="affairDescription" title="Affair description"/>
   	<string name="description" max="1000" multiline="true" title="Description"/>
   	<boolean name="isModel" title="Model ?"/>
@@ -85,6 +85,9 @@
   	<many-to-many name="memberUserInfoSet" ref="com.axelor.apps.base.db.UserInfo" title="Members"/>
   	
   	<many-to-one name="modelProject" ref="com.axelor.apps.organisation.db.Project" title="Project model"/>
+  	<many-to-one name="preSalesTask" ref="com.axelor.apps.organisation.db.Task" title="Task"/>
+  	<boolean name="imputExpense" title="Imputation note de frais"/>
+  	<integer name="typeProjectSelect" title="Type select" selection="organisation.project.type.project.select"/>
   	
     <!-- Need -->
     <date name="consultationDate" title="Consultation Date"/>

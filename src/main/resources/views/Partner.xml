@@ -5,6 +5,8 @@
     
     <grid name="partner-grid" title="Partners" model="com.axelor.apps.base.db.Partner">
     	<toolbar>
+    		<button name="printPhoneBook" title="Print PhoneBook" onClick="action-print-phonebook" icon="img/icons/print.png"/>
+    		
 			<button name="fbContact" title="Facebook Contact" icon="img/facebook.jpg"
 				onClick="com.axelor.sn.web.PartnerImportController:importFBContacts" />
 			<button name="twtContact" title="Twitter Contact" icon="img/twitterLogo.png"
@@ -435,6 +437,10 @@
 	
 	<action-method name="action-set-partner-seq" >
 		<call class="com.axelor.apps.base.web.PartnerControllerSimple" method="setPartnerSequence"/>
+	</action-method>
+    
+    <action-method name="action-print-phonebook" >
+		<call class="com.axelor.apps.base.web.PartnerControllerSimple" method="printContactPhonebook"/>
 	</action-method>
     
     <action-validate name="action-partner-company-set-validate">

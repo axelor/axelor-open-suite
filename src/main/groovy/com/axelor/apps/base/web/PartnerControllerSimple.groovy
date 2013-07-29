@@ -16,6 +16,7 @@ import com.axelor.exception.db.IException;
 import com.axelor.rpc.ActionRequest
 import com.axelor.rpc.ActionResponse
 import groovy.util.logging.Slf4j
+import com.axelor.auth.db.User
 import com.google.inject.Inject;
 
 @Slf4j
@@ -77,6 +78,39 @@ class PartnerControllerSimple {
 		}
 	}
 	
+	/**
+	* Fonction appeler par le bouton imprimer
+	*
+	* @param request
+	* @param response
+	* @return
+	*/
+   def void printContactPhonebook(ActionRequest request, ActionResponse response) {
+
+	   AxelorSettings axelorSettings = AxelorSettings.get()
+	   
+	   StringBuilder url = new StringBuilder()
+	   User user = request.context.get("__user__")
+	   
+	   url.append("${axelorSettings.get('axelor.report.engine', '')}/frameset?__report=report/PhoneBook.rptdesign&__format=html&UserId=${user.id}&__locale=fr_FR${axelorSettings.get('axelor.report.engine.datasource')}")
+	   log.debug("URL : {}", url)
+	   String urlNotExist = URLService.notExist(url.toString())
+	   if (urlNotExist == null){
+	   
+		   log.debug("Impression des informations sur le partenaire Employee PhoneBook")
+		   
+		   response.view = [
+			   "title": "Phone Book",
+			   "resource": url,
+			   "viewType": "html"
+		   ]
+	   
+	   }
+	   else {
+		   response.flash = urlNotExist
+	   }
+   }
+
 	
 	def void createAccountingSituations(ActionRequest request, ActionResponse response) {
 		
