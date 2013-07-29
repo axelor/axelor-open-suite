@@ -11,7 +11,8 @@
         <field name="isModel"/>
     </grid>
     
-    <form cols="6" onNew="action-affair-record-default" name="affair-form" title="Affair" model="com.axelor.apps.organisation.db.Project">
+    <form cols="6" onNew="action-affair-record-default" name="affair-form" title="Affair" model="com.axelor.apps.organisation.db.Project"
+    onSave="action-affair-method-create-default-task-on-save">
 	    <group showTitle="false" colSpan="4">
 	        <field name="affairName"/>
 	        <field name="responsibleUserInfo"/>
@@ -21,7 +22,7 @@
 	        <field name="company" widget="SuggestBox"/>
 	       	<field name="typeDurationSelect"/>
 	        <field name="plannedDuration"/>
-	        <field name="description" widget="html"/>
+	        <field name="description" colSpan="4" widget="html"/>
 	        <group name="specificSettings" title="Specific settings" colSpan="4" canCollapse="true">
 	        	<field name="isProject"/>
 	        	<field name="isAffair"/>
@@ -39,13 +40,13 @@
 	        <button name="createSalesOrder" title="Create quote" colSpan="1"/>
 	        <button name="generateNewInstanceOfProject" title="Generate new project instance" hideIf="!isModel" colSpan="1"/>
 	        <button name="transformToProject" title="Transform to project" showIf="isProject == true" colSpan="1"/>
-	        <button name="createTask" title="Create task" colSpan="1"/>
+	        <button name="createPreSalesTask" title="Create pre-sales task" colSpan="1" onClick="save,action-affair-method-create-pre-sales-task"/>
 	    </group>
 	    <field name="candidateSet" colSpan="4"/>
 	    <field name="employeeSet" colSpan="4"/>
 	    <notebook colSpan="6">
 	        <page title="Tasks">
-	        	<field name="task"/>
+	        	<field name="preSalesTask"/>
 	            <field name="taskList" grid-view="task-project-grid" form-view="task-form" colSpan="6"/>
 	        </page>
 	        <page title="Financial information" colSpan="4">
@@ -96,9 +97,16 @@
 	    </notebook>    
 	</form>
 	
-    
     <action-record name="action-affair-record-default" model="com.axelor.apps.organisation.db.Project">
 		<field name="isTimeSheetImputable" expr="true"/>
 	</action-record>
 			
+	<action-method name="action-affair-method-create-pre-sales-task">
+		<call class="com.axelor.apps.organisation.web.ProjectController" method="createPreSalesTask"/>
+	</action-method>	
+		
+	<action-method name="action-affair-method-create-default-task-on-save">
+		<call class="com.axelor.apps.organisation.web.ProjectController" method="createDefaultTask"/>
+	</action-method>
+		
 </object-views>

@@ -11,7 +11,8 @@
         <field name="isModel"/>
     </grid>
     
-    <form cols="6" onNew="action-project-record-default,action-project-unit" name="project-form" title="Affair/Project" model="com.axelor.apps.organisation.db.Project">
+    <form cols="6" onNew="action-project-record-default,action-project-unit" name="project-form" title="Affair/Project" model="com.axelor.apps.organisation.db.Project"
+    onSave="action-project-method-create-default-task-on-save">
 	    <group showTitle="false" colSpan="4">
 	        <field name="affairName"/>
 	        <field name="responsibleUserInfo"/>
@@ -22,7 +23,7 @@
 	        <field name="company" widget="SuggestBox"/>
 	        <field name="typeDurationSelect"/>
 	        <field name="plannedDuration"/>
-	        <field name="description" widget="html"/>
+	        <field name="description" colSpan="4" widget="html"/>
 	        <group name="specificSettings" title="Specific settings" colSpan="4" canCollapse="true">
 	        	<field name="isProject"/>
 	        	<field name="isAffair"/>
@@ -30,7 +31,7 @@
 	            <field name="modelProject" hideIf="isModel" domain="self.isModel = true"/>
 	            <field name="parentProject" onChange="action-project-unit"/>
 	            <field name="imputExpense"/>
-	            <field name="typeProjectSelect" showIf="imputExpense == true"/>
+	            <field name="typeProjectSelect" showIf="imputExpense == true" onChange="action-project-attrs-domain-task-project"/>
 	            <field name="isReinvoicingExpense"/>
 	            <field name="isReinvoicingTime"/>
 	            <field name="isTimeSheetImputable"/> 
@@ -77,5 +78,15 @@
    		<error message="Generating invoice is impossible, please link the task to a saleOrderLine to do so." if="eval: taskList?.collect(){ it?.salesOrderLine }?.contains(null) == true"/>
    		<error message="There is currently no task to invoice. If you need to generate an invoice from a task, please tick the checkbox 'To invoice' and make sure all necessary informations are filled in." if="eval: taskList?.collect(){ it?.isToInvoice }?.contains(true) == false"/>
 	</action-validate> 
+	
+	<action-method name="action-project-method-create-default-task-on-save">
+		<call class="com.axelor.apps.organisation.web.ProjectController" method="createDefaultTask"/>
+	</action-method>
 		
+	<action-attrs name="action-project-attrs-domain-task-project">
+		<attribute name="domain" for="defaultTask" expr="eval: &quot;self?.userInfo?.internalUser.id = __user__.id&quot;" if="typeProjectSelect == 1"/>
+		<attribute name="domain" for="parentProject" expr="eval: &quot;self?.responsibleUserInfo?.internalUser.id = __user__.id&quot;" if="typeProjectSelect == 2"/>
+	</action-attrs>
+	
+	
 </object-views>
