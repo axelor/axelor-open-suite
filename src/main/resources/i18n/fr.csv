@@ -705,8 +705,6 @@
 "organisation.resource.status.select","3","select","OK","OK",,,,
 "organisation.resource.status.select","4","select","KO","KO",,,,
 "organisation.resource.status.select","5","select","Canceled","Annulé",,,,
-"organisation.sales.order.line.discount.type.select","1","select","In %","En %",,,,
-"organisation.sales.order.line.discount.type.select","2","select","Fixed","Fixe",,,,
 "organisation.schedule.line.day.select","1","select","Monday","Lundi",,,,
 "organisation.schedule.line.day.select","2","select","Tuesday","Mardi",,,,
 "organisation.schedule.line.day.select","3","select","Wednesday","Mercredi",,,,
