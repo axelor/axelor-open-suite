@@ -20,8 +20,7 @@
     </grid>
     
     <form name="product-form" title="Product" model="com.axelor.apps.base.db.Product" cols="2" colWidths="*,400"
-		onNew="action-product-record-default-new,action-product-record-sale-supply-select,action-sn-integration-init,action-showing-seen,action-main-cntrl"
-		onLoad="action-sn-integration-init,action-showing-seen,action-main-cntrl,com.axelor.sn.web.SNCommonController:refreshSnStatusUpdatesComments">
+		onNew="action-product-record-default-new,action-product-record-sale-supply-select">
     
 	    <group title="Informations" colSpan="1" cols="6">
 	    	<group showTitle="false" colSpan="2">
@@ -81,58 +80,6 @@
 				<field name="productVariantConfiguration" widget="NestedEditor" summary-view="true" 
 						form-view="product-variant-configuration-form" edit-window="self" canSelect="true" showTitle="false"/>
 			</page>
-			<page title="Social Networking" cols="6" hideIf="id == null">
-				<group title="Social Networking Integration" colSpan="3">
-					<group colSpan="3" cols="2" name="snIntegrationInit">
-						<button name="showing" title="Post Message"
-							onClick="action-showing,com.axelor.sn.web.SNCommonController:sayProduct" />
-						<button name="retriveCmnt" hideIf="snStatusUpdates == null" title="Comments/Replies"
-							onClick="com.axelor.sn.web.SNCommonController:getComments" />
-						<spacer colSpan="1" />
-					</group>
-					<spacer colSpan="1" />
-					<break />
-					<group colSpan="2" cols="6" name="boolFields" hideIf="snStatusUpdates !=  null">
-						<field name="fb" title="Facebook" colSpan="1" widget="[type=boolean]" />
-						<field name="ln" title="Linkedin" colSpan="1" widget="[type=boolean]" />
-						<field name="twt" title="Twitter" colSpan="1" widget="[type=boolean]" />
-
-					</group>
-					<break />
-					<group colSpan="3" cols="3" colWidths="20%,*">
-						<field name="snStatusUpdates" title="Discussion" readonly="true"
-							colSpan="3" canView="true" edit-window="self" form-view="sn-product-comments-form"
-							hideIf="snStatusUpdates == null" />
-						<break />
-						<group colSpan="3" cols="3" colWidths="70%,*">
-							<field name="postToSN" showTitle="false" hidden="true"
-								colSpan="2" widget="Text" />
-							<group colSpan="1" cols="2">
-								<button name="postit" title="Post" hidden="true"
-									onClick="com.axelor.sn.web.SNCommonController:postOnSN,action-showing-seen, save, com.axelor.sn.web.SNCommonController:refreshSnStatusUpdatesComments" />
-								<button name="cancel" title="Cancel" hidden="true"
-									onClick="action-showing-seen" />
-							</group>
-						</group>
-
-					</group>
-
-				</group>
-				<group name="snStatusComment" colSpan="3" cols="3">
-					<field name="comments" title="Comments" hideIf="snStatusUpdates == null"
-						readonly="true"
-						widget="SnStatusComments[type=ONE_TO_MANY|target=com.axelor.apps.socialnetwork.db.SnStatusComments]">
-						<grid title="Comments">
-							<field name="partner" title="By" width="100" />
-							<field name="commentText" title="Comment" />
-							<field name="commentDateT" title="Time" width="125" />
-							<field name="isFacebook" title="Facebook" width="35" />
-							<field name="isLinkedin" title="Linkedin" width="35" />
-							<field name="isTwitter" title="Twitter" width="35" />
-						</grid>
-					</field>
-				</group>
-			</page>
         </notebook>
     </form>
     
@@ -162,36 +109,9 @@
     <action-validate name="action-product-validate-sale-supply-select">
    		<alert message="A product of type service can't be procured from stock." if="saleSupplySelect == 1 &amp;&amp; productTypeSelect == 'service'"/>
 	</action-validate> 
-
-    <!-- ACTIONS FOR SOCIAL NETWORKING INTEGRATION -->
-
-	<action-attrs name="action-sn-integration-init">
-		<attribute name="hidden" for="snIntegrationInit" expr="eval:id == null" />
-		<attribute name="hidden" for="comments" expr="false"
-			if="eval:snStatusUpdates != null" />
-	</action-attrs>
-
-	<action-attrs name="action-main-cntrl">
-		<attribute name="hidden" for="snStatusUpdates" expr="eval:snStatusUpdates == null" />
-	</action-attrs>
-
-	<action-attrs name="action-showing">
-		<attribute name="hidden" expr="false" for="postToSN" />
-		<attribute name="hidden" expr="false" for="postit" />
-		<attribute name="hidden" expr="true" for="showing" />
-		<attribute name="hidden" expr="false" for="cancel" />
-	</action-attrs>
-
-	<action-attrs name="action-showing-seen">
-		<attribute name="hidden" expr="false" for="showing" />		
-		<attribute name="hidden" expr="true" for="postToSN" />
-		<attribute name="hidden" expr="true" for="postit" />
-		<attribute name="hidden" expr="true" for="cancel" />
-	</action-attrs>
 	
 	<action-method name="action-print-product-catelog" >
 		<call class="com.axelor.apps.base.web.ProductControllerSimple" method="printProductCatelog"/>
 	</action-method>
-	<!-- END OF ACTIONS FOR SOCIAL NETWORKING INTEGRATION -->
     
 </object-views>

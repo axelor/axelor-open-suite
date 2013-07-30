@@ -55,9 +55,9 @@
 	        <field name="supplierTypeSelect" hideIf="isContact || !isSupplier"/>
 	        <break/>
 	        <spacer colSpan="1"/>
-	        <button name="facebook" icon="img/facebook_logo.png" css="sn-buttons"/>
-	        <button name="linkedin" icon="img/linkedin_logo.png" css="sn-buttons"/>
-	        <button name="twitter" icon="img/twitter_logo.png" css="sn-buttons"/>
+	        <button name="facebook" icon="img/facebook_logo.png" css="sn-buttons" onClick="action-partner-view-sn-profile"/>
+	        <button name="linkedin" icon="img/linkedin_logo.png" css="sn-buttons" onClick="action-partner-view-sn-profile"/>
+	        <button name="twitter" icon="img/twitter_logo.png" css="sn-buttons" onClick="action-partner-view-sn-profile"/>
 	    </group>
 	    <field name="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2" colSpan="4" domain="self.isContact = 'true'" grid-view="partner-contact-grid"/>
 	    <break/>
@@ -375,6 +375,11 @@
 		<view type="grid" name="opportunity-grid"/>
 		<view type="form" name="opportunity-form"/>
 		<domain>self.relatedToSelect = 'com.axelor.apps.base.db.Partner' AND self.relatedToSelectId = :id</domain>
+		<context name="id" expr="eval: id"/>
+	</action-view>
+	
+	<action-view name="action-partner-view-sn-profile" title="Profiles" model="com.axelor.apps.base.db.Wizard">
+		<view type="form" name="sn-profile-wizard-form"/>
 		<context name="id" expr="eval: id"/>
 	</action-view>
     

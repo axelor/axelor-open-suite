@@ -6,17 +6,24 @@
   <module name="socialnetwork" package="com.axelor.apps.socialnetwork.db"/>
 
   <entity name="SnStatusUpdates">
+  	<boolean name="isFb" title="Facebook"/>
+  	<boolean name="isTwt" title="Twitter"/>
+  	<boolean name="isLn" title="Linkedin"/>
+  	<boolean name="isFbWall" title="Post on Wall ?"/>
   	<string name="linkedinUpdateRef"/>
   	<string name="facebookUpdateRef"/>
   	<string name="twitterUpdateRef"/>
-  	<many-to-one name="fbPersonalCredential" title="Facebook account" ref="com.axelor.apps.socialnetwork.db.PersonalCredential"/>
+  	<!-- <many-to-one name="fbPersonalCredential" title="Facebook account" ref="com.axelor.apps.socialnetwork.db.PersonalCredential"/>
   	<many-to-one name="twtPersonalCredential" title="Twitter account" ref="com.axelor.apps.socialnetwork.db.PersonalCredential"/>
   	<many-to-one name="lnPersonalCredential" title="LinkedIn account" ref="com.axelor.apps.socialnetwork.db.PersonalCredential"/>
-  	<many-to-one name="commentPersonalCredential" ref="com.axelor.apps.socialnetwork.db.PersonalCredential"/>
-    <string name="content" namecolumn="true" multiline="true" max="600"/>
-    <datetime name="updateDateT" tz="true"/>
-    <many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo"/>
-    <one-to-many name="snStatusCommentsList" ref="com.axelor.apps.socialnetwork.db.SnStatusComments" orphan="true" mappedBy="snStatusUpdates"/>
- </entity>
+  	<many-to-one name="commentPersonalCredential" ref="com.axelor.apps.socialnetwork.db.PersonalCredential"/> -->
+    <string name="content" namecolumn="true" multiline="true" required="true" max="140" title="Content"/>
+    <datetime name="updateDateT" tz="true" title="Update Time"/>
+    <one-to-many name="snStatusCommentsList" ref="com.axelor.apps.socialnetwork.db.SnStatusComments" orphan="true" mappedBy="snStatusUpdates" title="Comments"/>
+    <one-to-many name="snPagePostRefList" ref="com.axelor.apps.socialnetwork.db.SnPagePostRef"/>
+    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner"/>
+    <many-to-many name="companyPartnerSet" ref="com.axelor.apps.base.db.Partner" title="Pages"/>
+    <many-to-one name="commentCompanyPartner" ref="com.axelor.apps.base.db.Partner" title="Page"/>
+  </entity>
  
 </domain-models>

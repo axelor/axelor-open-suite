@@ -4,14 +4,14 @@
  	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
  	<module name="socialnetwork" package="com.axelor.apps.socialnetwork.db" />
  	<entity name="SnSendMessage">
- 		<string name="content" multiline="true" max="140"/>
+ 		<string name="content" multiline="true" max="140" required="true" title="Content"/>
  		<string name="snMessageRef" />
- 		<string name="subject" />
- 		<datetime name="messageDateT" tz="true" title="Message date" />
+ 		<string name="subject" title="Subject"/>
+ 		<datetime name="messageDateT" tz="true" title="Message date" readonly="true"/>
  		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" />
- 		<many-to-one name="socialNet" ref="com.axelor.apps.socialnetwork.db.SocialNet" orphan="true" />
- 		<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" orphan="true" />
- 		<many-to-one name="personalCredential" ref="com.axelor.apps.socialnetwork.db.PersonalCredential" />
- 		<many-to-one name="socialNetUserAccount" title="Social Network Account" ref="com.axelor.apps.socialnetwork.db.SocialNetUserAccount"/>
+ 		<many-to-one name="socialNet" ref="com.axelor.apps.socialnetwork.db.SocialNet" orphan="true" required="true" title="Social Network"/>
+ 		<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" orphan="true" required="true" title="To User"/>
+ 		<many-to-one name="personalCredential" ref="com.axelor.apps.socialnetwork.db.PersonalCredential" required="true" title="Personal Credential"/>
+ 		<string name="snRef" title="Social Network Id" required="true"/>
  	</entity>
  </domain-models>
