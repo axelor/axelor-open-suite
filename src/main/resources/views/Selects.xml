@@ -682,24 +682,7 @@
 		<option value="2">Medium</option>
 		<option value="3">High</option>
 	</selection>
-
-	<selection name="consulting.need.type.select">
-		<option value="1">Fixed fee</option>
-		<option value="2">Onsite</option>
-		<option value="3">TMA</option>
-	</selection>
-
-	<selection name="consulting.need.pricing.mode.select">
-		<option value="1">Daily</option>
-		<option value="2">Monthly fix</option>
-		<option value="3">Monthly regulated</option>
-	</selection>
 	
-	<selection name="consulting.price.list.discount.line.amount.type.select">
-		<option value="1">Fixe</option>
-		<option value="2">%</option>
-	</selection>
-
 	<selection name="grade.0.up.to.5.select">
 		<option value="20">1</option>
 		<option value="40">2</option>
@@ -725,21 +708,7 @@
 		<option value="1">Day</option>
 		<option value="2">Hour</option>
 	</selection>
-
-	<selection name="consulting.need.status.select">
-		<option value="1">New</option>
-		<option value="2">Commercially validated</option>
-		<option value="3">Technically validated</option>
-		<option value="4">Proposed customer</option>
-		<option value="5">Converted</option>
-	</selection>
 	
-	<selection name="consulting.need.end.status.select">
-		<option value="1">Win</option>
-		<option value="2">Lost</option>
-		<option value="3">Canceled</option>
-	</selection>
-
 	<!-- Organisation -->
 
 	<selection name="organisation.candidate.availability.select">
@@ -987,41 +956,7 @@
 		<option value="2">By delivery</option>
 		<option value="3">Per order</option>
 	</selection>
-
-	<selection name="consulting.needline.profile.category.select">
-		<option value="1">Junior</option>
-		<option value="2">Senior</option>
-		<option value="3">Expert</option>
-	</selection>
 	
-	<selection name="consulting.resource.lost.reason.select">
-		<option value="1">Too expensive</option>
-		<option value="2">Availability issue</option>
-		<option value="3">Postponed</option>
-		<option value="4">Internal solution</option>
-		<option value="5">No budget</option>
-	</selection>
-
-	<selection name="consulting.price.list.based.on.select">
-		<option value="1">Cost price</option>
-		<option value="2">Sale price</option>
-	</selection>
-
-	<selection name="consulting.price.list.type.select">
-		<option value="1">Sale</option>
-		<option value="2">Purchase</option>
-	</selection>
-
-	<selection name="consulting.price.list.discount.line.type.select">
-		<option value="1">Discount</option>
-		<option value="2">Additionnal</option>
-	</selection>
-	
-	<selection name="consulting.price.list.discount.line.price.type.select">
-		<option value="1">Unit price</option>
-		<option value="2">Discount</option>
-	</selection>
-
 	<selection name="base.html.template.type.select">
 		<option value="1">Contact</option>
 		<option value="2">Campaign</option>
