@@ -362,6 +362,8 @@
 "supplychain.purchase.order.invoicing.type.select","1","select","Free","Libre",,,,
 "supplychain.purchase.order.invoicing.type.select","2","select","By delivery","Par livraison",,,,
 "supplychain.purchase.order.invoicing.type.select","3","select","Per order","Par commande",,,,
+"supplychain.sales.order.line.discount.type.select","1","select","In %","En %",,,,
+"supplychain.sales.order.line.discount.type.select","2","select","Fixed","Fixe",,,,
 "action-purchase-order-show-supplier-invoice","action-purchase-order-show-supplier-invoice","action","Supplier invoices","Factures fournisseurs",,,,
 "action-sales-order-button-validation","action-sales-order-button-validation","action","Project must be filled if create task by line is check.",,,,,""
 "action-sales-order-view-invoice","action-sales-order-view-invoice","action","Invoices","Factures",,,,

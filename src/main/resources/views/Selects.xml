@@ -60,4 +60,9 @@
 		<option value="2">Draft invoice N days after order validation</option>
 	</selection>
 	
+	<selection name="supplychain.sales.order.line.discount.type.select">
+		<option value="1">In %</option>
+		<option value="2">Fixed</option>
+	</selection>
+	
 </object-views>
