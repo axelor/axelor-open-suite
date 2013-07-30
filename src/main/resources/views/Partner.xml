@@ -53,6 +53,10 @@
 	        <field name="isSupplier" hideIf="partnerTypeSelect == 2"/>
 	        <field name="supplierTypeSelect" hideIf="isContact || !isSupplier"/>
 	        <break/>
+	        <spacer colSpan="1"/>
+	        <button name="facebook" icon="img/facebook_logo.png" css="sn-buttons" onClick="action-partner-view-sn-profile"/>
+	        <button name="linkedin" icon="img/linkedin_logo.png" css="sn-buttons" onClick="action-partner-view-sn-profile"/>
+	        <button name="twitter" icon="img/twitter_logo.png" css="sn-buttons" onClick="action-partner-view-sn-profile"/>
 	    </group>
 	    <field name="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2" colSpan="4" domain="self.isContact = 'true'" grid-view="partner-contact-grid"/>
 	    <break/>
@@ -111,15 +115,12 @@
 	        <page title="Social Networking" colSpan="4" name="socialNetworkingTab"
 				hideIf="id == null" onSelect="action-partner-attrs-hide-send-message">
 				<notebook>
-					<page title="Social Net Accounts">
+					<page title="Search">
 						<field name="hasSearchPartner" widget="BOOLEAN[type=BOOLEAN]" title="Search Partner on Social Network ?"/>
 						<break/>
 						<field name="fbSearch" widget="NestedEditor[type=MANY_TO_ONE|target=com.axelor.apps.socialnetwork.db.FBSearch]" summary-view="true" 
 						form-view="partner-fb-search-nested-form" edit-window="self" canSelect="false" showTitle="false" showIf="hasSearchPartner"/>
 						<break/>
-	                    <spacer/>
-	                    <break/>
-						<field name="socialNetUserAccountList" colSpan="4"/>
 					</page>
 					<page title="Inbox Message"> <!-- hideIf="socialNet.name == 'linkedin'"> -->
 						<portlet action="action-fetch-all-sn-mail" colSpan="4" />
@@ -130,8 +131,8 @@
 
 					<page title="Send Personal Message" name="snPersonalMessage">
 						<!-- hideIf="socialNet.name == 'facebook'"> -->
-						<field name="snSendMessageList" title="Personal Messages"><!-- 
-								onChange="com.axelor.sn.web.TWTController:directMessageO2M"> -->
+						<field name="snSendMessageList" title="Personal Messages">
+								<!-- onChange="com.axelor.sn.web.TWTController:directMessageO2M"> -->
 							<grid title="All Sent Messages">
 								<field name="socialNet" title="Social Networking Type"/>
 								<field name="partner" title="To"/>
