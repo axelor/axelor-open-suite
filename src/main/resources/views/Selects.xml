@@ -293,27 +293,7 @@
 		<option value="3">Validated</option>
 		<option value="4">Canceled</option>
 	</selection>
-
-	<selection name="marketing.campaign.type.select">
-		<option value="1">Email</option>
-		<option value="2">Mail</option>
-		<option value="3">Phone</option>
-		<option value="4">Sms</option>
-		<option value="5">Mms</option>
-		<option value="6">Web</option>
-	</selection>
-
-	<selection name="imarketing.type.select">
-		<option value="1">Contact</option>
-		<option value="2">Lead</option>
-	</selection>
-	
-	<selection name="imarketing.querie.type.select">
-		<option value="1">SQL</option>
-		<option value="2">JPQL</option>
-		<option value="3">FILTER</option>
-	</selection>
-											
+												
 	<selection name="supplychain.purchase.order.invoicing.type.select">
 		<option value="1">Free</option>
 		<option value="2">By delivery</option>
