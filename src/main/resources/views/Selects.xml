@@ -261,4 +261,33 @@
 		<option value="20">20</option>
 	</selection>
 	
+	<selection name="hr.expense.validation.status.select">
+		<option value="1">Verified</option>
+		<option value="2">Waiting validation</option>
+	</selection>
+	
+	<selection name='hr.expense.line.file.received.select'>
+		<option value='1'>Yes</option>
+		<option value='2'>No</option>
+	</selection>
+	
+	<selection name="hr.expense.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Submited</option>
+		<option value="3">Validated RSC Manager</option>
+		<option value="4">Validated commercial</option>
+		<option value="5">Paid</option>
+		<option value="6">Refused</option>
+	</selection>
+	
+	<selection name="expense.line.expense.type.select">
+		<option value="1">Reinvoiceable</option>
+		<option value="2">Not reinvoiceable</option>
+	</selection>
+	
+	<selection name="training.experience.type.select">
+		<option value="internal">Internal</option>
+		<option value="previousJob">Previous job</option>
+	</selection>
+	
 </object-views>
