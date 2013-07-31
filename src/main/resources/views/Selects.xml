@@ -30,15 +30,9 @@
 		<option value="2">Approval</option>
 	</selection>
 	
-
 	<selection name="partner.partner.type.select">
 		<option value="1">Company</option>
 		<option value="2">Individual</option>
-	</selection>
-
-	<selection name="account.account.schedule.type">
-		<option value='type'>Type</option>
-		<option value='subtype'>Subtype</option>
 	</selection>
 
 	<selection name='mail.model.object.concerned.select'>
@@ -51,18 +45,6 @@
 	<selection name='iadministration.yes.no.select'>
 		<option value='1'>Yes</option>
 		<option value='0'>No</option>
-	</selection>
-
-	<selection name='iinvoice.operation.type.select'>
-		<option value='1'>Supplier purchase</option>
-		<option value='2'>Supplier refund</option>
-		<option value='3'>Customer sale</option>
-		<option value='4'>Customer refund</option>
-	</selection>
-
-	<selection name='ipayment.operation.type.select'>
-		<option value='1'>Supplier</option>
-		<option value='2'>Customer</option>
 	</selection>
 
 	<selection name='iterritory.artmin.select'>
@@ -110,11 +92,6 @@
 		<option value='invoice'>Invoice</option>
 		<option value='payment'>Payment Schedule</option>
 		<option value='reject'>Reject</option>
-	</selection>
-
-	<selection name='payment.voucher.state.select'>
-		<option value='1'>Draft</option>
-		<option value='2'>Confirmed</option>
 	</selection>
 
 	<selection name='invoice.account.condition.invoice.sending.format.select'>
@@ -173,51 +150,14 @@
 		<option value='1'>Validated</option>
 	</selection>
 	
-	<selection name='account.account.type.select'>
-		<option value='asset'>Asset</option>
-		<option value='cash'>Cash</option>
-		<option value='commitment'>Commitment</option>
-		<option value='currentAsset'>Current Asset</option>
-		<option value='debt'>Debt</option>
-		<option value='equity'>Equity</option>
-		<option value='expense'>Expense</option>
-		<option value='immobilisation'>Immobilisation</option>
-		<option value='income'>Income</option>
-		<option value='payable'>Payable</option>
-		<option value='provision'>Provision</option>
-		<option value='receivable'>Receivable</option>
-		<option value='special'>Special</option>
-		<option value='tax'>Tax</option>
-		<option value='view'>View</option>
-	</selection>
-	
-
 	<selection name='title.type.select'>
 		<option value='1'>Civility</option>
 		<option value='2'>Legal form</option>
 	</selection>
 
-	<selection name='move.line.mail.select'>
-		<option value='1'>Do not send mail</option>
-		<option value='2'>Mail to send</option>
-		<option value='3'>Mail sent</option>
-	</selection>
-
-	<selection name='move.line.reimbursement.state.select'>
-		<option value='0'></option>
-		<option value='1'>Reimbursement ongoing</option>
-		<option value='2'>Reimbursed</option>
-	</selection>
-
 	<selection name='reimbursement.export.state.select'>
 		<option value='1'>To reimburse</option>
 		<option value='2'>Reimbursed</option>
-	</selection>
-
-	<selection name='reconcile.state.select'>
-		<option value='1'>Draft</option>
-		<option value='2'>Confirmed</option>
-		<option value='3'>Canceled</option>
 	</selection>
 
 	<selection name='provision.service.processing.way.select'>
@@ -235,78 +175,14 @@
 		<option value='1'>Validated</option>
 	</selection>
 
-	<selection name='iaccount.account.schedule.export.type.select'>
-		<option value='0'>Monthly payment schedule(DD)</option>
-		<option value='1'>Invoices/Payment schedule(DD)</option>
-	</selection>
-
-	<selection name='payment.schedule.state.select'>
-		<option value='1'>Draft</option>
-		<option value='2'>Confirmed</option>
-		<option value='3'>Closed</option>
-		<option value='4'>Canceled</option>
-	</selection>
-
-	<selection name='iaccount.account.schedule.nature.select'>
-		<option value='0'>Payment</option>
-		<option value='2'>Lissage de paiement</option>
-	</selection>
-
 	<selection name='base.base.on.select'>
 		<option value='amount'>Amount</option>
 		<option value='quantity'>Qty</option>
 	</selection>
 	
-	<selection name='pricing.list.type.select'>
-		<option value='0'></option>
-		<option value='1'>Specific</option>
-	</selection>
-
 	<selection name='iadministration.export.type.select'>
 		<option value="pdf">PDF</option>
 		<option value="xls">XLS</option>
-	</selection>
-
-	<selection name='move.line.report.type.select'>
-		<option value="1">Payment collection journal</option>
-		<option value="2">General ledger</option>
-		<option value="3">Balance</option>
-		<option value="4">Aged Balance</option>
-		<option value="5">Cheque deposit slip</option>
-		<option value="10">Cash payments summary</option>
-		<option value="11">Journal</option>
-		<option value="13">Payment differences</option>
-		<option value="12">VAT Statement</option>
-	</selection>
-
-	<selection name='move.line.report.type.select.export'>
-		<option value="6">Export sales -> Acc. Soft.</option>
-		<option value="7">Export refunds -> Acc. Soft.</option>
-		<option value="8">Export tresury -> Acc. Soft.</option>
-		<option value="9">Export purchases -> Acc. Soft.</option>
-	</selection>
-
-	<selection name='move.state.select'>
-		<option value='draft'>Draft</option>
-		<option value='simulated'>Simulated</option>
-		<option value='validated'>Validated</option>
-		<option value='canceled'>Canceled</option>
-	</selection>
-
-	<selection name='cash.register.state.select'>
-		<option value='0'>Draft</option>
-		<option value='1'>Closed</option>
-	</selection>
-
-	<selection name='payer.quality.config.line.incident.type.select'>
-		<option value='0'>Reminder</option>
-		<option value='1'>Reject</option>
-	</selection>
-
-	<selection name='iaccount.account.schedule.irrecoverable.state.select'>
-		<option value="0"></option>
-		<option value="1">To shift as irrecoverable</option>
-		<option value="2">Shifted as irrecoverable</option>
 	</selection>
 
 	<selection name="sequence.generic.code.select">
@@ -352,64 +228,6 @@
 	</selection>
 
 	<!-- TODO à modifier, produit, taxe, paiement dans le code java ou les vues -->
-	<selection name="account.management.type.select">
-		<option value="1">Product</option>
-		<option value="2">Tax</option>
-		<option value="3">Payment</option>
-	</selection>
-
-	<selection name="iinvoice.batch.action.select">
-		<option value="0">Invoicing</option>
-		<option value="1">Status</option>
-		<option value="2">Alarm</option>
-		<option value="3">Invoicesbill Invoicing</option>
-		<option value="4">Invoicesbill Confirmation</option>
-	</selection>
-
-	<selection name="iaccounting.batch.action.select">
-		<option value="11">Reimbursement</option>
-		<option value="12">Direct debit</option>
-		<option value="14">Reminder</option>
-		<option value="15">Payments by IPO et IPO cheque</option>
-		<option value="16">Doubtful Customers</option>
-	</selection>
-
-	<selection name="ireimbursement.batch.type.select">
-		<option value="1">Reimbursement Export</option>
-		<option value="2">Rejected Reimbursements Import</option>
-	</selection>
-
-	<selection name="ireimbursement.batch.export.type.select">
-		<option value="1">Generate reimbursements</option>
-		<option value="2">Export reimbursements</option>
-	</selection>
-
-	<selection name="iaccount.account.schedule.type.select">
-		<option value="1">Export direct debits</option>
-		<option value="2">Import direct debit rejects</option>
-	</selection>
-
-	<selection name="ireminder.batch.type.select">
-		<option value="1">Classic reminder</option>
-	</selection>
-
-	<selection name="iinterbank.account.order.batch.type.select">
-		<option value="1">Import payments by IPO and IPO cheque</option>
-		<option value="2">Import payment rejects by IPO and IPO cheque</option>
-	</selection>
-
-	<selection name="iinvoice.batch.to.status.select">
-		<option value="tov">Validate</option>
-		<option value="val">Ventilate</option>
-	</selection>
-
-	<selection name="iinvoice.batch.from.status.select">
-		<option value="dra">Draft</option>
-		<option value="tov">To validate</option>
-		<option value="val">Validate</option>
-		<option value="ala">In alarm</option>
-	</selection>
-
 	<selection name='journal.description.type.select'>
 		<option value="0">Free</option>
 		<option value="1">Payment</option>
@@ -460,35 +278,6 @@
 		<option value="3">Canceled</option>
 	</selection>
 				
-	<selection name="hr.expense.validation.status.select">
-		<option value="1">Verified</option>
-		<option value="2">Waiting validation</option>
-	</selection>
-
-	<selection name='hr.expense.line.file.received.select'>
-		<option value='1'>Yes</option>
-		<option value='2'>No</option>
-	</selection>
-
-	<selection name="hr.expense.status.select">
-		<option value="1">Draft</option>
-		<option value="2">Submited</option>
-		<option value="3">Validated RSC Manager</option>
-		<option value="4">Validated commercial</option>
-		<option value="5">Paid</option>
-		<option value="6">Refused</option>
-	</selection>
-
-	<selection name="expense.line.expense.type.select">
-		<option value="1">Reinvoiceable</option>
-		<option value="2">Not reinvoiceable</option>
-	</selection>
-
-	<selection name="training.experience.type.select">
-		<option value="internal">Internal</option>
-		<option value="previousJob">Previous job</option>
-	</selection>
-
 	<selection name="sales.order.invoice.type.select">
 		<option value="1">Per order</option>
 		<option value="2">With payment schedule</option>
