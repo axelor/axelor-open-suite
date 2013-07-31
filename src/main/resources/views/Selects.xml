@@ -539,14 +539,6 @@
 		<option value="5">Client invoice</option>
 	</selection>
 	
-	<selection name="production.prod.order.status.select">
-		<option value="1">Draft</option>
-		<option value="2">Standby</option>
-		<option value="3">Planned</option>
-		<option value="4">Finished</option>
-		<option value="5">Canceled</option>
-	</selection>
-	
 	<selection name="base.keyword.type.select">
 		<option value="1">Tools</option>
 		<option value="2">Sector</option>
