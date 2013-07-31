@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+
+
+	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
+	
+	<selection name="production.prod.order.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Standby</option>
+		<option value="3">Planned</option>
+		<option value="4">Finished</option>
+		<option value="5">Canceled</option>
+	</selection>
+	
+</object-views>
