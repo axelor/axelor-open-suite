@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+
+
+	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
+	
+	<selection name="crm.lead.status.select">
+		<option value="1">New</option>
+		<option value="2">Assigned</option>
+		<option value="3">In process</option>
+		<option value="4">Converted</option>
+		<option value="5">Recycled</option>
+		<option value="6">Dead</option>
+	</selection>
+	
+	<selection name="crm.event.type.select">
+		<option value="1">Call</option>
+		<option value="2">Meeting</option>
+		<option value="3">Task</option>
+		<option value="4">Holiday</option>
+		<option value="5">Ticket</option>
+		<option value="6">Event</option>
+	</selection>
+	
+	<selection name="crm.event.ticket.priority.select">
+		<option value="1">Low</option>
+		<option value="2">Normal</option>
+		<option value="3">High</option>
+		<option value="4">Urgent</option>
+		<option value="5">Immediate</option>
+	</selection>
+	
+	<selection name="crm.event.ticket.progress.select">
+		<option value="10">10 %</option>
+		<option value="20">20 %</option>
+		<option value="30">30 %</option>
+		<option value="40">40 %</option>
+		<option value="50">50 %</option>
+		<option value="60">60 %</option>
+		<option value="70">70 %</option>
+		<option value="80">80 %</option>
+		<option value="90">90 %</option>
+		<option value="100">100 %</option>
+	</selection>
+	
+	<!-- <selection name="crm.event.call.primary.status.select"> -->
+	<!-- <option value="1">Inboud</option> -->
+	<!-- <option value="2">Outbound</option> -->
+	<!-- </selection> -->
+
+	<!-- <selection name="crm.event.secondary.status.select"> -->
+	<!-- <option value="1">Planned</option> -->
+	<!-- <option value="2">Held</option> -->
+	<!-- <option value="3">Not held</option> -->
+	<!-- </selection> -->
+
+	<!-- <selection name="crm.event.task.thirdary.status.select"> -->
+	<!-- <option value="1">Not started</option> -->
+	<!-- <option value="2">In progress</option> -->
+	<!-- <option value="3">Completed</option> -->
+	<!-- <option value="4">Pending input</option> -->
+	<!-- <option value="5">Deferred</option> -->
+	<!-- </selection> -->
+
+<!-- 	<selection name="crm.event.related.to.select"> -->
+<!-- 		<option value="1">Partner</option> -->
+<!-- 		<option value="2">Contact</option> -->
+<!-- 		<option value="3">Lead</option> -->
+<!-- 		<option value="4">Opportunity</option> -->
+<!-- 		<option value="5">Product</option> -->
+<!-- 		<option value="6">Task</option> -->
+<!-- 		<option value="7">Affair</option> -->
+<!-- 		<option value="8">Quote</option> -->
+<!-- 		<option value="9">Order</option> -->
+<!-- 		<option value="10">Project</option> -->
+<!-- 		<option value="11">Task (Project)</option> -->
+<!-- 	</selection> -->
+
+	<selection name="crm.event.related.to.select">
+		<option value="com.axelor.apps.base.db.Partner">Partner/Contact</option>
+		<option value="com.axelor.apps.crm.db.Lead">Lead</option>
+		<option value="com.axelor.apps.crm.db.Opportunity">Opportunity</option>
+		<option value="com.axelor.apps.base.db.Product">Product</option>
+		<option value="com.axelor.apps.crm.db.Event">Event</option>
+		<option value="com.axelor.apps.supplychain.db.SalesOrder">Quote/Order</option>
+		<option value="com.axelor.apps.organisation.db.Project">Project/Affair</option>
+		<option value="com.axelor.apps.organisation.db.Task">Task (Project)</option>
+	</selection>
+	
+	<selection name="crm.event.call.duration.minutes.select">
+		<option value="0">00</option>
+		<option value="15">15</option>
+		<option value="30">30</option>
+		<option value="45">45</option>
+	</selection>
+	
+	<selection name="crm.calendar.type.select">
+		<option value="1">ICAL_SERVER</option>
+		<option value="2">CALENDAR_SERVER</option>
+		<option value="3">GCAL</option>
+		<option value="4">ZIMBRA</option>
+		<option value="5">KMS</option>
+		<option value="6">CGP</option>
+		<option value="7">CHANDLER</option>
+	</selection>
+	
+	<selection name="crm.opportunity.type.select">
+		<option value="1">Existing business</option>
+		<option value="2">New business</option>
+	</selection>
+	
+	<selection name="crm.opportunity.sales.stage.select">
+		<option value="1">Prospection</option>
+		<option value="2">Qualification</option>
+		<option value="3">Needs analysis</option>
+		<option value="4">Proposition</option>
+		<option value="5">Identify deciders</option>
+		<option value="6">Analysis</option>
+		<option value="7">Proposal/Quote</option>
+		<option value="8">Negociation</option>
+		<option value="9">Closed won</option>
+		<option value="10">Closed lost</option>
+	</selection>
+	
+	<selection name="crm.event.call.status.select">
+		<option value="1">Incoming</option>
+		<option value="2">Outgoing</option>
+	</selection>
+	
+	<selection name="crm.event.secondary.status.select">
+		<option value="1">Planified</option>
+		<option value="2">Realized</option>
+		<option value="3">Canceled</option>
+	</selection>
+	
+	<selection name="crm.event.primary.status.select">
+		<option value="1">Tentative</option>
+		<option value="2">Confirmed</option>
+	</selection>
+	
+	<selection name="crm.event.task.status.select">
+		<option value="1">Not started</option>
+		<option value="2">On going</option>
+		<option value="3">Finished</option>
+		<option value="4">Pending</option>
+		<option value="5">Reported</option>
+	</selection>
+	
+	<selection name="crm.event.ticket.status.select">
+		<option value="1">New</option>
+		<option value="2">In progress</option>
+		<option value="3">Resolved</option>
+		<option value="4">Feedback</option>
+		<option value="5">Closed</option>
+	</selection>
+	
+	<selection name="crm.event.task.priority.select">
+		<option value="1">Low</option>
+		<option value="2">Medium</option>
+		<option value="3">High</option>
+	</selection>
+	
+	<selection name="crm.event.attendee.status.select">
+		<option value="1">Non-participant</option>
+		<option value="2">Optional participant</option>
+		<option value="3">Required participant</option>
+	</selection>
+	
+</object-views>
