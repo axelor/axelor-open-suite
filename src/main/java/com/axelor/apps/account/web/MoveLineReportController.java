@@ -25,7 +25,7 @@ public class MoveLineReportController {
 	@Inject
 	private Injector injector;
 	
-	private static final Logger LOG = LoggerFactory.getLogger(MoveLineReport.class);
+	private static final Logger LOG = LoggerFactory.getLogger(MoveLineReportController.class);
 	
 	public void searchMoveLine(ActionRequest request, ActionResponse response) {
 		
