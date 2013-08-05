@@ -15,8 +15,7 @@ public class ProjectController {
 		
 		Project project = request.getContext().asType(Project.class);
 		
-		if(project != null) {
-			
+		if(project != null) {			
 			projectService.createDefaultTask(project);
 		}
 	}
@@ -25,8 +24,7 @@ public class ProjectController {
 		
 		Project affair = request.getContext().asType(Project.class);
 		
-		if(affair != null) {
-			
+		if(affair != null) {			
 			projectService.createPreSalesTask(affair);
 		}
 	}
