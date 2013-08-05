@@ -147,9 +147,6 @@ public class InventoryService {
 		
 	}
 	
-	
-	
-	
 	public void generateStockMove(Inventory inventory) throws AxelorException {
 		
 		Location toLocation = inventory.getLocation();
@@ -175,7 +172,10 @@ public class InventoryService {
 				if (stockMoveLine == null)  {
 					throw new AxelorException("Produit incorrect dans la ligne de l'inventaire "+inventorySeq, IException.CONFIGURATION_ERROR);
 				}
-					
+				
+				if(stockMove.getStockMoveLineList() == null) {
+					stockMove.setStockMoveLineList(new ArrayList<StockMoveLine>());
+				}
 				stockMove.getStockMoveLineList().add(stockMoveLine);
 			}
 		}
@@ -183,8 +183,6 @@ public class InventoryService {
 			stockMoveService.validate(stockMove);
 		}
 	}
-	
-	
 	
 	public StockMove createStockMoveHeader(Inventory inventory, Company company, Location toLocation, LocalDate inventoryDate, String name) throws AxelorException  {
 		
