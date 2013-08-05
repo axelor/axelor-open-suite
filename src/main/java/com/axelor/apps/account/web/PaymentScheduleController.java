@@ -12,15 +12,6 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 
 public class PaymentScheduleController {
-
-//	@Inject
-//	private SequenceService sgs
-//	
-//	@Inject
-//	private PaymentScheduleService pss
-//	
-//	@Inject
-//	private IrrecoverableService is
 	
 	@Inject
 	private Injector injector;

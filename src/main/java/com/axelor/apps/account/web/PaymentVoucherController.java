@@ -36,7 +36,6 @@ public class PaymentVoucherController {
 	//Called on onSave event
 	public void paymentVoucherSetNum(ActionRequest request, ActionResponse response){
 		
-		LOG.debug("In paymentVoucherSetNum ....");
 		PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
 		
 		if (paymentVoucher.getRef() == null || paymentVoucher.getRef().isEmpty()){
@@ -57,13 +56,11 @@ public class PaymentVoucherController {
 				}
 			}
 		}
-		LOG.debug("End paymentVoucherSetNum.");
 	}
 	
 	// Loading move lines of the selected partner (1st O2M)
 	public void loadMoveLines(ActionRequest request, ActionResponse response) {
-		
-		LOG.debug("In loadMoveLines ....");
+
 		PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
 		paymentVoucher = PaymentVoucher.find(paymentVoucher.getId());
 		
@@ -72,15 +69,11 @@ public class PaymentVoucherController {
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
-		
-		LOG.debug("End loadMoveLines.");
 	}
 	
 	// Filling lines to pay (2nd O2M)
 	public void loadSelectedLines(ActionRequest request, ActionResponse response) {
-		
-		LOG.debug("In loadSelectedLines ....");
-		
+				
 		PaymentVoucher paymentVoucherContext = request.getContext().asType(PaymentVoucher.class);
 		PaymentVoucher paymentVoucher = PaymentVoucher.find(paymentVoucherContext.getId());
 			
@@ -89,31 +82,23 @@ public class PaymentVoucherController {
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
-		
-		LOG.debug("End loadSelectedLines.");
 	}
 	
 	// Confirm the payment voucher
 	public void confirmPaymentVoucher(ActionRequest request, ActionResponse response) {
-		
-		LOG.debug("In confirmPaymentVoucher ....");
-		
+				
 		PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
 		paymentVoucher = PaymentVoucher.find(paymentVoucher.getId());
 		
 		try{				
 			pvs.get().confirmPaymentVoucher(paymentVoucher, false);
-			
 			response.setReload(true);	
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
-		
-		LOG.debug("End confirmPaymentVoucher.");
 	}
 	
 	public void getPaymentScheduleLine(ActionRequest request, ActionResponse response)  {
 		
-		LOG.debug("In getPaymentScheduleLine");
 		PaymentVoucher pv = request.getContext().asType(PaymentVoucher.class);
 		
 		if(pv.getInvoiceToPay() != null)  {
@@ -132,8 +117,6 @@ public class PaymentVoucherController {
 			response.setValue("paymentScheduleToPay", null);
 			response.setValue("scheduleToPay", null);			
 		}
-		
-		LOG.debug("End getPaymentScheduleLine");
 	}
 	
 	public void printPaymentVoucher(ActionRequest request, ActionResponse response) {
@@ -142,36 +125,14 @@ public class PaymentVoucherController {
 		StringBuilder url = new StringBuilder();
 		AxelorSettings gieSettings = AxelorSettings.get();
 		url.append(gieSettings.get("gie.report.engine","")+"/frameset?__report=report/PaymentVoucher.rptdesign&__format=pdf&PaymentVoucherId="+paymentVoucher.getId()+gieSettings.get("gie.report.engine.datasource"));
-		//url.append("${gieSettings.get('gie.report.engine', '')}/frameset?__report=report/PaymentVoucher.rptdesign&__format=pdf&PaymentVoucherId=${paymentVoucher.id}${gieSettings.get('gie.report.engine.datasource')}")
 		
-		LOG.debug("url.."+url);
+		LOG.debug("Follow the URL: "+url);
 		
 		Map<String,Object> mapView = new HashMap<String,Object>();
 		mapView.put("title", "Reçu saisie paiement "+paymentVoucher.getReceiptNo());
 		mapView.put("resource", url);
 		mapView.put("viewType", "html");
-		mapView.put("_showRecord", 6);
+		//mapView.put("_showRecord", 6);
 		response.setView(mapView);	
-	}
-	
-//	// Confirm the payment voucher
-//	def void isDebitToPay(ActionRequest request, ActionResponse response) {
-//		
-//		log.debug("In confirmPaymentVoucher ....")
-//		
-//		PaymentVoucher paymentVoucher = request.context as PaymentVoucher
-//		paymentVoucher = PaymentVoucher.find(paymentVoucher.id)
-//		
-//		try{
-//			
-//			pvs.get().isDebitToPay(paymentVoucher)
-//			
-//			response.reload = true
-//			
-//		}
-//		catch(Exception e)  { TraceBackService.trace(response, e) }
-//		
-//		log.debug("End confirmPaymentVoucher.")
-//	}
-	
+	}	
 }

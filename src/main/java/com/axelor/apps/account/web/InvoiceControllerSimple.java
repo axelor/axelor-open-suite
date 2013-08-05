@@ -15,34 +15,7 @@ import com.axelor.rpc.ActionResponse;
 public class InvoiceControllerSimple {
 
 	private static final Logger LOG = LoggerFactory.getLogger(InvoiceControllerSimple.class);
-	
-//	/**
-//	 * Affiche les moveLines de la move remplie dans la facture
-//	 * @param request
-//	 * @param response
-//	 */
-//	 def void showMoveLine(ActionRequest request, ActionResponse response) {
-//
-//		Invoice invoice = request.context as Invoice
-//		
-//		if (invoice.move) {
-//			
-//			long id = invoice.move.id
-//			 
-//			if(invoice.oldMove)  {
-//				id = invoice.oldMove.id
-//			}
-//		
-//			response.view = [
-//				title : "Lignes d'écriture : Facture ${invoice.invoiceId}",
-//				resource : MoveLine.class.name,
-//				domain : "self.move.id = ${id}"
-//			]
-//		}
-//		else response.flash = "Aucune ligne d'écriture"
-//		 
-//	 }
-	
+		
 	/**
 	 * Fonction appeler par le bouton imprimer
 	 *
@@ -57,7 +30,6 @@ public class InvoiceControllerSimple {
 		StringBuilder url = new StringBuilder();			
 		AxelorSettings axelorSettings = AxelorSettings.get();
 		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Invoice.rptdesign&__format=pdf&InvoiceId="+invoice.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
-		//url.append("${axelorSettings.get('axelor.report.engine', '')}/frameset?__report=report/Invoice.rptdesign&__format=pdf&InvoiceId=${invoice.id}&__locale=fr_FR${axelorSettings.get('axelor.report.engine.datasource')}")
 
 		LOG.debug("URL : {}", url);
 		

@@ -10,12 +10,6 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 
 public class MoveController {
-
-//	@Inject
-//	private MoveService ms
-	
-//	@Inject
-//	private PeriodService ps
 	
 	@Inject
 	private Injector injector;

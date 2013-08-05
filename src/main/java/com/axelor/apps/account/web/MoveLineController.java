@@ -10,12 +10,6 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 
 public class MoveLineController {
-
-//	@Inject
-//	private MoveLineService mls
-//	
-//	@Inject
-//	private IrrecoverableService is
 	
 	@Inject
 	private Injector injector;

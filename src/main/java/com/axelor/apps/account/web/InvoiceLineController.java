@@ -15,61 +15,51 @@ public class InvoiceLineController {
 
 	@Inject
 	private InvoiceLineService invoiceLineService;
-	
+
 	public void compute(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
 		BigDecimal exTaxTotal = BigDecimal.ZERO;
 		BigDecimal accountingExTaxTotal = BigDecimal.ZERO;
-		
-//		try{
-		
-			if(invoiceLine.getPrice() != null && invoiceLine.getQty() != null) {
-				
-				exTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), invoiceLine.getPrice());
+
+		if(invoiceLine.getPrice() != null && invoiceLine.getQty() != null) {
+
+			exTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), invoiceLine.getPrice());
+		}
+
+		if(exTaxTotal != null) {
+
+			Invoice invoice = invoiceLine.getInvoice();
+
+			if(invoice == null) {
+				invoice = request.getContext().getParentContext().asType(Invoice.class);
 			}
-			
-			if(exTaxTotal != null) {
-				
-				Invoice invoice = invoiceLine.getInvoice();
-				
-				if(invoice == null) {
-					invoice = request.getContext().getParentContext().asType(Invoice.class);
-				}
-				
-				if(invoice != null) {
-					accountingExTaxTotal = invoiceLineService.getAccountingExTaxTotal(exTaxTotal, invoice);
-				}
+
+			if(invoice != null) {
+				accountingExTaxTotal = invoiceLineService.getAccountingExTaxTotal(exTaxTotal, invoice);
 			}
-			response.setValue("exTaxTotal", exTaxTotal);
-			response.setValue("accountingExTaxTotal", accountingExTaxTotal);
-//		}
-//		catch(Exception e)  {
-//			response.flash = e
-//		}
+		}
+		response.setValue("exTaxTotal", exTaxTotal);
+		response.setValue("accountingExTaxTotal", accountingExTaxTotal);
+
 	}
-	
+
 	public void getProductInformation(ActionRequest request, ActionResponse response) throws AxelorException {
-		
+
 		InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
-		
+
 		Invoice invoice = invoiceLine.getInvoice();
-		
+
 		if(invoice == null)  {
 			invoice = request.getContext().getParentContext().asType(Invoice.class);
 		}
-			
+
 		if(invoice != null && invoiceLine.getProduct() != null)  {
-			
-//			try  {
-				boolean isPurchase = invoiceLineService.isPurchase(invoice);
-				response.setValue("vatLine", invoiceLineService.getVatLine(invoice, invoiceLine, isPurchase));
-				response.setValue("price", invoiceLineService.getUnitPrice(invoice, invoiceLine, isPurchase));
-				response.setValue("productName", invoiceLine.getProduct().getName());
-//			}
-//			catch(Exception e)  {
-//				response.flash = e
-//			}
+
+			boolean isPurchase = invoiceLineService.isPurchase(invoice);
+			response.setValue("vatLine", invoiceLineService.getVatLine(invoice, invoiceLine, isPurchase));
+			response.setValue("price", invoiceLineService.getUnitPrice(invoice, invoiceLine, isPurchase));
+			response.setValue("productName", invoiceLine.getProduct().getName());
 		}
 	}
 }
