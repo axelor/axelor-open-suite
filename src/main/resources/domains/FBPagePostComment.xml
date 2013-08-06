@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
 	<module name="socialnetwork" package="com.axelor.apps.socialnetwork.db" />
 	<entity name="FBPageComment">
-		<string name="commentid" title="Comment id" help="Facebook Unique ID for Comment"/>
+		<string name="commentRef" title="Comment id" help="Facebook Unique ID for Comment"/>
 		<many-to-one name="fbPagePost" ref="com.axelor.apps.socialnetwork.db.FBPagePost"
 			title="Please Select Message" help="Posted Content Association on which Comment is Being Received"/>
 		<string name="from_user" title="From::User" help="Comment Made by User" />

@@ -6,8 +6,8 @@
 
   <entity name="LnGroupDiscussionComments">
 	<many-to-one name="lnGroupDiscussion" ref="com.axelor.apps.socialnetwork.db.LnGroupDiscussion"/>
-	<string name="commentId" title="Comment id" />
-	<string name="commentText" title="Comment" multiline="true" max="4000" />
+	<string name="commentRef" title="Comment id" />
+	<string name="content" title="Content" multiline="true" max="4000" />
 	<datetime name="commentDateT" title="Time" tz="true" />
 	<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" />
 	<string name="fromUser" title="From"/> 

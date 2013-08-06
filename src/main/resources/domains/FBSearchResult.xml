@@ -13,5 +13,7 @@
 		<string name="companyName" help="Name of Company" />
 		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo"/>
  		<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" orphan="true" />
+ 		<!-- <binary name="picture" image="true" title="Photo"/> -->
+ 		<string name="pictureUrl" title="Picture Link"/>
 	</entity>
 </domain-models>

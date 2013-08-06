@@ -55,9 +55,9 @@
 	        <field name="supplierTypeSelect" hideIf="isContact || !isSupplier"/>
 	        <break/>
 	        <spacer colSpan="1"/>
-	        <button name="facebook" icon="img/facebook_logo.png" css="sn-buttons" onClick="action-partner-view-sn-profile"/>
-	        <button name="linkedin" icon="img/linkedin_logo.png" css="sn-buttons" onClick="action-partner-view-sn-profile"/>
-	        <button name="twitter" icon="img/twitter_logo.png" css="sn-buttons" onClick="action-partner-view-sn-profile"/>
+	        <button name="facebook" icon="img/facebook_logo.png" css="sn-buttons" onClick="action-partner-view-sn-profile" showIf="id != null"/>
+	        <button name="linkedin" icon="img/linkedin_logo.png" css="sn-buttons" onClick="action-partner-view-sn-profile" showIf="id != null"/>
+	        <button name="twitter" icon="img/twitter_logo.png" css="sn-buttons" onClick="action-partner-view-sn-profile" showIf="id != null"/>
 	    </group>
 	    <field name="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2" colSpan="4" domain="self.isContact = 'true'" grid-view="partner-contact-grid"/>
 	    <break/>
@@ -112,7 +112,7 @@
 	            <field name="partnerSeq"/>
 	            <field name="languageSelect" hideIf="isContact || partnerTypeSelect == 1"/>
 	            
-	        </page>
+	        </page><!-- 
 	        <page title="Social Networking" colSpan="4" name="socialNetworkingTab"
 				hideIf="id == null" onSelect="action-partner-attrs-hide-send-message">
 				<notebook>
@@ -123,15 +123,15 @@
 						form-view="partner-fb-search-nested-form" edit-window="self" canSelect="false" showTitle="false" showIf="hasSearchPartner"/>
 						<break/>
 					</page>
-					<page title="Inbox Message"> <!-- hideIf="socialNet.name == 'linkedin'"> -->
+					<page title="Inbox Message"> hideIf="socialNet.name == 'linkedin'">
 						<portlet action="action-fetch-all-sn-mail" colSpan="4" />
 					</page>
-					<page title="Recent Updates"> <!-- hideIf="socialNet.name != 'facebook'"> -->
+					<page title="Recent Updates"> hideIf="socialNet.name != 'facebook'">
 						<portlet action="action-fetch-all-sn-update" colSpan="4" />
 					</page>
 
 					<page title="Send Personal Message" name="snPersonalMessage">
-						<!-- hideIf="socialNet.name == 'facebook'"> -->
+						hideIf="socialNet.name == 'facebook'">
 						<field name="snSendMessageList" title="Personal Messages">
 							<grid title="All Sent Messages">
 								<field name="socialNet" title="Social Networking Type"/>
@@ -166,7 +166,7 @@
 						</field>
 					</page>
 				</notebook>
-			</page>
+			</page> -->
 			<page title="Reporting">
 				<group title="Action(s)" colSpan="2" cols="2">
                     <group colSpan="1" cols="1">
@@ -200,49 +200,15 @@
 	    </notebook>
 	</form>
 	
-	<form title="Search" name="partner-fb-search-nested-form" 
+	<!-- <form title="Search" name="partner-fb-search-nested-form" 
 		onNew="action-partner-search-nested-default-fb-search-record-iscompany,action-partner-search-nested-default-fb-search-record-param"
 		onLoad="action-partner-search-nested-default-fb-search-record-iscompany,action-partner-search-nested-default-fb-search-record-param">
 		<notebook title="Search On Facebook">
 			<page title="Search">
-				<field name="isCompany" readonly="true" hidden="true"/>
-				<break/>
-				<field name="searchparam" title="Please Enter Search Keywords"/>
-				<break />
-				<button name="submit" title="Search"
-					onClick="com.axelor.sn.web.FBController:search" />
-				<break />
-				<break />
-				<field name="fbSearchResultList" title="Result" colSpan="5">
-					<grid title="Result" editable="true">
-						<field name="userRef" readonly="true"/>
-						<field name="firstName" readonly="true" hideIf="isCompany"/>
-						<field name="lastName" readonly="true" hideIf="isCompany"/>
-						<field name="gender" readonly="true" hideIf="isCompany"/>
-						<field name="companyName" showIf="isCompany"/>
-						<field name="link" readonly="true"/>
-					</grid>
-					<form title="Result" onNew="action-fb-search-attrs-hide-result-fields" onLoad="action-fb-search-attrs-hide-result-fields">
-						<field name="userRef" readonly="true"/>
-						<field name="gender" readonly="true"/>
-						<break/>
-						<field name="firstName" readonly="true"/>
-						<field name="lastName" readonly="true"/>
-						<field name="companyName" readonly="true"/>
-						<break/>
-						<field name="link" readonly="true" colSpan="4"/>
-						<break/>
-						<spacer/>
-						<break/>
-						<field name="partner"/>
-	                    <break/>
-	                    <spacer/>
-						<button name="associate" title="Associate to partner" onClick="com.axelor.sn.web.FBController:associateToPartner"/>
-					</form>
-				</field>
+				
 			</page>
 		</notebook>
-	</form>
+	</form> -->
 	
 	<grid name="partner-light-grid" title="Contacts" model="com.axelor.apps.base.db.Partner">
         <field name="name"/>
@@ -294,23 +260,6 @@
 	        </page>
 	    </notebook>
     </form>
-	
-	<action-attrs name="action-partner-attrs-hide-send-message">
-		<attribute name="hidden" for="snPersonalMessage" expr="eval: !socialNetUserAccountList || socialNetUserAccountList?.collect{it.snUserRef}?.size() &gt; 0"/>
-	</action-attrs>
-	
-	<action-record name="action-partner-search-nested-default" model="com.axelor.apps.base.db.Partner">
-    	<field name="fbSearch" expr="action: action-partner-search-nested-default-fb-search-record-iscompany,action-partner-search-nested-default-fb-search-record-param"/>
-    </action-record>
-    
-    <action-record name="action-partner-search-nested-default-fb-search-record-iscompany" model="com.axelor.apps.socialnetwork.db.FBSearch">
-		<field name="isCompany" expr="eval: _parent.partnerTypeSelect == 1"/>
-    </action-record>
-    
-    <action-record name="action-partner-search-nested-default-fb-search-record-param" model="com.axelor.apps.socialnetwork.db.FBSearch">
-		<field name="searchparam" expr="eval: _parent.name" if="isCompany"/>
-    	<field name="searchparam" expr="eval: _parent.firstName+' '+_parent.name" if="!isCompany"/>
-    </action-record>
 	
 
 	<action-record name="action-partner-record-get-lead-converted-context" model="com.axelor.apps.base.db.Partner">
@@ -417,6 +366,15 @@
 
 	<!--SN Actions -->    
 	
+    <!-- 
+    <action-record name="action-partner-search-nested-default" model="com.axelor.apps.base.db.Partner">
+    	<field name="fbSearch" expr="action: action-partner-search-nested-default-fb-search-record-iscompany,action-partner-search-nested-default-fb-search-record-param"/>
+    </action-record>
+    
+    <action-attrs name="action-partner-attrs-hide-send-message">
+		<attribute name="hidden" for="snPersonalMessage" expr="eval: !socialNetUserAccountList || socialNetUserAccountList?.collect{it.snUserRef}?.size() &gt; 0"/>
+	</action-attrs>
+    
     <action-view name="action-fetch-all-sn-update" title="Recents Update of This User" model="com.axelor.apps.socialnetwork.db.FBNewsFeed"> 
 		<view type="grid" name="fb-news-feed-grid1" />
 		<view type="form" name="fb-news-feed-form"/>
@@ -426,7 +384,7 @@
 
 	<action-record name="action-fill-direct-message"
 		model="com.axelor.apps.socialnetwork.db.SnSendMessage">
-		<!-- <field name="curUser" expr="eval:__user__" /> -->
+		<field name="curUser" expr="eval:__user__" />
 		<field name="partner" expr="eval:_parent" />
 		<field name="messageDateT" expr="eval:__datetime__" />
 	</action-record>
@@ -437,7 +395,7 @@
 		<view type="form" name="sn-msg-inbox-form" />
 		<domain>self.snUserRef in :_partnerUserRefList</domain>
 		<context name="_partnerUserRefList" expr="eval: (socialNetUserAccountList?.collect{it.snUserRef}?.size() &gt; 0) ? &quot;(${socialNetUserAccountList?.collect{it.snUserRef}?.join(',')})&quot; : &quot;(null)&quot;"/>
-	</action-view>
+	</action-view> -->
 	<!--END SN Actions -->
 	
 	<action-method name="action-set-partner-seq" >

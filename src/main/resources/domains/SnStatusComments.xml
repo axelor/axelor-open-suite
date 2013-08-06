@@ -7,15 +7,20 @@
 
 	<entity name="SnStatusComments">
 		<many-to-one name="snStatusUpdates" ref="com.axelor.apps.socialnetwork.db.SnStatusUpdates" orphan="true" title="Post"/>
-		<string name="commentId" title="Comment ID" readonly="true"/>
-		<string name="commentText" title="Comment" multiline="true" max="700" />
-		<datetime name="commentDateT" title="Time" tz="true" readonly="true"/>
+		<many-to-one name="parentSnStatusComments" ref="com.axelor.apps.socialnetwork.db.SnStatusComments" orphan="true" title="Parent Comment"/>
+		<one-to-many name="childrenSnStatusCommentsList" ref="com.axelor.apps.socialnetwork.db.SnStatusComments" mappedBy="parentSnStatusComments"/>
 		<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" orphan="true" title="By" readonly="true"/>
 		<many-to-one name="companyPartner" ref="com.axelor.apps.base.db.Partner" orphan="true" title="Page"/>
-		<boolean name="isFacebook" title="Facebook ?"/>
-		<boolean name="isFacebookWall" title="Comment on Wall ?"/>
-		<boolean name="isLinkedin" title="LinkedIn ?"/>
-		<boolean name="isTwitter" title="Twitter ?"/>
+		<many-to-one name="socialNet" ref="com.axelor.apps.socialnetwork.db.SocialNet" title="Social Network" required="true"/>
+		<string name="commentRef" title="Comment Id" readonly="true"/>
+		<string name="content" title="Content" multiline="true" max="700" />
+		<datetime name="commentDateT" title="Time" tz="true" readonly="true"/>
+		<boolean name="isFacebookWall" title="Comment on Wall ?" default="false"/>
+		
+		
+		<!-- <boolean name="isFacebook" title="Facebook ?"/> -->
+		<!-- <boolean name="isLinkedin" title="LinkedIn ?"/> -->
+		<!-- <boolean name="isTwitter" title="Twitter ?"/> -->
 	</entity>
 
 </domain-models>
