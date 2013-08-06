@@ -1,0 +1,159 @@
+package com.axelor.apps.supplychain.web;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.axelor.apps.AxelorSettings;
+import com.axelor.apps.base.db.IAdministration;
+import com.axelor.apps.base.db.UserInfo;
+import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.googleapps.db.GoogleFile;
+import com.axelor.apps.supplychain.db.ILocation;
+import com.axelor.apps.supplychain.db.Location;
+import com.axelor.apps.supplychain.db.SalesOrder;
+import com.axelor.apps.supplychain.service.SalesOrderService;
+import com.axelor.apps.tool.net.URLService;
+import com.axelor.auth.db.User;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.exception.service.TraceBackService;
+import com.axelor.googleapps.document.DocumentService;
+import com.axelor.googleapps.userutils.Utils;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
+import com.google.inject.Inject;
+
+public class SalesOrderController {
+
+	@Inject
+	private SalesOrderService salesOrderService;
+
+	@Inject
+	SequenceService sequenceService;
+
+	@Inject 
+	DocumentService documentSeriveObj;
+
+	@Inject 
+	Utils userUtils;
+
+	private static final Logger LOG = LoggerFactory.getLogger(SalesOrderController.class);
+	
+	/**
+	 * saves the document for any type of entity using template
+	 * @param request
+	 * @param response
+	 */
+	public void saveDocumentForOrder(ActionRequest request,ActionResponse response) {
+
+		userUtils.validAppsConfig(request, response);
+
+		// in this line change the Class as per the Module requirement i.e SalesOrder class here used
+		SalesOrder dataObject = request.getContext().asType(SalesOrder.class);
+		User currentUser = (User) request.getContext().get("__user__");
+		UserInfo currentUserInfo = UserInfo.all().filter("self.internalUser = ?1", currentUser).fetchOne();
+
+		GoogleFile documentData = documentSeriveObj.createDocumentWithTemplate(currentUserInfo,dataObject);
+		if(documentData == null) {
+			response.setFlash("The Document Can't be created because the template for this type of Entity not Found..!");
+			return;
+		}
+		response.setFlash("Document Created in Your Root Directory");
+	}
+	
+	public void compute(ActionRequest request, ActionResponse response)  {
+		
+		SalesOrder salesOrder = request.getContext().asType(SalesOrder.class);
+
+		try {		
+			salesOrderService.computeSalesOrder(salesOrder);
+			response.setReload(true);
+			response.setFlash("Montant du devis : "+salesOrder.getInTaxTotal()+" TTC");
+		}
+		catch(Exception e)  { TraceBackService.trace(response, e); }
+	}
+	
+	/**
+	 * Fonction appeler par le bouton imprimer
+	 *
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	public void showSalesOrder(ActionRequest request, ActionResponse response) {
+
+		SalesOrder salesOrder = request.getContext().asType(SalesOrder.class);
+
+		StringBuilder url = new StringBuilder();
+		AxelorSettings axelorSettings = AxelorSettings.get();
+
+		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/SalesOrder.rptdesign&__format=pdf&SalesOrderId="+salesOrder.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
+		LOG.debug("URL : {}", url);
+		String urlNotExist = URLService.notExist(url.toString());
+		
+		if(urlNotExist == null) {
+		
+			LOG.debug("Impression du devis "+salesOrder.getSalesOrderSeq()+" : "+url.toString());
+			
+			Map<String,Object> mapView = new HashMap<String,Object>();
+			mapView.put("title", "Devis "+salesOrder.getSalesOrderSeq());
+			mapView.put("resource", url);
+			mapView.put("viewType", "html");
+			response.setView(mapView);	
+		}
+		else {
+			response.setFlash(urlNotExist);
+		}
+	}
+	
+	public void setSequence(ActionRequest request, ActionResponse response) throws AxelorException {
+		
+		SalesOrder salesOrder = request.getContext().asType(SalesOrder.class);
+
+		if(salesOrder != null && salesOrder.getSalesOrderSeq() ==  null && salesOrder.getCompany() != null) {
+			String ref = sequenceService.getSequence(IAdministration.SALES_ORDER,salesOrder.getCompany(),false);
+			if (ref == null)
+				throw new AxelorException(String.format("La société %s n'a pas de séquence de configurée pour les devis",salesOrder.getCompany().getName()),
+								IException.CONFIGURATION_ERROR);
+			else
+				response.setValue("salesOrderSeq", ref);
+		}
+	}
+	
+	public void createTaskByLines(ActionRequest request, ActionResponse response) throws AxelorException {
+		
+		SalesOrder salesOrder = request.getContext().asType(SalesOrder.class);
+		
+		if(salesOrder != null) {
+			
+			salesOrderService.createTasks(salesOrder);
+		}
+	}
+	
+	public void createStockMoves(ActionRequest request, ActionResponse response) throws AxelorException {
+		
+		SalesOrder salesOrder = request.getContext().asType(SalesOrder.class);
+		
+		if(salesOrder != null) {
+			
+			salesOrderService.createStocksMovesFromSalesOrder(salesOrder);
+		}
+	}
+	
+	public void getLocation(ActionRequest request, ActionResponse response) {
+		
+		SalesOrder salesOrder = request.getContext().asType(SalesOrder.class);
+		
+		if(salesOrder != null) {
+			
+			Location location = Location.all().filter("company = ? and isDefaultLocation = ? and typeSelect = ?", salesOrder.getCompany(), true, ILocation.INTERNAL).fetchOne();
+			
+			if(location != null) {
+				response.setValue("location", location);
+			}
+		}
+	}
+}
