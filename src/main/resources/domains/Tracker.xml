@@ -10,9 +10,10 @@
 	<string name="targetUrl" title="Target URL" required="true"/>
 	<string name="code" title="Code" required="true" unique="true"/>
 	<string name="label" title="Label" multiline="true"/>
-	<integer name="counter"  readonly="true" title="Number of hits"/>
 	
 	<many-to-one name="campaign" ref="com.axelor.apps.marketing.db.Campaign"/>
+	
+	<finder-method name="findByCode" using="code"/>
 
   </entity>
 

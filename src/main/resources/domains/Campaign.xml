@@ -26,6 +26,7 @@
   	<many-to-one name="templateRule" ref="com.axelor.apps.base.db.TemplateRule" title="Template rule"/>
   	
 	<one-to-many name="trackerList" ref="com.axelor.apps.marketing.db.Tracker" mappedBy="campaign" title="Trackers"/>
+	<one-to-many name="trackerLineList" ref="com.axelor.apps.marketing.db.TrackerLine" mappedBy="campaign" title="Tracker Line"/>
 	
 	<boolean name="followedCampaign" default="false" title="Follow ?"/>
 	<many-to-one name="eventCategory" ref="com.axelor.apps.crm.db.EventCategory" title="Event category"/>

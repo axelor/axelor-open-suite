@@ -14,6 +14,7 @@
   	<string name="location" title="Location"/>
   	<string name="browser" title="Browser"/>
   	<string name="redirection" title="Redirection"/>
+    <datetime name="hour" title="Hour"/>
     
   </entity>
 
