@@ -13,15 +13,14 @@
     </grid>
     
     <form name="location-form" title="Stock Location" model="com.axelor.apps.supplychain.db.Location" cols="6"
-    	onNew="action-location-record-new"
-    	onSave="action-location-is-default-location">
+    	onNew="action-location-record-new">
     	<toolbar>
     		<button name="createInventory" title="Create inventory" onClick="action-location-view-create-inventory" colSpan="1"/>
     	</toolbar>
         <field name="name"/>
         <field name="parent"/>        
-        <field name="typeSelect"/>
-        <field name="company" widget="SuggestBox"/>
+        <field name="typeSelect" onChange="action-location-is-default-location"/>
+        <field name="company" widget="SuggestBox" onChange="action-location-is-default-location"/>
         <field name="partner" domain="self.isContact = false"/>
         <field name="isDefaultLocation" onChange="action-location-is-default-location"/>
         <break/>
