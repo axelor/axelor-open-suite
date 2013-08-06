@@ -8,7 +8,7 @@
   <entity name="TrackerLine" lang="java">
   	
   	<many-to-one name="tracker" ref="com.axelor.apps.marketing.db.Tracker" title="Tracker" initParam="true"/>
-  	<integer name="counter" readonly="true" title="Number of hits"/>
+  	<integer name="counter" readonly="true" title="Number of hits" default="0"/>
   	
   	<many-to-one name="campaign" ref="com.axelor.apps.marketing.db.Campaign" initParam="true"/>
   	
