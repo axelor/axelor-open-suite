@@ -72,5 +72,12 @@
         <field name="code" expr="can"/>
         <field name="name" expr="Annulé"/>
     </action-record>
+    
+    <action-record name="action-status-record-upr"
+        model="com.axelor.apps.base.db.Status"
+        search="('self.code = ?1', 'upr')">
+        <field name="code" expr="upr"/>
+        <field name="name" expr="En cours"/>
+    </action-record>
 
 </object-views>
