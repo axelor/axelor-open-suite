@@ -22,7 +22,20 @@ import com.google.inject.Injector;
 public class TemplateRuleService {
 	
 	@Inject
-	Injector injector;
+	private Injector injector;
+	
+	@Inject
+	private TemplateService ts;
+	
+	public Map<String, Object> getContext(TemplateRule templateRule, Model bean) {
+		Template template = this.getTemplate(bean, templateRule);
+		
+		if(template == null) {
+			return null;
+		}
+		
+		return ts.getContext(template, bean);
+	}
 
 	public Template getTemplate(Model bean, TemplateRule templateRule) {
 		if (templateRule.getTemplateRuleLineList() == null

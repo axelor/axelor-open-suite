@@ -11,12 +11,12 @@ public class TemplateService {
 	@Inject
 	private TemplateContextService tcs;
 	
-	public Map<String, Object> getContext(Template template, Model context) {
+	public Map<String, Object> getContext(Template template, Model bean) {
 		if(template.getTemplateContext() == null) {
 			return null;
 		}
 		
-		return tcs.getContext(template.getTemplateContext(), context);
+		return tcs.getContext(template.getTemplateContext(), bean);
 	}
 
 }

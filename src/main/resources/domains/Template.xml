@@ -9,7 +9,7 @@
   	
   	<string name="name" title="Name" namecolumn="true"/>
   	<string name="content" large="true" multiline="true" title="Content"/>
-  	<string name="suject" large="true" multiline="true" title="Suject"/>
+  	<string name="subject" large="true" multiline="true" title="Suject"/>
   	<string name="target" title="Target receptor"/>
   	
   	<many-to-one name="templateContext" ref="com.axelor.apps.base.db.TemplateContext" />

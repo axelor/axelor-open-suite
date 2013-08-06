@@ -13,12 +13,12 @@ public class TemplateContextService {
 	@Inject
 	private TemplateContextLineService tcls;
 	
-	public Map<String, Object> getContext(TemplateContext templateContext, Model context) {
+	public Map<String, Object> getContext(TemplateContext templateContext, Model bean) {
 		Map<String, Object> map = Maps.newHashMap();
 		
 		if(templateContext.getTemplateContextLine() != null) {
 			for (TemplateContextLine line : templateContext.getTemplateContextLine()) {
-				Object o = tcls.evaluate(line, context);
+				Object o = tcls.evaluate(line, bean);
 				map.put(line.getKey(), o);
 			}
 		}

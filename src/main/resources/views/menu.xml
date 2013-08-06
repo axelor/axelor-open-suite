@@ -551,6 +551,29 @@
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
+	
+	<menuitem name="evo-admin-root-templating" parent="evo-admin-root"
+		title="Templating"/>
+		
+	<menuitem name="evo-admin-root-templating-template-rules"
+		parent="evo-admin-root-templating" title="Template Rules"
+		action="evo.admin.root.templating.template.rules" />
+		
+	<action-view name="evo.admin.root.templating.template.rules"
+		title="Template Rules" model="com.axelor.apps.base.db.TemplateRule">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
+	
+	<menuitem name="evo-admin-root-templating-template"
+		parent="evo-admin-root-templating" title="Template"
+		action="evo.admin.root.templating.template" />
+		
+	<action-view name="evo.admin.root.templating.template"
+		title="Template" model="com.axelor.apps.base.db.Template">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
 
 	<menuitem name="evo-admin-root-general" parent="evo-admin-root"
 		title="General"/>
@@ -585,7 +608,6 @@
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
-
 
 	<menuitem name="evo-admin-conf-general-currency" parent="evo-admin-conf-general"
 		title="Currencies" action="evo.admin.conf.general.currency" />

@@ -5,16 +5,10 @@
 
   <module name="marketing" package="com.axelor.apps.marketing.db"/>
 
-  <entity name="Tracker" lang="java">
-	
-	<string name="value" title="Target URL" required="true"/>
-	<string name="key" title="Key" required="true" unique="true" namecolumn="true"/>
-	<string name="label" title="Label" multiline="true"/>
-	
-	<many-to-one name="campaign" ref="com.axelor.apps.marketing.db.Campaign"/>
-	
-	<finder-method name="findByKey" using="key"/>
-
+  <entity name="MarketingSettings" lang="java">
+  	
+  	<string name="trackerUrl" title="Tracking page" required="true"/>
+    
   </entity>
 
 </domain-models>

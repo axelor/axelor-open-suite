@@ -13,17 +13,17 @@ import com.google.common.base.Strings;
 
 public class TemplateContextLineService {
 
-	public Object evaluate(TemplateContextLine line, Model context) {
+	public Object evaluate(TemplateContextLine line, Model bean) {
 		
 		String query = line.getQuery();
 		if(Strings.isNullOrEmpty(query)) {
 			return null;
 		}
 		
-		return this.evaluate(query, context);
+		return this.evaluate(query, bean);
 	}
 	
-	public Object evaluate(String query, Model context) {
+	public Object evaluate(String query, Model bean) {
 		try {
 			Class<?> klass = this.extractClass(query);
 			System.err.println(klass);
@@ -36,7 +36,7 @@ public class TemplateContextLineService {
 
 			TypedQuery<?> querie = JPA.em().createQuery(sb.toString(), klass);
 			for (int j = 1; j <= n; j++) {
-				querie.setParameter(n, context);
+				querie.setParameter(n, bean);
 			}
 			
 			return querie.getResultList();
