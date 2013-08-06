@@ -267,8 +267,8 @@
 	</selection>
 	
 	<selection name='hr.expense.line.file.received.select'>
-		<option value='1'>Yes</option>
-		<option value='2'>No</option>
+		<option value="1">Yes</option>
+		<option value="2">No</option>
 	</selection>
 	
 	<selection name="hr.expense.status.select">
