@@ -93,4 +93,8 @@ public class QuerieService {
 		return null;
 	}
 
+	public void checkQuerie(Querie querie) throws AxelorException {
+		this.getQuerieResult(querie);
+	}
+
 }
