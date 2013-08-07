@@ -6,10 +6,10 @@
 	
 	<entity name="FilterList">
 	
-		<long name="recordId"/>
-		<string name="redordModel"/>
-		<long name="filterId"/>
-		<string name="filterCode"/>
+		<long name="recordId" initParam="true"/>
+		<string name="recordModel" initParam="true"/>
+		<long name="filterId" initParam="true"/>
+		<string name="filterCode" initParam="true"/>
 		
 		<finder-method name="findByFilterCode" using="long:id" filter="self.filterCode = :filterCode" all="true"/>
 		<finder-method name="findByFilterId" using="long:id" filter="self.filterId = :id" all="true"/>
