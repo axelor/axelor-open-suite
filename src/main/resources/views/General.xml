@@ -16,8 +16,7 @@
 		<field name="today" />
 	</grid>
 	
-	<form name="general-form" title="General admin" model="com.axelor.apps.base.db.General" cols="6" 
-	onSave="action-general-record-get-default-svi-stored-procedure">
+	<form name="general-form" title="General admin" model="com.axelor.apps.base.db.General" cols="6">
        	<toolbar>
 		    <button name="new" title="New" hidden="true"/>
 		    <button name="edit" title="Edit" hidden="true"/>
@@ -53,11 +52,6 @@
 	                <field name="qasWsdlUrl"/>
 	                <button name="checkQasWsdl" title="Test connection to QAS webservice" colSpan="2" onClick="com.axelor.apps.base.web.AddressController:check"/>
 	            </group>
-	            <group name="svi" title="IVS Interface" colSpan="4">
-	                <field name="sviStoredProcedure" showTitle="false" colSpan="4" widget="CodeEditor[syntax=sql]'"/>
-	                <break/>
-	                <button name="loadStoredProcedure" title="Load procedures" colSpan="2" onClick="save,com.axelor.apps.jdbc.web.JdbcController:runQuery"/>
-	            </group>
 	        </page>
 	        <page title="Exceptions" cols="4">
 	            <field name="exceptionDefaultMsg" colSpan="4"/>
@@ -70,11 +64,6 @@
 	    </notebook>
 	</form>
 	
-	<!-- ACTION RECORD -->
-	<action-record name="action-general-record-get-default-svi-stored-procedure" model="com.axelor.apps.base.db.General">
-		<field name="sviStoredProcedure" expr="call:com.axelor.apps.base.web.GeneralControllerSimple:getDefaultSviStoredProcedure()" if="!sviStoredProcedure"/>
-	</action-record>
-
 	<!-- ACTION METHOD -->
 	<action-method name="action-general-method-clear-formula">
 		<call class="com.axelor.apps.base.web.GeneralController" method="formulaClear" />

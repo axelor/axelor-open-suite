@@ -32,10 +32,8 @@
 		<!-- TVA -->
 		<many-to-one name="defaultExemptionVat" ref="com.axelor.apps.account.db.Vat" title="VAT 0%" />
 
-
 		<!-- Interfaces QAS et SVI -->
 		<string name="qasWsdlUrl" title="URL to the QAS WSDL" help="http://{serveur}:{port}/proweb.wsdl" />
-		<string name="sviStoredProcedure" title="Query to create stored procedures" large="true" />
 
 		<!-- Mapping API -->
 		<string name="mapApiSelect" title="Mapping service provider" 
