@@ -16,6 +16,7 @@ public class FilterService {
 		filter.save();
 	}
 	
+	@SuppressWarnings("rawtypes")
 	public void copyFilter(String code, Filter otherFilter) {
 		
 		final Filter filter = new Filter(code);
@@ -36,7 +37,7 @@ public class FilterService {
 				for (Map map : list) {
 					FilterList list = new FilterList();
 					list.setRecordId(Long.valueOf(map.get("recordId").toString()));
-					list.setRedordModel(map.get("redordModel").toString());
+					list.setRecordModel(map.get("redordModel").toString());
 					list.setFilterCode(filter.getCode());
 					list.setFilterId(filter.getId());
 					list.save();

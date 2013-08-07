@@ -9,7 +9,7 @@
   	
   	<string name="name" title="Name" required="true" unique="true"/>
   	<string name="code" title="Code" required="true" unique="true"/>
-  	<integer name="typeSelect" title="Type" required="true" selection="marketing.campaign.type.select"/>
+  	<integer name="typeSelect" title="Type" required="true" selection="imarketing.campaign.type.select"/>
   	<integer name="targetSelect" title="Target" required="true" selection="imarketing.type.select"/>
 	<many-to-one name="status" ref="com.axelor.apps.base.db.Status" readonly="true" title="Status"/>
 	<boolean name="createMessage" default="false" title="Generate message object for each email ?"/>
@@ -34,6 +34,9 @@
 	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team"/>
 	
 	<boolean name="hasForceEmailSending" default="false" title="Ignore mailing rejection ?"/>
+	
+	<!-- NOT DISPLAYED -->
+    <many-to-one name="filter" ref="com.axelor.apps.base.db.Filter" title="Filter"/>
     
   </entity>
 

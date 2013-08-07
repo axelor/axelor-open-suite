@@ -12,7 +12,7 @@
   	<string name="query" title="Query" large="true" multiline="true"/>
   	
   	<!-- back reference -->
-  	<many-to-one name="templateContext" ref="com.axelor.apps.base.db.TemplateContext"/>
+  	<many-to-one name="templateContext" ref="com.axelor.apps.base.db.TemplateContext" title="Template context"/>
     
   </entity>
 

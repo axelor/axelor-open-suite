@@ -7,7 +7,7 @@
 
   <entity name="Template" lang="java">
   	
-  	<string name="name" title="Name" namecolumn="true"/>
+  	<string name="name" title="Name" required="true" namecolumn="true"/>
   	<string name="content" large="true" multiline="true" title="Content"/>
   	<string name="subject" large="true" multiline="true" title="Suject"/>
   	<string name="target" title="Target receptor"/>
