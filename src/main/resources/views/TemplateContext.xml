@@ -5,12 +5,12 @@
     
     <grid name="template-context-grid" title="Template Context" model="com.axelor.apps.base.db.TemplateContext">
         <field name="name"/>
-        <field name="templateContextLine"/>
+        <field name="templateContextLineList"/>
     </grid>
     
     <form name="template-context-form" title="Template Context" model="com.axelor.apps.base.db.TemplateContext" cols="4">
         <field name="name"/>
-        <field name="templateContextLine" colSpan="4"/>
+        <field name="templateContextLineList" colSpan="4"/>
     </form>
     
 </object-views>

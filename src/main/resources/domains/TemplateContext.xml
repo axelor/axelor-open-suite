@@ -9,7 +9,7 @@
   
  	<string name="name" title="Name"/>
   	
-  	<one-to-many name="templateContextLine" ref="com.axelor.apps.base.db.TemplateContextLine" title="Template Context Line" mappedBy="templateContext"/>
+  	<one-to-many name="templateContextLineList" ref="com.axelor.apps.base.db.TemplateContextLine" title="Template Context Line" mappedBy="templateContext"/>
     
   </entity>
 
