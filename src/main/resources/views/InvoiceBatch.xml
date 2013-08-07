@@ -41,11 +41,7 @@
 		    	<field name="batchList" colSpan="4" />
     		</page>
     	</notebook>
-    	<button name="invoiceBatch" title="Run" colSpan="3" onClick="save,action-invoice-batch-method-action-invoice" />
     	<button name="statusBatch" title="Run" colSpan="3" onClick="save,action-invoice-batch-method-action-status" />
-    	<button name="alarmBatch" title="Run" colSpan="3" onClick="save,action-invoice-batch-method-action-alarm" />
-    	<button name="memoryBatch" title="Run" colSpan="3" onClick="save,action-invoice-batch-method-action-memory" />
-    	<button name="confirmMemoryBatch" title="Run" colSpan="3" onClick="save,action-invoice-batch-method-action-confirm-memory" />
     </form>
     
     <!-- ACTION RECORD -->
@@ -58,27 +54,11 @@
 	<action-method name="action-invoice-batch-method-invoice-set-domain">
 		<call class="com.axelor.apps.account.web.InvoiceBatchController" method="invoiceSetDomain"/>
 	</action-method>
-	
-	<action-method name="action-invoice-batch-method-action-invoice">
-		<call class="com.axelor.apps.account.web.InvoiceBatchController" method="actionInvoice"/>
-	</action-method>
-	
+		
 	<action-method name="action-invoice-batch-method-action-status">
 		<call class="com.axelor.apps.account.web.InvoiceBatchController" method="actionStatus"/>
 	</action-method>
-	
-	<action-method name="action-invoice-batch-method-action-alarm">
-		<call class="com.axelor.apps.account.web.InvoiceBatchController" method="actionAlarm"/>
-	</action-method>
-	
-	<action-method name="action-invoice-batch-method-action-memory">
-		<call class="com.axelor.apps.account.web.InvoiceBatchController" method="actionMemory"/>
-	</action-method>
-	
-	<action-method name="action-invoice-batch-method-action-confirm-memory">
-		<call class="com.axelor.apps.account.web.InvoiceBatchController" method="actionConfirmMemory"/>
-	</action-method>
-	
+				
     <!-- ACTION ATTRS -->
     <action-attrs name="action-invoice-batch-attrs-action-select">
 	    <attribute name="hidden" expr="eval: actionSelect in [null, 0, 3, 4]" for="statusOptionPage"/>

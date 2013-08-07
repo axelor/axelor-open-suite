@@ -36,7 +36,7 @@ public abstract class BatchWkf extends BatchStrategy {
 
 	}
 
-	protected static List<Invoice> invoiceQuery(InvoiceBatch invoiceBatch, boolean isTo) {
+	public static List<Invoice> invoiceQuery(InvoiceBatch invoiceBatch, boolean isTo) {
 		
 		if ( invoiceBatch != null ){
 			
