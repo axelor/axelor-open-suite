@@ -1,5 +1,6 @@
 package com.axelor.apps.base.service.template;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,7 +27,6 @@ public class TemplateContextLineService {
 	public Object evaluate(String query, Model bean) {
 		try {
 			Class<?> klass = this.extractClass(query);
-			System.err.println(klass);
 			StringBuilder sb = new StringBuilder(query);
 			int n = 0, i = sb.indexOf("?");
 			while (i > -1) {
@@ -38,8 +38,14 @@ public class TemplateContextLineService {
 			for (int j = 1; j <= n; j++) {
 				querie.setParameter(n, bean);
 			}
+			List<?> list = querie.getResultList();
+			if(list != null && !list.isEmpty() && list.size() == 1) {
+				return list.get(0);
+			}
+			else {
+				return list;
+			}
 			
-			return querie.getResultList();
 		}
 		catch(Exception ex) {
 			ex.printStackTrace();
