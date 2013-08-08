@@ -16,6 +16,7 @@ import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.schema.actions.Action;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.Resource;
+import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
@@ -88,6 +89,7 @@ public class TemplateRuleService {
 		return templateRuleLine;
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Boolean runAction(Model bean, MetaAction metaAction, String klassName) {
 		if(metaAction == null) {
 			return true;
@@ -96,18 +98,26 @@ public class TemplateRuleService {
 		Action action = MetaStore.getAction(metaAction.getName());
 		ActionHandler handler = createHandler(bean, action.getName(), klassName);
 		Object result = action.wrap(handler);
-		
+
 		if(result instanceof Map) {
-			return false;
+			Map<Object, Object> data = (Map<Object, Object>) result;
+			if(data.containsKey("errors") && data.get("errors") != null && !( (Map) data.get("errors") ).isEmpty()) {
+				return true;
+			}
+			else {
+				return false;
+			}
 		}
-		return true;
+		return (Boolean) result;
 	}
 	
 	private ActionHandler createHandler(Model bean, String action, String model) {
 		
 		ActionRequest request = new ActionRequest();
 		
-		request.setData(Resource.toMap(bean));
+		Map<String, Object> map = Maps.newHashMap();
+		map.put("context", Resource.toMap(bean));
+		request.setData(map);
 		request.setModel(model);
 		request.setAction(action);
 
