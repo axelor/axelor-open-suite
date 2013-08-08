@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+	<module name="socialnetwork" package="com.axelor.apps.socialnetwork.db" />
+	<entity name="SnSearchResult">
+		<many-to-one name="snSearch" ref="com.axelor.apps.socialnetwork.db.SnSearch"/>
+		<string name="userRef" help="Facebook Generated Unique User's ID"/>
+		<string name="userName" help="User Name" title="User name" readonly="true"/>
+		<string name="firstName" help="First Name of Person" title="First name" readonly="true"/>
+		<string name="lastName" help="Last Name of Person" title="Last name" readonly="true"/>
+		<string name="gender" title="Gender" readonly="true"/>
+		<string name="link" help="Profile Link" title="Profile Link" readonly="true"/>
+		<string name="companyName" help="Name of Company" title="Company name" readonly="true"/>
+		<string name="location" help="Location" title="Location" readonly="true"/>
+		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo"/>
+ 		<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" orphan="true" />
+ 		<!-- <binary name="picture" image="true" title="Photo"/> -->
+ 		<string name="pictureUrl" title="Picture Link" readonly="true"/>
+	</entity>
+</domain-models>

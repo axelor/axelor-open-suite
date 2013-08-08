@@ -20,6 +20,7 @@
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner"/>
     <many-to-many name="companyPartnerSet" ref="com.axelor.apps.base.db.Partner" title="Pages"/>
     <many-to-one name="commentCompanyPartner" ref="com.axelor.apps.base.db.Partner" title="Page"/>
+    <boolean name="isPostSuccessful"/>
   </entity>
  
 </domain-models>
