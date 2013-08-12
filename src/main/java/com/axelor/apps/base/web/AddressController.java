@@ -178,7 +178,7 @@ public class AddressController {
 			response.setFlash("NA");
 	}
 
-	public void export(ActionRequest request,ActionResponse response){
+	public void export(ActionRequest request,ActionResponse response) throws IOException{
 
 		AddressExport addressExport = request.getContext().asType(AddressExport.class);
 
