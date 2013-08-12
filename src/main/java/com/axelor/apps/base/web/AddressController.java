@@ -148,16 +148,16 @@ public class AddressController {
 			LOG.debug("select pickedEntry = {}", pickedEntry);
 			String moniker = pickedEntry.getMoniker();
 			if (moniker != null) {
-				Address address = (Address) ads.select(GeneralService.getGeneral().getQasWsdlUrl(), moniker);
+				com.qas.web_2005_02.Address address = ads.select(GeneralService.getGeneral().getQasWsdlUrl(), moniker);
 				LOG.debug("select address = {}", address);
 				//addressL4: title="N° et Libellé de la voie"
 				//addressL6: title="Code Postal - Commune"/>
-				response.setValue("addressL2", address.getAddressL2());
-				response.setValue("addressL3", address.getAddressL3());
-				response.setValue("addressL4", address.getAddressL4());
-				response.setValue("addressL5", address.getAddressL5());
-				response.setValue("addressL6", address.getAddressL6());
-				response.setValue("inseeCode", address.getInseeCode());
+				response.setValue("addressL2", address.getQAAddress().getAddressLine().get(1));
+				response.setValue("addressL3", address.getQAAddress().getAddressLine().get(2));
+				response.setValue("addressL4", address.getQAAddress().getAddressLine().get(3));
+				response.setValue("addressL5", address.getQAAddress().getAddressLine().get(4));
+				response.setValue("addressL6", address.getQAAddress().getAddressLine().get(5));
+				response.setValue("inseeCode", address.getQAAddress().getAddressLine().get(6));
 				response.setValue("certifiedOk", true);
 				response.setValue("pickList", new ArrayList<QAPicklistType>());
 			} 

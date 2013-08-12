@@ -24,13 +24,12 @@ public class AddressService {
 		return ads.doCanSearch(wsdlUrl);
 	}
 	
-	@SuppressWarnings("unchecked")
 	public Map<String,Object> validate(String wsdlUrl, String search) {
 		return (Map<String, Object>) ads.doSearch(wsdlUrl, search);
 	}
 	
-	public Address select(String wsdlUrl, String moniker) {
-		return (Address) ads.doGetAddress(wsdlUrl, moniker);
+	public com.qas.web_2005_02.Address select(String wsdlUrl, String moniker) {
+		return ads.doGetAddress(wsdlUrl, moniker);
 	}
 	
 	public int export(String path) throws IOException {
