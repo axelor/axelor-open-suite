@@ -6,7 +6,6 @@
     <grid name="template-context-line-grid" title="Template Context Lines" model="com.axelor.apps.base.db.TemplateContextline">
         <field name="name"/>
         <field name="key"/>
-        <field name="query"/>
     </grid>
     
     <form name="template-context-line-form" title="Template Context Line" model="com.axelor.apps.base.db.TemplateContextLine" cols="4">
