@@ -57,4 +57,16 @@
 	    <field name="currency" expr="eval: company?.currency"/>
 	</action-record>
     
+    <search-filters name="opportunity-filters" model="com.axelor.apps.crm.db.Opportunity" title="Opportunities filters">
+		<filter title="My Opportunities">
+			<domain>self.userInfo.internalUser.id = :_internalUser</domain>
+		</filter>
+		<filter title="Unassigned Opportunities">
+			<domain>self.userInfo IS NULL</domain>
+		</filter>
+		<filter title="My Team Opportunities">
+			<domain>self.team = :_myActiveTeam</domain>
+		</filter>
+	</search-filters>
+	
 </object-views>

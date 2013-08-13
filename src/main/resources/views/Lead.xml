@@ -133,4 +133,16 @@
    		<attribute name="readonly" for="otherCountry" expr="eval: !$readonly()"/>
    	</action-attrs>
    	 
+   	<search-filters name="lead-filters" model="com.axelor.apps.crm.db.Lead" title="Lead filters">
+		<filter title="My Leads">
+			<domain>self.userInfo.internalUser.id = :_internalUser</domain>
+		</filter>
+		<filter title="Unassigned Leads">
+			<domain>self.userInfo IS NULL</domain>
+		</filter>
+		<filter title="My Team Leads">
+			<domain>self.team = :_myActiveTeam</domain>
+		</filter>
+	</search-filters>
+	
 </object-views>

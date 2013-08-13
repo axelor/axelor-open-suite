@@ -320,4 +320,55 @@
     	<attribute name="hidden" for="responsibleUserInfo" expr="eval: true" if="_clientView"/>
     </action-attrs>
     
+    <search-filters name="tasks-filters" model="com.axelor.apps.crm.db.Event" title="Tasks filters">
+		<filter title="My Tasks">
+			<domain>self.userInfo.internalUser.id = :_internalUser</domain>
+		</filter>
+		<filter title="My Team Tasks">
+			<domain>self.team = :_myActiveTeam</domain>
+		</filter>
+	</search-filters>
+	
+	<search-filters name="meeting-filters" model="com.axelor.apps.crm.db.Event" title="Meeting filters">
+		<filter title="My Meetings">
+			<domain>self.userInfo.internalUser.id = :_internalUser</domain>
+		</filter>
+		<filter title="My Team Meetings">
+			<domain>self.team = :_myActiveTeam</domain>
+		</filter>
+	</search-filters>
+	
+	<search-filters name="call-filters" model="com.axelor.apps.crm.db.Event" title="Call filters">
+		<filter title="My Calls">
+			<domain>self.userInfo.internalUser.id = :_internalUser</domain>
+		</filter>
+		<filter title="My Team Calls">
+			<domain>self.team = :_myActiveTeam</domain>
+		</filter>
+	</search-filters>
+	
+	<search-filters name="ticket-filters" model="com.axelor.apps.crm.db.Event" title="Ticket filters">
+		<filter title="My Tickets">
+			<domain>self.userInfo.internalUser.id = :_internalUser</domain>
+		</filter>
+		<filter title="My Team Tickets">
+			<domain>self.team = :_myActiveTeam</domain>
+		</filter>
+		<filter title="Unassigned Tickets">
+			<domain>self.userInfo IS NULL</domain>
+		</filter>
+		<filter title="Urgent Tickets">
+			<domain>self.prioritySelect = 3</domain>
+		</filter>
+		<filter title="New Tickets">
+			<domain>self.progressSelect = 0</domain>
+		</filter>
+		<filter title="Ongoing Tickets">
+			<domain>(self.progressSelect != 0 and self.progressSelect != 100) or (self.ticketStatusSelect != 0 and self.ticketStatusSelect != 5)</domain>
+		</filter>
+		<filter title="Closed Tickets">
+			<domain>self.ticketStatusSelect = 5</domain>
+		</filter>
+	</search-filters>
+	
 </object-views>
