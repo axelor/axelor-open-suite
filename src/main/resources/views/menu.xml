@@ -66,117 +66,75 @@
 		icon="img/icons/partner.png" groups="admins,erp"/>
 
 	<menuitem name="contact-root-partner" parent="contact-root"
-		title="Show all" action="contact.root.partner" />
+		title="Accounts" action="contact.root.partner" />
 
-	<action-view name="contact.root.partner" title="Show all"
+	<action-view name="contact.root.partner" title="Accounts"
 		model="com.axelor.apps.base.db.Partner" icon="img/icons/partner_small.png">
 		<view type="grid" name="partner-grid" />
 		<view type="form" name="partner-form" />
+		<view-param name="search-filters" value="partner-filters"/>
 		<!-- <domain>self.curUser = null OR self.curUser = :user_id</domain> -->
 		<context name="user_id" expr="eval:__user__" />
-	</action-view>
-
-	<menuitem name="contact-root-enterprises" parent="contact-root"
-		title="All enterprises" action="contact.root.enterprises" />
-
-	<action-view name="contact.root.enterprises" title="All enterprises"
-		model="com.axelor.apps.base.db.Partner" icon="img/icons/partner_small.png">
-		<view type="grid" name="partner-grid" />
-		<view type="form" name="partner-form" />
-		<domain>self.partnerTypeSelect = 1</domain>
-		<context name="_partnerTypeSelect" expr="1" />
-	</action-view>
-	
-	<menuitem name="contact-root-contacts" parent="contact-root"
-		title="All contacts" action="contact.root.contacts" />
-
-	<action-view name="contact.root.contacts" title="All contacts"
-		model="com.axelor.apps.base.db.Partner" icon="img/icons/partner_small.png">
-		<view type="grid" name="partner-grid" />
-		<view type="form" name="partner-form" />
-		<domain>self.partnerTypeSelect = 2 and self.isContact = true</domain>
-	</action-view>
-	
-	<menuitem name="contact-filters" parent="contact-root" title="All filters"
-		icon="img/icons/parameter.png" />
-		
-	<menuitem name="contact-filters-prospects" parent="contact-filters"
-		title="All prospects" action="contact.filters.prospects" />
-
-	<action-view name="contact.filters.prospects" title="All prospects"
-		model="com.axelor.apps.base.db.Partner" icon="img/icons/partner_small.png">
-		<view type="grid" name="partner-grid" />
-		<view type="form" name="partner-form" />
-		<domain>self.customerTypeSelect = 2</domain>
-	</action-view>
-		
-	<menuitem name="contact-filters-clients" parent="contact-filters"
-		title="All clients" action="contact.filters.clients" />
-
-	<action-view name="contact.filters.clients" title="All clients"
-		model="com.axelor.apps.base.db.Partner" icon="img/icons/partner_small.png">
-		<view type="grid" name="partner-grid" />
-		<view type="form" name="partner-form" />
-		<domain>self.customerTypeSelect = 3</domain>
 	</action-view>
 	
 	<menuitem name="contact-conf" parent="contact-root" title="Configuration"
 		icon="img/icons/parameter.png" />
 		
 	<menuitem name="contact-conf-category" parent="contact-conf"
-		title="All partner categories" action="contact.conf.category" />
+		title="Partner categories" action="contact.conf.category" />
 
-	<action-view name="contact.conf.category" title="All partner categories"
+	<action-view name="contact.conf.category" title="Partner categories"
 		model="com.axelor.apps.base.db.PartnerCategory" icon="img/icons/parameter_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 
 	<menuitem name="contact-conf-address" parent="contact-conf"
-		title="All addresses" action="contact.conf.address" icon="img/icons/address-book.png" />
+		title="Addresses" action="contact.conf.address" icon="img/icons/address-book.png" />
 
-	<action-view name="contact.conf.address" title="All addresses"
+	<action-view name="contact.conf.address" title="Addresses"
 		model="com.axelor.apps.base.db.Address" icon="img/icons/address-book.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 	
 	<menuitem name="contact-conf-invoice-rib" parent="contact-conf"
-		title="All bank details" action="contact.conf.invoice.rib" />
+		title="Bank details" action="contact.conf.invoice.rib" />
 
 	<action-view name="contact.conf.invoice.rib"
-		title="All bank details" model="com.axelor.apps.base.db.BankDetails" icon="img/icons/parameter_small.png">
+		title="Bank details" model="com.axelor.apps.base.db.BankDetails" icon="img/icons/parameter_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 
 	<menuitem name="contact-conf-invoice-bic" parent="contact-conf"
-		title="All SWIFT codes" action="contact.conf.invoice.bic" />
+		title="SWIFT codes" action="contact.conf.invoice.bic" />
 
 	<action-view name="contact.conf.invoice.bic"
-		title="All SWIFT codes" model="com.axelor.apps.base.db.Bic" icon="img/icons/parameter_small.png">
+		title="SWIFT codes" model="com.axelor.apps.base.db.Bic" icon="img/icons/parameter_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 
 	<menuitem name="contact-conf-invoice-sources" parent="contact-conf"
-		title="All sources" action="contact.conf.invoice.sources" />
+		title="Sources" action="contact.conf.invoice.sources" />
 
 	<action-view name="contact.conf.invoice.sources"
-		title="All sources" model="com.axelor.apps.base.db.Source" icon="img/icons/parameter_small.png">
+		title="Sources" model="com.axelor.apps.base.db.Source" icon="img/icons/parameter_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 	
 	<menuitem name="contact-conf-invoice-site" parent="contact-conf"
-		title="All sites" action="contact.conf.invoice.sites" />
+		title="Sites" action="contact.conf.invoice.sites" />
 
 	<action-view name="contact.conf.invoice.sites"
-		title="All sites" model="com.axelor.apps.consulting.db.Site" icon="img/icons/parameter_small.png">
+		title="Sites" model="com.axelor.apps.consulting.db.Site" icon="img/icons/parameter_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 	
+	<!--  
 	<menuitem name="contact-conf-geographical-area" parent="contact-conf"
 		title="Geographical zones" action="contact.conf.geographical.area" />
 
@@ -194,7 +152,7 @@
 		<view type="grid" name="partner-list-map-grid" />
 		<view type="form" name="partner-list-map-form" />
 	</action-view>
-
+	-->
 	
 	<menuitem name="product-root" title="Products" priority="170"
 		icon="img/icons/product.png" groups="admins,erp"/>
