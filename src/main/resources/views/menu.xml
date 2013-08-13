@@ -108,7 +108,6 @@
 		<view type="grid" name="sales-order-grid" />
 		<view type="form" name="sales-order-form" />
 		<view-param name="search-filters" value="sales-order-filters"/>
-		<domain>self.statusSelect = 3</domain>
 		<context name="_internalUser" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
 	</action-view>	
