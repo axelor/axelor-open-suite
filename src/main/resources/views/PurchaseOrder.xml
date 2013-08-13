@@ -136,4 +136,13 @@
    		<error message="The field 'Location' must be filled." if="location == null"/>
 	</action-validate> 
 
+	<search-filters name="purchases-order-filters" model="com.axelor.apps.supplychain.db.PurchaseOrder" title="Purchases Order filters">
+		<filter title="My RFQs">
+			<domain>(self.statusSelect = 1 or self.statusSelect = 2 or self.statusSelect = 3) and self.buyerUserInfo.internalUser.id = :_internalUser</domain>
+		</filter>
+		<filter title="My Sales">
+			<domain>(self.statusSelect = 4 or self.statusSelect = 5) and self.buyerUserInfo.internalUser.id = :_internalUser</domain>
+		</filter>
+	</search-filters>
+	
 </object-views>

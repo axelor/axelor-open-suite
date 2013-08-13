@@ -221,4 +221,19 @@
 		<error message="The location must be filled." if="location == null"/>
 	</action-validate> 
 	
+	<search-filters name="sales-order-filters" model="com.axelor.apps.supplychain.db.SalesOrder" title="Sales Order filters">
+		<filter title="My Proposals">
+			<domain>(self.statusSelect = 1 or self.statusSelect = 2) and self.salesmanUserInfo.internalUser.id = :_internalUser</domain>
+		</filter>
+		<filter title="My Sales">
+			<domain>self.statusSelect = 3 and self.salesmanUserInfo.internalUser.id = :_internalUser</domain>
+		</filter>
+		<filter title="My Team Proposals">
+			<domain>(self.statusSelect = 1 or self.statusSelect = 2) and self.team = :_myActiveTeam</domain>
+		</filter>
+		<filter title="My Team Sales">
+			<domain>self.statusSelect = 3 and self.team = :_myActiveTeam</domain>
+		</filter>
+	</search-filters>
+	
 </object-views>

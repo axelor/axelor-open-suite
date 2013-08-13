@@ -128,4 +128,46 @@
 		<attribute name="hidden" for="generateInvoice" expr="eval: (salesOrder == null &amp;&amp; purchaseOrder == null) || (salesOrder != null &amp;&amp; salesOrder?.invoicingTypeSelect != 5) || (purchaseOrder != null &amp;&amp; purchaseOrder.invoicingTypeSelect != 3) || invoice != null || statusSelect != 3"/>
 	</action-attrs>
 	
+	<search-filters name="customer-deliveries-filters" model="com.axelor.apps.supplychain.db.StockMove" title="Customer deliveries filters">
+		<filter title="Deliveries to prepare">
+			<domain>self.statusSelect = 2</domain>
+		</filter>
+		<filter title="Late Deliveries">
+			<domain>self.estimatedDate &lt; CURRENT_DATE</domain>
+		</filter>
+		<filter title="Deliveries History">
+			<domain>self.statusSelect = 3</domain>
+		</filter>
+		<filter title="Deliveries Cancelled">
+			<domain>self.statusSelect = 4</domain>
+		</filter>
+	</search-filters>
+	
+	<search-filters name="supplier-arrivals-filters" model="com.axelor.apps.supplychain.db.StockMove" title="Supplier arrivals filters">
+		<filter title="Today Arrivals">
+			<domain>self.estimatedDate = CURRENT_DATE</domain>
+		</filter>
+		<filter title="Upcoming arrivals">
+			<domain>self.estimatedDate &lt; :_newDate</domain>
+		</filter>
+		<filter title="Arrivals History">
+			<domain>self.statusSelect = 3</domain>
+		</filter>
+		<filter title="Cancelled Arrivals">
+			<domain>self.statusSelect = 4</domain>
+		</filter>
+	</search-filters>
+	
+	<search-filters name="internal-stock-move-filters" model="com.axelor.apps.supplychain.db.StockMove" title="Internal Stock Move filters">
+		<filter title="Moves To Prepare">
+			<domain>self.statusSelect = 2</domain>
+		</filter>
+		<filter title="Moves History">
+			<domain>self.statusSelect = 3</domain>
+		</filter>
+		<filter title="Moves Cancelled">
+			<domain>self.statusSelect = 4</domain>
+		</filter>
+	</search-filters>
+		
 </object-views>

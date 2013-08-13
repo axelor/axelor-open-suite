@@ -5,172 +5,59 @@
 	
 	<menuitem name="stock-root" title="Stock management"  priority="85"
 	icon="img/icons/baggage-cart-box.png" groups="admins,erp"/>
-	
+		
 	<menuitem name="stock-root-custdeliveries" parent="stock-root"
-		title="Customer Deliveries"/>
-	
-	<menuitem name="stock-root-custdeliveries-all" parent="stock-root-custdeliveries"
-		title="All Deliveries" action="stock.root.custdeliveries.all" />
+		title="Customer Deliveries" action="stock.root.custdeliveries" />
 
-	<action-view name="stock.root.custdeliveries.all" title="All deliveries"
+	<action-view name="stock.root.custdeliveries" title="Customer Deliveries"
 		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/product_small.png">
 		<view type="grid" />
 		<view type="form" />
-		<domain>self.typeSelect = 2</domain>
+		<view-param name="search-filters" value="customer-deliveries-filters"/>
+		<domain>self.toLocation.typeSelect = 3</domain>
 		<context name="_typeSelect" expr="2"/>
 	</action-view>
-		
-	<menuitem name="stock-root-custdeliveries-draft" parent="stock-root-custdeliveries"
-		title="Cust. Deliveries to prepare" action="stock.root.custdeliveries.draft" />
-
-	<action-view name="stock.root.custdeliveries.draft" title="Cust. deliveries to prepare"
-		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/product_small.png">
-		<view type="grid" />
-		<view type="form" />
-		<domain>self.typeSelect = 2 and self.statusSelect = 1</domain>
-		<context name="_typeSelect" expr="2"/>
-	</action-view>	
-		
-	<menuitem name="stock-root-custdeliveries-confirmed" parent="stock-root-custdeliveries"
-		title="Sent Cust. Deliveries" action="stock.root.custdeliveries.confirmed" />
-
-	<action-view name="stock.root.custdeliveries.confirmed" title="Sent Cust. Deliveries"
-		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/product_small.png">
-		<view type="grid" />
-		<view type="form" />
-		<domain>self.typeSelect = 2 and self.statusSelect = 2</domain>
-		<context name="_typeSelect" expr="2"/>
-	</action-view>		
-		
-	<menuitem name="stock-root-custdeliveries-cancel" parent="stock-root-custdeliveries"
-		title="Canceled Cust. Deliveries" action="stock.root.custdeliveries.cancel" />
-
-	<action-view name="stock.root.custdeliveries.cancel" title="Canceled Cust. Deliveries"
-		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/product_small.png">
-		<view type="grid" />
-		<view type="form" />
-		<domain>self.typeSelect = 2 and self.statusSelect = 4</domain>
-		<context name="_typeSelect" expr="2"/>
-	</action-view>			
-		
+					
 	<menuitem name="stock-root-suparrivals" parent="stock-root"
-		title="Supplier arrivals"/>
-	
-	<menuitem name="stock-root-suparrivals-all" parent="stock-root-suparrivals"
-		title="All goods arrivals" action="stock.root.suparrivals.all" />
+		title="Supplier Arrivals" action="stock.root.suparrivals.all" />
 
-	<action-view name="stock.root.suparrivals.all" title="All goods arrivals"
+	<action-view name="stock.root.suparrivals" title="Supplier Arrivals"
 		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/product_small.png">
 		<view type="grid" />
 		<view type="form" />
-		<domain>self.typeSelect = 3</domain>
+		<view-param name="search-filters" value="supplier-arrivals-filters"/>
+		<domain>self.fromLocation.typeSelect = 2</domain>
 		<context name="_typeSelect" expr="3"/>
-	</action-view>	
-		
-	<menuitem name="stock-root-suparrivals-today" parent="stock-root-suparrivals"
-		title="Today arrivals" action="stock.root.suparrivals.today" />
-
-	<action-view name="stock.root.suparrivals.today" title="Today arrivals"
-		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/product_small.png">
-		<view type="grid" />
-		<view type="form" />
-		<domain>self.typeSelect = 3 and CURRENT_DATE = self.estimatedDate</domain>
-		<context name="_typeSelect" expr="3"/>
-	</action-view>	
-		
-	<menuitem name="stock-root-suparrivals-upcoming" parent="stock-root-suparrivals"
-		title="Upcoming arrivals" action="stock.root.suparrivals.upcoming" />
-
-	<action-view name="stock.root.suparrivals.upcoming" title="Upcoming arrivals"
-		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/product_small.png">
-		<view type="grid" />
-		<view type="form" />
-		<domain>self.typeSelect = 3 and self.estimatedDate &lt; :_newDate</domain>
 		<context name="_newDate" expr="eval: __date__.plusWeeks(1)"/>
-		<context name="_typeSelect" expr="3"/>
-	</action-view>		
-		
-	<menuitem name="stock-root-suparrivals-previous" parent="stock-root-suparrivals"
-		title="Previous arrivals" action="stock.root.suparrivals.previous" />
-
-	<action-view name="stock.root.suparrivals.previous" title="Previous arrivals"
-		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/product_small.png">
-		<view type="grid" />
-		<view type="form" />
-		<domain>self.typeSelect = 3 and self.statusSelect = 3</domain>
-		<context name="_typeSelect" expr="3"/>
-	</action-view>		
-		
-	<menuitem name="stock-root-suparrivals-canceled" parent="stock-root-suparrivals"
-		title="Canceled arrivals" action="stock.root.suparrivals.canceled" />
-
-	<action-view name="stock.root.suparrivals.canceled" title="Canceled arrivals"
-		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/product_small.png">
-		<view type="grid" />
-		<view type="form" />
-		<domain>self.typeSelect = 3 and self.statusSelect = 4</domain>
-		<context name="_typeSelect" expr="3"/>
-	</action-view>		
-		
+	</action-view>	
+	
+			
 	<menuitem name="stock-root-internal" parent="stock-root"
-		title="Internal stock moves"/>	
-		
-	<menuitem name="stock-root-internal-toprepare" parent="stock-root-internal"
-		title="Stock move to prepare" action="stock.root.internal.toprepare" />
+		title="Internal Stock Moves" action="stock.root.internal" />
 
-	<action-view name="stock.root.internal.toprepare" title="Stock move to prepare"
+	<action-view name="stock.root.internal" title="Internal Stock Moves"
 		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/product_small.png">
 		<view type="grid" />
 		<view type="form" />
-		<domain>self.typeSelect = 1 and self.statusSelect = 1</domain>
+		<view-param name="search-filters" value="internal-stock-move-filters"/>
+		<domain>self.toLocation.typeSelect = 1</domain>
 		<context name="_typeSelect" expr="1"/>
 	</action-view>		
 		
-	<menuitem name="stock-root-internal-history" parent="stock-root-internal"
-		title="Stock move history" action="stock.root.internal.history" />
-
-	<action-view name="stock.root.internal.history" title="Stock move history"
-		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/product_small.png">
-		<view type="grid" />
-		<view type="form" />
-		<domain>self.typeSelect = 1 and self.statusSelect = 3</domain>
-		<context name="_typeSelect" expr="1"/>
-	</action-view>			
-		
-	<menuitem name="stock-root-internal-canceled" parent="stock-root-internal"
-		title="Stock move canceled" action="stock.root.internal.canceled" />
-
-	<action-view name="stock.root.internal.canceled" title="Stock move canceled"
-		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/product_small.png">
-		<view type="grid" />
-		<view type="form" />
-		<domain>self.typeSelect = 1 and self.statusSelect = 4</domain>
-		<context name="_typeSelect" expr="1"/>
-	</action-view>		
 		
 	<menuitem name="stock-root-inventories" parent="stock-root"
 		title="Periodical processing"/>		
 		
 	<menuitem name="stock-root-inventories-draft" parent="stock-root-inventories"
-		title="Draft Inventories" action="stock.root.inventories.draft" icon="img/icons/inventory.png"/>
+		title="Inventories" action="stock.root.inventories.draft" icon="img/icons/inventory.png"/>
 	
-	<action-view name="stock.root.inventories.draft" title="Draft Inventories"
+	<action-view name="stock.root.inventories.draft" title="Inventories"
 		model="com.axelor.apps.supplychain.db.Inventory" icon="img/icons/inventory.png">
 		<view type="grid" />
 		<view type="form" />
-		<domain>self.statusSelect = 1</domain>
+		<view-param name="search-filters" value="inventories-filters"/>
 	</action-view>
 	
-	<menuitem name="stock-root-inventories-confirmed" parent="stock-root-inventories"
-		title="Confirmed Inventories" action="stock.root.inventories.confirmed" icon="img/icons/inventory.png"/>
-	
-	<action-view name="stock.root.inventories.confirmed" title="Confirmed Inventories"
-		model="com.axelor.apps.supplychain.db.Inventory" icon="img/icons/inventory.png">
-		<view type="grid" />
-		<view type="form" />
-		<domain>self.statusSelect = 2</domain>
-	</action-view>
-		
 		
 	<menuitem name="stock-root-conf" parent="stock-root" title="Configuration"
 		icon="img/icons/parameter.png" />
@@ -193,15 +80,7 @@
 		<view type="form" />
 	</action-view>
 	
-	<menuitem name="stock-root-conf-inventory" parent="stock-root-conf"
-		title="Inventories" action="stock.root.conf.inventory" icon="img/icons/inventory.png"/>
-	
-	<action-view name="stock.root.conf.inventory" title="Inventories"
-		model="com.axelor.apps.supplychain.db.Inventory" icon="img/icons/inventory.png">
-		<view type="grid" />
-		<view type="form" />
-	</action-view>
-	
+		
 	<menuitem name="supply-chain-root" title="Sales/Purchases" priority="150"
 		icon="img/icons/order.png" groups="admins,erp"/>
 		
@@ -220,160 +99,29 @@
 		model="com.axelor.apps.supplychain.db.PurchaseOrder" icon="img/icons/order_small.png">
 		<view type="form" name="purchase-order-form" />
 	</action-view>	
-		
-	<menuitem name="supply-chain-root-sales" title="Sales" parent="supply-chain-root"/>
-	
-	<menuitem name="supply-chain-root-sales-my" title="My Team" parent="supply-chain-root-sales"/>	
-		
-	<menuitem name="supply-chain-root-sales-mydraftquotation" parent="supply-chain-root-sales-my"
-		title="My team draft quotes" action="supply.chain.root.sales.mydraftquotation" />
+			
+	<menuitem name="supply-chain-root-sales" parent="supply-chain-root"
+		title="Sale orders" action="supply.chain.root.sales" />
 
-	<action-view name="supply.chain.root.sales.mydraftquotation" title="My team draft quotes"
+	<action-view name="supply.chain.root.sales" title="Sale orders"
 		model="com.axelor.apps.supplychain.db.SalesOrder" icon="img/icons/order_small.png">
 		<view type="grid" name="sales-order-grid" />
 		<view type="form" name="sales-order-form" />
-		<domain>self.statusSelect = 1 and self.team IN self.salesmanUserInfo.teamSet</domain>
-	</action-view>
-	
-	<menuitem name="supply-chain-root-sales-myconfirmedquotation" parent="supply-chain-root-sales-my"
-		title="My team confirmed quotes" action="supply.chain.root.sales.myconfirmedquotation" />
-
-	<action-view name="supply.chain.root.sales.myconfirmedquotation" title="My team confirmed quotes"
-		model="com.axelor.apps.supplychain.db.SalesOrder" icon="img/icons/order_small.png">
-		<view type="grid" name="sales-order-grid" />
-		<view type="form" name="sales-order-form" />
-		<domain>self.statusSelect = 2 and self.team IN self.salesmanUserInfo.teamSet</domain>
-	</action-view>
-	
-	<menuitem name="supply-chain-root-sales-myso" parent="supply-chain-root-sales-my"
-		title="My team sale orders" action="supply.chain.root.sales.myso" />
-
-	<action-view name="supply.chain.root.sales.myso" title="My team sale orders"
-		model="com.axelor.apps.supplychain.db.SalesOrder" icon="img/icons/order_small.png">
-		<view type="grid" name="sales-order-grid" />
-		<view type="form" name="sales-order-form" />
-		<domain>self.statusSelect = 3 and self.team IN self.salesmanUserInfo.teamSet</domain>
+		<view-param name="search-filters" value="sales-order-filters"/>
+		<domain>self.statusSelect = 3</domain>
+		<context name="_internalUser" expr="eval: __user__.id"/>
+		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
 	</action-view>	
 	
-	
-	<menuitem name="supply-chain-root-sales-all" title="All sales" parent="supply-chain-root-sales"/>
-	
-	<menuitem name="supply-chain-root-sales-alldraftquotation" parent="supply-chain-root-sales-all"
-		title="All draft quotations" action="supply.chain.root.sales.alldraftquotation" />
+	<menuitem name="supply-chain-root-purchases" parent="supply-chain-root"
+		title="Purchases" action="supply.chain.root.purchases" />
 
-	<action-view name="supply.chain.root.sales.alldraftquotation" title="All draft quotations"
-		model="com.axelor.apps.supplychain.db.SalesOrder" icon="img/icons/order_small.png">
-		<view type="grid" name="sales-order-grid" />
-		<view type="form" name="sales-order-form" />
-		<domain>self.statusSelect = 1</domain>
-	</action-view>
-	
-	<menuitem name="supply-chain-root-sales-allconfirmedquotation" parent="supply-chain-root-sales-all"
-		title="All confirmed quotations" action="supply.chain.root.sales.allconfirmedquotation" />
-
-	<action-view name="supply.chain.root.sales.allconfirmedquotation" title="All confirmed quotations"
-		model="com.axelor.apps.supplychain.db.SalesOrder" icon="img/icons/order_small.png">
-		<view type="grid" name="sales-order-grid" />
-		<view type="form" name="sales-order-form" />
-		<domain>self.statusSelect = 2</domain>
-	</action-view>
-	
-	<menuitem name="supply-chain-root-sales-allso" parent="supply-chain-root-sales-all"
-		title="All sale orders" action="supply.chain.root.sales.allso" />
-
-	<action-view name="supply.chain.root.sales.allso" title="All sale orders"
-		model="com.axelor.apps.supplychain.db.SalesOrder" icon="img/icons/order_small.png">
-		<view type="grid" name="sales-order-grid" />
-		<view type="form" name="sales-order-form" />
-		<domain>self.statusSelect = 3</domain>
-	</action-view>	
-
-	<menuitem name="supply-chain-root-purchases" title="Purchases" parent="supply-chain-root"/>
-	
-	<menuitem name="supply-chain-root-purchases-mydraftrfq" parent="supply-chain-root-purchases"
-		title="My draft RFQ" action="supply.chain.root.purchases.mydraftrfq" />
-
-	<action-view name="supply.chain.root.purchases.mydraftrfq" title="My draft RFQ"
+	<action-view name="supply.chain.root.purchases" title="Purchases"
 		model="com.axelor.apps.supplychain.db.PurchaseOrder" icon="img/icons/order_small.png">
 		<view type="grid" name="purchase-order-grid" />
 		<view type="form" name="purchase-order-form" />
-		<domain>self.statusSelect = 1 and self.buyerUserInfo.internalUser.id = :_internalUser</domain>
+		<view-param name="search-filters" value="purchases-order-filters"/>
 		<context name="_internalUser" expr="eval: __user__.id"/>
-	</action-view>
-	
-	<menuitem name="supply-chain-root-purchases-myconfirmedrfq" parent="supply-chain-root-purchases"
-		title="My confirmed RFQ" action="supply.chain.root.purchases.myconfirmedrfq" />
-
-	<action-view name="supply.chain.root.purchases.myconfirmedrfq" title="My confirmed RFQ"
-		model="com.axelor.apps.supplychain.db.PurchaseOrder" icon="img/icons/order_small.png">
-		<view type="grid" name="purchase-order-grid" />
-		<view type="form" name="purchase-order-form" />
-		<domain>self.statusSelect = 2 and self.buyerUserInfo.internalUser.id = :_internalUser</domain>
-		<context name="_internalUser" expr="eval: __user__.id"/>
-	</action-view>
-	
-	<menuitem name="supply-chain-root-purchases-mywaitingpo" parent="supply-chain-root-purchases"
-		title="My PO waiting confirmation" action="supply.chain.root.purchases.mywaitingpo" />
-
-	<action-view name="supply.chain.root.purchases.mywaitingpo" title="My PO waiting confirmation"
-		model="com.axelor.apps.supplychain.db.PurchaseOrder" icon="img/icons/order_small.png">
-		<view type="grid" name="purchase-order-grid" />
-		<view type="form" name="purchase-order-form" />
-		<domain>self.statusSelect = 3 and self.buyerUserInfo.internalUser.id = :_internalUser</domain>
-		<context name="_internalUser" expr="eval: __user__.id"/>
-	</action-view>
-	
-	<menuitem name="supply-chain-root-purchases-myvalidatedpo" parent="supply-chain-root-purchases"
-		title="My validated PO" action="supply.chain.root.purchases.myvalidatedpo" />
-
-	<action-view name="supply.chain.root.purchases.myvalidatedpo" title="My validated PO"
-		model="com.axelor.apps.supplychain.db.PurchaseOrder" icon="img/icons/order_small.png">
-		<view type="grid" name="purchase-order-grid" />
-		<view type="form" name="purchase-order-form" />
-		<domain>self.statusSelect = 4 and self.buyerUserInfo.internalUser.id = :_internalUser</domain>
-		<context name="_internalUser" expr="eval: __user__.id"/>
-	</action-view>
-	
-	<menuitem name="supply-chain-root-purchases-allpurchases" title="All purchases" parent="supply-chain-root-purchases"/>
-	
-	<menuitem name="supply-chain-root-purchases-alldraftrfq" parent="supply-chain-root-purchases-allpurchases"
-		title="All draft RFQ" action="supply.chain.root.purchases.alldraftrfq" />
-
-	<action-view name="supply.chain.root.purchases.alldraftrfq" title="All draft RFQ"
-		model="com.axelor.apps.supplychain.db.PurchaseOrder" icon="img/icons/order_small.png">
-		<view type="grid" name="purchase-order-grid" />
-		<view type="form" name="purchase-order-form" />
-		<domain>self.statusSelect = 1</domain>
-	</action-view>
-	
-	<menuitem name="supply-chain-root-purchases-allconfirmedrfq" parent="supply-chain-root-purchases-allpurchases"
-		title="All confirmed RFQ" action="supply.chain.root.purchases.allconfirmedrfq" />
-
-	<action-view name="supply.chain.root.purchases.allconfirmedrfq" title="All confirmed RFQ"
-		model="com.axelor.apps.supplychain.db.PurchaseOrder" icon="img/icons/order_small.png">
-		<view type="grid" name="purchase-order-grid" />
-		<view type="form" name="purchase-order-form" />
-		<domain>self.statusSelect = 2</domain>
-	</action-view>
-	
-	<menuitem name="supply-chain-root-purchases-allpowaiting" parent="supply-chain-root-purchases-allpurchases"
-		title="All PO waiting confirmation" action="supply.chain.root.purchases.allpowaiting" />
-
-	<action-view name="supply.chain.root.purchases.allpowaiting" title="All PO waiting confirmation"
-		model="com.axelor.apps.supplychain.db.PurchaseOrder" icon="img/icons/order_small.png">
-		<view type="grid" name="purchase-order-grid" />
-		<view type="form" name="purchase-order-form" />
-		<domain>self.statusSelect = 3</domain>
-	</action-view>
-	
-	<menuitem name="supply-chain-root-purchases-allpo" parent="supply-chain-root-purchases-allpurchases"
-		title="All purchase orders" action="supply.chain.root.purchases.allpo" />
-
-	<action-view name="supply.chain.root.purchases.allpo" title="All purchase orders"
-		model="com.axelor.apps.supplychain.db.PurchaseOrder" icon="img/icons/order_small.png">
-		<view type="grid" name="purchase-order-grid" />
-		<view type="form" name="purchase-order-form" />
-		<domain>self.statusSelect = 4</domain>
 	</action-view>
 
 </object-views>

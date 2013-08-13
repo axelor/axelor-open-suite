@@ -71,4 +71,13 @@
 		<call class="com.axelor.apps.supplychain.web.InventoryController" method="generateStockMove"/>
 	</action-method>
     
+    <search-filters name="inventories-filters" model="com.axelor.apps.supplychain.db.Inventory" title="Inventories filters">
+		<filter title="Planned Inventories">
+			<domain>self.statusSelect = 1</domain>
+		</filter>
+		<filter title="Inventories History">
+			<domain>self.statusSelect = 2</domain>
+		</filter>
+	</search-filters>
+	
 </object-views>
