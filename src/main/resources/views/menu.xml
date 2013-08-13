@@ -134,118 +134,48 @@
 		<view type="form" />
 	</action-view>
 	
-	<!--  
-	<menuitem name="contact-conf-geographical-area" parent="contact-conf"
-		title="Geographical zones" action="contact.conf.geographical.area" />
+	
+<!-- 	<menuitem name="contact-conf-geographical-area" parent="contact-conf" -->
+<!-- 		title="Geographical zones" action="contact.conf.geographical.area" /> -->
 
-	<action-view name="contact.conf.geographical.area" title="Geographical zones"
-		model="com.axelor.apps.base.db.GeographicalArea" icon="img/icons/parameter_small.png">
-		<view type="grid" name="geographical-area-grid" />
-		<view type="form" name="geographical-area-form" />
-	</action-view>
+<!-- 	<action-view name="contact.conf.geographical.area" title="Geographical zones" -->
+<!-- 		model="com.axelor.apps.base.db.GeographicalArea" icon="img/icons/parameter_small.png"> -->
+<!-- 		<view type="grid" name="geographical-area-grid" /> -->
+<!-- 		<view type="form" name="geographical-area-form" /> -->
+<!-- 	</action-view> -->
 
-	<menuitem name="contact-conf-partner-list-map" parent="contact-conf"
-		title="Sales map" action="contact.conf.partner.list.map" />
+<!-- 	<menuitem name="contact-conf-partner-list-map" parent="contact-conf" -->
+<!-- 		title="Sales map" action="contact.conf.partner.list.map" /> -->
 
-	<action-view name="contact.conf.partner.list.map" title="Sales map"
-		model="com.axelor.apps.base.db.PartnerList" icon="img/icons/parameter_small.png">
-		<view type="grid" name="partner-list-map-grid" />
-		<view type="form" name="partner-list-map-form" />
-	</action-view>
-	-->
+<!-- 	<action-view name="contact.conf.partner.list.map" title="Sales map" -->
+<!-- 		model="com.axelor.apps.base.db.PartnerList" icon="img/icons/parameter_small.png"> -->
+<!-- 		<view type="grid" name="partner-list-map-grid" /> -->
+<!-- 		<view type="form" name="partner-list-map-form" /> -->
+<!-- 	</action-view> -->
+	
 	
 	<menuitem name="product-root" title="Products" priority="170"
 		icon="img/icons/product.png" groups="admins,erp"/>
 
- 
 	<menuitem name="product-root-product" parent="product-root"
-		title="All products" action="product.root.product" />
+		title="Products" action="product.root.product" />
 
-	<action-view name="product.root.product" title="All products"
+	<action-view name="product.root.product" title="Products"
 		model="com.axelor.apps.base.db.Product" icon="img/icons/product_small.png">
 		<view type="grid" />
 		<view type="form" />
-		<domain>self.endDate IS NULL or CURRENT_DATE &lt; self.endDate</domain>
+		<view-param name="search-filters" value="products-filters"/>
 		<context name="_activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
 	</action-view>
 	
-	<menuitem name="affair-root-price-list" parent="product-root"
-		title="Pricelists" action="affair.root.price.list" />
+<!-- 	<menuitem name="affair-root-price-list" parent="product-root" -->
+<!-- 		title="Pricelists" action="affair.root.price.list" /> -->
 
-	<action-view name="affair.root.price.list" title="Pricelists"
-		model="com.axelor.apps.consulting.db.PriceList" icon="img/icons/affair_small.png">
-		<view type="grid" name="price-list-grid" />
-		<view type="form" name="price-list-form" />
-	</action-view>	
-
-	<menuitem name="product-root-filters" parent="product-root"
-		title="All filters"/>
-	
-	<menuitem name="product-root-filters-storable" parent="product-root-filters"
-		title="All storable products" action="product.root.filters.storable" />
-		
-	<action-view name="product.root.filters.storable" title="All storable products"
-		model="com.axelor.apps.base.db.Product" icon="img/icons/product_small.png">
-		<view type="grid" />
-		<view type="form" />
-		<domain>self.productTypeSelect = 'storable'</domain>
-		<context name="_activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
-	</action-view>
-	
-	<menuitem name="product-root-filters-service" parent="product-root-filters"
-		title="All service products" action="product.root.filters.service" />
-		
-	<action-view name="product.root.filters.service" title="All service products"
-		model="com.axelor.apps.base.db.Product" icon="img/icons/product_small.png">
-		<view type="grid" />
-		<view type="form" />
-		<domain>self.productTypeSelect = 'service'</domain>
-		<context name="_activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
-	</action-view>
-	
-	<menuitem name="product-root-filters-rawmaterials" parent="product-root-filters"
-		title="All raw materials" action="product.root.filters.rawmaterials" />
-		
-	<action-view name="product.root.filters.rawmaterials" title="All raw materials"
-		model="com.axelor.apps.base.db.Product" icon="img/icons/product_small.png">
-		<view type="grid" />
-		<view type="form" />
-		<domain>self.isRawMaterial = true</domain>
-		<context name="_activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
-	</action-view>
-	
-	<menuitem name="product-root-filters-profiles" parent="product-root-filters"
-		title="All profiles" action="product.root.filters.profiles" />
-		
-	<action-view name="product.root.filters.profiles" title="All profiles"
-		model="com.axelor.apps.base.db.Product" icon="img/icons/product_small.png">
-		<view type="grid" />
-		<view type="form" />
-		<domain>self.applicationTypeSelect = 2</domain>
-		<context name="_activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
-	</action-view>
-	
-	<menuitem name="product-root-filters-travelexpenses" parent="product-root-filters"
-		title="All travel expenses products" action="product.root.filters.travelexpenses" />
-		
-	<action-view name="product.root.filters.travelexpenses" title="All travel expenses products"
-		model="com.axelor.apps.base.db.Product" icon="img/icons/product_small.png">
-		<view type="grid" />
-		<view type="form" />
-		<domain>self.applicationTypeSelect = 3</domain>
-		<context name="_activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
-	</action-view>
-	
-	<menuitem name="product-root-filters-obsoleteproducts" parent="product-root-filters"
-		title="All obsolete products" action="product.root.filters.obsoleteproducts" />
-		
-	<action-view name="product.root.filters.obsoleteproducts" title="All obsolete products"
-		model="com.axelor.apps.base.db.Product" icon="img/icons/product_small.png">
-		<view type="grid" />
-		<view type="form" />
-		<domain>self.endDate IS NOT NULL and CURRENT_DATE &gt; self.endDate</domain>
-		<context name="_activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
-	</action-view>
+<!-- 	<action-view name="affair.root.price.list" title="Pricelists" -->
+<!-- 		model="com.axelor.apps.consulting.db.PriceList" icon="img/icons/affair_small.png"> -->
+<!-- 		<view type="grid" name="price-list-grid" /> -->
+<!-- 		<view type="form" name="price-list-form" /> -->
+<!-- 	</action-view>	 -->
 	
 	<menuitem name="product-conf" parent="product-root" title="Configuration"
 		icon="img/icons/parameter.png" />
@@ -277,10 +207,6 @@
 		<view type="form" />
 	</action-view>
 	
-
-	
-	
-
 
 	<menuitem name="alarm-root" title="Alarmes" priority="80"
 		icon="img/icons/alert.png" groups="admins,erp"/>

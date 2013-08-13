@@ -3,13 +3,10 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    
-        
-    
     <grid name="product-grid" title="Products" model="com.axelor.apps.base.db.Product">
-    <toolbar>
-		<button name="catelog" title="Catelog" onClick="action-print-product-catelog"/>
-    </toolbar>    
+   		<toolbar>
+			<button name="catelog" title="Catelog" onClick="action-print-product-catelog"/>
+    	</toolbar>    
         <field name="code"/>
         <field name="name"/>
         <field name="productCategory"/>
@@ -114,4 +111,31 @@
 		<call class="com.axelor.apps.base.web.ProductControllerSimple" method="printProductCatelog"/>
 	</action-method>
     
+    <search-filters name="products-filters" model="com.axelor.apps.base.db.Product" title="Products filters">
+		<filter title="Current Products">
+			<domain>self.endDate IS NULL or CURRENT_DATE &lt; self.endDate</domain>
+		</filter>
+		<filter title="Storable Products">
+			<domain>(self.endDate IS NULL or CURRENT_DATE &lt; self.endDate) and self.productTypeSelect = 'storable'</domain>
+		</filter>
+		<filter title="Service Products">
+			<domain>(self.endDate IS NULL or CURRENT_DATE &lt; self.endDate) and self.productTypeSelect = 'service'</domain>
+		</filter>
+		<filter title="Products With Variant">
+			<domain>self.productVariantConfiguration != null</domain>
+		</filter>
+		<filter title="Raw Materials">
+			<domain>self.isRawMaterial = true</domain>
+		</filter>
+		<filter title="Profiles">
+			<domain>self.applicationTypeSelect = 2</domain>
+		</filter>
+		<filter title="Travel expenses">
+			<domain>self.applicationTypeSelect = 3</domain>
+		</filter>
+		<filter title="Obsolete Products">
+			<domain>CURRENT_DATE &gt; self.endDate</domain>
+		</filter>
+	</search-filters>
+	
 </object-views>
