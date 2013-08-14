@@ -283,6 +283,7 @@
 		model="com.axelor.apps.organisation.db.Project" icon="img/icons/project_small.png">
 		<view type="grid" name="project-grid" />
 		<view type="form" name="project-form" />
+		<view-param name="search-filters" value="project-filters"/>
 		<domain>self.isProject = true</domain>
 	</action-view>
 	
@@ -294,6 +295,10 @@
 		<view type="grid" name="task-grid" />
 		<view type="form" name="task-form" />
 		<view type="calendar" name="task-calendar"/>
+		<view-param name="search-filters" value="tasks-filters"/>
+		<context name="_internalUser" expr="eval: __user__.id"/>
+		<context name="_todayDateTime" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()"/>
+		<context name="_newDate" expr="eval: __datetime__.plusDays(5)"/>
 	</action-view>
 
 

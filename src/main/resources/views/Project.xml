@@ -89,5 +89,16 @@
 		<attribute name="domain" for="parentProject" expr="eval: &quot;self?.responsibleUserInfo?.internalUser.id = __user__.id&quot;" if="typeProjectSelect == 2"/>
 	</action-attrs>
 	
+	<search-filters name="project-filters" model="com.axelor.apps.organisation.db.Project" title="Project filters">
+		<filter title="My Projects">
+			<domain>self.exitDate IS NULL</domain>
+		</filter>
+		<filter title="Models">
+			<domain>self.isModel = true</domain>
+		</filter>
+		<filter title="Billable">
+			<domain>self.isReinvoicingTime = true OR self.isReinvoicingExpense = true</domain>
+		</filter>
+	</search-filters>
 	
 </object-views>

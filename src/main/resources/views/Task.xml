@@ -150,4 +150,22 @@
 		<attribute name="hidden" for="financialInformation" expr="eval: project == null || project?.isAffair == false"/>
 	</action-attrs>
 	
+	<search-filters name="tasks-filters" model="com.axelor.apps.organisation.db.Task" title="Tasks filters">
+		<filter title="My Tasks">
+			<domain>self.userInfo.internalUser.id = :_internalUser</domain>
+		</filter>
+		<filter title="My Today tasks">
+			<domain>self.userInfo.internalUser.id = :_internalUser and self.startDateT &lt;= :_todayDateTime</domain>
+		</filter>
+		<filter title="My Upcoming Tasks">
+			<domain>self.userInfo.internalUser.id = :_internalUser and self.startDateT &lt; :_newDate</domain>
+		</filter>
+		<filter title="Tasks Underevaluated">
+			<domain>self.spentTime &gt; self.estimateTime</domain>
+		</filter>
+		<filter title="Tasks To Invoice">
+			<domain>self.isToInvoice = true</domain>
+		</filter>
+	</search-filters>
+	
 </object-views>
