@@ -74,17 +74,7 @@
 "invoice-root-purchases-supinvoices","Suppl. Invoices","menu","Suppl. Invoices","Les factures fournisseur",,,,
 "invoice-root-purchases-suprefunds","Suppl. Refunds","menu","Suppl. Refunds","Les avoirs fournisseur",,,,
 "invoice-root-sales","Sales","menu","Sales","Les Ventes",,,,
-"invoice-root-sales-custinvoices","Cust. Invoices","menu","Cust. Invoices","Les factures client",,,,
-"invoice-root-sales-custrefunds","Cust. Refunds","menu","Cust. Refunds","Les avoirs client",,,,
-"invoice-root-sales-filters","Filters","menu","Filters","Filtres",,,,
-"invoice-root-sales-filters-confcustinvoice","Confirmed Cust. invoices","menu","Confirmed Cust. invoices","Les factures client confirmées",,,,
-"invoice-root-sales-filters-confcustrefunds","Confirmed Cust. refunds","menu","Confirmed Cust. refunds","Les avoirs client confirmés",,,,
-"invoice-root-sales-filters-draftcustinvoice","Draft Cust. invoices","menu","Draft Cust. invoices","Les factures client brouillon",,,,
-"invoice-root-sales-filters-draftcustrefunds","Draft Cust. refunds","menu","Draft Cust. refunds","Les avoirs client brouillon",,,,
-"invoice-root-sales-filters-duecustrefunds","Due Cust. refunds","menu","Due Cust. refunds","Les avoirs client échus",,,,
-"invoice-root-sales-filters-unpaiddueinvoice","Unpaid Due invoices","menu","Unpaid Due invoices","Les factures client échues",,,,
-"invoice-root-sales-filters-valcustinvoice","Validated Cust. invoices","menu","Validated Cust. invoices","Les factures client validées",,,,
-"invoice-root-sales-filters-valcustrefunds","Validated Cust. refunds","menu","Validated Cust. refunds","Les avoirs client validés",,,,
+"invoice-root-sales-custrefunds","Cust. Refunds","menu","Cust. Refunds","Avoirs des clients",,,,
 "mail-root-email-cash-register","Cash register emails","menu","Cash register emails","Les emails de caisse",,,,
 "mail-root-email-debtrecovery","Reminder emails","menu","Reminder emails","Les emails de relance",,,,
 "mail-root-email-reimboursement","Reimbursement emails","menu","Reimbursement emails","Les emails de remboursement",,,,
@@ -587,16 +577,7 @@
 "invoice.root.purchases.filters.valsuprefunds","invoice.root.purchases.filters.valsuprefunds","action","Validated Suppl. refunds","Avoirs fournisseur validés",,,,
 "invoice.root.purchases.supinvoices","invoice.root.purchases.supinvoices","action","Suppl. Invoices","Les factures fournisseur",,,,
 "invoice.root.purchases.suprefunds","invoice.root.purchases.suprefunds","action","Suppl. Refunds","Les avoirs fournisseur",,,,
-"invoice.root.sales.custinvoices","invoice.root.sales.custinvoices","action","Cust. Invoices","Les factures client",,,,
-"invoice.root.sales.custrefunds","invoice.root.sales.custrefunds","action","Cust. Refunds","Les avoirs client",,,,
-"invoice.root.sales.filters.confcustinvoice","invoice.root.sales.filters.confcustinvoice","action","Confirmed Cust. invoices","Les factures client confirmées",,,,
-"invoice.root.sales.filters.confcustrefunds","invoice.root.sales.filters.confcustrefunds","action","Confirmed Cust. refunds","Les avoirs client confirmés",,,,
-"invoice.root.sales.filters.draftcustinvoice","invoice.root.sales.filters.draftcustinvoice","action","Draft Cust. invoices","Les factures client brouillon",,,,
-"invoice.root.sales.filters.draftcustrefunds","invoice.root.sales.filters.draftcustrefunds","action","Draft Cust. refunds","Les avoirs client brouillon",,,,
-"invoice.root.sales.filters.duecustrefunds","invoice.root.sales.filters.duecustrefunds","action","Due Cust. refunds","Les avoirs client échus",,,,
-"invoice.root.sales.filters.unpaiddueinvoice","invoice.root.sales.filters.unpaiddueinvoice","action","Unpaid due invoices","Facture à payer arrivées à échéance",,,,
-"invoice.root.sales.filters.valcustinvoice","invoice.root.sales.filters.valcustinvoice","action","Validated Cust. invoices","Les factures client validées",,,,
-"invoice.root.sales.filters.valcustrefunds","invoice.root.sales.filters.valcustrefunds","action","Validated Cust. refunds","Les avoirs client validés",,,,
+"invoice.root.sales.custrefunds","invoice.root.sales.custrefunds","action","Cust. Refunds","Avoirs des clients",,,,
 "mail.root.email.cash.register","mail.root.email.cash.register","action","Cash register emails","Les emails de caisse",,,,
 "mail.root.email.debtrecovery","mail.root.email.debtrecovery","action","Reminder emails","Les emails de relance",,,,
 "mail.root.email.reimboursement","mail.root.email.reimboursement","action","Reimbursement emails","Les emails de remboursement",,,,
@@ -1477,17 +1458,7 @@
 "invoice-root-purchases-supinvoices","Suppl. Invoices","menu","Suppl. Invoices","Les factures fournisseur","",""
 "invoice-root-purchases-suprefunds","Suppl. Refunds","menu","Suppl. Refunds","Les avoirs fournisseur","",""
 "invoice-root-sales","Sales","menu","Sales","Les Ventes","",""
-"invoice-root-sales-custinvoices","Cust. Invoices","menu","Cust. Invoices","Les factures client","",""
-"invoice-root-sales-custrefunds","Cust. Refunds","menu","Cust. Refunds","Les avoirs client","",""
-"invoice-root-sales-filters","Filters","menu","Filters","Filtres","",""
-"invoice-root-sales-filters-confcustinvoice","Confirmed Cust. invoices","menu","Confirmed Cust. invoices","Les factures client confirmées","",""
-"invoice-root-sales-filters-confcustrefunds","Confirmed Cust. refunds","menu","Confirmed Cust. refunds","Les avoirs client confirmés","",""
-"invoice-root-sales-filters-draftcustinvoice","Draft Cust. invoices","menu","Draft Cust. invoices","Les factures client brouillon","",""
-"invoice-root-sales-filters-draftcustrefunds","Draft Cust. refunds","menu","Draft Cust. refunds","Les avoirs client brouillon","",""
-"invoice-root-sales-filters-duecustrefunds","Due Cust. refunds","menu","Due Cust. refunds","Les avoirs client échus","",""
-"invoice-root-sales-filters-unpaiddueinvoice","Unpaid Due invoices","menu","Unpaid Due invoices","Les factures client échues","",""
-"invoice-root-sales-filters-valcustinvoice","Validated Cust. invoices","menu","Validated Cust. invoices","Les factures client validées","",""
-"invoice-root-sales-filters-valcustrefunds","Validated Cust. refunds","menu","Validated Cust. refunds","Les avoirs client validés","",""
+"invoice-root-sales-custinvoices","Cust. Invoices","menu","Cust. Invoices","Factures de vente des clients","",""
 "mail-root-email-cash-register","Cash register emails","menu","Cash register emails","Les emails de caisse","",""
 "mail-root-email-debtrecovery","Reminder emails","menu","Reminder emails","Les emails de relance","",""
 "mail-root-email-reimboursement","Reimbursement emails","menu","Reimbursement emails","Les emails de remboursement","",""
@@ -2067,16 +2038,7 @@
 "invoice.root.purchases.filters.valsuprefunds","invoice.root.purchases.filters.valsuprefunds","action","Validated Suppl. refunds","Avoirs fournisseur validés","",""
 "invoice.root.purchases.supinvoices","invoice.root.purchases.supinvoices","action","Suppl. Invoices","Les factures fournisseur","",""
 "invoice.root.purchases.suprefunds","invoice.root.purchases.suprefunds","action","Suppl. Refunds","Les avoirs fournisseur","",""
-"invoice.root.sales.custinvoices","invoice.root.sales.custinvoices","action","Cust. Invoices","Les factures client","",""
-"invoice.root.sales.custrefunds","invoice.root.sales.custrefunds","action","Cust. Refunds","Les avoirs client","",""
-"invoice.root.sales.filters.confcustinvoice","invoice.root.sales.filters.confcustinvoice","action","Confirmed Cust. invoices","Les factures client confirmées","",""
-"invoice.root.sales.filters.confcustrefunds","invoice.root.sales.filters.confcustrefunds","action","Confirmed Cust. refunds","Les avoirs client confirmés","",""
-"invoice.root.sales.filters.draftcustinvoice","invoice.root.sales.filters.draftcustinvoice","action","Draft Cust. invoices","Les factures client brouillon","",""
-"invoice.root.sales.filters.draftcustrefunds","invoice.root.sales.filters.draftcustrefunds","action","Draft Cust. refunds","Les avoirs client brouillon","",""
-"invoice.root.sales.filters.duecustrefunds","invoice.root.sales.filters.duecustrefunds","action","Due Cust. refunds","Les avoirs client échus","",""
-"invoice.root.sales.filters.unpaiddueinvoice","invoice.root.sales.filters.unpaiddueinvoice","action","Unpaid due invoices","Facture à payer arrivées à échéance","",""
-"invoice.root.sales.filters.valcustinvoice","invoice.root.sales.filters.valcustinvoice","action","Validated Cust. invoices","Les factures client validées","",""
-"invoice.root.sales.filters.valcustrefunds","invoice.root.sales.filters.valcustrefunds","action","Validated Cust. refunds","Les avoirs client validés","",""
+"invoice.root.sales.custinvoices","invoice.root.sales.custinvoices","action","Cust. Invoices","Factures de vente des clients","",""
 "mail.root.email.cash.register","mail.root.email.cash.register","action","Cash register emails","Les emails de caisse","",""
 "mail.root.email.debtrecovery","mail.root.email.debtrecovery","action","Reminder emails","Les emails de relance","",""
 "mail.root.email.reimboursement","mail.root.email.reimboursement","action","Reimbursement emails","Les emails de remboursement","",""

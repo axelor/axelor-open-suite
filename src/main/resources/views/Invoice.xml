@@ -389,4 +389,43 @@
 		<export name="${invoiceId}.xml" template="/home/soregies/Export_Factures/invoice_export.tmpl"/>
 	</action-export>
 	
+	<search-filters name="customer-invoices-filters" model="com.axelor.apps.account.db.Invoice" title="Invoices filters">
+		<filter title="Validated">
+			<domain>self.status.code = 'val'</domain>
+		</filter>
+		<filter title="Ventilated">
+			<domain>self.status.code = 'dis'</domain>
+		</filter>
+		<filter title="Unpaid">
+			<domain>self.inTaxTotalRemaining &gt; 0</domain>
+		</filter>
+		<filter title="Unpaid Due">
+			<domain>CURRENT_DATE &gt; self.dueDate and self.inTaxTotalRemaining &gt; 0</domain>
+		</filter>
+		<filter title="With Payment Rejected">
+			<domain>self.rejectMoveLine IS NOT NULL</domain>
+		</filter>
+		<filter title="B2B">
+			<domain>self.clientPartner.partnerTypeSelect = 1</domain>
+		</filter>
+		<filter title="B2C">
+			<domain>self.clientPartner.partnerTypeSelect = 2</domain>
+		</filter>
+	</search-filters>
+	
+	<search-filters name="customer-refunds-filters" model="com.axelor.apps.account.db.Invoice" title="Invoices filters">
+		<filter title="Validated">
+			<domain>self.status.code = 'val'</domain>
+		</filter>
+		<filter title="Ventilated">
+			<domain>self.status.code = 'dis'</domain>
+		</filter>
+		<filter title="Unpaid">
+			<domain>self.inTaxTotalRemaining &gt; 0</domain>
+		</filter>
+		<filter title="Unpaid Due">
+			<domain>CURRENT_DATE &gt; self.dueDate and self.inTaxTotalRemaining &gt; 0</domain>
+		</filter>
+	</search-filters>
+	
 </object-views>

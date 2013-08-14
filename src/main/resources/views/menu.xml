@@ -26,6 +26,7 @@
 		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
+		<view-param name="search-filters" value="customer-invoices-filters"/>
 		<domain>self.operationTypeSelect = 3</domain>
 		<context name="operationTypeSelect" expr="eval:3"/>
 	</action-view>
@@ -37,94 +38,11 @@
 		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
+		<view-param name="search-filters" value="customer-refunds-filters"/>
 		<domain>self.operationTypeSelect = 4</domain>
 		<context name="operationTypeSelect" expr="eval:4"/>
 	</action-view>
-	
-	<menuitem name="invoice-root-sales-filters" parent="invoice-root-sales"
-		title="Filters" />
-		
-	<menuitem name="invoice-root-sales-filters-draftcustinvoice" parent="invoice-root-sales-filters"
-		title="Draft Cust. invoices" action="invoice.root.sales.filters.draftcustinvoice" />
-
-	<action-view name="invoice.root.sales.filters.draftcustinvoice" title="Draft Cust. invoices"
-		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
-		<view type="grid" name="invoice-grid"/>
-		<view type="form" name="invoice-form"/>
-		<domain>self.operationTypeSelect = 3 and self.status.code = 'dra'</domain>
-	</action-view>
-	
-	<menuitem name="invoice-root-sales-filters-confcustinvoice" parent="invoice-root-sales-filters"
-		title="Confirmed Cust. invoices" action="invoice.root.sales.filters.confcustinvoice" />
-
-	<action-view name="invoice.root.sales.filters.confcustinvoice" title="Confirmed Cust. invoices"
-		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
-		<view type="grid" name="invoice-grid"/>
-		<view type="form" name="invoice-form"/>
-		<domain>self.operationTypeSelect = 3 and self.status.code = 'con'</domain>
-	</action-view>
-	
-	<menuitem name="invoice-root-sales-filters-valcustinvoice" parent="invoice-root-sales-filters"
-		title="Validated Cust. invoices" action="invoice.root.sales.filters.valcustinvoice" />
-
-	<action-view name="invoice.root.sales.filters.valcustinvoice" title="Validated Cust. invoices"
-		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
-		<view type="grid" name="invoice-grid"/>
-		<view type="form" name="invoice-form"/>
-		<domain>self.operationTypeSelect = 3 and self.status.code = 'val'</domain>
-	</action-view>
-	
-	<menuitem name="invoice-root-sales-filters-unpaiddueinvoice" parent="invoice-root-sales-filters"
-		title="Unpaid Due invoices" action="invoice.root.sales.filters.unpaiddueinvoice" />
-
-	<action-view name="invoice.root.sales.filters.unpaiddueinvoice" title="Unpaid due invoices"
-		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
-		<view type="grid" name="invoice-grid"/>
-		<view type="form" name="invoice-form"/>
-		<domain>self.operationTypeSelect = 3 and CURRENT_DATE &gt; self.dueDate and self.inTaxTotalRemaining &gt; 0</domain>
-	</action-view>	
-		
-	
-	<menuitem name="invoice-root-sales-filters-draftcustrefunds" parent="invoice-root-sales-filters"
-		title="Draft Cust. refunds" action="invoice.root.sales.filters.draftcustrefunds" />
-
-	<action-view name="invoice.root.sales.filters.draftcustrefunds" title="Draft Cust. refunds"
-		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
-		<view type="grid" name="invoice-grid"/>
-		<view type="form" name="invoice-form"/>
-		<domain>self.operationTypeSelect = 4 and self.status.code = 'dra'</domain>
-	</action-view>
-	
-	<menuitem name="invoice-root-sales-filters-confcustrefunds" parent="invoice-root-sales-filters"
-		title="Confirmed Cust. refunds" action="invoice.root.sales.filters.confcustrefunds" />
-
-	<action-view name="invoice.root.sales.filters.confcustrefunds" title="Confirmed Cust. refunds"
-		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
-		<view type="grid" name="invoice-grid"/>
-		<view type="form" name="invoice-form"/>
-		<domain>self.operationTypeSelect = 4 and self.status.code = 'con'</domain>
-	</action-view>
-	
-	<menuitem name="invoice-root-sales-filters-valcustrefunds" parent="invoice-root-sales-filters"
-		title="Validated Cust. refunds" action="invoice.root.sales.filters.valcustrefunds" />
-
-	<action-view name="invoice.root.sales.filters.valcustrefunds" title="Validated Cust. refunds"
-		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
-		<view type="grid" name="invoice-grid"/>
-		<view type="form" name="invoice-form"/>
-		<domain>self.operationTypeSelect = 4 and self.status.code = 'val'</domain>
-	</action-view>
-	
-	<menuitem name="invoice-root-sales-filters-duecustrefunds" parent="invoice-root-sales-filters"
-		title="Due Cust. refunds" action="invoice.root.sales.filters.duecustrefunds" />
-
-	<action-view name="invoice.root.sales.filters.duecustrefunds" title="Due Cust. refunds"
-		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
-		<view type="grid" name="invoice-grid"/>
-		<view type="form" name="invoice-form"/>
-		<domain>self.operationTypeSelect = 4 and CURRENT_DATE &gt; self.dueDate</domain>
-	</action-view>
-		
+			
 		
 	<menuitem name="invoice-root-purchases" parent="invoice-root"
 		title="Purchases" />	
