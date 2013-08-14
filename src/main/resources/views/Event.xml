@@ -277,7 +277,7 @@
     </action-method>
     
     <action-method name="action-event-set-sequence">
-		<call class="com.axelor.apps.supplychain.web.EventController" method="setSequence" />
+		<call class="com.axelor.apps.crm.web.EventController" method="setSequence" />
 	</action-method>
 	
     <action-method name="action-meeting-method-compute-end-date-time">
