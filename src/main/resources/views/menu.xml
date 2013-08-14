@@ -19,7 +19,7 @@
 	</action-view>
 					
 	<menuitem name="stock-root-suparrivals" parent="stock-root"
-		title="Supplier Arrivals" action="stock.root.suparrivals.all" />
+		title="Supplier Arrivals" action="stock.root.suparrivals" />
 
 	<action-view name="stock.root.suparrivals" title="Supplier Arrivals"
 		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/product_small.png">
