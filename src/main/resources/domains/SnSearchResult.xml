@@ -16,5 +16,6 @@
  		<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" orphan="true" />
  		<!-- <binary name="picture" image="true" title="Photo"/> -->
  		<string name="pictureUrl" title="Picture Link" readonly="true"/>
+ 		<many-to-one name="socialNet" ref="com.axelor.apps.socialnetwork.db.SocialNet"/>
 	</entity>
 </domain-models>
