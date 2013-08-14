@@ -114,5 +114,20 @@
 		<call class="com.axelor.apps.organisation.web.EmployeeController" method="showEmployee" />
 	</action-method>
     
+    <search-filters name="employee-filters" model="com.axelor.apps.organisation.db.Employee" title="Employee filters">
+		<filter title="Current Employees">
+			<domain>self.exitDate IS NULL</domain>
+		</filter>
+		<filter title="Old Employees">
+			<domain>self.exitDate &lt; CURRENT_DATE</domain>
+		</filter>
+		<filter title="Managers">
+			<domain>self.macroCategorySelect = 1 OR self.macroCategorySelect = 2 OR self.macroCategorySelect = 3</domain>
+		</filter>
+		<filter title="Skill workers">
+			<domain>self.macroCategorySelect = 4 OR self.macroCategorySelect = 5 OR self.macroCategorySelect = 6</domain>
+		</filter>
+	</search-filters>
+	
 </object-views>
   

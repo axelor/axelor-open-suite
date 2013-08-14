@@ -62,6 +62,7 @@
     
     <action-record name="action-project-record-default" model="com.axelor.apps.organisation.db.Project">
 		<field name="isTimeSheetImputable" expr="true"/>
+		<field name="isProject" expr="true"/>
 	</action-record>
 	
     <action-record name="action-project-unit" model="com.axelor.apps.organisation.db.Project">

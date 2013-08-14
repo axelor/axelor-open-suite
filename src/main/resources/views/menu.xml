@@ -15,14 +15,15 @@
 		model="com.axelor.apps.organisation.db.Employee" icon="img/icons/organisation_small.png">
 		<view type="grid" name="employee-grid" />
 		<view type="form" name="employee-form" />
+		<view-param name="search-filters" value="employee-filters"/>
 	</action-view>	
 	
 	<menuitem name="hr-root-recruitment" title="Recruitment" parent="hr-root"/>
 		
 	<menuitem name="hr-root-recruitment-candidate" parent="hr-root-recruitment"
-		title="All candidates" action="hr.root.recruitment.candidate" />
+		title="Candidates" action="hr.root.recruitment.candidate" />
 
-	<action-view name="hr.root.recruitment.candidate" title="All candidates"
+	<action-view name="hr.root.recruitment.candidate" title="Candidates"
 		model="com.axelor.apps.organisation.db.Candidate" icon="img/icons/organisation_small.png">
 		<view type="grid" name="candidate-grid" />
 		<view type="form" name="candidate-form" />
@@ -254,9 +255,9 @@
 	</action-view>	
 		
 	<menuitem name="affair-root-project-all-affair" parent="affair-root-project"
-		title="All Affairs" action="affair.root.project.all.affair" />
+		title="Affairs" action="affair.root.project.all.affair" />
 
-	<action-view name="affair.root.project.all.affair" title="All Affairs"
+	<action-view name="affair.root.project.all.affair" title="Affairs"
 		model="com.axelor.apps.organisation.db.Project" icon="img/icons/affair_small.png">
 		<view type="grid" name="affair-grid" />
 		<view type="form" name="affair-form" />
