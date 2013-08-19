@@ -24,19 +24,18 @@
 "account-root-accounting-batch","Accounting batches","menu","Accounting batches","Les batchs de comptabilité",,,,
 "account-root-export","Accounting Exports/Reports","menu","Accounting Exports/Reports","Exports/Rapports comptables",,,,
 "account-root-export-reimbursement","Reimbursements","menu","Reimbursements","Remboursements",,,,
-"account-root-move","Accounting Moves","menu","Accounting Moves","Écritures",,,,
-"account-root-move-move","Accounting Moves","menu","Accounting Moves","Écritures",,,,
-"account-root-move-move-All","All accounting moves (including technical moves)","menu","All accounting moves (including technical moves)","Les Écritures (pièces techniques incluses)",,,,
-"account-root-move-move-line","Accounting Move lines","menu","Accounting Move lines","Les Lignes d'écritures",,,,
-"account-root-move-move-line-All","All accounting move lines (including technical move lines)","menu","All accounting move lines (including technical move lines)","Les Lignes d'écritures (Lignes techniques incluses)",,,,
+"account-root-move","Moves","menu","Moves","Écritures",,,,
+"account-root-move-move","Moves","menu","Moves","Écritures",,,,
+"account-root-move-move-line","Move Lines","menu","Move Lines","Les Lignes d'écritures",,,,
+"account-root-payments","Payments","menu","Payments","Paiements",,,,
 "account-root-payment-schedule","Payment Schedule","menu","Payment Schedule","Echéanciers de paiement",,,,
 "account-root-payment-schedule-payment-schedule","Payment Schedule","menu","Payment Schedule","Echéanciers de paiement",,,,
 "account-root-payment-schedule-payment-schedule-line","Payment schedule line","menu","Payment schedule line","Ligne d'échéanciers de paiement",,,,
 "account-root-periodic-processing","Periodical processing","menu","Periodical processing","Les Traitements Périodiques",,,,
-"account-root-periodic-processing-account-clearance","Overpayments clearances","menu","Overpayments clearances","Les Apurements de trop-perçu",,,,
-"account-root-periodic-processing-cash-register","Cash register closure","menu","Cash register closure","Les Fermetures Caisses",,,,
-"account-root-periodic-processing-cheque-rejection","Rejects of cheque","menu","Rejects of cheque","Les Rejets de chèque",,,,
-"account-root-periodic-processing-irrecoverable","Shift to irrecoverable","menu","Shift to irrecoverable","Passage en irrécouvrable",,,,
+"account-root-periodic-processing-overpayment-clearances","Overpayments clearances","menu","Overpayments clearances","Les Apurements de trop-perçu",,,,
+"account-root-periodic-processing-cash-register-closure","Cash register closure","menu","Cash register closure","Les Fermetures Caisses",,,,
+"account-root-periodic-processing-cheque-reject","Rejects of cheques","menu","Rejects of cheques","Les Rejets de chèques",,,,
+"account-root-periodic-processing-shift-irrecoverable","Shift to irrecoverable","menu","Shift to irrecoverable","Passage en irrécouvrable",,,,
 "account-root-periodic-processing-payment-voucher","Payment vouchers","menu","Payment vouchers","Les Saisies paiements",,,,
 "account-root-periodic-processing-reconcile","Reconcilations","menu","Reconcilations","Les Réconciliations",,,,
 "account-root-reporting-moveLineExport","Accounting exports","menu","Accounting exports","Les Exports comptables",,,,
@@ -51,14 +50,12 @@
 "account-root-tax-reason-exemption","Tax exemption reasons","menu","Tax exemption reasons","Les motifs d'exonérations",,,,
 "account-root-tax-tax","Taxes","menu","Taxes","Taxes",,,,
 "account-root-tax-vat","VATs","menu","VATs","Les TVA",,,,
-"account-tech","Administration","menu","Administration","Administration",,,,
-"debtRecovery-conf-reminder","Configuration","menu","Configuration","Configuration",,,,
-"debtRecovery-conf-reminder-reminder-level","Reminder levels","menu","Reminder levels","Les niveaux de relance",,,,
-"debtRecovery-conf-reminder-reminder-mail-model","Reminder mail models","menu","Reminder mail models","Les modèles de courrier",,,,
-"debtRecovery-conf-reminder-reminder-method","Reminder methods","menu","Reminder methods","Les méthodes de relance",,,,
-"debtRecovery-root","Debt recoveries","menu","Debt recoveries","Recouvrement",,,,
-"debtRecovery-root-reminder","Debt recoveries","menu","Debt recoveries","Recouvrement",,,,
-"debtRecovery-root-reminder-reminder-history","Reminders history","menu","Reminders history","L'historique des relances",,,,
+"debt-recovery-root-conf","Configuration","menu","Configuration","Configuration",,,,
+"debt-recovery-root-conf-reminder-level","Reminder levels","menu","Reminder levels","Les niveaux de relance",,,,
+"debt-recovery-root-conf-mail-model","Reminder mail models","menu","Reminder mail models","Les modèles de courrier",,,,
+"debt-recovery-root-conf-reminder-method","Reminder methods","menu","Reminder methods","Les méthodes de relance",,,,
+"account-root-debt-recovery","Debt recovery","menu","Debt recovery","Recouvrement",,,,
+"debt-recovery-root-reminders","Reminders history","menu","Reminders history","L'historique des relances",,,,
 "invoice-root","Invoice","menu","Invoice","Facture",,,,
 "invoice-root-invoice","New invoice","menu","New invoice","Nouvelle facture",,,,
 "invoice-root-purchases","Purchases","menu","Purchases","Les Achats",,,,
@@ -529,18 +526,16 @@
 "account.conf.financial.year","account.conf.financial.year","action","Fiscal years","Les années fiscales",,,,
 "account.root.accounting.batch","account.root.accounting.batch","action","Accounting batches","Les batchs de comptabilité",,,,
 "account.root.account.paybox","account.root.account.paybox","action","Paybox","Paybox",,,,
-"account.root.account.schedule.account.schedule","account.root.account.schedule.account.schedule","action","Payment Schedule","Echéanciers de paiement",,,,
-"account.root.account.schedule.account.schedule.line","account.root.account.schedule.account.schedule.line","action","Payment schedule line","Ligne d'échéanciers de paiement",,,,
+"account.root.payment.schedule.payment.schedule","account.root.payment.schedule.payment.schedule","action","Payment Schedule","Echéanciers de paiement",,,,
+"account.root.payment.schedule.payment.schedule.line","account.root.payment.schedule.payment.schedule.line","action","Payment schedule line","Ligne d'échéanciers de paiement",,,,
 "account.root.export.reimbursement","account.root.export.reimbursement","action","Reimbursements","Remboursements",,,,
-"account.root.move.move","account.root.move.move","action","Accounting Moves","Écritures",,,,
-"account.root.move.move.All","account.root.move.move.All","action","All accounting moves (including technical moves)","Les Écritures (pièces techniques incluses)",,,,
-"account.root.move.move.line","account.root.move.move.line","action","Accounting Move lines","Les Lignes d'écritures",,,,
-"account.root.move.move.line.All","account.root.move.move.line.All","action","All accounting move lines (including technical move lines)","Les Lignes d'écritures (Lignes techniques incluses)",,,,
-"account.root.periodic.processing.account.clearance","account.root.periodic.processing.account.clearance","action","Overpayments clearances","Les Apurements de trop-perçu",,,,
+"account.root.move.move","account.root.move.move","action","Moves","Écritures",,,,
+"account.root.move.move.line","account.root.move.move.line","action","Move Lines","Les Lignes d'écritures",,,,
+"account.root.periodic.processing.overpayment.clearances","account.root.periodic.processing.overpayment.clearances","action","Overpayments clearances","Les Apurements de trop-perçu",,,,
 "account.root.periodic.processing.account.voucher.paybox.email","account.root.periodic.processing.account.voucher.paybox.email","action","Email used by Paybox","Email utilisé par Paybox",,,,
-"account.root.periodic.processing.cash.register","account.root.periodic.processing.cash.register","action","Cash register closure","Les Fermetures Caisses",,,,
-"account.root.periodic.processing.cheque-rejection","account.root.periodic.processing.cheque-rejection","action","Rejects of cheque","Les Rejets de chèque",,,,
-"account.root.periodic.processing.irrecoverable","account.root.periodic.processing.irrecoverable","action","Shift to irrecoverable","Passage en irrécouvrable",,,,
+"account.root.periodic.processing.cash.register.closure","account.root.periodic.processing.cash.register.closure","action","Cash register closure","Les Fermetures Caisses",,,,
+"account.root.periodic.processing.cheque.reject","account.root.periodic.processing.cheque.reject","action","Rejects of cheques","Les Rejets de chèques",,,,
+"account.root.periodic.processing.shift.irrecoverable","account.root.periodic.processing.shift.irrecoverable","action","Shift to irrecoverable","Passage en irrécouvrable",,,,
 "account.root.periodic.processing.payment.voucher","account.root.periodic.processing.payment.voucher","action","Payment vouchers","Les Saisies paiements",,,,
 "account.root.periodic.processing.reconcile","account.root.periodic.processing.reconcile","action","Reconcilations","Les Réconciliations",,,,
 "account.root.reporting.moveLineExport","account.root.reporting.moveLineExport","action","Accounting exports","Les Exports comptables",,,,
@@ -554,10 +549,10 @@
 "account.root.tax.tax","account.root.tax.tax","action","Taxes","Taxes",,,,
 "account.root.tax.vat","account.root.tax.vat","action","VATs","Les TVA",,,,
 "action-invoice-alarm-alert","action-invoice-alarm-alert","action","You cannot suspend an invoice which you did not validate","Vous ne pouvez pas suspendre une facture que vous n'avez pas validé",,,,
-"debtRecovery.conf.reminder.reminder.level","debtRecovery.conf.reminder.reminder.level","action","Reminder levels","Les niveaux de relance",,,,
-"debtRecovery.conf.reminder.reminder.mail.model","debtRecovery.conf.reminder.reminder.mail.model","action","Reminder mail models","Les modèles de courrier",,,,
-"debtRecovery.conf.reminder.reminder.method","debtRecovery.conf.reminder.reminder.method","action","Reminder methods","Les méthodes de relance",,,,
-"debtRecovery.root.reminder.reminder.history","debtRecovery.root.reminder.reminder.history","action","Reminders history","L'historique des relances",,,,
+"debt.recovery.root.conf.reminder.level","debt.recovery.root.conf.reminder.level","action","Reminder levels","Les niveaux de relance",,,,
+"debt.recovery.root.conf.mail.model","debt.recovery.root.conf.mail.model","action","Reminder mail models","Les modèles de courrier",,,,
+"debt.recovery.root.conf.reminder.method","debt.recovery.root.conf.reminder.method","action","Reminder methods","Les méthodes de relance",,,,
+"debt.recovery.root.reminders","debt.recovery.root.reminders","action","Reminders history","L'historique des relances",,,,
 "invoice.root.invoice","invoice.root.invoice","action","New invoice","Nouvelle facture",,,,
 "invoice.root.purchases.supinvoices","invoice.root.purchases.supinvoices","action","Suppl. Invoices","Factures d'achats des fournisseurs",,,,
 "invoice.root.purchases.suprefunds","invoice.root.purchases.suprefunds","action","Suppl. Refunds","Avoirs des fournisseurs",,,,
@@ -1393,17 +1388,8 @@
 "account-root-accounting-batch","Accounting batches","menu","Accounting batches","Les batchs de comptabilité","",""
 "account-root-export","Accounting Exports/Reports","menu","Accounting Exports/Reports","Exports/Rapports comptables","",""
 "account-root-export-reimbursement","Reimbursements","menu","Reimbursements","Remboursements","",""
-"account-root-move","Accounting Moves","menu","Accounting Moves","Écritures","",""
-"account-root-move-move","Accounting Moves","menu","Accounting Moves","Écritures","",""
-"account-root-move-move-All","All accounting moves (including technical moves)","menu","All accounting moves (including technical moves)","Les Écritures (pièces techniques incluses)","",""
-"account-root-move-move-line","Accounting Move lines","menu","Accounting Move lines","Les Lignes d'écritures","",""
-"account-root-move-move-line-All","All accounting move lines (including technical move lines)","menu","All accounting move lines (including technical move lines)","Les Lignes d'écritures (Lignes techniques incluses)","",""
 "account-root-payment-schedule","Payment Schedule","menu","Payment Schedule","Echéanciers","",""
 "account-root-periodic-processing","Periodical processing","menu","Periodical processing","Les Traitements Périodiques","",""
-"account-root-periodic-processing-account-clearance","Overpayments clearances","menu","Overpayments clearances","Les Apurements de trop-perçu","",""
-"account-root-periodic-processing-cash-register","Cash register closure","menu","Cash register closure","Les Fermetures Caisses","",""
-"account-root-periodic-processing-cheque-rejection","Rejects of cheque","menu","Rejects of cheque","Les Rejets de chèque","",""
-"account-root-periodic-processing-irrecoverable","Shift to irrecoverable","menu","Shift to irrecoverable","Passage en irrécouvrable","",""
 "account-root-periodic-processing-payment-voucher","Payment vouchers","menu","Payment vouchers","Les Saisies paiements","",""
 "account-root-periodic-processing-reconcile","Reconcilations","menu","Reconcilations","Les Réconciliations","",""
 "account-root-reporting-moveLineExport","Accounting exports","menu","Accounting exports","Les Exports comptables","",""
@@ -1418,14 +1404,6 @@
 "account-root-tax-reason-exemption","Tax exemption reasons","menu","Tax exemption reasons","Les motifs d'exonérations","",""
 "account-root-tax-tax","Taxes","menu","Taxes","Taxes","",""
 "account-root-tax-vat","VATs","menu","VATs","Les TVA","",""
-"account-tech","Administration","menu","Administration","Administration","",""
-"debtRecovery-conf-reminder","Configuration","menu","Configuration","Configuration","",""
-"debtRecovery-conf-reminder-reminder-level","Reminder levels","menu","Reminder levels","Les niveaux de relance","",""
-"debtRecovery-conf-reminder-reminder-mail-model","Reminder mail models","menu","Reminder mail models","Les modèles de courrier","",""
-"debtRecovery-conf-reminder-reminder-method","Reminder methods","menu","Reminder methods","Les méthodes de relance","",""
-"debtRecovery-root","Debt recoveries","menu","Debt recoveries","Recouvrement","",""
-"debtRecovery-root-reminder","Debt recoveries","menu","Debt recoveries","Recouvrement","",""
-"debtRecovery-root-reminder-reminder-history","Reminders history","menu","Reminders history","L'historique des relances","",""
 "invoice-root","Invoice","menu","Invoice","Facture","",""
 "invoice-root-invoice","New invoice","menu","New invoice","Nouvelle facture","",""
 "invoice-root-purchases","Purchases","menu","Purchases","Les Achats","",""
@@ -1970,15 +1948,7 @@
 "account.root.accounting.batch","account.root.accounting.batch","action","Accounting batches","Les batchs de comptabilité","",""
 "account.root.account.paybox","account.root.account.paybox","action","Paybox","Paybox","",""
 "account.root.export.reimbursement","account.root.export.reimbursement","action","Reimbursements","Remboursements","",""
-"account.root.move.move","account.root.move.move","action","Accounting Moves","Écritures","",""
-"account.root.move.move.All","account.root.move.move.All","action","All accounting moves (including technical moves)","Les Écritures (pièces techniques incluses)","",""
-"account.root.move.move.line","account.root.move.move.line","action","Accounting Move lines","Les Lignes d'écritures","",""
-"account.root.move.move.line.All","account.root.move.move.line.All","action","All accounting move lines (including technical move lines)","Les Lignes d'écritures (Lignes techniques incluses)","",""
-"account.root.periodic.processing.account.clearance","account.root.periodic.processing.account.clearance","action","Overpayments clearances","Les Apurements de trop-perçu","",""
 "account.root.periodic.processing.account.voucher.paybox.email","account.root.periodic.processing.account.voucher.paybox.email","action","Email used by Paybox","Email utilisé par Paybox","",""
-"account.root.periodic.processing.cash.register","account.root.periodic.processing.cash.register","action","Cash register closure","Les Fermetures Caisses","",""
-"account.root.periodic.processing.cheque-rejection","account.root.periodic.processing.cheque-rejection","action","Rejects of cheque","Les Rejets de chèque","",""
-"account.root.periodic.processing.irrecoverable","account.root.periodic.processing.irrecoverable","action","Shift to irrecoverable","Passage en irrécouvrable","",""
 "account.root.periodic.processing.payment.voucher","account.root.periodic.processing.payment.voucher","action","Payment vouchers","Les Saisies paiements","",""
 "account.root.periodic.processing.reconcile","account.root.periodic.processing.reconcile","action","Reconcilations","Les Réconciliations","",""
 "account.root.reporting.moveLineExport","account.root.reporting.moveLineExport","action","Accounting exports","Les Exports comptables","",""
@@ -1992,10 +1962,6 @@
 "account.root.tax.tax","account.root.tax.tax","action","Taxes","Taxes","",""
 "account.root.tax.vat","account.root.tax.vat","action","VATs","Les TVA","",""
 "action-invoice-alarm-alert","action-invoice-alarm-alert","action","You cannot suspend an invoice which you did not validate","Vous ne pouvez pas suspendre une facture que vous n'avez pas validé","",""
-"debtRecovery.conf.reminder.reminder.level","debtRecovery.conf.reminder.reminder.level","action","Reminder levels","Les niveaux de relance","",""
-"debtRecovery.conf.reminder.reminder.mail.model","debtRecovery.conf.reminder.reminder.mail.model","action","Reminder mail models","Les modèles de courrier","",""
-"debtRecovery.conf.reminder.reminder.method","debtRecovery.conf.reminder.reminder.method","action","Reminder methods","Les méthodes de relance","",""
-"debtRecovery.root.reminder.reminder.history","debtRecovery.root.reminder.reminder.history","action","Reminders history","L'historique des relances","",""
 "invoice.root.invoice","invoice.root.invoice","action","New invoice","Nouvelle facture","",""
 "mail.root.email.cash.register","mail.root.email.cash.register","action","Cash register emails","Les emails de caisse","",""
 "mail.root.email.debtrecovery","mail.root.email.debtrecovery","action","Reminder emails","Les emails de relance","",""

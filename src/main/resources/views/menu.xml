@@ -78,9 +78,9 @@
 
     <menuitem name="account-root-payment-schedule-payment-schedule"
         parent="account-root-payment-schedule" title="Payment Schedule"
-        action="account.root.account.schedule.account.schedule" />
+        action="account.root.payment.schedule.payment.schedule" />
 
-    <action-view name="account.root.account.schedule.account.schedule"
+    <action-view name="account.root.payment.schedule.payment.schedule"
         title="Payment Schedule" model="com.axelor.apps.account.db.PaymentSchedule" icon="img/evo-icons/invoice_small.png">
         <view type="grid" />
         <view type="form" />
@@ -89,9 +89,9 @@
 
     <menuitem name="account-root-payment-schedule-payment-schedule-line"
         parent="account-root-payment-schedule" title="Payment schedule line"
-        action="account.root.account.schedule.account.schedule.line" />
+        action="account.root.payment.schedule.payment.schedule.line" />
 
-    <action-view name="account.root.account.schedule.account.schedule.line"
+    <action-view name="account.root.payment.schedule.payment.schedule.line"
         title="Payment schedule line" model="com.axelor.apps.account.db.PaymentScheduleLine" icon="img/evo-icons/invoice_small.png">
         <view type="grid" />
         <view type="form" />
@@ -104,47 +104,27 @@
 
 
 	<menuitem name="account-root-move" parent="account-root"
-		title="Accounting Moves" />
+		title="Moves" />
 
 	<menuitem name="account-root-move-move" parent="account-root-move"
-		title="Accounting Moves" action="account.root.move.move" />
+		title="Moves" action="account.root.move.move" />
 
-	<action-view name="account.root.move.move" title="Accounting Moves"
+	<action-view name="account.root.move.move" title="Moves"
 		model="com.axelor.apps.account.db.Move" icon="img/icons/account_small.png">
 		<view type="grid" />
 		<view type="form" />
+		<view-param name="search-filters" value="move-filters"/>
 		<domain>self.ignoreInAccountingOk in (null,'f')</domain>
 	</action-view>
 
 	<menuitem name="account-root-move-move-line" parent="account-root-move"
-		title="Accounting Move lines" action="account.root.move.move.line" />
+		title="Move Lines" action="account.root.move.move.line" />
 
-	<action-view name="account.root.move.move.line" title="Accounting Move lines"
+	<action-view name="account.root.move.move.line" title="Move Lines"
 		model="com.axelor.apps.account.db.MoveLine" icon="img/icons/account_small.png">
 		<view type="grid" />
 		<view type="form" />
 		<domain>self.ignoreInAccountingOk in (null,'f')</domain>
-	</action-view>
-
-	<menuitem name="account-tech" parent="account-root-move"
-		title="Administration" />
-
-	<menuitem name="account-root-move-move-All" parent="account-tech"
-		title="All accounting moves (including technical moves)" action="account.root.move.move.All" />
-
-	<action-view name="account.root.move.move.All"
-		title="All accounting moves (including technical moves)" model="com.axelor.apps.account.db.Move" icon="img/icons/account_small.png"> 
-		<view type="grid" />
-		<view type="form" />
-	</action-view>
-
-	<menuitem name="account-root-move-move-line-All" parent="account-tech"
-		title="All accounting move lines (including technical move lines)" action="account.root.move.move.line.All" />
-
-	<action-view name="account.root.move.move.line.All"
-		title="All accounting move lines (including technical move lines)" model="com.axelor.apps.account.db.MoveLine" icon="img/icons/account_small.png">
-		<view type="grid" />
-		<view type="form" />
 	</action-view>
 	
 	
@@ -159,65 +139,12 @@
 		title="Payment vouchers" model="com.axelor.apps.account.db.PaymentVoucher" icon="img/icons/payment_small.png">
 		<view type="grid" />
 		<view type="form" />
+		<view-param name="search-filters" value="payment-voucher-filters"/>
 	</action-view>
 	
-	<menuitem name="account-root-payments-customer-payments"
-		parent="account-root-payments" title="Customer payments"
-		action="account.root.payments.customer.payments" icon="img/icons/payment.png"/>
-
-	<action-view name="account.root.payments.customer.payments"
-		title="Customer payments" model="com.axelor.apps.account.db.PaymentVoucher" icon="img/icons/payment_small.png">
-		<view type="grid" />
-		<view type="form" />
-		<context name="_operationTypeSelect" expr="3"/>
-	</action-view>
-	
-	<menuitem name="account-root-payments-customer-refunds"
-		parent="account-root-payments" title="Customer refunds"
-		action="account.root.payments.customer.refunds" icon="img/icons/payment.png"/>
-
-	<action-view name="account.root.payments.customer.refunds"
-		title="Customer refunds" model="com.axelor.apps.account.db.PaymentVoucher" icon="img/icons/payment_small.png">
-		<view type="grid" />
-		<view type="form" />
-		<context name="_operationTypeSelect" expr="4"/>
-	</action-view>
-	
-	<menuitem name="account-root-payments-supplier-payments"
-		parent="account-root-payments" title="Supplier payments"
-		action="account.root.payments.supplier.payments" icon="img/icons/payment.png"/>
-
-	<action-view name="account.root.payments.supplier.payments"
-		title="Supplier payments" model="com.axelor.apps.account.db.PaymentVoucher" icon="img/icons/payment_small.png">
-		<view type="grid" />
-		<view type="form" />
-		<context name="_operationTypeSelect" expr="1"/>
-	</action-view>
-	
-	<menuitem name="account-root-payments-supplier-refunds"
-		parent="account-root-payments" title="Supplier refunds"
-		action="account.root.payments.supplier.refunds" icon="img/icons/payment.png"/>
-
-	<action-view name="account.root.payments.supplier.refunds"
-		title="Supplier refunds" model="com.axelor.apps.account.db.PaymentVoucher" icon="img/icons/payment_small.png">
-		<view type="grid" />
-		<view type="form" />
-		<context name="_operationTypeSelect" expr="2"/>
-	</action-view>
-
 
 	<menuitem name="account-root-periodic-processing" parent="account-root"
 		title="Periodical processing" />
-
-	<menuitem name="account-root-periodic-processing-payment-voucher"
-		parent="account-root-periodic-processing" title="Payment vouchers"
-		action="account.root.periodic.processing.payment.voucher" icon="img/icons/payment.png"/>
-
-	<action-view name="account.root.periodic.processing.payment.voucher"
-		title="Payment vouchers" model="com.axelor.apps.account.db.PaymentVoucher" icon="img/icons/payment_small.png">
-		<view type="grid" />
-		<view type="form" />
-	</action-view>
 
 	<menuitem name="account-root-periodic-processing-reconcile"
 		parent="account-root-periodic-processing" title="Reconcilations"
@@ -229,95 +156,93 @@
 		<view type="form" />
 	</action-view>
 
-	<menuitem name="account-root-periodic-processing-cash-register-line"
+	<menuitem name="account-root-periodic-processing-cash-register-closure"
 		parent="account-root-periodic-processing" title="Cash register closure"
-		action="account.root.periodic.processing.cash.register.line" />
+		action="account.root.periodic.processing.cash.register.closure" />
 
-	<action-view name="account.root.periodic.processing.cash.register.line"
+	<action-view name="account.root.periodic.processing.cash.register.closure"
 		title="Cash register closure" model="com.axelor.apps.account.db.CashRegisterLine" icon="img/icons/account_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 
-	<menuitem name="account-root-periodic-processing-account-clearance"
+	<menuitem name="account-root-periodic-processing-overpayment-clearances"
 		parent="account-root-periodic-processing" title="Overpayments clearances"
-		action="account.root.periodic.processing.account.clearance" />
+		action="account.root.periodic.processing.overpayment.clearances" />
 
-	<action-view name="account.root.periodic.processing.account.clearance"
+	<action-view name="account.root.periodic.processing.overpayment.clearances"
 		title="Overpayments clearances" model="com.axelor.apps.account.db.AccountClearance" icon="img/icons/account_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 
-	<menuitem name="account-root-periodic-processing-irrecoverable"
+	<menuitem name="account-root-periodic-processing-shift-irrecoverable"
 		parent="account-root-periodic-processing" title="Shift to irrecoverable"
-		action="account.root.periodic.processing.irrecoverable" />
+		action="account.root.periodic.processing.shift.irrecoverable" />
 
-	<action-view name="account.root.periodic.processing.irrecoverable"
+	<action-view name="account.root.periodic.processing.shift.irrecoverable"
 		title="Shift to irrecoverable" model="com.axelor.apps.account.db.Irrecoverable" icon="img/icons/account_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 
-	<menuitem name="account-root-periodic-processing-cheque-rejection"
-		parent="account-root-periodic-processing" title="Rejects of cheque"
-		action="account.root.periodic.processing.cheque-rejection" />
+	<menuitem name="account-root-periodic-processing-cheque-reject"
+		parent="account-root-periodic-processing" title="Rejects of cheques"
+		action="account.root.periodic.processing.cheque.reject" />
 
-	<action-view name="account.root.periodic.processing.cheque-rejection"
-		title="Rejects of cheque" model="com.axelor.apps.account.db.ChequeRejection" icon="img/icons/account_small.png">
+	<action-view name="account.root.periodic.processing.cheque.reject"
+		title="Rejects of cheques" model="com.axelor.apps.account.db.ChequeRejection" icon="img/icons/account_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 
-	<menuitem name="debtRecovery-root" parent="account-root"
-		title="Debt recoveries" icon="img/icons/reminder.png" />
+	<menuitem name="account-root-debt-recovery" parent="account-root"
+		title="Debt recovery" icon="img/icons/reminder.png" />
 
-	<menuitem name="debtRecovery-root-reminder" parent="debtRecovery-root"
-		title="Debt recoveries" />
+	<menuitem name="debt-recovery-root-reminders"
+		parent="account-root-debt-recovery" title="Reminders history"
+		action="debt.recovery.root.reminders" />
 
-	<menuitem name="debtRecovery-root-reminder-reminder-history"
-		parent="debtRecovery-root-reminder" title="Reminders history"
-		action="debtRecovery.root.reminder.reminder.history" />
-
-	<action-view name="debtRecovery.root.reminder.reminder.history"
+	<action-view name="debt.recovery.root.reminders"
 		title="Reminders history" model="com.axelor.apps.account.db.ReminderHistory" icon="img/icons/reminder_small.png">
 		<view type="grid" name="reminder-history-line-grid" />
 		<view type="form" name="reminder-history-form" />
 	</action-view>
 
-	<menuitem name="debtRecovery-conf-reminder" parent="debtRecovery-root-reminder"
+	<menuitem name="debt-recovery-root-conf" parent="account-root-debt-recovery"
 		title="Configuration" icon="img/icons/parameter.png" />
 
-	<menuitem name="debtRecovery-conf-reminder-reminder-method"
-		parent="debtRecovery-conf-reminder" title="Reminder methods"
-		action="debtRecovery.conf.reminder.reminder.method" />
+	<menuitem name="debt-recovery-root-conf-reminder-method"
+		parent="debt-recovery-root-conf" title="Reminder methods"
+		action="debt.recovery.root.conf.reminder.method" />
 
-	<action-view name="debtRecovery.conf.reminder.reminder.method"
+	<action-view name="debt.recovery.root.conf.reminder.method"
 		title="Reminder methods" model="com.axelor.apps.account.db.ReminderMethod" icon="img/icons/reminder_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 
-	<menuitem name="debtRecovery-conf-reminder-reminder-level"
-		parent="debtRecovery-conf-reminder" title="Reminder levels"
-		action="debtRecovery.conf.reminder.reminder.level" />
+	<menuitem name="debt-recovery-root-conf-reminder-level"
+		parent="debt-recovery-root-conf" title="Reminder levels"
+		action="debt.recovery.root.conf.reminder.level" />
 
-	<action-view name="debtRecovery.conf.reminder.reminder.level"
+	<action-view name="debt.recovery.root.conf.reminder.level"
 		title="Reminder levels" model="com.axelor.apps.account.db.ReminderLevel" icon="img/icons/reminder_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 
-	<menuitem name="debtRecovery-conf-reminder-reminder-mail-model"
-		parent="debtRecovery-conf-reminder" title="Reminder mail models"
-		action="debtRecovery.conf.reminder.reminder.mail.model" />
+	<menuitem name="debt-recovery-root-conf-mail-model"
+		parent="debt-recovery-root-conf" title="Reminder mail models"
+		action="debt.recovery.root.conf.mail.model" />
 
-	<action-view name="debtRecovery.conf.reminder.reminder.mail.model"
+	<action-view name="debt.recovery.root.conf.mail.model"
 		title="Reminder mail models" model="com.axelor.apps.base.db.MailModel" icon="img/icons/reminder_small.png">
 		<view type="grid" />
 		<view type="form" />
 		<domain>self.typeSelect = 1 and self.objectConcernedSelect = 1</domain>
 	</action-view>
+
 
 	<menuitem name="account-root-export" parent="account-root"
 		title="Accounting Exports/Reports" icon="img/icons/report.png" />

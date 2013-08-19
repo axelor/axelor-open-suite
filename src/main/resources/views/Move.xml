@@ -130,7 +130,10 @@
 		<call class="com.axelor.apps.account.web.MoveController" method="getPeriod"/>
 	</action-method>
 	
-   
-   
+	<search-filters name="move-filters" model="com.axelor.apps.account.db.Move" title="Move filters">
+		<filter title="Current Period Entries">
+			<domain>self.period IS NULL OR (CURRENT_DATE &gt;= self.period.fromDate and CURRENT_DATE &lt;= self.period.toDate)</domain>
+		</filter>
+	</search-filters>
    
 </object-views>
