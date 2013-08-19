@@ -389,7 +389,7 @@
 		<export name="${invoiceId}.xml" template="/home/soregies/Export_Factures/invoice_export.tmpl"/>
 	</action-export>
 	
-	<search-filters name="customer-invoices-filters" model="com.axelor.apps.account.db.Invoice" title="Invoices filters">
+	<search-filters name="customer-invoices-filters" model="com.axelor.apps.account.db.Invoice" title="Customer invoices filters">
 		<filter title="Validated">
 			<domain>self.status.code = 'val'</domain>
 		</filter>
@@ -413,7 +413,43 @@
 		</filter>
 	</search-filters>
 	
-	<search-filters name="customer-refunds-filters" model="com.axelor.apps.account.db.Invoice" title="Invoices filters">
+	<search-filters name="customer-refunds-filters" model="com.axelor.apps.account.db.Invoice" title="Customer refunds filters">
+		<filter title="Validated">
+			<domain>self.status.code = 'val'</domain>
+		</filter>
+		<filter title="Ventilated">
+			<domain>self.status.code = 'dis'</domain>
+		</filter>
+		<filter title="Unpaid">
+			<domain>self.inTaxTotalRemaining &gt; 0</domain>
+		</filter>
+		<filter title="Unpaid Due">
+			<domain>CURRENT_DATE &gt; self.dueDate and self.inTaxTotalRemaining &gt; 0</domain>
+		</filter>
+	</search-filters>
+	
+	<search-filters name="supplier-invoices-filters" model="com.axelor.apps.account.db.Invoice" title="Supplier invoices filters">
+		<filter title="Draft">
+			<domain>self.status.code = 'dra'</domain>
+		</filter>
+		<filter title="Validated">
+			<domain>self.status.code = 'val'</domain>
+		</filter>
+		<filter title="Ventilated">
+			<domain>self.status.code = 'dis'</domain>
+		</filter>
+		<filter title="Unpaid">
+			<domain>self.inTaxTotalRemaining &gt; 0</domain>
+		</filter>
+		<filter title="Unpaid Due">
+			<domain>CURRENT_DATE &gt; self.dueDate and self.inTaxTotalRemaining &gt; 0</domain>
+		</filter>
+	</search-filters>
+	
+	<search-filters name="supplier-refunds-filters" model="com.axelor.apps.account.db.Invoice" title="Supplier refunds filters">
+		<filter title="Draft">
+			<domain>self.status.code = 'dra'</domain>
+		</filter>
 		<filter title="Validated">
 			<domain>self.status.code = 'val'</domain>
 		</filter>

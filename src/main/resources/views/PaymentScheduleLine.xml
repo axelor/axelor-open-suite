@@ -96,4 +96,22 @@
 		<field name="status" readonly="true" />
 	</form>
 
+	<search-filters name="payment-schedule-line-filters" model="com.axelor.apps.account.db.PaymentScheduleLine" title="Payment schedule line filters">
+		<filter title="Payment Schedules Lines">
+			<domain>self.paymentSchedule.natureSelect = 0</domain>
+		</filter>
+		<filter title="Payment Smoothings Lines">
+			<domain>self.paymentSchedule.natureSelect = 2</domain>
+		</filter>
+		<filter title="Rejected Schedule lines">
+			<domain>self.rejectDate IS NOT NULL</domain>
+		</filter>
+		<filter title="Schedule lines created from reject">
+			<domain>self.fromReject = true</domain>
+		</filter>
+		<filter title="Advance Schedule lines">
+			<domain>self.advanceMoveLine IS NOT NULL</domain>
+		</filter>
+	</search-filters>
+	
 </object-views>

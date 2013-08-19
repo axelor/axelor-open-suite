@@ -54,6 +54,7 @@
 		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
+		<view-param name="search-filters" value="supplier-invoices-filters"/>
 		<domain>self.operationTypeSelect = 1</domain>
 		<context name="operationTypeSelect" expr="eval:1"/>
 	</action-view>
@@ -65,105 +66,25 @@
 		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
+		<view-param name="search-filters" value="supplier-refunds-filters"/>
 		<domain>self.operationTypeSelect = 2</domain>
 		<context name="operationTypeSelect" expr="eval:2"/>
 	</action-view>	
 		
-	<menuitem name="invoice-root-purchases-filters" parent="invoice-root-purchases"
-		title="Filters" />	
 		
-	<menuitem name="invoice-root-purchases-filters-draftsupinvoice" parent="invoice-root-purchases-filters"
-		title="Draft Suppl. invoices" action="invoice.root.purchases.filters.draftsupinvoice" />
-
-	<action-view name="invoice.root.purchases.filters.draftsupinvoice" title="Draft Suppl. invoices"
-		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
-		<view type="grid" name="invoice-grid"/>
-		<view type="form" name="invoice-form"/>
-		<domain>self.operationTypeSelect = 1 and self.status.code = 'dra'</domain>
-	</action-view>
-	
-	<menuitem name="invoice-root-purchases-filters-confsupinvoice" parent="invoice-root-purchases-filters"
-		title="Confirmed Suppl. invoices" action="invoice.root.purchases.filters.confsupinvoice" />
-
-	<action-view name="invoice.root.purchases.filters.confsupinvoice" title="Confirmed Suppl. invoices"
-		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
-		<view type="grid" name="invoice-grid"/>
-		<view type="form" name="invoice-form"/>
-		<domain>self.operationTypeSelect = 1 and self.status.code = 'con'</domain>
-	</action-view>
-	
-	<menuitem name="invoice-root-purchases-filters-valsupinvoice" parent="invoice-root-purchases-filters"
-		title="Validated Suppl. invoices" action="invoice.root.purchases.filters.valsupinvoice" />
-
-	<action-view name="invoice.root.purchases.filters.valsupinvoice" title="Validated Suppl. invoices"
-		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
-		<view type="grid" name="invoice-grid"/>
-		<view type="form" name="invoice-form"/>
-		<domain>self.operationTypeSelect = 1 and self.status.code = 'val'</domain>
-	</action-view>	
-		
-	<menuitem name="invoice-root-purchases-filters-unpaiddueinvoice" parent="invoice-root-purchases-filters"
-		title="Unpaid Due invoices" action="invoice.root.purchases.filters.unpaiddueinvoice" />
-
-	<action-view name="invoice.root.purchases.filters.unpaiddueinvoice" title="Unpaid due invoices"
-		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
-		<view type="grid" name="invoice-grid"/>
-		<view type="form" name="invoice-form"/>
-		<domain>self.operationTypeSelect = 1 and CURRENT_DATE &gt; self.dueDate and self.inTaxTotalRemaining &gt; 0</domain>
-	</action-view>	
-		
-	
-	<menuitem name="invoice-root-purchases-filters-draftcustrefunds" parent="invoice-root-purchases-filters"
-		title="Draft Suppl. refunds" action="invoice.root.purchases.filters.draftsuprefunds" />
-
-	<action-view name="invoice.root.purchases.filters.draftsuprefunds" title="Draft Suppl. refunds"
-		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
-		<view type="grid" name="invoice-grid"/>
-		<view type="form" name="invoice-form"/>
-		<domain>self.operationTypeSelect = 2 and self.status.code = 'dra'</domain>
-	</action-view>
-	
-	<menuitem name="invoice-root-purchases-filters-confsuprefunds" parent="invoice-root-purchases-filters"
-		title="Confirmed Suppl. refunds" action="invoice.root.purchases.filters.confsuprefunds" />
-
-	<action-view name="invoice.root.purchases.filters.confsuprefunds" title="Confirmed Suppl. refunds"
-		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
-		<view type="grid" name="invoice-grid"/>
-		<view type="form" name="invoice-form"/>
-		<domain>self.operationTypeSelect = 2 and self.status.code = 'con'</domain>
-	</action-view>
-	
-	<menuitem name="invoice-root-purchases-filters-valsuprefunds" parent="invoice-root-purchases-filters"
-		title="Validated Suppl. refunds" action="invoice.root.purchases.filters.valsuprefunds" />
-
-	<action-view name="invoice.root.purchases.filters.valsuprefunds" title="Validated Suppl. refunds"
-		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
-		<view type="grid" name="invoice-grid"/>
-		<view type="form" name="invoice-form"/>
-		<domain>self.operationTypeSelect = 2 and self.status.code = 'val'</domain>
-	</action-view>
-	
-	<menuitem name="invoice-root-purchases-filters-duesuprefunds" parent="invoice-root-purchases-filters"
-		title="Due Suppl. refunds" action="invoice.root.purchases.filters.duesuprefunds" />
-
-	<action-view name="invoice.root.purchases.filters.duesuprefunds" title="Due Suppl. refunds"
-		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
-		<view type="grid" name="invoice-grid"/>
-		<view type="form" name="invoice-form"/>
-		<domain>self.operationTypeSelect = 2 and CURRENT_DATE &gt; self.dueDate</domain>
-	</action-view>
 	
 	<menuitem name="account-root-payment-schedule" parent="invoice-root"
         title="Payment Schedule" />
 
     <menuitem name="account-root-payment-schedule-payment-schedule"
-        parent="account-root-payment-schedule" title="All Payments Schedule"
+        parent="account-root-payment-schedule" title="Payment Schedule"
         action="account.root.account.schedule.account.schedule" />
 
     <action-view name="account.root.account.schedule.account.schedule"
-        title="All Payments Schedule" model="com.axelor.apps.account.db.PaymentSchedule" icon="img/evo-icons/invoice_small.png">
+        title="Payment Schedule" model="com.axelor.apps.account.db.PaymentSchedule" icon="img/evo-icons/invoice_small.png">
         <view type="grid" />
         <view type="form" />
+        <view-param name="search-filters" value="payment-schedule-filters"/>
     </action-view>
 
     <menuitem name="account-root-payment-schedule-payment-schedule-line"
@@ -174,6 +95,7 @@
         title="Payment schedule line" model="com.axelor.apps.account.db.PaymentScheduleLine" icon="img/evo-icons/invoice_small.png">
         <view type="grid" />
         <view type="form" />
+        <view-param name="search-filters" value="payment-schedule-line-filters"/>
     </action-view>
 
 

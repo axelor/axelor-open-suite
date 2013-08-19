@@ -29,9 +29,9 @@
 "account-root-move-move-All","All accounting moves (including technical moves)","menu","All accounting moves (including technical moves)","Les Écritures (pièces techniques incluses)",,,,
 "account-root-move-move-line","Accounting Move lines","menu","Accounting Move lines","Les Lignes d'écritures",,,,
 "account-root-move-move-line-All","All accounting move lines (including technical move lines)","menu","All accounting move lines (including technical move lines)","Les Lignes d'écritures (Lignes techniques incluses)",,,,
-"account-root-payment-schedule","Payment Schedule","menu","Payment Schedule","Echéanciers",,,,
-"account-root-payment-schedule-payment-schedule","All Payments Schedule","menu","All Payments Schedule","Les échéanciers",,,,
-"account-root-payment-schedule-payment-schedule-line","Payment schedule line","menu","Payment schedule line","Les lignes d'échéanciers",,,,
+"account-root-payment-schedule","Payment Schedule","menu","Payment Schedule","Echéanciers de paiement",,,,
+"account-root-payment-schedule-payment-schedule","Payment Schedule","menu","Payment Schedule","Echéanciers de paiement",,,,
+"account-root-payment-schedule-payment-schedule-line","Payment schedule line","menu","Payment schedule line","Ligne d'échéanciers de paiement",,,,
 "account-root-periodic-processing","Periodical processing","menu","Periodical processing","Les Traitements Périodiques",,,,
 "account-root-periodic-processing-account-clearance","Overpayments clearances","menu","Overpayments clearances","Les Apurements de trop-perçu",,,,
 "account-root-periodic-processing-cash-register","Cash register closure","menu","Cash register closure","Les Fermetures Caisses",,,,
@@ -62,18 +62,10 @@
 "invoice-root","Invoice","menu","Invoice","Facture",,,,
 "invoice-root-invoice","New invoice","menu","New invoice","Nouvelle facture",,,,
 "invoice-root-purchases","Purchases","menu","Purchases","Les Achats",,,,
-"invoice-root-purchases-filters","Filters","menu","Filters","Filtres",,,,
-"invoice-root-purchases-filters-confsupinvoice","Confirmed Suppl. invoices","menu","Confirmed Suppl. invoices","Factures fournisseur confirmées",,,,
-"invoice-root-purchases-filters-confsuprefunds","Confirmed Suppl. refunds","menu","Confirmed Suppl. refunds","Avoirs fournisseur confirmés",,,,
-"invoice-root-purchases-filters-draftcustrefunds","Draft Suppl. refunds","menu","Draft Suppl. refunds","Avoirs fournisseur brouillons",,,,
-"invoice-root-purchases-filters-draftsupinvoice","Draft Suppl. invoices","menu","Draft Suppl. invoices","Factures fournisseur brouillons",,,,
-"invoice-root-purchases-filters-duesuprefunds","Due Suppl. refunds","menu","Due Suppl. refunds","Avoirs fournisseur dus",,,,
-"invoice-root-purchases-filters-unpaiddueinvoice","Unpaid Due invoices","menu","Unpaid Due invoices","Les factures client échues",,,,
-"invoice-root-purchases-filters-valsupinvoice","Validated Suppl. invoices","menu","Validated Suppl. invoices","Factures fournisseur validées",,,,
-"invoice-root-purchases-filters-valsuprefunds","Validated Suppl. refunds","menu","Validated Suppl. refunds","Avoirs fournisseur validés",,,,
-"invoice-root-purchases-supinvoices","Suppl. Invoices","menu","Suppl. Invoices","Les factures fournisseur",,,,
-"invoice-root-purchases-suprefunds","Suppl. Refunds","menu","Suppl. Refunds","Les avoirs fournisseur",,,,
+"invoice-root-purchases-supinvoices","Suppl. Invoices","menu","Suppl. Invoices","Factures d'achats des fournisseurs",,,,
+"invoice-root-purchases-suprefunds","Suppl. Refunds","menu","Suppl. Refunds","Avoirs des fournisseurs",,,,
 "invoice-root-sales","Sales","menu","Sales","Les Ventes",,,,
+"invoice-root-sales-custinvoices","Cust. Invoices","menu","Cust. Invoices","Factures de vente des clients",,,,
 "invoice-root-sales-custrefunds","Cust. Refunds","menu","Cust. Refunds","Avoirs des clients",,,,
 "mail-root-email-cash-register","Cash register emails","menu","Cash register emails","Les emails de caisse",,,,
 "mail-root-email-debtrecovery","Reminder emails","menu","Reminder emails","Les emails de relance",,,,
@@ -537,8 +529,8 @@
 "account.conf.financial.year","account.conf.financial.year","action","Fiscal years","Les années fiscales",,,,
 "account.root.accounting.batch","account.root.accounting.batch","action","Accounting batches","Les batchs de comptabilité",,,,
 "account.root.account.paybox","account.root.account.paybox","action","Paybox","Paybox",,,,
-"account.root.account.schedule.account.schedule","account.root.account.schedule.account.schedule","action","All Payments Schedule","Les échéanciers",,,,
-"account.root.account.schedule.account.schedule.line","account.root.account.schedule.account.schedule.line","action","Payment schedule line","Les lignes d'échéanciers",,,,
+"account.root.account.schedule.account.schedule","account.root.account.schedule.account.schedule","action","Payment Schedule","Echéanciers de paiement",,,,
+"account.root.account.schedule.account.schedule.line","account.root.account.schedule.account.schedule.line","action","Payment schedule line","Ligne d'échéanciers de paiement",,,,
 "account.root.export.reimbursement","account.root.export.reimbursement","action","Reimbursements","Remboursements",,,,
 "account.root.move.move","account.root.move.move","action","Accounting Moves","Écritures",,,,
 "account.root.move.move.All","account.root.move.move.All","action","All accounting moves (including technical moves)","Les Écritures (pièces techniques incluses)",,,,
@@ -567,16 +559,9 @@
 "debtRecovery.conf.reminder.reminder.method","debtRecovery.conf.reminder.reminder.method","action","Reminder methods","Les méthodes de relance",,,,
 "debtRecovery.root.reminder.reminder.history","debtRecovery.root.reminder.reminder.history","action","Reminders history","L'historique des relances",,,,
 "invoice.root.invoice","invoice.root.invoice","action","New invoice","Nouvelle facture",,,,
-"invoice.root.purchases.filters.confsupinvoice","invoice.root.purchases.filters.confsupinvoice","action","Confirmed Suppl. invoices","Factures fournisseur confirmées",,,,
-"invoice.root.purchases.filters.confsuprefunds","invoice.root.purchases.filters.confsuprefunds","action","Confirmed Suppl. refunds","Avoirs fournisseur confirmés",,,,
-"invoice.root.purchases.filters.draftsupinvoice","invoice.root.purchases.filters.draftsupinvoice","action","Draft Suppl. invoices","Factures fournisseur brouillons",,,,
-"invoice.root.purchases.filters.draftsuprefunds","invoice.root.purchases.filters.draftsuprefunds","action","Draft Suppl. refunds","Avoirs fournisseur brouillons",,,,
-"invoice.root.purchases.filters.duesuprefunds","invoice.root.purchases.filters.duesuprefunds","action","Due Suppl. refunds","Avoirs fournisseur dus",,,,
-"invoice.root.purchases.filters.unpaiddueinvoice","invoice.root.purchases.filters.unpaiddueinvoice","action","Unpaid due invoices","Facture à payer arrivées à échéance",,,,
-"invoice.root.purchases.filters.valsupinvoice","invoice.root.purchases.filters.valsupinvoice","action","Validated Suppl. invoices","Factures fournisseur validées",,,,
-"invoice.root.purchases.filters.valsuprefunds","invoice.root.purchases.filters.valsuprefunds","action","Validated Suppl. refunds","Avoirs fournisseur validés",,,,
-"invoice.root.purchases.supinvoices","invoice.root.purchases.supinvoices","action","Suppl. Invoices","Les factures fournisseur",,,,
-"invoice.root.purchases.suprefunds","invoice.root.purchases.suprefunds","action","Suppl. Refunds","Les avoirs fournisseur",,,,
+"invoice.root.purchases.supinvoices","invoice.root.purchases.supinvoices","action","Suppl. Invoices","Factures d'achats des fournisseurs",,,,
+"invoice.root.purchases.suprefunds","invoice.root.purchases.suprefunds","action","Suppl. Refunds","Avoirs des fournisseurs",,,,
+"invoice.root.sales.custinvoices","invoice.root.sales.custinvoices","action","Cust. Invoices","Factures de vente des clients",,,,
 "invoice.root.sales.custrefunds","invoice.root.sales.custrefunds","action","Cust. Refunds","Avoirs des clients",,,,
 "mail.root.email.cash.register","mail.root.email.cash.register","action","Cash register emails","Les emails de caisse",,,,
 "mail.root.email.debtrecovery","mail.root.email.debtrecovery","action","Reminder emails","Les emails de relance",,,,
@@ -1414,8 +1399,6 @@
 "account-root-move-move-line","Accounting Move lines","menu","Accounting Move lines","Les Lignes d'écritures","",""
 "account-root-move-move-line-All","All accounting move lines (including technical move lines)","menu","All accounting move lines (including technical move lines)","Les Lignes d'écritures (Lignes techniques incluses)","",""
 "account-root-payment-schedule","Payment Schedule","menu","Payment Schedule","Echéanciers","",""
-"account-root-payment-schedule-payment-schedule","All Payments Schedule","menu","All Payments Schedule","Les échéanciers","",""
-"account-root-payment-schedule-payment-schedule-line","Payment schedule line","menu","Payment schedule line","Les lignes d'échéanciers","",""
 "account-root-periodic-processing","Periodical processing","menu","Periodical processing","Les Traitements Périodiques","",""
 "account-root-periodic-processing-account-clearance","Overpayments clearances","menu","Overpayments clearances","Les Apurements de trop-perçu","",""
 "account-root-periodic-processing-cash-register","Cash register closure","menu","Cash register closure","Les Fermetures Caisses","",""
@@ -1446,19 +1429,7 @@
 "invoice-root","Invoice","menu","Invoice","Facture","",""
 "invoice-root-invoice","New invoice","menu","New invoice","Nouvelle facture","",""
 "invoice-root-purchases","Purchases","menu","Purchases","Les Achats","",""
-"invoice-root-purchases-filters","Filters","menu","Filters","Filtres","",""
-"invoice-root-purchases-filters-confsupinvoice","Confirmed Suppl. invoices","menu","Confirmed Suppl. invoices","Factures fournisseur confirmées","",""
-"invoice-root-purchases-filters-confsuprefunds","Confirmed Suppl. refunds","menu","Confirmed Suppl. refunds","Avoirs fournisseur confirmés","",""
-"invoice-root-purchases-filters-draftcustrefunds","Draft Suppl. refunds","menu","Draft Suppl. refunds","Avoirs fournisseur brouillons","",""
-"invoice-root-purchases-filters-draftsupinvoice","Draft Suppl. invoices","menu","Draft Suppl. invoices","Factures fournisseur brouillons","",""
-"invoice-root-purchases-filters-duesuprefunds","Due Suppl. refunds","menu","Due Suppl. refunds","Avoirs fournisseur dus","",""
-"invoice-root-purchases-filters-unpaiddueinvoice","Unpaid Due invoices","menu","Unpaid Due invoices","Les factures client échues","",""
-"invoice-root-purchases-filters-valsupinvoice","Validated Suppl. invoices","menu","Validated Suppl. invoices","Factures fournisseur validées","",""
-"invoice-root-purchases-filters-valsuprefunds","Validated Suppl. refunds","menu","Validated Suppl. refunds","Avoirs fournisseur validés","",""
-"invoice-root-purchases-supinvoices","Suppl. Invoices","menu","Suppl. Invoices","Les factures fournisseur","",""
-"invoice-root-purchases-suprefunds","Suppl. Refunds","menu","Suppl. Refunds","Les avoirs fournisseur","",""
 "invoice-root-sales","Sales","menu","Sales","Les Ventes","",""
-"invoice-root-sales-custinvoices","Cust. Invoices","menu","Cust. Invoices","Factures de vente des clients","",""
 "mail-root-email-cash-register","Cash register emails","menu","Cash register emails","Les emails de caisse","",""
 "mail-root-email-debtrecovery","Reminder emails","menu","Reminder emails","Les emails de relance","",""
 "mail-root-email-reimboursement","Reimbursement emails","menu","Reimbursement emails","Les emails de remboursement","",""
@@ -1998,8 +1969,6 @@
 "account.conf.financial.year","account.conf.financial.year","action","Fiscal years","Les années fiscales","",""
 "account.root.accounting.batch","account.root.accounting.batch","action","Accounting batches","Les batchs de comptabilité","",""
 "account.root.account.paybox","account.root.account.paybox","action","Paybox","Paybox","",""
-"account.root.account.schedule.account.schedule","account.root.account.schedule.account.schedule","action","All Payments Schedule","Les échéanciers","",""
-"account.root.account.schedule.account.schedule.line","account.root.account.schedule.account.schedule.line","action","Payment schedule line","Les lignes d'échéanciers","",""
 "account.root.export.reimbursement","account.root.export.reimbursement","action","Reimbursements","Remboursements","",""
 "account.root.move.move","account.root.move.move","action","Accounting Moves","Écritures","",""
 "account.root.move.move.All","account.root.move.move.All","action","All accounting moves (including technical moves)","Les Écritures (pièces techniques incluses)","",""
@@ -2028,17 +1997,6 @@
 "debtRecovery.conf.reminder.reminder.method","debtRecovery.conf.reminder.reminder.method","action","Reminder methods","Les méthodes de relance","",""
 "debtRecovery.root.reminder.reminder.history","debtRecovery.root.reminder.reminder.history","action","Reminders history","L'historique des relances","",""
 "invoice.root.invoice","invoice.root.invoice","action","New invoice","Nouvelle facture","",""
-"invoice.root.purchases.filters.confsupinvoice","invoice.root.purchases.filters.confsupinvoice","action","Confirmed Suppl. invoices","Factures fournisseur confirmées","",""
-"invoice.root.purchases.filters.confsuprefunds","invoice.root.purchases.filters.confsuprefunds","action","Confirmed Suppl. refunds","Avoirs fournisseur confirmés","",""
-"invoice.root.purchases.filters.draftsupinvoice","invoice.root.purchases.filters.draftsupinvoice","action","Draft Suppl. invoices","Factures fournisseur brouillons","",""
-"invoice.root.purchases.filters.draftsuprefunds","invoice.root.purchases.filters.draftsuprefunds","action","Draft Suppl. refunds","Avoirs fournisseur brouillons","",""
-"invoice.root.purchases.filters.duesuprefunds","invoice.root.purchases.filters.duesuprefunds","action","Due Suppl. refunds","Avoirs fournisseur dus","",""
-"invoice.root.purchases.filters.unpaiddueinvoice","invoice.root.purchases.filters.unpaiddueinvoice","action","Unpaid due invoices","Facture à payer arrivées à échéance","",""
-"invoice.root.purchases.filters.valsupinvoice","invoice.root.purchases.filters.valsupinvoice","action","Validated Suppl. invoices","Factures fournisseur validées","",""
-"invoice.root.purchases.filters.valsuprefunds","invoice.root.purchases.filters.valsuprefunds","action","Validated Suppl. refunds","Avoirs fournisseur validés","",""
-"invoice.root.purchases.supinvoices","invoice.root.purchases.supinvoices","action","Suppl. Invoices","Les factures fournisseur","",""
-"invoice.root.purchases.suprefunds","invoice.root.purchases.suprefunds","action","Suppl. Refunds","Les avoirs fournisseur","",""
-"invoice.root.sales.custinvoices","invoice.root.sales.custinvoices","action","Cust. Invoices","Factures de vente des clients","",""
 "mail.root.email.cash.register","mail.root.email.cash.register","action","Cash register emails","Les emails de caisse","",""
 "mail.root.email.debtrecovery","mail.root.email.debtrecovery","action","Reminder emails","Les emails de relance","",""
 "mail.root.email.reimboursement","mail.root.email.reimboursement","action","Reimbursement emails","Les emails de remboursement","",""

@@ -121,6 +121,20 @@
 		<call class="com.axelor.apps.account.web.PaymentScheduleController" method="cancel"/>
 	</action-method>
 	
+	<search-filters name="payment-schedule-filters" model="com.axelor.apps.account.db.PaymentSchedule" title="Payment schedule filters">
+		<filter title="Payment Schedules">
+			<domain>self.natureSelect = 0</domain>
+		</filter>
+		<filter title="Payment Smoothings">
+			<domain>self.natureSelect = 2</domain>
+		</filter>
+		<filter title="Ongoing Schedules">
+			<domain>self.startDate &lt; CURRENT_DATE</domain>
+		</filter>
+		<filter title="Old Schedules">
+			<domain>self.startDate &gt; CURRENT_DATE</domain>
+		</filter>
+	</search-filters>
 	
 </object-views>
 
