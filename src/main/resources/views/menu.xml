@@ -64,6 +64,8 @@
 		<context name="_typeSelect" expr="3"/>
 		<context name="_internalUser" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
+		<context name="_todayDateTime" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()"/>
+		<context name="_newDate" expr="eval: __datetime__.plusDays(5)"/>
 	</action-view>
 	
 	<menuitem name="crm-root-meeting" parent="crm-root"
@@ -79,6 +81,7 @@
 		<context name="_typeSelect" expr="2"/>
 		<context name="_internalUser" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
+		<context name="_newDate" expr="eval: __datetime__.plusDays(5)"/>
 	</action-view>
 	
 	<menuitem name="crm-root-call" parent="crm-root"
@@ -93,6 +96,7 @@
 		<context name="_typeSelect" expr="1"/>
 		<context name="_internalUser" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
+		<context name="_todayDateTime" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()"/>
 	</action-view>
 	
 	<menuitem name="crm-root-ticket" parent="crm-root"

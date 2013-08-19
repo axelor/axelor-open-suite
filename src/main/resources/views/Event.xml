@@ -324,6 +324,12 @@
 		<filter title="My Tasks">
 			<domain>self.userInfo.internalUser.id = :_internalUser</domain>
 		</filter>
+		<filter title="My Today Tasks">
+			<domain>self.userInfo.internalUser.id = :_internalUser and self.startDateTime &lt;= :_todayDateTime</domain>
+		</filter>
+		<filter title="My Upcoming Tasks">
+			<domain>self.userInfo.internalUser.id = :_internalUser and self.startDateTime &lt; :_newDate and (self.taskStatusSelect = 1 or self.taskStatusSelect = 2)</domain>
+		</filter>
 		<filter title="My Team Tasks">
 			<domain>self.team = :_myActiveTeam</domain>
 		</filter>
@@ -333,6 +339,9 @@
 		<filter title="My Meetings">
 			<domain>self.userInfo.internalUser.id = :_internalUser</domain>
 		</filter>
+		<filter title="My Upcoming Meetings">
+			<domain>self.userInfo.internalUser.id = :_internalUser and self.startDateTime &lt; :_newDate</domain>
+		</filter>
 		<filter title="My Team Meetings">
 			<domain>self.team = :_myActiveTeam</domain>
 		</filter>
@@ -341,6 +350,9 @@
 	<search-filters name="call-filters" model="com.axelor.apps.crm.db.Event" title="Call filters">
 		<filter title="My Calls">
 			<domain>self.userInfo.internalUser.id = :_internalUser</domain>
+		</filter>
+		<filter title="My Today Calls">
+			<domain>self.userInfo.internalUser.id = :_internalUser and self.startDateTime &lt;= :_todayDateTime</domain>
 		</filter>
 		<filter title="My Team Calls">
 			<domain>self.team = :_myActiveTeam</domain>
