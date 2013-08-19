@@ -4,14 +4,14 @@
 "account-conf-analytic-account","Analytic accounts","menu","Analytic accounts","Les comptes analytiques",,,,
 "account-conf-analytic-axis","Analytic axis","menu","Analytic axis","Les axes analytiques",,,,
 "account-conf-analytic-journal","Analytic journals","menu","Analytic journals","Les journaux analytiques",,,,
-"account-conf-export","Reportings/Exports","menu","Reportings/Exports","Rapports / Exports",,,,
+"account-conf-reporting","Reportings/Exports","menu","Reportings/Exports","Rapports / Exports",,,,
 "account-conf-export-accounting-category","Account categories","menu","Account categories","Les catégories de comptes",,,,
 "account-conf-export-accounting-category-line","Accounting report category line","menu","Accounting report category line","Les lignes de catégories de rapports comptables",,,,
-"account-conf-export-interbank-code","Reject/Return reason codes","menu","Reject/Return reason codes","Listes des codes motifs de rejet/retour ",,,,
+"account-conf-reporting-interbank-code","Reject/Return reason codes","menu","Reject/Return reason codes","Listes des codes motifs de rejet/retour ",,,,
 "account-conf-financial","Financial","menu","Financial","Financière",,,,
 "account-conf-financial-account","Financial Accounts","menu","Financial Accounts","Les comptes comptables",,,,
-"account-conf-financial-accounting-plan","Chart of accounts","menu","Chart of accounts","Le plan comptable",,,,
-"account-conf-financial-account-management","Financial accounts management","menu","Financial accounts management","Les gestions de compte comptable",,,,
+"account-conf-financial-accounting-plan","Chart of Accounts","menu","Chart of Accounts","Le plan comptable",,,,
+"account-conf-financial-account-management","Financial Accounts Management","menu","Financial Accounts Management","Les gestions de compte comptable",,,,
 "account-conf-financial-account-type","Account types","menu","Account types","Les types de compte",,,,
 "account-conf-financial-journal","Journals","menu","Journals","Les journaux",,,,
 "account-conf-financial-journal-type","Journal types","menu","Journal types","Les types de journaux",,,,
@@ -21,9 +21,10 @@
 "account-conf-payment-paybox","Paybox","menu","Paybox","Paybox",,,,
 "account-conf-payment-payment-mode","Payment modes","menu","Payment modes","Les modes de paiements",,,,
 "account-root","Accounting","menu","Accounting","Comptabilité",,,,
-"account-root-accounting-batch","Accounting batches","menu","Accounting batches","Les batchs de comptabilité",,,,
-"account-root-export","Accounting Exports/Reports","menu","Accounting Exports/Reports","Exports/Rapports comptables",,,,
-"account-root-export-reimbursement","Reimbursements","menu","Reimbursements","Remboursements",,,,
+"account-conf-accounting-batch","Accounting batches","menu","Accounting batches","Les batchs de comptabilité",,,,
+"account-conf-cash-register","Cash registers","menu","Cash registers","Les Caisses",,,,
+"account-root-accounting","Accounting Exports/Reports","menu","Accounting Exports/Reports","Exports/Rapports comptables",,,,
+"account-root-accounting-reimbursement","Reimbursements","menu","Reimbursements","Remboursements",,,,
 "account-root-move","Moves","menu","Moves","Écritures",,,,
 "account-root-move-move","Moves","menu","Moves","Écritures",,,,
 "account-root-move-move-line","Move Lines","menu","Move Lines","Les Lignes d'écritures",,,,
@@ -38,8 +39,8 @@
 "account-root-periodic-processing-shift-irrecoverable","Shift to irrecoverable","menu","Shift to irrecoverable","Passage en irrécouvrable",,,,
 "account-root-periodic-processing-payment-voucher","Payment vouchers","menu","Payment vouchers","Les Saisies paiements",,,,
 "account-root-periodic-processing-reconcile","Reconcilations","menu","Reconcilations","Les Réconciliations",,,,
-"account-root-reporting-moveLineExport","Accounting exports","menu","Accounting exports","Les Exports comptables",,,,
-"account-root-reporting-moveLineReport","Accounting reports","menu","Accounting reports","Rapports comptables",,,,
+"account-root-accounting-accounting-exports","Accounting exports","menu","Accounting exports","Les Exports comptables",,,,
+"account-root-accounting-accounting-reports","Accounting reports","menu","Accounting reports","Rapports comptables",,,,
 "account-root-tax","Taxes","menu","Taxes","Taxes",,,,
 "account-root-tax-base","Tax bases","menu","Tax bases","Les assiettes de taxes",,,,
 "account-root-tax-calculation-rule","Tax calculation rules","menu","Tax calculation rules","Les règles de calculs des taxes",,,,
@@ -509,26 +510,27 @@
 "com.axelor.apps.account.db.Year","year-form","form","Fiscal year","Année fiscale",,,,
 "year-form","close","button","Close fiscal year","Clôturer l'exercice",,,,
 "com.axelor.apps.account.db.Year","year-grid","grid","Fiscal years","Les années fiscales",,,,
-"account.conf.account.payment.mode","account.conf.account.payment.mode","action","Payment modes","Les modes de paiements",,,,
+"account.conf.payment.payment.mode","account.conf.payment.payment.mode","action","Payment modes","Les modes de paiements",,,,
 "account.conf.analytic.account","account.conf.analytic.account","action","Analytic accounts","Les comptes analytiques",,,,
 "account.conf.analytic.axis","account.conf.analytic.axis","action","Analytic axis","Les axes analytiques",,,,
 "account.conf.analytic.journal","account.conf.analytic.journal","action","Analytic journals","Les journaux analytiques",,,,
 "account.conf.export.accounting.category","account.conf.export.accounting.category","action","Account categories","Les catégories de comptes",,,,
 "account.conf.export.accounting.category.line","account.conf.export.accounting.category.line","action","Accounting report category line","Les lignes de catégories de rapports comptables",,,,
-"account.conf.export.interbank.code","account.conf.export.interbank.code","action","Reject/Return reason codes","Listes des codes motifs de rejet/retour ",,,,
+"account.conf.reporting.interbank.code","account.conf.reporting.interbank.code","action","Reject/Return reason codes","Listes des codes motifs de rejet/retour ",,,,
 "account.conf.financial.account","account.conf.financial.account","action","Financial Accounts","Les comptes comptables",,,,
-"account.conf.financial.accounting.plan","account.conf.financial.accounting.plan","action","Chart of accounts","Le plan comptable",,,,
-"account.conf.financial.account.management","account.conf.financial.account.management","action","Financial accounts management","Les gestions de compte comptable",,,,
+"account.conf.financial.accounting.plan","account.conf.financial.accounting.plan","action","Chart of Accounts","Le plan comptable",,,,
+"account.conf.financial.account.management","account.conf.financial.account.management","action","Financial Accounts Management","Les gestions de compte comptable",,,,
 "account.conf.financial.account.type","account.conf.financial.account.type","action","Account types","Les types de compte",,,,
 "account.conf.financial.journal","account.conf.financial.journal","action","Journals","Les journaux",,,,
 "account.conf.financial.journal.type","account.conf.financial.journal.type","action","Journal types","Les types de journaux",,,,
 "account.conf.financial.period","account.conf.financial.period","action","Periods","Les périodes comptables",,,,
 "account.conf.financial.year","account.conf.financial.year","action","Fiscal years","Les années fiscales",,,,
-"account.root.accounting.batch","account.root.accounting.batch","action","Accounting batches","Les batchs de comptabilité",,,,
-"account.root.account.paybox","account.root.account.paybox","action","Paybox","Paybox",,,,
+"account.conf.accounting.batch","account.conf.accounting.batch","action","Accounting batches","Les batchs de comptabilité",,,,
+"account.conf.cash.register","account.conf.cash.register","action","Cash registers","Les Caisses",,,,
+"account.conf.payment.paybox","account.conf.payment.paybox","action","Paybox","Paybox",,,,
 "account.root.payment.schedule.payment.schedule","account.root.payment.schedule.payment.schedule","action","Payment Schedule","Echéanciers de paiement",,,,
 "account.root.payment.schedule.payment.schedule.line","account.root.payment.schedule.payment.schedule.line","action","Payment schedule line","Ligne d'échéanciers de paiement",,,,
-"account.root.export.reimbursement","account.root.export.reimbursement","action","Reimbursements","Remboursements",,,,
+"account.root.accounting.reimbursement","account.root.accounting.reimbursement","action","Reimbursements","Remboursements",,,,
 "account.root.move.move","account.root.move.move","action","Moves","Écritures",,,,
 "account.root.move.move.line","account.root.move.move.line","action","Move Lines","Les Lignes d'écritures",,,,
 "account.root.periodic.processing.overpayment.clearances","account.root.periodic.processing.overpayment.clearances","action","Overpayments clearances","Les Apurements de trop-perçu",,,,
@@ -538,8 +540,8 @@
 "account.root.periodic.processing.shift.irrecoverable","account.root.periodic.processing.shift.irrecoverable","action","Shift to irrecoverable","Passage en irrécouvrable",,,,
 "account.root.periodic.processing.payment.voucher","account.root.periodic.processing.payment.voucher","action","Payment vouchers","Les Saisies paiements",,,,
 "account.root.periodic.processing.reconcile","account.root.periodic.processing.reconcile","action","Reconcilations","Les Réconciliations",,,,
-"account.root.reporting.moveLineExport","account.root.reporting.moveLineExport","action","Accounting exports","Les Exports comptables",,,,
-"account.root.reporting.moveLineReport","account.root.reporting.moveLineReport","action","Accounting reports","Rapports comptables",,,,
+"account.root.accounting.accounting.exports","account.root.accounting.accounting.exports","action","Accounting exports","Les Exports comptables",,,,
+"account.root.accounting.accounting.reports","account.root.accounting.accounting.reports","action","Accounting reports","Rapports comptables",,,,
 "account.root.tax.base","account.root.tax.base","action","Tax bases","Les assiettes de taxes",,,,
 "account.root.tax.calculation.rule","account.root.tax.calculation.rule","action","Tax calculation rules","Les règles de calculs des taxes",,,,
 "account.root.tax.conf.vat.management","account.root.tax.conf.vat.management","action","V.A.T. management","Gestion de la TVA",,,,
@@ -1368,14 +1370,8 @@
 "account-conf-analytic-account","Analytic accounts","menu","Analytic accounts","Les comptes analytiques","",""
 "account-conf-analytic-axis","Analytic axis","menu","Analytic axis","Les axes analytiques","",""
 "account-conf-analytic-journal","Analytic journals","menu","Analytic journals","Les journaux analytiques","",""
-"account-conf-export","Reportings/Exports","menu","Reportings/Exports","Rapports / Exports","",""
-"account-conf-export-accounting-category","Account categories","menu","Account categories","Les catégories de comptes","",""
-"account-conf-export-accounting-category-line","Accounting report category line","menu","Accounting report category line","Les lignes de catégories de rapports comptables","",""
-"account-conf-export-interbank-code","Reject/Return reason codes","menu","Reject/Return reason codes","Listes des codes motifs de rejet/retour ","",""
 "account-conf-financial","Financial","menu","Financial","Financière","",""
 "account-conf-financial-account","Financial Accounts","menu","Financial Accounts","Les comptes comptables","",""
-"account-conf-financial-accounting-plan","Chart of accounts","menu","Chart of accounts","Le plan comptable","",""
-"account-conf-financial-account-management","Financial accounts management","menu","Financial accounts management","Les gestions de compte comptable","",""
 "account-conf-financial-account-type","Account types","menu","Account types","Les types de compte","",""
 "account-conf-financial-journal","Journals","menu","Journals","Les journaux","",""
 "account-conf-financial-journal-type","Journal types","menu","Journal types","Les types de journaux","",""
@@ -1385,15 +1381,10 @@
 "account-conf-payment-paybox","Paybox","menu","Paybox","Paybox","",""
 "account-conf-payment-payment-mode","Payment modes","menu","Payment modes","Les modes de paiements","",""
 "account-root","Accounting","menu","Accounting","Comptabilité","",""
-"account-root-accounting-batch","Accounting batches","menu","Accounting batches","Les batchs de comptabilité","",""
-"account-root-export","Accounting Exports/Reports","menu","Accounting Exports/Reports","Exports/Rapports comptables","",""
-"account-root-export-reimbursement","Reimbursements","menu","Reimbursements","Remboursements","",""
 "account-root-payment-schedule","Payment Schedule","menu","Payment Schedule","Echéanciers","",""
 "account-root-periodic-processing","Periodical processing","menu","Periodical processing","Les Traitements Périodiques","",""
 "account-root-periodic-processing-payment-voucher","Payment vouchers","menu","Payment vouchers","Les Saisies paiements","",""
 "account-root-periodic-processing-reconcile","Reconcilations","menu","Reconcilations","Les Réconciliations","",""
-"account-root-reporting-moveLineExport","Accounting exports","menu","Accounting exports","Les Exports comptables","",""
-"account-root-reporting-moveLineReport","Accounting reports","menu","Accounting reports","Rapports comptables","",""
 "account-root-tax","Taxes","menu","Taxes","Taxes","",""
 "account-root-tax-base","Tax bases","menu","Tax bases","Les assiettes de taxes","",""
 "account-root-tax-calculation-rule","Tax calculation rules","menu","Tax calculation rules","Les règles de calculs des taxes","",""
@@ -1930,29 +1921,20 @@
 "move.line.mail.select","3","select","Mail sent","Courrier envoyé",,,,
 "payment.voucher.state.select","1","select","Draft","Brouillon",,,,
 "payment.voucher.state.select","2","select","Confirmed","Confirmé",,,,
-"account.conf.account.payment.mode","account.conf.account.payment.mode","action","Payment modes","Les modes de paiements","",""
 "account.conf.analytic.account","account.conf.analytic.account","action","Analytic accounts","Les comptes analytiques","",""
 "account.conf.analytic.axis","account.conf.analytic.axis","action","Analytic axis","Les axes analytiques","",""
 "account.conf.analytic.journal","account.conf.analytic.journal","action","Analytic journals","Les journaux analytiques","",""
 "account.conf.export.accounting.category","account.conf.export.accounting.category","action","Account categories","Les catégories de comptes","",""
 "account.conf.export.accounting.category.line","account.conf.export.accounting.category.line","action","Accounting report category line","Les lignes de catégories de rapports comptables","",""
-"account.conf.export.interbank.code","account.conf.export.interbank.code","action","Reject/Return reason codes","Listes des codes motifs de rejet/retour ","",""
 "account.conf.financial.account","account.conf.financial.account","action","Financial Accounts","Les comptes comptables","",""
-"account.conf.financial.accounting.plan","account.conf.financial.accounting.plan","action","Chart of accounts","Le plan comptable","",""
-"account.conf.financial.account.management","account.conf.financial.account.management","action","Financial accounts management","Les gestions de compte comptable","",""
 "account.conf.financial.account.type","account.conf.financial.account.type","action","Account types","Les types de compte","",""
 "account.conf.financial.journal","account.conf.financial.journal","action","Journals","Les journaux","",""
 "account.conf.financial.journal.type","account.conf.financial.journal.type","action","Journal types","Les types de journaux","",""
 "account.conf.financial.period","account.conf.financial.period","action","Periods","Les périodes comptables","",""
 "account.conf.financial.year","account.conf.financial.year","action","Fiscal years","Les années fiscales","",""
-"account.root.accounting.batch","account.root.accounting.batch","action","Accounting batches","Les batchs de comptabilité","",""
-"account.root.account.paybox","account.root.account.paybox","action","Paybox","Paybox","",""
-"account.root.export.reimbursement","account.root.export.reimbursement","action","Reimbursements","Remboursements","",""
 "account.root.periodic.processing.account.voucher.paybox.email","account.root.periodic.processing.account.voucher.paybox.email","action","Email used by Paybox","Email utilisé par Paybox","",""
 "account.root.periodic.processing.payment.voucher","account.root.periodic.processing.payment.voucher","action","Payment vouchers","Les Saisies paiements","",""
 "account.root.periodic.processing.reconcile","account.root.periodic.processing.reconcile","action","Reconcilations","Les Réconciliations","",""
-"account.root.reporting.moveLineExport","account.root.reporting.moveLineExport","action","Accounting exports","Les Exports comptables","",""
-"account.root.reporting.moveLineReport","account.root.reporting.moveLineReport","action","Accounting reports","Rapports comptables","",""
 "account.root.tax.base","account.root.tax.base","action","Tax bases","Les assiettes de taxes","",""
 "account.root.tax.calculation.rule","account.root.tax.calculation.rule","action","Tax calculation rules","Les règles de calculs des taxes","",""
 "account.root.tax.conf.vat.management","account.root.tax.conf.vat.management","action","V.A.T. management","Gestion de la TVA","",""
