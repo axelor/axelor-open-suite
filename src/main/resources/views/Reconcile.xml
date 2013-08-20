@@ -58,5 +58,16 @@
     	<call class="com.axelor.apps.account.web.ReconcileController" method="unreconcile"/>
     </action-method>
 
-    
+    <search-filters name="reconcile-filters" model="com.axelor.apps.account.db.Reconcile" title="Reconcile filters">
+		<filter title="Draft">
+			<domain>self.state = '1'</domain>
+		</filter>
+		<filter title="Confirmed">
+			<domain>self.state = '2'</domain>
+		</filter>
+		<filter title="Canceled">
+			<domain>self.state = '3'</domain>
+		</filter>
+	</search-filters>
+	
 </object-views>

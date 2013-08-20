@@ -153,6 +153,7 @@
 		title="Reconcilations" model="com.axelor.apps.account.db.Reconcile" icon="img/icons/account_small.png">
 		<view type="grid" />
 		<view type="form" />
+		<view-param name="search-filters" value="reconcile-filters"/>
 	</action-view>
 
 	<menuitem name="account-root-periodic-processing-cash-register-closure"
