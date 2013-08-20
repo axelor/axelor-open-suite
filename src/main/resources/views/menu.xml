@@ -257,6 +257,7 @@
 		title="Reimbursements" model="com.axelor.apps.account.db.Reimbursement" icon="img/icons/report_small.png">
 		<view type="grid" />
 		<view type="form" />
+		<view-param name="search-filters" value="reimbursement-filters"/>
 	</action-view>
 
 	<menuitem name="account-root-accounting-accounting-reports" parent="account-root-accounting"

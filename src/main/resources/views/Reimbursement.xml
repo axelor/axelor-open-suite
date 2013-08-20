@@ -46,5 +46,12 @@
  		<attribute name="hidden" for="rejectInformation" expr="eval: rejectedOk == false"/>
  	</action-attrs>
 
-   
+	<search-filters name="reimbursement-filters" model="com.axelor.apps.account.db.Reimbursement" title="Reimbursement filters">
+		<filter title="Recent reimbursements">
+			<domain></domain>
+		</filter>
+		<filter title="Rejected reimbursements">
+			<domain>self.rejectedOk = true</domain>
+		</filter>	
+	</search-filters>   
 </object-views>
