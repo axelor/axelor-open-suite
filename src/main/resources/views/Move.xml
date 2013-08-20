@@ -134,6 +134,33 @@
 		<filter title="Current Period Entries">
 			<domain>self.period IS NULL OR (CURRENT_DATE &gt;= self.period.fromDate and CURRENT_DATE &lt;= self.period.toDate)</domain>
 		</filter>
+		<filter title="Exported moves">
+			<domain>self.ignoreInAccountingOk = true</domain>
+		</filter>
+		<filter title="Moves to export">
+			<domain>self.ignoreInAccountingOk = false</domain>
+		</filter>
+		<filter title="Moves from invoices/refunds">
+			<domain>self.invoice IS NOT NULL</domain>
+		</filter>
+		<filter title="Moves from payment">
+			<domain>self.paymentMode IS NOT NULL</domain>
+		</filter>
+		<filter title="Misc. Moves">
+			<domain>self.date IS NOT NULL</domain>
+		</filter>
+		<filter title="Draft Moves">
+			<domain>self.state = 'draft'</domain>
+		</filter>
+		<filter title="Simulated Moves">
+			<domain>self.state = 'simulated'</domain>
+		</filter>
+		<filter title="Validated Moves">
+			<domain>self.state = 'validated'</domain>
+		</filter>
+		<filter title="Canceled Moves">
+			<domain>self.state = 'canceled'</domain>
+		</filter>
 	</search-filters>
    
 </object-views>
