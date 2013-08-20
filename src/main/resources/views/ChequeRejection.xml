@@ -73,4 +73,13 @@
     	<field name="partner" expr="eval: paymentVoucher?.partner" if="eval: paymentVoucher != null"/>
     </action-record>
     
+    <search-filters name="cheque-rejection-filters" model="com.axelor.apps.account.db.ChequeRejection" title="Cheque rejection filters">
+		<filter title="Recent rejects">
+			<domain>self.rejectionDate &gt;= :_newDate1</domain>
+		</filter>
+		<filter title="Rejects over past 30 days">
+			<domain>self.rejectionDate &gt;= :_newDate2</domain>
+		</filter>
+	</search-filters>
+	
 </object-views>

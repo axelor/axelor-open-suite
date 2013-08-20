@@ -194,6 +194,9 @@
 		title="Rejects of cheques" model="com.axelor.apps.account.db.ChequeRejection" icon="img/icons/account_small.png">
 		<view type="grid" />
 		<view type="form" />
+		<view-param name="search-filters" value="cheque-rejection-filters"/>
+		<context name="_newDate1" expr="eval: __date__.minusDays(5)"/>
+		<context name="_newDate2" expr="eval: __date__.minusDays(30)"/>
 	</action-view>
 
 	<menuitem name="account-root-debt-recovery" parent="account-root"
