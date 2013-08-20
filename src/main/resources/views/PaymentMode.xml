@@ -12,8 +12,9 @@
         <field name="code"/>
         <field name="bankJournal"/>
         <field name="invoiceLabel" />
+        <separator/>
         <field name="accountManagementList" grid-view="account-management-payment-mode-grid" form-view="account-management-payment-mode-form"
-        domain="self.typeSelect = 3" colSpan="4" />
+        domain="self.typeSelect = 3" colSpan="4" showTitle="false"/>
     </form>
     
     <action-record name="action-payment-mode-record-cheque"

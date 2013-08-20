@@ -21,6 +21,7 @@
         <field name="toDate"/>
         <field name="reportedBalanceDate"/>
         <field name="company" widget="SuggestBox"/>
+        <separator/>
 <!--         <field name="reportedBalanceLineList" colSpan="4"/> -->
         <group colSpan="4" cols="4">
         	<button name="close" title="Close fiscal year" colSpan="2" onClick="action-year-close-method,save"/>

@@ -15,16 +15,25 @@
     <form name="reconcile-form" title="Reconcile" model="com.axelor.apps.account.db.Reconcile" cols="4" 
     	onNew="action-reconcile-record-default,action-reconcile-attrs-default"
     	onLoad="action-reconcile-attrs-default">
-        <field name="lineDebit" domain="self.debit &gt; 0.0" onChange="action-reconcile-attrs-domain-credit"/>
-        <field name="lineCredit" domain="self.credit &gt; 0.0" onChange="action-reconcile-attrs-domain-debit"/>
-        <field name="debit"/>
-        <field name="credit"/>
-        <field name="amount"/>
-        <break/>
-        <button name="reconcile" title="Reconcile" colSpan="2" onClick="save,action-reconcile-method-reconcile"/>
-        <button name="unreconcile" title="Unreconcile" colSpan="2" onClick="save,action-reconcile-method-unreconcile"/>
-        <break/>
-        <field name="state"/>
+        <group colSpan="4" title="-" cols="4">
+        	<field name="lineDebit" onChange="action-reconcile-attrs-domain-credit" domain="self.debit &gt; 0.0"/>
+        	<field name="lineCredit" onChange="action-reconcile-attrs-domain-debit" domain="self.credit &gt; 0.0"/>
+        	<field name="debit"/>
+        	<field name="credit"/>
+    	</group>
+    	<group colSpan="2" cols="2">
+        	<field name="amount"/>
+    	</group>
+    	<separator/>
+    	<group colSpan="4" cols="4">
+        	<group colSpan="2" cols="2">
+        		<button name="reconcile" title="Reconcile" colSpan="2" onClick="save,action-reconcile-method-reconcile"/>
+            	<button name="unreconcile" title="Unreconcile" colSpan="2" onClick="save,action-reconcile-method-unreconcile"/>
+        	</group>
+        	<group colSpan="2" cols="2">
+            	<field name="state"/>
+        	</group>        
+    	</group>
     </form>
     
     <action-record name="action-reconcile-record-default" model="com.axelor.apps.account.db.Reconcile">

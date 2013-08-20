@@ -17,18 +17,21 @@
 	    onNew="action-period-record-open,action-period-attrs-button"
 	    onLoad="action-period-attrs-button">
         <field name="name"/>
-        <field name="code"/>
-        <field name="year"/>
-        <break/>
-        <field name="fromDate"/>
-        <field name="toDate"/>
-        <field name="company" widget="SuggestBox"/>
-        <field name="status"/>
-        <break/>
-        <group colSpan="4" cols="4">
-        	<button name="close" title="Close period" colSpan="2" onClick="action-period-record-close,action-period-attrs-button,save"/>
-        	<button name="reopen" title="Reopen period" colSpan="2" onClick="action-period-record-open,action-period-attrs-button,save"/>
-        </group>
+    	<field name="code"/>
+    	<field name="fromDate"/>
+    	<field name="toDate"/>
+    	<field name="year"/>    
+    	<field name="company" widget="SuggestBox"/>
+    	<separator/>
+    	<group colSpan="4" cols="4">
+        	<group colSpan="2" cols="2">
+            	<button name="close" title="Close period" colSpan="2" onClick="action-period-record-close,action-period-attrs-button,save"/>
+            	<button name="reopen" title="Reopen period" colSpan="2" onClick="action-period-record-open,action-period-attrs-button,save"/>
+        	</group>
+        	<group colSpan="2" cols="2">
+            	<field name="status"/>
+        	</group>        
+    	</group>
     </form>
     
     <action-record name="action-period-record-close" model="com.axelor.apps.account.db.Period">

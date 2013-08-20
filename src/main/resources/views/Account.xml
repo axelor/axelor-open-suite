@@ -6,7 +6,7 @@
     <grid name="account-grid" title="Accounts" model="com.axelor.apps.account.db.Account">
         <field name="code"/>
         <field name="name"/>
-        <field name="type"/>
+        <field name="accountType"/>
         <field name="reconcileOk"/>
         <field name="parent"/>
         <field name="company"/>
@@ -20,7 +20,7 @@
     	onNew="action-account-record-new">
         <field name="code"/>
         <field name="name"/>
-        <field name="type"/>
+        <field name="accountType"/>
         <field name="company" widget="SuggestBox" onChange="action-account-clean-company,action-account-validate"/>
 		<field name="parent" domain="self.company = :company" onChange="action-account-clean-company,action-account-validate"/>
         <field name="reconcileOk"/>
