@@ -27,4 +27,13 @@
     	<attribute name="hidden" expr="eval: objectConcernedSelect in [2,3,4] || reminderTypeSelect == 'standard'" for="reminderSocialServiceSelect"/>
 	</action-attrs>
     
+    <search-filters name="mail-model-filters" model="com.axelor.apps.base.db.MailModel" title="Mail model filters">
+		<filter title="Emails models">
+			<domain>self.typeSelect = 0</domain>
+		</filter>
+		<filter title="Mails models">
+			<domain>self.typeSelect = 1</domain>
+		</filter>
+	</search-filters>
+	
 </object-views>
