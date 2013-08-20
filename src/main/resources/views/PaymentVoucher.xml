@@ -248,11 +248,29 @@
 		<filter title="Customer payments">
 			<domain>self.operationTypeSelect = 3</domain>
 		</filter>
+		<filter title="Draft Customer payments">
+			<domain>self.operationTypeSelect = 3 AND self.state = '1'</domain>
+		</filter>
+		<filter title="Confirmed Customer payments">
+			<domain>self.operationTypeSelect = 3 AND self.state = '2'</domain>
+		</filter>
+		<filter title="Customer payments with remaining">
+			<domain>self.operationTypeSelect = 3 AND self.remainingAllocatedAmount &gt; 0</domain>
+		</filter>
+		<filter title="Customer Paybox payments">
+			<domain>self.operationTypeSelect = 3 AND self.payboxPaidOk = true</domain>
+		</filter>
 		<filter title="Customer refunds">
 			<domain>self.operationTypeSelect = 4</domain>
 		</filter>
 		<filter title="Supplier payments">
 			<domain>self.operationTypeSelect = 1</domain>
+		</filter>
+		<filter title="Draft Supplier payments">
+			<domain>self.operationTypeSelect = 1 AND self.state = '1'</domain>
+		</filter>
+		<filter title="Confirmed Supplier payments">
+			<domain>self.operationTypeSelect = 1 AND self.state = '2'</domain>
 		</filter>
 		<filter title="Supplier refunds">
 			<domain>self.operationTypeSelect = 2</domain>
