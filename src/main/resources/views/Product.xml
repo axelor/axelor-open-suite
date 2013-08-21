@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    <grid name="product-grid" title="Products" model="com.axelor.apps.base.db.Product">
+    <grid name="product-grid" title="Products" model="com.axelor.apps.base.db.Product" orderBy="name">
    		<toolbar>
 			<button name="catelog" title="Catelog" onClick="action-print-product-catelog"/>
     	</toolbar>    
