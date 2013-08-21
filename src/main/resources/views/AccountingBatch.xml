@@ -23,6 +23,7 @@
     		<page name="reimbursementPage" title="Reimbursement configuration" cols="4">
     			<field name="reimbursementTypeSelect" onChange="action-accounting-batch-attrs-reimbursement-type-select"/>
     			<field name="reimbursementExportTypeSelect"/>
+    			<button name="reimbursementBatch" title="Reimbursement Batch" colSpan="4" onClick="save,action-accounting-batch-method-action-reimbursement" />
     		</page>
     		<page name="directDebitPage" title="Direct debit configuration" cols="4">
     			<field name="directDebitTypeSelect" onChange="action-accounting-batch-attrs-direct-debit-type-select"/>
@@ -31,15 +32,18 @@
 	    			<field name="debitDate"/>
 	    			<field name="authorityMemoryExportTypeSelect"/>
     			</group>
+    			<button name="directDebitBatch" title="Direct Debit Batch" colSpan="4" onClick="save,action-accounting-batch-method-action-direct-debit" />
     		</page>
     		<page name="reminderPage" title="Reminder configuration" cols="4">
     			<field name="reminderTypeSelect"/>
+    			<button name="reminderBatch" title="Reminder Batch" colSpan="4" onClick="save,action-accounting-batch-method-action-reminder" />
     		</page>
     		<page name="interbankPaymentOrderPage" title="Payments by IPO and IPO Cheque configuration" cols="4">
     			<field name="interbankPaymentOrderTypeSelect"/>
+    			<button name="interbankPaymentOrderBatch" title="Interbank Payment Order Batch" colSpan="4" onClick="save,action-accounting-batch-method-action-interbank-payment-order" />
     		</page>
     		<page name="doubtfulCustormerPage" title="Doubtful customers configuration" cols="4">
-    		
+    			<button name="doubtfulCustomerBatch" title="Doubtful Customer Batch" colSpan="4" onClick="save,action-accounting-batch-method-action-doubtful-customer" />
     		</page>
     		<page name="accountCustomerPage" title="Configuration Calcul des comptes clients" cols="4">
     			<group title="Mettre à jour" colSpan="4" cols="6">
@@ -60,12 +64,7 @@
 		    	<field name="description" showTitle="false" colSpan="4" />
 		    	<field name="batchList" colSpan="4" />
     		</page>
-    	</notebook>
-    	<button name="reimbursementBatch" title="Run" colSpan="3" onClick="save,action-accounting-batch-method-action-reimbursement" />
-    	<button name="directDebitBatch" title="Run" colSpan="3" onClick="save,action-accounting-batch-method-action-direct-debit" />
-    	<button name="reminderBatch" title="Run" colSpan="3" onClick="save,action-accounting-batch-method-action-reminder" />
-    	<button name="interbankPaymentOrderBatch" title="Run" colSpan="3" onClick="save,action-accounting-batch-method-action-interbank-payment-order" />
-    	<button name="doubtfulCustomerBatch" title="Run" colSpan="3" onClick="save,action-accounting-batch-method-action-doubtful-customer" />
+    	</notebook>   	
     </form>
     
     <!-- ACTION RECORD -->
@@ -102,11 +101,6 @@
 	    <attribute name="hidden" expr="eval: actionSelect != 14" for="reminderPage"/>
 	    <attribute name="hidden" expr="eval: actionSelect != 15" for="interbankPaymentOrderPage"/>
    	    <attribute name="hidden" expr="eval: actionSelect != 16" for="doubtfulCustormerPage"/>
-   	    <attribute name="hidden" expr="eval: actionSelect != 11" for="reimbursementBatch"/>
-	    <attribute name="hidden" expr="eval: actionSelect != 12" for="directDebitBatch"/>
-	    <attribute name="hidden" expr="eval: actionSelect != 14" for="reminderBatch"/>
-	    <attribute name="hidden" expr="eval: actionSelect != 15" for="interbankPaymentOrderBatch"/>
-   	    <attribute name="hidden" expr="eval: actionSelect != 16" for="doubtfulCustomerBatch"/>
 	</action-attrs>
 	
 	<action-attrs name="action-accounting-batch-attrs-reimbursement-type-select">

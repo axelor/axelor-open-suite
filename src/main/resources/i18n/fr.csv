@@ -680,7 +680,7 @@
 "com.axelor.apps.account.db.ChequeRejection","company","field","Company","Société",,,,
 "com.axelor.apps.account.db.ChequeRejection","dateTime","field","Date","Date",,,,
 "com.axelor.apps.account.db.ChequeRejection","partner","field","Customer","Tiers",,,,
-"com.axelor.apps.account.db.ChequeRejection","paymentVoucher","field","Payment vouvher","Encaissement par chèque",,,,
+"com.axelor.apps.account.db.ChequeRejection","paymentVoucher","field","Payment voucher","Encaissement par chèque",,,,
 "com.axelor.apps.account.db.ChequeRejection","amountRejected","field","Rejected amount","Montant rejeté",,,,
 "com.axelor.apps.account.db.ChequeRejection","rejectionDate","field","Reject Date","Date du rejet",,,,
 "com.axelor.apps.account.db.ChequeRejection","interbankCodeLine","field","Rejection reason","Motif du rejet",,,,
