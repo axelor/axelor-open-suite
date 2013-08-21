@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    <grid name="sales-order-line-grid" title="SO lines" model="com.axelor.apps.supplychain.db.SalesOrderLine">
+    <grid name="sales-order-line-grid" title="SO lines" model="com.axelor.apps.supplychain.db.SalesOrderLine" orderBy="sequence">
     	<field name="sequence"/>
         <field name="productName"/>
         <field name="qty"/>

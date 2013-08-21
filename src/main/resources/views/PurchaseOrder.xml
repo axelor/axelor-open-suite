@@ -3,10 +3,11 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    <grid name="purchase-order-grid" title="Supplier RFQs/POs" model="com.axelor.apps.supplychain.db.PurchaseOrder">
+    <grid name="purchase-order-grid" title="Supplier RFQs/POs" model="com.axelor.apps.supplychain.db.PurchaseOrder" orderBy="-orderDate">
     	<field name="purchaseOrderSeq"/>
         <field name="supplierPartner"/>
         <field name="affairProject"/>
+        <field name="orderDate"/>
         <field name="buyerUserInfo"/>
         <field name="statusSelect"/>
     </grid>
