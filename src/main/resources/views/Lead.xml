@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    <grid name="lead-grid" title="Leads" model="com.axelor.apps.crm.db.Lead">
+    <grid name="lead-grid" title="Leads" model="com.axelor.apps.crm.db.Lead" orderBy="enterpriseName">
         <field name="enterpriseName"/>
         <field name="name"/>
         <field name="firstName"/>
