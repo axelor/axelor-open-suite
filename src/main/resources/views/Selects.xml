@@ -331,9 +331,9 @@
 	</selection>
 	
 	<selection name="socialnetwork.facebook.post.privacy.select">
-		<option value="ALL_FRIENDS">All friends</option>
-		<option value="FRIENDS_OF_FRIENDS">Friends of friends</option>
 		<option value="EVERYONE">Public</option>
+		<option value="FRIENDS_OF_FRIENDS">Friends of friends</option>
+		<option value="ALL_FRIENDS">All friends</option>
 		<option value="SELF">Only Me</option>
 	</selection>
 

@@ -9,20 +9,20 @@
   	<boolean name="isFb" title="Facebook"/>
   	<boolean name="isTwt" title="Twitter"/>
   	<boolean name="isLn" title="Linkedin"/>
-  	<boolean name="isFbWall" title="Post on Wall ?"/>
+  	<boolean name="isFbWall" title="Post on Wall ?" default="true"/>
   	<string name="linkedinUpdateRef"/>
   	<string name="facebookUpdateRef"/>
   	<string name="twitterUpdateRef"/>
-    <string name="content" namecolumn="true" multiline="true" required="true" max="140" title="Content"/>
+    <string name="content" namecolumn="true" multiline="true" required="true" max="60000" title="Content"/>
     <datetime name="updateDateT" tz="true" title="Update Time"/>
     <!-- <one-to-many name="snStatusCommentsList" ref="com.axelor.apps.socialnetwork.db.SnStatusComments" orphan="true" mappedBy="snStatusUpdates" title="Comments"/> -->
     <one-to-many name="snPagePostRefList" ref="com.axelor.apps.socialnetwork.db.SnPagePostRef"/>
-    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner"/>
+    <many-to-one name="snProfile" ref="com.axelor.apps.socialnetwork.db.SnProfile"/>
     <many-to-many name="companyPartnerSet" ref="com.axelor.apps.base.db.Partner" title="Pages"/>
     <many-to-one name="commentCompanyPartner" ref="com.axelor.apps.base.db.Partner" title="Page"/>
     <boolean name="isPostSuccessful"/>
     <many-to-one name="socialNet" ref="com.axelor.apps.socialnetwork.db.SocialNet" title="Social Network"/>
-    <string name="fbPrivacySelect" selection="socialnetwork.facebook.post.privacy.select" title="Privacy parameter"/>
+    <string name="fbPrivacySelect" selection="socialnetwork.facebook.post.privacy.select" title="Privacy parameter" default="'EVERYONE'"/>
   </entity>
  
 </domain-models>

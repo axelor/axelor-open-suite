@@ -9,7 +9,7 @@
 		<many-to-one name="snStatusUpdates" ref="com.axelor.apps.socialnetwork.db.SnStatusUpdates" orphan="true" title="Post"/>
 		<many-to-one name="parentSnStatusComments" ref="com.axelor.apps.socialnetwork.db.SnStatusComments" orphan="true" title="Parent Comment"/>
 		<one-to-many name="childrenSnStatusCommentsList" ref="com.axelor.apps.socialnetwork.db.SnStatusComments" mappedBy="parentSnStatusComments"/>
-		<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" orphan="true" title="By" readonly="true"/>
+		<many-to-one name="snProfile" ref="com.axelor.apps.socialnetwork.db.SnProfile" orphan="true" title="By" readonly="true"/>
 		<many-to-one name="companyPartner" ref="com.axelor.apps.base.db.Partner" orphan="true" title="Page"/>
 		<many-to-one name="socialNet" ref="com.axelor.apps.socialnetwork.db.SocialNet" title="Social Network" required="true"/>
 		<string name="commentRef" title="Comment Id" readonly="true"/>

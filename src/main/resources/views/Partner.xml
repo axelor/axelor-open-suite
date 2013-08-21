@@ -256,8 +256,8 @@
 		<context name="id" expr="eval: id"/>
 	</action-view>
 	
-	<action-view name="action-partner-view-sn-profile" title="Profiles" model="com.axelor.apps.base.db.Wizard">
-		<view type="form" name="sn-profile-wizard-form"/>
+	<action-view name="action-partner-view-sn-profile" title="Profiles" model="com.axelor.apps.socialnetwork.db.SnProfile">
+		<view type="form" name="sn-profile-form"/>
 		<context name="id" expr="eval: id"/>
 	</action-view>
     

@@ -12,6 +12,7 @@
 		<string name="link" help="Profile Link" title="Profile Link" readonly="true"/>
 		<string name="companyName" help="Name of Company" title="Company name" readonly="true"/>
 		<string name="location" help="Location" title="Location" readonly="true"/>
+		<string name="locale" help="Locale" title="Locale" readonly="true"/>
 		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo"/>
  		<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" orphan="true" />
  		<!-- <binary name="picture" image="true" title="Photo"/> -->
