@@ -5,7 +5,7 @@
     
     <!-- VUE GENERALE -->
     
-    <grid name="invoice-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice">
+    <grid name="invoice-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
         <field name="invoiceId"/>
         <field name="operationTypeSelect" />
         <field name="clientPartner"/>
