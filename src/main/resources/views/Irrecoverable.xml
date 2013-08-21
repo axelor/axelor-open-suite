@@ -8,23 +8,36 @@
         <field name="company"/>
         <field name="status"/>
     </grid>
+    
     <form name="irrecoverable-form" title="Irrecoverable" model="com.axelor.apps.account.db.Irrecoverable" cols="4"
     	onNew="action-record-irrecoverable-default-record,action-irrecoverable-attrs-hidden" 
     	onLoad="action-irrecoverable-attrs-hidden">
-        <field name="name"/>
-        <field name="userInfo"/>
-        <field name="dateTime"/>
-        <field name="company" widget="SuggestBox"/>
-        <button name="getIrrecoverable" title="Get invoices and schedule lines to set as irrecoverable" colSpan="2" onClick="save,com.axelor.apps.account.web.IrrecoverableController:getIrrecoverable"/>
-        <field name="invoiceSet" colSpan="4"  grid-view="invoice-grid" form-view="invoice-form"/>
-        <field name="paymentScheduleLineSet" colSpan="4"/>
-        <button name="createIrrecoverableReport" title="Generate irrecoverable report" colSpan="2" onClick="save,com.axelor.apps.account.web.IrrecoverableController:createIrrecoverableReport"/>
-        <field name="irrecoverableCustomerLineList" colSpan="4"/>
-        <field name="exportTypeSelect"/>
-        <button name="printReport" title="Print" colSpan="2" icon="img/icons/print.png" onClick="save,com.axelor.apps.account.web.IrrecoverableController:printIrrecoverable"/>
-        <button name="passInIrrecoverable" title="Shift to irrecoverable" colSpan="2" onClick="save,com.axelor.apps.account.web.IrrecoverableController:passInIrrecoverable,action-irrecoverable-attrs-hidden"/>
-        <field name="status"/>
-        <field name="moveSet" colSpan="4"/>
+        <group title="Header" colSpan="4" cols="4">
+        	<field name="name"/>
+        	<field name="userInfo"/>
+        	<field name="dateTime"/>
+        	<field name="company" widget="SuggestBox"/>
+    	</group>
+    	<button name="getIrrecoverable" title="Get invoices and schedule lines to set as irrecoverable" colSpan="4" onClick="save,com.axelor.apps.account.web.IrrecoverableController:getIrrecoverable"/>
+    	<field name="invoiceSet" colSpan="4" form-view="invoice-form" grid-view="invoice-grid"/>
+    	<field name="paymentScheduleLineSet" colSpan="4"/>
+    	<group title="Irrecoverable report" colSpan="4" cols="4">
+        	<group title="Report execution" colSpan="2" cols="2">
+            	<button name="createIrrecoverableReport" title="Generate irrecoverable report" colSpan="2" onClick="save,com.axelor.apps.account.web.IrrecoverableController:createIrrecoverableReport"/>
+            	<field name="irrecoverableCustomerLineList" colSpan="2"/>
+        	</group>
+        	<group title="Print settings" colSpan="2" cols="2">
+            	<field name="exportTypeSelect"/>
+            	<button name="printReport" title="Print" colSpan="2" icon="img/icons/print.png" onClick="save,com.axelor.apps.account.web.IrrecoverableController:printIrrecoverable"/>
+        	</group>
+    	</group>
+    	<group title="Irrecoverable Execution" colSpan="4" cols="4">
+        	<group title="Action" colSpan="4" cols="4">
+            	<button name="passInIrrecoverable" title="Shift to irrecoverable" colSpan="2" onClick="save,com.axelor.apps.account.web.IrrecoverableController:passInIrrecoverable,action-irrecoverable-attrs-hidden"/>
+            	<field name="status"/>
+        	</group>
+        	<field name="moveSet" colSpan="4" showIf="status.code != 'dra'"/>
+    	</group>
     </form>
     
     <action-attrs name="action-irrecoverable-attrs-hidden">

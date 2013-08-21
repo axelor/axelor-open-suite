@@ -17,15 +17,28 @@
     onNew="action-cash-register-line-record-new,action-cash-register-line-attrs-hidden-button"
     onLoad="action-cash-register-line-attrs-hidden-button,action-cash-register-line-attrs-readonly">
         <field name="userInfo"/>
-        <field name="cashRegister"/>
-        <field name="createDateTime"/>
-        <field name="cashRegisterDate"/>
-        <field name="cashRegisterAmount"/>
-        <field name="depositedAmount"/>
-        <field name="stateSelect"/>
-        <field name="emailSendedOk"/>
-        <button name="closeCashRegister" title="Close cashier" colSpan="2" onClick="save,com.axelor.apps.account.web.CashRegisterController:closeCashRegister,action-cash-register-line-attrs-hidden-button,save"/>
-    	<button name="openCashRegister" title="Open cashier" colSpan="2" onClick="save,com.axelor.apps.account.web.CashRegisterController:openCashRegister,action-cash-register-line-attrs-hidden-button,save"/>
+    	<field name="createDateTime"/>
+    	<group colSpan="4">
+        	<field name="cashRegister"/>
+        	<field name="cashRegisterDate"/>
+    	</group>
+    	<group title="Amounts to register" colSpan="4">
+        	<field name="cashRegisterAmount"/>
+        	<field name="depositedAmount"/>
+    	</group>
+    	<group title="Follow-up" colSpan="2">
+        	<field name="emailSendedOk"/>    
+    	</group>
+    	<break/>
+    	<group title="Actions" colSpan="4" cols="4">
+        	<group colSpan="2" cols="2">
+            	<button name="closeCashRegister" title="Close cashier" colSpan="2" onClick="save,com.axelor.apps.account.web.CashRegisterController:closeCashRegister,action-cash-register-line-attrs-hidden-button,save"/>
+            	<button name="openCashRegister" title="Open cashier" colSpan="2" onClick="save,com.axelor.apps.account.web.CashRegisterController:openCashRegister,action-cash-register-line-attrs-hidden-button,save"/>
+        	</group>
+        	<group colSpan="2" cols="2">
+            	<field name="stateSelect"/>
+        	</group>
+    	</group>
     </form>
     
     <action-record name="action-cash-register-line-record-new" model="com.axelor.apps.account.db.CashRegisterLine">

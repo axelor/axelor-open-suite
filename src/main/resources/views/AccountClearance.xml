@@ -17,16 +17,22 @@
     	onNew="action-account-clearance-record-default"
     	onLoad="action-account-clearance-attrs-hidden-buttons">
     	<field name="name"/>
-        <field name="dateTime"/>
-        <field name="userInfo"/>
-        <field name="company" widget="SuggestBox"/>
-        <field name="amountThreshold"/>
-        <field name="dateThreshold"/>
-        <button name="getExcessPayment" title="Get overdue payments" colSpan="2" onClick="save,com.axelor.apps.account.web.AccountClearanceController:getExcessPayment,save"/>
-        <field name="moveLineSet" colSpan="4"/>
-        <button name="validateAccountClearance" title="Validate account clearances" colSpan="2" onClick="save,com.axelor.apps.account.web.AccountClearanceController:validateAccountClearance,action-account-clearance-attrs-hidden-buttons,save"/>
-        <button name="showAccountClearanceMoveLines" title="Move lines generated" colSpan="2" onClick="com.axelor.apps.account.web.AccountClearanceControllerSimple:showAccountClearanceMoveLines"/>
-        <field name="status"/>
+    	<field name="dateTime"/>
+    	<field name="userInfo"/>
+    	<field name="company" widget="SuggestBox"/>
+   		<group title="Clearance settings" colSpan="4" cols="4">
+        	<field name="amountThreshold"/>
+        	<field name="dateThreshold"/>
+    	</group>
+    	<button name="getExcessPayment" title="Get overdue payments" colSpan="4" onClick="save,com.axelor.apps.account.web.AccountClearanceController:getExcessPayment,save"/>
+    	<field name="moveLineSet" colSpan="4"/>
+    	<group title="Actions" colSpan="2" cols="2">
+        	<button name="validateAccountClearance" title="Validate account clearances" colSpan="2" onClick="save,com.axelor.apps.account.web.AccountClearanceController:validateAccountClearance,action-account-clearance-attrs-hidden-buttons,save"/>
+        	<field name="status"/>
+    	</group>
+    	<group title="Links" colSpan="2" cols="2" showIf="status.code != 'dra'">
+        	<button name="showAccountClearanceMoveLines" title="Move lines generated" colSpan="2" onClick="com.axelor.apps.account.web.AccountClearanceControllerSimple:showAccountClearanceMoveLines"/>
+    	</group>
     </form>
     
 	<action-attrs name="action-account-clearance-attrs-hidden-buttons">
