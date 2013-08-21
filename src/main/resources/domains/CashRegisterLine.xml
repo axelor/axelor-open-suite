@@ -13,11 +13,11 @@
 		]]>
  	</string>
     <many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="Cashier Agent" readonly="true"/>
-    <many-to-one name="cashRegister" ref="com.axelor.apps.account.db.CashRegister" title="CashRegister" required="true"/>
+    <many-to-one name="cashRegister" ref="com.axelor.apps.account.db.CashRegister" title="Cash Register" required="true"/>
     <datetime name="createDateTime" title="Creation Date" tz="true" readonly="true"/>
     <date name="cashRegisterDate" title="Cash register date" required="true"/>
     <decimal name="depositedAmount" title="Deposited Amount"/>
-    <decimal name="cashRegisterAmount" title="Cash Regsiter Amount"/>
+    <decimal name="cashRegisterAmount" title="Cash Register Amount"/>
     <integer name="stateSelect" title="Status" readonly="true" selection="cash.register.state.select"/>
     <boolean name="emailSendedOk" title="Email sent ?" default="false" readonly="true"/>
   

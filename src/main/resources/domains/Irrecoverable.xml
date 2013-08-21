@@ -13,7 +13,7 @@
   	<many-to-many name="paymentScheduleLineSet" ref="com.axelor.apps.account.db.PaymentScheduleLine" title="Echéance rejetées"/>
   	<many-to-many name="moveSet" ref="com.axelor.apps.account.db.Move" title="Ecritures générées"/>
   	<many-to-one name="status" ref="com.axelor.apps.base.db.Status" title="Statut" readonly="true"/>
-  	<datetime name="dateTime" title="date" tz="true" readonly="true"/>
+  	<datetime name="dateTime" title="Date" tz="true" readonly="true"/>
   	<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="Utilisateur" readonly="true"/>
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Société" required="true"/>
   	<string name="exportTypeSelect" title="Type d'impression" selection="iadministration.export.type.select"/>
