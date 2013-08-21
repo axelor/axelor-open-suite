@@ -38,6 +38,8 @@
     
     <!--     MOVE LINE EXPORT -->
     <integer title="Type d'export" name="moveLineExportTypeSelect" selection="move.line.report.type.select.export"/>
+    <date name="startDate" title="Start date"/>
+    <date name="endDate" title="End date"/>
     
     <!-- OTHERS INFORMATIONS -->
     <string name="description" title="Description" large="true" />

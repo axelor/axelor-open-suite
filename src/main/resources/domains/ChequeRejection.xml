@@ -10,7 +10,7 @@
    	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
     <datetime name="dateTime" title="Date" tz="true" readonly="true"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
-  	<many-to-one name="paymentVoucher" ref="com.axelor.apps.account.db.PaymentVoucher" title="Payment vouvher" required="true"/>
+  	<many-to-one name="paymentVoucher" ref="com.axelor.apps.account.db.PaymentVoucher" title="Payment voucher" required="true"/>
   	<decimal name="amountRejected" title="Rejected amount" readonly="true"/>
   	<date name="rejectionDate" title="Reject Date" required="true"/>
     <many-to-one name="interbankCodeLine" ref="com.axelor.apps.account.db.InterbankCodeLine" title="Rejection reason" required="true"/>
