@@ -61,7 +61,7 @@
     </form>
     
     
-    <grid name="call-grid" title="Calls" model="com.axelor.apps.crm.db.Event">
+    <grid name="call-grid" title="Calls" model="com.axelor.apps.crm.db.Event" orderBy="-startDateTime">
         <field name="subject"/>
         <field name="callStatusSelect"/>
         <field name="statusSelect"/>
@@ -107,7 +107,7 @@
   </calendar>
     
     
-    <grid name="meeting-grid" title="Meetings" model="com.axelor.apps.crm.db.Event" >
+    <grid name="meeting-grid" title="Meetings" model="com.axelor.apps.crm.db.Event" orderBy="-startDateTime">
         <field name="subject"/>
         <field name="statusSelect"/>
         <field name="startDateTime"/>
@@ -145,7 +145,7 @@
         </group>
     </form>
     
-    <grid name="crm-task-grid" title="Tasks" model="com.axelor.apps.crm.db.Event">
+    <grid name="crm-task-grid" title="Tasks" model="com.axelor.apps.crm.db.Event" orderBy="-startDateTime">
         <field name="subject"/>
         <field name="taskStatusSelect"/>
         <field name="startDateTime"/>
