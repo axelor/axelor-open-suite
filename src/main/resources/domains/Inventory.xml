@@ -16,5 +16,10 @@
   	<integer name="formatSelect" title="Format" selection="supplychain.inventory.format.select"/>
   	<string name="importFilePath" title="File Path"/>
   	
+  	<many-to-one name="productFamily" ref="com.axelor.apps.base.db.ProductFamily" title="Product family"/>
+  	<many-to-one name="productCategory" ref="com.axelor.apps.base.db.ProductCategory" title="Product category"/>
+  	<boolean name="excludeOutOfStock" title="Exclude out of stock products ?"/>
+  	<boolean name="includeObsolete" title="Include obsolete products ?"/>
+  	
   </entity>
 </domain-models>
