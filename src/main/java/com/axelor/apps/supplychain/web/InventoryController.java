@@ -2,6 +2,7 @@ package com.axelor.apps.supplychain.web;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -11,6 +12,7 @@ import com.axelor.apps.AxelorSettings;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.supplychain.db.Inventory;
+import com.axelor.apps.supplychain.db.InventoryLine;
 import com.axelor.apps.supplychain.service.InventoryService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.db.User;
@@ -85,5 +87,23 @@ public class InventoryController {
 		
 		Inventory inventory = request.getContext().asType(Inventory.class);
 		inventoryService.generateStockMove(inventory);
+	}
+	
+	public void fillInventoryLineList(ActionRequest request, ActionResponse response) {
+		
+		Inventory inventory = request.getContext().asType(Inventory.class);
+		if(inventory != null) {
+			List<InventoryLine> inventoryLineList = inventoryService.fillInventoryLineList(inventory);
+			if(inventoryLineList == null)
+				response.setFlash("Il n'y a aucun produit contenu dans l'emplacement de stock.");
+			else {
+				if(inventoryLineList.size() > 0) {
+					response.setFlash("La liste des lignes d'inventaire a été rempli.");
+					response.setReload(true);
+				}
+				else
+					response.setFlash("Aucune lignes d'inventaire n'a été créée.");
+			}
+		}
 	}
 }

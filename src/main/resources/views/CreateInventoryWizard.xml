@@ -4,22 +4,34 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
     
-    <form cols="4" name="create-inventory-wizard-form" title="Create inventory" model="com.axelor.apps.base.db.Wizard" onNew="action-location-record-on-new">
- 		<group title="Header" colSpan="4"  colWidths="25%,25%,25%,25%">
- 			<button name="validate" title="Validate" onClick="action-location-method-create-inventory,action-location-view-inventory"/>
- 		</group>
-    	<group colSpan="4" cols="4" colWidths="25%,25%,25%,25%">
-    		<field name="inventoryDate" widget="DATE[type=DATE]" title="Inventory date"/>
-    		<break/>
-    		<field name="description" max="600" title="Description"/>
-    		<break/>
-			<field name="excludeOutOfStock" widget="BOOLEAN[type=BOOLEAN]" title="Exclude out of stock products ?"/>
-			<field name="includeObsolete" widget="BOOLEAN[type=BOOLEAN]" title="Include obsolete products ?"/>
-			<break/>
-			<field name="productFamily" widget="MANY_TO_ONE[type=MANY_TO_ONE|target=com.axelor.apps.base.db.ProductFamily]" title="Product family"/>
-			<field name="productCategory" widget="MANY_TO_ONE[type=MANY_TO_ONE|target=com.axelor.apps.base.db.ProductCategory]" title="Product category"/>
-		</group>
-    </form>
+    <form cols="6" onNew="action-location-record-on-new" name="create-inventory-wizard-form" title="Create inventory" model="com.axelor.apps.base.db.Wizard">
+    	<group colSpan="6" cols="6">
+        	<group colSpan="1">
+        	</group>
+        	<group colSpan="4" cols="4" colWidths="25%,25%,25%,25%">
+            	<group colSpan="4">
+                	<field name="location" title="Location" widget="MANY_TO_ONE[type=MANY_TO_ONE|target=com.axelor.apps.supplychain.db.Location]"/>
+                	<field name="inventoryDate" title="Inventory date" widget="DATE[type=DATE]"/>
+                	<spacer/>
+                	<field name="description" title="Description" max="600" colSpan="4"/>
+            	</group>
+            	<spacer/>
+            	<group title="Fill inventory with" colSpan="4">
+                	<field name="productFamily" title="Product family" widget="MANY_TO_ONE[type=MANY_TO_ONE|target=com.axelor.apps.base.db.ProductFamily]"/>
+                	<field name="productCategory" title="Product category" widget="MANY_TO_ONE[type=MANY_TO_ONE|target=com.axelor.apps.base.db.ProductCategory]"/>
+                	<field name="excludeOutOfStock" title="Exclude out of stock products ?" widget="BOOLEAN[type=BOOLEAN]"/>
+                	<field name="includeObsolete" title="Include obsolete products ?" widget="BOOLEAN[type=BOOLEAN]"/>
+            	</group>
+        	</group>
+        	<group colSpan="1">
+        	</group>
+        	<spacer/>
+        	<break/>
+        	<group colSpan="1">
+        	</group>
+        	<button name="validate" title="Validate" onClick="action-location-method-create-inventory,action-location-view-inventory" colSpan="4"/>
+    	</group>
+	</form>
     
     <action-record name="action-location-record-on-new" model="com.axelor.apps.base.db.Wizard">
     	<!-- <field name="inventoryDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()"/> -->
