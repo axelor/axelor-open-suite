@@ -229,10 +229,14 @@ public class InventoryService {
 					if((inventory.getProductCategory() == null && inventory.getProductFamily() == null)
 						|| (product.getProductCategory() != null && product.getProductCategory().getCode() != null && codeCategory != null && product.getProductCategory().getCode().equals(codeCategory))
 						|| (product.getProductFamily() != null && product.getProductFamily().getCode() != null && codeFamily != null && product.getProductFamily().getCode().equals(codeFamily))) {
+						
+						if(codeCategory != null && codeFamily != null && product.getProductCategory() != null && product.getProductFamily() != null && product.getProductCategory().getCode() != null && product.getProductFamily().getCode() != null 
+							&& ((!product.getProductCategory().getCode().equals(codeCategory)) || (!product.getProductFamily().getCode().equals(codeFamily))))
+							continue;
 						if(inventory.getExcludeOutOfStock()) {
 							if(locationLine.getCurrentQty().compareTo(BigDecimal.ZERO) > 0) {
 								if(!inventory.getIncludeObsolete()) {
-									if(inventory.getDateT() != null && inventory.getDateT().toLocalDate().isBefore(product.getEndDate()))
+									if((product.getEndDate() == null) || (inventory.getDateT() != null && inventory.getDateT().toLocalDate().isBefore(product.getEndDate())))
 										inventoryLineList.add(createInventoryLine(product, locationLine.getCurrentQty(), inventory, locationLine.getTrackingNumber(), locationLine.getProductVariant()));
 								}
 								else 
@@ -241,7 +245,7 @@ public class InventoryService {
 						}
 						else {
 							if(!inventory.getIncludeObsolete()) {
-								if(inventory.getDateT() != null && inventory.getDateT().toLocalDate().isBefore(product.getEndDate()))
+								if((product.getEndDate() == null) || (inventory.getDateT() != null && inventory.getDateT().toLocalDate().isBefore(product.getEndDate())))
 									inventoryLineList.add(createInventoryLine(product, locationLine.getCurrentQty(), inventory, locationLine.getTrackingNumber(), locationLine.getProductVariant()));
 							}
 							else
