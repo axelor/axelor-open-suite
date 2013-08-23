@@ -28,6 +28,7 @@
         </group>
         <group title="Content" colSpan="4">
         	<field name="subject" colSpan="4"/>
+        	<spacer/>
        	 	<field name="content" colSpan="4" showTitle="false" widget="html"/>
         </group>
         <group title="Related to" colSpan="1" cols="2">
