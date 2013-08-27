@@ -194,69 +194,52 @@ public class InventoryService {
 		return stockMove;
 	}
 
-
-	public InventoryLine createInventoryLine(Product product, BigDecimal currentQty, Inventory inventory, TrackingNumber trackingNumber, ProductVariant productVariant) {
-
-		InventoryLine inventoryLine = new InventoryLine();
-		inventoryLine.setProduct(product);
-		inventoryLine.setCurrentQty(currentQty);
-		inventoryLine.setInventory(inventory);
-		inventoryLine.setTrackingNumber(trackingNumber);
-		inventoryLine.setProductVariant(productVariant);
-
-		return inventoryLine;
-	}
-
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public List<InventoryLine> fillInventoryLineList(Inventory inventory) {
 
-		Location location = inventory.getLocation();
-		String codeCategory = null;
-		String codeFamily = null;
-
-		if(inventory.getProductCategory() != null)
-			codeCategory = inventory.getProductCategory().getCode();
-		if(inventory.getProductFamily() != null)
-			codeFamily = inventory.getProductFamily().getCode();
-
-		if(location != null && location.getLocationLineList() != null) {
+		if(inventory.getLocation() == null)
+			return null;
+		
+		String query = "self.location = ?";
+		List<Object> params = new ArrayList<Object>();
+		
+		params.add(inventory.getLocation());
+		
+		if (inventory.getExcludeOutOfStock()) {
+			query += " and self.currentQty > 0";
+		}
+		
+		if (!inventory.getIncludeObsolete()) {
+			query += " and (self.product.endDate > ? or self.product.endDate is null)";
+			params.add(inventory.getDateT().toLocalDate());
+		}
+		
+		if (inventory.getProductFamily() != null) {
+			query += " and self.product.productFamily = ?";
+			params.add(inventory.getProductFamily());
+		}
+		
+		if (inventory.getProductCategory() != null) {
+			query += " and self.product.productCategory = ?";
+			params.add(inventory.getProductCategory());
+		}
+		
+		List<LocationLine> locationLineList = LocationLine.all().filter(query, params.toArray()).fetch();
+		if (locationLineList != null) {
 			List<InventoryLine> inventoryLineList = new ArrayList<InventoryLine>();
-
-			for(LocationLine locationLine : location.getLocationLineList()) {
-
-				Product product = locationLine.getProduct();
-				if(product != null) {
-					if((inventory.getProductCategory() == null && inventory.getProductFamily() == null)
-						|| (product.getProductCategory() != null && product.getProductCategory().getCode() != null && codeCategory != null && product.getProductCategory().getCode().equals(codeCategory))
-						|| (product.getProductFamily() != null && product.getProductFamily().getCode() != null && codeFamily != null && product.getProductFamily().getCode().equals(codeFamily))) {
-						
-						if(codeCategory != null && codeFamily != null && product.getProductCategory() != null && product.getProductFamily() != null && product.getProductCategory().getCode() != null && product.getProductFamily().getCode() != null 
-							&& ((!product.getProductCategory().getCode().equals(codeCategory)) || (!product.getProductFamily().getCode().equals(codeFamily))))
-							continue;
-						if(inventory.getExcludeOutOfStock()) {
-							if(locationLine.getCurrentQty().compareTo(BigDecimal.ZERO) > 0) {
-								if(!inventory.getIncludeObsolete()) {
-									if((product.getEndDate() == null) || (inventory.getDateT() != null && inventory.getDateT().toLocalDate().isBefore(product.getEndDate())))
-										inventoryLineList.add(createInventoryLine(product, locationLine.getCurrentQty(), inventory, locationLine.getTrackingNumber(), locationLine.getProductVariant()));
-								}
-								else 
-									inventoryLineList.add(createInventoryLine(product, locationLine.getCurrentQty(), inventory, locationLine.getTrackingNumber(), locationLine.getProductVariant()));
-							}
-						}
-						else {
-							if(!inventory.getIncludeObsolete()) {
-								if((product.getEndDate() == null) || (inventory.getDateT() != null && inventory.getDateT().toLocalDate().isBefore(product.getEndDate())))
-									inventoryLineList.add(createInventoryLine(product, locationLine.getCurrentQty(), inventory, locationLine.getTrackingNumber(), locationLine.getProductVariant()));
-							}
-							else
-								inventoryLineList.add(createInventoryLine(product, locationLine.getCurrentQty(), inventory, locationLine.getTrackingNumber(), locationLine.getProductVariant()));
-						}
-					}
-				}
+			
+			for (LocationLine locationLine : locationLineList) {
+				InventoryLine inventoryLine = new InventoryLine();
+				inventoryLine.setProduct(locationLine.getProduct());
+				inventoryLine.setCurrentQty(locationLine.getCurrentQty());
+				inventoryLine.setInventory(inventory);
+				inventoryLine.setTrackingNumber(locationLine.getTrackingNumber());
+				inventoryLine.setProductVariant(locationLine.getProductVariant());
+				inventoryLineList.add(inventoryLine);
 			}
 			inventory.setInventoryLineList(inventoryLineList);
 			inventory.save();
-			return inventory.getInventoryLineList();
+			return inventoryLineList;
 		}
 		return null;
 	}
