@@ -5,10 +5,14 @@
 
   <module name="socialnetwork" package="com.axelor.apps.socialnetwork.db"/>
 
-  <entity name="SnPagePostRef">
-  	<string name="messageUpdateRef"/>
-  	<many-to-one name="snStatusUpdates" ref="com.axelor.apps.socialnetwork.db.SnStatusUpdates"/>
-	<many-to-one name="snPage" ref="com.axelor.apps.socialnetwork.db.SnPage"/>
+  <entity name="SnPage">
+  	<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo"/>
+  	<string name="pageRef"/>
+  	<string name="name" title="Name"/>
+  	<string name="userName"/>
+  	<many-to-many name="snProfileSet" ref="com.axelor.apps.socialnetwork.db.SnProfile"/>
+  	<string name="link" title="Link"/>
+  	<string name="pictureUrl"/>
   </entity>
  
 </domain-models>

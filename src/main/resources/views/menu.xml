@@ -61,7 +61,16 @@
 		<view type="portal" name="manufacturing.dashboard.portal" />
 	    <context name="_today" expr="eval: __date__.toDate()"/>
 	</action-view>
+	
+	<menuitem name="menu-stock-dashboard" parent="menu-dashboards"
+		title="Stock Dashboard" action="portal.stock.dashboard.view"/>	
 
+	<action-view name="portal.stock.dashboard.view" title="Stock Dashboard"
+		icon="img/icons/crm_small.png">
+		<view type="portal" name="stock.dashboard.portal" />
+	    <context name="_newDate" expr="eval: __date__.plusDays(5)"/>
+	</action-view>
+	
 	<menuitem name="contact-root" title="Companies/Contacts" priority="190"
 		icon="img/icons/partner.png" groups="admins,erp"/>
 

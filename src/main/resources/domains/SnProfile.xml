@@ -5,8 +5,8 @@
 	<module name="socialnetwork" package="com.axelor.apps.socialnetwork.db" />
 	<entity name="SnProfile">
 		<string name="snFbRef" title="Facebook User/Page ID"/>
-	    <string name="snTwtRef" title="Twitter User ID"/>
-	    <string name="snLnRef" title="LinkedIn User/Company ID"/>
+		<string name="snTwtRef" title="Twitter User ID"/>
+		<string name="snLnRef" title="LinkedIn User/Company ID"/>
 		<string name="fbUserName" title="Facebook Username"/>
 		<string name="twtUserName" title="Twitter Username"/>
 		<one-to-one name="partner" ref="com.axelor.apps.base.db.Partner"/>
@@ -26,5 +26,6 @@
 		<string name="gender" title="Gender"/>
 		<string name="lnHeadline" title="Headline"/>
 		<string name="fbLocale" title="Locale"/>
+		<many-to-many name="snPageSet" ref="com.axelor.apps.socialnetwork.db.SnPage"/>
 	</entity>
 </domain-models>

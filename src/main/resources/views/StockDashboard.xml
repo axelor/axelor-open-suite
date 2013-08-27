@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+	
+	<portal title="Dashboard" name="stock.dashboard.portal" cols="2">		
+		<portlet action="stock.dashboard.portal.upcoming.deliveries" canSearch="true" height="350" />
+		<portlet action="stock.dashboard.portal.late.deliveries" canSearch="true" height="350" />
+		<portlet action="stock.dashboard.portal.upcoming.arrivals" height="350" canSearch="true" />
+		<portlet action="stock.dashboard.portal.late.arrivals" canSearch="true" height="350" />
+		<portlet action="stock.dashboard.portal.product.out.stock.bylocation" canSearch="true" height="350" />	
+	</portal>
+
+	<action-view name="stock.dashboard.portal.upcoming.deliveries" title="Upcoming deliveries"
+		model="com.axelor.apps.supplychain.db.StockMove">
+		<view type="grid" name="stock-move-grid" />
+		<view type="form" name="stock-move-form" />
+		<domain>self.toLocation.typeSelect = 3 and (self.estimatedDate &gt;= CURRENT_DATE and self.estimatedDate &lt;= :_newDate)</domain>
+	</action-view>
+
+	<action-view name="stock.dashboard.portal.late.deliveries" title="Late deliveries"
+		model="com.axelor.apps.supplychain.db.StockMove">
+		<view type="grid" name="stock-move-grid" />
+		<view type="form" name="stock-move-form" />
+		<domain>self.toLocation.typeSelect = 3 and self.estimatedDate &lt; CURRENT_DATE</domain>
+	</action-view>
+
+	<action-view name="stock.dashboard.portal.upcoming.arrivals" title="Upcoming arrivals"
+		model="com.axelor.apps.supplychain.db.StockMove">
+		<view type="grid" name="stock-move-grid"/>
+		<view type="form" name="stock-move-form"/>
+	    <domain>self.fromLocation.typeSelect = 2 and (self.estimatedDate &gt;= CURRENT_DATE and self.estimatedDate &lt;= :_newDate)</domain>
+	</action-view>
+
+	<action-view name="stock.dashboard.portal.late.arrivals" title="Late arrivals"
+		model="com.axelor.apps.supplychain.db.StockMove">
+		<view type="grid" name="stock-move-grid" />
+		<view type="form" name="stock-move-form" />
+		<domain>self.fromLocation.typeSelect = 2 and self.estimatedDate &lt; CURRENT_DATE</domain>
+	</action-view>
+
+	<action-view name="stock.dashboard.portal.product.out.stock.bylocation" title="Product out stock"
+		model="com.axelor.apps.supplychain.db.LocationLine">
+		<view type="grid" name="location-line-grid" />
+		<view type="form" name="location-line-form" />
+		<domain>self.futureQty &lt; 0</domain>
+	</action-view>
+	
+</object-views>
