@@ -26,31 +26,38 @@
         <field name="email"/>
     </grid>
     
-    <form cols="4" colWidths="25*"   name="partner-form" title="Partner" model="com.axelor.apps.base.db.Partner"
+    <form cols="6" colWidths="25*"   name="partner-form" title="Partner" model="com.axelor.apps.base.db.Partner"
 	    onNew="action-partner-record-partner-type-select,action-partner-record-set-default" 
 	    onLoad="action-partner-attrs-change-name,action-partner-attrs-hide-tabs" 
 	    onSave="action-set-partner-seq,action-create-accounting-situation">
-	    <group colSpan="1">
-	        <field name="picture"/>
+	   <group colSpan="1" cols="1">
+	        <group colSpan="1">
+	            <field name="picture" showTitle="false"/>
+	        </group>
+	        <break/>
+	        <group colSpan="1" colWidths="33%,34%,33%">
+	            <button name="facebook" icon="img/facebook_logo.png" css="sn-buttons" onClick="action-partner-view-sn-profile" showIf="id != null"/>
+	        	<button name="linkedin" icon="img/linkedin_logo.png" css="sn-buttons" onClick="action-partner-view-sn-profile" showIf="id != null"/>
+	        	<button name="twitter" icon="img/twitter_logo.png" css="sn-buttons" onClick="action-partner-view-sn-profile" showIf="id != null"/>
+	        </group>
 	    </group>
-	    <group colSpan="3" cols="6">
-	        <field name="titleSelect" hideIf="partnerTypeSelect != 2" css="highlight"/>
-	        <field name="name" css="highlight"/>
-	        <field name="firstName" hideIf="partnerTypeSelect != 2" css="highlight"/>
+	   <group colSpan="1">
+            <field name="titleSelect" showTitle="false" hideIf="partnerTypeSelect != 2" placeholder="Civility"/>
+            <break/>
+            <field name="name" showTitle="false" css="highlight" placeholder="Name"/>
+            <break/>
+            <field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name"/>    
+        </group>
+	    <group colSpan="4" cols="6">
 	        <break/>
 	        <field name="partnerCategory" widget="SuggestBox"/>
 	        <field name="partnerTypeSelect" onChange="action-partner-attrs-change-name,action-partner-attrs-hide-tabs"/>
 	        <field name="parentPartner" hideIf="partnerTypeSelect != 1"/>
 	        <field name="isContact" hideIf="partnerTypeSelect != 2" onChange="action-partner-set-non-contact-fields,action-partner-attrs-hide-tabs"/>
 	        <field name="isCustomer"/>
-	        <field name="customerTypeSelect" hideIf="isContact || !isCustomer"/>        
+	        <field name="customerTypeSelect" hideIf="isContact || !isCustomer"/>
 	        <field name="isSupplier" hideIf="partnerTypeSelect == 2"/>
 	        <field name="supplierTypeSelect" hideIf="isContact || !isSupplier"/>
-	        <break/>
-	        <spacer colSpan="1"/>
-	        <button name="facebook" icon="img/facebook_logo.png" css="sn-buttons" onClick="action-partner-view-sn-profile" showIf="id != null"/>
-	        <button name="linkedin" icon="img/linkedin_logo.png" css="sn-buttons" onClick="action-partner-view-sn-profile" showIf="id != null"/>
-	        <button name="twitter" icon="img/twitter_logo.png" css="sn-buttons" onClick="action-partner-view-sn-profile" showIf="id != null"/>
 	    </group>
 	    <field name="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2" colSpan="4" domain="self.isContact = 'true'" grid-view="partner-contact-grid"/>
 	    <break/>
