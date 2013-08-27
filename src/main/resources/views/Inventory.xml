@@ -14,7 +14,7 @@
     	onNew="action-inventory-record-new">
 	    <field name="inventorySeq"/>
 	    <field name="statusSelect" widget="NavSelect"/>
-	    <field name="location"/>
+	    <field name="location" domain="self.typeSelect = 1 OR self.typeSelect = 2"/>
 	    <spacer/>
 	    <group title="Export" colSpan="1" showIf="statusSelect == 2 || statusSelect == 3">
 	    	<field name="formatSelect"/>
