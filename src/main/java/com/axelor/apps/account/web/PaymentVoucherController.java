@@ -132,7 +132,6 @@ public class PaymentVoucherController {
 		mapView.put("title", "Reçu saisie paiement "+paymentVoucher.getReceiptNo());
 		mapView.put("resource", url);
 		mapView.put("viewType", "html");
-		//mapView.put("_showRecord", 6);
 		response.setView(mapView);	
 	}	
 }
