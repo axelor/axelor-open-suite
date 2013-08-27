@@ -314,11 +314,13 @@ public class IrrecoverableService {
 	 * @param irrecoverable
 	 * @throws AxelorException
 	 */
-	public void passInIrrecoverable(Irrecoverable irrecoverable) throws AxelorException  {
+	public int passInIrrecoverable(Irrecoverable irrecoverable) throws AxelorException  {
 				
 		irrecoverable.setMoveSet(new HashSet<Move>());
 		
 		EntityTransaction transaction = JPA.em().getTransaction();
+		
+		int anomaly = 0;
 		
 		int i = 0;
 		if(irrecoverable.getInvoiceSet() != null && irrecoverable.getInvoiceSet().size() != 0)  {
@@ -341,8 +343,14 @@ public class IrrecoverableService {
 						JPA.clear();
 					}
 					
+				} catch (AxelorException e) {
+					anomaly++;
+					TraceBackService.trace(new AxelorException(String.format("Facture %s", invoice.getInvoiceId()), e, e.getcategory()), IException.IRRECOVERABLE, irrecoverable.getId());
+					LOG.error("Bug(Anomalie) généré(e) pour la facture : {}", invoice.getInvoiceId());	
+					
 				} catch (Exception e) {
-					TraceBackService.trace(e);
+					anomaly++;
+					TraceBackService.trace(new Exception(String.format("Facture %s", invoice.getInvoiceId()), e), IException.IRRECOVERABLE, irrecoverable.getId());
 					LOG.error("Bug(Anomalie) généré(e) pour la facture : {}", invoice.getInvoiceId());
 		
 				} finally {
@@ -372,8 +380,14 @@ public class IrrecoverableService {
 						JPA.clear();
 					}
 					
+				} catch (AxelorException e) {
+					anomaly++;
+					TraceBackService.trace(new AxelorException(String.format("Ligne d'échéancier %s", paymentScheduleLine.getName()), e, e.getcategory()), IException.IRRECOVERABLE, irrecoverable.getId());
+					LOG.error("Bug(Anomalie) généré(e) pour la ligne d'échéancier : {}", paymentScheduleLine.getName());
+					
 				} catch (Exception e) {
-					TraceBackService.trace(e);
+					anomaly++;
+					TraceBackService.trace(new Exception(String.format("Ligne d'échéancier %s", paymentScheduleLine.getName()), e), IException.IRRECOVERABLE, irrecoverable.getId());
 					LOG.error("Bug(Anomalie) généré(e) pour la ligne d'échéancier : {}", paymentScheduleLine.getName());
 		
 				} finally {
@@ -389,34 +403,8 @@ public class IrrecoverableService {
 		irrecoverable.setStatus(Status.all().filter("self.code = 'val'").fetchOne());
 		irrecoverable.save();
 		transaction.commit();
-	}
-	
-	
-	@Deprecated
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void createIrrecoverableCustomerLineMove(Irrecoverable irrecoverable, Partner payerPartner, List<Invoice> invoiceList, Set<PaymentScheduleLine> paymentScheduleLineSet) throws AxelorException  {
 		
-		this.createMoveForPaymentScheduleLineReject(irrecoverable, paymentScheduleLineSet);
-		this.createIrrecoverableInvoiceLineMove(irrecoverable, invoiceList);
-		
-	}
-	
-	@Deprecated
-	public void createMoveForPaymentScheduleLineReject(Irrecoverable irrecoverable, Set<PaymentScheduleLine> paymentScheduleLineSet) throws AxelorException  {
-		for(PaymentScheduleLine paymentScheduleLine : paymentScheduleLineSet)  {
-			
-			this.createMoveForPaymentScheduleLineReject(irrecoverable, paymentScheduleLine);
-			
-		}
-	}
-	
-	@Deprecated
-	public void createIrrecoverableInvoiceLineMove(Irrecoverable irrecoverable, List<Invoice> invoiceList) throws AxelorException  {
-		for(Invoice invoice : invoiceList)  {
-			
-			this.createIrrecoverableInvoiceLineMove(irrecoverable, invoice);
-			
-		}
+		return anomaly;
 	}
 	
 	

@@ -34,6 +34,7 @@
     	<group title="Irrecoverable Execution" colSpan="4" cols="4">
         	<group title="Action" colSpan="4" cols="4">
             	<button name="passInIrrecoverable" title="Shift to irrecoverable" colSpan="2" onClick="save,com.axelor.apps.account.web.IrrecoverableController:passInIrrecoverable,action-irrecoverable-attrs-hidden"/>
+            	<button name="showTraceBack" title="Anomalies" onClick="save,action-irrecoverable-show-trace-back" colSpan="2"/>
             	<field name="status"/>
         	</group>
         	<field name="moveSet" colSpan="4" showIf="status.code != 'dra'"/>
@@ -43,6 +44,7 @@
     <action-attrs name="action-irrecoverable-attrs-hidden">
     	<attribute name="hidden" for="getIrrecoverable" expr="eval: status?.code == 'val'"/>
     	<attribute name="hidden" for="passInIrrecoverable" expr="eval: status?.code == 'val'"/>
+    	<attribute name="hidden" for="showTraceBack" expr="eval: status?.code != 'val'"/>
     </action-attrs>
 	
 	<action-record name="action-record-irrecoverable-default-record" model="com.axelor.apps.account.db.Irrecoverable">
@@ -51,5 +53,12 @@
         <field name="status" expr="action:action-status-record-dra"/>
    		<field name="company"   expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
 	</action-record>
+	
+	<action-view name="action-irrecoverable-show-trace-back" title="Les anomalies"	model="com.axelor.exception.db.TraceBack">
+		<view type="grid" />
+		<view type="form" />
+		<domain>self.batchId = :id and self.origin = 'irrecoverable'</domain>
+		<context name="id" expr="eval: id"/>
+	</action-view>
 	
 </object-views>

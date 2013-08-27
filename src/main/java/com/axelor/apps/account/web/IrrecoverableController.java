@@ -51,8 +51,11 @@ public class IrrecoverableController {
 		irrecoverable = Irrecoverable.find(irrecoverable.getId());
 
 		try {
-			is.passInIrrecoverable(irrecoverable);
+			int anomaly = is.passInIrrecoverable(irrecoverable);
+			
 			response.setReload(true);
+			
+			response.setFlash("Traitement terminé - "+anomaly+" anomalies générées");
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
