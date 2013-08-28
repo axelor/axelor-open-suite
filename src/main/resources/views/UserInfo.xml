@@ -36,7 +36,7 @@
         	<page title="Projects">
         		<field name="projectSet" showTitle="false" colSpan="4"/>
         	</page>
-        	<page title="Social Network" colSpan="4" cols="2">
+        	<page title="Social Network" colSpan="4" cols="2" colWidths="50%,50%">
         		<field name="fbPersonalCredential" grid-view="fb-credential-grid" form-view="fb-credential-form"/>
         		<field name="twtPersonalCredential" grid-view="twt-credential-grid" form-view="twt-credential-form"/>
         		<field name="lnPersonalCredential" grid-view="ln-credential-grid" form-view="ln-credential-form"/>
