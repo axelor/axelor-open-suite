@@ -11,14 +11,13 @@ public class CurrencyConversionLineController {
 		CurrencyConversionLine ccl = request.getContext().asType(CurrencyConversionLine.class);
 		
 		if (CurrencyConversionLine.all().filter("self.startCurrency = ?1 and self.endCurrency = ?2 and self.toDate = null",ccl.getStartCurrency(),ccl.getEndCurrency()).count() > 0) {
-			String msg = "Last conversion rate period has not been closed";
+			String msg = "WARNING : Last conversion rate period has not been closed";
 			response.setFlash(msg);
 			response.setValue("fromDate", "");		
 		}
 		else if (CurrencyConversionLine.all().filter("self.startCurrency = ?1 and self.endCurrency = ?2 and self.toDate >= ?3",ccl.getStartCurrency(),ccl.getEndCurrency(),ccl.getFromDate()).count() > 0) {
-			String msg = "Last conversion rate period has not ended";
+			String msg = "WARNING : Last conversion rate period has not ended";
 			response.setFlash(msg);
-			response.setValue("fromDate", "");
 		}
 	}
 }

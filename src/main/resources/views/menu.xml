@@ -51,6 +51,7 @@
 	<action-view name="portal.human.resources.dashboard.view" title="Human Resources Dashboard"
 		icon="img/icons/crm_small.png">
 		<view type="portal" name="human.resources.dashboard.portal" />
+		<context name="_user_id" expr="eval:__user__.id"/>
 	</action-view>
 	
 	<menuitem name="menu-manufacturing-dashboard" parent="menu-dashboards"

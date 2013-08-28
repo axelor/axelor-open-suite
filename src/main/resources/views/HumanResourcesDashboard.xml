@@ -7,8 +7,13 @@
 		<portlet action="human.resources.dashboard.portal.upcoming.holidays" height="350" canSearch="true" />
 		<portlet action="human.resources.dashboard.portal.candidates" canSearch="true" height="350" />
 		<portlet action="human.resources.dashboard.portal.timesheets" canSearch="true" height="350" />
+		<portlet action="human.resources.dashboard.portal.my.timesheets" canSearch="true" height="350" />
 		<portlet action="human.resources.dashboard.portal.travel.expenses" canSearch="true" height="350" />
+		<portlet action="human.resources.dashboard.portal.my.travel.expenses" canSearch="true" height="350" />
 		<portlet action="human.resources.dashboard.portal.overtimes" canSearch="true" height="350" />
+		<portlet action="human.resources.dashboard.portal.my.overtimes" canSearch="true" height="350" />
+		<portlet action="human.resources.dashboard.portal.leaverequest" canSearch="true" height="350" />
+		<portlet action="human.resources.dashboard.portal.my.leaverequest" canSearch="true" height="350" />
 	</portal>
 
 	<action-view name="human.resources.dashboard.portal.upcoming.holidays" title="All Upcoming Holidays"
@@ -42,6 +47,39 @@
 		<view type="grid" name="overtime-grid" />
 		<view type="form" name="overtime-form" />
 	</action-view>
+	
+	<action-view name="human.resources.dashboard.portal.leaverequest" title="All leave requests"
+		model="com.axelor.apps.organisation.db.LeaveRequest">
+		<view type="grid" name="leave-request-grid" />
+		<view type="form" name="leave-request-form" />
+	</action-view>
 
+	<action-view name="human.resources.dashboard.portal.my.timesheets" title="My Timesheets"
+		model="com.axelor.apps.organisation.db.Timesheet">
+		<view type="grid" name="timesheet-grid" />
+		<view type="form" name="timesheet-form" />
+		<domain>self.userInfo.internalUser.id = :_user_id</domain>
+	</action-view>
 
+	<action-view name="human.resources.dashboard.portal.my.travel.expenses" title="My Travel Expenses"
+		model="com.axelor.apps.organisation.db.Expense">
+		<view type="grid" name="expense-grid" />
+		<view type="form" name="expense-form" />
+		<domain>self.userInfo.internalUser.id = :_user_id</domain>
+	</action-view>
+
+	<action-view name="human.resources.dashboard.portal.my.overtimes" title="My Overtimes"
+		model="com.axelor.apps.organisation.db.Overtime">
+		<view type="grid" name="overtime-grid" />
+		<view type="form" name="overtime-form" />
+		<domain>self.userInfo.internalUser.id = :_user_id</domain>
+	</action-view>
+	
+	<action-view name="human.resources.dashboard.portal.my.leaverequest" title="My leave requests"
+		model="com.axelor.apps.organisation.db.LeaveRequest">
+		<view type="grid" name="leave-request-grid" />
+		<view type="form" name="leave-request-form" />
+		<domain>self.employeeUserInfo.internalUser.id = :_user_id</domain>
+	</action-view>
+	
 </object-views>
