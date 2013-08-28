@@ -129,7 +129,7 @@
 		<option value="2">Outgoing</option>
 	</selection>
 	
-	<selection name="crm.event.secondary.status.select">
+	<selection name="crm.event.status.select">
 		<option value="1">Planified</option>
 		<option value="2">Realized</option>
 		<option value="3">Canceled</option>
