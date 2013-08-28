@@ -372,14 +372,14 @@
 	 <action-view name="action-partner-view-partner-event" title="Events" model="com.axelor.apps.crm.db.Event">
 		<view type="grid" name="event-grid"/>
 		<view type="form"/>
-		<domain>self.relatedToSelect = 'com.axelor.apps.base.db.Partner' AND self.relatedToSelectId = :id</domain>
+		<domain>self.project.clientPartner.id = :id</domain>
 		<context name="id" expr="eval: id"/>
 	</action-view>
 	
 	<action-view name="action-partner-view-partner-opportunities" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="opportunity-grid"/>
 		<view type="form" name="opportunity-form"/>
-		<domain>self.relatedToSelect = 'com.axelor.apps.base.db.Partner' AND self.relatedToSelectId = :id</domain>
+		<domain>self.partner.id = :id</domain>
 		<context name="id" expr="eval: id"/>
 	</action-view>
 	
