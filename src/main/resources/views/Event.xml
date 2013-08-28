@@ -120,6 +120,7 @@
         <group title="Informations" cols="4" colSpan="1">
         	<field name="subject"/>
 	        <field name="statusSelect"/>
+	        <field name="meetingType"/>
 	        <spacer/><break/>
 	        <group title="Meeting dates" colSpan="4" cols="4" colWidths="25*" css="groupTitle">
 		        <field name="startDateTime" onChange="action-meeting-method-compute-start-date-time"/>
