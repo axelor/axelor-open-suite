@@ -6,6 +6,12 @@
   <module name="socialnetwork" package="com.axelor.apps.socialnetwork.db"/>
 
   <entity name="SnPagePostRef">
+  	<![CDATA[
+    This class indicates for a Facebook status the page on which it has been posted 
+    and the id of the status on this page
+ 	For a status update on multiple pages, there will be a list of this entity
+    @author David Nguyen
+    ]]>
   	<string name="messageUpdateRef"/>
   	<many-to-one name="snStatusUpdates" ref="com.axelor.apps.socialnetwork.db.SnStatusUpdates"/>
 	<many-to-one name="snPage" ref="com.axelor.apps.socialnetwork.db.SnPage"/>

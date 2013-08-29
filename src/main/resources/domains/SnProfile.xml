@@ -4,6 +4,11 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
 	<module name="socialnetwork" package="com.axelor.apps.socialnetwork.db" />
 	<entity name="SnProfile">
+		<![CDATA[
+	    This class represents all 3 social networks profiles
+	 	It contains data that we could get from them
+	    @author David Nguyen
+	    ]]>
 		<string name="snFbRef" title="Facebook User/Page ID"/>
 		<string name="snTwtRef" title="Twitter User ID"/>
 		<string name="snLnRef" title="LinkedIn User/Company ID"/>

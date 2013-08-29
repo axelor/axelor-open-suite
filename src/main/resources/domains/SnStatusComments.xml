@@ -6,6 +6,13 @@
 	<module name="socialnetwork" package="com.axelor.apps.socialnetwork.db" />
 
 	<entity name="SnStatusComments">
+		<![CDATA[
+	    This class represents a comment/status post on a social network
+	 	This object is used in a trail view.
+	 	parentSnStatusComments is the status post
+	 	childrenSnStatusCommentsList are the comments on the status
+	    @author David Nguyen
+	    ]]>
 		<many-to-one name="snStatusUpdates" ref="com.axelor.apps.socialnetwork.db.SnStatusUpdates" orphan="true" title="Post"/>
 		<many-to-one name="parentSnStatusComments" ref="com.axelor.apps.socialnetwork.db.SnStatusComments" orphan="true" title="Parent Comment"/>
 		<one-to-many name="childrenSnStatusCommentsList" ref="com.axelor.apps.socialnetwork.db.SnStatusComments" mappedBy="parentSnStatusComments"/>

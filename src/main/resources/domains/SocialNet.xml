@@ -4,6 +4,15 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
 	<module name="socialnetwork" package="com.axelor.apps.socialnetwork.db" />
 	<entity name="SocialNet">
+		<![CDATA[
+	    This class references the social networks.
+	    It indicates their name and website.
+	    
+	    For example :
+	    name : facebook
+	    website : www.facebook.com
+	    @author David Nguyen
+	    ]]>
 		<string name="name" title="Name" help="Name of Social Networking"/>
 		<string name="website" title="Website" help="Website for Social Networking"/>
 	</entity>

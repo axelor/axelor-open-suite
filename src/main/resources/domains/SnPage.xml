@@ -6,6 +6,12 @@
   <module name="socialnetwork" package="com.axelor.apps.socialnetwork.db"/>
 
   <entity name="SnPage">
+  	<![CDATA[
+    This class represents a page on Facebook
+ 	A user can have many pages and a page can be related to multiple user
+ 	so there is a many2many relation with SnProfile
+    @author David Nguyen
+    ]]>
   	<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo"/>
   	<string name="pageRef"/>
   	<string name="name" title="Name"/>
