@@ -372,7 +372,7 @@
 	 <action-view name="action-partner-view-partner-event" title="Events" model="com.axelor.apps.crm.db.Event">
 		<view type="grid" name="event-grid"/>
 		<view type="form"/>
-		<domain>self.project.clientPartner.id = :id</domain>
+		<domain>self.project.clientPartner.id = :id or self.project.contactPartner.id = :id or self.taskPartner.id = :id</domain>
 		<context name="id" expr="eval: id"/>
 	</action-view>
 	

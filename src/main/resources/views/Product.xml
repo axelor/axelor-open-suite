@@ -38,7 +38,7 @@
 	        <field name="invoiceLineType"/>
 	        <group showTitle="false" colSpan="6">
 		        <field name="startDate"/>
-		        <field name="endDate"/>
+		        <field name="endDate" onChange="action-product-validate-end-date,action-product-method-reset-end-date"/>
 	        </group>
 	    </group>
         <group title="Description" colSpan="1" cols="1">
@@ -111,6 +111,14 @@
 		<call class="com.axelor.apps.base.web.ProductControllerSimple" method="printProductCatelog"/>
 	</action-method>
     
+    <action-validate name="action-product-validate-end-date">
+    	<alert message="The product pulled-off date must be greater than the launch date." if="endDate &lt; startDate"/>
+    </action-validate>
+    
+    <action-record name="action-product-method-reset-end-date" model="com.axelor.apps.base.db.Product">
+    	<field name="endDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="endDate &lt; startDate"/>
+    </action-record>
+	
     <search-filters name="products-filters" model="com.axelor.apps.base.db.Product" title="Products filters">
 		<filter title="Current Products">
 			<domain>self.endDate IS NULL or CURRENT_DATE &lt; self.endDate</domain>
