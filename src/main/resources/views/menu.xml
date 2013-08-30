@@ -16,6 +16,15 @@
 		<view type="grid" name="employee-grid" />
 		<view type="form" name="employee-form" />
 		<view-param name="search-filters" value="employee-filters"/>
+	</action-view>
+	
+	<menuitem name="hr-root-mission-order" parent="hr-root"
+		title="Mission order" action="hr.root.mission.order" />
+
+	<action-view name="hr.root.mission.order" title="Mission order"
+		model="com.axelor.apps.organisation.db.MissionOrder" icon="img/icons/organisation_small.png">
+		<view type="grid" name="mission-order-grid" />
+		<view type="form" name="mission-order-form" />
 	</action-view>	
 	
 	<menuitem name="hr-root-recruitment" title="Recruitment" parent="hr-root"/>

@@ -6,6 +6,11 @@
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
 	
+	<selection name="organisation.mission.order.date.type.select">
+		<option value="1">Included</option>
+		<option value="2">Excluded</option>
+	</selection>
+	
 	<selection name="organisation.timesheet.time.unit.select">
 		<option value="1">Day</option>
 		<option value="2">Hour</option>
