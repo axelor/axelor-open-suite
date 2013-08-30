@@ -20,7 +20,7 @@
         	<field name="date"/>
         	<break/>
         	<field name="company"/>
-        	<field name="affair"/>
+        	<field name="affair" domain="self.isAffair = true" grid-view="affair-grid" form-view="affair-form"/>
        		<field name="employee"/>
         	<field name="qualificationKeyword" colSpan="2" domain="self.typeSelect = '3'" form-view="keyword-profession-form" grid-view="keyword-profession-grid"/>
         	<group title="Mission information" colSpan="6" cols="6">
