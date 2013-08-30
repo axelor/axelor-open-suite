@@ -10,9 +10,11 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.AxelorSettings;
 import com.axelor.apps.base.db.IAdministration;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.supplychain.db.Inventory;
 import com.axelor.apps.supplychain.db.InventoryLine;
+import com.axelor.apps.supplychain.db.Location;
 import com.axelor.apps.supplychain.service.InventoryService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.db.User;
@@ -106,4 +108,23 @@ public class InventoryController {
 			}
 		}
 	}
+	
+	
+	public void setInventorySequence(ActionRequest request, ActionResponse response) throws AxelorException {
+		
+		Inventory inventory = request.getContext().asType(Inventory.class);
+		
+		if(inventory.getInventorySeq() ==  null) {
+			
+			Location location = inventory.getLocation();
+			
+			String ref = sequenceService.getSequence(IAdministration.INVENTORY, location.getCompany(),false);
+			if (ref == null)  
+				throw new AxelorException("Aucune séquence configurée pour les inventaires pour la société "+location.getCompany().getName(),
+						IException.CONFIGURATION_ERROR);
+			else
+				response.setValue("inventorySeq", ref);
+		}
+	}
 }
+  

@@ -11,7 +11,7 @@
     </grid>
     
     <form name="inventory-form" title="Inventory" model="com.axelor.apps.supplychain.db.Inventory" cols="4"
-    	onNew="action-inventory-record-new">
+    	onNew="action-inventory-record-new" onSave="action-set-inventory-seq">
 	    <field name="inventorySeq"/>
 	    <field name="statusSelect" widget="NavSelect"/>
 	    <field name="location" domain="self.typeSelect = 1 OR self.typeSelect = 2"/>
@@ -80,6 +80,10 @@
         
     <action-method name="action-inventory-method-fill-inventory">
 		<call class="com.axelor.apps.supplychain.web.InventoryController" method="fillInventoryLineList"/>
+	</action-method>
+	
+	<action-method name="action-set-inventory-seq" >
+		<call class="com.axelor.apps.supplychain.web.InventoryController" method="setInventorySequence"/>
 	</action-method>
 	
     <search-filters name="inventories-filters" model="com.axelor.apps.supplychain.db.Inventory" title="Inventories filters">
