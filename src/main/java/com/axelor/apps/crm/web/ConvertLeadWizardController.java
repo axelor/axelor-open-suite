@@ -1,5 +1,7 @@
 package com.axelor.apps.crm.web;
 
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,8 +27,9 @@ public class ConvertLeadWizardController {
 		
 		Context context = request.getContext();
 		
-		Lead leadContext = (Lead) context.get("_lead");
-		Lead lead = Lead.find(leadContext.getId());
+		Map<String, Object> leadContext = (Map<String, Object>) context.get("_lead");
+		
+		Lead lead = Lead.find(((Integer)leadContext.get("id")).longValue());
 		
 		Partner partner = null;
 		Partner contactPartner = null;

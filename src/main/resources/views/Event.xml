@@ -71,7 +71,7 @@
     </grid>
     
     <form name="call-form" title="Call" model="com.axelor.apps.crm.db.Event" cols="2" colWidths="*,400"
-    	onNew="action-event-new-record">
+    	onNew="action-event-new-record,action-event-record-call-default-duration">
         <group title="Informations" cols="4" colSpan="1">
         	<field name="subject" colSpan="2"/>
 	        <field name="callStatusSelect" colSpan="2"/>
@@ -220,7 +220,7 @@
 		        <field name="durationHours"/>
 	        </group>
 	        <group title="Related to" colSpan="2" cols="2"  colWidths="40%,60%">
-	        	<field name="project"/>
+	        	<field name="project" required="true"/>
 	        	<field name="task"/>
 	        	<field name="isTimesheetAffected"/>
 	        </group>
@@ -253,7 +253,7 @@
         		</field>
         	</page>
         	<page title="Watchers">
-        		<field name="userInfoSet" showTitle="false" colSpan="6"/>
+        		<field name="userInfoSet" widget="TagSelect" showTitle="false" colSpan="6"/>
         	</page>
         </notebook>
     </form>
@@ -305,6 +305,10 @@
     	<field name="quaternaryStatusSelect" expr="1"/>
 <!--     	<field name="ticketNumberSeq" expr="eval: com.axelor.apps.crm.db.Event.all().filter('self.typeSelect = 5').count() + 1"/> -->
     	<field name="prioritySelect" expr="eval: _prioritySelect"/>
+    </action-record>
+    
+    <action-record name="action-event-record-call-default-duration" model="com.axelor.apps.crm.db.Event">
+    	<field name="durationHours" expr="1"/>
     </action-record>
     
     <action-group name="action-event-new-record">
