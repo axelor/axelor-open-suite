@@ -10,22 +10,18 @@
 	    <field name="geographicalArea"/>
 	</grid>
 	
-    <form name="site-form" title="Site" model="com.axelor.apps.consulting.db.Site" cols="4" >
-		<field name="name"/>
+    <form cols="4" name="site-form" title="Site" model="com.axelor.apps.consulting.db.Site">
+	    <field name="name"/>
 	    <field name="partner" domain="self.isContact = false"/>
-	    <field name="siretNumber"/>
 	    <field name="address"/>
+	    <field name="siretNumber"/>
+	    <separator title="Sales attributes" colSpan="4"/>
 	    <field name="commercialLevelSelect"/>
 	    <field name="geographicalArea"/>
-	    <break/>
-		<notebook colSpan="2" title="Notebook keywords">
-			<page title="Tool Keywords">
-				<field name="toolKeyWordSet" domain="self.typeSelect = '1'" grid-view="keyword-tool-grid" form-view="keyword-tool-form" />
-			</page>
-			<page title="Sector Keywords">
-				<field name="sectorKeyWordSet" domain="self.typeSelect = '2'" grid-view="keyword-area-grid" form-view="keyword-area-form"/>
-			</page>
-		</notebook>
-    </form>
+	    <group title="Keywords" colSpan="4">
+	        <field name="toolKeyWordSet" colSpan="2" domain="self.typeSelect = '1'" form-view="keyword-tool-form" grid-view="keyword-tool-grid" widget="TagSelect[create=name]"/>
+	        <field name="sectorKeyWordSet" colSpan="2" domain="self.typeSelect = '2'" form-view="keyword-area-form" grid-view="keyword-area-grid" widget="TagSelect[create=name]"/>
+	    </group>
+	</form>
 	
 </object-views>
