@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.wizard.ConvertWizardService;
 import com.axelor.apps.crm.db.Event;
+import com.axelor.apps.crm.db.IEvent;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
@@ -75,6 +76,12 @@ public class ConvertLeadWizardService {
 		event = (Event) convertWizardService.createObject(context, event, mapper);
 		
 		event.setTypeSelect(type);
+		if(type == IEvent.CALL || type == IEvent.MEETING)  {
+			event.setStatusSelect(1);
+		}
+		else if (type == IEvent.TASK)  {
+			event.setTaskStatusSelect(1);
+		}
 		
 		return event;
 	}

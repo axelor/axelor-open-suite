@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.crm.db.Event;
+import com.axelor.apps.crm.db.IEvent;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.service.ConvertLeadWizardService;
@@ -61,13 +62,13 @@ public class ConvertLeadWizardController {
 			opportunity = convertLeadWizardService.createOpportunity((Map<String, Object>) context.get("opportunity"));
 		}
 		if(context.get("hasConvertIntoCall") != null && (Boolean) context.get("hasConvertIntoCall")) {
-			callEvent = convertLeadWizardService.createEvent((Map<String, Object>) context.get("callEvent"), 1);
+			callEvent = convertLeadWizardService.createEvent((Map<String, Object>) context.get("callEvent"), IEvent.CALL);
 		}
 		if(context.get("hasConvertIntoMeeting") != null && (Boolean) context.get("hasConvertIntoMeeting")) {
-			meetingEvent = convertLeadWizardService.createEvent((Map<String, Object>) context.get("meetingEvent"), 2);
+			meetingEvent = convertLeadWizardService.createEvent((Map<String, Object>) context.get("meetingEvent"), IEvent.MEETING);
 		}
 		if(context.get("hasConvertIntoTask") != null && (Boolean) context.get("hasConvertIntoTask")) {
-			taskEvent = convertLeadWizardService.createEvent((Map<String, Object>)context.get("taskEvent"), 3);
+			taskEvent = convertLeadWizardService.createEvent((Map<String, Object>)context.get("taskEvent"), IEvent.TASK);
 		}
 		
 		leadService.convertLead(lead, partner, contactPartner, opportunity, callEvent, meetingEvent, taskEvent);

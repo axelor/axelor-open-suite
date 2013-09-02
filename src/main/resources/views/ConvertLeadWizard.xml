@@ -309,6 +309,7 @@
 	<form name="meeting-lead-converted-form" title="Meeting" model="com.axelor.apps.crm.db.Event" cols="4" onNew="action-event-new-record">
         <group title="Informations" cols="4" colSpan="4">
         	<field name="subject" colSpan="4"/>
+        	<field name="meetingType"/>
 	        <spacer/><break/>
 	        <group title="Meeting date" colSpan="4" cols="5" css="groupTitle">
 	        	<field name="startDateTime" colSpan="2"/>
