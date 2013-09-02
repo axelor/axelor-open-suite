@@ -7,14 +7,22 @@
         <field name="name"/>
     </grid>
     
-    <form name="calendar-form" title="Calendar" cols="4" model="com.axelor.apps.crm.db.Calendar">
-    	<field name="title"/>
-        <field name="url"/>
-        <field name="typeSelect"/>
-        <field name="isSslConnection"/>
-        <field name="port"/>
-        <field name="login"/>
-        <field name="password" widget="password"/>
+    <form cols="4" name="calendar-form" title="Calendar" model="com.axelor.apps.crm.db.Calendar">
+	    <field name="title"/>
+	    <break/>
+	    <group title="Connection settings" colSpan="4">
+	        <field name="url"/>
+	        <field name="typeSelect"/>
+	        <field name="isSslConnection"/>
+	        <field name="port"/>
+	    </group>
+	    <break/>
+	    <separator title="Credentials" colSpan="4"/>
+	    <break/>
+	    <group colSpan="4">
+	        <field name="login"/>
+	        <field name="password" widget="password"/>
+	    </group>
 	</form>
     
    	 

@@ -83,19 +83,19 @@
 	                <field name="source"/>
 	            </group>
 	            <group title="Postal addresses" colSpan="3" cols="4">
-	                <group title="Primary address" colSpan="2" cols="2">
-			    		<field name="primaryAddress"/>
-			    		<field name="primaryCity"/>
-			    		<field name="primaryState"/>
-			    		<field name="primaryPostalCode"/>
-			    		<field name="primaryCountry"/>
+	                <group title="Invoicing address" colSpan="2" cols="2">
+			    		<field name="primaryAddress" widget="STRING[type=STRING]" title="Address"/>
+			    		<field name="primaryCity" title="City"/>
+			    		<field name="primaryState" title="State"/>
+			    		<field name="primaryPostalCode" title="Postal code"/>
+			    		<field name="primaryCountry" widget="MANY_TO_ONE[target=com.axelor.apps.base.db.Country|targetName=name]" title="Country"/>
 			    	</group>
-			    	<group title="Other address" colSpan="2" cols="2">
-			    		<field name="otherAddress"/>
-			    		<field name="otherCity"/>
-			    		<field name="otherState"/>
-			    		<field name="otherPostalCode"/>
-			    		<field name="otherCountry"/>
+			    	<group title="Delivery address" colSpan="2" cols="2">
+			    		<field name="otherAddress" title="Address"/>
+			    		<field name="otherCity" title="City"/>
+			    		<field name="otherState" title="State"/>
+			    		<field name="otherPostalCode" title="Postal code"/>
+			    		<field name="otherCountry" widget="MANY_TO_ONE[target=com.axelor.apps.base.db.Country|targetName=name]" title="Country"/>
 			    	</group>
 	            </group>
 	            <group title="Contact" colSpan="3" cols="4">
@@ -149,14 +149,14 @@
 			    		<field name="primaryCity" title="City"/>
 			    		<field name="primaryState" title="State"/>
 			    		<field name="primaryPostalCode" title="Postal code"/>
-			    		<field name="primaryCountry" title="Country"/>
+			    		<field name="primaryCountry" widget="MANY_TO_ONE[target=com.axelor.apps.base.db.Country|targetName=name]" title="Country"/>
 			    	</group>
 			    	<group title="Delivery address" colSpan="2" cols="2">
 			    		<field name="otherAddress" title="Address"/>
 			    		<field name="otherCity" title="City"/>
 			    		<field name="otherState" title="State"/>
 			    		<field name="otherPostalCode" title="Postal code"/>
-			    		<field name="otherCountry" title="Country"/>
+			    		<field name="otherCountry" widget="MANY_TO_ONE[target=com.axelor.apps.base.db.Country|targetName=name]" title="Country"/>
 			    	</group>
 	            </group>
 	            <group title="Contact" colSpan="3" cols="4">
