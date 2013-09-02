@@ -10,22 +10,39 @@
 	    <field name="iban"/>
     </grid>
     
-    <form name="bank-details-form" title="Bank details" model="com.axelor.apps.base.db.BankDetails" cols="4">
-        <group colSpan="4" cols="6" >
-            <field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form"/>
-            <field name="ownerName"/>
-            <field name="bankAddress"/>
-        </group>
-        <field name="bic"/>
-        <field name="iban" onChange="save,action-method_bank-details-validIban,save"/>
-        <field name="countryCode"/>
-        <break/>
-        <field name="bankCode"/>
-        <field name="sortCode"/>
-        <field name="accountNbr"/>
-        <field name="bbanKey"/>
-        <field name="ibanBic" colSpan="4"/>
-    </form>
+    <form cols="4" name="bank-details-form" title="Bank details" model="com.axelor.apps.base.db.BankDetails">
+	    <group title="Owner" colSpan="2" cols="4">
+	        <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+	        <break/>
+	        <field name="ownerName"/>
+	    </group>
+	    <group title="Bank" colSpan="2" cols="4">
+	        <field name="countryCode"/>
+	        <break/>
+	        <field name="bankAddress"/>
+	    </group>    
+	    <group title="RIB" colSpan="3" cols="6">
+	        <separator title="Bank"/>
+	        <separator title="Sort Code"/>
+	        <separator title="Account Nbr"/>
+	        <separator title="Key"/>
+	        <break/>
+	        <field name="bankCode" showTitle="false"/>
+	        <field name="sortCode" showTitle="false"/>
+	        <field name="accountNbr" showTitle="false"/>
+	        <field name="bbanKey" showTitle="false"/>
+	    </group>
+	    <group title="IBAN" colSpan="3" cols="6">
+	        <separator title="IBAN (International Bank Account Identifier)" colSpan="3"/>
+	        <separator title="BIC (Bank Identifier Code)" colSpan="2"/>
+	        <break/>
+	        <field name="iban" onChange="save,action-method_bank-details-validIban,save" colSpan="3" showTitle="false"/>
+	        <field name="bic" showTitle="false" colSpan="2"/>
+	        <break/>
+	        <separator title="IBAN + BIC" colSpan="4"/>
+	        <field name="ibanBic" colSpan="4" readonly="true" showTitle="false"/>
+	    </group>
+	</form>
     
     <action-method name="action-method_bank-details-validIban">
     	<call class="com.axelor.apps.base.web.BankDetailsController" method="onChangeIban"/>
