@@ -34,10 +34,11 @@
 	        <field name="eventStatusSelect" colSpan="2"/>
 	        <spacer/><break/>
 	        <group title="Event dates" colSpan="4" cols="4" colWidths="25*" css="groupTitle">
+	        <label title="Duration" colSpan="1"/>
 		        <field name="startDateTime" onChange="action-meeting-method-compute-start-date-time"/>
 		        <field name="endDateTime" onChange="action-meeting-method-compute-end-date-time"/>
-		        <field name="durationHours" onChange="action-meeting-method-compute-duration"/>
-		        <field name="durationMinutesSelect" showTitle="false" colSpan="1"/>
+		        <field name="durationHours" placeholder="Hours" onChange="action-meeting-method-compute-duration"/>
+		        <field name="durationMinutesSelect" showTitle="false" placeholder="Minutes" colSpan="1"/>
 	        </group>
 	        <spacer/><break/>
 	        <field name="description" widget="TEXT[height=4]" colSpan="4"/>
@@ -79,8 +80,8 @@
 	        <spacer/><break/>
 	        <group title="Call date" colSpan="4" cols="3" css="groupTitle">
 	        	<field name="startDateTime" colSpan="2"/>
-	         	<field name="durationHours" colSpan="2"/>
-		        <field name="durationMinutesSelect" showTitle="false" colSpan="1"/>
+	         	<field name="durationHours" placeholder="Hours" colSpan="2"/>
+		        <field name="durationMinutesSelect" showTitle="false" placeholder="Minutes" colSpan="1"/>
 	        </group>
 	        <spacer/><break/>
 	        <field name="description" widget="TEXT[height=4]" colSpan="4"/>
@@ -115,36 +116,53 @@
         <field name="reminder"/>
     </grid>
     
-    <form name="meeting-form" title="Meeting" model="com.axelor.apps.crm.db.Event" cols="2" colWidths="*,400" 
-    	onNew="action-event-new-record">
-        <group title="Informations" cols="4" colSpan="1">
-        	<field name="subject"/>
+    <form name="meeting-form" title="Meeting" model="com.axelor.apps.crm.db.Event" cols="2" colWidths="*,400"  
+    onNew="action-event-new-record">
+	    <field name="subject" showTitle="false" css="highlight" placeholder="Subject" colSpan="4"/>
+	    <group title="Informations" colSpan="2" cols="4">
 	        <field name="statusSelect"/>
 	        <field name="meetingType"/>
-	        <spacer/><break/>
-	        <group title="Meeting dates" colSpan="4" cols="4" colWidths="25*" css="groupTitle">
-		        <field name="startDateTime" onChange="action-meeting-method-compute-start-date-time"/>
-		        <field name="endDateTime" onChange="action-meeting-method-compute-end-date-time"/>
-		        <field name="durationHours" onChange="action-meeting-method-compute-duration"/>
-		        <field name="durationMinutesSelect" showTitle="false" colSpan="1"/>
+	        <spacer/>
+	        <break/>
+	        <group title="Meeting dates" colSpan="2" css="groupTitle" cols="2" colWidths="50%,50%">
+	            <group colSpan="1" cols="2">
+	            	<separator title="Start/End dates" colSpan="2"/>
+	            	<field name="startDateTime" onChange="action-meeting-method-compute-start-date-time"/>
+	            	<field name="endDateTime" onChange="action-meeting-method-compute-end-date-time"/>
+	            </group>
+	            <group colSpan="1" cols="3">
+	            	<separator title="Duration" colSpan="3"/>
+	                <field name="durationHours" showTitle="false" onChange="action-meeting-method-compute-duration" colSpan="1" />
+	                <label title=":" colSpan="1"/>
+	                <field name="durationMinutesSelect" showTitle="false" colSpan="1"/>
+	            </group>
 	        </group>
-	       	<spacer/><break/>
+	        <group title="Reminders" colSpan="2" cols="2">
+	        	<field name="eventReminderList" colSpan="2" showTitle="false"/>
+	        </group>
+	        <spacer/>
+	        <break/>
 	        <field name="location"/>
-	        <field name="reminder"/>
-	        <field name="description" widget="TEXT[height=4]" colSpan="4"/>
-        </group>
-        <group title="Related to" colSpan="1" cols="2">
+	        <field name="description" colSpan="4" widget="TEXT[height=4]"/>
+	    </group>
+	    <group title="Related to" colSpan="2" cols="2">
 	        <field name="relatedToSelect" widget="RefSelect[related=relatedToSelectId]"/>
-        </group>
-        <group title="Assigned to" cols="4" colSpan="2" canCollapse="true">
+	    </group>
+	    <group title="Assigned to" colSpan="2" cols="4" canCollapse="true">
 	        <field name="userInfo"/>
-	    	<field name="team" readonlyIf="!userInfo" onSelect="action-event-attrs-team-domain"/>
-        </group>
-        <group title="Attendees" cols="4" colSpan="2" canCollapse="true">
-        	<field name="contactEventAttendeeList" grid-view="event-attendee-contact-grid" form-view="event-attendee-contact-form" colSpan="4"/>
-        	<field name="leadEventAttendeeList" grid-view="event-attendee-lead-grid" form-view="event-attendee-lead-form" colSpan="4"/>
-        </group>
-    </form>
+	        <field name="team" readonlyIf="!userInfo" onSelect="action-event-attrs-team-domain"/>
+	    </group>
+	    <group title="Attendees" colSpan="2" cols="4" canCollapse="true">
+	    	<group colSpan="2" cols="4">
+	    		<separator title="Contacts" colSpan="4"/>
+	    	 	<field name="contactEventAttendeeList" colSpan="4" form-view="event-attendee-contact-form" grid-view="event-attendee-contact-grid" showTitle="false"/>
+	    	</group>
+	       	<group colSpan="2" cols="4">
+	       		<separator title="Leads" colSpan="4"/>
+	        	<field name="leadEventAttendeeList" colSpan="4" form-view="event-attendee-lead-form" grid-view="event-attendee-lead-grid" showTitle="false"/>
+	        </group>
+	    </group>
+	</form>
     
     <grid name="crm-task-grid" title="Tasks" model="com.axelor.apps.crm.db.Event" orderBy="-startDateTime">
         <field name="subject"/>
@@ -163,7 +181,7 @@
          	<group title="Task date" colSpan="4" cols="4" colWidths="25*" css="groupTitle">
 		        <field name="startDateTime" onChange="action-meeting-method-compute-start-date-time"/>
 		        <field name="endDateTime" onChange="action-meeting-method-compute-end-date-time"/>
-		        <field name="durationHours" onChange="action-meeting-method-compute-duration"/>
+		        <field name="durationHours" placeholder="Hours" onChange="action-meeting-method-compute-duration"/>
 	        </group>
 	        <spacer/><break/>
 	        <field name="taskPartner"/>
@@ -217,16 +235,17 @@
    			<group title="Ticket date" colSpan="2" cols="2" colWidths="40%,60%">
 		        <field name="startDateTime"/>
 		        <field name="endDateTime" title="DeadLine"/>
-		        <field name="durationHours"/>
+		        <field name="durationHours" placeholder="Hours"/>
 	        </group>
 	        <group title="Related to" colSpan="2" cols="2"  colWidths="40%,60%">
-	        	<field name="project" required="true"/>
+	        	<field name="clientPartner"/>
+	        	<field name="contactPartner"/>
+	        	<field name="project" required="true" domain="self.clientPartner = :clientPartner || self.contactPartner = :contactPartner || (:contactPartner = null &amp;&amp; :clientPartner = null)"/>
 	        	<field name="task"/>
-	        	<field name="isTimesheetAffected"/>
 	        </group>
 	        <group colSpan="2" cols="2"  colWidths="40%,60%">
 	        	<field name="createdBy" readonly="true"/>
-	        	<field name="userInfo"/>
+	        	<field name="userInfo" onChange="action-event-record-ticket-responsible-user-info"/>
 	        	<field name="responsibleUserInfo"/>
 	        </group>
     	</group>
@@ -253,15 +272,23 @@
         		</field>
         	</page>
         	<page title="Watchers">
-        		<field name="userInfoSet" widget="TagSelect" showTitle="false" colSpan="6"/>
+        		<field name="userInfoSet" widget="TagSelect" showTitle="false" colSpan="6" onSelect="action-event-attrs-watchers-domain"/>
         	</page>
         </notebook>
     </form>
     
+    <action-attrs name="action-event-attrs-watchers-domain">
+    	<attribute name="domain" for="userInfoSet" expr="eval: &quot; self.id IN (${project?.memberUserInfoSet?.collect{it.id}.join(',')})&quot;" if="project?.memberUserInfoSet?.collect{it.id}?.size() > 0"/>
+    	<attribute name="domain" for="userInfoSet" expr="eval:" if="project?.memberUserInfoSet?.collect{it.id}?.size() == 0"/>
+    </action-attrs>
+    
     <action-record name="action-event-default-record-userinfo" model="com.axelor.apps.crm.db.Event">
-    	<field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" if="typeSelect == 1 || typeSelect == 2 || typeSelect == 3 || typeSelect == 5"/>
-    	<field name="responsibleUserInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" if="typeSelect == 5"/>
+    	<field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" if="typeSelect == 1 || typeSelect == 2 || typeSelect == 3"/>
    		<field name="team" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
+    </action-record>
+    
+    <action-record name="action-event-record-ticket-responsible-user-info" model="com.axelor.apps.crm.db.Event">
+    	<field name="responsibleUserInfo" expr="eval: userInfo" if="responsibleUserInfo == null"/>
     </action-record>
     
     <action-attrs name="action-event-attrs-team-domain">
@@ -321,8 +348,8 @@
     </action-group>
     
     <action-attrs name="action-event-ticket-attrs-default">
-    	<attribute name="hidden" for="isTimesheetAffected" expr="eval: true" if="_clientView"/>
     	<attribute name="hidden" for="responsibleUserInfo" expr="eval: true" if="_clientView"/>
+    	<attribute name="required" for="project" expr="eval: true" if="typeSelect == 5"/>
     </action-attrs>
     
     <search-filters name="tasks-filters" model="com.axelor.apps.crm.db.Event" title="Tasks filters">

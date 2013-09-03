@@ -77,10 +77,10 @@ public class ConvertLeadWizardService {
 		
 		event.setTypeSelect(type);
 		if(type == IEvent.CALL || type == IEvent.MEETING)  {
-			event.setStatusSelect(1);
+			event.setStatusSelect(IEvent.STATUS_PLANIFIED);
 		}
 		else if (type == IEvent.TASK)  {
-			event.setTaskStatusSelect(1);
+			event.setTaskStatusSelect(IEvent.CALL_STATUS_OUTGOING);
 		}
 		
 		return event;

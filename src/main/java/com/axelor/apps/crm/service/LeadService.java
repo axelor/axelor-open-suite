@@ -76,62 +76,6 @@ public class LeadService {
 	}
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	/**
-	 * Create a partner from a lead
-	 * @param lead
-	 * @return
-	 * @throws AxelorException
-	 */
-	public Partner createPartner(Partner partner) throws AxelorException  {
-		
-		
-		
-		
-		
-		
-		
-		
-		
-//		Partner partner = new Partner();
-//		partner = (Partner) context.get("partner");
-		
-//		partner.setFirstName(((Partner) context.get("partner")).getName());
-//		partner.setName(lead.getName());
-//		partner.setTitleSelect(lead.getTitleSelect());
-//		partner.setCustomerTypeSelect(2);
-//		partner.setPartnerTypeSelect(IPartner.PARTNER_TYPE_SELECT_INDIVIDUAL);
-//		partner.setIsContact(true);
-//		partner.setEmail(lead.getEmail());
-//		partner.setFax(lead.getFax());
-//		partner.setWebSite(lead.getWebSite());
-//		partner.setMobilePhonePro(lead.getMobile());
-//		partner.setSource(lead.getSource());
-//		partner.setDepartment(lead.getDepartment());
-//		
-//		partner.setPartnerSeq(this.getSequence());
-//		
-//		this.setPartnerCompany(partner);
-//		
-//		if(lead.getEnterpriseName()!=null && !lead.getEnterpriseName().isEmpty())  {
-//			
-//			//TODO : create partner ?
-//		}
-//		
-		// add others
-		return partner;
-	}
-	
-	
 	/**
 	 * Get sequence for partner
 	 * @return

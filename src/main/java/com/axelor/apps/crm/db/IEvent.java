@@ -21,8 +21,15 @@ public interface IEvent {
 	/**
 	 * Static event call status select
 	 */
-	static final int CALL_INCOMING_STATUS = 1;
-	static final int CALL_OUTGOING_STATUS = 2;
+	static final int CALL_STATUS_INCOMING = 1;
+	static final int CALL_STATUS_OUTGOING = 2;
+	
+	/**
+	 * Static event status select
+	 */
+	static final int STATUS_PLANIFIED = 1;
+	static final int STATUS_REALIZED = 2;
+	static final int STATUS_CANCELED = 3;
 	
 	/**
 	 * Static event related to select
