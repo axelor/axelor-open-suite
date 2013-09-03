@@ -20,7 +20,6 @@
   	<string name="relatedToSelect" title="Related to" selection="crm.event.related.to.select"/>
   	<integer name="relatedToSelectId"/>
   	
-  	<boolean name="reminder" title="Reminder"/>
     <string name="description" large="true" title="Description"/>
     
     <many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="Assigned to"/>
@@ -31,6 +30,9 @@
 	
 	<many-to-one name="calendar" ref="com.axelor.apps.crm.db.Calendar" title="Calendar" />
 	<string name="calendarEventUid" title="UID (Calendar)"/>
+	
+	<one-to-many name="eventReminderList" ref="com.axelor.apps.crm.db.EventReminder" mappedBy="event" title="Reminders"/>
+	
     
 <!-- Call -->
     <integer name="callStatusSelect" title="Status" selection="crm.event.call.status.select"/>  
@@ -50,10 +52,11 @@
     <string name="ticketNumberSeq" title="Ticket number"/>
     <many-to-many name="userInfoSet" ref="com.axelor.apps.base.db.UserInfo" title="Watchers"/>
     <many-to-one name="responsibleUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="User in charge of the issue"/>
-  	<boolean name="isTimesheetAffected" title="Timesheet affected ?"/>
   	<one-to-many name="messageList" ref="com.axelor.apps.message.db.Message" mappedBy="event" title="Comments"/>
   	<many-to-one name="project" ref="com.axelor.apps.organisation.db.Project" title="Project"/>
 	<many-to-one name="task" ref="com.axelor.apps.organisation.db.Task" title="Task"/>
+  	<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
+  	<many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Contact"/>
   
 <!--   Event -->
 	<integer name="eventStatusSelect" title="" selection="crm.event.event.status.select"/>
