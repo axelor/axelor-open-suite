@@ -131,7 +131,7 @@
 	        <field name="partnerTypeSelect" onChange="action-partner-attrs-change-name,action-partner-attrs-hide-tabs"/>
 	        <field name="isCustomer"/>
 	        <field name="customerTypeSelect" hideIf="isContact || !isCustomer"/>        
-	        <field name="isSupplier" hideIf="partnerTypeSelect == 2"/>
+	        <field name="isSupplier" hideIf="partnerTypeSelect == 2" onChange="action-set-supplier-type-select"/>
 	        <field name="supplierTypeSelect" hideIf="isContact || !isSupplier"/>
 	        <break/>
 	    </group>
