@@ -8,7 +8,7 @@
   <entity name="PastTime" lang="java">
   
   	<many-to-one name="event" ref="com.axelor.apps.crm.db.Event" title="Ticket"/>
-  	<boolean name="timesheetImputed" title="Already imputed in timesheet"/>
+  	<boolean name="timesheetImputed" title="Already imputed in timesheet" readonly="true"/>
   	<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="User"/>
   	<many-to-one name="task" ref="com.axelor.apps.organisation.db.Task" title="Task"/>
     <integer name="durationHours" title="Duration" />

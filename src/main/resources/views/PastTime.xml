@@ -37,7 +37,7 @@
         <field name="date"/>
         <group colSpan="2" cols="3">
            	<separator title="Estimated duration" colSpan="3"/>
-            <field name="durationHours" placeholder="Hours" showTitle="false" onChange="action-meeting-method-compute-duration" colSpan="1" />
+            <field name="durationHours" placeholder="Hours" showTitle="false" colSpan="1" />
             <label title=":" colSpan="1"/>
             <field name="durationMinutesSelect" placeholder="Minutes" showTitle="false" colSpan="1"/>
       	</group>
@@ -59,7 +59,7 @@
         <field name="date"/>
         <group colSpan="2" cols="3">
            	<separator title="Estimated duration" colSpan="3"/>
-            <field name="durationHours" placeholder="Hours" showTitle="false" onChange="action-meeting-method-compute-duration" colSpan="1" />
+            <field name="durationHours" placeholder="Hours" showTitle="false" colSpan="1" />
             <label title=":" colSpan="1"/>
             <field name="durationMinutesSelect" placeholder="Minutes" showTitle="false" colSpan="1"/>
       	</group>

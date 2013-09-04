@@ -5,7 +5,7 @@
     
     <grid name="batch-grid" title="Batches" model="com.axelor.apps.base.db.Batch">
     	<field name="id" />
-		<field name="createdBy" title="Créé par" />
+		<field name="createdBy"/>
 		<field name="duration" />
 		<field name="startDate" />
 		<field name="endDate" />
@@ -15,7 +15,7 @@
     
     <form name="batch-form" title="Batch" model="com.axelor.apps.base.db.Batch" cols="4"
     	onNew="action-batch-attrs" onLoad="action-batch-attrs">
-		<field name="createdBy" title="Créé par" />
+		<field name="createdBy"/>
 		<field name="duration" />
 		<field name="startDate" />
 		<field name="endDate" />
