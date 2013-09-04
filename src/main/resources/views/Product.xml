@@ -28,14 +28,14 @@
 	                <spacer/>
 	                <break/>
 	                <group title="Product typology" colSpan="2" cols="2" colWidths="40%,60%">
-	                    <field name="applicationTypeSelect"/>
-	                    <field name="productTypeSelect" onChange="action-product-record-sale-supply-select,action-product-validate-sale-supply-select"/>
+	                    <field name="applicationTypeSelect" onChange="action-set-product-type-select" />
+	                    <field name="productTypeSelect" onChange="action-product-record-sale-supply-select,action-product-validate-sale-supply-select" showIf="applicationTypeSelect == 1"/>
 	                    <field name="invoiceLineType"/>
 	                </group>
 	                <group title="Procurement/Stock config" colSpan="2" cols="2"  colWidths="50%,50%">
 	                    <field name="procurementMethodSelect"/>
 	                    <field name="saleSupplySelect" onChange="action-product-validate-sale-supply-select"/>
-	                    <field name="isRawMaterial"/>
+	                    <field name="isRawMaterial" showIf="productTypeSelect != 'service"/>
 	                </group>
 	                <group title="Categorization" colSpan="2" cols="2"  colWidths="40%,60%">
 	                    <field name="productFamily" domain="self.productCategory = :productCategory"/>
@@ -77,10 +77,10 @@
 	<!--             	<button name="showBillsOfMaterial" title="Show bills of material"/> -->
 	<!--             	 <portlet action="chart:chart.planned.qty.by.location" height="200" colSpan="2"/> -->
 	<!--             </page> -->
-	        <page title="Stock" colSpan="2" cols="4">
+	        <page title="Stock" colSpan="2" cols="4" showIf="productTypeSelect != 'service" >
 	            <portlet colSpan="4" action="action-product-view-stock"/>
 	        </page>
-	        <page title="Tracking number" colSpan="2" cols="4">
+	        <page title="Tracking number" colSpan="2" cols="4" showIf="productTypeSelect != 'service" >
 	            <field name="hasWarranty" colSpan="4"/>
 	            <field name="warrantyNbrOfMonths" showIf="hasWarranty"/>
 	            <break/>
@@ -119,6 +119,17 @@
     	<field name="saleSupplySelect" expr="1" if="productTypeSelect == 'storable'"/>
     	<field name="saleSupplySelect" expr="3" if="productTypeSelect == 'service'"/>
     </action-record>
+    
+    <action-record name="action-set-product-type-select" model="com.axelor.apps.base.db.Product">
+    	<field name="productTypeSelect" expr="eval:(applicationTypeSelect == 2 || applicationTypeSelect == 3)?'service':null" />
+    </action-record>
+    
+    <action-attrs name="action-hide-product-field">
+    	<attribute name="hidden" for="productTypeSelect" expr="eval:applicationTypeSelect == 2 || applicationTypeSelect == 3"  />
+    	<attribute name="hidden" for="isRawMaterial" expr="eval:productTypeSelect == 'service'"  />
+    	<attribute name="hidden" for="tab-stock" expr="eval:productTypeSelect == 'service'"  />
+    	<attribute name="hidden" for="tab-tracking-number" expr="eval:productTypeSelect == 'service'"  />
+    </action-attrs>
     
     <action-validate name="action-product-validate-sale-supply-select">
    		<alert message="A product of type service can't be procured from stock." if="saleSupplySelect == 1 &amp;&amp; productTypeSelect == 'service'"/>
