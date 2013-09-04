@@ -27,8 +27,10 @@
     
     <form cols="4" onNew="action-task-default-record,action-task-attrs-hide-financial" name="task-form" title="Task" model="com.axelor.apps.organisation.db.Task"
     onSave="action-task-compute-margin">
-    	<field name="name"/>
-    	<field name="statusSelect" showTitle="false" colSpan="2" widget="NavSelect"/>
+    	<group colSpan="4" cols="3">
+    		<field name="name" showTitle="false" css="highlight" placeholder="Task name" colSpan="2"/>
+    		<field name="statusSelect" showTitle="false" colSpan="1" widget="NavSelect"/>
+    	</group>
     	<group title="Context" colSpan="4" cols="6">
        		<field name="project" onChange="action-task-attrs-project-title,action-task-attrs-hide-financial"/>
         	<field name="userInfo"/>
@@ -51,7 +53,6 @@
 	            <field name="totalTimeSheetUnit" title="Total worked unit"/>
 	        </group>
 	    </group>
-	    <button name="backup" title="Backup" colSpan="1"/>
 	    <button name="generateDraftInvoice" title="Generate draft invoice" showIf="isToInvoice == true &amp;&amp; statusSelect == 3" colSpan="1" onClick="save,action-task-validate-generate-invoice,action-task-method-create-invoice"/>
 	    <break/>
 	    <notebook colSpan="4">
@@ -112,6 +113,9 @@
 	        <page title="Description" colSpan="4">
 	            <field name="description" showTitle="false" colSpan="4"/>
 	        </page>
+	        <page title="Past times">
+        		<field name="pastTimeList" showTitle="false" colSpan="4" grid-view="past-time-task-grid" form-view="past-time-task-form"/>
+        	</page>
 	    </notebook>
 	</form>
     

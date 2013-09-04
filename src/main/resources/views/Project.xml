@@ -14,7 +14,7 @@
     <form cols="6" onNew="action-project-record-default,action-project-unit" name="project-form" title="Affair/Project" model="com.axelor.apps.organisation.db.Project"
     onSave="action-project-method-create-default-task-on-save">
 	    <group showTitle="false" colSpan="4">
-	        <field name="affairName"/>
+	   		<field name="affairName" showTitle="false" css="highlight" placeholder="Project name" colSpan="4"/>
 	        <field name="responsibleUserInfo"/>
 	        <field name="defaultTask" hideIf="!isTimeSheetImputable"/>
 	        <field name="projectUnit"/>
@@ -23,25 +23,36 @@
 	        <field name="company" widget="SuggestBox"/>
 	        <field name="typeDurationSelect"/>
 	        <field name="plannedDuration"/>
-	        <field name="description" colSpan="4" widget="html"/>
-	        <group name="specificSettings" title="Specific settings" colSpan="4" canCollapse="true">
-	        	<field name="isProject"/>
-	        	<field name="isAffair"/>
-	            <field name="isModel"/>
-	            <field name="modelProject" hideIf="isModel" domain="self.isModel = true"/>
-	            <field name="parentProject" onChange="action-project-unit"/>
-	            <field name="imputExpense"/>
-	            <field name="typeProjectSelect" showIf="imputExpense == true" onChange="action-project-attrs-domain-task-project"/>
-	            <field name="isReinvoicingExpense"/>
-	            <field name="isReinvoicingTime"/>
-	            <field name="isTimeSheetImputable"/> 
-	        </group>
 	    </group>
 	    <group title="Actions" showTitle="false" colSpan="2" cols="1">
 	        <button name="generateNewInstanceOfProject" title="Generate new project instance" hideIf="!isModel" colSpan="1"/>
 	        <button name="generateDraftInvoice" title="Generate draft invoice" colSpan="1" onClick="save,action-project-validate-generate-invoice,action-project-method-create-invoice"/>
 	        <button name="showTask" title="Show tasks" colSpan="1" onClick="action-project-view-task"/>
 	    </group>
+	    <group title="Description" colSpan="6">
+        	<field name="description" colSpan="6" widget="html" showTitle="false"/>
+        </group>
+        <group name="specificSettings" title="Specific settings" colSpan="6" cols="6" canCollapse="true" colWidths="16%,17%,16%,17%,16%,18%">
+        	<field name="isProject"/>
+        	<field name="isAffair"/>
+        	<field name="parentProject" onChange="action-project-unit"/>
+        	<group colSpan="2" cols="2">
+        		<separator title="Project model" colSpan="2"/>
+       			<field name="isModel"/>
+            	<field name="modelProject" hideIf="isModel" domain="self.isModel = true"/>
+        	</group>
+            <group colSpan="2" cols="2">
+            	<separator title="Expense" colSpan="2"/>
+            	<field name="imputExpense"/>
+            	<field name="typeProjectSelect" showIf="imputExpense == true" onChange="action-project-attrs-domain-task-project"/>
+            	<field name="isReinvoicingExpense"/>
+            </group>
+            <group colSpan="2" cols="2">
+            	<separator title="Timesheet" colSpan="2"/>
+            	<field name="isReinvoicingTime"/>
+            	<field name="isTimeSheetImputable"/> 
+            </group>
+        </group>
 	    <notebook colSpan="6">
 	        <page title="Tasks">
 	            <field name="taskList" grid-view="task-project-grid" form-view="task-form" colSpan="6"/>
@@ -72,6 +83,10 @@
 	
 	<action-method name="action-project-method-create-invoice">
 		<call class="com.axelor.apps.accountorganisation.web.ProjectInvoiceController" method="createInvoice"/>
+	</action-method>
+	
+	<action-method name="action-project-method-get-task-past-time">
+		<call class="com.axelor.apps.organisation.web.ProjectController" method="getTaskPastTime"/>
 	</action-method>
 	
 	<action-validate name="action-project-validate-generate-invoice">

@@ -9,9 +9,9 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 
-public class TimeSheetPeriodService {
+public class TimesheetPeriodService {
 	
-	private static final Logger LOG = LoggerFactory.getLogger(TimeSheetPeriodService.class); 
+	private static final Logger LOG = LoggerFactory.getLogger(TimesheetPeriodService.class); 
 	
 	/**
 	 * Recupère la bonne période pour la date passée en paramètre

@@ -12,7 +12,7 @@
     
     <form name="timesheet-input-form" title="Timesheet input" model="com.axelor.apps.organisation.db.TimesheetInput" cols="4">
         <field name="date"/>
-        <field name="duration"/>
+        <field name="duration" placeholder="Hours"/>
         <field name="isToInvoice"/>
         <field name="isInvoiced"/>
     </form>

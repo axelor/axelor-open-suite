@@ -13,15 +13,14 @@
     <form name="timesheet-form" title="Timesheet" model="com.axelor.apps.organisation.db.Timesheet" cols="8"
     onNew="action-timesheet-default-record,action-timesheet-getPeriod">
         <field name="userInfo"/>
-        <field name="statusSelect" widget="NavSelect"/>
+        <field name="statusSelect" widget="NavSelect" showTitle="false"/>
         <break/>
         <field name="fromDate" onChange="action-timesheet-getPeriod"/>
         <field name="toDate"/>
         <group title="Satisfaction" cols="4" colSpan="8" colWidths="10%,10%,10%,70%">
         	<separator colSpan="8" title="Project"/>
         	<group colSpan="2">
-				<field name="projectSatisfactionSelect" widget="Progress" showIf="$readonly()"/>
-				<field name="projectSatisfactionSelect" hideIf="$readonly()"/>
+				<field name="projectSatisfactionSelect" widget="SelectProgress"/>
 			</group>
 	        <field name="projectComment"/>
 	        <separator colSpan="8" title="Company"/>
@@ -44,6 +43,7 @@
    			<group colSpan="1" cols="1">
 	         	<button name="confirm" title="Confirm" colSpan="1" onClick="save,action-timesheet-record-confirm,save" showIf="statusSelect == 1 || statusSelect == 4"/>
 	            <button name="validate" title="Validate" colSpan="1" onClick="save,action-timesheet-record-validate,save" showIf="statusSelect == 2"/>
+	            <button name="getTaskPastTime" title="Get past time from task" colSpan="1" onClick="save,action-timesheet-method-get-task-past-time" showIf="statusSelect != 3"/>
 	            <button name="cancel" title="Cancel" colSpan="1" onClick="save,action-timesheet-record-cancel" showIf="statusSelect == 1 || statusSelect == 2"/>
 	        </group>
    			<group colSpan="1" cols="2" readonly="true">
@@ -61,7 +61,7 @@
     </action-record>
     
     <action-method name="action-timesheet-getPeriod">
-    	<call class="com.axelor.apps.organisation.web.TimeSheetController" method="getPeriod"/>
+    	<call class="com.axelor.apps.organisation.web.TimesheetController" method="getPeriod"/>
     </action-method>
     
     <action-record name="action-timesheet-record-confirm" model="com.axelor.apps.organisation.db.Timesheet">
