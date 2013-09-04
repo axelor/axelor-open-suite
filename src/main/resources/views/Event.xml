@@ -212,36 +212,38 @@
         <field name="prioritySelect"/>
         <field name="userInfo"/>
         <field name="description"/>
-        <field name="progressSelect" widget="Progress"/>
+        <field name="progressSelect" widget="SelectProgress"/>
     </grid>
     
     <form name="ticket-form" title="Ticket" model="com.axelor.apps.crm.db.Event" cols="6" colWidths="*,400"
-    	onNew="action-event-new-record,action-event-ticket-attrs-default"
+    	onNew="action-event-new-record,action-event-ticket-attrs-default,action-event-record-ticket-status-select,action-event-record-progress-select"
     	onLoad="action-event-ticket-attrs-default"
     	onSave="action-event-set-sequence">
+    	<field name="subject" showTitle="false" css="highlight" placeholder="Subject" colSpan="4"/>
     	<group colSpan="6" cols="6"  colWidths="16%,17%,16%,17%,16%,18%">
 	    	<field name="ticketNumberSeq" readonly="true"/>
-	       	<field name="subject"/>
 	       	<field name="eventCategory" domain="self.typeSelect = :typeSelect"/>
 	       	<field name="ticketStatusSelect"/>
 	       	<field name="prioritySelect"/>
-	       	<group colSpan="2">
-				<field name="progressSelect" widget="Progress" showIf="$readonly()"/>
-				<field name="progressSelect" hideIf="$readonly()"/>
-			</group>
+			<field name="progressSelect" widget="SelectProgress"/>
 	        <break/>
     	</group>
     	<group colSpan="6" cols="6">
    			<group title="Ticket date" colSpan="2" cols="2" colWidths="40%,60%">
 		        <field name="startDateTime"/>
 		        <field name="endDateTime" title="DeadLine"/>
-		        <field name="durationHours" placeholder="Hours"/>
+		        <group colSpan="2" cols="3">
+	            	<separator title="Estimated duration" colSpan="3"/>
+	                <field name="durationHours" placeholder="Hours" showTitle="false" onChange="action-meeting-method-compute-duration" colSpan="1" />
+	                <label title=":" colSpan="1"/>
+	                <field name="durationMinutesSelect" placeholder="Minutes" showTitle="false" colSpan="1"/>
+	            </group>
 	        </group>
 	        <group title="Related to" colSpan="2" cols="2"  colWidths="40%,60%">
 	        	<field name="clientPartner"/>
 	        	<field name="contactPartner"/>
 	        	<field name="project" required="true" domain="self.clientPartner = :clientPartner || self.contactPartner = :contactPartner || (:contactPartner = null &amp;&amp; :clientPartner = null)"/>
-	        	<field name="task"/>
+	        	<field name="task" domain="self.project = :project"/>
 	        </group>
 	        <group colSpan="2" cols="2"  colWidths="40%,60%">
 	        	<field name="createdBy" readonly="true"/>
@@ -251,7 +253,7 @@
     	</group>
         <notebook colSpan="6">
         	<page title="Description" >
-        		<field name="description" widget="TEXT[height=4]" showTitle="false" colSpan="6"/>
+        		<field name="description" widget="Html[lite=true]" showTitle="false" colSpan="6"/>
         	</page>
         	<page title="Comments">
         		<field name="messageList" showTitle="false" colSpan="6">
@@ -261,18 +263,21 @@
 				            <field name="sender"/>
 				        </group>
 				        <group title="Content" colSpan="4">
-				       	 	<field name="content" colSpan="4" showTitle="false" widget="html"/>
+				       	 	<field name="content" colSpan="4" showTitle="false" widget="Html[lite=true]"/>
 				        </group>
         			</form>
         			<grid title="Comments">
 			            <field name="sendedDate"/>
 			            <field name="sender"/>
-			       	 	<field name="content" colSpan="4" showTitle="false" widget="html"/>
+			       	 	<field name="content" colSpan="4" showTitle="false" widget="Html[lite=true]"/>
         			</grid>
         		</field>
         	</page>
         	<page title="Watchers">
         		<field name="userInfoSet" widget="TagSelect" showTitle="false" colSpan="6" onSelect="action-event-attrs-watchers-domain"/>
+        	</page>
+        	<page title="Past times" showIf="task != null">
+        		<field name="pastTimeList" showTitle="false" colSpan="6" grid-view="past-time-ticket-grid" form-view="past-time-ticket-form"/>
         	</page>
         </notebook>
     </form>
@@ -322,6 +327,14 @@
     
     <action-record name="action-event-record-status-select" model="com.axelor.apps.crm.db.Event">
     	<field name="statusSelect" expr="1" if="typeSelect == 1 || typeSelect == 2"/>
+    </action-record>
+    
+    <action-record name="action-event-record-ticket-status-select" model="com.axelor.apps.crm.db.Event">
+    	<field name="ticketStatusSelect" expr="1"/>
+    </action-record>
+    
+    <action-record name="action-event-record-progress-select" model="com.axelor.apps.crm.db.Event">
+    	<field name="progressSelect" expr="0"/>
     </action-record>
     
     <action-record name="action-event-record-call-status-select" model="com.axelor.apps.crm.db.Event">
