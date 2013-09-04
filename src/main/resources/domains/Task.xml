@@ -102,6 +102,9 @@
   	<decimal name="qty" title="Quantity" default="1"/>
   	<decimal name="price" title="Unit price"/>
   	
+	<!--   	Onglet Temps passés -->
+  	<one-to-many name="pastTimeList" ref="com.axelor.apps.base.db.PastTime" mappedBy="task" title="Past times"/>
+  	
   </entity>
 
 </domain-models>

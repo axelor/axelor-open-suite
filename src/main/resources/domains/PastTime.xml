@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="PastTime" lang="java">
+  
+  	<many-to-one name="event" ref="com.axelor.apps.crm.db.Event" title="Ticket"/>
+  	<boolean name="timesheetImputed" title="Already imputed in timesheet"/>
+  	<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="User"/>
+  	<many-to-one name="task" ref="com.axelor.apps.organisation.db.Task" title="Task"/>
+    <integer name="durationHours" title="Duration" />
+    <integer name="durationMinutesSelect" title="Duration" selection="crm.event.call.duration.minutes.select" />
+    <date name="date" title="Date"/>
+    
+  </entity>
+
+</domain-models>

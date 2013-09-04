@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+	
+    <grid name="past-time-grid" title="Past time" model="com.axelor.apps.base.db.PastTime">
+        <field name="event"/>
+        <field name="timesheetImputed"/>
+        <field name="userInfo"/>
+        <field name="task" />
+        <field name="date"/>
+        <field name="durationHours" />
+        <field name="durationMinutesSelect" />
+    </grid>
+    
+    <form name="past-time-form" title="Past time" model="com.axelor.apps.base.db.PastTime" cols="4" onNew="action-past-time-record-default">
+        <field name="event"/>
+        <field name="timesheetImputed"/>
+        <field name="userInfo"/>
+        <field name="task" />
+        <field name="date"/>
+        <field name="durationHours" />
+        <field name="durationMinutesSelect" />
+    </form>
+    
+    <grid name="past-time-ticket-grid" title="Past time" model="com.axelor.apps.base.db.PastTime">
+        <field name="timesheetImputed"/>
+        <field name="userInfo"/>
+        <field name="date"/>
+        <field name="durationHours" title="Hours"/>
+        <field name="durationMinutesSelect"  title="Minutes"/>
+    </grid>
+    
+    <form name="past-time-ticket-form" title="Past time" model="com.axelor.apps.base.db.PastTime" cols="4" onNew="action-past-time-record-default,action-past-time-ticket-record-task">
+        <field name="timesheetImputed"/>
+        <field name="userInfo"/>
+        <field name="date"/>
+        <group colSpan="2" cols="3">
+           	<separator title="Estimated duration" colSpan="3"/>
+            <field name="durationHours" placeholder="Hours" showTitle="false" onChange="action-meeting-method-compute-duration" colSpan="1" />
+            <label title=":" colSpan="1"/>
+            <field name="durationMinutesSelect" placeholder="Minutes" showTitle="false" colSpan="1"/>
+      	</group>
+    </form>
+    
+    <grid name="past-time-task-grid" title="Past time" model="com.axelor.apps.base.db.PastTime">
+        <field name="event"/>
+        <field name="timesheetImputed"/>
+        <field name="userInfo"/>
+        <field name="date"/>
+        <field name="durationHours" title="Hours"/>
+        <field name="durationMinutesSelect"  title="Minutes"/>
+    </grid>
+    
+    <form name="past-time-task-form" title="Past time" model="com.axelor.apps.base.db.PastTime" cols="4" onNew="action-past-time-record-default">
+        <field name="event"/>
+        <field name="timesheetImputed"/>
+        <field name="userInfo"/>
+        <field name="date"/>
+        <group colSpan="2" cols="3">
+           	<separator title="Estimated duration" colSpan="3"/>
+            <field name="durationHours" placeholder="Hours" showTitle="false" onChange="action-meeting-method-compute-duration" colSpan="1" />
+            <label title=":" colSpan="1"/>
+            <field name="durationMinutesSelect" placeholder="Minutes" showTitle="false" colSpan="1"/>
+      	</group>
+    </form>
+    
+    <action-record name="action-past-time-ticket-record-task" model="com.axelor.apps.base.db.PastTime">
+    	<field name="task" expr="eval: _parent?.task"/>
+    	<field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+    </action-record>
+    
+    <action-record name="action-past-time-record-default" model="com.axelor.apps.base.db.PastTime">
+    	<field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+    	<field name="date" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+    </action-record>
+    
+</object-views>
