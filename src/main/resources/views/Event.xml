@@ -242,7 +242,7 @@
 	        <group title="Related to" colSpan="2" cols="2"  colWidths="40%,60%">
 	        	<field name="clientPartner"/>
 	        	<field name="contactPartner"/>
-	        	<field name="project" required="true" domain="self.clientPartner = :clientPartner || self.contactPartner = :contactPartner || (:contactPartner = null &amp;&amp; :clientPartner = null)"/>
+	        	<field name="project" required="true" form-view="project-form" domain="self.clientPartner = :clientPartner || self.contactPartner = :contactPartner || (:contactPartner = null &amp;&amp; :clientPartner = null)"/>
 	        	<field name="task" domain="self.project = :project"/>
 	        </group>
 	        <group colSpan="2" cols="2"  colWidths="40%,60%">
