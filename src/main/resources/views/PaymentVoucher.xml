@@ -50,7 +50,7 @@
 					onChange="action-pv-hide-invoiceToPay,action-paymentVoucherRejectToPay-onChange,action-pv-moveLine-domain-3,action-payment-voucher-company-onChange"/>
 			</group>
 	        <group title="Payer" colSpan="2" cols="2" colWidths="20%,80%">
-	                <field name="partner" onSelect="action-payment-voucher-domain-on-partner" onChange="action-pv-moveLine-domain-4" form-view="partner-form" grid-view="partner-grid"/>
+	                <field name="partner" domain=":company MEMBER OF self.companySet AND self.partnerTypeSelect = 1"  onChange="action-pv-moveLine-domain-4" form-view="partner-form" grid-view="partner-grid"/>
 	                <field name="paymentMode" widget="SuggestBox" onChange="action-pv-attrs-hidden-bankCardTransactionNumber,action-pv-hide-confirm-button,action-attrs-payment-voucher-hidden-receipt,action-attrs-payment-voucher-readonly-status"/>
 	       			<field name="currency"/>
 	        </group>
@@ -164,13 +164,12 @@
 		<attribute name="domain" for="moveLine" expr="eval: &quot;self.account.reconcileOk = 't' and self.fromSchedulePaymentOk = 'f' and self.base.id = ${partner?.id} and self.move.state = 'validated' and self.amountRemaining &gt; 0.0  and self.credit &gt; 0.0&quot;"/>
 	</action-attrs>
 	
-	<action-attrs name="action-payment-voucher-domain-on-partner">
-		<!--  
+	<!--  <action-attrs name="action-payment-voucher-domain-on-partner">
 		<attribute name="domain" for="partner" expr="eval: &quot;:company IN (self.partner?.companySet?.toList())&quot;" if="company != null"/>
 		<attribute name="domain" for="partner" expr="eval: &quot;self.isContact = false&quot;"/>
-		-->
 		<attribute name="domain" for="partner" expr="eval: &quot;self.partnerTypeSelect = 1&quot;"/>
 	</action-attrs>
+	-->
 	
 	<action-attrs name="action-payment-voucher-domain-on-invoice-to-pay">
 		<attribute name="domain" for="invoiceToPay" expr="eval: &quot;self.company = :company&quot;" if="operationTypeSelect == null"/>
