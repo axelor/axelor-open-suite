@@ -65,5 +65,6 @@ public interface IException {
 	public static final String ACCOUNT_CUSTOMER = "accountCustomer";
 	public static final String MOVE_LINE_EXPORT_ORIGIN = "moveLineExport";
 	public static final String IRRECOVERABLE = "irrecoverable";
+	public static final String CRM = "crm";
 	
 }
