@@ -1,846 +1,517 @@
-"domain","name","type","title","title_t","help","help_t","doc","doc_t"
-"affair-root","Affair","menu","Affair","Toutes les affaires",,,,
-"affair-root-project","Affairs","menu","Affairs","Les affaires",,,,
-"affair-root-project-all-affair","Affairs","menu","Affairs","Toutes les affaires",,,,
-"affair-root-project-new-affair","New Affair","menu","New Affair","Nouvelle Affaire",,,,
-"hr-root","Human Resources","menu","Human Resources","RH",,,,
-"hr-root-conf","Configuration","menu","Configuration","Configuration",,,,
-"hr-root-config-public-holidays","Public holidays","menu","Public holidays","Jours Fériés",,,,
-"hr-root-employee","Employees","menu","Employees","Les Employés",,,,
-"hr-root-mission-order","Mission order","menu","Mission order","Ordre de mission",,,,
-"hr-root-inputforms","Input forms","menu","Input forms","Formulaires de saisie",,,,
-"hr-root-inputforms-leave-request","My leave requests","menu","My leave requests","Mes demandes de congé",,,,
-"hr-root-inputforms-overtimes","My overtimes","menu","My overtimes","Mes heures supplémentaires",,,,
-"hr-root-inputforms-timesheet","My timesheet","menu","My timesheet","Mes feuilles de temps à compléter",,,,
-"hr-root-inputforms-travelexpenses","My travel expenses","menu","My travel expenses","Mes notes de frais",,,,
-"hr-root-paymentforms","Payment forms","menu","Payment forms","Paiement à réaliser",,,,
-"hr-root-paymentforms-overtimes","Overtimes to be paid","menu","Overtimes to be paid","Heures sup à payer",,,,
-"hr-root-paymentforms-travelexpenses","Travel expenses to be paid","menu","Travel expenses to be paid","Notes de frais à rembourser",,,,
-"hr-root-history","History","menu","History","Historique",,,,
-"hr-root-history-olds-timesheets","Olds timesheets","menu","Olds timesheets","Mes anciennes feuilles de temps",,,,
-"hr-root-planning","Plannings","menu","Plannings","Les plannings",,,,
-"hr-root-recruitment","Recruitment","menu","Recruitment","Recrutement",,,,
-"hr-root-recruitment-candidate","Candidates","menu","Candidates","Tous les candidats",,,,
-"hr-root-schedule","Working hours","menu","Working hours","Les horaires de travail",,,,
-"hr-root-training","Trainings","menu","Trainings","Les formations",,,,
-"hr-root-validationforms","Validation forms","menu","Validation forms","Formulaires à valider",,,,
-"hr-root-validationforms-leave-request","Leave requests to validate","menu","Leave requests to validate","Demande de congé à valider",,,,
-"hr-root-validationforms-overtimes","Overtimes to validate","menu","Overtimes to validate","Heures supplémentaires à valider",,,,
-"hr-root-validationforms-timesheet","Timesheets to validate","menu","Timesheets to validate","Feuilles de temps à valider",,,,
-"hr-root-validationforms-travelexpenses-manager","Travel expenses to validate by RSC Manager","menu","Travel expenses to validate by RSC Manager","Notes de frais à valider par Ressource Manager",,,,
-"hr-root-validationforms-travelexpenses-commercial","Travel expenses to validate by commercial","menu","Travel expenses to validate by commercial","Notes de frais à valider par Commercial",,,,
-"menu-gant1","Gantt Diagram","menu","Gantt Diagram","Diagramme de GANTT",,,,
-"project-root","Project","menu","Project","Projet",,,,
-"project-root-project","Projects","menu","Projects","Les projets",,,,
-"project-root-task","Tasks","menu","Tasks","Tâches",,,,
-"affair-form","createPreSalesTask","button","Create pre-sales task","Créer tache avant vente",,,,
-"com.axelor.apps.organisation.db.Advance","advance-form","form","Advance","Avance",,,,
-"com.axelor.apps.organisation.db.Advance","advance-grid","grid","Advances","Avances",,,,
-"com.axelor.apps.organisation.db.Advance","employee","field","Employee","Employé",,,,
-"com.axelor.apps.organisation.db.Advance","date","field","Advance payment date","Date d'avance",,,,
-"com.axelor.apps.organisation.db.Advance","amount","field","Amount","Montant",,,,
-"com.axelor.apps.organisation.db.Advance","reversalDate","field","Reversal Date","Date de reprise",,,,
-"com.axelor.apps.organisation.db.Advance","comment","field","Comment","Commentaire",,,,
-"com.axelor.apps.organisation.db.Bonus","bonus-form","form","Bonus","Bonus",,,,
-"com.axelor.apps.organisation.db.Bonus","bonus-grid","grid","Bonuses","Bonus",,,,
-"com.axelor.apps.organisation.db.Bonus","employee","field",,,,,,
-"com.axelor.apps.organisation.db.Bonus","period","field","Period","Période",,,,
-"com.axelor.apps.organisation.db.Bonus","name","field","Label","Libellé",,,,
-"com.axelor.apps.organisation.db.Bonus","amount","field","Amount","Montant brut",,,,
-"com.axelor.apps.organisation.db.Business","business-form","form","Business","Business",,,,
-"com.axelor.apps.organisation.db.Business","business-grid","grid","Businesses","Contrôles de formule",,,,
-"candidate-form","recruit","button","Transform into employee","Transformer en employé",,,,
-"com.axelor.apps.organisation.db.Candidate","candidate-form","form","Candidate","Candidat",,,,
-"candidate-form","","group","Coordonnées","Coordonnées",,,,
-"candidate-form","","group","Recruitment Type","Type de recrutement",,,,
-"candidate-form","","page","General","Général",,,,
-"candidate-form","","group","Candidate Follow up","Suivi candidat",,,,
-"com.axelor.apps.organisation.db.RecuitmentProcessAdvancement","","form","Recruitment process progress","Avancement Processus de Recrutement",,,,
-"com.axelor.apps.organisation.db.RecuitmentProcessAdvancement","","grid","Recruitment process progresses","Avancement Processus de Recrutement",,,,
-"candidate-form","","page","Profile","Profil",,,,
-"candidate-form","","group","-",,,,,""
-"candidate-form","","group","Keywords","Mots clé",,,,
-"candidate-form","","group","Companies","Les sociétés",,,,
-"candidate-form","","group","Education/Trainings","Éducation / Formations",,,,
-"candidate-form","assign","button","Affect to recruitment pool","Affectation Vivier",,,,
-"candidate-form","assign","button","Copy all necessary fields (including Professionnal Background …)","Copier tous les champs nécessaires",,,,
-"candidate-form","","page","Evaluation","Évaluation",,,,
-"candidate-form","compute","button","Compute","Calculer",,,,
-"candidate-form","","page","Additionnal information","Informations Complémentaires",,,,
-"candidate-form","","page","Competences","Compétence",,,,
-"candidate-form","","page","Other opportunities","Autre piste",,,,
-"candidate-form","","page","Reporting","Rapport",,,,
-"candidate-form","","group","Action(s)","Action(s)",,,,
-"candidate-form","showCandidate","button","Print CV",,,,,""
-"com.axelor.apps.organisation.db.Candidate","candidate-grid","grid","Candidates","Candidats",,,,
-"com.axelor.apps.organisation.db.Candidate","importId","field",,,,,,
-"com.axelor.apps.organisation.db.Candidate","titleSelect","field","Civility","Civilité",,,,
-"com.axelor.apps.organisation.db.Candidate","userInfo","field","Titulaire","Titulaire",,,,
-"com.axelor.apps.organisation.db.Candidate","name","field","Family Name","Nom",,,,
-"com.axelor.apps.organisation.db.Candidate","firstName","field","First Name","Prénom",,,,
-"com.axelor.apps.organisation.db.Candidate","mobilePhone","field","Mobile N°","Téléphone Portable",,,,
-"com.axelor.apps.organisation.db.Candidate","fixedPhone","field","Fixed phone N°","Téléphone Fixe",,,,
-"com.axelor.apps.organisation.db.Candidate","email","field","E-mail","E-mail",,,,
-"com.axelor.apps.organisation.db.Candidate","recruitmentTypeSelect","field","Recruitment type","Type d'embauche",,,,
-"com.axelor.apps.organisation.db.Candidate","address","field","Address","Adresse",,,,
-"com.axelor.apps.organisation.db.Candidate","avalabilitySelect","field","Available within","Disponible sous",,,,
-"com.axelor.apps.organisation.db.Candidate","availabilityDate","field","or Available from","ou Dispo le",,,,
-"com.axelor.apps.organisation.db.Candidate","decisionDate","field","Decision Date","Date de prise de décision",,,,
-"com.axelor.apps.organisation.db.Candidate","salaryExpectation","field","Salary expectation","Rémunération souhaitée",,,,
-"com.axelor.apps.organisation.db.Candidate","relocationSelect","field","Mobilité Géographique","Mobilité Géographique","Non modifiable, automatique en fonction du champs 'Mobilité Géographique' dans l'onglet 'autres infos'",,,
-"com.axelor.apps.organisation.db.Candidate","globalEvaluation","field","Global grade","Evaluation Globale","The grade is calculated based on the page 'Appraisal'",,,
-"com.axelor.apps.organisation.db.Candidate","resume","field","CV","CV",,,,
-"com.axelor.apps.organisation.db.Candidate","coverLetter","field","Cover Letter","Lettre de Motivation",,,,
-"com.axelor.apps.organisation.db.Candidate","macroCategorySelect","field","Macro Category","Macro-Catégorie",,,,
-"com.axelor.apps.organisation.db.Candidate","categorySelect","field","Category","Catégorie",,,,
-"com.axelor.apps.organisation.db.Candidate","recruitmentProcessAdvancementList","field","Recruitment Process Progress","Avancement Processus de Recrutement",,,,
-"com.axelor.apps.organisation.db.Candidate","toolKeywordSet","field","Tool Keywords","Mots clés Outils",,,,
-"com.axelor.apps.organisation.db.Candidate","fieldKeywordSet","field","Sector Keywords","Mots clés Secteurs",,,,
-"com.axelor.apps.organisation.db.Candidate","jobKeywordSet","field","Job Keywords","Mots clés Métiers",,,,
-"com.axelor.apps.organisation.db.Candidate","partnerSet","field","Companies","Sociétés",,,,
-"com.axelor.apps.organisation.db.Candidate","positionList","field","Professional experience","Parcours professionel",,,,
-"com.axelor.apps.organisation.db.Candidate","degree","field","Significant Degree","Diplôme signficatif",,,,
-"com.axelor.apps.organisation.db.Candidate","trainingLineList","field","Academic background/Trainings","Formation",,,,
-"com.axelor.apps.organisation.db.Candidate","evaluationLineList","field","Evaluation/Appraisal form","Evaluation",,,,
-"com.axelor.apps.organisation.db.Candidate","evaluationGrade","field","Global grade / 20","Evaluation Globale / 20",,,,
-"com.axelor.apps.organisation.db.Candidate","personalInfo","field","Additionnal informations ","Informations Complémentaires",,,,
-"com.axelor.apps.organisation.db.Candidate","competence","field","Competences","Compétences",,,,
-"com.axelor.apps.organisation.db.Candidate","candidateOtherOpportunityList","field","Candidates other position proposals","Autres pistes",,,,
-"com.axelor.apps.organisation.db.CandidateOtherOpportunity","candidate-other-opportunity-form","form","Other opportunities","Autre piste",,,,
-"com.axelor.apps.organisation.db.CandidateOtherOpportunity","candidate-other-opportunity-grid","grid","Other opportunity","Autre piste",,,,
-"com.axelor.apps.organisation.db.CandidateOtherOpportunity","candidate","field",,"Candidat",,,,
-"com.axelor.apps.organisation.db.CandidateOtherOpportunity","ets","field","Société","ETS","Etablissement",,,
-"com.axelor.apps.organisation.db.CandidateOtherOpportunity","opportunity","field","Position title","Fonction Proposée",,,,
-"com.axelor.apps.organisation.db.CandidateOtherOpportunity","contact","field","Contact","Interlocuteur",,,,
-"com.axelor.apps.organisation.db.CandidateOtherOpportunity","statusSelect","field","Status","Etat d'avancement",,,,
-"com.axelor.apps.organisation.db.CandidateOtherOpportunity","interestSelect","field","Motivation","Intérêt",,,,
-"com.axelor.apps.organisation.db.CompetenceArea","competence-area-form","form","CompetenceArea","Domaines compétence",,,,
-"com.axelor.apps.organisation.db.CompetenceArea","competence-area-grid","grid","CompetenceArea","Domaines compétence",,,,
-"com.axelor.apps.organisation.db.CompetenceArea","name","field","Competence Area","Domaine de Compétence",,,,
-"com.axelor.apps.organisation.db.CompetenceArea","code","field","Code","Code",,,,
-"com.axelor.apps.organisation.db.Competence","competence-edit-form","form","Competences","Compétence",,,,
-"com.axelor.apps.organisation.db.Competence","typeSelect","field","Competence type","Type de compétence",,,,
-"com.axelor.apps.organisation.db.Competence","candidate","field",,"Candidat",,,,
-"com.axelor.apps.organisation.db.Competence","employee","field",,"Employé",,,,
-"com.axelor.apps.organisation.db.Competence","name","field","Profil title","Intilulé du profil",,,,
-"com.axelor.apps.organisation.db.Competence","subTitle","field","Profil sub title","Sous-titre du Profil",,,,
-"com.axelor.apps.organisation.db.Competence","interventionTypeSet","field","Intervention type","Domaines de Compétences",,,,
-"com.axelor.apps.organisation.db.Competence","competenceAreaSet","field","Competence area","Types d'Intervention",,,,
-"com.axelor.apps.organisation.db.Competence","expertSkillSet","field",,"Expertises",,,,
-"com.axelor.apps.organisation.db.Competence","masteredSkillSet","field",,"Compétences maîtrisées",,,,
-"com.axelor.apps.organisation.db.Competence","awareSkillSet","field",,"Connaissances",,,,
-"competence-edit-form","","page","Expertises","Expertises",,,,
-"competence-edit-form","","page","Mastered Skills","Compétences Maîtrisées",,,,
-"competence-edit-form","","page","Awareness","Conscience",,,,
-"com.axelor.apps.organisation.db.Competence","competence-edit-grid","grid","Competences","Compétence",,,,
-"com.axelor.apps.organisation.db.Degree","degree-form","form","Degree","Diplômes",,,,
-"com.axelor.apps.organisation.db.Degree","degree-grid","grid","Degree","Diplômes",,,,
-"com.axelor.apps.organisation.db.Degree","importId","field",,,,,,
-"com.axelor.apps.organisation.db.Degree","name","field","Diploma","Diplôme",,,,
-"com.axelor.apps.organisation.db.Employee","employee-grid","grid","Employee","Employés",,,,
-"com.axelor.apps.organisation.db.Employee","employee-form","form","Employee","Employés",,,,
-"com.axelor.apps.organisation.db.Employee","titleSelect","field","Civility","Civilité",,,,
-"com.axelor.apps.organisation.db.Employee","name","field","Surname","Nom",,,,
-"com.axelor.apps.organisation.db.Employee","firstName","field","First Name","Prénom",,,,
-"com.axelor.apps.organisation.db.Employee","entryDate","field","Entry Date","Date d'embauche",,,,
-"com.axelor.apps.organisation.db.Employee","exitDate","field","Departure Date","Date de départ",,,,
-"com.axelor.apps.organisation.db.Employee","companyDepartment","field","Department","Département",,,,
-"com.axelor.apps.organisation.db.Employee","phoneAtCustomer","field","OnSite Phone N°","N° Tél. chez client",,,,
-"com.axelor.apps.organisation.db.Employee","internalContact","field","Internal Contact","Contact interne",,,,
-"com.axelor.apps.organisation.db.Employee","dailySalaryCost","field","Employee Daily Cost","Coût du salarié par jour",,,,
-"com.axelor.apps.organisation.db.Employee","macroCategorySelect","field","Macro-Category","Macro-Catégorie",,,,
-"com.axelor.apps.organisation.db.Employee","categorySelect","field","Category","Catégorie",,,,
-"com.axelor.apps.organisation.db.Employee","personalInfo","field","Additionnal information","Informations Complémentaires",,,,
-"com.axelor.apps.organisation.db.Employee","positionList","field","Professionnal background","Parcours professionel",,,,
-"com.axelor.apps.organisation.db.Employee","toolKeywordSet","field","Tools Keywords","Mots clés Outils",,,,
-"com.axelor.apps.organisation.db.Employee","fieldKeywordSet","field","Sector Keywords","Mots clés Secteurs",,,,
-"com.axelor.apps.organisation.db.Employee","jobKeywordSet","field","Job Keywords","Mots clés Métiers",,,,
-"com.axelor.apps.organisation.db.Employee","partnerSet","field","Companies","Sociétés",,,,
-"com.axelor.apps.organisation.db.Employee","competence","field","Competences","Compétences",,,,
-"com.axelor.apps.organisation.db.Employee","emergencyContact","field","Emergency contact","Personne à prévenir",,,,
-"com.axelor.apps.organisation.db.Employee","emergencyNumber","field","Emergency Contact Phone Nbr.","Numéro d'urgence",,,,
-"com.axelor.apps.organisation.db.Employee","candidate","field","Candidate (job application)","Ancien candidat",,,,
-"com.axelor.apps.organisation.db.Employee","bonusList","field","Employee Bonuses","Primes/Bonus",,,,
-"com.axelor.apps.organisation.db.Employee","advanceList","field","Cash Advances","Avances",,,,
-"com.axelor.apps.organisation.db.Employee","vehicleFiscalPower","field","Vehicle Fiscal Power","Puissance fiscale véhicule",,,,
-"com.axelor.apps.organisation.db.Employee","salaryFromDate","field","From","Date d'effet",,,,
-"com.axelor.apps.organisation.db.Employee","salaryAmount","field","Gross Salary","Montant brut",,,,
-"com.axelor.apps.organisation.db.Employee","expenseList","field","Expenses list","Notes de frais",,,,
-"com.axelor.apps.organisation.db.Employee","commuteFee","field","Commute Fee","Montant",,,,
-"com.axelor.apps.organisation.db.Employee","commuteFeeRefundPerc","field","Commute Fee Refund %","% de prise en charge",,,,
-"com.axelor.apps.organisation.db.Employee","supervisedBySelect","field","Supervised by",,,,,
-"com.axelor.apps.organisation.db.Employee","managerUserInfo","field","Manager",,,,,
-"com.axelor.apps.organisation.db.Employee","managerProfileProduct","field","Manager Profile",,,,,
-"com.axelor.apps.organisation.db.Employee","profileProduct","field","Profile",,,,,
-"employee-form","","group","Contract Details","Details contact",,,,
-"employee-form","","page","Additionnal information","Informations Complémentaires",,,,
-"employee-form","","page","Profile","Profil",,,,
-"employee-form","","group","-",,,,,""
-"employee-form","","group","Keywords","Mots clé",,,,
-"employee-form","","group","Companies","Les sociétés",,,,
-"employee-form","","page","Salary/Expenses/Holidays","Salaire / Charges / Vacances",,,,
-"employee-form","","page","Salary","Salaire",,,,
-"employee-form","","group","Fixed salary","Salaire fixe",,,,
-"employee-form","","page","Travel expense","Note de frais",,,,
-"employee-form","","group","Commute expenses","Dépenses",,,,
-"employee-form","","page","Competences","Compétence",,,,
-"employee-form","","page","Hierarchy","Hiérarchie",,,,
-"com.axelor.apps.organisation.db.EvaluationLine","evaluation-line-form","form","Evaluation lines","Ligne d'évaluation",,,,
-"com.axelor.apps.organisation.db.EvaluationLine","evaluation-line-grid","grid","Evaluation lines","Ligne d'évaluation",,,,
-"com.axelor.apps.organisation.db.EvaluationLine","candidate","field",,"Candidat",,,,
-"com.axelor.apps.organisation.db.EvaluationLine","label","field","Criteria evaluated",,,,,
-"com.axelor.apps.organisation.db.EvaluationLine","coefficient","field","Coefficient","Coefficient",,,,
-"com.axelor.apps.organisation.db.EvaluationLine","gradeSelect","field","Grade","Note",,,,
-"com.axelor.apps.organisation.db.ExpenseLine","expense-edit-line-grid","grid","Expense Lines","Lignes de frais",,,,
-"com.axelor.apps.organisation.db.Expense","expense-edit-grid","grid","Travel expenses","Les notes de frais",,,,
-"com.axelor.apps.organisation.db.Expense","expense-grid","grid","Travel expenses","Les notes de frais",,,,
-"com.axelor.apps.organisation.db.Expense","expense-form","form","Travel expense","Note de frais",,,,
-"com.axelor.apps.organisation.db.Expense","employee","field","Employee","Employé",,,,
-"com.axelor.apps.organisation.db.Expense","userInfo","field","Employee","Employé",,,,
-"com.axelor.apps.organisation.db.Expense","date","field","Date","Date",,,,
-"com.axelor.apps.organisation.db.Expense","totalAmount","field","Total amount","Montant total",,,,
-"com.axelor.apps.organisation.db.Expense","currency","field","Currency","Devise",,,,
-"com.axelor.apps.organisation.db.Expense","expenseLineList","field","Expense lines","Ligne de frais",,,,
-"com.axelor.apps.organisation.db.Expense","validationStatusSelect","field","Validation Status","Etat de validation",,,,
-"com.axelor.apps.organisation.db.Expense","progress","field","Progress","Avancement",,,,
-"com.axelor.apps.organisation.db.Expense","paymentPeriod","field","Payment Period","Période",,,,
-"com.axelor.apps.organisation.db.Expense","statusSelect","field","Status","Etat",,,,
-"com.axelor.apps.organisation.db.Expense","validatedByUserInfo","field","Validated by",,,,,
-"com.axelor.apps.organisation.db.Expense","validationDate","field","Validation date","Date de validation",,,,
-"com.axelor.apps.organisation.db.Expense","motif","field","Reason","Motif",,,,
-"expense-form","","group","Action(s)","Action(s)",,,,
-"expense-form","submit","button","Submit","Envoyer",,,,
-"expense-form","validateManager","button","Validate","Valider",,,,
-"expense-form","validateCommercial","button","Validate","Valider",,,,
-"expense-form","confirm","button","Confirm","Confirmer",,,,
-"expense-form","refuse","button","Refuse","Refuse",,,,
-"expense-form","sum","button","Compute","Calculer",,,,
-"expense-form","draft","button","Draft","Brouillon",,,,
-"com.axelor.apps.organisation.db.ExpenseLine","expense-line-form","form","Expense Line","Ligne de dépense",,,,
-"expense-line-form","","group","Context","Context",,,,
-"expense-line-form","","group","Details","Détails",,,,
-"expense-line-form","","group","Proofs","Preuves",,,,
-"expense-line-form","","group","Validation/Invoicing","Validation/Facturation",,,,
-"com.axelor.apps.organisation.db.ExpenseLine","expense-line-grid","grid","Expense Line","Ligne de dépense",,,,
-"com.axelor.apps.organisation.db.ExpenseLine","task","field","Tâche","Tâche",,,,
-"com.axelor.apps.organisation.db.ExpenseLine","expense","field","Expense","Note de frais",,,,
-"com.axelor.apps.organisation.db.ExpenseLine","project","field","Affair",,,,,
-"com.axelor.apps.organisation.db.ExpenseLine","expenseTypeSelect","field","Type of expense","Type de dépense",,,,
-"com.axelor.apps.organisation.db.ExpenseLine","product","field","Product","Produit",,,,
-"com.axelor.apps.organisation.db.ExpenseLine","unit","field","UOM","UdM",,,,
-"com.axelor.apps.organisation.db.ExpenseLine","shortDescription","field","Short description","Description courte",,,,
-"com.axelor.apps.organisation.db.ExpenseLine","date","field","Date","Date",,,,
-"com.axelor.apps.organisation.db.ExpenseLine","qty","field","Quantity","Quantité",,,,
-"com.axelor.apps.organisation.db.ExpenseLine","price","field","Unit price","Prix à l'unité",,,,
-"com.axelor.apps.organisation.db.ExpenseLine","reference","field","Reference","Référence",,,,
-"com.axelor.apps.organisation.db.ExpenseLine","sequence","field","Sequence","Séquence",,,,
-"com.axelor.apps.organisation.db.ExpenseLine","total","field","Total","Total",,,,
-"com.axelor.apps.organisation.db.ExpenseLine","file","field","File","Fichier",,,,
-"com.axelor.apps.organisation.db.ExpenseLine","fileReceived","field","File received","Fichier reçu",,,,
-"com.axelor.apps.organisation.db.ExpenseLine","validationDate","field","Date de validation","Date de validation",,,,
-"com.axelor.apps.organisation.db.ExpenseLine","istoInvoice","field","A facturer","A facturer",,,,
-"com.axelor.apps.organisation.db.ExpenseLine","isInvoiced","field","Facturé","Facturé",,,,
-"com.axelor.apps.organisation.db.InterventionType","intervention-type-form","form","InterventionType","Types d'intervention",,,,
-"com.axelor.apps.organisation.db.InterventionType","intervention-type-grid","grid","InterventionType","Types d'intervention",,,,
-"com.axelor.apps.organisation.db.InterventionType","name","field","Intervention type","Type d'Intervention",,,,
-"com.axelor.apps.organisation.db.InterventionType","code","field","Code","Code",,,,
-"com.axelor.apps.organisation.db.LeaveRequest","leave-request-calendar","calendar","Leave requests","Les demandes de congé",,,,
-"com.axelor.apps.organisation.db.LeaveRequest","leave-request-form","form","Leave request","Demande de congé",,,,
-"com.axelor.apps.organisation.db.LeaveRequest","employeeUserInfo","field","Employee","Employé",,,,
-"com.axelor.apps.organisation.db.LeaveRequest","requestDate","field","Request Date","Date de la demande",,,,
-"com.axelor.apps.organisation.db.LeaveRequest","startDateT","field","From Date/Time","Date/heure de début",,,,
-"com.axelor.apps.organisation.db.LeaveRequest","endDateT","field","To Date/Time","Date/heure de fin",,,,
-"com.axelor.apps.organisation.db.LeaveRequest","nbrOfDayOff","field","Nbr of Days Off","Nombre de jours de congé",,,,
-"com.axelor.apps.organisation.db.LeaveRequest","leaveRequestReason","field","Reason","Raison",,,,
-"com.axelor.apps.organisation.db.LeaveRequest","managerUserInfo","field","Manager","Responsable",,,,
-"com.axelor.apps.organisation.db.LeaveRequest","approvalDate","field","Approval Date","Date d'acceptation",,,,
-"com.axelor.apps.organisation.db.LeaveRequest","remainingDaysOnPeriod","field","Remaining days for the period","Reste à prendre sur la période",,,,
-"com.axelor.apps.organisation.db.LeaveRequest","statusSelect","field","Request status","Etat de la demande",,,,
-"leave-request-form","","group","Leave period","Période de congé",,,,
-"leave-request-form","confirm","button","Confirm","Confirmer",,,,
-"leave-request-form","cancel","button","Cancel","Annuler",,,,
-"leave-request-form","validate","button","Validate","Valider",,,,
-"com.axelor.apps.organisation.db.LeaveRequest","leave-request-grid","grid","Leave requests","Les demandes de congé",,,,
-"com.axelor.apps.organisation.db.LeaveRequestReason","leave-request-reason-form","form","Leave request reason","Motif de congé",,,,
-"com.axelor.apps.organisation.db.LeaveRequestReason","leave-request-reason-grid","grid","Leave request reasons","Les motifs de congé",,,,
-"com.axelor.apps.organisation.db.LeaveRequestReason","code","field","Code","Code",,,,
-"com.axelor.apps.organisation.db.LeaveRequestReason","name","field","Name","Nom",,,,
-"com.axelor.apps.organisation.db.MissionOrder","mission-order-grid","grid","Mission orders","Ordres de mission",,,,
-"com.axelor.apps.organisation.db.MissionOrder","mission-order-form","form","Mission order","Ordre de mission",,,,
-"com.axelor.apps.organisation.db.MissionOrder","reference","field","Reference","Référence",,,,
-"com.axelor.apps.organisation.db.MissionOrder","missionPropose","field","Mission propose","Objet de la mission",,,,
-"com.axelor.apps.organisation.db.MissionOrder","company","field","Company","Société",,,,
-"com.axelor.apps.organisation.db.MissionOrder","affair","field","Affair","Affaire",,,,
-"com.axelor.apps.organisation.db.MissionOrder","employee","field","Employee","Employé",,,,
-"com.axelor.apps.organisation.db.MissionOrder","userInfo","field","Mission manager","Responsable interne de la mission",,,,
-"com.axelor.apps.organisation.db.MissionOrder","address","field","Address","Lieu",,,,
-"com.axelor.apps.organisation.db.MissionOrder","contactPartner","field","Local contact","Contact local",,,,
-"com.axelor.apps.organisation.db.MissionOrder","qualificationKeyword","field","Qualification (contractual)","Qualification (Contractuelle)",,,,
-"com.axelor.apps.organisation.db.MissionOrder","workingTime","field","Working time / Specific condition","Horaires / Conditions particulières",,,,
-"com.axelor.apps.organisation.db.MissionOrder","missionStartDate","field","Mission date","Date de la mission",,,,
-"com.axelor.apps.organisation.db.MissionOrder","missionEndDate","field","To","au",,,,
-"mission-order-form","","group","Mission order","Ordre de mission",,,,
-"mission-order-form","","group","Mission information","Information mission",,,,
-"com.axelor.apps.organisation.db.MobilityChoice","mobility-choice-form","form","Geographical mobility","Mobilité Géographique",,,,
-"com.axelor.apps.organisation.db.MobilityChoice","mobility-choice-grid","grid","Geographical mobility","Mobilité Géographique",,,,
-"com.axelor.apps.organisation.db.MobilityChoice","name","field","Name","Nom",,,,
-"com.axelor.apps.organisation.db.MobilityChoice","code","field","Code","Code",,,,
-"com.axelor.apps.organisation.db.Overtime","overtime-grid","grid","Overtimes","Heures supplémentaires",,,,
-"com.axelor.apps.organisation.db.Overtime","overtime-form","form","Overtime","Heures supplémentaires",,,,
-"com.axelor.apps.organisation.db.Overtime","userInfo","field","Employee","Employé",,,,
-"com.axelor.apps.organisation.db.Overtime","date","field","Date","Date",,,,
-"com.axelor.apps.organisation.db.Overtime","totalAmount","field","Total amount","Montant total",,,,
-"com.axelor.apps.organisation.db.Overtime","currency","field","Currency","Devise",,,,
-"com.axelor.apps.organisation.db.Overtime","overtimeLineList","field","Overtime lines","Lignes d'heures sup.",,,,
-"com.axelor.apps.organisation.db.Overtime","statusSelect","field","Status","Etat",,,,
-"com.axelor.apps.organisation.db.Overtime","validationDate","field","Date","Date de validation",,,,
-"com.axelor.apps.organisation.db.Overtime","validatedByUserInfo","field","Validated by",,,,,
-"com.axelor.apps.organisation.db.Overtime","period","field","Month of Payment","Mois paiement",,,,
-"com.axelor.apps.organisation.db.Overtime","motif","field","Reason","Motif",,,,
-"overtime-form","","group","Action(s)","Action(s)",,,,
-"overtime-form","submit","button","Submit","Envoyer",,,,
-"overtime-form","validateManager","button","Validate","Valider",,,,
-"overtime-form","validateCommercial","button","Validate","Valider",,,,
-"overtime-form","confirm","button","Confirm","Confirmer",,,,
-"overtime-form","refuse","button","Refuse","Refuse",,,,
-"overtime-form","draft","button","Draft","Brouillon",,,,
-"com.axelor.apps.organisation.db.OvertimeLine","overtime-line-grid","grid","Overtime lines","Heures supplémentaires",,,,
-"com.axelor.apps.organisation.db.OvertimeLine","overtime-line-form","form","Overtime line","Heure supplémentaire",,,,
-"com.axelor.apps.organisation.db.OvertimeLine","overtime","field","Employee","Employé",,,,
-"com.axelor.apps.organisation.db.OvertimeLine","description","field","Description","Description",,,,
-"com.axelor.apps.organisation.db.OvertimeLine","affair","field","Affair","Affaire",,,,
-"com.axelor.apps.organisation.db.OvertimeLine","quantity","field","Quantity","Quantité",,,,
-"com.axelor.apps.organisation.db.OvertimeLine","unit","field","UOM","UdM",,,,
-"com.axelor.apps.organisation.db.OvertimeLine","unitPrice","field","Unit price","Prix unitaire",,,,
-"com.axelor.apps.organisation.db.OvertimeLine","total","field","Sub total","Sous-total",,,,
-"com.axelor.apps.organisation.db.OvertimeLine","validationDate","field","Date de validation","Date de validation",,,,
-"overtime-line-form","validate","button","Validate","Valider",,,,
-"com.axelor.apps.crm.db.Participant","participant-form","form","Participant","Participant",,,,
-"com.axelor.apps.crm.db.Participant","participant-grid","grid","Participants","Participants",,,,
-"com.axelor.apps.organisation.db.PersonalInfo","personal-info-edit-form","form","Additionnal information","Informations Complémentaires",,,,
-"com.axelor.apps.organisation.db.PersonalInfo","importId","field",,,,,,
-"com.axelor.apps.organisation.db.PersonalInfo","candidate","field","Candidate","Candidat",,,,
-"com.axelor.apps.organisation.db.PersonalInfo","employee","field","Employee","Employé",,,,
-"com.axelor.apps.organisation.db.PersonalInfo","dob","field","Date of Birth","Date de Naissance",,,,
-"com.axelor.apps.organisation.db.PersonalInfo","citizenshipCountry","field","Nationality","Nationalité",,,,
-"com.axelor.apps.organisation.db.PersonalInfo","accreditationSelect","field","Accreditation","Habilitation",,,,
-"com.axelor.apps.organisation.db.PersonalInfo","maritalStatusSelect","field","Marital status","Situation Maritale",,,,
-"com.axelor.apps.organisation.db.PersonalInfo","childrenNbr","field","Nbr of children","Nombre d'enfants",,,,
-"com.axelor.apps.organisation.db.PersonalInfo","spouseProfession","field","Spouse occupation","Profession du Conjoint",,,,
-"com.axelor.apps.organisation.db.PersonalInfo","mobilityChoiceSet","field","Geographical mobility",,,,,
-"com.axelor.apps.organisation.db.PlacementFollowUp","placement-follow-up-form","form","PlacementFollowUp","PlacementFollowUp",,,,
-"com.axelor.apps.organisation.db.PlacementFollowUp","placement-follow-up-grid","grid","PlacementFollowUp","PlacementFollowUp",,,,
-"com.axelor.apps.organisation.db.PlacementFollowUp","candidate","field",,"Candidat",,,,
-"com.axelor.apps.organisation.db.Planning","planning-form","form","Planning","Planification",,,,
-"com.axelor.apps.organisation.db.Planning","planning-grid","grid","Planning","Planification",,,,
-"com.axelor.apps.organisation.db.Planning","period","field","Période","Période",,,,
-"com.axelor.apps.organisation.db.Planning","userInfo","field","Fait par","Fait par",,,,
-"com.axelor.apps.organisation.db.Planning","date","field","Date","Date",,,,
-"com.axelor.apps.organisation.db.Planning","planningLineList","field","Les lignes de plannification","Les lignes de planification",,,,
-"com.axelor.apps.organisation.db.PlanningLine","planning-line-form","form","Planning line","Ligne de planification",,,,
-"com.axelor.apps.organisation.db.PlanningLine","planning-line-grid","grid","Planning lines","Les lignes de planification",,,,
-"com.axelor.apps.organisation.db.PlanningLine","planning-line-task-grid","grid","Planning lines","Les lignes de planification",,,,
-"com.axelor.apps.organisation.db.PlanningLine","planning-line-tast-form","form","Planning line","Ligne de planification",,,,
-"com.axelor.apps.organisation.db.PlanningLine","planning","field","Plannification","Planification",,,,
-"com.axelor.apps.organisation.db.PlanningLine","product","field","Profil","Profil",,,,
-"com.axelor.apps.organisation.db.PlanningLine","employee","field","RSC","RSC",,,,
-"com.axelor.apps.organisation.db.PlanningLine","task","field","Tâche","Tâche",,,,
-"com.axelor.apps.organisation.db.PlanningLine","fromDateTime","field","Du",,,,,
-"com.axelor.apps.organisation.db.PlanningLine","toDateTime","field","Au",,,,,
-"com.axelor.apps.organisation.db.PlanningLine","duration","field","Durée","Durée",,,,
-"com.axelor.apps.organisation.db.PlanningLine","unit","field","Unité","Unité",,,,
-"com.axelor.apps.organisation.db.PlanningLine","timeSheet","field","Feuille de temps","Feuille de temps",,,,
-"com.axelor.apps.organisation.db.Position","position-form","form","Professional background","Parcours professionel",,,,
-"com.axelor.apps.organisation.db.Position","position-grid","grid","Professional background","Parcours professionel",,,,
-"com.axelor.apps.organisation.db.Position","candidate","field",,"Candidat",,,,
-"com.axelor.apps.organisation.db.Position","employee","field",,"Employé",,,,
-"com.axelor.apps.organisation.db.Position","name","field","Intitulé du poste","Intitulé du poste",,,,
-"com.axelor.apps.organisation.db.Position","startDate","field","Date de début","Date de début",,,,
-"com.axelor.apps.organisation.db.Position","endDate","field","Date de fin","Date de fin",,,,
-"com.axelor.apps.organisation.db.Position","employer","field","Société","Société",,,,
-"com.axelor.apps.organisation.db.Position","description","field","Description de poste","Description de poste",,,,
-"com.axelor.apps.organisation.db.Position","departureCause","field","Raison du départ","Raison du départ",,,,
-"com.axelor.apps.organisation.db.Position","department","field","Service","Service",,,,
-"com.axelor.apps.organisation.db.Position","duration","field","Durée","Durée",,,,
-"com.axelor.apps.organisation.db.Position","referenceTitle","field","Titre de la référence","Titre de la référence",,,,
-"com.axelor.apps.organisation.db.Position","context","field","Contexte","Contexte",,,,
-"com.axelor.apps.organisation.db.Position","goals","field","Objectifs","Objectifs",,,,
-"com.axelor.apps.organisation.db.Position","development","field","Déroulement","Déroulement",,,,
-"com.axelor.apps.organisation.db.Position","result","field","Résultat","Résultat",,,,
-"com.axelor.apps.organisation.db.Position","technicalEnvironment","field","Environnement technique","Environnement technique",,,,
-"com.axelor.apps.organisation.db.Position","contact","field","Nom contact","Nom contact",,,,
-"com.axelor.apps.organisation.db.Position","recommendationSelect","field","Avis contact","Avis contact",,,,
-"com.axelor.apps.organisation.db.Position","comment","field","Commentaire du contact","Commentaire du contact",,,,
-"com.axelor.apps.organisation.db.Project","project-grid","grid","Affairs/Projects","Affaires / Projets",,,,
-"com.axelor.apps.organisation.db.Project","project-form","form","Affair/Project","Affaire / Projet",,,,
-"com.axelor.apps.organisation.db.Project","clientPartner","field","Customer","Client",,,,
-"com.axelor.apps.organisation.db.Project","contactPartner","field","Contact","Contact",,,,
-"com.axelor.apps.organisation.db.Project","affairName","field","Affair name","Nom de l'affaire",,,,
-"com.axelor.apps.organisation.db.Project","affairDescription","field","Affair description",,,,,
-"com.axelor.apps.organisation.db.Project","isModel","field","Model ?","Modèle ?",,,,
-"com.axelor.apps.organisation.db.Project","isProject","field","Project ?","Projet ?",,,,
-"com.axelor.apps.organisation.db.Project","isAffair","field","Affair ?","Affaire ?",,,,
-"com.axelor.apps.organisation.db.Project","isTimeSheetImputable","field","Timesheet input required ?","Imputation feuille de temps ?",,,,
-"com.axelor.apps.organisation.db.Project","defaultTask","field","Default task","Tâche par défaut",,,,
-"com.axelor.apps.organisation.db.Project","isReinvoicingExpense","field","Reinvoicing of travel expense","Refacturation des NDF",,,,
-"com.axelor.apps.organisation.db.Project","isReinvoicingTime","field","Reinvoicing time spent","Refacturation du temps",,,,
-"com.axelor.apps.organisation.db.Project","initialBudgetTurnover","field","Turnover","CA",,,,
-"com.axelor.apps.organisation.db.Project","initialBudgetCost","field","Cost","Coût",,,,
-"com.axelor.apps.organisation.db.Project","initialBudgetMargin","field","Margin","Marge",,,,
-"com.axelor.apps.organisation.db.Project","realizedTurnover","field","Turnover","CA",,,,
-"com.axelor.apps.organisation.db.Project","realizedBudgetCost","field","Cost","Coût",,,,
-"com.axelor.apps.organisation.db.Project","realizedBudgetMargin","field","Margin","Marge",,,,
-"com.axelor.apps.organisation.db.Project","remainingTurnover","field","Turnover","CA",,,,
-"com.axelor.apps.organisation.db.Project","remainingBudgetCost","field","Cost","Coût",,,,
-"com.axelor.apps.organisation.db.Project","remainingBudgetMargin","field","Margin","Marge",,,,
-"com.axelor.apps.organisation.db.Project","expectedFinalTurnover","field","Turnover","CA",,,,
-"com.axelor.apps.organisation.db.Project","expectedFinalCost","field","Cost","Coût",,,,
-"com.axelor.apps.organisation.db.Project","expectedFinalMargin","field","Margin","Marge",,,,
-"com.axelor.apps.organisation.db.Project","plannedTime","field","Planned time","Charge temps prévu",,,,
-"com.axelor.apps.organisation.db.Project","typeDurationSelect","field","Type duration","Type durée",,,,
-"com.axelor.apps.organisation.db.Project","plannedDuration","field","Planned duration","Durée prévue",,,,
-"com.axelor.apps.organisation.db.Project","spentTime","field","Spent Time","Charge temps passé",,,,
-"com.axelor.apps.organisation.db.Project","remainingTime","field","Remaining time","Reste à faire",,,,
-"com.axelor.apps.organisation.db.Project","budgetedExpenses","field","Budgeted Expenses","Frais prévus",,,,
-"com.axelor.apps.organisation.db.Project","incurredExpenses","field","Incurred expenses","Frais générés",,,,
-"com.axelor.apps.organisation.db.Project","remainingExpenses","field","Remaining expenses","Frais restants",,,,
-"com.axelor.apps.organisation.db.Project","parentProject","field","Parent project","Projet parent",,,,
-"com.axelor.apps.organisation.db.Project","projectUnit","field","Project unit",,,,,
-"com.axelor.apps.organisation.db.Project","taskList","field","Tasks","Tâches",,,,
-"com.axelor.apps.organisation.db.Project","responsibleUserInfo","field","Responsible","Responsable",,,,
-"com.axelor.apps.organisation.db.Project","memberUserInfoSet","field","Members","Membres",,,,
-"com.axelor.apps.organisation.db.Project","modelProject","field","Project model",,,,,
-"com.axelor.apps.organisation.db.Project","consultationDate","field","Consultation Date","Date de consultation",,,,
-"com.axelor.apps.organisation.db.Project","typeSelect","field","Type","Type",,,,
-"com.axelor.apps.organisation.db.Project","deadline","field","Deadline","Date limite",,,,
-"com.axelor.apps.organisation.db.Project","complexity","field","Complexity","Complexité",,,,
-"com.axelor.apps.organisation.db.Project","competition","field","Competition","Concurrence",,,,
-"com.axelor.apps.organisation.db.Project","plannedBudget","field","Planned budget","Budget prévu",,,,
-"com.axelor.apps.organisation.db.Project","needDescription","field","Need Description","Description du besoin",,,,
-"com.axelor.apps.organisation.db.Project","specificationFile","field","Attach specification","Spécifications",,,,
-"com.axelor.apps.organisation.db.Project","answerDate","field","Answer Date","Date de réponse",,,,
-"com.axelor.apps.organisation.db.Project","candidateSet","field","Candidates","Candidats",,,,
-"com.axelor.apps.organisation.db.Project","employeeSet","field","Employees","Employés",,,,
-"com.axelor.apps.organisation.db.Project","marketTypeSelect","field","Market Type","Forme",,,,
-"com.axelor.apps.organisation.db.Project","imputExpense","field","Imputation note de frais","Imputation note de frais",,,,
-"com.axelor.apps.organisation.db.Project","typeSelect","field","Type select","Type",,,,
-"com.axelor.apps.organisation.db.Project","preSalesTask","field","Pre-sales task","Tâche avant vente",,,,
-"project-form","","group","Actions","Actions",,,,
-"project-form","createSalesOrder","button","Create quote","Créer devis",,,,
-"project-form","generateNewInstanceOfProject","button","Generate new project instance","Générer nouvelle instance du projet",,,,
-"project-form","generateDraftInvoice","button","Generate draft invoice","Générer facture brouillon",,,,
-"project-form","showTask","button","Show tasks","Voir les tâches",,,,
-"project-form","","page","Tasks","Tâches",,,,
-"project-form","","page","Financial information","Informations financières",,,,
-"project-form","","group","Initial Budget","Budget initial",,,,
-"project-form","","group","Realized","Réalisé",,,,
-"project-form","","group","Remaining to do","Reste à faire",,,,
-"project-form","","group","Estimated final","Estimation finale",,,,
-"project-form","","page","Responsable / Membres","Responsable / Membres",,,,
-"com.axelor.apps.organisation.db.PublicHolidaysLine","public-holiday-line-form","form","Public holiday","Jours Fériés",,,,
-"com.axelor.apps.organisation.db.PublicHolidaysLine","public-holiday-line-grid","grid","Public holidays","Jours Fériés",,,,
-"com.axelor.apps.organisation.db.PublicHolidaysLine","name","field","Name","Nom",,,,
-"com.axelor.apps.organisation.db.PublicHolidaysLine","publicHolidays","field","Public holiday","Les jours fériés",,,,
-"com.axelor.apps.organisation.db.PublicHolidaysLine","date","field","Date","Date",,,,
-"com.axelor.apps.organisation.db.PublicHolidaysLine","description","field","Description","Descriptif",,,,
-"com.axelor.apps.organisation.db.PublicHolidays","public-holidays-form","form","Public holidays","Jours Fériés",,,,
-"com.axelor.apps.organisation.db.PublicHolidays","public-holidays-grid","grid","Public holidays","Jours Fériés",,,,
-"com.axelor.apps.organisation.db.PublicHolidays","name","field","Name","Nom",,,,
-"com.axelor.apps.organisation.db.PublicHolidays","schedule","field","Timetable","Les horaires",,,,
-"com.axelor.apps.organisation.db.PublicHolidays","publicHolidaysLineList","field","Public holidays","Les jours fériés",,,,
-"com.axelor.apps.organisation.db.RecuitmentProcessAdvancement","recruitment-process-advancement-form","form","Recruitment process advancement","Avancements processus recrutement",,,,
-"com.axelor.apps.organisation.db.RecuitmentProcessAdvancement","recruitment-process-advancement-grid","grid","Recruitment process advancement","Avancements processus recrutement",,,,
-"com.axelor.apps.organisation.db.RecuitmentProcessAdvancement","candidate","field",,"Candidat",,,,
-"com.axelor.apps.organisation.db.RecuitmentProcessAdvancement","statusSelect","field","Etat d'avancement","Etat d'avancement",,,,
-"com.axelor.apps.organisation.db.RecuitmentProcessAdvancement","dateT","field","Date-time","Date-heure",,,,
-"com.axelor.apps.organisation.db.RecuitmentProcessAdvancement","note","field","Notes","Commentaire",,,,
-"com.axelor.apps.organisation.db.Schedule","schedule-form","form","Horaires","Horaires",,,,
-"com.axelor.apps.organisation.db.Schedule","schedule-grid","grid","Les horaires","Les horaires",,,,
-"com.axelor.apps.organisation.db.Schedule","name","field","Name","Nom",,,,
-"com.axelor.apps.organisation.db.Schedule","scheduleLineList","field","Shift periods","Les périodes horaires",,,,
-"com.axelor.apps.organisation.db.Schedule","publicHolidays","field","Public holidays list","Les jours fériés",,,,
-"com.axelor.apps.organisation.db.ScheduleLine","schedule-line-form","form","Working Time shift","Période horaire",,,,
-"com.axelor.apps.organisation.db.ScheduleLine","schedule-line-grid","grid","Working Time shifts","Les périodes horaires",,,,
-"com.axelor.apps.organisation.db.ScheduleLine","schedule","field","Shift","Horaires",,,,
-"com.axelor.apps.organisation.db.ScheduleLine","startDate","field","Start date","Date début d'application",,,,
-"com.axelor.apps.organisation.db.ScheduleLine","scheduleSubLineList","field","Daily periods","Les périodes journalières",,,,
-"com.axelor.apps.organisation.db.ScheduleSubLine","schedule-sub-line-form","form","Working timeshift periods","Période journalière",,,,
-"com.axelor.apps.organisation.db.ScheduleSubLine","schedule-sub-line-grid","grid","Working timeshift periods","Période journalière",,,,
-"com.axelor.apps.organisation.db.ScheduleSubLine","scheduleLine","field","Shift lines","Période horaires",,,,
-"com.axelor.apps.organisation.db.ScheduleSubLine","daySelect","field","Day","Jour",,,,
-"com.axelor.apps.organisation.db.ScheduleSubLine","startPeriod1","field","Start hour period 1","Heure début période 1",,,,
-"com.axelor.apps.organisation.db.ScheduleSubLine","endPeriod1","field","End hour period 1","Heure fin période 1",,,,
-"com.axelor.apps.organisation.db.ScheduleSubLine","startPeriod2","field","Start hour period 2","Heure début période 2",,,,
-"com.axelor.apps.organisation.db.ScheduleSubLine","endPeriod2","field","End hour period 2","Heure fin période 2",,,,
-"com.axelor.apps.organisation.db.SkillLine","skill-line-edit-grid","grid","Skills","Compétences",,,,
-"com.axelor.apps.organisation.db.SkillLine","name","field","Label","Libellé",,,,
-"com.axelor.apps.organisation.db.SkillLine","value","field","Value","Valeur",,,,
-"com.axelor.apps.organisation.db.SkillLine","skillSet","field",,"Compétences",,,,
-"com.axelor.apps.organisation.db.SkillSet","skill-set-edit-form","form","Skill","Compétence",,,,
-"com.axelor.apps.organisation.db.SkillSet","skillLineList","field","Skills list","Lignes de compétences",,,,
-"com.axelor.apps.organisation.db.SkillSet","languageSet","field",,"Langues",,,,
-"com.axelor.apps.organisation.db.SkillSet","expertCompetence","field",,"Expertises",,,,
-"com.axelor.apps.organisation.db.SkillSet","masteredCompetence","field",,"Compétences maîtrisées",,,,
-"com.axelor.apps.organisation.db.SkillSet","awareCompetence","field",,"Connaissances",,,,
-"com.axelor.apps.organisation.db.Task","task-calendar","calendar","Tasks","Tâches",,,,
-"com.axelor.apps.organisation.db.Task","task-form","form","Task","Tâche",,,,
-"com.axelor.apps.organisation.db.Task","Total worked quantity","viewField","Total worked quantity","Quantité totale travaillé",,,,
-"com.axelor.apps.organisation.db.Task","Total worked unit","viewField","Total worked unit","Unité travaillé totale",,,,
-"com.axelor.apps.organisation.db.Task","salesOrderLine","field","Sale order line (origin)","Ligne de commande initiale",,,,
-"com.axelor.apps.organisation.db.Task","name","field","Task name","Nom de la tâche",,,,
-"com.axelor.apps.organisation.db.Task","project","field","Project","Projet",,,,
-"com.axelor.apps.organisation.db.Task","totalTaskQty","field","Total ordered",,,,,
-"com.axelor.apps.organisation.db.Task","totalTimeSheetQty","field","Total worked",,,,,
-"com.axelor.apps.organisation.db.Task","totalPlannedQty","field","Total planned",,,,,
-"com.axelor.apps.organisation.db.Task","totalTaskUnit","field","Total ordered unit",,,,,
-"com.axelor.apps.organisation.db.Task","totalTimeSheetUnit","field","Total worked unit",,,,,
-"com.axelor.apps.organisation.db.Task","totalPlannedUnit","field","Total planned unit",,,,,
-"com.axelor.apps.organisation.db.Task","taskProgress","field","Task Progress","Avancement tâche",,,,
-"com.axelor.apps.organisation.db.Task","description","field","Description","Description",,,,
-"com.axelor.apps.organisation.db.Task","isTimesheetAffected","field","Input from timesheet ?","Imputable feuille de temps ?",,,,
-"com.axelor.apps.organisation.db.Task","userInfo","field","Assigned to","Assigné à",,,,
-"com.axelor.apps.organisation.db.Task","statusSelect","field","Status","Etat",,,,
-"com.axelor.apps.organisation.db.Task","totalTask","field","Total task","Total de la tâche",,,,
-"com.axelor.apps.organisation.db.Task","isToInvoice","field","To invoice ?","A facturer ?",,,,
-"com.axelor.apps.organisation.db.Task","invoicingDate","field","Invoicing Date","Date de la facturation",,,,
-"com.axelor.apps.organisation.db.Task","amountToInvoice","field","Amount to invoice","Montant à facturer",,,,
-"com.axelor.apps.organisation.db.Task","startDateT","field","Start Date Time","Date début",,,,
-"com.axelor.apps.organisation.db.Task","endDateT","field","End Date Time","Date fin",,,,
-"com.axelor.apps.organisation.db.Task","planningLineList","field","Resources planning","Planification RSC",,,,
-"com.axelor.apps.organisation.db.Task","notes","field","Notes","Notes",,,,
-"com.axelor.apps.organisation.db.Task","initialBudgetTurnover","field","Turnover","CA",,,,
-"com.axelor.apps.organisation.db.Task","initialBudgetCost","field","Cost","Coût",,,,
-"com.axelor.apps.organisation.db.Task","initialBudgetMargin","field","Margin","Marge",,,,
-"com.axelor.apps.organisation.db.Task","realizedTurnover","field","Turnover","CA",,,,
-"com.axelor.apps.organisation.db.Task","realizedBudgetCost","field","Cost","Coût",,,,
-"com.axelor.apps.organisation.db.Task","realizedBudgetMargin","field","Margin","Marge",,,,
-"com.axelor.apps.organisation.db.Task","remainingTurnover","field","Turnover","CA",,,,
-"com.axelor.apps.organisation.db.Task","remainingBudgetCost","field","Cost","Coût",,,,
-"com.axelor.apps.organisation.db.Task","remainingBudgetMargin","field","Margin","Marge",,,,
-"com.axelor.apps.organisation.db.Task","expectedFinalTurnover","field","Turnover","CA",,,,
-"com.axelor.apps.organisation.db.Task","expectedFinalCost","field","Cost","Coût",,,,
-"com.axelor.apps.organisation.db.Task","expectedFinalMargin","field","Margin","Marge",,,,
-"com.axelor.apps.organisation.db.Task","gapBetweenFinalAndInitial","field","Initial/Final Difference","Ecart final/initial",,,,
-"com.axelor.apps.organisation.db.Task","salesOrderLineList","field","Customer order lines","Les lignes de commandes clients",,,,
-"com.axelor.apps.organisation.db.Task","customerInvoiceLineList","field","Customer invoice lines","Les lignes de factures clients",,,,
-"com.axelor.apps.organisation.db.Task","supplierOrderLineList","field","Supplier order lines","Les lignes de commandes fournisseurs",,,,
-"com.axelor.apps.organisation.db.Task","supplierInvoiceLineList","field","Supplier invoice lines","Les lignes de factures fournisseurs",,,,
-"com.axelor.apps.organisation.db.Task","expenseLineList","field","Travel expense lines","Les lignes de notes de frais",,,,
-"com.axelor.apps.organisation.db.Task","timesheetLineList","field","Timesheet lines","Les lignes de feuille de temps",,,,
-"com.axelor.apps.organisation.db.Task","otherCostTaskProductLine","field","Other planned costs","Autres coût planifiés",,,,
-"com.axelor.apps.organisation.db.Task","otherRevenueTaskProductLine","field","Other planned revenue","Autres recettes planifiées",,,,
-"com.axelor.apps.organisation.db.Task","taskUpdateLineList","field","Task update lines","Lignes de tâches MàJ",,,,
-"com.axelor.apps.organisation.db.Task","estimateTime","field","Estimated time","Temps prévu",,,,
-"com.axelor.apps.organisation.db.Task","spentTime","field","Spent time","Temps passé",,,,
-"com.axelor.apps.organisation.db.Task","remainingTime","field","Reminaing time","Reste à faire",,,,
-"com.axelor.apps.organisation.db.Task","generatedCharge","field","Charge generated","Frais générés",,,,
-"com.axelor.apps.organisation.db.Task","product","field","Product","Produit",,,,
-"com.axelor.apps.organisation.db.Task","qty","field","Quantity","Quantité",,,,
-"com.axelor.apps.organisation.db.Task","price","field","Unit Price","Prix à l'unité",,,,
-"task-form","backup","button","Backup","Sauvegarde",,,,
-"task-form","","page","Planification and realization","Planification et réalisation",,,,
-"task-form","","page","Notes","Remarques",,,,
-"task-form","","page","Financial information","Informations financières",,,,
-"task-form","","group","Budget initial","Budget initial",,,,
-"task-form","","group","Reaslized","Réalisé",,,,
-"task-form","","group","Remaining to do","Reste à faire",,,,
-"task-form","","group","Estimated final","Estimation finale",,,,
-"task-form","","page","Links","Liens",,,,
-"task-form","","page","Description","Description",,,,
-"com.axelor.apps.organisation.db.Task","task-grid","grid","Tasks","Tâches",,,,
-"com.axelor.apps.organisation.db.TaskProductLine","task-product-line-form","form","Task product line","Autre planification",,,,
-"com.axelor.apps.organisation.db.TaskProductLine","task","field","Task","Tâche",,,,
-"com.axelor.apps.organisation.db.TaskProductLine","product","field","Product","Produit",,,,
-"com.axelor.apps.organisation.db.TaskProductLine","amount","field","Forecasted amount","Montant prévu",,,,
-"task-product-line-form","update","button","Ajouter","Ajouter",,,,
-"com.axelor.apps.organisation.db.TaskProductLine","task-product-line-grid","grid","Task product line","Autre planification",,,,
-"com.axelor.apps.organisation.db.TaskUpdateLine","task-update-line-form","form","Mise à jour des coût","Mise à jour des coûts",,,,
-"com.axelor.apps.organisation.db.TaskUpdateLine","task","field","Task","Tâche",,,,
-"com.axelor.apps.organisation.db.TaskUpdateLine","date","field","Date","Date",,,,
-"com.axelor.apps.organisation.db.TaskUpdateLine","userInfo","field","User","Utilisateur",,,,
-"com.axelor.apps.organisation.db.TaskUpdateLine","revenue","field","Revenue","Recette",,,,
-"com.axelor.apps.organisation.db.TaskUpdateLine","cost","field","Cost","Coût",,,,
-"task-update-line-form","update","button","Add","Ajouter",,,,
-"com.axelor.apps.organisation.db.TaskUpdateLine","task-update-line-grid","grid","Les mises à jours des coûts","Les mises à jours des coûts",,,,
-"com.axelor.apps.organisation.db.Timesheet","timesheet-form","form","Timesheet","Feuille de temps",,,,
-"timesheet-form","","group","Satisfaction","Satisfaction",,,,
-"timesheet-form","","separator","Project","Projet",,,,
-"timesheet-form","","separator","Company","Société",,,,
-"timesheet-form","","group","Unité","Unité",,,,
-"timesheet-form","","separator","Details of time spent on project/tasks","Lignes de temps passé sur les projets/tâche",,,,
-"timesheet-form","","group","Action(s)","Action(s)",,,,
-"timesheet-form","confirm","button","Confirm","Confirmer",,,,
-"timesheet-form","validate","button","Validate","Valider",,,,
-"timesheet-form","cancel","button","Cancel","Annuler",,,,
-"com.axelor.apps.organisation.db.Timesheet","timesheet-grid","grid","Timesheets","Les feuilles de temps",,,,
-"com.axelor.apps.organisation.db.Timesheet","userInfo","field","Employee","Employé",,,,
-"com.axelor.apps.organisation.db.Timesheet","period","field","Period","Période",,,,
-"com.axelor.apps.organisation.db.Timesheet","fromDate","field","From Date","Date de",,,,
-"com.axelor.apps.organisation.db.Timesheet","toDate","field","To Date","Date à",,,,
-"com.axelor.apps.organisation.db.Timesheet","projectSatisfactionSelect","field","Project satisfaction","Satisfaction",,,,
-"com.axelor.apps.organisation.db.Timesheet","companySatisfactionSelect","field","Company satisfaction","Satisfaction",,,,
-"com.axelor.apps.organisation.db.Timesheet","projectComment","field","Comment","Commentaire",,,,
-"com.axelor.apps.organisation.db.Timesheet","companyComment","field","Comment","Commentaire",,,,
-"com.axelor.apps.organisation.db.Timesheet","unit","field","Unit","Unité",,,,
-"com.axelor.apps.organisation.db.Timesheet","timeUnitSelect","field","Day/Hour","Jour/Heure",,,,
-"com.axelor.apps.organisation.db.Timesheet","timesheetLineList","field","Timesheet line","Lignes de temps",,,,
-"com.axelor.apps.organisation.db.Timesheet","timesheetInputTotal","field","Total input time","Total saisi",,,,
-"com.axelor.apps.organisation.db.Timesheet","timesheetTotalByTypeList","field","Total per type","Total par type",,,,
-"com.axelor.apps.organisation.db.Timesheet","statusSelect","field","Status","Status",,,,
-"com.axelor.apps.organisation.db.Timesheet","validatedByUserInfo","field","Validated by",,,,,
-"com.axelor.apps.organisation.db.Timesheet","validationDate","field","Validation date",,,,,
-"com.axelor.apps.organisation.db.TimesheetInput","timesheet-input-form","form","Timesheet input","Saisie d'une période",,,,
-"com.axelor.apps.organisation.db.TimesheetInput","timesheet-input-grid","grid","Timesheet inputs","Les saisies de période",,,,
-"com.axelor.apps.organisation.db.TimesheetInput","timesheetLine","field","Ligne de feuille de temps","Ligne de feuille de temps",,,,
-"com.axelor.apps.organisation.db.TimesheetInput","date","field","Date","Date",,,,
-"com.axelor.apps.organisation.db.TimesheetInput","duration","field","Duration","Durée",,,,
-"com.axelor.apps.organisation.db.TimesheetInput","isToInvoice","field","To invoice ?","A facturer ?",,,,
-"com.axelor.apps.organisation.db.TimesheetInput","isInvoiced","field","Invoiced ?","Facturé ?",,,,
-"com.axelor.apps.organisation.db.TimesheetLine","timesheet-line-form","form","Timesheet project/task time input","Ligne de feuille de temps",,,,
-"com.axelor.apps.organisation.db.TimesheetLine","timesheet-line-grid","grid","Timesheet project/task time inputs","Les lignes de feuille de temps",,,,
-"com.axelor.apps.organisation.db.TimesheetLine","timesheet","field","Timesheet","Feuille de temps",,,,
-"com.axelor.apps.organisation.db.TimesheetLine","project","field","Project","Projet",,,,
-"com.axelor.apps.organisation.db.TimesheetLine","task","field","Task","Tâche",,,,
-"com.axelor.apps.organisation.db.TimesheetLine","timesheetInputList","field","Inputs List","Les saisies",,,,
-"com.axelor.apps.organisation.db.TimesheetLine","isToInvoice","field","To invoice ?","A facturer ?",,,,
-"timesheet-period-config-form","generateTimesheets","button","Generate Timesheets","Générer les feuilles de temps",,,,
-"timesheet-period-config-form","","group","Weekly","Hebdomadaire",,,,
-"timesheet-period-config-form","","group","Monthly","Mensuel",,,,
-"timesheet-period-config-form","","group","Period","Période",,,,
-"timesheet-period-config-form","","group","Day/Hour of generation","Jour/heure de génération",,,,
-"timesheet-period-config-form","","group","Reminder delay","Délai de relance",,,,
-"timesheet-period-config-form","","group","Limit","Limite",,,,
-"com.axelor.apps.organisation.db.TimesheetPeriodConfig","timesheet-period-config-form","form","Timesheet Period Config","Configuration période feuille de temps",,,,
-"com.axelor.apps.organisation.db.TimesheetPeriodConfig","timesheet-period-config-grid","grid","Timesheets Period Config","Configuration période feuilles de temps",,,,
-"com.axelor.apps.organisation.db.TimesheetPeriodConfig","typeSelect","field","Type period","Type de période",,,,
-"com.axelor.apps.organisation.db.TimesheetPeriodConfig","firstDayOfWeek","field","First day of week","1er jour de la semaine",,,,
-"com.axelor.apps.organisation.db.TimesheetPeriodConfig","lastDayOfWeek","field","Last day of week","Dernier jour de la semaine",,,,
-"com.axelor.apps.organisation.db.TimesheetPeriodConfig","dayOfGeneration","field","Day of generation","Jour de génération",,,,
-"com.axelor.apps.organisation.db.TimesheetPeriodConfig","hourOfGeneration","field","Hour of generation","Heure de génération",,,,
-"com.axelor.apps.organisation.db.TimesheetPeriodConfig","isLastDayOfMonth","field","Is last day of month","Dernier jour",,,,
-"com.axelor.apps.organisation.db.TimesheetPeriodConfig","lastDayAdjustement","field","+/- n day(s)","+/- n jour(s)",,,,
-"com.axelor.apps.organisation.db.TimesheetPeriodConfig","dayOfMonth","field","Day","Jour",,,,
-"com.axelor.apps.organisation.db.TimesheetPeriodConfig","hourReminderDelay","field","Number of hours","Nb d'heure",,,,
-"com.axelor.apps.organisation.db.TimesheetPeriodConfig","dayReminderDelay","field","Number of days","Nb de jour",,,,
-"com.axelor.apps.organisation.db.TimesheetPeriodConfig","hourLimitDelay","field","Number of hours","Nb d'heure",,,,
-"com.axelor.apps.organisation.db.TimesheetPeriodConfig","dayLimitDelay","field","Number of days","Nb de jour",,,,
-"com.axelor.apps.organisation.db.TimesheetPeriodConfig","isReminderAtTimesheetCreation","field","Is reminder at timesheet creation","Relancer dès la génération de la feuille de temps",,,,
-"com.axelor.apps.organisation.db.TimesheetTotalByType","timesheet-total-by-type-form","form","Total input per type","Total par type",,,,
-"com.axelor.apps.organisation.db.TimesheetTotalByType","timesheet-total-by-type-grid","grid","Total input per types","Totaux par type",,,,
-"com.axelor.apps.organisation.db.TimesheetTotalByType","timesheet","field","Timesheet","Feuille de temps",,,,
-"com.axelor.apps.organisation.db.TimesheetTotalByType","project","field","Project","Projet",,,,
-"com.axelor.apps.organisation.db.TimesheetTotalByType","duration","field","Duration","Durée",,,,
-"com.axelor.apps.organisation.db.Topic","topic-form","form","Topic","Sujets",,,,
-"com.axelor.apps.organisation.db.Topic","topic-grid","grid","Topic","Sujets",,,,
-"com.axelor.apps.organisation.db.Topic","name","field","Technical topic","Dominante technique",,,,
-"com.axelor.apps.organisation.db.TrainingCenter","training-center-form","form","TrainingCenter","Centres de formation",,,,
-"com.axelor.apps.organisation.db.TrainingCenter","training-center-grid","grid","TrainingCenter","Centres de formation",,,,
-"com.axelor.apps.organisation.db.TrainingCenter","importId","field",,,,,,
-"com.axelor.apps.organisation.db.TrainingCenter","name","field","Ecole","Ecole/Université",,,,
-"com.axelor.apps.organisation.db.TrainingCenter","country","field","Pays","Pays",,,,
-"com.axelor.apps.organisation.db.Training","training-grid","grid","Training","Formations",,,,
-"com.axelor.apps.organisation.db.Training","training-form","form","Training","Formations",,,,
-"com.axelor.apps.organisation.db.Training","experienceTypeSelect","field","Experience type","Type d'expérience",,,,
-"com.axelor.apps.organisation.db.Training","startDate","field","Start date","Date début",,,,
-"com.axelor.apps.organisation.db.Training","endDate","field","End date","Date fin",,,,
-"com.axelor.apps.organisation.db.Training","jobTitle","field","Job position","Intitulé poste",,,,
-"com.axelor.apps.organisation.db.Training","service","field","Service","Service",,,,
-"com.axelor.apps.organisation.db.Training","duration","field","Duration (days)","Durée",,,,
-"com.axelor.apps.organisation.db.Training","jobDescription","field","Job description","Description poste",,,,
-"com.axelor.apps.organisation.db.Training","referencePosition","field","Reference position","Fonction référent",,,,
-"com.axelor.apps.organisation.db.Training","context","field","Context","Contexte",,,,
-"com.axelor.apps.organisation.db.Training","aims","field","Aims","Objectifs",,,,
-"com.axelor.apps.organisation.db.Training","progress","field","Progress","Progression",,,,
-"com.axelor.apps.organisation.db.Training","technicalEnvironment","field","Technical environment","Environnement technique",,,,
-"com.axelor.apps.organisation.db.Training","result","field","Result","Résultat",,,,
-"com.axelor.apps.organisation.db.Training","toolKeywordSet","field","Keyword tool","Mots clés outils",,,,
-"com.axelor.apps.organisation.db.Training","sectorKeywordSet","field","Keyword sector","Mots clés secteurs",,,,
-"training-form","","label"," "," ",,,,
-"com.axelor.apps.organisation.db.TrainingLine","training-line-form","form","TrainingLine","Lignes de formation",,,,
-"com.axelor.apps.organisation.db.TrainingLine","training-line-grid","grid","TrainingLine","Lignes de formation",,,,
-"com.axelor.apps.organisation.db.TrainingLine","candidate","field","Candidate","Candidat",,,,
-"com.axelor.apps.organisation.db.TrainingLine","degree","field","Diploma/Degree","Diplôme",,,,
-"com.axelor.apps.organisation.db.TrainingLine","trainingCenter","field","Training center","Ecole",,,,
-"com.axelor.apps.organisation.db.TrainingLine","topicSet","field","Technical topics","Dominantes techniques",,,,
-"com.axelor.apps.organisation.db.TrainingLine","completionYear","field","Year of completion","Année d'obtention",,,,
-"com.axelor.apps.organisation.db.TrainingLine","comment","field","Comment","Commentaire",,,,
-"organisation.candidate.availability.select","1","select","Immediate","Immédiat",,,,
-"organisation.candidate.availability.select","2","select","1 month","1 mois",,,,
-"organisation.candidate.availability.select","3","select","2 month","2 mois",,,,
-"organisation.candidate.availability.select","4","select","3 month","3 mois",,,,
-"organisation.candidate.availability.select","5","select","1 month negociable","1 mois négociable",,,,
-"organisation.candidate.availability.select","6","select","2 month negociable","2 mois négociable",,,,
-"organisation.candidate.availability.select","7","select","3 month negociable","3 mois négociable",,,,
-"organisation.candidate.category.select","1","select","Junior","Junior",,,,
-"organisation.candidate.category.select","2","select","Senior","Senior",,,,
-"organisation.candidate.category.select","3","select","Expert","Expert",,,,
-"organisation.mission.order.date.type.select","1","select","Included","Inclus",,,,
-"organisation.mission.order.date.type.select","2","select","Excluded","Exclus",,,,
-"organisation.candidate.macroCategory.select","1","select","Junior Manager (0 - 5 ans)","Cadre Junior (0 - 5 ans)",,,,
-"organisation.candidate.macroCategory.select","2","select","Confirmed Manager(5 - 10 ans)","Cadre Confirmé (5 - 10 ans)",,,,
-"organisation.candidate.macroCategory.select","3","select","Senior Manager ( > 10 ans)","Cadre Senior ( > 10 ans)",,,,
-"organisation.candidate.macroCategory.select","4","select","Junior Worker Junior (0 - 5 ans)","Non-Cadre Junior (0 - 5 ans)",,,,
-"organisation.candidate.macroCategory.select","5","select","Confirmed Worker (5 - 10 ans)","Non-Cadre Confirmé (5 - 10 ans)",,,,
-"organisation.candidate.macroCategory.select","6","select","Senior Worker ( > 10 ans)","Non-Cadre Senior ( > 10 ans)",,,,
-"organisation.candidate.other.opportunity.interest.select","1","select","High","Élevé",,,,
-"organisation.candidate.other.opportunity.interest.select","2","select","Medium","Moyen",,,,
-"organisation.candidate.other.opportunity.interest.select","3","select","Low","Faible",,,,
-"organisation.candidate.other.opportunity.state.select","1","select","1st RDV (green)","1er RDV (vert)",,,,
-"organisation.candidate.other.opportunity.state.select","2","select","2nd RDV (green)","2éme RDV (vert)",,,,
-"organisation.candidate.other.opportunity.state.select","3","select","3rd RDV (orange)","3éme RDV (orange)",,,,
-"organisation.candidate.other.opportunity.state.select","4","select","Proposal(red)","Proposition (rouge)",,,,
-"organisation.candidate.other.opportunity.state.select","5","select","Signature (red)","Signature (rouge)",,,,
-"organisation.candidate.other.opportunity.state.select","6","select","OK (red)","OK (rouge)",,,,
-"organisation.candidate.other.opportunity.state.select","7","select","No feedback (orange)","NDPS (orange)",,,,
-"organisation.candidate.other.opportunity.state.select","8","select","Negative (vert)","Négatif (vert)",,,,
-"organisation.candidate.recruitmentType.select","1","select","Straight recruitment","Embauche directe",,,,
-"organisation.candidate.recruitmentType.select","2","select","Project recruitment","Embauche projet",,,,
-"organisation.candidate.relocation.select","1","select","National","National",,,,
-"organisation.candidate.relocation.select","2","select","International","International",,,,
-"organisation.candidate.relocation.select","3","select","Reduced","Réduite",,,,
-"organisation.employee.supervised.by.select","1","select","Manager",,,,,
-"organisation.employee.supervised.by.select","2","select","Profile","Profil",,,,
-"organisation.personal.info.accreditation.select","1","select",,,,,,
-"organisation.personal.info.accreditation.select","2","select","CD","CD",,,,
-"organisation.personal.info.accreditation.select","3","select","SD","SD",,,,
-"organisation.personal.info.accreditation.select","4","select","OTAN","OTAN",,,,
-"organisation.personal.info.accreditation.select","5","select","CEA","CEA",,,,
-"organisation.personal.info.marital.status.select","1","select","Single","Célibataire",,,,
-"organisation.personal.info.marital.status.select","2","select","Married","Marié",,,,
-"organisation.position.recommendation.select","1","select","Very positive (green)","Très favorable (afficher la ligne en vert)",,,,
-"organisation.position.recommendation.select","2","select","Positive  (green)","Favorable  (afficher la ligne en vert)",,,,
-"organisation.position.recommendation.select","3","select","Mixed opinion (orange)","Mitigé  (afficher la ligne en orange)",,,,
-"organisation.position.recommendation.select","4","select","Unfavourable (red)","Défavorable  (afficher la ligne en rouge)",,,,
-"organisation.recruitmentProcessAdvancement.status.select","1","select","1st RDV (green)","1er RDV (vert)",,,,
-"organisation.recruitmentProcessAdvancement.status.select","2","select","2nd RDV (green)","2éme RDV (vert)",,,,
-"organisation.recruitmentProcessAdvancement.status.select","3","select","3rd RDV (orange)","3éme RDV (orange)",,,,
-"organisation.recruitmentProcessAdvancement.status.select","4","select","Proposal(red)","Proposition (rouge)",,,,
-"organisation.recruitmentProcessAdvancement.status.select","5","select","Signature (red)","Signature (rouge)",,,,
-"organisation.recruitmentProcessAdvancement.status.select","6","select","OK (red)","OK (rouge)",,,,
-"organisation.recruitmentProcessAdvancement.status.select","7","select","No feedback (orange)","NDPS (orange)",,,,
-"organisation.recruitmentProcessAdvancement.status.select","8","select","Negative (vert)","Négatif (vert)",,,,
-"organisation.resource.status.select","1","select","On going","En cours",,,,
-"organisation.resource.status.select","2","select","Waiting candidate confirmation","En attente confirmation candidat",,,,
-"organisation.resource.status.select","3","select","OK","OK",,,,
-"organisation.resource.status.select","4","select","KO","KO",,,,
-"organisation.resource.status.select","5","select","Canceled","Annulé",,,,
-"organisation.schedule.line.day.select","1","select","Monday","Lundi",,,,
-"organisation.schedule.line.day.select","2","select","Tuesday","Mardi",,,,
-"organisation.schedule.line.day.select","3","select","Wednesday","Mercredi",,,,
-"organisation.schedule.line.day.select","4","select","Thursday","Jeudi",,,,
-"organisation.schedule.line.day.select","5","select","Friday","Vendredi",,,,
-"organisation.schedule.line.day.select","6","select","Saturday","Samedi",,,,
-"organisation.schedule.line.day.select","7","select","Sunday","Dimanche",,,,
-"organisation.task.status.select","1","select","Draft","Brouillon",,,,
-"organisation.task.status.select","2","select","Confirmed","Confirmé",,,,
-"organisation.task.status.select","3","select","Validated","Validé",,,,
-"organisation.task.status.select","4","select","Canceled","Annulé",,,,
-"organisation.project.type.duration.select","1","select","Day","Jour",,,,
-"organisation.project.type.duration.select","2","select","Month","Mois",,,,
-"organisation.project.type.duration.select","3","select","Year","Année",,,,
-"organisation.project.type.project.select","1","select","Task","Tâche",,,,
-"organisation.project.type.project.select","2","select","Project","Projet",,,,
-"organisation.affair.market.type.select","1","select","Market","Marché",,,,
-"organisation.affair.market.type.select","2","select","Order form market","Marché à bon de commande",,,,
-"organisation.affair.market.type.select","3","select","Other","Autre",,,,
-"organisation.timesheet.time.unit.select","1","select","Day","Jour",,,,
-"organisation.timesheet.time.unit.select","2","select","Hour","Heure",,,,
-"organisation.timesheet.period.config.type.select","1","select","Weekly","Hebdomadaire",,,,
-"organisation.timesheet.period.config.type.select","2","select","Monthly","Mensuel",,,,
-"organisation.timesheet.period.config.day.week.select","1","select","Monday","Lundi",,,,
-"organisation.timesheet.period.config.day.week.select","2","select","Tuesday","Mardi",,,,
-"organisation.timesheet.period.config.day.week.select","3","select","Wednesday","Mercredi",,,,
-"organisation.timesheet.period.config.day.week.select","4","select","Thursday","Jeudi",,,,
-"organisation.timesheet.period.config.day.week.select","5","select","Friday","Vendredi",,,,
-"organisation.timesheet.period.config.day.week.select","6","select","Saturday","Samedi",,,,
-"organisation.timesheet.period.config.day.week.select","7","select","Sunday","Dimanche",,,,
-"grade.0.up.to.20.select","0","select","0","0",,,,
-"grade.0.up.to.20.select","1","select","1","1",,,,
-"grade.0.up.to.20.select","2","select","2","2",,,,
-"grade.0.up.to.20.select","3","select","3","3",,,,
-"grade.0.up.to.20.select","4","select","4","4",,,,
-"grade.0.up.to.20.select","5","select","5","5",,,,
-"grade.0.up.to.20.select","6","select","6","6",,,,
-"grade.0.up.to.20.select","7","select","7","7",,,,
-"grade.0.up.to.20.select","8","select","8","8",,,,
-"grade.0.up.to.20.select","9","select","9","9",,,,
-"grade.0.up.to.20.select","10","select","10","10",,,,
-"grade.0.up.to.20.select","11","select","11","11",,,,
-"grade.0.up.to.20.select","12","select","12","12",,,,
-"grade.0.up.to.20.select","13","select","13","13",,,,
-"grade.0.up.to.20.select","14","select","14","14",,,,
-"grade.0.up.to.20.select","15","select","15","15",,,,
-"grade.0.up.to.20.select","16","select","16","16",,,,
-"grade.0.up.to.20.select","17","select","17","17",,,,
-"grade.0.up.to.20.select","18","select","18","18",,,,
-"grade.0.up.to.20.select","19","select","19","19",,,,
-"grade.0.up.to.20.select","20","select","20","20",,,,
-"grade.0.up.to.10.select","10","select","1","1",,,,
-"grade.0.up.to.10.select","20","select","2","2",,,,
-"grade.0.up.to.10.select","30","select","3","3",,,,
-"grade.0.up.to.10.select","40","select","4","4",,,,
-"grade.0.up.to.10.select","50","select","5","5",,,,
-"grade.0.up.to.10.select","60","select","6","6",,,,
-"grade.0.up.to.10.select","70","select","7","7",,,,
-"grade.0.up.to.10.select","80","select","8","8",,,,
-"grade.0.up.to.10.select","90","select","9","9",,,,
-"grade.0.up.to.10.select","100","select","10","10",,,,
-"grade.0.up.to.5.select","20","select","1","1",,,,
-"grade.0.up.to.5.select","40","select","2","2",,,,
-"grade.0.up.to.5.select","60","select","3","3",,,,
-"grade.0.up.to.5.select","80","select","4","4",,,,
-"grade.0.up.to.5.select","100","select","5","5",,,,
-"hr.expense.status.select","1","select","Draft","Brouillon",,,,
-"hr.expense.status.select","2","select","Submited","Soumis",,,,
-"hr.expense.status.select","3","select","Validated RSC Manager","Validée RSC Manager",,,,
-"hr.expense.status.select","4","select","Validated commercial","Validée commercial",,,,
-"hr.expense.status.select","5","select","Paid","Payée",,,,
-"hr.expense.status.select","6","select","Refused","Refusée",,,,
-"hr.expense.line.file.received.select","1","select","Yes","Oui",,,,
-"hr.expense.line.file.received.select","2","select","No","Non",,,,
-"hr.expense.validation.status.select","1","select","Verified","Vérifié",,,,
-"hr.expense.validation.status.select","2","select","Waiting validation","En attente validation",,,,
-"expense.line.expense.type.select","1","select","Reinvoiceable","Refacturable",,,,
-"expense.line.expense.type.select","2","select","Not reinvoiceable","Non refacturable",,,,
-"training.experience.type.select","internal","select","Internal","Interne",,,,
-"training.experience.type.select","previousJob","select","Previous job","Antérieur",,,,
-"action-expense-alert-validate","action-expense-alert-validate","action","All supporting files have not been provided","Tous les fichiers justificatifs n'ont pas été fourni",,,,
-"action-leave-request-button-cancel","action-leave-request-button-cancel","action","The holiday period already started you can not cancel this holiday.",,,,,""
-"action-leave-request-button-confirmation","action-leave-request-button-confirmation","action","Start date required.","Date de départ nécessaire.",,,,
-"action-leave-request-button-confirmation","action-leave-request-button-confirmation","action","Leave request reason required.","La raison de demande de congé est necessaire",,,,
-"action-leave-request-button-confirmation","action-leave-request-button-confirmation","action","Request date required.","Date de la demande nécessaire.",,,,
-"action-leave-request-button-validation","action-leave-request-button-validation","action","The holiday request date should be equal or before the today date.","La date de demande de congé doit être égale ou avant la date d'aujourd'hui.",,,,
-"action-leave-request-button-validation","action-leave-request-button-validation","action","Holiday requests duration must always be greater than 0.","Durée des demandes de vacances doit toujours être supérieure à 0.",,,,
-"action-leave-request-button-validation","action-leave-request-button-validation","action","The holiday end date must be after the start date.","La date de fin de vacances doit être postérieure à la date de départ.",,,,
-"action-leave-request-button-validation","action-leave-request-button-validation","action","The holiday request duration is greater than the remaining holidays. Please contact your supervisor to be credited with advance holidays permission.","La durée de demande de congé est supérieure aux vacances restants. S'il vous plaît contactez votre superviseur pour être crédité d'avance la permission de vacances.",,,,
-"action-leave-request-button-validation","action-leave-request-button-validation","action","You are not allowed to validate this holiday request, please refer to your supervisor (the supervisor is listed in the employee hierarchy notebook).","Vous n'êtes pas autorisé à valider cette demande de vacances, veuillez vous référer à votre supérieur hiérarchique (le superviseur est inscrit dans le cahier de la hiérarchie de l'employé).",,,,
-"action-project-view-task","action-project-view-task","action","Tasks","Tâches",,,,
-"affair.root.project.all.affair","affair.root.project.all.affair","action","Affairs","Toutes les affaires",,,,
-"affair.root.project.new.affair","affair.root.project.new.affair","action","New Affair","Nouvelle Affaire",,,,
-"demo.gantt1","demo.gantt1","action","Gantt Diagram","Diagramme de GANTT",,,,
-"hr.root.config.public.holidays","hr.root.config.public.holidays","action","Public holidays","Jours Fériés",,,,
-"hr.root.employee","hr.root.employee","action","Employees","Les Employés",,,,
-"hr.root.mission.order","hr.root.mission.order","action","Mission order","Ordre de mission",,,,
-"hr.root.inputforms.leave.request","hr.root.inputforms.leave.request","action","My leave requests","Mes demandes de congé",,,,
-"hr.root.inputforms.overtimes","hr.root.inputforms.overtimes","action","My overtimes","Mes heures supplémentaires",,,,
-"hr.root.inputforms.timesheet","hr.root.inputforms.timesheet","action","My timesheet","Mes feuilles de temps à compléter",,,,
-"hr.root.inputforms.travelexpenses","hr.root.inputforms.travelexpenses","action","My travel expenses","Mes notes de frais",,,,
-"hr.root.paymentforms.overtimes","hr.root.paymentforms.overtimes","action","Overtimes to be paid","Heures sup à payer",,,,
-"hr.root.paymentforms.travelexpenses","hr.root.paymentforms.travelexpenses","action","Travel expenses to be paid","Notes de frais à rembourser",,,,
-"hr.root.history.olds.timesheets","hr.root.history.olds.timesheets","action","Olds timesheets","Mes anciennes feuilles de temps",,,,
-"hr.root.planning","hr.root.planning","action","Plannings","Les plannings",,,,
-"hr.root.recruitment.candidate","hr.root.recruitment.candidate","action","Candidates","Tous les candidats",,,,
-"hr.root.schedule","hr.root.schedule","action","Working hours","Les horaires de travail",,,,
-"hr.root.training","hr.root.training","action","Trainings","Les formations",,,,
-"hr.root.validationforms.leave.request","hr.root.validationforms.leave.request","action","Leave requests to validate","Demande de congé à valider",,,,
-"hr.root.validationforms.overtimes","hr.root.validationforms.overtimes","action","Overtimes to validate","Heures supplémentaires à valider",,,,
-"hr.root.validationforms.timesheet","hr.root.validationforms.timesheet","action","Timesheets to validate","Feuilles de temps à valider",,,,
-"hr.root.validationforms.travelexpenses.manager","hr.root.validationforms.travelexpenses.manager","action","Travel expenses to validate by RSC Manager","Notes de frais à valider par Ressource Manager",,,,
-"hr.root.validationforms.travelexpenses.commercial","hr.root.validationforms.travelexpenses.commercial","action","Travel expenses to validate by commercial","Notes de frais à valider par Commercial",,,,
-"project.root.project","project.root.project","action","Projects","Les projets",,,,
-"project.root.task","project.root.task","action","Tasks","Tâches",,,,
-"action-task-validate-generate-invoice","action-task-validate-generate-invoice","action","Generating invoice is impossible, Please link the task to a saleOrderLine to do so.","Merci de relier la tâche à une ligne de devis/commande pour générer une facture.",,,,
-"action-project-validate-generate-invoice","action-project-validate-generate-invoice","action","Generating invoice is impossible, the fields clientPartner and contactPartner must be filled.","Merci de remplir les champs 'Client' et 'Contact' pour générer une facture.",,,,
-"action-project-validate-generate-invoice","action-project-validate-generate-invoice","action","Generating invoice is impossible, Please link the task to a saleOrderLine to do so.","Merci de relier la tâche à une ligne de devis/commande pour générer une facture.",,,,
-"action-project-validate-generate-invoice","action-project-validate-generate-invoice","action","There is currently no task to invoice. If you need to generate an invoice from a task, please tick the checkbox 'To invoice' and make sure all necessary informations are filled in.","Il y a actuellement aucune tâche à facturer. Si vous souhaitez générer une une ligne de facture à partir d'une tâche, veuillez cocher la case 'A facturer' et faire en sorte que toutes les informations nécessaires sont remplies.",,,,
-
+"domain","name","type","title","title_t","help","help_t","doc"
+"affair-root","Affair","menu","Affair","Affaire","","",""
+"affair-root-project","Affairs","menu","Affairs","Affaires","","",""
+"affair-root-project-all-affair","Affairs","menu","Affairs","Affaires","","",""
+"affair-root-project-new-affair","New Affair","menu","New Affair","Nouvelle Affaire","","",""
+"hr-root","Human Resources","menu","Human Resources","RH","","",""
+"hr-root-conf","Configuration","menu","Configuration","Configuration","","",""
+"hr-root-config-public-holidays","Public holidays","menu","Public holidays","Jours Fériés","","",""
+"hr-root-employee","Employees","menu","Employees","Employés","","",""
+"hr-root-history","History","menu","History","Historique","","",""
+"hr-root-history-olds-timesheets","Olds timesheets","menu","Olds timesheets","Mes anciennes feuilles de temps","","",""
+"hr-root-inputforms","Input forms","menu","Input forms","Formulaires de saisie","","",""
+"hr-root-inputforms-leave-request","My leave requests","menu","My leave requests","Mes demandes de congé","","",""
+"hr-root-inputforms-overtimes","My overtimes","menu","My overtimes","Mes heures supplémentaires","","",""
+"hr-root-inputforms-timesheet","My timesheet","menu","My timesheet","Mes feuilles de temps à compléter","","",""
+"hr-root-inputforms-travelexpenses","My travel expenses","menu","My travel expenses","Mes notes de frais","","",""
+"hr-root-mission-order","Mission order","menu","Mission order","Ordre de mission","","",""
+"hr-root-paymentforms","Payment forms","menu","Payment forms","Paiement à réaliser","","",""
+"hr-root-paymentforms-overtimes","Overtimes to be paid","menu","Overtimes to be paid","Heures sup à payer","","",""
+"hr-root-paymentforms-travelexpenses","Travel expenses to be paid","menu","Travel expenses to be paid","Notes de frais à rembourser","","",""
+"hr-root-planning","Plannings","menu","Plannings","Plannings","","",""
+"hr-root-recruitment","Recruitment","menu","Recruitment","Recrutement","","",""
+"hr-root-recruitment-candidate","Candidates","menu","Candidates","Candidats","","",""
+"hr-root-schedule","Working hours","menu","Working hours","Horaires de travail","","",""
+"hr-root-training","Trainings","menu","Trainings","Formations","","",""
+"hr-root-validationforms","Validation forms","menu","Validation forms","Formulaires à valider","","",""
+"hr-root-validationforms-leave-request","Leave requests to validate","menu","Leave requests to validate","Demande de congé à valider","","",""
+"hr-root-validationforms-overtimes","Overtimes to validate","menu","Overtimes to validate","Heures supplémentaires à valider","","",""
+"hr-root-validationforms-timesheet","Timesheets to validate","menu","Timesheets to validate","Feuilles de temps à valider","","",""
+"hr-root-validationforms-travelexpenses-commercial","Travel expenses to validate by commercial","menu","Travel expenses to validate by commercial","Notes de frais à valider par Commercial","","",""
+"hr-root-validationforms-travelexpenses-manager","Travel expenses to validate by RSC Manager","menu","Travel expenses to validate by RSC Manager","Notes de frais à valider par Ressource Manager","","",""
+"menu-gant1","Gantt Diagram","menu","Gantt Diagram","Diagramme de GANTT","","",""
+"project-root","Project","menu","Project","Projet","","",""
+"project-root-project","Projects","menu","Projects","Les projets","","",""
+"project-root-task","Tasks","menu","Tasks","Tâches","","",""
+"expense.line.expense.type.select","2","select","Not reinvoiceable","Non refacturable","","",""
+"expense.line.expense.type.select","1","select","Reinvoiceable","Refacturable","","",""
+"grade.0.up.to.10.select","100","select","10","10","","",""
+"grade.0.up.to.10.select","90","select","9","9","","",""
+"grade.0.up.to.10.select","80","select","8","8","","",""
+"grade.0.up.to.10.select","70","select","7","7","","",""
+"grade.0.up.to.10.select","60","select","6","6","","",""
+"grade.0.up.to.10.select","50","select","5","5","","",""
+"grade.0.up.to.10.select","40","select","4","4","","",""
+"grade.0.up.to.10.select","30","select","3","3","","",""
+"grade.0.up.to.10.select","20","select","2","2","","",""
+"grade.0.up.to.10.select","10","select","1","1","","",""
+"grade.0.up.to.10.select","0","select","0","0","","",""
+"grade.0.up.to.20.select","20","select","20","20","","",""
+"grade.0.up.to.20.select","19","select","19","19","","",""
+"grade.0.up.to.20.select","18","select","18","18","","",""
+"grade.0.up.to.20.select","17","select","17","17","","",""
+"grade.0.up.to.20.select","16","select","16","16","","",""
+"grade.0.up.to.20.select","15","select","15","15","","",""
+"grade.0.up.to.20.select","14","select","14","14","","",""
+"grade.0.up.to.20.select","13","select","13","13","","",""
+"grade.0.up.to.20.select","12","select","12","12","","",""
+"grade.0.up.to.20.select","11","select","11","11","","",""
+"grade.0.up.to.20.select","10","select","10","10","","",""
+"grade.0.up.to.20.select","9","select","9","9","","",""
+"grade.0.up.to.20.select","8","select","8","8","","",""
+"grade.0.up.to.20.select","7","select","7","7","","",""
+"grade.0.up.to.20.select","6","select","6","6","","",""
+"grade.0.up.to.20.select","5","select","5","5","","",""
+"grade.0.up.to.20.select","4","select","4","4","","",""
+"grade.0.up.to.20.select","3","select","3","3","","",""
+"grade.0.up.to.20.select","2","select","2","2","","",""
+"grade.0.up.to.20.select","1","select","1","1","","",""
+"grade.0.up.to.20.select","0","select","0","0","","",""
+"grade.0.up.to.5.select","100","select","5","5","","",""
+"grade.0.up.to.5.select","80","select","4","4","","",""
+"grade.0.up.to.5.select","60","select","3","3","","",""
+"grade.0.up.to.5.select","40","select","2","2","","",""
+"grade.0.up.to.5.select","20","select","1","1","","",""
+"grade.0.up.to.5.select","0","select","0","0","","",""
+"hr.expense.line.file.received.select","2","select","No","Non","","",""
+"hr.expense.line.file.received.select","1","select","Yes","Oui","","",""
+"hr.expense.status.select","6","select","Refused","Refusée","","",""
+"hr.expense.status.select","5","select","Paid","Payée","","",""
+"hr.expense.status.select","4","select","Validated commercial","Paiement demandé","","",""
+"hr.expense.status.select","3","select","Validated RSC Manager","Validée","","",""
+"hr.expense.status.select","2","select","Submited","A valider","","",""
+"hr.expense.status.select","1","select","Draft","Brouillon","","",""
+"hr.expense.validation.status.select","2","select","Waiting validation","En attente validation","","",""
+"hr.expense.validation.status.select","1","select","Verified","Vérifié","","",""
+"organisation.affair.market.type.select","3","select","Other","Autre","","",""
+"organisation.affair.market.type.select","2","select","Order form market","Marché à bon de commande","","",""
+"organisation.affair.market.type.select","1","select","Market","Marché","","",""
+"organisation.candidate.availability.select","7","select","3 month negociable","3 mois négociable","","",""
+"organisation.candidate.availability.select","6","select","2 month negociable","2 mois négociable","","",""
+"organisation.candidate.availability.select","5","select","1 month negociable","1 mois négociable","","",""
+"organisation.candidate.availability.select","4","select","3 month","3 mois","","",""
+"organisation.candidate.availability.select","3","select","2 month","2 mois","","",""
+"organisation.candidate.availability.select","2","select","1 month","1 mois","","",""
+"organisation.candidate.availability.select","1","select","Immediate","Immédiat","","",""
+"organisation.candidate.category.select","3","select","Expert","Expert","","",""
+"organisation.candidate.category.select","2","select","Senior","Senior","","",""
+"organisation.candidate.category.select","1","select","Junior","Junior","","",""
+"organisation.candidate.macroCategory.select","6","select","Senior Worker ( > 10 ans)","Non-Cadre Senior ( > 10 ans)","","",""
+"organisation.candidate.macroCategory.select","5","select","Confirmed Worker (5 - 10 ans)","Non-Cadre Confirmé (5 - 10 ans)","","",""
+"organisation.candidate.macroCategory.select","4","select","Junior Worker Junior (0 - 5 ans)","Non-Cadre Junior (0 - 5 ans)","","",""
+"organisation.candidate.macroCategory.select","3","select","Senior Manager ( > 10 ans)","Cadre Senior ( > 10 ans)","","",""
+"organisation.candidate.macroCategory.select","2","select","Confirmed Manager(5 - 10 ans)","Cadre Confirmé (5 - 10 ans)","","",""
+"organisation.candidate.macroCategory.select","1","select","Junior Manager (0 - 5 ans)","Cadre Junior (0 - 5 ans)","","",""
+"organisation.candidate.other.opportunity.interest.select","3","select","Low","Faible","","",""
+"organisation.candidate.other.opportunity.interest.select","2","select","Medium","Moyen","","",""
+"organisation.candidate.other.opportunity.interest.select","1","select","High","Élevé","","",""
+"organisation.candidate.other.opportunity.state.select","8","select","Negative (vert)","Négatif","","",""
+"organisation.candidate.other.opportunity.state.select","7","select","No feedback (orange)","Pas de réponse","","",""
+"organisation.candidate.other.opportunity.state.select","6","select","OK (red)","OK","","",""
+"organisation.candidate.other.opportunity.state.select","5","select","Signature (red)","Signature","","",""
+"organisation.candidate.other.opportunity.state.select","4","select","Proposal(red)","Proposition","","",""
+"organisation.candidate.other.opportunity.state.select","3","select","3rd RDV (orange)","3ème RDV","","",""
+"organisation.candidate.other.opportunity.state.select","2","select","2nd RDV (green)","2ème RDV","","",""
+"organisation.candidate.other.opportunity.state.select","1","select","1st RDV (green)","1er RDV","","",""
+"organisation.candidate.recruitmentType.select","2","select","Project recruitment","Besoin projet","","",""
+"organisation.candidate.recruitmentType.select","1","select","Straight recruitment","Besoin interne","","",""
+"organisation.candidate.relocation.select","3","select","Reduced","Réduite","","",""
+"organisation.candidate.relocation.select","2","select","International","International","","",""
+"organisation.candidate.relocation.select","1","select","National","National","","",""
+"organisation.employee.supervised.by.select","2","select","Profile","Profil","","",""
+"organisation.employee.supervised.by.select","1","select","Manager","Cadre","","",""
+"organisation.mission.order.date.type.select","2","select","Excluded","Exclus","","",""
+"organisation.mission.order.date.type.select","1","select","Included","Inclus","","",""
+"organisation.personal.info.accreditation.select","5","select","CEA","CEA","","",""
+"organisation.personal.info.accreditation.select","4","select","OTAN","OTAN","","",""
+"organisation.personal.info.accreditation.select","3","select","SD","SD","","",""
+"organisation.personal.info.accreditation.select","2","select","CD","CD","","",""
+"organisation.personal.info.accreditation.select","1","select","","","","",""
+"organisation.personal.info.marital.status.select","2","select","Married","Marié(e)","","",""
+"organisation.personal.info.marital.status.select","1","select","Single","Célibataire","","",""
+"organisation.position.recommendation.select","4","select","Unfavourable (red)","Défavorable","","",""
+"organisation.position.recommendation.select","3","select","Mixed opinion (orange)","Mitigé","","",""
+"organisation.position.recommendation.select","2","select","Positive  (green)","Favorable","","",""
+"organisation.position.recommendation.select","1","select","Very positive (green)","Très favorable","","",""
+"organisation.project.type.duration.select","3","select","Year","Année","","",""
+"organisation.project.type.duration.select","2","select","Month","Mois","","",""
+"organisation.project.type.duration.select","1","select","Day","Jour","","",""
+"organisation.project.type.project.select","2","select","Project","Projet","","",""
+"organisation.project.type.project.select","1","select","Task","Tâche","","",""
+"organisation.recruitmentProcessAdvancement.status.select","8","select","Negative (vert)","Négatif","","",""
+"organisation.recruitmentProcessAdvancement.status.select","7","select","No feedback (orange)","Pas de réponse","","",""
+"organisation.recruitmentProcessAdvancement.status.select","6","select","OK (red)","OK","","",""
+"organisation.recruitmentProcessAdvancement.status.select","5","select","Signature (red)","Signature","","",""
+"organisation.recruitmentProcessAdvancement.status.select","4","select","Proposal(red)","Proposition","","",""
+"organisation.recruitmentProcessAdvancement.status.select","3","select","3rd RDV (orange)","3ème RDV","","",""
+"organisation.recruitmentProcessAdvancement.status.select","2","select","2nd RDV (green)","2ème RDV","","",""
+"organisation.recruitmentProcessAdvancement.status.select","1","select","1st RDV (green)","1er RDV","","",""
+"organisation.resource.status.select","5","select","Canceled","Annulé","","",""
+"organisation.resource.status.select","4","select","KO","KO","","",""
+"organisation.resource.status.select","3","select","OK","OK","","",""
+"organisation.resource.status.select","2","select","Waiting candidate confirmation","Attente confirmation candidat","","",""
+"organisation.resource.status.select","1","select","On going","En cours","","",""
+"organisation.schedule.line.day.select","7","select","Sunday","Dimanche","","",""
+"organisation.schedule.line.day.select","6","select","Saturday","Samedi","","",""
+"organisation.schedule.line.day.select","5","select","Friday","Vendredi","","",""
+"organisation.schedule.line.day.select","4","select","Thursday","Jeudi","","",""
+"organisation.schedule.line.day.select","3","select","Wednesday","Mercredi","","",""
+"organisation.schedule.line.day.select","2","select","Tuesday","Mardi","","",""
+"organisation.schedule.line.day.select","1","select","Monday","Lundi","","",""
+"organisation.task.status.select","4","select","Canceled","Annulé","","",""
+"organisation.task.status.select","3","select","Validated","Validé","","",""
+"organisation.task.status.select","2","select","Confirmed","Confirmé","","",""
+"organisation.task.status.select","1","select","Draft","Brouillon","","",""
+"organisation.timesheet.period.config.day.month.select","28","select","28","","","",""
+"organisation.timesheet.period.config.day.month.select","27","select","27","","","",""
+"organisation.timesheet.period.config.day.month.select","26","select","26","","","",""
+"organisation.timesheet.period.config.day.month.select","25","select","25","25","","",""
+"organisation.timesheet.period.config.day.month.select","24","select","24","","","",""
+"organisation.timesheet.period.config.day.month.select","23","select","23","","","",""
+"organisation.timesheet.period.config.day.month.select","22","select","22","","","",""
+"organisation.timesheet.period.config.day.month.select","21","select","21","","","",""
+"organisation.timesheet.period.config.day.month.select","20","select","20","20","","",""
+"organisation.timesheet.period.config.day.month.select","19","select","19","19","","",""
+"organisation.timesheet.period.config.day.month.select","18","select","18","18","","",""
+"organisation.timesheet.period.config.day.month.select","17","select","17","17","","",""
+"organisation.timesheet.period.config.day.month.select","16","select","16","16","","",""
+"organisation.timesheet.period.config.day.month.select","15","select","15","15","","",""
+"organisation.timesheet.period.config.day.month.select","14","select","14","14","","",""
+"organisation.timesheet.period.config.day.month.select","13","select","13","13","","",""
+"organisation.timesheet.period.config.day.month.select","12","select","12","12","","",""
+"organisation.timesheet.period.config.day.month.select","11","select","11","11","","",""
+"organisation.timesheet.period.config.day.month.select","10","select","10","10","","",""
+"organisation.timesheet.period.config.day.month.select","9","select","09","","","",""
+"organisation.timesheet.period.config.day.month.select","8","select","08","","","",""
+"organisation.timesheet.period.config.day.month.select","7","select","07","","","",""
+"organisation.timesheet.period.config.day.month.select","6","select","06","","","",""
+"organisation.timesheet.period.config.day.month.select","5","select","05","","","",""
+"organisation.timesheet.period.config.day.month.select","4","select","04","","","",""
+"organisation.timesheet.period.config.day.month.select","3","select","03","","","",""
+"organisation.timesheet.period.config.day.month.select","2","select","02","","","",""
+"organisation.timesheet.period.config.day.month.select","1","select","01","","","",""
+"organisation.timesheet.period.config.day.month.select","0","select","00","00","","",""
+"organisation.timesheet.period.config.day.week.select","7","select","Sunday","Dimanche","","",""
+"organisation.timesheet.period.config.day.week.select","6","select","Saturday","Samedi","","",""
+"organisation.timesheet.period.config.day.week.select","5","select","Friday","Vendredi","","",""
+"organisation.timesheet.period.config.day.week.select","4","select","Thursday","Jeudi","","",""
+"organisation.timesheet.period.config.day.week.select","3","select","Wednesday","Mercredi","","",""
+"organisation.timesheet.period.config.day.week.select","2","select","Tuesday","Mardi","","",""
+"organisation.timesheet.period.config.day.week.select","1","select","Monday","Lundi","","",""
+"organisation.timesheet.period.config.hour.day.select","23","select","23","","","",""
+"organisation.timesheet.period.config.hour.day.select","22","select","22","","","",""
+"organisation.timesheet.period.config.hour.day.select","21","select","21","","","",""
+"organisation.timesheet.period.config.hour.day.select","20","select","20","20","","",""
+"organisation.timesheet.period.config.hour.day.select","19","select","19","19","","",""
+"organisation.timesheet.period.config.hour.day.select","18","select","18","18","","",""
+"organisation.timesheet.period.config.hour.day.select","17","select","17","17","","",""
+"organisation.timesheet.period.config.hour.day.select","16","select","16","16","","",""
+"organisation.timesheet.period.config.hour.day.select","15","select","15","15","","",""
+"organisation.timesheet.period.config.hour.day.select","14","select","14","14","","",""
+"organisation.timesheet.period.config.hour.day.select","13","select","13","13","","",""
+"organisation.timesheet.period.config.hour.day.select","12","select","12","12","","",""
+"organisation.timesheet.period.config.hour.day.select","11","select","11","11","","",""
+"organisation.timesheet.period.config.hour.day.select","10","select","10","10","","",""
+"organisation.timesheet.period.config.hour.day.select","9","select","09","","","",""
+"organisation.timesheet.period.config.hour.day.select","8","select","08","","","",""
+"organisation.timesheet.period.config.hour.day.select","7","select","07","","","",""
+"organisation.timesheet.period.config.hour.day.select","6","select","06","","","",""
+"organisation.timesheet.period.config.hour.day.select","5","select","05","","","",""
+"organisation.timesheet.period.config.hour.day.select","4","select","04","","","",""
+"organisation.timesheet.period.config.hour.day.select","3","select","03","","","",""
+"organisation.timesheet.period.config.hour.day.select","2","select","02","","","",""
+"organisation.timesheet.period.config.hour.day.select","1","select","01","","","",""
+"organisation.timesheet.period.config.hour.day.select","0","select","00","00","","",""
+"organisation.timesheet.period.config.type.select","2","select","Monthly","Mensuel","","",""
+"organisation.timesheet.period.config.type.select","1","select","Weekly","Hebdomadaire","","",""
+"organisation.timesheet.time.unit.select","2","select","Hour","Heure","","",""
+"organisation.timesheet.time.unit.select","1","select","Day","Jour","","",""
+"training.experience.type.select","previousJob","select","Previous job","Ancien métier","","",""
+"training.experience.type.select","internal","select","Internal","Interne","","",""
+"com.axelor.apps.organisation.db.Advance","advance-form","form","Advance","Avance","","",""
+"com.axelor.apps.organisation.db.Advance","advance-grid","grid","Advances","Avances","","",""
+"com.axelor.apps.organisation.db.Project","affair-form","form","Affair","Affaire","","",""
+"affair-form","specificSettings","group","Specific settings","Configuration spécifique","","",""
+"affair-form","","group","Actions","Actions","","",""
+"affair-form","createSalesOrder","button","Create quote","Créer devis","","",""
+"affair-form","generateNewInstanceOfProject","button","Generate new project instance","Générer nouvelle instance du projet","","",""
+"affair-form","transformToProject","button","Transform to project","Transformer en projet","","",""
+"affair-form","createPreSalesTask","button","Create pre-sales task","Créer tache avant vente","","",""
+"affair-form","","page","Tasks","Tâches","","",""
+"affair-form","","page","Financial information","Informations financières","","",""
+"affair-form","","group","Initial Budget","Budget initial","","",""
+"affair-form","","group","Realized","Réalisé","","",""
+"affair-form","","group","Remaining to do","Reste à faire","","",""
+"affair-form","","group","Estimated final","Estimation finale","","",""
+"affair-form","","page","Membres","","","",""
+"affair-form","","page","Need","","","",""
+"com.axelor.apps.organisation.db.Project","affair-grid","grid","Affairs","Affaires","","",""
+"com.axelor.apps.organisation.db.Bonus","bonus-form","form","Bonus","Bonus","","",""
+"com.axelor.apps.organisation.db.Bonus","bonus-grid","grid","Bonuses","Les Bonus","","",""
+"com.axelor.apps.organisation.db.Business","business-form","form","Business","Business","","",""
+"com.axelor.apps.organisation.db.Business","business-grid","grid","Businesses","Les Business","","",""
+"candidate-form","transformInEmployee","button","Transform into employee","Transformer en employé","","",""
+"com.axelor.apps.organisation.db.Candidate","candidate-form","form","Candidate","Candidat","","",""
+"candidate-form","","group","Coordonnées","Coordonnées","","",""
+"candidate-form","","group","Recruitment Type","Type de recrutement","","",""
+"candidate-form","","page","General","Général","","",""
+"candidate-form","","group","Candidate Follow up","Suivi candidat","","",""
+"com.axelor.apps.organisation.db.RecuitmentProcessAdvancement","","form","Recruitment process progress","Avancement Processus de Recrutement","","",""
+"com.axelor.apps.organisation.db.RecuitmentProcessAdvancement","","grid","Recruitment process progresses","Avancement Processus de Recrutement","","",""
+"candidate-form","","page","Profile","Profil","","",""
+"candidate-form","","group","-","-","","",""
+"candidate-form","","group","Keywords","Mots clés","","",""
+"candidate-form","","group","Companies","Sociétés","","",""
+"candidate-form","","group","Education/Trainings","Éducation / Formations","","",""
+"candidate-form","assign","button","Affect to recruitment pool","Affectation Vivier","","",""
+"candidate-form","assign","button","Copy all necessary fields (including Professionnal Background …)","Copier tous les champs nécessaires","","",""
+"candidate-form","","page","Evaluation","Évaluation","","",""
+"candidate-form","compute","button","Compute","Calculer","","",""
+"candidate-form","","page","Additionnal information","Informations Complémentaires","","",""
+"candidate-form","","page","Competences","Compétences","","",""
+"candidate-form","","page","Other opportunities","Autres pistes","","",""
+"candidate-form","","page","Reporting","Rapport","","",""
+"candidate-form","","group","Action(s)","Action(s)","","",""
+"candidate-form","showCandidate","button","Print CV","Imprimer le CV","","",""
+"com.axelor.apps.organisation.db.Candidate","candidate-grid","grid","Candidates","Candidats","","",""
+"com.axelor.apps.organisation.db.CandidateOtherOpportunity","candidate-other-opportunity-form","form","Other opportunities","Autres pistes","","",""
+"com.axelor.apps.organisation.db.CandidateOtherOpportunity","candidate-other-opportunity-grid","grid","Other opportunity","Autres pistes","","",""
+"com.axelor.apps.organisation.db.CompetenceArea","competence-area-form","form","CompetenceArea","Domaine compétence","","",""
+"com.axelor.apps.organisation.db.CompetenceArea","competence-area-grid","grid","CompetenceArea","Domaine compétence","","",""
+"com.axelor.apps.organisation.db.Competence","competence-edit-form","form","Competences","Compétences","","",""
+"competence-edit-form","","page","Expertises","Expertises","","",""
+"competence-edit-form","","page","Mastered Skills","Compétences Maîtrisées","","",""
+"competence-edit-form","","page","Awareness","Notions","","",""
+"com.axelor.apps.organisation.db.Competence","competence-edit-grid","grid","Competences","Compétences","","",""
+"com.axelor.apps.organisation.db.Degree","degree-form","form","Degree","Diplômes","","",""
+"com.axelor.apps.organisation.db.Degree","degree-grid","grid","Degree","Diplômes","","",""
+"com.axelor.apps.organisation.db.Employee","employee-filters","search-filters","Employee filters","","","",""
+"com.axelor.apps.organisation.db.Employee","Current Employees","filter","Current Employees","","","",""
+"com.axelor.apps.organisation.db.Employee","Old Employees","filter","Old Employees","","","",""
+"com.axelor.apps.organisation.db.Employee","Managers","filter","Managers","","","",""
+"com.axelor.apps.organisation.db.Employee","Skill workers","filter","Skill workers","","","",""
+"com.axelor.apps.organisation.db.Employee","employee-form","form","Employee","Employés","","",""
+"employee-form","","group","Contract Details","Détails contact","","",""
+"employee-form","","page","Additionnal information","Informations Complémentaires","","",""
+"employee-form","","page","Profile","Profil","","",""
+"employee-form","","group","-","-","","",""
+"employee-form","","group","Keywords","Mots clés","","",""
+"employee-form","","group","Companies","Sociétés","","",""
+"employee-form","","page","Salary/Expenses/Holidays","Salaire / Charges / Vacances","","",""
+"employee-form","","page","Salary","Salaires","","",""
+"employee-form","","group","Fixed salary","Salaire fixe","","",""
+"employee-form","","page","Travel expense","Notes de frais","","",""
+"employee-form","","group","Commute expenses","Dépenses","","",""
+"employee-form","","page","Competences","Compétences","","",""
+"employee-form","","page","Hierarchy","Hiérarchie","","",""
+"employee-form","","page","Reporting","Rapport","","",""
+"employee-form","","group","Action(s)","Action(s)","","",""
+"employee-form","showEmployee","button","Print","Imprimer","","",""
+"com.axelor.apps.organisation.db.Employee","employee-grid","grid","Employee","Employés","","",""
+"com.axelor.apps.organisation.db.EvaluationLine","evaluation-line-form","form","Evaluation lines","Lignes d'évaluation","","",""
+"com.axelor.apps.organisation.db.EvaluationLine","evaluation-line-grid","grid","Evaluation lines","Lignes d'évaluation","","",""
+"com.axelor.apps.organisation.db.Expense","expense-edit-grid","grid","Travel expenses","Notes de frais","","",""
+"com.axelor.apps.organisation.db.ExpenseLine","expense-edit-line-grid","grid","Expense Lines","Lignes de frais","","",""
+"com.axelor.apps.organisation.db.Expense","expense-form","form","Travel expense","Notes de frais","","",""
+"expense-form","","group","Action(s)","Action(s)","","",""
+"expense-form","draft","button","Draft","Brouillon","","",""
+"expense-form","submit","button","Submit","Envoyer","","",""
+"expense-form","validateManager","button","Validate","Valider","","",""
+"expense-form","validateCommercial","button","Validate","Valider","","",""
+"expense-form","confirm","button","Confirm","Confirmer","","",""
+"expense-form","refuse","button","Refuse","Refuser","","",""
+"expense-form","sum","button","Compute","Calculer","","",""
+"com.axelor.apps.organisation.db.Expense","expense-grid","grid","Travel expenses","Notes de frais","","",""
+"com.axelor.apps.organisation.db.ExpenseLine","expense-line-form","form","Expense Line","Ligne de dépense","","",""
+"expense-line-form","","group","Context","Contexte","","",""
+"expense-line-form","","group","Details","Détails","","",""
+"expense-line-form","","group","Proofs","Preuves","","",""
+"expense-line-form","","group","Validation/Invoicing","Validation/Facturation","","",""
+"com.axelor.apps.organisation.db.ExpenseLine","expense-line-grid","grid","Expense Line","Ligne de dépense","","",""
+"com.axelor.apps.organisation.db.InterventionType","intervention-type-form","form","InterventionType","Types d'intervention","","",""
+"com.axelor.apps.organisation.db.InterventionType","intervention-type-grid","grid","InterventionType","Types d'intervention","","",""
+"com.axelor.apps.organisation.db.LeaveRequest","leave-request-calendar","calendar","Leave requests","Demandes de congé","","",""
+"com.axelor.apps.organisation.db.LeaveRequest","leave-request-form","form","Leave request","Demande de congé","","",""
+"leave-request-form","","group","Leave period","Période de congés","","",""
+"leave-request-form","confirm","button","Confirm","Confirmer","","",""
+"leave-request-form","cancel","button","Cancel","Annuler","","",""
+"leave-request-form","validate","button","Validate","Valider","","",""
+"com.axelor.apps.organisation.db.LeaveRequest","leave-request-grid","grid","Leave requests","Demandes de congé","","",""
+"com.axelor.apps.organisation.db.LeaveRequestReason","leave-request-reason-form","form","Leave request reason","Motif de congés","","",""
+"com.axelor.apps.organisation.db.LeaveRequestReason","leave-request-reason-grid","grid","Leave request reasons","Motifs de congés","","",""
+"com.axelor.apps.organisation.db.MissionOrder","mission-order-form","form","Mission order","Ordre de mission","","",""
+"mission-order-form","","group","Mission order","Ordre de mission","","",""
+"mission-order-form","","group","Mission information","Information mission","","",""
+"com.axelor.apps.organisation.db.MissionOrder","mission-order-grid","grid","Mission orders","Ordres de mission","","",""
+"com.axelor.apps.organisation.db.MobilityChoice","mobility-choice-form","form","Geographical mobility","Mobilité Géographique","","",""
+"com.axelor.apps.organisation.db.MobilityChoice","mobility-choice-grid","grid","Geographical mobility","Mobilité Géographique","","",""
+"com.axelor.apps.organisation.db.Overtime","overtime-form","form","Overtime","Heures supplémentaires","","",""
+"overtime-form","","group","Action(s)","Action(s)","","",""
+"overtime-form","draft","button","Draft","Brouillon","","",""
+"overtime-form","submit","button","Submit","Envoyer","","",""
+"overtime-form","validateManager","button","Validate","Valider","","",""
+"overtime-form","validateCommercial","button","Validate","Valider","","",""
+"overtime-form","confirm","button","Confirm","Confirmer","","",""
+"overtime-form","refuse","button","Refuse","Refuser","","",""
+"com.axelor.apps.organisation.db.Overtime","overtime-grid","grid","Overtimes","Heures supplémentaires","","",""
+"com.axelor.apps.organisation.db.OvertimeLine","overtime-line-form","form","Overtime line","Heure supplémentaire","","",""
+"overtime-line-form","validate","button","Validate","Valider","","",""
+"com.axelor.apps.organisation.db.OvertimeLine","overtime-line-grid","grid","Overtime lines","Heures supplémentaires","","",""
+"com.axelor.apps.crm.db.Participant","participant-form","form","Participant","Participant","","",""
+"com.axelor.apps.crm.db.Participant","participant-grid","grid","Participants","Participants","","",""
+"com.axelor.apps.organisation.db.PersonalInfo","personal-info-edit-form","form","Additionnal information","Informations Complémentaires","","",""
+"com.axelor.apps.organisation.db.PlacementFollowUp","placement-follow-up-form","form","PlacementFollowUp","Suivi du placement","","",""
+"com.axelor.apps.organisation.db.PlacementFollowUp","placement-follow-up-grid","grid","PlacementFollowUp","Suivi du placement","","",""
+"com.axelor.apps.organisation.db.Planning","planning-form","form","Planning","Planification","","",""
+"com.axelor.apps.organisation.db.Planning","planning-grid","grid","Planning","Planification","","",""
+"com.axelor.apps.organisation.db.PlanningLine","planning-line-form","form","Planning line","Ligne de planification","","",""
+"com.axelor.apps.organisation.db.PlanningLine","planning-line-grid","grid","Planning lines","Lignes de planification","","",""
+"com.axelor.apps.organisation.db.PlanningLine","planning-line-task-form","form","Planning line","Ligne de planification","","",""
+"com.axelor.apps.organisation.db.PlanningLine","planning-line-task-grid","grid","Planning lines","Lignes de planification","","",""
+"com.axelor.apps.organisation.db.Position","position-form","form","Professional background","Parcours professionel","","",""
+"com.axelor.apps.organisation.db.Position","position-grid","grid","Professional background","Parcours professionel","","",""
+"com.axelor.apps.organisation.db.Project","project-filters","search-filters","Project filters","","","",""
+"com.axelor.apps.organisation.db.Project","My Projects","filter","My Projects","","","",""
+"com.axelor.apps.organisation.db.Project","Models","filter","Models","Objets","","",""
+"com.axelor.apps.organisation.db.Project","Billable","filter","Billable","","","",""
+"com.axelor.apps.organisation.db.Project","project-form","form","Affair/Project","Affaire / Projet","","",""
+"com.axelor.apps.organisation.db.Project","Project name","placeholder","Project name","","","",""
+"project-form","","group","Actions","Actions","","",""
+"project-form","generateNewInstanceOfProject","button","Generate new project instance","Générer nouvelle instance du projet","","",""
+"project-form","generateDraftInvoice","button","Generate draft invoice","Générer facture brouillon","","",""
+"project-form","showTask","button","Show tasks","Voir les tâches","","",""
+"project-form","","group","Description","Description","","",""
+"project-form","specificSettings","group","Specific settings","Configuration spécifique","","",""
+"project-form","","separator","Project model","","","",""
+"project-form","","separator","Expense","NDF","","",""
+"project-form","","separator","Timesheet","Feuille de temps","","",""
+"project-form","","page","Tasks","Tâches","","",""
+"project-form","","page","Membres","","","",""
+"com.axelor.apps.organisation.db.Project","project-grid","grid","Affairs/Projects","Affaires / Projets","","",""
+"com.axelor.apps.organisation.db.PublicHolidaysLine","public-holiday-line-form","form","Public holiday","Jours Fériés","","",""
+"com.axelor.apps.organisation.db.PublicHolidaysLine","public-holiday-line-grid","grid","Public holidays","Jours Fériés","","",""
+"com.axelor.apps.organisation.db.PublicHolidays","public-holidays-form","form","Public holidays","Jours Fériés","","",""
+"com.axelor.apps.organisation.db.PublicHolidays","public-holidays-grid","grid","Public holidays","Jours Fériés","","",""
+"com.axelor.apps.organisation.db.RecuitmentProcessAdvancement","recruitment-process-advancement-form","form","Recruitment process advancement","Avancements processus recrutement","","",""
+"com.axelor.apps.organisation.db.RecuitmentProcessAdvancement","recruitment-process-advancement-grid","grid","Recruitment process advancement","Avancements processus recrutement","","",""
+"com.axelor.apps.organisation.db.Schedule","schedule-form","form","Horaires","Horaires","","",""
+"com.axelor.apps.organisation.db.Schedule","schedule-grid","grid","Les horaires","Les horaires","","",""
+"com.axelor.apps.organisation.db.ScheduleLine","schedule-line-form","form","Working Time shift","Période horaire","","",""
+"com.axelor.apps.organisation.db.ScheduleLine","schedule-line-grid","grid","Working Time shifts","Les périodes horaires","","",""
+"com.axelor.apps.organisation.db.ScheduleSubLine","schedule-sub-line-form","form","Working timeshift periods","Période journalière","","",""
+"com.axelor.apps.organisation.db.ScheduleSubLine","schedule-sub-line-grid","grid","Working timeshift periods","Période journalière","","",""
+"com.axelor.apps.organisation.db.SkillLine","skill-line-edit-form","form","Skills","Compétences","","",""
+"com.axelor.apps.organisation.db.SkillLine","skill-line-edit-grid","grid","Skills","Compétences","","",""
+"com.axelor.apps.organisation.db.SkillSet","skill-set-edit-form","form","Skill","Compétence","","",""
+"com.axelor.apps.organisation.db.Task","task-calendar","calendar","Tasks","Tâches","","",""
+"com.axelor.apps.organisation.db.Task","task-form","form","Task","Tâche","","",""
+"com.axelor.apps.organisation.db.Task","Task name","placeholder","Task name","","","",""
+"task-form","","group","Context","Contexte","","",""
+"task-form","","group","Total","","","",""
+"task-form","","group","Planned","Planifié","","",""
+"task-form","","group","Real","","","",""
+"com.axelor.apps.organisation.db.Task","Total worked quantity","viewField","Total worked quantity","Quantité totale travaillé","","",
+"com.axelor.apps.organisation.db.Task","Total worked unit","viewField","Total worked unit","Unité travaillé totale","","",
+"task-form","generateDraftInvoice","button","Generate draft invoice","Générer facture brouillon","","",""
+"task-form","","page","Planification and realization","Planification et réalisation","","",""
+"task-form","","page","Suivi Facturation","","","",""
+"task-form","","page","Notes","Remarques","","",""
+"task-form","financialInformation","page","Financial information","Informations financières","","",""
+"task-form","","group","Budget initial","Budget initial","","",""
+"task-form","","group","Reaslized","Réalisé","","",""
+"task-form","","group","Remaining to do","Reste à faire","","",""
+"task-form","","group","Estimated final","Estimation finale","","",""
+"task-form","","page","Links","Liens","","",""
+"task-form","","page","Description","Description","","",""
+"task-form","","page","Past times","","","",""
+"com.axelor.apps.organisation.db.Task","task-grid","grid","Tasks","Tâches","","",""
+"com.axelor.apps.organisation.db.TaskProductLine","task-product-line-form","form","Task product line","Autre planification","","",""
+"task-product-line-form","update","button","Ajouter","Ajouter","","",""
+"com.axelor.apps.organisation.db.TaskProductLine","task-product-line-grid","grid","Task product line","Autre planification","","",""
+"com.axelor.apps.organisation.db.Task","task-project-grid","grid","Tasks","Tâches","","",""
+"com.axelor.apps.organisation.db.Task","tasks-filters","search-filters","Tasks filters","","","",""
+"com.axelor.apps.organisation.db.Task","My Tasks","filter","My Tasks","Mes Tâches","","",""
+"com.axelor.apps.organisation.db.Task","My Today tasks","filter","My Today tasks","","","",""
+"com.axelor.apps.organisation.db.Task","My Upcoming Tasks","filter","My Upcoming Tasks","","","",""
+"com.axelor.apps.organisation.db.Task","Tasks Underevaluated","filter","Tasks Underevaluated","","","",""
+"com.axelor.apps.organisation.db.Task","Tasks To Invoice","filter","Tasks To Invoice","","","",""
+"com.axelor.apps.organisation.db.TaskUpdateLine","task-update-line-form","form","Mise à jour des coût","Mise à jour des coûts","","",""
+"task-update-line-form","update","button","Add","Ajouter","","",""
+"com.axelor.apps.organisation.db.TaskUpdateLine","task-update-line-grid","grid","Les mises à jours des coûts","Les mises à jours des coûts","","",""
+"com.axelor.apps.organisation.db.Timesheet","timesheet-form","form","Timesheet","Feuille de temps","","",""
+"timesheet-form","","group","Satisfaction","Satisfaction","","",""
+"timesheet-form","","separator","Project","Projet","","",""
+"timesheet-form","","separator","Company","Société","","",""
+"timesheet-form","","group","Unité","Unité","","",""
+"timesheet-form","","separator","Details of time spent on project/tasks","Lignes de temps passé sur les projets/tâche","","",""
+"timesheet-form","","group","Action(s)","Action(s)","","",""
+"timesheet-form","confirm","button","Confirm","Confirmer","","",""
+"timesheet-form","validate","button","Validate","Valider","","",""
+"timesheet-form","getTaskPastTime","button","Get past time from task","","","",""
+"timesheet-form","cancel","button","Cancel","Annuler","","",""
+"com.axelor.apps.organisation.db.Timesheet","timesheet-grid","grid","Timesheets","Feuilles de temps","","",""
+"com.axelor.apps.organisation.db.TimesheetInput","timesheet-input-form","form","Timesheet input","Saisie d'une période","","",""
+"com.axelor.apps.organisation.db.TimesheetInput","Hours","placeholder","Hours","","","",""
+"com.axelor.apps.organisation.db.TimesheetInput","timesheet-input-grid","grid","Timesheet inputs","Les saisies de période","","",""
+"com.axelor.apps.organisation.db.TimesheetLine","timesheet-line-form","form","Timesheet project/task time input","Ligne de feuille de temps","","",""
+"com.axelor.apps.organisation.db.TimesheetLine","timesheet-line-grid","grid","Timesheet project/task time inputs","Les lignes de feuille de temps","","",""
+"com.axelor.apps.organisation.db.TimesheetPeriodConfig","timesheet-period-config-form","form","Timesheet Period Config","Configuration période feuille de temps","","",""
+"timesheet-period-config-form","","group","Weekly","Hebdomadaire","","",""
+"timesheet-period-config-form","","group","Period","Période","","",""
+"timesheet-period-config-form","","group","Day/Hour of generation","Jour/heure de génération","","",""
+"timesheet-period-config-form","","group","Monthly","Mensuel","","",""
+"timesheet-period-config-form","","group","Day/Hour of generation","Jour/heure de génération","","",""
+"timesheet-period-config-form","reminderDelay","group","Reminder delay","Délai de relance","","",""
+"timesheet-period-config-form","","group","Limit","Limite","","",""
+"timesheet-period-config-form","generateTimesheets","button","Generate Timesheets","Générer les feuilles de temps","","",""
+"com.axelor.apps.organisation.db.TimesheetPeriodConfig","timesheet-period-config-grid","grid","Timesheets Period Config","Configuration période feuilles de temps","","",""
+"com.axelor.apps.organisation.db.TimesheetTotalByType","timesheet-total-by-type-form","form","Total input per type","Total par type","","",""
+"com.axelor.apps.organisation.db.TimesheetTotalByType","timesheet-total-by-type-grid","grid","Total input per types","Totaux par type","","",""
+"com.axelor.apps.organisation.db.Topic","topic-form","form","Topic","Sujets","","",""
+"com.axelor.apps.organisation.db.Topic","topic-grid","grid","Topic","Sujets","","",""
+"com.axelor.apps.organisation.db.TrainingCenter","training-center-form","form","TrainingCenter","Centres de formation","","",""
+"com.axelor.apps.organisation.db.TrainingCenter","training-center-grid","grid","TrainingCenter","Centres de formation","","",""
+"com.axelor.apps.organisation.db.Training","training-form","form","Training","Formations","","",""
+"training-form","","label"," "," ","","",""
+"com.axelor.apps.organisation.db.Training","training-grid","grid","Training","Formations","","",""
+"com.axelor.apps.organisation.db.TrainingLine","training-line-form","form","TrainingLine","Lignes de formation","","",""
+"com.axelor.apps.organisation.db.TrainingLine","training-line-grid","grid","TrainingLine","Lignes de formation","","",""
+"action-expense-alert-validate","action-expense-alert-validate","action","All supporting files have not been provided","Tous les fichiers justificatifs n'ont pas été fournis.","","",""
+"action-leave-request-button-cancel","action-leave-request-button-cancel","action","The holiday period already started you can not cancel this holiday.","La période de congés ayant déjà commencée, vous ne pouvez pas l'annuler.","","",""
+"action-leave-request-button-confirmation","action-leave-request-button-confirmation","action","Start date required.","Veuillez renseigner une date de départ en congés et la durée associée des congés.","","",""
+"action-leave-request-button-confirmation","action-leave-request-button-confirmation","action","Leave request reason required.","Veuillez renseigner le motif de votre demande de congés.","","",""
+"action-leave-request-button-confirmation","action-leave-request-button-confirmation","action","Request date required.","Veuillez renseigner la date de demande de congés.","","",""
+"action-leave-request-button-validation","action-leave-request-button-validation","action","The holiday request date should be equal or before the today date.","La date de demande de congé doit être égale ou précéder la date du jour.","","",""
+"action-leave-request-button-validation","action-leave-request-button-validation","action","Holiday requests duration must always be greater than 0.","La durée ne peut être négative.","","",""
+"action-leave-request-button-validation","action-leave-request-button-validation","action","The holiday end date must be after the start date.","La date de fin de vacances doit être postérieure à la date de départ.","","",""
+"action-leave-request-button-validation","action-leave-request-button-validation","action","The holiday request duration is greater than the remaining holidays. Please contact your supervisor to be credited with advance holidays permission.","La durée de demande de congés est supérieure aux vacances restantes. Merci de contacter votre superviseur pour bénéficier d'une avance de congés.","","",""
+"action-leave-request-button-validation","action-leave-request-button-validation","action","You are not allowed to validate this holiday request, please refer to your supervisor (the supervisor is listed in the employee hierarchy notebook).","","","",""
+"action-project-validate-generate-invoice","action-project-validate-generate-invoice","action","Generating invoice is impossible, the fields clientPartner and contactPartner must be filled.","Merci de remplir les champs 'Client' et 'Contact' pour générer une facture.","","",""
+"action-project-validate-generate-invoice","action-project-validate-generate-invoice","action","Generating invoice is impossible, please link the task to a saleOrderLine to do so.","","","",""
+"action-project-validate-generate-invoice","action-project-validate-generate-invoice","action","There is currently no task to invoice. If you need to generate an invoice from a task, please tick the checkbox 'To invoice' and make sure all necessary informations are filled in.","Aucune tâche n'est à facturer pour l'instant. Si vous souhaitez générer une ligne de facture à partir d'une tâche, veuillez cocher la case 'A facturer' et faire en sorte que toutes les informations nécessaires soient remplies.","","",""
+"action-project-view-task","action-project-view-task","action","Tasks","Tâches","","",""
+"action-task-validate-generate-invoice","action-task-validate-generate-invoice","action","Generating invoice is impossible, Please link the task to a saleOrderLine to do so.","Merci de relier la tâche à une ligne de devis/commande pour générer une facture.","","",""
+"affair.root.project.all.affair","affair.root.project.all.affair","action","Affairs","Affaires","","",""
+"affair.root.project.new.affair","affair.root.project.new.affair","action","New Affair","Nouvelle Affaire","","",""
+"demo.gantt1","demo.gantt1","action","Gantt Diagram","Diagramme de GANTT","","",""
+"hr.root.config.public.holidays","hr.root.config.public.holidays","action","Public holidays","Jours Fériés","","",""
+"hr.root.employee","hr.root.employee","action","Employees","Employés","","",""
+"hr.root.history.olds.timesheets","hr.root.history.olds.timesheets","action","Olds timesheets","Mes anciennes feuilles de temps","","",""
+"hr.root.inputforms.leave.request","hr.root.inputforms.leave.request","action","My leave requests","Mes demandes de congé","","",""
+"hr.root.inputforms.overtimes","hr.root.inputforms.overtimes","action","My overtimes","Mes heures supplémentaires","","",""
+"hr.root.inputforms.timesheet","hr.root.inputforms.timesheet","action","My timesheet","Mes feuilles de temps à compléter","","",""
+"hr.root.inputforms.travelexpenses","hr.root.inputforms.travelexpenses","action","My travel expenses","Mes notes de frais","","",""
+"hr.root.mission.order","hr.root.mission.order","action","Mission order","Ordre de mission","","",""
+"hr.root.paymentforms.overtimes","hr.root.paymentforms.overtimes","action","Overtimes to be paid","Heures sup à payer","","",""
+"hr.root.paymentforms.travelexpenses","hr.root.paymentforms.travelexpenses","action","Travel expenses to be paid","Notes de frais à rembourser","","",""
+"hr.root.planning","hr.root.planning","action","Plannings","Plannings","","",""
+"hr.root.recruitment.candidate","hr.root.recruitment.candidate","action","Candidates","Candidats","","",""
+"hr.root.schedule","hr.root.schedule","action","Working hours","Horaires de travail","","",""
+"hr.root.training","hr.root.training","action","Trainings","Formations","","",""
+"hr.root.validationforms.leave.request","hr.root.validationforms.leave.request","action","Leave requests to validate","Demande de congé à valider","","",""
+"hr.root.validationforms.overtimes","hr.root.validationforms.overtimes","action","Overtimes to validate","Heures supplémentaires à valider","","",""
+"hr.root.validationforms.timesheet","hr.root.validationforms.timesheet","action","Timesheets to validate","Feuilles de temps à valider","","",""
+"hr.root.validationforms.travelexpenses.commercial","hr.root.validationforms.travelexpenses.commercial","action","Travel expenses to validate by commercial","Notes de frais à valider par Commercial","","",""
+"hr.root.validationforms.travelexpenses.manager","hr.root.validationforms.travelexpenses.manager","action","Travel expenses to validate by RSC Manager","Notes de frais à valider par Ressource Manager","","",""
+"project.root.project","project.root.project","action","Projects","Les projets","","",""
+"project.root.task","project.root.task","action","Tasks","Tâches","","",""
