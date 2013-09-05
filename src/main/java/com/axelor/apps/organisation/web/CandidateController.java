@@ -44,15 +44,23 @@ import com.axelor.apps.AxelorSettings;
 import com.axelor.apps.base.db.Keyword;
 import com.axelor.apps.organisation.db.Candidate;
 import com.axelor.apps.organisation.db.EvaluationLine;
+import com.axelor.apps.organisation.service.EmployeeService;
+import com.axelor.apps.organisation.service.TimesheetPeriodService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.db.User;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.meta.db.MetaUser;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 public class CandidateController {
 
+	@Inject
+	private Provider<EmployeeService> employeeService;
+	
+	
 	private static final Logger LOG = LoggerFactory.getLogger(CandidateController.class);
 	
 	public void updateKeywordSet(Set<Keyword> keywordSet, String typeSelect) {
@@ -111,6 +119,17 @@ public class CandidateController {
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
+	
+	
+	public void transformInEmployee(ActionRequest request, ActionResponse response) {
+		
+		Candidate candidate = request.getContext().asType(Candidate.class);
+		
+		employeeService.get().createEmployee(Candidate.find(candidate.getId()));
+		
+		response.setReload(true);
+	}
+	
 	
 	/**
 	 * Fonction appeler par le bouton imprimer

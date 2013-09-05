@@ -13,6 +13,7 @@
     <form name="timesheet-form" title="Timesheet" model="com.axelor.apps.organisation.db.Timesheet" cols="8"
     onNew="action-timesheet-default-record,action-timesheet-getPeriod">
         <field name="userInfo"/>
+        <spacer/>
         <field name="statusSelect" widget="NavSelect" showTitle="false"/>
         <break/>
         <field name="fromDate" onChange="action-timesheet-getPeriod"/>
@@ -63,6 +64,10 @@
     <action-method name="action-timesheet-getPeriod">
     	<call class="com.axelor.apps.organisation.web.TimesheetController" method="getPeriod"/>
     </action-method>
+    
+    <action-method name="action-timesheet-method-get-task-past-time">
+		<call class="com.axelor.apps.organisation.web.TimesheetController" method="getTaskPastTime"/>
+	</action-method>
     
     <action-record name="action-timesheet-record-confirm" model="com.axelor.apps.organisation.db.Timesheet">
     	<field name="statusSelect" expr="eval: 2"/>

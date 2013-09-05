@@ -85,10 +85,6 @@
 		<call class="com.axelor.apps.accountorganisation.web.ProjectInvoiceController" method="createInvoice"/>
 	</action-method>
 	
-	<action-method name="action-project-method-get-task-past-time">
-		<call class="com.axelor.apps.organisation.web.ProjectController" method="getTaskPastTime"/>
-	</action-method>
-	
 	<action-validate name="action-project-validate-generate-invoice">
 		<error message="Generating invoice is impossible, the fields clientPartner and contactPartner must be filled." if="clientPartner == null || contactPartner == null"/>
    		<error message="Generating invoice is impossible, please link the task to a saleOrderLine to do so." if="eval: taskList?.collect(){ it?.salesOrderLine }?.contains(null) == true"/>

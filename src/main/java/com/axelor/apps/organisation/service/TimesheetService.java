@@ -78,8 +78,9 @@ public class TimesheetService {
 		
 		timesheetLine.setProject(task.getProject());
 		timesheetLine.setTask(task);
+		timesheetLine.setIsToInvoice(true);
 		
-		List<PastTime> pastTimeList = PastTime.all().filter("self.userInfo = ?1 AND self.task = ?2  AND pt.timesheetImputed IN (false,null)", timesheet.getUserInfo(), task).fetch();
+		List<PastTime> pastTimeList = PastTime.all().filter("self.userInfo = ?1 AND self.task = ?2  AND self.timesheetImputed IN (false,null)", timesheet.getUserInfo(), task).fetch();
 		
 		for(PastTime pastTime : pastTimeList)  {
 			
