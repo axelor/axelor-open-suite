@@ -75,7 +75,7 @@ public class ProductVariantService {
 		productVariant.setProductVariantValue3(productVariantValue3);
 		productVariant.setProductVariantValue4(productVariantValue4);
 		
-		productVariant.setUsedforStock(usedForStock);
+		productVariant.setUsedForStock(usedForStock);
 		
 		return productVariant;
 	}

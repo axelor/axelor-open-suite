@@ -16,7 +16,7 @@
 	<many-to-one name="productVariantValue3" ref="com.axelor.apps.base.db.ProductVariantValue"/>
 	<many-to-one name="productVariantValue4" ref="com.axelor.apps.base.db.ProductVariantValue"/>
 	
-	<boolean name="usedforStock" title="Use for stock only"/>
+	<boolean name="usedForStock" title="Use for stock only"/>
 	
 	<string name="name" title="Name">
 		<![CDATA[
