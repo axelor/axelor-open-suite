@@ -149,7 +149,7 @@ public class LocationLineService {
 		if(detailLocationLine == null)  {
 			
 			ProductVariant stockProductVariant = productVariant;
-			if(productVariant != null && !productVariant.getUsedforStock())  {
+			if(productVariant != null && !productVariant.getUsedForStock())  {
 				stockProductVariant = productVariantService.getStockProductVariant(productVariant);
 			}
 			detailLocationLine = this.createDetailLocationLine(detailLocation, product, stockProductVariant, trackingNumber);

@@ -18,42 +18,37 @@
 	    <toolbar>
 	        <button name="createDocument" title="Create Document" onClick="com.axelor.apps.supplychain.web.SalesOrderController:saveDocumentForOrder"/>
 	    </toolbar>
-	    <group colSpan="3" cols="4" colWidths="17%,33%,17%,33%">
-	        <field name="salesOrderSeq"/>
+	    <group colSpan="4" cols="6">
+	        <field name="salesOrderSeq" css="highlight"/>
+	        <field name="affairProject"/>        
 	        <field name="company" widget="SuggestBox" onChange="action-sales-order-record-company-configuration"/>
-	        <field name="location" domain="self.company = :company and self.typeSelect = 1"/>
-	        <field name="affairProject"/>
-	        <field name="currency"/>
 	        <field name="externalReference"/>
-	        <field name="creationDate"/>
-	    </group>
-	    <group colSpan="1" cols="1">
-	        <field name="statusSelect" widget="NavSelect"/>
-	        <button name="showInvoice" title="Show Invoices" colSpan="1" onClick="action-sales-order-view-invoice" showIf="statusSelect == 3"/>
+	        <field name="location" domain="self.company = :company and self.typeSelect = 1"/>
+	        <field name="currency"/>
 	    </group>
 	    <notebook colSpan="4">
-	        <page title="Customer information">
-	            <field name="clientPartner" onChange="action-sales-order-record-partner" domain="self.isContact = false AND self.isCustomer = true"/>
-	            <field name="contactPartner" onSelect="action-sales-order-attrs-contact-partner-domain" />
+	        <page title="Customer information" colSpan="4" cols="6">
+	            <field name="clientPartner" onChange="action-sales-order-record-partner" domain="self.isContact = 'false'"/>
 	            <field name="mainInvoicingAddress"/>
-	            <field name="deliveryAddress"/>
 	            <field name="invoicingTypeSelect"/>
+	            <field name="contactPartner" domain="self.isContact = 'true'"/>
+	            <field name="deliveryAddress"/>
 	            <field name="priceList" domain="self.typeSelect = 1 and (self.partner = null or self.partner = :clientPartner) and  :__date__ &lt; self.validTo"/>
-	            <group title="Specific settings" name="specificSettings" canCollapse="true" colSpan="4">
-	                <separator title="Sale order Settings" colSpan="4"/>
-	                    <field name="isToPrintLineSubTotal"/>
-	                    <field name="project" domain="self.company = :company or self.company = null" showIf="hasToCreateTaskByLine"/>
-	                <separator title="Sale order lines Settings" colSpan="4"/>
-	                    <field name="hasToCreateTaskByLine"/>
-	                    <field name="hasToCreateMoByLine"/>
-	                    <field name="hasToCreateProposal"/>
+	            <group name="specificSettings" title="Specific settings" colSpan="6" cols="6" canCollapse="true">
+	                <separator title="Sale order Settings" colSpan="6"/>
+	                <field name="isToPrintLineSubTotal"/>
+	                <field name="project" showIf="hasToCreateTaskByLine" domain="self.company = :company or self.company = null"/>
+	                <break/>
+	                <separator title="Sale order lines Settings" colSpan="6"/>
+	                <field name="hasToCreateTaskByLine"/>
+	                <field name="hasToCreateMoByLine"/>
+	                <field name="hasToCreateProposal"/>
 	            </group>
 	            <break/>
-	            <separator title="Sale order content" colSpan="4"/>
-	            <field name="salesOrderLineList" colSpan="4"/>
-	            
-	            <group showTitle="false" colSpan="4" cols="3">
-	                <group title="-" colSpan="2" cols="2">
+	            <separator title="Sale order content" colSpan="6"/>
+	            <field name="salesOrderLineList" colSpan="6"/>
+	            <group showTitle="false" colSpan="6" cols="3">
+	                <group colSpan="2" cols="2">
 	                    <field name="salesOrderLineVatList" showTitle="false" colSpan="2"/>
 	                    <group title="Action(s)" colSpan="2" cols="2">
 	                        <group colSpan="1" cols="1">
@@ -63,37 +58,45 @@
 	                            <button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2" colSpan="1" onClick="save,action-sales-order-record-cancel"/>
 	                            <button name="showSalesOrder" title="Print" showIf="statusSelect == 3" colSpan="1" icon="img/icons/print.png" onClick="save,action-sales-order-method-show-sales-order"/>
 	                            <button name="sendByEmail" title="Send by email" showIf="statusSelect == 3" colSpan="1"/>
-	                    	</group>
-	                    	<group readonly="true" colSpan="1" cols="2">
-	                        	<field name="validatedByUserInfo" colSpan="1"/>
-	                        	<field name="validationDate" colSpan="1"/>
-	                    	</group>
-	                	</group>
+	                            <button name="generateInvoice" title="Generate invoice" showIf="statusSelect == 3 &amp;&amp; invoicingTypeSelect != 5" colSpan="2" onClick="save,action-sales-order-method-generate-invoice"/>
+	                            <button name="generateProject" title="Generate project" showIf="statusSelect == 3" colSpan="2"/>
+	                        </group>
+	                        <group readonly="true" colSpan="1" cols="2">
+	                            <field name="creationDate"/>
+	                            <field name="validatedByUserInfo" colSpan="1"/>
+	                            <field name="validationDate" colSpan="1"/>
+	                            <field name="orderDate"/>
+	                            <field name="orderNumber"/>
+	                        </group>
+	                    </group>
 	                </group>
 	                <group title="Totaux" colSpan="1" cols="1">
-	                    <group readonly="true" colSpan="1" css="subtotal" cols="2" colWidths="50%,50%">
+	                    <group readonly="true" colSpan="1" css="subtotal" cols="2" colWidths="30%,50%">
 	                        <field name="exTaxTotal"/>
 	                        <field name="vatTotal"/>
 	                        <field name="inTaxTotal" css="subtotal-total"/>
 	                        <field name="amountRemainingToBeInvoiced"/>
 	                    </group>
+	                    <group colSpan="1" cols="1">
+	                        <field name="statusSelect" widget="NavSelect"/>
+	                    </group>
 	                </group>
 	            </group>
 	        </page>
 	        <page title="Other informations">
-	            <group title="Sales follow-up" colSpan="4">
-		            <field name="salesmanUserInfo"/>
-		            <field name="team" onSelect="action-sales-order-domain-on-team"/>
+	            <group title="Sales follow-up" colSpan="2" cols="2">
+	                <field name="salesmanUserInfo"/>
+	                <field name="team" onSelect="action-sales-order-domain-on-team"/>
 	            </group>
-	            <group title="Financial terms" colSpan="4">
-		            <field name="paymentMode"/>
-		            <field name="paymentCondition"/>
+	            <group title="Financial terms" colSpan="2" cols="2">
+	                <field name="paymentMode"/>
+	                <field name="paymentCondition"/>
 	            </group>
-	            <group title="Marketing" colSpan="4">
-		            <field name="source"/>
+	            <group title="Marketing" colSpan="2">
+	                <field name="source"/>
 	            </group>
-	            <group title="Invoicing" colSpan="4">
-		            <field name="showDetailsInInvoice"/>
+	            <group title="Invoicing" colSpan="2">
+	                <field name="showDetailsInInvoice"/>
 	            </group>
 	        </page>
 	        <page title="Payment schedule" showIf="invoicingTypeSelect == 2">
@@ -101,16 +104,11 @@
 	            <field name="salesOrderScheduleLineList" colSpan="4"/>
 	        </page>
 	        <page title="Invoicing" showIf="statusSelect == 3">
+	            <button name="showInvoice" title="Show Invoices" showIf="statusSelect == 3" colSpan="4" onClick="action-sales-order-view-invoice"/>
 	            <field name="invoiceSet" colSpan="4"/>
 	        </page>
-	        <page title="Customer order">
-	            <field name="orderDate"/>
-	            <field name="orderNumber"/>
-	            <button name="generateInvoice" title="Generate invoice" showIf="statusSelect == 3 &amp;&amp; invoicingTypeSelect != 5" colSpan="2" onClick="save,action-sales-order-method-generate-invoice"/>
-	            <button name="generateProject" title="Generate project" showIf="statusSelect == 3" colSpan="2"/>
-	        </page>
 	    </notebook>
-    </form>
+	</form>
     
     <action-attrs name="action-sales-order-domain-on-team">
     	<attribute name="domain" for="team" expr="eval: salesmanUserInfo?.teamSet?.collect{it.id}?.size() > 0 ? &quot;self.id IN (${salesmanUserInfo?.teamSet?.collect{it.id}?.join(',')})&quot; : null"/>

@@ -5,44 +5,50 @@
     
     <grid name="sales-order-line-grid" title="SO lines" model="com.axelor.apps.supplychain.db.SalesOrderLine" orderBy="sequence">
     	<field name="sequence"/>
-        <field name="productName"/>
-        <field name="qty"/>
-        <field name="unit"/>
-        <field name="price"/>
-        <field name="vatLine.value"/>
-        <field name="discountTypeSelect"/>
-        <field name="discountAmount"/>
-        <field name="exTaxTotal"/>
-    </grid>
+	    <field name="productName"/>
+	    <field name="qty"/>
+	    <field name="unit"/>
+	    <field name="price"/>
+	    <field name="vatLine.value"/>
+	    <field name="exTaxTotal"/>
+	</grid>
     
     <form name="sales-order-line-form" title="SO line" model="com.axelor.apps.supplychain.db.SalesOrderLine" cols="4" 
     onNew="action-sales-order-line-record-new,action-sales-order-line-record-sequence"
     onLoad="action-sales-order-line-attrs-ressources-planning,action-sales-order-line-attrs-hide-product-variant">
-	    <field name="sequence"/>  
-	    <field name="isOrdered"/>
-	    <field name="saleSupplySelect" required="true"/>
-	    <field name="product" required="true" onChange="action-sales-order-line-record-product-variant,action-sales-order-line-method-get-product-information,action-sales-order-line-method-compute,action-sales-order-line-method-setBooleans,action-sales-order-line-attrs-ressources-planning,action-sales-order-line-attrs-hide-product-variant" domain="self.endDate = null or self.endDate &gt; :__date__"/>
-	    <field name="productName"/>
-	    <field name="qty" onChange="action-sales-order-line-method-compute" required="true"/>
-	    <field name="unit"/>
-	    <field name="price" required="true" onChange="action-sales-order-line-method-compute"/>
-	    <field name="discountTypeSelect"/>
-	    <field name="discountAmount"/>
-	    <field name="exTaxTotal" required="true"/>
-	    <field name="supplierPartner" domain="self.partnerTypeSelect = 2"/>
-	    <group title="V.A.T informations" colSpan="4" cols="4">
-	    	<field name="vatLine" domain="self.endDate = null or self.endDate &gt; :__date__"/>
-	    	<field name="vatLine.vat.name"/>
-	    	<field name="vatLine.value"/>
+	    <group colSpan="4" cols="6" colWidths="10%,10%,30%,10%,30%,10%">
+		    <field name="sequence"/>
+		    <field name="isOrdered"/>
+		    <field name="isToPrintLineSubTotal"/>
 	    </group>
-	    <group title="Product Variants" colSpan="4" cols="4">
-	        <field name="productVariant" widget="NestedEditor" summary-view="true" form-view="product-variant-form" edit-window="self" canSelect="false" showTitle="false"/>
-	    </group>    
-	    <field name="task"/>
-	    <field name="isToPrintLineSubTotal"/>
-	    <field name="description" colSpan="4"/>
+	    <separator colSpan="4"/>
+	    <field name="product" onChange="action-sales-order-line-record-product-variant,action-sales-order-line-method-get-product-information,action-sales-order-line-method-compute,action-sales-order-line-method-setBooleans,action-sales-order-line-attrs-ressources-planning,action-sales-order-line-attrs-hide-product-variant" domain="self.endDate = null or self.endDate &gt; :__date__"/>
+	    <field name="productName"/>
+	    <field name="qty" onChange="action-sales-order-line-method-compute"/>
+	    <field name="unit"/>
+	    <field name="price" onChange="action-sales-order-line-method-compute"/>
+	    <field name="vatLine" domain="self.endDate = null or self.endDate &gt; :__date__"/>
+	    <field name="exTaxTotal"/>
+	    <field name="vatLine.value"/>      
+	    <group name="discount" title="Remise" colSpan="4" cols="4" canCollapse="true">
+	        <field name="discountTypeSelect"/>
+	        <field name="discountAmount"/>
+	    </group>
 	    <notebook colSpan="6">
-	        <page title="SO line details"> 
+	        <page title="Settings">
+	            <group colSpan="6" cols="4" colWidths="30%,10%,30%,10%">
+	                <field name="saleSupplySelect"/>
+	                <break/>
+	                <field name="supplierPartner" domain="self.partnerTypeSelect = 2"/>
+	                <field name="task"/>
+	            </group>
+	        </page>
+	        <page title="Notes">
+	            <field name="description" colSpan="4" showTitle="false"/>
+	        </page>
+	         
+	        <page title="SO line details">
+	            <field name="productVariant" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="product-variant-form" summary-view="true"/>
 	            <field name="salesOrderSubLineList" colSpan="6"/>
 	        </page>
 	        <page title="Invoicing follow-up">
@@ -54,11 +60,11 @@
 	            <field name="invoiceSet" colSpan="6"/>
 	        </page>
 	        <page name="ressourcesPlanning" title="Ressources Planning">
-	        	<field name="employeeSet" colSpan="4" domain="self.exitDate = null or self.exitDate &gt; :__date__"/>
-	        	<field name="candidateSet" colSpan="4"/>
+	            <field name="employeeSet" colSpan="4" domain="self.exitDate = null or self.exitDate &gt; :__date__"/>
+	            <field name="candidateSet" colSpan="4"/>
 	        </page>
 	    </notebook>
-    </form>
+	</form>
     
     <!-- ACTION RECORD -->
     <action-record name="action-sales-order-line-record-new" model="com.axelor.apps.supplychain.db.SalesOrderLine">

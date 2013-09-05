@@ -86,7 +86,7 @@ public class StockMoveLineService {
 		if(product != null && product.getApplicationTypeSelect() == IProduct.PRODUCT_TYPE) {
 
 			ProductVariant stockProductVariant = productVariant;
-			if(productVariant != null && !productVariant.getUsedforStock())  {
+			if(productVariant != null && !productVariant.getUsedForStock())  {
 				stockProductVariant = productVariantService.getStockProductVariant(productVariant);
 			}
 			
