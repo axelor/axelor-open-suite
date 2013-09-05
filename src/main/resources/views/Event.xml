@@ -86,7 +86,7 @@
 	        </group>
 	        <spacer/><break/>
 	        <field name="description" widget="TEXT[height=4]" colSpan="4"/>
-	        <group title="Reminders" colSpan="2" cols="2">
+	        <group title="Reminders" colSpan="4" cols="2">
 	        	<field name="eventReminderList" widget="MasterDetail" colSpan="2" showTitle="false"/>
 	        </group>
         </group>
@@ -186,7 +186,7 @@
 	        </group>
 	        <spacer/><break/>
 	        <field name="taskPartner"/>
-	        <group title="Reminders" colSpan="2" cols="2">
+	        <group title="Reminders" colSpan="4" cols="2">
 	        	<field name="eventReminderList" widget="MasterDetail" colSpan="2" showTitle="false"/>
 	        </group>
 	        <field name="prioritySelect"/>
