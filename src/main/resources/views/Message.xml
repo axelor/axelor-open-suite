@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
 	
     <grid name="message-grid" title="Emails" model="com.axelor.apps.message.db.Message">
-        <field name="sendedDate"/>
+        <field name="sendedDateT"/>
         <field name="sender"/>
         <field name="subject"/>
     </grid>
@@ -13,7 +13,7 @@
     onNew="action-message-default-record">
     	<group title="Informations" colSpan="4">
  			<field name="typeSelect"/>
-            <field name="sendedDate"/>
+            <field name="sendedDateT"/>
             <field name="fromEmailAddress"/>
             <field name="senderUserInfo"/>
             <field name="statusSelect"/>
@@ -44,7 +44,7 @@
     
     <form name="message-inbox-form" title="Email" model="com.axelor.apps.message.db.Message" cols="4">
     	<group title="Informations" colSpan="4" readonly="true">
-            <field name="sendedDate"/>
+            <field name="sendedDateT"/>
             <field name="sender"/>
             <field name="statusSelect"/>
         </group>
@@ -59,7 +59,7 @@
     </form>
 
 	<action-record name="action-message-default-record" model="com.axelor.apps.message.db.Message">
-    	<field name="sendedDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()" if="sendedDate == null"/>
+    	<field name="sendedDateT" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()" if="sendedDate == null"/>
     	<field name="statusSelect" expr="eval: 1"/>
     	<field name="typeSelect" expr="eval: 2"/>
     </action-record>
