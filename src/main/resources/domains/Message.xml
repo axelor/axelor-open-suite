@@ -7,15 +7,15 @@
   
   <entity name="Message" lang="java">
   
-  	<integer name="typeSelect" title="Type" selection="email.type.select"/>
+  	<integer name="typeSelect" title="Type" selection="message.type.select"/>
   	<string name="subject" title="Subject"/>
   	<string name="content" title="Content" large="true"/>
-	<datetime name="sendedDate" title="Sended date"/>
-	<string name="relatedTo1Select" title="Related to" selection="base.message.related.to.select"/>
+	<datetime name="sendedDateT" title="Sended date"/>
+	<string name="relatedTo1Select" title="Related to" selection="message.related.to.select"/>
   	<integer name="relatedTo1SelectId"/>
-  	<string name="relatedTo2Select" title="Related to" selection="base.message.related.to.select"/>
+  	<string name="relatedTo2Select" title="Related to" selection="message.related.to.select"/>
   	<integer name="relatedTo2SelectId"/>
-	<integer name="statusSelect" title="Status" selection="email.status.select"/>
+	<integer name="statusSelect" title="Status" selection="message.status.select"/>
   	
   <!--   	Email -->
   	<many-to-many name="toEmailAddressSet" ref="com.axelor.apps.message.db.EmailAddress" title="To"/>

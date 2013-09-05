@@ -12,6 +12,8 @@
 	 <integer name="duration" title="Duration"/>
 	 <integer name="durationTypeSelect" title="Duration type" selection="crm.eventReminder.duration.type.select"/>
 	 <integer name="assignToSelect" title="Assign to" selection="crm.eventReminder.assign.to.select"/>
+	 <boolean name="isReminded" title="RemindedOk" default="false"/>
+  	 <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
 	  
   </entity>
 
