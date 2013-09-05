@@ -20,15 +20,15 @@
     onLoad="action-sales-order-line-attrs-ressources-planning,action-sales-order-line-attrs-hide-product-variant">
 	    <field name="sequence"/>  
 	    <field name="isOrdered"/>
-	    <field name="saleSupplySelect"/>
-	    <field name="product" onChange="action-sales-order-line-record-product-variant,action-sales-order-line-method-get-product-information,action-sales-order-line-method-compute,action-sales-order-line-method-setBooleans,action-sales-order-line-attrs-ressources-planning,action-sales-order-line-attrs-hide-product-variant" domain="self.endDate = null or self.endDate &gt; :__date__"/>
+	    <field name="saleSupplySelect" required="true"/>
+	    <field name="product" required="true" onChange="action-sales-order-line-record-product-variant,action-sales-order-line-method-get-product-information,action-sales-order-line-method-compute,action-sales-order-line-method-setBooleans,action-sales-order-line-attrs-ressources-planning,action-sales-order-line-attrs-hide-product-variant" domain="self.endDate = null or self.endDate &gt; :__date__"/>
 	    <field name="productName"/>
-	    <field name="qty" onChange="action-sales-order-line-method-compute"/>
+	    <field name="qty" onChange="action-sales-order-line-method-compute" required="true"/>
 	    <field name="unit"/>
-	    <field name="price" onChange="action-sales-order-line-method-compute"/>
+	    <field name="price" required="true" onChange="action-sales-order-line-method-compute"/>
 	    <field name="discountTypeSelect"/>
 	    <field name="discountAmount"/>
-	    <field name="exTaxTotal"/>
+	    <field name="exTaxTotal" required="true"/>
 	    <field name="supplierPartner" domain="self.partnerTypeSelect = 2"/>
 	    <group title="V.A.T informations" colSpan="4" cols="4">
 	    	<field name="vatLine" domain="self.endDate = null or self.endDate &gt; :__date__"/>

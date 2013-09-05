@@ -33,8 +33,8 @@
 	    </group>
 	    <notebook colSpan="4">
 	        <page title="Customer information">
-	            <field name="clientPartner" onChange="action-sales-order-record-partner" domain="self.isContact = 'false'"/>
-	            <field name="contactPartner" domain="self.isContact = 'true'"/>
+	            <field name="clientPartner" onChange="action-sales-order-record-partner" domain="self.isContact = false AND self.isCustomer = true"/>
+	            <field name="contactPartner" onSelect="action-sales-order-attrs-contact-partner-domain" />
 	            <field name="mainInvoicingAddress"/>
 	            <field name="deliveryAddress"/>
 	            <field name="invoicingTypeSelect"/>
@@ -220,6 +220,10 @@
 	<action-validate name="action-sale-order-validate-check-location">
 		<error message="The location must be filled." if="location == null"/>
 	</action-validate> 
+	
+	<action-attrs name="action-sales-order-attrs-contact-partner-domain">
+        <attribute name="domain" expr="eval: &quot;self.isContact = true AND self.id IN (${(clientPartner?.contactPartnerSet != null &amp;&amp; !clientPartner.contactPartnerSet.empty)?clientPartner.contactPartnerSet.collect{it.id}.join(','):'null,null'})&quot;"  for="contactPartner"/>
+    </action-attrs>
 	
 	<search-filters name="sales-order-filters" model="com.axelor.apps.supplychain.db.SalesOrder" title="Sales Order filters">
 		<filter title="My Proposals">
