@@ -75,7 +75,7 @@
 	<menuitem name="contact-root" title="Companies/Contacts" priority="190"
 		icon="img/icons/partner.png" groups="admins,erp"/>
 
-	<menuitem name="contact-root-partner" parent="contact-root"
+	<menuitem name="contact-root-partner" parent="contact-root" priority="3"
 		title="Accounts" action="contact.root.partner" />
 
 	<action-view name="contact.root.partner" title="Accounts"
@@ -84,10 +84,21 @@
 		<view type="form" name="partner-form" />
 		<view-param name="search-filters" value="partner-filters"/>
 		<!-- <domain>self.curUser = null OR self.curUser = :user_id</domain> -->
+		<domain>self.isContact = false</domain>
 		<context name="user_id" expr="eval:__user__" />
 	</action-view>
 	
-	<menuitem name="contact-conf" parent="contact-root" title="Configuration"
+	<menuitem name="contact-root-contact" parent="contact-root" priority="2"
+		title="Contacts" action="contact.root.contact" />
+
+	<action-view name="contact.root.contact" title="Contacts"
+		model="com.axelor.apps.base.db.Partner" icon="img/icons/partner_small.png">
+		<view type="grid" name="partner-contact-grid" />
+		<view type="form" name="partner-contact-form" />
+		<domain>self.isContact = true</domain>
+	</action-view>
+	
+	<menuitem name="contact-conf" parent="contact-root" title="Configuration" priority="1"
 		icon="img/icons/parameter.png" />
 		
 	<menuitem name="contact-conf-category" parent="contact-conf"

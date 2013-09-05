@@ -27,8 +27,8 @@
     </grid>
     
     <form cols="6" colWidths="25*"   name="partner-form" title="Partner" model="com.axelor.apps.base.db.Partner"
-	    onNew="action-partner-record-partner-type-select,action-partner-record-set-default" 
-	    onLoad="action-partner-attrs-change-name,action-partner-attrs-hide-tabs" 
+	    onNew="action-partner-record-partner-type-select,action-partner-record-set-default,action-partner-attrs-set-readonly" 
+	    onLoad="action-partner-attrs-change-name,action-partner-attrs-hide-tabs,action-partner-attrs-set-readonly" 
 	    onSave="action-set-partner-seq,action-create-accounting-situation">
 	   <group colSpan="1" cols="1">
 	        <group colSpan="1">
@@ -53,17 +53,17 @@
 	        <field name="partnerCategory" widget="SuggestBox"/>
 	        <field name="partnerTypeSelect" onChange="action-partner-attrs-change-name,action-partner-attrs-hide-tabs"/>
 	        <field name="parentPartner" hideIf="partnerTypeSelect != 1"/>
-	        <field name="isContact" hideIf="partnerTypeSelect != 2 || (partnerTypeSelect == 2 &amp;&amp; isCustomer)" onChange="action-partner-set-non-contact-fields,action-partner-attrs-hide-tabs"/>
+	        <field name="isContact" hideIf="partnerTypeSelect != 2 || (partnerTypeSelect == 2 &amp;&amp; isCustomer)" onChange="action-partner-set-non-contact-fields,action-partner-attrs-hide-tabs,action-partner-attrs-set-readonly"/>
 	        <field name="isCustomer" hideIf="partnerTypeSelect == 2"/>
 	        <field name="customerTypeSelect" hideIf="(isContact &amp;&amp; partnerTypeSelect == 2) || !isCustomer"/>
 	        <field name="isSupplier" hideIf="partnerTypeSelect == 2"  onChange="action-set-supplier-type-select"/>
 	        <field name="supplierTypeSelect" hideIf="partnerTypeSelect == 2 || isContact || !isSupplier" />
 	    </group>
-	    <field name="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2" colSpan="4" domain="self.isContact = 'true'" grid-view="partner-contact-grid" form-view="partner-contact-form"/>
+	    <field name="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2" colSpan="4" domain="self.isContact = 'true'" grid-view="partner-contact-grid" form-view="partner-contact-form" />
 	    <break/>
 	    <notebook colSpan="4">
 	        <page name="information" title="Informations">
-	            <group title="Partner details" colSpan="3" cols="4">
+	            <group title="Partner details" colSpan="3" cols="4" hideIf="partnerTypeSelect == 2">
 	                <field name="site" domain="self.partner.id = :id"/>
 	                <field name="department"/>
 	                <field name="source" hideIf="isContact"/>
@@ -174,7 +174,7 @@
 	    </group>
 	    <notebook colSpan="4">
 	        <page name="information" title="Informations">
-	            <group title="Partner details" colSpan="3" cols="4">
+	            <group title="Partner details" colSpan="3" cols="4" hideIf="partnerTypeSelect == 2">
 	                <field name="site" domain="self.partner.id = :id"/>
 	                <field name="department"/>
 	                <field name="source" hideIf="isContact"/>
@@ -199,8 +199,8 @@
 	
 
 	<form cols="6" colWidths="25*" name="partner-contact-form" title="Partner" model="com.axelor.apps.base.db.Partner"
-	    onNew="action-partner-contact-record-default" 
-	    onLoad="action-partner-attrs-change-name,action-partner-attrs-hide-tabs" 
+	    onNew="action-partner-contact-record-default,action-partner-attrs-set-readonly" 
+	    onLoad="action-partner-attrs-change-name,action-partner-attrs-hide-tabs,action-partner-attrs-set-readonly" 
 	    onSave="action-set-partner-seq,action-create-accounting-situation">
 	   <group colSpan="1" cols="1">
 	        <group colSpan="1">
@@ -225,17 +225,17 @@
 	        <field name="partnerCategory" widget="SuggestBox"/>
 	        <field name="partnerTypeSelect" onChange="action-partner-attrs-change-name,action-partner-attrs-hide-tabs"/>
 	        <field name="parentPartner" hideIf="partnerTypeSelect != 1"/>
-	        <field name="isContact" hideIf="partnerTypeSelect != 2 || (partnerTypeSelect == 2 &amp;&amp; isCustomer)" onChange="action-partner-set-non-contact-fields,action-partner-attrs-hide-tabs"/>
+	        <field name="isContact" readonly="true" hideIf="partnerTypeSelect != 2 || (partnerTypeSelect == 2 &amp;&amp; isCustomer)" onChange="action-partner-set-non-contact-fields,action-partner-attrs-hide-tabs,action-partner-attrs-set-readonly"/>
 	        <field name="isCustomer" hideIf="partnerTypeSelect == 2"/>
 	        <field name="customerTypeSelect" hideIf="(isContact &amp;&amp; partnerTypeSelect == 2) || !isCustomer"/>
 	        <field name="isSupplier" hideIf="partnerTypeSelect == 2" onChange="action-set-supplier-type-select"/>
 	        <field name="supplierTypeSelect" hideIf="partnerTypeSelect == 2 || isContact || !isSupplier"/>
 	    </group>
-	    <field name="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2" colSpan="4" domain="self.isContact = 'true'" grid-view="partner-contact-grid" form-view="partner-contact-form"/>
+	    <field name="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2" colSpan="4" domain="self.isContact = 'true'" grid-view="partner-contact-grid" form-view="partner-contact-form" />
 	    <break/>
 	    <notebook colSpan="4">
 	        <page name="information" title="Informations">
-	            <group title="Partner details" colSpan="3" cols="4">
+	            <group title="Partner details" colSpan="3" cols="4" hideIf="partnerTypeSelect == 2">
 	                <field name="site" domain="self.partner.id = :id"/>
 	                <field name="department"/>
 	                <field name="source" hideIf="isContact"/>
@@ -402,8 +402,12 @@
 	<action-attrs name="action-partner-attrs-hide-tabs">
 		<attribute name="required" for="currency" expr="eval:!isContact || partnerTypeSelect != 2"/>
 	</action-attrs>
-
-	<action-record name="action-partner-record-partner-type-select" model="com.axelor.apps.base.db.Partner">
+	
+	<action-attrs name="action-partner-attrs-set-readonly">
+		<attribute name="readonly" for="partnerTypeSelect" expr="eval:isContact"/>
+	</action-attrs>
+	
+	<action-record name="action-partner-record-partner-type-select" model="com.axelor.apps.base.db.Partner" >
     	<field name="partnerTypeSelect" expr="eval:_partnerTypeSelect"/>
     </action-record>
     
@@ -444,19 +448,19 @@
 	
 	<search-filters name="partner-filters" model="com.axelor.apps.base.db.Partner" title="Partner filters">
 		<filter title="All Enterprises">
-			<domain>self.partnerTypeSelect = 1</domain>
+			<domain>self.partnerTypeSelect = 1 AND self.isContact = false</domain>
 		</filter>
 		<filter title="All Individuals">
-			<domain>self.partnerTypeSelect = 2</domain>
+			<domain>self.partnerTypeSelect = 2 AND self.isContact = false</domain>
 		</filter>
 		<filter title="All Prospects">
-			<domain>self.customerTypeSelect = 2</domain>
+			<domain>self.customerTypeSelect = 2 AND self.isContact = false</domain>
 		</filter>
 		<filter title="All Clients">
-			<domain>self.customerTypeSelect = 3</domain>
+			<domain>self.customerTypeSelect = 3 AND self.isContact = false</domain>
 		</filter>
 		<filter title="All Suppliers">
-			<domain>self.supplierTypeSelect = 2</domain>
+			<domain>self.supplierTypeSelect = 2 AND self.isContact = false</domain>
 		</filter>
 	</search-filters>
 	
