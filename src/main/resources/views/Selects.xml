@@ -186,4 +186,8 @@
 		<option value="2">For all</option>
 	</selection>
 	
+	<selection name="icrm.batch.action.select">
+		<option value="21">Event reminder</option>
+	</selection>
+	
 </object-views>

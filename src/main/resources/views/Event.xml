@@ -42,7 +42,9 @@
 	        </group>
 	        <spacer/><break/>
 	        <field name="description" widget="TEXT[height=4]" colSpan="4"/>
-	        <field name="reminder"/>
+	        <group title="Reminders" colSpan="2" cols="2">
+	        	<field name="eventReminderList" widget="MasterDetail" colSpan="2" showTitle="false"/>
+	        </group>
         </group>
         <group title="Related to" colSpan="1" cols="2">
 	        <field name="relatedToSelect" widget="RefSelect[related=relatedToSelectId]"/>
@@ -68,11 +70,10 @@
         <field name="statusSelect"/>
         <field name="startDateTime"/>
         <field name="relatedToSelect"/>
-        <field name="reminder"/>
     </grid>
     
     <form name="call-form" title="Call" model="com.axelor.apps.crm.db.Event" cols="2" colWidths="*,400"
-    	onNew="action-event-new-record,action-event-record-call-default-duration">
+    	onNew="action-event-new-record">
         <group title="Informations" cols="4" colSpan="1">
         	<field name="subject" colSpan="2"/>
 	        <field name="callStatusSelect" colSpan="2"/>
@@ -85,7 +86,9 @@
 	        </group>
 	        <spacer/><break/>
 	        <field name="description" widget="TEXT[height=4]" colSpan="4"/>
-	        <field name="reminder"/>
+	        <group title="Reminders" colSpan="2" cols="2">
+	        	<field name="eventReminderList" widget="MasterDetail" colSpan="2" showTitle="false"/>
+	        </group>
         </group>
         <group title="Related to" colSpan="1" cols="2">
 	        <field name="relatedToSelect" widget="RefSelect[related=relatedToSelectId]"/>
@@ -113,7 +116,6 @@
         <field name="statusSelect"/>
         <field name="startDateTime"/>
         <field name="relatedToSelect"/>
-        <field name="reminder"/>
     </grid>
     
     <form name="meeting-form" title="Meeting" model="com.axelor.apps.crm.db.Event" cols="2" colWidths="*,400"  
@@ -138,7 +140,7 @@
 	            </group>
 	        </group>
 	        <group title="Reminders" colSpan="2" cols="2">
-	        	<field name="eventReminderList" colSpan="2" showTitle="false"/>
+	        	<field name="eventReminderList" widget="MasterDetail" colSpan="2" showTitle="false"/>
 	        </group>
 	        <spacer/>
 	        <break/>
@@ -169,7 +171,6 @@
         <field name="taskStatusSelect"/>
         <field name="startDateTime"/>
         <field name="relatedToSelect"/>
-        <field name="reminder"/>
     </grid>
     
     <form name="crm-task-form" title="Task" model="com.axelor.apps.crm.db.Event" cols="2" colWidths="*,400"
@@ -185,7 +186,9 @@
 	        </group>
 	        <spacer/><break/>
 	        <field name="taskPartner"/>
-	        <field name="reminder"/>
+	        <group title="Reminders" colSpan="2" cols="2">
+	        	<field name="eventReminderList" widget="MasterDetail" colSpan="2" showTitle="false"/>
+	        </group>
 	        <field name="prioritySelect"/>
 	        <field name="description" widget="TEXT[height=4]" colSpan="4"/>
         </group>
@@ -347,12 +350,13 @@
     	<field name="prioritySelect" expr="eval: _prioritySelect"/>
     </action-record>
     
-    <action-record name="action-event-record-call-default-duration" model="com.axelor.apps.crm.db.Event">
+    <action-record name="action-event-record-default-duration" model="com.axelor.apps.crm.db.Event">
     	<field name="durationHours" expr="1"/>
     </action-record>
     
     <action-group name="action-event-new-record">
     	<action name="action-event-default-record"/>
+    	<action name="action-event-record-default-duration" if="typeSelect != 5"/>
     	<action name="action-ticket-record-new" if="typeSelect == 5"/> <!-- typeSelect == 5: ticket -->
     	<action name="action-event-default-record-userinfo"/>
     	<action name="action-event-record-call-status-select" if="typeSelect == 1"/>

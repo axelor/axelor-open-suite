@@ -192,6 +192,15 @@
 	<menuitem name="crm-conf" parent="crm-root" title="Configuration"
 		icon="img/icons/parameter.png" />
 	
+	<menuitem name="crm-conf-crm-batch" parent="crm-conf"
+		title="Crm batches" action="crm.conf.crm.batch" />
+
+	<action-view name="crm.conf.crm.batch" title="Batches"
+		model="com.axelor.apps.crm.db.CrmBatch" icon="img/icons/parameter_small.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
+	
 	<menuitem name="crm-conf-lead-source" parent="crm-conf"
 		title="Leads Source" action="crm.conf.lead.source" />
 		
