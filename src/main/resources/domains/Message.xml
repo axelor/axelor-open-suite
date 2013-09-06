@@ -23,6 +23,7 @@
   	<many-to-many name="bccEmailAddressSet" ref="com.axelor.apps.message.db.EmailAddress" title="Bcc" help="Blind carbon copy"/>
   	<many-to-one name="fromEmailAddress" ref="com.axelor.apps.message.db.EmailAddress" title="Sender (Email)" readonly="true"/>
   	<boolean name="sentByEmail" title="Sent by email"/>
+  	<many-to-one name="mailAccount" ref="com.axelor.apps.message.db.MailAccount" title="Mail account"/>
   	
 <!--   	Intern message -->
   	<many-to-one name="senderUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="Sender (User)" readonly="true"/>
