@@ -6,7 +6,7 @@
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
 
-	<selection name="message.message.related.to.select">
+	<selection name="message.related.to.select">
 		<option value="com.axelor.apps.base.db.Partner">Partner/Contact</option>
 		<option value="com.axelor.apps.crm.db.Lead">Lead</option>
 		<option value="com.axelor.apps.crm.db.Opportunity">Opportunity</option>
@@ -28,5 +28,9 @@
 		<option value="3">Canceled</option>
 	</selection>
 				
+	<selection name="mail.account.server.type.select">
+		<option value="1">POP</option>
+		<option value="2">IMAP</option>
+	</selection>			
 
 </object-views>

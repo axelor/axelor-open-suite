@@ -35,6 +35,26 @@
 			<version>${project.version}</version>
 		</dependency>
 		
+		<!-- Java Mail : Order is important -->
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>1.4.7</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>javax.mail-api</artifactId>
+			<version>1.5.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.subethamail</groupId>
+			<artifactId>subethasmtp-wiser</artifactId>
+			<version>1.2</version>
+			<scope>test</scope>
+		</dependency>
+		
 	</dependencies>
 
 </project>

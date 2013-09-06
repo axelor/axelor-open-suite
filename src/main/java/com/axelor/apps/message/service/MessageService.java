@@ -30,6 +30,12 @@
  */
 package com.axelor.apps.message.service;
 
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.mail.MessagingException;
+
 import org.joda.time.DateTime;
 import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
@@ -41,7 +47,9 @@ import com.axelor.apps.base.service.user.UserInfoService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.IMessage;
+import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.db.Message;
+import com.axelor.apps.message.mail.MailSender;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -97,5 +105,69 @@ public class MessageService {
 		
 		return message;
 	}	
+	
+	
+	@Transactional
+	public void sendMessageByEmail(Message message)  {
+		try {
+			
+			MailAccount mailAccount = message.getMailAccount();
+			
+			if(mailAccount != null)  {
+			
+				List<String> recipients = new ArrayList<String>();
+				
+				/** Ajout des destinataires  **/
+				for(EmailAddress emailAddress : message.getToEmailAddressSet())  {
+					
+					if(emailAddress.getAddress() != null && !emailAddress.getAddress().isEmpty())  {
+					
+						recipients.add(emailAddress.getAddress());
+					}
+				}
+				
+				/** Ajout des destinataires en copie **/
+				for(EmailAddress emailAddress : message.getBccEmailAddressSet())  {
+					
+					if(emailAddress.getAddress() != null && !emailAddress.getAddress().isEmpty())  {
+					
+						recipients.add(emailAddress.getAddress());
+					}
+				}
+				
+				/** Ajout des destinataires  en copie privée **/
+				for(EmailAddress emailAddress : message.getCcEmailAddressSet())  {
+					
+					if(emailAddress.getAddress() != null && !emailAddress.getAddress().isEmpty())  {
+					
+						recipients.add(emailAddress.getAddress());
+					}
+				}
+				
+				if(!recipients.isEmpty())  {
+					// Init the sender
+					MailSender sender = new MailSender(
+							"smtp", 
+							mailAccount.getHost(), 
+							mailAccount.getPort().toString(), 
+							mailAccount.getLogin(),
+							mailAccount.getName(),
+							mailAccount.getPassword());
+					
+					// Short method to create and send the message
+					sender.send(message.getContent(), message.getSubject(), recipients);
+					
+					message.setSentByEmail(true);
+					message.save();
+				}
+			}
+			
+		} catch (MessagingException e) {
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		
+	}
 	
 }

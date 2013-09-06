@@ -67,6 +67,16 @@
 	</action-view>
 
 	<menuitem name="mail-root-email-conf" parent="mail-root-email-box" title="Configuration"/>
+
+	<menuitem name="mail-root-email-conf-mail-account" parent="mail-root-email-conf" title="Email account" action="mail.root.email.conf.mail.account" />	
+		
+	<action-view name="mail.root.email.conf.mail.account" title="Email account" 
+		model="com.axelor.apps.message.db.MailAccount" icon="img/icons/parameter_small.png">
+		<view type="grid" />
+		<view type="form" />
+		<domain>self.userInfo.internalUser.id = :_internalUser</domain>
+		<context name="_internalUser" expr="eval: __user__.id"/>
+	</action-view>
 	
 	<menuitem name="mail-root-email-conf-routing" parent="mail-root-email-conf" title="Routings" action="mail.root.email.conf.routing" />	
 		
