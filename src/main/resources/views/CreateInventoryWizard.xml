@@ -10,17 +10,17 @@
         	</group>
         	<group colSpan="4" cols="4" colWidths="25%,25%,25%,25%">
             	<group colSpan="4">
-                	<field name="location" title="Location" widget="MANY_TO_ONE[type=MANY_TO_ONE|target=com.axelor.apps.supplychain.db.Location]"/>
-                	<field name="inventoryDate" title="Inventory date" widget="DATE[type=DATE]"/>
+                	<field name="location" title="Location" widget="ManyToOne[target=com.axelor.apps.supplychain.db.Location]"/>
+                	<field name="inventoryDate" title="Inventory date" widget="Date"/>
                 	<spacer/>
                 	<field name="description" title="Description" max="600" colSpan="4"/>
             	</group>
             	<spacer/>
             	<group title="Fill inventory with" colSpan="4">
-                	<field name="productFamily" title="Product family" widget="MANY_TO_ONE[type=MANY_TO_ONE|target=com.axelor.apps.base.db.ProductFamily]"/>
-                	<field name="productCategory" title="Product category" widget="MANY_TO_ONE[type=MANY_TO_ONE|target=com.axelor.apps.base.db.ProductCategory]"/>
-                	<field name="excludeOutOfStock" title="Exclude out of stock products ?" widget="BOOLEAN[type=BOOLEAN]"/>
-                	<field name="includeObsolete" title="Include obsolete products ?" widget="BOOLEAN[type=BOOLEAN]"/>
+                	<field name="productFamily" title="Product family" widget="ManyToOne[target=com.axelor.apps.base.db.ProductFamily]"/>
+                	<field name="productCategory" title="Product category" widget="ManyToOne[target=com.axelor.apps.base.db.ProductCategory]"/>
+                	<field name="excludeOutOfStock" title="Exclude out of stock products ?" widget="Boolean"/>
+                	<field name="includeObsolete" title="Include obsolete products ?" widget="Boolean"/>
             	</group>
         	</group>
         	<group colSpan="1">
