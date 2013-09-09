@@ -4,12 +4,16 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
 	
     <grid name="email-address-grid" title="Email addresses" model="com.axelor.apps.message.db.EmailAddress">
-        <field name="fullName"/>
+        <field name="name"/>
     </grid>
     
     <form name="email-address-form" title="Email address" model="com.axelor.apps.message.db.EmailAddress" cols="2">
 		<field name="partner"/>
-		<field name="address"/>
+		<field name="address" widget="Email"/>
+    </form>
+    
+    <form name="email-address-simple-form" title="Email address" model="com.axelor.apps.message.db.EmailAddress" cols="2">
+		<field name="address" widget="Email"/>
     </form>
     
 </object-views>
