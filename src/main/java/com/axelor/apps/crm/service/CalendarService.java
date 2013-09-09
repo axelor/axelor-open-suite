@@ -438,11 +438,11 @@ public class CalendarService {
 		Attendee attendee = null;
 		
 		if(eventAttendee.getContactPartner() != null)  {
-			attendee = new Attendee(URI.create("mailto:"+eventAttendee.getContactPartner().getEmail()));
+			attendee = new Attendee(URI.create("mailto:"+eventAttendee.getContactPartner().getEmailAddress().getAddress()));
 			attendee.getParameters().add(new Cn(eventAttendee.getContactPartner().getName()+eventAttendee.getContactPartner().getFirstName()));
 		}
 		else if(eventAttendee.getLead() != null)  {
-			attendee = new Attendee(URI.create("mailto:"+eventAttendee.getLead().getEmail()));
+			attendee = new Attendee(URI.create("mailto:"+eventAttendee.getLead().getEmailAddress().getAddress()));
 			attendee.getParameters().add(new Cn(eventAttendee.getLead().getName()+eventAttendee.getLead().getFirstName()));
 		}
 		

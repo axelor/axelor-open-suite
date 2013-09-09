@@ -190,7 +190,7 @@
     	<field name="name" expr="eval: _lead.name"/>
     	<field name="firstName" expr="eval: _lead.firstName"/>
     	<field name="titleSelect" expr="eval: _lead.titleSelect"/>
-    	<field name="email" expr="eval: _lead.email"/>
+    	<field name="emailAddress" expr="eval: _lead.emailAddress"/>
     	<field name="fax" expr="eval: _lead.fax"/>
     	<field name="mobilePhonePerso" expr="eval: _lead.mobile"/>
     	<field name="webSite" expr="eval: _lead.website"/>
@@ -216,7 +216,7 @@
     	<field name="name" expr="eval: _lead.name"/>
     	<field name="firstName" expr="eval: _lead.firstName"/>
     	<field name="titleSelect" expr="eval: _lead.titleSelect"/>
-    	<field name="email" expr="eval: _lead.email"/>
+    	<field name="emailAddress" expr="eval: _lead.emailAddress"/>
     	<field name="fax" expr="eval: _lead.fax"/>
     	<field name="mobilePhonePerso" expr="eval: _lead.mobile"/>
     	<field name="webSite" expr="eval: _lead.website"/>

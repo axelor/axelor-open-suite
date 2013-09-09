@@ -50,7 +50,7 @@
 		        <field name="firstName"/>
 		        <field name="enterpriseName"/>
 		        <field name="jobTitle"/>
-		        <field name="email" widget="Email"/>
+		        <field name="emailAddress"  canSelect="false" canNew="false" form-view="email-address-simple-form"/>
 		        <field name="partner" showIf="statusSelect == 4"/>
 	    	</group>
 	    	<group title="Primary address" colSpan="2" cols="2">
