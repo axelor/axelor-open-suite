@@ -40,7 +40,7 @@
     
     <!-- From contact -->
     <many-to-one name="commune" ref="com.axelor.apps.base.db.Commune" title="City - Commune"/>
-    <string name="email" title="Email"/>
+    <one-to-one name="emailAddress" ref="com.axelor.apps.message.db.EmailAddress" title="Email"/>
     <string name="fax" title="Fax"/>
     <string name="fixedPhone1" title="Fixed phone 1"/>
     <string name="fixedPhone2" title="Fixed phone 2"/>

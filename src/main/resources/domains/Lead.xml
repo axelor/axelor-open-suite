@@ -36,7 +36,7 @@
   	<boolean name="isCopyAddress" title="Copy primary address"/>
     
     
-    <string name="email" title="Email address"/>
+    <one-to-one name="emailAddress" ref="com.axelor.apps.message.db.EmailAddress" title="Email"/>
 	<binary name="picture" title="Picture" />
 	
 	<string name="description" title="Description" large="true"/>

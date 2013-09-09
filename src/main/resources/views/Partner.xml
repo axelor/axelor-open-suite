@@ -23,7 +23,7 @@
 		<field name="fixedPhonePro"/>
 		<field name="mobilePhonePerso"/>
 		<field name="mobilePhonePro"/>
-        <field name="email"/>
+        <field name="emailAddress"/>
     </grid>
     
     <form cols="6" colWidths="25*"   name="partner-form" title="Partner" model="com.axelor.apps.base.db.Partner"
@@ -73,7 +73,7 @@
 	                <field name="deliveryAddress"/>
 	            </group>
 	            <group title="Contact" colSpan="3" cols="4">
-	                <field name="email" widget="Email"/>
+	                <field name="emailAddress" canSelect="false" canNew="false" form-view="email-address-simple-form"/>
 	                <field name="fax"/>
 	                <field name="fixedPhone1"/>
 	                <field name="fixedPhone2"/>
@@ -184,7 +184,7 @@
 	                <field name="deliveryAddress"/>
 	            </group>
 	            <group title="Contact" colSpan="3" cols="4">
-	                <field name="email" widget="Email"/>
+	                <field name="emailAddress" canSelect="false" canNew="false" form-view="email-address-simple-form"/>
 	                <field name="fax"/>
 	                <field name="fixedPhone1"/>
 	                <field name="fixedPhone2"/>
@@ -245,7 +245,7 @@
 	                <field name="deliveryAddress"/>
 	            </group>
 	            <group title="Contact" colSpan="3" cols="4">
-	                <field name="email" widget="Email"/>
+	                <field name="emailAddress"/>
 	                <field name="fax"/>
 	                <field name="fixedPhone1"/>
 	                <field name="fixedPhone2"/>
