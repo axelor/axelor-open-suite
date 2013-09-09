@@ -12,37 +12,37 @@
  		</group>
  		
  		<group colSpan="4" cols="4" colWidths="25%,25%,25%,25%">
-			<field name="hasConvertIntoContact" widget="BOOLEAN[type=BOOLEAN]" title="Convert into Contact ?"/>
-			<field name="selectContactPartner" widget="MANY_TO_ONE[type=MANY_TO_ONE|target=com.axelor.apps.base.db.Partner]" title="Or Select Contact" domain="self.isContact = 'true'"/>
+			<field name="hasConvertIntoContact" widget="Boolean" title="Convert into Contact ?"/>
+			<field name="selectContactPartner" widget="ManyToOne[target=com.axelor.apps.base.db.Partner]" title="Or Select Contact" domain="self.isContact = 'true'"/>
 		</group>
 		<group title="Contact" colSpan="4" showIf="hasConvertIntoContact" showTitle="false">
 			<field name="contactPartner" widget="NestedEditor[type=MANY_TO_ONE|target=com.axelor.apps.base.db.Partner]" summary-view="true" 
 			form-view="contact-lead-converted-form" edit-window="self" canSelect="false" showTitle="false" />
 		</group>
 		<group colSpan="4" cols="4" colWidths="25%,25%,25%,25%">
-			<field name="hasConvertIntoPartner" widget="BOOLEAN[type=BOOLEAN]" title="Convert into Partner ?"/>
-			<field name="selectPartner" widget="MANY_TO_ONE[type=MANY_TO_ONE|target=com.axelor.apps.base.db.Partner]" title="Or Select Partner" domain="self.isContact = 'false'"/>
+			<field name="hasConvertIntoPartner" widget="Boolean" title="Convert into Partner ?"/>
+			<field name="selectPartner" widget="ManyToOne[target=com.axelor.apps.base.db.Partner]" title="Or Select Partner" domain="self.isContact = 'false'"/>
 		</group>
 		<group title="Partner" colSpan="4" showIf="hasConvertIntoPartner" showTitle="false">
 			<field name="partner" widget="NestedEditor[type=MANY_TO_ONE|target=com.axelor.apps.base.db.Partner]" summary-view="true" 
 			form-view="partner-lead-converted-form" edit-window="self" canSelect="false" showTitle="false"/>
 		</group>
-		<field name="hasConvertIntoOpportunity" widget="BOOLEAN[type=BOOLEAN]" title="Create into Opportunity ?"/>
+		<field name="hasConvertIntoOpportunity" widget="Boolean" title="Create into Opportunity ?"/>
 		<group title="Opportunity" colSpan="4" showIf="hasConvertIntoOpportunity"  showTitle="false">
 			<field name="opportunity" widget="NestedEditor[type=MANY_TO_ONE|target=com.axelor.apps.crm.db.Opportunity]" summary-view="true" 
 			form-view="opportunity-lead-converted-form" edit-window="self" canSelect="false" showTitle="false"/>
 		</group>
-		<field name="hasConvertIntoCall" widget="BOOLEAN[type=BOOLEAN]" title="Log a call ?"/>
+		<field name="hasConvertIntoCall" widget="Boolean" title="Log a call ?"/>
 		<group title="Call" colSpan="4" showIf="hasConvertIntoCall"  showTitle="false">
 			<field name="callEvent" widget="NestedEditor[type=MANY_TO_ONE|target=com.axelor.apps.crm.db.Event]" summary-view="true" 
 			form-view="call-lead-converted-form" edit-window="self" canSelect="false" showTitle="false"/>
 		</group>
-		<field name="hasConvertIntoMeeting" widget="BOOLEAN[type=BOOLEAN]" title="Schedule a meeting ?"/>
+		<field name="hasConvertIntoMeeting" widget="Boolean" title="Schedule a meeting ?"/>
 		<group title="Meeting" colSpan="4" showIf="hasConvertIntoMeeting"  showTitle="false">
 			<field name="meetingEvent" widget="NestedEditor[type=MANY_TO_ONE|target=com.axelor.apps.crm.db.Event]" canNew="true" canRemove="false" canView="true" 
 			canSelect="false"  summary-view="true" form-view="meeting-lead-converted-form"  edit-window="self" showTitle="false"/>
  		</group>
- 		<field name="hasConvertIntoTask" widget="BOOLEAN[type=BOOLEAN]" title="Create a task ?"/>
+ 		<field name="hasConvertIntoTask" widget="Boolean" title="Create a task ?"/>
 		<group title="Task" colSpan="4" showIf="hasConvertIntoTask"  showTitle="false">
 			<field name="taskEvent" widget="NestedEditor[type=MANY_TO_ONE|target=com.axelor.apps.crm.db.Event]" canNew="true" canRemove="false" canView="true" 
 			canSelect="false"  summary-view="true" form-view="crm-task-lead-converted-form"  edit-window="self" showTitle="false" />
@@ -88,14 +88,14 @@
 			    		<field name="primaryCity" title="City"/>
 			    		<field name="primaryState" title="State"/>
 			    		<field name="primaryPostalCode" title="Postal code"/>
-			    		<field name="primaryCountry" widget="MANY_TO_ONE[target=com.axelor.apps.base.db.Country|targetName=name]" title="Country"/>
+			    		<field name="primaryCountry" widget="ManyToOne[target=com.axelor.apps.base.db.Country|targetName=name]" title="Country"/>
 			    	</group>
 			    	<group title="Delivery address" colSpan="2" cols="2">
 			    		<field name="otherAddress" title="Address"/>
 			    		<field name="otherCity" title="City"/>
 			    		<field name="otherState" title="State"/>
 			    		<field name="otherPostalCode" title="Postal code"/>
-			    		<field name="otherCountry" widget="MANY_TO_ONE[target=com.axelor.apps.base.db.Country|targetName=name]" title="Country"/>
+			    		<field name="otherCountry" widget="ManyToOne[target=com.axelor.apps.base.db.Country|targetName=name]" title="Country"/>
 			    	</group>
 	            </group>
 	            <group title="Contact" colSpan="3" cols="4">
@@ -149,14 +149,14 @@
 			    		<field name="primaryCity" title="City"/>
 			    		<field name="primaryState" title="State"/>
 			    		<field name="primaryPostalCode" title="Postal code"/>
-			    		<field name="primaryCountry" widget="MANY_TO_ONE[target=com.axelor.apps.base.db.Country|targetName=name]" title="Country"/>
+			    		<field name="primaryCountry" widget="ManyToOne[target=com.axelor.apps.base.db.Country|targetName=name]" title="Country"/>
 			    	</group>
 			    	<group title="Delivery address" colSpan="2" cols="2">
 			    		<field name="otherAddress" title="Address"/>
 			    		<field name="otherCity" title="City"/>
 			    		<field name="otherState" title="State"/>
 			    		<field name="otherPostalCode" title="Postal code"/>
-			    		<field name="otherCountry" widget="MANY_TO_ONE[target=com.axelor.apps.base.db.Country|targetName=name]" title="Country"/>
+			    		<field name="otherCountry" widget="ManyToOne[target=com.axelor.apps.base.db.Country|targetName=name]" title="Country"/>
 			    	</group>
 	            </group>
 	            <group title="Contact" colSpan="3" cols="4">
