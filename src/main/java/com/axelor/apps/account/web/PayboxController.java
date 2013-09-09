@@ -66,7 +66,7 @@ public class PayboxController {
 		try {
 			Partner partner = paymentVoucher.getPartner();
 			
-			if ((partner.getEmail() != null && !partner.getEmail().isEmpty()) ||
+			if ((partner.getEmailAddress().getAddress() != null && !partner.getEmailAddress().getAddress().isEmpty()) ||
 			    (paymentVoucher.getEmail() != null && !paymentVoucher.getEmail().isEmpty())  || 
 				paymentVoucher.getDefaultEmailOk()) {
 			

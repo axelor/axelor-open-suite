@@ -233,8 +233,8 @@ public class PayboxService {
 		Partner partner = paymentVoucher.getPartner();
 		Company company = paymentVoucher.getCompany();
 		
-		if(partner.getEmail() != null && !partner.getEmail().isEmpty())  {
-			return partner.getEmail();
+		if(partner.getEmailAddress().getAddress() != null && !partner.getEmailAddress().getAddress().isEmpty())  {
+			return partner.getEmailAddress().getAddress();
 		}
 		else if(paymentVoucher.getEmail() != null && !paymentVoucher.getEmail().isEmpty())  {
 			return paymentVoucher.getEmail();
@@ -360,7 +360,7 @@ public class PayboxService {
 	 * @throws AxelorException
 	 */
 	public void checkPayboxPartnerFields(Partner partner) throws AxelorException  {
-		if (partner.getEmail() == null || partner.getEmail().isEmpty())  {
+		if (partner.getEmailAddress().getAddress() == null || partner.getEmailAddress().getAddress().isEmpty())  {
 			throw new AxelorException(String.format("%s :\n Veuillez paramétrer un Email pour le tiers %s.", 
 					GeneralService.getExceptionAccountingMsg(), partner.getName()), IException.CONFIGURATION_ERROR);
 		}
@@ -418,7 +418,8 @@ public class PayboxService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void addPayboxEmail(Partner partner, String email, boolean toSaveOk)  {
 		if(toSaveOk)  {
-			partner.setEmail(email);
+			
+			partner.getEmailAddress().setAddress(email);
 			partner.save();
 		}
 	}
