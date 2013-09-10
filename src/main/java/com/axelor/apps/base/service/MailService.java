@@ -58,6 +58,7 @@ import com.axelor.apps.base.db.MailModel;
 import com.axelor.apps.base.db.MailModelTag;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.tool.ObjectTool;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -351,11 +352,11 @@ public class MailService {
 				LOG.debug("Niveau traité : {}", fieldName);	
 				
 				// Récupération du type d'objet enfant
-				f = this.getField(fieldName, classGotten);
+				f = ObjectTool.getField(fieldName, classGotten);
 				classGotten = f.getType();
 				
 				// Récupération de l'objet enfant
-				obj = this.getObject(obj, fieldName);
+				obj = ObjectTool.getObject(obj, fieldName);
 				if(obj == null)  {
 					obj = new String("");
 					break;
@@ -374,82 +375,6 @@ public class MailService {
 	}
 	
 	
-	/**
-	 * Méthode permettant de récupéré un champ d'une classe depuis son nom
-	 * @param fieldName
-	 * 			Le nom d'un champ
-	 * @param classGotten
-	 * 			La classe portant le champ
-	 * @return
-	 */
-	public Field getField(String fieldName, @SuppressWarnings("rawtypes") Class classGotten)  {
-		Field field = null;
-		try {
-			LOG.debug("Classe traitée - {}", classGotten);
-			field = classGotten.getDeclaredField(fieldName);
-
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (NoSuchFieldException e) {
-			e.printStackTrace();
-		}
-		LOG.debug("Champ récupéré : {}", field);
-		return field;
-	}
-	
-	
-	/**
-	 * Methode permettant de récupéré un object enfant (d'après le nom d'un champ) depuis un object parent
-	 * @param obj
-	 * 			Un objet parent
-	 * @param linked
-	 * 			Un nom de champ
-	 * @return
-	 */
-	public Object getObject(Object obj, String fieldName)   {
-		Method m= null;
-		try {
-			@SuppressWarnings("rawtypes")
-			Class[] paramTypes = null;
-			m = obj.getClass().getMethod("get"+this.capitalizeFirstLetter(fieldName),paramTypes);
-		} catch (SecurityException e) {
-			return null;
-		} catch (NoSuchMethodException e) {
-			return null;
-		}
-		LOG.debug("Méthode récupéré : {}", m);
-		try {
-			Object[] args = null;
-			obj = m.invoke(obj,args);
-		} catch (IllegalArgumentException e) {
-			return null;
-		} catch (IllegalAccessException e) {
-			return null;
-		} catch (InvocationTargetException e) {
-			return null;
-		}
-		LOG.debug("Objet récupéré", obj);
-		return obj;
-	}
-	
-	
-	/**
-	 * Fonction permettant de mettre la première lettre d'une chaine de caractère en majuscule
-	 * @param value
-	 * 			Une chaine de caractère
-	 * @return
-	 */
-	public String capitalizeFirstLetter(String s) {
-		if (s == null) {
-			return null;
-		}
-		if (s.length() == 0) {
-			return s;
-		}
-		StringBuilder result = new StringBuilder(s);
-		result.replace(0, 1, result.substring(0, 1).toUpperCase());
-		return result.toString();
-	}
 	
 	
 	/**

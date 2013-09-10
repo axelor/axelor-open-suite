@@ -30,6 +30,10 @@
 	    onNew="action-partner-record-partner-type-select,action-partner-record-set-default,action-partner-attrs-set-readonly" 
 	    onLoad="action-partner-attrs-change-name,action-partner-attrs-hide-tabs,action-partner-attrs-set-readonly" 
 	    onSave="action-set-partner-seq,action-create-accounting-situation">
+	    <toolbar>
+    		<button name="sendByEmail" title="Send email" onClick="save,action-send-by-email-with-template" colSpan="1"/>
+    	</toolbar>
+	    
 	   <group colSpan="1" cols="1">
 	        <group colSpan="1">
 	            <field name="picture" showTitle="false"/>
@@ -159,6 +163,11 @@
 	    onNew="action-partner-record-partner-type-select" 
 	    onLoad="action-partner-attrs-change-namet" 
 	    onSave="action-set-partner-seq">
+	    
+	    <toolbar>
+    		<button name="sendByEmail" title="Send email" onClick="save,action-send-by-email-with-template" colSpan="1"/>
+    	</toolbar>
+    	
 	    <group colSpan="1">
 	        <field name="picture"/>
 	    </group>
@@ -202,6 +211,11 @@
 	    onNew="action-partner-contact-record-default,action-partner-attrs-set-readonly" 
 	    onLoad="action-partner-attrs-change-name,action-partner-attrs-hide-tabs,action-partner-attrs-set-readonly" 
 	    onSave="action-set-partner-seq,action-create-accounting-situation">
+	    
+	    <toolbar>
+    		<button name="sendByEmail" title="Send email" onClick="save,action-send-by-email-with-template" colSpan="1"/>
+    	</toolbar>
+    	
 	   <group colSpan="1" cols="1">
 	        <group colSpan="1">
 	            <field name="picture" showTitle="false"/>
@@ -463,5 +477,6 @@
 			<domain>self.supplierTypeSelect = 2 AND self.isContact = false</domain>
 		</filter>
 	</search-filters>
+	
 	
 </object-views>
