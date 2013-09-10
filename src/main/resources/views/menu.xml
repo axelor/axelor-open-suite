@@ -264,5 +264,35 @@
 <!-- <context name="_typeSelect" expr="2"/> -->
 <!-- <context name="_calendarSet" expr="eval: com.axelor.apps.crm.db.CalendarConfiguration.find(1).calendarSet"/> -->
 <!-- </action-view> -->
+	
+	<menuitem name="top-menu-utility" priority="300"  title="." icon="img/icons/create.png" groups="admins,erp"/> 	
+	
+	
+	<menuitem name="top-menu-crm-activities" priority="150" title="Activity" icon="img/icons/calender.png" groups="admins,erp"/> 	
+
+	<menuitem name="top-menu-activity-my-calender" icon="img/icons/calender.png" parent="top-menu-crm-activities" title="My Calender" action="crm.root.meeting.my.calendar" />
+		
+	
+	<menuitem name="top-menu-activity-team-calender" icon="img/icons/calender.png" parent="top-menu-crm-activities" 	title="My Team Calender" action="crm.root.meeting.team.calendar" />
+		
+	
+	<menuitem name="top-menu-activity-create-task" icon="img/icons/calender.png" parent="top-menu-crm-activities" 	title="Create Task" action="top.activity.new.task" />
+		
+	<action-view name="top.activity.new.task" title="New Task" model="com.axelor.apps.crm.db.Event" >
+		<view type="form"/>
+	</action-view>
+	
+	<menuitem name="top-menu-activity-create-call" icon="img/icons/calender.png" parent="top-menu-crm-activities" 	title="Create Call" action="top.activity.new.call" />
+		
+	<action-view name="top.activity.new.call" title="New Call" model="com.axelor.apps.crm.db.Event" >
+		<view type="form"/>
+	</action-view>
+
+	<menuitem name="top-menu-activity-create-meeting" icon="img/icons/calender.png" parent="top-menu-crm-activities" 	title="Create Meeting" action="top.activity.new.meeting" />
+		
+	<action-view name="top.activity.new.meeting" title="New Meeting" model="com.axelor.apps.crm.db.Event" >
+		<view type="form"/>
+	</action-view>
+
 
 </object-views>
