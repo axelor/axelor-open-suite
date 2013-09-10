@@ -73,5 +73,10 @@
 		<call class="com.axelor.apps.message.web.MessageController" method="sendByEmail"/>
 	</action-method>
     
+    <!-- 	Action commune pour tous les envoies par email avec utilisation de template et context -->
+	
+	<action-method name="action-send-by-email-with-template">
+		<call class="com.axelor.apps.message.web.GenerateMessageController" method="callMessageWizard"/>
+	</action-method>
     
 </object-views>

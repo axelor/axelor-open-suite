@@ -50,6 +50,7 @@ import com.axelor.apps.message.db.IMessage;
 import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.mail.MailSender;
+import com.axelor.apps.supplychain.db.SalesOrder;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -58,6 +59,9 @@ public class MessageService {
 	private static final Logger LOG = LoggerFactory.getLogger(MessageService.class);
 	
 	private DateTime todayTime;
+	
+	@Inject
+	private UserInfoService uis;
 
 	@Inject
 	public MessageService(UserInfoService userInfoService) {
@@ -85,7 +89,28 @@ public class MessageService {
 	}	
 	
 	
-	public Message createMessage(String content, EmailAddress fromEmailAddress, UserInfo recipientUserInfo, String relatedTo1Select, int relatedTo1SelectId,
+	@Transactional
+	public Message createMessage(String model, int id, String subject, String content)  {
+		
+		return this.createMessage(
+				content, 
+				null, 
+				null, 
+				model, 
+				id, 
+				null, 
+				0, 
+				todayTime.toLocalDateTime(), 
+				uis.getUserInfo(), 
+				false, 
+				IMessage.STATUS_DRAFT, 
+				subject, 
+				IMessage.TYPE_SENT)
+				.save();
+	}	
+	
+	
+	private Message createMessage(String content, EmailAddress fromEmailAddress, UserInfo recipientUserInfo, String relatedTo1Select, int relatedTo1SelectId,
 			String relatedTo2Select, int relatedTo2SelectId, LocalDateTime sendedDate, UserInfo senderUserInfo, boolean sentByEmail, int statusSelect, 
 			String subject, int typeSelect)  {
 		Message message = new Message();
