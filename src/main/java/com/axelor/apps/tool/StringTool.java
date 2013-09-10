@@ -214,4 +214,23 @@ public final class StringTool {
 		return sb.toString();
 	}
 	
+	
+	/**
+	 * Fonction permettant de mettre la première lettre d'une chaine de caractère en majuscule
+	 * @param value
+	 * 			Une chaine de caractère
+	 * @return
+	 */
+	public static String capitalizeFirstLetter(String s) {
+		if (s == null) {
+			return null;
+		}
+		if (s.length() == 0) {
+			return s;
+		}
+		StringBuilder result = new StringBuilder(s);
+		result.replace(0, 1, result.substring(0, 1).toUpperCase());
+		return result.toString();
+	}
+	
 }
