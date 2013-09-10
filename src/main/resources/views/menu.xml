@@ -80,30 +80,24 @@
 		<view type="form" />
 	</action-view>
 	
-		
-	<menuitem name="supply-chain-root" title="Sales/Purchases" priority="150"
+	<menuitem name="sc-root-sales" title="Sales" priority="150"
 		icon="img/icons/order.png" groups="admins,erp"/>
+			
+	<menuitem name="sc-root-sales-new-so" title="New Sale order" priority="2"
+		icon="img/icons/order.png" groups="admins,erp" action="sc.root.sales.new.so" parent="sc-root-sales"/>
 		
-	<menuitem name="supply-chain-root-sales-order" parent="supply-chain-root"
-		title="New client sales order" action="supply.chain.root.sales.order" />
-
-	<action-view name="supply.chain.root.sales.order" title="New client sales order"
-		model="com.axelor.apps.supplychain.db.SalesOrder" icon="img/icons/order_small.png">
-		<view type="form" name="sales-order-form" />
+	<action-view name="sc.root.sales.new.so" title="New Sale order"
+		model="com.axelor.apps.supplychain.db.SalesOrder" icon="img/icons/order.png">
+		<view type="form" name="sales-order-form"/>
+		<view-param name="search-filters" value="sales-order-filters"/>
+		<context name="_internalUser" expr="eval: __user__.id"/>
+		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
 	</action-view>	
 	
-	<menuitem name="supply-chain-root-purchases-order" parent="supply-chain-root"
-		title="New supplier purchases order" action="supply.chain.root.purchases.order" />
-
-	<action-view name="supply.chain.root.purchases.order" title="New supplier purchases order"
-		model="com.axelor.apps.supplychain.db.PurchaseOrder" icon="img/icons/order_small.png">
-		<view type="form" name="purchase-order-form" />
-	</action-view>	
-			
-	<menuitem name="supply-chain-root-sales" parent="supply-chain-root"
-		title="Sale orders" action="supply.chain.root.sales" />
-
-	<action-view name="supply.chain.root.sales" title="Sale orders"
+	<menuitem name="sc-root-sales-orders" parent="sc-root-sales" priority="1"
+		title="Sale orders" action="sc.root.sales.orders" />
+	
+	<action-view name="sc.root.sales.orders" title="Sale orders"
 		model="com.axelor.apps.supplychain.db.SalesOrder" icon="img/icons/order_small.png">
 		<view type="grid" name="sales-order-grid" />
 		<view type="form" name="sales-order-form" />
@@ -112,10 +106,22 @@
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
 	</action-view>	
 	
-	<menuitem name="supply-chain-root-purchases" parent="supply-chain-root"
-		title="Purchases" action="supply.chain.root.purchases" />
+	
+	<menuitem name="sc-root-purchases" title="Purchases" priority="150"
+		icon="img/icons/order_small.png" groups="admins,erp"/>
+		
+	<menuitem name="sc-root-purchase-order-new" title="New Purchase order" priority="2"
+		icon="img/icons/order_small.png" groups="admins,erp" action="sc.root.purchase.order.new" parent="sc-root-purchases"/>
+		
+	<action-view name="sc.root.purchase.order.new" title="New Purchase order"
+		model="com.axelor.apps.supplychain.db.PurchaseOrder" icon="img/icons/order_small.png">
+		<view type="form" name="purchase-order-form" />
+	</action-view>	
+	
+	<menuitem name="sc-root-purchase-orders" parent="sc-root-purchases" priority="1" 
+		title="Purchase orders" action="sc.root.purchase.orders" />
 
-	<action-view name="supply.chain.root.purchases" title="Purchases"
+	<action-view name="sc.root.purchase.orders" title="Purchase orders"
 		model="com.axelor.apps.supplychain.db.PurchaseOrder" icon="img/icons/order_small.png">
 		<view type="grid" name="purchase-order-grid" />
 		<view type="form" name="purchase-order-form" />
