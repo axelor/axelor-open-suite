@@ -265,32 +265,64 @@
 <!-- <context name="_calendarSet" expr="eval: com.axelor.apps.crm.db.CalendarConfiguration.find(1).calendarSet"/> -->
 <!-- </action-view> -->
 	
+	<!-- Top Menu for Activity and Create Entry for opportunity.... -->
 	
-	
-	<menuitem name="top-menu-crm-activities" priority="150" title="Activity" icon="img/icons/calender.png" groups="admins,erp"/> 	
+	<menuitem name="top-menu-crm-activities" priority="150" title="Activity" icon="img/icons/calendar.png" groups="admins,erp"/> 	
 
-	<menuitem name="top-menu-activity-my-calender" icon="img/icons/calender.png" parent="top-menu-crm-activities" title="My Calender" action="crm.root.meeting.my.calendar" />
+	<menuitem name="top-menu-activity-my-calendar" icon="img/icons/crm_small.png" parent="top-menu-crm-activities" title="My Calendar" action="crm.root.meeting.my.calendar" />
 		
 	
-	<menuitem name="top-menu-activity-team-calender" icon="img/icons/calender.png" parent="top-menu-crm-activities" 	title="My Team Calender" action="crm.root.meeting.team.calendar" />
+	<menuitem name="top-menu-activity-team-calendar" icon="img/icons/calendar.png" parent="top-menu-crm-activities" 	title="My Team Calendar" action="crm.root.meeting.team.calendar" />
 		
 	
-	<menuitem name="top-menu-activity-create-task" icon="img/icons/calender.png" parent="top-menu-crm-activities" 	title="Create Task" action="top.activity.new.task" />
+	<menuitem name="top-menu-activity-create-task" icon="img/icons/calendar.png" parent="top-menu-crm-activities" 	title="Create Task" action="top.activity.new.task" />
 		
 	<action-view name="top.activity.new.task" title="New Task" model="com.axelor.apps.crm.db.Event" >
 		<view type="form"/>
 	</action-view>
 	
-	<menuitem name="top-menu-activity-create-call" icon="img/icons/calender.png" parent="top-menu-crm-activities" 	title="Create Call" action="top.activity.new.call" />
+	<menuitem name="top-menu-activity-create-call" icon="img/icons/calendar.png" parent="top-menu-crm-activities" 	title="Create Call" action="top.activity.new.call" />
 		
 	<action-view name="top.activity.new.call" title="New Call" model="com.axelor.apps.crm.db.Event" >
 		<view type="form"/>
 	</action-view>
 
-	<menuitem name="top-menu-activity-create-meeting" icon="img/icons/calender.png" parent="top-menu-crm-activities" 	title="Create Meeting" action="top.activity.new.meeting" />
+	<menuitem name="top-menu-activity-create-meeting" icon="img/icons/calendar.png" parent="top-menu-crm-activities" 	title="Create Meeting" action="top.activity.new.meeting" />
 		
 	<action-view name="top.activity.new.meeting" title="New Meeting" model="com.axelor.apps.crm.db.Event" >
 		<view type="form"/>
+	</action-view>
+
+	<menuitem name="top-menu-create-opportunity" parent="top-menu-utility" title="Create Opportunity" action="top.new.opportunity.view" />
+		
+	<action-view name="top.new.opportunity.view" title="Create Opportunity" model="com.axelor.apps.crm.db.Opportunity" >
+		<view type="form" name="opportunity-form"/>
+	</action-view>
+	
+	<menuitem name="top-menu-create-lead" parent="top-menu-utility"	title="Create Lead" action="top.new.lead.view" />
+		
+	<action-view name="top.new.lead.view" title="Create Lead" icon="img/icons/address-book.png" model="com.axelor.apps.crm.db.Lead" >
+		<view type="form" name="lead-form" />
+	</action-view>
+	
+	
+	
+	<!-- CRM Dashboard Entry for CRM.... -->
+
+
+
+	<menuitem name="menu-crm-dashboards" priority="200" title="CRM Dashboards" icon="img/icons/chart.png" groups="admins,erp"/> 
+	
+	<menuitem name="portal.opportunities" parent="menu-crm-dashboards" title="Opportunity" action="portal.opportunity.dashboard.view" />
+		
+	<action-view name="portal.opportunity.dashboard.view" title="Opportunity" icon="img/icons/crm_small.png">
+		<view type="portal" name="crm.opportunity.portal" />
+	</action-view>
+
+	<menuitem name="portal.opportunities.graph" parent="menu-crm-dashboards" title="Opportunity Chart Report" action="portal.opportunity.graph.dashboard.view" />
+		
+	<action-view name="portal.opportunity.graph.dashboard.view" title="Opportunity Report" icon="img/icons/calendar.png">
+		<view type="portal" name="crm.opportunity.graph.portal" />
 	</action-view>
 
 

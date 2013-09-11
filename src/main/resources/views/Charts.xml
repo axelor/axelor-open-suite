@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+	  
+	  
+		
+	 <chart name="chart.dashboard.opportunities.sales.stage.amount.bar" title="Opportunities By Sale Stage">
+	    <dataset type="sql">
+	    <![CDATA[
+		SELECT
+          SUM(self.amount) AS amount,
+	      selection_item.title as _sales_stage
+	    FROM
+	        crm_opportunity self
+	    LEFT JOIN
+	        meta_select as selection ON selection.name = 'crm.opportunity.sales.stage.select'
+	    LEFT JOIN 
+	    	meta_select_item as selection_item ON selection_item.select_id = selection.id
+		WHERE
+			cast(selection_item.value as decimal) = self.sales_stage_select			
+	    GROUP BY
+		   _sales_stage
+		ORDER BY
+		   _sales_stage
+	    ]]>
+	    </dataset>
+	    <category key="_sales_stage" type="text"/>
+    	<series key="amount" type="bar"/>
+	 </chart>
+	
+	 <chart name="chart.dashboard.opportunities.source.amount.bar" title="Opportunities By Source">
+	    <dataset type="sql">
+		    <![CDATA[
+			SELECT
+	          SUM(self.amount) AS amount,
+		      Source.name as _source
+		    FROM
+		        crm_opportunity self
+		    LEFT JOIN
+		        base_source as Source ON self.source = Source.id
+		    GROUP BY
+			    _source
+			ORDER BY
+			    _source
+		    ]]>
+	    </dataset>
+	    <category key="_source" type="text"/>
+    	<series key="amount" type="bar"/>
+	  </chart>
+	  
+	   <chart name="chart.dashboard.opportunities.type.amount.bar" title="Opportunities By Source">
+	    <dataset type="sql">
+		    <![CDATA[
+			SELECT
+          		SUM(self.amount) AS amount,
+	      		opportunity_type.name as _opportunity_type
+	    	FROM
+	        	crm_opportunity self
+	    	LEFT JOIN
+	        	crm_opportunity_type as opportunity_type ON self.opportunity_type = opportunity_type.id
+	    	GROUP BY
+		    	_opportunity_type
+			ORDER BY
+		   		_opportunity_type
+		 ]]>
+	    </dataset>
+	    <category key="_opportunity_type" type="text"/>
+    	<series key="amount" type="bar"/>
+	  </chart>
+	  	
+	  <chart name="chart.dashboard.opportunities.won.by.leadsource.bar" title="Opportunities By Source">
+	    <dataset type="sql">
+		    <![CDATA[
+			SELECT
+	          count(self.id) AS lead_won,
+		      Source.name as _source
+		    FROM
+		        crm_opportunity self
+		    LEFT JOIN
+		        base_source as Source ON self.source = Source.id
+		    GROUP BY
+			    _source
+			ORDER BY
+			    _source
+		 ]]>
+	    </dataset>
+	    <category key="_source" type="text"/>
+    	<series key="lead_won" type="pie"/>
+	  </chart>
+	  	  
+	  	  <chart name="chart.dashboard.opportunities.won.by.salesman.bar" title="Opportunities By Source">
+	    <dataset type="sql">
+		    <![CDATA[
+			SELECT
+          		SUM(self.amount) AS amount,
+	      		sales_man.full_name as _sales_man
+	    	FROM
+	        	crm_opportunity self
+	    	LEFT JOIN
+	        	base_user_info as sales_man ON self.user_info = sales_man.id
+	    	GROUP BY
+		    	_sales_man
+			ORDER BY
+		   		_sales_man
+		 ]]>
+	    </dataset>
+	    <category key="_sales_man" type="text"/>
+    	<series key="amount" type="bar"/>
+	  </chart>
+	  	
+</object-views>
