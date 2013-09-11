@@ -32,6 +32,7 @@ package com.axelor.apps.crm.service;
 
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.crm.service.batch.BatchEventReminderMessage;
+import com.axelor.apps.message.service.MailAccountService;
 import com.axelor.apps.message.service.MessageService;
 import com.google.inject.Injector;
 
@@ -48,7 +49,7 @@ public class EventReminderThread extends Thread {
 	@Override
 	public void run() {
 		
-		new BatchEventReminderMessage(injector.getInstance(MessageService.class)).process();
+		new BatchEventReminderMessage(injector.getInstance(MessageService.class), injector.getInstance(MailAccountService.class)).process();
 	}
 	
 	
