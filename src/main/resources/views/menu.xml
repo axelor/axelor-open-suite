@@ -605,7 +605,10 @@
 		<view type="form" />
 	</action-view>
 
-	<menuitem name="top-menu-utility" priority="300"  title="." icon="img/icons/create.png" groups="admins,erp"/> 	
+	<!-- Top Menu for Create new objects.... -->
+
+
+	<menuitem name="top-menu-utility" priority="300"  title="Create" icon="img/icons/create.png" groups="admins,erp"/> 	
 
 	<menuitem name="top-menu-create-partner" parent="top-menu-utility" title="Create Partner" action="top.new.partner.view" />
 		
@@ -620,33 +623,8 @@
 	</action-view>
 
 	
-	<menuitem name="top-menu-create-opportunity" parent="top-menu-utility" title="Create Opportunity" action="top.new.opportunity.view" />
-		
-	<action-view name="top.new.opportunity.view" title="Create Opportunity" model="com.axelor.apps.crm.db.Opportunity" >
-		<view type="form" name="opportunity-form"/>
-	</action-view>
 	
-	<menuitem name="top-menu-create-lead" parent="top-menu-utility"	title="Create Lead" action="top.new.lead.view" />
-		
-	<action-view name="top.new.lead.view" title="Create Lead" icon="img/icons/address-book.png" model="com.axelor.apps.crm.db.Lead" >
-		<view type="form" name="lead-form" />
-	</action-view>
 	
-	<menuitem name="top-menu-create-so" parent="top-menu-utility" title="Create SO" action="top.new.sales.order.view" />
 		
-	<action-view name="top.new.sales.order.view" title="Create Lead" model="com.axelor.apps.supplychain.db.SaleOrder" >
-		<view type="form" name="sales-order-form"/>
-	</action-view>
-
-	<menuitem name="menu-crm-dashboards" priority="200"
-    	title="CRM Dashboards" icon="img/icons/chart.png" groups="admins,erp"/> 
-	
-	<menuitem name="portal.opportunities" parent="menu-crm-dashboards"
-		title="Opportunity" action="portal.opportunity.dashboard.view" />
-		
-	<action-view name="portal.opportunity.dashboard.view" title="Opportunity"
-	icon="img/icons/crm_small.png">
-		<view type="portal" name="crm.opportunity.portal" />
-	</action-view>
 
 </object-views>

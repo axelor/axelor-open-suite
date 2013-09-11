@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+	
+	<portal title="Dashboard" name="crm.opportunity.portal" cols="2">
+	    <portlet action="close.opportunity" height="350" colSpan="1" canSearch="true"/>
+	    <portlet action="open.opportunity" height="350" colSpan="1" canSearch="true"/>
+	    <portlet action="portal.opportunities.won.by.account" height="350" colSpan="1" canSearch="true"/>
+  	</portal>
+
+
+	<action-view name="close.opportunity" title="Close Opportunities"
+		model="com.axelor.apps.crm.db.Opportunity">
+		<view type="grid" name="opportunity-grid"/>
+		<domain>self.salesStageSelect in (9, 10)</domain>
+		
+		
+	</action-view>
+	
+	
+	<action-view name="open.opportunity" title="Open Opportunities"
+		model="com.axelor.apps.crm.db.Opportunity">
+		<view type="grid" name="opportunity-grid"/>
+		<domain>self.salesStageSelect not in (9, 10)</domain>
+		
+	</action-view>
+	
+	<action-view name="portal.opportunities.won.by.account" title="Opportunities Won By Partner"
+		model="com.axelor.apps.crm.db.Opportunity">
+		<view type="grid" name="opportunity-grid-group"/>
+		<domain>self.salesStageSelect = 9</domain>
+	</action-view>
+	
+  
+	
+	
+	<portal title="Dashboard" name="crm.opportunity.graph.portal" cols="2">
+		<portlet action="portal.opportunities.by.source" height="350"/>
+	    <portlet action="portal.opportunities.by.salestage" height="350"/>
+	    <portlet action="portal.opportunities.by.type" height="350" colSpan="1"/>
+	    <portlet action="portal.opportunities.won.by.leadsource" height="350"/>
+	    <portlet action="portal.opportunities.won.by.salesman" height="350"/>
+	 </portal>
+  	
+   	<action-view name="portal.opportunities.by.type" title="Opportunities By Type">
+   		<view type="chart" name="chart.dashboard.opportunities.type.amount.bar" />
+  	</action-view>
+  	
+  	
+	
+	<action-view name="portal.opportunities.won.by.leadsource" title="Opportunities Won By Lead Source">
+    	<view type="chart" name="chart.dashboard.opportunities.won.by.leadsource.bar" />
+  	</action-view>
+  
+    <action-view name="portal.opportunities.won.by.salesman" title="Opportunities Won By Salesman">
+    	<view type="chart" name="chart.dashboard.opportunities.won.by.salesman.bar" />
+  	</action-view>
+  	
+  	<action-view name="portal.opportunities.by.source" title="Chart">
+    <view type="chart" name="chart.dashboard.opportunities.source.amount.bar" />
+  </action-view>
+  
+  <action-view name="portal.opportunities.by.salestage" title="Opportunities By Sale Stage">
+    <view type="chart" name="chart.dashboard.opportunities.sales.stage.amount.bar" />
+  </action-view>
+	
+</object-views>
