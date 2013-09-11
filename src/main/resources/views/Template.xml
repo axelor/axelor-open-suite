@@ -17,6 +17,7 @@
         <field name="metaModel"/>
         <field name="target"/>
         <field name="birtTemplate"/>
+        <field name="filePath" widget="url"/>
         <field name="isDefault"/>
         <field name="templateContext" colSpan="4"/>
         <notebook colSpan="4">
@@ -25,6 +26,11 @@
         	</page>
         	<page title="Content">
         		<field name="content" colSpan="4" widget="Html[lite=false]" showTitle="false"/>
+        	</page>
+        	<page title="Recipients">
+        		<field name="toRecipients" colSpan="4"/>
+        		<field name="ccRecipients" colSpan="4"/>
+        		<field name="bccRecipients" colSpan="4"/>
         	</page>
         </notebook>
     </form>

@@ -16,6 +16,7 @@
 		<boolean name="securitySelect" title="SSL/TLS"/>
 		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="User" readonly="true"/>
 		<boolean name="isDefault" title="Default account ?"/>
+		<string name="signature" title="Signature"/>
 
 	</entity>
 

@@ -8,9 +8,17 @@
         <field name="templateLink"/>
     </grid>
     
-    <form name="birt-template-form" title="Birt Template" model="com.axelor.apps.base.db.BirtTemplate" cols="4">
+    <form name="birt-template-form" title="Birt Template" model="com.axelor.apps.base.db.BirtTemplate" cols="4"
+    onNew="action-birt-template-record-default">
         <field name="name"/>
         <field name="templateLink"/>
+        <field name="format"/>
+        <field name="generatedFilePath"/>
+        <field name="birtTemplateParameterList" colSpan="4"/>
     </form>
+    
+    <action-record name="action-birt-template-record-default" model="com.axelor.apps.base.db.BirtTemplate">
+    	<field name="format" expr="pdf"/>
+    </action-record>
     
 </object-views>

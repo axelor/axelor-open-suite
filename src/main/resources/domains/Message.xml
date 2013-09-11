@@ -7,15 +7,16 @@
   
   <entity name="Message" lang="java">
   
-  	<integer name="typeSelect" title="Type" selection="message.type.select"/>
+  	<integer name="typeSelect" title="Type" selection="message.type.select" readonly="true"/>
   	<string name="subject" title="Subject"/>
   	<string name="content" title="Content" large="true"/>
-	<datetime name="sendedDateT" title="Sended date"/>
+	<datetime name="sendedDateT" title="Sended date" readonly="true"/>
 	<string name="relatedTo1Select" title="Related to" selection="message.related.to.select"/>
   	<integer name="relatedTo1SelectId"/>
   	<string name="relatedTo2Select" title="Related to" selection="message.related.to.select"/>
   	<integer name="relatedTo2SelectId"/>
-	<integer name="statusSelect" title="Status" selection="message.status.select"/>
+	<integer name="statusSelect" title="Status" selection="message.status.select" readonly="true"/>
+	<string name="filePath" title="File path"/>
   	
   <!--   	Email -->
   	<many-to-many name="toEmailAddressSet" ref="com.axelor.apps.message.db.EmailAddress" title="To"/>
