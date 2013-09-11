@@ -32,6 +32,8 @@
         <group title="Informations" cols="4" colSpan="1">
         	<field name="subject" colSpan="2"/>
 	        <field name="eventStatusSelect" colSpan="2"/>
+	        <field name="clientPartner"/>
+        	<field name="contactPartner"/>
 	        <spacer/><break/>
 	        <group title="Event dates" colSpan="4" cols="4" colWidths="25*" css="groupTitle">
 	        <label title="Duration" colSpan="1"/>
@@ -78,6 +80,8 @@
         	<field name="subject" colSpan="2"/>
 	        <field name="callStatusSelect" colSpan="2"/>
 	        <field name="statusSelect" showTitle="false" colSpan="1"/>
+	        <field name="clientPartner"/>
+        	<field name="contactPartner"/>
 	        <spacer/><break/>
 	        <group title="Call date" colSpan="4" cols="3" css="groupTitle">
 	        	<field name="startDateTime" colSpan="2"/>
@@ -124,6 +128,8 @@
 	    <group title="Informations" colSpan="2" cols="4">
 	        <field name="statusSelect"/>
 	        <field name="meetingType"/>
+	        <field name="clientPartner"/>
+        	<field name="contactPartner"/>
 	        <spacer/>
 	        <break/>
 	        <group title="Meeting dates" colSpan="2" css="groupTitle" cols="2" colWidths="50%,50%">
@@ -178,6 +184,8 @@
         <group title="Informations" cols="4" colSpan="1">
         	<field name="subject"/>
 	        <field name="taskStatusSelect"/>
+	        <field name="clientPartner"/>
+        	<field name="contactPartner"/>
 	        <spacer/><break/>
          	<group title="Task date" colSpan="4" cols="4" colWidths="25*" css="groupTitle">
 		        <field name="startDateTime" onChange="action-meeting-method-compute-start-date-time"/>
@@ -185,7 +193,6 @@
 		        <field name="durationHours" placeholder="Hours" onChange="action-meeting-method-compute-duration"/>
 	        </group>
 	        <spacer/><break/>
-	        <field name="taskPartner"/>
 	        <group title="Reminders" colSpan="4" cols="2">
 	        	<field name="eventReminderList" widget="MasterDetail" colSpan="2" showTitle="false"/>
 	        </group>

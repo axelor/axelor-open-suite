@@ -15,7 +15,8 @@
     
     <form name="lead-form" title="Lead" cols="4" onNew="action-account-record-new,action-lead-default-record-new" model="com.axelor.apps.crm.db.Lead">
     	<toolbar>
-    		<button name="convertLead" title="Convert lead" onClick="action-lead-view-convert-lead" colSpan="1" hideIf="statusSelect == 4"/>
+    		<button name="convertLead" title="Convert lead" onClick="save,action-lead-view-convert-lead" colSpan="1" hideIf="statusSelect == 4"/>
+    		<button name="sendByEmail" title="Send email" onClick="save,action-send-by-email-with-template" colSpan="1"/>
     	</toolbar>
     
  		<group title="Header" colSpan="4">
@@ -124,7 +125,7 @@
     	<field name="otherPostalCode" expr="eval: primaryPostalCode" if="!isCopyAddress"/>
     	<field name="otherCountry" expr="eval: primaryCountry" if="!isCopyAddress"/>
     </action-record>
-   	
+    
    	<action-attrs name="action-lead-attrs-readonly-other-address">
    		<attribute name="readonly" for="otherAddress" expr="!$readonly()"/>
    		<attribute name="readonly" for="otherCity" expr="eval: !$readonly()"/>
