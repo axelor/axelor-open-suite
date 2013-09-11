@@ -10,7 +10,15 @@
         <field name="expectedCloseDate"/>
         <field name="amount"/>
     </grid>
-    
+   <grid groupBy="userInfo" name="opportunity-grid-group" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity">
+   		<field name="name"/>
+   		<field name="userInfo"/>
+        <field name="partner"/>
+        <field name="currency"/>
+        <field name="expectedCloseDate"/>
+        <field name="amount" aggregate="sum"/>
+	</grid>
+ 
     <form name="opportunity-form" title="Opportunity" model="com.axelor.apps.crm.db.Opportunity" cols="4"
     	onNew="action-opportunity-record-new,action-opportunity-record-currency">
          <group title="Informations" colSpan="4" cols="6">
