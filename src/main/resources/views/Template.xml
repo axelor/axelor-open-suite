@@ -17,10 +17,11 @@
         <field name="metaModel"/>
         <field name="target"/>
         <field name="birtTemplate"/>
+        <field name="isDefault"/>
         <field name="templateContext" colSpan="4"/>
         <notebook colSpan="4">
         	<page title="Subject">
-        		<field name="subject" colSpan="4" widget="Html[lite=false]" showTitle="false"/>
+        		<field name="subject" colSpan="4" showTitle="false"/>
         	</page>
         	<page title="Content">
         		<field name="content" colSpan="4" widget="Html[lite=false]" showTitle="false"/>

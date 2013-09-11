@@ -34,6 +34,9 @@
 	
 	<one-to-many name="eventReminderList" ref="com.axelor.apps.crm.db.EventReminder" mappedBy="event" title="Reminders"/>
 	
+	<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
+  	<many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Contact"/>
+	
     
 <!-- Call -->
     <integer name="callStatusSelect" title="Status" selection="crm.event.call.status.select"/>  
@@ -44,7 +47,6 @@
 
 <!-- Task -->
 	<integer name="taskStatusSelect" title="Status" selection="crm.event.task.status.select"/>
-	<many-to-one name="taskPartner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
     
 <!-- Ticket -->
 	<integer name="ticketStatusSelect" title="Status" selection="crm.event.ticket.status.select"/>
@@ -55,8 +57,6 @@
   	<one-to-many name="messageList" ref="com.axelor.apps.message.db.Message" mappedBy="event" title="Comments"/>
   	<many-to-one name="project" ref="com.axelor.apps.organisation.db.Project" title="Project"/>
 	<many-to-one name="task" ref="com.axelor.apps.organisation.db.Task" title="Task"/>
-  	<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
-  	<many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Contact"/>
   	<one-to-many name="pastTimeList" ref="com.axelor.apps.base.db.PastTime" mappedBy="event" title="Past times"/>
   
 <!--   Event -->
