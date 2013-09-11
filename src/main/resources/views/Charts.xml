@@ -108,5 +108,65 @@
 	    <category key="_sales_man" type="text"/>
     	<series key="amount" type="bar"/>
 	  </chart>
+	  
+	  <chart name="chart.opportunities.by.origin.by.stage" title="Opportunities By Origin By Stage">
+		<dataset type="jpql">
+		    <![CDATA[
+		    SELECT
+			    SUM(self.amount)    AS amount,
+			    self.source.name    AS source,
+			    self.salesStageSelect AS stage
+			FROM
+			    Opportunity self
+			GROUP BY
+			    self.salesStageSelect,
+			    self.source.name
+			ORDER BY
+			    self.salesStageSelect,
+			    self.source.name
+		    ]]>
+	    </dataset>
+	    <category key="source" type="text"/>
+	    <series key="amount" groupBy="stage" type="bar"/>
+	</chart>
+	
+	<chart name="chart.leads.by.source" title="Leads by Source">
+		<dataset type="jpql">
+		    <![CDATA[
+		    SELECT
+		        COUNT(*) AS leads,
+		        self.source.name AS source
+		    FROM
+		        Lead self
+		    GROUP BY
+		    	self.source.name
+		    ORDER BY
+		        self.source.name
+		    ]]>
+	    </dataset>
+	    <category key="source" type="text"/>
+	    <series key="leads"  type="bar"/>
+	</chart>
+	
+	<chart name="chart.customers.by.country" title="Customers by country">
+		<dataset type="jpql">
+		    <![CDATA[
+		    SELECT
+			    COUNT(*) as partners,
+			    country.name as countryName
+			FROM
+			    Country country,Partner partner
+			WHERE 
+			    partner.mainInvoicingAddress.addressL7Country.id = country.id AND
+			    partner.isCustomer = true AND partner.customerTypeSelect = 3
+			GROUP BY
+			    country.id
+			ORDER BY
+			    country.name
+		    ]]>
+	    </dataset>
+	    <category key="countryName" type="text"/>
+	    <series key="partners"  type="bar"/>
+	</chart>
 	  	
 </object-views>
