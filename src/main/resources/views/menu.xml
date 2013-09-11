@@ -20,7 +20,8 @@
 		model="com.axelor.apps.message.db.Message" icon="img/icons/mail_small.png">
 		<view type="grid" name="message-grid"/>
 		<view type="form" name="message-form"/>
-		<domain>self.typeSelect = 1</domain>
+		<domain>self.recipientUserInfo.internalUser.id = :_internalUser AND self.statusSelect = 2</domain>
+		<context name="_internalUser" expr="eval: __user__.id"/>
 	</action-view>	
 		
 <!-- 	title-f="Nouveau message" -->
@@ -41,7 +42,8 @@
 		model="com.axelor.apps.message.db.Message" icon="img/icons/mail_small.png">
 		<view type="grid" name="message-grid"/>
 		<view type="form" name="message-form"/>
-		<domain>self.statusSelect = 1</domain>
+		<domain>self.statusSelect = 1 AND self.senderUserInfo.internalUser.id = :_internalUser</domain>
+		<context name="_internalUser" expr="eval: __user__.id"/>
 	</action-view>	
 		
 <!-- 	title-f="Messages envoyés" -->
@@ -52,7 +54,8 @@
 		model="com.axelor.apps.message.db.Message" icon="img/icons/mail_small.png">
 		<view type="grid" name="message-grid"/>
 		<view type="form" name="message-form"/>
-		<domain>self.typeSelect = 2</domain>
+		<domain>self.senderUserInfo.internalUser.id = :_internalUser AND self.statusSelect = 2</domain>
+		<context name="_internalUser" expr="eval: __user__.id"/>
 	</action-view>
 		
 <!-- 	title-f="Messages supprimés" -->
@@ -63,7 +66,8 @@
 		model="com.axelor.apps.message.db.Message" icon="img/icons/mail_small.png">
 		<view type="grid" name="message-grid"/>
 		<view type="form" name="message-form"/>
-		<domain>self.statusSelect = 3</domain>
+		<domain>self.statusSelect = 3 AND (self.senderUserInfo.internalUser.id = :_internalUser OR self.recipientUserInfo.internalUser.id = :_internalUser)</domain>
+		<context name="_internalUser" expr="eval: __user__.id"/>
 	</action-view>
 
 	<menuitem name="mail-root-email-conf" parent="mail-root-email-box" title="Configuration"/>

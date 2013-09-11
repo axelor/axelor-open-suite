@@ -30,18 +30,30 @@
  */
 package com.axelor.apps.message.service;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.AxelorSettings;
+import com.axelor.apps.base.db.BirtTemplate;
+import com.axelor.apps.base.db.BirtTemplateParameter;
 import com.axelor.apps.base.db.Template;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.template.TemplateService;
+import com.axelor.apps.message.db.EmailAddress;
+import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.service.MessageService;
+import com.axelor.apps.tool.net.URLService;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.axelor.tool.template.TemplateMaker;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
 public class TemplateMessageService {
@@ -54,42 +66,190 @@ public class TemplateMessageService {
 	@Inject
 	private MessageService messageService;
 	
+	@Inject
+	private MailAccountService mailAccountService;
 	
 	
 	
-	public Message generateMessage(Object object, long objectId, String model, String tag, Template template) throws ClassNotFoundException, InstantiationException, IllegalAccessException  {
+	public Message generateMessage(Object object, long objectId, String model, String tag, Template template) throws ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException  {
 		
-		
-		System.out.println("model : "+model);
-		System.out.println("tag : "+tag);
-		System.out.println("object id : "+objectId);
-		System.out.println("object : "+object);
-		System.out.println("object.getClass().getSimpleName() : "+object.getClass().getSimpleName());
+		LOG.debug("model : "+model);
+		LOG.debug("tag : "+tag);
+		LOG.debug("object id : "+objectId);
+		LOG.debug("object : "+object);
 		
 		//Init the maker
 		TemplateMaker maker = new TemplateMaker(new Locale("fr"), '$', '$');
-		//Set template
-		maker.setTemplate(template.getContent());
-		
 		
 		Class<? extends Model> myClass = (Class<? extends Model>) Class.forName( model );
 
 		//Set context
 		maker.setContext(JPA.find(myClass.newInstance().getClass(), objectId), tag);
-		//Make it
-		String content = maker.make();
 		
 		
-		maker.setTemplate(template.getSubject());
-		String subject = maker.make();
+		String content = "";
+		String subject = "";
+		String toRecipients = "";
+		String ccRecipients = "";
+		String bccRecipients = "";
 		
-		Message message = messageService.createMessage(model, new Long(objectId).intValue(), subject, content);
+		
+		if(template.getContent() != null)  {
+			//Set template
+			maker.setTemplate(template.getContent());
+			//Make it
+			content = maker.make();
+		}
+		
+		MailAccount mailAccount = mailAccountService.getDefaultMailAccount();
+		content += messageService.getSignature(mailAccount);
+		
+		if(template.getSubject() != null)  {
+			maker.setTemplate(template.getSubject());
+			subject = maker.make();
+		}
+		
+		if(template.getToRecipients() != null)  {
+			maker.setTemplate(template.getToRecipients());
+			toRecipients = maker.make();
+		}
+		
+		if(template.getCcRecipients() != null)  {
+			maker.setTemplate(template.getCcRecipients());
+			ccRecipients = maker.make();
+		}
+		
+		if(template.getBccRecipients() != null)  {
+			maker.setTemplate(template.getBccRecipients());
+			bccRecipients = maker.make();
+		}
+		
+		String filePath = null;
+		BirtTemplate birtTemplate = template.getBirtTemplate();
+		if(birtTemplate != null)  {
+			filePath = this.generatePdfFile(
+					maker, 
+					birtTemplate.getName(),
+					birtTemplate.getTemplateLink(), 
+					birtTemplate.getGeneratedFilePath(), 
+					birtTemplate.getFormat(), 
+					birtTemplate.getBirtTemplateParameterList());
+					
+		}
+		if(filePath == null)  {
+			filePath = template.getFilePath();
+		}
+		
+		Message message = messageService.createMessage(
+				model, 
+				new Long(objectId).intValue(), 
+				subject, 
+				content, 
+				this.getEmailAddress(toRecipients),
+				this.getEmailAddress(ccRecipients),
+				this.getEmailAddress(bccRecipients),
+				mailAccount,
+				filePath
+				);
 		
 		return message;
 		
 	}
 	
+	public List<EmailAddress> getEmailAddress(String recipients)  {
+		
+		List<EmailAddress> emailAddressList = Lists.newArrayList(); 
+		
+		if(recipients!=null && !recipients.isEmpty())  {
+			String[] toTab = recipients.split(";");
+			for(String s : toTab)  {
+				EmailAddress emailAddress = EmailAddress.find(Long.parseLong(s));
+				if(emailAddress != null)  {
+					emailAddressList.add(emailAddress);
+				}
+			}
+		}
+		
+		return emailAddressList;
+	}
+	
+	
+	public String generatePdfFile(TemplateMaker maker, String name, String modelPath, String generatedFilePath, String format, List<BirtTemplateParameter> birtTemplateParameterList) throws AxelorException {
 
+		AxelorSettings axelorSettings = AxelorSettings.get();
+		
+		if(modelPath != null && !modelPath.isEmpty())  {
+			
+			String parameters = "";
+			for(BirtTemplateParameter birtTemplateParameter : birtTemplateParameterList)  {
+				
+				maker.setTemplate(birtTemplateParameter.getValue());
+				String value = maker.make();
+				parameters += "&"+birtTemplateParameter.getName()+"="+value;
+			}
+			
+			
+			String url = axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/"+modelPath+"&__format="+format+parameters+axelorSettings.get("axelor.report.engine.datasource");
+			
+			LOG.debug("URL : {}", url);
+			
+			String urlNotExist = URLService.notExist(url.toString());
+			if (urlNotExist != null){
+				throw new AxelorException(String.format("%s : Le chemin vers le template Birt est incorrect", 
+						GeneralService.getExceptionMailMsg()), IException.CONFIGURATION_ERROR);
+			}
+			final int random = new Random().nextInt();
+			String filePath = generatedFilePath;
+			String fileName = name+"_"+random+"."+format;
+			
+			try {
+				URLService.fileDownload(url, filePath, fileName);
+			} catch (IOException e) {
+				throw new AxelorException(String.format("%s : Erreur lors de l'édition du fichier : \n %s", 
+						GeneralService.getExceptionMailMsg(), e), IException.CONFIGURATION_ERROR);
+			}
+			
+			return filePath+fileName;
+			
+		}
+		return "";
+		
+	}
+	
+	
+	
+	/**
+	 * Fonction appeler par le bouton imprimer
+	 *
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	/**public void showSalesOrder(ActionRequest request, ActionResponse response) {
+
+		SalesOrder salesOrder = request.getContext().asType(SalesOrder.class);
+
+		StringBuilder url = new StringBuilder();
+		AxelorSettings axelorSettings = AxelorSettings.get();
+
+		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/SalesOrder.rptdesign&__format=pdf&SalesOrderId="+salesOrder.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
+		LOG.debug("URL : {}", url);
+		String urlNotExist = URLService.notExist(url.toString());
+		
+		if(urlNotExist == null) {
+		
+			LOG.debug("Impression du devis "+salesOrder.getSalesOrderSeq()+" : "+url.toString());
+			
+			Map<String,Object> mapView = new HashMap<String,Object>();
+			mapView.put("title", "Devis "+salesOrder.getSalesOrderSeq());
+			mapView.put("resource", url);
+			mapView.put("viewType", "html");
+			response.setView(mapView);	
+		}
+		else {
+			response.setFlash(urlNotExist);
+		}
+	}**/
 	
 }
 

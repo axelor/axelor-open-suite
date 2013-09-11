@@ -3,62 +3,45 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
 	
-    <grid name="message-grid" title="Emails" model="com.axelor.apps.message.db.Message">
+    <grid name="message-grid" title="Emails" model="com.axelor.apps.message.db.Message" orderBy="-sendedDateT">
         <field name="sendedDateT"/>
         <field name="senderUserInfo"/>
         <field name="subject"/>
     </grid>
     
     <form name="message-form" title="Email" model="com.axelor.apps.message.db.Message" cols="4"
-    onNew="action-message-default-record">
-    	<group title="Informations" colSpan="4">
- 			<field name="typeSelect"/>
+    onNew="action-message-default-record,action-message-record-get-signature">
+    	<group title="Informations" colSpan="4" readonlyIf="statusSelect == 2 || statusSelect == 3">
             <field name="sendedDateT"/>
-            <field name="fromEmailAddress"/>
+            <field name="fromEmailAddress" />
             <field name="senderUserInfo"/>
-            <field name="mailAccount" widget="SuggestBox"/>
+            <field name="mailAccount" widget="SuggestBox" onChange="action-message-record-get-signature"/>
             <field name="statusSelect"/>
 <!--             <field name="sentByEmail"/> -->
         </group>
-        <group title="Recipients" colSpan="4">
+        <group title="Recipients" colSpan="4" readonlyIf="statusSelect == 2 || statusSelect == 3">
         	<field name="toEmailAddressSet" widget="TagSelect[create=emailAddress]" form-view="email-address-form" colSpan="4"/>
         	<field name="ccEmailAddressSet" widget="TagSelect[create=emailAddress]" form-view="email-address-form" colSpan="4"/>
         	<field name="bccEmailAddressSet" widget="TagSelect[create=emailAddress]" form-view="email-address-form" colSpan="4"/>
         	<separator title="" colSpan="4"/>
         	<field name="recipientUserInfo" widget="TagSelect[create=name]" colSpan="4" help="Internal Message"/>
         </group>
-        <group title="Content" colSpan="4">
+        <group title="Content" colSpan="4" readonlyIf="statusSelect == 2 || statusSelect == 3">
         	<field name="subject" colSpan="4"/>
         	<spacer/>
        	 	<field name="content" colSpan="4" showTitle="false" widget="html"/>
         </group>
-        <group title="Related to" colSpan="1" cols="2">
+        <group title="Related to" colSpan="1" cols="2" readonlyIf="statusSelect == 3">
 	        <field name="relatedTo1Select" widget="RefSelect[related=relatedTo1SelectId]"/>
 	        <field name="relatedTo2Select" widget="RefSelect[related=relatedTo2SelectId]"/>
+	        <field name="filePath" widget="url"/>
         </group>
 <!--         <button name="printMail" title="Imprimer" colSpan="2" onClick="save,action-mail-method-print-mail"/> -->
 <!--         <button name="reply" title="Reply" showIf="!canReply" onClick="com.axelor.dyndemo.web.DynController:showReply"/> -->
-        <button name="send" title="Send" onClick="save,action-message-method-send-by-email"/>
-<!--         <button name="cancel" title="Cancel" onClick=""/> -->
+        <button name="send" title="Send" onClick="save,action-message-method-send-by-email,save" showIf="statusSelect == 1 "/>
+        <button name="delete" title="Delete" onClick="save,action-message-record-delete-status,save" showIf="statusSelect != 3"/>
     </form>
     
-    
-    <form name="message-inbox-form" title="Email" model="com.axelor.apps.message.db.Message" cols="4">
-    	<group title="Informations" colSpan="4" readonly="true">
-            <field name="sendedDateT"/>
-            <field name="senderUserInfo"/>
-            <field name="mailAccount" widget="SuggestBox"/>
-            <field name="statusSelect"/>
-        </group>
-        <group title="Content" colSpan="4" readonly="true">
-       	 	<field name="content" colSpan="4" showTitle="false" widget="html"/>
-        </group>
-        <group title="Recipients" colSpan="4" readonly="true">
-        	<field name="toPartnerSet" widget="TagSelect[create=name,firstName,email]" form-view="email-address-form" colSpan="4"/>
-        	<field name="ccPartnerSet" widget="TagSelect[create=name,firstName,email]" form-view="email-address-form" colSpan="4"/>
-        	<field name="bccPartnerSet" widget="TagSelect[create=name,firstName,email]" form-view="email-address-form" colSpan="4"/>
-        </group>
-    </form>
     
 	<action-record name="action-message-default-record" model="com.axelor.apps.message.db.Message">
     	<field name="sendedDateT" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()"/>
@@ -66,6 +49,15 @@
     	<field name="typeSelect" expr="eval: 2"/>
     	<field name="senderUserInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
     	<field name="mailAccount" expr="eval: com.axelor.apps.mail.db.MailAccount.all().filter('self.isDefault = true and self.userInfo.id = :userInfo').fetchOne()"/>
+    </action-record>
+    
+    <action-record name="action-message-record-get-signature" model="com.axelor.apps.message.db.Message">
+    	<field name="content" expr="eval: mailAccount?.signature" if="content == null"/>
+    </action-record>
+    
+    <action-record name="action-message-record-delete-status" model="com.axelor.apps.message.db.Message">
+    	<field name="statusSelect" expr="3"/>
+    
     </action-record>
     
     <!-- ACTION METHOD -->

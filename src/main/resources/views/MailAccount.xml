@@ -11,11 +11,12 @@
     </grid>
     
     <form name="mail-account-form" title="Mail account" model="com.axelor.apps.message.db.MailAccount" cols="4" 
-    onNew="action-message-default-record">
+    onNew="action-mail-account-default-record">
     	<group title="Informations" colSpan="4">
             <field name="name"/>
             <field name="userInfo"/>
-            <field name="isDefault" onChange="action-mail-account-validate-is-default"/>
+        	<field name="signature" widget="Html[lite=true]" colSpan="4"/>
+        	<field name="isDefault" onChange="action-mail-account-validate-is-default"/>
         </group>
         <group title="Login" colSpan="4">
        	 	<field name="login"/>
@@ -30,7 +31,7 @@
     </form>
 
 	<action-record name="action-mail-account-default-record" model="com.axelor.apps.message.db.MailAccount">
-    	<field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" if="userInfo == null"/>
+    	<field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
     </action-record>
     
 	<action-validate name="action-mail-account-validate-is-default">

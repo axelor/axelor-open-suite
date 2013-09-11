@@ -161,6 +161,28 @@ public class MailSender extends MailConnection {
 
 		return msg;
 	}
+	
+	public Message createMessage(String content, String subject, List<String> recipients, Map<String, String> files) throws UnsupportedEncodingException, MessagingException {
+		Preconditions.checkArgument(recipients != null && recipients.size() > 0, "Recipients can not be null or empty");
+
+		Message msg = new MimeMessage(getSession());
+		InternetAddress from = new InternetAddress(getUserName(), getAliasName());
+		msg.setFrom(from);
+
+		InternetAddress[] toAddresses = new InternetAddress[recipients.size()];
+		int i = 0;
+		for (String recipient : recipients) {
+			toAddresses[i] = new InternetAddress(recipient);
+			i++;
+		}
+		
+		msg.setRecipients(Message.RecipientType.TO, toAddresses);
+
+		msg.setSubject(subject);
+		msg.setContent(this.createMultiPart(content, files));
+
+		return msg;
+	}
 
 	private Multipart createMultiPart(String content, Map<String, String> files) throws MessagingException {
 		Multipart mp = new MimeMultipart();

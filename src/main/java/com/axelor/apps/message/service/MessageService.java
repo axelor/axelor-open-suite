@@ -33,14 +33,18 @@ package com.axelor.apps.message.service;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.mail.MessagingException;
+import javax.mail.Transport;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.UserInfo;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.user.UserInfoService;
@@ -50,7 +54,9 @@ import com.axelor.apps.message.db.IMessage;
 import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.mail.MailSender;
-import com.axelor.apps.supplychain.db.SalesOrder;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -61,7 +67,7 @@ public class MessageService {
 	private DateTime todayTime;
 	
 	@Inject
-	private UserInfoService uis;
+	private UserInfoService userInfoService;
 
 	@Inject
 	public MessageService(UserInfoService userInfoService) {
@@ -70,11 +76,26 @@ public class MessageService {
 	}
 	
 	@Transactional
-	public Message createMessage(Event event)  {
+	public Message createMessage(Event event, MailAccount mailAccount)  {
+		
+		UserInfo recipientUserInfo = event.getUserInfo();
+		
+		List<EmailAddress> toEmailAddressList = Lists.newArrayList();
+		
+		if(recipientUserInfo != null)  {
+			Partner partner = recipientUserInfo.getPartner();
+			if(partner != null)  {
+				EmailAddress emailAddress = partner.getEmailAddress();
+				if(emailAddress != null)  {
+					toEmailAddressList.add(emailAddress);
+				}
+			}
+		}
+		
 		return this.createMessage(
 				event.getDescription(), 
 				null, 
-				event.getUserInfo(), 
+				recipientUserInfo, 
 				IMessage.RELATED_TO_EVENT, 
 				event.getId().intValue(), 
 				event.getRelatedToSelect(), 
@@ -84,13 +105,20 @@ public class MessageService {
 				false, 
 				IMessage.STATUS_SENT, 
 				"Remind : "+event.getSubject(), 
-				IMessage.TYPE_RECEIVED)
+				IMessage.TYPE_RECEIVED,
+				toEmailAddressList,
+				null,
+				null,
+				mailAccount,
+				null
+				)
 				.save();
 	}	
 	
 	
 	@Transactional
-	public Message createMessage(String model, int id, String subject, String content)  {
+	public Message createMessage(String model, int id, String subject, String content, List<EmailAddress> toEmailAddressList, List<EmailAddress> ccEmailAddressList, 
+			List<EmailAddress> bccEmailAddressList, MailAccount mailAccount, String linkPath)  {
 		
 		return this.createMessage(
 				content, 
@@ -101,18 +129,24 @@ public class MessageService {
 				null, 
 				0, 
 				todayTime.toLocalDateTime(), 
-				uis.getUserInfo(), 
+				userInfoService.getUserInfo(), 
 				false, 
 				IMessage.STATUS_DRAFT, 
 				subject, 
-				IMessage.TYPE_SENT)
+				IMessage.TYPE_SENT,
+				toEmailAddressList,
+				ccEmailAddressList,
+				bccEmailAddressList,
+				mailAccount,
+				linkPath)
 				.save();
 	}	
 	
 	
 	private Message createMessage(String content, EmailAddress fromEmailAddress, UserInfo recipientUserInfo, String relatedTo1Select, int relatedTo1SelectId,
 			String relatedTo2Select, int relatedTo2SelectId, LocalDateTime sendedDate, UserInfo senderUserInfo, boolean sentByEmail, int statusSelect, 
-			String subject, int typeSelect)  {
+			String subject, int typeSelect, List<EmailAddress> toEmailAddressList, List<EmailAddress> ccEmailAddressList, List<EmailAddress> bccEmailAddressList, 
+			MailAccount mailAccount, String filePath)  {
 		Message message = new Message();
 		message.setContent(content);
 		message.setFromEmailAddress(fromEmailAddress);
@@ -128,12 +162,34 @@ public class MessageService {
 		message.setSubject(subject);
 		message.setTypeSelect(typeSelect);
 		
+		Set<EmailAddress> toEmailAddressSet = Sets.newHashSet();
+		if(toEmailAddressList != null)  {
+			toEmailAddressSet.addAll(toEmailAddressList);
+		}
+		message.setToEmailAddressSet(toEmailAddressSet);
+		
+		Set<EmailAddress> ccEmailAddressSet = Sets.newHashSet();
+		if(ccEmailAddressList != null)  {
+			ccEmailAddressSet.addAll(ccEmailAddressList);
+		}
+		message.setCcEmailAddressSet(ccEmailAddressSet);
+		
+		Set<EmailAddress> bccEmailAddressSet = Sets.newHashSet();
+		if(bccEmailAddressList != null)  {
+			bccEmailAddressSet.addAll(bccEmailAddressList);
+		}
+		message.setBccEmailAddressSet(ccEmailAddressSet);
+		
+		message.setMailAccount(mailAccount);
+		
+		message.setFilePath(filePath);
+		
 		return message;
 	}	
 	
 	
 	@Transactional
-	public void sendMessageByEmail(Message message)  {
+	public Message sendMessageByEmail(Message message)  {
 		try {
 			
 			MailAccount mailAccount = message.getMailAccount();
@@ -170,6 +226,12 @@ public class MessageService {
 				}
 				
 				if(!recipients.isEmpty())  {
+					
+					Map<String, String> attachment = Maps.newHashMap();
+					if(message.getFilePath() != null && !message.getFilePath().isEmpty())   {
+						attachment.put("File 1", message.getFilePath());
+					}	
+						
 					// Init the sender
 					MailSender sender = new MailSender(
 							"smtp", 
@@ -179,12 +241,21 @@ public class MessageService {
 							mailAccount.getName(),
 							mailAccount.getPassword());
 					
-					// Short method to create and send the message
-					sender.send(message.getContent(), message.getSubject(), recipients);
+					
+					// Create the Message
+					javax.mail.Message msg = sender.createMessage(message.getContent(), message.getSubject(), recipients, attachment);
+					// Send
+					Transport.send(msg);
 					
 					message.setSentByEmail(true);
+					message.setStatusSelect(IMessage.STATUS_SENT);
 					message.save();
 				}
+			}
+			if(!message.getSentByEmail() && message.getRecipientUserInfo()!=null)  {
+				message.setStatusSelect(IMessage.STATUS_SENT);
+				message.setSentByEmail(false);
+				message.save();
 			}
 			
 		} catch (MessagingException e) {
@@ -192,7 +263,18 @@ public class MessageService {
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
+		return message;
 		
+	}
+	
+	
+	public String getSignature(MailAccount mailAccount)  {
+		
+		if(mailAccount != null && mailAccount.getSignature() != null)  {
+			return "\n "+mailAccount.getSignature();
+		}
+		
+		return "";
 	}
 	
 }

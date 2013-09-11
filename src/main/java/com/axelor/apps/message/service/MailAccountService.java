@@ -1,4 +1,3 @@
-package com.axelor.apps.message.db;
 /**
  * Copyright (c) 2012-2013 Axelor. All Rights Reserved.
  *
@@ -29,44 +28,29 @@ package com.axelor.apps.message.db;
  * All portions of the code written by Axelor are
  * Copyright (c) 2012-2013 Axelor. All Rights Reserved.
  */
+package com.axelor.apps.message.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-/**
- * Interface of Event object. Enum all static variable of object.
- * 
- * @author dubaux
- * 
- */
-public interface IMessage {
+import com.axelor.apps.base.service.user.UserInfoService;
+import com.axelor.apps.message.db.MailAccount;
+import com.google.inject.Inject;
 
+public class MailAccountService {
 
-	/**
-	 * Static status select
-	 */
-	static final int STATUS_DRAFT = 1;
-	static final int STATUS_SENT = 2;
-	static final int STATUS_DELETED = 3;
+	private static final Logger LOG = LoggerFactory.getLogger(MailAccountService.class);
 	
-	
-	/**
-	 * Static status select
-	 */
-	static final int TYPE_RECEIVED = 1;
-	static final int TYPE_SENT = 2;
-	
-	
-	/**
-	 * Static related to select
-	 */
-	static final String RELATED_TO_PARTNER = "com.axelor.apps.base.db.Partner";
-	static final String RELATED_TO_LEAD = "com.axelor.apps.crm.db.Lead";
-	static final String RELATED_TO_OPPORTUNITY = "com.axelor.apps.crm.db.Opportunity";
-	static final String RELATED_TO_PRODUCT = "com.axelor.apps.base.db.Product";
-	static final String RELATED_TO_EVENT = "com.axelor.apps.crm.db.Event";
-	static final String RELATED_TO_SALESORDER = "com.axelor.apps.supplychain.db.SalesOrder";
-	static final String RELATED_TO_PROJECT = "com.axelor.apps.organisation.db.Project";
-	static final String RELATED_TO_TASK = "com.axelor.apps.organisation.db.Task";
-	
-	
+	@Inject
+	private UserInfoService uis;
 
+	
+	
+	public MailAccount getDefaultMailAccount()  {
+		
+		MailAccount mailAccount = MailAccount.all().filter("self.userInfo = ?1 AND self.isDefault = true", uis.getUserInfo()).fetchOne();
+		
+		return mailAccount;
+	}
+	
 }

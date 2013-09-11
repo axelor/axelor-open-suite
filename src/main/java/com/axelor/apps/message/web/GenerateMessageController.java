@@ -42,6 +42,7 @@ import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.tool.ObjectTool;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -53,7 +54,7 @@ import com.google.inject.Inject;
 public class GenerateMessageController {
 
 	@Inject
-	private TemplateMessageService salesOrderTemplateService;
+	private TemplateMessageService templateMessageService;
 
 
 	private static final Logger LOG = LoggerFactory.getLogger(GenerateMessageController.class);
@@ -72,7 +73,10 @@ public class GenerateMessageController {
 			
 			LOG.debug("Template number : {} ", templateNumber);
 			
-			if(templateNumber > 1 || templateNumber == 0)  {
+			if(templateNumber == 0)  {
+				response.setFlash("Veuillez configurer un template");
+			}
+			else if(templateNumber > 1 || templateNumber == 0)  {
 
 				Map<String,Object> context = new HashMap<String,Object>();
 				context.put("_object", object);
@@ -80,7 +84,7 @@ public class GenerateMessageController {
 				context.put("_templateContextModel", object.getClass().getCanonicalName());
 
 				Map<String, Object> map = Maps.newHashMap();
-				map.put("name", "generate-so-message-wizard-form");
+				map.put("name", "generate-message-wizard-form");
 				map.put("type", "form");
 				
 				List<Object> items = Lists.newArrayList();
@@ -91,7 +95,7 @@ public class GenerateMessageController {
 				view.put("resource", Wizard.class.getName());
 				view.put("viewType", "form");
 				view.put("views", items);
-				view.put("name", "generate-so-message-wizard-form");
+				view.put("name", "generate-message-wizard-form");
 				view.put("context", context);
 
 				response.setView(view);
@@ -142,7 +146,7 @@ public class GenerateMessageController {
 	}
 	
 	
-	public Map<String,Object> generateMessage(Object object, long objectId, String model, String tag, Template template) throws SecurityException, NoSuchFieldException, ClassNotFoundException, InstantiationException, IllegalAccessException  {
+	public Map<String,Object> generateMessage(Object object, long objectId, String model, String tag, Template template) throws SecurityException, NoSuchFieldException, ClassNotFoundException, InstantiationException, IllegalAccessException, AxelorException  {
 		
 		LOG.debug("object : {} ", object);
 		LOG.debug("template : {} ", template);
@@ -150,15 +154,24 @@ public class GenerateMessageController {
 		LOG.debug("model : {} ", model);
 		LOG.debug("tag : {} ", tag);
 		
-		Message message = salesOrderTemplateService.generateMessage(object, objectId, model, tag, template);
+		Message message = templateMessageService.generateMessage(object, objectId, model, tag, template);
 
 		Map<String,Object> context = new HashMap<String,Object>();
 		context.put("_showRecord", message.getId());
+		
+		Map<String, Object> map = Maps.newHashMap();
+		map.put("name", "message-form");
+		map.put("type", "form");
+		
+		List<Object> items = Lists.newArrayList();
+		items.add(map);
 		
 		Map<String,Object> view = new HashMap<String,Object>();
 		view.put("title", "Create message ");
 		view.put("resource",Message.class.getName());
 		view.put("viewType", "form");
+		view.put("views", items);
+		view.put("name", "message-form");
 		view.put("context", context);
 
 		return view;
