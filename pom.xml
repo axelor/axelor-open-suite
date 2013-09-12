@@ -42,11 +42,13 @@
 			<version>${project.version}</version>
 		</dependency>
 		
+		<!-- Axelor-googleapps -->
 		<dependency>
 			<groupId>com.axelor</groupId>
 			<artifactId>axelor-googleapps</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		
 	</dependencies>
 
 </project>
