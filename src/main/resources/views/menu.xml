@@ -306,14 +306,14 @@
 	</action-view>
 	
 	
-	
+	  
 	<!-- CRM Dashboard Entry for CRM.... -->
 
 
 
 	<menuitem name="menu-crm-dashboards" priority="200" title="CRM Dashboards" icon="img/icons/chart.png" groups="admins,erp"/> 
 	
-	<menuitem name="portal.opportunities" parent="menu-crm-dashboards" title="Opportunity" action="portal.opportunity.dashboard.view" />
+	<menuitem name="portal.opportunities" parent="menu-crm-dashboards" title="Opportunity List Report" action="portal.opportunity.dashboard.view" />
 		
 	<action-view name="portal.opportunity.dashboard.view" title="Opportunity" icon="img/icons/crm_small.png">
 		<view type="portal" name="crm.opportunity.portal" />
@@ -325,5 +325,16 @@
 		<view type="portal" name="crm.opportunity.graph.portal" />
 	</action-view>
 
+	<menuitem name="portal.crm.lead.graph" parent="menu-crm-dashboards" title="Lead Chart Report" action="portal.lead.graph.dashboard.view" />
 
+	<action-view name="portal.lead.graph.dashboard.view" title="Lead Graph Report" icon="img/icons/calendar.png">
+		<view type="portal" name="crm.lead.graph.portal" />
+	</action-view>
+	
+		
+	<menuitem name="portal.crm.event.graph" parent="menu-crm-dashboards" title="Event Chart Report" action="portal.event.graph.dashboard.view" />
+
+	<action-view name="portal.event.graph.dashboard.view" title="Event Graph Report" icon="img/icons/calendar.png">
+		<view type="portal" name="crm.event.graph.portal" />
+	</action-view>
 </object-views>

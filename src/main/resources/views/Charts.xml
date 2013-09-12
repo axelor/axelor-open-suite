@@ -169,4 +169,146 @@
 	    <series key="partners"  type="bar"/>
 	</chart>
 	  	
+	 <chart name="chart.leads.by.team.by.status.bar" title="Leads by Team by Status">
+		<dataset type="sql">
+		    <![CDATA[
+		    SELECT
+			    SUM(self.opportunity_amount) AS _opportunity_amount,
+			    team.name AS _team,
+			    selection_item.title as _status
+			FROM
+			   crm_lead as self
+			LEFT JOIN   
+			   base_team as team ON self.team = team.id
+			LEFT JOIN
+	        	meta_select as selection ON selection.name = 'crm.lead.status.select'
+	    	LEFT JOIN 
+	    		meta_select_item as selection_item ON selection_item.select_id = selection.id
+			WHERE
+				cast(selection_item.value as decimal) = self.status_select			
+	    	GROUP BY
+			  	_status,
+			  	_team
+			ORDER BY
+			   	_status,
+			   	_team	
+    ]]>
+	    </dataset>
+	    <category key="_team" type="text"/>
+	    <series key="_opportunity_amount" groupBy="_status" type="bar"/>
+	</chart>
+	
+	<chart name="chart.leads.by.salesman.by.status.bar" title="Leads by Salesman by Status">
+		<dataset type="sql">
+		    <![CDATA[
+		    SELECT
+			    SUM(self.opportunity_amount)    AS _opportunity_amount,
+			    sales_man.full_name as _sales_man,
+			    selection_item.title as _status
+			FROM
+			    crm_lead as self
+			LEFT JOIN
+	        	base_user_info as sales_man ON self.user_info = sales_man.id
+			LEFT JOIN
+	        	meta_select as selection ON selection.name = 'crm.lead.status.select'
+	    	LEFT JOIN 
+	    		meta_select_item as selection_item ON selection_item.select_id = selection.id
+			WHERE
+				cast(selection_item.value as decimal) = self.status_select			
+	    	GROUP BY
+			  	_status,
+			  	_sales_man
+			ORDER BY
+			   	_status,
+			   	_sales_man	
+			  ]]>
+	    </dataset>
+	    <category key="_sales_man" type="text"/>
+	    <series key="_opportunity_amount" groupBy="_status" type="bar"/>
+	</chart>
+	
+	<chart name="chart.calls.types.by.user.bar" title="Calls type by user">
+		<dataset type="sql">
+		    <![CDATA[
+		    SELECT
+			    COUNT(self.id)    AS _total_calls,
+			    sales_man.full_name as _sales_man,
+			    selection_item.title as _status
+			FROM
+			    crm_event as self
+			LEFT JOIN
+	        	base_user_info as sales_man ON self.user_info = sales_man.id
+			LEFT JOIN
+	        	meta_select as selection ON selection.name = 'crm.event.call.status.select'
+	    	LEFT JOIN 
+	    		meta_select_item as selection_item ON selection_item.select_id = selection.id
+			WHERE
+				cast(selection_item.value as decimal) = self.call_status_select			
+	    	GROUP BY
+			  	_status,
+			  	_sales_man
+			ORDER BY
+			   	_status,
+			   	_sales_man	
+			  ]]>
+	    </dataset>
+	    <category key="_sales_man" type="text"/>
+	    <series key="_total_calls" groupBy="_status" type="bar"/>
+	</chart>
+	  	
+	 <chart name="chart.calls.types.by.team.bar" title="Calls type by team">
+		<dataset type="sql">
+		    <![CDATA[
+		    SELECT
+			    COUNT(self.id)    AS _total_calls,
+			    team.name as _team
+			    selection_item.title as _status
+			FROM
+			    crm_event as self
+			LEFT JOIN
+	        	base_team as team ON self.team = team.id
+			LEFT JOIN
+	        	meta_select as selection ON selection.name = 'crm.event.call.status.select'
+	    	LEFT JOIN 
+	    		meta_select_item as selection_item ON selection_item.select_id = selection.id
+			WHERE
+				cast(selection_item.value as decimal) = self.call_status_select			
+	    	GROUP BY
+			  	_status,
+			  	_team
+			ORDER BY
+			   	_team,
+			   	_status	
+			  ]]>
+	    </dataset>
+	    <category key="_team" type="text"/>
+	    <series key="_total_calls" groupBy="_status" type="bar"/>
+	</chart>  	
+	  	
+	<chart name="chart.calls.types.by.team.bar" title="Calls by team by user">
+		<dataset type="sql">
+		    <![CDATA[
+		    SELECT
+			    COUNT(self.id)    AS _total_calls,
+			    sales_man.full_name as _sales_man,
+			    team.name as _team
+			FROM
+			    crm_event as self
+			LEFT JOIN
+	        	base_user_info as sales_man ON self.user_info = sales_man.id
+			LEFT JOIN
+	        	base_team as team ON self.team = team.id
+	    	GROUP BY
+			  	_team,
+			  	_sales_man
+			ORDER BY
+			   	_team,
+			   	_sales_man	
+			  ]]>
+	    </dataset>
+	    <category key="_team" type="text"/>
+	    <series key="_total_calls" groupBy="_sales_man" type="bar"/>
+	</chart> 
+	  	
+	  	
 </object-views>
