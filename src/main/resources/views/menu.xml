@@ -123,4 +123,9 @@
 		<context name="_internalUser" expr="eval: __user__.id"/>
 	</action-view>
 
+	<menuitem name="top-menu-create-so" parent="top-menu-utility" title="Create SO" action="supply.chain.root.sales.order" />
+		
+	
+	
+
 </object-views>
