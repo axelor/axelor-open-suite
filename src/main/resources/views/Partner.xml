@@ -86,6 +86,10 @@
 	                <field name="mobilePhonePro"/>
 	                <field name="webSite"/>
 	            </group>
+	            <group title="Assigned to" canCollapse="true">
+			        <field name="userInfo"/>
+			        <field name="team"/>
+			    </group>
 	        </page>
 	        <page title="Links">
 	            <group colSpan="4" cols="6">
