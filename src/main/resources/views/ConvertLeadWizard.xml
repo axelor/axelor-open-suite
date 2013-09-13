@@ -6,46 +6,44 @@
     
     <form cols="4" name="convert-lead-wizard-form" title="Convert lead" model="com.axelor.apps.base.db.Wizard" onNew="action-convert-lead-wizard-default">
  		<group title="Header" colSpan="4"  colWidths="25%,25%,25%,25%">
- 			
  			<button name="validate" title="Validate" onClick="action-lead-method-convert-lead"/>
- 			
  		</group>
  		
  		<group colSpan="4" cols="4" colWidths="25%,25%,25%,25%">
 			<field name="hasConvertIntoContact" widget="Boolean" title="Convert into Contact ?"/>
 			<field name="selectContactPartner" widget="ManyToOne[target=com.axelor.apps.base.db.Partner]" title="Or Select Contact" domain="self.isContact = 'true'"/>
 		</group>
-		<group title="Contact" colSpan="4" showIf="hasConvertIntoContact" showTitle="false">
+		<group colSpan="4" showIf="hasConvertIntoContact" showTitle="false">
 			<field name="contactPartner" widget="NestedEditor[type=MANY_TO_ONE|target=com.axelor.apps.base.db.Partner]" summary-view="true" 
-			form-view="contact-lead-converted-form" edit-window="self" canSelect="false" showTitle="false" />
+			form-view="contact-lead-converted-form" edit-window="self" canSelect="false" title="Contact"/>
 		</group>
 		<group colSpan="4" cols="4" colWidths="25%,25%,25%,25%">
 			<field name="hasConvertIntoPartner" widget="Boolean" title="Convert into Partner ?"/>
 			<field name="selectPartner" widget="ManyToOne[target=com.axelor.apps.base.db.Partner]" title="Or Select Partner" domain="self.isContact = 'false'"/>
 		</group>
-		<group title="Partner" colSpan="4" showIf="hasConvertIntoPartner" showTitle="false">
+		<group colSpan="4" showIf="hasConvertIntoPartner" showTitle="false">
 			<field name="partner" widget="NestedEditor[type=MANY_TO_ONE|target=com.axelor.apps.base.db.Partner]" summary-view="true" 
-			form-view="partner-lead-converted-form" edit-window="self" canSelect="false" showTitle="false"/>
+			form-view="partner-lead-converted-form" edit-window="self" canSelect="false" title="Partner"/>
 		</group>
 		<field name="hasConvertIntoOpportunity" widget="Boolean" title="Create into Opportunity ?"/>
-		<group title="Opportunity" colSpan="4" showIf="hasConvertIntoOpportunity"  showTitle="false">
+		<group colSpan="4" showIf="hasConvertIntoOpportunity"  showTitle="false">
 			<field name="opportunity" widget="NestedEditor[type=MANY_TO_ONE|target=com.axelor.apps.crm.db.Opportunity]" summary-view="true" 
-			form-view="opportunity-lead-converted-form" edit-window="self" canSelect="false" showTitle="false"/>
+			form-view="opportunity-lead-converted-form" edit-window="self" canSelect="false" title="Opportunity"/>
 		</group>
 		<field name="hasConvertIntoCall" widget="Boolean" title="Log a call ?"/>
-		<group title="Call" colSpan="4" showIf="hasConvertIntoCall"  showTitle="false">
+		<group colSpan="4" showIf="hasConvertIntoCall"  showTitle="false">
 			<field name="callEvent" widget="NestedEditor[type=MANY_TO_ONE|target=com.axelor.apps.crm.db.Event]" summary-view="true" 
-			form-view="call-lead-converted-form" edit-window="self" canSelect="false" showTitle="false"/>
+			form-view="call-lead-converted-form" edit-window="self" canSelect="false" title="Call"/>
 		</group>
 		<field name="hasConvertIntoMeeting" widget="Boolean" title="Schedule a meeting ?"/>
-		<group title="Meeting" colSpan="4" showIf="hasConvertIntoMeeting"  showTitle="false">
+		<group colSpan="4" showIf="hasConvertIntoMeeting"  showTitle="false">
 			<field name="meetingEvent" widget="NestedEditor[type=MANY_TO_ONE|target=com.axelor.apps.crm.db.Event]" canNew="true" canRemove="false" canView="true" 
-			canSelect="false"  summary-view="true" form-view="meeting-lead-converted-form"  edit-window="self" showTitle="false"/>
+			canSelect="false"  summary-view="true" form-view="meeting-lead-converted-form"  edit-window="self" title="Meeting"/>
  		</group>
  		<field name="hasConvertIntoTask" widget="Boolean" title="Create a task ?"/>
-		<group title="Task" colSpan="4" showIf="hasConvertIntoTask"  showTitle="false">
+		<group colSpan="4" showIf="hasConvertIntoTask">
 			<field name="taskEvent" widget="NestedEditor[type=MANY_TO_ONE|target=com.axelor.apps.crm.db.Event]" canNew="true" canRemove="false" canView="true" 
-			canSelect="false"  summary-view="true" form-view="crm-task-lead-converted-form"  edit-window="self" showTitle="false" />
+			canSelect="false"  summary-view="true" form-view="crm-task-lead-converted-form"  edit-window="self" title="Task" />
  		</group>
  		
 	</form>
@@ -54,7 +52,7 @@
 	<action-record name="action-convert-lead-wizard-default" model="com.axelor.apps.base.db.Wizard">
     	<field name="partner" expr="action: action-convert-lead-wizard-default-partner"/>
     	<field name="contactPartner" expr="action: action-convert-lead-wizard-default-contact"/>
-    	<field name="opportunity" expr="action: action-convert-lead-wizard-default-opportunity"/>
+    	<field name="opportunity" expr="action: action-opportunity-record-from-lead"/>
     	<field name="callEvent" expr="action: action-convert-lead-wizard-default-call-event"/>
     	<field name="meetingEvent" expr="action: action-convert-lead-wizard-default-meeting-event"/>
     	<field name="taskEvent" expr="action: action-convert-lead-wizard-default-task-event"/>
@@ -206,8 +204,8 @@
     	<field name="otherState" expr="eval: _lead.otherState"/>
     	<field name="otherPostalCode" expr="eval: _lead.otherPostalCode"/>
     	<field name="otherCountry" expr="eval: _lead.otherCountry"/>
-<!--     	<field name="mainInvoicingAddress" expr="action: action-convert-lead-wizard-default-partner-main-invoicing-address"/> -->
-<!--     	<field name="deliveryAddress" expr="action: action-convert-lead-wizard-default-partner-delivery-address"/> -->
+    	<field name="userInfo" expr="eval: _lead.userInfo"/>
+    	<field name="team" expr="eval: _lead.team"/>
     </action-record>
     
     
@@ -232,13 +230,13 @@
     	<field name="otherState" expr="eval: _lead.otherState"/>
     	<field name="otherPostalCode" expr="eval: _lead.otherPostalCode"/>
     	<field name="otherCountry" expr="eval: _lead.otherCountry"/>
-<!--     	<field name="mainInvoicingAddress" expr="action: action-convert-lead-wizard-default-partner-main-invoicing-address"/> -->
-<!--     	<field name="deliveryAddress" expr="action: action-convert-lead-wizard-default-partner-delivery-address"/> -->
+    	<field name="userInfo" expr="eval: _lead.userInfo"/>
+    	<field name="team" expr="eval: _lead.team"/>
     </action-record>
 	
 	
 	<form name="opportunity-lead-converted-form" title="Opportunity" model="com.axelor.apps.crm.db.Opportunity" cols="4"
-    	onNew="action-opportunity-record-new,action-opportunity-record-currency">
+    	onLoad="action-opportunity-record-new,action-opportunity-record-currency">
          <group title="Informations" colSpan="4" cols="6">
 	        <group title="Context" colSpan="4" cols="6">
 		        <field name="name"/>
@@ -272,16 +270,7 @@
     </form>
 	
 	
-	<action-record name="action-convert-lead-wizard-default-opportunity" model="com.axelor.apps.crm.db.Opportunity">
-    	<field name="name" expr="eval: _lead.name"/>
-    	<field name="amount" expr="eval: _lead.opportunityAmount"/>
-    	<field name="description" expr="eval: _lead.description"/>
-    	<field name="source" expr="eval: _lead.source"/>
-    	<field name="campaign" expr="eval: _lead.campaign"/>
-    </action-record>
-	
-	
-	<form name="call-lead-converted-form" title="Call" model="com.axelor.apps.crm.db.Event" cols="4" onNew="action-event-new-record">
+	<form name="call-lead-converted-form" title="Call" model="com.axelor.apps.crm.db.Event" cols="4" onLoad="action-event-new-record">
         <group title="Informations" cols="4" colSpan="4">
         	<field name="subject" colSpan="4"/>
 	        <spacer/><break/>
@@ -302,11 +291,14 @@
 	
 	
 	<action-record name="action-convert-lead-wizard-default-call-event" model="com.axelor.apps.crm.db.Event">
-    	<field name="description" expr="eval: _lead.description"/>
     	<field name="_typeSelect" expr="eval: 1"/>
+    	<field name="lead" expr="eval: _lead"/>
+    	<field name="description" expr="eval: _lead.description"/>
+    	<field name="userInfo" expr="eval: _lead.userInfo"/>
+    	<field name="team" expr="eval: _lead.team"/>
     </action-record>
 	
-	<form name="meeting-lead-converted-form" title="Meeting" model="com.axelor.apps.crm.db.Event" cols="4" onNew="action-event-new-record">
+	<form name="meeting-lead-converted-form" title="Meeting" model="com.axelor.apps.crm.db.Event" cols="4" onLoad="action-event-new-record">
         <group title="Informations" cols="4" colSpan="4">
         	<field name="subject" colSpan="4"/>
         	<field name="meetingType"/>
@@ -327,15 +319,18 @@
     </form>
     
      <action-record name="action-convert-lead-wizard-default-meeting-event" model="com.axelor.apps.crm.db.Event">
-    	<field name="description" expr="eval: _lead.description"/>
     	<field name="_typeSelect" expr="eval: 2"/>
+    	<field name="lead" expr="eval: _lead"/>
+    	<field name="description" expr="eval: _lead.description"/>
+    	<field name="userInfo" expr="eval: _lead.userInfo"/>
+    	<field name="team" expr="eval: _lead.team"/>
     </action-record>
     
     
-    <form name="crm-task-lead-converted-form" title="Task" model="com.axelor.apps.crm.db.Event" cols="4" onNew="action-event-new-record">
+    <form name="crm-task-lead-converted-form" title="Task" model="com.axelor.apps.crm.db.Event" cols="4" onLoad="action-event-new-record">
         <group title="Informations" cols="4" colSpan="4">
         	<field name="subject"/>
-	        <field name="tertiaryStatusSelect"/>
+	        <field name="taskStatusSelect"/>
 	        <spacer/><break/>
          	<group title="Task date" colSpan="4" cols="4" colWidths="25*" css="groupTitle">
 		        <field name="startDateTime" onChange="action-meeting-method-compute-start-date-time"/>
@@ -353,20 +348,11 @@
     </form>
     
     <action-record name="action-convert-lead-wizard-default-task-event" model="com.axelor.apps.crm.db.Event">
-    	<field name="description" expr="eval: _lead.description"/>
     	<field name="_typeSelect" expr="eval: 3"/>
-    </action-record>
-	
-    <action-record name="action-convert-lead-wizard-default-partner-main-invoicing-address" model="com.axelor.apps.base.db.Address">
-    	<field name="addressL4" expr="eval: _lead.primaryAddress"/>
-    	<field name="addressL6" expr="eval: _lead.primaryPostalCode+' '+_lead.primaryCity+' '+_lead.primaryState"/>
-    	<field name="addressL7Country" expr="eval: _lead.primaryCountry"/>
-    </action-record>
-    
-    <action-record name="action-convert-lead-wizard-default-partner-delivery-address" model="com.axelor.apps.base.db.Address">
-    	<field name="addressL4" expr="eval: _lead.otherAddress"/>
-    	<field name="addressL6" expr="eval: _lead.otherPostalCode+' '+_lead.otherCity+' '+_lead.otherState"/>
-    	<field name="addressL7Country" expr="eval: _lead.otherCountry"/>
+    	<field name="lead" expr="eval: _lead"/>
+    	<field name="description" expr="eval: _lead.description"/>
+    	<field name="userInfo" expr="eval: _lead.userInfo"/>
+    	<field name="team" expr="eval: _lead.team"/>
     </action-record>
     
     <action-method name="action-lead-method-convert-lead">

@@ -18,23 +18,23 @@
     		<button name="convertLead" title="Convert lead" onClick="save,action-lead-view-convert-lead" colSpan="1" hideIf="statusSelect == 4"/>
     		<button name="sendByEmail" title="Send email" onClick="save,action-send-by-email-with-template" colSpan="1"/>
     	</toolbar>
-    
+        <menubar>
+	        <menu title="Actions" icon="img/icons/create.png" showTitle="true">
+	            <item title="Create call" action="save,action-lead-view-create-call"/>
+	            <item title="Schedule meeting" action="save,action-lead-view-create-meeting"/>
+	            <item title="Create task" action="save,action-lead-view-create-task"/>
+	            <item title="Create opportunity" action="save,action-lead-view-create-opportunity"/>
+	        </menu>
+	    </menubar>
  		<group title="Header" colSpan="4">
  			<group showTitle="false" colSpan="1">
-	            <field name="picture" widget="image"/>
+	            <field name="picture" widget="image" showTitle="false"/>
 	        </group>
 	        <group showTitle="false" colSpan="2" css="highlight">
 	        	<field name="titleSelect" colSpan="1" showTitle="false" readonly="true"/>
 	            <field name="name" colSpan="1" showTitle="false" readonly="true" />
 		        <field name="firstName" colSpan="1" showTitle="false" readonly="true"/>
 	        </group>
-<!-- 	    	<group title="Actions" colSpan="1" cols="1" canCollapse="true" collapseIf="true"> -->
-<!-- 	    		<button name="convertLead" title="Convert lead" colSpan="1" onClick="action-lead-method-convert-lead"  hideIf="statusSelect == 4"/> -->
-<!-- 	    		<button name="scheduleMeeting" title="Schedule meeting" colSpan="1"/> -->
-<!-- 	    		<button name="createTask" title="Create task" colSpan="1"/> -->
-<!-- 	    		<button name="composeMessage" title="Compose email" colSpan="1"/> -->
-<!-- 	    		<button name="createCall" title="Create call" colSpan="1"/> -->
-<!-- 	    	</group> -->
 	    	<group title="Links" colSpan="1" cols="1" canCollapse="true" collapseIf="true">
 	    		<button name="showPartner" title="Show partner/contact"  colSpan="1"/>
 	    		<button name="showMeetings" title="Show meetings"  colSpan="1"/>
@@ -117,6 +117,29 @@
 		<context name="_lead" expr="eval: __self__"/>
 		<context name="_titleSelect" expr="eval: titleSelect"/>
 	</action-view>
+    
+    <action-view name="action-lead-view-create-call" title="Create call" model="com.axelor.apps.crm.db.Event">
+    	<view type="form" name="call-form"/>
+    	<context name="_lead" expr="eval: __self__"/>
+    	<context name="_typeSelect" expr="1"/>
+    </action-view>
+    
+    <action-view name="action-lead-view-create-meeting" title="Create meeting" model="com.axelor.apps.crm.db.Event">
+    	<view type="form" name="meeting-form"/>
+    	<context name="_lead" expr="eval: __self__"/>
+    	<context name="_typeSelect" expr="2"/>
+    </action-view>
+    
+    <action-view name="action-lead-view-create-task" title="Create task" model="com.axelor.apps.crm.db.Event">
+    	<view type="form" name="crm-task-form"/>
+    	<context name="_lead" expr="eval: __self__"/>
+    	<context name="_typeSelect" expr="3"/>
+    </action-view>
+    
+    <action-view name="action-lead-view-create-opportunity" title="Create opportunity" model="com.axelor.apps.crm.db.Opportunity">
+    	<view type="form" name="opportunity-form"/>
+    	<context name="_lead" expr="eval: __self__"/>
+    </action-view>
     
     <action-record name="action-lead-record-other-address" model="com.axelor.apps.crm.db.Lead">
     	<field name="otherAddress" expr="eval: primaryAddress" if="!isCopyAddress"/>

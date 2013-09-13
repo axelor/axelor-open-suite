@@ -34,6 +34,7 @@
 	        <field name="eventStatusSelect" colSpan="2"/>
 	        <field name="clientPartner"/>
         	<field name="contactPartner"/>
+        	<field name="lead"/>
 	        <spacer/><break/>
 	        <group title="Event dates" colSpan="4" cols="4" colWidths="25*" css="groupTitle">
 	        <label title="Duration" colSpan="1"/>
@@ -61,8 +62,6 @@
         </group>
         <field name="calendar" widget="SuggestBox"/>
         <field name="calendarEventUid"/>
-        
-<!--         A completer -->
     </form>
     
     
@@ -82,6 +81,7 @@
 	        <field name="statusSelect" showTitle="false" colSpan="1"/>
 	        <field name="clientPartner"/>
         	<field name="contactPartner"/>
+        	<field name="lead"/>
 	        <spacer/><break/>
 	        <group title="Call date" colSpan="4" cols="3" css="groupTitle">
 	        	<field name="startDateTime" colSpan="2"/>
@@ -107,6 +107,8 @@
         </group>
     </form>
     
+    
+    
   <calendar name="meeting-calendar" title="Meetings" mode="month" colorBy="userInfo" 
     eventStart="startDateTime" 
     eventStop="endDateTime" 
@@ -127,9 +129,10 @@
 	    <field name="subject" showTitle="false" css="highlight" placeholder="Subject" colSpan="4"/>
 	    <group title="Informations" colSpan="2" cols="4">
 	        <field name="statusSelect"/>
-	        <field name="meetingType"/>
+	        <field name="meetingType" widget="SuggestBox"/>
 	        <field name="clientPartner"/>
         	<field name="contactPartner"/>
+        	<field name="lead"/>
 	        <spacer/>
 	        <break/>
 	        <group title="Meeting dates" colSpan="2" css="groupTitle" cols="2" colWidths="50%,50%">
@@ -186,6 +189,7 @@
 	        <field name="taskStatusSelect"/>
 	        <field name="clientPartner"/>
         	<field name="contactPartner"/>
+        	<field name="lead"/>
 	        <spacer/><break/>
          	<group title="Task date" colSpan="4" cols="4" colWidths="25*" css="groupTitle">
 		        <field name="startDateTime" onChange="action-meeting-method-compute-start-date-time"/>
@@ -347,13 +351,8 @@
     	<field name="progressSelect" expr="0"/>
     </action-record>
     
-    <action-record name="action-event-record-call-status-select" model="com.axelor.apps.crm.db.Event">
-    	<field name="callStatusSelect" expr="eval: _callAllCrm"/>
-    </action-record>
-    
     <action-record name="action-ticket-record-new" model="com.axelor.apps.crm.db.Event">
     	<field name="quaternaryStatusSelect" expr="1"/>
-<!--     	<field name="ticketNumberSeq" expr="eval: com.axelor.apps.crm.db.Event.all().filter('self.typeSelect = 5').count() + 1"/> -->
     	<field name="prioritySelect" expr="eval: _prioritySelect"/>
     </action-record>
     
@@ -365,11 +364,23 @@
     	<action name="action-event-default-record"/>
     	<action name="action-event-record-default-duration" if="typeSelect != 5"/>
     	<action name="action-ticket-record-new" if="typeSelect == 5"/> <!-- typeSelect == 5: ticket -->
-    	<action name="action-event-default-record-userinfo"/>
-    	<action name="action-event-record-call-status-select" if="typeSelect == 1"/>
+    	<action name="action-event-default-record-userinfo" if="_lead == null"/>
+    	<action name="action-event-record-event-from-lead" if="_lead != null"/>
+    	<action name="action-event-record-call-status-select" if="typeSelect == 1 &amp;&amp; _lead != null"/>
     	<action name="action-event-record-status-select" if="typeSelect == 2 || typeSelect == 1"/>
     	<action name="action-event-record-task-status-select" if="typeSelect == 3"/>
     </action-group>
+    
+    <action-record name="action-event-record-event-from-lead" model="com.axelor.apps.crm.db.Event">
+    	<field name="lead" expr="eval: _lead"/>
+    	<field name="description" expr="eval: _lead.description"/>
+    	<field name="userInfo" expr="eval: _lead.userInfo"/>
+    	<field name="team" expr="eval: _lead.team"/>
+    </action-record>
+    
+    <action-record name="action-event-record-call-status-select" model="com.axelor.apps.crm.db.Event">
+    	<field name="callStatusSelect" expr="2"/>
+    </action-record>
     
     <action-attrs name="action-event-ticket-attrs-default">
     	<attribute name="hidden" for="responsibleUserInfo" expr="eval: true" if="_clientView"/>
