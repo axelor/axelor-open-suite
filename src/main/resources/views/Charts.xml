@@ -231,17 +231,17 @@
 		<dataset type="sql">
 		    <![CDATA[
 		    SELECT
-			    COUNT(self.id)    AS _total_calls,
-			    sales_man.full_name as _sales_man,
-			    selection_item.title as _status
+			    COUNT(self.id)			AS 	_total_calls,
+			    sales_man.full_name		AS 	_sales_man,
+			    selection_item.title	AS 	_status
 			FROM
-			    crm_event as self
+			    crm_event 				AS self
 			LEFT JOIN
-	        	base_user_info as sales_man ON self.user_info = sales_man.id
+	        	base_user_info as sales_man 		ON self.user_info = sales_man.id
 			LEFT JOIN
-	        	meta_select as selection ON selection.name = 'crm.event.call.status.select'
+	        	meta_select as selection 			ON selection.name = 'crm.event.call.status.select'
 	    	LEFT JOIN 
-	    		meta_select_item as selection_item ON selection_item.select_id = selection.id
+	    		meta_select_item as selection_item 	ON selection_item.select_id = selection.id
 			WHERE
 				cast(selection_item.value as decimal) = self.call_status_select			
 	    	GROUP BY
@@ -260,17 +260,17 @@
 		<dataset type="sql">
 		    <![CDATA[
 		    SELECT
-			    COUNT(self.id)    AS _total_calls,
-			    team.name as _team
-			    selection_item.title as _status
+			    COUNT(self.id)    		AS 	_total_calls,
+			    team.name 				AS 	_team,
+			    selection_item.title 	AS 	_status
 			FROM
 			    crm_event as self
 			LEFT JOIN
-	        	base_team as team ON self.team = team.id
+	        	base_team as team 					ON self.team = team.id
 			LEFT JOIN
-	        	meta_select as selection ON selection.name = 'crm.event.call.status.select'
+	        	meta_select as selection 			ON selection.name = 'crm.event.call.status.select'
 	    	LEFT JOIN 
-	    		meta_select_item as selection_item ON selection_item.select_id = selection.id
+	    		meta_select_item as selection_item 	ON selection_item.select_id = selection.id
 			WHERE
 				cast(selection_item.value as decimal) = self.call_status_select			
 	    	GROUP BY
@@ -285,7 +285,7 @@
 	    <series key="_total_calls" groupBy="_status" type="bar"/>
 	</chart>  	
 	  	
-	<chart name="chart.calls.types.by.team.bar" title="Calls by team by user">
+	<chart name="chart.calls.types.by.team.by.user.bar" title="Calls by team by user">
 		<dataset type="sql">
 		    <![CDATA[
 		    SELECT
@@ -309,6 +309,99 @@
 	    <category key="_team" type="text"/>
 	    <series key="_total_calls" groupBy="_sales_man" type="bar"/>
 	</chart> 
+	
+	
+	<chart name="chart.open.tickets.by.priority.bar" title="Open tickets by priority">
+		<dataset type="sql">
+		    <![CDATA[
+		    SELECT
+			    COUNT(self.id)    		AS 	_total_calls,
+			    selection_item.title 	AS 	_priority
+			FROM
+			    crm_event as self
+			LEFT JOIN
+	        	meta_select as selection 			ON selection.name = 'crm.event.ticket.priority.select'
+	    	LEFT JOIN 
+	    		meta_select_item as selection_item 	ON selection_item.select_id = selection.id
+			WHERE
+				cast(selection_item.value as decimal) = self.priority_select and self.ticket_status_select != 5		
+	    	GROUP BY
+			  	_priority
+			ORDER BY
+			   	_priority	
+			  ]]>
+	    </dataset>
+	    <category key="_priority" type="text"/>
+	    <series key="_total_calls" type="bar"/>
+	</chart>  	
+	
+	<chart name="chart.open.tickets.by.status.bar" title="Open tickets by status">
+		<dataset type="sql">
+		    <![CDATA[
+		    SELECT
+			    COUNT(self.id)    		AS 	_total_calls,
+			    selection_item.title 	AS 	_status
+			FROM
+			    crm_event as self
+			LEFT JOIN
+	        	meta_select as selection 			ON selection.name = 'crm.event.status.select'
+	    	LEFT JOIN 
+	    		meta_select_item as selection_item 	ON selection_item.select_id = selection.id
+			WHERE
+				cast(selection_item.value as decimal) = self.status_select and self.ticket_status_select != 5		
+	    	GROUP BY
+			  	_status
+			ORDER BY
+			   	_status	
+			  ]]>
+	    </dataset>
+	    <category key="_status" type="text"/>
+	    <series key="_total_calls" type="bar"/>
+	</chart>  	
 	  	
 	  	
+	  <chart name="chart.agents.by.open.cases.bar" title="Top agents by Open Tickets">
+		<dataset type="sql">
+		    <![CDATA[
+		    SELECT
+			    COUNT(self.id)    		AS 	_total_calls,
+			    sales_man.full_name as _sales_man,
+			    selection_item.title 	AS 	_status
+			FROM
+			  	crm_event as self
+			LEFT JOIN
+	        	base_user_info as sales_man ON self.user_info = sales_man.id
+			LEFT JOIN
+	        	meta_select as selection 			ON selection.name = 'crm.event.status.select'
+	    	LEFT JOIN 
+	    		meta_select_item as selection_item 	ON selection_item.select_id = selection.id
+			WHERE
+				cast(selection_item.value as decimal) = self.status_select and self.ticket_status_select != 5		
+	    	GROUP BY
+			  	_status,
+			  	_sales_man
+			ORDER BY
+			   	_status,	
+			   	_sales_man
+			  ]]>
+	    </dataset>
+	    <category key="_status" type="text"/>
+	    <series key="_total_calls" type="bar"/>
+	</chart>  		
+	<!-- 
+	 <chart name="chart.due.open.ticket.gauge.bar" title="Due Open Tickets">
+		<dataset type="sql">
+		    <![CDATA[
+		    SELECT
+			    COUNT(self.id)    		AS 	_total_ticket,
+			    (select Count(id) from crm_event as open_ticket where open_ticket.ticket_status_select != 5) as _open_ticket
+			FROM
+			  	crm_event as self
+			  ]]>
+	    </dataset>
+	   	<category key="_open_ticket" type="text"/>
+	    <config name="min" value="0"/>
+    	<config name="max" value="100"/>
+	    <series key="_total_ticket" type="gauge"/>
+	</chart>  	 -->
 </object-views>
