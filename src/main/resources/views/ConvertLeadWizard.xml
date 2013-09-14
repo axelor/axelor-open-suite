@@ -99,11 +99,8 @@
 	            <group title="Contact" colSpan="3" cols="4">
 	                <field name="email" widget="Email"/>
 	                <field name="fax"/>
-	                <field name="fixedPhone1"/>
-	                <field name="fixedPhone2"/>
-	                <field name="fixedPhonePro"/>
-	                <field name="mobilePhonePerso"/>
-	                <field name="mobilePhonePro"/>
+	                <field name="fixedPhone"/>
+					<field name="mobilePhone"/>
 	                <field name="webSite"/>
 	            </group>
 	        </page>
@@ -160,11 +157,8 @@
 	            <group title="Contact" colSpan="3" cols="4">
 	                <field name="email" widget="Email"/>
 	                <field name="fax"/>
-	                <field name="fixedPhone1"/>
-	                <field name="fixedPhone2"/>
-	                <field name="fixedPhonePro"/>
-	                <field name="mobilePhonePerso"/>
-	                <field name="mobilePhonePro"/>
+	                <field name="fixedPhone"/>
+					<field name="mobilePhone"/>
 	                <field name="webSite"/>
 	            </group>
 	        </page>
@@ -190,11 +184,12 @@
     	<field name="titleSelect" expr="eval: _lead.titleSelect"/>
     	<field name="emailAddress" expr="eval: _lead.emailAddress"/>
     	<field name="fax" expr="eval: _lead.fax"/>
-    	<field name="mobilePhonePerso" expr="eval: _lead.mobile"/>
+    	<field name="mobilePhone" expr="eval: _lead.mobilePhone"/>
+    	<field name="fixedPhone" expr="eval: _lead.fixedPhone"/>
     	<field name="webSite" expr="eval: _lead.website"/>
     	<field name="source" expr="eval: _lead.source"/>
     	<field name="department" expr="eval: _lead.department"/>
-    	<field name="primaryAddress" expr="eval: _lead.primaryAddress"/>
+    	<field name="primaryAddress" expr="eval: _primaryAddress"/>
     	<field name="primaryCity" expr="eval: _lead.primaryCity"/>
     	<field name="primaryState" expr="eval: _lead.primaryState"/>
     	<field name="primaryPostalCode" expr="eval: _lead.primaryPostalCode"/>
@@ -216,7 +211,8 @@
     	<field name="titleSelect" expr="eval: _lead.titleSelect"/>
     	<field name="emailAddress" expr="eval: _lead.emailAddress"/>
     	<field name="fax" expr="eval: _lead.fax"/>
-    	<field name="mobilePhonePerso" expr="eval: _lead.mobile"/>
+    	<field name="mobilePhone" expr="eval: _lead.mobilePhone"/>
+    	<field name="fixedPhone" expr="eval: _lead.fixedPhone"/>
     	<field name="webSite" expr="eval: _lead.website"/>
     	<field name="source" expr="eval: _lead.source"/>
     	<field name="department" expr="eval: _lead.department"/>

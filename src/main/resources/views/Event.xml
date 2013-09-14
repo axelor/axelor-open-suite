@@ -364,9 +364,10 @@
     	<action name="action-event-default-record"/>
     	<action name="action-event-record-default-duration" if="typeSelect != 5"/>
     	<action name="action-ticket-record-new" if="typeSelect == 5"/> <!-- typeSelect == 5: ticket -->
-    	<action name="action-event-default-record-userinfo" if="_lead == null"/>
+    	<action name="action-event-default-record-userinfo" if="_lead == null &amp;&amp; _partner == null"/>
     	<action name="action-event-record-event-from-lead" if="_lead != null"/>
-    	<action name="action-event-record-call-status-select" if="typeSelect == 1 &amp;&amp; _lead != null"/>
+    	<action name="action-event-record-event-from-partner" if="_partner != null"/>
+    	<action name="action-event-record-call-status-select" if="typeSelect == 1 &amp;&amp; (_lead != null || _partner != null)"/>
     	<action name="action-event-record-status-select" if="typeSelect == 2 || typeSelect == 1"/>
     	<action name="action-event-record-task-status-select" if="typeSelect == 3"/>
     </action-group>
@@ -376,6 +377,15 @@
     	<field name="description" expr="eval: _lead.description"/>
     	<field name="userInfo" expr="eval: _lead.userInfo"/>
     	<field name="team" expr="eval: _lead.team"/>
+    </action-record>
+    
+    <action-record name="action-event-record-event-from-partner" model="com.axelor.apps.crm.db.Event">
+    	<field name="clientPartner" expr="eval: _partner" if="_partner.isContact == false"/>
+    	<field name="clientPartner" expr="eval: _partner.mainPartner" if="_partner.isContact == true"/>
+    	<field name="contactPartner" expr="eval: _partner" if="_partner.isContact == true"/>
+    	<field name="description" expr="eval: _partner.description"/>
+    	<field name="userInfo" expr="eval: _partner.userInfo"/>
+    	<field name="team" expr="eval: _partner.team"/>
     </action-record>
     
     <action-record name="action-event-record-call-status-select" model="com.axelor.apps.crm.db.Event">

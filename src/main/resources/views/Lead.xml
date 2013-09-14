@@ -52,7 +52,6 @@
 		        <field name="enterpriseName"/>
 		        <field name="jobTitle"/>
 		        <field name="emailAddress"  canSelect="false" canNew="false" form-view="email-address-simple-form"/>
-		        <field name="fixedPhone"/>
 		        <field name="partner" showIf="statusSelect == 4"/>
 	    	</group>
 	    	<group title="Primary address" colSpan="2" cols="2">
@@ -74,7 +73,8 @@
 		        <field name="officeName"/>
 		        <field name="department"/>
 		        <field name="fax"/>
-		        <field name="mobile"/>
+		        <field name="fixedPhone"/>
+		        <field name="mobilePhone"/>
 		        <field name="webSite"/>
 		       	<field name="contactDate"/>
 		        <field name="description" widget="TEXT[height=3]" colSpan="6"/>
@@ -116,7 +116,7 @@
     <action-view name="action-lead-view-convert-lead" title="Convert lead" model="com.axelor.apps.base.db.Wizard">
 		<view type="form" name="convert-lead-wizard-form"/>
 		<context name="_lead" expr="eval: __self__"/>
-		<context name="_titleSelect" expr="eval: titleSelect"/>
+		<context name="_primaryAddress" expr="eval: primaryAddress"/>
 	</action-view>
     
     <action-view name="action-lead-view-create-call" title="Create call" model="com.axelor.apps.crm.db.Event">

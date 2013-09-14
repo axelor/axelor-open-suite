@@ -58,9 +58,9 @@
     <action-group name="action-opportunity-group-new">
     	<action name="action-opportunity-record-new"/>
     	<action name="action-opportunity-record-currency"/>
-    	<action name="action-opportunity-record-default" if="_lead == null"/>
+    	<action name="action-opportunity-record-default" if="_lead == null &amp;&amp; _partner == null"/>
     	<action name="action-opportunity-record-from-lead" if="_lead != null"/>
-    
+    	<action name="action-opportunity-record-from-partner" if="_partner != null"/>
     </action-group>
     
     <action-record name="action-opportunity-record-new" model="com.axelor.apps.crm.db.Opportunity">
@@ -80,13 +80,22 @@
     
     <action-record name="action-opportunity-record-from-lead" model="com.axelor.apps.crm.db.Opportunity">
     	<field name="lead" expr="eval: _lead"/>
-    	<field name="name" expr="eval: _lead.name"/>
     	<field name="amount" expr="eval: _lead.opportunityAmount"/>
     	<field name="description" expr="eval: _lead.description"/>
     	<field name="source" expr="eval: _lead.source"/>
     	<field name="campaign" expr="eval: _lead.campaign"/>
     	<field name="userInfo" expr="eval: _lead.userInfo"/>
     	<field name="team" expr="eval: _lead.team"/>
+    </action-record>
+    
+    <action-record name="action-opportunity-record-from-partner" model="com.axelor.apps.crm.db.Opportunity">
+    	<field name="clientPartner" expr="eval: _partner" if="_partner.isContact == false"/>
+    	<field name="clientPartner" expr="eval: _partner.mainPartner" if="_partner.isContact == true"/>
+    	<field name="contactPartner" expr="eval: _partner" if="_partner.isContact == true"/>
+    	<field name="description" expr="eval: _partner.description"/>
+    	<field name="source" expr="eval: _partner.source"/>
+    	<field name="userInfo" expr="eval: _partner.userInfo"/>
+    	<field name="team" expr="eval: _partner.team"/>
     </action-record>
     
     
