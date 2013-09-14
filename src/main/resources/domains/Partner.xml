@@ -36,17 +36,15 @@
     <many-to-one name="mainInvoicingAddress" ref="com.axelor.apps.base.db.Address" title="Invoicing Address"/>
     <many-to-one name="deliveryAddress" ref="com.axelor.apps.base.db.Address" title="Delivery Address"/>
     <many-to-many name="contactPartnerSet" ref="com.axelor.apps.base.db.Partner" title="Contacts"/>
+    <many-to-one name="mainPartner" ref="com.axelor.apps.base.db.Partner" title="Main partner"/>
     <many-to-one name="source" ref="com.axelor.apps.base.db.Source" title="Source"/>
     
     <!-- From contact -->
     <many-to-one name="commune" ref="com.axelor.apps.base.db.Commune" title="City - Commune"/>
     <one-to-one name="emailAddress" ref="com.axelor.apps.message.db.EmailAddress" title="Email"/>
     <string name="fax" title="Fax"/>
-    <string name="fixedPhone1" title="Fixed phone 1"/>
-    <string name="fixedPhone2" title="Fixed phone 2"/>
-    <string name="fixedPhonePro" title="Prof. fixed phone"/>
-    <string name="mobilePhonePerso" title="Perso. mobile phone"/>
-    <string name="mobilePhonePro" title="Prof. mobile phone"/>
+    <string name="fixedPhone" title="Fixed phone"/>
+    <string name="mobilePhone" title="Mobile phone"/>
     <string name="webSite" title="Website"/>
     
     <one-to-one name="snProfile" ref="com.axelor.apps.socialnetwork.db.SnProfile" title="Social Network Profile"/>

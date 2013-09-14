@@ -15,7 +15,7 @@
     <string name="enterpriseName" title="Enterprise name"/> 
     <string name="officeName" title="Office name"/>
   	<string name="jobTitle" title="Job Title"/>
-    <string name="mobile" title="Mobile N°"/>
+    <string name="mobilePhone" title="Mobile N°"/>
   	<string name="department" title="Department/Division"/>
   	<string name="fax" title="Fax"/>
   	<string name="webSite" title="Website"/>
