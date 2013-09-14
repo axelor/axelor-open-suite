@@ -42,8 +42,7 @@
 	    <portlet action="portal.opportunities.won.by.leadsource" height="350"/>
 	    <portlet action="portal.opportunities.won.by.salesman" height="350"/>
 	    <portlet title="Opportunities By Origin By Stage" action="chart:chart.opportunities.by.origin.by.stage" height="350"/>
-	    <portlet title="Leads by Source"  action="chart:chart.leads.by.source" height="350"/>
-	    <portlet title="Customers by country" action="chart:chart.customers.by.country" height="350"/>
+	    <portlet title="Customers by country" action="chart:chart.customers.by.country.bar" height="350"/>
 	 </portal>
   	
    	<action-view name="portal.opportunities.by.type" title="Opportunities By Type">
@@ -61,11 +60,74 @@
   	</action-view>
   	
   	<action-view name="portal.opportunities.by.source" title="Chart">
-    <view type="chart" name="chart.dashboard.opportunities.source.amount.bar" />
+    	<view type="chart" name="chart.dashboard.opportunities.source.amount.bar" />
+ 	</action-view>
+  
+  	<action-view name="portal.opportunities.by.salestage" title="Opportunities By Sale Stage">
+    	<view type="chart" name="chart.dashboard.opportunities.sales.stage.amount.bar" />
+  	</action-view>
+  	
+  	<portal title="Lead Dashboard" name="crm.lead.graph.portal" cols="2">
+		<portlet action="portal.leads.by.source" height="350"/>
+	    <portlet action="portal.leads.by.country" height="350"/>
+	    <portlet action="portal.leads.by.team.by.status" height="350" colSpan="1"/>
+	    <portlet action="portal.leads.by.salesman.by.status" height="350"/>
+	</portal>
+	 
+  	<action-view name="portal.leads.by.source" title="Leads by Source">
+    	<view type="chart" name="chart.leads.by.source.bar" />
+  	</action-view>
+  
+  <action-view name="portal.leads.by.country" title="Leads by Country">
+    	<view type="chart" name="chart.leads.by.country.bar" />
   </action-view>
   
-  <action-view name="portal.opportunities.by.salestage" title="Opportunities By Sale Stage">
-    <view type="chart" name="chart.dashboard.opportunities.sales.stage.amount.bar" />
+  <action-view name="portal.leads.by.team.by.status" title="Leads by Team by Status">
+    	<view type="chart" name="chart.leads.by.team.by.status.bar" />
+  </action-view>
+  
+  <action-view name="portal.leads.by.salesman.by.status" title="Leads by Salesman by Status">
+    	<view type="chart" name="chart.leads.by.salesman.by.status.bar" />
+  </action-view>
+  
+  <portal title="Event Dashboard" name="crm.event.graph.portal" cols="2">
+		<portlet action="portal.calls.types.by.user" height="350"/>
+	    <portlet action="portal.calls.types.by.team" height="350"/>
+	    <portlet action="portal.calls.by.team.by.user" height="350"/>
+	    <portlet action="portal.open.tickets.by.priority" height="350"/>
+	    <portlet action="portal.open.tickets.by.status" height="350"/>
+		<portlet action="portal.agents.by.open.cases" height="350"/>
+		<portlet action="portal.customer.by.open.cases" height="350"/>
+	    
+	</portal>
+	 
+  	<action-view name="portal.calls.types.by.user" title="Calls type by user">
+    	<view type="chart" name="chart.calls.types.by.team,bar" />
+  	</action-view>
+  
+  <action-view name="portal.calls.types.by.team" title="Calls type by team">
+    	<view type="chart" name="chart.calls.types.by.team.bar" />
+  </action-view>
+  
+  <action-view name="portal.calls.by.team.by.user" title="Calls by team by user">
+    	<view type="chart" name="chart.calls.by.team.by.user.bar" />
+  </action-view>
+  
+  <action-view name="portal.open.tickets.by.priority" title="Open tickets by priority">
+    	<view type="chart" name="chart.open.tickets.by.priority.bar" />
+  </action-view>
+	
+	
+	 <action-view name="portal.open.tickets.by.status" title="Open tickets by status">
+    	<view type="chart" name="chart.open.tickets.by.status.bar" />
+  </action-view>
+  
+  <action-view name="portal.agents.by.open.cases" title="Calls by team by user">
+    	<view type="chart" name="chart.agents.by.open.cases.bar" />
+  </action-view>
+  
+  <action-view name="portal.customer.by.open.cases" title="Open tickets by priority">
+    	<view type="chart" name="chart.customer.by.open.cases.bar" />
   </action-view>
 	
 </object-views>

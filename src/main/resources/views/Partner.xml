@@ -78,6 +78,8 @@
 	                <field name="site" domain="self.partner.id = :id"/>
 	                <field name="department"/>
 	                <field name="source" hideIf="isContact"/>
+	                 <field name="reportsTo" hideIf="!isContact" />
+					<field name="jobTitle" hideIf="!isContact"/>
 	            </group>
 	            <group title="Postal addresses" hideIf="isContact" colSpan="4" cols="4">
 	                <field name="mainInvoicingAddress" onChange="action-partner-record-main-invoicing-address"/>
@@ -154,6 +156,9 @@
 	                    </field>
 	                </form>
 	            </field>
+	        </page>
+	        <page name="descriptionPage" title="Description">
+	        	<field name="description" widget="Html[lite=true]"/>
 	        </page>
 	    </notebook>
 	</form>

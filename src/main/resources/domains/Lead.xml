@@ -56,7 +56,7 @@
     
     <many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="Assigned to"/>
   	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team"/>
-  	
+  	<string name="fixedPhone" title="Fixed Phone"/>
   	
 	<!--   	Social Network -->
 	<one-to-one name="snProfile" ref="com.axelor.apps.socialnetwork.db.SnProfile"/>
