@@ -17,10 +17,8 @@
         <field name="name"/>
         <field name="firstName"/>
         <field name="mainInvoicingAddress"/>
-        <field name="fixedPhone1"/>
-		<field name="fixedPhonePro"/>
-		<field name="mobilePhonePerso"/>
-		<field name="mobilePhonePro"/>
+        <field name="fixedPhone"/>
+		<field name="mobilePhone"/>
         <field name="emailAddress"/>
     </grid>
     
@@ -28,6 +26,18 @@
 	    onLoad="action-partner-attrs-change-name,action-partner-attrs-hide-tabs,action-partner-attrs-set-readonly" 
 	    onNew="action-partner-record-partner-type-select,action-partner-record-set-default,action-partner-attrs-set-readonly" 
 	    onSave="action-set-partner-seq,action-create-accounting-situation">
+	    <toolbar>
+    		<button name="sendByEmail" title="Send email" onClick="save,action-send-by-email-with-template" colSpan="1"/>
+    	</toolbar>
+    	
+   	 	<menubar>
+	        <menu title="Actions" icon="img/icons/create.png" showTitle="true">
+	            <item title="Create call" action="save,action-partner-view-create-call"/>
+	            <item title="Schedule meeting" action="save,action-partner-view-create-meeting"/>
+	            <item title="Create task" action="save,action-partner-view-create-task"/>
+	            <item title="Create opportunity" action="save,action-partner-view-create-opportunity"/>
+	        </menu>
+	    </menubar>
 	    <group colSpan="1" cols="1">
 	        <group colSpan="1">
 	            <field name="picture" showTitle="false"/>
@@ -56,31 +66,29 @@
 	        <field name="customerTypeSelect" hideIf="(isContact &amp;&amp; partnerTypeSelect == 2) || !isCustomer"/>
 	        <field name="isSupplier" hideIf="partnerTypeSelect == 2" onChange="action-set-supplier-type-select"/>
 	        <field name="supplierTypeSelect" hideIf="partnerTypeSelect == 2 || isContact || !isSupplier"/>
+	        <field name="mainPartner" hideIf="!isContact"/>
 	    </group>
 	    <field name="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2" colSpan="4" domain="self.isContact = 'true'" grid-view="partner-contact-grid" form-view="partner-contact-form" />
 	    <break/>
 	    <notebook colSpan="4">
 	        <page name="information" title="Informations">
-	            <group title="Partner details" colSpan="3" cols="4" hideIf="partnerTypeSelect == 2">
+	            <group title="Partner details" colSpan="4" cols="4" hideIf="partnerTypeSelect == 2">
 	                <field name="site" domain="self.partner.id = :id"/>
 	                <field name="department"/>
 	                <field name="source" hideIf="isContact"/>
 	            </group>
-	            <group title="Postal addresses" colSpan="3" cols="4">
+	            <group title="Postal addresses" colSpan="4" cols="4">
 	                <field name="deliveryAddress" onChange="action-partner-record-main-invoicing-address"/>
 	                <field name="mainInvoicingAddress"/>
 	            </group>
-	            <group title="Contact" colSpan="3" cols="4">
+	            <group title="Contact" colSpan="4" cols="4">
 	                <field name="emailAddress" canSelect="false" canNew="false" form-view="email-address-simple-form"/>
 	                <field name="fax"/>
-	                <field name="fixedPhone1"/>
-	                <field name="fixedPhone2"/>
-	                <field name="fixedPhonePro"/>
-	                <field name="mobilePhonePerso"/>
-	                <field name="mobilePhonePro"/>
+	                <field name="fixedPhone"/>
+					<field name="mobilePhone"/>
 	                <field name="webSite"/>
 	            </group>
-	            <group title="Assigned to" canCollapse="true">
+	            <group title="Assigned to" canCollapse="true" colSpan="4" cols="4">
 			        <field name="userInfo"/>
 			        <field name="team"/>
 			    </group>
@@ -99,7 +107,7 @@
 	            <portlet colSpan="2" action="action-partner-view-partner-event"/>
 	            <portlet colSpan="2" action="action-partner-view-partner-opportunities"/>
 	        </page>
-	        <page name="payment" title="Invoicing/Payment" cols="4" hideIf="partnerTypeSelect == 2 || isContact">
+	        <page name="payment" title="Invoicing/Payment" colSpan="4" cols="4" hideIf="partnerTypeSelect == 2 || isContact">
 	            <field name="invoiceSendingFormatSelect"/>
 	            <field name="paymentMode"/>
 	            <field name="paymentCondition"/>
@@ -152,6 +160,18 @@
 	    onNew="action-partner-contact-record-default,action-partner-attrs-set-readonly" 
 	    onLoad="action-partner-attrs-change-name,action-partner-attrs-hide-tabs,action-partner-attrs-set-readonly" 
 	    onSave="action-set-partner-seq,action-create-accounting-situation">
+	    <toolbar>
+    		<button name="sendByEmail" title="Send email" onClick="save,action-send-by-email-with-template" colSpan="1"/>
+    	</toolbar>
+    	
+   	 	<menubar>
+	        <menu title="Actions" icon="img/icons/create.png" showTitle="true">
+	            <item title="Create call" action="save,action-partner-view-create-call"/>
+	            <item title="Schedule meeting" action="save,action-partner-view-create-meeting"/>
+	            <item title="Create task" action="save,action-partner-view-create-task"/>
+	            <item title="Create opportunity" action="save,action-partner-view-create-opportunity"/>
+	        </menu>
+	    </menubar>
 	   <group colSpan="1" cols="1">
 	        <group colSpan="1">
 	            <field name="picture" showTitle="false"/>
@@ -180,30 +200,32 @@
 	        <field name="customerTypeSelect" hideIf="(isContact &amp;&amp; partnerTypeSelect == 2) || !isCustomer"/>
 	        <field name="isSupplier" hideIf="partnerTypeSelect == 2" onChange="action-set-supplier-type-select"/>
 	        <field name="supplierTypeSelect" hideIf="partnerTypeSelect == 2 || isContact || !isSupplier"/>
+	        <field name="mainPartner" hideIf="!isContact"/>
 	    </group>
 	    <field name="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2" colSpan="4" domain="self.isContact = 'true'" grid-view="partner-contact-grid" form-view="partner-contact-form" />
 	    <break/>
 	    <notebook colSpan="4">
 	        <page name="information" title="Informations">
-	            <group title="Partner details" colSpan="3" cols="4" hideIf="partnerTypeSelect == 2">
+	            <group title="Partner details" colSpan="4" cols="4" hideIf="partnerTypeSelect == 2">
 	                <field name="site" domain="self.partner.id = :id"/>
 	                <field name="department"/>
 	                <field name="source" hideIf="isContact"/>
 	            </group>
-	            <group title="Postal addresses" hideIf="isContact" colSpan="3" cols="4">
+	            <group title="Postal addresses" hideIf="isContact" colSpan="4" cols="4">
 	                <field name="mainInvoicingAddress" onChange="action-partner-record-main-invoicing-address"/>
 	                <field name="deliveryAddress"/>
 	            </group>
-	            <group title="Contact" colSpan="3" cols="4">
+	            <group title="Contact" colSpan="4" cols="4">
 	                <field name="emailAddress" canSelect="false" canNew="false" form-view="email-address-simple-form"/>
 	                <field name="fax"/>
-	                <field name="fixedPhone1"/>
-	                <field name="fixedPhone2"/>
-	                <field name="fixedPhonePro"/>
-	                <field name="mobilePhonePerso"/>
-	                <field name="mobilePhonePro"/>
+	                <field name="fixedPhone"/>
+					<field name="mobilePhone"/>
 	                <field name="webSite"/>
 	            </group>
+	            <group title="Assigned to" canCollapse="true" colSpan="4" cols="4">
+			        <field name="userInfo"/>
+			        <field name="team"/>
+			    </group>
 	        </page>
 	        <page title="Links">
 	            <group colSpan="4" cols="6">
