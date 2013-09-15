@@ -324,4 +324,10 @@
 	<action-view name="portal.event.graph.dashboard.view" title="Event Graph Report" icon="img/icons/calendar.png">
 		<view type="portal" name="crm.event.graph.portal" />
 	</action-view>
+	
+	<menuitem name="portal.base.crm.partner.graph" parent="menu-crm-dashboards" title="Partner List Report" action="portal.base.partner.list.dashboard.view" />
+
+	<action-view name="portal.base.partner.list.dashboard.view" title="Partner List Report">
+		<view type="portal" name="base.partner.list.portal" />
+	</action-view>
 </object-views>

@@ -28,6 +28,30 @@
 	    <category key="_sales_stage" type="text"/>
     	<series key="amount" type="bar"/>
 	 </chart>
+	 
+	  <chart name="chart.dashboard.opportunities.by.stage.type.bar" title="Pipeline by Stage and Type">
+	    <dataset type="sql">
+	    <![CDATA[
+		SELECT
+          SUM(self.amount) AS amount,
+	      selection_item.title as _sales_stage
+	    FROM
+	        crm_opportunity self
+	    LEFT JOIN
+	        meta_select as selection ON selection.name = 'crm.opportunity.sales.stage.select'
+	    LEFT JOIN 
+	    	meta_select_item as selection_item ON selection_item.select_id = selection.id
+		WHERE
+			cast(selection_item.value as decimal) = self.sales_stage_select	and self.sales_stage_select not in (9, 10)		
+	    GROUP BY
+		   _sales_stage
+		ORDER BY
+		   _sales_stage
+	    ]]>
+	    </dataset>
+	    <category key="_sales_stage" type="text"/>
+    	<series key="amount" type="bar"/>
+	 </chart>
 	
 	 <chart name="chart.dashboard.opportunities.source.amount.bar" title="Opportunities By Source">
 	    <dataset type="sql">
@@ -130,7 +154,7 @@
 	    <series key="amount" groupBy="stage" type="bar"/>
 	</chart>
 	
-	<chart name="chart.leads.by.source" title="Leads by Source">
+	<chart name="chart.leads.by.source.bar" title="Leads by Source">
 		<dataset type="jpql">
 		    <![CDATA[
 		    SELECT
@@ -148,7 +172,7 @@
 	    <series key="leads"  type="bar"/>
 	</chart>
 	
-	<chart name="chart.customers.by.country" title="Customers by country">
+	<chart name="chart.customers.by.country.bar" title="Customers by country">
 		<dataset type="jpql">
 		    <![CDATA[
 		    SELECT
@@ -387,7 +411,36 @@
 	    </dataset>
 	    <category key="_status" type="text"/>
 	    <series key="_total_calls" type="bar"/>
-	</chart>  		
+	</chart>  	
+	
+	<chart name="chart.customer.by.open.cases.bar" title="Top clients by Open Cases">
+		<dataset type="sql">
+		    <![CDATA[
+		    SELECT
+			    COUNT(self.id)    		AS 	_total_calls,
+			    partner.full_name 		AS 	_partner,
+			    selection_item.title 	AS 	_status
+			FROM
+			  	crm_event as self
+			LEFT JOIN
+	        	base_partner as partner ON self.partner = partner.id
+			LEFT JOIN
+	        	meta_select as selection 			ON selection.name = 'crm.event.status.select'
+	    	LEFT JOIN 
+	    		meta_select_item as selection_item 	ON selection_item.select_id = selection.id
+			WHERE
+				cast(selection_item.value as decimal) = self.status_select and self.ticket_status_select != 5		
+	    	GROUP BY
+			  	_status,
+			  	_partner
+			ORDER BY
+			   	_status,	
+			   	_partner
+			  ]]>
+	    </dataset>
+	    <category key="_partner" type="text"/>
+	    <series key="_total_calls" groupBy="_status"  type="bar"/>
+	</chart>  			
 	<!-- 
 	 <chart name="chart.due.open.ticket.gauge.bar" title="Due Open Tickets">
 		<dataset type="sql">
