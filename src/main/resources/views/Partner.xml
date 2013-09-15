@@ -24,6 +24,16 @@
         <field name="emailAddress"/>
     </grid>
     
+     <grid  groupBy="userInfo" name="partner-grid-group" title="Partner" model="com.axelor.apps.base.db.Partner">
+        <field name="name"/>
+        <field name="firstName"/>
+        <field name="mainInvoicingAddress"/>
+        <field name="fixedPhone"/>
+		<field name="mobilePhone"/>
+        <field name="emailAddress"/>
+        <field name="userInfo"/>
+    </grid>
+    
     <form cols="6" colWidths="25*"   name="partner-form" title="Partner" model="com.axelor.apps.base.db.Partner"
 	    onNew="action-partner-record-partner-type-select,action-partner-record-set-default,action-partner-attrs-set-readonly" 
 	    onLoad="action-partner-attrs-change-name,action-partner-attrs-hide-tabs,action-partner-attrs-set-readonly" 
@@ -78,7 +88,7 @@
 	                <field name="site" domain="self.partner.id = :id"/>
 	                <field name="department"/>
 	                <field name="source" hideIf="isContact"/>
-	                 <field name="reportsTo" hideIf="!isContact" />
+	                <field name="reportsTo" hideIf="!isContact" />
 					<field name="jobTitle" hideIf="!isContact"/>
 	            </group>
 	            <group title="Postal addresses" hideIf="isContact" colSpan="4" cols="4">

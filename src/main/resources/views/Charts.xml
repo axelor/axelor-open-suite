@@ -60,7 +60,7 @@
 		    self.status_select
 		ORDER BY
 		    concat(date_part('year',self.creation_date),'/',date_part('month',self.creation_date))
-	    ]]>
+	    ]]> 
 	    </dataset>
 	    <category key="month_year" type="text"/>
     	<series key="amount" type="bar"/>
