@@ -100,6 +100,12 @@
 	        <field name="userInfo"/>
 	        <field name="team"/>
 	    </group>
+	    <group title="Reportings" colSpan="4" canCollapse="true">
+     		<portlet colSpan="4" action="action-lead-view-upcoming-events"/>
+     		<portlet colSpan="4" action="action-lead-view-historical-events-completed"/>
+     		<portlet colSpan="4" action="action-lead-view-opportunity"/>
+     		<portlet colSpan="4" action="action-lead-view-event-ticket"/>
+	    </group>
 	</form>
     
     <action-record name="action-lead-record-new" model="com.axelor.apps.crm.db.Lead">
@@ -113,11 +119,29 @@
     	<field name="team"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
     </action-record>
     
-    <action-view name="action-lead-view-convert-lead" title="Convert lead" model="com.axelor.apps.base.db.Wizard">
+    <action-record name="action-lead-record-other-address" model="com.axelor.apps.crm.db.Lead">
+    	<field name="otherAddress" expr="eval: primaryAddress" if="!isCopyAddress"/>
+    	<field name="otherCity" expr="eval: primaryCity" if="!isCopyAddress"/>
+    	<field name="otherState" expr="eval: primaryState" if="!isCopyAddress"/>
+    	<field name="otherPostalCode" expr="eval: primaryPostalCode" if="!isCopyAddress"/>
+    	<field name="otherCountry" expr="eval: primaryCountry" if="!isCopyAddress"/>
+    </action-record>
+    
+   	<action-attrs name="action-lead-attrs-readonly-other-address">
+   		<attribute name="readonly" for="otherAddress" expr="!$readonly()"/>
+   		<attribute name="readonly" for="otherCity" expr="eval: !$readonly()"/>
+   		<attribute name="readonly" for="otherState" expr="eval: !$readonly()"/>
+   		<attribute name="readonly" for="otherPostalCode" expr="eval: !$readonly()"/>
+   		<attribute name="readonly" for="otherCountry" expr="eval: !$readonly()"/>
+   	</action-attrs>
+   	
+   	<action-view name="action-lead-view-convert-lead" title="Convert lead" model="com.axelor.apps.base.db.Wizard">
 		<view type="form" name="convert-lead-wizard-form"/>
 		<context name="_lead" expr="eval: __self__"/>
 		<context name="_primaryAddress" expr="eval: primaryAddress"/>
 	</action-view>
+    
+    <!--     CREATE CRM OBJECT FROM LEAD -->
     
     <action-view name="action-lead-view-create-call" title="Create call" model="com.axelor.apps.crm.db.Event">
     	<view type="form" name="call-form"/>
@@ -141,23 +165,39 @@
     	<view type="form" name="opportunity-form"/>
     	<context name="_lead" expr="eval: __self__"/>
     </action-view>
-    
-    <action-record name="action-lead-record-other-address" model="com.axelor.apps.crm.db.Lead">
-    	<field name="otherAddress" expr="eval: primaryAddress" if="!isCopyAddress"/>
-    	<field name="otherCity" expr="eval: primaryCity" if="!isCopyAddress"/>
-    	<field name="otherState" expr="eval: primaryState" if="!isCopyAddress"/>
-    	<field name="otherPostalCode" expr="eval: primaryPostalCode" if="!isCopyAddress"/>
-    	<field name="otherCountry" expr="eval: primaryCountry" if="!isCopyAddress"/>
-    </action-record>
-    
-   	<action-attrs name="action-lead-attrs-readonly-other-address">
-   		<attribute name="readonly" for="otherAddress" expr="!$readonly()"/>
-   		<attribute name="readonly" for="otherCity" expr="eval: !$readonly()"/>
-   		<attribute name="readonly" for="otherState" expr="eval: !$readonly()"/>
-   		<attribute name="readonly" for="otherPostalCode" expr="eval: !$readonly()"/>
-   		<attribute name="readonly" for="otherCountry" expr="eval: !$readonly()"/>
-   	</action-attrs>
    	
+<!--    	PORTLET -->
+   	
+	<action-view name="action-lead-view-upcoming-events" title="Upcoming events" model="com.axelor.apps.crm.db.Event">
+		<view type="grid" name="event-grid"/>
+		<view type="form" name="event-form"/>
+		<domain>self.lead.id = :id and self.startDateTime > :_todayTime and self.typeSelect != 5</domain>
+		<context name="id" expr="eval: id"/>
+		<context name="_todayTime" expr="eval: __datetime__"/>
+	</action-view>
+	
+	<action-view name="action-lead-view-historical-events-completed" title="Historical events completed" model="com.axelor.apps.crm.db.Event">
+		<view type="grid" name="event-grid"/>
+		<view type="form" name="event-form"/>
+		<domain>self.lead.id = :id and self.endDateTime &lt; :_todayTime and self.typeSelect != 5</domain>
+		<context name="id" expr="eval: id"/>
+		<context name="_todayTime" expr="eval: __datetime__"/>
+	</action-view>
+   	
+   	<action-view name="action-lead-view-opportunity" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity">
+		<view type="grid" name="opportunity-grid"/>
+		<view type="form" name="opportunity-form"/>
+		<domain>self.lead.id = :id</domain>
+		<context name="id" expr="eval: id"/>
+	</action-view>
+	
+	<action-view name="action-lead-view-event-ticket" title="Tickets" model="com.axelor.apps.crm.db.Event">
+		<view type="grid" name="ticket-grid"/>
+		<view type="form" name="ticket-form"/>
+		<domain>self.lead.id = :id AND self.typeSelect = 5</domain>
+		<context name="id" expr="eval: id"/>
+	</action-view>
+	
    	<search-filters name="lead-filters" model="com.axelor.apps.crm.db.Lead" title="Lead filters">
 		<filter title="My Leads">
 			<domain>self.userInfo.internalUser.id = :_internalUser</domain>
