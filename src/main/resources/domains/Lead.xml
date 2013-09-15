@@ -16,6 +16,7 @@
     <string name="officeName" title="Office name"/>
   	<string name="jobTitle" title="Job Title"/>
     <string name="mobilePhone" title="Mobile N°"/>
+    <string name="fixedPhone" title="Fixed Phone"/>
   	<string name="department" title="Department/Division"/>
   	<string name="fax" title="Fax"/>
   	<string name="webSite" title="Website"/>
@@ -56,7 +57,6 @@
     
     <many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="Assigned to"/>
   	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team"/>
-  	<string name="fixedPhone" title="Fixed Phone"/>
   	
 	<!--   	Social Network -->
 	<one-to-one name="snProfile" ref="com.axelor.apps.socialnetwork.db.SnProfile"/>
