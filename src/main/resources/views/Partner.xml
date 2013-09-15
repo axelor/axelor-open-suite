@@ -95,17 +95,10 @@
 	        </page>
 	        <page title="Links">
 	            <group colSpan="4" cols="6">
-	                <button name="showSalesOrder1" title="Show sales order" hideIf="isContact" colSpan="2" onClick="save,action-partner-view-partner-sales-order"/>
-	                <button name="showInvoice1" title="Show invoices" hideIf="isContact" colSpan="2" onClick="save,action-partner-view-partner-invoice"/>
-	                <button name="showProject1" title="Show projects" hideIf="isContact" colSpan="2" onClick="save,action-partner-view-partner-project"/>
+	                <button name="showSalesOrder" title="Show sales order" colSpan="2" onClick="save,action-partner-view-partner-sales-order"/>
+	                <button name="showInvoice" title="Show invoices" colSpan="2" onClick="save,action-partner-view-partner-invoice"/>
+	                <button name="showProject" title="Show projects" colSpan="2" onClick="save,action-partner-view-partner-project"/>
 	            </group>
-	            <group colSpan="4" cols="6">
-	                <button name="showSalesOrder2" title="Show sales order" showIf="isContact" colSpan="2" onClick="save,action-partner-view-contact-sales-order"/>
-	                <button name="showInvoice2" title="Show invoices" showIf="isContact" colSpan="2" onClick="save,action-partner-view-contact-invoice"/>
-	                <button name="showProject2" title="Show projects" showIf="isContact" colSpan="2" onClick="save,action-partner-view-contact-project"/>
-	            </group>
-	            <portlet colSpan="2" action="action-partner-view-partner-event"/>
-	            <portlet colSpan="2" action="action-partner-view-partner-opportunities"/>
 	        </page>
 	        <page name="payment" title="Invoicing/Payment" colSpan="4" cols="4" hideIf="partnerTypeSelect == 2 || isContact">
 	            <field name="invoiceSendingFormatSelect"/>
@@ -154,6 +147,13 @@
                 </group>
 			</page>
 	    </notebook>
+	    <group title="Reportings" colSpan="6" canCollapse="true">
+     		<portlet colSpan="6" action="action-partner-view-upcoming-events"/>
+     		<portlet colSpan="6" action="action-partner-view-historical-events-completed"/>
+     		<portlet colSpan="6" action="action-partner-view-opportunity"/>
+     		<portlet colSpan="6" action="action-partner-view-sales-order"/>
+     		<portlet colSpan="6" action="action-partner-view-tickets"/>
+	    </group>
 	</form>
 	
 	<form cols="6" colWidths="25*" name="partner-contact-form" title="Partner" model="com.axelor.apps.base.db.Partner"
@@ -229,17 +229,10 @@
 	        </page>
 	        <page title="Links">
 	            <group colSpan="4" cols="6">
-	                <button name="showSalesOrder1" title="Voir les devis" hideIf="isContact" colSpan="2" onClick="save,action-partner-view-partner-sales-order"/>
-	                <button name="showInvoice1" title="Voir les factures" hideIf="isContact" colSpan="2" onClick="save,action-partner-view-partner-invoice"/>
-	                <button name="showProject1" title="Voir les projets" hideIf="isContact" colSpan="2" onClick="save,action-partner-view-partner-project"/>
+	                <button name="showSalesOrder" title="Show sales order" colSpan="2" onClick="save,action-partner-view-partner-sales-order"/>
+	                <button name="showInvoice" title="Show invoices" colSpan="2" onClick="save,action-partner-view-partner-invoice"/>
+	                <button name="showProject" title="Show projects" colSpan="2" onClick="save,action-partner-view-partner-project"/>
 	            </group>
-	            <group colSpan="4" cols="6">
-	                <button name="showSalesOrder2" title="Voir les devis" showIf="isContact" colSpan="2" onClick="save,action-partner-view-contact-sales-order"/>
-	                <button name="showInvoice2" title="Voir les factures" showIf="isContact" colSpan="2" onClick="save,action-partner-view-contact-invoice"/>
-	                <button name="showProject2" title="Voir les projets" showIf="isContact" colSpan="2" onClick="save,action-partner-view-contact-project"/>
-	            </group>
-	            <portlet colSpan="2" action="action-partner-view-partner-event"/>
-	            <portlet colSpan="2" action="action-partner-view-partner-opportunities"/>
 	        </page>
 	<!--         <page name="payment" title="Invoicing/Payment" cols="4"> -->
 	<!--             <field name="invoiceSendingFormatSelect"/> -->
@@ -288,6 +281,13 @@
 	            </field>
 	        </page>
 	    </notebook>
+	    <group title="Reportings" colSpan="6" canCollapse="true">
+     		<portlet colSpan="6" action="action-partner-view-upcoming-events"/>
+     		<portlet colSpan="6" action="action-partner-view-historical-events-completed"/>
+     		<portlet colSpan="6" action="action-partner-view-opportunity"/>
+     		<portlet colSpan="6" action="action-partner-view-sales-order"/>
+     		<portlet colSpan="6" action="action-partner-view-tickets"/>
+	    </group>
 	</form>
 	
 	<action-method name="action-create-accounting-situation" >
