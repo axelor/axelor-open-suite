@@ -90,6 +90,11 @@
 	                <field name="source" hideIf="isContact"/>
 	                <field name="reportsTo" hideIf="!isContact" />
 					<field name="jobTitle" hideIf="!isContact"/>
+					<field name="industrySectorSelect"/>
+					<field name="nbrEmployees"/>
+					<field name="salesTurnover"/>
+					<field name="registrationCode"/>
+					<field name="vatNbr"/>
 	            </group>
 	            <group title="Postal addresses" hideIf="isContact" colSpan="4" cols="4">
 	                <field name="mainInvoicingAddress" onChange="action-partner-record-main-invoicing-address"/>
@@ -161,8 +166,8 @@
 	            </field>
 	        </page>
         	<page title="Description" hideIf="partnerTypeSelect == 2">
-			<field name="description" showTitle="false" colSpan="4" widget="Html[lite=true]"/>
-		</page>
+				<field name="description" showTitle="false" colSpan="4" widget="Html[lite=true]"/>
+			</page>
 	    </notebook>
 	    <group title="Reportings" colSpan="6" canCollapse="true">
      		<portlet colSpan="6" action="action-partner-view-upcoming-events"/>

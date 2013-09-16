@@ -82,7 +82,11 @@
 	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team"/>
 	<many-to-one name="reportsTo" ref="com.axelor.apps.base.db.Partner" title="Reports to"/>
     <string name="description" title="description"  large="true"/>
-   
+   	<integer name="industrySectorSelect" title="Industry" selection="partner.industry.sectory.select"/> 
+	<integer name="nbrEmployees" title="N° of Employees"/>
+	<integer name="salesTurnover" title="Turnover"/>
+	<integer name="registrationCode" title="Registration code"/>
+	<string name="vatNbr" title="VAT N°"/>
   </entity>
   
 </domain-models>
