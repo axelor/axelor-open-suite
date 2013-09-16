@@ -423,7 +423,7 @@
 			FROM
 			  	crm_event as self
 			LEFT JOIN
-	        	base_partner as partner ON self.partner = partner.id
+	        	base_partner as partner ON self.task_partner = partner.id
 			LEFT JOIN
 	        	meta_select as selection 			ON selection.name = 'crm.event.status.select'
 	    	LEFT JOIN 
