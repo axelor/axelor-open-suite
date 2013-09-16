@@ -146,6 +146,9 @@
                     </group>
                 </group>
 			</page>
+			<page title="Description" hideIf="partnerTypeSelect == 2">
+				<field name="description" showTitle="false" colSpan="4" widget="html"/>
+			</page>
 	    </notebook>
 	    <group title="Reportings" colSpan="6" canCollapse="true">
      		<portlet colSpan="6" action="action-partner-view-upcoming-events"/>
