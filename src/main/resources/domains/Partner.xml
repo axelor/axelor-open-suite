@@ -5,7 +5,7 @@
   
   <entity name="Partner" lang="java">
   
-  	<integer name="importId"/>
+  	<string name="importId"/>
   
   	<!-- En-tête  -->
     <many-to-one name="partnerCategory" ref="com.axelor.apps.base.db.PartnerCategory" title="Category"/>
@@ -16,6 +16,7 @@
     <string name="titleSelect" title="Civility" selection="partner.title.type.select"/>
     <string name="name" title="Name/Company Name"/>
     <string name="firstName" title="First Name"/>
+    <string name="jobTitle" title="Job Title"/>
     <string name="fullName" title="Nom du Contact" namecolumn="true">
     <![CDATA[
     if (partnerTypeSelect == 0 && firstName == null) return name;
@@ -78,10 +79,11 @@
    	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
    
     <many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="Assigned to"/>
-  	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team"/>
-   	<many-to-one name="reportsTo" ref="com.axelor.apps.base.db.Partner" title="Reports to"/>
+	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team"/>
+	<many-to-one name="reportsTo" ref="com.axelor.apps.base.db.Partner" title="Reports to"/>
 	<string name="jobTitle" title="Fonction"/>
-  	<string name="description" title="Description"/>
+    <string name="description" title="description"  large="true"/>
+   
   </entity>
   
 </domain-models>
