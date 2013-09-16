@@ -34,6 +34,7 @@ import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.crm.db.EventReminder;
 import com.axelor.apps.crm.service.EventReminderService;
+import com.axelor.apps.crm.service.TargetService;
 import com.axelor.apps.message.service.MailAccountService;
 import com.axelor.apps.message.service.MessageService;
 
@@ -42,6 +43,8 @@ public abstract class BatchStrategy extends AbstractBatch {
 	protected EventReminderService eventReminderService;
 	protected MessageService messageService;
 	protected MailAccountService mailAccountService;
+	protected TargetService targetService;
+
 	
 	
 	protected BatchStrategy(EventReminderService eventReminderService) {
@@ -53,6 +56,11 @@ public abstract class BatchStrategy extends AbstractBatch {
 		super();
 		this.messageService = messageService;
 		this.mailAccountService = mailAccountService;
+	}
+	
+	protected BatchStrategy(TargetService targetService) {
+		super();
+		this.targetService = targetService;
 	}
 	
 	protected void updateEventReminder( EventReminder eventReminder ){

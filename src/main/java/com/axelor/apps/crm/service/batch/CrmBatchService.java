@@ -33,8 +33,8 @@ package com.axelor.apps.crm.service.batch;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.crm.service.batch.BatchStrategy;
 import com.axelor.apps.crm.db.CrmBatch;
 import com.axelor.apps.crm.db.ICrmBatch;
 import com.axelor.exception.AxelorException;
@@ -52,6 +52,9 @@ public class CrmBatchService {
 
 	@Inject
 	private Provider<BatchEventReminder> eventReminderProvider;
+	
+	@Inject
+	private Provider<BatchTarget> targetProvider;
 	
 
 // Appel 	
@@ -76,6 +79,10 @@ public class CrmBatchService {
 				batch = eventReminder(crmBatch);
 				break;
 				
+			case ICrmBatch.BATCH_TARGET:
+				batch = target(crmBatch);
+				break;
+				
 			default:
 				throw new AxelorException(String.format("Action %s inconnu pour le traitement %s", crmBatch.getActionSelect(), batchCode), IException.INCONSISTENCY);
 			}
@@ -91,6 +98,13 @@ public class CrmBatchService {
 	public Batch eventReminder(CrmBatch crmBatch) {
 		
 		BatchStrategy strategy = eventReminderProvider.get(); 
+		return strategy.run(crmBatch);
+		
+	}
+	
+	public Batch target(CrmBatch crmBatch) {
+		
+		BatchStrategy strategy = targetProvider.get(); 
 		return strategy.run(crmBatch);
 		
 	}

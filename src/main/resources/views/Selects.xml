@@ -188,6 +188,14 @@
 	
 	<selection name="icrm.batch.action.select">
 		<option value="21">Event reminder</option>
+		<option value='22'>Target</option>
+	</selection>
+	
+	<selection name="crm.target.configuration.period.type.select">
+		<option value="0">None</option>
+		<option value="1">Monthly</option>
+		<option value="2">Weekly</option>
+		<option value="3">Daily</option>
 	</selection>
 	
 </object-views>

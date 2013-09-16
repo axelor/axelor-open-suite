@@ -63,6 +63,22 @@ public class CrmBatchController {
 		response.setReload(true);
 	}
 	
+	/**
+	 * Lancer le batch des objectifs
+	 *
+	 * @param request
+	 * @param response
+	 */
+	public void actionTarget(ActionRequest request, ActionResponse response){
+		
+		CrmBatch crmBatch = request.getContext().asType(CrmBatch.class);
+		
+		Batch batch = crmBatchService.target(CrmBatch.find(crmBatch.getId()));
+		
+		if(batch != null)
+			response.setFlash(batch.getComment());
+		response.setReload(true);
+	}
 	
 	
 	// WS

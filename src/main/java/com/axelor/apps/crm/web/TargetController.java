@@ -28,23 +28,34 @@
  * All portions of the code written by Axelor are
  * Copyright (c) 2012-2013 Axelor. All Rights Reserved.
  */
-package com.axelor.apps.crm.db;
+package com.axelor.apps.crm.web;
 
-/**
- * Interface of Event object. Enum all static variable of object.
- * 
- * @author dubaux
- * 
- */
-public interface ICrmBatch {
+import com.axelor.apps.crm.db.Target;
+import com.axelor.apps.crm.service.TargetService;
+import com.axelor.exception.service.TraceBackService;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
+import com.google.inject.Inject;
 
+public class TargetController {
 
-	/**
-	 * Static select in CrmBatch
-	 */
-
-	// ACTION TYPE
-	static final int BATCH_EVENT_REMINDER = 21;
-	static final int BATCH_TARGET = 22;
+	@Inject
+	private TargetService targetService;
 	
+	public void update(ActionRequest request, ActionResponse response){
+		
+		Target target = request.getContext().asType(Target.class);
+		
+		try {
+			targetService.update(target);
+			response.setValue("opportunityAmountEarned", target.getOpportunityAmountEarned());
+			response.setValue("opportunityCreatedNumber", target.getOpportunityCreatedNumber());
+			response.setValue("opportunityCreatedWon", target.getOpportunityCreatedWon());
+			response.setValue("callEmittedNumber", target.getCallEmittedNumber());
+			response.setValue("meetingNumber", target.getMeetingNumber());
+			
+			
+		}
+		catch (Exception e) { TraceBackService.trace(response, e); }
+	}
 }

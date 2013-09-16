@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="target-grid" title="Targets" model="com.axelor.apps.crm.db.Target">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="periodTypeSelect"/>
+        <field name="fromDate"/>
+        <field name="toDate"/>
+    </grid>
+    
+    <form name="target-form" title="Target" model="com.axelor.apps.crm.db.Target" cols="4" onLoad="action-target-method-update,save" onSave="action-target-validate">
+    	<group title="Information" colSpan="4">
+    		<field name="name"/>
+        	<field name="code"/>
+        	<field name="userInfo" showIf="team == null"/>
+        	<field name="team" showIf="userInfo == null"/>
+    	</group>
+    	<group title="Period" colSpan="4">
+    		<field name="periodTypeSelect"/>
+	        <field name="fromDate"/>
+	        <field name="toDate"/>
+    	</group>
+        <group title="Opportunity" colSpan="4">
+	        <group colSpan="2" cols="2">
+	        	<separator title="Target" colSpan="2"/>
+		        <field name="opportunityAmountEarnedTarget"/>
+	        	<field name="opportunityCreatedNumberTarget"/>
+	        	<field name="opportunityCreatedWonTarget"/>
+	        </group>
+	        <group colSpan="2" cols="2">
+	        	<separator title="Real" colSpan="2"/>
+	        	<field name="opportunityAmountEarned"/>
+	        	<field name="opportunityCreatedNumber"/>
+	        	<field name="opportunityCreatedWon"/>
+        	</group>
+        </group>
+<!--         <group title="Sales order" colSpan="4"> -->
+<!--         	<group colSpan="2" cols="2"> -->
+<!-- 	        	<separator title="Target" colSpan="2"/> -->
+<!-- 		        <field name="salesOrderAmountEarnedTarget"/> -->
+<!-- 		       	<field name="salesOrderCreatedNumberTarget"/> -->
+<!-- 		       	<field name="salesOrderCreatedWonTarget"/> -->
+<!-- 	        </group> -->
+<!-- 	        <group colSpan="2" cols="2"> -->
+<!-- 	        	<separator title="Real" colSpan="2"/> -->
+<!-- 	        	<field name="salesOrderAmountEarned"/> -->
+<!-- 	        	<field name="salesOrderCreatedNumber"/> -->
+<!-- 	        	<field name="salesOrderCreatedWon"/> -->
+<!--         	</group> -->
+<!--         </group> -->
+        <group title="Events" colSpan="4">
+        	<group colSpan="2" cols="2">
+	        	<separator title="Target" colSpan="2"/>
+		        <field name="callEmittedNumberTarget"/>
+		        <field name="meetingNumberTarget"/>
+	        </group>
+	        <group colSpan="2" cols="2">
+	        	<separator title="Real" colSpan="2"/>
+		        <field name="callEmittedNumber"/>
+		        <field name="meetingNumber"/>
+        	</group>
+       	</group>
+    </form>
+    
+    <action-method name="action-target-method-update">
+    	<call class="com.axelor.apps.crm.web.TargetController" method="update"/>
+    </action-method>
+    
+    <action-validate name="action-target-validate">
+    	<error message="From date must be less than the to date" if="fromDate > toDate"/>
+    </action-validate>
+    
+</object-views>

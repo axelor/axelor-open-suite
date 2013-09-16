@@ -254,6 +254,24 @@
 		<view type="grid" name="calendar-configuration-grid"/>
 		<view type="form" name="calendar-configuration-form"/>
 	</action-view>
+	
+	<menuitem name="crm-conf-target-configuration" parent="crm-conf"
+		title="Targets configurations" action="crm.conf.target.configuration" />
+
+	<action-view name="crm.conf.target.configuration" title="Targets Configurations"
+		model="com.axelor.apps.crm.db.TargetConfiguration" icon="img/icons/parameter_small.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
+	
+	<menuitem name="crm-conf-target" parent="crm-conf"
+		title="Targets" action="crm.conf.target" />
+
+	<action-view name="crm.conf.target" title="Target"
+		model="com.axelor.apps.crm.db.Target" icon="img/icons/parameter_small.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
 
 
 <!-- <action-view title="Calendrier" icon="img/icons/calendar-task.png" model="com.axelor.apps.crm.db.Event" name="crm.root.event.calendar.1">  -->
@@ -329,5 +347,25 @@
 
 	<action-view name="portal.base.partner.list.dashboard.view" title="Partner List Report">
 		<view type="portal" name="base.partner.list.portal" />
+	</action-view>
+	
+	<menuitem name="menu-target-user-dashboard" parent="menu-dashboards"
+		title="Target user Dashboard" action="portal.target.user.dashboard.view"/>	
+	
+	<action-view name="portal.target.user.dashboard.view" title="Target user Dashboard"
+		icon="img/icons/crm_small.png">
+		<view type="portal" name="target.user.dashboard.portal" />
+		<context name="date" expr="eval: __date__"/>
+		<context name="user" expr="eval: __user__.id"/>
+	</action-view>
+	
+	<menuitem name="menu-target-team-dashboard" parent="menu-dashboards"
+		title="Target team Dashboard" action="portal.target.team.dashboard.view"/>	
+
+	<action-view name="portal.target.team.dashboard.view" title="Target team Dashboard"
+		icon="img/icons/crm_small.png">
+		<view type="portal" name="target.team.dashboard.portal" />
+		<context name="team" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeamId()"/>
+		<context name="date" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
 	</action-view>
 </object-views>

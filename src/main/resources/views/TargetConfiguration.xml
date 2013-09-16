@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="target-configuration-grid" title="Target configurations" model="com.axelor.apps.crm.db.TargetConfiguration">
+        <field name="name"/>
+        <field name="code"/>
+    </grid>
+    
+    <form name="target-configuration-form" title="Target configuration" model="com.axelor.apps.crm.db.TargetConfiguration" cols="4">
+    	<group title="Information" colSpan="4">
+    		<field name="name"/>
+        	<field name="code"/>
+    	</group>
+    	<group title="Period" colSpan="4">
+    		<field name="periodTypeSelect"/>
+	        <field name="fromDate"/>
+	        <field name="toDate"/>
+    	</group>
+        <group title="Opportunity" colSpan="2">
+        	<field name="opportunityAmountEarned"/>
+        	<field name="opportunityCreatedNumber"/>
+        	<field name="opportunityCreatedWon"/>
+        </group>
+<!--         <group title="Sales order" colSpan="2"> -->
+<!--         	<field name="salesOrderAmountEarned"/> -->
+<!--         	<field name="salesOrderCreatedNumber"/> -->
+<!--         	<field name="salesOrderCreatedWon"/> -->
+<!--         </group> -->
+        <field name="callEmittedNumber"/>
+        <field name="meetingNumber"/>
+        
+    </form>
+    
+</object-views>
