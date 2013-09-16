@@ -31,9 +31,7 @@
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">96</property>
     <list-property name="cssStyleSheets">
-        <structure>
-            <property name="fileName">border.css</property>
-        </structure>
+        
     </list-property>
     <parameters>
         <scalar-parameter name="DBName" id="3673">
@@ -785,7 +783,6 @@ where Users.id = ?]]></xml-property>
                 <property name="height">2.9375in</property>
                 <cell id="4365">
                     <table id="262">
-                        <property name="style">roundedcorner</property>
                         <property name="marginLeft">0pt</property>
                         <property name="width">7.854166666666667in</property>
                         <property name="dataSet">PhoneBookDS</property>
@@ -2085,7 +2082,6 @@ where Users.id = ?]]></xml-property>
                             <header>
                                 <row id="3686">
                                     <property name="height">0.6145833333333334in</property>
-                                    <property name="style">roundedcorner</property>
                                     <cell id="3687">
                                         <property name="colSpan">2</property>
                                         <property name="rowSpan">1</property>
