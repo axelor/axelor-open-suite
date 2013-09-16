@@ -255,6 +255,11 @@
 		<option value='1'>Notification</option>
 		<option value='3'>Block while invoicing</option>
 	</selection>
+	
+	<selection name='ibase.batch.action.select'>
+		<option value='1'>Target</option>
+	</selection>
+	
 
 	<selection name="sales.order.invoice.type.select">
 		<option value="1">Per order</option>
@@ -314,5 +319,6 @@
 		<option value="ALL_FRIENDS">All friends</option>
 		<option value="SELF">Only Me</option>
 	</selection>
+	
 
 </object-views>

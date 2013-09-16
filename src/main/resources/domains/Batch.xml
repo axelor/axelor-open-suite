@@ -12,6 +12,8 @@
   	<many-to-one name="accountingBatch" ref="com.axelor.apps.account.db.AccountingBatch" />
   	<many-to-one name="alarmEngineBatch" ref="com.axelor.apps.base.db.AlarmEngineBatch" />
   	<many-to-one name="crmBatch" ref="com.axelor.apps.crm.db.CrmBatch" />
+  	<many-to-one name="baseBatch" ref="com.axelor.apps.base.db.BaseBatch" />
+  	
 
   	<!-- HEADER -->
     <datetime name="startDate" title="Start Date" readonly="true" tz="true" />

@@ -604,6 +604,16 @@
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
+	
+	<menuitem name="base-batch" parent="evo-admin-root"
+		title="Base batches" action="base.batch" />
+
+	<action-view name="base.batch" title="Base batches"
+		model="com.axelor.apps.base.db.BaseBatch" icon="img/icons/parameter_small.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
+	
 
 	<!-- Top Menu for Create new objects.... -->
 

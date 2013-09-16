@@ -121,6 +121,22 @@ public class UserInfoService {
 	}
 	
 	/**
+	 * Méthode qui retourne l'équipe active de l'utilisateur connecté
+	 * 
+	 * @return Team
+	 * 		L'équipe
+	 */
+	public Long getUserActiveTeamId() {
+		
+		UserInfo userInfo = getUserInfo();
+		if (userInfo != null && userInfo.getActiveTeam() != null){
+			return userInfo.getActiveTeam().getId();
+		}
+	
+		return null;
+	}
+	
+	/**
 	 * Méthode qui retourne le tiers de l'utilisateur connecté
 	 * 
 	 * @return Partner
