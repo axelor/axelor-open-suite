@@ -87,11 +87,11 @@
 	<portal title="Dashboard" name="crm.opportunity.graph.portal" cols="2">
 		<portlet action="portal.opportunities.by.source" height="350"/>
 	    <portlet action="portal.opportunities.by.salestage" height="350"/>
-	    <portlet action="portal.opportunities.by.type" height="350" colSpan="1"/>
-	    <portlet action="portal.opportunities.byStage.byType" height="350"/>
+	    <portlet action="portal.opportunities.by.type"  height="350" colSpan="1"/>
 	    <portlet action="portal.opportunities.won.by.leadsource" height="350"/>
 	    <portlet action="portal.opportunities.won.by.salesman" height="350"/>
 	    <portlet title="Opportunities By Origin By Stage" action="chart:chart.opportunities.by.origin.by.stage" height="350"/>
+	    <portlet title="Customers by country" action="chart:chart.customers.by.country" height="350"/>
 	 </portal>
   	
   	
@@ -169,7 +169,7 @@
 		</portal>
 	 
   	<action-view name="portal.calls.types.by.user" title="Calls type by user">
-    	<view type="chart" name="chart.calls.types.by.team,bar" />
+    	<view type="chart" name="chart.calls.types.by.user.bar" />
   	</action-view>
   
   	<action-view name="portal.calls.types.by.team" title="Calls type by team">
@@ -177,7 +177,7 @@
   	</action-view>
   
   	<action-view name="portal.calls.by.team.by.user" title="Calls by team by user">
-    	<view type="chart" name="chart.calls.by.team.by.user.bar" />
+    	<view type="chart" name="chart.calls.types.by.team.by.user.bar" />
   	</action-view>
   
   	<action-view name="portal.open.tickets.by.priority" title="Open tickets by priority">
@@ -197,4 +197,6 @@
     	<view type="chart" name="chart.customer.by.open.cases.bar" />
   	</action-view>
 	
+	
+  	
 </object-views>
