@@ -41,11 +41,12 @@ import com.axelor.apps.supplychain.db.Inventory;
 import com.axelor.apps.supplychain.db.InventoryLine;
 import com.axelor.apps.supplychain.db.Location;
 import com.axelor.apps.supplychain.db.LocationLine;
+import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
 public class LocationService {
 	
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Inventory createInventory(String ref, LocalDate date, String description, Location location, 
 			boolean excludeOutOfStock, boolean includeObsolete, ProductFamily productFamily,
 			ProductCategory productCategory) throws Exception {
