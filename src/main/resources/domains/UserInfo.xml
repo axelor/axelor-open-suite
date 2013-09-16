@@ -7,6 +7,7 @@
 
   <entity name="UserInfo" sequential="true" lang="java">
   
+  	<string name="importId" />
     <many-to-one name="internalUser" ref="com.axelor.auth.db.User" title="User"/>
     <many-to-many name="companySet" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <many-to-one name="activeCompany" ref="com.axelor.apps.base.db.Company" title="Active company"/>

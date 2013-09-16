@@ -66,6 +66,33 @@
 		<option value='authority'>Collectivité</option>
 	</selection>
 
+	<selection name="partner.industry.sectory.select">
+		<option value="1">Agriculture</option>
+		<option value="2">Banking &amp; Insurance</option>
+		<option value="3">Biotechnologies</option>
+		<option value="4">Chemistry</option>
+		<option value="5">Communication</option>
+		<option value="6">Real Estate</option>
+		<option value="7">Services</option>
+		<option value="8">Education</option>
+		<option value="9">Electronics</option>
+		<option value="10">Energy &amp; Utilities</option>
+		<option value="11">Entertainment</option>
+		<option value="12">Media</option>
+		<option value="13">Finance</option>
+		<option value="14">Food &amp; Beverage</option>
+		<option value="15">Government</option>
+		<option value="16">Healthcare</option>
+		<option value="17">Machinery</option>
+		<option value="18">Manufacturing</option>
+		<option value="19">Non-profit</option>
+		<option value="20">Retaile</option>
+		<option value="21">Transport &amp; Logistics</option>
+		<option value="22">Telecom</option>
+		<option value="22">Apparel</option>
+		<option value="23">Other</option>
+	</selection>
+	
 	<selection name='product.product.type.select'>
 		<option value='service'>Service</option>
 		<option value='storable'>Storable</option>

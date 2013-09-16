@@ -140,6 +140,39 @@ public class PartnerControllerSimple {
 		}
 	}
 	
+	/**
+	 * Fonction appeler par le bouton imprimer
+	 *
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	public void printCompanyPhonebook(ActionRequest request, ActionResponse response) {
+
+		AxelorSettings axelorSettings = AxelorSettings.get();
+
+		StringBuilder url = new StringBuilder();
+		User user = (User) request.getContext().get("__user__");
+
+		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/CompanyPhoneBook.rptdesign&__format=html&UserId="+user.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
+
+		LOG.debug("URL : {}", url);
+		String urlNotExist = URLService.notExist(url.toString());
+		if (urlNotExist == null){
+
+			LOG.debug("Impression des informations sur le partenaire Company PhoneBook");
+
+			Map<String,Object> mapView = new HashMap<String,Object>();
+			mapView.put("title", "Company PhoneBook");
+			mapView.put("resource", url);
+			mapView.put("viewType", "html");
+			response.setView(mapView);		   
+		}
+		else {
+			response.setFlash(urlNotExist);
+		}
+	}
+	
 	public void createAccountingSituations(ActionRequest request, ActionResponse response) {
 		
 		Partner partner = request.getContext().asType(Partner.class);

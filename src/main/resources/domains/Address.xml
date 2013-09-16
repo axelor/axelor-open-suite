@@ -7,7 +7,7 @@
 
   	<entity name="Address" lang="java">
 
-    <integer name="importId"/>
+    <string name="importId"/>
     <string name="addressL2" title="Recipient details"/>
     <string name="addressL3" title="Spatial information" />
     <string name="addressL4" title="N° and Street label"/>

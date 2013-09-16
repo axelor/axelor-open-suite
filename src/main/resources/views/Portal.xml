@@ -8,15 +8,14 @@
 	<portal title="Partner Dashboard" name="base.partner.list.portal" cols="2">
 	<!--<portlet action="portal.my.recent.customers" height="350" colSpan="1" canSearch="true"/>  -->
 	    <portlet action="portal.partner.by.salesman" height="350" colSpan="1" canSearch="true"/>
-	<!--<portlet action="portal.partner.recent.partners" height="350" colSpan="1" canSearch="true"/>	 -->
+		<portlet action="portal.partner.recent.partners" height="350" colSpan="1" canSearch="true"/>	
 	<!--<portlet action="portal.partner.by.industrySector" height="350" colSpan="1" canSearch="true"/>	-->
 	 	<portlet title="Customers by country" action="chart:chart.customers.by.country.bar" height="350"/>
   	</portal>
 	
 	<action-view name="portal.my.recent.customers" title="My Recent Customers" model="com.axelor.apps.base.db.Partner">
 		<view type="grid" name="partner-grid"/>
-		<domain>self.getUpdateOn() BETWEEN :one_month and CURRENT_TIMESTAMP"</domain>
-    	<context name="one_month" expr="eval: DateUtil.addMonth(new Date(), -1)"/>	
+    	<domain>self.updatedOn &gt; date(now())-30</domain>
     </action-view>
 	
 	<action-view name="portal.partner.by.salesman" title="Customers by salesman" model="com.axelor.apps.base.db.Partner">
@@ -25,8 +24,7 @@
 	
 	<action-view title="Recently created partners" model="com.axelor.apps.base.db.Partner" name="portal.partner.recent.partners">
     	<view type="grid" name="partner-grid"/>
-    	<domain>self.getCreateOn() BETWEEN :days_15 and CURRENT_TIMESTAMP"</domain>
-    	<context name="days_15" expr="eval: DateUtil.addDays(new Date(), -15)"/>
+    	<domain>self.createdOn &gt; date(now())-15</domain>
 	</action-view>
 	
 	<action-view name="portal.partner.by.industrySector" title="Partners by Industry Sector" model="com.axelor.apps.base.db.Partner">
@@ -81,17 +79,25 @@
 		<domain>self.salesStageSelect in (9, 10)</domain>
 	</action-view>
 	
+	<action-view name="portal.opportunities.recent.opps" title="Recently created opportunities" model="com.axelor.apps.crm.db.Opportunity">
+		<view type="grid" name="opportunity-grid"/>
+		<domain>self.createdOn &gt; date(now())-15</domain>
+	</action-view>
 	
+	<action-view name="portal.opportunities.lost.deals" title="Recent lost deals" model="com.axelor.apps.crm.db.Opportunity">
+		<view type="grid" name="opportunity-grid"/>
+		<domain>self.updatedOn &gt; date(now())-30 and self.salesStageSelect = 10</domain>
+	</action-view>
 		<!--  Opportunity Graph View Dashboard  -->
 	
 	<portal title="Dashboard" name="crm.opportunity.graph.portal" cols="2">
 		<portlet action="portal.opportunities.by.source" height="350"/>
 	    <portlet action="portal.opportunities.by.salestage" height="350"/>
-	    <portlet action="portal.opportunities.by.type" height="350" colSpan="1"/>
-	    <portlet action="portal.opportunities.byStage.byType" height="350"/>
+	    <portlet action="portal.opportunities.by.type"  height="350" colSpan="1"/>
 	    <portlet action="portal.opportunities.won.by.leadsource" height="350"/>
 	    <portlet action="portal.opportunities.won.by.salesman" height="350"/>
 	    <portlet title="Opportunities By Origin By Stage" action="chart:chart.opportunities.by.origin.by.stage" height="350"/>
+	    <portlet title="Customers by country" action="chart:chart.customers.by.country" height="350"/>
 	 </portal>
   	
   	
@@ -135,6 +141,8 @@
 	    <portlet action="portal.leads.by.country" height="350"/>
 	    <portlet action="portal.leads.by.team.by.status" height="350" colSpan="1"/>
 	    <portlet action="portal.leads.by.salesman.by.status" height="350"/>
+	    <portlet action="portal.leads.recent.leads" height="350" colSpan="1" canSearch="true"/>
+	    
 	</portal>
 	 
   	<action-view name="portal.leads.by.source" title="Leads by Source">
@@ -153,7 +161,11 @@
 	  	<view type="chart" name="chart.leads.by.salesman.by.status.bar" />
 	</action-view>
   
-  	
+  <!--  Lead Grid View Portal -->
+  	<action-view name="portal.leads.recent.leads" title="Recently created leads" model="com.axelor.apps.crm.db.Lead">
+		<view type="grid" name="lead-grid"/>
+		<domain>self.createdOn &gt; date(now())-15</domain>
+	</action-view>
   	<!--  Event  Graph view Dashboard  -->
   
   
@@ -169,7 +181,7 @@
 		</portal>
 	 
   	<action-view name="portal.calls.types.by.user" title="Calls type by user">
-    	<view type="chart" name="chart.calls.types.by.team,bar" />
+    	<view type="chart" name="chart.calls.types.by.user.bar" />
   	</action-view>
   
   	<action-view name="portal.calls.types.by.team" title="Calls type by team">
@@ -177,7 +189,7 @@
   	</action-view>
   
   	<action-view name="portal.calls.by.team.by.user" title="Calls by team by user">
-    	<view type="chart" name="chart.calls.by.team.by.user.bar" />
+    	<view type="chart" name="chart.calls.types.by.team.by.user.bar" />
   	</action-view>
   
   	<action-view name="portal.open.tickets.by.priority" title="Open tickets by priority">
@@ -197,4 +209,6 @@
     	<view type="chart" name="chart.customer.by.open.cases.bar" />
   	</action-view>
 	
+	
+  	
 </object-views>

@@ -6,6 +6,7 @@
     <grid name="partner-grid" title="Partners" model="com.axelor.apps.base.db.Partner" orderBy="name">
     	<toolbar>
     		<button name="printPhoneBook" title="Print PhoneBook" onClick="action-print-phonebook" icon="img/icons/print.png"/>
+    		<button name="printCompnayPhoneBook" title="Print compnay phoneBook" onClick="action-print-compnay-phonebook" icon="img/icons/print.png"/>
 		</toolbar>
         <field name="name"/>
         <field name="firstName"/>
@@ -90,6 +91,11 @@
 	                <field name="source" hideIf="isContact"/>
 	                <field name="reportsTo" hideIf="!isContact" />
 					<field name="jobTitle" hideIf="!isContact"/>
+					<field name="industrySectorSelect"/>
+					<field name="nbrEmployees"/>
+					<field name="salesTurnover"/>
+					<field name="registrationCode"/>
+					<field name="vatNbr"/>
 	            </group>
 	            <group title="Postal addresses" hideIf="isContact" colSpan="4" cols="4">
 	                <field name="mainInvoicingAddress" onChange="action-partner-record-main-invoicing-address"/>
@@ -160,9 +166,9 @@
 	                </form>
 	            </field>
 	        </page>
-	        <page name="descriptionPage" title="Description">
-	        	<field name="description" widget="Html[lite=true]"/>
-	        </page>
+        	<page title="Description" hideIf="partnerTypeSelect == 2">
+				<field name="description" showTitle="false" colSpan="4" widget="Html[lite=true]"/>
+			</page>
 	    </notebook>
 	    <group title="Reportings" colSpan="6" canCollapse="true">
      		<portlet colSpan="6" action="action-partner-view-upcoming-events"/>
@@ -511,13 +517,13 @@
 		<call class="com.axelor.apps.base.web.PartnerControllerSimple" method="setPartnerSequence"/>
 	</action-method>
     
-    <action-method name="action-print-phonebook" >
+    <action-method name="action-print-compnay-phonebook" >
+		<call class="com.axelor.apps.base.web.PartnerControllerSimple" method="printCompanyPhonebook"/>
+	</action-method>
+	
+	<action-method name="action-print-phonebook" >
 		<call class="com.axelor.apps.base.web.PartnerControllerSimple" method="printContactPhonebook"/>
 	</action-method>
-    
-    <action-validate name="action-partner-company-set-validate">
-   		<alert message="Some company settings are missing. On the company settings, in the account tab, please fill in the 2 fields Customer account and supplier account. This field will be used by default for the accounting situation for each company."/>
-	</action-validate>
 	
 	<search-filters name="partner-filters" model="com.axelor.apps.base.db.Partner" title="Partner filters">
 		<filter title="All Enterprises">
