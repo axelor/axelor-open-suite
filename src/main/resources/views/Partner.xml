@@ -76,6 +76,13 @@
 	                <field name="site" domain="self.partner.id = :id"/>
 	                <field name="department"/>
 	                <field name="source" hideIf="isContact"/>
+	                <field name="reportsTo" hideIf="!isContact" />
+					<field name="jobTitle" hideIf="!isContact"/>
+					<field name="industrySectorSelect"/>
+					<field name="nbrEmployees"/>
+					<field name="salesTurnover"/>
+					<field name="registrationCode"/>
+					<field name="vatNbr"/>
 	            </group>
 	            <group title="Postal addresses" colSpan="4" cols="4">
 	                <field name="deliveryAddress" onChange="action-partner-record-main-invoicing-address"/>
