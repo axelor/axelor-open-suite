@@ -119,10 +119,10 @@ public class PartnerControllerSimple {
 		AxelorSettings axelorSettings = AxelorSettings.get();
 
 		StringBuilder url = new StringBuilder();
-		User user = (User) request.getContext().get("__user__");
+		LinkedHashMap user = (LinkedHashMap) request.getContext().get("__user__");
 
-		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/PhoneBook.rptdesign&__format=html&UserId="+user.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
-
+		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/PhoneBook.rptdesign&__format=html&UserId="+user.get("id")+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
+		
 		LOG.debug("URL : {}", url);
 		String urlNotExist = URLService.notExist(url.toString());
 		if (urlNotExist == null){
@@ -152,9 +152,10 @@ public class PartnerControllerSimple {
 		AxelorSettings axelorSettings = AxelorSettings.get();
 
 		StringBuilder url = new StringBuilder();
-		User user = (User) request.getContext().get("__user__");
+LinkedHashMap user = (LinkedHashMap) request.getContext().get("__user__");
 
-		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/CompanyPhoneBook.rptdesign&__format=html&UserId="+user.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
+
+		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/CompanyPhoneBook.rptdesign&__format=html&UserId="+user.get("id")+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
 
 		LOG.debug("URL : {}", url);
 		String urlNotExist = URLService.notExist(url.toString());
