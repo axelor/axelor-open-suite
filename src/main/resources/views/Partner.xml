@@ -4,6 +4,11 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
     <grid name="partner-grid" title="Partners" model="com.axelor.apps.base.db.Partner" orderBy="name">
+    	<toolbar>
+    		<button name="printPhoneBook" title="Print PhoneBook" onClick="action-print-phonebook" icon="img/icons/print.png"/>
+    		<button name="printCompnayPhoneBook" title="Print compnay phoneBook" onClick="action-print-compnay-phonebook" icon="img/icons/print.png"/>
+    		
+		</toolbar>
         <field name="name"/>
         <field name="firstName"/>
         <field name="mainInvoicingAddress"/>
@@ -304,4 +309,11 @@
 		<call class="com.axelor.apps.base.web.PartnerControllerSimple" method="createAccountingSituations"/>
 	</action-method>
 	
+	<action-method name="action-print-compnay-phonebook" >
+		<call class="com.axelor.apps.base.web.PartnerControllerSimple" method="printCompanyPhonebook"/>
+	</action-method>
+	
+	<action-method name="action-print-phonebook" >
+		<call class="com.axelor.apps.base.web.PartnerControllerSimple" method="printContactPhonebook"/>
+	</action-method>
 </object-views>
