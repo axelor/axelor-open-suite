@@ -5,7 +5,7 @@
 
 <!-- 	  Target user charts -->
 	  
-	   <chart name="chart.user.call.target.gauge" title="Call emitted target">
+	   <chart name="chart.user.call.target.gauge" title="Calls emitted target completed (%)">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -20,7 +20,7 @@
 	    	<config name="max" value="100"/>
 		</chart>
 		
-		<chart name="chart.user.call.target.bar" title="Call emitted target historical">
+		<chart name="chart.user.call.target.bar" title="Call emitted historical">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -44,7 +44,7 @@
 	    	<config name="max" value="100"/>
 		</chart>
 		
-		<chart name="chart.user.meeting.target.gauge" title="Meeting number target">
+		<chart name="chart.user.meeting.target.gauge" title="Meetings number target completed (%)">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -59,7 +59,7 @@
 	    	<config name="max" value="100"/>
 		</chart>
 		
-		<chart name="chart.user.meeting.target.bar" title="Meeting number target historical">
+		<chart name="chart.user.meeting.target.bar" title="Meetings number historical">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -83,7 +83,7 @@
 	    	<config name="max" value="100"/>
 		</chart>
 		
-		<chart name="chart.user.opportunity.amount.earned.target.gauge" title="Opportunity amount earned target">
+		<chart name="chart.user.opportunity.amount.earned.target.gauge" title="Opportunities amount earned target completed (%)">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -98,7 +98,7 @@
 	    	<config name="max" value="100"/>
 		</chart>
 		
-		<chart name="chart.user.opportunity.amount.earned.target.bar" title="Opportunity amount earned target historical">
+		<chart name="chart.user.opportunity.amount.earned.target.bar" title="Opportunities amount earned historical">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -122,7 +122,7 @@
 	    	<config name="max" value="100"/>
 		</chart>
 	
-		<chart name="chart.user.opportunity.created.number.target.gauge" title="Opportunity created number target">
+		<chart name="chart.user.opportunity.created.number.target.gauge" title="Opportunities created number target completed (%)">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -137,7 +137,7 @@
 	    	<config name="max" value="100"/>
 		</chart>
 		
-		<chart name="chart.user.opportunity.created.number.target.bar" title="Opportunity created number target historical">
+		<chart name="chart.user.opportunity.created.number.target.bar" title="Opportunities created number historical">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -161,7 +161,7 @@
 	    	<config name="max" value="100"/>
 		</chart>
 		
-		<chart name="chart.user.opportunity.amount.won.target.gauge" title="Opportunity created won target">
+		<chart name="chart.user.opportunity.amount.won.target.gauge" title="Opportunities created won target completed (%)">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -176,7 +176,7 @@
 	    	<config name="max" value="100"/>
 		</chart>
 		
-		<chart name="chart.user.opportunity.amount.won.target.bar" title="Opportunity created won target historical">
+		<chart name="chart.user.opportunity.amount.won.target.bar" title="Opportunities created won historical">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -200,7 +200,7 @@
 	    	<config name="max" value="100"/>
 		</chart>
 		
-		<chart name="chart.user.sales.order.amount.earned.target.gauge" title="Sales order amount earned target">
+		<chart name="chart.user.sales.order.amount.earned.target.gauge" title="Sales orders amount earned target completed (%)">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -215,7 +215,7 @@
 	    	<config name="max" value="100"/>
 		</chart>
 		
-		<chart name="chart.user.sales.order.amount.earned.target.bar" title="Sales order amount earned target historical">
+		<chart name="chart.user.sales.order.amount.earned.target.bar" title="Sales orders amount earned historical">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -239,7 +239,7 @@
 	    	<config name="max" value="100"/>
 		</chart>
 		
-		<chart name="chart.user.sales.order.created.number.target.gauge" title="Sales order created number target">
+		<chart name="chart.user.sales.order.created.number.target.gauge" title="Sales orders created number target completed (%)">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -254,7 +254,7 @@
 	    	<config name="max" value="100"/>
 		</chart>
 		
-		<chart name="chart.user.sales.order.created.number.target.bar" title="Sales order created number target historical">
+		<chart name="chart.user.sales.order.created.number.target.bar" title="Sales orders created number historical">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -278,7 +278,7 @@
 	    	<config name="max" value="100"/>
 		</chart>
 		
-		<chart name="chart.user.sales.order.created.won.target.gauge" title="Sales order created won target">
+		<chart name="chart.user.sales.order.created.won.target.gauge" title="Sales orders created won target completed (%)">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -293,7 +293,7 @@
 	    	<config name="max" value="100"/>
 		</chart>
 		
-		<chart name="chart.user.sales.order.created.won.target.bar" title="Sales order created won target historical">
+		<chart name="chart.user.sales.order.created.won.target.bar" title="Sales orders created won historical">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -320,7 +320,7 @@
 		
 <!--   Target team charts -->
 	  
-	   <chart name="chart.team.call.target.gauge" title="Call emitted target">
+	   <chart name="chart.team.call.target.gauge" title="Calls emitted target completed (%)">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -335,7 +335,7 @@
 	    	<config name="max" value="100"/>
 		</chart>
 		
-		<chart name="chart.team.call.target.bar" title="Call emitted target historical">
+		<chart name="chart.team.call.target.bar" title="Calls emitted historical">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -359,7 +359,7 @@
 	    	<config name="max" value="100"/>
 		</chart>
 		
-		<chart name="chart.team.meeting.target.gauge" title="Meeting number target">
+		<chart name="chart.team.meeting.target.gauge" title="Meetings number target completed (%)">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -374,7 +374,7 @@
 	    	<config name="max" value="100"/>
 		</chart>
 		
-		<chart name="chart.team.meeting.target.bar" title="Meeting number target historical">
+		<chart name="chart.team.meeting.target.bar" title="Meeting number historical">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -398,7 +398,7 @@
 	    	<config name="max" value="100"/>
 		</chart>
 		
-		<chart name="chart.team.opportunity.amount.earned.target.gauge" title="Opportunity amount earned target">
+		<chart name="chart.team.opportunity.amount.earned.target.gauge" title="Opportunities amount earned target competed (%)">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -413,7 +413,7 @@
 	    	<config name="max" value="100"/>
 		</chart>
 		
-		<chart name="chart.team.opportunity.amount.earned.target.bar" title="Opportunity amount earned target historical">
+		<chart name="chart.team.opportunity.amount.earned.target.bar" title="Opportunities amount earned historical">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -437,7 +437,7 @@
 	    	<config name="max" value="100"/>
 		</chart>
 	
-		<chart name="chart.team.opportunity.created.number.target.gauge" title="Opportunity created number target">
+		<chart name="chart.team.opportunity.created.number.target.gauge" title="Opportunities created number target completed (%)">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -452,7 +452,7 @@
 	    	<config name="max" value="100"/>
 		</chart>
 		
-		<chart name="chart.team.opportunity.created.number.target.bar" title="Opportunity created number target historical">
+		<chart name="chart.team.opportunity.created.number.target.bar" title="Opportunities created number historical">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -476,7 +476,7 @@
 	    	<config name="max" value="100"/>
 		</chart>
 		
-		<chart name="chart.team.opportunity.amount.won.target.gauge" title="Opportunity created won target">
+		<chart name="chart.team.opportunity.amount.won.target.gauge" title="Opportunities created won target completed (%)">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -491,7 +491,7 @@
 	    	<config name="max" value="100"/>
 		</chart>
 		
-		<chart name="chart.team.opportunity.amount.won.target.bar" title="Opportunity created won target historical">
+		<chart name="chart.team.opportunity.amount.won.target.bar" title="Opportunities created won historical">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -515,7 +515,7 @@
 	    	<config name="max" value="100"/>
 		</chart>
 		
-		<chart name="chart.team.sales.order.amount.earned.target.gauge" title="Sales order amount earned target">
+		<chart name="chart.team.sales.order.amount.earned.target.gauge" title="Sales orders amount earned target completed (%)">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -530,7 +530,7 @@
 	    	<config name="max" value="100"/>
 		</chart>
 		
-		<chart name="chart.team.sales.order.amount.earned.target.bar" title="Sales order amount earned target historical">
+		<chart name="chart.team.sales.order.amount.earned.target.bar" title="Sales orders amount earned historical">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -554,7 +554,7 @@
 	    	<config name="max" value="100"/>
 		</chart>
 		
-		<chart name="chart.team.sales.order.created.number.target.gauge" title="Sales order created number target">
+		<chart name="chart.team.sales.order.created.number.target.gauge" title="Sales orders created number target completed (%)">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -569,7 +569,7 @@
 	    	<config name="max" value="100"/>
 		</chart>
 		
-		<chart name="chart.team.sales.order.created.number.target.bar" title="Sales order created number target historical">
+		<chart name="chart.team.sales.order.created.number.target.bar" title="Sales orders created number historical">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -593,7 +593,7 @@
 	    	<config name="max" value="100"/>
 		</chart>
 		
-		<chart name="chart.team.sales.order.created.won.target.gauge" title="Sales order created won target">
+		<chart name="chart.team.sales.order.created.won.target.gauge" title="Sales orders created won target completed">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -608,7 +608,7 @@
 	    	<config name="max" value="100"/>
 		</chart>
 		
-		<chart name="chart.team.sales.order.created.won.target.bar" title="Sales order created won target historical">
+		<chart name="chart.team.sales.order.created.won.target.bar" title="Sales orders created won historical">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT

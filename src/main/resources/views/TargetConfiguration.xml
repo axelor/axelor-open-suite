@@ -6,12 +6,16 @@
     <grid name="target-configuration-grid" title="Target configurations" model="com.axelor.apps.crm.db.TargetConfiguration">
         <field name="name"/>
         <field name="code"/>
+        <field name="userInfo" />
+       	<field name="team"/>
     </grid>
     
     <form name="target-configuration-form" title="Target configuration" model="com.axelor.apps.crm.db.TargetConfiguration" cols="4">
     	<group title="Information" colSpan="4">
     		<field name="name"/>
         	<field name="code"/>
+        	<field name="userInfo" showIf="team == null"/>
+        	<field name="team" showIf="userInfo == null"/>
     	</group>
     	<group title="Period" colSpan="4">
     		<field name="periodTypeSelect"/>

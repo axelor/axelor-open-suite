@@ -119,8 +119,8 @@
 
 	<action-view name="crm.root.lead" title="Leads"
 		model="com.axelor.apps.crm.db.Lead" icon="img/icons/crm_small.png">
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="lead-grid"/>
+		<view type="form" name="lead-form"/>
 		<view-param name="search-filters" value="lead-filters"/>
 		<context name="_internalUser" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
@@ -131,8 +131,8 @@
 
 	<action-view name="crm.root.opportunity" title="Opportunities"
 		model="com.axelor.apps.crm.db.Opportunity" icon="img/icons/crm_small.png">
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="opportunity-grid"/>
+		<view type="form" name="opportunity-form"/>
 		<view-param name="search-filters" value="opportunity-filters"/>
 		<context name="_internalUser" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>

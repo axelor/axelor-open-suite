@@ -35,6 +35,7 @@ import java.math.BigDecimal;
 import javax.persistence.Query;
 
 import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,7 +69,7 @@ public class TargetService {
 					targetConfiguration.getOpportunityAmountEarned().doubleValue(), targetConfiguration.getOpportunityCreatedNumber(), targetConfiguration.getOpportunityCreatedWon()).fetchOne(); 
 			
 			if(target2 == null)  {
-				Target target = this.createTarget(targetConfiguration, oldDate.plusDays(1), date);
+				Target target = this.createTarget(targetConfiguration, oldDate, date.minusDays(1));
 			
 				this.update(target);
 			
@@ -129,62 +130,69 @@ public class TargetService {
 		LocalDate fromDate = target.getFromDate();
 		LocalDate toDate = target.getToDate();
 		
+		LocalDateTime fromDateTime = new LocalDateTime(fromDate.getYear(), fromDate.getMonthOfYear(), fromDate.getDayOfMonth(), 0, 0);
+		LocalDateTime toDateTime = new LocalDateTime(toDate.getYear(), toDate.getMonthOfYear(), toDate.getDayOfMonth(), 23, 59);
+		
 		if(userInfo != null)  {
-			Query q = JPA.em().createQuery("select SUM(self.amount) FROM Opportunity as op WHERE op.userInfo = ?1 AND op.salesStageSelect = 9 ");
+			Query q = JPA.em().createQuery("select SUM(op.amount) FROM Opportunity as op WHERE op.userInfo = ?1 AND op.salesStageSelect = 9 AND op.createdOn >= ?2 AND op.createdOn <= ?3 ");
 			q.setParameter(1, userInfo);
+			q.setParameter(2, fromDateTime);
+			q.setParameter(3, toDateTime);
 					
-			BigDecimal opportunityAmountEarned = (BigDecimal) q.getResultList();
+			BigDecimal opportunityAmountEarned = (BigDecimal) q.getSingleResult();
 			
 			Long callEmittedNumber = Event.all().filter("self.typeSelect = ?1 AND self.userInfo = ?2 AND self.startDateTime >= ?3 AND self.endDateTime <= ?4 AND self.callStatusSelect = 2",
-					1, userInfo, fromDate, toDate).count();
+					1, userInfo, fromDateTime, toDateTime).count();
 			
 			target.setCallEmittedNumber(callEmittedNumber.intValue());
 			
-			Long meetingNumber = Event.all().filter("self.typeSelect = ?2 AND self.userInfo = ?2 AND self.startDateTime >= ?3 AND self.endDateTime <= ?4",
-					1, userInfo, fromDate, toDate).count();
+			Long meetingNumber = Event.all().filter("self.typeSelect = ?1 AND self.userInfo = ?2 AND self.startDateTime >= ?3 AND self.endDateTime <= ?4",
+					1, userInfo, fromDateTime, toDateTime).count();
 			
 			target.setMeetingNumber(meetingNumber.intValue());
 			
 			
 			target.setOpportunityAmountEarned(opportunityAmountEarned);
 			
-			Long opportunityCreatedNumber = Opportunity.all().filter("self.userInfo = ?1 AND self.createdAt >= ?2 AND self.createdAt <= ?3",
-					1, userInfo, fromDate, toDate).count();
+			Long opportunityCreatedNumber = Opportunity.all().filter("self.userInfo = ?1 AND self.createdOn >= ?2 AND self.createdOn <= ?3",
+					userInfo, fromDateTime, toDateTime).count();
 			
 			target.setOpportunityCreatedNumber(opportunityCreatedNumber.intValue());
 			
-			Long opportunityCreatedWon = Opportunity.all().filter("self.userInfo = ?1 AND self.createdAt >= ?2 AND self.createdAt <= ?3 AND self.salesStageSelect = 9",
-					1, userInfo, fromDate, toDate).count();
+			Long opportunityCreatedWon = Opportunity.all().filter("self.userInfo = ?1 AND self.createdOn >= ?2 AND self.createdOn <= ?3 AND self.salesStageSelect = 9",
+					userInfo, fromDateTime, toDateTime).count();
 			
 			target.setOpportunityCreatedWon(opportunityCreatedWon.intValue());
 		}
 		else if(team != null)  {
 			
-			Query q = JPA.em().createQuery("select SUM(self.amount) FROM Opportunity as op WHERE op.team = ?1 AND op.salesStageSelect = 9 ");
+			Query q = JPA.em().createQuery("select SUM(op.amount) FROM Opportunity as op WHERE op.team = ?1 AND op.salesStageSelect = 9  AND op.createdOn >= ?2 AND op.createdOn <= ?3 ");
 			q.setParameter(1, team);
+			q.setParameter(2, fromDateTime);
+			q.setParameter(3, toDateTime);
 					
 			BigDecimal opportunityAmountEarned = (BigDecimal) q.getResultList();
 			
 			Long callEmittedNumber = Event.all().filter("self.typeSelect = ?1 AND self.team = ?2 AND self.startDateTime >= ?3 AND self.endDateTime <= ?4 AND self.callStatusSelect = 2",
-					1, team, fromDate, toDate).count();
+					1, userInfo, fromDateTime, toDateTime).count();
 			
 			target.setCallEmittedNumber(callEmittedNumber.intValue());
 			
-			Long meetingNumber = Event.all().filter("self.typeSelect = ?2 AND self.team = ?2 AND self.startDateTime >= ?3 AND self.endDateTime <= ?4",
-					1, team, fromDate, toDate).count();
+			Long meetingNumber = Event.all().filter("self.typeSelect = ?1 AND self.team = ?2 AND self.startDateTime >= ?3 AND self.endDateTime <= ?4",
+					1, userInfo, fromDateTime, toDateTime).count();
 			
 			target.setMeetingNumber(meetingNumber.intValue());
 			
 			
 			target.setOpportunityAmountEarned(opportunityAmountEarned);
 			
-			Long opportunityCreatedNumber = Opportunity.all().filter("self.team = ?1 AND self.createdAt >= ?2 AND self.createdAt <= ?3",
-					1, team, fromDate, toDate).count();
+			Long opportunityCreatedNumber = Opportunity.all().filter("self.team = ?1 AND self.createdOn >= ?2 AND self.createdOn <= ?3",
+					userInfo, fromDateTime, toDateTime).count();
 			
 			target.setOpportunityCreatedNumber(opportunityCreatedNumber.intValue());
 			
-			Long opportunityCreatedWon = Opportunity.all().filter("self.team = ?1 AND self.createdAt >= ?2 AND self.createdAt <= ?3 AND self.salesStageSelect = 9",
-					1, team, fromDate, toDate).count();
+			Long opportunityCreatedWon = Opportunity.all().filter("self.team = ?1 AND self.createdOn >= ?2 AND self.createdOn <= ?3 AND self.salesStageSelect = 9",
+					userInfo, fromDateTime, toDateTime).count();
 			
 			target.setOpportunityCreatedWon(opportunityCreatedWon.intValue());
 		}
