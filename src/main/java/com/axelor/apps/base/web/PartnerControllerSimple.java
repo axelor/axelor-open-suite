@@ -31,6 +31,7 @@
 package com.axelor.apps.base.web;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -44,7 +45,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.tool.net.URLService;
-import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.rpc.ActionRequest;
@@ -119,10 +119,10 @@ public class PartnerControllerSimple {
 		AxelorSettings axelorSettings = AxelorSettings.get();
 
 		StringBuilder url = new StringBuilder();
-		User user = (User) request.getContext().get("__user__");
+		LinkedHashMap user = (LinkedHashMap) request.getContext().get("user_id");
 
-		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/PhoneBook.rptdesign&__format=html&UserId="+user.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
-
+		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/PhoneBook.rptdesign&__format=html&UserId="+user.get("id")+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
+		
 		LOG.debug("URL : {}", url);
 		String urlNotExist = URLService.notExist(url.toString());
 		if (urlNotExist == null){
@@ -152,9 +152,10 @@ public class PartnerControllerSimple {
 		AxelorSettings axelorSettings = AxelorSettings.get();
 
 		StringBuilder url = new StringBuilder();
-		User user = (User) request.getContext().get("__user__");
+		LinkedHashMap user = (LinkedHashMap) request.getContext().get("user_id");
 
-		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/CompanyPhoneBook.rptdesign&__format=html&UserId="+user.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
+
+		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/CompanyPhoneBook.rptdesign&__format=html&UserId="+user.get("id")+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
 
 		LOG.debug("URL : {}", url);
 		String urlNotExist = URLService.notExist(url.toString());
