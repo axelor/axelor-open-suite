@@ -309,11 +309,4 @@
 		<call class="com.axelor.apps.base.web.PartnerControllerSimple" method="createAccountingSituations"/>
 	</action-method>
 	
-	<action-method name="action-print-compnay-phonebook" >
-		<call class="com.axelor.apps.base.web.PartnerControllerSimple" method="printCompanyPhonebook"/>
-	</action-method>
-	
-	<action-method name="action-print-phonebook" >
-		<call class="com.axelor.apps.base.web.PartnerControllerSimple" method="printContactPhonebook"/>
-	</action-method>
-</object-views>
+	</object-views>
