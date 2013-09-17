@@ -310,16 +310,16 @@ public class SalesOrderService {
 						/* Loop of the salesOrderSubLineList */
 						for(SalesOrderSubLine salesOrderSubLine : salesOrderLine.getSalesOrderSubLineList())  {
 							/* Create a new PlanningLine */
-							PlanningLine pl = new PlanningLine();
-							pl.setTask(task);
-							pl.setEmployee(salesOrderSubLine.getEmployee());
-							pl.setProduct(salesOrderSubLine.getProduct());
-							pl.setFromDateTime(new LocalDateTime(GeneralService.getTodayDateTime()));
-							pl.setDuration(duration);
-							pl.setUnit(salesOrderSubLine.getUnit());
-							pl.setToDateTime(pl.getFromDateTime().plusDays(duration.intValue()));
-							task.getPlanningLineList().add(pl);
-							pl.save();
+							PlanningLine planningLine = new PlanningLine();
+							planningLine.setTask(task);
+							planningLine.setEmployee(salesOrderSubLine.getEmployee());
+							planningLine.setProduct(salesOrderSubLine.getProduct());
+							planningLine.setFromDateTime(new LocalDateTime(GeneralService.getTodayDateTime()));
+							planningLine.setDuration(duration);
+							planningLine.setUnit(salesOrderSubLine.getUnit());
+							planningLine.setToDateTime(planningLine.getFromDateTime().plusDays(duration.intValue()));
+							task.getPlanningLineList().add(planningLine);
+							planningLine.save();
 						}
 					}
 					task.save();
