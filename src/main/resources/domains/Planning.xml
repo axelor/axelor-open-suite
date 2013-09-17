@@ -7,7 +7,7 @@
 
   <entity name="Planning" lang="java">
   	
-  	<many-to-one name="period" ref="com.axelor.apps.account.db.Period" title="Période"/>
+  	<many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Période"/>
   	<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="Fait par"/>
 	<date name="date" title="Date"/>
 	

@@ -32,8 +32,8 @@ package com.axelor.csv.script
 
 import org.joda.time.LocalDate
 
-import com.axelor.apps.account.db.Period
-import com.axelor.apps.account.db.Year
+import com.axelor.apps.base.db.Period
+import com.axelor.apps.base.db.Year
 import com.axelor.apps.base.db.General
 import com.axelor.apps.base.db.Status
 import com.axelor.apps.base.db.Company

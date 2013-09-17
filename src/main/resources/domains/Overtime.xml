@@ -14,7 +14,7 @@
     <string name="statusSelect" title="Status" selection="hr.expense.status.select" readonly="true"/>
     <date name="validationDate" title="Date" readonly="true"/>
     <many-to-one name="validatedByUserInfo" ref="com.axelor.apps.base.db.UserInfo" readonly="true" title="Validated by"/> 
-  	<many-to-one name="period" ref="com.axelor.apps.account.db.Period" title="Month of Payment" />
+  	<many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Month of Payment" />
   	<string name="motif" title="Reason"/>
   	
   </entity>
