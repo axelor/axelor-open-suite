@@ -11,11 +11,10 @@
   	<many-to-one name="project" ref="com.axelor.apps.organisation.db.Project" title="Project"/>
   	<many-to-one name="task" ref="com.axelor.apps.organisation.db.Task" title="Task"/>
 	
-<!-- 	Ajouter type de congé -->
-	
-	<one-to-many name="timesheetInputList" ref="com.axelor.apps.organisation.db.TimesheetInput" mappedBy="timesheetLine" title="Inputs List"/>
+	<date name="date" title="Date"/>
+	<decimal name="duration" title="Duration (h)"/>
 	<boolean name="isToInvoice" title="To invoice ?"/>
-
+	<boolean name="isInvoiced" title="Invoiced ?"/>
 		
   </entity>
 

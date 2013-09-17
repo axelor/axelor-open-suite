@@ -89,6 +89,8 @@
   	<boolean name="imputExpense" title="Imputation note de frais"/>
   	<integer name="typeProjectSelect" title="Type select" selection="organisation.project.type.project.select"/>
   	
+  	<boolean name="isAdministrative" title="Administrative ?"/>
+  	
     <!-- Need -->
     <date name="consultationDate" title="Consultation Date"/>
     <string name="typeSelect" title="Type" selection="consulting.need.type.select"/>

@@ -16,7 +16,7 @@
   	
   	<decimal name="nbrOfDayOff" title="Nbr of Days Off" />
   	
- 	<many-to-one name="leaveRequestReason" ref="com.axelor.apps.organisation.db.LeaveRequestReason" title="Reason"/>
+ 	<many-to-one name="reasonTask" ref="com.axelor.apps.organisation.db.Task" title="Reason"/>
  	
  	<many-to-one name="managerUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="Manager"/>
   	

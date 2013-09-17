@@ -26,6 +26,16 @@
 	<integer name="statusSelect" title="Status" selection="default.status.select" readonly="true"/>
     <many-to-one name="validatedByUserInfo" ref="com.axelor.apps.base.db.UserInfo" readonly="true" title="Validated by"/> 
   	<date name="validationDate" title="Validation date" readonly="true"/>
+  	
+  	<boolean name="hasToGetLeaveRequests" title="Get leave requests"/>
+  	<boolean name="hasToGetPastTimeFromTask" title="Get past time from tasks"/>
+  	<boolean name="hasToGetPlanningLine"  title="Get planning line"/>
+  	<boolean name="hasCompleteTimesheetLines" title="Complete lines"/>
+  	<date name="completeFromDate" title="From Date"/>
+  	<date name="completeToDate" title="To Date"/>
+  	<many-to-one name="completeDefaultTask" ref="Task" title="Default task"/>
+  	<decimal name="duration" title="Duration (h)"/>
+  	
   </entity>
 
 </domain-models>

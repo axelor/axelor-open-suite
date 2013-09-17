@@ -42,6 +42,8 @@
 		<many-to-one name="managerUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="Manager"/>
 		<many-to-one name="managerProfileProduct" ref="com.axelor.apps.base.db.Product" title="Manager Profile"/>
 		<many-to-one name="profileProduct" ref="com.axelor.apps.base.db.Product" title="Profile"/>
+		
+		<one-to-many name="paySheetList" ref="PaySheet" mappedBy="employee" title="Pay sheets"/>
 	</entity>
 
 </domain-models>

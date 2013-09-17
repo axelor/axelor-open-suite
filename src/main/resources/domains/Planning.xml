@@ -13,6 +13,12 @@
 	
 	<one-to-many name="planningLineList" ref="com.axelor.apps.organisation.db.PlanningLine" mappedBy="planning" title="Les lignes de plannification"/>
 
+	<boolean name="hasCompleteTimesheetLines" title="Complete lines"/>
+  	<date name="completeFromDate" title="From Date"/>
+  	<date name="completeToDate" title="To Date"/>
+  	<many-to-one name="completeDefaultTask" ref="Task" title="Default task"/>
+  	<decimal name="duration" title="Duration (h)"/>
+
   </entity>
 
 </domain-models>
