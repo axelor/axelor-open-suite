@@ -42,14 +42,14 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.Period;
 import com.axelor.apps.account.db.ReportedBalance;
 import com.axelor.apps.account.db.ReportedBalanceLine;
-import com.axelor.apps.account.db.Year;
 import com.axelor.apps.account.service.debtrecovery.ReminderService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Status;
+import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -113,7 +113,7 @@ public class YearService {
 							year);
 					LOG.debug("ReportedBalanceLine : {}",reportedBalanceLine);
 					reportedBalance.getReportedBalanceLineList().add(reportedBalanceLine);
-					year.getReportedBalanceLineList().add(reportedBalanceLine);
+//					year.getReportedBalanceLineList().add(reportedBalanceLine);
 					reportedBalance.save();
 					find = true;
 				}
@@ -127,7 +127,7 @@ public class YearService {
 						reportedBalance,
 						this.computeReportedBalance(year.getFromDate(), year.getToDate(), partner, company.getCustomerAccount(), company.getDoubtfulCustomerAccount()),
 						year);
-				year.getReportedBalanceLineList().add(reportedBalanceLine);
+//				year.getReportedBalanceLineList().add(reportedBalanceLine);
 				LOG.debug("ReportedBalanceLine : {}",reportedBalanceLine);
 				reportedBalance.getReportedBalanceLineList().add(reportedBalanceLine);
 				reportedBalance.save();

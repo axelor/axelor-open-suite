@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    <grid name="year-grid" title="Fiscal years" model="com.axelor.apps.account.db.Year">
+    <grid name="year-account-grid" title="Fiscal years" model="com.axelor.apps.base.db.Year">
         <field name="name"/>
         <field name="code"/>
         <field name="fromDate"/>
@@ -13,7 +13,7 @@
         <field name="status"/>
     </grid>
     
-    <form name="year-form" title="Fiscal year" model="com.axelor.apps.account.db.Year" cols="4"
+    <form name="year-account-form" title="Fiscal year" model="com.axelor.apps.base.db.Year" cols="4"
     onNew="action-year-record-new">
         <field name="name"/>
         <field name="code"/>
@@ -29,7 +29,7 @@
     	</group>
     </form>
     
-    <action-record name="action-year-record-new" model="com.axelor.apps.account.db.Year">
+    <action-record name="action-year-record-new" model="com.axelor.apps.base.db.Year">
     	<field name="status" expr="action:action-status-record-ope"/>
     	<field name="company"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
     </action-record>

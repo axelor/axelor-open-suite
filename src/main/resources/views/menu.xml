@@ -308,18 +308,18 @@
 		title="Fiscal years" action="account.conf.financial.year" />
 
 	<action-view name="account.conf.financial.year" title="Fiscal years"
-		model="com.axelor.apps.account.db.Year" icon="img/icons/parameter_small.png">
-		<view type="grid" />
-		<view type="form" />
+		model="com.axelor.apps.base.db.Year" icon="img/icons/parameter_small.png">
+		<view type="grid" name="year-acount-grid"/>
+		<view type="form" name="year-account-form"/>
 	</action-view>
 
 	<menuitem name="account-conf-financial-period" parent="account-conf-financial"
 		title="Periods" action="account.conf.financial.period" />
 
 	<action-view name="account.conf.financial.period" title="Periods"
-		model="com.axelor.apps.account.db.Period" icon="img/icons/parameter_small.png">
-		<view type="grid" />
-		<view type="form" />
+		model="com.axelor.apps.base.db.Period" icon="img/icons/parameter_small.png">
+		<view type="grid" name="period-account-grid"/>
+		<view type="form" name="period-account-form"/>
 	</action-view>
 
 	<menuitem name="account-conf-financial-journal" parent="account-conf-financial"

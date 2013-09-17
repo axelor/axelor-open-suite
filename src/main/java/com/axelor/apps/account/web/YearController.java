@@ -30,7 +30,7 @@
  */
 package com.axelor.apps.account.web;
 
-import com.axelor.apps.account.db.Year;
+import com.axelor.apps.base.db.Year;
 import com.axelor.apps.account.service.YearService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
