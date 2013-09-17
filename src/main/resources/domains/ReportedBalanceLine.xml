@@ -8,7 +8,7 @@
   <entity name="ReportedBalanceLine" lang="java">
   
   	<many-to-one name="reportedBalance" ref="com.axelor.apps.account.db.ReportedBalance" title="Reported balance"/>
-  	<many-to-one name="year" ref="com.axelor.apps.account.db.Year" title="Fiscal year"/>
+  	<many-to-one name="year" ref="com.axelor.apps.base.db.Year" title="Fiscal year"/>
     <decimal name="amount" title="Amount"/>
   
   </entity>

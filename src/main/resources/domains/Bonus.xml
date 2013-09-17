@@ -7,7 +7,7 @@
 
  <entity name="Bonus" lang="java">
 		<many-to-one name="employee" ref="Employee"/>
-		<many-to-one name="period" ref="com.axelor.apps.account.db.Period" title="Period"/>
+		<many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Period"/>
 		<string name="name" title="Label"/>
 		<decimal name="amount" title="Amount"/>
 	</entity>

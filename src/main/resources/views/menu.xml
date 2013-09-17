@@ -533,6 +533,24 @@
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
+	
+	<menuitem name="evo-admin-conf-general-year" parent="evo-admin-conf-general"
+		title="Years" action="evo.admin.conf.general.year" />
+
+	<action-view name="evo.admin.conf.general.year" title="Years"
+		model="com.axelor.apps.base.db.Year" icon="img/icons/parameter_small.png">
+		<view type="grid" name="year-grid"/>
+		<view type="form" name="year-form"/>
+	</action-view>
+	
+	<menuitem name="evo-admin-conf-general-period" parent="evo-admin-conf-general"
+		title="Periods" action="evo.admin.conf.general.period" />
+
+	<action-view name="evo.admin.conf.general.period" title="Periods"
+		model="com.axelor.apps.base.db.Period" icon="img/icons/parameter_small.png">
+		<view type="grid" name="period-grid"/>
+		<view type="form" name="period-form"/>
+	</action-view>
 
 	<menuitem name="evo-admin-conf-general-sequence-generic"
 		parent="evo-admin-conf-general" title="Sequences"

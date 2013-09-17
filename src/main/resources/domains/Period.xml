@@ -3,13 +3,13 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
 
-  <module name="account" package="com.axelor.apps.account.db"/>
+  <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="Period" lang="java">
   
     <string name="name" title="Name" required="true"/>
     <string name="code" title="Code"/>
-    <many-to-one name="year" ref="Year" title="Year"/>
+    <many-to-one name="year" ref="com.axelor.apps.base.db.Year" title="Year"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <date name="fromDate" title="From"/>
     <date name="toDate" title="To"/>
