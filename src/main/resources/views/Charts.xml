@@ -238,7 +238,7 @@
 	    	LEFT JOIN 
 	    		meta_select_item as selection_item ON selection_item.select_id = selection.id
 			WHERE
-				cast(selection_item.value as decimal) = self.status_select			
+				cast(selection_item.value as decimal) = self.status_select	and sales_man.full_name != ''	
 	    	GROUP BY
 			  	_status,
 			  	_sales_man

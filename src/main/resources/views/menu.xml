@@ -285,7 +285,7 @@
 	
 	<!-- Top Menu for Activity and Create Entry for opportunity.... -->
 	
-	<menuitem name="top-menu-crm-activities" priority="150" title="Activity" icon="img/icons/calendar.png" groups="admins,erp"/> 	
+	<menuitem name="top-menu-crm-activities" priority="150" title="Activity" icon="img/icons/calendar.png" groups="admins,erp" top="true" left="false"/> 	
 
 	<menuitem name="top-menu-activity-my-calendar" icon="img/icons/crm_small.png" parent="top-menu-crm-activities" title="My Calendar" action="crm.root.meeting.my.calendar" />
 	
