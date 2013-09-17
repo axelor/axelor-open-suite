@@ -54,8 +54,8 @@ public class LeaveRequestService {
 		event.setStartDateTime(leaveRequest.getStartDateT());
 		event.setEndDateTime(leaveRequest.getEndDateT());
 		event.setUserInfo(leaveRequest.getEmployeeUserInfo());
-		if(leaveRequest.getLeaveRequestReason()!= null)  {
-			event.setDescription(leaveRequest.getLeaveRequestReason().getName());
+		if(leaveRequest.getReasonTask()!= null)  {
+			event.setDescription(leaveRequest.getReasonTask().getName());
 		}
 		return event.save();
 		

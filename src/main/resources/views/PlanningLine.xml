@@ -29,6 +29,7 @@
     <grid name="planning-line-task-grid" title="Planning lines" model="com.axelor.apps.organisation.db.PlanningLine">
         <field name="product"/>
         <field name="employee"/>
+        <field name="planning"/>
         <field name="fromDateTime"/>
         <field name="toDateTime"/>
         <field name="duration"/>
@@ -40,6 +41,7 @@
     onNew="action-planningline-default-record,action-planningline-set-datetime">
         <field name="product" domain="self.applicationTypeSelect = 2"/>
         <field name="employee"/>
+        <field name="planning"/>
         <field name="fromDateTime" onChange="action-planning-line-method-compute-start-date-time"/>
         <field name="toDateTime" onChange="action-planning-line-method-compute-end-date-time"/>
         <field name="duration" onChange="action-planning-line-method-compute-duration"/>

@@ -8,7 +8,7 @@
 	    eventStart="startDateT" 
 	    eventStop="endDateT" 
 	    eventLength="1">
-	    <field name="leaveRequestReason" />
+	    <field name="reasonTask"/>
  	 </calendar>
     
     <grid name="leave-request-grid" title="Leave requests" model="com.axelor.apps.organisation.db.LeaveRequest">
@@ -17,7 +17,7 @@
         <field name="startDateT"/>
         <field name="endDateT"/>
         <field name="nbrOfDayOff"/>
-        <field name="leaveRequestReason"/>
+        <field name="reasonTask"/>
         <field name="managerUserInfo"/>
         <field name="approvalDate"/>
         <field name="remainingDaysOnPeriod"/>
@@ -28,7 +28,7 @@
     	onNew="action-leave-request-record-new">
 		<field name="employeeUserInfo"/>
         <field name="requestDate"/>
-        <field name="leaveRequestReason"/>
+        <field name="reasonTask" domain="self.isLeaveRequest = true"/>
         <separator colSpan="4"/>
         <group title="Leave period" colSpan="3" cols="6">
         	<field name="startDateT" onChange="action-leave-request-method-compute-start-date-time"/>

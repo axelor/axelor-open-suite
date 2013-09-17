@@ -69,6 +69,7 @@
 							<field name="salaryFromDate"/>
 							<field name="salaryAmount"/>
 						</group>
+						<field name="paySheetList" grid-view="pay-sheet-employee-grid" form-view="pay-sheet-employee-form" colSpan="4"/>
 					</page>
 					<page title="Travel expense">
 						<group title="Commute expenses">

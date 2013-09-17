@@ -42,9 +42,9 @@ import com.axelor.apps.base.db.PastTime;
 import com.axelor.apps.base.db.UserInfo;
 import com.axelor.apps.organisation.db.Task;
 import com.axelor.apps.organisation.db.Timesheet;
-import com.axelor.apps.organisation.db.TimesheetInput;
 import com.axelor.apps.organisation.db.TimesheetLine;
 import com.axelor.db.JPA;
+import com.google.common.collect.Lists;
 import com.google.inject.persist.Transactional;
 
 public class TimesheetService {
@@ -64,14 +64,32 @@ public class TimesheetService {
 		
 		for(Task task : taskList)  {
 			
-			timesheet.addTimesheetLineListItem(this.createTimesheetLine(timesheet, task));
+			timesheet.getTimesheetLineList().addAll(this.createTimesheetLines(timesheet, task));
 			
 		}
 		timesheet.save();
 		
 	}
 	
-	public TimesheetLine createTimesheetLine(Timesheet timesheet, Task task)  {
+	public List<TimesheetLine> createTimesheetLines(Timesheet timesheet, Task task)  {
+		
+		List<TimesheetLine> timesheetLineList = Lists.newArrayList();
+		
+		List<PastTime> pastTimeList = PastTime.all().filter("self.userInfo = ?1 AND self.task = ?2  AND self.timesheetImputed IN (false,null)", timesheet.getUserInfo(), task).fetch();
+		
+		for(PastTime pastTime : pastTimeList)  {
+			
+			timesheetLineList.add(this.createTimesheetLine(timesheet, task, pastTime));
+			
+			pastTime.setTimesheetImputed(true);
+			pastTime.save();
+		}
+		
+		return timesheetLineList;
+	}
+	
+	
+	public TimesheetLine createTimesheetLine(Timesheet timesheet, Task task, PastTime pastTime)  {
 		
 		TimesheetLine timesheetLine = new TimesheetLine();
 		timesheetLine.setTimesheet(timesheet);
@@ -79,48 +97,14 @@ public class TimesheetService {
 		timesheetLine.setProject(task.getProject());
 		timesheetLine.setTask(task);
 		timesheetLine.setIsToInvoice(true);
-		
-		List<PastTime> pastTimeList = PastTime.all().filter("self.userInfo = ?1 AND self.task = ?2  AND self.timesheetImputed IN (false,null)", timesheet.getUserInfo(), task).fetch();
-		
-		for(PastTime pastTime : pastTimeList)  {
-			
-			timesheetLine.addTimesheetInputListItem(this.createTimesheetInput(timesheetLine, pastTime));
-			
-			pastTime.setTimesheetImputed(true);
-			pastTime.save();
-		}
-		
-		return timesheetLine;
-	}
-	
-	
-	public TimesheetInput createTimesheetInput(TimesheetLine timesheetLine, PastTime pastTime)  {
-		
-		TimesheetInput timesheetInput = new TimesheetInput();
-		timesheetInput.setTimesheetLine(timesheetLine);
-		timesheetInput.setDate(pastTime.getDate());
-		timesheetInput.setIsToInvoice(true);
+		timesheetLine.setDate(pastTime.getDate());
 		
 		int duration = pastTime.getDurationHours()+(pastTime.getDurationMinutesSelect()/60);
-		timesheetInput.setDuration(new BigDecimal(duration));
+		timesheetLine.setDuration(new BigDecimal(duration));
 		
-		return timesheetInput;
+		return timesheetLine;
 		
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 }

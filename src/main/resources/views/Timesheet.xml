@@ -10,15 +10,14 @@
         <field name="statusSelect"/>
     </grid>
     
-    <form name="timesheet-form" title="Timesheet" model="com.axelor.apps.organisation.db.Timesheet" cols="8"
+    <form name="timesheet-form" title="Timesheet" model="com.axelor.apps.organisation.db.Timesheet" cols="4"
     onNew="action-timesheet-default-record,action-timesheet-getPeriod">
         <field name="userInfo"/>
-        <spacer/>
         <field name="statusSelect" widget="NavSelect" showTitle="false"/>
         <break/>
         <field name="fromDate" onChange="action-timesheet-getPeriod"/>
         <field name="toDate"/>
-        <group title="Satisfaction" cols="4" colSpan="8" colWidths="10%,10%,10%,70%">
+        <group title="Satisfaction" cols="4" colSpan="4" colWidths="10%,10%,10%,70%">
         	<separator colSpan="8" title="Project"/>
         	<group colSpan="2">
 				<field name="projectSatisfactionSelect" widget="SelectProgress"/>
@@ -31,20 +30,38 @@
 			</group>
         	<field name="companyComment"/>
         </group>
-        <group title="Unité" colSpan="8">
+        <group title="Unité" colSpan="4">
          	<field name="unit"/>
         	<field name="timeUnitSelect"/>
         </group>
         <spacer/>
-        <separator colSpan="8" title="Details of time spent on project/tasks"/>
-        <field name="timesheetLineList" colSpan="8"/>
+        <separator colSpan="4" title="Details of time spent on project/tasks"/>
+        <group title="Configuration" colSpan="4" readonlyIf="statusSelect == 3">
+        	<field name="hasToGetLeaveRequests"/>
+		  	<field name="hasToGetPastTimeFromTask"/>
+		  	<field name="hasToGetPlanningLine"/>
+		  	<separator colSpan="4"/>
+		  	<field name="hasCompleteTimesheetLines" onChange="action-timesheet-record-complete-group-default"/>
+		  	<group title="Complete time sheet configuration" colSpan="4" showIf="hasCompleteTimesheetLines == true">
+		  		<field name="completeFromDate"/>
+			  	<field name="completeToDate"/>
+			  	<field name="completeDefaultTask"/>
+			  	<field name="duration"/>
+		  	</group>
+		  	<group title="Action(s)" colSpan="4" showIf="statusSelect != 3 &amp;&amp; hasToGetLeaveRequests == true || hasToGetPastTimeFromTask == true || hasToGetPlanningLine == true || hasCompleteTimesheetLines == true)">
+		  		<button name="getPastTimeButton" title="Get past time" colSpan="1" onClick="save,action-timesheet-method-get-task-past-time" 
+		  		showIf="statusSelect != 3 &amp;&amp; hasToGetLeaveRequests == true || hasToGetPastTimeFromTask == true || hasToGetPlanningLine == true)"/>
+		  		<button name="completeTimeSheetButton" title="Complete time sheet" colSpan="1" onClick="save" showIf="statusSelect != 3 &amp;&amp; hasCompleteTimesheetLines == true"/>
+		  	</group>
+        </group>
+	  	
+        <field name="timesheetLineList" colSpan="4"/>
         <field name="timesheetInputTotal"/>
-        <field name="timesheetTotalByTypeList" colSpan="8"/>
+        <field name="timesheetTotalByTypeList" colSpan="4"/>
        	<group title="Action(s)" colSpan="4">
    			<group colSpan="1" cols="1">
 	         	<button name="confirm" title="Confirm" colSpan="1" onClick="save,action-timesheet-record-confirm,save" showIf="statusSelect == 1 || statusSelect == 4"/>
 	            <button name="validate" title="Validate" colSpan="1" onClick="save,action-timesheet-record-validate,save" showIf="statusSelect == 2"/>
-	            <button name="getTaskPastTime" title="Get past time from task" colSpan="1" onClick="save,action-timesheet-method-get-task-past-time" showIf="statusSelect != 3"/>
 	            <button name="cancel" title="Cancel" colSpan="1" onClick="save,action-timesheet-record-cancel" showIf="statusSelect == 1 || statusSelect == 2"/>
 	        </group>
    			<group colSpan="1" cols="2" readonly="true">
@@ -53,6 +70,11 @@
    			</group>
         </group>
     </form>
+    
+    <action-record name="action-timesheet-record-complete-group-default" model="com.axelor.apps.organisation.db.Timesheet">
+    	<field name="completeFromDate" expr="eval: fromDate" if="completeFromDate == null"/>
+    	<field name="completeToDate" expr="eval: toDate" if="completeToDate == null"/>
+    </action-record>
     
     <action-record name="action-timesheet-default-record" model="com.axelor.apps.organisation.db.Timesheet">
     	<field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>

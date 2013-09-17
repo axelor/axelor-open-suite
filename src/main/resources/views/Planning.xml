@@ -13,8 +13,24 @@
         <field name="period"/>
         <field name="userInfo"/>
         <field name="date"/>
+        
+        <group title="Configuration" colSpan="4">
+		  	<field name="hasCompleteTimesheetLines" onChange="action-timesheet-record-complete-group-default"/>
+		  	<group title="Complete time sheet configuration" colSpan="4" showIf="hasCompleteTimesheetLines == true">
+		  		<field name="completeFromDate"/>
+			  	<field name="completeToDate"/>
+			  	<field name="completeDefaultTask"/>
+			  	<field name="duration"/>
+		  	</group>
+		  	<button name="completeTimeSheetButton" title="Complete time sheet" colSpan="1" onClick="save" showIf="hasCompleteTimesheetLines == true"/>
+        </group>
+        
         <field name="planningLineList" colSpan="6" grid-view="planning-line-grid" form-view="planning-line-form"/>
     </form>
     
+    <action-record name="action-planning-record-complete-group-default" model="com.axelor.apps.organisation.db.Planning">
+    	<field name="completeFromDate" expr="eval: period?.fromDate" if="completeFromDate == null"/>
+    	<field name="completeToDate" expr="eval: period?.toDate" if="completeToDate == null"/>
+    </action-record>
     
 </object-views>

@@ -31,8 +31,8 @@
 package com.axelor.apps.organisation.web;
 
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.organisation.db.Timesheet;
-import com.axelor.apps.organisation.service.TimesheetPeriodService;
 import com.axelor.apps.organisation.service.TimesheetService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
@@ -43,7 +43,7 @@ import com.google.inject.Provider;
 public class TimesheetController {
 
 	@Inject
-	private Provider<TimesheetPeriodService> timeSheetPeriodService;
+	private Provider<PeriodService> periodService;
 	
 	@Inject
 	private Provider<TimesheetService> timesheetService;
@@ -57,7 +57,7 @@ public class TimesheetController {
 			
 			if(timesheet.getFromDate() != null && company != null)  {
 
-				response.setValue("period", timeSheetPeriodService.get().rightPeriod(timesheet.getFromDate(), company));
+				response.setValue("period", periodService.get().rightPeriod(timesheet.getFromDate(), company));
 			}
 			else {
 				response.setValue("period", null);

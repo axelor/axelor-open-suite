@@ -45,7 +45,6 @@ import com.axelor.apps.base.db.Keyword;
 import com.axelor.apps.organisation.db.Candidate;
 import com.axelor.apps.organisation.db.EvaluationLine;
 import com.axelor.apps.organisation.service.EmployeeService;
-import com.axelor.apps.organisation.service.TimesheetPeriodService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.db.User;
 import com.axelor.exception.service.TraceBackService;
