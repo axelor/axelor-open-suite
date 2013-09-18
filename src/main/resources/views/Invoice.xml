@@ -133,7 +133,7 @@
 	            <group colSpan="2" cols="2">
             		<button name="compute" title="Compute" colSpan="2" onClick="save,action-invoice-method-compute,save"/>
 	                <button name="computeFooter" title="Compute invoice footer" colSpan="2" onClick="save,action-invoice-method-compute-footer,save"/>
-	                <button name="showInvoice" title="Print" icon="img/icons/print.png" colSpan="2" onClick="save,action-invoice-method-show-invoice"/>
+	                <button name="showInvoice" title="Print" colSpan="2" onClick="save,action-invoice-method-show-invoice"/>
 	                <button name="exportInvoice" title="Export" colSpan="2" onClick="save,invoice-export"/>
 	                <button name="sendByEmail" title="Send by email" colSpan="2" showIf="operationTypeSelect = 3 || operationTypeSelect = 4"/>
 	            </group>
