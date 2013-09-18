@@ -17,7 +17,7 @@
 		    <category key="_callEmittedNumber" type="text"/>
 		    <series key="_callEmittedNumber" type="gauge"/>
 		    <config name="min" value="0"/>
-	    	<config name="max" value="100"/>
+	    	<config name="max" value="200"/>
 		</chart>
 		
 		<chart name="chart.user.call.target.bar" title="Call emitted historical">
@@ -40,8 +40,6 @@
 		    <category key="_toDate" type="text"/>
 		    <series key="_callEmittedNumber" type="bar"/>
 <!-- 		    <series key="_callEmittedNumberTarget" type="bar"/> -->
-		    <config name="min" value="0"/>
-	    	<config name="max" value="100"/>
 		</chart>
 		
 		<chart name="chart.user.meeting.target.gauge" title="Meetings number target completed (%)">
@@ -56,7 +54,7 @@
 		    <category key="_meetingNumber" type="text"/>
 		    <series key="_meetingNumber" type="gauge"/>
 		    <config name="min" value="0"/>
-	    	<config name="max" value="100"/>
+	    	<config name="max" value="200"/>
 		</chart>
 		
 		<chart name="chart.user.meeting.target.bar" title="Meetings number historical">
@@ -79,8 +77,6 @@
 		    <category key="_toDate" type="text"/>
 		    <series key="_meetingNumber" type="bar"/>
 <!-- 		    <series key="_meetingNumberTarget" type="bar"/> -->
-		    <config name="min" value="0"/>
-	    	<config name="max" value="100"/>
 		</chart>
 		
 		<chart name="chart.user.opportunity.amount.earned.target.gauge" title="Opportunities amount earned target completed (%)">
@@ -95,7 +91,7 @@
 		    <category key="_opportunityAmountEarned" type="text"/>
 		    <series key="_opportunityAmountEarned" type="gauge"/>
 		    <config name="min" value="0"/>
-	    	<config name="max" value="100"/>
+	    	<config name="max" value="200"/>
 		</chart>
 		
 		<chart name="chart.user.opportunity.amount.earned.target.bar" title="Opportunities amount earned historical">
@@ -118,8 +114,6 @@
 		    <category key="_toDate" type="text"/>
 		    <series key="_opportunityAmountEarned" type="bar"/>
 <!-- 		    <series key="_opportunityAmountEarnedTarget" type="bar"/> -->
-		    <config name="min" value="0"/>
-	    	<config name="max" value="100"/>
 		</chart>
 	
 		<chart name="chart.user.opportunity.created.number.target.gauge" title="Opportunities created number target completed (%)">
@@ -134,7 +128,7 @@
 		    <category key="_opportunityCreatedNumber" type="text"/>
 		    <series key="_opportunityCreatedNumber" type="gauge"/>
 		    <config name="min" value="0"/>
-	    	<config name="max" value="100"/>
+	    	<config name="max" value="200"/>
 		</chart>
 		
 		<chart name="chart.user.opportunity.created.number.target.bar" title="Opportunities created number historical">
@@ -157,8 +151,6 @@
 		    <category key="_toDate" type="text"/>
 		    <series key="_opportunityCreatedNumber" type="bar"/>
 <!-- 		    <series key="_opportunityAmountEarnedTarget" type="bar"/> -->
-		    <config name="min" value="0"/>
-	    	<config name="max" value="100"/>
 		</chart>
 		
 		<chart name="chart.user.opportunity.amount.won.target.gauge" title="Opportunities created won target completed (%)">
@@ -173,7 +165,7 @@
 		    <category key="_opportunityCreatedWon" type="text"/>
 		    <series key="_opportunityCreatedWon" type="gauge"/>
 		    <config name="min" value="0"/>
-	    	<config name="max" value="100"/>
+	    	<config name="max" value="200"/>
 		</chart>
 		
 		<chart name="chart.user.opportunity.amount.won.target.bar" title="Opportunities created won historical">
@@ -196,8 +188,6 @@
 		    <category key="_toDate" type="text"/>
 		    <series key="_opportunityCreatedWon" type="bar"/>
 <!-- 		    <series key="_opportunityCreatedWonTarget" type="bar"/> -->
-		    <config name="min" value="0"/>
-	    	<config name="max" value="100"/>
 		</chart>
 		
 		<chart name="chart.user.sales.order.amount.earned.target.gauge" title="Sales orders amount earned target completed (%)">
@@ -212,7 +202,7 @@
 		    <category key="_salesOrderAmountEarned" type="text"/>
 		    <series key="_salesOrderAmountEarned" type="gauge"/>
 		    <config name="min" value="0"/>
-	    	<config name="max" value="100"/>
+	    	<config name="max" value="200"/>
 		</chart>
 		
 		<chart name="chart.user.sales.order.amount.earned.target.bar" title="Sales orders amount earned historical">
@@ -235,8 +225,6 @@
 		    <category key="_toDate" type="text"/>
 		    <series key="_salesOrderAmountEarned" type="bar"/>
 <!-- 		    <series key="_salesOrderAmountEarnedTarget" type="bar"/> -->
-		    <config name="min" value="0"/>
-	    	<config name="max" value="100"/>
 		</chart>
 		
 		<chart name="chart.user.sales.order.created.number.target.gauge" title="Sales orders created number target completed (%)">
@@ -251,7 +239,7 @@
 		    <category key="_salesOrderCreatedNumber" type="text"/>
 		    <series key="_salesOrderCreatedNumber" type="gauge"/>
 		    <config name="min" value="0"/>
-	    	<config name="max" value="100"/>
+	    	<config name="max" value="200"/>
 		</chart>
 		
 		<chart name="chart.user.sales.order.created.number.target.bar" title="Sales orders created number historical">
@@ -274,8 +262,6 @@
 		    <category key="_toDate" type="text"/>
 		    <series key="_salesOrderCreatedNumber" type="bar"/>
 <!-- 		    <series key="_salesOrderCreatedNumberTarget" type="bar"/> -->
-		    <config name="min" value="0"/>
-	    	<config name="max" value="100"/>
 		</chart>
 		
 		<chart name="chart.user.sales.order.created.won.target.gauge" title="Sales orders created won target completed (%)">
@@ -290,7 +276,7 @@
 		    <category key="_salesOrderCreatedWon" type="text"/>
 		    <series key="_salesOrderCreatedWon" type="gauge"/>
 		    <config name="min" value="0"/>
-	    	<config name="max" value="100"/>
+	    	<config name="max" value="200"/>
 		</chart>
 		
 		<chart name="chart.user.sales.order.created.won.target.bar" title="Sales orders created won historical">
@@ -313,8 +299,6 @@
 		    <category key="_toDate" type="text"/>
 		    <series key="_salesOrderCreatedWon" type="bar"/>
 <!-- 		    <series key="_salesOrderCreatedWonTarget" type="bar"/> -->
-		    <config name="min" value="0"/>
-	    	<config name="max" value="100"/>
 		</chart>
 		
 		
@@ -332,7 +316,7 @@
 		    <category key="_callEmittedNumber" type="text"/>
 		    <series key="_callEmittedNumber" type="gauge"/>
 		    <config name="min" value="0"/>
-	    	<config name="max" value="100"/>
+	    	<config name="max" value="200"/>
 		</chart>
 		
 		<chart name="chart.team.call.target.bar" title="Calls emitted historical">
@@ -355,8 +339,6 @@
 		    <category key="_toDate" type="text"/>
 		    <series key="_callEmittedNumber" type="bar"/>
 <!-- 		    <series key="_callEmittedNumberTarget" type="bar"/> -->
-		    <config name="min" value="0"/>
-	    	<config name="max" value="100"/>
 		</chart>
 		
 		<chart name="chart.team.meeting.target.gauge" title="Meetings number target completed (%)">
@@ -371,7 +353,7 @@
 		    <category key="_meetingNumber" type="text"/>
 		    <series key="_meetingNumber" type="gauge"/>
 		    <config name="min" value="0"/>
-	    	<config name="max" value="100"/>
+	    	<config name="max" value="200"/>
 		</chart>
 		
 		<chart name="chart.team.meeting.target.bar" title="Meeting number historical">
@@ -394,8 +376,6 @@
 		    <category key="_toDate" type="text"/>
 		    <series key="_meetingNumber" type="bar"/>
 <!-- 		    <series key="_meetingNumberTarget" type="bar"/> -->
-		    <config name="min" value="0"/>
-	    	<config name="max" value="100"/>
 		</chart>
 		
 		<chart name="chart.team.opportunity.amount.earned.target.gauge" title="Opportunities amount earned target competed (%)">
@@ -410,7 +390,7 @@
 		    <category key="_opportunityAmountEarned" type="text"/>
 		    <series key="_opportunityAmountEarned" type="gauge"/>
 		    <config name="min" value="0"/>
-	    	<config name="max" value="100"/>
+	    	<config name="max" value="200"/>
 		</chart>
 		
 		<chart name="chart.team.opportunity.amount.earned.target.bar" title="Opportunities amount earned historical">
@@ -433,8 +413,6 @@
 		    <category key="_toDate" type="text"/>
 		    <series key="_opportunityAmountEarned" type="bar"/>
 <!-- 		    <series key="_opportunityAmountEarnedTarget" type="bar"/> -->
-		    <config name="min" value="0"/>
-	    	<config name="max" value="100"/>
 		</chart>
 	
 		<chart name="chart.team.opportunity.created.number.target.gauge" title="Opportunities created number target completed (%)">
@@ -449,7 +427,7 @@
 		    <category key="_opportunityCreatedNumber" type="text"/>
 		    <series key="_opportunityCreatedNumber" type="gauge"/>
 		    <config name="min" value="0"/>
-	    	<config name="max" value="100"/>
+	    	<config name="max" value="200"/>
 		</chart>
 		
 		<chart name="chart.team.opportunity.created.number.target.bar" title="Opportunities created number historical">
@@ -472,8 +450,6 @@
 		    <category key="_toDate" type="text"/>
 		    <series key="_opportunityCreatedNumber" type="bar"/>
 <!-- 		    <series key="_opportunityAmountEarnedTarget" type="bar"/> -->
-		    <config name="min" value="0"/>
-	    	<config name="max" value="100"/>
 		</chart>
 		
 		<chart name="chart.team.opportunity.amount.won.target.gauge" title="Opportunities created won target completed (%)">
@@ -488,7 +464,7 @@
 		    <category key="_opportunityCreatedWon" type="text"/>
 		    <series key="_opportunityCreatedWon" type="gauge"/>
 		    <config name="min" value="0"/>
-	    	<config name="max" value="100"/>
+	    	<config name="max" value="200"/>
 		</chart>
 		
 		<chart name="chart.team.opportunity.amount.won.target.bar" title="Opportunities created won historical">
@@ -511,8 +487,6 @@
 		    <category key="_toDate" type="text"/>
 		    <series key="_opportunityCreatedWon" type="bar"/>
 <!-- 		    <series key="_opportunityCreatedWonTarget" type="bar"/> -->
-		    <config name="min" value="0"/>
-	    	<config name="max" value="100"/>
 		</chart>
 		
 		<chart name="chart.team.sales.order.amount.earned.target.gauge" title="Sales orders amount earned target completed (%)">
@@ -527,7 +501,7 @@
 		    <category key="_salesOrderAmountEarned" type="text"/>
 		    <series key="_salesOrderAmountEarned" type="gauge"/>
 		    <config name="min" value="0"/>
-	    	<config name="max" value="100"/>
+	    	<config name="max" value="200"/>
 		</chart>
 		
 		<chart name="chart.team.sales.order.amount.earned.target.bar" title="Sales orders amount earned historical">
@@ -550,8 +524,6 @@
 		    <category key="_toDate" type="text"/>
 		    <series key="_salesOrderAmountEarned" type="bar"/>
 <!-- 		    <series key="_salesOrderAmountEarnedTarget" type="bar"/> -->
-		    <config name="min" value="0"/>
-	    	<config name="max" value="100"/>
 		</chart>
 		
 		<chart name="chart.team.sales.order.created.number.target.gauge" title="Sales orders created number target completed (%)">
@@ -566,7 +538,7 @@
 		    <category key="_salesOrderCreatedNumber" type="text"/>
 		    <series key="_salesOrderCreatedNumber" type="gauge"/>
 		    <config name="min" value="0"/>
-	    	<config name="max" value="100"/>
+	    	<config name="max" value="200"/>
 		</chart>
 		
 		<chart name="chart.team.sales.order.created.number.target.bar" title="Sales orders created number historical">
@@ -589,8 +561,6 @@
 		    <category key="_toDate" type="text"/>
 		    <series key="_salesOrderCreatedNumber" type="bar"/>
 <!-- 		    <series key="_salesOrderCreatedNumberTarget" type="bar"/> -->
-		    <config name="min" value="0"/>
-	    	<config name="max" value="100"/>
 		</chart>
 		
 		<chart name="chart.team.sales.order.created.won.target.gauge" title="Sales orders created won target completed">
@@ -605,7 +575,7 @@
 		    <category key="_salesOrderCreatedWon" type="text"/>
 		    <series key="_salesOrderCreatedWon" type="gauge"/>
 		    <config name="min" value="0"/>
-	    	<config name="max" value="100"/>
+	    	<config name="max" value="200"/>
 		</chart>
 		
 		<chart name="chart.team.sales.order.created.won.target.bar" title="Sales orders created won historical">
@@ -628,8 +598,6 @@
 		    <category key="_toDate" type="text"/>
 		    <series key="_salesOrderCreatedWon" type="bar"/>
 <!-- 		    <series key="_salesOrderCreatedWonTarget" type="bar"/> -->
-		    <config name="min" value="0"/>
-	    	<config name="max" value="100"/>
 		</chart>
 		
 		
