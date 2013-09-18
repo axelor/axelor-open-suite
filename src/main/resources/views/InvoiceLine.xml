@@ -25,6 +25,7 @@
 		        <field name="price" onChange="action-invoice-line-method-compute"/>
 		        <field name="product.unit"/>
 		        <field name="exTaxTotal"/>
+		        <field name="task"/>
 		        <group title="V.A.T informations" colSpan="4" cols="4">
 		    		<field name="vatLine"/>
 					<field name="vatLine.vat.name"/>
