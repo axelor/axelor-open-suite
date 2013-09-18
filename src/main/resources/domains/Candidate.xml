@@ -42,7 +42,16 @@
 		<many-to-one name="competence" ref="Competence" title="Competences" mappedBy="candidate"/>
 		<one-to-many name="candidateOtherOpportunityList" ref="CandidateOtherOpportunity" title="Candidates other position proposals" mappedBy="candidate"/>
 		
-			
+		
+		<integer name="etatCandidature" title="Etat candidature" selection="organisation.candidate.state.select"/>
+		<many-to-one name="metierRecherche" ref="com.axelor.apps.base.db.Keyword" title="Métier recherché"/>
+		<integer name="contratRecherche" title="Contrat recherché" selection="organisation.job.offer.contrat.type.select"/>
+		<integer name="niveauEtudes" title="Niveau d'études" selection="organisation.job.offer.niveau.type.select"/>
+		<many-to-one name="fonction" ref="com.axelor.apps.base.db.Keyword" title="Fonction"/>
+		<string name="permis" title="Permis" help="Format: Permis A/Permis B/..."/>
+		<many-to-one name="source" ref="com.axelor.apps.base.db.Source" title="Source"/>
+		<date name="recruitementDate" title="Date entretien"/>
+		<string name="commentaire" title="Commentaire" multiline="true"/>	
 	</entity>
 
 </domain-models>
