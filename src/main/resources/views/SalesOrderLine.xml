@@ -40,7 +40,7 @@
 	                <field name="saleSupplySelect"/>
 	                <break/>
 	                <field name="supplierPartner" domain="self.partnerTypeSelect = 2"/>
-	                <field name="task"/>
+	                <field name="task" readonlyIf="(_parent.statusSelect = 2 || _parent.statusSelect = 3 || _parent.statusSelect = 4) &amp;&amp; task != null"/>
 	            </group>
 	        </page>
 	        <page title="Notes">

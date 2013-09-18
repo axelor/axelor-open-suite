@@ -9,6 +9,7 @@
         <field name="affairProject"/>
         <field name="orderDate"/>
         <field name="buyerUserInfo"/>
+        <field name="inTaxTotal"/>
         <field name="statusSelect"/>
     </grid>
     

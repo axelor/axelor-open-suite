@@ -24,6 +24,7 @@
     	<field name="unit"/>
     	<field name="exTaxTotal"/>
 		<field name="deliveryDate"/>
+		<field name="task" readonlyIf="(_parent.statusSelect = 2 || _parent.statusSelect = 3 || _parent.statusSelect = 4) &amp;&amp; task != null"/>
 		<group title="V.A.T informations" colSpan="4" cols="4">
     		<field name="vatLine" domain="self.endDate = null or self.endDate &gt; :__date__"/>
 			<field name="vatLine.vat.name"/>

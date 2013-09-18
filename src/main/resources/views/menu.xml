@@ -84,10 +84,10 @@
 		icon="img/icons/order.png" groups="admins,erp"/>
 			
 	<menuitem name="sc-root-sales-new-so" title="New Sale order" priority="2"
-		icon="img/icons/order.png" groups="admins,erp" action="sc.root.sales.new.so" parent="sc-root-sales"/>
+		 groups="admins,erp" action="sc.root.sales.new.so" parent="sc-root-sales"/>
 		
 	<action-view name="sc.root.sales.new.so" title="New Sale order"
-		model="com.axelor.apps.supplychain.db.SalesOrder" icon="img/icons/order.png">
+		model="com.axelor.apps.supplychain.db.SalesOrder" icon="img/icons/order_small.png">
 		<view type="form" name="sales-order-form"/>
 		<view-param name="search-filters" value="sales-order-filters"/>
 		<context name="_internalUser" expr="eval: __user__.id"/>
@@ -95,7 +95,7 @@
 	</action-view>	
 	
 	<menuitem name="sc-root-sales-orders" parent="sc-root-sales" priority="1"
-		title="Sale orders" action="sc.root.sales.orders" />
+		groups="admins,erp" title="Sale orders" action="sc.root.sales.orders" />
 	
 	<action-view name="sc.root.sales.orders" title="Sale orders"
 		model="com.axelor.apps.supplychain.db.SalesOrder" icon="img/icons/order_small.png">
@@ -108,18 +108,18 @@
 	
 	
 	<menuitem name="sc-root-purchases" title="Purchases" priority="150"
-		icon="img/icons/order_small.png" groups="admins,erp"/>
+		icon="img/icons/order.png" groups="admins,erp"/>
 		
 	<menuitem name="sc-root-purchase-order-new" title="New Purchase order" priority="2"
-		icon="img/icons/order_small.png" groups="admins,erp" action="sc.root.purchase.order.new" parent="sc-root-purchases"/>
+		groups="admins,erp" action="sc.root.purchase.order.new" parent="sc-root-purchases"/>
 		
 	<action-view name="sc.root.purchase.order.new" title="New Purchase order"
 		model="com.axelor.apps.supplychain.db.PurchaseOrder" icon="img/icons/order_small.png">
 		<view type="form" name="purchase-order-form" />
 	</action-view>	
 	
-	<menuitem name="sc-root-purchase-orders" parent="sc-root-purchases" priority="1" 
-		title="Purchase orders" action="sc.root.purchase.orders" />
+	<menuitem name="sc-root-purchase-orders" title="Purchase orders" priority="1" 
+		groups="admins,erp" action="sc.root.purchase.orders" parent="sc-root-purchases"/>
 
 	<action-view name="sc.root.purchase.orders" title="Purchase orders"
 		model="com.axelor.apps.supplychain.db.PurchaseOrder" icon="img/icons/order_small.png">

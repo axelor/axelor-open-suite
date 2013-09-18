@@ -46,12 +46,14 @@ import com.axelor.apps.supplychain.db.Location;
 import com.axelor.apps.supplychain.db.SalesOrder;
 import com.axelor.apps.supplychain.service.SalesOrderService;
 import com.axelor.apps.tool.net.URLService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.googleapps.document.DocumentService;
 import com.axelor.googleapps.userutils.Utils;
+import com.axelor.meta.db.MetaUser;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -83,7 +85,7 @@ public class SalesOrderController {
 
 		// in this line change the Class as per the Module requirement i.e SalesOrder class here used
 		SalesOrder dataObject = request.getContext().asType(SalesOrder.class);
-		User currentUser = (User) request.getContext().get("__user__");
+		User currentUser =  AuthUtils.getUser();
 		UserInfo currentUserInfo = UserInfo.all().filter("self.internalUser = ?1", currentUser).fetchOne();
 
 		GoogleFile documentData = documentSeriveObj.createDocumentWithTemplate(currentUserInfo,dataObject);
