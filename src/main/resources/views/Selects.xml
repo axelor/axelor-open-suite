@@ -127,7 +127,7 @@
 		<option value="7">Sunday</option>
 	</selection>
 	
-	<selection name="organisation.timesheet.period.config.day.month.select">
+	<selection name="organisation.day.month.select">
 		<option value="0">00</option>
 		<option value="1">01</option>
 		<option value="2">02</option>
@@ -156,6 +156,7 @@
 		<option value="25">25</option>
 		<option value="26">26</option>
 		<option value="27">27</option>
+		<option value="28">28</option>
 		<option value="28">28</option>
 	</selection>
 	

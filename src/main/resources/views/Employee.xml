@@ -59,7 +59,7 @@
 				</group>
 				<field name="positionList" colSpan="4"/>	
 			</page>
-			<page title="Salary/Expenses/Holidays">
+			<page title="Salary/Expenses/Leaves">
 				<notebook>
 					<page title="Salary">
 						<field name="bonusList" grid-view="bonus-grid" colSpan="2"/>
@@ -78,12 +78,11 @@
 						</group>
 						<field name="expenseList" colSpan="4" grid-view="expense-edit-grid"/>
 					</page>
-					<page title="Holidays">	
+					<page title="Leaves">	
+						<field name="employeeLeaveList" colSpan="4"/>
 					</page>
 				</notebook>
 			</page>
-<!-- 			<page title="Holidays"> -->
-<!-- 			</page> -->
 			<page title="Competences">
 				<field name="competence" widget="NestedEditor" summary-view="true" form-view="competence-edit-form" hidden="true"/>
 			</page>

@@ -57,6 +57,19 @@
 <!-- 		<view type="form" name="candidate-form" /> -->
 <!-- 		<domain>self.macroCategorySelect in (4,5,6)</domain> -->
 <!-- 	</action-view> -->
+
+	<menuitem name="hr-root-my-timesheet-line-calendar" parent="hr-root-inputforms"
+		title="My leaves calendar" action="hr.root.my.timesheet.line.calendar"/>
+		
+	<action-view name="hr.root.my.timesheet.line.calendar" title="My leaves calendar"
+		model="com.axelor.apps.organisation.db.TimesheetLine" icon="img/icons/organisation_small.png">
+		<view type="calendar" name="timesheet-line-calendar" />
+		<view type="form" name="timesheet-line-form" />
+		<domain>self.userInfo.internalUser.id = :_internalUserId and self.statusSelect = 1</domain>
+		<context name="_internalUserId" expr="eval: __user__.id"/>
+		<context name="_statusSelect" expr="1"/>
+	</action-view>
+
 	
 	<menuitem name="hr-root-inputforms" parent="hr-root"
 		title="Input forms" />
@@ -244,6 +257,15 @@
 		<view type="grid" name="public-holidays-grid" />
 		<view type="form" name="public-holidays-form" />
 	</action-view>	
+	
+	<menuitem name="hr-root-conf-task-leave-request-reason" parent="hr-root-conf"
+		title="Leave request reasons" action="hr.root.conf.task.leave.request.reason" />
+
+	<action-view name="hr.root.conf.task.leave.request.reason" title="Leave request reasons"
+		model="com.axelor.apps.organisation.db.Task" icon="img/icons/project_small.png">
+		<view type="grid" name="task-leave-reason-grid" />
+		<view type="form" name="task-leave-reason-form" />
+	</action-view>
 
 	
 	

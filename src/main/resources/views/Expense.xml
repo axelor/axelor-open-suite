@@ -23,7 +23,7 @@
     <form name="expense-form" title="Travel expense" model="com.axelor.apps.organisation.db.Expense" cols="4"
     onNew="action-expense-default-record" onLoad="action-expense-method-check-validation-status">
 		<field name="userInfo"/>
-   	 	<field name="statusSelect" widget="NavSelect"/>
+   	 	<field name="statusSelect" widget="NavSelect" showTitle="false"/>
         <field name="date" />
         <field name="totalAmount"/>
        	<field name="currency" />

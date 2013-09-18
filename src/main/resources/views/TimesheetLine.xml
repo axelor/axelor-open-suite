@@ -3,6 +3,10 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
+    <calendar name="timesheet-line-calendar" eventStart="startDateT" eventStop="endDateT"  title="TImesheet project/task time input" model="com.axelor.apps.organisation.db.TimesheetLine">
+    	<field name="task"/>
+    </calendar>
+    
     <grid name="timesheet-line-grid" title="Timesheet project/task time inputs" model="com.axelor.apps.organisation.db.TimesheetLine">
         <field name="project"/>
         <field name="task"/>
@@ -10,7 +14,7 @@
         <field name="duration" title="Duration (h)"/>
     </grid>
     
-    <form name="timesheet-line-form" title="Timesheet project/task time input" model="com.axelor.apps.organisation.db.TimesheetLine" cols="4">
+    <form name="timesheet-line-form" title="Timesheet project/task time input" model="com.axelor.apps.organisation.db.TimesheetLine" cols="4" onNew="action-timesheet-line-record-default">
         <field name="project"/>
         <field name="task"/>
         <field name="date"/>
@@ -18,5 +22,10 @@
         <field name="isToInvoice"/>
         <field name="isInvoiced"/>
     </form>
+    
+    <action-record name="action-timesheet-line-record-default" model="com.axelor.apps.organisation.db.TimesheetLine">
+	    <field name="date" expr="eval : startDateT" if="startDateT != null"/>
+	    <field name="duration" expr="eval : new Interval(startDateT.toDateTime(), endDateT.toDateTime()).toDuration().toStandardHours().getHours()" if="startDateT != null"/>
+    </action-record>
     
 </object-views>
