@@ -17,8 +17,18 @@
             <bind to="code" column="group"/>
       </bind>
 	</input>
+	
     
 <!--     IMPORT DU PACKAGE 'BASE' -->   
+    <input file="base_year.csv" separator=";" type="com.axelor.app.base.db.Year">
+        <bind to="name" column="name"/>
+        <bind to="code" column="code"/>
+        <bind to="toDate" column="toDate"/>
+        <bind to="fromDate" column="fromDate"/>
+        <bind to="status" search="self.code = :status_code" >
+            <bind to="code" column="status_code"/>
+        </bind>
+    </input>
     
   	<input file="base_status.csv" separator=";" type="com.axelor.apps.base.db.Status">
 		<bind column="statut_id" to="koalaId" />
@@ -70,6 +80,9 @@
 	<!-- A BESOIN de paymentMode, fichier vide actuellement, il faudra faire un update -->
 	<input file="base_partner.csv" separator=";" type="com.axelor.apps.base.db.Partner">
 		<bind column="companySet_code" to="companySet" search="self.code in :companySet_code" eval="companySet_code.split('\\|') as List"/>
+		<bind to="emailAddress" search="self.address = :email">
+			<bind to="address" column="email" />
+		</bind>
 	</input>
 	
 	<!-- A BESOIN DE PARTNER -->
@@ -135,10 +148,10 @@
 		<bind column="name_fr" to="name"/>	
 	</input>
 	
-	<input file="base_productCategory.csv" separator=";" search="self.code = :code_fr and self.name = :name_fr" type="com.axelor.apps.base.db.ProductCategory">
-		<bind column="code_fr" to="code" update="true"/>	
-		<bind column="name_fr" to="name" update="true"/>	
-	</input>
+<!-- 	<input file="base_productCategory.csv" separator=";" search="self.code = :code_fr and self.name = :name_fr" type="com.axelor.apps.base.db.ProductCategory"> -->
+<!-- 		<bind column="code_fr" to="code" update="true"/>	 -->
+<!-- 		<bind column="name_fr" to="name" update="true"/>	 -->
+<!-- 	</input> -->
 
 	<input file="base_productFamily.csv" separator=";" type="com.axelor.apps.base.db.ProductFamily">
 		<bind column="name_fr_FR" to="name"/>
@@ -153,10 +166,16 @@
 
  	<input file="base_partner.csv" separator=";" search="self.importId = :importId" update="true" type="com.axelor.apps.base.db.Partner">
 		<bind column="companySet_code" to="companySet" search="self.code in :companySet_code" eval="companySet_code.split('\\|') as List"/>
+		<bind to="mainPartner" search="self.importId = :mainPartner_importId" update="true" />
 	</input>
+	
 
-<!--     IMPORT DU PACKAGE 'ACCOUNT' -->     
-
+<!--     IMPORT DU PACKAGE 'ACCOUNT' -->
+     
+	<input file="account_accountType.csv" separator=";" type="com.axelor.apps.account.db.AccountType">
+  		<bind to="nameSelect" column="name" />
+  	</input>
+	
 	<input file="account_journalType.csv" separator=";" type="com.axelor.apps.account.db.JournalType" />
 	
 	<input file="account_journal.csv" separator=";" type="com.axelor.apps.account.db.Journal" />
@@ -176,19 +195,6 @@
 	<input file="account_analyticAxis.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAxis" />
 	
 	<input file="account_analyticAccount.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAccount" />
-	
-	<input file="account_year.csv" separator=";" type="com.axelor.apps.account.db.Year">
-        <bind to="name" column="name"/>
-        <bind to="code" column="code"/>
-        <bind to="toDate" column="toDate"/>
-        <bind to="fromDate" column="fromDate"/>
-<!--         <bind to="company" search="self.code = :company_name" > -->
-<!--             <bind to="name" column="company_name"/> -->
-<!--         </bind> -->
-        <bind to="status" search="self.code = :status_code" >
-            <bind to="code" column="status_code"/>
-        </bind>
-    </input>
 	
 	<input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company" search="self.importId = :importId" update="true" call="com.axelor.csv.script.UpdateAll:updatePeriod">
 		<bind column="importId" to="importId"/>
@@ -241,9 +247,10 @@
 	
 	
 	<input file="account_accountManagement.csv" separator=";" type="com.axelor.apps.account.db.AccountManagement" >
-		<bind search="self.code = :cashAccount_code and self.company.code = :company.code" to="cashAccount"/>
-		<bind search="self.code = :saleAccount_code and self.company.code = :company.code" to="saleAccount"/>
-		<bind search="self.code = :purchaseAccount_code and self.company.code = :company.code" to="purchaseAccount"/>
+		<bind search="self.code = :company_code" to="company" update="true" />
+		<bind search="self.code = :cashAccount_code and self.company.code = :company_code" to="cashAccount" update="true" />
+		<bind search="self.code = :saleAccount_code and self.company.code = :company_code" to="saleAccount" update="true" />
+		<bind search="self.code = :purchaseAccount_code and self.company.code = :company_code" to="purchaseAccount" update="true" />
 	</input>
 	
 	<input file="account_analyticAccountManagement.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAccountManagement" />
@@ -267,14 +274,18 @@
 		<bind to="qasWsdlUrl" column="qas_url"/>
 	</input>
 
-	<input file="account_journal.csv" separator=";"  type="com.axelor.apps.account.db.Journal" search="self.importId = :importId" update="true" >
-		<bind to="journal" search="self.code = :journal.code" >
-      <bind to="code" column="journal.code"/>
-    </bind>
-	</input>
+<!-- 	<input file="account_journal.csv" separator=";"  type="com.axelor.apps.account.db.Journal" search="self.importId = :importId" update="true" > -->
+<!-- 		<bind to="journal" search="self.code = :journal.code" > -->
+<!--       <bind to="code" column="journal.code"/> -->
+<!--     </bind> -->
+<!-- 	</input> -->
 	
 	<input file="base_partner.csv" separator=";" type="com.axelor.apps.base.db.Partner" search="self.importId = :importId" 
-	update="true" call="com.axelor.csv.script.ImportPartner:importAccountingSituation"/>
+	update="true" call="com.axelor.csv.script.ImportPartner:importAccountingSituation">
+		<bind to="isContact" eval="isContact == 'true' ? true : false" />
+		<bind to="isCustomer" eval="isCustomer == 'true' ? true : false" />
+		<bind to="isSupplier" eval="isSupplier == 'true' ? true : false" />
+	</input>
 	
 	<input file="base_bankDetails.csv" separator=";" search="self.importId = :partner_importId" update="true" type="com.axelor.apps.base.db.Partner" >
 		<bind to="bankDetails" search="self.importId = :importId" >
@@ -284,7 +295,9 @@
 	
 	
 <!--     IMPORT DU PACKAGE 'CRM' --> 	
-
+	
+	<input file="crm_eventCategory.csv" separator=";" type="com.axelor.apps.crm.db.EventCategory" />
+	
 	<input file="crm_lead.csv" separator=";" type="com.axelor.apps.crm.db.Lead">
 		<bind column="description_fr_FR" to="description"/>
 		<bind column="jobTitle_fr" to="jobTitle"/>
@@ -297,7 +310,16 @@
 	
 	
 <!--     IMPORT DU PACKAGE 'ORGANISATION' --> 	
-	
+	<input file="organisation_publicHolidays.csv" separator=";" type="com.axelor.apps.organisation.db.PublicHolidays" />
+  	
+  	<input file="organisation_publicHolidaysLine.csv" separator=";" type="com.axelor.apps.organisation.db.PublicHolidaysLine" />
+  	
+  	<input file="organisation_schedule.csv" separator=";" type="com.axelor.apps.organisation.db.Schedule" />
+  	
+  	<input file="organisation_scheduleLine.csv" separator=";" type="com.axelor.apps.organisation.db.ScheduleLine" />
+  	
+  	<input file="organisation_scheduleSubLine.csv" separator=";" type="com.axelor.apps.organisation.db.ScheduleSubLine" />
+		
 	<input file="organisation_degree.csv" separator=";" type="com.axelor.apps.organisation.db.Degree"/>
 	
 	<input file="organisation_personalInfo.csv" separator=";" type="com.axelor.apps.organisation.db.PersonalInfo"/>

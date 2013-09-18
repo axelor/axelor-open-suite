@@ -2,8 +2,9 @@
 <csv-inputs xmlns="http://apps.axelor.com/xml/ns/data-import"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://apps.axelor.com/xml/ns/data-import http://apps.axelor.com/xml/ns/data-import/data-import_0.9.xsd">
-  
-  <!-- 	<input file="auth_group.csv" separator=";" type="com.axelor.auth.db.Group" />
+  	
+  	
+    <input file="auth_group.csv" separator=";" type="com.axelor.auth.db.Group" />
   	
   	<input file="base_country.csv" separator=";" type="com.axelor.apps.base.db.Country" />
   	
@@ -82,7 +83,7 @@
 		<bind to="team" search="self.importId = :team_id" update="true" >
 			<bind to="importId" column="team_id" />
 		</bind>
-	</input> -->
+	</input> 
 	
 	<input file="Accounts.csv" separator=";" type="com.axelor.apps.base.db.Partner" search="self.importId = :id" update="true">
 		<bind to="parentPartner" search="self.importId = :parent_id" update="true">
