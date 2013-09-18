@@ -46,6 +46,7 @@ import com.axelor.apps.organisation.db.Candidate;
 import com.axelor.apps.organisation.db.EvaluationLine;
 import com.axelor.apps.organisation.service.EmployeeService;
 import com.axelor.apps.tool.net.URLService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.meta.db.MetaUser;
@@ -144,7 +145,8 @@ public class CandidateController {
 		StringBuilder url = new StringBuilder();
 		AxelorSettings axelorSettings = AxelorSettings.get();
 		
-		MetaUser metaUser = MetaUser.findByUser((User) request.getContext().get("__user__"));
+		MetaUser metaUser = MetaUser.findByUser( AuthUtils.getUser());
+		
 		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Candidate.rptdesign&__format=pdf&CandidateId="+candidate.getId()+"&Locale="+metaUser.getLanguage()+axelorSettings.get("axelor.report.engine.datasource"));
 		
 		LOG.debug("URL : {}", url);

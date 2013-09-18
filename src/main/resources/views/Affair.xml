@@ -22,7 +22,7 @@
 	        <field name="company" widget="SuggestBox"/>
 	       	<field name="typeDurationSelect"/>
 	        <field name="plannedDuration"/>
-	        <field name="description" colSpan="4" widget="html"/>
+	        <field name="description" colSpan="4" widget="Html[lite=true]"/>
 	        <group name="specificSettings" title="Specific settings" colSpan="4" canCollapse="true">
 	        	<field name="isProject"/>
 	        	<field name="isAffair"/>

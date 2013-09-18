@@ -27,11 +27,12 @@
         <field name="date" />
         <field name="totalAmount"/>
        	<field name="currency" />
+       	<field name="project" />
    	 	<field name="expenseLineList" colSpan="4"/>
    	 	<break/>
    	 	<field name="progress" widget="progress"/>
    	 	<field name="paymentPeriod"/>
-   	 	<field name="motif" showIf="statusSelect == 6"/>
+   	 	<field name="refusalReason" showIf="statusSelect == 6"/>
    	 	<break/>
        	<group title="Action(s)" colSpan="4">
    			<group colSpan="1" cols="1">

@@ -89,7 +89,7 @@
 			<page title="Hierarchy">
 				<field name="supervisedBySelect" />
 				<field name="managerUserInfo" showIf="supervisedBySelect == 1"/>
-				<field name="managerProfileProduct" domain="self.applicationTypeSelect = 2"/>
+				<field name="managerProfileProduct" domain="self.applicationTypeSelect = 2" showIf="supervisedBySelect == 2"/>
 				<field name="profileProduct" domain="self.applicationTypeSelect = 2"/>
 			</page>
 			<page title="Reporting">

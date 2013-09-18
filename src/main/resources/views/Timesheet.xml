@@ -55,7 +55,7 @@
 		  	</group>
         </group>
 	  	
-        <field name="timesheetLineList" colSpan="4"/>
+        <field name="timesheetLineList" colSpan="4" grid-view="timesheet-line-grid" form-view="timesheet-line-form"/>
         <field name="timesheetInputTotal"/>
         <field name="timesheetTotalByTypeList" colSpan="4"/>
        	<group title="Action(s)" colSpan="4">

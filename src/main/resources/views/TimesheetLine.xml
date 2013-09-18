@@ -10,11 +10,29 @@
     <grid name="timesheet-line-grid" title="Timesheet project/task time inputs" model="com.axelor.apps.organisation.db.TimesheetLine">
         <field name="project"/>
         <field name="task"/>
+        <field name="timesheet.userInfo"/>
         <field name="date"/>
         <field name="duration" title="Duration (h)"/>
     </grid>
     
     <form name="timesheet-line-form" title="Timesheet project/task time input" model="com.axelor.apps.organisation.db.TimesheetLine" cols="4" onNew="action-timesheet-line-record-default">
+        <field name="project"/>
+        <field name="task"/>
+        <field name="timesheet.userInfo"/>
+        <field name="date"/>
+        <field name="duration" title="Duration (h)"/>
+        <field name="isToInvoice"/>
+        <field name="isInvoiced"/>
+    </form>
+    
+    <grid name="timesheet-line-employee-grid" title="Timesheet project/task time inputs" model="com.axelor.apps.organisation.db.TimesheetLine">
+        <field name="project"/>
+        <field name="task"/>
+        <field name="date"/>
+        <field name="duration" title="Duration (h)"/>
+    </grid>
+    
+     <form name="timesheet-line-employee-form" title="Timesheet project/task time input" model="com.axelor.apps.organisation.db.TimesheetLine" cols="4" onNew="action-timesheet-line-record-default">
         <field name="project"/>
         <field name="task"/>
         <field name="date"/>

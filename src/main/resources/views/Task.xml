@@ -26,6 +26,7 @@
     </grid>
     
     <form name="task-form" title="Task" model="com.axelor.apps.organisation.db.Task" cols="4" onNew="action-task-default-record,action-task-attrs-hide-financial" 
+    onLoad="action-task-method-update-financial-information,save"
     onSave="action-task-compute-margin">
     	<group colSpan="4" cols="3">
     		<field name="name" showTitle="false" css="highlight" placeholder="Task name" colSpan="2"/>
@@ -97,14 +98,14 @@
 	            <field name="generatedCharge"/>
 	        </page>
 	        <page title="Links" colSpan="4">
-	            <field name="submittedSalesOrderLineSet" colSpan="4"/>
-	            <field name="submittedPurchaseOrderLineSet" colSpan="4"/>
-	            <field name="validatedSalesOrderLineSet" colSpan="4"/>
-	            <field name="validatedPurchaseOrderLineSet" colSpan="4"/>
-	            <field name="customerInvoiceLineSet" colSpan="4"/>
-	            <field name="supplierInvoiceLineSet" colSpan="4"/>
-	            <field name="timesheetLineSet" colSpan="4"/>
-	            <field name="expenseLineSet" colSpan="4"/>
+	        	<portlet colSpan="4" action="action-task-view-submitted-sales-order-line"/>
+	     		<portlet colSpan="4" action="action-task-view-submitted-purchase-order-line"/>
+	     		<portlet colSpan="4" action="action-task-view-validated-sales-order-line"/>
+	     		<portlet colSpan="4" action="action-task-view-validated-purchase-order-line"/>
+	     		<portlet colSpan="4" action="action-task-view-customer-invoice-line"/>
+	     		<portlet colSpan="4" action="action-task-view-supplier-invoice-line"/>
+	     		<portlet colSpan="4" action="action-task-view-timesheet-line"/>
+	     		<portlet colSpan="4" action="action-task-view-expense-line"/>
 	        </page>
 	        <page title="Description" colSpan="4">
 	            <field name="description" showTitle="false" colSpan="4"/>
@@ -187,6 +188,68 @@
 	<action-attrs name="action-task-attrs-hide-financial">
 		<attribute name="hidden" for="financialInformation" expr="eval: project == null || project?.isAffair == false"/>
 	</action-attrs>
+	
+	<action-method name="action-task-method-update-financial-information">
+		<call class="com.axelor.apps.organisation.web.TaskController" method="updateFinancialInformation"/>
+	</action-method>
+	
+  	
+  	<action-view name="action-task-view-submitted-sales-order-line" title="Submitted customer order lines" model="com.axelor.apps.supplychain.db.SalesOrderLine">
+  		<view type="grid" name="sales-order-line-grid"/>
+		<view type="form" name="sales-order-line-form"/>
+  		<domain>self.salesOrder.statusSelect = 2 and self.task.id = :id</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
+  	<action-view name="action-task-view-submitted-purchase-order-line" title="Submitted supplier order lines" model="com.axelor.apps.supplychain.db.PurchaseOrderLine">
+  		<view type="grid" name="purchase-order-line-grid"/>
+		<view type="form" name="purchase-order-line-form"/>
+  		<domain>self.purchaseOrder.statusSelect = 2 and self.task.id = :id</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
+  	<action-view name="action-task-view-validated-sales-order-line" title="Submitted Customer order lines" model="com.axelor.apps.supplychain.db.SalesOrderLine">
+  		<view type="grid" name="sales-order-line-grid"/>
+		<view type="form" name="sales-order-line-form"/>
+  		<domain>self.salesOrder.statusSelect = 3 and self.task.id = :id</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
+  	<action-view name="action-task-view-validated-purchase-order-line" title="Submitted supplier order lines" model="com.axelor.apps.supplychain.db.PurchaseOrderLine">
+  		<view type="grid" name="purchase-order-line-grid"/>
+		<view type="form" name="purchase-order-line-form"/>
+  		<domain>self.purchaseOrder.statusSelect = 3 and self.task.id = :id</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
+  	<action-view name="action-task-view-customer-invoice-line" title="Customer invoice lines" model="com.axelor.apps.account.db.InvoiceLine">
+  		<view type="grid" name="invoice-line-grid"/>
+		<view type="form" name="invoice-line-form"/>
+  		<domain>self.invoice.status.code = 'dis' and self.task.id = :id and (self.invoice.operationTypeSelect = 3 or self.invoice.operationTypeSelect = 4)</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
+  	<action-view name="action-task-view-supplier-invoice-line" title="Supplier invoice lines" model="com.axelor.apps.account.db.InvoiceLine">
+  		<view type="grid" name="invoice-line-grid"/>
+		<view type="form" name="invoice-line-form"/>
+  		<domain>self.invoice.status.code = 'dis' and self.task.id = :id and (self.invoice.operationTypeSelect = 1 or self.invoice.operationTypeSelect = 2)</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
+  	<action-view name="action-task-view-timesheet-line" title="Timesheet lines" model="com.axelor.apps.organisation.db.TimesheetLine">
+  		<view type="grid" name="timesheet-line-employee-grid"/>
+		<view type="form" name="timesheet-line-employee-form"/>
+  		<domain>self.timesheet.statusSelect = 3 and self.task.id = :id</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
+  	<action-view name="action-task-view-expense-line" title="Travel expense lines" model="com.axelor.apps.organisation.db.ExpenseLine">
+  		<view type="grid" name="expense-line-grid"/>
+		<view type="form" name="expense-line-form"/>
+  		<domain>self.expense.statusSelect = 3 and self.task.id = :id</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
 	
 	<search-filters name="tasks-filters" model="com.axelor.apps.organisation.db.Task" title="Tasks filters">
 		<filter title="My Tasks">
