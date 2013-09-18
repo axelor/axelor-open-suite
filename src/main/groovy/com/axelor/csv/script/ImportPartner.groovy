@@ -49,7 +49,8 @@ class ImportPartner {
 			assert bean instanceof Partner
 	        try{
 	            Partner partner = (Partner) bean
-				
+				partner.contactPartnerSet = new HashSet<Partner>()
+				Partner.all().filter("self.mainPartner.id = ?1",partner.id).fetch().each{it->partner.contactPartnerSet.add(it)}
 				for(Company company : partner.companySet)  {
 					
 					AccountingSituation accountingSituation = new AccountingSituation()
@@ -61,7 +62,7 @@ class ImportPartner {
 						partner.accountingSituationList = new ArrayList<AccountingSituation>()
 					}
 					partner.accountingSituationList.add(accountingSituation)
-					
+						
 				}
 				
 				return partner

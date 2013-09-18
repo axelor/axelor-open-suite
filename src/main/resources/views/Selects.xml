@@ -89,8 +89,8 @@
 		<option value="20">Retaile</option>
 		<option value="21">Transport &amp; Logistics</option>
 		<option value="22">Telecom</option>
-		<option value="22">Apparel</option>
-		<option value="23">Other</option>
+		<option value="23">Apparel</option>
+		<option value="24">Other</option>
 	</selection>
 	
 	<selection name='product.product.type.select'>
