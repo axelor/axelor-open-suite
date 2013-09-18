@@ -279,6 +279,10 @@
 		<option value="2">No</option>
 	</selection>
 	
+	<selection name='organisation.project.report.type.select'>
+		<option value="pdf">PDF</option>
+		<option value="xls">XLS</option>
+	</selection>
 	<selection name="hr.expense.status.select">
 		<option value="1">Draft</option>
 		<option value="2">Submited</option>

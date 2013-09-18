@@ -54,6 +54,9 @@
 	                <field name="estimatedTurnover"/>
 	                <field name="estimatedCost"/>
 	                <field name="estimatedMargin"/>
+	                 <field name="exportTypeSelect"/>
+	                <button name="printProject" colSpan="2" title="Voir rapport estimations" onClick="action-print-project-report" icon="img/icons/print.png"/>
+	               
 	            </group>
 	            <group title="Confirmed" colSpan="4" cols="6">
 	                <field name="confirmedTurnover"/>
@@ -95,6 +98,7 @@
     <action-record name="action-affair-record-default" model="com.axelor.apps.organisation.db.Project">
 		<field name="isTimeSheetImputable" expr="true"/>
 		<field name="isAffair" expr="true"/>
+    	<field name="exportTypeSelect" expr="eval: pdf"/>
 	</action-record>
 			
 	<action-method name="action-affair-method-create-pre-sales-task">
@@ -103,6 +107,10 @@
 		
 	<action-method name="action-affair-method-create-default-task-on-save">
 		<call class="com.axelor.apps.organisation.web.ProjectController" method="createDefaultTask"/>
+	</action-method>
+	
+	<action-method name="action-print-project-report" >
+		<call class="com.axelor.apps.organisation.web.ProjectController" method="printProjectReport"/>
 	</action-method>
 		
 </object-views>

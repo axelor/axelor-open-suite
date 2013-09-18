@@ -30,8 +30,13 @@
  */
 package com.axelor.apps.organisation.web;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import com.axelor.apps.AxelorSettings;
 import com.axelor.apps.organisation.db.Task;
 import com.axelor.apps.organisation.service.TaskService;
+import com.axelor.apps.tool.net.URLService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -58,6 +63,37 @@ public class TaskController {
 		response.setValue("realizedMargin", task.getRealizedMargin());
 	}
 
-	
+	/**
+	 * Fonction appeler par le bouton imprimer
+	 *
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	public void printTaskReport(ActionRequest request, ActionResponse response) {
+
+		Task task = request.getContext().asType(Task.class);
+
+		StringBuilder url = new StringBuilder();
+		AxelorSettings axelorSettings = AxelorSettings.get();
+
+		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Task.rptdesign&__format="+task.getExportTypeSelect()+"&TaskId="+task.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
+
+
+		String urlNotExist = URLService.notExist(url.toString());
+		if (urlNotExist == null){
+
+
+			Map<String,Object> mapView = new HashMap<String,Object>();
+			mapView.put("title", "Name "+task.getName());
+			mapView.put("resource", url);
+			mapView.put("viewType", "html");
+			response.setView(mapView);	
+		}
+		else {
+			response.setFlash(urlNotExist);
+		}
+	}
+
 	
 }

@@ -72,12 +72,16 @@
 	        </page>
 	        <page title="Notes">
 	            <field name="notes" colSpan="4"/>
+	            
 	        </page>
 	        <page name="financialInformation" title="Financial information" colSpan="4">
 	            <group title="Estimated" colSpan="4" cols="6">
 	                <field name="estimatedTurnover"/>
 	                <field name="estimatedCost"/>
 	                <field name="estimatedMargin"/>
+	                <field name="exportTypeSelect"/>
+	                <button name="printTask" colSpan="2" title="Voir rapport estimations" onClick="action-print-task-report" icon="img/icons/print.png"/>
+	                
 	            </group>
 	            <group title="Confirmed" colSpan="4" cols="6">
 	                <field name="confirmedTurnover"/>
@@ -159,6 +163,7 @@
     	<field name="statusSelect" expr="eval: 1"/>
     	<field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
     	<field name="isTimesheetAffected" expr="true"/>
+    	<field name="exportTypeSelect" expr="eval: pdf"/>
     </action-record>
     
     <action-record name="action-task-salesOrderLine-on-change" model="com.axelor.apps.organisation.db.Task">
@@ -193,6 +198,9 @@
 		<call class="com.axelor.apps.organisation.web.TaskController" method="updateFinancialInformation"/>
 	</action-method>
 	
+	<action-method name="action-print-task-report" >
+		<call class="com.axelor.apps.organisation.web.TaskController" method="printTaskReport"/>
+	</action-method>
   	
   	<action-view name="action-task-view-submitted-sales-order-line" title="Submitted customer order lines" model="com.axelor.apps.supplychain.db.SalesOrderLine">
   		<view type="grid" name="sales-order-line-grid"/>
