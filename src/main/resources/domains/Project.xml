@@ -23,46 +23,36 @@
   	
   	<integer name="typeDurationSelect" title="Type duration" selection="organisation.project.type.duration.select"/>
   	<integer name="plannedDuration" title="Planned duration"/>
-  	<decimal name="initialBudgetTurnover" title="Turnover"/>
-  	<decimal name="initialBudgetCost" title="Cost"/>
-  	<decimal name="initialBudgetMargin" title="Margin">
+  	<!-- Financial informations -->
+  	<decimal name="estimatedTurnover" title="Turnover"/>
+  	<decimal name="estimatedCost" title="Cost"/>
+  	<decimal name="estimatedMargin" title="Margin">
   		<![CDATA[
-  			if (initialBudgetTurnover != null && initialBudgetCost != null) {
-  				initialBudgetMargin = initialBudgetTurnover.subtract(initialBudgetCost);
-  				return initialBudgetMargin;
+  			if (estimatedTurnover != null && estimatedCost != null) {
+  				estimatedMargin = estimatedTurnover.subtract(estimatedCost);
+  				return estimatedMargin;
+  			}
+  			return null;
+  		]]>
+  	</decimal>
+  	<decimal name="confirmedTurnover" title="Turnover"/>
+  	<decimal name="confirmedCost" title="Cost"/>
+  	<decimal name="confirmedMargin" title="Margin">
+  		<![CDATA[
+  			if (confirmedTurnover != null && confirmedCost != null) {
+  				confirmedMargin = confirmedTurnover.subtract(confirmedCost);
+  				return confirmedMargin;
   			}
   			return null;
   		]]>
   	</decimal>
   	<decimal name="realizedTurnover" title="Turnover"/>
-  	<decimal name="realizedBudgetCost" title="Cost"/>
-  	<decimal name="realizedBudgetMargin" title="Margin">
+  	<decimal name="realizedCost" title="Cost"/>
+  	<decimal name="realizedMargin" title="Margin">
   		<![CDATA[
-  			if (realizedTurnover != null && realizedBudgetCost != null) {
-  				realizedBudgetMargin = realizedTurnover.subtract(realizedBudgetCost);
-  				return realizedBudgetMargin;
-  			}
-  			return null;
-  		]]>
-  	</decimal>
-  	<decimal name="remainingTurnover" title="Turnover"/>
-  	<decimal name="remainingBudgetCost" title="Cost"/>
-  	<decimal name="remainingBudgetMargin" title="Margin">
-  		<![CDATA[
-  			if (remainingTurnover != null && remainingBudgetCost != null) {
-  				remainingBudgetMargin = remainingTurnover.subtract(remainingBudgetCost);
-  				return remainingBudgetMargin;
-  			}
-  			return null;
-  		]]>
-  	</decimal>
-  	<decimal name="expectedFinalTurnover" title="Turnover"/>
-  	<decimal name="expectedFinalCost" title="Cost"/>
-  	<decimal name="expectedFinalMargin" title="Margin">
-  		<![CDATA[
-  			if (expectedFinalTurnover != null && expectedFinalCost != null) {
-  				expectedFinalMargin = expectedFinalTurnover.subtract(expectedFinalCost);
-  				return expectedFinalMargin;
+  			if (realizedTurnover != null && realizedCost != null) {
+  				realizedMargin = realizedTurnover.subtract(realizedCost);
+  				return realizedMargin;
   			}
   			return null;
   		]]>

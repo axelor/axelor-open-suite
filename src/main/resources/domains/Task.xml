@@ -36,59 +36,53 @@
 <!--   Notebook Additionnal information -->
 	<string name="notes" title="Notes" large="true"/>
 
-  	<decimal name="initialBudgetTurnover" title="Turnover"/>
-  	<decimal name="initialBudgetCost" title="Cost"/>
-  	<decimal name="initialBudgetMargin" title="Margin">
+<!-- Financial informations -->
+  	<decimal name="estimatedTurnover" title="Turnover"/>
+  	<decimal name="estimatedCost" title="Cost"/>
+  	<decimal name="estimatedMargin" title="Margin">
   		<![CDATA[
-  			if (initialBudgetTurnover != null && initialBudgetCost != null) {
-  				initialBudgetMargin = initialBudgetTurnover.subtract(initialBudgetCost);
-  				return initialBudgetMargin;
+  			if (estimatedTurnover != null && estimatedCost != null) {
+  				estimatedMargin = estimatedTurnover.subtract(estimatedCost);
+  				return estimatedMargin;
+  			}
+  			return null;
+  		]]>
+  	</decimal>
+  	<decimal name="confirmedTurnover" title="Turnover"/>
+  	<decimal name="confirmedCost" title="Cost"/>
+  	<decimal name="confirmedMargin" title="Margin">
+  		<![CDATA[
+  			if (confirmedTurnover != null && confirmedCost != null) {
+  				confirmedMargin = confirmedTurnover.subtract(confirmedCost);
+  				return confirmedMargin;
   			}
   			return null;
   		]]>
   	</decimal>
   	<decimal name="realizedTurnover" title="Turnover"/>
-  	<decimal name="realizedBudgetCost" title="Cost"/>
-  	<decimal name="realizedBudgetMargin" title="Margin">
+  	<decimal name="realizedCost" title="Cost"/>
+  	<decimal name="realizedMargin" title="Margin">
   		<![CDATA[
-  			if (realizedTurnover != null && realizedBudgetCost != null) {
-  				realizedBudgetMargin = realizedTurnover.subtract(realizedBudgetCost);
-  				return realizedBudgetMargin;
+  			if (realizedTurnover != null && realizedCost != null) {
+  				realizedMargin = realizedTurnover.subtract(realizedCost);
+  				return realizedMargin;
   			}
   			return null;
   		]]>
   	</decimal>
-  	<decimal name="remainingTurnover" title="Turnover"/>
-  	<decimal name="remainingBudgetCost" title="Cost"/>
-  	<decimal name="remainingBudgetMargin" title="Margin">
-  		<![CDATA[
-  			if (remainingTurnover != null && remainingBudgetCost != null) {
-  				remainingBudgetMargin = remainingTurnover.subtract(remainingBudgetCost);
-  				return remainingBudgetMargin;
-  			}
-  			return null;
-  		]]>
-  	</decimal>
-  	<decimal name="expectedFinalTurnover" title="Turnover"/>
-  	<decimal name="expectedFinalCost" title="Cost"/>
-  	<decimal name="expectedFinalMargin" title="Margin">
-  		<![CDATA[
-  			if (expectedFinalTurnover != null && expectedFinalCost != null) {
-  				expectedFinalMargin = expectedFinalTurnover.subtract(expectedFinalCost);
-  				return expectedFinalMargin;
-  			}
-  			return null;
-  		]]>
-  	</decimal>
-  	<decimal name="gapBetweenFinalAndInitial" title="Initial/Final Difference"/>
   	
-<!--   	Onglet Infos financiers -->
-  	<many-to-many name="salesOrderLineList" ref="com.axelor.apps.supplychain.db.SalesOrderLine" title="Customer order lines"/>
-  	<many-to-many name="customerInvoiceLineList" ref="com.axelor.apps.account.db.InvoiceLine" title="Customer invoice lines"/>
-  	<many-to-many name="supplierOrderLineList" ref="com.axelor.apps.supplychain.db.PurchaseOrderLine" title="Supplier order lines"/>
-  	<many-to-many name="supplierInvoiceLineList" ref="com.axelor.apps.account.db.InvoiceLine" title="Supplier invoice lines"/>
-  	<many-to-many name="expenseLineList" ref="com.axelor.apps.organisation.db.ExpenseLine" title="Travel expense lines"/>
-  	<many-to-many name="timesheetLineList" ref="com.axelor.apps.organisation.db.TimesheetLine" title="Timesheet lines"/>
+  	<many-to-many name="submittedSalesOrderLineSet" ref="com.axelor.apps.supplychain.db.SalesOrderLine" title="Submitted Customer order lines"/>
+  	<many-to-many name="submittedPurchaseOrderLineSet" ref="com.axelor.apps.supplychain.db.PurchaseOrderLine" title="Submitted Supplier order lines"/>
+  	
+  	<many-to-many name="validatedSalesOrderLineSet" ref="com.axelor.apps.supplychain.db.SalesOrderLine" title="Validated Customer order lines"/>
+  	<many-to-many name="validatedPurchaseOrderLineSet" ref="com.axelor.apps.supplychain.db.PurchaseOrderLine" title="Validated supplier order lines"/>
+  	
+  	<many-to-many name="customerInvoiceLineSet" ref="com.axelor.apps.account.db.InvoiceLine" title="Customer invoice lines"/>
+  	<many-to-many name="supplierInvoiceLineSet" ref="com.axelor.apps.account.db.InvoiceLine" title="Supplier invoice lines"/>
+  	<many-to-many name="timesheetLineSet" ref="com.axelor.apps.organisation.db.TimesheetLine" title="Validated timesheet lines"/>
+  	<many-to-many name="expenseLineSet" ref="com.axelor.apps.organisation.db.ExpenseLine" title="Validated travel expense lines"/>
+  	
+
   	
   	<one-to-many name="otherCostTaskProductLine" ref="com.axelor.apps.organisation.db.TaskProductLine" title="Other planned costs"/>
   	<one-to-many name="otherRevenueTaskProductLine" ref="com.axelor.apps.organisation.db.TaskProductLine" title="Other planned revenue"/>
@@ -106,6 +100,12 @@
   	
 	<!--   	Onglet Temps passés -->
   	<one-to-many name="pastTimeList" ref="com.axelor.apps.base.db.PastTime" mappedBy="task" title="Past times"/>
+  	
+  	
+<!--   	Leave request reasons field -->
+  	<boolean name="hasCummulation" title="Cumulation ?"/>
+  	<integer name="accountingDay" title="Accounting day" selection="organisation.day.month.select"/>
+  	
   	
   </entity>
 
