@@ -28,9 +28,9 @@
 "com.axelor.apps.message.db.EmailAddress","email-address-grid","grid","Email addresses","Adresses email","","",""
 "com.axelor.apps.message.db.EmailAddress","email-address-simple-form","form","Email address","Adresse Email","","",""
 "com.axelor.apps.base.db.Wizard","generate-message-wizard-form","form","Generate message","","","",""
-"com.axelor.apps.base.db.Wizard","Template","viewField","Template","","","",
+"com.axelor.apps.base.db.Wizard","Template","viewField","Template","Modèle","","",
 "generate-message-wizard-form","validate","button","Validate","Valider","","",""
-"com.axelor.apps.message.db.MailAccount","mail-account-form","form","Mail account","","","",""
+"com.axelor.apps.message.db.MailAccount","mail-account-form","form","Mail account","Compte email","","",""
 "mail-account-form","","group","Informations","Informations","","",""
 "mail-account-form","","group","Login","Identifiant","","",""
 "mail-account-form","","group","Configurations","Configurations","","",""
