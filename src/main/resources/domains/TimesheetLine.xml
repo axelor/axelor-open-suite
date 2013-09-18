@@ -15,7 +15,9 @@
 	<decimal name="duration" title="Duration (h)"/>
 	<boolean name="isToInvoice" title="To invoice ?"/>
 	<boolean name="isInvoiced" title="Invoiced ?"/>
-		
+	
+	<datetime name="startDateT"/>
+	<datetime name="endDateT"/>
   </entity>
 
 </domain-models>
