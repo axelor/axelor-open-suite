@@ -17,18 +17,21 @@
 
 	<form name="candidate-form" title="Candidate" model="com.axelor.apps.organisation.db.Candidate" 
 	 	onSave="action-organisation-candidate-save-record"
-		onNew="action-method-candidate-default-record">
+		onNew="action-record-candidate-default,action-method-candidate-default-record,action-attrs-candidate-recruitment-advancement">
 		<toolbar>
 			<button name="transformInEmployee" title="Transform into employee" onClick="save,action-candidate-method-transform-in-employee" />
 		</toolbar>
 		<group name="header" cols="6" colSpan="6">
 			<group colSpan="1">
-				<field name="picture" widget="image"/>
+				<field name="picture" showTitle="false" widget="image"/>
 			</group>
 			<group colSpan="3" cols="6" showTitle="false" css="highlight">
 				<field name="titleSelect" showTitle="false" readonly="true"/>
 				<field name="name" showTitle="false" readonly="true"/>
 				<field name="firstName" showTitle="false" readonly="true"/>
+				<break/>
+				<field name="fonction" grid-view="keyword-profession-grid" form-view="keyword-profession-form" domain="self.typeSelect = '3'"/>
+				<field name="titleSelect" hideIf="$readonly()"/>
 			</group>
 			<break/>
 			<group colSpan="3" cols="6">
@@ -52,10 +55,14 @@
 		<notebook>
 			<page title="General" cols="6" colSpan="6">
 				<field name="relocationSelect" />
+				<field name="metierRecherche" grid-view="keyword-profession-grid" form-view="keyword-profession-form" domain="self.typeSelect = '3'"/>
+				<field name="contratRecherche" />
 				<field name="salaryExpectation" />
 				<field name="globalEvaluation" />
+				<field name="permis" />
 				<field name="resume" />
 				<field name="coverLetter" />
+				<field name="source" />
 				<group title="Candidate Follow up" cols="6" colSpan="6">	
 					<field name="userInfo"/>
 					<field name="createdOn" readonly="true"/>
@@ -63,19 +70,23 @@
 					<field name="avalabilitySelect" />
 					<field name="availabilityDate" />
 					<field name="decisionDate" />
-					<field name="recruitmentProcessAdvancementList" colSpan="6">
-					<form title="Recruitment process progress">
-						<field name="stateSelect"/>
-						<field name="dateTime"/>
-						<field name="comment"/>
-					</form>
-					<grid title="Recruitment process progresses" editable="true">
-						<hilite color="#3333FF" background="#CDEB8B" condition="stateSelect = 0" />
-						<field name="stateSelect"/>
-						<field name="dateTime"/>
-						<field name="comment"/>
-					</grid>
-				</field>
+					<group title="Recruitment process advancement" cols="6" colSpan="6">
+						<field name="etatCandidature" readonly="true"/>
+						<field name="commentaire"/>
+						<field name="recruitementDate" showIf="etatCandidature == 2 || etatCandidature == 3 || etatCandidature == 4"/>
+						<group title="Action(s)" colSpan="6" cols="6" hideIf="etatCandidature == 8">
+							<button name="nouvelleCandidature" title="Nouvelle candidature" colSpan="6" onClick="action-record-recruitment-advancement,save,action-method-candidate-create-recruitment-process-line,action-record-candidate-reset-fields,save" showIf="etatCandidature == 6 || etatCandidature == 9"/>
+							<button name="preSelection" title="Pré-selectionné" colSpan="6" onClick="action-record-recruitment-advancement,save,action-method-candidate-create-recruitment-process-line,action-record-candidate-reset-fields,save" showIf="etatCandidature == 1"/>
+							<button name="premierEntretien" title="Premier entretien" onClick="action-record-recruitment-advancement,save,action-method-candidate-create-recruitment-process-line,action-record-candidate-reset-fields,save" showIf="etatCandidature == 2"/>
+							<button name="deuxiemeEntretien" title="Deuxième entretien" onClick="action-record-recruitment-advancement,save,action-method-candidate-create-recruitment-process-line,action-record-candidate-reset-fields,save" showIf="etatCandidature == 3"/>
+							<button name="troisiemeEntretien" title="Troisième entretien" onClick="action-record-recruitment-advancement,save,action-method-candidate-create-recruitment-process-line,action-record-candidate-reset-fields,save" showIf="etatCandidature == 4"/>
+							<button name="rejectRecruitmentAdvancement" title="Rejetée" showIf="etatCandidature == 2 || etatCandidature == 3 || etatCandidature == 4 || etatCandidature == 5" onClick="action-record-button-reject,save,action-method-candidate-create-recruitment-process-line,action-record-candidate-reset-fields,save"/>
+							<button name="proposeOfferRecruitmentAdvancement" title="Offre proposée" showIf="etatCandidature == 3 || etatCandidature == 4 || etatCandidature == 5" onClick="action-record-candidate-propose-offer-recruitment-advancement,save,action-method-candidate-create-recruitment-process-line,action-record-candidate-reset-fields,save"/>
+							<button name="acceptOfferRecruitmentAdvancement" title="Offre acceptée" showIf="etatCandidature == 7" onClick="action-record-candidate-propose-offer-recruitment-advancement,save,action-method-candidate-create-recruitment-process-line,action-record-candidate-reset-fields,save"/>
+							<button name="rejectOfferRecruitmentAdvancement" title="Offre refusée" showIf="etatCandidature == 7" onClick="action-record-button-reject-offer,save,action-method-candidate-create-recruitment-process-line,action-record-candidate-reset-fields,save"/>
+						</group>
+						<field name="recruitmentProcessAdvancementList" readonly="true" grid-view="recruitment-candidate-process-advancement-grid" colSpan="6"/>
+					</group>
 				</group>
 			</page>
 			<page title="Profile">
@@ -93,9 +104,10 @@
 				<group title="Education/Trainings" cols="4" colSpan="4">	
 					<field name="degree"/>
 					<!-- TODO set domain domain="self.id IN (1, 2, 3)" -->
-					<button name="assign" title="Affect to recruitment pool"
-						help="Copy all necessary fields (including Professionnal Background …)"
-						colSpan="2" />
+<!--					<button name="assign" title="Affect to recruitment pool" -->
+<!-- 						help="Copy all necessary fields (including Professionnal Background …)" -->
+<!-- 						colSpan="2" /> -->
+					<field name="niveauEtudes" />
 					<field name="trainingLineList" colSpan="4"/>
 				</group>
 			</page>
@@ -149,6 +161,43 @@
 	
 	<action-method name="action-candidate-method-transform-in-employee">
 		<call class="com.axelor.apps.organisation.web.CandidateController" method="transformInEmployee"/>
+	</action-method>
+
+	<action-record name="action-record-recruitment-advancement" model="com.axelor.apps.organisation.db.Candidate">
+		<field name="etatCandidature" expr="5" if="etatCandidature == 4"/>
+		<field name="etatCandidature" expr="4" if="etatCandidature == 3"/>
+		<field name="etatCandidature" expr="3" if="etatCandidature == 2"/>
+		<field name="etatCandidature" expr="2" if="etatCandidature == 1"/>
+		<field name="etatCandidature" expr="1" if="etatCandidature == 6"/>
+		<field name="etatCandidature" expr="1" if="etatCandidature == 9"/>			
+	</action-record>
+	
+	<action-record name="action-record-candidate-propose-offer-recruitment-advancement" model="com.axelor.apps.organisation.db.Candidate">
+		<field name="etatCandidature" expr="8" if="etatCandidature == 7"/>
+		<field name="etatCandidature" expr="7" if="etatCandidature == 5"/>
+		<field name="etatCandidature" expr="7" if="etatCandidature == 4"/>
+		<field name="etatCandidature" expr="7" if="etatCandidature == 3"/>
+	</action-record>
+	
+	<action-record name="action-record-candidate-default" model="com.axelor.apps.organisation.db.Candidate">
+		<field name="etatCandidature" expr="1" />
+	</action-record>
+	
+	<action-record name="action-record-button-reject" model="com.axelor.apps.organisation.db.Candidate">
+		<field name="etatCandidature" expr="6" />
+	</action-record>
+	
+	<action-record name="action-record-button-reject-offer" model="com.axelor.apps.organisation.db.Candidate">
+		<field name="etatCandidature" expr="9" />
+	</action-record>
+
+	<action-record name="action-record-candidate-reset-fields" model="com.axelor.apps.organisation.db.Candidate">
+		<field name="recruitementDate" expr=""/>
+		<field name="commentaire" expr=""/>
+	</action-record>
+	
+	<action-method name="action-method-candidate-create-recruitment-process-line">
+		<call class="com.axelor.apps.organisation.web.CandidateController" method="createRecruitmentProcessAdvancementLine" />
 	</action-method>
 
 </object-views>

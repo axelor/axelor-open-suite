@@ -13,17 +13,33 @@
     
     <form cols="6" onNew="action-affair-record-default" name="affair-form" title="Affair" model="com.axelor.apps.organisation.db.Project"
     onSave="action-affair-method-create-default-task-on-save">
-	    <group showTitle="false" colSpan="4">
-	        <field name="affairName"/>
-	        <field name="responsibleUserInfo"/>
-	        <field name="defaultTask" hideIf="!isTimeSheetImputable"/>
+    	<group showTitle="false" cols="4">
+        	<field name="affairName"/>
+        	<field name="statusTypeSelect" widget="NavSelect" showTitle="false"/>
+        	<field name="responsibleUserInfo"/>
+        	<field name="defaultTask" hideIf="!isTimeSheetImputable"/>
+ 		</group>
+    	<group title="Actions" showTitle="false" colSpan="2" cols="1">
+	        <button name="createSalesOrder" title="Create quote" colSpan="1"/>
+	        <button name="generateNewInstanceOfProject" title="Generate new project instance" hideIf="!isModel" colSpan="1"/>
+	        <button name="transformToProject" title="Transform to project" showIf="isProject == true" colSpan="1"/>
+	        <button name="createPreSalesTask" title="Create pre-sales task" colSpan="1" onClick="save,action-affair-method-create-pre-sales-task"/>
+	    </group>
+	    <group showTitle="false" colSpan="6">
+	        <field name="company" widget="SuggestBox"/>
+        	<break/>
 	        <field name="clientPartner"/>
 	        <field name="contactPartner" domain="self.isContact = true"/>
-	        <field name="company" widget="SuggestBox"/>
 	       	<field name="typeDurationSelect"/>
 	        <field name="plannedDuration"/>
-	        <field name="description" colSpan="4" widget="Html[lite=true]"/>
-	        <group name="specificSettings" title="Specific settings" colSpan="4" canCollapse="true">
+	        <field name="userInfo"/>
+        	<field name="solutionAttendue"/>
+        	<field name="comiteEngagement"/>
+        	<field name="motif" showIf="statusTypeSelect == 4"/>
+	        <group title="Description" colSpan="6">
+            	<field name="description" showTitle="false" widget="Html[lite=true]"/>
+        	</group>
+	        <group name="specificSettings" title="Specific settings" colSpan="6" canCollapse="true">
 	        	<field name="isProject"/>
 	        	<field name="isAffair"/>
 	            <field name="isModel"/>
@@ -33,15 +49,10 @@
 	            <field name="typeProjectSelect" showIf="imputExpense == true"/>
 	            <field name="isReinvoicingExpense"/>
 	            <field name="isReinvoicingTime"/>
-	            <field name="isTimeSheetImputable"/> 
+	            <field name="isTimeSheetImputable"/>
 	        </group>
 	    </group>
-	    <group title="Actions" showTitle="false" colSpan="2" cols="1">
-	        <button name="createSalesOrder" title="Create quote" colSpan="1"/>
-	        <button name="generateNewInstanceOfProject" title="Generate new project instance" hideIf="!isModel" colSpan="1"/>
-	        <button name="transformToProject" title="Transform to project" showIf="isProject == true" colSpan="1"/>
-	        <button name="createPreSalesTask" title="Create pre-sales task" colSpan="1" onClick="save,action-affair-method-create-pre-sales-task"/>
-	    </group>
+	    
 	    <field name="candidateSet" colSpan="4"/>
 	    <field name="employeeSet" colSpan="4"/>
 	    <notebook colSpan="6">
@@ -91,6 +102,139 @@
 	            <field name="answerDate"/>
 	            <field name="specificationFile"/>
 	            <field name="needDescription"/>
+	        </page>
+	        <page title="Information commerciale" cols="6">
+	        	<group colSpan="2">
+                	<field name="agency" colSpan="2"/>
+                	<field name="daUserInfo" colSpan="2"/>
+                	<field name="icUserInfo" colSpan="2"/>
+                	<field name="source" colSpan="2"/>
+                	<group colSpan="4" title="Agenda">
+                    	<field name="agenda" showTitle="false" widget="html"/>
+                	</group>
+                	<group colSpan="4" title="Critères d'évaluation de l'offre">
+                    	<field name="critEvalOffre" showTitle="false" widget="html"/>
+                	</group>
+           		</group>
+            	<group colSpan="4">
+            		<group colSpan="4" title="Descriptif">
+                		<field name="descriptif" showTitle="false" widget="html"/>
+                	</group>
+            	</group>
+	        </page>
+	        <page title="Qualification avant-vente" cols="6">
+	        	<group colSpan="2">
+                	<field name="respQualifUserInfo" colSpan="2"/>
+                	<group title="CP avant-vente" colSpan="4">
+                    	<field name="engagementTypeSelect" colSpan="2"/>
+                    	<field name="solution" colSpan="2"/>
+                    	<field name="technologies" colSpan="2"/>
+                	</group>
+                	<group title="Montants" colSpan="4">
+                    	<field name="macroChiffMarche" colSpan="2"/>
+                    	<field name="estimationParAnnee" colSpan="2"/>
+                    	<field name="estimationParPhaseLot" colSpan="2"/>
+                	</group>
+                	<group title="Dates" colSpan="4">
+                    	<field name="receptionDossierDate" colSpan="2"/>
+                    	<field name="remiseQualifDate" colSpan="2"/>
+                    	<field name="finalOffreTechDate" colSpan="2"/>
+                    	<field name="finalOffreComDate" colSpan="2"/>
+                    	<field name="remiseOffrePrevueDate" colSpan="2"/>
+                	</group>
+                	<group title="Charges avant-vente" colSpan="4">
+                    	<field name="chargesQualif" colSpan="2"/>
+                    	<field name="estimationChargesRep" colSpan="2"/>
+                	</group>
+            	</group>
+            	<group colSpan="4">
+                	<group colSpan="4" title="Qualification du dossier">
+                    	<field name="qualifDossier" showTitle="false" widget="html"/>
+                	</group>
+                	<group colSpan="4" title="Point IMPORTANTS">
+                    	<field name="pointImportant" showTitle="false" widget="html"/>
+                	</group>
+                	<group colSpan="4" title="Analyse : Note / 20">
+                   		<field name="analyseNote" showTitle="false" widget="html"/>
+                	</group>
+                	<field name="conclusionAvtVenteTypeSelect" widget="RadioSelect[direction=vertical]"/>
+            	</group>
+	        </page>
+	        <page title="Qualification technique" cols="6">
+	        	<group colSpan="2">
+                	<field name="respCdsSdm" colSpan="2"/>
+                	<field name="expert" colSpan="2"/>
+                	<group title="CP avant-vente" colSpan="4">
+                    	<field name="engagementTypeSelect" colSpan="2"/>
+                    	<field name="solution" colSpan="2"/>
+                    	<field name="technologies" colSpan="2"/>
+                	</group>
+                	<group title="Montants" colSpan="4">
+                    	<field name="macroChiffMarche" colSpan="2"/>
+                    	<field name="estimationParAnnee" colSpan="2"/>
+                    	<field name="estimationParPhaseLot" colSpan="2"/>
+                	</group>
+                	<group title="Dates" colSpan="4">
+                    	<field name="receptionDossierDate" colSpan="2"/>
+                    	<field name="remiseQualifDate" colSpan="2"/>
+                    	<field name="finalOffreTechDate" colSpan="2"/>
+                    	<field name="finalOffreComDate" colSpan="2"/>
+                    	<field name="remiseOffrePrevueDate" colSpan="2"/>
+                	</group>
+                	<group title="Charges avant-vente" colSpan="4">
+                    	<field name="chargesQualif" colSpan="2"/>
+                    	<field name="estimationChargesRep" colSpan="2"/>
+                	</group>
+            	</group>
+            	<group colSpan="4">
+                	<group colSpan="4" title="Positionnement de notre CDS sur cette affaire">
+                    	<field name="positionnementCDS" showTitle="false" widget="html"/>
+                	</group>
+                	<group colSpan="4" title="Point Marquant du dossier / VA-VAPA">
+                    	<field name="pointMarquantDossier" showTitle="false" widget="html"/>
+                	</group>
+                	<group colSpan="4" title="Analyse des Risques / Solutions">
+                   		<field name="analyseRisquesSolutions" showTitle="false" widget="html"/>
+                	</group>
+                	<group colSpan="4" title="AVIS DE LA DIRECTION TECHNIQUE / CDS CIBLE">
+                   		<field name="avisDirectionTechnique" showTitle="false" widget="html"/>
+                	</group>
+            	</group>
+	        </page>
+	        <page title="GO/NOGO" cols="6" colSpan="6">
+            	<field name="goNoGoTypeSelect" colSpan="6"/>
+            	<field name="todayDate" colSpan="6"/>
+            	<group title="Responsables" cols="3" colSpan="3">
+                	<field name="dirTechniqueUserInfo" colSpan="3"/>
+                	<field name="dirCommercialeserInfo" colSpan="3"/>
+                	<field name="dirAgenceUserInfo" colSpan="3"/>
+                	<field name="respCDSUserInfo" colSpan="3"/>
+                	<field name="respAvtVenteUserInfo" colSpan="3"/>
+            	</group>
+            	<group title="Equipe réponse" cols="3" colSpan="3">
+                	<field name="pilotageEquipe" colSpan="3"/>
+                	<field name="partTechniqueDate" colSpan="3"/>
+                	<field name="partCommercialeDate" colSpan="3"/>
+                	<field name="relectureDate" colSpan="3"/>
+                	<field name="responseDate" colSpan="3"/>
+                	<field name="chargeAV" colSpan="3"/>
+            	</group>
+        	</page>
+	        <page title="Synthèse de l'offre" cols="6">
+	        	<group colSpan="2">
+	        		<field name="agency" colSpan="2"/>
+	        		<field name="daUserInfo" colSpan="2"/>
+	        		<field name="icUserInfo" colSpan="2"/>
+	        		<field name="avUserInfo" colSpan="2"/>
+	        		<field name="clientPartner" colSpan="2"/>
+	        		<field name="cdsConcerne" colSpan="2"/>
+	        	</group>
+	        	<group colSpan="4">
+	        		<group colSpan="4" title="Description du projet">
+	        			<field name="descriptionProjet" showTitle="false" widget="html"/>
+	        		</group>
+	        		<field name="offerLineList" colSpan="4"/>
+	        	</group>
 	        </page>
 	    </notebook>    
 	</form>

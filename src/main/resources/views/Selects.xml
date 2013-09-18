@@ -302,4 +302,104 @@
 		<option value="previousJob">Previous job</option>
 	</selection>
 	
+	
+	
+	
+	<selection name="organisation.candidate.state.select">
+		<option value="1">Nouvelle candidature</option>
+		<option value="2">Pré-selectionné</option>
+		<option value="3">Premier entretien</option>
+		<option value="4">Second entretien</option>
+		<option value="5">Troisième entretien</option>
+		<option value="6">Rejetée</option>
+		<option value="7">Offre proposée</option>
+		<option value="8">Offre acceptée</option>
+		<option value="9">Offre refusée</option>
+	</selection>
+	
+	<selection name="organisation.project.status.type.select">
+		<option value="1">Draft</option>
+		<option value="2">Submitted</option>
+		<option value="3">Accepted</option>
+		<option value="4">Refused</option>
+		<option value="5">Sent</option>
+		<option value="6">Won</option>
+		<option value="7">Lost</option>
+	</selection>
+
+	<selection name="organisation.project.engagement.type.select">
+		<option value="1">TMA</option>
+		<option value="2">FORFAIT</option>
+		<option value="3">ATG</option>
+		<option value="4">Moyen</option>
+		<option value="5">Résultat</option>
+	</selection>
+	
+	<selection name="organisation.project.conclusion.avt.vente.type.select">
+		<option value="1">GO</option>
+		<option value="2">NOGO</option>
+		<option value="3">GOIF</option>
+	</selection>
+	
+	<selection name="organisation.project.go.no.go.type.select">
+		<option value="1">GO</option>
+		<option value="2">NOGO</option>
+	</selection>
+	
+	<selection name="organisation.project.type.duration.select">
+		<option value="1">Day</option>
+		<option value="2">Month</option>
+		<option value="3">Year</option>
+	</selection>
+	
+	<selection name="organisation.job.offer.contrat.type.select">
+		<option value="1">CDI</option>
+		<option value="2">CDD</option>
+	</selection>
+	
+	<selection name="organisation.job.offer.remuneration.type.select">
+		<option value="1">de 25 à 35 k€</option>
+		<option value="2">de 35 à 45 k€</option>
+		<option value="3">de 45 à 55 k€</option>
+		<option value="4">de 55 à 65 k€</option>
+		<option value="5">de 65 à 75 k€</option>
+		<option value="6">de 75 à 85 k€</option>
+		<option value="7">de 85 à 95 k€</option>
+		<option value="8">de 95 à 100 k€ ou plus</option>
+	</selection>
+
+	<selection name="organisation.job.offer.domaine.type.select">
+		<option value="1">Communication</option>
+	</selection>
+
+	<selection name="organisation.job.offer.niveau.type.select">
+		<option value="1">Bac +1</option>
+		<option value="2">Bac +2</option>
+		<option value="3">Bac +3</option>
+		<option value="4">Bac +4</option>
+		<option value="5">Bac +5 ou plus</option>
+	</selection>
+
+	<selection name="organisation.job.offer.experience.type.select">
+		<option value="1">1 an</option>
+		<option value="2">2 ans</option>
+		<option value="3">3 ans</option>
+		<option value="4">4 ans</option>
+		<option value="5">5 ans</option>
+		<option value="6">6 ans</option>
+		<option value="7">7 ans</option>
+		<option value="8">8 ans</option>
+		<option value="9">9 ans</option>
+		<option value="10">10 ans ou plus</option>
+	</selection>
+	
+	<selection name="organisation.job.offer.langue.type.select">
+		<option value="anglais">Anglais</option>
+		<option value="francais">Français</option>
+		<option value="allemand">Allemand</option>
+		<option value="espagnol">Espagnol</option>
+		<option value="italien">Italien</option>
+	</selection>
+	
+	
 </object-views>
