@@ -216,40 +216,5 @@ public class TemplateMessageService {
 		
 	}
 	
-	
-	
-	/**
-	 * Fonction appeler par le bouton imprimer
-	 *
-	 * @param request
-	 * @param response
-	 * @return
-	 */
-	/**public void showSalesOrder(ActionRequest request, ActionResponse response) {
-
-		SalesOrder salesOrder = request.getContext().asType(SalesOrder.class);
-
-		StringBuilder url = new StringBuilder();
-		AxelorSettings axelorSettings = AxelorSettings.get();
-
-		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/SalesOrder.rptdesign&__format=pdf&SalesOrderId="+salesOrder.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
-		LOG.debug("URL : {}", url);
-		String urlNotExist = URLService.notExist(url.toString());
-		
-		if(urlNotExist == null) {
-		
-			LOG.debug("Impression du devis "+salesOrder.getSalesOrderSeq()+" : "+url.toString());
-			
-			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", "Devis "+salesOrder.getSalesOrderSeq());
-			mapView.put("resource", url);
-			mapView.put("viewType", "html");
-			response.setView(mapView);	
-		}
-		else {
-			response.setFlash(urlNotExist);
-		}
-	}**/
-	
 }
 
