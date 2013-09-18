@@ -50,25 +50,20 @@
 	            <field name="taskList" grid-view="task-project-grid" form-view="task-form" colSpan="6"/>
 	        </page>
 	        <page title="Financial information" colSpan="4">
-	            <group title="Initial Budget" colSpan="6" cols="6">
-	                <field name="initialBudgetTurnover"/>
-	                <field name="initialBudgetCost"/>
-	                <field name="initialBudgetMargin"/>
+	            <group title="Estimated" colSpan="4" cols="6">
+	                <field name="estimatedTurnover"/>
+	                <field name="estimatedCost"/>
+	                <field name="estimatedMargin"/>
 	            </group>
-	            <group title="Realized" colSpan="6" cols="6">
+	            <group title="Confirmed" colSpan="4" cols="6">
+	                <field name="confirmedTurnover"/>
+	                <field name="confirmedCost"/>
+	                <field name="confirmedMargin"/>
+	            </group>
+	            <group title="Reaslized" colSpan="4" cols="6">
 	                <field name="realizedTurnover"/>
-	                <field name="realizedBudgetCost"/>
-	                <field name="realizedBudgetMargin"/>
-	            </group>
-	            <group title="Remaining to do" colSpan="6" cols="6">
-	                <field name="remainingTurnover"/>
-	                <field name="remainingBudgetCost"/>
-	                <field name="remainingBudgetMargin"/>
-	            </group>
-	            <group title="Estimated final" colSpan="6" cols="6">
-	                <field name="expectedFinalTurnover"/>
-	                <field name="expectedFinalCost"/>
-	                <field name="expectedFinalMargin"/>
+	                <field name="realizedCost"/>
+	                <field name="realizedMargin"/>
 	            </group>
 	            <group colSpan="6" cols="6">
 	                <field name="plannedTime"/>

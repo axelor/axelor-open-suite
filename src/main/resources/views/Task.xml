@@ -25,7 +25,7 @@
         <field name="totalTimeSheetQty"/>
     </grid>
     
-    <form cols="4" onNew="action-task-default-record,action-task-attrs-hide-financial" name="task-form" title="Task" model="com.axelor.apps.organisation.db.Task"
+    <form name="task-form" title="Task" model="com.axelor.apps.organisation.db.Task" cols="4" onNew="action-task-default-record,action-task-attrs-hide-financial" 
     onSave="action-task-compute-margin">
     	<group colSpan="4" cols="3">
     		<field name="name" showTitle="false" css="highlight" placeholder="Task name" colSpan="2"/>
@@ -73,26 +73,20 @@
 	            <field name="notes" colSpan="4"/>
 	        </page>
 	        <page name="financialInformation" title="Financial information" colSpan="4">
-	            <group title="Budget initial" colSpan="4" cols="6">
-	                <field name="initialBudgetTurnover"/>
-	                <field name="initialBudgetCost"/>
-	                <field name="initialBudgetMargin"/>
+	            <group title="Estimated" colSpan="4" cols="6">
+	                <field name="estimatedTurnover"/>
+	                <field name="estimatedCost"/>
+	                <field name="estimatedMargin"/>
+	            </group>
+	            <group title="Confirmed" colSpan="4" cols="6">
+	                <field name="confirmedTurnover"/>
+	                <field name="confirmedCost"/>
+	                <field name="confirmedMargin"/>
 	            </group>
 	            <group title="Reaslized" colSpan="4" cols="6">
 	                <field name="realizedTurnover"/>
-	                <field name="realizedBudgetCost"/>
-	                <field name="realizedBudgetMargin"/>
-	            </group>
-	            <group title="Remaining to do" colSpan="4" cols="6">
-	                <field name="remainingTurnover"/>
-	                <field name="remainingBudgetCost"/>
-	                <field name="remainingBudgetMargin"/>
-	            </group>
-	            <group title="Estimated final" colSpan="4" cols="6">
-	                <field name="expectedFinalTurnover"/>
-	                <field name="expectedFinalCost"/>
-	                <field name="expectedFinalMargin"/>
-	                <field name="gapBetweenFinalAndInitial"/>
+	                <field name="realizedCost"/>
+	                <field name="realizedMargin"/>
 	            </group>
 	            <field name="otherCostTaskProductLine" colSpan="4"/>
 	            <field name="otherRevenueTaskProductLine" colSpan="4"/>
@@ -103,12 +97,52 @@
 	            <field name="generatedCharge"/>
 	        </page>
 	        <page title="Links" colSpan="4">
-	            <field name="salesOrderLineList" colSpan="4"/>
-	            <field name="customerInvoiceLineList" colSpan="4"/>
-	            <field name="supplierOrderLineList" colSpan="4"/>
-	            <field name="supplierInvoiceLineList" colSpan="4"/>
-	            <field name="expenseLineList" colSpan="4"/>
-	            <field name="timesheetLineList" colSpan="4"/>
+	            <field name="submittedSalesOrderLineSet" colSpan="4"/>
+	            <field name="submittedPurchaseOrderLineSet" colSpan="4"/>
+	            <field name="validatedSalesOrderLineSet" colSpan="4"/>
+	            <field name="validatedPurchaseOrderLineSet" colSpan="4"/>
+	            <field name="customerInvoiceLineSet" colSpan="4"/>
+	            <field name="supplierInvoiceLineSet" colSpan="4"/>
+	            <field name="timesheetLineSet" colSpan="4"/>
+	            <field name="expenseLineSet" colSpan="4"/>
+	        </page>
+	        <page title="Description" colSpan="4">
+	            <field name="description" showTitle="false" colSpan="4"/>
+	        </page>
+	        <page title="Past times">
+        		<field name="pastTimeList" showTitle="false" colSpan="4" grid-view="past-time-task-grid" form-view="past-time-task-form"/>
+        	</page>
+	    </notebook>
+	</form>
+	
+	<grid name="task-leave-reason-grid" title="Tasks" model="com.axelor.apps.organisation.db.Task">
+        <field name="name"/>
+        <field name="hasCummulation"/>
+        <field name="accountingDay"/>
+    </grid>
+	
+	<form name="task-leave-reason-form" title="Task" model="com.axelor.apps.organisation.db.Task" cols="4" onNew="action-task-default-record"
+    onSave="action-task-compute-margin">
+    	<group colSpan="4" cols="3">
+    		<field name="name" showTitle="false" css="highlight" placeholder="Task name" colSpan="2"/>
+    		<field name="statusSelect" showTitle="false" colSpan="1" widget="NavSelect"/>
+    		<field name="hasCummulation"/>
+    		<field name="accountingDay"/>
+    	</group>
+    	<group title="Context" colSpan="4" cols="6">
+       		<field name="project" onChange="action-task-attrs-project-title,action-task-attrs-hide-financial"/>
+        	<field name="userInfo"/>
+        	<field name="taskProgress" widget="Progress"/>
+        	<field name="startDateT"/>
+        	<field name="endDateT"/>    
+        	<field name="totalTask"/>
+    	</group>
+	    <notebook colSpan="4">
+	        <page title="Planification and realization">
+	            <field name="planningLineList" onChange="action-task-compute-total-planned-qty" colSpan="4" form-view="planning-line-task-form" grid-view="planning-line-task-grid"/>
+	        </page>
+	        <page title="Notes">
+	            <field name="notes" colSpan="4"/>
 	        </page>
 	        <page title="Description" colSpan="4">
 	            <field name="description" showTitle="false" colSpan="4"/>
