@@ -35,13 +35,13 @@
 	            <field name="name" colSpan="1" showTitle="false" readonly="true" />
 		        <field name="firstName" colSpan="1" showTitle="false" readonly="true"/>
 	        </group>
-	    	<group title="Links" colSpan="1" cols="1" canCollapse="true" collapseIf="true">
-	    		<button name="showPartner" title="Show partner/contact"  colSpan="1"/>
-	    		<button name="showMeetings" title="Show meetings"  colSpan="1"/>
-	    		<button name="showTasks" title="Show tasks"  colSpan="1"/>
-	    		<button name="showMessages" title="Show messages"  colSpan="1"/>
-	    		<button name="showCalls" title="Show calls"  colSpan="1"/>
-	    	</group>
+<!-- 	    	<group title="Links" colSpan="1" cols="1" canCollapse="true" collapseIf="true"> -->
+<!-- 	    		<button name="showPartner" title="Show partner/contact"  colSpan="1"/> -->
+<!-- 	    		<button name="showMeetings" title="Show meetings"  colSpan="1"/> -->
+<!-- 	    		<button name="showTasks" title="Show tasks"  colSpan="1"/> -->
+<!-- 	    		<button name="showMessages" title="Show messages"  colSpan="1"/> -->
+<!-- 	    		<button name="showCalls" title="Show calls"  colSpan="1"/> -->
+<!-- 	    	</group> -->
  		</group>
  		
 	    <group title="Informations" colSpan="4">
