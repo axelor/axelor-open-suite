@@ -71,18 +71,6 @@
   		]]>
   	</decimal>
   	
-  	<many-to-many name="submittedSalesOrderLineSet" ref="com.axelor.apps.supplychain.db.SalesOrderLine" title="Submitted Customer order lines"/>
-  	<many-to-many name="submittedPurchaseOrderLineSet" ref="com.axelor.apps.supplychain.db.PurchaseOrderLine" title="Submitted Supplier order lines"/>
-  	
-  	<many-to-many name="validatedSalesOrderLineSet" ref="com.axelor.apps.supplychain.db.SalesOrderLine" title="Validated Customer order lines"/>
-  	<many-to-many name="validatedPurchaseOrderLineSet" ref="com.axelor.apps.supplychain.db.PurchaseOrderLine" title="Validated supplier order lines"/>
-  	
-  	<many-to-many name="customerInvoiceLineSet" ref="com.axelor.apps.account.db.InvoiceLine" title="Customer invoice lines"/>
-  	<many-to-many name="supplierInvoiceLineSet" ref="com.axelor.apps.account.db.InvoiceLine" title="Supplier invoice lines"/>
-  	<many-to-many name="timesheetLineSet" ref="com.axelor.apps.organisation.db.TimesheetLine" title="Validated timesheet lines"/>
-  	<many-to-many name="expenseLineSet" ref="com.axelor.apps.organisation.db.ExpenseLine" title="Validated travel expense lines"/>
-  	
-
   	
   	<one-to-many name="otherCostTaskProductLine" ref="com.axelor.apps.organisation.db.TaskProductLine" title="Other planned costs"/>
   	<one-to-many name="otherRevenueTaskProductLine" ref="com.axelor.apps.organisation.db.TaskProductLine" title="Other planned revenue"/>

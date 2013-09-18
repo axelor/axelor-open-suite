@@ -6,10 +6,9 @@
   <module name="organisation" package="com.axelor.apps.organisation.db"/>
 
   <entity name="ExpenseLine" lang="java">
-  	<many-to-one name="task" ref="com.axelor.apps.organisation.db.Task" title="Tâche"/>
   
   	<many-to-one name="expense" title="Expense" ref="com.axelor.apps.organisation.db.Expense" />
-  	<many-to-one name="project" title="Affair" ref="com.axelor.apps.organisation.db.Project" />
+  	<many-to-one name="task" ref="com.axelor.apps.organisation.db.Task" title="Task"/>
   	<string name="expenseTypeSelect" title="Type of expense" selection="expense.line.expense.type.select" />
   	<many-to-one name="product" title="Product" ref="com.axelor.apps.base.db.Product"/>
   	<many-to-one name="unit" title="UOM" ref="com.axelor.apps.base.db.Unit"/>
