@@ -197,7 +197,7 @@
 		<dataset type="sql">
 		    <![CDATA[
 		    SELECT
-			    SUM(self.opportunity_amount) AS _opportunity_amount,
+			    COUNT(self.opportunity_amount) AS _opportunity_amount,
 			    team.name AS _team,
 			    selection_item.title as _status
 			FROM
@@ -226,7 +226,7 @@
 		<dataset type="sql">
 		    <![CDATA[
 		    SELECT
-			    SUM(self.opportunity_amount)    AS _opportunity_amount,
+			    COUNT(self.opportunity_amount)    AS _opportunity_amount,
 			    sales_man.full_name as _sales_man,
 			    selection_item.title as _status
 			FROM
@@ -359,6 +359,31 @@
 	    <series key="_total_calls" type="bar"/>
 	</chart>  	
 	
+	<chart name="chart.open.ticket.priority.distribution.bar" title="Ticket distribution by Priority">
+		<dataset type="sql">
+		    <![CDATA[
+		    SELECT
+			    cast(cast(COUNT(*) as decimal)/(select Count(*) from crm_event as event where event.ticket_status_select !=5) * 100 as decimal (5,2)) AS 	_total_calls,
+			    selection_item.title 	AS 	_priority
+			FROM
+			    crm_event as self
+			LEFT JOIN
+	        	meta_select as selection 			ON selection.name = 'crm.event.ticket.priority.select'
+	    	LEFT JOIN 
+	    		meta_select_item as selection_item 	ON selection_item.select_id = selection.id
+			WHERE
+				cast(selection_item.value as decimal) = self.priority_select and self.ticket_status_select != 5		
+	    	GROUP BY
+			  	_priority
+			ORDER BY
+			   	_priority	
+			  ]]>
+	    </dataset>
+	    <category key="_priority" type="text"/>
+	    <series key="_total_calls" type="pie"/>
+	</chart>  	
+	
+	
 	<chart name="chart.open.tickets.by.status.bar" title="Open tickets by status">
 		<dataset type="sql">
 		    <![CDATA[
@@ -440,7 +465,50 @@
 	    </dataset>
 	    <category key="_partner" type="text"/>
 	    <series key="_total_calls" groupBy="_status"  type="bar"/>
+	</chart>  	
+	
+	<chart name="chart.leads.by.country.bar" title="Leads by Country">
+		<dataset type="sql">
+		    <![CDATA[
+		    SELECT
+			    COUNT(self.id)    	AS 	_total_leads,
+			    country.name 		AS 	_country
+			FROM
+			  	crm_lead as self
+			LEFT JOIN
+	        	base_country as country ON self.primary_country = country.id
+	    	GROUP BY
+			  	_country
+			ORDER BY
+			   	_country
+			  ]]>
+	    </dataset>
+	    <category key="_country" type="text"/>
+	    <series key="_total_lead"  type="bar"/>
 	</chart>  			
+	<chart name="chart.partner.by.industry.sector.bar" title="Partners by Industry Sector">
+	    <dataset type="sql">
+	    <![CDATA[
+		SELECT
+          COUNT(self.id) AS _total_partner,
+	      selection_item.title as _industry_sector
+	    FROM
+	        base_partner as self
+	    LEFT JOIN
+	        meta_select as selection ON selection.name = 'partner.industry.sectory.select'
+	    LEFT JOIN 
+	    	meta_select_item as selection_item ON selection_item.select_id = selection.id
+		WHERE
+			cast(selection_item.value as decimal) = self.industry_sector_select	and self.is_contact != true		
+	    GROUP BY
+		   _industry_sector
+		ORDER BY
+		   _industry_sector
+	    ]]>
+	    </dataset>
+	    <category key="_industry_sector" type="text"/>
+    	<series key="_total_partner" type="pie"/>
+	 </chart>
 	<!-- 
 	 <chart name="chart.due.open.ticket.gauge.bar" title="Due Open Tickets">
 		<dataset type="sql">

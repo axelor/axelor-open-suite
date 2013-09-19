@@ -337,11 +337,11 @@
 	</action-view>
 	
 		
-<!-- 	<menuitem name="portal.crm.event.graph" parent="menu-crm-dashboards" title="Event Chart Report" action="portal.event.graph.dashboard.view" /> -->
+ 	<menuitem name="portal.crm.event.graph" parent="menu-crm-dashboards" title="Event Chart Report" action="portal.event.graph.dashboard.view" /> 
 
-<!-- 	<action-view name="portal.event.graph.dashboard.view" title="Event Graph Report" icon="img/icons/calendar.png"> -->
-<!-- 		<view type="portal" name="crm.event.graph.portal" /> -->
-<!-- 	</action-view> -->
+ 	<action-view name="portal.event.graph.dashboard.view" title="Event Graph Report" icon="img/icons/calendar.png"> 
+ 		<view type="portal" name="crm.event.graph.portal" />
+	</action-view> 
 	
 	<menuitem name="portal.base.crm.partner.graph" parent="menu-crm-dashboards" title="Partner List Report" action="portal.base.partner.list.dashboard.view" />
 
