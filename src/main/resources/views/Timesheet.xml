@@ -17,6 +17,7 @@
         <break/>
         <field name="fromDate" onChange="action-timesheet-getPeriod"/>
         <field name="toDate"/>
+        <field name="project" />
         <group title="Satisfaction" cols="4" colSpan="4" colWidths="10%,10%,10%,70%">
         	<separator colSpan="8" title="Project"/>
         	<group colSpan="2">

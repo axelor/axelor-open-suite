@@ -34,10 +34,6 @@ import java.math.BigDecimal;
 
 import javax.persistence.Query;
 
-import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.UserInfo;
-import com.axelor.apps.organisation.db.Employee;
 import com.axelor.apps.organisation.db.Task;
 import com.axelor.db.JPA;
 
@@ -52,7 +48,7 @@ public class TaskService {
 		
 		this.updateEstimatedAmount(task);
 		this.updateConfirmedAmount(task);
-//		this.updateRealizedAmount(task);
+		this.updateRealizedAmount(task);
 		
 		
 	}
@@ -148,7 +144,7 @@ public class TaskService {
 				
 		BigDecimal supplierInvoiceLineRealizedCost = (BigDecimal) q.getSingleResult();
 		
-		q = JPA.em().createQuery("select SUM(il.product.costPrice * sol.qty) FROM InvoiceLine as il WHERE il.task = ?1 AND il.invoice.status.code = 'dis' AND (il.invoice.operationTypeSelect = 3 OR il.invoice.operationTypeSelect = 4)");
+		q = JPA.em().createQuery("select SUM(il.product.costPrice * il.qty) FROM InvoiceLine as il WHERE il.task = ?1 AND il.invoice.status.code = 'dis' AND (il.invoice.operationTypeSelect = 3 OR il.invoice.operationTypeSelect = 4)");
 		q.setParameter(1, task);
 				
 		BigDecimal customerInvoiceLineRealizedCost = (BigDecimal) q.getSingleResult();

@@ -12,6 +12,7 @@
     </grid>
     
     <form cols="6" onNew="action-affair-record-default" name="affair-form" title="Affair" model="com.axelor.apps.organisation.db.Project"
+    onLoad="action-project-method-update-financial-information"
     onSave="action-affair-method-create-default-task-on-save">
     	<group showTitle="false" cols="4">
         	<field name="affairName"/>
@@ -255,6 +256,10 @@
 	
 	<action-method name="action-print-project-report" >
 		<call class="com.axelor.apps.organisation.web.ProjectController" method="printProjectReport"/>
+	</action-method>
+	
+	<action-method name="action-project-method-update-financial-information">
+		<call class="com.axelor.apps.organisation.web.ProjectController" method="updateFinancialInformation"/>
 	</action-method>
 		
 </object-views>
