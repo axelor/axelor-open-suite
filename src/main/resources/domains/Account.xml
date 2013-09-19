@@ -7,6 +7,7 @@
 
   <entity name="Account" lang="java">
   
+  	<integer name="importId" />
     <string name="name" title="Name" required="true"/>
     <string name="code" title="Code" required="true" help="The account code is usually a number (e.g. : 101000). The account code help to locate the account in the chart of account. This code must be unique per company account chart."/>
     <many-to-one name="parent" ref="Account" title="Parent Account" help="The parent account helps to define the company chart of accounts. Depending on the company field, you will be only entitled to select parent accounts associated to the same company."/>
