@@ -1,36 +1,36 @@
-"importId";"titleSelect";"enterpriseName";"name";"firstName";"officeName";"jobTitle_fr";"jobTitle_en";"mobile";"department";"fax";"website";"email";"description_fr_FR";"description_en_EN";"contactDate";"statusSelect";"leadSource";"statusDescription";"leadSourceDescription";"campaign.id";"referredBy";"isDoNotCall";"userInfo";"team.id"
-1;1;"APP Solutions";"Bastien";"HUBERT";;"Responsable Achats";"Consultant";"07.73.11.99.99";;;;"b.hubert@app-solutions.fr";;;"2013-01-24";3;9;;;;;"true";6;1
-2;2;"G&Q International";"Louise";"BERTHELOT";;"Consultant";"Consultant";"07.18.36.39.99";;;;"l.berthelot@gq-international.fr";;;"2013-01-25";7;5;;;;;"false";6;2
-3;1;"GORDON Solutions";"Théo";"GOMEZ";;"PDG";"Consultant";;;;;"t.gomez@gordon-solutions.fr";;;"2013-01-26";6;8;;;;;"true";6;3
-4;2;"KGM Media";"Christelle";"RAULT";;"PDG";"Project Manager";;;;;"c.rault@kgm-media.fr";;;"2013-01-27";5;1;;;;;"false";6;4
-5;2;"YEU Solutions";"Margot";"PARIS";;"Consultant";"CEO";;;;;"m.paris@yeu-solutions.fr";;;"2013-01-28";2;1;;;;;"true";6;5
-6;2;"A&U Web";"Juliette";"FERNANDES";;"Gérant";"Consultant";;;;;"j.fernandes@au-web.fr";;;"2013-01-29";7;2;;;;;"false";6;1
-7;2;"B&T Web";"Margot";"THIERY";;"Consultant";"CEO";"07.44.59.12.99";;;;"m.thiery@bt-web.fr";;;"2013-01-30";5;5;;;;;"true";6;2
-8;1;"B&X Web";"Étienne";"DURANT";;"PDG";"Project Manager";"06.68.94.94.99";;;;"é.durant@bx-web.fr";;;"2013-01-31";5;5;;;;;"false";6;3
-9;2;"WIX Solutions";"Claire";"BRAULT";;"Gérant";"Owner";"06.74.88.59.99";;;;"c.brault@wix-solutions.fr";;;"2013-02-01";7;5;;;;;"true";6;4
-10;1;"Q&L Solutions";"Nicolas";"LEBLANC";;"Consultant";"Owner";"06.98.32.72.99";;;;"n.leblanc@ql-solutions.fr";;;"2013-02-02";1;8;;;;;"false";6;5
-11;2;"GEH Systems";"Julia";"GRANGER";;"Acheteur";"Consultant";"06.73.13.31.99";;;;"j.granger@geh-systems.fr";;;"2013-02-03";5;6;;;;;"true";6;1
-12;1;"BOWMAN Industries";"Thibaut";"MEYER";;"Chef de projet";"CEO";"06.82.61.92.99";;;;"t.meyer@bowman-industries.fr";;;"2013-02-04";1;6;;;;;"false";6;2
-13;1;"ILQ Industries";"Thomas";"GRAS";;"Chef de projet";"Owner";"06.61.68.27.99";;;;"t.gras@ilq-industries.fr";;;"2013-02-05";3;8;;;;;"true";6;3
-14;1;"K&J Web";"Alex";"JACQUOT";;"Consultant";"Project Manager";;;;;"a.jacquot@kj-web.fr";;;"2013-02-06";7;5;;;;;"false";6;4
-15;2;"M&N Industries";"Myriam";"RAULT";;"Consultant";"Purchasing Manager";;;;;"m.rault@mn-industries.fr";;;"2013-02-07";7;1;;;;;"true";6;5
-16;1;"MOSER Solutions";"Rémy";"GONÇALVES";;"Acheteur";"Purchasing Manager";;;;;"r.gonçalves@moser-solutions.fr";;;"2013-02-08";7;6;;;;;"false";6;1
-17;2;"WEBSTER International";"Jennifer";"COLLIN";;"Responsable Achats";"Consultant";;;;;"j.collin@webster-international.fr";;;"2013-02-09";4;4;;;;;"true";6;2
-18;1;"Z&C Industries";"Enzo";"LUCAS";;"Chef de projet";"Owner";"06.81.80.35.99";;;;"e.lucas@zc-industries.fr";;;"2013-02-10";7;2;;;;;"false";6;3
-19;1;"BALDWIN Industries";"Pierre";"GUYON";;"Consultant";"Project Manager";"06.92.70.37.99";;;;"p.guyon@baldwin-industries.fr";;;"2013-02-11";2;1;;;;;"true";6;4
-20;2;"PORTER Services";"Laetitia";"BLONDEL";;"PDG";"CEO";"07.67.55.99.99";;;;"l.blondel@porter-services.fr";;;"2013-02-12";6;7;;;;;"false";6;5
-21;2;"BRYANT International";"Julie";"CHARPENTIER";;"Acheteur";"Consultant";"07.77.80.55.99";;;;"j.charpentier@bryant-international.fr";;;"2013-02-13";1;3;;;;;"true";6;1
-22;2;"TAB Technologies";"Laurie";"GUILBERT";;"Gérant";"Consultant";"06.11.25.55.99";;;;"l.guilbert@tab-technologies.fr";;;"2013-02-14";3;3;;;;;"false";6;2
-23;2;"SHELTON Media";"Vanessa";"GOMEZ";;"Consultant";"Buyer";"06.87.86.36.99";;;;"v.gomez@shelton-media.fr";;;"2013-02-15";4;2;;;;;"true";6;3
-24;2;"NKJ Technologies";"Anna";"GOMES";;"Chef de projet";"Purchasing Manager";"06.97.57.49.99";;;;"a.gomes@nkj-technologies.fr";;;"2013-02-16";5;4;;;;;"false";6;4
-25;2;"O&D Web";"Gaëlle";"VIAL";;"PDG";"Consultant";"07.25.67.69.99";;;;"g.vial@od-web.fr";;;"2013-02-17";7;9;;;;;"true";6;5
-26;1;"S&S Conseil";"Maxence";"LE-GUEN";;"Gérant";"CEO";"07.20.25.91.99";;;;"m.le-guen@ss-conseil.fr";;;"2013-02-18";3;3;;;;;"false";6;1
-27;1;"CONNOLLY Solutions";"Gael";"BILLARD";;"PDG";"Purchasing Manager";;;;;"g.billard@connolly-solutions.fr";;;"2013-02-19";2;8;;;;;"true";6;2
-28;2;"GVS Services";"Amandine";"GUICHARD";;"Consultant";"Purchasing Manager";;;;;"a.guichard@gvs-services.fr";;;"2013-02-20";7;3;;;;;"false";6;3
-29;1;"E&U Systems";"Étienne";"POTTIER";;"Consultant";"CEO";"06.66.13.87.99";;;;"é.pottier@eu-systems.fr";;;"2013-02-21";6;2;;;;;"true";6;4
-30;1;"IYT Services";"Florent";"GAY";;"Chef de projet";"Consultant";"06.65.68.49.99";;;;"f.gay@iyt-services.fr";;;"2013-02-22";6;3;;;;;"false";6;5
-31;2;"U&M Media";"Amandine";"MAS";;"Responsable Achats";"CEO";"06.75.47.73.99";;;;"a.mas@um-media.fr";;;"2013-02-23";3;3;;;;;"true";6;1
-32;1;"JENSEN International";"Damien";"CHATELAIN";;"Consultant";"Owner";"06.76.94.95.99";;;;"d.chatelain@jensen-international.fr";;;"2013-02-24";1;10;;;;;"false";6;2
-33;2;"ROWE Services";"Anna";"FAVIER";;"PDG";"CEO";;;;;"a.favier@rowe-services.fr";;;"2013-02-25";1;8;;;;;"true";6;3
-34;1;"KAY Conseil";"Eric";"DUPUIS";;"Consultant";"Owner";;;;;"e.dupuis@kay-conseil.fr";;;"2013-02-26";4;5;;;;;"false";6;4
-35;2;"GRAY Technologies";"Sarah";"LE-GALL";;"Consultant";"Consultant";;;;;"s.le-gall@gray-technologies.fr";;;"2013-02-27";7;2;;;;;"true";6;5
+importId;titleSelect;enterpriseName;name;firstName;officeName;jobTitle_fr;jobTitle_en;mobilePhone;department;fax;website;email;description_fr_FR;description_en_EN;contactDate;statusSelect;source.importId;statusDescription;leadSourceDescription;campaign.id;referredBy;isDoNotCall;userInfo.importId;team.id
+1;1;APP Solutions;Bastien;HUBERT;;Responsable Achats;Consultant;07.73.11.99.99;;;;b.hubert@app-solutions.fr;;;2013-01-24;3;9;;;;;true;6;1
+2;2;G&Q International;Louise;BERTHELOT;;Consultant;Consultant;07.18.36.39.99;;;;l.berthelot@gq-international.fr;;;2013-01-25;7;5;;;;;false;6;2
+3;1;GORDON Solutions;Théo;GOMEZ;;PDG;Consultant;;;;;t.gomez@gordon-solutions.fr;;;2013-01-26;6;8;;;;;true;6;3
+4;2;KGM Media;Christelle;RAULT;;PDG;Project Manager;;;;;c.rault@kgm-media.fr;;;2013-01-27;5;1;;;;;false;6;4
+5;2;YEU Solutions;Margot;PARIS;;Consultant;CEO;;;;;m.paris@yeu-solutions.fr;;;2013-01-28;2;1;;;;;true;6;5
+6;2;A&U Web;Juliette;FERNANDES;;Gérant;Consultant;;;;;j.fernandes@au-web.fr;;;2013-01-29;7;2;;;;;false;6;1
+7;2;B&T Web;Margot;THIERY;;Consultant;CEO;07.44.59.12.99;;;;m.thiery@bt-web.fr;;;2013-01-30;5;5;;;;;true;6;2
+8;1;B&X Web;Étienne;DURANT;;PDG;Project Manager;06.68.94.94.99;;;;é.durant@bx-web.fr;;;2013-01-31;5;5;;;;;false;6;3
+9;2;WIX Solutions;Claire;BRAULT;;Gérant;Owner;06.74.88.59.99;;;;c.brault@wix-solutions.fr;;;2013-02-01;7;5;;;;;true;6;4
+10;1;Q&L Solutions;Nicolas;LEBLANC;;Consultant;Owner;06.98.32.72.99;;;;n.leblanc@ql-solutions.fr;;;2013-02-02;1;8;;;;;false;6;5
+11;2;GEH Systems;Julia;GRANGER;;Acheteur;Consultant;06.73.13.31.99;;;;j.granger@geh-systems.fr;;;2013-02-03;5;6;;;;;true;6;1
+12;1;BOWMAN Industries;Thibaut;MEYER;;Chef de projet;CEO;06.82.61.92.99;;;;t.meyer@bowman-industries.fr;;;2013-02-04;1;6;;;;;false;6;2
+13;1;ILQ Industries;Thomas;GRAS;;Chef de projet;Owner;06.61.68.27.99;;;;t.gras@ilq-industries.fr;;;2013-02-05;3;8;;;;;true;6;3
+14;1;K&J Web;Alex;JACQUOT;;Consultant;Project Manager;;;;;a.jacquot@kj-web.fr;;;2013-02-06;7;5;;;;;false;6;4
+15;2;M&N Industries;Myriam;RAULT;;Consultant;Purchasing Manager;;;;;m.rault@mn-industries.fr;;;2013-02-07;7;1;;;;;true;6;5
+16;1;MOSER Solutions;Rémy;GONÇALVES;;Acheteur;Purchasing Manager;;;;;r.gonçalves@moser-solutions.fr;;;2013-02-08;7;6;;;;;false;6;1
+17;2;WEBSTER International;Jennifer;COLLIN;;Responsable Achats;Consultant;;;;;j.collin@webster-international.fr;;;2013-02-09;4;4;;;;;true;6;2
+18;1;Z&C Industries;Enzo;LUCAS;;Chef de projet;Owner;06.81.80.35.99;;;;e.lucas@zc-industries.fr;;;2013-02-10;7;2;;;;;false;6;3
+19;1;BALDWIN Industries;Pierre;GUYON;;Consultant;Project Manager;06.92.70.37.99;;;;p.guyon@baldwin-industries.fr;;;2013-02-11;2;1;;;;;true;6;4
+20;2;PORTER Services;Laetitia;BLONDEL;;PDG;CEO;07.67.55.99.99;;;;l.blondel@porter-services.fr;;;2013-02-12;6;7;;;;;false;6;5
+21;2;BRYANT International;Julie;CHARPENTIER;;Acheteur;Consultant;07.77.80.55.99;;;;j.charpentier@bryant-international.fr;;;2013-02-13;1;3;;;;;true;6;1
+22;2;TAB Technologies;Laurie;GUILBERT;;Gérant;Consultant;06.11.25.55.99;;;;l.guilbert@tab-technologies.fr;;;2013-02-14;3;3;;;;;false;6;2
+23;2;SHELTON Media;Vanessa;GOMEZ;;Consultant;Buyer;06.87.86.36.99;;;;v.gomez@shelton-media.fr;;;2013-02-15;4;2;;;;;true;6;3
+24;2;NKJ Technologies;Anna;GOMES;;Chef de projet;Purchasing Manager;06.97.57.49.99;;;;a.gomes@nkj-technologies.fr;;;2013-02-16;5;4;;;;;false;6;4
+25;2;O&D Web;Gaëlle;VIAL;;PDG;Consultant;07.25.67.69.99;;;;g.vial@od-web.fr;;;2013-02-17;7;9;;;;;true;6;5
+26;1;S&S Conseil;Maxence;LE-GUEN;;Gérant;CEO;07.20.25.91.99;;;;m.le-guen@ss-conseil.fr;;;2013-02-18;3;3;;;;;false;6;1
+27;1;CONNOLLY Solutions;Gael;BILLARD;;PDG;Purchasing Manager;;;;;g.billard@connolly-solutions.fr;;;2013-02-19;2;8;;;;;true;6;2
+28;2;GVS Services;Amandine;GUICHARD;;Consultant;Purchasing Manager;;;;;a.guichard@gvs-services.fr;;;2013-02-20;7;3;;;;;false;6;3
+29;1;E&U Systems;Étienne;POTTIER;;Consultant;CEO;06.66.13.87.99;;;;é.pottier@eu-systems.fr;;;2013-02-21;6;2;;;;;true;6;4
+30;1;IYT Services;Florent;GAY;;Chef de projet;Consultant;06.65.68.49.99;;;;f.gay@iyt-services.fr;;;2013-02-22;6;3;;;;;false;6;5
+31;2;U&M Media;Amandine;MAS;;Responsable Achats;CEO;06.75.47.73.99;;;;a.mas@um-media.fr;;;2013-02-23;3;3;;;;;true;6;1
+32;1;JENSEN International;Damien;CHATELAIN;;Consultant;Owner;06.76.94.95.99;;;;d.chatelain@jensen-international.fr;;;2013-02-24;1;10;;;;;false;6;2
+33;2;ROWE Services;Anna;FAVIER;;PDG;CEO;;;;;a.favier@rowe-services.fr;;;2013-02-25;1;8;;;;;true;6;3
+34;1;KAY Conseil;Eric;DUPUIS;;Consultant;Owner;;;;;e.dupuis@kay-conseil.fr;;;2013-02-26;4;5;;;;;false;6;4
+35;2;GRAY Technologies;Sarah;LE-GALL;;Consultant;Consultant;;;;;s.le-gall@gray-technologies.fr;;;2013-02-27;7;2;;;;;true;6;5

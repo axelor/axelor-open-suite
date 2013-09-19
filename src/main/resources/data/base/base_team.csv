@@ -1,6 +1,6 @@
-"importId";"code_fr";"name_fr";"code_en";"name_en";"userInfoSet"
-1;"NE";"Nord Est";"NE";"North East";
-2;"SE";"Sud Est";"SE";"South East";
-3;"NO";"Nord Ouest";"NW";"North West";
-4;"SO";"Sud Ouest";"SW";"South West";
-5;"EXP";"Export";"EXP";"Export";
+importId;code_fr;name_fr;code_en;name_en
+1;NE;Nord Est;NE;North East
+2;SE;Sud Est;SE;South East
+3;NO;Nord Ouest;NW;North West
+4;SO;Sud Ouest;SW;South West
+5;EXP;Export;EXP;Export

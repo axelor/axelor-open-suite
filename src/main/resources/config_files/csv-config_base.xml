@@ -158,6 +158,12 @@
 		<bind column="code_fr_FR" to="code"/>
 	</input>
 	
+	<input file="account_invoiceLineType.csv" separator=";" type="com.axelor.apps.account.db.InvoiceLineType">
+		<bind column="importId" to="importId"/>
+		<bind column="code_fr" to="code"/>
+		<bind column="name_fr" to="name"/>
+	</input>
+	
 	<input file="base_product.csv" separator=";" type="com.axelor.apps.base.db.Product">
 		<bind column="name_fr" to="name"/>
 		<bind column="code_fr" to="code"/>
@@ -182,7 +188,14 @@
 	
 	<input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account" >
 		<bind to="name" column="name_fr_FR"/>
-<!-- 		<bind to="name" column="name_en_EN"/> -->
+		<bind to="company" search="self.code = :company_code" update="true" />
+	</input>
+	
+	<input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account"  search="self.importId = :importId" update="true">
+		<bind to="importId" column="importId" />
+		<bind to="parent" search="self.code = :parent_code AND self.company.code = :company_code" update="true">
+			<bind to="code" column="parent_code" />
+		</bind>
 	</input>
 	
 	<input file="account_paymentMode.csv" separator=";" type="com.axelor.apps.account.db.PaymentMode" />
@@ -258,12 +271,6 @@
 	
 	<input file="account_reminderConfigLine.csv" separator=";" type="com.axelor.apps.account.db.ReminderConfigLine" />
 	
-	<input file="account_invoiceLineType.csv" separator=";" type="com.axelor.apps.account.db.InvoiceLineType">
-		<bind column="importId" to="importId"/>
-		<bind column="code_fr" to="code"/>
-		<bind column="name_fr" to="name"/>
-	</input>
-	
 	
 <!-- 	Deuxième passe sur le package 'base' pour prendre en compte les éléments du package account  -->
 
@@ -301,6 +308,9 @@
 	<input file="crm_lead.csv" separator=";" type="com.axelor.apps.crm.db.Lead">
 		<bind column="description_fr_FR" to="description"/>
 		<bind column="jobTitle_fr" to="jobTitle"/>
+		<bind to="emailAddress" search="self.address = :email">
+			<bind to="address" column="email" />
+		</bind>
 	</input>
 	
 	<input file="crm_meetingType.csv" separator=";" type="com.axelor.apps.crm.db.MeetingType">
