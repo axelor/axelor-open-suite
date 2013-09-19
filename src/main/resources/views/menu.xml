@@ -310,6 +310,20 @@
 		<view type="form" name="lead-form" />
 	</action-view>
 	
+	<menuitem name="top-prospection" title="Prospection" groups="admins,erp" top="true" left="false"/>
+	
+	<menuitem name="top-prospection-leads" title="Leads" action="top.propsection.leads" parent="top-prospection" groups="admins,erp" top="true" left="false"/> 	
+	<action-view name="top.propsection.leads" title="Leads" model="com.axelor.apps.crm.db.Lead" >
+		<view type="grid" name="lead-grid" />
+		<view type="form" name="lead-form" />
+	</action-view>
+	
+	<menuitem name="top-prospection-opportunity" title="Opportunities" action="top.prospection.opportunity" parent="top-prospection"  groups="admins,erp" top="true" left="false"/> 	
+	<action-view name="top.prospection.opportunity" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" >
+		<view type="grid" name="opportunity-grid" />
+		<view type="form" name="opportunity-form" />
+	</action-view>
+	
 	
 	  
 	<!-- CRM Dashboard Entry for CRM.... -->
