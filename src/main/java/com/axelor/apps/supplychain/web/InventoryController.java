@@ -47,6 +47,7 @@ import com.axelor.apps.supplychain.db.InventoryLine;
 import com.axelor.apps.supplychain.db.Location;
 import com.axelor.apps.supplychain.service.InventoryService;
 import com.axelor.apps.tool.net.URLService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -79,8 +80,7 @@ public class InventoryController {
 
 		StringBuilder url = new StringBuilder();
 		AxelorSettings axelorSettings = AxelorSettings.get();
-		
-		MetaUser metaUser = MetaUser.findByUser((User) request.getContext().get("__user__"));
+		MetaUser metaUser = MetaUser.findByUser(AuthUtils.getUser());
 		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Inventory.rptdesign&__format="+((format == 1) ? "pdf":(format == 2) ? "xls":"pdf")+"&InventoryId="+inventory.getId()+"&Locale="+metaUser.getLanguage()+axelorSettings.get("axelor.report.engine.datasource"));
 		
 		LOG.debug("URL : {}", url);
