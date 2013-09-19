@@ -37,39 +37,15 @@
 	<string name="notes" title="Notes" large="true"/>
 
 <!-- Financial informations -->
-  	<decimal name="estimatedTurnover" title="Turnover"/>
-  	<decimal name="estimatedCost" title="Cost"/>
-  	<decimal name="estimatedMargin" title="Margin">
-  		<![CDATA[
-  			if (estimatedTurnover != null && estimatedCost != null) {
-  				estimatedMargin = estimatedTurnover.subtract(estimatedCost);
-  				return estimatedMargin;
-  			}
-  			return null;
-  		]]>
-  	</decimal>
-  	<decimal name="confirmedTurnover" title="Turnover"/>
-  	<decimal name="confirmedCost" title="Cost"/>
-  	<decimal name="confirmedMargin" title="Margin">
-  		<![CDATA[
-  			if (confirmedTurnover != null && confirmedCost != null) {
-  				confirmedMargin = confirmedTurnover.subtract(confirmedCost);
-  				return confirmedMargin;
-  			}
-  			return null;
-  		]]>
-  	</decimal>
-  	<decimal name="realizedTurnover" title="Turnover"/>
-  	<decimal name="realizedCost" title="Cost"/>
-  	<decimal name="realizedMargin" title="Margin">
-  		<![CDATA[
-  			if (realizedTurnover != null && realizedCost != null) {
-  				realizedMargin = realizedTurnover.subtract(realizedCost);
-  				return realizedMargin;
-  			}
-  			return null;
-  		]]>
-  	</decimal>
+  	<decimal name="estimatedTurnover" title="Turnover" readonly="true"/>
+  	<decimal name="estimatedCost" title="Cost" readonly="true"/>
+  	<decimal name="estimatedMargin" title="Margin" readonly="true"/>
+  	<decimal name="confirmedTurnover" title="Turnover" readonly="true"/>
+  	<decimal name="confirmedCost" title="Cost" readonly="true"/>
+  	<decimal name="confirmedMargin" title="Margin" readonly="true"/>
+  	<decimal name="realizedTurnover" title="Turnover" readonly="true"/>
+  	<decimal name="realizedCost" title="Cost" readonly="true"/>
+  	<decimal name="realizedMargin" title="Margin" readonly="true"/>
   	
   	
   	<one-to-many name="otherCostTaskProductLine" ref="com.axelor.apps.organisation.db.TaskProductLine" title="Other planned costs"/>
