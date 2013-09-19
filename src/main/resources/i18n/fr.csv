@@ -1,215 +1,220 @@
-"domain","name","type","title","title_t","help","help_t","doc"
-"sc-root-purchase-order-new","New Purchase order","menu","New Purchase order","","","",""
-"sc-root-purchase-orders","Purchase orders","menu","Purchase orders","","","",""
-"sc-root-purchases","Purchases","menu","Purchases","Achats/Devis","","",""
-"sc-root-sales","Sales","menu","Sales","Ventes","","",""
-"sc-root-sales-new-so","New Sale order","menu","New Sale order","","","",""
-"sc-root-sales-orders","Sale orders","menu","Sale orders","Devis/commandes","","",""
-"stock-root","Stock management","menu","Stock management","Gestion des stocks","","",""
-"stock-root-conf","Configuration","menu","Configuration","Configuration","","",""
-"stock-root-conf-min-stock-rules","Minimum stock rules","menu","Minimum stock rules","Règles de stock minimum","","",""
-"stock-root-custdeliveries","Customer Deliveries","menu","Customer Deliveries","Livraisons Client","","",""
-"stock-root-internal","Internal Stock Moves","menu","Internal Stock Moves","Mouvements Internes","","",""
-"stock-root-inventories","Periodical processing","menu","Periodical processing","Traitements Périodiques","","",""
-"stock-root-inventories-draft","Inventories","menu","Inventories","Inventaires","","",""
-"stock-root-location","Stock Locations","menu","Stock Locations","Emplacements de stock","","",""
-"stock-root-suparrivals","Supplier Arrivals","menu","Supplier Arrivals","Livraisons Fournisseur","","",""
-"top-menu-create-so","Create SO","menu","Create SO","","","",""
-"supplychain.default.status.select","4","select","Canceled","Annulé","","",""
-"supplychain.default.status.select","3","select","Realized","Réalisé","","",""
-"supplychain.default.status.select","2","select","Planned","Planifié","","",""
-"supplychain.default.status.select","1","select","Draft","Brouillon","","",""
-"supplychain.inventory.format.select","2","select","XLS","Excel","","",""
-"supplychain.inventory.format.select","1","select","PDF","PDF","","",""
-"supplychain.invoicing.moment.select","2","select","Draft invoice N days after order validation","Facture brouillons N jrs après validation Cmde","","",""
-"supplychain.invoicing.moment.select","1","select","When a task is over","Lorsqu'une tâche est terminée","","",""
-"supplychain.location.type.select","3","select","Virtual","Virtuel","","",""
-"supplychain.location.type.select","2","select","External","Externe","","",""
-"supplychain.location.type.select","1","select","Internal","Interne","","",""
-"supplychain.min.stock.rules.order.alert.select","2","select","PO/Production","PO/Production","","",""
-"supplychain.min.stock.rules.order.alert.select","1","select","Alert","Alerte","","",""
-"supplychain.min.stock.rules.type.select","2","select","Future","Futur","","",""
-"supplychain.min.stock.rules.type.select","1","select","Current","Actuel","","",""
-"supplychain.purchase.order.status.select","6","select","Canceled","Annulé","","",""
-"supplychain.purchase.order.status.select","5","select","Finished","Terminé","","",""
-"supplychain.purchase.order.status.select","4","select","Validated","Validé","","",""
-"supplychain.purchase.order.status.select","3","select","Received","Reçu","","",""
-"supplychain.purchase.order.status.select","2","select","Requested","Demandé","","",""
-"supplychain.purchase.order.status.select","1","select","Draft","Brouillon","","",""
-"supplychain.sales.order.line.discount.type.select","2","select","Fixed","Fixe","","",""
-"supplychain.sales.order.line.discount.type.select","1","select","In %","En %","","",""
-"supplychain.sales.order.line.sale.supply.select","3","select","Produce","Produire","","",""
-"supplychain.sales.order.line.sale.supply.select","2","select","Purchase","Acheter","","",""
-"supplychain.sales.order.line.sale.supply.select","1","select","FromStock","Stock","","",""
-"supplychain.stock.move.type.select","3","select","Incoming move","Mvt Stock Réception","","",""
-"supplychain.stock.move.type.select","2","select","Outgoing move","Mvt Stock Livraison","","",""
-"supplychain.stock.move.type.select","1","select","Internal move","Mouvement Interne","","",""
-"com.axelor.apps.base.db.Wizard","create-inventory-wizard-form","form","Create inventory","Créer inventaire","","",""
-"com.axelor.apps.base.db.Wizard","Location","viewField","Location","Emplacement/Entrepôt","","",
-"com.axelor.apps.base.db.Wizard","Inventory date","viewField","Inventory date","Date inventaire","","",
-"com.axelor.apps.base.db.Wizard","Description","viewField","Description","","","",
-"create-inventory-wizard-form","","group","Fill inventory with","Remplir l'inventaire avec","","",""
-"com.axelor.apps.base.db.Wizard","Product family","viewField","Product family","Famille produit","","",
-"com.axelor.apps.base.db.Wizard","Product category","viewField","Product category","Catégorie produit","","",
-"com.axelor.apps.base.db.Wizard","Exclude out of stock products ?","viewField","Exclude out of stock products ?","Exclure produits sans stock ?","","",
-"com.axelor.apps.base.db.Wizard","Include obsolete products ?","viewField","Include obsolete products ?","Inclure les produits obsolètes ?","","",
-"create-inventory-wizard-form","validate","button","Validate","Valider","","",""
-"com.axelor.apps.supplychain.db.StockMove","customer-deliveries-filters","search-filters","Customer deliveries filters","Livraisons Clients","","",""
-"com.axelor.apps.supplychain.db.StockMove","Deliveries to prepare","filter","Deliveries to prepare","Livraisons à préparer","","",""
-"com.axelor.apps.supplychain.db.StockMove","Late Deliveries","filter","Late Deliveries","Livraisons en retard","","",""
-"com.axelor.apps.supplychain.db.StockMove","Deliveries History","filter","Deliveries History","Historique livraisons","","",""
-"com.axelor.apps.supplychain.db.StockMove","Deliveries Cancelled","filter","Deliveries Cancelled","Livraisons annulées","","",""
-"com.axelor.apps.supplychain.db.DeliveryOrder","delivery-order-form","form","Delivery order","Bon de livraison","","",""
-"delivery-order-form","validate","button","Validate","Valider","","",""
-"delivery-order-form","generateInvoice","button","Generate supplier invoice for control","Générer facture fournisseur de contrôle","","",""
-"com.axelor.apps.supplychain.db.DeliveryOrder","delivery-order-grid","grid","Delivery orders","Bons de livraison","","",""
-"com.axelor.apps.supplychain.db.DeliveryOrderLine","delivery-order-line-form","form","DO line","Ligne de TVA","","",""
-"com.axelor.apps.supplychain.db.DeliveryOrderLine","delivery-order-line-grid","grid","DO lines","Lignes de bon de livraison","","",""
-"com.axelor.apps.supplychain.db.StockMove","internal-stock-move-filters","search-filters","Internal Stock Move filters","","","",""
-"com.axelor.apps.supplychain.db.StockMove","Moves To Prepare","filter","Moves To Prepare","Livraisons à préparer","","",""
-"com.axelor.apps.supplychain.db.StockMove","Moves History","filter","Moves History","Historique Ecritures","","",""
-"com.axelor.apps.supplychain.db.StockMove","Moves Cancelled","filter","Moves Cancelled","Ecritures annulées","","",""
-"com.axelor.apps.supplychain.db.Inventory","inventories-filters","search-filters","Inventories filters","Filtres inventaires","","",""
-"com.axelor.apps.supplychain.db.Inventory","Planned Inventories","filter","Planned Inventories","Inventaires planifiés","","",""
-"com.axelor.apps.supplychain.db.Inventory","Inventories History","filter","Inventories History","Historique inventaires","","",""
-"com.axelor.apps.supplychain.db.Inventory","inventory-form","form","Inventory","Inventaires","","",""
-"inventory-form","","group","Export","Export","","",""
-"inventory-form","showInventory","button","Print","Imprimer","","",""
-"inventory-form","","group","Import","Import","","",""
-"inventory-form","importFile","button","Import","Import","","",""
-"inventory-form","","group","Fill inventory with","Remplir l'inventaire avec","","",""
-"inventory-form","fillInventory","button","Fill inventory","Compléter l'inventaire","","",""
-"inventory-form","","group","Actions","Actions","","",""
-"inventory-form","plan","button","Plan","","","",""
-"inventory-form","realize","button","Realize","Réalisé","","",""
-"inventory-form","cancel","button","Cancel","Annuler","","",""
-"inventory-form","draft","button","Draft","Brouillon","","",""
-"com.axelor.apps.supplychain.db.Inventory","inventory-grid","grid","Inventory","Inventaires","","",""
-"com.axelor.apps.supplychain.db.InventoryLine","inventory-line-form","form","Inventory line","Ligne d'inventaire","","",""
-"inventory-line-form","","group","Product Variants","Variantes produit","","",""
-"com.axelor.apps.supplychain.db.InventoryLine","inventory-line-grid","grid","Inventory lines","Lignes d'inventaire","","",""
-"location-form","createInventory","button","Create inventory","Créer inventaire","","",""
-"com.axelor.apps.supplychain.db.Location","location-form","form","Stock Location","Emplacement","","",""
-"location-form","viewContent","button","View location content","Voir contenu de l'emplacement","","",""
-"location-form","","page","Stock","Stock","","",""
-"location-form","","page","Stock Details","Détail des stocks","","",""
-"com.axelor.apps.supplychain.db.Location","location-grid","grid","Stock Locations","Emplacements de stock","","",""
-"com.axelor.apps.supplychain.db.LocationLine","location-line-details-form","form","Stock Location content","Contenu emplacement","","",""
-"com.axelor.apps.supplychain.db.LocationLine","location-line-details-grid","grid","Stock Locations content","Contenus emplacement","","",""
-"com.axelor.apps.supplychain.db.LocationLine","location-line-form","form","Stock Location content","Contenu emplacement","","",""
-"com.axelor.apps.supplychain.db.LocationLine","location-line-grid","grid","Stock Locations content","Contenus emplacement","","",""
-"com.axelor.apps.supplychain.db.LocationLine","location-line-product-form","form","Stock Location content","Contenu emplacement","","",""
-"com.axelor.apps.supplychain.db.LocationLine","location-line-product-grid","grid","Stock Locations content","Contenus emplacement","","",""
-"com.axelor.apps.production.db.Machine","machine-form","form","Machine","Machine","","",""
-"com.axelor.apps.production.db.Machine","machine-grid","grid","Machines","Machines","","",""
-"com.axelor.apps.supplychain.db.MinStockRules","min-stock-rules-form","form","Minimum stock rule","Les Règles de stock minimum","","",""
-"com.axelor.apps.supplychain.db.MinStockRules","min-stock-rules-grid","grid","Minimum stock rules","Règles de stock minimum","","",""
-"com.axelor.apps.supplychain.db.PurchaseOrder","purchase-order-form","form","Supplier RFQ/PO","Devis/commande fournisseur","","",""
-"purchase-order-form","","group","-","-","","",""
-"purchase-order-form","","group","Action(s)","Action(s)","","",""
-"purchase-order-form","compute","button","Compute","Calculer","","",""
-"purchase-order-form","draft","button","Draft","Brouillon","","",""
-"purchase-order-form","requested","button","Requested","Demandé","","",""
-"purchase-order-form","receipt","button","Receipt","Reçu","","",""
-"purchase-order-form","validate","button","Validate","Valider","","",""
-"purchase-order-form","completed","button","Completed","Terminer","","",""
-"purchase-order-form","cancel","button","Cancel","Annuler","","",""
-"purchase-order-form","sendByEmail","button","Send by email","Envoyer par email","","",""
-"purchase-order-form","generateDeliveryOrder","button","Generate delivery","Générer bon de livraison","","",""
-"purchase-order-form","showSupplierInvoice","button","Show invoice","Factures fournisseurs","","",""
-"purchase-order-form","generateControlInvoice","button","Generate control invoice","Générer facture","","",""
-"purchase-order-form","","group","Totals","Totaux","","",""
-"com.axelor.apps.supplychain.db.PurchaseOrder","purchase-order-grid","grid","Supplier RFQs/POs","Devis/commandes fournisseurs","","",""
-"com.axelor.apps.supplychain.db.PurchaseOrderLine","purchase-order-line-form","form","PO line","Ligne de commande fournisseur","","",""
-"purchase-order-line-form","","group","V.A.T informations","Informations TVA","","",""
-"purchase-order-line-form","","group","Product Variants","Variantes produit","","",""
-"com.axelor.apps.supplychain.db.PurchaseOrderLine","purchase-order-line-grid","grid","PO lines","Lignes de commande fournisseur","","",""
-"com.axelor.apps.supplychain.db.PurchaseOrderLineVat","purchase-order-line-vat-form","form","SO VAT line","Ligne de TVA","","",""
-"com.axelor.apps.supplychain.db.PurchaseOrderLineVat","purchase-order-line-vat-grid","grid","SO VAT lines","Les lignes de TVA","","",""
-"com.axelor.apps.supplychain.db.PurchaseOrder","purchases-order-filters","search-filters","Purchases Order filters","","","",""
-"com.axelor.apps.supplychain.db.PurchaseOrder","My RFQs","filter","My RFQs","Mes RFQs","","",""
-"com.axelor.apps.supplychain.db.PurchaseOrder","My Sales","filter","My Sales","Mes Ventes","","",""
-"com.axelor.apps.supplychain.db.SalesOrder","sales-order-filters","search-filters","Sales Order filters","","","",""
-"com.axelor.apps.supplychain.db.SalesOrder","My Proposals","filter","My Proposals","Mes devis/propositions","","",""
-"com.axelor.apps.supplychain.db.SalesOrder","My Sales","filter","My Sales","Mes Ventes","","",""
-"com.axelor.apps.supplychain.db.SalesOrder","My Team Proposals","filter","My Team Proposals","Devis de mon équipe","","",""
-"com.axelor.apps.supplychain.db.SalesOrder","My Team Sales","filter","My Team Sales","Ventes de mon équipe","","",""
-"sales-order-form","createDocument","button","Create Document","Créer un document","","",""
-"com.axelor.apps.supplychain.db.SalesOrder","sales-order-form","form","Sale order","Devis","","",""
-"sales-order-form","","page","Customer information","Informations client","","",""
-"sales-order-form","specificSettings","group","Specific settings","Configuration spécifique","","",""
-"sales-order-form","","separator","Sale order Settings","Configuration du devis","","",""
-"sales-order-form","","separator","Sale order lines Settings","Configuration des lignes de devis","","",""
-"sales-order-form","","separator","Sale order content","Lignes de devis","","",""
-"sales-order-form","","group","Action(s)","Action(s)","","",""
-"sales-order-form","compute","button","Compute","Calculer","","",""
-"sales-order-form","confirm","button","Confirm","Confirmer","","",""
-"sales-order-form","validate","button","Validate","Valider","","",""
-"sales-order-form","cancel","button","Cancel","Annuler","","",""
-"sales-order-form","showSalesOrder","button","Print","Imprimer","","",""
-"sales-order-form","sendByEmail","button","Send by email","Envoyer par email","","",""
-"sales-order-form","generateInvoice","button","Generate invoice","Générer facture","","",""
-"sales-order-form","generateProject","button","Generate project","Générer projet","","",""
-"sales-order-form","","group","Totaux","Totaux","","",""
-"sales-order-form","","page","Other informations","Autres informations","","",""
-"sales-order-form","","group","Sales follow-up","Suivi devis","","",""
-"sales-order-form","","group","Financial terms","Termes financier","","",""
-"sales-order-form","","group","Marketing","Marketing","","",""
-"sales-order-form","","group","Invoicing","Facturation","","",""
-"sales-order-form","","page","Payment schedule","Échéancier","","",""
-"sales-order-form","","page","Invoicing","Facturation","","",""
-"sales-order-form","showInvoice","button","Show Invoices","Les factures","","",""
-"com.axelor.apps.supplychain.db.SalesOrder","sales-order-grid","grid","Sale orders","Devis/commandes","","",""
-"com.axelor.apps.supplychain.db.SalesOrderLine","sales-order-line-form","form","SO line","Ligne de devis","","",""
-"sales-order-line-form","discount","group","Remise","","","",""
-"sales-order-line-form","","page","Settings","Configurations","","",""
-"sales-order-line-form","","page","Notes","Remarques","","",""
-"sales-order-line-form","","page","SO line details","Détails","","",""
-"sales-order-line-form","","page","Invoicing follow-up","Suivi facturation","","",""
-"sales-order-line-form","ressourcesPlanning","page","Ressources Planning","Planning des ressources","","",""
-"com.axelor.apps.supplychain.db.SalesOrderLine","sales-order-line-grid","grid","SO lines","Lignes de devis","","",""
-"com.axelor.apps.supplychain.db.SalesOrderLineVat","sales-order-line-vat-form","form","SO VAT line","Ligne de TVA","","",""
-"com.axelor.apps.supplychain.db.SalesOrderLineVat","sales-order-line-vat-grid","grid","SO VAT lines","Les lignes de TVA","","",""
-"com.axelor.apps.supplychain.db.SalesOrderScheduleLine","sales-order-schedule-line-form","form","SO schedule line","Ligne d'échéance de devis","","",""
-"com.axelor.apps.supplychain.db.SalesOrderScheduleLine","sales-order-schedule-line-grid","grid","SO schedule lines","Lignes d'échéances de devis","","",""
-"com.axelor.apps.supplychain.db.SalesOrderSubLine","sales-order-sub-line-form","form","SO subline","Sous-ligne de devis","","",""
-"sales-order-sub-line-form","","group","Product Variants","Variantes produit","","",""
-"com.axelor.apps.supplychain.db.SalesOrderSubLine","sales-order-sub-line-grid","grid","SO sublines","Sous-lignes de devis","","",""
-"com.axelor.apps.supplychain.db.StockMove","stock-move-form","form","Stock move","Mouvement de stock","","",""
-"stock-move-form","","group","Stock move reference","Références mouvement de stock","","",""
-"stock-move-form","","group","Stock move informations","Informations mouvement de stock","","",""
-"stock-move-form","","group","Action(s)","Action(s)","","",""
-"stock-move-form","plan","button","Plan","","","",""
-"stock-move-form","realize","button","Realize","Réalisé","","",""
-"stock-move-form","cancel","button","Cancel","Annuler","","",""
-"stock-move-form","draft","button","Draft","Brouillon","","",""
-"stock-move-form","generateInvoice","button","Generate invoice","Générer facture","","",""
-"stock-move-form","","page","Stock move details","Détails mouvement de stock","","",""
-"stock-move-form","","page","Configuration","Configuration","","",""
-"com.axelor.apps.supplychain.db.StockMove","stock-move-grid","grid","Stock moves","Mouvements de stock","","",""
-"com.axelor.apps.supplychain.db.StockMoveLine","stock-move-line-form","form","Stock move line","Ligne mvt. de stock","","",""
-"com.axelor.apps.supplychain.db.StockMoveLine","stock-move-line-grid","grid","Stock move lines","Lignes mvt. de stock","","",""
-"com.axelor.apps.supplychain.db.StockMove","supplier-arrivals-filters","search-filters","Supplier arrivals filters","","","",""
-"com.axelor.apps.supplychain.db.StockMove","Today Arrivals","filter","Today Arrivals","Arrivages du jour","","",""
-"com.axelor.apps.supplychain.db.StockMove","Upcoming arrivals","filter","Upcoming arrivals","Prochaines réceptions","","",""
-"com.axelor.apps.supplychain.db.StockMove","Arrivals History","filter","Arrivals History","Historique arrivées","","",""
-"com.axelor.apps.supplychain.db.StockMove","Cancelled Arrivals","filter","Cancelled Arrivals","Arrivages annulées","","",""
-"action-location-view-create-inventory","action-location-view-create-inventory","action","Create inventory","Créer inventaire","","",""
-"action-location-view-inventory","action-location-view-inventory","action","Inventaire généré","","","",""
-"action-purchase-order-show-supplier-invoice","action-purchase-order-show-supplier-invoice","action","Supplier invoices","Factures fournisseur","","",""
-"action-purchase-order-validate-location","action-purchase-order-validate-location","action","The field 'Location' must be filled.","Le champ "Entrepôt" doit être complété.","","",""
-"action-sale-order-validate-check-location","action-sale-order-validate-check-location","action","The location must be filled.","Merci de remplir le champ 'Location' afin de générer les mouvements de stocks.","","",""
-"action-sales-order-button-validation","action-sales-order-button-validation","action","Project must be filled if create task by line is check.","Le projet doit être renseigné si Créer tâche par ligne est coché.","","",""
-"action-sales-order-button-validation","action-sales-order-button-validation","action","The company of the sale order and the company of the project must be the same.","La société du Bon de commande et du projet doivent être identiques.","","",""
-"action-sales-order-view-invoice","action-sales-order-view-invoice","action","Invoices","Factures","","",""
-"action-sales-order-view-send-by-email","action-sales-order-view-send-by-email","action","Send sales order by email","","","",""
-"sc.root.purchase.order.new","sc.root.purchase.order.new","action","New Purchase order","","","",""
-"sc.root.purchase.orders","sc.root.purchase.orders","action","Purchase orders","","","",""
-"sc.root.sales.new.so","sc.root.sales.new.so","action","New Sale order","","","",""
-"sc.root.sales.orders","sc.root.sales.orders","action","Sale orders","Devis/commandes","","",""
-"stock.root.conf.min.Stock.rules","stock.root.conf.min.Stock.rules","action","Minimum stock rules","Règles de stock minimum","","",""
-"stock.root.custdeliveries","stock.root.custdeliveries","action","Customer Deliveries","Livraisons Client","","",""
-"stock.root.internal","stock.root.internal","action","Internal Stock Moves","Mouvements Internes","","",""
-"stock.root.inventories.draft","stock.root.inventories.draft","action","Inventories","Inventaires","","",""
-"stock.root.location","stock.root.location","action","Stock Locations","Emplacements de stock","","",""
-"stock.root.suparrivals","stock.root.suparrivals","action","Supplier Arrivals","Livraisons Fournisseur","","",""
+domain;name;type;title;title_t;help;help_t;doc
+sc-root-purchase-order-new;New Purchase order;menu;New Purchase order;;;;
+sc-root-purchase-orders;Purchase orders;menu;Purchase orders;;;;
+sc-root-purchases;Purchases;menu;Purchases;Achats/Devis;;;
+sc-root-sales;Sales;menu;Sales;Ventes;;;
+sc-root-sales-new-so;New Sale order;menu;New Sale order;;;;
+sc-root-sales-orders;Sale orders;menu;Sale orders;Devis/commandes;;;
+stock-root;Stock management;menu;Stock management;Gestion des stocks;;;
+stock-root-conf;Configuration;menu;Configuration;Configuration;;;
+stock-root-conf-min-stock-rules;Minimum stock rules;menu;Minimum stock rules;Règles de stock minimum;;;
+stock-root-custdeliveries;Customer Deliveries;menu;Customer Deliveries;Livraisons Client;;;
+stock-root-internal;Internal Stock Moves;menu;Internal Stock Moves;Mouvements Internes;;;
+stock-root-inventories;Periodical processing;menu;Periodical processing;Traitements Périodiques;;;
+stock-root-inventories-draft;Inventories;menu;Inventories;Inventaires;;;
+stock-root-location;Stock Locations;menu;Stock Locations;Emplacements de stock;;;
+stock-root-suparrivals;Supplier Arrivals;menu;Supplier Arrivals;Livraisons Fournisseur;;;
+top-menu-create-so;Create SO;menu;Create SO;;;;
+supplychain.default.status.select;4;select;Canceled;Annulé;;;
+supplychain.default.status.select;3;select;Realized;Réalisé;;;
+supplychain.default.status.select;2;select;Planned;Planifié;;;
+supplychain.default.status.select;1;select;Draft;Brouillon;;;
+supplychain.inventory.format.select;2;select;XLS;Excel;;;
+supplychain.inventory.format.select;1;select;PDF;PDF;;;
+supplychain.invoicing.moment.select;2;select;Draft invoice N days after order validation;Facture brouillons N jrs après validation Cmde;;;
+supplychain.invoicing.moment.select;1;select;When a task is over;Lorsqu'une tâche est terminée;;;
+supplychain.location.type.select;3;select;Virtual;Virtuel;;;
+supplychain.location.type.select;2;select;External;Externe;;;
+supplychain.location.type.select;1;select;Internal;Interne;;;
+supplychain.min.stock.rules.order.alert.select;2;select;PO/Production;PO/Production;;;
+supplychain.min.stock.rules.order.alert.select;1;select;Alert;Alerte;;;
+supplychain.min.stock.rules.type.select;2;select;Future;Futur;;;
+supplychain.min.stock.rules.type.select;1;select;Current;Actuel;;;
+supplychain.purchase.order.status.select;6;select;Canceled;Annulé;;;
+supplychain.purchase.order.status.select;5;select;Finished;Terminé;;;
+supplychain.purchase.order.status.select;4;select;Validated;Validé;;;
+supplychain.purchase.order.status.select;3;select;Received;Reçu;;;
+supplychain.purchase.order.status.select;2;select;Requested;Demandé;;;
+supplychain.purchase.order.status.select;1;select;Draft;Brouillon;;;
+supplychain.sales.order.line.discount.type.select;2;select;Fixed;Fixe;;;
+supplychain.sales.order.line.discount.type.select;1;select;In %;En %;;;
+supplychain.sales.order.line.sale.supply.select;3;select;Produce;Produire;;;
+supplychain.sales.order.line.sale.supply.select;2;select;Purchase;Acheter;;;
+supplychain.sales.order.line.sale.supply.select;1;select;FromStock;Stock;;;
+supplychain.stock.move.type.select;3;select;Incoming move;Mvt Stock Réception;;;
+supplychain.stock.move.type.select;2;select;Outgoing move;Mvt Stock Livraison;;;
+supplychain.stock.move.type.select;1;select;Internal move;Mouvement Interne;;;
+com.axelor.apps.base.db.Wizard;create-inventory-wizard-form;form;Create inventory;Créer inventaire;;;
+com.axelor.apps.base.db.Wizard;Location;viewField;Location;Emplacement/Entrepôt;;;
+com.axelor.apps.base.db.Wizard;Inventory date;viewField;Inventory date;Date inventaire;;;
+com.axelor.apps.base.db.Wizard;Description;viewField;Description;;;;
+create-inventory-wizard-form;;group;Fill inventory with;Remplir l'inventaire avec;;;
+com.axelor.apps.base.db.Wizard;Product family;viewField;Product family;Famille produit;;;
+com.axelor.apps.base.db.Wizard;Product category;viewField;Product category;Catégorie produit;;;
+com.axelor.apps.base.db.Wizard;Exclude out of stock products ?;viewField;Exclude out of stock products ?;Exclure produits sans stock ?;;;
+com.axelor.apps.base.db.Wizard;Include obsolete products ?;viewField;Include obsolete products ?;Inclure les produits obsolètes ?;;;
+create-inventory-wizard-form;validate;button;Validate;Valider;;;
+com.axelor.apps.supplychain.db.StockMove;customer-deliveries-filters;search-filters;Customer deliveries filters;Livraisons Clients;;;
+com.axelor.apps.supplychain.db.StockMove;Deliveries to prepare;filter;Deliveries to prepare;Livraisons à préparer;;;
+com.axelor.apps.supplychain.db.StockMove;Late Deliveries;filter;Late Deliveries;Livraisons en retard;;;
+com.axelor.apps.supplychain.db.StockMove;Deliveries History;filter;Deliveries History;Historique livraisons;;;
+com.axelor.apps.supplychain.db.StockMove;Deliveries Cancelled;filter;Deliveries Cancelled;Livraisons annulées;;;
+com.axelor.apps.supplychain.db.DeliveryOrder;delivery-order-form;form;Delivery order;Bon de livraison;;;
+delivery-order-form;validate;button;Validate;Valider;;;
+delivery-order-form;generateInvoice;button;Generate supplier invoice for control;Générer facture fournisseur de contrôle;;;
+com.axelor.apps.supplychain.db.DeliveryOrder;delivery-order-grid;grid;Delivery orders;Bons de livraison;;;
+com.axelor.apps.supplychain.db.DeliveryOrderLine;delivery-order-line-form;form;DO line;Ligne de TVA;;;
+com.axelor.apps.supplychain.db.DeliveryOrderLine;delivery-order-line-grid;grid;DO lines;Lignes de bon de livraison;;;
+com.axelor.apps.supplychain.db.StockMove;internal-stock-move-filters;search-filters;Internal Stock Move filters;;;;
+com.axelor.apps.supplychain.db.StockMove;Moves To Prepare;filter;Moves To Prepare;Livraisons à préparer;;;
+com.axelor.apps.supplychain.db.StockMove;Moves History;filter;Moves History;Historique Ecritures;;;
+com.axelor.apps.supplychain.db.StockMove;Moves Cancelled;filter;Moves Cancelled;Ecritures annulées;;;
+com.axelor.apps.supplychain.db.Inventory;inventories-filters;search-filters;Inventories filters;Filtres inventaires;;;
+com.axelor.apps.supplychain.db.Inventory;Planned Inventories;filter;Planned Inventories;Inventaires planifiés;;;
+com.axelor.apps.supplychain.db.Inventory;Inventories History;filter;Inventories History;Historique inventaires;;;
+com.axelor.apps.supplychain.db.Inventory;inventory-form;form;Inventory;Inventaires;;;
+inventory-form;;group;Export;Export;;;
+inventory-form;showInventory;button;Print;Imprimer;;;
+inventory-form;;group;Import;Import;;;
+inventory-form;importFile;button;Import;Import;;;
+inventory-form;;group;Fill inventory with;Remplir l'inventaire avec;;;
+inventory-form;fillInventory;button;Fill inventory;Compléter l'inventaire;;;
+inventory-form;;group;Actions;Actions;;;
+inventory-form;plan;button;Plan;;;;
+inventory-form;realize;button;Realize;Réalisé;;;
+inventory-form;cancel;button;Cancel;Annuler;;;
+inventory-form;draft;button;Draft;Brouillon;;;
+com.axelor.apps.supplychain.db.Inventory;inventory-grid;grid;Inventory;Inventaires;;;
+com.axelor.apps.supplychain.db.InventoryLine;inventory-line-form;form;Inventory line;Ligne d'inventaire;;;
+inventory-line-form;;group;Product Variants;Variantes produit;;;
+com.axelor.apps.supplychain.db.InventoryLine;inventory-line-grid;grid;Inventory lines;Lignes d'inventaire;;;
+location-form;createInventory;button;Create inventory;Créer inventaire;;;
+com.axelor.apps.supplychain.db.Location;location-form;form;Stock Location;Emplacement;;;
+location-form;viewContent;button;View location content;Voir contenu de l'emplacement;;;
+location-form;;page;Stock;Stock;;;
+location-form;;page;Stock Details;Détail des stocks;;;
+com.axelor.apps.supplychain.db.Location;location-grid;grid;Stock Locations;Emplacements de stock;;;
+com.axelor.apps.supplychain.db.LocationLine;location-line-details-form;form;Stock Location content;Contenu emplacement;;;
+com.axelor.apps.supplychain.db.LocationLine;location-line-details-grid;grid;Stock Locations content;Contenus emplacement;;;
+com.axelor.apps.supplychain.db.LocationLine;location-line-form;form;Stock Location content;Contenu emplacement;;;
+com.axelor.apps.supplychain.db.LocationLine;location-line-grid;grid;Stock Locations content;Contenus emplacement;;;
+com.axelor.apps.supplychain.db.LocationLine;location-line-product-form;form;Stock Location content;Contenu emplacement;;;
+com.axelor.apps.supplychain.db.LocationLine;location-line-product-grid;grid;Stock Locations content;Contenus emplacement;;;
+com.axelor.apps.production.db.Machine;machine-form;form;Machine;Machine;;;
+com.axelor.apps.production.db.Machine;machine-grid;grid;Machines;Machines;;;
+com.axelor.apps.supplychain.db.MinStockRules;min-stock-rules-form;form;Minimum stock rule;Les Règles de stock minimum;;;
+com.axelor.apps.supplychain.db.MinStockRules;min-stock-rules-grid;grid;Minimum stock rules;Règles de stock minimum;;;
+com.axelor.apps.supplychain.db.PurchaseOrder;purchase-order-form;form;Supplier RFQ/PO;Devis/commande fournisseur;;;
+purchase-order-form;;group;-0;-0;;;
+purchase-order-form;;group;Action(s);Action(s);;;
+purchase-order-form;compute;button;Compute;Calculer;;;
+purchase-order-form;draft;button;Draft;Brouillon;;;
+purchase-order-form;requested;button;Requested;Demandé;;;
+purchase-order-form;receipt;button;Receipt;Reçu;;;
+purchase-order-form;validate;button;Validate;Valider;;;
+purchase-order-form;completed;button;Completed;Terminer;;;
+purchase-order-form;cancel;button;Cancel;Annuler;;;
+purchase-order-form;sendByEmail;button;Send by email;Envoyer par email;;;
+purchase-order-form;generateDeliveryOrder;button;Generate delivery;Générer bon de livraison;;;
+purchase-order-form;showSupplierInvoice;button;Show invoice;Factures fournisseurs;;;
+purchase-order-form;generateControlInvoice;button;Generate control invoice;Générer facture;;;
+purchase-order-form;;group;Totals;Totaux;;;
+com.axelor.apps.supplychain.db.PurchaseOrder;purchase-order-grid;grid;Supplier RFQs/POs;Devis/commandes fournisseurs;;;
+com.axelor.apps.supplychain.db.PurchaseOrderLine;purchase-order-line-form;form;PO line;Ligne de commande fournisseur;;;
+purchase-order-line-form;;group;V.A.T informations;Informations TVA;;;
+purchase-order-line-form;;group;Product Variants;Variantes produit;;;
+com.axelor.apps.supplychain.db.PurchaseOrderLine;purchase-order-line-grid;grid;PO lines;Lignes de commande fournisseur;;;
+com.axelor.apps.supplychain.db.PurchaseOrderLineVat;purchase-order-line-vat-form;form;SO VAT line;Ligne de TVA;;;
+com.axelor.apps.supplychain.db.PurchaseOrderLineVat;purchase-order-line-vat-grid;grid;SO VAT lines;Les lignes de TVA;;;
+com.axelor.apps.supplychain.db.PurchaseOrder;purchases-order-filters;search-filters;Purchases Order filters;;;;
+com.axelor.apps.supplychain.db.PurchaseOrder;My RFQs;filter;My RFQs;Mes RFQs;;;
+com.axelor.apps.supplychain.db.PurchaseOrder;My Sales;filter;My Sales;Mes Ventes;;;
+com.axelor.apps.supplychain.db.SalesOrder;sales-order-filters;search-filters;Sales Order filters;;;;
+com.axelor.apps.supplychain.db.SalesOrder;My Proposals;filter;My Proposals;Mes devis/propositions;;;
+com.axelor.apps.supplychain.db.SalesOrder;My Sales;filter;My Sales;Mes Ventes;;;
+com.axelor.apps.supplychain.db.SalesOrder;My Team Proposals;filter;My Team Proposals;Devis de mon équipe;;;
+com.axelor.apps.supplychain.db.SalesOrder;My Team Sales;filter;My Team Sales;Ventes de mon équipe;;;
+sales-order-form;createDocument;button;Create Document;Créer un document;;;
+com.axelor.apps.supplychain.db.SalesOrder;sales-order-form;form;Sale order;Devis;;;
+sales-order-form;;page;Customer information;Informations client;;;
+sales-order-form;specificSettings;group;Specific settings;Configuration spécifique;;;
+sales-order-form;;separator;Sale order Settings;Configuration du devis;;;
+sales-order-form;;separator;Sale order lines Settings;Configuration des lignes de devis;;;
+sales-order-form;;separator;Sale order content;Lignes de devis;;;
+sales-order-form;;group;Action(s);Action(s);;;
+sales-order-form;compute;button;Compute;Calculer;;;
+sales-order-form;confirm;button;Confirm;Confirmer;;;
+sales-order-form;validate;button;Validate;Valider;;;
+sales-order-form;cancel;button;Cancel;Annuler;;;
+sales-order-form;showSalesOrder;button;Print;Imprimer;;;
+sales-order-form;sendByEmail;button;Send by email;Envoyer par email;;;
+sales-order-form;generateInvoice;button;Generate invoice;Générer facture;;;
+sales-order-form;generateProject;button;Generate project;Générer projet;;;
+sales-order-form;;group;Totaux;Totaux;;;
+sales-order-form;;page;Other informations;Autres informations;;;
+sales-order-form;;group;Sales follow-up;Suivi devis;;;
+sales-order-form;;group;Financial terms;Termes financier;;;
+sales-order-form;;group;Marketing;Marketing;;;
+sales-order-form;;group;Invoicing;Facturation;;;
+sales-order-form;;page;Payment schedule;Échéancier;;;
+sales-order-form;;page;Invoicing;Facturation;;;
+sales-order-form;showInvoice;button;Show Invoices;Les factures;;;
+com.axelor.apps.supplychain.db.SalesOrder;sales-order-grid;grid;Sale orders;Devis/commandes;;;
+com.axelor.apps.supplychain.db.SalesOrderLine;sales-order-line-form;form;SO line;Ligne de devis;;;
+sales-order-line-form;discount;group;Remise;;;;
+sales-order-line-form;;page;Settings;Configurations;;;
+sales-order-line-form;;page;Notes;Remarques;;;
+sales-order-line-form;;page;SO line details;Détails;;;
+sales-order-line-form;;page;Invoicing follow-up;Suivi facturation;;;
+sales-order-line-form;ressourcesPlanning;page;Ressources Planning;Planning des ressources;;;
+com.axelor.apps.supplychain.db.SalesOrderLine;sales-order-line-grid;grid;SO lines;Lignes de devis;;;
+com.axelor.apps.supplychain.db.SalesOrderLineVat;sales-order-line-vat-form;form;SO VAT line;Ligne de TVA;;;
+com.axelor.apps.supplychain.db.SalesOrderLineVat;sales-order-line-vat-grid;grid;SO VAT lines;Les lignes de TVA;;;
+com.axelor.apps.supplychain.db.SalesOrderScheduleLine;sales-order-schedule-line-form;form;SO schedule line;Ligne d'échéance de devis;;;
+com.axelor.apps.supplychain.db.SalesOrderScheduleLine;sales-order-schedule-line-grid;grid;SO schedule lines;Lignes d'échéances de devis;;;
+com.axelor.apps.supplychain.db.SalesOrderSubLine;sales-order-sub-line-form;form;SO subline;Sous-ligne de devis;;;
+sales-order-sub-line-form;;group;Product Variants;Variantes produit;;;
+com.axelor.apps.supplychain.db.SalesOrderSubLine;sales-order-sub-line-grid;grid;SO sublines;Sous-lignes de devis;;;
+com.axelor.apps.supplychain.db.StockMove;stock-move-form;form;Stock move;Mouvement de stock;;;
+stock-move-form;;group;Stock move reference;Références mouvement de stock;;;
+stock-move-form;;group;Stock move informations;Informations mouvement de stock;;;
+stock-move-form;;group;Action(s);Action(s);;;
+stock-move-form;plan;button;Plan;;;;
+stock-move-form;realize;button;Realize;Réalisé;;;
+stock-move-form;cancel;button;Cancel;Annuler;;;
+stock-move-form;draft;button;Draft;Brouillon;;;
+stock-move-form;generateInvoice;button;Generate invoice;Générer facture;;;
+stock-move-form;;page;Stock move details;Détails mouvement de stock;;;
+stock-move-form;;page;Configuration;Configuration;;;
+com.axelor.apps.supplychain.db.StockMove;stock-move-grid;grid;Stock moves;Mouvements de stock;;;
+com.axelor.apps.supplychain.db.StockMoveLine;stock-move-line-form;form;Stock move line;Ligne mvt. de stock;;;
+com.axelor.apps.supplychain.db.StockMoveLine;stock-move-line-grid;grid;Stock move lines;Lignes mvt. de stock;;;
+com.axelor.apps.supplychain.db.StockMove;supplier-arrivals-filters;search-filters;Supplier arrivals filters;;;;
+com.axelor.apps.supplychain.db.StockMove;Today Arrivals;filter;Today Arrivals;Arrivages du jour;;;
+com.axelor.apps.supplychain.db.StockMove;Upcoming arrivals;filter;Upcoming arrivals;Prochaines réceptions;;;
+com.axelor.apps.supplychain.db.StockMove;Arrivals History;filter;Arrivals History;Historique arrivées;;;
+com.axelor.apps.supplychain.db.StockMove;Cancelled Arrivals;filter;Cancelled Arrivals;Arrivages annulées;;;
+action-location-view-create-inventory;action-location-view-create-inventory;action;Create inventory;Créer inventaire;;;
+action-location-view-inventory;action-location-view-inventory;action;Inventaire généré;;;;
+action-purchase-order-show-supplier-invoice;action-purchase-order-show-supplier-invoice;action;Supplier invoices;Factures fournisseur;;;
+action-purchase-order-validate-location;action-purchase-order-validate-location;action;The field 'Location' must be filled.;"Le champ Entrepôt"" doit être complété.""";;;
+action-sale-order-validate-check-location;action-sale-order-validate-check-location;action;The location must be filled.;Merci de remplir le champ 'Location' afin de générer les mouvements de stocks.;;;
+action-sales-order-button-validation;action-sales-order-button-validation;action;Project must be filled if create task by line is check.;Le projet doit être renseigné si Créer tâche par ligne est coché.;;;
+action-sales-order-button-validation;action-sales-order-button-validation;action;The company of the sale order and the company of the project must be the same.;La société du Bon de commande et du projet doivent être identiques.;;;
+action-sales-order-view-invoice;action-sales-order-view-invoice;action;Invoices;Factures;;;
+action-sales-order-view-send-by-email;action-sales-order-view-send-by-email;action;Send sales order by email;;;;
+sc.root.purchase.order.new;sc.root.purchase.order.new;action;New Purchase order;;;;
+sc.root.purchase.orders;sc.root.purchase.orders;action;Purchase orders;;;;
+sc.root.sales.new.so;sc.root.sales.new.so;action;New Sale order;;;;
+sc.root.sales.orders;sc.root.sales.orders;action;Sale orders;Devis/commandes;;;
+stock.root.conf.min.Stock.rules;stock.root.conf.min.Stock.rules;action;Minimum stock rules;Règles de stock minimum;;;
+stock.root.custdeliveries;stock.root.custdeliveries;action;Customer Deliveries;Livraisons Client;;;
+stock.root.internal;stock.root.internal;action;Internal Stock Moves;Mouvements Internes;;;
+stock.root.inventories.draft;stock.root.inventories.draft;action;Inventories;Inventaires;;;
+stock.root.location;stock.root.location;action;Stock Locations;Emplacements de stock;;;
+stock.root.suparrivals;stock.root.suparrivals;action;Supplier Arrivals;Livraisons Fournisseur;;;
+top-sales;top-sales;menu;Sales;Ventes;;;
+top.sales.offers;top.sales.offers;action;Quotes;Devis;;;
+top.sales.orders;top.sales.orders;action;Orders;Commandes;;;
+top-sales-offers;top-sales-offers;menu;Quotes;Devis;;;
+Top-sales-orders;Top-sales-orders;menu;Orders;Commandes;;;
