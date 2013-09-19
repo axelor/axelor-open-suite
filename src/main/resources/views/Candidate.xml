@@ -12,6 +12,7 @@
 		<field name="avalabilitySelect" />
 		<field name="availabilityDate" />
 		<field name="salaryExpectation" />
+		<button name="sendByEmail" title="Send by email" colSpan="1" onClick="action-send-by-email-with-template" icon="img/Mail.png"/>
 	</grid>
 
 

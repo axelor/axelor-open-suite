@@ -6,6 +6,7 @@
 	<grid name="employee-grid" title="Employee"	model="com.axelor.apps.organisation.db.Employee">
 		<field name="name" />
 		<field name="firstName" />
+		<button name="sendByEmail" title="Send by email" colSpan="1" onClick="action-send-by-email-with-template" icon="img/Mail.png"/>
 	</grid>
 
 	<form name="employee-form" title="Employee"	model="com.axelor.apps.organisation.db.Employee" cols="4"

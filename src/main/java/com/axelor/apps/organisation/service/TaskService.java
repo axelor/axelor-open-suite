@@ -150,13 +150,13 @@ public class TaskService {
 		BigDecimal customerInvoiceLineRealizedCost = (BigDecimal) q.getSingleResult();
 		
 		
-		q = JPA.em().createQuery("select SUM(tl.userInfo.employee.dailySalaryCost * tl.duration) FROM TimesheetLine as tl WHERE tl.task = ?1 and tl.statusSelect = 3");
+		q = JPA.em().createQuery("select SUM(tl.timesheet.userInfo.employee.dailySalaryCost * tl.duration) FROM TimesheetLine as tl WHERE tl.task = ?1 and tl.timesheet.statusSelect = 3");
 		q.setParameter(1, task);
 				
 		BigDecimal timesheetLineRealizedCost = (BigDecimal) q.getSingleResult();
 			
 		
-		q = JPA.em().createQuery("select SUM(el.total) FROM ExpenseLine as el WHERE el.task = ?1 and el.statusSelect = 4");
+		q = JPA.em().createQuery("select SUM(el.total) FROM ExpenseLine as el WHERE el.task = ?1 and el.expense.statusSelect = 4");
 		q.setParameter(1, task);
 				
 		BigDecimal expenseLineRealizedCost = (BigDecimal) q.getSingleResult();

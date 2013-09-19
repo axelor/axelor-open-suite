@@ -59,10 +59,10 @@
 <!-- 	</action-view> -->
 
 	<menuitem name="hr-root-my-timesheet-line-calendar" parent="hr-root-inputforms"
-		title="My leaves calendar" action="hr.root.my.timesheet.line.calendar"/>
+		title="My timesheet calendar" action="hr.root.my.timesheet.line.calendar" icon="img/icons/calendar-task.png"/>
 		
-	<action-view name="hr.root.my.timesheet.line.calendar" title="My leaves calendar"
-		model="com.axelor.apps.organisation.db.TimesheetLine" icon="img/icons/organisation_small.png">
+	<action-view name="hr.root.my.timesheet.line.calendar" title="My timesheet calendar"
+		model="com.axelor.apps.organisation.db.TimesheetLine" icon="img/icons/calendar-task.png">
 		<view type="calendar" name="timesheet-line-calendar" />
 		<view type="form" name="timesheet-line-form" />
 		<domain>self.userInfo.internalUser.id = :_internalUserId and self.statusSelect = 1</domain>
@@ -265,6 +265,7 @@
 		model="com.axelor.apps.organisation.db.Task" icon="img/icons/project_small.png">
 		<view type="grid" name="task-leave-reason-grid" />
 		<view type="form" name="task-leave-reason-form" />
+		<domain>self.isLeaveResquest = true</domain>
 	</action-view>
 
 	

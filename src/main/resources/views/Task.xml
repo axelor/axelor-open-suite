@@ -75,12 +75,12 @@
 	            
 	        </page>
 	        <page name="financialInformation" title="Financial information" colSpan="4">
+	        	<field name="exportTypeSelect"/>
+	            <button name="printTask" colSpan="2" title="Voir rapport estimations" onClick="action-print-task-report" icon="img/icons/print.png"/>
 	            <group title="Estimated" colSpan="4" cols="6">
 	                <field name="estimatedTurnover"/>
 	                <field name="estimatedCost"/>
 	                <field name="estimatedMargin"/>
-	                <field name="exportTypeSelect"/>
-	                <button name="printTask" colSpan="2" title="Voir rapport estimations" onClick="action-print-task-report" icon="img/icons/print.png"/>
 	                
 	            </group>
 	            <group title="Confirmed" colSpan="4" cols="6">

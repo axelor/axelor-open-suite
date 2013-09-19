@@ -12,7 +12,7 @@
     </grid>
     
     <form cols="6" onNew="action-affair-record-default" name="affair-form" title="Affair" model="com.axelor.apps.organisation.db.Project"
-    onLoad="action-project-method-update-financial-information"
+    onLoad="action-project-method-update-financial-information,save"
     onSave="action-affair-method-create-default-task-on-save">
     	<group showTitle="false" cols="4">
         	<field name="affairName"/>
@@ -53,7 +53,6 @@
 	            <field name="isTimeSheetImputable"/>
 	        </group>
 	    </group>
-	    
 	    <field name="candidateSet" colSpan="4"/>
 	    <field name="employeeSet" colSpan="4"/>
 	    <notebook colSpan="6">
@@ -62,13 +61,12 @@
 	            <field name="taskList" grid-view="task-project-grid" form-view="task-form" colSpan="6"/>
 	        </page>
 	        <page title="Financial information" colSpan="4">
+	        	<field name="exportTypeSelect"/>
+                <button name="printProject" colSpan="2" title="Voir rapport estimations" onClick="action-print-project-report" icon="img/icons/print.png"/>
 	            <group title="Estimated" colSpan="4" cols="6">
 	                <field name="estimatedTurnover"/>
 	                <field name="estimatedCost"/>
 	                <field name="estimatedMargin"/>
-	                 <field name="exportTypeSelect"/>
-	                <button name="printProject" colSpan="2" title="Voir rapport estimations" onClick="action-print-project-report" icon="img/icons/print.png"/>
-	               
 	            </group>
 	            <group title="Confirmed" colSpan="4" cols="6">
 	                <field name="confirmedTurnover"/>
