@@ -13,71 +13,82 @@
         <field name="statusSelect"/>
     </grid>
     
-    <form name="lead-form" title="Lead" cols="4" onNew="action-account-record-new,action-lead-default-record-new" model="com.axelor.apps.crm.db.Lead">
-    	<toolbar>
-    		<button name="convertLead" title="Convert lead" onClick="save,action-lead-view-convert-lead" colSpan="1" hideIf="statusSelect == 4"/>
-    		<button name="sendByEmail" title="Send email" onClick="save,action-send-by-email-with-template" colSpan="1"/>
-    	</toolbar>
-        <menubar>
+    <form name="lead-form" title="Lead" model="com.axelor.apps.crm.db.Lead" cols="4" onNew="action-account-record-new,action-lead-default-record-new">
+	    <toolbar>
+	        <button name="convertLead" title="Convert lead" hideIf="statusSelect == 4" colSpan="1" onClick="save,action-lead-view-convert-lead"/>
+	        <button name="sendByEmail" title="Send email" colSpan="1" onClick="save,action-send-by-email-with-template"/>
+	    </toolbar>
+	    <menubar>
 	        <menu title="Actions" icon="img/icons/create.png" showTitle="true">
-	            <item title="Create call" action="save,action-lead-view-create-call"/>
-	            <item title="Schedule meeting" action="save,action-lead-view-create-meeting"/>
-	            <item title="Create task" action="save,action-lead-view-create-task"/>
-	            <item title="Create opportunity" action="save,action-lead-view-create-opportunity"/>
+	            <divider title="Create call" action="save,action-lead-view-create-call"/>
+	            <divider title="Schedule meeting" action="save,action-lead-view-create-meeting"/>
+	            <divider title="Create task" action="save,action-lead-view-create-task"/>
+	            <divider title="Create opportunity" action="save,action-lead-view-create-opportunity"/>
 	        </menu>
 	    </menubar>
- 		<group title="Header" colSpan="4">
- 			<group showTitle="false" colSpan="1">
-	            <field name="picture" widget="image" showTitle="false"/>
+	    <group colSpan="6" cols="6">
+	        <group colSpan="1" cols="1">
+	            <field name="picture" showTitle="false"/>
 	        </group>
-	        <group showTitle="false" colSpan="2" css="highlight">
-	        	<field name="titleSelect" colSpan="1" showTitle="false" readonly="true"/>
-	            <field name="name" colSpan="1" showTitle="false" readonly="true" />
-		        <field name="firstName" colSpan="1" showTitle="false" readonly="true"/>
+	        <group title="Contact" colSpan="1" cols="1">
+	            <group colSpan="1" cols="1">
+	                <field name="titleSelect" showTitle="false" placeholder="Civility"/>
+	                <break/>
+	                <field name="name" showTitle="false" css="highlight" placeholder="Name"/>
+	                <break/>
+	                <field name="firstName" showTitle="false" css="highlight" placeholder="First name"/>
+	                <break/>
+	            </group>
+	            <group colSpan="2" cols="1">
+	                <field name="enterpriseName" showIf="partner != null"/>
+	                <field name="partner" showIf="statusSelect == 4"/>
+	                <field name="jobTitle" placeholder="Function"/>
+	            </group>
 	        </group>
-<!-- 	    	<group title="Links" colSpan="1" cols="1" canCollapse="true" collapseIf="true"> -->
-<!-- 	    		<button name="showPartner" title="Show partner/contact"  colSpan="1"/> -->
-<!-- 	    		<button name="showMeetings" title="Show meetings"  colSpan="1"/> -->
-<!-- 	    		<button name="showTasks" title="Show tasks"  colSpan="1"/> -->
-<!-- 	    		<button name="showMessages" title="Show messages"  colSpan="1"/> -->
-<!-- 	    		<button name="showCalls" title="Show calls"  colSpan="1"/> -->
-<!-- 	    	</group> -->
- 		</group>
- 		
+	        <group colSpan="3" cols="4">
+	            <group title="Coordonnées" colSpan="4">
+	                
+	                <field name="fixedPhone"/>
+	                <field name="fax"/>
+	                <field name="mobilePhone"/>
+	                <field name="emailAddress" canSelect="false" canNew="false" form-view="email-address-simple-form"/>
+	            </group>
+	            <group title="Assigned to" colSpan="4">
+	                <field name="contactDate"/>
+	                <break/>
+	                <field name="userInfo"/>
+	                <field name="team"/>
+	            </group>
+	        </group>  
+	        <group title="Links" colSpan="1" cols="1" canCollapse="true" collapseIf="true">
+	            <button name="showPartner" title="Show partner/contact" colSpan="1"/>
+	            <button name="showMeetings" title="Show meetings" colSpan="1"/>
+	            <button name="showTasks" title="Show tasks" colSpan="1"/>
+	            <button name="showMessages" title="Show messages" colSpan="1"/>
+	            <button name="showCalls" title="Show calls" colSpan="1"/>
+	        </group>
+	    </group>
 	    <group title="Informations" colSpan="4">
-	    	<group title="Key information" colSpan="4" css="groupTitle" cols="6">
-		    	<field name="titleSelect"/>
-		        <field name="name"/>
-		        <field name="firstName"/>
-		        <field name="enterpriseName"/>
-		        <field name="jobTitle"/>
-		        <field name="emailAddress"  canSelect="false" canNew="false" form-view="email-address-simple-form"/>
-		        <field name="partner" showIf="statusSelect == 4"/>
-	    	</group>
-	    	<group title="Primary address" colSpan="2" cols="2">
-	    		<field name="primaryAddress"/>
-	    		<field name="primaryCity"/>
-	    		<field name="primaryState"/>
-	    		<field name="primaryPostalCode"/>
-	    		<field name="primaryCountry"/>
-	    	</group>
-	    	<group title="Other address" colSpan="2" cols="2">
-	    		<field name="otherAddress"/>
-	    		<field name="otherCity"/>
-	    		<field name="otherState"/>
-	    		<field name="otherPostalCode"/>
-	    		<field name="otherCountry"/>
-	    		<field name="isCopyAddress" onChange="action-lead-record-other-address,action-lead-attrs-readonly-other-address"/>
-	    	</group>
+	        <group title="Primary address" colSpan="2" cols="2">
+	            <field name="primaryAddress"/>
+	            <field name="primaryCity"/>
+	            <field name="primaryState"/>
+	            <field name="primaryPostalCode"/>
+	            <field name="primaryCountry"/>
+	        </group>
+	        <group title="Other address" colSpan="2" cols="2">
+	            <field name="otherAddress"/>
+	            <field name="otherCity"/>
+	            <field name="otherState"/>
+	            <field name="otherPostalCode"/>
+	            <field name="otherCountry"/>
+	            <field name="isCopyAddress" onChange="action-lead-record-other-address,action-lead-attrs-readonly-other-address"/>
+	        </group>
 	        <group title="Extra information" colSpan="4" css="groupTitle" cols="6">
-		        <field name="officeName"/>
-		        <field name="department"/>
-		        <field name="fax"/>
-		        <field name="fixedPhone"/>
-		        <field name="mobilePhone"/>
-		        <field name="webSite"/>
-		       	<field name="contactDate"/>
-		        <field name="description" widget="TEXT[height=3]" colSpan="6"/>
+	            <field name="officeName"/>
+	            <field name="department"/>
+	            <field name="webSite"/>
+	            <field name="description" colSpan="6" widget="TEXT[height=3]"/>
 	        </group>
 	        <break/>
 	        <group title="Status details" colSpan="2" css="groupTitle" cols="2">
@@ -89,22 +100,17 @@
 	            <field name="sourceDescription"/>
 	        </group>
 	        <group title="Marketing" colSpan="4" css="groupTitle" cols="6">
-		        <field name="campaign"/>
-		       	<field name="referredBy"/>
-		        <field name="isDoNotCall" colSpan="2"/>
+	            <field name="campaign"/>
+	            <field name="referredBy"/>
+	            <field name="isDoNotCall" colSpan="2"/>
 	        </group>
 	        <field name="opportunityAmount"/>
 	    </group>
-	    
-	    <group title="Assigned to" canCollapse="true">
-	        <field name="userInfo"/>
-	        <field name="team"/>
-	    </group>
 	    <group title="Reportings" colSpan="4" canCollapse="true">
-     		<portlet colSpan="4" action="action-lead-view-upcoming-events"/>
-     		<portlet colSpan="4" action="action-lead-view-historical-events-completed"/>
-     		<portlet colSpan="4" action="action-lead-view-opportunity"/>
-     		<portlet colSpan="4" action="action-lead-view-event-ticket"/>
+	        <portlet colSpan="4" action="action-lead-view-upcoming-events"/>
+	        <portlet colSpan="4" action="action-lead-view-historical-events-completed"/>
+	        <portlet colSpan="4" action="action-lead-view-opportunity"/>
+	        <portlet colSpan="4" action="action-lead-view-event-ticket"/>
 	    </group>
 	</form>
     
