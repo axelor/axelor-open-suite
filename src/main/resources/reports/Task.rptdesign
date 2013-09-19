@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 3.7.2.v20120213 Build &lt;3.7.2.v20120214-1408></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.2.2.v201301221637 Build &lt;4.2.2.v20130206-1509></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaDriverClass</property>
@@ -52,7 +52,7 @@
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">1</value>
+                <value type="constant">2</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -242,8 +242,7 @@
             <xml-property name="queryText"><![CDATA[select SalesOrderLine.id, SalesOrder.order_date, ClientPartner.full_name as "client_name", SalesOrderLine.ex_tax_total,
 UserInfo.full_name as "user_name", SalesOrderLine.product_name
 from organisation_task as Task 
-inner join organisation_task_sales_order_line_list as TaskSalesOrderSet on (TaskSalesOrderSet.organisation_task = Task.id)
-inner join supplychain_sales_order_line as SalesOrderLine on (SalesOrderLine.id = TaskSalesOrderSet.sales_order_line_list)
+left outer join supplychain_sales_order_line as SalesOrderLine on (SalesOrderLine.task = Task.id)
 left outer join supplychain_sales_order as SalesOrder on (SalesOrder.id = SalesOrderLine.sales_order)
 left outer join base_partner as ClientPartner on (SalesOrder.client_partner = ClientPartner.id)
 left outer join base_user_info as UserInfo on (SalesOrder.salesman_user_info = UserInfo.id)
@@ -2593,8 +2592,7 @@ where LangTranslate.key = ? and Invoice.id = ? ]]></xml-property>
             <xml-property name="queryText"><![CDATA[select SupplierPartner.id, PurchaseOrder.order_date, SupplierPartner.full_name as "client_name", PurchaseOrderLine.ex_tax_total,
 UserInfo.full_name as "user_name", PurchaseOrderLine.product_name
 from organisation_task as Task 
-inner join organisation_task_supplier_order_line_list as TaskPurchaseOrderSet on (TaskPurchaseOrderSet.organisation_task = Task.id)
-inner join supplychain_purchase_order_line as PurchaseOrderLine on (PurchaseOrderLine.id = TaskPurchaseOrderSet.supplier_order_line_list)
+left outer join supplychain_purchase_order_line as PurchaseOrderLine on (PurchaseOrderLine.task = Task.id)
 left outer join supplychain_purchase_order as PurchaseOrder on (PurchaseOrder.id = PurchaseOrderLine.purchase_order)
 left outer join base_partner as SupplierPartner on (PurchaseOrder.supplier_partner = SupplierPartner.id)
 left outer join base_user_info as UserInfo on (PurchaseOrder.buyer_user_info = UserInfo.id)
