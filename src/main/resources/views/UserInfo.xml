@@ -15,6 +15,7 @@
         <field name="today"/>
         <field name="activeCashRegister"/>
         <field name="timesheetPeriodConfig"/>
+        <field name="employee"/>
         <notebook colSpan="4">
         	<page title="User login settings">
 	        	<field widget="NestedEditor" canSelect="false" summary-view="true" name="internalUser">

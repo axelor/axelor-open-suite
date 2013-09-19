@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+	
+	<module name="organisation" package="com.axelor.apps.organisation.db"/>
+		<entity name="JobOffer" lang="java">
+		
+			<string name="offre" title="Offre"/>
+			<many-to-one name="affair" ref="com.axelor.apps.organisation.db.Project" title="Affaire"/>
+			<date name="dateDebut" title="Date début"/>
+			<date name="dateFin" title="Date fin"/>
+			<integer name="nbPostes" title="Nb. postes"/>
+		
+			<!-- Groupe Offre -->
+			<string name="descriptif" title="Descriptif" large="true" multiline="true"/>
+			<integer name="contratTypeSelect" title="Type de contrat" selection="organisation.job.offer.contrat.type.select"/>
+			<integer name="remunerationTypeSelect" title="Rem. brute annuelle" selection="organisation.job.offer.remuneration.type.select"/>
+			<string name="avantages" title="Avantages" large="true" multiline="true"/>
+			<many-to-one name="region" ref="com.axelor.apps.base.db.Region" title="Zone Géo"/>
+			<string name="complZoneGeo" title="Complément zone géo"/>
+			<integer name="domaineTypeSelect" title="Domaine" selection="organisation.job.offer.domaine.type.select"/>
+			<string name="metier" title="Métier"/>
+		
+			<!-- Groupe Profil candidat -->
+			<integer name="niveauTypeSelect" title="Niveau d'étude" selection="organisation.job.offer.niveau.type.select"/>
+			<integer name="experienceTypeSelect" title="Expérience" selection="organisation.job.offer.experience.type.select"/>
+			<many-to-many name="langueTypeSet" ref="com.axelor.apps.base.db.Language" title="Langue"/>
+			<many-to-many name="formationSet" ref="com.axelor.apps.organisation.db.TrainingLine" title="Formation"/>
+			<string name="etablissement" title="Etablissement"/>
+		
+		</entity>	
+</domain-models>

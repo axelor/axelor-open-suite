@@ -27,6 +27,8 @@
   	<decimal name="amountInvoiced" title="Amount invoiced"/>
   	<decimal name="amountRemainingToBeInvoiced" title="Remaining to invoice"/>
   	
+  	<many-to-one name="task" ref="com.axelor.apps.organisation.db.Task" title="Task"/>
+  	
 <!--   Onglet Historique -->
   	<many-to-many name="invoiceSet" ref="com.axelor.apps.account.db.Invoice" title="Associated Invoice lines"/>
   	
