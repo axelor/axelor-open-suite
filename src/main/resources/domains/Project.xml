@@ -94,7 +94,7 @@
     <many-to-many name="candidateSet" title="Candidates" ref="com.axelor.apps.organisation.db.Candidate"/>
     <many-to-many name="employeeSet" title="Employees" ref="com.axelor.apps.organisation.db.Employee"/>
     <integer name="marketTypeSelect" title="Market Type" selection="organisation.affair.market.type.select"/>
-    
+    <string name="exportTypeSelect" title="Export Type" selection="organisation.project.report.type.select"/>
   </entity>
 
 </domain-models>

@@ -106,6 +106,8 @@
   	<boolean name="hasCummulation" title="Cumulation ?"/>
   	<integer name="accountingDay" title="Accounting day" selection="organisation.day.month.select"/>
   	
+  	<string name="exportTypeSelect" title="Export Type" selection="organisation.project.report.type.select"/>
+  	
   	
   </entity>
 
