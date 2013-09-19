@@ -6,10 +6,11 @@
 	<!--  Partner Dashboard  -->
 	
 	<portal title="Partner Dashboard" name="base.partner.list.portal" cols="2">
-	<!--<portlet action="portal.my.recent.customers" height="350" colSpan="1" canSearch="true"/>  -->
+		<portlet action="portal.my.recent.customers" height="350" colSpan="1" canSearch="true"/> 
 	    <portlet action="portal.partner.by.salesman" height="350" colSpan="1" canSearch="true"/>
 		<portlet action="portal.partner.recent.partners" height="350" colSpan="1" canSearch="true"/>	
-	<!--<portlet action="portal.partner.by.industrySector" height="350" colSpan="1" canSearch="true"/>	-->
+		<portlet action="portal.partner.by.industry.sector" height="350" colSpan="1" canSearch="true"/>
+		<portlet action="portal.my.customers" height="350" colSpan="1" canSearch="true"/>
 	 	<portlet title="Customers by country" action="chart:chart.customers.by.country.bar" height="350"/>
   	</portal>
 	
@@ -27,9 +28,14 @@
     	<domain>self.createdOn &gt; date(now())-15</domain>
 	</action-view>
 	
-	<action-view name="portal.partner.by.industrySector" title="Partners by Industry Sector" model="com.axelor.apps.base.db.Partner">
+	<action-view name="portal.my.customers" title="My Customers" model="com.axelor.apps.base.db.Partner">
 		<view type="grid" name="partner-grid"/>
-		<domain>self.salesStageSelect in (9, 10)</domain>
+		 <domain>self.userInfo = :userInfoId</domain>
+		 <context name="userInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+    </action-view>
+	
+	<action-view name="portal.partner.by.industry.sector" title="Partners by Industry Sector" model="com.axelor.apps.base.db.Partner">
+		<view type="chart" name="chart.partner.by.industry.sector.bar" />
 	</action-view>
 	
 	
@@ -88,7 +94,9 @@
 		<view type="grid" name="opportunity-grid"/>
 		<domain>self.updatedOn &gt; date(now())-30 and self.salesStageSelect = 10</domain>
 	</action-view>
-		<!--  Opportunity Graph View Dashboard  -->
+	
+	
+<!--  Opportunity Graph View Dashboard  -->
 	
 	<portal title="Dashboard" name="crm.opportunity.graph.portal" cols="2">
 		<portlet action="portal.opportunities.by.source" height="350"/>
@@ -133,7 +141,7 @@
   	
   	
 
-  	<!--  Lead Graph view Dashboard  -->
+ <!--  Lead Graph view Dashboard  -->
   	
   	
   	<portal title="Lead Graph Dashboard" name="crm.lead.graph.portal" cols="2">
@@ -177,7 +185,7 @@
 		    <portlet action="portal.open.tickets.by.status" height="350"/>
 			<portlet action="portal.agents.by.open.cases" height="350"/>
 			<portlet action="portal.customer.by.open.cases" height="350"/>
-		    
+			<portlet action="portal.open.ticket.priority.distribution" height="350"/>
 		</portal>
 	 
   	<action-view name="portal.calls.types.by.user" title="Calls type by user">
@@ -209,6 +217,9 @@
     	<view type="chart" name="chart.customer.by.open.cases.bar" />
   	</action-view>
 	
+	<action-view name="portal.open.ticket.priority.distribution" title="Ticket distribution by Priority">
+    	<view type="chart" name="chart.open.ticket.priority.distribution.bar" />
+  	</action-view>
 	
   	
 </object-views>

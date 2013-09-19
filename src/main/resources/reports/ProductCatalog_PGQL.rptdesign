@@ -46,11 +46,6 @@
     <property name="layoutPreference">auto layout</property>
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">96</property>
-    <list-property name="cssStyleSheets">
-        <structure>
-            <property name="fileName">border.css</property>
-        </structure>
-    </list-property>
     <parameters>
         <scalar-parameter name="ProductIds" id="211">
             <property name="hidden">false</property>
