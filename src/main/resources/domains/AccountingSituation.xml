@@ -16,9 +16,9 @@
 	
 	<!-- PAGE Compte Client -->
     <many-to-many name="moveLineSet" ref="com.axelor.apps.account.db.MoveLine" title="Movelines"/>    
-    <decimal name="balanceCustAccount" title="Total balance"/>
-    <decimal name="balanceDueCustAccount" title="Due balance"/>
-	<decimal name="balanceDueReminderCustAccount" title="Due balance (remindable)"/>
+    <decimal name="balanceCustAccount" title="Total balance" readonly="true"/>
+    <decimal name="balanceDueCustAccount" title="Due balance" readonly="true"/>
+	<decimal name="balanceDueReminderCustAccount" title="Due balance (remindable)" readonly="true"/>
 	<boolean name="custAccountMustBeUpdateOk" title="Le compte client doit être mis à jour"/>
 
 	<!--  PAGE Relance -->

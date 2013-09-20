@@ -13,9 +13,9 @@
   	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team"/>
   	
 <!-- Opportunity -->
-    <decimal name="opportunityAmountEarned" title="Amount earned"/>
-    <integer name="opportunityCreatedNumber" title="Created number"/>
-    <integer name="opportunityCreatedWon" title="Created won"/>
+    <decimal name="opportunityAmountEarned" title="Amount earned" readonly="true"/>
+    <integer name="opportunityCreatedNumber" title="Created number" readonly="true"/>
+    <integer name="opportunityCreatedWon" title="Created won" readonly="true"/>
     <decimal name="opportunityAmountEarnedTarget" title="Amount earned"/>
     <integer name="opportunityCreatedNumberTarget" title="Created number"/>
     <integer name="opportunityCreatedWonTarget" title="Created won"/>
@@ -29,8 +29,8 @@
 <!--     <integer name="salesOrderCreatedWonTarget" title="Created won"/> -->
 
 <!-- Call -->
-    <integer name="callEmittedNumber" title="Call emitted number"/>
-    <integer name="meetingNumber" title="Meeting number"/>
+    <integer name="callEmittedNumber" title="Call emitted number" readonly="true"/>
+    <integer name="meetingNumber" title="Meeting number" readonly="true"/>
     <integer name="callEmittedNumberTarget" title="Call emitted number"/>
     <integer name="meetingNumberTarget" title="Meeting number"/>
     

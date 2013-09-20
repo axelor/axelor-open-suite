@@ -22,7 +22,7 @@
         <field name="mainInvoicingAddress"/>
         <field name="fixedPhone"/>
 		<field name="mobilePhone"/>
-        <field name="emailAddress"/>
+        <field name="emailAddress.address"/>
     </grid>
     
      <grid  groupBy="userInfo" name="partner-grid-group" title="Partner" model="com.axelor.apps.base.db.Partner">
@@ -31,7 +31,7 @@
         <field name="mainInvoicingAddress"/>
         <field name="fixedPhone"/>
 		<field name="mobilePhone"/>
-        <field name="emailAddress"/>
+        <field name="emailAddress.address"/>
         <field name="userInfo"/>
     </grid>
     
@@ -176,8 +176,8 @@
 	    <button name="showProject" title="Show projects" colSpan="3" onClick="save,action-partner-view-partner-project"/>
 	    <portlet colSpan="6" action="action-partner-view-upcoming-events"/>
 	    <portlet colSpan="6" action="action-partner-view-historical-events-completed"/>
-	    <portlet colSpan="6" action="action-partner-view-opportunity"/>
-	    <portlet colSpan="6" action="action-partner-view-sales-order"/>
+	    <portlet colSpan="6" action="action-partner-view-opportunities"/>
+	    <portlet colSpan="6" action="action-partner-view-sales-orders"/>
 	    <portlet colSpan="6" action="action-partner-view-tickets"/>
 	</form>
 	
@@ -380,8 +380,8 @@
 	    <button name="showProject" title="Show projects" colSpan="3" onClick="save,action-partner-view-partner-project"/>
 	    <portlet colSpan="6" action="action-partner-view-upcoming-events"/>
 	    <portlet colSpan="6" action="action-partner-view-historical-events-completed"/>
-	    <portlet colSpan="6" action="action-partner-view-opportunity"/>
-	    <portlet colSpan="6" action="action-partner-view-sales-order"/>
+	    <portlet colSpan="6" action="action-partner-view-opportunities"/>
+	    <portlet colSpan="6" action="action-partner-view-sales-orders"/>
 	    <portlet colSpan="6" action="action-partner-view-tickets"/>
 	</form>
 	
@@ -468,15 +468,15 @@
 		<context name="_isContact" expr="eval: isContact"/>
 	</action-view>
    	
-   	<action-view name="action-partner-view-opportunity" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity">
+   	<action-view name="action-partner-view-opportunities" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="opportunity-grid"/>
 		<view type="form" name="opportunity-form"/>
-		<domain>(self.clientPartner.id = :id AND :_isContact = false) OR (self.contactPartner.id = :id AND :_isContact = true)</domain>
+		<domain>self.partner.id = :id</domain>
 		<context name="id" expr="eval: id"/>
 		<context name="_isContact" expr="eval: isContact"/>
 	</action-view>
     
-    <action-view name="action-partner-view-sales-order" title="Sales orders" model="com.axelor.apps.supplychain.db.SalesOrder">
+    <action-view name="action-partner-view-sales-orders" title="Sales orders" model="com.axelor.apps.supplychain.db.SalesOrder">
 		<view type="grid" name="sales-order-grid"/>
 		<view type="form" name="sales-order-form"/>
 		<domain>(self.clientPartner.id = :id AND :_isContact = false) OR (self.contactPartner.id = :id AND :_isContact = true)</domain>
@@ -484,7 +484,7 @@
 		<context name="_isContact" expr="eval: isContact"/>
 	</action-view>
 	
-	<action-view name="action-partner-view-event-ticket" title="Tickets" model="com.axelor.apps.crm.db.Event">
+	<action-view name="action-partner-view-tickets" title="Tickets" model="com.axelor.apps.crm.db.Event">
 		<view type="grid" name="ticket-grid"/>
 		<view type="form" name="ticket-form"/>
 		<domain>((self.clientPartner.id = :id AND :_isContact = false) OR (self.contactPartner.id = :id AND :_isContact = true)) AND self.typeSelect = 5</domain>
