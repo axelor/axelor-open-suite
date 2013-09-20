@@ -24,7 +24,7 @@
         <field name="mainInvoicingAddress"/>
         <field name="fixedPhone"/>
 		<field name="mobilePhone"/>
-        <field name="emailAddress"/>
+        <field name="emailAddress.address"/>
     </grid>
     
     <form cols="6" colWidths="25*" onLoad="action-partner-attrs-change-name,action-partner-attrs-hide-tabs,action-partner-attrs-set-readonly" onSave="action-set-partner-seq,action-create-accounting-situation" onNew="action-partner-record-partner-type-select,action-partner-record-set-default,action-partner-attrs-set-readonly" name="partner-form" title="Partner" model="com.axelor.apps.base.db.Partner">
@@ -168,8 +168,8 @@
 	    <button name="showProject" title="Show projects" colSpan="3" onClick="save,action-partner-view-partner-project"/>
 	    <portlet colSpan="6" action="action-partner-view-upcoming-events"/>
 	    <portlet colSpan="6" action="action-partner-view-historical-events-completed"/>
-	    <portlet colSpan="6" action="action-partner-view-opportunity"/>
-	    <portlet colSpan="6" action="action-partner-view-sales-order"/>
+	    <portlet colSpan="6" action="action-partner-view-opportunities"/>
+	    <portlet colSpan="6" action="action-partner-view-sales-orders"/>
 	    <portlet colSpan="6" action="action-partner-view-tickets"/>
 	</form>
 		
@@ -317,8 +317,8 @@
 	    <button name="showProject" title="Show projects" colSpan="3" onClick="save,action-partner-view-partner-project"/>
 	    <portlet colSpan="6" action="action-partner-view-upcoming-events"/>
 	    <portlet colSpan="6" action="action-partner-view-historical-events-completed"/>
-	    <portlet colSpan="6" action="action-partner-view-opportunity"/>
-	    <portlet colSpan="6" action="action-partner-view-sales-order"/>
+	    <portlet colSpan="6" action="action-partner-view-opportunities"/>
+	    <portlet colSpan="6" action="action-partner-view-sales-orders"/>
 	    <portlet colSpan="6" action="action-partner-view-tickets"/>
 	</form>
 	
