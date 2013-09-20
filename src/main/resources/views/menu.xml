@@ -310,6 +310,20 @@
 		<view type="form" name="lead-form" />
 	</action-view>
 	
+	<menuitem name="top-prospection" title="Prospection" groups="admins,erp" top="true" left="false"/>
+	
+	<menuitem name="top-prospection-leads" title="Leads" action="top.propsection.leads" parent="top-prospection" groups="admins,erp" top="true" left="false"/> 	
+	<action-view name="top.propsection.leads" title="Leads" model="com.axelor.apps.crm.db.Lead" >
+		<view type="grid" name="lead-grid" />
+		<view type="form" name="lead-form" />
+	</action-view>
+	
+	<menuitem name="top-prospection-opportunity" title="Opportunities" action="top.prospection.opportunity" parent="top-prospection"  groups="admins,erp" top="true" left="false"/> 	
+	<action-view name="top.prospection.opportunity" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" >
+		<view type="grid" name="opportunity-grid" />
+		<view type="form" name="opportunity-form" />
+	</action-view>
+	
 	
 	  
 	<!-- CRM Dashboard Entry for CRM.... -->
@@ -337,11 +351,11 @@
 	</action-view>
 	
 		
-<!-- 	<menuitem name="portal.crm.event.graph" parent="menu-crm-dashboards" title="Event Chart Report" action="portal.event.graph.dashboard.view" /> -->
+ 	<menuitem name="portal.crm.event.graph" parent="menu-crm-dashboards" title="Event Chart Report" action="portal.event.graph.dashboard.view" /> 
 
-<!-- 	<action-view name="portal.event.graph.dashboard.view" title="Event Graph Report" icon="img/icons/calendar.png"> -->
-<!-- 		<view type="portal" name="crm.event.graph.portal" /> -->
-<!-- 	</action-view> -->
+ 	<action-view name="portal.event.graph.dashboard.view" title="Event Graph Report" icon="img/icons/calendar.png"> 
+ 		<view type="portal" name="crm.event.graph.portal" />
+	</action-view> 
 	
 	<menuitem name="portal.base.crm.partner.graph" parent="menu-crm-dashboards" title="Partner List Report" action="portal.base.partner.list.dashboard.view" />
 
