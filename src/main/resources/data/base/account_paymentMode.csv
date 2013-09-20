@@ -1,17 +1,17 @@
-"importId";"name";"code";"bankJournal.code";"invoiceLabel_fr_FR"
-1;"Enc. Autre";"IN_OTH";"ENC_OTH";"Autres moyens de paiement"
-2;"Enc. Prélèvement";"IN_DD";"ENC_PRE";"Prélèvement"
-3;"Enc. TIP";"IN_TIP";"ENC_TIP";"TIP"
-4;"Enc. Espèces";"IN_ESP";"ENC_ESP";"Espèces"
-5;"Enc. Carte bancaire";"IN_CB";"ENC_CB";"Carte bancaire"
-6;"Enc. Chèque";"IN_CHQ";"ENC_CHQ";"Chèque"
-7;"Enc. Internet";"IN_INT";"ENC_WEB";"Internet"
-8;"Enc. Virement";"IN_VIR";"ENC_VIR";"Virement"
-9;"Enc. TIP + Chèque";"IN_TIC";"ENC_TEC";"TIP + Chèque"
-10;"Dec. Prélèvement";"OUT_DD";"DEC_PRE";"Prélèvement"
-11;"Dec. TIP";"OUT_TIP";"DEC_TIP";"TIP"
-12;"Dec. Espèces";"OUT_ESP";"DEC_ESP";"Espèces"
-13;"Dec. Carte bancaire";"OUT_CB";"DEC_CB";"Carte bancaire"
-14;"Dec. Chèque";"OUT_CHQ";"DEC_CHQ";"Chèque"
-15;"Dec. Virement";"OUT_VIR";"DEC_VIR";"Virement"
-16;"Dec. Autres";"OUT_OTH";"DEC_OTH";"Autres moyens de paiement"
+importId;name;code;bankJournal.code;invoiceLabel
+1;Enc. Autre;IN_OTH;ENC_OTH;Autres moyens de paiement
+2;Enc. Prélèvement;IN_DD;ENC_PRE;Prélèvement
+3;Enc. TIP;IN_TIP;ENC_TIP;TIP
+4;Enc. Espèces;IN_ESP;ENC_ESP;Espèces
+5;Enc. Carte bancaire;IN_CB;ENC_CB;Carte bancaire
+6;Enc. Chèque;IN_CHQ;ENC_CHQ;Chèque
+7;Enc. Internet;IN_INT;ENC_WEB;Internet
+8;Enc. Virement;IN_VIR;ENC_VIR;Virement
+9;Enc. TIP + Chèque;IN_TIC;ENC_TEC;TIP + Chèque
+10;Dec. Prélèvement;OUT_DD;DEC_PRE;Prélèvement
+11;Dec. TIP;OUT_TIP;DEC_TIP;TIP
+12;Dec. Espèces;OUT_ESP;DEC_ESP;Espèces
+13;Dec. Carte bancaire;OUT_CB;DEC_CB;Carte bancaire
+14;Dec. Chèque;OUT_CHQ;DEC_CHQ;Chèque
+15;Dec. Virement;OUT_VIR;DEC_VIR;Virement
+16;Dec. Autres;OUT_OTH;DEC_OTH;Autres moyens de paiement

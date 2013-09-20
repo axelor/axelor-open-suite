@@ -1,4 +1,4 @@
-importId;company_code;typeSelect ;product.importId;tax.code;productFamily.importId;paymentMode.code;saleAccount_code;saleVat.code;purchaseAccount_code;purchaseVat.code;cashAccount_code
+importId;company_code;typeSelect;product.importId;tax.code;productFamily.importId;paymentMode.code;saleAccount_code;saleVat.code;purchaseAccount_code;purchaseVat.code;cashAccount_code
 1;AXC;1;;;1;;707100;N_C;607100;N_D;
 2;AXC;1;;;2;;707100;N_C;607100;N_D;
 3;AXC;1;;;3;;707100;N_C;607100;N_D;
