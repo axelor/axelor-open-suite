@@ -349,7 +349,7 @@
 		<view type="portal" name="base.partner.list.portal" />
 	</action-view>
 	
-	<menuitem name="menu-target-user-dashboard" parent="menu-dashboards"
+	<menuitem name="menu-target-user-dashboard" parent="menu-crm-dashboards"
 		title="Target user Dashboard" action="portal.target.user.dashboard.view"/>	
 	
 	<action-view name="portal.target.user.dashboard.view" title="Target user Dashboard"
@@ -359,7 +359,7 @@
 		<context name="user" expr="eval: __user__.id"/>
 	</action-view>
 	
-	<menuitem name="menu-target-team-dashboard" parent="menu-dashboards"
+	<menuitem name="menu-target-team-dashboard" parent="menu-crm-dashboards"
 		title="Target team Dashboard" action="portal.target.team.dashboard.view"/>	
 
 	<action-view name="portal.target.team.dashboard.view" title="Target team Dashboard"

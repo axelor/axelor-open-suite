@@ -32,6 +32,8 @@
 	    <group colSpan="1" cols="4">
 	        <separator title="Subject" colSpan="4" hideIf="$readonly()"/>
 	        <field name="subject" showTitle="false" colSpan="4" css="highlight" placeholder="Subject"/>
+	        <separator title="Location" colSpan="4"/>
+	        <field name="location" showTitle="false" colSpan="4" css="highlight" placeholder="Location"/>
 	        <separator title="Description" colSpan="4"/>
 	        <field name="description" colSpan="4" widget="TEXT[height=3]" showTitle="false" placeholder="Description"/>
 	        <break/>
@@ -41,7 +43,7 @@
 	            <field name="endDateTime" onChange="action-meeting-method-compute-end-date-time"/>
 	            <field name="durationHours" placeholder="Hours" onChange="action-meeting-method-compute-duration"/>
 	            <label title=":" colSpan="1"/>
-	            <field name="durationMinutesSelect" showTitle="false" placeholder="Hours" onChange="action-meeting-method-compute-duration"/>
+	            <field name="durationMinutesSelect" showTitle="false" placeholder="Minutes" onChange="action-meeting-method-compute-duration"/>
 	        </group>
 	    </group>
 	    <group colSpan="1" cols="2">
@@ -101,7 +103,7 @@
 	            <field name="endDateTime" onChange="action-meeting-method-compute-end-date-time"/>
 	            <field name="durationHours" placeholder="Hours" onChange="action-meeting-method-compute-duration"/>
 	            <label title=":" colSpan="1"/>
-	            <field name="durationMinutesSelect" showTitle="false" placeholder="Hours" onChange="action-meeting-method-compute-duration"/>
+	            <field name="durationMinutesSelect" showTitle="false" placeholder="Minutes" onChange="action-meeting-method-compute-duration"/>
 	        </group>
 	    </group>
 	    <group colSpan="1" cols="2">
@@ -160,6 +162,8 @@
 	    <group colSpan="1" cols="4">
 	        <separator title="Subject" colSpan="4" hideIf="$readonly()"/>
 	        <field name="subject" showTitle="false" colSpan="4" css="highlight" placeholder="Subject"/>
+	        <separator title="Location" colSpan="4"/>
+	        <field name="location" showTitle="false" colSpan="4" css="highlight" placeholder="Location"/>
 	        <separator title="Description" colSpan="4"/>
 	        <field name="description" colSpan="4" widget="TEXT[height=3]" showTitle="false" placeholder="Description"/>
 	        <break/>
@@ -169,7 +173,7 @@
 	            <field name="endDateTime" onChange="action-meeting-method-compute-end-date-time"/>
 	            <field name="durationHours" placeholder="Hours" onChange="action-meeting-method-compute-duration"/>
 	            <label title=":" colSpan="1"/>
-	            <field name="durationMinutesSelect" showTitle="false" placeholder="Hours" onChange="action-meeting-method-compute-duration"/>
+	            <field name="durationMinutesSelect" showTitle="false" placeholder="Minutes" onChange="action-meeting-method-compute-duration"/>
 	        </group>
 	    </group>
 	    <group colSpan="1" cols="2">
@@ -218,16 +222,18 @@
 	    <group colSpan="1" cols="4">
 	        <separator title="Subject" colSpan="4"/>
 	        <field name="subject" showTitle="false" placeholder="Subject" />
+	        <separator title="Location" colSpan="4"/>
+	        <field name="location" showTitle="false" colSpan="4" css="highlight" placeholder="Location"/>
 	        <separator title="Description" colSpan="4"/>
 	        <field name="description" colSpan="4" widget="TEXT[height=3]" showTitle="false" placeholder="Description"/>
 	        <break/>
 	        <group colSpan="4" css="groupTitle" cols="8" colWidths="25*">
-	            <separator title="Dates" colSpan="7"/>
+	            <separator title="Dates" colSpan="8"/>
 	            <field name="startDateTime" onChange="action-meeting-method-compute-start-date-time"/>
 	            <field name="endDateTime" onChange="action-meeting-method-compute-end-date-time"/>
 	            <field name="durationHours" placeholder="Hours" onChange="action-meeting-method-compute-duration"/>
 	            <label title=":" colSpan="1"/>
-	            <field name="durationMinutesSelect" showTitle="false" placeholder="Hours" onChange="action-meeting-method-compute-duration"/>
+	            <field name="durationMinutesSelect" showTitle="false" placeholder="Minutes" onChange="action-meeting-method-compute-duration"/>
 	        </group>
 	    </group>
 	    <group colSpan="1" cols="2">
@@ -404,6 +410,7 @@
     
     <action-record name="action-event-record-default-duration" model="com.axelor.apps.crm.db.Event">
     	<field name="durationHours" expr="1"/>
+    	<field name="durationMinutesSelect" expr="0"/>
     </action-record>
     
     <action-group name="action-event-new-record">

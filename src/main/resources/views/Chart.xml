@@ -9,7 +9,7 @@
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
-				    (self.callEmittedNumber/(self.callEmittedNumberTarget))*100   		AS 	_callEmittedNumber
+				    self.callEmittedNumber*100/self.callEmittedNumberTarget   		AS 	_callEmittedNumber
 				FROM Target self 
 				WHERE self.userInfo.internalUser.id = :user and self.fromDate <= :date and self.toDate >= :date and self.callEmittedNumberTarget > 0
 				  ]]>
@@ -46,7 +46,7 @@
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
-				    (self.meetingNumber/self.meetingNumberTarget)*100   		AS 	_meetingNumber
+				    self.meetingNumber*100/self.meetingNumberTarget   		AS 	_meetingNumber
 				FROM Target self 
 				WHERE self.userInfo.internalUser.id = :user and self.fromDate <= :date and self.toDate >= :date and self.meetingNumberTarget > 0
 				  ]]>
@@ -79,27 +79,27 @@
 <!-- 		    <series key="_meetingNumberTarget" type="bar"/> -->
 		</chart>
 		
-		<chart name="chart.user.opportunity.amount.earned.target.gauge" title="Opportunities amount earned target completed (%)">
+		<chart name="chart.user.opportunity.amount.won.target.gauge" title="Opportunities amount won target completed (%)">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
-				    (self.opportunityAmountEarned/self.opportunityAmountEarnedTarget)*100   		AS 	_opportunityAmountEarned
+				    self.opportunityAmountWon*100/self.opportunityAmountWonTarget   		AS 	_opportunityAmountWon
 				FROM Target self 
-				WHERE self.userInfo.internalUser.id = :user and self.fromDate <= :date and self.toDate >= :date and self.opportunityAmountEarnedTarget > 0
+				WHERE self.userInfo.internalUser.id = :user and self.fromDate <= :date and self.toDate >= :date and self.opportunityAmountWonTarget > 0
 				  ]]>
 		    </dataset>
-		    <category key="_opportunityAmountEarned" type="text"/>
-		    <series key="_opportunityAmountEarned" type="gauge"/>
+		    <category key="_opportunityAmountWon" type="text"/>
+		    <series key="_opportunityAmountWon" type="gauge"/>
 		    <config name="min" value="0"/>
 	    	<config name="max" value="200"/>
 		</chart>
 		
-		<chart name="chart.user.opportunity.amount.earned.target.bar" title="Opportunities amount earned historical">
+		<chart name="chart.user.opportunity.amount.won.target.bar" title="Opportunities amount won historical">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
-				    SUM(self.opportunityAmountEarned)           AS     _opportunityAmountEarned,
-				    SUM(self.opportunityAmountEarnedTarget)           AS     _opportunityAmountEarnedTarget,
+				    SUM(self.opportunityAmountWon)           AS     _opportunityAmountWon,
+				    SUM(self.opportunityAmountWonTarget)           AS     _opportunityAmountWonTarget,
 				    self.periodTypeSelect as _period,
 				    self.toDate as _toDate
 				FROM Target self 
@@ -112,15 +112,15 @@
 				  ]]>
 		    </dataset>
 		    <category key="_toDate" type="text"/>
-		    <series key="_opportunityAmountEarned" type="bar"/>
-<!-- 		    <series key="_opportunityAmountEarnedTarget" type="bar"/> -->
+		    <series key="_opportunityAmountWon" type="bar"/>
+<!-- 		    <series key="_opportunityAmountWonTarget" type="bar"/> -->
 		</chart>
 	
 		<chart name="chart.user.opportunity.created.number.target.gauge" title="Opportunities created number target completed (%)">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
-				    (self.opportunityCreatedNumber/self.opportunityCreatedNumberTarget)*100   		AS 	_opportunityCreatedNumber
+				    self.opportunityCreatedNumber*100/self.opportunityCreatedNumberTarget 		AS 	_opportunityCreatedNumber
 				FROM Target self 
 				WHERE self.userInfo.internalUser.id = :user and self.fromDate <= :date and self.toDate >= :date and self.opportunityCreatedNumberTarget > 0
 				  ]]>
@@ -157,7 +157,7 @@
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
-				    (self.opportunityCreatedWon/self.opportunityCreatedWonTarget)*100   		AS 	_opportunityCreatedWon
+				    self.opportunityCreatedWon*100/self.opportunityCreatedWonTarget   		AS 	_opportunityCreatedWon
 				FROM Target self 
 				WHERE self.userInfo.internalUser.id = :user and self.fromDate <= :date and self.toDate >= :date and self.opportunityCreatedWonTarget > 0
 				  ]]>
@@ -190,27 +190,27 @@
 <!-- 		    <series key="_opportunityCreatedWonTarget" type="bar"/> -->
 		</chart>
 		
-		<chart name="chart.user.sales.order.amount.earned.target.gauge" title="Sales orders amount earned target completed (%)">
+		<chart name="chart.user.sales.order.amount.won.target.gauge" title="Sales orders amount won target completed (%)">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
-				    (self.salesOrderAmountEarned/self.salesOrderAmountEarnedTarget)*100   		AS 	_salesOrderAmountEarned
+				    self.salesOrderAmountWon*100/self.salesOrderAmountWonTarget   		AS 	_salesOrderAmountWon
 				FROM Target self 
-				WHERE self.userInfo.internalUser.id = :user and self.fromDate <= :date and self.toDate >= :date and self.salesOrderAmountEarnedTarget > 0
+				WHERE self.userInfo.internalUser.id = :user and self.fromDate <= :date and self.toDate >= :date and self.salesOrderAmountWonTarget > 0
 				  ]]>
 		    </dataset>
-		    <category key="_salesOrderAmountEarned" type="text"/>
-		    <series key="_salesOrderAmountEarned" type="gauge"/>
+		    <category key="_salesOrderAmountWon" type="text"/>
+		    <series key="_salesOrderAmountWon" type="gauge"/>
 		    <config name="min" value="0"/>
 	    	<config name="max" value="200"/>
 		</chart>
 		
-		<chart name="chart.user.sales.order.amount.earned.target.bar" title="Sales orders amount earned historical">
+		<chart name="chart.user.sales.order.amount.won.target.bar" title="Sales orders amount won historical">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
-				    SUM(self.salesOrderAmountEarned)           AS     _salesOrderAmountEarned,
-				    SUM(self.salesOrderAmountEarnedTarget)           AS     _salesOrderAmountEarnedTarget,
+				    SUM(self.salesOrderAmountWon)           AS     _salesOrderAmountWon,
+				    SUM(self.salesOrderAmountWonTarget)           AS     _salesOrderAmountEarnedTarget,
 				    self.periodTypeSelect as _period,
 				    self.toDate as _toDate
 				FROM Target self 
@@ -223,7 +223,7 @@
 				  ]]>
 		    </dataset>
 		    <category key="_toDate" type="text"/>
-		    <series key="_salesOrderAmountEarned" type="bar"/>
+		    <series key="_salesOrderAmountWon" type="bar"/>
 <!-- 		    <series key="_salesOrderAmountEarnedTarget" type="bar"/> -->
 		</chart>
 		
@@ -231,7 +231,7 @@
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
-				    (self.salesOrderCreatedNumber/self.salesOrderCreatedNumberTarget)*100   		AS 	_salesOrderCreatedNumber
+				    self.salesOrderCreatedNumber*100/self.salesOrderCreatedNumberTarget   		AS 	_salesOrderCreatedNumber
 				FROM Target self 
 				WHERE self.userInfo.internalUser.id = :user and self.fromDate <= :date and self.toDate >= :date and self.salesOrderCreatedNumberTarget > 0
 				  ]]>
@@ -268,7 +268,7 @@
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
-				    (self.salesOrderCreatedWon/self.salesOrderCreatedWonTarget)*100   		AS 	_salesOrderCreatedWon
+				    self.salesOrderCreatedWon*100/self.salesOrderCreatedWonTarget   		AS 	_salesOrderCreatedWon
 				FROM Target self 
 				WHERE self.userInfo.internalUser.id = :user and self.fromDate <= :date and self.toDate >= :date and self.salesOrderCreatedWonTarget > 0
 				  ]]>
@@ -308,7 +308,7 @@
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
-				    (self.callEmittedNumber/(self.callEmittedNumberTarget))*100   		AS 	_callEmittedNumber
+				    self.callEmittedNumber*100/self.callEmittedNumberTarget   		AS 	_callEmittedNumber
 				FROM Target self 
 				WHERE self.team.id = :team and self.fromDate <= :date and self.toDate >= :date and self.callEmittedNumberTarget > 0
 				  ]]>
@@ -345,7 +345,7 @@
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
-				    (self.meetingNumber/self.meetingNumberTarget)*100   		AS 	_meetingNumber
+				    self.meetingNumber*100/self.meetingNumberTarget   		AS 	_meetingNumber
 				FROM Target self 
 				WHERE self.team.id = :team and self.fromDate <= :date and self.toDate >= :date and self.meetingNumberTarget > 0
 				  ]]>
@@ -378,27 +378,27 @@
 <!-- 		    <series key="_meetingNumberTarget" type="bar"/> -->
 		</chart>
 		
-		<chart name="chart.team.opportunity.amount.earned.target.gauge" title="Opportunities amount earned target competed (%)">
+		<chart name="chart.team.opportunity.amount.won.target.gauge" title="Opportunities amount won target competed (%)">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
-				    (self.opportunityAmountEarned/self.opportunityAmountEarnedTarget)*100   		AS 	_opportunityAmountEarned
+				    self.opportunityAmountWon*100/self.opportunityAmountWonTarget   		AS 	_opportunityAmountWon
 				FROM Target self 
-				WHERE self.team.id = :team and self.fromDate <= :date and self.toDate >= :date and self.opportunityAmountEarnedTarget > 0
+				WHERE self.team.id = :team and self.fromDate <= :date and self.toDate >= :date and self.opportunityAmountWonTarget > 0
 				  ]]>
 		    </dataset>
-		    <category key="_opportunityAmountEarned" type="text"/>
-		    <series key="_opportunityAmountEarned" type="gauge"/>
+		    <category key="_opportunityAmountWon" type="text"/>
+		    <series key="_opportunityAmountWon" type="gauge"/>
 		    <config name="min" value="0"/>
 	    	<config name="max" value="200"/>
 		</chart>
 		
-		<chart name="chart.team.opportunity.amount.earned.target.bar" title="Opportunities amount earned historical">
+		<chart name="chart.team.opportunity.amount.won.target.bar" title="Opportunities amount won historical">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
-				    SUM(self.opportunityAmountEarned)           AS     _opportunityAmountEarned,
-				    SUM(self.opportunityAmountEarnedTarget)           AS     _opportunityAmountEarnedTarget,
+				    SUM(self.opportunityAmountWon)           AS     _opportunityAmountWon,
+				    SUM(self.opportunityAmountWonTarget)           AS     _opportunityAmountWonTarget,
 				    self.periodTypeSelect as _period,
 				    self.toDate as _toDate
 				FROM Target self 
@@ -411,15 +411,15 @@
 				  ]]>
 		    </dataset>
 		    <category key="_toDate" type="text"/>
-		    <series key="_opportunityAmountEarned" type="bar"/>
-<!-- 		    <series key="_opportunityAmountEarnedTarget" type="bar"/> -->
+		    <series key="_opportunityAmountWon" type="bar"/>
+<!-- 		    <series key="_opportunityAmountWonTarget" type="bar"/> -->
 		</chart>
 	
 		<chart name="chart.team.opportunity.created.number.target.gauge" title="Opportunities created number target completed (%)">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
-				    (self.opportunityCreatedNumber/self.opportunityCreatedNumberTarget)*100   		AS 	_opportunityCreatedNumber
+				    self.opportunityCreatedNumber*100/self.opportunityCreatedNumberTarget   		AS 	_opportunityCreatedNumber
 				FROM Target self 
 				WHERE self.team.id = :team and self.fromDate <= :date and self.toDate >= :date and self.opportunityCreatedNumberTarget > 0
 				  ]]>
@@ -456,7 +456,7 @@
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
-				    (self.opportunityCreatedWon/self.opportunityCreatedWonTarget)*100   		AS 	_opportunityCreatedWon
+				    self.opportunityCreatedWon*100/self.opportunityCreatedWonTarget   		AS 	_opportunityCreatedWon
 				FROM Target self 
 				WHERE self.team.id = :team and self.fromDate <= :date and self.toDate >= :date and self.opportunityCreatedWonTarget > 0
 				  ]]>
@@ -489,27 +489,27 @@
 <!-- 		    <series key="_opportunityCreatedWonTarget" type="bar"/> -->
 		</chart>
 		
-		<chart name="chart.team.sales.order.amount.earned.target.gauge" title="Sales orders amount earned target completed (%)">
+		<chart name="chart.team.sales.order.amount.won.target.gauge" title="Sales orders amount won target completed (%)">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
-				    (self.salesOrderAmountEarned/self.salesOrderAmountEarnedTarget)*100   		AS 	_salesOrderAmountEarned
+				    self.salesOrderAmountWon*100/self.salesOrderAmountWonTarget   		AS 	_salesOrderAmountWon
 				FROM Target self 
-				WHERE self.team.id = :team and self.fromDate <= :date and self.toDate >= :date and self.salesOrderAmountEarnedTarget > 0
+				WHERE self.team.id = :team and self.fromDate <= :date and self.toDate >= :date and self.salesOrderAmountWonTarget > 0
 				  ]]>
 		    </dataset>
-		    <category key="_salesOrderAmountEarned" type="text"/>
-		    <series key="_salesOrderAmountEarned" type="gauge"/>
+		    <category key="_salesOrderAmountWon" type="text"/>
+		    <series key="_salesOrderAmountWon" type="gauge"/>
 		    <config name="min" value="0"/>
 	    	<config name="max" value="200"/>
 		</chart>
 		
-		<chart name="chart.team.sales.order.amount.earned.target.bar" title="Sales orders amount earned historical">
+		<chart name="chart.team.sales.order.amount.won.target.bar" title="Sales orders amount won historical">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
-				    SUM(self.salesOrderAmountEarned)           AS     _salesOrderAmountEarned,
-				    SUM(self.salesOrderAmountEarnedTarget)           AS     _salesOrderAmountEarnedTarget,
+				    SUM(self.salesOrderAmountWon)           AS     _salesOrderAmountWon,
+				    SUM(self.salesOrderAmountWonTarget)           AS     _salesOrderAmountEarnedWon,
 				    self.periodTypeSelect as _period,
 				    self.toDate as _toDate
 				FROM Target self 
@@ -522,15 +522,15 @@
 				  ]]>
 		    </dataset>
 		    <category key="_toDate" type="text"/>
-		    <series key="_salesOrderAmountEarned" type="bar"/>
-<!-- 		    <series key="_salesOrderAmountEarnedTarget" type="bar"/> -->
+		    <series key="_salesOrderAmountWon" type="bar"/>
+<!-- 		    <series key="_salesOrderAmountEarnedWon" type="bar"/> -->
 		</chart>
 		
 		<chart name="chart.team.sales.order.created.number.target.gauge" title="Sales orders created number target completed (%)">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
-				    (self.salesOrderCreatedNumber/self.salesOrderCreatedNumberTarget)*100   		AS 	_salesOrderCreatedNumber
+				    self.salesOrderCreatedNumber*100/self.salesOrderCreatedNumberTarget   		AS 	_salesOrderCreatedNumber
 				FROM Target self 
 				WHERE self.team.id = :team and self.fromDate <= :date and self.toDate >= :date and self.salesOrderCreatedNumberTarget > 0
 				  ]]>
@@ -567,7 +567,7 @@
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
-				    (self.salesOrderCreatedWon/self.salesOrderCreatedWonTarget)*100   		AS 	_salesOrderCreatedWon
+				    self.salesOrderCreatedWon*100/self.salesOrderCreatedWonTarget   		AS 	_salesOrderCreatedWon
 				FROM Target self 
 				WHERE self.team.id = :team and self.fromDate <= :date and self.toDate >= :date and self.salesOrderCreatedWonTarget > 0
 				  ]]>

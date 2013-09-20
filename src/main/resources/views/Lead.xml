@@ -28,9 +28,9 @@
 	    </menubar>
 	    <group colSpan="6" cols="6">
 	        <group colSpan="1" cols="1">
-	            <field name="picture" showTitle="false"/>
+	            <field name="picture" widget="image" showTitle="false"/>
 	        </group>
-	        <group title="Contact" colSpan="1" cols="1">
+	        <group title="Contact" colSpan="2" cols="1">
 	            <group colSpan="1" cols="1">
 	                <field name="titleSelect" showTitle="false" placeholder="Civility"/>
 	                <break/>
@@ -60,13 +60,6 @@
 	                <field name="team"/>
 	            </group>
 	        </group>  
-	        <group title="Links" colSpan="1" cols="1" canCollapse="true" collapseIf="true">
-	            <button name="showPartner" title="Show partner/contact" colSpan="1"/>
-	            <button name="showMeetings" title="Show meetings" colSpan="1"/>
-	            <button name="showTasks" title="Show tasks" colSpan="1"/>
-	            <button name="showMessages" title="Show messages" colSpan="1"/>
-	            <button name="showCalls" title="Show calls" colSpan="1"/>
-	        </group>
 	    </group>
 	    <group title="Informations" colSpan="4">
 	        <group title="Primary address" colSpan="2" cols="2">
