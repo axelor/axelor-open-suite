@@ -6,6 +6,7 @@
 	<module name="organisation" package="com.axelor.apps.organisation.db" />
 
 	<entity name="Employee" lang="java">
+		<integer name="importId" />
 		<integer name="titleSelect" title="Civility" selection="partner.title.type.select" />
 		<string name="name" title="Surname" required="true" />
 		<string name="firstName" title="First Name" required="true" />
