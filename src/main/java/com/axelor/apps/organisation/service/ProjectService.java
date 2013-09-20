@@ -70,14 +70,11 @@ public class ProjectService {
 	}
 	
 	
-//	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void updateFinancialInformation(Project project)  {
-		
 		
 		this.updateEstimatedAmount(project);
 		this.updateConfirmedAmount(project);
 		this.updateRealizedAmount(project);
-		
 		
 	}
 	
