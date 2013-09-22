@@ -15,7 +15,7 @@
         <field name="project"/>
         <field name="totalTaskQty"/>
         <field name="totalTimeSheetQty"/>
-        <field name="taskProgress" widget="Progress"/>
+        <field name="taskProgress" widget="SelectProgress"/>
     </grid>
     
     <grid name="task-project-grid" title="Tasks" model="com.axelor.apps.organisation.db.Task" orderBy="taskProgress">
@@ -26,39 +26,36 @@
     </grid>
     
     <form name="task-form" title="Task" model="com.axelor.apps.organisation.db.Task" cols="4" onNew="action-task-default-record,action-task-attrs-hide-financial" 
-    onLoad="action-task-method-update-financial-information,save"
-    onSave="action-task-compute-margin">
+    onLoad="action-task-method-update-financial-information,action-task-method-get-spent-time,action-task-method-get-planned-time,action-task-record-remaining-time,action-task-record-progress,action-task-attrs-status-select,action-task-record-task-completed,save">
     	<group colSpan="4" cols="3">
     		<field name="name" showTitle="false" css="highlight" placeholder="Task name" colSpan="2"/>
-    		<field name="statusSelect" showTitle="false" colSpan="1" widget="NavSelect"/>
+    		<field name="statusSelect" showTitle="false" colSpan="1" widget="NavSelect" onChange="action-task-attrs-status-select"/>
     	</group>
-    	<group title="Context" colSpan="4" cols="6">
+    	<group name="context" title="Context" colSpan="4" cols="6">
        		<field name="project" onChange="action-task-attrs-project-title,action-task-attrs-hide-financial"/>
-        	<field name="userInfo"/>
-        	<field name="taskProgress" widget="Progress"/>
         	<field name="startDateT"/>
-        	<field name="endDateT"/>    
-        	<field name="totalTask"/>
+        	<field name="endDateT"/>  
+        	<field name="userInfo"/>
+        	<field name="totalTime"/>
+        	<field name="unit"/>  
     	</group>
 	    <group colSpan="4" cols="6">
-	        <group title="Total" colSpan="2" cols="2">
-	            <field name="totalTaskQty"/>
-	            <field name="totalTaskUnit"/>
+	        <group title="Times" colSpan="6" cols="6">
+	            <field name="plannedTime"/>
+	            <field name="spentTime"/>
+	            <field name="remainingTime"/>
 	        </group>
-	        <group title="Planned" colSpan="2" cols="2">
-	            <field name="totalPlannedQty"/>
-	            <field name="totalPlannedUnit"/>
-	        </group>
-	        <group title="Real" colSpan="2" cols="2">
-	            <field name="totalTimeSheetQty" title="Total worked quantity"/>
-	            <field name="totalTimeSheetUnit" title="Total worked unit"/>
+	        <group title="Avancement" colSpan="6" cols="6">
+		        <field name="taskProgress" widget="SelectProgress" onChange="action-task-record-delays-and-advance,action-task-record-task-completed"/>
+	            <field name="delays"/>
+	            <field name="advance"/>
 	        </group>
 	    </group>
 	    <button name="generateDraftInvoice" title="Generate draft invoice" showIf="isToInvoice == true &amp;&amp; statusSelect == 3" colSpan="1" onClick="save,action-task-validate-generate-invoice,action-task-method-create-invoice"/>
 	    <break/>
 	    <notebook colSpan="4">
 	        <page title="Planification and realization">
-	            <field name="planningLineList" onChange="action-task-compute-total-planned-qty" colSpan="4" form-view="planning-line-task-form" grid-view="planning-line-task-grid"/>
+	            <field name="planningLineList" onChange="action-task-method-get-planned-time" colSpan="4" form-view="planning-line-task-form" grid-view="planning-line-task-grid"/>
 	        </page>
 	        <page title="Suivi Facturation">
 	            <field name="salesOrderLine" onChange="action-task-salesOrderLine-on-change"/>
@@ -71,22 +68,20 @@
 	            <field name="amountToInvoice"/>  
 	        </page>
 	        <page title="Notes">
-	            <field name="notes" colSpan="4"/>
-	            
+	            <field name="notes" colSpan="4" showTitle="false"/>
 	        </page>
 	        <page name="financialInformation" title="Financial information" colSpan="4">
 	        	<field name="exportTypeSelect"/>
 	            <button name="printTask" colSpan="2" title="Voir rapport estimations" onClick="action-print-task-report" icon="img/icons/print.png"/>
+				<group title="Initial" colSpan="4" cols="6">
+	                <field name="initialTurnover"/>
+	                <field name="initialCost"/>
+	                <field name="initialMargin"/>
+	            </group>
 	            <group title="Estimated" colSpan="4" cols="6">
 	                <field name="estimatedTurnover"/>
 	                <field name="estimatedCost"/>
 	                <field name="estimatedMargin"/>
-	                
-	            </group>
-	            <group title="Confirmed" colSpan="4" cols="6">
-	                <field name="confirmedTurnover"/>
-	                <field name="confirmedCost"/>
-	                <field name="confirmedMargin"/>
 	            </group>
 	            <group title="Reaslized" colSpan="4" cols="6">
 	                <field name="realizedTurnover"/>
@@ -96,9 +91,6 @@
 	            <field name="otherCostTaskProductLine" colSpan="4"/>
 	            <field name="otherRevenueTaskProductLine" colSpan="4"/>
 	            <field name="taskUpdateLineList" colSpan="4"/>
-	            <field name="estimateTime"/>
-	            <field name="spentTime"/>
-	            <field name="remainingTime"/>
 	            <field name="generatedCharge"/>
 	        </page>
 	        <page title="Links" colSpan="4">
@@ -114,8 +106,8 @@
 	        <page title="Description" colSpan="4">
 	            <field name="description" showTitle="false" colSpan="4"/>
 	        </page>
-	        <page title="Past times">
-        		<field name="pastTimeList" showTitle="false" colSpan="4" grid-view="past-time-task-grid" form-view="past-time-task-form"/>
+	        <page title="Spent times">
+        		<field name="spentTimeList" showTitle="false" colSpan="4" grid-view="spent-time-task-grid" form-view="spent-time-task-form" onChange="action-task-method-get-spent-time,action-task-record-progress,action-task-record-task-completed"/>
         	</page>
 	    </notebook>
 	</form>
@@ -126,8 +118,7 @@
         <field name="accountingDay"/>
     </grid>
 	
-	<form name="task-leave-reason-form" title="Task" model="com.axelor.apps.organisation.db.Task" cols="4" onNew="action-task-default-record"
-    onSave="action-task-compute-margin">
+	<form name="task-leave-reason-form" title="Task" model="com.axelor.apps.organisation.db.Task" cols="4" onNew="action-task-default-record">
     	<group colSpan="4" cols="3">
     		<field name="name" showTitle="false" css="highlight" placeholder="Task name" colSpan="2"/>
     		<field name="statusSelect" showTitle="false" colSpan="1" widget="NavSelect"/>
@@ -152,8 +143,8 @@
 	        <page title="Description" colSpan="4">
 	            <field name="description" showTitle="false" colSpan="4"/>
 	        </page>
-	        <page title="Past times">
-        		<field name="pastTimeList" showTitle="false" colSpan="4" grid-view="past-time-task-grid" form-view="past-time-task-form"/>
+	        <page title="Spent times">
+        		<field name="spentTimeList" showTitle="false" colSpan="4" grid-view="spent-time-task-grid" form-view="spent-time-task-form"/>
         	</page>
 	    </notebook>
 	</form>
@@ -166,16 +157,44 @@
     	<field name="exportTypeSelect" expr="eval: pdf"/>
     </action-record>
     
+    <action-record name="action-task-record-delays-and-advance" model="com.axelor.apps.organisation.db.Task">
+		<field name="advance" expr="eval: spentTime - taskProgress*totalTime/100" if="spentTime - taskProgress*totalTime/100 > 0"/>
+		<field name="delays" expr="eval: taskProgress*totalTime/100 - spentTime" if="taskProgress*totalTime/100 - spentTime > 0"/>
+		<field name="delays" expr="eval: 0" if="spentTime - taskProgress*totalTime/100 >= 0"/>
+		<field name="advance" expr="eval: 0" if="taskProgress*totalTime/100 - spentTime >= 0"/>
+	</action-record>
+	
+	<action-record name="action-task-record-task-completed" model="com.axelor.apps.organisation.db.Task">
+		<field name="statusSelect" expr="4" if="taskProgress == 100"/>
+	</action-record>
+	
+	<action-record name="action-task-record-progress" model="com.axelor.apps.organisation.db.Task">
+		<field name="taskProgress" expr="eval: 100 * spentTime / totalTime" if="totalTime > 0"/>
+		<field name="taskProgress" expr="eval: 0" if="totalTime == 0"/>
+	</action-record>
+	
+	<action-attrs name="action-task-attrs-status-select">
+		<attribute name="readonly" for="context" expr="eval: statusSelect >= 3"/>
+	</action-attrs>
+	
+	<action-record name="action-task-record-remaining-time" model="com.axelor.apps.organisation.db.Task">
+		<field name="remainingTime" expr="eval: totalTime - spentTime"/>
+	</action-record>
+	
+	<action-method name="action-task-method-get-spent-time">
+		<call class="com.axelor.apps.organisation.web.TaskController" method="getSpentTime"/>
+	</action-method>
+	
+	<action-method name="action-task-method-get-planned-time">
+		<call class="com.axelor.apps.organisation.web.TaskController" method="getPlannedTime"/>
+	</action-method>
+    
     <action-record name="action-task-salesOrderLine-on-change" model="com.axelor.apps.organisation.db.Task">
     	<field name="product" expr="eval:salesOrderLine?.product" if="salesOrderLine"/>
     	<field name="qty" expr="eval:salesOrderLine?.qty" if="salesOrderLine"/>
     	<field name="price" expr="eval:salesOrderLine?.price" if="salesOrderLine"/>
     </action-record>
     
-    <action-record name="action-task-compute-total-planned-qty" model="com.axelor.apps.organisation.db.Task">
-    	<field name="totalPlannedQty" expr="eval: planningLineList?.collect(){it?.duration}?.sum()" if="planningLineList != null"/>
-    </action-record>
-    	
     <action-method name="action-task-method-create-invoice">
 		<call class="com.axelor.apps.accountorganisation.web.TaskInvoiceController" method="createInvoice"/>
 	</action-method>

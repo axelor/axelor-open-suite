@@ -37,6 +37,7 @@ import com.axelor.apps.AxelorSettings;
 import com.axelor.apps.organisation.db.Task;
 import com.axelor.apps.organisation.service.TaskService;
 import com.axelor.apps.tool.net.URLService;
+import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -50,18 +51,41 @@ public class TaskController {
 		
 		Task task = request.getContext().asType(Task.class);
 		
-		taskService.updateFinancialInformation(task);
-		
-		response.setValue("estimatedTurnover", task.getEstimatedTurnover());
-		response.setValue("estimatedCost", task.getEstimatedCost());
-		response.setValue("estimatedMargin", task.getEstimatedMargin());
-		response.setValue("confirmedTurnover", task.getConfirmedTurnover());
-		response.setValue("confirmedCost", task.getConfirmedCost());
-		response.setValue("confirmedMargin", task.getConfirmedMargin());
-		response.setValue("realizedTurnover", task.getRealizedTurnover());
-		response.setValue("realizedCost", task.getRealizedCost());
-		response.setValue("realizedMargin", task.getRealizedMargin());
+		if(task.getId() != null)  {
+			taskService.updateFinancialInformation(task);
+			
+			response.setValue("initialTurnover", task.getInitialTurnover());
+			response.setValue("initialCost", task.getInitialCost());
+			response.setValue("initialMargin", task.getInitialMargin());
+			response.setValue("estimatedTurnover", task.getEstimatedTurnover());
+			response.setValue("estimatedCost", task.getEstimatedCost());
+			response.setValue("estimatedMargin", task.getEstimatedMargin());
+			response.setValue("realizedTurnover", task.getRealizedTurnover());
+			response.setValue("realizedCost", task.getRealizedCost());
+			response.setValue("realizedMargin", task.getRealizedMargin());
+		}
 	}
+	
+	
+	public void getSpentTime(ActionRequest request, ActionResponse response) throws AxelorException {
+		
+		Task task = request.getContext().asType(Task.class);
+		
+		if(task.getId() != null)  {
+				response.setValue("spentTime", taskService.getSpentTime(task));
+		}
+	}
+	
+	
+	public void getPlannedTime(ActionRequest request, ActionResponse response) throws AxelorException {
+		
+		Task task = request.getContext().asType(Task.class);
+		
+		if(task.getId() != null)  {
+				response.setValue("plannedTime", taskService.getPlannedTime(task));
+		}
+	}
+
 
 	/**
 	 * Fonction appeler par le bouton imprimer

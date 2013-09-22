@@ -31,42 +31,121 @@
 package com.axelor.apps.organisation.service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import javax.persistence.Query;
 
+import com.axelor.apps.base.db.SpentTime;
+import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.organisation.db.PlanningLine;
 import com.axelor.apps.organisation.db.Task;
 import com.axelor.db.JPA;
+import com.axelor.exception.AxelorException;
+import com.google.inject.Inject;
 
 
 
 public class TaskService {
 
+	@Inject
+	private UnitConversionService unitConversionService;
 	
 //	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void updateFinancialInformation(Task task)  {
 		
 		
-		this.updateEstimatedAmount(task);
-		this.updateConfirmedAmount(task);
+		this.updateInitialAmount(task);
+		this.updateEstimedAmount(task);
 		this.updateRealizedAmount(task);
 		
 		
 	}
 	
 	
-	public void updateEstimatedAmount(Task task)  {
+	public BigDecimal getSpentTime(Task task) throws AxelorException  {
+		
+		return unitConversionService.convert(Unit.all().filter("self.code = 'HRE'").fetchOne(), task.getUnit(), this.getSpentTimeHours(task.getSpentTimeList()));
+		
+	}
+	
+	public BigDecimal getPlannedTime(Task task) throws AxelorException  {
+		
+		BigDecimal plannedTime = BigDecimal.ZERO;
+		
+		if(task.getPlanningLineList() != null)  {
+			for(PlanningLine planningLine : task.getPlanningLineList())  {
+				plannedTime = plannedTime.add(unitConversionService.convert(planningLine.getUnit(), task.getUnit(), planningLine.getDuration()));
+			}
+		}
+		
+		return plannedTime;
+	}
+	
+	
+	public BigDecimal getSpentTimeHours(List<SpentTime> spentTimeList)  {
+		
+		BigDecimal spentTimeHours = BigDecimal.ZERO;
+		
+		for(SpentTime spentTime : spentTimeList)  {
+			spentTimeHours = spentTimeHours.add(new BigDecimal(spentTime.getDurationHours()+spentTime.getDurationMinutesSelect()/60));
+		}
+		
+		return spentTimeHours;
+	}
+	
+	public void updateInitialAmount(Task task)  {
 		
 		Query q = JPA.em().createQuery("select SUM(sol.exTaxTotal) FROM SalesOrderLine as sol WHERE sol.task = ?1 AND sol.salesOrder.statusSelect = 2");
 		q.setParameter(1, task);
 				
-		BigDecimal estimatedTurnover = (BigDecimal) q.getSingleResult();
+		BigDecimal initialTurnover = (BigDecimal) q.getSingleResult();
 		
 		q = JPA.em().createQuery("select SUM(pol.exTaxTotal) FROM PurchaseOrderLine as pol WHERE pol.task = ?1 AND pol.purchaseOrder.statusSelect = 2");
 		q.setParameter(1, task);
 				
-		BigDecimal purchaseOrderEstimatedCost = (BigDecimal) q.getSingleResult();
+		BigDecimal purchaseOrderInitialCost = (BigDecimal) q.getSingleResult();
 		
 		q = JPA.em().createQuery("select SUM(sol.product.costPrice * sol.qty) FROM SalesOrderLine as sol WHERE sol.task = ?1 AND sol.salesOrder.statusSelect = 2");
+		q.setParameter(1, task);
+				
+		BigDecimal salesOrderInitialCost = (BigDecimal) q.getSingleResult();
+		
+		BigDecimal initialCost = BigDecimal.ZERO;
+		if(purchaseOrderInitialCost != null)  {
+			initialCost = initialCost.add(purchaseOrderInitialCost);
+		}
+		if(salesOrderInitialCost != null)  {
+			initialCost = initialCost.add(salesOrderInitialCost);
+		}
+		
+		BigDecimal initialMargin = BigDecimal.ZERO;
+		if(initialTurnover != null)  {
+			initialMargin = initialCost.add(initialTurnover);
+		}
+		if(initialCost != null)  {
+			initialMargin = initialMargin.subtract(initialCost);
+		}
+		
+		task.setInitialTurnover(initialTurnover);
+		task.setInitialCost(initialCost);
+		task.setInitialMargin(initialMargin);
+	}
+	
+	
+	public void updateEstimedAmount(Task task)  {
+		
+		Query q = JPA.em().createQuery("select SUM(sol.exTaxTotal) FROM SalesOrderLine as sol WHERE sol.task = ?1 AND sol.salesOrder.statusSelect = 3");
+		q.setParameter(1, task);
+				
+		BigDecimal estimatedTurnover = (BigDecimal) q.getSingleResult();
+		
+		q = JPA.em().createQuery("select SUM(pol.exTaxTotal) FROM PurchaseOrderLine as pol WHERE pol.task = ?1 AND pol.purchaseOrder.statusSelect = 3");
+		q.setParameter(1, task);
+				
+		BigDecimal purchaseOrderEstimatedCost = (BigDecimal) q.getSingleResult();
+		
+		q = JPA.em().createQuery("select SUM(sol.product.costPrice * sol.qty) FROM SalesOrderLine as sol WHERE sol.task = ?1 AND sol.salesOrder.statusSelect = 3");
 		q.setParameter(1, task);
 				
 		BigDecimal salesOrderEstimatedCost = (BigDecimal) q.getSingleResult();
@@ -81,7 +160,7 @@ public class TaskService {
 		
 		BigDecimal estimatedMargin = BigDecimal.ZERO;
 		if(estimatedTurnover != null)  {
-			estimatedMargin = estimatedCost.add(estimatedTurnover);
+			estimatedMargin = estimatedMargin.add(estimatedTurnover);
 		}
 		if(estimatedCost != null)  {
 			estimatedMargin = estimatedMargin.subtract(estimatedCost);
@@ -90,45 +169,6 @@ public class TaskService {
 		task.setEstimatedTurnover(estimatedTurnover);
 		task.setEstimatedCost(estimatedCost);
 		task.setEstimatedMargin(estimatedMargin);
-	}
-	
-	
-	public void updateConfirmedAmount(Task task)  {
-		
-		Query q = JPA.em().createQuery("select SUM(sol.exTaxTotal) FROM SalesOrderLine as sol WHERE sol.task = ?1 AND sol.salesOrder.statusSelect = 3");
-		q.setParameter(1, task);
-				
-		BigDecimal confirmedTurnover = (BigDecimal) q.getSingleResult();
-		
-		q = JPA.em().createQuery("select SUM(pol.exTaxTotal) FROM PurchaseOrderLine as pol WHERE pol.task = ?1 AND pol.purchaseOrder.statusSelect = 3");
-		q.setParameter(1, task);
-				
-		BigDecimal purchaseOrderConfirmedCost = (BigDecimal) q.getSingleResult();
-		
-		q = JPA.em().createQuery("select SUM(sol.product.costPrice * sol.qty) FROM SalesOrderLine as sol WHERE sol.task = ?1 AND sol.salesOrder.statusSelect = 3");
-		q.setParameter(1, task);
-				
-		BigDecimal salesOrderConfirmedCost = (BigDecimal) q.getSingleResult();
-		
-		BigDecimal confirmedCost = BigDecimal.ZERO;
-		if(purchaseOrderConfirmedCost != null)  {
-			confirmedCost = confirmedCost.add(purchaseOrderConfirmedCost);
-		}
-		if(salesOrderConfirmedCost != null)  {
-			confirmedCost = confirmedCost.add(salesOrderConfirmedCost);
-		}
-		
-		BigDecimal confirmedMargin = BigDecimal.ZERO;
-		if(confirmedTurnover != null)  {
-			confirmedMargin = confirmedMargin.add(confirmedTurnover);
-		}
-		if(confirmedCost != null)  {
-			confirmedMargin = confirmedMargin.subtract(confirmedCost);
-		}
-		
-		task.setConfirmedTurnover(confirmedTurnover);
-		task.setConfirmedCost(confirmedCost);
-		task.setConfirmedMargin(confirmedMargin);
 	}
 	
 	

@@ -38,7 +38,7 @@ import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.base.db.PastTime;
+import com.axelor.apps.base.db.SpentTime;
 import com.axelor.apps.base.db.UserInfo;
 import com.axelor.apps.organisation.db.Task;
 import com.axelor.apps.organisation.db.Timesheet;
@@ -52,11 +52,11 @@ public class TimesheetService {
 	private static final Logger LOG = LoggerFactory.getLogger(TimesheetService.class); 
 	
 	@Transactional
-	public void getTaskPastTime(Timesheet timesheet)  {
+	public void getTaskSpentTime(Timesheet timesheet)  {
 		
 		UserInfo userInfo = timesheet.getUserInfo();
 		
-		Query q = JPA.em().createQuery("select DISTINCT(task) FROM PastTime as pt WHERE pt.userInfo = ?1 AND pt.timesheetImputed IN (false,null)");
+		Query q = JPA.em().createQuery("select DISTINCT(task) FROM SpentTime as pt WHERE pt.userInfo = ?1 AND pt.timesheetImputed IN (false,null)");
 		q.setParameter(1, userInfo);
 				
 		@SuppressWarnings("unchecked")
@@ -75,21 +75,21 @@ public class TimesheetService {
 		
 		List<TimesheetLine> timesheetLineList = Lists.newArrayList();
 		
-		List<PastTime> pastTimeList = PastTime.all().filter("self.userInfo = ?1 AND self.task = ?2  AND self.timesheetImputed IN (false,null)", timesheet.getUserInfo(), task).fetch();
+		List<SpentTime> spentTimeList = SpentTime.all().filter("self.userInfo = ?1 AND self.task = ?2  AND self.timesheetImputed IN (false,null)", timesheet.getUserInfo(), task).fetch();
 		
-		for(PastTime pastTime : pastTimeList)  {
+		for(SpentTime spentTime : spentTimeList)  {
 			
-			timesheetLineList.add(this.createTimesheetLine(timesheet, task, pastTime));
+			timesheetLineList.add(this.createTimesheetLine(timesheet, task, spentTime));
 			
-			pastTime.setTimesheetImputed(true);
-			pastTime.save();
+			spentTime.setTimesheetImputed(true);
+			spentTime.save();
 		}
 		
 		return timesheetLineList;
 	}
 	
 	
-	public TimesheetLine createTimesheetLine(Timesheet timesheet, Task task, PastTime pastTime)  {
+	public TimesheetLine createTimesheetLine(Timesheet timesheet, Task task, SpentTime spentTime)  {
 		
 		TimesheetLine timesheetLine = new TimesheetLine();
 		timesheetLine.setTimesheet(timesheet);
@@ -97,9 +97,9 @@ public class TimesheetService {
 		timesheetLine.setProject(task.getProject());
 		timesheetLine.setTask(task);
 		timesheetLine.setIsToInvoice(true);
-		timesheetLine.setDate(pastTime.getDate());
+		timesheetLine.setDate(spentTime.getDate());
 		
-		int duration = pastTime.getDurationHours()+(pastTime.getDurationMinutesSelect()/60);
+		int duration = spentTime.getDurationHours()+(spentTime.getDurationMinutesSelect()/60);
 		timesheetLine.setDuration(new BigDecimal(duration));
 		
 		return timesheetLine;

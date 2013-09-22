@@ -39,7 +39,7 @@
         <separator colSpan="4" title="Details of time spent on project/tasks"/>
         <group title="Configuration" colSpan="4" readonlyIf="statusSelect == 3">
         	<field name="hasToGetLeaveRequests"/>
-		  	<field name="hasToGetPastTimeFromTask"/>
+		  	<field name="hasToGetSpentTimeFromTask"/>
 		  	<field name="hasToGetPlanningLine"/>
 		  	<separator colSpan="4"/>
 		  	<field name="hasCompleteTimesheetLines" onChange="action-timesheet-record-complete-group-default"/>
@@ -49,9 +49,9 @@
 			  	<field name="completeDefaultTask"/>
 			  	<field name="duration"/>
 		  	</group>
-		  	<group title="Action(s)" colSpan="4" showIf="statusSelect != 3 &amp;&amp; hasToGetLeaveRequests == true || hasToGetPastTimeFromTask == true || hasToGetPlanningLine == true || hasCompleteTimesheetLines == true)">
-		  		<button name="getPastTimeButton" title="Get past time" colSpan="1" onClick="save,action-timesheet-method-get-task-past-time" 
-		  		showIf="statusSelect != 3 &amp;&amp; hasToGetLeaveRequests == true || hasToGetPastTimeFromTask == true || hasToGetPlanningLine == true)"/>
+		  	<group title="Action(s)" colSpan="4" showIf="statusSelect != 3 &amp;&amp; hasToGetLeaveRequests == true || hasToGetSpentTimeFromTask == true || hasToGetPlanningLine == true || hasCompleteTimesheetLines == true)">
+		  		<button name="getSpentTimeButton" title="Get past time" colSpan="1" onClick="save,action-timesheet-method-get-task-spent-time" 
+		  		showIf="statusSelect != 3 &amp;&amp; hasToGetLeaveRequests == true || hasToGetSpentTimeFromTask == true || hasToGetPlanningLine == true)"/>
 		  		<button name="completeTimeSheetButton" title="Complete time sheet" colSpan="1" onClick="save" showIf="statusSelect != 3 &amp;&amp; hasCompleteTimesheetLines == true"/>
 		  	</group>
         </group>
@@ -88,8 +88,8 @@
     	<call class="com.axelor.apps.organisation.web.TimesheetController" method="getPeriod"/>
     </action-method>
     
-    <action-method name="action-timesheet-method-get-task-past-time">
-		<call class="com.axelor.apps.organisation.web.TimesheetController" method="getTaskPastTime"/>
+    <action-method name="action-timesheet-method-get-task-spent-time">
+		<call class="com.axelor.apps.organisation.web.TimesheetController" method="getTaskSpentTime"/>
 	</action-method>
     
     <action-record name="action-timesheet-record-confirm" model="com.axelor.apps.organisation.db.Timesheet">

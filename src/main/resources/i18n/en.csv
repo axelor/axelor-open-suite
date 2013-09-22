@@ -466,7 +466,7 @@
 "timesheet-form","","group","Configuration","","","",""
 "timesheet-form","","group","Complete time sheet configuration","","","",""
 "timesheet-form","","group","Action(s)","","","",""
-"timesheet-form","getPastTimeButton","button","Get past time","","","",""
+"timesheet-form","getSpentTimeButton","button","Get past time","","","",""
 "timesheet-form","completeTimeSheetButton","button","Complete time sheet","","","",""
 "timesheet-form","","group","Action(s)","","","",""
 "timesheet-form","confirm","button","Confirm","","","",""

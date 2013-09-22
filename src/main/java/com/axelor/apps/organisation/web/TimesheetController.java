@@ -66,11 +66,11 @@ public class TimesheetController {
 		catch (Exception e){ TraceBackService.trace(response, e); }
 	}
 	
-	public void getTaskPastTime(ActionRequest request, ActionResponse response) {
+	public void getTaskSpentTime(ActionRequest request, ActionResponse response) {
 		
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
 		
-		timesheetService.get().getTaskPastTime(timesheet);
+		timesheetService.get().getTaskSpentTime(timesheet);
 		
 		response.setReload(true);
 		

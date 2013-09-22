@@ -108,8 +108,9 @@
 	<selection name="organisation.task.status.select">
 		<option value="1">Draft</option>
 		<option value="2">Confirmed</option>
-		<option value="3">Validated</option>
-		<option value="4">Canceled</option>
+		<option value="3">Started</option>
+		<option value="4">Completed</option>
+		<option value="5">Canceled</option>
 	</selection>
 	
 	<selection name="organisation.timesheet.period.config.type.select">
@@ -222,52 +223,6 @@
 		<option value="5">Canceled</option>
 	</selection>
 	
-	<selection name="grade.0.up.to.5.select">
-		<option value="0">0</option>
-		<option value="20">1</option>
-		<option value="40">2</option>
-		<option value="60">3</option>
-		<option value="80">4</option>
-		<option value="100">5</option>
-	</selection>
-	
-	<selection name="grade.0.up.to.10.select">
-		<option value="0">0</option>
-		<option value="10">1</option>
-		<option value="20">2</option>
-		<option value="30">3</option>
-		<option value="40">4</option>
-		<option value="50">5</option>
-		<option value="60">6</option>
-		<option value="70">7</option>
-		<option value="80">8</option>
-		<option value="90">9</option>
-		<option value="100">10</option>
-	</selection>
-	
-	<selection name="grade.0.up.to.20.select">
-		<option value="0">0</option>
-		<option value="1">1</option>
-		<option value="2">2</option>
-		<option value="3">3</option>
-		<option value="4">4</option>
-		<option value="5">5</option>
-		<option value="6">6</option>
-		<option value="7">7</option>
-		<option value="8">8</option>
-		<option value="9">9</option>
-		<option value="10">10</option>
-		<option value="11">11</option>
-		<option value="12">12</option>
-		<option value="13">13</option>
-		<option value="14">14</option>
-		<option value="15">15</option>
-		<option value="16">16</option>
-		<option value="17">17</option>
-		<option value="18">18</option>
-		<option value="19">19</option>
-		<option value="20">20</option>
-	</selection>
 	
 	<selection name="hr.expense.validation.status.select">
 		<option value="1">Verified</option>
@@ -301,8 +256,6 @@
 		<option value="internal">Internal</option>
 		<option value="previousJob">Previous job</option>
 	</selection>
-	
-	
 	
 	
 	<selection name="organisation.candidate.state.select">

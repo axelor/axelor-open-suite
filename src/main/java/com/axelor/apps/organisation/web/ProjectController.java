@@ -33,13 +33,9 @@ package com.axelor.apps.organisation.web;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.hsqldb.persist.Log;
-
 import com.axelor.apps.AxelorSettings;
 import com.axelor.apps.organisation.db.Project;
-import com.axelor.apps.organisation.db.Task;
 import com.axelor.apps.organisation.service.ProjectService;
-import com.axelor.apps.organisation.service.TaskService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -72,17 +68,19 @@ public class ProjectController {
 		
 		Project project = request.getContext().asType(Project.class);
 		
-		projectService.updateFinancialInformation(project);
-		
-		response.setValue("estimatedTurnover", project.getEstimatedTurnover());
-		response.setValue("estimatedCost", project.getEstimatedCost());
-		response.setValue("estimatedMargin", project.getEstimatedMargin());
-		response.setValue("confirmedTurnover", project.getConfirmedTurnover());
-		response.setValue("confirmedCost", project.getConfirmedCost());
-		response.setValue("confirmedMargin", project.getConfirmedMargin());
-		response.setValue("realizedTurnover", project.getRealizedTurnover());
-		response.setValue("realizedCost", project.getRealizedCost());
-		response.setValue("realizedMargin", project.getRealizedMargin());
+		if(project.getId() != null)  {
+			projectService.updateFinancialInformation(project);
+			
+			response.setValue("estimatedTurnover", project.getEstimatedTurnover());
+			response.setValue("estimatedCost", project.getEstimatedCost());
+			response.setValue("estimatedMargin", project.getEstimatedMargin());
+			response.setValue("confirmedTurnover", project.getConfirmedTurnover());
+			response.setValue("confirmedCost", project.getConfirmedCost());
+			response.setValue("confirmedMargin", project.getConfirmedMargin());
+			response.setValue("realizedTurnover", project.getRealizedTurnover());
+			response.setValue("realizedCost", project.getRealizedCost());
+			response.setValue("realizedMargin", project.getRealizedMargin());
+		}
 	}
 	
 	
