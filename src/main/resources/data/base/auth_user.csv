@@ -1,27 +1,27 @@
-"code";"name";"password";"group.code";"language"
-"admin";"Administrator";"axadmin";"admins";"fr"
-"demo";"Demo";"axdemo";"user";"fr"
-"dg";"Yoann MARQUES";"dg";"admins";"fr"
-"assist";"Lucy ROBERT";"assist";"admins";"fr"
-"dirpro";"Lucas RICHARD";"dirpro";"admins";"fr"
-"cpro1";"Loic HERVE";"cpro1";"admins";"fr"
-"dev1";"Virgine CLEMENT";"dev1";"admins";"fr"
-"dev2";"Jeremy DA";"dev2";"admins";"fr"
-"cpro2";"Daniel SILVA";"cpro2";"admins";"fr"
-"dev3";"Greg MARCHAL";"dev3";"admins";"fr"
-"form1";"Charles MARTIN";"form1";"admins";"fr"
-"dirco";"Kevin FERRER";"dirco";"admins";"fr"
-"comn1";"Charles FERRAND";"comn1";"admins";"fr"
-"comn2";"Tony RAYMOND";"comn2";"admins";"fr"
-"coms1";"Thomas LAMY";"coms1";"admins";"fr"
-"coms2";"Anne GIRAULT";"coms2";"admins";"fr"
-"comi1";"Dimitri GEOFFROY";"comi1";"admins";"fr"
-"ach";"Alex DAVID";"ach";"admins";"fr"
-"dirinfo";"William ANDRE";"dirinfo";"admins";"fr"
-"tech1";"Victoria LOUIS";"tech1";"admins";"fr"
-"tech2";"Simon RICHARD";"tech2";"admins";"fr"
-"dirsupp";"David MAURIN";"dirsupp";"admins";"fr"
-"supp1";"Cyril FERNANDES";"supp1";"admins";"fr"
-"supp2";"Robin COSTA";"supp2";"admins";"fr"
-"rh";"Romane COLIN";"rh";"admins";"fr"
-"compta";"Sophie COHEN";"compta";"admins";"fr"
+code;name;password;group.code;language
+admin;Administrator;axadmin;admins;fr
+demo;Demo;axdemo;user;fr
+dirg;Yoann MARQUES;dirg;admins;fr
+assist;Lucy ROBERT;assist;admins;fr
+dirpro;Lucas RICHARD;dirpro;admins;fr
+cpro1;Loic HERVE;cpro1;admins;fr
+dev1;Virgine CLEMENT;dev1;admins;fr
+dev2;Jeremy DA;dev2;admins;fr
+cpro2;Daniel SILVA;cpro2;admins;fr
+dev3;Greg MARCHAL;dev3;admins;fr
+form1;Charles MARTIN;form1;admins;fr
+dirco;Kevin FERRER;dirco;admins;fr
+comn1;Charles FERRAND;comn1;admins;fr
+comn2;Tony RAYMOND;comn2;admins;fr
+coms1;Thomas LAMY;coms1;admins;fr
+coms2;Anne GIRAULT;coms2;admins;fr
+comi1;Dimitri GEOFFROY;comi1;admins;fr
+dirach;Alex DAVID;dirach;admins;fr
+dirinfo;William ANDRE;dirinfo;admins;fr
+tech1;Victoria LOUIS;tech1;admins;fr
+tech2;Simon RICHARD;tech2;admins;fr
+dirsupp;David MAURIN;dirsupp;admins;fr
+supp1;Cyril FERNANDES;supp1;admins;fr
+supp2;Robin COSTA;supp2;admins;fr
+dirrh;Romane COLIN;dirrh;admins;fr
+compta;Sophie COHEN;compta;admins;fr

@@ -7,16 +7,7 @@
     
     <input file="auth_group.csv" separator=";" type="com.axelor.auth.db.Group" />
     
-    <input file="auth_user.csv" separator=";" type="com.axelor.auth.db.User">
-      <bind column="code_fr" to="code" />
-      <!-- <bind column="code_en" to="code" /> -->
-		  <bind column="name" to="name" />
-		  <bind column="password_fr" to="password"/>
-      <!-- <bind column="password_en" to="password"/> -->
-      <bind to="group" search="self.code = :group" >
-            <bind to="code" column="group"/>
-      </bind>
-	</input>
+    <input file="auth_user.csv" separator=";" type="com.axelor.auth.db.User"  />
 	
     
 <!--     IMPORT DU PACKAGE 'BASE' -->   
@@ -177,7 +168,7 @@
 		<bind column="code_fr" to="code"/>
 		<bind column="description_fr" to="description"/>
 	</input>
-
+	
  	<input file="base_partner.csv" separator=";" search="self.importId = :importId" update="true" type="com.axelor.apps.base.db.Partner">
 		<bind column="companySet_code" to="companySet" search="self.code in :companySet_code" eval="companySet_code.split('\\|') as List"/>
 		<bind to="mainPartner" search="self.importId = :mainPartner_importId" update="true" />
@@ -198,7 +189,7 @@
 	
 	<input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account"  search="self.importId = :importId" update="true">
 		<bind to="importId" column="importId" />
-		<bind to="parent" search="self.code = :parent_code AND self.company.code = :company_code" update="true">
+		<bind to="parent" search="self.code = :parent_code AND self.company.id = 1" update="true">
 			<bind to="code" column="parent_code" />
 		</bind>
 	</input>
@@ -322,6 +313,9 @@
 		<bind column="code_fr_FR" to="code"/>
 	</input>
 	
+	<input file="crm_opportunityType.csv" separator=";" type="com.axelor.apps.crm.db.OpportunityType" />
+	
+	<input file="crm_opportunity.csv" separator=";" type="com.axelor.apps.crm.db.Opportunity" />
 	
 <!--     IMPORT DU PACKAGE 'ORGANISATION' --> 	
 	<input file="organisation_publicHolidays.csv" separator=";" type="com.axelor.apps.organisation.db.PublicHolidays" />
@@ -359,11 +353,11 @@
 	
 	<input file="organisation_personalInfo.csv" separator=";" type="com.axelor.apps.organisation.db.PersonalInfo"/>
 	
-	<input file="organisation_employee_Serv.csv" separator=";" type="com.axelor.apps.organisation.db.Employee" search="self.importId = :imporId" update="true">
-		<bind to="importId" column="importId" />
-	</input>
+	<input file="organisation_employee_Serv.csv" separator=";" type="com.axelor.apps.organisation.db.Employee" search="self.importId  = :importId" update="true" />
 	
-<!--     IMPORT DU PACKAGE 'SUPPLY CHAIN' --> 	
+	<input file="supplychain_location.csv" separator=";" type="com.axelor.apps.supplychain.db.Location"/>
+<!--     IMPORT DU PACKAGE 'SUPPLY CHAIN' -->
+	<input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company" search="self.importId = :importId" update="true"/> 	
 	  	
 </csv-inputs>
 
