@@ -6,7 +6,8 @@
   <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
 
   <entity name="Location" lang="java">
-  
+  	
+  	<integer name="importId" />
     <string name="name" title="Nom" required="true"/>
     <many-to-one name="parent" ref="com.axelor.apps.supplychain.db.Location" title="Parent"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
