@@ -47,7 +47,7 @@ public class TaskController {
 	@Inject
 	TaskService taskService;
 	
-	public void updateFinancialInformation(ActionRequest request, ActionResponse response) {
+	public void updateFinancialInformation(ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		Task task = request.getContext().asType(Task.class);
 		

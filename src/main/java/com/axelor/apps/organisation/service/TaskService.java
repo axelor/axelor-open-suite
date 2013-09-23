@@ -35,9 +35,11 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.SpentTime;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.organisation.db.Employee;
 import com.axelor.apps.organisation.db.PlanningLine;
 import com.axelor.apps.organisation.db.Task;
 import com.axelor.db.JPA;
@@ -52,7 +54,7 @@ public class TaskService {
 	private UnitConversionService unitConversionService;
 	
 //	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void updateFinancialInformation(Task task)  {
+	public void updateFinancialInformation(Task task) throws AxelorException  {
 		
 		
 		this.updateInitialAmount(task);
@@ -94,11 +96,10 @@ public class TaskService {
 		return spentTimeHours;
 	}
 	
-	public void updateInitialAmount(Task task)  {
-		
+	public void updateInitialAmount(Task task) throws AxelorException  {
 		Query q = JPA.em().createQuery("select SUM(sol.exTaxTotal) FROM SalesOrderLine as sol WHERE sol.task = ?1 AND sol.salesOrder.statusSelect = 2");
 		q.setParameter(1, task);
-				
+		
 		BigDecimal initialTurnover = (BigDecimal) q.getSingleResult();
 		
 		q = JPA.em().createQuery("select SUM(pol.exTaxTotal) FROM PurchaseOrderLine as pol WHERE pol.task = ?1 AND pol.purchaseOrder.statusSelect = 2");
@@ -108,9 +109,8 @@ public class TaskService {
 		
 		q = JPA.em().createQuery("select SUM(sol.product.costPrice * sol.qty) FROM SalesOrderLine as sol WHERE sol.task = ?1 AND sol.salesOrder.statusSelect = 2");
 		q.setParameter(1, task);
-				
 		BigDecimal salesOrderInitialCost = (BigDecimal) q.getSingleResult();
-		
+				
 		BigDecimal initialCost = BigDecimal.ZERO;
 		if(purchaseOrderInitialCost != null)  {
 			initialCost = initialCost.add(purchaseOrderInitialCost);
@@ -133,7 +133,7 @@ public class TaskService {
 	}
 	
 	
-	public void updateEstimedAmount(Task task)  {
+	public void updateEstimedAmount(Task task) throws AxelorException  {
 		
 		Query q = JPA.em().createQuery("select SUM(sol.exTaxTotal) FROM SalesOrderLine as sol WHERE sol.task = ?1 AND sol.salesOrder.statusSelect = 3");
 		q.setParameter(1, task);
@@ -145,10 +145,39 @@ public class TaskService {
 				
 		BigDecimal purchaseOrderEstimatedCost = (BigDecimal) q.getSingleResult();
 		
-		q = JPA.em().createQuery("select SUM(sol.product.costPrice * sol.qty) FROM SalesOrderLine as sol WHERE sol.task = ?1 AND sol.salesOrder.statusSelect = 3");
-		q.setParameter(1, task);
-				
-		BigDecimal salesOrderEstimatedCost = (BigDecimal) q.getSingleResult();
+		BigDecimal salesOrderEstimatedCost = BigDecimal.ZERO;
+		
+		if(task.getPlanningLineList() != null && !task.getPlanningLineList().isEmpty())  {
+			for(PlanningLine planningLine : task.getPlanningLineList())  {
+				Employee employee = planningLine.getEmployee();
+				Product profil = planningLine.getProduct();
+				if(employee != null)  {
+					salesOrderEstimatedCost = salesOrderEstimatedCost.
+							add(employee.getDailySalaryCost().
+									multiply(unitConversionService.
+											convert(
+													planningLine.getUnit(), 
+													Unit.all().filter("self.code = 'JR'").fetchOne(), 
+													planningLine.getDuration())));
+				}
+				else if(profil != null)  {
+					salesOrderEstimatedCost = salesOrderEstimatedCost.
+							add(profil.getCostPrice().
+									multiply(unitConversionService.
+											convert(
+													planningLine.getUnit(), 
+													profil.getUnit(), 
+													planningLine.getDuration())));
+				}
+			}
+		}
+		else  {
+			q = JPA.em().createQuery("select SUM(sol.product.costPrice * sol.qty) FROM SalesOrderLine as sol WHERE sol.task = ?1 AND sol.salesOrder.statusSelect = 3");
+			q.setParameter(1, task);
+					
+			salesOrderEstimatedCost = (BigDecimal) q.getSingleResult();
+		}
+		
 		
 		BigDecimal estimatedCost = BigDecimal.ZERO;
 		if(purchaseOrderEstimatedCost != null)  {
