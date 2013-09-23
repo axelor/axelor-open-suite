@@ -13,18 +13,18 @@
   	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team"/>
   	
 <!-- Opportunity -->
-    <decimal name="opportunityAmountEarned" title="Amount earned" readonly="true"/>
+    <decimal name="opportunityAmountWon" title="Amount won" readonly="true"/>
     <integer name="opportunityCreatedNumber" title="Created number" readonly="true"/>
     <integer name="opportunityCreatedWon" title="Created won" readonly="true"/>
-    <decimal name="opportunityAmountEarnedTarget" title="Amount earned"/>
+    <decimal name="opportunityAmountWonTarget" title="Amount won"/>
     <integer name="opportunityCreatedNumberTarget" title="Created number"/>
     <integer name="opportunityCreatedWonTarget" title="Created won"/>
     
 <!-- Sales order -->
-<!-- 	<decimal name="salesOrderAmountEarned" title="Amount earned"/> -->
+<!-- 	<decimal name="salesOrderAmountWon" title="Amount won"/> -->
 <!--     <integer name="salesOrderCreatedNumber" title="Created number"/> -->
 <!--     <integer name="salesOrderCreatedWon" title="Created won"/> -->
-<!--     <decimal name="salesOrderAmountEarnedTarget" title="Amount earned"/> -->
+<!--     <decimal name="salesOrderAmountWonTarget" title="Amount won"/> -->
 <!--     <integer name="salesOrderCreatedNumberTarget" title="Created number"/> -->
 <!--     <integer name="salesOrderCreatedWonTarget" title="Created won"/> -->
 
