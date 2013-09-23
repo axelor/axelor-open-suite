@@ -342,8 +342,8 @@
 	        <page title="Watchers">
 	            <field name="userInfoSet" showTitle="false" colSpan="6" widget="TagSelect" onSelect="action-event-attrs-watchers-domain"/>
 	        </page>
-	        <page title="Past times" showIf="task != null">
-	            <field name="pastTimeList" showTitle="false" colSpan="6" form-view="past-time-ticket-form" grid-view="past-time-ticket-grid"/>
+	        <page title="Spent times" showIf="task != null">
+	            <field name="spentTimeList" showTitle="false" colSpan="6" form-view="spent-time-ticket-form" grid-view="spent-time-ticket-grid"/>
 	        </page>
 	    </notebook>
 	</form>
