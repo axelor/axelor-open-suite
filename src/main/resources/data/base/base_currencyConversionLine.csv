@@ -1,4 +1,4 @@
-"importId";"general.importId";"startCurrency.code";"endCurrency.code";"conversionRate";"fromDate";"toDate"
+"importId";"general.id";"startCurrency.code";"endCurrency.code";"conversionRate";"fromDate";"toDate"
 1;1;"EUR";"USD";"1.3008";"2012-05-01";
 2;1;"EUR";"GBP";"0.8533";"2012-05-01";
 3;1;"EUR";"CNY";"8.0321";"2012-05-01";
