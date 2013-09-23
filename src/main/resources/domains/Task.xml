@@ -10,13 +10,15 @@
   	<many-to-one name="salesOrderLine" ref="com.axelor.apps.supplychain.db.SalesOrderLine" title="Sale order line (origin)"/>
   	<string name="name" title="Task name"/>
   	<many-to-one name="project" ref="com.axelor.apps.organisation.db.Project" title="Project"/>
-  	<decimal name="totalTaskQty" title="Total ordered"/>
-  	<decimal name="totalTimeSheetQty" title="Total worked"/>
-  	<decimal name="totalPlannedQty" title="Total planned"/>
-  	<many-to-one name="totalTaskUnit" title="Total ordered unit" ref="com.axelor.apps.base.db.Unit"/>
-  	<many-to-one name="totalTimeSheetUnit" title="Total worked unit" ref="com.axelor.apps.base.db.Unit"/>
-  	<many-to-one name="totalPlannedUnit" title="Total planned unit" ref="com.axelor.apps.base.db.Unit"/>
-  	<integer name="taskProgress" title="Task Progress"/>
+  	<many-to-one name="unit" title="Unit" ref="com.axelor.apps.base.db.Unit"/>
+  	<decimal name="totalTime" title="Total time"/>
+  	<decimal name="plannedTime" title="Planned time" readonly="true"/>
+  	<decimal name="spentTime" title="Spent time" readonly="true"/>
+  	<decimal name="remainingTime" title="Reminaing time" readonly="true"/>
+  	<decimal name="generatedCharge" title="Charge generated"/>
+  	<decimal name="delays" title="Delays" readonly="true"/>
+  	<decimal name="advance" title="Advance" readonly="true"/>
+  	<integer name="taskProgress" title="Task Progress" selection="grade.0.up.to.100.select"/>
   	<string name="description" title="Description" large="true"/>
   	<boolean name="isTimesheetAffected" title="Input from timesheet ?"/>
   	<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="Assigned to"/>
@@ -37,12 +39,12 @@
 	<string name="notes" title="Notes" large="true"/>
 
 <!-- Financial informations -->
+  	<decimal name="initialTurnover" title="Turnover" readonly="true"/>
+  	<decimal name="initialCost" title="Cost" readonly="true"/>
+  	<decimal name="initialMargin" title="Margin" readonly="true"/>
   	<decimal name="estimatedTurnover" title="Turnover" readonly="true"/>
   	<decimal name="estimatedCost" title="Cost" readonly="true"/>
   	<decimal name="estimatedMargin" title="Margin" readonly="true"/>
-  	<decimal name="confirmedTurnover" title="Turnover" readonly="true"/>
-  	<decimal name="confirmedCost" title="Cost" readonly="true"/>
-  	<decimal name="confirmedMargin" title="Margin" readonly="true"/>
   	<decimal name="realizedTurnover" title="Turnover" readonly="true"/>
   	<decimal name="realizedCost" title="Cost" readonly="true"/>
   	<decimal name="realizedMargin" title="Margin" readonly="true"/>
@@ -52,18 +54,13 @@
   	<one-to-many name="otherRevenueTaskProductLine" ref="com.axelor.apps.organisation.db.TaskProductLine" title="Other planned revenue"/>
   	<one-to-many name="taskUpdateLineList" ref="com.axelor.apps.organisation.db.TaskUpdateLine" title="Task update lines"/>
   	
-  	<decimal name="estimateTime" title="Estimated time"/>
-  	<decimal name="spentTime" title="Spent time"/>
-  	<decimal name="remainingTime" title="Reminaing time"/>
-  	<decimal name="generatedCharge" title="Charge generated"/>
-  	
   	<!--   	Onglet facturation -->
   	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
   	<decimal name="qty" title="Quantity" default="1"/>
   	<decimal name="price" title="Unit price"/>
   	
 	<!--   	Onglet Temps passés -->
-  	<one-to-many name="pastTimeList" ref="com.axelor.apps.base.db.PastTime" mappedBy="task" title="Past times"/>
+  	<one-to-many name="spentTimeList" ref="com.axelor.apps.base.db.SpentTime" mappedBy="task" title="Spent times"/>
   	
   	
 <!--   	Leave request reasons field -->

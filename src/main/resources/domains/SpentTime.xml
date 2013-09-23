@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="PastTime" lang="java">
+  <entity name="SpentTime" lang="java">
   
   	<many-to-one name="event" ref="com.axelor.apps.crm.db.Event" title="Ticket"/>
   	<boolean name="timesheetImputed" title="Already imputed in timesheet" readonly="true"/>
