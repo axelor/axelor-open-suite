@@ -227,7 +227,7 @@ public class SalesOrderService {
 		UnitConversionService ucs = new UnitConversionService();
 		BigDecimal sum = new BigDecimal(0);
 		boolean sameUnit = checkSameUnitPlanningLineList(planningLineList);
-		Unit projectUnit = task.getProject().getProjectUnit();
+		Unit projectUnit = task.getProject().getUnit();
 		LocalDateTime laterDate = task.getEndDateT();
 
 		for(PlanningLine planningLine : planningLineList)  {
