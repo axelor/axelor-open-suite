@@ -302,7 +302,7 @@ importId;code;parent_code;name_fr_FR;name_en_EN;accountType.nameSelect;reconcile
 301;31;CL3;Matières premières (et fourniture);Raw materials (and delivery);view;;AXG;;;;;;;;;;;;
 302;311000;31;Matière (ou groupe) A;Material (or group) A;current asset;;AXG;;;;;;;;;;;;
 303;312000;31;Matière (ou groupe) B;Material (or group) B;current asset;;AXG;;;;;;;;;;;;
-304;317000;31;Fournitures A; B; C; ..;Supplies A; B; C; ..;current asset;;AXG;;;;;;
+304;317000;31;Fournitures A, B, C, ..;Supplies A, B, C, ..;current asset;;AXG;;;;;;
 305;32;CL3;Autres approvisionnements;Other supplies;view;;AXG;;;;;;;;;;;;
 306;321000;32;Matières consommables;Consumables;current asset;;AXG;;;;;;;;;;;;
 307;321100;321000;Matière (ou groupe) C;Material (or group) C;current asset;;AXG;;;;;;;;;;;;
@@ -351,7 +351,7 @@ importId;code;parent_code;name_fr_FR;name_en_EN;accountType.nameSelect;reconcile
 350;391000;39;Provisions pour dépréciation des matières premières (et fournitures);Impairment of raw materials (supplies);current asset;;AXG;;;;;;;;;;;;
 351;391100;391000;Matières (ou groupe) A;Subjects (or group) A;current asset;;AXG;;;;;;;;;;;;
 352;391200;391000;Matières (ou groupe) B;Material (or group) B;current asset;;AXG;;;;;;;;;;;;
-353;391700;391000;Fournitures A; B; C; ..;Supplies A; B; C; ..;current asset;;AXG;;;;;;
+353;391700;391000;Fournitures A, B, C, ..;Supplies A, B, C, ..;current asset;;AXG;;;;;;
 354;392000;39;Provisions pour dépréciation des autres approvisionnements;Impairment of other supplies;current asset;;AXG;;;;;;;;;;;;
 355;392100;392000;Matières consommables (même ventilation que celle du compte 321);Consumables (same breakdown as the account 321);current asset;;AXG;;;;;;;;;;;;
 356;392200;392000;Fournitures consommables (même ventilation que celle du compte 322);Consumables (same breakdown as the account 322);current asset;;AXG;;;;;;;;;;;;
@@ -600,7 +600,7 @@ importId;code;parent_code;name_fr_FR;name_en_EN;accountType.nameSelect;reconcile
 599;601000;60;Achats stockés - Matières premières (et fournitures);Stored purchases - Raw (and supplies);expense;;AXG;;;;;;;;;;;;
 600;601100;601000;Matières (ou groupe) A;Subjects (or group) A;expense;;AXG;;;;;;;;;;;;
 601;601200;601000;Matières (ou groupe) B;Material (or group) B;expense;;AXG;;;;;;;;;;;;
-602;601700;601000;Fournitures A; B; C; ..;Supplies A; B; C; ..;expense;;AXG;;;;;;
+602;601700;601000;Fournitures A, B, C, ..;Supplies A, B, C, ..;expense;;AXG;;;;;;
 603;602000;60;Achats stockés - Autres approvisionnements;Stored purchases - Other supplies;expense;;AXG;;;;;;;;;;;;
 604;602100;602000;Matières consommables;Consumables;expense;;AXG;;;;;;;;;;;;
 605;602110;602100;Matières (ou groupe) C;Material (or group) C;expense;;AXG;;;;;;;;;;;;
@@ -765,7 +765,7 @@ importId;code;parent_code;name_fr_FR;name_en_EN;accountType.nameSelect;reconcile
 764;648000;64;Autres charges de personnel;Other personnel expenses;expense;;AXG;;;;;;;;;;;;
 765;65;CL6;Autres charges de gestion courante;Other current operating expenses;view;;AXG;;;;;;;;;;;;
 766;651000;65;Redevances pour concessions, brevets, licences, marques, procédés, logiciels, droits et valeurs similaires;Fees for concessions, patents, licenses, trademarks, processes, software, similar rights and assets;expense;;AXG
-767;651100;651000;Redevances pour concessions brevets; licences; marques; procédés; logiciels ;Patent Fees for concessions; licenses; trademarks; processes; software;expense;;AXG;;;;
+767;651100;651000;Redevances pour concessions brevets, licences, marques, procédés, logiciels ;Patent Fees for concessions, licenses, trademarks, processes, software;expense;;AXG;;;;
 768;651600;651000;Droits d'auteur et de reproduction;Copyright and reproduction;expense;;AXG;;;;;;;;;;;;
 769;651800;651000;Autres droits et valeurs similaires;Other similar rights and assets;expense;;AXG;;;;;;;;;;;;
 770;653000;65;Jetons de présence;Attendance;expense;;AXG;;;;;;;;;;;;

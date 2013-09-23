@@ -1,5 +1,6 @@
 "importId";"name";"name_en_EN";"parent.importId";"company.importId";"partner.importId";"typeSelect"
 1;"Entrepôt principal";"Main Warehouse";;1;90000;1
-2;"Virtuel Client";"Customer virtual";;1;90000;3
-3;"Virtuel Fourn.";"Supplier virtual";;1;90000;3
-4;"Virtuel Prod.";"Production virtual";;1;90000;3
+2;"Client";"Customer";;1;90000;2
+3;"Fournisseur";"Supplier";;1;90000;2
+4;"Inventaire";"Inventory";;1;90000;3
+5;"Production";"Production";;1;90000;3
