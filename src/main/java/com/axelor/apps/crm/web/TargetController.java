@@ -48,7 +48,7 @@ public class TargetController {
 		
 		try {
 			targetService.update(Target.find(target.getId()));
-			response.setValue("opportunityAmountEarned", target.getOpportunityAmountEarned());
+			response.setValue("opportunityAmountWon", target.getOpportunityAmountWon());
 			response.setValue("opportunityCreatedNumber", target.getOpportunityCreatedNumber());
 			response.setValue("opportunityCreatedWon", target.getOpportunityCreatedWon());
 			response.setValue("callEmittedNumber", target.getCallEmittedNumber());

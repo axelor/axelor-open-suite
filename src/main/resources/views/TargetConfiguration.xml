@@ -23,12 +23,12 @@
 	        <field name="toDate"/>
     	</group>
         <group title="Opportunity" colSpan="2">
-        	<field name="opportunityAmountEarned"/>
+        	<field name="opportunityAmountWon"/>
         	<field name="opportunityCreatedNumber"/>
         	<field name="opportunityCreatedWon"/>
         </group>
 <!--         <group title="Sales order" colSpan="2"> -->
-<!--         	<field name="salesOrderAmountEarned"/> -->
+<!--         	<field name="salesOrderAmountWon"/> -->
 <!--         	<field name="salesOrderCreatedNumber"/> -->
 <!--         	<field name="salesOrderCreatedWon"/> -->
 <!--         </group> -->

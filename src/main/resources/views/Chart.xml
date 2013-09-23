@@ -136,7 +136,7 @@
 			    <![CDATA[
 			    SELECT
 				    SUM(self.opportunityCreatedNumber)           AS     _opportunityCreatedNumber,
-				    SUM(self.opportunityAmountEarnedTarget)           AS     _opportunityAmountEarnedTarget,
+				    SUM(self.opportunityCreatedNumberTarget)           AS     _opportunityCreatedNumberTarget,
 				    self.periodTypeSelect as _period,
 				    self.toDate as _toDate
 				FROM Target self 
@@ -150,7 +150,7 @@
 		    </dataset>
 		    <category key="_toDate" type="text"/>
 		    <series key="_opportunityCreatedNumber" type="bar"/>
-<!-- 		    <series key="_opportunityAmountEarnedTarget" type="bar"/> -->
+<!-- 		    <series key="_opportunityCreatedNumberTarget" type="bar"/> -->
 		</chart>
 		
 		<chart name="chart.user.opportunity.amount.won.target.gauge" title="Opportunities created won target completed (%)">
@@ -210,7 +210,7 @@
 			    <![CDATA[
 			    SELECT
 				    SUM(self.salesOrderAmountWon)           AS     _salesOrderAmountWon,
-				    SUM(self.salesOrderAmountWonTarget)           AS     _salesOrderAmountEarnedTarget,
+				    SUM(self.salesOrderAmountWonTarget)           AS     _salesOrderAmountWonTarget,
 				    self.periodTypeSelect as _period,
 				    self.toDate as _toDate
 				FROM Target self 
@@ -224,7 +224,7 @@
 		    </dataset>
 		    <category key="_toDate" type="text"/>
 		    <series key="_salesOrderAmountWon" type="bar"/>
-<!-- 		    <series key="_salesOrderAmountEarnedTarget" type="bar"/> -->
+<!-- 		    <series key="_salesOrderAmountWonTarget" type="bar"/> -->
 		</chart>
 		
 		<chart name="chart.user.sales.order.created.number.target.gauge" title="Sales orders created number target completed (%)">
@@ -435,7 +435,7 @@
 			    <![CDATA[
 			    SELECT
 				    SUM(self.opportunityCreatedNumber)           AS     _opportunityCreatedNumber,
-				    SUM(self.opportunityAmountEarnedTarget)           AS     _opportunityAmountEarnedTarget,
+				    SUM(self.opportunityCreatedNumberTarget)           AS     _opportunityCreatedNumberTarget,
 				    self.periodTypeSelect as _period,
 				    self.toDate as _toDate
 				FROM Target self 
@@ -449,7 +449,7 @@
 		    </dataset>
 		    <category key="_toDate" type="text"/>
 		    <series key="_opportunityCreatedNumber" type="bar"/>
-<!-- 		    <series key="_opportunityAmountEarnedTarget" type="bar"/> -->
+<!-- 		    <series key="_opportunityCreatedNumberTarget" type="bar"/> -->
 		</chart>
 		
 		<chart name="chart.team.opportunity.amount.won.target.gauge" title="Opportunities created won target completed (%)">
@@ -509,7 +509,7 @@
 			    <![CDATA[
 			    SELECT
 				    SUM(self.salesOrderAmountWon)           AS     _salesOrderAmountWon,
-				    SUM(self.salesOrderAmountWonTarget)           AS     _salesOrderAmountEarnedWon,
+				    SUM(self.salesOrderAmountWonTarget)           AS     _salesOrderAmountWonTarget,
 				    self.periodTypeSelect as _period,
 				    self.toDate as _toDate
 				FROM Target self 
@@ -523,7 +523,7 @@
 		    </dataset>
 		    <category key="_toDate" type="text"/>
 		    <series key="_salesOrderAmountWon" type="bar"/>
-<!-- 		    <series key="_salesOrderAmountEarnedWon" type="bar"/> -->
+<!-- 		    <series key="_salesOrderAmountWonTarget" type="bar"/> -->
 		</chart>
 		
 		<chart name="chart.team.sales.order.created.number.target.gauge" title="Sales orders created number target completed (%)">

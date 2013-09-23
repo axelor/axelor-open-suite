@@ -26,13 +26,13 @@
         <group title="Opportunity" colSpan="4">
 	        <group colSpan="2" cols="2">
 	        	<separator title="Target" colSpan="2"/>
-		        <field name="opportunityAmountEarnedTarget"/>
+		        <field name="opportunityAmountWonTarget"/>
 	        	<field name="opportunityCreatedNumberTarget"/>
 	        	<field name="opportunityCreatedWonTarget"/>
 	        </group>
 	        <group colSpan="2" cols="2">
 	        	<separator title="Real" colSpan="2"/>
-	        	<field name="opportunityAmountEarned"/>
+	        	<field name="opportunityAmountWon"/>
 	        	<field name="opportunityCreatedNumber"/>
 	        	<field name="opportunityCreatedWon"/>
         	</group>
@@ -40,13 +40,13 @@
 <!--         <group title="Sales order" colSpan="4"> -->
 <!--         	<group colSpan="2" cols="2"> -->
 <!-- 	        	<separator title="Target" colSpan="2"/> -->
-<!-- 		        <field name="salesOrderAmountEarnedTarget"/> -->
+<!-- 		        <field name="salesOrderAmountWonTarget"/> -->
 <!-- 		       	<field name="salesOrderCreatedNumberTarget"/> -->
 <!-- 		       	<field name="salesOrderCreatedWonTarget"/> -->
 <!-- 	        </group> -->
 <!-- 	        <group colSpan="2" cols="2"> -->
 <!-- 	        	<separator title="Real" colSpan="2"/> -->
-<!-- 	        	<field name="salesOrderAmountEarned"/> -->
+<!-- 	        	<field name="salesOrderAmountWon"/> -->
 <!-- 	        	<field name="salesOrderCreatedNumber"/> -->
 <!-- 	        	<field name="salesOrderCreatedWon"/> -->
 <!--         	</group> -->

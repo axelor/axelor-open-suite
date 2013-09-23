@@ -71,10 +71,10 @@ public class TargetService {
 			
 				Target target2 = Target.all().filter("self.userInfo = ?1 AND self.team = ?2 AND self.periodTypeSelect = ?3 AND self.fromDate >= ?4 AND self.toDate <= ?5 AND " +
 						"((self.callEmittedNumberTarget > 0 AND ?6 > 0) OR (self.meetingNumberTarget > 0 AND ?7 > 0) OR " +
-						"(self.opportunityAmountEarnedTarget > 0.00 AND ?8 > 0.00) OR (self.opportunityCreatedNumberTarget > 0 AND ?9 > 0) OR (self.opportunityCreatedWonTarget > 0 AND ?10 > 0))", 
+						"(self.opportunityAmountWonTarget > 0.00 AND ?8 > 0.00) OR (self.opportunityCreatedNumberTarget > 0 AND ?9 > 0) OR (self.opportunityCreatedWonTarget > 0 AND ?10 > 0))", 
 						targetConfiguration.getUserInfo(), targetConfiguration.getTeam(), targetConfiguration.getPeriodTypeSelect(), targetConfiguration.getFromDate(), targetConfiguration.getToDate(),
 						targetConfiguration.getCallEmittedNumber(), targetConfiguration.getMeetingNumber(),
-						targetConfiguration.getOpportunityAmountEarned().doubleValue(), targetConfiguration.getOpportunityCreatedNumber(), targetConfiguration.getOpportunityCreatedWon()).fetchOne(); 
+						targetConfiguration.getOpportunityAmountWon().doubleValue(), targetConfiguration.getOpportunityCreatedNumber(), targetConfiguration.getOpportunityCreatedWon()).fetchOne(); 
 				
 				if(target2 == null)  {
 					Target target = this.createTarget(targetConfiguration, oldDate, date.minusDays(1));
@@ -115,10 +115,10 @@ public class TargetService {
 		Target target = new Target();
 		target.setCallEmittedNumberTarget(targetConfiguration.getCallEmittedNumber());
 		target.setMeetingNumberTarget(targetConfiguration.getMeetingNumber());
-		target.setOpportunityAmountEarnedTarget(targetConfiguration.getOpportunityAmountEarned());
+		target.setOpportunityAmountWonTarget(targetConfiguration.getOpportunityAmountWon());
 		target.setOpportunityCreatedNumberTarget(target.getOpportunityCreatedNumberTarget());
 		target.setOpportunityCreatedWonTarget(target.getOpportunityCreatedWonTarget());
-//		target.setSalesOrderAmountEarnedTarget(targetConfiguration.getSalesOrderAmountEarned());
+//		target.setSalesOrderAmountWonTarget(targetConfiguration.getSalesOrderAmountWon());
 //		target.setSalesOrderCreatedNumberTarget(targetConfiguration.getSalesOrderCreatedNumber());
 //		target.setSalesOrderCreatedWonTarget(targetConfiguration.getSalesOrderCreatedWon());
 		target.setPeriodTypeSelect(targetConfiguration.getPeriodTypeSelect());
@@ -148,7 +148,7 @@ public class TargetService {
 			q.setParameter(2, fromDateTime);
 			q.setParameter(3, toDateTime);
 					
-			BigDecimal opportunityAmountEarned = (BigDecimal) q.getSingleResult();
+			BigDecimal opportunityAmountWon = (BigDecimal) q.getSingleResult();
 			
 			Long callEmittedNumber = Event.all().filter("self.typeSelect = ?1 AND self.userInfo = ?2 AND self.startDateTime >= ?3 AND self.endDateTime <= ?4 AND self.callStatusSelect = 2",
 					1, userInfo, fromDateTime, toDateTime).count();
@@ -161,7 +161,7 @@ public class TargetService {
 			target.setMeetingNumber(meetingNumber.intValue());
 			
 			
-			target.setOpportunityAmountEarned(opportunityAmountEarned);
+			target.setOpportunityAmountWon(opportunityAmountWon);
 			
 			Long opportunityCreatedNumber = Opportunity.all().filter("self.userInfo = ?1 AND self.createdOn >= ?2 AND self.createdOn <= ?3",
 					userInfo, fromDateTime, toDateTime).count();
@@ -180,7 +180,7 @@ public class TargetService {
 			q.setParameter(2, fromDateTime);
 			q.setParameter(3, toDateTime);
 					
-			BigDecimal opportunityAmountEarned = (BigDecimal) q.getResultList();
+			BigDecimal opportunityAmountWon = (BigDecimal) q.getResultList();
 			
 			Long callEmittedNumber = Event.all().filter("self.typeSelect = ?1 AND self.team = ?2 AND self.startDateTime >= ?3 AND self.endDateTime <= ?4 AND self.callStatusSelect = 2",
 					1, userInfo, fromDateTime, toDateTime).count();
@@ -193,7 +193,7 @@ public class TargetService {
 			target.setMeetingNumber(meetingNumber.intValue());
 			
 			
-			target.setOpportunityAmountEarned(opportunityAmountEarned);
+			target.setOpportunityAmountWon(opportunityAmountWon);
 			
 			Long opportunityCreatedNumber = Opportunity.all().filter("self.team = ?1 AND self.createdOn >= ?2 AND self.createdOn <= ?3",
 					userInfo, fromDateTime, toDateTime).count();
