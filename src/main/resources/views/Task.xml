@@ -83,25 +83,31 @@
 	                <field name="estimatedCost"/>
 	                <field name="estimatedMargin"/>
 	            </group>
-	            <group title="Reaslized" colSpan="4" cols="6">
+	            <group title="Realized" colSpan="4" cols="6">
 	                <field name="realizedTurnover"/>
 	                <field name="realizedCost"/>
 	                <field name="realizedMargin"/>
 	            </group>
-	            <field name="otherCostTaskProductLine" colSpan="4"/>
-	            <field name="otherRevenueTaskProductLine" colSpan="4"/>
-	            <field name="taskUpdateLineList" colSpan="4"/>
-	            <field name="generatedCharge"/>
+	            
 	        </page>
 	        <page title="Links" colSpan="4">
-	        	<portlet colSpan="4" action="action-task-view-submitted-sales-order-line"/>
-	     		<portlet colSpan="4" action="action-task-view-submitted-purchase-order-line"/>
-	     		<portlet colSpan="4" action="action-task-view-validated-sales-order-line"/>
-	     		<portlet colSpan="4" action="action-task-view-validated-purchase-order-line"/>
-	     		<portlet colSpan="4" action="action-task-view-customer-invoice-line"/>
-	     		<portlet colSpan="4" action="action-task-view-supplier-invoice-line"/>
-	     		<portlet colSpan="4" action="action-task-view-timesheet-line"/>
-	     		<portlet colSpan="4" action="action-task-view-expense-line"/>
+<!-- 	        	<field name="taskUpdateLineList" colSpan="4"/> -->
+	        	<notebook>
+	        		<page title="Initial">
+	        			<portlet colSpan="4" action="action-task-view-submitted-sales-order-line"/>
+	     				<portlet colSpan="4" action="action-task-view-submitted-purchase-order-line"/>
+	        		</page>
+	        		<page title="Estimated">
+	        			<portlet colSpan="4" action="action-task-view-validated-sales-order-line"/>
+	     				<portlet colSpan="4" action="action-task-view-validated-purchase-order-line"/>
+	        		</page>
+	        		<page title="Realized">
+	        			<portlet colSpan="4" action="action-task-view-customer-invoice-line"/>
+			     		<portlet colSpan="4" action="action-task-view-supplier-invoice-line"/>
+			     		<portlet colSpan="4" action="action-task-view-timesheet-line"/>
+			     		<portlet colSpan="4" action="action-task-view-expense-line"/>
+	        		</page>
+	        	</notebook>
 	        </page>
 	        <page title="Description" colSpan="4">
 	            <field name="description" showTitle="false" colSpan="4"/>

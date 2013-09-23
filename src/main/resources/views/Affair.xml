@@ -23,7 +23,7 @@
     	<group title="Actions" showTitle="false" colSpan="2" cols="1">
 	        <button name="createSalesOrder" title="Create quote" colSpan="1"/>
 	        <button name="generateNewInstanceOfProject" title="Generate new project instance" hideIf="!isModel" colSpan="1"/>
-	        <button name="transformToProject" title="Transform to project" showIf="isProject == true" colSpan="1"/>
+	        <button name="transformToProject" title="Transform to project" showIf="isProject == false" colSpan="1" onClick="action-affair-record-transform-in-project,save"/>
 	        <button name="createPreSalesTask" title="Create pre-sales task" colSpan="1" onClick="save,action-affair-method-create-pre-sales-task"/>
 	    </group>
 	    <group showTitle="false" colSpan="6">
@@ -31,12 +31,19 @@
         	<break/>
 	        <field name="clientPartner"/>
 	        <field name="contactPartner" domain="self.isContact = true"/>
-	       	<field name="typeDurationSelect"/>
-	        <field name="plannedDuration"/>
 	        <field name="userInfo"/>
         	<field name="solutionAttendue"/>
         	<field name="comiteEngagement"/>
         	<field name="motif" showIf="statusTypeSelect == 4"/>
+        	<group title="Times" colSpan="6" cols="6">
+        		<field name="totalTime"/>
+        		<field name="unit"/>  
+        		<spacer colSpan="2"/>
+        		<separator colSpan="6"/>
+	            <field name="plannedTime"/>
+	            <field name="spentTime"/>
+	            <field name="remainingTime"/>
+	        </group>
 	        <group title="Description" colSpan="6">
             	<field name="description" showTitle="false" widget="Html[lite=true]"/>
         	</group>
@@ -63,28 +70,20 @@
 	        <page title="Financial information" colSpan="4">
 	        	<field name="exportTypeSelect"/>
                 <button name="printProject" colSpan="2" title="Voir rapport estimations" onClick="action-print-project-report" icon="img/icons/print.png"/>
+	            <group title="Initial" colSpan="4" cols="6">
+	                <field name="initialTurnover"/>
+	                <field name="initialCost"/>
+	                <field name="initialMargin"/>
+	            </group>
 	            <group title="Estimated" colSpan="4" cols="6">
 	                <field name="estimatedTurnover"/>
 	                <field name="estimatedCost"/>
 	                <field name="estimatedMargin"/>
 	            </group>
-	            <group title="Confirmed" colSpan="4" cols="6">
-	                <field name="confirmedTurnover"/>
-	                <field name="confirmedCost"/>
-	                <field name="confirmedMargin"/>
-	            </group>
 	            <group title="Reaslized" colSpan="4" cols="6">
 	                <field name="realizedTurnover"/>
 	                <field name="realizedCost"/>
 	                <field name="realizedMargin"/>
-	            </group>
-	            <group colSpan="6" cols="6">
-	                <field name="plannedTime"/>
-	                <field name="spentTime"/>
-	                <field name="remainingTime"/>
-	                <field name="budgetedExpenses"/>
-	                <field name="incurredExpenses"/>
-	                <field name="remainingExpenses"/>
 	            </group>
 	        </page>
 	        <page title="Membres" colSpan="4">
@@ -109,15 +108,15 @@
                 	<field name="icUserInfo" colSpan="2"/>
                 	<field name="source" colSpan="2"/>
                 	<group colSpan="4" title="Agenda">
-                    	<field name="agenda" showTitle="false" widget="html"/>
+                    	<field name="agenda" showTitle="false" widget="Html[lite=true]"/>
                 	</group>
                 	<group colSpan="4" title="Critères d'évaluation de l'offre">
-                    	<field name="critEvalOffre" showTitle="false" widget="html"/>
+                    	<field name="critEvalOffre" showTitle="false" widget="Html[lite=true]"/>
                 	</group>
            		</group>
             	<group colSpan="4">
             		<group colSpan="4" title="Descriptif">
-                		<field name="descriptif" showTitle="false" widget="html"/>
+                		<field name="descriptif" showTitle="false" widget="Html[lite=true]"/>
                 	</group>
             	</group>
 	        </page>
@@ -148,13 +147,13 @@
             	</group>
             	<group colSpan="4">
                 	<group colSpan="4" title="Qualification du dossier">
-                    	<field name="qualifDossier" showTitle="false" widget="html"/>
+                    	<field name="qualifDossier" showTitle="false" widget="Html[lite=true]"/>
                 	</group>
                 	<group colSpan="4" title="Point IMPORTANTS">
-                    	<field name="pointImportant" showTitle="false" widget="html"/>
+                    	<field name="pointImportant" showTitle="false" widget="Html[lite=true]"/>
                 	</group>
                 	<group colSpan="4" title="Analyse : Note / 20">
-                   		<field name="analyseNote" showTitle="false" widget="html"/>
+                   		<field name="analyseNote" showTitle="false" widget="Html[lite=true]"/>
                 	</group>
                 	<field name="conclusionAvtVenteTypeSelect" widget="RadioSelect[direction=vertical]"/>
             	</group>
@@ -187,22 +186,22 @@
             	</group>
             	<group colSpan="4">
                 	<group colSpan="4" title="Positionnement de notre CDS sur cette affaire">
-                    	<field name="positionnementCDS" showTitle="false" widget="html"/>
+                    	<field name="positionnementCDS" showTitle="false" widget="Html[lite=true]"/>
                 	</group>
                 	<group colSpan="4" title="Point Marquant du dossier / VA-VAPA">
-                    	<field name="pointMarquantDossier" showTitle="false" widget="html"/>
+                    	<field name="pointMarquantDossier" showTitle="false" widget="Html[lite=true]"/>
                 	</group>
                 	<group colSpan="4" title="Analyse des Risques / Solutions">
-                   		<field name="analyseRisquesSolutions" showTitle="false" widget="html"/>
+                   		<field name="analyseRisquesSolutions" showTitle="false" widget="Html[lite=true]"/>
                 	</group>
                 	<group colSpan="4" title="AVIS DE LA DIRECTION TECHNIQUE / CDS CIBLE">
-                   		<field name="avisDirectionTechnique" showTitle="false" widget="html"/>
+                   		<field name="avisDirectionTechnique" showTitle="false" widget="Html[lite=true]"/>
                 	</group>
             	</group>
 	        </page>
 	        <page title="GO/NOGO" cols="6" colSpan="6">
-            	<field name="goNoGoTypeSelect" colSpan="6"/>
-            	<field name="todayDate" colSpan="6"/>
+            	<field name="goNoGoTypeSelect" colSpan="3"/>
+            	<field name="todayDate" colSpan="3"/>
             	<group title="Responsables" cols="3" colSpan="3">
                 	<field name="dirTechniqueUserInfo" colSpan="3"/>
                 	<field name="dirCommercialeserInfo" colSpan="3"/>
@@ -230,7 +229,7 @@
 	        	</group>
 	        	<group colSpan="4">
 	        		<group colSpan="4" title="Description du projet">
-	        			<field name="descriptionProjet" showTitle="false" widget="html"/>
+	        			<field name="descriptionProjet" showTitle="false" widget="Html[lite=true]"/>
 	        		</group>
 	        		<field name="offerLineList" colSpan="4"/>
 	        	</group>
@@ -242,6 +241,10 @@
 		<field name="isTimeSheetImputable" expr="true"/>
 		<field name="isAffair" expr="true"/>
     	<field name="exportTypeSelect" expr="eval: pdf"/>
+	</action-record>
+	
+	<action-record name="action-affair-record-transform-in-project" model="com.axelor.apps.organisation.db.Project">
+		<field name="isProject" expr="true"/>
 	</action-record>
 			
 	<action-method name="action-affair-method-create-pre-sales-task">

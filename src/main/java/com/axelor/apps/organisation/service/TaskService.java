@@ -145,39 +145,7 @@ public class TaskService {
 				
 		BigDecimal purchaseOrderEstimatedCost = (BigDecimal) q.getSingleResult();
 		
-		BigDecimal salesOrderEstimatedCost = BigDecimal.ZERO;
-		
-		if(task.getPlanningLineList() != null && !task.getPlanningLineList().isEmpty())  {
-			for(PlanningLine planningLine : task.getPlanningLineList())  {
-				Employee employee = planningLine.getEmployee();
-				Product profil = planningLine.getProduct();
-				if(employee != null)  {
-					salesOrderEstimatedCost = salesOrderEstimatedCost.
-							add(employee.getDailySalaryCost().
-									multiply(unitConversionService.
-											convert(
-													planningLine.getUnit(), 
-													Unit.all().filter("self.code = 'JR'").fetchOne(), 
-													planningLine.getDuration())));
-				}
-				else if(profil != null)  {
-					salesOrderEstimatedCost = salesOrderEstimatedCost.
-							add(profil.getCostPrice().
-									multiply(unitConversionService.
-											convert(
-													planningLine.getUnit(), 
-													profil.getUnit(), 
-													planningLine.getDuration())));
-				}
-			}
-		}
-		else  {
-			q = JPA.em().createQuery("select SUM(sol.product.costPrice * sol.qty) FROM SalesOrderLine as sol WHERE sol.task = ?1 AND sol.salesOrder.statusSelect = 3");
-			q.setParameter(1, task);
-					
-			salesOrderEstimatedCost = (BigDecimal) q.getSingleResult();
-		}
-		
+		BigDecimal salesOrderEstimatedCost = this.getSalesOrderEstimatedCost(task);
 		
 		BigDecimal estimatedCost = BigDecimal.ZERO;
 		if(purchaseOrderEstimatedCost != null)  {
@@ -198,6 +166,53 @@ public class TaskService {
 		task.setEstimatedTurnover(estimatedTurnover);
 		task.setEstimatedCost(estimatedCost);
 		task.setEstimatedMargin(estimatedMargin);
+	}
+	
+	
+	public BigDecimal getSalesOrderEstimatedCost(Task task) throws AxelorException  {
+		BigDecimal salesOrderEstimatedCost = BigDecimal.ZERO;
+		
+		if(task.getPlanningLineList() != null && !task.getPlanningLineList().isEmpty())  {
+			salesOrderEstimatedCost = this.getPlanningLinesAmount(task);
+		}
+		else  {
+			Query q = JPA.em().createQuery("select SUM(sol.product.costPrice * sol.qty) FROM SalesOrderLine as sol WHERE sol.task = ?1 AND sol.salesOrder.statusSelect = 3");
+			q.setParameter(1, task);
+					
+			salesOrderEstimatedCost = (BigDecimal) q.getSingleResult();
+		}
+		
+		return salesOrderEstimatedCost;
+	}
+	
+	
+	public BigDecimal getPlanningLinesAmount(Task task) throws AxelorException  {
+		BigDecimal planningLineAmount = BigDecimal.ZERO;
+		
+		for(PlanningLine planningLine : task.getPlanningLineList())  {
+			Employee employee = planningLine.getEmployee();
+			Product profil = planningLine.getProduct();
+			if(employee != null)  {
+				planningLineAmount = planningLineAmount.
+						add(employee.getDailySalaryCost().
+								multiply(unitConversionService.
+										convert(
+												planningLine.getUnit(), 
+												Unit.all().filter("self.code = 'JR'").fetchOne(), 
+												planningLine.getDuration())));
+			}
+			else if(profil != null)  {
+				planningLineAmount = planningLineAmount.
+						add(profil.getCostPrice().
+								multiply(unitConversionService.
+										convert(
+												planningLine.getUnit(), 
+												profil.getUnit(), 
+												planningLine.getDuration())));
+			}
+		}
+		
+		return planningLineAmount;
 	}
 	
 	

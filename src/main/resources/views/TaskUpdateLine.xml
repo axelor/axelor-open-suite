@@ -6,17 +6,27 @@
     <grid name="task-update-line-grid" title="Les mises à jours des coûts" model="com.axelor.apps.organisation.db.TaskUpdateLine">
         <field name="date"/>
         <field name="userInfo"/>
-        <field name="revenue"/>
-        <field name="cost"/>
+        <field name="product"/>
+        <field name="amount"/>
+        <field name="typeSelect"/>
+        <field name="applicationSelect"/>
+        <field name="description"/>
     </grid>
     
-    <form name="task-update-line-form" title="Mise à jour des coût" model="com.axelor.apps.organisation.db.TaskUpdateLine" cols="4" >
+    <form name="task-update-line-form" title="Mise à jour des coût" model="com.axelor.apps.organisation.db.TaskUpdateLine" cols="4" 
+    onNew="action-task-update-line-record-default">
         <field name="date"/>
         <field name="userInfo"/>
-        <field name="revenue"/>
-        <field name="cost"/>
-        <button name="update" title="Add"/>
+        <field name="product"/>
+        <field name="amount"/>
+        <field name="typeSelect"/>
+        <field name="applicationSelect"/>
+        <field name="description"/>
     </form>
     
+    <action-record name="action-task-update-line-record-default" model="com.axelor.apps.organisation.db.TaskUpdateLine">
+    	<field name="date" expr="eval: __date__"/>
+    	<field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+    </action-record>
     
 </object-views>

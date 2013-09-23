@@ -37,6 +37,7 @@ import com.axelor.apps.AxelorSettings;
 import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.organisation.service.ProjectService;
 import com.axelor.apps.tool.net.URLService;
+import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -50,8 +51,9 @@ public class ProjectController {
 		
 		Project project = request.getContext().asType(Project.class);
 		
-		if(project != null) {			
+		if(project != null && project.getDefaultTask() != null) {			
 			projectService.createDefaultTask(project);
+			response.setReload(true);
 		}
 	}
 	
@@ -60,23 +62,25 @@ public class ProjectController {
 		Project affair = request.getContext().asType(Project.class);
 		
 		if(affair != null) {			
-			projectService.createPreSalesTask(affair);
+			if(projectService.createPreSalesTask(affair) != null)  {
+				response.setReload(true);
+			}
 		}
 	}
 	
-	public void updateFinancialInformation(ActionRequest request, ActionResponse response) {
+	public void updateFinancialInformation(ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		Project project = request.getContext().asType(Project.class);
 		
 		if(project.getId() != null)  {
 			projectService.updateFinancialInformation(project);
 			
+			response.setValue("initialTurnover", project.getInitialTurnover());
+			response.setValue("initialCost", project.getInitialCost());
+			response.setValue("initialMargin", project.getInitialMargin());
 			response.setValue("estimatedTurnover", project.getEstimatedTurnover());
 			response.setValue("estimatedCost", project.getEstimatedCost());
 			response.setValue("estimatedMargin", project.getEstimatedMargin());
-			response.setValue("confirmedTurnover", project.getConfirmedTurnover());
-			response.setValue("confirmedCost", project.getConfirmedCost());
-			response.setValue("confirmedMargin", project.getConfirmedMargin());
 			response.setValue("realizedTurnover", project.getRealizedTurnover());
 			response.setValue("realizedCost", project.getRealizedCost());
 			response.setValue("realizedMargin", project.getRealizedMargin());
