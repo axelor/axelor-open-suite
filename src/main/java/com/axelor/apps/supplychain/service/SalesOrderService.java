@@ -249,13 +249,13 @@ public class SalesOrderService {
 		if(sameUnit) {
 			/* Set the unit to the task by taking the unit of the first element of the planning line list */
 			if(planningLineList.get(0) != null) {
-				task.setTotalTaskUnit(planningLineList.get(0).getUnit());
+				task.setUnit(planningLineList.get(0).getUnit());
 			}
-			task.setTotalTaskQty(sum);
+			task.setTotalTask(sum);
 		}
 		else {
-			task.setTotalTaskQty(sum);
-			task.setTotalTaskUnit(projectUnit);
+			task.setTotalTask(sum);
+			task.setUnit(projectUnit);
 		}
 		task.setEndDateT(laterDate);
 	}
@@ -299,8 +299,8 @@ public class SalesOrderService {
 						setUnitPlanningLineList(salesOrderLine.getTask().getPlanningLineList(), task);
 					}
 					else {
-						task.setTotalTaskQty(salesOrderLine.getQty());
-						task.setTotalTaskUnit(salesOrderLine.getUnit());
+						task.setTotalTask(salesOrderLine.getQty());
+						task.setUnit(salesOrderLine.getUnit());
 					}
 
 					/* If the subline list of the salesOrderLine is not empty */

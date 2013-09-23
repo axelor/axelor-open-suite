@@ -53,7 +53,6 @@ import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.googleapps.document.DocumentService;
 import com.axelor.googleapps.userutils.Utils;
-import com.axelor.meta.db.MetaUser;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
