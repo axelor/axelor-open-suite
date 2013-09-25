@@ -22,7 +22,7 @@
     	<field name="toDate"/>
     	<field name="year"/>    
     	<field name="company" widget="SuggestBox"/>
-    	<separator/>
+    	<separator colSpan="4"/>
     	<group colSpan="4" cols="4">
         	<group colSpan="2" cols="2">
             	<button name="close" title="Close period" colSpan="2" onClick="action-period-record-close,action-period-attrs-button,save"/>

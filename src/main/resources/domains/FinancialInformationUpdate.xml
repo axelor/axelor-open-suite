@@ -5,7 +5,7 @@
 
   <module name="organisation" package="com.axelor.apps.organisation.db"/>
 
-  <entity name="TaskUpdateLine" lang="java">
+  <entity name="FinancialInformationUpdate" lang="java">
   	
   	<many-to-one name="task" ref="com.axelor.apps.organisation.db.Task" title="Task"/>
   	<date name="date" title="Date" readonly="true"/>

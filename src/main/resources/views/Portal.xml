@@ -105,7 +105,6 @@
 	    <portlet action="portal.opportunities.won.by.leadsource" height="350"/>
 	    <portlet action="portal.opportunities.won.by.salesman" height="350"/>
 	    <portlet title="Opportunities By Origin By Stage" action="chart:chart.opportunities.by.origin.by.stage" height="350"/>
-	    <portlet title="Customers by country" action="chart:chart.customers.by.country" height="350"/>
 	 </portal>
   	
   	

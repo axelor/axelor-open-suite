@@ -9,7 +9,7 @@
   
   	<many-to-one name="salesOrderLine" ref="com.axelor.apps.supplychain.db.SalesOrderLine" title="Sale order line (origin)"/>
   	<string name="name" title="Task name"/>
-  	<many-to-one name="project" ref="com.axelor.apps.organisation.db.Project" title="Project"/>
+  	<many-to-one name="project" ref="com.axelor.apps.organisation.db.Project" title="Project" required="true"/>
   	<many-to-one name="unit" title="Unit" ref="com.axelor.apps.base.db.Unit"/>
   	<decimal name="totalTime" title="Total time"/>
   	<decimal name="plannedTime" title="Planned time" readonly="true"/>
@@ -49,7 +49,7 @@
   	<decimal name="realizedMargin" title="Margin" readonly="true"/>
   	
   	
-  	<one-to-many name="taskUpdateLineList" ref="com.axelor.apps.organisation.db.TaskUpdateLine" title="Task update lines"/>
+  	<one-to-many name="financialInformationUpdateList" ref="com.axelor.apps.organisation.db.FinancialInformationUpdate" mappedBy="task" title="Financial information updates"/>
   	
   	<!--   	Onglet facturation -->
   	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>

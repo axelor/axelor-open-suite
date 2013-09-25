@@ -3090,7 +3090,6 @@
 "supplychain.purchase.order.invoicing.type.select","3","select","Per order","","","",""
 "title.type.select","1","select","Civility","","","",""
 "title.type.select","2","select","Legal form","","","",""
-"","","chart","Purchases orders per family product over six month","","","",""
 "chart.planned.qty.by.location","chart.planned.qty.by.location","chart","Stock prévisionnel","","","",""
 "chart.purchase.buyer.dashboard.family.product.purchase.turnover","chart.purchase.buyer.dashboard.family.product.purchase.turnover","chart","My purchases orders per product family over past month","","","",""
 "chart.purchase.buyer.dashboard.family.product.purchase.volume","chart.purchase.buyer.dashboard.family.product.purchase.volume","chart","My purchases orders per product family over past month in volume","","","",""

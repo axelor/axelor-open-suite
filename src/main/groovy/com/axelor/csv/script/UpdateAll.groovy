@@ -47,14 +47,14 @@ class UpdateAll {
 			try {
 				assert bean instanceof Company
 				Company company = (Company) bean
-				def general = General.all().fetchOne()
+				General general = General.all().fetchOne()
 				company.administration = general
-				def periods = Period.all().filter("self.company.code = ?1",company.code)
-				def opeStatus = Status.all().filter("self.code = 'ope'").fetchOne()
-				if(periods.fetch().empty) {
-					for(year in Year.all().filter("self.company.code = ?1",company.code).fetch()) {
+				List<Period> periods = Period.all().filter("self.company.id = ?1",company.id).fetch()
+				Status opeStatus = Status.all().filter("self.code = 'ope'").fetchOne()
+				if(periods == null || periods.empty) {
+					for(year in Year.all().filter("self.company.id = ?1",company.id).fetch()) {
 						for(month in 1..12) {
-							def period = new Period()
+							Period period = new Period()
 							LocalDate dt = new LocalDate(year.code.split('_')[0].toInteger(),month,1)
 							period.toDate = dt.dayOfMonth().withMaximumValue()
 							period.fromDate = dt.dayOfMonth().withMinimumValue()
