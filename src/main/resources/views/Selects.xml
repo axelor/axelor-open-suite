@@ -355,4 +355,16 @@
 	</selection>
 	
 	
+	<selection name="organisation.task.update.line.type.select">
+		<option value="1">Revenue</option>
+		<option value="2">Cost</option>
+	</selection>
+	
+	<selection name="organisation.task.update.line.application.select">
+		<option value="1">Initial</option>
+		<option value="2">Estimated</option>
+		<option value="3">Realized</option>
+	</selection>
+	
+	
 </object-views>

@@ -86,6 +86,27 @@
 	                <field name="realizedMargin"/>
 	            </group>
 	        </page>
+	        <page title="Links" colSpan="4">
+	        	<notebook>
+	        		<page title="Initial">
+	        			<portlet colSpan="4" action="action-project-view-submitted-sales-order-line"/>
+	     				<portlet colSpan="4" action="action-project-view-submitted-purchase-order-line"/>
+	     				<portlet colSpan="4" action="action-project-view-initial-financial-information-update"/>
+	        		</page>
+	        		<page title="Estimated">
+	        			<portlet colSpan="4" action="action-project-view-validated-sales-order-line"/>
+	     				<portlet colSpan="4" action="action-project-view-validated-purchase-order-line"/>
+	     				<portlet colSpan="4" action="action-project-view-estimated-financial-information-update"/>
+	        		</page>
+	        		<page title="Realized">
+	        			<portlet colSpan="4" action="action-project-view-customer-invoice-line"/>
+			     		<portlet colSpan="4" action="action-project-view-supplier-invoice-line"/>
+			     		<portlet colSpan="4" action="action-project-view-timesheet-line"/>
+			     		<portlet colSpan="4" action="action-project-view-expense-line"/>
+			     		<portlet colSpan="4" action="action-project-view-realized-financial-information-update"/>
+	        		</page>
+	        	</notebook>
+	        </page>
 	        <page title="Membres" colSpan="4">
 	            <field name="memberUserInfoSet" colSpan="6"/>
 	        </page>
@@ -262,5 +283,82 @@
 	<action-method name="action-project-method-update-financial-information">
 		<call class="com.axelor.apps.organisation.web.ProjectController" method="updateFinancialInformation"/>
 	</action-method>
+	
+	<action-view name="action-project-view-submitted-sales-order-line" title="Submitted customer order lines" model="com.axelor.apps.supplychain.db.SalesOrderLine">
+  		<view type="grid" name="sales-order-line-grid"/>
+		<view type="form" name="sales-order-line-form"/>
+  		<domain>self.salesOrder.statusSelect = 2 and self.salesOrder.affairProject.id = :id</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
+  	<action-view name="action-project-view-submitted-purchase-order-line" title="Submitted supplier order lines" model="com.axelor.apps.supplychain.db.PurchaseOrderLine">
+  		<view type="grid" name="purchase-order-line-grid"/>
+		<view type="form" name="purchase-order-line-form"/>
+  		<domain>self.purchaseOrder.statusSelect = 2 and self.purchaseOrder.affairProject.id = :id</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
+  	<action-view name="action-project-view-initial-financial-information-update" title="Financial information updates" model="com.axelor.apps.organisation.db.FinancialInformationUpdate">
+  		<view type="grid" name="financial-information-update-grid"/>
+		<view type="form" name="financial-information-update-form"/>
+  		<domain>self.applicationSelect = 1 and self.project.id = :id</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
+  	<action-view name="action-project-view-validated-sales-order-line" title="Validated Customer order lines" model="com.axelor.apps.supplychain.db.SalesOrderLine">
+  		<view type="grid" name="sales-order-line-grid"/>
+		<view type="form" name="sales-order-line-form"/>
+  		<domain>self.salesOrder.statusSelect = 3 and self.salesOrder.affairProject.id = :id</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
+  	<action-view name="action-project-view-validated-purchase-order-line" title="Validated supplier order lines" model="com.axelor.apps.supplychain.db.PurchaseOrderLine">
+  		<view type="grid" name="purchase-order-line-grid"/>
+		<view type="form" name="purchase-order-line-form"/>
+  		<domain>self.purchaseOrder.statusSelect = 3 and self.purchaseOrder.affairProject.id = :id</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
+  	<action-view name="action-project-view-estimated-financial-information-update" title="Financial information updates" model="com.axelor.apps.organisation.db.FinancialInformationUpdate">
+  		<view type="grid" name="financial-information-update-grid"/>
+		<view type="form" name="financial-information-update-form"/>
+  		<domain>self.applicationSelect = 2 and self.project.id = :id</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
+  	<action-view name="action-project-view-customer-invoice-line" title="Customer invoice lines" model="com.axelor.apps.account.db.InvoiceLine">
+  		<view type="grid" name="invoice-line-grid"/>
+		<view type="form" name="invoice-line-form"/>
+  		<domain>self.invoice.status.code = 'dis' and self.invoice.project.id = :id and (self.invoice.operationTypeSelect = 3 or self.invoice.operationTypeSelect = 4)</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
+  	<action-view name="action-project-view-supplier-invoice-line" title="Supplier invoice lines" model="com.axelor.apps.account.db.InvoiceLine">
+  		<view type="grid" name="invoice-line-grid"/>
+		<view type="form" name="invoice-line-form"/>
+  		<domain>self.invoice.status.code = 'dis' and self.invoice.project.id = :id and (self.invoice.operationTypeSelect = 1 or self.invoice.operationTypeSelect = 2)</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
+  	<action-view name="action-project-view-timesheet-line" title="Timesheet lines" model="com.axelor.apps.organisation.db.TimesheetLine">
+  		<view type="grid" name="timesheet-line-employee-grid"/>
+		<view type="form" name="timesheet-line-employee-form"/>
+  		<domain>self.timesheet.statusSelect = 3 and self.project.id = :id</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
+  	<action-view name="action-project-view-expense-line" title="Travel expense lines" model="com.axelor.apps.organisation.db.ExpenseLine">
+  		<view type="grid" name="expense-line-grid"/>
+		<view type="form" name="expense-line-form"/>
+  		<domain>self.expense.statusSelect = 3 and self.expense.project.id = :id</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
+  	<action-view name="action-project-view-realized-financial-information-update" title="Financial information updates" model="com.axelor.apps.organisation.db.FinancialInformationUpdate">
+  		<view type="grid" name="financial-information-update-grid"/>
+		<view type="form" name="financial-information-update-form"/>
+  		<domain>self.applicationSelect = 3 and self.project.id = :id</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
 		
 </object-views>

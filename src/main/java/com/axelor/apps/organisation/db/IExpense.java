@@ -31,9 +31,7 @@
 package com.axelor.apps.organisation.db;
 
 /**
- * Interface of Expense package. Enum all static variable of packages.
- * 
- * @author nguyen
+ * Interface of Expense object. Enum all static variable of object.
  * 
  */
 public interface IExpense {

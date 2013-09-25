@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    <grid name="task-update-line-grid" title="Les mises à jours des coûts" model="com.axelor.apps.organisation.db.TaskUpdateLine">
+    <grid name="financial-information-update-grid" title="Les mises à jours des informations financières" model="com.axelor.apps.organisation.db.FinancialInformationUpdate">
         <field name="date"/>
         <field name="userInfo"/>
         <field name="product"/>
@@ -13,8 +13,9 @@
         <field name="description"/>
     </grid>
     
-    <form name="task-update-line-form" title="Mise à jour des coût" model="com.axelor.apps.organisation.db.TaskUpdateLine" cols="4" 
-    onNew="action-task-update-line-record-default">
+    <form name="financial-information-update-form" title="Mise à jour des informations financières" model="com.axelor.apps.organisation.db.FinancialInformationUpdate" cols="4" 
+    onNew="action-financial-information-update-record-default" 
+    onSave="action-financial-information-update-record-project">
         <field name="date"/>
         <field name="userInfo"/>
         <field name="product"/>
@@ -24,7 +25,7 @@
         <field name="description"/>
     </form>
     
-    <action-record name="action-task-update-line-record-default" model="com.axelor.apps.organisation.db.TaskUpdateLine">
+    <action-record name="action-financial-information-update-record-default" model="com.axelor.apps.organisation.db.FinancialInformationUpdate">
     	<field name="date" expr="eval: __date__"/>
     	<field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
     </action-record>

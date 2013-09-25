@@ -34,6 +34,7 @@ import java.math.BigDecimal;
 
 import javax.persistence.Query;
 
+import com.axelor.apps.organisation.db.ITaskUpdateLine;
 import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.organisation.db.Task;
 import com.axelor.db.JPA;
@@ -93,10 +94,25 @@ public class ProjectService {
 	
 	public void updateInitialAmount(Project project)  {
 		
+		/**  REVENUE  **/
+		
 		Query q = JPA.em().createQuery("select SUM(sol.exTaxTotal) FROM SalesOrderLine as sol WHERE sol.salesOrder.affairProject = ?1 AND sol.salesOrder.statusSelect = 2");
 		q.setParameter(1, project);
 				
-		BigDecimal initialTurnover = (BigDecimal) q.getSingleResult();
+		BigDecimal salesOrderLineInitialTurnover = (BigDecimal) q.getSingleResult();
+		
+		BigDecimal financialInformationUpdateInitialTurnover = this.getFinancialInformationUpdateAmount(project, ITaskUpdateLine.TYPE_REVENUE, ITaskUpdateLine.APPLICATION_INITIAL);
+		
+		BigDecimal initialTurnover = BigDecimal.ZERO;
+		if(salesOrderLineInitialTurnover != null)  {
+			initialTurnover = initialTurnover.add(salesOrderLineInitialTurnover);
+		}
+		if(financialInformationUpdateInitialTurnover != null)  {
+			initialTurnover = initialTurnover.add(financialInformationUpdateInitialTurnover);
+		}
+		
+		
+		/**  COST  **/
 		
 		q = JPA.em().createQuery("select SUM(pol.exTaxTotal) FROM PurchaseOrderLine as pol WHERE pol.purchaseOrder.affairProject = ?1 AND pol.purchaseOrder.statusSelect = 2");
 		q.setParameter(1, project);
@@ -108,6 +124,8 @@ public class ProjectService {
 				
 		BigDecimal salesOrderInitialCost = (BigDecimal) q.getSingleResult();
 		
+		BigDecimal financialInformationUpdateInitialCost = this.getFinancialInformationUpdateAmount(project, ITaskUpdateLine.TYPE_COST, ITaskUpdateLine.APPLICATION_INITIAL);
+		
 		BigDecimal initialCost = BigDecimal.ZERO;
 		if(purchaseOrderInitialCost != null)  {
 			initialCost = initialCost.add(purchaseOrderInitialCost);
@@ -115,6 +133,12 @@ public class ProjectService {
 		if(salesOrderInitialCost != null)  {
 			initialCost = initialCost.add(salesOrderInitialCost);
 		}
+		if(financialInformationUpdateInitialCost != null)  {
+			initialCost = initialCost.add(financialInformationUpdateInitialCost);
+		}
+		
+		
+		/**  MARGIN  **/
 		
 		BigDecimal initialMargin = BigDecimal.ZERO;
 		if(initialTurnover != null)  {
@@ -132,10 +156,25 @@ public class ProjectService {
 	
 	public void updateEstimatedAmount(Project project) throws AxelorException  {
 		
+		/**  REVENUE  **/
+		
 		Query q = JPA.em().createQuery("select SUM(sol.exTaxTotal) FROM SalesOrderLine as sol WHERE sol.salesOrder.affairProject = ?1 AND sol.salesOrder.statusSelect = 3");
 		q.setParameter(1, project);
 				
-		BigDecimal estimatedTurnover = (BigDecimal) q.getSingleResult();
+		BigDecimal salesOrderLineEstimatedTurnover = (BigDecimal) q.getSingleResult();
+		
+		BigDecimal financialInformationUpdateEstimatedTurnover = this.getFinancialInformationUpdateAmount(project, ITaskUpdateLine.TYPE_REVENUE, ITaskUpdateLine.APPLICATION_ESTIMATED);
+		
+		BigDecimal estimatedTurnover = BigDecimal.ZERO;
+		if(salesOrderLineEstimatedTurnover != null)  {
+			estimatedTurnover = estimatedTurnover.add(salesOrderLineEstimatedTurnover);
+		}
+		if(financialInformationUpdateEstimatedTurnover != null)  {
+			estimatedTurnover = estimatedTurnover.add(financialInformationUpdateEstimatedTurnover);
+		}
+			
+		
+		/**  COST  **/
 		
 		q = JPA.em().createQuery("select SUM(pol.exTaxTotal) FROM PurchaseOrderLine as pol WHERE pol.purchaseOrder.affairProject = ?1 AND pol.purchaseOrder.statusSelect = 3");
 		q.setParameter(1, project);
@@ -144,6 +183,8 @@ public class ProjectService {
 
 		BigDecimal salesOrderEstimatedCost = this.getSalesOrderEstimatedCost(project);
 		
+		BigDecimal financialInformationUpdateEstimatedCost = this.getFinancialInformationUpdateAmount(project, ITaskUpdateLine.TYPE_COST, ITaskUpdateLine.APPLICATION_ESTIMATED);
+		
 		BigDecimal estimatedCost = BigDecimal.ZERO;
 		if(purchaseOrderEstimatedCost != null)  {
 			estimatedCost = estimatedCost.add(purchaseOrderEstimatedCost);
@@ -151,6 +192,12 @@ public class ProjectService {
 		if(salesOrderEstimatedCost != null)  {
 			estimatedCost = estimatedCost.add(salesOrderEstimatedCost);
 		}
+		if(financialInformationUpdateEstimatedCost != null)  {
+			estimatedCost = estimatedCost.add(financialInformationUpdateEstimatedCost);
+		}
+		
+		
+		/**  MARGIN  **/
 		
 		BigDecimal estimatedMargin = BigDecimal.ZERO;
 		if(estimatedTurnover != null)  {
@@ -166,26 +213,27 @@ public class ProjectService {
 	}
 	
 	
-	public BigDecimal getSalesOrderEstimatedCost(Project project) throws AxelorException  {
-		
-		BigDecimal salesOrderConfirmedCost = BigDecimal.ZERO;
-		
-		if(project.getTaskList() != null)  {
-			for(Task task : project.getTaskList())   {
-				salesOrderConfirmedCost = salesOrderConfirmedCost.add(taskService.getPlanningLinesAmount(task));
-			}
-		}
-		
-		return salesOrderConfirmedCost;
-	}
-	
-	
 	public void updateRealizedAmount(Project project)  {
+		
+		/**  REVENUE  **/
 		
 		Query q = JPA.em().createQuery("select SUM(il.exTaxTotal) FROM InvoiceLine as il WHERE il.invoice.project = ?1 AND il.invoice.status.code = 'dis' AND (il.invoice.operationTypeSelect = 3 OR il.invoice.operationTypeSelect = 4)");
 		q.setParameter(1, project);
 				
-		BigDecimal realizedTurnover = (BigDecimal) q.getSingleResult();
+		BigDecimal invoiceLineRealizedTurnover = (BigDecimal) q.getSingleResult();
+		
+		BigDecimal financialInformationUpdateRealizedTurnover = this.getFinancialInformationUpdateAmount(project, ITaskUpdateLine.TYPE_REVENUE, ITaskUpdateLine.APPLICATION_REALIZED);
+		
+		BigDecimal realizedTurnover = BigDecimal.ZERO;
+		if(invoiceLineRealizedTurnover != null)  {
+			realizedTurnover = realizedTurnover.add(invoiceLineRealizedTurnover);
+		}
+		if(financialInformationUpdateRealizedTurnover != null)  {
+			realizedTurnover = realizedTurnover.add(financialInformationUpdateRealizedTurnover);
+		}
+		
+		
+		/**  COST  **/
 		
 		q = JPA.em().createQuery("select SUM(il.exTaxTotal) FROM InvoiceLine as il WHERE il.invoice.project = ?1 AND il.invoice.status.code = 'dis' AND (il.invoice.operationTypeSelect = 1 OR il.invoice.operationTypeSelect = 2)");
 		q.setParameter(1, project);
@@ -209,6 +257,7 @@ public class ProjectService {
 				
 		BigDecimal expenseLineRealizedCost = (BigDecimal) q.getSingleResult();
 		
+		BigDecimal financialInformationUpdateRealizedCost = this.getFinancialInformationUpdateAmount(project, ITaskUpdateLine.TYPE_COST, ITaskUpdateLine.APPLICATION_REALIZED);
 		
 		BigDecimal realizedCost = BigDecimal.ZERO;
 		if(supplierInvoiceLineRealizedCost != null)  {
@@ -223,6 +272,12 @@ public class ProjectService {
 		if(expenseLineRealizedCost != null)  {
 			realizedCost = realizedCost.add(expenseLineRealizedCost);
 		}
+		if(financialInformationUpdateRealizedCost != null)  {
+			realizedCost = realizedCost.add(financialInformationUpdateRealizedCost);
+		}
+		
+		
+		/**  MARGIN  **/
 		
 		BigDecimal realizedMargin = BigDecimal.ZERO;
 		if(realizedTurnover != null)  {
@@ -235,5 +290,32 @@ public class ProjectService {
 		project.setRealizedTurnover(realizedTurnover);
 		project.setRealizedCost(realizedCost);
 		project.setRealizedMargin(realizedMargin);
+	}
+	
+	
+	public BigDecimal getSalesOrderEstimatedCost(Project project) throws AxelorException  {
+		
+		BigDecimal salesOrderConfirmedCost = BigDecimal.ZERO;
+		
+		if(project.getTaskList() != null)  {
+			for(Task task : project.getTaskList())   {
+				salesOrderConfirmedCost = salesOrderConfirmedCost.add(taskService.getPlanningLinesAmount(task));
+			}
+		}
+		
+		return salesOrderConfirmedCost;
+	}
+
+	
+	public BigDecimal getFinancialInformationUpdateAmount(Project project, int typeSelect, int applicationSelect )  {
+		
+		Query q = JPA.em().
+				createQuery("select SUM(fiu.amount) FROM FinancialInformationUpdate as fiu WHERE fiu.project = ?1 AND fiu.typeSelect = ?2 AND fiu.applicationSelect = ?3");
+		q.setParameter(1, project);
+		q.setParameter(2, typeSelect);
+		q.setParameter(3, applicationSelect);
+				
+		return (BigDecimal) q.getSingleResult();
+		
 	}
 }

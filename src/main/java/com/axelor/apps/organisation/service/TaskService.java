@@ -40,6 +40,7 @@ import com.axelor.apps.base.db.SpentTime;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.organisation.db.Employee;
+import com.axelor.apps.organisation.db.ITaskUpdateLine;
 import com.axelor.apps.organisation.db.PlanningLine;
 import com.axelor.apps.organisation.db.Task;
 import com.axelor.db.JPA;
@@ -47,28 +48,28 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
 
-
 public class TaskService {
 
 	@Inject
 	private UnitConversionService unitConversionService;
 	
-//	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void updateFinancialInformation(Task task) throws AxelorException  {
-		
 		
 		this.updateInitialAmount(task);
 		this.updateEstimedAmount(task);
 		this.updateRealizedAmount(task);
-		
 		
 	}
 	
 	
 	public BigDecimal getSpentTime(Task task) throws AxelorException  {
 		
-		return unitConversionService.convert(Unit.all().filter("self.code = 'HRE'").fetchOne(), task.getUnit(), this.getSpentTimeHours(task.getSpentTimeList()));
-		
+		if(task.getSpentTimeList() != null && !task.getSpentTimeList().isEmpty())  {
+			return unitConversionService.convert(Unit.all().filter("self.code = 'HRE'").fetchOne(), task.getUnit(), this.getSpentTimeHours(task.getSpentTimeList()));
+		}
+		else  {
+			return BigDecimal.ZERO;
+		}
 	}
 	
 	public BigDecimal getPlannedTime(Task task) throws AxelorException  {
@@ -97,10 +98,26 @@ public class TaskService {
 	}
 	
 	public void updateInitialAmount(Task task) throws AxelorException  {
+		
+		/**  REVENUE  **/
+		
 		Query q = JPA.em().createQuery("select SUM(sol.exTaxTotal) FROM SalesOrderLine as sol WHERE sol.task = ?1 AND sol.salesOrder.statusSelect = 2");
 		q.setParameter(1, task);
 		
-		BigDecimal initialTurnover = (BigDecimal) q.getSingleResult();
+		BigDecimal salesOrderLineInitialTurnover = (BigDecimal) q.getSingleResult();
+		
+		BigDecimal financialInformationUpdateInitialTurnover = this.getFinancialInformationUpdateAmount(task, ITaskUpdateLine.TYPE_REVENUE, ITaskUpdateLine.APPLICATION_INITIAL);
+		
+		BigDecimal initialTurnover = BigDecimal.ZERO;
+		if(salesOrderLineInitialTurnover != null)  {
+			initialTurnover = initialTurnover.add(salesOrderLineInitialTurnover);
+		}
+		if(financialInformationUpdateInitialTurnover != null)  {
+			initialTurnover = initialTurnover.add(financialInformationUpdateInitialTurnover);
+		}
+		
+		
+		/**  COST  **/
 		
 		q = JPA.em().createQuery("select SUM(pol.exTaxTotal) FROM PurchaseOrderLine as pol WHERE pol.task = ?1 AND pol.purchaseOrder.statusSelect = 2");
 		q.setParameter(1, task);
@@ -111,6 +128,8 @@ public class TaskService {
 		q.setParameter(1, task);
 		BigDecimal salesOrderInitialCost = (BigDecimal) q.getSingleResult();
 				
+		BigDecimal financialInformationUpdateInitialCost = this.getFinancialInformationUpdateAmount(task, ITaskUpdateLine.TYPE_COST, ITaskUpdateLine.APPLICATION_INITIAL);
+		
 		BigDecimal initialCost = BigDecimal.ZERO;
 		if(purchaseOrderInitialCost != null)  {
 			initialCost = initialCost.add(purchaseOrderInitialCost);
@@ -118,6 +137,12 @@ public class TaskService {
 		if(salesOrderInitialCost != null)  {
 			initialCost = initialCost.add(salesOrderInitialCost);
 		}
+		if(financialInformationUpdateInitialCost != null)  {
+			initialCost = initialCost.add(financialInformationUpdateInitialCost);
+		}
+		
+		
+		/**  MARGIN  **/
 		
 		BigDecimal initialMargin = BigDecimal.ZERO;
 		if(initialTurnover != null)  {
@@ -135,10 +160,24 @@ public class TaskService {
 	
 	public void updateEstimedAmount(Task task) throws AxelorException  {
 		
+		/**  REVENUE  **/
+		
 		Query q = JPA.em().createQuery("select SUM(sol.exTaxTotal) FROM SalesOrderLine as sol WHERE sol.task = ?1 AND sol.salesOrder.statusSelect = 3");
 		q.setParameter(1, task);
 				
-		BigDecimal estimatedTurnover = (BigDecimal) q.getSingleResult();
+		BigDecimal salesOrderEstimatedTurnover = (BigDecimal) q.getSingleResult();
+		
+		BigDecimal financialInformationUpdateEstimatedTurnover = this.getFinancialInformationUpdateAmount(task, ITaskUpdateLine.TYPE_REVENUE, ITaskUpdateLine.APPLICATION_ESTIMATED);
+		
+		BigDecimal estimatedTurnover = BigDecimal.ZERO;
+		if(salesOrderEstimatedTurnover != null)  {
+			estimatedTurnover = estimatedTurnover.add(salesOrderEstimatedTurnover);
+		}
+		if(financialInformationUpdateEstimatedTurnover != null)  {
+			estimatedTurnover = estimatedTurnover.add(financialInformationUpdateEstimatedTurnover);
+		}
+		
+		/**  COST  **/
 		
 		q = JPA.em().createQuery("select SUM(pol.exTaxTotal) FROM PurchaseOrderLine as pol WHERE pol.task = ?1 AND pol.purchaseOrder.statusSelect = 3");
 		q.setParameter(1, task);
@@ -147,6 +186,8 @@ public class TaskService {
 		
 		BigDecimal salesOrderEstimatedCost = this.getSalesOrderEstimatedCost(task);
 		
+		BigDecimal financialInformationUpdateEstimatedCost = this.getFinancialInformationUpdateAmount(task, ITaskUpdateLine.TYPE_COST, ITaskUpdateLine.APPLICATION_ESTIMATED);
+		
 		BigDecimal estimatedCost = BigDecimal.ZERO;
 		if(purchaseOrderEstimatedCost != null)  {
 			estimatedCost = estimatedCost.add(purchaseOrderEstimatedCost);
@@ -154,6 +195,12 @@ public class TaskService {
 		if(salesOrderEstimatedCost != null)  {
 			estimatedCost = estimatedCost.add(salesOrderEstimatedCost);
 		}
+		if(financialInformationUpdateEstimatedCost != null)  {
+			estimatedCost = estimatedCost.add(financialInformationUpdateEstimatedCost);
+		}
+		
+		
+		/**  MARGIN  **/
 		
 		BigDecimal estimatedMargin = BigDecimal.ZERO;
 		if(estimatedTurnover != null)  {
@@ -169,6 +216,86 @@ public class TaskService {
 	}
 	
 	
+	public void updateRealizedAmount(Task task)  {
+		
+		/**  REVENUE  **/
+		
+		Query q = JPA.em().createQuery("select SUM(il.exTaxTotal) FROM InvoiceLine as il WHERE il.task = ?1 AND il.invoice.status.code = 'dis' AND (il.invoice.operationTypeSelect = 3 OR il.invoice.operationTypeSelect = 4)");
+		q.setParameter(1, task);
+				
+		BigDecimal invoiceLineRealizedTurnover = (BigDecimal) q.getSingleResult();
+		
+		BigDecimal financialInformationUpdateRealizedTurnover = this.getFinancialInformationUpdateAmount(task, ITaskUpdateLine.TYPE_REVENUE, ITaskUpdateLine.APPLICATION_REALIZED);
+		
+		BigDecimal realizedTurnover = BigDecimal.ZERO;
+		if(invoiceLineRealizedTurnover != null)  {
+			realizedTurnover = realizedTurnover.add(invoiceLineRealizedTurnover);
+		}
+		if(financialInformationUpdateRealizedTurnover != null)  {
+			realizedTurnover = realizedTurnover.add(financialInformationUpdateRealizedTurnover);
+		}
+
+		
+		/**  COST  **/
+		
+		q = JPA.em().createQuery("select SUM(il.exTaxTotal) FROM InvoiceLine as il WHERE il.task = ?1 AND il.invoice.status.code = 'dis' AND (il.invoice.operationTypeSelect = 1 OR il.invoice.operationTypeSelect = 2)");
+		q.setParameter(1, task);
+				
+		BigDecimal supplierInvoiceLineRealizedCost = (BigDecimal) q.getSingleResult();
+		
+		q = JPA.em().createQuery("select SUM(il.product.costPrice * il.qty) FROM InvoiceLine as il WHERE il.task = ?1 AND il.invoice.status.code = 'dis' AND (il.invoice.operationTypeSelect = 3 OR il.invoice.operationTypeSelect = 4)");
+		q.setParameter(1, task);
+				
+		BigDecimal customerInvoiceLineRealizedCost = (BigDecimal) q.getSingleResult();
+		
+		
+		q = JPA.em().createQuery("select SUM(tl.timesheet.userInfo.employee.dailySalaryCost * tl.duration) FROM TimesheetLine as tl WHERE tl.task = ?1 and tl.timesheet.statusSelect = 3");
+		q.setParameter(1, task);
+				
+		BigDecimal timesheetLineRealizedCost = (BigDecimal) q.getSingleResult();
+			
+		
+		q = JPA.em().createQuery("select SUM(el.total) FROM ExpenseLine as el WHERE el.task = ?1 and el.expense.statusSelect = 4");
+		q.setParameter(1, task);
+				
+		BigDecimal expenseLineRealizedCost = (BigDecimal) q.getSingleResult();
+		
+		BigDecimal financialInformationUpdateRealizedCost = this.getFinancialInformationUpdateAmount(task, ITaskUpdateLine.TYPE_COST, ITaskUpdateLine.APPLICATION_REALIZED);
+		
+		BigDecimal realizedCost = BigDecimal.ZERO;
+		if(supplierInvoiceLineRealizedCost != null)  {
+			realizedCost = realizedCost.add(supplierInvoiceLineRealizedCost);
+		}
+		if(customerInvoiceLineRealizedCost != null)  {
+			realizedCost = realizedCost.add(customerInvoiceLineRealizedCost);
+		}
+		if(timesheetLineRealizedCost != null)  {
+			realizedCost = realizedCost.add(timesheetLineRealizedCost);
+		}
+		if(expenseLineRealizedCost != null)  {
+			realizedCost = realizedCost.add(expenseLineRealizedCost);
+		}
+		if(financialInformationUpdateRealizedCost != null)  {
+			realizedCost = realizedCost.add(financialInformationUpdateRealizedCost);
+		}
+		
+		
+		/**  MARGIN  **/
+		
+		BigDecimal realizedMargin = BigDecimal.ZERO;
+		if(realizedTurnover != null)  {
+			realizedMargin = realizedMargin.add(realizedTurnover);
+		}
+		if(realizedCost != null)  {
+			realizedMargin = realizedMargin.subtract(realizedCost);
+		}
+		
+		task.setRealizedTurnover(realizedTurnover);
+		task.setRealizedCost(realizedCost);
+		task.setRealizedMargin(realizedMargin);
+	}
+
+
 	public BigDecimal getSalesOrderEstimatedCost(Task task) throws AxelorException  {
 		BigDecimal salesOrderEstimatedCost = BigDecimal.ZERO;
 		
@@ -184,6 +311,20 @@ public class TaskService {
 		
 		return salesOrderEstimatedCost;
 	}
+	
+	
+	public BigDecimal getFinancialInformationUpdateAmount(Task task, int typeSelect, int applicationSelect )  {
+		
+		Query q = JPA.em().
+				createQuery("select SUM(fiu.amount) FROM FinancialInformationUpdate as fiu WHERE fiu.task = ?1 AND fiu.typeSelect = ?2 AND fiu.applicationSelect = ?3");
+		q.setParameter(1, task);
+		q.setParameter(2, typeSelect);
+		q.setParameter(3, applicationSelect);
+				
+		return (BigDecimal) q.getSingleResult();
+		
+	}
+	
 	
 	
 	public BigDecimal getPlanningLinesAmount(Task task) throws AxelorException  {
@@ -214,154 +355,5 @@ public class TaskService {
 		
 		return planningLineAmount;
 	}
-	
-	
-	public void updateRealizedAmount(Task task)  {
-		
-		Query q = JPA.em().createQuery("select SUM(il.exTaxTotal) FROM InvoiceLine as il WHERE il.task = ?1 AND il.invoice.status.code = 'dis' AND (il.invoice.operationTypeSelect = 3 OR il.invoice.operationTypeSelect = 4)");
-		q.setParameter(1, task);
-				
-		BigDecimal realizedTurnover = (BigDecimal) q.getSingleResult();
-		
-		q = JPA.em().createQuery("select SUM(il.exTaxTotal) FROM InvoiceLine as il WHERE il.task = ?1 AND il.invoice.status.code = 'dis' AND (il.invoice.operationTypeSelect = 1 OR il.invoice.operationTypeSelect = 2)");
-		q.setParameter(1, task);
-				
-		BigDecimal supplierInvoiceLineRealizedCost = (BigDecimal) q.getSingleResult();
-		
-		q = JPA.em().createQuery("select SUM(il.product.costPrice * il.qty) FROM InvoiceLine as il WHERE il.task = ?1 AND il.invoice.status.code = 'dis' AND (il.invoice.operationTypeSelect = 3 OR il.invoice.operationTypeSelect = 4)");
-		q.setParameter(1, task);
-				
-		BigDecimal customerInvoiceLineRealizedCost = (BigDecimal) q.getSingleResult();
-		
-		
-		q = JPA.em().createQuery("select SUM(tl.timesheet.userInfo.employee.dailySalaryCost * tl.duration) FROM TimesheetLine as tl WHERE tl.task = ?1 and tl.timesheet.statusSelect = 3");
-		q.setParameter(1, task);
-				
-		BigDecimal timesheetLineRealizedCost = (BigDecimal) q.getSingleResult();
-			
-		
-		q = JPA.em().createQuery("select SUM(el.total) FROM ExpenseLine as el WHERE el.task = ?1 and el.expense.statusSelect = 4");
-		q.setParameter(1, task);
-				
-		BigDecimal expenseLineRealizedCost = (BigDecimal) q.getSingleResult();
-		
-		
-		
-		
-		BigDecimal realizedCost = BigDecimal.ZERO;
-		if(supplierInvoiceLineRealizedCost != null)  {
-			realizedCost = realizedCost.add(supplierInvoiceLineRealizedCost);
-		}
-		if(customerInvoiceLineRealizedCost != null)  {
-			realizedCost = realizedCost.add(customerInvoiceLineRealizedCost);
-		}
-		if(timesheetLineRealizedCost != null)  {
-			realizedCost = realizedCost.add(timesheetLineRealizedCost);
-		}
-		if(expenseLineRealizedCost != null)  {
-			realizedCost = realizedCost.add(expenseLineRealizedCost);
-		}
-		
-		BigDecimal realizedMargin = BigDecimal.ZERO;
-		if(realizedTurnover != null)  {
-			realizedMargin = realizedMargin.add(realizedTurnover);
-		}
-		if(realizedCost != null)  {
-			realizedMargin = realizedMargin.subtract(realizedCost);
-		}
-		
-		task.setRealizedTurnover(realizedTurnover);
-		task.setRealizedCost(realizedCost);
-		task.setRealizedMargin(realizedMargin);
-	}
-
-
-	
-	
-	
-	/**  SalesOrder  **/
-//	
-//	public void completeSubmittedSalesOrderLines(SalesOrder salesOrder)  {
-//		if (salesOrder.getSalesOrderLineList() != null) {
-//			for(SalesOrderLine salesOrderLine : salesOrder.getSalesOrderLineList())  {
-//				this.addSubmittedSalesOrderLine(salesOrderLine);
-//			}
-//		}
-//	}
-//	
-//	public void completeValidatedSalesOrderLines(SalesOrder salesOrder)  {
-//		if (salesOrder.getSalesOrderLineList() != null) {
-//			for(SalesOrderLine salesOrderLine : salesOrder.getSalesOrderLineList())  {
-//				this.addValidatedSalesOrderLine(salesOrderLine);
-//			}
-//		}
-//	}
-//		
-//	public void addSubmittedSalesOrderLine(SalesOrderLine salesOrderLine)  {
-//		Task task = salesOrderLine.getTask();
-//		if(task != null)  {
-//			if(task.getSubmittedSalesOrderLineSet() == null)  {
-//				task.setSubmittedSalesOrderLineSet(new HashSet<SalesOrderLine>());
-//			}
-//			if(!task.getSubmittedSalesOrderLineSet().contains(salesOrderLine))  {
-//				task.getSubmittedSalesOrderLineSet().add(salesOrderLine);
-//			}
-//		}
-//	}
-//	
-//	public void addValidatedSalesOrderLine(SalesOrderLine salesOrderLine)  {
-//		Task task = salesOrderLine.getTask();
-//		if(task != null)  {
-//			if(task.getValidatedSalesOrderLineSet() == null)  {
-//				task.setValidatedSalesOrderLineSet(new HashSet<SalesOrderLine>());
-//			}
-//			if(!task.getValidatedSalesOrderLineSet().contains(salesOrderLine))  {
-//				task.getValidatedSalesOrderLineSet().add(salesOrderLine);
-//			}
-//		}
-//	}
-//	
-//	
-/**  PurchaseOrder  **/
-//	
-//	public void completeSubmittedPurchaseOrderLines(PurchaseOrder purchaseOrder)  {
-//		if (purchaseOrder.getPurchaseOrderLineList() != null) {
-//			for(PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList())  {
-//				this.addSubmittedPurchaseOrderLine(purchaseOrderLine);
-//			}
-//		}
-//	}
-//	
-//	public void completeValidatedPurchaseOrderLines(PurchaseOrder purchaseOrder)  {
-//		if (purchaseOrder.getPurchaseOrderLineList() != null) {
-//			for(PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList())  {
-//				this.addValidatedPurchaseOrderLine(purchaseOrderLine);
-//			}
-//		}
-//	}
-//		
-//	public void addSubmittedPurchaseOrderLine(PurchaseOrderLine purchaseOrderLine)  {
-//		Task task = purchaseOrderLine.getTask();
-//		if(task != null)  {
-//			if(task.getSubmittedSalesOrderLineSet() == null)  {
-//				task.setSubmittedSalesOrderLineSet(new HashSet<SalesOrderLine>());
-//			}
-//			if(!task.getSubmittedPurchaseOrderLineSet().contains(purchaseOrderLine))  {
-//				task.getSubmittedPurchaseOrderLineSet().add(purchaseOrderLine);
-//			}
-//		}
-//	}
-//	
-//	public void addValidatedPurchaseOrderLine(PurchaseOrderLine purchaseOrderLine)  {
-//		Task task = purchaseOrderLine.getTask();
-//		if(task != null)  {
-//			if(task.getValidatedSalesOrderLineSet() == null)  {
-//				task.setValidatedSalesOrderLineSet(new HashSet<SalesOrderLine>());
-//			}
-//			if(!task.getValidatedPurchaseOrderLineSet().contains(purchaseOrderLine))  {
-//				task.getValidatedPurchaseOrderLineSet().add(purchaseOrderLine);
-//			}
-//		}
-//	}
 	
 }

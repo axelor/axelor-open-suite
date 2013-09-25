@@ -91,21 +91,26 @@
 	            
 	        </page>
 	        <page title="Links" colSpan="4">
-<!-- 	        	<field name="taskUpdateLineList" colSpan="4"/> -->
+	        	<group title="Update financial information" collapseIf="financialInformationUpdateList == null || financialInformationUpdateList.isEmpty()" canCollapse="true" colSpan="4">
+	        		<field name="financialInformationUpdateList" colSpan="4" showTitle="false"/>
+	        	</group>
 	        	<notebook>
 	        		<page title="Initial">
 	        			<portlet colSpan="4" action="action-task-view-submitted-sales-order-line"/>
 	     				<portlet colSpan="4" action="action-task-view-submitted-purchase-order-line"/>
+	     				<portlet colSpan="4" action="action-task-view-initial-financial-information-update"/>
 	        		</page>
 	        		<page title="Estimated">
 	        			<portlet colSpan="4" action="action-task-view-validated-sales-order-line"/>
 	     				<portlet colSpan="4" action="action-task-view-validated-purchase-order-line"/>
+	     				<portlet colSpan="4" action="action-task-view-estimated-financial-information-update"/>
 	        		</page>
 	        		<page title="Realized">
 	        			<portlet colSpan="4" action="action-task-view-customer-invoice-line"/>
 			     		<portlet colSpan="4" action="action-task-view-supplier-invoice-line"/>
 			     		<portlet colSpan="4" action="action-task-view-timesheet-line"/>
 			     		<portlet colSpan="4" action="action-task-view-expense-line"/>
+			     		<portlet colSpan="4" action="action-task-view-realized-financial-information-update"/>
 	        		</page>
 	        	</notebook>
 	        </page>
@@ -241,10 +246,24 @@
   		<context name="id" expr="eval: id"/>
   	</action-view>
   	
+  	<action-view name="action-task-view-initial-financial-information-update" title="Financial information updates" model="com.axelor.apps.organisation.db.FinancialInformationUpdate">
+  		<view type="grid" name="financial-information-update-grid"/>
+		<view type="form" name="financial-information-update-form"/>
+  		<domain>self.applicationSelect = 1 and self.task.id = :id</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
   	<action-view name="action-task-view-validated-sales-order-line" title="Validated Customer order lines" model="com.axelor.apps.supplychain.db.SalesOrderLine">
   		<view type="grid" name="sales-order-line-grid"/>
 		<view type="form" name="sales-order-line-form"/>
   		<domain>self.salesOrder.statusSelect = 3 and self.task.id = :id</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
+  	<action-view name="action-task-view-estimated-financial-information-update" title="Financial information updates" model="com.axelor.apps.organisation.db.FinancialInformationUpdate">
+  		<view type="grid" name="financial-information-update-grid"/>
+		<view type="form" name="financial-information-update-form"/>
+  		<domain>self.applicationSelect = 2 and self.task.id = :id</domain>
   		<context name="id" expr="eval: id"/>
   	</action-view>
   	
@@ -280,6 +299,13 @@
   		<view type="grid" name="expense-line-grid"/>
 		<view type="form" name="expense-line-form"/>
   		<domain>self.expense.statusSelect = 3 and self.task.id = :id</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
+  	<action-view name="action-task-view-realized-financial-information-update" title="Financial information updates" model="com.axelor.apps.organisation.db.FinancialInformationUpdate">
+  		<view type="grid" name="financial-information-update-grid"/>
+		<view type="form" name="financial-information-update-form"/>
+  		<domain>self.applicationSelect = 3 and self.task.id = :id</domain>
   		<context name="id" expr="eval: id"/>
   	</action-view>
   	
