@@ -19,7 +19,7 @@
     	<field name="statusSelect" widget="NavSelect" showTitle="false"/>
     	<field name="company" widget="SuggestBox" onChange="action-purchase-order-record-company-configuration"/>
    	 	<field name="supplierPartner" domain="self.partnerTypeSelect = 1" onChange="action-purchase-order-record-partner"/>
-        <field name="affairProject"/>
+        <field name="affairProject" domain="self.isAffair = true"/>
         <field name="buyerUserInfo"/>
         <field name="orderDate"/>
         <field name="deliveryDate"/>
