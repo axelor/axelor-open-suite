@@ -37,7 +37,7 @@
 "top-menu-activity-my-calendar","My Calendar","menu","My Calendar","Mon Calendrier","","",""
 "top-menu-activity-team-calendar","My Team Calendar","menu","My Team Calendar","","","",""
 "top-menu-create-lead","Create Lead","menu","Create Lead","Créer lead","","",""
-"top-menu-create-opportunity","Create Opportunity","menu","Create Opportunity","","","",""
+"top-menu-create-opportunity","Create Opportunity","menu","Create Opportunity","Créer Opportunité","","",""
 "top-menu-crm-activities","Activity","menu","Activity","Activité","","",""
 "top-prospection","Prospection","menu","Prospection","Prospection","","",""
 "top-prospection-leads","Leads","menu","Leads","Pistes","","",""
@@ -245,7 +245,7 @@
 "com.axelor.apps.base.db.Wizard","Or Select Partner","viewField","Or Select Partner","Sélectionner Tiers existant ?","","",
 "com.axelor.apps.base.db.Wizard","Partner","viewField","Partner","","","",
 "com.axelor.apps.base.db.Wizard","Create into Opportunity ?","viewField","Create into Opportunity ?","Créer Opportunité ?","","",
-"com.axelor.apps.base.db.Wizard","Opportunity","viewField","Opportunity","","","",
+"com.axelor.apps.base.db.Wizard","Opportunity","viewField","Opportunity","Opportunité","","",
 "com.axelor.apps.base.db.Wizard","Log a call ?","viewField","Log a call ?","Notifier un Appel ?","","",
 "com.axelor.apps.base.db.Wizard","Call","viewField","Call","","","",
 "com.axelor.apps.base.db.Wizard","Schedule a meeting ?","viewField","Schedule a meeting ?","Planifier un Meeting ?","","",
@@ -327,7 +327,7 @@
 "","","menuItem","Create call","","","",""
 "","","menuItem","Schedule meeting","","","",""
 "","","menuItem","Create task","","","",""
-"","","menuItem","Create opportunity","","","",""
+"","","menuItem","Create opportunity","Créer Opportunité","","",""
 "com.axelor.apps.crm.db.Lead","lead-form","form","Lead","Prospect","","",""
 "lead-form","","group","Contact","Contact","","",""
 "com.axelor.apps.crm.db.Lead","Civility","placeholder","Civility","","","",""
@@ -470,7 +470,7 @@
 "action-lead-view-convert-lead","action-lead-view-convert-lead","action","Convert lead","Convertir le prospect","","",""
 "action-lead-view-create-call","action-lead-view-create-call","action","Create call","","","",""
 "action-lead-view-create-meeting","action-lead-view-create-meeting","action","Create meeting","Créer rendez-vous","","",""
-"action-lead-view-create-opportunity","action-lead-view-create-opportunity","action","Create opportunity","","","",""
+"action-lead-view-create-opportunity","action-lead-view-create-opportunity","action","Create opportunity","Créer Opportunité","","",""
 "action-lead-view-create-task","action-lead-view-create-task","action","Create task","","","",""
 "action-lead-view-event-ticket","action-lead-view-event-ticket","action","Tickets","Tickets","","",""
 "action-lead-view-historical-events-completed","action-lead-view-historical-events-completed","action","Historical events completed","","","",""
@@ -506,6 +506,6 @@
 "portal.target.team.dashboard.view","portal.target.team.dashboard.view","action","Target team Dashboard","Tableau de bord des objectifs équipes","","",""
 "portal.target.user.dashboard.view","portal.target.user.dashboard.view","action","Target user Dashboard","Tableau de bord des objectifs utilisateurs","","",""
 "top.new.lead.view","top.new.lead.view","action","Create Lead","Créer lead","","",""
-"top.new.opportunity.view","top.new.opportunity.view","action","Create Opportunity","","","",""
+"top.new.opportunity.view","top.new.opportunity.view","action","Create Opportunity","Créer Opportunité","","",""
 "top.propsection.leads","top.propsection.leads","action","Leads","Pistes","","",""
 "top.prospection.opportunity","top.prospection.opportunity","action","Opportunities","Opportunités","","",""
