@@ -30,12 +30,21 @@
  */
 package com.axelor.apps.supplychain.web;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.axelor.apps.AxelorSettings;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.supplychain.db.ILocation;
 import com.axelor.apps.supplychain.db.Location;
 import com.axelor.apps.supplychain.db.PurchaseOrder;
+import com.axelor.apps.supplychain.db.SalesOrder;
 import com.axelor.apps.supplychain.service.PurchaseOrderService;
+import com.axelor.apps.tool.net.URLService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
@@ -50,6 +59,9 @@ public class PurchaseOrderController {
 	
 	@Inject
 	private PurchaseOrderService purchaseOrderService;
+	
+	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderController.class);
+
 	
 	public void setSequence(ActionRequest request, ActionResponse response) throws AxelorException {
 		
@@ -101,6 +113,39 @@ public class PurchaseOrderController {
 			if(location != null) {
 				response.setValue("location", location);
 			}
+		}
+	}
+	
+	/**
+	 * Fonction appeler par le bouton imprimer
+	 *
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	public void showPurchaseOrder(ActionRequest request, ActionResponse response) {
+
+		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+
+		StringBuilder url = new StringBuilder();
+		AxelorSettings axelorSettings = AxelorSettings.get();
+
+		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/PurchaseOrder.rptdesign&__format=pdf&PurchaseOrderId="+purchaseOrder.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
+		LOG.debug("URL : {}", url);
+		String urlNotExist = URLService.notExist(url.toString());
+		
+		if(urlNotExist == null) {
+		
+			LOG.debug("Impression du devis "+purchaseOrder.getPurchaseOrderSeq() +" : "+url.toString());
+			
+			Map<String,Object> mapView = new HashMap<String,Object>();
+			mapView.put("title", "Devis "+purchaseOrder.getPurchaseOrderSeq());
+			mapView.put("resource", url);
+			mapView.put("viewType", "html");
+			response.setView(mapView);	
+		}
+		else {
+			response.setFlash(urlNotExist);
 		}
 	}
 }

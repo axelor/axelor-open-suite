@@ -15,7 +15,7 @@
     
     <form name="purchase-order-form" title="Supplier RFQ/PO" model="com.axelor.apps.supplychain.db.PurchaseOrder" cols="4" onNew="action-purchase-order-record-new,action-purchase-order-record-company-configuration,action-purchase-order-method-get-location"
     onSave="action-purchase-order-set-sequence">
-    	<field name="purchaseOrderSeq"/>
+       	<field name="purchaseOrderSeq"/>
     	<field name="statusSelect" widget="NavSelect" showTitle="false"/>
     	<field name="company" widget="SuggestBox" onChange="action-purchase-order-record-company-configuration"/>
    	 	<field name="supplierPartner" domain="self.partnerTypeSelect = 1" onChange="action-purchase-order-record-partner"/>
@@ -42,6 +42,7 @@
 	                	<button name="completed" title="Completed" colSpan="1" onClick="action-purchase-order-record-completed,save" showIf="statusSelect == 4"/>
 	                	<button name="cancel" title="Cancel" colSpan="1" onClick="save,action-purchase-order-record-cancel" showIf="statusSelect == 1 || statusSelect == 2"/>
 	                	<button name="sendByEmail" title="Send by email" colSpan="1" showIf="statusSelect == 4"/>
+	                	<button name="printPurchaseOrder" title=" Print Purchase Order" onClick="save,action-purchase-order-method-show-purchase-order" icon="img/icons/print.png"/>
 			    		<button name="generateDeliveryOrder" title="Generate delivery" colSpan="1" showIf="statusSelect == 4"/>
 			    		<button name="showSupplierInvoice" title="Show invoice" colSpan="1" onClick="action-purchase-order-show-supplier-invoice"/>
 			    		<button name="generateControlInvoice" title="Generate control invoice" showIf="statusSelect == 4" onClick="save,action-purchase-order-method-generate-control-invoice" colSpan="1" />
@@ -125,6 +126,11 @@
 	<action-method name="action-purchase-order-method-get-location">
     	<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="getLocation"/>
     </action-method>
+    
+    <action-method name="action-purchase-order-method-show-purchase-order">
+		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="showPurchaseOrder"/>
+	</action-method>
+    
     
     <action-view name="action-purchase-order-show-supplier-invoice" title="Supplier invoices"
 		model="com.axelor.apps.account.db.Invoice">
