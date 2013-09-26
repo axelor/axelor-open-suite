@@ -335,7 +335,7 @@ public class PaymentService {
 			BigDecimal amountRemaining = debitMoveLine.getAmountRemaining();
 			
 			//Afin de pouvoir arrêter si il n'y a plus rien pour payer
-			if(remainingPaidAmount2.compareTo(BigDecimal.ZERO) < 0)  {
+			if(remainingPaidAmount2.compareTo(BigDecimal.ZERO) <= 0)  {
 				break;
 			}
 			BigDecimal amountToPay = remainingPaidAmount2.min(amountRemaining);
@@ -439,7 +439,7 @@ public class PaymentService {
 			BigDecimal amountRemaining = creditMoveLine.getAmountRemaining();
 			
 			//Afin de pouvoir arrêter si il n'y a plus rien à payer
-			if(remainingPaidAmount2.compareTo(BigDecimal.ZERO) < 0)  {
+			if(remainingPaidAmount2.compareTo(BigDecimal.ZERO) <= 0)  {
 				break;
 			}
 			BigDecimal amountToPay = remainingPaidAmount2.min(amountRemaining);
@@ -554,7 +554,7 @@ public class PaymentService {
 							i--;
 							
 							//Afin de pouvoir arrêter si il n'y a plus rien à payer
-							if(amountDebit.compareTo(BigDecimal.ZERO) < 0)  {
+							if(amountDebit.compareTo(BigDecimal.ZERO) <= 0)  {
 								break;
 							}
 							
