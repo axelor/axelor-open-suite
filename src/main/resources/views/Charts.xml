@@ -363,7 +363,7 @@
 		<dataset type="sql">
 		    <![CDATA[
 		    SELECT
-			    cast(cast(COUNT(*) as decimal)/(select Count(*) from crm_event as event where event.ticket_status_select !=5) * 100 as decimal (5,2)) AS 	_total_calls,
+			    cast(cast(COUNT(*) as decimal)/(select Count(*) from crm_event as event where event.ticket_status_select !=5 and event.priority_select > 0) * 100 as decimal (5,2)) AS 	_total_calls,
 			    selection_item.title 	AS 	_priority
 			FROM
 			    crm_event as self
