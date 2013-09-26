@@ -14,7 +14,7 @@
     </grid>
     <form name="move-form" title="Account move" model="com.axelor.apps.account.db.Move" cols="4" 
     onLoad="action-move-attrs-status,action-move-attrs-hidden-date,action-move-attrs-hidden-get-info-from-first-move-line-ok"
-    onNew="action-move-attrs-status,default-move-record,action-move-attrs-hidden-get-info-from-first-move-line-ok,action-move-attrs-hidden-date">
+    onNew="action-move-attrs-status,default-move-record,action-move-attrs-hidden-get-info-from-first-move-line-ok,action-move-attrs-hidden-date,action-move-method-get-period">
     	<notebook colSpan="4">
     	<page title="Informations" colSpan="4">
 	        <group title="Move header" colSpan="4">
