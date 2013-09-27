@@ -141,6 +141,7 @@
     <action-record name="action-sales-order-record-validate" model="com.axelor.apps.supplychain.db.SalesOrder">
     	<field name="statusSelect" expr="eval: 3"/>
     	<field name="validationDate" expr="eval: __date__"/>
+    	<field name="validatedByUserInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
     </action-record>
     
      <action-record name="action-sales-order-record-cancel" model="com.axelor.apps.supplychain.db.SalesOrder">

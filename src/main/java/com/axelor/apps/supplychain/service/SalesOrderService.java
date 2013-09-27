@@ -293,6 +293,7 @@ public class SalesOrderService {
 					task.setInvoicingDate(salesOrderLine.getInvoicingDate());
 					task.setAmountToInvoice(salesOrderLine.getAmountRemainingToBeInvoiced());
 					task.setStatusSelect(ISalesOrder.DRAFT); // 1 = draft
+					task.setEstimatedAmount(salesOrder.getExTaxTotal());
 					/* Check if there is a planning line list in the salesOrderLine task */
 					if(salesOrderLine.getTask() != null && salesOrderLine.getTask().getPlanningLineList() != null && salesOrderLine.getTask().getPlanningLineList().size() > 0) {
 						/* Call the method to set the unit of the task */

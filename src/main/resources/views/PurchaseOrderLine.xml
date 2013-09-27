@@ -16,24 +16,25 @@
     <form name="purchase-order-line-form" title="PO line" model="com.axelor.apps.supplychain.db.PurchaseOrderLine" cols="4" 
     onNew="action-purchase-order-line-record-new"
     onLoad="action-sales-order-line-attrs-hide-product-variant">
-    	<field name="product" domain="self.endDate = null or self.endDate &gt; :__date__" onChange="action-purchase-order-line-method-get-product-information,action-purchase-order-line-method-compute,action-purchase-order-line-record-product-variant"/>
-    	<field name="product.productCategory"/>
-    	<field name="productName"/>
-    	<field name="qty" onChange="action-purchase-order-line-method-compute"/>
-    	<field name="price" onChange="action-purchase-order-line-method-compute"/>
-    	<field name="unit"/>
-    	<field name="exTaxTotal"/>
-		<field name="deliveryDate"/>
-		<field name="task" readonlyIf="(_parent.statusSelect = 2 || _parent.statusSelect = 3 || _parent.statusSelect = 4) &amp;&amp; task != null"/>
-		<group title="V.A.T informations" colSpan="4" cols="4">
-    		<field name="vatLine" domain="self.endDate = null or self.endDate &gt; :__date__"/>
-			<field name="vatLine.vat.name"/>
-			<field name="vatLine.value"/>
-		</group>
-	    <group title="Product Variants" colSpan="4" cols="4">
-	        <field name="productVariant" widget="NestedEditor" summary-view="true" form-view="product-variant-form" edit-window="self" canSelect="false" showTitle="false"/>
-	    </group>    
-    </form>
+	    <field name="product" onChange="action-purchase-order-line-method-get-product-information,action-purchase-order-line-method-compute,action-purchase-order-line-record-product-variant" domain="self.endDate = null or self.endDate &gt; :__date__"/>
+	    <field name="productName"/>
+	    <field name="qty" onChange="action-purchase-order-line-method-compute"/>
+	    <field name="unit"/>
+	    <field name="price" onChange="action-purchase-order-line-method-compute"/>
+	    <field name="vatLine" domain="self.endDate = null or self.endDate &gt; :__date__"/>
+	    <field name="exTaxTotal"/>
+	    <field name="vatLine.value"/>
+	    <notebook colSpan="4">
+	        <page title="Details" colSpan="4" cols="4">
+	            <field name="deliveryDate"/>
+	            <break/>
+	            <field name="productVariant" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="product-variant-form" summary-view="true"/>
+	        </page>
+	        <page title="Links" colSpan="4" cols="4">
+	            <field name="task" readonlyIf="(_parent.statusSelect = 2 || _parent.statusSelect = 3 || _parent.statusSelect = 4) &amp;&amp; task != null"/>    
+	        </page>
+	    </notebook>       
+	</form>
     
     <action-record name="action-purchase-order-line-record-new" model="com.axelor.apps.supplychain.db.PurchaseOrderLine">
     	<field name="qty" expr="eval: 1"/>
