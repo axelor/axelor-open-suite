@@ -59,10 +59,10 @@ public class ProductControllerSimple {
 		int currentYear = GeneralService.getTodayDateTime().getYear();
 		String productIds = "";
 
-		List<String> lstSelectedPartner = (List<String>) request.getContext().get("_ids");
+		List<Integer> lstSelectedPartner = (List<Integer>) request.getContext().get("_ids");
 
-		for(String it : lstSelectedPartner) {
-			productIds+= it+",";
+		for(Integer it : lstSelectedPartner) {
+			productIds+= it.toString()+",";
 		}
 
 		if(!productIds.equals("")){
