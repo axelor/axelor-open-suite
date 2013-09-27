@@ -172,7 +172,8 @@
 	</input>
 	
  	<input file="base_partner.csv" separator=";" search="self.importId = :importId" update="true" type="com.axelor.apps.base.db.Partner">
-		<bind column="companySet_importId" to="companySet" search="self.importId in :companySet_importId" eval="companySet_importId.split('\\|') as List"/>
+<!-- 		<bind column="companySet_importId" to="companySet" search="self.importId in :companySet_importId" eval="companySet_importId.split('\\|') as List"/> -->
+		<bind column="companySet_importId" to="companySet" search="self.importId in :companySet_importId" />
 		<bind to="mainPartner" search="self.importId = :mainPartner_importId" update="true" />
 	</input>
 	
