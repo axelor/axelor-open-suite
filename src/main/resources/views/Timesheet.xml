@@ -26,14 +26,13 @@
 	        <field name="projectComment"/>
 	        <separator colSpan="8" title="Company"/>
 	        <group colSpan="2">
-				<field name="companySatisfactionSelect" widget="Progress" showIf="$readonly()"/>
-				<field name="companySatisfactionSelect" hideIf="$readonly()"/>
+				<field name="companySatisfactionSelect" widget="SelectProgress"/>
 			</group>
         	<field name="companyComment"/>
         </group>
         <group title="Unité" colSpan="4">
-         	<field name="unit"/>
-        	<field name="timeUnitSelect"/>
+<!--          	<field name="unit"/> -->
+<!--         	<field name="timeUnitSelect"/> -->
         </group>
         <spacer/>
         <separator colSpan="4" title="Details of time spent on project/tasks"/>
@@ -47,7 +46,7 @@
 		  		<field name="completeFromDate"/>
 			  	<field name="completeToDate"/>
 			  	<field name="completeDefaultTask"/>
-			  	<field name="duration"/>
+			  	<field name="duration (h)"/>
 		  	</group>
 		  	<group title="Action(s)" colSpan="4" showIf="statusSelect != 3 &amp;&amp; hasToGetLeaveRequests == true || hasToGetSpentTimeFromTask == true || hasToGetPlanningLine == true || hasCompleteTimesheetLines == true)">
 		  		<button name="getSpentTimeButton" title="Get past time" colSpan="1" onClick="save,action-timesheet-method-get-task-spent-time" 
@@ -62,7 +61,7 @@
        	<group title="Action(s)" colSpan="4">
    			<group colSpan="1" cols="1">
 	         	<button name="confirm" title="Confirm" colSpan="1" onClick="save,action-timesheet-record-confirm,save" showIf="statusSelect == 1 || statusSelect == 4"/>
-	            <button name="validate" title="Validate" colSpan="1" onClick="save,action-timesheet-record-validate,save" showIf="statusSelect == 2"/>
+	            <button name="validate" title="Validate" colSpan="1" onClick="save,action-timesheet-method-validate,action-timesheet-record-validate,save" showIf="statusSelect == 2"/>
 	            <button name="cancel" title="Cancel" colSpan="1" onClick="save,action-timesheet-record-cancel" showIf="statusSelect == 1 || statusSelect == 2"/>
 	        </group>
    			<group colSpan="1" cols="2" readonly="true">
@@ -84,6 +83,16 @@
     	<field name="statusSelect" expr="eval: _statusSelect ? _statusSelect : 1"/> 	
     </action-record>
     
+    <action-record name="action-timesheet-record-validate" model="com.axelor.apps.organisation.db.Timesheet">
+    	<field name="statusSelect" expr="eval: 3"/>
+    	<field name="validationDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+    	<field name="validatedByUserInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+    </action-record>
+    
+     <action-record name="action-timesheet-record-cancel" model="com.axelor.apps.organisation.db.Timesheet">
+    	<field name="statusSelect" expr="eval: 4"/>
+    </action-record>
+    
     <action-method name="action-timesheet-getPeriod">
     	<call class="com.axelor.apps.organisation.web.TimesheetController" method="getPeriod"/>
     </action-method>
@@ -96,14 +105,10 @@
     	<field name="statusSelect" expr="eval: 2"/>
     </action-record>
     
-    <action-record name="action-timesheet-record-validate" model="com.axelor.apps.organisation.db.Timesheet">
-    	<field name="statusSelect" expr="eval: 3"/>
-    	<field name="validationDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
-    	<field name="validatedByUserInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
-    </action-record>
+    <action-method name="action-timesheet-method-validate">
+    	<call class="com.axelor.apps.organisation.web.TimsheetController" method="validate"/>
+    </action-method>
     
-     <action-record name="action-timesheet-record-cancel" model="com.axelor.apps.organisation.db.Timesheet">
-    	<field name="statusSelect" expr="eval: 4"/>
-    </action-record>
+    
     
 </object-views>

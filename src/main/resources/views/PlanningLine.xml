@@ -15,14 +15,14 @@
     </grid>
     
     <form name="planning-line-form" title="Planning line" model="com.axelor.apps.organisation.db.PlanningLine" cols="4" 
-    onNew="action-planningline-default-record,action-planningline-set-datetime">
+    onNew="action-planning-line-default-record,action-planning-line-set-datetime">
         <field name="product" domain="self.applicationTypeSelect = 2"/>
         <field name="employee"/>
         <field name="task"/>
         <field name="fromDateTime" onChange="action-planning-line-method-compute-start-date-time"/>
         <field name="toDateTime" onChange="action-planning-line-method-compute-end-date-time"/>
         <field name="duration" onChange="action-planning-line-method-compute-duration"/>
-        <field name="unit"/>
+        <field name="unit" onChange="action-planning-line-method-compute-unit"/>
         <field name="timeSheet"/>
     </form>
     
@@ -38,23 +38,25 @@
     </grid>
     
     <form name="planning-line-task-form" title="Planning line" model="com.axelor.apps.organisation.db.PlanningLine" cols="4" 
-    onNew="action-planningline-default-record,action-planningline-set-datetime">
+    onNew="action-planning-line-default-record,action-planning-line-set-datetime">
         <field name="product" domain="self.applicationTypeSelect = 2"/>
         <field name="employee"/>
         <field name="planning"/>
         <field name="fromDateTime" onChange="action-planning-line-method-compute-start-date-time"/>
         <field name="toDateTime" onChange="action-planning-line-method-compute-end-date-time"/>
         <field name="duration" onChange="action-planning-line-method-compute-duration"/>
-        <field name="unit"/>
+        <field name="unit" onChange="action-planning-line-method-compute-unit"/>
         <field name="timeSheet"/>
     </form>
     
-    <action-record name="action-planningline-default-record" model="com.axelor.apps.organisation.db.PlanningLine">
+    <action-record name="action-planning-line-default-record" model="com.axelor.apps.organisation.db.PlanningLine">
     	<field name="fromDateTime" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()" if="fromDateTime == null"/> 	
+    	<field name="unit" expr="eval: com.axelor.apps.base.db.Unit.all().filter(&quot;self.code = 'HRE'&quot;).fetchOne()"/>
+    	<field name="employee" expr="eval: _parent?.userInfo?.employee"/>
     </action-record>
     
-    <action-record name="action-planningline-set-datetime" model="com.axelor.apps.organisation.db.PlanningLine">
-    	<field name="fromDateTime" expr="call:com.axelor.apps.organisation.service.PlanningLineService:getSpecificDateTime(fromDateTime,8,0,0,0)" if="fromDateTime != null" />
+    <action-record name="action-planning-line-set-datetime" model="com.axelor.apps.organisation.db.PlanningLine">
+    	<field name="fromDateTime" expr="eval: fromDateTime.withTime(8,0,0,0)" if="fromDateTime != null"/>
     </action-record>
     
     <action-method name="action-planning-line-method-compute-start-date-time">
@@ -67,6 +69,10 @@
     
     <action-method name="action-planning-line-method-compute-duration">
     	<call class="com.axelor.apps.organisation.web.PlanningLineController" method="computeDuration"/>
+    </action-method>
+    
+     <action-method name="action-planning-line-method-compute-unit">
+    	<call class="com.axelor.apps.organisation.web.PlanningLineController" method="computeUnit"/>
     </action-method>
     
 </object-views>

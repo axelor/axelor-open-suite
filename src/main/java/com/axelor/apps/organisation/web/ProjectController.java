@@ -51,8 +51,8 @@ public class ProjectController {
 		
 		Project project = request.getContext().asType(Project.class);
 		
-		if(project != null && project.getDefaultTask() != null) {			
-			projectService.createDefaultTask(project);
+		if(project.getDefaultTask() == null) {			
+			projectService.createDefaultTask(Project.find(project.getId()));
 			response.setReload(true);
 		}
 	}
@@ -61,10 +61,8 @@ public class ProjectController {
 		
 		Project affair = request.getContext().asType(Project.class);
 		
-		if(affair != null) {			
-			if(projectService.createPreSalesTask(affair) != null)  {
-				response.setReload(true);
-			}
+		if(projectService.createPreSalesTask(affair) != null)  {
+			response.setReload(true);
 		}
 	}
 	
@@ -75,16 +73,24 @@ public class ProjectController {
 		if(project.getId() != null)  {
 			projectService.updateFinancialInformation(project);
 			
-			response.setValue("initialTurnover", project.getInitialTurnover());
-			response.setValue("initialCost", project.getInitialCost());
-			response.setValue("initialMargin", project.getInitialMargin());
-			response.setValue("estimatedTurnover", project.getEstimatedTurnover());
-			response.setValue("estimatedCost", project.getEstimatedCost());
-			response.setValue("estimatedMargin", project.getEstimatedMargin());
-			response.setValue("realizedTurnover", project.getRealizedTurnover());
-			response.setValue("realizedCost", project.getRealizedCost());
-			response.setValue("realizedMargin", project.getRealizedMargin());
+			response.setValue("initialEstimatedTurnover", project.getInitialEstimatedTurnover());
+			response.setValue("initialEstimatedCost", project.getInitialEstimatedCost());
+			response.setValue("initialEstimatedMargin", project.getInitialEstimatedMargin());
+			response.setValue("realEstimatedTurnover", project.getRealEstimatedTurnover());
+			response.setValue("realEstimatedCost", project.getRealEstimatedCost());
+			response.setValue("realEstimatedMargin", project.getRealEstimatedMargin());
+			response.setValue("realInvoicedTurnover", project.getRealInvoicedTurnover());
+			response.setValue("realInvoicedCost", project.getRealInvoicedCost());
+			response.setValue("realInvoicedMargin", project.getRealInvoicedMargin());
 		}
+	}
+	
+	
+	public void updateTaskProgress(ActionRequest request, ActionResponse response) {
+		
+		Project project = request.getContext().asType(Project.class);
+		
+		projectService.updateTaskProgress(project);
 	}
 	
 	
@@ -107,7 +113,6 @@ public class ProjectController {
 
 		String urlNotExist = URLService.notExist(url.toString());
 		if (urlNotExist == null){
-
 
 			Map<String,Object> mapView = new HashMap<String,Object>();
 			mapView.put("title", "Name "+project.getAffairName());

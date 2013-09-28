@@ -28,28 +28,43 @@
  * All portions of the code written by Axelor are
  * Copyright (c) 2012-2013 Axelor. All Rights Reserved.
  */
-package com.axelor.apps.organisation.db;
+package com.axelor.apps.organisation.service;
 
-/**
- * Interface of TaskUpdateLine object. Enum all static variable of object.
- * 
- */
-public interface ITaskUpdateLine {
+import java.math.BigDecimal;
 
-	/**
-     * Static select in TaskUpdateLine
-     */
+import com.axelor.apps.base.db.SpentTime;
+import com.axelor.apps.organisation.db.TimesheetLine;
 
-    // TYPE SELECT
 
-	static final int TYPE_REVENUE = 1;
-	static final int TYPE_COST = 2;
+public class SpentTimeService {
+
+
+	public SpentTime createSpentTime (TimesheetLine timesheetLine)  {
+		
+		SpentTime spentTime = new SpentTime();
+		spentTime.setDate(timesheetLine.getDate());
+		spentTime.setTask(timesheetLine.getTask());
+		BigDecimal duration = timesheetLine.getDuration();
+		spentTime.setDurationHours(duration.intValue());
+		spentTime.setDurationMinutesSelect(this.getMinutesDuration(duration));
+		spentTime.setTimesheetImputed(true);
+		spentTime.setUserInfo(timesheetLine.getTimesheet().getUserInfo());
+		
+		return spentTime;
+		
+	}
 	
-	 // APPLICATION SELECT
-
-	static final int APPLICATION_INITIAL_ESTIMATED = 1;
-	static final int APPLICATION_REAL_ESTIMATED = 2;
-	static final int APPLICATION_REAL_INVOICED = 3;
 	
-	
+	public int getMinutesDuration(BigDecimal duration)  {
+		
+		int minutes = duration.subtract(duration.setScale(0)).multiply(new BigDecimal(60)).intValue();
+		
+		if(minutes >= 53 && minutes < 8)  {  return 00;  }
+		else if(minutes >= 8 && minutes < 23)  {  return 15;  }
+		else if(minutes >= 23 && minutes < 38)  {  return 30;  }
+		else if(minutes >= 38 && minutes < 53)  {  return 45;  }
+		
+		return 00;
+		
+	}
 }

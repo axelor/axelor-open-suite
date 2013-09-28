@@ -75,4 +75,13 @@ public class TimesheetController {
 		response.setReload(true);
 		
 	}
+	
+	public void validate(ActionRequest request, ActionResponse response) {
+		
+		Timesheet timesheet = request.getContext().asType(Timesheet.class);
+		
+		timesheetService.get().validate(timesheet);
+		
+		response.setReload(true);
+	}
 }

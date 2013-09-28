@@ -30,34 +30,27 @@
  */
 package com.axelor.apps.organisation.service;
 
+import java.math.BigDecimal;
+
 import org.joda.time.Duration;
-import org.joda.time.Interval;
 import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.tool.date.DurationTool;
+import com.axelor.exception.AxelorException;
+import com.google.inject.Inject;
 
 public class PlanningLineService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PlanningLineService.class);
 	
-	public Duration computeDuration(LocalDateTime startDateTime, LocalDateTime endDateTime)  {
+	@Inject
+	private UnitConversionService unitConversionService;
 	
-		return new Interval(startDateTime.toDateTime(), endDateTime.toDateTime()).toDuration();
-	}
 	
-	public int getHoursDuration(Duration duration)  {
-		
-		return duration.toStandardHours().getHours();
-	}
-	
-	public int getDaysDuration(int hours)  {
-		
-		double day = (double)hours/(double)24;
-		double arrondi = Math.ceil(day);
-		
-		return (int) arrondi;
-	}
-
 	public int getMinutesDuration(Duration duration)  {
 		
 		int minutes = duration.toStandardMinutes().getMinutes() % 60;
@@ -72,18 +65,33 @@ public class PlanningLineService {
 		return 00;
 		
 	}
+	
 
-	public LocalDateTime computeStartDateTime(double durationDay, LocalDateTime endDateTime)  {
+	public LocalDateTime computeStartDateTime(BigDecimal duration, LocalDateTime endDateTime, Unit unit) throws AxelorException  {
 			
-		return endDateTime.minusHours((int)durationDay*24);	
+		return endDateTime.minusMinutes(unitConversionService.convert(unit, Unit.all().filter("self.code = 'MIN'").fetchOne(), duration).intValue());
 		
 	}
 	
-	public LocalDateTime computeEndDateTime(LocalDateTime startDateTime, double durationDay)  {
+	
+	public LocalDateTime computeEndDateTime(LocalDateTime startDateTime, BigDecimal duration, Unit unit) throws AxelorException  {
 		
-		return startDateTime.plusHours((int)durationDay*24);
+		return startDateTime.plusMinutes(unitConversionService.convert(unit, Unit.all().filter("self.code = 'MIN'").fetchOne(), duration).intValue());
 		
 	}
+	
+	
+	public BigDecimal getDuration(LocalDateTime startDateTime, LocalDateTime endDateTime, Unit unit) throws AxelorException  {
+		
+		return unitConversionService.convert(
+				Unit.all().filter("self.code = 'MIN'").fetchOne(), 
+				unit, 
+				new BigDecimal(
+						DurationTool.getMinutesDuration(
+								DurationTool.computeDuration(startDateTime, endDateTime))));
+		
+	}
+	
 	
 	public LocalDateTime getSpecificDateTime(LocalDateTime dateTime, int hour, int minute, int second, int millissecond)  {
 		

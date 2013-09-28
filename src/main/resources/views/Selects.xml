@@ -105,7 +105,7 @@
 		<option value="3">Low</option>
 	</selection>
 	
-	<selection name="organisation.task.status.select">
+	<selection name="organisation.project.status.select">
 		<option value="1">Draft</option>
 		<option value="2">Confirmed</option>
 		<option value="3">Started</option>
@@ -361,9 +361,15 @@
 	</selection>
 	
 	<selection name="organisation.task.update.line.application.select">
-		<option value="1">Initial</option>
-		<option value="2">Estimated</option>
-		<option value="3">Realized</option>
+		<option value="1">Initial estimated</option>
+		<option value="2">Real estimated</option>
+		<option value="3">Real invoiced</option>
+	</selection>
+	
+	<selection name="organisation.project.real.estimated.method.select">
+		<option value="1">None</option>
+		<option value="2">Progress</option>
+		<option value="3">Subscription</option>
 	</selection>
 	
 	

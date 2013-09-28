@@ -28,28 +28,40 @@
  * All portions of the code written by Axelor are
  * Copyright (c) 2012-2013 Axelor. All Rights Reserved.
  */
-package com.axelor.apps.organisation.db;
+package com.axelor.apps.organisation.service;
 
-/**
- * Interface of TaskUpdateLine object. Enum all static variable of object.
- * 
- */
-public interface ITaskUpdateLine {
+import java.util.ArrayList;
 
-	/**
-     * Static select in TaskUpdateLine
-     */
+import com.axelor.apps.organisation.db.FinancialInformationHistoryLine;
+import com.axelor.apps.organisation.db.Task;
+import com.axelor.exception.AxelorException;
+import com.google.inject.Inject;
 
-    // TYPE SELECT
 
-	static final int TYPE_REVENUE = 1;
-	static final int TYPE_COST = 2;
+public class FinancialInformationHistoryService {
+
+	@Inject
+	private FinancialInformationHistoryLineService financialInformationHistoryLineService;
 	
-	 // APPLICATION SELECT
-
-	static final int APPLICATION_INITIAL_ESTIMATED = 1;
-	static final int APPLICATION_REAL_ESTIMATED = 2;
-	static final int APPLICATION_REAL_INVOICED = 3;
 	
+	public void addFinancialInformationHistoryLine(Task task, FinancialInformationHistoryLine financialInformationHistoryLine) throws AxelorException  {
+		
+		if(task.getFinancialInformationHistoryLineList() == null)  {
+			task.setFinancialInformationHistoryLineList(new ArrayList<FinancialInformationHistoryLine>());
+		}
+		task.getFinancialInformationHistoryLineList().add(financialInformationHistoryLine);
+	}
+	
+	
+	public void updateFinancialInformationInitialEstimatedHistory(Task task) throws AxelorException  {
+		
+		this.addFinancialInformationHistoryLine(
+				task, 
+				financialInformationHistoryLineService.createFinancialInformationHistoryLine(
+						task, 
+						task.getInitialEstimatedTurnover(), 
+						task.getInitialEstimatedCost(), 
+						task.getInitialEstimatedMargin()));
+	}
 	
 }

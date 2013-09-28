@@ -30,10 +30,14 @@
  */
 package com.axelor.apps.organisation.web;
 
-import org.joda.time.Duration;
+import java.math.BigDecimal;
 
+import org.joda.time.LocalDateTime;
+
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.organisation.db.PlanningLine;
 import com.axelor.apps.organisation.service.PlanningLineService;
+import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -43,47 +47,69 @@ public class PlanningLineController {
 	@Inject
 	private PlanningLineService planningLineService;
 	
-	public void computeStartDateTime(ActionRequest request, ActionResponse response) {
+	public void computeStartDateTime(ActionRequest request, ActionResponse response) throws AxelorException {
 				
-		PlanningLine planningline = request.getContext().asType(PlanningLine.class);
+		PlanningLine planningLine = request.getContext().asType(PlanningLine.class);
 		
-		if(planningline != null && planningline.getFromDateTime() != null)  {
-			if(planningline.getToDateTime() != null) {
-				Duration duration =  planningLineService.computeDuration(planningline.getFromDateTime(), planningline.getToDateTime());
-				response.setValue("duration", planningLineService.getDaysDuration(planningLineService.getHoursDuration(duration)));
+		LocalDateTime fromDateTime = planningLine.getFromDateTime();
+		LocalDateTime toDateTime = planningLine.getToDateTime();
+		Unit unit = planningLine.getUnit();
+		
+		if(planningLine.getFromDateTime() != null)  {
+			if(planningLine.getToDateTime() != null) {
+				response.setValue("duration", planningLineService.getDuration(fromDateTime, toDateTime, unit));
 			}
-			else if(planningline.getDuration() != null) {
-				response.setValue("toDateTime", planningLineService.computeEndDateTime(planningline.getFromDateTime(), planningline.getDuration().doubleValue()));
+			else if(planningLine.getDuration() != null) {
+				response.setValue("toDateTime", planningLineService.computeEndDateTime(fromDateTime, planningLine.getDuration(), unit));
 			}
 		}
 	}
 	
-	public void computeEndDateTime(ActionRequest request, ActionResponse response) {
+	public void computeEndDateTime(ActionRequest request, ActionResponse response) throws AxelorException {
 		
-		PlanningLine planningline = request.getContext().asType(PlanningLine.class);
+		PlanningLine planningLine = request.getContext().asType(PlanningLine.class);
 		
-		if(planningline != null && planningline.getToDateTime() != null)  {
-			if(planningline.getFromDateTime() != null)  {
-				Duration duration =  planningLineService.computeDuration(planningline.getFromDateTime(), planningline.getToDateTime());
-				response.setValue("duration", planningLineService.getDaysDuration(planningLineService.getHoursDuration(duration)));
+		LocalDateTime fromDateTime = planningLine.getFromDateTime();
+		LocalDateTime toDateTime = planningLine.getToDateTime();
+		Unit unit = planningLine.getUnit();
+		
+		if(toDateTime != null)  {
+			if(fromDateTime != null)  {
+				response.setValue("duration", planningLineService.getDuration(planningLine.getFromDateTime(), toDateTime, unit));
 			}
-			else if(planningline.getDuration() != null)  {
-				response.setValue("fromDateTime", planningLineService.computeStartDateTime(planningline.getDuration().doubleValue(), planningline.getToDateTime()));
+			else if(planningLine.getDuration() != null)  {
+				response.setValue("fromDateTime", planningLineService.computeStartDateTime(planningLine.getDuration(), toDateTime, unit));
 			}
 		}
 	}
  	
-	public void computeDuration(ActionRequest request, ActionResponse response) {
+	public void computeDuration(ActionRequest request, ActionResponse response) throws AxelorException {
 		
-		PlanningLine planningline = request.getContext().asType(PlanningLine.class);
+		PlanningLine planningLine = request.getContext().asType(PlanningLine.class);
 		
-		if(planningline != null && planningline.getDuration() != null)  {
-			if(planningline.getFromDateTime() != null)  {
-				response.setValue("toDateTime", planningLineService.computeEndDateTime(planningline.getFromDateTime(), planningline.getDuration().doubleValue()));
+		BigDecimal duration = planningLine.getDuration();
+		
+		if(duration != null)  {
+			if(planningLine.getFromDateTime() != null)  {
+				response.setValue("toDateTime", planningLineService.computeEndDateTime(planningLine.getFromDateTime(), duration, planningLine.getUnit()));
 			}
-			else if(planningline.getToDateTime() != null)  {
-				response.setValue("fromDateTime", planningLineService.computeStartDateTime(planningline.getDuration().doubleValue(), planningline.getToDateTime()));
+			else if(planningLine.getToDateTime() != null)  {
+				response.setValue("fromDateTime", planningLineService.computeStartDateTime(duration, planningLine.getToDateTime(), planningLine.getUnit()));
 			}
 		}
 	}
+	
+	public void computeUnit(ActionRequest request, ActionResponse response) throws AxelorException {
+		
+		PlanningLine planningLine = request.getContext().asType(PlanningLine.class);
+		
+		LocalDateTime fromDateTime = planningLine.getFromDateTime();
+		LocalDateTime toDateTime = planningLine.getToDateTime();
+		
+		if(fromDateTime != null && toDateTime != null)  {
+			response.setValue("duration", planningLineService.getDuration(fromDateTime, toDateTime, planningLine.getUnit()));
+		}
+	}
+	
+	
 }

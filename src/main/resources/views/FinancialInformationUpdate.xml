@@ -14,8 +14,7 @@
     </grid>
     
     <form name="financial-information-update-form" title="Mise à jour des informations financières" model="com.axelor.apps.organisation.db.FinancialInformationUpdate" cols="4" 
-    onNew="action-financial-information-update-record-default" 
-    onSave="action-financial-information-update-record-project">
+    onNew="action-financial-information-update-record-default">
         <field name="date"/>
         <field name="userInfo"/>
         <field name="product"/>

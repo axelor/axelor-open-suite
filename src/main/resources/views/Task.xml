@@ -32,7 +32,7 @@
     		<field name="statusSelect" showTitle="false" colSpan="1" widget="NavSelect" onChange="action-task-attrs-status-select"/>
     	</group>
     	<group name="context" title="Context" colSpan="4" cols="6">
-       		<field name="project" onChange="action-task-attrs-project-title,action-task-attrs-hide-financial"/>
+       		<field name="project" onChange="action-task-attrs-project-title,action-task-attrs-hide-financial,action-task-record-real-estimated-method"/>
         	<field name="startDateT"/>
         	<field name="endDateT"/>  
         	<field name="userInfo"/>
@@ -71,46 +71,50 @@
 	            <field name="notes" colSpan="4" showTitle="false"/>
 	        </page>
 	        <page name="financialInformation" title="Financial information" colSpan="4">
+	        	<field name="realEstimatedMethodSelect"/>
+	        	<field name="estimatedAmount"/>
+	        	<field name="project.company.currency"/>
 	        	<field name="exportTypeSelect"/>
 	            <button name="printTask" colSpan="2" title="Voir rapport estimations" onClick="action-print-task-report" icon="img/icons/print.png"/>
-				<group title="Initial" colSpan="4" cols="6">
-	                <field name="initialTurnover"/>
-	                <field name="initialCost"/>
-	                <field name="initialMargin"/>
+				<group title="Initial estimated" colSpan="4" cols="6" hideIf="realEstimatedMethodSelect == 1">
+	                <field name="initialEstimatedTurnover"/>
+	                <field name="initialEstimatedCost"/>
+	                <field name="initialEstimatedMargin"/>
+					<button name="updateInitialEstimatedAmounts" colSpan="2" onClick="action-task-method-update-initial-estimated-amounts" showIf="statusSelect >= 3"/>
+					<field name="financialInformationHistoryLineList" colSpan="4" showIf="statusSelect >= 3"/>
 	            </group>
-	            <group title="Estimated" colSpan="4" cols="6">
-	                <field name="estimatedTurnover"/>
-	                <field name="estimatedCost"/>
-	                <field name="estimatedMargin"/>
+	            <group title="Real estimated" colSpan="4" cols="6">
+	                <field name="realEstimatedTurnover"/>
+	                <field name="realEstimatedCost"/>
+	                <field name="realEstimatedMargin"/>
 	            </group>
-	            <group title="Realized" colSpan="4" cols="6">
-	                <field name="realizedTurnover"/>
-	                <field name="realizedCost"/>
-	                <field name="realizedMargin"/>
+	            <group title="Real invoiced" colSpan="4" cols="6">
+	                <field name="realInvoicedTurnover"/>
+	                <field name="realInvoicedCost"/>
+	                <field name="realInvoicedMargin"/>
 	            </group>
-	            
 	        </page>
 	        <page title="Links" colSpan="4">
 	        	<group title="Update financial information" collapseIf="financialInformationUpdateList == null || financialInformationUpdateList.isEmpty()" canCollapse="true" colSpan="4">
 	        		<field name="financialInformationUpdateList" colSpan="4" showTitle="false"/>
 	        	</group>
 	        	<notebook>
-	        		<page title="Initial">
+	        		<page title="Initial estimated" hideIf="realEstimatedMethodSelect == 1">
 	        			<portlet colSpan="4" action="action-task-view-submitted-sales-order-line"/>
 	     				<portlet colSpan="4" action="action-task-view-submitted-purchase-order-line"/>
-	     				<portlet colSpan="4" action="action-task-view-initial-financial-information-update"/>
+	     				<portlet colSpan="4" action="action-task-view-initial-estimated-financial-information-update"/>
 	        		</page>
-	        		<page title="Estimated">
+	        		<page title="Real estimated">
 	        			<portlet colSpan="4" action="action-task-view-validated-sales-order-line"/>
 	     				<portlet colSpan="4" action="action-task-view-validated-purchase-order-line"/>
-	     				<portlet colSpan="4" action="action-task-view-estimated-financial-information-update"/>
+	     				<portlet colSpan="4" action="action-task-view-real-estimated-financial-information-update"/>
 	        		</page>
-	        		<page title="Realized">
+	        		<page title="Real invoiced">
 	        			<portlet colSpan="4" action="action-task-view-customer-invoice-line"/>
 			     		<portlet colSpan="4" action="action-task-view-supplier-invoice-line"/>
 			     		<portlet colSpan="4" action="action-task-view-timesheet-line"/>
 			     		<portlet colSpan="4" action="action-task-view-expense-line"/>
-			     		<portlet colSpan="4" action="action-task-view-realized-financial-information-update"/>
+			     		<portlet colSpan="4" action="action-task-view-real-invoiced-financial-information-update"/>
 	        		</page>
 	        	</notebook>
 	        </page>
@@ -199,11 +203,19 @@
 	<action-method name="action-task-method-get-planned-time">
 		<call class="com.axelor.apps.organisation.web.TaskController" method="getPlannedTime"/>
 	</action-method>
+	
+	<action-method name="action-task-method-update-initial-estimated-amounts">
+		<call class="com.axelor.apps.organisation.web.TaskController" method="updateFinancialInformationInitialEstimated"/>
+	</action-method>
     
     <action-record name="action-task-salesOrderLine-on-change" model="com.axelor.apps.organisation.db.Task">
     	<field name="product" expr="eval:salesOrderLine?.product" if="salesOrderLine"/>
     	<field name="qty" expr="eval:salesOrderLine?.qty" if="salesOrderLine"/>
     	<field name="price" expr="eval:salesOrderLine?.price" if="salesOrderLine"/>
+    </action-record>
+    
+    <action-record name="action-task-record-real-estimated-method" model="com.axelor.apps.organisation.db.Task">
+    	<field name="realEstimatedMethodSelect" expr="eval: project.realEstimatedMethodSelect"/>
     </action-record>
     
     <action-method name="action-task-method-create-invoice">
@@ -246,7 +258,7 @@
   		<context name="id" expr="eval: id"/>
   	</action-view>
   	
-  	<action-view name="action-task-view-initial-financial-information-update" title="Financial information updates" model="com.axelor.apps.organisation.db.FinancialInformationUpdate">
+  	<action-view name="action-task-view-initial-estimated-financial-information-update" title="Financial information updates" model="com.axelor.apps.organisation.db.FinancialInformationUpdate">
   		<view type="grid" name="financial-information-update-grid"/>
 		<view type="form" name="financial-information-update-form"/>
   		<domain>self.applicationSelect = 1 and self.task.id = :id</domain>
@@ -260,7 +272,7 @@
   		<context name="id" expr="eval: id"/>
   	</action-view>
   	
-  	<action-view name="action-task-view-estimated-financial-information-update" title="Financial information updates" model="com.axelor.apps.organisation.db.FinancialInformationUpdate">
+  	<action-view name="action-task-view-real-estimated-financial-information-update" title="Financial information updates" model="com.axelor.apps.organisation.db.FinancialInformationUpdate">
   		<view type="grid" name="financial-information-update-grid"/>
 		<view type="form" name="financial-information-update-form"/>
   		<domain>self.applicationSelect = 2 and self.task.id = :id</domain>
@@ -277,14 +289,14 @@
   	<action-view name="action-task-view-customer-invoice-line" title="Customer invoice lines" model="com.axelor.apps.account.db.InvoiceLine">
   		<view type="grid" name="invoice-line-grid"/>
 		<view type="form" name="invoice-line-form"/>
-  		<domain>self.invoice.status.code = 'dis' and self.task.id = :id and (self.invoice.operationTypeSelect = 3 or self.invoice.operationTypeSelect = 4)</domain>
+  		<domain>(self.invoice.status.code = 'val' or self.invoice.status.code = 'dis') and self.task.id = :id and (self.invoice.operationTypeSelect = 3 or self.invoice.operationTypeSelect = 4)</domain>
   		<context name="id" expr="eval: id"/>
   	</action-view>
   	
   	<action-view name="action-task-view-supplier-invoice-line" title="Supplier invoice lines" model="com.axelor.apps.account.db.InvoiceLine">
   		<view type="grid" name="invoice-line-grid"/>
 		<view type="form" name="invoice-line-form"/>
-  		<domain>self.invoice.status.code = 'dis' and self.task.id = :id and (self.invoice.operationTypeSelect = 1 or self.invoice.operationTypeSelect = 2)</domain>
+  		<domain>(self.invoice.status.code = 'val' or self.invoice.status.code = 'dis') and self.task.id = :id and (self.invoice.operationTypeSelect = 1 or self.invoice.operationTypeSelect = 2)</domain>
   		<context name="id" expr="eval: id"/>
   	</action-view>
   	
@@ -302,7 +314,7 @@
   		<context name="id" expr="eval: id"/>
   	</action-view>
   	
-  	<action-view name="action-task-view-realized-financial-information-update" title="Financial information updates" model="com.axelor.apps.organisation.db.FinancialInformationUpdate">
+  	<action-view name="action-task-view-real-invoiced-financial-information-update" title="Financial information updates" model="com.axelor.apps.organisation.db.FinancialInformationUpdate">
   		<view type="grid" name="financial-information-update-grid"/>
 		<view type="form" name="financial-information-update-form"/>
   		<domain>self.applicationSelect = 3 and self.task.id = :id</domain>

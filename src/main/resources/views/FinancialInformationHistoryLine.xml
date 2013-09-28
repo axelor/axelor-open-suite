@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="financial-information-update-grid" title="Les mises à jours des informations financières" model="com.axelor.apps.organisation.db.FinancialInformationHistoryLine">
+        <field name="dateT"/>
+        <field name="userInfo"/>
+        <field name="turnover"/>
+        <field name="cost"/>
+        <field name="margin"/>
+    </grid>
+    
+    <form name="financial-information-update-form" title="Mise à jour des informations financières" model="com.axelor.apps.organisation.db.FinancialInformationHistoryLine" cols="4">
+        <field name="dateT"/>
+        <field name="userInfo"/>
+        <field name="turnover"/>
+        <field name="cost"/>
+        <field name="margin"/>
+    </form>
+    
+    
+</object-views>

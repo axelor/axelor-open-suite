@@ -44,14 +44,21 @@ import com.axelor.apps.organisation.db.Task;
 import com.axelor.apps.organisation.db.Timesheet;
 import com.axelor.apps.organisation.db.TimesheetLine;
 import com.axelor.db.JPA;
+import com.axelor.exception.AxelorException;
 import com.google.common.collect.Lists;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.persist.Transactional;
 
 public class TimesheetService {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(TimesheetService.class); 
 	
-	@Transactional
+	@Inject
+	private Injector injector;
+	
+	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void getTaskSpentTime(Timesheet timesheet)  {
 		
 		UserInfo userInfo = timesheet.getUserInfo();
@@ -104,6 +111,33 @@ public class TimesheetService {
 		
 		return timesheetLine;
 		
+	}
+	
+	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void validate(Timesheet timesheet)  {
+		
+		List<Task> taskList = Lists.newArrayList();
+		
+		if(timesheet.getTimesheetLineList() != null)  {
+			for(TimesheetLine timesheetLine : timesheet.getTimesheetLineList())  {
+				
+				Task task = timesheetLine.getTask();
+				if(task != null && timesheetLine.getSpentTime() == null)  {
+					timesheetLine.setSpentTime(
+							injector.getInstance(SpentTimeService.class).createSpentTime(timesheetLine));
+					if(!taskList.contains(task))  {
+						taskList.add(task);
+					}
+				}
+			}
+		}
+		
+		timesheet.save();
+
+		if(!taskList.isEmpty())  {
+			injector.getInstance(TaskService.class).updateTaskProgress(taskList);
+		}
 	}
 	
 	

@@ -28,28 +28,37 @@
  * All portions of the code written by Axelor are
  * Copyright (c) 2012-2013 Axelor. All Rights Reserved.
  */
-package com.axelor.apps.organisation.db;
+package com.axelor.apps.organisation.web;
 
-/**
- * Interface of TaskUpdateLine object. Enum all static variable of object.
- * 
- */
-public interface ITaskUpdateLine {
+import com.axelor.apps.base.service.PeriodService;
+import com.axelor.apps.organisation.db.Planning;
+import com.axelor.exception.service.TraceBackService;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 
-	/**
-     * Static select in TaskUpdateLine
-     */
+public class PlanningController {
 
-    // TYPE SELECT
-
-	static final int TYPE_REVENUE = 1;
-	static final int TYPE_COST = 2;
+	@Inject
+	private Provider<PeriodService> periodService;
 	
-	 // APPLICATION SELECT
-
-	static final int APPLICATION_INITIAL_ESTIMATED = 1;
-	static final int APPLICATION_REAL_ESTIMATED = 2;
-	static final int APPLICATION_REAL_INVOICED = 3;
 	
+	
+	public void getPeriod(ActionRequest request, ActionResponse response) {
+		
+		Planning planning = request.getContext().asType(Planning.class);
+	
+		try {
+			if(planning.getDate() != null && planning.getUserInfo() != null && planning.getUserInfo().getActiveCompany() != null) {
+				
+				response.setValue("period", periodService.get().rightPeriod(planning.getDate(), planning.getUserInfo().getActiveCompany()));				
+			}
+			else {
+				response.setValue("period", null);
+			}
+		}
+		catch (Exception e){ TraceBackService.trace(response, e); }
+	}
 	
 }
