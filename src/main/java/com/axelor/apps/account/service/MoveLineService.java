@@ -362,6 +362,10 @@ public class MoveLineService {
 			
 			account2 = accountManagementService.getProductAccount(accountManagement, isPurchase);
 			
+			if(account2 == null)  {
+				throw new AxelorException(String.format("Compte comptable absent de la configuration pour la ligne : %s (société : %s)", invoiceLine.getName(), company.getName()), IException.CONFIGURATION_ERROR);
+			}
+			
 			for (AnalyticAccountManagement analyticAccountManagement : accountManagement.getAnalyticAccountManagementList()){
 				if(analyticAccountManagement.getAnalyticAccount() == null){
 					throw new AxelorException(String.format("Le compte analytique %s associé au compte comptable de vente pour le produit %s n'est pas configuré: (société : %s)", analyticAccountManagement.getAnalyticAxis().getName(),invoiceLine.getProductName(), company.getName()), IException.CONFIGURATION_ERROR);
