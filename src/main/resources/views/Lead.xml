@@ -13,7 +13,9 @@
         <field name="statusSelect"/>
     </grid>
     
-    <form name="lead-form" title="Lead" model="com.axelor.apps.crm.db.Lead" cols="4" onNew="action-account-record-new,action-lead-default-record-new">
+    <form name="lead-form" title="Lead" model="com.axelor.apps.crm.db.Lead" cols="4" 
+    onNew="action-account-record-new,action-lead-default-record-new" 
+    onLoad="action-lead-attrs-readonly-other-address">
 	    <toolbar>
 	        <button name="convertLead" title="Convert lead" hideIf="statusSelect == 4" colSpan="1" onClick="save,action-lead-view-convert-lead"/>
 	        <button name="sendByEmail" title="Send email" colSpan="1" onClick="save,action-send-by-email-with-template"/>
@@ -60,51 +62,53 @@
 	                <field name="team"/>
 	            </group>
 	        </group>  
-	    </group>
-	    <group title="Informations" colSpan="4">
-	        <group title="Primary address" colSpan="2" cols="2">
-	            <field name="primaryAddress"/>
-	            <field name="primaryCity"/>
-	            <field name="primaryState"/>
-	            <field name="primaryPostalCode"/>
-	            <field name="primaryCountry"/>
-	        </group>
-	        <group title="Other address" colSpan="2" cols="2">
-	            <field name="otherAddress"/>
-	            <field name="otherCity"/>
-	            <field name="otherState"/>
-	            <field name="otherPostalCode"/>
-	            <field name="otherCountry"/>
-	            <field name="isCopyAddress" onChange="action-lead-record-other-address,action-lead-attrs-readonly-other-address"/>
-	        </group>
-	        <group title="Extra information" colSpan="4" css="groupTitle" cols="6">
-	            <field name="officeName"/>
-	            <field name="department"/>
-	            <field name="webSite"/>
-	            <field name="description" colSpan="6" widget="TEXT[height=3]"/>
-	        </group>
-	        <break/>
-	        <group title="Status details" colSpan="2" css="groupTitle" cols="2">
-	            <field name="statusSelect"/>
-	            <field name="statusDescription"/>
-	        </group>
-	        <group title="Source details" colSpan="2" css="groupTitle" cols="2">
-	            <field name="source"/>
-	            <field name="sourceDescription"/>
-	        </group>
-	        <group title="Marketing" colSpan="4" css="groupTitle" cols="6">
-	            <field name="campaign"/>
-	            <field name="referredBy"/>
-	            <field name="isDoNotCall" colSpan="2"/>
-	        </group>
-	        <field name="opportunityAmount"/>
-	    </group>
-	    <group title="Reportings" colSpan="4" canCollapse="true">
-	        <portlet colSpan="4" action="action-lead-view-upcoming-events"/>
-	        <portlet colSpan="4" action="action-lead-view-historical-events-completed"/>
-	        <portlet colSpan="4" action="action-lead-view-opportunity"/>
-	        <portlet colSpan="4" action="action-lead-view-event-ticket"/>
-	    </group>
+         </group>  
+	    <notebook colSpan="4">
+	        <page name="information" title="Informations">
+		        <group title="Primary address" colSpan="2" cols="2">
+		            <field name="primaryAddress"/>
+		            <field name="primaryCity"/>
+		            <field name="primaryState"/>
+		            <field name="primaryPostalCode"/>
+		            <field name="primaryCountry"/>
+		        </group>
+		        <group title="Other address" colSpan="2" cols="2">
+		            <field name="otherAddress"/>
+		            <field name="otherCity"/>
+		            <field name="otherState"/>
+		            <field name="otherPostalCode"/>
+		            <field name="otherCountry"/>
+		            <field name="isCopyAddress" onChange="action-lead-record-other-address,action-lead-attrs-readonly-other-address"/>
+		        </group>
+		        <group title="Extra information" colSpan="4" css="groupTitle" cols="6">
+		            <field name="officeName"/>
+		            <field name="department"/>
+		            <field name="webSite"/>
+		            <field name="description" colSpan="6" widget="TEXT[height=3]"/>
+		        </group>
+		        <break/>
+		        <group title="Status details" colSpan="2" css="groupTitle" cols="2">
+		            <field name="statusSelect"/>
+		            <field name="statusDescription"/>
+		        </group>
+		        <group title="Source details" colSpan="2" css="groupTitle" cols="2">
+		            <field name="source"/>
+		            <field name="sourceDescription"/>
+		        </group>
+		        <group title="Marketing" colSpan="4" css="groupTitle" cols="6">
+		            <field name="campaign"/>
+		            <field name="referredBy"/>
+		            <field name="isDoNotCall" colSpan="2"/>
+		        </group>
+		        <field name="opportunityAmount"/>
+		   </page>
+	    	<page name="activities" title="Activities" >
+		        <portlet colSpan="4" action="action-lead-view-upcoming-events"/>
+		        <portlet colSpan="4" action="action-lead-view-historical-events-completed"/>
+		        <portlet colSpan="4" action="action-lead-view-opportunity"/>
+		        <portlet colSpan="4" action="action-lead-view-event-ticket"/>
+	        </page>
+        </notebook>
 	</form>
     
     <action-record name="action-lead-record-new" model="com.axelor.apps.crm.db.Lead">
@@ -119,19 +123,19 @@
     </action-record>
     
     <action-record name="action-lead-record-other-address" model="com.axelor.apps.crm.db.Lead">
-    	<field name="otherAddress" expr="eval: primaryAddress" if="!isCopyAddress"/>
-    	<field name="otherCity" expr="eval: primaryCity" if="!isCopyAddress"/>
-    	<field name="otherState" expr="eval: primaryState" if="!isCopyAddress"/>
-    	<field name="otherPostalCode" expr="eval: primaryPostalCode" if="!isCopyAddress"/>
-    	<field name="otherCountry" expr="eval: primaryCountry" if="!isCopyAddress"/>
+    	<field name="otherAddress" expr="eval: primaryAddress" if="isCopyAddress"/>
+    	<field name="otherCity" expr="eval: primaryCity" if="isCopyAddress"/>
+    	<field name="otherState" expr="eval: primaryState" if="isCopyAddress"/>
+    	<field name="otherPostalCode" expr="eval: primaryPostalCode" if="isCopyAddress"/>
+    	<field name="otherCountry" expr="eval: primaryCountry" if="isCopyAddress"/>
     </action-record>
     
    	<action-attrs name="action-lead-attrs-readonly-other-address">
-   		<attribute name="readonly" for="otherAddress" expr="!$readonly()"/>
-   		<attribute name="readonly" for="otherCity" expr="eval: !$readonly()"/>
-   		<attribute name="readonly" for="otherState" expr="eval: !$readonly()"/>
-   		<attribute name="readonly" for="otherPostalCode" expr="eval: !$readonly()"/>
-   		<attribute name="readonly" for="otherCountry" expr="eval: !$readonly()"/>
+   		<attribute name="readonly" for="otherAddress" expr="isCopyAddress"/>
+   		<attribute name="readonly" for="otherCity" expr="eval: isCopyAddress"/>
+   		<attribute name="readonly" for="otherState" expr="eval: isCopyAddress"/>
+   		<attribute name="readonly" for="otherPostalCode" expr="eval: isCopyAddress"/>
+   		<attribute name="readonly" for="otherCountry" expr="eval: isCopyAddress"/>
    	</action-attrs>
    	
    	<action-view name="action-lead-view-convert-lead" title="Convert lead" model="com.axelor.apps.base.db.Wizard">

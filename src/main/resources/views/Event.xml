@@ -83,12 +83,14 @@
     
     
     <grid name="call-grid" title="Calls" model="com.axelor.apps.crm.db.Event" orderBy="-startDateTime">
-        <field name="subject"/>
-        <field name="callStatusSelect"/>
-        <field name="statusSelect"/>
-        <field name="startDateTime"/>
-        <field name="relatedToSelect"/>
-    </grid>
+	    <field name="subject"/>
+	    <field name="callStatusSelect"/>
+	    <field name="contact"/>
+	    <field name="startDateTime"/>
+	    <field name="endDateTime"/>
+	    <field name="statusSelect"/>
+	    <field name="userInfo"/>
+	</grid>
     
     <form name="call-form" title="Call" model="com.axelor.apps.crm.db.Event" cols="2" colWidths="*,400" onNew="action-event-new-record">
 	    <group colSpan="1" cols="4">
@@ -143,20 +145,23 @@
     
     
     
-  <calendar name="meeting-calendar" title="Meetings" mode="month" colorBy="userInfo" 
-    eventStart="startDateTime" 
-    eventStop="endDateTime" 
-    eventLength="1">
-    <field name="subject" />
-  </calendar>
+	<calendar name="meeting-calendar" title="Meetings" mode="month" colorBy="userInfo" 
+	    eventStart="startDateTime" 
+	    eventStop="endDateTime" 
+	    eventLength="1">
+	    <field name="subject" />
+	</calendar>
     
     
     <grid name="meeting-grid" title="Meetings" model="com.axelor.apps.crm.db.Event" orderBy="-startDateTime">
-        <field name="subject"/>
-        <field name="statusSelect"/>
-        <field name="startDateTime"/>
-        <field name="relatedToSelect"/>
-    </grid>
+	    <field name="meetingType"/>
+	    <field name="subject"/>
+	    <field name="relatedToSelect"/>
+	    <field name="startDateTime"/>
+	    <field name="endDateTime"/>
+	    <field name="statusSelect"/>
+	    <field name="userInfo"/>
+	</grid>
     
     <form name="meeting-form" title="Meeting" model="com.axelor.apps.crm.db.Event" cols="2" colWidths="*,400" onNew="action-event-new-record">
 	    <group colSpan="1" cols="4">
@@ -212,11 +217,13 @@
 	</form>
     
     <grid name="crm-task-grid" title="Tasks" model="com.axelor.apps.crm.db.Event" orderBy="-startDateTime">
-        <field name="subject"/>
-        <field name="taskStatusSelect"/>
-        <field name="startDateTime"/>
-        <field name="relatedToSelect"/>
-    </grid>
+	    <field name="subject"/>
+	    <field name="contactPartner"/>
+	    <field name="endDateTime"/>
+	    <field name="taskStatusSelect"/>    
+	    <field name="prioritySelect"/>
+	    <field name="userInfo"/>
+	</grid>
     
     <form name="crm-task-form" title="Task"  model="com.axelor.apps.crm.db.Event" cols="2" colWidths="*,400"  onNew="action-event-new-record">
 	    <group colSpan="1" cols="4">
@@ -260,17 +267,17 @@
 	</form>
     
     
-     <grid name="ticket-grid" title="Ticket" model="com.axelor.apps.crm.db.Event" orderBy="ticketNumberSeq">
-     	<field name="ticketNumberSeq"/>
-        <field name="subject"/>
-        <field name="ticketStatusSelect"/>
-        <field name="eventCategory"/>
-        <field name="startDateTime"/>
-        <field name="prioritySelect"/>
-        <field name="userInfo"/>
-        <field name="description"/>
-        <field name="progressSelect" widget="SelectProgress"/>
-    </grid>
+	<grid name="ticket-grid" title="Ticket" model="com.axelor.apps.crm.db.Event" orderBy="ticketNumberSeq" >
+	    <field name="ticketNumberSeq"/>
+	    <field name="subject"/>
+	    <field name="eventCategory"/>
+	    <field name="startDateTime"/>
+	    <field name="endDateTime"/>
+	    <field name="userInfo"/>
+	    <field name="prioritySelect"/>
+	    <field name="ticketStatusSelect"/>
+	    <field name="progressSelect" widget="SelectProgress"/>
+	</grid>
     
     <form name="ticket-form" title="Ticket" model="com.axelor.apps.crm.db.Event" cols="6" colWidths="*,400" 
     onLoad="action-event-ticket-attrs-default" 
@@ -285,7 +292,7 @@
 	        </group>
 	        <separator title="Details" colSpan="4"/>
 	        <group colSpan="2" cols="4">
-	            <field name="eventCategory" domain="self.typeSelect = :typeSelect"/>
+	            <field name="eventCategory" widget="SuggestBox" domain="self.typeSelect = :typeSelect"/>
 	            <field name="createdBy" readonly="true"/>
 	            <field name="userInfo" onChange="action-event-record-ticket-responsible-user-info"/>
 	            <field name="responsibleUserInfo"/>
