@@ -15,7 +15,7 @@
     <string name="projectComment" title="Comment"/>
     <string name="companyComment" title="Comment"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
-    <integer name="timeUnitSelect" title="Day/Hour" selection="organisation.timesheet.time.unit.select"/>
+<!--     <integer name="timeUnitSelect" title="Day/Hour" selection="organisation.timesheet.time.unit.select"/> -->
     <many-to-one name="project" title="Affair" ref="com.axelor.apps.organisation.db.Project" />
     
 <!--     Onglet Ligne de temps passé sur les projets/tâches -->

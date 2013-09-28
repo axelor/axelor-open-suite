@@ -12,7 +12,7 @@
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" readonly="true" title="Société"/>
   	<string name="affairName" title="Affair name" required="true" namecolumn="true"/>
   	<string name="affairDescription" title="Affair description"/>
-  	<string name="description" max="1000" multiline="true" title="Description"/>
+  	<string name="description" large="true" multiline="true" title="Description"/>
   	<boolean name="isModel" title="Model ?"/>
   	<boolean name="isProject" title="Project ?"/>
   	<boolean name="isAffair" title="Affair ?"/>
@@ -20,17 +20,19 @@
   	<many-to-one name="defaultTask" ref="com.axelor.apps.organisation.db.Task" title="Default task"/>
   	<boolean name="isReinvoicingExpense" title="Reinvoicing of travel expense"/>
   	<boolean name="isReinvoicingTime" title="Reinvoicing time spent"/>
+  	<integer name="projectStatusSelect" title="Status" selection="organisation.project.status.select"/>
+  	<integer name="realEstimatedMethodSelect" title="Real estimated compute method" selection="organisation.project.real.estimated.method.select"/>
   	
   	<!-- Financial informations -->
-  	<decimal name="initialTurnover" title="Turnover" readonly="true"/>
-  	<decimal name="initialCost" title="Cost" readonly="true"/>
-  	<decimal name="initialMargin" title="Margin" readonly="true"/>
-  	<decimal name="estimatedTurnover" title="Turnover" readonly="true"/>
-  	<decimal name="estimatedCost" title="Cost" readonly="true"/>
-  	<decimal name="estimatedMargin" title="Margin" readonly="true"/>
-  	<decimal name="realizedTurnover" title="Turnover" readonly="true"/>
-  	<decimal name="realizedCost" title="Cost" readonly="true"/>
-  	<decimal name="realizedMargin" title="Margin" readonly="true"/>
+  	<decimal name="initialEstimatedTurnover" title="Turnover" readonly="true"/>
+  	<decimal name="initialEstimatedCost" title="Cost" readonly="true"/>
+  	<decimal name="initialEstimatedMargin" title="Margin" readonly="true"/>
+  	<decimal name="realEstimatedTurnover" title="Turnover" readonly="true"/>
+  	<decimal name="realEstimatedCost" title="Cost" readonly="true"/>
+  	<decimal name="realEstimatedMargin" title="Margin" readonly="true"/>
+  	<decimal name="realInvoicedTurnover" title="Turnover" readonly="true"/>
+  	<decimal name="realInvoicedCost" title="Cost" readonly="true"/>
+  	<decimal name="realInvoicedMargin" title="Margin" readonly="true"/>
   	
   	<decimal name="plannedTime" title="Planned time" readonly="true"/>
   	<decimal name="spentTime" title="Spent time" readonly="true"/>
