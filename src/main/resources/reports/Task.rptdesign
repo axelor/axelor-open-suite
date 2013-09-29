@@ -246,7 +246,7 @@ left outer join supplychain_sales_order_line as SalesOrderLine on (SalesOrderLin
 left outer join supplychain_sales_order as SalesOrder on (SalesOrder.id = SalesOrderLine.sales_order)
 left outer join base_partner as ClientPartner on (SalesOrder.client_partner = ClientPartner.id)
 left outer join base_user_info as UserInfo on (SalesOrder.salesman_user_info = UserInfo.id)
-where Task.id = ? and SalesOrder.status_select = 2]]></xml-property>
+where Task.id = ? and SalesOrder.status_select = 3]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -2596,7 +2596,7 @@ left outer join supplychain_purchase_order_line as PurchaseOrderLine on (Purchas
 left outer join supplychain_purchase_order as PurchaseOrder on (PurchaseOrder.id = PurchaseOrderLine.purchase_order)
 left outer join base_partner as SupplierPartner on (PurchaseOrder.supplier_partner = SupplierPartner.id)
 left outer join base_user_info as UserInfo on (PurchaseOrder.buyer_user_info = UserInfo.id)
-where Task.id = ? and PurchaseOrder.status_select = 2]]></xml-property>
+where Task.id = ? and PurchaseOrder.status_select = 3]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
