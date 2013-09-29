@@ -34,7 +34,7 @@
 DATE=`/bin/date "+%Y%m%d"`
 PATHDUMP="$HOME/dump"
 PATHLOG="$HOME/logs"
-DATABASE="axelor-import"
+DATABASE="axelor-erp"
 
 backupDb ()
 {
