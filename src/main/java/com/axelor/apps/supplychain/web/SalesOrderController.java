@@ -154,15 +154,7 @@ public class SalesOrderController {
 		}
 	}
 	
-	public void createTaskByLines(ActionRequest request, ActionResponse response) throws AxelorException {
-		
-		SalesOrder salesOrder = request.getContext().asType(SalesOrder.class);
-		
-		if(salesOrder != null) {
-			
-			salesOrderService.createTasks(salesOrder);
-		}
-	}
+	
 	
 	public void createStockMoves(ActionRequest request, ActionResponse response) throws AxelorException {
 		

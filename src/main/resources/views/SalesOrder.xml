@@ -197,14 +197,6 @@
 	</action-view>
 	
 	
-	<action-view name="action-sales-order-view-send-by-email" title="Send sales order by email" model="com.axelor.apps.base.db.Wizard">
-		<view type="form" name="generate-so-message-wizard-form"/> 
-<!-- 		if="com.axelor.apps.base.db.Template.all().filter('self.model.packageName = com.axelor.apps.supplychain.db and self.model.name = SalesOrder ').count() > 1"/> -->
-		<context name="_salesOrder" expr="eval: __self__"/>
-	</action-view>
-	
-	
-	
 	<action-attrs name="action-sales-order-attrs-collapse-specific-settings-group">
 		<attribute name="collapse" for="specificSettings" expr="eval: true"/>
 	</action-attrs>
@@ -215,7 +207,7 @@
 	</action-validate> 
 	
 	<action-method name="action-sales-order-create-tasks">
-		<call class="com.axelor.apps.supplychain.web.SalesOrderController" method="createTaskByLines" if="hasToCreateTaskByLine &amp;&amp; project != null"/>
+		<call class="com.axelor.apps.organisation.web.TaskController" method="createTaskByLines" if="hasToCreateTaskByLine &amp;&amp; project != null"/>
 	</action-method>
 	
 	<action-method name="action-sales-order-create-stock-move">
