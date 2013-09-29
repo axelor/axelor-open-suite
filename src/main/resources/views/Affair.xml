@@ -13,7 +13,6 @@
     
     <form name="affair-form" title="Affair" model="com.axelor.apps.organisation.db.Project" cols="6" 
     onNew="action-affair-record-default"
-    onLoad="action-project-method-update-financial-information,save"
     onSave="action-affair-method-create-default-task-on-save">
     	<group showTitle="false" cols="6" colSpan="6">
 	    	<field name="affairName" showTitle="false" css="highlight" placeholder="Affair name" colSpan="4"/>
@@ -70,7 +69,7 @@
 	        	<field name="preSalesTask"/>
 	            <field name="taskList" grid-view="task-project-grid" form-view="task-form" colSpan="6"/>
 	        </page>
-	        <page title="Financial information" colSpan="4">
+	        <page title="Financial information" colSpan="4" onSelect="action-project-method-update-financial-information,save">
 	        	<field name="realEstimatedMethodSelect"/>
 	        	<field name="company.currency"/>
 	        	<field name="exportTypeSelect"/>
@@ -94,13 +93,14 @@
 	        <page title="Links" colSpan="4">
 	        	<notebook>
 	        		<page title="Initial estimated" hideIf="realEstimatedMethodSelect == 1">
-	        			<portlet colSpan="4" action="action-project-view-submitted-sales-order-line"/>
-	     				<portlet colSpan="4" action="action-project-view-submitted-purchase-order-line"/>
+	        			<portlet colSpan="4" action="action-project-view-validated-sales-order-line"/>
+	     				<portlet colSpan="4" action="action-project-view-validated-purchase-order-line"/>
 	     				<portlet colSpan="4" action="action-project-view-initial-estimated-financial-information-update"/>
 	        		</page>
 	        		<page title="Real estimated">
-	        			<portlet colSpan="4" action="action-project-view-validated-sales-order-line"/>
-	     				<portlet colSpan="4" action="action-project-view-validated-purchase-order-line"/>
+	        			<portlet colSpan="4" action="action-project-view-validated-purchase-order-line"/>
+	        			<portlet colSpan="4" action="action-project-view-timesheet-line"/>
+			     		<portlet colSpan="4" action="action-project-view-expense-line"/>
 	     				<portlet colSpan="4" action="action-project-view-real-estimated-financial-information-update"/>
 	        		</page>
 	        		<page title="Real invoiced">
@@ -270,6 +270,8 @@
     	<field name="realEstimatedMethodSelect" expr="2"/>
     	<field name="responsibleUserInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
 		<field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+		<field name="statusTypeSelect" expr="1"/>		
+		<field name="unit" expr="eval: company?.administration?.unit"/>
 	</action-record>
 	
 	<action-record name="action-affair-record-transform-in-project" model="com.axelor.apps.organisation.db.Project">
@@ -291,20 +293,6 @@
 	<action-method name="action-project-method-update-financial-information">
 		<call class="com.axelor.apps.organisation.web.ProjectController" method="updateFinancialInformation"/>
 	</action-method>
-	
-	<action-view name="action-project-view-submitted-sales-order-line" title="Submitted customer order lines" model="com.axelor.apps.supplychain.db.SalesOrderLine">
-  		<view type="grid" name="sales-order-line-grid"/>
-		<view type="form" name="sales-order-line-form"/>
-  		<domain>self.salesOrder.statusSelect = 2 and self.task.affairProject.id = :id</domain>
-  		<context name="id" expr="eval: id"/>
-  	</action-view>
-  	
-  	<action-view name="action-project-view-submitted-purchase-order-line" title="Submitted supplier order lines" model="com.axelor.apps.supplychain.db.PurchaseOrderLine">
-  		<view type="grid" name="purchase-order-line-grid"/>
-		<view type="form" name="purchase-order-line-form"/>
-  		<domain>self.purchaseOrder.statusSelect = 2 and self.task.affairProject.id = :id</domain>
-  		<context name="id" expr="eval: id"/>
-  	</action-view>
   	
   	<action-view name="action-project-view-initial-estimated-financial-information-update" title="Financial information updates" model="com.axelor.apps.organisation.db.FinancialInformationUpdate">
   		<view type="grid" name="financial-information-update-grid"/>

@@ -30,7 +30,6 @@
  */
 package com.axelor.apps.organisation.service;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -40,6 +39,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.SpentTime;
 import com.axelor.apps.base.db.UserInfo;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.organisation.db.Task;
 import com.axelor.apps.organisation.db.Timesheet;
 import com.axelor.apps.organisation.db.TimesheetLine;
@@ -59,7 +59,7 @@ public class TimesheetService {
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void getTaskSpentTime(Timesheet timesheet)  {
+	public void getTaskSpentTime(Timesheet timesheet) throws AxelorException  {
 		
 		UserInfo userInfo = timesheet.getUserInfo();
 		
@@ -78,7 +78,7 @@ public class TimesheetService {
 		
 	}
 	
-	public List<TimesheetLine> createTimesheetLines(Timesheet timesheet, Task task)  {
+	public List<TimesheetLine> createTimesheetLines(Timesheet timesheet, Task task) throws AxelorException  {
 		
 		List<TimesheetLine> timesheetLineList = Lists.newArrayList();
 		
@@ -96,7 +96,7 @@ public class TimesheetService {
 	}
 	
 	
-	public TimesheetLine createTimesheetLine(Timesheet timesheet, Task task, SpentTime spentTime)  {
+	public TimesheetLine createTimesheetLine(Timesheet timesheet, Task task, SpentTime spentTime) throws AxelorException  {
 		
 		TimesheetLine timesheetLine = new TimesheetLine();
 		timesheetLine.setTimesheet(timesheet);
@@ -106,8 +106,7 @@ public class TimesheetService {
 		timesheetLine.setIsToInvoice(true);
 		timesheetLine.setDate(spentTime.getDate());
 		
-		int duration = spentTime.getDurationHours()+(spentTime.getDurationMinutesSelect()/60);
-		timesheetLine.setDuration(new BigDecimal(duration));
+		timesheetLine.setDuration(injector.getInstance(UnitConversionService.class).convert(spentTime.getUnit(), timesheetLine.getTimesheet().getUnit(), spentTime.getDuration()));
 		
 		return timesheetLine;
 		

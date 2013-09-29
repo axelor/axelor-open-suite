@@ -47,6 +47,7 @@
 	    <field name="date" expr="eval: startDateT.toLocalDate()" if="startDateT != null"/>
 	    <field name="startDateT" expr="eval: startDateT.plusHours(8)" if="startDateT != null &amp;&amp; endDateT != null &amp;&amp; startDateT == endDateT"/>
 	    <field name="endDateT" expr="eval: endDateT.plusHours(16)" if="startDateT != null &amp;&amp; endDateT != null &amp;&amp; startDateT == endDateT"/>
+	    <field name="project" expr="eval: _parent?.project"/>
     </action-record>
     
     <action-record name="action-timesheet-line-record-default-duration" model="com.axelor.apps.organisation.db.TimesheetLine">

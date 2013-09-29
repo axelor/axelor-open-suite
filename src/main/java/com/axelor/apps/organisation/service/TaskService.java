@@ -31,6 +31,7 @@
 package com.axelor.apps.organisation.service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -47,7 +48,11 @@ import com.axelor.apps.organisation.db.Employee;
 import com.axelor.apps.organisation.db.ITask;
 import com.axelor.apps.organisation.db.ITaskUpdateLine;
 import com.axelor.apps.organisation.db.PlanningLine;
+import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.organisation.db.Task;
+import com.axelor.apps.supplychain.db.SalesOrder;
+import com.axelor.apps.supplychain.db.SalesOrderLine;
+import com.axelor.apps.supplychain.db.SalesOrderSubLine;
 import com.axelor.apps.tool.date.DurationTool;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -82,27 +87,15 @@ public class TaskService {
 	}
 	
 	
-	public BigDecimal getSpentTime(Task task) throws AxelorException  {
-		
-		if(task.getSpentTimeList() != null && !task.getSpentTimeList().isEmpty())  {
-			
-			this.checkTaskUnit(task);
-			
-			Unit fromUnit = Unit.all().filter("self.code = 'HRE'").fetchOne();
-			if(fromUnit == null)  {
-				throw new AxelorException("Veuillez configurer une unité heure 'HRE'.", IException.CONFIGURATION_ERROR);
-			}
-			return unitConversionService.convert(Unit.all().filter("self.code = 'HRE'").fetchOne(), task.getUnit(), this.getSpentTimeHours(task.getSpentTimeList()));
-		}
-		else  {
-			return BigDecimal.ZERO;
+	public void checkTaskProject(Task task) throws AxelorException  {
+		if(task.getProject() == null)  {
+			throw new AxelorException("Veuillez configurer un projet sur la tâche", IException.CONFIGURATION_ERROR);
 		}
 	}
 	
-	
-	public void checkTaskUnit(Task task) throws AxelorException  {
-		if(task.getUnit() == null)  {
-			throw new AxelorException("Veuillez configurer une unité sur la tâche", IException.CONFIGURATION_ERROR);
+	public void checkProjectUnit(Project project) throws AxelorException  {
+		if(project.getUnit() == null)  {
+			throw new AxelorException("Veuillez configurer une unité sur le projet", IException.CONFIGURATION_ERROR);
 		}
 	}
 	
@@ -113,6 +106,27 @@ public class TaskService {
 		}
 	}
 	
+	public void checkSpentTimeUnit(SpentTime spentTime) throws AxelorException  {
+		if(spentTime.getUnit() == null)  {
+			throw new AxelorException("Veuillez configurer une unité sur les lignes de temps passé", IException.CONFIGURATION_ERROR);
+		}
+	}
+	
+	
+	public BigDecimal getSpentTime(Task task) throws AxelorException  {
+		
+		if(task.getSpentTimeList() != null && !task.getSpentTimeList().isEmpty())  {
+			
+			this.checkTaskProject(task);
+			this.checkProjectUnit(task.getProject());
+			
+			return this.getSpentTime(task.getSpentTimeList(), task.getProject().getUnit());
+		}
+		else  {
+			return BigDecimal.ZERO;
+		}
+	}
+	
 	
 	public BigDecimal getPlannedTime(Task task) throws AxelorException  {
 		
@@ -120,27 +134,41 @@ public class TaskService {
 		
 		if(task.getPlanningLineList() != null)  {
 			
-			this.checkTaskUnit(task);
+			this.checkTaskProject(task);
+			this.checkProjectUnit(task.getProject());
 			
-			for(PlanningLine planningLine : task.getPlanningLineList())  {
-				this.checkPlanningLineUnit(planningLine);
-				plannedTime = plannedTime.add(unitConversionService.convert(planningLine.getUnit(), task.getUnit(), planningLine.getDuration()));
-			}
+			return this.getPlannedTime(task.getPlanningLineList(), task.getProject().getUnit());
 		}
 		
 		return plannedTime;
 	}
 	
 	
-	public BigDecimal getSpentTimeHours(List<SpentTime> spentTimeList)  {
+	public BigDecimal getPlannedTime(List<PlanningLine> planningLineList, Unit unit) throws AxelorException  {
 		
-		BigDecimal spentTimeHours = BigDecimal.ZERO;
+		BigDecimal plannedTime = BigDecimal.ZERO;
 		
-		for(SpentTime spentTime : spentTimeList)  {
-			spentTimeHours = spentTimeHours.add(new BigDecimal(spentTime.getDurationHours()+spentTime.getDurationMinutesSelect()/60));
+		for(PlanningLine planningLine : planningLineList)  {
+			
+			this.checkPlanningLineUnit(planningLine);
+			plannedTime = plannedTime.add(unitConversionService.convert(planningLine.getUnit(), unit, planningLine.getDuration()));
 		}
 		
-		return spentTimeHours;
+		return plannedTime;
+	}
+	
+	
+	public BigDecimal getSpentTime(List<SpentTime> spentTimeList, Unit unit) throws AxelorException  {
+		
+		BigDecimal spentTimesDuration = BigDecimal.ZERO;
+		
+		for(SpentTime spentTime : spentTimeList)  {
+			
+			this.checkSpentTimeUnit(spentTime);
+			spentTimesDuration = spentTimesDuration.add(unitConversionService.convert(spentTime.getUnit(), unit, spentTime.getDuration()));
+		}
+		
+		return spentTimesDuration;
 	}
 	
 	public void updateInitialEstimatedAmount(Task task) throws AxelorException  {
@@ -529,7 +557,7 @@ public class TaskService {
 		
 		BigDecimal totalTime = task.getTotalTime();
 		if(totalTime.compareTo(BigDecimal.ZERO) == 1)  {
-			taskProgress = task.getSpentTime().multiply(new BigDecimal(100)).divide(totalTime);
+			taskProgress = task.getSpentTime().multiply(new BigDecimal(100)).divide(totalTime, 2, BigDecimal.ROUND_UP);
 		}
 		
 		return taskProgress.intValue();
@@ -560,5 +588,158 @@ public class TaskService {
 		
 		return 0;
 	}
+	
+	
+	/**
+	 * Méthode permettant de calculer la somme des durées de la liste de planning et 
+	 * d'assigner la quantité, l'unité, et la date de fin à la tâche courante.
+	 * @param planningLineList La liste des lignes de planning
+	 * @param task La tâche courante
+	 * @throws AxelorException Les unités demandés ne se trouvent pas dans la liste de conversion
+	 */
+	public LocalDateTime getTaskEndDate(Task task) throws AxelorException {
+
+		LocalDateTime laterDate = task.getEndDateT();
+		
+		if(task.getPlanningLineList() != null)  {
+			
+			for(PlanningLine planningLine : task.getPlanningLineList())  {
+				if(laterDate == null || laterDate.compareTo(planningLine.getToDateTime()) < 0) {
+					laterDate = planningLine.getToDateTime();
+				}
+			}
+		}
+		
+		return laterDate;
+	}
+	
+	
+	/**
+	 * Permet de faire la somme des durées des sous-lignes du salesOrderLine.
+	 * @param SalesOrderSubLineList Liste des sous-lignes du salesOrderLine
+	 * @return La somme des durées
+	 * @throws AxelorException 
+	 */
+	public BigDecimal computeDuration(List<SalesOrderSubLine> SalesOrderSubLineList, Unit unit) throws AxelorException {
+
+		BigDecimal duration = BigDecimal.ZERO;
+
+		for(SalesOrderSubLine salesOrderSubLine : SalesOrderSubLineList)  {
+
+			duration = duration.add(unitConversionService.convert(salesOrderSubLine.getUnit(), unit, salesOrderSubLine.getQty()));
+		}
+		return duration;
+	}
+
+	
+	/**
+	 * Méthode permettant de créer une tâche.
+	 * @param salesOrder L'object SaleOrder courant
+	 * @throws AxelorException Les unités demandés ne se trouvent pas dans la liste de conversion
+	 */
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void createTasks(SalesOrder salesOrder) throws AxelorException  {
+
+		if(salesOrder.getSalesOrderLineList() != null && salesOrder.getProject() != null)  {
+			/* Loop of the salesOrderLineList */
+			for(SalesOrderLine salesOrderLine : salesOrder.getSalesOrderLineList())  {
+				Product salesOrderLineProduct = salesOrderLine.getProduct();
+				
+				if(salesOrderLineProduct != null && salesOrderLineProduct.getProductTypeSelect().equals("service") && salesOrderLineProduct.getSaleSupplySelect() == 3) {
+					
+					Task task = salesOrderLine.getTask();
+					if(task == null)  {
+						task = this.createTask(salesOrderLine);
+					}
+					else {
+						this.updateTask(salesOrderLine);
+					}
+					
+					salesOrderLine.setTask(task);
+					
+					/* Check if there is a planning line list in the salesOrderLine task */
+					if(salesOrderLine.getTask() != null && salesOrderLine.getSalesOrderSubLineList()!= null) {
+						/* Call the method to set the unit of the task */
+						task.setTotalTime(task.getTotalTime().add(this.computeDuration(salesOrderLine.getSalesOrderSubLineList(), task.getProject().getUnit())));
+					}
+					else {
+						task.setTotalTime(task.getTotalTime().add(unitConversionService.convert(salesOrderLine.getUnit(), task.getProject().getUnit(), salesOrderLine.getQty())));
+					}
+					
+					this.createPlanningLines(salesOrderLine, task);
+					
+					task.setEndDateT(this.getTaskEndDate(task));
+
+					task.save();
+				}
+			}
+		}		
+	}
+	
+	
+	public Task createTask(SalesOrderLine salesOrderLine)  {
+		Task task = new Task();
+		task.setProject(salesOrderLine.getSalesOrder().getProject());
+		task.setSalesOrderLine(salesOrderLine);
+		task.setProduct(salesOrderLine.getProduct());
+		task.setQty(salesOrderLine.getQty());
+		task.setPrice(salesOrderLine.getPrice());
+		task.setName(salesOrderLine.getProductName());
+		task.setDescription(salesOrderLine.getDescription());
+		task.setStartDateT(todayTime);
+		task.setIsTimesheetAffected(true);
+		task.setIsToInvoice(salesOrderLine.getIsToInvoice());
+		task.setInvoicingDate(salesOrderLine.getInvoicingDate());
+		task.setStatusSelect(ITask.STATUS_DRAFT);
+		task.setAmountToInvoice(salesOrderLine.getAmountRemainingToBeInvoiced());
+		task.setEstimatedAmount(salesOrderLine.getExTaxTotal());
+		
+		return task;
+	}
+	
+	
+	public void updateTask(SalesOrderLine salesOrderLine)  {
+		
+		Task task = salesOrderLine.getTask();
+		task.setAmountToInvoice(task.getAmountToInvoice().add(salesOrderLine.getAmountRemainingToBeInvoiced()));
+		task.setEstimatedAmount(task.getEstimatedAmount().add(salesOrderLine.getExTaxTotal()));
+		
+	}
+	
+	public void createPlanningLines(SalesOrderLine salesOrderLine, Task task) throws AxelorException  {
+	
+		if(salesOrderLine.getSalesOrderSubLineList() != null) {
+			if(task.getPlanningLineList() == null)  {
+				task.setPlanningLineList(new ArrayList<PlanningLine>());
+			}
+			
+			for(SalesOrderSubLine salesOrderSubLine : salesOrderLine.getSalesOrderSubLineList())  {
+				task.getPlanningLineList().add(
+						this.createPlanningLine(salesOrderSubLine, task));
+			}
+		}
+	}
+	
+	
+	public PlanningLine createPlanningLine(SalesOrderSubLine salesOrderSubLine, Task task) throws AxelorException  {
+		
+		PlanningLine planningLine = new PlanningLine();
+		planningLine.setTask(task);
+		planningLine.setEmployee(salesOrderSubLine.getEmployee());
+		planningLine.setProduct(salesOrderSubLine.getProduct());
+		planningLine.setFromDateTime(todayTime);
+		
+		planningLine.setDuration(salesOrderSubLine.getQty());
+		planningLine.setUnit(salesOrderSubLine.getUnit());
+		planningLine.setToDateTime(
+				planningLine.getFromDateTime().plusMinutes(
+						unitConversionService.convert(
+								salesOrderSubLine.getUnit(), 
+								Unit.all().filter("self.code = 'MIN'").fetchOne(), 
+								salesOrderSubLine.getQty()).intValue()));
+		return planningLine;
+		
+	}
+	
 	
 }

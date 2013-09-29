@@ -45,8 +45,8 @@ public class SpentTimeService {
 		spentTime.setDate(timesheetLine.getDate());
 		spentTime.setTask(timesheetLine.getTask());
 		BigDecimal duration = timesheetLine.getDuration();
-		spentTime.setDurationHours(duration.intValue());
-		spentTime.setDurationMinutesSelect(this.getMinutesDuration(duration));
+		spentTime.setDuration(duration);
+		spentTime.setUnit(timesheetLine.getSpentTime().getUnit());
 		spentTime.setTimesheetImputed(true);
 		spentTime.setUserInfo(timesheetLine.getTimesheet().getUserInfo());
 		
@@ -55,16 +55,5 @@ public class SpentTimeService {
 	}
 	
 	
-	public int getMinutesDuration(BigDecimal duration)  {
-		
-		int minutes = duration.subtract(duration.setScale(0)).multiply(new BigDecimal(60)).intValue();
-		
-		if(minutes >= 53 && minutes < 8)  {  return 00;  }
-		else if(minutes >= 8 && minutes < 23)  {  return 15;  }
-		else if(minutes >= 23 && minutes < 38)  {  return 30;  }
-		else if(minutes >= 38 && minutes < 53)  {  return 45;  }
-		
-		return 00;
-		
-	}
+	
 }

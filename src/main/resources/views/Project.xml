@@ -22,7 +22,7 @@
 	        <field name="company" widget="SuggestBox"/>
 	    </group>
 	    <group showTitle="false" colSpan="2" cols="2">
-	    	<field name="projectStatusSelect" colSpan="2"/>
+	    	<field name="projectStatusSelect" widget="NavSelect" showTitle="false" colSpan="2"/>
 		    <group title="Actions" showTitle="false" colSpan="2" cols="1">
 		        <button name="generateNewInstanceOfProject" title="Generate new project instance" hideIf="!isModel" colSpan="1"/>
 		        <button name="generateDraftInvoice" title="Generate draft invoice" colSpan="1" onClick="save,action-project-validate-generate-invoice,action-project-method-create-invoice"/>
@@ -88,6 +88,7 @@
     	<field name="realEstimatedMethodSelect" expr="2"/>
     	<field name="responsibleUserInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
 		<field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+		<field name="projectStatusSelect" expr="1"/>
 	</action-record>
 	
     <action-record name="action-project-unit" model="com.axelor.apps.organisation.db.Project">

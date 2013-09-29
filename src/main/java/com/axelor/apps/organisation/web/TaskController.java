@@ -39,6 +39,7 @@ import com.axelor.apps.organisation.db.Task;
 import com.axelor.apps.organisation.service.FinancialInformationHistoryLineService;
 import com.axelor.apps.organisation.service.FinancialInformationHistoryService;
 import com.axelor.apps.organisation.service.TaskService;
+import com.axelor.apps.supplychain.db.SalesOrder;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
@@ -151,5 +152,16 @@ public class TaskController {
 		}
 	}
 
+	
+	
+	public void createTaskByLines(ActionRequest request, ActionResponse response) throws AxelorException {
+		
+		SalesOrder salesOrder = request.getContext().asType(SalesOrder.class);
+		
+		if(salesOrder != null) {
+			
+			taskService.get().createTasks(salesOrder);
+		}
+	}
 	
 }

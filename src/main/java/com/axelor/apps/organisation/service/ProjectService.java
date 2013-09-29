@@ -34,6 +34,7 @@ import java.math.BigDecimal;
 
 import javax.persistence.Query;
 
+import com.axelor.apps.organisation.db.ITask;
 import com.axelor.apps.organisation.db.ITaskUpdateLine;
 import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.organisation.db.Task;
@@ -58,6 +59,8 @@ public class ProjectService {
 			defaultTask.setProject(project);
 			defaultTask.setRealEstimatedMethodSelect(project.getRealEstimatedMethodSelect());
 			project.setDefaultTask(defaultTask);
+			defaultTask.setExportTypeSelect("pdf");
+			defaultTask.setStatusSelect(ITask.STATUS_DRAFT);
 			project.getTaskList().add(defaultTask);
 			defaultTask.save();
 			
@@ -358,4 +361,5 @@ public class ProjectService {
 		injector.getInstance(TaskService.class).updateTaskProgress(project.getTaskList());
 		
 	}
+	
 }

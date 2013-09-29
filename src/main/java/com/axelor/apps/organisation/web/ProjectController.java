@@ -51,7 +51,7 @@ public class ProjectController {
 		
 		Project project = request.getContext().asType(Project.class);
 		
-		if(project.getDefaultTask() == null) {			
+		if(project.getId() != null && project.getDefaultTask() == null) {			
 			projectService.createDefaultTask(Project.find(project.getId()));
 			response.setReload(true);
 		}

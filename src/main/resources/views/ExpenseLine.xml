@@ -39,7 +39,7 @@
 
 	    <group title="Context" colSpan="4">
 	        <field name="expenseTypeSelect"/>
-	        <field name="task"/>
+	        <field name="task" onSelect="action-attrs-expense-line-task-domain"/>
 	    </group>
 	    <group title="Details" colSpan="4">
 	        <field name="product" colSpan="2" onChange="action-expenseline-product,action-expenseline-compute-total" domain="self.applicationTypeSelect = 3 and self.endDate IS NULL or CURRENT_DATE &lt; self.endDate"/>
@@ -83,5 +83,9 @@
     	<field name="validationDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="fileReceived == 1"/>
     	<field name="validationDate" expr="" if="fileReceived == 2"/>
     </action-record>
+    
+    <action-attrs name="action-attrs-expense-line-task-domain">
+    	<attribute name="domain" for="task" expr="eval: &quot;self.project = ${_parent?.project}&quot;"/>
+    </action-attrs>
     
 </object-views>
