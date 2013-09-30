@@ -143,7 +143,7 @@
 
 	<action-view name="crm.root.meeting.my.calendar" title="My Meetings Calendar"
 		model="com.axelor.apps.crm.db.Event" icon="img/icons/calendar-task.png">
-		<view type="calendar" name="event-calendar"/>
+		<view type="calendar" name="event-calendar-color-by-calendar"/>
 		<view type="grid" name="event-grid"/>
 		<view type="form" name="event-form"/>
 		<domain>self.userInfo.internalUser.id = :_internalUser</domain>
@@ -156,7 +156,7 @@
 		
 	<action-view name="crm.root.meeting.team.calendar" title="Team Calendar"
 		model="com.axelor.apps.crm.db.Event" icon="img/icons/calendar-task.png">
-		<view type="calendar" name="event-calendar"/>
+		<view type="calendar" name="event-calendar-color-by-user-info"/>
 		<view type="grid" name="event-grid"/>
 		<view type="form" name="event-form"/>
 		<domain>self.team = :_myActiveTeam</domain>
