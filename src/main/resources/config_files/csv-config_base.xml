@@ -222,6 +222,19 @@
 	
 	<input file="account_vatLine.csv" separator=";" type="com.axelor.apps.account.db.VatLine" />
 	
+	<input file="account_vatAccount.csv" separator=";" type="com.axelor.apps.account.db.VatAccount">
+		<bind to="company" search="self.id = :company_id" update="true">
+			<bind column="company_id" to="company"/>
+		</bind>
+        <bind column="importId" to="importId" />
+       	<bind to="vat" search="self.code = :vat_code" update="true">
+			<bind column="vat_code" to="vat"/>
+		</bind>
+		<bind to="account" search="self.code = :account_code and self.company.id = :company_id" update="true">
+			<bind column="account_code" to="account"/>
+		</bind>
+	</input>
+	
 	<input file="account_vat.csv" separator=";" update="true" search="self.importId = :importId" type="com.axelor.apps.account.db.Vat">
 <!-- 		<bind column="_activeVatLine" to="activeVatLine"/> -->
 		<bind to="activeVatLine" search="self.importId = :_activeVatLine" update="true">
