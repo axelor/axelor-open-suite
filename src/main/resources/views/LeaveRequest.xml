@@ -27,20 +27,20 @@
     <form name="leave-request-form" title="Leave request" model="com.axelor.apps.organisation.db.LeaveRequest" cols="4"
     	onNew="action-leave-request-record-new">
 		<field name="employeeUserInfo"/>
+		<spacer/>
+		<field name="statusSelect" widget="NavSelect" showTitle="false"/>
         <field name="requestDate"/>
-        <field name="reasonTask" domain="self.isLeaveRequest = true"/>
-        <separator colSpan="4"/>
-        <group title="Leave period" colSpan="3" cols="6">
+        <field name="reasonTask" domain="self.isLeaveRequest = true" form-view="task-leave-reason-form" grid-view="task-leave-reason-grid"/>
+        <field name="accounted"/>
+        <group title="Leave period" colSpan="4" cols="4">
         	<field name="startDateT" onChange="action-leave-request-method-compute-start-date-time"/>
         	<field name="endDateT" onChange="action-leave-request-method-compute-end-date-time"/>
         	<field name="nbrOfDayOff" onChange="action-leave-request-method-compute-duration"/>
+        	<field name="remainingDaysOnPeriod" readonly="true"/>
         </group>
-        <field name="remainingDaysOnPeriod"/>
-        <separator colSpan="4"/>
-        <group colSpan="4" cols="6">
+        <group colSpan="4" cols="4">
 	        <field name="managerUserInfo"/>
 	        <field name="approvalDate"/>
-	        <field name="statusSelect" widget="NavSelect"/>
         </group>
         <button name="confirm" title="Confirm" colSpan="2" showIf="statusSelect == 1 || statusSelect == 4" onClick="action-leave-request-button-confirmation,save,action-leave-request-record-confirm,save"/>
         <button name="cancel" title="Cancel" colSpan="2" showIf="statusSelect == 2 || statusSelect == 3" onClick="action-leave-request-button-cancel,save,action-leave-request-record-cancel,save"/>

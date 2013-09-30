@@ -28,23 +28,37 @@
  * All portions of the code written by Axelor are
  * Copyright (c) 2012-2013 Axelor. All Rights Reserved.
  */
-package com.axelor.apps.organisation.db;
+package com.axelor.apps.organisation.web;
 
-/**
- * Interface of Expense object. Enum all static variable of object.
- * 
- */
-public interface IExpense {
+import com.axelor.apps.base.service.PeriodService;
+import com.axelor.apps.organisation.db.Planning;
+import com.axelor.exception.service.TraceBackService;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 
+public class PlanningController {
 
-	/**
-     * Static select in ExpenseLine
-     */
-
-    // STATE
-
-	static final int YES = 1;
-	static final int NO = 2;
-
+	@Inject
+	private Provider<PeriodService> periodService;
+	
+	
+	
+	public void getPeriod(ActionRequest request, ActionResponse response) {
+		
+		Planning planning = request.getContext().asType(Planning.class);
+	
+		try {
+			if(planning.getDate() != null && planning.getUserInfo() != null && planning.getUserInfo().getActiveCompany() != null) {
+				
+				response.setValue("period", periodService.get().rightPeriod(planning.getDate(), planning.getUserInfo().getActiveCompany()));				
+			}
+			else {
+				response.setValue("period", null);
+			}
+		}
+		catch (Exception e){ TraceBackService.trace(response, e); }
+	}
 	
 }

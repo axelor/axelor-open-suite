@@ -105,11 +105,12 @@
 		<option value="3">Low</option>
 	</selection>
 	
-	<selection name="organisation.task.status.select">
+	<selection name="organisation.project.status.select">
 		<option value="1">Draft</option>
 		<option value="2">Confirmed</option>
-		<option value="3">Validated</option>
-		<option value="4">Canceled</option>
+		<option value="3">Started</option>
+		<option value="4">Completed</option>
+		<option value="5">Canceled</option>
 	</selection>
 	
 	<selection name="organisation.timesheet.period.config.type.select">
@@ -127,7 +128,7 @@
 		<option value="7">Sunday</option>
 	</selection>
 	
-	<selection name="organisation.timesheet.period.config.day.month.select">
+	<selection name="organisation.day.month.select">
 		<option value="0">00</option>
 		<option value="1">01</option>
 		<option value="2">02</option>
@@ -156,6 +157,7 @@
 		<option value="25">25</option>
 		<option value="26">26</option>
 		<option value="27">27</option>
+		<option value="28">28</option>
 		<option value="28">28</option>
 	</selection>
 	
@@ -221,52 +223,6 @@
 		<option value="5">Canceled</option>
 	</selection>
 	
-	<selection name="grade.0.up.to.5.select">
-		<option value="0">0</option>
-		<option value="20">1</option>
-		<option value="40">2</option>
-		<option value="60">3</option>
-		<option value="80">4</option>
-		<option value="100">5</option>
-	</selection>
-	
-	<selection name="grade.0.up.to.10.select">
-		<option value="0">0</option>
-		<option value="10">1</option>
-		<option value="20">2</option>
-		<option value="30">3</option>
-		<option value="40">4</option>
-		<option value="50">5</option>
-		<option value="60">6</option>
-		<option value="70">7</option>
-		<option value="80">8</option>
-		<option value="90">9</option>
-		<option value="100">10</option>
-	</selection>
-	
-	<selection name="grade.0.up.to.20.select">
-		<option value="0">0</option>
-		<option value="1">1</option>
-		<option value="2">2</option>
-		<option value="3">3</option>
-		<option value="4">4</option>
-		<option value="5">5</option>
-		<option value="6">6</option>
-		<option value="7">7</option>
-		<option value="8">8</option>
-		<option value="9">9</option>
-		<option value="10">10</option>
-		<option value="11">11</option>
-		<option value="12">12</option>
-		<option value="13">13</option>
-		<option value="14">14</option>
-		<option value="15">15</option>
-		<option value="16">16</option>
-		<option value="17">17</option>
-		<option value="18">18</option>
-		<option value="19">19</option>
-		<option value="20">20</option>
-	</selection>
 	
 	<selection name="hr.expense.validation.status.select">
 		<option value="1">Verified</option>
@@ -278,6 +234,10 @@
 		<option value="2">No</option>
 	</selection>
 	
+	<selection name='organisation.project.report.type.select'>
+		<option value="pdf">PDF</option>
+		<option value="xls">XLS</option>
+	</selection>
 	<selection name="hr.expense.status.select">
 		<option value="1">Draft</option>
 		<option value="2">Submited</option>
@@ -296,5 +256,121 @@
 		<option value="internal">Internal</option>
 		<option value="previousJob">Previous job</option>
 	</selection>
+	
+	
+	<selection name="organisation.candidate.state.select">
+		<option value="1">Nouvelle candidature</option>
+		<option value="2">Pré-selectionné</option>
+		<option value="3">Premier entretien</option>
+		<option value="4">Second entretien</option>
+		<option value="5">Troisième entretien</option>
+		<option value="6">Rejetée</option>
+		<option value="7">Offre proposée</option>
+		<option value="8">Offre acceptée</option>
+		<option value="9">Offre refusée</option>
+	</selection>
+	
+	<selection name="organisation.project.status.type.select">
+		<option value="1">Draft</option>
+		<option value="2">Submitted</option>
+		<option value="3">Accepted</option>
+		<option value="4">Refused</option>
+		<option value="5">Sent</option>
+		<option value="6">Won</option>
+		<option value="7">Lost</option>
+	</selection>
+
+	<selection name="organisation.project.engagement.type.select">
+		<option value="1">TMA</option>
+		<option value="2">FORFAIT</option>
+		<option value="3">ATG</option>
+		<option value="4">Moyen</option>
+		<option value="5">Résultat</option>
+	</selection>
+	
+	<selection name="organisation.project.conclusion.avt.vente.type.select">
+		<option value="1">GO</option>
+		<option value="2">NOGO</option>
+		<option value="3">GOIF</option>
+	</selection>
+	
+	<selection name="organisation.project.go.no.go.type.select">
+		<option value="1">GO</option>
+		<option value="2">NOGO</option>
+	</selection>
+	
+	<selection name="organisation.project.type.duration.select">
+		<option value="1">Day</option>
+		<option value="2">Month</option>
+		<option value="3">Year</option>
+	</selection>
+	
+	<selection name="organisation.job.offer.contrat.type.select">
+		<option value="1">CDI</option>
+		<option value="2">CDD</option>
+	</selection>
+	
+	<selection name="organisation.job.offer.remuneration.type.select">
+		<option value="1">de 25 à 35 k€</option>
+		<option value="2">de 35 à 45 k€</option>
+		<option value="3">de 45 à 55 k€</option>
+		<option value="4">de 55 à 65 k€</option>
+		<option value="5">de 65 à 75 k€</option>
+		<option value="6">de 75 à 85 k€</option>
+		<option value="7">de 85 à 95 k€</option>
+		<option value="8">de 95 à 100 k€ ou plus</option>
+	</selection>
+
+	<selection name="organisation.job.offer.domaine.type.select">
+		<option value="1">Communication</option>
+	</selection>
+
+	<selection name="organisation.job.offer.niveau.type.select">
+		<option value="1">Bac +1</option>
+		<option value="2">Bac +2</option>
+		<option value="3">Bac +3</option>
+		<option value="4">Bac +4</option>
+		<option value="5">Bac +5 ou plus</option>
+	</selection>
+
+	<selection name="organisation.job.offer.experience.type.select">
+		<option value="1">1 an</option>
+		<option value="2">2 ans</option>
+		<option value="3">3 ans</option>
+		<option value="4">4 ans</option>
+		<option value="5">5 ans</option>
+		<option value="6">6 ans</option>
+		<option value="7">7 ans</option>
+		<option value="8">8 ans</option>
+		<option value="9">9 ans</option>
+		<option value="10">10 ans ou plus</option>
+	</selection>
+	
+	<selection name="organisation.job.offer.langue.type.select">
+		<option value="anglais">Anglais</option>
+		<option value="francais">Français</option>
+		<option value="allemand">Allemand</option>
+		<option value="espagnol">Espagnol</option>
+		<option value="italien">Italien</option>
+	</selection>
+	
+	
+	<selection name="organisation.task.update.line.type.select">
+		<option value="1">Revenue</option>
+		<option value="2">Cost</option>
+	</selection>
+	
+	<selection name="organisation.task.update.line.application.select">
+		<option value="1">Initial estimated</option>
+		<option value="2">Real estimated</option>
+		<option value="3">Real invoiced</option>
+	</selection>
+	
+	<selection name="organisation.project.real.estimated.method.select">
+		<option value="1">None</option>
+		<option value="2">Progress</option>
+		<option value="3">Subscription</option>
+	</selection>
+	
 	
 </object-views>

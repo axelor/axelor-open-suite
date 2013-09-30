@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+
+	<grid name="job-offer-grid" title="Job offers" model="com.axelor.apps.organisation.db.JobOffer">
+		<field name="offre"/>
+		<field name="dateDebut"/>
+		<field name="dateFin"/>
+		<field name="nbPostes"/>
+	</grid>
+
+	<form name="job-offer-form" title="Job offer" model="com.axelor.apps.organisation.db.JobOffer" cols="6">
+		<field name="offre" colSpan="2"/>
+		<field name="affair" domain="self.isAffair = true" grid-view="affair-grid" form-view="affair-form" colSpan="2"/>
+		<break/>
+		<field name="dateDebut"/>
+		<field name="dateFin"/>
+		<field name="nbPostes"/>	
+		<group title="Offre" colSpan="6" cols="6" canCollapse="true">
+        	<group colSpan="6">
+            	<field name="descriptif" colSpan="6"/>
+        	</group>
+        	<group colSpan="4" cols="4">
+            	<field name="contratTypeSelect"/>
+            	<field name="remunerationTypeSelect"/>
+            	<field name="region"/>
+            	<field name="complZoneGeo"/>
+            	<field name="domaineTypeSelect"/>
+            	<field name="metier"/>
+        	</group>
+        	<group colSpan="2" cols="2">
+            	<field name="avantages"/>
+        	</group>
+    	</group>
+		<group title="Profil candidat" canCollapse="true" cols="6" colSpan="6">
+			<field name="niveauTypeSelect"/>
+			<field name="experienceTypeSelect"/>
+			<field name="langueTypeSet" widget="TagSelect[create=name,code]"/>
+			<field name="formationSet" widget="TagSelect[create=candidate,degree]"/>
+			<field name="etablissement"/>
+		</group>
+	</form>
+	
+</object-views>

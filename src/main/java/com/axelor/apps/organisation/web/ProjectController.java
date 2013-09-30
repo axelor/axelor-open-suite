@@ -30,8 +30,14 @@
  */
 package com.axelor.apps.organisation.web;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import com.axelor.apps.AxelorSettings;
 import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.organisation.service.ProjectService;
+import com.axelor.apps.tool.net.URLService;
+import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -45,8 +51,9 @@ public class ProjectController {
 		
 		Project project = request.getContext().asType(Project.class);
 		
-		if(project != null) {			
-			projectService.createDefaultTask(project);
+		if(project.getId() != null && project.getDefaultTask() == null) {			
+			projectService.createDefaultTask(Project.find(project.getId()));
+			response.setReload(true);
 		}
 	}
 	
@@ -54,9 +61,67 @@ public class ProjectController {
 		
 		Project affair = request.getContext().asType(Project.class);
 		
-		if(affair != null) {			
-			projectService.createPreSalesTask(affair);
+		if(projectService.createPreSalesTask(affair) != null)  {
+			response.setReload(true);
 		}
 	}
 	
+	public void updateFinancialInformation(ActionRequest request, ActionResponse response) throws AxelorException {
+		
+		Project project = request.getContext().asType(Project.class);
+		
+		if(project.getId() != null)  {
+			projectService.updateFinancialInformation(project);
+			
+			response.setValue("initialEstimatedTurnover", project.getInitialEstimatedTurnover());
+			response.setValue("initialEstimatedCost", project.getInitialEstimatedCost());
+			response.setValue("initialEstimatedMargin", project.getInitialEstimatedMargin());
+			response.setValue("realEstimatedTurnover", project.getRealEstimatedTurnover());
+			response.setValue("realEstimatedCost", project.getRealEstimatedCost());
+			response.setValue("realEstimatedMargin", project.getRealEstimatedMargin());
+			response.setValue("realInvoicedTurnover", project.getRealInvoicedTurnover());
+			response.setValue("realInvoicedCost", project.getRealInvoicedCost());
+			response.setValue("realInvoicedMargin", project.getRealInvoicedMargin());
+		}
+	}
+	
+	
+	public void updateTaskProgress(ActionRequest request, ActionResponse response) {
+		
+		Project project = request.getContext().asType(Project.class);
+		
+		projectService.updateTaskProgress(project);
+	}
+	
+	
+	/**
+	 * Fonction appeler par le bouton imprimer
+	 *
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	public void printProjectReport(ActionRequest request, ActionResponse response) {
+
+		Project project = request.getContext().asType(Project.class);
+
+		StringBuilder url = new StringBuilder();
+		AxelorSettings axelorSettings = AxelorSettings.get();
+
+		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Project.rptdesign&__format="+project.getExportTypeSelect()+"&ProjectId="+project.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
+
+
+		String urlNotExist = URLService.notExist(url.toString());
+		if (urlNotExist == null){
+
+			Map<String,Object> mapView = new HashMap<String,Object>();
+			mapView.put("title", "Name "+project.getAffairName());
+			mapView.put("resource", url);
+			mapView.put("viewType", "html");
+			response.setView(mapView);	
+		}
+		else {
+			response.setFlash(urlNotExist);
+		}
+	}
 }

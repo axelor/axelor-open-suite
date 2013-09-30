@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.AxelorSettings;
 import com.axelor.apps.organisation.db.Employee;
 import com.axelor.apps.tool.net.URLService;
-import com.axelor.auth.db.User;
+import com.axelor.auth.AuthUtils;
 import com.axelor.meta.db.MetaUser;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -47,6 +47,7 @@ import com.axelor.rpc.ActionResponse;
 public class EmployeeController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(EmployeeController.class);
+	
 	
 	/**
 	 * Fonction appeler par le bouton imprimer
@@ -62,7 +63,8 @@ public class EmployeeController {
 		StringBuilder url = new StringBuilder();
 		AxelorSettings axelorSettings = AxelorSettings.get();
 		
-		MetaUser metaUser = MetaUser.findByUser((User) request.getContext().get("__user__"));
+		MetaUser metaUser = MetaUser.findByUser( AuthUtils.getUser());
+		
 		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Employee.rptdesign&__format=pdf&EmployeeId="+employee.getId()+"&Locale="+metaUser.getLanguage()+axelorSettings.get("axelor.report.engine.datasource"));
 
 		LOG.debug("URL : {}", url);

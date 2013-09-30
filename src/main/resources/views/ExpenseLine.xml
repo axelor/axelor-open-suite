@@ -8,7 +8,7 @@
 		<field name="product" />
 		<field name="shortDescription" />
 		<field name="expenseTypeSelect" />
-		<field name="project" />
+		<field name="task" />
 		<field name="qty" />
 		<field name="unit" />
 		<field name="price" />
@@ -24,7 +24,7 @@
 		<field name="product" />
 		<field name="shortDescription" />
 		<field name="expenseTypeSelect" />
-		<field name="project" />
+		<field name="task"/>
 		<field name="qty" />
 		<field name="unit" />
 		<field name="price" />
@@ -35,24 +35,24 @@
 	</grid>
 
 	<form name="expense-line-form" title="Expense Line"
-		model="com.axelor.apps.organisation.db.ExpenseLine" cols="4" onNew="action-expenseline-default-record">
+		model="com.axelor.apps.organisation.db.ExpenseLine" cols="4" onNew="action-expense-line-default-record">
 
 	    <group title="Context" colSpan="4">
 	        <field name="expenseTypeSelect"/>
-	        <field name="project" onChange="action-expenseline-expense-type-select"/>
+	        <field name="task" onSelect="action-attrs-expense-line-task-domain"/>
 	    </group>
 	    <group title="Details" colSpan="4">
-	        <field name="product" colSpan="2" onChange="action-expenseline-product,action-expenseline-compute-total" domain="self.applicationTypeSelect = 3 and self.endDate IS NULL or CURRENT_DATE &lt; self.endDate"/>
+	        <field name="product" colSpan="2" onChange="action-expense-line-product,action-expense-line-method-compute" domain="self.applicationTypeSelect = 3 and self.endDate IS NULL or CURRENT_DATE &lt; self.endDate"/>
 	        <field name="shortDescription" colSpan="4"/>
-	        <field name="qty" onChange="action-expenseline-compute-total"/>
+	        <field name="qty" onChange="action-expense-line-method-compute"/>
 	        <field name="unit"/>
-	        <field name="price" onChange="action-expenseline-compute-total"/>
+	        <field name="price" onChange="action-expense-line-method-compute"/>
 	        <field name="total"/>
 	    </group>
 	    <break/>
 	    <group title="Proofs" colSpan="4">
 	        <field name="file"/>
-	        <field name="fileReceived" onChange="action-expenseline-record-validation-date"/>
+	        <field name="fileReceived" onChange="action-expense-line-record-validation-date"/>
 	    </group>
 	    <group title="Validation/Invoicing" colSpan="6">
 	        <field name="validationDate"/>
@@ -61,30 +61,31 @@
 	    </group>
 	</form>
 
-	<action-record name="action-expenseline-default-record" model="com.axelor.apps.organisation.db.ExpenseLine">
+	<action-record name="action-expense-line-default-record" model="com.axelor.apps.organisation.db.ExpenseLine">
     	<field name="expenseTypeSelect" expr="eval: 2"/>
     	<field name="fileReceived" expr="eval: 2"/>
     	<field name="qty" expr="1"/>
+    	<field name="expenseTypeSelect" expr="1" if="_parent?.project?.isReinvoicingExpense == true"/>
+    	<field name="expenseTypeSelect" expr="2" if="_parent?.project?.isReinvoicingExpense == false"/>
     </action-record>
     
-    <action-record name="action-expenseline-expense-type-select" model="com.axelor.apps.organisation.db.ExpenseLine">
-    	<field name="expenseTypeSelect" expr="1" if="project?.isReinvoicingExpense == true"/>
-    	<field name="expenseTypeSelect" expr="2" if="project?.isReinvoicingExpense == false"/>
-    </action-record>
-    
-    <action-record name="action-expenseline-compute-total" model="com.axelor.apps.organisation.db.ExpenseLine">
-    	<field name="total" expr="eval:qty*price" if="qty != null &amp;&amp; price != null"/>
-    </action-record>
-    
-    <action-record name="action-expenseline-product" model="com.axelor.apps.organisation.db.ExpenseLine">
+    <action-record name="action-expense-line-product" model="com.axelor.apps.organisation.db.ExpenseLine">
     	<field name="shortDescription" expr="eval: product?.name" if="product"/>
     	<field name="unit" expr="eval: product?.unit" if="product"/>
     	<field name="price" expr="eval: product?.purchasePrice" if="product"/>
     </action-record>
     
-    <action-record name="action-expenseline-record-validation-date" model="com.axelor.apps.organisation.db.ExpenseLine">
+    <action-record name="action-expense-line-record-validation-date" model="com.axelor.apps.organisation.db.ExpenseLine">
     	<field name="validationDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="fileReceived == 1"/>
     	<field name="validationDate" expr="" if="fileReceived == 2"/>
     </action-record>
+    
+   	<action-method name="action-expense-line-method-compute">
+		<call class="com.axelor.apps.organisation.web.ExpenseLineController" method="compute"/>
+	</action-method>
+    
+    <action-attrs name="action-attrs-expense-line-task-domain">
+    	<attribute name="domain" for="task" expr="eval: &quot;self.project = ${_parent?.project}&quot;"/>
+    </action-attrs>
     
 </object-views>

@@ -31,20 +31,25 @@
 package com.axelor.apps.organisation.db;
 
 /**
- * Interface of Expense object. Enum all static variable of object.
+ * Interface of TaskUpdateLine object. Enum all static variable of object.
  * 
  */
-public interface IExpense {
-
+public interface ITaskUpdateLine {
 
 	/**
-     * Static select in ExpenseLine
+     * Static select in TaskUpdateLine
      */
 
-    // STATE
+    // TYPE SELECT
 
-	static final int YES = 1;
-	static final int NO = 2;
+	static final int TYPE_REVENUE = 1;
+	static final int TYPE_COST = 2;
+	
+	 // APPLICATION SELECT
 
+	static final int APPLICATION_INITIAL_ESTIMATED = 1;
+	static final int APPLICATION_REAL_ESTIMATED = 2;
+	static final int APPLICATION_REAL_INVOICED = 3;
+	
 	
 }

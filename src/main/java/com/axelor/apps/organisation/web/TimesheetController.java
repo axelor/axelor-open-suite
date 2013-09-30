@@ -34,6 +34,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.organisation.db.Timesheet;
 import com.axelor.apps.organisation.service.TimesheetService;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -66,13 +67,22 @@ public class TimesheetController {
 		catch (Exception e){ TraceBackService.trace(response, e); }
 	}
 	
-	public void getTaskPastTime(ActionRequest request, ActionResponse response) {
+	public void getTaskSpentTime(ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
 		
-		timesheetService.get().getTaskPastTime(timesheet);
+		timesheetService.get().getTaskSpentTime(timesheet);
 		
 		response.setReload(true);
 		
+	}
+	
+	public void validate(ActionRequest request, ActionResponse response) {
+		
+		Timesheet timesheet = request.getContext().asType(Timesheet.class);
+		
+		timesheetService.get().validate(timesheet);
+		
+		response.setReload(true);
 	}
 }

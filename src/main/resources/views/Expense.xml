@@ -6,6 +6,7 @@
 	<grid name="expense-edit-grid" title="Travel expenses" editable="true"
 		model="com.axelor.apps.organisation.db.Expense">
 		<field name="date" />
+		<field name="company"/>
 		<field name="expenseLineList" grid-view="expense-line-edit-grid" />
 		<field name="statusSelect"/>
 	</grid>
@@ -13,6 +14,7 @@
     <grid name="expense-grid" title="Travel expenses" model="com.axelor.apps.organisation.db.Expense">
         <field name="userInfo"/>
         <field name="date"/>
+        <field name="company"/>
         <field name="totalAmount"/>
         <field name="currency"/>
         <field name="paymentPeriod"/>
@@ -21,17 +23,19 @@
     </grid>
     
     <form name="expense-form" title="Travel expense" model="com.axelor.apps.organisation.db.Expense" cols="4"
-    onNew="action-expense-default-record" onLoad="action-expense-method-check-validation-status">
+    onNew=""action-expense-group-default"" onLoad="action-expense-method-check-validation-status">
 		<field name="userInfo"/>
-   	 	<field name="statusSelect" widget="NavSelect"/>
+   	 	<field name="statusSelect" widget="NavSelect" showTitle="false"/>
         <field name="date" />
+        <field name="company"/>
         <field name="totalAmount"/>
        	<field name="currency" />
+       	<field name="project" />
    	 	<field name="expenseLineList" colSpan="4"/>
    	 	<break/>
    	 	<field name="progress" widget="progress"/>
    	 	<field name="paymentPeriod"/>
-   	 	<field name="motif" showIf="statusSelect == 6"/>
+   	 	<field name="refusalReason" showIf="statusSelect == 6"/>
    	 	<break/>
        	<group title="Action(s)" colSpan="4">
    			<group colSpan="1" cols="1">
@@ -51,11 +55,20 @@
         </group>
     </form>
     
-	<action-record name="action-expense-default-record" model="com.axelor.apps.organisation.db.Expense">
+    <action-group name="action-expense-group-default">
+    	<action name="action-expense-record-default"/>
+    	<action name="action-expense-record-default-currency"/>
+    </action-group>
+    
+	<action-record name="action-expense-record-default" model="com.axelor.apps.organisation.db.Expense">
     	<field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
     	<field name="date" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="date == null"/>
-    	<field name="currency" expr="eval: _activeCompany?.currency"/>	
     	<field name="statusSelect" expr="eval: 1"/>
+		<field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+    </action-record>
+    
+    <action-record name="action-expense-record-default-currency" model="com.axelor.apps.organisation.db.Expense">
+    	<field name="currency" expr="eval: company?.currency"/>	
     </action-record>
     
     <action-record name="action-expense-sum-expense-line" model="com.axelor.apps.organisation.db.Expense">

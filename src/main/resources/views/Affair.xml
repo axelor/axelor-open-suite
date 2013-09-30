@@ -11,19 +11,45 @@
         <field name="isModel"/>
     </grid>
     
-    <form cols="6" onNew="action-affair-record-default" name="affair-form" title="Affair" model="com.axelor.apps.organisation.db.Project"
+    <form name="affair-form" title="Affair" model="com.axelor.apps.organisation.db.Project" cols="6" 
+    onNew="action-affair-record-default"
     onSave="action-affair-method-create-default-task-on-save">
-	    <group showTitle="false" colSpan="4">
-	        <field name="affairName"/>
-	        <field name="responsibleUserInfo"/>
-	        <field name="defaultTask" hideIf="!isTimeSheetImputable"/>
+    	<group showTitle="false" cols="6" colSpan="6">
+	    	<field name="affairName" showTitle="false" css="highlight" placeholder="Affair name" colSpan="4"/>
+	       	<field name="statusTypeSelect" widget="NavSelect" showTitle="false"/>
+    	</group>
+    	<group showTitle="false" cols="4">
+        	<field name="responsibleUserInfo"/>
+        	<field name="defaultTask" hideIf="!isTimeSheetImputable"/>
+        	<field name="company" widget="SuggestBox"/>
 	        <field name="clientPartner"/>
 	        <field name="contactPartner" domain="self.isContact = true"/>
-	        <field name="company" widget="SuggestBox"/>
-	       	<field name="typeDurationSelect"/>
-	        <field name="plannedDuration"/>
-	        <field name="description" colSpan="4" widget="html"/>
-	        <group name="specificSettings" title="Specific settings" colSpan="4" canCollapse="true">
+	        <field name="userInfo"/>
+        	<field name="solutionAttendue"/>
+        	<field name="comiteEngagement"/>
+        	<field name="motif" showIf="statusTypeSelect == 4"/>
+ 		</group>
+    	<group title="Actions" showTitle="false" colSpan="2" cols="1">
+	        <button name="createSalesOrder" title="Create quote" colSpan="1"/>
+	        <button name="generateNewInstanceOfProject" title="Generate new project instance" hideIf="!isModel" colSpan="1"/>
+	        <button name="transformToProject" title="Transform to project" showIf="isProject == false" colSpan="1" onClick="action-affair-record-transform-in-project,save"/>
+	        <button name="createPreSalesTask" title="Create pre-sales task" colSpan="1" onClick="save,action-affair-method-create-pre-sales-task"/>
+	        <button name="updateTaskProgression" title="Update task progress" colSpan="1" onClick="action-project-method-update-task-progress"/>
+	    </group>
+	    <group showTitle="false" colSpan="6">
+        	<group title="Times" colSpan="6" cols="6">
+        		<field name="totalTime"/>
+        		<field name="unit"/>  
+        		<spacer colSpan="2"/>
+        		<separator colSpan="6"/>
+	            <field name="plannedTime"/>
+	            <field name="spentTime"/>
+	            <field name="remainingTime"/>
+	        </group>
+	        <group title="Description" colSpan="6">
+            	<field name="description" showTitle="false" widget="Html[lite=true]"/>
+        	</group>
+	        <group name="specificSettings" title="Specific settings" colSpan="6" canCollapse="true">
 	        	<field name="isProject"/>
 	        	<field name="isAffair"/>
 	            <field name="isModel"/>
@@ -33,14 +59,8 @@
 	            <field name="typeProjectSelect" showIf="imputExpense == true"/>
 	            <field name="isReinvoicingExpense"/>
 	            <field name="isReinvoicingTime"/>
-	            <field name="isTimeSheetImputable"/> 
+	            <field name="isTimeSheetImputable"/>
 	        </group>
-	    </group>
-	    <group title="Actions" showTitle="false" colSpan="2" cols="1">
-	        <button name="createSalesOrder" title="Create quote" colSpan="1"/>
-	        <button name="generateNewInstanceOfProject" title="Generate new project instance" hideIf="!isModel" colSpan="1"/>
-	        <button name="transformToProject" title="Transform to project" showIf="isProject == true" colSpan="1"/>
-	        <button name="createPreSalesTask" title="Create pre-sales task" colSpan="1" onClick="save,action-affair-method-create-pre-sales-task"/>
 	    </group>
 	    <field name="candidateSet" colSpan="4"/>
 	    <field name="employeeSet" colSpan="4"/>
@@ -49,35 +69,48 @@
 	        	<field name="preSalesTask"/>
 	            <field name="taskList" grid-view="task-project-grid" form-view="task-form" colSpan="6"/>
 	        </page>
-	        <page title="Financial information" colSpan="4">
-	            <group title="Initial Budget" colSpan="6" cols="6">
-	                <field name="initialBudgetTurnover"/>
-	                <field name="initialBudgetCost"/>
-	                <field name="initialBudgetMargin"/>
+	        <page title="Financial information" colSpan="4" onSelect="action-project-method-update-financial-information,save">
+	        	<field name="realEstimatedMethodSelect"/>
+	        	<field name="company.currency"/>
+	        	<field name="exportTypeSelect"/>
+                <button name="printProject" colSpan="2" title="Voir rapport estimations" onClick="action-print-project-report" icon="img/icons/print.png"/>
+	            <group title="Initial estimated" colSpan="4" cols="6" hideIf="realEstimatedMethodSelect == 1">
+	                <field name="initialEstimatedTurnover"/>
+	                <field name="initialEstimatedCost"/>
+	                <field name="initialEstimatedMargin"/>
 	            </group>
-	            <group title="Realized" colSpan="6" cols="6">
-	                <field name="realizedTurnover"/>
-	                <field name="realizedBudgetCost"/>
-	                <field name="realizedBudgetMargin"/>
+	            <group title="Real estimated" colSpan="4" cols="6">
+	                <field name="realEstimatedTurnover"/>
+	                <field name="realEstimatedCost"/>
+	                <field name="realEstimatedMargin"/>
 	            </group>
-	            <group title="Remaining to do" colSpan="6" cols="6">
-	                <field name="remainingTurnover"/>
-	                <field name="remainingBudgetCost"/>
-	                <field name="remainingBudgetMargin"/>
+	            <group title="Real invoiced" colSpan="4" cols="6">
+	                <field name="realInvoicedTurnover"/>
+	                <field name="realInvoicedCost"/>
+	                <field name="realInvoicedMargin"/>
 	            </group>
-	            <group title="Estimated final" colSpan="6" cols="6">
-	                <field name="expectedFinalTurnover"/>
-	                <field name="expectedFinalCost"/>
-	                <field name="expectedFinalMargin"/>
-	            </group>
-	            <group colSpan="6" cols="6">
-	                <field name="plannedTime"/>
-	                <field name="spentTime"/>
-	                <field name="remainingTime"/>
-	                <field name="budgetedExpenses"/>
-	                <field name="incurredExpenses"/>
-	                <field name="remainingExpenses"/>
-	            </group>
+	        </page>
+	        <page title="Links" colSpan="4">
+	        	<notebook>
+	        		<page title="Initial estimated" hideIf="realEstimatedMethodSelect == 1">
+	        			<portlet colSpan="4" action="action-project-view-validated-sales-order-line"/>
+	     				<portlet colSpan="4" action="action-project-view-validated-purchase-order-line"/>
+	     				<portlet colSpan="4" action="action-project-view-initial-estimated-financial-information-update"/>
+	        		</page>
+	        		<page title="Real estimated">
+	        			<portlet colSpan="4" action="action-project-view-validated-purchase-order-line"/>
+	        			<portlet colSpan="4" action="action-project-view-timesheet-line"/>
+			     		<portlet colSpan="4" action="action-project-view-expense-line"/>
+	     				<portlet colSpan="4" action="action-project-view-real-estimated-financial-information-update"/>
+	        		</page>
+	        		<page title="Real invoiced">
+	        			<portlet colSpan="4" action="action-project-view-customer-invoice-line"/>
+			     		<portlet colSpan="4" action="action-project-view-supplier-invoice-line"/>
+			     		<portlet colSpan="4" action="action-project-view-timesheet-line"/>
+			     		<portlet colSpan="4" action="action-project-view-expense-line"/>
+			     		<portlet colSpan="4" action="action-project-view-real-invoiced-financial-information-update"/>
+	        		</page>
+	        	</notebook>
 	        </page>
 	        <page title="Membres" colSpan="4">
 	            <field name="memberUserInfoSet" colSpan="6"/>
@@ -94,12 +127,155 @@
 	            <field name="specificationFile"/>
 	            <field name="needDescription"/>
 	        </page>
+	        <page title="Information commerciale" cols="6">
+	        	<group colSpan="2">
+                	<field name="agency" colSpan="2"/>
+                	<field name="daUserInfo" colSpan="2"/>
+                	<field name="icUserInfo" colSpan="2"/>
+                	<field name="source" colSpan="2"/>
+                	<group colSpan="4" title="Agenda">
+                    	<field name="agenda" showTitle="false" widget="Html[lite=true]"/>
+                	</group>
+                	<group colSpan="4" title="Critères d'évaluation de l'offre">
+                    	<field name="critEvalOffre" showTitle="false" widget="Html[lite=true]"/>
+                	</group>
+           		</group>
+            	<group colSpan="4">
+            		<group colSpan="4" title="Descriptif">
+                		<field name="descriptif" showTitle="false" widget="Html[lite=true]"/>
+                	</group>
+            	</group>
+	        </page>
+	        <page title="Qualification avant-vente" cols="6">
+	        	<group colSpan="2">
+                	<field name="respQualifUserInfo" colSpan="2"/>
+                	<group title="CP avant-vente" colSpan="4">
+                    	<field name="engagementTypeSelect" colSpan="2"/>
+                    	<field name="solution" colSpan="2"/>
+                    	<field name="technologies" colSpan="2"/>
+                	</group>
+                	<group title="Montants" colSpan="4">
+                    	<field name="macroChiffMarche" colSpan="2"/>
+                    	<field name="estimationParAnnee" colSpan="2"/>
+                    	<field name="estimationParPhaseLot" colSpan="2"/>
+                	</group>
+                	<group title="Dates" colSpan="4">
+                    	<field name="receptionDossierDate" colSpan="2"/>
+                    	<field name="remiseQualifDate" colSpan="2"/>
+                    	<field name="finalOffreTechDate" colSpan="2"/>
+                    	<field name="finalOffreComDate" colSpan="2"/>
+                    	<field name="remiseOffrePrevueDate" colSpan="2"/>
+                	</group>
+                	<group title="Charges avant-vente" colSpan="4">
+                    	<field name="chargesQualif" colSpan="2"/>
+                    	<field name="estimationChargesRep" colSpan="2"/>
+                	</group>
+            	</group>
+            	<group colSpan="4">
+                	<group colSpan="4" title="Qualification du dossier">
+                    	<field name="qualifDossier" showTitle="false" widget="Html[lite=true]"/>
+                	</group>
+                	<group colSpan="4" title="Point IMPORTANTS">
+                    	<field name="pointImportant" showTitle="false" widget="Html[lite=true]"/>
+                	</group>
+                	<group colSpan="4" title="Analyse : Note / 20">
+                   		<field name="analyseNote" showTitle="false" widget="Html[lite=true]"/>
+                	</group>
+                	<field name="conclusionAvtVenteTypeSelect" widget="RadioSelect[direction=vertical]"/>
+            	</group>
+	        </page>
+	        <page title="Qualification technique" cols="6">
+	        	<group colSpan="2">
+                	<field name="respCdsSdm" colSpan="2"/>
+                	<field name="expert" colSpan="2"/>
+                	<group title="CP avant-vente" colSpan="4">
+                    	<field name="engagementTypeSelect" colSpan="2"/>
+                    	<field name="solution" colSpan="2"/>
+                    	<field name="technologies" colSpan="2"/>
+                	</group>
+                	<group title="Montants" colSpan="4">
+                    	<field name="macroChiffMarche" colSpan="2"/>
+                    	<field name="estimationParAnnee" colSpan="2"/>
+                    	<field name="estimationParPhaseLot" colSpan="2"/>
+                	</group>
+                	<group title="Dates" colSpan="4">
+                    	<field name="receptionDossierDate" colSpan="2"/>
+                    	<field name="remiseQualifDate" colSpan="2"/>
+                    	<field name="finalOffreTechDate" colSpan="2"/>
+                    	<field name="finalOffreComDate" colSpan="2"/>
+                    	<field name="remiseOffrePrevueDate" colSpan="2"/>
+                	</group>
+                	<group title="Charges avant-vente" colSpan="4">
+                    	<field name="chargesQualif" colSpan="2"/>
+                    	<field name="estimationChargesRep" colSpan="2"/>
+                	</group>
+            	</group>
+            	<group colSpan="4">
+                	<group colSpan="4" title="Positionnement de notre CDS sur cette affaire">
+                    	<field name="positionnementCDS" showTitle="false" widget="Html[lite=true]"/>
+                	</group>
+                	<group colSpan="4" title="Point Marquant du dossier / VA-VAPA">
+                    	<field name="pointMarquantDossier" showTitle="false" widget="Html[lite=true]"/>
+                	</group>
+                	<group colSpan="4" title="Analyse des Risques / Solutions">
+                   		<field name="analyseRisquesSolutions" showTitle="false" widget="Html[lite=true]"/>
+                	</group>
+                	<group colSpan="4" title="AVIS DE LA DIRECTION TECHNIQUE / CDS CIBLE">
+                   		<field name="avisDirectionTechnique" showTitle="false" widget="Html[lite=true]"/>
+                	</group>
+            	</group>
+	        </page>
+	        <page title="GO/NOGO" cols="6" colSpan="6">
+            	<field name="goNoGoTypeSelect" colSpan="3"/>
+            	<field name="todayDate" colSpan="3"/>
+            	<group title="Responsables" cols="3" colSpan="3">
+                	<field name="dirTechniqueUserInfo" colSpan="3"/>
+                	<field name="dirCommercialeserInfo" colSpan="3"/>
+                	<field name="dirAgenceUserInfo" colSpan="3"/>
+                	<field name="respCDSUserInfo" colSpan="3"/>
+                	<field name="respAvtVenteUserInfo" colSpan="3"/>
+            	</group>
+            	<group title="Equipe réponse" cols="3" colSpan="3">
+                	<field name="pilotageEquipe" colSpan="3"/>
+                	<field name="partTechniqueDate" colSpan="3"/>
+                	<field name="partCommercialeDate" colSpan="3"/>
+                	<field name="relectureDate" colSpan="3"/>
+                	<field name="responseDate" colSpan="3"/>
+                	<field name="chargeAV" colSpan="3"/>
+            	</group>
+        	</page>
+	        <page title="Synthèse de l'offre" cols="6">
+	        	<group colSpan="2">
+	        		<field name="agency" colSpan="2"/>
+	        		<field name="daUserInfo" colSpan="2"/>
+	        		<field name="icUserInfo" colSpan="2"/>
+	        		<field name="avUserInfo" colSpan="2"/>
+	        		<field name="clientPartner" colSpan="2"/>
+	        		<field name="cdsConcerne" colSpan="2"/>
+	        	</group>
+	        	<group colSpan="4">
+	        		<group colSpan="4" title="Description du projet">
+	        			<field name="descriptionProjet" showTitle="false" widget="Html[lite=true]"/>
+	        		</group>
+	        		<field name="offerLineList" colSpan="4"/>
+	        	</group>
+	        </page>
 	    </notebook>    
 	</form>
 	
     <action-record name="action-affair-record-default" model="com.axelor.apps.organisation.db.Project">
 		<field name="isTimeSheetImputable" expr="true"/>
 		<field name="isAffair" expr="true"/>
+    	<field name="exportTypeSelect" expr="eval: 'pdf'"/>
+    	<field name="realEstimatedMethodSelect" expr="2"/>
+    	<field name="responsibleUserInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+		<field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+		<field name="statusTypeSelect" expr="1"/>		
+		<field name="unit" expr="eval: company?.administration?.unit"/>
+	</action-record>
+	
+	<action-record name="action-affair-record-transform-in-project" model="com.axelor.apps.organisation.db.Project">
+		<field name="isProject" expr="true"/>
 	</action-record>
 			
 	<action-method name="action-affair-method-create-pre-sales-task">
@@ -109,5 +285,76 @@
 	<action-method name="action-affair-method-create-default-task-on-save">
 		<call class="com.axelor.apps.organisation.web.ProjectController" method="createDefaultTask"/>
 	</action-method>
+	
+	<action-method name="action-print-project-report" >
+		<call class="com.axelor.apps.organisation.web.ProjectController" method="printProjectReport"/>
+	</action-method>
+	
+	<action-method name="action-project-method-update-financial-information">
+		<call class="com.axelor.apps.organisation.web.ProjectController" method="updateFinancialInformation"/>
+	</action-method>
+  	
+  	<action-view name="action-project-view-initial-estimated-financial-information-update" title="Financial information updates" model="com.axelor.apps.organisation.db.FinancialInformationUpdate">
+  		<view type="grid" name="financial-information-update-grid"/>
+		<view type="form" name="financial-information-update-form"/>
+  		<domain>self.applicationSelect = 1 and self.task.project.id = :id</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
+  	<action-view name="action-project-view-validated-sales-order-line" title="Validated Customer order lines" model="com.axelor.apps.supplychain.db.SalesOrderLine">
+  		<view type="grid" name="sales-order-line-grid"/>
+		<view type="form" name="sales-order-line-form"/>
+  		<domain>self.salesOrder.statusSelect = 3 and self.task.affairProject.id = :id</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
+  	<action-view name="action-project-view-validated-purchase-order-line" title="Validated supplier order lines" model="com.axelor.apps.supplychain.db.PurchaseOrderLine">
+  		<view type="grid" name="purchase-order-line-grid"/>
+		<view type="form" name="purchase-order-line-form"/>
+  		<domain>self.purchaseOrder.statusSelect = 3 and self.task.affairProject.id = :id</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
+  	<action-view name="action-project-view-real-estimated-financial-information-update" title="Financial information updates" model="com.axelor.apps.organisation.db.FinancialInformationUpdate">
+  		<view type="grid" name="financial-information-update-grid"/>
+		<view type="form" name="financial-information-update-form"/>
+  		<domain>self.applicationSelect = 2 and self.task.project.id = :id</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
+  	<action-view name="action-project-view-customer-invoice-line" title="Customer invoice lines" model="com.axelor.apps.account.db.InvoiceLine">
+  		<view type="grid" name="invoice-line-grid"/>
+		<view type="form" name="invoice-line-form"/>
+  		<domain>(self.invoice.status.code = 'val' or self.invoice.status.code = 'dis') and self.task.project.id = :id and (self.invoice.operationTypeSelect = 3 or self.invoice.operationTypeSelect = 4)</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
+  	<action-view name="action-project-view-supplier-invoice-line" title="Supplier invoice lines" model="com.axelor.apps.account.db.InvoiceLine">
+  		<view type="grid" name="invoice-line-grid"/>
+		<view type="form" name="invoice-line-form"/>
+  		<domain>(self.invoice.status.code = 'val' or self.invoice.status.code = 'dis') and self.task.project.id = :id and (self.invoice.operationTypeSelect = 1 or self.invoice.operationTypeSelect = 2)</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
+  	<action-view name="action-project-view-timesheet-line" title="Timesheet lines" model="com.axelor.apps.organisation.db.TimesheetLine">
+  		<view type="grid" name="timesheet-line-employee-grid"/>
+		<view type="form" name="timesheet-line-employee-form"/>
+  		<domain>self.timesheet.statusSelect = 3 and self.task.project.id = :id</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
+  	<action-view name="action-project-view-expense-line" title="Travel expense lines" model="com.axelor.apps.organisation.db.ExpenseLine">
+  		<view type="grid" name="expense-line-grid"/>
+		<view type="form" name="expense-line-form"/>
+  		<domain>self.expense.statusSelect = 3 and self.task.project.id = :id</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
+  	<action-view name="action-project-view-real-invoiced-financial-information-update" title="Financial information updates" model="com.axelor.apps.organisation.db.FinancialInformationUpdate">
+  		<view type="grid" name="financial-information-update-grid"/>
+		<view type="form" name="financial-information-update-form"/>
+  		<domain>self.applicationSelect = 3 and self.task.project.id = :id</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
 		
 </object-views>

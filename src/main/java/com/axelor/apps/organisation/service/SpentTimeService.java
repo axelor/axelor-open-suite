@@ -28,23 +28,32 @@
  * All portions of the code written by Axelor are
  * Copyright (c) 2012-2013 Axelor. All Rights Reserved.
  */
-package com.axelor.apps.organisation.db;
+package com.axelor.apps.organisation.service;
 
-/**
- * Interface of Expense object. Enum all static variable of object.
- * 
- */
-public interface IExpense {
+import java.math.BigDecimal;
+
+import com.axelor.apps.base.db.SpentTime;
+import com.axelor.apps.organisation.db.TimesheetLine;
 
 
-	/**
-     * Static select in ExpenseLine
-     */
+public class SpentTimeService {
 
-    // STATE
 
-	static final int YES = 1;
-	static final int NO = 2;
-
+	public SpentTime createSpentTime (TimesheetLine timesheetLine)  {
+		
+		SpentTime spentTime = new SpentTime();
+		spentTime.setDate(timesheetLine.getDate());
+		spentTime.setTask(timesheetLine.getTask());
+		BigDecimal duration = timesheetLine.getDuration();
+		spentTime.setDuration(duration);
+		spentTime.setUnit(timesheetLine.getSpentTime().getUnit());
+		spentTime.setTimesheetImputed(true);
+		spentTime.setUserInfo(timesheetLine.getTimesheet().getUserInfo());
+		
+		return spentTime;
+		
+	}
+	
+	
 	
 }
