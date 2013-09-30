@@ -14,6 +14,7 @@
     </grid>
     
     <form name="invoice-line-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine" cols="4" 
+    onNew="action-invoice-line-record-new"
     onLoad="action-invoice-line-method-product-management">
     	<notebook>
     		<page title="Informations">
@@ -73,6 +74,11 @@
 		<field name="vatLine.vat.name"/>
 		<field name="vatLine.value"/>
     </form>
+    
+    <action-record name="action-invoice-line-record-new" model="com.axelor.apps.supplychain.db.PurchaseOrderLine">
+    	<field name="qty" expr="eval: 1"/>
+    	<field name="task" expr="eval: _parent?.affairProject?.defaultTask"/>
+    </action-record>
     
     <action-record name="action-invoice-line-record-product-variant" model="com.axelor.apps.account.db.InvoiceLine">
     	<field name="productVariant" expr="action:action-product-variant-record-on-new" if="product?.productVariantConfiguration != null"/>
