@@ -47,14 +47,12 @@ public class TargetController {
 		Target target = request.getContext().asType(Target.class);
 		
 		try {
-			targetService.update(target);
-			response.setValue("opportunityAmountEarned", target.getOpportunityAmountEarned());
+			targetService.update(Target.find(target.getId()));
+			response.setValue("opportunityAmountWon", target.getOpportunityAmountWon());
 			response.setValue("opportunityCreatedNumber", target.getOpportunityCreatedNumber());
 			response.setValue("opportunityCreatedWon", target.getOpportunityCreatedWon());
 			response.setValue("callEmittedNumber", target.getCallEmittedNumber());
 			response.setValue("meetingNumber", target.getMeetingNumber());
-			
-			
 		}
 		catch (Exception e) { TraceBackService.trace(response, e); }
 	}

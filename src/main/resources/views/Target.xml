@@ -11,59 +11,62 @@
         <field name="toDate"/>
     </grid>
     
-    <form name="target-form" title="Target" model="com.axelor.apps.crm.db.Target" cols="4" onLoad="action-target-method-update,save" onSave="action-target-validate">
-    	<group title="Information" colSpan="4">
-    		<field name="name"/>
-        	<field name="code"/>
-        	<field name="userInfo" showIf="team == null"/>
-        	<field name="team" showIf="userInfo == null"/>
-    	</group>
-    	<group title="Period" colSpan="4">
-    		<field name="periodTypeSelect"/>
+    <form name="target-form" title="Target" model="com.axelor.apps.crm.db.Target" cols="4"  
+    onLoad="action-target-method-update,save" 
+    onSave="action-target-validate">
+	    <group title="Information" colSpan="4" colWidths="15%,35%,15%,35%">
+	        <field name="name"/>
+	        <field name="code"/>
+	        <field name="userInfo" showIf="team == null"/>
+	        <field name="team" showIf="userInfo == null"/>
+	    </group>
+	    <group title="Period" colSpan="4" colWidths="15%,35%,15%,35%">
+	        <field name="periodTypeSelect"/>
 	        <field name="fromDate"/>
 	        <field name="toDate"/>
-    	</group>
-        <group title="Opportunity" colSpan="4">
-	        <group colSpan="2" cols="2">
-	        	<separator title="Target" colSpan="2"/>
-		        <field name="opportunityAmountEarnedTarget"/>
-	        	<field name="opportunityCreatedNumberTarget"/>
-	        	<field name="opportunityCreatedWonTarget"/>
-	        </group>
-	        <group colSpan="2" cols="2">
-	        	<separator title="Real" colSpan="2"/>
-	        	<field name="opportunityAmountEarned"/>
-	        	<field name="opportunityCreatedNumber"/>
-	        	<field name="opportunityCreatedWon"/>
-        	</group>
-        </group>
-<!--         <group title="Sales order" colSpan="4"> -->
+	    </group>
+	    <group title="Opportunity" colSpan="4" cols="4" colWidths="15%,35%,15%,35%">
+	        <spacer/>
+	        <separator title="Target"/>
+	        <spacer/>
+	        <separator title="Real"/>
+	        <field name="opportunityAmountWonTarget"/>
+	        <label title="Vs"/>
+	        <field name="opportunityAmountWon" showTitle="false" />
+	        <field name="opportunityCreatedNumberTarget"/>
+	        <label title="Vs"/>
+	        <field name="opportunityCreatedNumber" showTitle="false"/>
+	        <field name="opportunityCreatedWonTarget"/>
+	        <label title="Vs"/>
+	        <field name="opportunityCreatedWon" showTitle="false"/>  
+	    </group>
+	    <group title="Events" colSpan="4" cols="4" colWidths="15%,35%,15%,35%">
+	        <spacer/>
+	        <separator title="Target"/>
+	        <spacer/>
+	        <separator title="Real"/>
+	        <field name="callEmittedNumberTarget"/>
+	        <label title="Vs"/>
+	        <field name="callEmittedNumber" showTitle="false"/>
+	        <field name="meetingNumberTarget"/>
+	        <label title="Vs"/>
+	        <field name="meetingNumber" showTitle="false"/>
+	    </group>
+<!-- 	    <group title="Sales order" colSpan="4"> -->
 <!--         	<group colSpan="2" cols="2"> -->
 <!-- 	        	<separator title="Target" colSpan="2"/> -->
-<!-- 		        <field name="salesOrderAmountEarnedTarget"/> -->
+<!-- 		        <field name="salesOrderAmountWonTarget"/> -->
 <!-- 		       	<field name="salesOrderCreatedNumberTarget"/> -->
 <!-- 		       	<field name="salesOrderCreatedWonTarget"/> -->
 <!-- 	        </group> -->
 <!-- 	        <group colSpan="2" cols="2"> -->
 <!-- 	        	<separator title="Real" colSpan="2"/> -->
-<!-- 	        	<field name="salesOrderAmountEarned"/> -->
+<!-- 	        	<field name="salesOrderAmountWon"/> -->
 <!-- 	        	<field name="salesOrderCreatedNumber"/> -->
 <!-- 	        	<field name="salesOrderCreatedWon"/> -->
 <!--         	</group> -->
 <!--         </group> -->
-        <group title="Events" colSpan="4">
-        	<group colSpan="2" cols="2">
-	        	<separator title="Target" colSpan="2"/>
-		        <field name="callEmittedNumberTarget"/>
-		        <field name="meetingNumberTarget"/>
-	        </group>
-	        <group colSpan="2" cols="2">
-	        	<separator title="Real" colSpan="2"/>
-		        <field name="callEmittedNumber"/>
-		        <field name="meetingNumber"/>
-        	</group>
-       	</group>
-    </form>
+	</form>
     
     <action-method name="action-target-method-update">
     	<call class="com.axelor.apps.crm.web.TargetController" method="update"/>
