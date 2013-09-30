@@ -2,6 +2,8 @@
 "1/2-JR";4;"HRE"
 "JR";8;"HRE"
 "SEM";5;"JR"
+"MOIS";20;"JR"
+"ANNEE";12;"MOIS"
 "ANNEE";251;"JR"
 "BTE2";2;"U"
 "BTE2";2;"PCE"
