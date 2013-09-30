@@ -81,11 +81,12 @@ public class SalesOrderService {
 	@Inject
 	private StockMoveLineService stockMoveLineService;
 
-	public SalesOrder _computeSalesOrderLines(SalesOrder salesOrder)  {
+	public SalesOrder _computeSalesOrderLines(SalesOrder salesOrder) throws AxelorException  {
 
 		if(salesOrder.getSalesOrderLineList() != null)  {
 			for(SalesOrderLine salesOrderLine : salesOrder.getSalesOrderLineList())  {
 				salesOrderLine.setExTaxTotal(salesOrderLineService.computeSalesOrderLine(salesOrderLine));
+				salesOrderLine.setCompanyExTaxTotal(salesOrderLineService.getCompanyExTaxTotal(salesOrderLine.getExTaxTotal(), salesOrder));
 			}
 		}
 
