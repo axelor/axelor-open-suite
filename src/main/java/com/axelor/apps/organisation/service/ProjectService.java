@@ -102,7 +102,7 @@ public class ProjectService {
 		
 		/**  REVENUE  **/
 		
-		Query q = JPA.em().createQuery("select SUM(sol.exTaxTotal) FROM SalesOrderLine as sol WHERE sol.task.project = ?1 AND sol.salesOrder.statusSelect = 3");
+		Query q = JPA.em().createQuery("select SUM(sol.companyExTaxTotal) FROM SalesOrderLine as sol WHERE sol.task.project = ?1 AND sol.salesOrder.statusSelect = 3");
 		q.setParameter(1, project);
 				
 		BigDecimal salesOrderTurnover = (BigDecimal) q.getSingleResult();
@@ -119,7 +119,7 @@ public class ProjectService {
 		
 		/**  COST  **/
 		
-		q = JPA.em().createQuery("select SUM(pol.exTaxTotal) FROM PurchaseOrderLine as pol WHERE pol.task.project = ?1 AND pol.purchaseOrder.statusSelect = 3");
+		q = JPA.em().createQuery("select SUM(pol.companyExTaxTotal) FROM PurchaseOrderLine as pol WHERE pol.task.project = ?1 AND pol.purchaseOrder.statusSelect = 3");
 		q.setParameter(1, project);
 				
 		BigDecimal purchaseOrderCost = (BigDecimal) q.getSingleResult();
@@ -174,7 +174,7 @@ public class ProjectService {
 		
 		/**  COST  **/
 		
-		Query q = JPA.em().createQuery("select SUM(pol.exTaxTotal) FROM PurchaseOrderLine as pol WHERE pol.task.project = ?1 AND pol.purchaseOrder.statusSelect = 3 AND pol.product.applicationTypeSelect = 1");
+		Query q = JPA.em().createQuery("select SUM(pol.companyExTaxTotal) FROM PurchaseOrderLine as pol WHERE pol.task.project = ?1 AND pol.purchaseOrder.statusSelect = 3 AND pol.product.applicationTypeSelect = 1");
 		q.setParameter(1, project);
 				
 		BigDecimal purchaseOrderCost = (BigDecimal) q.getSingleResult();
@@ -185,7 +185,7 @@ public class ProjectService {
 				
 		BigDecimal timesheetLineCost = (BigDecimal) q.getSingleResult();
 		
-		q = JPA.em().createQuery("select SUM(el.total) FROM ExpenseLine as el WHERE el.task.project = ?1 and el.expense.statusSelect = 4");
+		q = JPA.em().createQuery("select SUM(el.companyTotal) FROM ExpenseLine as el WHERE el.task.project = ?1 and el.expense.statusSelect = 4");
 		q.setParameter(1, project);
 				
 		BigDecimal expenseLineCost = (BigDecimal) q.getSingleResult();
@@ -235,7 +235,7 @@ public class ProjectService {
 		
 /**  REVENUE  **/
 		
-		Query q = JPA.em().createQuery("select SUM(il.exTaxTotal) FROM InvoiceLine as il WHERE il.task.project = ?1 AND il.invoice.status.code = 'val' AND (il.invoice.operationTypeSelect = 3 OR il.invoice.operationTypeSelect = 4)");
+		Query q = JPA.em().createQuery("select SUM(il.companyExTaxTotal) FROM InvoiceLine as il WHERE il.task.project = ?1 AND il.invoice.status.code = 'val' AND (il.invoice.operationTypeSelect = 3 OR il.invoice.operationTypeSelect = 4)");
 		q.setParameter(1, project);
 				
 		BigDecimal invoiceLineTurnover = (BigDecimal) q.getSingleResult();
@@ -253,7 +253,7 @@ public class ProjectService {
 		
 		/**  COST  **/
 		
-		q = JPA.em().createQuery("select SUM(il.exTaxTotal) FROM InvoiceLine as il WHERE il.task.project = ?1 AND il.invoice.status.code = 'val' AND (il.invoice.operationTypeSelect = 1 OR il.invoice.operationTypeSelect = 2)");
+		q = JPA.em().createQuery("select SUM(il.companyExTaxTotal) FROM InvoiceLine as il WHERE il.task.project = ?1 AND il.invoice.status.code = 'val' AND (il.invoice.operationTypeSelect = 1 OR il.invoice.operationTypeSelect = 2)");
 		q.setParameter(1, project);
 				
 		BigDecimal supplierInvoiceLineCost = (BigDecimal) q.getSingleResult();
@@ -270,7 +270,7 @@ public class ProjectService {
 		BigDecimal timesheetLineCost = (BigDecimal) q.getSingleResult();
 			
 		
-		q = JPA.em().createQuery("select SUM(el.total) FROM ExpenseLine as el WHERE el.task.project = ?1 and el.expense.statusSelect = 4");
+		q = JPA.em().createQuery("select SUM(el.companyTotal) FROM ExpenseLine as el WHERE el.task.project = ?1 and el.expense.statusSelect = 4");
 		q.setParameter(1, project);
 				
 		BigDecimal expenseLineCost = (BigDecimal) q.getSingleResult();

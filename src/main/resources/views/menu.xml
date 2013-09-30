@@ -143,7 +143,6 @@
 		<view type="grid" name="expense-grid" />
 		<view type="form" name="expense-form" />
 		<domain>self.statusSelect = '3'</domain>
-		<context name="_activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
 	</action-view>
 	
 	<menuitem name="hr-root-validationforms-travelexpenses-commercial" parent="hr-root-validationforms"

@@ -42,6 +42,7 @@ import org.joda.time.LocalDateTime;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.SpentTime;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.organisation.db.Employee;
@@ -65,6 +66,9 @@ public class TaskService {
 
 	@Inject
 	private UnitConversionService unitConversionService;
+	
+	@Inject
+	private CurrencyService currencyService;
 	
 	private LocalDateTime todayTime;
 	
@@ -175,7 +179,7 @@ public class TaskService {
 		
 		/**  REVENUE  **/
 		
-		Query q = JPA.em().createQuery("select SUM(sol.exTaxTotal) FROM SalesOrderLine as sol WHERE sol.task = ?1 AND sol.salesOrder.statusSelect = 3");
+		Query q = JPA.em().createQuery("select SUM(sol.companyExTaxTotal) FROM SalesOrderLine as sol WHERE sol.task = ?1 AND sol.salesOrder.statusSelect = 3");
 		q.setParameter(1, task);
 				
 		BigDecimal salesOrderTurnover = (BigDecimal) q.getSingleResult();
@@ -192,7 +196,7 @@ public class TaskService {
 		
 		/**  COST  **/
 		
-		q = JPA.em().createQuery("select SUM(pol.exTaxTotal) FROM PurchaseOrderLine as pol WHERE pol.task = ?1 AND pol.purchaseOrder.statusSelect = 3");
+		q = JPA.em().createQuery("select SUM(pol.companyExTaxTotal) FROM PurchaseOrderLine as pol WHERE pol.task = ?1 AND pol.purchaseOrder.statusSelect = 3");
 		q.setParameter(1, task);
 				
 		BigDecimal purchaseOrderCost = (BigDecimal) q.getSingleResult();
@@ -247,7 +251,7 @@ public class TaskService {
 		
 		/**  COST  **/
 		
-		Query q = JPA.em().createQuery("select SUM(pol.exTaxTotal) FROM PurchaseOrderLine as pol WHERE pol.task = ?1 AND pol.purchaseOrder.statusSelect = 3 AND pol.product.applicationTypeSelect = 1");
+		Query q = JPA.em().createQuery("select SUM(pol.companyExTaxTotal) FROM PurchaseOrderLine as pol WHERE pol.task = ?1 AND pol.purchaseOrder.statusSelect = 3 AND pol.product.applicationTypeSelect = 1");
 		q.setParameter(1, task);
 				
 		BigDecimal purchaseOrderCost = (BigDecimal) q.getSingleResult();
@@ -258,7 +262,7 @@ public class TaskService {
 				
 		BigDecimal timesheetLineCost = (BigDecimal) q.getSingleResult();
 		
-		q = JPA.em().createQuery("select SUM(el.total) FROM ExpenseLine as el WHERE el.task = ?1 and el.expense.statusSelect = 4");
+		q = JPA.em().createQuery("select SUM(el.companyTotal) FROM ExpenseLine as el WHERE el.task = ?1 and el.expense.statusSelect = 4");
 		q.setParameter(1, task);
 				
 		BigDecimal expenseLineCost = (BigDecimal) q.getSingleResult();
@@ -314,7 +318,7 @@ public class TaskService {
 		
 		/**  REVENUE  **/
 		
-		Query q = JPA.em().createQuery("select SUM(il.exTaxTotal) FROM InvoiceLine as il WHERE il.task = ?1 AND il.invoice.status.code = 'val' AND (il.invoice.operationTypeSelect = 3 OR il.invoice.operationTypeSelect = 4)");
+		Query q = JPA.em().createQuery("select SUM(il.companyExTaxTotal) FROM InvoiceLine as il WHERE il.task = ?1 AND il.invoice.status.code = 'val' AND (il.invoice.operationTypeSelect = 3 OR il.invoice.operationTypeSelect = 4)");
 		q.setParameter(1, task);
 				
 		BigDecimal invoiceLineTurnover = (BigDecimal) q.getSingleResult();
@@ -332,7 +336,7 @@ public class TaskService {
 		
 		/**  COST  **/
 		
-		q = JPA.em().createQuery("select SUM(il.exTaxTotal) FROM InvoiceLine as il WHERE il.task = ?1 AND il.invoice.status.code = 'val' AND (il.invoice.operationTypeSelect = 1 OR il.invoice.operationTypeSelect = 2)");
+		q = JPA.em().createQuery("select SUM(il.companyExTaxTotal) FROM InvoiceLine as il WHERE il.task = ?1 AND il.invoice.status.code = 'val' AND (il.invoice.operationTypeSelect = 1 OR il.invoice.operationTypeSelect = 2)");
 		q.setParameter(1, task);
 				
 		BigDecimal supplierInvoiceLineCost = (BigDecimal) q.getSingleResult();
@@ -349,7 +353,7 @@ public class TaskService {
 		BigDecimal timesheetLineCost = (BigDecimal) q.getSingleResult();
 			
 		
-		q = JPA.em().createQuery("select SUM(el.total) FROM ExpenseLine as el WHERE el.task = ?1 and el.expense.statusSelect = 4");
+		q = JPA.em().createQuery("select SUM(el.companyTotal) FROM ExpenseLine as el WHERE el.task = ?1 and el.expense.statusSelect = 4");
 		q.setParameter(1, task);
 				
 		BigDecimal expenseLineCost = (BigDecimal) q.getSingleResult();
@@ -677,9 +681,12 @@ public class TaskService {
 	}
 	
 	
-	public Task createTask(SalesOrderLine salesOrderLine)  {
+	public Task createTask(SalesOrderLine salesOrderLine) throws AxelorException  {
 		Task task = new Task();
-		task.setProject(salesOrderLine.getSalesOrder().getProject());
+		
+		SalesOrder salesOrder = salesOrderLine.getSalesOrder();
+		Project project = salesOrder.getProject();
+		task.setProject(project);
 		task.setSalesOrderLine(salesOrderLine);
 		task.setProduct(salesOrderLine.getProduct());
 		task.setQty(salesOrderLine.getQty());
@@ -691,18 +698,22 @@ public class TaskService {
 		task.setIsToInvoice(salesOrderLine.getIsToInvoice());
 		task.setInvoicingDate(salesOrderLine.getInvoicingDate());
 		task.setStatusSelect(ITask.STATUS_DRAFT);
-		task.setAmountToInvoice(salesOrderLine.getAmountRemainingToBeInvoiced());
-		task.setEstimatedAmount(salesOrderLine.getExTaxTotal());
+		
+		task.setAmountToInvoice(
+				currencyService.getAmountCurrencyConverted(salesOrder.getCurrency(), project.getCompany().getCurrency(), salesOrderLine.getAmountRemainingToBeInvoiced(), todayTime.toLocalDate()));
+		task.setEstimatedAmount(salesOrderLine.getCompanyExTaxTotal());
 		
 		return task;
 	}
 	
 	
-	public void updateTask(SalesOrderLine salesOrderLine)  {
+	public void updateTask(SalesOrderLine salesOrderLine) throws AxelorException  {
 		
 		Task task = salesOrderLine.getTask();
-		task.setAmountToInvoice(task.getAmountToInvoice().add(salesOrderLine.getAmountRemainingToBeInvoiced()));
-		task.setEstimatedAmount(task.getEstimatedAmount().add(salesOrderLine.getExTaxTotal()));
+		
+		task.setAmountToInvoice(task.getAmountToInvoice().add(
+				currencyService.getAmountCurrencyConverted(salesOrderLine.getSalesOrder().getCurrency(), task.getProject().getCompany().getCurrency(), salesOrderLine.getAmountRemainingToBeInvoiced(), todayTime.toLocalDate())));
+		task.setEstimatedAmount(task.getEstimatedAmount().add(salesOrderLine.getCompanyExTaxTotal()));
 		
 	}
 	
