@@ -56,7 +56,6 @@ public class SalesOrderLineController {
 				if (salesOrderLine.getPrice() != null && salesOrderLine.getQty() != null) {
 					if(salesOrderLine.getSalesOrderSubLineList() == null || salesOrderLine.getSalesOrderSubLineList().isEmpty()) {
 						exTaxTotal = SalesOrderLineService.computeAmount(salesOrderLine.getQty(), salesOrderLine.getPrice());
-						companyExTaxTotal = SalesOrderLineService.computeAmount(salesOrderLine.getQty(), salesOrderLine.getPrice());
 					}
 				}
 				

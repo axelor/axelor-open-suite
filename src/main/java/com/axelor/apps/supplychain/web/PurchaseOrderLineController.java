@@ -48,13 +48,29 @@ public class PurchaseOrderLineController {
 		
 		PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
 		BigDecimal exTaxTotal = BigDecimal.ZERO;
+		BigDecimal companyExTaxTotal = BigDecimal.ZERO;
 		
 		try{
 			if (purchaseOrderLine.getPrice() != null && purchaseOrderLine.getQty() != null){
 				
-				exTaxTotal = purchaseOrderLineService.computeAmount(purchaseOrderLine.getQty(), purchaseOrderLine.getPrice());
+				exTaxTotal = PurchaseOrderLineService.computeAmount(purchaseOrderLine.getQty(), purchaseOrderLine.getPrice());
 			}
+			
+			if(exTaxTotal != null) {
+
+				PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
+
+				if(purchaseOrder == null) {
+					purchaseOrder = request.getContext().getParentContext().asType(PurchaseOrder.class);
+				}
+
+				if(purchaseOrder != null) {
+					companyExTaxTotal = purchaseOrderLineService.getCompanyExTaxTotal(exTaxTotal, purchaseOrder);
+				}
+			}
+			
 			response.setValue("exTaxTotal", exTaxTotal);
+			response.setValue("companyExTaxTotal", companyExTaxTotal);
 		}
 		catch(Exception e)  {
 			response.setFlash(e.getMessage());
