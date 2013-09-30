@@ -36,6 +36,7 @@ import java.math.RoundingMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.VatLine;
 import com.axelor.apps.account.service.AccountManagementService;
 import com.axelor.apps.base.service.CurrencyService;
@@ -112,5 +113,17 @@ public class SalesOrderLineService {
 		return exTaxTotal;
 	}
 
+	
+	public BigDecimal getCompanyExTaxTotal(BigDecimal exTaxTotal, SalesOrder salesOrder) throws AxelorException  {
+		
+		return currencyService.getAmountCurrencyConverted(
+				salesOrder.getCurrency(), salesOrder.getCompany().getCurrency(), exTaxTotal, salesOrder.getCreationDate());  
+	}
+	
+	public BigDecimal getCompanyCostPrice(BigDecimal costPrice, SalesOrder salesOrder) throws AxelorException  {
+		
+		return currencyService.getAmountCurrencyConverted(
+				salesOrder.getCurrency(), salesOrder.getCompany().getCurrency(), costPrice, salesOrder.getCreationDate());  
+	}
 	
 }

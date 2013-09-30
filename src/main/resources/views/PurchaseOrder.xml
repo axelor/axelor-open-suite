@@ -9,58 +9,77 @@
         <field name="affairProject"/>
         <field name="orderDate"/>
         <field name="buyerUserInfo"/>
+        <field name="inTaxTotal"/>
         <field name="statusSelect"/>
     </grid>
     
-    <form name="purchase-order-form" title="Supplier RFQ/PO" model="com.axelor.apps.supplychain.db.PurchaseOrder" cols="4" onNew="action-purchase-order-record-new,action-purchase-order-record-company-configuration,action-purchase-order-method-get-location"
+    <form name="purchase-order-form" title="Supplier RFQ/PO" model="com.axelor.apps.supplychain.db.PurchaseOrder" cols="4" 
+    onNew="action-purchase-order-record-new,action-purchase-order-record-company-configuration,action-purchase-order-method-get-location" 
     onSave="action-purchase-order-set-sequence">
-    	<field name="purchaseOrderSeq"/>
-    	<field name="statusSelect" widget="NavSelect" showTitle="false"/>
-    	<field name="company" widget="SuggestBox" onChange="action-purchase-order-record-company-configuration"/>
-   	 	<field name="supplierPartner" domain="self.partnerTypeSelect = 1" onChange="action-purchase-order-record-partner"/>
-        <field name="affairProject"/>
-        <field name="buyerUserInfo"/>
-        <field name="orderDate"/>
-        <field name="deliveryDate"/>
-        <field name="location" domain="self.company = :company and self.typeSelect = 1"/>
-        <field name="currency"/>
-        <field name="invoicingTypeSelect"/>
-        <field name="invoice" hideIf="invoicingTypeSelect == 2"/>
-		<field name="purchaseOrderLineList" colSpan="4" grid-view="purchase-order-line-grid" form-view="purchase-order-line-form"/>
-
-      	<group colSpan="4" cols="3" showTitle="false">
-      		<group title="-" colSpan="2" cols="2">
-      			<field name="purchaseOrderLineVatList" showTitle="false" colSpan="2"/>
-       			<group colSpan="2" cols="2" title="Action(s)">
-       				<group colSpan="1" cols="1">
-       					<button name="compute" title="Compute" colSpan="1" onClick="save,action-purchase-order-method-compute,save" hideIf="statusSelect == 4"/>
-       					<button name="draft" title="Draft" colSpan="1" onClick="action-purchase-order-record-draft,save" showIf="statusSelect == 6"/>
-       					<button name="requested" title="Requested" colSpan="1" onClick="action-purchase-order-record-requested,save" showIf="statusSelect == 1"/>
-       					<button name="receipt" title="Receipt" colSpan="1" onClick="action-purchase-order-record-receipt,save" showIf="statusSelect == 2"/>
-	               		<button name="validate" title="Validate" colSpan="1" onClick="action-purchase-order-validate-location,save,action-purchase-order-create-stock-move,action-purchase-order-record-validate,save" showIf="statusSelect == 3"/>
-	                	<button name="completed" title="Completed" colSpan="1" onClick="action-purchase-order-record-completed,save" showIf="statusSelect == 4"/>
-	                	<button name="cancel" title="Cancel" colSpan="1" onClick="save,action-purchase-order-record-cancel" showIf="statusSelect == 1 || statusSelect == 2"/>
-	                	<button name="sendByEmail" title="Send by email" colSpan="1" showIf="statusSelect == 4"/>
-			    		<button name="generateDeliveryOrder" title="Generate delivery" colSpan="1" showIf="statusSelect == 4"/>
-			    		<button name="showSupplierInvoice" title="Show invoice" colSpan="1" onClick="action-purchase-order-show-supplier-invoice"/>
-			    		<button name="generateControlInvoice" title="Generate control invoice" showIf="statusSelect == 4" onClick="save,action-purchase-order-method-generate-control-invoice" colSpan="1" />
-       				</group>
-       				<group colSpan="1" cols="2" readonly="true">
-       					<field name="validatedByUserInfo" colSpan="1"/>
-                		<field name="validationDate" colSpan="1"/>
-       				</group>
-      			</group>
-      		</group>
-      		<group colSpan="1" cols="1" title="Totals">
-        		<group colSpan="1" css="subtotal" cols="2" colWidths="50%,50%" readonly="true">
-        			<field name="exTaxTotal"/>
-     				<field name="vatTotal"/>
-        			<field name="inTaxTotal" css="subtotal-total"/>
-	    			<field name="amountRemainingToBeInvoiced"/>
-	    		</group>
-       		</group>
-       	</group>
-    </form>
+	    <group colSpan="4" cols="6">
+	        <field name="purchaseOrderSeq" css="highlight"/>
+	        <field name="orderDate"/>
+	        <field name="company" widget="SuggestBox" onChange="action-purchase-order-record-company-configuration"/>
+	        <field name="externalReference"/>
+	        <field name="currency"/>
+	        <field name="affairProject" domain="self.isAffair = true"/>
+	    </group>
+	    <notebook colSpan="4">
+	        <page title="PO information" colSpan="4" cols="6">
+	            <group title="Contacts" colSpan="6" cols="6">
+	                <field name="supplierPartner" onChange="action-purchase-order-record-partner" domain="self.partnerTypeSelect = 1"/>
+	                <field name="contactPartner" domain="self.isContact = 'true'"/>
+	                <field name="invoicingTypeSelect"/>
+	                <field name="buyerUserInfo"/>
+	                <spacer/>
+	                <spacer/>
+	                <field name="invoice"/>
+	            </group>
+	            <group title="Delivery" colSpan="6" cols="6">
+	                <field name="location" domain="self.company = :company and self.typeSelect = 1"/>
+	                <field name="deliveryDate"/>
+	            </group>
+	            <field name="purchaseOrderLineList" colSpan="6" form-view="purchase-order-line-form" grid-view="purchase-order-line-grid"/>
+	            <group colSpan="3" cols="2">
+	                <field name="purchaseOrderLineVatList" showTitle="false" colSpan="2"/>
+	                <group title="Action(s)" colSpan="2" cols="2">
+	                    <group colSpan="1" cols="1">
+	                        <button name="compute" title="Compute" hideIf="statusSelect == 4" colSpan="1" onClick="save,action-purchase-order-method-compute,save"/>
+	                        <button name="draft" title="Draft" showIf="statusSelect == 6" colSpan="1" onClick="action-purchase-order-record-draft,save"/>
+	                        <button name="requested" title="Requested" showIf="statusSelect == 1" colSpan="1" onClick="action-purchase-order-record-requested,save"/>
+	                        <button name="receipt" title="Receipt" showIf="statusSelect == 2" colSpan="1" onClick="action-purchase-order-record-receipt,save"/>
+	                        <button name="validate" title="Validate" showIf="statusSelect == 3" colSpan="1" onClick="action-purchase-order-validate-location,save,action-purchase-order-create-stock-move,action-purchase-order-record-validate,save"/>
+	                        <button name="completed" title="Completed" showIf="statusSelect == 4" colSpan="1" onClick="action-purchase-order-record-completed,save"/>
+	                        <button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2" colSpan="1" onClick="save,action-purchase-order-record-cancel"/>
+	                        <button name="sendByEmail" title="Send by email" showIf="statusSelect == 4" colSpan="1"/>
+	                        <button name="printPurchaseOrder" title=" Print Purchase Order" onClick="save,action-purchase-order-method-show-purchase-order"/>
+	                        <button name="generateDeliveryOrder" title="Generate delivery" showIf="statusSelect == 4" colSpan="1"/>
+	                        <button name="showSupplierInvoice" title="Show invoice" colSpan="1" onClick="action-purchase-order-show-supplier-invoice"/>
+	                        <button name="generateControlInvoice" title="Generate control invoice" showIf="statusSelect == 4" colSpan="1" onClick="save,action-purchase-order-method-generate-control-invoice"/>
+	                    </group>
+	                    <group readonly="true" colSpan="1" cols="2">
+	                        <field name="validatedByUserInfo" colSpan="1"/>
+	                        <field name="validationDate" colSpan="1"/>
+	                    </group>
+	                </group>
+	            </group>
+	            <group colSpan="3" cols="3">
+	                
+	                <group title="Totals" colSpan="3" cols="3" colWidths="50%,50%">
+	                    <spacer/><field name="exTaxTotal" />
+	                    <spacer/><field name="vatTotal" />
+	                    
+	                     <spacer/> <spacer/><separator colSpan="1"/>
+	                    <spacer/><field name="inTaxTotal" css="highlight"/>
+	                    <spacer/><field name="amountRemainingToBeInvoiced"/>
+	                </group>
+	                 <group colSpan="3" cols="3">
+	                    <field name="statusSelect" showTitle="false" widget="NavSelect"/>
+	                </group>
+	            </group>
+	        </page>
+	    </notebook>
+	</form>
     
     <action-record name="action-purchase-order-record-new" model="com.axelor.apps.supplychain.db.PurchaseOrder">
     	<field name="statusSelect" expr="1"/>
@@ -124,6 +143,11 @@
 	<action-method name="action-purchase-order-method-get-location">
     	<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="getLocation"/>
     </action-method>
+    
+    <action-method name="action-purchase-order-method-show-purchase-order">
+		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="showPurchaseOrder"/>
+	</action-method>
+    
     
     <action-view name="action-purchase-order-show-supplier-invoice" title="Supplier invoices"
 		model="com.axelor.apps.account.db.Invoice">

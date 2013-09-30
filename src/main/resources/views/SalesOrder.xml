@@ -10,17 +10,18 @@
         <field name="clientReference"/>
         <field name="creationDate"/>
         <field name="inTaxTotal"/>
+        <field name="statusSelect"/>
     </grid>
     
 	<form name="sales-order-form" title="Sale order" model="com.axelor.apps.supplychain.db.SalesOrder" cols="4" 
 	onNew="action-sales-order-record-default,action-sales-order-record-company-configuration,action-sales-order-method-get-location,action-sales-order-record-currency,action-sales-order-attrs-collapse-specific-settings-group"
-	onSave="action-sales-order-set-sequence" onLoad="action-sales-order-attrs-collapse-specific-settings-group,action-sales-order-group-validated-read-only">
+	onSave="action-sales-order-set-sequence" onLoad="action-sales-order-attrs-collapse-specific-settings-group,action-sales-order-attrs-validated-read-only">
 	    <toolbar>
 	        <button name="createDocument" title="Create Document" onClick="com.axelor.apps.supplychain.web.SalesOrderController:saveDocumentForOrder"/>
 	    </toolbar>
 	    <group colSpan="4" cols="6">
 	        <field name="salesOrderSeq" css="highlight"/>
-	        <field name="affairProject"/>        
+	        <field name="affairProject" domain="self.isAffair = true"/>        
 	        <field name="company" widget="SuggestBox" onChange="action-sales-order-record-company-configuration"/>
 	        <field name="externalReference"/>
 	        <field name="location" domain="self.company = :company and self.typeSelect = 1"/>
@@ -54,10 +55,10 @@
 	                        <group colSpan="1" cols="1">
 	                            <button name="compute" title="Compute" hideIf="statusSelect == 3" colSpan="1" onClick="save,action-sales-order-method-compute,save"/>
 	                            <button name="confirm" title="Confirm" showIf="statusSelect == 1 || statusSelect == 4" colSpan="1" onClick="save,action-sales-order-set-sequence,action-sales-order-method-compute,action-sales-order-record-confirm,save"/>
-	                            <button name="validate" title="Validate" showIf="statusSelect == 2" colSpan="1" onClick="save,action-sales-order-button-validation,save,action-sales-order-create-tasks,action-sale-order-validate-check-location,action-sales-order-create-stock-move,action-sales-order-record-validate,action-sales-order-group-validated-read-only,save"/>
+	                            <button name="validate" title="Validate" showIf="statusSelect == 2" colSpan="1" onClick="save,action-sales-order-button-validation,save,action-sales-order-create-tasks,action-sale-order-validate-check-location,action-sales-order-create-stock-move,action-sales-order-record-validate,action-sales-order-attrs-validated-read-only,save"/>
 	                            <button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2" colSpan="1" onClick="save,action-sales-order-record-cancel"/>
-	                            <button name="showSalesOrder" title="Print" showIf="statusSelect == 3" colSpan="1" icon="img/icons/print.png" onClick="save,action-sales-order-method-show-sales-order"/>
-	                            <button name="sendByEmail" title="Send by email" showIf="statusSelect == 3" colSpan="1" onClick="action-sales-order-send-by-email"/>
+	                            <button name="showSalesOrder" title="Print" showIf="statusSelect == 3" colSpan="1" onClick="save,action-sales-order-method-show-sales-order"/>
+	                            <button name="sendByEmail" title="Send by email" showIf="statusSelect == 3" colSpan="1" onClick="action-send-by-email-with-template"/>
 	                            <button name="generateInvoice" title="Generate invoice" showIf="statusSelect == 3 &amp;&amp; invoicingTypeSelect != 5" colSpan="2" onClick="save,action-sales-order-method-generate-invoice"/>
 	                            <button name="generateProject" title="Generate project" showIf="statusSelect == 3" colSpan="2"/>
 	                        </group>
@@ -114,23 +115,19 @@
     	<attribute name="domain" for="team" expr="eval: salesmanUserInfo?.teamSet?.collect{it.id}?.size() > 0 ? &quot;self.id IN (${salesmanUserInfo?.teamSet?.collect{it.id}?.join(',')})&quot; : null"/>
     </action-attrs>
     
-    <action-group name="action-sales-order-group-validated-read-only">
-    	<action name="action-sales-order-attrs-validated-read-only" if="statusSelect == 3"/>
-    </action-group>
-    
     <action-attrs name="action-sales-order-attrs-validated-read-only">
-    	<attribute name="readonly" for="salesOrderLineList" expr="true"/>
-    	<attribute name="readonly" for="salesOrderLineVatList" expr="true"/>
-    	<attribute name="readonly" for="currency" expr="true"/>
-    	<attribute name="readonly" for="location" expr="true"/>
-    	<attribute name="readonly" for="company" expr="true"/>
-    	<attribute name="readonly" for="clientPartner" expr="true"/>
-    	<attribute name="readonly" for="invoicingTypeSelect" expr="true"/>
-    	<attribute name="readonly" for="hasToCreateTaskByLine" expr="true"/>
-    	<attribute name="readonly" for="hasToCreateMoByLine" expr="true"/>
-    	<attribute name="readonly" for="hasToCreateProposal" expr="true"/>
-    	<attribute name="readonly" for="project" expr="true"/>
-    	<attribute name="readonly" for="priceList" expr="true"/>
+<!--     	<attribute name="readonly" for="salesOrderLineList" expr="true"/> -->
+    	<attribute name="readonly" for="salesOrderLineVatList" expr="statusSelect == 3"/>
+    	<attribute name="readonly" for="currency" expr="statusSelect == 3"/>
+    	<attribute name="readonly" for="location" expr="statusSelect == 3"/>
+    	<attribute name="readonly" for="company" expr="statusSelect == 3"/>
+    	<attribute name="readonly" for="clientPartner" expr="statusSelect == 3"/>
+    	<attribute name="readonly" for="invoicingTypeSelect" expr="statusSelect == 3"/>
+    	<attribute name="readonly" for="hasToCreateTaskByLine" expr="statusSelect == 3"/>
+    	<attribute name="readonly" for="hasToCreateMoByLine" expr="statusSelect == 3"/>
+    	<attribute name="readonly" for="hasToCreateProposal" expr="statusSelect == 3"/>
+    	<attribute name="readonly" for="project" expr="statusSelect == 3"/>
+    	<attribute name="readonly" for="priceList" expr="statusSelect == 3"/>
     </action-attrs>
     
     <action-method name="action-sales-order-method-show-sales-order">
@@ -144,6 +141,7 @@
     <action-record name="action-sales-order-record-validate" model="com.axelor.apps.supplychain.db.SalesOrder">
     	<field name="statusSelect" expr="eval: 3"/>
     	<field name="validationDate" expr="eval: __date__"/>
+    	<field name="validatedByUserInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
     </action-record>
     
      <action-record name="action-sales-order-record-cancel" model="com.axelor.apps.supplychain.db.SalesOrder">
@@ -199,20 +197,6 @@
 	</action-view>
 	
 	
-	
-	
-	<action-method name="action-sales-order-send-by-email">
-		<call class="com.axelor.apps.message.web.GenerateMessageController" method="callMessageWizard"/>
-	</action-method>
-	
-	<action-view name="action-sales-order-view-send-by-email" title="Send sales order by email" model="com.axelor.apps.base.db.Wizard">
-		<view type="form" name="generate-so-message-wizard-form"/> 
-<!-- 		if="com.axelor.apps.base.db.Template.all().filter('self.model.packageName = com.axelor.apps.supplychain.db and self.model.name = SalesOrder ').count() > 1"/> -->
-		<context name="_salesOrder" expr="eval: __self__"/>
-	</action-view>
-	
-	
-	
 	<action-attrs name="action-sales-order-attrs-collapse-specific-settings-group">
 		<attribute name="collapse" for="specificSettings" expr="eval: true"/>
 	</action-attrs>
@@ -223,7 +207,7 @@
 	</action-validate> 
 	
 	<action-method name="action-sales-order-create-tasks">
-		<call class="com.axelor.apps.supplychain.web.SalesOrderController" method="createTaskByLines" if="hasToCreateTaskByLine &amp;&amp; project != null"/>
+		<call class="com.axelor.apps.organisation.web.TaskController" method="createTaskByLines" if="hasToCreateTaskByLine &amp;&amp; project != null"/>
 	</action-method>
 	
 	<action-method name="action-sales-order-create-stock-move">

@@ -42,6 +42,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.supplychain.db.PurchaseOrder;
 import com.axelor.apps.supplychain.db.PurchaseOrderLine;
+import com.axelor.apps.supplychain.db.SalesOrder;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
@@ -99,5 +100,11 @@ private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderLineServi
 		return purchaseOrderLine.getExTaxTotal();
 	}
 
+	
+	public BigDecimal getCompanyExTaxTotal(BigDecimal exTaxTotal, PurchaseOrder purchaseOrder) throws AxelorException  {
+		
+		return currencyService.getAmountCurrencyConverted(
+				purchaseOrder.getCurrency(), purchaseOrder.getCompany().getCurrency(), exTaxTotal, purchaseOrder.getOrderDate());  
+	}
 	
 }

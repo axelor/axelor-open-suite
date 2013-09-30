@@ -46,6 +46,7 @@ import com.axelor.apps.supplychain.db.Location;
 import com.axelor.apps.supplychain.db.SalesOrder;
 import com.axelor.apps.supplychain.service.SalesOrderService;
 import com.axelor.apps.tool.net.URLService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -83,7 +84,7 @@ public class SalesOrderController {
 
 		// in this line change the Class as per the Module requirement i.e SalesOrder class here used
 		SalesOrder dataObject = request.getContext().asType(SalesOrder.class);
-		User currentUser = (User) request.getContext().get("__user__");
+		User currentUser = 	AuthUtils.getUser();
 		UserInfo currentUserInfo = UserInfo.all().filter("self.internalUser = ?1", currentUser).fetchOne();
 
 		GoogleFile documentData = documentSeriveObj.createDocumentWithTemplate(currentUserInfo,dataObject);
@@ -153,15 +154,7 @@ public class SalesOrderController {
 		}
 	}
 	
-	public void createTaskByLines(ActionRequest request, ActionResponse response) throws AxelorException {
-		
-		SalesOrder salesOrder = request.getContext().asType(SalesOrder.class);
-		
-		if(salesOrder != null) {
-			
-			salesOrderService.createTasks(salesOrder);
-		}
-	}
+	
 	
 	public void createStockMoves(ActionRequest request, ActionResponse response) throws AxelorException {
 		

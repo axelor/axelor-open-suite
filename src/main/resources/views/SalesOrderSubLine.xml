@@ -17,7 +17,7 @@
     </grid>
     
     <form name="sales-order-sub-line-form" title="SO subline" model="com.axelor.apps.supplychain.db.SalesOrderSubLine" cols="4" 
-    onNew="action-sales-order-sub-line-record-new,action-sales-order-line-attrs-hide-product-variant"
+    onNew="action-sales-order-sub-line-record-new,action-sales-order-sub-line-record-sequence,action-sales-order-line-attrs-hide-product-variant"
     onLoad="action-sales-order-line-attrs-hide-product-variant">
     	<field name="sequence"/>
     	<field name="product" domain="self.endDate = null or self.endDate &gt; :__date__" onChange="action-sales-order-sub-line-method-get-product-information,action-sales-order-sub-line-method-compute,action-sales-order-sub-line-record-product-variant,action-sales-order-line-attrs-hide-product-variant"/>
@@ -32,13 +32,16 @@
 		<field name="vatLine.vat.name"/>
 		<field name="vatLine.value"/>
 		<field name="exTaxTotal"/>
-		<group title="Product Variants" colSpan="4" cols="4">
-	        <field name="productVariant" widget="NestedEditor" summary-view="true" form-view="product-variant-form" edit-window="self" canSelect="false" showTitle="false"/>
-	    </group>    
+        <field name="productVariant" widget="NestedEditor" summary-view="true" colSpan="4" form-view="product-variant-form" edit-window="self" canSelect="false" showTitle="false"/>
     </form>
     
-    <action-record name="action-sales-order-sub-line-record-new" model="com.axelor.apps.supplychain.db.SalesOrderLine">
+    <action-record name="action-sales-order-sub-line-record-new" model="com.axelor.apps.supplychain.db.SalesOrderSubLine">
     	<field name="qty" expr="eval: 1"/>
+    </action-record>
+    
+    <action-record name="action-sales-order-sub-line-record-sequence" model="com.axelor.apps.supplychain.db.SalesOrderSubLine">
+    	<field name="sequence" expr="1" if="eval: _parent?.salesOrderSubLineList == null"/>
+    	<field name="sequence" expr="eval: _parent?.salesOrderSubLineList.size()+1" if="eval: _parent?.salesOrderSubLineList != null"/>
     </action-record>
     
     <action-record name="action-sales-order-sub-line-record-product-variant" model="com.axelor.apps.supplychain.db.SalesOrderSubLine">

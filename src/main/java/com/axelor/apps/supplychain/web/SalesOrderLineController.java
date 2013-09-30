@@ -50,14 +50,30 @@ public class SalesOrderLineController {
 		
 		if(salesOrderLine != null) {
 			BigDecimal exTaxTotal = BigDecimal.ZERO;
+			BigDecimal companyExTaxTotal = BigDecimal.ZERO;
 
 			try{
 				if (salesOrderLine.getPrice() != null && salesOrderLine.getQty() != null) {
 					if(salesOrderLine.getSalesOrderSubLineList() == null || salesOrderLine.getSalesOrderSubLineList().isEmpty()) {
-						exTaxTotal = salesOrderLineService.computeAmount(salesOrderLine.getQty(), salesOrderLine.getPrice());
+						exTaxTotal = SalesOrderLineService.computeAmount(salesOrderLine.getQty(), salesOrderLine.getPrice());
 					}
 				}
+				
+				if(exTaxTotal != null) {
+
+					SalesOrder salesOrder = salesOrderLine.getSalesOrder();
+
+					if(salesOrder == null) {
+						salesOrder = request.getContext().getParentContext().asType(SalesOrder.class);
+					}
+
+					if(salesOrder != null) {
+						companyExTaxTotal = salesOrderLineService.getCompanyExTaxTotal(exTaxTotal, salesOrder);
+					}
+				}
+				
 				response.setValue("exTaxTotal", exTaxTotal);
+				response.setValue("companyExTaxTotal", companyExTaxTotal);
 			}
 			catch(Exception e) {
 				response.setFlash(e.getMessage()); 
@@ -78,11 +94,14 @@ public class SalesOrderLineController {
 			if(salesOrder != null && salesOrderLine.getProduct() != null) {
 
 				try  {
+					BigDecimal price = salesOrderLineService.getUnitPrice(salesOrder, salesOrderLine);
+					
 					response.setValue("vatLine", salesOrderLineService.getVatLine(salesOrder, salesOrderLine));
-					response.setValue("price", salesOrderLineService.getUnitPrice(salesOrder, salesOrderLine));
+					response.setValue("price", price);
 					response.setValue("productName", salesOrderLine.getProduct().getName());
 					response.setValue("saleSupplySelect", salesOrderLine.getProduct().getSaleSupplySelect());
 					response.setValue("unit", salesOrderLine.getProduct().getUnit());
+					response.setValue("companyCostPrice", salesOrderLineService.getCompanyCostPrice(price, salesOrder));
 				}
 				catch(Exception e)  {
 					response.setFlash(e.getMessage()); 
