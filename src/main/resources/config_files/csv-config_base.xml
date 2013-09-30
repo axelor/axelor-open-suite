@@ -361,6 +361,10 @@
 	<input file="supplychain_location.csv" separator=";" type="com.axelor.apps.supplychain.db.Location"/>
 <!--     IMPORT DU PACKAGE 'SUPPLY CHAIN' -->
 	<input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company" search="self.importId = :importId" update="true"/> 	
+	
+	<input file="supplychain_salesOrder.csv" separator=";" type="com.axelor.apps.supplychain.db.SalesOrder" />
+	<input file="supplychain_salesOrderLine.csv" separator=";" type="com.axelor.apps.supplychain.db.SalesOrderLine" />
+	<input file="supplychain_salesOrder.csv" separator=";" type="com.axelor.apps.supplychain.db.SalesOrder" call="com.axelor.csv.script.ImportSalesOrder:importSalesOrder" search="self.importId = :importId" update="true"/>
 	  	
 </csv-inputs>
 

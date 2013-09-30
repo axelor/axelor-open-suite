@@ -30,6 +30,12 @@
     
     <dependency>
     	<groupId>com.axelor</groupId>
+    	<artifactId>axelor-supplychain</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    
+    <dependency>
+    	<groupId>com.axelor</groupId>
     	<artifactId>axelor-data</artifactId>
     	<version>${project.version}</version>
     </dependency>
