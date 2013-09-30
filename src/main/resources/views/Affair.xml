@@ -12,6 +12,7 @@
     </grid>
     
     <form name="affair-form" title="Affair" model="com.axelor.apps.organisation.db.Project" cols="6" 
+    onLoad="action-project-method-update-financial-information,save"
     onNew="action-affair-record-default"
     onSave="action-affair-method-create-default-task-on-save">
     	<group showTitle="false" cols="6" colSpan="6">
@@ -69,7 +70,7 @@
 	        	<field name="preSalesTask"/>
 	            <field name="taskList" grid-view="task-project-grid" form-view="task-form" colSpan="6"/>
 	        </page>
-	        <page title="Financial information" colSpan="4" onSelect="action-project-method-update-financial-information,save">
+	        <page title="Financial information" colSpan="4">
 	        	<field name="realEstimatedMethodSelect"/>
 	        	<field name="company.currency"/>
 	        	<field name="exportTypeSelect"/>

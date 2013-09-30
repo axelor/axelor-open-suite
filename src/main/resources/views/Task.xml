@@ -26,7 +26,7 @@
     </grid>
     
     <form name="task-form" title="Task" model="com.axelor.apps.organisation.db.Task" cols="4" onNew="action-task-default-record,action-task-attrs-hide-financial" 
-    onLoad="action-task-method-get-spent-time,action-task-method-get-planned-time,action-task-record-remaining-time,action-task-record-progress,action-task-attrs-status-select,action-task-record-task-completed,save">
+    onLoad="action-task-method-get-spent-time,action-task-method-get-planned-time,action-task-record-remaining-time,action-task-record-progress,action-task-attrs-status-select,action-task-record-task-completed,action-task-method-update-financial-information,save">
     	<group colSpan="4" cols="3">
     		<field name="name" showTitle="false" css="highlight" placeholder="Task name" colSpan="2"/>
     		<field name="statusSelect" showTitle="false" colSpan="1" widget="NavSelect" onChange="action-task-attrs-status-select"/>
@@ -70,7 +70,7 @@
 	        <page title="Notes">
 	            <field name="notes" colSpan="4" showTitle="false"/>
 	        </page>
-	        <page name="financialInformation" title="Financial information" colSpan="4" onSelect="action-task-method-update-financial-information,save">
+	        <page name="financialInformation" title="Financial information" colSpan="4">
 	        	<field name="realEstimatedMethodSelect"/>
 	        	<field name="estimatedAmount"/>
 	        	<field name="project.company.currency"/>
