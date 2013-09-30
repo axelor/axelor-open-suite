@@ -58,7 +58,7 @@
 	                            <button name="validate" title="Validate" showIf="statusSelect == 2" colSpan="1" onClick="save,action-sales-order-button-validation,save,action-sales-order-create-tasks,action-sale-order-validate-check-location,action-sales-order-create-stock-move,action-sales-order-record-validate,action-sales-order-attrs-validated-read-only,save"/>
 	                            <button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2" colSpan="1" onClick="save,action-sales-order-record-cancel"/>
 	                            <button name="showSalesOrder" title="Print" showIf="statusSelect == 3" colSpan="1" onClick="save,action-sales-order-method-show-sales-order"/>
-	                            <button name="sendByEmail" title="Send by email" showIf="statusSelect == 3" colSpan="1" onClick="action-send-by-email-with-template"/>
+	                            <button name="sendByEmail" title="Send by email" colSpan="1" onClick="action-send-by-email-with-template"/>
 	                            <button name="generateInvoice" title="Generate invoice" showIf="statusSelect == 3 &amp;&amp; invoicingTypeSelect != 5" colSpan="2" onClick="save,action-sales-order-method-generate-invoice"/>
 	                            <button name="generateProject" title="Generate project" showIf="statusSelect == 3" colSpan="2"/>
 	                        </group>
