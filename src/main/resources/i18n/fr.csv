@@ -47,7 +47,7 @@
 "debt-recovery-root-reminders","Reminders history","menu","Reminders history","Historique des relances","","",""
 "invoice-root","Invoice","menu","Invoice","Facture","","",""
 "invoice-root-invoice","New invoice","menu","New invoice","Nouvelle facture","","",""
-"invoice-root-purchases","Purchases","menu","Purchases","Achats/Devis","","",""
+"invoice-root-purchases","Purchases","menu","Purchases","Achats","","",""
 "invoice-root-purchases-supinvoices","Suppl. Invoices","menu","Suppl. Invoices","Factures d'achats des fournisseurs","","",""
 "invoice-root-purchases-suprefunds","Suppl. Refunds","menu","Suppl. Refunds","Avoirs des fournisseurs","","",""
 "invoice-root-sales","Sales","menu","Sales","Ventes","","",""
