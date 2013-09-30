@@ -178,7 +178,7 @@ public class MessageService {
 		if(bccEmailAddressList != null)  {
 			bccEmailAddressSet.addAll(bccEmailAddressList);
 		}
-		message.setBccEmailAddressSet(ccEmailAddressSet);
+		message.setBccEmailAddressSet(bccEmailAddressSet);
 		
 		message.setMailAccount(mailAccount);
 		
