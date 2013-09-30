@@ -20,6 +20,7 @@
   	<date name="validationDate" title="Validation date" readonly="true"/>
   	<string name="refusalReason" title="Refusal reason"/>
   	<many-to-one name="project" title="Affair" ref="com.axelor.apps.organisation.db.Project" />
+  	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
   	
   </entity>
   

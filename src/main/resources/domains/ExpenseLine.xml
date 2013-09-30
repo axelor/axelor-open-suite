@@ -22,6 +22,9 @@
   	<date name="validationDate" title="Date de validation" readonly="true"/>
   	<boolean name="istoInvoice" title="A facturer"/>
   	<boolean name="isInvoiced" title="Facturé" readonly="true"/>
+  	
+  	<!--   	Champ technique non affiché, utilisé pour les reportings -->
+  	<decimal name="companyTotal" title="Total W.T. in company currency" hidden="true"/>
   </entity>
   
 </domain-models>

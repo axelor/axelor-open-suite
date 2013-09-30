@@ -36,6 +36,11 @@
 
 	<many-to-one name="productVariant" ref="com.axelor.apps.base.db.ProductVariant"/>
   	
+  	
+  	<!--   	Champ technique non affiché, utilisé pour les reportings -->
+  	<decimal name="companyExTaxTotal" title="Total W.T. in company currency" hidden="true"/>
+  	
+  	
   </entity>
 
 </domain-models>

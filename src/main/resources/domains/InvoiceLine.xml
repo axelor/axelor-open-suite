@@ -32,6 +32,9 @@
     
     <string name="note" title="Note" large="true"/>
     
+    <!--   	Champ technique non affiché, utilisé pour les reportings -->
+  	<decimal name="companyExTaxTotal" title="Total W.T. in company currency" hidden="true"/>
+    
     <string name="name" title="Name" search="invoice,taxInvoice,productName">
    	    <![CDATA[
    	    	String name = productName;
