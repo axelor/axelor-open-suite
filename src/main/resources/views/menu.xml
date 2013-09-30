@@ -379,6 +379,15 @@
 		<view type="form" />
 	</action-view>
 	
+	<menuitem name="account-conf-financial-vat" parent="account-conf-financial"
+		title="Les TVA" action="account.conf.financial.vat" />
+
+	<action-view name="account.conf.financial.vat" title="Les TVA"
+		model="com.axelor.apps.account.db.Vat" icon="img/icons/account_small.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
+	
 	<menuitem name="account-conf-analytic" parent="account-conf"
 		title="Analytic" />
 
