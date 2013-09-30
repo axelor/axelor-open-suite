@@ -26,6 +26,8 @@
   	
   	<integer name="statusSelect" title="Request status" selection="default.status.select" readonly="true"/>
   
+  	<boolean name="accounted" title="Accounted"/>
+  
   </entity>
   
 </domain-models>

@@ -8,7 +8,7 @@
   <entity name="SalesOrder" lang="java">
   	
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" title="Société"/>
-  
+  	<integer name="importId" />
   	<string name="salesOrderSeq" namecolumn="true" title="Reference" readonly="true"/>
   	<many-to-one name="affairProject" ref="com.axelor.apps.organisation.db.Project" title="Affair"/>
   	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" required="true" title="Currency"/>

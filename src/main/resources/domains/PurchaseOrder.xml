@@ -20,6 +20,7 @@
   	<integer name="invoicingTypeSelect" title="Type de facturation" selection="supplychain.purchase.order.invoicing.type.select"/>
   	<many-to-one name="invoice" ref="com.axelor.apps.account.db.Invoice" title="Invoice" readonly="true"/>
   	<many-to-one name="location" ref="com.axelor.apps.supplychain.db.Location" title="Location"/>
+  	<string name="externalReference" title="Supplier reference"/>
   	
 <!--   	Ligne de TVA -->	
 	<one-to-many name="purchaseOrderLineVatList" ref="com.axelor.apps.supplychain.db.PurchaseOrderLineVat" mappedBy="purchaseOrder" title="V.A.T. Lines"/>

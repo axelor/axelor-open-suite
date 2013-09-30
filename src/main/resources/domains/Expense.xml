@@ -15,10 +15,12 @@
     <string name="validationStatusSelect" title="Validation Status" selection="hr.expense.validation.status.select" readonly="true"/>
     <decimal name="progress" title="Progress" />
     <many-to-one name="paymentPeriod" ref="com.axelor.apps.base.db.Period" title="Payment Period" />
-    <string name="statusSelect" title="Status" selection="hr.expense.status.select" readonly="true"/>
+    <integer name="statusSelect" title="Status" selection="hr.expense.status.select" readonly="true"/>
     <many-to-one name="validatedByUserInfo" ref="com.axelor.apps.base.db.UserInfo" readonly="true" title="Validated by"/> 
   	<date name="validationDate" title="Validation date" readonly="true"/>
-  	<string name="motif" title="Reason"/>
+  	<string name="refusalReason" title="Refusal reason"/>
+  	<many-to-one name="project" title="Affair" ref="com.axelor.apps.organisation.db.Project" />
+  	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
   	
   </entity>
   

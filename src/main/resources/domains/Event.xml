@@ -14,7 +14,7 @@
   	<datetime name="startDateTime" title="Start Date"/>
   	<datetime name="endDateTime" title="End Date"/>
   	<integer name="durationHours" title="Duration" nullable="true"/>
-  	<integer name="durationMinutesSelect" title="Duration" selection="crm.event.call.duration.minutes.select" nullable="true"/>
+  	<integer name="durationMinutesSelect" title="Duration" selection="crm.event.call.duration.minutes.select"/>
   	<many-to-one name="eventCategory" ref="com.axelor.apps.crm.db.EventCategory" title="Category"/>
   	<integer name="prioritySelect" title="Priority" selection="crm.event.ticket.priority.select"/>
   	
@@ -38,7 +38,6 @@
   	<many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Contact"/>
 	<many-to-one name="lead" ref="com.axelor.apps.crm.db.Lead" title="Lead"/>
 	
-    
 <!-- Call -->
     <integer name="callStatusSelect" title="Status" selection="crm.event.call.status.select"/>  
     
@@ -58,7 +57,7 @@
   	<one-to-many name="messageList" ref="com.axelor.apps.message.db.Message" mappedBy="event" title="Comments"/>
   	<many-to-one name="project" ref="com.axelor.apps.organisation.db.Project" title="Project"/>
 	<many-to-one name="task" ref="com.axelor.apps.organisation.db.Task" title="Task"/>
-  	<one-to-many name="pastTimeList" ref="com.axelor.apps.base.db.PastTime" mappedBy="event" title="Past times"/>
+  	<one-to-many name="spentTimeList" ref="com.axelor.apps.base.db.SpentTime" mappedBy="event" title="Spent times"/>
   
 <!--   Event -->
 	<integer name="eventStatusSelect" title="" selection="crm.event.event.status.select"/>

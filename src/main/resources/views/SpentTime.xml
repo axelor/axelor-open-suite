@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+	
+    <grid name="spent-time-grid" title="Past time" model="com.axelor.apps.base.db.SpentTime">
+        <field name="event"/>
+        <field name="timesheetImputed"/>
+        <field name="userInfo"/>
+        <field name="task" />
+        <field name="date"/>
+        <field name="duration"/>
+       	<field name="unit"/>
+    </grid>
+    
+    <form name="spent-time-form" title="Past time" model="com.axelor.apps.base.db.SpentTime" cols="4" onNew="action-spent-time-record-default">
+        <field name="event"/>
+        <field name="timesheetImputed"/>
+        <field name="userInfo"/>
+        <field name="task" />
+        <field name="date"/>
+        <field name="duration"/>
+       	<field name="unit"/>
+    </form>
+    
+    <grid name="spent-time-ticket-grid" title="Past time" model="com.axelor.apps.base.db.SpentTime">
+        <field name="timesheetImputed"/>
+        <field name="userInfo"/>
+        <field name="date"/>
+        <field name="duration"/>
+       	<field name="unit"/>
+    </grid>
+    
+    <form name="spent-time-ticket-form" title="Past time" model="com.axelor.apps.base.db.SpentTime" cols="4" onNew="action-spent-time-record-default">
+        <field name="timesheetImputed"/>
+        <field name="userInfo"/>
+        <field name="date"/>
+        <field name="duration"/>
+       	<field name="unit"/>
+    </form>
+    
+    <grid name="spent-time-task-grid" title="Past time" model="com.axelor.apps.base.db.SpentTime">
+        <field name="event"/>
+        <field name="timesheetImputed"/>
+        <field name="userInfo"/>
+        <field name="date"/>
+        <field name="duration"/>
+       	<field name="unit"/>
+    </grid>
+    
+    <form name="spent-time-task-form" title="Past time" model="com.axelor.apps.base.db.SpentTime" cols="4" onNew="action-spent-time-record-default">
+        <field name="event"/>
+        <field name="timesheetImputed"/>
+        <field name="userInfo"/>
+        <field name="date"/>
+        <field name="duration"/>
+       	<field name="unit"/>
+    </form>
+    
+    <action-record name="action-spent-time-record-default" model="com.axelor.apps.base.db.SpentTime">
+    	<field name="task" expr="eval: _parent?.task"/>
+    	<field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+    	<field name="date" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+    	<field name="unit" expr="eval: _parent?.task?.project?.unit"/>
+    </action-record>
+    
+</object-views>

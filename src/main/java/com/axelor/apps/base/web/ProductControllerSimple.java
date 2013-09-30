@@ -40,6 +40,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.AxelorSettings;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.tool.net.URLService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -53,15 +54,15 @@ public class ProductControllerSimple {
 		AxelorSettings axelorSettings = AxelorSettings.get();
 		
 		StringBuilder url = new StringBuilder();
-		User user = (User) request.getContext().get("__user__");
+		User user =  AuthUtils.getUser();
 		
 		int currentYear = GeneralService.getTodayDateTime().getYear();
 		String productIds = "";
 
-		List<String> lstSelectedPartner = (List<String>) request.getContext().get("_ids");
+		List<Integer> lstSelectedPartner = (List<Integer>) request.getContext().get("_ids");
 
-		for(String it : lstSelectedPartner) {
-			productIds+= it+",";
+		for(Integer it : lstSelectedPartner) {
+			productIds+= it.toString()+",";
 		}
 
 		if(!productIds.equals("")){

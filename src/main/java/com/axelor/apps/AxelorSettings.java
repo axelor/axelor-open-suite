@@ -31,13 +31,18 @@
 package com.axelor.apps;
 
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.persistence.EntityManagerFactory;
 
 import com.axelor.db.JPA;
+import com.google.common.base.Charsets;
+import com.google.common.io.CharStreams;
 
 @Singleton
 public class AxelorSettings {
@@ -66,9 +71,15 @@ public class AxelorSettings {
 			properties.load(is);
 			properties.put("axelor.jdbc.url", emf.getProperties().get("javax.persistence.jdbc.url"));
 			properties.put("axelor.jdbc.user", emf.getProperties().get("javax.persistence.jdbc.user"));
-			properties.put("axelor.jdbc.password", emf.getProperties().get("javax.persistence.jdbc.password"));
+			InputStream res = Thread.currentThread().getContextClassLoader().getResourceAsStream("META-INF/persistence.xml");
+			String text = CharStreams.toString(new InputStreamReader(res, Charsets.UTF_8));
+			Pattern pat = Pattern.compile("<property\\s*name=\"javax.persistence.jdbc.password\"\\s*value=\"(.*?)\"\\s*/>", Pattern.CASE_INSENSITIVE);
+			Matcher mat = pat.matcher(text);
+			while (mat.find()) {
+				 properties.put("axelor.jdbc.password", mat.group(1));
+			}
 			
-			String dataSource = String.format("&DBName=%s&UserName=%s&Password=%s", 
+			String dataSource = String.format("&DBName=%s&UserName=%s&Password=%s",
 					properties.get("axelor.jdbc.url"), properties.get("axelor.jdbc.user"), properties.get("axelor.jdbc.password"));
 			
 			properties.put("axelor.report.engine.datasource",dataSource);

@@ -16,7 +16,7 @@
  	<boolean name="isLastDayOfMonth" title="Is last day of month"/>
  	<integer name="lastDayAdjustement" title="+/- n day(s)"/>
  	
- 	<integer name="dayOfMonth" title="Day" selection="organisation.timesheet.period.config.day.month.select"/>
+ 	<integer name="dayOfMonth" title="Day" selection="organisation.day.month.select"/>
   	<integer name="hourReminderDelay" title="Number of hours"/>
   	<integer name="dayReminderDelay" title="Number of days"/>
   	

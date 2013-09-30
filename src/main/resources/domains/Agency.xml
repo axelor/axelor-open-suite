@@ -5,12 +5,11 @@
 
   <module name="organisation" package="com.axelor.apps.organisation.db"/>
 
-  <entity name="TaskProductLine" lang="java">
-  	
-  	<many-to-one name="task" ref="com.axelor.apps.organisation.db.Task" title="Task"/>
-  	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
-  	<decimal name="amount" title="Forecasted amount"/>
-  
+  <entity name="Agency" lang="java">
+ 
+  	<string name="code" title="Code"/>
+  	<string name="name" title="Name"/>
+    
   </entity>
 
 </domain-models>

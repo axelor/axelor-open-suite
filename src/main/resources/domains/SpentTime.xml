@@ -5,16 +5,15 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="PastTime" lang="java">
+  <entity name="SpentTime" lang="java">
   
   	<many-to-one name="event" ref="com.axelor.apps.crm.db.Event" title="Ticket"/>
   	<boolean name="timesheetImputed" title="Already imputed in timesheet" readonly="true"/>
   	<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="User"/>
   	<many-to-one name="task" ref="com.axelor.apps.organisation.db.Task" title="Task"/>
-    <integer name="durationHours" title="Duration" />
-    <integer name="durationMinutesSelect" title="Duration" selection="crm.event.call.duration.minutes.select" />
+    <decimal name="duration" title="Duration" />
     <date name="date" title="Date"/>
-    
+    <many-to-one name="unit" title="Unit" ref="com.axelor.apps.base.db.Unit" required="true"/>
   </entity>
 
 </domain-models>

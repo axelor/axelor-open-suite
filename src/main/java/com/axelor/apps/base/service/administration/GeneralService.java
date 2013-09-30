@@ -59,11 +59,14 @@ public final class GeneralService {
 	
 	@Inject
 	private GeneralService() {
-		
-		try {
+	
+		General general = General.all().fetchOne();
+		if(general != null)  {
 			administrationId = General.all().fetchOne().getId();
 		}
-		catch(Exception e) { throw new RuntimeException("Veuillez configurer l'administration générale.", e); }
+		else  {
+			throw new RuntimeException("Veuillez configurer l'administration générale.");
+		}
 		
 	}
 	

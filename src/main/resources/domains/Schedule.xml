@@ -6,9 +6,9 @@
   <module name="organisation" package="com.axelor.apps.organisation.db"/>
 
   <entity name="Schedule" lang="java">
-  	
+  	<integer name="importId" />
   	<string name="name" title="Name"/>
-  	<one-to-many name="scheduleLineList" ref="com.axelor.apps.organisation.db.ScheduleLine" title="Shift periods"/>
+  	<one-to-many name="scheduleLineList" ref="com.axelor.apps.organisation.db.ScheduleLine" mappedBy="schedule" title="Shift periods"/>
 	<many-to-one name="publicHolidays" ref="com.axelor.apps.organisation.db.PublicHolidays" title="Public holidays list"/>
 	
   </entity>

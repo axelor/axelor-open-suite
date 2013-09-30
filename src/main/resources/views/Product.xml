@@ -49,12 +49,13 @@
 	        <page title="Pricing" colSpan="2" cols="4">
 	            <group colSpan="4"  colWidths="20%,30%,20%,30%">
 	                <separator title="Sales" colSpan="2"/>
-	                <separator title="Purchases" colSpan="2"/>
+	                <separator title="Purchases / Costs" colSpan="2"/>
 	                <field name="salePrice"/>
 	                <field name="purchasePrice"/>
 	                <field name="saleCurrency"/>  
 	                <field name="purchaseCurrency"/>
 	                <field name="unit"/>
+	                <field name="costPrice"/>
 	            </group>
 	            <group colSpan="4">
 	                <group colSpan="2">

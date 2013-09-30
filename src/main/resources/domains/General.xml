@@ -18,8 +18,7 @@
 			title="Code list for rejects/return of Direct debit, Wire Transfers and IPO" />
 		<many-to-one name="chequeInterbankCode" ref="com.axelor.apps.account.db.InterbankCode" title="Code list for rejects/return of Cheques" />
 		<one-to-many name="payerQualityConfigLineList" ref="com.axelor.apps.account.db.PayerQualityConfigLine" title="Weight table (Payer quality)" />
-<!-- 		<one-to-many name="currencyConversionLineList" ref="com.axelor.apps.base.db.CurrencyConversionLine" mappedBy="administration" title="Tableau de conversion des devises"/> -->
-		<one-to-many name="currencyConversionLineList" ref="com.axelor.apps.base.db.CurrencyConversionLine" title="Currency conversion table"/>
+		<one-to-many name="currencyConversionLineList" ref="com.axelor.apps.base.db.CurrencyConversionLine" mappedBy="general" title="Currency conversion table"/>
 
 		<!-- Exception -->
 		<string name="exceptionDefaultMsg" multiline="true" title="Default Message" required="true" />

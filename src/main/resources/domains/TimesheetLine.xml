@@ -10,12 +10,15 @@
   	<many-to-one name="timesheet" ref="com.axelor.apps.organisation.db.Timesheet" title="Timesheet"/>
   	<many-to-one name="project" ref="com.axelor.apps.organisation.db.Project" title="Project"/>
   	<many-to-one name="task" ref="com.axelor.apps.organisation.db.Task" title="Task"/>
+  	<many-to-one name="spentTime" ref="com.axelor.apps.base.db.SpentTime" title="Spent time"/>
 	
 	<date name="date" title="Date"/>
 	<decimal name="duration" title="Duration (h)"/>
 	<boolean name="isToInvoice" title="To invoice ?"/>
 	<boolean name="isInvoiced" title="Invoiced ?"/>
-		
+	
+	<datetime name="startDateT"/>
+	<datetime name="endDateT"/>
   </entity>
 
 </domain-models>

@@ -6,6 +6,7 @@
 	<module name="organisation" package="com.axelor.apps.organisation.db" />
 
 	<entity name="Employee" lang="java">
+		<integer name="importId" />
 		<integer name="titleSelect" title="Civility" selection="partner.title.type.select" />
 		<string name="name" title="Surname" required="true" />
 		<string name="firstName" title="First Name" required="true" />
@@ -44,6 +45,8 @@
 		<many-to-one name="profileProduct" ref="com.axelor.apps.base.db.Product" title="Profile"/>
 		
 		<one-to-many name="paySheetList" ref="PaySheet" mappedBy="employee" title="Pay sheets"/>
+		
+		<one-to-many name="employeeLeaveList" ref="EmployeeLeave" mappedBy="employee" title="Employee leavees"/>
 	</entity>
 
 </domain-models>

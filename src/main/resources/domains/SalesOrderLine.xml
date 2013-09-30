@@ -9,6 +9,7 @@
   
   	<many-to-one name="salesOrder" ref="com.axelor.apps.supplychain.db.SalesOrder" title="Sale order"/>
   	<integer name="sequence" title="Sequence"/>
+  	<integer name="importId" />
   	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
   	<decimal name="qty" title="Qty" default="1"/>
   	<boolean name="isToPrintLineSubTotal" title="Print subtotal per line"/>
@@ -18,7 +19,7 @@
   	<many-to-one name="vatLine" ref="com.axelor.apps.account.db.VatLine" title="V.A.T."/>
   	<decimal name="exTaxTotal" title="Total W.T."/>
   	
-  	<many-to-one name="task" ref="com.axelor.apps.organisation.db.Task" title="Task" readonly="true"/>
+  	<many-to-one name="task" ref="com.axelor.apps.organisation.db.Task" title="Task"/>
   	<many-to-many name="employeeSet" ref="com.axelor.apps.organisation.db.Employee" title="Employees"/>
   	<many-to-many name="candidateSet" ref="com.axelor.apps.organisation.db.Candidate" title="Candidates"/>
   	<string name="description" title="Description" large="true"/>
@@ -49,6 +50,11 @@
   	<boolean name="isInvoiceControlled" title="Facture controllée"/>
   	
   	<many-to-one name="productVariant" ref="com.axelor.apps.base.db.ProductVariant"/>
+  	
+<!--   	Champ technique non affiché, utilisé pour les reportings -->
+  	<decimal name="companyExTaxTotal" title="Total W.T. in company currency" hidden="true"/>
+  	<decimal name="companyCostPrice" title="Unit cost price in company currency" hidden="true"/>
+  	
   	
   </entity>
 

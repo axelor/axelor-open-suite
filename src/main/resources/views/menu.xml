@@ -650,6 +650,10 @@
 		<view type="form" name="partner-form"/>
 	</action-view>
 
+	<menuitem name="top-relations" title="Relations" groups="admins,erp" top="true" left="false"/>
+	<menuitem name="top-relations-partners" title="Accounts" action="contact.root.partner" parent="top-relations" groups="admins,erp" top="true" left="false"/> 	
+	<menuitem name="top-relations-contacts" title="Contacts" action="contact.root.contact" parent="top-relations" groups="admins,erp" top="true" left="false"/>		  
+	
 	
 	
 		

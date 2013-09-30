@@ -13,12 +13,12 @@
   	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team"/>
   	
 <!-- Opportunity -->
-    <decimal name="opportunityAmountEarned" title="Amount earned"/>
+    <decimal name="opportunityAmountWon" title="Amount won"/>
     <integer name="opportunityCreatedNumber" title="Created number"/>
     <integer name="opportunityCreatedWon" title="Created won"/>
     
 <!-- Sales order -->
-<!-- 	<decimal name="salesOrderAmountEarned" title="Amount earned"/> -->
+<!-- 	<decimal name="salesOrderAmountWon" title="Amount won"/> -->
 <!--     <integer name="salesOrderCreatedNumber" title="Created number"/> -->
 <!--     <integer name="salesOrderCreatedWon" title="Created won"/> -->
 

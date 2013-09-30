@@ -57,7 +57,7 @@
     <one-to-many name="reportedBalanceList" ref="com.axelor.apps.account.db.ReportedBalance" mappedBy="partner" title="Reported Balance"/>
     
     <many-to-many name="companySet" ref="com.axelor.apps.base.db.Company" title="Companies associated to"/>
-    <one-to-many name="accountingSituationList" ref="com.axelor.apps.account.db.AccountingSituation" title="Accounting situation"/>
+    <one-to-many name="accountingSituationList" ref="com.axelor.apps.account.db.AccountingSituation" mappedBy="partner" title="Accounting situation"/>
    
     <one-to-many name="bankDetailsList" ref="com.axelor.apps.base.db.BankDetails" mappedBy="partner" title="Bank Details list"/>
    
