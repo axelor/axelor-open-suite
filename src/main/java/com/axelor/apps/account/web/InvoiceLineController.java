@@ -51,6 +51,7 @@ public class InvoiceLineController {
 		InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
 		BigDecimal exTaxTotal = BigDecimal.ZERO;
 		BigDecimal accountingExTaxTotal = BigDecimal.ZERO;
+		BigDecimal companyExTaxTotal = BigDecimal.ZERO;
 
 		if(invoiceLine.getPrice() != null && invoiceLine.getQty() != null) {
 
@@ -67,10 +68,12 @@ public class InvoiceLineController {
 
 			if(invoice != null) {
 				accountingExTaxTotal = invoiceLineService.getAccountingExTaxTotal(exTaxTotal, invoice);
+				companyExTaxTotal = invoiceLineService.getCompanyExTaxTotal(exTaxTotal, invoice);
 			}
 		}
 		response.setValue("exTaxTotal", exTaxTotal);
 		response.setValue("accountingExTaxTotal", accountingExTaxTotal);
+		response.setValue("companyExTaxTotal", companyExTaxTotal);
 
 	}
 

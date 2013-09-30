@@ -37,22 +37,23 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
+import com.google.inject.Provider;
 
 public class MoveController {
 	
 	@Inject
-	private Injector injector;
+	private Provider<MoveService> moveService;
+	
+	@Inject
+	private Provider<PeriodService> periodService;
 	
 	public void validate(ActionRequest request, ActionResponse response) {
 
 		Move move = request.getContext().asType(Move.class);
 		move = Move.find(move.getId());
 		
-		MoveService ms = injector.getInstance(MoveService.class);
-		
 		try {
-			ms.validate(move);
+			moveService.get().validate(move);
 			response.setReload(true);
 		}
 		catch (Exception e){ TraceBackService.trace(response, e); }
@@ -65,8 +66,7 @@ public class MoveController {
 		try {
 			if(move.getDate() != null && move.getCompany() != null) {
 				
-				PeriodService ps = injector.getInstance(PeriodService.class);
-				response.setValue("period", ps.rightPeriod(move.getDate(), move.getCompany()));				
+				response.setValue("period", periodService.get().rightPeriod(move.getDate(), move.getCompany()));				
 			}
 			else {
 				response.setValue("period", null);

@@ -92,6 +92,11 @@ public class InvoiceLineService {
 	}
 	
 	
+	public BigDecimal getCompanyExTaxTotal(BigDecimal exTaxTotal, Invoice invoice) throws AxelorException  {
+		
+		return currencyService.getAmountCurrencyConverted(
+				invoice.getCurrency(), invoice.getCompany().getCurrency(), exTaxTotal, invoice.getInvoiceDate());  
+	}
 	
 	
 }

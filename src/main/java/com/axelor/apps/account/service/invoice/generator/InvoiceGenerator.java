@@ -57,7 +57,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Status;
 import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.organisation.db.Project;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 
@@ -78,10 +78,11 @@ public abstract class InvoiceGenerator {
 	protected Partner clientPartner;
 	protected Partner contactPartner;
 	protected Currency currency;
+	protected Project affairProject;
 	protected LocalDate today;
 	
 	protected InvoiceGenerator(int operationType, Company company,PaymentCondition paymentCondition, PaymentMode paymentMode, Address mainInvoicingAddress, 
-			Partner clientPartner, Partner contactPartner, Currency currency) throws AxelorException {
+			Partner clientPartner, Partner contactPartner, Currency currency, Project affairProject) throws AxelorException {
 		
 		this.operationType = operationType;
 		this.company = company;
@@ -90,6 +91,7 @@ public abstract class InvoiceGenerator {
 		this.mainInvoicingAddress = mainInvoicingAddress;
 		this.clientPartner = clientPartner;
 		this.contactPartner = contactPartner;
+		this.affairProject = affairProject;
 		this.currency = currency;
 		
 		this.today = GeneralService.getTodayDate();
@@ -199,6 +201,8 @@ public abstract class InvoiceGenerator {
 			throw new AxelorException(String.format("%s :\nDevise absente", GeneralService.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
 		}
 		invoice.setCurrency(currency);
+		
+		invoice.setProject(affairProject);
 		
 		invoice.setCompany(company);
 		

@@ -67,7 +67,6 @@ public class AccountCustomerService {
 	}
 	
 	
-	
 	/**
 	 * Fonction permettant de calculer le solde total d'un contrat
 	 * @param contractLine
@@ -76,7 +75,7 @@ public class AccountCustomerService {
 	 * 			Le solde total
 	 */
 	public BigDecimal getBalance (Partner partner, Company company)  {
-		LOG.debug("Begin getBalance service...");
+		LOG.debug("Compute balance (Partner : {}, Company : {})",partner.getName(),company.getName());
 
 		Query query = JPA.em().createNativeQuery("SELECT SUM(COALESCE(m1.sum_remaining,0) - COALESCE(m2.sum_remaining,0) ) "+
 												"FROM public.account_move_line as ml  "+
@@ -101,8 +100,7 @@ public class AccountCustomerService {
 			balance = BigDecimal.ZERO;
 		}
 		
-		LOG.debug("balance (method with SQL query) : {}", balance);	
-		LOG.debug("End getBalance service");
+		LOG.debug("Balance : {}", balance);	
 		
 		return balance;
 	}
@@ -120,7 +118,7 @@ public class AccountCustomerService {
 	 * 			Le solde exigible
 	 */
 	public BigDecimal getBalanceDue (Partner partner, Company company)  {
-		LOG.debug("Begin getBalanceDueReminder service...");
+		LOG.debug("Compute balance due (Partner : {}, Company : {})",partner.getName(),company.getName());
 		
 		Query query = JPA.em().createNativeQuery("SELECT SUM( COALESCE(m1.sum_remaining,0) - COALESCE(m2.sum_remaining,0) ) "+
 				"FROM public.account_move_line as ml  "+
@@ -157,8 +155,7 @@ public class AccountCustomerService {
 			balance = BigDecimal.ZERO;
 		}
 		
-		LOG.debug("balance due (method with SQL query) : {}", balance);	
-		LOG.debug("End getBalanceDueReminder service");
+		LOG.debug("Balance : {}", balance);	
 		
 		return balance;
 	}
@@ -170,7 +167,7 @@ public class AccountCustomerService {
 	/** solde des échéanciers dont le type est non contentieux et qui ne sont pas bloqués ******************************************************/
 	
 	public BigDecimal getBalanceDueReminder(Partner partner, Company company)  {
-		LOG.debug("Begin getContractLineBalanceDueReminder service");
+		LOG.debug("Compute balance due reminder (Partner : {}, Company : {})",partner.getName(),company.getName());
 		
 		//Calcul sur factures exigibles non bloquées en relance et dont la date de facture + délai d'acheminement < date du jour
 		//et échéanciers dont le type est non contentieux et qui ne sont pas bloqués //TODO NON CONTENTIEUX ?
@@ -210,8 +207,7 @@ public class AccountCustomerService {
 			balance = BigDecimal.ZERO;
 		}
 		
-		LOG.debug("balance due reminder (method with SQL query) : {}", balance);	
-		LOG.debug("End getBalanceDueReminder service");
+		LOG.debug("Balance : {}", balance);	
 		
 		return balance;
 	}
@@ -318,6 +314,9 @@ public class AccountCustomerService {
 	public AccountingSituation updateAccountingSituationCustomerAccount(AccountingSituation accountingSituation, boolean updateCustAccount, boolean updateDueCustAccount, boolean updateDueReminderCustAccount)  {
 		Partner partner = accountingSituation.getPartner();
 		Company company = accountingSituation.getCompany();
+		
+		LOG.debug("Update customer account (Partner : {}, Company : {}, Update balance : {}, balance due : {}, balance due reminder : {})",
+				partner.getName(), company.getName(), updateCustAccount, updateDueReminderCustAccount);
 		
 		if(updateCustAccount)  {
 			accountingSituation.setBalanceCustAccount(this.getBalance(partner, company));

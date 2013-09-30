@@ -7,7 +7,6 @@
     	<toolbar>
     		<button name="printPhoneBook" title="Print PhoneBook" onClick="action-print-phonebook" icon="img/icons/print.png"/>
     		<button name="printCompnayPhoneBook" title="Print compnay phoneBook" onClick="action-print-compnay-phonebook" icon="img/icons/print.png"/>
-    		
 		</toolbar>
         <field name="name"/>
         <field name="firstName"/>
@@ -18,120 +17,123 @@
         <field name="socialNetUserAccountList"/>
     </grid>
     
-    <grid name="partner-contact-grid" title="Contacts" model="com.axelor.apps.base.db.Partner">
-        <field name="name"/>
-        <field name="firstName"/>
-        <field name="mainInvoicingAddress"/>
-        <field name="fixedPhone"/>
-		<field name="mobilePhone"/>
-        <field name="emailAddress"/>
-    </grid>
-    
-    <form cols="6" colWidths="25*" name="partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" 
-	    onLoad="action-partner-attrs-change-name,action-partner-attrs-hide-tabs,action-partner-attrs-set-readonly" 
-	    onNew="action-partner-record-partner-type-select,action-partner-record-set-default,action-partner-attrs-set-readonly" 
-	    onSave="action-set-partner-seq,action-create-accounting-situation">
+    <form name="partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" cols="6" colWidths="25*" 
+    onNew="action-partner-record-partner-type-select,action-partner-record-set-default,action-partner-attrs-set-readonly"
+    onLoad="action-partner-attrs-change-name,action-partner-attrs-hide-tabs,action-partner-attrs-set-readonly" 
+    onSave="action-set-partner-seq,action-create-accounting-situation">
 	    <toolbar>
-    		<button name="sendByEmail" title="Send email" onClick="save,action-send-by-email-with-template" colSpan="1"/>
-    	</toolbar>
-    	
-   	 	<menubar>
+	        <button name="sendByEmail" title="Send email" colSpan="1" onClick="save,action-send-by-email-with-template"/>
+	        <button name="showPartnerInfo" title="Print Informations" colSpan="1" icon="img/icons/print.png" onClick="save,action-partner-method-show-partner-info"/>
+	    </toolbar>
+	    <menubar>
 	        <menu title="Actions" icon="img/icons/create.png" showTitle="true">
-	            <item title="Create call" action="save,action-partner-view-create-call"/>
-	            <item title="Schedule meeting" action="save,action-partner-view-create-meeting"/>
-	            <item title="Create task" action="save,action-partner-view-create-task"/>
-	            <item title="Create opportunity" action="save,action-partner-view-create-opportunity"/>
+	            <divider title="Create call" action="save,action-partner-view-create-call"/>
+	            <divider title="Schedule meeting" action="save,action-partner-view-create-meeting"/>
+	            <divider title="Create task" action="save,action-partner-view-create-task"/>
+	            <divider title="Create opportunity" action="save,action-partner-view-create-opportunity"/>
 	        </menu>
 	    </menubar>
-	    <group colSpan="1" cols="1">
+	    <group colSpan="6" cols="6">
+	        <group colSpan="1" cols="1">
+	            <group colSpan="1">
+	                <field name="picture" showTitle="false"/>
+	            </group>
+	            <break/>
+	            <group colSpan="1">
+	                <button name="facebook" showIf="id != null" css="sn-buttons" icon="img/facebook_logo.png" onClick="action-partner-view-sn-profile"/>
+	                <button name="linkedin" showIf="id != null" css="sn-buttons" icon="img/linkedin_logo.png" onClick="action-partner-view-sn-profile"/>
+	                <button name="twitter" showIf="id != null" css="sn-buttons" icon="img/twitter_logo.png" onClick="action-partner-view-sn-profile"/>
+	            </group>
+	        </group>
 	        <group colSpan="1">
-	            <field name="picture" showTitle="false"/>
+	            <field name="titleSelect" showTitle="false" hideIf="partnerTypeSelect != 2" placeholder="Civility"/>
+	            <break/>
+	            <field name="name" showTitle="false" css="highlight" placeholder="Name"/>
+	            <break/>
+	            <field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name"/>
+	            <break/>
+	            <field name="partnerTypeSelect" showTitle="false" onChange="action-partner-attrs-change-name,action-partner-attrs-hide-tabs"/>
 	        </group>
-	        <break/>
-	        <group colSpan="1" colWidths="33%,34%,33%">
-	            <button name="facebook" icon="img/facebook_logo.png" css="sn-buttons" onClick="action-partner-view-sn-profile" showIf="id != null"/>
-	        	<button name="linkedin" icon="img/linkedin_logo.png" css="sn-buttons" onClick="action-partner-view-sn-profile" showIf="id != null"/>
-	        	<button name="twitter" icon="img/twitter_logo.png" css="sn-buttons" onClick="action-partner-view-sn-profile" showIf="id != null"/>
+	        <group colSpan="4" cols="4">
+	            <field name="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2" colSpan="4" domain="self.isContact = 'true'" form-view="partner-contact-form" grid-view="partner-contact-grid"/>    
 	        </group>
 	    </group>
-	   <group colSpan="1">
-            <field name="titleSelect" showTitle="false" hideIf="partnerTypeSelect != 2" placeholder="Civility"/>
-            <break/>
-            <field name="name" showTitle="false" css="highlight" placeholder="Name"/>
-            <break/>
-            <field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name"/>    
-        </group>
-	    <group colSpan="4" cols="6">
-	        <break/>
-	        <field name="partnerCategory" widget="SuggestBox"/>
-	        <field name="partnerTypeSelect" onChange="action-partner-attrs-change-name,action-partner-attrs-hide-tabs" />
-	        <field name="parentPartner" hideIf="partnerTypeSelect != 1"/>
-	        <field name="isContact" hideIf="partnerTypeSelect != 2 || (partnerTypeSelect == 2 &amp;&amp; isCustomer)"  onChange="action-partner-set-non-contact-fields,action-partner-attrs-hide-tabs,action-partner-attrs-set-readonly"/>
-	        <field name="isCustomer" hideIf="partnerTypeSelect == 2"/>
-	        <field name="customerTypeSelect" hideIf="(isContact &amp;&amp; partnerTypeSelect == 2) || !isCustomer"/>
-	        <field name="isSupplier" hideIf="partnerTypeSelect == 2" onChange="action-set-supplier-type-select"/>
-	        <field name="supplierTypeSelect" hideIf="partnerTypeSelect == 2 || isContact || !isSupplier"/>
-	        <field name="mainPartner" hideIf="!isContact"/>
-	    </group>
-	    <field name="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2" colSpan="4" domain="self.isContact = 'true'" grid-view="partner-contact-grid" form-view="partner-contact-form" />
 	    <break/>
 	    <notebook colSpan="4">
 	        <page name="information" title="Informations">
-	            <group title="Partner details" colSpan="4" cols="4" hideIf="partnerTypeSelect == 2">
-	                <field name="site" domain="self.partner.id = :id"/>
-	                <field name="department"/>
-	                <field name="source" hideIf="isContact"/>
-	                <field name="reportsTo" hideIf="!isContact" />
-					<field name="jobTitle" hideIf="!isContact"/>
-					<field name="industrySectorSelect"/>
-					<field name="nbrEmployees"/>
-					<field name="salesTurnover"/>
-					<field name="registrationCode"/>
-					<field name="vatNbr"/>
+	            <group colSpan="4" cols="4" hideIf="isContact">
+	                <group colSpan="2" cols="4" colWidths="20%,20%,40%,20%">
+	                    <field name="isCustomer" hideIf="partnerTypeSelect == 2"/>
+	                    <field name="customerTypeSelect" showTitle="false" hideIf="(isContact &amp;&amp; partnerTypeSelect == 2) || !isCustomer"/>
+	                    <spacer/>
+	                </group>
+	                <group colSpan="2" cols="4" colWidths="20%,20%,40%,20%">
+	                    <field name="isSupplier" hideIf="partnerTypeSelect == 2" onChange="action-set-supplier-type-select"/>
+	                    <field name="supplierTypeSelect" showTitle="false" hideIf="partnerTypeSelect == 2 || isContact || !isSupplier"/>
+	                </group>
+	            </group>
+	            <group title="Partner Details" hideIf="partnerTypeSelect == 2" colSpan="4" cols="4">
+	                <group colSpan="2" cols="2">
+	                    <field name="partnerCategory" widget="SuggestBox"/>
+	                    <field name="industrySectorSelect"/>
+	                    <field name="source" hideIf="isContact"/>
+	                    <field name="site" domain="self.partner.id = :id"/>
+	                    <field name="department"/>
+	                </group>
+	                <group colSpan="2" cols="2">
+	                    <field name="salesTurnover"/>
+	                    <field name="nbrEmployees"/>
+	                    <field name="registrationCode"/>
+	                    <field name="vatNbr"/>
+	                    <field name="parentPartner" hideIf="partnerTypeSelect != 1"/>
+	                </group>
+	            </group>
+	            <group title="Contacts details" hideIf="partnerTypeSelect == 2 || !isContact" colSpan="4" cols="4">
+	                <field name="mainPartner" hideIf="!isContact"/>
+	                <field name="source" hideIf="!isContact"/>
+	                <field name="reportsTo" hideIf="!isContact"/>
+	                <field name="jobTitle" hideIf="!isContact"/>
 	            </group>
 	            <group title="Postal addresses" colSpan="4" cols="4">
 	                <field name="deliveryAddress" onChange="action-partner-record-main-invoicing-address"/>
 	                <field name="mainInvoicingAddress"/>
 	            </group>
 	            <group title="Contact" colSpan="4" cols="4">
+	                <field name="fixedPhone"/>
+	                <field name="mobilePhone" hideIf="partnerTypeSelect == 1"/>
 	                <field name="emailAddress" canSelect="false" canNew="false" form-view="email-address-simple-form"/>
 	                <field name="fax"/>
-	                <field name="fixedPhone"/>
-					<field name="mobilePhone"/>
 	                <field name="webSite"/>
 	            </group>
-	            <group title="Assigned to" canCollapse="true" colSpan="4" cols="4">
-			        <field name="userInfo"/>
-			        <field name="team"/>
-			    </group>
 	        </page>
-	        <page title="Links">
-	            <group colSpan="4" cols="6">
-	                <button name="showSalesOrder" title="Show sales order" colSpan="2" onClick="save,action-partner-view-partner-sales-order"/>
-	                <button name="showInvoice" title="Show invoices" colSpan="2" onClick="save,action-partner-view-partner-invoice"/>
-	                <button name="showProject" title="Show projects" colSpan="2" onClick="save,action-partner-view-partner-project"/>
-	            </group>
+	        <page title="Notes">
+	            <field name="description" showTitle="false" colSpan="4" widget="html"/>
 	        </page>
-	        <page name="payment" title="Invoicing/Payment" colSpan="4" cols="4" hideIf="partnerTypeSelect == 2 || isContact">
+	        <page name="payment" title="Invoicing/Payment" hideIf="partnerTypeSelect == 2 || isContact" colSpan="4" cols="4">
 	            <field name="invoiceSendingFormatSelect"/>
 	            <field name="paymentMode"/>
 	            <field name="paymentCondition"/>
 	            <field name="currency"/>
 	            <field name="payerQuality"/>
-	            <field name="bankDetails" widget="SuggestBox" domain="self.partner.id = :id" />
-	            <field name="bankDetailsList" showTitle="false" colSpan="4" form-view="bank-details-form" grid-view="bank-details-grid" />
-	            <button name="showInvoice" title="View all unpaid invoices" colSpan="2" onClick="save,action-partner-method-show-invoice"/>
+	            <field name="bankDetails" widget="SuggestBox" domain="self.partner.id = :id"/>
+	            <field name="bankDetailsList" showTitle="false" colSpan="4" form-view="bank-details-form" grid-view="bank-details-grid"/>
+	            <button name="showAllInvoices" title="Show invoices" colSpan="2" onClick="save,action-partner-view-partner-invoice"/>
+	            <button name="showUnpaidInvoice" title="View all unpaid invoices" colSpan="2" onClick="save,action-partner-method-show-invoice"/>
 	        </page>
-	        <page title="Settings">
-	            <field name="companySet" colSpan="4" widget="TagSelect[create=name]" onChange="action-partner-company-set-validate"/>
+	        <page title="Settings" cols="4">
 	            <field name="partnerSeq"/>
 	            <field name="languageSelect" hideIf="isContact || partnerTypeSelect == 1"/>
-	            
+	            <group title="Assigned to" colSpan="4" cols="4" canCollapse="true">
+	                <field name="companySet" colSpan="4" widget="TagSelect[create=name]" onChange="action-partner-company-set-validate"/>
+	                <break/>
+	                <field name="userInfo"/>
+	                <field name="team"/>
+	            </group>
 	        </page>
-	        <page name="compteClient" title="Customer balance" hideIf="partnerTypeSelect == 2 || isContact">
+	        <page name="compteClient" title="Customer balance" hideIf="isContact">
 	            <field name="accountingSituationList" colSpan="4" widget="MasterDetail" onSelect="action-account-accounting-situation-method-update-customer-account"/>
 	        </page>
-	        <page name="reportedBalance" title="Reported balance" hideIf="partnerTypeSelect == 2 || isContact">
+	        <page name="reportedBalance" title="Reported balance" hideIf="isContact">
 	            <field name="reportedBalanceList" colSpan="4">
 	                <grid name="reported-balance-grid" title="Reported balances" model="com.axelor.apps.account.db.ReportedBalance">
 	                    <field name="company"/>
@@ -151,159 +153,17 @@
 	                </form>
 	            </field>
 	        </page>
-			<page title="Reporting" hideIf="partnerTypeSelect == 2">
-				<group title="Action(s)" colSpan="2" cols="2">
-                    <group colSpan="1" cols="1">
-                        <button name="showPartnerInfo" title="Print Informations" colSpan="1" icon="img/icons/print.png" onClick="save,action-partner-method-show-partner-info"/>
-                    </group>
-                </group>
-			</page>
-			<page title="Description" hideIf="partnerTypeSelect == 2">
-				<field name="description" showTitle="false" colSpan="4" widget="html"/>
-			</page>
+		    <page name="activities" title="Activities" >
+	        	<button name="showProject" title="Show projects" colSpan="3" onClick="save,action-partner-view-partner-project"/>
+			    <portlet colSpan="6" action="action-partner-view-upcoming-events"/>
+			    <portlet colSpan="6" action="action-partner-view-historical-events-completed"/>
+			    <portlet colSpan="6" action="action-partner-view-opportunities"/>
+			    <portlet colSpan="6" action="action-partner-view-sales-orders"/>
+			    <portlet colSpan="6" action="action-partner-view-tickets"/>
+	        </page>
 	    </notebook>
-	    <group title="Reportings" colSpan="6" canCollapse="true">
-     		<portlet colSpan="6" action="action-partner-view-upcoming-events"/>
-     		<portlet colSpan="6" action="action-partner-view-historical-events-completed"/>
-     		<portlet colSpan="6" action="action-partner-view-opportunity"/>
-     		<portlet colSpan="6" action="action-partner-view-sales-order"/>
-     		<portlet colSpan="6" action="action-partner-view-tickets"/>
-	    </group>
 	</form>
 	
-	<form cols="6" colWidths="25*" name="partner-contact-form" title="Partner" model="com.axelor.apps.base.db.Partner"
-	    onNew="action-partner-contact-record-default,action-partner-attrs-set-readonly" 
-	    onLoad="action-partner-attrs-change-name,action-partner-attrs-hide-tabs,action-partner-attrs-set-readonly" 
-	    onSave="action-set-partner-seq,action-create-accounting-situation">
-	    <toolbar>
-    		<button name="sendByEmail" title="Send email" onClick="save,action-send-by-email-with-template" colSpan="1"/>
-    	</toolbar>
-    	
-   	 	<menubar>
-	        <menu title="Actions" icon="img/icons/create.png" showTitle="true">
-	            <item title="Create call" action="save,action-partner-view-create-call"/>
-	            <item title="Schedule meeting" action="save,action-partner-view-create-meeting"/>
-	            <item title="Create task" action="save,action-partner-view-create-task"/>
-	            <item title="Create opportunity" action="save,action-partner-view-create-opportunity"/>
-	        </menu>
-	    </menubar>
-	   <group colSpan="1" cols="1">
-	        <group colSpan="1">
-	            <field name="picture" showTitle="false"/>
-	        </group>
-	        <break/>
-	        <group colSpan="1" colWidths="33%,34%,33%">
-	            <button name="facebook" icon="img/facebook_logo.png" css="sn-buttons" onClick="action-partner-view-sn-profile" showIf="id != null"/>
-	        	<button name="linkedin" icon="img/linkedin_logo.png" css="sn-buttons" onClick="action-partner-view-sn-profile" showIf="id != null"/>
-	        	<button name="twitter" icon="img/twitter_logo.png" css="sn-buttons" onClick="action-partner-view-sn-profile" showIf="id != null"/>
-	        </group>
-	    </group>
-	   <group colSpan="1">
-            <field name="titleSelect" showTitle="false" hideIf="partnerTypeSelect != 2" placeholder="Civility"/>
-            <break/>
-            <field name="name" showTitle="false" css="highlight" placeholder="Name"/>
-            <break/>
-            <field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name"/>    
-        </group>
-	    <group colSpan="4" cols="6">
-	        <break/>
-	        <field name="partnerCategory" widget="SuggestBox"/>
-	        <field name="partnerTypeSelect" onChange="action-partner-attrs-change-name,action-partner-attrs-hide-tabs"/>
-	        <field name="parentPartner" hideIf="partnerTypeSelect != 1"/>
-	        <field name="isContact" readonly="true" hideIf="partnerTypeSelect != 2 || (partnerTypeSelect == 2 &amp;&amp; isCustomer)" onChange="action-partner-set-non-contact-fields,action-partner-attrs-hide-tabs,action-partner-attrs-set-readonly"/>
-	        <field name="isCustomer" hideIf="partnerTypeSelect == 2"/>
-	        <field name="customerTypeSelect" hideIf="(isContact &amp;&amp; partnerTypeSelect == 2) || !isCustomer"/>
-	        <field name="isSupplier" hideIf="partnerTypeSelect == 2" onChange="action-set-supplier-type-select"/>
-	        <field name="supplierTypeSelect" hideIf="partnerTypeSelect == 2 || isContact || !isSupplier"/>
-	        <field name="mainPartner" hideIf="!isContact"/>
-	    </group>
-	    <field name="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2" colSpan="4" domain="self.isContact = 'true'" grid-view="partner-contact-grid" form-view="partner-contact-form" />
-	    <break/>
-	    <notebook colSpan="4">
-	        <page name="information" title="Informations">
-	            <group title="Partner details" colSpan="4" cols="4" hideIf="partnerTypeSelect == 2">
-	                <field name="site" domain="self.partner.id = :id"/>
-	                <field name="department"/>
-	                <field name="source" hideIf="isContact"/>
-	            </group>
-	            <group title="Postal addresses" hideIf="isContact" colSpan="4" cols="4">
-	                <field name="mainInvoicingAddress" onChange="action-partner-record-main-invoicing-address"/>
-	                <field name="deliveryAddress"/>
-	            </group>
-	            <group title="Contact" colSpan="4" cols="4">
-	                <field name="emailAddress" canSelect="false" canNew="false" form-view="email-address-simple-form"/>
-	                <field name="fax"/>
-	                <field name="fixedPhone"/>
-					<field name="mobilePhone"/>
-	                <field name="webSite"/>
-	            </group>
-	            <group title="Assigned to" canCollapse="true" colSpan="4" cols="4">
-			        <field name="userInfo"/>
-			        <field name="team"/>
-			    </group>
-	        </page>
-	        <page title="Links">
-	            <group colSpan="4" cols="6">
-	                <button name="showSalesOrder" title="Show sales order" colSpan="2" onClick="save,action-partner-view-partner-sales-order"/>
-	                <button name="showInvoice" title="Show invoices" colSpan="2" onClick="save,action-partner-view-partner-invoice"/>
-	                <button name="showProject" title="Show projects" colSpan="2" onClick="save,action-partner-view-partner-project"/>
-	            </group>
-	        </page>
-	<!--         <page name="payment" title="Invoicing/Payment" cols="4"> -->
-	<!--             <field name="invoiceSendingFormatSelect"/> -->
-	<!--             <field name="paymentMode"/> -->
-	<!--             <field name="paymentCondition"/> -->
-	<!--             <field name="currency"/> -->
-	<!--             <field name="payerQuality"/> -->
-	<!--             <field name="bankDetails"/> -->
-	<!--             <field name="bankDetailsList" showTitle="false" colSpan="4" form-view="bank-details-form" grid-view="bank-details-grid"/> -->
-	<!--             <button name="showInvoice" title="View all unpaid invoices" colSpan="2" onClick="save,action-partner-method-show-invoice"/> -->
-	<!--         </page> -->
-	        <page title="Settings">
-	            <field name="companySet" colSpan="4" widget="TagSelect[create=name]" onChange="action-partner-company-set-validate"/>
-	            <field name="partnerSeq"/>
-	            <field name="languageSelect" hideIf="isContact || partnerTypeSelect == 1"/>
-	            
-	        </page>
-			<page title="Reporting" hideIf="partnerTypeSelect == 2">
-				<group title="Action(s)" colSpan="2" cols="2">
-                    <group colSpan="1" cols="1">
-                        <button name="showPartnerInfo" title="Print Informations" colSpan="1" icon="img/icons/print.png" onClick="save,action-partner-method-show-partner-info"/>
-                    </group>
-                </group>
-			</page>
-	        <page name="compteClient" title="Customer balance" hideIf="partnerTypeSelect == 2 || isContact">
-	            <field name="accountingSituationList" colSpan="4" widget="MasterDetail" onSelect="action-account-accounting-situation-method-update-customer-account"/>
-	        </page>
-	        <page name="reportedBalance" title="Reported balance" hideIf="partnerTypeSelect == 2 || isContact">
-	            <field name="reportedBalanceList" colSpan="4">
-	                <grid name="reported-balance-grid" title="Reported balances" model="com.axelor.apps.account.db.ReportedBalance">
-	                    <field name="company"/>
-	                </grid>
-	                <form cols="4" name="reported-balance-form" title="Reported balance" model="com.axelor.apps.account.db.ReportedBalance">
-	                    <field name="company" widget="SuggestBox"/>
-	                    <field name="reportedBalanceLineList" colSpan="4">
-	                        <grid name="reported-balance-line-grid" title="Reported balance lines" model="com.axelor.apps.account.db.ReportedBalanceLine">
-	                            <field name="year"/>
-	                            <field name="amount"/>
-	                        </grid>
-	                        <form cols="4" name="reported-balance-line-form" title="Reported balance line" model="com.axelor.apps.account.db.ReportedBalanceLine">
-	                            <field name="year"/>
-	                            <field name="amount"/>
-	                        </form>
-	                    </field>
-	                </form>
-	            </field>
-	        </page>
-	    </notebook>
-	    <group title="Reportings" colSpan="6" canCollapse="true">
-     		<portlet colSpan="6" action="action-partner-view-upcoming-events"/>
-     		<portlet colSpan="6" action="action-partner-view-historical-events-completed"/>
-     		<portlet colSpan="6" action="action-partner-view-opportunity"/>
-     		<portlet colSpan="6" action="action-partner-view-sales-order"/>
-     		<portlet colSpan="6" action="action-partner-view-tickets"/>
-	    </group>
-	</form>
 	
 	<action-method name="action-create-accounting-situation" >
 		<call class="com.axelor.apps.base.web.PartnerControllerSimple" method="createAccountingSituations"/>
