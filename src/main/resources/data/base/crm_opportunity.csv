@@ -1,0 +1,44 @@
+"importId";"name";"partner.importId";"lead.id";"currency.code";"expectedCloseDate";"amount";"opportunityType.id";"bestCase";"worstCase";"salesStageSelect";"probability";"nextStep";"description";"source.id";"company.id";"userInfo.id";"team.id"
+1;"Consultant Junior - 4 Jour(s) + Serveur dédié XL - 12 Mois";;1;"EUR";"2013-09-23";"5119.88";1;6200;4600;7;39;;;11;1;15;2
+2;"Support technique - 3 Heure + Serveur dédié XXL - 12 Mois";;2;"EUR";"2013-09-24";2688;1;3300;2000;8;42;;;3;1;15;2
+3;"Paramétrage ERP - 5 Forfait + Cloud Privé Vsphere XL - 12 Mois";;3;"EUR";"2013-09-25";84564;1;109900;71900;7;27;;;4;1;15;2
+4;"Paramétrage CRM - 4 Forfait + Serveur dédié XXL - 12 Mois";;4;"EUR";"2013-09-26";34388;1;39900;26800;8;81;;;11;1;13;1
+5;"Support technique - 3 Heure + Serveur dédié XXL - 12 Mois";;5;"EUR";"2013-09-27";2688;1;3300;1900;7;93;;;3;1;16;2
+6;"Chef de projet - 3 Jour(s) + Serveur dédié L - 12 Mois";;6;"EUR";"2013-09-28";"4799.88";1;5800;3400;6;24;;;7;1;16;2
+7;"Paramétrage CRM - 5 Forfait + Cloud Privé Vcloud - 12 Mois";;7;"EUR";"2013-09-29";54544;1;66000;46400;8;79;;;2;1;16;2
+8;"Développeur Senior - 3 Jour(s) + Serveur dédié L - 12 Mois";;8;"EUR";"2013-09-30";"4049.88";1;4700;3600;8;48;;;5;1;15;2
+9;"Développeur Junior - 4 Jour(s) + Cloud Privé Vcloud - 12 Mois";;9;"EUR";"2013-10-01";17144;1;21400;14200;5;66;;;7;1;17;3
+10;"Paramétrage ERP - 3 Forfait + Stockage NAS XL - 12 Mois";;10;"EUR";"2013-10-02";"46199.88";1;58700;33700;6;74;;;14;1;14;1
+11;"Formation technique - 3 Jour(s) + Cloud Privé Vcloud - 12 Mois";;11;"EUR";"2013-10-03";17244;1;21000;12400;10;90;;;5;1;17;3
+12;"Développeur Junior - 1 Jour(s) + Cloud Privé Vsphere XL - 12 Mois";;12;"EUR";"2013-10-04";10214;1;12900;7100;8;48;;;11;1;16;2
+13;"Consultant Senior - 3 Jour(s) + Cloud Privé Vcloud - 12 Mois";;13;"EUR";"2013-10-05";17244;1;20500;13800;2;25;;;4;1;15;2
+14;"Formation fonctionnelle CRM - 5 Jour(s) + Serveur dédié XXL - 12 Mois";;14;"EUR";"2013-10-06";7388;1;9100;6500;1;66;;;8;1;15;2
+15;"Développeur Senior - 3 Jour(s) + Serveur dédié M - 12 Mois";;15;"EUR";"2013-10-07";"3809.88";1;4300;3400;7;33;;;4;1;15;2
+16;"Paramétrage ERP - 4 Forfait + Cloud Privé Vsphere XL - 12 Mois";;16;"EUR";"2013-10-08";69564;1;88300;51500;1;22;;;1;1;15;2
+17;"Paramétrage CRM - 5 Forfait + Serveur dédié XS - 12 Mois";;17;"EUR";"2013-10-09";"40599.88";1;45900;35700;4;34;;;14;1;16;2
+18;"Paramétrage CRM - 4 Forfait + Serveur dédié L - 12 Mois";;18;"EUR";"2013-10-10";"33799.88";1;42600;24300;8;45;;;11;1;17;3
+19;"Consultant Junior - 3 Jour(s) + Serveur dédié L - 12 Mois";;19;"EUR";"2013-10-11";"4199.88";1;5100;3700;6;69;;;2;1;13;1
+20;"Consultant Junior - 2 Jour(s) + Stockage NAS S - 12 Mois";;20;"EUR";"2013-10-12";"1719.88";1;2100;1300;1;23;;;10;1;17;3
+21;"Formation fonctionnelle CRM - 5 Jour(s) + Stockage NAS S - 12 Mois";;21;"EUR";"2013-10-13";"5119.88";1;6200;3600;2;94;;;3;1;16;2
+22;"Développeur Junior - 5 Jour(s) + Stockage NAS SSD S - 12 Mois";;22;"EUR";"2013-10-14";"5169.88";1;6700;4500;2;58;;;12;1;15;2
+23;"Formation fonctionnelle ERP - 2 Jour(s) + Cloud Privé Vsphere XL - 12 Mois";;23;"EUR";"2013-10-15";11764;1;14200;10100;3;79;;;12;1;14;1
+24;"Support technique - 4 Heure + Stockage NAS S - 12 Mois";;24;"EUR";"2013-10-16";"519.88";1;600;400;5;62;;;13;1;15;2
+25;"Formation fonctionnelle ERP - 2 Jour(s) + Cloud Privé Vcloud - 12 Mois";;25;"EUR";"2013-10-17";16744;1;18800;12200;2;78;;;14;1;17;3
+26;"Développeur Senior - 1 Jour(s) + Serveur dédié M - 12 Mois";;26;"EUR";"2013-10-18";"2309.88";1;3000;1900;4;74;;;6;1;14;1
+27;"Paramétrage CRM - 1 Forfait + Stockage NAS SSD S - 12 Mois";;27;"EUR";"2013-10-19";"9919.88";1;12100;7700;4;58;;;14;1;13;1
+28;"Chef de projet - 2 Jour(s) + Cloud Privé Vsphere S - 12 Mois";;28;"EUR";"2013-10-20";7004;1;8800;6100;5;78;;;2;1;17;3
+29;"Consultant Senior - 4 Jour(s) + Cloud Privé Vcloud - 12 Mois";;29;"EUR";"2013-10-21";18144;1;21200;15100;2;61;;;9;1;17;3
+30;"Consultant Senior - 3 Jour(s) + Stockage NAS XL - 12 Mois";;30;"EUR";"2013-10-22";"3899.88";1;4300;3500;3;57;;;12;1;15;2
+31;"Chef de projet - 4 Jour(s) + Stockage NAS XL - 12 Mois";;31;"EUR";"2013-10-23";"5199.88";1;6500;3700;8;84;;;7;1;13;1
+32;"Support technique - 4 Heure + Serveur dédié L - 12 Mois";;32;"EUR";"2013-10-24";"2199.88";1;2800;1600;6;74;;;5;1;16;2
+33;"Formation fonctionnelle CRM - 3 Jour(s) + Stockage NAS S - 12 Mois";;33;"EUR";"2013-10-25";"3119.88";1;3900;2600;1;90;;;14;1;16;2
+34;"Développeur Junior - 4 Jour(s) + Serveur dédié M - 12 Mois";;34;"EUR";"2013-10-26";"4159.88";1;4800;3300;6;100;;;1;1;17;3
+35;"Développeur Senior - 1 Jour(s) + Cloud Privé Vsphere L - 12 Mois";;35;"EUR";"2013-10-27";7434;1;8500;5400;6;47;;;7;1;17;3
+36;"Paramétrage ERP + Cloud Privé Vcloud - 12 Mois";1;;"EUR";"2013-10-28";29544;3;37500;25700;1;99;;;7;1;;
+37;"Formation fonctionnelle ERP + Stockage NAS SSD S - 12 Mois";4;;"EUR";"2013-10-29";"3019.88";3;3600;2600;5;54;;;2;1;;
+38;"Formation technique - 3 Jour(s) + Serveur dédié S - 12 Mois";6;;"EUR";"2013-10-30";"3539.88";3;4000;2900;7;59;;;6;1;;
+39;"Formation fonctionnelle ERP - 5 Jour(s) + Serveur dédié XS - 12 Mois";9;;"EUR";"2013-10-31";"6099.88";3;6900;4800;10;83;;;3;1;;
+40;"Support technique - 1 Heure + Serveur dédié XXL - 12 Mois";12;;"EUR";"2013-11-01";2488;3;3200;2000;7;62;;;4;1;;
+41;"Paramétrage CRM - 1 Forfait + Cloud Privé Vcloud - 12 Mois";15;;"EUR";"2013-11-02";22544;3;25700;15800;5;51;;;14;1;;
+42;"Consultant Senior - 2 Jour(s) + Cloud Privé Vsphere XL - 12 Mois";18;;"EUR";"2013-11-03";11364;3;12600;9200;1;57;;;4;1;;
+43;"Chef de projet - 1 Jour(s) + Stockage NAS S - 12 Mois";20;;"EUR";"2013-11-04";"1119.88";3;1300;900;10;67;;;3;1;;

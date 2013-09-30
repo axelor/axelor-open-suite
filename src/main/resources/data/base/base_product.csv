@@ -1,44 +1,44 @@
-"importId";"name_fr";"code_fr";"name_en";"code_en";"description_fr";"description_en";"productCategory.id";"productCategory_code_en";"productFamily.id";"productFamily_code_en";"applicationTypeSelect";"procurementMethodSelect";"isRawMaterial";"unit.code";"productTypeSelect";"salePrice";"saleCurrency.code";"purchasePrice";"purchaseCurrency.code";"startDate";"endDate";"invoiceLineType.id"
-1;"Serveur dédié XS";"INFO-DED-0001";"Dedicated Server XS";;"Serveur dédié i5-2400 4x3.1GHz 16GoRAM 2x 2To SATA2";"Dedicated Server i5-2400 4x3.1GHz 16GoRAM 2x 2To SATA2";1;;2;;1;"produce";"false";"U";"service";49.99;"EUR";36.49;"EUR";"2013-01-01";;4
-2;"Serveur dédié S";"INFO-DED-0002";"Dedicated Server S";;"Serveur dédié Xeon E3-1270 4x3,4GHz 32GoRAM 2x100 Go SSD";"Dedicated Server Xeon E3-1270 4x3.4GHz 32GoRAM 2x100Go SSD";1;;2;;1;"produce";"false";"U";"service";69.99;"EUR";56.69;"EUR";"2013-01-01";;4
-3;"Serveur dédié M";"INFO-DED-0003";"Dedicated Server M";;"Serveur dédié Xeon E5-1620 4x3,6GHz 64GoRAM 2x100 Go SSD";"Dedicated Server Xeon E5-1620 4x3.6GHz 64GoRAM 2x100Go SSD";1;;2;;1;"produce";"false";"U";"service";129.99;"EUR";109.19;"EUR";"2013-01-01";;4
-4;"Serveur dédié L";"INFO-DED-0004";"Dedicated Server L";;"Serveur dédié Xeon E5-1650 6x3,2GHz 64Go DDR3 ECCRAM 2x 2To SATA3";"Dedicated Server Xeon E5-1650 6x3.2GHz 64Go DDR3 ECCRAM 2x 2To SATA3";1;;2;;1;"produce";"false";"U";"service";149.99;"EUR";104.99;"EUR";"2013-01-01";;4
-5;"Serveur dédié XL";"INFO-DED-0005";"Dedicated Server XL";;"Serveur dédié Xeon E5-1650 6x3,2GHz 64Go RAM 2x 120Go";"Dedicated Server Xeon E5-1650 6x3.2GHz 64GoRAM 2x 120Go";1;;2;;1;"produce";"false";"U";"service";159.99;"EUR";115.19;"EUR";"2013-01-01";;4
-6;"Serveur dédié XXL";"INFO-DED-0006";"Dedicated Server XXL";;"Serveur dédié Xeon E5606 8x2x2,13GHz 128GoRAM 2x 600Go SAS";"Dedicated Server Xeon E5606 8x2x2.13GHz 128GoRAM 2x 600Go SAS";1;;2;;1;"produce";"false";"U";"service";199;"EUR";151.24;"EUR";"2013-01-01";;4
-7;"Cloud Privé Vsphere S";"INFO-DED-0007";"Private Cloud Vsphere S";;"Private Cloud vSphere 8cores 32 Go RAM 2x300Go";"Private Cloud Vsphere S";1;;2;;1;"produce";"false";"U";"service";417;"EUR";350.28;"EUR";"2013-01-01";;4
-8;"Cloud Privé Vsphere L";"INFO-DED-0008";"Private Cloud Vsphere L";;"Private Cloud vSphere 16cores 64 Go RAM 2x300Go";"Private Cloud Vsphere L";1;;2;;1;"produce";"false";"U";"service";557;"EUR";423.32;"EUR";"2013-01-01";;4
-9;"Cloud Privé Vsphere XL";"INFO-DED-0009";"Private Cloud Vsphere XL";;"Private Cloud vSphere 16cores 128 Go RAM 2x300Go";"Private Cloud Vsphere XL";1;;2;;1;"produce";"false";"U";"service";797;"EUR";637.60;"EUR";"2013-01-01";;4
-10;"Cloud Privé Vcloud";"INFO-DED-0010";"Private Cloud Vcloud";;"Private Cloud vCloud 40GHz 76 Go RAM 1.12 To";"Private Cloud Vcloud";1;;2;;1;"produce";"false";"U";"service";1212;"EUR";872.64;"EUR";"2013-01-01";;4
-11;"Stockage NAS S";"INFO-STK-0011";"NAS Storage S";;"Stockage NAS Standard 100Go";"NAS Storage Standard 100Go";1;;3;;1;"produce";"false";"U";"service";9.99;"EUR";7.59;"EUR";"2013-01-01";;4
-12;"Stockage NAS L";"INFO-STK-0012";"NAS Storage L";;"Stockage NAS Hybrid Haute Disponibilité 300Go";"NAS Storage Hybrid Haute Disponibilité 300Go";1;;3;;1;"produce";"false";"U";"service";59.99;"EUR";49.19;"EUR";"2013-01-01";;4
-13;"Stockage NAS XL";"INFO-STK-0013";"NAS Storage XL";;"Stockage NAS Hybrid Haute Disponibilité 600Go";"NAS Storage Hybrid Haute Disponibilité 600Go";1;;3;;1;"produce";"false";"U";"service";99.99;"EUR";71.99;"EUR";"2013-01-01";;4
-14;"Stockage NAS SSD S";"INFO-STK-0014";"NAS Storage SSD S";;"Stockage NAS SSD Haut Disponibilité 100 GB";"NAS Storage SSD Haut Disponibilité 100Go";1;;3;;1;"produce";"false";"U";"service";159.99;"EUR";135.99;"EUR";"2013-01-01";;4
-15;"Domaine .fr";"INFO-DOM-0015";"Domain .fr";;"Création/Transfert Nom de Domaine .fr";"Creation/Transfer Domain .fr";1;;4;;1;"produce";"false";"U";"service";6.99;"EUR";5.03;"EUR";"2013-01-01";;4
-16;"Domaine .be";"INFO-DOM-0016";"Domain .be";;"Création/Transfert Nom de Domaine .be";"Creation/Transfer Domain .be";1;;4;;1;"produce";"false";"U";"service";6.99;"EUR";5.59;"EUR";"2013-01-01";;4
-17;"Domaine .net";"INFO-DOM-0017";"Domain .net";;"Création/Transfert Nom de Domaine .net";"Creation/Transfer Domain .net";1;;4;;1;"produce";"false";"U";"service";6.99;"EUR";5.66;"EUR";"2013-01-01";;4
-18;"Domaine .info";"INFO-DOM-0018";"Domain .info";;"Création/Transfert Nom de Domaine .info";"Creation/Transfer Domain .info";1;;4;;1;"produce";"false";"U";"service";6.99;"EUR";5.03;"EUR";"2013-01-01";;4
-19;"Domaine .com";"INFO-DOM-0019";"Domain .com";;"Création/Transfert Nom de Domaine .com";"Creation/Transfer Domain .com";1;;4;;1;"produce";"false";"U";"service";6.99;"EUR";5.52;"EUR";"2013-01-01";;4
-20;"Domaine .eu";"INFO-DOM-0020";"Domain .eu";;"Création/Transfert Nom de Domaine .eu";"Creation/Transfer Domain .eu";1;;4;;1;"produce";"false";"U";"service";6.99;"EUR";5.03;"EUR";"2013-01-01";;4
-21;"Domaine .ca";"INFO-DOM-0021";"Domain .ca";;"Création/Transfert Nom de Domaine .ca";"Creation/Transfer Domain .ca";1;;4;;1;"produce";"false";"U";"service";8.99;"EUR";6.38;"EUR";"2013-01-01";;4
-22;"Hébergement mutualisé S";"INFO-MUT-0022";"Shared Hosting S";;"Hébergement mutualisé S 25Go";"Shared Hosting  RAM 25Go";1;;1;;1;"produce";"false";"U";"service";1.99;"EUR";1.43;"EUR";"2013-01-01";;4
-23;"Hébergement mutualisé M";"INFO-MUT-0023";"Shared Hosting M";;"Hébergement mutualisé M 100Go";"Shared Hosting  RAM 100Go";1;;1;;1;"produce";"false";"U";"service";4.99;"EUR";3.64;"EUR";"2013-01-01";;4
-24;"Hébergement mutualisé L";"INFO-MUT-0024";"Shared Hosting L";;"Hébergement mutualisé L 250Go";"Shared Hosting  RAM 250Go";1;;1;;1;"produce";"false";"U";"service";9.99;"EUR";7.19;"EUR";"2013-01-01";;4
-25;"Hébergement mutualisé XL";"INFO-MUT-0025";"Shared Hosting XL";;"Hébergement mutualisé XL 500Go";"Shared Hosting  RAM 500Go";1;;1;;1;"produce";"false";"U";"service";19.99;"EUR";15.79;"EUR";"2013-01-01";;4
-26;"Ligne SIP Perso";"INFO-TEL-0026";"SIP Phone line Perso";;"Ligne téléphonique incluant les appels vers les fixes";"Phone line including free calls to fix phones";1;;5;;1;"produce";"false";"U";"service";0.99;"EUR";0.70;"EUR";"2013-01-01";;4
-27;"Ligne SIP Pro";"INFO-TEL-0027";"SIP Phone line Pro";;"Ligne téléphonique incluant les appels vers les fixes et les mobiles";"Phone line including free calls to fix phones and to mobiles";1;;5;;1;"produce";"false";"U";"service";4.99;"EUR";4.09;"EUR";"2013-01-01";;4
-28;"Support fonctionnel";"SUP-STEC-0028";"Functionnal support";;;;2;;6;;1;"produce";"false";"HRE";"service";80;"EUR";68.00;"EUR";"2013-01-01";;4
-29;"Support technique";"SUP-SFCT-0029";"Technical support";;;;2;;7;;1;"produce";"false";"HRE";"service";100;"EUR";84.00;"EUR";"2013-01-01";;4
-30;"Formation fonctionnelle ERP";"FORM-FFCT-0030";"Functionnal training ERP";;;;3;;9;;1;"produce";"false";"JR";"service";1100;"EUR";880.00;"EUR";"2013-01-01";;4
-31;"Formation fonctionnelle CRM";"FORM-FFCT-0031";"Functionnal training CRM";;;;3;;9;;1;"produce";"false";"JR";"service";1000;"EUR";780.00;"EUR";"2013-01-01";;4
-32;"Formation technique";"FORM-FTEC-0032";"Formation technique";;;;3;;8;;1;"produce";"false";"JR";"service";900;"EUR";747.00;"EUR";"2013-01-01";;4
-33;"Chef de projet";"CEXP-PJT-0033";"Project Manager";;;;4;;10;;2;"produce";"false";"JR";"service";1000;"EUR";710.00;"EUR";"2013-01-01";;4
-34;"Consultant Junior";"CEXP-PJT-0034";"Junior Consultant";;;;4;;10;;2;"produce";"false";"JR";"service";800;"EUR";608.00;"EUR";"2013-01-01";;4
-35;"Consultant Senior";"CEXP-PJT-0035";"Senior Consultant";;;;4;;10;;2;"produce";"false";"JR";"service";900;"EUR";738.00;"EUR";"2013-01-01";;4
-36;"Paramétrage CRM";"CEXP-PJT-0036";"CRM Customization";;;;4;;10;;1;"produce";"false";"U";"service";8000;"EUR";5920.00;"EUR";"2013-01-01";;4
-37;"Paramétrage ERP";"CEXP-PJT-0037";"ERP Customization";;;;4;;10;;1;"produce";"false";"U";"service";15000;"EUR";10650.00;"EUR";"2013-01-01";;4
-38;"Développeur Junior";"CEXP-DEV-0038";"Junior Developper";;;;4;;11;;2;"produce";"false";"JR";"service";650;"EUR";481.00;"EUR";"2013-01-01";;4
-39;"Développeur Senior";"CEXP-DEV-0039";"Senior Developper";;;;4;;;;2;"produce";"false";"JR";"service";750;"EUR";555.00;"EUR";"2013-01-01";;4
-40;"Billets de train";"NDF-0040";"Train ticket";;;;6;;;;3;"buy";"false";"U";"service";80;"EUR";65.60;"EUR";"2013-01-01";;5
-41;"Billets d'avion";"NDF-0041";"Plane ticket";;;;6;;;;3;"buy";"false";"U";"service";150;"EUR";109.50;"EUR";"2013-01-01";;5
-42;"Repas";"NDF-0042";"Meal";;;;6;;;;3;"buy";"false";"U";"service";20;"EUR";14.40;"EUR";"2013-01-01";;5
-43;"Hôtel";"NDF-0043";"Hotel";;;;6;;;;3;"buy";"false";"U";"service";90;"EUR";63.00;"EUR";"2013-01-01";;5
+importId;name_fr;code_fr;name_en;code_en;description_fr;description_en;productFamily.id;productCategory_code_en;productCategory.id;productFamily_code_en;applicationTypeSelect;procurementMethodSelect;isRawMaterial;unit.code;productTypeSelect;salePrice;saleCurrency.code;purchasePrice;purchaseCurrency.code;startDate;endDate;invoiceLineType.id;saleSupplySelect
+1;Serveur dédié XS;INFO-DED-0001;Dedicated Server XS;;Serveur dédié i5-2400 4x3.1GHz 16GoRAM 2x 2To SATA2;Dedicated Server i5-2400 4x3.1GHz 16GoRAM 2x 2To SATA2;1;;2;;1;produce;false;U;service;49.99;EUR;36.49;EUR;2013-01-01;;1;1
+2;Serveur dédié S;INFO-DED-0002;Dedicated Server S;;Serveur dédié Xeon E3-1270 4x3,4GHz 32GoRAM 2x100 Go SSD;Dedicated Server Xeon E3-1270 4x3.4GHz 32GoRAM 2x100Go SSD;1;;2;;1;produce;false;U;service;69.99;EUR;56.69;EUR;2013-01-01;;1;1
+3;Serveur dédié M;INFO-DED-0003;Dedicated Server M;;Serveur dédié Xeon E5-1620 4x3,6GHz 64GoRAM 2x100 Go SSD;Dedicated Server Xeon E5-1620 4x3.6GHz 64GoRAM 2x100Go SSD;1;;2;;1;produce;false;U;service;129.99;EUR;109.19;EUR;2013-01-01;;1;1
+4;Serveur dédié L;INFO-DED-0004;Dedicated Server L;;Serveur dédié Xeon E5-1650 6x3,2GHz 64Go DDR3 ECCRAM 2x 2To SATA3;Dedicated Server Xeon E5-1650 6x3.2GHz 64Go DDR3 ECCRAM 2x 2To SATA3;1;;2;;1;produce;false;U;service;149.99;EUR;104.99;EUR;2013-01-01;;1;1
+5;Serveur dédié XL;INFO-DED-0005;Dedicated Server XL;;Serveur dédié Xeon E5-1650 6x3,2GHz 64Go RAM 2x 120Go;Dedicated Server Xeon E5-1650 6x3.2GHz 64GoRAM 2x 120Go;1;;2;;1;produce;false;U;service;159.99;EUR;115.19;EUR;2013-01-01;;1;1
+6;Serveur dédié XXL;INFO-DED-0006;Dedicated Server XXL;;Serveur dédié Xeon E5606 8x2x2,13GHz 128GoRAM 2x 600Go SAS;Dedicated Server Xeon E5606 8x2x2.13GHz 128GoRAM 2x 600Go SAS;1;;2;;1;produce;false;U;service;199;EUR;151.24;EUR;2013-01-01;;1;1
+7;Cloud Privé Vsphere S;INFO-DED-0007;Private Cloud Vsphere S;;Private Cloud vSphere 8cores 32 Go RAM 2x300Go;Private Cloud Vsphere S;1;;2;;1;produce;false;U;service;417;EUR;350.28;EUR;2013-01-01;;1;1
+8;Cloud Privé Vsphere L;INFO-DED-0008;Private Cloud Vsphere L;;Private Cloud vSphere 16cores 64 Go RAM 2x300Go;Private Cloud Vsphere L;1;;2;;1;produce;false;U;service;557;EUR;423.32;EUR;2013-01-01;;1;1
+9;Cloud Privé Vsphere XL;INFO-DED-0009;Private Cloud Vsphere XL;;Private Cloud vSphere 16cores 128 Go RAM 2x300Go;Private Cloud Vsphere XL;1;;2;;1;produce;false;U;service;797;EUR;637.6;EUR;2013-01-01;;1;1
+10;Cloud Privé Vcloud;INFO-DED-0010;Private Cloud Vcloud;;Private Cloud vCloud 40GHz 76 Go RAM 1.12 To;Private Cloud Vcloud;1;;2;;1;produce;false;U;service;1212;EUR;872.64;EUR;2013-01-01;;1;1
+11;Stockage NAS S;INFO-STK-0011;NAS Storage S;;Stockage NAS Standard 100Go;NAS Storage Standard 100Go;1;;3;;1;produce;false;U;service;9.99;EUR;7.59;EUR;2013-01-01;;1;1
+12;Stockage NAS L;INFO-STK-0012;NAS Storage L;;Stockage NAS Hybrid Haute Disponibilité 300Go;NAS Storage Hybrid Haute Disponibilité 300Go;1;;3;;1;produce;false;U;service;59.99;EUR;49.19;EUR;2013-01-01;;1;1
+13;Stockage NAS XL;INFO-STK-0013;NAS Storage XL;;Stockage NAS Hybrid Haute Disponibilité 600Go;NAS Storage Hybrid Haute Disponibilité 600Go;1;;3;;1;produce;false;U;service;99.99;EUR;71.99;EUR;2013-01-01;;1;1
+14;Stockage NAS SSD S;INFO-STK-0014;NAS Storage SSD S;;Stockage NAS SSD Haut Disponibilité 100 GB;NAS Storage SSD Haut Disponibilité 100Go;1;;3;;1;produce;false;U;service;159.99;EUR;135.99;EUR;2013-01-01;;1;1
+15;Domaine .fr;INFO-DOM-0015;Domain .fr;;Création/Transfert Nom de Domaine .fr;Creation/Transfer Domain .fr;1;;4;;1;produce;false;U;service;6.99;EUR;5.03;EUR;2013-01-01;;1;1
+16;Domaine .be;INFO-DOM-0016;Domain .be;;Création/Transfert Nom de Domaine .be;Creation/Transfer Domain .be;1;;4;;1;produce;false;U;service;6.99;EUR;5.59;EUR;2013-01-01;;1;1
+17;Domaine .net;INFO-DOM-0017;Domain .net;;Création/Transfert Nom de Domaine .net;Creation/Transfer Domain .net;1;;4;;1;produce;false;U;service;6.99;EUR;5.66;EUR;2013-01-01;;1;1
+18;Domaine .info;INFO-DOM-0018;Domain .info;;Création/Transfert Nom de Domaine .info;Creation/Transfer Domain .info;1;;4;;1;produce;false;U;service;6.99;EUR;5.03;EUR;2013-01-01;;1;1
+19;Domaine .com;INFO-DOM-0019;Domain .com;;Création/Transfert Nom de Domaine .com;Creation/Transfer Domain .com;1;;4;;1;produce;false;U;service;6.99;EUR;5.52;EUR;2013-01-01;;1;1
+20;Domaine .eu;INFO-DOM-0020;Domain .eu;;Création/Transfert Nom de Domaine .eu;Creation/Transfer Domain .eu;1;;4;;1;produce;false;U;service;6.99;EUR;5.03;EUR;2013-01-01;;1;1
+21;Domaine .ca;INFO-DOM-0021;Domain .ca;;Création/Transfert Nom de Domaine .ca;Creation/Transfer Domain .ca;1;;4;;1;produce;false;U;service;8.99;EUR;6.38;EUR;2013-01-01;;1;1
+22;Hébergement mutualisé S;INFO-MUT-0022;Shared Hosting S;;Hébergement mutualisé S 25Go;Shared Hosting  RAM 25Go;1;;1;;1;produce;false;U;service;1.99;EUR;1.43;EUR;2013-01-01;;1;1
+23;Hébergement mutualisé M;INFO-MUT-0023;Shared Hosting M;;Hébergement mutualisé M 100Go;Shared Hosting  RAM 100Go;1;;1;;1;produce;false;U;service;4.99;EUR;3.64;EUR;2013-01-01;;1;1
+24;Hébergement mutualisé L;INFO-MUT-0024;Shared Hosting L;;Hébergement mutualisé L 250Go;Shared Hosting  RAM 250Go;1;;1;;1;produce;false;U;service;9.99;EUR;7.19;EUR;2013-01-01;;1;1
+25;Hébergement mutualisé XL;INFO-MUT-0025;Shared Hosting XL;;Hébergement mutualisé XL 500Go;Shared Hosting  RAM 500Go;1;;1;;1;produce;false;U;service;19.99;EUR;15.79;EUR;2013-01-01;;1;1
+26;Ligne SIP Perso;INFO-TEL-0026;SIP Phone line Perso;;Ligne téléphonique incluant les appels vers les fixes;Phone line including free calls to fix phones;1;;5;;1;produce;false;U;service;0.99;EUR;0.7;EUR;2013-01-01;;1;1
+27;Ligne SIP Pro;INFO-TEL-0027;SIP Phone line Pro;;Ligne téléphonique incluant les appels vers les fixes et les mobiles;Phone line including free calls to fix phones and to mobiles;1;;5;;1;produce;false;U;service;4.99;EUR;4.09;EUR;2013-01-01;;1;1
+28;Support fonctionnel;SUP-STEC-0028;Functionnal support;;;;2;;6;;1;produce;false;HRE;service;80;EUR;68;EUR;2013-01-01;;2;3
+29;Support technique;SUP-SFCT-0029;Technical support;;;;2;;7;;1;produce;false;HRE;service;100;EUR;84;EUR;2013-01-01;;2;3
+30;Formation fonctionnelle ERP;FORM-FFCT-0030;Functionnal training ERP;;;;3;;9;;1;produce;false;JR;service;1100;EUR;880;EUR;2013-01-01;;3;3
+31;Formation fonctionnelle CRM;FORM-FFCT-0031;Functionnal training CRM;;;;3;;9;;1;produce;false;JR;service;1000;EUR;780;EUR;2013-01-01;;3;3
+32;Formation technique;FORM-FTEC-0032;Formation technique;;;;3;;8;;1;produce;false;JR;service;900;EUR;747;EUR;2013-01-01;;3;3
+33;Chef de projet;CEXP-PJT-0033;Project Manager;;;;4;;10;;2;produce;false;JR;service;1000;EUR;710;EUR;2013-01-01;;4;3
+34;Consultant Junior;CEXP-PJT-0034;Junior Consultant;;;;4;;10;;2;produce;false;JR;service;800;EUR;608;EUR;2013-01-01;;4;3
+35;Consultant Senior;CEXP-PJT-0035;Senior Consultant;;;;4;;10;;2;produce;false;JR;service;900;EUR;738;EUR;2013-01-01;;4;3
+36;Paramétrage CRM;CEXP-PJT-0036;CRM Customization;;;;4;;10;;1;produce;false;U;service;8000;EUR;5920;EUR;2013-01-01;;4;3
+37;Paramétrage ERP;CEXP-PJT-0037;ERP Customization;;;;4;;10;;1;produce;false;U;service;15000;EUR;10650;EUR;2013-01-01;;4;3
+38;Développeur Junior;CEXP-DEV-0038;Junior Developper;;;;4;;11;;2;produce;false;JR;service;650;EUR;481;EUR;2013-01-01;;4;3
+39;Développeur Senior;CEXP-DEV-0039;Senior Developper;;;;4;;11;;2;produce;false;JR;service;750;EUR;555;EUR;2013-01-01;;4;3
+40;Billets de train;NDF-0040;Train ticket;;;;6;;12;;3;buy;false;U;service;80;EUR;65.6;EUR;2013-01-01;;6;2
+41;Billets d'avion;NDF-0041;Plane ticket;;;;6;;12;;3;buy;false;U;service;150;EUR;109.5;EUR;2013-01-01;;6;2
+42;Repas;NDF-0042;Meal;;;;6;;13;;3;buy;false;U;service;20;EUR;14.4;EUR;2013-01-01;;6;2
+43;Hôtel;NDF-0043;Hotel;;;;6;;14;;3;buy;false;U;service;90;EUR;63;EUR;2013-01-01;;6;2

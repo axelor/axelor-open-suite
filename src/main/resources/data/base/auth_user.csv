@@ -1,33 +1,27 @@
-"code";"name";"password";"group.code";"language"
-"admin";"Administrator";"axadmin";"admins";"fr"
-"demo";"Demo";"axdemo";"user";"fr"
-"pbe";"P. Belloy";"axpbe";"admins";"fr"
-"gga";"G. Garin";"axgga";"admins";"fr"
-"cgu";"C. Guerrier";"axcgu";"admins";"fr"
-"gdu";"G. Dubaux";"axgdu";"admins";"fr"
-"lju";"L. Jubair";"axlju";"admins";"fr"
-"aha";"A. Halioua";"axaha";"admins";"fr"
-"user1";"Y. Marques";"user1";"user";"fr"
-"user2";"L. Robert";"user2";"user";"fr"
-"user3";"L. Richard";"user3";"user";"fr"
-"user4";"L. Herve";"user4";"user";"fr"
-"user5";"V. Clement";"user5";"user";"fr"
-"user6";"J. Da";"user6";"user";"fr"
-"user7";"D. Silva";"user7";"user";"fr"
-"user8";"G. Marchal";"user8";"user";"fr"
-"user9";"C. Martin";"user9";"user";"fr"
-"user10";"K. Ferrer";"user10";"user";"fr"
-"user11";"C. Ferrand";"user11";"user";"fr"
-"user12";"T. Raymond";"user12";"user";"fr"
-"user13";"T. Lamy";"user13";"user";"fr"
-"user14";"A. Girault";"user14";"user";"fr"
-"user15";"D. Geoffroy";"user15";"user";"fr"
-"user16";"A. David";"user16";"user";"fr"
-"user17";"W. Andre";"user17";"user";"fr"
-"user18";"V. Louis";"user18";"user";"fr"
-"user19";"S. Richard";"user19";"user";"fr"
-"user20";"D. Maurin";"user20";"user";"fr"
-"user21";"C. Fernandes";"user21";"user";"fr"
-"user22";"R. Costa";"user22";"user";"fr"
-"user23";"R. Colin";"user23";"user";"fr"
-"user24";"S. Cohen";"user24";"user";"fr"
+code;name;password;group.code;language
+admin;Administrator;axadmin;admins;fr
+demo;Demo;axdemo;user;fr
+dirg;Yoann MARQUES;dirg;admins;fr
+assist;Lucy ROBERT;assist;admins;fr
+dirpro;Lucas RICHARD;dirpro;admins;fr
+cpro1;Loic HERVE;cpro1;admins;fr
+dev1;Virgine CLEMENT;dev1;admins;fr
+dev2;Jeremy DA;dev2;admins;fr
+cpro2;Daniel SILVA;cpro2;admins;fr
+dev3;Greg MARCHAL;dev3;admins;fr
+form1;Charles MARTIN;form1;admins;fr
+dirco;Kevin FERRER;dirco;admins;fr
+comn1;Charles FERRAND;comn1;admins;fr
+comn2;Tony RAYMOND;comn2;admins;fr
+coms1;Thomas LAMY;coms1;admins;fr
+coms2;Anne GIRAULT;coms2;admins;fr
+comi1;Dimitri GEOFFROY;comi1;admins;fr
+dirach;Alex DAVID;dirach;admins;fr
+dirinfo;William ANDRE;dirinfo;admins;fr
+tech1;Victoria LOUIS;tech1;admins;fr
+tech2;Simon RICHARD;tech2;admins;fr
+dirsupp;David MAURIN;dirsupp;admins;fr
+supp1;Cyril FERNANDES;supp1;admins;fr
+supp2;Robin COSTA;supp2;admins;fr
+dirrh;Romane COLIN;dirrh;admins;fr
+compta;Sophie COHEN;compta;admins;fr

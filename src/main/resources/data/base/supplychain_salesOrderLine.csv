@@ -1,0 +1,21 @@
+"importId";"salesOrder.id";"sequence";"product.id";"productName";"qty";"unit.id";"price";"vatLine.id";"exTaxTotal";"hasToCreateTask";"isOrdered";"saleSupplySelect"
+1;1;1;1;"Serveur dédié XS";12;9;"49.99";1;"599.88";"true";"true";1
+2;1;2;32;"Formation technique";5;7;900;1;4500;"true";"true";3
+3;1;3;27;"Ligne SIP Pro";12;7;"4.99";2;"59.88";"true";"true";1
+4;2;1;3;"Serveur dédié M";12;9;"129.99";1;"1559.88";"true";"true";1
+5;2;2;30;"Formation fonctionnelle ERP";5;7;1100;1;5500;"true";"true";3
+6;3;1;2;"Serveur dédié S";12;9;"69.99";1;"839.88";"true";"true";1
+7;3;2;31;"Formation fonctionnelle CRM";5;7;1000;1;5000;"true";"true";3
+8;4;1;33;"Chef de projet";10;7;1000;1;10000;"true";"true";3
+9;4;2;38;"Développeur Junior";20;7;650;1;13000;"true";"true";3
+10;5;1;25;"Hébergement mutualisé XL";12;9;"19.99";1;"239.88";"true";"true";1
+11;5;2;36;"Paramétrage CRM";5;7;8000;1;40000;"true";"true";3
+12;5;3;28;"Support fonctionnel";20;5;80;2;1600;"true";"true";3
+13;6;1;36;"Paramétrage CRM";5;7;8000;2;40000;"true";"true";3
+14;6;2;36;"Paramétrage CRM";1;1;8000;3;8000;"true";"true";3
+15;7;1;31;"Formation fonctionnelle CRM";5;7;1000;4;5000;"true";"true";3
+16;7;2;32;"Formation technique";5;7;900;5;4500;"true";"true";3
+17;7;3;38;"Développeur Junior";15;7;650;4;9750;"true";"true";3
+18;7;4;39;"Développeur Senior";6;7;750;5;4500;"true";"true";3
+19;8;1;37;"Paramétrage ERP";1;7;15000;6;15000;"true";"true";3
+20;8;2;28;"Support fonctionnel";20;5;80;7;1600;"true";"true";3
