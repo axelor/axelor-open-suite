@@ -9,6 +9,7 @@
   
   	<many-to-one name="salesOrder" ref="com.axelor.apps.supplychain.db.SalesOrder" title="Sale order"/>
   	<integer name="sequence" title="Sequence"/>
+  	<integer name="importId" />
   	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
   	<decimal name="qty" title="Qty" default="1"/>
   	<boolean name="isToPrintLineSubTotal" title="Print subtotal per line"/>
