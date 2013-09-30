@@ -179,7 +179,6 @@
 "com.axelor.apps.supplychain.db.SalesOrderScheduleLine","sales-order-schedule-line-form","form","SO schedule line","","","",""
 "com.axelor.apps.supplychain.db.SalesOrderScheduleLine","sales-order-schedule-line-grid","grid","SO schedule lines","","","",""
 "com.axelor.apps.supplychain.db.SalesOrderSubLine","sales-order-sub-line-form","form","SO subline","","","",""
-"sales-order-sub-line-form","","group","Product Variants","","","",""
 "com.axelor.apps.supplychain.db.SalesOrderSubLine","sales-order-sub-line-grid","grid","SO sublines","","","",""
 "com.axelor.apps.supplychain.db.StockMove","stock-move-form","form","Stock move","","","",""
 "stock-move-form","","group","Stock move reference","","","",""
