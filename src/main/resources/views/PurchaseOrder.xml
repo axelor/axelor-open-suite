@@ -17,7 +17,7 @@
     onNew="action-purchase-order-record-new,action-purchase-order-record-company-configuration,action-purchase-order-method-get-location" 
     onSave="action-purchase-order-set-sequence">
     	<toolbar>
-            <button name="printPurchaseOrder" title=" Print Purchase Order" onClick="save,action-purchase-order-method-show-purchase-order"/>
+            <button name="print" title=" Print" onClick="save,action-purchase-order-method-show-purchase-order"/>
 	        <button name="sendByEmail" title="Send email" colSpan="1" onClick="save,action-send-by-email-with-template"/>
 	    </toolbar>
 	    <group colSpan="4" cols="6">

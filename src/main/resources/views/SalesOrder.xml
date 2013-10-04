@@ -18,8 +18,8 @@
 	onSave="action-sales-order-set-sequence" onLoad="action-sales-order-attrs-collapse-specific-settings-group,action-sales-order-attrs-validated-read-only">
 	    <toolbar>
 <!-- 	        <button name="createDocument" title="Create Document" onClick="com.axelor.apps.supplychain.web.SalesOrderController:saveDocumentForOrder"/> -->
-            <button name="showSalesOrder" title="Print" colSpan="1" onClick="save,action-sales-order-method-show-sales-order"/>
-	        <button name="sendByEmail" title="Send email" colSpan="1" onClick="save,action-send-by-email-with-template"/>
+            <button name="print" title="Print" onClick="save,action-sales-order-method-show-sales-order"/>
+	        <button name="sendByEmail" title="Send email" onClick="save,action-send-by-email-with-template"/>
 	    </toolbar>
 	    <group colSpan="4" cols="6">
 	        <field name="salesOrderSeq" css="highlight"/>
