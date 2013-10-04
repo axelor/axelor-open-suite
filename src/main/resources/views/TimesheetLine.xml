@@ -13,7 +13,8 @@
         <field name="task"/>
         <field name="timesheet.userInfo"/>
         <field name="date"/>
-        <field name="duration" title="Duration (h)"/>
+        <field name="duration" title="Duration"/>
+        <field name="timesheet.unit"/>
     </grid>
     
     <form name="timesheet-line-form" title="Timesheet project/task time input" model="com.axelor.apps.organisation.db.TimesheetLine" cols="4" 
@@ -22,7 +23,8 @@
         <field name="task" onChange="action-timesheet-line-record-project" domain="self.project = :project or :project = null"/>
         <field name="timesheet.userInfo"/>
         <field name="date"/>
-        <field name="duration" title="Duration (h)"/>
+        <field name="duration" title="Duration"/>
+        <field name="timesheet.unit"/>
         <field name="isToInvoice"/>
         <field name="isInvoiced"/>
     </form>
@@ -38,7 +40,8 @@
         <field name="project"/>
         <field name="task" onChange="action-timesheet-line-record-project" domain="self.project = :project or :project = null"/>
         <field name="date"/>
-        <field name="duration" title="Duration (h)"/>
+        <field name="duration" title="Duration"/>
+        <field name="timesheet.unit"/>
         <field name="isToInvoice"/>
         <field name="isInvoiced"/>
     </form>

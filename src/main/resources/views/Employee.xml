@@ -13,7 +13,7 @@
 	onNew="action-employee-default-record">
 		<group name="header" cols="6" colSpan="6">
 			<group colSpan="1">
-            	<field name="picture" widget="image"/>
+            	<field name="picture" widget="image" showTitle="false"/>
         	</group>
         	<group colSpan="3" cols="6" showTitle="false" css="highlight">
 				<field name="titleSelect" showTitle="false" readonly="true"/>

@@ -110,8 +110,11 @@
 	        </page>
 	        <page title="Evaluation">
 	            <field name="evaluationLineList" colSpan="4" form-view="evaluation-line-form" grid-view="evaluation-line-grid"/>
-	            <field name="evaluationGrade" readonly="true"/>
-	            <button name="compute" title="Compute" onClick="action-organisation-candidate-evaluation-record"/>
+	            <group colSpan="2">
+		            <field name="evaluationGrade" readonly="true"/>
+		            <button name="compute" title="Compute" onClick="action-organisation-candidate-evaluation-record"/>
+	            </group>
+	            <portlet action="chart:chart.candidate.evaluation" colSpan="2"/>
 	        </page>
 	        <page title="Additionnal information">
 	            <field name="permis"/>
@@ -187,5 +190,22 @@
 	<action-method name="action-method-candidate-create-recruitment-process-line">
 		<call class="com.axelor.apps.organisation.web.CandidateController" method="createRecruitmentProcessAdvancementLine" />
 	</action-method>
+	
+	<chart name="chart.candidate.evaluation" title="Grade by skills">
+			<dataset type="jpql">
+			    <![CDATA[
+			    SELECT
+				    evaluationLine.label as label,
+				    sum(evaluationLine.gradeSelect) as grade
+				FROM
+				    EvaluationLine evaluationLine
+				WHERE 
+				    evaluationLine.candidate = :id
+				GROUP BY evaluationLine.label
+				  ]]>
+		    </dataset>
+		    <category key="label" type="text"/>
+		    <series key="grade" type="scatter"/>
+		</chart>
 
 </object-views>

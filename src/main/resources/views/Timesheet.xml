@@ -31,8 +31,7 @@
         	<field name="companyComment"/>
         </group>
         <group title="Unité" colSpan="4">
-<!--          	<field name="unit"/> -->
-<!--         	<field name="timeUnitSelect"/> -->
+         	<field name="unit"/>
         </group>
         <spacer/>
         <separator colSpan="4" title="Details of time spent on project/tasks"/>
@@ -46,7 +45,7 @@
 		  		<field name="completeFromDate"/>
 			  	<field name="completeToDate"/>
 			  	<field name="completeDefaultTask"/>
-			  	<field name="duration (h)"/>
+			  	<field name="duration"/>
 		  	</group>
 		  	<group title="Action(s)" colSpan="4" showIf="statusSelect != 3 &amp;&amp; hasToGetLeaveRequests == true || hasToGetSpentTimeFromTask == true || hasToGetPlanningLine == true || hasCompleteTimesheetLines == true)">
 		  		<button name="getSpentTimeButton" title="Get past time" colSpan="1" onClick="save,action-timesheet-method-get-task-spent-time" 
@@ -80,7 +79,8 @@
     	<field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
     	<field name="fromDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="fromDate == null"/>
     	<field name="toDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="toDate == null"/>
-    	<field name="statusSelect" expr="eval: _statusSelect ? _statusSelect : 1"/> 	
+    	<field name="statusSelect" expr="eval: _statusSelect ? _statusSelect : 1"/> 
+    	<field name="unit" expr="com.axelor.apps.base.db.Unit(&quot;self.code = 'JR'&quot;).fetchOne()"/>	
     </action-record>
     
     <action-record name="action-timesheet-record-validate" model="com.axelor.apps.organisation.db.Timesheet">

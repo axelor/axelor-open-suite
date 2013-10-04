@@ -11,7 +11,7 @@
         <field name="isModel"/>
     </grid>
     
-    <form cols="6" onNew="action-project-record-default,action-project-unit" name="project-form" title="Affair/Project" model="com.axelor.apps.organisation.db.Project"
+    <form cols="6" onNew="action-project-group-default" name="project-form" title="Affair/Project" model="com.axelor.apps.organisation.db.Project"
     onSave="action-project-method-create-default-task-on-save">
 	    <group showTitle="false" colSpan="4">
 	   		<field name="affairName" showTitle="false" css="highlight" placeholder="Project name" colSpan="4"/>
@@ -81,6 +81,12 @@
 		<context name="_projectId" expr="eval: __this__.id"/>
 	</action-view>
     
+    
+    <action-group name="action-project-group-default">
+    	<action name="action-project-record-default"/>
+    	<action name="action-project-record-unit"/>
+    </action-group>
+    
     <action-record name="action-project-record-default" model="com.axelor.apps.organisation.db.Project">
 		<field name="isTimeSheetImputable" expr="true"/>
 		<field name="isProject" expr="true"/>
@@ -91,7 +97,7 @@
 		<field name="projectStatusSelect" expr="1"/>
 	</action-record>
 	
-    <action-record name="action-project-unit" model="com.axelor.apps.organisation.db.Project">
+    <action-record name="action-project-record-unit" model="com.axelor.apps.organisation.db.Project">
 		<field name="unit" expr="eval: parentProject?.projectUnit" if="parentProject &amp;&amp; parentProject.unit"/>
 		<field name="unit" expr="call:com.axelor.apps.base.service.administration.GeneralService:getUnit()" if="!parentProject || parentProject.unit == null"/>
 	</action-record>
