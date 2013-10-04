@@ -264,6 +264,30 @@
 	    </notebook>    
 	</form>
 	
+	<action-group name="action-affair-group-default">
+		<action name="action-affair-record-default"/>
+		<action name="action-affair-record-unit"/>
+	</action-group>
+	
+    <action-record name="action-affair-record-default" model="com.axelor.apps.organisation.db.Project">
+		<field name="isTimeSheetImputable" expr="true"/>
+		<field name="isAffair" expr="true"/>
+    	<field name="exportTypeSelect" expr="eval: 'pdf'"/>
+    	<field name="realEstimatedMethodSelect" expr="2"/>
+    	<field name="responsibleUserInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+		<field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+		<field name="statusTypeSelect" expr="1"/>		
+		<field name="unit" expr="eval: company?.administration?.unit"/>
+	</action-record>
+	
+	<action-record name="action-affair-record-unit" model="com.axelor.apps.organisation.db.Project">
+		<field name="unit" expr="eval: company?.administration?.unit"/>
+	</action-record>
+	
+	<action-record name="action-affair-record-transform-in-project" model="com.axelor.apps.organisation.db.Project">
+		<field name="isProject" expr="true"/>
+	</action-record>
+			
 	<action-method name="action-affair-method-create-pre-sales-task">
 		<call class="com.axelor.apps.organisation.web.ProjectController" method="createPreSalesTask"/>
 	</action-method>	
