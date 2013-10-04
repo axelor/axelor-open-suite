@@ -21,6 +21,7 @@
   	<boolean name="isReinvoicingExpense" title="Reinvoicing of travel expense"/>
   	<boolean name="isReinvoicingTime" title="Reinvoicing time spent"/>
   	<integer name="projectStatusSelect" title="Status" selection="organisation.project.status.select"/>
+  	<integer name="affairStatusSelect" title="Statut" selection="organisation.affair.status.select"/>
   	<integer name="realEstimatedMethodSelect" title="Real estimated compute method" selection="organisation.project.real.estimated.method.select"/>
   	
   	<!-- Financial informations -->
@@ -69,72 +70,6 @@
     <integer name="marketTypeSelect" title="Market Type" selection="organisation.affair.market.type.select"/>
     <string name="exportTypeSelect" title="Export Type" selection="organisation.project.report.type.select"/>
 
-<!--     TRSB -->
-    <many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="Dossier présenté par"/>
-    <string name="solutionAttendue" title="Solution attendue"/>
-    <date name="comiteEngagement" title="Comité d'engagement"/>
-    <integer name="statusTypeSelect" title="Statut" selection="organisation.project.status.type.select"/>
-    <string name="motif" title="Motif"/>
-    
-    <!-- Onglet Information commerciale -->
-    <many-to-one name="agency" ref="com.axelor.apps.organisation.db.Agency" title="Agence TRSB"/>
-    <many-to-one name="daUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="DA"/>
-    <many-to-one name="icUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="IC"/>
-    <many-to-one name="source" ref="com.axelor.apps.base.db.Source" title="SOURCE"/>
-    <string name="agenda" title="Agenda"/>
-    <string name="critEvalOffre" title="Critères d'évaluation de l'offre"/>
-    <string name="descriptif" title="Descriptif"/>
-    
-    <!-- Onglet Qualification avant-vente -->
-    <many-to-one name="respQualifUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="Resp. qualif."/>
-    <integer name="engagementTypeSelect" title="Engagement" selection="organisation.project.engagement.type.select"/>
-    <string name="solution" title="Solution"/>
-    <string name="technologies" title="Technologies"/>
-    <decimal name="macroChiffMarche" title="Macro chiffrage du Marché (€HT)"/>
-    <decimal name="estimationParAnnee" title="Estimation par année"/>
-    <decimal name="estimationParPhaseLot" title="Estimation par Phase, Par Lot"/>
-    <date name="receptionDossierDate" title="Réception du dossier"/>
-    <date name="remiseQualifDate" title="Remise de la qualification"/>
-    <date name="finalOffreTechDate" title="Finalisation de l'offre technique"/>
-    <date name="finalOffreComDate" title="Finalisation de l'offre commerciale"/>
-    <date name="remiseOffrePrevueDate" title="Remise de l'offre prévue"/>
-    <integer name="chargesQualif" title="Charges de qualification (en 1/4 de j/h)"/>
-    <integer name="estimationChargesRep" title="Estimation des Charges de réponse"/>
-    <string name="qualifDossier" title="Qualification du dossier"/>
-    <string name="pointImportant" title="Point IMPORTANTS"/>
-    <string name="analyseNote" title="Analyse : Note / 20"/>
-    <integer name="conclusionAvtVenteTypeSelect" title="Conclusion avant-vente" selection="organisation.project.conclusion.avt.vente.type.select"/>
-    
-    <!-- Onglet Qualification technique -->
-    <string name="respCdsSdm" title="RESP CDS/SDM"/>
-    <string name="expert" title="EXPERT"/>
-    <string name="positionnementCDS" title="Positionnement de notre CDS sur cette affaire"/>
-    <string name="pointMarquantDossier" title="Point Marquant du dossier / VA-VAPA"/>
-    <string name="analyseRisquesSolutions" title="Analyse des Risques / Solutions"/>
-    <string name="avisDirectionTechnique" title="AVIS DE LA DIRECTION TECHNIQUE / CDS CIBLE"/>
-    
-    <!-- Onglet GO/NOGO -->
-    <integer name="goNoGoTypeSelect" title="GO/NOGO" selection="organisation.project.go.no.go.type.select"/>
-    <date name="todayDate" title="Le"/>
-    <many-to-one name="dirTechniqueUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="Direction Technique"/>
-    <many-to-one name="dirCommercialeserInfo" ref="com.axelor.apps.base.db.UserInfo" title="Directeur commercial"/>
-    <many-to-one name="dirAgenceUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="Directeur d'Agence"/>
-    <many-to-one name="respCDSUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="Responsable CDS"/>
-    <many-to-one name="respAvtVenteUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="Respondable AVANT-VENTE"/>
-    <string name="pilotageEquipe" title="Pilotage, équipe"/>
-    <date name="partTechniqueDate" title="Date Partie Technique"/>
-    <date name="partCommercialeDate" title="Date Partie Commerciale"/>
-    <date name="relectureDate" title="Date relecture"/>
-    <date name="responseDate" title="Date de réponse"/>
-    <string name="chargeAV" title="Charge AV"/>
-    
-    <!-- Onglet Synthèse de l'offre -->
-    <many-to-one name="avUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="AVV"/>
-    <string name="cdsConcerne" title="CDS concerné"/>
-    <string name="descriptionProjet" title="Description du projet"/>
-    <one-to-many name="offerLineList" mappedBy="affair" ref="com.axelor.apps.organisation.db.OfferLine" title="Lignes d'offres"/>
-	
-	<string name="fileEnclosed" title="File"/>
   </entity>
 
 </domain-models>
