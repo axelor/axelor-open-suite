@@ -177,14 +177,14 @@
   	<action-view name="action-project-view-validated-sales-order-line" title="Validated Customer order lines" model="com.axelor.apps.supplychain.db.SalesOrderLine">
   		<view type="grid" name="sales-order-line-grid"/>
 		<view type="form" name="sales-order-line-form"/>
-  		<domain>self.salesOrder.statusSelect = 3 and self.task.affairProject.id = :id</domain>
+  		<domain>self.salesOrder.statusSelect = 3 and self.task.project.id = :id</domain>
   		<context name="id" expr="eval: id"/>
   	</action-view>
   	
   	<action-view name="action-project-view-validated-purchase-order-line" title="Validated supplier order lines" model="com.axelor.apps.supplychain.db.PurchaseOrderLine">
   		<view type="grid" name="purchase-order-line-grid"/>
 		<view type="form" name="purchase-order-line-form"/>
-  		<domain>self.purchaseOrder.statusSelect = 3 and self.task.affairProject.id = :id</domain>
+  		<domain>self.purchaseOrder.statusSelect = 3 and self.task.project.id = :id</domain>
   		<context name="id" expr="eval: id"/>
   	</action-view>
   	
