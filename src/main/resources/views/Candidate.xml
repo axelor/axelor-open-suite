@@ -66,25 +66,26 @@
 	            <group title="Follow-up" colSpan="6" cols="6">
 	                <group colSpan="4" cols="4">
 	                    <field name="userInfo"/>
-	                    <field name="etatCandidature" readonly="true"/>
+	                    <field name="recruitmentStatusSelect" readonly="true"/>
 	                    <field name="globalEvaluation"/>
 	                    <field name="createdOn" readonly="true"/>
 	                </group>
 	                <group colSpan="2" cols="4">
-	                    <group hideIf="etatCandidature == 8" colSpan="2">
-	                        <button name="nouvelleCandidature" title="Nouvelle candidature" showIf="etatCandidature == 6 || etatCandidature == 9" colSpan="6" onClick="action-record-recruitment-advancement,save,action-method-candidate-create-recruitment-process-line,action-record-candidate-reset-fields,save"/>
-	                        <button name="preSelection" title="Pré-selectionné" showIf="etatCandidature == 1" colSpan="6" onClick="action-record-recruitment-advancement,save,action-method-candidate-create-recruitment-process-line,action-record-candidate-reset-fields,save"/>
-	                        <button name="premierEntretien" title="Premier entretien" showIf="etatCandidature == 2" onClick="action-record-recruitment-advancement,save,action-method-candidate-create-recruitment-process-line,action-record-candidate-reset-fields,save"/>
-	                        <button name="deuxiemeEntretien" title="Deuxième entretien" showIf="etatCandidature == 3" onClick="action-record-recruitment-advancement,save,action-method-candidate-create-recruitment-process-line,action-record-candidate-reset-fields,save"/>
-	                        <button name="troisiemeEntretien" title="Troisième entretien" showIf="etatCandidature == 4" onClick="action-record-recruitment-advancement,save,action-method-candidate-create-recruitment-process-line,action-record-candidate-reset-fields,save"/>
-	                        <button name="rejectRecruitmentAdvancement" title="Rejetée" showIf="etatCandidature == 2 || etatCandidature == 3 || etatCandidature == 4 || etatCandidature == 5" onClick="action-record-button-reject,save,action-method-candidate-create-recruitment-process-line,action-record-candidate-reset-fields,save"/>
-	                        <button name="proposeOfferRecruitmentAdvancement" title="Offre proposée" showIf="etatCandidature == 3 || etatCandidature == 4 || etatCandidature == 5" onClick="action-record-candidate-propose-offer-recruitment-advancement,save,action-method-candidate-create-recruitment-process-line,action-record-candidate-reset-fields,save"/>
-	                        <button name="acceptOfferRecruitmentAdvancement" title="Offre acceptée" showIf="etatCandidature == 7" onClick="action-record-candidate-propose-offer-recruitment-advancement,save,action-method-candidate-create-recruitment-process-line,action-record-candidate-reset-fields,save"/>
-	                        <button name="rejectOfferRecruitmentAdvancement" title="Offre refusée" showIf="etatCandidature == 7" onClick="action-record-button-reject-offer,save,action-method-candidate-create-recruitment-process-line,action-record-candidate-reset-fields,save"/>
+	                    <group hideIf="recruitmentStatusSelect == 8" colSpan="2">
+	                        <button name="nouvelleCandidature" title="Nouvelle candidature" showIf="recruitmentStatusSelect == 6 || recruitmentStatusSelect == 9" colSpan="6" onClick="action-record-recruitment-advancement,save,action-method-candidate-create-recruitment-process-line,action-record-candidate-reset-fields,save"/>
+	                        <button name="preSelection" title="Pré-selectionné" showIf="recruitmentStatusSelect == 1" colSpan="6" onClick="action-record-recruitment-advancement,save,action-method-candidate-create-recruitment-process-line,action-record-candidate-reset-fields,save"/>
+	                        <button name="premierEntretien" title="Premier entretien" showIf="recruitmentStatusSelect == 2" onClick="action-record-recruitment-advancement,save,action-method-candidate-create-recruitment-process-line,action-record-candidate-reset-fields,save"/>
+	                        <button name="deuxiemeEntretien" title="Deuxième entretien" showIf="recruitmentStatusSelect == 3" onClick="action-record-recruitment-advancement,save,action-method-candidate-create-recruitment-process-line,action-record-candidate-reset-fields,save"/>
+	                        <button name="troisiemeEntretien" title="Troisième entretien" showIf="recruitmentStatusSelect == 4" onClick="action-record-recruitment-advancement,save,action-method-candidate-create-recruitment-process-line,action-record-candidate-reset-fields,save"/>
+	                        <button name="rejectRecruitmentAdvancement" title="Rejetée" showIf="recruitmentStatusSelect == 2 || recruitmentStatusSelect == 3 || recruitmentStatusSelect == 4 || etatCandidature == 5" onClick="action-record-button-reject,save,action-method-candidate-create-recruitment-process-line,action-record-candidate-reset-fields,save"/>
+	                        <button name="proposeOfferRecruitmentAdvancement" title="Offre proposée" showIf="recruitmentStatusSelect == 3 || recruitmentStatusSelect == 4 || recruitmentStatusSelect == 5" onClick="action-record-candidate-propose-offer-recruitment-advancement,save,action-method-candidate-create-recruitment-process-line,action-record-candidate-reset-fields,save"/>
+	                        <button name="acceptOfferRecruitmentAdvancement" title="Offre acceptée" showIf="recruitmentStatusSelect == 7" onClick="action-record-candidate-propose-offer-recruitment-advancement,save,action-method-candidate-create-recruitment-process-line,action-record-candidate-reset-fields,save"/>
+	                        <button name="rejectOfferRecruitmentAdvancement" title="Offre refusée" showIf="recruitmentStatusSelect == 7" onClick="action-record-button-reject-offer,save,action-method-candidate-create-recruitment-process-line,action-record-candidate-reset-fields,save"/>
 	                    </group>
 	                    <break/>
-	                    <field name="recruitementDate" showIf="etatCandidature == 2 || etatCandidature == 3 || etatCandidature == 4"/>
+	                    <field name="recruitementDate" showIf="recruitmentStatusSelect == 2 || recruitmentStatusSelect == 3 || recruitmentStatusSelect == 4"/>
 	                </group>
+	                <field name="note" colSpan="6"/>
 	                <field name="recruitmentProcessAdvancementList" readonly="true" colSpan="6" grid-view="recruitment-candidate-process-advancement-grid"/>
 	            </group>
 	        </page>
@@ -112,7 +113,7 @@
 	            <field name="evaluationLineList" colSpan="4" form-view="evaluation-line-form" grid-view="evaluation-line-grid"/>
 	            <group colSpan="2">
 		            <field name="evaluationGrade" readonly="true"/>
-		            <button name="compute" title="Compute" onClick="action-organisation-candidate-evaluation-record"/>
+		            <button name="compute" title="Compute" onClick="save,action-organisation-candidate-evaluation-record"/>
 	            </group>
 	            <portlet action="chart:chart.candidate.evaluation" colSpan="2"/>
 	        </page>
@@ -121,7 +122,6 @@
 	            <field name="source"/>
 	            <field name="personalInfo" hidden="true" widget="NestedEditor" form-view="personal-info-edit-form" summary-view="true"/>
 	            <break/>
-	            <field name="commentaire" colSpan="6"/>
 	        </page>
 	        <page title="Competences">
 	            <field name="competence" hidden="true" widget="NestedEditor" form-view="competence-edit-form" summary-view="true"/>
@@ -200,12 +200,12 @@
 				FROM
 				    EvaluationLine evaluationLine
 				WHERE 
-				    evaluationLine.candidate = :id
+				    evaluationLine.candidate.id = :id
 				GROUP BY evaluationLine.label
 				  ]]>
 		    </dataset>
 		    <category key="label" type="text"/>
-		    <series key="grade" type="scatter"/>
+		    <series key="grade" type="bar"/>
 		</chart>
 
 </object-views>
