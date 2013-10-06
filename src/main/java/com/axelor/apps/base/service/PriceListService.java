@@ -37,11 +37,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.IPriceListLine;
-import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCategory;
-import com.axelor.apps.supplychain.db.SalesOrderLine;
 
 public class PriceListService {
 	

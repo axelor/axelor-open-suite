@@ -27,7 +27,7 @@
   	<date name="invoicingDate" title="Invoicing Date"/>
   	
   	<many-to-one name="supplierPartner" ref="com.axelor.apps.base.db.Partner" title="Supplier"/>
-  	<decimal name="discountAmount" title="Remise"/>
+  	<decimal name="discountAmount" title="Discount amount"/>
   	<integer name="discountTypeSelect" title="In % / fixed" selection="base.price.list.line.amount.type.select"/>
   	
   	<boolean name="isOrdered" title="Commandé ?"/>
