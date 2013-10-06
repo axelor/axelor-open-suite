@@ -55,6 +55,7 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Status;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.organisation.db.Project;
@@ -80,9 +81,10 @@ public abstract class InvoiceGenerator {
 	protected Currency currency;
 	protected Project affairProject;
 	protected LocalDate today;
+	protected PriceList priceList;
 	
 	protected InvoiceGenerator(int operationType, Company company,PaymentCondition paymentCondition, PaymentMode paymentMode, Address mainInvoicingAddress, 
-			Partner clientPartner, Partner contactPartner, Currency currency, Project affairProject) throws AxelorException {
+			Partner clientPartner, Partner contactPartner, Currency currency, Project affairProject, PriceList priceList) throws AxelorException {
 		
 		this.operationType = operationType;
 		this.company = company;
@@ -93,6 +95,7 @@ public abstract class InvoiceGenerator {
 		this.contactPartner = contactPartner;
 		this.affairProject = affairProject;
 		this.currency = currency;
+		this.priceList = priceList;
 		
 		this.today = GeneralService.getTodayDate();
 		this.exceptionMsg = GeneralService.getExceptionInvoiceMsg();
@@ -109,12 +112,13 @@ public abstract class InvoiceGenerator {
 	 * @param contactPartner
 	 * @throws AxelorException
 	 */
-	protected InvoiceGenerator(int operationType, Company company, Partner clientPartner, Partner contactPartner) throws AxelorException {
+	protected InvoiceGenerator(int operationType, Company company, Partner clientPartner, Partner contactPartner, PriceList priceList) throws AxelorException {
 		
 		this.operationType = operationType;
 		this.company = company;
 		this.clientPartner = clientPartner;
 		this.contactPartner = contactPartner;
+		this.priceList = priceList;
 		
 		this.today = GeneralService.getTodayDate();
 		this.exceptionMsg = GeneralService.getExceptionInvoiceMsg();
@@ -211,6 +215,8 @@ public abstract class InvoiceGenerator {
 		invoice.setJournal(journalService.getJournal(invoice)); 
 		
 		invoice.setStatus(Status.all().filter("code = 'dra'").fetchOne());
+		
+		invoice.setPriceList(priceList);
 		
 		initCollections(invoice);
 		

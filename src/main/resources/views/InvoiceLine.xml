@@ -32,6 +32,10 @@
 					<field name="vatLine.vat.name"/>
 					<field name="vatLine.value"/>
 				</group>
+				 <group name="discount" title="Discount" colSpan="4" cols="4" canCollapse="true">
+			        <field name="discountTypeSelect" onChange="action-invoice-line-method-compute"/>
+			        <field name="discountAmount" onChange="action-invoice-line-method-compute"/>
+			    </group>
 	<!--         <group name="discountGroup" title="Rabais / Remise" colSpan="4" cols="4"> -->
 	<!--             <field name="discountEngineLineSet" grid-view="discount-engine-line-grid" form-view="discount-engine-line-form" colSpan="4"/> -->
 	<!--         	<field name="discountOk" /> -->
@@ -39,9 +43,9 @@
 				<group title="Product Variants" colSpan="4" cols="4">
 			        <field name="productVariant" widget="NestedEditor" summary-view="true" form-view="product-variant-form" edit-window="self" canSelect="false" showTitle="false"/>
 			    </group>
-		        <group title="Others" colSpan="4" cols="4">
-		        	<field name="excludeQtyBaseOk" />
-		        </group>
+<!-- 		        <group title="Others" colSpan="4" cols="4"> -->
+<!-- 		        	<field name="excludeQtyBaseOk" /> -->
+<!-- 		        </group> -->
     		</page>
     		<page title="Notes">
     			<field name="note"/>

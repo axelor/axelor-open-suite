@@ -35,6 +35,7 @@
             <field name="partnerAccount" domain="self.company = :company" onSelect="action-invoice-partner-account-domain"/>
             <field name="address" colSpan="4"/>
             <field name="project" domain="self.isAffair = true"/>
+            <field name="priceList" domain="((self.typeSelect = 2 and (:operationTypeSelect = 1 or :operationTypeSelect = 2)) or (self.typeSelect = 1 and (:operationTypeSelect = 3 or :operationTypeSelect = 4)) or :operationTypeSelect = null or :operationTypeSelect = 0) and (self.partner = null or self.partner = :clientPartner) and (self.validFromDate &lt;= :__date__ or self.validFromDate = null) and (self.validToDate &gt;= :__date__ or self.validToDate = null)"/>
         </group>
         <group title="Reference documents" cols="4" colSpan="4">
         	<field name="internalReference"/>
@@ -51,7 +52,6 @@
             <field name="journal" domain="self.inactiveOk != true"/>
             <field name="move"/>
             <field name="oldMove"/>
-<!--             <button name="showMoveLine" title="Lignes d'écriture" colSpan="2" onClick="save,com.axelor.apps.account.web.InvoiceControllerSimple:showMoveLine"/> -->
    			<field name="currency" onChange="action-invoice-attrs-change-total-title"/>
         </group>
         <notebook colSpan="4">

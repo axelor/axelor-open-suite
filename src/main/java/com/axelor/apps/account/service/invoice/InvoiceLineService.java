@@ -39,8 +39,13 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.VatLine;
 import com.axelor.apps.account.service.AccountManagementService;
+import com.axelor.apps.base.db.IPriceListLine;
+import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.supplychain.db.PurchaseOrderLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
@@ -54,6 +59,9 @@ public class InvoiceLineService {
 
 	@Inject
 	private CurrencyService currencyService;
+	
+	@Inject
+	private PriceListService priceListService;
 	
 	
 	public VatLine getVatLine(Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase) throws AxelorException  {
@@ -99,4 +107,25 @@ public class InvoiceLineService {
 	}
 	
 	
+	public PriceListLine getPriceListLine(InvoiceLine invoiceLine, PriceList priceList)  {
+		
+		return priceListService.getPriceListLine(invoiceLine.getProduct(), priceList);
+	
+	}
+	
+	
+	public BigDecimal computeDiscount(InvoiceLine invoiceLine)  {
+		BigDecimal unitPrice = invoiceLine.getPrice();
+		
+		if(invoiceLine.getDiscountTypeSelect() == IPriceListLine.AMOUNT_TYPE_FIXED)  {
+			return  unitPrice.add(invoiceLine.getDiscountAmount());
+		}
+		else if(invoiceLine.getDiscountTypeSelect() == IPriceListLine.AMOUNT_TYPE_PERCENT)  {
+			return unitPrice.multiply(
+					BigDecimal.ONE.add(
+							invoiceLine.getDiscountAmount().divide(new BigDecimal(100))));
+		}
+		
+		return unitPrice;
+	}
 }

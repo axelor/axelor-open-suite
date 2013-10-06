@@ -36,6 +36,9 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
+import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.PriceListLine;
+import com.axelor.apps.base.service.PriceListService;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -45,6 +48,9 @@ public class InvoiceLineController {
 
 	@Inject
 	private InvoiceLineService invoiceLineService;
+	
+	@Inject
+	private PriceListService priceListService;
 
 	public void compute(ActionRequest request, ActionResponse response) throws AxelorException {
 
@@ -55,7 +61,7 @@ public class InvoiceLineController {
 
 		if(invoiceLine.getPrice() != null && invoiceLine.getQty() != null) {
 
-			exTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), invoiceLine.getPrice());
+			exTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), invoiceLineService.computeDiscount(invoiceLine));
 		}
 
 		if(exTaxTotal != null) {
@@ -89,10 +95,33 @@ public class InvoiceLineController {
 
 		if(invoice != null && invoiceLine.getProduct() != null)  {
 
-			boolean isPurchase = invoiceLineService.isPurchase(invoice);
-			response.setValue("vatLine", invoiceLineService.getVatLine(invoice, invoiceLine, isPurchase));
-			response.setValue("price", invoiceLineService.getUnitPrice(invoice, invoiceLine, isPurchase));
-			response.setValue("productName", invoiceLine.getProduct().getName());
+			try  {
+			
+				boolean isPurchase = invoiceLineService.isPurchase(invoice);
+				
+				BigDecimal price = invoiceLineService.getUnitPrice(invoice, invoiceLine, isPurchase);
+				
+				response.setValue("vatLine", invoiceLineService.getVatLine(invoice, invoiceLine, isPurchase));
+				response.setValue("productName", invoiceLine.getProduct().getName());
+				
+				PriceList priceList = invoice.getPriceList();
+				if(priceList != null)  {
+					PriceListLine priceListLine = invoiceLineService.getPriceListLine(invoiceLine, priceList);
+					
+					if(priceList.getIsDisplayed())  {
+						response.setValue("discountAmount", priceListService.getDiscountAmount(priceListLine, price));
+						response.setValue("discountTypeSelect", priceListService.getDiscountTypeSelect(priceListLine));
+					}
+					else  {
+						price = priceListService.getUnitPriceDiscounted(priceListLine, price);
+					}
+				}
+				
+				response.setValue("price", price);
+			}
+			catch(Exception e) {
+				response.setFlash(e.getMessage());
+			}
 		}
 	}
 }
