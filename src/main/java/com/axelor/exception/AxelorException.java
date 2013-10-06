@@ -31,11 +31,7 @@
 package com.axelor.exception;
 
 /**
- * Exception spécifique Axelor. Exception soulever pour des anomalies contrôlées dans GIE.
- * 
- * @author guerrier
- * @version 1.0
- *
+ * Exception spécifique Axelor.
  */
 public class AxelorException extends Exception {
 	
