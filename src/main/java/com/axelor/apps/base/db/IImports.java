@@ -33,8 +33,6 @@ package com.axelor.apps.base.db;
 /**
  * Interface of Imports package. Enum all static variable of packages.
  * 
- * @author P. Belloy
- * 
  */
 public interface IImports {
 

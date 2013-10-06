@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+	
+	
+    <grid name="price-list-grid" title="Price lists" model="com.axelor.apps.base.db.PriceList"> 
+    	<field name="partner"/> 
+    	<field name="validFrom"/>
+    	<field name="validTo"/>
+    	<field name="title"/>
+    	<field name="isActive"/>
+    </grid>
+    
+   <form name="price-list-form" title="Price list" model="com.axelor.apps.base.db.PriceList" cols="4"
+   onNew="action-price-list-record-default,action-price-list-record-title">
+	    <field name="title" /> 
+    	<field name="isActive"/> 
+    	<break/>
+	    <field name="partner" domain="self.isContact = false" onChange="action-price-list-record-title"/> 
+	    <field name="typeSelect"/>
+	    <break/>
+    	<field name="validFromDate" onChange="action-price-list-record-title"/>
+    	<field name="validToDate" onChange="action-price-list-record-title"/> 
+    	<break/>
+    	<field name="isDisplayed"/>
+    	<break/>
+    	<notebook colSpan="4">
+    		<page name="priceListLine" title="Price list lines" >
+    			<field name="basedOnSelect"/>
+    			<field name="generalDiscount"/>
+    			<label name="or" title="Or"/>
+    			<field name="priceListLineList" grid-view="price-list-line-grid" form-view="price-list-line-form" colSpan="4"/>
+    		 </page>
+    		<page name="comments" title="Comments">
+    			<field name="comments"/>    					
+    		</page>
+    	</notebook>
+   </form>
+   
+   <action-record name="action-price-list-record-default" model="com.axelor.apps.base.db.PriceList">
+   		<field name="partner" expr="eval: _parent.clientPartner" if="_parent._model == 'com.axelor.apps.supplychain.db.SalesOrder'"/>
+   		<field name="partner" expr="eval: _parent.supplierPartner" if="_parent._model == 'com.axelor.apps.supplychain.db.PurchaseOrder'"/>
+   		<field name="typeSelect" expr="1" if="_parent._model == 'com.axelor.apps.supplychain.db.SalesOrder'"/>
+   		<field name="typeSelect" expr="2" if="_parent._model == 'com.axelor.apps.supplychain.db.PurchaseOrder'"/>
+   		<field name="isActive" expr="true"/>
+   		<field name="isDisplayed" expr="true"/>
+   		<field name="validFromDate" expr="eval: __date__"/>
+   </action-record>
+   
+   <action-record name="action-price-list-record-title" model="com.axelor.apps.base.db.PriceList">
+   		<field name="title" expr="eval: partner?.fullName + ' - ' + validFromDate" if="title == null &amp;&amp; partner != null &amp;&amp; validFromDate != null"/>
+   </action-record>
+   
+</object-views>
+

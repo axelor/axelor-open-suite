@@ -9,7 +9,11 @@
   
   	<string name="purchaseOrderSeq" title="Reference" readonly="true"/>
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" title="Company"/>
+  	
   	<many-to-one name="supplierPartner" ref="com.axelor.apps.base.db.Partner" required="true" title="Supplier"/>
+  	<many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Contact"/>
+  	<many-to-one name="priceList" ref="com.axelor.apps.base.db.PriceList" title="Price list"/>
+  	
   	<many-to-one name="affairProject" ref="com.axelor.apps.organisation.db.Project" title="Affair"/>
 	<many-to-one name="buyerUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="Buyer"/>
   	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>

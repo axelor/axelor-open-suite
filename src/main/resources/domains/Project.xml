@@ -57,7 +57,7 @@
   	
     <!-- Need -->
     <date name="consultationDate" title="Consultation Date"/>
-    <string name="typeSelect" title="Type" selection="consulting.need.type.select"/>
+    <string name="needTypeSelect" title="Type" selection="organisation.project.need.type.select"/>
     <date name="deadline" title="Deadline"/>
     <string name="complexity" title="Complexity" selection="grade.0.up.to.5.select"/>
 	<string name="competition" title="Competition" selection="grade.0.up.to.5.select"/>

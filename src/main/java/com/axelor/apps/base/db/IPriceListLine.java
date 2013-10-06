@@ -28,35 +28,25 @@
  * All portions of the code written by Axelor are
  * Copyright (c) 2012-2013 Axelor. All Rights Reserved.
  */
-package com.axelor.apps.sale.db;
+package com.axelor.apps.base.db;
 
-public interface ISale {
+/**
+ * Interface of PriceListLine object. Enum all static variable of packages.
+ * 
+ */
+public interface IPriceListLine {
 
 	/**
-	 * Static select in Product Category
+	 * Static select for PriceListLine
 	 */
-	// TypeSelect
-	static final String DEFAULT = "default";
-	static final String SUBSCRIPTION = "subscription";
-	static final String CONSUMPTION = "consumption";
-	static final String OVERLOAD = "overload";
-	static final String ROUTING = "routing";
-	static final String FEE = "fee";
-	static final String SERVICE = "service";
-	static final String PROVISION = "provision";
 	
-	/**
-	 * Static select in SalesRuleAction
-	 */
-   static final int MEETING = 1;
-   static final int SALES_OFFER_PERSO = 2;
-   static final int EMAIL = 3;
-   static final int MAIL = 4;
-   static final int ALARM = 5;
-
-   
-   static final int ANNIVERSARY_DATE = 0;
-   static final int NOTIFICATION = 1;
-   static final int INVOICING_BLOCKING = 3;
-
+	// AMOUNT TYPE SELECT
+	static final int AMOUNT_TYPE_PERCENT = 1;
+	static final int AMOUNT_TYPE_FIXED = 2;
+	
+	// AMOUNT TYPE SELECT
+	static final int TYPE_DISCOUNT = 1;
+	static final int TYPE_ADDITIONNAL = 2;
+	static final int TYPE_REPLACE = 3;
+	
 }

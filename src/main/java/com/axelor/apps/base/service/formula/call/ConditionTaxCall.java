@@ -45,9 +45,6 @@ import com.axelor.exception.AxelorException;
 /**
  * Singleton d'accès aux formules des conditions de taxes.
  * 
- * @author guerrier
- * @version 1.0
- *
  */
 @Singleton
 public final class ConditionTaxCall {

@@ -42,9 +42,6 @@ import com.axelor.auth.db.User;
  * UserInfoService est une classe implémentant l'ensemble des services pour
  * les informations utilisateur.
  * 
- * @author Pierre Belloy
- * 
- * @version 1.0
  */
 public class UserInfoService {
 

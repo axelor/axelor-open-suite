@@ -28,7 +28,7 @@
   	
   	<many-to-one name="supplierPartner" ref="com.axelor.apps.base.db.Partner" title="Supplier"/>
   	<decimal name="discountAmount" title="Remise"/>
-  	<decimal name="discountTypeSelect" title="En % / fixe" selection="supplychain.sales.order.line.discount.type.select"/>
+  	<integer name="discountTypeSelect" title="In % / fixed" selection="base.price.list.line.amount.type.select"/>
   	
   	<boolean name="isOrdered" title="Commandé ?"/>
   	<boolean name="isToInvoice" title="A facturer ?"/>

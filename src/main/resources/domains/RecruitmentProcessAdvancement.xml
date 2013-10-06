@@ -7,9 +7,10 @@
 
  	<entity name="RecuitmentProcessAdvancement" lang="java">
 		<many-to-one name="candidate" ref="Candidate"/>
-		<string name="statusSelect" title="Etat d'avancement" selection="organisation.recruitmentProcessAdvancement.status.select" />
+		<integer name="statusSelect" title="Avancement date" selection="organisation.candidate.recruitment.state.select" />
+		<date name="recruitmentDate" title="Recruitment date"/>
 		<datetime name="dateT" title="Date-time"/>
-		<string name="note" title="Notes" />
+		<string name="note" title="Notes" multiline="true"/>
 	</entity>
 
 </domain-models>

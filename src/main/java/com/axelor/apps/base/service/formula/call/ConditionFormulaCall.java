@@ -41,9 +41,6 @@ import com.axelor.exception.AxelorException;
 /**
  * Singleton d'accès aux formules des conditions des prix unitaires.
  * 
- * @author guerrier
- * @version 1.0
- *
  */
 @Singleton
 public final class ConditionFormulaCall {

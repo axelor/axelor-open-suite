@@ -3,15 +3,15 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
   
-	<module name="consulting" package="com.axelor.apps.consulting.db" />
+	<module name="base" package="com.axelor.apps.base.db" />
 			
 		<entity name="PriceListLine"  lang="java">
-			<integer name="minExperience" title="Minimum experience"/>
-			<integer name="maxExperience" title="Maximum experience"/>
-			<decimal name="price" title="Prix" precision="20" scale="5"/>
-			<many-to-one name="product" ref="com.axelor.apps.base.db.Product"/>
-			<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
-			<many-to-one name="priceList" ref="PriceList" title="Price List"/>
+			<many-to-one name="priceList" ref="com.axelor.apps.base.db.PriceList" title="Price list"/>
+			<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+			<many-to-one name="productCategory" ref="com.axelor.apps.base.db.ProductCategory" title="Product category"/>
+			<integer name="typeSelect" title="Discount/Additionnal/Replace" selection="base.price.list.line.type.select"/>
+			<integer name="amountTypeSelect" title="Fixe/%" selection="base.price.list.line.amount.type.select"/>
+			<decimal name="amount" title="Amount/%"/>
 		</entity>
 		
 </domain-models>

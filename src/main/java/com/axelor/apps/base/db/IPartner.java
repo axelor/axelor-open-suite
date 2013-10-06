@@ -33,8 +33,6 @@ package com.axelor.apps.base.db;
 /**
  * Interface of Partner object. Enum all static variable of object.
  * 
- * @author dubaux
- * 
  */
 public interface IPartner {
 
