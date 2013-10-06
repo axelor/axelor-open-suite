@@ -113,7 +113,7 @@
 	            <field name="memberUserInfoSet" colSpan="6"/>
 	        </page>
 	        <page title="Need">
-	            <field name="typeSelect"/>
+	            <field name="needTypeSelect"/>
 	            <field name="marketTypeSelect"/>
 	            <field name="consultationDate"/>
 	            <field name="deadline"/>

@@ -341,5 +341,10 @@
 		<option value="3">Subscription</option>
 	</selection>
 	
+	<selection name="organisation.project.need.type.select">
+		<option value="1">Fixed fee</option>
+		<option value="2">Onsite</option>
+		<option value="3">TMA</option>
+	</selection>
 	
 </object-views>
