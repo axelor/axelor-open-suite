@@ -36,7 +36,7 @@
 	            <field name="invoicingTypeSelect"/>
 	            <field name="contactPartner" domain="self.isContact = 'true'"/>
 	            <field name="deliveryAddress"/>
-	            <field name="priceList" domain="self.typeSelect = 1 and (self.partner = null or self.partner = :clientPartner) and  :__date__ &lt; self.validTo"/>
+	            <field name="priceList" domain="self.typeSelect = 1 and (self.partner = null or self.partner = :clientPartner) and (self.validFromDate &gt;= :__date__ or self.validFromDate = null) and (self.validToDate &lt;= :__date__ or self.validToDate = null)"/>
 	            <group name="specificSettings" title="Specific settings" colSpan="6" cols="6" canCollapse="true">
 	                <separator title="Sale order Settings" colSpan="6"/>
 	                <field name="isToPrintLineSubTotal"/>

@@ -32,6 +32,10 @@ package com.axelor.apps.supplychain.web;
 
 import java.math.BigDecimal;
 
+import com.axelor.apps.base.db.IPriceListLine;
+import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.PriceListLine;
+import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.supplychain.db.SalesOrder;
 import com.axelor.apps.supplychain.db.SalesOrderLine;
 import com.axelor.apps.supplychain.service.SalesOrderLineService;
@@ -43,6 +47,9 @@ public class SalesOrderLineController {
 
 	@Inject
 	private SalesOrderLineService salesOrderLineService;
+	
+	@Inject
+	private PriceListService priceListService;
 
 	public void compute(ActionRequest request, ActionResponse response) {
 
@@ -55,7 +62,7 @@ public class SalesOrderLineController {
 			try{
 				if (salesOrderLine.getPrice() != null && salesOrderLine.getQty() != null) {
 					if(salesOrderLine.getSalesOrderSubLineList() == null || salesOrderLine.getSalesOrderSubLineList().isEmpty()) {
-						exTaxTotal = SalesOrderLineService.computeAmount(salesOrderLine.getQty(), salesOrderLine.getPrice());
+						exTaxTotal = SalesOrderLineService.computeAmount(salesOrderLine.getQty(), salesOrderLineService.computeDiscount(salesOrderLine));
 					}
 				}
 				
@@ -97,11 +104,26 @@ public class SalesOrderLineController {
 					BigDecimal price = salesOrderLineService.getUnitPrice(salesOrder, salesOrderLine);
 					
 					response.setValue("vatLine", salesOrderLineService.getVatLine(salesOrder, salesOrderLine));
-					response.setValue("price", price);
 					response.setValue("productName", salesOrderLine.getProduct().getName());
 					response.setValue("saleSupplySelect", salesOrderLine.getProduct().getSaleSupplySelect());
 					response.setValue("unit", salesOrderLine.getProduct().getUnit());
-					response.setValue("companyCostPrice", salesOrderLineService.getCompanyCostPrice(price, salesOrder));
+					response.setValue("companyCostPrice", salesOrderLineService.getCompanyCostPrice(salesOrder, salesOrderLine));
+					
+					PriceList priceList = salesOrder.getPriceList();
+					if(priceList != null)  {
+						PriceListLine priceListLine = salesOrderLineService.getPriceListLine(salesOrderLine, priceList);
+						
+						if(priceList.getIsDisplayed())  {
+							response.setValue("discountAmount", priceListService.getDiscountAmount(priceListLine, price));
+							response.setValue("discountTypeSelect", priceListService.getDiscountTypeSelect(priceListLine));
+						}
+						else  {
+							price = priceListService.getUnitPriceDiscounted(priceListLine, price);
+						}
+					}
+					
+					response.setValue("price", price);
+					
 				}
 				catch(Exception e)  {
 					response.setFlash(e.getMessage()); 

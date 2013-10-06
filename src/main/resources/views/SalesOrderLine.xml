@@ -31,8 +31,8 @@
 	    <field name="exTaxTotal"/>
 	    <field name="vatLine.value"/>      
 	    <group name="discount" title="Remise" colSpan="4" cols="4" canCollapse="true">
-	        <field name="discountTypeSelect"/>
-	        <field name="discountAmount"/>
+	        <field name="discountTypeSelect" onChange="action-sales-order-line-method-compute"/>
+	        <field name="discountAmount" onChange="action-sales-order-line-method-compute"/>
 	    </group>
 	    <notebook colSpan="6">
 	        <page title="Settings">
