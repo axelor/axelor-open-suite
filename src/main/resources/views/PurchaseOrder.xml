@@ -35,7 +35,7 @@
 	                <field name="contactPartner" domain="self.isContact = 'true'"/>
 	                <field name="invoicingTypeSelect"/>
 	                <field name="buyerUserInfo"/>
-	                <field name="priceList" domain="self.typeSelect = 2 and (self.partner = null or self.partner = :supplierPartner) and (self.validFromDate &gt;= :__date__ or self.validFromDate = null) and (self.validToDate &lt;= :__date__ or self.validToDate = null)"/>
+	                <field name="priceList" domain="self.typeSelect = 2 and (self.partner = null or self.partner = :supplierPartner) and (self.validFromDate &lt;= :__date__ or self.validFromDate = null) and (self.validToDate &gt;= :__date__ or self.validToDate = null)"/>
 	                <field name="invoice"/>
 	            </group>
 	            <group title="Delivery" colSpan="6" cols="6">
