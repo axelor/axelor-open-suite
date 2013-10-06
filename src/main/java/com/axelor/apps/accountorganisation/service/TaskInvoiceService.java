@@ -80,7 +80,7 @@ public class TaskInvoiceService {
 		SalesOrder salesOrder = task.getSalesOrderLine().getSalesOrder();
 		
 		InvoiceGenerator invoiceGenerator = new InvoiceGenerator(IInvoice.CLIENT_SALE, salesOrder.getCompany(),salesOrder.getPaymentCondition(), 
-				salesOrder.getPaymentMode(), salesOrder.getMainInvoicingAddress(), salesOrder.getClientPartner(), salesOrder.getContactPartner(), salesOrder.getCurrency(), salesOrder.getAffairProject()) {
+				salesOrder.getPaymentMode(), salesOrder.getMainInvoicingAddress(), salesOrder.getClientPartner(), salesOrder.getContactPartner(), salesOrder.getCurrency(), salesOrder.getAffairProject(), null) {
 			
 			@Override
 			public Invoice generate() throws AxelorException {
@@ -110,7 +110,7 @@ public class TaskInvoiceService {
 			Unit unit, VatLine vatLine, Task task, ProductVariant productVariant) throws AxelorException  {
 		
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, productName, price, description, qty, unit, vatLine, task, 
-				product.getInvoiceLineType(), productVariant, false) {
+				product.getInvoiceLineType(), productVariant, BigDecimal.ZERO, 0, exTaxTotal, false) {
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
 				
