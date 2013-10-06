@@ -32,9 +32,6 @@ package com.axelor.apps.account.db;
 
 /**
  * Interface of Invoice package. Enum all static variable of packages.
- * 
- * @author guerrier
- * 
  */
 public interface IInvoice {
 

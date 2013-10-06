@@ -65,8 +65,6 @@ import com.axelor.exception.db.IException;
 /**
  * Classe de création de ligne de facture abstraite.
  * 
- * @author guerrier
- *
  */
 public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 	

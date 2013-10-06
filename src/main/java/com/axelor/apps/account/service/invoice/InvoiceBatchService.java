@@ -45,10 +45,6 @@ import com.axelor.exception.db.IException;
 /**
  * InvoiceBatchService est une classe implémentant l'ensemble des batchs de
  * facturations.
- * 
- * @author Cédric Guerrier
- * 
- * @version 1.0
  */
 public class InvoiceBatchService {
 
