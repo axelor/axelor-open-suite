@@ -39,8 +39,13 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.VatLine;
 import com.axelor.apps.account.service.AccountManagementService;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.base.db.IPriceListLine;
+import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.supplychain.db.SalesOrder;
+import com.axelor.apps.supplychain.db.SalesOrderLine;
 import com.axelor.apps.supplychain.db.SalesOrderSubLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -54,6 +59,9 @@ public class SalesOrderSubLineService {
 	
 	@Inject
 	private AccountManagementService accountManagementService;
+	
+	@Inject
+	private PriceListService priceListService;
 	
 	
 	/**
@@ -94,5 +102,43 @@ public class SalesOrderSubLineService {
 		
 	}
 	
+	
+	public BigDecimal getCompanyExTaxTotal(BigDecimal exTaxTotal, SalesOrder salesOrder) throws AxelorException  {
+		
+		return currencyService.getAmountCurrencyConverted(
+				salesOrder.getCurrency(), salesOrder.getCompany().getCurrency(), exTaxTotal, salesOrder.getCreationDate());  
+	}
+	
+	
+	public BigDecimal getCompanyCostPrice(SalesOrder salesOrder, SalesOrderSubLine salesOrderSubLine) throws AxelorException  {
+		
+		Product product = salesOrderSubLine.getProduct();
+		
+		return currencyService.getAmountCurrencyConverted(
+				product.getPurchaseCurrency(), salesOrder.getCompany().getCurrency(), product.getCostPrice(), salesOrder.getCreationDate());  
+	}
+	
+	
+	public PriceListLine getPriceListLine(SalesOrderSubLine salesOrderSubLine, PriceList priceList)  {
+		
+		return priceListService.getPriceListLine(salesOrderSubLine.getProduct(), priceList);
+	
+	}
+	
+	
+	public BigDecimal computeDiscount(SalesOrderSubLine salesOrderSubLine)  {
+		BigDecimal unitPrice = salesOrderSubLine.getPrice();
+		
+		if(salesOrderSubLine.getDiscountTypeSelect() == IPriceListLine.AMOUNT_TYPE_FIXED)  {
+			return  unitPrice.add(salesOrderSubLine.getDiscountAmount());
+		}
+		else if(salesOrderSubLine.getDiscountTypeSelect() == IPriceListLine.AMOUNT_TYPE_PERCENT)  {
+			return unitPrice.multiply(
+					BigDecimal.ONE.add(
+							salesOrderSubLine.getDiscountAmount().divide(new BigDecimal(100))));
+		}
+		
+		return unitPrice;
+	}
 	
 }

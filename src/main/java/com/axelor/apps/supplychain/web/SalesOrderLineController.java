@@ -32,7 +32,6 @@ package com.axelor.apps.supplychain.web;
 
 import java.math.BigDecimal;
 
-import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.service.PriceListService;

@@ -30,7 +30,7 @@
 	    <field name="vatLine" domain="self.endDate = null or self.endDate &gt; :__date__"/>
 	    <field name="exTaxTotal"/>
 	    <field name="vatLine.value"/>      
-	    <group name="discount" title="Remise" colSpan="4" cols="4" canCollapse="true">
+	    <group name="discount" title="Discount" colSpan="4" cols="4" canCollapse="true">
 	        <field name="discountTypeSelect" onChange="action-sales-order-line-method-compute"/>
 	        <field name="discountAmount" onChange="action-sales-order-line-method-compute"/>
 	    </group>

@@ -38,11 +38,15 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.VatLine;
 import com.axelor.apps.account.service.AccountManagementService;
+import com.axelor.apps.base.db.IPriceListLine;
+import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.supplychain.db.PurchaseOrder;
 import com.axelor.apps.supplychain.db.PurchaseOrderLine;
-import com.axelor.apps.supplychain.db.SalesOrder;
+import com.axelor.apps.supplychain.db.SalesOrderLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
@@ -54,6 +58,9 @@ private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderLineServi
 	
 	@Inject
 	private AccountManagementService accountManagementService;
+	
+	@Inject
+	private PriceListService priceListService;
 	
 	
 	/**
@@ -107,4 +114,26 @@ private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderLineServi
 				purchaseOrder.getCurrency(), purchaseOrder.getCompany().getCurrency(), exTaxTotal, purchaseOrder.getOrderDate());  
 	}
 	
+	
+	public PriceListLine getPriceListLine(PurchaseOrderLine purchaseOrderLine, PriceList priceList)  {
+		
+		return priceListService.getPriceListLine(purchaseOrderLine.getProduct(), priceList);
+	
+	}
+	
+	
+	public BigDecimal computeDiscount(PurchaseOrderLine purchaseOrderLine)  {
+		BigDecimal unitPrice = purchaseOrderLine.getPrice();
+		
+		if(purchaseOrderLine.getDiscountTypeSelect() == IPriceListLine.AMOUNT_TYPE_FIXED)  {
+			return  unitPrice.add(purchaseOrderLine.getDiscountAmount());
+		}
+		else if(purchaseOrderLine.getDiscountTypeSelect() == IPriceListLine.AMOUNT_TYPE_PERCENT)  {
+			return unitPrice.multiply(
+					BigDecimal.ONE.add(
+							purchaseOrderLine.getDiscountAmount().divide(new BigDecimal(100))));
+		}
+		
+		return unitPrice;
+	}
 }

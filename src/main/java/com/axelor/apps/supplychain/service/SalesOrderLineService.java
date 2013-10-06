@@ -63,6 +63,9 @@ public class SalesOrderLineService {
 	@Inject
 	private PriceListService priceListService;
 	
+	@Inject
+	private SalesOrderSubLineService salesOrderSubLineService;
+	
 	
 	/**
 	 * Calculer le montant HT d'une ligne de devis.
@@ -103,12 +106,15 @@ public class SalesOrderLineService {
 	}
 	
 	
-	public BigDecimal computeSalesOrderLine(SalesOrderLine salesOrderLine)  {
+	public BigDecimal computeSalesOrderLine(SalesOrderLine salesOrderLine) throws AxelorException  {
 		
 		BigDecimal exTaxTotal = BigDecimal.ZERO;
 		
 		if(salesOrderLine.getSalesOrderSubLineList() != null && !salesOrderLine.getSalesOrderSubLineList().isEmpty())  {
 			for(SalesOrderSubLine salesOrderSubLine : salesOrderLine.getSalesOrderSubLineList())  {
+				
+				salesOrderSubLine.setCompanyExTaxTotal(salesOrderSubLineService.getCompanyExTaxTotal(salesOrderLine.getExTaxTotal(), salesOrderLine.getSalesOrder()));
+				
 				exTaxTotal = exTaxTotal.add(salesOrderSubLine.getExTaxTotal());
 			}
 		}

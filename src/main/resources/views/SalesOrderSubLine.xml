@@ -29,9 +29,12 @@
 		<field name="unit"/>
 		<field name="price" onChange="action-sales-order-sub-line-method-compute"/>
 		<field name="vatLine" domain="self.endDate = null or self.endDate &gt; :__date__"/>
-		<field name="vatLine.vat.name"/>
-		<field name="vatLine.value"/>
 		<field name="exTaxTotal"/>
+		<field name="vatLine.value"/>
+		<group name="discount" title="Discount" colSpan="4" cols="4" canCollapse="true">
+	        <field name="discountTypeSelect" onChange="action-sales-order-sub-line-method-compute"/>
+	        <field name="discountAmount" onChange="action-sales-order-sub-line-method-compute"/>
+	    </group>
         <field name="productVariant" widget="NestedEditor" summary-view="true" colSpan="4" form-view="product-variant-form" edit-window="self" canSelect="false" showTitle="false"/>
     </form>
     
