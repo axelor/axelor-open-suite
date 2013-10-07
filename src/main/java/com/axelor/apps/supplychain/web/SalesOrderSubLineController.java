@@ -31,6 +31,7 @@
 package com.axelor.apps.supplychain.web;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
@@ -117,12 +118,12 @@ public class SalesOrderSubLineController {
 					if(priceList != null)  {
 						PriceListLine priceListLine = salesOrderSubLineService.getPriceListLine(salesOrderSubLine, priceList);
 						
-						if(priceList.getIsDisplayed())  {
-							response.setValue("discountAmount", priceListService.getDiscountAmount(priceListLine, price));
-							response.setValue("discountTypeSelect", priceListService.getDiscountTypeSelect(priceListLine));
-						}
-						else  {
-							price = priceListService.getUnitPriceDiscounted(priceListLine, price);
+						Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
+						
+						response.setValue("discountAmount", discounts.get("discountAmount"));
+						response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
+						if(discounts.get("price") != null)  {
+							price = (BigDecimal) discounts.get("price");
 						}
 					}
 					
