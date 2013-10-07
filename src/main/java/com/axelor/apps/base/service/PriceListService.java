@@ -31,7 +31,9 @@
 package com.axelor.apps.base.service;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -122,9 +124,6 @@ public class PriceListService {
 	}
 	
 	
-	
-	
-	
 	public BigDecimal getUnitPriceDiscounted(PriceListLine priceListLine, BigDecimal unitPrice)  {
 		
 		switch (priceListLine.getTypeSelect()) {
@@ -160,6 +159,17 @@ public class PriceListService {
 	}
 	
 	
+	public BigDecimal getUnitPriceDiscounted(PriceList priceList, BigDecimal unitPrice)  {
+		
+		BigDecimal discountPercent = priceList.getGeneralDiscount(); 
+		
+		return unitPrice.multiply(
+				BigDecimal.ONE.subtract(
+						discountPercent.divide(new BigDecimal(100))));
+		
+	}
+	
+	
 	public BigDecimal computeDiscount(BigDecimal unitPrice, int discountTypeSelect, BigDecimal discountAmount)  {
 		
 		if(discountTypeSelect == IPriceListLine.AMOUNT_TYPE_FIXED)  {
@@ -172,5 +182,32 @@ public class PriceListService {
 		}
 		
 		return unitPrice;
+	}
+	
+	
+	public Map<String, Object>  getDiscounts(PriceList priceList, PriceListLine priceListLine, BigDecimal price)  {
+		
+		Map<String, Object> discounts = new HashMap<String, Object>();
+		
+		if(priceListLine != null)  {
+			if(priceList.getIsDisplayed())  {
+				discounts.put("discountAmount", this.getDiscountAmount(priceListLine, price));
+				discounts.put("discountTypeSelect", this.getDiscountTypeSelect(priceListLine));
+			}
+			else  {
+				discounts.put("price", this.getUnitPriceDiscounted(priceListLine, price));
+			}
+		}
+		else  {
+			if(priceList.getIsDisplayed())  {
+				discounts.put("discountAmount", priceList.getGeneralDiscount());
+				discounts.put("discountTypeSelect", IPriceListLine.AMOUNT_TYPE_PERCENT);
+			}
+			else  {
+				discounts.put("price", this.getUnitPriceDiscounted(priceList, price));
+			}
+		}
+		
+		return discounts;
 	}
 }
