@@ -41,6 +41,7 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCategory;
+import com.axelor.apps.supplychain.db.SalesOrderLine;
 
 public class PriceListService {
 	
@@ -156,5 +157,20 @@ public class PriceListService {
 			default:
 				return unitPrice;
 		}
+	}
+	
+	
+	public BigDecimal computeDiscount(BigDecimal unitPrice, int discountTypeSelect, BigDecimal discountAmount)  {
+		
+		if(discountTypeSelect == IPriceListLine.AMOUNT_TYPE_FIXED)  {
+			return  unitPrice.add(discountAmount);
+		}
+		else if(discountTypeSelect == IPriceListLine.AMOUNT_TYPE_PERCENT)  {
+			return unitPrice.multiply(
+					BigDecimal.ONE.add(
+							discountAmount.divide(new BigDecimal(100))));
+		}
+		
+		return unitPrice;
 	}
 }
