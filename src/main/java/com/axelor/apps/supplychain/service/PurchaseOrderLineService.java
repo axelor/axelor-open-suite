@@ -123,17 +123,8 @@ private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderLineServi
 	
 	
 	public BigDecimal computeDiscount(PurchaseOrderLine purchaseOrderLine)  {
-		BigDecimal unitPrice = purchaseOrderLine.getPrice();
 		
-		if(purchaseOrderLine.getDiscountTypeSelect() == IPriceListLine.AMOUNT_TYPE_FIXED)  {
-			return  unitPrice.add(purchaseOrderLine.getDiscountAmount());
-		}
-		else if(purchaseOrderLine.getDiscountTypeSelect() == IPriceListLine.AMOUNT_TYPE_PERCENT)  {
-			return unitPrice.multiply(
-					BigDecimal.ONE.add(
-							purchaseOrderLine.getDiscountAmount().divide(new BigDecimal(100))));
-		}
+		return priceListService.computeDiscount(purchaseOrderLine.getPrice(), purchaseOrderLine.getDiscountTypeSelect(), purchaseOrderLine.getDiscountAmount());
 		
-		return unitPrice;
 	}
 }

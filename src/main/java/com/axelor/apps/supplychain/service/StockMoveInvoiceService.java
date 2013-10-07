@@ -64,7 +64,6 @@ public class StockMoveInvoiceService {
 		Invoice invoice = invoiceGenerator.generate();
 		
 		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, stockMove.getStockMoveLineList()));
-//		invoiceGenerator.computeInvoice(invoice);
 		if (invoice != null) {
 			stockMove.setInvoice(invoice);
 			stockMove.save();
@@ -81,7 +80,6 @@ public class StockMoveInvoiceService {
 		Invoice invoice = invoiceGenerator.generate();
 		
 		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, stockMove.getStockMoveLineList()));
-//		invoiceGenerator.computeInvoice(invoice);
 		if (invoice != null) {
 			stockMove.setInvoice(invoice);
 			stockMove.save();

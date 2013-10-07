@@ -34,7 +34,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +47,6 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.supplychain.db.PurchaseOrder;
 import com.axelor.apps.supplychain.db.PurchaseOrderLine;
 import com.axelor.exception.AxelorException;
@@ -62,13 +60,6 @@ public class PurchaseOrderInvoiceService {
 
 	@Inject
 	private CurrencyService currencyService;
-
-	private LocalDate today;
-
-	public PurchaseOrderInvoiceService() {
-
-		this.today = GeneralService.getTodayDate();
-	}
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice generateInvoice(PurchaseOrder purchaseOrder) throws AxelorException  {
@@ -90,7 +81,6 @@ public class PurchaseOrderInvoiceService {
 		Invoice invoice = invoiceGenerator.generate();
 
 		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, purchaseOrder.getPurchaseOrderLineList()));
-//		invoiceGenerator.computeInvoice(invoice);
 		return invoice;
 	}
 

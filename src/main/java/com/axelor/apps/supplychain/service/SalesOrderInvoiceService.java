@@ -147,7 +147,6 @@ public class SalesOrderInvoiceService {
 		Invoice invoice = invoiceGenerator.generate();
 		
 		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, salesOrder.getSalesOrderLineList(), salesOrder.getShowDetailsInInvoice()));
-//		invoiceGenerator.computeInvoice(invoice);
 		return invoice;
 		
 	}

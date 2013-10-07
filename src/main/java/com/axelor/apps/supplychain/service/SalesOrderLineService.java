@@ -150,17 +150,8 @@ public class SalesOrderLineService {
 	
 	
 	public BigDecimal computeDiscount(SalesOrderLine salesOrderLine)  {
-		BigDecimal unitPrice = salesOrderLine.getPrice();
 		
-		if(salesOrderLine.getDiscountTypeSelect() == IPriceListLine.AMOUNT_TYPE_FIXED)  {
-			return  unitPrice.add(salesOrderLine.getDiscountAmount());
-		}
-		else if(salesOrderLine.getDiscountTypeSelect() == IPriceListLine.AMOUNT_TYPE_PERCENT)  {
-			return unitPrice.multiply(
-					BigDecimal.ONE.add(
-							salesOrderLine.getDiscountAmount().divide(new BigDecimal(100))));
-		}
+		return priceListService.computeDiscount(salesOrderLine.getPrice(), salesOrderLine.getDiscountTypeSelect(), salesOrderLine.getDiscountAmount());
 		
-		return unitPrice;
 	}
 }
