@@ -81,7 +81,6 @@ public class ProjectInvoiceService {
 
 		Invoice invoice = invoiceGenerator.generate();
 		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, project));
-		invoiceGenerator.computeInvoice(invoice);
 		return invoice;
 	}
 	

@@ -91,7 +91,6 @@ public class TaskInvoiceService {
 		
 		Invoice invoice = invoiceGenerator.generate();
 		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, task));
-		invoiceGenerator.computeInvoice(invoice);
 		return invoice;
 	}
 	
