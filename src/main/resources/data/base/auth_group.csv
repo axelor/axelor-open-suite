@@ -1,4 +1,8 @@
-id;code;name
-1;admins;Admins
-2;user;Utilisateur
-3;workflow;workflow
+id;code;name;navigation;permissions
+1;admins;Admins;;
+2;user;Utilisateur;;
+3;workflow;workflow;;
+4;client;Client;hidden;perms.user-info
+5;consultant;Consultant;;perms.user-info
+6;crm;CRM;;perms.user-info
+7;erp;ERP;;perms.user-info

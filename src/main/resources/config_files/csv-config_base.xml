@@ -4,8 +4,12 @@
   xsi:schemaLocation="http://apps.axelor.com/xml/ns/data-import http://apps.axelor.com/xml/ns/data-import/data-import_0.9.xsd">
   
 <!--     IMPORT DU PACKAGE 'AUTH' -->
+
+    <input file="auth_permission.csv" separator=";" type="com.axelor.auth.db.Permission" />
     
-    <input file="auth_group.csv" separator=";" type="com.axelor.auth.db.Group" />
+    <input file="auth_group.csv" separator=";" type="com.axelor.auth.db.Group" >
+      <bind column="permissions" to="permissions" search="self.name in :permissions" eval="permissions.split('\\|') as List"/>
+    </input>
     
     <input file="auth_user.csv" separator=";" type="com.axelor.auth.db.User"  />
 	
