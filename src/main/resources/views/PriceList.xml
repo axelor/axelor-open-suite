@@ -27,7 +27,6 @@
     	<break/>
     	<notebook colSpan="4">
     		<page name="priceListLine" title="Price list lines" >
-    			<field name="basedOnSelect"/>
     			<field name="generalDiscount"/>
     			<label name="or" title="Or"/>
     			<field name="priceListLineList" grid-view="price-list-line-grid" form-view="price-list-line-form" colSpan="4"/>

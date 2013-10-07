@@ -10,6 +10,7 @@
    	 	<field name="typeSelect"/>
     	<field name="amountTypeSelect"/>
     	<field name="amount"/>
+    	<field name="minQty"/>
 	</grid>
     
 	<form name="price-list-line-form" title="Price list line" model="com.axelor.apps.base.db.PriceListLine"
@@ -22,6 +23,7 @@
 		<field name="typeSelect" onChange="action-price-list-line-record-type-select"/>
 		<field name="amountTypeSelect" hideIf="typeSelect == 3"/>
 		<field name="amount"/>
+		<field name="minQty"/>
 	</form>
 	
 	<action-record name="action-price-list-line-record-default" model="com.axelor.apps.base.db.PriceListLine">

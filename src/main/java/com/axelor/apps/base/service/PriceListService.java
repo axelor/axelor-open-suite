@@ -32,7 +32,6 @@ package com.axelor.apps.base.service;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -42,53 +41,21 @@ import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.ProductCategory;
-import com.axelor.apps.supplychain.db.SalesOrderLine;
 
 public class PriceListService {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(PriceListService.class); 
 
 	
-	private PriceListLine getPriceListLine(Product product, List<PriceListLine> priceLineLineList)  {
-	
-		if(priceLineLineList != null)  {
-			for(PriceListLine priceListLine : priceLineLineList)  {
-				
-				if(priceListLine.getProduct() != null && priceListLine.getProduct().equals(product))  {
-					return priceListLine;
-				}
-			}
-		}
-		
-		return null;
-	}
-	
-	
-	private PriceListLine getPriceListLine(ProductCategory productCategory, List<PriceListLine> priceLineLineList)  {
-		
-		if(priceLineLineList != null && productCategory != null)  {
-			for(PriceListLine priceListLine : priceLineLineList)  {
-				
-				if(priceListLine.getProductCategory() != null && priceListLine.getProductCategory().equals(productCategory))  {
-					return priceListLine;
-				}
-			}
-		}
-		
-		return null;
-	}
-	
-	
-	public PriceListLine getPriceListLine(Product product, PriceList priceList)  {
+	public PriceListLine getPriceListLine(Product product, BigDecimal qty, PriceList priceList)  {
 		
 		PriceListLine priceListLine = null;
 		
 		if(product != null && priceList != null)  {
-			priceListLine = this.getPriceListLine(product, priceList.getPriceListLineList());
+			priceListLine = PriceListLine.all().filter("self.product = ?1 AND self.minQty <= ?2 ORDER BY self.minQty DESC", product, qty).fetchOne();
 			
-			if(priceListLine == null)  {
-				priceListLine = this.getPriceListLine(product.getProductCategory(), priceList.getPriceListLineList());
+			if(priceListLine == null && product.getProductCategory() != null)  {
+				priceListLine = PriceListLine.all().filter("self.productCategory = ?1 AND self.minQty <= ?2 ORDER BY self.minQty DESC", product.getProductCategory(), qty).fetchOne();
 			}
 		}
 		
