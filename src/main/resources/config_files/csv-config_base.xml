@@ -4,8 +4,12 @@
   xsi:schemaLocation="http://apps.axelor.com/xml/ns/data-import http://apps.axelor.com/xml/ns/data-import/data-import_0.9.xsd">
   
 <!--     IMPORT DU PACKAGE 'AUTH' -->
+
+    <input file="auth_permission.csv" separator=";" type="com.axelor.auth.db.Permission" />
     
-    <input file="auth_group.csv" separator=";" type="com.axelor.auth.db.Group" />
+    <input file="auth_group.csv" separator=";" type="com.axelor.auth.db.Group" >
+      <bind column="permissions" to="permissions" search="self.name in :permissions" eval="permissions.split('\\|') as List"/>
+    </input>
     
     <input file="auth_user.csv" separator=";" type="com.axelor.auth.db.User"  />
 	
@@ -221,6 +225,19 @@
 	</input>
 	
 	<input file="account_vatLine.csv" separator=";" type="com.axelor.apps.account.db.VatLine" />
+	
+	<input file="account_vatAccount.csv" separator=";" type="com.axelor.apps.account.db.VatAccount">
+		<bind to="company" search="self.id = :company_id" update="true">
+			<bind column="company_id" to="company"/>
+		</bind>
+        <bind column="importId" to="importId" />
+       	<bind to="vat" search="self.code = :vat_code" update="true">
+			<bind column="vat_code" to="vat"/>
+		</bind>
+		<bind to="account" search="self.code = :account_code and self.company.id = :company_id" update="true">
+			<bind column="account_code" to="account"/>
+		</bind>
+	</input>
 	
 	<input file="account_vat.csv" separator=";" update="true" search="self.importId = :importId" type="com.axelor.apps.account.db.Vat">
 <!-- 		<bind column="_activeVatLine" to="activeVatLine"/> -->
