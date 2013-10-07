@@ -45,7 +45,6 @@ import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
-import com.axelor.apps.supplychain.db.PurchaseOrderLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
@@ -109,7 +108,7 @@ public class InvoiceLineService {
 	
 	public PriceListLine getPriceListLine(InvoiceLine invoiceLine, PriceList priceList)  {
 		
-		return priceListService.getPriceListLine(invoiceLine.getProduct(), priceList);
+		return priceListService.getPriceListLine(invoiceLine.getProduct(), invoiceLine.getQty(), priceList);
 	
 	}
 	

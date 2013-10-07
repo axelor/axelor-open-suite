@@ -63,7 +63,7 @@
         <field name="product" onChange="action-invoice-line-method-get-product-information,action-invoice-line-method-compute"/>
         <field name="product.productCategory"/>
         <field name="productName"/>
-        <field name="qty" onChange="action-invoice-line-method-compute"/>
+        <field name="qty" onChange="action-invoice-line-method-get-discount,action-invoice-line-method-compute"/>
         <field name="price" onChange="action-invoice-line-method-compute"/>
         <field name="product.unit"/>
         <field name="exTaxTotal"/>
@@ -88,6 +88,10 @@
 	
 	<action-method name="action-invoice-line-method-get-product-information">
 		<call class="com.axelor.apps.account.web.InvoiceLineController" method="getProductInformation"/>
+	</action-method>
+	
+	<action-method name="action-invoice-line-method-get-discount">
+		<call class="com.axelor.apps.account.web.InvoiceLineController" method="getDiscount"/>
 	</action-method>
 	
 </object-views>

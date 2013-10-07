@@ -31,6 +31,7 @@
 package com.axelor.apps.account.web;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -108,12 +109,50 @@ public class InvoiceLineController {
 				if(priceList != null)  {
 					PriceListLine priceListLine = invoiceLineService.getPriceListLine(invoiceLine, priceList);
 					
-					if(priceList.getIsDisplayed())  {
-						response.setValue("discountAmount", priceListService.getDiscountAmount(priceListLine, price));
-						response.setValue("discountTypeSelect", priceListService.getDiscountTypeSelect(priceListLine));
+					Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
+					
+					response.setValue("discountAmount", discounts.get("discountAmount"));
+					response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
+					if(discounts.get("price") != null)  {
+						price = (BigDecimal) discounts.get("price");
 					}
-					else  {
-						price = priceListService.getUnitPriceDiscounted(priceListLine, price);
+				}
+				
+				response.setValue("price", price);
+			}
+			catch(Exception e) {
+				response.setFlash(e.getMessage());
+			}
+		}
+	}
+	
+	
+	public void getDiscount(ActionRequest request, ActionResponse response) throws AxelorException {
+
+		InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+
+		Invoice invoice = invoiceLine.getInvoice();
+
+		if(invoice == null)  {
+			invoice = request.getContext().getParentContext().asType(Invoice.class);
+		}
+
+		if(invoice != null && invoiceLine.getProduct() != null)  {
+
+			try  {
+			
+				BigDecimal price = invoiceLine.getPrice();
+				
+				PriceList priceList = invoice.getPriceList();
+				if(priceList != null)  {
+					PriceListLine priceListLine = invoiceLineService.getPriceListLine(invoiceLine, priceList);
+					
+					Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
+					
+					response.setValue("discountAmount", discounts.get("discountAmount"));
+					response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
+					if(discounts.get("price") != null)  {
+						price = (BigDecimal) discounts.get("price");
 					}
 				}
 				
