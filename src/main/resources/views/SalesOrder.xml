@@ -172,6 +172,7 @@
  		<field name="paymentMode" expr="eval: clientPartner?.paymentMode"/>
  		<field name="mainInvoicingAddress" expr="eval: clientPartner?.mainInvoicingAddress"/>
 		<field name="deliveryAddress" expr="eval: clientPartner?.deliveryAddress"/>
+		<field name="priceList" expr="eval: com.axelor.apps.base.db.PriceList.all().filter('self.partner = ?1 AND self.isActive = true AND self.typeSelect = 1 AND (self.validFromDate &lt;= ?2 or self.validFromDate = null) AND (self.validToDate &gt;= ?2 or self.validToDate = null)',clientPartner, __date__).fetchOne()"/>
     </action-record>
     
     <action-method name="action-sales-order-method-get-location">

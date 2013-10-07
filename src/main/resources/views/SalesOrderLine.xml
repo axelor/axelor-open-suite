@@ -24,7 +24,7 @@
 	    <separator colSpan="4"/>
 	    <field name="product" onChange="action-sales-order-line-record-product-variant,action-sales-order-line-method-get-product-information,action-sales-order-line-method-compute,action-sales-order-line-method-setBooleans,action-sales-order-line-attrs-ressources-planning,action-sales-order-line-attrs-hide-product-variant" domain="self.endDate = null or self.endDate &gt; :__date__"/>
 	    <field name="productName"/>
-	    <field name="qty" onChange="action-sales-order-line-method-compute"/>
+	    <field name="qty" onChange="action-sales-order-line-method-get-discount,action-sales-order-line-method-compute"/>
 	    <field name="unit"/>
 	    <field name="price" onChange="action-sales-order-line-method-compute"/>
 	    <field name="vatLine" domain="self.endDate = null or self.endDate &gt; :__date__"/>
@@ -90,6 +90,10 @@
 	
 	<action-method name="action-sales-order-line-method-get-product-information">
 		<call class="com.axelor.apps.supplychain.web.SalesOrderLineController" method="getProductInformation"/>
+	</action-method>
+	
+	<action-method name="action-sales-order-line-method-get-discount">
+		<call class="com.axelor.apps.supplychain.web.SalesOrderLineController" method="getDiscount"/>
 	</action-method>
         
   	<!-- ACTION ATTRS -->

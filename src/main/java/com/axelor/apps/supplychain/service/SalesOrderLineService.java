@@ -144,7 +144,7 @@ public class SalesOrderLineService {
 	
 	public PriceListLine getPriceListLine(SalesOrderLine salesOrderLine, PriceList priceList)  {
 		
-		return priceListService.getPriceListLine(salesOrderLine.getProduct(), priceList);
+		return priceListService.getPriceListLine(salesOrderLine.getProduct(), salesOrderLine.getQty(), priceList);
 	
 	}
 	

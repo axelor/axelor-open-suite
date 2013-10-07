@@ -18,7 +18,7 @@
     onLoad="action-sales-order-line-attrs-hide-product-variant">
 	    <field name="product" onChange="action-purchase-order-line-method-get-product-information,action-purchase-order-line-method-compute,action-purchase-order-line-record-product-variant" domain="self.endDate = null or self.endDate &gt; :__date__"/>
 	    <field name="productName"/>
-	    <field name="qty" onChange="action-purchase-order-line-method-compute"/>
+	    <field name="qty" onChange="action-purchase-order-line-method-get-discount,action-purchase-order-line-method-compute"/>
 	    <field name="unit"/>
 	    <field name="price" onChange="action-purchase-order-line-method-compute"/>
 	    <field name="vatLine" domain="self.endDate = null or self.endDate &gt; :__date__"/>
@@ -56,6 +56,10 @@
 	
 	<action-method name="action-purchase-order-line-method-get-product-information">
 		<call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController" method="getProductInformation"/>
+	</action-method>
+	
+	<action-method name="action-purchase-order-line-method-get-discount">
+		<call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController" method="getDiscount"/>
 	</action-method>
 	
 </object-views>

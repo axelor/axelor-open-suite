@@ -117,7 +117,7 @@ private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderLineServi
 	
 	public PriceListLine getPriceListLine(PurchaseOrderLine purchaseOrderLine, PriceList priceList)  {
 		
-		return priceListService.getPriceListLine(purchaseOrderLine.getProduct(), priceList);
+		return priceListService.getPriceListLine(purchaseOrderLine.getProduct(), purchaseOrderLine.getQty(), priceList);
 	
 	}
 	

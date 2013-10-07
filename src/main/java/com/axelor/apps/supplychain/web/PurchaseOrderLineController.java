@@ -124,4 +124,41 @@ public class PurchaseOrderLineController {
 			}
 		}
 	}
+	
+	
+	public void getDiscount(ActionRequest request, ActionResponse response){
+		
+		PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
+		
+		PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
+		
+		if(purchaseOrder == null)  {
+			purchaseOrder = request.getContext().getParentContext().asType(PurchaseOrder.class);
+		}
+			
+		if(purchaseOrder != null && purchaseOrderLine.getProduct() != null)  {
+			
+			try  {
+				BigDecimal price = purchaseOrderLine.getPrice();
+				
+				PriceList priceList = purchaseOrder.getPriceList();
+				if(priceList != null)  {
+					PriceListLine priceListLine = purchaseOrderLineService.getPriceListLine(purchaseOrderLine, priceList);
+					
+					Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
+					
+					response.setValue("discountAmount", discounts.get("discountAmount"));
+					response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
+					if(discounts.get("price") != null)  {
+						price = (BigDecimal) discounts.get("price");
+					}
+				}
+				
+				response.setValue("price", price);
+			}
+			catch(Exception e) {
+				response.setFlash(e.getMessage());
+			}
+		}
+	}
 }

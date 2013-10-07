@@ -132,4 +132,43 @@ public class SalesOrderLineController {
 			}
 		}
 	}
+	
+	
+	public void getDiscount(ActionRequest request, ActionResponse response) {
+
+		SalesOrderLine salesOrderLine = request.getContext().asType(SalesOrderLine.class);	
+
+		if(salesOrderLine != null) {
+			SalesOrder salesOrder = salesOrderLine.getSalesOrder();
+			if(salesOrder == null)  {
+				salesOrder = request.getContext().getParentContext().asType(SalesOrder.class);
+			}
+
+			if(salesOrder != null && salesOrderLine.getProduct() != null) {
+
+				try  {
+					BigDecimal price = salesOrderLine.getPrice();
+					
+					PriceList priceList = salesOrder.getPriceList();
+					if(priceList != null)  {
+						PriceListLine priceListLine = salesOrderLineService.getPriceListLine(salesOrderLine, priceList);
+						
+						Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
+						
+						response.setValue("discountAmount", discounts.get("discountAmount"));
+						response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
+						if(discounts.get("price") != null)  {
+							price = (BigDecimal) discounts.get("price");
+						}
+					}
+					
+					response.setValue("price", price);
+					
+				}
+				catch(Exception e)  {
+					response.setFlash(e.getMessage()); 
+				}
+			}
+		}
+	}
 }

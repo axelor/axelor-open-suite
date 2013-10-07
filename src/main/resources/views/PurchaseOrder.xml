@@ -97,6 +97,7 @@
 	
     <action-record name="action-purchase-order-record-partner" model="com.axelor.apps.supplychain.db.PurchaseOrder">
  		<field name="currency" expr="eval: supplierPartner?.currency"/>
+ 		<field name="priceList" expr="eval: com.axelor.apps.base.db.PriceList.all().filter('self.partner = ?1 AND self.isActive = true AND self.typeSelect = 2 AND (self.validFromDate &lt;= ?2 or self.validFromDate = null) AND (self.validToDate &gt;= ?2 or self.validToDate = null)',supplierPartner, __date__).fetchOne()"/>
  	</action-record>
     
     <action-record name="action-purchase-order-record-validate" model="com.axelor.apps.supplychain.db.PurchaseOrder">

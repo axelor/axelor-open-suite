@@ -121,7 +121,7 @@ public class SalesOrderSubLineService {
 	
 	public PriceListLine getPriceListLine(SalesOrderSubLine salesOrderSubLine, PriceList priceList)  {
 		
-		return priceListService.getPriceListLine(salesOrderSubLine.getProduct(), priceList);
+		return priceListService.getPriceListLine(salesOrderSubLine.getProduct(), salesOrderSubLine.getQty(), priceList);
 	
 	}
 	
