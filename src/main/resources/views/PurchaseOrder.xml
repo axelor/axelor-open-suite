@@ -31,8 +31,8 @@
 	    <notebook colSpan="4">
 	        <page title="PO information" colSpan="4" cols="6">
 	            <group title="Contacts" colSpan="6" cols="6">
-	                <field name="supplierPartner" onChange="action-purchase-order-record-partner" domain="self.partnerTypeSelect = 1"/>
-	                <field name="contactPartner" domain="self.isContact = 'true'"/>
+	                <field name="supplierPartner" form-view="partner-form" onChange="action-purchase-order-record-partner" domain="self.isContact = false"/>
+	                <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 	                <field name="invoicingTypeSelect"/>
 	                <field name="buyerUserInfo"/>
 	                <field name="priceList" domain="self.typeSelect = 2 and (self.partner = null or self.partner = :supplierPartner) and (self.validFromDate &lt;= :__date__ or self.validFromDate = null) and (self.validToDate &gt;= :__date__ or self.validToDate = null)"/>
