@@ -22,7 +22,7 @@
         	<field name="dateTime"/>
         	<field name="company" widget="SuggestBox"/>
         	<field name="paymentMode"/>
-        	<field name="partner"/>
+        	<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
     	</group>
     	<group title="Payment Rejected" colSpan="4" cols="4">
         	<field name="paymentVoucher" onChange="action-cheque-rejection-record-amount-rejected,action-cheque-rejection-record-partner" onSelect="action-cheque-rejection-attrs-domain-payment-voucher" domain="self.company=:company">

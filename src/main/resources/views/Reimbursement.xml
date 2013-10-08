@@ -15,7 +15,7 @@
     	<group title="Header" colSpan="4" cols="4">
     		<field name="ref"/>
     		<break/>
-    		<field name="partner"/>
+    		<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
     		<field name="company"/>
     	</group>
     	<group title="Reimbursement details" colSpan="4" cols="4">
