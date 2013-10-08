@@ -18,7 +18,7 @@
 	        <field name="responsibleUserInfo"/>
 	        <field name="defaultTask" hideIf="!isTimeSheetImputable"/>
 	        <field name="clientPartner"/>
-	        <field name="contactPartner" domain="self.isContact = true"/>
+	        <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 	        <field name="company" widget="SuggestBox"/>
 	    </group>
 	    <group showTitle="false" colSpan="2" cols="2">

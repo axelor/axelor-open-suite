@@ -9,7 +9,7 @@
     </grid>
     
     <form name="participant-form" title="Participant" model="com.axelor.apps.crm.db.Participant" cols="4">
-        <field name="partner" domain="self.isContact = false"/>
+        <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" />
         <field name="isComing"/>
     </form>
     
