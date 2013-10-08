@@ -11,7 +11,8 @@
  		
  		<group colSpan="4" cols="4" colWidths="25%,25%,25%,25%">
 			<field name="hasConvertIntoContact" widget="Boolean" title="Convert into Contact ?"/>
-			<field name="selectContactPartner" widget="ManyToOne[target=com.axelor.apps.base.db.Partner]" title="Or Select Contact" domain="self.isContact = 'true'"/>
+			<field name="selectContactPartner" widget="ManyToOne[target=com.axelor.apps.base.db.Partner]" title="Or Select Contact" domain="self.isContact = 'true'"
+			form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 		</group>
 		<group colSpan="4" showIf="hasConvertIntoContact" showTitle="false">
 			<field name="contactPartner" widget="NestedEditor[type=MANY_TO_ONE|target=com.axelor.apps.base.db.Partner]" summary-view="true" 
@@ -19,7 +20,8 @@
 		</group>
 		<group colSpan="4" cols="4" colWidths="25%,25%,25%,25%">
 			<field name="hasConvertIntoPartner" widget="Boolean" title="Convert into Partner ?"/>
-			<field name="selectPartner" widget="ManyToOne[target=com.axelor.apps.base.db.Partner]" title="Or Select Partner" domain="self.isContact = 'false'"/>
+			<field name="selectPartner" widget="ManyToOne[target=com.axelor.apps.base.db.Partner]" title="Or Select Partner" domain="self.isContact = 'false'"
+			form-view="partner-form" grid-view="partner-grid"/>
 		</group>
 		<group colSpan="4" showIf="hasConvertIntoPartner" showTitle="false">
 			<field name="partner" widget="NestedEditor[type=MANY_TO_ONE|target=com.axelor.apps.base.db.Partner]" summary-view="true" 
@@ -59,7 +61,7 @@
     </action-record>
 	
 	
-	<form cols="4" colWidths="25*"   name="contact-lead-converted-form" title="Partner" model="com.axelor.apps.base.db.Partner"
+	<form cols="4" colWidths="25*"   name="contact-lead-converted-form" title="Contact" model="com.axelor.apps.base.db.Partner"
 	    onNew="action-partner-record-partner-type-select,action-partner-record-set-default,action-convert-lead-wizard-default-partner">
 	    <group colSpan="1">
 	        <field name="picture"/>
@@ -70,7 +72,6 @@
 	        <field name="firstName" hideIf="partnerTypeSelect != 2" css="highlight"/>
 	        <break/>
 	        <field name="partnerCategory" widget="SuggestBox"/>
-	        <field name="partnerTypeSelect" onChange="action-partner-attrs-change-name,action-partner-attrs-hide-tabs"/>
 	        <break/>
 	    </group>
 	    <notebook colSpan="4">
