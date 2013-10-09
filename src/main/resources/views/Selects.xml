@@ -498,5 +498,26 @@
 		<option value="SELF">Only Me</option>
 	</selection>
 	
+	<selection name="base.price.list.type.select">
+		<option value="1">Sale</option>
+		<option value="2">Purchase</option>
+	</selection>
+	
+	<selection name="base.price.list.based.on.select">
+		<option value="1">Cost price</option>
+		<option value="2">Sale price</option>
+	</selection>
+	
+	<selection name="base.price.list.line.type.select">
+		<option value="1">Discount</option>
+		<option value="2">Additionnal</option>
+		<option value="3">Replace</option>
+	</selection>
+	
+	<selection name="base.price.list.line.amount.type.select">
+		<option value="1">In %</option>
+		<option value="2">Fixed</option>
+	</selection>
+	
 
 </object-views>

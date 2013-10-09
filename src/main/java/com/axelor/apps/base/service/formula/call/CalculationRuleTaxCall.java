@@ -48,9 +48,6 @@ import com.axelor.exception.AxelorException;
 /**
  * Singleton d'accès aux formules des assiettes.
  * 
- * @author guerrier
- * @version 1.0
- *
  */
 @Singleton
 public final class CalculationRuleTaxCall {

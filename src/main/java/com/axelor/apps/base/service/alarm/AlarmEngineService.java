@@ -55,10 +55,6 @@ import com.google.inject.Inject;
 
 /**
  * Classe implémentant l'ensemble des fonctions utiles au moteur d'alarmes.
- * 
- * @author guerrier
- * @version 1.0
- *
  */
 public class AlarmEngineService <T extends Model>  {
 

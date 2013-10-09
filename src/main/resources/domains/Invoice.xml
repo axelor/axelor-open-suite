@@ -25,6 +25,7 @@
     <string name="internalReference" title="Internal Document Reference" help="Refers to an internal document like a SO, PO, Stock Picking reference..."/>
     <string name="externalReference" title="External Document Reference" help="Refers to an external document like a Customer or Supplier Order, Supplier invoice, Bill of lading..."/>
     <many-to-one name="project" title="Affair" ref="com.axelor.apps.organisation.db.Project" />
+    <many-to-one name="priceList" ref="com.axelor.apps.base.db.PriceList" title="Price list"/>
     
     <!-- Dates -->
     <date name="invoiceDate" title="Invoice Date" required="true"/>

@@ -21,12 +21,10 @@
     <decimal name="exTaxTotal" title="Total W.T." precision="20" scale="2" readonly="true"/>
     <decimal name="accountingExTaxTotal" title="Total W.T. in accounting currency" precision="20" scale="2" hidden="true"/>
     <many-to-one name="vatLine" ref="com.axelor.apps.account.db.VatLine" title="V.A.T."/>
-    <many-to-many  name="discountEngineLineSet" ref="DiscountEngineLine" title="Discount / Rebates"/>
-    <decimal name="standardPrice" title="Price w/o discount" precision="20" scale="6"/>
-    <decimal name="standardExTaxTotal" title="Total W.T. not discounted" precision="20" scale="2"/>
-    <decimal name="socialDiscountPerc" title="Discount %" precision="20" scale="3"/>
-    <boolean name="excludeQtyBaseOk" title="Exclude bases based on qty ?"/>
-    <boolean name="discountOk" title="Discount ?" />
+    
+    <decimal name="discountAmount" title="Discount amount"/>
+  	<integer name="discountTypeSelect" title="In % / fixed" selection="base.price.list.line.amount.type.select"/>
+    
     <string name="description" title="Description"/>
     <many-to-one name="productVariant" ref="com.axelor.apps.base.db.ProductVariant" title="Variants"/>
     

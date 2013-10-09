@@ -10,7 +10,7 @@
   	<many-to-one name="salesOrderLine" ref="com.axelor.apps.supplychain.db.SalesOrderLine" title="Ligne de devis"/>
   
   	<integer name="sequence" title="Sequence"/>
-  	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+  	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>
   	<string name="productName" title="Label"/>
 	<many-to-one name="employee" ref="com.axelor.apps.organisation.db.Employee" title="Employee"/>
   	<string name="description" title="Description" large="true"/>
@@ -19,9 +19,16 @@
 	<decimal name="price" title="Unit price"/>
 	<many-to-one name="vatLine" ref="com.axelor.apps.account.db.VatLine" title="V.A.T."/>
   	<decimal name="exTaxTotal" title="Total W.T."/>
+  	
+  	<decimal name="discountAmount" title="Discount amount"/>
+  	<integer name="discountTypeSelect" title="In % / fixed" selection="base.price.list.line.amount.type.select"/>
     
     <many-to-one name="productVariant" ref="com.axelor.apps.base.db.ProductVariant"/>
     
+    <!--   	Champ technique non affiché, utilisé pour les reportings -->
+  	<decimal name="companyExTaxTotal" title="Total W.T. in company currency" hidden="true"/>
+  	<decimal name="companyCostPrice" title="Unit cost price in company currency" hidden="true"/>
+  	
   </entity>
 
 </domain-models>

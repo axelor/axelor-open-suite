@@ -12,7 +12,7 @@
 	
     <form cols="4" name="site-form" title="Site" model="com.axelor.apps.consulting.db.Site">
 	    <field name="name"/>
-	    <field name="partner" domain="self.isContact = false"/>
+	    <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
 	    <field name="address"/>
 	    <field name="siretNumber"/>
 	    <separator title="Sales attributes" colSpan="4"/>

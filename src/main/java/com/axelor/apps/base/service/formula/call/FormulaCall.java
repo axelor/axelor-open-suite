@@ -47,9 +47,6 @@ import com.axelor.exception.AxelorException;
 /**
  * Singleton d'accès aux formules de prix unitaire.
  * 
- * @author guerrier
- * @version 1.0
- *
  */
 @Singleton
 public final class FormulaCall {

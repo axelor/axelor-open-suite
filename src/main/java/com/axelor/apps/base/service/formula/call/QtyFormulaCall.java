@@ -47,9 +47,6 @@ import com.axelor.exception.AxelorException;
 /**
  * Singleton d'accès aux formules de coefficient pour les quantités.
  * 
- * @author guerrier
- * @version 1.0
- *
  */
 @Singleton
 public final class QtyFormulaCall {

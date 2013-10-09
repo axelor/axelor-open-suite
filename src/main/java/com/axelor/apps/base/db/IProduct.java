@@ -33,8 +33,6 @@ package com.axelor.apps.base.db;
 /**
  * Interface of Product package. Enum all static variable of packages.
  * 
- * @author Tan Rodrigue 
- * 
  */
 public interface IProduct {
 

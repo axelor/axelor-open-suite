@@ -59,9 +59,6 @@
 	<many-to-one name="task" ref="com.axelor.apps.organisation.db.Task" title="Task"/>
   	<one-to-many name="spentTimeList" ref="com.axelor.apps.base.db.SpentTime" mappedBy="event" title="Spent times"/>
   
-<!--   Event -->
-	<integer name="eventStatusSelect" title="" selection="crm.event.event.status.select"/>
-  
   </entity>
 
 </domain-models>

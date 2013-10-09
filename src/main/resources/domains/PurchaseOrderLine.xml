@@ -9,7 +9,7 @@
   
   	<many-to-one name="purchaseOrder" ref="com.axelor.apps.supplychain.db.PurchaseOrder" title="Purchase order"/>
   	<integer name="sequence" title="Sequence"/>
-  	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+  	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>
   	<decimal name="qty" title="Qty" default="1"/>
   	<string name="productName" title="Label"/>
   	<decimal name="price" title="Unit price"/>
@@ -20,7 +20,7 @@
   	<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
   	
   	<decimal name="discountAmount" title="Discount amount"/>
-  	<decimal name="discountTypeSelect" title="Discount type" selection="supplychain.sales.order.line.discount.type.select"/>
+  	<integer name="discountTypeSelect" title="In % / fixed" selection="base.price.list.line.amount.type.select"/>
   	
   	<boolean name="isOrdered" title="Ordered ?"/>
   	<boolean name="isInvoiced" title="Invoiced ?"/>

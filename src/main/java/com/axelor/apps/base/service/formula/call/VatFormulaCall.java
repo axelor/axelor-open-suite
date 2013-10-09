@@ -48,9 +48,6 @@ import com.axelor.exception.AxelorException;
 /**
  * Singleton d'accès aux formules de TVA.
  * 
- * @author guerrier
- * @version 1.0
- *
  */
 @Singleton
 public final class VatFormulaCall {

@@ -44,9 +44,6 @@ import com.axelor.exception.AxelorException;
 
 /**
  * Singleton d'accès aux formules des conditions d'assiettes.
- * 
- * @author guerrier
- * @version 1.0
  *
  */
 @Singleton

@@ -10,7 +10,7 @@
   	<many-to-one name="salesOrder" ref="com.axelor.apps.supplychain.db.SalesOrder" title="Sale order"/>
   	<integer name="sequence" title="Sequence"/>
   	<integer name="importId" />
-  	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+  	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>
   	<decimal name="qty" title="Qty" default="1"/>
   	<boolean name="isToPrintLineSubTotal" title="Print subtotal per line"/>
   	<string name="productName" title="Product name"/>
@@ -27,8 +27,8 @@
   	<date name="invoicingDate" title="Invoicing Date"/>
   	
   	<many-to-one name="supplierPartner" ref="com.axelor.apps.base.db.Partner" title="Supplier"/>
-  	<decimal name="discountAmount" title="Remise"/>
-  	<decimal name="discountTypeSelect" title="En % / fixe" selection="supplychain.sales.order.line.discount.type.select"/>
+  	<decimal name="discountAmount" title="Discount amount"/>
+  	<integer name="discountTypeSelect" title="In % / fixed" selection="base.price.list.line.amount.type.select"/>
   	
   	<boolean name="isOrdered" title="Commandé ?"/>
   	<boolean name="isToInvoice" title="A facturer ?"/>

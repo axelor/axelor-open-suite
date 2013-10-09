@@ -6,7 +6,6 @@
   <entity name="ProductFamily" lang="java">
  
  	<integer name="importId"/>
-    <many-to-one name="productCategory" ref="ProductCategory" title="Product category" />
     <string name="code" title="Family Code" index="true"/>
     <string name="name" title="Family Name"/>
     <one-to-many name="accountManagementList" ref="com.axelor.apps.account.db.AccountManagement" mappedBy="productFamily" title="Accounts"/>

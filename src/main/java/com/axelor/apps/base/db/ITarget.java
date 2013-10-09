@@ -32,9 +32,6 @@ package com.axelor.apps.base.db;
 
 /**
  * Interface of Administration package. Enum all static variable of packages.
- * 
- * @author guerrier
- * 
  */
 public interface ITarget {
 

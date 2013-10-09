@@ -3,22 +3,21 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
   
-	<module name="consulting" package="com.axelor.apps.consulting.db" />
+	<module name="base" package="com.axelor.apps.base.db" />
 		
 		<entity name="PriceList"  lang="java">
 			<many-to-one name="partner" title="Partner" ref="com.axelor.apps.base.db.Partner"/>
-			<date name="validFrom" title="Valid from"/>
-			<date name="validTo" title="Valid to"/>
-			<string name="title" title="Title"/>
+			<date name="validFromDate" title="Valid from"/>
+			<date name="validToDate" title="Valid to"/>
+			<string name="title" title="Title" namecolumn="true"/>
 			<boolean name="isActive" title="Active?"/>
 			<string name="comments" title="Comments" large="true"/>
-			<one-to-many name="priceListLineList" ref="com.axelor.apps.consulting.db.PriceListLine" mappedBy="priceList"/>
-			
-			<one-to-many name="priceListDiscountLineList" ref="com.axelor.apps.consulting.db.PriceListDiscountLine" mappedBy="priceList" title="Discount lines"/>
+			<one-to-many name="priceListLineList" ref="com.axelor.apps.base.db.PriceListLine" mappedBy="priceList" title="Price lines"/>
+			<boolean name="isDisplayed" title="Display discount?"/>
 			<decimal name="generalDiscount" title="General discount (%)"/>
 			
-			<integer name="typeSelect" title="Type" selection="consulting.price.list.type.select"/>
-			<integer name="basedOnSelect" title="Based on" selection="consulting.price.list.based.on.select"/>
+			<integer name="typeSelect" title="Type" selection="base.price.list.type.select"/>
+			<integer name="basedOnSelect" title="Based on" selection="base.price.list.based.on.select"/>
 		</entity>
 		
 </domain-models>
