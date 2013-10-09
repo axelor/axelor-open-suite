@@ -232,8 +232,4 @@ public class InvoiceController {
 		}
 	}
 	
-	public void setOperationTypeSelect(ActionRequest request, ActionResponse response)  {
-		Invoice invoice = request.getContext().asType(Invoice.class);
-		response.setValue("operationTypeSelect", invoice.getOperationTypeSelect());
-	}
 }

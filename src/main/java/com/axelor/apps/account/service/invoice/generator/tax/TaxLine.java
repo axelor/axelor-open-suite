@@ -48,10 +48,6 @@ import com.axelor.exception.AxelorException;
 /**
  * InvoiceLineTaxService est une classe implémentant l'ensemble des services
  * pour les lignes de taxes des factures.
- * 
- * @author Cédric Guerrier
- * 
- * @version 1.0
  */
 public class TaxLine extends TaxGenerator {
 

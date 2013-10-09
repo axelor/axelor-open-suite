@@ -35,8 +35,6 @@ import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 /**
  * Classe de création de ligne de facture abstraite.
  * Chaine de responsabilité.
- * 
- * @author guerrier
  *
  */
 public abstract class InvoiceLineChain extends InvoiceLineGenerator {

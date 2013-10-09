@@ -65,8 +65,6 @@ import com.axelor.exception.db.IException;
 /**
  * Classe de création de ligne de facture abstraite.
  * 
- * @author guerrier
- *
  */
 public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 	
@@ -90,6 +88,9 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 	protected boolean isTaxInvoice; 
 	protected InvoiceLineType invoiceLineType;
 	protected ProductVariant productVariant;
+	protected BigDecimal discountAmount;
+	protected int discountTypeSelect;
+	protected BigDecimal exTaxTotal;
 	
 	protected InvoiceLineGenerator() { }
 	
@@ -114,7 +115,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 	
 
 	protected InvoiceLineGenerator( Invoice invoice, Product product, String productName, BigDecimal price, String description, BigDecimal qty,
-			Unit unit, VatLine vatLine, Task task, InvoiceLineType invoiceLineType, ProductVariant productVariant, boolean isTaxInvoice) {
+			Unit unit, VatLine vatLine, Task task, InvoiceLineType invoiceLineType, ProductVariant productVariant, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal, boolean isTaxInvoice) {
 
         this.invoice = invoice;
         this.product = product;
@@ -127,13 +128,16 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
         this.task = task;
         this.invoiceLineType = invoiceLineType;
         this.productVariant = productVariant;
+        this.discountTypeSelect = discountTypeSelect;
+        this.discountAmount = discountAmount;
+        this.exTaxTotal = exTaxTotal;
         this.isTaxInvoice = isTaxInvoice;
         this.today = GeneralService.getTodayDate();
         this.currencyService = new CurrencyService(this.today);
     }
 	
 	protected InvoiceLineGenerator( Invoice invoice, Product product, String productName, BigDecimal price, String description, BigDecimal qty,
-			Unit unit, Task task, InvoiceLineType invoiceLineType, ProductVariant productVariant, boolean isTaxInvoice) {
+			Unit unit, Task task, InvoiceLineType invoiceLineType, ProductVariant productVariant, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal, boolean isTaxInvoice) {
 
         this.invoice = invoice;
         this.product = product;
@@ -145,6 +149,9 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
         this.task = task;
         this.invoiceLineType = invoiceLineType;
         this.productVariant = productVariant;
+        this.discountTypeSelect = discountTypeSelect;
+        this.discountAmount = discountAmount;
+        this.exTaxTotal = exTaxTotal;
         this.isTaxInvoice = isTaxInvoice;
         this.today = GeneralService.getTodayDate();
         this.currencyService = new CurrencyService(this.today);
@@ -188,7 +195,10 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		invoiceLine.setPrice(price);
 		invoiceLine.setQty(qty);
 		
-		BigDecimal exTaxTotal = computeAmount(qty, price);
+		if(exTaxTotal == null)  {
+			exTaxTotal = computeAmount(qty, price);
+		}
+		
 		invoiceLine.setExTaxTotal(exTaxTotal);
 		
 		Partner clientPartner = invoice.getClientPartner();
@@ -218,6 +228,10 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		invoiceLine.setInvoiceLineType(invoiceLineType);
 		
 		invoiceLine.setProductVariant(productVariant);
+		
+		invoiceLine.setDiscountTypeSelect(discountTypeSelect);
+		invoiceLine.setDiscountAmount(discountAmount);
+		
 		
 		return invoiceLine;
 		

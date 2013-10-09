@@ -60,9 +60,6 @@ import com.axelor.apps.account.db.TaxLine;
  * InvoiceLineTaxTransitionService est une classe implémentant l'ensemble des
  * services pour l'historisation des lignes de taxes d'une facture.
  * 
- * @author Cédric Guerrier
- * 
- * @version 1.0
  */
 public class TaxHistoryLine extends TaxGenerator {
 

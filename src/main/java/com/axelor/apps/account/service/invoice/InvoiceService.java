@@ -56,9 +56,6 @@ import com.google.inject.persist.Transactional;
  * InvoiceService est une classe implémentant l'ensemble des services de
  * facturations.
  * 
- * @author Cédric Guerrier
- * 
- * @version 4.0
  */
 public class InvoiceService {
 

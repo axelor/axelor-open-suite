@@ -107,7 +107,7 @@
 	            </group>
 	        </page>
 	        <page title="Notes">
-	            <field name="description" showTitle="false" colSpan="4" widget="html"/>
+	            <field name="description" showTitle="false" colSpan="4" widget="Html[lite=true]"/>
 	        </page>
 	        <page name="payment" title="Invoicing/Payment" hideIf="partnerTypeSelect == 2 || isContact" colSpan="4" cols="4">
 	            <field name="invoiceSendingFormatSelect"/>
