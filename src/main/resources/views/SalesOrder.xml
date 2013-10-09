@@ -7,6 +7,7 @@
         <field name="salesOrderSeq"/>
         <field name="company"/>
         <field name="currency"/>
+        <field name="clientPartner"/>
         <field name="clientReference"/>
         <field name="creationDate"/>
         <field name="inTaxTotal"/>

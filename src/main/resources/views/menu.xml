@@ -14,7 +14,7 @@
 		<view type="grid" />
 		<view type="form" />
 		<view-param name="search-filters" value="customer-deliveries-filters"/>
-		<domain>self.toLocation.typeSelect = 3</domain>
+		<domain>self.toLocation.typeSelect = 2</domain>
 		<context name="_typeSelect" expr="2"/>
 	</action-view>
 					
@@ -27,7 +27,7 @@
 		<view type="form" />
 		<view-param name="search-filters" value="supplier-arrivals-filters"/>
 		<domain>self.fromLocation.typeSelect = 2</domain>
-		<context name="_typeSelect" expr="3"/>
+		<context name="_typeSelect" expr="2"/>
 		<context name="_newDate" expr="eval: __date__.plusWeeks(1)"/>
 	</action-view>	
 	
@@ -40,7 +40,7 @@
 		<view type="grid" />
 		<view type="form" />
 		<view-param name="search-filters" value="internal-stock-move-filters"/>
-		<domain>self.toLocation.typeSelect = 1</domain>
+		<domain>self.fromLocation.typeSelect = 1 OR self.toLocation.typeSelect = 1</domain>
 		<context name="_typeSelect" expr="1"/>
 	</action-view>		
 		

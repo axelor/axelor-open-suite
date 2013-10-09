@@ -6,7 +6,6 @@
     <grid name="sales-order-sub-line-grid" title="SO sublines" model="com.axelor.apps.supplychain.db.SalesOrderSubLine" orderBy="sequence">
         <field name="sequence"/>
         <field name="product"/>
-        <field name="productCategory"/>
         <field name="employee"/>
     	<field name="description"/>
     	<field name="unit"/>
@@ -21,7 +20,6 @@
     onLoad="action-sales-order-line-attrs-hide-product-variant">
     	<field name="sequence"/>
     	<field name="product" domain="self.endDate = null or self.endDate &gt; :__date__" onChange="action-sales-order-sub-line-method-get-product-information,action-sales-order-sub-line-method-compute,action-sales-order-sub-line-record-product-variant,action-sales-order-line-attrs-hide-product-variant"/>
-    	<field name="product.productCategory"/>
     	<field name="productName"/>
     	<field name="employee"/>
     	<field name="description" colSpan="4"/>
