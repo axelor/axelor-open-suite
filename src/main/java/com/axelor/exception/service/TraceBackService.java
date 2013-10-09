@@ -44,11 +44,7 @@ import com.axelor.exception.db.TraceBack;
 import com.axelor.rpc.ActionResponse;
 
 /**
- * Classe implémentant l'ensemble des services pouvant être utiles dans la gestion des exceptions de GIE.
- * 
- * @author guerrier
- * @version 2.0
- *
+ * Classe implémentant l'ensemble des services pouvant être utiles dans la gestion des exceptions Axelor.
  */
 public class TraceBackService {
 
