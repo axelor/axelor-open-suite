@@ -48,7 +48,7 @@
 	        </page>
 	         
 	        <page title="SO line details">
-	            <field name="productVariant" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="product-variant-form" summary-view="true"/>
+	            <field name="productVariant" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="product-variant-form" summary-view="true" hidden="true"/>
 	            <field name="salesOrderSubLineList" colSpan="6"/>
 	        </page>
 	        <page title="Invoicing follow-up">

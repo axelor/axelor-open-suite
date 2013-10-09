@@ -32,7 +32,7 @@
 	        <page title="Details" colSpan="4" cols="4">
 	            <field name="deliveryDate"/>
 	            <break/>
-	            <field name="productVariant" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="product-variant-form" summary-view="true"/>
+	            <field name="productVariant" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="product-variant-form" summary-view="true" hidden="true"/>
 	        </page>
 	        <page title="Links" colSpan="4" cols="4">
 	            <field name="task"/>    
