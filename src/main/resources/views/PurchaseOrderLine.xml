@@ -15,7 +15,7 @@
     
     <form name="purchase-order-line-form" title="PO line" model="com.axelor.apps.supplychain.db.PurchaseOrderLine" cols="4" 
     onNew="action-purchase-order-line-record-new"
-    onLoad="action-sales-order-line-attrs-hide-product-variant">
+    onLoad="action-sales-order-line-attrs-hide-product-variant,action-purchase-order-line-attrs-task-readonly">
 	    <field name="product" onChange="action-purchase-order-line-method-get-product-information,action-purchase-order-line-method-compute,action-purchase-order-line-record-product-variant" domain="self.endDate = null or self.endDate &gt; :__date__"/>
 	    <field name="productName"/>
 	    <field name="qty" onChange="action-purchase-order-line-method-get-discount,action-purchase-order-line-method-compute"/>
@@ -35,11 +35,14 @@
 	            <field name="productVariant" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="product-variant-form" summary-view="true"/>
 	        </page>
 	        <page title="Links" colSpan="4" cols="4">
-	            <field name="task" readonlyIf="(_parent.statusSelect = 2 || _parent.statusSelect = 3 || _parent.statusSelect = 4) &amp;&amp; task != null"/>    
+	            <field name="task"/>    
 	        </page>
 	    </notebook>       
 	</form>
-    
+	
+	
+	<!-- ACTION RECORD -->
+	
     <action-record name="action-purchase-order-line-record-new" model="com.axelor.apps.supplychain.db.PurchaseOrderLine">
     	<field name="qty" expr="eval: 1"/>
     	<field name="task" expr="eval: _parent?.affairProject?.defaultTask"/>
@@ -50,6 +53,7 @@
     </action-record>
    
    	<!-- ACTION METHOD -->
+	
 	<action-method name="action-purchase-order-line-method-compute">
 		<call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController" method="compute"/>
 	</action-method>
@@ -61,5 +65,11 @@
 	<action-method name="action-purchase-order-line-method-get-discount">
 		<call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController" method="getDiscount"/>
 	</action-method>
+	
+	<!-- ACTION ATTRS -->
+	
+	<action-attrs name="action-purchase-order-line-attrs-task-readonly">
+		<attribute name="readonly" for="task" expr="eval: (_parent.statusSelect = 2 || _parent.statusSelect = 3 || _parent.statusSelect = 4) &amp;&amp; task != null"/>
+	</action-attrs>
 	
 </object-views>
