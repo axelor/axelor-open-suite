@@ -20,7 +20,7 @@
     <form name="invoice-form" title="Invoice" model="com.axelor.apps.account.db.Invoice" cols="4" 
     	onLoad="action-invoice-attrs-status,action-invoice-attrs-debit-blocking,action-invoice-attrs-reminder-blocking,action-set-partner-domain,
     	action-invoice-attrs-collapse-irrecoverable-group"
-    	onNew="default-invoice-record,action-invoice-set-operationTypeSelect,action-invoice-attrs-status,action-invoice-attrs-debit-blocking,action-invoice-attrs-reminder-blocking,
+    	onNew="default-invoice-record,action-invoice-attrs-status,action-invoice-attrs-debit-blocking,action-invoice-attrs-reminder-blocking,
     	action-invoice-attrs-collapse-irrecoverable-group,action-set-partner-domain">
         <field name="endOfCycleOk"/>
         <field name="invoiceId"/>
@@ -206,8 +206,6 @@
     </form>
     
     
-    
-    
     <!-- invoice-account  -->
     <grid name="invoice-account-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice">			        
     	<field name="invoiceTypeSelect"/>
@@ -264,11 +262,12 @@
     
     <action-record name="action-invoice-record-partner-change" model="com.axelor.apps.account.db.Invoice">
     	<field name="paymentMode" expr="eval: clientPartner?.paymentMode"/>
+    	<field name="paymentCondition" expr="eval: clientPartner?.paymentCondition"/>
+    	<field name="partnerAccount" expr="eval: com.axelor.apps.account.db.AccountingSituation.all().filter(&quot;self.partner = ?1 AND self.company = ?2&quot;,clientPartner,company).fetchOne()?.supplierAccount"  if="operationTypeSelect == 1 || operationTypeSelect == 2" />
+    	<field name="partnerAccount" expr="eval: com.axelor.apps.account.db.AccountingSituation.all().filter(&quot;self.partner = ?1 AND self.company = ?2&quot;,clientPartner,company).fetchOne()?.customerAccount"  if="operationTypeSelect == 3 || operationTypeSelect == 4" />
     	<field name="address" expr="eval: clientPartner?.mainInvoicingAddress "/>
     	<field name="dueDate" expr="eval: __date__"/>
     	<field name="currency" expr="eval: clientPartner?.currency"/>
-    	<field name="partnerAccount" expr="eval: clientPartner?.supplierAccount"  if="operationTypeSelect == 1 || operationTypeSelect == 2" />
-    	<field name="partnerAccount" expr="eval: clientPartner?.customerAccount"  if="operationTypeSelect == 3 || operationTypeSelect == 4" />
 		<field name="priceList" expr="eval: com.axelor.apps.base.db.PriceList.all().filter('self.partner = ?1 AND self.isActive = true AND self.typeSelect = 1 AND (self.validFromDate &lt;= ?2 or self.validFromDate = null) AND (self.validToDate &gt;= ?2 or self.validToDate = null)',clientPartner, __date__).fetchOne()" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
 		<field name="priceList" expr="eval: com.axelor.apps.base.db.PriceList.all().filter('self.partner = ?1 AND self.isActive = true AND self.typeSelect = 2 AND (self.validFromDate &lt;= ?2 or self.validFromDate = null) AND (self.validToDate &gt;= ?2 or self.validToDate = null)',clientPartner, __date__).fetchOne()" if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
     </action-record>
@@ -381,10 +380,6 @@
     <action-method name="action-invoice-method-get-journal">
         <call class="com.axelor.apps.account.web.InvoiceController" method="getJournal"/>
     </action-method>
-    <action-method name="action-invoice-set-operationTypeSelect" >
-    	<call class="com.axelor.apps.account.web.InvoiceController" method="setOperationTypeSelect"/>
-    </action-method>
-    
 
 	<!-- ACTION EXPORT -->
 
