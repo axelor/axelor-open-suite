@@ -188,6 +188,7 @@ public class SalesOrderService {
 			}
 			
 			StockMove stockMove = stockMoveService.createStockMove(salesOrder.getDeliveryAddress(), company, salesOrder.getClientPartner(), salesOrder.getLocation(), toLocation);
+			stockMove.setSalesOrder(salesOrder);
 			stockMove.setStockMoveLineList(new ArrayList<StockMoveLine>());
 			
 			for(SalesOrderLine salesOrderLine: salesOrder.getSalesOrderLineList()) {

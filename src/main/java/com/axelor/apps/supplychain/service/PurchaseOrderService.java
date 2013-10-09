@@ -184,6 +184,7 @@ public class PurchaseOrderService {
 			}
 
 			StockMove stockMove = stockMoveService.createStockMove(null, company, purchaseOrder.getSupplierPartner(), startLocation, purchaseOrder.getLocation());
+			stockMove.setPurchaseOrder(purchaseOrder);
 			stockMove.setStockMoveLineList(new ArrayList<StockMoveLine>());
 			
 			for(PurchaseOrderLine purchaseOrderLine: purchaseOrder.getPurchaseOrderLineList()) {
