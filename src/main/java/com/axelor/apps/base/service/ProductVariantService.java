@@ -175,7 +175,7 @@ public class ProductVariantService {
 				true);
 				
 		if(stockProductVariant == null)  {
-			stockProductVariant = this.copyProductVariant(stockProductVariant, true);
+			stockProductVariant = this.copyProductVariant(productVariant, true);
 		}
 		
 		return stockProductVariant;

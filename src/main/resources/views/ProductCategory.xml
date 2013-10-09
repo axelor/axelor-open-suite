@@ -6,12 +6,14 @@
     <grid name="product-category-grid" title="Product categories" model="com.axelor.apps.base.db.ProductCategory" orderBy="name">
         <field name="name"/>
         <field name="code"/>
+        <field name="productFamily"/>
         <field name="parentProductCategory"/>
     </grid>
     
     <form name="product-category-form" title="Product category" model="com.axelor.apps.base.db.ProductCategory" cols="6">
         <field name="name"/>
         <field name="code"/>
+        <field name="productFamily"/>
         <field name="parentProductCategory"/>
     </form>
 </object-views>

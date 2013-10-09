@@ -15,28 +15,28 @@
 		model="com.axelor.apps.supplychain.db.StockMove">
 		<view type="grid" name="stock-move-grid" />
 		<view type="form" name="stock-move-form" />
-		<domain>self.toLocation.typeSelect = 3 and (self.estimatedDate &gt;= CURRENT_DATE and self.estimatedDate &lt;= :_newDate)</domain>
+		<domain>self.toLocation.typeSelect = 2 AND (self.estimatedDate &gt;= CURRENT_DATE AND self.estimatedDate &lt;= :_newDate) AND self.statusSelect = 2</domain>
 	</action-view>
 
 	<action-view name="stock.dashboard.portal.late.deliveries" title="Late deliveries"
 		model="com.axelor.apps.supplychain.db.StockMove">
 		<view type="grid" name="stock-move-grid" />
 		<view type="form" name="stock-move-form" />
-		<domain>self.toLocation.typeSelect = 3 and self.estimatedDate &lt; CURRENT_DATE</domain>
+		<domain>self.toLocation.typeSelect = 2 AND self.estimatedDate &lt; CURRENT_DATE AND self.statusSelect = 2</domain>
 	</action-view>
 
 	<action-view name="stock.dashboard.portal.upcoming.arrivals" title="Upcoming arrivals"
 		model="com.axelor.apps.supplychain.db.StockMove">
 		<view type="grid" name="stock-move-grid"/>
 		<view type="form" name="stock-move-form"/>
-	    <domain>self.fromLocation.typeSelect = 2 and (self.estimatedDate &gt;= CURRENT_DATE and self.estimatedDate &lt;= :_newDate)</domain>
+	    <domain>self.fromLocation.typeSelect = 2 AND (self.estimatedDate &gt;= CURRENT_DATE AND self.estimatedDate &lt;= :_newDate) AND self.statusSelect = 2</domain>
 	</action-view>
 
 	<action-view name="stock.dashboard.portal.late.arrivals" title="Late arrivals"
 		model="com.axelor.apps.supplychain.db.StockMove">
 		<view type="grid" name="stock-move-grid" />
 		<view type="form" name="stock-move-form" />
-		<domain>self.fromLocation.typeSelect = 2 and self.estimatedDate &lt; CURRENT_DATE</domain>
+		<domain>self.fromLocation.typeSelect = 2 AND self.estimatedDate &lt; CURRENT_DATE AND self.statusSelect = 2</domain>
 	</action-view>
 
 	<action-view name="stock.dashboard.portal.product.out.stock.bylocation" title="Product out of stock"

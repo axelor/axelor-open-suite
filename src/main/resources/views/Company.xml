@@ -24,7 +24,7 @@
         <field name="code"/>
         <field name="parent"/>
         <field name="logoPath" />
-        <field name="partner" domain="self.isContact = false"/>
+        <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
         <field name="address" colSpan="4"/>
         <notebook colSpan="4">
             <page title="Accounting" cols="4" >

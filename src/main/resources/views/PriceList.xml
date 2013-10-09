@@ -17,7 +17,7 @@
 	    <field name="title" /> 
     	<field name="isActive"/> 
     	<break/>
-	    <field name="partner" domain="self.isContact = false" onChange="action-price-list-record-title"/> 
+	    <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" onChange="action-price-list-record-title"/> 
 	    <field name="typeSelect"/>
 	    <break/>
     	<field name="validFromDate" onChange="action-price-list-record-title"/>

@@ -85,7 +85,7 @@
    	<integer name="industrySectorSelect" title="Industry" selection="partner.industry.sectory.select"/> 
 	<integer name="nbrEmployees" title="N° of Employees"/>
 	<integer name="salesTurnover" title="Turnover"/>
-	<integer name="registrationCode" title="Registration code"/>
+	<string name="registrationCode" title="Registration code"/>
 	<string name="vatNbr" title="VAT N°"/>
   </entity>
   

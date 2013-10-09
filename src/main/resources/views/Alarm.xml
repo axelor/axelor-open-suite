@@ -26,7 +26,7 @@
         <field name="alarmEngine" summary-view="alarm-message-form" form-view="alarm-message-form" edit-window="self" />
         <field name="content" colSpan="6" showTitle="false" />
         <group title="Details" canCollapse="true" colSpan="6" cols="4">
-	        <field name="partner" domain="self.isContact = false"/>
+	        <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
 	        <field name="invoice" grid-view="invoice-grid" form-view="invoice-form"/>
 	        <field name="balanceDueReminder"/>
         </group>

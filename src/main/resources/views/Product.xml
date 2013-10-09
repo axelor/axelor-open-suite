@@ -38,8 +38,8 @@
 	                    <field name="isRawMaterial" showIf="productTypeSelect != 'service"/>
 	                </group>
 	                <group title="Categorization" colSpan="2" cols="2"  colWidths="40%,60%">
-	                    <field name="productFamily" domain="self.productCategory = :productCategory"/>
-	                    <field name="productCategory"/>
+	                    <field name="productFamily"/>
+	                    <field name="productCategory" domain="self.productFamily = :productFamily"/>
 	                    <spacer/>
 	                </group>
 	            </group>
