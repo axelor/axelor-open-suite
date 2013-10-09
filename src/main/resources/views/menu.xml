@@ -89,6 +89,7 @@
 	<action-view name="sc.root.sales.new.so" title="New Sale order"
 		model="com.axelor.apps.supplychain.db.SalesOrder" icon="img/icons/order_small.png">
 		<view type="form" name="sales-order-form"/>
+		<view type="grid" name="sales-order-grid"/>
 		<view-param name="search-filters" value="sales-order-filters"/>
 		<context name="_internalUser" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
@@ -116,6 +117,7 @@
 	<action-view name="sc.root.purchase.order.new" title="New Purchase order"
 		model="com.axelor.apps.supplychain.db.PurchaseOrder" icon="img/icons/order_small.png">
 		<view type="form" name="purchase-order-form" />
+		<view type="grid" name="purchase-order-grid" />
 	</action-view>	
 	
 	<menuitem name="sc-root-purchase-orders" title="Purchase orders" priority="1" 
@@ -134,6 +136,7 @@
 	<action-view name="supply.chain.root.sales.order" title="Sales order"
 		model="com.axelor.apps.supplychain.db.SalesOrder" >
 		<view type="form" name="sales-order-form" />
+		<view type="grid" name="sales-order-grid" />
 	</action-view>	
 	
 
