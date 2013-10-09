@@ -10,7 +10,7 @@
     </grid>
     
     <form name="message-form" title="Email" model="com.axelor.apps.message.db.Message" cols="4"
-    onNew="action-message-default-record,action-message-record-get-signature">
+    onNew="action-message-record-default,action-message-record-mail-account,action-message-record-get-signature">
     	<group title="Informations" colSpan="4" readonlyIf="statusSelect == 2 || statusSelect == 3">
             <field name="sendedDateT"/>
             <field name="fromEmailAddress" />
@@ -43,12 +43,15 @@
     </form>
     
     
-	<action-record name="action-message-default-record" model="com.axelor.apps.message.db.Message">
+	<action-record name="action-message-record-default" model="com.axelor.apps.message.db.Message">
     	<field name="sendedDateT" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()"/>
     	<field name="statusSelect" expr="eval: 1"/>
     	<field name="typeSelect" expr="eval: 2"/>
     	<field name="senderUserInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
-    	<field name="mailAccount" expr="eval: com.axelor.apps.mail.db.MailAccount.all().filter('self.isDefault = true and self.userInfo.id = :userInfo').fetchOne()"/>
+    </action-record>
+    
+    <action-record name="action-message-record-mail-account" model="com.axelor.apps.message.db.Message">
+    	<field name="mailAccount" expr="eval: com.axelor.apps.message.db.MailAccount.all().filter('self.isDefault = true and self.userInfo = ?1',senderUserInfo).fetchOne()"/>
     </action-record>
     
     <action-record name="action-message-record-get-signature" model="com.axelor.apps.message.db.Message">
