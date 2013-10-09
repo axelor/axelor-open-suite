@@ -40,9 +40,6 @@ import com.google.inject.Inject;
  * Une période est composée d'une date de début, d'une date de fin, et d'un
  * attribut booléen qui détermine si l'on fixe l'année sur 360 jours.
  * 
- * @author guerrier
- * @version 1.0
- *
  */
 public class Period {
 

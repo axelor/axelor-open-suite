@@ -42,9 +42,6 @@ import com.axelor.apps.tool.date.DateTool;
 /**
  * Outils simplifiant l'utilisation des nombres.
  * 
- * @author guerrier
- *
- * @version 1.0
  */
 public final class DecimalTool {
 
