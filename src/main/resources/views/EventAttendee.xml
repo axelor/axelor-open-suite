@@ -5,12 +5,12 @@
     
     <grid name="event-attendee-contact-grid" title="Contacts" model="com.axelor.apps.crm.db.EventAttendee">
         <field name="statusSelect"/>
-        <field name="contactPartner"/>
+        <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
     </grid>
     
     <form name="event-attendee-contact-form" title="Contact" model="com.axelor.apps.crm.db.EventAttendee" cols="2" colWidths="*,400">
     	<field name="statusSelect"/>
-        <field name="contactPartner"/>
+        <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
     </form>
     
      <grid name="event-attendee-lead-grid" title="Leads" model="com.axelor.apps.crm.db.EventAttendee">

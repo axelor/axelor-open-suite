@@ -17,6 +17,7 @@
 	<action-view name="crm.root.create.task" title="Task"
 		model="com.axelor.apps.crm.db.Event" icon="img/icons/new.png">
 		<view type="form" name="crm-task-form"/>
+		<view type="grid" name="crm-task-grid"/>
 		<context name="_typeSelect" expr="3"/>
 		<context name="_internalUser" expr="eval: __user__.id"/>
 	</action-view>
@@ -27,6 +28,7 @@
 	<action-view name="crm.root.create.meeting" title="Meeting"
 		model="com.axelor.apps.crm.db.Event" icon="img/icons/new.png">
 		<view type="form" name="meeting-form"/>
+		<view type="grid" name="meeting-grid"/>
 		<context name="_typeSelect" expr="2"/>
 		<context name="_internalUser" expr="eval: __user__.id"/>
 	</action-view>
@@ -37,6 +39,7 @@
 	<action-view name="crm.root.create.call" title="Call"
 		model="com.axelor.apps.crm.db.Event" icon="img/icons/new.png">
 		<view type="form" name="call-form"/>
+		<view type="grid" name="call-grid"/>
 		<context name="_typeSelect" expr="1"/>
 		<context name="_internalUser" expr="eval: __user__.id"/>
 	</action-view>
@@ -47,6 +50,7 @@
 	<action-view name="crm.root.create.ticket" title="Ticket"
 		model="com.axelor.apps.crm.db.Event" icon="img/icons/new.png">
 		<view type="form" name="ticket-form"/>
+		<view type="grid" name="ticket-grid"/>
 		<context name="_typeSelect" expr="5"/>
 		<context name="_prioritySelect" expr="2"/>
 		<context name="_internalUser" expr="eval: __user__.id"/>
@@ -143,7 +147,7 @@
 
 	<action-view name="crm.root.meeting.my.calendar" title="My Meetings Calendar"
 		model="com.axelor.apps.crm.db.Event" icon="img/icons/calendar-task.png">
-		<view type="calendar" name="event-calendar"/>
+		<view type="calendar" name="event-calendar-color-by-calendar"/>
 		<view type="grid" name="event-grid"/>
 		<view type="form" name="event-form"/>
 		<domain>self.userInfo.internalUser.id = :_internalUser</domain>
@@ -156,7 +160,7 @@
 		
 	<action-view name="crm.root.meeting.team.calendar" title="Team Calendar"
 		model="com.axelor.apps.crm.db.Event" icon="img/icons/calendar-task.png">
-		<view type="calendar" name="event-calendar"/>
+		<view type="calendar" name="event-calendar-color-by-user-info"/>
 		<view type="grid" name="event-grid"/>
 		<view type="form" name="event-form"/>
 		<domain>self.team = :_myActiveTeam</domain>
@@ -302,12 +306,14 @@
 
 	<action-view name="top.new.opportunity.view" title="Create Opportunity" model="com.axelor.apps.crm.db.Opportunity" >
 		<view type="form" name="opportunity-form"/>
+		<view type="grid" name="opportunity-grid"/>
 	</action-view>
 	
 	<menuitem name="top-menu-create-lead" parent="top-menu-utility"	title="Create Lead" action="top.new.lead.view" />
 		
 	<action-view name="top.new.lead.view" title="Create Lead" icon="img/icons/address-book.png" model="com.axelor.apps.crm.db.Lead" >
 		<view type="form" name="lead-form" />
+		<view type="grid" name="lead-grid" />
 	</action-view>
 	
 	<menuitem name="top-prospection" title="Prospection" groups="admins,erp" top="true" left="false"/>

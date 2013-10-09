@@ -484,7 +484,7 @@
 			  ]]>
 	    </dataset>
 	    <category key="_country" type="text"/>
-	    <series key="_total_lead"  type="bar"/>
+	    <series key="_total_leads"  type="bar"/>
 	</chart>  			
 	<chart name="chart.partner.by.industry.sector.bar" title="Partners by Industry Sector">
 	    <dataset type="sql">
