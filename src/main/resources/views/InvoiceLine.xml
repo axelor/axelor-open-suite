@@ -14,12 +14,12 @@
     </grid>
     
     <form name="invoice-line-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine" cols="4" 
-    onNew="action-invoice-line-record-new"
-    onLoad="action-invoice-line-method-product-management">
+    onNew="action-invoice-line-record-new,action-invoice-line-attrs-hide-product-variant"
+    onLoad="action-invoice-line-method-product-management,action-invoice-line-attrs-hide-product-variant">
     	<notebook>
     		<page title="Informations">
-	    		<field name="invoiceLineType" required="true"/>
-		        <field name="product" onChange="action-invoice-line-method-get-product-information,action-invoice-line-record-product-variant,action-invoice-line-method-compute"/>
+		        <field name="product" onChange="action-invoice-line-attrs-hide-product-variant,action-invoice-line-method-get-product-information,action-invoice-line-record-product-variant,action-invoice-line-method-compute,action-invoice-line-record-invoice-line-type"/>
+		        <field name="invoiceLineType"/>
 		        <field name="product.productCategory"/>
 		        <field name="productName"/>
 		        <field name="qty" onChange="action-invoice-line-method-compute"/>
@@ -36,9 +36,7 @@
 			        <field name="discountTypeSelect" onChange="action-invoice-line-method-compute"/>
 			        <field name="discountAmount" onChange="action-invoice-line-method-compute"/>
 			    </group>
-				<group title="Product Variants" colSpan="4" cols="4">
-			        <field name="productVariant" widget="NestedEditor" summary-view="true" form-view="product-variant-form" edit-window="self" canSelect="false" showTitle="false"/>
-			    </group>
+		        <field name="productVariant" widget="NestedEditor" summary-view="true" form-view="product-variant-form" edit-window="self" canSelect="false" showTitle="false" colSpan="4" hidden="true"/>
     		</page>
     		<page title="Notes">
     			<field name="note"/>
@@ -59,8 +57,8 @@
     
     <form name="tax-invoice-line-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine" cols="4" 
     onLoad="action-invoice-line-method-product-management">
-        <field name="invoiceLineType" required="true"/>
-        <field name="product" onChange="action-invoice-line-method-get-product-information,action-invoice-line-method-compute"/>
+        <field name="product" onChange="action-invoice-line-method-get-product-information,action-invoice-line-method-compute,action-invoice-line-record-invoice-line-type"/>
+        <field name="invoiceLineType"/>
         <field name="product.productCategory"/>
         <field name="productName"/>
         <field name="qty" onChange="action-invoice-line-method-get-discount,action-invoice-line-method-compute"/>
@@ -81,6 +79,10 @@
     	<field name="productVariant" expr="action:action-product-variant-record-on-new" if="product?.productVariantConfiguration != null"/>
     </action-record>
     
+    <action-record name="action-invoice-line-record-invoice-line-type" model="com.axelor.apps.account.db.InvoiceLine">
+    	<field name="invoiceLineType" expr="eval: product?.invoiceLineType"/>
+    </action-record>
+    
 	<!-- ACTION METHOD -->
 	<action-method name="action-invoice-line-method-compute">
 		<call class="com.axelor.apps.account.web.InvoiceLineController" method="compute"/>
@@ -93,5 +95,10 @@
 	<action-method name="action-invoice-line-method-get-discount">
 		<call class="com.axelor.apps.account.web.InvoiceLineController" method="getDiscount"/>
 	</action-method>
+	
+	<!-- ACTION ATTRS -->
+	<action-attrs name="action-invoice-line-attrs-hide-product-variant">
+    	<attribute name="hidden" for="productVariant" expr="product?.productVariantConfiguration == null"/>
+    </action-attrs>
 	
 </object-views>
