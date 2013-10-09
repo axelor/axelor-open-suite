@@ -13,22 +13,18 @@
     
     <form name="affair-form" title="Affair" model="com.axelor.apps.organisation.db.Project" cols="6" 
     onLoad="action-project-method-update-financial-information,save"
-    onNew="action-affair-record-default"
+    onNew="action-affair-group-default"
     onSave="action-affair-method-create-default-task-on-save">
     	<group showTitle="false" cols="6" colSpan="6">
 	    	<field name="affairName" showTitle="false" css="highlight" placeholder="Affair name" colSpan="4"/>
-	       	<field name="statusTypeSelect" widget="NavSelect" showTitle="false"/>
+	       	<field name="affairStatusSelect" widget="NavSelect" showTitle="false"/>
     	</group>
     	<group showTitle="false" cols="4">
         	<field name="responsibleUserInfo"/>
         	<field name="defaultTask" hideIf="!isTimeSheetImputable"/>
         	<field name="company" widget="SuggestBox"/>
 	        <field name="clientPartner"/>
-	        <field name="contactPartner" domain="self.isContact = true"/>
-	        <field name="userInfo"/>
-        	<field name="solutionAttendue"/>
-        	<field name="comiteEngagement"/>
-        	<field name="motif" showIf="statusTypeSelect == 4"/>
+	        <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
  		</group>
     	<group title="Actions" showTitle="false" colSpan="2" cols="1">
 	        <button name="createSalesOrder" title="Create quote" colSpan="1"/>
@@ -117,7 +113,7 @@
 	            <field name="memberUserInfoSet" colSpan="6"/>
 	        </page>
 	        <page title="Need">
-	            <field name="typeSelect"/>
+	            <field name="needTypeSelect"/>
 	            <field name="marketTypeSelect"/>
 	            <field name="consultationDate"/>
 	            <field name="deadline"/>
@@ -128,141 +124,13 @@
 	            <field name="specificationFile"/>
 	            <field name="needDescription"/>
 	        </page>
-	        <page title="Information commerciale" cols="6">
-	        	<group colSpan="2">
-                	<field name="agency" colSpan="2"/>
-                	<field name="daUserInfo" colSpan="2"/>
-                	<field name="icUserInfo" colSpan="2"/>
-                	<field name="source" colSpan="2"/>
-                	<group colSpan="4" title="Agenda">
-                    	<field name="agenda" showTitle="false" widget="Html[lite=true]"/>
-                	</group>
-                	<group colSpan="4" title="Critères d'évaluation de l'offre">
-                    	<field name="critEvalOffre" showTitle="false" widget="Html[lite=true]"/>
-                	</group>
-           		</group>
-            	<group colSpan="4">
-            		<group colSpan="4" title="Descriptif">
-                		<field name="descriptif" showTitle="false" widget="Html[lite=true]"/>
-                	</group>
-            	</group>
-	        </page>
-	        <page title="Qualification avant-vente" cols="6">
-	        	<group colSpan="2">
-                	<field name="respQualifUserInfo" colSpan="2"/>
-                	<group title="CP avant-vente" colSpan="4">
-                    	<field name="engagementTypeSelect" colSpan="2"/>
-                    	<field name="solution" colSpan="2"/>
-                    	<field name="technologies" colSpan="2"/>
-                	</group>
-                	<group title="Montants" colSpan="4">
-                    	<field name="macroChiffMarche" colSpan="2"/>
-                    	<field name="estimationParAnnee" colSpan="2"/>
-                    	<field name="estimationParPhaseLot" colSpan="2"/>
-                	</group>
-                	<group title="Dates" colSpan="4">
-                    	<field name="receptionDossierDate" colSpan="2"/>
-                    	<field name="remiseQualifDate" colSpan="2"/>
-                    	<field name="finalOffreTechDate" colSpan="2"/>
-                    	<field name="finalOffreComDate" colSpan="2"/>
-                    	<field name="remiseOffrePrevueDate" colSpan="2"/>
-                	</group>
-                	<group title="Charges avant-vente" colSpan="4">
-                    	<field name="chargesQualif" colSpan="2"/>
-                    	<field name="estimationChargesRep" colSpan="2"/>
-                	</group>
-            	</group>
-            	<group colSpan="4">
-                	<group colSpan="4" title="Qualification du dossier">
-                    	<field name="qualifDossier" showTitle="false" widget="Html[lite=true]"/>
-                	</group>
-                	<group colSpan="4" title="Point IMPORTANTS">
-                    	<field name="pointImportant" showTitle="false" widget="Html[lite=true]"/>
-                	</group>
-                	<group colSpan="4" title="Analyse : Note / 20">
-                   		<field name="analyseNote" showTitle="false" widget="Html[lite=true]"/>
-                	</group>
-                	<field name="conclusionAvtVenteTypeSelect" widget="RadioSelect[direction=vertical]"/>
-            	</group>
-	        </page>
-	        <page title="Qualification technique" cols="6">
-	        	<group colSpan="2">
-                	<field name="respCdsSdm" colSpan="2"/>
-                	<field name="expert" colSpan="2"/>
-                	<group title="CP avant-vente" colSpan="4">
-                    	<field name="engagementTypeSelect" colSpan="2"/>
-                    	<field name="solution" colSpan="2"/>
-                    	<field name="technologies" colSpan="2"/>
-                	</group>
-                	<group title="Montants" colSpan="4">
-                    	<field name="macroChiffMarche" colSpan="2"/>
-                    	<field name="estimationParAnnee" colSpan="2"/>
-                    	<field name="estimationParPhaseLot" colSpan="2"/>
-                	</group>
-                	<group title="Dates" colSpan="4">
-                    	<field name="receptionDossierDate" colSpan="2"/>
-                    	<field name="remiseQualifDate" colSpan="2"/>
-                    	<field name="finalOffreTechDate" colSpan="2"/>
-                    	<field name="finalOffreComDate" colSpan="2"/>
-                    	<field name="remiseOffrePrevueDate" colSpan="2"/>
-                	</group>
-                	<group title="Charges avant-vente" colSpan="4">
-                    	<field name="chargesQualif" colSpan="2"/>
-                    	<field name="estimationChargesRep" colSpan="2"/>
-                	</group>
-            	</group>
-            	<group colSpan="4">
-                	<group colSpan="4" title="Positionnement de notre CDS sur cette affaire">
-                    	<field name="positionnementCDS" showTitle="false" widget="Html[lite=true]"/>
-                	</group>
-                	<group colSpan="4" title="Point Marquant du dossier / VA-VAPA">
-                    	<field name="pointMarquantDossier" showTitle="false" widget="Html[lite=true]"/>
-                	</group>
-                	<group colSpan="4" title="Analyse des Risques / Solutions">
-                   		<field name="analyseRisquesSolutions" showTitle="false" widget="Html[lite=true]"/>
-                	</group>
-                	<group colSpan="4" title="AVIS DE LA DIRECTION TECHNIQUE / CDS CIBLE">
-                   		<field name="avisDirectionTechnique" showTitle="false" widget="Html[lite=true]"/>
-                	</group>
-            	</group>
-	        </page>
-	        <page title="GO/NOGO" cols="6" colSpan="6">
-            	<field name="goNoGoTypeSelect" colSpan="3"/>
-            	<field name="todayDate" colSpan="3"/>
-            	<group title="Responsables" cols="3" colSpan="3">
-                	<field name="dirTechniqueUserInfo" colSpan="3"/>
-                	<field name="dirCommercialeserInfo" colSpan="3"/>
-                	<field name="dirAgenceUserInfo" colSpan="3"/>
-                	<field name="respCDSUserInfo" colSpan="3"/>
-                	<field name="respAvtVenteUserInfo" colSpan="3"/>
-            	</group>
-            	<group title="Equipe réponse" cols="3" colSpan="3">
-                	<field name="pilotageEquipe" colSpan="3"/>
-                	<field name="partTechniqueDate" colSpan="3"/>
-                	<field name="partCommercialeDate" colSpan="3"/>
-                	<field name="relectureDate" colSpan="3"/>
-                	<field name="responseDate" colSpan="3"/>
-                	<field name="chargeAV" colSpan="3"/>
-            	</group>
-        	</page>
-	        <page title="Synthèse de l'offre" cols="6">
-	        	<group colSpan="2">
-	        		<field name="agency" colSpan="2"/>
-	        		<field name="daUserInfo" colSpan="2"/>
-	        		<field name="icUserInfo" colSpan="2"/>
-	        		<field name="avUserInfo" colSpan="2"/>
-	        		<field name="clientPartner" colSpan="2"/>
-	        		<field name="cdsConcerne" colSpan="2"/>
-	        	</group>
-	        	<group colSpan="4">
-	        		<group colSpan="4" title="Description du projet">
-	        			<field name="descriptionProjet" showTitle="false" widget="Html[lite=true]"/>
-	        		</group>
-	        		<field name="offerLineList" colSpan="4"/>
-	        	</group>
-	        </page>
 	    </notebook>    
 	</form>
+	
+	<action-group name="action-affair-group-default">
+		<action name="action-affair-record-default"/>
+		<action name="action-affair-record-unit"/>
+	</action-group>
 	
     <action-record name="action-affair-record-default" model="com.axelor.apps.organisation.db.Project">
 		<field name="isTimeSheetImputable" expr="true"/>
@@ -271,7 +139,11 @@
     	<field name="realEstimatedMethodSelect" expr="2"/>
     	<field name="responsibleUserInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
 		<field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
-		<field name="statusTypeSelect" expr="1"/>		
+		<field name="affairStatusSelect" expr="1"/>		
+		<field name="unit" expr="eval: company?.administration?.unit"/>
+	</action-record>
+	
+	<action-record name="action-affair-record-unit" model="com.axelor.apps.organisation.db.Project">
 		<field name="unit" expr="eval: company?.administration?.unit"/>
 	</action-record>
 	
@@ -305,14 +177,14 @@
   	<action-view name="action-project-view-validated-sales-order-line" title="Validated Customer order lines" model="com.axelor.apps.supplychain.db.SalesOrderLine">
   		<view type="grid" name="sales-order-line-grid"/>
 		<view type="form" name="sales-order-line-form"/>
-  		<domain>self.salesOrder.statusSelect = 3 and self.task.affairProject.id = :id</domain>
+  		<domain>self.salesOrder.statusSelect = 3 and self.task.project.id = :id</domain>
   		<context name="id" expr="eval: id"/>
   	</action-view>
   	
   	<action-view name="action-project-view-validated-purchase-order-line" title="Validated supplier order lines" model="com.axelor.apps.supplychain.db.PurchaseOrderLine">
   		<view type="grid" name="purchase-order-line-grid"/>
 		<view type="form" name="purchase-order-line-form"/>
-  		<domain>self.purchaseOrder.statusSelect = 3 and self.task.affairProject.id = :id</domain>
+  		<domain>self.purchaseOrder.statusSelect = 3 and self.task.project.id = :id</domain>
   		<context name="id" expr="eval: id"/>
   	</action-view>
   	

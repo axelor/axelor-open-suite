@@ -158,10 +158,7 @@ public class TaskController {
 		
 		SalesOrder salesOrder = request.getContext().asType(SalesOrder.class);
 		
-		if(salesOrder != null) {
-			
-			taskService.get().createTasks(salesOrder);
-		}
+		taskService.get().createTasks(salesOrder);
 	}
 	
 }

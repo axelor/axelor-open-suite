@@ -43,6 +43,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.SpentTime;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.organisation.db.Employee;
@@ -69,6 +70,9 @@ public class TaskService {
 	
 	@Inject
 	private CurrencyService currencyService;
+	
+	@Inject
+	private PriceListService priceListService;
 	
 	private LocalDateTime todayTime;
 	
@@ -690,7 +694,7 @@ public class TaskService {
 		task.setSalesOrderLine(salesOrderLine);
 		task.setProduct(salesOrderLine.getProduct());
 		task.setQty(salesOrderLine.getQty());
-		task.setPrice(salesOrderLine.getPrice());
+		task.setPrice(this.computeDiscount(salesOrderLine));
 		task.setName(salesOrderLine.getProductName());
 		task.setDescription(salesOrderLine.getDescription());
 		task.setStartDateT(todayTime);
@@ -716,6 +720,14 @@ public class TaskService {
 		task.setEstimatedAmount(task.getEstimatedAmount().add(salesOrderLine.getCompanyExTaxTotal()));
 		
 	}
+	
+	
+	public BigDecimal computeDiscount(SalesOrderLine salesOrderLine)  {
+		
+		return priceListService.computeDiscount(salesOrderLine.getPrice(), salesOrderLine.getDiscountTypeSelect(), salesOrderLine.getDiscountAmount());
+		
+	}
+	
 	
 	public void createPlanningLines(SalesOrderLine salesOrderLine, Task task) throws AxelorException  {
 	

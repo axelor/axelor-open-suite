@@ -33,7 +33,6 @@ package com.axelor.apps.organisation.web;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -42,8 +41,10 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.AxelorSettings;
 import com.axelor.apps.base.db.Keyword;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.organisation.db.Candidate;
 import com.axelor.apps.organisation.db.EvaluationLine;
+import com.axelor.apps.organisation.db.RecuitmentProcessAdvancement;
 import com.axelor.apps.organisation.service.EmployeeService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
@@ -53,6 +54,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.google.inject.persist.Transactional;
 
 public class CandidateController {
 
@@ -101,24 +103,6 @@ public class CandidateController {
 		return e;
 	}
 	
-	public void onNew(ActionRequest request, ActionResponse response)  {
-				
-		try {
-			List<EvaluationLine> evaluationLineList = new ArrayList<EvaluationLine>();
-			evaluationLineList.add(createEvaluationLine("Technique", 3));
-			evaluationLineList.add(createEvaluationLine("Anglais", 2));
-			evaluationLineList.add(createEvaluationLine("Communication", 2));
-			evaluationLineList.add(createEvaluationLine("Maturité", 2));
-			evaluationLineList.add(createEvaluationLine("Potentiel", 2));
-			evaluationLineList.add(createEvaluationLine("Management", 2));
-			evaluationLineList.add(createEvaluationLine("Dynamisme", 1));
-			
-			LOG.debug("elList= {}", evaluationLineList);
-			response.setValue("evaluationLineList", evaluationLineList);
-		}
-		catch(Exception e)  { TraceBackService.trace(response, e); }
-	}
-	
 	
 	public void transformInEmployee(ActionRequest request, ActionResponse response) {
 		
@@ -163,6 +147,28 @@ public class CandidateController {
 		}
 		else {
 			response.setFlash(urlNotExist);
+		}
+	}
+	
+	@Transactional
+	public void createRecruitmentProcessAdvancementLine(ActionRequest request, ActionResponse response) {
+
+		Candidate candidate = request.getContext().asType(Candidate.class);
+		
+		if(candidate != null) {
+			
+			if(candidate.getRecruitmentProcessAdvancementList() == null) {
+				candidate.setRecruitmentProcessAdvancementList(new ArrayList<RecuitmentProcessAdvancement>());
+			}
+			RecuitmentProcessAdvancement recruitmentProcessAdvancement = new RecuitmentProcessAdvancement();
+			recruitmentProcessAdvancement.setCandidate(candidate);
+			recruitmentProcessAdvancement.setStatusSelect(candidate.getRecruitmentStatusSelect());
+			recruitmentProcessAdvancement.setDateT(GeneralService.getTodayDateTime().toLocalDateTime());
+			recruitmentProcessAdvancement.setRecruitmentDate(candidate.getRecruitementDate());
+			recruitmentProcessAdvancement.setNote(candidate.getNote());
+			candidate.getRecruitmentProcessAdvancementList().add(recruitmentProcessAdvancement);
+			candidate.save();
+			response.setReload(true);
 		}
 	}
 }

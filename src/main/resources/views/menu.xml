@@ -267,10 +267,17 @@
 		<domain>self.isLeaveResquest = true</domain>
 	</action-view>
 
-	
-	
 	<menuitem name="affair-root" title="Affair" priority="120"
 		icon="img/icons/affair.png" groups="admins,erp"/>
+		
+	<menuitem name="affair-root-site" parent="affair-root"
+		title="Sites" action="affair.root.site" />
+
+	<action-view name="affair.root.site" title="Sites"
+		model="com.axelor.apps.consulting.db.Site" icon="img/icons/affair_small.png">
+		<view type="grid" name="site-grid" />
+		<view type="form" name="site-form" />
+	</action-view>	
 	
 	<menuitem name="affair-root-project" parent="affair-root"
 		title="Affairs" />
