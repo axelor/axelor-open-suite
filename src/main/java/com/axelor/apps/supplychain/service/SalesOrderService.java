@@ -32,29 +32,20 @@ package com.axelor.apps.supplychain.service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.List;
 
-import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IProduct;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.supplychain.service.StockMoveService;
-import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.organisation.db.PlanningLine;
-import com.axelor.apps.organisation.db.Task;
 import com.axelor.apps.supplychain.db.ILocation;
-import com.axelor.apps.supplychain.db.ISalesOrder;
 import com.axelor.apps.supplychain.db.Location;
 import com.axelor.apps.supplychain.db.SalesOrder;
 import com.axelor.apps.supplychain.db.SalesOrderLine;
 import com.axelor.apps.supplychain.db.SalesOrderLineVat;
-import com.axelor.apps.supplychain.db.SalesOrderSubLine;
 import com.axelor.apps.supplychain.db.StockMove;
 import com.axelor.apps.supplychain.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
@@ -197,6 +188,7 @@ public class SalesOrderService {
 			}
 			
 			StockMove stockMove = stockMoveService.createStockMove(salesOrder.getDeliveryAddress(), company, salesOrder.getClientPartner(), salesOrder.getLocation(), toLocation);
+			stockMove.setSalesOrder(salesOrder);
 			stockMove.setStockMoveLineList(new ArrayList<StockMoveLine>());
 			
 			for(SalesOrderLine salesOrderLine: salesOrder.getSalesOrderLineList()) {
@@ -205,7 +197,7 @@ public class SalesOrderService {
 				// Check if the company field 'hasOutSmForStorableProduct' = true and productTypeSelect = 'storable' or 'hasOutSmForNonStorableProduct' = true and productTypeSelect = 'service' or productTypeSelect = 'other'
 				if(product != null && ((company.getHasOutSmForStorableProduct() && product.getProductTypeSelect().equals(IProduct.STORABLE)) || (company.getHasOutSmForNonStorableProduct() && !product.getProductTypeSelect().equals(IProduct.STORABLE)))) {
 					
-					StockMoveLine stockMoveLine = stockMoveLineService.createStockMoveLine(product, salesOrderLine.getQty(), salesOrderLine.getUnit(), salesOrderLine.getPrice(), stockMove, salesOrderLine.getProductVariant(), 1);
+					StockMoveLine stockMoveLine = stockMoveLineService.createStockMoveLine(product, salesOrderLine.getQty(), salesOrderLine.getUnit(), salesOrderLineService.computeDiscount(salesOrderLine), stockMove, salesOrderLine.getProductVariant(), 1);
 					if(stockMoveLine != null) {
 						stockMove.getStockMoveLineList().add(stockMoveLine);
 					}

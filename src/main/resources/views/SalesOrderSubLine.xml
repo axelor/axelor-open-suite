@@ -6,7 +6,6 @@
     <grid name="sales-order-sub-line-grid" title="SO sublines" model="com.axelor.apps.supplychain.db.SalesOrderSubLine" orderBy="sequence">
         <field name="sequence"/>
         <field name="product"/>
-        <field name="productCategory"/>
         <field name="employee"/>
     	<field name="description"/>
     	<field name="unit"/>
@@ -21,7 +20,6 @@
     onLoad="action-sales-order-line-attrs-hide-product-variant">
     	<field name="sequence"/>
     	<field name="product" domain="self.endDate = null or self.endDate &gt; :__date__" onChange="action-sales-order-sub-line-method-get-product-information,action-sales-order-sub-line-method-compute,action-sales-order-sub-line-record-product-variant,action-sales-order-line-attrs-hide-product-variant"/>
-    	<field name="product.productCategory"/>
     	<field name="productName"/>
     	<field name="employee"/>
     	<field name="description" colSpan="4"/>
@@ -29,10 +27,13 @@
 		<field name="unit"/>
 		<field name="price" onChange="action-sales-order-sub-line-method-compute"/>
 		<field name="vatLine" domain="self.endDate = null or self.endDate &gt; :__date__"/>
-		<field name="vatLine.vat.name"/>
-		<field name="vatLine.value"/>
 		<field name="exTaxTotal"/>
-        <field name="productVariant" widget="NestedEditor" summary-view="true" colSpan="4" form-view="product-variant-form" edit-window="self" canSelect="false" showTitle="false"/>
+		<field name="vatLine.value"/>
+		<group name="discount" title="Discount" colSpan="4" cols="4" canCollapse="true">
+	        <field name="discountTypeSelect" onChange="action-sales-order-sub-line-method-compute"/>
+	        <field name="discountAmount" onChange="action-sales-order-sub-line-method-compute"/>
+	    </group>
+        <field name="productVariant" widget="NestedEditor" summary-view="true" colSpan="4" form-view="product-variant-form" edit-window="self" canSelect="false" showTitle="false" hidden="true"/>
     </form>
     
     <action-record name="action-sales-order-sub-line-record-new" model="com.axelor.apps.supplychain.db.SalesOrderSubLine">

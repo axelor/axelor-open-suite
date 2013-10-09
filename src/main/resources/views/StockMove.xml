@@ -27,7 +27,7 @@
         		<field name="stockMoveSeq"/>
         		<field name="name"/>
         		<field name="company" widget="SuggestBox"/>
-        		<field name="partner" domain="self.isContact = false"/>       	
+        		<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
     		</group>
     		<group title="Stock move informations"  colSpan="2" cols="2">
         		<field name="fromLocation"/>

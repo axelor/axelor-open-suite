@@ -6,6 +6,7 @@
     <grid name="purchase-order-grid" title="Supplier RFQs/POs" model="com.axelor.apps.supplychain.db.PurchaseOrder" orderBy="-orderDate">
     	<field name="purchaseOrderSeq"/>
         <field name="supplierPartner"/>
+        <field name="externalReference"/>
         <field name="affairProject"/>
         <field name="orderDate"/>
         <field name="buyerUserInfo"/>
@@ -16,6 +17,10 @@
     <form name="purchase-order-form" title="Supplier RFQ/PO" model="com.axelor.apps.supplychain.db.PurchaseOrder" cols="4" 
     onNew="action-purchase-order-record-new,action-purchase-order-record-company-configuration,action-purchase-order-method-get-location" 
     onSave="action-purchase-order-set-sequence">
+    	<toolbar>
+            <button name="print" title=" Print" onClick="save,action-purchase-order-method-show-purchase-order"/>
+	        <button name="sendByEmail" title="Send email" colSpan="1" onClick="save,action-send-by-email-with-template"/>
+	    </toolbar>
 	    <group colSpan="4" cols="6">
 	        <field name="purchaseOrderSeq" css="highlight"/>
 	        <field name="orderDate"/>
@@ -27,12 +32,11 @@
 	    <notebook colSpan="4">
 	        <page title="PO information" colSpan="4" cols="6">
 	            <group title="Contacts" colSpan="6" cols="6">
-	                <field name="supplierPartner" onChange="action-purchase-order-record-partner" domain="self.partnerTypeSelect = 1"/>
-	                <field name="contactPartner" domain="self.isContact = 'true'"/>
+	                <field name="supplierPartner" form-view="partner-form" onChange="action-purchase-order-record-partner" domain="self.isContact = false"/>
+	                <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 	                <field name="invoicingTypeSelect"/>
 	                <field name="buyerUserInfo"/>
-	                <spacer/>
-	                <spacer/>
+	                <field name="priceList" domain="self.typeSelect = 2 and (self.partner = null or self.partner = :supplierPartner) and (self.validFromDate &lt;= :__date__ or self.validFromDate = null) and (self.validToDate &gt;= :__date__ or self.validToDate = null)"/>
 	                <field name="invoice"/>
 	            </group>
 	            <group title="Delivery" colSpan="6" cols="6">
@@ -51,8 +55,6 @@
 	                        <button name="validate" title="Validate" showIf="statusSelect == 3" colSpan="1" onClick="action-purchase-order-validate-location,save,action-purchase-order-create-stock-move,action-purchase-order-record-validate,save"/>
 	                        <button name="completed" title="Completed" showIf="statusSelect == 4" colSpan="1" onClick="action-purchase-order-record-completed,save"/>
 	                        <button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2" colSpan="1" onClick="save,action-purchase-order-record-cancel"/>
-	                        <button name="sendByEmail" title="Send by email" showIf="statusSelect == 4" colSpan="1"/>
-	                        <button name="printPurchaseOrder" title=" Print Purchase Order" onClick="save,action-purchase-order-method-show-purchase-order"/>
 	                        <button name="generateDeliveryOrder" title="Generate delivery" showIf="statusSelect == 4" colSpan="1"/>
 	                        <button name="showSupplierInvoice" title="Show invoice" colSpan="1" onClick="action-purchase-order-show-supplier-invoice"/>
 	                        <button name="generateControlInvoice" title="Generate control invoice" showIf="statusSelect == 4" colSpan="1" onClick="save,action-purchase-order-method-generate-control-invoice"/>
@@ -96,6 +98,7 @@
 	
     <action-record name="action-purchase-order-record-partner" model="com.axelor.apps.supplychain.db.PurchaseOrder">
  		<field name="currency" expr="eval: supplierPartner?.currency"/>
+ 		<field name="priceList" expr="eval: com.axelor.apps.base.db.PriceList.all().filter('self.partner = ?1 AND self.isActive = true AND self.typeSelect = 2 AND (self.validFromDate &lt;= ?2 or self.validFromDate = null) AND (self.validToDate &gt;= ?2 or self.validToDate = null)',supplierPartner, __date__).fetchOne()"/>
  	</action-record>
     
     <action-record name="action-purchase-order-record-validate" model="com.axelor.apps.supplychain.db.PurchaseOrder">

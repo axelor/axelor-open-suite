@@ -30,6 +30,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,7 +64,6 @@ public class StockMoveInvoiceService {
 		Invoice invoice = invoiceGenerator.generate();
 		
 		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, stockMove.getStockMoveLineList()));
-		invoiceGenerator.computeInvoice(invoice);
 		if (invoice != null) {
 			stockMove.setInvoice(invoice);
 			stockMove.save();
@@ -80,7 +80,6 @@ public class StockMoveInvoiceService {
 		Invoice invoice = invoiceGenerator.generate();
 		
 		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, stockMove.getStockMoveLineList()));
-		invoiceGenerator.computeInvoice(invoice);
 		if (invoice != null) {
 			stockMove.setInvoice(invoice);
 			stockMove.save();
@@ -108,7 +107,7 @@ public class StockMoveInvoiceService {
 			throw new AxelorException(String.format("Produit incorrect dans le mouvement de stock %s ", stockMoveLine.getStockMove().getStockMoveSeq()), IException.CONFIGURATION_ERROR);
 		
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), stockMoveLine.getPrice(), 
-				product.getDescription(), stockMoveLine.getQty(), stockMoveLine.getUnit(), null, product.getInvoiceLineType(), stockMoveLine.getProductVariant(), false)  {
+				product.getDescription(), stockMoveLine.getQty(), stockMoveLine.getUnit(), null, product.getInvoiceLineType(), stockMoveLine.getProductVariant(), BigDecimal.ZERO, 0, null, false)  {
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
 				

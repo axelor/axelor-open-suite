@@ -36,11 +36,14 @@ import java.math.RoundingMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.VatLine;
 import com.axelor.apps.account.service.AccountManagementService;
-import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.db.IPriceListLine;
+import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.supplychain.db.SalesOrder;
 import com.axelor.apps.supplychain.db.SalesOrderLine;
 import com.axelor.apps.supplychain.db.SalesOrderSubLine;
@@ -56,6 +59,12 @@ public class SalesOrderLineService {
 	
 	@Inject
 	private AccountManagementService accountManagementService;
+	
+	@Inject
+	private PriceListService priceListService;
+	
+	@Inject
+	private SalesOrderSubLineService salesOrderSubLineService;
 	
 	
 	/**
@@ -97,12 +106,15 @@ public class SalesOrderLineService {
 	}
 	
 	
-	public BigDecimal computeSalesOrderLine(SalesOrderLine salesOrderLine)  {
+	public BigDecimal computeSalesOrderLine(SalesOrderLine salesOrderLine) throws AxelorException  {
 		
 		BigDecimal exTaxTotal = BigDecimal.ZERO;
 		
 		if(salesOrderLine.getSalesOrderSubLineList() != null && !salesOrderLine.getSalesOrderSubLineList().isEmpty())  {
 			for(SalesOrderSubLine salesOrderSubLine : salesOrderLine.getSalesOrderSubLineList())  {
+				
+				salesOrderSubLine.setCompanyExTaxTotal(salesOrderSubLineService.getCompanyExTaxTotal(salesOrderLine.getExTaxTotal(), salesOrderLine.getSalesOrder()));
+				
 				exTaxTotal = exTaxTotal.add(salesOrderSubLine.getExTaxTotal());
 			}
 		}
@@ -120,10 +132,26 @@ public class SalesOrderLineService {
 				salesOrder.getCurrency(), salesOrder.getCompany().getCurrency(), exTaxTotal, salesOrder.getCreationDate());  
 	}
 	
-	public BigDecimal getCompanyCostPrice(BigDecimal costPrice, SalesOrder salesOrder) throws AxelorException  {
+	
+	public BigDecimal getCompanyCostPrice(SalesOrder salesOrder, SalesOrderLine salesOrderLine) throws AxelorException  {
+		
+		Product product = salesOrderLine.getProduct();
 		
 		return currencyService.getAmountCurrencyConverted(
-				salesOrder.getCurrency(), salesOrder.getCompany().getCurrency(), costPrice, salesOrder.getCreationDate());  
+				product.getPurchaseCurrency(), salesOrder.getCompany().getCurrency(), product.getCostPrice(), salesOrder.getCreationDate());  
 	}
 	
+	
+	public PriceListLine getPriceListLine(SalesOrderLine salesOrderLine, PriceList priceList)  {
+		
+		return priceListService.getPriceListLine(salesOrderLine.getProduct(), salesOrderLine.getQty(), priceList);
+	
+	}
+	
+	
+	public BigDecimal computeDiscount(SalesOrderLine salesOrderLine)  {
+		
+		return priceListService.computeDiscount(salesOrderLine.getPrice(), salesOrderLine.getDiscountTypeSelect(), salesOrderLine.getDiscountAmount());
+		
+	}
 }

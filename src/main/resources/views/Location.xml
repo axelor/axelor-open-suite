@@ -21,7 +21,7 @@
         <field name="parent"/>        
         <field name="typeSelect" onChange="action-location-is-default-location"/>
         <field name="company" widget="SuggestBox" onChange="action-location-is-default-location"/>
-        <field name="partner" domain="self.isContact = false"/>
+        <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
         <field name="isDefaultLocation" onChange="action-location-is-default-location"/>
         <break/>
         <spacer/>

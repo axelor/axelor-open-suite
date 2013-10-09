@@ -147,7 +147,6 @@ public class SalesOrderInvoiceService {
 		Invoice invoice = invoiceGenerator.generate();
 		
 		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, salesOrder.getSalesOrderLineList(), salesOrder.getShowDetailsInInvoice()));
-		invoiceGenerator.computeInvoice(invoice);
 		return invoice;
 		
 	}
@@ -161,7 +160,8 @@ public class SalesOrderInvoiceService {
 		}
 		
 		InvoiceGenerator invoiceGenerator = new InvoiceGenerator(IInvoice.CLIENT_SALE, salesOrder.getCompany(),salesOrder.getPaymentCondition(), 
-				salesOrder.getPaymentMode(), salesOrder.getMainInvoicingAddress(), salesOrder.getClientPartner(), salesOrder.getContactPartner(), salesOrder.getCurrency(), salesOrder.getAffairProject()) {
+				salesOrder.getPaymentMode(), salesOrder.getMainInvoicingAddress(), salesOrder.getClientPartner(), salesOrder.getContactPartner(), 
+				salesOrder.getCurrency(), salesOrder.getAffairProject(), salesOrder.getPriceList()) {
 			
 			@Override
 			public Invoice generate() throws AxelorException {
@@ -204,10 +204,11 @@ public class SalesOrderInvoiceService {
 	}
 	
 	
-	public List<InvoiceLine> createInvoiceLine(Invoice invoice, BigDecimal exTaxTotal, Product product, String productName, BigDecimal price, String description, BigDecimal qty,
-			Unit unit, VatLine vatLine, Task task, ProductVariant productVariant) throws AxelorException  {
+	public List<InvoiceLine> createInvoiceLine(Invoice invoice, Product product, String productName, BigDecimal price, String description, BigDecimal qty,
+			Unit unit, VatLine vatLine, Task task, ProductVariant productVariant, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal) throws AxelorException  {
 		
-		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, productName, price, description, qty, unit, vatLine, task, product.getInvoiceLineType(), productVariant, false)  {
+		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, productName, price, description, qty, unit, vatLine, task, product.getInvoiceLineType(), 
+				productVariant, discountAmount, discountTypeSelect, exTaxTotal, false)  {
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
 				
@@ -226,9 +227,9 @@ public class SalesOrderInvoiceService {
 	
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, SalesOrderLine salesOrderLine) throws AxelorException  {
 		
-		return this.createInvoiceLine(invoice, salesOrderLine.getExTaxTotal(), salesOrderLine.getProduct(), salesOrderLine.getProductName(), 
+		return this.createInvoiceLine(invoice, salesOrderLine.getProduct(), salesOrderLine.getProductName(), 
 				salesOrderLine.getPrice(), salesOrderLine.getDescription(), salesOrderLine.getQty(), salesOrderLine.getUnit(), salesOrderLine.getVatLine(), 
-				salesOrderLine.getTask(), salesOrderLine.getProductVariant());
+				salesOrderLine.getTask(), salesOrderLine.getProductVariant(), salesOrderLine.getDiscountAmount(), salesOrderLine.getDiscountTypeSelect(), salesOrderLine.getExTaxTotal());
 		
 		
 	}
@@ -236,9 +237,10 @@ public class SalesOrderInvoiceService {
 	
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, SalesOrderSubLine salesOrderSubLine) throws AxelorException  {
 		
-		return this.createInvoiceLine(invoice, salesOrderSubLine.getExTaxTotal(), salesOrderSubLine.getProduct(), salesOrderSubLine.getProductName(), 
+		return this.createInvoiceLine(invoice, salesOrderSubLine.getProduct(), salesOrderSubLine.getProductName(), 
 				salesOrderSubLine.getPrice(), salesOrderSubLine.getDescription(), salesOrderSubLine.getQty(), salesOrderSubLine.getUnit(), 
-				salesOrderSubLine.getVatLine(), salesOrderSubLine.getSalesOrderLine().getTask(), salesOrderSubLine.getProductVariant());
+				salesOrderSubLine.getVatLine(), salesOrderSubLine.getSalesOrderLine().getTask(), salesOrderSubLine.getProductVariant(), 
+				salesOrderSubLine.getDiscountAmount(), salesOrderSubLine.getDiscountTypeSelect(), salesOrderSubLine.getExTaxTotal());
 		
 	}
 	

@@ -184,15 +184,18 @@ public class PurchaseOrderService {
 			}
 
 			StockMove stockMove = stockMoveService.createStockMove(null, company, purchaseOrder.getSupplierPartner(), startLocation, purchaseOrder.getLocation());
+			stockMove.setPurchaseOrder(purchaseOrder);
 			stockMove.setStockMoveLineList(new ArrayList<StockMoveLine>());
 			
 			for(PurchaseOrderLine purchaseOrderLine: purchaseOrder.getPurchaseOrderLineList()) {
 				
 				Product product = purchaseOrderLine.getProduct();
 				// Check if the company field 'hasInSmForStorableProduct' = true and productTypeSelect = 'storable' or 'hasInSmForNonStorableProduct' = true and productTypeSelect = 'service' or productTypeSelect = 'other'
-				if(product != null && ((company.getHasInSmForStorableProduct() && product.getProductTypeSelect().equals(IProduct.STORABLE)) || (company.getHasInSmForNonStorableProduct() && !product.getProductTypeSelect().equals(IProduct.STORABLE)))) {
+				if(product != null && ((company.getHasInSmForStorableProduct() && product.getProductTypeSelect().equals(IProduct.STORABLE)) 
+						|| (company.getHasInSmForNonStorableProduct() && !product.getProductTypeSelect().equals(IProduct.STORABLE)))) {
 
-					StockMoveLine stockMoveLine = stockMoveLineService.createStockMoveLine(product, purchaseOrderLine.getQty(), purchaseOrderLine.getUnit(), purchaseOrderLine.getPrice(), stockMove, purchaseOrderLine.getProductVariant(), 2);
+					StockMoveLine stockMoveLine = stockMoveLineService.createStockMoveLine(product, purchaseOrderLine.getQty(), purchaseOrderLine.getUnit(), 
+							purchaseOrderLineService.computeDiscount(purchaseOrderLine), stockMove, purchaseOrderLine.getProductVariant(), 2);
 					if(stockMoveLine != null) {
 						stockMove.getStockMoveLineList().add(stockMoveLine);
 					}
