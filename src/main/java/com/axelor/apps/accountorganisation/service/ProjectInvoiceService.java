@@ -70,7 +70,7 @@ public class ProjectInvoiceService {
 	public Invoice createInvoice(Project project) throws AxelorException {
 
 		
-		InvoiceGenerator invoiceGenerator = new InvoiceGenerator(IInvoice.CLIENT_SALE, project.getCompany(), project.getClientPartner(), project.getContactPartner()) {
+		InvoiceGenerator invoiceGenerator = new InvoiceGenerator(IInvoice.CLIENT_SALE, project.getCompany(), project.getClientPartner(), project.getContactPartner(), null) {
 
 			@Override
 			public Invoice generate() throws AxelorException {
@@ -81,7 +81,6 @@ public class ProjectInvoiceService {
 
 		Invoice invoice = invoiceGenerator.generate();
 		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, project));
-		invoiceGenerator.computeInvoice(invoice);
 		return invoice;
 	}
 	
