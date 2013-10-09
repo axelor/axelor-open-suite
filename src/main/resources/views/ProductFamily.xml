@@ -5,13 +5,11 @@
 
     <grid name="product-family-grid" title="Products families" model="com.axelor.apps.base.db.ProductFamily" orderBy="name">
         <field name="name"/>
-        <field name="productCategory"/>
         <field name="code"/>
     </grid>
     
     <form name="product-family-form" title="Product family" model="com.axelor.apps.base.db.ProductFamily" cols="4">
         <field name="name"/>
-        <field name="productCategory"/>
         <field name="code"/>
         <field name="accountManagementList" grid-view="account-management-product-grid" form-view="account-management-product-form"
         domain="self.typeSelect = 1" colSpan="4"/>
