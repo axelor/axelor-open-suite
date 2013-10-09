@@ -53,7 +53,7 @@
 	    </group>
 	    <group colSpan="1" cols="2">
 	        <group title="Attributes" colSpan="2" cols="2" colWidths="10%,90%">
-	            <field name="eventStatusSelect"/>
+	            <field name="statusSelect"/>
 	            <field name="calendar" widget="SuggestBox"/>
 	        </group>
 	        <group title="Linked to" colSpan="2" cols="2">

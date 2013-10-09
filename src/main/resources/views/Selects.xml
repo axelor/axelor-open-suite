@@ -46,39 +46,6 @@
 		<option value="100">100 %</option>
 	</selection>
 	
-	<!-- <selection name="crm.event.call.primary.status.select"> -->
-	<!-- <option value="1">Inboud</option> -->
-	<!-- <option value="2">Outbound</option> -->
-	<!-- </selection> -->
-
-	<!-- <selection name="crm.event.secondary.status.select"> -->
-	<!-- <option value="1">Planned</option> -->
-	<!-- <option value="2">Held</option> -->
-	<!-- <option value="3">Not held</option> -->
-	<!-- </selection> -->
-
-	<!-- <selection name="crm.event.task.thirdary.status.select"> -->
-	<!-- <option value="1">Not started</option> -->
-	<!-- <option value="2">In progress</option> -->
-	<!-- <option value="3">Completed</option> -->
-	<!-- <option value="4">Pending input</option> -->
-	<!-- <option value="5">Deferred</option> -->
-	<!-- </selection> -->
-
-<!-- 	<selection name="crm.event.related.to.select"> -->
-<!-- 		<option value="1">Partner</option> -->
-<!-- 		<option value="2">Contact</option> -->
-<!-- 		<option value="3">Lead</option> -->
-<!-- 		<option value="4">Opportunity</option> -->
-<!-- 		<option value="5">Product</option> -->
-<!-- 		<option value="6">Task</option> -->
-<!-- 		<option value="7">Affair</option> -->
-<!-- 		<option value="8">Quote</option> -->
-<!-- 		<option value="9">Order</option> -->
-<!-- 		<option value="10">Project</option> -->
-<!-- 		<option value="11">Task (Project)</option> -->
-<!-- 	</selection> -->
-
 	<selection name="crm.event.related.to.select">
 		<option value="com.axelor.apps.base.db.Partner">Partner/Contact</option>
 		<option value="com.axelor.apps.crm.db.Lead">Lead</option>
