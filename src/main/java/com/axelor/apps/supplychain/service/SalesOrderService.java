@@ -204,7 +204,7 @@ public class SalesOrderService {
 				}	
 			}
 			if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
-				stockMoveService.validate(stockMove);
+				stockMoveService.plan(stockMove);
 			}
 		}
 	}

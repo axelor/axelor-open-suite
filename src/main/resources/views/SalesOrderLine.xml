@@ -102,7 +102,7 @@
     </action-attrs>
     
     <action-attrs name="action-sales-order-line-attrs-hide-product-variant">
-    	<attribute name="hidden" for="productVariant" expr="product?.productVariantConfiguration == null"/>
+    	<attribute name="hidden" for="productVariant" expr="eval: product?.productVariantConfiguration == null"/>
     </action-attrs>
     
     <action-attrs name="action-sales-order-line-attrs-task-readonly">
