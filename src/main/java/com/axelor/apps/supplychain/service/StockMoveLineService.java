@@ -237,7 +237,7 @@ public class StockMoveLineService {
 	
 	
 	public void updateLocations(Location fromLocation, Location toLocation, Product product, BigDecimal qty, int fromStatus, int toStatus, LocalDate 
-			lastFutureStockMoveDate, ProductVariant productVariant, TrackingNumber trackingNumber )  {
+			lastFutureStockMoveDate, ProductVariant productVariant, TrackingNumber trackingNumber ) throws AxelorException  {
 		
 		switch(fromStatus)  {
 			case IStockMove.PLANNED:

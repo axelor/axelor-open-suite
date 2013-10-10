@@ -41,9 +41,11 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.TrackingNumber;
 import com.axelor.apps.base.service.ProductVariantService;
+import com.axelor.apps.supplychain.db.ILocation;
 import com.axelor.apps.supplychain.db.Location;
 import com.axelor.apps.supplychain.db.LocationLine;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -58,7 +60,7 @@ public class LocationLineService {
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void updateLocation(Location location, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement, 
-			LocalDate lastFutureStockMoveDate, TrackingNumber trackingNumber, ProductVariant productVariant)  {
+			LocalDate lastFutureStockMoveDate, TrackingNumber trackingNumber, ProductVariant productVariant) throws AxelorException  {
 		
 		this.updateLocation(location, product, qty, current, future, isIncrement, lastFutureStockMoveDate);
 		
@@ -70,7 +72,7 @@ public class LocationLineService {
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void updateLocation(Location location, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement, LocalDate lastFutureStockMoveDate)  {
+	public void updateLocation(Location location, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement, LocalDate lastFutureStockMoveDate) throws AxelorException  {
 		
 		LocationLine locationLine = this.getLocationLine(location, product);
 		
@@ -79,6 +81,8 @@ public class LocationLineService {
 		
 		locationLine = this.updateLocation(locationLine, qty, current, future, isIncrement, lastFutureStockMoveDate);
 		
+		this.checkStockMin(locationLine, false);
+		
 		locationLine.save();
 		
 	}
@@ -86,7 +90,7 @@ public class LocationLineService {
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void updateDetailLocation(Location location, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement, 
-			LocalDate lastFutureStockMoveDate, ProductVariant productVariant, TrackingNumber trackingNumber)  {
+			LocalDate lastFutureStockMoveDate, ProductVariant productVariant, TrackingNumber trackingNumber) throws AxelorException  {
 		
 		LocationLine detailLocationLine = this.getDetailLocationLine(location, product, productVariant, trackingNumber);
 		
@@ -95,9 +99,35 @@ public class LocationLineService {
 		
 		detailLocationLine = this.updateLocation(detailLocationLine, qty, current, future, isIncrement, lastFutureStockMoveDate);
 		
+		this.checkStockMin(detailLocationLine, true);
+		
 		detailLocationLine.save();
 		
 	}
+	
+	
+	public void checkStockMin(LocationLine locationLine, boolean isDetailLocationLine) throws AxelorException  {
+		
+		if(!isDetailLocationLine && locationLine.getCurrentQty().compareTo(BigDecimal.ZERO) == -1 && locationLine.getLocation().getTypeSelect() == ILocation.INTERNAL)  {
+			throw new AxelorException(String.format("Les stocks du produit %s (%s) sont insuffisants pour réaliser la livraison", 
+					locationLine.getProduct().getName(), locationLine.getProduct().getCode()), IException.CONFIGURATION_ERROR);
+		}
+		else if(isDetailLocationLine && locationLine.getCurrentQty().compareTo(BigDecimal.ZERO) == -1 && locationLine.getLocation().getTypeSelect() == ILocation.INTERNAL)  {
+			String variantName = "";
+			if(locationLine.getProductVariant() != null)  {
+				variantName = locationLine.getProductVariant().getName();
+			}
+			
+			String trackingNumber = "";
+			if(locationLine.getTrackingNumber() != null)  {
+				trackingNumber = locationLine.getTrackingNumber().getTrackingNumberSeq();
+			}
+			
+			throw new AxelorException(String.format("Les stocks du produit %s (%s), variante {}, numéro de suivi {}  sont insuffisants pour réaliser la livraison", 
+					locationLine.getProduct().getName(), locationLine.getProduct().getCode(), variantName, trackingNumber), IException.CONFIGURATION_ERROR);
+		}
+	}
+	
 	
 	
 	public LocationLine updateLocation(LocationLine locationLine, BigDecimal qty, boolean current, boolean future, boolean isIncrement, 
@@ -142,6 +172,24 @@ public class LocationLineService {
 	}
 	
 	
+	
+	/**
+	 * Récupération de la ligne détaillée de stock :
+	 * On vérifie si l'entrepot contient une ligne détaillée de stock pour un produit, une vairante de produit et un numéro de suivi donnés.
+	 * Si l'entrepot ne contient pas de ligne détaillée de stock pour ces paramètres, alors on vérifie que
+	 * et on créé une ligne détaillée de stock. 
+	 * 
+	 * @param detailLocation
+	 * 			Entrepot détaillé
+	 * @param product
+	 * 			Produit concerné
+	 * @param productVariant
+	 * 			La variante de produit concernée
+	 * @param trackingNumber
+	 * 			Le numéro de suivi concerné
+	 * @return
+	 * 			Une ligne détaillée de stock
+	 */
 	public LocationLine getDetailLocationLine(Location detailLocation, Product product, ProductVariant productVariant, TrackingNumber trackingNumber)  {
 		
 		LocationLine detailLocationLine = this.getDetailLocationLine(detailLocation.getDetailsLocationLineList(), product, productVariant, trackingNumber);
@@ -164,6 +212,15 @@ public class LocationLineService {
 	}
 	
 	
+	/**
+	 * Permet de récupérer la ligne de stock d'un entrepot en fonction d'un produit donné.
+	 * @param locationLineList
+	 * 		Une liste de ligne de stock
+	 * @param product
+	 * 		Un produit
+	 * @return
+	 * 		La ligne de stock
+	 */
 	public LocationLine getLocationLine(List<LocationLine> locationLineList, Product product)  {
 		
 		for(LocationLine locationLine : locationLineList)  {
@@ -178,6 +235,19 @@ public class LocationLineService {
 	}
 	
 	
+	/**
+	 * Permet de récupérer la ligne détaillée de stock d'un entrepot en fonction d'un produit, d'une variante de produit et d'un numéro de suivi donnés.
+	 * @param detailLocationLineList
+	 * 		Une liste de ligne détaillée de stock
+	 * @param product
+	 * 		Un produit
+	 * @param productVariant
+	 * 		Une variante de produit
+	 * @param trackingNumber
+	 * 		Un numéro de suivi
+	 * @return
+	 * 		Un ligne de stock
+	 */
 	public LocationLine getDetailLocationLine(List<LocationLine> detailLocationLineList, Product product, ProductVariant productVariant, TrackingNumber trackingNumber)  {
 		
 		for(LocationLine detailLocationLine : detailLocationLineList)  {
@@ -194,6 +264,16 @@ public class LocationLineService {
 	}
 	
 	
+	
+	/**
+	 * Permet de créer une ligne de stock pour un entrepot et un produit donnés.
+	 * @param location
+	 * 		Un entrepot
+	 * @param product
+	 * 		Un produit
+	 * @return
+	 * 		La ligne de stock
+	 */
 	public LocationLine createLocationLine(Location location, Product product)  {
 		
 		LOG.debug("Création d'une ligne de stock : Entrepot? {}, Produit? {} ", new Object[] { location.getName(), product.getCode() });
@@ -210,6 +290,19 @@ public class LocationLineService {
 	}
 	
 	
+	/**
+	 * Permet de créer une ligne détaillée de stock pour un entrepot, un produit, une variante de produit et un numéro de suivi donnés.
+	 * @param location
+	 * 		Un entrepot
+	 * @param product
+	 * 		Un produit
+	 * @param productVariant
+	 * 		Une variante de produit
+	 * @param trackingNumber
+	 * 		Un numéro de suivi
+	 * @return
+	 * 		La ligne détaillée de stock
+	 */
 	public LocationLine createDetailLocationLine(Location location, Product product, ProductVariant productVariant, TrackingNumber trackingNumber)  {
 		
 		LOG.debug("Création d'une ligne de détail de stock : Entrepot? {}, Produit? {}, Variante? {}, Num de suivi? {} ", 

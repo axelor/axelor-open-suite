@@ -211,7 +211,7 @@ public class InventoryService {
 			}
 		}
 		if (stockMove.getStockMoveLineList() != null) {
-			stockMoveService.validate(stockMove);
+			stockMoveService.plan(stockMove);
 		}
 	}
 

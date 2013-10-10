@@ -96,9 +96,9 @@ public class PurchaseOrderController {
 		
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 		
-		if(purchaseOrder != null) {
+		if(purchaseOrder.getId() != null) {
 
-			purchaseOrderService.createStocksMoves(purchaseOrder);
+			purchaseOrderService.createStocksMoves(PurchaseOrder.find(purchaseOrder.getId()));
 		}
 	}
 	

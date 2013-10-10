@@ -16,10 +16,10 @@
     </grid>
     
     <form name="sales-order-sub-line-form" title="SO subline" model="com.axelor.apps.supplychain.db.SalesOrderSubLine" cols="4" 
-    onNew="action-sales-order-sub-line-record-new,action-sales-order-sub-line-record-sequence,action-sales-order-line-attrs-hide-product-variant"
-    onLoad="action-sales-order-line-attrs-hide-product-variant">
+    onNew="action-sales-order-sub-line-record-new,action-sales-order-sub-line-record-sequence,action-sales-order-sub-line-attrs-hide-product-variant"
+    onLoad="action-sales-order-sub-line-attrs-hide-product-variant">
     	<field name="sequence"/>
-    	<field name="product" domain="self.endDate = null or self.endDate &gt; :__date__" onChange="action-sales-order-sub-line-method-get-product-information,action-sales-order-sub-line-method-compute,action-sales-order-sub-line-record-product-variant,action-sales-order-line-attrs-hide-product-variant"/>
+    	<field name="product" domain="self.endDate = null or self.endDate &gt; :__date__" onChange="action-sales-order-sub-line-method-get-product-information,action-sales-order-sub-line-method-compute,action-sales-order-sub-line-record-product-variant,action-sales-order-sub-line-attrs-hide-product-variant"/>
     	<field name="productName"/>
     	<field name="employee"/>
     	<field name="description" colSpan="4"/>
@@ -57,5 +57,11 @@
 	<action-method name="action-sales-order-sub-line-method-get-product-information">
 		<call class="com.axelor.apps.supplychain.web.SalesOrderSubLineController" method="getProductInformation"/>
 	</action-method>
+	
+	
+	<!-- ACTION ATTRS -->
+	<action-attrs name="action-sales-order-sub-line-attrs-hide-product-variant">
+    	<attribute name="hidden" for="productVariant" expr="eval: product?.productVariantConfiguration == null"/>
+    </action-attrs>
     
 </object-views>

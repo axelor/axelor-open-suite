@@ -160,9 +160,9 @@ public class SalesOrderController {
 		
 		SalesOrder salesOrder = request.getContext().asType(SalesOrder.class);
 		
-		if(salesOrder != null) {
+		if(salesOrder.getId() != null) {
 			
-			salesOrderService.createStocksMovesFromSalesOrder(salesOrder);
+			salesOrderService.createStocksMovesFromSalesOrder(SalesOrder.find(salesOrder.getId()));
 		}
 	}
 	
