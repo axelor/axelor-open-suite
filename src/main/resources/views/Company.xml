@@ -186,6 +186,9 @@
             <page title="Invoicing" cols="4">
             	<field name="showDetailsInInvoice"/>
             </page>
+            <page title="Printing">
+            	<field name="printingSettings" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="printing-setting-form"  summary-view="true"/>
+            </page>
         </notebook>
     </form>
 	
