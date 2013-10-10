@@ -217,7 +217,7 @@
 "call-lead-converted-form","","group","Meeting date","","","",""
 "call-lead-converted-form","","group","Description","","","",""
 "call-lead-converted-form","","group","Assignment","","","",""
-"com.axelor.apps.base.db.Partner","contact-lead-converted-form","form","Partner","","","",""
+"com.axelor.apps.base.db.Partner","contact-lead-converted-form","form","Contact","","","",""
 "contact-lead-converted-form","information","page","Informations","","","",""
 "contact-lead-converted-form","","group","Partner details","","","",""
 "contact-lead-converted-form","","group","Postal addresses","","","",""
