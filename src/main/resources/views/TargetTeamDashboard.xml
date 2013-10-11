@@ -12,8 +12,8 @@
 		<portlet action="chart:chart.team.opportunity.amount.won.target.bar" height="350"/>
 		<portlet action="chart:chart.team.opportunity.created.number.target.gauge" height="350"/>
 		<portlet action="chart:chart.team.opportunity.created.number.target.bar" height="350"/>
-		<portlet action="chart:chart.team.opportunity.amount.won.target.gauge" height="350"/>
-		<portlet action="chart:chart.team.opportunity.amount.won.target.bar" height="350"/>
+		<portlet action="chart:chart.team.opportunity.created.won.target.gauge" height="350"/>
+		<portlet action="chart:chart.team.opportunity.created.won.target.bar" height="350"/>
 <!-- 		<portlet action="chart:chart.team.sales.order.amount.won.target.gauge" height="350"/> -->
 <!-- 		<portlet action="chart:chart.team.sales.order.amount.won.target.bar" height="350"/> -->
 <!-- 		<portlet action="chart:chart.team.sales.order.created.number.target.gauge" height="350"/> -->

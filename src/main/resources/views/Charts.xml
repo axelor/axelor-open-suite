@@ -677,7 +677,7 @@
 <!-- 		    <series key="_opportunityCreatedNumberTarget" type="bar"/> -->
 		</chart>
 		
-		<chart name="chart.user.opportunity.amount.won.target.gauge" title="Opportunities created won target completed (%)">
+		<chart name="chart.user.opportunity.created.won.target.gauge" title="Opportunities created won target completed (%)">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -692,7 +692,7 @@
 	    	<config name="max" value="200"/>
 		</chart>
 		
-		<chart name="chart.user.opportunity.amount.won.target.bar" title="Opportunities created won historical">
+		<chart name="chart.user.opportunity.created.won.target.bar" title="Opportunities created won historical">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -976,7 +976,7 @@
 <!-- 		    <series key="_opportunityCreatedNumberTarget" type="bar"/> -->
 		</chart>
 		
-		<chart name="chart.team.opportunity.amount.won.target.gauge" title="Opportunities created won target completed (%)">
+		<chart name="chart.team.opportunity.created.won.target.gauge" title="Opportunities created won target completed (%)">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -991,7 +991,7 @@
 	    	<config name="max" value="200"/>
 		</chart>
 		
-		<chart name="chart.team.opportunity.amount.won.target.bar" title="Opportunities created won historical">
+		<chart name="chart.team.opportunity.created.won.target.bar" title="Opportunities created won historical">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
