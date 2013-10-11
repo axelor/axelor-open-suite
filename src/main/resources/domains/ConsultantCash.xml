@@ -7,8 +7,7 @@
 
  	<entity name="ConsultantCash" lang="java">
  		<integer name="importId"/>
-		<string name="label" title="Label"/>
-		<string name="name" title="Title"/>
+		<string name="label" title="Label" namecolumn="true"/>
 		<decimal name="amount" title="Amount"/>
 		<date name="date" title="Date"/>
 		<integer name="typeSelect" title="Type" selection="organisation.consultant.type.select"/>
