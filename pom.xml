@@ -13,7 +13,7 @@
   <parent>
     <artifactId>axelor-module-parent</artifactId>
     <groupId>com.axelor</groupId>
-    <version>0.9.1-SNAPSHOT</version>
+    <version>0.9.0-SNAPSHOT</version>
     <relativePath>../axelor-module-parent/pom.xml</relativePath>
   </parent>
 
