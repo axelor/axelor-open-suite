@@ -48,10 +48,10 @@
         <group name="accountGroup" title="Accounting details" colSpan="4" cols="4" canCollapse="true">
             <field name="schedulePaymentOk" readonly="true"/>
             <field name="doubtfulCustomerOk" readonly="true"/>
-            <field name="paymentSchedule" readonly="true"/>
+            <field name="paymentSchedule" readonly="true" showIf="paymentSchedule"/>
             <field name="journal" domain="self.inactiveOk != true"/>
             <field name="move"/>
-            <field name="oldMove"/>
+            <field name="oldMove" showIf="oldMove"/>
    			<field name="currency" onChange="action-invoice-attrs-change-total-title"/>
         </group>
         <notebook colSpan="4">
@@ -60,12 +60,11 @@
 <!--                 <field name="invoiceLineTaxList" grid-view="invoice-line-tax-grid" form-view="invoice-line-tax-form" colSpan="4" /> -->
                 <field name="invoiceLineVatList" grid-view="invoice-line-vat-grid" form-view="invoice-line-vat-form" colSpan="4" />
             </page>
-            <page title="Details" cols="4">
-				<field name="taxInvoiceLineList" grid-view="tax-invoice-line-grid" form-view="tax-invoice-line-form" colSpan="4" />
-                <field name="invoiceLineTaxHistoryList" grid-view="invoice-line-tax-history-grid" form-view="invoice-line-tax-history-form" colSpan="4" />
-            </page>
+<!--             <page title="Details" cols="4"> -->
+<!-- 				<field name="taxInvoiceLineList" grid-view="tax-invoice-line-grid" form-view="tax-invoice-line-form" colSpan="4" /> -->
+<!--                 <field name="invoiceLineTaxHistoryList" grid-view="invoice-line-tax-history-grid" form-view="invoice-line-tax-history-form" colSpan="4" /> -->
+<!--             </page> -->
             <page title="Configuration" cols="6">
-            	<field name="copyOthersOk" />
             	<group name="refundGroup" colSpan="6" cols="4">
 	            	<separator title="Refund" colSpan="4"/>
 	                <button name="createRefund" title="Generate refund" colSpan="2" onClick="save,action-invoice-method-create-refund,save"/>
@@ -321,14 +320,13 @@
 	    <attribute name="readonly" expr="eval: status?.code in ['val','can','dis']" for="dateGroup"/>
 	    
 	    <attribute name="readonly" expr="eval: status?.code in ['val','can','dis']" for="invoiceLineList"/>
-	    <attribute name="readonly" expr="eval: status?.code in ['val','can','dis']" for="invoiceLineTaxList"/>
+<!-- 	    <attribute name="readonly" expr="eval: status?.code in ['val','can','dis']" for="invoiceLineTaxList"/> -->
 	    <attribute name="readonly" expr="eval: status?.code in ['val','can','dis']" for="invoiceLineVatList"/>
 	    
-	    <attribute name="readonly" expr="eval: status?.code in ['val','can','dis']" for="taxInvoiceLineList"/>
-	    <attribute name="readonly" expr="eval: status?.code in ['val','can','dis']" for="invoiceLineTaxHistoryList"/>
+<!-- 	    <attribute name="readonly" expr="eval: status?.code in ['val','can','dis']" for="taxInvoiceLineList"/> -->
+<!-- 	    <attribute name="readonly" expr="eval: status?.code in ['val','can','dis']" for="invoiceLineTaxHistoryList"/> -->
 	    
 	    <attribute name="readonly" expr="eval: status?.code in ['val','can','dis']" for="previousInvoice"/>
-	    <attribute name="readonly" expr="eval: status?.code in ['val','can','dis']" for="copyOthersOk"/>
 	    <attribute name="readonly" expr="eval: !(status?.code in ['dis'])" for="refundGroup"/>
 	    
 	    <attribute name="readonly" expr="eval: status?.code in ['val','can','dis']" for="alarmList"/>
