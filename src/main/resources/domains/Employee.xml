@@ -47,6 +47,9 @@
 		<one-to-many name="paySheetList" ref="PaySheet" mappedBy="employee" title="Pay sheets"/>
 		
 		<one-to-many name="employeeLeaveList" ref="EmployeeLeave" mappedBy="employee" title="Employee leavees"/>
+		
+		<one-to-many name="consultantOperatingList" ref="com.axelor.apps.organisation.db.ConsultantOperating" mappedBy="employee" title="Consultant operating"/>
+		<one-to-many name="consultantCashList" ref="com.axelor.apps.organisation.db.ConsultantCash" mappedBy="employee" title="Consultant cash"/>
 	</entity>
 
 </domain-models>
