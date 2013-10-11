@@ -347,4 +347,11 @@
 		<option value="3">TMA</option>
 	</selection>
 	
+	<selection name="organisation.consultant.type.select">
+		<option value="1">Regularization</option>
+		<option value="2">Commission</option>
+		<option value="3">Net salary</option>
+		<option value="4">Wage burden</option>
+	</selection>
+	
 </object-views>

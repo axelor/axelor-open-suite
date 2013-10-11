@@ -102,6 +102,10 @@
 			<!-- <field name="placementFollowUpList" grid-view="placement-follow-up-edit-grid" 
 				form-view="placement-follow-up-edit-list"></field> -->
 			<!-- </page> -->
+			<page title="Consultant">
+				<field name="consultantOperatingList" title="Consultant operation" colSpan="4"/>
+				<field name="consultantCashList" title="Consultant cash" colSpan="4"/>
+			</page>
 		</notebook>
 	</form>
 	
