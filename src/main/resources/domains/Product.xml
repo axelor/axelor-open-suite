@@ -50,6 +50,8 @@
     
     <many-to-one name="productVariantConfiguration" ref="com.axelor.apps.base.db.ProductVariantConfiguration"/>
   
+  	<many-to-one name="defaultSupplierPartner" ref="com.axelor.apps.base.db.Partner" title="Default supplier partner"/>
+  
   </entity>
 
 </domain-models>
