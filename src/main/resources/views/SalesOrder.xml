@@ -63,10 +63,10 @@
 	                            <button name="generateInvoice" title="Generate invoice" showIf="statusSelect == 3 &amp;&amp; invoicingTypeSelect != 5" colSpan="2" onClick="save,action-sales-order-method-generate-invoice"/>
 	                            <button name="generateProject" title="Generate project" showIf="statusSelect == 3" colSpan="2"/>
 	                        </group>
-	                        <group readonly="true" colSpan="1" cols="2">
-	                            <field name="creationDate"/>
-	                            <field name="validatedByUserInfo" colSpan="1"/>
-	                            <field name="validationDate" colSpan="1"/>
+	                        <group colSpan="1" cols="2">
+	                            <field name="creationDate" readonly="true"/>
+	                            <field name="validatedByUserInfo" colSpan="1" readonly="true"/>
+	                            <field name="validationDate" colSpan="1" readonly="true"/>
 	                            <field name="orderDate"/>
 	                            <field name="orderNumber"/>
 	                        </group>
