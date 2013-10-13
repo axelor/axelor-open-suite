@@ -33,18 +33,27 @@ package com.axelor.apps.supplychain.service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.IProduct;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.UserInfo;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.organisation.db.Project;
+import com.axelor.apps.supplychain.db.IPurchaseOrder;
 import com.axelor.apps.supplychain.db.Location;
 import com.axelor.apps.supplychain.db.PurchaseOrder;
-import com.axelor.apps.supplychain.db.PurchaseOrderLineVat;
 import com.axelor.apps.supplychain.db.PurchaseOrderLine;
+import com.axelor.apps.supplychain.db.PurchaseOrderLineVat;
 import com.axelor.apps.supplychain.db.StockMove;
 import com.axelor.apps.supplychain.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
@@ -70,6 +79,9 @@ public class PurchaseOrderService {
 	
 	@Inject
 	private StockMoveLineService stockMoveLineService;
+	
+	@Inject
+	private SequenceService sequenceService;
 	
 	public PurchaseOrder _computePurchaseOrderLines(PurchaseOrder purchaseOrder) throws AxelorException  {
 		
@@ -161,6 +173,42 @@ public class PurchaseOrderService {
 		else { purchaseOrder.getPurchaseOrderLineVatList().clear(); }
 		
 	}
+	
+	
+	
+	public PurchaseOrder createPurchaseOrder(Project affairProject, UserInfo buyerUserInfo, Company company, Partner contactPartner, Currency currency, 
+			LocalDate deliveryDate, String externalReference, int invoicingTypeSelect, Location location, LocalDate orderDate, PriceList priceList, Partner supplierPartner) throws AxelorException  {
+		PurchaseOrder purchaseOrder = new PurchaseOrder();
+		purchaseOrder.setAffairProject(affairProject);
+		purchaseOrder.setBuyerUserInfo(buyerUserInfo);
+		purchaseOrder.setCompany(company);
+		purchaseOrder.setContactPartner(contactPartner);
+		purchaseOrder.setCurrency(currency);
+		purchaseOrder.setDeliveryDate(deliveryDate);
+		purchaseOrder.setExternalReference(externalReference);
+		purchaseOrder.setInvoicingTypeSelect(invoicingTypeSelect);
+		purchaseOrder.setLocation(location);
+		purchaseOrder.setOrderDate(orderDate);
+		purchaseOrder.setPriceList(priceList);
+		purchaseOrder.setPurchaseOrderLineList(new ArrayList<PurchaseOrderLine>());
+		
+		purchaseOrder.setPurchaseOrderSeq(this.getSequence(company));
+		purchaseOrder.setStatusSelect(IPurchaseOrder.DRAFT);
+		purchaseOrder.setSupplierPartner(supplierPartner);
+		
+		return purchaseOrder;
+	}
+	
+	
+	public String getSequence(Company company) throws AxelorException  {
+		String seq = sequenceService.getSequence(IAdministration.PURCHASE_ORDER,company,false);
+		if (seq == null)  {
+			throw new AxelorException(String.format("La société %s n'a pas de séquence de configurée pour les commandes fournisseur",company.getName()),
+							IException.CONFIGURATION_ERROR);
+		}
+		return seq;
+	}
+	
 	
 	/**
 	 * Méthode permettant de créer un StockMove à partir d'un PurchaseOrder.

@@ -69,12 +69,7 @@ public class PurchaseOrderController {
 		
 		if(purchaseOrder != null && purchaseOrder.getPurchaseOrderSeq() ==  null && purchaseOrder.getCompany() != null) {
 			
-			String ref = sequenceService.getSequence(IAdministration.PURCHASE_ORDER,purchaseOrder.getCompany(),false);
-			if (ref == null)
-				throw new AxelorException(String.format("La société %s n'a pas de séquence de configurée pour les commandes fournisseur",purchaseOrder.getCompany().getName()),
-								IException.CONFIGURATION_ERROR);
-			else
-				response.setValue("purchaseOrderSeq", ref);
+			response.setValue("purchaseOrderSeq", purchaseOrderService.getSequence(purchaseOrder.getCompany()));
 		}
 	}
 	
