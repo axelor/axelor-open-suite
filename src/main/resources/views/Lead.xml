@@ -98,7 +98,8 @@
 		        <group title="Marketing" colSpan="4" css="groupTitle" cols="6">
 		            <field name="campaign"/>
 		            <field name="referredBy"/>
-		            <field name="isDoNotCall" colSpan="2"/>
+		            <field name="isDoNotCall"/>
+		            <field name="isDoNotSendEmail"/>
 		        </group>
 		        <field name="opportunityAmount"/>
 		   </page>
