@@ -124,9 +124,9 @@ public class StockMoveService {
 	 * @return l'objet StockMove
 	 * @throws AxelorException Aucune séquence de StockMove (Livraison) n'a été configurée
 	 */
-	public StockMove createStockMove(Address toAddress, Company company, Partner clientPartner, Location fromLocation, Location toLocation) throws AxelorException {
+	public StockMove createStockMove(Address toAddress, Company company, Partner clientPartner, Location fromLocation, Location toLocation, LocalDate estimatedDate) throws AxelorException {
 
-		return this.createStockMove(toAddress, company, clientPartner, fromLocation, toLocation, this.today, this.today);
+		return this.createStockMove(toAddress, company, clientPartner, fromLocation, toLocation, null, estimatedDate);
 	}
 	
 	

@@ -49,6 +49,7 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.organisation.db.Project;
+import com.axelor.apps.supplychain.db.ILocation;
 import com.axelor.apps.supplychain.db.IPurchaseOrder;
 import com.axelor.apps.supplychain.db.Location;
 import com.axelor.apps.supplychain.db.PurchaseOrder;
@@ -193,7 +194,7 @@ public class PurchaseOrderService {
 		purchaseOrder.setPurchaseOrderLineList(new ArrayList<PurchaseOrderLine>());
 		
 		purchaseOrder.setPurchaseOrderSeq(this.getSequence(company));
-		purchaseOrder.setStatusSelect(IPurchaseOrder.DRAFT);
+		purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_DRAFT);
 		purchaseOrder.setSupplierPartner(supplierPartner);
 		
 		return purchaseOrder;
@@ -231,7 +232,7 @@ public class PurchaseOrderService {
 						GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
 			}
 
-			StockMove stockMove = stockMoveService.createStockMove(null, company, purchaseOrder.getSupplierPartner(), startLocation, purchaseOrder.getLocation());
+			StockMove stockMove = stockMoveService.createStockMove(null, company, purchaseOrder.getSupplierPartner(), startLocation, purchaseOrder.getLocation(), purchaseOrder.getDeliveryDate());
 			stockMove.setPurchaseOrder(purchaseOrder);
 			stockMove.setStockMoveLineList(new ArrayList<StockMoveLine>());
 			
@@ -253,5 +254,11 @@ public class PurchaseOrderService {
 				stockMoveService.plan(stockMove);
 			}
 		}
+	}
+	
+	
+	public Location getLocation(Company company)  {
+		
+		return Location.all().filter("company = ? and isDefaultLocation = ? and typeSelect = ?", company, true, ILocation.INTERNAL).fetchOne();
 	}
 }

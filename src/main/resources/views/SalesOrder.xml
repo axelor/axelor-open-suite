@@ -25,7 +25,7 @@
 	    <group colSpan="4" cols="6">
 	        <field name="salesOrderSeq" css="highlight"/>
 	        <field name="affairProject" domain="self.isAffair = true"/>        
-	        <field name="company" widget="SuggestBox" onChange="action-sales-order-record-company-configuration"/>
+	        <field name="company" widget="SuggestBox" onChange="action-sales-order-record-company-configuration,action-sales-order-method-get-location"/>
 	        <field name="externalReference"/>
 	        <field name="location" domain="self.company = :company and self.typeSelect = 1"/>
 	        <field name="currency"/>
@@ -69,6 +69,7 @@
 	                            <field name="validationDate" colSpan="1" readonly="true"/>
 	                            <field name="orderDate"/>
 	                            <field name="orderNumber"/>
+	                            <field name="shipmentDate"/>
 	                        </group>
 	                    </group>
 	                </group>
@@ -101,7 +102,7 @@
 	                <field name="showDetailsInInvoice"/>
 	            </group>
 	        </page>
-	        <page title="Payment schedule" showIf="invoicingTypeSelect == 2">
+	        <page title="Schedule" showIf="invoicingTypeSelect == 2">
 	            <field name="invoicingMomentSelect" colSpan="3"/>
 	            <field name="salesOrderScheduleLineList" colSpan="4"/>
 	        </page>

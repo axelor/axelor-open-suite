@@ -39,7 +39,6 @@ import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.supplychain.db.PurchaseOrder;
 import com.axelor.apps.supplychain.db.PurchaseOrderLine;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineService;
-import com.axelor.apps.supplychain.service.SalesOrderLineService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;

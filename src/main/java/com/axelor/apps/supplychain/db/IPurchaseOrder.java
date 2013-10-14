@@ -37,11 +37,21 @@ public interface IPurchaseOrder {
 	 * Static purchase order status select
 	 */
 
-	static final int DRAFT = 1;
-	static final int REQUESTED = 2;
-	static final int RECEIVED = 3;
-	static final int VALIDATED = 4;
-	static final int FINISHED = 5;
-	static final int CANCELED = 6;
+	static final int STATUS_DRAFT = 1;
+	static final int STATUS_REQUESTED = 2;
+	static final int STATUS_RECEIVED = 3;
+	static final int STATUS_VALIDATED = 4;
+	static final int STATUS_FINISHED = 5;
+	static final int STATUS_CANCELED = 6;
+	
+	
+	/**
+	 * Static invoicing type select
+	 */
 
+	static final int INVOICING_FREE = 1;
+	static final int INVOICING_BY_DELIVERY = 2;
+	static final int INVOICING_PER_ORDER = 3;
+	
+	
 }

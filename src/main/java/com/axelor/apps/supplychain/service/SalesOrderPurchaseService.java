@@ -30,32 +30,25 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.db.IInvoice;
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.VatLine;
-import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
-import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.ProductVariant;
-import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.UserInfo;
 import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.organisation.db.Task;
+import com.axelor.apps.base.service.user.UserInfoService;
+import com.axelor.apps.supplychain.db.IPurchaseOrder;
+import com.axelor.apps.supplychain.db.PurchaseOrder;
 import com.axelor.apps.supplychain.db.SalesOrder;
 import com.axelor.apps.supplychain.db.SalesOrderLine;
-import com.axelor.apps.supplychain.db.SalesOrderSubLine;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -65,42 +58,80 @@ public class SalesOrderPurchaseService {
 
 	@Inject
 	private PurchaseOrderService purchaseOrderService;
+	
+	@Inject
+	private PurchaseOrderLineService purchaseOrderLineService;
 
 	private LocalDate today;
 	
+	private UserInfo user;
+	
 	@Inject
-	public SalesOrderPurchaseService() {
+	public SalesOrderPurchaseService(UserInfoService userInfoService) {
 
 		this.today = GeneralService.getTodayDate();
+		this.user = userInfoService.getUserInfo();
+	}
+	
+
+	public void createPurchaseOrders(SalesOrder salesOrder) throws AxelorException  {
+		
+		Map<Partner,List<SalesOrderLine>> salesOrderLinesBySupplierPartner = this.splitBySupplierPartner(salesOrder.getSalesOrderLineList());
+		
+		for(Partner supplierPartner : salesOrderLinesBySupplierPartner.keySet())  {
+			
+			this.createPurchaseOrder(supplierPartner, salesOrderLinesBySupplierPartner.get(supplierPartner), salesOrder);
+			
+		}
 		
 	}
 	
-	public void createPurchaseOrders(SalesOrder salesOrder)  {
+	
+	public Map<Partner,List<SalesOrderLine>> splitBySupplierPartner(List<SalesOrderLine> salesOrderLineList)  {
 		
+		Map<Partner,List<SalesOrderLine>> salesOrderLinesBySupplierPartner = new HashMap<Partner,List<SalesOrderLine>>();
+		
+		for(SalesOrderLine salesOrderLine : salesOrderLineList)  {
+			
+			Partner supplierPartner = salesOrderLine.getSupplierPartner();
+			
+			if(!salesOrderLinesBySupplierPartner.containsKey(supplierPartner))  {
+				salesOrderLinesBySupplierPartner.put(supplierPartner, new ArrayList<SalesOrderLine>());
+			}
+			
+			salesOrderLinesBySupplierPartner.get(supplierPartner).add(salesOrderLine);
+			
+		}
+		
+		return salesOrderLinesBySupplierPartner;
 	}
 	
 	
-	public void createPurchaseOrder(SalesOrderLine salesOrderLine)  {
-		SalesOrder salesOrder = salesOrderLine.getSalesOrder();
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void createPurchaseOrder(Partner supplierPartner, List<SalesOrderLine> salesOrderLineList, SalesOrder salesOrder) throws AxelorException  {
 		
-		Product product = salesOrderLine.getProduct();
-		
-//		purchaseOrderService.createPurchaseOrder(
-//				salesOrder.getAffairProject(), 
-//				buyerUserInfo, 
-//				salesOrder.getCompany(), 
-//				null, 
-//				product.getPurchaseCurrency(), 
-//				deliveryDate, 
-//				externalReference, 
-//				invoicingTypeSelect, 
-//				location, 
-//				orderDate, 
-//				priceList, 
-//				product.getDefaultSupplierPartner());
+		PurchaseOrder purchaseOrder = purchaseOrderService.createPurchaseOrder(
+				salesOrder.getAffairProject(), 
+				user, 
+				salesOrder.getCompany(), 
+				null, 
+				supplierPartner.getCurrency(), 
+				null, 
+				null, 
+				IPurchaseOrder.INVOICING_FREE, 
+				purchaseOrderService.getLocation(salesOrder.getCompany()), 
+				today, 
+				PriceList.all().filter("self.partner = ?1 AND self.typeSelect = 2", supplierPartner).fetchOne(), 
+				supplierPartner);
 		
 		
+		for(SalesOrderLine salesOrderLine : salesOrderLineList)  {
+			
+			purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLineService.createPurchaseOrderLine(purchaseOrder, salesOrderLine));
+			
+		}
 		
+		purchaseOrder.save();
 	}
 }
 
