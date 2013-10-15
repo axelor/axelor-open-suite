@@ -111,7 +111,7 @@ public class EmployeeController {
 			LOG.debug("Impression des informations sur l'employe "+employee.getName()+" "+employee.getFirstName()+" : "+url.toString());
 			
 			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", "Employee Consultant"+employee.getName()+" "+employee.getFirstName());
+			mapView.put("title", "Employee Consultant "+employee.getName()+" "+employee.getFirstName());
 			mapView.put("resource", url);
 			mapView.put("viewType", "html");
 			response.setView(mapView);		
