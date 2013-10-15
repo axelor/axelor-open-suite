@@ -32,18 +32,22 @@ package com.axelor.apps.supplychain.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.VatLine;
 import com.axelor.apps.account.service.AccountManagementService;
-import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductVariant;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.base.service.ProductVariantService;
+import com.axelor.apps.organisation.db.Task;
 import com.axelor.apps.supplychain.db.PurchaseOrder;
 import com.axelor.apps.supplychain.db.PurchaseOrderLine;
 import com.axelor.apps.supplychain.db.SalesOrderLine;
@@ -62,6 +66,10 @@ private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderLineServi
 	@Inject
 	private PriceListService priceListService;
 	
+	@Inject 
+	private ProductVariantService productVariantService;
+	
+	private int sequence = 0;
 	
 	/**
 	 * Calculer le montant HT d'une ligne de commande.
@@ -126,5 +134,71 @@ private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderLineServi
 		
 		return priceListService.computeDiscount(purchaseOrderLine.getPrice(), purchaseOrderLine.getDiscountTypeSelect(), purchaseOrderLine.getDiscountAmount());
 		
+	}
+	
+	
+	public PurchaseOrderLine createPurchaseOrderLine(PurchaseOrder purchaseOrder, SalesOrderLine salesOrderLine) throws AxelorException  {
+
+		return this.createPurchaseOrderLine(
+				purchaseOrder, 
+				salesOrderLine.getProduct(), 
+				salesOrderLine.getDescription(), 
+				productVariantService.copyProductVariant(salesOrderLine.getProductVariant(), false), 
+				salesOrderLine.getQty(), 
+				salesOrderLine.getUnit(), 
+				salesOrderLine.getTask());
+		
+	}
+	
+	
+	public PurchaseOrderLine createPurchaseOrderLine(PurchaseOrder purchaseOrder, Product product, String description, ProductVariant productVariant, BigDecimal qty, Unit unit, Task task) throws AxelorException  {
+		
+		PurchaseOrderLine purchaseOrderLine = new PurchaseOrderLine();
+		purchaseOrderLine.setAmountInvoiced(BigDecimal.ZERO);
+		
+		purchaseOrderLine.setDeliveryDate(purchaseOrder.getDeliveryDate());
+		purchaseOrderLine.setDescription(description);
+		
+		purchaseOrderLine.setIsInvoiced(false);
+		purchaseOrderLine.setIsOrdered(false);
+		
+		BigDecimal price = this.getUnitPrice(purchaseOrder, purchaseOrderLine);
+		
+		PriceList priceList = purchaseOrder.getPriceList();
+		if(priceList != null)  {
+			PriceListLine priceListLine = this.getPriceListLine(purchaseOrderLine, priceList);
+			
+			Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
+			
+			purchaseOrderLine.setDiscountAmount((BigDecimal) discounts.get("discountAmount"));
+			purchaseOrderLine.setDiscountTypeSelect((Integer) discounts.get("discountTypeSelect"));
+			
+			if(discounts.get("price") != null)  {
+				price = (BigDecimal) discounts.get("price");
+			}
+		}
+		
+		purchaseOrderLine.setPrice(price);
+		purchaseOrderLine.setProduct(product);
+		purchaseOrderLine.setProductName(product.getName());
+		purchaseOrderLine.setProductVariant(productVariant);
+		purchaseOrderLine.setPurchaseOrder(purchaseOrder);
+		purchaseOrderLine.setQty(qty);
+		purchaseOrderLine.setSequence(sequence);
+		sequence++;
+		
+		purchaseOrderLine.setTask(task);
+		purchaseOrderLine.setUnit(unit);
+		purchaseOrderLine.setVatLine(this.getVatLine(purchaseOrder, purchaseOrderLine));
+		
+		BigDecimal exTaxTotal = PurchaseOrderLineService.computeAmount(purchaseOrderLine.getQty(), this.computeDiscount(purchaseOrderLine));
+			
+		BigDecimal companyExTaxTotal = this.getCompanyExTaxTotal(exTaxTotal, purchaseOrder);
+			
+		purchaseOrderLine.setExTaxTotal(exTaxTotal);
+		purchaseOrderLine.setCompanyExTaxTotal(companyExTaxTotal);
+		purchaseOrderLine.setAmountRemainingToBeInvoiced(exTaxTotal);
+			
+		return purchaseOrderLine;
 	}
 }

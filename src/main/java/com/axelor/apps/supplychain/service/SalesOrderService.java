@@ -187,7 +187,7 @@ public class SalesOrderService {
 						GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
 			}
 			
-			StockMove stockMove = stockMoveService.createStockMove(salesOrder.getDeliveryAddress(), company, salesOrder.getClientPartner(), salesOrder.getLocation(), toLocation);
+			StockMove stockMove = stockMoveService.createStockMove(salesOrder.getDeliveryAddress(), company, salesOrder.getClientPartner(), salesOrder.getLocation(), toLocation, salesOrder.getShipmentDate());
 			stockMove.setSalesOrder(salesOrder);
 			stockMove.setStockMoveLineList(new ArrayList<StockMoveLine>());
 			

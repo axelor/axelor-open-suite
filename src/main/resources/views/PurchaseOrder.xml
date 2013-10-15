@@ -24,7 +24,7 @@
 	    <group colSpan="4" cols="6">
 	        <field name="purchaseOrderSeq" css="highlight"/>
 	        <field name="orderDate"/>
-	        <field name="company" widget="SuggestBox" onChange="action-purchase-order-record-company-configuration"/>
+	        <field name="company" widget="SuggestBox" onChange="action-purchase-order-record-company-configuration,action-purchase-order-method-get-location"/>
 	        <field name="externalReference"/>
 	        <field name="currency"/>
 	        <field name="affairProject" domain="self.isAffair = true"/>

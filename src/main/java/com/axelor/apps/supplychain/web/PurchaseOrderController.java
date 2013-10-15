@@ -37,16 +37,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.AxelorSettings;
-import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.supplychain.db.ILocation;
-import com.axelor.apps.supplychain.db.Location;
 import com.axelor.apps.supplychain.db.PurchaseOrder;
-import com.axelor.apps.supplychain.db.SalesOrder;
 import com.axelor.apps.supplychain.service.PurchaseOrderService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -69,12 +64,7 @@ public class PurchaseOrderController {
 		
 		if(purchaseOrder != null && purchaseOrder.getPurchaseOrderSeq() ==  null && purchaseOrder.getCompany() != null) {
 			
-			String ref = sequenceService.getSequence(IAdministration.PURCHASE_ORDER,purchaseOrder.getCompany(),false);
-			if (ref == null)
-				throw new AxelorException(String.format("La société %s n'a pas de séquence de configurée pour les commandes fournisseur",purchaseOrder.getCompany().getName()),
-								IException.CONFIGURATION_ERROR);
-			else
-				response.setValue("purchaseOrderSeq", ref);
+			response.setValue("purchaseOrderSeq", purchaseOrderService.getSequence(purchaseOrder.getCompany()));
 		}
 	}
 	
@@ -106,13 +96,9 @@ public class PurchaseOrderController {
 		
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 		
-		if(purchaseOrder != null) {
+		if(purchaseOrder.getCompany() != null) {
 			
-			Location location = Location.all().filter("company = ? and isDefaultLocation = ? and typeSelect = ?", purchaseOrder.getCompany(), true, ILocation.INTERNAL).fetchOne();
-			
-			if(location != null) {
-				response.setValue("location", location);
-			}
+			response.setValue("location", purchaseOrderService.getLocation(purchaseOrder.getCompany()));
 		}
 	}
 	
