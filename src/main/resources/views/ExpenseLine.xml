@@ -42,7 +42,7 @@
 	        <field name="task" onSelect="action-attrs-expense-line-task-domain"/>
 	    </group>
 	    <group title="Details" colSpan="4">
-	        <field name="product" colSpan="2" onChange="action-expense-line-product,action-expense-line-method-compute" domain="self.applicationTypeSelect = 3 and self.endDate IS NULL or CURRENT_DATE &lt; self.endDate"/>
+	        <field name="product" colSpan="2" widget="SuggestBox" onChange="action-expense-line-product,action-expense-line-method-compute" domain="self.applicationTypeSelect = 3 and self.endDate IS NULL or CURRENT_DATE &lt; self.endDate"/>
 	        <field name="shortDescription" colSpan="4"/>
 	        <field name="qty" onChange="action-expense-line-method-compute"/>
 	        <field name="unit"/>
