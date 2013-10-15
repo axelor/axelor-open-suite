@@ -33,7 +33,7 @@
             <field name="paymentCondition" widget="SuggestBox"/>
             <field name="bankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" hideIf="operationTypeSelect >= 3" domain="self.partner = :clientPartner"/>
             <field name="partnerAccount" domain="self.company = :company" onSelect="action-invoice-partner-account-domain"/>
-            <field name="address" colSpan="4"/>
+            <field name="address" colSpan="2"/>
             <field name="project" domain="self.isAffair = true"/>
             <field name="priceList" domain="((self.typeSelect = 2 and (:operationTypeSelect = 1 or :operationTypeSelect = 2)) or (self.typeSelect = 1 and (:operationTypeSelect = 3 or :operationTypeSelect = 4)) or :operationTypeSelect = null or :operationTypeSelect = 0) and (self.partner = null or self.partner = :clientPartner) and (self.validFromDate &lt;= :__date__ or self.validFromDate = null) and (self.validToDate &gt;= :__date__ or self.validToDate = null)"/>
         </group>
@@ -132,9 +132,7 @@
             <group name="stateGroup" title="Status" colSpan="4" cols="4">
 	            <group colSpan="2" cols="2">
             		<button name="compute" title="Compute" colSpan="2" onClick="save,action-invoice-method-compute,save"/>
-	                <button name="computeFooter" title="Compute invoice footer" colSpan="2" onClick="save,action-invoice-method-compute-footer,save"/>
 	                <button name="showInvoice" title="Print" colSpan="2" onClick="save,action-invoice-method-show-invoice"/>
-	                <button name="exportInvoice" title="Export" colSpan="2" onClick="save,invoice-export"/>
 	                <button name="sendByEmail" title="Send by email" colSpan="2" showIf="operationTypeSelect = 3 || operationTypeSelect = 4"/>
 	            </group>
 	            <group colSpan="2" cols="2">
@@ -314,7 +312,6 @@
 	    <attribute name="hidden" expr="eval: status?.code in ['tov','dra','can','dis','ala']" for="ventilate"/>
 	    
 	    <attribute name="hidden" expr="eval: status?.code in ['val','can','dis']" for="compute"/>
-	    <attribute name="hidden" expr="eval: status?.code in ['val','can','dis']" for="computeFooter"/>
 
 	    <attribute name="readonly" expr="eval: status?.code in ['val','can','dis']" for="operationTypeSelect"/>
 	    <attribute name="readonly" expr="eval: status?.code in ['val','can','dis']" for="dateGroup"/>
@@ -351,10 +348,6 @@
 		<call class="com.axelor.apps.account.web.InvoiceControllerSimple" method="showInvoice"/>
 	</action-method>
 	
-	<action-method name="action-invoice-method-compute-footer">
-		<call class="com.axelor.apps.account.web.InvoiceController" method="computeFooter"/>
-	</action-method>
-	
 	<action-method name="action-invoice-method-validate">
 		<call class="com.axelor.apps.account.web.InvoiceController" method="validate"/>
 	</action-method>
@@ -379,12 +372,6 @@
         <call class="com.axelor.apps.account.web.InvoiceController" method="getJournal"/>
     </action-method>
 
-	<!-- ACTION EXPORT -->
-
-	<action-export name="invoice-export" output="/home/soregies/Export_Factures/" >
-		<export name="${invoiceId}.xml" template="/home/soregies/Export_Factures/invoice_export.tmpl"/>
-	</action-export>
-	
 	<search-filters name="customer-invoices-filters" model="com.axelor.apps.account.db.Invoice" title="Customer invoices filters">
 		<filter title="Validated">
 			<domain>self.status.code = 'val'</domain>

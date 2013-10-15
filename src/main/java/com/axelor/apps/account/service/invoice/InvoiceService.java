@@ -144,27 +144,6 @@ public class InvoiceService {
 		
 	}
 	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void computeFooter(final Invoice invoice) throws AxelorException {
-
-		LOG.debug("Calcule du pied de facture");
-		
-		InvoiceGenerator invoiceGenerator = new InvoiceGenerator() {
-			
-			@Override
-			public Invoice generate() throws AxelorException {
-
-				computeInvoice(invoice);
-					
-				return invoice;
-			}
-			
-		};
-		
-		invoiceGenerator.generate().save();
-		
-	}
-	
 	
 	/**
 	 * Validation d'une facture.
