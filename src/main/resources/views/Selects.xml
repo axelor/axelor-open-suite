@@ -503,11 +503,6 @@
 		<option value="2">Purchase</option>
 	</selection>
 	
-	<selection name="base.price.list.based.on.select">
-		<option value="1">Cost price</option>
-		<option value="2">Sale price</option>
-	</selection>
-	
 	<selection name="base.price.list.line.type.select">
 		<option value="1">Discount</option>
 		<option value="2">Additionnal</option>

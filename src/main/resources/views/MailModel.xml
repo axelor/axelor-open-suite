@@ -10,7 +10,7 @@
         <field name="subject"/>
         <field name="content"/>
     </grid>
-    <form name="mailModel-form" title="Email model" model="com.axelor.apps.base.db.MailModel" cols="3"
+    <form name="mailModel-form" title="Email model" model="com.axelor.apps.base.db.MailModel" cols="2"
     onLoad="action-mail-model-attrs-hidden">
         <field name="code"/>
         <field name="name"/>

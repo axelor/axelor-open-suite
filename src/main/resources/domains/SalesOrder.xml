@@ -17,6 +17,7 @@
   	<date name="validationDate" title="Validation date" readonly="true"/>
   	<many-to-one name="project" ref="com.axelor.apps.organisation.db.Project" title="Select project"/>
 	<many-to-one name="location" ref="com.axelor.apps.supplychain.db.Location" title="Location"/>
+	<date name="shipmentDate" title="Date of shipment"/>
 	
 <!--   	Onglet Coordonnées client -->
   	<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" required="true" title="Customer"/>
