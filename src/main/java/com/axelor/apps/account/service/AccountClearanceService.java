@@ -91,10 +91,10 @@ public class AccountClearanceService {
 	private UserInfo user;
 
 	@Inject
-	public AccountClearanceService(UserInfoService uis) {
+	public AccountClearanceService(UserInfoService userInfoService) {
 
 		this.todayTime = GeneralService.getTodayDateTime();
-		this.user = uis.getUserInfo();
+		this.user = userInfoService.getUserInfo();
 	}
 	
 	

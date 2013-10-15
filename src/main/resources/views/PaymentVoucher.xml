@@ -131,9 +131,9 @@
 	</action-record>
    	
 	<action-record name="action-paymentVoucherInvoice-onChange" model="com.axelor.apps.account.db.PaymentVoucher" >
-		<field name="partner" expr="eval:invoiceToPay?.partner"/>
+		<field name="partner" expr="eval:invoiceToPay?.clientPartner"/>
 		<field name="paymentMode" expr="eval:invoiceToPay?.paymentMode"/>
-		<field name="currency" expr="eval:invoiceToPay?.partner?.currency"/>
+		<field name="currency" expr="eval:invoiceToPay?.clientPartner?.currency"/>
 	</action-record>
 
 	<action-record name="action-paymentVoucherScheduleToPay-onChange" model="com.axelor.apps.account.db.PaymentVoucher" >

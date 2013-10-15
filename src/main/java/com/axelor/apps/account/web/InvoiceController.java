@@ -52,28 +52,6 @@ public class InvoiceController {
 	@Inject
 	private Provider<JournalService> js;
 	
-	/**
-	 * Fonction appeler par le bouton calculer Pied de facture
-	 * 
-	 * @param request
-	 * @param response
-	 * @return
-	 */
-	public void computeFooter(ActionRequest request, ActionResponse response) {
-
-		Invoice invoice = request.getContext().asType(Invoice.class);
-		invoice = Invoice.find(invoice.getId());
-
-		try{
-			is.get().computeFooter(invoice);
-
-			response.setReload(true);
-			response.setFlash("Montant de la facture : "+invoice.getInvoiceInTaxTotal()+" TTC");
-		}
-		catch(Exception e)  {
-			TraceBackService.trace(response, e);
-		}
-	}
 	
 	/**
 	 * Fonction appeler par le bouton calculer

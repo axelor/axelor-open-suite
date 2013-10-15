@@ -17,7 +17,7 @@
     	<field name="customerAccount"/>
        	<field name="supplierAccount"/>
     	<separator title="Customer balance" colSpan="4"/>
-        <field name="moveLineSet" colSpan="4"/>
+        <field name="moveLineSet" colSpan="4" form-view="move-line-accounting-situation-form" grid-view="move-line-accounting-situation-grid"/>
         <field name="balanceCustAccount"/>
         <field name="balanceDueCustAccount"/>
         <field name="balanceDueReminderCustAccount"/>

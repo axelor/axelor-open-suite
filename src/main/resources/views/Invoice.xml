@@ -33,7 +33,8 @@
             <field name="paymentCondition" widget="SuggestBox"/>
             <field name="bankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" hideIf="operationTypeSelect >= 3" domain="self.partner = :clientPartner"/>
             <field name="partnerAccount" domain="self.company = :company" onSelect="action-invoice-partner-account-domain"/>
-            <field name="address" colSpan="4"/>
+            <field name="address" colSpan="2"/>
+            <field name="project" domain="self.isAffair = true"/>
             <field name="priceList" domain="((self.typeSelect = 2 and (:operationTypeSelect = 1 or :operationTypeSelect = 2)) or (self.typeSelect = 1 and (:operationTypeSelect = 3 or :operationTypeSelect = 4)) or :operationTypeSelect = null or :operationTypeSelect = 0) and (self.partner = null or self.partner = :clientPartner) and (self.validFromDate &lt;= :__date__ or self.validFromDate = null) and (self.validToDate &gt;= :__date__ or self.validToDate = null)"/>
             <separator colSpan="4"/>
             <field name="project" domain="self.isAffair = true"/>
@@ -50,10 +51,10 @@
         <group name="accountGroup" title="Accounting details" colSpan="4" cols="4" canCollapse="true">
             <field name="schedulePaymentOk" readonly="true"/>
             <field name="doubtfulCustomerOk" readonly="true"/>
-            <field name="paymentSchedule" readonly="true"/>
+            <field name="paymentSchedule" readonly="true" showIf="paymentSchedule"/>
             <field name="journal" domain="self.inactiveOk != true"/>
             <field name="move"/>
-            <field name="oldMove"/>
+            <field name="oldMove" showIf="oldMove"/>
    			<field name="currency" onChange="action-invoice-attrs-change-total-title"/>
         </group>
         <notebook colSpan="4">
@@ -62,12 +63,11 @@
 <!--                 <field name="invoiceLineTaxList" grid-view="invoice-line-tax-grid" form-view="invoice-line-tax-form" colSpan="4" /> -->
                 <field name="invoiceLineVatList" grid-view="invoice-line-vat-grid" form-view="invoice-line-vat-form" colSpan="4" />
             </page>
-            <page title="Details" cols="4">
-				<field name="taxInvoiceLineList" grid-view="tax-invoice-line-grid" form-view="tax-invoice-line-form" colSpan="4" />
-                <field name="invoiceLineTaxHistoryList" grid-view="invoice-line-tax-history-grid" form-view="invoice-line-tax-history-form" colSpan="4" />
-            </page>
+<!--             <page title="Details" cols="4"> -->
+<!-- 				<field name="taxInvoiceLineList" grid-view="tax-invoice-line-grid" form-view="tax-invoice-line-form" colSpan="4" /> -->
+<!--                 <field name="invoiceLineTaxHistoryList" grid-view="invoice-line-tax-history-grid" form-view="invoice-line-tax-history-form" colSpan="4" /> -->
+<!--             </page> -->
             <page title="Configuration" cols="6">
-            	<field name="copyOthersOk" />
             	<group name="refundGroup" colSpan="6" cols="4">
 	            	<separator title="Refund" colSpan="4"/>
 	                <button name="createRefund" title="Generate refund" colSpan="2" onClick="save,action-invoice-method-create-refund,save"/>
@@ -135,9 +135,7 @@
             <group name="stateGroup" title="Status" colSpan="4" cols="4">
 	            <group colSpan="2" cols="2">
             		<button name="compute" title="Compute" colSpan="2" onClick="save,action-invoice-method-compute,save"/>
-	                <button name="computeFooter" title="Compute invoice footer" colSpan="2" onClick="save,action-invoice-method-compute-footer,save"/>
 	                <button name="showInvoice" title="Print" colSpan="2" onClick="save,action-invoice-method-show-invoice"/>
-	                <button name="exportInvoice" title="Export" colSpan="2" onClick="save,invoice-export"/>
 	                <button name="sendByEmail" title="Send by email" colSpan="2" showIf="operationTypeSelect = 3 || operationTypeSelect = 4"/>
 	            </group>
 	            <group colSpan="2" cols="2">
@@ -317,20 +315,18 @@
 	    <attribute name="hidden" expr="eval: status?.code in ['tov','dra','can','dis','ala']" for="ventilate"/>
 	    
 	    <attribute name="hidden" expr="eval: status?.code in ['val','can','dis']" for="compute"/>
-	    <attribute name="hidden" expr="eval: status?.code in ['val','can','dis']" for="computeFooter"/>
 
 	    <attribute name="readonly" expr="eval: status?.code in ['val','can','dis']" for="operationTypeSelect"/>
 	    <attribute name="readonly" expr="eval: status?.code in ['val','can','dis']" for="dateGroup"/>
 	    
 	    <attribute name="readonly" expr="eval: status?.code in ['val','can','dis']" for="invoiceLineList"/>
-	    <attribute name="readonly" expr="eval: status?.code in ['val','can','dis']" for="invoiceLineTaxList"/>
+<!-- 	    <attribute name="readonly" expr="eval: status?.code in ['val','can','dis']" for="invoiceLineTaxList"/> -->
 	    <attribute name="readonly" expr="eval: status?.code in ['val','can','dis']" for="invoiceLineVatList"/>
 	    
-	    <attribute name="readonly" expr="eval: status?.code in ['val','can','dis']" for="taxInvoiceLineList"/>
-	    <attribute name="readonly" expr="eval: status?.code in ['val','can','dis']" for="invoiceLineTaxHistoryList"/>
+<!-- 	    <attribute name="readonly" expr="eval: status?.code in ['val','can','dis']" for="taxInvoiceLineList"/> -->
+<!-- 	    <attribute name="readonly" expr="eval: status?.code in ['val','can','dis']" for="invoiceLineTaxHistoryList"/> -->
 	    
 	    <attribute name="readonly" expr="eval: status?.code in ['val','can','dis']" for="previousInvoice"/>
-	    <attribute name="readonly" expr="eval: status?.code in ['val','can','dis']" for="copyOthersOk"/>
 	    <attribute name="readonly" expr="eval: !(status?.code in ['dis'])" for="refundGroup"/>
 	    
 	    <attribute name="readonly" expr="eval: status?.code in ['val','can','dis']" for="alarmList"/>
@@ -353,10 +349,6 @@
 	
 	<action-method name="action-invoice-method-show-invoice">
 		<call class="com.axelor.apps.account.web.InvoiceControllerSimple" method="showInvoice"/>
-	</action-method>
-	
-	<action-method name="action-invoice-method-compute-footer">
-		<call class="com.axelor.apps.account.web.InvoiceController" method="computeFooter"/>
 	</action-method>
 	
 	<action-method name="action-invoice-method-validate">
@@ -383,12 +375,6 @@
         <call class="com.axelor.apps.account.web.InvoiceController" method="getJournal"/>
     </action-method>
 
-	<!-- ACTION EXPORT -->
-
-	<action-export name="invoice-export" output="/home/soregies/Export_Factures/" >
-		<export name="${invoiceId}.xml" template="/home/soregies/Export_Factures/invoice_export.tmpl"/>
-	</action-export>
-	
 	<search-filters name="customer-invoices-filters" model="com.axelor.apps.account.db.Invoice" title="Customer invoices filters">
 		<filter title="Validated">
 			<domain>self.status.code = 'val'</domain>
