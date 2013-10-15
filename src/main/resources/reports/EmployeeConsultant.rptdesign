@@ -668,7 +668,7 @@ dataSetRow["amount"]
                 <structure>
                     <property name="name">Recetters</property>
                     <text-property name="displayName">amount</text-property>
-                    <expression name="expression" type="javascript">if(dataSetRow["amount"] > 0  &amp;&amp; dataSetRow["type"] == "1"){
+                    <expression name="expression" type="javascript">if(dataSetRow["amount"] > 0  &amp;&amp; dataSetRow["type"] == "2"){
 dataSetRow["amount"] 
 }</expression>
                     <property name="dataType">decimal</property>
@@ -677,7 +677,7 @@ dataSetRow["amount"]
                 <structure>
                     <property name="name">Depenses</property>
                     <text-property name="displayName">amount</text-property>
-                    <expression name="expression" type="javascript">if(dataSetRow["amount"] &lt; 0  &amp;&amp; dataSetRow["type"] == "1"){
+                    <expression name="expression" type="javascript">if(dataSetRow["amount"] &lt; 0  &amp;&amp; dataSetRow["type"] == "2"){
 dataSetRow["amount"] * -1
 }</expression>
                     <property name="dataType">decimal</property>
@@ -686,7 +686,7 @@ dataSetRow["amount"] * -1
                 <structure>
                     <property name="name">Encaissement</property>
                     <text-property name="displayName">amount</text-property>
-                    <expression name="expression" type="javascript">if(dataSetRow["amount"] >= 0  &amp;&amp; dataSetRow["type"] == "2"){
+                    <expression name="expression" type="javascript">if(dataSetRow["amount"] >= 0  &amp;&amp; dataSetRow["type"] == "1"){
 dataSetRow["amount"]
 }</expression>
                     <property name="dataType">decimal</property>
@@ -695,7 +695,7 @@ dataSetRow["amount"]
                 <structure>
                     <property name="name">Decaissement</property>
                     <text-property name="displayName">amount</text-property>
-                    <expression name="expression" type="javascript">if(dataSetRow["amount"] &lt; 0  &amp;&amp; dataSetRow["type"] == "2"){
+                    <expression name="expression" type="javascript">if(dataSetRow["amount"] &lt; 0  &amp;&amp; dataSetRow["type"] == "1"){
 dataSetRow["amount"] * -1
 }</expression>
                     <property name="dataType">decimal</property>
