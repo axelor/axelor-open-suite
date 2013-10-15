@@ -15,7 +15,7 @@
         <field name="userInfo"/>
         <field name="date"/>
         <field name="company"/>
-        <field name="totalAmount"/>
+        <field name="totalAmount" title="Total (TTC)"/>
         <field name="currency"/>
         <field name="paymentPeriod"/>
         <field name="statusSelect"/>
@@ -27,7 +27,7 @@
    	 	<field name="statusSelect" widget="NavSelect" showTitle="false"/>
         <field name="date" />
         <field name="company"/>
-        <field name="totalAmount"/>
+        <field name="totalAmount" title="Total (TTC)"/>
        	<field name="currency" />
        	<field name="project" />
    	 	<field name="expenseLineList" colSpan="4"/>
@@ -70,7 +70,7 @@
     </action-record>
     
     <action-record name="action-expense-compute-expense-line" model="com.axelor.apps.organisation.db.Expense">
-    	<field name="totalAmount" expr="eval:expenseLineList?.collect(){it?.total}?.sum()"/>
+    	<field name="totalAmount" expr="eval:expenseLineList?.collect(){it?.inTaxTotal}?.sum()"/>
     </action-record>
     
     <action-record name="action-expense-record-submit" model="com.axelor.apps.organisation.db.Expense">

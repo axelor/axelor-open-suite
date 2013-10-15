@@ -12,7 +12,8 @@
 		<field name="qty" />
 		<field name="unit" />
 		<field name="price" />
-		<field name="total" />
+		<field name="inTaxTotal" />
+		<field name="vatLine"/>
 		<field name="file" />
 		<field name="fileReceived" />
 		<field name="validationDate" />
@@ -28,7 +29,8 @@
 		<field name="qty" />
 		<field name="unit" />
 		<field name="price" />
-		<field name="total" />
+		<field name="inTaxTotal" />
+		<field name="vatLine"/>
 		<field name="file" />
 		<field name="fileReceived" />
 		<field name="validationDate" />
@@ -47,7 +49,8 @@
 	        <field name="qty" onChange="action-expense-line-method-compute"/>
 	        <field name="unit"/>
 	        <field name="price" onChange="action-expense-line-method-compute"/>
-	        <field name="total"/>
+	        <field name="inTaxTotal"/>
+	        <field name="vatLine"/>
 	    </group>
 	    <break/>
 	    <group title="Proofs" colSpan="4">
