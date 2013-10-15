@@ -97,8 +97,11 @@ public class VentilateState extends WorkflowInvoice {
 		
 		invoice.setInvoiceDate(date);
 		
-		invoice.setDueDate(date.plusDays( invoice.getPaymentCondition().getPaymentTime() ) );
-
+		if(invoice.getPaymentCondition() != null)  {
+			date = date.plusDays( invoice.getPaymentCondition().getPaymentTime() );
+		}
+		
+		invoice.setDueDate(date);
 		
 	}
 	
