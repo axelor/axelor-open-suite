@@ -16,7 +16,8 @@
   	<date name="date" title="Date" />
   	<decimal name="qty" title="Quantity"/>
   	<decimal name="price" title="Unit price"/>
-  	<decimal name="total" title="Total"/>
+  	<decimal name="inTaxTotal" title="Total (TTC)"/>
+  	<many-to-one name="vatLine" ref="com.axelor.apps.account.db.VatLine" title="V.A.T."/>
   	<binary name="file" title="File" />
   	<integer name="fileReceived" title="File received" selection="hr.expense.line.file.received.select"/>
   	<date name="validationDate" title="Date de validation" readonly="true"/>
