@@ -17,15 +17,6 @@
     <string name="name" title="Name/Company Name"/>
     <string name="firstName" title="First Name"/>
     <string name="jobTitle" title="Job Title"/>
-    <string name="fullName" title="Nom du Contact" namecolumn="true">
-    <![CDATA[
-    if (partnerTypeSelect == 0 && firstName == null) return name;
-    else if (partnerTypeSelect == 0 && firstName != null) return firstName + ' ' + name;
-    else if (partnerTypeSelect == 1) return name;
-    else if (partnerTypeSelect == 2 && firstName == null) return name;
-    else return firstName + ' ' + name;
-    ]]>
-    </string>
     <binary name="picture" image="true" title="Photo"/>
     <boolean name="isCustomer" title="Customer ?"/>
     <boolean name="isSupplier" title="Supplier ?"/>
@@ -87,6 +78,15 @@
 	<integer name="salesTurnover" title="Turnover"/>
 	<string name="registrationCode" title="Registration code"/>
 	<string name="vatNbr" title="VAT N°"/>
+	
+	 <string name="fullName" title="Nom du Contact" namecolumn="true">
+	    <![CDATA[
+	    if(name != null && firstName != null)  return firstName + " " + name;
+	    else if(name != null)  return name;
+	    else if(firstName != null)  return firstName;
+	    return "";
+	    ]]>
+    </string>
   </entity>
   
 </domain-models>

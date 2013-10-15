@@ -9,9 +9,11 @@
     </grid>
     
     <form name="product-variant-attribute-form" title="Product variant attribute" model="com.axelor.apps.base.db.ProductVariantAttribute" cols="4">
-        <field name="name"/>
+        <field name="name" colSpan="2"/>
+        <spacer/>
+        <spacer/>
         <break/>
-        <field name="productVariantValueList"/>
+        <field name="productVariantValueList"  colSpan="4"/>
     </form>   
 
 </object-views>
