@@ -64,7 +64,8 @@
 	<action-view name="hr.root.my.timesheet.line.calendar" title="My timesheet calendar"
 		model="com.axelor.apps.organisation.db.TimesheetLine" icon="img/icons/calendar-task.png">
 		<view type="calendar" name="timesheet-line-calendar" />
-		<view type="form" name="timesheet-line-form" />
+		<view type="form" name="timesheet-line-calendar-form" />
+		<view type="grid" name="timesheet-line-calendar-grid" />
 		<domain>self.userInfo.internalUser.id = :_internalUserId and self.statusSelect = 1</domain>
 		<context name="_internalUserId" expr="eval: __user__.id"/>
 		<context name="_statusSelect" expr="1"/>
