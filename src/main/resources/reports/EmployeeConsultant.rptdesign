@@ -757,7 +757,7 @@ dataSetRow["amount"]
                     <list-property name="arguments">
                         <structure>
                             <property name="name">Expression</property>
-                            <expression name="value" type="javascript">row["Reccetters"]</expression>
+                            <expression name="value" type="javascript">row["Recetters"]</expression>
                         </structure>
                     </list-property>
                     <property name="allowExport">true</property>
