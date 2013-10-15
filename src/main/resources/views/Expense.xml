@@ -19,7 +19,6 @@
         <field name="currency"/>
         <field name="paymentPeriod"/>
         <field name="statusSelect"/>
-        <field name="progress" widget="Progress"/>
     </grid>
     
     <form name="expense-form" title="Travel expense" model="com.axelor.apps.organisation.db.Expense" cols="4"
@@ -33,7 +32,6 @@
        	<field name="project" />
    	 	<field name="expenseLineList" colSpan="4"/>
    	 	<break/>
-   	 	<field name="progress" widget="progress"/>
    	 	<field name="paymentPeriod"/>
    	 	<field name="refusalReason" showIf="statusSelect == 6"/>
    	 	<break/>
@@ -44,8 +42,8 @@
 	            <button name="validateManager" title="Validate" colSpan="1" onClick="save,action-expense-method-check-validation-status,action-expense-record-validate-manager,action-expense-alert-validate,action-expense-record-validation-info,save" showIf="statusSelect == 2"/>
 	            <button name="validateCommercial" title="Validate" colSpan="1" onClick="save,action-expense-record-validate-commercial,action-expense-record-validation-info,save" showIf="statusSelect == 3"/>
 	         	<button name="confirm" title="Confirm" colSpan="1" onClick="save,action-expense-record-confirm,save" showIf="statusSelect == 4"/>
-	            <button name="refuse" title="Refuse" colSpan="1" onClick="save,action-expense-record-refuse" showIf="statusSelect == 1 || statusSelect == 2"/>
-        		<button name="sum" title="Compute" colSpan="2" onClick="action-expense-sum-expense-line"/>
+	            <button name="refuse" title="Refuse" colSpan="1" onClick="save,action-expense-record-refuse" showIf="statusSelect == 2"/>
+        		<button name="compute" title="Compute" colSpan="2" onClick="action-expense-compute-expense-line"/>
 	        </group>
    			<group colSpan="1" cols="2" readonly="true">
    				<field name="validatedByUserInfo" colSpan="1"/>
@@ -71,7 +69,7 @@
     	<field name="currency" expr="eval: company?.currency"/>	
     </action-record>
     
-    <action-record name="action-expense-sum-expense-line" model="com.axelor.apps.organisation.db.Expense">
+    <action-record name="action-expense-compute-expense-line" model="com.axelor.apps.organisation.db.Expense">
     	<field name="totalAmount" expr="eval:expenseLineList?.collect(){it?.total}?.sum()"/>
     </action-record>
     
