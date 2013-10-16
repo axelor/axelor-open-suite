@@ -85,39 +85,4 @@ public class EmployeeController {
 		}
 	}
 	
-	/**
-	 * Fonction appeler par le bouton imprimer
-	 *
-	 * @param request
-	 * @param response
-	 * @return
-	 */
-	public void showConsultantReport(ActionRequest request, ActionResponse response) {
-
-		Employee employee = request.getContext().asType(Employee.class);
-
-		StringBuilder url = new StringBuilder();
-		AxelorSettings axelorSettings = AxelorSettings.get();
-		
-		MetaUser metaUser = MetaUser.findByUser( AuthUtils.getUser());
-		
-		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/EmployeeConsultant.rptdesign&__format=pdf&EmployeeId="+employee.getId()+"&Locale="+metaUser.getLanguage()+axelorSettings.get("axelor.report.engine.datasource"));
-
-		LOG.debug("URL : {}", url);
-		
-		String urlNotExist = URLService.notExist(url.toString());
-		if (urlNotExist == null){
-		
-			LOG.debug("Impression des informations sur l'employe "+employee.getName()+" "+employee.getFirstName()+" : "+url.toString());
-			
-			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", "Employee Consultant "+employee.getName()+" "+employee.getFirstName());
-			mapView.put("resource", url);
-			mapView.put("viewType", "html");
-			response.setView(mapView);		
-		}
-		else {
-			response.setFlash(urlNotExist);
-		}
-	}
 }

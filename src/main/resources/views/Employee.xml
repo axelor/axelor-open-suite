@@ -96,17 +96,12 @@
 			<page title="Reporting">
 				<group title="Action(s)" colSpan="4" cols="4">
 					<button name="showEmployee" title=" Print" colSpan="1" icon="img/icons/print.png" onClick="save,action-partner-method-show-employee"/>
-					<button name="showConsultantAccountPDF" title=" Relevé compte" colSpan="1" icon="img/icons/print.png" onClick="save,action-consultant-account-pdf-employee"/>
 				</group>
 			</page>
 			<!-- <page title="Suivi du placement des besoins" hidden="true"> -->
 			<!-- <field name="placementFollowUpList" grid-view="placement-follow-up-edit-grid" 
 				form-view="placement-follow-up-edit-list"></field> -->
 			<!-- </page> -->
-			<page title="Consultant">
-				<field name="consultantOperatingList" title="Consultant operation" colSpan="4"/>
-				<field name="consultantCashList" title="Consultant cash" colSpan="4"/>
-			</page>
 		</notebook>
 	</form>
 	
@@ -120,10 +115,6 @@
 		<call class="com.axelor.apps.organisation.web.EmployeeController" method="showEmployee" />
 	</action-method>
 	
-	<action-method name="action-consultant-account-pdf-employee">
-		<call class="com.axelor.apps.organisation.web.EmployeeController" method="showConsultantReport" />
-	</action-method>
-    
     <search-filters name="employee-filters" model="com.axelor.apps.organisation.db.Employee" title="Employee filters">
 		<filter title="Current Employees">
 			<domain>self.exitDate IS NULL</domain>

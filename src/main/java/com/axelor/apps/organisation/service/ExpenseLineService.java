@@ -36,8 +36,11 @@ import java.math.RoundingMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.db.VatLine;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.organisation.db.Expense;
+import com.axelor.apps.supplychain.db.SalesOrder;
+import com.axelor.apps.supplychain.db.SalesOrderLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
@@ -78,6 +81,11 @@ public class ExpenseLineService {
 	}
 			
 		
-	
+	public VatLine getVatLine(SalesOrder salesOrder, SalesOrderLine salesOrderLine) throws AxelorException  {
+		
+		return accountManagementService.getVatLine(
+				salesOrder.getCreationDate(), salesOrderLine.getProduct(), salesOrder.getCompany(), false);
+		
+	}
 	
 }

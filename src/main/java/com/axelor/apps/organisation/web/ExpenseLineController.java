@@ -31,10 +31,15 @@
 package com.axelor.apps.organisation.web;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
+import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.organisation.db.Expense;
 import com.axelor.apps.organisation.db.ExpenseLine;
 import com.axelor.apps.organisation.service.ExpenseLineService;
+import com.axelor.apps.supplychain.db.SalesOrder;
+import com.axelor.apps.supplychain.db.SalesOrderLine;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -76,6 +81,50 @@ public class ExpenseLineController {
 		catch(Exception e)  {
 			response.setFlash(e.getMessage());
 		}	
-		
+	}
+	
+	
+	public void getProductInformation(ActionRequest request, ActionResponse response) {
+
+		ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
+
+		if(expenseLine != null) {
+			Expense expense = expenseLine.getExpense();
+			if(expense == null)  {
+				expense = request.getContext().getParentContext().asType(Expense.class);
+			}
+
+			if(salesOrder != null && salesOrderLine.getProduct() != null) {
+
+				try  {
+					BigDecimal price = salesOrderLineService.getUnitPrice(salesOrder, salesOrderLine);
+					
+					response.setValue("vatLine", salesOrderLineService.getVatLine(salesOrder, salesOrderLine));
+					response.setValue("productName", salesOrderLine.getProduct().getName());
+					response.setValue("saleSupplySelect", salesOrderLine.getProduct().getSaleSupplySelect());
+					response.setValue("unit", salesOrderLine.getProduct().getUnit());
+					response.setValue("companyCostPrice", salesOrderLineService.getCompanyCostPrice(salesOrder, salesOrderLine));
+					
+					PriceList priceList = salesOrder.getPriceList();
+					if(priceList != null)  {
+						PriceListLine priceListLine = salesOrderLineService.getPriceListLine(salesOrderLine, priceList);
+						
+						Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
+						
+						response.setValue("discountAmount", discounts.get("discountAmount"));
+						response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
+						if(discounts.get("price") != null)  {
+							price = (BigDecimal) discounts.get("price");
+						}
+					}
+					
+					response.setValue("price", price);
+					
+				}
+				catch(Exception e)  {
+					response.setFlash(e.getMessage()); 
+				}
+			}
+		}
 	}
 }
