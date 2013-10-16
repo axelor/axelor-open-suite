@@ -37,7 +37,6 @@
             <field name="priceList" domain="((self.typeSelect = 2 and (:operationTypeSelect = 1 or :operationTypeSelect = 2)) or (self.typeSelect = 1 and (:operationTypeSelect = 3 or :operationTypeSelect = 4)) or :operationTypeSelect = null or :operationTypeSelect = 0) and (self.partner = null or self.partner = :clientPartner) and (self.validFromDate &lt;= :__date__ or self.validFromDate = null) and (self.validToDate &gt;= :__date__ or self.validToDate = null)"/>
             <separator colSpan="4"/>
             <field name="project" domain="self.isAffair = true"/>
-            <field name="consultantEmployee"/>
         </group>
         <group title="Reference documents" cols="4" colSpan="4">
         	<field name="internalReference"/>
