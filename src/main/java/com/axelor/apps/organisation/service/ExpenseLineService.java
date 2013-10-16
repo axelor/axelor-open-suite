@@ -36,11 +36,10 @@ import java.math.RoundingMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.db.VatLine;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.organisation.db.Expense;
-import com.axelor.apps.supplychain.db.SalesOrder;
-import com.axelor.apps.supplychain.db.SalesOrderLine;
+import com.axelor.apps.organisation.db.ExpenseLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
@@ -74,6 +73,21 @@ public class ExpenseLineService {
 	}
 	
 	
+	public BigDecimal getUnitPrice(Expense expense, ExpenseLine expenseLine) throws AxelorException  {
+		
+		Product product = expenseLine.getProduct();
+		
+		BigDecimal unitPrice = currencyService.getAmountCurrencyConverted(
+			product.getPurchaseCurrency(), expense.getCurrency(), product.getPurchasePrice(), expenseLine.getDate());  
+		
+		if(expenseLine.getVatLine() != null)  {
+			unitPrice = unitPrice.add(expenseLine.getVatLine().getValue().multiply(unitPrice));
+		}
+		
+		return unitPrice;
+	}
+	
+	
 	public BigDecimal getCompanyTotal(BigDecimal total, Expense expense) throws AxelorException  {
 		
 		return currencyService.getAmountCurrencyConverted(
@@ -81,11 +95,4 @@ public class ExpenseLineService {
 	}
 			
 		
-	public VatLine getVatLine(SalesOrder salesOrder, SalesOrderLine salesOrderLine) throws AxelorException  {
-		
-		return accountManagementService.getVatLine(
-				salesOrder.getCreationDate(), salesOrderLine.getProduct(), salesOrder.getCompany(), false);
-		
-	}
-	
 }

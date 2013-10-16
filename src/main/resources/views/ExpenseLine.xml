@@ -5,23 +5,25 @@
 
 	<grid name="expense-edit-line-grid" editable="true" title="Expense Lines"
 		model="com.axelor.apps.organisation.db.ExpenseLine">
-		<field name="product" />
+		<field name="date"/>
+        <field name="product" colSpan="2" widget="SuggestBox" onChange="action-expense-line-method-get-product-information-1,action-expense-line-method-get-product-information-2,action-expense-line-method-compute" domain="self.applicationTypeSelect = 3 and self.endDate IS NULL or CURRENT_DATE &lt; self.endDate"/>
 		<field name="shortDescription" />
 		<field name="expenseTypeSelect" />
-		<field name="task" />
-		<field name="qty" />
+		<field name="task" onSelect="action-attrs-expense-line-task-domain"/>
+		<field name="qty" onChange="action-expense-line-method-compute"/>
 		<field name="unit" />
-		<field name="price" />
+		<field name="price" onChange="action-expense-line-method-compute"/>
 		<field name="inTaxTotal" />
 		<field name="vatLine"/>
 		<field name="file" />
-		<field name="fileReceived" />
+		<field name="fileReceived" onChange="action-expense-line-record-validation-date"/>
 		<field name="validationDate" />
 	</grid>
 
 
 	<grid name="expense-line-grid" title="Expense Line"
 		model="com.axelor.apps.organisation.db.ExpenseLine">
+		<field name="date"/>
 		<field name="product" />
 		<field name="shortDescription" />
 		<field name="expenseTypeSelect" />
@@ -39,12 +41,17 @@
 	<form name="expense-line-form" title="Expense Line"
 		model="com.axelor.apps.organisation.db.ExpenseLine" cols="4" onNew="action-expense-line-default-record">
 
+	 	<group title="Date" colSpan="4">
+	        <field name="date"/>
+	        <spacer/>
+	        <spacer/>
+	    </group>
 	    <group title="Context" colSpan="4">
 	        <field name="expenseTypeSelect"/>
 	        <field name="task" onSelect="action-attrs-expense-line-task-domain"/>
 	    </group>
 	    <group title="Details" colSpan="4">
-	        <field name="product" colSpan="2" widget="SuggestBox" onChange="action-expense-line-product,action-expense-line-method-compute" domain="self.applicationTypeSelect = 3 and self.endDate IS NULL or CURRENT_DATE &lt; self.endDate"/>
+	        <field name="product" colSpan="2" widget="SuggestBox" onChange="action-expense-line-method-get-product-information-1,action-expense-line-method-get-product-information-2,action-expense-line-method-compute" domain="self.applicationTypeSelect = 3 and self.endDate IS NULL or CURRENT_DATE &lt; self.endDate"/>
 	        <field name="shortDescription" colSpan="4"/>
 	        <field name="qty" onChange="action-expense-line-method-compute"/>
 	        <field name="unit"/>
@@ -72,12 +79,6 @@
     	<field name="expenseTypeSelect" expr="2" if="_parent?.project?.isReinvoicingExpense == false"/>
     </action-record>
     
-    <action-record name="action-expense-line-product" model="com.axelor.apps.organisation.db.ExpenseLine">
-    	<field name="shortDescription" expr="eval: product?.name" if="product"/>
-    	<field name="unit" expr="eval: product?.unit" if="product"/>
-    	<field name="price" expr="eval: product?.purchasePrice" if="product"/>
-    </action-record>
-    
     <action-record name="action-expense-line-record-validation-date" model="com.axelor.apps.organisation.db.ExpenseLine">
     	<field name="validationDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="fileReceived == 1"/>
     	<field name="validationDate" expr="" if="fileReceived == 2"/>
@@ -85,6 +86,14 @@
     
    	<action-method name="action-expense-line-method-compute">
 		<call class="com.axelor.apps.organisation.web.ExpenseLineController" method="compute"/>
+	</action-method>
+	
+	<action-method name="action-expense-line-method-get-product-information-1">
+		<call class="com.axelor.apps.accountorganisation.web.ExpenseLineController" method="getProductInformation"/>
+	</action-method>
+	
+	<action-method name="action-expense-line-method-get-product-information-2">
+		<call class="com.axelor.apps.organisation.web.ExpenseLineController" method="getProductInformation"/>
 	</action-method>
     
     <action-attrs name="action-attrs-expense-line-task-domain">

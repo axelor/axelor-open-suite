@@ -31,15 +31,10 @@
 package com.axelor.apps.organisation.web;
 
 import java.math.BigDecimal;
-import java.util.Map;
 
-import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.organisation.db.Expense;
 import com.axelor.apps.organisation.db.ExpenseLine;
 import com.axelor.apps.organisation.service.ExpenseLineService;
-import com.axelor.apps.supplychain.db.SalesOrder;
-import com.axelor.apps.supplychain.db.SalesOrderLine;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -53,16 +48,16 @@ public class ExpenseLineController {
 	
 		ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
 		
-		BigDecimal total = BigDecimal.ZERO;
+		BigDecimal inTaxTotal = BigDecimal.ZERO;
 		BigDecimal companyTotal = BigDecimal.ZERO;
 		
 		try{
 			if (expenseLine.getPrice() != null && expenseLine.getQty() != null){
 				
-				total = ExpenseLineService.computeAmount(expenseLine.getQty(), expenseLine.getPrice());
+				inTaxTotal = ExpenseLineService.computeAmount(expenseLine.getQty(), expenseLine.getPrice());
 			}
 			
-			if(total != null) {
+			if(inTaxTotal != null) {
 
 				Expense expense = expenseLine.getExpense();
 
@@ -71,11 +66,11 @@ public class ExpenseLineController {
 				}
 
 				if(expense != null) {
-					companyTotal = expenseLineService.getCompanyTotal(total, expense);
+					companyTotal = expenseLineService.getCompanyTotal(inTaxTotal, expense);
 				}
 			}
 			
-			response.setValue("total", total);
+			response.setValue("inTaxTotal", inTaxTotal);
 			response.setValue("companyTotal", companyTotal);
 		}
 		catch(Exception e)  {
@@ -94,31 +89,15 @@ public class ExpenseLineController {
 				expense = request.getContext().getParentContext().asType(Expense.class);
 			}
 
-			if(salesOrder != null && salesOrderLine.getProduct() != null) {
+			if(expense != null && expenseLine.getProduct() != null) {
 
 				try  {
-					BigDecimal price = salesOrderLineService.getUnitPrice(salesOrder, salesOrderLine);
 					
-					response.setValue("vatLine", salesOrderLineService.getVatLine(salesOrder, salesOrderLine));
-					response.setValue("productName", salesOrderLine.getProduct().getName());
-					response.setValue("saleSupplySelect", salesOrderLine.getProduct().getSaleSupplySelect());
-					response.setValue("unit", salesOrderLine.getProduct().getUnit());
-					response.setValue("companyCostPrice", salesOrderLineService.getCompanyCostPrice(salesOrder, salesOrderLine));
+					response.setValue("productName", expenseLine.getProduct().getName());
+					response.setValue("saleSupplySelect", expenseLine.getProduct().getSaleSupplySelect());
+					response.setValue("unit", expenseLine.getProduct().getUnit());
 					
-					PriceList priceList = salesOrder.getPriceList();
-					if(priceList != null)  {
-						PriceListLine priceListLine = salesOrderLineService.getPriceListLine(salesOrderLine, priceList);
-						
-						Map<String, Object> discounts = priceListService.getDiscounts(priceList, priceListLine, price);
-						
-						response.setValue("discountAmount", discounts.get("discountAmount"));
-						response.setValue("discountTypeSelect", discounts.get("discountTypeSelect"));
-						if(discounts.get("price") != null)  {
-							price = (BigDecimal) discounts.get("price");
-						}
-					}
-					
-					response.setValue("price", price);
+					response.setValue("price", expenseLineService.getUnitPrice(expense, expenseLine));
 					
 				}
 				catch(Exception e)  {
