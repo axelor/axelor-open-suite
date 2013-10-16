@@ -29,7 +29,6 @@
 	        <field name="externalReference"/>
 	        <field name="location" domain="self.company = :company and self.typeSelect = 1"/>
 	        <field name="currency"/>
-	        <field name="consultantEmployee"/>
 	    </group>
 	    <notebook colSpan="4">
 	        <page title="Customer information" colSpan="4" cols="6">

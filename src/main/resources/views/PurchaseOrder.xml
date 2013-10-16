@@ -28,7 +28,6 @@
 	        <field name="externalReference"/>
 	        <field name="currency"/>
 	        <field name="affairProject" domain="self.isAffair = true"/>
-	        <field name="consultantEmployee"/>
 	    </group>
 	    <notebook colSpan="4">
 	        <page title="PO information" colSpan="4" cols="6">
