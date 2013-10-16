@@ -38,7 +38,6 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.VatLine;
 import com.axelor.apps.account.service.AccountManagementService;
-import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
