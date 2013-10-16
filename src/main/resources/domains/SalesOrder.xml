@@ -67,8 +67,6 @@
     
     <many-to-one name="validatedByUserInfo" ref="com.axelor.apps.base.db.UserInfo" readonly="true" title="Validated by"/>  	
     
-    <many-to-one name="consultantEmployee" ref="com.axelor.apps.organisation.db.Employee" title="Consultant"/>
-    
   </entity>
 
 </domain-models>
