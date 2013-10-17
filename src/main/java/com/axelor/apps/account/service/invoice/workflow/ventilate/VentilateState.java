@@ -34,13 +34,14 @@ import java.math.BigDecimal;
 
 import org.joda.time.LocalDate;
 
+import com.axelor.apps.account.db.IPaymentCondition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.service.MoveService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Status;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -48,35 +49,24 @@ import com.google.common.base.Preconditions;
 
 public class VentilateState extends WorkflowInvoice {
 
-	protected boolean useExcessPayment;
 	protected SequenceService SequenceService;
 	protected MoveService moveService;
 	
-	private boolean updateInvoiceDate;
 	
 	public VentilateState(SequenceService SequenceService, MoveService moveService, Invoice invoice) {
 		
 		super(invoice);
 		this.SequenceService = SequenceService;
 		this.moveService = moveService;
-		this.updateInvoiceDate = true;
-		this.useExcessPayment = true;
 		
 	}
 	
-	public void setUpdateInvoiceDate( boolean updateInvoiceDate ){
-		this.updateInvoiceDate = updateInvoiceDate;
-	}
-	
-	public void setUseExcessPayment( boolean useExcessPayment ){
-		this.useExcessPayment = useExcessPayment;
-	}
 	
 	@Override
 	public void process( ) throws AxelorException {
 		
 		Preconditions.checkNotNull(invoice.getClientPartner());
-		if (updateInvoiceDate) { setInvoiceDate( ); }
+		setDueDate( );
 		
 		setInvoiceId( );
 		updatePaymentSchedule( );
@@ -91,17 +81,50 @@ public class VentilateState extends WorkflowInvoice {
 		
 	}
 	
-	protected void setInvoiceDate( ){
+	protected void setDueDate( ) throws AxelorException{
 		
-		LocalDate date = GeneralService.getTodayDate();
+		this.checkInvoiceDate();
 		
-		invoice.setInvoiceDate(date);
-		
-		if(invoice.getPaymentCondition() != null)  {
-			date = date.plusDays( invoice.getPaymentCondition().getPaymentTime() );
+		if(!invoice.getPaymentCondition().getIsFree())  {
+			invoice.setDueDate(this.getDueDate());
 		}
 		
-		invoice.setDueDate(date);
+	}
+	
+	
+	protected void checkInvoiceDate() throws AxelorException  {
+		
+		if(Invoice.all().filter("self.status.code = 'dis' AND self.invoiceDate > ?1", invoice.getInvoiceDate()).count() > 0)  {
+			throw new AxelorException(String.format("La date de facture ou d'avoir ne peut être antérieure à la date de la dernière facture ventilée"), IException.CONFIGURATION_ERROR);
+		}
+		
+	}
+	
+	
+	protected LocalDate getDueDate()  {
+		
+		PaymentCondition paymentCondition = invoice.getPaymentCondition();
+		
+		switch (paymentCondition.getTypeSelect()) {
+		case IPaymentCondition.TYPE_NET:
+			
+			return invoice.getInvoiceDate().plusDays(paymentCondition.getPaymentTime());
+			
+		case IPaymentCondition.TYPE_END_OF_MONTH_N_DAYS:
+					
+			return invoice.getInvoiceDate().dayOfMonth().withMaximumValue().plusDays(paymentCondition.getPaymentTime());
+					
+		case IPaymentCondition.TYPE_N_DAYS_END_OF_MONTH:
+			
+			return invoice.getInvoiceDate().plusDays(paymentCondition.getPaymentTime()).dayOfMonth().withMaximumValue();
+			
+		case IPaymentCondition.TYPE_N_DAYS_END_OF_MONTH_AT:
+			
+			return invoice.getInvoiceDate().plusDays(paymentCondition.getPaymentTime()).dayOfMonth().withMaximumValue().plusDays(paymentCondition.getDaySelect());
+
+		default:
+			return invoice.getInvoiceDate();
+		}
 		
 	}
 	

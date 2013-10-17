@@ -186,4 +186,11 @@
 		<option value="ala">In alarm</option>
 	</selection>
 		
+	<selection name="account.payment.condition.type.select">
+		<option value="1">Net</option>
+		<option value="2">End of month + n days</option>
+		<option value="3">N days + end of month</option>
+		<option value="4">N days + end of month at</option>
+	</selection>	
+
 </object-views>

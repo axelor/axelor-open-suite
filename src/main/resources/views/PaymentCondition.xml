@@ -5,12 +5,17 @@
     <grid name="payment-condition-grid" title="Payment Condition" model="com.axelor.apps.account.db.PaymentCondition">
         <field name="name"/>
         <field name="code"/>
+        <field name="typeSelect"/>
         <field name="paymentTime"/>
+        <field name="isFree"/>
     </grid>
     <form name="payment-condition-form" title="Payment Condition" model="com.axelor.apps.account.db.PaymentCondition" cols="4">
-         <field name="name"/>
+        <field name="name"/>
         <field name="code"/>
+        <field name="typeSelect"/>
         <field name="paymentTime"/>
+        <field name="daySelect" showIf="typeSelect == 4"/>
+        <field name="isFree"/>
     </form>
     
 </object-views>

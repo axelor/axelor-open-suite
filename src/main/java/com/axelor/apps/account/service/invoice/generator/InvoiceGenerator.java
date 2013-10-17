@@ -169,9 +169,9 @@ public abstract class InvoiceGenerator {
 		if(paymentCondition == null)  {
 			paymentCondition = clientPartner.getPaymentCondition();
 		}
-//		if(paymentCondition == null)  {
-//			throw new AxelorException(String.format("%s :\nCondition de paiement absent", GeneralService.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
-//		}
+		if(paymentCondition == null)  {
+			throw new AxelorException(String.format("%s :\nCondition de paiement absent", GeneralService.getExceptionInvoiceMsg()), IException.MISSING_FIELD);	
+		}
 		invoice.setPaymentCondition(paymentCondition);
 		
 		invoice.setDueDate(this.today.plusDays(paymentCondition.getPaymentTime()));
