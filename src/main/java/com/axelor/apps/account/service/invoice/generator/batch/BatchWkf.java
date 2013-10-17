@@ -79,8 +79,6 @@ public abstract class BatchWkf extends BatchStrategy {
 			if (isTo) { params.add(invoiceBatch.getToStatusSelect()); }
 			else { params.add(invoiceBatch.getFromStatusSelect()); }
 	
-			int i = 3;
-			
 			LOG.debug("Query: {}", query);
 			
 			return Invoice.all().filter(query, params.toArray()).fetch();

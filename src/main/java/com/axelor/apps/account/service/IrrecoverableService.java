@@ -48,7 +48,6 @@ import com.axelor.apps.account.db.IAccount;
 import com.axelor.apps.account.db.IInvoice;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.InvoiceLineType;
 import com.axelor.apps.account.db.InvoiceLineVat;
 import com.axelor.apps.account.db.Irrecoverable;
@@ -62,7 +61,6 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.Reconcile;
-import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.Vat;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
@@ -611,10 +609,6 @@ public class IrrecoverableService {
 			irlList.add(this.createIrrecoverableReportLine(iil, invoiceLine.getInvoiceLineType().getName(), invoiceLine.getExTaxTotal().multiply(prorataRate).setScale(2, RoundingMode.HALF_EVEN), seq));
 			seq++;
 		}
-		for(InvoiceLineTax invoiceLineTax : consolidateInvoiceLineTax(invoice.getInvoiceLineTaxList()))  {
-			irlList.add(this.createIrrecoverableReportLine(iil, invoiceLineTax.getTax().getName(), invoiceLineTax.getExTaxTotal().multiply(prorataRate).setScale(2, RoundingMode.HALF_EVEN), seq));
-			seq++;
-		}
 		for(InvoiceLineVat invoiceLineVat : invoice.getInvoiceLineVatList())  {
 			irlList.add(this.createIrrecoverableReportLine(iil, invoiceLineVat.getVatLine().getVat().getName(), invoiceLineVat.getVatTotal().multiply(prorataRate).setScale(2, RoundingMode.HALF_EVEN), seq));
 			seq++;
@@ -757,30 +751,6 @@ public class IrrecoverableService {
 	
 	
 	/**
-	 * Fonction permettant de consolider les lignes de taxes d'une facture
-	 * @param invoiceLineTaxList
-	 * 			Une liste de ligne de taxes d'une facture
-	 * @return
-	 */
-	public List<InvoiceLineTax> consolidateInvoiceLineTax(List<InvoiceLineTax> invoiceLineTaxList)  {
-		List<InvoiceLineTax> consolidateInvoiceLineTaxList = new ArrayList<InvoiceLineTax>();
-		List<Tax> consolidateTaxList = new ArrayList<Tax>();
-
-		for(InvoiceLineTax invoiceLineTax : invoiceLineTaxList)  {
-			if(consolidateTaxList.contains(invoiceLineTax.getTax()))  {
-				InvoiceLineTax ilt = consolidateInvoiceLineTaxList.get(consolidateTaxList.indexOf(invoiceLineTax.getTax()));
-				ilt.setExTaxTotal(ilt.getExTaxTotal().add(invoiceLineTax.getExTaxTotal()));
-			}
-			else  {
-				consolidateInvoiceLineTaxList.add(invoiceLineTax);
-				consolidateTaxList.add(invoiceLineTax.getTax());
-			}
-		}
-		return consolidateInvoiceLineTaxList;
-	}
-	
-	
-	/**
 	 * Fonction permettant de créer l'écriture de passage en irrécouvrable d'une facture
 	 * @param invoice
 	 * 			Une facture
@@ -811,16 +781,6 @@ public class IrrecoverableService {
 		else  {
 			creditAmount = invoice.getInTaxTotalRemaining();
 			debitAmount = creditAmount;
-		}
-		
-		// Debits MoveLines Tax
-		for(InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList())  {
-			amount = (invoiceLineTax.getExTaxTotal().multiply(prorataRate)).setScale(2, RoundingMode.HALF_EVEN);
-			debitMoveLine = mls.createMoveLine(move, payerPartner, ams.getAccount(invoiceLineTax.getTax(), company, false), amount, true, false, date,
-					seq, false, false, false, null);
-			move.getMoveLineList().add(debitMoveLine);
-			seq++;
-			debitAmount = debitAmount.subtract(amount);
 		}
 		
 		// Debits MoveLines Tva

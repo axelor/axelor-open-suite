@@ -32,8 +32,6 @@ package com.axelor.apps.account.service.invoice.generator;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.joda.time.LocalDate;
@@ -186,8 +184,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		
 		InvoiceLine invoiceLine = new InvoiceLine();
 		
-		if (isTaxInvoice) { invoiceLine.setTaxInvoice(invoice); }
-		else { invoiceLine.setInvoice(invoice); }
+		invoiceLine.setInvoice(invoice);
 		
 		invoiceLine.setProduct(product);
 		invoiceLine.setProductName(productName);
@@ -257,8 +254,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		
 		InvoiceLine refundInvoiceLine = JPA.copy(invoiceLine, true);
 		
-		if (invoiceLine.getInvoice() != null) {	 refundInvoiceLine.setInvoice(invoice); }
-		if (invoiceLine.getTaxInvoice() != null) {	 refundInvoiceLine.setTaxInvoice(invoice); }
+		refundInvoiceLine.setInvoice(invoice);
 		
 		qty =  invoiceLine.getQty() ; 
 		
@@ -273,33 +269,6 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		return refundInvoiceLine;
 	}
 	
-	
-	protected List<InvoiceLine> getInvoiceLines(Invoice invoice, boolean exclude, Integer... types){
-		
-		return getInvoiceLines(invoice.getInvoiceLineList(), exclude, false, types);
-		
-	}
-	
-	protected List<InvoiceLine> getInvoiceLines(List<InvoiceLine> invoiceLines, boolean exclude, boolean excludeDiscount, Integer... types){
-		
-		List<InvoiceLine> res = new ArrayList<InvoiceLine>();
-		List<Integer> typeList = null;
-		
-		if (types != null) { typeList = Arrays.asList(types); }
-		
-		for (InvoiceLine invoiceLine : invoiceLines) {
-			
-//			if ( typeList == null || ( !exclude && typeList.contains( invoiceLine.getTypeSelect() ) ) || ( exclude && !typeList.contains( invoiceLine.getTypeSelect() ) ) ) {
-//				
-//				if ( excludeDiscount && invoiceLine.getDiscountOk() ) { continue; } 
-//				else { res.add( invoiceLine ); }
-//			}
-			
-		}
-		
-		return res;
-		
-	}
 	
 	protected InvoiceLine substractInvoiceLine(InvoiceLine invoiceLine1, InvoiceLine invoiceLine2){
 		

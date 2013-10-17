@@ -43,13 +43,10 @@ import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.IInvoice;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.InvoiceLineTax;
-import com.axelor.apps.account.db.InvoiceLineTaxHistory;
 import com.axelor.apps.account.db.InvoiceLineVat;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.service.JournalService;
-import com.axelor.apps.account.service.invoice.generator.tax.TaxLine;
 import com.axelor.apps.account.service.invoice.generator.tax.VatInvoiceLine;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
@@ -260,36 +257,44 @@ public abstract class InvoiceGenerator {
 	/**
 	 * Peupler une facture.
 	 * <p>
-	 * Cette fonction permet de déterminer d'ajouter les lignes de taxes passées en paramètres et de déterminer les tva d'une facture à partir des lignes de factures et de taxes passées en paramètres. 
-	 * Ces lignes de factures sont au préalable réparties entre les lignes de factures concernant uniquement les taxes et les lignes standards.
+	 * Cette fonction permet de déterminer de déterminer les tva d'une facture. 
 	 * </p>
 	 * 
 	 * @param invoice
-	 * @param contractLine
+	 * 
+	 * @throws AxelorException
+	 */
+	public void populate(Invoice invoice) throws AxelorException {
+		
+		this.populate(invoice, invoice.getInvoiceLineList());
+		
+	}
+	
+	
+	/**
+	 * Peupler une facture.
+	 * <p>
+	 * Cette fonction permet de déterminer de déterminer les tva d'une facture à partir des lignes de factures  en paramètres. 
+	 * </p>
+	 * 
+	 * @param invoice
 	 * @param invoiceLines
-	 * @param invoiceLineTaxes
-	 * @param standard
 	 * 
 	 * @throws AxelorException
 	 */
 	public void populate(Invoice invoice, List<InvoiceLine> invoiceLines) throws AxelorException {
 		
-		LOG.debug("Peupler une facture => lignes de factures: {} ", new Object[] { invoiceLines.size() });
+		LOG.debug("Peupler une facture => lignes de factures: {} ", new Object[] {  invoiceLines.size() });
 		
 		initCollections( invoice );
-		dispatchInvoiceLine( invoice, invoiceLines );
 		
-		// Add Tax lines
-		TaxLine taxGenerator = new TaxLine(invoice, invoiceLines);
-		invoice.getInvoiceLineTaxList().addAll( taxGenerator.creates() );
-		// Add Tax lines history		
-		invoice.getInvoiceLineTaxHistoryList().addAll(taxGenerator.getInvoiceLineTaxHistories());
 		// create Tva lines
-		invoice.getInvoiceLineVatList().addAll((new VatInvoiceLine(invoice, invoice.getInvoiceLineList(), invoice.getInvoiceLineTaxList())).creates());
+		invoice.getInvoiceLineVatList().addAll((new VatInvoiceLine(invoice, invoiceLines)).creates());
 		
 		computeInvoice(invoice);
 		
 	}
+	
 	
 	/**
 	 * Initialiser l'ensemble des Collections d'une facture 
@@ -299,7 +304,6 @@ public abstract class InvoiceGenerator {
 	protected void initCollections(Invoice invoice){
 
 		initInvoiceLineVats(invoice);
-		initInvoiceLineTaxes(invoice);
 		initInvoiceLines(invoice);
 		
 	}
@@ -312,29 +316,9 @@ public abstract class InvoiceGenerator {
 	protected void initInvoiceLines(Invoice invoice) {
 		
 		if (invoice.getInvoiceLineList() == null) { invoice.setInvoiceLineList(new ArrayList<InvoiceLine>()); }
-		else { invoice.getInvoiceLineList().clear(); }
-		
-		if (invoice.getTaxInvoiceLineList() == null) { invoice.setTaxInvoiceLineList(new ArrayList<InvoiceLine>()); }
-		else { invoice.getTaxInvoiceLineList().clear(); }
 		
 	}
 	
-	/**
-	 * Initialiser l'ensemble des listes de ligne de taxes d'une facture 
-	 * 
-	 * @param invoice
-	 */
-	protected void initInvoiceLineTaxes(Invoice invoice) {
-		
-		if (invoice.getInvoiceLineTaxHistoryList() == null) { invoice.setInvoiceLineTaxHistoryList(new ArrayList<InvoiceLineTaxHistory>()); }
-		else { invoice.getInvoiceLineTaxHistoryList().clear(); }
-		
-		if (invoice.getInvoiceLineTaxList() == null) { invoice.setInvoiceLineTaxList(new ArrayList<InvoiceLineTax>()); }
-		else { invoice.getInvoiceLineTaxList().clear(); }
-
-		invoice.flush();
-		
-	}
 	
 	/**
 	 * Initialiser l'ensemble des listes de ligne de tva d'une facture 
@@ -361,13 +345,11 @@ public abstract class InvoiceGenerator {
 	public void computeInvoice(Invoice invoice) throws AxelorException {
 		
 		// Dans la devise de la comptabilité du tiers
-		invoice.setExAllTaxTotal( BigDecimal.ZERO );
 		invoice.setExTaxTotal( BigDecimal.ZERO );
 		invoice.setVatTotal( BigDecimal.ZERO );
 		invoice.setInTaxTotal( BigDecimal.ZERO );
 		
 		// Dans la devise de la facture
-		invoice.setInvoiceExAllTaxTotal(BigDecimal.ZERO);
 		invoice.setInvoiceExTaxTotal(BigDecimal.ZERO);
 		invoice.setInvoiceVatTotal(BigDecimal.ZERO);
 		invoice.setInvoiceInTaxTotal(BigDecimal.ZERO);
@@ -375,43 +357,20 @@ public abstract class InvoiceGenerator {
 		for (InvoiceLineVat vatLine : invoice.getInvoiceLineVatList()) {
 			
 			// Dans la devise de la comptabilité du tiers
-			invoice.setExAllTaxTotal(invoice.getExAllTaxTotal().add( vatLine.getAccountingExAllTaxBase() ));
 			invoice.setExTaxTotal(invoice.getExTaxTotal().add( vatLine.getAccountingExTaxBase() ));
 			invoice.setVatTotal(invoice.getVatTotal().add( vatLine.getAccountingVatTotal() ));
 			invoice.setInTaxTotal(invoice.getInTaxTotal().add( vatLine.getAccountingInTaxTotal() ));
 			
 			// Dans la devise de la facture
-			invoice.setInvoiceExAllTaxTotal(invoice.getInvoiceExAllTaxTotal().add( vatLine.getExAllTaxBase() ));
 			invoice.setInvoiceExTaxTotal(invoice.getInvoiceExTaxTotal().add( vatLine.getExTaxBase() ));
 			invoice.setInvoiceVatTotal(invoice.getInvoiceVatTotal().add( vatLine.getVatTotal() ));
 			invoice.setInvoiceInTaxTotal(invoice.getInvoiceInTaxTotal().add( vatLine.getInTaxTotal() ));
 			
 		}
 		
-		LOG.debug("Montant de la facture: HTT = {},  HT = {}, TVA = {}, TTC = {}",
-			new Object[] { invoice.getExAllTaxTotal(), invoice.getExTaxTotal(), invoice.getVatTotal(), invoice.getInTaxTotal() });
+		LOG.debug("Montant de la facture: HT = {}, TVA = {}, TTC = {}",
+			new Object[] { invoice.getExTaxTotal(), invoice.getVatTotal(), invoice.getInTaxTotal() });
 		
 	}
 
-	/**
-	 * Répartir les lignes de factures entre les deux listes de la factures si
-	 * celle-ci sont liées.
-	 * 
-	 * @param invoice
-	 * @param invoiceLines
-	 */
-	protected void dispatchInvoiceLine(Invoice invoice, List<InvoiceLine> invoiceLines) {
-
-		for (InvoiceLine invoiceLine : invoiceLines) {
-
-			if (invoiceLine.getInvoice() != null) {
-				invoice.getInvoiceLineList().add(invoiceLine); 
-			}
-			if (invoiceLine.getTaxInvoice() != null) {
-				invoice.getTaxInvoiceLineList().add(invoiceLine);
-			}
-		}
-
-	}
-	
 }

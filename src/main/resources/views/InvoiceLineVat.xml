@@ -16,7 +16,6 @@
     	<break/>
 		<field name="vatLine.vat.name"/>
 		<field name="vatLine.value"/>
-		<field name="exAllTaxBase"/>
 		<field name="exTaxBase"/>
 		<field name="vatTotal"/>
 		<field name="inTaxTotal"/>

@@ -131,9 +131,8 @@ public class InvoiceService {
 
 				List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
 				invoiceLines.addAll(invoice.getInvoiceLineList());
-				invoiceLines.addAll(invoice.getTaxInvoiceLineList());
 				
-				populate(invoice, invoiceLines);
+				populate(invoice);
 				
 				return invoice;
 			}

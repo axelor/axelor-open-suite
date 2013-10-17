@@ -58,13 +58,8 @@
         <notebook colSpan="4">
             <page title="Invoice content" cols="4">
 	    		<field name="invoiceLineList" grid-view="invoice-line-grid" form-view="invoice-line-form" colSpan="4"/>
-<!--                 <field name="invoiceLineTaxList" grid-view="invoice-line-tax-grid" form-view="invoice-line-tax-form" colSpan="4" /> -->
                 <field name="invoiceLineVatList" grid-view="invoice-line-vat-grid" form-view="invoice-line-vat-form" colSpan="4" />
             </page>
-<!--             <page title="Details" cols="4"> -->
-<!-- 				<field name="taxInvoiceLineList" grid-view="tax-invoice-line-grid" form-view="tax-invoice-line-form" colSpan="4" /> -->
-<!--                 <field name="invoiceLineTaxHistoryList" grid-view="invoice-line-tax-history-grid" form-view="invoice-line-tax-history-form" colSpan="4" /> -->
-<!--             </page> -->
             <page title="Configuration" cols="6">
             	<group name="refundGroup" colSpan="6" cols="4">
 	            	<separator title="Refund" colSpan="4"/>
@@ -116,14 +111,12 @@
 <!--             <group title="Totals" colSpan="2" cols="2"> -->
             <group title="Totals" colSpan="2" cols="4">
 <!-- 				<group name="accountingTotalGroup" title="Totals in accounting currency" colSpan="2" cols="2"> -->
-<!--                <field name="exAllTaxTotal"/> -->
 	                <field name="exTaxTotal"/>
 	                <field name="vatTotal"/>
 	                <field name="inTaxTotal"/>
 	                <field name="inTaxTotalRemaining"/>
 <!-- 	            </group> -->
 <!-- 	            <group name="invoiceTotalGroup" title="Totals in invoice currency" colSpan="2" cols="2"> -->
-	<!--                 <field name="invoiceExAllTaxTotal"/> -->
 <!-- 	                <field name="invoiceExTaxTotal"/> -->
 <!-- 	                <field name="invoiceVatTotal"/> -->
 <!-- 	                <field name="invoiceInTaxTotal"/> -->
@@ -306,29 +299,18 @@
 	</action-attrs>
 	
     <action-attrs name="action-invoice-attrs-status">
-    
 	    <attribute name="hidden" expr="eval: status?.code in ['can','dis']" for="cancel"/>
 	    <attribute name="hidden" expr="eval: status?.code in ['dra','can','dis','ala']" for="alarm"/>
     	<attribute name="hidden" expr="eval: status?.code in ['val','can','dis','ala']" for="validate"/>
 	    <attribute name="hidden" expr="eval: status?.code in ['tov','dra','can','dis','ala']" for="ventilate"/>
-	    
 	    <attribute name="hidden" expr="eval: status?.code in ['val','can','dis']" for="compute"/>
-
 	    <attribute name="readonly" expr="eval: status?.code in ['val','can','dis']" for="operationTypeSelect"/>
 	    <attribute name="readonly" expr="eval: status?.code in ['val','can','dis']" for="dateGroup"/>
-	    
 	    <attribute name="readonly" expr="eval: status?.code in ['val','can','dis']" for="invoiceLineList"/>
-<!-- 	    <attribute name="readonly" expr="eval: status?.code in ['val','can','dis']" for="invoiceLineTaxList"/> -->
 	    <attribute name="readonly" expr="eval: status?.code in ['val','can','dis']" for="invoiceLineVatList"/>
-	    
-<!-- 	    <attribute name="readonly" expr="eval: status?.code in ['val','can','dis']" for="taxInvoiceLineList"/> -->
-<!-- 	    <attribute name="readonly" expr="eval: status?.code in ['val','can','dis']" for="invoiceLineTaxHistoryList"/> -->
-	    
 	    <attribute name="readonly" expr="eval: status?.code in ['val','can','dis']" for="previousInvoice"/>
 	    <attribute name="readonly" expr="eval: !(status?.code in ['dis'])" for="refundGroup"/>
-	    
 	    <attribute name="readonly" expr="eval: status?.code in ['val','can','dis']" for="alarmList"/>
-	    
 	</action-attrs>
 	
 	<action-attrs name="action-invoice-attrs-change-total-title">

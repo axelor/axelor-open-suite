@@ -48,7 +48,6 @@ import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticAccountManagement;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.InvoiceLineVat;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
@@ -382,25 +381,6 @@ public class MoveLineService {
 			MoveLine moveLine = this.createMoveLine(move, partner, account2, exTaxTotal, !isDebitCustomer, isMinus, invoice.getInvoiceDate(), null, moveLineId++, false, false, false, invoice.getInvoiceId());
 			moveLine.getAnalyticAccountSet().addAll(analyticAccounts);
 			moveLine.setVatLine(invoiceLine.getVatLine());
-			
-			moveLines.add(moveLine);
-			
-		}
-		
-		// Traitement des lignes de taxes
-		for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()){
-			
-			account2 = accountManagementService.getAccount(invoiceLineTax.getTax(), company, isPurchase);
-			exTaxTotal = invoiceLineTax.getAccountingExTaxTotal();
-			
-			if (account2 == null)  {
-				throw new AxelorException(String.format("Compte comptable absent de la taxe : %s (société : %s)", invoiceLineTax.getTax().getName(), company.getName()), IException.CONFIGURATION_ERROR);
-			}
-				
-			LOG.debug("Traitement de la ligne de tax : compte comptable = {}, montant = {}", new Object[]{account2.getName(), exTaxTotal});
-			
-			MoveLine moveLine = this.createMoveLine(move, partner, account2, exTaxTotal, !isDebitCustomer, isMinus, invoice.getInvoiceDate(), null, moveLineId++, false, false, false, invoice.getInvoiceId());
-			moveLine.setVatLine(invoiceLineTax.getVatLine());
 			
 			moveLines.add(moveLine);
 			
