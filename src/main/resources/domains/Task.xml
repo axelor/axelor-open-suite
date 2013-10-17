@@ -63,7 +63,7 @@
   	
 <!--   	Leave request reasons field -->
   	<boolean name="hasCummulation" title="Cumulation ?"/>
-  	<integer name="accountingDay" title="Accounting day" selection="organisation.day.month.select"/>
+  	<integer name="accountingDay" title="Accounting day" selection="day.month.select"/>
   	
   	<string name="exportTypeSelect" title="Export Type" selection="organisation.project.report.type.select"/>
   	
