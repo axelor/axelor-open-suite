@@ -47,9 +47,9 @@
             <field name="dueDate"/>
         </group>
         <group name="accountGroup" title="Accounting details" colSpan="4" cols="4" canCollapse="true">
-            <field name="schedulePaymentOk" readonly="true"/>
-            <field name="doubtfulCustomerOk" readonly="true"/>
-            <field name="paymentSchedule" readonly="true" showIf="paymentSchedule"/>
+            <field name="schedulePaymentOk" readonly="true" showIf="schedulePaymentOk"/>
+            <field name="doubtfulCustomerOk" readonly="true" showIf="doubtfulCustomerOk"/>
+            <field name="paymentSchedule" readonly="true" showIf="schedulePaymentOk"/>
             <field name="journal" domain="self.inactiveOk != true"/>
             <field name="move"/>
             <field name="oldMove" showIf="oldMove"/>
@@ -60,7 +60,7 @@
 	    		<field name="invoiceLineList" grid-view="invoice-line-grid" form-view="invoice-line-form" colSpan="4"/>
                 <field name="invoiceLineVatList" grid-view="invoice-line-vat-grid" form-view="invoice-line-vat-form" colSpan="4" />
             </page>
-            <page title="Configuration" cols="6">
+            <page title="Configuration" cols="6" showIf="status.code != 'dra'">
             	<group name="refundGroup" colSpan="6" cols="4">
 	            	<separator title="Refund" colSpan="4"/>
 	                <button name="createRefund" title="Generate refund" colSpan="2" onClick="save,action-invoice-method-create-refund,save"/>
@@ -84,7 +84,7 @@
                     <field name="reminderBlockingReason" colSpan="4"/>
                 </group>
             </page>
-            <page name="paymentPage" title="Payment" cols="4">
+            <page name="paymentPage" title="Payment" cols="4" showIf="status.code == 'dis'">
             	<group name="directDebitGroup" title="Direct debit" colSpan="4" cols="4">
 	                <field name="debitNumber"/>
 	           		<field name="directDebitManagement" form-view="direct-debit-management-form-invoice"/>
@@ -329,7 +329,7 @@
 	<!-- ACTION METHOD -->
 	
 	<action-method name="action-invoice-method-show-invoice">
-		<call class="com.axelor.apps.account.web.InvoiceControllerSimple" method="showInvoice"/>
+		<call class="com.axelor.apps.account.web.InvoiceController" method="showInvoice"/>
 	</action-method>
 	
 	<action-method name="action-invoice-method-validate">

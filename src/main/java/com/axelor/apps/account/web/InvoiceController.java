@@ -30,10 +30,18 @@
  */
 package com.axelor.apps.account.web;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.axelor.apps.AxelorSettings;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.tool.net.URLService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
@@ -52,6 +60,7 @@ public class InvoiceController {
 	@Inject
 	private Provider<JournalService> js;
 	
+	private static final Logger LOG = LoggerFactory.getLogger(InvoiceController.class);
 	
 	/**
 	 * Fonction appeler par le bouton calculer
@@ -67,9 +76,7 @@ public class InvoiceController {
 
 		try{
 			is.get().compute(invoice);
-
 			response.setReload(true);
-			response.setFlash("Montant de la facture : "+invoice.getInvoiceInTaxTotal()+" TTC");
 		}
 		catch(Exception e)  {
 			TraceBackService.trace(response, e);
@@ -91,7 +98,6 @@ public class InvoiceController {
 		try{
 			is.get().validate(invoice);
 			response.setReload(true);
-			response.setFlash("Facture "+invoice.getStatus().getName());
 		}
 		catch(Exception e)  {
 			TraceBackService.trace(response, e);
@@ -113,7 +119,6 @@ public class InvoiceController {
 		try {
 			is.get().ventilate(invoice);
 			response.setReload(true);
-			response.setFlash("Facture "+invoice.getStatus().getName());
 		}
 		catch(Exception e)  {
 			TraceBackService.trace(response, e);
@@ -200,7 +205,6 @@ public class InvoiceController {
 	public void getJournal(ActionRequest request, ActionResponse response)  {
 		
 		Invoice invoice = request.getContext().asType(Invoice.class);
-//		invoice = Invoice.find(invoice.id)
 
 		try  {
 			response.setValue("journal", js.get().getJournal(invoice));
@@ -210,4 +214,42 @@ public class InvoiceController {
 		}
 	}
 	
+	
+	/**
+	 * Fonction appeler par le bouton imprimer
+	 *
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	public void showInvoice(ActionRequest request, ActionResponse response) {
+
+		Invoice invoice = request.getContext().asType(Invoice.class);
+
+		StringBuilder url = new StringBuilder();			
+		AxelorSettings axelorSettings = AxelorSettings.get();
+		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Invoice.rptdesign&__format=pdf&InvoiceId="+invoice.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
+
+		LOG.debug("URL : {}", url);
+		
+		String urlNotExist = URLService.notExist(url.toString());
+		if (urlNotExist == null){
+		
+			LOG.debug("Impression de la facture "+invoice.getInvoiceId()+" : "+url.toString());
+			
+			String title = "Facture ";
+			if(invoice.getInvoiceId() != null)  {
+				title += invoice.getInvoiceId();
+			}
+			
+			Map<String,Object> mapView = new HashMap<String,Object>();
+			mapView.put("title", title);
+			mapView.put("resource", url);
+			mapView.put("viewType", "html");
+			response.setView(mapView);		
+		}
+		else {
+			response.setFlash(urlNotExist);
+		}
+	}
 }
