@@ -16,7 +16,7 @@
 		<view type="form" name="invoice-form"/>
 		<view type="grid" name="invoice-grid"/>
 		<domain>self.operationTypeSelect = 3 OR self.operationTypeSelect = 4</domain>
-		<context name="operationTypeSelect" expr="eval:3"/>
+		<context name="_operationTypeSelect" expr="eval:3"/>
 	</action-view>	
 	
 	<menuitem name="invoice-root-sup-invoice" parent="invoice-root"
@@ -27,7 +27,7 @@
 		<view type="form" name="invoice-form"/>
 		<view type="grid" name="invoice-grid"/>
 		<domain>self.operationTypeSelect = 1 OR self.operationTypeSelect = 2</domain>
-		<context name="operationTypeSelect" expr="eval:1"/>
+		<context name="_operationTypeSelect" expr="eval:1"/>
 	</action-view>	
 
 	<menuitem name="invoice-root-sales" parent="invoice-root"
@@ -42,7 +42,7 @@
 		<view type="form" name="invoice-form"/>
 		<view-param name="search-filters" value="customer-invoices-filters"/>
 		<domain>self.operationTypeSelect = 3</domain>
-		<context name="operationTypeSelect" expr="eval:3"/>
+		<context name="_operationTypeSelect" expr="eval:3"/>
 	</action-view>
 
 	<menuitem name="invoice-root-sales-custrefunds" parent="invoice-root-sales"
@@ -54,7 +54,7 @@
 		<view type="form" name="invoice-form"/>
 		<view-param name="search-filters" value="customer-refunds-filters"/>
 		<domain>self.operationTypeSelect = 4</domain>
-		<context name="operationTypeSelect" expr="eval:4"/>
+		<context name="_operationTypeSelect" expr="eval:4"/>
 	</action-view>
 			
 		
@@ -70,7 +70,7 @@
 		<view type="form" name="invoice-form"/>
 		<view-param name="search-filters" value="supplier-invoices-filters"/>
 		<domain>self.operationTypeSelect = 1</domain>
-		<context name="operationTypeSelect" expr="eval:1"/>
+		<context name="_operationTypeSelect" expr="eval:1"/>
 	</action-view>
 
 	<menuitem name="invoice-root-purchases-suprefunds" parent="invoice-root-purchases"
@@ -82,7 +82,7 @@
 		<view type="form" name="invoice-form"/>
 		<view-param name="search-filters" value="supplier-refunds-filters"/>
 		<domain>self.operationTypeSelect = 2</domain>
-		<context name="operationTypeSelect" expr="eval:2"/>
+		<context name="_operationTypeSelect" expr="eval:2"/>
 	</action-view>	
 		
 		

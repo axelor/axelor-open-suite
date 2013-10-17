@@ -20,7 +20,7 @@
     <form name="invoice-form" title="Invoice" model="com.axelor.apps.account.db.Invoice" cols="4" 
     	onLoad="action-invoice-attrs-status,action-invoice-attrs-debit-blocking,action-invoice-attrs-reminder-blocking,action-set-partner-domain,
     	action-invoice-attrs-collapse-irrecoverable-group"
-    	onNew="default-invoice-record,action-invoice-attrs-status,action-invoice-attrs-debit-blocking,action-invoice-attrs-reminder-blocking,
+    	onNew="action-invoice-record-default,action-invoice-attrs-status,action-invoice-attrs-debit-blocking,action-invoice-attrs-reminder-blocking,
     	action-invoice-attrs-collapse-irrecoverable-group,action-set-partner-domain">
         <field name="endOfCycleOk"/>
         <field name="invoiceId"/>
@@ -240,11 +240,12 @@
     </grid>
     
 	<!-- ACTION RECORD -->
-    <action-record name="default-invoice-record" model="com.axelor.apps.account.db.Invoice">
+    <action-record name="action-invoice-record-default" model="com.axelor.apps.account.db.Invoice">
         <field name="invoiceDate" expr="eval: __date__"/>
         <field name="status" expr="action:action-status-record-dra"/>
         <field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
         <field name="currency" expr="eval:com.axelor.apps.base.db.UserInfo.all().filter('internalUser = ?1',__user__).fetchOne()?.activeCompany?.currency" />
+        <field name="operationTypeSelect" expr="eval: _operationTypeSelect"/>
     </action-record>
     
     <action-record name="action-invoice-record-company-change" model="com.axelor.apps.account.db.Invoice">
