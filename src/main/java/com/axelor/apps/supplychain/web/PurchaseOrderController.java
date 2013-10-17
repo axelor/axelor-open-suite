@@ -76,7 +76,6 @@ public class PurchaseOrderController {
 			try {
 				purchaseOrderService.computePurchaseOrder(purchaseOrder);
 				response.setReload(true);
-				response.setFlash("Montant de la commande : "+purchaseOrder.getInTaxTotal()+" TTC");
 			}
 			catch(Exception e)  { TraceBackService.trace(response, e); }
 		}
@@ -124,8 +123,13 @@ public class PurchaseOrderController {
 		
 			LOG.debug("Impression du devis "+purchaseOrder.getPurchaseOrderSeq() +" : "+url.toString());
 			
+			String title = "Devis ";
+			if(purchaseOrder.getPurchaseOrderSeq() != null)  {
+				title += purchaseOrder.getPurchaseOrderSeq();
+			}
+			
 			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", "Devis "+purchaseOrder.getPurchaseOrderSeq());
+			mapView.put("title", "Devis "+title);
 			mapView.put("resource", url);
 			mapView.put("viewType", "html");
 			response.setView(mapView);	

@@ -102,7 +102,6 @@ public class SalesOrderController {
 		try {		
 			salesOrderService.computeSalesOrder(salesOrder);
 			response.setReload(true);
-			response.setFlash("Montant du devis : "+salesOrder.getInTaxTotal()+" TTC");
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
@@ -129,8 +128,13 @@ public class SalesOrderController {
 		
 			LOG.debug("Impression du devis "+salesOrder.getSalesOrderSeq()+" : "+url.toString());
 			
+			String title = "Devis ";
+			if(salesOrder.getSalesOrderSeq() != null)  {
+				title += salesOrder.getSalesOrderSeq();
+			}
+			
 			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", "Devis "+salesOrder.getSalesOrderSeq());
+			mapView.put("title", "Devis "+title);
 			mapView.put("resource", url);
 			mapView.put("viewType", "html");
 			response.setView(mapView);	
