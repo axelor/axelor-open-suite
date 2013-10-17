@@ -11,6 +11,10 @@
 
 	<form name="employee-form" title="Employee"	model="com.axelor.apps.organisation.db.Employee" cols="4"
 	onNew="action-employee-default-record">
+		<toolbar>
+            <button name="showEmployee" title="Print CV" onClick="save,action-partner-method-show-employee"/>
+	        <button name="sendByEmail" title="Send email" onClick="save,action-send-by-email-with-template"/>
+	    </toolbar>
 		<group name="header" cols="6" colSpan="6">
 			<group colSpan="1">
             	<field name="picture" widget="image" showTitle="false"/>
@@ -92,11 +96,6 @@
 				<field name="managerUserInfo" showIf="supervisedBySelect == 1"/>
 				<field name="managerProfileProduct" domain="self.applicationTypeSelect = 2" showIf="supervisedBySelect == 2"/>
 				<field name="profileProduct" domain="self.applicationTypeSelect = 2"/>
-			</page>
-			<page title="Reporting">
-				<group title="Action(s)" colSpan="4" cols="4">
-					<button name="showEmployee" title=" Print" colSpan="1" icon="img/icons/print.png" onClick="save,action-partner-method-show-employee"/>
-				</group>
 			</page>
 			<!-- <page title="Suivi du placement des besoins" hidden="true"> -->
 			<!-- <field name="placementFollowUpList" grid-view="placement-follow-up-edit-grid" 

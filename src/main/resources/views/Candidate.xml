@@ -20,8 +20,9 @@
 	onNew="action-record-candidate-default,action-method-candidate-default-record,action-attrs-candidate-recruitment-advancement" 
 	onSave="action-organisation-candidate-save-record">
 	    <toolbar>
+	        <button name="showCandidate" title="Print CV" onClick="save,action-partner-method-show-candidate"/>
+	        <button name="sendByEmail" title="Send email" onClick="save,action-send-by-email-with-template"/>
 	        <button name="transformInEmployee" title="Transform into employee" onClick="save,action-candidate-method-transform-in-employee"/>
-	        <button name="showCandidate" title="Print CV" colSpan="1" icon="img/icons/print.png" onClick="save,action-partner-method-show-candidate"/>
 	    </toolbar>
 	    <group colSpan="6" cols="6">
 	        <group colSpan="1">
