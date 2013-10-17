@@ -444,19 +444,6 @@
 		<view type="form" />
 	</action-view>
 
-	<menuitem name="evo-admin-root-formula" parent="evo-admin-root"
-		title="Formula"/>
-
-	<menuitem name="evo-admin-root-formula-formula-generator"
-		parent="evo-admin-root-formula" title="Generations of Formula"
-		action="evo.admin.root.formula.formula.generator" />
-
-	<action-view name="evo.admin.root.formula.formula.generator"
-		title="Generations of Formula" model="com.axelor.apps.base.db.FormulaGenerator" icon="img/icons/organisation_small.png">
-		<view type="grid" />
-		<view type="form" />
-	</action-view>
-	
 	<menuitem name="evo-admin-root-templating" parent="evo-admin-root"
 		title="Templating"/>
 		

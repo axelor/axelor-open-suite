@@ -40,13 +40,10 @@ import org.joda.time.LocalDate;
 
 import com.axelor.apps.account.db.Vat;
 import com.axelor.apps.base.db.CurrencyConversionLine;
-import com.axelor.apps.base.db.FormulaGenerator;
 import com.axelor.apps.base.db.General;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.UserInfo;
 import com.axelor.apps.base.service.user.UserInfoService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
 
 @Singleton
 public final class GeneralService {
@@ -156,24 +153,6 @@ public final class GeneralService {
 		return null;
 	}
 
-// Formules
-	
-	/**
-	 * Obtenir l'unité par défaut pour la facturation de l'abonnement.
-	 * 
-	 * @return 
-	 * @throws AxelorException 
-	 */
-	public static FormulaGenerator getFormulaGenerator() throws AxelorException {
-
-		if (getGeneral() != null) {
-			return getGeneral().getFormulaGenerator();
-		}
-		else {
-			throw new AxelorException("Formule indisponible dans l'administration Axelor", IException.CONFIGURATION_ERROR);
-		}
-		
-	}
 
 // Message exception	
 	
