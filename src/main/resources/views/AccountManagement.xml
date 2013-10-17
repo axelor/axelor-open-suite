@@ -24,9 +24,6 @@
         	<page name="productPage" title="Product" cols="4">
         		<field name="product"/>
        		</page>
-        	<page name="taxePage" title="Tax" cols="2">
-		     	<field name="tax" colSpan="2"/>
-        	</page>
         	<page name="vatPage" title="VAT" cols="2">
 		     	<field name="purchaseVat"/>
 		     	<field name="saleVat"/>
@@ -55,9 +52,6 @@
         	<page name="analyticAccountManagementPage" title="Comptes analytiques" cols="2">
         		<field name="analyticAccountManagementList" colSpan="2"/>
         	</page>
-        	<page name="taxePage" title="Taxes" cols="2">
-		     	<field name="tax" colSpan="2"/>
-        	</page>
         	<page name="vatPage" title="TVA" cols="2">
 		     	<field name="purchaseVat"/>
 		     	<field name="saleVat"/>
@@ -65,17 +59,6 @@
         </notebook>
     </form>
     
-    <grid name="account-management-tax-grid" title="Les gestions de compte comptable" model="com.axelor.apps.account.db.AccountManagement">
-        <field name="company"/>
-        <field name="taxAccount"/>
-    </grid>
-    
-    <form name="account-management-tax-form" title="Gestion de compte comptable" model="com.axelor.apps.account.db.AccountManagement" cols="4"
-    onNew="action-account-management-record-tax">
-    	<field name="typeSelect" hidden="true"/>
-        <field name="company" widget="SuggestBox"/>
-        <field name="taxAccount"/>
-    </form>
     
     <grid name="account-management-payment-mode-grid" title="Les gestions de compte comptable" model="com.axelor.apps.account.db.AccountManagement">
         <field name="company"/>

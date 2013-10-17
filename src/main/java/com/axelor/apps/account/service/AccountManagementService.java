@@ -38,7 +38,6 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
-import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.Vat;
 import com.axelor.apps.account.db.VatLine;
 import com.axelor.apps.base.db.Company;
@@ -225,51 +224,6 @@ public class AccountManagementService {
 		}
 
 		throw new AxelorException(String.format("Aucune TVA trouvée pour le produit %s", product.getCode()), IException.CONFIGURATION_ERROR);
-		
-	}
-	
-	
-	/**
-	 * Obtenir le compte comptable d'un produit.
-	 * 
-	 * @param product
-	 * @param company
-	 * @param isPurchase
-	 * @return
-	 * @throws AxelorException 
-	 */
-	public Account getAccount(Tax tax, Company company, boolean isPurchase) throws AxelorException{
-		
-		LOG.debug("Obtention du compte comptable pour la taxe {} (société : {}, achat ? {})",
-			new Object[]{tax, company, isPurchase});
-		
-		AccountManagement accountManagement = this.getAccountManagement(tax.getAccountManagementList(), company);
-		
-		if (accountManagement == null)  {
-			throw new AxelorException(String.format("Configuration comptable absente de la taxe : %s (société : %s)", tax.getName(), company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		
-		return this.getProductAccount(accountManagement, isPurchase);
-			
-	}
-	
-	
-	
-	/**
-	 * Obtenir la bonne configuration comptable en fonction de la société.
-	 * 
-	 * @param accountManagements
-	 * @param company
-	 * @return
-	 * @throws AxelorException 
-	 */
-	public AccountManagement getAccountManagement(Tax tax, Company company) throws AxelorException{
-		
-		
-		if (tax.getAccountManagementList() == null || tax.getAccountManagementList().isEmpty())  {
-			throw new AxelorException(String.format("Configuration comptable absente de la taxe : %s (société : %s)", tax.getName(), company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		return this.getAccountManagement(tax.getAccountManagementList(), company);
 		
 	}
 	
