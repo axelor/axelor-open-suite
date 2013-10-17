@@ -38,6 +38,8 @@
   
   	<one-to-many name="priceList" ref="com.axelor.apps.base.db.Price" mappedBy="product" title="Prices"/>
   	
+  	<one-to-many name="supplierCatalogList" ref="com.axelor.apps.base.db.SupplierCatalog" mappedBy="product" title="Supplier Catalog Lines"/>
+  	
   	<!-- SOCIAL NETWORKING INTEGRATION FOR PRODUCT -->
     <many-to-one name="snStatusUpdates" ref="com.axelor.apps.socialnetwork.db.SnStatusUpdates" required="false" orphan="true" default="null"/>
   
