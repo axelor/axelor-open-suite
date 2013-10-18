@@ -12,7 +12,7 @@
 			<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/axelor-test" />
 			
 			<property name="javax.persistence.jdbc.user" value="axelor" />
-			<property name="javax.persistence.jdbc.password" value="lmdpdlaa" />
+			<property name="javax.persistence.jdbc.password" value="" />
 
 	        <!--  
 	        	value="create" to build a new database on each run;
