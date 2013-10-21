@@ -253,24 +253,6 @@ public abstract class InvoiceGenerator {
 	
 	
 	
-	
-	/**
-	 * Peupler une facture.
-	 * <p>
-	 * Cette fonction permet de déterminer de déterminer les tva d'une facture. 
-	 * </p>
-	 * 
-	 * @param invoice
-	 * 
-	 * @throws AxelorException
-	 */
-	public void populate(Invoice invoice) throws AxelorException {
-		
-		this.populate(invoice, invoice.getInvoiceLineList());
-		
-	}
-	
-	
 	/**
 	 * Peupler une facture.
 	 * <p>
@@ -287,6 +269,8 @@ public abstract class InvoiceGenerator {
 		LOG.debug("Peupler une facture => lignes de factures: {} ", new Object[] {  invoiceLines.size() });
 		
 		initCollections( invoice );
+		
+		invoice.getInvoiceLineList().addAll(invoiceLines);
 		
 		// create Tva lines
 		invoice.getInvoiceLineVatList().addAll((new VatInvoiceLine(invoice, invoiceLines)).creates());
@@ -316,6 +300,7 @@ public abstract class InvoiceGenerator {
 	protected void initInvoiceLines(Invoice invoice) {
 		
 		if (invoice.getInvoiceLineList() == null) { invoice.setInvoiceLineList(new ArrayList<InvoiceLine>()); }
+		else  {  invoice.getInvoiceLineList().clear();  }
 		
 	}
 	

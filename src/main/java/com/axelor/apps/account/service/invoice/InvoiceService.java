@@ -132,7 +132,7 @@ public class InvoiceService {
 				List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
 				invoiceLines.addAll(invoice.getInvoiceLineList());
 				
-				populate(invoice);
+				populate(invoice, invoiceLines);
 				
 				return invoice;
 			}

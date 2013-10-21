@@ -70,7 +70,7 @@ public class RefundInvoice extends InvoiceGenerator implements InvoiceStrategy {
 			refundLines.addAll( refund.getInvoiceLineList() );
 		}
 		
-		populate( refund );
+		populate( refund, refundLines );
 		refund.setMove(null);
 		
 		refund.setStatus(Status.all().filter("self.code = 'dra'").fetchOne());
@@ -80,9 +80,9 @@ public class RefundInvoice extends InvoiceGenerator implements InvoiceStrategy {
 	}
 	
 	@Override
-	public void populate(Invoice invoice) throws AxelorException {
+	public void populate(Invoice invoice, List<InvoiceLine> invoiceLines) throws AxelorException {
 		
-		super.populate(invoice);
+		super.populate(invoice, invoiceLines);
 	}
 	
 	
