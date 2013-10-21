@@ -82,10 +82,10 @@ public class TrackingNumberService {
 	
 	public String getOrderMethod(TrackingNumberConfiguration trackingNumberConfiguration)  {
 		switch (trackingNumberConfiguration.getSaleAutoTrackingNbrOrderSelect()) {
-			case IProduct.FIFO:
+			case IProduct.SALE_TRACKING_ORDER_FIFO:
 				return " ORDER BY self.trackingNumber ASC";
 				
-			case IProduct.LIFO:
+			case IProduct.SALE_TRACKING_ORDER_LIFO:
 				return " ORDER BY self.trackingNumber DESC";
 	
 			default:

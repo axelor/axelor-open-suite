@@ -83,7 +83,7 @@ public class StockMoveLineService {
 	 */
 	public StockMoveLine createStockMoveLine(Product product, BigDecimal quantity, Unit unit, BigDecimal price, StockMove stockMove, ProductVariant productVariant, int type ) throws AxelorException {
 
-		if(product != null && product.getApplicationTypeSelect() == IProduct.PRODUCT_TYPE) {
+		if(product != null && product.getApplicationTypeSelect() == IProduct.APPLICATION_TYPE_PRODUCT) {
 
 			ProductVariant stockProductVariant = productVariant;
 			if(productVariant != null && !productVariant.getUsedForStock())  {

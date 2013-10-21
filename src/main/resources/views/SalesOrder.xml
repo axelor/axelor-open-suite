@@ -41,11 +41,9 @@
 	            <group name="specificSettings" title="Specific settings" colSpan="6" cols="6" canCollapse="true">
 	                <separator title="Sale order Settings" colSpan="6"/>
 	                <field name="isToPrintLineSubTotal"/>
-	                <field name="project" showIf="hasToCreateTaskByLine" domain="self.company = :company or self.company = null"/>
 	                <break/>
 	                <separator title="Sale order lines Settings" colSpan="6"/>
-	                <field name="hasToCreateTaskByLine"/>
-	                <field name="hasToCreateMoByLine"/>
+	                <field name="hasGlobalTask"/>
 	                <field name="hasToCreateProposal"/>
 	            </group>
 	            <break/>
@@ -58,9 +56,9 @@
 	                        <group colSpan="1" cols="1">
 	                            <button name="compute" title="Compute" hideIf="statusSelect == 3" colSpan="1" onClick="save,action-sales-order-method-compute,save"/>
 	                            <button name="confirm" title="Confirm" showIf="statusSelect == 1 || statusSelect == 4" colSpan="1" onClick="save,action-sales-order-set-sequence,action-sales-order-method-compute,action-sales-order-record-confirm,save"/>
-	                            <button name="validate" title="Validate" showIf="statusSelect == 2" colSpan="1" onClick="save,action-sales-order-button-validation,save,action-sales-order-create-tasks,action-sale-order-validate-check-location,action-sales-order-create-stock-move,action-sales-order-record-validate,action-sales-order-attrs-validated-read-only,save"/>
+	                            <button name="validate" title="Validate" showIf="statusSelect == 2" colSpan="1" onClick="save,action-sales-order-create-tasks,action-sale-order-validate-check-location,action-sales-order-create-stock-move,action-sales-order-record-validate,action-sales-order-attrs-validated-read-only,save"/>
 	                            <button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2" colSpan="1" onClick="save,action-sales-order-record-cancel"/>
-	                            <button name="generateInvoice" title="Generate invoice" showIf="statusSelect == 3 &amp;&amp; invoicingTypeSelect != 5" colSpan="2" onClick="save,action-sales-order-method-generate-invoice"/>
+	                            <button name="generateInvoice" title="Generate invoice" showIf="statusSelect == 3 &amp;&amp; invoicingTypeSelect != 4" colSpan="2" onClick="save,action-sales-order-method-generate-invoice"/>
 	                            <button name="generateProject" title="Generate project" showIf="statusSelect == 3" colSpan="2"/>
 	                        </group>
 	                        <group colSpan="1" cols="2">
@@ -125,8 +123,6 @@
     	<attribute name="readonly" for="company" expr="statusSelect == 3"/>
     	<attribute name="readonly" for="clientPartner" expr="statusSelect == 3"/>
     	<attribute name="readonly" for="invoicingTypeSelect" expr="statusSelect == 3"/>
-    	<attribute name="readonly" for="hasToCreateTaskByLine" expr="statusSelect == 3"/>
-    	<attribute name="readonly" for="hasToCreateMoByLine" expr="statusSelect == 3"/>
     	<attribute name="readonly" for="hasToCreateProposal" expr="statusSelect == 3"/>
     	<attribute name="readonly" for="project" expr="statusSelect == 3"/>
     	<attribute name="readonly" for="priceList" expr="statusSelect == 3"/>
@@ -158,7 +154,8 @@
     	<field name="creationDate" expr="eval: __date__"/>
     	<field name="statusSelect" expr="eval: 1"/>
     	<field name="company"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
-    	<field name="invoicingTypeSelect" expr="eval: 6"/>
+    	<field name="invoicingTypeSelect" expr="eval: 5"/>
+    	<field name="hasGlobalTask" expr="eval: true"/>
     	<field name="salesmanUserInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
     	<field name="team" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
     </action-record>
@@ -204,13 +201,8 @@
 		<attribute name="collapse" for="specificSettings" expr="eval: true"/>
 	</action-attrs>
     
-    <action-validate name="action-sales-order-button-validation">
-   		<error message="Project must be filled if create task by line is check." if="hasToCreateTaskByLine &amp;&amp; project == null"/>
-   		<error message="The company of the sale order and the company of the project must be the same." if="eval: hasToCreateTaskByLine == true &amp;&amp; company != null &amp;&amp; project != null &amp;&amp; project.company != null &amp;&amp; company.id != project.company.id"/>
-	</action-validate> 
-	
 	<action-method name="action-sales-order-create-tasks">
-		<call class="com.axelor.apps.organisation.web.TaskController" method="createTaskByLines" if="hasToCreateTaskByLine &amp;&amp; project != null"/>
+		<call class="com.axelor.apps.organisation.web.TaskController" method="createTasks"/>
 	</action-method>
 	
 	<action-method name="action-sales-order-create-stock-move">

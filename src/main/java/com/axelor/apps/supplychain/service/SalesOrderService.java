@@ -173,40 +173,74 @@ public class SalesOrderService {
 	 */
 	public void createStocksMovesFromSalesOrder(SalesOrder salesOrder) throws AxelorException {
 		
-		if(salesOrder.getSalesOrderLineList() != null && salesOrder.getCompany() != null) {
+		Company company = salesOrder.getCompany();
+		
+		if(salesOrder.getSalesOrderLineList() != null && company != null) {
 			
-			Company company = salesOrder.getCompany();
-			
-			Location toLocation = Location.all().filter("self.isDefaultLocation = true and self.company = ?1 and self.typeSelect = ?2", company, ILocation.EXTERNAL).fetchOne();
-			
-			if(toLocation == null)  {
-				toLocation = company.getCustomerVirtualLocation();
-			}
-			if(toLocation == null)  {
-				throw new AxelorException(String.format("%s Veuillez configurer un entrepot virtuel client pour la société %s ",
-						GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
-			}
-			
-			StockMove stockMove = stockMoveService.createStockMove(salesOrder.getDeliveryAddress(), company, salesOrder.getClientPartner(), salesOrder.getLocation(), toLocation, salesOrder.getShipmentDate());
-			stockMove.setSalesOrder(salesOrder);
-			stockMove.setStockMoveLineList(new ArrayList<StockMoveLine>());
+			StockMove stockMove = this.createStockMove(salesOrder, company);
 			
 			for(SalesOrderLine salesOrderLine: salesOrder.getSalesOrderLineList()) {
 				
-				Product product = salesOrderLine.getProduct();
-				// Check if the company field 'hasOutSmForStorableProduct' = true and productTypeSelect = 'storable' or 'hasOutSmForNonStorableProduct' = true and productTypeSelect = 'service' or productTypeSelect = 'other'
-				if(product != null && ((company.getHasOutSmForStorableProduct() && product.getProductTypeSelect().equals(IProduct.STORABLE)) || (company.getHasOutSmForNonStorableProduct() && !product.getProductTypeSelect().equals(IProduct.STORABLE)))) {
-					
-					StockMoveLine stockMoveLine = stockMoveLineService.createStockMoveLine(product, salesOrderLine.getQty(), salesOrderLine.getUnit(), salesOrderLineService.computeDiscount(salesOrderLine), stockMove, salesOrderLine.getProductVariant(), 1);
-					if(stockMoveLine != null) {
-						stockMove.getStockMoveLineList().add(stockMoveLine);
-					}
-				}	
+				this.createStockMoveLine(stockMove, salesOrderLine, company);
+				
 			}
+			
 			if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
 				stockMoveService.plan(stockMove);
 			}
 		}
 	}
+	
+	
+	public StockMove createStockMove(SalesOrder salesOrder, Company company) throws AxelorException  {
+		
+		Location toLocation = Location.all().filter("self.isDefaultLocation = true and self.company = ?1 and self.typeSelect = ?2", company, ILocation.EXTERNAL).fetchOne();
+		
+		if(toLocation == null)  {
+			toLocation = company.getCustomerVirtualLocation();
+		}
+		if(toLocation == null)  {
+			throw new AxelorException(String.format("%s Veuillez configurer un entrepot virtuel client pour la société %s ",
+					GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
+		}
+		
+		StockMove stockMove = stockMoveService.createStockMove(
+				salesOrder.getDeliveryAddress(), 
+				company, 
+				salesOrder.getClientPartner(), 
+				salesOrder.getLocation(), 
+				toLocation, 
+				salesOrder.getShipmentDate());
+		
+		stockMove.setSalesOrder(salesOrder);
+		stockMove.setStockMoveLineList(new ArrayList<StockMoveLine>());
+		
+		return stockMove;
+	}
+	
+	
+	public void createStockMoveLine(StockMove stockMove, SalesOrderLine salesOrderLine, Company company) throws AxelorException  {
+		
+		Product product = salesOrderLine.getProduct();
+		
+		if(product != null && ((company.getHasOutSmForStorableProduct() && product.getProductTypeSelect().equals(IProduct.PRODUCT_TYPE_STORABLE)) 
+				|| (company.getHasOutSmForNonStorableProduct() && !product.getProductTypeSelect().equals(IProduct.PRODUCT_TYPE_STORABLE)))) {
+			
+			StockMoveLine stockMoveLine = stockMoveLineService.createStockMoveLine(
+					product, 
+					salesOrderLine.getQty(), 
+					salesOrderLine.getUnit(), 
+					salesOrderLineService.computeDiscount(salesOrderLine), 
+					stockMove,
+					salesOrderLine.getProductVariant(), 
+					1);
+			
+			if(stockMoveLine != null) {
+				stockMove.getStockMoveLineList().add(stockMoveLine);
+			}
+		}	
+	}
+		
+		
 }
 
