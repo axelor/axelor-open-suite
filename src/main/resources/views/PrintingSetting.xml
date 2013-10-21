@@ -4,8 +4,13 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
 	<form name="printing-setting-form" title="Printing Setting" model="com.axelor.apps.base.db.PrintingSetting" cols="6">
-        <field name="pdfHeader" colSpan="6" widget="html"/>
-        <field name="pdfFooter" colSpan="6" widget="html"/>
+		<field name="languageSelect"/>
+		<spacer colSpan="4"/>
+		<break/>
+		<separator title="Company Header" colSpan="6"/>
+		<field name="pdfHeader" colSpan="6" widget="html" showTitle="false"/>
+		<separator title="Company Footer" colSpan="6"/>
+       	<field name="pdfFooter" colSpan="6" widget="html" showTitle="false"/>
     </form>
 
 </object-views>

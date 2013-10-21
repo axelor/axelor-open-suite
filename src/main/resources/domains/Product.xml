@@ -33,11 +33,12 @@
    
     
     <many-to-one name="invoiceLineType" ref="com.axelor.apps.account.db.InvoiceLineType" title="Invoice line type"/>
-    <many-to-one name="vatManagement" ref="com.axelor.apps.account.db.VatManagement" title="V.A.T. Configuration"/>
         
     <one-to-many name="accountManagementList" ref="com.axelor.apps.account.db.AccountManagement" mappedBy="product" title="Accounts"/>
   
   	<one-to-many name="priceList" ref="com.axelor.apps.base.db.Price" mappedBy="product" title="Prices"/>
+  	
+  	<one-to-many name="supplierCatalogList" ref="com.axelor.apps.base.db.SupplierCatalog" mappedBy="product" title="Supplier Catalog Lines"/>
   	
   	<!-- SOCIAL NETWORKING INTEGRATION FOR PRODUCT -->
     <many-to-one name="snStatusUpdates" ref="com.axelor.apps.socialnetwork.db.SnStatusUpdates" required="false" orphan="true" default="null"/>

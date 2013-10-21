@@ -17,7 +17,7 @@
     <many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" required="true" title="Customer"/>
   	<many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Contact"/>
  	<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment Mode" required="true"/>
-    <many-to-one name="paymentCondition" ref="com.axelor.apps.account.db.PaymentCondition" title="Payment condition"/>
+    <many-to-one name="paymentCondition" ref="com.axelor.apps.account.db.PaymentCondition" title="Payment condition" required="true"/>
     <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank details"/>
     <many-to-one name="partnerAccount" ref="com.axelor.apps.account.db.Account" title="Customer account" required="true"/>
 	<many-to-one name="address" ref="com.axelor.apps.base.db.Address" title="Address" />
@@ -43,16 +43,10 @@
     
     <!-- Invoice content -->
     <one-to-many name="invoiceLineList" ref="InvoiceLine" mappedBy="invoice" title="Invoice Lines" />
-    <one-to-many name="invoiceLineTaxList" ref="InvoiceLineTax" mappedBy="invoice" title="Tax lines" />
     <one-to-many name="invoiceLineVatList" ref="InvoiceLineVat" mappedBy="invoice" title="VAT Lines" readonly="true" />
-    
-    <!-- Détails -->
-    <one-to-many name="taxInvoiceLineList" ref="InvoiceLine" mappedBy="taxInvoice" title="Invoice line for taxes calculation" />
-    <one-to-many name="invoiceLineTaxHistoryList" ref="InvoiceLineTaxHistory" mappedBy="invoice" title="Tax line details" />
     
     <!-- Configuration -->
     <boolean name="alreadyPrintedOk" title="Already printed ?" default="true" help="Field allowing to distinguish the original invoice from a copy/duplicata."/>
-    <boolean name="copyOthersOk" title="Keep other lines ?" default="true"/>
     <many-to-one name="previousInvoice" ref="Invoice" title="Previous invoice" />
     <many-to-one name="refundInvoice" ref="Invoice" title="Refund" />
     <one-to-many name="originalInvoiceList" ref="com.axelor.apps.account.db.Invoice" mappedBy="refundInvoice" title="Invoice of origin"/>
@@ -90,14 +84,12 @@
     
 	<!--     Total based on the partner currency in the company accounts -->
 	<!--     TODO : To be renamed with the prefix 'accounting' -->
-    <decimal name="exAllTaxTotal" title="Total W.A.T." scale="2" precision="20" readonly="true" help="Total without all taxes"/>
     <decimal name="exTaxTotal" title="Total W.V." scale="2" precision="20" readonly="true" help="Total without VAT."/>
     <decimal name="vatTotal" title="Total V.A.T." scale="2" precision="20" readonly="true" help="Total VAT amount is a result of the sum of the VAT lines Amount."/>
     <decimal name="inTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true" help="Total all taxes/VAT included."/>
     <decimal name="inTaxTotalRemaining" title="Remaining to pay" readonly="true" />
     
 	<!--     Totals based on the invoice currency -->
-    <decimal name="invoiceExAllTaxTotal" title="Total W.A.T." scale="2" precision="20" readonly="true"/>
     <decimal name="invoiceExTaxTotal" title="Total W.V." scale="2" precision="20" readonly="true"/>
     <decimal name="invoiceVatTotal" title="Total V.A.T." scale="2" precision="20" readonly="true"/>
     <decimal name="invoiceInTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true"/>
@@ -106,8 +98,6 @@
     <many-to-one name="status" ref="com.axelor.apps.base.db.Status" title="Status" readonly="true"/>
     <many-to-one name="validatedByUserInfo" ref="com.axelor.apps.base.db.UserInfo" readonly="true" title="Validated by"/>  
 
-	<many-to-one name="consultantEmployee" ref="com.axelor.apps.organisation.db.Employee" title="Consultant"/>
-    
   </entity>
   
 </domain-models>

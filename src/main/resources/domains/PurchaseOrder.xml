@@ -35,8 +35,7 @@
     <decimal name="vatTotal" title="Total V.A.T." scale="2" precision="20" readonly="true"/>
     <decimal name="inTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true"/>
     <decimal name="amountRemainingToBeInvoiced" title="Amount remaining to invoice" readonly="true"/>
-    
-    <many-to-one name="consultantEmployee" ref="com.axelor.apps.organisation.db.Employee" title="Consultant"/>
+
   </entity>
 
 </domain-models>

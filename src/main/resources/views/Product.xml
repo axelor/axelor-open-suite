@@ -22,55 +22,55 @@
 	                <field name="picture" showTitle="false"/>
 	            </group>
 	            <group colSpan="1" cols="6">
-	                <field name="name" colSpan="3" showTitle="false" css="highlight" placeholder="Name"/>
-	                <spacer/>
-	                <field name="code" showTitle="false" css="highlight" placeholder="Code"/>
-	                <spacer/>
-	                <break/>
-	                <group title="Product typology" colSpan="2" cols="2" colWidths="40%,60%">
-	                    <field name="applicationTypeSelect" onChange="action-set-product-type-select" />
-	                    <field name="productTypeSelect" onChange="action-product-record-sale-supply-select,action-product-validate-sale-supply-select" showIf="applicationTypeSelect == 1"/>
-	                    <field name="invoiceLineType"/>
-	                </group>
-	                <group title="Procurement/Stock config" colSpan="2" cols="2"  colWidths="50%,50%">
-	                    <field name="procurementMethodSelect"/>
-	                    <field name="saleSupplySelect" onChange="action-product-validate-sale-supply-select"/>
-	                    <field name="isRawMaterial" showIf="productTypeSelect != 'service"/>
-	                </group>
-	                <group title="Categorization" colSpan="2" cols="2"  colWidths="40%,60%">
-	                    <field name="productFamily"/>
-	                    <field name="productCategory" domain="self.productFamily = :productFamily"/>
-	                    <spacer/>
-	                </group>
-	            </group>
+					<field name="name" showTitle="false" colSpan="3" css="highlight" placeholder="Name"/>
+					<spacer/>
+					<field name="code" showTitle="false" css="highlight" placeholder="Code"/>
+					<spacer/>
+					<break/>
+					<group title="Product typology" colSpan="3" cols="2" colWidths="30%,70%">
+						<field name="productTypeSelect" onChange="action-product-record-sale-supply-select,action-product-validate-sale-supply-select"/>
+						<field name="saleSupplySelect" onChange="action-product-validate-sale-supply-select"/>
+						<field name="invoiceLineType"/>
+					</group>
+					<group title="Categorization" colSpan="3" cols="2" colWidths="30%,70%">
+						<field name="applicationTypeSelect" onChange="action-set-product-type-select"/>
+						<field name="productFamily"/>
+						<field name="productCategory" domain="self.productFamily = :productFamily"/>
+					</group>
+				</group>
 	    </group>
 	    <separator title="Product specific attributes" colSpan="2"/>
 	    <notebook colSpan="2">
-	        <page title="Pricing" colSpan="2" cols="4">
-	            <group colSpan="4"  colWidths="20%,30%,20%,30%">
-	                <separator title="Sales" colSpan="2"/>
-	                <separator title="Purchases / Costs" colSpan="2"/>
-	                <field name="salePrice"/>
-	                <field name="purchasePrice"/>
-	                <field name="saleCurrency"/>  
-	                <field name="purchaseCurrency"/>
-	                <field name="unit"/>
-	                <field name="costPrice"/>
-	            </group>
-	            <group colSpan="4">
-	                <group colSpan="2">
-	                    <separator title="Description" colSpan="2"/>
-	                    <break/>
-	                    <field name="description" showTitle="false" colSpan="2"/>                
-	                </group>
-	                <group colSpan="2" cols="2" colWidths="40%,60%">
-	                    <separator title="Product dates" colSpan="2"/>
-	                    <break/>
-	                    <field name="startDate"/>
-	                    <field name="endDate" onChange="action-product-validate-end-date,action-product-method-reset-end-date"/>
-	                </group>
-	            </group>    
-	        </page>
+			<page title="Sale" colSpan="2" cols="4">
+				<group colSpan="4" colWidths="20%,30%,20%,30%">
+					<separator title="Sales" colSpan="2"/>
+					<separator title="Product dates" colSpan="2"/>
+					<field name="salePrice"/>
+					<field name="startDate"/>
+					<field name="saleCurrency"/>
+					<field name="endDate" onChange="action-product-validate-end-date,action-product-method-reset-end-date"/>
+					<field name="unit"/>
+				</group>
+				<group colSpan="4">
+					<group colSpan="2">
+						<separator title="Description" colSpan="2"/>
+						<break/>
+						<field name="description" showTitle="false" colSpan="2"/>
+					</group>
+					<group colSpan="2" cols="2" colWidths="40%,60%">
+					</group>
+				</group>
+			</page>
+			<page title="Purchase/Costs" colSpan="2" cols="4">
+				<separator title="Purchases" colSpan="2"/>
+				<separator title="Costs" colSpan="2"/>
+				<field name="purchasePrice"/>
+				<field name="costPrice"/>
+				<field name="purchaseCurrency"/>
+				<break/>
+				<separator title="Catalogue fournisseurs" colSpan="4"/>
+				<field name="supplierCatalogList" colSpan="4"/>        
+			</page>
 	        <page title="Accounting" colSpan="2" cols="4">
 	            <field name="accountManagementList" colSpan="4" domain="self.typeSelect = 1" form-view="account-management-product-form" grid-view="account-management-product-grid"/>
 	        </page>
@@ -78,9 +78,14 @@
 	<!--             	<button name="showBillsOfMaterial" title="Show bills of material"/> -->
 	<!--             	 <portlet action="chart:chart.planned.qty.by.location" height="200" colSpan="2"/> -->
 	<!--             </page> -->
-	        <page title="Stock" colSpan="2" cols="4" showIf="productTypeSelect != 'service" >
-	            <portlet colSpan="4" action="action-product-view-stock"/>
-	        </page>
+	        <page title="Stock" showIf="productTypeSelect != 'service" colSpan="2" cols="4">
+            <separator title="Procurement settings" colSpan="2"/>
+				<field name="procurementMethodSelect"/>
+				<field name="isRawMaterial" showIf="productTypeSelect != 'service"/>
+				<spacer/>
+				<break/>
+				<portlet colSpan="4" action="action-product-view-stock"/>
+			</page>
 	        <page title="Tracking number" colSpan="2" cols="4" showIf="productTypeSelect != 'service" >
 	            <field name="hasWarranty" colSpan="4"/>
 	            <field name="warrantyNbrOfMonths" showIf="hasWarranty"/>
@@ -95,8 +100,7 @@
 	            <field name="productVariantConfiguration" showTitle="false" widget="NestedEditor" canSelect="true" edit-window="self" form-view="product-variant-configuration-form" summary-view="true"/>
 	        </page>
 	    </notebook>
-	</form>
-    
+	</form>    
     
     <action-view name="action-product-view-stock" title="Stock" model="com.axelor.apps.supplychain.db.LocationLine">
     	<view type="grid" name="location-line-product-grid"/>

@@ -8,7 +8,7 @@
   <entity name="ScheduleSubLine" lang="java">
   	
   	<many-to-one name="scheduleLine" ref="com.axelor.apps.organisation.db.ScheduleLine" title="Shift lines"/>
-  	<integer name="daySelect" title="Day" selection="organisation.schedule.line.day.select"/>
+  	<integer name="daySelect" title="Day" selection="day.week.select"/>
 	<time name="startPeriod1" title="Start hour period 1"/>
 	<time name="endPeriod1" title="End hour period 1"/>
 	<time name="startPeriod2" title="Start hour period 2"/>

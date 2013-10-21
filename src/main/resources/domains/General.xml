@@ -8,7 +8,6 @@
 
 		<integer name="importId"/>
 		<datetime name="today" title="Today date" tz="true" help="If empty, the today date will be the server date." />
-		<many-to-one name="formulaGenerator" ref="com.axelor.apps.base.db.FormulaGenerator" title="Formula" />
 		<boolean name="logOk" title="Activate Logs ?" default="true" />
 		<many-to-one name="defaultProjectUnit" title="Project unit" ref="com.axelor.apps.base.db.Unit"/>
 		

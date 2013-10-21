@@ -13,12 +13,10 @@
 	<many-to-one name="purchaseVat" ref="com.axelor.apps.account.db.Vat" title="Purchase V.A.T."/>
 	<many-to-one name="saleVat" ref="com.axelor.apps.account.db.Vat" title="Sale V.A.T."/>
 	<many-to-one name="cashAccount" ref="com.axelor.apps.account.db.Account" title="Payment account"/>
-	<many-to-one name="taxAccount" ref="com.axelor.apps.account.db.Account" title="Tax account"/>
 	
 	<one-to-many name="analyticAccountManagementList" ref="AnalyticAccountManagement" mappedBy="accountManagement" title="Analytic accounts"/>
 	
     <many-to-one  name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
-    <many-to-one  name="tax" ref="com.axelor.apps.account.db.Tax" title="Tax"/>
     <many-to-one  name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode"/>
     <many-to-one  name="productFamily" ref="com.axelor.apps.base.db.ProductFamily" title="Product family"/>
     

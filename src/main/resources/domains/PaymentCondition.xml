@@ -10,6 +10,10 @@
     <string name="name" title="Name" />
     <string name="code" title="Code" />
 	<integer name="paymentTime" title="Payment period"/>    
+	<integer name="typeSelect" title="Type" selection="account.payment.condition.type.select"/>
+	<integer name="daySelect" title="Day" selection="day.month.select"/>
+	<boolean name="isFree" title="Free ?"/>
+
   </entity>
 
 </domain-models>
