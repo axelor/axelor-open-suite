@@ -443,9 +443,8 @@
 		<option value="1">Per order</option>
 		<option value="2">With payment schedule</option>
 		<option value="3">Per task</option>
-		<option value="4">Depending on Nbr of days</option>
-		<option value="5">Per shipment</option>
-		<option value="6">Free</option>
+		<option value="4">Per shipment</option>
+		<option value="5">Free</option>
 	</selection>
 
 	<selection name="default.status.select">

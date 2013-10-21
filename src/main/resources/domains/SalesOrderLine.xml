@@ -30,7 +30,6 @@
   	<decimal name="discountAmount" title="Discount amount"/>
   	<integer name="discountTypeSelect" title="In % / fixed" selection="base.price.list.line.amount.type.select"/>
   	
-  	<boolean name="isOrdered" title="Commandé ?"/>
   	<boolean name="isToInvoice" title="A facturer ?"/>
   	<boolean name="isInvoiced" title="Facturé ?"/>
   	<decimal name="amountInvoiced" title="Montant facturé"/>

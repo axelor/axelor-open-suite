@@ -15,7 +15,6 @@
   	<string name="externalReference" title="Customer reference"/>
   	<date name="creationDate" title="Creation date" required="true" readonly="true"/>
   	<date name="validationDate" title="Validation date" readonly="true"/>
-  	<many-to-one name="project" ref="com.axelor.apps.organisation.db.Project" title="Select project"/>
 	<many-to-one name="location" ref="com.axelor.apps.supplychain.db.Location" title="Location"/>
 	<date name="shipmentDate" title="Date of shipment"/>
 	
@@ -31,8 +30,7 @@
   	<integer name="invoicingTypeSelect" title="Invoicing type" selection="sales.order.invoice.type.select"/>
   	
 <!--   	Ligne de devis -->
-	<boolean name="hasToCreateTaskByLine" title="Create a task per line ?"/>
-	<boolean name="hasToCreateMoByLine" title="Create a M.O. per line ?"/>
+	<boolean name="hasGlobalTask" title="Global task ?"/>
 	<boolean name="hasToCreateProposal" title="Create purchase orders ?"/>
 	<one-to-many name="salesOrderLineList" ref="com.axelor.apps.supplychain.db.SalesOrderLine" mappedBy="salesOrder" title="Sale order lines"/>
 

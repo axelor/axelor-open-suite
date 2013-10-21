@@ -37,15 +37,21 @@ package com.axelor.apps.base.db;
 public interface IProduct {
 
 	// APPLICATION TYPE SELECT VALUE
-	static final int PRODUCT_TYPE = 1;
-	static final int PROFILE_TYPE = 2;
-	static final int EXPENSE_TYPE = 3;
+	static final int APPLICATION_TYPE_PRODUCT = 1;
+	static final int APPLICATION_TYPE_PROFILE = 2;
+	static final int APPLICATION_TYPE_EXPENSE = 3;
 
 	// PRODUCT TYPE SELECT
-	static final String SERVICE = "service";
-	static final String STORABLE = "storable";
+	static final String PRODUCT_TYPE_SERVICE = "service";
+	static final String PRODUCT_TYPE_STORABLE = "storable";
 	
-	// PRODUCT TYPE SELECT
-	static final int FIFO = 1;
-	static final int LIFO = 2;
+	// SALE TRACKING ORDER SELECT
+	static final int SALE_TRACKING_ORDER_FIFO = 1;
+	static final int SALE_TRACKING_ORDER_LIFO = 2;
+	
+	// SALE SUPPLY SELECT
+	static final int SALE_SUPPLY_FROM_STOCK = 1;
+	static final int SALE_SUPPLY_PURCHASE = 2;
+	static final int SALE_SUPPLY_PRODUCE = 3;
+	
 }
