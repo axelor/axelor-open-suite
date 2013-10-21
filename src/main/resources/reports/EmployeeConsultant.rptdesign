@@ -18,6 +18,7 @@
     <property name="layoutPreference">auto layout</property>
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">96</property>
+    <property name="locale">fr_FR</property>
     <parameters>
         <scalar-parameter name="EmployeeId" id="3265">
             <property name="valueType">static</property>
@@ -533,12 +534,6 @@ where Employee.id = ?]]></xml-property>
         <simple-master-page name="Simple MasterPage" id="2">
             <property name="headerHeight">0in</property>
             <property name="footerHeight">0in</property>
-            <page-footer>
-                <text id="3">
-                    <property name="contentType">html</property>
-                    <text-property name="content"><![CDATA[<value-of>new Date()</value-of>]]></text-property>
-                </text>
-            </page-footer>
         </simple-master-page>
     </page-setup>
     <body>
@@ -842,6 +837,7 @@ dataSetRow["amount"]
             </column>
             <header>
                 <row id="3910">
+                    <property name="height">0.34375in</property>
                     <cell id="3911">
                         <property name="colSpan">3</property>
                         <property name="rowSpan">1</property>
@@ -850,7 +846,7 @@ dataSetRow["amount"]
                         <property name="borderBottomColor">#FFFFFF</property>
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftColor">#FFFFFF</property>
+                        <property name="borderLeftColor">#3C3C3C</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightColor">#FFFFFF</property>
@@ -874,6 +870,7 @@ dataSetRow["amount"]
                             <property name="borderTopColor">#3C3C3C</property>
                             <property name="borderTopStyle">solid</property>
                             <property name="borderTopWidth">thin</property>
+                            <property name="marginTop">3pt</property>
                             <property name="contentType">auto</property>
                             <text-property name="content"><![CDATA[Devise : EUR]]></text-property>
                         </text>
@@ -910,6 +907,7 @@ dataSetRow["amount"]
                             <property name="borderTopColor">#3C3C3C</property>
                             <property name="borderTopStyle">solid</property>
                             <property name="borderTopWidth">thin</property>
+                            <property name="marginTop">3pt</property>
                             <property name="contentType">auto</property>
                             <text-property name="content"><![CDATA[Exploitation]]></text-property>
                         </text>
@@ -925,7 +923,7 @@ dataSetRow["amount"]
                         <property name="borderLeftColor">#FFFFFF</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightColor">#FFFFFF</property>
+                        <property name="borderRightColor">#3C3C3C</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopColor">#FFFFFF</property>
@@ -946,12 +944,14 @@ dataSetRow["amount"]
                             <property name="borderTopColor">#3C3C3C</property>
                             <property name="borderTopStyle">solid</property>
                             <property name="borderTopWidth">thin</property>
+                            <property name="marginTop">3pt</property>
                             <property name="contentType">auto</property>
                             <text-property name="content"><![CDATA[Trésorerie]]></text-property>
                         </text>
                     </cell>
                 </row>
                 <row id="3806">
+                    <property name="height">0.3333333333333333in</property>
                     <cell id="3807">
                         <property name="backgroundColor">#606062</property>
                         <property name="borderBottomColor">#606062</property>
@@ -981,6 +981,7 @@ dataSetRow["amount"]
                             <property name="borderTopColor">#606062</property>
                             <property name="borderTopStyle">solid</property>
                             <property name="borderTopWidth">thin</property>
+                            <property name="marginTop">3pt</property>
                             <property name="contentType">auto</property>
                             <text-property name="content"><![CDATA[Date]]></text-property>
                         </text>
@@ -1014,6 +1015,7 @@ dataSetRow["amount"]
                             <property name="borderTopColor">#606062</property>
                             <property name="borderTopStyle">solid</property>
                             <property name="borderTopWidth">thin</property>
+                            <property name="marginTop">3pt</property>
                             <property name="contentType">auto</property>
                             <text-property name="content"><![CDATA[Origine]]></text-property>
                         </text>
@@ -1047,6 +1049,7 @@ dataSetRow["amount"]
                             <property name="borderTopColor">#606062</property>
                             <property name="borderTopStyle">solid</property>
                             <property name="borderTopWidth">thin</property>
+                            <property name="marginTop">3pt</property>
                             <property name="contentType">auto</property>
                             <text-property name="content"><![CDATA[Description]]></text-property>
                         </text>
@@ -1080,6 +1083,7 @@ dataSetRow["amount"]
                             <property name="borderTopColor">#606062</property>
                             <property name="borderTopStyle">solid</property>
                             <property name="borderTopWidth">thin</property>
+                            <property name="marginTop">3pt</property>
                             <property name="contentType">auto</property>
                             <text-property name="content"><![CDATA[Recettes]]></text-property>
                         </text>
@@ -1113,6 +1117,7 @@ dataSetRow["amount"]
                             <property name="borderTopColor">#606062</property>
                             <property name="borderTopStyle">solid</property>
                             <property name="borderTopWidth">thin</property>
+                            <property name="marginTop">3pt</property>
                             <property name="contentType">auto</property>
                             <text-property name="content"><![CDATA[Dépenses]]></text-property>
                         </text>
@@ -1146,6 +1151,7 @@ dataSetRow["amount"]
                             <property name="borderTopColor">#606062</property>
                             <property name="borderTopStyle">solid</property>
                             <property name="borderTopWidth">thin</property>
+                            <property name="marginTop">3pt</property>
                             <property name="contentType">auto</property>
                             <text-property name="content"><![CDATA[Encaissement]]></text-property>
                         </text>
@@ -1179,6 +1185,7 @@ dataSetRow["amount"]
                             <property name="borderTopColor">#606062</property>
                             <property name="borderTopStyle">solid</property>
                             <property name="borderTopWidth">thin</property>
+                            <property name="marginTop">3pt</property>
                             <property name="contentType">auto</property>
                             <text-property name="content"><![CDATA[Décaissement]]></text-property>
                         </text>
@@ -1187,10 +1194,8 @@ dataSetRow["amount"]
             </header>
             <detail>
                 <row id="3814">
+                    <property name="height">0.2604166666666667in</property>
                     <cell id="3815">
-                        <property name="borderBottomColor">#606062</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftColor">#606062</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
@@ -1201,15 +1206,13 @@ dataSetRow["amount"]
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <text id="3837">
+                            <property name="color">#3C3C3C</property>
                             <property name="textAlign">center</property>
                             <property name="contentType">html</property>
                             <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyy">row["date"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="3816">
-                        <property name="borderBottomColor">#606062</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftColor">#606062</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
@@ -1220,6 +1223,7 @@ dataSetRow["amount"]
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <text id="3923">
+                            <property name="color">#3C3C3C</property>
                             <property name="textAlign">center</property>
                             <property name="contentType">html</property>
                             <text-property name="content"><![CDATA[<VALUE-OF>if(row["type_select"] == "1"){
@@ -1234,9 +1238,6 @@ dataSetRow["amount"]
                         </text>
                     </cell>
                     <cell id="3817">
-                        <property name="borderBottomColor">#606062</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftColor">#606062</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
@@ -1247,14 +1248,12 @@ dataSetRow["amount"]
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <data id="3846">
+                            <property name="color">#3C3C3C</property>
                             <property name="textAlign">center</property>
                             <property name="resultSetColumn">label</property>
                         </data>
                     </cell>
                     <cell id="3818">
-                        <property name="borderBottomColor">#606062</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftColor">#606062</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
@@ -1266,17 +1265,14 @@ dataSetRow["amount"]
                         <property name="borderTopWidth">thin</property>
                         <text id="3878">
                             <property name="fontWeight">normal</property>
+                            <property name="color">#3C3C3C</property>
+                            <property name="marginRight">1pt</property>
                             <property name="textAlign">right</property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00"> row["Recetters"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>if(row["Recetters"] != null){
-"€ "
-}</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF  format="###,##0.00 ¤"> row["Recetters"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="3819">
-                        <property name="borderBottomColor">#606062</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftColor">#606062</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
@@ -1288,17 +1284,14 @@ dataSetRow["amount"]
                         <property name="borderTopWidth">thin</property>
                         <text id="3879">
                             <property name="fontWeight">normal</property>
+                            <property name="color">#3C3C3C</property>
+                            <property name="marginRight">1pt</property>
                             <property name="textAlign">right</property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["Depenses"]</VALUE-OF><VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF>if(row["Depenses"] != null){
-"€ "
-}</VALUE-OF> ]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00 ¤">row["Depenses"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="3820">
-                        <property name="borderBottomColor">#606062</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftColor">#606062</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
@@ -1310,17 +1303,14 @@ dataSetRow["amount"]
                         <property name="borderTopWidth">thin</property>
                         <text id="3880">
                             <property name="fontWeight">normal</property>
+                            <property name="color">#3C3C3C</property>
+                            <property name="marginRight">1pt</property>
                             <property name="textAlign">right</property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["Encaissement"]</VALUE-OF><VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>if(row["Encaissement"] != null){
-"€ "
-}</VALUE-OF> ]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00 ¤">row["Encaissement"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="3821">
-                        <property name="borderBottomColor">#606062</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftColor">#606062</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
@@ -1332,34 +1322,31 @@ dataSetRow["amount"]
                         <property name="borderTopWidth">thin</property>
                         <text id="3881">
                             <property name="fontWeight">normal</property>
+                            <property name="color">#3C3C3C</property>
+                            <property name="marginRight">1pt</property>
                             <property name="textAlign">right</property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["Decaissement"]</VALUE-OF><VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>if(row["Decaissement"] != null){
-"€ "
-}</VALUE-OF> ]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00 ¤">row["Decaissement"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                 </row>
             </detail>
             <footer>
                 <row id="3822">
-                    <property name="height">0.2708333333333333in</property>
+                    <property name="height">0.3333333333333333in</property>
                     <cell id="3823">
                         <property name="colSpan">3</property>
                         <property name="rowSpan">1</property>
                         <property name="backgroundColor">#3C3C3C</property>
-                        <property name="borderBottomColor">#3C3C3C</property>
+                        <property name="borderBottomColor">#FFFFFF</property>
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftColor">#3C3C3C</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightColor">#3C3C3C</property>
+                        <property name="borderRightColor">#FFFFFF</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <property name="borderTopColor">#3C3C3C</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
                         <text id="3861">
                             <property name="fontWeight">bold</property>
                             <property name="color">#FFFFFF</property>
@@ -1375,6 +1362,8 @@ dataSetRow["amount"]
                             <property name="borderTopColor">#3C3C3C</property>
                             <property name="borderTopStyle">solid</property>
                             <property name="borderTopWidth">thin</property>
+                            <property name="marginTop">3pt</property>
+                            <property name="marginRight">2pt</property>
                             <property name="textAlign">right</property>
                             <property name="contentType">auto</property>
                             <text-property name="content"><![CDATA[Total Période]]></text-property>
@@ -1382,94 +1371,85 @@ dataSetRow["amount"]
                     </cell>
                     <cell id="3826">
                         <property name="backgroundColor">#3C3C3C</property>
-                        <property name="borderBottomColor">#3C3C3C</property>
+                        <property name="borderBottomColor">#FFFFFF</property>
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftColor">#3C3C3C</property>
+                        <property name="borderLeftColor">#FFFFFF</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightColor">#3C3C3C</property>
+                        <property name="borderRightColor">#FFFFFF</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <property name="borderTopColor">#3C3C3C</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
                         <text id="3874">
                             <property name="fontWeight">bold</property>
                             <property name="color">#FFFFFF</property>
+                            <property name="marginTop">3pt</property>
+                            <property name="marginRight">1pt</property>
                             <property name="textAlign">right</property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["TotalReccetters"]</VALUE-OF> €]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00 ¤">row["TotalReccetters"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="3827">
                         <property name="backgroundColor">#3C3C3C</property>
-                        <property name="borderBottomColor">#3C3C3C</property>
+                        <property name="borderBottomColor">#FFFFFF</property>
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftColor">#3C3C3C</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightColor">#3C3C3C</property>
+                        <property name="borderRightColor">#FFFFFF</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <property name="borderTopColor">#3C3C3C</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
                         <text id="3875">
                             <property name="fontWeight">bold</property>
                             <property name="color">#FFFFFF</property>
+                            <property name="marginTop">3pt</property>
+                            <property name="marginRight">1pt</property>
                             <property name="textAlign">right</property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["TotalDepenses"]</VALUE-OF> €]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00 ¤">row["TotalDepenses"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="3828">
                         <property name="backgroundColor">#3C3C3C</property>
-                        <property name="borderBottomColor">#3C3C3C</property>
+                        <property name="borderBottomColor">#FFFFFF</property>
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftColor">#3C3C3C</property>
+                        <property name="borderLeftColor">#FFFFFF</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightColor">#3C3C3C</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopColor">#3C3C3C</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
                         <text id="3876">
                             <property name="fontWeight">bold</property>
                             <property name="color">#FFFFFF</property>
+                            <property name="marginTop">3pt</property>
+                            <property name="marginRight">1pt</property>
                             <property name="textAlign">right</property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["TotalEncaissement"]</VALUE-OF> €]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00 ¤">row["TotalEncaissement"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="3829">
                         <property name="backgroundColor">#3C3C3C</property>
-                        <property name="borderBottomColor">#3C3C3C</property>
+                        <property name="borderBottomColor">#FFFFFF</property>
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftColor">#3C3C3C</property>
+                        <property name="borderLeftColor">#FFFFFF</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightColor">#3C3C3C</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <property name="borderTopColor">#3C3C3C</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
                         <text id="3877">
                             <property name="fontWeight">bold</property>
                             <property name="color">#FFFFFF</property>
+                            <property name="marginTop">3pt</property>
+                            <property name="marginRight">1pt</property>
                             <property name="textAlign">right</property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["TotalDecaissement"]</VALUE-OF> €]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00 ¤">row["TotalDecaissement"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                 </row>
                 <row id="3853">
+                    <property name="height">0.3333333333333333in</property>
                     <cell id="3854">
                         <property name="colSpan">3</property>
                         <property name="rowSpan">1</property>
@@ -1480,10 +1460,10 @@ dataSetRow["amount"]
                         <property name="borderLeftColor">#3C3C3C</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightColor">#3C3C3C</property>
+                        <property name="borderRightColor">#FFFFFF</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <property name="borderTopColor">#3C3C3C</property>
+                        <property name="borderTopColor">#FFFFFF</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <text id="3862">
@@ -1501,6 +1481,8 @@ dataSetRow["amount"]
                             <property name="borderTopColor">#3C3C3C</property>
                             <property name="borderTopStyle">solid</property>
                             <property name="borderTopWidth">thin</property>
+                            <property name="marginTop">3pt</property>
+                            <property name="marginRight">2pt</property>
                             <property name="textAlign">right</property>
                             <property name="contentType">auto</property>
                             <text-property name="content"><![CDATA[Solde]]></text-property>
@@ -1513,21 +1495,23 @@ dataSetRow["amount"]
                         <property name="borderBottomColor">#3C3C3C</property>
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftColor">#3C3C3C</property>
+                        <property name="borderLeftColor">#FFFFFF</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightColor">#3C3C3C</property>
+                        <property name="borderRightColor">#FFFFFF</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <property name="borderTopColor">#3C3C3C</property>
+                        <property name="borderTopColor">#FFFFFF</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <text id="3873">
                             <property name="fontWeight">bold</property>
                             <property name="color">#FFFFFF</property>
+                            <property name="marginTop">3pt</property>
+                            <property name="marginRight">1pt</property>
                             <property name="textAlign">right</property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["DiffRecAndDep"]</VALUE-OF> €]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00 ¤">row["DiffRecAndDep"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="3859">
@@ -1537,21 +1521,23 @@ dataSetRow["amount"]
                         <property name="borderBottomColor">#3C3C3C</property>
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftColor">#3C3C3C</property>
+                        <property name="borderLeftColor">#FFFFFF</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightColor">#3C3C3C</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <property name="borderTopColor">#3C3C3C</property>
+                        <property name="borderTopColor">#FFFFFF</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <text id="3872">
                             <property name="fontWeight">bold</property>
                             <property name="color">#FFFFFF</property>
+                            <property name="marginTop">3pt</property>
+                            <property name="marginRight">1pt</property>
                             <property name="textAlign">right</property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["DiffEncaAndDecai"]</VALUE-OF> €]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00 ¤">row["DiffEncaAndDecai"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                 </row>
