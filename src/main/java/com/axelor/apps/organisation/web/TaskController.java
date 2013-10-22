@@ -154,7 +154,7 @@ public class TaskController {
 
 	
 	
-	public void createTaskByLines(ActionRequest request, ActionResponse response) throws AxelorException {
+	public void createTask(ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		SalesOrder salesOrder = request.getContext().asType(SalesOrder.class);
 		

@@ -31,9 +31,16 @@
 package com.axelor.apps.organisation.service;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 
 import javax.persistence.Query;
 
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.organisation.db.Candidate;
+import com.axelor.apps.organisation.db.Employee;
+import com.axelor.apps.organisation.db.IProject;
 import com.axelor.apps.organisation.db.ITask;
 import com.axelor.apps.organisation.db.ITaskUpdateLine;
 import com.axelor.apps.organisation.db.Project;
@@ -158,7 +165,7 @@ public class ProjectService {
 	
 	public void updateRealEstimatedAmount(Project project) throws AxelorException  {
 		
-/**  REVENUE  **/
+		/**  REVENUE  **/
 		
 		BigDecimal progressTurnover = this.getProjectProgress(project);
 		
@@ -233,7 +240,7 @@ public class ProjectService {
 	
 	public void updateRealInvoicedAmount(Project project)  {
 		
-/**  REVENUE  **/
+		/**  REVENUE  **/
 		
 		Query q = JPA.em().createQuery("select SUM(il.companyExTaxTotal) FROM InvoiceLine as il WHERE il.task.project = ?1 AND il.invoice.status.code = 'val' AND (il.invoice.operationTypeSelect = 3 OR il.invoice.operationTypeSelect = 4)");
 		q.setParameter(1, project);
@@ -360,6 +367,24 @@ public class ProjectService {
 		
 		injector.getInstance(TaskService.class).updateTaskProgress(project.getTaskList());
 		
+	}
+	
+	public Project createProject(String affairName, int affairStatusSelect, Partner clientPartner, Company company, Partner contactPartner, boolean isAffair, boolean isProject)  {
+		
+		Project project = new Project();
+		project.setAffairName(affairName);
+		project.setAffairStatusSelect(affairStatusSelect);
+		project.setCandidateSet(new HashSet<Candidate>());
+		project.setClientPartner(clientPartner);
+		project.setCompany(company);
+		project.setContactPartner(contactPartner);
+		project.setEmployeeSet(new HashSet<Employee>());
+		project.setExportTypeSelect(IProject.REPORT_TYPE_PDF);
+		project.setIsAffair(isAffair);
+		project.setIsProject(isProject);
+		project.setUnit(GeneralService.getUnit());
+		
+		return project;
 	}
 	
 }

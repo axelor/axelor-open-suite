@@ -39,6 +39,7 @@ import javax.persistence.Query;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
+import com.axelor.apps.base.db.IProduct;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.SpentTime;
 import com.axelor.apps.base.db.Unit;
@@ -648,19 +649,33 @@ public class TaskService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void createTasks(SalesOrder salesOrder) throws AxelorException  {
 
-		if(salesOrder.getSalesOrderLineList() != null && salesOrder.getProject() != null)  {
+		if(salesOrder.getSalesOrderLineList() != null)  {
 			/* Loop of the salesOrderLineList */
 			for(SalesOrderLine salesOrderLine : salesOrder.getSalesOrderLineList())  {
-				Product salesOrderLineProduct = salesOrderLine.getProduct();
+				Product product = salesOrderLine.getProduct();
 				
-				if(salesOrderLineProduct != null && salesOrderLineProduct.getProductTypeSelect().equals("service") && salesOrderLineProduct.getSaleSupplySelect() == 3) {
+				if(product != null && product.getProductTypeSelect().equals(IProduct.PRODUCT_TYPE_SERVICE) && product.getSaleSupplySelect() == IProduct.SALE_SUPPLY_PRODUCE) {
 					
-					Task task = salesOrderLine.getTask();
-					if(task == null)  {
-						task = this.createTask(salesOrderLine);
+					Task task = null;
+					
+					if(salesOrder.getHasGlobalTask())  {
+						Project project = salesOrder.getAffairProject();
+						
+						if(project == null)  {
+							// Create project
+						}
+						
+						task = project.getDefaultTask();
+						
 					}
-					else {
-						this.updateTask(salesOrderLine);
+					else  {
+						task = salesOrderLine.getTask();
+						if(task == null)  {
+							task = this.createTask(salesOrderLine);
+						}
+						else {
+							this.updateTask(salesOrderLine);
+						}
 					}
 					
 					salesOrderLine.setTask(task);
@@ -689,7 +704,8 @@ public class TaskService {
 		Task task = new Task();
 		
 		SalesOrder salesOrder = salesOrderLine.getSalesOrder();
-		Project project = salesOrder.getProject();
+//		Project project = salesOrder.getProject();
+		Project project = null;
 		task.setProject(project);
 		task.setSalesOrderLine(salesOrderLine);
 		task.setProduct(salesOrderLine.getProduct());
