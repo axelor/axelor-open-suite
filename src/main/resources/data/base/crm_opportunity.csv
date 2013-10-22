@@ -1,44 +1,39 @@
 "importId";"name";"partner.importId";"lead.id";"currency.code";"expectedCloseDate";"amount";"opportunityType.id";"bestCase";"worstCase";"salesStageSelect";"probability";"nextStep";"description";"source.id";"company.id";"userInfo.id";"team.id"
-1;"Consultant Junior - 4 Jour(s) + Serveur dédié XL - 12 Mois";;1;"EUR";"2013-09-23";"5119.88";1;6200;4600;7;39;;;11;1;15;2
-2;"Support technique - 3 Heure + Serveur dédié XXL - 12 Mois";;2;"EUR";"2013-09-24";2688;1;3300;2000;8;42;;;3;1;15;2
-3;"Paramétrage ERP - 5 Forfait + Cloud Privé Vsphere XL - 12 Mois";;3;"EUR";"2013-09-25";84564;1;109900;71900;7;27;;;4;1;15;2
-4;"Paramétrage CRM - 4 Forfait + Serveur dédié XXL - 12 Mois";;4;"EUR";"2013-09-26";34388;1;39900;26800;8;81;;;11;1;13;1
-5;"Support technique - 3 Heure + Serveur dédié XXL - 12 Mois";;5;"EUR";"2013-09-27";2688;1;3300;1900;7;93;;;3;1;16;2
-6;"Chef de projet - 3 Jour(s) + Serveur dédié L - 12 Mois";;6;"EUR";"2013-09-28";"4799.88";1;5800;3400;6;24;;;7;1;16;2
-7;"Paramétrage CRM - 5 Forfait + Cloud Privé Vcloud - 12 Mois";;7;"EUR";"2013-09-29";54544;1;66000;46400;8;79;;;2;1;16;2
-8;"Développeur Senior - 3 Jour(s) + Serveur dédié L - 12 Mois";;8;"EUR";"2013-09-30";"4049.88";1;4700;3600;8;48;;;5;1;15;2
-9;"Développeur Junior - 4 Jour(s) + Cloud Privé Vcloud - 12 Mois";;9;"EUR";"2013-10-01";17144;1;21400;14200;5;66;;;7;1;17;3
-10;"Paramétrage ERP - 3 Forfait + Stockage NAS XL - 12 Mois";;10;"EUR";"2013-10-02";"46199.88";1;58700;33700;6;74;;;14;1;14;1
-11;"Formation technique - 3 Jour(s) + Cloud Privé Vcloud - 12 Mois";;11;"EUR";"2013-10-03";17244;1;21000;12400;10;90;;;5;1;17;3
-12;"Développeur Junior - 1 Jour(s) + Cloud Privé Vsphere XL - 12 Mois";;12;"EUR";"2013-10-04";10214;1;12900;7100;8;48;;;11;1;16;2
-13;"Consultant Senior - 3 Jour(s) + Cloud Privé Vcloud - 12 Mois";;13;"EUR";"2013-10-05";17244;1;20500;13800;2;25;;;4;1;15;2
-14;"Formation fonctionnelle CRM - 5 Jour(s) + Serveur dédié XXL - 12 Mois";;14;"EUR";"2013-10-06";7388;1;9100;6500;1;66;;;8;1;15;2
-15;"Développeur Senior - 3 Jour(s) + Serveur dédié M - 12 Mois";;15;"EUR";"2013-10-07";"3809.88";1;4300;3400;7;33;;;4;1;15;2
-16;"Paramétrage ERP - 4 Forfait + Cloud Privé Vsphere XL - 12 Mois";;16;"EUR";"2013-10-08";69564;1;88300;51500;1;22;;;1;1;15;2
-17;"Paramétrage CRM - 5 Forfait + Serveur dédié XS - 12 Mois";;17;"EUR";"2013-10-09";"40599.88";1;45900;35700;4;34;;;14;1;16;2
-18;"Paramétrage CRM - 4 Forfait + Serveur dédié L - 12 Mois";;18;"EUR";"2013-10-10";"33799.88";1;42600;24300;8;45;;;11;1;17;3
-19;"Consultant Junior - 3 Jour(s) + Serveur dédié L - 12 Mois";;19;"EUR";"2013-10-11";"4199.88";1;5100;3700;6;69;;;2;1;13;1
-20;"Consultant Junior - 2 Jour(s) + Stockage NAS S - 12 Mois";;20;"EUR";"2013-10-12";"1719.88";1;2100;1300;1;23;;;10;1;17;3
-21;"Formation fonctionnelle CRM - 5 Jour(s) + Stockage NAS S - 12 Mois";;21;"EUR";"2013-10-13";"5119.88";1;6200;3600;2;94;;;3;1;16;2
-22;"Développeur Junior - 5 Jour(s) + Stockage NAS SSD S - 12 Mois";;22;"EUR";"2013-10-14";"5169.88";1;6700;4500;2;58;;;12;1;15;2
-23;"Formation fonctionnelle ERP - 2 Jour(s) + Cloud Privé Vsphere XL - 12 Mois";;23;"EUR";"2013-10-15";11764;1;14200;10100;3;79;;;12;1;14;1
-24;"Support technique - 4 Heure + Stockage NAS S - 12 Mois";;24;"EUR";"2013-10-16";"519.88";1;600;400;5;62;;;13;1;15;2
-25;"Formation fonctionnelle ERP - 2 Jour(s) + Cloud Privé Vcloud - 12 Mois";;25;"EUR";"2013-10-17";16744;1;18800;12200;2;78;;;14;1;17;3
-26;"Développeur Senior - 1 Jour(s) + Serveur dédié M - 12 Mois";;26;"EUR";"2013-10-18";"2309.88";1;3000;1900;4;74;;;6;1;14;1
-27;"Paramétrage CRM - 1 Forfait + Stockage NAS SSD S - 12 Mois";;27;"EUR";"2013-10-19";"9919.88";1;12100;7700;4;58;;;14;1;13;1
-28;"Chef de projet - 2 Jour(s) + Cloud Privé Vsphere S - 12 Mois";;28;"EUR";"2013-10-20";7004;1;8800;6100;5;78;;;2;1;17;3
-29;"Consultant Senior - 4 Jour(s) + Cloud Privé Vcloud - 12 Mois";;29;"EUR";"2013-10-21";18144;1;21200;15100;2;61;;;9;1;17;3
-30;"Consultant Senior - 3 Jour(s) + Stockage NAS XL - 12 Mois";;30;"EUR";"2013-10-22";"3899.88";1;4300;3500;3;57;;;12;1;15;2
-31;"Chef de projet - 4 Jour(s) + Stockage NAS XL - 12 Mois";;31;"EUR";"2013-10-23";"5199.88";1;6500;3700;8;84;;;7;1;13;1
-32;"Support technique - 4 Heure + Serveur dédié L - 12 Mois";;32;"EUR";"2013-10-24";"2199.88";1;2800;1600;6;74;;;5;1;16;2
-33;"Formation fonctionnelle CRM - 3 Jour(s) + Stockage NAS S - 12 Mois";;33;"EUR";"2013-10-25";"3119.88";1;3900;2600;1;90;;;14;1;16;2
-34;"Développeur Junior - 4 Jour(s) + Serveur dédié M - 12 Mois";;34;"EUR";"2013-10-26";"4159.88";1;4800;3300;6;100;;;1;1;17;3
-35;"Développeur Senior - 1 Jour(s) + Cloud Privé Vsphere L - 12 Mois";;35;"EUR";"2013-10-27";7434;1;8500;5400;6;47;;;7;1;17;3
-36;"Paramétrage ERP + Cloud Privé Vcloud - 12 Mois";1;;"EUR";"2013-10-28";29544;3;37500;25700;1;99;;;7;1;;
-37;"Formation fonctionnelle ERP + Stockage NAS SSD S - 12 Mois";4;;"EUR";"2013-10-29";"3019.88";3;3600;2600;5;54;;;2;1;;
-38;"Formation technique - 3 Jour(s) + Serveur dédié S - 12 Mois";6;;"EUR";"2013-10-30";"3539.88";3;4000;2900;7;59;;;6;1;;
-39;"Formation fonctionnelle ERP - 5 Jour(s) + Serveur dédié XS - 12 Mois";9;;"EUR";"2013-10-31";"6099.88";3;6900;4800;10;83;;;3;1;;
-40;"Support technique - 1 Heure + Serveur dédié XXL - 12 Mois";12;;"EUR";"2013-11-01";2488;3;3200;2000;7;62;;;4;1;;
-41;"Paramétrage CRM - 1 Forfait + Cloud Privé Vcloud - 12 Mois";15;;"EUR";"2013-11-02";22544;3;25700;15800;5;51;;;14;1;;
-42;"Consultant Senior - 2 Jour(s) + Cloud Privé Vsphere XL - 12 Mois";18;;"EUR";"2013-11-03";11364;3;12600;9200;1;57;;;4;1;;
-43;"Chef de projet - 1 Jour(s) + Stockage NAS S - 12 Mois";20;;"EUR";"2013-11-04";"1119.88";3;1300;900;10;67;;;3;1;;
+1;"Serveur haute performance - 5 U + Imprimante Laser - 7 U";;1;"EUR";"2013-10-23";40074;1;45700;31700;2;39;;;3;1;15;2
+2;"Serveur classique - 3 U + Imprimante Jet d'encre - 20 U";;2;"EUR";"2013-10-24";7422;1;8200;6400;2;42;;;6;1;15;2
+3;"Imprimante Jet d'encre - 3 U + Serveur classique - 6 U";;3;"EUR";"2013-10-25";29816;1;37000;20900;1;27;;;7;1;15;2
+4;"Imprimante Laser - 5 U + Serveur haute performance - 17 U";;4;"EUR";"2013-10-26";35429;1;39300;29400;3;81;;;10;1;13;1
+5;"Serveur haute performance - 4 U + Serveur classique - 15 U";;5;"EUR";"2013-10-27";16000;1;18100;12800;10;93;;;11;1;16;2
+6;"Imprimante Jet d'encre - 3 U + Imprimante Laser - 6 U";;6;"EUR";"2013-10-28";7651;1;9900;6400;2;24;;;3;1;16;2
+7;"Chef de projet - 5 JR + Consultant - 11 JR";;7;"EUR";"2013-10-29";11800;1;13100;10300;2;79;;;6;1;16;2
+8;"Consultant - 1 JR + Etude - 1 U";;8;"EUR";"2013-10-30";18000;1;20000;14400;2;48;;;7;1;15;2
+9;"Etude - 1 U";;9;"EUR";"2013-10-31";10000;1;12900;8600;1;66;;;10;1;17;3
+10;"Maintenance annuelle - 1 ANNEE";;10;"EUR";"2013-11-01";2000;1;2500;1600;2;74;;;11;1;14;1
+11;"Serveur haute performance - 16 U + Imprimante Laser - 20 U";;11;"EUR";"2013-11-02";43003;1;50700;31000;3;90;;;3;1;17;3
+12;"Serveur classique - 1 U + Imprimante Jet d'encre - 14 U";;12;"EUR";"2013-11-03";7974;1;9800;7000;1;48;;;6;1;16;2
+13;"Imprimante Jet d'encre - 5 U + Serveur classique - 9 U";;13;"EUR";"2013-11-04";13316;1;17000;10100;1;25;;;7;1;15;2
+14;"Imprimante Laser - 2 U + Serveur haute performance - 20 U";;14;"EUR";"2013-11-05";41287;1;46700;31000;1;66;;;3;1;15;2
+15;"Serveur haute performance - 4 U + Serveur classique - 11 U";;15;"EUR";"2013-11-06";22000;1;27100;16100;2;33;;;6;1;15;2
+16;"Imprimante Jet d'encre - 5 U + Imprimante Laser - 15 U";;16;"EUR";"2013-11-07";5377;1;6500;4400;2;22;;;3;1;15;2
+17;"Chef de projet - 2 JR + Consultant - 9 JR";;17;"EUR";"2013-11-08";9400;1;11900;7400;2;34;;;6;1;16;2
+18;"Consultant - 5 JR + Etude - 1 U";;18;"EUR";"2013-11-09";14700;1;17200;12200;2;45;;;6;1;17;3
+19;"Etude - 1 U";;19;"EUR";"2013-11-10";10000;1;11100;7400;1;69;;;7;1;13;1
+20;"Maintenance annuelle - 1 ANNEE";;20;"EUR";"2013-11-11";2000;1;2300;1800;3;23;;;10;1;17;3
+21;"Serveur haute performance - 10 U + Imprimante Laser - 14 U";;21;"EUR";"2013-11-12";37145;1;40900;29700;2;94;;;11;1;16;2
+22;"Serveur classique - 4 U + Imprimante Jet d'encre - 14 U";;22;"EUR";"2013-11-13";4132;1;5200;3300;10;58;;;11;1;15;2
+23;"Imprimante Jet d'encre - 4 U + Serveur classique - 9 U";;23;"EUR";"2013-11-14";10829;1;14100;8900;3;79;;;7;1;14;1
+24;"Imprimante Laser - 1 U + Serveur haute performance - 5 U";;24;"EUR";"2013-11-15";26716;1;33900;21600;3;62;;;6;1;15;2
+25;"Serveur haute performance - 4 U + Serveur classique - 8 U";;25;"EUR";"2013-11-16";23500;1;29800;20200;1;78;;;7;1;;3
+26;"Imprimante Jet d'encre - 2 U + Imprimante Laser - 12 U";;26;"EUR";"2013-11-17";4619;1;5800;3900;1;74;;;11;1;;1
+27;"Chef de projet - 4 JR + Consultant - 8 JR";;27;"EUR";"2013-11-18";12200;1;15100;9800;2;58;;;3;1;;1
+28;"Consultant - 3 JR + Etude - 1 U";;28;"EUR";"2013-11-19";14900;1;17000;11000;2;78;;;3;1;;3
+29;"Etude - 1 U";;29;"EUR";"2013-11-20";8000;1;9700;7200;1;61;;;6;1;;3
+30;"Maintenance annuelle - 1 ANNEE";;30;"EUR";"2013-11-21";2000;1;2300;1400;3;57;;;6;1;;2
+31;"Serveur haute performance - 10 U + Imprimante Laser - 6 U";20;;"EUR";"2013-11-22";18003;1;22000;14400;9;84;;;12;1;15;2
+32;"Serveur classique - 2 U + Imprimante Jet d'encre - 18 U";44;;"EUR";"2013-11-23";11448;3;14500;8700;9;74;;;12;1;16;2
+33;"Imprimante Jet d'encre - 2 U + Serveur classique - 14 U";70;;"EUR";"2013-11-24";25645;3;33300;21500;9;90;;;12;1;16;2
+34;"Imprimante Laser - 1 U + Serveur haute performance - 8 U";77;;"EUR";"2013-11-25";50858;3;58000;42700;9;100;;;12;1;15;2
+35;"Serveur haute performance - 5 U + Serveur classique - 10 U";88;;"EUR";"2013-11-26";27500;3;30500;22600;7;47;;;12;1;14;1
+36;"Imprimante Jet d'encre - 4 U + Imprimante Laser - 19 U";132;;"EUR";"2013-11-27";7322;3;9400;6600;7;99;;;12;1;17;3
+37;"Chef de projet - 4 JR + Consultant - 10 JR";136;;"EUR";"2013-11-28";7800;1;9400;6300;7;54;;;12;1;17;3
+38;"Consultant - 1 JR + Etude - 1 U";148;;"EUR";"2013-11-29";13400;1;14700;10900;6;59;;;12;1;17;3
