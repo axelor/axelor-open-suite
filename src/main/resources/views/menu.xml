@@ -66,7 +66,7 @@
 		<view type="calendar" name="timesheet-line-calendar" />
 		<view type="form" name="timesheet-line-calendar-form" />
 		<view type="grid" name="timesheet-line-calendar-grid" />
-		<domain>self.userInfo.internalUser.id = :_internalUserId and self.statusSelect = 1</domain>
+		<domain>self.timesheet.userInfo.internalUser.id = :_internalUserId and self.timesheet.statusSelect = :_statusSelect</domain>
 		<context name="_internalUserId" expr="eval: __user__.id"/>
 		<context name="_statusSelect" expr="1"/>
 	</action-view>
