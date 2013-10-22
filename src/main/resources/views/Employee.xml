@@ -48,7 +48,7 @@
 				<field name="emergencyNumber"/>
 				<spacer/>
 				<break/>
-				<field name="personalInfo" widget="NestedEditor" summary-view="true" form-view="personal-info-edit-form"/>
+				<field name="personalInfo" widget="NestedEditor" summary-view="true" form-view="personal-info-edit-form" canSelect="false" showTitle="false"/>
 				<field name="candidate"/>
 			</page>
 			<page title="Profile">
