@@ -141,11 +141,7 @@
 	<input file="base_unitConversion.csv" separator=";" type="com.axelor.apps.base.db.UnitConversion"/>
 
 	<!-- TODO BIND EN FONCTION DE LA LANGUE POUR LES 2 CI-dessous -->
-	<input file="base_productCategory.csv" separator=";" type="com.axelor.apps.base.db.ProductCategory">
-		<bind column="code_fr" to="code"/>	
-		<bind column="name_fr" to="name"/>	
-	</input>
-	
+
 <!-- 	<input file="base_productCategory.csv" separator=";" search="self.code = :code_fr and self.name = :name_fr" type="com.axelor.apps.base.db.ProductCategory"> -->
 <!-- 		<bind column="code_fr" to="code" update="true"/>	 -->
 <!-- 		<bind column="name_fr" to="name" update="true"/>	 -->
@@ -154,6 +150,11 @@
 	<input file="base_productFamily.csv" separator=";" type="com.axelor.apps.base.db.ProductFamily">
 		<bind column="name_fr_FR" to="name"/>
 		<bind column="code_fr_FR" to="code"/>
+	</input>
+	
+	<input file="base_productCategory.csv" separator=";" type="com.axelor.apps.base.db.ProductCategory">
+		<bind column="code_fr" to="code"/>	
+		<bind column="name_fr" to="name"/>	
 	</input>
 	
 	<input file="account_invoiceLineType.csv" separator=";" type="com.axelor.apps.account.db.InvoiceLineType">

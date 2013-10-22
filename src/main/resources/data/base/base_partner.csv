@@ -1,4 +1,4 @@
-"importId";"partnerSeq";"partnerTypeSelect";"isContact";"name";"firstName";"titleSelect";"language.code";"mainInvoicingAddress.importId";"deliveryAddress.importId";"email";"fixedPhone";"mobilePhone";"bankDetails.importId";"invoiceSendingFormatSelect";"paymentMode.code";"paymentCondition.code";"partnerCategory.code";"currency.code";"blocking.importId";"rejectCounter";"companySet_importId";"customerAccount_code";"supplierAccount_code";"mainPartner_importId";"isCustomer";"customerTypeSelect";"isSupplier";"supplierTypeSelect";"industrySectorSelect";"userInfo.importId";"team.importId";"source.id"
+"importId";"partnerSeq";"partnerTypeSelect";"isContact";"name";"firstName";"titleSelect";"languageSelect";"mainInvoicingAddress.importId";"deliveryAddress.importId";"email";"fixedPhone";"mobilePhone";"bankDetails.importId";"invoiceSendingFormatSelect";"paymentMode.code";"paymentCondition.code";"partnerCategory.code";"currency.code";"blocking.importId";"rejectCounter";"companySet_importId";"customerAccount_code";"supplierAccount_code";"mainPartner_importId";"isCustomer";"customerTypeSelect";"isSupplier";"supplierTypeSelect";"industrySectorSelect";"userInfo.importId";"team.importId";"source.id"
 20;"T00001";1;"false";"APOLLO";;;"fr";62;62;"info@apollo.fr";"04.35.79.88.99";;1;"emailpaper";"IN_CHQ";"30JRFDM";"SME";"EUR";;;1;411100;401100;;"true";2;"true";2;4;15;2;5
 21;"T00002";2;"true";"MICHEL";"Loic";1;"fr";62;62;"l.michel@apollo.fr";"04.31.45.39.99";"06.41.66.37.99";;;;;;;;;1;;;20;"false";;"false";;;;;
 22;"T00003";2;"true";"GARCIA";"Daniel";1;"fr";62;62;"d.garcia@apollo.fr";"04.19.14.89.99";"06.89.42.54.99";;;;;;;;;1;;;20;"false";;"false";;;;;
@@ -50,12 +50,12 @@
 90001;"T00049";2;"true";"MARQUES";"Yoann";1;"fr";90000;90000;"y.marques@axelor.com";"01.10.79.99.70";;;;;;;;;;1;;;;"false";;"false";;;;;
 90002;"T00050";2;"true";"ROBERT";"Lucy";2;"fr";90000;90000;"l.robert@axelor.com";"01.10.79.99.71";;;;;;;;;;1;;;;"false";;"false";;;;;
 90003;"T00051";2;"true";"RICHARD";"Lucas";1;"fr";90000;90000;"l.richard@axelor.com";"01.10.79.99.72";;;;;;;;;;1;;;;"false";;"false";;;;;
-90004;"T00052";2;"true";"SILVA";"Daniel";1;"fr";90000;90000;"k.admin@axelor.com";"01.10.79.99.76";;;;;;;;;;1;;;;"false";;"false";;;;;
-90005;"T00053";2;"true";"MARTIN";"Charles";1;"fr";90000;90000;"t.raymond@axelor.com";"01.10.79.99.78";;;;;;;;;;1;;;;"false";;"false";;;;;
-90006;"T00054";2;"true";"DEMOERP";"Kevin";1;"fr";90000;90000;"k.admin@axelor.com";"01.10.79.99.76";;;;;;;;;;1;;;;"false";;"false";;;;;
+90004;"T00052";2;"true";"SILVA";"Daniel";1;"fr";90000;90000;"d.silva@axelor.com";"01.10.79.99.76";;;;;;;;;;1;;;;"false";;"false";;;;;
+90005;"T00053";2;"true";"MARTIN";"Charles";1;"fr";90000;90000;"c.martin@axelor.com";"01.10.79.99.78";;;;;;;;;;1;;;;"false";;"false";;;;;
+90006;"T00054";2;"true";"DEMOERP";"Kevin";1;"fr";90000;90000;"k.demoerp@axelor.com";"01.10.79.99.76";;;;;;;;;;1;;;;"false";;"false";;;;;
 90007;"T00055";2;"true";"DEMOCRM";"Charles";1;"fr";90001;90001;"c.democrm@axelor.com";"01.10.79.99.77";;;;;;;;;;1;;;;"false";;"false";;;;;
 90008;"T00056";2;"true";"RAYMOND";"Tony";1;"fr";90003;90003;"t.raymond@axelor.com";"01.10.79.99.78";;;;;;;;;;1;;;;"false";;"false";;;;;
-90009;"T00057";2;"true";"LAMY";"Thomas";1;"fr";90002;90002;"t.demoerp@axelor.com";"01.10.79.99.79";;;;;;;;;;1;;;;"false";;"false";;;;;
+90009;"T00057";2;"true";"LAMY";"Thomas";1;"fr";90002;90002;"t.lamy@axelor.com";"01.10.79.99.79";;;;;;;;;;1;;;;"false";;"false";;;;;
 90010;"T00058";2;"true";"GIRAULT";"Anne";2;"fr";90004;90004;"a.girault@axelor.com";"01.10.79.99.80";;;;;;;;;;1;;;;"false";;"false";;;;;
 90011;"T00059";2;"true";"GEOFFROY";"Dimitri";1;"fr";90000;90000;"d.geoffroy@axelor.com";"01.10.79.99.81";;;;;;;;;;1;;;;"false";;"false";;;;;
 90012;"T00060";2;"true";"DAVID";"Alex";1;"fr";90000;90000;"a.david@axelor.com";"01.10.79.99.82";;;;;;;;;;1;;;;"false";;"false";;;;;
