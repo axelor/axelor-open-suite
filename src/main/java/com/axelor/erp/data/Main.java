@@ -41,6 +41,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.name.Names;
+import com.google.inject.util.Providers;
 
 /**
  * Main importer class. 
@@ -86,6 +87,8 @@ public class Main {
 			return;
 		}
 		
+		final String errorDir = cmd.getErrorDir() == null ? null : cmd.getErrorDir().getPath();
+		
 		Injector injector = Guice.createInjector(new AbstractModule() {
 			
 			@Override
@@ -94,6 +97,7 @@ public class Main {
 				install(new AuthModule.Simple());
 				bindConstant().annotatedWith(Names.named("axelor.data.config")).to(cmd.getConfig().toString());
 				bindConstant().annotatedWith(Names.named("axelor.data.dir")).to(cmd.getDataDir().toString());
+				bind(String.class).annotatedWith(Names.named("axelor.error.dir")).toProvider(Providers.<String>of(errorDir));
 			}
 		});
 		
