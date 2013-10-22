@@ -22,6 +22,8 @@
 		<bind column="statut_flag_facture" to="invoiceStatusOK" eval="statut_flag_facture == '1'? true : false" />
 	</input>
 
+
+	<input file="base_template.csv" separator=";" type="com.axelor.apps.base.db.Template"/>
     
 	<input file="base_team.csv" separator=";" type="com.axelor.apps.base.db.Team">
 		<bind column="code_fr" to="code"/>
@@ -123,7 +125,7 @@
     	<bind to="toBeAdded" column="toBeAdded" eval="toBeAdded?.empty ? '1' : toBeAdded"/>
     </input>
     
- 	<input file="base_companyDepartment_Prod.csv" separator=";" type="com.axelor.apps.base.db.CompanyDepartment">
+ 	<input file="base_companyDepartment.csv" separator=";" type="com.axelor.apps.base.db.CompanyDepartment">
  		<bind column="id" to="importId"/>
  		<bind column="code_fr" to="code"/>
  		<bind column="name_fr" to="name"/>
@@ -131,15 +133,6 @@
 <!--  		<bind column="name_en" to="name"/> -->
  	</input>
  	
-<!--  	<input file="base_companyDepartment_Serv.csv" separator=";" type="com.axelor.apps.base.db.Department"> -->
-<!--  		<bind column="id" to="importId"/> -->
-<!--  		<bind column="code_fr" to="code"/> -->
-<!--  		<bind column="name_fr" to="name"/> -->
-<!--  		<bind column="code_en" to="code"/> -->
-<!--  		<bind column="name_en" to="name"/> -->
-<!--  	</input> -->
-
-	
 	<input file="base_unit.csv" separator=";" type="com.axelor.apps.base.db.Unit">
 		<bind column="name_fr_FR" to="name" />
 		<bind column="code_fr_FR" to="code" />
@@ -370,6 +363,8 @@
 		<bind column="fieldKeywordSet_importId" to="fieldKeywordSet" search="self.importId in :fieldKeywordSet_importId" eval="fieldKeywordSet_importId.split('\\|') as List"/>
 		<bind column="jobKeywordSet_importId" to="jobKeywordSet" search="self.importId in :jobKeywordSet_importId" eval="jobKeywordSet_importId.split('\\|') as List"/>
 	</input>
+	
+	<input file="organisation_mobilityChoice.csv" separator=";" type="com.axelor.apps.organisation.db.MobilityChoice"/>
 	
 	<input file="organisation_personalInfo.csv" separator=";" type="com.axelor.apps.organisation.db.PersonalInfo"/>
 	
