@@ -53,4 +53,10 @@ public interface IProject {
 	static final int REAL_ESTIMATED_METHOD_NONE = 1;
 	static final int REAL_ESTIMATED_METHOD_PROGRESS = 2;
 	static final int REAL_ESTIMATED_METHOD_SUBSCRIPTION = 3;
+	
+	
+	// REPORT TYPE SELECT
+	static final String REPORT_TYPE_PDF = "pdf";
+	static final String REPORT_TYPE_XLS = "xls";
+	
 }
