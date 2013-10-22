@@ -67,7 +67,7 @@
 	    <break/>
 	    <group title="Assigned to" colSpan="2" cols="4" canCollapse="true">
 	        <field name="userInfo"/>
-	        <field name="team" readonlyIf="!userInfo" onSelect="action-event-attrs-team-domain"/>
+	        <field name="team" onSelect="action-event-attrs-team-domain"/>
 	    </group>
 	    <group colSpan="2" cols="2">
 	        <group title="Reminders" colSpan="1" cols="2">
@@ -129,7 +129,7 @@
 	    <break/>
 	    <group title="Assigned to" colSpan="2" cols="4" canCollapse="true">
 	        <field name="userInfo"/>
-	        <field name="team" readonlyIf="!userInfo" onSelect="action-event-attrs-team-domain"/>
+	        <field name="team" onSelect="action-event-attrs-team-domain"/>
 	    </group>
 	    <group colSpan="2" cols="2">
 	        <group title="Reminders" colSpan="1" cols="2">
@@ -202,7 +202,7 @@
 	    <break/>
 	    <group title="Assigned to" colSpan="2" cols="4" canCollapse="true">
 	        <field name="userInfo"/>
-	        <field name="team" readonlyIf="!userInfo" onSelect="action-event-attrs-team-domain"/>
+	        <field name="team" onSelect="action-event-attrs-team-domain"/>
 	    </group>
 	    <group colSpan="2" cols="2">
 	        <group title="Reminders" colSpan="1" cols="2">
@@ -264,7 +264,7 @@
 	    <break/>
 	    <group title="Assigned to" colSpan="2" cols="4" canCollapse="true">
 	        <field name="userInfo"/>
-	        <field name="team" readonlyIf="!userInfo" onSelect="action-event-attrs-team-domain"/>
+	        <field name="team" onSelect="action-event-attrs-team-domain"/>
 	    </group>
 	    <group title="Reminders" colSpan="4" cols="2">
 	            <field name="eventReminderList" showTitle="false" colSpan="2" widget="MasterDetail"/>
@@ -287,7 +287,7 @@
     <form name="ticket-form" title="Ticket" model="com.axelor.apps.crm.db.Event" cols="6" colWidths="*,400" 
     onLoad="action-event-ticket-attrs-default" 
     onSave="action-event-set-sequence" 
-    onNew="action-event-new-record,action-event-ticket-attrs-default,action-event-record-ticket-status-select,action-event-record-progress-select">
+    onNew="action-event-new-record,action-event-ticket-attrs-default">
 	    <group colSpan="1" cols="4">
 	        <group colSpan="2" cols="2" colWidths="100,*">
 	            <separator title="Ticket N°" colSpan="1" hideIf="$readonly()"/>
@@ -401,23 +401,17 @@
     
     <action-record name="action-event-record-task-status-select" model="com.axelor.apps.crm.db.Event">
     	<field name="taskStatusSelect" expr="1" if="typeSelect == 3"/>
+    	<field name="progressSelect" expr="0"/>
     </action-record>
     
     <action-record name="action-event-record-status-select" model="com.axelor.apps.crm.db.Event">
     	<field name="statusSelect" expr="1" if="typeSelect == 1 || typeSelect == 2"/>
     </action-record>
     
-    <action-record name="action-event-record-ticket-status-select" model="com.axelor.apps.crm.db.Event">
-    	<field name="ticketStatusSelect" expr="1"/>
-    </action-record>
-    
-    <action-record name="action-event-record-progress-select" model="com.axelor.apps.crm.db.Event">
-    	<field name="progressSelect" expr="0"/>
-    </action-record>
-    
     <action-record name="action-ticket-record-new" model="com.axelor.apps.crm.db.Event">
-    	<field name="quaternaryStatusSelect" expr="1"/>
+    	<field name="ticketStatusSelect" expr="1"/>
     	<field name="prioritySelect" expr="eval: _prioritySelect"/>
+    	<field name="progressSelect" expr="0"/>
     </action-record>
     
     <action-record name="action-event-record-default-duration" model="com.axelor.apps.crm.db.Event">
