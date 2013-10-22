@@ -35,8 +35,8 @@
     </grid>
     
     <form name="partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" cols="6" colWidths="25*" 
-    onNew="action-partner-record-partner-type-select,action-partner-record-set-default,action-partner-attrs-set-readonly" 
-    onLoad="action-partner-attrs-change-name,action-partner-attrs-hide-tabs,action-partner-attrs-set-readonly" 
+    onNew="action-partner-record-partner-type-select,action-partner-record-set-default" 
+    onLoad="action-partner-attrs-change-name,action-partner-attrs-hide-tabs" 
     onSave="action-set-partner-seq,action-create-accounting-situation">
 	    <toolbar>
 	        <button name="sendByEmail" title="Send email" colSpan="1" onClick="save,action-send-by-email-with-template"/>
@@ -93,7 +93,7 @@
 	                <group colSpan="2" cols="2">
 	                    <field name="partnerCategory" widget="SuggestBox"/>
 	                    <field name="industrySectorSelect"/>
-	                    <field name="source" hideIf="isContact"/>
+	                    <field name="source"/>
 	                    <field name="site" domain="self.partner.id = :id"/>
 	                    <field name="department"/>
 	                </group>
@@ -104,12 +104,6 @@
 	                    <field name="vatNbr"/>
 	                    <field name="parentPartner" hideIf="partnerTypeSelect != 1"/>
 	                </group>
-	            </group>
-	            <group title="Contacts details" hideIf="partnerTypeSelect == 2 || !isContact" colSpan="4" cols="4">
-	                <field name="mainPartner" hideIf="!isContact"/>
-	                <field name="source" hideIf="!isContact"/>
-	                <field name="reportsTo" hideIf="!isContact"/>
-	                <field name="jobTitle" hideIf="!isContact"/>
 	            </group>
 	            <group title="Postal addresses" colSpan="4" cols="4">
 	                <field name="deliveryAddress" onChange="action-partner-record-main-invoicing-address"/>
@@ -126,7 +120,7 @@
 	        <page title="Notes">
 	            <field name="description" showTitle="false" colSpan="4" widget="Html[lite=true]"/>
 	        </page>
-	        <page name="payment" title="Invoicing/Payment" hideIf="partnerTypeSelect == 2 || isContact" colSpan="4" cols="4">
+	        <page name="payment" title="Invoicing/Payment" hideIf="partnerTypeSelect == 2" colSpan="4" cols="4">
 	            <field name="invoiceSendingFormatSelect"/>
 	            <field name="paymentMode"/>
 	            <field name="paymentCondition"/>
@@ -136,7 +130,7 @@
 	        </page>
 	        <page title="Settings" cols="4">
 	            <field name="partnerSeq"/>
-	            <field name="languageSelect" hideIf="isContact || partnerTypeSelect == 1"/>
+	            <field name="languageSelect"/>
 	            <group title="Assigned to" colSpan="4" cols="4" canCollapse="true">
 	                <field name="companySet" colSpan="4" widget="TagSelect[create=name]" onChange="action-partner-company-set-validate"/>
 	                <break/>
@@ -211,9 +205,9 @@
 	
 
 	<form name="partner-contact-form" title="Contact" model="com.axelor.apps.base.db.Partner" cols="6" colWidths="25*" 
-	onNew="action-partner-record-partner-type-select,action-partner-contact-record-default,action-partner-attrs-set-readonly" 
-	onLoad="action-partner-attrs-change-name,action-partner-attrs-hide-tabs,action-partner-attrs-set-readonly" 
-	onSave="action-set-partner-seq,action-create-accounting-situation">
+	onNew="action-partner-record-partner-type-select,action-partner-contact-record-default" 
+	onLoad="action-partner-attrs-change-name,action-partner-attrs-hide-tabs" 
+	onSave="action-set-partner-seq">
 	    <toolbar>
 	        <button name="sendByEmail" title="Send email" colSpan="1" onClick="save,action-send-by-email-with-template"/>
 	        <button name="showPartnerInfo" title="Print Informations" colSpan="1" icon="img/icons/print.png" onClick="save,action-partner-method-show-partner-info"/>
@@ -404,10 +398,6 @@
 	
 	<action-attrs name="action-partner-attrs-hide-tabs">
 		<attribute name="required" for="currency" expr="eval:!isContact || partnerTypeSelect != 2"/>
-	</action-attrs>
-	
-	<action-attrs name="action-partner-attrs-set-readonly">
-		<attribute name="readonly" for="partnerTypeSelect" expr="eval:isContact"/>
 	</action-attrs>
 	
 	<action-record name="action-partner-record-partner-type-select" model="com.axelor.apps.base.db.Partner" >

@@ -18,7 +18,7 @@
         <field name="employee"/>
         <notebook colSpan="4">
         	<page title="User login settings">
-	        	<field widget="NestedEditor" canSelect="false" summary-view="true" name="internalUser">
+	        	<field widget="NestedEditor" canSelect="false" summary-view="true" name="internalUser" showTitle="false">
 	                <form cols="4" title="User login settings">
                       <field name="name"/>
                       <field name="group"/>
