@@ -55,7 +55,14 @@
 	
 	<input file="base_currency.csv" separator=";" type="com.axelor.apps.base.db.Currency" />
 	
+	<input file="base_unit.csv" separator=";" type="com.axelor.apps.base.db.Unit">
+		<bind column="name_fr_FR" to="name" />
+		<bind column="code_fr_FR" to="code" />
+	</input>
+	
 	<input file="base_general.csv" separator=";" type="com.axelor.apps.base.db.General" />
+	
+	<input file="base_unitConversion.csv" separator=";" type="com.axelor.apps.base.db.UnitConversion"/>
 	
 	<input file="base_partnerCategory.csv" separator=";" type="com.axelor.apps.base.db.PartnerCategory">
 		<bind column="name_fr_FR" to="name"/>	
@@ -133,12 +140,6 @@
 <!--  		<bind column="name_en" to="name"/> -->
  	</input>
  	
-	<input file="base_unit.csv" separator=";" type="com.axelor.apps.base.db.Unit">
-		<bind column="name_fr_FR" to="name" />
-		<bind column="code_fr_FR" to="code" />
-	</input>
-	
-	<input file="base_unitConversion.csv" separator=";" type="com.axelor.apps.base.db.UnitConversion"/>
 
 	<!-- TODO BIND EN FONCTION DE LA LANGUE POUR LES 2 CI-dessous -->
 
