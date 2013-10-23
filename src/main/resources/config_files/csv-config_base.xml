@@ -310,6 +310,9 @@
     	</bind>
 	</input>
 	
+	<input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company" search="self.importId = :importId" update="true">
+		<bind column="bankDetailsSet_id" to="bankDetailsSet" search="self.importId in :bankDetailsSet_id" />
+	</input> 
 	
 <!--     IMPORT DU PACKAGE 'CRM' --> 	
 	
@@ -383,6 +386,18 @@
 	<input file="supplychain_salesOrder.csv" separator=";" type="com.axelor.apps.supplychain.db.SalesOrder" />
 	<input file="supplychain_salesOrderLine.csv" separator=";" type="com.axelor.apps.supplychain.db.SalesOrderLine" />
 	<input file="supplychain_salesOrder.csv" separator=";" type="com.axelor.apps.supplychain.db.SalesOrder" call="com.axelor.csv.script.ImportSalesOrder:importSalesOrder" search="self.importId = :importId" update="true"/>
+	  	
+ 	<input file="organisation_project.csv" separator=";" type="com.axelor.apps.organisation.db.Project">
+ 		<bind column="memberUserInfoSet_id" to="memberUserInfoSet" search="self.importId in :memberUserInfoSet_id" eval="memberUserInfoSet_id.split('\\|') as List"/>
+ 	</input>	
+ 	
+ 	<input file="organisation_task.csv" separator=";" type="com.axelor.apps.organisation.db.Task">
+ 		<bind to="startDateT" column="startDateT" eval="!startDateT.empty ? startDateT.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{2}) ([0-9]{2}):([0-9]{2})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1'.padLeft(2,'0')+'T$4'+':$5') : null"/>
+ 		<bind to="endDateT" column="endDateT" eval="!endDateT.empty ? endDateT.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{2}) ([0-9]{2}):([0-9]{2})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1'.padLeft(2,'0')+'T$4'+':$5') : null"/>
+ 		<bind to="name" column="name_fr"/>
+ 	</input>	
+ 	
+ 	<input file="base_spentTime.csv" separator=";" type="com.axelor.apps.base.db.SpentTime"/>
 	  	
 </csv-inputs>
 
