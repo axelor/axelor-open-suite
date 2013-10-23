@@ -40,7 +40,7 @@ import java.util.List;
 import au.com.bytecode.opencsv.CSVReader;
 
 import com.axelor.db.JPA;
-import com.axelor.db.Widget;
+import com.axelor.db.annotations.Widget;
 import com.csvreader.CsvWriter;
 
 //Generate csv file with mapping of object fields to csv column"
