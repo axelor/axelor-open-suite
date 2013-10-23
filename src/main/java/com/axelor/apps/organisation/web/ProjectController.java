@@ -37,7 +37,9 @@ import com.axelor.apps.AxelorSettings;
 import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.organisation.service.ProjectService;
 import com.axelor.apps.tool.net.URLService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.db.MetaUser;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -108,8 +110,9 @@ public class ProjectController {
 		StringBuilder url = new StringBuilder();
 		AxelorSettings axelorSettings = AxelorSettings.get();
 
-		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Project.rptdesign&__format="+project.getExportTypeSelect()+"&ProjectId="+project.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
-
+		MetaUser metaUser = MetaUser.findByUser( AuthUtils.getUser());
+		
+		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Project.rptdesign&__format="+project.getExportTypeSelect()+"&Locale="+metaUser.getLanguage()+"&ProjectId="+project.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
 
 		String urlNotExist = URLService.notExist(url.toString());
 		if (urlNotExist == null){

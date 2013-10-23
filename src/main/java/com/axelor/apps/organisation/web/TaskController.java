@@ -41,7 +41,9 @@ import com.axelor.apps.organisation.service.FinancialInformationHistoryService;
 import com.axelor.apps.organisation.service.TaskService;
 import com.axelor.apps.supplychain.db.SalesOrder;
 import com.axelor.apps.tool.net.URLService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.db.MetaUser;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -131,10 +133,12 @@ public class TaskController {
 
 		Task task = request.getContext().asType(Task.class);
 
+		MetaUser metaUser = MetaUser.findByUser( AuthUtils.getUser());
+
 		StringBuilder url = new StringBuilder();
 		AxelorSettings axelorSettings = AxelorSettings.get();
 
-		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Task.rptdesign&__format="+task.getExportTypeSelect()+"&TaskId="+task.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
+		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Task.rptdesign&__format="+task.getExportTypeSelect()+"&TaskId="+task.getId()+"&Local="+metaUser.getLanguage()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
 
 
 		String urlNotExist = URLService.notExist(url.toString());
