@@ -42,7 +42,7 @@
 	                <break/>
 	            </group>
 	            <group colSpan="2" cols="1">
-	                <field name="enterpriseName" showIf="partner != null"/>
+	                <field name="enterpriseName" placeholder="Enterprise name" showIf="partner == null"/>
 	                <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" showIf="statusSelect == 4"/>
 	                <field name="jobTitle" placeholder="Function"/>
 	            </group>

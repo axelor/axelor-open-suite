@@ -77,14 +77,16 @@ public class ConvertLeadWizardController {
 			contactPartner = convertLeadWizardService.createPartner((Map<String, Object>) context.get("contactPartner"));
 		}
 		else  if(context.get("selectContact") != null) {
-			contactPartner = Partner.find((Long) context.get("selectContactPartner"));
+			Map<String, Object> selectContactContext = (Map<String, Object>) context.get("selectContact");
+			contactPartner = Partner.find(((Integer) selectContactContext.get("id")).longValue());
 		}
 		
 		if(context.get("hasConvertIntoPartner") != null && (Boolean) context.get("hasConvertIntoPartner")) {
 			partner = convertLeadWizardService.createPartner((Map<String, Object>) context.get("partner"));
 		}
 		else  if(context.get("selectPartner") != null) {
-			partner = Partner.find((Long) context.get("selectPartner"));
+			Map<String, Object> selectPartnerContext = (Map<String, Object>) context.get("selectPartner");
+			partner = Partner.find(((Integer) selectPartnerContext.get("id")).longValue());
 		}
 		
 		if(context.get("hasConvertIntoOpportunity") != null && (Boolean) context.get("hasConvertIntoOpportunity")) {
