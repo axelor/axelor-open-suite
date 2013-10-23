@@ -7,6 +7,8 @@
 
   <entity name="Task" lang="java">
   
+  	<string name="importId"/>
+  	
   	<many-to-one name="salesOrderLine" ref="com.axelor.apps.supplychain.db.SalesOrderLine" title="Sale order line (origin)"/>
   	<string name="name" title="Task name" required="true"/>
   	<many-to-one name="project" ref="com.axelor.apps.organisation.db.Project" title="Project" required="true"/>
