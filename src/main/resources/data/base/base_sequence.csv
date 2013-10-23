@@ -39,9 +39,22 @@
 "moveLineExport";"Export comptable";1;10;"EXPCPT_%Y_";;1;1;1;
 "moveLineReport";"Reporting comptable";1;10;"REPORTDF_%Y_";;1;1;1;
 "paymentSchedule";"Numero echeancier";1;10;"ECHPAI_%Y_";;1;1;1;
-"paymentVoucher";"Numero de paiement espèces";1;10;"PAY_ESP_%Y_";;1;1;1;"ENC_ESP"
-"paymentVoucher";"Numero de paiement CB";1;10;"PAY_CB_%Y_";;1;1;1;"ENC_CB"
-"paymentVoucher";"Numero de paiement chèques";1;10;"PAY_CHQ_%Y_";;1;1;1;"ENC_CHQ"
+"paymentVoucher";"N° de paiement enc. espèces ";1;10;"_ENC_ESP_%Y_";;1;1;1;"ENC_ESP"
+"paymentVoucher";"N° de paiement enc. chèques ";1;10;"_ENC_CHQ_%Y_";;1;1;1;"ENC_CHQ"
+"paymentVoucher";"N° de paiement enc. CB ";1;10;"_ENC_CB_%Y_";;1;1;1;"ENC_CB"
+"paymentVoucher";"N° de paiement enc. internet ";1;10;"_ENC_WEB_%Y_";;1;1;1;"ENC_WEB"
+"paymentVoucher";"N° de paiement enc. TIP ";1;10;"_ENC_TIP_%Y_";;1;1;1;"ENC_TIP"
+"paymentVoucher";"N° de paiement enc. TIP+Cheque ";1;10;"_ENC_TEC_%Y_";;1;1;1;"ENC_TEC"
+"paymentVoucher";"N° de paiement enc. virement ";1;10;"_ENC_VIR_%Y_";;1;1;1;"ENC_VIR"
+"paymentVoucher";"N° de paiement enc. prélèvement  (factures et échéanciers hors mensu)";1;10;"_ENC_PRE_%Y_";;1;1;1;"ENC_PRE"
+"paymentVoucher";"N° de paiement enc. autres moyens ";1;10;"_ENC_OTH_%Y_";;1;1;1;"ENC_OTH"
+"paymentVoucher";"N° de paiement dec. espèces ";1;10;"_DEC_ESP_%Y_";;1;1;1;"DEC_ESP"
+"paymentVoucher";"N° de paiement dec. chèques ";1;10;"_DEC_CHQ_%Y_";;1;1;1;"DEC_CHQ"
+"paymentVoucher";"N° de paiement dec. CB ";1;10;"_DEC_CB_%Y_";;1;1;1;"DEC_CB"
+"paymentVoucher";"N° de paiement dec. TIP ";1;10;"_DEC_TIP_%Y_";;1;1;1;"DEC_TIP"
+"paymentVoucher";"N° de paiement dec. virement ";1;10;"_DEC_VIR_%Y_";;1;1;1;"DEC_VIR"
+"paymentVoucher";"N° de paiement dec. prélèvement  (factures et échéanciers hors mensu) ";1;10;"_DEC_PRE_%Y_";;1;1;1;"DEC_PRE"
+"paymentVoucher";"N° de paiement dec. autres moyens ";1;10;"_DEC_OTH_%Y_";;1;1;1;"DEC_OTH"
 "paymentVoucherReceiptNo";"Numéro de reçu";1;10;"RECU_%Y_";;1;1;1;
 "purchaseInterface";"Interface achat";1;10;"INTACH_%Y_";;1;1;1;
 "refundInterface";"Interface avoir";1;10;"INTAVO_%Y_";;1;1;1;
