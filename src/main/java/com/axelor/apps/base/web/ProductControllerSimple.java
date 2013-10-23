@@ -42,6 +42,7 @@ import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.meta.db.MetaUser;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 
@@ -60,7 +61,6 @@ public class ProductControllerSimple {
 		String productIds = "";
 
 		List<Integer> lstSelectedPartner = (List<Integer>) request.getContext().get("_ids");
-
 		for(Integer it : lstSelectedPartner) {
 			productIds+= it.toString()+",";
 		}
@@ -68,8 +68,10 @@ public class ProductControllerSimple {
 		if(!productIds.equals("")){
 			productIds = "&ProductIds="+productIds.substring(0, productIds.length()-1);	
 		}
-		
-		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/ProductCatalog_PGQL.rptdesign&__format=pdf"+productIds+"&UserId="+user.getId()+"&CurrYear="+currentYear+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
+
+		MetaUser metaUser = MetaUser.findByUser( AuthUtils.getUser());
+		String language = metaUser.getLanguage() != null? metaUser.getLanguage() : "en"; 
+		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/ProductCatalog_PGQL.rptdesign&Locale="+language+"&__format=pdf"+productIds+"&UserId="+user.getId()+"&CurrYear="+currentYear+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
 		
 		LOG.debug("URL : {}", url);
 		String urlNotExist = URLService.notExist(url.toString());
