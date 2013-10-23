@@ -41,7 +41,7 @@ import javax.xml.ws.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.tool.address.AddressService;
+import com.axelor.apps.tool.address.AddressTool;
 
 import com.qas.web_2005_02.Address;
 import com.qas.web_2005_02.EngineEnumType;
@@ -56,7 +56,7 @@ import com.qas.web_2005_02.QASearch;
 import com.qas.web_2005_02.QASearchOk;
 import com.qas.web_2005_02.QASearchResult;
 
-public class AddressService {
+public class AddressTool {
 
 	static private QName SERVICE_NAME = null;
 	static private QName PORT_NAME = null;
@@ -64,7 +64,7 @@ public class AddressService {
 	static private Service service = null;
 	static private QAPortType client = null;
 	
-	private static final Logger LOG = LoggerFactory.getLogger(AddressService.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AddressTool.class);
 	
 	public void setService(String wsdlUrl) throws MalformedURLException {
 		// TODO: inject this
