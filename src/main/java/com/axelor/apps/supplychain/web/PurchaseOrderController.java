@@ -114,6 +114,7 @@ public class PurchaseOrderController {
 
 		StringBuilder url = new StringBuilder();
 		AxelorSettings axelorSettings = AxelorSettings.get();
+		String language = purchaseOrder.getSupplierPartner().getLanguageSelect() != null? purchaseOrder.getSupplierPartner().getLanguageSelect() : purchaseOrder.getCompany().getPrintingSettings().getLanguageSelect() != null ? purchaseOrder.getCompany().getPrintingSettings().getLanguageSelect() : "en" ; 
 
 		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/PurchaseOrder.rptdesign&__format=pdf&PurchaseOrderId="+purchaseOrder.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
 		LOG.debug("URL : {}", url);
