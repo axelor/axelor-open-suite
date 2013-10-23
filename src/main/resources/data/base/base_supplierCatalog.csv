@@ -1,0 +1,22 @@
+"product.importId";"supplierPartner.importId";"productSupplierName";"productSupplierCode";"price";"updateDate";"description";"calculatedPrice"
+5;148;"InkJet Printer PRINTO";"IP-PRINTQ";"279.65";"2013-02-01";;
+5;170;"PRINTO Inkjet";6541241;"302.02";"2013-03-15";;
+6;148;"Laser Printer PROPRINT";"LP-PROPRINT";"321.75";"2013-02-01";;
+6;170;"PROPRINT Laser";6543248;"341.06";"2013-03-15";;
+7;148;"HDD HARDSHARK 1 To ";"HD-HSHARK1T";"51.00";"2013-02-01";;
+7;170;"HARDSHARK SATA 1 To ";7458764;"53.55";"2013-03-15";;
+8;148;"HDD SSDSHARK 100 Go ";"HD-SSHARK100G";"56.8";"2013-02-01";;
+8;170;"SSDSHARK 100 Go ";7458897;"60.21";"2013-03-15";;
+9;152;"Processor 4x3,4 GHz POWER4CORE";"PROC-651245";"153.00";"2013-04-20";;
+10;152;"Processor 6x3,2 GHz POWER6CORE";"PROC-651257";"426.60";"2013-04-20";;
+11;148;"Rack Casing";"CS-RACK";"58.80";"2013-02-01";;
+12;170;"RAMTOP 8 Go DDR3 ";8000024;"56.00";"2013-03-15";;
+13;170;"RAMEXTRA 16 Go DDR3 ";8000026;"113.60";"2013-03-15";;
+14;152;"Classic MotherBoard";"MOTH-45678C";"124.50";"2013-04-20";;
+15;152;"High Performance MotherBoard";"MOTH-45678HP";"197.50";"2013-04-20";;
+16;88;"Cartouche jet d'encre FLUID";"C.MH0100";"240.17";"2013-06-01";;
+17;88;"Cartouche encre laser POWDER";"C.TH0850";"339.92";"2013-06-01";;
+18;88;"Ramette 500 Feuilles A4 Standard 80 g";"P.AS8005";"5.03";"2013-06-01";;
+19;88;"Stylos billes medium (Bte 50)";"F.SM74851";"11.40";"2013-06-01";;
+20;88;"Café moulu 250g";"A.CF0005";"2.16";"2013-06-01";;
+21;88;"Bouteille Eau (1,5L)";"A.BE0002";"0.69";"2013-06-01";;
