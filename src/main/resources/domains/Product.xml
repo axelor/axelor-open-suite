@@ -18,7 +18,7 @@
     <integer name="saleSupplySelect" title="Méthode d'appro. des ventes" selection="product.sale.supply.select"/>
      
     <string name="productTypeSelect" title="Product type" required="true" selection="product.product.type.select"/>
-    <string name="procurementMethodSelect" title="Procurement method" required="true" selection="product.procurement.method.select"/>
+    <string name="procurementMethodSelect" title="Procurement method" selection="product.procurement.method.select"/>
     <boolean name="isRawMaterial" title="Raw material"/>
     
     <decimal name="salePrice" title="Sale price W.T." precision="20" scale="5"/>
