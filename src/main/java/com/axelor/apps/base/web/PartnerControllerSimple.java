@@ -48,6 +48,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.meta.db.MetaUser;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -84,12 +85,13 @@ public class PartnerControllerSimple {
 	public void showPartnerInfo(ActionRequest request, ActionResponse response) {
 
 		Partner partner = request.getContext().asType(Partner.class);
+		MetaUser metaUser = MetaUser.findByUser( AuthUtils.getUser());
 
 		StringBuilder url = new StringBuilder();
 		AxelorSettings axelorSettings = AxelorSettings.get();
-
-		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Partner.rptdesign&__format=pdf&PartnerId="+partner.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
-
+		String language = partner.getLanguageSelect() != null? partner.getLanguageSelect() : metaUser.getLanguage();
+		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Partner.rptdesign&__format=pdf&Locale="+language+"&PartnerId="+partner.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
+		
 		LOG.debug("URL : {}", url);
 
 		String urlNotExist = URLService.notExist(url.toString());
@@ -121,7 +123,9 @@ public class PartnerControllerSimple {
 
 		StringBuilder url = new StringBuilder();
 		User user = AuthUtils.getUser();
-		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/PhoneBook.rptdesign&__format=html&UserId="+user.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
+		MetaUser metaUser = MetaUser.findByUser(user);
+
+		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/PhoneBook.rptdesign&__format=html&Locale="+metaUser.getLanguage()+"&UserId="+user.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
 		
 		LOG.debug("URL : {}", url);
 		String urlNotExist = URLService.notExist(url.toString());
@@ -154,8 +158,9 @@ public class PartnerControllerSimple {
 		StringBuilder url = new StringBuilder();
 
 		User user = AuthUtils.getUser();
+		MetaUser metaUser = MetaUser.findByUser(user);
 
-		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/CompanyPhoneBook.rptdesign&__format=html&UserId="+user.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
+		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/CompanyPhoneBook.rptdesign&__format=html&Locale="+metaUser.getLanguage()+"&UserId="+user.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
 
 		LOG.debug("URL : {}", url);
 		String urlNotExist = URLService.notExist(url.toString());
