@@ -13,7 +13,6 @@
 	onNew="action-employee-default-record">
 		<toolbar>
             <button name="showEmployee" title="Print CV" onClick="save,action-partner-method-show-employee"/>
-            <button name="showEmployeeConsultant" title="Relevé compte" onClick="save,action-partner-method-show-employee-consultant"/>
 	        <button name="sendByEmail" title="Send email" onClick="save,action-send-by-email-with-template"/>
 	    </toolbar>
 		<group name="header" cols="6" colSpan="6">
@@ -115,9 +114,6 @@
 		<call class="com.axelor.apps.organisation.web.EmployeeController" method="showEmployee" />
 	</action-method>
 	
-	<action-method name="action-partner-method-show-employee-consultant">
-		<call class="com.axelor.apps.organisation.web.EmployeeController" method="showEmployeeConsultant" />
-	</action-method>
 	
     <search-filters name="employee-filters" model="com.axelor.apps.organisation.db.Employee" title="Employee filters">
 		<filter title="Current Employees">
