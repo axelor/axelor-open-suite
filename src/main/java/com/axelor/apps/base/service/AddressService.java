@@ -28,7 +28,7 @@
  * All portions of the code written by Axelor are
  * Copyright (c) 2012-2013 Axelor. All Rights Reserved.
  */
-package com.axelor.apps.base.web;
+package com.axelor.apps.base.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,12 +41,15 @@ import org.slf4j.LoggerFactory;
 import au.com.bytecode.opencsv.CSVWriter;
 
 import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.Country;
 import com.google.inject.Inject;
 
-public class AddressService {
 
+public class AddressService {
+	
+	
 	@Inject
-	private com.axelor.apps.tool.address.AddressService ads;
+	private com.axelor.apps.tool.address.AddressTool ads;
 	
 	private static final Logger LOG = LoggerFactory.getLogger(AddressService.class);
 	
@@ -95,5 +98,32 @@ public class AddressService {
 		LOG.info("{} exported", path);
 		
 		return addresses.size();
+	}
+	
+	
+	public Address createAddress(String addressL2, String addressL3, String addressL4, String addressL5, String addressL6, Country addressL7Country)  {
+		
+		Address address = new Address();
+		address.setAddressL2(addressL2);
+		address.setAddressL3(addressL3);
+		address.setAddressL4(addressL4);
+		address.setAddressL5(addressL5);
+		address.setAddressL6(addressL6);
+		address.setAddressL7Country(addressL7Country);
+		
+		return address;
+	}
+	
+	
+	public Address getAddress(String addressL2, String addressL3, String addressL4, String addressL5, String addressL6, Country addressL7Country)  {
+		
+		return Address.all().filter("self.addressL2 = ?1 AND self.addressL3 = ?2 AND self.addressL4 = ?3 " +
+				"AND self.addressL5 = ?4 AND self.addressL6 = ?5 AND self.addressL7Country = ?6",
+				addressL2,
+				addressL3,
+				addressL4,
+				addressL5,
+				addressL6,
+				addressL7Country).fetchOne();
 	}
 }

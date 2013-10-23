@@ -30,14 +30,9 @@
  */
 package com.axelor.apps.base.web;
 
-import groovy.json.JsonSlurper;
-import groovy.util.XmlSlurper;
-import groovy.util.slurpersupport.GPathResult;
-
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -59,6 +54,7 @@ import com.axelor.apps.base.db.Import;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerList;
 import com.axelor.apps.base.db.PickListEntry;
+import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.user.UserInfoService;
 import com.axelor.data.Importer;

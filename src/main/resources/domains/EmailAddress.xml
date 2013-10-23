@@ -13,8 +13,8 @@
 	<string name="name" readonly="true">
 		<![CDATA[
 		String name = "";
-	    if(partner != null)  {   name += "["+partner.getFullName()+"] ";  }
-	    if(address != null)  {   name += address;  }
+	    if(partner != null)  {   name += partner.getFullName()+" ";  }
+	    if(address != null)  {   name += "["+address+"]";  }
 	    return name;
 	    ]]>
 	</string>
