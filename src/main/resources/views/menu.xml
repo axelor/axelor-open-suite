@@ -155,7 +155,54 @@
 		<view-param name="search-filters" value="payment-voucher-filters"/>
 	</action-view>
 	
+	<menuitem name="account-root-payments-new-cust-payment"
+		parent="account-root-payments" title="Create Cust. Payment"
+		action="account.root.payments.new.cust.payment" />
 
+	<action-view name="account.root.payments.new.cust.payment"
+		title="Payment vouchers" model="com.axelor.apps.account.db.PaymentVoucher" icon="img/icons/payment_small.png">
+		<view type="form" />
+		<view type="grid" />
+		<view-param name="search-filters" value="payment-voucher-filters"/>
+		<context name="_operationTypeSelect" expr="eval:3"/>
+	</action-view>
+	
+	<menuitem name="account-root-payments-new-cust-refund"
+		parent="account-root-payments" title="Create Cust. Refund"
+		action="account.root.payments.new.cust.refund" />
+
+	<action-view name="account.root.payments.new.cust.refund"
+		title="Payment vouchers" model="com.axelor.apps.account.db.PaymentVoucher" icon="img/icons/payment_small.png">
+		<view type="form" />
+		<view type="grid" />
+		<view-param name="search-filters" value="payment-voucher-filters"/>
+		<context name="_operationTypeSelect" expr="eval:4"/>
+	</action-view>
+	
+	<menuitem name="account-root-payments-new-suppl-payment"
+		parent="account-root-payments" title="Create Suppl. Payment"
+		action="account.root.payments.new.suppl.payment" />
+
+	<action-view name="account.root.payments.new.suppl.payment"
+		title="Payment vouchers" model="com.axelor.apps.account.db.PaymentVoucher" icon="img/icons/payment_small.png">
+		<view type="form" />
+		<view type="grid" />
+		<view-param name="search-filters" value="payment-voucher-filters"/>
+		<context name="_operationTypeSelect" expr="eval:1"/>
+	</action-view>
+	
+	<menuitem name="account-root-payments-new-suppl-refund"
+		parent="account-root-payments" title="Create Suppl. Refund"
+		action="account.root.payments.new.suppl.refund" />
+
+	<action-view name="account.root.payments.new.suppl.refund"
+		title="Payment vouchers" model="com.axelor.apps.account.db.PaymentVoucher" icon="img/icons/payment_small.png">
+		<view type="form" />
+		<view type="grid" />
+		<view-param name="search-filters" value="payment-voucher-filters" />
+		<context name="_operationTypeSelect" expr="eval:2"/>
+	</action-view>
+	
 	<menuitem name="account-root-periodic-processing" parent="account-root"
 		title="Periodical processing" />
 
