@@ -46,7 +46,7 @@
 1033;"T00045";2;"false";"MEYER";"Philippe";1;"fr";75019;75019;"p.meyer@yahoo.com";"04.52.66.34.99";"07.31.30.96.99";9;"email";"IN_CB";"15JRNET";"INDIV";"EUR";;;1;411100;401100;;"true";2;"false";;;17;3;9
 1039;"T00046";2;"false";"MITCHELL";"Sandra";2;"en";4008;244;"s.mitchell@yahoo.com";"+44 151 227 8999";;;"email";"IN_VIR";"15JRFDM";"INDIV";"USD";;;1;411100;401100;;"true";2;"false";;;17;3;12
 1045;"T00047";2;"false";"PARKER";"Laura";2;"en";10027;250;"l.parker@msn.com";"+1 305 507 7799";;;"email";"IN_VIR";"15JRFDM";"INDIV";"USD";;;1;411100;401100;;"true";2;"false";;;17;3;11
-90000;"T00048";1;"false";"Axelor";;;"fr";90000;90000;"info@axelor.com";"01.83.64.06.50";;10;"emailpaper";"IN_CHQ";"30JRFDM";"SME";"EUR";;;1;411100;401100;;"false";;"false";;;;;
+90000;"T00048";1;"false";"Axelor";;;"fr";90000;90000;"info@axelor.com";"01.83.64.06.50";;90000;"emailpaper";"IN_CHQ";"30JRFDM";"SME";"EUR";;;1;411100;401100;;"false";;"false";;;;;
 90001;"T00049";2;"true";"MARQUES";"Yoann";1;"fr";90000;90000;"y.marques@axelor.com";"01.10.79.99.70";;;;;;;;;;1;;;;"false";;"false";;;;;
 90002;"T00050";2;"true";"ROBERT";"Lucy";2;"fr";90000;90000;"l.robert@axelor.com";"01.10.79.99.71";;;;;;;;;;1;;;;"false";;"false";;;;;
 90003;"T00051";2;"true";"RICHARD";"Lucas";1;"fr";90000;90000;"l.richard@axelor.com";"01.10.79.99.72";;;;;;;;;;1;;;;"false";;"false";;;;;

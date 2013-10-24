@@ -45,9 +45,9 @@
 	
 	<input file="base_departement.csv" separator=";" type="com.axelor.apps.base.db.Department" />
 	
-	<input file="base_canton.csv" separator=";" type="com.axelor.apps.base.db.Canton" />
+<!-- 	<input file="base_canton.csv" separator=";" type="com.axelor.apps.base.db.Canton" /> -->
 
-	<input file="base_commune.csv" separator=";" type="com.axelor.apps.base.db.Commune" />
+<!-- 	<input file="base_commune.csv" separator=";" type="com.axelor.apps.base.db.Commune" /> -->
 	
 	<input file="base_address.csv" separator=";" type="com.axelor.apps.base.db.Address" />
 	
@@ -170,6 +170,8 @@
 		<bind column="description_fr" to="description"/>
 	</input>
 	
+	<input file="base_supplierCatalog.csv" separator=";" type="com.axelor.apps.base.db.SupplierCatalog"/>
+	
  	<input file="base_partner.csv" separator=";" search="self.importId = :importId" update="true" type="com.axelor.apps.base.db.Partner">
 <!-- 		<bind column="companySet_importId" to="companySet" search="self.importId in :companySet_importId" eval="companySet_importId.split('\\|') as List"/> -->
 		<bind column="companySet_importId" to="companySet" search="self.importId in :companySet_importId" />
@@ -235,7 +237,6 @@
 	</input>
 	
 	<input file="account_vat.csv" separator=";" update="true" search="self.importId = :importId" type="com.axelor.apps.account.db.Vat">
-<!-- 		<bind column="_activeVatLine" to="activeVatLine"/> -->
 		<bind to="activeVatLine" search="self.importId = :_activeVatLine" update="true">
 			<bind column="_activeVatLine" to="importId"/>
 		</bind>
@@ -291,12 +292,6 @@
 		<bind to="qasWsdlUrl" column="qas_url"/>
 	</input>
 
-<!-- 	<input file="account_journal.csv" separator=";"  type="com.axelor.apps.account.db.Journal" search="self.importId = :importId" update="true" > -->
-<!-- 		<bind to="journal" search="self.code = :journal.code" > -->
-<!--       <bind to="code" column="journal.code"/> -->
-<!--     </bind> -->
-<!-- 	</input> -->
-	
 	<input file="base_partner.csv" separator=";" type="com.axelor.apps.base.db.Partner" search="self.importId = :importId" 
 	update="true" call="com.axelor.csv.script.ImportPartner:importAccountingSituation">
 		<bind to="isContact" eval="isContact == 'true' ? true : false" />
@@ -331,9 +326,15 @@
 		<bind column="code_fr_FR" to="code"/>
 	</input>
 	
+	<input file="crm_event.csv" separator=";" type="com.axelor.apps.crm.db.Event">
+		<bind to="startDateTime" column="startDateTime" eval="!startDateTime.empty ? startDateTime.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4}) ([0-9]{2}):([0-9]{2})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1'+'T$4'+':$5') : null"/>
+		<bind to="endDateTime" column="endDateTime" eval="!endDateTime.empty ? endDateTime.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4}) ([0-9]{2}):([0-9]{2})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1'+'T$4'+':$5') : null"/>
+	</input>
+	
 	<input file="crm_opportunityType.csv" separator=";" type="com.axelor.apps.crm.db.OpportunityType" />
 	
 	<input file="crm_opportunity.csv" separator=";" type="com.axelor.apps.crm.db.Opportunity" />
+	
 	
 <!--     IMPORT DU PACKAGE 'ORGANISATION' --> 	
 	<input file="organisation_publicHolidays.csv" separator=";" type="com.axelor.apps.organisation.db.PublicHolidays" />
@@ -392,8 +393,8 @@
  	</input>	
  	
  	<input file="organisation_task.csv" separator=";" type="com.axelor.apps.organisation.db.Task">
- 		<bind to="startDateT" column="startDateT" eval="!startDateT.empty ? startDateT.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{2}) ([0-9]{2}):([0-9]{2})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1'.padLeft(2,'0')+'T$4'+':$5') : null"/>
- 		<bind to="endDateT" column="endDateT" eval="!endDateT.empty ? endDateT.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{2}) ([0-9]{2}):([0-9]{2})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1'.padLeft(2,'0')+'T$4'+':$5') : null"/>
+ 		<bind to="startDateT" column="startDateT" eval="!startDateT.empty ? startDateT.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4}) ([0-9]{2}):([0-9]{2})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1'+'T$4'+':$5') : null"/>
+ 		<bind to="endDateT" column="endDateT" eval="!endDateT.empty ? endDateT.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4}) ([0-9]{2}):([0-9]{2})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1'+'T$4'+':$5') : null"/>
  		<bind to="name" column="name_fr"/>
  	</input>	
  	
