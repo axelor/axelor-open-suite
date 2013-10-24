@@ -80,8 +80,9 @@
 	                <field name="initialEstimatedTurnover"/>
 	                <field name="initialEstimatedCost"/>
 	                <field name="initialEstimatedMargin"/>
-					<button name="updateInitialEstimatedAmounts" colSpan="2" onClick="action-task-method-update-initial-estimated-amounts" showIf="statusSelect >= 3"/>
-					<field name="financialInformationHistoryLineList" colSpan="4" showIf="statusSelect >= 3"/>
+	                <separator title="History" colSpan="6" showIf="statusSelect >= 3"/>
+					<button name="updateInitialEstimatedAmounts" title="Update and &lt;br&gt; historize" showIf="statusSelect >= 3" colSpan="1" onClick="action-task-method-update-initial-estimated-amounts"/>
+               		<field name="financialInformationHistoryLineList" colSpan="5" showIf="statusSelect >= 3"/>
 	            </group>
 	            <group title="Real estimated" colSpan="4" cols="6">
 	                <field name="realEstimatedTurnover"/>
