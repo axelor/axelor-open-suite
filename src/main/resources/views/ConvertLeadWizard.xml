@@ -314,7 +314,7 @@
     
     <action-record name="action-country-record-find-other-country-by-id"
     	model="com.axelor.apps.base.db.Country"
-    	search="('self.id = ?1', _parent._lead.primaryCountry.id)">
+    	search="('self.id = ?1', _parent._lead.otherCountry.id)">
     	<field name="id" expr="eval: _parent._lead.otherCountry.id"/>
     </action-record>
 	
