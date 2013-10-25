@@ -38,7 +38,7 @@
             <field name="partnerAccount" domain="self.company = :company" onSelect="action-invoice-partner-account-domain" readonlyIf="status.code == 'dis'"/>
             <field name="address" colSpan="2"/>
             <field name="priceList" domain="((self.typeSelect = 2 and (:operationTypeSelect = 1 or :operationTypeSelect = 2)) or (self.typeSelect = 1 and (:operationTypeSelect = 3 or :operationTypeSelect = 4)) or :operationTypeSelect = null or :operationTypeSelect = 0) and (self.partner = null or self.partner = :clientPartner) and (self.validFromDate &lt;= :__date__ or self.validFromDate = null) and (self.validToDate &gt;= :__date__ or self.validToDate = null)" readonlyIf="status.code != 'dra'"/>
-            <field name="project" domain="self.isAffair = true"/>
+            <field name="project" domain="self.isBusiness = true"/>
         </group>
         <group title="Reference documents" cols="4" colSpan="4" canCollapse="true">
         	<field name="internalReference"/>

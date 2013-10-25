@@ -76,12 +76,12 @@ public abstract class InvoiceGenerator {
 	protected Partner clientPartner;
 	protected Partner contactPartner;
 	protected Currency currency;
-	protected Project affairProject;
+	protected Project project;
 	protected LocalDate today;
 	protected PriceList priceList;
 	
 	protected InvoiceGenerator(int operationType, Company company,PaymentCondition paymentCondition, PaymentMode paymentMode, Address mainInvoicingAddress, 
-			Partner clientPartner, Partner contactPartner, Currency currency, Project affairProject, PriceList priceList) throws AxelorException {
+			Partner clientPartner, Partner contactPartner, Currency currency, Project project, PriceList priceList) throws AxelorException {
 		
 		this.operationType = operationType;
 		this.company = company;
@@ -90,7 +90,7 @@ public abstract class InvoiceGenerator {
 		this.mainInvoicingAddress = mainInvoicingAddress;
 		this.clientPartner = clientPartner;
 		this.contactPartner = contactPartner;
-		this.affairProject = affairProject;
+		this.project = project;
 		this.currency = currency;
 		this.priceList = priceList;
 		
@@ -203,7 +203,7 @@ public abstract class InvoiceGenerator {
 		}
 		invoice.setCurrency(currency);
 		
-		invoice.setProject(affairProject);
+		invoice.setProject(project);
 		
 		invoice.setCompany(company);
 		
