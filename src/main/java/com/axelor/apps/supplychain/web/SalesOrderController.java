@@ -177,7 +177,8 @@ public class SalesOrderController {
 		
 		if(salesOrder != null) {
 			
-			Location location = Location.all().filter("company = ? and isDefaultLocation = ? and typeSelect = ?", salesOrder.getCompany(), true, ILocation.INTERNAL).fetchOne();
+			Location location = Location.all().filter("self.company = ?1 and self.isDefaultLocation = ?2 and self.typeSelect = ?3", 
+					salesOrder.getCompany(), true, ILocation.INTERNAL).fetchOne();
 			
 			if(location != null) {
 				response.setValue("location", location);
