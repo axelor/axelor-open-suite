@@ -3,8 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
 	
-	<action-view name="wizard-client-view" title="My space"
-		model="com.axelor.apps.base.db.Wizard">
+	<action-view name="wizard-client-view" title="My space">
 		<view type="form" name="wizard-client-form"/>
 		<view-param name="show-toolbar" value="false"/>
 	</action-view>
