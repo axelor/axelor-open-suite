@@ -29,7 +29,7 @@
 		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
 		<view type="grid" name="invoice-client-grid"/>
     	<view type="form" name="invoice-client-form"/>
-		<domain>self.partner = :_myPartner</domain>
+		<domain>self.clientPartner = :_myPartner</domain>
 		<context name="_myPartner" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserPartner()"/>
 	</action-view>
 	
