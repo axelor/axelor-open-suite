@@ -40,7 +40,6 @@ import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.user.UserInfoService;
 import com.axelor.apps.organisation.db.FinancialInformationHistoryLine;
 import com.axelor.apps.organisation.db.Task;
-import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
 
@@ -61,7 +60,7 @@ public class FinancialInformationHistoryLineService {
 	}
 	
 	
-	public FinancialInformationHistoryLine createFinancialInformationHistoryLine(Task task, BigDecimal turnover, BigDecimal cost, BigDecimal margin) throws AxelorException  {
+	public FinancialInformationHistoryLine createFinancialInformationHistoryLine(Task task, BigDecimal turnover, BigDecimal cost, BigDecimal margin)  {
 		
 		FinancialInformationHistoryLine financialInformationHistoryLine = new FinancialInformationHistoryLine();
 		financialInformationHistoryLine.setTask(task);

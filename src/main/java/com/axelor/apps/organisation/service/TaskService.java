@@ -31,7 +31,6 @@
 package com.axelor.apps.organisation.service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -39,10 +38,10 @@ import javax.persistence.Query;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
-import com.axelor.apps.base.db.IProduct;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.SpentTime;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.organisation.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.UnitConversionService;
@@ -53,13 +52,11 @@ import com.axelor.apps.organisation.db.ITaskUpdateLine;
 import com.axelor.apps.organisation.db.PlanningLine;
 import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.organisation.db.Task;
-import com.axelor.apps.supplychain.db.SalesOrder;
-import com.axelor.apps.supplychain.db.SalesOrderLine;
-import com.axelor.apps.supplychain.db.SalesOrderSubLine;
 import com.axelor.apps.tool.date.DurationTool;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.meta.service.MetaTranslations;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -74,6 +71,9 @@ public class TaskService {
 	
 	@Inject
 	private PriceListService priceListService;
+	
+	@Inject
+	private MetaTranslations metaTranslations;
 	
 	private LocalDateTime todayTime;
 	
@@ -98,26 +98,26 @@ public class TaskService {
 	
 	public void checkTaskProject(Task task) throws AxelorException  {
 		if(task.getProject() == null)  {
-			throw new AxelorException("Veuillez configurer un projet sur la tâche", IException.CONFIGURATION_ERROR);
+			throw new AxelorException(metaTranslations.get(IExceptionMessage.TASK_1), IException.CONFIGURATION_ERROR);
 		}
 	}
 	
 	public void checkProjectUnit(Project project) throws AxelorException  {
 		if(project.getUnit() == null)  {
-			throw new AxelorException("Veuillez configurer une unité sur le projet", IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IExceptionMessage.TASK_2, IException.CONFIGURATION_ERROR);
 		}
 	}
 	
 	
 	public void checkPlanningLineUnit(PlanningLine planningLine) throws AxelorException  {
 		if(planningLine.getUnit() == null)  {
-			throw new AxelorException("Veuillez configurer une unité sur les lignes de plannification %s", IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IExceptionMessage.TASK_3, IException.CONFIGURATION_ERROR);
 		}
 	}
 	
 	public void checkSpentTimeUnit(SpentTime spentTime) throws AxelorException  {
 		if(spentTime.getUnit() == null)  {
-			throw new AxelorException("Veuillez configurer une unité sur les lignes de temps passé", IException.CONFIGURATION_ERROR);
+			throw new AxelorException(IExceptionMessage.TASK_4, IException.CONFIGURATION_ERROR);
 		}
 	}
 	
@@ -621,164 +621,5 @@ public class TaskService {
 		
 		return laterDate;
 	}
-	
-	
-	/**
-	 * Permet de faire la somme des durées des sous-lignes du salesOrderLine.
-	 * @param SalesOrderSubLineList Liste des sous-lignes du salesOrderLine
-	 * @return La somme des durées
-	 * @throws AxelorException 
-	 */
-	public BigDecimal computeDuration(List<SalesOrderSubLine> SalesOrderSubLineList, Unit unit) throws AxelorException {
-
-		BigDecimal duration = BigDecimal.ZERO;
-
-		for(SalesOrderSubLine salesOrderSubLine : SalesOrderSubLineList)  {
-
-			duration = duration.add(unitConversionService.convert(salesOrderSubLine.getUnit(), unit, salesOrderSubLine.getQty()));
-		}
-		return duration;
-	}
-
-	
-	/**
-	 * Méthode permettant de créer une tâche.
-	 * @param salesOrder L'object SaleOrder courant
-	 * @throws AxelorException Les unités demandés ne se trouvent pas dans la liste de conversion
-	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void createTasks(SalesOrder salesOrder) throws AxelorException  {
-
-		if(salesOrder.getSalesOrderLineList() != null)  {
-			/* Loop of the salesOrderLineList */
-			for(SalesOrderLine salesOrderLine : salesOrder.getSalesOrderLineList())  {
-				Product product = salesOrderLine.getProduct();
-				
-				if(product != null && product.getProductTypeSelect().equals(IProduct.PRODUCT_TYPE_SERVICE) && product.getSaleSupplySelect() == IProduct.SALE_SUPPLY_PRODUCE) {
-					
-					Task task = null;
-					
-					if(salesOrder.getHasGlobalTask())  {
-						Project project = salesOrder.getAffairProject();
-						
-						if(project == null)  {
-							// Create project
-						}
-						
-						task = project.getDefaultTask();
-						
-					}
-					else  {
-						task = salesOrderLine.getTask();
-						if(task == null)  {
-							task = this.createTask(salesOrderLine);
-						}
-						else {
-							this.updateTask(salesOrderLine);
-						}
-					}
-					
-					salesOrderLine.setTask(task);
-					
-					/* Check if there is a planning line list in the salesOrderLine task */
-					if(salesOrderLine.getTask() != null && salesOrderLine.getSalesOrderSubLineList()!= null) {
-						/* Call the method to set the unit of the task */
-						task.setTotalTime(task.getTotalTime().add(this.computeDuration(salesOrderLine.getSalesOrderSubLineList(), task.getProject().getUnit())));
-					}
-					else {
-						task.setTotalTime(task.getTotalTime().add(unitConversionService.convert(salesOrderLine.getUnit(), task.getProject().getUnit(), salesOrderLine.getQty())));
-					}
-					
-					this.createPlanningLines(salesOrderLine, task);
-					
-					task.setEndDateT(this.getTaskEndDate(task));
-
-					task.save();
-				}
-			}
-		}		
-	}
-	
-	
-	public Task createTask(SalesOrderLine salesOrderLine) throws AxelorException  {
-		Task task = new Task();
-		
-		SalesOrder salesOrder = salesOrderLine.getSalesOrder();
-//		Project project = salesOrder.getProject();
-		Project project = null;
-		task.setProject(project);
-		task.setSalesOrderLine(salesOrderLine);
-		task.setProduct(salesOrderLine.getProduct());
-		task.setQty(salesOrderLine.getQty());
-		task.setPrice(this.computeDiscount(salesOrderLine));
-		task.setName(salesOrderLine.getProductName());
-		task.setDescription(salesOrderLine.getDescription());
-		task.setStartDateT(todayTime);
-		task.setIsTimesheetAffected(true);
-		task.setIsToInvoice(salesOrderLine.getIsToInvoice());
-		task.setInvoicingDate(salesOrderLine.getInvoicingDate());
-		task.setStatusSelect(ITask.STATUS_DRAFT);
-		
-		task.setAmountToInvoice(
-				currencyService.getAmountCurrencyConverted(salesOrder.getCurrency(), project.getCompany().getCurrency(), salesOrderLine.getAmountRemainingToBeInvoiced(), todayTime.toLocalDate()));
-		task.setEstimatedAmount(salesOrderLine.getCompanyExTaxTotal());
-		
-		return task;
-	}
-	
-	
-	public void updateTask(SalesOrderLine salesOrderLine) throws AxelorException  {
-		
-		Task task = salesOrderLine.getTask();
-		
-		task.setAmountToInvoice(task.getAmountToInvoice().add(
-				currencyService.getAmountCurrencyConverted(salesOrderLine.getSalesOrder().getCurrency(), task.getProject().getCompany().getCurrency(), salesOrderLine.getAmountRemainingToBeInvoiced(), todayTime.toLocalDate())));
-		task.setEstimatedAmount(task.getEstimatedAmount().add(salesOrderLine.getCompanyExTaxTotal()));
-		
-	}
-	
-	
-	public BigDecimal computeDiscount(SalesOrderLine salesOrderLine)  {
-		
-		return priceListService.computeDiscount(salesOrderLine.getPrice(), salesOrderLine.getDiscountTypeSelect(), salesOrderLine.getDiscountAmount());
-		
-	}
-	
-	
-	public void createPlanningLines(SalesOrderLine salesOrderLine, Task task) throws AxelorException  {
-	
-		if(salesOrderLine.getSalesOrderSubLineList() != null) {
-			if(task.getPlanningLineList() == null)  {
-				task.setPlanningLineList(new ArrayList<PlanningLine>());
-			}
-			
-			for(SalesOrderSubLine salesOrderSubLine : salesOrderLine.getSalesOrderSubLineList())  {
-				task.getPlanningLineList().add(
-						this.createPlanningLine(salesOrderSubLine, task));
-			}
-		}
-	}
-	
-	
-	public PlanningLine createPlanningLine(SalesOrderSubLine salesOrderSubLine, Task task) throws AxelorException  {
-		
-		PlanningLine planningLine = new PlanningLine();
-		planningLine.setTask(task);
-		planningLine.setEmployee(salesOrderSubLine.getEmployee());
-		planningLine.setProduct(salesOrderSubLine.getProduct());
-		planningLine.setFromDateTime(todayTime);
-		
-		planningLine.setDuration(salesOrderSubLine.getQty());
-		planningLine.setUnit(salesOrderSubLine.getUnit());
-		planningLine.setToDateTime(
-				planningLine.getFromDateTime().plusMinutes(
-						unitConversionService.convert(
-								salesOrderSubLine.getUnit(), 
-								Unit.all().filter("self.code = 'MIN'").fetchOne(), 
-								salesOrderSubLine.getQty()).intValue()));
-		return planningLine;
-		
-	}
-	
 	
 }

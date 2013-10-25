@@ -31,9 +31,12 @@
 package com.axelor.apps.organisation.service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashSet;
 
 import javax.persistence.Query;
+
+import org.joda.time.LocalDateTime;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -56,23 +59,51 @@ public class ProjectService {
 	@Inject
 	private Injector injector;
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void createDefaultTask(Project project) {
+	
+	private LocalDateTime todayTime;
+	
+	@Inject
+	public ProjectService() {
+		
+		todayTime = GeneralService.getTodayDateTime().toLocalDateTime();
+		
+	}
+	
+	public void updateDefaultTask(Project project) {
 
 		if(project.getDefaultTask() == null)  {
-			Task defaultTask = new Task();
-
-			defaultTask.setName(project.getAffairName());
-			defaultTask.setProject(project);
-			defaultTask.setRealEstimatedMethodSelect(project.getRealEstimatedMethodSelect());
-			project.setDefaultTask(defaultTask);
-			defaultTask.setExportTypeSelect("pdf");
-			defaultTask.setStatusSelect(ITask.STATUS_DRAFT);
-			project.getTaskList().add(defaultTask);
-			defaultTask.save();
+			
+			this.createDefaultTask(project);
 			
 		}
+		
 	}
+	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public Task createDefaultTask(Project project) {
+
+		Task defaultTask = new Task();
+
+		defaultTask.setName(project.getAffairName());
+		defaultTask.setProject(project);
+		defaultTask.setRealEstimatedMethodSelect(project.getRealEstimatedMethodSelect());
+		project.setDefaultTask(defaultTask);
+		defaultTask.setExportTypeSelect("pdf");
+		defaultTask.setStatusSelect(ITask.STATUS_DRAFT);
+		defaultTask.setStartDateT(todayTime);
+		defaultTask.setAmountToInvoice(BigDecimal.ZERO);
+		defaultTask.setEstimatedAmount(BigDecimal.ZERO);
+		if(project.getTaskList() == null)  {
+			project.setTaskList(new ArrayList<Task>());
+		}
+		project.addTaskListItem(defaultTask);
+		project.setDefaultTask(defaultTask);
+		defaultTask.save();
+		
+		return defaultTask;
+		
+	}
+	
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Task createPreSalesTask(Project project) {

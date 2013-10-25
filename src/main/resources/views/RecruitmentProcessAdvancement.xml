@@ -17,7 +17,6 @@
     </form>
     
     <grid name="recruitment-candidate-process-advancement-grid" title="Recruitment process progresses" model="com.axelor.apps.organisation.db.RecuitmentProcessAdvancement">
-		<hilite color="#3333FF" background="#CDEB8B" condition="stateSelect = 0" />
 		<field name="statusSelect"/>
 		<field name="recruitmentDate" showIf="statusSelect == 3 || statusSelect == 4 || statusSelect == 5"/>
 		<field name="dateT"/>

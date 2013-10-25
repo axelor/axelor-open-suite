@@ -28,39 +28,28 @@
  * All portions of the code written by Axelor are
  * Copyright (c) 2012-2013 Axelor. All Rights Reserved.
  */
-package com.axelor.apps.organisation.service;
+package com.axelor.apps.organisation.db;
 
-import java.util.ArrayList;
+public interface ISalesOrder {
 
-import com.axelor.apps.organisation.db.FinancialInformationHistoryLine;
-import com.axelor.apps.organisation.db.Task;
-import com.google.inject.Inject;
-
-
-public class FinancialInformationHistoryService {
-
-	@Inject
-	private FinancialInformationHistoryLineService financialInformationHistoryLineService;
 	
+	/**
+	 * Static salesOrder status select
+	 */
+
+	static final int STATUS_DRAFT = 1;
+	static final int STATUS_CONFIRMED = 2;
+	static final int STATUS_VALIDATED = 3;
+	static final int STATUS_CANCELED = 4;
+
 	
-	public void addFinancialInformationHistoryLine(Task task, FinancialInformationHistoryLine financialInformationHistoryLine)  {
-		
-		if(task.getFinancialInformationHistoryLineList() == null)  {
-			task.setFinancialInformationHistoryLineList(new ArrayList<FinancialInformationHistoryLine>());
-		}
-		task.getFinancialInformationHistoryLineList().add(financialInformationHistoryLine);
-	}
-	
-	
-	public void updateFinancialInformationInitialEstimatedHistory(Task task)  {
-		
-		this.addFinancialInformationHistoryLine(
-				task, 
-				financialInformationHistoryLineService.createFinancialInformationHistoryLine(
-						task, 
-						task.getInitialEstimatedTurnover(), 
-						task.getInitialEstimatedCost(), 
-						task.getInitialEstimatedMargin()));
-	}
+	/**
+	 * Static salesOrder invoicingTypeSelect
+	 */
+	static final int INVOICING_TYPE_PER_ORDER = 1;
+	static final int INVOICING_TYPE_WITH_PAYMENT_SCHEDULE = 2;
+	static final int INVOICING_TYPE_PER_TASK = 3;
+	static final int INVOICING_TYPE_PER_SHIPMENT = 4;
+	static final int INVOICING_TYPE_FREE = 5;
 	
 }
