@@ -6,7 +6,7 @@
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
 	
-	<selection name="supplychain.sales.order.line.sale.supply.select">
+	<selection name="product.sale.supply.select">
 		<option value="1">FromStock</option>
 		<option value="2">Purchase</option>
 		<option value="3">Produce</option>

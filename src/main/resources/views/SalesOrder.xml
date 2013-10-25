@@ -202,7 +202,7 @@
 	</action-attrs>
     
 	<action-method name="action-sales-order-create-tasks">
-		<call class="com.axelor.apps.organisation.web.TaskController" method="createTasks"/>
+		<call class="com.axelor.apps.accountorganisation.web.TaskSalesOrderController" method="createTasks"/>
 	</action-method>
 	
 	<action-method name="action-sales-order-create-stock-move">
