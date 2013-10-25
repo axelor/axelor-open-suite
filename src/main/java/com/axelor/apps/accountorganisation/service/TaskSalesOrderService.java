@@ -82,10 +82,6 @@ public class TaskSalesOrderService {
 	@Inject
 	private ProjectService projectService;
 	
-//	@Inject
-//	private MetaTranslations metaTranslations;
-	
-	
 	
 	private LocalDateTime todayTime;
 	
@@ -113,7 +109,7 @@ public class TaskSalesOrderService {
 			
 			boolean hasGlobalTask = salesOrder.getHasGlobalTask();
 			
-			Project project = salesOrder.getAffairProject();
+			Project project = salesOrder.getProject();
 			
 			if(project == null)  {
 				project = projectService.createProject(
@@ -125,7 +121,7 @@ public class TaskSalesOrderService {
 						true, 
 						true);
 				
-				salesOrder.setAffairProject(project);
+				salesOrder.setProject(project);
 			}
 			
 			if(hasGlobalTask)  {
@@ -212,7 +208,7 @@ public class TaskSalesOrderService {
 		
 		SalesOrder salesOrder = salesOrderLine.getSalesOrder();
 		
-		Project project = salesOrder.getAffairProject();
+		Project project = salesOrder.getProject();
 		
 		if(project.getTaskList() == null)  {
 			project.setTaskList(new ArrayList<Task>());
