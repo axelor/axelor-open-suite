@@ -7,7 +7,7 @@
     	<field name="purchaseOrderSeq"/>
         <field name="supplierPartner"/>
         <field name="externalReference"/>
-        <field name="affairProject"/>
+        <field name="project"/>
         <field name="orderDate"/>
         <field name="buyerUserInfo"/>
         <field name="inTaxTotal"/>
@@ -27,7 +27,7 @@
 	        <field name="company" widget="SuggestBox" onChange="action-purchase-order-record-company-configuration,action-purchase-order-method-get-location"/>
 	        <field name="externalReference"/>
 	        <field name="currency"/>
-	        <field name="affairProject" domain="self.isAffair = true"/>
+	        <field name="project" domain="self.isBusiness = true"/>
 	    </group>
 	    <notebook colSpan="4">
 	        <page title="PO information" colSpan="4" cols="6">

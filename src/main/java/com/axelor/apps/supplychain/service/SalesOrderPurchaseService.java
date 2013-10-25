@@ -111,7 +111,7 @@ public class SalesOrderPurchaseService {
 	public void createPurchaseOrder(Partner supplierPartner, List<SalesOrderLine> salesOrderLineList, SalesOrder salesOrder) throws AxelorException  {
 		
 		PurchaseOrder purchaseOrder = purchaseOrderService.createPurchaseOrder(
-				salesOrder.getAffairProject(), 
+				salesOrder.getProject(), 
 				user, 
 				salesOrder.getCompany(), 
 				null, 

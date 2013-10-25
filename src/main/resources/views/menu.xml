@@ -81,7 +81,7 @@
 	</action-view>
 	
 	<menuitem name="sc-root-sales" title="Sales" priority="150"
-		icon="img/icons/order.png" groups="admins,erp"/>
+		icon="img/icons/order.png" groups="admins,erp,crm"/>
 			
 	<menuitem name="sc-root-sales-new-so" title="New Sale order" priority="2"
 		 groups="admins,erp" action="sc.root.sales.new.so" parent="sc-root-sales"/>
@@ -140,7 +140,7 @@
 	</action-view>	
 	
 
-	<menuitem name="top-sales" title="Sales" groups="admins,erp" top="true" left="false"/>
+	<menuitem name="top-sales" title="Sales" groups="admins,erp,crm" top="true" left="false"/>
 	
 	<menuitem name="top-sales-offers" title="Quotes" action="top.sales.offers" parent="top-sales" groups="admins,erp" top="true" left="false"/>
 	<action-view name="top.sales.offers" title="Quotes"

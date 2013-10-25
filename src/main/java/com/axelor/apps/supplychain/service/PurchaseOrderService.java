@@ -177,10 +177,10 @@ public class PurchaseOrderService {
 	
 	
 	
-	public PurchaseOrder createPurchaseOrder(Project affairProject, UserInfo buyerUserInfo, Company company, Partner contactPartner, Currency currency, 
+	public PurchaseOrder createPurchaseOrder(Project project, UserInfo buyerUserInfo, Company company, Partner contactPartner, Currency currency, 
 			LocalDate deliveryDate, String externalReference, int invoicingTypeSelect, Location location, LocalDate orderDate, PriceList priceList, Partner supplierPartner) throws AxelorException  {
 		PurchaseOrder purchaseOrder = new PurchaseOrder();
-		purchaseOrder.setAffairProject(affairProject);
+		purchaseOrder.setProject(project);
 		purchaseOrder.setBuyerUserInfo(buyerUserInfo);
 		purchaseOrder.setCompany(company);
 		purchaseOrder.setContactPartner(contactPartner);

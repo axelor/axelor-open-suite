@@ -45,7 +45,7 @@
 	
     <action-record name="action-purchase-order-line-record-new" model="com.axelor.apps.supplychain.db.PurchaseOrderLine">
     	<field name="qty" expr="eval: 1"/>
-    	<field name="task" expr="eval: _parent?.affairProject?.defaultTask"/>
+    	<field name="task" expr="eval: _parent?.project?.defaultTask"/>
     </action-record>
     
     <action-record name="action-purchase-order-line-record-product-variant" model="com.axelor.apps.supplychain.db.PurchaseOrderLine">

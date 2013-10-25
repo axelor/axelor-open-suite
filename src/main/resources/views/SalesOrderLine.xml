@@ -70,7 +70,7 @@
     	<field name="qty" expr="eval: 1"/>
     	<field name="isOrdered" expr="true"/>
     	<field name="isToPrintLineSubTotal" expr="true" if="eval: _parent?.isToPrintLineSubTotal == true"/>
-    	<field name="task" expr="eval: _parent?.affairProject?.defaultTask"/>
+    	<field name="task" expr="eval: _parent?.project?.defaultTask"/>
     </action-record>
     
 	<action-record name="action-sales-order-line-record-sequence" model="com.axelor.apps.supplychain.db.SalesOrderLine">

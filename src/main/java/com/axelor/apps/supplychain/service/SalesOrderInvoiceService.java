@@ -161,7 +161,7 @@ public class SalesOrderInvoiceService {
 		
 		InvoiceGenerator invoiceGenerator = new InvoiceGenerator(IInvoice.CLIENT_SALE, salesOrder.getCompany(),salesOrder.getPaymentCondition(), 
 				salesOrder.getPaymentMode(), salesOrder.getMainInvoicingAddress(), salesOrder.getClientPartner(), salesOrder.getContactPartner(), 
-				salesOrder.getCurrency(), salesOrder.getAffairProject(), salesOrder.getPriceList()) {
+				salesOrder.getCurrency(), salesOrder.getProject(), salesOrder.getPriceList()) {
 			
 			@Override
 			public Invoice generate() throws AxelorException {

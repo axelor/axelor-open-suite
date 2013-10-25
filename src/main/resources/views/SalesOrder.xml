@@ -24,7 +24,7 @@
 	    </toolbar>
 	    <group colSpan="4" cols="6">
 	        <field name="salesOrderSeq" css="highlight"/>
-	        <field name="affairProject" domain="self.isAffair = true"/>        
+	        <field name="project" domain="self.isBusiness = true"/>        
 	        <field name="company" widget="SuggestBox" onChange="action-sales-order-record-company-configuration,action-sales-order-method-get-location"/>
 	        <field name="externalReference"/>
 	        <field name="location" domain="self.company = :company and self.typeSelect = 1"/>
