@@ -3,7 +3,7 @@
 	<module name="organisation" package="com.axelor.apps.organisation.db"/>
 	<entity name="OfferLine" lang="java">
 	
-		<many-to-one name="affair" ref="com.axelor.apps.organisation.db.Project" title="Marge %"/>
+		<many-to-one name="project" ref="com.axelor.apps.organisation.db.Project" title="Marge %"/>
 		<integer name="type" title="Type"/>
 		<integer name="nbJours" title="Nbre Jours"/>
 		<decimal name="coutFrais" title="Coût + Frais"/>

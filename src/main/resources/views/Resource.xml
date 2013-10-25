@@ -10,7 +10,7 @@
         <field name="estimatedProfitability"/>
         <field name="priceTargetForReturn"/>
         <field name="statusSelect"/>
-        <field name="affair"/>
+        <field name="project"/>
         <field name="lostReasonSelect"/>
         <field name="lostReasonNote"/>
         <field name="product"/>
@@ -26,7 +26,7 @@
 	        <field name="priceTargetForReturn"/>
 	        <field name="statusSelect"/>
         <break/>
-	        <field name="affair"/>
+	        <field name="project"/>
 	        <field name="lostReasonSelect"/>
 	        <break/>
 	        <field name="lostReasonNote"/>

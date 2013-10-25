@@ -22,7 +22,7 @@
 	<string name="name" title="Name">
 		<![CDATA[
 	    String name = "";
-	    if (project != null) name += project.getAffairName();
+	    if (project != null) name += project.getName();
 	    if (task != null) name += " - "+task.getName();
 	    return name;
 	    ]]>

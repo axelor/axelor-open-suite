@@ -8,7 +8,7 @@
   <entity name="OvertimeLine" lang="java">
   	<many-to-one name="overtime" title="Employee" ref="com.axelor.apps.organisation.db.Overtime" />
   	<string name="description" title="Description" />
-  	<many-to-one name="affair" title="Affair" ref="com.axelor.apps.organisation.db.Project" />
+  	<many-to-one name="project" title="Business" ref="com.axelor.apps.organisation.db.Project" />
   	<decimal name="quantity" title="Quantity" />  
   	<many-to-one name="unit" title="UOM" ref="com.axelor.apps.base.db.Unit"/>
   	<decimal name="unitPrice" title="Unit price"/>

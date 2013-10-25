@@ -7,7 +7,7 @@
 		<entity name="JobOffer" lang="java">
 		
 			<string name="offre" title="Offre"/>
-			<many-to-one name="affair" ref="com.axelor.apps.organisation.db.Project" title="Affaire"/>
+			<many-to-one name="project" ref="com.axelor.apps.organisation.db.Project" title="Business"/>
 			<date name="dateDebut" title="Date début"/>
 			<date name="dateFin" title="Date fin"/>
 			<integer name="nbPostes" title="Nb. postes"/>

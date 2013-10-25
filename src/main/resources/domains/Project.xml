@@ -12,18 +12,17 @@
   	<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
   	<many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Contact"/>
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" readonly="true" title="Société"/>
-  	<string name="affairName" title="Affair name" required="true" namecolumn="true"/>
-  	<string name="affairDescription" title="Affair description"/>
+  	<string name="name" title="Name" required="true" namecolumn="true"/>
   	<string name="description" large="true" multiline="true" title="Description"/>
   	<boolean name="isModel" title="Model ?"/>
   	<boolean name="isProject" title="Project ?"/>
-  	<boolean name="isAffair" title="Affair ?"/>
+  	<boolean name="isBusiness" title="Business ?"/>
   	<boolean name="isTimeSheetImputable" title="Timesheet input required ?"/>
   	<many-to-one name="defaultTask" ref="com.axelor.apps.organisation.db.Task" title="Default task"/>
   	<boolean name="isReinvoicingExpense" title="Reinvoicing of travel expense"/>
   	<boolean name="isReinvoicingTime" title="Reinvoicing time spent"/>
   	<integer name="projectStatusSelect" title="Status" selection="organisation.project.status.select"/>
-  	<integer name="affairStatusSelect" title="Statut" selection="organisation.affair.status.select"/>
+  	<integer name="businessStatusSelect" title="Statut" selection="organisation.project.business.status.select"/>
   	<integer name="realEstimatedMethodSelect" title="Real estimated compute method" selection="organisation.project.real.estimated.method.select"/>
   	
   	<!-- Financial informations -->
@@ -69,7 +68,7 @@
     <datetime name="answerDate" title="Answer Date"/>
     <many-to-many name="candidateSet" title="Candidates" ref="com.axelor.apps.organisation.db.Candidate"/>
     <many-to-many name="employeeSet" title="Employees" ref="com.axelor.apps.organisation.db.Employee"/>
-    <integer name="marketTypeSelect" title="Market Type" selection="organisation.affair.market.type.select"/>
+    <integer name="marketTypeSelect" title="Market Type" selection="organisation.project.business.market.type.select"/>
     <string name="exportTypeSelect" title="Export Type" selection="organisation.project.report.type.select"/>
 
   </entity>

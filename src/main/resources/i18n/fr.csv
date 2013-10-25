@@ -1904,7 +1904,7 @@
 "com.axelor.apps.organisation.db.Project","clientPartner","field","Customer","Client","",""
 "com.axelor.apps.organisation.db.Project","contactPartner","field","Contact","Contact","",""
 "com.axelor.apps.organisation.db.Project","company","field","Société","Société","",""
-"com.axelor.apps.organisation.db.Project","affairName","field","Affair name","Nom Affaire","",""
+"com.axelor.apps.organisation.db.Project","name","field","Name","Nom","",""
 "com.axelor.apps.organisation.db.Project","affairDescription","field","Affair description","Description","",""
 "com.axelor.apps.organisation.db.Project","description","field","Description","Description","",""
 "com.axelor.apps.organisation.db.Project","isModel","field","Model ?","Modèle ?","",""

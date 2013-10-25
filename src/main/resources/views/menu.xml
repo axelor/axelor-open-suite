@@ -73,7 +73,7 @@
 	</action-view>
 	
 	<menuitem name="contact-root" title="Companies/Contacts" priority="190"
-		icon="img/icons/partner.png" groups="admins,erp"/>
+		icon="img/icons/partner.png" groups="admins,erp,crm"/>
 
 	<menuitem name="contact-root-partner" parent="contact-root" priority="3"
 		title="Accounts" action="contact.root.partner" />
@@ -155,6 +155,15 @@
 		<view type="form" />
 	</action-view>
 	
+	<menuitem name="contact-conf-price-list" parent="contact-conf"
+		title="Price lists" action="contact.conf.price.list" />
+
+	<action-view name="contact.conf.price.list" title="Price lists"
+		model="com.axelor.apps.base.db.PriceList" icon="img/icons/parameter_small.png">
+		<view type="grid" name="price-list-grid" />
+		<view type="form" name="price-list-form" />
+	</action-view>	
+	
 	
 <!-- 	<menuitem name="contact-conf-geographical-area" parent="contact-conf" -->
 <!-- 		title="Geographical zones" action="contact.conf.geographical.area" /> -->
@@ -176,7 +185,7 @@
 	
 	
 	<menuitem name="product-root" title="Products" priority="170"
-		icon="img/icons/product.png" groups="admins,erp"/>
+		icon="img/icons/product.png" groups="admins,erp,crm"/>
 
 	<menuitem name="product-root-product" parent="product-root"
 		title="Products" action="product.root.product" />
@@ -188,15 +197,6 @@
 		<view-param name="search-filters" value="products-filters"/>
 		<context name="_activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
 	</action-view>
-	
-<!-- 	<menuitem name="affair-root-price-list" parent="product-root" -->
-<!-- 		title="Pricelists" action="affair.root.price.list" /> -->
-
-<!-- 	<action-view name="affair.root.price.list" title="Pricelists" -->
-<!-- 		model="com.axelor.apps.consulting.db.PriceList" icon="img/icons/affair_small.png"> -->
-<!-- 		<view type="grid" name="price-list-grid" /> -->
-<!-- 		<view type="form" name="price-list-form" /> -->
-<!-- 	</action-view>	 -->
 	
 	<menuitem name="product-conf" parent="product-root" title="Configuration"
 		icon="img/icons/parameter.png" />
@@ -349,242 +349,242 @@
 
 
 
-	<menuitem name="evo-admin-root" title="ERP Administration" priority="60"
-		icon="img/icons/organisation.png" groups="admins,erp"/>
+	<menuitem name="admin-root" title="ERP Administration" priority="60"
+		icon="img/icons/organisation.png" groups="admins,erp,crm"/>
 
-	<menuitem name="evo-admin-root-organisation" parent="evo-admin-root" title="Organization"/>
+	<menuitem name="admin-root-organisation" parent="admin-root" title="Organization"/>
 
-	<menuitem name="evo-admin-root-organisation-territory"
-		parent="evo-admin-root-organisation" title="Territories"
-		action="evo.admin.root.organisation.territory" />
+	<menuitem name="admin-root-organisation-territory"
+		parent="admin-root-organisation" title="Territories"
+		action="admin.root.organisation.territory" />
 
-	<action-view name="evo.admin.root.organisation.territory"
+	<action-view name="admin.root.organisation.territory"
 		title="Territories" model="com.axelor.apps.base.db.Territory" icon="img/icons/organisation_small.png" >
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 
-	<menuitem name="evo-admin-root-organisation-territory-commune"
-		parent="evo-admin-root-organisation" title="Cities/Communes"
-		action="evo.admin.root.organisation.territory.commune" />
+	<menuitem name="admin-root-organisation-territory-commune"
+		parent="admin-root-organisation" title="Cities/Communes"
+		action="admin.root.organisation.territory.commune" />
 
-	<action-view name="evo.admin.root.organisation.territory.commune"
+	<action-view name="admin.root.organisation.territory.commune"
 		title="Cities/Communes" model="com.axelor.apps.base.db.Commune" icon="img/icons/organisation_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 
-	<menuitem name="evo-admin-root-organisation-territory-department"
-		parent="evo-admin-root-organisation-territory" title="Departments"
-		action="evo.admin.root.organisation.territory.department" />
+	<menuitem name="admin-root-organisation-territory-department"
+		parent="admin-root-organisation-territory" title="Departments"
+		action="admin.root.organisation.territory.department" />
 
-	<action-view name="evo.admin.root.organisation.territory.department"
+	<action-view name="admin.root.organisation.territory.department"
 		title="Departments" model="com.axelor.apps.base.db.Department" icon="img/icons/organisation_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 
-	<menuitem name="evo-admin-root-organisation-region"
-		parent="evo-admin-root-organisation" title="Regions"
-		action="evo.admin.root.organisation.region" />
+	<menuitem name="admin-root-organisation-region"
+		parent="admin-root-organisation" title="Regions"
+		action="admin.root.organisation.region" />
 
-	<action-view name="evo.admin.root.organisation.region"
+	<action-view name="admin.root.organisation.region"
 		title="Regions" model="com.axelor.apps.base.db.Region" icon="img/icons/organisation_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 
-	<menuitem name="evo-admin-root-organisation-country"
-		parent="evo-admin-root-organisation" title="Countries"
-		action="evo.admin.root.organisation.country" />
+	<menuitem name="admin-root-organisation-country"
+		parent="admin-root-organisation" title="Countries"
+		action="admin.root.organisation.country" />
 
-	<action-view name="evo.admin.root.organisation.country"
+	<action-view name="admin.root.organisation.country"
 		title="Countries" model="com.axelor.apps.base.db.Country" icon="img/icons/organisation_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 
-	<menuitem name="evo-admin-root-organisation-territory-canton"
-		parent="evo-admin-root-organisation-territory" title="Cantons"
-		action="evo.admin.root.organisation.territory.canton" />
+	<menuitem name="admin-root-organisation-territory-canton"
+		parent="admin-root-organisation-territory" title="Cantons"
+		action="admin.root.organisation.territory.canton" />
 
-	<action-view name="evo.admin.root.organisation.territory.canton"
+	<action-view name="admin.root.organisation.territory.canton"
 		title="Cantons" model="com.axelor.apps.base.db.Canton" icon="img/icons/organisation_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 
-	<menuitem name="evo-admin-root-user" parent="evo-admin-root"
+	<menuitem name="admin-root-user" parent="admin-root"
 		title="Users/Companies" />
 
-	<menuitem name="evo-admin-root-user-user-info" parent="evo-admin-root-user"
-		title="Users" action="evo.admin.root.base.user.info" />
+	<menuitem name="admin-root-user-user-info" parent="admin-root-user"
+		title="Users" action="admin.root.base.user.info" />
 
-	<action-view name="evo.admin.root.base.user.info" title="Users"
+	<action-view name="admin.root.base.user.info" title="Users"
 		model="com.axelor.apps.base.db.UserInfo" icon="img/icons/organisation_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 	
-	<menuitem name="evo-admin-root-user-team" parent="evo-admin-root-user"
-		title="Teams" action="evo.admin.root.base.team" />
+	<menuitem name="admin-root-user-team" parent="admin-root-user"
+		title="Teams" action="admin.root.base.team" />
 
-	<action-view name="evo.admin.root.base.team" title="Teams"
+	<action-view name="admin.root.base.team" title="Teams"
 		model="com.axelor.apps.base.db.Team" icon="img/icons/organisation_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 	
-	<menuitem name="evo-admin-root-user-company" parent="evo-admin-root-user"
-		title="Companies" action="evo.admin.root.base.company" />
+	<menuitem name="admin-root-user-company" parent="admin-root-user"
+		title="Companies" action="admin.root.base.company" />
 
-	<action-view name="evo.admin.root.base.company" title="Companies"
+	<action-view name="admin.root.base.company" title="Companies"
 		model="com.axelor.apps.base.db.Company" icon="img/icons/organisation_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 
-	<menuitem name="evo-admin-root-templating" parent="evo-admin-root"
+	<menuitem name="admin-root-templating" parent="admin-root"
 		title="Templating"/>
 		
-	<menuitem name="evo-admin-root-templating-template-rules"
-		parent="evo-admin-root-templating" title="Template Rules"
-		action="evo.admin.root.templating.template.rules" />
+	<menuitem name="admin-root-templating-template-rules"
+		parent="admin-root-templating" title="Template Rules"
+		action="admin.root.templating.template.rules" />
 		
-	<action-view name="evo.admin.root.templating.template.rules"
+	<action-view name="admin.root.templating.template.rules"
 		title="Template Rules" model="com.axelor.apps.base.db.TemplateRule">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 	
-	<menuitem name="evo-admin-root-templating-template"
-		parent="evo-admin-root-templating" title="Template"
-		action="evo.admin.root.templating.template" />
+	<menuitem name="admin-root-templating-template"
+		parent="admin-root-templating" title="Template"
+		action="admin.root.templating.template" />
 		
-	<action-view name="evo.admin.root.templating.template"
+	<action-view name="admin.root.templating.template"
 		title="Template" model="com.axelor.apps.base.db.Template">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 
-	<menuitem name="evo-admin-root-general" parent="evo-admin-root"
+	<menuitem name="admin-root-general" parent="admin-root"
 		title="General"/>
 
-	<menuitem name="evo-admin-root-general-general" parent="evo-admin-root-general"
-		title="General admin" action="evo.admin.root.general.general" />
+	<menuitem name="admin-root-general-general" parent="admin-root-general"
+		title="General admin" action="admin.root.general.general" />
 
-	<action-view name="evo.admin.root.general.general" title="General admin"
+	<action-view name="admin.root.general.general" title="General admin"
 		model="com.axelor.apps.base.db.General" icon="img/icons/organisation_small.png">
 		<view type="grid" />
 		<view type="form" />
 		<context name="_showSingle" expr="true" />
 	</action-view>
 
-	<menuitem name="evo-admin-conf-general" parent="evo-admin-root-general"
+	<menuitem name="admin-conf-general" parent="admin-root-general"
 		title="Configuration" icon="img/icons/parameter.png" />
 
-	<menuitem name="evo-admin-conf-general-status" parent="evo-admin-conf-general"
-		title="All Status" action="evo.admin.conf.general.status" />
+	<menuitem name="admin-conf-general-status" parent="admin-conf-general"
+		title="All Status" action="admin.conf.general.status" />
 
-	<action-view name="evo.admin.conf.general.status" title="All Status"
+	<action-view name="admin.conf.general.status" title="All Status"
 		model="com.axelor.apps.base.db.Status" icon="img/icons/parameter_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 
-	<menuitem name="evo-admin-conf-general-unit" parent="evo-admin-conf-general"
-		title="Units" action="evo.admin.conf.general.unit" />
+	<menuitem name="admin-conf-general-unit" parent="admin-conf-general"
+		title="Units" action="admin.conf.general.unit" />
 
-	<action-view name="evo.admin.conf.general.unit" title="Units"
+	<action-view name="admin.conf.general.unit" title="Units"
 		model="com.axelor.apps.base.db.Unit" icon="img/icons/parameter_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 
-	<menuitem name="evo-admin-conf-general-currency" parent="evo-admin-conf-general"
-		title="Currencies" action="evo.admin.conf.general.currency" />
+	<menuitem name="admin-conf-general-currency" parent="admin-conf-general"
+		title="Currencies" action="admin.conf.general.currency" />
 
-	<action-view name="evo.admin.conf.general.currency"
+	<action-view name="admin.conf.general.currency"
 		title="Currencies" model="com.axelor.apps.base.db.Currency" icon="img/icons/parameter_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 
 
-	<menuitem name="evo-admin-conf-general-unit-conversion"
-		parent="evo-admin-conf-general" title="Unit conversions"
-		action="evo.admin.conf.general.unit.conversion" />
+	<menuitem name="admin-conf-general-unit-conversion"
+		parent="admin-conf-general" title="Unit conversions"
+		action="admin.conf.general.unit.conversion" />
 
-	<action-view name="evo.admin.conf.general.unit.conversion"
+	<action-view name="admin.conf.general.unit.conversion"
 		title="Unit conversions" model="com.axelor.apps.base.db.UnitConversion" icon="img/icons/parameter_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 	
-	<menuitem name="evo-admin-conf-general-year" parent="evo-admin-conf-general"
-		title="Years" action="evo.admin.conf.general.year" />
+	<menuitem name="admin-conf-general-year" parent="admin-conf-general"
+		title="Years" action="admin.conf.general.year" />
 
-	<action-view name="evo.admin.conf.general.year" title="Years"
+	<action-view name="admin.conf.general.year" title="Years"
 		model="com.axelor.apps.base.db.Year" icon="img/icons/parameter_small.png">
 		<view type="grid" name="year-grid"/>
 		<view type="form" name="year-form"/>
 	</action-view>
 	
-	<menuitem name="evo-admin-conf-general-period" parent="evo-admin-conf-general"
-		title="Periods" action="evo.admin.conf.general.period" />
+	<menuitem name="admin-conf-general-period" parent="admin-conf-general"
+		title="Periods" action="admin.conf.general.period" />
 
-	<action-view name="evo.admin.conf.general.period" title="Periods"
+	<action-view name="admin.conf.general.period" title="Periods"
 		model="com.axelor.apps.base.db.Period" icon="img/icons/parameter_small.png">
 		<view type="grid" name="period-grid"/>
 		<view type="form" name="period-form"/>
 	</action-view>
 
-	<menuitem name="evo-admin-conf-general-sequence-generic"
-		parent="evo-admin-conf-general" title="Sequences"
-		action="evo.admin.conf.general.sequence.generic" />
+	<menuitem name="admin-conf-general-sequence-generic"
+		parent="admin-conf-general" title="Sequences"
+		action="admin.conf.general.sequence.generic" />
 
-	<action-view name="evo.admin.conf.general.sequence.generic"
+	<action-view name="admin.conf.general.sequence.generic"
 		title="Sequences" model="com.axelor.apps.base.db.Sequence" icon="img/icons/parameter_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 	
-	<menuitem name="evo-admin-conf-general-keyword"
-		parent="evo-admin-conf-general" title="Keywords"
-		action="evo.admin.conf.general.keyword" />
+	<menuitem name="admin-conf-general-keyword"
+		parent="admin-conf-general" title="Keywords"
+		action="admin.conf.general.keyword" />
 
-	<action-view name="evo.admin.conf.general.keyword"
+	<action-view name="admin.conf.general.keyword"
 		title="Keywords" model="com.axelor.apps.base.db.Keyword" icon="img/icons/parameter_small.png">
 		<view type="grid" name="keyword-grid"/>
 		<view type="form" name="keyword-form"/>
 	</action-view>
 	
-	<menuitem name="evo-admin-conf-general-source"
-		parent="evo-admin-conf-general" title="Sources"
-		action="evo.admin.conf.general.source" />
+	<menuitem name="admin-conf-general-source"
+		parent="admin-conf-general" title="Sources"
+		action="admin.conf.general.source" />
 
-	<action-view name="evo.admin.conf.general.source"
+	<action-view name="admin.conf.general.source"
 		title="Sources" model="com.axelor.apps.base.db.Source" icon="img/icons/parameter_small.png">
 		<view type="grid" name="source-grid"/>
 		<view type="form" name="source-form"/>
 	</action-view>
 
-	<menuitem name="evo-admin-root-maintenance" parent="evo-admin-root"
+	<menuitem name="admin-root-maintenance" parent="admin-root"
 		title="Technical maintenance" />
 
-	<menuitem name="evo-admin-root-maintenance-trace-back" parent="evo-admin-root-maintenance"
-		title="Tracebacks" action="evo.admin.root.maintenance.trace.back" />
+	<menuitem name="admin-root-maintenance-trace-back" parent="admin-root-maintenance"
+		title="Tracebacks" action="admin.root.maintenance.trace.back" />
 
-	<action-view name="evo.admin.root.maintenance.trace.back"
+	<action-view name="admin.root.maintenance.trace.back"
 		title="Tracebacks" model="com.axelor.exception.db.TraceBack" icon="img/icons/organisation_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 
-	<menuitem name="evo-admin-root-import" parent="evo-admin-root-maintenance"
-		title="Imports" action="evo.admin.root.import" />
+	<menuitem name="admin-root-import" parent="admin-root-maintenance"
+		title="Imports" action="admin.root.import" />
 
-	<action-view name="evo.admin.root.import" title="Imports"
+	<action-view name="admin.root.import" title="Imports"
 		model="com.axelor.apps.base.db.Import" icon="img/icons/organisation_small.png">
 		<view type="grid" name="import-grid" />
 		<view type="form" name="import-form" />
@@ -592,25 +592,25 @@
 	</action-view>
 
 	
-	<menuitem name="evo-admin-root-indicator-generator-grouping" parent="evo-admin-root-maintenance"
-		title="Indicators groups" action="evo.admin.root.indicator.generator.grouping" />
+	<menuitem name="admin-root-indicator-generator-grouping" parent="admin-root-maintenance"
+		title="Indicators groups" action="admin.root.indicator.generator.grouping" />
 
-	<action-view name="evo.admin.root.indicator.generator.grouping"
+	<action-view name="admin.root.indicator.generator.grouping"
 		title="Indicators groups" model="com.axelor.apps.base.db.IndicatorGeneratorGrouping" icon="img/icons/organisation_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 	
-	<menuitem name="evo-admin-root-indicator-generator" parent="evo-admin-root-maintenance"
-		title="Indicators generators" action="evo.admin.root.indicator.generator" />
+	<menuitem name="admin-root-indicator-generator" parent="admin-root-maintenance"
+		title="Indicators generators" action="admin.root.indicator.generator" />
 
-	<action-view name="evo.admin.root.indicator.generator"
+	<action-view name="admin.root.indicator.generator"
 		title="Indicators generators" model="com.axelor.apps.base.db.IndicatorGenerator" icon="img/icons/organisation_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 	
-	<menuitem name="base-batch" parent="evo-admin-root"
+	<menuitem name="base-batch" parent="admin-root"
 		title="Base batches" action="base.batch" />
 
 	<action-view name="base.batch" title="Base batches"

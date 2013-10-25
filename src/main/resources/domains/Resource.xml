@@ -14,7 +14,7 @@
 		<decimal name="priceTargetForReturn" title="Target price for X% of profitability"/>
 		<integer name="statusSelect" title="Status" selection="organisation.resource.status.select"/>
 		<many-to-one name="salesOrder"  title="Sale Order" ref="com.axelor.apps.supplychain.db.SalesOrder"/>
-		<many-to-one name="affair" ref="com.axelor.apps.organisation.db.Project" title="Affair"/>
+		<many-to-one name="project" ref="com.axelor.apps.organisation.db.Project" title="Business"/>
 		<string name="lostReasonSelect" title="Reason of the lost" selection="consulting.resource.lost.reason.select"/>
 		<string name="lostReasonNote" title="Commentary of the lost"/>
 		<many-to-one name="product"  title="Profile" ref="com.axelor.apps.base.db.Product"/>
