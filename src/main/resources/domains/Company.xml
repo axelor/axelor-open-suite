@@ -154,7 +154,7 @@
   	<boolean name="hasOutSmForNonStorableProduct" title="Generate out going stock move for non storable product"/>
   	<boolean name="hasInSmForStorableProduct" title="Generate incoming stock move for storable product"/>
   	<boolean name="hasInSmForNonStorableProduct" title="Generate incoming stock move for non storable product"/>
-  	<integer name="salesOrderInvoicingTypeSelect" title="Sales order invoicing type" selection="sales.order.invoice.type.select"/>
+  	<integer name="salesOrderInvoicingTypeSelect" title="Sales order invoicing type" selection="sales.order.invoicing.type.select"/>
   	<integer name="purchaseOrderInvoicingTypeSelect" title="Purchases order invoicing type" selection="supplychain.purchase.order.invoicing.type.select"/>
   	<many-to-one name="printingSettings" ref="PrintingSettings" title="Printing Settings"/>
   	

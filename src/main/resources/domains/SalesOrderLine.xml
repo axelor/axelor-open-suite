@@ -14,7 +14,7 @@
   	<decimal name="qty" title="Qty" default="1"/>
   	<boolean name="isToPrintLineSubTotal" title="Print subtotal per line"/>
   	<string name="productName" title="Product name"/>
-  	<integer name="saleSupplySelect" title="Méthode d'appro. des ventes" selection="supplychain.sales.order.line.sale.supply.select"/>
+  	<integer name="saleSupplySelect" title="Méthode d'appro. des ventes" selection="product.sale.supply.select"/>
   	<decimal name="price" title="Unit price"/>
   	<many-to-one name="vatLine" ref="com.axelor.apps.account.db.VatLine" title="V.A.T."/>
   	<decimal name="exTaxTotal" title="Total W.T."/>

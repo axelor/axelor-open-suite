@@ -27,7 +27,7 @@
   
   	<boolean name="isToPrintLineSubTotal" title="Print subtotal per line"/>
   	<boolean name="hasSubLineDefaultValue" title="Default value for sublines"/>
-  	<integer name="invoicingTypeSelect" title="Invoicing type" selection="sales.order.invoice.type.select"/>
+  	<integer name="invoicingTypeSelect" title="Invoicing type" selection="sales.order.invoicing.type.select"/>
   	
 <!--   	Ligne de devis -->
 	<boolean name="hasGlobalTask" title="Global task ?"/>

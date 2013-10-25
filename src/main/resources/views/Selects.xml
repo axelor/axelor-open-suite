@@ -261,6 +261,7 @@
 	</selection>
 
 	<selection name="product.sale.supply.select">
+		<option value="0">None</option>
 		<option value="1">FromStock</option>
 		<option value="2">Purchase</option>
 		<option value="3">Produce</option>
@@ -439,7 +440,7 @@
 	</selection>
 	
 
-	<selection name="sales.order.invoice.type.select">
+	<selection name="sales.order.invoicing.type.select">
 		<option value="1">Per order</option>
 		<option value="2">With payment schedule</option>
 		<option value="3">Per task</option>
