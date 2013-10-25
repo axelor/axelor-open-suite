@@ -36,10 +36,16 @@ import java.util.List;
 
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.UnitConversion;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.meta.service.MetaTranslations;
+import com.google.inject.Inject;
 
 public class UnitConversionService {
+	
+	@Inject
+	private MetaTranslations metaTranslations;
 
 	/**
 	 * Obtenir le coefficient entre deux unités dans une liste de conversion. Si l'unité de départ et l'unité
@@ -72,7 +78,9 @@ public class UnitConversionService {
 			
 		}
 		/* If there is no startUnit and endUnit in the UnitConversion list so we throw an exception */
-		throw new AxelorException("Veuillez configurer les conversions d'unités de '"+startUnit.getName()+"' à '"+endUnit.getName()+"'.", IException.CONFIGURATION_ERROR);
+		throw new AxelorException(String.format(metaTranslations.get(IExceptionMessage.UNIT_CONVERSION_1), 
+				startUnit.getName(), endUnit.getName()), IException.CONFIGURATION_ERROR);
+
 	}
 	
 	/**
@@ -96,7 +104,7 @@ public class UnitConversionService {
 	public BigDecimal convert(List<UnitConversion> unitConversionList, Unit startUnit, Unit endUnit, BigDecimal value) throws AxelorException {
 		 
 		if (startUnit == null || endUnit == null)
-			throw new AxelorException("Veuillez configurer les conversions d'unités.", IException.CONFIGURATION_ERROR);
+			throw new AxelorException(metaTranslations.get(IExceptionMessage.UNIT_CONVERSION_2), IException.CONFIGURATION_ERROR);
 			
 		if (startUnit.equals(endUnit))
 			return value; 
@@ -126,7 +134,7 @@ public class UnitConversionService {
 	public BigDecimal convert(Unit startUnit, Unit endUnit, BigDecimal value) throws AxelorException {
 		 
 		if (startUnit == null || endUnit == null)
-			throw new AxelorException("Veuillez configurer les conversions d'unités.", IException.CONFIGURATION_ERROR);
+			throw new AxelorException(metaTranslations.get(IExceptionMessage.UNIT_CONVERSION_2), IException.CONFIGURATION_ERROR);
 			
 		if (startUnit.equals(endUnit))
 			return value; 

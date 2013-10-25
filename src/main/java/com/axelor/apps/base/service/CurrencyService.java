@@ -40,14 +40,19 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.CurrencyConversionLine;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.meta.service.MetaTranslations;
 import com.google.inject.Inject;
 
 public class CurrencyService {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(CurrencyService.class);
+	
+	@Inject
+	private MetaTranslations metaTranslations;
 	
 	private LocalDate today;
 
@@ -75,8 +80,7 @@ public class CurrencyService {
 		}
 		
 		if(currencyConversionLine == null)  {
-			throw new AxelorException(String.format("Aucune conversion trouvée de la devise '%s' à la devise '%s' à la date du %s", 
-					startCurrency, endCurrency, today), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(metaTranslations.get(IExceptionMessage.CURRENCY_1), startCurrency, endCurrency, today), IException.CONFIGURATION_ERROR);
 		}
 		
 		return currencyConversionLine.getConversionRate();
@@ -116,7 +120,7 @@ public class CurrencyService {
 			}
 			
 			if(currencyConversionLine == null)  {
-				throw new AxelorException(String.format("Aucune conversion trouvée de la devise '%s' à la devise '%s' à la date du %s", 
+				throw new AxelorException(String.format(metaTranslations.get(IExceptionMessage.CURRENCY_1), 
 						currencyStart.getName(), currencyEnd.getName(), today), IException.CONFIGURATION_ERROR);
 			}
 			
