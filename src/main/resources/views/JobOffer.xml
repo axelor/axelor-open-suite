@@ -12,7 +12,7 @@
 
 	<form name="job-offer-form" title="Job offer" model="com.axelor.apps.organisation.db.JobOffer" cols="6">
 		<field name="offre" colSpan="2"/>
-		<field name="affair" domain="self.isAffair = true" grid-view="affair-grid" form-view="affair-form" colSpan="2"/>
+		<field name="project" domain="self.isBusiness = true" grid-view="business-project-grid" form-view="business-project-form" colSpan="2"/>
 		<break/>
 		<field name="dateDebut"/>
 		<field name="dateFin"/>

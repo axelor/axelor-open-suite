@@ -229,13 +229,13 @@
 	</action-validate> 
 	
 	<action-attrs name="action-task-attrs-project-title">
-		<attribute name="title" for="project" expr="Projet" if="project?.isProject == true &amp;&amp; project?.isAffair == false"/>
-		<attribute name="title" for="project" expr="Affaire" if="project?.isProject == false &amp;&amp; project?.isAffair == true"/>
-		<attribute name="title" for="project" expr="Projet/Affaire" if="project?.isProject == true &amp;&amp; project?.isAffair == true"/>
+		<attribute name="title" for="project" expr="Projet" if="project?.isProject == true &amp;&amp; project?.isBusiness == false"/>
+		<attribute name="title" for="project" expr="Business" if="project?.isProject == false &amp;&amp; project?.isBusiness == true"/>
+		<attribute name="title" for="project" expr="Project/Business" if="project?.isProject == true &amp;&amp; project?.isBusiness == true"/>
 	</action-attrs>
 	
 	<action-attrs name="action-task-attrs-hide-financial">
-		<attribute name="hidden" for="financialInformation" expr="eval: project == null || project?.isAffair == false"/>
+		<attribute name="hidden" for="financialInformation" expr="eval: project == null || project?.isBusiness == false"/>
 	</action-attrs>
 	
 	<action-method name="action-task-method-update-financial-information">

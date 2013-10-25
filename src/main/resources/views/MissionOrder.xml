@@ -6,7 +6,7 @@
 	<grid name="mission-order-grid" title="Mission orders" model="com.axelor.apps.organisation.db.MissionOrder">
 		<field name="reference" />
 		<field name="date" />
-		<field name="affair" />
+		<field name="project" />
 		<field name="company" />
 		<field name="employee" />
 		<field name="address"/>
@@ -20,7 +20,7 @@
         	<field name="date"/>
         	<break/>
         	<field name="company"/>
-        	<field name="affair" domain="self.isAffair = true" grid-view="affair-grid" form-view="affair-form"/>
+        	<field name="project" domain="self.isBusiness = true" grid-view="business-project-grid" form-view="business-project-form"/>
        		<field name="employee"/>
         	<field name="qualificationKeyword" colSpan="2" domain="self.typeSelect = '3'" form-view="keyword-profession-form" grid-view="keyword-profession-grid"/>
         	<group title="Mission information" colSpan="6" cols="6">

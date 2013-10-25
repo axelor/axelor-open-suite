@@ -61,9 +61,9 @@ public class ProjectController {
 	
 	public void createPreSalesTask(ActionRequest request, ActionResponse response) {
 		
-		Project affair = request.getContext().asType(Project.class);
+		Project project = request.getContext().asType(Project.class);
 		
-		if(projectService.createPreSalesTask(affair) != null)  {
+		if(projectService.createPreSalesTask(project) != null)  {
 			response.setReload(true);
 		}
 	}
@@ -118,7 +118,7 @@ public class ProjectController {
 		if (urlNotExist == null){
 
 			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", "Name "+project.getAffairName());
+			mapView.put("title", "Name "+project.getName());
 			mapView.put("resource", url);
 			mapView.put("viewType", "html");
 			response.setView(mapView);	

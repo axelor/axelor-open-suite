@@ -3,18 +3,18 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    <grid name="project-grid" title="Affairs/Projects" model="com.axelor.apps.organisation.db.Project">
+    <grid name="project-grid" title="Projects" model="com.axelor.apps.organisation.db.Project">
         <field name="clientPartner"/>
         <field name="contactPartner"/>
         <field name="company"/>
-        <field name="affairName"/>
+        <field name="name"/>
         <field name="isModel"/>
     </grid>
     
-    <form cols="6" onNew="action-project-group-default" name="project-form" title="Affair/Project" model="com.axelor.apps.organisation.db.Project"
+    <form cols="6" onNew="action-project-group-default" name="project-form" title="Project" model="com.axelor.apps.organisation.db.Project"
     onSave="action-project-method-create-default-task-on-save">
 	    <group showTitle="false" colSpan="4">
-	   		<field name="affairName" showTitle="false" css="highlight" placeholder="Project name" colSpan="4"/>
+	   		<field name="name" showTitle="false" css="highlight" placeholder="Name" colSpan="4"/>
 	        <field name="responsibleUserInfo"/>
 	        <field name="defaultTask" hideIf="!isTimeSheetImputable"/>
 	        <field name="clientPartner"/>
@@ -44,7 +44,7 @@
         </group>
         <group name="specificSettings" title="Specific settings" colSpan="6" cols="6" canCollapse="true" colWidths="16%,17%,16%,17%,16%,18%">
         	<field name="isProject"/>
-        	<field name="isAffair"/>
+        	<field name="isBusiness"/>
         	<field name="parentProject" onChange="action-project-unit"/>
         	<group colSpan="2" cols="2">
         		<separator title="Project model" colSpan="2"/>

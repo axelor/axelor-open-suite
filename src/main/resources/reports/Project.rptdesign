@@ -259,7 +259,7 @@
             <xml-property name="queryText"><![CDATA[select SalesOrderLine.id, SalesOrder.order_date, ClientPartner.full_name as "client_name", SalesOrderLine.ex_tax_total,
 UserInfo.full_name as "user_name", SalesOrderLine.product_name
 from organisation_project as Project 
-left outer join supplychain_sales_order as SalesOrder on (SalesOrder.affair_project = Project.id)
+left outer join supplychain_sales_order as SalesOrder on (SalesOrder.project = Project.id)
 
 left outer join supplychain_sales_order_line as SalesOrderLine on (SalesOrderLine.sales_order = SalesOrder.id)
 
@@ -2500,7 +2500,7 @@ where Project.id = ? and SalesOrder.status_select = 2]]></xml-property>
 UserInfo.full_name as "user_name", PurchaseOrderLine.product_name
 from organisation_project as Project 
 
-left outer join supplychain_purchase_order as PurchaseOrder on (PurchaseOrder.affair_project = Project.id)
+left outer join supplychain_purchase_order as PurchaseOrder on (PurchaseOrder.project = Project.id)
 left outer join supplychain_purchase_order_line as PurchaseOrderLine on (PurchaseOrderLine.purchase_order = PurchaseOrder.id)
 
 left outer join base_partner as SupplierPartner on (PurchaseOrder.supplier_partner = SupplierPartner.id)

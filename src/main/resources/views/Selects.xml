@@ -118,7 +118,7 @@
 		<option value="2">Project</option>
 	</selection>
 	
-	<selection name="organisation.affair.market.type.select">
+	<selection name="organisation.project.business.market.type.select">
 		<option value="1">Market</option>
 		<option value="2">Order form market</option>
 		<option value="3">Other</option>
@@ -177,7 +177,7 @@
 		<option value="9">Offer refused</option>
 	</selection>
 	
-	<selection name="organisation.affair.status.select">
+	<selection name="organisation.project.business.status.select">
 		<option value="1">Draft</option>
 		<option value="2">Submitted</option>
 		<option value="3">Accepted</option>

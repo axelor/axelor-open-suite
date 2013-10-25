@@ -268,39 +268,39 @@
 		<domain>self.isLeaveResquest = true</domain>
 	</action-view>
 
-	<menuitem name="affair-root" title="Affair" priority="120"
-		icon="img/icons/affair.png" groups="admins,erp"/>
+	<menuitem name="business-root" title="Business" priority="120"
+		icon="img/icons/business.png" groups="admins,erp"/>
 		
-	<menuitem name="affair-root-site" parent="affair-root"
-		title="Sites" action="affair.root.site" />
+	<menuitem name="business-root-site" parent="business-root"
+		title="Sites" action="business.root.site" />
 
-	<action-view name="affair.root.site" title="Sites"
-		model="com.axelor.apps.consulting.db.Site" icon="img/icons/affair_small.png">
+	<action-view name="business.root.site" title="Sites"
+		model="com.axelor.apps.consulting.db.Site" icon="img/icons/business_small.png">
 		<view type="grid" name="site-grid" />
 		<view type="form" name="site-form" />
 	</action-view>	
 	
-	<menuitem name="affair-root-project" parent="affair-root"
-		title="Affairs" />
+	<menuitem name="business-root-project" parent="business-root"
+		title="Business" />
 		
-	<menuitem name="affair-root-project-new-affair" parent="affair-root-project"
-		title="New Affair" action="affair.root.project.new.affair" />
+	<menuitem name="business-root-project-new-business" parent="business-root-project"
+		title="New Business" action="business.root.project.new.business" />
 
-	<action-view name="affair.root.project.new.affair" title="New Affair"
-		model="com.axelor.apps.organisation.db.Project" icon="img/icons/affair_small.png">
-		<view type="form" name="affair-form" />
-		<view type="grid" name="affair-grid" />
-		<domain>self.isAffair = true</domain>
+	<action-view name="business.root.project.new.business" title="New Business"
+		model="com.axelor.apps.organisation.db.Project" icon="img/icons/business_small.png">
+		<view type="form" name="business-project-form" />
+		<view type="grid" name="business-project-grid" />
+		<domain>self.isBusiness = true</domain>
 	</action-view>	
 		
-	<menuitem name="affair-root-project-all-affair" parent="affair-root-project"
-		title="Affairs" action="affair.root.project.all.affair" />
+	<menuitem name="business-root-project-all-business" parent="business-root-project"
+		title="Business" action="business.root.project.all.business" />
 
-	<action-view name="affair.root.project.all.affair" title="Affairs"
-		model="com.axelor.apps.organisation.db.Project" icon="img/icons/affair_small.png">
-		<view type="grid" name="affair-grid" />
-		<view type="form" name="affair-form" />
-		<domain>self.isAffair = true</domain>
+	<action-view name="business.root.project.all.business" title="Business"
+		model="com.axelor.apps.organisation.db.Project" icon="img/icons/business_small.png">
+		<view type="grid" name="business-project-grid" />
+		<view type="form" name="business-project-form" />
+		<domain>self.isBusiness = true</domain>
 	</action-view>	
 	
 	

@@ -84,7 +84,7 @@ public class ProjectService {
 
 		Task defaultTask = new Task();
 
-		defaultTask.setName(project.getAffairName());
+		defaultTask.setName(project.getName());
 		defaultTask.setProject(project);
 		defaultTask.setRealEstimatedMethodSelect(project.getRealEstimatedMethodSelect());
 		project.setDefaultTask(defaultTask);
@@ -108,13 +108,13 @@ public class ProjectService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Task createPreSalesTask(Project project) {
 
-		if(project.getAffairName() != null && !project.getAffairName().isEmpty()) {
-			Task findTask = Task.all().filter("self.project = ?1 AND self.name = ?2", project, "Avant vente "+project.getAffairName()).fetchOne();
+		if(project.getName() != null && !project.getName().isEmpty()) {
+			Task findTask = Task.all().filter("self.project = ?1 AND self.name = ?2", project, "Avant vente "+project.getName()).fetchOne();
 			if(findTask == null) {
 				Task preSalestask = new Task();
 
 				preSalestask.setProject(project);
-				preSalestask.setName("Avant vente "+project.getAffairName());
+				preSalestask.setName("Avant vente "+project.getName());
 				preSalestask.setRealEstimatedMethodSelect(project.getRealEstimatedMethodSelect());
 				project.getTaskList().add(preSalestask);
 				preSalestask.save();
@@ -400,18 +400,18 @@ public class ProjectService {
 		
 	}
 	
-	public Project createProject(String affairName, int affairStatusSelect, Partner clientPartner, Company company, Partner contactPartner, boolean isAffair, boolean isProject)  {
+	public Project createProject(String name, int businessStatusSelect, Partner clientPartner, Company company, Partner contactPartner, boolean isBusiness, boolean isProject)  {
 		
 		Project project = new Project();
-		project.setAffairName(affairName);
-		project.setAffairStatusSelect(affairStatusSelect);
+		project.setName(name);
+		project.setBusinessStatusSelect(businessStatusSelect);
 		project.setCandidateSet(new HashSet<Candidate>());
 		project.setClientPartner(clientPartner);
 		project.setCompany(company);
 		project.setContactPartner(contactPartner);
 		project.setEmployeeSet(new HashSet<Employee>());
 		project.setExportTypeSelect(IProject.REPORT_TYPE_PDF);
-		project.setIsAffair(isAffair);
+		project.setIsBusiness(isBusiness);
 		project.setIsProject(isProject);
 		project.setUnit(GeneralService.getUnit());
 		
