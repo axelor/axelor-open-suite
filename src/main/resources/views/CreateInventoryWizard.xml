@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
     
-    <form cols="6" onNew="action-location-record-on-new" name="create-inventory-wizard-form" title="Create inventory" model="com.axelor.apps.base.db.Wizard">
+    <form cols="6" onNew="action-create-inventory-wizard-record-default" name="create-inventory-wizard-form" title="Create inventory" model="com.axelor.apps.base.db.Wizard">
     	<group colSpan="6" cols="6">
         	<group colSpan="1">
         	</group>
@@ -33,9 +33,17 @@
     	</group>
 	</form>
     
-    <action-record name="action-location-record-on-new" model="com.axelor.apps.base.db.Wizard">
-    	<!-- <field name="inventoryDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()"/> -->
+    <action-record name="action-create-inventory-wizard-record-default" model="com.axelor.apps.base.db.Wizard">
     	<field name="inventoryDate" expr="eval: __date__"/>
+    	<field name="excludeOutOfStock" expr="eval: false"/>
+    	<field name="includeObsolete" expr="eval: false"/>
+    	<field name="location" expr="action: action-create-inventory-wizard-record-location"/>
+    </action-record>
+    
+    <action-record name="action-create-inventory-wizard-record-location"
+    	model="com.axelor.apps.supplychain.db.Location"
+    	search="('self.id = ?1', _location.id)">
+    	<field name="id" expr="eval: _location.id"/>
     </action-record>
     
     <action-method name="action-location-method-create-inventory">

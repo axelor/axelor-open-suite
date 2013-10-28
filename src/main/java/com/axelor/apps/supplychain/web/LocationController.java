@@ -30,17 +30,15 @@
  */
 package com.axelor.apps.supplychain.web;
 
+import java.util.Map;
+
 import org.joda.time.LocalDate;
 
-import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.ProductFamily;
-import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.supplychain.db.Inventory;
 import com.axelor.apps.supplychain.db.Location;
-import com.axelor.apps.supplychain.service.LocationService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.apps.supplychain.service.InventoryService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
@@ -49,10 +47,7 @@ import com.google.inject.Inject;
 public class LocationController {
 
 	@Inject
-	LocationService locationService;
-	
-	@Inject
-	SequenceService sequenceService;
+	private InventoryService inventoryService;
 	
 	public void checkIsDefaultLocation(ActionRequest request, ActionResponse response){
 		
@@ -73,35 +68,39 @@ public class LocationController {
 		Context context = request.getContext();
 		LocalDate date = new LocalDate(context.get("inventoryDate"));
 		String description = (String) context.get("description");
-		Location contextLocation = (Location) context.get("_location");
-		Location location = null;
-		if(contextLocation != null) {
-			location = Location.find(contextLocation.getId());
-		}
+		
 		boolean excludeOutOfStock = (Boolean) context.get("excludeOutOfStock");
 		boolean includeObsolete = (Boolean) context.get("includeObsolete");
 		
-		if (location == null)
-			throw new AxelorException("Emplacement invalide",
-							IException.CONFIGURATION_ERROR);
+		// Récupération de l'entrepot
+		Map<String, Object> locationContext = (Map<String, Object>) context.get("location");
 		
-		ProductFamily productFamily = null;
-		ProductFamily contextProductFamily = (ProductFamily) context.get("productFamily");
-		if (contextProductFamily != null) {
-			productFamily = ProductFamily.find(contextProductFamily.getId());
+		Location location = null;
+		
+		if(locationContext != null)  {
+			location = Location.find(((Integer)locationContext.get("id")).longValue());
 		}
 		
-		ProductCategory productCategory = null;
-		ProductCategory contextProductCategory = (ProductCategory) context.get("productCategory");
-		if (contextProductCategory != null) {
-			productCategory = ProductCategory.find(contextProductCategory.getId());
-		}	
-		String ref = sequenceService.getSequence(IAdministration.INVENTORY, location.getCompany(),false);
-		if (ref == null)
-			throw new AxelorException("Aucune séquence configurée pour les inventaires pour la société "+location.getCompany().getName(),
-							IException.CONFIGURATION_ERROR);
+		// Récupération de la famille de produit
+		Map<String, Object> productFamilyContext = (Map<String, Object>) context.get("productFamily");
 		
-		Inventory inventory = locationService.createInventory(ref, date, description, location, excludeOutOfStock,
+		ProductFamily productFamily = null;
+		
+		if (productFamilyContext != null) {
+			productFamily = ProductFamily.find(((Integer)productFamilyContext.get("id")).longValue());
+		}
+		
+		// Récupération de la catégorie de produit
+		Map<String, Object> productCategoryContext = (Map<String, Object>) context.get("productCategory");
+		
+		ProductCategory productCategory = null;
+		
+		if (productCategoryContext != null) {
+			productCategory = ProductCategory.find(((Integer)productCategoryContext.get("id")).longValue());
+		}
+		
+		
+		Inventory inventory = inventoryService.createInventoryFromWizard(date, description, location, excludeOutOfStock,
 										includeObsolete, productFamily, productCategory);
 		response.setValue("inventoryId", inventory.getId());
 	}

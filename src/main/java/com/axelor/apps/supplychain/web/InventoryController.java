@@ -39,18 +39,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.AxelorSettings;
-import com.axelor.apps.base.db.IAdministration;
-import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.supplychain.db.Inventory;
 import com.axelor.apps.supplychain.db.InventoryLine;
 import com.axelor.apps.supplychain.db.Location;
 import com.axelor.apps.supplychain.service.InventoryService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
 import com.axelor.meta.db.MetaUser;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -60,9 +55,6 @@ public class InventoryController {
 
 	@Inject
 	InventoryService inventoryService;
-	
-	@Inject
-	SequenceService sequenceService;
 	
 	private static final Logger LOG = LoggerFactory.getLogger(InventoryController.class);
 	
@@ -105,13 +97,6 @@ public class InventoryController {
 		String filePath = inventory.getImportFilePath();
 		char separator = ',';
 		
-		if(inventory.getInventorySeq() == null || inventory.getInventorySeq().isEmpty()) {
-			String ref = sequenceService.getSequence(IAdministration.INVENTORY, inventory.getLocation().getCompany(),false);
-			if (ref == null)
-				throw new AxelorException("Aucune séquence configurée pour les inventaires pour la société "+inventory.getLocation().getCompany().getName(),
-								IException.CONFIGURATION_ERROR);
-			inventory.setInventorySeq(ref);
-		}
 		inventoryService.importFile(filePath, separator, inventory);
 		response.setFlash("File "+filePath+" successfully imported.");
 	}
@@ -122,22 +107,24 @@ public class InventoryController {
 		inventoryService.generateStockMove(inventory);
 	}
 	
-	public void fillInventoryLineList(ActionRequest request, ActionResponse response) {
+	public void fillInventoryLineList(ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		Inventory inventory = request.getContext().asType(Inventory.class);
 		if(inventory != null) {
 			List<InventoryLine> inventoryLineList = inventoryService.fillInventoryLineList(inventory);
-			if(inventoryLineList == null)
+			if(inventoryLineList == null)  {
 				response.setFlash("Il n'y a aucun produit contenu dans l'emplacement de stock.");
+			}
 			else {
 				if(inventoryLineList.size() > 0) {
 					response.setFlash("La liste des lignes d'inventaire a été rempli.");
-					response.setReload(true);
 				}
-				else
+				else  {
 					response.setFlash("Aucune lignes d'inventaire n'a été créée.");
+				}
 			}
 		}
+		response.setReload(true);
 	}
 	
 	
@@ -149,12 +136,7 @@ public class InventoryController {
 			
 			Location location = inventory.getLocation();
 			
-			String ref = sequenceService.getSequence(IAdministration.INVENTORY, location.getCompany(),false);
-			if (ref == null)  
-				throw new AxelorException("Aucune séquence configurée pour les inventaires pour la société "+location.getCompany().getName(),
-						IException.CONFIGURATION_ERROR);
-			else
-				response.setValue("inventorySeq", ref);
+			response.setValue("inventorySeq", inventoryService.getInventorySequence(location.getCompany()));
 		}
 	}
 }

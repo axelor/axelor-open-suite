@@ -28,24 +28,30 @@
  * All portions of the code written by Axelor are
  * Copyright (c) 2012-2013 Axelor. All Rights Reserved.
  */
-package com.axelor.apps.supplychain.db;
+package com.axelor.apps.supplychain.service;
 
-public interface IStockMove {
+import java.math.BigDecimal;
 
-	/**
-	 * Static stock move status select
-	 */
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductVariant;
+import com.axelor.apps.base.db.TrackingNumber;
+import com.axelor.apps.supplychain.db.Inventory;
+import com.axelor.apps.supplychain.db.InventoryLine;
 
-	static final int STATUS_DRAFT = 1;
-	static final int STATUS_PLANNED = 2;
-	static final int STATUS_REALIZED = 3;
-	static final int STATUS_CANCELED = 43;
+public class InventoryLineService {
 
-	/**
-	 * Static StockMove type select
-	 */
+	public InventoryLine createInventoryLine(Inventory inventory, Product product, BigDecimal currentQty, TrackingNumber trackingNumber, ProductVariant productVariant)  {
+		
+		InventoryLine inventoryLine = new InventoryLine();
+		inventoryLine.setInventory(inventory);
+		inventoryLine.setProduct(product);
+		inventoryLine.setCurrentQty(currentQty);
+		inventoryLine.setTrackingNumber(trackingNumber);
+		inventoryLine.setProductVariant(productVariant);
+		
+		return inventoryLine;
+		
+	}
+
 	
-	static final int TYPE_INTERNAL = 1;
-	static final int TYPE_OUTGOING = 2;
-	static final int TYPE_INCOMING = 3;
 }

@@ -23,7 +23,14 @@
 		<option value="2">XLS</option>
 	</selection>
 	
-	<selection name="supplychain.default.status.select">
+	<selection name="supplychain.stock.move.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Planned</option>
+		<option value="3">Realized</option>
+		<option value="4">Canceled</option>
+	</selection>
+	
+	<selection name="supplychain.inventory.status.select">
 		<option value="1">Draft</option>
 		<option value="2">Planned</option>
 		<option value="3">Realized</option>

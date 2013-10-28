@@ -30,22 +30,23 @@
  */
 package com.axelor.apps.supplychain.db;
 
-public interface IStockMove {
+public interface IInventory {
 
 	/**
-	 * Static stock move status select
+	 * Static status select
 	 */
 
 	static final int STATUS_DRAFT = 1;
 	static final int STATUS_PLANNED = 2;
 	static final int STATUS_REALIZED = 3;
-	static final int STATUS_CANCELED = 43;
-
-	/**
-	 * Static StockMove type select
-	 */
+	static final int STATUS_CANCELED = 4;
 	
-	static final int TYPE_INTERNAL = 1;
-	static final int TYPE_OUTGOING = 2;
-	static final int TYPE_INCOMING = 3;
+	
+	/**
+	 * Static format select
+	 */
+
+	static final int FORMAT_PDF = 1;
+	static final int FORMAT_XLS = 2;
+	
 }

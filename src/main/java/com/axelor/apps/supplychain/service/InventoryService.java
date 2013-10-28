@@ -39,11 +39,16 @@ import java.util.List;
 import org.joda.time.LocalDate;
 
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.IProduct;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductCategory;
+import com.axelor.apps.base.db.ProductFamily;
 import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.TrackingNumber;
 import com.axelor.apps.base.service.ProductVariantService;
+import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.supplychain.db.IInventory;
 import com.axelor.apps.supplychain.db.IStockMove;
 import com.axelor.apps.supplychain.db.Inventory;
 import com.axelor.apps.supplychain.db.InventoryLine;
@@ -60,6 +65,9 @@ import com.google.inject.persist.Transactional;
 public class InventoryService {
 
 	@Inject
+	private InventoryLineService inventoryLineService;
+	
+	@Inject
 	private StockMoveService stockMoveService;
 
 	@Inject
@@ -67,8 +75,69 @@ public class InventoryService {
 
 	@Inject
 	private ProductVariantService productVariantService;
+	
+	@Inject
+	private SequenceService sequenceService;
 
 
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public Inventory createInventoryFromWizard(LocalDate date, String description, Location location, boolean excludeOutOfStock, 
+			boolean includeObsolete, ProductFamily productFamily, ProductCategory productCategory) throws Exception {
+		
+		Inventory inventory = this.createInventory(date, description, location, excludeOutOfStock, includeObsolete, productFamily, productCategory).save();
+		
+		this.fillInventoryLineList(inventory);
+		
+		return inventory;
+	}
+	
+	
+	
+	public Inventory createInventory(LocalDate date, String description, Location location, boolean excludeOutOfStock, boolean includeObsolete, 
+			ProductFamily productFamily, ProductCategory productCategory) throws AxelorException  {
+		
+		if(location == null)  {
+			throw new AxelorException("Veuillez selectionner un entrepot",IException.CONFIGURATION_ERROR);
+		}
+		
+		Inventory inventory = new Inventory();
+		
+		inventory.setInventorySeq(this.getInventorySequence(location.getCompany()));
+			
+		inventory.setDateT(date.toDateTimeAtStartOfDay());
+		
+		inventory.setDescription(description);
+		
+		inventory.setFormatSelect(IInventory.FORMAT_PDF);
+		
+		inventory.setLocation(location);
+		
+		inventory.setExcludeOutOfStock(excludeOutOfStock);
+		
+		inventory.setIncludeObsolete(includeObsolete);
+		
+		inventory.setProductCategory(productCategory);
+		
+		inventory.setProductFamily(productFamily);
+		
+		inventory.setStatusSelect(IInventory.STATUS_DRAFT);
+		
+		return inventory;
+	}
+	
+	
+	public String getInventorySequence(Company company) throws AxelorException   {
+		
+		String ref = sequenceService.getSequence(IAdministration.INVENTORY, company,false);
+		if (ref == null)
+			throw new AxelorException("Aucune séquence configurée pour les inventaires pour la société "+company.getName(),
+							IException.CONFIGURATION_ERROR);
+		
+		return ref;
+		
+	}
+	
+	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void importFile(String filePath, char separator, Inventory inventory) throws IOException, AxelorException {
 
@@ -218,21 +287,45 @@ public class InventoryService {
 	public StockMove createStockMoveHeader(Inventory inventory, Company company, Location toLocation, LocalDate inventoryDate, String name) throws AxelorException  {
 
 		StockMove stockMove = stockMoveService.createStockMove(null, company, null, company.getInventoryVirtualLocation(), toLocation, inventoryDate, inventoryDate);
-		stockMove.setTypeSelect(IStockMove.INTERNAL);
+		stockMove.setTypeSelect(IStockMove.TYPE_INTERNAL);
 		stockMove.setName(name);
 
 		return stockMove;
 	}
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public List<InventoryLine> fillInventoryLineList(Inventory inventory) {
+	public List<InventoryLine> fillInventoryLineList(Inventory inventory) throws AxelorException {
 
-		if(inventory.getLocation() == null)
-			return null;
+		if(inventory.getLocation() == null)  {
+			throw new AxelorException("Veuillez selectionner un entrepot",IException.CONFIGURATION_ERROR);
+		}
 		
-		String query = "self.location = ?";
+		this.initInventoryLines(inventory);
+		
+		List<LocationLine> locationLineList = this.getLocationLines(inventory);
+		
+		if (locationLineList != null) {
+			List<InventoryLine> inventoryLineList = new ArrayList<InventoryLine>();
+			
+			for (LocationLine locationLine : locationLineList) {
+				
+				inventoryLineList.add(this.createInventoryLine(inventory, locationLine));
+				
+			}
+			inventory.setInventoryLineList(inventoryLineList);
+			inventory.save();
+			return inventoryLineList;
+		}
+		return null;
+	}
+	
+	
+	public List<LocationLine> getLocationLines(Inventory inventory)  {
+		
+		String query = "(self.location = ? OR self.detailsLocation = ?)";
 		List<Object> params = new ArrayList<Object>();
 		
+		params.add(inventory.getLocation());
 		params.add(inventory.getLocation());
 		
 		if (inventory.getExcludeOutOfStock()) {
@@ -254,23 +347,28 @@ public class InventoryService {
 			params.add(inventory.getProductCategory());
 		}
 		
-		List<LocationLine> locationLineList = LocationLine.all().filter(query, params.toArray()).fetch();
-		if (locationLineList != null) {
-			List<InventoryLine> inventoryLineList = new ArrayList<InventoryLine>();
-			
-			for (LocationLine locationLine : locationLineList) {
-				InventoryLine inventoryLine = new InventoryLine();
-				inventoryLine.setProduct(locationLine.getProduct());
-				inventoryLine.setCurrentQty(locationLine.getCurrentQty());
-				inventoryLine.setInventory(inventory);
-				inventoryLine.setTrackingNumber(locationLine.getTrackingNumber());
-				inventoryLine.setProductVariant(locationLine.getProductVariant());
-				inventoryLineList.add(inventoryLine);
-			}
-			inventory.setInventoryLineList(inventoryLineList);
-			inventory.save();
-			return inventoryLineList;
-		}
-		return null;
+		return LocationLine.all().filter(query, params.toArray()).fetch();
+		
 	}
+	
+	
+	
+	public InventoryLine createInventoryLine(Inventory inventory, LocationLine locationLine)  {
+		
+		return inventoryLineService.createInventoryLine(
+				inventory, 
+				locationLine.getProduct(), 
+				locationLine.getCurrentQty(), 
+				locationLine.getTrackingNumber(), 
+				locationLine.getProductVariant());
+		
+	}
+	
+	
+	public void initInventoryLines(Inventory inventory)  {
+		
+		if (inventory.getInventoryLineList() == null) { inventory.setInventoryLineList(new ArrayList<InventoryLine>()); }
+		else  {  inventory.getInventoryLineList().clear();  }
+	}
+	
 }

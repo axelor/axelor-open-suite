@@ -82,7 +82,7 @@ public class StockMoveService {
 		String ref = "";
 		
 		switch(stockMoveType)  {
-			case IStockMove.INTERNAL:
+			case IStockMove.TYPE_INTERNAL:
 				ref = sequenceService.getSequence(IAdministration.INTERNAL, company, false);
 				if (ref == null)  {
 					throw new AxelorException(String.format("%s Aucune séquence configurée pour les mouvements internes de stock pour la société %s",
@@ -90,7 +90,7 @@ public class StockMoveService {
 				}
 				break;
 				
-			case IStockMove.INCOMING:
+			case IStockMove.TYPE_INCOMING:
 				ref = sequenceService.getSequence(IAdministration.INCOMING, company, false);
 				if (ref == null)  {
 					throw new AxelorException(String.format("%s Aucune séquence configurée pour les receptions de stock pour la société %s",
@@ -98,7 +98,7 @@ public class StockMoveService {
 				}
 				break;
 				
-			case IStockMove.OUTGOING:
+			case IStockMove.TYPE_OUTGOING:
 				ref = sequenceService.getSequence(IAdministration.OUTGOING, company, false);
 				if (ref == null)  {
 					throw new AxelorException(String.format("%s Aucune séquence configurée pour les livraisons de stock pour la société %s",
@@ -144,7 +144,7 @@ public class StockMoveService {
 		StockMove stockMove = new StockMove();
 		stockMove.setToAddress(toAddress);
 		stockMove.setCompany(company);
-		stockMove.setStatusSelect(IStockMove.DRAFT);
+		stockMove.setStatusSelect(IStockMove.STATUS_DRAFT);
 		stockMove.setRealDate(realDate);
 		stockMove.setEstimatedDate(estimatedDate);
 		stockMove.setPartner(clientPartner);
@@ -158,13 +158,13 @@ public class StockMoveService {
 	public int getStockMoveType(Location fromLocation, Location toLocation)  {
 		
 		if(fromLocation.getTypeSelect() == ILocation.INTERNAL && toLocation.getTypeSelect() == ILocation.INTERNAL) {
-			return IStockMove.INTERNAL;
+			return IStockMove.TYPE_INTERNAL;
 		}
 		else if(fromLocation.getTypeSelect() != ILocation.INTERNAL && toLocation.getTypeSelect() == ILocation.INTERNAL) {	
-			return IStockMove.INCOMING;
+			return IStockMove.TYPE_INCOMING;
 		}
 		else if(fromLocation.getTypeSelect() == ILocation.INTERNAL && toLocation.getTypeSelect() != ILocation.INTERNAL) {
-			return IStockMove.OUTGOING;
+			return IStockMove.TYPE_OUTGOING;
 		}
 		return 0;
 	}
@@ -201,7 +201,7 @@ public class StockMoveService {
 		}
 
 		
-		if(stockMove.getTypeSelect() == IStockMove.OUTGOING)  {
+		if(stockMove.getTypeSelect() == IStockMove.TYPE_OUTGOING)  {
 			
 		}
 		
@@ -219,7 +219,7 @@ public class StockMoveService {
 				fromLocation, 
 				toLocation, 
 				stockMove.getStatusSelect(), 
-				IStockMove.PLANNED, 
+				IStockMove.STATUS_PLANNED, 
 				stockMove.getStockMoveLineList(),
 				stockMove.getEstimatedDate());
 		
@@ -227,7 +227,7 @@ public class StockMoveService {
 			stockMove.setEstimatedDate(this.today);
 		}
 		
-		stockMove.setStatusSelect(IStockMove.PLANNED);
+		stockMove.setStatusSelect(IStockMove.STATUS_PLANNED);
 		
 		stockMove.save();
 		
@@ -243,11 +243,11 @@ public class StockMoveService {
 				stockMove.getFromLocation(), 
 				stockMove.getToLocation(), 
 				stockMove.getStatusSelect(), 
-				IStockMove.REALIZED, 
+				IStockMove.STATUS_REALIZED, 
 				stockMove.getStockMoveLineList(),
 				stockMove.getEstimatedDate());
 		
-		stockMove.setStatusSelect(IStockMove.REALIZED);
+		stockMove.setStatusSelect(IStockMove.STATUS_REALIZED);
 		stockMove.setRealDate(this.today);
 		stockMove.save();
 	}
@@ -262,11 +262,11 @@ public class StockMoveService {
 				stockMove.getFromLocation(), 
 				stockMove.getToLocation(), 
 				stockMove.getStatusSelect(), 
-				IStockMove.CANCELED, 
+				IStockMove.STATUS_CANCELED, 
 				stockMove.getStockMoveLineList(),
 				stockMove.getEstimatedDate());
 		
-		stockMove.setStatusSelect(IStockMove.CANCELED);
+		stockMove.setStatusSelect(IStockMove.STATUS_CANCELED);
 		stockMove.setRealDate(this.today);
 		stockMove.save();
 	}

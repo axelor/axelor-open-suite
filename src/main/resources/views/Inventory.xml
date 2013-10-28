@@ -13,20 +13,20 @@
     <form name="inventory-form" title="Inventory" model="com.axelor.apps.supplychain.db.Inventory" cols="4"
     	onNew="action-inventory-record-new" onSave="action-set-inventory-seq">
 	    <field name="inventorySeq"/>
-	    <field name="statusSelect" widget="NavSelect"/>
+	    <field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="2"/>
 	    <field name="location" domain="self.typeSelect = 1 OR self.typeSelect = 2"/>
-	    <spacer/>
-	    <group title="Export" colSpan="1" showIf="statusSelect == 2 || statusSelect == 3">
+	    <group title="Export" colSpan="2" showIf="statusSelect == 2 || statusSelect == 3">
 	    	<field name="formatSelect"/>
 	    	<button name="showInventory" title="Print" colSpan="1" icon="img/icons/print.png" onClick="save,action-inventory-method-show-inventory" showIf="formatSelect != null"/>
 	    </group>
 	    <field name="dateT"/>
-	    <spacer/>
-	    <group title="Import" colSpan="1" hideIf="statusSelect != 2" cols="2">
+	    <group title="Import" colSpan="2" hideIf="statusSelect != 2" cols="2">
 	    	<field name="importFilePath"/><break/>
-	    	<button name="importFile" title="Import" colSpan="2" onClick="save,action-inventory-method-import-file,save" showIf="importFilePath != null"/>
+	    	<button name="importFile" title="Import" colSpan="2" onClick="save,action-set-inventory-seq,action-inventory-method-import-file,save" showIf="importFilePath != null"/>
 	    </group>
-	    <field name="description" colSpan="4"/>
+	    <group colSpan="4" title="Description">
+	    	<field name="description" colSpan="4" showTitle="false"/>
+	    </group>
 	    <spacer/>
 		<group title="Fill inventory with" colSpan="4">
             <field name="productFamily"/>
@@ -34,11 +34,11 @@
             <field name="excludeOutOfStock"/>
             <field name="includeObsolete"/>
         </group>
-        <button name="fillInventory" title="Fill inventory" showIf="location != null" colSpan="4" onClick="save,action-inventory-method-fill-inventory,save"/>
+        <button name="fillInventory" title="Fill inventory" showIf="location != null" colSpan="4" onClick="save,action-inventory-method-fill-inventory,action-set-inventory-seq,save"/>
 	    <separator/>
 	    <field name="inventoryLineList" colSpan="4" readonlyIf="statusSelect == 3"/>
 	    <group title="Actions" colSpan="4">
-	        <button name="plan" title="Plan" showIf="statusSelect == 1 &amp;&amp; location != null" colSpan="1" onClick="save,action-inventory-record-plan,save"/><break/>
+	        <button name="plan" title="Plan" showIf="statusSelect == 1 &amp;&amp; location != null" colSpan="1" onClick="save,action-inventory-record-plan,action-set-inventory-seq,save"/><break/>
 			<button name="realize" title="Realize" showIf="statusSelect == 2" colSpan="1" onClick="save,action-inventory-method-generate-stock-move,action-inventory-record-realize,save"/><break/>
 			<button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3" colSpan="1" onClick="save,action-inventory-record-cancel,save"/><break/>
         	<button name="draft" title="Draft" showIf="statusSelect == 4" onClick="save,action-inventory-record-draft,save"/>
@@ -48,6 +48,7 @@
     <action-record name="action-inventory-record-new" model="com.axelor.apps.supplychain.db.Inventory">
 	    <field name="statusSelect" expr="1"/>
 	    <field name="dateT" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()"/>
+	    <field name="formatSelect" expr="1"/>
 	</action-record>
 	
 	<action-record name="action-inventory-record-draft" model="com.axelor.apps.supplychain.db.Inventory">

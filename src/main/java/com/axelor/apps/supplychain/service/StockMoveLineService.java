@@ -240,12 +240,12 @@ public class StockMoveLineService {
 			lastFutureStockMoveDate, ProductVariant productVariant, TrackingNumber trackingNumber ) throws AxelorException  {
 		
 		switch(fromStatus)  {
-			case IStockMove.PLANNED:
+			case IStockMove.STATUS_PLANNED:
 				locationLineService.updateLocation(fromLocation, product, qty, false, true, true, null, trackingNumber, productVariant);
 				locationLineService.updateLocation(toLocation, product, qty, false, true, false, null, trackingNumber, productVariant);
 				break;
 				
-			case IStockMove.REALIZED:
+			case IStockMove.STATUS_REALIZED:
 				locationLineService.updateLocation(fromLocation, product, qty, true, true, true, null, trackingNumber, productVariant);
 				locationLineService.updateLocation(toLocation, product, qty, true, true, false, null, trackingNumber, productVariant);
 				break;
@@ -255,12 +255,12 @@ public class StockMoveLineService {
 		}
 		
 		switch(toStatus)  {
-			case IStockMove.PLANNED:
+			case IStockMove.STATUS_PLANNED:
 				locationLineService.updateLocation(fromLocation, product, qty, false, true, false, lastFutureStockMoveDate, trackingNumber, productVariant);
 				locationLineService.updateLocation(toLocation, product, qty, false, true, true, lastFutureStockMoveDate, trackingNumber, productVariant);
 				break;
 				
-			case IStockMove.REALIZED:
+			case IStockMove.STATUS_REALIZED:
 				locationLineService.updateLocation(fromLocation, product, qty, true, true, false, null, trackingNumber, productVariant);
 				locationLineService.updateLocation(toLocation, product, qty, true, true, true, null, trackingNumber, productVariant);
 				break;
