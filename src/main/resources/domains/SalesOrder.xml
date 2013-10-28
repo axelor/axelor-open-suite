@@ -31,7 +31,6 @@
   	
 <!--   	Ligne de devis -->
 	<boolean name="hasGlobalTask" title="Global task ?"/>
-	<boolean name="hasToCreateProposal" title="Create purchase orders ?"/>
 	<one-to-many name="salesOrderLineList" ref="com.axelor.apps.supplychain.db.SalesOrderLine" mappedBy="salesOrder" title="Sale order lines"/>
 
 <!--   	Ligne de TVA -->	
