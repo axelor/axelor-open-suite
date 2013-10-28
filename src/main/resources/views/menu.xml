@@ -625,11 +625,20 @@
 
 	<menuitem name="top-menu-utility" priority="300"  title="Create" icon="img/icons/create.png" groups="admins,erp" top="true" left="false"/> 	
 
-	<menuitem name="top-menu-create-partner" parent="top-menu-utility" title="Create Partner" action="top.new.partner.view" />
+	<menuitem name="top-menu-create-partner" parent="top-menu-utility" title="Create Partner" action="top.new.partner.view" top="true" left="false"/> 	
 		
 	<action-view name="top.new.partner.view" title="Create Partner" model="com.axelor.apps.base.db.Partner" >
 		<view type="form" name="partner-form"/>
+		<context name="_partnerTypeSelect" expr="eval:1" />
 	</action-view>
+	
+	<menuitem name="top-new-partner-individual" parent="top-menu-utility" title="Create Individual Partner" action="top.new.partner.individual" top="true" left="false"/> 	
+		
+	<action-view name="top.new.partner.individual" title="Create Individual Partner" model="com.axelor.apps.base.db.Partner" >
+		<view type="form" name="partner-form"/>
+		<context name="_partnerTypeSelect" expr="eval:2" />
+	</action-view>
+	
 	
 	<menuitem name="top-menu-create-contact" parent="top-menu-utility" title="Create Contact" action="top.new.contact.view" />
 		
