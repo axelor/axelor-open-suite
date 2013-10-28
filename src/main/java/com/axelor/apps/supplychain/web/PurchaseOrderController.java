@@ -50,7 +50,7 @@ import com.google.inject.Inject;
 public class PurchaseOrderController {
 
 	@Inject
-	SequenceService sequenceService;
+	private SequenceService sequenceService;
 	
 	@Inject
 	private PurchaseOrderService purchaseOrderService;

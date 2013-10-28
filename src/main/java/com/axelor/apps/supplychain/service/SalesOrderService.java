@@ -36,20 +36,11 @@ import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.IProduct;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.supplychain.db.ILocation;
-import com.axelor.apps.supplychain.db.Location;
 import com.axelor.apps.supplychain.db.SalesOrder;
 import com.axelor.apps.supplychain.db.SalesOrderLine;
 import com.axelor.apps.supplychain.db.SalesOrderLineVat;
-import com.axelor.apps.supplychain.db.StockMove;
-import com.axelor.apps.supplychain.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -66,11 +57,6 @@ public class SalesOrderService {
 	@Inject
 	private SalesOrderLineVatService salesOrderLineVatService;
 
-	@Inject
-	private StockMoveService stockMoveService;
-	
-	@Inject
-	private StockMoveLineService stockMoveLineService;
 
 	public SalesOrder _computeSalesOrderLines(SalesOrder salesOrder) throws AxelorException  {
 
@@ -165,82 +151,5 @@ public class SalesOrderService {
 
 	}
 
-
-	/**
-	 * Méthode permettant de créer un StockMove à partir d'un SalesOrder.
-	 * @param salesOrder l'objet salesOrder
-	 * @throws AxelorException Aucune séquence de StockMove (Livraison) n'a été configurée
-	 */
-	public void createStocksMovesFromSalesOrder(SalesOrder salesOrder) throws AxelorException {
-		
-		Company company = salesOrder.getCompany();
-		
-		if(salesOrder.getSalesOrderLineList() != null && company != null) {
-			
-			StockMove stockMove = this.createStockMove(salesOrder, company);
-			
-			for(SalesOrderLine salesOrderLine: salesOrder.getSalesOrderLineList()) {
-				
-				this.createStockMoveLine(stockMove, salesOrderLine, company);
-				
-			}
-			
-			if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
-				stockMoveService.plan(stockMove);
-			}
-		}
-	}
-	
-	
-	public StockMove createStockMove(SalesOrder salesOrder, Company company) throws AxelorException  {
-		
-		Location toLocation = Location.all().filter("self.isDefaultLocation = true and self.company = ?1 and self.typeSelect = ?2", company, ILocation.EXTERNAL).fetchOne();
-		
-		if(toLocation == null)  {
-			toLocation = company.getCustomerVirtualLocation();
-		}
-		if(toLocation == null)  {
-			throw new AxelorException(String.format("%s Veuillez configurer un entrepot virtuel client pour la société %s ",
-					GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		
-		StockMove stockMove = stockMoveService.createStockMove(
-				salesOrder.getDeliveryAddress(), 
-				company, 
-				salesOrder.getClientPartner(), 
-				salesOrder.getLocation(), 
-				toLocation, 
-				salesOrder.getShipmentDate());
-		
-		stockMove.setSalesOrder(salesOrder);
-		stockMove.setStockMoveLineList(new ArrayList<StockMoveLine>());
-		
-		return stockMove;
-	}
-	
-	
-	public void createStockMoveLine(StockMove stockMove, SalesOrderLine salesOrderLine, Company company) throws AxelorException  {
-		
-		Product product = salesOrderLine.getProduct();
-		
-		if(product != null && ((company.getHasOutSmForStorableProduct() && product.getProductTypeSelect().equals(IProduct.PRODUCT_TYPE_STORABLE)) 
-				|| (company.getHasOutSmForNonStorableProduct() && !product.getProductTypeSelect().equals(IProduct.PRODUCT_TYPE_STORABLE)))) {
-			
-			StockMoveLine stockMoveLine = stockMoveLineService.createStockMoveLine(
-					product, 
-					salesOrderLine.getQty(), 
-					salesOrderLine.getUnit(), 
-					salesOrderLineService.computeDiscount(salesOrderLine), 
-					stockMove,
-					salesOrderLine.getProductVariant(), 
-					1);
-			
-			if(stockMoveLine != null) {
-				stockMove.getStockMoveLineList().add(stockMoveLine);
-			}
-		}	
-	}
-		
-		
 }
 

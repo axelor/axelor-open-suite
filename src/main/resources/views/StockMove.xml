@@ -125,7 +125,7 @@
 	</action-method>
 	
 	<action-attrs name="action-stock-move-attrs-hide-button-generate-invoice">
-		<attribute name="hidden" for="generateInvoice" expr="eval: (salesOrder == null &amp;&amp; purchaseOrder == null) || (salesOrder != null &amp;&amp; salesOrder?.invoicingTypeSelect != 4) || (purchaseOrder != null &amp;&amp; purchaseOrder.invoicingTypeSelect != 3) || invoice != null || statusSelect != 3"/>
+		<attribute name="hidden" for="generateInvoice" expr="eval: (salesOrder == null &amp;&amp; purchaseOrder == null) || (salesOrder != null &amp;&amp; salesOrder?.invoicingTypeSelect != 4 &amp;&amp; salesOrder?.invoicingTypeSelect != 5) || (purchaseOrder != null &amp;&amp; purchaseOrder.invoicingTypeSelect != 3) || invoice != null || statusSelect != 3"/>
 	</action-attrs>
 	
 	<search-filters name="customer-deliveries-filters" model="com.axelor.apps.supplychain.db.StockMove" title="Customer deliveries filters">

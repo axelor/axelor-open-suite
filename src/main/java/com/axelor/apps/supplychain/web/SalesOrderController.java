@@ -45,6 +45,7 @@ import com.axelor.apps.supplychain.db.ILocation;
 import com.axelor.apps.supplychain.db.Location;
 import com.axelor.apps.supplychain.db.SalesOrder;
 import com.axelor.apps.supplychain.service.SalesOrderService;
+import com.axelor.apps.supplychain.service.SalesOrderStockMoveService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -56,22 +57,28 @@ import com.axelor.googleapps.userutils.Utils;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 public class SalesOrderController {
 
-	@Inject
-	private SalesOrderService salesOrderService;
-
-	@Inject
-	SequenceService sequenceService;
-
-	@Inject 
-	DocumentService documentSeriveObj;
-
-	@Inject 
-	Utils userUtils;
-
 	private static final Logger LOG = LoggerFactory.getLogger(SalesOrderController.class);
+	
+	@Inject
+	private Provider<SalesOrderService> salesOrderService;
+	
+	@Inject
+	private Provider<SalesOrderStockMoveService> salesOrderStockMoveService;
+	
+	@Inject
+	private Provider<SequenceService> sequenceService;
+
+	@Inject 
+	private Provider<DocumentService> documentSeriveObj;
+
+	@Inject 
+	private Provider<Utils> userUtils;
+
+	
 	
 	/**
 	 * saves the document for any type of entity using template
@@ -80,14 +87,14 @@ public class SalesOrderController {
 	 */
 	public void saveDocumentForOrder(ActionRequest request,ActionResponse response) {
 
-		userUtils.validAppsConfig(request, response);
+		userUtils.get().validAppsConfig(request, response);
 
 		// in this line change the Class as per the Module requirement i.e SalesOrder class here used
 		SalesOrder dataObject = request.getContext().asType(SalesOrder.class);
 		User currentUser = 	AuthUtils.getUser();
 		UserInfo currentUserInfo = UserInfo.all().filter("self.internalUser = ?1", currentUser).fetchOne();
 
-		GoogleFile documentData = documentSeriveObj.createDocumentWithTemplate(currentUserInfo,dataObject);
+		GoogleFile documentData = documentSeriveObj.get().createDocumentWithTemplate(currentUserInfo,dataObject);
 		if(documentData == null) {
 			response.setFlash("The Document Can't be created because the template for this type of Entity not Found..!");
 			return;
@@ -95,16 +102,18 @@ public class SalesOrderController {
 		response.setFlash("Document Created in Your Root Directory");
 	}
 	
+	
 	public void compute(ActionRequest request, ActionResponse response)  {
 		
 		SalesOrder salesOrder = request.getContext().asType(SalesOrder.class);
 
 		try {		
-			salesOrderService.computeSalesOrder(salesOrder);
+			salesOrderService.get().computeSalesOrder(salesOrder);
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
+	
 	
 	/**
 	 * Fonction appeler par le bouton imprimer
@@ -150,7 +159,7 @@ public class SalesOrderController {
 		SalesOrder salesOrder = request.getContext().asType(SalesOrder.class);
 
 		if(salesOrder != null && salesOrder.getSalesOrderSeq() ==  null && salesOrder.getCompany() != null) {
-			String ref = sequenceService.getSequence(IAdministration.SALES_ORDER,salesOrder.getCompany(),false);
+			String ref = sequenceService.get().getSequence(IAdministration.SALES_ORDER,salesOrder.getCompany(),false);
 			if (ref == null)
 				throw new AxelorException(String.format("La société %s n'a pas de séquence de configurée pour les devis",salesOrder.getCompany().getName()),
 								IException.CONFIGURATION_ERROR);
@@ -167,7 +176,7 @@ public class SalesOrderController {
 		
 		if(salesOrder.getId() != null) {
 			
-			salesOrderService.createStocksMovesFromSalesOrder(SalesOrder.find(salesOrder.getId()));
+			salesOrderStockMoveService.get().createStocksMovesFromSalesOrder(SalesOrder.find(salesOrder.getId()));
 		}
 	}
 	
