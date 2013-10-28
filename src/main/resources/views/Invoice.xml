@@ -29,8 +29,8 @@
         <field name="operationTypeSelect" onChange="action-invoice-method-get-journal,action-invoice-record-partner-change,action-set-partner-domain" readonlyIf="status.code != 'dra'"/>
         <group name="partnerGroup" title="Invoicing informations" colSpan="4" cols="4" canCollapse="true">
             <field name="company" widget="SuggestBox" onChange="action-invoice-method-get-journal,action-invoice-record-company-change" readonlyIf="status.code != 'dra'"/>
-            <field name="clientPartner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form" onChange="action-invoice-record-partner-change,action-invoice-record-due-date" readonlyIf="status.code != 'dra'" />
-       		<field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
+            <field name="clientPartner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form" onChange="action-invoice-record-partner-change,action-invoice-record-due-date,action-set-partner-domain" readonlyIf="status.code != 'dra'" />
+       		<field name="contactPartner"  form-view="partner-contact-form" grid-view="partner-contact-grid" domain="self.isContact = true"/>
             <field name="paymentMode" widget="SuggestBox"/>
             <field name="paymentCondition" widget="SuggestBox" onChange="action-invoice-record-due-date" readonlyIf="status.code == 'dis'"/>
             <field name="currency" onChange="action-invoice-attrs-change-total-title" readonlyIf="status.code != 'dra'"/>
@@ -283,6 +283,7 @@
 		<attribute name="domain" for="clientPartner" expr="eval:'self.isCustomer = true'" if="operationTypeSelect == 2"/>
 		<attribute name="domain" for="clientPartner" expr="eval:'self.isSupplier = true'" if="operationTypeSelect == 3"/>
 		<attribute name="domain" for="clientPartner" expr="eval:'self.isSupplier = true'" if="operationTypeSelect == 4"/>
+		<attribute name="domain" for="contactPartner" expr="eval: &quot;self.id IN (${clientPartner.contactPartnerSet?.collect{it.id}.join(',')})&quot;" if="clientPartner != null"/>
 	</action-attrs>
 	
 	
