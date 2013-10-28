@@ -38,6 +38,7 @@ import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.accountorganisation.db.ISalesOrder;
 import com.axelor.apps.accountorganisation.exceptions.IExceptionMessage;
 import com.axelor.apps.base.db.IProduct;
 import com.axelor.apps.base.db.Unit;
@@ -46,7 +47,6 @@ import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.organisation.db.IProject;
-import com.axelor.apps.organisation.db.ISalesOrder;
 import com.axelor.apps.organisation.db.ITask;
 import com.axelor.apps.organisation.db.PlanningLine;
 import com.axelor.apps.organisation.db.Project;
@@ -102,40 +102,36 @@ public class TaskSalesOrderService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void createTasks(SalesOrder salesOrder) throws AxelorException  {
 
-		if(salesOrder.getInvoicingTypeSelect() == ISalesOrder.INVOICING_TYPE_PER_TASK  ||  
-				salesOrder.getInvoicingTypeSelect() == ISalesOrder.INVOICING_TYPE_FREE)  {
+		this.checkProductType(salesOrder);
 			
-			this.checkProductType(salesOrder);
+		boolean hasGlobalTask = salesOrder.getHasGlobalTask();
+		
+		Project project = salesOrder.getProject();
+		
+		if(project == null)  {
+			project = projectService.createProject(
+					salesOrder.getClientPartner().getFullName()+" "+salesOrder.getSalesOrderSeq(), 
+					IProject.STATUS_DRAFT, 
+					salesOrder.getClientPartner(), 
+					salesOrder.getCompany(), 
+					salesOrder.getContactPartner(), 
+					true, 
+					true);
 			
-			boolean hasGlobalTask = salesOrder.getHasGlobalTask();
-			
-			Project project = salesOrder.getProject();
-			
-			if(project == null)  {
-				project = projectService.createProject(
-						salesOrder.getClientPartner().getFullName()+" "+salesOrder.getSalesOrderSeq(), 
-						IProject.STATUS_DRAFT, 
-						salesOrder.getClientPartner(), 
-						salesOrder.getCompany(), 
-						salesOrder.getContactPartner(), 
-						true, 
-						true);
-				
-				salesOrder.setProject(project);
-			}
-			
-			if(hasGlobalTask)  {
-				
-				projectService.updateDefaultTask(project);
-				
-				this.assignTaskInSalesOrderLines(salesOrder.getSalesOrderLineList(), project.getDefaultTask());
-				
-			}
-			
-			this.createTasks(salesOrder.getSalesOrderLineList());
-			
-			salesOrder.save();
+			salesOrder.setProject(project);
 		}
+		
+		if(hasGlobalTask)  {
+			
+			projectService.updateDefaultTask(project);
+			
+			this.assignTaskInSalesOrderLines(salesOrder.getSalesOrderLineList(), project.getDefaultTask());
+			
+		}
+		
+		this.createTasks(salesOrder.getSalesOrderLineList());
+		
+		salesOrder.save();
 	}
 	
 	
@@ -191,8 +187,7 @@ public class TaskSalesOrderService {
 	
 	public boolean isTaskProduct(SalesOrderLine salesOrderLine)  {
 		
-		if(salesOrderLine != null 
-				&& salesOrderLine.getProduct() != null
+		if(salesOrderLine.getProduct() != null
 				&& salesOrderLine.getProduct().getProductTypeSelect().equals(IProduct.PRODUCT_TYPE_SERVICE) 
 				&& salesOrderLine.getSaleSupplySelect() == IProduct.SALE_SUPPLY_PRODUCE)  {
 			
@@ -218,15 +213,24 @@ public class TaskSalesOrderService {
 		task.setProject(project);
 		task.setSalesOrderLine(salesOrderLine);
 		task.setProduct(salesOrderLine.getProduct());
-		task.setQty(salesOrderLine.getQty());
-		task.setPrice(this.computeDiscount(salesOrderLine));
+		
+		boolean isToInvoice = this.isToInvoice(salesOrderLine.getSalesOrder());
+		
+		task.setIsToInvoice(isToInvoice);
+		
+		if(isToInvoice)  {
+			
+			task.setQty(salesOrderLine.getQty());
+			task.setPrice(this.computeDiscount(salesOrderLine));
+			task.setInvoicingDate(salesOrderLine.getInvoicingDate());
+		}
+		
 		task.setName(salesOrder.getSalesOrderSeq()+" - "+salesOrderLine.getSequence()+" : "+salesOrderLine.getProductName());
 		task.setDescription(salesOrderLine.getDescription());
 		task.setStartDateT(todayTime);
 		task.setEndDateT(todayTime);
 		task.setIsTimesheetAffected(true);
-		task.setIsToInvoice(false);
-		task.setInvoicingDate(salesOrderLine.getInvoicingDate());
+		
 		task.setEstimatedAmount(BigDecimal.ZERO);
 		task.setTotalTime(BigDecimal.ZERO);
 		task.setStatusSelect(ITask.STATUS_DRAFT);
@@ -240,9 +244,15 @@ public class TaskSalesOrderService {
 		
 		Task task = salesOrderLine.getTask();
 		
-		task.setIsToInvoice(true);
+		boolean isToInvoice = this.isToInvoice(salesOrderLine.getSalesOrder());
 		
-		task.setAmountToInvoice(task.getAmountToInvoice().add(salesOrderLine.getCompanyExTaxTotal()));
+		task.setIsToInvoice(isToInvoice);
+		
+		if(isToInvoice)  {
+			
+			task.setAmountToInvoice(task.getAmountToInvoice().add(salesOrderLine.getCompanyExTaxTotal()));
+			
+		}
 		
 		task.setEstimatedAmount(task.getEstimatedAmount().add(salesOrderLine.getCompanyExTaxTotal()));
 			
@@ -305,7 +315,7 @@ public class TaskSalesOrderService {
 	
 	public void checkProductType(SalesOrder salesOrder) throws AxelorException  {
 
-		if(salesOrder.getSalesOrderLineList() != null && salesOrder.getInvoicingTypeSelect() == ISalesOrder.INVOICING_TYPE_PER_TASK)  {
+		if(salesOrder.getSalesOrderLineList() != null && this.isTaskInvoicingMethod(salesOrder))  {
 			for(SalesOrderLine salesOrderLine : salesOrder.getSalesOrderLineList())  {
 				
 				this.checkProductType(salesOrderLine);
@@ -321,6 +331,19 @@ public class TaskSalesOrderService {
 		if(!this.isTaskProduct(salesOrderLine))  {
 			throw new AxelorException(new MetaTranslations().get(IExceptionMessage.TASK_SALES_ORDER_1), IException.CONFIGURATION_ERROR);
 		}
+		
+	}
+	
+	
+	public boolean isToInvoice(SalesOrder salesOrder)  {
+		
+		return salesOrder.getInvoicingTypeSelect() == ISalesOrder.INVOICING_TYPE_PER_TASK || salesOrder.getInvoicingTypeSelect() == ISalesOrder.INVOICING_TYPE_FREE ;
+		
+	}
+	
+	public boolean isTaskInvoicingMethod(SalesOrder salesOrder)  {
+		
+		return salesOrder.getInvoicingTypeSelect() == ISalesOrder.INVOICING_TYPE_PER_TASK;
 		
 	}
 }
