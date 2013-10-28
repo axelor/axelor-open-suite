@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
     <grid name="stock-move-line-grid" title="Stock move lines" model="com.axelor.apps.supplychain.db.StockMoveLine" editable="true">
-        <field name="product" onChange="action-inventory-line-attrs-tracking-number"/>
+        <field name="product" onChange="action-inventory-line-attrs-tracking-number,action-stock-move-line-set-product-price-unit"/>
         <field name="qty"/>
         <field name="unit"/>
         <field name="price"/>
@@ -13,7 +13,7 @@
     
     <form name="stock-move-line-form" title="Stock move line" model="com.axelor.apps.supplychain.db.StockMoveLine" cols="4"
     	onNew="action-stock-move-line-record-new" onLoad="action-inventory-line-attrs-tracking-number">
-        <field name="product" domain="self.applicationTypeSelect = 1" onChange="action-inventory-line-attrs-tracking-number"/>
+        <field name="product" domain="self.applicationTypeSelect = 1" onChange="action-inventory-line-attrs-tracking-number,action-stock-move-line-set-product-price-unit"/>
         <field name="qty"/>
         <field name="unit"/>
         <field name="price"/>
@@ -23,6 +23,11 @@
     
     <action-record name="action-stock-move-line-record-new" model="com.axelor.apps.supplychain.db.StockMoveLine">
 	    <field name="qty" expr="1"/>
+	</action-record>
+	
+	<action-record name="action-stock-move-line-set-product-price-unit" model="com.axelor.apps.supplychain.db.StockMoveLine">
+	    <field name="unit" expr="eval: product.unit"/>
+	    <field name="price" expr="eval: product.costPrice"/>
 	</action-record>
     
 </object-views>
