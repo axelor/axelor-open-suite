@@ -3,20 +3,6 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    <grid name="partner-grid" title="Partners" model="com.axelor.apps.base.db.Partner" orderBy="name">
-    	<toolbar>
-    		<button name="printPhoneBook" title="Print PhoneBook" onClick="action-print-phonebook" icon="img/icons/print.png"/>
-    		<button name="printCompnayPhoneBook" title="Print compnay phoneBook" onClick="action-print-compnay-phonebook" icon="img/icons/print.png"/>
-		</toolbar>
-        <field name="name"/>
-        <field name="firstName"/>
-        <field name="mainInvoicingAddress"/>
-        <field name="isContact"/>
-   		<field name="partnerTypeSelect"/>
-        <field name="partnerCategory"/>
-        <field name="socialNetUserAccountList"/>
-    </grid>
-    
     <form name="partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" cols="6" colWidths="25*" 
     onNew="action-partner-record-partner-type-select,action-partner-record-set-default,action-partner-attrs-set-readonly"
     onLoad="action-partner-attrs-change-name,action-partner-attrs-hide-tabs,action-partner-attrs-set-readonly" 
@@ -166,7 +152,7 @@
 	
 	
 	<action-method name="action-create-accounting-situation" >
-		<call class="com.axelor.apps.base.web.PartnerControllerSimple" method="createAccountingSituations"/>
+		<call class="com.axelor.apps.base.web.PartnerController" method="createAccountingSituations"/>
 	</action-method>
 	
 	</object-views>
