@@ -348,6 +348,41 @@ public class MoveService {
 	
 	
 	
+	/**
+	 * Fonction permettant de récuperer la ligne d'écriture (non complétement lettrée sur le compte client) de la facture
+	 * @param invoice
+	 * 			Une facture
+	 * @return
+	 * @throws AxelorException 
+	 */
+	public MoveLine getCustomerMoveLine(Invoice invoice) throws AxelorException  {
+		if(this.isDebitCustomer(invoice))  {
+			return mls.getDebitCustomerMoveLine(invoice);
+		}
+		else  {
+			return mls.getCreditCustomerMoveLine(invoice);
+		}
+	}
+	
+	
+	/**
+	 * Fonction permettant de récuperer la ligne d'écriture (en débit et non complétement payée sur le compte client) de la facture ou du rejet de facture
+	 * @param invoice
+	 * 			Une facture
+	 * @param isInvoiceReject
+	 * 			La facture est-elle rejetée?
+	 * @return
+	 * @throws AxelorException 
+	 */
+	public MoveLine getCustomerMoveLine(Invoice invoice, boolean isInvoiceReject) throws AxelorException  {
+		if(isInvoiceReject)  {
+			return invoice.getRejectMoveLine();
+		}
+		else  {
+			return this.getCustomerMoveLine(invoice);
+		}
+	}
+	
 	
 	/**
 	 * Méthode permettant d'employer les trop-perçus
@@ -362,66 +397,141 @@ public class MoveService {
 	 *
 	 */
 	//TODO à faire selon les cas
-	public Move createMoveUseExcessPayment(Invoice invoice, boolean isDebitCustomer) throws AxelorException{
+	public Move createMoveUseExcessPaymentOrDue(Invoice invoice) throws AxelorException{
 
 		Move move = null;
 		
 		if (invoice != null) {
 			
-			// Récupération des trop-perçus
-			List<MoveLine> creditMoveLineList = pas.getExcessPayment(invoice, invoice.getCompany().getCustomerAccount());
-			
-			if(creditMoveLineList != null && creditMoveLineList.size() != 0)  {
+			if(this.isDebitCustomer(invoice))  {
 				
-				Company company = invoice.getCompany();
-				Partner partner = invoice.getClientPartner();
-				Account account = invoice.getPartnerAccount();
-				MoveLine invoiceCustomerMoveLine = mls.getCustomerMoveLine(invoice);
+				// Emploie du trop perçu
+				this.createMoveUseExcessPayment(invoice);
 				
-				if (company.getMiscOperationJournal() == null){
-					throw new AxelorException(String.format("Veuillez configurer un journal des O.D pour la société %s", company.getName()), IException.CONFIGURATION_ERROR);
-				}
-				Journal journal = company.getMiscOperationJournal();
-		
-				// Si c'est le même compte sur les trop-perçus et sur la facture, alors on lettre directement
-				if(this.isSameAccount(creditMoveLineList, account))  {
-					List<MoveLine> debitMoveLineList = new ArrayList<MoveLine>();
-					debitMoveLineList.add(invoiceCustomerMoveLine);
-					pas.useExcessPaymentOnMoveLines(debitMoveLineList, creditMoveLineList);
-				}
-				// Sinon on créée une O.D. pour passer du compte de la facture à un autre compte sur les trop-perçus
-				else  {
-
-					LOG.debug("Création d'une écriture comptable O.D. spécifique à l'emploie des trop-perçus {} (Société : {}, Journal : {})", new Object[]{invoice.getInvoiceId(), company.getName(), journal.getCode()});
-					
-					move = this.createMove(journal, company, null, partner, invoice.getInvoiceDate(), null, false);
-					
-					if (move != null){
-						BigDecimal totalCreditAmount = this.getTotalCreditAmount(creditMoveLineList);
-						BigDecimal amount = totalCreditAmount.min(invoiceCustomerMoveLine.getDebit()); 
-						
-						// Création de la ligne au crédit
-						MoveLine creditMoveLine =  mls.createMoveLine(move , partner, account , amount, false, false, toDay, 1, false, false, false, null);
-						move.getMoveLineList().add(creditMoveLine);
-						
-						// Emploie des trop-perçus sur les lignes de debit qui seront créées au fil de l'eau
-						pas.useExcessPaymentWithAmountConsolidated(creditMoveLineList, amount, move, 2, partner,
-								 company, account, invoice.getInvoiceDate(), invoice.getDueDate());
-							
-						this.validateMove(move);
-						
-						//Création de la réconciliation
-						Reconcile reconcile = rs.createReconcile(invoiceCustomerMoveLine, creditMoveLine, amount);
-						rs.confirmReconcile(reconcile);
-					}
-				}
-
-				invoice.setInTaxTotalRemaining(this.getInTaxTotalRemaining(invoice, account));
+			}
+			else   {
+				
+				// Emploie des dûs
+				this.createMoveUseInvoiceDue(invoice);
+				
 			}
 		}
 		return move;
 	}
 
+		
+	/**
+	 * Méthode permettant d'employer les dûs sur l'avoir
+	 * On récupère prioritairement les dûs (factures) selectionné sur l'avoir, puis les autres dûs du contrat
+	 *
+	 * 2 cas :
+	 * 		- le compte des dûs est le même que celui de l'avoir : alors on lettre directement
+	 *  	- le compte n'est pas le même : on créée une O.D. de passage sur le bon compte
+	 * @param invoice
+	 * @param company
+	 * @param useExcessPayment
+	 * @return
+	 * @throws AxelorException
+	 */
+	public Move createMoveUseInvoiceDue(Invoice invoice) throws AxelorException{
+
+		Company company = invoice.getCompany();
+		Account account = invoice.getPartnerAccount();
+		Partner partner = invoice.getClientPartner();
+		
+		Move move = null;
+		
+		// Récupération des dûs
+		MoveLine invoiceCustomerMoveLine = this.getCustomerMoveLine(invoice);
+
+		List<MoveLine> debitMoveLines = pas.getInvoiceDue(invoice, true); //TODO ajouter parametrage general
+
+		if(debitMoveLines != null && debitMoveLines.size() != 0)  {
+			// Si c'est le même compte sur les trop-perçus et sur la facture, alors on lettre directement
+			if(this.isSameAccount(debitMoveLines, invoice.getPartnerAccount()))  {
+				List<MoveLine> creditMoveLineList = new ArrayList<MoveLine>();
+				creditMoveLineList.add(invoiceCustomerMoveLine);
+				pas.useExcessPaymentOnMoveLines(debitMoveLines, creditMoveLineList);
+			}
+			// Sinon on créée une O.D. pour passer du compte de la facture à un autre compte sur les trop-perçus
+			else  {
+				this.createMoveUseDebit(invoice, debitMoveLines, invoiceCustomerMoveLine);
+			}
+
+			// Gestion du passage en 580
+			rs.balanceCredit(invoiceCustomerMoveLine, company, true);
+
+			BigDecimal remainingPaidAmount = invoiceCustomerMoveLine.getAmountRemaining();
+			// Si il y a un restant à payer, alors on crée un trop-perçu.
+			if(remainingPaidAmount.compareTo(BigDecimal.ZERO) > 0 )  {
+				this.createExcessMove(invoice, company, partner, account, remainingPaidAmount, invoiceCustomerMoveLine);
+			}
+		}
+
+		invoice.setInTaxTotalRemaining(this.getInTaxTotalRemaining(invoice, account));
+	
+		return move;
+	}
+	
+	
+	public Move createMoveUseExcessPayment(Invoice invoice) throws AxelorException{
+
+		Move move = null;
+		
+		// Récupération des trop-perçus
+		List<MoveLine> creditMoveLineList = pas.getExcessPayment(invoice, invoice.getCompany().getCustomerAccount());
+		
+		if(creditMoveLineList != null && creditMoveLineList.size() != 0)  {
+			
+			Company company = invoice.getCompany();
+			Partner partner = invoice.getClientPartner();
+			Account account = invoice.getPartnerAccount();
+			MoveLine invoiceCustomerMoveLine = this.getCustomerMoveLine(invoice);
+			
+			if (company.getMiscOperationJournal() == null){
+				throw new AxelorException(String.format("Veuillez configurer un journal des O.D pour la société %s", company.getName()), IException.CONFIGURATION_ERROR);
+			}
+			Journal journal = company.getMiscOperationJournal();
+	
+			// Si c'est le même compte sur les trop-perçus et sur la facture, alors on lettre directement
+			if(this.isSameAccount(creditMoveLineList, account))  {
+				List<MoveLine> debitMoveLineList = new ArrayList<MoveLine>();
+				debitMoveLineList.add(invoiceCustomerMoveLine);
+				pas.useExcessPaymentOnMoveLines(debitMoveLineList, creditMoveLineList);
+			}
+			// Sinon on créée une O.D. pour passer du compte de la facture à un autre compte sur les trop-perçus
+			else  {
+
+				LOG.debug("Création d'une écriture comptable O.D. spécifique à l'emploie des trop-perçus {} (Société : {}, Journal : {})", new Object[]{invoice.getInvoiceId(), company.getName(), journal.getCode()});
+				
+				move = this.createMove(journal, company, null, partner, invoice.getInvoiceDate(), null, false);
+				
+				if (move != null){
+					BigDecimal totalCreditAmount = this.getTotalCreditAmount(creditMoveLineList);
+					BigDecimal amount = totalCreditAmount.min(invoiceCustomerMoveLine.getDebit()); 
+					
+					// Création de la ligne au crédit
+					MoveLine creditMoveLine =  mls.createMoveLine(move , partner, account , amount, false, false, toDay, 1, false, false, false, null);
+					move.getMoveLineList().add(creditMoveLine);
+					
+					// Emploie des trop-perçus sur les lignes de debit qui seront créées au fil de l'eau
+					pas.useExcessPaymentWithAmountConsolidated(creditMoveLineList, amount, move, 2, partner,
+							 company, account, invoice.getInvoiceDate(), invoice.getDueDate());
+						
+					this.validateMove(move);
+					
+					//Création de la réconciliation
+					Reconcile reconcile = rs.createReconcile(invoiceCustomerMoveLine, creditMoveLine, amount);
+					rs.confirmReconcile(reconcile);
+				}
+			}
+
+			invoice.setInTaxTotalRemaining(this.getInTaxTotalRemaining(invoice, account));
+		}
+		return move;
+	}
+	
+		
 	
 	/**
 	 * Fonction permettant de savoir si toutes les lignes d'écritures utilise le même compte que celui passé en paramètre

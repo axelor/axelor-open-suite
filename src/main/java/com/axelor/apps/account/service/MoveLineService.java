@@ -478,55 +478,6 @@ public class MoveLineService {
 	}
 	
 	
-	/**
-	 * Fonction permettant de récuperer la ligne d'écriture (en débit et non complétement payée sur le compte client) de la facture ou du rejet de facture
-	 * @param invoice
-	 * 			Une facture
-	 * @param isInvoiceReject
-	 * 			La facture est-elle rejetée?
-	 * @return
-	 */
-	public MoveLine getCustomerMoveLine(Invoice invoice, boolean isInvoiceReject)  {
-		if(isInvoiceReject)  {
-			return invoice.getRejectMoveLine();
-		}
-		else  {
-			return this.getDebitCustomerMoveLine(invoice);
-		}
-	}
-	
-	
-	/**
-	 * Fonction permettant de récuperer la ligne d'écriture (non complétement lettrée sur le compte client) d'une écriture de facture
-	 * @param invoice
-	 * 			Une facture
-	 * @return
-	 */
-	public MoveLine getCustomerMoveLine(Move move, boolean refund)  {
-		if(!refund)  {
-			return this.getDebitCustomerMoveLine(move);
-		}
-		else  {
-			return this.getCreditCustomerMoveLine(move);
-		}
-	}
-	
-	
-	/**
-	 * Fonction permettant de récuperer la ligne d'écriture (non complétement lettrée sur le compte client) de la facture
-	 * @param invoice
-	 * 			Une facture
-	 * @return
-	 */
-	public MoveLine getCustomerMoveLine(Invoice invoice)  {
-		if(invoice.getInTaxTotal().compareTo(BigDecimal.ZERO) >= 0)  {
-			return this.getDebitCustomerMoveLine(invoice);
-		}
-		else  {
-			return this.getCreditCustomerMoveLine(invoice);
-		}
-	}
-	
 	
 	/**
 	 * Fonction permettant de récuperer la ligne d'écriture (au credit et non complétement lettrée sur le compte client) de la facture

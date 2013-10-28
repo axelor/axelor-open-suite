@@ -801,7 +801,7 @@ public class IrrecoverableService {
 		seq++;
 		
 		// Getting customer MoveLine from Facture
-		MoveLine customerMoveLine = mls.getCustomerMoveLine(invoice, isInvoiceReject);
+		MoveLine customerMoveLine = ms.getCustomerMoveLine(invoice, isInvoiceReject);
 		if(customerMoveLine == null)  {
 			throw new AxelorException(String.format("%s :\n La facture %s ne possède pas de pièce comptable dont le restant à payer est positif",
 					GeneralService.getExceptionAccountingMsg(), invoice.getInvoiceId()), IException.INCONSISTENCY);
@@ -939,7 +939,7 @@ public class IrrecoverableService {
 					this.passInIrrecoverable(invoice.getRejectMoveLine(), managementObject, false);
 				}
 				else  {
-					MoveLine moveLine = mls.getCustomerMoveLine(invoice);
+					MoveLine moveLine = ms.getCustomerMoveLine(invoice);
 					if(moveLine == null)  {
 						throw new AxelorException(String.format("%s :\n La facture %s ne possède pas de pièce comptable dont le restant à payer est positif",
 								GeneralService.getExceptionAccountingMsg(),invoice.getInvoiceId()), IException.INCONSISTENCY);
@@ -972,7 +972,7 @@ public class IrrecoverableService {
 				this.passInIrrecoverable(invoice.getRejectMoveLine(), managementObject, false);
 			}
 			else  {
-				MoveLine moveLine = mls.getCustomerMoveLine(invoice);
+				MoveLine moveLine = ms.getCustomerMoveLine(invoice);
 				if(moveLine == null)  {
 					throw new AxelorException(String.format("%s :\n La facture %s ne possède pas de pièce comptable dont le restant à payer est positif",
 							GeneralService.getExceptionAccountingMsg(),invoice.getInvoiceId()), IException.INCONSISTENCY);
@@ -998,7 +998,7 @@ public class IrrecoverableService {
 				this.notPassInIrrecoverable(invoice.getRejectMoveLine(), false);
 			}
 			else  {
-				MoveLine moveLine = mls.getCustomerMoveLine(invoice);
+				MoveLine moveLine = ms.getCustomerMoveLine(invoice);
 				if(moveLine != null)  {
 					this.notPassInIrrecoverable(moveLine, false);
 				}

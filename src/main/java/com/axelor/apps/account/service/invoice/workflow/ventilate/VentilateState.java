@@ -139,11 +139,7 @@ public class VentilateState extends WorkflowInvoice {
 			
 			invoice.setMove(move);
 			
-//			if ( invoice.getInTaxTotal().compareTo(BigDecimal.ZERO) == 1 ) {
-//				// Emploie du trop perçu
-//				moveService.createMoveUseExcessPayment(invoice);
-//			} 
-//			else if ()
+			moveService.createMoveUseExcessPaymentOrDue(invoice);
 			
 		}
 		

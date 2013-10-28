@@ -111,7 +111,7 @@ public class PaymentVoucherService  {
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public PaymentVoucher createPaymentVoucherIPO(Invoice invoice, DateTime dateTime, BigDecimal amount, PaymentMode paymentMode) throws AxelorException  {
-		MoveLine customerMoveLine = mls.getCustomerMoveLine(invoice, invoice.getRejectMoveLine() != null);
+		MoveLine customerMoveLine = ms.getCustomerMoveLine(invoice, invoice.getRejectMoveLine() != null);
 		
 		if (LOG.isDebugEnabled())  {  LOG.debug("Création d'une saisie paiement par TIP ou TIP chèque - facture : {}",invoice.getInvoiceId());  }
 		if (LOG.isDebugEnabled())  {  LOG.debug("Création d'une saisie paiement par TIP ou TIP chèque - mode de paiement : {}",paymentMode.getCode());  }

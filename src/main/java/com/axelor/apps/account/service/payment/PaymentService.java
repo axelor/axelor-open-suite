@@ -155,6 +155,7 @@ public class PaymentService {
 	}
 	
 	
+	
 	public List<MoveLine> getInvoiceDue(Invoice invoice, boolean useOthersInvoiceDue) throws AxelorException {
 		Company company = invoice.getCompany();
 		Partner partner = invoice.getClientPartner();
@@ -229,10 +230,18 @@ public class PaymentService {
 			BigDecimal debitTotalRemaining = BigDecimal.ZERO;
 			BigDecimal creditTotalRemaining = BigDecimal.ZERO;
 			for(MoveLine creditMoveLine : creditMoveLines)  {
+				
+				LOG.debug("Emploie du trop perçu : ligne en crédit : {})", creditMoveLine);
+				
+				LOG.debug("Emploie du trop perçu : ligne en crédit (restant à payer): {})", creditMoveLine.getAmountRemaining());
 				creditTotalRemaining = creditTotalRemaining.add(creditMoveLine.getAmountRemaining());
 			}
 			for(MoveLine debitMoveLine : debitMoveLines)  {
-				debitTotalRemaining=debitTotalRemaining.add(debitMoveLine.getAmountRemaining());
+				
+				LOG.debug("Emploie du trop perçu : ligne en débit : {})", debitMoveLine);
+				
+				LOG.debug("Emploie du trop perçu : ligne en débit (restant à payer): {})", debitMoveLine.getAmountRemaining());
+				debitTotalRemaining = debitTotalRemaining.add(debitMoveLine.getAmountRemaining());
 			}
 			
 			for(MoveLine creditMoveLine : creditMoveLines){
