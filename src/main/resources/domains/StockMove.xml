@@ -15,7 +15,7 @@
     <date name="estimatedDate" title="Estimated date"/>
     <date name="realDate" title="Move date" readonly="true"/>
     
-    <integer name="statusSelect" title="Status" selection="supplychain.default.status.select" readonly="true"/>
+    <integer name="statusSelect" title="Status" selection="supplychain.stock.move.status.select" readonly="true"/>
     <integer name="typeSelect" title="Type Status" selection="supplychain.stock.move.type.select"/>
     
     <many-to-one name="fromAddress" ref="com.axelor.apps.base.db.Address" title="From address"/>

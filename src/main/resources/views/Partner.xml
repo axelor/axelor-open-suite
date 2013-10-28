@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    <grid orderBy="name" name="partner-grid" title="Partners" model="com.axelor.apps.base.db.Partner">
+    <grid name="partner-grid" title="Partners" model="com.axelor.apps.base.db.Partner" orderBy="name">
 	    <toolbar>
 	        <button name="printPhoneBook" title="Print PhoneBook" icon="img/icons/print.png" onClick="action-print-phonebook"/>
 	        <button name="printCompnayPhoneBook" title="Print compnay phoneBook" icon="img/icons/print.png" onClick="action-print-compnay-phonebook"/>
@@ -24,7 +24,7 @@
 	    <field name="emailAddress.address"/>
 	</grid>
     
-     <grid  groupBy="userInfo" name="partner-grid-group" title="Partner" model="com.axelor.apps.base.db.Partner">
+     <grid name="partner-grid-group" title="Partner" model="com.axelor.apps.base.db.Partner" groupBy="userInfo">
         <field name="name"/>
         <field name="firstName"/>
         <field name="mainInvoicingAddress"/>
@@ -285,7 +285,7 @@
 	
     
     <action-method name="action-partner-method-show-partner-info">
-		<call class="com.axelor.apps.base.web.PartnerControllerSimple" method="showPartnerInfo"/>
+		<call class="com.axelor.apps.base.web.PartnerController" method="showPartnerInfo"/>
 	</action-method>
     
     <action-view name="action-partner-view-partner-invoice" title="Invoices" model="com.axelor.apps.account.db.Invoice">
@@ -434,15 +434,15 @@
 	</action-record>
 	
 	<action-method name="action-set-partner-seq" >
-		<call class="com.axelor.apps.base.web.PartnerControllerSimple" method="setPartnerSequence"/>
+		<call class="com.axelor.apps.base.web.PartnerController" method="setPartnerSequence"/>
 	</action-method>
     
     <action-method name="action-print-compnay-phonebook" >
-		<call class="com.axelor.apps.base.web.PartnerControllerSimple" method="printCompanyPhonebook"/>
+		<call class="com.axelor.apps.base.web.PartnerController" method="printCompanyPhonebook"/>
 	</action-method>
 	
 	<action-method name="action-print-phonebook" >
-		<call class="com.axelor.apps.base.web.PartnerControllerSimple" method="printContactPhonebook"/>
+		<call class="com.axelor.apps.base.web.PartnerController" method="printContactPhonebook"/>
 	</action-method>
 	
 	<search-filters name="partner-filters" model="com.axelor.apps.base.db.Partner" title="Partner filters">

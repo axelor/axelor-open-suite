@@ -46,9 +46,9 @@ import com.axelor.meta.db.MetaUser;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 
-public class ProductControllerSimple {
+public class ProductController {
 	
-	private static final Logger LOG = LoggerFactory.getLogger(ProductControllerSimple.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ProductController.class);
 	
 	public void printProductCatelog(ActionRequest request, ActionResponse response) {
 

@@ -53,7 +53,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
-public class PartnerControllerSimple {
+public class PartnerController {
 
 	@Inject
 	SequenceService sequenceService;
@@ -61,7 +61,7 @@ public class PartnerControllerSimple {
 	@Inject
 	PartnerService partnerService;
 
-	private static final Logger LOG = LoggerFactory.getLogger(PartnerControllerSimple.class);
+	private static final Logger LOG = LoggerFactory.getLogger(PartnerController.class);
 
 	public void setPartnerSequence(ActionRequest request, ActionResponse response) throws AxelorException {
 		Partner partner = request.getContext().asType(Partner.class);

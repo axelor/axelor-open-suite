@@ -141,7 +141,7 @@
 	</action-validate> 
 	
 	<action-method name="action-print-product-catelog" >
-		<call class="com.axelor.apps.base.web.ProductControllerSimple" method="printProductCatelog"/>
+		<call class="com.axelor.apps.base.web.ProductController" method="printProductCatelog"/>
 	</action-method>
     
     <action-validate name="action-product-validate-end-date">
