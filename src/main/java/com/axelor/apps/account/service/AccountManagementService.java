@@ -121,7 +121,7 @@ public class AccountManagementService {
 		
 		for (AccountManagement accountManagement : accountManagements){
 			if (accountManagement.getCompany().equals(company)){
-				LOG.debug("Obtention de la configuration comptable {} => société: {}",	company.getName());
+				LOG.debug("Obtention de la configuration comptable => société: {}",	company.getName());
 				
 				return accountManagement;
 			}
