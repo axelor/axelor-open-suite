@@ -4,41 +4,43 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
 
 	<grid name="job-offer-grid" title="Job offers" model="com.axelor.apps.organisation.db.JobOffer">
-		<field name="offre"/>
-		<field name="dateDebut"/>
-		<field name="dateFin"/>
-		<field name="nbPostes"/>
+		<field name="code"/>
+		<field name="name"/>
+		<field name="contractTypeSelect"/>
+		<field name="openDate"/>
+		<field name="endDate"/>
+		<field name="nbrOfPositions"/>
 	</grid>
 
 	<form name="job-offer-form" title="Job offer" model="com.axelor.apps.organisation.db.JobOffer" cols="6">
-		<field name="offre" colSpan="2"/>
+		<field name="name" colSpan="2"/>
+		<field name="code"/>
 		<field name="project" domain="self.isBusiness = true" grid-view="business-project-grid" form-view="business-project-form" colSpan="2"/>
 		<break/>
-		<field name="dateDebut"/>
-		<field name="dateFin"/>
-		<field name="nbPostes"/>	
-		<group title="Offre" colSpan="6" cols="6" canCollapse="true">
+		<field name="fromDate"/>
+		<field name="toDate"/>
+		<field name="nbrOfPositions"/>	
+		<group title="Offer details" colSpan="6" cols="6" canCollapse="true">
         	<group colSpan="6">
-            	<field name="descriptif" colSpan="6"/>
+            	<field name="description" colSpan="6"/>
         	</group>
         	<group colSpan="4" cols="4">
-            	<field name="contratTypeSelect"/>
+            	<field name="contractTypeSelect"/>
             	<field name="remunerationTypeSelect"/>
-            	<field name="region"/>
-            	<field name="complZoneGeo"/>
-            	<field name="domaineTypeSelect"/>
-            	<field name="metier"/>
+            	<field name="geoZoneCompl"/>
+            	<field name="domainTypeSelect"/>
+            	<field name="jobTitle"/>
         	</group>
         	<group colSpan="2" cols="2">
-            	<field name="avantages"/>
+            	<field name="advantages"/>
         	</group>
     	</group>
 		<group title="Profil candidat" canCollapse="true" cols="6" colSpan="6">
-			<field name="niveauTypeSelect"/>
+			<field name="educationLevelSelect"/>
 			<field name="experienceTypeSelect"/>
-			<field name="langueTypeSet" widget="TagSelect[create=name,code]"/>
-			<field name="formationSet" widget="TagSelect[create=candidate,degree]"/>
-			<field name="etablissement"/>
+			<field name="languageSet" widget="TagSelect[create=name,code]"/>
+			<field name="trainingLineSet" widget="TagSelect[create=candidate,degree]"/>
+			<field name="branch"/>
 		</group>
 	</form>
 	

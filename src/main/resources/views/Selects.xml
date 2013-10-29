@@ -75,6 +75,9 @@
 	<selection name="organisation.personal.info.marital.status.select">
 		<option value="1">Single</option>
 		<option value="2">Married</option>
+		<option value="3">Civil Union</option>
+		<option value="4">Divorced</option>
+		<option value="5">Widowed</option>
 	</selection>
 	
 	<selection name="organisation.candidate.other.opportunity.state.select">
@@ -193,55 +196,46 @@
 		<option value="3">Year</option>
 	</selection>
 	
-	<selection name="organisation.job.offer.contrat.type.select">
+	<selection name="organisation.job.offer.contract.type.select">
 		<option value="1">CDI</option>
 		<option value="2">CDD</option>
 	</selection>
 	
 	<selection name="organisation.job.offer.remuneration.type.select">
-		<option value="1">de 25 à 35 k€</option>
-		<option value="2">de 35 à 45 k€</option>
-		<option value="3">de 45 à 55 k€</option>
-		<option value="4">de 55 à 65 k€</option>
-		<option value="5">de 65 à 75 k€</option>
-		<option value="6">de 75 à 85 k€</option>
-		<option value="7">de 85 à 95 k€</option>
-		<option value="8">de 95 à 100 k€ ou plus</option>
+		<option value="1">from 25 to 35 k€</option>
+		<option value="2">from 35 to 45 k€</option>
+		<option value="3">from 45 to 55 k€</option>
+		<option value="4">from 55 to 65 k€</option>
+		<option value="5">from 65 to 75 k€</option>
+		<option value="6">from 75 to 85 k€</option>
+		<option value="7">from 85 to 95 k€</option>
+		<option value="8">from 95 to 100 k€ or more</option>
 	</selection>
 
 	<selection name="organisation.job.offer.domaine.type.select">
 		<option value="1">Communication</option>
 	</selection>
 
-	<selection name="organisation.job.offer.niveau.type.select">
-		<option value="1">Bac +1</option>
-		<option value="2">Bac +2</option>
-		<option value="3">Bac +3</option>
-		<option value="4">Bac +4</option>
-		<option value="5">Bac +5 ou plus</option>
+	<selection name="organisation.job.offer.education.level.select">
+		<option value="1">1 yr Univ.</option>
+		<option value="2">2 yrs Univ.</option>
+		<option value="3">3 yrs Univ.</option>
+		<option value="4">4 yrs Univ.</option>
+		<option value="5">5 yrs Univ. or more</option>
 	</selection>
 
 	<selection name="organisation.job.offer.experience.type.select">
-		<option value="1">1 an</option>
-		<option value="2">2 ans</option>
-		<option value="3">3 ans</option>
-		<option value="4">4 ans</option>
-		<option value="5">5 ans</option>
-		<option value="6">6 ans</option>
-		<option value="7">7 ans</option>
-		<option value="8">8 ans</option>
-		<option value="9">9 ans</option>
-		<option value="10">10 ans ou plus</option>
+		<option value="1">1 yr.</option>
+		<option value="2">2 yrs.</option>
+		<option value="3">3 yrs.</option>
+		<option value="4">4 yrs.</option>
+		<option value="5">5 yrs.</option>
+		<option value="6">6 yrs.</option>
+		<option value="7">7 yrs.</option>
+		<option value="8">8 yrs.</option>
+		<option value="9">9 yrs.</option>
+		<option value="10">10 yrs. or more</option>
 	</selection>
-	
-	<selection name="organisation.job.offer.langue.type.select">
-		<option value="anglais">Anglais</option>
-		<option value="francais">Français</option>
-		<option value="allemand">Allemand</option>
-		<option value="espagnol">Espagnol</option>
-		<option value="italien">Italien</option>
-	</selection>
-	
 	
 	<selection name="organisation.task.update.line.type.select">
 		<option value="1">Revenue</option>

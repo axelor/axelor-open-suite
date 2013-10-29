@@ -12,95 +12,102 @@
 	<form name="employee-form" title="Employee"	model="com.axelor.apps.organisation.db.Employee" cols="4"
 	onNew="action-employee-default-record">
 		<toolbar>
-            <button name="showEmployee" title="Print CV" onClick="save,action-partner-method-show-employee"/>
-	        <button name="sendByEmail" title="Send email" onClick="save,action-send-by-email-with-template"/>
-	    </toolbar>
-		<group name="header" cols="6" colSpan="6">
+			<button name="showEmployee" title="Print CV" onClick="save,action-partner-method-show-employee"/>
+			<button name="sendByEmail" title="Send email" onClick="save,action-send-by-email-with-template"/>
+		</toolbar>
+		<group name="header" colSpan="6" cols="6">
 			<group colSpan="1">
-            	<field name="picture" widget="image" showTitle="false"/>
-        	</group>
-        	<group colSpan="3" cols="6" showTitle="false" css="highlight">
-				<field name="titleSelect" showTitle="false" readonly="true"/>
-        		<field name="name" showTitle="false" readonly="true"/>
-				<field name="firstName" showTitle="false" readonly="true"/>
-        	</group>
-        	<break/>
-        	<group colSpan="3" cols="6">
-				<field name="titleSelect" hideIf="$readonly()"/>
-        		<field name="name" hideIf="$readonly()"/>
-				<field name="firstName" hideIf="$readonly()"/>
-        	</group>
-        	<break/>
-			<group title="Contract Details" cols="6" colSpan="6">
-				<field name="dailySalaryCost" />
-				<field name="entryDate" />
-				<field name="exitDate" />
-				<field name="companyDepartment"/>
-				<field name="macroCategorySelect" />
-				<field name="categorySelect" />
+				<field name="picture" showTitle="false" widget="image"/>
+			</group>
+			<group colSpan="5" cols="5">
+				<group title="Contact" colSpan="1" cols="1">
+					<field name="titleSelect" showTitle="false" placeholder="Civility"/>
+					<break/>
+					<field name="name" showTitle="false" css="highlight" placeholder="Name"/>
+					<break/>
+					<field name="firstName" showTitle="false" css="highlight" placeholder="First Name"/>
+					<separator title="Function" colSpan="1"/>
+					<field name="function" placeholder="Function"/>
+					<separator title="Department" colSpan="1"/>
+					<field name="companyDepartment"/>
+				</group>  
+				<group title="Main Contact details" colSpan="2" cols="4" colWidths="30%,20%,30%,20%">
+						<field name="internalContact"/>
+						<field name="internalContact.mobilePhone"/>
+						<field name="internalContact.fixedPhone"/>
+						<field name="phoneAtCustomer"/>
+						<field name="internalContact.emailAddress.address" widget="Email" title="Email"/>
+						<break/>
+						<field name="internalContact.mainInvoicingAddress" colSpan="4"/>
+						<separator title="Emergency" colSpan="4"/>
+						<field name="emergencyContact" domain="self.isContact = True"/>
+						<field name="emergencyNumber"/>
+				</group>
 			</group>
 		</group>
-		<notebook colSpan="4">
+		<notebook colSpan="6">
 			<page title="Additionnal information">
-				<field name="internalContact" />
-				<field name="phoneAtCustomer" />
-				<field name="emergencyContact" domain="self.isContact = True"/>
-				<field name="emergencyNumber"/>
-				<spacer/>
-				<break/>
-				<field name="personalInfo" widget="NestedEditor" summary-view="true" form-view="personal-info-edit-form" canSelect="false" showTitle="false"/>
-				<field name="candidate"/>
-			</page>
-			<page title="Profile">
-				<group title="-" cols="4" colSpan="4">
-					<group title="Keywords" colSpan="2">
-						<field name="toolKeywordSet" domain="self.typeSelect = '1'" colSpan="2" grid-view="keyword-tool-grid" form-view="keyword-tool-form" widget="TagSelect[create=keyWord]"/>
-						<field name="fieldKeywordSet" domain="self.typeSelect = '2'" colSpan="2" grid-view="keyword-area-grid" form-view="keyword-area-form" widget="TagSelect[create=keyWord]"/>
-						<field name="jobKeywordSet" domain="self.typeSelect = '3'" colSpan="2" grid-view="keyword-profession-grid" form-view="keyword-profession-form" widget="TagSelect[create=keyWord]"/>
+				<group title="Contract Details" colSpan="6" cols="6">
+					<field name="contractTypeSelect"/>
+					<field name="contractDuration" showIf="contractTypeSelect == 2"/>
+					<field name="functionRanking"/>
+					<field name="entryDate"/>
+					<field name="macroCategorySelect"/>
+					<field name="categorySelect"/>
+					<field name="exitDate"/>
+					<separator title="Advantages" colSpan="6"/>
+					<field name="advantages" colSpan="6" showTitle="false"/>
+				</group>
+				<group title="Hierarchy" colSpan="6" cols="4">
+					<group colSpan="2" cols="2" colWidths="20%,80%">
+						<field name="supervisedBySelect"/>
+						<field name="managerUserInfo" showIf="supervisedBySelect == 1"/>
+						<field name="managerProfileProduct" showIf="supervisedBySelect == 2" domain="self.applicationTypeSelect = 2"/>        
 					</group>
-					<group title="Companies" colSpan="2">
-						<field name="partnerSet" colSpan="4" grid-view="company-grid" domain="self.isContact = 'true'"/>
+					<group colSpan="2" cols="2" colWidths="20%,80%">
+						<field name="profileProduct" domain="self.applicationTypeSelect = 2" colSpan="2"/>    
 					</group>
 				</group>
-				<field name="positionList" colSpan="4"/>	
+				<break/>
+				<field name="personalInfo" showTitle="false" widget="NestedEditor" canSelect="false" form-view="personal-info-edit-form" summary-view="true" colSpan="6"/>
 			</page>
-			<page title="Salary/Expenses/Leaves">
-				<notebook>
-					<page title="Salary">
-						<field name="bonusList" grid-view="bonus-grid" colSpan="2"/>
-						<field name="advanceList" grid-view="advance-grid" colSpan="2"/>
-						<field name="vehicleFiscalPower"/>
-						<group title="Fixed salary">
-							<field name="salaryFromDate"/>
-							<field name="salaryAmount"/>
-						</group>
-						<field name="paySheetList" grid-view="pay-sheet-employee-grid" form-view="pay-sheet-employee-form" colSpan="4"/>
-					</page>
-					<page title="Travel expense">
-						<group title="Commute expenses">
-							<field name="commuteFee"/>
-							<field name="commuteFeeRefundPerc"/>
-						</group>
-						<field name="expenseList" colSpan="4" grid-view="expense-edit-grid"/>
-					</page>
-					<page title="Leaves">	
-						<field name="employeeLeaveList" colSpan="4"/>
-					</page>
-				</notebook>
+			<page title="Profile">
+				<group colSpan="4" cols="4">
+					<group title="Keywords" colSpan="2">
+						<field name="toolKeywordSet" colSpan="2" widget="TagSelect[create=keyWord]" domain="self.typeSelect = '1'" form-view="keyword-tool-form" grid-view="keyword-tool-grid"/>
+						<field name="fieldKeywordSet" colSpan="2" widget="TagSelect[create=keyWord]" domain="self.typeSelect = '2'" form-view="keyword-area-form" grid-view="keyword-area-grid"/>
+						<field name="jobKeywordSet" colSpan="2" widget="TagSelect[create=keyWord]" domain="self.typeSelect = '3'" form-view="keyword-profession-form" grid-view="keyword-profession-grid"/>
+					</group>
+					<group title="Competences profile" colSpan="2">
+						<field name="competence"/>
+					</group>
+				</group>
+				<field name="positionList" colSpan="4"/>
 			</page>
-			<page title="Competences">
-				<field name="competence" widget="NestedEditor" summary-view="true" form-view="competence-edit-form" hidden="true"/>
+			<page title="Salary" cols="6">
+				<group title="Fixed salary" colSpan="6" cols="6">
+					<field name="salaryFromDate"/>
+					<field name="salaryAmount"/>
+					<field name="dailySalaryCost"/>
+				</group>
+				<field name="bonusList" colSpan="3" grid-view="bonus-grid"/>
+				<field name="advanceList" colSpan="3" grid-view="advance-grid"/>
+				<field name="paySheetList" colSpan="6" form-view="pay-sheet-employee-form" grid-view="pay-sheet-employee-grid"/>
 			</page>
-			<page title="Hierarchy">
-				<field name="supervisedBySelect" />
-				<field name="managerUserInfo" showIf="supervisedBySelect == 1"/>
-				<field name="managerProfileProduct" domain="self.applicationTypeSelect = 2" showIf="supervisedBySelect == 2"/>
-				<field name="profileProduct" domain="self.applicationTypeSelect = 2"/>
+			<page title="Travel expense" cols="6">
+				<field name="vehicleFiscalPower"/>
+				<field name="commuteFee"/>
+				<field name="commuteFeeRefundPerc"/>
+				<field name="expenseList" colSpan="6" grid-view="expense-edit-grid"/>
 			</page>
-			<!-- <page title="Suivi du placement des besoins" hidden="true"> -->
-			<!-- <field name="placementFollowUpList" grid-view="placement-follow-up-edit-grid" 
-				form-view="placement-follow-up-edit-list"></field> -->
-			<!-- </page> -->
+			<page title="Leaves">
+				<field name="employeeLeaveList" colSpan="4"/>
+			</page>
+			<page title="History">
+				<separator title="Recruitment" colSpan="4"/>
+				<break/>
+				<field name="candidate"/>    
+			</page>
 		</notebook>
 	</form>
 	
