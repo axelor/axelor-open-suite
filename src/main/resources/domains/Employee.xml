@@ -11,6 +11,7 @@
 		<string name="name" title="Surname" required="true" />
 		<string name="firstName" title="First Name" required="true" />
     	<binary name="picture" image="true" title="Photo"/>
+		<string name="function" title="Function"/>
 		<date name="entryDate" title="Entry Date"/>
 		<date name="exitDate" title="Departure Date"/>
 		<many-to-one name="companyDepartment" ref="com.axelor.apps.base.db.CompanyDepartment" title="Department"/>
@@ -19,6 +20,12 @@
 		<decimal name="dailySalaryCost" title="Employee Daily Cost"/>
 		<integer name="macroCategorySelect" title="Macro-Category" selection="organisation.candidate.macroCategory.select"/>
 		<integer name="categorySelect" title="Category"	selection="organisation.candidate.category.select"/>
+		
+		<integer name="contractTypeSelect" title="Type de contrat" selection="organisation.job.offer.contract.type.select"/>
+		<integer name="contractDuration" title="Duration"/>
+		<string name="functionRanking" title="Function Coeff."/>
+        <string name="advantages" title="Advantages" large="true" multiline="true"/>
+		
 		<many-to-one name="personalInfo" ref="PersonalInfo"	title="Additionnal information" mappedBy="employee"/>
 		<one-to-many name="positionList" ref="Position"	title="Professionnal background" mappedBy="employee" />
 		<many-to-many name="toolKeywordSet" ref="com.axelor.apps.base.db.Keyword" title="Tools Keywords" />
@@ -26,7 +33,7 @@
 		<many-to-many name="jobKeywordSet" ref="com.axelor.apps.base.db.Keyword" title="Job Keywords" />
 		<many-to-many name="partnerSet" ref="com.axelor.apps.base.db.Partner" title="Companies" />
 		<many-to-one name="competence" ref="Competence" title="Competences"	mappedBy="employee"/>
-		<string name="emergencyContact" title="Emergency contact"/>
+		<string name="emergencyContact" title="Emergency Contact"/>
 		<string name="emergencyNumber" title="Emergency Contact Phone Nbr."/>
 		<many-to-one name="candidate" ref="Candidate" title="Candidate (job application)"/>
 
@@ -42,11 +49,11 @@
 		<integer name="supervisedBySelect" title="Supervised by" selection="organisation.employee.supervised.by.select" />
 		<many-to-one name="managerUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="Manager"/>
 		<many-to-one name="managerProfileProduct" ref="com.axelor.apps.base.db.Product" title="Manager Profile"/>
-		<many-to-one name="profileProduct" ref="com.axelor.apps.base.db.Product" title="Profile"/>
+		<many-to-one name="profileProduct" ref="com.axelor.apps.base.db.Product" title="Associated Profile"/>
 		
 		<one-to-many name="paySheetList" ref="PaySheet" mappedBy="employee" title="Pay sheets"/>
 		
-		<one-to-many name="employeeLeaveList" ref="EmployeeLeave" mappedBy="employee" title="Employee leavees"/>
+		<one-to-many name="employeeLeaveList" ref="EmployeeLeave" mappedBy="employee" title="Employee leaves"/>
 		
 	</entity>
 

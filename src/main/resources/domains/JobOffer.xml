@@ -6,28 +6,29 @@
 	<module name="organisation" package="com.axelor.apps.organisation.db"/>
 		<entity name="JobOffer" lang="java">
 		
-			<string name="offre" title="Offre"/>
+			<string name="name" title="Offer title"/>
+			<string name="code" title="Code"/>
 			<many-to-one name="project" ref="com.axelor.apps.organisation.db.Project" title="Business"/>
-			<date name="dateDebut" title="Date début"/>
-			<date name="dateFin" title="Date fin"/>
-			<integer name="nbPostes" title="Nb. postes"/>
-		
+			<date name="fromDate" title="Open from"/>
+			<date name="toDate" title="To"/>
+			<integer name="nbrOfPositions" title="Nbr of Positions"/>
+			
 			<!-- Groupe Offre -->
-			<string name="descriptif" title="Descriptif" large="true" multiline="true"/>
-			<integer name="contratTypeSelect" title="Type de contrat" selection="organisation.job.offer.contrat.type.select"/>
+			<string name="description" title="Description" large="true" multiline="true"/>
+			<integer name="contractTypeSelect" title="Type de contrat" selection="organisation.job.offer.contract.type.select"/>
 			<integer name="remunerationTypeSelect" title="Rem. brute annuelle" selection="organisation.job.offer.remuneration.type.select"/>
-			<string name="avantages" title="Avantages" large="true" multiline="true"/>
+			<string name="advantages" title="Advantages" large="true" multiline="true"/>
 			<many-to-one name="region" ref="com.axelor.apps.base.db.Region" title="Zone Géo"/>
-			<string name="complZoneGeo" title="Complément zone géo"/>
-			<integer name="domaineTypeSelect" title="Domaine" selection="organisation.job.offer.domaine.type.select"/>
-			<string name="metier" title="Métier"/>
+			<string name="geoZoneCompl" title="Geo. Zone Complement"/>
+			<integer name="domainTypeSelect" title="Domain" selection="organisation.job.offer.domain.type.select"/>
+			<string name="jobTitle" title="Job title"/>
 		
 			<!-- Groupe Profil candidat -->
-			<integer name="niveauTypeSelect" title="Niveau d'étude" selection="organisation.job.offer.niveau.type.select"/>
+			<integer name="educationLevelSelect" title="Niveau d'étude" selection="organisation.job.offer.education.level.select"/>
 			<integer name="experienceTypeSelect" title="Expérience" selection="organisation.job.offer.experience.type.select"/>
-			<many-to-many name="langueTypeSet" ref="com.axelor.apps.base.db.Language" title="Langue"/>
-			<many-to-many name="formationSet" ref="com.axelor.apps.organisation.db.TrainingLine" title="Formation"/>
-			<string name="etablissement" title="Etablissement"/>
+			<many-to-many name="languageSet" ref="com.axelor.apps.base.db.Language" title="Language"/>
+			<many-to-many name="trainingLineSet" ref="com.axelor.apps.organisation.db.TrainingLine" title="Training"/>
+			<string name="branch" title="Branch"/>
 		
 		</entity>	
 </domain-models>
