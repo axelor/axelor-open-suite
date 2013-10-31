@@ -4,13 +4,17 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
     <grid name="lead-grid" title="Leads" model="com.axelor.apps.crm.db.Lead" orderBy="enterpriseName">
-        <field name="enterpriseName"/>
         <field name="name"/>
         <field name="firstName"/>
-        <field name="contactDate"/>
-        <field name="expectedCloseDate"/>
-        <field name="campaign"/>
+		<field name="enterpriseName"/>
+        <field name="fixedPhone"/>
+		<field name="emailAddress.address"/>
+		<field name="contactDate"/>
+		<field name="userInfo"/>
         <field name="statusSelect"/>
+		<button name="logCall" title="Log Call" colSpan="1" icon="img/Phone.png" onClick="action-lead-view-create-call"/>
+		<button name="scheduleMeeting" title="Schedule Meeting" colSpan="1" icon="img/Meeting.png" onClick="action-lead-view-create-meeting"/>
+		<button name="sendByEmail" title="Send Email" colSpan="1" icon="img/Mail.png" onClick="action-send-by-email-with-template"/>
     </grid>
     
     <form name="lead-form" title="Lead" model="com.axelor.apps.crm.db.Lead" cols="4" 
