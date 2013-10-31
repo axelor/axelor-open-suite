@@ -335,6 +335,11 @@
 	        </page>
 	        <page title="Comments">
 	            <field name="messageList" showTitle="false" colSpan="6">
+                     <grid title="Comments">
+                        <field name="sendedDate"/>
+                        <field name="sender"/>
+                        <field name="content" showTitle="false" colSpan="4" widget="Html[lite=true]"/>
+                    </grid>
 	                <form title="Comment">
 	                    <group title="Informations" readonly="true" colSpan="4">
 	                        <field name="sendedDate"/>
@@ -344,11 +349,6 @@
 	                        <field name="content" showTitle="false" colSpan="4" widget="Html[lite=true]"/>
 	                    </group>
 	                </form>
-	                <grid title="Comments">
-	                    <field name="sendedDate"/>
-	                    <field name="sender"/>
-	                    <field name="content" showTitle="false" colSpan="4" widget="Html[lite=true]"/>
-	                </grid>
 	            </field>
 	        </page>
 	        <page title="Watchers">
