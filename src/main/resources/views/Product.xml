@@ -17,7 +17,7 @@
 		<button name="sendByEmail" title="Send Email" colSpan="1" icon="img/Mail.png" onClick="action-send-by-email-with-template"/>
     </grid>
     
-    <form cols="2" onNew="action-product-record-default-new,action-product-record-sale-supply-select" name="product-form" title="Product" model="com.axelor.apps.base.db.Product">
+    <form cols="2" onNew="action-product-record-default-new,action-product-record-sale-supply-select" name="product-form" title="Product" model="com.axelor.apps.base.db.Product" >
 	    <group colWidths="15%,85%" colSpan="6" cols="2">
 	            <group colSpan="1">
 	                <field name="picture" showTitle="false"/>
@@ -86,6 +86,7 @@
 				<spacer/>
 				<break/>
 				<portlet colSpan="4" action="action-product-view-stock"/>
+				<portlet action="chart:chart.stock.report.for.product" height="200" colSpan="4"/>
 			</page>
 	        <page title="Tracking number" colSpan="2" cols="4" showIf="productTypeSelect != 'service" >
 	            <field name="hasWarranty" colSpan="4"/>
