@@ -5,15 +5,16 @@
     
     <grid name="product-grid" title="Products" model="com.axelor.apps.base.db.Product" orderBy="name">
    		<toolbar>
-			<button name="catelog" title="Catelog" onClick="action-print-product-catelog"/>
+			<button name="catalog" title="Catalog" onClick="action-print-product-catalog"/>
     	</toolbar>    
         <field name="code"/>
         <field name="name"/>
         <field name="productCategory"/>
         <field name="productFamily"/>
-        <field name="unit"/>
         <field name="productTypeSelect"/>
-       	<field name="procurementMethodSelect"/>
+       	<field name="saleSupplySelect"/>
+		<field name="unit"/>
+		<button name="sendByEmail" title="Send Email" colSpan="1" icon="img/Mail.png" onClick="action-send-by-email-with-template"/>
     </grid>
     
     <form cols="2" onNew="action-product-record-default-new,action-product-record-sale-supply-select" name="product-form" title="Product" model="com.axelor.apps.base.db.Product">
@@ -140,7 +141,7 @@
    		<alert message="A product of type service can't be procured from stock." if="saleSupplySelect == 1 &amp;&amp; productTypeSelect == 'service'"/>
 	</action-validate> 
 	
-	<action-method name="action-print-product-catelog" >
+	<action-method name="action-print-product-catalog" >
 		<call class="com.axelor.apps.base.web.ProductController" method="printProductCatelog"/>
 	</action-method>
     
