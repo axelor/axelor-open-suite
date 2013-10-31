@@ -30,14 +30,24 @@
  */
 package com.axelor.apps.supplychain.web;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.axelor.apps.AxelorSettings;
 import com.axelor.apps.supplychain.db.StockMove;
 import com.axelor.apps.supplychain.service.StockMoveService;
+import com.axelor.apps.tool.net.URLService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 
 public class StockMoveController {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(SalesOrderController.class);
 
 	@Inject
 	private StockMoveService stockMoveService;
@@ -73,5 +83,44 @@ public class StockMoveController {
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
+	}
+	
+	/**
+	 * Fonction appeler par le bouton imprimer
+	 *
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	public void printStockMove(ActionRequest request, ActionResponse response) {
+
+		StockMove stockMove = request.getContext().asType(StockMove.class);
+
+		StringBuilder url = new StringBuilder();
+		AxelorSettings axelorSettings = AxelorSettings.get();
+		String language = stockMove.getPartner().getLanguageSelect() != null? stockMove.getPartner().getLanguageSelect() : stockMove.getCompany().getPrintingSettings().getLanguageSelect() != null ? stockMove.getCompany().getPrintingSettings().getLanguageSelect() : "en" ; 
+		language = language == "" ? "en": language;
+		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/StockMove.rptdesign&__format=pdf&Locale="+language+"&StockMoveId="+stockMove.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
+		LOG.debug("URL : {}", url);
+		String urlNotExist = URLService.notExist(url.toString());
+		
+		if(urlNotExist == null) {
+		
+			LOG.debug("Impression du stock move "+stockMove.getStockMoveSeq()+" : "+url.toString());
+			
+			String title = "StockMove ";
+			if(stockMove.getStockMoveSeq() != null)  {
+				title += stockMove.getStockMoveSeq();
+			}
+			
+			Map<String,Object> mapView = new HashMap<String,Object>();
+			mapView.put("title", "StockMove "+title);
+			mapView.put("resource", url);
+			mapView.put("viewType", "html");
+			response.setView(mapView);	
+		}
+		else {
+			response.setFlash(urlNotExist);
+		}
 	}
 }
