@@ -30,12 +30,23 @@
  */
 package com.axelor.apps.organisation.web;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.axelor.apps.AxelorSettings;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.PeriodService;
+import com.axelor.apps.organisation.db.Employee;
 import com.axelor.apps.organisation.db.Timesheet;
 import com.axelor.apps.organisation.service.TimesheetService;
+import com.axelor.apps.tool.net.URLService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.meta.db.MetaUser;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -43,6 +54,8 @@ import com.google.inject.Provider;
 
 public class TimesheetController {
 
+	private static final Logger LOG = LoggerFactory.getLogger(EmployeeController.class);
+	
 	@Inject
 	private Provider<PeriodService> periodService;
 	
@@ -84,5 +97,41 @@ public class TimesheetController {
 		timesheetService.get().validate(timesheet);
 		
 		response.setReload(true);
+	}
+	
+	/**
+	 * Fonction appeler par le bouton imprimer
+	 *
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	public void printTimesheet(ActionRequest request, ActionResponse response) {
+
+		Timesheet timesheet = request.getContext().asType(Timesheet.class);
+
+		StringBuilder url = new StringBuilder();
+		AxelorSettings axelorSettings = AxelorSettings.get();
+		String language = timesheet.getUserInfo().getPartner().getLanguageSelect() != null? timesheet.getUserInfo().getPartner().getLanguageSelect() : timesheet.getUserInfo().getActiveCompany().getPrintingSettings().getLanguageSelect() != null ? timesheet.getUserInfo().getActiveCompany().getPrintingSettings().getLanguageSelect() : "en" ; 
+		language = language == ""? "en": language;
+		
+		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Timesheet.rptdesign&__format=pdf&TimesheetId="+timesheet.getId()+"&Locale="+language+axelorSettings.get("axelor.report.engine.datasource"));
+
+		LOG.debug("URL : {}", url);
+		
+		String urlNotExist = URLService.notExist(url.toString());
+		if (urlNotExist == null){
+		
+			LOG.debug("Impression des informations timesheet "+timesheet.getUserInfo().getPartner().getName()+" "+timesheet.getUserInfo().getPartner().getFirstName()+" : "+url.toString());
+			
+			Map<String,Object> mapView = new HashMap<String,Object>();
+			mapView.put("title", "Employee "+timesheet.getUserInfo().getPartner().getName()+" "+timesheet.getUserInfo().getPartner().getFirstName());
+			mapView.put("resource", url);
+			mapView.put("viewType", "html");
+			response.setView(mapView);		
+		}
+		else {
+			response.setFlash(urlNotExist);
+		}
 	}
 }

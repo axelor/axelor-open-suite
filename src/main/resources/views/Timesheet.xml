@@ -62,6 +62,7 @@
 	         	<button name="confirm" title="Confirm" colSpan="1" onClick="save,action-timesheet-record-confirm,save" showIf="statusSelect == 1 || statusSelect == 4"/>
 	            <button name="validate" title="Validate" colSpan="1" onClick="save,action-timesheet-method-validate,action-timesheet-record-validate,save" showIf="statusSelect == 2"/>
 	            <button name="cancel" title="Cancel" colSpan="1" onClick="save,action-timesheet-record-cancel" showIf="statusSelect == 1 || statusSelect == 2"/>
+	            <button name="printTimesheet" title=" Print" colSpan="1" onClick="save,action-print-pdf-timesheet" icon="img/icons/print.png"/>
 	        </group>
    			<group colSpan="1" cols="2" readonly="true">
    				<field name="validatedByUserInfo" colSpan="1"/>
@@ -107,6 +108,9 @@
     
     <action-method name="action-timesheet-method-validate">
     	<call class="com.axelor.apps.organisation.web.TimsheetController" method="validate"/>
+    </action-method>
+     <action-method name="action-print-pdf-timesheet">
+    	<call class="com.axelor.apps.organisation.web.TimsheetController" method="printTimesheet"/>
     </action-method>
     
     
