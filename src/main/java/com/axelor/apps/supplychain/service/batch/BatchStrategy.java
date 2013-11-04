@@ -28,29 +28,29 @@
  * All portions of the code written by Axelor are
  * Copyright (c) 2012-2013 Axelor. All Rights Reserved.
  */
-package com.axelor.apps.supplychain.db;
+package com.axelor.apps.supplychain.service.batch;
 
-public interface ISalesOrder {
+import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.apps.supplychain.db.SalesOrder;
+import com.axelor.apps.supplychain.service.SalesOrderInvoiceService;
 
+public abstract class BatchStrategy extends AbstractBatch {
+
+	protected BatchInvoicing batchInvoicing;
 	
-	/**
-	 * Static salesOrder status select
-	 */
-
-	static final int STATUS_DRAFT = 1;
-	static final int STATUS_CONFIRMED = 2;
-	static final int STATUS_VALIDATED = 3;
-	static final int STATUS_CANCELED = 4;
-
+	protected SalesOrderInvoiceService salesOrderInvoiceService;
 	
-	/**
-	 * Static salesOrder invoicingTypeSelect
-	 */
-	static final int INVOICING_TYPE_PER_ORDER = 1;
-	static final int INVOICING_TYPE_WITH_PAYMENT_SCHEDULE = 2;
-	static final int INVOICING_TYPE_PER_TASK = 3;
-	static final int INVOICING_TYPE_PER_SHIPMENT = 4;
-	static final int INVOICING_TYPE_FREE = 5;
-	static final int INVOICING_TYPE_SUBSCRIPTION = 6;
+	protected BatchStrategy(SalesOrderInvoiceService salesOrderInvoiceService)  {
+		super();
+		this.salesOrderInvoiceService = salesOrderInvoiceService;
+	}
 	
+	
+	protected void updateSalesOrder( SalesOrder salesOrder ){
+		
+		salesOrder.addBatchSetItem( Batch.find( batch.getId() ) );
+			
+		incrementDone();
+	}
 }

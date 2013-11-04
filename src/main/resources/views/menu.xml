@@ -131,6 +131,17 @@
 		<context name="_internalUser" expr="eval: __user__.id"/>
 	</action-view>
 
+
+	<menuitem name="admin-root-batch-supplychain" parent="admin-root-batch"
+		title="Supplychain batches" action="admin.root.batch.supplychain" />
+
+	<action-view name="admin.root.batch.supplychain" title="Supplychain batches"
+		model="com.axelor.apps.supplychain.db.SupplychainBatch" icon="img/icons/parameter_small.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
+
+
 	<menuitem name="top-menu-create-so" parent="top-menu-utility" title="Create SO" action="supply.chain.root.sales.order" />
 	
 	<action-view name="supply.chain.root.sales.order" title="Sales order"

@@ -30,27 +30,14 @@
  */
 package com.axelor.apps.supplychain.db;
 
-public interface ISalesOrder {
+public interface ISupplychainBatch {
 
-	
 	/**
-	 * Static salesOrder status select
+	 * Static select in SupplychainBatch
 	 */
 
-	static final int STATUS_DRAFT = 1;
-	static final int STATUS_CONFIRMED = 2;
-	static final int STATUS_VALIDATED = 3;
-	static final int STATUS_CANCELED = 4;
-
+	// ACTION TYPE
+	static final int BATCH_INVOICING = 1;
 	
-	/**
-	 * Static salesOrder invoicingTypeSelect
-	 */
-	static final int INVOICING_TYPE_PER_ORDER = 1;
-	static final int INVOICING_TYPE_WITH_PAYMENT_SCHEDULE = 2;
-	static final int INVOICING_TYPE_PER_TASK = 3;
-	static final int INVOICING_TYPE_PER_SHIPMENT = 4;
-	static final int INVOICING_TYPE_FREE = 5;
-	static final int INVOICING_TYPE_SUBSCRIPTION = 6;
 	
 }

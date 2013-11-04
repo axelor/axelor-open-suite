@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+
+    <grid name="supplychain-batch-grid" title="supplychain batches" model="com.axelor.apps.supplychain.db.SupplychainBatch">
+    	<field name="actionSelect" />
+    	<field name="code" />
+		<field name="company" />
+		<field name="createdOn"/>
+		<field name="createdBy"/>
+    </grid>
+ 
+    <form name="supplychain-batch-form" title="supplychain Batch" model="com.axelor.apps.supplychain.db.SupplychainBatch" cols="4"
+    onLoad="action-supplychain-batch-attrs-action-select,action-supplychain-batch-attrs-action-select" 
+    onNew="action-supplychain-batch-record-on-new,action-supplychain-batch-attrs-action-select">
+    	<field name="actionSelect" onChange="action-supplychain-batch-attrs-action-select"/>
+    	<field name="code" />
+    	<field name="company" widget="SuggestBox"/>
+    	<break/>
+    	<notebook colSpan="4">
+    		<page name="InvoicingPage" title="Invoicing page" cols="4">
+    			<button name="invoicingBatch" title="Invoicing batch" colSpan="4" onClick="save,action-supplychain-batch-method-action-invoicing" />
+    		</page>
+    		<page title="Information" cols="4">
+    			<field name="createdOn" title="Created on"/>
+				<field name="createdBy" title="Created by" />
+		    	<field name="description" showTitle="false" colSpan="4" />
+		    	<field name="batchList" colSpan="4" />
+    		</page>
+    	</notebook>   	
+    </form>
+    
+    <!-- ACTION RECORD -->
+    <action-record name="action-supplychain-batch-record-on-new" model="com.axelor.apps.supplychain.db.SupplychainBatch">
+		<field name="createdOn" expr="call:com.axelor.apps.supplychain.service.administration.GeneralService:getTodayDate()"/>
+		<field name="createdBy" expr="call:com.axelor.apps.supplychain.service.user.UserInfoService:getUserInfo()"/>
+	</action-record>
+    
+    <!-- ACTION METHOD -->
+	<action-method name="action-supplychain-batch-method-action-invoicing">
+		<call class="com.axelor.apps.supplychain.web.SupplychainBatchController" method="actionInvoicing"/>
+	</action-method>
+	
+    <!-- ACTION ATTRS -->
+    <action-attrs name="action-supplychain-batch-attrs-action-select">
+	    <attribute name="hidden" expr="eval: actionSelect != 1" for="InvoicingPage"/>
+	</action-attrs>
+	
+</object-views>

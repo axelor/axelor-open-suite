@@ -47,10 +47,13 @@ import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductVariant;
+import com.axelor.apps.base.db.Scheduler;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.scheduler.SchedulerService;
 import com.axelor.apps.organisation.db.Task;
+import com.axelor.apps.supplychain.db.ISalesOrder;
 import com.axelor.apps.supplychain.db.SalesOrder;
 import com.axelor.apps.supplychain.db.SalesOrderLine;
 import com.axelor.apps.supplychain.db.SalesOrderSubLine;
@@ -72,6 +75,9 @@ public class SalesOrderInvoiceService {
 	@Inject
 	private SalesOrderLineVatService salesOrderLineVatService;
 	
+	@Inject
+	private SchedulerService schedulerService;
+	
 
 	private LocalDate today;
 	
@@ -82,8 +88,39 @@ public class SalesOrderInvoiceService {
 		
 	}
 	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	
 	public Invoice generateInvoice(SalesOrder salesOrder) throws AxelorException  {
+		
+		switch (salesOrder.getInvoicingTypeSelect()) {
+			case ISalesOrder.INVOICING_TYPE_PER_ORDER:
+				
+				return this.generatePerOrderInvoice(salesOrder);
+				
+//			case ISalesOrder.INVOICING_TYPE_WITH_PAYMENT_SCHEDULE:
+//						TODO
+//				return null;
+			case ISalesOrder.INVOICING_TYPE_PER_TASK:
+				
+				return null;
+			case ISalesOrder.INVOICING_TYPE_PER_SHIPMENT:
+				
+				return null;
+			case ISalesOrder.INVOICING_TYPE_FREE:
+				
+				return this.generatePerOrderInvoice(salesOrder);
+				
+			case ISalesOrder.INVOICING_TYPE_SUBSCRIPTION:
+				
+				return this.generateSubscriptionInvoice(salesOrder);
+	
+			default:
+				return null;
+		}
+	}
+	
+	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public Invoice generatePerOrderInvoice(SalesOrder salesOrder) throws AxelorException  {
 		
 		this.checkIfSalesOrderIsCompletelyInvoiced(salesOrder);
 		
@@ -97,6 +134,90 @@ public class SalesOrderInvoiceService {
 	}
 	
 	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public Invoice generateSubscriptionInvoice(SalesOrder salesOrder) throws AxelorException  {
+		
+		Invoice invoice = this.createInvoice(salesOrder);
+		
+		this.assignInvoice(salesOrder, invoice);
+		
+		invoice.setIsSubscription(true);
+		
+		Scheduler scheduler = salesOrder.getSchedulerInstance().getScheduler();
+		
+		invoice.setSubscriptionFromDate(salesOrder.getNextInvPeriodStartDate());
+		
+		LocalDate nextInvPeriodStartDate = schedulerService.getComputeDate(scheduler, invoice.getSubscriptionFromDate());
+		
+		invoice.setSubscriptionToDate(nextInvPeriodStartDate.minusDays(1));
+		
+		salesOrder.setNextInvPeriodStartDate(nextInvPeriodStartDate);
+		
+		return invoice;
+	}
+	
+	
+	public void checkSubscriptionSalesOrder(SalesOrder salesOrder) throws AxelorException  {
+		
+		if(salesOrder.getSchedulerInstance() == null || salesOrder.getSchedulerInstance().getScheduler() == null)  {
+			throw new AxelorException(String.format("Il est nécessaire de définir un plannificateur."), IException.CONFIGURATION_ERROR);
+		}
+		
+		if(salesOrder.getSubscriptionStartDate() == null)  {
+			throw new AxelorException(String.format("Il est nécessaire de définir une date de début d'abonnement."), IException.CONFIGURATION_ERROR);
+		}
+		if(salesOrder.getInvoicedFirstDate() == null)  {
+			throw new AxelorException(String.format("Il est nécessaire de définir une date de première facturation."), IException.CONFIGURATION_ERROR);
+		}
+	}
+	
+	
+	
+	
+	/**
+	 * Cree une facture mémoire à partir d'un devis.
+	 * 
+	 * Le planificateur doit être prêt.
+	 * 
+	 * @param salesOrder
+	 * 		Le devis
+	 * 
+	 * @return Invoice
+	 * 		La facture d'abonnement
+	 * 
+	 * @throws AxelorException 
+	 * @throws Exception 
+	 */
+	public Invoice runSubscriptionInvoicing(SalesOrder salesOrder) throws AxelorException  {
+		
+		Invoice invoice = null;
+		
+		LOG.debug("Création de la facture mémoire pour le devis : {}", salesOrder.getSalesOrderSeq());
+		
+		if(schedulerService.isSchedulerInstanceIsReady(salesOrder.getSchedulerInstance()))  {
+			
+			LOG.debug("Le mémoire est prêt à etre lancé.");
+			invoice = this.generateSubscriptionInvoice(salesOrder);
+			
+			if(invoice != null)  {
+				LOG.debug("Mis à jour de l'historique du planificateur");
+				schedulerService.addInHistory(salesOrder.getSchedulerInstance(), today, false);
+			}
+		}
+		else{
+			
+			LocalDate nextDate = schedulerService.getTheoricalExecutionDate(salesOrder.getSchedulerInstance());
+			
+			LOG.debug(String.format("La facturation n'est pas prête à etre lancée : %s < %s", today, nextDate));
+			throw new AxelorException(String.format("Le devis %s sera facturé le %s.", salesOrder.getSalesOrderSeq(), nextDate), IException.CONFIGURATION_ERROR);
+		}
+		
+		return invoice;
+		
+	}
+	
+	
+	
 	public void checkIfSalesOrderIsCompletelyInvoiced(SalesOrder salesOrder) throws AxelorException  {
 		
 		BigDecimal total = BigDecimal.ZERO;
@@ -108,7 +229,7 @@ public class SalesOrderInvoiceService {
 		}
 		
 		if(total.compareTo(salesOrder.getInTaxTotal()) == 0)  {
-			throw new AxelorException(String.format("Le devis %s est déjà complêtement facturé", salesOrder.getSalesOrderSeq()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format("Le devis est déjà complêtement facturé"), IException.CONFIGURATION_ERROR);
 		}
 		
 	}
