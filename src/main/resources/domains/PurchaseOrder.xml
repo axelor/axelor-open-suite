@@ -26,9 +26,10 @@
   	<many-to-one name="location" ref="com.axelor.apps.supplychain.db.Location" title="Location"/>
   	<string name="externalReference" title="Supplier reference"/>
   	
-<!--   	Ligne de TVA -->	
+<!-- Ligne de TVA -->	
 	<one-to-many name="purchaseOrderLineVatList" ref="com.axelor.apps.supplychain.db.PurchaseOrderLineVat" mappedBy="purchaseOrder" title="V.A.T. Lines"/>
-	
+
+<!-- Validation and totals -->	
     <many-to-one name="validatedByUserInfo" ref="com.axelor.apps.base.db.UserInfo" readonly="true" title="Validated by"/> 
   	<date name="validationDate" title="Validation date" readonly="true"/>
     <decimal name="exTaxTotal" title="Total W.V." scale="2" precision="20" readonly="true"/>
@@ -36,6 +37,10 @@
     <decimal name="inTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true"/>
     <decimal name="amountRemainingToBeInvoiced" title="Amount remaining to invoice" readonly="true"/>
 
+<!-- Notes -->
+	<string name="notes" large="true" multiline="true" title="Notes"/>
+	
+	
   </entity>
 
 </domain-models>
