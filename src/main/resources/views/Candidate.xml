@@ -11,6 +11,8 @@
 		<field name="email"/>
 		<field name="availabilitySelect" />
 		<field name="availabilityDate" />
+		<field name="currentJobKeyword" domain="self.typeSelect = '3'"/>
+		<field name="searchedJobKeyword" domain="self.typeSelect = '3'"/>		
 		<field name="salaryExpectation" />
 		<button name="sendByEmail" title="Send by email" colSpan="1" onClick="action-send-by-email-with-template" icon="img/Mail.png"/>
 	</grid>

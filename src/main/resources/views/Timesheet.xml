@@ -13,18 +13,20 @@
     <form name="timesheet-form" title="Timesheet" model="com.axelor.apps.organisation.db.Timesheet" cols="4"
     onNew="action-timesheet-default-record,action-timesheet-getPeriod">
         <field name="userInfo"/>
-        <field name="statusSelect" widget="NavSelect" showTitle="false"/>
-        <break/>
-        <field name="fromDate" onChange="action-timesheet-getPeriod"/>
-        <field name="toDate"/>
-        <field name="project" domain="self.isBusiness = true"/>
-        <group title="Satisfaction" cols="4" colSpan="4" colWidths="10%,10%,10%,70%">
-        	<separator colSpan="8" title="Project"/>
+		<spacer/>
+		<field name="statusSelect" showTitle="false" widget="NavSelect"/>
+		<break/>
+		<field name="fromDate" onChange="action-timesheet-getPeriod"/>
+		<field name="toDate"/>
+		<field name="unit"/>
+		<field name="project" domain="self.isAffair = true"/>
+        <group title="Satisfaction" colSpan="4" cols="4">
+        	<separator colSpan="8" title="Project" colSpan="4"/>
         	<group colSpan="2">
 				<field name="projectSatisfactionSelect" widget="SelectProgress"/>
 			</group>
 	        <field name="projectComment"/>
-	        <separator colSpan="8" title="Company"/>
+	        <separator colSpan="4" title="Company"/>
 	        <group colSpan="2">
 				<field name="companySatisfactionSelect" widget="SelectProgress"/>
 			</group>
@@ -35,40 +37,41 @@
         </group>
         <spacer/>
         <separator colSpan="4" title="Details of time spent on project/tasks"/>
-        <group title="Configuration" colSpan="4" readonlyIf="statusSelect == 3">
-        	<field name="hasToGetLeaveRequests"/>
-		  	<field name="hasToGetSpentTimeFromTask"/>
-		  	<field name="hasToGetPlanningLine"/>
-		  	<separator colSpan="4"/>
-		  	<field name="hasCompleteTimesheetLines" onChange="action-timesheet-record-complete-group-default"/>
-		  	<group title="Complete time sheet configuration" colSpan="4" showIf="hasCompleteTimesheetLines == true">
-		  		<field name="completeFromDate"/>
-			  	<field name="completeToDate"/>
-			  	<field name="completeDefaultTask"/>
-			  	<field name="duration"/>
-		  	</group>
-		  	<group title="Action(s)" colSpan="4" showIf="statusSelect != 3 &amp;&amp; hasToGetLeaveRequests == true || hasToGetSpentTimeFromTask == true || hasToGetPlanningLine == true || hasCompleteTimesheetLines == true)">
-		  		<button name="getSpentTimeButton" title="Get past time" colSpan="1" onClick="save,action-timesheet-method-get-task-spent-time" 
-		  		showIf="statusSelect != 3 &amp;&amp; hasToGetLeaveRequests == true || hasToGetSpentTimeFromTask == true || hasToGetPlanningLine == true)"/>
-		  		<button name="completeTimeSheetButton" title="Complete time sheet" colSpan="1" onClick="save" showIf="statusSelect != 3 &amp;&amp; hasCompleteTimesheetLines == true"/>
-		  	</group>
-        </group>
-	  	
+        <group title="Configuration" readonlyIf="statusSelect == 3" colSpan="4" cols="7">
+			<field name="hasToGetLeaveRequests"/>
+			<field name="hasToGetSpentTimeFromTask"/>
+			<field name="hasToGetPlanningLine"/>
+			<button name="getSpentTimeButton" title="Get past time" showIf="statusSelect != 3 &amp;&amp; hasToGetLeaveRequests == true || hasToGetSpentTimeFromTask == true || hasToGetPlanningLine == true)" colSpan="1" onClick="save,action-timesheet-method-get-task-spent-time"/>
+			<separator colSpan="7"/>
+			<group colSpan="7" cols="6">
+					<field name="hasCompleteTimesheetLines" onChange="action-timesheet-record-complete-group-default"/>
+				<group title="Complete time sheet configuration" showIf="hasCompleteTimesheetLines == true" colSpan="4">
+					<field name="completeFromDate"/>
+					<field name="completeToDate"/>
+					<field name="completeDefaultTask"/>
+					<field name="duration"/>
+				</group>
+				<button name="completeTimeSheetButton" title="Complete time sheet" showIf="statusSelect != 3 &amp;&amp; hasCompleteTimesheetLines == true" colSpan="6" onClick="save"/>
+			</group>    
+		</group> 
         <field name="timesheetLineList" colSpan="4" grid-view="timesheet-line-grid" form-view="timesheet-line-form"/>
-        <field name="timesheetInputTotal"/>
-        <field name="timesheetTotalByTypeList" colSpan="4"/>
-       	<group title="Action(s)" colSpan="4">
-   			<group colSpan="1" cols="1">
-	         	<button name="confirm" title="Confirm" colSpan="1" onClick="save,action-timesheet-record-confirm,save" showIf="statusSelect == 1 || statusSelect == 4"/>
-	            <button name="validate" title="Validate" colSpan="1" onClick="save,action-timesheet-method-validate,action-timesheet-record-validate,save" showIf="statusSelect == 2"/>
-	            <button name="cancel" title="Cancel" colSpan="1" onClick="save,action-timesheet-record-cancel" showIf="statusSelect == 1 || statusSelect == 2"/>
-	            <button name="printTimesheet" title=" Print" colSpan="1" onClick="save,action-print-pdf-timesheet" icon="img/icons/print.png"/>
-	        </group>
-   			<group colSpan="1" cols="2" readonly="true">
-   				<field name="validatedByUserInfo" colSpan="1"/>
-             	<field name="validationDate" colSpan="1"/>
-   			</group>
-        </group>
+		<group colSpan="4" cols="4">
+			<group colSpan="2">
+				<group title="Action(s)" colSpan="2" cols="1">
+					<button name="confirm" title="Confirm" showIf="statusSelect == 1 || statusSelect == 4" colSpan="1" onClick="save,action-timesheet-record-confirm,save"/>
+					<button name="validate" title="Validate" showIf="statusSelect == 2" colSpan="1" onClick="save,action-timesheet-method-validate,action-timesheet-record-validate,save"/>
+					<button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2" colSpan="1" onClick="save,action-timesheet-record-cancel"/>
+				</group>
+				<group readonly="true" colSpan="2">
+					<field name="validatedByUserInfo" colSpan="1"/>
+					<field name="validationDate" colSpan="1"/>
+				</group>
+			</group>
+			<group title="Totals" colSpan="4" cols="2">
+				<field name="timesheetInputTotal"/>
+				<field name="timesheetTotalByTypeList" colSpan="4"/>
+			</group>
+		</group>
     </form>
     
     <action-record name="action-timesheet-record-complete-group-default" model="com.axelor.apps.organisation.db.Timesheet">
