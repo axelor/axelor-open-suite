@@ -26,6 +26,7 @@
 	        <field name="purchaseQtyByTracking" help="0 --&gt; infinite" colSpan="2"/>
 	    </group>
 	    <break/>
+		<separator colSpan="4"/>
 	    <field name="isProductionTrackingManaged"/>
 	    <break/>
 	    <group title="Production tracking management" showIf="isProductionTrackingManaged" colSpan="4" cols="2" colWidths="40%,*">
@@ -33,6 +34,7 @@
 	        <field name="productionQtyByTracking" help="0 --&gt; infinite" colSpan="2"/>
 	    </group>
 	    <break/>
+		<separator colSpan="4"/>
 	    <field name="isSaleTrackingManaged"/>
 	    <break/>
 	    <group title="Sale tracking management" showIf="isSaleTrackingManaged" colSpan="4" cols="2" colWidths="40%,*">
