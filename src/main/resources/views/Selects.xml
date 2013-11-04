@@ -138,8 +138,6 @@
 		<option value="0">Invoicing</option>
 		<option value="1">Status</option>
 		<option value="2">Alarm</option>
-		<option value="3">Invoicesbill Invoicing</option>
-		<option value="4">Invoicesbill Confirmation</option>
 	</selection>
 	
 	<selection name="iaccounting.batch.action.select">

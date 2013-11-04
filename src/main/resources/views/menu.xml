@@ -344,15 +344,6 @@
 	<menuitem name="account-conf" parent="account-root" title="Configuration"
 		icon="img/icons/parameter.png" />
 
-	<menuitem name="account-conf-accounting-batch" parent="account-conf"
-		title="Accounting batches" action="account.conf.accounting.batch" />
-
-	<action-view name="account.conf.accounting.batch" title="Accounting batches"
-		model="com.axelor.apps.account.db.AccountingBatch" icon="img/icons/account_small.png">
-		<view type="grid" />
-		<view type="form" />
-	</action-view>
-	
 	<menuitem name="account-conf-cash-register" parent="account-conf"
 		title="Cash registers" action="account.conf.cash.register" />
 		
@@ -609,6 +600,16 @@
 		<domain>self.typeSelect = 1 AND self.objectConcernedSelect = 4</domain>
 		<context name="typeSelect" expr="1" />
 		<context name="objectConcernedSelect" expr="4" />
+	</action-view>
+	
+	
+	<menuitem name="admin-root-batch-accounting" parent="admin-root-batch"
+		title="Accounting batches" action="admin.root.batch.accounting" />
+
+	<action-view name="admin.root.batch.accounting" title="Accounting batches"
+		model="com.axelor.apps.account.db.AccountingBatch" icon="img/icons/parameter_small.png">
+		<view type="grid" />
+		<view type="form" />
 	</action-view>
 	
 	

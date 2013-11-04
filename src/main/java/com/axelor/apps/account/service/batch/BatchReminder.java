@@ -150,7 +150,7 @@ public class BatchReminder extends BatchStrategy {
 	protected void stop() {
 
 		String comment = "Compte rendu de relance :\n";
-		comment += String.format("\t* %s contrat(s) traité(s)\n", batch.getDone());
+		comment += String.format("\t* %s tiers(s) traité(s)\n", batch.getDone());
 		comment += String.format("\t* %s anomalie(s)", batch.getAnomaly());
 		
 		comment += String.format("\t* %s Courrier(s) et email(s) traité(s)\n", mailDone);
