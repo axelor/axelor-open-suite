@@ -5,7 +5,7 @@
 "customerRefund";"Avoir client";1;7;"AC_%Y";;1;1;1;
 "supplierInvoice";"Facture d'achat";1;7;"FF_%Y";;1;1;1;
 "supplierRefund";"Avoir fournisseur";1;7;"AVF_%Y";;1;1;1;
-"debit";"Prelevement prelevement  (facture et echeanciers hors mensu)";1;7;"PREFAC_%Y_";;1;1;1;"ENC_PRE"
+"debit";"Prélèvement (facture et echeanciers hors mensu)";1;7;"PREFAC_%Y_";;1;1;1;"ENC_PRE"
 "debitReject";"Rejet des prélèvements";1;7;"REJPRL_%Y_";;1;1;1;"REJ_BNQ"
 "doubtfulCustomer";"Passage en créance douteuse";1;7;"CREDOU_%Y_";;1;1;1;
 "irrecoverable";"Passage en irrécouvrable";1;7;"IRRECOUV_%Y_";;1;1;1;
@@ -38,7 +38,7 @@
 "move";"Ecriture passage en irrécouvrable";1;10;"ECRIRREC_%Y_";;1;1;1;"IRRECOUV"
 "moveLineExport";"Export comptable";1;10;"EXPCPT_%Y_";;1;1;1;
 "moveLineReport";"Reporting comptable";1;10;"REPORTDF_%Y_";;1;1;1;
-"paymentSchedule";"Numero echeancier";1;10;"ECHPAI_%Y_";;1;1;1;
+"paymentSchedule";"N° écheancier";1;10;"ECHPAI_%Y_";;1;1;1;
 "paymentVoucher";"N° de paiement enc. espèces ";1;10;"_ENC_ESP_%Y_";;1;1;1;"ENC_ESP"
 "paymentVoucher";"N° de paiement enc. chèques ";1;10;"_ENC_CHQ_%Y_";;1;1;1;"ENC_CHQ"
 "paymentVoucher";"N° de paiement enc. CB ";1;10;"_ENC_CB_%Y_";;1;1;1;"ENC_CB"
@@ -55,7 +55,7 @@
 "paymentVoucher";"N° de paiement dec. virement ";1;10;"_DEC_VIR_%Y_";;1;1;1;"DEC_VIR"
 "paymentVoucher";"N° de paiement dec. prélèvement  (factures et échéanciers hors mensu) ";1;10;"_DEC_PRE_%Y_";;1;1;1;"DEC_PRE"
 "paymentVoucher";"N° de paiement dec. autres moyens ";1;10;"_DEC_OTH_%Y_";;1;1;1;"DEC_OTH"
-"paymentVoucherReceiptNo";"Numéro de reçu";1;10;"RECU_%Y_";;1;1;1;
+"paymentVoucherReceiptNo";"N° de reçu";1;10;"RECU_%Y_";;1;1;1;
 "purchaseInterface";"Interface achat";1;10;"INTACH_%Y_";;1;1;1;
 "refundInterface";"Interface avoir";1;10;"INTAVO_%Y_";;1;1;1;
 "reimbursement";"Proposition remboursement";1;10;"REMB_%Y_";;1;1;1;
