@@ -4,7 +4,10 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
     <grid name="purchase-order-grid" title="Supplier RFQs/POs" model="com.axelor.apps.supplychain.db.PurchaseOrder" orderBy="-orderDate">
-    	<field name="purchaseOrderSeq"/>
+    	<toolbar>
+            <button name="print" title="Print" icon="img/icons/print.png" onClick="action-purchase-order-method-show-purchase-order"/>
+		</toolbar>
+		<field name="purchaseOrderSeq"/>
         <field name="supplierPartner"/>
         <field name="externalReference"/>
         <field name="project"/>
@@ -12,13 +15,14 @@
         <field name="buyerUserInfo"/>
         <field name="inTaxTotal"/>
         <field name="statusSelect"/>
+		<button name="sendByEmail" title="Send Email" colSpan="1" icon="img/Mail.png" onClick="action-send-by-email-with-template"/>
     </grid>
     
     <form name="purchase-order-form" title="Supplier RFQ/PO" model="com.axelor.apps.supplychain.db.PurchaseOrder" cols="4" 
     onNew="action-purchase-order-record-new,action-purchase-order-record-company-configuration,action-purchase-order-method-get-location" 
     onSave="action-purchase-order-set-sequence">
     	<toolbar>
-            <button name="print" title=" Print" onClick="save,action-purchase-order-method-show-purchase-order"/>
+            <button name="print" title="Print" icon="img/icons/print.png" onClick="save,action-purchase-order-method-show-purchase-order"/>
 	        <button name="sendByEmail" title="Send email" colSpan="1" onClick="save,action-send-by-email-with-template"/>
 	    </toolbar>
 	    <group colSpan="4" cols="6">
@@ -66,7 +70,6 @@
 	                </group>
 	            </group>
 	            <group colSpan="3" cols="3">
-	                
 	                <group title="Totals" colSpan="3" cols="3" colWidths="50%,50%">
 	                    <spacer/><field name="exTaxTotal" />
 	                    <spacer/><field name="vatTotal" />
@@ -80,6 +83,9 @@
 	                </group>
 	            </group>
 	        </page>
+			<page title="Notes" colSpan="4" cols="6">
+				<field name="notes" showTitle="false" colSpan="6" widget="Html[lite=true]"/>
+			</page>
 	    </notebook>
 	</form>
     
