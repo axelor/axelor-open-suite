@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="SchedulerInstance" lang="java">
+  
+    <string name="name" namecolumn="true" title="Libellé" />
+    <many-to-one name="scheduler" ref="Scheduler" title="Planificateur" />
+    <date name="firstExecutionDate" title="Date de démarrage" tz="true"/>
+    <date name="lastTheoreticalExecutionDate" title="Date théorique de dernière génération" tz="true" readonly="true"/>
+    <date name="lastExecutionDate" title="Date de la dernière génération" tz="true"/>
+    <one-to-many name="schedulerIntanceHistoryList" ref="SchedulerInstanceHistory" mappedBy="schedulerInstance" title="Historique des éxécutions"/>
+  
+  </entity>
+
+</domain-models>

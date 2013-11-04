@@ -610,14 +610,19 @@
 		<view type="form" />
 	</action-view>
 	
-	<menuitem name="base-batch" parent="admin-root"
-		title="Base batches" action="base.batch" />
+	
+	<menuitem name="admin-root-batch" parent="admin-root"
+		title="Batches" action="admin.root.batch"/>
+	
+	<menuitem name="admin-root-batch-base" parent="admin-root-batch"
+		title="Base batches" action="admin.root.batch.base" />
 
-	<action-view name="base.batch" title="Base batches"
+	<action-view name="admin.root.batch.base" title="Base batches"
 		model="com.axelor.apps.base.db.BaseBatch" icon="img/icons/parameter_small.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
+	
 	
 
 	<!-- Top Menu for Create new objects.... -->

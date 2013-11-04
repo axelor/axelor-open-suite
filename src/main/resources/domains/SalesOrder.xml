@@ -17,6 +17,7 @@
   	<date name="validationDate" title="Validation date" readonly="true"/>
 	<many-to-one name="location" ref="com.axelor.apps.supplychain.db.Location" title="Location"/>
 	<date name="shipmentDate" title="Date of shipment"/>
+	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
 	
 <!--   	Onglet Coordonnées client -->
   	<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" required="true" title="Customer"/>
@@ -61,6 +62,14 @@
 <!-- 	Onglet Commande Client -->
     <date name="orderDate" title="Order Date"/>
     <string name="orderNumber" title="Order Number"/>
+    
+<!--     Onglet scheduler -->
+<!-- 	<many-to-one name="scheduler" ref="com.axelor.apps.base.db.Scheduler" title="Scheduler"/> -->
+	<one-to-one name="schedulerInstance" ref="com.axelor.apps.base.db.SchedulerInstance" title="Scheduler instance"/>
+	<date name="subscriptionStartDate" title="Subscription start date"/>
+	<date name="invoicedFirstDate" title="Invoiced first date"/>
+	<date name="nextInvPeriodStartDate" title="Next invoiced period start date" readonly="true"/>
+	<date name="subscriptionEndDate" title="Subscription end date"/>
     
     <many-to-one name="validatedByUserInfo" ref="com.axelor.apps.base.db.UserInfo" readonly="true" title="Validated by"/>  	
     

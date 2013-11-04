@@ -22,6 +22,7 @@
     <many-to-one name="partnerAccount" ref="com.axelor.apps.account.db.Account" title="Customer account" required="true"/>
 	<many-to-one name="address" ref="com.axelor.apps.base.db.Address" title="Address" />
     <boolean name="endOfCycleOk" title="End of cycle" default="false"/>
+    <boolean name="isSubscription" title="Subscription ?" default="false"/>
     <string name="internalReference" title="Internal Document Reference" help="Refers to an internal document like a SO, PO, Stock Picking reference..."/>
     <string name="externalReference" title="External Document Reference" help="Refers to an external document like a Customer or Supplier Order, Supplier invoice, Bill of lading..."/>
     <many-to-one name="project" title="Business" ref="com.axelor.apps.organisation.db.Project" />
@@ -30,6 +31,8 @@
     <!-- Dates -->
     <date name="invoiceDate" title="Invoice Date" required="true"/>
     <date name="dueDate" title="Due Date"/>
+    <date name="subscriptionFromDate" title="From"/>
+    <date name="subscriptionToDate" title="To"/>
     
     <!-- Accounting informations -->
     <boolean name="schedulePaymentOk" title="Belonging to a payment schedule" default="false"/>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+
+    <grid name="scheduler-grid" title="Planificateur" model="com.axelor.apps.base.db.Scheduler">
+        <field name="name"/>
+    </grid>
+	
+	<form name="scheduler-form" title="Planificateur" model="com.axelor.apps.base.db.Scheduler" cols="4"
+		onSave="scheduler-validate-infos" >
+	    <field name="name" colSpan="2"/>
+	    <break/>
+	    <group name="header" showTitle="false" colSpan="3" cols="4">
+	    	<group colSpan="1" cols="2" title="Périodicité">
+		    	<field name="daily" colSpan="2" onChange="scheduler-onChange-daily"/>
+		    	<field name="weekly" colSpan="2" onChange="scheduler-onChange-weekly"/>
+		    	<field name="monthly" colSpan="2" onChange="scheduler-onChange-monthly"/>
+		    	<field name="annual" colSpan="2" onChange="scheduler-onChange-annual"/>
+		    </group>
+		    <group colSpan="3" cols="4" showTitle="false">
+		    	<group name="dailyGroup" showTitle="false" hideIf="!daily" >
+		            <separator title="Quotidienne" colSpan="4"/> 
+		    		<field title="Tous les" name="dayDaily" colSpan="1" />
+		    		<label title="jour(s)"/>
+		    	</group>
+		    	<group name="weeklyGroup" showTitle="false" hideIf="!weekly">
+		            <separator title="Hebdomadaire" colSpan="4"/> 
+		    		<field title="Toutes les" name="weekWeekly" colSpan="1"/>
+		    		<label title="semaine(s)"/>
+		    		<break/>
+		    		<label title="Le :" colSpan="1"/>
+		    		<group showTitle="false" colSpan="5" >
+			    		<field name="monday" />
+					    <field name="tuesday" />
+					    <field name="wednesday" />
+					    <field name="thursday" />
+					    <field name="friday" />
+					    <field name="saturday" />
+					    <field name="sunday" />
+				    </group>
+		    	</group>
+		    	<group cols="5" name="monthlyGroup" showTitle="false" hideIf="!monthly">
+		            <separator title="Mensuel" colSpan="4"/> 
+		            <break/>
+		    		<field title="Le" name="dayMonthly" colSpan="1"/>
+		    		<field title="tous les" name="monthMonthly" colSpan="1"/>
+		    		<label title="mois"/>
+		    	</group>
+		    	<group name="annualGroup" showTitle="false" hideIf="!annual">
+		            <separator title="Annuelle" colSpan="4"/> 
+		    		<field title="Tous les" name="yearAnnual"/>
+		    		<label title="an(s)"/>
+		    		<break/>
+		    		<field name="dayAnnual" title="Le"/>
+		    		<field showTitle="false" name="monthAnnualSelect"/>
+		    	</group>
+		    </group>
+	    </group>
+	</form>
+
+	<action-record name="scheduler-onChange-daily" model="com.axelor.apps.base.db.Scheduler">
+		<field name="weekly" expr="eval: false"/>
+		<field name="monthly" expr="eval: false"/>
+		<field name="annual" expr="eval: false"/>
+	</action-record>
+	
+	<action-record name="scheduler-onChange-monthly" model="com.axelor.apps.base.db.Scheduler">
+		<field name="weekly" expr="eval: false"/>
+		<field name="daily" expr="eval: false"/>
+		<field name="annual" expr="eval: false"/>
+	</action-record>
+	
+	<action-record name="scheduler-onChange-annual" model="com.axelor.apps.base.db.Scheduler">
+		<field name="weekly" expr="eval: false"/>
+		<field name="monthly" expr="eval: false"/>
+		<field name="daily" expr="eval: false"/>
+	</action-record>
+	
+	<action-record name="scheduler-onChange-weekly" model="com.axelor.apps.base.db.Scheduler">
+		<field name="daily" expr="eval: false"/>
+		<field name="monthly" expr="eval: false"/>
+		<field name="annual" expr="eval: false"/>
+	</action-record>
+	
+	<action-validate name="scheduler-validate-infos">
+		<error message="Veuillez saisir une périodicité." if="!daily &amp;&amp; !weekly &amp;&amp; !monthly &amp;&amp; !annual"/>
+		<error message="Veuillez saisir une rythme en jour." if="daily &amp;&amp; !dayDaily"/>
+		<error message="Veuillez saisir une rythme en jour." if="weekly &amp;&amp; !weekWeekly"/>
+		<error message="Veuillez saisir un jour de la semaine pour le rythme." if="weekly &amp;&amp; (!monday &amp;&amp; !tuesday &amp;&amp; !wednesday &amp;&amp; !thursday &amp;&amp; !friday &amp;&amp; !saturday &amp;&amp; !sunday)"/>
+		<error message="Veuillez saisir une rythme en jour." if="monthly &amp;&amp; !dayMonthly"/>
+		<error message="Veuillez saisir une rythme en mois." if="monthly &amp;&amp; !monthMonthly"/>
+		<error message="Veuillez saisir une rythme en année." if="annual &amp;&amp; !yearAnnual"/>
+		<error message="Veuillez saisir une rythme en mois." if="annual &amp;&amp; !monthAnnual"/>
+		<error message="Veuillez saisir un jour du mois pour le rythme." if="annual &amp;&amp; !dayAnnual"/>
+	</action-validate>
+	
+</object-views>
