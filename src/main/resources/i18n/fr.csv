@@ -24,7 +24,7 @@
 "","","select","Interbank payment order","Ordre de paiement interbancaire","",""
 "","","select","CRM","CRM","",""
 "","","select","Technical anomaly","Anomalie technique","",""
-"","","select","Functional anomaly","Anomalie fonctionnel","",""
+"","","select","Functional anomaly","Anomalie fonctionnelle","",""
 "com.axelor.exception.db.TraceBack","","view","TraceBack","Les TraceBacks","",""
 "com.axelor.exception.db.TraceBack","","group","Anomaly","Anomalie","",""
 "com.axelor.exception.db.TraceBack","","group","Error","Erreur","",""
