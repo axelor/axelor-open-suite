@@ -19,7 +19,7 @@
 	onSave="action-sales-order-set-sequence" onLoad="action-sales-order-attrs-collapse-specific-settings-group,action-sales-order-attrs-validated-read-only">
 	    <toolbar>
 <!-- 	        <button name="createDocument" title="Create Document" onClick="com.axelor.apps.supplychain.web.SalesOrderController:saveDocumentForOrder"/> -->
-            <button name="print" title="Print" onClick="save,action-sales-order-method-show-sales-order"/>
+            <button name="print" title="Print" icon="img/icons/print.png" onClick="save,action-sales-order-method-show-sales-order"/>
 	        <button name="sendByEmail" title="Send email" onClick="save,action-send-by-email-with-template"/>
 	    </toolbar>
 	    <group colSpan="4" cols="6">
@@ -48,7 +48,7 @@
 	            <group showTitle="false" colSpan="6" cols="3">
 	                <group colSpan="2" cols="2">
 	                    <field name="salesOrderLineVatList" showTitle="false" colSpan="2"/>
-	                    <group title="Action(s)" colSpan="2" cols="2">
+	                    <group title="Action(s)" colSpan="2" cols="2" colWidths="50%,50%">
 	                        <group colSpan="1" cols="1">
 	                            <button name="compute" title="Compute" hideIf="statusSelect == 3" colSpan="1" onClick="save,action-sales-order-method-compute,save"/>
 	                            <button name="confirm" title="Confirm" showIf="statusSelect == 1 || statusSelect == 4" colSpan="1" onClick="save,action-sales-order-set-sequence,action-sales-order-method-compute,action-sales-order-record-confirm,save"/>
