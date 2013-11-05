@@ -1,4 +1,4 @@
-"inventory.id";"product.importId";"currentQty";"realQty";"description";"productVariant.importId";"trackingNumber.importId"
+"inventory.id";"product.importId";"currentQty";"realQty";"description";"productVariant_importId";"trackingNumber_importId"
 1;3;"0.00";"25.00";;;
 1;4;"0.00";"25.00";;;
 1;5;"0.00";"40.00";;;
