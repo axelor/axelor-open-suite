@@ -21,7 +21,7 @@
 		<field name="unit"/>
 		<field name="project" domain="self.isAffair = true"/>
         <group title="Satisfaction" colSpan="4" cols="4">
-        	<separator colSpan="8" title="Project" colSpan="4"/>
+        	<separator title="Project" colSpan="4"/>
         	<group colSpan="2">
 				<field name="projectSatisfactionSelect" widget="SelectProgress"/>
 			</group>
