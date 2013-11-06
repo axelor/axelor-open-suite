@@ -63,9 +63,6 @@
 	</form>
 	
 	<!-- ACTION METHOD -->
-	<action-method name="action-general-method-clear-formula">
-		<call class="com.axelor.apps.base.web.GeneralController" method="formulaClear" />
-	</action-method>
 
 	<action-method name="action-general-method-payer-quality-process">
 		<call class="com.axelor.apps.base.web.GeneralController" method="payerQualityProcess" />
