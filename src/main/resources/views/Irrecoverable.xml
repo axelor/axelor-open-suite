@@ -54,7 +54,7 @@
    		<field name="company"   expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
 	</action-record>
 	
-	<action-view name="action-irrecoverable-show-trace-back" title="Les anomalies"	model="com.axelor.exception.db.TraceBack">
+	<action-view name="action-irrecoverable-show-trace-back" title="Anomalies"	model="com.axelor.exception.db.TraceBack">
 		<view type="grid" />
 		<view type="form" />
 		<domain>self.batchId = :id and self.origin = 'irrecoverable'</domain>
