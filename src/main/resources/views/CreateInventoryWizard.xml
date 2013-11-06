@@ -50,7 +50,7 @@
     	<call class="com.axelor.apps.supplychain.web.LocationController" method="createInventory"/>
     </action-method>
     
-    <action-view name="action-location-view-inventory" title="Inventaire généré" model="com.axelor.apps.supplychain.db.Inventory">
+    <action-view name="action-location-view-inventory" title="Inventory generated" model="com.axelor.apps.supplychain.db.Inventory">
     	<view type="form" name="inventory-form"/>
     	<context name="_showRecord" expr="eval: inventoryId"/>
     </action-view>
