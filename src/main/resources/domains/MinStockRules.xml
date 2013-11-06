@@ -8,13 +8,17 @@
   <entity name="MinStockRules" lang="java">
   
   	<string name="name" title="Name"/>
-  	
-  	<many-to-one name="event" ref="com.axelor.apps.crm.db.Event" title="Event"/>
+	
+	<many-to-one name="location" ref="com.axelor.apps.supplychain.db.Location" title="Location"/>  	
   	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
   	<integer name="minQty" title="Minimum quantity"/>
+  	<decimal name="reOrderQty" title="Re-order quantity"/>
   	<integer name="typeSelect" title="Type" selection="supplychain.min.stock.rules.type.select"/>
   	
   	<integer name="orderAlertSelect" title="Order alert select" selection="supplychain.min.stock.rules.order.alert.select"/>
+  	
+  	<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="User"/>
+  	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team"/>
   	
   </entity>
 </domain-models>
