@@ -87,10 +87,10 @@
 		<context name="_statusSelect" expr="1"/>
 	</action-view>
 	
-	<menuitem name="hr-root-inputforms-travelexpenses" parent="hr-root-inputforms"
-		title="My travel expenses" action="hr.root.inputforms.travelexpenses"/>
+	<menuitem name="hr-root-inputforms-expenses" parent="hr-root-inputforms"
+		title="My expenses" action="hr.root.inputforms.expenses"/>
 		
-	<action-view name="hr.root.inputforms.travelexpenses" title="My travel expenses"
+	<action-view name="hr.root.inputforms.expenses" title="My expenses"
 		model="com.axelor.apps.organisation.db.Expense" icon="img/icons/organisation_small.png">
 		<view type="grid" name="expense-grid" />
 		<view type="form" name="expense-form" />
@@ -136,20 +136,20 @@
 		<context name="_statusSelect" expr="1"/>
 	</action-view>
 	
-	<menuitem name="hr-root-validationforms-travelexpenses-manager" parent="hr-root-validationforms"
-		title="Travel expenses to validate by RSC Manager" action="hr.root.validationforms.travelexpenses.manager"/>
+	<menuitem name="hr-root-validationforms-expenses-manager" parent="hr-root-validationforms"
+		title="Expenses to validate by RSC Manager" action="hr.root.validationforms.expenses.manager"/>
 		
-	<action-view name="hr.root.validationforms.travelexpenses.manager" title="Travel expenses to validate by RSC Manager"
+	<action-view name="hr.root.validationforms.expenses.manager" title="Expenses to validate by RSC Manager"
 		model="com.axelor.apps.organisation.db.Expense" icon="img/icons/organisation_small.png">
 		<view type="grid" name="expense-grid" />
 		<view type="form" name="expense-form" />
 		<domain>self.statusSelect = '3'</domain>
 	</action-view>
 	
-	<menuitem name="hr-root-validationforms-travelexpenses-commercial" parent="hr-root-validationforms"
-		title="Travel expenses to validate by commercial" action="hr.root.validationforms.travelexpenses.commercial"/>
+	<menuitem name="hr-root-validationforms-Expenses-commercial" parent="hr-root-validationforms"
+		title="Expenses to validate by commercial" action="hr.root.validationforms.Expenses.commercial"/>
 		
-	<action-view name="hr.root.validationforms.travelexpenses.commercial" title="Travel expenses to validate by commercial"
+	<action-view name="hr.root.validationforms.expenses.commercial" title="Expenses to validate by commercial"
 		model="com.axelor.apps.organisation.db.Expense" icon="img/icons/organisation_small.png">
 		<view type="grid" name="expense-grid" />
 		<view type="form" name="expense-form" />
@@ -183,10 +183,10 @@
 	<menuitem name="hr-root-paymentforms" parent="hr-root"
 		title="Payment forms" />
 	
-	<menuitem name="hr-root-paymentforms-travelexpenses" parent="hr-root-paymentforms"
-		title="Travel expenses to be paid" action="hr.root.paymentforms.travelexpenses"/>
+	<menuitem name="hr-root-paymentforms-expenses" parent="hr-root-paymentforms"
+		title="Expenses to be paid" action="hr.root.paymentforms.expenses"/>
 		
-	<action-view name="hr.root.paymentforms.travelexpenses" title="Travel expenses to be paid"
+	<action-view name="hr.root.paymentforms.expenses" title="Expenses to be paid"
 		model="com.axelor.apps.organisation.db.Expense" icon="img/icons/organisation_small.png">
 		<view type="grid" name="expense-grid" />
 		<view type="form" name="expense-form" />
