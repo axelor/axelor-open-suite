@@ -32,7 +32,7 @@
 			</group>
         	<field name="companyComment"/>
         </group>
-        <group title="Unité" colSpan="4">
+        <group title="Unit" colSpan="4">
          	<field name="unit"/>
         </group>
         <spacer/>

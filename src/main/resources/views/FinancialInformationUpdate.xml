@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    <grid name="financial-information-update-grid" title="Les mises à jours des informations financières" model="com.axelor.apps.organisation.db.FinancialInformationUpdate">
+    <grid name="financial-information-update-grid" title="Others financials informations" model="com.axelor.apps.organisation.db.FinancialInformationUpdate">
         <field name="date"/>
         <field name="userInfo"/>
         <field name="product"/>
@@ -13,7 +13,7 @@
         <field name="description"/>
     </grid>
     
-    <form name="financial-information-update-form" title="Mise à jour des informations financières" model="com.axelor.apps.organisation.db.FinancialInformationUpdate" cols="4" 
+    <form name="financial-information-update-form" title="Other financial information" model="com.axelor.apps.organisation.db.FinancialInformationUpdate" cols="4" 
     onNew="action-financial-information-update-record-default">
         <field name="date"/>
         <field name="userInfo"/>

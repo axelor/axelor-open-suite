@@ -70,7 +70,7 @@
 	        	<field name="realEstimatedMethodSelect"/>
 	        	<field name="company.currency"/>
 	        	<field name="exportTypeSelect"/>
-                <button name="printProject" colSpan="2" title="Voir rapport estimations" onClick="action-print-project-report" icon="img/icons/print.png"/>
+                <button name="printProject" colSpan="2" title="View forecast report" onClick="action-print-project-report" icon="img/icons/print.png"/>
 	            <group title="Initial estimated" colSpan="4" cols="6" hideIf="realEstimatedMethodSelect == 1">
 	                <field name="initialEstimatedTurnover"/>
 	                <field name="initialEstimatedCost"/>
@@ -109,7 +109,7 @@
 	        		</page>
 	        	</notebook>
 	        </page>
-	        <page title="Membres" colSpan="4">
+	        <page title="members" colSpan="4">
 	            <field name="memberUserInfoSet" colSpan="6"/>
 	        </page>
 	        <page title="Need">
