@@ -390,9 +390,9 @@
 		<option value="salesOrder">Sales order</option>
 		<option value="purchaseOrder">Purchase order</option>
 		<option value="eventTicket">Ticket</option>
-		<option value="intStockMove">Mouvement Interne</option>
-		<option value="outStockMove">Mvt Stock Livraison</option>
-		<option value="inStockMove">Mvt Stock Reception</option>
+		<option value="intStockMove">Internal stock move</option>
+		<option value="outStockMove">Delivery stock move</option>
+		<option value="inStockMove">Receipt stock move</option>
 		<option value="inventory">Inventory</option>
 		<option value="productTrackingNumber">Product tracking number</option>
 	</selection>
