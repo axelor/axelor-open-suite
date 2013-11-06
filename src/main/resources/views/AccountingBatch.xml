@@ -45,14 +45,14 @@
     		<page name="doubtfulCustormerPage" title="Doubtful customers configuration" cols="4">
     			<button name="doubtfulCustomerBatch" title="Doubtful Customer Batch" colSpan="4" onClick="save,action-accounting-batch-method-action-doubtful-customer" />
     		</page>
-    		<page name="accountCustomerPage" title="Configuration Calcul des comptes clients" cols="4">
-    			<group title="Mettre à jour" colSpan="4" cols="6">
+    		<page name="accountCustomerPage" title="Account calculation configuration" cols="4">
+    			<group title="Update" colSpan="4" cols="6">
 	    			<field name="updateCustAccountOk"/>
 	    			<field name="updateDueCustAccountOk"/>
 	    			<field name="updateDueReminderCustAccountOk"/>
     			</group>
     		</page>
-    		<page name="moveLineExportPage" title="Configuration Export des écritures">
+    		<page name="moveLineExportPage" title="Move Lines Export Config">
     			<field name="moveLineExportTypeSelect"/>
     			<field name="startDate"/>
    				<field name="endDate"/>
