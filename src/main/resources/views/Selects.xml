@@ -50,7 +50,8 @@
 	
 	<selection name="supplychain.min.stock.rules.order.alert.select">
 		<option value="1">Alert</option>
-		<option value="2">PO/Production</option>
+		<option value="2">Purchase order</option>
+		<option value="2">Manufacturing order</option>
 	</selection>
 	
 	<selection name="supplychain.purchase.order.status.select">
