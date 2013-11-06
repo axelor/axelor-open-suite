@@ -19,7 +19,7 @@
   	<boolean name="isBusiness" title="Business ?"/>
   	<boolean name="isTimeSheetImputable" title="Timesheet input required ?"/>
   	<many-to-one name="defaultTask" ref="com.axelor.apps.organisation.db.Task" title="Default task"/>
-  	<boolean name="isReinvoicingExpense" title="Reinvoicing of travel expense"/>
+  	<boolean name="isReinvoicingExpense" title="Reinvoicing of expense"/>
   	<boolean name="isReinvoicingTime" title="Reinvoicing time spent"/>
   	<integer name="projectStatusSelect" title="Status" selection="organisation.project.status.select"/>
   	<integer name="businessStatusSelect" title="Statut" selection="organisation.project.business.status.select"/>

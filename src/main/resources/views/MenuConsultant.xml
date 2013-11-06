@@ -14,7 +14,7 @@
 	
 	<portal name="consultant.dashboard.portal" title="Dashboard">
 		<portlet action="consultant.dashbord.portal.time.sheet" canSearch="true" height="400" />
-		<portlet action="consultant.dashboard.portal.travel.expense" canSearch="true" height="400" />
+		<portlet action="consultant.dashboard.portal.expense" canSearch="true" height="400" />
 		<portlet action="consultant.dashboard.portal.tasks" canSearch="true" height="400" />
 		<portlet action="consultant.dashboard.portal.leave.request" canSearch="true" height="400" />
 	</portal>
@@ -27,7 +27,7 @@
 		<context name="_userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
 	</action-view>	
 	
-	<action-view name="consultant.dashboard.portal.travel.expense" title="My expenses to complete"
+	<action-view name="consultant.dashboard.portal.expense" title="My expenses to complete"
 		model="com.axelor.apps.organisation.db.Expense">
 		<view type="grid" name="expense-grid" />
 		<view type="form" name="expense-form" />
@@ -79,7 +79,7 @@
 	<menuitem name="menu-consultant-expense" title="My Expenses" groups="consultant" 
 		action="menu.consultant.expense" />	
 	
-	<action-view name="menu.consultant.expense" title="My Travel expenses"
+	<action-view name="menu.consultant.expense" title="My expenses"
 		model="com.axelor.apps.organisation.db.Expense" >
 		<view type="grid" name="expense-grid" />
 		<view type="form" name="expense-form" />

@@ -173,7 +173,7 @@
 		<filter title="Profiles">
 			<domain>self.applicationTypeSelect = 2</domain>
 		</filter>
-		<filter title="Travel expenses">
+		<filter title="Expenses">
 			<domain>self.applicationTypeSelect = 3</domain>
 		</filter>
 		<filter title="Obsolete Products">

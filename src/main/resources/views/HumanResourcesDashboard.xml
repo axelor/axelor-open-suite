@@ -8,8 +8,8 @@
 		<portlet action="human.resources.dashboard.portal.candidates" canSearch="true" height="350" />
 		<portlet action="human.resources.dashboard.portal.timesheets" canSearch="true" height="350" />
 		<portlet action="human.resources.dashboard.portal.my.timesheets" canSearch="true" height="350" />
-		<portlet action="human.resources.dashboard.portal.travel.expenses" canSearch="true" height="350" />
-		<portlet action="human.resources.dashboard.portal.my.travel.expenses" canSearch="true" height="350" />
+		<portlet action="human.resources.dashboard.portal.expenses" canSearch="true" height="350" />
+		<portlet action="human.resources.dashboard.portal.my.expenses" canSearch="true" height="350" />
 		<portlet action="human.resources.dashboard.portal.overtimes" canSearch="true" height="350" />
 		<portlet action="human.resources.dashboard.portal.my.overtimes" canSearch="true" height="350" />
 		<portlet action="human.resources.dashboard.portal.leaverequest" canSearch="true" height="350" />
@@ -36,7 +36,7 @@
 		<view type="form" name="timesheet-form" />
 	</action-view>
 
-	<action-view name="human.resources.dashboard.portal.travel.expenses" title="All Travel Expenses"
+	<action-view name="human.resources.dashboard.portal.expenses" title="All Expenses"
 		model="com.axelor.apps.organisation.db.Expense">
 		<view type="grid" name="expense-grid" />
 		<view type="form" name="expense-form" />
@@ -61,7 +61,7 @@
 		<domain>self.userInfo.internalUser.id = :_user_id</domain>
 	</action-view>
 
-	<action-view name="human.resources.dashboard.portal.my.travel.expenses" title="My Travel Expenses"
+	<action-view name="human.resources.dashboard.portal.my.expenses" title="My Expenses"
 		model="com.axelor.apps.organisation.db.Expense">
 		<view type="grid" name="expense-grid" />
 		<view type="form" name="expense-form" />
