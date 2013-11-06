@@ -158,36 +158,36 @@
 	</action-method>
 
 	<action-record name="action-record-recruitment-advancement" model="com.axelor.apps.organisation.db.Candidate">
-		<field name="etatCandidature" expr="5" if="etatCandidature == 4"/>
-		<field name="etatCandidature" expr="4" if="etatCandidature == 3"/>
-		<field name="etatCandidature" expr="3" if="etatCandidature == 2"/>
-		<field name="etatCandidature" expr="2" if="etatCandidature == 1"/>
-		<field name="etatCandidature" expr="1" if="etatCandidature == 6"/>
-		<field name="etatCandidature" expr="1" if="etatCandidature == 9"/>			
+		<field name="recruitmentStatusSelect" expr="5" if="etatCandidature == 4"/>
+		<field name="recruitmentStatusSelect" expr="4" if="etatCandidature == 3"/>
+		<field name="recruitmentStatusSelect" expr="3" if="etatCandidature == 2"/>
+		<field name="recruitmentStatusSelect" expr="2" if="etatCandidature == 1"/>
+		<field name="recruitmentStatusSelect" expr="1" if="etatCandidature == 6"/>
+		<field name="recruitmentStatusSelect" expr="1" if="etatCandidature == 9"/>			
 	</action-record>
 	
 	<action-record name="action-record-candidate-propose-offer-recruitment-advancement" model="com.axelor.apps.organisation.db.Candidate">
-		<field name="etatCandidature" expr="8" if="etatCandidature == 7"/>
-		<field name="etatCandidature" expr="7" if="etatCandidature == 5"/>
-		<field name="etatCandidature" expr="7" if="etatCandidature == 4"/>
-		<field name="etatCandidature" expr="7" if="etatCandidature == 3"/>
+		<field name="recruitmentStatusSelect" expr="8" if="etatCandidature == 7"/>
+		<field name="recruitmentStatusSelect" expr="7" if="etatCandidature == 5"/>
+		<field name="recruitmentStatusSelect" expr="7" if="etatCandidature == 4"/>
+		<field name="recruitmentStatusSelect" expr="7" if="etatCandidature == 3"/>
 	</action-record>
 	
 	<action-record name="action-record-candidate-default" model="com.axelor.apps.organisation.db.Candidate">
-		<field name="etatCandidature" expr="1" />
+		<field name="recruitmentStatusSelect" expr="1" />
 	</action-record>
 	
 	<action-record name="action-record-button-reject" model="com.axelor.apps.organisation.db.Candidate">
-		<field name="etatCandidature" expr="6" />
+		<field name="recruitmentStatusSelect" expr="6" />
 	</action-record>
 	
 	<action-record name="action-record-button-reject-offer" model="com.axelor.apps.organisation.db.Candidate">
-		<field name="etatCandidature" expr="9" />
+		<field name="recruitmentStatusSelect" expr="9" />
 	</action-record>
 
 	<action-record name="action-record-candidate-reset-fields" model="com.axelor.apps.organisation.db.Candidate">
 		<field name="recruitementDate" expr=""/>
-		<field name="commentaire" expr=""/>
+		<field name="note" expr=""/>
 	</action-record>
 	
 	<action-method name="action-method-candidate-create-recruitment-process-line">
