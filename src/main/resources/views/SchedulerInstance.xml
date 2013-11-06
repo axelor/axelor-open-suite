@@ -2,14 +2,14 @@
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
 
-    <grid name="scheduler-instance-grid" title="Mon Planificateur" model="com.axelor.apps.base.db.SchedulerInstance">
+    <grid name="scheduler-instance-grid" title="Schedulers" model="com.axelor.apps.base.db.SchedulerInstance">
         <field name="name"/>
         <field name="lastTheoreticalExecutionDate"/>
         <field name="lastExecutionDate"/>
 	    <field name="firstExecutionDate"/>
     </grid>
 	
-	<form name="scheduler-instance-form" title="Mon Planificateur" model="com.axelor.apps.base.db.SchedulerInstance" cols="6"
+	<form name="scheduler-instance-form" title="Scheduler" model="com.axelor.apps.base.db.SchedulerInstance" cols="6"
 		onNew="action-scheduler-instance-record-first-execution-date"
 		onSave="scheduler-instance-validate-infos">
 	    <field name="name" colSpan="2"/>
@@ -21,11 +21,11 @@
 		    <field name="lastTheoreticalExecutionDate" readonly="true"/>
 		    <field name="lastExecutionDate" readonly="true"/>
 	    </group>
-	    <field name="schedulerIntanceHistoryList" colSpan="6"/>
+	    <field name="schedulerInstanceHistoryList" colSpan="6"/>
 	</form>
 	
 	<action-validate name="scheduler-instance-validate-infos">
-		<error message="Veuillez saisir une date de prochain démarrage." if="!firstExecutionDate"/>
+		<error message="Please, enter date of next execution." if="!firstExecutionDate"/>
 	</action-validate>
 	
 	<action-record name="action-scheduler-instance-record-first-execution-date" model="com.axelor.apps.base.db.SchedulerInstance">

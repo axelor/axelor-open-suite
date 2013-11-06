@@ -7,12 +7,12 @@
 
   <entity name="SchedulerInstance" lang="java">
   
-    <string name="name" namecolumn="true" title="Libellé" />
-    <many-to-one name="scheduler" ref="Scheduler" title="Planificateur" />
-    <date name="firstExecutionDate" title="Date de démarrage" tz="true"/>
-    <date name="lastTheoreticalExecutionDate" title="Date théorique de dernière génération" tz="true" readonly="true"/>
-    <date name="lastExecutionDate" title="Date de la dernière génération" tz="true"/>
-    <one-to-many name="schedulerIntanceHistoryList" ref="SchedulerInstanceHistory" mappedBy="schedulerInstance" title="Historique des éxécutions"/>
+    <string name="name" namecolumn="true" title="Label" />
+    <many-to-one name="scheduler" ref="Scheduler" title="Scheduler" />
+    <date name="firstExecutionDate" title="First execution date" tz="true"/>
+    <date name="lastTheoreticalExecutionDate" title="Last theoretical execution date" tz="true" readonly="true"/>
+    <date name="lastExecutionDate" title="Last execution date" tz="true"/>
+    <one-to-many name="schedulerInstanceHistoryList" ref="SchedulerInstanceHistory" mappedBy="schedulerInstance" title="Executions history"/>
   
   </entity>
 

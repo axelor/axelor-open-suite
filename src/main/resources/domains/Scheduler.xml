@@ -8,29 +8,29 @@
   <entity name="Scheduler" lang="java">
   
   	<string name="importId" hashKey="false" unique="true"/>
-    <string name="name" namecolumn="true" title="Libellé" />
-    <boolean name="annual" title="Annuelle" default="false"/>
-    <boolean name="daily" title="Quotidienne" default="false"/>
-    <boolean name="monthly" title="Mensuel" default="false"/>
-    <boolean name="weekly" title="Hebdomadaire" default="false"/>
-    <!-- Quotidienne -->
-    <integer name="dayDaily" title="Rythme" default="1"/>
-    <!-- Hebdomadaire -->
-    <integer name="weekWeekly" title="Rythme" default="1"/>
-    <boolean name="monday" title="Lundi" default="false"/>
-    <boolean name="tuesday" title="Mardi" default="false"/>
-    <boolean name="wednesday" title="Mercredi" default="false"/>
-    <boolean name="thursday" title="Jeudi" default="false"/>
-    <boolean name="friday" title="Vendredi" default="false"/>
-    <boolean name="saturday" title="Samedi" default="false"/>
-    <boolean name="sunday" title="Dimanche" default="false"/>
-    <!-- Mensuel -->
-    <integer name="dayMonthly" title="Jour du mois" default="1" />
-    <integer name="monthMonthly" title="Rythme" default="1" />
-    <!-- Annuelle -->
-    <integer name="yearAnnual" title="Rythme" default="1" />
-    <integer name="monthAnnualSelect" title="Mois" default="1" selection="iadministration.month.select"/>
-    <integer name="dayAnnual" title="Jour du mois" default="1"/>
+    <string name="name" namecolumn="true" title="Label" />
+    <boolean name="annually" title="Annually" default="false"/>
+    <boolean name="daily" title="Daily" default="false"/>
+    <boolean name="monthly" title="Monthly" default="false"/>
+    <boolean name="weekly" title="Weekly" default="false"/>
+    <!-- Daily -->
+    <integer name="dayDaily" title="Rhythm" default="1"/>
+    <!-- Weekly -->
+    <integer name="weekWeekly" title="Rhythm" default="1"/>
+    <boolean name="monday" title="Monday" default="false"/>
+    <boolean name="tuesday" title="Tuesday" default="false"/>
+    <boolean name="wednesday" title="Wednesday" default="false"/>
+    <boolean name="thursday" title="Thursday" default="false"/>
+    <boolean name="friday" title="Friday" default="false"/>
+    <boolean name="saturday" title="Saturday" default="false"/>
+    <boolean name="sunday" title="Sunday" default="false"/>
+    <!-- Monthly -->
+    <integer name="monthMonthly" title="Rhythm" default="1" />
+    <integer name="dayMonthly" title="Day of month" default="1" />
+    <!-- Annually -->
+    <integer name="yearAnnually" title="Rhythm" default="1" />
+    <integer name="monthAnnuallySelect" title="Month" default="1" selection="iadministration.month.select"/>
+    <integer name="dayAnnually" title="Day of month" default="1"/>
     
   </entity>
 

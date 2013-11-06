@@ -163,7 +163,7 @@ public class SchedulerService {
 	 */
 	public LocalDate getComputeDate(Scheduler scheduler, LocalDate date) throws AxelorException{
 		
-		if(scheduler.getAnnual())
+		if(scheduler.getAnnually())
 			return this.getAnnualComputeDate(scheduler,date);
 		else if(scheduler.getMonthly())
 			return this.getMonthlyComputeDate(scheduler,date);
@@ -275,29 +275,29 @@ public class SchedulerService {
 		
 		int monthOfYear = 0;
 		
-		if(scheduler.getMonthAnnualSelect().equals(IAdministration.JAN))
+		if(scheduler.getMonthAnnuallySelect().equals(IAdministration.JAN))
 			monthOfYear = DateTimeConstants.JANUARY;
-		else if(scheduler.getMonthAnnualSelect().equals(IAdministration.FEB))
+		else if(scheduler.getMonthAnnuallySelect().equals(IAdministration.FEB))
 			monthOfYear = DateTimeConstants.FEBRUARY;
-		else if(scheduler.getMonthAnnualSelect().equals(IAdministration.MAR))
+		else if(scheduler.getMonthAnnuallySelect().equals(IAdministration.MAR))
 			monthOfYear = DateTimeConstants.MARCH;
-		else if(scheduler.getMonthAnnualSelect().equals(IAdministration.APR))
+		else if(scheduler.getMonthAnnuallySelect().equals(IAdministration.APR))
 			monthOfYear = DateTimeConstants.APRIL;
-		else if(scheduler.getMonthAnnualSelect().equals(IAdministration.MAY))
+		else if(scheduler.getMonthAnnuallySelect().equals(IAdministration.MAY))
 			monthOfYear = DateTimeConstants.MAY;
-		else if(scheduler.getMonthAnnualSelect().equals(IAdministration.JUN))
+		else if(scheduler.getMonthAnnuallySelect().equals(IAdministration.JUN))
 			monthOfYear = DateTimeConstants.JUNE;
-		else if(scheduler.getMonthAnnualSelect().equals(IAdministration.JUL))
+		else if(scheduler.getMonthAnnuallySelect().equals(IAdministration.JUL))
 			monthOfYear = DateTimeConstants.JULY;
-		else if(scheduler.getMonthAnnualSelect().equals(IAdministration.AUG))
+		else if(scheduler.getMonthAnnuallySelect().equals(IAdministration.AUG))
 			monthOfYear = DateTimeConstants.AUGUST;
-		else if(scheduler.getMonthAnnualSelect().equals(IAdministration.SEP))
+		else if(scheduler.getMonthAnnuallySelect().equals(IAdministration.SEP))
 			monthOfYear = DateTimeConstants.SEPTEMBER;
-		else if(scheduler.getMonthAnnualSelect().equals(IAdministration.OCT))
+		else if(scheduler.getMonthAnnuallySelect().equals(IAdministration.OCT))
 			monthOfYear = DateTimeConstants.OCTOBER;
-		else if(scheduler.getMonthAnnualSelect().equals(IAdministration.NOV))
+		else if(scheduler.getMonthAnnuallySelect().equals(IAdministration.NOV))
 			monthOfYear = DateTimeConstants.NOVEMBER;
-		else if(scheduler.getMonthAnnualSelect().equals(IAdministration.DEC))
+		else if(scheduler.getMonthAnnuallySelect().equals(IAdministration.DEC))
 			monthOfYear = DateTimeConstants.DECEMBER;
 		
 		if(monthOfYear != 0){
@@ -305,12 +305,12 @@ public class SchedulerService {
 			int start = date.plusWeeks(scheduler.getWeekWeekly()).dayOfMonth().getMinimumValue();
 			int end = date.plusWeeks(scheduler.getWeekWeekly()).dayOfMonth().getMaximumValue();
 			
-			if(start <= scheduler.getDayAnnual() && scheduler.getDayAnnual() <= end)
-				return date.plusYears(scheduler.getYearAnnual()).withMonthOfYear(monthOfYear).withDayOfMonth(scheduler.getDayAnnual());
+			if(start <= scheduler.getDayAnnually() && scheduler.getDayAnnually() <= end)
+				return date.plusYears(scheduler.getYearAnnually()).withMonthOfYear(monthOfYear).withDayOfMonth(scheduler.getDayAnnually());
 			else if(scheduler.getDayMonthly() < start)
-				return date.plusYears(scheduler.getYearAnnual()).withMonthOfYear(monthOfYear).dayOfMonth().withMinimumValue();
+				return date.plusYears(scheduler.getYearAnnually()).withMonthOfYear(monthOfYear).dayOfMonth().withMinimumValue();
 			else if(scheduler.getDayMonthly() > end)
-				return date.plusYears(scheduler.getYearAnnual()).withMonthOfYear(monthOfYear).dayOfMonth().withMaximumValue();
+				return date.plusYears(scheduler.getYearAnnually()).withMonthOfYear(monthOfYear).dayOfMonth().withMaximumValue();
 			
 		}
 		
@@ -344,11 +344,11 @@ public class SchedulerService {
 		history.setLastThoereticalExecutionDate(date);
 		history.setSchedulerInstance(schedulerI);
 		
-		if(schedulerI.getSchedulerIntanceHistoryList() == null){
-			schedulerI.setSchedulerIntanceHistoryList(new ArrayList<SchedulerInstanceHistory>());
+		if(schedulerI.getSchedulerInstanceHistoryList() == null){
+			schedulerI.setSchedulerInstanceHistoryList(new ArrayList<SchedulerInstanceHistory>());
 		}
 		
-		schedulerI.getSchedulerIntanceHistoryList().add(history);
+		schedulerI.getSchedulerInstanceHistoryList().add(history);
 		
 		schedulerI.save();
 	}

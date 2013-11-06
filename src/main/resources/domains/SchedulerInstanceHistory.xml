@@ -7,9 +7,9 @@
 
   <entity name="SchedulerInstanceHistory" lang="java">
   
-    <date name="lastExecutionDate" title="Date de génération" tz="true"/>
-    <date name="lastThoereticalExecutionDate" title="Date théorique de génération" tz="true"/>
-    <many-to-one name="schedulerInstance" ref="SchedulerInstance" title="Planificateur"/>
+    <date name="lastExecutionDate" title="Execution date" tz="true"/>
+    <date name="lastThoereticalExecutionDate" title="Next theoretical execution date" tz="true"/>
+    <many-to-one name="schedulerInstance" ref="SchedulerInstance" title="Scheduler"/>
   
   </entity>
 
