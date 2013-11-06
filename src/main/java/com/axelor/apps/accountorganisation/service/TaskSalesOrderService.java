@@ -102,36 +102,41 @@ public class TaskSalesOrderService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void createTasks(SalesOrder salesOrder) throws AxelorException  {
 
+		// Vérification de l'ensemble des lignes de devis pour le type 'Facturation par tâche'
 		this.checkProductType(salesOrder);
 			
-		boolean hasGlobalTask = salesOrder.getHasGlobalTask();
-		
-		Project project = salesOrder.getProject();
-		
-		if(project == null)  {
-			project = projectService.createProject(
-					salesOrder.getClientPartner().getFullName()+" "+salesOrder.getSalesOrderSeq(), 
-					IProject.STATUS_DRAFT, 
-					salesOrder.getClientPartner(), 
-					salesOrder.getCompany(), 
-					salesOrder.getContactPartner(), 
-					true, 
-					true);
+		// Si il y a au moins une tache a créer
+		if(this.hasSalesOrderLineTaskProduct(salesOrder))  {
 			
-			salesOrder.setProject(project);
+			boolean hasGlobalTask = salesOrder.getHasGlobalTask();
+			
+			Project project = salesOrder.getProject();
+			
+			if(project == null)  {
+				project = projectService.createProject(
+						salesOrder.getClientPartner().getFullName()+" "+salesOrder.getSalesOrderSeq(), 
+						IProject.STATUS_DRAFT, 
+						salesOrder.getClientPartner(), 
+						salesOrder.getCompany(), 
+						salesOrder.getContactPartner(), 
+						true, 
+						true);
+				
+				salesOrder.setProject(project);
+			}
+			
+			if(hasGlobalTask)  {
+				
+				projectService.updateDefaultTask(project);
+				
+				this.assignTaskInSalesOrderLines(salesOrder.getSalesOrderLineList(), project.getDefaultTask());
+				
+			}
+			
+			this.createTasks(salesOrder.getSalesOrderLineList());
+			
+			salesOrder.save();
 		}
-		
-		if(hasGlobalTask)  {
-			
-			projectService.updateDefaultTask(project);
-			
-			this.assignTaskInSalesOrderLines(salesOrder.getSalesOrderLineList(), project.getDefaultTask());
-			
-		}
-		
-		this.createTasks(salesOrder.getSalesOrderLineList());
-		
-		salesOrder.save();
 	}
 	
 	
@@ -313,6 +318,33 @@ public class TaskSalesOrderService {
 	}
 	
 	
+	public boolean hasSalesOrderLineTaskProduct(SalesOrder salesOrder) throws AxelorException  {
+
+		if(salesOrder.getSalesOrderLineList() != null && this.isTaskInvoicingMethod(salesOrder))  {
+			for(SalesOrderLine salesOrderLine : salesOrder.getSalesOrderLineList())  {
+				
+				if(this.hasSalesOrderLineTaskProduct(salesOrderLine))  {
+					return true;
+				}
+				
+			}
+		}
+		return false;
+	}
+	
+	
+	public boolean hasSalesOrderLineTaskProduct(SalesOrderLine salesOrderLine) throws AxelorException  {
+		
+		if(this.isTaskProduct(salesOrderLine))  {
+			return true;
+		}
+		
+		return false;
+		
+	}
+	
+	
+	
 	public void checkProductType(SalesOrder salesOrder) throws AxelorException  {
 
 		if(salesOrder.getSalesOrderLineList() != null && this.isTaskInvoicingMethod(salesOrder))  {
@@ -322,8 +354,6 @@ public class TaskSalesOrderService {
 				
 			}
 		}
-		
-		
 	}
 	
 	public void checkProductType(SalesOrderLine salesOrderLine) throws AxelorException  {
