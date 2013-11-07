@@ -1,0 +1,4 @@
+"importId";"salesOrderSeq";"externalReference";"invoicingTypeSelect";"clientPartner.importId";"contactPartner.importId";"mainInvoicingAddress.importId";"deliveryAddress.importId";"salesmanUserInfo.importId";"team.importId";"paymentMode.code";"paymentCondition.code";"currency.code";"creationDate";"statusSelect";"company.importId";"location.id"
+9;"00009";"8736";1;88;89;590;590;14;1;"IN_CB";"15JRNET";"EUR";"2013-05-26[2013y+05M25d]";1;1;1
+10;"00010";"CF_1342";4;20;21;62;62;15;2;"IN_CB";"15JRNET";"EUR";"2013-07-29[2013y+06M29d]";1;1;1
+11;"00011";"F-2549";1;44;45;13002;13002;16;2;"IN_CHQ";"30JRFDM";"EUR";"TODAY[+1y-6M+6d]";1;1;1

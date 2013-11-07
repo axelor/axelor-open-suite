@@ -3,8 +3,13 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://apps.axelor.com/xml/ns/data-import http://apps.axelor.com/xml/ns/data-import/data-import_0.9.xsd">
   
-	<input file="supplychain_salesOrder.csv" separator=";" type="com.axelor.apps.supplychain.db.SalesOrder" >
-		<bind to="testDate" column="creationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(creationDate)"/>
+	<input file="test_supplychain_salesOrder.csv" separator=";" type="com.axelor.apps.supplychain.db.SalesOrder" >
+		<bind to="creationDate" column="creationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(creationDate)"/>
 	</input>
   	
+  	<input file="test_crm_event.csv" separator=";" type="com.axelor.apps.crm.db.Event" >
+  		<bind to="startDateTime" column="startDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(startDateTime)"/>
+		<bind to="endDateTime" column="endDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(endDateTime)"/>
+	</input>
+	
 </csv-inputs>
