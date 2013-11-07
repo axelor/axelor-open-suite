@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="blocking-grid" title="Blockings" model="com.axelor.apps.base.db.Blocking">
+        <field name="company"/>
+        <field name="invoicingBlockingOk"/>
+        <field name="debitBlockingOk"/>
+        <field name="reimbursementBlockingOk"/>
+        <field name="reminderBlockingOk" />
+    </grid>
+    
+    <form name="blocking-form" title="Blocking" model="com.axelor.apps.base.db.Blocking" cols="4">
+     	<field name="company"/>
+     	<field name="invoicingBlockingOk"/>
+        <field name="debitBlockingOk"/>
+        <field name="reimbursementBlockingOk"/>
+        <field name="reminderBlockingOk" />
+        <group title="Invoicing blocking" showIf="invoicingBlockingOk">
+        	<field name="invoicingBlockingToDate"/>
+        	<field name="invoicingBlockingReason"/>
+        	<field name="invoicingBlockingByUserInfo"/>
+        </group>
+        <group title="Direct debit blocking" showIf="debitBlockingOk">
+        	<field name="debitBlockingToDate"/>
+        	<field name="debitBlockingReason"/>
+        	<field name="debitBlockingByUserInfo"/>
+        </group>
+        <group title="Reimbursement blocking" showIf="reimbursementBlockingOk">
+        	<field name="reimbursementBlockingToDate"/>
+        	<field name="reimbursementBlockingReason"/>
+        	<field name="reimbursementBlockingByUserInfo"/>
+        </group>
+        <group title="Reminder blocking" showIf="reminderBlockingOk">
+        	<field name="reminderBlockingToDate"/>
+        	<field name="reminderBlockingReason"/>
+        	<field name="reminderBlockingByUserInfo"/>
+        </group>
+    </form>
+
+</object-views>

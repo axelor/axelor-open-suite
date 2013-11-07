@@ -108,7 +108,6 @@
     	<view type="grid" name="location-line-product-grid"/>
     	<view type="form" name="location-line-product-form"/>
     	<domain>self.product.id = :id</domain>
-    	<context name="id" expr="eval: id"/>
     </action-view>
     
     <action-record name="action-product-record-default-new" model="com.axelor.apps.base.db.Product">

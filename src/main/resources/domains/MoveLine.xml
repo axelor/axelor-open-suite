@@ -17,9 +17,6 @@
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
     <string name="counter" title="Line Nbr." help="This sequence is unique per Move, automatically reset to 1 for a new moveline"/>
     <many-to-one name="invoiceReject" ref="com.axelor.apps.account.db.Invoice" title="Invoice rejected"/>
-    <boolean name="ignoreInAccountingOk" title="Ignore in accounting" default="false"/>
-    <boolean name="ignoreInReminderOk" title="Ignore in remind process" default="false"/>
-    <boolean name="fromSchedulePaymentOk" title="From Schedule payment" default="false"/>
     <boolean name="exportedDirectDebitOk" title="Exported Direct Debit" default="false"/>
     <many-to-one name="interbankCodeLine" ref="com.axelor.apps.account.db.InterbankCodeLine" title="Reject reason"/>
     <string name="description" title="Description"/>

@@ -25,7 +25,6 @@
     <integer name="directDebitTypeSelect" title="Direct Debit batch type" selection="iaccount.account.schedule.type.select"/>
     <integer name="directDebitExportTypeSelect" title="Datatype" selection="iaccount.account.schedule.export.type.select"/>
     <date name="debitDate" title="Reference Due Date"/>
-  	<string name="authorityMemoryExportTypeSelect" title="Printing type" selection="iadministration.export.type.select"/>
 
     
     <!--  INTERBANK PAYMENT ORDER -->

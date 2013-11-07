@@ -8,10 +8,9 @@
   <entity name="PaymentScheduleLine" lang="java">
   
   	<many-to-one name="paymentSchedule" ref="com.axelor.apps.account.db.PaymentSchedule" title="Payment Schedule"/>
-    <many-to-one name="moveLineGenerated" ref="com.axelor.apps.account.db.MoveLine" title="Move line generated"/>
     <integer name="scheduleLineSeq" title="Schedule line N°" required="true"/>
     <decimal name="inTaxAmount" title="Amount A.T.I."/>
-    <decimal name="inTaxAmountPaid" title="Amount pais A.T.I."/>
+    <decimal name="inTaxAmountPaid" title="Amount paid A.T.I."/>
     <date name="scheduleDate" title="Schedule Date" required="true"/>
     <boolean name="rejectedOk" title="Rejected" default="false"/>
     <boolean name="debitBlockingOk" title="Debit blocking" default="false"/>
@@ -19,7 +18,6 @@
     <date name="rejectDate" title="Reject Date"/>
     <many-to-one name="interbankCodeLine" ref="com.axelor.apps.account.db.InterbankCodeLine" title="Reject reason"/>
     <many-to-one name="advanceMoveLine" ref="com.axelor.apps.account.db.MoveLine" title="Advance move line"/>
-    <many-to-one name="reverseMove" ref="com.axelor.apps.account.db.Move" title="Monthly payment reverse move"/>
     <string name="debitNumber" title="Direct debit Nbr"/>
     <many-to-one name="directDebitManagement" ref="com.axelor.apps.account.db.DirectDebitManagement" title="Direct debit management"/>
     <many-to-one name="rejectMoveLine" ref="com.axelor.apps.account.db.MoveLine" title="Reject move line"/>
@@ -36,21 +34,6 @@
 	    	else return " - ";
 	    ]]>
     </string>
-    <decimal name="amountRemaining" title="Remaining amount to pay">
-    	<![CDATA[
-	    	if (moveLineGenerated != null) return moveLineGenerated.getAmountRemaining();
-	    	else return BigDecimal.ZERO;
-	    	
-	    ]]>
-    </decimal>
-    
-    <decimal name="amountRemainingCurrency" title="Remaining amount to pay in currency">
-    	<![CDATA[
-	    	if (moveLineGenerated != null) return moveLineGenerated.getAmountRemaining();
-	    	else return BigDecimal.ZERO;
-	    	
-	    ]]>
-    </decimal>
     
   </entity>
   

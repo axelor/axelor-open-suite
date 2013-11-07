@@ -15,7 +15,6 @@
     <many-to-one name="supplierAccount" ref="com.axelor.apps.account.db.Account" title="Supplier account"/>
 	
 	<!-- PAGE Compte Client -->
-    <many-to-many name="moveLineSet" ref="com.axelor.apps.account.db.MoveLine" title="Movelines"/>    
     <decimal name="balanceCustAccount" title="Total balance" readonly="true"/>
     <decimal name="balanceDueCustAccount" title="Due balance" readonly="true"/>
 	<decimal name="balanceDueReminderCustAccount" title="Due balance (remindable)" readonly="true"/>

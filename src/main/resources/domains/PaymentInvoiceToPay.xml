@@ -15,7 +15,6 @@
 	<decimal name="amountToPay" title="Amount charged"/>
 	<many-to-one name="moveLineGenerated" ref="com.axelor.apps.account.db.MoveLine" title="Move Line generated" readonly="true"/>
 	<many-to-one name="paymentVoucher" ref="com.axelor.apps.account.db.PaymentVoucher" title="Payment" readonly="true"/>
-	<many-to-one name="paymentScheduleLine" ref="com.axelor.apps.account.db.PaymentScheduleLine" title="Schedule line" readonly="true"/>
 	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
 <!-- 	<decimal name="amountToPayCurrency" title="Montant imputé en devise"/> -->
 

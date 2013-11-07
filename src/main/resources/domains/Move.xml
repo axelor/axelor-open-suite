@@ -18,31 +18,14 @@
     <string name="state" title="Status" default="draft" readonly="true" selection="move.state.select"/>
     <boolean name="rejectOk" title="Reject" default="false"/>
     <boolean name="getInfoFromFirstMoveLineOk" title="Get information from 1st Move line" default="true"/>
-    <string name="exportToAgressoNumber" title="Accounting Export N°"/>
-    <date name="exportToAgressoDate" title="Export Date"/>
+    <string name="exportNumber" title="Accounting Export N°"/>
+    <date name="exportDate" title="Export Date"/>
     <boolean name="accountingOk" title="Exported" default="false"/>
     <many-to-one name="moveLineReport" ref="com.axelor.apps.account.db.MoveLineReport" title="Accounting Export"/>
     <many-to-one name="paymentVoucher" ref="com.axelor.apps.account.db.PaymentVoucher" title="Payment voucher"/>
    	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
-    
-    <boolean name="ignoreInAccountingOk" title="Ignore in accounting">
-    	<![CDATA[
-		    if (moveLineList != null && !moveLineList.isEmpty()) return moveLineList.get(0).getIgnoreInAccountingOk();
-		    else return false;
-	     ]]>
-	</boolean>
-    <boolean name="ignoreInReminderOk" title="Ignore in remind process">
-    	<![CDATA[
-		    if (moveLineList != null && !moveLineList.isEmpty()) return moveLineList.get(0).getIgnoreInReminderOk();
-		    else return false;
-	     ]]>
-	</boolean>
-    <boolean name="fromSchedulePaymentOk" title="From schedule payment">
-    	<![CDATA[
-		    if (moveLineList != null && !moveLineList.isEmpty()) return moveLineList.get(0).getFromSchedulePaymentOk();
-		    else return false;
-	     ]]>
-	</boolean>
+    <boolean name="ignoreInAccountingOk" title="Ignore in accounting" default="false"/>
+    <boolean name="ignoreInReminderOk" title="Ignore in remind process" default="false"/>
     
   </entity>
 </domain-models>

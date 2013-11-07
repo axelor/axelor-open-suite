@@ -13,7 +13,6 @@
 	<decimal name="paidAmount" title="Amount already paid" readonly="true"/>
 	<!-- <boolean name="addOk" default="false" title="Ajouter" readonly="true"/> -->
 	<many-to-one name="paymentVoucher" ref="com.axelor.apps.account.db.PaymentVoucher" title="Payment" readonly="true"/>
-	<many-to-one name="paymentScheduleLine" ref="com.axelor.apps.account.db.PaymentScheduleLine" title="Schedule line"/>
   	
   	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
   	

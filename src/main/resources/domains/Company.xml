@@ -31,7 +31,6 @@
    	<many-to-one name="reimbursementJournal" ref="com.axelor.apps.account.db.Journal" title="Reimbursement Journal"/>
    	<many-to-one name="irrecoverableJournal" ref="com.axelor.apps.account.db.Journal" title="Irrecoverable Journal"/>
    	<many-to-one name="miscOperationJournal" ref="com.axelor.apps.account.db.Journal" title="Misc. Operation Journal"/>
-   	<many-to-one name="technicalJournal" ref="com.axelor.apps.account.db.Journal" title="Technical Journal"/>
     <string name="logoPath" title="Path to company logo" help="Fill inside this field the path to the company logo"/>
     <decimal name="thresholdDistanceFromRegulation" title="Allowed Payment range"/>
    	<many-to-one name="cashPositionVariationAccount" ref="com.axelor.apps.account.db.Account" title="Cashier Regulation account"/>
@@ -49,7 +48,6 @@
    	<!--  Onglet Doubtful Cust. -->
    	<string name="sixMonthDebtPassReason" title="Shift Reason (long term debt)" default="Receivables over 6 months"/>
    	<string name="threeMonthDebtPassReason" title="Shift Reason (short term debt)" default="Receivables over 3 months"/>
-   	<string name="litigationDebtPassReason" title="Shift Reason (litigation)" default="Litigation"/>
    	<integer name="sixMonthDebtMonthNumber" title="Long term debt duration (month)" default="6"/>
    	<integer name="threeMonthDebtMontsNumber" title="Short term debt duration (month)" default="3"/>
    	

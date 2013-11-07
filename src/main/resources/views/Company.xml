@@ -33,7 +33,6 @@
 	                <field name="customerCreditNoteJournal" domain="self.inactiveOk != true"/>
 	                <field name="supplierPurchaseJournal" domain="self.inactiveOk != true"/>
 	                <field name="supplierCreditNoteJournal" domain="self.inactiveOk != true"/>
-	                <field name="technicalJournal" domain="self.inactiveOk != true"/>
 	                <field name="majorAccountJournal" domain="self.inactiveOk != true"/>
 	                <field name="invoiceDirectDebitJournal" domain="self.inactiveOk != true"/>
 	                <field name="rejectJournal" domain="self.inactiveOk != true"/>
@@ -113,7 +112,6 @@
            	 	<field name="threeMonthDebtMontsNumber"/>
            	 	<field name="sixMonthDebtPassReason"/>
            	 	<field name="threeMonthDebtPassReason"/>
-           	 	<field name="litigationDebtPassReason"/>
             </page>
             <page title="Direct debit" cols="4">
           		<separator title="Configuration" colSpan="4"/>

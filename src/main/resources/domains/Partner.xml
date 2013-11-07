@@ -44,7 +44,7 @@
     <many-to-one name="site" ref="com.axelor.apps.consulting.db.Site" title="Site"/>
     <string name="department" title="Department"/>
     
-    <decimal name="payerQuality" title="Payer quality"/>
+    <decimal name="payerQuality" title="Payer quality" readonly="true"/>
     <one-to-many name="reportedBalanceList" ref="com.axelor.apps.account.db.ReportedBalance" mappedBy="partner" title="Reported Balance"/>
     
     <many-to-many name="companySet" ref="com.axelor.apps.base.db.Company" title="Companies associated to"/>
@@ -60,7 +60,7 @@
   	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
    
     <!-- PAGE Blocage -->
-	<many-to-one name="blocking" ref="com.axelor.apps.base.db.Blocking" title="Blocking follow-up List"/>
+	<one-to-many name="blockingList" ref="com.axelor.apps.base.db.Blocking" title="Blocking follow-up List" mappedBy="partner"/>
 	
 	 <!-- PAGE Relance -->
 	<many-to-one name="reminder" ref="com.axelor.apps.account.db.Reminder" title="Reminder follow-up list "/>
