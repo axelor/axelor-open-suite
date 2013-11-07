@@ -49,7 +49,7 @@ public class AccountingSituationController {
 		
 		try {
 			if(accountingSituation != null)  {
-				acs.updateMoveLineSet(accountingSituation);
+				acs.updateCustomerAccount(accountingSituation);
 			}
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }

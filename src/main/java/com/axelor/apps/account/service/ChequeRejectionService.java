@@ -122,8 +122,7 @@ public class ChequeRejectionService {
 			
 			if(moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0)  {
 				// Debit MoveLine
-				MoveLine debitMoveLine = mls.createMoveLine(move, partner, moveLine.getAccount(), moveLine.getCredit(), true, false, rejectionDate,
-							ref, false, false, false, null);
+				MoveLine debitMoveLine = mls.createMoveLine(move, partner, moveLine.getAccount(), moveLine.getCredit(), true, false, rejectionDate, ref, null);
 				move.getMoveLineList().add(debitMoveLine);
 				debitMoveLine.setInterbankCodeLine(interbankCodeLine);
 				debitMoveLine.setDescription(description);
@@ -131,8 +130,7 @@ public class ChequeRejectionService {
 			}
 			else  {
 				// Credit MoveLine
-				MoveLine creditMoveLine = mls.createMoveLine(move, partner, moveLine.getAccount(), moveLine.getDebit(), false, false, rejectionDate,
-							ref, false, false, false, null);
+				MoveLine creditMoveLine = mls.createMoveLine(move, partner, moveLine.getAccount(), moveLine.getDebit(), false, false, rejectionDate, ref, null);
 				move.getMoveLineList().add(creditMoveLine);
 				creditMoveLine.setInterbankCodeLine(interbankCodeLine);
 				creditMoveLine.setDescription(description);

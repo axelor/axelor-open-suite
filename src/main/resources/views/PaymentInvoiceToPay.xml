@@ -5,7 +5,6 @@
     <grid name="payment-invoice-to-pay-grid" title="Payment voucher invoices to pay" model="com.axelor.apps.account.db.PaymentInvoiceToPay">
         <field name="sequence"/>
 <!--         <field name="invoice"/> -->
-        <field name="paymentScheduleLine"/>
         <field name="moveLine"/>
         <field name="company"/>
         <field name="currency"/>
@@ -17,7 +16,6 @@
     <form name="payment-invoice-to-pay-form" title="Payment voucher invoices to pay" model="com.axelor.apps.account.db.PaymentInvoiceToPay" cols="4">
         <field name="sequence"/>
 <!--         <field name="invoice" grid-view="invoice-grid" form-view="invoice-form"/> -->
-        <field name="paymentScheduleLine"/>
         <field name="moveLine"/>
         <field name="company" widget="SuggestBox"/>
         <field name="currency"/>

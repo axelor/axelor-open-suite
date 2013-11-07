@@ -80,28 +80,28 @@ public class IrrecoverableService {
 	private static final Logger LOG = LoggerFactory.getLogger(IrrecoverableService.class); 
 
 	@Inject
-	private SequenceService sGeneralService;
+	private SequenceService sequenceService;
 	
 	@Inject
-	private MoveService ms;
+	private MoveService moveService;
 	
 	@Inject
-	private MoveLineService mls;
+	private MoveLineService moveLineService;
 	
 	@Inject
-	private ReconcileService rs;
+	private ReconcileService reconcileService;
 	
 	@Inject
-	private VatService vs;
+	private VatService vatService;
 	
 	@Inject
-	private AccountManagementService ams;
+	private AccountManagementService accountManagementService;
 	
 	@Inject
-	private VatAccountService vas;
+	private VatAccountService vatAccountService;
 	
 	@Inject
-	private PaymentScheduleService pss;
+	private PaymentScheduleService paymentScheduleService;
 	
 	private LocalDate date;
 
@@ -134,7 +134,7 @@ public class IrrecoverableService {
 		irrecoverable.getPaymentScheduleLineSet().addAll(this.getPaymentScheduleLineList(company));
 		
 		if(irrecoverable.getName() == null)  {
-			String seq = sGeneralService.getSequence(IAdministration.IRRECOVERABLE, company, false);
+			String seq = sequenceService.getSequence(IAdministration.IRRECOVERABLE, company, false);
 			if(seq == null)  {
 				throw new AxelorException(String.format("%s :\n Veuillez configurer une séquence Passage en irrécouvrable pour la société %s",
 						GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
@@ -161,8 +161,8 @@ public class IrrecoverableService {
 		List<Partner> partnerList = new ArrayList<Partner>();
 		
 		for(Invoice invoice : invoiceList)  {
-			if(!partnerList.contains(invoice.getClientPartner()))  {
-				partnerList.add(invoice.getClientPartner());
+			if(!partnerList.contains(invoice.getPartner()))  {
+				partnerList.add(invoice.getPartner());
 			}
 		}
 		return partnerList;
@@ -198,7 +198,7 @@ public class IrrecoverableService {
 	 */
 	public List<PaymentScheduleLine> getPaymentScheduleLineList(Company company)   {
 		return PaymentScheduleLine.all()
-				.filter("self.fromReject = 'true' AND self.paymentSchedule.irrecoverableStateSelect = ?1 AND self.paymentSchedule.company = ?2 AND self.paymentSchedule.state = '4' AND self.amountRemaining > 0 ORDER BY self.scheduleDate ASC", IAccount.TO_PASS_IN_IRRECOUVRABLE, company).fetch();
+				.filter("self.paymentSchedule.irrecoverableStateSelect = ?1 AND self.paymentSchedule.company = ?2 AND self.paymentSchedule.state = '4' AND self.rejectMoveLine.amountRemaining > 0 ORDER BY self.scheduleDate ASC", IAccount.TO_PASS_IN_IRRECOUVRABLE, company).fetch();
 	}
 	
 	
@@ -216,7 +216,7 @@ public class IrrecoverableService {
 		List<Invoice> invoiceList = new ArrayList<Invoice>();
 		
 		for(Invoice invoice : allInvoiceList)  {
-			if(invoice.getClientPartner().equals(partner))  {
+			if(invoice.getPartner().equals(partner))  {
 				invoiceList.add(invoice);
 			}
 		}
@@ -439,15 +439,16 @@ public class IrrecoverableService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void createMoveForPaymentScheduleLineReject(Irrecoverable irrecoverable, PaymentScheduleLine paymentScheduleLine) throws AxelorException  {
 		
-		Move move = this.createIrrecoverableMove(paymentScheduleLine.getMoveLineGenerated());
+		Move move = this.createIrrecoverableMove(paymentScheduleLine.getRejectMoveLine());
 		if(move == null)  {
 			throw new AxelorException(String.format("%s :\n Erreur généré lors de la création de l'écriture de passage en irrécouvrable %s",
 					GeneralService.getExceptionAccountingMsg()), IException.INCONSISTENCY);
 		}
-		ms.validateMove(move);
+		moveService.validateMove(move);
 		irrecoverable.getMoveSet().add(move);
 		
 	}
+	
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -461,7 +462,7 @@ public class IrrecoverableService {
 			throw new AxelorException(String.format("%s :\n Erreur généré lors de la création de l'écriture de passage en irrécouvrable %s",
 					GeneralService.getExceptionAccountingMsg()), IException.INCONSISTENCY);
 		}
-		ms.validateMove(move);
+		moveService.validateMove(move);
 		irrecoverable.getMoveSet().add(move);
 		
 		invoice.setIrrecoverableStateSelect(IInvoice.PASSED_IN_IRRECOUVRABLE);
@@ -633,9 +634,9 @@ public class IrrecoverableService {
 	public List<IrrecoverableReportLine> createIrrecoverableReportLineList(IrrecoverablePaymentScheduleLineLine ipsll, PaymentScheduleLine paymentScheduleLine, Vat vat) throws AxelorException  {
 		List<IrrecoverableReportLine> irlList = new ArrayList<IrrecoverableReportLine>();
 
-		BigDecimal vatRate = vs.getVatRate(vat, date);
+		BigDecimal vatRate = vatService.getVatRate(vat, date);
 		
-		BigDecimal amount = paymentScheduleLine.getAmountRemaining();
+		BigDecimal amount = paymentScheduleLine.getInTaxAmount();
 
 		BigDecimal divid = vatRate.add(BigDecimal.ONE);
 		
@@ -763,10 +764,10 @@ public class IrrecoverableService {
 	 */
 	public Move createIrrecoverableMove(Invoice invoice, BigDecimal prorataRate, boolean isInvoiceReject) throws AxelorException  {
 		Company company = invoice.getCompany();
-		Partner payerPartner = invoice.getClientPartner();
+		Partner payerPartner = invoice.getPartner();
 		
 		// Move
-		Move move = ms.createMove(company.getIrrecoverableJournal(), company, null, payerPartner, null, false);
+		Move move = moveService.createMove(company.getIrrecoverableJournal(), company, null, payerPartner, null, false);
 		
 		int seq = 1;
 		
@@ -786,22 +787,21 @@ public class IrrecoverableService {
 		// Debits MoveLines Tva
 		for(InvoiceLineVat invoiceLineVat : invoice.getInvoiceLineVatList())  {
 			amount = (invoiceLineVat.getVatTotal().multiply(prorataRate)).setScale(2, RoundingMode.HALF_EVEN);
-			debitMoveLine = mls.createMoveLine(move, payerPartner, vas.getAccount(invoiceLineVat.getVatLine().getVat(), company), amount, true, false, date,
-					seq, false, false, false, null);
+			debitMoveLine = moveLineService.createMoveLine(
+					move, payerPartner, vatAccountService.getAccount(invoiceLineVat.getVatLine().getVat(), company), amount, true, false, date, seq, null);
 			move.getMoveLineList().add(debitMoveLine);
 			seq++;
 			debitAmount = debitAmount.subtract(amount);
 		}
 		
 		// Debit MoveLine 654 (irrecoverable account)
-		debitMoveLine = mls.createMoveLine(move, payerPartner, company.getIrrecoverableAccount(), debitAmount, true, false, date,
-				seq, false, false, false, null);
+		debitMoveLine = moveLineService.createMoveLine(move, payerPartner, company.getIrrecoverableAccount(), debitAmount, true, false, date, seq, null);
 		move.getMoveLineList().add(debitMoveLine);
 	
 		seq++;
 		
 		// Getting customer MoveLine from Facture
-		MoveLine customerMoveLine = ms.getCustomerMoveLine(invoice, isInvoiceReject);
+		MoveLine customerMoveLine = moveService.getCustomerMoveLine(invoice, isInvoiceReject);
 		if(customerMoveLine == null)  {
 			throw new AxelorException(String.format("%s :\n La facture %s ne possède pas de pièce comptable dont le restant à payer est positif",
 					GeneralService.getExceptionAccountingMsg(), invoice.getInvoiceId()), IException.INCONSISTENCY);
@@ -809,12 +809,11 @@ public class IrrecoverableService {
 		customerMoveLine.setIrrecoverableStateSelect(IAccount.PASSED_IN_IRRECOUVRABLE);
 		
 		// Credit MoveLine Customer account (411, 416, ...)
-		MoveLine creditMoveLine = mls.createMoveLine(move, payerPartner, customerMoveLine.getAccount(), creditAmount, false, false, date,
-				seq, false, false, false, null);
+		MoveLine creditMoveLine = moveLineService.createMoveLine(move, payerPartner, customerMoveLine.getAccount(), creditAmount, false, false, date, seq, null);
 		move.getMoveLineList().add(creditMoveLine);
 		
-		Reconcile reconcile = rs.createReconcile(customerMoveLine, creditMoveLine, creditAmount);
-		rs.confirmReconcile(reconcile);
+		Reconcile reconcile = reconcileService.createReconcile(customerMoveLine, creditMoveLine, creditAmount);
+		reconcileService.confirmReconcile(reconcile);
 		
 		return move;
 	}
@@ -834,34 +833,31 @@ public class IrrecoverableService {
 		BigDecimal amount = moveLine.getAmountRemaining();
 		
 		// Move
-		Move move = ms.createMove(company.getIrrecoverableJournal(), company, null, payerPartner, null, false);
+		Move move = moveService.createMove(company.getIrrecoverableJournal(), company, null, payerPartner, null, false);
 
 		int seq = 1;
 		
 		// Credit MoveLine Customer account (411, 416, ...)
-		MoveLine creditMoveLine = mls.createMoveLine(move, payerPartner, moveLine.getAccount(), amount, false, false, date,
-				seq, false, false, false, null);
+		MoveLine creditMoveLine = moveLineService.createMoveLine(move, payerPartner, moveLine.getAccount(), amount, false, false, date, seq, null);
 		move.getMoveLineList().add(creditMoveLine);
 		
-		Reconcile reconcile = rs.createReconcile(moveLine, creditMoveLine, amount);
-		rs.confirmReconcile(reconcile);
+		Reconcile reconcile = reconcileService.createReconcile(moveLine, creditMoveLine, amount);
+		reconcileService.confirmReconcile(reconcile);
 		
 		Vat vat = company.getIrrecoverableStandardRateVat();
 		
-		BigDecimal vatRate = vs.getVatRate(vat, date);
-		Account vatAccount = vas.getAccount(vat, company);
+		BigDecimal vatRate = vatService.getVatRate(vat, date);
+		Account vatAccount = vatAccountService.getAccount(vat, company);
 		
 		// Debit MoveLine 654. (irrecoverable account)
 		BigDecimal divid = vatRate.add(BigDecimal.ONE);
 		BigDecimal irrecoverableAmount = amount.divide(divid, 6, RoundingMode.HALF_EVEN).setScale(2, RoundingMode.HALF_EVEN);
-		MoveLine creditMoveLine1 = mls.createMoveLine(move, payerPartner, company.getIrrecoverableAccount(), irrecoverableAmount, true, false, date,
-				2, false, false, false, null);
+		MoveLine creditMoveLine1 = moveLineService.createMoveLine(move, payerPartner, company.getIrrecoverableAccount(), irrecoverableAmount, true, false, date, 2, null);
 		move.getMoveLineList().add(creditMoveLine1);
 
 		// Debit MoveLine 445 (VAT account)
 		BigDecimal vatAmount = amount.subtract(irrecoverableAmount);
-		MoveLine creditMoveLine2 = mls.createMoveLine(move, payerPartner, vatAccount, vatAmount, true, false, date,
-				3, false, false, false, null);
+		MoveLine creditMoveLine2 = moveLineService.createMoveLine(move, payerPartner, vatAccount, vatAmount, true, false, date, 3, null);
 		move.getMoveLineList().add(creditMoveLine2);
 		
 		return move;
@@ -896,7 +892,7 @@ public class IrrecoverableService {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un compte de créance irrécouvrable pour la société %s",
 					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
 		}
-		String seq = sGeneralService.getSequence(IAdministration.IRRECOVERABLE, company, true);
+		String seq = sequenceService.getSequence(IAdministration.IRRECOVERABLE, company, true);
 		if(seq == null) {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer une séquence de Passage en irrécouvrable pour la société %s",
 					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
@@ -939,7 +935,7 @@ public class IrrecoverableService {
 					this.passInIrrecoverable(invoice.getRejectMoveLine(), managementObject, false);
 				}
 				else  {
-					MoveLine moveLine = ms.getCustomerMoveLine(invoice);
+					MoveLine moveLine = moveService.getCustomerMoveLine(invoice);
 					if(moveLine == null)  {
 						throw new AxelorException(String.format("%s :\n La facture %s ne possède pas de pièce comptable dont le restant à payer est positif",
 								GeneralService.getExceptionAccountingMsg(),invoice.getInvoiceId()), IException.INCONSISTENCY);
@@ -972,7 +968,7 @@ public class IrrecoverableService {
 				this.passInIrrecoverable(invoice.getRejectMoveLine(), managementObject, false);
 			}
 			else  {
-				MoveLine moveLine = ms.getCustomerMoveLine(invoice);
+				MoveLine moveLine = moveService.getCustomerMoveLine(invoice);
 				if(moveLine == null)  {
 					throw new AxelorException(String.format("%s :\n La facture %s ne possède pas de pièce comptable dont le restant à payer est positif",
 							GeneralService.getExceptionAccountingMsg(),invoice.getInvoiceId()), IException.INCONSISTENCY);
@@ -998,7 +994,7 @@ public class IrrecoverableService {
 				this.notPassInIrrecoverable(invoice.getRejectMoveLine(), false);
 			}
 			else  {
-				MoveLine moveLine = ms.getCustomerMoveLine(invoice);
+				MoveLine moveLine = moveService.getCustomerMoveLine(invoice);
 				if(moveLine != null)  {
 					this.notPassInIrrecoverable(moveLine, false);
 				}
@@ -1034,7 +1030,6 @@ public class IrrecoverableService {
 			managementObject = this.createManagementObject("IRR", company.getIrrecoverableReasonPassage());
 			moveLine.setManagementObject(managementObject);
 			
-//			aes.createActionEvent(company.getIrrecoverableReasonPassage(), date, moveLine.getPartner(), moveLine, managementObject).save();
 		}
 		
 		if(moveLine.getMove().getInvoice() != null && passInvoice)  {
@@ -1086,7 +1081,7 @@ public class IrrecoverableService {
 	
 	
 	/**
-	 * Procédure permettant de passer un échéancier de paiement en irrécouvrable
+	 * Procédure permettant de passer un échéancier de lissage de paiement en irrécouvrable
 	 * La procédure passera aussi les lignes d'écriture de rejet d'échéance en irrécouvrable, 
 	 * ainsi que les factures pas complètement payée selectionnées sur l'échéancier 
 	 * 
@@ -1108,13 +1103,11 @@ public class IrrecoverableService {
 		ManagementObject managementObject = this.createManagementObject("IRR", company.getIrrecoverableReasonPassage());
 		paymentSchedule.setManagementObject(managementObject);
 		
-//		aes.createActionEvent(company.getIrrecoverableReasonPassage(), date, paymentSchedule.getPartner(), paymentSchedule, managementObject).save();
-		
 		List<MoveLine> paymentScheduleLineRejectMoveLineList = new ArrayList<MoveLine>();
 		
 		for(PaymentScheduleLine paymentScheduleLine : paymentSchedule.getPaymentScheduleLineList())  {
-			if(paymentScheduleLine.getFromReject())  {
-				paymentScheduleLineRejectMoveLineList.add(paymentScheduleLine.getMoveLineGenerated());
+			if(paymentScheduleLine.getRejectMoveLine() != null && paymentScheduleLine.getRejectMoveLine().getAmountRemaining().compareTo(BigDecimal.ZERO) > 0)  {
+				paymentScheduleLineRejectMoveLineList.add(paymentScheduleLine.getRejectMoveLine());
 			}
 		}
 		
@@ -1128,14 +1121,14 @@ public class IrrecoverableService {
 			}
 		}
 		
-		pss.cancelPaymentSchedule(paymentSchedule);
+		paymentScheduleService.cancelPaymentSchedule(paymentSchedule);
 		
 		paymentSchedule.save();
 	}
 	
 	
 	/**
-	 * Procédure permettant d'annuler le passage en irrécouvrable d'une échéancier de paiement
+	 * Procédure permettant d'annuler le passage en irrécouvrable d'une échéancier de lissage de paiement
 	 * La procédure annulera aussi le passage en irrécouvrable des lignes d'écriture de rejet d'échéance en irrécouvrable, 
 	 * ainsi que des factures pas complètement payée selectionnées sur l'échéancier 
 	 * @param paymentSchedule
@@ -1149,8 +1142,8 @@ public class IrrecoverableService {
 		List<MoveLine> paymentScheduleLineRejectMoveLineList = new ArrayList<MoveLine>();
 		
 		for(PaymentScheduleLine paymentScheduleLine : paymentSchedule.getPaymentScheduleLineList())  {
-			if(paymentScheduleLine.getFromReject())  {
-				paymentScheduleLineRejectMoveLineList.add(paymentScheduleLine.getMoveLineGenerated());
+			if(paymentScheduleLine.getRejectMoveLine() != null && paymentScheduleLine.getRejectMoveLine().getAmountRemaining().compareTo(BigDecimal.ZERO) > 0)  {
+				paymentScheduleLineRejectMoveLineList.add(paymentScheduleLine.getRejectMoveLine());
 			}
 		}
 		

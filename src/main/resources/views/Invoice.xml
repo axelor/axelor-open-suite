@@ -8,7 +8,7 @@
     <grid name="invoice-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
         <field name="invoiceId"/>
         <field name="operationTypeSelect" />
-        <field name="clientPartner"/>
+        <field name="partner"/>
         <field name="paymentMode" />
         <field name="invoiceDate"/>
         <field name="dueDate"/>
@@ -29,15 +29,15 @@
         <field name="operationTypeSelect" onChange="action-invoice-method-get-journal,action-invoice-record-partner-change,action-set-partner-domain" readonlyIf="status.code != 'dra'"/>
         <group name="partnerGroup" title="Invoicing informations" colSpan="4" cols="4" canCollapse="true">
             <field name="company" widget="SuggestBox" onChange="action-invoice-method-get-journal,action-invoice-record-company-change" readonlyIf="status.code != 'dra'"/>
-            <field name="clientPartner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form" onChange="action-invoice-record-partner-change,action-invoice-record-due-date,action-set-partner-domain" readonlyIf="status.code != 'dra'" />
+            <field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form" onChange="action-invoice-record-partner-change,action-invoice-record-due-date,action-set-partner-domain" readonlyIf="status.code != 'dra'" />
        		<field name="contactPartner"  form-view="partner-contact-form" grid-view="partner-contact-grid" domain="self.isContact = true"/>
             <field name="paymentMode" widget="SuggestBox"/>
             <field name="paymentCondition" widget="SuggestBox" onChange="action-invoice-record-due-date" readonlyIf="status.code == 'dis'"/>
             <field name="currency" onChange="action-invoice-attrs-change-total-title" readonlyIf="status.code != 'dra'"/>
-            <field name="bankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" hideIf="operationTypeSelect >= 3" domain="self.partner = :clientPartner"/>
+            <field name="bankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" hideIf="operationTypeSelect >= 3" domain="self.partner = :partner"/>
             <field name="partnerAccount" domain="self.company = :company" onSelect="action-invoice-partner-account-domain" readonlyIf="status.code == 'dis'"/>
             <field name="address" colSpan="2"/>
-            <field name="priceList" domain="((self.typeSelect = 2 and (:operationTypeSelect = 1 or :operationTypeSelect = 2)) or (self.typeSelect = 1 and (:operationTypeSelect = 3 or :operationTypeSelect = 4)) or :operationTypeSelect = null or :operationTypeSelect = 0) and (self.partner = null or self.partner = :clientPartner) and (self.validFromDate &lt;= :__date__ or self.validFromDate = null) and (self.validToDate &gt;= :__date__ or self.validToDate = null)" readonlyIf="status.code != 'dra'"/>
+            <field name="priceList" domain="((self.typeSelect = 2 and (:operationTypeSelect = 1 or :operationTypeSelect = 2)) or (self.typeSelect = 1 and (:operationTypeSelect = 3 or :operationTypeSelect = 4)) or :operationTypeSelect = null or :operationTypeSelect = 0) and (self.partner = null or self.partner = :partner) and (self.validFromDate &lt;= :__date__ or self.validFromDate = null) and (self.validToDate &gt;= :__date__ or self.validToDate = null)" readonlyIf="status.code != 'dra'"/>
             <field name="project" domain="self.isBusiness = true"/>
         </group>
         <group title="Reference documents" cols="4" colSpan="4" canCollapse="true">
@@ -152,7 +152,7 @@
     		<button name="new" title="" hidden="true"/>
     	</toolbar>
         <field name="invoiceId"/>
-        <field name="clientPartner"/>
+        <field name="partner"/>
         <field name="paymentMode" />
         <field name="invoiceDate"/>
         <field name="dueDate"/>
@@ -203,8 +203,7 @@
     <grid name="invoice-account-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice">			        
     	<field name="invoiceTypeSelect"/>
 		<field name="invoiceId"/>
-		<field name="contractLine"/>
-		<field name="clientPartner"/>
+		<field name="partner"/>
 		<field name="paymentMode" />
 		<field name="invoiceDate"/>
 		<field name="dueDate"/>
@@ -217,8 +216,7 @@
     <grid name="invoice-direct-debit-grid" title="Debited invoices" model="com.axelor.apps.account.db.Invoice">			        
     	<field name="invoiceTypeSelect"/>
 		<field name="invoiceId"/>
-		<field name="contractLine"/>
-		<field name="clientPartner"/>
+		<field name="partner"/>
 		<field name="paymentMode" />
 		<field name="invoiceDate"/>
 		<field name="dueDate"/>
@@ -256,14 +254,14 @@
     </action-record>
     
     <action-record name="action-invoice-record-partner-change" model="com.axelor.apps.account.db.Invoice">
-    	<field name="paymentMode" expr="eval: clientPartner?.paymentMode"/>
-    	<field name="paymentCondition" expr="eval: clientPartner?.paymentCondition"/>
-    	<field name="partnerAccount" expr="eval: com.axelor.apps.account.db.AccountingSituation.all().filter(&quot;self.partner = ?1 AND self.company = ?2&quot;,clientPartner,company).fetchOne()?.supplierAccount"  if="operationTypeSelect == 1 || operationTypeSelect == 2" />
-    	<field name="partnerAccount" expr="eval: com.axelor.apps.account.db.AccountingSituation.all().filter(&quot;self.partner = ?1 AND self.company = ?2&quot;,clientPartner,company).fetchOne()?.customerAccount"  if="operationTypeSelect == 3 || operationTypeSelect == 4" />
-    	<field name="address" expr="eval: clientPartner?.mainInvoicingAddress "/>
-    	<field name="currency" expr="eval: clientPartner?.currency"/>
-		<field name="priceList" expr="eval: com.axelor.apps.base.db.PriceList.all().filter('self.partner = ?1 AND self.isActive = true AND self.typeSelect = 1 AND (self.validFromDate &lt;= ?2 or self.validFromDate = null) AND (self.validToDate &gt;= ?2 or self.validToDate = null)',clientPartner, __date__).fetchOne()" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
-		<field name="priceList" expr="eval: com.axelor.apps.base.db.PriceList.all().filter('self.partner = ?1 AND self.isActive = true AND self.typeSelect = 2 AND (self.validFromDate &lt;= ?2 or self.validFromDate = null) AND (self.validToDate &gt;= ?2 or self.validToDate = null)',clientPartner, __date__).fetchOne()" if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
+    	<field name="paymentMode" expr="eval: partner?.paymentMode"/>
+    	<field name="paymentCondition" expr="eval: partner?.paymentCondition"/>
+    	<field name="partnerAccount" expr="eval: com.axelor.apps.account.db.AccountingSituation.all().filter(&quot;self.partner = ?1 AND self.company = ?2&quot;,partner,company).fetchOne()?.supplierAccount"  if="operationTypeSelect == 1 || operationTypeSelect == 2" />
+    	<field name="partnerAccount" expr="eval: com.axelor.apps.account.db.AccountingSituation.all().filter(&quot;self.partner = ?1 AND self.company = ?2&quot;,partner,company).fetchOne()?.customerAccount"  if="operationTypeSelect == 3 || operationTypeSelect == 4" />
+    	<field name="address" expr="eval: partner?.mainInvoicingAddress "/>
+    	<field name="currency" expr="eval: partner?.currency"/>
+		<field name="priceList" expr="eval: com.axelor.apps.base.db.PriceList.all().filter('self.partner = ?1 AND self.isActive = true AND self.typeSelect = 1 AND (self.validFromDate &lt;= ?2 or self.validFromDate = null) AND (self.validToDate &gt;= ?2 or self.validToDate = null)',partner, __date__).fetchOne()" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
+		<field name="priceList" expr="eval: com.axelor.apps.base.db.PriceList.all().filter('self.partner = ?1 AND self.isActive = true AND self.typeSelect = 2 AND (self.validFromDate &lt;= ?2 or self.validFromDate = null) AND (self.validToDate &gt;= ?2 or self.validToDate = null)',partner, __date__).fetchOne()" if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
     </action-record>
     
     
@@ -282,11 +280,11 @@
     <!-- ACTION ATTRS -->
 	
 	<action-attrs name="action-set-partner-domain">
-		<attribute name="domain" for="clientPartner" expr="eval:'self.isCustomer = true'" if="operationTypeSelect == 1"/>
-		<attribute name="domain" for="clientPartner" expr="eval:'self.isCustomer = true'" if="operationTypeSelect == 2"/>
-		<attribute name="domain" for="clientPartner" expr="eval:'self.isSupplier = true'" if="operationTypeSelect == 3"/>
-		<attribute name="domain" for="clientPartner" expr="eval:'self.isSupplier = true'" if="operationTypeSelect == 4"/>
-		<attribute name="domain" for="contactPartner" expr="eval: &quot;self.id IN (${clientPartner.contactPartnerSet?.collect{it.id}.join(',')})&quot;" if="clientPartner != null"/>
+		<attribute name="domain" for="partner" expr="eval:'self.isCustomer = true'" if="operationTypeSelect == 1"/>
+		<attribute name="domain" for="partner" expr="eval:'self.isCustomer = true'" if="operationTypeSelect == 2"/>
+		<attribute name="domain" for="partner" expr="eval:'self.isSupplier = true'" if="operationTypeSelect == 3"/>
+		<attribute name="domain" for="partner" expr="eval:'self.isSupplier = true'" if="operationTypeSelect == 4"/>
+		<attribute name="domain" for="contactPartner" expr="eval: &quot;self.id IN (${partner.contactPartnerSet?.collect{it.id}.join(',')})&quot;" if="partner != null"/>
 	</action-attrs>
 	
 	
@@ -296,7 +294,7 @@
 	
 	<action-attrs name="action-invoice-attrs-change-total-title">
 		<attribute name="title" for="accountingTotalGroup" expr="eval: 'Totaux en devise comptable (${:self.currency.symbol})'"/>
-		<attribute name="title" for="invoiceTotalGroup" expr="eval: 'Totaux en devise de la facture (${:self.clientPartner.currency.symbol})'"/>
+		<attribute name="title" for="invoiceTotalGroup" expr="eval: 'Totaux en devise de la facture (${:self.partner.currency.symbol})'"/>
 	</action-attrs>
 	
 	<!-- DOMAIN -->
@@ -353,10 +351,10 @@
 			<domain>self.rejectMoveLine IS NOT NULL</domain>
 		</filter>
 		<filter title="B2B">
-			<domain>self.clientPartner.partnerTypeSelect = 1</domain>
+			<domain>self.partner.partnerTypeSelect = 1</domain>
 		</filter>
 		<filter title="B2C">
-			<domain>self.clientPartner.partnerTypeSelect = 2</domain>
+			<domain>self.partner.partnerTypeSelect = 2</domain>
 		</filter>
 	</search-filters>
 	

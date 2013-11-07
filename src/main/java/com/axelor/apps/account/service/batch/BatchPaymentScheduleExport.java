@@ -122,6 +122,7 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 		checkPoint();
 
 	}
+	
 
 	@Override
 	protected void process() {
@@ -134,7 +135,7 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 				
 				case IAccount.INVOICE_EXPORT:
 					
-					this.exportInvoiceAndPaymentScheduleBatch(company);
+					this.exportInvoiceBatch(company);
 					
 					break;
 					
@@ -151,10 +152,10 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 	}
 	
 	
-public void exportMonthlyPaymentBatch(Company company)  {
+	public void exportMonthlyPaymentBatch(Company company)  {
 		
 		List<PaymentScheduleLine> pslListGrandCompte = paymentScheduleExportService.getPaymentScheduleLineToDebit(
-				Company.find(company.getId()), Batch.find(batch.getId()).getAccountingBatch().getDebitDate(), paymentScheduleExportService.getDebitPaymentMode(), true);
+				Company.find(company.getId()), Batch.find(batch.getId()).getAccountingBatch().getDebitDate(), paymentScheduleExportService.getDebitPaymentMode());
 		
 		LOG.debug("\n Liste des échéances grand comptes retenues {} \n", paymentScheduleExportService.toStringPaymentScheduleLineList(pslListGrandCompte));
 		
@@ -169,15 +170,19 @@ public void exportMonthlyPaymentBatch(Company company)  {
 					pslListGrandCompte, Company.find(company.getId()),
 					paymentScheduleExportService.getDebitPaymentMode(),
 					Status.all().filter("code = 'val'").fetchOne(),
-					Company.find(company.getId()).getMajorAccountJournal(),
-					true));
+					Company.find(company.getId()).getMajorAccountJournal()));
 		}
 		
 		// Création du fichier d'export au format CFONB
 		if(paymentScheduleLineList != null && paymentScheduleLineList.size() != 0)  {
 			try  {
 				
-				cfonbService.exportCFONB(Batch.find(batch.getId()).getStartDate(), Batch.find(batch.getId()).getAccountingBatch().getDebitDate(), paymentScheduleLineList, Company.find(company.getId()), Batch.find(batch.getId()).getAccountingBatch().getBankDetails());
+				cfonbService.exportPaymentScheduleCFONB(
+						Batch.find(batch.getId()).getStartDate(), 
+						Batch.find(batch.getId()).getAccountingBatch().getDebitDate(), 
+						paymentScheduleLineList, 
+						Company.find(company.getId()), 
+						Batch.find(batch.getId()).getAccountingBatch().getBankDetails());
 		
 			} catch (AxelorException e) {
 				
@@ -199,7 +204,7 @@ public void exportMonthlyPaymentBatch(Company company)  {
 	
 
 	/**
-	 * Méthode permettant de générer l'ensemble des exports des prélèvements pour Mensu Masse et Mensu Grand Compte
+	 * Méthode permettant de générer l'ensemble des exports des prélèvements pour Mensu
 	 * @param paymentScheduleExport
 	 * 			Un objet d'export des prélèvements
 	 * @param company
@@ -216,7 +221,7 @@ public void exportMonthlyPaymentBatch(Company company)  {
 	 * @return
 	 * @throws AxelorException
 	 */
-	public List<PaymentScheduleLine> generateAllExportMensu (List<PaymentScheduleLine> pslList, Company company, PaymentMode paymentMode, Status statusVal, Journal journal, boolean isMajorAccount)  {
+	public List<PaymentScheduleLine> generateAllExportMensu (List<PaymentScheduleLine> pslList, Company company, PaymentMode paymentMode, Status statusVal, Journal journal)  {
 		
 		Move move = null;
 		
@@ -253,15 +258,19 @@ public void exportMonthlyPaymentBatch(Company company)  {
 			for(PaymentScheduleLine paymentScheduleLine : pslList)  {
 				
 				try  {
-					PaymentScheduleLine paymentScheduleLineToExport = paymentScheduleExportService.generateExportMensu(
-							PaymentScheduleLine.find(paymentScheduleLine.getId()), pslList, Status.find(statusVal.getId()), Company.find(company.getId()), isMajorAccount, ref, Move.find(move.getId()));
-					if(paymentScheduleLineToExport != null)  {
-						ref++;
-						i++;
-						pslListToExport.add(paymentScheduleLineToExport);
-						updatePaymentScheduleLine(paymentScheduleLineToExport);
-						this.totalAmount = this.totalAmount.add(PaymentScheduleLine.find(paymentScheduleLine.getId()).getInTaxAmount());
+					if(paymentScheduleExportService.isDebitBlocking(paymentScheduleLine))  {
+					
+						PaymentScheduleLine paymentScheduleLineToExport = paymentScheduleExportService.generateExportMensu(
+								PaymentScheduleLine.find(paymentScheduleLine.getId()), pslList, Status.find(statusVal.getId()), Company.find(company.getId()), ref, Move.find(move.getId()));
+						if(paymentScheduleLineToExport != null)  {
+							ref++;
+							i++;
+							pslListToExport.add(paymentScheduleLineToExport);
+							updatePaymentScheduleLine(paymentScheduleLineToExport);
+							this.totalAmount = this.totalAmount.add(PaymentScheduleLine.find(paymentScheduleLine.getId()).getInTaxAmount());
+						}
 					}
+					
 				} catch (AxelorException e) {
 					
 					TraceBackService.trace(new AxelorException(String.format("Prélèvement de l'échéance %s", paymentScheduleLine.getName()), e, e.getcategory()), IException.DIRECT_DEBIT, batch.getId());
@@ -319,13 +328,7 @@ public void exportMonthlyPaymentBatch(Company company)  {
 
 	
 	
-	public void exportInvoiceAndPaymentScheduleBatch(Company company)  {
-		
-		List<PaymentScheduleLine> paymentScheduleLineToExportList = this.exportPaymentSchedule(Company.find(company.getId()),
-				PaymentMode.all().filter("self.code = 'DD'").fetchOne(),
-				Status.all().filter("code = 'val'").fetchOne(), 
-				Batch.find(batch.getId()).getAccountingBatch().getDebitDate());
-		
+	public void exportInvoiceBatch(Company company)  {
 		
 		List<Invoice> invoiceToExportList = this.exportInvoice(Company.find(company.getId()),
 				Batch.find(batch.getId()).getAccountingBatch().getDebitDate(), 
@@ -333,11 +336,15 @@ public void exportMonthlyPaymentBatch(Company company)  {
 				
 		
 		// Création du fichier d'export au format CFONB
-		if((paymentScheduleLineToExportList != null && paymentScheduleLineToExportList.size() != 0)
-				|| (invoiceToExportList != null && invoiceToExportList.size() != 0))  {
+		if(invoiceToExportList != null && invoiceToExportList.size() != 0)  {
 			try  {
 				
-				cfonbService.exportCFONB(Batch.find(batch.getId()).getStartDate(), Batch.find(batch.getId()).getAccountingBatch().getDebitDate(), paymentScheduleLineToExportList, invoiceToExportList, Company.find(company.getId()), Batch.find(batch.getId()).getAccountingBatch().getBankDetails());
+				cfonbService.exportInvoiceCFONB(
+						Batch.find(batch.getId()).getStartDate(), 
+						Batch.find(batch.getId()).getAccountingBatch().getDebitDate(), 
+						invoiceToExportList, 
+						Company.find(company.getId()), 
+						Batch.find(batch.getId()).getAccountingBatch().getBankDetails());
 			
 			} catch (AxelorException e) {
 				
@@ -356,60 +363,6 @@ public void exportMonthlyPaymentBatch(Company company)  {
 			}	
 		}
 	}
-	
-	
-	public List<PaymentScheduleLine> exportPaymentSchedule(Company company, PaymentMode paymentMode, Status status, LocalDate scheduleDate)  {
-		
-		List<PaymentScheduleLine> paymentScheduleLineList = paymentScheduleExportService.getPaymentScheduleLineToDebit(Company.find(company.getId()), scheduleDate, PaymentMode.find(paymentMode.getId()));
-		
-		List<PaymentScheduleLine> paymentScheduleLineExportedList = new ArrayList<PaymentScheduleLine>();  // Liste des échéances de paiement exportés
-		
-		int i = 0;
-		
-		for(PaymentScheduleLine paymentScheduleLine : paymentScheduleLineList)  {
-		
-			try  {
-				
-				if(paymentScheduleLine.getMoveLineGenerated()!=null)  {
-					PaymentScheduleLine paymentScheduleLineToExport = paymentScheduleExportService.exportPaymentScheduleLine(
-							PaymentScheduleLine.find(paymentScheduleLine.getId()), 
-							paymentScheduleLineList, 
-							PaymentMode.find(paymentMode.getId()), 
-							Company.find(company.getId()), 
-							Status.find(status.getId()));
-					
-					if(paymentScheduleLineToExport != null)  {
-						paymentScheduleLineExportedList.add(paymentScheduleLineToExport);
-						updatePaymentScheduleLine(paymentScheduleLineToExport);
-						this.totalAmount = this.totalAmount.add(cfonbService.getAmountRemainingFromPaymentMove(PaymentScheduleLine.find(paymentScheduleLine.getId())));
-						i++;
-					}
-				}
-				
-			} catch (AxelorException e) {
-				
-				TraceBackService.trace(new AxelorException(String.format("Batch d'export des prélèvements %s", paymentScheduleLine.getName()), e, e.getcategory()), IException.DIRECT_DEBIT, batch.getId());
-				
-				incrementAnomaly();
-				
-			} catch (Exception e) {
-				
-				TraceBackService.trace(new Exception(String.format("Batch d'export des prélèvements %s", paymentScheduleLine.getName()), e), IException.DIRECT_DEBIT, batch.getId());
-				
-				incrementAnomaly();
-				
-				LOG.error("Bug(Anomalie) généré(e) pour le batch d'export des prélèvements {}", paymentScheduleLine.getName());
-				
-			} finally {
-				
-				if (i % 10 == 0) { JPA.clear(); }
-	
-			}	
-			
-		}
-		return paymentScheduleLineExportedList;
-	}
-	
 	
 	
 	/**

@@ -107,7 +107,7 @@ public class InterbankPaymentOrderRejectImportService {
 						GeneralService.getExceptionAccountingMsg(), refReject, company.getName()), IException.INCONSISTENCY);
 			}
 			
-			Partner partner = invoice.getClientPartner();
+			Partner partner = invoice.getPartner();
 			if(invoice.getPaymentMode() == null)  {
 				throw new AxelorException(String.format("%s - Aucun mode de paiement configuré pour la facture %s",
 						GeneralService.getExceptionAccountingMsg(), refReject), IException.INCONSISTENCY);
@@ -118,14 +118,12 @@ public class InterbankPaymentOrderRejectImportService {
 			Move move = ms.createMove(company.getRejectJournal(), company, null, partner, null, true);
 			
 			// Création d'une ligne au crédit
-			MoveLine debitMoveLine = mls.createMoveLine(move , partner, company.getCustomerAccount(), amountReject, true, false, 
-					ris.createRejectDate(dateReject), 1, false, false, false, refReject);
+			MoveLine debitMoveLine = mls.createMoveLine(move , partner, company.getCustomerAccount(), amountReject, true, false, ris.createRejectDate(dateReject), 1, refReject);
 			move.getMoveLineList().add(debitMoveLine);	
 			debitMoveLine.setInterbankCodeLine(causeReject);
 			
 			// Création d'une ligne au crédit
-			MoveLine creditMoveLine = mls.createMoveLine(move , partner, bankAccount, amountReject, false, false, 
-					ris.createRejectDate(dateReject), 2, false, false, false, null);
+			MoveLine creditMoveLine = mls.createMoveLine(move , partner, bankAccount, amountReject, false, false, ris.createRejectDate(dateReject), 2, null);
 			move.getMoveLineList().add(creditMoveLine);		
 			ms.validateMove(move);
 			move.save();

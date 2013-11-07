@@ -44,7 +44,6 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.service.MoveLineService;
 import com.axelor.apps.account.service.MoveService;
@@ -105,10 +104,6 @@ public class DoubtfulCustomerService {
 		}
 		if(company.getThreeMonthDebtPassReason() == null || company.getThreeMonthDebtPassReason().isEmpty())  {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un Motif de passage (créance de plus de trois mois) pour la société %s",
-					GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		if(company.getLitigationDebtPassReason() == null || company.getLitigationDebtPassReason().isEmpty())  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un Motif de passage (contentieux) pour la société %s",
 					GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
 		}
 		if(company.getSixMonthDebtMonthNumber() == null)  {
@@ -179,8 +174,7 @@ public class DoubtfulCustomerService {
 					
 					BigDecimal amountRemaining = moveLine.getAmountRemaining();
 					// Ecriture au crédit sur le 411
-					MoveLine creditMoveLine = mls.createMoveLine(newMove , moveLine.getPartner(), moveLine.getAccount(), amountRemaining, false, false, 
-							today, ref, false, false, false, null);
+					MoveLine creditMoveLine = mls.createMoveLine(newMove , moveLine.getPartner(), moveLine.getAccount(), amountRemaining, false, false, today, ref, null);
 					newMove.getMoveLineList().add(creditMoveLine);
 					
 					Reconcile reconcile = rs.createReconcile(moveLine, creditMoveLine, amountRemaining);
@@ -193,8 +187,7 @@ public class DoubtfulCustomerService {
 		}
 		
 		// Ecriture au débit sur le 416 (client douteux)
-		MoveLine debitMoveLine = mls.createMoveLine(newMove , newMove.getPartner(), doubtfulCustomerAccount, totalAmountRemaining, true, false, 
-				today, ref, false, false, false, null);
+		MoveLine debitMoveLine = mls.createMoveLine(newMove , newMove.getPartner(), doubtfulCustomerAccount, totalAmountRemaining, true, false, today, ref, null);
 		newMove.getMoveLineList().add(debitMoveLine);
 		
 		debitMoveLine.setPassageReason(debtPassReason);
@@ -206,11 +199,8 @@ public class DoubtfulCustomerService {
 			rs.confirmReconcile(reconcile, false);
 		}
 
-		Invoice invoice = this.invoiceProcess(newMove, doubtfulCustomerAccount, debtPassReason);
+		this.invoiceProcess(newMove, doubtfulCustomerAccount, debtPassReason);
 		
-		// Création d'un évènement
-//		ActionEvent actionEvent = aes.createActionEvent("Passage en client douteux : "+debtPassReason, this.today, partner, invoice);
-//		actionEvent.save();
 	}
 	
 	
@@ -249,8 +239,7 @@ public class DoubtfulCustomerService {
 		BigDecimal amountRemaining = moveLine.getAmountRemaining();
 		
 		// Ecriture au crédit sur le 411
-		MoveLine creditMoveLine = mls.createMoveLine(newMove , partner, moveLine.getAccount(), amountRemaining, false, false, 
-				today, 1, false, false, false, null);
+		MoveLine creditMoveLine = mls.createMoveLine(newMove , partner, moveLine.getAccount(), amountRemaining, false, false, today, 1, null);
 		newMove.getMoveLineList().add(creditMoveLine);
 		
 		Reconcile reconcile = rs.createReconcile(moveLine, creditMoveLine, amountRemaining);
@@ -258,8 +247,7 @@ public class DoubtfulCustomerService {
 		rs.confirmReconcile(reconcile, false);
 		
 		// Ecriture au débit sur le 416 (client douteux)
-		MoveLine debitMoveLine = mls.createMoveLine(newMove , newMove.getPartner(), doubtfulCustomerAccount, amountRemaining, true, false, 
-				today, 2, false, false, false, null);
+		MoveLine debitMoveLine = mls.createMoveLine(newMove , newMove.getPartner(), doubtfulCustomerAccount, amountRemaining, true, false, today, 2, null);
 		newMove.getMoveLineList().add(debitMoveLine);
 		
 		debitMoveLine.setInvoiceReject(moveLine.getInvoiceReject());
@@ -268,11 +256,8 @@ public class DoubtfulCustomerService {
 		ms.validateMove(newMove);
 		newMove.save();
 
-		Invoice invoice = this.invoiceRejectProcess(debitMoveLine, doubtfulCustomerAccount, debtPassReason);
+		this.invoiceRejectProcess(debitMoveLine, doubtfulCustomerAccount, debtPassReason);
 		
-		// Création d'un évènement
-//		ActionEvent actionEvent = aes.createActionEvent("Passage en client douteux : "+debtPassReason, this.today, partner, invoice);
-//		actionEvent.save();
 	}
 	
 	
@@ -296,10 +281,6 @@ public class DoubtfulCustomerService {
 					
 					moveLine.setPassageReason(debtPassReason);
 					moveLine.save();
-					
-					// Création d'un évènement
-//					ActionEvent actionEvent = aes.createActionEvent("Passage en client douteux : "+debtPassReason, this.today, moveLine.getPartner(), move.getInvoice());
-//					actionEvent.save();
 					
 					break;
 				}
@@ -362,7 +343,7 @@ public class DoubtfulCustomerService {
 	 * 		Le règle à appliquer :
 	 * 		<ul>
      *      <li>0 = Créance de + 6 mois</li>
-     *      <li>1 = Créance de + 3 mois sur contrat résilié</li>
+     *      <li>1 = Créance de + 3 mois</li>
      *  	</ul>
 	 * @param doubtfulCustomerAccount
 	 * 		Le compte client douteux
@@ -374,7 +355,6 @@ public class DoubtfulCustomerService {
 	public List<Move> getMove(int rule, Account doubtfulCustomerAccount, Company company)  {
 		
 		LocalDate date = null;
-		String complementaryRequest = " ";
 		
 		switch (rule) {
 		
@@ -383,10 +363,9 @@ public class DoubtfulCustomerService {
 				date = this.today.minusMonths(company.getSixMonthDebtMonthNumber());
 				break;
 	
-			//Créance de + 3 mois sur contrat résilié	
+			//Créance de + 3 mois
 			case 1 : 
 				date = this.today.minusMonths(company.getThreeMonthDebtMontsNumber());
-				complementaryRequest = " AND ml.contractLine.status.code ='res' ";
 				break;
 				
 			default:
@@ -397,7 +376,7 @@ public class DoubtfulCustomerService {
 
 		String request = "SELECT DISTINCT m FROM MoveLine ml, Move m WHERE ml.move = m AND ml.company.id = "+ company.getId() +" AND ml.account.reconcileOk = 'true' " +
 				"AND ml.invoice IS NOT NULL AND ml.amountRemaining > 0.00 AND ml.debit > 0.00 AND ml.dueDate < '"+ date.toString() + 
-				"'" + complementaryRequest +" AND ml.account.id != "+doubtfulCustomerAccount.getId();
+				"' AND ml.account.id != "+doubtfulCustomerAccount.getId();
 		
 		LOG.debug("Requete : {} ",request);
 		
@@ -415,7 +394,7 @@ public class DoubtfulCustomerService {
 	 * 		Le règle à appliquer :
 	 * 		<ul>
      *      <li>0 = Créance de + 6 mois</li>
-     *      <li>1 = Créance de + 3 mois sur contrat résilié</li>
+     *      <li>1 = Créance de + 3 mois</li>
      *  	</ul>
 	 * @param doubtfulCustomerAccount
 	 * 		Le compte client douteux
@@ -435,16 +414,16 @@ public class DoubtfulCustomerService {
 			case 0 :
 				date = this.today.minusMonths(company.getSixMonthDebtMonthNumber());
 				moveLineList = MoveLine.all().filter("self.company = ?1 AND self.account.reconcileOk = 'true' " +
-						"AND self.invoiceReject IS NOT NULL AND self.amountRemaining > 0.00 AND self.debit > 0.00 AND self.dueDate < ?2" +
-						" AND self.account != ?3",company, date, doubtfulCustomerAccount).fetch();
+						"AND self.invoiceReject IS NOT NULL AND self.amountRemaining > 0.00 AND self.debit > 0.00 AND self.dueDate < ?2 " +
+						"AND self.account != ?3",company, date, doubtfulCustomerAccount).fetch();
 				break;
 	
-			//Créance de + 3 mois sur contrat résilié	
+			//Créance de + 3 mois
 			case 1 : 
 				date = this.today.minusMonths(company.getThreeMonthDebtMontsNumber());
 				moveLineList = MoveLine.all().filter("self.company = ?1 AND self.account.reconcileOk = 'true' " +
-						"AND self.invoiceReject IS NOT NULL AND self.amountRemaining > 0.00 AND self.debit > 0.00 AND self.dueDate < ?2" +
-						" AND self.contractLine.status.code ='res' AND self.account != ?3",company, date, doubtfulCustomerAccount).fetch();
+						"AND self.invoiceReject IS NOT NULL AND self.amountRemaining > 0.00 AND self.debit > 0.00 AND self.dueDate < ?2 " +
+						"AND self.account != ?3",company, date, doubtfulCustomerAccount).fetch();
 				break;
 				
 			default:
@@ -455,39 +434,5 @@ public class DoubtfulCustomerService {
 		
 		return moveLineList;
 	}
-	
-	
-	/**
-	 * Procédure permettant de traiter les échéanciers de surrendettement, liquidation judiciaire, redressement judiciare, et passage à l'huissier
-	 * Les écritures de factures selectionner sur l'échéancier seront passées sur le compte client douteux
-	 * 
-	 * @param paymentSchedule
-	 * 			Un échéancier de surrendettement, liquidation judiciaire, redressement judiciare, ou passage à l'huissier
-	 * @throws AxelorException
-	 */
-	public void doubtfulCustomerProcess(PaymentSchedule paymentSchedule) throws AxelorException  {
-		
-		ArrayList<Move> moveList = new ArrayList<Move>();
-		ArrayList<Move> moveListToUpdate = new ArrayList<Move>();
-		
-		for(Invoice invoice : paymentSchedule.getInvoiceSet())  {
-			if(invoice.getOldMove() != null)  {
-				moveListToUpdate.add(invoice.getMove());
-			}
-			else  {
-				moveList.add(invoice.getMove());
-			}
-		}
-		
-		Company company = paymentSchedule.getCompany();
-		this.testCompanyField(company);
-		
-		Account doubtfulCustomerAccount = company.getDoubtfulCustomerAccount();
-		String litigationDebtPassReason = company.getLitigationDebtPassReason();
-
-		this.createDoubtFulCustomerMove(moveList, doubtfulCustomerAccount, litigationDebtPassReason);
-		this.updateDoubtfulCustomerMove(moveListToUpdate, doubtfulCustomerAccount, litigationDebtPassReason);
-	}
-	
 	
 }

@@ -66,10 +66,6 @@
 	    </page>
 	    <page title="Others" colSpan="4">
 	        <field name="vatLine"/>
-	        <break/>
-	    	<field name="ignoreInAccountingOk"/>
-	        <field name="ignoreInReminderOk"/>
-	        <field name="fromSchedulePaymentOk"/>
 	        <field name="exportedDirectDebitOk"/>
 	    </page>
         </notebook>
@@ -115,10 +111,6 @@
 	    </page>
 	    <page title="Others" colSpan="4">
 	        <field name="vatLine"/>
-	        <break/>
-	    	<field name="ignoreInAccountingOk"/>
-	        <field name="ignoreInReminderOk"/>
-	        <field name="fromSchedulePaymentOk"/>
 	        <field name="exportedDirectDebitOk"/>
 	    </page>
         </notebook>
@@ -137,9 +129,6 @@
 	<action-record name="action-move-line-record-get-first-move-line-informations" model="com.axelor.apps.account.db.MoveLine">
 		<field name="interbankCodeLine" expr="eval: _parent?.moveLineList.get(0).interbankCodeLine" if="eval: _parent?.getInfoFromFirstMoveLineOk == true &amp;&amp; _parent?.moveLineList != null &amp;&amp; _parent?.moveLineList.size() != 0"/>
 		<field name="description" expr="eval: _parent?.moveLineList.get(0).description" if="eval: _parent?.getInfoFromFirstMoveLineOk == true &amp;&amp; _parent?.moveLineList != null &amp;&amp; _parent?.moveLineList.size() != 0"/>
-		<field name="ignoreInAccountingOk" expr="eval: _parent?.moveLineList.get(0).ignoreInAccountingOk" if="eval: _parent?.getInfoFromFirstMoveLineOk == true &amp;&amp; _parent?.moveLineList != null &amp;&amp; _parent?.moveLineList.size() != 0"/>
-		<field name="ignoreInReminderOk" expr="eval: _parent?.moveLineList.get(0).ignoreInReminderOk" if="eval: _parent?.getInfoFromFirstMoveLineOk == true &amp;&amp; _parent?.moveLineList != null &amp;&amp; _parent?.moveLineList.size() != 0"/>
-		<field name="fromSchedulePaymentOk" expr="eval: _parent?.moveLineList.get(0).fromSchedulePaymentOk" if="eval: _parent?.getInfoFromFirstMoveLineOk == true &amp;&amp; _parent?.moveLineList != null &amp;&amp; _parent?.moveLineList.size() != 0"/>
 		<field name="exportedDirectDebitOk" expr="eval: _parent?.moveLineList.get(0).exportedDirectDebitOk" if="eval: _parent?.getInfoFromFirstMoveLineOk == true &amp;&amp; _parent?.moveLineList != null &amp;&amp; _parent?.moveLineList.size() != 0"/>
 		<field name="partner" expr="eval: _parent?.moveLineList.get(0).partner" if="eval: _parent?.getInfoFromFirstMoveLineOk == true &amp;&amp; _parent?.moveLineList != null &amp;&amp; _parent?.moveLineList.size() != 0"/>
 	</action-record>

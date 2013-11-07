@@ -89,7 +89,7 @@ public class PaymentService {
 	
 	/**
 	 * Employer le trop perçu d'une facture.
-	 * Les trop-perçus récupérés sont ceux appartenant au même contrat que la facture
+	 * Les trop-perçus récupérés sont ceux appartenant au même tiers que la facture
 	 *
 	 * @param invoice
 	 * @param move
@@ -103,7 +103,7 @@ public class PaymentService {
 		 // Récupérer la ligne en débit de la facture
 		 MoveLine invoiceLineDebit = null;
 		 for (MoveLine moveLineDebit : move.getMoveLineList()){
-			 if (moveLineDebit.getDebit().compareTo(BigDecimal.ZERO) == 1 && moveLineDebit.getPartner().equals(invoice.getClientPartner()) &&
+			 if (moveLineDebit.getDebit().compareTo(BigDecimal.ZERO) == 1 && moveLineDebit.getPartner().equals(invoice.getPartner()) &&
 				 moveLineDebit.getAmountRemaining().compareTo(BigDecimal.ZERO) == 1){
 				 invoiceLineDebit = moveLineDebit;
 				 break;
@@ -144,10 +144,10 @@ public class PaymentService {
 		
 		 List<MoveLine> creditMoveLines =  MoveLine
 		 .all()
-		 .filter("move.company = ?1 and move.state = ?2 and fromSchedulePaymentOk = false" +
-		 " and account.reconcileOk = ?3 and credit > 0 and amountRemaining > 0 " +
-		 "and partner = ?4 and account = ?5 ORDER by date asc ",
-		 company, "validated", true, invoice.getClientPartner(), account).fetch();
+		 .filter("self.move.company = ?1 AND self.move.state = ?2 AND self.move.ignoreInAccountingOk IN (false,null)" +
+		 " AND self.account.reconcileOk = ?3 AND self.credit > 0 and self.amountRemaining > 0" +
+		 " AND self.partner = ?4 AND self.account = ?5 ORDER BY self.date ASC",
+		 company, "validated", true, invoice.getPartner(), account).fetch();
 		 
 		 LOG.debug("Nombre de trop-perçus à imputer sur la facture récupéré : {}", creditMoveLines.size());
 
@@ -158,7 +158,7 @@ public class PaymentService {
 	
 	public List<MoveLine> getInvoiceDue(Invoice invoice, boolean useOthersInvoiceDue) throws AxelorException {
 		Company company = invoice.getCompany();
-		Partner partner = invoice.getClientPartner();
+		Partner partner = invoice.getPartner();
 
 		// Récupérer les dûs du tiers pour le même compte que celui de l'avoir
 		List<MoveLine> debitMoveLines = ms.getOrignalInvoiceFromRefund(invoice);
@@ -167,16 +167,16 @@ public class PaymentService {
 		if(useOthersInvoiceDue)  {
 			if(debitMoveLines != null && debitMoveLines.size() != 0)  {
 				othersDebitMoveLines = MoveLine
-						 .all().filter("move.company = ?1 and move.state = ?2 and fromSchedulePaymentOk = false" +
-						 " and account.reconcileOk = ?3 and debit > 0 and amountRemaining > 0 " +
-						 "and partner = ?4 and self NOT IN ?5 ORDER by date asc ",
+						 .all().filter("self.move.company = ?1 AND self.move.state = ?2 AND self.move.ignoreInAccountingOk IN (false,null)" +
+						 " AND self.account.reconcileOk = ?3 AND self.debit > 0 AND self.amountRemaining > 0 " +
+						 " AND self.partner = ?4 AND self NOT IN ?5 ORDER BY self.date ASC ",
 						 company, "validated", true, partner, debitMoveLines).fetch();
 			}
 			else  {
 				othersDebitMoveLines = MoveLine
-						 .all().filter("move.company = ?1 and move.state = ?2 and fromSchedulePaymentOk = false" +
-						 " and account.reconcileOk = ?3 and debit > 0 and amountRemaining > 0 " +
-						 "and partner = ?4 ORDER by date asc ",
+						 .all().filter("self.move.company = ?1 AND self.move.state = ?2 AND self.move.ignoreInAccountingOk IN (false,null)" +
+						 " AND self.account.reconcileOk = ?3 AND self.debit > 0 AND self.amountRemaining > 0 " +
+						 " AND self.partner = ?4 ORDER BY self.date ASC ",
 						 company, "validated", true, partner).fetch();
 			}
 			debitMoveLines.addAll(othersDebitMoveLines);
@@ -365,9 +365,6 @@ public class PaymentService {
 					false,
 					this.date,
 					moveLineNo2,
-					false,
-					false,
-					false,
 					invoiceName);
 			move.getMoveLineList().add(creditMoveLine);
 			
@@ -417,9 +414,6 @@ public class PaymentService {
 					false,
 					this.date,
 					moveLineNo2,
-					false,
-					false,
-					false,
 					null);
 			
 			move.getMoveLineList().add(moveLine);
@@ -461,9 +455,6 @@ public class PaymentService {
 					false,
 					this.date,
 					moveLineNo2,
-					false,
-					false,
-					false,
 					creditMoveLine.getName());
 			move.getMoveLineList().add(debitMoveLine);
 			
@@ -500,9 +491,6 @@ public class PaymentService {
 					false,
 					this.date,
 					moveLineNo2,
-					false,
-					false,
-					false,
 					null);
 			
 			move.getMoveLineList().add(debitmoveLine);
@@ -550,9 +538,6 @@ public class PaymentService {
 							date,
 							dueDate,
 							moveLineNo2,
-							false,
-							false,
-							false,
 							null);
 					move.getMoveLineList().add(debitMoveLine);
 					moveLineNo2++;
@@ -602,9 +587,6 @@ public class PaymentService {
 					date,
 					dueDate,
 					moveLineNo2,
-					false,
-					false,
-					false,
 					null);
 			
 			move.getMoveLineList().add(debitmoveLine);

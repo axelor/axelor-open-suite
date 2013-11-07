@@ -111,7 +111,7 @@ public class CfonbService {
 	 * @param company
 	 * @throws AxelorException
 	 */
-	public void exportCFONB(DateTime processingDateTime, LocalDate scheduleDate, List<PaymentScheduleLine> paymentScheduleLineList, Company company, BankDetails bankDetails) throws AxelorException  {
+	public void exportPaymentScheduleCFONB(DateTime processingDateTime, LocalDate scheduleDate, List<PaymentScheduleLine> paymentScheduleLineList, Company company, BankDetails bankDetails) throws AxelorException  {
 		this.testCompanyExportCFONBField(company);
 		
 		// paramètre obligatoire : au minimum 
@@ -150,6 +150,60 @@ public class CfonbService {
 		
 		this.createCFONBFile(cFONB, processingDateTime, company.getPaymentScheduleExportFolderPathCFONB(), "prelevement");
 	}
+	
+	
+	/**
+	 * Méthode permettant d'exporter les prélèvements de facture au format CFONB
+	 * @param paymentScheduleExport
+	 * @param paymentScheduleLineList
+	 * @param invoiceList
+	 * @param company
+	 * @throws AxelorException
+	 */
+	public void exportInvoiceCFONB(DateTime processingDateTime, LocalDate scheduleDate, List<Invoice> invoiceList, Company company, BankDetails bankDetails) throws AxelorException  {
+		this.testCompanyExportCFONBField(company);
+		
+		// paramètre obligatoire : au minimum 
+		//		un enregistrement emetteur par date de règlement (code 03)
+		// 		un enregistrement destinataire (code 06)
+		// 		un enregistrement total (code 08)
+		
+		String senderCFONB = this.createSenderMonthlyExportCFONB(company, scheduleDate, bankDetails);
+		List<String> multiRecipientCFONB = new ArrayList<String>();
+		
+		List<DirectDebitManagement> directDebitManagementList = new ArrayList<DirectDebitManagement>();
+		
+		for(Invoice invoice : invoiceList)  {
+			invoice = Invoice.find(invoice.getId());
+			if(invoice.getDirectDebitManagement() == null)  {
+				multiRecipientCFONB.add(this.createRecipientCFONB(company, invoice));
+			}
+			else  {
+				if(!directDebitManagementList.contains(invoice.getDirectDebitManagement()))  {
+					directDebitManagementList.add(invoice.getDirectDebitManagement());
+				}
+			}
+		}
+		
+		for(DirectDebitManagement directDebitManagement : directDebitManagementList)  {
+			multiRecipientCFONB.add(this.createRecipientCFONB(company, directDebitManagement, true, true));
+		}
+
+		
+		BigDecimal amount = this.getTotalAmountInvoice(invoiceList);
+		
+		String totalCFONB = this.createPaymentScheduleTotalCFONB(company,amount);
+		
+		this.testLength(senderCFONB, totalCFONB, multiRecipientCFONB, company);
+		
+		List<String> cFONB = this.createCFONBExport(senderCFONB, multiRecipientCFONB, totalCFONB);
+		
+		// Mise en majuscule des enregistrement
+		cFONB = this.toUpperCase(cFONB);
+		
+		this.createCFONBFile(cFONB, processingDateTime, company.getPaymentScheduleExportFolderPathCFONB(), "prelevement");
+	}
+	
 	
 	
 	/**
@@ -222,6 +276,7 @@ public class CfonbService {
 		
 		this.createCFONBFile(cFONB, processingDateTime, company.getPaymentScheduleExportFolderPathCFONB(), "prelevement");
 	}
+	
 	
 	
 	/**
@@ -472,9 +527,9 @@ public class CfonbService {
 		String partnerName = "";
 		if(isForInvoice)  {
 			Invoice invoice = (Invoice) directDebitManagement.getInvoiceSet().toArray()[0];
-			Partner partner = invoice.getClientPartner();
+			Partner partner = invoice.getPartner();
 			bankDetails = partner.getBankDetails();
-			partnerName = this.getPayeurPartnerName(invoice.getClientPartner());			// Nom/Raison sociale du débiteur
+			partnerName = this.getPayeurPartnerName(invoice.getPartner());			// Nom/Raison sociale du débiteur
 			if(bankDetails == null) {
 				throw new AxelorException(String.format("%s :\n Veuillez configurer un RIB pour le tiers %s",
 						GeneralService.getExceptionAccountingMsg(), partner.getName()), IException.CONFIGURATION_ERROR);
@@ -541,7 +596,7 @@ public class CfonbService {
 	 * @throws AxelorException
 	 */
 	public String createRecipientCFONB(Company company, Invoice invoice) throws AxelorException  {
-		Partner partner = invoice.getClientPartner();
+		Partner partner = invoice.getPartner();
 		BankDetails bankDetails = partner.getBankDetails();
 		if(bankDetails == null)  {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un RIB pour le tiers %s",
@@ -765,21 +820,6 @@ public class CfonbService {
 		
 	}
 	
-	
-	/**
-	 * Méthode permettant de construire le Nom/Raison sociale du tiers payeur d'un mémoire
-	 * @param memory
-	 * 				Un mémoire
-	 * @return
-	 * 				Civilité + Nom + Prénom 	si c'est une personne physique
-	 * 				Civilité + Nom 				sinon
-	 */
-	public String getPayeurPartnerName(Invoice memory)  {
-
-		return this.getPayeurPartnerName(memory.getClientPartner());
-		
-	}
-
 	
 	/**
 	 * Méthode permettant de construire le Nom/Raison sociale du tiers payeur d'un mémoire

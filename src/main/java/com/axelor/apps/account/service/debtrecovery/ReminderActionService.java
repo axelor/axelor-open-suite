@@ -104,8 +104,9 @@ public class ReminderActionService {
 	
 	
 	/**
-	 * Procédure permettant de lancer l'ensemble des actions relative au niveau de relance d'un contrat
-	 * @param contractLine
+	 * Procédure permettant de lancer l'ensemble des actions relative au niveau de relance d'un tiers
+	 * @param reminder
+	 * 			Une relance
 	 * @throws AxelorException 
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -113,12 +114,12 @@ public class ReminderActionService {
 		
 		LOG.debug("Begin runAction service ...");
 		if(reminder.getReminderMethod()==null )  {
-			throw new AxelorException(String.format("%s :\nContrat %s: Méthode de relance absente.", 
+			throw new AxelorException(String.format("%s :\nTiers %s: Méthode de relance absente.", 
 					GeneralService.getExceptionReminderMsg(), reminder.getAccountingSituation().getPartner().getName()), IException.MISSING_FIELD);
 		}
 		if(reminder.getReminderMethodLine()==null)  {
 			throw new AxelorException(
-					String.format("%s :\nContrat %s: Ligne de relance absente.", 
+					String.format("%s :\nTiers %s: Ligne de relance absente.", 
 							GeneralService.getExceptionReminderMsg(), reminder.getAccountingSituation().getPartner().getName()), IException.MISSING_FIELD);
 		}
 
@@ -140,8 +141,9 @@ public class ReminderActionService {
 	
 	
 	/**
-	 * Procédure permettant de lancer manuellement l'ensemble des actions relative au niveau de relance d'un contrat
-	 * @param contractLine
+	 * Procédure permettant de lancer manuellement l'ensemble des actions relative au niveau de relance d'un tiers
+	 * @param reminder
+	 * 			Une relance
 	 * @throws AxelorException 
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -177,8 +179,8 @@ public class ReminderActionService {
 	
 	/**
 	 * Porcédure permettant de déplacer une ligne de relance vers une ligne de relance en attente
-	 * @param contractLine
-	 * 			Un contrat
+	 * @param partner
+	 * 			Une relance
 	 * @param reminderMatrixLine
 	 * 			La ligne de relance que l'on souhaite déplacer
 	 * @throws AxelorException
@@ -196,11 +198,11 @@ public class ReminderActionService {
 	
 	
 	/**
-	 * Fonction permettant de valider la ligne de relance en attente en la déplaçant vers la ligne de relance courante d'un contrat
-	 * @param contractLine
-	 * 			Un contrat
+	 * Fonction permettant de valider la ligne de relance en attente en la déplaçant vers la ligne de relance courante d'un tiers
+	 * @param reminder
+	 * 			Une relance
 	 * @return
-	 * 			Le contrat
+	 * 			La relance
 	 * @throws AxelorException
 	 */
 	public Reminder reminderLevelValidate(Reminder reminder) throws AxelorException  {
@@ -215,7 +217,8 @@ public class ReminderActionService {
 	
 	/**
 	 * Procédure permettant d'enregistrer les éléments de la relance dans l'historique des relances
-	 * @param contractLine
+	 * @param reminder
+	 * 			Une relance
 	 */
 	@Transactional
 	public void saveReminder(Reminder reminder)  {

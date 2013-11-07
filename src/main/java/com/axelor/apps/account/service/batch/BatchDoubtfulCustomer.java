@@ -152,7 +152,7 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
 				
 				incrementAnomaly();
 				
-				LOG.error("Bug(Anomalie) généré(e) pour le contrat {}", move.getInvoice().getInvoiceId());
+				LOG.error("Bug(Anomalie) généré(e) pour la facture {}", Move.find(move.getId()).getInvoice().getInvoiceId());
 				
 			} finally {
 				
@@ -197,7 +197,7 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
 				
 				incrementAnomaly();
 				
-				LOG.error("Bug(Anomalie) généré(e) pour le contrat {}", moveLine.getInvoiceReject().getInvoiceId());
+				LOG.error("Bug(Anomalie) généré(e) pour la facture {}", MoveLine.find(moveLine.getId()).getInvoiceReject().getInvoiceId());
 				
 			} finally {
 				

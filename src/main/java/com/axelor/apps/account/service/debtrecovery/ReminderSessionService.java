@@ -73,8 +73,8 @@ public class ReminderSessionService {
 	
 	/**
 	 * Fonction permettant de récupérer une méthode de relance en fonction de la categorie du tiers et d'une société
-	 * @param contractLine
-	 * 			Un contrat
+	 * @param reminder
+	 * 			Une relance
 	 * @return
 	 */
 	public ReminderMethod getReminderMethod(Reminder reminder)  {
@@ -100,10 +100,10 @@ public class ReminderSessionService {
 	
 	
 	/**
-	 * Session de relance pour contrat actif
+	 * Session de relance
 	 * 
-	 * @param contractLine
-	 * 				Un contrat
+	 * @param reminder
+	 * 				Une relance
 	 * @throws AxelorException 
 	 */
 	public Reminder reminderSession(Reminder reminder) throws AxelorException  {
@@ -144,7 +144,7 @@ public class ReminderSessionService {
 				
 				if(!reminderMethodLine.getManualValidationOk())  {
 					LOG.debug("Si le niveau ne necessite pas de validation manuelle");
-					reminder.setReminderMethodLine(reminderMethodLine);		// Afin d'afficher la ligne de niveau sur le contrat
+					reminder.setReminderMethodLine(reminderMethodLine);		// Afin d'afficher la ligne de niveau sur le tiers
 					reminder.setWaitReminderMethodLine(null);
 					// et lancer les autres actions du niveau
 				}
@@ -188,9 +188,9 @@ public class ReminderSessionService {
 	
 	
 	/**
-	 * Fonction réinitialisant la relance si le contrat est soldé ou que le solde exigible est respecté (échéancier respecté)
+	 * Fonction réinitialisant la relance
 	 * @throws AxelorException 
-	 * @param contractLine
+	 * @param relance
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void reminderInitialisation (Reminder reminder) throws AxelorException  {
@@ -212,10 +212,10 @@ public class ReminderSessionService {
 	
 	
 	/**
-	 * Fonction permetant de récupérer l'ensemble des lignes de relance de la matrice de relance pour un contrat actif
+	 * Fonction permetant de récupérer l'ensemble des lignes de relance de la matrice de relance pour un tiers
 	 * 
-	 * @param contractLine
-	 *			Un contrat
+	 * @param reminder
+	 *			Une relance
 	 * @return
 	 *			Une liste de ligne de matrice de relance 			
 	 */
@@ -225,10 +225,10 @@ public class ReminderSessionService {
 	
 	
 	/**
-	 * Fonction permettant de récupérer une ligne de relance de la matrice de relance pour un contrat
+	 * Fonction permettant de récupérer une ligne de relance de la matrice de relance pour un tiers
 	 *
-	 * @param contractLine
-	 *			Un contrat
+	 * @param reminder
+	 *			Une relance
 	 * @param reminderLevel
 	 * 			Un niveau de relance
 	 * @return

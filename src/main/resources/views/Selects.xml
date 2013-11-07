@@ -59,11 +59,6 @@
 		<option value='4'>Canceled</option>
 	</selection>
 	
-	<selection name='pricing.list.type.select'>
-		<option value='0'></option>
-		<option value='1'>Specific</option>
-	</selection>
-	
 	<selection name='move.line.report.type.select'>
 		<option value="1">Payment collection journal</option>
 		<option value="2">General ledger</option>
@@ -119,13 +114,8 @@
 	</selection>
 	
 	<selection name='iaccount.account.schedule.export.type.select'>
-		<option value='0'>Monthly payment schedule(DD)</option>
-		<option value='1'>Invoices/Payment schedule(DD)</option>
-	</selection>
-	
-	<selection name='iaccount.account.schedule.nature.select'>
-		<option value='0'>Payment</option>
-		<option value='2'>Lissage de paiement</option>
+		<option value='0'>Payment smoothing(DD)</option>
+		<option value='1'>Invoices(DD)</option>
 	</selection>
 	
 	<selection name='iaccount.account.schedule.irrecoverable.state.select'>

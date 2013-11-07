@@ -58,6 +58,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Status;
+import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserInfoService;
@@ -92,22 +93,25 @@ public class ReimbursementExportService {
 	private static final Logger LOG = LoggerFactory.getLogger(ReimbursementExportService.class); 
 	
 	@Inject
-	private MoveService ms;
+	private MoveService moveService;
 	
 	@Inject
-	private MoveLineService mls;
+	private MoveLineService moveLineService;
 	
 	@Inject
-	private ReconcileService rs;
+	private ReconcileService reconcileService;
 	
 	@Inject 
-	private CfonbService cs;
+	private CfonbService cfonbService;
 	
 	@Inject
-	private UserInfoService uis;
+	private UserInfoService userInfoService;
 	
 	@Inject
-	private SequenceService sgs;
+	private SequenceService sequenceService;
+	
+	@Inject
+	private BlockingService blockingService;
 	
 	private LocalDate today;
 
@@ -216,12 +220,11 @@ public class ReimbursementExportService {
 					moveLine.setReimbursementStateSelect(IAccount.REIMBURSED);
 					
 					if(first)  {
-						newMove = ms.createMove(company.getReimbursementJournal(), company, null, partner, null, false);
+						newMove = moveService.createMove(company.getReimbursementJournal(), company, null, partner, null, false);
 						first = false;
 					}
 					// Création d'une ligne au débit
-					MoveLine newDebitMoveLine = mls.createMoveLine(newMove , partner, moveLine.getAccount(), amountRemaining, true, false, 
-										today, seq, false, false, false, null);
+					MoveLine newDebitMoveLine = moveLineService.createMoveLine(newMove , partner, moveLine.getAccount(), amountRemaining, true, false, today, seq, null);
 					newMove.getMoveLineList().add(newDebitMoveLine);		
 					if(reimbursement.getDescription() != null && !reimbursement.getDescription().isEmpty())  {
 						newDebitMoveLine.setDescription(reimbursement.getDescription());
@@ -230,19 +233,18 @@ public class ReimbursementExportService {
 					seq++;
 					
 					//Création de la réconciliation
-					Reconcile reconcile = rs.createReconcile(newDebitMoveLine, moveLine, amountRemaining);
-					rs.confirmReconcile(reconcile, false);
+					Reconcile reconcile = reconcileService.createReconcile(newDebitMoveLine, moveLine, amountRemaining);
+					reconcileService.confirmReconcile(reconcile, false);
 				}			
 			}
 			// Création de la ligne au crédit
-			MoveLine newCreditMoveLine = mls.createMoveLine(newMove , partner, company.getReimbursementAccount(), reimbursement.getAmountReimbursed(), false, false, 
-								today, seq, false, false, false, null);
+			MoveLine newCreditMoveLine = moveLineService.createMoveLine(newMove, partner, company.getReimbursementAccount(), reimbursement.getAmountReimbursed(), false, false, today, seq, null);
 		
 			newMove.getMoveLineList().add(newCreditMoveLine);
 			if(reimbursement.getDescription() != null && !reimbursement.getDescription().isEmpty())  {
 				newCreditMoveLine.setDescription(reimbursement.getDescription());
 			}
-			ms.validateMove(newMove);
+			moveService.validateMove(newMove);
 			newMove.save();
 		}
 	}
@@ -271,7 +273,7 @@ public class ReimbursementExportService {
 					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
-		String seq = sgs.getSequence(IAdministration.REIMBOURSEMENT, company, true);
+		String seq = sequenceService.getSequence(IAdministration.REIMBOURSEMENT, company, true);
 		if(seq == null) {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer une séquence Remboursement pour la société %s",
 					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
@@ -291,8 +293,8 @@ public class ReimbursementExportService {
 	
 	/**
 	 * Méthode permettant de créer un remboursement
-	 * @param contractLine
-	 * 				Un contrat
+	 * @param partner
+	 * 				Un tiers
 	 * @param company
 	 * 				Une société
 	 * @param reimbursementExport
@@ -309,7 +311,7 @@ public class ReimbursementExportService {
 		
 		reimbursement.setBankDetails(bankDetails);
 		
-		String seq = sgs.getSequence(IAdministration.REIMBOURSEMENT, company, false);
+		String seq = sequenceService.getSequence(IAdministration.REIMBOURSEMENT, company, false);
 
 		reimbursement.setRef(seq);
 		
@@ -318,36 +320,25 @@ public class ReimbursementExportService {
 	
 	
 	/**
-	 * Le contrat peux t-il être remboursé ?
-	 * Si le contrat est bloqué en remboursement et que la date de fin de blocage n'est pas passée alors on ne peut pas rembourser.
+	 * Le tiers peux t-il être remboursé ?
+	 * Si le tiers est bloqué en remboursement et que la date de fin de blocage n'est pas passée alors on ne peut pas rembourser.
 	 * 
-	 * @param contractLine
-	 * 			Un contrat
 	 * @return
 	 */
-	public boolean canBeReimbursed(Partner partner){
+	public boolean canBeReimbursed(Partner partner, Company company){
 		
-		if (partner.getBlocking() != null && partner.getBlocking().getReimbursementBlockingOk()){
-			
-			if (partner.getBlocking().getReimbursementBlockingToDate() != null && partner.getBlocking().getReimbursementBlockingToDate().isBefore(today)){
-				return true;
-			}
-			else {return false;}
-			
-		}
-		
-		return true;
+		return !blockingService.isReminderBlocking(partner, company);
 	}
 	
 	
 	
 	/**
-	 * Procédure permettant de mettre à jour la liste des RIBs dans le contrat
+	 * Procédure permettant de mettre à jour la liste des RIBs du tiers
 	 * @param reimbursement
 	 * 				Un remboursement
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void updateContractCurrentRIB(Reimbursement reimbursement)  {
+	public void updatePartnerCurrentRIB(Reimbursement reimbursement)  {
 		BankDetails bankDetails = reimbursement.getBankDetails();
 		Partner partner = reimbursement.getPartner();
 		
@@ -521,8 +512,8 @@ public class ReimbursementExportService {
 	
 	/**
 	 * Procédure permettant de créer un remboursement si un trop perçu est généré à la facture fin de cycle
-	 * @param contractLine
-	 * 			Un contrat
+	 * @param partner
+	 * 			Un tiers
 	 * @param company
 	 * 			Une société
 	 * @param moveLine
@@ -558,20 +549,16 @@ public class ReimbursementExportService {
 	
 	/**
 	 * Procédure permettant de créer un remboursement si un trop perçu est généré à la facture fin de cycle grand comptes
-	 * @param contractLine
-	 * 			Un contrat
-	 * @param company
-	 * 			Une société
-	 * @param moveLine
-	 * 			Un trop-perçu
+	 * @param invoice
+	 * 			Une facture
 	 * @throws AxelorException
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void createReimbursementInvoice(Invoice invoice) throws AxelorException  {
 		Company company = invoice.getCompany();
-		Partner partner = invoice.getClientPartner();
+		Partner partner = invoice.getPartner();
 		
-		// récupération des trop-perçus du contrat
+		// récupération des trop-perçus du tiers
 		List<MoveLine> moveLineList = MoveLine.all().filter("self.account.reconcileOk = 'true' AND self.fromSchedulePaymentOk = 'false' " +
 				"AND self.move.state = ?1 AND self.amountRemaining > 0 AND self.credit > 0 AND self.partner = ?2 AND self.reimbursementStateSelect = ?3 "
 				,IAccount.VALIDATED_MOVE , partner, IAccount.NULL).fetch();

@@ -17,7 +17,7 @@
     	<field name="customerAccount"/>
        	<field name="supplierAccount"/>
     	<separator title="Customer balance" colSpan="4"/>
-        <field name="moveLineSet" colSpan="4" form-view="move-line-accounting-situation-form" grid-view="move-line-accounting-situation-grid"/>
+        <portlet colSpan="4" action="action-accounting-situation-view-move-lines"/>
         <field name="balanceCustAccount"/>
         <field name="balanceDueCustAccount"/>
         <field name="balanceDueReminderCustAccount"/>
@@ -28,5 +28,12 @@
   	<action-method name="action-account-accounting-situation-method-update-customer-account">
 		<call class="com.axelor.apps.account.web.AccountingSituationController" method="updateCustomerAccount"/>
 	</action-method>
+	
+	<action-view name="action-accounting-situation-view-move-lines" title="Move lines" model="com.axelor.apps.account.db.MoveLine">
+        <view type="grid" name="move-line-accounting-situation-grid"/>
+    	<view type="form" name="move-line-accounting-situation-form"/>
+    	<domain>self.partner = :partner AND self.move.company = :company AND self.move.ignoreInAccountingOk IN ('false', null) 
+    	AND self.account.reconcileOk = 'true' AND self.move.state = 'validated'</domain>
+    </action-view>
     
  </object-views>

@@ -19,6 +19,5 @@
         <field name="invoiceAmount"/>
         <field name="paidAmount"/>
         <field name="amountRemaining"/>
-        <field name="paymentScheduleLine"/>
     </form>
 </object-views>

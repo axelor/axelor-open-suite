@@ -37,7 +37,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.AxelorSettings;
-import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.service.payment.PayboxService;
@@ -127,27 +126,6 @@ public class PaymentVoucherController {
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
 	
-	public void getPaymentScheduleLine(ActionRequest request, ActionResponse response)  {
-		
-		PaymentVoucher pv = request.getContext().asType(PaymentVoucher.class);
-		
-		if(pv.getInvoiceToPay() != null)  {
-			
-			Invoice invoicetoPay = Invoice.find(pv.getInvoiceToPay().getId());
-			if(invoicetoPay.getPaymentSchedule() != null)  {
-				response.setValue("paymentScheduleToPay", invoicetoPay.getPaymentSchedule());
-				response.setValue("scheduleToPay", pvs.get().getPaymentScheduleLine(invoicetoPay.getPaymentSchedule()));
-			}
-			else  {
-				response.setValue("paymentScheduleToPay", null);
-				response.setValue("scheduleToPay", null);			
-			}
-		}
-		else  {
-			response.setValue("paymentScheduleToPay", null);
-			response.setValue("scheduleToPay", null);			
-		}
-	}
 	
 	public void printPaymentVoucher(ActionRequest request, ActionResponse response) {
 		

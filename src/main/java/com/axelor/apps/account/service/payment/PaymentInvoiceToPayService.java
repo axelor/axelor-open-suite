@@ -56,7 +56,6 @@ public class PaymentInvoiceToPayService {
 		
 		if (pv != null && ml != null){
 			PaymentInvoiceToPay piToPay= new PaymentInvoiceToPay();
-			piToPay.setPaymentScheduleLine(pv.getScheduleToPay());
 			piToPay.setSequence(seq);
 			piToPay.setMoveLine(ml);
 			piToPay.setTotalAmount(totalAmount);

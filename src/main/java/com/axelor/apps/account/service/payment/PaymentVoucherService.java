@@ -116,13 +116,13 @@ public class PaymentVoucherService  {
 		if (LOG.isDebugEnabled())  {  LOG.debug("Création d'une saisie paiement par TIP ou TIP chèque - facture : {}",invoice.getInvoiceId());  }
 		if (LOG.isDebugEnabled())  {  LOG.debug("Création d'une saisie paiement par TIP ou TIP chèque - mode de paiement : {}",paymentMode.getCode());  }
 		if (LOG.isDebugEnabled())  {  LOG.debug("Création d'une saisie paiement par TIP ou TIP chèque - société : {}",invoice.getCompany().getName());  }
-		if (LOG.isDebugEnabled())  {  LOG.debug("Création d'une saisie paiement par TIP ou TIP chèque - tiers payeur : {}",invoice.getClientPartner().getName());  }
+		if (LOG.isDebugEnabled())  {  LOG.debug("Création d'une saisie paiement par TIP ou TIP chèque - tiers payeur : {}",invoice.getPartner().getName());  }
 		
 		PaymentVoucher paymentVoucher = this.createPaymentVoucher(invoice.getCompany(), 
 				null, 
 				paymentMode, 
 				dateTime, 
-				invoice.getClientPartner(), 
+				invoice.getPartner(), 
 				amount, 
 				null,
 				invoice,
@@ -183,8 +183,6 @@ public class PaymentVoucherService  {
 			
 			pv.setInvoiceToPay(invoiceToPay);
 			pv.setRejectToPay(rejectToPay);
-			pv.setPaymentScheduleToPay(paymentScheduleToPay);
-			pv.setScheduleToPay(scheduleToPay);
 			pv.setPaidAmount(amount2);
 		
 			if (seq != null){
@@ -230,12 +228,12 @@ public class PaymentVoucherService  {
 		
 		moveLines = MoveLine
 					.all()
-					.filter("partner = ?1 and debit > 0 " +
-							"and account.reconcileOk = 't' " +
-							"and amountRemaining > 0 " +
-							"and move.state = 'validated' " +
-							"and ignoreInReminderOk = 'f' " +
-							"and move.company = ?2 "
+					.filter("self.partner = ?1 and self.debit > 0 " +
+							"and self.account.reconcileOk = 't' " +
+							"and self.amountRemaining > 0 " +
+							"and self.move.state = 'validated' " +
+							"and self.move.ignoreInReminderOk = 'f' " +
+							"and self.move.company = ?2 "
 							,pv.getPartner(), pv.getCompany()).fetch();
 		
 		moveLines.remove(excludeMoveLine);
@@ -303,9 +301,6 @@ public class PaymentVoucherService  {
 		}
 		
 		if(moveLine != null)  {
-			if(moveLine.getPaymentScheduleLine() != null && !moveLine.getPaymentScheduleLine().getFromReject())  {
-				piToPay.setPaymentScheduleLine(moveLine.getPaymentScheduleLine());
-			}
 			
 			Move move = moveLine.getMove();
 			
@@ -343,8 +338,6 @@ public class PaymentVoucherService  {
 
 			piToPay.setSequence(lineSeq);
 			piToPay.setMoveLine(moveLine);
-			
-			
 			
 			piToPay.setAmountToPay(amountToPay);
 			piToPay.setPaymentVoucher(paymentVoucher);
@@ -473,7 +466,6 @@ public class PaymentVoucherService  {
 							if(piToPayFromContext.getMoveLine() != null && piToPayFromContext.getMoveLine().getId() != null)  {
 								piToPayOld.setMoveLine(piToPayFromContext.getMoveLine());
 							}
-							piToPayOld.setPaymentScheduleLine(piToPayFromContext.getPaymentScheduleLine());
 							piToPayOld.setTotalAmount(piToPayFromContext.getTotalAmount());
 							piToPayOld.setRemainingAmount(piToPayFromContext.getRemainingAmount());
 							piToPayOld.setAmountToPay(piToPayFromContext.getAmountToPay());
@@ -519,7 +511,6 @@ public class PaymentVoucherService  {
 
 						piToPay.setSequence(lineSeq);
 						piToPay.setMoveLine(moveLine);
-						piToPay.setPaymentScheduleLine(pil.getPaymentScheduleLine());
 						piToPay.setTotalAmount(pil.getInvoiceAmount());
 						piToPay.setRemainingAmount(pil.getInvoiceAmount().subtract(pil.getPaidAmount()));
 						piToPay.setAmountToPay(amountToPay);
@@ -562,9 +553,6 @@ public class PaymentVoucherService  {
 			pi.setPaidAmount(moveLine.getAmountPaid());
 			pi.setDueDate(moveLine.getDueDate());
 			pi.setPaymentVoucher(paymentVoucher);
-			if(moveLine.getPaymentScheduleLine() != null && !moveLine.getPaymentScheduleLine().getFromReject())  {
-				pi.setPaymentScheduleLine(moveLine.getPaymentScheduleLine());
-			}
 			Move move = moveLine.getMove();
 			if(move.getInvoice() != null)  {  pi.setCurrency(move.getInvoice().getCurrency());  }
 			else  {  pi.setCurrency(move.getCurrency());  }
@@ -574,31 +562,6 @@ public class PaymentVoucherService  {
 		return pil;
 	}
 
-	/**
-	 * Fonction permettant de récupérer la prochaine échéance à payer
-	 * @param paymentSchedule
-	 * 				Un échéancier
-	 * @return
-	 * 				Une échéance
-	 */
-	public PaymentScheduleLine getPaymentScheduleLine(PaymentSchedule paymentSchedule)  {
-
-		if(paymentSchedule != null)  {
-			List<PaymentScheduleLine> paymentScheduleLineList = PaymentScheduleLine.all()
-					.filter("self.paymentSchedule = ?1 ORDER BY self.scheduleDate ASC ",paymentSchedule).fetch();
-			
-			if(paymentScheduleLineList != null)  {
-				for(PaymentScheduleLine paymentScheduleLine : paymentScheduleLineList)  {
-					if(paymentScheduleLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0)  {
-						return paymentScheduleLine;
-					}
-				}
-			}
-		}
-		LOG.debug("End getPaymentScheduleLine");
-		return null;
-	}
-	
 	
 	/**
 	 * Fonction permettant de récupérer la ligne d'écriture à payer
@@ -613,24 +576,13 @@ public class PaymentVoucherService  {
 		if(paymentVoucher.getRejectToPay() != null)  {
 			return paymentVoucher.getRejectToPay();
 		}
-		// Paiement d'une échéance | EN : Paying a schedule
-		else if(paymentVoucher.getScheduleToPay() != null)  {
-			paymentVoucher.getScheduleToPay().getMoveLineGenerated().setPaymentScheduleLine(paymentVoucher.getScheduleToPay());
-			return paymentVoucher.getScheduleToPay().getMoveLineGenerated();
-		}
 		// Paiement d'une facture | EN : Paying an invoice
 		else if (paymentVoucher.getInvoiceToPay() != null){
-			if (paymentVoucher.getInvoiceToPay().getSchedulePaymentOk() && paymentVoucher.getScheduleToPay() == null)  {
-					throw new AxelorException(String.format("%s :\n La facture est selectionnée sur un échéancier dont toutes les échéances sont payées.<br/> Merci de sélectionner une échéance.", 
-							GeneralService.getExceptionAccountingMsg()), IException.CONFIGURATION_ERROR);
+			if(this.isDebitToPay(paymentVoucher))  {
+				return this.getInvoiceDebitMoveline(paymentVoucher.getInvoiceToPay());   
 			}
-			else  {		
-				if(this.isDebitToPay(paymentVoucher))  {
-					return this.getInvoiceDebitMoveline(paymentVoucher.getInvoiceToPay());   
-				}
-				else  {
-					return this.getInvoiceCreditMoveline(paymentVoucher.getInvoiceToPay());   
-				}
+			else  {
+				return this.getInvoiceCreditMoveline(paymentVoucher.getInvoiceToPay());   
 			}
 		}
 		return null;
@@ -785,46 +737,17 @@ public class PaymentVoucherService  {
 				LOG.debug("PV moveLineToPay debit : {}", moveLineToPay.getDebit());
 				LOG.debug("PV moveLineToPay amountPaid : {}", moveLineToPay.getAmountPaid());
 //				BigDecimal amountToPay = paymentInvoiceToPay.getAmountToPay();
-				PaymentScheduleLine paymentScheduleLine = paymentInvoiceToPay.getPaymentScheduleLine();
 				
 				BigDecimal amountToPay = this.getAmountCurrencyConverted(moveLineToPay, paymentVoucher, paymentInvoiceToPay.getAmountToPay());
 				
 				if (amountToPay.compareTo(BigDecimal.ZERO) > 0)  {								
 					
-					// Rejected MoveLine case (Normal + FromSchedule)
-					if(moveLineToPay.getFromSchedulePaymentOk() && paymentScheduleLine == null)  {
-						LOG.debug("Reject case");
-						paidLineTotal = paidLineTotal.add(amountToPay);
+					paidLineTotal = paidLineTotal.add(amountToPay);
 						
-						this.toPayRejectMoveLine(move, moveLineNo, payerPartner, moveLineToPay, amountToPay, paymentInvoiceToPay, isDebitToPay, paymentDate, updateCustomerAccount);
-						
-						moveLineNo +=1;
-					}
-					// normal moveline (not from payment schedule)
-					else if (!moveLineToPay.getFromSchedulePaymentOk())  {
-						LOG.debug("Normal case");
-						paidLineTotal = paidLineTotal.add(amountToPay);
-						
-						this.toPayInvoice(move, moveLineNo, payerPartner, moveLineToPay, amountToPay, paymentInvoiceToPay, isDebitToPay, paymentDate, updateCustomerAccount);
+					this.payMoveLine(move, moveLineNo, payerPartner, moveLineToPay, amountToPay, paymentInvoiceToPay, isDebitToPay, paymentDate, updateCustomerAccount);
 					
-						moveLineNo +=1;
-					}
-					// payment of a Schedule move line
-					else if(isDebitToPay)  {
-						LOG.debug("Schedule payment case");
-						paidLineTotal = paidLineTotal.add(amountToPay);
-						
-						PaymentSchedule paymentSchedule = this.getPaymentSchedule(moveLineToPay.getMove(), payerPartner);
-						
-						LOG.debug("paymentSchedule : : : : : :{}",paymentSchedule);
-						if (paymentSchedule != null)  {
-							
-							lastPaymentScheduleLine = paymentScheduleLine;
-							
-							moveLineNo = this.toPayPaymentScheduleLine(paymentInvoiceToPay, paymentSchedule, payerPartner, moveLineNo, 
-									amountToPay, company, paymentScheduleLine, moveLineToPay, paymentMode, move, paymentDate, updateCustomerAccount);
-						}
-					}
+					moveLineNo +=1;
+					
 				}
 			}
 			// Create move line for the payment amount
@@ -834,15 +757,14 @@ public class PaymentVoucherService  {
 			// on the same account as the moveLine (excess payment)
 			// in the else case we create a classical balance on the bank account of the payment mode
 			if (paymentVoucher.getMoveLine() != null){
-				moveLine = mls.createMoveLine(move,paymentVoucher.getPartner(),paymentVoucher.getMoveLine().getAccount(),
-						paymentVoucher.getPaidAmount(),isDebitToPay,false,paymentDate,moveLineNo,false,false,false, null);
+				moveLine = mls.createMoveLine(move,paymentVoucher.getPartner(),paymentVoucher.getMoveLine().getAccount(), 
+						paymentVoucher.getPaidAmount(), isDebitToPay, false, paymentDate, moveLineNo, null);
 				
 				Reconcile reconcile = rs.createReconcile(moveLine,paymentVoucher.getMoveLine(),moveLine.getDebit(), !isDebitToPay);
 				rs.confirmReconcile(reconcile, updateCustomerAccount);
 			}
 			else{
-				moveLine = mls.createMoveLine(move,payerPartner,paymentModeAccount,
-						paymentVoucher.getPaidAmount(),isDebitToPay,false,paymentDate,moveLineNo,false,false,false, null);
+				moveLine = mls.createMoveLine(move, payerPartner, paymentModeAccount, paymentVoucher.getPaidAmount(), isDebitToPay, false, paymentDate, moveLineNo, null);
 			}
 			move.getMoveLineList().add(moveLine);
 			// Check if the paid amount is > paid lines total
@@ -851,7 +773,7 @@ public class PaymentVoucherService  {
 				BigDecimal remainingPaidAmount = paymentVoucher.getRemainingAmount();
 				
 				moveLine = mls.createMoveLine(move,paymentVoucher.getPartner(),company.getCustomerAccount(),
-						remainingPaidAmount,!isDebitToPay,false,paymentDate,moveLineNo++,false,false,false, null);
+						remainingPaidAmount,!isDebitToPay, false, paymentDate, moveLineNo++, null);
 				move.getMoveLineList().add(moveLine);
 				
 				if(lastPaymentScheduleLine == null || pss.isLastSchedule(lastPaymentScheduleLine))  {
@@ -875,16 +797,10 @@ public class PaymentVoucherService  {
 	 * @return
 	 */
 	public List<PaymentInvoiceToPay>  getPaymentInvoiceToPayList(PaymentVoucher paymentVoucher)  {
-		List<PaymentInvoiceToPay> allPaymentInvoiceToPayList = new ArrayList<PaymentInvoiceToPay>();	
 		
-		List<PaymentInvoiceToPay> schedulePaymentInvoiceToPayList = PaymentInvoiceToPay.all().
-				filter("paymentVoucher = ?1 and paymentScheduleLine is not null ORDER by paymentScheduleLine.scheduleDate ASC", paymentVoucher).fetch();
+		return PaymentInvoiceToPay.all().
+				filter("self.paymentVoucher = ?1 ORDER by self.sequence ASC", paymentVoucher).fetch();
 		
-		List<PaymentInvoiceToPay> otherPaymentInvoiceToPayList = PaymentInvoiceToPay.all().	filter("paymentVoucher = ?1 and paymentScheduleLine is null", paymentVoucher).fetch();
-		
-		if(schedulePaymentInvoiceToPayList!=null)  { allPaymentInvoiceToPayList.addAll(schedulePaymentInvoiceToPayList);  }
-		if(otherPaymentInvoiceToPayList!=null)  { allPaymentInvoiceToPayList.addAll(otherPaymentInvoiceToPayList);  }
-		return allPaymentInvoiceToPayList;
 	}
 	
 	
@@ -907,20 +823,7 @@ public class PaymentVoucherService  {
 		List<MoveLine> debitMoveLines = new ArrayList<MoveLine>();
 		for (PaymentInvoiceToPay paymentInvoiceToPay : paymentInvoiceToPayList)  {
 			
-			// Récupération des ligne d'écriture de facture de l'échéance
-			if(paymentInvoiceToPay.getPaymentScheduleLine() != null && !paymentInvoiceToPay.getPaymentScheduleLine().getFromReject())  {
-				scheduleToBePaid2 = true;
-				List<MoveLine> moveLineInvoiceToPay = pss.getPaymentSchedulerMoveLineToPay(paymentInvoiceToPay.getPaymentScheduleLine().getPaymentSchedule());
-				debitMoveLines.addAll(this.assignMaxAmountToReconcile (moveLineInvoiceToPay, paymentInvoiceToPay.getAmountToPay()));
-			
-				// Manage the double payment in the case of a payment schedule
-				//Copy the payment line and reconcile it with piToPay.moveLine
-				this.createSchedulePaymentMoveLine(paymentInvoiceToPay, paymentDate);
-				// End copy the payment line
-			}
-			else  {
-				debitMoveLines.add(paymentInvoiceToPay.getMoveLine());
-			}
+			debitMoveLines.add(paymentInvoiceToPay.getMoveLine());
 		}	
 		List<MoveLine> creditMoveLines = new ArrayList<MoveLine>();
 		creditMoveLines.add(creditMoveLine);
@@ -1009,62 +912,10 @@ public class PaymentVoucherService  {
 	 * @param moveLineToPay
 	 * @param amountToPay
 	 * @param paymentInvoiceToPay
-	 * @throws AxelorException
-	 */
-	public MoveLine toPayRejectMoveLine(Move paymentMove, int moveLineSeq, Partner payerPartner, MoveLine moveLineToPay, BigDecimal amountToPay, 
-			PaymentInvoiceToPay paymentInvoiceToPay, boolean isDebitToPay, LocalDate paymentDate, boolean updateCustomerAccount) throws AxelorException  {
-		String invoiceName = "";
-		if(moveLineToPay.getMove().getInvoice()!=null)  {
-			invoiceName = moveLineToPay.getMove().getInvoice().getInvoiceId();
-		}
-		else  {
-			invoiceName = paymentInvoiceToPay.getPaymentVoucher().getRef();
-		}
-		MoveLine moveLine = mls.createMoveLine(paymentMove,
-				payerPartner,
-				moveLineToPay.getAccount(),
-				amountToPay,
-				!isDebitToPay,
-				false,
-				paymentDate,
-				moveLineSeq,
-				false,
-				false,
-				false,
-				invoiceName);
-		moveLine.setPaymentScheduleLine(moveLineToPay.getPaymentScheduleLine());
-		
-		paymentMove.getMoveLineList().add(moveLine);
-		paymentInvoiceToPay.setMoveLineGenerated(moveLine);
-
-		Reconcile reconcile = null;
-		PaymentScheduleLine paymentScheduleLine = moveLineToPay.getPaymentScheduleLine();
-		if(pss.isLastSchedule(paymentScheduleLine))  {
-			reconcile = rs.createGenericReconcile(moveLineToPay,moveLine,amountToPay, true, false, !isDebitToPay);
-		}
-		else  {
-			reconcile = rs.createGenericReconcile(moveLineToPay,moveLine,amountToPay, false, false, !isDebitToPay);
-		}
-		LOG.debug("Reconcile : : : {}", reconcile);
-		rs.confirmReconcile(reconcile, updateCustomerAccount);
-		
-		this.closePaymentScheduleLineProcess(moveLineToPay);
-		return moveLine;
-	}
-	
-	
-	/**
-	 * 
-	 * @param paymentMove
-	 * @param moveLineSeq
-	 * @param payerPartner
-	 * @param moveLineToPay
-	 * @param amountToPay
-	 * @param paymentInvoiceToPay
 	 * @return
 	 * @throws AxelorException
 	 */
-	public MoveLine toPayInvoice(Move paymentMove, int moveLineSeq, Partner payerPartner, MoveLine moveLineToPay, BigDecimal amountToPay, PaymentInvoiceToPay paymentInvoiceToPay,
+	public MoveLine payMoveLine(Move paymentMove, int moveLineSeq, Partner payerPartner, MoveLine moveLineToPay, BigDecimal amountToPay, PaymentInvoiceToPay paymentInvoiceToPay,
 			boolean isDebitToPay, LocalDate paymentDate, boolean updateCustomerAccount) throws AxelorException  {
 		String invoiceName = "";
 		if(moveLineToPay.getMove().getInvoice()!=null)  {
@@ -1073,7 +924,8 @@ public class PaymentVoucherService  {
 		else  {
 			invoiceName = paymentInvoiceToPay.getPaymentVoucher().getRef();
 		}
-		MoveLine moveLine = mls.createMoveLine(paymentMove,
+		MoveLine moveLine = mls.createMoveLine(
+				paymentMove,
 				payerPartner,
 				moveLineToPay.getAccount(),
 				amountToPay,
@@ -1081,11 +933,7 @@ public class PaymentVoucherService  {
 				false,
 				paymentDate,
 				moveLineSeq,
-				false,
-				false,
-				false,
 				invoiceName);
-		moveLine.setPaymentScheduleLine(moveLineToPay.getPaymentScheduleLine());
 		
 		paymentMove.getMoveLineList().add(moveLine);
 		paymentInvoiceToPay.setMoveLineGenerated(moveLine);
@@ -1137,60 +985,6 @@ public class PaymentVoucherService  {
 	}
 	
 	
-	
-	/**
-	 * 
-	 * @param paymentInvoiceToPay
-	 * 			 	not null only for paymentVoucher
-	 * @param paymentSchedule
-	 * @param payerPartner
-	 * @param moveLineSeq
-	 * @param amountToPay
-	 * @param company
-	 * @param paymentScheduleLine
-	 * @param moveLine
-	 * @param paymentMode
-	 * @param paymentMove
-	 * @throws AxelorException
-	 */
-	public int toPayPaymentScheduleLine(PaymentInvoiceToPay paymentInvoiceToPay, PaymentSchedule paymentSchedule, Partner payerPartner, int moveLineSeq, 
-			BigDecimal amountToPay, Company company, PaymentScheduleLine paymentScheduleLine, MoveLine moveLine, PaymentMode paymentMode, Move paymentMove,
-			LocalDate paymentDate, boolean updateCustomerAccount) throws AxelorException  {
-		
-		int moveLineSeq2 = moveLineSeq;
-		
-		List<MoveLine> moveLinesToPay = new ArrayList<MoveLine>();
-		// Paying a normal schedule line
-		if(paymentScheduleLine != null 
-				&& !paymentScheduleLine.getFromReject())  {
-
-			List<MoveLine> moveLineInvoiceToPay = pss.getPaymentSchedulerMoveLineToPay(paymentScheduleLine.getPaymentSchedule());
-			moveLinesToPay.addAll(this.assignMaxAmountToReconcile (moveLineInvoiceToPay, amountToPay));
-		}
-		
-		moveLineSeq2 = pas.createExcessPaymentWithAmount(moveLinesToPay, amountToPay, 
-				paymentMove, moveLineSeq2, payerPartner, company, 
-				paymentInvoiceToPay, company.getCustomerAccount(), paymentDate, updateCustomerAccount);
-
-		
-		
-		// Manage the double payment in the case of a payment schedule
-		// Copy the payment line and reconcile it with piToPay.moveLine
-		this.createSchedulePaymentMoveLine(paymentScheduleLine, 
-				moveLine, 
-				company, 
-				paymentMode, 
-				amountToPay,
-				paymentDate,
-				updateCustomerAccount);
-		// End copy the payment line
-		
-		this.closePaymentScheduleLineProcess(moveLine);
-		return moveLineSeq2;
-	}
-	
-	
-	
 	/**
 	 * Fonction permettant de récupérer un échéancier à payer
 	 * @param move
@@ -1230,90 +1024,6 @@ public class PaymentVoucherService  {
 		if(paymentScheduleLine != null)  {
 			paymentScheduleLine.setStatus(Status.all().filter("self.code = 'clo'").fetchOne());
 			paymentScheduleLine.save();
-		}
-	}
-	
-	
-	
-	/**
-	 * Pay the schedule
-	 * 
-	 * Used to Manage the double payment in the case of a payment schedule
-	 * Copy the payment line and reconcile it with piToPay.moveLine
-	 * @param paymentInvoiceToPay
-	 * 				Un ligne de saisie paiement  à payer (2ième O2M)
-	 * @param moveLine
-	 * 				La ligne d'écriture de paiement
-	 * @throws AxelorException
-	 */
-	public void createSchedulePaymentMoveLine(PaymentInvoiceToPay paymentInvoiceToPay, LocalDate paymentDate) throws AxelorException  {
-		this.createSchedulePaymentMoveLine(paymentInvoiceToPay.getPaymentScheduleLine(), 
-				paymentInvoiceToPay.getMoveLine(), 
-				paymentInvoiceToPay.getCompany(), 
-				paymentInvoiceToPay.getPaymentVoucher().getPaymentMode(), 
-				paymentInvoiceToPay.getAmountToPay(),
-				paymentDate,
-				true);
-	}
-	
-	
-	/**
-	 * Pay the schedule
-	 * 
-	 * Used to Manage the double payment in the case of a payment schedule
-	 * Copy the payment line and reconcile it with piToPay.moveLine
-	 * @param paymentInvoiceToPay
-	 * 				Un ligne de saisie paiement  à payer (2ième O2M)
-	 * @param moveLine
-	 * 				La ligne d'écriture de paiement
-	 * @throws AxelorException
-	 */
-	public void createSchedulePaymentMoveLine(PaymentScheduleLine paymentScheduleLine, MoveLine moveLine, Company company, PaymentMode paymentMode, BigDecimal amountToPay,
-			LocalDate paymentDate, boolean updateCustomerAccount) throws AxelorException  {
-		if(paymentScheduleLine != null 
-				&& !paymentScheduleLine.getFromReject())  {
-			Partner partner = moveLine.getPartner();
-			
-			Move move = ms.createMove(company.getTechnicalJournal(), company, null, partner, paymentDate, paymentMode, false, null);
-			
-			MoveLine copiedMoveLine = mls.createMoveLine(move,
-					partner,
-					moveLine.getAccount(),
-					amountToPay,
-					false,
-					false,
-					paymentDate,
-					1,
-					true,
-					false,
-					false,
-					null);
-		
-			move.getMoveLineList().add(copiedMoveLine);
-			
-			Account paymentModeAccount = pms.getCompanyAccount(paymentMode, company);
-			
-			MoveLine creditMoveLine = mls.createMoveLine(move,
-					partner,
-					paymentModeAccount,
-					amountToPay,
-					true,
-					false,
-					paymentDate,
-					2,
-					true,
-					false,
-					false,
-					null);
-			move.getMoveLineList().add(creditMoveLine);
-			
-			ms.validateMove(move, updateCustomerAccount);
-			
-			LOG.debug("copiedMoveLine : : : : : :{}",copiedMoveLine);
-			
-			Reconcile reconcile = rs.createReconcile(moveLine,copiedMoveLine,amountToPay);
-			LOG.debug("Reconcile with copied move line: : : ", reconcile);		
-			rs.confirmReconcile(reconcile, updateCustomerAccount);
 		}
 	}
 	

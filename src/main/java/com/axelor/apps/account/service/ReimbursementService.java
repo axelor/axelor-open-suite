@@ -39,12 +39,12 @@ public class ReimbursementService {
 	
 	
 	/**
-	 * Procédure permettant de mettre à jour la liste des RIBs dans le contrat
+	 * Procédure permettant de mettre à jour la liste des RIBs du tiers
 	 * @param reimbursement
 	 * 				Un remboursement
 	 */
 	@Transactional
-	public void updateContractCurrentRIB(Reimbursement reimbursement)  {
+	public void updatePartnerCurrentRIB(Reimbursement reimbursement)  {
 		BankDetails bankDetails = reimbursement.getBankDetails();
 		Partner partner = reimbursement.getPartner();
 

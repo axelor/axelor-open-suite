@@ -163,7 +163,7 @@ public class BatchAccountCustomer extends BatchStrategy {
 				
 				anomaly++;
 				
-				LOG.error("Bug(Anomalie) généré(e) pour le contrat {}",  AccountingSituation.find(accountingSituation.getId()));
+				LOG.error("Bug(Anomalie) généré(e) pour le compte client {}",  AccountingSituation.find(accountingSituation.getId()));
 				
 			} finally {
 				

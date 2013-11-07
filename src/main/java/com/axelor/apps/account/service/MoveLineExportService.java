@@ -231,8 +231,8 @@ public class MoveLineExportService {
 							String periodCode = firstMove.getPeriod().getFromDate().toString("yyyyMM");
 							
 							for(Move move : moves)  {
-								move.setExportToAgressoNumber(exportToAgressoNumber);
-								move.setExportToAgressoDate(interfaceDate);
+								move.setExportNumber(exportToAgressoNumber);
+								move.setExportDate(interfaceDate);
 								move.setAccountingOk(true);
 								move.setMoveLineReport(mlr);
 								move.save();
@@ -404,8 +404,8 @@ public class MoveLineExportService {
 							
 							for(Move move : moves)  {
 								
-								move.setExportToAgressoNumber(exportToAgressoNumber);
-								move.setExportToAgressoDate(interfaceDate);
+								move.setExportNumber(exportToAgressoNumber);
+								move.setExportDate(interfaceDate);
 								move.setAccountingOk(true);
 								move.setMoveLineReport(mlr);
 								move.save();
@@ -572,8 +572,8 @@ public class MoveLineExportService {
 							String periodCode = firstMove.getPeriod().getFromDate().toString("yyyyMM");
 							
 							for(Move move : moves)  {
-								move.setExportToAgressoNumber(exportToAgressoNumber);
-								move.setExportToAgressoDate(interfaceDate);
+								move.setExportNumber(exportToAgressoNumber);
+								move.setExportDate(interfaceDate);
 								move.setAccountingOk(true);
 								move.setMoveLineReport(mlr);
 								move.save();
@@ -734,8 +734,8 @@ public class MoveLineExportService {
 								
 								String periodCode = move.getPeriod().getFromDate().toString("yyyyMM");
 								
-								move.setExportToAgressoNumber(exportToAgressoNumber);
-								move.setExportToAgressoDate(interfaceDate);
+								move.setExportNumber(exportToAgressoNumber);
+								move.setExportDate(interfaceDate);
 								move.setAccountingOk(true);
 								move.setMoveLineReport(mlr);
 								move.save();
@@ -894,7 +894,7 @@ public class MoveLineExportService {
 										
 										items[0] = companyCode;
 										items[1] = journal.getExportCode();
-										items[2] = moveLine3.getMove().getExportToAgressoNumber();
+										items[2] = moveLine3.getMove().getExportNumber();
 										items[3] = String.format("%s", sequence);
 										sequence++;		
 										items[4] = accountCode;
@@ -984,7 +984,7 @@ public class MoveLineExportService {
 			for(MoveLine moveLine2 : sortMoveLineList)  {
 				if(moveLine.getAnalyticAccountSet().equals(moveLine2.getAnalyticAccountSet()) 
 						&& moveLine.getMove().getJournal().equals(moveLine2.getMove().getJournal())
-						&& moveLine.getMove().getExportToAgressoNumber().equals(moveLine2.getMove().getExportToAgressoNumber()))  {
+						&& moveLine.getMove().getExportNumber().equals(moveLine2.getMove().getExportNumber()))  {
 					moveLine2.setDebit(moveLine2.getDebit().add(moveLine.getDebit()));
 					moveLine2.setCredit(moveLine2.getCredit().add(moveLine.getCredit()));
 					found = true;

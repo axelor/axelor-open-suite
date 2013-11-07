@@ -31,7 +31,7 @@
 package com.axelor.apps.account.db;
 
 /**
- * Interface of Contract package. Enum all static variable of packages.
+ * Interface of Account package. Enum all static variable of packages.
  */
 public interface IAccount {
 
@@ -59,10 +59,6 @@ public interface IAccount {
 	/**
 	 * Static select in PaymentSchedule
 	 */
-	// NATURE
-	static final int PAYMENT_SCHEDULE = 0;
-	static final int MONTHLY_PAYMENT_SCHEDULE = 1;
-	static final int MAJOR_ACCOUNT_SCHEDULE = 2;
 
 	// IRRECOVERABLE STATE SELECT
 	static final int NOT_IRRECOUVRABLE = 0;
@@ -118,14 +114,6 @@ public interface IAccount {
 	// STATE
 	static final int DRAFT_CASHREGISTERLINE = 0;
 	static final int CLOSED_CASHREGISTERLINE = 1;
-
-	/**
-	 * Static select in AccountClearance
-	 */
-	// CONTRACTLINE TYPE SELECT
-	static final int CANCELED_CONTRACTLINE = 0;
-	static final int NOT_CANCELED_CONTRACTLINE = 1;
-	static final int ALL_CONTRACTLINE = 2;
 
 	/**
 	 * Static select in Reimbursement

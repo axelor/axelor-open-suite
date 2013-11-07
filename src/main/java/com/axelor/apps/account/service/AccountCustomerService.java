@@ -32,7 +32,6 @@ package com.axelor.apps.account.service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -68,9 +67,11 @@ public class AccountCustomerService {
 	
 	
 	/**
-	 * Fonction permettant de calculer le solde total d'un contrat
-	 * @param contractLine
-	 * 			Un contrat
+	 * Fonction permettant de calculer le solde total d'un tiers
+	 * @param partner
+	 * 			Un tiers
+	 * @param company
+	 * 			Une société
 	 * @return
 	 * 			Le solde total
 	 */
@@ -78,18 +79,18 @@ public class AccountCustomerService {
 		LOG.debug("Compute balance (Partner : {}, Company : {})",partner.getName(),company.getName());
 
 		Query query = JPA.em().createNativeQuery("SELECT SUM(COALESCE(m1.sum_remaining,0) - COALESCE(m2.sum_remaining,0) ) "+
-												"FROM public.account_move_line as ml  "+
-												"left outer join ( "+
-													"SELECT moveline.amount_remaining as sum_remaining, moveline.id as moveline_id "+
-													"FROM public.account_move_line as moveline "+
-													"WHERE moveline.debit > 0  GROUP BY moveline.id, moveline.amount_remaining) AS m1 on (m1.moveline_id = ml.id) "+
-												"left outer join ( "+
-													"SELECT moveline.amount_remaining as sum_remaining, moveline.id as moveline_id "+
-													"FROM public.account_move_line as moveline "+
-													"WHERE moveline.credit > 0  GROUP BY moveline.id, moveline.amount_remaining) AS m2 on (m2.moveline_id = ml.id) "+
-												"left outer join public.account_account as account on (ml.account = account.id) "+
-												"left outer join public.account_move as move on (ml.move = move.id) "+
-												"where ml.partner = ?1 AND move.company = ?2 AND ml.ignore_in_accounting_ok in ('false', null) AND account.reconcile_ok = 'true' "+
+												"FROM public.account_move_line AS ml  "+
+												"LEFT OUTER JOIN ( "+
+													"SELECT moveline.amount_remaining AS sum_remaining, moveline.id AS moveline_id "+
+													"FROM public.account_move_line AS moveline "+
+													"WHERE moveline.debit > 0  GROUP BY moveline.id, moveline.amount_remaining) AS m1 ON (m1.moveline_id = ml.id) "+
+												"LEFT OUTER JOIN ( "+
+													"SELECT moveline.amount_remaining AS sum_remaining, moveline.id AS moveline_id "+
+													"FROM public.account_move_line AS moveline "+
+													"WHERE moveline.credit > 0  GROUP BY moveline.id, moveline.amount_remaining) AS m2 ON (m2.moveline_id = ml.id) "+
+												"LEFT OUTER JOIN public.account_account AS account ON (ml.account = account.id) "+
+												"LEFT OUTER JOIN public.account_move AS move ON (ml.move = move.id) "+
+												"WHERE ml.partner = ?1 AND move.company = ?2 AND move.ignore_in_accounting_ok IN ('false', null) AND account.reconcile_ok = 'true' "+
 												"AND move.state = 'validated' AND ml.amount_remaining > 0 ")
 												.setParameter(1, partner)
 												.setParameter(2, company);
@@ -107,13 +108,16 @@ public class AccountCustomerService {
 	
 	
 	/**
-	 * Fonction permettant de calculer le solde exigible d'un contrat
+	 * Fonction permettant de calculer le solde exigible d'un tiers
 	 * 
-	 * Calcul du solde exigible du contrat :
-	 * Montant Total des échéances (des factures et des échéanciers) échues (date du jour >= date de l’échéance) - Montant Total payé sur l’échéancier
+	 * Calcul du solde exigible du tiers :
+	 * Montant Total des factures et des échéances rejetées échues (date du jour >= date de l’échéance)
 	 * 
-	 * @param contractLine
-	 * 			Un contrat
+	 * @param partner
+	 * 			Un tiers
+	 * @param company
+	 * 			Une société
+	 * 
 	 * @return
 	 * 			Le solde exigible
 	 */
@@ -121,29 +125,22 @@ public class AccountCustomerService {
 		LOG.debug("Compute balance due (Partner : {}, Company : {})",partner.getName(),company.getName());
 		
 		Query query = JPA.em().createNativeQuery("SELECT SUM( COALESCE(m1.sum_remaining,0) - COALESCE(m2.sum_remaining,0) ) "+
-				"FROM public.account_move_line as ml  "+
-				"left outer join ( "+
-					"SELECT moveline.amount_remaining as sum_remaining, moveline.id as moveline_id "+
-					"FROM public.account_move_line as moveline "+
-					"left outer join public.account_move as move on (moveline.move = move.id) "+
-					"left outer join public.account_invoice as iinvoice on (move.invoice = iinvoice.id) "+
-					"WHERE moveline.debit > 0 AND moveline.due_date <= ?1 " +
-					"AND ( iinvoice.schedule_payment_ok in ('false', null) " +
-						"OR ( iinvoice IS NULL " +
-							"AND (( moveline.from_schedule_payment_ok = 'true' AND moveline.ignore_in_accounting_ok = 'true') " +
-								"OR ( moveline.from_schedule_payment_ok IN ('false', null) AND moveline.ignore_in_accounting_ok = 'false') " +
-								")" +
-							")" +
-						")" +
+				"FROM public.account_move_line AS ml  "+
+				"LEFT OUTER JOIN ( "+
+					"SELECT moveline.amount_remaining AS sum_remaining, moveline.id AS moveline_id "+
+					"FROM public.account_move_line AS moveline "+
+					"WHERE moveline.debit > 0 " +
+					"AND ((moveline.due_date IS NULL AND moveline.date <= ?1) OR (moveline.due_date IS NOT NULL AND moveline.due_date <= ?1)) " +
 					"GROUP BY moveline.id, moveline.amount_remaining) AS m1 on (m1.moveline_id = ml.id) "+
-				"left outer join ( "+
-					"SELECT moveline.amount_remaining as sum_remaining, moveline.id as moveline_id "+
-					"FROM public.account_move_line as moveline "+
-					"WHERE moveline.credit > 0 AND (moveline.from_schedule_payment_ok IN ('false', null) OR moveline.ignore_in_accounting_ok IN ('false', null))  " +
-					"GROUP BY moveline.id, moveline.amount_remaining) AS m2 on (m2.moveline_id = ml.id) "+
-				"left outer join public.account_account as account on (ml.account = account.id) "+
-				"left outer join public.account_move as move on (ml.move = move.id) "+
-				"where ml.partner = ?2 AND move.company = ?3 AND ml.ignore_in_reminder_ok in ('false', null) AND account.reconcile_ok = 'true' "+
+				"LEFT OUTER JOIN ( "+
+					"SELECT moveline.amount_remaining AS sum_remaining, moveline.id AS moveline_id "+
+					"FROM public.account_move_line AS moveline "+
+					"WHERE moveline.credit > 0 " +
+					"GROUP BY moveline.id, moveline.amount_remaining) AS m2 ON (m2.moveline_id = ml.id) "+
+				"LEFT OUTER JOIN public.account_account AS account ON (ml.account = account.id) "+
+				"LEFT OUTER JOIN public.account_move AS move ON (ml.move = move.id) "+
+				"WHERE ml.partner = ?2 AND move.company = ?3 AND move.ignore_in_reminder_ok IN ('false', null) " +
+				"AND move.ignore_in_accounting_ok IN ('false', null) AND account.reconcile_ok = 'true' "+
 				"AND move.state = 'validated' AND ml.amount_remaining > 0 ")
 				.setParameter(1, today.toDate(), TemporalType.DATE)
 				.setParameter(2, partner)
@@ -155,46 +152,39 @@ public class AccountCustomerService {
 			balance = BigDecimal.ZERO;
 		}
 		
-		LOG.debug("Balance : {}", balance);	
+		LOG.debug("Balance due : {}", balance);	
 		
 		return balance;
 	}
 	
 	
 	
-	/******************************************  2. Calcul du solde exigible (relançable) du contrat  ******************************************/
-	/** solde des factures exigibles non bloquées en relance et dont « la date de facture » + « délai d’acheminement(X) » <« date du jour »  ***/
-	/** solde des échéanciers dont le type est non contentieux et qui ne sont pas bloqués ******************************************************/
+	/******************************************  2. Calcul du solde exigible (relançable) du tiers  ******************************************/
+	/** solde des factures exigibles non bloquées en relance et dont « la date de facture » + « délai d’acheminement(X) » <« date du jour » 
+	 *  si la date de facture = date d'échéance de facture, sinon pas de prise en compte du délai d'acheminement ***/
+	/** solde des échéances rejetées qui ne sont pas bloqués ******************************************************/
 	
 	public BigDecimal getBalanceDueReminder(Partner partner, Company company)  {
 		LOG.debug("Compute balance due reminder (Partner : {}, Company : {})",partner.getName(),company.getName());
 		
-		//Calcul sur factures exigibles non bloquées en relance et dont la date de facture + délai d'acheminement < date du jour
-		//et échéanciers dont le type est non contentieux et qui ne sont pas bloqués //TODO NON CONTENTIEUX ?
 		Query query = JPA.em().createNativeQuery("SELECT SUM( COALESCE(m1.sum_remaining,0) - COALESCE(m2.sum_remaining,0) ) "+
 				"FROM public.account_move_line as ml  "+
-				"left outer join ( "+
-					"SELECT moveline.amount_remaining as sum_remaining, moveline.id as moveline_id "+
-					"FROM public.account_move_line as moveline "+
-					"left outer join public.account_move as move on (moveline.move = move.id) "+
-					"left outer join public.account_invoice as iinvoice on (move.invoice = iinvoice.id) "+
-					"WHERE moveline.debit > 0 AND moveline.due_date <= ?2 " +
-					"AND (( iinvoice.reminder_blocking_ok IN ('false', null) AND iinvoice.schedule_payment_ok IN ('false', null) AND (iinvoice.invoice_date + ?1 ) < ?2 ) " +
-						"OR ( iinvoice IS NULL " +
-							"AND (( moveline.from_schedule_payment_ok = 'true' AND moveline.ignore_in_accounting_ok = 'true') " +
-								"OR ( moveline.from_schedule_payment_ok IN ('false', null) AND moveline.ignore_in_accounting_ok = 'false') " +
-								") " +
-							") " +
-						") " +
-					"GROUP BY moveline.id, moveline.amount_remaining) AS m1 on (m1.moveline_id = ml.id) "+
-				"left outer join ( "+
-					"SELECT moveline.amount_remaining as sum_remaining, moveline.id as moveline_id "+
-					"FROM public.account_move_line as moveline "+
-					"WHERE moveline.credit > 0 AND (moveline.from_schedule_payment_ok IN ('false', null) OR moveline.ignore_in_accounting_ok IN ('false', null))  " +
-					"GROUP BY moveline.id, moveline.amount_remaining) AS m2 on (m2.moveline_id = ml.id) "+
-				"left outer join public.account_account as account on (ml.account = account.id) "+
-				"left outer join public.account_move as move on (ml.move = move.id) "+
-				"where ml.partner = ?3 AND move.company = ?4 AND ml.ignore_in_reminder_ok in ('false', null) AND account.reconcile_ok = 'true' "+
+				"LEFT OUTER JOIN ( "+
+					"SELECT moveline.amount_remaining AS sum_remaining, moveline.id AS moveline_id "+
+					"FROM public.account_move_line AS moveline "+
+					"WHERE moveline.debit > 0 AND (( moveline.date = moveline.due_date AND (moveline.due_date + ?1 ) < ?2 ) " +
+					"OR (moveline.due_date IS NOT NULL AND moveline.date != moveline.due_date AND moveline.due_date < ?2)" +
+					"OR (moveline.due_date IS NULL AND moveline.date < ?2)) " +
+					"GROUP BY moveline.id, moveline.amount_remaining) AS m1 ON (m1.moveline_id = ml.id) "+
+				"LEFT OUTER JOIN ( "+
+					"SELECT moveline.amount_remaining AS sum_remaining, moveline.id AS moveline_id "+
+					"FROM public.account_move_line AS moveline "+
+					"WHERE moveline.credit > 0 " +
+					"GROUP BY moveline.id, moveline.amount_remaining) AS m2 ON (m2.moveline_id = ml.id) "+
+				"LEFT OUTER JOIN public.account_account AS account ON (ml.account = account.id) "+
+				"LEFT OUTER JOIN public.account_move AS move ON (ml.move = move.id) "+
+				"WHERE ml.partner = ?3 AND move.company = ?4 AND move.ignore_in_reminder_ok in ('false', null) " +
+				"AND move.ignore_in_accounting_ok IN ('false', null) AND account.reconcile_ok = 'true' "+
 				"AND move.state = 'validated' AND ml.amount_remaining > 0 ")
 				.setParameter(1, company.getMailTransitTime())
 				.setParameter(2, today.toDate(), TemporalType.DATE)
@@ -207,7 +197,7 @@ public class AccountCustomerService {
 			balance = BigDecimal.ZERO;
 		}
 		
-		LOG.debug("Balance : {}", balance);	
+		LOG.debug("Balance due reminder : {}", balance);	
 		
 		return balance;
 	}
@@ -215,7 +205,10 @@ public class AccountCustomerService {
 	
 	/**
 	 * Méthode permettant de récupérer l'ensemble des lignes d'écriture pour une société et un tiers
-	 * @param contractLine
+	 * @param partner
+	 * 			Un tiers
+	 * @param company
+	 * 			Une société
 	 * @return
 	 */
 	public List<MoveLine> getMoveLine(Partner partner, Company company)  {
@@ -253,7 +246,7 @@ public class AccountCustomerService {
 	
 	
 	/**
-	 * Méthode permettant de récupérer la liste des contrats distincts impactés par l'écriture
+	 * Méthode permettant de récupérer la liste des tiers distincts impactés par l'écriture
 	 * @param move
 	 * 			Une écriture
 	 * @return
@@ -281,15 +274,14 @@ public class AccountCustomerService {
 	
 	
 	/**
-	 * Méthode permettant de mettre à jour le M2M MoveLineSet du contrat avec toutes 
-	 * les lignes d'écritures dont le contrat correspond et qui ne sont pas ignorées en compta.
-	 * @param contractLine
-	 * 				Un contrat
+	 * Méthode permettant de mettre à jour les soldes du compte client d'un tiers.
+	 * @param accountingSituation
+	 * 				Un compte client
 	 */
 	@Transactional
-	public void updateMoveLineSet(AccountingSituation accountingSituation)  {
+	public void updateCustomerAccount(AccountingSituation accountingSituation)  {
 		
-		LOG.debug("Begin updateMoveLineSet service ...");
+		LOG.debug("Begin updateCustomerAccount service ...");
 		
 		Partner partner = accountingSituation.getPartner();
 		Company company = accountingSituation.getCompany();
@@ -298,15 +290,9 @@ public class AccountCustomerService {
 		accountingSituation.setBalanceDueCustAccount(this.getBalanceDue(partner, company));
 		accountingSituation.setBalanceDueReminderCustAccount(this.getBalanceDueReminder(partner, company));
 		
-		List<MoveLine> moveLineList = MoveLine.all().filter("self.partner = ?1 AND self.move.company = ?2 AND self.ignoreInAccountingOk in (false, null) AND self.account.reconcileOk = 'true' AND self.move.state = 'validated' ORDER by self.date asc"
-				, partner, company).fetch();
-		  
-		accountingSituation.setMoveLineSet(new HashSet<MoveLine>());
-		accountingSituation.getMoveLineSet().addAll(moveLineList);
-	
 		accountingSituation.save();
 		
-		LOG.debug("End updateMoveLineSet service");
+		LOG.debug("End updateCustomerAccount service");
 	}
 	
 	

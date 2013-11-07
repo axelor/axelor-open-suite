@@ -340,25 +340,6 @@ public class ReconcileService {
 	}
 	
 	
-	
-	/**
-	 * Procédure permettant de récupérer l'écriture d'avoir d'un trop-perçu généré par un avoir
-	 * @param moveLine
-	 * 			un trop-perçu
-	 * @return
-	 */
-	public Move getRefundMove (MoveLine moveLine)  {
-		Move move = moveLine.getMove();
-		if(move.getJournal().equals(move.getCompany().getTechnicalJournal()))  {
-			MoveLine oppositeMoveLine = ms.getOppositeMoveLine(moveLine);
-			if(oppositeMoveLine.getReconcileList1() != null && oppositeMoveLine.getReconcileList1().size() == 1)  {
-				return oppositeMoveLine.getReconcileList1().get(0).getLineCredit().getMove();
-			}
-		}
-		return null;
-	}
-	
-	
 	/**
 	 * Méthode permettant de lettrer une écriture au débit avec une écriture au crédit
 	 * @param debitMoveLine
@@ -372,7 +353,6 @@ public class ReconcileService {
 		this.confirmReconcile(reconcile, updateCustomerAccount);
 		
 	}
-	
 	
 	
 	/**
@@ -406,12 +386,10 @@ public class ReconcileService {
 				Move newMove = ms.createMove(company.getMiscOperationJournal(), company, null, partner, null, false);
 				
 				// Création de la ligne au crédit
-				MoveLine newCreditMoveLine = mls.createMoveLine(newMove, partner, account, debitAmountRemaining, false, false, 
-						today, 1, false, false, false, null);
+				MoveLine newCreditMoveLine = mls.createMoveLine(newMove, partner, account, debitAmountRemaining, false, false, today, 1, null);
 				
 				// Création de la ligne au debit
-				MoveLine newDebitMoveLine = mls.createMoveLine(newMove, partner, company.getCashPositionVariationAccount(), debitAmountRemaining, true, false, 
-						today, 2, false, false, false, null);
+				MoveLine newDebitMoveLine = mls.createMoveLine(newMove, partner, company.getCashPositionVariationAccount(), debitAmountRemaining, true, false, today, 2, null);
 				
 				newMove.getMoveLineList().add(newCreditMoveLine);
 				newMove.getMoveLineList().add(newDebitMoveLine);
@@ -458,12 +436,10 @@ public class ReconcileService {
 					
 					
 					// Création de la ligne au crédit
-					MoveLine newCreditMoveLine = mls.createMoveLine(newMove, partner, company.getCashPositionVariationAccount(), creditAmountRemaining, false, false, 
-							today, 2, false, false, false, null);
+					MoveLine newCreditMoveLine = mls.createMoveLine(newMove, partner, company.getCashPositionVariationAccount(), creditAmountRemaining, false, false, today, 2, null);
 					
 					// Création de la ligne au débit
-					MoveLine newDebitMoveLine = mls.createMoveLine(newMove, partner, account, creditAmountRemaining, true, false, 
-							today, 1, false, false, false, null);
+					MoveLine newDebitMoveLine = mls.createMoveLine(newMove, partner, account, creditAmountRemaining, true, false, today, 1, null);
 					
 					newMove.getMoveLineList().add(newCreditMoveLine);
 					newMove.getMoveLineList().add(newDebitMoveLine);

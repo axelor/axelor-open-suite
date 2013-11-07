@@ -198,12 +198,12 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		
 		invoiceLine.setExTaxTotal(exTaxTotal);
 		
-		Partner clientPartner = invoice.getClientPartner();
-		Currency partnerCurrency = clientPartner.getCurrency();
+		Partner partner = invoice.getPartner();
+		Currency partnerCurrency = partner.getCurrency();
 		
 		if(partnerCurrency == null)  {
 			throw new AxelorException(String.format("Veuillez selectionner une devise pour le tiers %s (%s)", 
-					clientPartner.getFullName(), clientPartner.getPartnerSeq()), IException.CONFIGURATION_ERROR);
+					partner.getFullName(), partner.getPartnerSeq()), IException.CONFIGURATION_ERROR);
 		}
 		
 		invoiceLine.setAccountingExTaxTotal(

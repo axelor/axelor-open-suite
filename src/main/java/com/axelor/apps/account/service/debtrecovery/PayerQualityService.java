@@ -96,7 +96,7 @@ public class PayerQualityService {
 		for(MoveLine moveLine : moveLineList)  {
 			burden = burden.add(this.getPayerQualityNote(moveLine, payerQualityConfigLineList));
 		}	
-		LOG.debug("Contrat {} : Qualité payeur : {}", partner.getName(), burden);
+		LOG.debug("Tiers {} : Qualité payeur : {}", partner.getName(), burden);
 		return burden;
 	}
 	

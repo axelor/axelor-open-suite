@@ -36,7 +36,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +48,6 @@ import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Status;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -58,8 +56,6 @@ import com.axelor.exception.service.TraceBackService;
 public class BatchReimbursementExport extends BatchStrategy {
 
 	private static final Logger LOG = LoggerFactory.getLogger(BatchReimbursementExport.class);
-
-	private LocalDate today;
 
 	private boolean stop = false;
 	
@@ -71,7 +67,6 @@ public class BatchReimbursementExport extends BatchStrategy {
 	public BatchReimbursementExport(ReimbursementExportService reimbursementExportService, CfonbService cfonbService, BatchAccountCustomer batchAccountCustomer) {
 		
 		super(reimbursementExportService, cfonbService, batchAccountCustomer);
-		this.today = GeneralService.getTodayDate();
 		
 	}
 
@@ -163,9 +158,9 @@ public class BatchReimbursementExport extends BatchStrategy {
 			try {
 				partner = Partner.find(partner.getId());
 				
-				LOG.debug("Contrat n° {}", partner.getName());
+				LOG.debug("Tiers n° {}", partner.getName());
 				
-				if(reimbursementExportService.canBeReimbursed(partner))  {
+				if(reimbursementExportService.canBeReimbursed(partner, Company.find(company.getId())))  {
 				
 					List<MoveLine> moveLineList = MoveLine.all().filter("self.account.reconcileOk = 'true' AND self.fromSchedulePaymentOk = 'false' " +
 							"AND self.move.state = ?1 AND self.amountRemaining > 0 AND self.credit > 0 AND self.partner = ?2 AND self.company = ?3 AND " +
@@ -196,7 +191,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 				
 				incrementAnomaly();
 				
-				LOG.error("Bug(Anomalie) généré(e) pour le contrat {}", Partner.find(partner.getId()).getName());
+				LOG.error("Bug(Anomalie) généré(e) pour le tiers {}", Partner.find(partner.getId()).getName());
 				
 			} finally {
 				
@@ -213,7 +208,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 		
 		// On récupère les remboursements dont les trop perçu ont été annulés
 		List<Reimbursement> reimbursementToCancelList = Reimbursement.all()
-				.filter("self.contractLine.contract.company = ?1 and self.status.code = 'val' and self.amountToReimburse = 0", company).fetch();
+				.filter("self.company = ?1 and self.status.code = 'val' and self.amountToReimburse = 0", company).fetch();
 		
 		// On annule les remboursements
 		Status statusCan = Status.all().filter("self.code = 'can'").fetchOne();
@@ -221,11 +216,9 @@ public class BatchReimbursementExport extends BatchStrategy {
 			reimbursement.setStatus(statusCan);
 		}
 		
-		// On récupère les remboursement à rembourser et qui ne sont pas bloqué en remboursement
+		// On récupère les remboursement à rembourser
 		List<Reimbursement> reimbursementList = Reimbursement.all()
-				.filter("self.contractLine.contract.company = ?1 and self.status.code = 'val' and self.amountToReimburse > 0 " +
-						"AND (self.contractLine.reimbursementBlockingOk = 'false' OR (self.contractLine.reimbursementBlockingOk = 'true' AND self.contractLine.reimbursementBlockingToDate < ?2))",
-						company, today).fetch();
+				.filter("self.company = ?1 and self.status.code = 'val' and self.amountToReimburse > 0", company).fetch();
 		
 		List<Reimbursement> reimbursementToExport = new ArrayList<Reimbursement>();
 		
@@ -233,11 +226,14 @@ public class BatchReimbursementExport extends BatchStrategy {
 			try {
 				reimbursement = Reimbursement.find(reimbursement.getId());
 				
-				reimbursementExportService.reimburse(reimbursement, company);
-				updateReimbursement(Reimbursement.find(reimbursement.getId()));
-				reimbursementToExport.add(reimbursement);
-				this.totalAmount = this.totalAmount.add(Reimbursement.find(reimbursement.getId()).getAmountReimbursed());
-				i++;
+				if(reimbursementExportService.canBeReimbursed(reimbursement.getPartner(), reimbursement.getCompany()))  {
+				
+					reimbursementExportService.reimburse(reimbursement, company);
+					updateReimbursement(Reimbursement.find(reimbursement.getId()));
+					reimbursementToExport.add(reimbursement);
+					this.totalAmount = this.totalAmount.add(Reimbursement.find(reimbursement.getId()).getAmountReimbursed());
+					i++;
+				}
 				
 			} catch (AxelorException e) {
 				

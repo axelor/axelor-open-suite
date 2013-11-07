@@ -104,40 +104,14 @@ public class AccountClearanceService {
 		
 		this.testCompanyField(company);
 		
-		String contractLineStatusRequest = this.getContractLineStatusRequest(accountClearance);
-		
 		List<MoveLine> moveLineList = MoveLine.all().filter("self.company = ?1 AND self.account.reconcileOk = 'true' AND self.fromSchedulePaymentOk = 'false' " +
-				"AND self.move.state = ?2 AND self.amountRemaining > 0 AND self.amountRemaining <= ?3 AND self.credit > 0 AND self.account in ?4 AND self.date <= ?5"
-				+contractLineStatusRequest,
+				"AND self.move.state = ?2 AND self.amountRemaining > 0 AND self.amountRemaining <= ?3 AND self.credit > 0 AND self.account in ?4 AND self.date <= ?5",
 				company, IAccount.VALIDATED_MOVE , accountClearance.getAmountThreshold(), 
 				company.getClearanceAccountSet(), accountClearance.getDateThreshold()).fetch();
 		
 		LOG.debug("Liste des trop perçus récupérés : {}", moveLineList);
 		
 		return moveLineList;
-	}
-	
-	
-	public String getContractLineStatusRequest(AccountClearance accountClearance)  {
-//		switch (accountClearance.getContractLineTypeSelect()) {
-		
-//			// Contrat résilié						
-//			case IAccount.CANCELED_CONTRACTLINE:
-//				return " AND self.contractLine.status.code = 'res'";
-//							
-//			// Contrat non résilié
-//			case IAccount.NOT_CANCELED_CONTRACTLINE:			
-//				return " AND self.contractLine.status.code != 'res'";
-							
-			// Tous les contrats
-//			case IAccount.ALL_CONTRACTLINE:			
-				return "";
-				
-//			default:
-//				break;
-//			}
-//		
-//		return null;
 	}
 	
 	
@@ -184,24 +158,19 @@ public class AccountClearanceService {
 
 		// Debit MoveLine 411
 		BigDecimal amount = moveLine.getAmountRemaining();
-		MoveLine debitMoveLine = mls.createMoveLine(move, partner, moveLine.getAccount(), amount, true, false, todayTime.toLocalDate(),
-				1, false, false, false, null);
+		MoveLine debitMoveLine = mls.createMoveLine(move, partner, moveLine.getAccount(), amount, true, false, todayTime.toLocalDate(), 1, null);
 		move.getMoveLineList().add(debitMoveLine);
-		
 		
 		// Credit MoveLine 77. (profit account)
 		BigDecimal divid = vatRate.add(BigDecimal.ONE);
 		BigDecimal profitAmount = amount.divide(divid, 2, RoundingMode.HALF_EVEN).setScale(2, RoundingMode.HALF_EVEN);
-		MoveLine creditMoveLine1 = mls.createMoveLine(move, partner, profitAccount, profitAmount, false, false, todayTime.toLocalDate(),
-				2, false, false, false, null);
+		MoveLine creditMoveLine1 = mls.createMoveLine(move, partner, profitAccount, profitAmount, false, false, todayTime.toLocalDate(), 2, null);
 		move.getMoveLineList().add(creditMoveLine1);
 
 		// Credit MoveLine 445 (VAT account)
 		BigDecimal vatAmount = amount.subtract(profitAmount);
-		MoveLine creditMoveLine2 = mls.createMoveLine(move, partner, vatAccount, vatAmount, false, false, todayTime.toLocalDate(),
-				3, false, false, false, null);
+		MoveLine creditMoveLine2 = mls.createMoveLine(move, partner, vatAccount, vatAmount, false, false, todayTime.toLocalDate(), 3, null);
 		move.getMoveLineList().add(creditMoveLine2);
-		
 		
 		Reconcile reconcile = rs.createReconcile(debitMoveLine, moveLine, amount);
 		rs.confirmReconcile(reconcile);
@@ -215,7 +184,7 @@ public class AccountClearanceService {
 	
 	
 	
-	public AccountClearance createAccountClearance(Company company, String name,BigDecimal amountThreshold, LocalDate dateThreshold, int contractLineTypeSelect, List<MoveLine> moveLineSet)  {
+	public AccountClearance createAccountClearance(Company company, String name,BigDecimal amountThreshold, LocalDate dateThreshold, List<MoveLine> moveLineSet)  {
 		AccountClearance accountClearance = new AccountClearance();
 		accountClearance.setAmountThreshold(amountThreshold);
 		accountClearance.setCompany(company);

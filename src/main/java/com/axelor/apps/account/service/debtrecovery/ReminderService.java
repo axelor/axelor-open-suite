@@ -50,7 +50,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.tool.date.DateTool;
-import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
@@ -77,19 +76,11 @@ public class ReminderService {
 		
 	}
 	
-	/******************************************  1. Calcul du solde exigible du contrat  *****************************************************************/
-    /** Montant Total des échéances (des factures et des échéanciers) échues (date du jour >= date de l’échéance) - Montant Total payé sur l’échéancier **/
-	
-	
-	
-	/******************************************  2. Calcul du solde exigible (relançable) du contrat  ******************************************/
-	/** solde des factures exigibles non bloquées en relance et dont « la date de facture » + « délai d’acheminement(X) » <« date du jour »  ***/
-	/** solde des échéanciers dont le type est non contentieux et qui ne sont pas bloqués ******************************************************/
 
 	/**
-	 * Fonction permettant de calculer le solde exigible relançable d'un contrat
-	 * @param contractLine
-	 * 			Un contrat
+	 * Fonction permettant de calculer le solde exigible relançable d'un tiers
+	 * @param reminder
+	 * 			Une relance
 	 * @return
 	 * 			Le solde exigible relançable
 	 */
@@ -109,7 +100,7 @@ public class ReminderService {
 		BigDecimal balance = BigDecimal.ZERO;
 		for(MoveLine moveLine : moveLineQuery)  {
 			if(moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0)  {
-				if(moveLine.getAccount()!=null && moveLine.getAccount().getReconcileOk() && !moveLine.getIgnoreInReminderOk() && !(moveLine.getFromSchedulePaymentOk() && moveLine.getIgnoreInAccountingOk()))  {
+				if(moveLine.getAccount()!=null && moveLine.getAccount().getReconcileOk())  {
 					balance = balance.subtract(moveLine.getAmountRemaining());
 				}
 			}
@@ -118,9 +109,6 @@ public class ReminderService {
 	}
 	
 			
-	/******************************************  3. Calcul de la date de référence  ******************************************/
-	
-
 	/**
 	 * Fonction qui récupère la plus ancienne date d'échéance d'une liste de lignes d'écriture
 	 * @param moveLineList
@@ -166,10 +154,8 @@ public class ReminderService {
 	
 	/**
 	 * Fonction qui permet de récupérer la date de relance la plus récente
-	 * @param contractLine
-	 * 			Un contrat
-	 * @param isLitigation
-	 * 			Le contrat est-il en contentieux?
+	 * @param reminder
+	 * 			Une relance
 	 * @return 
 	 * 			La date de relance la plus récente
 	 */
@@ -180,10 +166,8 @@ public class ReminderService {
 	
 	/**
 	 * Fonction qui détermine la date de référence
-	 * @param contractLine
-	 * 			Un contrat
-	 * @param isLitigation 
-	 * 			Le contrat est-il en contentieux?
+	 * @param reminder
+	 * 			Une relance
 	 * @return
 	 * 			La date de référence
 	 */
@@ -207,13 +191,13 @@ public class ReminderService {
 	}
 	
 	
-/******************************************  Méthodes communes 1,2 et 3  ******************************************/
-	
 	
 	/**
-	 * Fonction permettant de récuperer une liste de ligne d'écriture exigible relançable d'un contrat
-	 * @param contractLine
-	 * 			Un contrat
+	 * Fonction permettant de récuperer une liste de ligne d'écriture exigible relançable d'un tiers
+	 * @param partner
+	 * 			Un tiers
+	 * @param company
+	 * 			Une société
 	 * @return
 	 * 			La liste de ligne d'écriture
 	 */
@@ -223,7 +207,7 @@ public class ReminderService {
 		List<MoveLine> moveLineQuery = this.getMoveLine(partner, company);
 		
 		for(MoveLine moveLine : moveLineQuery)  {
-			if(moveLine.getMove()!=null)  {
+			if(moveLine.getMove()!=null && !moveLine.getMove().getIgnoreInReminderOk())  {
 				Move move = moveLine.getMove();
 				//facture exigibles non bloquée en relance et dont la date de facture + délai d'acheminement < date du jour
 				if(move.getInvoice()!=null && !move.getInvoice().getReminderBlockingOk() 
@@ -232,24 +216,22 @@ public class ReminderService {
 					if((moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) 
 							&& moveLine.getDueDate() != null
 							&&	(today.isAfter(moveLine.getDueDate())  || today.isEqual(moveLine.getDueDate())))  {
-						if(moveLine.getAccount()!=null && moveLine.getAccount().getReconcileOk() && !moveLine.getIgnoreInReminderOk())  {
+						if(moveLine.getAccount()!=null && moveLine.getAccount().getReconcileOk())  {
 							if(moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0)  {
 								moveLineList.add(moveLine);
 							}
 						}
 					}
 				}
-				//échéanciers dont le type est non contentieux et qui ne sont pas bloqués
+				//échéances rejetées qui ne sont pas bloqués
 				else if(move.getInvoice()==null)  {
-					if((moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) 
+					if(moveLine.getPaymentScheduleLine() != null 
+							&& (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) 
 							&& moveLine.getDueDate() != null
 							&&	(today.isAfter(moveLine.getDueDate())  || today.isEqual(moveLine.getDueDate())))  {
-						if(moveLine.getAccount()!=null && moveLine.getAccount().getReconcileOk() && !moveLine.getIgnoreInReminderOk())  {
-							if((moveLine.getFromSchedulePaymentOk() && moveLine.getIgnoreInAccountingOk()) 
-									|| (!moveLine.getFromSchedulePaymentOk() && !moveLine.getIgnoreInAccountingOk()))  { 
-								if(moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0)  {
-									moveLineList.add(moveLine);
-								}
+						if(moveLine.getAccount()!=null && moveLine.getAccount().getReconcileOk())  {
+							if(moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0)  {
+								moveLineList.add(moveLine);
 							}
 						}
 					}
@@ -276,11 +258,11 @@ public class ReminderService {
 		for(MoveLine moveLine : moveLineList)  {
 			if(moveLine.getMove().getInvoice()==null )  {
 				// Ajout à la liste des échéances exigibles relançables
-				PaymentScheduleLine psl = getPaymentScheduleFromMoveLine(partner, moveLine);
-				if(psl != null)  {
-					// Si le status est 'cloturé' et un montant restant à payer, c'est à dire des échéances d'un échéancier annulé
-					if(psl.getAmountRemaining().compareTo(BigDecimal.ZERO) == 0 || !psl.getStatus().getCode().equals("clo"))  {
-						paymentScheduleLineList.add(psl);
+				PaymentScheduleLine paymentScheduleLine = getPaymentScheduleFromMoveLine(partner, moveLine);
+				if(paymentScheduleLine != null)  {
+					// Si un montant reste à payer, c'est à dire une échéance rejeté 
+					if(moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0)  {
+						paymentScheduleLineList.add(paymentScheduleLine);
 					}
 				}
 			}
@@ -289,8 +271,11 @@ public class ReminderService {
 	}
 	
 	/**
-	 * Méthode permettant de récupérer l'ensemble des lignes d'écriture d'un contrat
-	 * @param contractLine
+	 * Méthode permettant de récupérer l'ensemble des lignes d'écriture d'un tiers
+	 * @param partner
+	 * 			Un tiers
+	 * @param company
+	 * 			Une société
 	 * @return
 	 */
 	public List<MoveLine> getMoveLine(Partner partner, Company company)  {
@@ -302,20 +287,13 @@ public class ReminderService {
 	
 	/**
 	 * Méthode permettant de récupérer une ligne d'échéancier depuis une ligne d'écriture
-	 * @param contractLine
+	  * @param partner
+	 * 			Un tiers
 	 * @param moveLine
 	 * @return
 	 */
 	public PaymentScheduleLine getPaymentScheduleFromMoveLine(Partner partner, MoveLine moveLine)  {
-//		for(PaymentSchedule paymentSchedule : partner.getPaymentScheduleList())  {
-//			for(PaymentScheduleLine paymentScheduleLine : paymentSchedule.getPaymentScheduleLineList())  {
-//				if(moveLine.equals(paymentScheduleLine.getMoveLineGenerated()))  {
-//					return paymentScheduleLine;
-//				}
-//			}		
-//		}
-//		return null;
-		return moveLine.getPaymentScheduleLine();
+		return PaymentScheduleLine.all().filter("self.rejectMoveLine = ?1", moveLine).fetchOne();
 	}
 	
 
@@ -337,50 +315,6 @@ public class ReminderService {
 		return DateTool.dateInPeriod(today, dayBegin, monthBegin, dayEnd, monthEnd);
 		
 	}
-	
-	
-	
-	/**
-	 * Méthode de relance en masse
-	 * @param company 
-	 * 		Une société
-	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void reminderAllContractLine(Company company)   {
-
-		int i = 0;
-		List<Partner> allPartners = Partner.all().filter("self.reminderClosedOk = false AND self.contract.company = ?1", company).fetch();
-
-		for (Partner partner : allPartners) {
-
-			i += 1;
-
-			// Commit
-			try {
-				
-				this.reminder(partner, company);
-				LOG.debug("Tiers traité : {}", partner.getName());	
-				if (i % 50 == 0)  {
-					JPA.flush();
-				}
-
-			} catch (Exception e) {
-				TraceBackService.trace(e);
-				LOG.error("Bug(Anomalie) généré(e) pour le Tiers {}",partner.getName());
-			}
-
-		}
-
-	}
-	
-
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public boolean reminder(Partner partner, Company company) throws AxelorException  {
-		boolean remindedOk = this.reminderGenerate(partner, company);
-		partner.save();
-		return remindedOk;
-	}
-	
 	
 	
 	public Reminder getReminder(Partner partner, Company company) throws AxelorException  {
@@ -412,12 +346,10 @@ public class ReminderService {
 	
 	/**
 	 * Méthode de relance en masse
-	 * @param contractLine
-	 * 			Un contrat
-	 * @param period1Ok
-	 * 			Est-on dans la période de blocage en relance pour les contrats sociaux
-	 * @param period2Ok
-	 * 			Est-on dans la période d'envoie de mail automatique pour les contrats sociaux bloqués en relance de niveau 3
+	 * @param partner
+	 * 			Un tiers
+	 * @param company
+	 * 			Une société
 	 * @throws AxelorException
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -433,13 +365,14 @@ public class ReminderService {
 			reminder.setBalanceDue(balanceDue);
 			LOG.debug("balanceDue : {} ",balanceDue);
 			
-			List<MoveLine> moveLineList = this.getMoveLineReminder(partner, company);
-			BigDecimal balanceDueReminder = this.getBalanceDueReminder(moveLineList, partner);
+			BigDecimal balanceDueReminder = acs.getBalanceDueReminder(partner, company);
 			
 			if (balanceDueReminder.compareTo(BigDecimal.ZERO) > 0) {
 				LOG.debug("balanceDueReminder : {} ",balanceDueReminder);
 				
 				remindedOk = true;
+				
+				List<MoveLine> moveLineList = this.getMoveLineReminder(partner, company);
 				
 				this.updateInvoiceReminder(reminder,  this.getInvoiceList(moveLineList));
 				this.updatePaymentScheduleLineReminder(reminder, this.getPaymentScheduleList(moveLineList, partner));

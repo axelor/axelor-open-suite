@@ -6,17 +6,10 @@
 	<grid name="payment-schedule-line-grid" title="Schedule lines"
 		model="com.axelor.apps.account.db.PaymentScheduleLine" orderBy="scheduleDate">
 		<field name="paymentSchedule" />
-		<field name="move" />
-		<field name="moveLineGenerated" />
 		<field name="scheduleLineSeq" />
 		<field name="inTaxAmount" />
 		<field name="inTaxAmountPaid" />
-		<field name="amountRemaining" />
 		<field name="scheduleDate" />
-		<field name="socialServicePartner" />
-		<field name="requestedAmount" />
-		<field name="agreementOk" />
-		<field name="allocatedAmount" />
 		<field name="debitBlockingOk" />
 		<field name="rejectDate" />
 		<field name="interbankCodeLine" />
@@ -28,17 +21,10 @@
 	<form name="payment-schedule-line-form" title="Schedule line"
 		model="com.axelor.apps.account.db.PaymentScheduleLine" cols="4">
 		<field name="paymentSchedule" />
-		<field name="move" />
-		<field name="moveLineGenerated" />
 		<field name="scheduleLineSeq" />
-		<field name="inTaxAmount" />
+		<field name="inTaxAmount" readonlyIf="fromReject"/>
 		<field name="inTaxAmountPaid" />
-		<field name="amountRemaining" />
 		<field name="scheduleDate" />
-		<field name="socialServicePartner" grid-view="partner-grid" form-view="partner-form"/>
-		<field name="requestedAmount" />
-		<field name="agreementOk" />
-		<field name="allocatedAmount" />
 		<field name="debitBlockingOk" />
 		<field name="rejectDate" />
 		<field name="interbankCodeLine" />
@@ -48,7 +34,6 @@
 		<field name="rejectMoveLine" />
 		<field name="advanceOrPaymentMove" />
 		<field name="advanceMoveLine" />
-		<field name="reverseMove" />
 		<field name="fromReject" />
 	</form>
 
@@ -56,13 +41,7 @@
 		model="com.axelor.apps.account.db.PaymentScheduleLine" orderBy="scheduleDate">
 		<field name="scheduleLineSeq" />
 		<field name="inTaxAmount" />
-		<field name="amountRemaining" />
-		<field name="move" />
 		<field name="scheduleDate" />
-		<field name="socialServicePartner" />
-		<field name="requestedAmount" />
-		<field name="agreementOk" />
-		<field name="allocatedAmount" />
 		<field name="debitBlockingOk" />
 		<field name="rejectDate" />
 		<field name="interbankCodeLine" />
@@ -74,15 +53,8 @@
 		model="com.axelor.apps.account.db.PaymentScheduleLine" cols="4">
 		<field name="invoice" grid-view="invoice-grid" form-view="invoice-form"/>
 		<field name="scheduleLineSeq" />
-		<field name="inTaxAmount" />
-		<field name="amountRemaining" />
-		<field name="move" />
-		<field name="moveLineGenerated" />
+		<field name="inTaxAmount" readonlyIf="fromReject"/>
 		<field name="scheduleDate" />
-		<field name="socialServicePartner" grid-view="partner-grid" form-view="partner-form"/>
-		<field name="requestedAmount" />
-		<field name="agreementOk" />
-		<field name="allocatedAmount" />
 		<field name="debitBlockingOk" />
 		<field name="rejectDate" />
 		<field name="interbankCodeLine" />
@@ -91,7 +63,6 @@
 		<field name="rejectMoveLine" />
 		<field name="advanceOrPaymentMove" />
 		<field name="advanceMoveLine" />
-		<field name="reverseMove" />
 		<field name="fromReject" />
 		<field name="status" readonly="true" />
 	</form>
@@ -108,9 +79,6 @@
 		</filter>
 		<filter title="Schedule lines created from reject">
 			<domain>self.fromReject = true</domain>
-		</filter>
-		<filter title="Advance Schedule lines">
-			<domain>self.advanceMoveLine IS NOT NULL</domain>
 		</filter>
 	</search-filters>
 	

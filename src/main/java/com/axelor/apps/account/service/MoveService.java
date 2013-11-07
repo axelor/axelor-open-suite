@@ -91,7 +91,7 @@ public class MoveService {
 	}
 	
 	/**
-	 * Créer une écriture comptable de toute pièce en passant tous les paramètres qu'il faut.
+	 * Créer une écriture comptable à la date du jour impactant la compta.
 	 * 
 	 * @param journal
 	 * @param period
@@ -105,10 +105,33 @@ public class MoveService {
 	 */
 	public Move createMove(Journal journal, Company company, Invoice invoice, Partner partner, PaymentMode paymentMode, boolean isReject) throws AxelorException{
 		
-		LOG.debug("Création d'une écriture comptable (journal : {}, société : {}", new Object[]{journal.getName(), company.getName()});
-		
 		return this.createMove(journal, company, invoice, partner, toDay, paymentMode, isReject);
 	}
+	
+	
+	
+	/**
+	 * Créer une écriture comptable impactant la compta.
+	 * 
+	 * @param journal
+	 * @param period
+	 * @param company
+	 * @param invoice
+	 * @param partner
+	 * @param dateTime
+	 * @param isReject
+	 * 		<code>true = écriture de rejet avec séquence spécifique</code>
+	 * @return
+	 * @throws AxelorException 
+	 */
+	public Move createMove(Journal journal, Company company, Invoice invoice, Partner partner, LocalDate date, PaymentMode paymentMode, boolean isReject) throws AxelorException{
+		
+		return this.createMove(journal, company, invoice, partner, date, paymentMode, false, false, isReject);
+		
+	}
+	
+	
+	
 	
 	/**
 	 * Créer une écriture comptable de toute pièce en passant tous les paramètres qu'il faut.
@@ -124,7 +147,8 @@ public class MoveService {
 	 * @return
 	 * @throws AxelorException 
 	 */
-	public Move createMove(Journal journal, Company company, Invoice invoice, Partner partner, LocalDate date, PaymentMode paymentMode, boolean isReject) throws AxelorException{
+	public Move createMove(Journal journal, Company company, Invoice invoice, Partner partner, LocalDate date, PaymentMode paymentMode, boolean ignoreInReminderOk, 
+			boolean ignoreInAccountingOk, boolean isReject) throws AxelorException{
 		
 		LOG.debug("Création d'une écriture comptable (journal : {}, société : {}", new Object[]{journal.getName(), company.getName()});
 		
@@ -138,6 +162,9 @@ public class MoveService {
 			move.setJournal(journal);
 			move.setCompany(company);
 			
+			move.setIgnoreInReminderOk(ignoreInReminderOk);
+			move.setIgnoreInAccountingOk(ignoreInAccountingOk);
+			
 			String code = "";
 			if (isReject)  {
 				code = IAdministration.DEBIT_REJECT;
@@ -148,8 +175,8 @@ public class MoveService {
 			
 			String ref = sgs.getSequence(code, company, journal, false);
 			if (ref == null)  {
-				throw new AxelorException(String.format("La société %s n'a pas de séquence d'écriture comptable configurée pour le journal %s", company.getName(), journal.getName()),
-						IException.CONFIGURATION_ERROR);
+				throw new AxelorException(String.format("La société %s n'a pas de séquence d'écriture comptable configurée pour le journal %s", 
+						company.getName(), journal.getName()), IException.CONFIGURATION_ERROR);
 			}
 				
 			move.setReference(ref);
@@ -192,7 +219,7 @@ public class MoveService {
 			
 			Journal journal = invoice.getJournal();
 			Company company = invoice.getCompany();
-			Partner partner = invoice.getClientPartner();
+			Partner partner = invoice.getPartner();
 			Account account = invoice.getPartnerAccount();
 			
 			LOG.debug("Création d'une écriture comptable spécifique à la facture {} (Société : {}, Journal : {})", new Object[]{invoice.getInvoiceId(), company.getName(), journal.getCode()});
@@ -396,7 +423,6 @@ public class MoveService {
 	 * 
 	 *
 	 */
-	//TODO à faire selon les cas
 	public Move createMoveUseExcessPaymentOrDue(Invoice invoice) throws AxelorException{
 
 		Move move = null;
@@ -422,7 +448,7 @@ public class MoveService {
 		
 	/**
 	 * Méthode permettant d'employer les dûs sur l'avoir
-	 * On récupère prioritairement les dûs (factures) selectionné sur l'avoir, puis les autres dûs du contrat
+	 * On récupère prioritairement les dûs (factures) selectionné sur l'avoir, puis les autres dûs du tiers
 	 *
 	 * 2 cas :
 	 * 		- le compte des dûs est le même que celui de l'avoir : alors on lettre directement
@@ -437,7 +463,7 @@ public class MoveService {
 
 		Company company = invoice.getCompany();
 		Account account = invoice.getPartnerAccount();
-		Partner partner = invoice.getClientPartner();
+		Partner partner = invoice.getPartner();
 		
 		Move move = null;
 		
@@ -484,7 +510,7 @@ public class MoveService {
 		if(creditMoveLineList != null && creditMoveLineList.size() != 0)  {
 			
 			Company company = invoice.getCompany();
-			Partner partner = invoice.getClientPartner();
+			Partner partner = invoice.getPartner();
 			Account account = invoice.getPartnerAccount();
 			MoveLine invoiceCustomerMoveLine = this.getCustomerMoveLine(invoice);
 			
@@ -511,7 +537,7 @@ public class MoveService {
 					BigDecimal amount = totalCreditAmount.min(invoiceCustomerMoveLine.getDebit()); 
 					
 					// Création de la ligne au crédit
-					MoveLine creditMoveLine =  mls.createMoveLine(move , partner, account , amount, false, false, toDay, 1, false, false, false, null);
+					MoveLine creditMoveLine =  mls.createMoveLine(move , partner, account , amount, false, false, toDay, 1, null);
 					move.getMoveLineList().add(creditMoveLine);
 					
 					// Emploie des trop-perçus sur les lignes de debit qui seront créées au fil de l'eau
@@ -580,58 +606,9 @@ public class MoveService {
 	}
 	
 	
-	/**
-	 * Méthode permettant d'employer les dûs sur l'avoir
-	 * On récupère prioritairement les dûs (factures) selectionné sur l'avoir, puis les autres dûs du contrat
-	 * 
-	 * 2 cas : 
-	 * 		- le compte des dûs est le même que celui de l'avoir : alors on lettre directement
-	 *  	- le compte n'est pas le même : on créée une O.D. de passage sur le bon compte
-	 * @param invoice
-	 * @param company
-	 * @param useExcessPayment
-	 * @return
-	 * @throws AxelorException
-	 */
-	public void createRefundMove(Invoice invoice, boolean useOthersInvoiceDue) throws AxelorException  {
-		
-//		Company company = invoice.getCompany();
-//		Partner partner = invoice.getPartner();
-//		Account account = invoice.getPartnerAccount();
-//		MoveLine invoiceCustomerMoveLine = mls.getCustomerMoveLine(invoice);
-//
-//		List<MoveLine> debitMoveLines = pas.getInvoiceDue(invoice, useOthersInvoiceDue);
-//		
-//		if(debitMoveLines != null && debitMoveLines.size() != 0)  {
-//			// Si c'est le même compte sur les trop-perçus et sur la facture, alors on lettre directement
-//			if(this.isSameAccount(debitMoveLines, invoice.getPartnerAccount()))  {
-//				List<MoveLine> creditMoveLineList = new ArrayList<MoveLine>();
-//				creditMoveLineList.add(invoiceCustomerMoveLine);
-//				pas.useExcessPaymentOnMoveLines(debitMoveLines, creditMoveLineList);
-//			}
-//			// Sinon on créée une O.D. pour passer du compte de la facture à un autre compte sur les trop-perçus
-//			else  {
-//				this.createMoveUseDebit(invoice, debitMoveLines, invoiceCustomerMoveLine);
-//			}
-//			
-//			// Gestion du passage en 580
-//			rs.balanceCredit(invoiceCustomerMoveLine, company);
-//			
-//			BigDecimal remainingPaidAmount = invoiceCustomerMoveLine.getAmountRemaining();
-//			// Si il y a un restant à payer, alors on crée un trop-perçu.
-//			if(remainingPaidAmount.compareTo(BigDecimal.ZERO) > 0 )  {
-//				this.createExcessMove(invoice, company, partner, account, remainingPaidAmount, invoiceCustomerMoveLine);
-//			}
-//		}
-//		
-//		invoice.setInTaxTotalRemaining(this.getInTaxTotalRemaining(invoice, account, true));
-		
-	}
-	
-	
 	public Move createMoveUseDebit(Invoice invoice, List<MoveLine> debitMoveLines, MoveLine invoiceCustomerMoveLine) throws AxelorException{
 		Company company = invoice.getCompany();
-		Partner partner = invoice.getClientPartner();
+		Partner partner = invoice.getPartner();
 		Account account = invoice.getPartnerAccount();
 		
 		if (company.getMiscOperationJournal() == null){
@@ -652,7 +629,7 @@ public class MoveService {
 			BigDecimal amount = totalDebitAmount.min(invoiceCustomerMoveLine.getCredit()); 
 			
 			// Création de la ligne au débit
-			MoveLine debitMoveLine =  mls.createMoveLine(oDmove , partner, account , amount, true, false, toDay, 1, false, false, false, null);
+			MoveLine debitMoveLine =  mls.createMoveLine(oDmove , partner, account , amount, true, false, toDay, 1, null);
 			oDmove.getMoveLineList().add(debitMoveLine);
 			
 			// Emploie des dûs sur les lignes de credit qui seront créées au fil de l'eau
@@ -674,8 +651,6 @@ public class MoveService {
 	 * 			Une société
 	 * @param partner
 	 * 			Un tiers payeur
-	 * @param contractLine
-	 * 			Un contrat
 	 * @param account
 	 * 			Le compte client (411 toujours)
 	 * @param amount
@@ -700,9 +675,6 @@ public class MoveService {
 				false,
 				this.toDay,
 				1,
-				false,
-				false,
-				false,
 				null);
 		excessMove.getMoveLineList().add(debitMoveLine);
 		
@@ -714,9 +686,6 @@ public class MoveService {
 				false,
 				this.toDay,
 				2,
-				false,
-				false,
-				false,
 				null);
 		excessMove.getMoveLineList().add(creditMoveLine);
 		
@@ -980,6 +949,5 @@ public class MoveService {
 		}
 		return null;
 	}	
-	
 	
 }

@@ -40,14 +40,12 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.db.IAccount;
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerService;
-import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
@@ -57,7 +55,6 @@ import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.base.service.user.UserInfoService;
-import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
@@ -100,8 +97,8 @@ public class PaymentScheduleService {
 	/**
 	 * Création d'un échéancier sans ces lignes.
 	 * 
-	 * @param contractLine
-	 * 			Le contrat cible.
+	 * @param partner
+	 * 			Le tiers.
 	 * @param invoices
 	 *			Collection de factures.
 	 * @param company
@@ -130,8 +127,8 @@ public class PaymentScheduleService {
 	/**
 	 * Création d'un échéancier sans ces lignes.
 	 * 
-	 * @param contractLine
-	 * 			Le contrat cible.
+	 * @param partner
+	 * 			Le tiers.
 	 * @param invoice
 	 * 			Facture globale permettant de définir la facture pour une échéance.
 	 * 			L'échéancier est automatiquement associé à la facture si celle-ci existe.
@@ -269,8 +266,6 @@ public class PaymentScheduleService {
 	/**
 	 * Création d'un échéancier avec ces lignes.
 	 * 
-	 * @param contractLine
-	 * 			Le contrat cible.
 	 * @param company
 	 * 			La société.
 	 * @param date
@@ -287,11 +282,6 @@ public class PaymentScheduleService {
 	 * 			Mode de paiement.
 	 * @param payerPartner
 	 * 			Tiers payeur.
-	 * @param type
-	 * 			Type de l'échéancier.
-	 * 			<code>0 = paiement</code>
-	 * 			<code>1 = mensu masse</code>
-	 * 			<code>2 = mensu grand-compte</code>
 	 * 
 	 * @return
 	 * 			L'échéancier créé.
@@ -336,91 +326,52 @@ public class PaymentScheduleService {
 	
 	
 	/**
-	 * Permet de valider une saisie paiement.
-	 * Crée une moveLine pour chaque ligne et une move représentant la totalité de la saisie paiement
-	 * @param ps
-	 * 
-	 * @return 
-	 *
-	 * @throws AxelorException 			
+	 * Permet de valider un échéancier.
+     *
+	 * @param paymentSchedule
+	 * @throws AxelorException
 	 */
-	public Move validatePaymentSchedule(PaymentSchedule paymentSchedule, boolean fromMonthlyPayment) throws AxelorException {
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void validatePaymentSchedule(PaymentSchedule paymentSchedule) throws AxelorException {
 				
 		LOG.debug("Validation de l'échéancier {}", paymentSchedule.getScheduleId());
 		
-		Move move = null;
-		
-		if (paymentSchedule != null){
-			
-			if (paymentSchedule.getTotalToPayAmount().compareTo(paymentSchedule.getInTaxAmount()) != 0)  {
-				throw new AxelorException(String.format("Le total des échances de l'échéancier %s est différent du total des factures : %s <> %s",
-						paymentSchedule.getScheduleId(), paymentSchedule.getTotalToPayAmount(), paymentSchedule.getInTaxAmount()), IException.INCONSISTENCY);
-			}
-				
-			if (paymentSchedule.getPaymentScheduleLineList() != null){
-
-				BigDecimal total = BigDecimal.ZERO;
-
-				for (PaymentScheduleLine paymentScheduleLine : paymentSchedule.getPaymentScheduleLineList())  {
-					total = total.add(paymentScheduleLine.getInTaxAmount());
-				}
-				
-				Company company = paymentSchedule.getCompany();
-				Partner payerPartner = paymentSchedule.getPartner();
-				
-				if (company.getTechnicalJournal() == null){
-					throw new AxelorException(String.format("Veuillez configurer un Journal Technique pour la société %s", company.getName()), IException.CONFIGURATION_ERROR);
-				}
-				
-				move = ms.createMove(company.getTechnicalJournal(), company, null, payerPartner, null, false);
-				MoveLine moveLine = null;
-				int moveLineId = 0;
-				
-				for (PaymentScheduleLine paymentScheduleLine : paymentSchedule.getPaymentScheduleLineList()){
-					
-					moveLine = mls.createMoveLine(move, payerPartner, company.getCustomerAccount(), paymentScheduleLine.getInTaxAmount(), true, false, paymentScheduleLine.getScheduleDate(), moveLineId++, true, false, true, null);
-					moveLine.setPaymentScheduleLine(paymentScheduleLine);
-					move.getMoveLineList().add(moveLine);
-					paymentScheduleLine.setMoveLineGenerated(moveLine);
-					
-				}
-				
-				moveLine = mls.createMoveLine(move, payerPartner, company.getCustomerAccount(), total, false, false, date, moveLineId++, true, false, true, null);
-				move.getMoveLineList().add(moveLine);
-				
-				if (paymentSchedule.getInvoiceSet() != null){
-					
-					List<MoveLine> moveLineInvoiceToPay = this.getPaymentSchedulerMoveLineToPay(paymentSchedule);
-					
-					for (MoveLine moveLineInvoice : moveLineInvoiceToPay){
-
-						moveLineInvoice.setIgnoreInReminderOk(true);
-						moveLineInvoice.getMove().getInvoice().setSchedulePaymentOk(true);
-						moveLineInvoice.getMove().getInvoice().setPaymentSchedule(paymentSchedule);
-						
-					}
-				}
-				
-				move.setState("validated");
-			}
+		if(paymentSchedule.getPaymentScheduleLineList() == null || paymentSchedule.getPaymentScheduleLineList().size() == 0)  {
+			throw new AxelorException(String.format("%s :\n Erreur : Veuillez d'abord créer les lignes d'échéancier pour l'échéancier %s ",
+					GeneralService.getExceptionAccountingMsg(), paymentSchedule.getScheduleId()), IException.INCONSISTENCY);
 		}
-		
-		return move;
-		
-	}
-	
-	public void validate(PaymentSchedule paymentSchedule){
-		
+			
+//		this.updateInvoices(paymentSchedule); //TODO
+
 		paymentSchedule.setState("2");
 		
-		Partner partner = paymentSchedule.getPartner();
-		
-		if (PaymentSchedule.all().filter("partner = ?1 AND state = '2'", partner).count() > 0){
-			//TODO: attribuer code au message
-			Alarm alarm = aes.get("", partner, true);
-		}
-		
+		paymentSchedule.save();
 	}
+	
+	
+	public void updateInvoices(PaymentSchedule paymentSchedule)  {
+		
+		if (paymentSchedule.getInvoiceSet() != null){
+			
+			List<MoveLine> moveLineInvoiceToPay = this.getPaymentSchedulerMoveLineToPay(paymentSchedule);
+			
+			for (MoveLine moveLineInvoice : moveLineInvoiceToPay){
+
+				moveLineInvoice.getMove().setIgnoreInReminderOk(true);
+				this.updateInvoice(moveLineInvoice.getMove().getInvoice(), paymentSchedule);
+				
+			}
+		}
+	}
+	
+	
+	public void updateInvoice(Invoice invoice, PaymentSchedule paymentSchedule)  {
+		
+		invoice.setSchedulePaymentOk(true);
+		invoice.setPaymentSchedule(paymentSchedule);
+	}
+	
+	
 	
 	/**
 	 * Methode qui annule un échéancier
@@ -433,21 +384,13 @@ public class PaymentScheduleService {
 		// L'échéancier est passé à annulé
 		paymentSchedule.setState("4");
 		
-		Move move = null;
-		
 		for(PaymentScheduleLine paymentScheduleLine : paymentSchedule.getPaymentScheduleLineList())  {
 		
 			// Si l'échéance n'est pas complètement payée
-			if(paymentScheduleLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0 ) {
+			if(paymentScheduleLine.getInTaxAmountPaid().compareTo(paymentScheduleLine.getInTaxAmount()) != 0 ) {
 			
 				// L'échéance est passée à cloturé
 				paymentScheduleLine.setStatus(closedStatus);
-				
-				if(move == null && paymentScheduleLine.getMoveLineGenerated() != null)  {
-					
-					// Récupération de la pièce technique
-					move = paymentScheduleLine.getMoveLineGenerated().getMove();
-				}
 			}
 		}
 		
@@ -458,10 +401,6 @@ public class PaymentScheduleService {
 			// L'échéancier est assigné dans un nouveau champs afin de garder un lien invisble pour l'utilisateur, mais utilisé pour le passage en irrécouvrable
 			invoice.setCanceledPaymentSchedule(paymentSchedule);  
 			invoice.setSchedulePaymentOk(false);
-		}
-		
-		if(move != null)  {
-			move.setState(IAccount.CANCELED_MOVE);
 		}
 		
 	}
@@ -535,36 +474,7 @@ public class PaymentScheduleService {
 	
 // Transactional
 	
-	/**
-	 * Valider un échéancier.
-	 * 
-	 * @param paymentSchedule
-	 * @throws AxelorException
-	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void validatePaymentSchedule(PaymentSchedule paymentSchedule) throws AxelorException {
-		if(paymentSchedule.getPaymentScheduleLineList() == null || paymentSchedule.getPaymentScheduleLineList().size() == 0)  {
-			throw new AxelorException(String.format("%s :\n Erreur : Veuillez d'abord créer les lignes d'échéancier pour l'échéancier %s ",
-					GeneralService.getExceptionAccountingMsg(), paymentSchedule.getScheduleId()), IException.INCONSISTENCY);
-		}
-		
-		Move generatedMove = this.validatePaymentSchedule(paymentSchedule, false);
-		if (generatedMove != null){
-			paymentSchedule.setGeneratedMove(generatedMove);
-			paymentSchedule.setState("2");
-		}
-		
-		if(	paymentSchedule.getPaymentScheduleType() != null && (
-									paymentSchedule.getPaymentScheduleType().getCode().equals("ELJ") ||
-									paymentSchedule.getPaymentScheduleType().getCode().equals("ERJ") ||
-									paymentSchedule.getPaymentScheduleType().getCode().equals("ESU")))  {
-			// Passage en client douteux
-			dcs.doubtfulCustomerProcess(paymentSchedule);
-		}
-		
-		paymentSchedule.save();
-		
-	}
+	
 	
 	/**
 	 * Créer des lignes d'échéancier à partir des lignes de factures de celui-ci.
@@ -575,15 +485,23 @@ public class PaymentScheduleService {
 	@Transactional
 	public void createPaymentScheduleLines(PaymentSchedule paymentSchedule){
 		
+		this.initCollection(paymentSchedule);
+		
+		paymentSchedule.getPaymentScheduleLineList().addAll(psls.createPaymentScheduleLines(paymentSchedule));
+		paymentSchedule.save();
+		
+	}
+	
+	
+	
+	public void initCollection(PaymentSchedule paymentSchedule)  {
+		
 		if (paymentSchedule.getPaymentScheduleLineList() == null)  {
 			paymentSchedule.setPaymentScheduleLineList(new ArrayList<PaymentScheduleLine>());
 		}
 		else  { 
 			paymentSchedule.getPaymentScheduleLineList().clear();
 		}
-		
-		paymentSchedule.getPaymentScheduleLineList().addAll(psls.createPaymentScheduleLines(paymentSchedule, paymentSchedule.getInvoiceSet()));
-		paymentSchedule.save();
 		
 	}
 	
@@ -594,100 +512,4 @@ public class PaymentScheduleService {
 		paymentSchedule.save();
 	}
 	
-	
-	/**
-	 * Methode permettant de créer un échéancier de paiement sur 1 ou 2 mois en fonction du montant restant à payer sur la facture de fin de cycle
-	 * @param invoice
-	 * 			Une facture de fin de cycle
-	 * @param fromBatch
-	 * @throws AxelorException 
-	 */
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void createPaymentSchedule(Invoice invoice) throws AxelorException  {
-		
-		LOG.debug("Begin CreatePaymentSchedule");
-			
-		PaymentSchedule paymentScheduleReference = invoice.getPaymentSchedule();
-		Partner partner = invoice.getClientPartner();
-		Company company = invoice.getCompany();
-
-		if(paymentScheduleReference != null)  {
-
-			LOG.debug("Restant dû de la facture : {}", invoice.getInTaxTotalRemaining());
-			
-			// Si le restant dû est positif
-			if(invoice.getInTaxTotalRemaining().compareTo(BigDecimal.ZERO) > 0)  {
-				
-				LOG.debug("CreatePaymentSchedule - le restant dû est positif");
-				
-				// Récupération du montant de la dernière mensualité
-				LOG.debug("Récupération du montant de la dernière mensualité");
-				
-				List<PaymentScheduleLine> pslList = new ArrayList<PaymentScheduleLine>();
-				pslList = paymentScheduleReference.getPaymentScheduleLineList();
-				BigDecimal pslAmount = pslList.get(pslList.size()-1).getInTaxAmount();
-				
-				// Récupération de la date de la dernière mensualité
-				LOG.debug("Récupération de la date de la dernière mensualité");
-				LocalDate lastScheduleDate = pslList.get(pslList.size()-1).getScheduleDate();
-				
-				// Création d'une liste de facture
-				LOG.debug("Création d'une liste de facture");
-				Set<Invoice> invoiceSet = new HashSet<Invoice>();
-				invoiceSet.add(invoice);
-				
-				// Si le restant dû est inférieur ou égale au montant d'une échéance
-				if(invoice.getInTaxTotalRemaining().compareTo(pslAmount) <= 0)  {
-					// alors on l'étale sur une échéance
-					LOG.debug("CreatePaymentSchedule - le restant dû est inférieur ou égale au montant d'une échéance");
-					
-					PaymentSchedule paymentSchedule = this.createPaymentSchedule(partner, company, invoiceSet, lastScheduleDate.plusMonths(1), 1);
-					this.createPaymentScheduleLines(paymentSchedule);
-					this.validatePaymentSchedule(paymentSchedule);
-					
-					LOG.debug("CreatePaymentSchedule - echéancier de paiement créé : {}", paymentSchedule);
-					paymentSchedule.save();
-				}
-				else {
-					
-					// sinon on l'étale sur deux échéance
-					LOG.debug("CreatePaymentSchedule - le restant dû est supérieur au montant d'une échéance");
-					// La première échéance est égale au montant d'une échéance du cycle
-					// La deuxième échéance est égale à : Restant dû - échéance du cycle
-					
-					PaymentSchedule paymentSchedule = this.createPaymentSchedule(partner, company, invoiceSet, lastScheduleDate.plusMonths(1), 2);
-					this.createPaymentScheduleLines(paymentSchedule);
-					
-					
-					if(paymentSchedule != null)  {
-						
-						LOG.debug("paymentSchedule : {}",paymentSchedule);
-						LOG.debug("paymentSchedule.getPaymentScheduleLineList() : {}",paymentSchedule.getPaymentScheduleLineList());
-						
-						BigDecimal balance = invoice.getInTaxTotalRemaining().subtract(pslAmount);
-						for(PaymentScheduleLine paymentScheduleLine : paymentSchedule.getPaymentScheduleLineList())  {
-							if(paymentScheduleLine.getScheduleLineSeq() == 1)  {
-								paymentScheduleLine.setInTaxAmount(pslAmount);
-								paymentScheduleLine.setAmountRemaining(pslAmount);
-							}
-							else  {
-								paymentScheduleLine.setInTaxAmount(balance);
-								paymentScheduleLine.setAmountRemaining(balance);
-							}
-						}
-					
-						LOG.debug("CreatePaymentSchedule - echéancier de paiement créé : {}", paymentSchedule);
-						paymentSchedule.save();
-					}
-					else  {
-						
-						LOG.debug("Impossible de crée un échéancier de paiement ");
-						throw new AxelorException(String.format("%s :\n Impossible de créer un échéancier de paiement ... ", GeneralService.getExceptionAccountingMsg()), IException.INCONSISTENCY);
-					}
-					this.validatePaymentSchedule(paymentSchedule);
-				}
-			}
-		}
-		LOG.debug("End CreatePaymentSchedule"); 
-	}
 }

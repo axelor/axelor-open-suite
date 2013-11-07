@@ -136,8 +136,6 @@ public class BatchPaymentScheduleImport extends BatchStrategy {
 		
 		int i=0;
 		
-		boolean isMoveDate = true;
-		
 		if(!stop)  {
 			
 			for(List<String[]> rejectList : data.keySet())  {
@@ -188,7 +186,6 @@ public class BatchPaymentScheduleImport extends BatchStrategy {
 				}
 		
 				this.createRejectMove(Company.find(company.getId()), 
-						paymentScheduleImportService.getPaymentScheduleLinePaymentList(), 
 						paymentScheduleImportService.getPaymentScheduleLineMajorAccountList(), 
 						paymentScheduleImportService.getInvoiceList(), 
 						paymentScheduleImportService.getStatusUpr(), rejectDate);
@@ -217,8 +214,7 @@ public class BatchPaymentScheduleImport extends BatchStrategy {
 	 * @throws AxelorException
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public Move createRejectMove(Company company, List<PaymentScheduleLine> pslListGC, List<PaymentScheduleLine> pslListPayment, 
-			List<Invoice> invoiceList, Status statusUpr, LocalDate rejectDate)  {
+	public Move createRejectMove(Company company, List<PaymentScheduleLine> pslListGC, 	List<Invoice> invoiceList, Status statusUpr, LocalDate rejectDate)  {
 	
 		// Création de l'écriture d'extourne par société
 		Move move = this.createRejectMove(company, rejectDate);
@@ -226,10 +222,10 @@ public class BatchPaymentScheduleImport extends BatchStrategy {
 		if(!stop)  {
 			int ref = 1;  // Initialisation du compteur d'échéances
 	
-			/*** Echéancier de Mensu Grand Compte en PRLVT ***/
+			/*** Echéancier de Lissage de paiement en PRLVT ***/
 			if(pslListGC != null && pslListGC.size()!=0 )  {
 				
-				LOG.debug("Création des écritures de rejets : Echéancier de mensu grand compte");
+				LOG.debug("Création des écritures de rejets : Echéancier de lissage de paiement");
 				ref = this.createMajorAccountRejectMoveLines(pslListGC, Company.find(company.getId()), 
 						Company.find(company.getId()).getCustomerAccount(), Move.find(move.getId()), ref);
 				
@@ -243,12 +239,6 @@ public class BatchPaymentScheduleImport extends BatchStrategy {
 						Company.find(company.getId()).getCustomerAccount(), Move.find(move.getId()), ref);
 			}
 			
-			/*** Echéancier de paiement en PRLVT  ***/
-			if(pslListPayment != null && pslListPayment.size()!=0 )  {
-				
-				LOG.debug("Création des écritures de rejets : Echéancier de paiement");
-				ref = this.createPaymentScheduleRejectMoveLines(pslListPayment, Company.find(company.getId()), Move.find(move.getId()), ref, statusUpr);
-			}
 	
 			this.validateRejectMove(Company.find(company.getId()), Move.find(move.getId()), ref, rejectDate);
 			
@@ -402,58 +392,6 @@ public class BatchPaymentScheduleImport extends BatchStrategy {
 				incrementAnomaly();
 				
 				LOG.error("Bug(Anomalie) généré(e) pour la création de l'écriture de rejet de la facture {}", invoice.getInvoiceId());
-				
-			} finally {
-				
-				if (ref2 % 10 == 0) { JPA.clear(); }
-	
-			}	
-		}
-		return ref2;
-	}
-	
-	
-	/**
-	 * 
-	 * @param pslListPayment
-	 * 				Une liste de ligne d'échéancier de paiement
-	 * @param pslListNewPayment
-	 * 				La liste des nouvelles lignes d'échéancier de paiement
-	 * @param company
-	 * 				Une société
-	 * @param move
-	 * 				L'écriture de rejet
-	 * @param ref
-	 * 				Le numéro de ligne d'écriture
-	 * @param statusUpr
-	 * 				Le status 'en cours'
-	 * @return
-	 * 				Le numéro de ligne d'écriture incrémenté
-	 * @throws AxelorException
-	 */
-	public int createPaymentScheduleRejectMoveLines(List<PaymentScheduleLine> pslListPayment, Company company, Move move, int ref, Status statusUpr)  {
-		int ref2 = ref;
-		for(PaymentScheduleLine paymentScheduleLine : pslListPayment)  {
-			try  {
-				MoveLine moveLine = paymentScheduleImportService.createPaymentScheduleRejectMoveLine(PaymentScheduleLine.find(paymentScheduleLine.getId()), 
-						Company.find(company.getId()), Move.find(move.getId()), ref2, Status.find(statusUpr.getId()));
-				if(moveLine != null)  {
-					ref2++;
-					updatePaymentScheduleLine(PaymentScheduleLine.find(paymentScheduleLine.getId()));
-				}
-			} catch (AxelorException e) {
-				
-				TraceBackService.trace(new AxelorException(String.format("Création de l'écriture de rejet de l'échéance %s", paymentScheduleLine.getName()), e, e.getcategory()), IException.DIRECT_DEBIT, batch.getId());
-				
-				incrementAnomaly();
-				
-			} catch (Exception e) {
-				
-				TraceBackService.trace(new Exception(String.format("Création de l'écriture de rejet de l'échéance %s", paymentScheduleLine.getName()), e), IException.DIRECT_DEBIT, batch.getId());
-				
-				incrementAnomaly();
-				
-				LOG.error("Bug(Anomalie) généré(e) pour la création de l'écriture de rejet de l'échéance {}", paymentScheduleLine.getName());
 				
 			} finally {
 				

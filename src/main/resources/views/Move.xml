@@ -67,9 +67,6 @@
 						    	<field name="analyticAccountSet" colSpan="4"/>
 						    </page>
 						    <page title="Others" colSpan="4">
-						    	<field name="ignoreInAccountingOk"/>
-						        <field name="ignoreInReminderOk"/>
-						        <field name="fromSchedulePaymentOk"/>
 						        <field name="exportedDirectDebitOk"/>
 						    </page>
 						</notebook>	
@@ -84,15 +81,14 @@
         
         </page>
         <page title="Accounting export" colSpan="4">
-	    	<field name="exportToAgressoNumber"/>
-	        <field name="exportToAgressoDate"/>
+	    	<field name="exportNumber"/>
+	        <field name="exportDate"/>
 	        <field name="accountingOk"/>
 	        <field name="moveLineReport" form-view="move-line-report-export-form"/>
 	    </page>
 	    <page title="Others" colSpan="4">
 	    	<field name="ignoreInAccountingOk"/>
 	        <field name="ignoreInReminderOk"/>
-	        <field name="fromSchedulePaymentOk"/>
 	        <field name="rejectOk"/>
 	    </page>
 	    </notebook>

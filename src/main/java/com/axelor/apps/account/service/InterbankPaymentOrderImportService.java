@@ -110,9 +110,9 @@ public class InterbankPaymentOrderImportService {
 	
 	public void updateBankDetails(String[] payment, Invoice invoice, PaymentMode paymentMode)  {
 		LOG.debug("Mise à jour des coordonnées bancaire du payeur : Payeur = {} , Facture = {}, Mode de paiement = {}", 
-				new Object[]{invoice.getClientPartner().getName(),invoice.getInvoiceId(),paymentMode.getName()});
+				new Object[]{invoice.getPartner().getName(),invoice.getInvoiceId(),paymentMode.getName()});
 		
-		Partner partner = invoice.getClientPartner();
+		Partner partner = invoice.getPartner();
 		
 		BankDetails bankDetails = bds.createBankDetails( //TODO
 				this.getAccountNbr(payment[2]),

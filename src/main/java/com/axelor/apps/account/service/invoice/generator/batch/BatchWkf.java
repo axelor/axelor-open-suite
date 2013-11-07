@@ -57,7 +57,7 @@ public abstract class BatchWkf extends BatchStrategy {
 	 * @param invoiceBatch
 	 *            Le batch de facturation concerné.
 	 * 
-	 * @return Une liste de contrat.
+	 * @return Une liste de facture.
 	 */
 	protected static Collection<Invoice> invoices(InvoiceBatch invoiceBatch, boolean isTo) {
 
@@ -72,7 +72,7 @@ public abstract class BatchWkf extends BatchStrategy {
 			
 			List<Object> params = new ArrayList<Object>();
 			
-			String query = "self.invoiceTypeSelect != 10 AND self.company = ?1";
+			String query = "self.company = ?1";
 			params.add(invoiceBatch.getCompany());
 	
 			query += " AND self.status.code = ?2";

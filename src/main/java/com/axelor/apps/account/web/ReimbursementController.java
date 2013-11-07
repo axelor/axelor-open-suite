@@ -45,7 +45,7 @@ public class ReimbursementController {
 	public void validateReimbursement(ActionRequest request, ActionResponse response) {
 		
 		Reimbursement reimbursement = request.getContext().asType(Reimbursement.class);
-		rs.updateContractCurrentRIB(reimbursement);
+		rs.updatePartnerCurrentRIB(reimbursement);
 		
 		if (reimbursement.getBankDetails() != null) {
 			response.setValue("status", Status.all().filter("self.code = 'val'").fetchOne());

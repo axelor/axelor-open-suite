@@ -40,11 +40,9 @@
 			<group title="To pay" colSpan="2" cols="3" colWidths="15%,40%,5%">
 				<field name="invoiceToPay"
 					onSelect="action-payment-voucher-domain-on-invoice-to-pay" 
-					onChange="action-pv-get-payment-schedule-to-pay,action-paymentVoucherInvoice-onChange,action-pv-hide-rejectToPay,action-pv-moveLine-domain-1,action-payment-voucher-company-onChange"
+					onChange="action-paymentVoucherInvoice-onChange,action-pv-hide-rejectToPay,action-pv-moveLine-domain-1,action-payment-voucher-company-onChange"
 					form-view="invoice-form" grid-view="invoice-grid" />
 				<label title="&lt;font color=#953B39&gt; OR &lt;/font&gt;" colSpan="1" />
-				<field name="paymentScheduleToPay" domain="self.company = :company"/>
-				<label  title="&lt;font color=#953B39&gt; OR &lt;/font&gt;" colSpan="1" />
 				<field name="rejectToPay" title="Reject to pay" 
 					onSelect="action-payment-voucher-domain-on-reject-to-pay" 
 					onChange="action-pv-hide-invoiceToPay,action-paymentVoucherRejectToPay-onChange,action-pv-moveLine-domain-3,action-payment-voucher-company-onChange"/>
@@ -131,17 +129,11 @@
 	</action-record>
    	
 	<action-record name="action-paymentVoucherInvoice-onChange" model="com.axelor.apps.account.db.PaymentVoucher" >
-		<field name="partner" expr="eval:invoiceToPay?.clientPartner"/>
+		<field name="partner" expr="eval:invoiceToPay?.partner"/>
 		<field name="paymentMode" expr="eval:invoiceToPay?.paymentMode"/>
-		<field name="currency" expr="eval:invoiceToPay?.clientPartner?.currency"/>
+		<field name="currency" expr="eval:invoiceToPay?.partner?.currency"/>
 	</action-record>
 
-	<action-record name="action-paymentVoucherScheduleToPay-onChange" model="com.axelor.apps.account.db.PaymentVoucher" >
-		<field name="partner" expr="eval:scheduleToPay?.paymentSchedule?.partner"/>
-		<field name="paymentMode" expr="eval:scheduleToPay?.paymentMode"/>
-		<field name="currency" expr="eval:scheduleToPay?.paymentSchedule?.partner?.currency"/>
-	</action-record>
-	
 	<action-record name="action-paymentVoucherRejectToPay-onChange" model="com.axelor.apps.account.db.PaymentVoucher" >
 		<field name="partner" expr="eval:rejectToPay?.partner"/>
 		<field name="paymentMode" expr="eval:rejectToPay?.move.paymentMode"/>
@@ -150,10 +142,6 @@
 	
 	<action-attrs name="action-pv-moveLine-domain-1">
 		<attribute name="domain" for="moveLine" expr="eval: &quot;self.account.reconcileOk = 't' and self.fromSchedulePaymentOk = 'f' and self.base.id = ${partner?.id} and self.move.state = 'validated' and self.amountRemaining &gt; 0.0  and self.credit &gt; 0.0 and self.move.company.id = ${invoiceToPay?.company?.id}&quot;"/>
-	</action-attrs>
-	
-	<action-attrs name="action-pv-moveLine-domain-2">
-		<attribute name="domain" for="moveLine" expr="eval: &quot;self.account.reconcileOk = 't' and self.fromSchedulePaymentOk = 'f' and self.base.id = ${partner?.id} and self.move.state = 'validated' and self.amountRemaining &gt; 0.0  and self.credit &gt; 0.0 and self.move.company.id = ${scheduleToPay?.paymentSchedule?.company?.id}&quot;"/>
 	</action-attrs>
 	
 	<action-attrs name="action-pv-moveLine-domain-3">
