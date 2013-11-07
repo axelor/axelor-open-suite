@@ -95,7 +95,7 @@
             <property name="odaDriverClass">org.postgresql.Driver</property>
             <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-erp</property>
             <property name="odaUser">axelor</property>
-            
+            <encrypted-property name="odaPassword" encryptionID="base64">bG1kcGRsYWE=</encrypted-property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -175,10 +175,10 @@
                     <text-property name="heading">partner_reference</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">agency_name</property>
+                    <property name="columnName">cash_register_name</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">agency_name</text-property>
-                    <text-property name="heading">agency_name</text-property>
+                    <text-property name="displayName">cash_register_name</text-property>
+                    <text-property name="heading">cash_register_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">credit</property>
@@ -287,7 +287,7 @@
                     </structure>
                     <structure>
                         <property name="position">13</property>
-                        <property name="name">agency_name</property>
+                        <property name="name">cash_register_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
@@ -396,8 +396,8 @@
                 </structure>
                 <structure>
                     <property name="position">13</property>
-                    <property name="name">agency_name</property>
-                    <property name="nativeName">agency_name</property>
+                    <property name="name">cash_register_name</property>
+                    <property name="nativeName">cash_register_name</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
@@ -425,19 +425,19 @@
             </list-property>
             <xml-property name="queryText"><![CDATA[select MoveLine.id, MoveLine.name as "MoveLineName", MoveLineReport.global,MoveLineReport.global_by_date, MoveLineReport.global_by_post, 
 MoveLine.date, Partner.name as contact_name, Partner.first_name as contact_first_name, MoveLine.amount_paid, 
-Invoice.invoice_id, MoveLineAccount.code as account_code, Partner.reference as partner_reference, Agency.name_long as agency_name,
+Invoice.invoice_id, MoveLineAccount.code as account_code, Partner.partner_seq as partner_reference, CashRegister.name as cash_register_name,
 MoveLine.credit, MoveLine.debit, MoveLine.amount_remaining 
 from public.account_move_line_report as MoveLineReport 
-left outer join public.account_move_line as MoveLine on (MoveLineReport.id = ? AND MoveLine.ignore_in_accounting_ok = false) 
-left outer join public.account_move as Move on (MoveLine.move = Move.id) 
+left outer join public.account_move_line as MoveLine on (MoveLineReport.id = ?) 
+left outer join public.account_move as Move on (MoveLine.move = Move.id  AND Move.ignore_in_accounting_ok = false) 
 left outer join public.account_account as Account on (MoveLineReport.account  = Account.id ) 
 left outer join public.account_account as MoveLineAccount on (MoveLine.account  = MoveLineAccount.id ) 
 left outer join public.base_partner as Partner on (MoveLine.partner = Partner.id) 
 left outer join public.base_partner as FromPartner on (MoveLineReport.from_partner = FromPartner.id) 
 left outer join public.base_partner as ToPartner on (MoveLineReport.to_partner = ToPartner.id) 
 left outer join public.base_company as Company on (MoveLineReport.company = Company.id) 
-left outer join public.base_agency as Agency on (Move.agency = Agency.id) 
-left outer join public.account_period as Period on (Move.period = Period.id) 
+left outer join public.account_cash_register as CashRegister on (Move.cash_register = CashRegister.id) 
+left outer join public.base_period as Period on (Move.period = Period.id) 
 left outer join public.account_journal as Journal on (Move.journal = Journal.id) 
 left outer join public.account_payment_mode as PaymentMode on (Move.payment_mode = PaymentMode.id) 
 left outer join public.account_reconcile as Reconcile on (Reconcile.line_credit = MoveLine.id) 
@@ -454,11 +454,11 @@ Move.company = MoveLineReport.company AND
 (MoveLineReport.to_partner IS NULL OR (MoveLine.partner IS NULL OR (ToPartner.name >= Partner.name))) AND
 (MoveLineReport.account IS NULL OR (MoveLineReport.account = MoveLine.account)) AND
 (MoveLine.account IS NULL OR (MoveLineAccount.reconcile_ok = true )) AND
-(MoveLineReport.agency IS NULL OR MoveLineReport.agency = Move.agency) AND 
+(MoveLineReport.cash_register IS NULL OR MoveLineReport.cash_register = Move.cash_register) AND 
 (MoveLineReport.period IS NULL OR MoveLineReport.period  = Move.period) AND 
 (MoveLineReport.journal IS NULL OR MoveLineReport.journal  = Move.journal) AND 
 (MoveLineReport.payment_mode IS  NULL OR (MoveLineReport.payment_mode = Move.payment_mode)) AND 
-MoveLine.ignore_in_accounting_ok = false AND MoveLine.debit <= 0
+Move.ignore_in_accounting_ok = false AND MoveLine.debit <= 0
 
 UNION 
 
@@ -466,19 +466,19 @@ UNION
 
 select MoveLine.id, MoveLine.name as "MoveLineName", MoveLineReport.global,MoveLineReport.global_by_date, MoveLineReport.global_by_post, 
 MoveLine.date, Partner.name as contact_name, Partner.first_name as contact_first_name, MoveLine.amount_paid, 
-null, MoveLineAccount.code as account_code, Partner.reference as partner_reference, Agency.name_long as agency_name,
+null, MoveLineAccount.code as account_code, Partner.partner_seq as partner_reference, CashRegister.name as cash_register_name,
 MoveLine.credit, MoveLine.debit, MoveLine.amount_remaining 
 from public.account_move_line_report as MoveLineReport 
-left outer join public.account_move_line as MoveLine on (MoveLineReport.id = ? AND MoveLine.ignore_in_accounting_ok = false) 
-left outer join public.account_move as Move on (MoveLine.move = Move.id) 
+left outer join public.account_move_line as MoveLine on (MoveLineReport.id = ?) 
+left outer join public.account_move as Move on (MoveLine.move = Move.id  AND Move.ignore_in_accounting_ok = false) 
 left outer join public.account_account as Account on (MoveLineReport.account  = Account.id ) 
 left outer join public.account_account as MoveLineAccount on (MoveLine.account  = MoveLineAccount.id ) 
 left outer join public.base_partner as Partner on (MoveLine.partner = Partner.id) 
 left outer join public.base_partner as FromPartner on (MoveLineReport.from_partner = FromPartner.id) 
 left outer join public.base_partner as ToPartner on (MoveLineReport.to_partner = ToPartner.id) 
 left outer join public.base_company as Company on (MoveLineReport.company = Company.id) 
-left outer join public.base_agency as Agency on (Move.agency = Agency.id) 
-left outer join public.account_period as Period on (Move.period = Period.id) 
+left outer join public.account_cash_register as CashRegister on (Move.cash_register = CashRegister.id) 
+left outer join public.base_period as Period on (Move.period = Period.id) 
 left outer join public.account_journal as Journal on (Move.journal = Journal.id) 
 left outer join public.account_payment_mode as PaymentMode on (Move.payment_mode = PaymentMode.id) 
 left outer join public.account_reconcile as Reconcile on (Reconcile.line_credit = MoveLine.id) 
@@ -497,15 +497,15 @@ Move.company = MoveLineReport.company AND
 (MoveLineReport.to_partner IS NULL OR (MoveLine.partner IS NULL OR (ToPartner.name >= Partner.name))) AND
 (MoveLineReport.account IS NULL OR (MoveLineReport.account = MoveLine.account)) AND
 (MoveLine.account IS NULL OR (MoveLineAccount.reconcile_ok = true )) AND
-(MoveLineReport.agency IS NULL OR MoveLineReport.agency = Move.agency) AND 
+(MoveLineReport.cash_register IS NULL OR MoveLineReport.cash_register = Move.cash_register) AND 
 (MoveLineReport.period IS NULL OR MoveLineReport.period  = Move.period) AND 
 (MoveLineReport.journal IS NULL OR MoveLineReport.journal  = Move.journal) AND 
 (MoveLineReport.payment_mode IS  NULL OR (MoveLineReport.payment_mode = Move.payment_mode)) AND
-MoveLine.ignore_in_accounting_ok = false AND MoveLine.debit <= 0 AND Reconcile.id IS NOT NULL AND MoveLine.amount_remaining > 0 
+Move.ignore_in_accounting_ok = false AND MoveLine.debit <= 0 AND Reconcile.id IS NOT NULL AND MoveLine.amount_remaining > 0 
 
 GROUP BY MoveLine.id, MoveLine.name, MoveLineReport.global,MoveLineReport.global_by_date, MoveLineReport.global_by_post, 
-MoveLine.date, Partner.name, Partner.first_name, Partner.reference,  
-MoveLineAccount.code, Agency.name_long, Agency.id, 
+MoveLine.date, Partner.name, Partner.first_name, Partner.partner_seq,  
+MoveLineAccount.code, CashRegister.name, CashRegister.id, 
 MoveLine.credit, MoveLine.debit, MoveLine.amount_remaining, Reconcile.amount]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -599,10 +599,10 @@ MoveLine.credit, MoveLine.debit, MoveLine.amount_remaining, Reconcile.amount]]><
                     <text-property name="heading">account_code</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">agency_name</property>
+                    <property name="columnName">cash_register_name</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">agency_name</text-property>
-                    <text-property name="heading">agency_name</text-property>
+                    <text-property name="displayName">cash_register_name</text-property>
+                    <text-property name="heading">cash_register_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">payment_mode</property>
@@ -683,7 +683,7 @@ MoveLine.credit, MoveLine.debit, MoveLine.amount_remaining, Reconcile.amount]]><
                     </structure>
                     <structure>
                         <property name="position">12</property>
-                        <property name="name">agency_name</property>
+                        <property name="name">cash_register_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
@@ -774,8 +774,8 @@ MoveLine.credit, MoveLine.debit, MoveLine.amount_remaining, Reconcile.amount]]><
                 </structure>
                 <structure>
                     <property name="position">12</property>
-                    <property name="name">agency_name</property>
-                    <property name="nativeName">agency_name</property>
+                    <property name="name">cash_register_name</property>
+                    <property name="nativeName">cash_register_name</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
@@ -790,15 +790,15 @@ MoveLine.credit, MoveLine.debit, MoveLine.amount_remaining, Reconcile.amount]]><
             <xml-property name="queryText"><![CDATA[select Company.name as company_name, MoveLineReport.date_from, MoveLineReport.date_to, MoveLineReport.date as "ReportDate", 
 MoveLineReport.publication_date_time as "ReportDateEdition", 
 Period.name as period_name, Journal.name as journal_name, MoveLineReport.global, MoveLineReport.global_by_date,
-MoveLineReport.global_by_post, Account.code as account_code, Agency.name_short as agency_name,
+MoveLineReport.global_by_post, Account.code as account_code, CashRegister.name as cash_register_name,
 PaymentMode.name as payment_mode
 from public.account_move_line_report as MoveLineReport 
 inner join public.base_company as Company on (MoveLineReport.company = Company.id)
 left outer join public.account_account as Account on (MoveLineReport.account = Account.id)
 left outer join public.account_payment_mode as PaymentMode on (MoveLineReport.payment_mode = PaymentMode.id)
 left outer join public.account_journal as Journal on (MoveLineReport.journal = Journal.id)
-left outer join public.account_period as Period on (MoveLineReport.period = Period.id)
-left outer join public.base_agency as Agency on (MoveLineReport.agency = Agency.id)
+left outer join public.base_period as Period on (MoveLineReport.period = Period.id)
+left outer join public.account_cash_register as CashRegister on (MoveLineReport.cash_register = CashRegister.id)
 where MoveLineReport.id = ? 
 ]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -936,9 +936,9 @@ where MoveLineReport.id = ?
                             <property name="dataType">string</property>
                         </structure>
                         <structure>
-                            <property name="name">agency_name</property>
-                            <text-property name="displayName">agency_name</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["agency_name"]</expression>
+                            <property name="name">cash_register_name</property>
+                            <text-property name="displayName">cash_register_name</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["cash_register_name"]</expression>
                             <property name="dataType">string</property>
                         </structure>
                         <structure>
@@ -1098,9 +1098,9 @@ where MoveLineReport.id = ?
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">agency_name</property>
-                    <text-property name="displayName">agency_name</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["agency_name"]</expression>
+                    <property name="name">cash_register_name</property>
+                    <text-property name="displayName">cash_register_name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["cash_register_name"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
@@ -1272,7 +1272,7 @@ where MoveLineReport.id = ?
                 <cell id="525">
                     <text id="571">
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["agency_name"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["cash_register_name"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
             </row>
@@ -1391,9 +1391,9 @@ where MoveLineReport.id = ?
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
-                    <property name="name">agency_name</property>
-                    <text-property name="displayName">agency_name</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["agency_name"]</expression>
+                    <property name="name">cash_register_name</property>
+                    <text-property name="displayName">cash_register_name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["cash_register_name"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
@@ -2045,9 +2045,9 @@ row["amount_remaining"]
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
-                    <property name="name">agency_name</property>
-                    <text-property name="displayName">agency_name</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["agency_name"]</expression>
+                    <property name="name">cash_register_name</property>
+                    <text-property name="displayName">cash_register_name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["cash_register_name"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
@@ -3053,9 +3053,9 @@ row["amount_remaining"]
                     <property name="allowExport">true</property>
                 </structure>
                 <structure>
-                    <property name="name">agency_name</property>
-                    <text-property name="displayName">agency_name</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["agency_name"]</expression>
+                    <property name="name">cash_register_name</property>
+                    <text-property name="displayName">cash_register_name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["cash_register_name"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
@@ -3394,9 +3394,9 @@ row["amount_remaining"]
             </header>
             <group id="1152">
                 <property name="groupName">AgencyGroup</property>
-                <expression name="keyExpr" type="javascript">row["agency_name"]</expression>
+                <expression name="keyExpr" type="javascript">row["cash_register_name"]</expression>
                 <structure name="toc">
-                    <expression name="expressionValue" type="javascript">row["agency_name"]</expression>
+                    <expression name="expressionValue" type="javascript">row["cash_register_name"]</expression>
                 </structure>
                 <property name="hideDetail">false</property>
                 <footer>
@@ -3419,7 +3419,7 @@ row["amount_remaining"]
                                 <property name="backgroundColor">#E5E5E5</property>
                                 <property name="textAlign">center</property>
                                 <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<B>S/Total  <VALUE-OF>row["agency_name"]</VALUE-OF></B>]]></text-property>
+                                <text-property name="content"><![CDATA[<B>S/Total  <VALUE-OF>row["cash_register_name"]</VALUE-OF></B>]]></text-property>
                             </text>
                         </cell>
                         <cell id="1170">
@@ -3922,9 +3922,9 @@ row["amount_remaining"]
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">agency_name</property>
-                    <text-property name="displayName">agency_name</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["agency_name"]</expression>
+                    <property name="name">cash_register_name</property>
+                    <text-property name="displayName">cash_register_name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["cash_register_name"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
@@ -4034,9 +4034,9 @@ dataSetRow["amount_paid"]
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
-                    <property name="name">agency_name</property>
-                    <text-property name="displayName">agency_name</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["agency_name"]</expression>
+                    <property name="name">cash_register_name</property>
+                    <text-property name="displayName">cash_register_name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["cash_register_name"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
