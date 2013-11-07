@@ -176,7 +176,7 @@ public class MoveLineReportService {
 		}
 		
 		if(!sqlRequest.equals("")) {  sqlRequest += and;  }
-		sqlRequest += String.format("self.ignoreInAccountingOk = 'false'");  
+		sqlRequest += String.format("self.move.ignoreInAccountingOk = 'false'");  
 		
 		LOG.debug("Requete : {}", sqlRequest);
 		
