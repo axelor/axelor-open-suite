@@ -228,7 +228,9 @@ public class InvoiceController {
 
 		StringBuilder url = new StringBuilder();			
 		AxelorSettings axelorSettings = AxelorSettings.get();
-		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Invoice.rptdesign&__format=pdf&InvoiceId="+invoice.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
+		String language = invoice.getPartner().getLanguageSelect() != null? invoice.getPartner().getLanguageSelect() : invoice.getCompany().getPrintingSettings().getLanguageSelect() != null ? invoice.getCompany().getPrintingSettings().getLanguageSelect() : "en" ; 
+
+		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Invoice.rptdesign&__format=pdf&Locale="+language+"&InvoiceId="+invoice.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
 
 		LOG.debug("URL : {}", url);
 		
