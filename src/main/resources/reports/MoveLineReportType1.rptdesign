@@ -95,7 +95,6 @@
             <property name="odaDriverClass">org.postgresql.Driver</property>
             <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-erp</property>
             <property name="odaUser">axelor</property>
-            <encrypted-property name="odaPassword" encryptionID="base64">bG1kcGRsYWE=</encrypted-property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -3041,7 +3040,7 @@ row["amount_remaining"]
                     <property name="name">AmountPaidOnDate</property>
                     <property name="dataType">float</property>
                     <simple-property-list name="aggregateOn">
-                        <value>AgencyGroup</value>
+                        <value>CashRegisterGroup</value>
                     </simple-property-list>
                     <property name="aggregateFunction">SUM</property>
                     <list-property name="arguments">
@@ -3059,10 +3058,10 @@ row["amount_remaining"]
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">sumOnAgency</property>
+                    <property name="name">sumOnCashRegister</property>
                     <property name="dataType">float</property>
                     <simple-property-list name="aggregateOn">
-                        <value>AgencyGroup</value>
+                        <value>CashRegisterGroup</value>
                     </simple-property-list>
                     <property name="aggregateFunction">SUM</property>
                     <list-property name="arguments">
@@ -3140,10 +3139,10 @@ dataSetRow["amount_remaining"]
                     <property name="allowExport">true</property>
                 </structure>
                 <structure>
-                    <property name="name">AmountRemainByAgency</property>
+                    <property name="name">AmountRemainByCashRegister</property>
                     <property name="dataType">float</property>
                     <simple-property-list name="aggregateOn">
-                        <value>AgencyGroup</value>
+                        <value>CashRegisterGroup</value>
                     </simple-property-list>
                     <property name="aggregateFunction">SUM</property>
                     <list-property name="arguments">
@@ -3393,7 +3392,7 @@ row["amount_remaining"]
                 </row>
             </header>
             <group id="1152">
-                <property name="groupName">AgencyGroup</property>
+                <property name="groupName">CashRegisterGroup</property>
                 <expression name="keyExpr" type="javascript">row["cash_register_name"]</expression>
                 <structure name="toc">
                     <expression name="expressionValue" type="javascript">row["cash_register_name"]</expression>
@@ -3436,7 +3435,7 @@ row["amount_remaining"]
                                 <property name="marginRight">5pt</property>
                                 <property name="textAlign">right</property>
                                 <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00 {RoundingMode=HALF_UP}">row["sumOnAgency"] + row["AmountRemainByAgency"]</VALUE-OF>]]></text-property>
+                                <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00 {RoundingMode=HALF_UP}">row["sumOnCashRegister"] + row["AmountRemainByCashRegister"]</VALUE-OF>]]></text-property>
                             </text>
                         </cell>
                         <cell id="1172">
@@ -3474,7 +3473,7 @@ row["amount_remaining"]
                                 <property name="marginRight">5pt</property>
                                 <property name="textAlign">right</property>
                                 <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00 {RoundingMode=HALF_UP}">row["sumOnAgency"] + row["AmountRemainByAgency"]</VALUE-OF>]]></text-property>
+                                <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00 {RoundingMode=HALF_UP}">row["sumOnCashRegister"] + row["AmountRemainByCashRegister"]</VALUE-OF>]]></text-property>
                             </text>
                         </cell>
                     </row>
