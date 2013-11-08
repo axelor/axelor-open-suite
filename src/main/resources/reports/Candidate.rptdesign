@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.2.2.v201301221637 Build &lt;4.2.2.v20130206-1509></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 3.7.2.v20120213 Build &lt;3.7.2.v20120214-1408></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -23,6 +23,34 @@
             <property name="name">odaUser</property>
             <property name="id">7</property>
             <expression name="value" type="javascript">params["UserName"].value</expression>
+        </structure>
+        <structure>
+            <property name="name">odaDriverClass</property>
+            <property name="id">7</property>
+        </structure>
+        <structure>
+            <property name="name">odaAutoCommit</property>
+            <property name="id">7</property>
+        </structure>
+        <structure>
+            <property name="name">odaIsolationMode</property>
+            <property name="id">7</property>
+        </structure>
+        <structure>
+            <property name="name">odaPassword</property>
+            <property name="id">7</property>
+        </structure>
+        <structure>
+            <property name="name">odaJndiName</property>
+            <property name="id">7</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileName</property>
+            <property name="id">7</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileStorePath</property>
+            <property name="id">7</property>
         </structure>
     </list-property>
     <property name="units">in</property>
@@ -117,7 +145,6 @@
             <property name="odaDriverClass">org.postgresql.Driver</property>
             <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-erp</property>
             <property name="odaUser">axelor</property>
-            
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -945,14 +972,6 @@ where Candidate.id = ?]]></xml-property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
-                <structure>
-                    <property name="name">param_3</property>
-                    <property name="nativeName"></property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                    <property name="position">3</property>
-                    <property name="isInput">true</property>
-                </structure>
             </list-property>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
@@ -987,7 +1006,8 @@ where Candidate.id = ?]]></xml-property>
             </list-property>
             <xml-property name="queryText"><![CDATA[select LangTranslate.key, LangTranslate.translation
 from meta_translation as LangTranslate
-where LangTranslate.key = ? and LangTranslate.language = ? and LangTranslate.domain = ?]]></xml-property>
+where LangTranslate.key = ? and LangTranslate.language = ? and 
+LangTranslate.domain = 'axelor-organisation' and LangTranslate.type = 'others']]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -1014,21 +1034,6 @@ where LangTranslate.key = ? and LangTranslate.language = ? and LangTranslate.dom
           <design:identifier>
             <design:name></design:name>
             <design:position>2</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>3</design:position>
           </design:identifier>
           <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
           <design:precision>0</design:precision>
@@ -3742,13 +3747,7 @@ where Candidate.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'personalInfo'</value>
-                                </simple-property-list>
-                            </structure>
-                            <structure>
-                                <property name="paramName">param_3</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'com.axelor.apps.organisation.db.Candidate'</value>
+                                    <value type="javascript">'candidatePersonalInfo'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -3788,13 +3787,7 @@ where Candidate.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'dob'</value>
-                                </simple-property-list>
-                            </structure>
-                            <structure>
-                                <property name="paramName">param_3</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'com.axelor.apps.organisation.db.PersonalInfo'</value>
+                                    <value type="javascript">'candidateDob'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -3810,12 +3803,6 @@ where Candidate.id = ?]]></xml-property>
                                 <text-property name="displayName">translation</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
                                 <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Date of Birth</property>
-                                <expression name="expression" type="javascript">dataSetRow["translation"] + " :"</expression>
-                                <property name="dataType">string</property>
-                                <property name="allowExport">true</property>
                             </structure>
                         </list-property>
                         <property name="resultSetColumn">Date of Birth</property>
@@ -3844,13 +3831,7 @@ where Candidate.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'citizenshipCountry'</value>
-                                </simple-property-list>
-                            </structure>
-                            <structure>
-                                <property name="paramName">param_3</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'com.axelor.apps.organisation.db.PersonalInfo'</value>
+                                    <value type="javascript">'candidateCitizenshipCountry'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -3866,12 +3847,6 @@ where Candidate.id = ?]]></xml-property>
                                 <text-property name="displayName">translation</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
                                 <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Nationality</property>
-                                <expression name="expression" type="javascript">dataSetRow["translation"] + " :"</expression>
-                                <property name="dataType">string</property>
-                                <property name="allowExport">true</property>
                             </structure>
                         </list-property>
                         <property name="resultSetColumn">Nationality</property>
@@ -3900,13 +3875,7 @@ where Candidate.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'maritalStatusSelect'</value>
-                                </simple-property-list>
-                            </structure>
-                            <structure>
-                                <property name="paramName">param_3</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'com.axelor.apps.organisation.db.PersonalInfo'</value>
+                                    <value type="javascript">'candidateMaritalStatusSelect'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -3922,12 +3891,6 @@ where Candidate.id = ?]]></xml-property>
                                 <text-property name="displayName">translation</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
                                 <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Marital status</property>
-                                <expression name="expression" type="javascript">dataSetRow["translation"] + " :"</expression>
-                                <property name="dataType">string</property>
-                                <property name="allowExport">true</property>
                             </structure>
                         </list-property>
                         <property name="resultSetColumn">Marital status</property>
@@ -3988,13 +3951,7 @@ where Candidate.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'mobilityChoiceSet'</value>
-                                </simple-property-list>
-                            </structure>
-                            <structure>
-                                <property name="paramName">param_3</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'com.axelor.apps.organisation.db.PersonalInfo'</value>
+                                    <value type="javascript">'candidateMobilityChoiceSet'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -4010,12 +3967,6 @@ where Candidate.id = ?]]></xml-property>
                                 <text-property name="displayName">translation</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
                                 <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Geographical mobility</property>
-                                <expression name="expression" type="javascript">dataSetRow["translation"] + " :"</expression>
-                                <property name="dataType">string</property>
-                                <property name="allowExport">true</property>
                             </structure>
                         </list-property>
                         <property name="resultSetColumn">Geographical mobility</property>
@@ -4281,13 +4232,7 @@ where Candidate.id = ?]]></xml-property>
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'positionList'</value>
-                                    </simple-property-list>
-                                </structure>
-                                <structure>
-                                    <property name="paramName">param_3</property>
-                                    <simple-property-list name="expression">
-                                        <value type="javascript">'com.axelor.apps.organisation.db.Candidate'</value>
+                                        <value type="javascript">'candidatePositionList'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -4331,13 +4276,7 @@ where Candidate.id = ?]]></xml-property>
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'startDate'</value>
-                                    </simple-property-list>
-                                </structure>
-                                <structure>
-                                    <property name="paramName">param_3</property>
-                                    <simple-property-list name="expression">
-                                        <value type="javascript">'com.axelor.apps.organisation.db.Position'</value>
+                                        <value type="javascript">'candidateStartdate'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -4353,12 +4292,6 @@ where Candidate.id = ?]]></xml-property>
                                     <text-property name="displayName">translation</text-property>
                                     <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
                                     <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">Start date</property>
-                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                    <property name="dataType">string</property>
-                                    <property name="allowExport">true</property>
                                 </structure>
                             </list-property>
                             <property name="resultSetColumn">Start date</property>
@@ -4384,13 +4317,7 @@ where Candidate.id = ?]]></xml-property>
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'endDate'</value>
-                                    </simple-property-list>
-                                </structure>
-                                <structure>
-                                    <property name="paramName">param_3</property>
-                                    <simple-property-list name="expression">
-                                        <value type="javascript">'com.axelor.apps.organisation.db.Position'</value>
+                                        <value type="javascript">'candidateEnddate'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -4406,12 +4333,6 @@ where Candidate.id = ?]]></xml-property>
                                     <text-property name="displayName">translation</text-property>
                                     <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
                                     <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">End date</property>
-                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                    <property name="dataType">string</property>
-                                    <property name="allowExport">true</property>
                                 </structure>
                             </list-property>
                             <property name="resultSetColumn">End date</property>
@@ -4437,13 +4358,7 @@ where Candidate.id = ?]]></xml-property>
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'employer'</value>
-                                    </simple-property-list>
-                                </structure>
-                                <structure>
-                                    <property name="paramName">param_3</property>
-                                    <simple-property-list name="expression">
-                                        <value type="javascript">'com.axelor.apps.organisation.db.Position'</value>
+                                        <value type="javascript">'candidateEmployer'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -4459,12 +4374,6 @@ where Candidate.id = ?]]></xml-property>
                                     <text-property name="displayName">translation</text-property>
                                     <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
                                     <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">Company</property>
-                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                    <property name="dataType">string</property>
-                                    <property name="allowExport">true</property>
                                 </structure>
                             </list-property>
                             <property name="resultSetColumn">Company</property>
@@ -4478,13 +4387,7 @@ where Candidate.id = ?]]></xml-property>
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'name'</value>
-                                    </simple-property-list>
-                                </structure>
-                                <structure>
-                                    <property name="paramName">param_3</property>
-                                    <simple-property-list name="expression">
-                                        <value type="javascript">'com.axelor.apps.organisation.db.Position'</value>
+                                        <value type="javascript">'candidatePositionName'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -4500,12 +4403,6 @@ where Candidate.id = ?]]></xml-property>
                                     <text-property name="displayName">translation</text-property>
                                     <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
                                     <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">Position name</property>
-                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                    <property name="dataType">string</property>
-                                    <property name="allowExport">true</property>
                                 </structure>
                             </list-property>
                             <property name="resultSetColumn">Position name</property>
@@ -4633,6 +4530,7 @@ where Candidate.id = ?]]></xml-property>
                     </cell>
                 </row>
                 <row id="3819">
+                    <property name="height">0.010416666666666666in</property>
                     <cell id="3820">
                         <property name="colSpan">4</property>
                         <property name="rowSpan">1</property>
@@ -4688,12 +4586,12 @@ where Candidate.id = ?]]></xml-property>
                         <property name="paddingBottom">1pt</property>
                         <property name="paddingRight">1pt</property>
                         <property name="textAlign">left</property>
-                        <property name="dataSet">NoDomainTranslationDS</property>
+                        <property name="dataSet">TranslationDS</property>
                         <list-property name="paramBindings">
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'Education/Trainings'</value>
+                                    <value type="javascript">'candidateEducationTraining'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -4735,13 +4633,7 @@ where Candidate.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'degree'</value>
-                                </simple-property-list>
-                            </structure>
-                            <structure>
-                                <property name="paramName">param_3</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'com.axelor.apps.organisation.db.Candidate'</value>
+                                    <value type="javascript">'candidateSignificantDegree'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -4757,12 +4649,6 @@ where Candidate.id = ?]]></xml-property>
                                 <text-property name="displayName">translation</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
                                 <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Significant Degree</property>
-                                <expression name="expression" type="javascript">dataSetRow["translation"] + " :"</expression>
-                                <property name="dataType">string</property>
-                                <property name="allowExport">true</property>
                             </structure>
                         </list-property>
                         <property name="resultSetColumn">Significant Degree</property>
@@ -4851,13 +4737,7 @@ where Candidate.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'trainingLineList'</value>
-                                </simple-property-list>
-                            </structure>
-                            <structure>
-                                <property name="paramName">param_3</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'com.axelor.apps.organisation.db.Candidate'</value>
+                                    <value type="javascript">'candidateTrainingLineList'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -4963,13 +4843,7 @@ where Candidate.id = ?]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'degree'</value>
-                                                </simple-property-list>
-                                            </structure>
-                                            <structure>
-                                                <property name="paramName">param_3</property>
-                                                <simple-property-list name="expression">
-                                                    <value type="javascript">'com.axelor.apps.organisation.db.TrainingLine'</value>
+                                                    <value type="javascript">'candidateDegree'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -4985,12 +4859,6 @@ where Candidate.id = ?]]></xml-property>
                                                 <text-property name="displayName">translation</text-property>
                                                 <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
                                                 <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">Diploma/Degree</property>
-                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                <property name="dataType">string</property>
-                                                <property name="allowExport">true</property>
                                             </structure>
                                         </list-property>
                                         <property name="resultSetColumn">Diploma/Degree</property>
@@ -5007,13 +4875,7 @@ where Candidate.id = ?]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'trainingCenter'</value>
-                                                </simple-property-list>
-                                            </structure>
-                                            <structure>
-                                                <property name="paramName">param_3</property>
-                                                <simple-property-list name="expression">
-                                                    <value type="javascript">'com.axelor.apps.organisation.db.TrainingLine'</value>
+                                                    <value type="javascript">'candidateTrainingCenter'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -5029,12 +4891,6 @@ where Candidate.id = ?]]></xml-property>
                                                 <text-property name="displayName">translation</text-property>
                                                 <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
                                                 <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">Training center</property>
-                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                <property name="dataType">string</property>
-                                                <property name="allowExport">true</property>
                                             </structure>
                                         </list-property>
                                         <property name="resultSetColumn">Training center</property>
@@ -5046,12 +4902,12 @@ where Candidate.id = ?]]></xml-property>
                                     <property name="borderRightWidth">thin</property>
                                     <data id="4716">
                                         <property name="fontWeight">bold</property>
-                                        <property name="dataSet">NoDomainTranslationDS</property>
+                                        <property name="dataSet">TranslationDS</property>
                                         <list-property name="paramBindings">
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'Year'</value>
+                                                    <value type="javascript">'candidateYear'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -5067,12 +4923,6 @@ where Candidate.id = ?]]></xml-property>
                                                 <text-property name="displayName">translation</text-property>
                                                 <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
                                                 <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">Year</property>
-                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                <property name="dataType">string</property>
-                                                <property name="allowExport">true</property>
                                             </structure>
                                         </list-property>
                                         <property name="resultSetColumn">Year</property>
@@ -5086,13 +4936,7 @@ where Candidate.id = ?]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'comment'</value>
-                                                </simple-property-list>
-                                            </structure>
-                                            <structure>
-                                                <property name="paramName">param_3</property>
-                                                <simple-property-list name="expression">
-                                                    <value type="javascript">'com.axelor.apps.organisation.db.TrainingLine'</value>
+                                                    <value type="javascript">'candidateComment'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -5108,12 +4952,6 @@ where Candidate.id = ?]]></xml-property>
                                                 <text-property name="displayName">translation</text-property>
                                                 <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
                                                 <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">Comment</property>
-                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                <property name="dataType">string</property>
-                                                <property name="allowExport">true</property>
                                             </structure>
                                         </list-property>
                                         <property name="resultSetColumn">Comment</property>
@@ -5287,13 +5125,7 @@ where Candidate.id = ?]]></xml-property>
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'evaluationLineList'</value>
-                                    </simple-property-list>
-                                </structure>
-                                <structure>
-                                    <property name="paramName">param_3</property>
-                                    <simple-property-list name="expression">
-                                        <value type="javascript">'com.axelor.apps.organisation.db.Candidate'</value>
+                                        <value type="javascript">'candidateEvaluationLineList'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -5337,13 +5169,7 @@ where Candidate.id = ?]]></xml-property>
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'label'</value>
-                                    </simple-property-list>
-                                </structure>
-                                <structure>
-                                    <property name="paramName">param_3</property>
-                                    <simple-property-list name="expression">
-                                        <value type="javascript">'com.axelor.apps.organisation.db.EvaluationLine'</value>
+                                        <value type="javascript">'candidateCriteriaEvaluated'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -5359,12 +5185,6 @@ where Candidate.id = ?]]></xml-property>
                                     <text-property name="displayName">translation</text-property>
                                     <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
                                     <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">Criteria evaluated</property>
-                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                    <property name="dataType">string</property>
-                                    <property name="allowExport">true</property>
                                 </structure>
                             </list-property>
                             <property name="resultSetColumn">Criteria evaluated</property>
@@ -5390,13 +5210,7 @@ where Candidate.id = ?]]></xml-property>
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'coefficient'</value>
-                                    </simple-property-list>
-                                </structure>
-                                <structure>
-                                    <property name="paramName">param_3</property>
-                                    <simple-property-list name="expression">
-                                        <value type="javascript">'com.axelor.apps.organisation.db.EvaluationLine'</value>
+                                        <value type="javascript">'candidateCoefficient'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -5412,12 +5226,6 @@ where Candidate.id = ?]]></xml-property>
                                     <text-property name="displayName">translation</text-property>
                                     <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
                                     <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">Coefficient</property>
-                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                    <property name="dataType">string</property>
-                                    <property name="allowExport">true</property>
                                 </structure>
                             </list-property>
                             <property name="resultSetColumn">Coefficient</property>
@@ -5443,13 +5251,7 @@ where Candidate.id = ?]]></xml-property>
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'gradeSelect'</value>
-                                    </simple-property-list>
-                                </structure>
-                                <structure>
-                                    <property name="paramName">param_3</property>
-                                    <simple-property-list name="expression">
-                                        <value type="javascript">'com.axelor.apps.organisation.db.EvaluationLine'</value>
+                                        <value type="javascript">'candidateGrade'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -5465,12 +5267,6 @@ where Candidate.id = ?]]></xml-property>
                                     <text-property name="displayName">translation</text-property>
                                     <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
                                     <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">Grade</property>
-                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                    <property name="dataType">string</property>
-                                    <property name="allowExport">true</property>
                                 </structure>
                             </list-property>
                             <property name="resultSetColumn">Grade</property>
@@ -5590,13 +5386,7 @@ where Candidate.id = ?]]></xml-property>
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'evaluationGrade'</value>
-                                    </simple-property-list>
-                                </structure>
-                                <structure>
-                                    <property name="paramName">param_3</property>
-                                    <simple-property-list name="expression">
-                                        <value type="javascript">'com.axelor.apps.organisation.db.Candidate'</value>
+                                        <value type="javascript">'candidateGlobalGrade'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -5612,12 +5402,6 @@ where Candidate.id = ?]]></xml-property>
                                     <text-property name="displayName">translation</text-property>
                                     <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
                                     <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">Global grade / 20</property>
-                                    <expression name="expression" type="javascript">dataSetRow["translation"] + " :"</expression>
-                                    <property name="dataType">string</property>
-                                    <property name="allowExport">true</property>
                                 </structure>
                             </list-property>
                             <property name="resultSetColumn">Global grade / 20</property>
@@ -5699,13 +5483,7 @@ where Candidate.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'competence'</value>
-                                </simple-property-list>
-                            </structure>
-                            <structure>
-                                <property name="paramName">param_3</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'com.axelor.apps.organisation.db.Candidate'</value>
+                                    <value type="javascript">'candidateCompetence'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -5751,13 +5529,7 @@ where Candidate.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'interventionTypeSet'</value>
-                                </simple-property-list>
-                            </structure>
-                            <structure>
-                                <property name="paramName">param_3</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'com.axelor.apps.organisation.db.Competence'</value>
+                                    <value type="javascript">'candidateInterventionTypeSet'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -5789,13 +5561,7 @@ where Candidate.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'competenceAreaSet'</value>
-                                </simple-property-list>
-                            </structure>
-                            <structure>
-                                <property name="paramName">param_3</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'com.axelor.apps.organisation.db.Competence'</value>
+                                    <value type="javascript">'candidateCompetenceAreaSet'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -5957,13 +5723,7 @@ where Candidate.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'languageSet'</value>
-                                </simple-property-list>
-                            </structure>
-                            <structure>
-                                <property name="paramName">param_3</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'com.axelor.apps.organisation.db.SkillSet'</value>
+                                    <value type="javascript">'candidateLanguageSet'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -6043,13 +5803,7 @@ where Candidate.id = ?]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'name'</value>
-                                                </simple-property-list>
-                                            </structure>
-                                            <structure>
-                                                <property name="paramName">param_3</property>
-                                                <simple-property-list name="expression">
-                                                    <value type="javascript">'com.axelor.apps.base.db.Language'</value>
+                                                    <value type="javascript">'candidateLanguageName'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -6065,12 +5819,6 @@ where Candidate.id = ?]]></xml-property>
                                                 <text-property name="displayName">translation</text-property>
                                                 <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
                                                 <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">Language name</property>
-                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                <property name="dataType">string</property>
-                                                <property name="allowExport">true</property>
                                             </structure>
                                         </list-property>
                                         <property name="resultSetColumn">Language name</property>
@@ -6085,12 +5833,12 @@ where Candidate.id = ?]]></xml-property>
                                     <property name="borderRightWidth">thin</property>
                                     <data id="4694">
                                         <property name="fontWeight">bold</property>
-                                        <property name="dataSet">NoDomainTranslationDS</property>
+                                        <property name="dataSet">TranslationDS</property>
                                         <list-property name="paramBindings">
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'Level'</value>
+                                                    <value type="javascript">'candidateLanguageLavel'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -6106,12 +5854,6 @@ where Candidate.id = ?]]></xml-property>
                                                 <text-property name="displayName">translation</text-property>
                                                 <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
                                                 <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">Level</property>
-                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                <property name="dataType">string</property>
-                                                <property name="allowExport">true</property>
                                             </structure>
                                         </list-property>
                                         <property name="resultSetColumn">Level</property>
@@ -6154,12 +5896,12 @@ where Candidate.id = ?]]></xml-property>
                                     <property name="borderRightWidth">thin</property>
                                     <data id="4672">
                                         <property name="textAlign">center</property>
-                                        <property name="dataSet">NoDomainTranslationDS</property>
+                                        <property name="dataSet">TranslationDS</property>
                                         <list-property name="paramBindings">
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'Expert'</value>
+                                                    <value type="javascript">'candidateLanguageExpert'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -6175,12 +5917,6 @@ where Candidate.id = ?]]></xml-property>
                                                 <text-property name="displayName">translation</text-property>
                                                 <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
                                                 <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">Expert</property>
-                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                <property name="dataType">string</property>
-                                                <property name="allowExport">true</property>
                                             </structure>
                                         </list-property>
                                         <property name="resultSetColumn">Expert</property>
@@ -6315,13 +6051,7 @@ where Candidate.id = ?]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'masteredCompetence'</value>
-                                                </simple-property-list>
-                                            </structure>
-                                            <structure>
-                                                <property name="paramName">param_3</property>
-                                                <simple-property-list name="expression">
-                                                    <value type="javascript">'com.axelor.apps.organisation.db.SkillSet'</value>
+                                                    <value type="javascript">'candidateLanguageMaster'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -6337,12 +6067,6 @@ where Candidate.id = ?]]></xml-property>
                                                 <text-property name="displayName">translation</text-property>
                                                 <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
                                                 <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">Mastered</property>
-                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                <property name="dataType">string</property>
-                                                <property name="allowExport">true</property>
                                             </structure>
                                         </list-property>
                                         <property name="resultSetColumn">Mastered</property>
@@ -6477,13 +6201,7 @@ where Candidate.id = ?]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'awareCompetence'</value>
-                                                </simple-property-list>
-                                            </structure>
-                                            <structure>
-                                                <property name="paramName">param_3</property>
-                                                <simple-property-list name="expression">
-                                                    <value type="javascript">'com.axelor.apps.organisation.db.SkillSet'</value>
+                                                    <value type="javascript">'candidateLanguageAware'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -6499,12 +6217,6 @@ where Candidate.id = ?]]></xml-property>
                                                 <text-property name="displayName">translation</text-property>
                                                 <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
                                                 <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">Aware</property>
-                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                <property name="dataType">string</property>
-                                                <property name="allowExport">true</property>
                                             </structure>
                                         </list-property>
                                         <property name="resultSetColumn">Aware</property>
@@ -6573,13 +6285,7 @@ where Candidate.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'skillLineList'</value>
-                                </simple-property-list>
-                            </structure>
-                            <structure>
-                                <property name="paramName">param_3</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'com.axelor.apps.organisation.db.SkillSet'</value>
+                                    <value type="javascript">'candidateSkillLineList'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -6665,13 +6371,7 @@ where Candidate.id = ?]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'name'</value>
-                                                </simple-property-list>
-                                            </structure>
-                                            <structure>
-                                                <property name="paramName">param_3</property>
-                                                <simple-property-list name="expression">
-                                                    <value type="javascript">'com.axelor.apps.organisation.db.SkillLine'</value>
+                                                    <value type="javascript">'candidateSkillName'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -6687,12 +6387,6 @@ where Candidate.id = ?]]></xml-property>
                                                 <text-property name="displayName">translation</text-property>
                                                 <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
                                                 <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">Skill name</property>
-                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                <property name="dataType">string</property>
-                                                <property name="allowExport">true</property>
                                             </structure>
                                         </list-property>
                                         <property name="resultSetColumn">Skill name</property>
@@ -6701,12 +6395,12 @@ where Candidate.id = ?]]></xml-property>
                                 <cell id="4478">
                                     <data id="4695">
                                         <property name="fontWeight">bold</property>
-                                        <property name="dataSet">NoDomainTranslationDS</property>
+                                        <property name="dataSet">TranslationDS</property>
                                         <list-property name="paramBindings">
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'Level'</value>
+                                                    <value type="javascript">'candidateSkillLavel'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -6722,12 +6416,6 @@ where Candidate.id = ?]]></xml-property>
                                                 <text-property name="displayName">translation</text-property>
                                                 <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
                                                 <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">Level</property>
-                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                <property name="dataType">string</property>
-                                                <property name="allowExport">true</property>
                                             </structure>
                                         </list-property>
                                         <property name="resultSetColumn">Level</property>
@@ -6757,12 +6445,12 @@ where Candidate.id = ?]]></xml-property>
                                 <cell id="4481">
                                     <data id="4673">
                                         <property name="textAlign">center</property>
-                                        <property name="dataSet">NoDomainTranslationDS</property>
+                                        <property name="dataSet">TranslationDS</property>
                                         <list-property name="paramBindings">
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'Expert'</value>
+                                                    <value type="javascript">'candidateSkillExpert'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -6778,12 +6466,6 @@ where Candidate.id = ?]]></xml-property>
                                                 <text-property name="displayName">translation</text-property>
                                                 <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
                                                 <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">Expert</property>
-                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                <property name="dataType">string</property>
-                                                <property name="allowExport">true</property>
                                             </structure>
                                         </list-property>
                                         <property name="resultSetColumn">Expert</property>
@@ -6909,13 +6591,7 @@ where Candidate.id = ?]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'masteredCompetence'</value>
-                                                </simple-property-list>
-                                            </structure>
-                                            <structure>
-                                                <property name="paramName">param_3</property>
-                                                <simple-property-list name="expression">
-                                                    <value type="javascript">'com.axelor.apps.organisation.db.SkillSet'</value>
+                                                    <value type="javascript">'candidateSkillMastered'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -6931,12 +6607,6 @@ where Candidate.id = ?]]></xml-property>
                                                 <text-property name="displayName">translation</text-property>
                                                 <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
                                                 <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">Mastered</property>
-                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                <property name="dataType">string</property>
-                                                <property name="allowExport">true</property>
                                             </structure>
                                         </list-property>
                                         <property name="resultSetColumn">Mastered</property>
@@ -7062,13 +6732,7 @@ where Candidate.id = ?]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'awareCompetence'</value>
-                                                </simple-property-list>
-                                            </structure>
-                                            <structure>
-                                                <property name="paramName">param_3</property>
-                                                <simple-property-list name="expression">
-                                                    <value type="javascript">'com.axelor.apps.organisation.db.SkillSet'</value>
+                                                    <value type="javascript">'candidateSkillAware'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -7084,12 +6748,6 @@ where Candidate.id = ?]]></xml-property>
                                                 <text-property name="displayName">translation</text-property>
                                                 <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
                                                 <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">Aware</property>
-                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                <property name="dataType">string</property>
-                                                <property name="allowExport">true</property>
                                             </structure>
                                         </list-property>
                                         <property name="resultSetColumn">Aware</property>
