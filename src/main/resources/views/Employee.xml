@@ -99,7 +99,7 @@
 				<field name="advanceList" colSpan="3" grid-view="advance-grid"/>
 				<field name="paySheetList" colSpan="6" form-view="pay-sheet-employee-form" grid-view="pay-sheet-employee-grid"/>
 			</page>
-			<page title="Travel expense" cols="6">
+			<page title="Expenses" cols="6">
 				<field name="vehicleFiscalPower"/>
 				<field name="commuteFee"/>
 				<field name="commuteFeeRefundPerc"/>
