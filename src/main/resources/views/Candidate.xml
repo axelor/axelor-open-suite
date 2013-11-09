@@ -40,28 +40,26 @@
 	                <break/>
 	                <field name="currentJobKeyword" domain="self.typeSelect = '3'" placeholder="Function" form-view="keyword-profession-form" grid-view="keyword-profession-grid"/>
 	            </group>
-	            <group colSpan="4" cols="4">
-	                <group title="Main Contact details" colSpan="2" cols="4">
-	                    <field name="mobilePhone"/>
-	                    <field name="fixedPhone"/>
-	                    <field name="email" widget="Email"/>
-	                    <break/>
-	                    <field name="address" colSpan="4"/>
-	                </group>
-	                <group title="Search criterias" colSpan="2" cols="4">
-	                    <field name="contractType"/>
-	                    <field name="searchedJobKeyword" domain="self.typeSelect = '3'" form-view="keyword-profession-form" grid-view="keyword-profession-grid"/>
-	                    <field name="relocationSelect"/>
-	                    <field name="salaryExpectation"/>
-	                    <field name="resume"/>
-	                    <field name="coverLetter"/>
-	                </group>
-	            </group>
+				<group title="Main Contact details" colSpan="4" cols="4">
+					<field name="mobilePhone"/>
+					<field name="fixedPhone"/>
+					<field name="email" widget="Email"/>
+					<break/>
+					<field name="address" colSpan="4"/>
+				</group>
 	        </group>
 	    </group>
 	    <notebook>
 	        <page title="General" colSpan="6" cols="6">
-	            <group title="Availability and Decision" colSpan="6" cols="6">
+	            <group title="Search criterias" colSpan="6" cols="6">
+	                    <field name="contractType"/>
+	                    <field name="searchedJobKeyword" domain="self.typeSelect = '3'" form-view="keyword-profession-form" grid-view="keyword-profession-grid"/>
+	                    <field name="salaryExpectation"/>
+						<field name="relocationSelect"/>
+	                    <field name="resume"/>
+	                    <field name="coverLetter"/>
+	            </group>
+				<group title="Availability and Decision" colSpan="6" cols="6">
 	                    <field name="availabilitySelect"/>
 	                    <field name="availabilityDate"/>
 	                    <field name="decisionDate"/>
