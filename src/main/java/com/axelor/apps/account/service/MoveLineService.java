@@ -341,7 +341,7 @@ public class MoveLineService {
 			throw new AxelorException(String.format("Compte tiers absent de la facture %s", invoice.getInvoiceId()), IException.MISSING_FIELD);
 		}
 		
-		moveLines.add( this.createMoveLine(move, partner, account2, invoice.getInTaxTotal(), isDebitCustomer, isMinus, invoice.getInvoiceDate(), invoice.getDueDate(), moveLineId, invoice.getInvoiceId()));
+		moveLines.add( this.createMoveLine(move, partner, account2, invoice.getInTaxTotal(), isDebitCustomer, isMinus, invoice.getInvoiceDate(), invoice.getDueDate(), moveLineId++, invoice.getInvoiceId()));
 		
 		// Traitement des lignes de facture
 		for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()){

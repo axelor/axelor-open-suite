@@ -238,7 +238,7 @@ public class MoveLineReportService {
 			}
 		}
 		else if(moveLineReport.getTypeSelect() ==  7)  {
-			if(company.getSaleJournalType() != null)  {
+			if(company.getCreditNoteJournalType() != null)  {
 				return company.getCreditNoteJournalType();
 			}
 			else  {
@@ -247,7 +247,7 @@ public class MoveLineReportService {
 			}
 		}
 		else if(moveLineReport.getTypeSelect() ==  8)  {
-			if(company.getSaleJournalType() != null)  {
+			if(company.getCashJournalType() != null)  {
 				return company.getCashJournalType();
 			}
 			else  {
@@ -256,7 +256,7 @@ public class MoveLineReportService {
 			}
 		}
 		else if(moveLineReport.getTypeSelect() ==  9)  {
-			if(company.getSaleJournalType() != null)  {
+			if(company.getPurchaseJournalType() != null)  {
 				return company.getPurchaseJournalType();
 			}
 			else  {
