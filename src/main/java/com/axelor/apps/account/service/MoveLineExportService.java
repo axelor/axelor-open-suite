@@ -222,8 +222,8 @@ public class MoveLineExportService {
 					
 					if(moveLines.size() > 0) {
 						
-						String exportToAgressoNumber = sgs.getSequence(IAdministration.SALES_INTERFACE, mlr.getCompany(), false);
-						if(exportToAgressoNumber == null)  {  
+						String exportNumber = sgs.getSequence(IAdministration.SALES_INTERFACE, mlr.getCompany(), false);
+						if(exportNumber == null)  {  
 							throw new AxelorException(String.format("%s :\n Erreur : Veuillez configurer une séquence Interface Vente pour la société %s",
 									GeneralService.getExceptionAccountingMsg(), mlr.getCompany().getName()), IException.CONFIGURATION_ERROR);
 						}
@@ -233,7 +233,7 @@ public class MoveLineExportService {
 						String periodCode = firstMove.getPeriod().getFromDate().toString("yyyyMM");
 						
 						for(Move move : moves)  {
-							move.setExportNumber(exportToAgressoNumber);
+							move.setExportNumber(exportNumber);
 							move.setExportDate(interfaceDate);
 							move.setAccountingOk(true);
 							move.setMoveLineReport(mlr);
@@ -247,7 +247,7 @@ public class MoveLineExportService {
 						String items[] = new String[8];
 						items[0] = companyCode;
 						items[1] = journalCode;
-						items[2] = exportToAgressoNumber;
+						items[2] = exportNumber;
 						items[3] = interfaceDate.toString("dd/MM/yyyy");
 						items[4] = totalDebit.toString();
 						items[5] = reference;
@@ -393,8 +393,8 @@ public class MoveLineExportService {
 					
 					if(moveLines.size() > 0) {
 						
-						String exportToAgressoNumber = sgs.getSequence(IAdministration.REFUND_INTERFACE, mlr.getCompany(), false);
-						if(exportToAgressoNumber == null)  {  
+						String exportNumber = sgs.getSequence(IAdministration.REFUND_INTERFACE, mlr.getCompany(), false);
+						if(exportNumber == null)  {  
 							throw new AxelorException(String.format("%s :\n Erreur : Veuillez configurer une séquence Interface Avoir pour la société %s",
 									GeneralService.getExceptionAccountingMsg(), mlr.getCompany().getName()), IException.CONFIGURATION_ERROR);
 						}
@@ -404,7 +404,7 @@ public class MoveLineExportService {
 						
 						for(Move move : moves)  {
 							
-							move.setExportNumber(exportToAgressoNumber);
+							move.setExportNumber(exportNumber);
 							move.setExportDate(interfaceDate);
 							move.setAccountingOk(true);
 							move.setMoveLineReport(mlr);
@@ -418,7 +418,7 @@ public class MoveLineExportService {
 						String items[] = new String[8];
 						items[0] = companyCode;
 						items[1] = journalCode;
-						items[2] = exportToAgressoNumber;
+						items[2] = exportNumber;
 						items[3] = interfaceDate.toString("dd/MM/yyyy");
 						items[4] = totalCredit.toString();
 						items[5] = reference;
@@ -560,8 +560,8 @@ public class MoveLineExportService {
 					
 					if(moveLines.size() > 0) {
 						
-						String exportToAgressoNumber = sgs.getSequence(IAdministration.TREASURY_INTERFACE, mlr.getCompany(), false);
-						if(exportToAgressoNumber == null)  {  
+						String exportNumber = sgs.getSequence(IAdministration.TREASURY_INTERFACE, mlr.getCompany(), false);
+						if(exportNumber == null)  {  
 							throw new AxelorException(String.format("%s :\n Erreur : Veuillez configurer une séquence Interface Trésorerie pour la société %s",
 									GeneralService.getExceptionAccountingMsg(), mlr.getCompany().getName()), IException.CONFIGURATION_ERROR);
 						}
@@ -570,7 +570,7 @@ public class MoveLineExportService {
 						String periodCode = firstMove.getPeriod().getFromDate().toString("yyyyMM");
 						
 						for(Move move : moves)  {
-							move.setExportNumber(exportToAgressoNumber);
+							move.setExportNumber(exportNumber);
 							move.setExportDate(interfaceDate);
 							move.setAccountingOk(true);
 							move.setMoveLineReport(mlr);
@@ -580,7 +580,7 @@ public class MoveLineExportService {
 						String items[] = new String[8];
 						items[0] = companyCode;
 						items[1] = journalCode;
-						items[2] = exportToAgressoNumber;
+						items[2] = exportNumber;
 						items[3] = interfaceDate.toString("dd/MM/yyyy");
 						items[4] = "0";
 						items[5] = reference;
@@ -722,15 +722,15 @@ public class MoveLineExportService {
 						
 						if(moveLines.size() > 0) {
 							
-							String exportToAgressoNumber = sgs.getSequence(IAdministration.PURCHASE_INTERFACE, mlr.getCompany(), false);
-							if(exportToAgressoNumber == null)  {  
+							String exportNumber = sgs.getSequence(IAdministration.PURCHASE_INTERFACE, mlr.getCompany(), false);
+							if(exportNumber == null)  {  
 								throw new AxelorException(String.format("%s :\n Erreur : Veuillez configurer une séquence Interface Achat pour la société %s",
 										GeneralService.getExceptionAccountingMsg(), mlr.getCompany().getName()), IException.CONFIGURATION_ERROR);
 							}
 							
 							String periodCode = move.getPeriod().getFromDate().toString("yyyyMM");
 							
-							move.setExportNumber(exportToAgressoNumber);
+							move.setExportNumber(exportNumber);
 							move.setExportDate(interfaceDate);
 							move.setAccountingOk(true);
 							move.setMoveLineReport(mlr);
@@ -751,7 +751,7 @@ public class MoveLineExportService {
 							String items[] = new String[12];
 							items[0] = companyCode;
 							items[1] = journalCode;
-							items[2] = exportToAgressoNumber;
+							items[2] = exportNumber;
 							items[3] = interfaceDate.toString("dd/MM/yyyy");
 							items[4] = "";  //TODO code fournisseur
 							items[5] = invoiceId;
@@ -842,7 +842,7 @@ public class MoveLineExportService {
 		
 		for (LocalDate localDate : dates)  {
 			
-			Query queryExportAgressoRef = JPA.em().createQuery("SELECT DISTINCT move.exportToAgressoNumber from MoveLine mvl where mvl.account!=null " +
+			Query queryExportAgressoRef = JPA.em().createQuery("SELECT DISTINCT move.exportNumber from MoveLine mvl where mvl.account!=null " +
 					"AND (mvl.debit > 0 OR mvl.credit > 0) AND mvl.date = '"+ localDate.toString() +"'"+ moveLineQueryStr);
 			List<String> exportAgressoRefs = new ArrayList<String>();
 			exportAgressoRefs = queryExportAgressoRef.getResultList();
@@ -853,7 +853,7 @@ public class MoveLineExportService {
 					int sequence = 1;
 					
 					Query query = JPA.em().createQuery("SELECT account.id from MoveLine mvl where mvl.account!=null AND (mvl.debit > 0 OR mvl.credit > 0) " +
-							"AND mvl.date = '"+ localDate.toString() +"' AND mvl.move.exportToAgressoNumber = '"+ exportAgressoRef + "'" + moveLineQueryStr +
+							"AND mvl.date = '"+ localDate.toString() +"' AND mvl.move.exportNumber = '"+ exportAgressoRef + "'" + moveLineQueryStr +
 							" group by account.id");
 					
 					List<Long> accountIds = new ArrayList<Long>();
@@ -865,7 +865,7 @@ public class MoveLineExportService {
 						if(accountId!=null) {
 							String accountCode = Account.find(accountId).getCode();
 							List<MoveLine> moveLines = MoveLine.all().filter("account.id = ?1 AND (self.debit > 0 OR self.credit > 0) AND self.date = '"+ 
-							localDate.toString() +"' AND move.exportToAgressoNumber = '"+ exportAgressoRef +"'" + moveLineQueryStr, accountId).fetch();
+							localDate.toString() +"' AND move.exportNumber = '"+ exportAgressoRef +"'" + moveLineQueryStr, accountId).fetch();
 							
 							LOG.debug("movelines  : {} " , moveLines);
 							
