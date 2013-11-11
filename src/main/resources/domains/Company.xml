@@ -23,6 +23,11 @@
     <many-to-one name="doubtfulCustomerAccount" ref="com.axelor.apps.account.db.Account" title="Doubtful customers account" help="Utiliser pour le passage en client douteux"/>    
     <many-to-one name="irrecoverableAccount" ref="com.axelor.apps.account.db.Account" title="Irrecoverable account"/>
     
+    <many-to-one name="saleJournalType" ref="com.axelor.apps.account.db.JournalType" title="Sales journal type"/>
+    <many-to-one name="purchaseJournalType" ref="com.axelor.apps.account.db.JournalType" title="Purchase journal type"/>
+    <many-to-one name="cashJournalType" ref="com.axelor.apps.account.db.JournalType" title="Cash journal type"/>
+    <many-to-one name="creditNoteJournalType" ref="com.axelor.apps.account.db.JournalType" title="Credit note journal type"/>
+    
     <string name="notes" large="true" title="Notes"/>
     <many-to-one name="invoiceDirectDebitJournal" ref="com.axelor.apps.account.db.Journal" title="Invoice Direct Debit Journal"/>
     <many-to-one name="majorAccountJournal" ref="com.axelor.apps.account.db.Journal" title="Journal prèlèvement lissage de paiement"/>

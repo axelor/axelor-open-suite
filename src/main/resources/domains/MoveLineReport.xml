@@ -27,56 +27,12 @@
     <boolean name="globalByPost" title="Subtotal by cash register" default="false"/>
     <boolean name="globalByDate" title="Subtotal by date" default="false"/>
     <boolean name="detailed" title="Detailed" default="false"/>
-    <many-to-many name="moveLineSet" ref="MoveLine" title="Move Lines"/>
     <many-to-one name="status" ref="com.axelor.apps.base.db.Status" title="Status" readonly="true"/>
     
+    <decimal name="totalDebit" title="Total Debit" readonly="true"/>
+    <decimal name="totalCredit" title="Total Credit" readonly="true"/>
+    <decimal name="balance" title="Balance" readonly="true"/>
     <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
     
-    <decimal name="totalDebit" title="Total Debit">
-    	<![CDATA[
-    		BigDecimal total = new BigDecimal("0.00");
-	    	if (moveLineSet != null && !moveLineSet.isEmpty()){
-	    		
-	    		for (MoveLine line : moveLineSet){
-	    			if (line.getDebit().compareTo(BigDecimal.ZERO) == 1){
-	    				total = total.add(line.getDebit());
-	    			}
-	    		}
-	    	}
-	    	
-	    	return total;
-	    ]]>
-    </decimal>
-    <decimal name="totalCredit" title="Total Credit">
-    	<![CDATA[
-    		BigDecimal total = new BigDecimal("0.00");
-	    	if (moveLineSet != null && !moveLineSet.isEmpty()){
-	    		
-	    		for (MoveLine line : moveLineSet){
-	    			if (line.getCredit().compareTo(BigDecimal.ZERO) == 1){
-	    				total = total.add(line.getCredit());
-	    			}
-	    		}
-	    	}
-	    	
-	    	return total;
-	    ]]>
-    </decimal>
-    <decimal name="balance" title="Balance">
-    	<![CDATA[
-    		BigDecimal total = new BigDecimal("0.00");
-	    	if (moveLineSet != null && !moveLineSet.isEmpty()){
-	    		BigDecimal lineSolde = new BigDecimal("0.00");
-	    		for (MoveLine line : moveLineSet){
-	    			lineSolde = line.getDebit().subtract(line.getCredit());
-    				total = total.add(lineSolde);
-    				
-	    		}
-	    	}
-	    	return total;
-	    ]]>	    
-    </decimal>
-    
- 
   </entity>
 </domain-models>
