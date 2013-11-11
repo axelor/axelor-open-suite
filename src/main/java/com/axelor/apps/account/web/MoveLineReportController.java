@@ -30,8 +30,8 @@
  */
 package com.axelor.apps.account.web;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -40,6 +40,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.AxelorSettings;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.JournalType;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineReport;
 import com.axelor.apps.account.service.MoveLineExportService;
@@ -47,40 +48,58 @@ import com.axelor.apps.account.service.MoveLineReportService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.common.collect.Maps;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
+import com.google.inject.Provider;
 
 public class MoveLineReportController {
 
 	@Inject
-	private Injector injector;
+	private Provider<MoveLineReportService> moveLineReportProvider;
+	
+	@Inject
+	private Provider<MoveLineExportService> moveLineExportProvider;
 
 	private static final Logger LOG = LoggerFactory.getLogger(MoveLineReportController.class);
 
+	/**
+	 * @param request
+	 * @param response
+	 */
 	public void searchMoveLine(ActionRequest request, ActionResponse response) {
 
 		MoveLineReport moveLineReport = request.getContext().asType(MoveLineReport.class);
 
-		MoveLineReportService mlrs = injector.getInstance(MoveLineReportService.class);
-
 		try  {
+			MoveLineReportService moveLineReportService = moveLineReportProvider.get();
+			
+			String queryFilter = moveLineReportService.getMoveLineList(MoveLineReport.find(moveLineReport.getId()));
+			BigDecimal debitBalance = moveLineReportService.getDebitBalance(queryFilter);
+			BigDecimal creditBalance = moveLineReportService.getCreditBalance(queryFilter);
+			
 			if (moveLineReport.getRef() == null) {
-
-				String seq = mlrs.getSequence(moveLineReport);
-
-				List<MoveLine> moveLineList = mlrs.getMoveLineList(moveLineReport);
-				response.setValue("moveLineSet", moveLineList);
-				response.setValue("ref", seq);				
+				response.setValue("ref", moveLineReportService.getSequence(moveLineReport));
 			}
-			else  {
 
-				List<MoveLine> moveLineList = mlrs.getMoveLineList(moveLineReport);
-				response.setValue("moveLineSet", moveLineList);
-			}
+			response.setValue("totalDebit", debitBalance);
+			response.setValue("totalCredit", creditBalance);
+			response.setValue("balance", debitBalance.subtract(creditBalance));
+			
+			Map<String, Object> view = Maps.newHashMap();
+			
+			view.put("title", "Lignes d'écritures récupérées");
+			view.put("resource", MoveLine.class.getName());
+			view.put("domain", queryFilter);
+			
+			response.setView(view);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
 
+	/**
+	 * @param request
+	 * @param response
+	 */
 	public void getSequence(ActionRequest request, ActionResponse response) {
 
 		MoveLineReport moveLineReport = request.getContext().asType(MoveLineReport.class);
@@ -88,24 +107,25 @@ public class MoveLineReportController {
 		try  {
 			if (moveLineReport.getRef() == null) {
 
-				MoveLineReportService mlrs = injector.getInstance(MoveLineReportService.class);
-
-				String seq = mlrs.getSequence(moveLineReport);
-				response.setValue("ref", seq);				
+				response.setValue(
+						"ref", 
+						moveLineReportProvider.get().getSequence(moveLineReport));				
 			}
 		}
 		catch(Exception e) { TraceBackService.trace(response, e); }
 	}
 
+	/**
+	 * @param request
+	 * @param response
+	 */
 	public void getJournalType(ActionRequest request, ActionResponse response) {
 
 		MoveLineReport moveLineReport = request.getContext().asType(MoveLineReport.class);
 
-		MoveLineReportService mlrs = injector.getInstance(MoveLineReportService.class);
-
 		try  {
 
-			JournalType journalType = mlrs.getJournalType(moveLineReport);
+			JournalType journalType = moveLineReportProvider.get().getJournalType(moveLineReport);
 			if(journalType != null)  {
 				String domainQuery = "self.type.id = "+journalType.getId();
 				response.setAttr("journal", "domain", domainQuery);
@@ -114,51 +134,59 @@ public class MoveLineReportController {
 		catch(Exception e) { TraceBackService.trace(response, e); }
 	}
 
+	/**
+	 * @param request
+	 * @param response
+	 */
 	public void getAccount(ActionRequest request, ActionResponse response) {
 
 		MoveLineReport moveLineReport = request.getContext().asType(MoveLineReport.class);
 
-		MoveLineReportService mlrs = injector.getInstance(MoveLineReportService.class);
-
 		try  {
-			Account account = mlrs.getAccount(moveLineReport);
+			Account account = moveLineReportProvider.get().getAccount(moveLineReport);
 			LOG.debug("Compte : {}", account);
 			response.setValue("account", account);			
 		}
 		catch(Exception e) { TraceBackService.trace(response, e); }
 	}
 
+	/**
+	 * @param request
+	 * @param response
+	 */
 	public void getReload(ActionRequest request, ActionResponse response) {
 
 		response.setReload(true);
 	}
 
+	/**
+	 * @param request
+	 * @param response
+	 */
 	public void replayExport(ActionRequest request, ActionResponse response) {
 
 		MoveLineReport moveLineReport = request.getContext().asType(MoveLineReport.class);
 		moveLineReport = MoveLineReport.find(moveLineReport.getId());		
-		String msgExport = "Veuillez configurer le chemin où le fichier exporté devra être stocké pour la société "+moveLineReport.getCompany().getName();
 		
 		if(moveLineReport.getCompany().getExportPath() == null) {
-			response.setFlash(msgExport);
+			response.setFlash("Veuillez configurer le chemin où le fichier exporté devra être stocké pour la société "+moveLineReport.getCompany().getName());
 			return;
 		}
-		MoveLineExportService mles = injector.getInstance(MoveLineExportService.class);
 
 		try {
 			switch(moveLineReport.getTypeSelect()) {
 			
 				case 6:
-					mles.exportMoveLineTypeSelect6(moveLineReport, true);
+					moveLineExportProvider.get().exportMoveLineTypeSelect6(moveLineReport, true);
 					break;
 				case 7:
-					mles.exportMoveLineTypeSelect7(moveLineReport, true);
+					moveLineExportProvider.get().exportMoveLineTypeSelect7(moveLineReport, true);
 					break;
 				case 8:
-					mles.exportMoveLineTypeSelect8(moveLineReport, true);
+					moveLineExportProvider.get().exportMoveLineTypeSelect8(moveLineReport, true);
 					break;
 				case 9:
-					mles.exportMoveLineTypeSelect9(moveLineReport, true);
+					moveLineExportProvider.get().exportMoveLineTypeSelect9(moveLineReport, true);
 					break;
 				default:
 					break;
@@ -167,6 +195,10 @@ public class MoveLineReportController {
 		catch(Exception e) { TraceBackService.trace(response, e); }
 	}
 
+	/**
+	 * @param request
+	 * @param response
+	 */
 	public void printExportMoveLine(ActionRequest request, ActionResponse response) {
 
 		MoveLineReport moveLineReport = request.getContext().asType(MoveLineReport.class);
@@ -182,15 +214,16 @@ public class MoveLineReportController {
 			LOG.debug("Type selected : {}" , moveLineReport.getTypeSelect());
 			String msgExport = "Veuillez configurer le chemin où le fichier exporté devra être stocké pour la société "+moveLineReport.getCompany().getName();
 
-			MoveLineReportService mlrs = injector.getInstance(MoveLineReportService.class);
+			MoveLineReportService moveLineReportService = moveLineReportProvider.get();
+			
 
 			if (moveLineReport.getRef() == null) {
 
-				String seq = mlrs.getSequence(moveLineReport);
-				mlrs.setSequence(moveLineReport, seq);
+				String seq = moveLineReportService.getSequence(moveLineReport);
+				moveLineReportService.setSequence(moveLineReport, seq);
 			}
 
-			mlrs.setStatus(moveLineReport);
+			moveLineReportService.setStatus(moveLineReport);
 
 			if(moveLineReport.getTypeSelect() >= 6 && moveLineReport.getTypeSelect() <= 9) {
 				
@@ -198,20 +231,20 @@ public class MoveLineReportController {
 					response.setFlash(msgExport);
 					return;
 				}
-				MoveLineExportService mles = injector.getInstance(MoveLineExportService.class);
+				MoveLineExportService moveLineExportService = moveLineExportProvider.get();
 
 				switch(moveLineReport.getTypeSelect()) {
 					case 6:
-						mles.exportMoveLineTypeSelect6(moveLineReport, false);
+						moveLineExportService.exportMoveLineTypeSelect6(moveLineReport, false);
 						break;
 					case 7:
-						mles.exportMoveLineTypeSelect7(moveLineReport, false);
+						moveLineExportService.exportMoveLineTypeSelect7(moveLineReport, false);
 						break;
 					case 8:
-						mles.exportMoveLineTypeSelect8(moveLineReport, false);
+						moveLineExportService.exportMoveLineTypeSelect8(moveLineReport, false);
 						break;
 					case 9:
-						mles.exportMoveLineTypeSelect9(moveLineReport, false);
+						moveLineExportService.exportMoveLineTypeSelect9(moveLineReport, false);
 						break;
 					default:
 						break;
@@ -222,12 +255,11 @@ public class MoveLineReportController {
 				if (moveLineReport.getId() != null) {
 
 					StringBuilder url = new StringBuilder();
-					mlrs.setPublicationDateTime(moveLineReport);
+					moveLineReportService.setPublicationDateTime(moveLineReport);
 					int typeSelect = moveLineReport.getTypeSelect();
 
 					AxelorSettings axelorSettings = AxelorSettings.get();
-					url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/MoveLineReportType"+typeSelect+".rptdesign&__format="+moveLineReport.getExportTypeSelect()+"&MoveLineReportId="+moveLineReport.getId()+"&code_taxe=${taxCode}&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
-					//url.append("${axelorSettings.get('axelor.report.engine', '')}/frameset?__report=report/MoveLineReportType${typeSelect}.rptdesign&__format=${moveLineReport.exportTypeSelect}&MoveLineReportId=${moveLineReport.id}&code_taxe=${taxCode}&__locale=fr_FR${axelorSettings.get('axelor.report.engine.datasource')}")
+					url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/MoveLineReportType"+typeSelect+".rptdesign&__format="+moveLineReport.getExportTypeSelect()+"&MoveLineReportId="+moveLineReport.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
 
 					LOG.debug("URL : {}", url);
 
@@ -240,5 +272,16 @@ public class MoveLineReportController {
 			}
 		}
 		catch(Exception e) { TraceBackService.trace(response, e); }	
+	}
+	
+	
+	public void showMoveExported(ActionRequest request, ActionResponse response) {
+		
+		MoveLineReport moveLineReport = request.getContext().asType(MoveLineReport.class);
+		Map<String,Object> mapView = new HashMap<String,Object>();
+		mapView.put("title", "Ecritures exportées");
+		mapView.put("resource", Move.class.getName());
+		mapView.put("domain", "self.moveLineReport.id = "+moveLineReport.getId());
+		response.setView(mapView);		
 	}
 }
