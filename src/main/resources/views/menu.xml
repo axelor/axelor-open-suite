@@ -95,7 +95,7 @@
         action="account.root.payment.schedule.payment.schedule" />
 
     <action-view name="account.root.payment.schedule.payment.schedule"
-        title="Payment Schedule" model="com.axelor.apps.account.db.PaymentSchedule" icon="img/evo-icons/invoice_small.png">
+        title="Payment Schedule" model="com.axelor.apps.account.db.PaymentSchedule">
         <view type="grid" />
         <view type="form" />
         <view-param name="search-filters" value="payment-schedule-filters"/>
@@ -106,7 +106,7 @@
         action="account.root.payment.schedule.payment.schedule.line" />
 
     <action-view name="account.root.payment.schedule.payment.schedule.line"
-        title="Payment schedule line" model="com.axelor.apps.account.db.PaymentScheduleLine" icon="img/evo-icons/invoice_small.png">
+        title="Payment schedule line" model="com.axelor.apps.account.db.PaymentScheduleLine">
         <view type="grid" />
         <view type="form" />
         <view-param name="search-filters" value="payment-schedule-line-filters"/>

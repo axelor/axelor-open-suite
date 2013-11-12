@@ -166,7 +166,7 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 		
 		if(!paymentScheduleLineList.isEmpty())  {
 			// Génération de l'écriture de paiement pour Mensu Grand Compte
-			LOG.debug("Génération de l'écriture de paiement pour Mensu Grand Compte");
+			LOG.debug("Génération de l'écriture de paiement des échéances");
 			
 			paymentScheduleLineList = this.generateAllExportMensu(
 					paymentScheduleLineList, Company.find(company.getId()),
@@ -260,7 +260,7 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 			for(PaymentScheduleLine paymentScheduleLine : pslList)  {
 				
 				try  {
-					if(paymentScheduleExportService.isDebitBlocking(paymentScheduleLine))  {
+					if(!paymentScheduleExportService.isDebitBlocking(paymentScheduleLine))  {
 					
 						PaymentScheduleLine paymentScheduleLineToExport = paymentScheduleExportService.generateExportMensu(
 								PaymentScheduleLine.find(paymentScheduleLine.getId()), pslList, Status.find(statusVal.getId()), Company.find(company.getId()), ref, Move.find(move.getId()));

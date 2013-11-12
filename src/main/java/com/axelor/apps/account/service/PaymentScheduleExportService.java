@@ -346,7 +346,6 @@ public class PaymentScheduleExportService {
 						"AND self.account.reconcileOk = ?2 AND self.amountRemaining > 0 " +
 						"AND self.move.invoice.operationTypeSelect = ?3 " +
 						"AND self.move.invoice.schedulePaymentOk = 'true' " +
-						"AND self.move.invoice.invoiceSubTypeSelect = 4 " +
 						"AND self.move.invoice.paymentSchedule = ?4 "+
 						"ORDER BY self.date", IAccount.VALIDATED_MOVE, true, IInvoice.CLIENT_SALE, paymentSchedule).fetch();
 	}
@@ -391,12 +390,12 @@ public class PaymentScheduleExportService {
 	 */
 	public List<PaymentScheduleLine> getPaymentScheduleLineToDebit(Company company, LocalDate debitDate, PaymentMode paymentMode, Currency currency)  {
 		return PaymentScheduleLine.all()
-				.filter("self.status.code = 'upr' AND self.debitBlockingOk IN ('f',null) AND self.paymentSchedule.state = '2' AND self.paymentSchedule.company = ?1 " +
-						"AND EXTRACT (day from self.scheduleDate) = ?2 AND self.scheduleDate <= ?3 " +
+				.filter("self.status.code = 'upr' AND self.paymentSchedule.state = '2' AND self.paymentSchedule.company = ?1 " +
+						"AND self.scheduleDate <= ?2 " +
 						"AND self.debitBlockingOk IN ('false',null) " +
-						"AND self.paymentSchedule.currency = ?5 " +
-						"AND self.paymentSchedule.paymentMode = ?6 ORDER BY self.scheduleDate"
-						, company, debitDate.getDayOfMonth(), debitDate, debitDate, currency, paymentMode).fetch(); 
+						"AND self.paymentSchedule.currency = ?3 " +
+						"AND self.paymentSchedule.paymentMode = ?4 ORDER BY self.scheduleDate"
+						, company, debitDate, currency, paymentMode).fetch(); 
 	}
 	
 	

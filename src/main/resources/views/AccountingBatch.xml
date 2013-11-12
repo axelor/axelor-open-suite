@@ -28,7 +28,7 @@
     		<page name="directDebitPage" title="Direct debit configuration" cols="4"  hideIf="actionSelect != 12">
     			<field name="directDebitTypeSelect"/>
     			<field name="currency" readonly="true"/>
-    			<group name="directDebitExportGroup"  hideIf="directDebitTypeSelect != 1">
+    			<group name="directDebitExportGroup" colSpan="4" hideIf="directDebitTypeSelect != 1">
 	    			<field name="directDebitExportTypeSelect"/>
 	    			<field name="debitDate"/>
     			</group>
