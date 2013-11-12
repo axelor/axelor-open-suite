@@ -37,7 +37,7 @@
 	                <field name="customerCreditNoteJournal" domain="self.inactiveOk != true"/>
 	                <field name="supplierPurchaseJournal" domain="self.inactiveOk != true"/>
 	                <field name="supplierCreditNoteJournal" domain="self.inactiveOk != true"/>
-	                <field name="majorAccountJournal" domain="self.inactiveOk != true"/>
+	                <field name="scheduleDirectDebitJournal" domain="self.inactiveOk != true"/>
 	                <field name="invoiceDirectDebitJournal" domain="self.inactiveOk != true"/>
 	                <field name="rejectJournal" domain="self.inactiveOk != true"/>
 	                <field name="reimbursementJournal" domain="self.inactiveOk != true"/>
@@ -121,6 +121,7 @@
           		<separator title="Configuration" colSpan="4"/>
           		<group title="Direct debits" colSpan="4">
           			<field name="paymentScheduleExportFolderPathCFONB"/>
+          			<field name="directDebitPaymentMode"/>
           		</group>
           		<group title="Direct debit rejects" colSpan="4">
           			<field name="rejectionPaymentMode"/>

@@ -13,6 +13,8 @@
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" title="Company" />
     <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="BBAN/IBAN to use"/>
     
+    <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
+    
     <!-- REIMBURSEMENT -->
     <integer name="reimbursementTypeSelect" title="Reimbursement batch type" selection="ireimbursement.batch.type.select"/>
     <integer name="reimbursementExportTypeSelect" title="Treatment/Operation type" selection="ireimbursement.batch.export.type.select"/>

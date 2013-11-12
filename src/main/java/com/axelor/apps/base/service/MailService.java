@@ -32,8 +32,6 @@ package com.axelor.apps.base.service;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.LinkedList;
@@ -44,7 +42,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.AxelorSettings;
-import com.axelor.apps.account.db.CashRegister;
+import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.CashRegisterLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.ReminderHistory;
@@ -305,9 +303,7 @@ public class MailService {
 			MailModel reminderMailModel = reminderMethodLine.getReminderMailModel();
 			Mail reminderMail = this.createGenericMail(reminderMailModel, null, today.plusDays(reminderMethodLine.getStandardDeadline()), partner.getMainInvoicingAddress(), company);
 			
-			LinkedList<ReminderHistory>  reminderHistoryList = new LinkedList<ReminderHistory>();
-			reminderHistoryList.addAll(partner.getReminder().getReminderHistoryList());
-			reminderMail.setReminderHistory(reminderHistoryList.getLast());
+			reminderMail.setReminderHistory(this.getReminderHistory(partner, company));
 			
 			return this.replaceTag(reminderMail);
 		}
@@ -317,6 +313,29 @@ public class MailService {
 		}
 	}
 	
+	
+	public List<ReminderHistory> getReminderHistoryList(Partner partner, Company company)  {
+		
+		
+		AccountingSituation accountingSituation = AccountingSituation.all().filter("self.partner = ?1 and self.company = ?2", partner, company).fetchOne();
+		if(accountingSituation != null && accountingSituation.getReminder() != null)  {
+			return accountingSituation.getReminder().getReminderHistoryList();
+		}
+		
+		return new LinkedList<ReminderHistory>();
+	}
+	
+	
+	public ReminderHistory getReminderHistory(Partner partner, Company company)  {
+		
+		LinkedList<ReminderHistory>  reminderHistoryList = new LinkedList<ReminderHistory>();
+		reminderHistoryList.addAll(this.getReminderHistoryList(partner, company));
+		
+		if(!reminderHistoryList.isEmpty())  {
+			return reminderHistoryList.getLast();
+		}
+		return null;
+	}
 	
 	
 	/**

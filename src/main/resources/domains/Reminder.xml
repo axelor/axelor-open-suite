@@ -7,7 +7,7 @@
 
   <entity name="Reminder" lang="java">
   
-    <many-to-one name="accountingSituation" ref="com.axelor.apps.account.db.AccountingSituation"/> 
+    <one-to-one name="accountingSituation" ref="com.axelor.apps.account.db.AccountingSituation"/> 
   	<many-to-one name="reminderMethod" ref="com.axelor.apps.account.db.ReminderMethod" title="Reminder method"/>
 	<many-to-one name="reminderMethodLine" ref="com.axelor.apps.account.db.ReminderMethodLine" title="Reminder method line reached by active contract" />
 	<date name="reminderDate" title="Last reminder date"/>

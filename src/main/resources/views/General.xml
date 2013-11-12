@@ -65,7 +65,7 @@
 	<!-- ACTION METHOD -->
 
 	<action-method name="action-general-method-payer-quality-process">
-		<call class="com.axelor.apps.base.web.GeneralController" method="payerQualityProcess" />
+		<call class="com.axelor.apps.account.web.GeneralController" method="payerQualityProcess" />
 	</action-method>
 	
 </object-views>

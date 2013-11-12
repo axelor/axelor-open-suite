@@ -19,6 +19,7 @@
     <many-to-many name="invoiceSet" ref="com.axelor.apps.account.db.Invoice" title="Select invoices to include in the payment schedule"/>
     <integer name="rejectCounter" title="Reject counter" readonly="true"/>
     <decimal name="inTaxAmount" title="Amount"/>
+    <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" required="true"/>
     
    	<integer name="irrecoverableStateSelect" title="Irrecoverable status" default="0" readonly="true" selection="iaccount.account.schedule.irrecoverable.state.select"/>
 	<many-to-one name="managementObject" ref="com.axelor.apps.account.db.ManagementObject" title="Irrecoverable shift reason"/>

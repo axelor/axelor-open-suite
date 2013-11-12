@@ -62,9 +62,6 @@
     <!-- PAGE Blocage -->
 	<one-to-many name="blockingList" ref="com.axelor.apps.base.db.Blocking" title="Blocking follow-up List" mappedBy="partner"/>
 	
-	 <!-- PAGE Relance -->
-	<many-to-one name="reminder" ref="com.axelor.apps.account.db.Reminder" title="Reminder follow-up list "/>
-   
     <integer name="rejectCounter" title="Reject counter"/>
    
    	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>

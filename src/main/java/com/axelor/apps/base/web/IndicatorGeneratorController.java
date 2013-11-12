@@ -45,10 +45,9 @@ public class IndicatorGeneratorController {
 	public void run(ActionRequest request, ActionResponse response){
 		
 		IndicatorGenerator indicatorGenerator = request.getContext().asType(IndicatorGenerator.class);
-		indicatorGenerator.find(indicatorGenerator.getId());
 		
 		try {
-			indicatorGeneratorService.run(indicatorGenerator);
+			indicatorGeneratorService.run(IndicatorGenerator.find(indicatorGenerator.getId()));
 			response.setReload(true);
 			response.setFlash("Requête exécutée");
 		}

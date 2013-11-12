@@ -88,7 +88,7 @@ public class CurrencyService {
 	}
 	
 	
-	public CurrencyConversionLine getCurrencyConversionLine(Currency startCurrency, Currency endCurrency, LocalDate localDate)  {
+	private CurrencyConversionLine getCurrencyConversionLine(Currency startCurrency, Currency endCurrency, LocalDate localDate)  {
 		
 		List<CurrencyConversionLine> currencyConversionLineList = GeneralService.getCurrencyConfigurationLineList();
 			

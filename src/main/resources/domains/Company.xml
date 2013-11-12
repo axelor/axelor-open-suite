@@ -30,7 +30,7 @@
     
     <string name="notes" large="true" title="Notes"/>
     <many-to-one name="invoiceDirectDebitJournal" ref="com.axelor.apps.account.db.Journal" title="Invoice Direct Debit Journal"/>
-    <many-to-one name="majorAccountJournal" ref="com.axelor.apps.account.db.Journal" title="Journal prèlèvement lissage de paiement"/>
+    <many-to-one name="scheduleDirectDebitJournal" ref="com.axelor.apps.account.db.Journal" title="Journal prèlèvement lissage de paiement"/>
     <many-to-one name="rejectJournal" ref="com.axelor.apps.account.db.Journal" title="Rejects journal"/>
     <many-to-one name="accountClearanceJournal" ref="com.axelor.apps.account.db.Journal" title="Account clearance journal"/>
    	<many-to-one name="reimbursementJournal" ref="com.axelor.apps.account.db.Journal" title="Reimbursement Journal"/>
@@ -101,6 +101,7 @@
    	<!-- Onglet Prélèvements -->
    	<string name="paymentScheduleExportFolderPathCFONB" title="Filepath for direct debit exports (CFONB)" help="exemple : /home/axelor/"/>
    	
+   	<many-to-one name="directDebitPaymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode for direct debit"/>
   	<many-to-one name="rejectionPaymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode after rejection"/>
     <integer name="paymentScheduleRejectNumLimit" title="Max Nbr. for payment schedule rejection"/>
     <integer name="invoiceRejectNumLimit" title="Max Nbr. of invoices rejection"/>

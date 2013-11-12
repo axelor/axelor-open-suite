@@ -33,7 +33,6 @@ package com.axelor.apps.base.web;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.axelor.apps.base.db.BaseBatch;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.service.batch.BaseBatchService;
 import com.axelor.exception.AxelorException;
@@ -45,8 +44,6 @@ public class BaseBatchController {
 
 	@Inject
 	private BaseBatchService baseBatchService;
-	
-	
 	
 	
 	// WS

@@ -21,7 +21,7 @@
 	<boolean name="custAccountMustBeUpdateOk" title="Le compte client doit être mis à jour"/>
 
 	<!--  PAGE Relance -->
-	<many-to-one name="reminder" ref="com.axelor.apps.account.db.Reminder" title="Reminder"/>
+	<one-to-one name="reminder" ref="com.axelor.apps.account.db.Reminder" mappedBy="accountingSituation" title="Reminder"/>
 	
 	
 	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
