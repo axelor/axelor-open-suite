@@ -141,6 +141,16 @@ public class MoveLineReportService {
 			query += String.format("self.move.journal.type = %s", this.getJournalType(moveLineReport).getId());  
 		}
 
+		if(moveLineReport.getTypeSelect() > 5 && moveLineReport.getTypeSelect() < 10)  {
+			if(!query.equals("")) {  query += and;  }
+			query += String.format("(self.move.accountingOk = false OR (self.move.accountingOk = true and self.move.moveLineReport = %s)) ", moveLineReport.getId());  
+		}
+		
+		if(moveLineReport.getTypeSelect() > 5 && moveLineReport.getTypeSelect() < 10)  {
+			if(!query.equals("")) {  query += and;  }
+			query += String.format("self.move.journal.notExportOk = false ");  
+		}
+		
 		if(moveLineReport.getTypeSelect() != null && moveLineReport.getTypeSelect() == 5)	{
 			if(!query.equals("")) {  query += and;  }
 			query += String.format("self.move.paymentMode.code = 'CHQ'");  

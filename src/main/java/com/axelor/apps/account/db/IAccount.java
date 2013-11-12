@@ -151,6 +151,8 @@ public interface IAccount {
 	static final int BATCH_REMINDER = 14;
 	static final int BATCH_INTERBANK_PAYMENT_ORDER = 15;
 	static final int BATCH_DOUBTFUL_CUSTOMER = 16;
+	static final int BATCH_ACCOUNT_CUSTOMER = 17;
+	static final int BATCH_MOVE_LINE_EXPORT = 18;
 	
 	// REIMBURSEMENT TYPE
 	static final int BATCH_REIMBURSEMENT_EXPORT = 1;

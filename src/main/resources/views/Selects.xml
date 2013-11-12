@@ -136,6 +136,8 @@
 		<option value="14">Reminder</option>
 		<option value="15">Payments by IPO et IPO cheque</option>
 		<option value="16">Doubtful Customers</option>
+		<option value="17">Update customer account</option>
+		<option value="18">Move export</option>
 	</selection>
 	
 	<selection name="ireimbursement.batch.type.select">

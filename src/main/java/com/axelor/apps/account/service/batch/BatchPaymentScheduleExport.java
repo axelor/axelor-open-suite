@@ -53,6 +53,7 @@ import com.axelor.apps.account.service.PaymentScheduleExportService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Status;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -91,6 +92,7 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 			try {
 				paymentScheduleExportService.checkDebitDate(batch.getAccountingBatch());
 				paymentScheduleExportService.checkCompanyJournal(company);
+				paymentScheduleExportService.checkDebitPaymentMode(company);
 				cfonbService.testCompanyExportCFONBField(company);
 				this.testAccountingBatchBankDetails(batch.getAccountingBatch());
 			} catch (AxelorException e) {
@@ -154,23 +156,23 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 	
 	public void exportMonthlyPaymentBatch(Company company)  {
 		
-		List<PaymentScheduleLine> pslListGrandCompte = paymentScheduleExportService.getPaymentScheduleLineToDebit(
-				Company.find(company.getId()), Batch.find(batch.getId()).getAccountingBatch().getDebitDate(), paymentScheduleExportService.getDebitPaymentMode());
+		PaymentMode debitPaymentMode = company.getDirectDebitPaymentMode();
 		
-		LOG.debug("\n Liste des échéances grand comptes retenues {} \n", paymentScheduleExportService.toStringPaymentScheduleLineList(pslListGrandCompte));
+		List<PaymentScheduleLine> paymentScheduleLineList = paymentScheduleExportService.getPaymentScheduleLineToDebit(
+				company, Batch.find(batch.getId()).getAccountingBatch().getDebitDate(), 
+				debitPaymentMode, Batch.find(batch.getId()).getAccountingBatch().getCurrency());
 		
-		List<PaymentScheduleLine> paymentScheduleLineList = new ArrayList<PaymentScheduleLine>();
+		LOG.debug("\n Liste des échéances grand comptes retenues {} \n", paymentScheduleExportService.toStringPaymentScheduleLineList(paymentScheduleLineList));
 		
-		
-		if(!pslListGrandCompte.isEmpty())  {
+		if(!paymentScheduleLineList.isEmpty())  {
 			// Génération de l'écriture de paiement pour Mensu Grand Compte
 			LOG.debug("Génération de l'écriture de paiement pour Mensu Grand Compte");
 			
-			paymentScheduleLineList.addAll(this.generateAllExportMensu(
-					pslListGrandCompte, Company.find(company.getId()),
-					paymentScheduleExportService.getDebitPaymentMode(),
+			paymentScheduleLineList = this.generateAllExportMensu(
+					paymentScheduleLineList, Company.find(company.getId()),
+					PaymentMode.find(debitPaymentMode.getId()),
 					Status.all().filter("code = 'val'").fetchOne(),
-					Company.find(company.getId()).getMajorAccountJournal()));
+					Company.find(company.getId()).getScheduleDirectDebitJournal());
 		}
 		
 		// Création du fichier d'export au format CFONB
@@ -332,7 +334,8 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 		
 		List<Invoice> invoiceToExportList = this.exportInvoice(Company.find(company.getId()),
 				Batch.find(batch.getId()).getAccountingBatch().getDebitDate(), 
-				PaymentMode.all().filter("self.code = 'DD'").fetchOne());
+				company.getDirectDebitPaymentMode(),
+				Batch.find(batch.getId()).getAccountingBatch().getCurrency());
 				
 		
 		// Création du fichier d'export au format CFONB
@@ -375,9 +378,9 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 	 * 			Un mode de paiement
 	 * @throws AxelorException
 	 */
-	public List<Invoice> exportInvoice(Company company, LocalDate scheduleDate, PaymentMode paymentMode)  {
+	public List<Invoice> exportInvoice(Company company, LocalDate scheduleDate, PaymentMode paymentMode, Currency currency)  {
 		
-		List<MoveLine> moveLineList = paymentScheduleExportService.getInvoiceToExport(Company.find(company.getId()), PaymentMode.find(paymentMode.getId()),scheduleDate);
+		List<MoveLine> moveLineList = paymentScheduleExportService.getInvoiceToExport(Company.find(company.getId()), PaymentMode.find(paymentMode.getId()),scheduleDate, Currency.find(currency.getId()));
 				
 		List<Invoice> invoiceToExportList = new ArrayList<Invoice>();
 		

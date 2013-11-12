@@ -72,6 +72,12 @@ public class AccountingBatchService {
 	
 	@Inject
 	private Provider<BatchInterbankPaymentOrderRejectImport> interbankPaymentOrderRejectImportProvider;
+	
+	@Inject
+	private Provider<BatchAccountCustomer> accountCustomerProvider;
+	
+	@Inject
+	private Provider<BatchMoveLineExport> moveLineExportProvider;
 
 // Appel 	
 	
@@ -122,6 +128,12 @@ public class AccountingBatchService {
 				break;
 			case IAccount.BATCH_DOUBTFUL_CUSTOMER:
 				batch = doubtfulCustomer(accountingBatch);
+				break;
+			case IAccount.BATCH_ACCOUNT_CUSTOMER:
+				batch = accountCustomer(accountingBatch);
+				break;
+			case IAccount.BATCH_MOVE_LINE_EXPORT:
+				batch = moveLineExport(accountingBatch);
 				break;
 			default:
 				throw new AxelorException(String.format("Action %s inconnu pour le traitement %s", accountingBatch.getActionSelect(), batchCode), IException.INCONSISTENCY);
@@ -190,6 +202,20 @@ public class AccountingBatchService {
 		BatchStrategy strategy = interbankPaymentOrderRejectImportProvider.get();
 		return strategy.run(accountingBatch);
 		
+	}
+	
+	public Batch accountCustomer(AccountingBatch accountingBatch) {
+
+		BatchStrategy strategy = accountCustomerProvider.get();
+		return strategy.run(accountingBatch);
+
+	}
+
+	public Batch moveLineExport(AccountingBatch accountingBatch) {
+
+		BatchStrategy strategy = moveLineExportProvider.get();
+		return strategy.run(accountingBatch);
+
 	}
 	
 }

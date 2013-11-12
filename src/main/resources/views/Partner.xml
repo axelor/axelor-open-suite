@@ -117,7 +117,7 @@
 	            </group>
 	        </page>
 	        <page name="compteClient" title="Customer balance" hideIf="isContact">
-	            <field name="accountingSituationList" colSpan="4" widget="MasterDetail" onSelect="action-account-accounting-situation-method-update-customer-account"/>
+	            <field name="accountingSituationList" colSpan="4" widget="MasterDetail" grid-view="accounting-situation-partner-grid" form-view="accounting-situation-partner-form" onSelect="action-account-accounting-situation-method-update-customer-account"/>
 	        </page>
 	        <page name="blocking" title="Blockings" hideIf="isContact">
 	            <field name="blocking" colSpan="4" widget="NestedEditor" canSelect="false" summary-view="true" showTitle="false"/>

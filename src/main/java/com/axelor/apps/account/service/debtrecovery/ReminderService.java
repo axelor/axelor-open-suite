@@ -355,10 +355,10 @@ public class ReminderService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public boolean reminderGenerate(Partner partner, Company company) throws AxelorException {			
 		boolean remindedOk = false;
-			
-		BigDecimal balanceDue = acs.getBalanceDue(partner, company);
 		
 		Reminder reminder = this.getReminder(partner, company); // ou getReminder si existe
+		
+		BigDecimal balanceDue = acs.getBalanceDue(partner, company);
 		
 		if (balanceDue.compareTo(BigDecimal.ZERO) > 0)  {
 			

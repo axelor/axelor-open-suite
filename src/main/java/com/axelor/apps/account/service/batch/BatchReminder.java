@@ -73,8 +73,8 @@ public class BatchReminder extends BatchStrategy {
 	public void reminderPartner()  {
 		
 		int i = 0;
-		List<Partner> partnerList = Partner.all().filter("self.reminderClosedOk = false AND ?1 IN self.companySet", batch.getAccountingBatch().getCompany()).fetch();
-
+		List<Partner> partnerList = Partner.all().filter("self.isContact = false AND ?1 MEMBER OF self.companySet", batch.getAccountingBatch().getCompany()).fetch();
+		
 		for (Partner partner : partnerList) {
 
 			try {

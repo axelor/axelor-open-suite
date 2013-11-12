@@ -56,6 +56,7 @@ import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.account.service.payment.PaymentVoucherService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Status;
@@ -174,6 +175,64 @@ public class PaymentScheduleExportService {
 	
 	
 	/**
+	 * Procédure permettant de vérifier que les journaux sont bien configuré dans la société
+	 * @param company
+	 * @throws AxelorException
+	 */
+	public void checkCompanyJournal(Company company) throws AxelorException  {
+		if(company.getInvoiceDirectDebitJournal() == null)  {
+			throw new AxelorException(String.format(
+					"%s :\n Erreur : Veuillez configurer un Journal prélèvement facture pour la société %s"
+					,GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
+		}
+	}
+	
+	/**
+	 * Procédure permettant de vérifier que les journaux sont bien configuré dans la société
+	 * @param company
+	 * @throws AxelorException
+	 */
+	public void checkCompanyJournalMonthlyPayment(Company company) throws AxelorException  {
+		if(company.getScheduleDirectDebitJournal() == null)  {
+			throw new AxelorException(String.format(
+					"%s :\n Erreur : Veuillez configurer un Journal prélèvement échéancier pour la société %s",
+					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
+		}
+	}
+	
+	
+	/**
+	 * Procédure permettant de vérifier que la date d'échéance est bien remplie
+	 * @param company
+	 * @throws AxelorException
+	 */
+	public void checkDebitDate(AccountingBatch accountingBatch) throws AxelorException  {
+		if(accountingBatch.getDebitDate() == null)  {
+			throw new AxelorException(String.format(
+					"%s :\n Erreur : Veuillez configurer une date de prélèvement pour la configuration de batch %s"
+					,GeneralService.getExceptionAccountingMsg(),accountingBatch.getCode()), IException.CONFIGURATION_ERROR);
+		}
+	}
+	
+	
+	/**
+	 * Procédure permettant de vérifier que le mode de paiement par prélèvement est bien configuré dans la société
+	 * @return
+	 * 			Le mode de paiement par prélèvement
+	 * @throws AxelorException 
+	 */
+	public void checkDebitPaymentMode(Company company) throws AxelorException  {
+		
+		if(company.getDirectDebitPaymentMode() == null)  {
+			throw new AxelorException(String.format(
+					"%s :\n Erreur : Veuillez configurer un mode de paiement par prélèvement pour la société %s",
+					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
+		}
+		
+	}
+	
+	
+	/**
 	 * Méthode permettant de retrouver l'échéance rejetée qui à impliquer la création de la nouvelle échéance
 	 * @param paymentScheduleLine
 	 * 			La nouvelle échéance
@@ -215,7 +274,7 @@ public class PaymentScheduleExportService {
 		
 		Account account;
 		
-		this.setDebitNumber(pslList, paymentScheduleLine, company, company.getMajorAccountJournal());
+		this.setDebitNumber(pslList, paymentScheduleLine, company, company.getScheduleDirectDebitJournal());
 		
 		account = company.getCustomerAccount();
 			
@@ -323,46 +382,6 @@ public class PaymentScheduleExportService {
 	
 	
 	/**
-	 * Procédure permettant de vérifier que les journaux sont bien configuré dans la société
-	 * @param company
-	 * @throws AxelorException
-	 */
-	public void checkCompanyJournal(Company company) throws AxelorException  {
-		if(company.getInvoiceDirectDebitJournal() == null)  {
-			throw new AxelorException(String.format(
-					"%s :\n Erreur : Veuillez configurer un Journal prélèvement facture et échéancier hors mensu pour la société %s"
-					,GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
-		}
-	}
-	
-	/**
-	 * Procédure permettant de vérifier que les journaux sont bien configuré dans la société
-	 * @param company
-	 * @throws AxelorException
-	 */ //TODO
-	public void checkCompanyJournalMonthlyPayment(Company company) throws AxelorException  {
-		if(company.getMajorAccountJournal() == null)  {
-			throw new AxelorException(String.format(
-					"%s :\n Erreur : Veuillez configurer un Journal mensu grand compte pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
-		}
-	}
-	
-	
-	/**
-	 * Procédure permettant de vérifier que la date d'échéance est bien remplie
-	 * @param company
-	 * @throws AxelorException
-	 */
-	public void checkDebitDate(AccountingBatch accountingBatch) throws AxelorException  {
-		if(accountingBatch.getDebitDate() == null)  {
-			throw new AxelorException(String.format(
-					"%s :\n Erreur : Veuillez configurer une date de prélèvement pour la configuration de batch %s"
-					,GeneralService.getExceptionAccountingMsg(),accountingBatch.getCode()), IException.CONFIGURATION_ERROR);
-		}
-	}
-	
-	/**
 	 * Methode permettant de récupérer la liste des échéances à prélever en fonction de la société et de la date de prélèvement
 	 * @param company
 	 * 			Une société
@@ -370,13 +389,14 @@ public class PaymentScheduleExportService {
 	 * 			Une date de prélèvement
 	 * @return
 	 */
-	public List<PaymentScheduleLine> getPaymentScheduleLineToDebit(Company company, LocalDate debitDate, PaymentMode paymentMode)  {
+	public List<PaymentScheduleLine> getPaymentScheduleLineToDebit(Company company, LocalDate debitDate, PaymentMode paymentMode, Currency currency)  {
 		return PaymentScheduleLine.all()
 				.filter("self.status.code = 'upr' AND self.debitBlockingOk IN ('f',null) AND self.paymentSchedule.state = '2' AND self.paymentSchedule.company = ?1 " +
 						"AND EXTRACT (day from self.scheduleDate) = ?2 AND self.scheduleDate <= ?3 " +
 						"AND self.debitBlockingOk IN ('false',null) " +
-						"AND self.paymentSchedule.paymentMode = ?5 ORDER BY self.scheduleDate"
-						, company, debitDate.getDayOfMonth(), debitDate, debitDate, paymentMode).fetch(); 
+						"AND self.paymentSchedule.currency = ?5 " +
+						"AND self.paymentSchedule.paymentMode = ?6 ORDER BY self.scheduleDate"
+						, company, debitDate.getDayOfMonth(), debitDate, debitDate, currency, paymentMode).fetch(); 
 	}
 	
 	
@@ -580,7 +600,7 @@ public class PaymentScheduleExportService {
 	
 	
 	
-	public List<MoveLine> getInvoiceToExport(Company company, PaymentMode paymentMode, LocalDate scheduleDate)  {
+	public List<MoveLine> getInvoiceToExport(Company company, PaymentMode paymentMode, LocalDate scheduleDate, Currency currency)  {
 		
 		List<MoveLine>  moveLineInvoiceList = new ArrayList<MoveLine>();
 		
@@ -596,7 +616,7 @@ public class PaymentScheduleExportService {
 		 * - la facture est remplie sur l'écriture
 		 * - la facture n'est pas selectionnée sur un échéancier
 		 */
-		List<MoveLine> mlList = MoveLine
+		List<MoveLine> moveLineList = MoveLine
 				.all()
 				.filter("self.move.state = ?1 AND self.exportedDirectDebitOk = 'false' " +
 						"AND self.move.company = ?2 " +
@@ -604,12 +624,13 @@ public class PaymentScheduleExportService {
 						"AND self.debit > 0 " +
 						"AND self.dueDate <= ?5 AND self.move.invoice IS NOT NULL " +
 						"AND self.move.invoice.paymentMode = ?4 " +
-						"AND self.move.invoice.schedulePaymentOk = 'false' "
-						, IAccount.VALIDATED_MOVE, company, true, paymentMode).fetch(); 
+						"AND self.move.invoice.schedulePaymentOk = 'false' " +
+						"AND self.move.invoice.currency = ?5"
+						, IAccount.VALIDATED_MOVE, company, true, paymentMode, currency).fetch(); 
 		
 		
 		// Ajout des factures
-		for(MoveLine moveLine : mlList)  {
+		for(MoveLine moveLine : moveLineList)  {
 			if(!this.isDebitBlocking(moveLine.getMove().getInvoice()))  {
 				moveLineInvoiceList.add(moveLine);
 			}
@@ -621,8 +642,9 @@ public class PaymentScheduleExportService {
 				.filter("self.rejectMoveLine IS NOT NULL AND self.rejectMoveLine.amountRemaining > 0 AND self.rejectMoveLine.debit > 0" +
 						" AND self.paymentMode = ?1 AND self.company = ?2 AND self.rejectMoveLine.exportedDirectDebitOk = 'false' AND self.move.state = ?3" +
 						" AND self.rejectMoveLine.account.reconcileOk = 'true' " +
-						" AND self.rejectMoveLine.invoiceReject IS NOT NULL"
-						, paymentMode, company, IAccount.VALIDATED_MOVE).fetch();
+						" AND self.rejectMoveLine.invoiceReject IS NOT NULL" +
+						" AND self.currency = ?4"
+						, paymentMode, company, IAccount.VALIDATED_MOVE, currency).fetch();
 		
 		// Ajout des factures rejetées
 		for(Invoice invoice : invoiceRejectList)  {
@@ -758,21 +780,6 @@ public class PaymentScheduleExportService {
 		return invoice;
 	}
 	
-	
-	public PaymentMode getPaymentMode(String code)  {
-		return PaymentMode.all().filter("self.code = ?1", code).fetchOne();
-	}
-	
-	
-	/**
-	 * Méthode permettant de récupérer le mode de paiement par Prélèvement
-	 * @return
-	 * 			Le mode de paiement par prélèvement
-	 */
-	public PaymentMode getDebitPaymentMode()  {
-		return this.getPaymentMode("DD");
-	}
-		
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Move validateMove(Move move) throws AxelorException  {

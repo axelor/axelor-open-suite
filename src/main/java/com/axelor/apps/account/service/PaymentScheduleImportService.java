@@ -47,6 +47,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
+import com.axelor.apps.account.service.debtrecovery.ReminderService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
@@ -91,6 +92,9 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 	
 	@Inject
 	private RejectImportService ris;
+	
+	@Inject
+	private ReminderService rs;
 	
 	@Inject
 	private Injector injector;
@@ -640,8 +644,9 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 		}
 			
 		// Mise à jour de la date de la dernière relance sur le tiers
-		partner.getReminder().setReminderDate(today);
+		rs.getReminder(partner, company).setReminderDate(today);
 	}
+	
 	
 	
 	/**
@@ -659,7 +664,7 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 			LOG.debug("COURRIER Facture");
 			mas.createImportRejectMail(invoice.getPartner(), company, company.getRejectPaymentScheduleMailModel(), invoice.getRejectMoveLine()).save();
 			// Mise à jour de la date de la dernière relance sur le tiers
-			partner.getReminder().setReminderDate(today);
+			rs.getReminder(partner, company).setReminderDate(today);
 			// Changement du mode de paiement de la facture, du tiers
 			this.setPaymentMode(invoice);
 			// Alarme générée dans l'historique du client ?

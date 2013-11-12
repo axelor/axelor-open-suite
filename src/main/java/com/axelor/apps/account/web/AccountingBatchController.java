@@ -158,6 +158,50 @@ public class AccountingBatchController {
 		response.setReload(true);
 	}
 	
+	
+	/**
+	 * Lancer le batch de calcul du compte client
+	 *
+	 * @param request
+	 * @param response
+	 */
+	public void actionAccountingCustomer(ActionRequest request, ActionResponse response){
+
+		AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+		
+		Batch batch = null;
+
+		batch = accountingBatchService.accountCustomer(AccountingBatch.find(accountingBatch.getId()));
+
+		if(batch != null)
+			response.setFlash(batch.getComment());
+		response.setReload(true);
+
+	}
+
+
+
+	/**
+	 * Lancer le batch de calcul du compte client
+	 *
+	 * @param request
+	 * @param response
+	 */
+	public void actionMoveLineExport(ActionRequest request, ActionResponse response){
+
+		AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+		
+		Batch batch = null;
+
+		batch = accountingBatchService.moveLineExport(AccountingBatch.find(accountingBatch.getId()));
+
+		if(batch != null)
+			response.setFlash(batch.getComment());
+		response.setReload(true);
+
+	}
+	
+	
 	// WS
 	
 	/**

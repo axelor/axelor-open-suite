@@ -38,8 +38,10 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PayerQualityConfigLine;
+import com.axelor.apps.account.db.Reminder;
 import com.axelor.apps.account.db.ReminderHistory;
 import com.axelor.apps.account.db.ReminderLevel;
 import com.axelor.apps.account.db.ReminderMethodLine;
@@ -63,18 +65,24 @@ public class PayerQualityService {
 		
 	}
 	
-	
+	//TODO : à remplacer par une requête afin de rendre le traitement scalable
 	public List<ReminderHistory> getReminderHistoryList(Partner partner)  {
 		List<ReminderHistory> reminderHistoryList = new ArrayList<ReminderHistory>();
-		if(partner.getReminder().getReminderHistoryList()!= null && partner.getReminder().getReminderHistoryList().size() != 0)   {
-			for(ReminderHistory reminderHistory : partner.getReminder().getReminderHistoryList())  {
-				if((reminderHistory.getReminderDate() != null && reminderHistory.getReminderDate().isAfter(today.minusYears(1))))  {
-					reminderHistoryList.add(reminderHistory);
+		if(partner.getAccountingSituationList() != null)  {
+			for(AccountingSituation accountingSituation : partner.getAccountingSituationList())  {
+				Reminder reminder = accountingSituation.getReminder();
+				if(reminder != null && reminder.getReminderHistoryList()!= null && !reminder.getReminderHistoryList().isEmpty())  {
+					for(ReminderHistory reminderHistory : reminder.getReminderHistoryList())  {
+						if((reminderHistory.getReminderDate() != null && reminderHistory.getReminderDate().isAfter(today.minusYears(1))))  {
+							reminderHistoryList.add(reminderHistory);
+						}
+					}
 				}
 			}
 		}
 		return reminderHistoryList;
 	}
+	
 	
 	public List<MoveLine> getMoveLineRejectList(Partner partner)  {
 		return MoveLine.all().filter("self.partner = ?1 AND self.date > ?2 AND self.interbankCodeLine IS NOT NULL", partner, today.minusYears(1)).fetch();
@@ -169,11 +177,6 @@ public class PayerQualityService {
 				}
 			}
 		}
-				
-		
-	
 	}
-	
-		
 	
 }

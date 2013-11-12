@@ -336,13 +336,13 @@ public class CfonbService {
 		String b3 = company.getSenderNumExportCFONB();				// Numéro d'émetteur
 		String c1One = "";											// Code CCD
 		String c1Two = "";											// Zone réservée	
-		String c1Three = date;											// Date d'échéance
+		String c1Three = date;										// Date d'échéance
 		String c2 = company.getSenderNameCodeExportCFONB();			// Nom/Raison sociale du donneur d'ordre
 		String d1One = "";											// Référence de la remise
 		String d1Two = "";											// Zone réservée
 		String d2One = "";											// Zone réservée
 		String d2Two = "E";											// Code monnaie
-		String d2Three = "";											// Zone réservée
+		String d2Three = "";										// Zone réservée
 		String d3 = bankDetails.getSortCode();  					// Code guichet de la banque du donneur d'ordre
 		String d4 = bankDetails.getAccountNbr();  					// Numéro de compte du donneur d’ordre
 		String e = "";												// Identifiant du donneur d'ordre
