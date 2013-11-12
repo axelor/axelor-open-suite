@@ -54,12 +54,12 @@
 			<page title="Additionnal information">
 				<group title="Contract Details" colSpan="6" cols="6">
 					<field name="contractTypeSelect"/>
-					<field name="contractDuration" showIf="contractTypeSelect == 2"/>
+					<field name="contractDuration" showIf="contractTypeSelect == 2" onChange="action-employee-set-exit-date"/>
 					<field name="functionRanking"/>
-					<field name="entryDate"/>
+					<field name="entryDate" onChange="action-employee-set-exit-date" />
 					<field name="macroCategorySelect"/>
 					<field name="categorySelect"/>
-					<field name="exitDate"/>
+					<field name="exitDate" />
 					<separator title="Advantages" colSpan="6"/>
 					<field name="advantages" colSpan="6" showTitle="false"/>
 				</group>
@@ -120,6 +120,10 @@
     	<field name="entryDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="entryDate == null"/>
     	<field name="categorySelect" expr="1"/>
     	<field name="macroCategorySelect" expr="4"/>
+    </action-record>
+    
+    <action-record name="action-employee-set-exit-date" model="com.axelor.apps.organisation.db.Employee">
+		<field name="exitDate" expr="eval:entryDate.plusMonths(contractDuration).minusDays(1)" if="entryDate != null &amp;&amp; contractDuration != null &amp;&amp; contractDuration &gt; 0"/>
     </action-record>
 	
 	<action-method name="action-partner-method-show-employee">
