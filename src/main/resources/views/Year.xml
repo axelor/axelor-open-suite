@@ -14,19 +14,20 @@
     </grid>
     
     <form name="year-account-form" title="Fiscal year" model="com.axelor.apps.base.db.Year" cols="4"
-    onNew="action-year-record-new">
+    onNew="action-year-record-new" >
         <field name="name"/>
         <field name="code"/>
-        <field name="fromDate"/>
-        <field name="toDate"/>
+        <field name="fromDate" onChange="action-year-check-date"/>
+        <field name="toDate" onChange="action-year-check-date"/>
         <field name="reportedBalanceDate"/>
         <field name="company" widget="SuggestBox"/>
-        <separator/>
+        <separator colSpan="4"/>
 <!--         <field name="reportedBalanceLineList" colSpan="4"/> -->
-        <group colSpan="4" cols="4">
-        	<button name="close" title="Close fiscal year" colSpan="2" onClick="action-year-close-method,save"/>
-        	<field name="status"/>
-    	</group>
+        <field name="status"/>
+        <button name="close" title="Close fiscal year" colSpan="2" onClick="action-year-close-method,save"/>
+    	<field name="periodDurationSelect" />
+    	<button name="generatePeriods" title="Generate periods" colSpan="2" onClick="save,action-year-validate-generate-period,com.axelor.apps.account.web.YearController:generatePeriods()"/>
+    	<field name="periodList" colSpan="4" />
     </form>
     
     <action-record name="action-year-record-new" model="com.axelor.apps.base.db.Year">
@@ -38,5 +39,20 @@
     	<call class="com.axelor.apps.account.web.YearController" method="close"/>
     </action-method>
     
-    
+    <action-validate name="action-year-validate-generate-period">
+	    <error message="To generate periods, please fill in the limits of the fiscal year." if="fromDate == null || toDate == null" />
+	    <error message="To generate periods, please fill in the Period duration." if="periodDurationSelect == null || periodDurationSelect == 0"/>
+	    <error message="Please clear all existing periods before generating new ones" if="!periodList.empty"/>
+	</action-validate>
+	
+	<action-validate name="action-year-check-date">
+		<error message="Enter proper 'From' and 'To' date." if="fromDate != null &amp;&amp; toDate != null &amp;&amp; fromDate &gt; toDate" action="action-year-set-empty-date"/>
+	</action-validate>
+	
+	<action-record name="action-year-set-empty-date" model="com.axelor.apps.base.db.Year">
+		<field name="fromDate" expr="eval:null" />
+		<field name="toDate" expr="eval:null" />
+	</action-record>
+	
+	
 </object-views>
