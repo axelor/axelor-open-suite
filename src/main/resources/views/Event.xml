@@ -521,27 +521,27 @@
 	
 	<!-- ACTIONS TO SET SELECTS -->
 	<action-record name="action-set-status-select-2" model="com.axelor.apps.crm.db.Event">
-		<field name="statusSelect" eval="2"/>
+		<field name="statusSelect" expr="eval:2"/>
 	</action-record>
 	<action-record name="action-set-status-select-3" model="com.axelor.apps.crm.db.Event">
-		<field name="statusSelect" eval="3"/>
+		<field name="statusSelect" expr="eval:3"/>
 	</action-record>
 	
 	<action-record name="action-set-task-status-select-2" model="com.axelor.apps.crm.db.Event">
-		<field name="taskStatusSelect" eval="2"/>
+		<field name="taskStatusSelect" expr="eval:2"/>
 	</action-record>	
 	<action-record name="action-set-task-status-select-3" model="com.axelor.apps.crm.db.Event">
-		<field name="taskStatusSelect" eval="3"/>
+		<field name="taskStatusSelect" expr="eval:3"/>
 	</action-record>	
 	
 	<action-record name="action-set-ticket-status-select-2" model="com.axelor.apps.crm.db.Event">
-		<field name="ticketStatusSelect" eval="2"/>
+		<field name="ticketStatusSelect" expr="eval:2"/>
 	</action-record>	
 	<action-record name="action-set-ticket-status-select-3" model="com.axelor.apps.crm.db.Event">
-		<field name="ticketStatusSelect" eval="3"/>
+		<field name="ticketStatusSelect" expr="eval:3"/>
 	</action-record>
 	<action-record name="action-set-ticket-status-select-5" model="com.axelor.apps.crm.db.Event">
-		<field name="ticketStatusSelect" eval="5"/>
+		<field name="ticketStatusSelect" expr="eval:5"/>
 	</action-record>
 	
 </object-views>
