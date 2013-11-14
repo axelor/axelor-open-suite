@@ -91,7 +91,7 @@ public class PurchaseOrderInvoiceService {
 		}
 
 		InvoiceGenerator invoiceGenerator = new InvoiceGenerator(IInvoice.SUPPLIER_PURCHASE, purchaseOrder.getCompany(), purchaseOrder.getSupplierPartner(), 
-				purchaseOrder.getContactPartner(), purchaseOrder.getPriceList()) {
+				purchaseOrder.getContactPartner(), purchaseOrder.getProject(), purchaseOrder.getPriceList()) {
 
 			@Override
 			public Invoice generate() throws AxelorException {
