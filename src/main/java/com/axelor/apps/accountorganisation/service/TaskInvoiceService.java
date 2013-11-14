@@ -31,6 +31,7 @@
 package com.axelor.apps.accountorganisation.service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,13 +44,19 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.VatLine;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.accountorganisation.exceptions.IExceptionMessage;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.organisation.db.Employee;
+import com.axelor.apps.organisation.db.ExpenseLine;
+import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.organisation.db.Task;
-import com.axelor.apps.supplychain.db.SalesOrder;
-import com.axelor.apps.supplychain.db.SalesOrderLine;
+import com.axelor.apps.organisation.db.Timesheet;
+import com.axelor.apps.organisation.db.TimesheetLine;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
+import com.axelor.meta.service.MetaTranslations;
 import com.google.inject.persist.Transactional;
 
 public class TaskInvoiceService {
@@ -60,28 +67,16 @@ public class TaskInvoiceService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice generateInvoice(Task task) throws AxelorException {
 		
-		// Check if the field task.isToInvoice = true
-		if(task.getIsToInvoice()) {
-			
-			SalesOrderLine salesOrderLine = task.getSalesOrderLine();
-			// Check if task.salesOrderLine and task.salesOrderLine.salesOrder are not empty
-			if(salesOrderLine != null && salesOrderLine.getSalesOrder() != null) {
-				
-				Invoice invoice = this.createInvoice(task);
-				invoice.save();
-				return invoice;
-			}
-		}
-		return null;
+		Invoice invoice = this.createInvoice(task);
+		invoice.save();
+		return invoice;
 	}
 			
 	public Invoice createInvoice(Task task) throws AxelorException {
 		
-		SalesOrder salesOrder = task.getSalesOrderLine().getSalesOrder();
+		Project project = task.getProject();
 		
-		InvoiceGenerator invoiceGenerator = new InvoiceGenerator(IInvoice.CLIENT_SALE, salesOrder.getCompany(),salesOrder.getPaymentCondition(), 
-				salesOrder.getPaymentMode(), salesOrder.getMainInvoicingAddress(), salesOrder.getClientPartner(), salesOrder.getContactPartner(), salesOrder.getCurrency(), salesOrder.getProject(), null) {
-			
+		InvoiceGenerator invoiceGenerator = new InvoiceGenerator(IInvoice.CLIENT_SALE, project.getCompany(), project.getClientPartner(), project.getContactPartner(), project, null) {	
 			@Override
 			public Invoice generate() throws AxelorException {
 				
@@ -94,14 +89,116 @@ public class TaskInvoiceService {
 		return invoice;
 	}
 	
-	@Transactional
+	
+	
 	public List<InvoiceLine> createInvoiceLines(Invoice invoice, Task task) throws AxelorException  {
 		
 		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
 		
-		invoiceLineList.addAll(this.createInvoiceLine(invoice, task));	
+		if(task.getIsToInvoice()) {
+			this.checkTaskToInvoice(task);
+			invoiceLineList.addAll(this.createInvoiceLine(invoice, task));
+			task.setIsToInvoice(false);
+		}
+		
+		invoiceLineList.addAll(this.createOtherElementInvoiceLines(invoice, task));
 		
 		return invoiceLineList;	
+	}
+	
+	
+	public void checkTaskToInvoice(Task task) throws AxelorException  {
+		if(task.getProduct() == null)  {
+			throw new AxelorException(new MetaTranslations().get(IExceptionMessage.TASK_INVOICE_2), IException.CONFIGURATION_ERROR);
+		}
+		if(task.getQty() == null)  {
+			throw new AxelorException(new MetaTranslations().get(IExceptionMessage.TASK_INVOICE_3), IException.CONFIGURATION_ERROR);
+		}
+		if(task.getPrice() == null)  {
+			throw new AxelorException(new MetaTranslations().get(IExceptionMessage.TASK_INVOICE_4), IException.CONFIGURATION_ERROR);
+		}
+		if(task.getAmountToInvoice() == null)  {
+			throw new AxelorException(new MetaTranslations().get(IExceptionMessage.TASK_INVOICE_5), IException.CONFIGURATION_ERROR);
+		}
+		if(this.computeAmount(task.getQty(), task.getPrice()).compareTo(task.getAmountToInvoice()) != 0)  {
+			throw new AxelorException(new MetaTranslations().get(IExceptionMessage.TASK_INVOICE_6), IException.CONFIGURATION_ERROR);
+		}
+	}
+	
+	
+	/**
+	 * Calculer le montant HT à facturer pour une tache.
+	 * 
+	 * @param quantity
+	 *          Quantité à facturer.
+	 * @param price
+	 *          Le prix.
+	 * 
+	 * @return 
+	 * 			Le montant HT à facturer.
+	 */
+	public BigDecimal computeAmount(BigDecimal quantity, BigDecimal price) {
+
+		BigDecimal amount = quantity.multiply(price).setScale(2, RoundingMode.HALF_EVEN);
+
+		LOG.debug("Calcul du montant HT avec une quantité de {} pour {} : {}", new Object[] { quantity, price, amount });
+
+		return amount;
+	}
+	
+	
+	
+	public List<InvoiceLine> createOtherElementInvoiceLines(Invoice invoice, Task task) throws AxelorException  {
+		
+		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
+		
+		invoiceLineList.addAll(this.createTimesheetInvoiceLines(invoice, this.getTimesheetLineToInvoice(task)));	
+		
+		invoiceLineList.addAll(this.createExpenseInvoiceLines(invoice, this.getExpenseLineToInvoice(task)));	
+		
+		return invoiceLineList;	
+	}
+	
+	
+	public List<TimesheetLine> getTimesheetLineToInvoice(Task task)  {
+		
+		return TimesheetLine.all().filter("self.timesheet.statusSelect = 3 AND self.task.id = ?1 AND self.isToInvoice = true", task.getId()).fetch();
+		
+	}
+	
+	
+	public List<ExpenseLine> getExpenseLineToInvoice(Task task)  {
+		
+		return ExpenseLine.all().filter("self.expense.statusSelect = 3 AND self.task.id = ?1 AND self.isToInvoice = true", task.getId()).fetch();
+		
+	}
+	
+	
+	public List<InvoiceLine> createExpenseInvoiceLines(Invoice invoice, List<ExpenseLine> expenseLineList) throws AxelorException  {
+		
+		List<InvoiceLine> expenseInvoiceLineList = new ArrayList<InvoiceLine>();
+		
+		for(ExpenseLine expenseLine : expenseLineList)  {
+			expenseInvoiceLineList.addAll(this.createInvoiceLine(invoice, expenseLine));	
+			expenseLine.setIsInvoiced(true);
+			expenseLine.setIsToInvoice(false);
+		}
+		
+		return expenseInvoiceLineList;	
+	}
+	
+	
+	public List<InvoiceLine> createTimesheetInvoiceLines(Invoice invoice, List<TimesheetLine> timesheetLineList) throws AxelorException  {
+		
+		List<InvoiceLine> expenseInvoiceLineList = new ArrayList<InvoiceLine>();
+		
+		for(TimesheetLine timesheetLine  : timesheetLineList)  {
+			expenseInvoiceLineList.addAll(this.createInvoiceLine(invoice, timesheetLine));	
+			timesheetLine.setIsInvoiced(true);
+			timesheetLine.setIsToInvoice(false);
+		}
+		
+		return expenseInvoiceLineList;	
 	}
 	
 	
@@ -125,18 +222,62 @@ public class TaskInvoiceService {
 		return invoiceLineGenerator.creates();
 	}
 	
+	
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, Task task) throws AxelorException  {
 		
-		SalesOrderLine salesOrderLine = task.getSalesOrderLine();
+		return this.createInvoiceLine(invoice, task.getAmountToInvoice(), task.getProduct(), task.getProduct().getName(), 
+				task.getPrice(), task.getDescription(), task.getQty(), task.getProduct().getUnit(), null, 
+				task, null);
 		
-		if(task.getProduct() != null) {
-			return this.createInvoiceLine(invoice, salesOrderLine.getExTaxTotal(), task.getProduct(), task.getProduct().getName(), 
-					task.getPrice(), salesOrderLine.getDescription(), task.getQty(), salesOrderLine.getUnit(), salesOrderLine.getVatLine(), 
-					task, salesOrderLine.getProductVariant());
+	}
+	
+	
+	//TODO montant TTC : opérationnel une fois l'ajout d'un TTC sur la facture réalisé
+	public List<InvoiceLine> createInvoiceLine(Invoice invoice, ExpenseLine expenseLine) throws AxelorException  {
+		
+		return this.createInvoiceLine(invoice, expenseLine.getInTaxTotal(), expenseLine.getProduct(), expenseLine.getProduct().getName(), 
+				expenseLine.getPrice(), expenseLine.getShortDescription(), expenseLine.getQty(), expenseLine.getProduct().getUnit(), expenseLine.getVatLine(), 
+				expenseLine.getTask(), null);
+		
+	}
+	
+	
+	public List<InvoiceLine> createInvoiceLine(Invoice invoice, TimesheetLine timesheetLine) throws AxelorException  {
+		
+		Timesheet timesheet = timesheetLine.getTimesheet();
+		
+		Product product = this.getTimesheetProduct(this.getTimesheetEmployee(timesheet));
+		
+		return this.createInvoiceLine(invoice, null, product, product.getName(), 
+				product.getSalePrice(), timesheetLine.getTask().getDescription(), timesheetLine.getDuration(), timesheet.getUnit(), null, 
+				timesheetLine.getTask(), null);
+		
+	}
+	
+	
+	public Employee getTimesheetEmployee(Timesheet timesheet) throws AxelorException  {
+		
+		Employee employee = timesheet.getUserInfo().getEmployee();
+		
+		if(employee == null)  {
+			throw new AxelorException(String.format(new MetaTranslations().get(IExceptionMessage.TASK_INVOICE_1), timesheet.getUserInfo().getFullName()), IException.CONFIGURATION_ERROR);
 		}
-		return this.createInvoiceLine(invoice, salesOrderLine.getExTaxTotal(), salesOrderLine.getProduct(), salesOrderLine.getProductName(), 
-				salesOrderLine.getPrice(), salesOrderLine.getDescription(), salesOrderLine.getQty(), salesOrderLine.getUnit(), salesOrderLine.getVatLine(), 
-				task, salesOrderLine.getProductVariant());
+		
+		return employee;
+		
+	}
+	
+	
+	public Product getTimesheetProduct(Employee employee) throws AxelorException  {
+		
+		Product profileProduct = employee.getProfileProduct();
+		
+		if(profileProduct == null)  {
+			throw new AxelorException(String.format(new MetaTranslations().get(IExceptionMessage.TASK_INVOICE_7), employee.getName(), employee.getFirstName()), IException.CONFIGURATION_ERROR);
+		}
+		
+		return profileProduct;
+			
 	}
 	
 }

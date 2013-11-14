@@ -57,20 +57,15 @@ public class ProjectInvoiceService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Invoice generateInvoice(Project project) throws AxelorException {
 
-		// Check if the fields clientPartner, contactPartner and company are not empty
-		if(project.getClientPartner() != null && project.getContactPartner() != null && project.getCompany() != null) {
-
-			Invoice invoice = this.createInvoice(project);
-			invoice.save();
-			return invoice;
-		}
-		return null;
+		Invoice invoice = this.createInvoice(project);
+		invoice.save();
+		return invoice;
 	}
 
 	public Invoice createInvoice(Project project) throws AxelorException {
 
 		
-		InvoiceGenerator invoiceGenerator = new InvoiceGenerator(IInvoice.CLIENT_SALE, project.getCompany(), project.getClientPartner(), project.getContactPartner(), null) {
+		InvoiceGenerator invoiceGenerator = new InvoiceGenerator(IInvoice.CLIENT_SALE, project.getCompany(), project.getClientPartner(), project.getContactPartner(), project, null) {
 
 			@Override
 			public Invoice generate() throws AxelorException {
@@ -85,17 +80,14 @@ public class ProjectInvoiceService {
 	}
 	
 	
-	@Transactional
 	public List<InvoiceLine> createInvoiceLines(Invoice invoice, Project project) throws AxelorException  {
 		
 		List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
 		
 		for(Task task : project.getTaskList()) {
 			
-			if(task.getIsToInvoice() && task.getSalesOrderLine() != null) {
+			invoiceLineList.addAll(taskInvoiceService.createInvoiceLines(invoice, task));
 				
-				invoiceLineList.addAll(taskInvoiceService.createInvoiceLine(invoice, task));
-			}
 		}
 		return invoiceLineList;	
 	}

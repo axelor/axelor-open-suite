@@ -51,6 +51,14 @@ public interface IExceptionMessage {
 	/**
 	 * Task Invoice Service
 	 */
+	static final String TASK_INVOICE_1 = "Veuillez configurer un employé pour l'utilisateur %s";
+	static final String TASK_INVOICE_2 = "Veuillez configurer un produit à facturer pour la tache";
+	static final String TASK_INVOICE_3 = "Veuillez configurer une quantité à facturer pour la tache";
+	static final String TASK_INVOICE_4 = "Veuillez configurer un prix unitaire à facturer pour la tache";
+	static final String TASK_INVOICE_5 = "Veuillez configurer un montant à facturer pour la tache";
+	static final String TASK_INVOICE_6 = "Le montant à facturer ne correspond pas à la quantité et au prix unitaire à facturer pour la tache";
+	static final String TASK_INVOICE_7 = "Veuillez configurer un produit profil pour l'employé %s %s";
+	
 	
 	
 	/**
