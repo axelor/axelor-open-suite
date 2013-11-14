@@ -46,7 +46,7 @@ public class SpentTimeService {
 		spentTime.setTask(timesheetLine.getTask());
 		BigDecimal duration = timesheetLine.getDuration();
 		spentTime.setDuration(duration);
-		spentTime.setUnit(timesheetLine.getSpentTime().getUnit());
+		spentTime.setUnit(timesheetLine.getTimesheet().getUnit());
 		spentTime.setTimesheetImputed(true);
 		spentTime.setUserInfo(timesheetLine.getTimesheet().getUserInfo());
 		

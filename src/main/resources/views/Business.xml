@@ -22,7 +22,7 @@
     	<group showTitle="false" cols="4">
         	<field name="responsibleUserInfo"/>
         	<field name="defaultTask" hideIf="!isTimeSheetImputable"/>
-        	<field name="company" widget="SuggestBox"/>
+        	<field name="company" widget="SuggestBox" readonlyIf="projectStatusSelect >= 3 || businessStatusSelect >= 2"/>
 	        <field name="clientPartner"/>
 	        <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
  		</group>
