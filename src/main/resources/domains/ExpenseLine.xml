@@ -21,7 +21,7 @@
   	<binary name="file" title="File" />
   	<integer name="fileReceived" title="File received" selection="hr.expense.line.file.received.select"/>
   	<date name="validationDate" title="Date de validation" readonly="true"/>
-  	<boolean name="istoInvoice" title="A facturer"/>
+  	<boolean name="isToInvoice" title="A facturer"/>
   	<boolean name="isInvoiced" title="Facturé" readonly="true"/>
   	
   	<!--   	Champ technique non affiché, utilisé pour les reportings -->

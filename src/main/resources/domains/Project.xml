@@ -9,9 +9,9 @@
   
   	<string name="importId"/>
   
-  	<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
+  	<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Customer" required="true"/>
   	<many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Contact"/>
-  	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" readonly="true" title="Société"/>
+  	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Société" required="true"/>
   	<string name="name" title="Name" required="true" namecolumn="true"/>
   	<string name="description" large="true" multiline="true" title="Description"/>
   	<boolean name="isModel" title="Model ?"/>

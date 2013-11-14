@@ -162,6 +162,10 @@
   	<integer name="purchaseOrderInvoicingTypeSelect" title="Purchases order invoicing type" selection="supplychain.purchase.order.invoicing.type.select"/>
   	<many-to-one name="printingSettings" ref="PrintingSettings" title="Printing Settings"/>
   	
+<!--   	Onglet Organisation -->
+	<many-to-one name="taskProduct" ref="com.axelor.apps.base.db.Product" title="Task product"/>
+
+  	
   </entity>
   
 </domain-models>
