@@ -181,6 +181,14 @@
 		<option value="2">End of month + n days</option>
 		<option value="3">N days + end of month</option>
 		<option value="4">N days + end of month at</option>
-	</selection>	
+	</selection>
+	
+	<selection name="account.year.period.duration.select">
+		<option value="1">1 Month</option>
+		<option value="2">2 Months</option>
+		<option value="3">3 Months</option>
+		<option value="6">6 Months</option>
+		<option value="12">1 Year</option>
+	</selection>		
 
 </object-views>

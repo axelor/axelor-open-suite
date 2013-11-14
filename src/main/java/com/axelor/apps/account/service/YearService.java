@@ -233,7 +233,36 @@ public class YearService {
 	}
 	
 	
-	
+	public List<Period> generatePeriods(Year year){
+		
+		List<Period> periods = new ArrayList<Period>();
+		Integer duration = year.getPeriodDurationSelect();
+		LocalDate fromDate = year.getFromDate();
+		LocalDate toDate = year.getToDate();
+		LocalDate periodToDate = fromDate;
+		Integer periodNumber = 1;
+		
+		while(periodToDate.isBefore(toDate)){
+			if(periodNumber != 1)
+				fromDate = fromDate.plusMonths(duration);
+			periodToDate = fromDate.plusMonths(duration).minusDays(1);
+			if(periodToDate.isAfter(toDate))
+				periodToDate = toDate; 
+			if(fromDate.isAfter(toDate))
+				continue;
+			Period period = new Period();
+			period.setFromDate(fromDate);
+			period.setToDate(periodToDate);
+			period.setYear(year);
+			period.setName(periodNumber+"/"+year.getCode());
+			period.setCode(periodNumber+"/"+year.getCode()+"_"+year.getCompany().getCode());
+			period.setCompany(year.getCompany());
+			period.setStatus(year.getStatus());
+			periods.add(period);
+			periodNumber ++;
+		}
+		return periods;
+	}
 	
 	
 	
