@@ -109,13 +109,14 @@ public abstract class InvoiceGenerator {
 	 * @param contactPartner
 	 * @throws AxelorException
 	 */
-	protected InvoiceGenerator(int operationType, Company company, Partner partner, Partner contactPartner, PriceList priceList) throws AxelorException {
+	protected InvoiceGenerator(int operationType, Company company, Partner partner, Partner contactPartner, Project project, PriceList priceList) throws AxelorException {
 		
 		this.operationType = operationType;
 		this.company = company;
 		this.partner = partner;
 		this.contactPartner = contactPartner;
 		this.priceList = priceList;
+		this.project = project;
 		
 		this.today = GeneralService.getTodayDate();
 		this.exceptionMsg = GeneralService.getExceptionInvoiceMsg();

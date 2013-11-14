@@ -46,6 +46,7 @@ import com.axelor.apps.account.db.VatLine;
 import com.axelor.apps.account.service.AccountManagementService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.db.Alarm;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
@@ -153,7 +154,6 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
         this.isTaxInvoice = isTaxInvoice;
         this.today = GeneralService.getTodayDate();
         this.currencyService = new CurrencyService(this.today);
-        this.accountManagementService = new AccountManagementService();
     }
 	
 	public Invoice getInvoice() {
@@ -210,6 +210,19 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 				currencyService.getAmountCurrencyConverted(
 						invoice.getCurrency(), partnerCurrency, exTaxTotal, invoice.getInvoiceDate()));  
 		
+		Company company = invoice.getCompany();
+		
+		Currency companyCurrency = company.getCurrency();
+		
+		if(companyCurrency == null)  {
+			throw new AxelorException(String.format("Veuillez selectionner une devise pour la société %s", 
+					company.getName()), IException.CONFIGURATION_ERROR);
+		}
+		
+		invoiceLine.setCompanyExTaxTotal(
+				currencyService.getAmountCurrencyConverted(
+						invoice.getCurrency(), companyCurrency, exTaxTotal, invoice.getInvoiceDate()));
+		
 		invoiceLine.setPricingListUnit(unit);
 		
 		if(vatLine == null)  {
@@ -217,7 +230,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 			if(invoice.getOperationTypeSelect() == IInvoice.SUPPLIER_PURCHASE || invoice.getOperationTypeSelect() == IInvoice.SUPPLIER_REFUND)  {
 				isPurchase = true;
 			}
-			vatLine = accountManagementService.getVatLine(invoice.getInvoiceDate(), product, invoice.getCompany(), isPurchase);
+			vatLine =  new AccountManagementService().getVatLine(invoice.getInvoiceDate(), product, invoice.getCompany(), isPurchase);
 		}
 		invoiceLine.setVatLine(vatLine);
 		
