@@ -30,6 +30,10 @@
  */
 package com.axelor.apps.base.web;
 
+import groovy.json.JsonBuilder;
+import groovy.json.JsonOutput;
+import groovy.lang.Closure;
+
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -42,6 +46,9 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import wslite.json.JSONArray;
+import wslite.json.JSONException;
+import wslite.json.JSONObject;
 import wslite.rest.ContentType;
 import wslite.rest.RESTClient;
 import wslite.rest.Response;
@@ -311,13 +318,12 @@ public class AddressController {
 		}
 	}
 
-	public Map<String,Object> geocodeGoogle(String qString) {
+	public JSONObject geocodeGoogle(String qString) {
 		Map<String,Object> response = new HashMap<String,Object>();
 		//http://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&sensor=true_or_false
 
 		// TODO inject the rest client, or better, run it in the browser
 		RESTClient restClient = new RESTClient("https://maps.googleapis.com");
-
 		Map<String,Object> responseQuery = new HashMap<String,Object>();
 		responseQuery.put("address", qString);
 		responseQuery.put("sensor", "false");
@@ -325,12 +331,28 @@ public class AddressController {
 		responseMap.put("path", "/maps/api/geocode/json");
 		responseMap.put("accept", ContentType.JSON);
 		responseMap.put("query", responseQuery);
+		
 		responseMap.put("connectTimeout", 5000);
 		responseMap.put("readTimeout", 10000);
 		responseMap.put("followRedirects", false);
 		responseMap.put("useCaches", false);
 		responseMap.put("sslTrustAllCerts", true);
-		Response restResponse = restClient.get(responseMap);
+		JSONObject restResponse = null;
+		try {
+			restResponse = new JSONObject(restClient.get(responseMap).getContentAsString());
+			if(restResponse != null && restResponse.containsKey("results")){
+				JSONObject result = (JSONObject)((JSONArray)restResponse.get("results")).get(0);
+				if(result != null && result.containsKey("geometry"))
+					restResponse = (JSONObject)((JSONObject) result.get("geometry")).get("location");
+				else restResponse = null;
+			}
+			else restResponse = null;
+				
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		/*
 		log.debug("restResponse = {}", restResponse)
 		log.debug("restResponse.parsedResponseContent.text = {}", restResponse.parsedResponseContent.text)
@@ -363,36 +385,33 @@ public class AddressController {
 	*/
 	//}
 
-		return response;
+		return restResponse;
 	}
 
 	public void viewMapGoogle(ActionRequest request, ActionResponse response)  {
-
 		Address address = request.getContext().asType(Address.class);
 		String qString = address.getAddressL4()+" ,"+address.getAddressL6();
-
 		try {
-			Map<String,Object> googleResponse = geocodeGoogle(qString);
-			if (googleResponse.get("multiple") != null) {
-				response.setFlash("<B>$qString</B> matches multiple locations. First selected.");
+			JSONObject googleResponse = geocodeGoogle(qString);
+//			if (googleResponse == null || googleResponse.get("multiple") != null) {
+//				response.setFlash("<B>"+qString+"</B> matches multiple locations. First selected.");
+//			}
+			if(googleResponse != null){
+				Double lat = (Double)(googleResponse.get("lat"));
+				Double lng = (Double)(googleResponse.get("lng"));
+				if (lat != null && lng != null) {
+					String url = String.format("map/gmaps.html?x=%f&y=%f&z=18",lat,lng);
+					Map<String,Object> mapView = new HashMap<String,Object>();
+					mapView.put("title", "Map");
+					mapView.put("resource", url);
+					mapView.put("viewType", "html");
+					response.setView(mapView);
+					response.setValue("latit", lat);
+					response.setValue("longit", lng);
+				}
+				else response.setFlash("<B>"+qString+"</B> not found");
 			}
-			BigDecimal lat = (BigDecimal) googleResponse.get("lat");
-			BigDecimal lng = (BigDecimal) googleResponse.get("lng");
-			if (lat != null && lng != null) {
-				String url = "http://localhost/HTML/gmaps.html?x=$lat&y=$lng&z=18";
-				Map<String,Object> mapView = new HashMap<String,Object>();
-				mapView.put("title", "Map");
-				mapView.put("resource", url);
-				mapView.put("viewType", "html");
-				response.setView(mapView);
-
-				response.setValue("latit", lat);
-				response.setValue("longit", lng);
-			}
-			else {
-				response.setFlash("<B>$qString</B> not found");
-			}
-
+			else response.setFlash("<B>"+qString+"</B> not found");
 		}
 		catch(Exception e)  {
 			TraceBackService.trace(response, e);
@@ -400,7 +419,7 @@ public class AddressController {
 	}
 
 	public void viewMap(ActionRequest request, ActionResponse response)  {
-		if (GeneralService.getGeneral().getMapApiSelect() == "1") {
+		if (GeneralService.getGeneral().getMapApiSelect().equals("1")) {
 			viewMapGoogle(request, response);
 		} else {
 			viewMapOsm(request, response);
@@ -423,31 +442,38 @@ public class AddressController {
 			BigDecimal depLng = departureAddress.getLongit();
 			BigDecimal arrLat = arrivalAddress.getLatit();
 			BigDecimal arrLng =  arrivalAddress.getLongit();
-
-			if ( !(depLat != null && depLng != null)) {
+			BigDecimal zero = new BigDecimal(0);
+			LOG.debug("BEFORE departureLat = {}, departureLng={}", depLat,depLng);
+			if ( depLat.equals(0) && depLng.equals(0)) {
 				Map<String,Object> googleResponse = geocodeGoogle(departureString);
-				if (googleResponse.get("multiple") != null) {
-					response.setFlash("<B>$departureString</B> matches multiple locations. First selected."); 
+//				if (googleResponse.get("multiple") != null) {
+//					response.setFlash("<B>$departureString</B> matches multiple locations. First selected."); 
+//				}
+				if(googleResponse != null){
+					depLat = new BigDecimal(googleResponse.get("lat").toString());
+					depLng = new BigDecimal(googleResponse.get("lng").toString());
 				}
-				depLat = (BigDecimal) googleResponse.get("lat");
-				depLng = (BigDecimal) googleResponse.get("lng");
 			}
-			if ( !(arrLat != null && arrLng != null)) {
+			LOG.debug("departureLat = {}, departureLng={}", depLat,depLng);
+			LOG.debug("BEFORE arrivalLat = {}, arrivalLng={}", arrLat,arrLng);
+			if (depLat != zero && depLng != zero) {
 				Map<String,Object> googleResponse = geocodeGoogle(arrivalString);
-				if (googleResponse.get("multiple") != null) {
-					response.setFlash("<B>$arrivalString</B> matches multiple locations. First selected.");
+//				if (googleResponse.get("multiple") != null) {
+//					response.setFlash("<B>$arrivalString</B> matches multiple locations. First selected.");
+//				}
+				if(googleResponse != null){
+					arrLat = new BigDecimal(googleResponse.get("lat").toString());
+					arrLng = new BigDecimal(googleResponse.get("lng").toString());
 				}
-				arrLat = (BigDecimal) googleResponse.get("lat");
-				arrLng = (BigDecimal) googleResponse.get("lng");
 			}
-			if (arrLat != null && arrLng != null) {
-				String url = "http://localhost/HTML/directions.html?dx=$depLat&dy=$depLng&ax=$arrLat&ay=$arrLng";
+			LOG.debug("arrivalLat = {}, arrivalLng={}", arrLat,arrLng);
+			if (arrLat != zero && arrLng != zero) {
+				String url = String.format("map/directions.html?dx=%f&dy=%f&ax=%f&ay=%f",depLat,depLng,arrLat,arrLng);
 				Map<String,Object> mapView = new HashMap<String,Object>();
 				mapView.put("title", "Directions");
 				mapView.put("resource", url);
 				mapView.put("viewType", "html");
 				response.setView(mapView);
-
 				response.setValue("latit", arrLat);	
 				response.setValue("longit", arrLng);	
 			}
@@ -464,7 +490,7 @@ public class AddressController {
 		Partner currPartner = uis.getUserPartner();
 		Address departureAddress = currPartner.getDeliveryAddress();
 		if (departureAddress != null) {
-			if (GeneralService.getGeneral().getMapApiSelect() == "1") {
+			if (GeneralService.getGeneral().getMapApiSelect().equals("1")) {
 				directionsMapGoogle(request, response);
 			} else {
 				response.setFlash("Not implemented yet for OSM! Please select the google service");
