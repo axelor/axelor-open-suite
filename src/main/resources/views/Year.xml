@@ -14,19 +14,19 @@
     </grid>
     
     <form name="year-account-form" title="Fiscal year" model="com.axelor.apps.base.db.Year" cols="4"
-    onNew="action-year-record-new" >
+    onNew="action-year-record-new" onSave="action-year-check-date" >
         <field name="name"/>
         <field name="code"/>
-        <field name="fromDate" onChange="action-year-check-date"/>
-        <field name="toDate" onChange="action-year-check-date"/>
+        <field name="fromDate" />
+        <field name="toDate"  />
         <field name="reportedBalanceDate"/>
         <field name="company" widget="SuggestBox"/>
         <separator colSpan="4"/>
 <!--         <field name="reportedBalanceLineList" colSpan="4"/> -->
         <field name="status"/>
-        <button name="close" title="Close fiscal year" colSpan="2" onClick="action-year-close-method,save"/>
+        <button name="close" title="Close fiscal year" colSpan="2" onClick="action-year-check-date,action-year-close-method,save"/>
     	<field name="periodDurationSelect" />
-    	<button name="generatePeriods" title="Generate periods" colSpan="2" onClick="save,action-year-validate-generate-period,com.axelor.apps.account.web.YearController:generatePeriods()"/>
+    	<button name="generatePeriods" title="Generate periods" colSpan="2" onClick="action-year-check-date,save,action-year-validate-generate-period,com.axelor.apps.account.web.YearController:generatePeriods,save"/>
     	<field name="periodList" colSpan="4" />
     </form>
     
@@ -47,6 +47,7 @@
 	
 	<action-validate name="action-year-check-date">
 		<error message="Enter proper 'From' and 'To' date." if="fromDate != null &amp;&amp; toDate != null &amp;&amp; fromDate &gt; toDate" action="action-year-set-empty-date"/>
+		<error message="Fiscal year already exist for 'From' and 'To' date." if="!Year.all().filter('((fromDate &gt;= ?1 AND fromDate &lt;= ?2) OR (toDate &gt;= ?3 AND toDate &lt;= ?4)) AND company = ?5 AND id != ?6',fromDate,toDate,fromDate,toDate,company,id).fetch().empty" />
 	</action-validate>
 	
 	<action-record name="action-year-set-empty-date" model="com.axelor.apps.base.db.Year">
