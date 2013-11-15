@@ -33,6 +33,11 @@ package com.axelor.apps.base.web;
 import groovy.json.JsonBuilder;
 import groovy.json.JsonOutput;
 import groovy.lang.Closure;
+import groovy.util.XmlSlurper;
+import groovy.util.slurpersupport.GPathResult;
+import groovy.util.slurpersupport.Node;
+import groovy.util.slurpersupport.NodeChild;
+import groovy.util.slurpersupport.NodeChildren;
 
 import java.io.File;
 import java.io.IOException;
@@ -284,34 +289,36 @@ public class AddressController {
 			mapResponse.put("followRedirects", false);
 			mapResponse.put("useCaches", false);
 			mapResponse.put("sslTrustAllCerts", true);
-
 			Response restResponse = restClient.get(mapResponse);
+			GPathResult searchresults = new XmlSlurper().parseText(restResponse.getContentAsString());
+			//NodeChildren ndch = (NodeChildren) searchresults.children();
+			Iterator<Node> iterator = searchresults.childNodes();
+//			if (places.size() > 1) {
+//				response.setFlash("<B>$qString</B> matches multiple locations. First selected.");
+//			}
+//			def firstPlaceFound = places[0];
 
-			/*GPathResult searchresults = new XmlSlurper().parseText(restResponse.parsedResponseContent.text);
-			def places = searchresults.place;
-			if (places.size() > 1) {
-				response.setFlash("<B>$qString</B> matches multiple locations. First selected.");
-			}
-			def firstPlaceFound = places[0];
-
-
-			if (firstPlaceFound != null) {
-				BigDecimal latit = new BigDecimal(firstPlaceFound.@lat.text());
-				BigDecimal longit = new BigDecimal(firstPlaceFound.@lon.text());
-
-				String url = "http://localhost/Leaflet/examples/oneMarker.html?x=$latit&y=$longit&z=18";
-				Map<String,Object> mapView = new HashMap<String,Object>();
-				mapView.put("title", "Map");
-				mapView.put("resource", url);
-				mapView.put("viewType", "html");
-				response.setView(mapView);
-
-				response.setValue("latit", latit);
-				response.setValue("longit", longit);
+			if(iterator.hasNext()){
+				Node node = iterator.next();
+				Map attributes = node.attributes();
+				if(attributes.containsKey("lat") && attributes.containsKey("lon")){
+					BigDecimal latit = new BigDecimal(node.attributes().get("lat").toString());
+					BigDecimal longit = new BigDecimal(node.attributes().get("lon").toString());
+					String url = String.format("map/oneMarker.html?x=%f&y=%f&z=18",latit,longit);
+					LOG.debug("URL = {}",url);
+					Map<String,Object> mapView = new HashMap<String,Object>();
+					mapView.put("title", "Map");
+					mapView.put("resource", url);
+					mapView.put("viewType", "html");
+					response.setView(mapView);
+					response.setValue("latit", latit);
+					response.setValue("longit", longit);
+				}
+				else response.setFlash(String.format("<B>%s</B> not found",qString));
 			}
 			else {
-				response.setFlash("<B>$qString</B> not found");
-			}*/
+				response.setFlash(String.format("<B>%s</B> not found",qString));
+			}
 		}
 		catch(Exception e)  {
 			TraceBackService.trace(response, e); 
