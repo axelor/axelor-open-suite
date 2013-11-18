@@ -449,31 +449,23 @@ public class AddressController {
 			BigDecimal arrLat = arrivalAddress.getLatit();
 			BigDecimal arrLng =  arrivalAddress.getLongit();
 			BigDecimal zero = new BigDecimal(0);
-			LOG.debug("BEFORE departureLat = {}, departureLng={}", depLat,depLng);
-			if ( depLat.equals(0) && depLng.equals(0)) {
+			if (BigDecimal.ZERO.compareTo(depLat) == 0 || BigDecimal.ZERO.compareTo(depLng) == 0) {
 				Map<String,Object> googleResponse = geocodeGoogle(departureString);
-//				if (googleResponse.get("multiple") != null) {
-//					response.setFlash("<B>$departureString</B> matches multiple locations. First selected."); 
-//				}
 				if(googleResponse != null){
 					depLat = new BigDecimal(googleResponse.get("lat").toString());
 					depLng = new BigDecimal(googleResponse.get("lng").toString());
 				}
 			}
 			LOG.debug("departureLat = {}, departureLng={}", depLat,depLng);
-			LOG.debug("BEFORE arrivalLat = {}, arrivalLng={}", arrLat,arrLng);
-			if (depLat != zero && depLng != zero) {
+			if (BigDecimal.ZERO.compareTo(arrLat) == 0  || BigDecimal.ZERO.compareTo(arrLng) == 0 ) {
 				Map<String,Object> googleResponse = geocodeGoogle(arrivalString);
-//				if (googleResponse.get("multiple") != null) {
-//					response.setFlash("<B>$arrivalString</B> matches multiple locations. First selected.");
-//				}
 				if(googleResponse != null){
 					arrLat = new BigDecimal(googleResponse.get("lat").toString());
 					arrLng = new BigDecimal(googleResponse.get("lng").toString());
 				}
 			}
 			LOG.debug("arrivalLat = {}, arrivalLng={}", arrLat,arrLng);
-			if (arrLat != zero && arrLng != zero) {
+			if (BigDecimal.ZERO.compareTo(depLat) != 0  && BigDecimal.ZERO.compareTo(depLng) != 0 && BigDecimal.ZERO.compareTo(arrLat) != 0 && BigDecimal.ZERO.compareTo(arrLng) != 0) {
 				String url = String.format("map/directions.html?dx=%f&dy=%f&ax=%f&ay=%f",depLat,depLng,arrLat,arrLng);
 				Map<String,Object> mapView = new HashMap<String,Object>();
 				mapView.put("title", "Directions");
