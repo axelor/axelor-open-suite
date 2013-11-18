@@ -269,58 +269,55 @@ public class AddressController {
 		Address address = request.getContext().asType(Address.class);
 		String qString = address.getAddressL4()+" ,"+address.getAddressL6();
 		LOG.debug("qString = {}", qString);
-
+		BigDecimal lat = address.getLatit();
+		BigDecimal lon = address.getLongit();
 		try {
-			RESTClient restClient = new RESTClient("http://nominatim.openstreetmap.org/");
-			Map<String,Object> mapQuery = new HashMap<String,Object>();
-			mapQuery.put("q", qString);
-			mapQuery.put("format", "xml");
-			mapQuery.put("polygon", true);
-			mapQuery.put("addressdetails", true);
-			Map<String,Object> mapHeaders = new HashMap<String,Object>();
-			mapHeaders.put("HTTP referrer", "axelor");
-			Map<String,Object> mapResponse = new HashMap<String,Object>();
-			mapResponse.put("path", "/search");
-			mapResponse.put("accept", ContentType.JSON);
-			mapResponse.put("query", mapQuery);
-			mapResponse.put("headers", mapHeaders);
-			mapResponse.put("connectTimeout", 5000);
-			mapResponse.put("readTimeout", 10000);
-			mapResponse.put("followRedirects", false);
-			mapResponse.put("useCaches", false);
-			mapResponse.put("sslTrustAllCerts", true);
-			Response restResponse = restClient.get(mapResponse);
-			GPathResult searchresults = new XmlSlurper().parseText(restResponse.getContentAsString());
-			//NodeChildren ndch = (NodeChildren) searchresults.children();
-			Iterator<Node> iterator = searchresults.childNodes();
-//			if (places.size() > 1) {
-//				response.setFlash("<B>$qString</B> matches multiple locations. First selected.");
-//			}
-//			def firstPlaceFound = places[0];
-
-			if(iterator.hasNext()){
-				Node node = iterator.next();
-				Map attributes = node.attributes();
-				if(attributes.containsKey("lat") && attributes.containsKey("lon")){
-					BigDecimal latit = new BigDecimal(node.attributes().get("lat").toString());
-					BigDecimal longit = new BigDecimal(node.attributes().get("lon").toString());
-					String url = String.format("map/oneMarker.html?x=%f&y=%f&z=18",latit,longit);
-					LOG.debug("URL = {}",url);
-					Map<String,Object> mapView = new HashMap<String,Object>();
-					mapView.put("title", "Map");
-					mapView.put("resource", url);
-					mapView.put("viewType", "html");
-					response.setView(mapView);
-					response.setValue("latit", latit);
-					response.setValue("longit", longit);
+			if(BigDecimal.ZERO.compareTo(lat) == 0 ||  BigDecimal.ZERO.compareTo(lon) == 0 ){
+				RESTClient restClient = new RESTClient("http://nominatim.openstreetmap.org/");
+				Map<String,Object> mapQuery = new HashMap<String,Object>();
+				mapQuery.put("q", qString);
+				mapQuery.put("format", "xml");
+				mapQuery.put("polygon", true);
+				mapQuery.put("addressdetails", true);
+				Map<String,Object> mapHeaders = new HashMap<String,Object>();
+				mapHeaders.put("HTTP referrer", "axelor");
+				Map<String,Object> mapResponse = new HashMap<String,Object>();
+				mapResponse.put("path", "/search");
+				mapResponse.put("accept", ContentType.JSON);
+				mapResponse.put("query", mapQuery);
+				mapResponse.put("headers", mapHeaders);
+				mapResponse.put("connectTimeout", 5000);
+				mapResponse.put("readTimeout", 10000);
+				mapResponse.put("followRedirects", false);
+				mapResponse.put("useCaches", false);
+				mapResponse.put("sslTrustAllCerts", true);
+				Response restResponse = restClient.get(mapResponse);
+				GPathResult searchresults = new XmlSlurper().parseText(restResponse.getContentAsString());
+				Iterator<Node> iterator = searchresults.childNodes();
+				if(iterator.hasNext()){
+					Node node = iterator.next();
+					Map attributes = node.attributes();
+					if(attributes.containsKey("lat") && attributes.containsKey("lon")){
+						if(BigDecimal.ZERO.compareTo(lat) == 0)
+							lat = new BigDecimal(node.attributes().get("lat").toString());
+						if(BigDecimal.ZERO.compareTo(lon) == 0)
+							lon = new BigDecimal(node.attributes().get("lon").toString());
+						response.setValue("latit", lat);
+						response.setValue("longit", lon);
+					}
 				}
-				else response.setFlash(String.format("<B>%s</B> not found",qString));
 			}
-			else {
-				response.setFlash(String.format("<B>%s</B> not found",qString));
-			}
-		}
-		catch(Exception e)  {
+			if(BigDecimal.ZERO.compareTo(lat) != 0 && BigDecimal.ZERO.compareTo(lon) != 0){
+				String url = String.format("map/oneMarker.html?x=%f&y=%f&z=18",lat,lon);
+				LOG.debug("URL = {}",url);
+				Map<String,Object> mapView = new HashMap<String,Object>();
+				mapView.put("title", "Map");
+				mapView.put("resource", url);
+				mapView.put("viewType", "html");
+				response.setView(mapView);
+			}else response.setFlash(String.format("<B>%s</B> not found",qString));
+			
+		}catch(Exception e)  {
 			TraceBackService.trace(response, e); 
 		}
 	}
@@ -398,27 +395,29 @@ public class AddressController {
 	public void viewMapGoogle(ActionRequest request, ActionResponse response)  {
 		Address address = request.getContext().asType(Address.class);
 		String qString = address.getAddressL4()+" ,"+address.getAddressL6();
+		BigDecimal lat = address.getLatit();
+		BigDecimal lon = address.getLongit();
+		LOG.debug("qString = {}", qString);
 		try {
-			JSONObject googleResponse = geocodeGoogle(qString);
-//			if (googleResponse == null || googleResponse.get("multiple") != null) {
-//				response.setFlash("<B>"+qString+"</B> matches multiple locations. First selected.");
-//			}
-			if(googleResponse != null){
-				Double lat = (Double)(googleResponse.get("lat"));
-				Double lng = (Double)(googleResponse.get("lng"));
-				if (lat != null && lng != null) {
-					String url = String.format("map/gmaps.html?x=%f&y=%f&z=18",lat,lng);
-					Map<String,Object> mapView = new HashMap<String,Object>();
-					mapView.put("title", "Map");
-					mapView.put("resource", url);
-					mapView.put("viewType", "html");
-					response.setView(mapView);
+			if(BigDecimal.ZERO.compareTo(lat) == 0 || BigDecimal.ZERO.compareTo(lon) == 0){
+				JSONObject googleResponse = geocodeGoogle(qString);
+				if(googleResponse != null){
+					if(BigDecimal.ZERO.compareTo(lat) == 0)
+						lat = new BigDecimal(googleResponse.get("lat").toString());
+					if(BigDecimal.ZERO.compareTo(lon) == 0)
+						lon = new BigDecimal(googleResponse.get("lng").toString());
 					response.setValue("latit", lat);
-					response.setValue("longit", lng);
+					response.setValue("longit", lon);
 				}
-				else response.setFlash("<B>"+qString+"</B> not found");
 			}
-			else response.setFlash("<B>"+qString+"</B> not found");
+			if(BigDecimal.ZERO.compareTo(lat) != 0 && BigDecimal.ZERO.compareTo(lon) != 0){
+				String url = String.format("map/gmaps.html?x=%f&y=%f&z=18",lat,lon);
+				Map<String,Object> mapView = new HashMap<String,Object>();
+				mapView.put("title", "Map");
+				mapView.put("resource", url);
+				mapView.put("viewType", "html");
+				response.setView(mapView);
+			}else response.setFlash(String.format("<B>%s</B> not found",qString));
 		}
 		catch(Exception e)  {
 			TraceBackService.trace(response, e);
@@ -500,7 +499,7 @@ public class AddressController {
 			if (GeneralService.getGeneral().getMapApiSelect().equals("1")) {
 				directionsMapGoogle(request, response);
 			} else {
-				response.setFlash("Not implemented yet for OSM! Please select the google service");
+				response.setFlash("Feature currently not available with Open Street Maps.");
 			}
 		} else {
 			response.setFlash("Current user's partner delivery address not set");
