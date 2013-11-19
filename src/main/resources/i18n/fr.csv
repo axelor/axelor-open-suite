@@ -1013,30 +1013,30 @@
 "com.axelor.apps.account.db.IrrecoverableReportLine","name","field","Nom","Nom",,
 "com.axelor.apps.organisation.db.JobOffer","name","field","Offer title","Intitulé offre",,
 "com.axelor.apps.organisation.db.JobOffer","code","field","Code","Code",,
-"com.axelor.apps.organisation.db.JobOffer","project","field","Business","Projet",,
-"com.axelor.apps.organisation.db.JobOffer","fromDate","field","Open from","Valide de",,
-"com.axelor.apps.organisation.db.JobOffer","toDate","field","To","à",,
-"com.axelor.apps.organisation.db.JobOffer","nbrOfPositions","field","Nbr of Positions","Nbr de Postes",,
+"com.axelor.apps.organisation.db.JobOffer","project","field","Business","Projet",,"A renseigner uniquement si l'offre d'emploi est associée à un projet."
+"com.axelor.apps.organisation.db.JobOffer","fromDate","field","Open from","Valide de",,"Date à partir de laquelle l'offre est valable."
+"com.axelor.apps.organisation.db.JobOffer","toDate","field","To","à",,"Date à partir de laquelle l'offre s'arrête."
+"com.axelor.apps.organisation.db.JobOffer","nbrOfPositions","field","Nbr of Positions","Nbr de Postes",,"Nombre de postes ouverts via cette offre."
 "com.axelor.apps.organisation.db.JobOffer","description","field","Description","Description",,
 "com.axelor.apps.organisation.db.JobOffer","contractTypeSelect","field","Type de contrat","Type de contrat",,
 "com.axelor.apps.organisation.db.JobOffer","remunerationTypeSelect","field","Rem. brute annuelle","Type rémunération",,
 "com.axelor.apps.organisation.db.JobOffer","advantages","field","Advantages","Avantages",,
-"com.axelor.apps.organisation.db.JobOffer","region","field","Zone Géo","Région",,
+"com.axelor.apps.organisation.db.JobOffer","region","field","Zone Géo","Région",,"Secteur géographique couvert par l'offre."
 "com.axelor.apps.organisation.db.JobOffer","geoZoneCompl","field","Geo. Zone Complement","Complément Zone Géographique",,
 "com.axelor.apps.organisation.db.JobOffer","domainTypeSelect","field","Domain","Domaine compétence",,
 "com.axelor.apps.organisation.db.JobOffer","jobTitle","field","Job title","Intitulé poste",,
-"com.axelor.apps.organisation.db.JobOffer","educationLevelSelect","field","Niveau d'étude","Niveau formation",,
+"com.axelor.apps.organisation.db.JobOffer","educationLevelSelect","field","Niveau d'étude","Niveau formation",,"Niveau de formation minimum pour postuler à l'offre."
 "com.axelor.apps.organisation.db.JobOffer","experienceTypeSelect","field","Expérience","Type expérience",,
-"com.axelor.apps.organisation.db.JobOffer","languageSet","field","Language","Langues",,
+"com.axelor.apps.organisation.db.JobOffer","languageSet","field","Language","Langues",,"Langues requises pour postuler à l'offre."
 "com.axelor.apps.organisation.db.JobOffer","trainingLineSet","field","Training","Formations",,
-"com.axelor.apps.organisation.db.JobOffer","branch","field","Branch","Etablissement",,
+"com.axelor.apps.organisation.db.JobOffer","branch","field","Branch","Etablissement",,"Etablissement auquel le poste est associé."
 "com.axelor.apps.account.db.Journal","importId","field",,"ID Import",,
 "com.axelor.apps.account.db.Journal","code","field","Code","Code",,
 "com.axelor.apps.account.db.Journal","name","field","Name","Nom",,
 "com.axelor.apps.account.db.Journal","type","field","Type","Type",,
-"com.axelor.apps.account.db.Journal","exportCode","field","Export code","Code d'export",,
-"com.axelor.apps.account.db.Journal","excessPaymentOk","field","Allow payments greater than due amount ?","Autoriser règlement supérieur aux montants dus ?",,
-"com.axelor.apps.account.db.Journal","editReceiptOk","field","Edit receipt ?","Editer un reçu ?",,
+"com.axelor.apps.account.db.Journal","exportCode","field","Export code","Code d'export",,"*"
+"com.axelor.apps.account.db.Journal","excessPaymentOk","field","Allow payments greater than due amount ?","Autoriser règlement supérieur aux montants dus ?",,"Dans le cadre d'un paiement, si un règlement est supérieur au montant dû (trop perçu), le paiement ne pourra pas être validé."
+"com.axelor.apps.account.db.Journal","editReceiptOk","field","Edit receipt ?","Editer un reçu ?",,"*"
 "com.axelor.apps.account.db.Journal","descriptionModel","field","Label for automatic moveline generation","Libellé pour génération automatique de la description des écritures",,
 "com.axelor.apps.account.db.Journal","descriptionIdentificationOk","field","Add Move line N° in the description","Ajouter le n° pièce dans la description",,
 "com.axelor.apps.account.db.Journal","notExportOk","field","Do not export ?","Ne pas exporter le contenu ?",,
@@ -1054,9 +1054,9 @@
 "com.axelor.apps.account.db.KeyPricingList","level4","field","Level 4","Niveau 4",,
 "com.axelor.apps.base.db.Keyword","importId","field",,"Id Import",,
 "com.axelor.apps.base.db.Keyword","keyWord","field","Keyword","Mot clé",,
-"com.axelor.apps.base.db.Keyword","typeSelect","field","Type","Domaine",,
+"com.axelor.apps.base.db.Keyword","typeSelect","field","Type","Domaine",,"Champ utilisé pour filtrer les mots clés par type."
 "com.axelor.apps.base.db.Language","name","field","Name","Nom",,
-"com.axelor.apps.base.db.Language","code","field","Code","Code",,
+"com.axelor.apps.base.db.Language","code","field","Code","Code",,"Le code doit respecter la nomenclature ISO des langues (exemple : fr_FR, en_EN)"
 "com.axelor.apps.crm.db.Lead","importId","field",,"Id Import",,
 "com.axelor.apps.crm.db.Lead","titleSelect","field","Title","Civilité",,
 "com.axelor.apps.crm.db.Lead","name","field","Last name","Nom",,
@@ -1066,62 +1066,62 @@
 "com.axelor.apps.crm.db.Lead","jobTitle","field","Job Title","Fonction",,
 "com.axelor.apps.crm.db.Lead","mobilePhone","field","Mobile N°","N° Mobile",,
 "com.axelor.apps.crm.db.Lead","fixedPhone","field","Fixed Phone","N° Fixe",,
-"com.axelor.apps.crm.db.Lead","department","field","Department/Division","Département",,
+"com.axelor.apps.crm.db.Lead","department","field","Department/Division","Département/Service",,
 "com.axelor.apps.crm.db.Lead","fax","field","Fax","Fax",,
 "com.axelor.apps.crm.db.Lead","webSite","field","Website","Site web",,
-"com.axelor.apps.crm.db.Lead","primaryAddress","field","Address","Adresse",,
-"com.axelor.apps.crm.db.Lead","primaryCity","field","City","Ville",,
-"com.axelor.apps.crm.db.Lead","primaryState","field","State","Statut",,
+"com.axelor.apps.crm.db.Lead","primaryAddress","field","Address","Adresse",,"Champ correspondant à l'adresse L4 de la norme postale."
+"com.axelor.apps.crm.db.Lead","primaryCity","field","City","Ville",,"Si le code postal associé est un cedex, le nom de la ville devra comporter un cedex (exemple : Paris Cedex 2, Rouen Cedex)"
+"com.axelor.apps.crm.db.Lead","primaryState","field","State","Etat/Province",,"Utilisé seulement pour certains pays comme les Etats-Unis, la Chine..."
 "com.axelor.apps.crm.db.Lead","primaryPostalCode","field","Postal code","Code postal",,
 "com.axelor.apps.crm.db.Lead","primaryCountry","field","Country","Pays",,
-"com.axelor.apps.crm.db.Lead","otherAddress","field","Address","Adresse",,
-"com.axelor.apps.crm.db.Lead","otherCity","field","City","Ville",,
-"com.axelor.apps.crm.db.Lead","otherState","field","State","Autre statut",,
+"com.axelor.apps.crm.db.Lead","otherAddress","field","Address","Adresse",,"Champ correspondant à l'adresse L4 de la norme postale."
+"com.axelor.apps.crm.db.Lead","otherCity","field","City","Ville",,"Si le code postal associé est un cedex, le nom de la ville devra comporter un cedex (exemple : Paris Cedex 2, Rouen Cedex)"
+"com.axelor.apps.crm.db.Lead","otherState","field","State","Etat/Province",,"Utilisé seulement pour certains pays comme les Etats-Unis, la Chine..."
 "com.axelor.apps.crm.db.Lead","otherPostalCode","field","Postal code","Code Postal",,
 "com.axelor.apps.crm.db.Lead","otherCountry","field","Country","Pays",,
-"com.axelor.apps.crm.db.Lead","isCopyAddress","field","Copy primary address","Dupliquer 1ère adresse ?",,
+"com.axelor.apps.crm.db.Lead","isCopyAddress","field","Copy primary address","Dupliquer 1ère adresse ?",,"Champ permettant de recopier les données d'adressee à gauche pour compléter l'adresse secondaire à droite."
 "com.axelor.apps.crm.db.Lead","emailAddress","field","Email","Email",,
 "com.axelor.apps.crm.db.Lead","picture","field","Picture","Image",,
 "com.axelor.apps.crm.db.Lead","description","field","Description","Description",,
-"com.axelor.apps.crm.db.Lead","contactDate","field","Contact date","Date contact",,
+"com.axelor.apps.crm.db.Lead","contactDate","field","Contact date","Date de contact",,
 "com.axelor.apps.crm.db.Lead","statusSelect","field","Status","Etat",,
-"com.axelor.apps.crm.db.Lead","source","field","Source","Source",,
-"com.axelor.apps.crm.db.Lead","statusDescription","field","Status description","Détail Etat",,
-"com.axelor.apps.crm.db.Lead","opportunityAmount","field","Opportunity amount","Montant opportunité",,
-"com.axelor.apps.crm.db.Lead","sourceDescription","field","Source description","Description provenance",,
-"com.axelor.apps.crm.db.Lead","campaign","field","Marketing Campaign","Campagne",,
-"com.axelor.apps.crm.db.Lead","referredBy","field","Referred by","Référencé par",,
-"com.axelor.apps.crm.db.Lead","isDoNotCall","field","Do not call ?","Ne pas appeler",,
-"com.axelor.apps.crm.db.Lead","isDoNotSendEmail","field","Do not send email ?","Pas d'emailing",,
-"com.axelor.apps.crm.db.Lead","partner","field","Contact","Tiers",,
-"com.axelor.apps.crm.db.Lead","userInfo","field","Assigned to","Assigné à ",,
-"com.axelor.apps.crm.db.Lead","team","field","Team","Equipe",,
-"com.axelor.apps.crm.db.Lead","snProfile","field",,"Profil Rés. Sociaux",,
+"com.axelor.apps.crm.db.Lead","source","field","Source","Source",,"Source (canal) de provenance de la Piste."
+"com.axelor.apps.crm.db.Lead","statusDescription","field","Status description","Détail Etat",,"Champ permettant de renseigner des informations complémentaires relatives à un changement d'Etat."
+"com.axelor.apps.crm.db.Lead","opportunityAmount","field","Opportunity amount","Montant opportunité",,"Montant d'une éventuelle opportunité associée à cette Piste à qualifier."
+"com.axelor.apps.crm.db.Lead","sourceDescription","field","Source description","Description provenance",,"Champ permettant de renseigner des informations complémentaires relatives à la provenance de la Piste.."
+"com.axelor.apps.crm.db.Lead","campaign","field","Marketing Campaign","Campagne",,"Dans le cas où le lead aient pris contact avec la société suite à une campagne, choisir la campagne associée."
+"com.axelor.apps.crm.db.Lead","referredBy","field","Referred by","Cité par",,"Personne ayant apporté ce contact."
+"com.axelor.apps.crm.db.Lead","isDoNotCall","field","Do not call ?","Ne pas appeler",,"Si cochée, indique que la piste ne souhaite pas recevoir d'appels dans le cadre d'une campagne téléphonique."
+"com.axelor.apps.crm.db.Lead","isDoNotSendEmail","field","Do not send email ?","Pas d'emailing",,"Si cochée, indique que la piste ne souhaite pas recevoir d'emails dans le cadre d'une campagne téléphonique."
+"com.axelor.apps.crm.db.Lead","partner","field","Contact","Tiers",,"Champ rempli automatiquement lorsque la Piste est convertie en Tiers (lien vers le Tiers créé)."
+"com.axelor.apps.crm.db.Lead","userInfo","field","Assigned to","Assigné à ",,"Utilisateur (employé) en charge du suivi de cette Piste."
+"com.axelor.apps.crm.db.Lead","team","field","Team","Equipe",,"Equipe en charge du suivi de cette Piste"
+"com.axelor.apps.crm.db.Lead","snProfile","field",,"Profil Rés. Sociaux",,"*"
 "com.axelor.apps.crm.db.Lead","fullName","field","Nom du Contact","Nom complet",,
-"com.axelor.apps.organisation.db.LeaveRequest","employeeUserInfo","field","Employee","Employé",,
-"com.axelor.apps.organisation.db.LeaveRequest","requestDate","field","Request Date","Date",,
-"com.axelor.apps.organisation.db.LeaveRequest","startDateT","field","From Date/Time","Date/heure de début",,
-"com.axelor.apps.organisation.db.LeaveRequest","endDateT","field","To Date/Time","Date/heure de fin",,
-"com.axelor.apps.organisation.db.LeaveRequest","nbrOfDayOff","field","Nbr of Days Off","Nbre de jours de congés",,
+"com.axelor.apps.organisation.db.LeaveRequest","employeeUserInfo","field","Employee","Employé",,"Champ renseigné automatiquement avec l'employé associé à l'utilisateur."
+"com.axelor.apps.organisation.db.LeaveRequest","requestDate","field","Request Date","Date",,"Champ rempli automatiquement avec la date du jour"
+"com.axelor.apps.organisation.db.LeaveRequest","startDateT","field","From Date/Time","Date/heure de début",,"Date de prise d'effet réelle du congé. Si le congé débute un Vendredi soir (sans travail le week-end), indiquez comme début de congé le Lundi matin."
+"com.axelor.apps.organisation.db.LeaveRequest","endDateT","field","To Date/Time","Date/heure de fin",,"Date de fin réelle du congé. Si le congé se termine un Mercredi soir, mettre la fin de congé au Mercredi soir (et non Jeudi Matin)."
+"com.axelor.apps.organisation.db.LeaveRequest","nbrOfDayOff","field","Nbr of Days Off","Nbre de jours de congés",,"*"
 "com.axelor.apps.organisation.db.LeaveRequest","reasonTask","field","Reason","Motif (tâche)",,
-"com.axelor.apps.organisation.db.LeaveRequest","managerUserInfo","field","Manager","Responsable",,
+"com.axelor.apps.organisation.db.LeaveRequest","managerUserInfo","field","Manager","Responsable",,"Responsable ayant validé la note de frais. Le responsable de chaque employé est défini sur la fiche employé."
 "com.axelor.apps.organisation.db.LeaveRequest","approvalDate","field","Approval Date","Date d'acceptation",,
-"com.axelor.apps.organisation.db.LeaveRequest","remainingDaysOnPeriod","field","Remaining days for the period","Reste à prendre sur la période",,
+"com.axelor.apps.organisation.db.LeaveRequest","remainingDaysOnPeriod","field","Remaining days for the period","Reste à prendre sur la période",,"Nombre de congé restant à prendre sur la période annuelle de prise des congés."
 "com.axelor.apps.organisation.db.LeaveRequest","statusSelect","field","Request status","Etat de la demande",,
-"com.axelor.apps.organisation.db.LeaveRequest","accounted","field","Accounted","Pris en compte",,
+"com.axelor.apps.organisation.db.LeaveRequest","accounted","field","Accounted","Pris en compte",,"*"
 "com.axelor.apps.supplychain.db.Location","importId","field",,"Id Import",,
 "com.axelor.apps.supplychain.db.Location","name","field","Nom","Nom",,
-"com.axelor.apps.supplychain.db.Location","parent","field","Parent","Emplacement Parent",,
-"com.axelor.apps.supplychain.db.Location","company","field","Company","Société",,
-"com.axelor.apps.supplychain.db.Location","partner","field","Partner","Tiers",,
+"com.axelor.apps.supplychain.db.Location","parent","field","Parent","Emplacement Parent",,"Champ permettant de définir une hiérarchie entre les emplacements."
+"com.axelor.apps.supplychain.db.Location","company","field","Company","Société",,"*"
+"com.axelor.apps.supplychain.db.Location","partner","field","Partner","Tiers",,"*"
 "com.axelor.apps.supplychain.db.Location","typeSelect","field","Type","Type d'emplacement",,
-"com.axelor.apps.supplychain.db.Location","isDefaultLocation","field","Default location","Emplacement par défault",,
-"com.axelor.apps.supplychain.db.Location","locationLineList","field","Location lines","Produits présents dans l'emplacement (vue consolidée)",,
-"com.axelor.apps.supplychain.db.Location","detailsLocationLineList","field","Details Location lines","Produits présents dans l'emplacement (vue non-consolidée)",,
+"com.axelor.apps.supplychain.db.Location","isDefaultLocation","field","Default location","Emplacement par défault",,"Un seul emplacement par défaut, par type et par société est possible."
+"com.axelor.apps.supplychain.db.Location","locationLineList","field","Location lines","Produits présents dans l'emplacement (vue consolidée)",,"Liste des produits présents dans l'entrepôt avec leurs stocks associés."
+"com.axelor.apps.supplychain.db.Location","detailsLocationLineList","field","Details Location lines","Produits présents dans l'emplacement (vue non-consolidée)",,"Liste des produits présents dans l'entrepôt avec leurs stocks associés avec le détail par N° lot/série et variantes."
 "com.axelor.apps.supplychain.db.LocationLine","location","field","Location","Emplacement",,
 "com.axelor.apps.supplychain.db.LocationLine","product","field","Product","Produit",,
-"com.axelor.apps.supplychain.db.LocationLine","currentQty","field","Current quantity","Qté actuelle",,
-"com.axelor.apps.supplychain.db.LocationLine","futureQty","field","Future quantity","Qté future",,
+"com.axelor.apps.supplychain.db.LocationLine","currentQty","field","Current quantity","Qté actuelle",,"Quantité actuelle sur l'ERP dans l'emplacement."
+"com.axelor.apps.supplychain.db.LocationLine","futureQty","field","Future quantity","Qté future",,"Quantité future tenant compte des arrivages et livraisons de produit à venir (mouvements de stock au statut 'Planifié')"
 "com.axelor.apps.supplychain.db.LocationLine","lastFutureStockMoveDate","field","Last Future Stock Move","Date dernier Mvt Future",,
 "com.axelor.apps.supplychain.db.LocationLine","trackingNumber","field","TrackingNumber","N° suivi",,
 "com.axelor.apps.supplychain.db.LocationLine","productVariant","field","Variants","Variante produit",,
@@ -1135,19 +1135,19 @@
 "com.axelor.apps.base.db.Mail","code","field","Code","Code",,
 "com.axelor.apps.base.db.Mail","name","field","Label","Libellé",,
 "com.axelor.apps.base.db.Mail","typeSelect","field","Type","Type",,
-"com.axelor.apps.base.db.Mail","objectConcernedSelect","field","Element concerned","Objet concerné",,
+"com.axelor.apps.base.db.Mail","objectConcernedSelect","field","Element concerned","Objet concerné",,"Exemple : "
 "com.axelor.apps.base.db.Mail","mailModel","field","Model","Modèle",,
 "com.axelor.apps.base.db.Mail","addressEmail","field","Email address","Adresse(s) email",,
-"com.axelor.apps.base.db.Mail","subject","field","Subject","Sujet",,
+"com.axelor.apps.base.db.Mail","subject","field","Subject","Sujet",,"Sujet ou Objet du mail."
 "com.axelor.apps.base.db.Mail","content","field","Content","Contenu",,
-"com.axelor.apps.base.db.Mail","sendScheduleDate","field","Forecasted Sent Date","Date d'envoi prévue",,
+"com.axelor.apps.base.db.Mail","sendScheduleDate","field","Forecasted Sent Date","Date d'envoi prévue",,"Date à laquelle le mail doit être envoyé."
 "com.axelor.apps.base.db.Mail","sendRealDate","field","Sent Date","Date d'envoi réelle",,
-"com.axelor.apps.base.db.Mail","partner","field","Recipient","Destinataire",,
-"com.axelor.apps.base.db.Mail","reminderHistory","field","Reminder line","Ligne de relance",,
-"com.axelor.apps.base.db.Mail","cashRegisterLine","field","Cashier","Fermeture caisse",,
+"com.axelor.apps.base.db.Mail","partner","field","Recipient","Destinataire",,"Liste des destinataires du courrier ou de l'email."
+"com.axelor.apps.base.db.Mail","reminderHistory","field","Reminder line","Ligne de relance",,"Indique que l'email est associé au processus de relance."
+"com.axelor.apps.base.db.Mail","cashRegisterLine","field","Cashier","Fermeture caisse",,"Indique que l'email est associé à une fermeture de caisse."
 "com.axelor.apps.base.db.Mail","company","field","Company","Société",,
-"com.axelor.apps.base.db.Mail","rejectMoveLine","field","Reject move line","Ligne d'écriture de rejet",,
-"com.axelor.apps.base.db.Mail","pdfFilePath","field","Generated PDF file path","Chemin du document pdf généré",,
+"com.axelor.apps.base.db.Mail","rejectMoveLine","field","Reject move line","Ligne d'écriture de rejet",,"*"
+"com.axelor.apps.base.db.Mail","pdfFilePath","field","Generated PDF file path","Chemin du document pdf généré",,"*"
 "com.axelor.apps.message.db.MailAccount","name","field","Name","Nom",,
 "com.axelor.apps.message.db.MailAccount","serverTypeSelect","field","Server Type","Type synchronisation",,
 "com.axelor.apps.message.db.MailAccount","login","field",,"Identifiant",,
@@ -3678,7 +3678,7 @@
 ,,"action","Recent lost deals","Opp. récemment perdues",,
 ,,"action","Recently created opportunities","Opp. récemment Créées",,
 ,,"action","Best Open Deals","Meilleures Opp. en cours",,
-,,"action","Opportunities Won By Partner","Opportunités gagnées par client",,
+,,"action","Opportunities Won By Partner","Opportunités gagnées par commercial",,
 ,,"action","Opportunities Won By Lead Source","Opportunités gagnées par source",,
 ,,"action","Opportunities Won By Salesman","Opp. Gagnées par Salesman",,
 ,,"action","Opportunities","Opportunités",,
