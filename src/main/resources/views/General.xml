@@ -5,11 +5,10 @@
 	
 	<grid name="general-grid" title="General admin" model="com.axelor.apps.base.db.General">
        	<toolbar>
-		    <button name="edit" title="New" hidden="true"/>
 		    <button name="save" title="Edit" hidden="true"/>
+		    <button name="new" title="New" hidden="true"/>
 		    <button name="delete" title="Delete" hidden="true"/>
 		    <button name="copy" title="Copy" hidden="true"/>
-		    <button name="cancel" title="Cancel" hidden="true"/>
 		    <button name="refresh" title="Refresh" hidden="true"/>
 		    <button name="search" title="Search" hidden="true"/>
 		</toolbar>
@@ -19,10 +18,9 @@
 	<form name="general-form" title="General admin" model="com.axelor.apps.base.db.General" cols="6">
        	<toolbar>
 		    <button name="new" title="New" hidden="true"/>
-		    <button name="edit" title="Edit" hidden="true"/>
 		    <button name="delete" title="Delete" hidden="true"/>
+		    <button name="back" title="Back" hidden="true"/>
 		    <button name="copy" title="Copy" hidden="true"/>
-		    <button name="cancel" title="Cancel" hidden="true"/>
 		    <button name="search" title="Search" hidden="true"/>
 		</toolbar>
 	    <field name="today"/>
