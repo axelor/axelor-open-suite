@@ -67,12 +67,10 @@
 	</action-view>
 	
 	
-	<action-view name="open.opportunity" title="Open Opportunities"
-		model="com.axelor.apps.crm.db.Opportunity">
-		<view type="form" name="opportunity-form"/>
-		<view type="grid" name="opportunity-grid"/>
-		<domain>self.salesStageSelect not in (9, 10)</domain>
-		
+	<action-view title="Open Opportunities" model="com.axelor.apps.crm.db.Opportunity" name="open.opportunity">
+	    <view type="grid" name="opportunity-grid"/>
+	    <view type="form" name="opportunity-form"/>
+	    <domain>self.salesStageSelect not in (9, 10)</domain>
 	</action-view>
 	
 	<action-view name="portal.opportunities.won.by.account" title="Opportunities Won By Partner"
