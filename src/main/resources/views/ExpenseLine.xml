@@ -26,13 +26,13 @@
 		<field name="date"/>
 		<field name="product" />
 		<field name="shortDescription" />
-		<field name="expenseTypeSelect" />
-		<field name="task"/>
 		<field name="qty" />
 		<field name="unit" />
 		<field name="price" />
-		<field name="inTaxTotal" />
 		<field name="vatLine"/>
+		<field name="inTaxTotal" />
+		<field name="expenseTypeSelect" />
+		<field name="task"/>
 		<field name="file" />
 		<field name="fileReceived" />
 		<field name="validationDate" />
