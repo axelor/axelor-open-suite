@@ -66,7 +66,7 @@
 	    </group>
 	    <group title="Validation/Invoicing" colSpan="6">
 	        <field name="validationDate"/>
-	        <field name="istoInvoice"/>
+	        <field name="isToInvoice"/>
 	        <field name="isInvoiced"/>
 	    </group>
 	</form>
@@ -97,7 +97,7 @@
 	</action-method>
     
     <action-attrs name="action-attrs-expense-line-task-domain">
-    	<attribute name="domain" for="task" expr="eval: &quot;self.project = ${_parent?.project}&quot;"/>
+    	<attribute name="domain" for="task" expr="eval: &quot;self.project.id = ${_parent?.project.id}&quot;"/>
     </action-attrs>
     
 </object-views>

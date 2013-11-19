@@ -12,14 +12,14 @@
     
     <form name="timesheet-form" title="Timesheet" model="com.axelor.apps.organisation.db.Timesheet" cols="4"
     onNew="action-timesheet-default-record,action-timesheet-getPeriod">
-        <field name="userInfo"/>
+        <field name="userInfo" readonlyIf="statusSelect >= 3"/>
 		<spacer/>
 		<field name="statusSelect" showTitle="false" widget="NavSelect"/>
 		<break/>
-		<field name="fromDate" onChange="action-timesheet-getPeriod"/>
-		<field name="toDate"/>
-		<field name="unit"/>
-		<field name="project" domain="self.isAffair = true"/>
+		<field name="fromDate" onChange="action-timesheet-getPeriod" readonlyIf="statusSelect >= 3"/>
+		<field name="toDate" readonlyIf="statusSelect >= 3"/>
+		<field name="unit" readonlyIf="statusSelect >= 3"/>
+		<field name="project" domain="self.isBusiness = true" readonlyIf="statusSelect >= 3"/>
         <group title="Satisfaction" colSpan="4" cols="4">
         	<separator title="Project" colSpan="4"/>
         	<group colSpan="2">
@@ -32,12 +32,8 @@
 			</group>
         	<field name="companyComment"/>
         </group>
-        <group title="Unit" colSpan="4">
-         	<field name="unit"/>
-        </group>
-        <spacer/>
         <separator colSpan="4" title="Details of time spent on project/tasks"/>
-        <group title="Configuration" readonlyIf="statusSelect == 3" colSpan="4" cols="7">
+        <group title="Configuration" readonlyIf="statusSelect >= 3" colSpan="4" cols="7">
 			<field name="hasToGetLeaveRequests"/>
 			<field name="hasToGetSpentTimeFromTask"/>
 			<field name="hasToGetPlanningLine"/>
@@ -54,7 +50,7 @@
 				<button name="completeTimeSheetButton" title="Complete time sheet" showIf="statusSelect != 3 &amp;&amp; hasCompleteTimesheetLines == true" colSpan="6" onClick="save"/>
 			</group>    
 		</group> 
-        <field name="timesheetLineList" colSpan="4" grid-view="timesheet-line-grid" form-view="timesheet-line-form"/>
+        <field name="timesheetLineList" colSpan="4" grid-view="timesheet-line-grid" form-view="timesheet-line-form" readonlyIf="statusSelect >= 3"/>
 		<group colSpan="4" cols="4">
 			<group colSpan="2">
 				<group title="Action(s)" colSpan="2" cols="1">
@@ -67,7 +63,7 @@
 					<field name="validationDate" colSpan="1"/>
 				</group>
 			</group>
-			<group title="Totals" colSpan="4" cols="2">
+			<group title="Totals" colSpan="4" cols="2" readonlyIf="statusSelect >= 3">
 				<field name="timesheetInputTotal"/>
 				<field name="timesheetTotalByTypeList" colSpan="4"/>
 			</group>
@@ -110,10 +106,10 @@
     </action-record>
     
     <action-method name="action-timesheet-method-validate">
-    	<call class="com.axelor.apps.organisation.web.TimsheetController" method="validate"/>
+    	<call class="com.axelor.apps.organisation.web.TimesheetController" method="validate"/>
     </action-method>
      <action-method name="action-print-pdf-timesheet">
-    	<call class="com.axelor.apps.organisation.web.TimsheetController" method="printTimesheet"/>
+    	<call class="com.axelor.apps.organisation.web.TimesheetController" method="printTimesheet"/>
     </action-method>
     
     

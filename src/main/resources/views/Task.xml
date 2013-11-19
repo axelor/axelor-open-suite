@@ -51,8 +51,6 @@
 	            <field name="advance"/>
 	        </group>
 	    </group>
-	    <button name="generateDraftInvoice" title="Generate draft invoice" showIf="isToInvoice == true &amp;&amp; statusSelect == 3" colSpan="1" onClick="save,action-task-validate-generate-invoice,action-task-method-create-invoice"/>
-	    <break/>
 	    <notebook colSpan="4">
 	        <page title="Planification and realization">
 	            <field name="planningLineList" onChange="action-task-method-get-planned-time" colSpan="4" form-view="planning-line-task-form" grid-view="planning-line-task-grid"/>
@@ -66,6 +64,7 @@
 	            <field name="isTimesheetAffected"/>
 	            <field name="invoicingDate"/>
 	            <field name="amountToInvoice"/>  
+	            <button name="generateDraftInvoice" title="Generate draft invoice" showIf="isToInvoice == true &amp;&amp; statusSelect == 4" colSpan="2" onClick="save,action-task-method-create-invoice"/>
 	        </page>
 	        <page title="Notes">
 	            <field name="notes" colSpan="4" showTitle="false"/>
@@ -95,7 +94,7 @@
 	                <field name="realInvoicedMargin"/>
 	            </group>
 	        </page>
-	        <page title="Links" colSpan="4">
+	        <page name="links" title="Links" colSpan="4">
 	        	<group title="Update financial information" collapseIf="financialInformationUpdateList == null || financialInformationUpdateList.isEmpty()" canCollapse="true" colSpan="4">
 	        		<field name="financialInformationUpdateList" colSpan="4" showTitle="false"/>
 	        	</group>
@@ -119,6 +118,15 @@
 			     		<portlet colSpan="4" action="action-task-view-real-invoiced-financial-information-update"/>
 	        		</page>
 	        	</notebook>
+	        </page>
+	        <page name="elementToInvoice" title="Elements to invoice">
+	        	<group colSpan="4" cols="6">
+	        		<field name="amountToInvoice" readonly="true" colSpan="2"/>  
+	        		<button name="generateDraftInvoice" title="Generate draft invoice" showIf="statusSelect == 4" colSpan="2" onClick="save,action-task-method-create-invoice"/>
+	        		<button name="showInvoices" title="Show invoices" showIf="statusSelect == 4" colSpan="2" onClick="action-task-view-invoice"/>
+	        	</group>
+	        	<portlet colSpan="4" action="action-task-view-expense-line-to-invoice"/>
+	        	<portlet colSpan="4" action="action-task-view-timesheet-line-to-invoice"/>
 	        </page>
 	        <page title="Description" colSpan="4">
 	            <field name="description" showTitle="false" colSpan="4"/>
@@ -224,10 +232,6 @@
 		<call class="com.axelor.apps.accountorganisation.web.TaskInvoiceController" method="createInvoice"/>
 	</action-method>
 	
-	<action-validate name="action-task-validate-generate-invoice">
-   		<alert message="Generating invoice is impossible, Please link the task to a saleOrderLine to do so." if="salesOrderLine == null"/>
-	</action-validate> 
-	
 	<action-attrs name="action-task-attrs-project-title">
 		<attribute name="title" for="project" expr="Projet" if="project?.isProject == true &amp;&amp; project?.isBusiness == false"/>
 		<attribute name="title" for="project" expr="Business" if="project?.isProject == false &amp;&amp; project?.isBusiness == true"/>
@@ -236,6 +240,8 @@
 	
 	<action-attrs name="action-task-attrs-hide-financial">
 		<attribute name="hidden" for="financialInformation" expr="eval: project == null || project?.isBusiness == false"/>
+		<attribute name="hidden" for="links" expr="eval: project == null || project?.isBusiness == false"/>
+		<attribute name="hidden" for="elementToInvoice" expr="eval: project == null || project?.isBusiness == false"/>
 	</action-attrs>
 	
 	<action-method name="action-task-method-update-financial-information">
@@ -289,8 +295,8 @@
   	</action-view>
   	
   	<action-view name="action-task-view-timesheet-line" title="Timesheet lines" model="com.axelor.apps.organisation.db.TimesheetLine">
-  		<view type="grid" name="timesheet-line-employee-grid"/>
-		<view type="form" name="timesheet-line-employee-form"/>
+  		<view type="grid" name="timesheet-line-task-grid"/>
+		<view type="form" name="timesheet-line-task-form"/>
   		<domain>self.timesheet.statusSelect = 3 and self.task.id = :id</domain>
   		<context name="id" expr="eval: id"/>
   	</action-view>
@@ -309,6 +315,26 @@
   		<context name="id" expr="eval: id"/>
   	</action-view>
   	
+  	<action-view name="action-task-view-timesheet-line-to-invoice" title="Timesheet lines" model="com.axelor.apps.organisation.db.TimesheetLine">
+  		<view type="grid" name="timesheet-line-task-grid"/>
+		<view type="form" name="timesheet-line-task-form"/>
+  		<domain>self.timesheet.statusSelect = 3 AND self.task.id = :id AND self.isToInvoice = true</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
+  	<action-view name="action-task-view-expense-line-to-invoice" title="Expense lines" model="com.axelor.apps.organisation.db.ExpenseLine">
+  		<view type="grid" name="expense-line-grid"/>
+		<view type="form" name="expense-line-form"/>
+  		<domain>self.expense.statusSelect = 3 AND self.task.id = :id AND self.isToInvoice = true</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+	
+	<action-view name="action-task-view-invoice" title="Invoices" model="com.axelor.apps.account.db.Invoice">
+  		<view type="grid" name="invoice-grid"/>
+		<view type="form" name="invoice-form"/>
+  		<domain>self.project.id = :projectId</domain>
+  		<context name="projectId" expr="eval: project.id"/>
+  	</action-view>
 	
 	<search-filters name="tasks-filters" model="com.axelor.apps.organisation.db.Task" title="Tasks filters">
 		<filter title="My Tasks">
