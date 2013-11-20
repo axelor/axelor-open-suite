@@ -113,7 +113,8 @@
 	    <portlet action="portal.opportunities.by.type"  height="350" colSpan="1"/>
 	    <portlet action="portal.opportunities.won.by.leadsource" height="350"/>
 	    <portlet action="portal.opportunities.won.by.salesman" height="350"/>
-	    <portlet title="Opportunities By Origin By Stage" action="chart:chart.opportunities.by.origin.by.stage" height="350"/>
+	    <portlet action="chart:chart.opportunities.by.origin.by.stage" height="350"/>
+	    <portlet action="chart:chart.opportunities.pipeline.next.90d" height="350"/>
 	 </portal>
   	
   	
