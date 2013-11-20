@@ -1150,7 +1150,7 @@ row["first_name"]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'timesheetFromDate'</value>
+                                    <value type="javascript">'Timesheet.fromDate'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -1194,7 +1194,7 @@ row["first_name"]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'timesheetBusiness'</value>
+                                    <value type="javascript">'Timesheet.business'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -1238,7 +1238,7 @@ row["first_name"]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'timesheetToDate'</value>
+                                    <value type="javascript">'Timesheet.toDate'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -1281,7 +1281,7 @@ row["first_name"]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'timesheetUnit'</value>
+                                    <value type="javascript">'Timesheet.unit'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -1433,7 +1433,7 @@ row["first_name"]
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'timesheetProject'</value>
+                                        <value type="javascript">'Timesheet.project'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -1478,7 +1478,7 @@ row["first_name"]
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'timesheetDate'</value>
+                                        <value type="javascript">'Timesheet.date'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -1523,7 +1523,7 @@ row["first_name"]
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'timesheetTask'</value>
+                                        <value type="javascript">'Timesheet.task'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -1570,7 +1570,7 @@ row["first_name"]
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'timesheetSpentTime'</value>
+                                        <value type="javascript">'Timesheet.spentTime'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -1698,7 +1698,7 @@ row["first_name"]
                                     <structure>
                                         <property name="paramName">param_1</property>
                                         <simple-property-list name="expression">
-                                            <value type="javascript">'timesheetDate'</value>
+                                            <value type="javascript">'Timesheet.date'</value>
                                         </simple-property-list>
                                     </structure>
                                 </list-property>
@@ -1759,7 +1759,7 @@ row["first_name"]
                                     <structure>
                                         <property name="paramName">param_1</property>
                                         <simple-property-list name="expression">
-                                            <value type="javascript">'timesheetTask'</value>
+                                            <value type="javascript">'Timesheet.task'</value>
                                         </simple-property-list>
                                     </structure>
                                 </list-property>
@@ -1822,7 +1822,7 @@ row["first_name"]
                                     <structure>
                                         <property name="paramName">param_1</property>
                                         <simple-property-list name="expression">
-                                            <value type="javascript">'timesheetSpentTime'</value>
+                                            <value type="javascript">'Timesheet.spentTime'</value>
                                         </simple-property-list>
                                     </structure>
                                 </list-property>
@@ -1893,7 +1893,7 @@ row["first_name"]
                                     <structure>
                                         <property name="paramName">param_1</property>
                                         <simple-property-list name="expression">
-                                            <value type="javascript">'timesheetProjectSpentTime'</value>
+                                            <value type="javascript">'Timesheet.projectSpentTime'</value>
                                         </simple-property-list>
                                     </structure>
                                 </list-property>
@@ -2112,7 +2112,7 @@ row["first_name"]
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'timesheetTotalSpentTime'</value>
+                                        <value type="javascript">'Timesheet.totalSpentTime'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -2227,7 +2227,7 @@ row["first_name"]
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'timesheetTotalDuration'</value>
+                                        <value type="javascript">'Timesheet.totalDuration'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -2487,7 +2487,7 @@ row["first_name"]
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'timesheetDesclaimer'</value>
+                                                    <value type="javascript">'Timesheet.desclaimer'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>

@@ -2839,12 +2839,12 @@ where Employee.id = ?]]></xml-property>
                         <property name="paddingRight">1pt</property>
                         <property name="textAlign">left</property>
                         <property name="whiteSpace">nowrap</property>
-                        <property name="dataSet">NoDomainTranslationDS</property>
+                        <property name="dataSet">TranslationDS</property>
                         <list-property name="paramBindings">
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'EmployeeContractDetails'</value>
+                                    <value type="javascript">'Employee.contractDetails'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -2883,7 +2883,7 @@ where Employee.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'employeeDailySalaryCost'</value>
+                                    <value type="javascript">'Employee.dailySalaryCost'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -2926,7 +2926,7 @@ where Employee.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'employeeEntryDate'</value>
+                                    <value type="javascript">'Employee.entryDate'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -2969,7 +2969,7 @@ where Employee.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'employeeExitDate'</value>
+                                    <value type="javascript">'Employee.exitDate'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -3012,7 +3012,7 @@ where Employee.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'employeeCompanyDepartment'</value>
+                                    <value type="javascript">'Employee.companyDepartment'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -3055,7 +3055,7 @@ where Employee.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'employeeMacroCategory'</value>
+                                    <value type="javascript">'Employee.macroCategory'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -3130,7 +3130,7 @@ where Employee.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'employeeCategory'</value>
+                                    <value type="javascript">'Employee.category'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -3292,7 +3292,7 @@ where Employee.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'employeePersonalInfo'</value>
+                                    <value type="javascript">'Employee.personalInfo'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -3332,7 +3332,7 @@ where Employee.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'employeeDob'</value>
+                                    <value type="javascript">'Employee.dob'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -3376,7 +3376,7 @@ where Employee.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'employeeCitizenshipCountry'</value>
+                                    <value type="javascript">'Employee.citizenshipCountry'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -3420,7 +3420,7 @@ where Employee.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'employeeMaritalStatus'</value>
+                                    <value type="javascript">'Employee.maritalStatus'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -3493,7 +3493,7 @@ where Employee.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'employeeMobilityChoice'</value>
+                                    <value type="javascript">'Employee.mobilityChoice'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -3599,7 +3599,7 @@ where Employee.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'employeeInternalContact'</value>
+                                    <value type="javascript">'Employee.internalContact'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -3771,7 +3771,7 @@ where Employee.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'employeePhoneAtCustomer'</value>
+                                    <value type="javascript">'Employee.phoneAtCustomer'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -3943,7 +3943,7 @@ where Employee.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'employeeEmergencyContact'</value>
+                                    <value type="javascript">'Employee.emergencyContact'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -4118,7 +4118,7 @@ where Employee.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'employeeEmergencyNumber'</value>
+                                    <value type="javascript">'Employee.emergencyNumber'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -4500,7 +4500,7 @@ where Employee.id = ?]]></xml-property>
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'employeePositionList'</value>
+                                        <value type="javascript">'Employee.positionList'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -4551,7 +4551,7 @@ where Employee.id = ?]]></xml-property>
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'employeeStartDate'</value>
+                                        <value type="javascript">'Employee.startDate'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -4587,7 +4587,7 @@ where Employee.id = ?]]></xml-property>
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'employeeEndDate'</value>
+                                        <value type="javascript">'Employee.endDate'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -4623,7 +4623,7 @@ where Employee.id = ?]]></xml-property>
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'employeeCompany'</value>
+                                        <value type="javascript">'Employee.company'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -4656,7 +4656,7 @@ where Employee.id = ?]]></xml-property>
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'employeePositionName'</value>
+                                        <value type="javascript">'Employee.positionName'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -4808,7 +4808,7 @@ where Employee.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'employeeCompetence'</value>
+                                    <value type="javascript">'Employee.competence'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -4854,7 +4854,7 @@ where Employee.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'employeeIntervention'</value>
+                                    <value type="javascript">'Employee.intervention'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -4886,7 +4886,7 @@ where Employee.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'employeeCompetenceArea'</value>
+                                    <value type="javascript">'Employee.competenceArea'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -5048,7 +5048,7 @@ where Employee.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'employeeLanguage'</value>
+                                    <value type="javascript">'Employee.language'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -5122,7 +5122,7 @@ where Employee.id = ?]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'employeeLanguageName'</value>
+                                                    <value type="javascript">'Employee.languageName'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -5157,7 +5157,7 @@ where Employee.id = ?]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'employeeLanguageLevel'</value>
+                                                    <value type="javascript">'Employee.languageLevel'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -5221,7 +5221,7 @@ where Employee.id = ?]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'employeeLanguageExpert'</value>
+                                                    <value type="javascript">'Employee.languageExpert'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -5365,7 +5365,7 @@ where Employee.id = ?]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'employeeMasteredCompetence'</value>
+                                                    <value type="javascript">'Employee.masteredCompetence'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -5512,7 +5512,7 @@ where Employee.id = ?]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'employeeAwareCompetence'</value>
+                                                    <value type="javascript">'Employee.awareCompetence'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -5592,7 +5592,7 @@ where Employee.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'employeeSkillLine'</value>
+                                    <value type="javascript">'Employee.skillLine'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -5672,7 +5672,7 @@ where Employee.id = ?]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'employeeSkillName'</value>
+                                                    <value type="javascript">'Employee.skillName'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -5701,7 +5701,7 @@ where Employee.id = ?]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'employeeSkillLavel'</value>
+                                                    <value type="javascript">'Employee.skillLavel'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -5751,7 +5751,7 @@ where Employee.id = ?]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'employeeSkillExpert'</value>
+                                                    <value type="javascript">'Employee.skillExpert'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -5886,7 +5886,7 @@ where Employee.id = ?]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'employeeSkillMastered'</value>
+                                                    <value type="javascript">'Employee.skillMastered'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -6021,7 +6021,7 @@ where Employee.id = ?]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'employeeSkillAware'</value>
+                                                    <value type="javascript">'Employee.skillAware'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>

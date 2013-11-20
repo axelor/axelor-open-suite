@@ -5189,7 +5189,7 @@ LangTranslate.domain = 'axelor-organisation' and LangTranslate.type = 'others']]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'projectExpectedRevenue'</value>
+                                    <value type="javascript">'Project.expectedRevenue'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -5318,7 +5318,7 @@ LangTranslate.domain = 'axelor-organisation' and LangTranslate.type = 'others']]
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'projectDate'</value>
+                                                    <value type="javascript">'Project.date'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -5365,7 +5365,7 @@ LangTranslate.domain = 'axelor-organisation' and LangTranslate.type = 'others']]
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'projectClient'</value>
+                                                    <value type="javascript">'Project.client'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -5412,7 +5412,7 @@ LangTranslate.domain = 'axelor-organisation' and LangTranslate.type = 'others']]
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'projectProductName'</value>
+                                                    <value type="javascript">'Project.productName'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -5459,7 +5459,7 @@ LangTranslate.domain = 'axelor-organisation' and LangTranslate.type = 'others']]
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'projctAmount'</value>
+                                                    <value type="javascript">'Project.amount'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -5506,7 +5506,7 @@ LangTranslate.domain = 'axelor-organisation' and LangTranslate.type = 'others']]
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'projectCommercial'</value>
+                                                    <value type="javascript">'Project.commercial'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -5706,7 +5706,7 @@ LangTranslate.domain = 'axelor-organisation' and LangTranslate.type = 'others']]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'projectProjectCost'</value>
+                                    <value type="javascript">'Project.projectCost'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -5735,7 +5735,7 @@ LangTranslate.domain = 'axelor-organisation' and LangTranslate.type = 'others']]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'projectPurchases'</value>
+                                    <value type="javascript">'Project.purchases'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -5866,7 +5866,7 @@ LangTranslate.domain = 'axelor-organisation' and LangTranslate.type = 'others']]
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'projectDate'</value>
+                                                    <value type="javascript">'Project.date'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -5913,7 +5913,7 @@ LangTranslate.domain = 'axelor-organisation' and LangTranslate.type = 'others']]
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'projectSupplier'</value>
+                                                    <value type="javascript">'Project.supplier'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -5960,7 +5960,7 @@ LangTranslate.domain = 'axelor-organisation' and LangTranslate.type = 'others']]
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'projectProductName'</value>
+                                                    <value type="javascript">'Project.productName'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -6007,7 +6007,7 @@ LangTranslate.domain = 'axelor-organisation' and LangTranslate.type = 'others']]
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'projectAmount'</value>
+                                                    <value type="javascript">'Project.amount'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -6025,7 +6025,8 @@ LangTranslate.domain = 'axelor-organisation' and LangTranslate.type = 'others']]
                                                 <property name="dataType">string</property>
                                             </structure>
                                         </list-property>
-                                        <property name="contentType">html</property>
+                                        <structure name="toc"/>
+                                        <property name="contentType">plain</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
@@ -6054,7 +6055,7 @@ LangTranslate.domain = 'axelor-organisation' and LangTranslate.type = 'others']]
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'projectPurchaser'</value>
+                                                    <value type="javascript">'Project.purchaser'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -6297,7 +6298,7 @@ LangTranslate.domain = 'axelor-organisation' and LangTranslate.type = 'others']]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'projectTotalTurnover'</value>
+                                    <value type="javascript">'Project.totalTurnover'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -6352,7 +6353,7 @@ LangTranslate.domain = 'axelor-organisation' and LangTranslate.type = 'others']]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'projectTotalCost'</value>
+                                    <value type="javascript">'Project.totalCost'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -6395,7 +6396,7 @@ LangTranslate.domain = 'axelor-organisation' and LangTranslate.type = 'others']]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'projectTotalMargin'</value>
+                                    <value type="javascript">'Project.totalMargin'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -6507,7 +6508,7 @@ LangTranslate.domain = 'axelor-organisation' and LangTranslate.type = 'others']]
                 <structure>
                     <property name="paramName">param_1</property>
                     <simple-property-list name="expression">
-                        <value type="javascript">'projectForecastMargin'</value>
+                        <value type="javascript">'Project.forecastMargin'</value>
                     </simple-property-list>
                 </structure>
             </list-property>
