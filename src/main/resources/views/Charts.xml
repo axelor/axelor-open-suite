@@ -133,21 +133,56 @@
     	<series key="amount" type="bar"/>
 	  </chart>
 	  
-	  <chart name="chart.opportunities.by.origin.by.stage" title="Opportunities By Origin By Stage">
-		<dataset type="jpql">
+	  <chart name="chart.opportunities.by.origin.by.stage" title="Opportunities By Origin By Stage" stacked="true">
+		<dataset type="sql">
 		    <![CDATA[
 		    SELECT
-			    SUM(self.amount)    AS amount,
-			    self.source.name    AS source,
-			    self.salesStageSelect AS stage
+    		    SUM(self.amount)    AS amount,
+			    src.name    AS source,
+			    selection_item.title AS stage
 			FROM
-			    Opportunity self
+			    crm_opportunity self
+            LEFT JOIN 
+                base_source src on src.id = self.source
+			LEFT JOIN
+	        	meta_select as selection ON selection.name = 'crm.opportunity.sales.stage.select'
+	    	LEFT JOIN 
+	    		meta_select_item as selection_item ON selection_item.select_id = selection.id
+			WHERE
+				selection_item.value = cast(self.sales_stage_select as char)		
 			GROUP BY
-			    self.salesStageSelect,
-			    self.source.name
+			    selection_item.title,
+			    src.name
 			ORDER BY
-			    self.salesStageSelect,
-			    self.source.name
+			    selection_item.title,
+			    src.name
+		    ]]>
+	    </dataset>
+	    <category key="source" type="text"/>
+	    <series key="amount" groupBy="stage" type="bar"/>
+	</chart>
+	
+	<chart name="chart.opportunities.pipeline.next.90d" title="Pipeline next 90 days" stacked="true">
+		<dataset type="sql">
+		    <![CDATA[
+		    SELECT
+		        '90 days period' as period,
+    		    SUM(self.amount)    AS amount,
+			    selection_item.title AS stage
+			FROM
+			    crm_opportunity self
+			LEFT JOIN
+	        	meta_select as selection ON selection.name = 'crm.opportunity.sales.stage.select'
+	    	LEFT JOIN 
+	    		meta_select_item as selection_item ON selection_item.select_id = selection.id
+			WHERE
+				expected_close_date < current_date and selection_item.value = cast(self.sales_stage_select as char)
+			GROUP BY
+			    selection_item.title,
+			    period
+			ORDER BY
+			    selection_item.title,
+			    period
 		    ]]>
 	    </dataset>
 	    <category key="source" type="text"/>
@@ -193,7 +228,7 @@
 	    <series key="partners"  type="bar"/>
 	</chart>
 	  	
-	 <chart name="chart.leads.by.team.by.status.bar" title="Leads by Team by Status">
+	 <chart name="chart.leads.by.team.by.status.bar" title="Leads by Team by Status" stacked="true">
 		<dataset type="sql">
 		    <![CDATA[
 		    SELECT
@@ -209,7 +244,7 @@
 	    	LEFT JOIN 
 	    		meta_select_item as selection_item ON selection_item.select_id = selection.id
 			WHERE
-				cast(selection_item.value as decimal) = self.status_select			
+				selection_item.value = cast(self.status_select as char)			
 	    	GROUP BY
 			  	_status,
 			  	_team
@@ -222,7 +257,7 @@
 	    <series key="_opportunity_amount" groupBy="_status" type="bar"/>
 	</chart>
 	
-	<chart name="chart.leads.by.salesman.by.status.bar" title="Leads by Salesman by Status">
+	<chart name="chart.leads.by.salesman.by.status.bar" title="Leads by Salesman by Status" stacked="true">
 		<dataset type="sql">
 		    <![CDATA[
 		    SELECT
@@ -238,7 +273,7 @@
 	    	LEFT JOIN 
 	    		meta_select_item as selection_item ON selection_item.select_id = selection.id
 			WHERE
-				cast(selection_item.value as decimal) = self.status_select	and sales_man.full_name != ''	
+				selection_item.value = cast(self.status_select as char)	and sales_man.full_name != ''	
 	    	GROUP BY
 			  	_status,
 			  	_sales_man
@@ -509,8 +544,7 @@
 	    <category key="_industry_sector" type="text"/>
     	<series key="_total_partner" type="pie"/>
 	 </chart>
-	<!-- 
-	 <chart name="chart.due.open.ticket.gauge.bar" title="Due Open Tickets">
+	<!--  <chart name="chart.due.open.ticket.gauge.bar" title="Due Open Tickets">
 		<dataset type="sql">
 		    <![CDATA[
 		    SELECT
@@ -524,7 +558,7 @@
 	    <config name="min" value="0"/>
     	<config name="max" value="100"/>
 	    <series key="_total_ticket" type="gauge"/>
-	</chart>  	 -->
+	</chart>  --> 
 	
 	
 	<!-- 	  Target user charts -->

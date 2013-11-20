@@ -14,7 +14,7 @@
         <field name="userInfo"/>
     </grid>
 	
-   <grid groupBy="userInfo" name="opportunity-grid-group" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity">
+   <grid groupBy="partner" name="opportunity-grid-group" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity">
    		<field name="name"/>
    		<field name="userInfo"/>
         <field name="partner"/>
@@ -23,7 +23,7 @@
         <field name="amount"/>
 	</grid>
 	
-	<grid name="opportunity-top-deal-grid" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" orderBy="amount" >
+	<grid name="opportunity-top-deal-grid" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" orderBy="-amount" >
         <field name="name"/>
         <field name="partner"/>
         <field name="amount"/>
