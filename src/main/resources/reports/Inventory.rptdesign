@@ -1129,7 +1129,7 @@ LangTranslate.domain = 'axelor-supplychain' and LangTranslate.type= 'other']]></
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'inventoryTitle'</value>
+                                        <value type="javascript">'Inventory.title'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -1214,7 +1214,7 @@ LangTranslate.domain = 'axelor-supplychain' and LangTranslate.type= 'other']]></
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'inventoryName'</value>
+                                        <value type="javascript">'Inventory.name'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -1328,7 +1328,7 @@ LangTranslate.domain = 'axelor-supplychain' and LangTranslate.type= 'other']]></
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'inventoryLocation'</value>
+                                        <value type="javascript">'Inventory.location'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -1462,7 +1462,7 @@ LangTranslate.domain = 'axelor-supplychain' and LangTranslate.type= 'other']]></
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'inventoryDate'</value>
+                                        <value type="javascript">'Inventory.date'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -1596,7 +1596,7 @@ LangTranslate.domain = 'axelor-supplychain' and LangTranslate.type= 'other']]></
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'inventoryName'</value>
+                                        <value type="javascript">'Inventory.name'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -1628,7 +1628,7 @@ LangTranslate.domain = 'axelor-supplychain' and LangTranslate.type= 'other']]></
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'inventoryCode'</value>
+                                        <value type="javascript">'Inventory.code'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -1675,7 +1675,7 @@ LangTranslate.domain = 'axelor-supplychain' and LangTranslate.type= 'other']]></
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'inventoryUnit'</value>
+                                        <value type="javascript">'Inventory.unit'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -1720,7 +1720,7 @@ LangTranslate.domain = 'axelor-supplychain' and LangTranslate.type= 'other']]></
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'inventoryRealQty'</value>
+                                        <value type="javascript">'Inventory.realQty'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -1765,7 +1765,7 @@ LangTranslate.domain = 'axelor-supplychain' and LangTranslate.type= 'other']]></
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'inventoryDescription'</value>
+                                        <value type="javascript">'Inventory.description'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>

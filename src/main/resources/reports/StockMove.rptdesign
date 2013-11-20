@@ -1287,11 +1287,11 @@ where StockMove.id = ?
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
                                     <value type="javascript">if(row["type_select"] == "1"){
-'stockMoveInternalMove'
+'StockMove.internalMove'
 }else if(row["type_select"] == "2"){
-'stockMoveDeliveryOrder'
+'StockMove.deliveryOrder'
 } else if(row["type_select"] == "3"){
-'stockMoveReceptionOrder'
+'StockMove.receptionOrder'
 }</value>
                                 </simple-property-list>
                             </structure>
@@ -1340,7 +1340,7 @@ where StockMove.id = ?
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'stockMoveCustomer'</value>
+                                    <value type="javascript">'StockMove.customer'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -1391,7 +1391,7 @@ where StockMove.id = ?
                                         <structure>
                                             <property name="paramName">param_1</property>
                                             <simple-property-list name="expression">
-                                                <value type="javascript">'stockMoveDate'</value>
+                                                <value type="javascript">'StockMove.date'</value>
                                             </simple-property-list>
                                         </structure>
                                     </list-property>
@@ -1424,11 +1424,11 @@ where StockMove.id = ?
                                             <property name="paramName">param_1</property>
                                             <simple-property-list name="expression">
                                                 <value type="javascript">if(row["type_select"] == "1"){
-'stockMoveReference'
+'StockMove.reference'
 }else if(row["type_select"] == "2"){
-'stockMovePurchaseOrder'
+'StockMove.purchaseOrder'
 }else if(row["type_select"] == "3"){
-'stockMovePurchaseOrder'
+'StockMove.purchaseOrder'
 }</value>
                                             </simple-property-list>
                                         </structure>
@@ -1465,7 +1465,7 @@ row._outer["purchase_order_seq"]
                                         <structure>
                                             <property name="paramName">param_1</property>
                                             <simple-property-list name="expression">
-                                                <value type="javascript">'stockMoveWeight'</value>
+                                                <value type="javascript">'StockMove.weight'</value>
                                             </simple-property-list>
                                         </structure>
                                     </list-property>
@@ -1498,11 +1498,11 @@ row._outer["purchase_order_seq"]
                                             <property name="paramName">param_1</property>
                                             <simple-property-list name="expression">
                                                 <value type="javascript">if(row["type_select"] == "1"){
-'stockMoveMovePreparedBy'
+'StockMove.movePreparedBy'
 }else if(row["type_select"] == "2"){
-'stockMoveStockPreparedBy'
+'StockMove.stockPreparedBy'
 }else if(row["type_select"] == "3"){
-'stockMoveReceivedBy'
+'StockMove.receivedBy'
 }</value>
                                             </simple-property-list>
                                         </structure>
@@ -1566,7 +1566,7 @@ row["first_name"]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'stockMoveDeliveryAddress'</value>
+                                    <value type="javascript">'StockMove.deliveryAddress'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -1635,7 +1635,7 @@ row["first_name"]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'stockMoveDeliveryDetails'</value>
+                                    <value type="javascript">'StockMove.deliveryDetails'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -1852,7 +1852,7 @@ row["first_name"]
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'stockMoveReference'</value>
+                                        <value type="javascript">'StockMove.reference'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -1897,7 +1897,7 @@ row["first_name"]
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'stockMoveProduct'</value>
+                                        <value type="javascript">'StockMove.product'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -1942,7 +1942,7 @@ row["first_name"]
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'stockMoveVariant'</value>
+                                        <value type="javascript">'StockMove.variant'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -1989,7 +1989,7 @@ row["first_name"]
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'stockMoveQtyUnit'</value>
+                                        <value type="javascript">'StockMove.qtyUnit'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -2036,7 +2036,7 @@ row["first_name"]
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'stockMoveLotNoRef'</value>
+                                        <value type="javascript">'StockMove.lotNoRef'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>

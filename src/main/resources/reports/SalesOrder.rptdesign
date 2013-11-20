@@ -1926,7 +1926,7 @@ LangTranslate.domain = 'axelor-supplychain' and LangTranslate.type = 'other']]><
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'salesOrderNo'</value>
+                                    <value type="javascript">'SalesOrder.no'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -1975,7 +1975,7 @@ LangTranslate.domain = 'axelor-supplychain' and LangTranslate.type = 'other']]><
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'salesOrderCustomer'</value>
+                                    <value type="javascript">'SalesOrder.customer'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -2026,7 +2026,7 @@ LangTranslate.domain = 'axelor-supplychain' and LangTranslate.type = 'other']]><
                                         <structure>
                                             <property name="paramName">param_1</property>
                                             <simple-property-list name="expression">
-                                                <value type="javascript">'salesOrderDate'</value>
+                                                <value type="javascript">'SalesOrder.date'</value>
                                             </simple-property-list>
                                         </structure>
                                     </list-property>
@@ -2058,7 +2058,7 @@ LangTranslate.domain = 'axelor-supplychain' and LangTranslate.type = 'other']]><
                                         <structure>
                                             <property name="paramName">param_1</property>
                                             <simple-property-list name="expression">
-                                                <value type="javascript">'salesOrderPaymentCondition'</value>
+                                                <value type="javascript">'SalesOrder.paymentCondition'</value>
                                             </simple-property-list>
                                         </structure>
                                     </list-property>
@@ -2090,7 +2090,7 @@ LangTranslate.domain = 'axelor-supplychain' and LangTranslate.type = 'other']]><
                                         <structure>
                                             <property name="paramName">param_1</property>
                                             <simple-property-list name="expression">
-                                                <value type="javascript">'salesOrderPaymentMode'</value>
+                                                <value type="javascript">'SalesOrder.paymentMode'</value>
                                             </simple-property-list>
                                         </structure>
                                     </list-property>
@@ -2122,7 +2122,7 @@ LangTranslate.domain = 'axelor-supplychain' and LangTranslate.type = 'other']]><
                                         <structure>
                                             <property name="paramName">param_1</property>
                                             <simple-property-list name="expression">
-                                                <value type="javascript">'salesOrderCustomerRef'</value>
+                                                <value type="javascript">'SalesOrder.customerRef'</value>
                                             </simple-property-list>
                                         </structure>
                                     </list-property>
@@ -2189,7 +2189,7 @@ row["ClientPartFirstName"]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'SalesOrderInvoicingAddrs'</value>
+                                    <value type="javascript">'SalesOrder.invoicingAddrs'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -2257,7 +2257,7 @@ row["ClientPartFirstName"]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'SalesOrderDeliveryAddress'</value>
+                                    <value type="javascript">'SalesOrder.deliveryAddress'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -2529,7 +2529,7 @@ row["ClientPartFirstName"]
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'SalesOrderProductDescription'</value>
+                                        <value type="javascript">'SalesOrder.productDescription'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -2575,7 +2575,7 @@ row["ClientPartFirstName"]
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'salesOrderVat'</value>
+                                        <value type="javascript">'SalesOrder.vat'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -2621,7 +2621,7 @@ row["ClientPartFirstName"]
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">"salesOrderQtyUnit"</value>
+                                        <value type="javascript">'SalesOrder.qtyUnit'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -2667,7 +2667,7 @@ row["ClientPartFirstName"]
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'salesOrderUnitPrice'</value>
+                                        <value type="javascript">'SalesOrder.unitPrice'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -2715,7 +2715,7 @@ row["ClientPartFirstName"]
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'salesOrderPriceExclVat'</value>
+                                        <value type="javascript">'SalesOrder.priceExclVat'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -2873,7 +2873,7 @@ row["ClientPartFirstName"]
                                     <structure>
                                         <property name="paramName">param_1</property>
                                         <simple-property-list name="expression">
-                                            <value type="javascript">'salesOrderProductDescription'</value>
+                                            <value type="javascript">'SalesOrder.productDescription'</value>
                                         </simple-property-list>
                                     </structure>
                                 </list-property>
@@ -2932,7 +2932,7 @@ row["ClientPartFirstName"]
                                     <structure>
                                         <property name="paramName">param_1</property>
                                         <simple-property-list name="expression">
-                                            <value type="javascript">'salesOrderVat'</value>
+                                            <value type="javascript">'SalesOrder.vat'</value>
                                         </simple-property-list>
                                     </structure>
                                 </list-property>
@@ -2991,7 +2991,7 @@ row["ClientPartFirstName"]
                                     <structure>
                                         <property name="paramName">param_1</property>
                                         <simple-property-list name="expression">
-                                            <value type="javascript">'salesOrderQtyUnit'</value>
+                                            <value type="javascript">'SalesOrder.qtyUnit'</value>
                                         </simple-property-list>
                                     </structure>
                                 </list-property>
@@ -3050,7 +3050,7 @@ row["ClientPartFirstName"]
                                     <structure>
                                         <property name="paramName">param_1</property>
                                         <simple-property-list name="expression">
-                                            <value type="javascript">'salesOrderUnitPrice'</value>
+                                            <value type="javascript">'SalesOrder.unitPrice'</value>
                                         </simple-property-list>
                                     </structure>
                                 </list-property>
@@ -3111,7 +3111,7 @@ row["ClientPartFirstName"]
                                     <structure>
                                         <property name="paramName">param_1</property>
                                         <simple-property-list name="expression">
-                                            <value type="javascript">'salesOrderPriceExclVat'</value>
+                                            <value type="javascript">'SalesOrder.priceExclVat'</value>
                                         </simple-property-list>
                                     </structure>
                                 </list-property>
@@ -3681,7 +3681,7 @@ row["ClientPartFirstName"]
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'salesOrderVat'</value>
+                                                    <value type="javascript">'SalesOrder.vat'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -3725,7 +3725,7 @@ row["ClientPartFirstName"]
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'salesOrderBase'</value>
+                                                    <value type="javascript">'SalesOrder.base'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -3769,7 +3769,7 @@ row["ClientPartFirstName"]
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'salesOrderVatAmount'</value>
+                                                    <value type="javascript">'SalesOrder.vatAmount'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -3891,7 +3891,7 @@ row["ClientPartFirstName"]
                                         <structure>
                                             <property name="paramName">param_1</property>
                                             <simple-property-list name="expression">
-                                                <value type="javascript">'salesOrderTotalExclVat'</value>
+                                                <value type="javascript">'SalesOrder.totalExclVat'</value>
                                             </simple-property-list>
                                         </structure>
                                     </list-property>
@@ -3964,7 +3964,7 @@ row["ClientPartFirstName"]
                                         <structure>
                                             <property name="paramName">param_1</property>
                                             <simple-property-list name="expression">
-                                                <value type="javascript">'salesOrderTotalVat'</value>
+                                                <value type="javascript">'SalesOrder.totalVat'</value>
                                             </simple-property-list>
                                         </structure>
                                     </list-property>
@@ -4049,7 +4049,7 @@ row["ClientPartFirstName"]
                                         <structure>
                                             <property name="paramName">param_1</property>
                                             <simple-property-list name="expression">
-                                                <value type="javascript">'salesOrderTotalInclVat'</value>
+                                                <value type="javascript">'SalesOrder.totalInclVat'</value>
                                             </simple-property-list>
                                         </structure>
                                     </list-property>
@@ -4133,7 +4133,7 @@ row["ClientPartFirstName"]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'SalesOrderNote'</value>
+                                    <value type="javascript">'SalesOrder.note'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -4197,7 +4197,7 @@ row["ClientPartFirstName"]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'salesOrderBankingInfo'</value>
+                                    <value type="javascript">'SalesOrder.bankingInfo'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -4241,7 +4241,7 @@ row["ClientPartFirstName"]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'salesOrderCheque'</value>
+                                    <value type="javascript">'SalesOrder.cheque'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -4278,7 +4278,7 @@ row["ClientPartFirstName"]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'salesOrderBankDetails'</value>
+                                    <value type="javascript">'SalesOrder.bankDetails'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
