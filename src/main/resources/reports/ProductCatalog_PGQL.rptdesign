@@ -132,7 +132,6 @@
             <property name="odaDriverClass">org.postgresql.Driver</property>
             <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-erp</property>
             <property name="odaUser">axelor</property>
-            
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -1048,6 +1047,14 @@ and LangTranslate.domain = 'axelor-base' and LangTranslate.type = 'other']]></xm
                         <property name="color">#68B022</property>
                         <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'ProductCatalog.summery'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
                         <list-property name="boundDataColumns">
                             <structure>
                                 <property name="name">key</property>
@@ -1574,7 +1581,7 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                                                         <structure>
                                                             <property name="paramName">param_1</property>
                                                             <simple-property-list name="expression">
-                                                                <value type="javascript">'productCatelogReference'</value>
+                                                                <value type="javascript">'ProductCatelog.reference'</value>
                                                             </simple-property-list>
                                                         </structure>
                                                     </list-property>
@@ -1606,7 +1613,7 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                                                         <structure>
                                                             <property name="paramName">param_1</property>
                                                             <simple-property-list name="expression">
-                                                                <value type="javascript">'productCatelogDescription'</value>
+                                                                <value type="javascript">'ProductCatelog.description'</value>
                                                             </simple-property-list>
                                                         </structure>
                                                     </list-property>
@@ -1645,7 +1652,7 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'productCatelogPrice'</value>
+                                                    <value type="javascript">'ProductCatelog.price'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>

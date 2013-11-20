@@ -897,7 +897,7 @@ LangTranslate.domain = 'axelor-base' and LangTranslate.type = 'other']]></xml-pr
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'phonebookPhonebook'</value>
+                                        <value type="javascript">'Phonebook.phonebook'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>

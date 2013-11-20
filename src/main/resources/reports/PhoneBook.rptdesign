@@ -103,7 +103,6 @@
             <property name="odaDriverClass">org.postgresql.Driver</property>
             <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-erp-1</property>
             <property name="odaUser">axelor</property>
-            
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -869,7 +868,7 @@ and LangTranslate.domain = 'axelor-base' and LangTranslate.type = 'other']]></xm
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'phonebook'</value>
+                                        <value type="javascript">'Phonebook.phonebook'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
