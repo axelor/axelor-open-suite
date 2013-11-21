@@ -95,6 +95,8 @@
 	    <field name="endDateTime"/>
 	    <field name="statusSelect"/>
 	    <field name="userInfo"/>
+	    <button name="accept" icon="img/icons/accept.png" help="Realize" onClick="action-set-status-select-2,action-save-event-status-select" />
+	    <button name="cancel" icon="img/icons/cancel.png" help="Cancel" onClick="action-set-status-select-3,action-save-event-status-select" />
 	</grid>
     
     <form name="call-form" title="Call" model="com.axelor.apps.crm.db.Event" cols="2" colWidths="*,400" onNew="action-event-new-record">
@@ -166,6 +168,8 @@
 	    <field name="endDateTime"/>
 	    <field name="statusSelect"/>
 	    <field name="userInfo"/>
+	    <button name="accept" icon="img/icons/accept.png" help="Realize" onClick="action-set-status-select-2,action-save-event-status-select" />
+	    <button name="cancel" icon="img/icons/cancel.png" help="Cancel" onClick="action-set-status-select-3,action-save-event-status-select" />
 	</grid>
     
     <form name="meeting-form" title="Meeting" model="com.axelor.apps.crm.db.Event" cols="2" colWidths="*,400" onNew="action-event-new-record">
@@ -228,6 +232,9 @@
 	    <field name="taskStatusSelect"/>    
 	    <field name="prioritySelect"/>
 	    <field name="userInfo"/>
+	    <button name="start" icon="img/icons/start.png" help="On going" onClick="action-set-task-status-select-2,action-save-event-task-status-select" />
+	    <button name="accept" icon="img/icons/accept.png" help="Finished" onClick="action-set-task-status-select-3,action-save-event-task-status-select" />
+	    <button name="pause" icon="img/icons/pause.png" help="Pending" onClick="action-set-task-status-select-4,action-save-event-task-status-select" />
 	</grid>
     
     <form name="crm-task-form" title="Task"  model="com.axelor.apps.crm.db.Event" cols="2" colWidths="*,400"  onNew="action-event-new-record">
@@ -282,6 +289,9 @@
 	    <field name="prioritySelect"/>
 	    <field name="ticketStatusSelect"/>
 	    <field name="progressSelect" widget="SelectProgress"/>
+	    <button name="start" icon="img/icons/start.png" help="In progress" onClick="action-set-ticket-status-select-2,action-save-event-ticket-status-select"/>
+	    <button name="accept" icon="img/icons/accept.png" help="Resolved" onClick="action-set-ticket-status-select-3,action-save-event-ticket-status-select"/>
+	    <button name="stop" icon="img/icons/stop.png" help="Closed" onClick="action-set-ticket-status-select-5,action-save-event-ticket-status-select"/>
 	</grid>
     
     <form name="ticket-form" title="Ticket" model="com.axelor.apps.crm.db.Event" cols="6" colWidths="*,400" 
@@ -397,6 +407,18 @@
     
     <action-method name="action-meeting-method-compute-duration">
     	<call class="com.axelor.apps.crm.web.EventController" method="computeDuration" />
+    </action-method>
+    
+    <action-method name="action-save-event-status-select">
+    	<call class="com.axelor.apps.crm.web.EventController" method="saveEventStatusSelect" />
+    </action-method>
+    
+    <action-method name="action-save-event-task-status-select">
+    	<call class="com.axelor.apps.crm.web.EventController" method="saveEventTaskStatusSelect" />
+    </action-method>
+    
+    <action-method name="action-save-event-ticket-status-select">
+    	<call class="com.axelor.apps.crm.web.EventController" method="saveEventTicketStatusSelect" />
     </action-method>
     
     <action-record name="action-event-record-task-status-select" model="com.axelor.apps.crm.db.Event">
@@ -532,6 +554,9 @@
 	</action-record>	
 	<action-record name="action-set-task-status-select-3" model="com.axelor.apps.crm.db.Event">
 		<field name="taskStatusSelect" expr="eval:3"/>
+	</action-record>	
+	<action-record name="action-set-task-status-select-4" model="com.axelor.apps.crm.db.Event">
+		<field name="taskStatusSelect" expr="eval:4"/>
 	</action-record>	
 	
 	<action-record name="action-set-ticket-status-select-2" model="com.axelor.apps.crm.db.Event">

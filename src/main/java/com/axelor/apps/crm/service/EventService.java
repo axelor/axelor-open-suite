@@ -36,6 +36,9 @@ import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.crm.db.Event;
+import com.google.inject.persist.Transactional;
+
 public class EventService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(EventService.class);
@@ -77,6 +80,11 @@ public class EventService {
 		
 		return startDateTime.plusHours(durationHours).plusMinutes(durationMinutes);
 		
+	}
+	
+	@Transactional
+	public void saveEvent(Event event){
+		event.save();
 	}
 	
 	

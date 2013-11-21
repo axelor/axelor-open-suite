@@ -42,6 +42,7 @@ import com.axelor.exception.db.IException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 public class EventController {
 
@@ -109,5 +110,26 @@ public class EventController {
 			else
 				response.setValue("ticketNumberSeq", ref);
 		}
+	}
+	
+	public void saveEventStatusSelect(ActionRequest request, ActionResponse response) throws AxelorException {
+		Event event = request.getContext().asType(Event.class);
+		Event persistEvent = Event.find(event.getId());
+		persistEvent.setStatusSelect(event.getStatusSelect());
+		eventService.saveEvent(persistEvent);
+	}
+	
+	public void saveEventTaskStatusSelect(ActionRequest request, ActionResponse response) throws AxelorException {
+		Event event = request.getContext().asType(Event.class);
+		Event persistEvent = Event.find(event.getId());
+		persistEvent.setTaskStatusSelect(event.getTaskStatusSelect());
+		eventService.saveEvent(persistEvent);
+	}
+	
+	public void saveEventTicketStatusSelect(ActionRequest request, ActionResponse response) throws AxelorException {
+		Event event = request.getContext().asType(Event.class);
+		Event persistEvent = Event.find(event.getId());
+		persistEvent.setTicketStatusSelect(event.getTicketStatusSelect());
+		eventService.saveEvent(persistEvent);
 	}
 }

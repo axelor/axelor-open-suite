@@ -185,7 +185,7 @@
 			    period
 		    ]]>
 	    </dataset>
-	    <category key="source" type="text"/>
+	    <category key="period" type="text"/>
 	    <series key="amount" groupBy="stage" type="bar"/>
 	</chart>
 	
@@ -544,7 +544,7 @@
 	    <category key="_industry_sector" type="text"/>
     	<series key="_total_partner" type="pie"/>
 	 </chart>
-	<!--  <chart name="chart.due.open.ticket.gauge.bar" title="Due Open Tickets">
+	 <chart name="chart.due.open.ticket.gauge.bar" title="Due Open Tickets">
 		<dataset type="sql">
 		    <![CDATA[
 		    SELECT
@@ -552,13 +552,13 @@
 			    (select Count(id) from crm_event as open_ticket where open_ticket.ticket_status_select != 5) as _open_ticket
 			FROM
 			  	crm_event as self
-			  ]]>
+			  ]]>	
 	    </dataset>
-	   	<category key="_open_ticket" type="text"/>
+	   	<category key="_total_ticket" type="text"/>
+	   	<series key="_open_ticket" type="gauge"/>
 	    <config name="min" value="0"/>
-    	<config name="max" value="100"/>
-	    <series key="_total_ticket" type="gauge"/>
-	</chart>  --> 
+    	<config name="max" value="_total_ticket"/>
+	</chart> 
 	
 	
 	<!-- 	  Target user charts -->
