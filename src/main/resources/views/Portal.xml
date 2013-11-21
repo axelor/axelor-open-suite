@@ -196,6 +196,7 @@
 			<portlet action="portal.agents.by.open.cases" height="350"/>
 			<portlet action="portal.customer.by.open.cases" height="350"/>
 			<portlet action="portal.open.ticket.priority.distribution" height="350"/>
+			<portlet action="chart:chart.due.open.ticket.gauge.bar" height="350"/>
 		</portal>
 	 
   	<action-view name="portal.calls.types.by.user" title="Calls type by user">
