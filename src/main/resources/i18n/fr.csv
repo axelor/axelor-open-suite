@@ -4370,3 +4370,8 @@
 "base-batch-form","createdBy","documentation",,,,
 "base-batch-form","description","documentation",,,,
 "base-batch-form","batchList","documentation",,,,
+"axelor-base",,"other","ProductCatalog.summery","Sommaire",,
+"axelor-base",,"other","ProductCatalog.reference","Référence",,
+"axelor-base",,"other","ProductCatalog.description","Description",,
+"axelor-base",,"other","ProductCatalog.price","Prix",,
+"axelor-base",,"other","Phonebook.phonebook","Annuaire",,
