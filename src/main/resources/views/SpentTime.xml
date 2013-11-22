@@ -4,13 +4,13 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
 	
     <grid name="spent-time-grid" title="Past time" model="com.axelor.apps.base.db.SpentTime">
-        <field name="event"/>
-        <field name="timesheetImputed"/>
-        <field name="userInfo"/>
-        <field name="task" />
         <field name="date"/>
+		<field name="userInfo"/>
         <field name="duration"/>
        	<field name="unit"/>
+		<field name="task" />
+		<field name="event"/>
+        <field name="timesheetImputed"/>
     </grid>
     
     <form name="spent-time-form" title="Past time" model="com.axelor.apps.base.db.SpentTime" cols="4" onNew="action-spent-time-record-default">
@@ -24,11 +24,11 @@
     </form>
     
     <grid name="spent-time-ticket-grid" title="Past time" model="com.axelor.apps.base.db.SpentTime">
-        <field name="timesheetImputed"/>
+		<field name="date"/>
         <field name="userInfo"/>
-        <field name="date"/>
         <field name="duration"/>
        	<field name="unit"/>
+		<field name="timesheetImputed"/>
     </grid>
     
     <form name="spent-time-ticket-form" title="Past time" model="com.axelor.apps.base.db.SpentTime" cols="4" onNew="action-spent-time-record-default">
@@ -40,21 +40,21 @@
     </form>
     
     <grid name="spent-time-task-grid" title="Past time" model="com.axelor.apps.base.db.SpentTime">
-        <field name="event"/>
-        <field name="timesheetImputed"/>
-        <field name="userInfo"/>
         <field name="date"/>
+        <field name="userInfo"/>
         <field name="duration"/>
        	<field name="unit"/>
+		<field name="event"/>
+        <field name="timesheetImputed"/>
     </grid>
     
     <form name="spent-time-task-form" title="Past time" model="com.axelor.apps.base.db.SpentTime" cols="4" onNew="action-spent-time-record-default">
-        <field name="event"/>
-        <field name="timesheetImputed"/>
-        <field name="userInfo"/>
         <field name="date"/>
+		<field name="userInfo"/>
         <field name="duration"/>
        	<field name="unit"/>
+		<field name="event"/>
+        <field name="timesheetImputed"/>
     </form>
     
     <action-record name="action-spent-time-record-default" model="com.axelor.apps.base.db.SpentTime">
