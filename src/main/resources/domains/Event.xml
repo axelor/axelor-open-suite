@@ -13,8 +13,9 @@
 	<integer name="statusSelect" title="Status" selection="crm.event.status.select"/>  
   	<datetime name="startDateTime" title="Start Date"/>
   	<datetime name="endDateTime" title="End Date"/>
-  	<integer name="durationHours" title="Duration" nullable="true"/>
-  	<integer name="durationMinutesSelect" title="Duration" selection="crm.event.call.duration.minutes.select"/>
+  	
+  	<long name="duration" title="Duration"/>
+  	
   	<many-to-one name="eventCategory" ref="com.axelor.apps.crm.db.EventCategory" title="Category"/>
   	<integer name="prioritySelect" title="Priority" selection="crm.event.ticket.priority.select"/>
   	
