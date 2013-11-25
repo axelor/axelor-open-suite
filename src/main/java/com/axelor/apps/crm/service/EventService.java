@@ -49,36 +49,21 @@ public class EventService {
 		
 	}
 	
-	public int getHoursDuration(Duration duration)  {
+	public int getDuration(Duration duration)  {
 		
-		return duration.toStandardHours().getHours();
-		
-	}
-	
-	public int getMinutesDuration(Duration duration)  {
-		
-		int minutes = duration.toStandardMinutes().getMinutes() % 60;
-		
-		LOG.debug("Minutes : {}", minutes);	
-		
-		if(minutes >= 53 && minutes < 8)  {  return 00;  }
-		else if(minutes >= 8 && minutes < 23)  {  return 15;  }
-		else if(minutes >= 23 && minutes < 38)  {  return 30;  }
-		else if(minutes >= 38 && minutes < 53)  {  return 45;  }
-		
-		return 00;
+		return duration.toStandardSeconds().getSeconds();
 		
 	}
 	
-	public LocalDateTime computeStartDateTime(int durationHours, int durationMinutes, LocalDateTime endDateTime)  {
+	public LocalDateTime computeStartDateTime(int duration, LocalDateTime endDateTime)  {
 			
-		return endDateTime.minusHours(durationHours).minusMinutes(durationMinutes);	
+		return endDateTime.minusSeconds(duration);	
 		
 	}
 	
-	public LocalDateTime computeEndDateTime(LocalDateTime startDateTime, int durationHours, int durationMinutes)  {
+	public LocalDateTime computeEndDateTime(LocalDateTime startDateTime, int duration)  {
 		
-		return startDateTime.plusHours(durationHours).plusMinutes(durationMinutes);
+		return startDateTime.plusSeconds(duration);
 		
 	}
 	

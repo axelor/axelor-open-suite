@@ -42,7 +42,6 @@ import com.axelor.exception.db.IException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 
 public class EventController {
 
@@ -59,11 +58,10 @@ public class EventController {
 		if(event.getStartDateTime() != null) {
 			if(event.getEndDateTime() != null) {
 				Duration duration =  eventService.computeDuration(event.getStartDateTime(), event.getEndDateTime());
-				response.setValue("durationHours", eventService.getHoursDuration(duration));
-				response.setValue("durationMinutesSelect", eventService.getMinutesDuration(duration));
+				response.setValue("duration", eventService.getDuration(duration));
 			}
-			else if(event.getDurationHours() != null) {
-				response.setValue("endDateTime", eventService.computeEndDateTime(event.getStartDateTime(), event.getDurationHours(), event.getDurationMinutesSelect()));
+			else if(event.getDuration() != null) {
+				response.setValue("endDateTime", eventService.computeEndDateTime(event.getStartDateTime(), event.getDuration().intValue()));
 			}
 		}
 	}
@@ -75,11 +73,10 @@ public class EventController {
 		if(event.getEndDateTime() != null) {
 			if(event.getStartDateTime() != null) {
 				Duration duration =  eventService.computeDuration(event.getStartDateTime(), event.getEndDateTime());
-				response.setValue("durationHours", eventService.getHoursDuration(duration));
-				response.setValue("durationMinutesSelect", eventService.getMinutesDuration(duration));
+				response.setValue("duration", eventService.getDuration(duration));
 			}
-			else if(event.getDurationHours() != null)  {
-				response.setValue("startDateTime", eventService.computeStartDateTime(event.getDurationHours(), event.getDurationMinutesSelect(), event.getEndDateTime()));
+			else if(event.getDuration() != null)  {
+				response.setValue("startDateTime", eventService.computeStartDateTime(event.getDuration().intValue(), event.getEndDateTime()));
 			}
 		}
 	}
@@ -88,12 +85,12 @@ public class EventController {
 		
 		Event event = request.getContext().asType(Event.class);
 		
-		if(event.getDurationHours() != null)  {
+		if(event.getDuration() != null)  {
 			if(event.getStartDateTime() != null)  {
-				response.setValue("endDateTime", eventService.computeEndDateTime(event.getStartDateTime(), event.getDurationHours(), event.getDurationMinutesSelect()));
+				response.setValue("endDateTime", eventService.computeEndDateTime(event.getStartDateTime(), event.getDuration().intValue()));
 			}
 			else if(event.getEndDateTime() != null)  {
-				response.setValue("startDateTime", eventService.computeStartDateTime(event.getDurationHours(), event.getDurationMinutesSelect(), event.getEndDateTime()));
+				response.setValue("startDateTime", eventService.computeStartDateTime(event.getDuration().intValue(), event.getEndDateTime()));
 			}
 		}
 	}

@@ -12,7 +12,7 @@
         <field name="typeSelect"/>
         <field name="subject"/>
         <field name="startDateTime"/>
-        <field name="durationHours"/>
+        <field name="duration"/>
         <field name="userInfo"/>
         <field name="team"/>
     </grid>
@@ -42,13 +42,11 @@
 	        <separator title="Description" colSpan="4"/>
 	        <field name="description" colSpan="4" widget="TEXT[height=3]" showTitle="false" placeholder="Description"/>
 	        <break/>
-	        <group colSpan="4" css="groupTitle" cols="8" colWidths="25*">
-	            <separator title="Dates" colSpan="8"/>
+	        <group colSpan="4" css="groupTitle" cols="6" colWidths="25*">
+	            <separator title="Dates" colSpan="6"/>
 	            <field name="startDateTime" onChange="action-meeting-method-compute-start-date-time"/>
 	            <field name="endDateTime" onChange="action-meeting-method-compute-end-date-time"/>
-	            <field name="durationHours" placeholder="Hours" onChange="action-meeting-method-compute-duration"/>
-	            <label title=":" colSpan="1"/>
-	            <field name="durationMinutesSelect" showTitle="false" placeholder="Minutes" onChange="action-meeting-method-compute-duration"/>
+	            <field name="duration" widget="duration[big=true]" onChange="action-meeting-method-compute-duration"/>
 	        </group>
 	    </group>
 	    <group colSpan="1" cols="2">
@@ -106,13 +104,11 @@
 	        <separator title="Description" colSpan="4"/>
 	        <field name="description" colSpan="4" widget="TEXT[height=3]" showTitle="false" placeholder="Description"/>
 	        <break/>
-	        <group colSpan="4" css="groupTitle" cols="8" colWidths="25*">
-	            <separator title="Dates" colSpan="8"/>
+	        <group colSpan="4" css="groupTitle" cols="6" colWidths="25*">
+	            <separator title="Dates" colSpan="6"/>
 	            <field name="startDateTime" onChange="action-meeting-method-compute-start-date-time"/>
 	            <field name="endDateTime" onChange="action-meeting-method-compute-end-date-time"/>
-	            <field name="durationHours" placeholder="Hours" onChange="action-meeting-method-compute-duration"/>
-	            <label title=":" colSpan="1"/>
-	            <field name="durationMinutesSelect" showTitle="false" placeholder="Minutes" onChange="action-meeting-method-compute-duration"/>
+	            <field name="duration" onChange="action-meeting-method-compute-duration"/>
 	        </group>
 	    </group>
 	    <group colSpan="1" cols="2">
@@ -181,13 +177,11 @@
 	        <separator title="Description" colSpan="4"/>
 	        <field name="description" colSpan="4" widget="TEXT[height=3]" showTitle="false" placeholder="Description"/>
 	        <break/>
-	        <group colSpan="4" css="groupTitle" cols="8" colWidths="25*">
-	            <separator title="Dates" colSpan="8"/>
+	        <group colSpan="4" css="groupTitle" cols="6" colWidths="25*">
+	            <separator title="Dates" colSpan="6"/>
 	            <field name="startDateTime" onChange="action-meeting-method-compute-start-date-time"/>
 	            <field name="endDateTime" onChange="action-meeting-method-compute-end-date-time"/>
-	            <field name="durationHours" placeholder="Hours" onChange="action-meeting-method-compute-duration"/>
-	            <label title=":" colSpan="1"/>
-	            <field name="durationMinutesSelect" showTitle="false" placeholder="Minutes" onChange="action-meeting-method-compute-duration"/>
+	            <field name="duration" onChange="action-meeting-method-compute-duration"/>
 	        </group>
 	    </group>
 	    <group colSpan="1" cols="2">
@@ -246,13 +240,11 @@
 	        <separator title="Description" colSpan="4"/>
 	        <field name="description" colSpan="4" widget="TEXT[height=3]" showTitle="false" placeholder="Description"/>
 	        <break/>
-	        <group colSpan="4" css="groupTitle" cols="8" colWidths="25*">
-	            <separator title="Dates" colSpan="8"/>
+	        <group colSpan="4" css="groupTitle" cols="6" colWidths="25*">
+	            <separator title="Dates" colSpan="6"/>
 	            <field name="startDateTime" onChange="action-meeting-method-compute-start-date-time"/>
 	            <field name="endDateTime" onChange="action-meeting-method-compute-end-date-time"/>
-	            <field name="durationHours" placeholder="Hours" onChange="action-meeting-method-compute-duration"/>
-	            <label title=":" colSpan="1"/>
-	            <field name="durationMinutesSelect" showTitle="false" placeholder="Minutes" onChange="action-meeting-method-compute-duration"/>
+	            <field name="duration" onChange="action-meeting-method-compute-duration"/>
 	        </group>
 	    </group>
 	    <group colSpan="1" cols="2">
@@ -312,16 +304,11 @@
 	            <field name="userInfo" onChange="action-event-record-ticket-responsible-user-info"/>
 	            <field name="responsibleUserInfo"/>
 	        </group>
-	        <group colSpan="4" css="groupTitle" cols="4">
-	                <separator title="Dates" colSpan="4"/>
+	        <group colSpan="4" css="groupTitle" cols="6">
+	                <separator title="Dates" colSpan="6"/>
 	                <field name="startDateTime" onChange="action-meeting-method-compute-start-date-time"/>
 	                <field name="endDateTime" onChange="action-meeting-method-compute-end-date-time"/>
-	                <break/>
-	                <group colSpan="2" cols="5">
-	                    <field name="durationHours" placeholder="Hours" onChange="action-meeting-method-compute-duration"/>
-	                    <label title=":" colSpan="1"/>
-	                    <field name="durationMinutesSelect" showTitle="false" placeholder="Minutes" onChange="action-meeting-method-compute-duration"/>
-	                </group>
+	                <field name="duration" onChange="action-meeting-method-compute-duration"/>
 	        </group>
 	    </group>
 	    <group colSpan="1" cols="2">
@@ -437,8 +424,7 @@
     </action-record>
     
     <action-record name="action-event-record-default-duration" model="com.axelor.apps.crm.db.Event">
-    	<field name="durationHours" expr="1"/>
-    	<field name="durationMinutesSelect" expr="0"/>
+    	<field name="duration" expr="100"/>
     </action-record>
     
     <action-group name="action-event-new-record">
