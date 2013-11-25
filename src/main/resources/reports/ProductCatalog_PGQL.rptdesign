@@ -1581,7 +1581,7 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                                                         <structure>
                                                             <property name="paramName">param_1</property>
                                                             <simple-property-list name="expression">
-                                                                <value type="javascript">'ProductCatelog.reference'</value>
+                                                                <value type="javascript">'ProductCatalog.reference'</value>
                                                             </simple-property-list>
                                                         </structure>
                                                     </list-property>
@@ -1613,7 +1613,7 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                                                         <structure>
                                                             <property name="paramName">param_1</property>
                                                             <simple-property-list name="expression">
-                                                                <value type="javascript">'ProductCatelog.description'</value>
+                                                                <value type="javascript">'ProductCatalog.description'</value>
                                                             </simple-property-list>
                                                         </structure>
                                                     </list-property>
@@ -1652,7 +1652,7 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'ProductCatelog.price'</value>
+                                                    <value type="javascript">'ProductCatalog.price'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
