@@ -19,7 +19,7 @@
         <field name="unit"/>
         <field name="prodProcess"/>
         <field name="billOfMaterialSet" colSpan="4" form-view="bill-of-material-line-form"  grid-view="bill-of-material-line-grid"/>
-        <field name="productionRemainsList" colSpan="4"/>
+        <field name="prodRemainsList" colSpan="4"/>
     </form>
     
     
@@ -44,7 +44,7 @@
         <field name="isRawMaterial"/>
         <field name="prodProcess" hideIf="isRawMaterial"/>
         <field name="billOfMaterialSet" colSpan="4" form-view="bill-of-material-line-form"  grid-view="bill-of-material-line-grid" hideIf="isRawMaterial"/>
-        <field name="productionRemainsList" colSpan="4"/>
+        <field name="prodRemainsList" colSpan="4"/>
     </form>
     
     <action-record name="action-bill-of-material-default-record" model="com.axelor.apps.production.db.BillOfMaterial">
