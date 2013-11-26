@@ -12,6 +12,9 @@
     
     <form name="timesheet-form" title="Timesheet" model="com.axelor.apps.organisation.db.Timesheet" cols="4"
     onNew="action-timesheet-default-record,action-timesheet-getPeriod">
+     	<toolbar>
+            <button name="print" title="Print" icon="img/icons/print.png" onClick="save,action-print-pdf-timesheet"/>
+	    </toolbar>
         <field name="userInfo" readonlyIf="statusSelect >= 3"/>
 		<spacer/>
 		<field name="statusSelect" showTitle="false" widget="NavSelect"/>
@@ -22,14 +25,10 @@
 		<field name="project" domain="self.isBusiness = true" readonlyIf="statusSelect >= 3"/>
         <group title="Satisfaction" colSpan="4" cols="4">
         	<separator title="Project" colSpan="4"/>
-        	<group colSpan="2">
-				<field name="projectSatisfactionSelect" widget="SelectProgress"/>
-			</group>
+			<field name="projectSatisfactionSelect" widget="SelectProgress"/>
 	        <field name="projectComment"/>
 	        <separator colSpan="4" title="Company"/>
-	        <group colSpan="2">
-				<field name="companySatisfactionSelect" widget="SelectProgress"/>
-			</group>
+			<field name="companySatisfactionSelect" widget="SelectProgress"/>
         	<field name="companyComment"/>
         </group>
         <separator colSpan="4" title="Details of time spent on project/tasks"/>
