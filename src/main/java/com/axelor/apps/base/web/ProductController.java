@@ -38,6 +38,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.AxelorSettings;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.UserInfo;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
@@ -45,15 +49,20 @@ import com.axelor.auth.db.User;
 import com.axelor.meta.db.MetaUser;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.apps.base.service.user.UserInfoService;
+import com.google.inject.Inject;
 
 public class ProductController {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(ProductController.class);
 	
+	@Inject UserInfoService userInfoService;
+	
 	public void printProductCatelog(ActionRequest request, ActionResponse response) {
 
 		AxelorSettings axelorSettings = AxelorSettings.get();
 		
+
 		StringBuilder url = new StringBuilder();
 		User user =  AuthUtils.getUser();
 		
@@ -81,6 +90,36 @@ public class ProductController {
 			
 			Map<String,Object> mapView = new HashMap<String,Object>();
 			mapView.put("title", "Product Catelog "+currentYear);
+			mapView.put("resource", url);
+			mapView.put("viewType", "html");
+			response.setView(mapView);		
+		}
+		else {
+			response.setFlash(urlNotExist);
+		}
+	}
+	
+	public void printProductSheet(ActionRequest request, ActionResponse response) {
+
+		AxelorSettings axelorSettings = AxelorSettings.get();
+	
+		Product product = request.getContext().asType(Product.class);
+		UserInfo userInfo =  userInfoService.getUserInfo();
+	
+		StringBuilder url = new StringBuilder();
+				
+		MetaUser metaUser = MetaUser.findByUser( AuthUtils.getUser());
+		String language = metaUser.getLanguage() != null? metaUser.getLanguage() : "en"; 
+		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/ProductSheet.rptdesign&Locale="+language+"&__format=pdf&ProductId="+product.getId()+"&CompanyId="+userInfo.getActiveCompany().getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
+		
+		LOG.debug("URL : {}", url);
+		String urlNotExist = URLService.notExist(url.toString());
+		if (urlNotExist == null){
+		
+			LOG.debug("Impression des informations sur le partenaire Product "+product.getName());
+			
+			Map<String,Object> mapView = new HashMap<String,Object>();
+			mapView.put("title", "Product Catelog "+product.getCode());
 			mapView.put("resource", url);
 			mapView.put("viewType", "html");
 			response.setView(mapView);		
