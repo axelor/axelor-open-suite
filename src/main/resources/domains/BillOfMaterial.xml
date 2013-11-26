@@ -9,8 +9,13 @@
   
   	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
   	<decimal name="qty" title="Quantity"/>
-  	<one-to-many name="billOfMaterialLineList" ref="com.axelor.apps.production.db.BillOfMaterialLine" mappedBy="parentBillOfMaterial" title="BOMs"/>
-  	<many-to-one name="prodProcess" ref="com.axelor.apps.production.db.ProdProcess" title="Production process"/>
+  	<many-to-one name="productVariant" ref="com.axelor.apps.base.db.ProductVariant" title="Product variant"/>
+  	<integer name="priority" title="Priority"/>
+    <boolean name="isRawMaterial" title="Raw material"/>
+    <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
+    <many-to-one name="prodProcess" ref="com.axelor.apps.production.db.ProdProcess" title="Production process"/>
+  	<many-to-many name="billOfMaterialSet" ref="com.axelor.apps.production.db.BillOfMaterial" title="BOMs"/>
+  	<one-to-many name="prodRemainsList" ref="com.axelor.apps.production.db.ProdRemains" title="Production remains"/>
   	
     
   </entity>

@@ -7,8 +7,10 @@
 
   <entity name="ProdProcess" lang="java">
   
-  	<string name="prodProcessSeq" title="Name"/>
-	<one-to-many name="prodProcessLineList" ref="com.axelor.apps.production.db.ProdProcessLine" mappedBy="prodProcess" title="Production process"/>  	
+  	<many-to-one name="prodResource" ref="com.axelor.apps.production.db.ProdResource" title="Resource"/>
+    <decimal name="capacityPerHour" title="Capacity / hours"/>
+    <boolean name="hasStockCheckout" title="Stock checkout ?"/>
+    <integer name="duration" title="Duration (min)"/>
     
   </entity>
 </domain-models>
