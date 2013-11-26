@@ -4,12 +4,17 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
     <grid name="prod-process-grid" title="Production process" model="com.axelor.apps.production.db.ProdProcess">
-        <field name="prodProcessSeq"/>
+        <field name="prodResource"/>
+        <field name="capacityPerHour"/>
+        <field name="hasStockCheckout"/>
+        <field name="duration"/>
     </grid>
     
     <form name="prod-process-form" title="Production process" model="com.axelor.apps.production.db.ProdProcess" cols="4">
-        <field name="prodProcessSeq"/>
-        <field name="prodProcessLineList" colSpan="4"/>
+        <field name="prodResource"/>
+        <field name="capacityPerHour"/>
+        <field name="hasStockCheckout"/>
+        <field name="duration"/>
     </form>
     
 </object-views>

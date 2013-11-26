@@ -4,22 +4,63 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
     <grid name="bill-of-material-grid" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">
-        <field name="product"/>
+        <field name="product" domain="self.productTypeSelect = 'storable'"  onChange="action-bill-of-material-record-product"/>
+        <field name="productVariant"/>
         <field name="qty"/>
+        <field name="unit"/>
         <field name="prodProcess"/>
-        <field name="billOfMaterialLineList"/>
     </grid>
     
     <form name="bill-of-material-form" title="Bill of material" model="com.axelor.apps.production.db.BillOfMaterial" cols="4"
-    onNew="action-bill-default-record">
-        <field name="product" domain="self.productTypeSelect = 'storable'"/>
+    onNew="action-bill-of-material-default-record">
+        <field name="product" domain="self.productTypeSelect = 'storable'"  onChange="action-bill-of-material-record-product"/>
+        <field name="productVariant"/>
         <field name="qty"/>
+        <field name="unit"/>
         <field name="prodProcess"/>
-        <field name="billOfMaterialLineList" colSpan="4"/>
+        <field name="billOfMaterialSet" colSpan="4" form-view="bill-of-material-line-form"  grid-view="bill-of-material-line-grid"/>
+        <field name="productionRemainsList" colSpan="4"/>
     </form>
     
-    <action-record name="action-bill-default-record" model="com.axelor.apps.production.db.BillOfMaterial">
+    
+    <grid name="bill-of-material-line-grid" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">
+        <field name="priority" readonlyIf="isRawMaterial"/>
+        <field name="product" domain="self.productTypeSelect = 'storable'"  onChange="action-bill-of-material-record-product"/>
+        <field name="productVariant"/>
+        <field name="qty"/>
+        <field name="unit"/>
+        <field name="isRawMaterial"/>
+        <field name="prodProcess" readonlyIf="isRawMaterial"/>
+    </grid>
+    
+    
+     <form name="bill-of-material-line-form" title="Bill of material" model="com.axelor.apps.production.db.BillOfMaterial" cols="4"
+    onNew="action-bill-of-material-line-default-record">
+    	<field name="priority" hideIf="isRawMaterial"/>
+        <field name="product" domain="self.productTypeSelect = 'storable'" onChange="action-bill-of-material-record-product"/>
+        <field name="productVariant"/>
+        <field name="qty"/>
+        <field name="unit"/>
+        <field name="isRawMaterial"/>
+        <field name="prodProcess" hideIf="isRawMaterial"/>
+        <field name="billOfMaterialSet" colSpan="4" form-view="bill-of-material-line-form"  grid-view="bill-of-material-line-grid" hideIf="isRawMaterial"/>
+        <field name="productionRemainsList" colSpan="4"/>
+    </form>
+    
+    <action-record name="action-bill-of-material-default-record" model="com.axelor.apps.production.db.BillOfMaterial">
     	<field name="qty" expr="1"/>
     </action-record>
     
+     <action-record name="action-bill-of-material-line-default-record" model="com.axelor.apps.production.db.BillOfMaterial">
+    	<field name="qty" expr="1"/>
+    	<field name="priority" expr="10"/>
+    </action-record>
+    
+    
+    <action-record name="action-bill-of-material-record-product" model="com.axelor.apps.production.db.BillOfMaterial">
+    	<field name="unit" expr="eval: product?.unit"/>
+    </action-record>
+    
 </object-views>
+
+

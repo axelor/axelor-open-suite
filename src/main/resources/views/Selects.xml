@@ -6,12 +6,14 @@
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
 	
-	<selection name="production.prod.order.status.select">
+	<selection name="production.manuf.order.status.select">
 		<option value="1">Draft</option>
-		<option value="2">Standby</option>
+		<option value="2">Canceled</option>
 		<option value="3">Planned</option>
-		<option value="4">Finished</option>
-		<option value="5">Canceled</option>
+		<option value="4">In progress</option>
+		<option value="5">Standby</option>
+		<option value="6">Finished</option>
+		
 	</selection>
 	
 </object-views>

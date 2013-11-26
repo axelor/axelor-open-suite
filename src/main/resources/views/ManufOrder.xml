@@ -5,14 +5,14 @@
     
     <grid name="manuf-order-grid" title="Manufacturing orders" model="com.axelor.apps.production.db.ManufOrder">
         <field name="manufOrderSeq"/>
+        <field name="company"/>
         <field name="billOfMaterial"/>
         <field name="prodProcess"/>
         <field name="outStockMove"/>
-        <field name="inLocation"/>
-        <field name="outLocation"/>
-        <field name="startDate"/>
-        <field name="endDate"/>
-        <field name="isSimulation"/>
+        <field name="plannedStartDateT"/>
+        <field name="plannedEndDateT"/>
+        <field name="realStartDateT"/>
+        <field name="realEndDateT"/>
         <field name="statusSelect"/>
     </grid>
     
@@ -20,30 +20,40 @@
     onNew="action-manuf-order-default-record">
         <field name="manufOrderSeq"/>
         <field name="statusSelect" widget="NavSelect"/>
+        <field name="company"/>
         <field name="billOfMaterial"/>
+        <field name="billOfMaterial.product"/>
         <field name="prodProcess"/>
-        <field name="isSimulation"/> 
-        <group title="Moves In/Out" colSpan="4">
-	        <field name="inStockMoveList" colSpan="4"/>
-	        <field name="inLocation"/>
-	        <field name="outStockMove"/>
-	        <field name="outLocation"/>
-        </group>
-        <group title="Date" colSpan="2">
-        	<field name="startDate"/>
-        	<field name="endDate"/>
-        </group>
-        <group title="Action" colSpan="2">
-        	<button name="standbyAllLines" title="Stand by all lines"/>
-        	<button name="endAllLines" title="Finish all lines "/>
-        </group>
-        <field name="manufOrderLineList" colSpan="4"/>
         
+         <group title="Dates" colSpan="4">
+         	<group showTitle="false" colSpan="2">
+         		<separator title="Planned dates" colSpan="2"/>
+	        	<field name="plannedStartDateT"/>
+	        	<field name="plannedEndDateT"/>
+	        </group>
+	        <group showTitle="false" colSpan="2">
+	        	<separator title="Real dates" colSpan="2"/>
+	        	<field name="realStartDateT"/>
+	        	<field name="realEndDateT"/>
+	        </group>
+        </group>
+        
+        <group title="Moves In/Out" colSpan="4">
+	        <field name="inStockMove"/>
+	        <field name="outStockMove"/>
+        </group>
+        <group title="Production waste" colSpan="4">
+	        <field name="wasteProdDescription" colSpan="4"/>
+	        <field name="wasteProdQty"/>
+	        <button name="generateWasteStockMove" title="Generate waste stock move" colSpan="2" onClick="Non implemented yet"/>
+	        <field name="wasteStockMove"/>
+        </group>
     </form>
     
     <action-record name="action-manuf-order-default-record" model="com.axelor.apps.production.db.ManufOrder">
     	<field name="statusSelect" expr="eval: 1"/>
-    	<field name="startDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="startDate == null"/>
+    	<field name="plannedStartDateT" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="startDate == null"/>
     </action-record>
+    
     
 </object-views>
