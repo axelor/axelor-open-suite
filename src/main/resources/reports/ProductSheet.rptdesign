@@ -1356,9 +1356,9 @@ where Expense.id = ?
 }else if(row._outer["warranty_nbr_of_months"] % 12 == 0){
 	row._outer["warranty_nbr_of_months"]/12 +" Year(s)"
 }else if(row._outer["warranty_nbr_of_months"] < 13){
-row._outer["warranty_nbr_of_months"] + " Months"
+row._outer["warranty_nbr_of_months"] + " Month(s)"
 }else{
-Formatter.format((row._outer["warranty_nbr_of_months"]/12), "#0") + " year(s) and "+ row._outer["warranty_nbr_of_months"] % 12 +" Months"
+Formatter.format((row._outer["warranty_nbr_of_months"]/12), "#0") + " Year(s) and "+ row._outer["warranty_nbr_of_months"] % 12 +" Month(s)"
 }</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
