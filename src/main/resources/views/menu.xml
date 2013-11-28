@@ -6,16 +6,16 @@
 
 
 	<menuitem name="crm-root" title="CRM" priority="180"
-		icon="img/icons/crm.png" groups="admins,erp,crm"/>
+		icon="img/Other/crm_86px.png" groups="admins,erp,crm"/>
 
 	<menuitem name="crm-root-create" parent="crm-root"
 		title="Create"/>
 		
 	<menuitem name="crm-root-create-task" parent="crm-root-create"
-		title="Task" action="crm.root.create.task" icon="img/icons/new.png"/>
+		title="Task" action="crm.root.create.task" icon="img/16px/new_16px.png"/>
 
 	<action-view name="crm.root.create.task" title="Task"
-		model="com.axelor.apps.crm.db.Event" icon="img/icons/new.png">
+		model="com.axelor.apps.crm.db.Event" icon="img/16px/new_16px.png">
 		<view type="form" name="crm-task-form"/>
 		<view type="grid" name="crm-task-grid"/>
 		<context name="_typeSelect" expr="3"/>
@@ -23,10 +23,10 @@
 	</action-view>
 	
 	<menuitem name="crm-root-create-meeting" parent="crm-root-create"
-		title="Meeting" action="crm.root.create.meeting" icon="img/icons/new.png"/>
+		title="Meeting" action="crm.root.create.meeting" icon="img/16px/new_16px.png"/>
 
 	<action-view name="crm.root.create.meeting" title="Meeting"
-		model="com.axelor.apps.crm.db.Event" icon="img/icons/new.png">
+		model="com.axelor.apps.crm.db.Event" icon="img/16px/new_16px.png">
 		<view type="form" name="meeting-form"/>
 		<view type="grid" name="meeting-grid"/>
 		<context name="_typeSelect" expr="2"/>
@@ -34,10 +34,10 @@
 	</action-view>
 	
 	<menuitem name="crm-root-create-call" parent="crm-root-create"
-		title="Call" action="crm.root.create.call" icon="img/icons/new.png"/>
+		title="Call" action="crm.root.create.call" icon="img/16px/new_16px.png"/>
 
 	<action-view name="crm.root.create.call" title="Call"
-		model="com.axelor.apps.crm.db.Event" icon="img/icons/new.png">
+		model="com.axelor.apps.crm.db.Event" icon="img/16px/new_16px.png">
 		<view type="form" name="call-form"/>
 		<view type="grid" name="call-grid"/>
 		<context name="_typeSelect" expr="1"/>
@@ -45,10 +45,10 @@
 	</action-view>
 	
 	<menuitem name="crm-root-create-ticket" parent="crm-root-create"
-		title="Ticket" action="crm.root.create.ticket" icon="img/icons/new.png"/>
+		title="Ticket" action="crm.root.create.ticket" icon="img/16px/new_16px.png"/>
 
 	<action-view name="crm.root.create.ticket" title="Ticket"
-		model="com.axelor.apps.crm.db.Event" icon="img/icons/new.png">
+		model="com.axelor.apps.crm.db.Event" icon="img/16px/new_16px.png">
 		<view type="form" name="ticket-form"/>
 		<view type="grid" name="ticket-grid"/>
 		<context name="_typeSelect" expr="5"/>
@@ -60,7 +60,7 @@
 		title="Tasks" action="crm.root.task" />
 
 	<action-view name="crm.root.task" title="Tasks"
-		model="com.axelor.apps.crm.db.Event" icon="img/icons/crm_small.png">
+		model="com.axelor.apps.crm.db.Event" icon="img/16px/crmSmall_16px.png">
 		<view type="grid" name="crm-task-grid"/>
 		<view type="form" name="crm-task-form"/>
 		<view-param name="search-filters" value="tasks-filters"/>
@@ -76,7 +76,7 @@
 		title="Meetings" action="crm.root.meeting" />
 
 	<action-view name="crm.root.meeting" title="Meetings"
-		model="com.axelor.apps.crm.db.Event" icon="img/icons/crm_small.png">
+		model="com.axelor.apps.crm.db.Event" icon="img/16px/crmSmall_16px.png">
 		<view type="grid" name="meeting-grid"/>
 		<view type="form" name="meeting-form"/>
 		<view type="calendar" name="meeting-calendar"/>
@@ -92,7 +92,7 @@
 		title="Calls" action="crm.root.call" />
 
 	<action-view name="crm.root.call" title="Calls"
-		model="com.axelor.apps.crm.db.Event" icon="img/icons/crm_small.png">
+		model="com.axelor.apps.crm.db.Event" icon="img/16px/crmSmall_16px.png">
 		<view type="grid" name="call-grid"/>
 		<view type="form" name="call-form"/>
 		<view-param name="search-filters" value="call-filters"/>
@@ -107,7 +107,7 @@
 		title="Tickets" action="crm.root.ticket" />
 
 	<action-view name="crm.root.ticket" title="Tickets"
-		model="com.axelor.apps.crm.db.Event" icon="img/icons/crm_small.png">
+		model="com.axelor.apps.crm.db.Event" icon="img/16px/crmSmall_16px.png">
 		<view type="grid" name="ticket-grid"/>
 		<view type="form" name="ticket-form"/>
 		<view-param name="search-filters" value="ticket-filters"/>
@@ -122,7 +122,7 @@
 		title="Leads" action="crm.root.lead" />
 
 	<action-view name="crm.root.lead" title="Leads"
-		model="com.axelor.apps.crm.db.Lead" icon="img/icons/crm_small.png">
+		model="com.axelor.apps.crm.db.Lead" icon="img/16px/crmSmall_16px.png">
 		<view type="grid" name="lead-grid"/>
 		<view type="form" name="lead-form"/>
 		<view-param name="search-filters" value="lead-filters"/>
@@ -134,7 +134,7 @@
 		title="Opportunities" action="crm.root.opportunity" />
 
 	<action-view name="crm.root.opportunity" title="Opportunities"
-		model="com.axelor.apps.crm.db.Opportunity" icon="img/icons/crm_small.png">
+		model="com.axelor.apps.crm.db.Opportunity" icon="img/16px/crmSmall_16px.png">
 		<view type="grid" name="opportunity-grid"/>
 		<view type="form" name="opportunity-form"/>
 		<view-param name="search-filters" value="opportunity-filters"/>
@@ -143,10 +143,10 @@
 	</action-view>
 		
 	<menuitem name="crm-root-meeting-my-calendar" parent="crm-root"
-		title="My Calendar" action="crm.root.meeting.my.calendar" icon="img/icons/calendar-task.png"/>
+		title="My Calendar" action="crm.root.meeting.my.calendar" icon="img/16px/calendarTask_16px.png"/>
 
 	<action-view name="crm.root.meeting.my.calendar" title="My Meetings Calendar"
-		model="com.axelor.apps.crm.db.Event" icon="img/icons/calendar-task.png">
+		model="com.axelor.apps.crm.db.Event" icon="img/16px/calendarTask_16px.png">
 		<view type="calendar" name="event-calendar-color-by-calendar"/>
 		<view type="grid" name="event-grid"/>
 		<view type="form" name="event-form"/>
@@ -156,10 +156,10 @@
 	</action-view>
 	
 	<menuitem name="crm-root-meeting-team-calendar" parent="crm-root"
-		title="Team Calendar" action="crm.root.meeting.team.calendar" icon="img/icons/calendar-task.png"/>
+		title="Team Calendar" action="crm.root.meeting.team.calendar" icon="img/16px/calendarTask_16px.png"/>
 		
 	<action-view name="crm.root.meeting.team.calendar" title="Team Calendar"
-		model="com.axelor.apps.crm.db.Event" icon="img/icons/calendar-task.png">
+		model="com.axelor.apps.crm.db.Event" icon="img/16px/calendarTask_16px.png">
 		<view type="calendar" name="event-calendar-color-by-user-info"/>
 		<view type="grid" name="event-grid"/>
 		<view type="form" name="event-form"/>
@@ -169,7 +169,7 @@
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
 	</action-view>
 	
-<!-- 	<action-view title="My Meetings Calendar" icon="img/icons/calendar-task.png" model="com.axelor.apps.crm.db.Event" name="crm.root.meeting.my.calendar"> -->
+<!-- 	<action-view title="My Meetings Calendar" icon="img/16px/calendarTask_16px.png" model="com.axelor.apps.crm.db.Event" name="crm.root.meeting.my.calendar"> -->
 <!-- 	    <view type="calendar" name="event-calendar"/> -->
 <!-- 	    <view type="form" name="event-form"/> -->
 <!-- 	    <domain>self.userInfo.id = :_internalUser OR self.id IN :_currentAttendee</domain> -->
@@ -182,10 +182,10 @@
 	
 	<!--  
 	<menuitem name="crm-root-meeting-team-calendar" parent="crm-root"
-		title="Shared calendar" action="crm.root.meeting.team.calendar" icon="img/icons/calendar-task.png"/>
+		title="Shared calendar" action="crm.root.meeting.team.calendar" icon="img/16px/calendarTask_16px.png"/>
 
 	<action-view name="crm.root.meeting.team.calendar" title="Shared calendar"
-		model="com.axelor.apps.crm.db.Event" icon="img/icons/calendar-task.png">
+		model="com.axelor.apps.crm.db.Event" icon="img/16px/calendarTask_16px.png">
 		<view type="calendar" name="event-calendar"/>
 		<view type="grid" name="event-grid"/>
 		<view type="form" name="event-form"/>
@@ -194,13 +194,13 @@
 	-->
 				
 	<menuitem name="crm-conf" parent="crm-root" title="Configuration"
-		icon="img/icons/parameter.png" />
+		icon="img/Other/parameter_59px.png" />
 	
 	<menuitem name="crm-conf-lead-source" parent="crm-conf"
 		title="Leads Source" action="crm.conf.lead.source" />
 		
 	<action-view name="crm.conf.lead.source" title="Leads Source"
-		model="com.axelor.apps.base.db.Source" icon="img/icons/parameter_small.png">
+		model="com.axelor.apps.base.db.Source" icon="img/16px/parameterSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
@@ -209,7 +209,7 @@
 		title="Meeting Types" action="crm.conf.meeting.type" />
 
 	<action-view name="crm.conf.meeting.type" title="Meeting Types"
-		model="com.axelor.apps.crm.db.MeetingType" icon="img/icons/parameter_small.png">
+		model="com.axelor.apps.crm.db.MeetingType" icon="img/16px/parameterSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
@@ -218,7 +218,7 @@
 		title="Meeting Participants" action="crm.conf.participant" />
 
 	<action-view name="crm.conf.participant" title="Meeting Participants"
-		model="com.axelor.apps.crm.db.Participant" icon="img/icons/parameter_small.png">
+		model="com.axelor.apps.crm.db.Participant" icon="img/16px/parameterSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
@@ -227,7 +227,7 @@
 		title="Event Categories" action="crm.conf.event.category" />
 
 	<action-view name="crm.conf.event.category" title="Event Categories"
-		model="com.axelor.apps.crm.db.EventCategory" icon="img/icons/parameter_small.png">
+		model="com.axelor.apps.crm.db.EventCategory" icon="img/16px/parameterSmall_16px.png">
 		<view type="grid" name="event-category-conf-grid"/>
 		<view type="form" name="event-category-form"/>
 	</action-view>
@@ -236,7 +236,7 @@
 		title="Calendars" action="crm.conf.calendar" />
 
 	<action-view name="crm.conf.calendar" title="Calendars"
-		model="com.axelor.apps.crm.db.Calendar" icon="img/icons/parameter_small.png">
+		model="com.axelor.apps.crm.db.Calendar" icon="img/16px/parameterSmall_16px.png">
 		<view type="grid" name="calendar-grid"/>
 		<view type="form" name="calendar-form"/>
 	</action-view>
@@ -245,7 +245,7 @@
 		title="Calendar Configurations" action="crm.conf.calendar.configuration" />
 
 	<action-view name="crm.conf.calendar.configuration" title="Calendar Configurations"
-		model="com.axelor.apps.crm.db.CalendarConfiguration" icon="img/icons/parameter_small.png">
+		model="com.axelor.apps.crm.db.CalendarConfiguration" icon="img/16px/parameterSmall_16px.png">
 		<view type="grid" name="calendar-configuration-grid"/>
 		<view type="form" name="calendar-configuration-form"/>
 	</action-view>
@@ -254,7 +254,7 @@
 		title="Targets configurations" action="crm.conf.target.configuration" />
 
 	<action-view name="crm.conf.target.configuration" title="Targets Configurations"
-		model="com.axelor.apps.crm.db.TargetConfiguration" icon="img/icons/parameter_small.png">
+		model="com.axelor.apps.crm.db.TargetConfiguration" icon="img/16px/parameterSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
@@ -263,7 +263,7 @@
 		title="Targets" action="crm.conf.target" />
 
 	<action-view name="crm.conf.target" title="Target"
-		model="com.axelor.apps.crm.db.Target" icon="img/icons/parameter_small.png">
+		model="com.axelor.apps.crm.db.Target" icon="img/16px/parameterSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
@@ -273,13 +273,13 @@
 		title="CRM batches" action="admin.root.batch.crm" />
 
 	<action-view name="admin.root.batch.crm" title="CRM batches"
-		model="com.axelor.apps.crm.db.CrmBatch" icon="img/icons/parameter_small.png">
+		model="com.axelor.apps.crm.db.CrmBatch" icon="img/16px/parameterSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 
 
-<!-- <action-view title="Calendrier" icon="img/icons/calendar-task.png" model="com.axelor.apps.crm.db.Event" name="crm.root.event.calendar.1">  -->
+<!-- <action-view title="Calendrier" icon="img/16px/calendarTask_16px.png" model="com.axelor.apps.crm.db.Event" name="crm.root.event.calendar.1">  -->
 <!-- <view type="calendar" name="event-calendar"/> -->
 <!-- <view type="grid" name="event-grid"/> -->
 <!-- <view type="form" name="event-form"/> -->
@@ -290,17 +290,17 @@
 	
 	<!-- Top Menu for Activity and Create Entry for opportunity.... -->
 	
-	<menuitem name="top-menu-crm-activities" priority="150" title="Activity" icon="img/icons/calendar.png" groups="admins,erp,crm" top="true" left="false"/> 	
+	<menuitem name="top-menu-crm-activities" priority="150" title="Activity" icon="img/16px/calendar_16px.png" groups="admins,erp,crm" top="true" left="false"/> 	
 
-	<menuitem name="top-menu-activity-my-calendar" icon="img/icons/crm_small.png" parent="top-menu-crm-activities" title="My Calendar" action="crm.root.meeting.my.calendar" />
+	<menuitem name="top-menu-activity-my-calendar" icon="img/16px/crmSmall_16px.png" parent="top-menu-crm-activities" title="My Calendar" action="crm.root.meeting.my.calendar" />
 	
-	<menuitem name="top-menu-activity-team-calendar" icon="img/icons/calendar.png" parent="top-menu-crm-activities" 	title="My Team Calendar" action="crm.root.meeting.team.calendar" />
+	<menuitem name="top-menu-activity-team-calendar" icon="img/16px/calendar_16px.png" parent="top-menu-crm-activities" 	title="My Team Calendar" action="crm.root.meeting.team.calendar" />
 	
-	<menuitem name="top-menu-activity-create-task" icon="img/icons/calendar.png" parent="top-menu-crm-activities" 	title="Create Task" action="crm.root.create.task" />
+	<menuitem name="top-menu-activity-create-task" icon="img/16px/calendar_16px.png" parent="top-menu-crm-activities" 	title="Create Task" action="crm.root.create.task" />
 	
-	<menuitem name="top-menu-activity-create-call" icon="img/icons/calendar.png" parent="top-menu-crm-activities" 	title="Create Call" action="crm.root.create.call" />
+	<menuitem name="top-menu-activity-create-call" icon="img/16px/calendar_16px.png" parent="top-menu-crm-activities" 	title="Create Call" action="crm.root.create.call" />
 	
-	<menuitem name="top-menu-activity-create-meeting" icon="img/icons/calendar.png" parent="top-menu-crm-activities" 	title="Create Meeting" action="crm.root.create.meeting" />
+	<menuitem name="top-menu-activity-create-meeting" icon="img/16px/calendar_16px.png" parent="top-menu-crm-activities" 	title="Create Meeting" action="crm.root.create.meeting" />
 		
 	
 	<menuitem name="top-menu-create-opportunity" parent="top-menu-utility" title="Create Opportunity" action="top.new.opportunity.view" />
@@ -312,7 +312,7 @@
 	
 	<menuitem name="top-menu-create-lead" parent="top-menu-utility"	title="Create Lead" action="top.new.lead.view" />
 		
-	<action-view name="top.new.lead.view" title="Create Lead" icon="img/icons/address-book.png" model="com.axelor.apps.crm.db.Lead" >
+	<action-view name="top.new.lead.view" title="Create Lead" icon="img/16px/addressBook_16px.png" model="com.axelor.apps.crm.db.Lead" >
 		<view type="form" name="lead-form" />
 		<view type="grid" name="lead-grid" />
 	</action-view>
@@ -337,30 +337,30 @@
 
 
 
-	<menuitem name="menu-crm-dashboards" priority="200" title="CRM Dashboards" icon="img/icons/chart.png" groups="admins,erp,crm"/> 
+	<menuitem name="menu-crm-dashboards" priority="200" title="CRM Dashboards" icon="img/16px/chart_16px.png" groups="admins,erp,crm"/> 
 	
 	<menuitem name="portal.opportunities" parent="menu-crm-dashboards" title="Opportunity List Report" action="portal.opportunity.dashboard.view" />
 		
-	<action-view name="portal.opportunity.dashboard.view" title="Opportunity" icon="img/icons/crm_small.png">
+	<action-view name="portal.opportunity.dashboard.view" title="Opportunity" icon="img/16px/crmSmall_16px.png">
 		<view type="portal" name="crm.opportunity.portal" />
 	</action-view>
 
 	<menuitem name="portal.opportunities.graph" parent="menu-crm-dashboards" title="Opportunity Chart Report" action="portal.opportunity.graph.dashboard.view" />
 		
-	<action-view name="portal.opportunity.graph.dashboard.view" title="Opportunity Report" icon="img/icons/calendar.png">
+	<action-view name="portal.opportunity.graph.dashboard.view" title="Opportunity Report" icon="img/16px/calendar_16px.png">
 		<view type="portal" name="crm.opportunity.graph.portal" />
 	</action-view>
 
 	<menuitem name="portal.crm.lead.graph" parent="menu-crm-dashboards" title="Lead Chart Report" action="portal.lead.graph.dashboard.view" />
 
-	<action-view name="portal.lead.graph.dashboard.view" title="Lead Graph Report" icon="img/icons/calendar.png">
+	<action-view name="portal.lead.graph.dashboard.view" title="Lead Graph Report" icon="img/16px/calendar_16px.png">
 		<view type="portal" name="crm.lead.graph.portal" />
 	</action-view>
 	
 		
  	<menuitem name="portal.crm.event.graph" parent="menu-crm-dashboards" title="Event Chart Report" action="portal.event.graph.dashboard.view" /> 
 
- 	<action-view name="portal.event.graph.dashboard.view" title="Event Graph Report" icon="img/icons/calendar.png"> 
+ 	<action-view name="portal.event.graph.dashboard.view" title="Event Graph Report" icon="img/16px/calendar_16px.png"> 
  		<view type="portal" name="crm.event.graph.portal" />
 	</action-view> 
 	
@@ -374,7 +374,7 @@
 		title="Target user Dashboard" action="portal.target.user.dashboard.view"/>	
 	
 	<action-view name="portal.target.user.dashboard.view" title="Target user Dashboard"
-		icon="img/icons/crm_small.png">
+		icon="img/16px/crmSmall_16px.png">
 		<view type="portal" name="target.user.dashboard.portal" />
 		<context name="date" expr="eval: __date__"/>
 		<context name="user" expr="eval: __user__.id"/>
@@ -384,7 +384,7 @@
 		title="Target team Dashboard" action="portal.target.team.dashboard.view"/>	
 
 	<action-view name="portal.target.team.dashboard.view" title="Target team Dashboard"
-		icon="img/icons/crm_small.png">
+		icon="img/16px/crmSmall_16px.png">
 		<view type="portal" name="target.team.dashboard.portal" />
 		<context name="team" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeamId()"/>
 		<context name="date" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
