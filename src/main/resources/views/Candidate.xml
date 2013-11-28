@@ -14,7 +14,7 @@
 		<field name="currentJobKeyword" domain="self.typeSelect = '3'"/>
 		<field name="searchedJobKeyword" domain="self.typeSelect = '3'"/>		
 		<field name="salaryExpectation" />
-		<button name="sendByEmail" title="Send by email" colSpan="1" onClick="action-send-by-email-with-template" icon="img/Mail.png"/>
+		<button name="sendByEmail" title="Send by email" colSpan="1" onClick="action-send-by-email-with-template" icon="img/Other/mail_19x14px.png"/>
 	</grid>
 
 
