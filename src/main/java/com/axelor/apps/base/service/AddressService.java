@@ -30,18 +30,34 @@
  */
 package com.axelor.apps.base.service;
 
+import groovy.util.XmlSlurper;
+import groovy.util.slurpersupport.GPathResult;
+import groovy.util.slurpersupport.Node;
+
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import wslite.json.JSONArray;
+import wslite.json.JSONException;
+import wslite.json.JSONObject;
+import wslite.rest.ContentType;
+import wslite.rest.RESTClient;
+import wslite.rest.Response;
+
 import au.com.bytecode.opencsv.CSVWriter;
 
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Country;
+import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
 
 
@@ -125,5 +141,192 @@ public class AddressService {
 				addressL5,
 				addressL6,
 				addressL7Country).fetchOne();
+	}
+	
+	public JSONObject geocodeGoogle(String qString) {
+		Map<String,Object> response = new HashMap<String,Object>();
+		//http://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&sensor=true_or_false
+
+		// TODO inject the rest client, or better, run it in the browser
+		RESTClient restClient = new RESTClient("https://maps.googleapis.com");
+		Map<String,Object> responseQuery = new HashMap<String,Object>();
+		responseQuery.put("address", qString);
+		responseQuery.put("sensor", "false");
+		Map<String,Object> responseMap = new HashMap<String,Object>();
+		responseMap.put("path", "/maps/api/geocode/json");
+		responseMap.put("accept", ContentType.JSON);
+		responseMap.put("query", responseQuery);
+		
+		responseMap.put("connectTimeout", 5000);
+		responseMap.put("readTimeout", 10000);
+		responseMap.put("followRedirects", false);
+		responseMap.put("useCaches", false);
+		responseMap.put("sslTrustAllCerts", true);
+		JSONObject restResponse = null;
+		try {
+			restResponse = new JSONObject(restClient.get(responseMap).getContentAsString());
+			if(restResponse != null && restResponse.containsKey("results")){
+				JSONObject result = (JSONObject)((JSONArray)restResponse.get("results")).get(0);
+				if(result != null && result.containsKey("geometry"))
+					restResponse = (JSONObject)((JSONObject) result.get("geometry")).get("location");
+				else restResponse = null;
+			}
+			else restResponse = null;
+				
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		/*
+		log.debug("restResponse = {}", restResponse)
+		log.debug("restResponse.parsedResponseContent.text = {}", restResponse.parsedResponseContent.text)
+		 */
+		//def searchresults = new JsonSlurper().parseText(restResponse.parsedResponseContent.text);
+		/*
+		LOG.debug("searchresults.status = {}", searchresults.status);
+		if (searchresults.status == "OK") {
+			/*
+			log.debug("searchresults.results.size() = {}", searchresults.results.size())
+			log.debug("searchresults.results[0] = {}", searchresults.results[0])
+			log.debug("searchresults.results[0].address_components = {}", searchresults.results[0].address_components)
+			log.debug("searchresults.results[0].geometry.location = {}", searchresults.results[0].geometry.location)
+		 */
+		/*
+		def results = searchresults.results;
+
+		if (results.size() > 1) {
+			response.put("multiple", true);			
+		}
+		def firstPlaceFound = results[0];
+
+		if (firstPlaceFound) {
+			BigDecimal lat = new BigDecimal(firstPlaceFound.geometry.location.lat);
+			BigDecimal lng = new BigDecimal(firstPlaceFound.geometry.location.lng);
+
+			response.put("lat", lat.setScale(10, RoundingMode.HALF_EVEN));
+			response.put("lng", lng.setScale(10, RoundingMode.HALF_EVEN));
+		}
+	*/
+	//}
+
+		return restResponse;
+	}
+	
+	public HashMap<String,Object> getMapGoogle(String qString, BigDecimal latitude, BigDecimal longitude){
+		HashMap<String,Object> result = new HashMap<String,Object>();
+		try {
+			if(BigDecimal.ZERO.compareTo(latitude) == 0 || BigDecimal.ZERO.compareTo(longitude) == 0){
+				JSONObject googleResponse = geocodeGoogle(qString);
+				if(googleResponse != null){
+					latitude = new BigDecimal(googleResponse.get("lat").toString());
+					longitude = new BigDecimal(googleResponse.get("lng").toString());
+				}
+			}
+			if(BigDecimal.ZERO.compareTo(latitude) != 0 && BigDecimal.ZERO.compareTo(longitude) != 0){
+				result.put("url",String.format("map/gmaps.html?x=%f&y=%f&z=18",latitude,longitude));
+				result.put("latitude", latitude);
+				result.put("longitude",longitude);
+				return result;
+			}
+			
+		}catch(Exception e){
+			TraceBackService.trace(e);
+		}
+		return null;
+	}
+	
+	
+	public HashMap<String,Object> getMapOsm(String qString, BigDecimal latitude, BigDecimal longitude){
+		HashMap<String,Object> result = new HashMap<String,Object>();
+		try {
+			if(BigDecimal.ZERO.compareTo(latitude) == 0 ||  BigDecimal.ZERO.compareTo(longitude) == 0 ){
+				RESTClient restClient = new RESTClient("http://nominatim.openstreetmap.org/");
+				Map<String,Object> mapQuery = new HashMap<String,Object>();
+				mapQuery.put("q", qString);
+				mapQuery.put("format", "xml");
+				mapQuery.put("polygon", true);
+				mapQuery.put("addressdetails", true);
+				Map<String,Object> mapHeaders = new HashMap<String,Object>();
+				mapHeaders.put("HTTP referrer", "axelor");
+				Map<String,Object> mapResponse = new HashMap<String,Object>();
+				mapResponse.put("path", "/search");
+				mapResponse.put("accept", ContentType.JSON);
+				mapResponse.put("query", mapQuery);
+				mapResponse.put("headers", mapHeaders);
+				mapResponse.put("connectTimeout", 5000);
+				mapResponse.put("readTimeout", 10000);
+				mapResponse.put("followRedirects", false);
+				mapResponse.put("useCaches", false);
+				mapResponse.put("sslTrustAllCerts", true);
+				Response restResponse = restClient.get(mapResponse);
+				GPathResult searchresults = new XmlSlurper().parseText(restResponse.getContentAsString());
+				Iterator<Node> iterator = searchresults.childNodes();
+				if(iterator.hasNext()){
+					Node node = iterator.next();
+					Map attributes = node.attributes();
+					if(attributes.containsKey("lat") && attributes.containsKey("lon")){
+						if(BigDecimal.ZERO.compareTo(latitude) == 0)
+							latitude = new BigDecimal(node.attributes().get("lat").toString());
+						if(BigDecimal.ZERO.compareTo(longitude) == 0)
+							longitude = new BigDecimal(node.attributes().get("lon").toString());
+					}
+				}
+			}
+			if(BigDecimal.ZERO.compareTo(latitude) != 0 && BigDecimal.ZERO.compareTo(longitude) != 0){
+				result.put("url",String.format("map/oneMarker.html?x=%f&y=%f&z=18",latitude,longitude));
+				result.put("latitude", latitude);
+				result.put("longitude",longitude);
+				return result;
+			}
+			
+		}catch(Exception e)  {
+			TraceBackService.trace(e); 
+		}
+		return null;
+	}
+	
+	public HashMap<String,Object> getMap(String qString, BigDecimal latitude, BigDecimal longitude){
+		LOG.debug("qString = {}", qString);
+		if (GeneralService.getGeneral().getMapApiSelect().equals("1")) 
+			return getMapGoogle(qString,latitude,longitude);
+		else
+			return getMapOsm(qString,latitude,longitude);
+	}
+	
+	public HashMap<String,Object> getDirectionMapGoogle(String dString, BigDecimal dLat, BigDecimal dLon, String aString, BigDecimal aLat, BigDecimal aLon){
+		LOG.debug("departureString = {}", dString);
+		LOG.debug("arrivalString = {}", aString);
+		HashMap<String,Object> result = new HashMap<String,Object>();
+		try {
+			if (BigDecimal.ZERO.compareTo(dLat) == 0 || BigDecimal.ZERO.compareTo(dLon) == 0) {
+				Map<String,Object> googleResponse = geocodeGoogle(dString);
+				if(googleResponse != null){
+					dLat = new BigDecimal(googleResponse.get("lat").toString());
+					dLon = new BigDecimal(googleResponse.get("lng").toString());
+				}
+			}
+			LOG.debug("departureLat = {}, departureLng={}", dLat,dLon);
+			if (BigDecimal.ZERO.compareTo(aLat) == 0  || BigDecimal.ZERO.compareTo(aLon) == 0 ) {
+				Map<String,Object> googleResponse = geocodeGoogle(aString);
+				if(googleResponse != null){
+					aLat = new BigDecimal(googleResponse.get("lat").toString());
+					aLon = new BigDecimal(googleResponse.get("lng").toString());
+				}
+			}
+			LOG.debug("arrivalLat = {}, arrivalLng={}", aLat,aLon);
+			if(BigDecimal.ZERO.compareTo(dLat) != 0  && BigDecimal.ZERO.compareTo(dLon) != 0){ 
+				if(BigDecimal.ZERO.compareTo(aLat) != 0 && BigDecimal.ZERO.compareTo(aLon) != 0){ 
+					result.put("url",String.format("map/directions.html?dx=%f&dy=%f&ax=%f&ay=%f",dLat,dLon,aLat,aLon));
+					result.put("aLat", aLat);
+					result.put("dLat", dLat);
+					return result;
+				}
+			}
+		}catch(Exception e)  {
+			TraceBackService.trace(e); 
+		}
+			
+		return null;
 	}
 }
