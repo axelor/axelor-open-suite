@@ -6,14 +6,14 @@
 	
 	
 	<menuitem name="manufacturing-root" title="Manufacturing" priority="84"
-		icon="img/icons/wheel.png" groups="admins,erp"/>
+		icon="img/16px/wheel_16px.png" groups="admins,erp"/>
 		
 	
 	<menuitem name="manufacturing-root-bill-of-material" parent="manufacturing-root"
 		title="Bills of materials" action="manufacturing.root.bill.of.material" />
 
 	<action-view name="manufacturing.root.bill.of.material" title="Bills of materials"
-		model="com.axelor.apps.production.db.BillOfMaterial" icon="img/icons/wheel.png">
+		model="com.axelor.apps.production.db.BillOfMaterial" icon="img/16px/wheel_16px.png">
 		<view type="grid" name="bill-of-material-grid" />
 		<view type="form" name="bill-of-material-form" />
 	</action-view>	
@@ -22,7 +22,7 @@
 		title="Manufacturing processes" action="manufacturing.root.prod.process" />
 
 	<action-view name="manufacturing.root.prod.process" title="Manufacturing processes"
-		model="com.axelor.apps.production.db.ProdProcess" icon="img/icons/wheel.png">
+		model="com.axelor.apps.production.db.ProdProcess" icon="img/16px/wheel_16px.png">
 		<view type="grid" name="prod-process-grid" />
 		<view type="form" name="prod-process-form" />
 	</action-view>
@@ -31,7 +31,7 @@
 		title="Manufacturing orders" action="manufacturing.root.manuf.order" />
 
 	<action-view name="manufacturing.root.manuf.order" title="Manufacturing orders"
-		model="com.axelor.apps.production.db.ManufOrder" icon="img/icons/wheel.png">
+		model="com.axelor.apps.production.db.ManufOrder" icon="img/16px/wheel_16px.png">
 		<view type="grid" name="manuf-order-grid" />
 		<view type="form" name="manuf-order-form" />
 	</action-view>	
@@ -40,19 +40,19 @@
 		title="MO plannings" action="manufacturing.root.manuf.order.planning" />
 
 	<action-view name="manufacturing.root.manuf.order.planning" title="MO plannings"
-		model="com.axelor.apps.production.db.ManufOrderPlanning" icon="img/icons/wheel.png">
+		model="com.axelor.apps.production.db.ManufOrderPlanning" icon="img/16px/wheel_16px.png">
 		<view type="grid" name="manuf-order-planning-grid" />
 		<view type="form" name="manuf-order-planning-form" />
 	</action-view>
 
 	<menuitem name="manufacturing-conf" parent="manufacturing-root" title="Configurations"
-		icon="img/icons/parameter.png" />
+		icon="img/Other/parameter_59px.png" />
 
 	<menuitem name="manufacturing-conf-prod-resource" parent="manufacturing-conf"
 		title="Resources" action="manufacturing.conf.prod.resource" />
 
 	<action-view name="manufacturing.conf.prod.resource" title="Resources"
-		model="com.axelor.apps.production.db.ProdResource" icon="img/icons/parameter_small.png">
+		model="com.axelor.apps.production.db.ProdResource" icon="img/16px/parameterSmall_16px.png">
 		<view type="grid" name="prod-resource-grid" />
 		<view type="form" name="prod-resource-form" />
 	</action-view>
@@ -61,7 +61,7 @@
 		title="Machines" action="manufacturing.conf.machine" />
 
 	<action-view name="manufacturing.conf.machine" title="Machines"
-		model="com.axelor.apps.production.db.Machine" icon="img/icons/parameter_small.png">
+		model="com.axelor.apps.production.db.Machine" icon="img/16px/parameterSmall_16px.png">
 		<view type="grid" name="machine-grid" />
 		<view type="form" name="machine-form" />
 	</action-view>
