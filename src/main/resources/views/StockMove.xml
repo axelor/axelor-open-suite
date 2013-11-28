@@ -43,7 +43,7 @@
 				<button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3" colSpan="1" onClick="save,action-stock-move-method-cancel,action-stock-move-attrs-canceled-read-only,save"/>
 	        	<button name="draft" title="Draft" showIf="statusSelect == 4" onClick="save,action-stock-move-record-draft,save"/>
             	<button name="generateInvoice" title="Generate invoice" onClick="save,action-stock-move-method-generate-invoice"/>
-            	<button name="printStockMove" title=" Print" onClick="save,action-print-stock-move" icon="img/icons/print.png"/>
+            	<button name="printStockMove" title=" Print" onClick="save,action-print-stock-move" icon="img/16px/print_16px.png"/>
         	</group>
     	</group>
     	<break/>

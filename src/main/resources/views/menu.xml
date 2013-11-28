@@ -4,13 +4,13 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
 	
 	<menuitem name="stock-root" title="Stock management"  priority="85"
-	icon="img/icons/baggage-cart-box.png" groups="admins,erp"/>
+	icon="img/16px/baggageCartBox_16px.png" groups="admins,erp"/>
 		
 	<menuitem name="stock-root-custdeliveries" parent="stock-root"
 		title="Customer Deliveries" action="stock.root.custdeliveries" />
 
 	<action-view name="stock.root.custdeliveries" title="Customer Deliveries"
-		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/product_small.png">
+		model="com.axelor.apps.supplychain.db.StockMove" icon="img/16px/productSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 		<view-param name="search-filters" value="customer-deliveries-filters"/>
@@ -22,7 +22,7 @@
 		title="Supplier Arrivals" action="stock.root.suparrivals" />
 
 	<action-view name="stock.root.suparrivals" title="Supplier Arrivals"
-		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/product_small.png">
+		model="com.axelor.apps.supplychain.db.StockMove" icon="img/16px/productSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 		<view-param name="search-filters" value="supplier-arrivals-filters"/>
@@ -36,7 +36,7 @@
 		title="Internal Stock Moves" action="stock.root.internal" />
 
 	<action-view name="stock.root.internal" title="Internal Stock Moves"
-		model="com.axelor.apps.supplychain.db.StockMove" icon="img/icons/product_small.png">
+		model="com.axelor.apps.supplychain.db.StockMove" icon="img/16px/productSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 		<view-param name="search-filters" value="internal-stock-move-filters"/>
@@ -49,10 +49,10 @@
 		title="Periodical processing"/>		
 		
 	<menuitem name="stock-root-inventories-draft" parent="stock-root-inventories"
-		title="Inventories" action="stock.root.inventories.draft" icon="img/icons/inventory.png"/>
+		title="Inventories" action="stock.root.inventories.draft" icon="img/16px/inventory_16px.png"/>
 	
 	<action-view name="stock.root.inventories.draft" title="Inventories"
-		model="com.axelor.apps.supplychain.db.Inventory" icon="img/icons/inventory.png">
+		model="com.axelor.apps.supplychain.db.Inventory" icon="img/16px/inventory_16px.png">
 		<view type="grid" />
 		<view type="form" />
 		<view-param name="search-filters" value="inventories-filters"/>
@@ -60,13 +60,13 @@
 	
 		
 	<menuitem name="stock-root-conf" parent="stock-root" title="Configuration"
-		icon="img/icons/parameter.png" />
+		icon="img/Other/parameter_59px.png" />
 		
 	<menuitem name="stock-root-location" parent="stock-root-conf"
 		title="Stock Locations" action="stock.root.location" />
 	
 	<action-view name="stock.root.location" title="Stock Locations"
-		model="com.axelor.apps.supplychain.db.Location" icon="img/icons/baggage-cart-box.png">
+		model="com.axelor.apps.supplychain.db.Location" icon="img/16px/addressBook_16px.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
@@ -75,19 +75,19 @@
 		title="Minimum stock rules" action="stock.root.conf.min.Stock.rules" />
 	
 	<action-view name="stock.root.conf.min.Stock.rules" title="Minimum stock rules"
-		model="com.axelor.apps.supplychain.db.MinStockRules" icon="img/icons/baggage-cart-box.png">
+		model="com.axelor.apps.supplychain.db.MinStockRules" icon="img/16px/addressBook_16px.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
 	
 	<menuitem name="sc-root-sales" title="Sales" priority="150"
-		icon="img/icons/order.png" groups="admins,erp,crm"/>
+		icon="img/32px/order_32px.png" groups="admins,erp,crm"/>
 			
 	<menuitem name="sc-root-sales-new-so" title="New Sale order" priority="2"
 		 groups="admins,erp" action="sc.root.sales.new.so" parent="sc-root-sales"/>
 		
 	<action-view name="sc.root.sales.new.so" title="New Sale order"
-		model="com.axelor.apps.supplychain.db.SalesOrder" icon="img/icons/order_small.png">
+		model="com.axelor.apps.supplychain.db.SalesOrder" icon="img/16px/orderSmall_16px.png">
 		<view type="form" name="sales-order-form"/>
 		<view type="grid" name="sales-order-grid"/>
 		<view-param name="search-filters" value="sales-order-filters"/>
@@ -99,7 +99,7 @@
 		groups="admins,erp" title="Sale orders" action="sc.root.sales.orders" />
 	
 	<action-view name="sc.root.sales.orders" title="Sale orders"
-		model="com.axelor.apps.supplychain.db.SalesOrder" icon="img/icons/order_small.png">
+		model="com.axelor.apps.supplychain.db.SalesOrder" icon="img/16px/orderSmall_16px.png">
 		<view type="grid" name="sales-order-grid" />
 		<view type="form" name="sales-order-form" />
 		<view-param name="search-filters" value="sales-order-filters"/>
@@ -109,13 +109,13 @@
 	
 	
 	<menuitem name="sc-root-purchases" title="Purchases" priority="150"
-		icon="img/icons/order.png" groups="admins,erp"/>
+		icon="img/32px/order_32px.png" groups="admins,erp"/>
 		
 	<menuitem name="sc-root-purchase-order-new" title="New Purchase order" priority="2"
 		groups="admins,erp" action="sc.root.purchase.order.new" parent="sc-root-purchases"/>
 		
 	<action-view name="sc.root.purchase.order.new" title="New Purchase order"
-		model="com.axelor.apps.supplychain.db.PurchaseOrder" icon="img/icons/order_small.png">
+		model="com.axelor.apps.supplychain.db.PurchaseOrder" icon="img/16px/orderSmall_16px.png">
 		<view type="form" name="purchase-order-form" />
 		<view type="grid" name="purchase-order-grid" />
 	</action-view>	
@@ -124,7 +124,7 @@
 		groups="admins,erp" action="sc.root.purchase.orders" parent="sc-root-purchases"/>
 
 	<action-view name="sc.root.purchase.orders" title="Purchase orders"
-		model="com.axelor.apps.supplychain.db.PurchaseOrder" icon="img/icons/order_small.png">
+		model="com.axelor.apps.supplychain.db.PurchaseOrder" icon="img/16px/orderSmall_16px.png">
 		<view type="grid" name="purchase-order-grid" />
 		<view type="form" name="purchase-order-form" />
 		<view-param name="search-filters" value="purchases-order-filters"/>
@@ -136,7 +136,7 @@
 		title="Supplychain batches" action="admin.root.batch.supplychain" />
 
 	<action-view name="admin.root.batch.supplychain" title="Supplychain batches"
-		model="com.axelor.apps.supplychain.db.SupplychainBatch" icon="img/icons/parameter_small.png">
+		model="com.axelor.apps.supplychain.db.SupplychainBatch" icon="img/16px/parameterSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
