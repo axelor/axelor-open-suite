@@ -6,13 +6,13 @@
 
 
 	<menuitem name="invoice-root" title="Invoice" priority="100"
-		icon="img/icons/invoice.png" groups="admins,erp"/>
+		icon="img/Other/invoice_67px.png" groups="admins,erp"/>
 		
 	<menuitem name="invoice-root-cust-invoice" parent="invoice-root"
 		title="New cust. invoice" action="invoice.root.cust.invoice" />
 
 	<action-view name="invoice.root.cust.invoice" title="New cust. invoice"
-		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
+		model="com.axelor.apps.account.db.Invoice" icon="img/16px/invoiceSmall_16px.png">
 		<view type="form" name="invoice-form"/>
 		<view type="grid" name="invoice-grid"/>
 		<domain>self.operationTypeSelect = 3 OR self.operationTypeSelect = 4</domain>
@@ -23,7 +23,7 @@
 		title="New sup. invoice" action="invoice.root.sup.invoice" />
 
 	<action-view name="invoice.root.sup.invoice" title="New sup. invoice"
-		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
+		model="com.axelor.apps.account.db.Invoice" icon="img/16px/invoiceSmall_16px.png">
 		<view type="form" name="invoice-form"/>
 		<view type="grid" name="invoice-grid"/>
 		<domain>self.operationTypeSelect = 1 OR self.operationTypeSelect = 2</domain>
@@ -37,7 +37,7 @@
 		title="Cust. Invoices" action="invoice.root.sales.custinvoices" />
 
 	<action-view name="invoice.root.sales.custinvoices" title="Cust. Invoices"
-		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
+		model="com.axelor.apps.account.db.Invoice" icon="img/16px/invoiceSmall_16px.png">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
 		<view-param name="search-filters" value="customer-invoices-filters"/>
@@ -49,7 +49,7 @@
 		title="Cust. Refunds" action="invoice.root.sales.custrefunds" />
 
 	<action-view name="invoice.root.sales.custrefunds" title="Cust. Refunds"
-		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
+		model="com.axelor.apps.account.db.Invoice" icon="img/16px/invoiceSmall_16px.png">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
 		<view-param name="search-filters" value="customer-refunds-filters"/>
@@ -65,7 +65,7 @@
 		title="Suppl. Invoices" action="invoice.root.purchases.supinvoices" />
 
 	<action-view name="invoice.root.purchases.supinvoices" title="Suppl. Invoices"
-		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
+		model="com.axelor.apps.account.db.Invoice" icon="img/16px/invoiceSmall_16px.png">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
 		<view-param name="search-filters" value="supplier-invoices-filters"/>
@@ -77,7 +77,7 @@
 		title="Suppl. Refunds" action="invoice.root.purchases.suprefunds" />
 
 	<action-view name="invoice.root.purchases.suprefunds" title="Suppl. Refunds"
-		model="com.axelor.apps.account.db.Invoice" icon="img/icons/invoice_small.png">
+		model="com.axelor.apps.account.db.Invoice" icon="img/16px/invoiceSmall_16px.png">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
 		<view-param name="search-filters" value="supplier-refunds-filters"/>
@@ -114,7 +114,7 @@
 
 
 	<menuitem name="account-root" title="Accounting" priority="90"
-		icon="img/icons/account.png" groups="admins,erp"/>
+		icon="img/Other/account_94px.png" groups="admins,erp"/>
 
 
 	<menuitem name="account-root-move" parent="account-root"
@@ -124,7 +124,7 @@
 		title="Moves" action="account.root.move.move" />
 
 	<action-view name="account.root.move.move" title="Moves"
-		model="com.axelor.apps.account.db.Move" icon="img/icons/account_small.png">
+		model="com.axelor.apps.account.db.Move" icon="img/16px/accountSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 		<view-param name="search-filters" value="move-filters"/>
@@ -134,7 +134,7 @@
 		title="Move Lines" action="account.root.move.move.line" />
 
 	<action-view name="account.root.move.move.line" title="Move Lines"
-		model="com.axelor.apps.account.db.MoveLine" icon="img/icons/account_small.png">
+		model="com.axelor.apps.account.db.MoveLine" icon="img/16px/accountSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 		<view-param name="search-filters" value="move-line-filters"/>
@@ -146,10 +146,10 @@
 
 	<menuitem name="account-root-payments-payment-voucher"
 		parent="account-root-payments" title="Payment vouchers"
-		action="account.root.payments.payment.voucher" icon="img/icons/payment.png"/>
+		action="account.root.payments.payment.voucher" icon="img/Other/payment_75px.png"/>
 
 	<action-view name="account.root.payments.payment.voucher"
-		title="Payment vouchers" model="com.axelor.apps.account.db.PaymentVoucher" icon="img/icons/payment_small.png">
+		title="Payment vouchers" model="com.axelor.apps.account.db.PaymentVoucher" icon="img/16px/paymentSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 		<view-param name="search-filters" value="payment-voucher-filters"/>
@@ -160,7 +160,7 @@
 		action="account.root.payments.new.cust.payment" />
 
 	<action-view name="account.root.payments.new.cust.payment"
-		title="Payment vouchers" model="com.axelor.apps.account.db.PaymentVoucher" icon="img/icons/payment_small.png">
+		title="Payment vouchers" model="com.axelor.apps.account.db.PaymentVoucher" icon="img/16px/paymentSmall_16px.png">
 		<view type="form" />
 		<view type="grid" />
 		<view-param name="search-filters" value="payment-voucher-filters"/>
@@ -172,7 +172,7 @@
 		action="account.root.payments.new.cust.refund" />
 
 	<action-view name="account.root.payments.new.cust.refund"
-		title="Payment vouchers" model="com.axelor.apps.account.db.PaymentVoucher" icon="img/icons/payment_small.png">
+		title="Payment vouchers" model="com.axelor.apps.account.db.PaymentVoucher" icon="img/16px/paymentSmall_16px.png">
 		<view type="form" />
 		<view type="grid" />
 		<view-param name="search-filters" value="payment-voucher-filters"/>
@@ -184,7 +184,7 @@
 		action="account.root.payments.new.suppl.payment" />
 
 	<action-view name="account.root.payments.new.suppl.payment"
-		title="Payment vouchers" model="com.axelor.apps.account.db.PaymentVoucher" icon="img/icons/payment_small.png">
+		title="Payment vouchers" model="com.axelor.apps.account.db.PaymentVoucher" icon="img/16px/paymentSmall_16px.png">
 		<view type="form" />
 		<view type="grid" />
 		<view-param name="search-filters" value="payment-voucher-filters"/>
@@ -196,7 +196,7 @@
 		action="account.root.payments.new.suppl.refund" />
 
 	<action-view name="account.root.payments.new.suppl.refund"
-		title="Payment vouchers" model="com.axelor.apps.account.db.PaymentVoucher" icon="img/icons/payment_small.png">
+		title="Payment vouchers" model="com.axelor.apps.account.db.PaymentVoucher" icon="img/16px/paymentSmall_16px.png">
 		<view type="form" />
 		<view type="grid" />
 		<view-param name="search-filters" value="payment-voucher-filters" />
@@ -211,7 +211,7 @@
 		action="account.root.periodic.processing.reconcile" />
 
 	<action-view name="account.root.periodic.processing.reconcile"
-		title="Reconcilations" model="com.axelor.apps.account.db.Reconcile" icon="img/icons/account_small.png">
+		title="Reconcilations" model="com.axelor.apps.account.db.Reconcile" icon="img/16px/accountSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 		<view-param name="search-filters" value="reconcile-filters"/>
@@ -222,7 +222,7 @@
 		action="account.root.periodic.processing.cash.register.closure" />
 
 	<action-view name="account.root.periodic.processing.cash.register.closure"
-		title="Cash register closure" model="com.axelor.apps.account.db.CashRegisterLine" icon="img/icons/account_small.png">
+		title="Cash register closure" model="com.axelor.apps.account.db.CashRegisterLine" icon="img/16px/accountSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
@@ -232,7 +232,7 @@
 		action="account.root.periodic.processing.overpayment.clearances" />
 
 	<action-view name="account.root.periodic.processing.overpayment.clearances"
-		title="Overpayments clearances" model="com.axelor.apps.account.db.AccountClearance" icon="img/icons/account_small.png">
+		title="Overpayments clearances" model="com.axelor.apps.account.db.AccountClearance" icon="img/16px/accountSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
@@ -242,7 +242,7 @@
 		action="account.root.periodic.processing.shift.irrecoverable" />
 
 	<action-view name="account.root.periodic.processing.shift.irrecoverable"
-		title="Shift to irrecoverable" model="com.axelor.apps.account.db.Irrecoverable" icon="img/icons/account_small.png">
+		title="Shift to irrecoverable" model="com.axelor.apps.account.db.Irrecoverable" icon="img/16px/accountSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
@@ -252,7 +252,7 @@
 		action="account.root.periodic.processing.cheque.reject" />
 
 	<action-view name="account.root.periodic.processing.cheque.reject"
-		title="Rejects of cheques" model="com.axelor.apps.account.db.ChequeRejection" icon="img/icons/account_small.png">
+		title="Rejects of cheques" model="com.axelor.apps.account.db.ChequeRejection" icon="img/16px/accountSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 		<view-param name="search-filters" value="cheque-rejection-filters"/>
@@ -261,27 +261,27 @@
 	</action-view>
 
 	<menuitem name="account-root-debt-recovery" parent="account-root"
-		title="Debt recovery" icon="img/icons/reminder.png" />
+		title="Debt recovery" icon="img/Other/reminder_55.png" />
 
 	<menuitem name="debt-recovery-root-reminders"
 		parent="account-root-debt-recovery" title="Reminders history"
 		action="debt.recovery.root.reminders" />
 
 	<action-view name="debt.recovery.root.reminders"
-		title="Reminders history" model="com.axelor.apps.account.db.ReminderHistory" icon="img/icons/reminder_small.png">
+		title="Reminders history" model="com.axelor.apps.account.db.ReminderHistory" icon="img/16px/reminderSmall_16px.png">
 		<view type="grid" name="reminder-history-line-grid" />
 		<view type="form" name="reminder-history-form" />
 	</action-view>
 
 	<menuitem name="debt-recovery-root-conf" parent="account-root-debt-recovery"
-		title="Configuration" icon="img/icons/parameter.png" />
+		title="Configuration" icon="img/Other/parameter_59px.png" />
 
 	<menuitem name="debt-recovery-root-conf-reminder-method"
 		parent="debt-recovery-root-conf" title="Reminder methods"
 		action="debt.recovery.root.conf.reminder.method" />
 
 	<action-view name="debt.recovery.root.conf.reminder.method"
-		title="Reminder methods" model="com.axelor.apps.account.db.ReminderMethod" icon="img/icons/reminder_small.png">
+		title="Reminder methods" model="com.axelor.apps.account.db.ReminderMethod" icon="img/16px/reminderSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
@@ -291,7 +291,7 @@
 		action="debt.recovery.root.conf.reminder.level" />
 
 	<action-view name="debt.recovery.root.conf.reminder.level"
-		title="Reminder levels" model="com.axelor.apps.account.db.ReminderLevel" icon="img/icons/reminder_small.png">
+		title="Reminder levels" model="com.axelor.apps.account.db.ReminderLevel" icon="img/16px/reminderSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
@@ -301,7 +301,7 @@
 		action="debt.recovery.root.conf.mail.model" />
 
 	<action-view name="debt.recovery.root.conf.mail.model"
-		title="Reminder mail models" model="com.axelor.apps.base.db.MailModel" icon="img/icons/reminder_small.png">
+		title="Reminder mail models" model="com.axelor.apps.base.db.MailModel" icon="img/16px/reminderSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 		<view-param name="search-filters" value="mail-model-filters"/>
@@ -309,13 +309,13 @@
 
 	
 	<menuitem name="account-root-accounting" parent="account-root"
-		title="Accounting Exports/Reports" icon="img/icons/report.png" />
+		title="Accounting Exports/Reports" icon="img/Other/report_55px.png" />
 
 	<menuitem name="account-root-accounting-reimbursement" parent="account-root-accounting"
 		title="Reimbursements" action="account.root.accounting.reimbursement" />
 
 	<action-view name="account.root.accounting.reimbursement"
-		title="Reimbursements" model="com.axelor.apps.account.db.Reimbursement" icon="img/icons/report_small.png">
+		title="Reimbursements" model="com.axelor.apps.account.db.Reimbursement" icon="img/16px/reportSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 		<view-param name="search-filters" value="reimbursement-filters"/>
@@ -325,7 +325,7 @@
 		title="Accounting reports" action="account.root.accounting.accounting.reports" />
 
 	<action-view name="account.root.accounting.accounting.reports"
-		title="Accounting reports" model="com.axelor.apps.account.db.MoveLineReport" icon="img/icons/report_small.png">
+		title="Accounting reports" model="com.axelor.apps.account.db.MoveLineReport" icon="img/16px/reportSmall_16px.png">
 		<view type="grid" name="move-line-report-grid" />
 		<view type="form" name="move-line-report-form" />
 		<domain>self.typeSelect in (1,2,3,4,5,10,11,12,13,14,15,16,17,18,19)</domain>
@@ -335,20 +335,20 @@
 		title="Accounting exports" action="account.root.accounting.accounting.exports" />
 
 	<action-view name="account.root.accounting.accounting.exports"
-		title="Accounting exports" model="com.axelor.apps.account.db.MoveLineReport" icon="img/icons/report_small.png">
+		title="Accounting exports" model="com.axelor.apps.account.db.MoveLineReport" icon="img/16px/reportSmall_16px.png">
 		<view type="grid" name="move-line-report-export-grid" />
 		<view type="form" name="move-line-report-export-form" />
 		<domain>self.typeSelect in (6,7,8,9)</domain>
 	</action-view>
 	
 	<menuitem name="account-conf" parent="account-root" title="Configuration"
-		icon="img/icons/parameter.png" />
+		icon="img/Other/parameter_59px.png" />
 
 	<menuitem name="account-conf-cash-register" parent="account-conf"
 		title="Cash registers" action="account.conf.cash.register" />
 		
 	<action-view name="account.conf.cash.register" title="Cash registers"
-		model="com.axelor.apps.account.db.CashRegister" icon="img/icons/account_small.png">
+		model="com.axelor.apps.account.db.CashRegister" icon="img/16px/accountSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
@@ -360,7 +360,7 @@
 		title="Fiscal years" action="account.conf.financial.year" />
 
 	<action-view name="account.conf.financial.year" title="Fiscal years"
-		model="com.axelor.apps.base.db.Year" icon="img/icons/parameter_small.png">
+		model="com.axelor.apps.base.db.Year" icon="img/16px/parameterSmall_16px.png">
 		<view type="grid" name="year-acount-grid"/>
 		<view type="form" name="year-account-form"/>
 	</action-view>
@@ -369,7 +369,7 @@
 		title="Periods" action="account.conf.financial.period" />
 
 	<action-view name="account.conf.financial.period" title="Periods"
-		model="com.axelor.apps.base.db.Period" icon="img/icons/parameter_small.png">
+		model="com.axelor.apps.base.db.Period" icon="img/16px/parameterSmall_16px.png">
 		<view type="grid" name="period-account-grid"/>
 		<view type="form" name="period-account-form"/>
 	</action-view>
@@ -378,7 +378,7 @@
 		title="Journals" action="account.conf.financial.journal" />
 
 	<action-view name="account.conf.financial.journal" title="Journals"
-		model="com.axelor.apps.account.db.Journal" icon="img/icons/parameter_small.png">
+		model="com.axelor.apps.account.db.Journal" icon="img/16px/parameterSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
@@ -387,7 +387,7 @@
 		title="Journal types" action="account.conf.financial.journal.type" />
 
 	<action-view name="account.conf.financial.journal.type"
-		title="Journal types" model="com.axelor.apps.account.db.JournalType" icon="img/icons/parameter_small.png">
+		title="Journal types" model="com.axelor.apps.account.db.JournalType" icon="img/16px/parameterSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
@@ -396,7 +396,7 @@
 		title="Financial Accounts" action="account.conf.financial.account" />
 
 	<action-view name="account.conf.financial.account" title="Financial Accounts"
-		model="com.axelor.apps.account.db.Account" icon="img/icons/parameter_small.png">
+		model="com.axelor.apps.account.db.Account" icon="img/16px/parameterSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
@@ -406,7 +406,7 @@
 		action="account.conf.financial.accounting.plan" />
 
 	<action-view name="account.conf.financial.accounting.plan"
-		title="Chart of Accounts" model="com.axelor.apps.account.db.Account" icon="img/icons/parameter_small.png">
+		title="Chart of Accounts" model="com.axelor.apps.account.db.Account" icon="img/16px/parameterSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 <!-- 		<view type="tree"/> -->
@@ -417,7 +417,7 @@
 		action="account.conf.financial.account.management" />
 
 	<action-view name="account.conf.financial.account.management"
-		title="Financial Accounts Management" model="com.axelor.apps.account.db.AccountManagement" icon="img/icons/parameter_small.png">
+		title="Financial Accounts Management" model="com.axelor.apps.account.db.AccountManagement" icon="img/16px/parameterSmall_16px.png">
 		<view type="grid" name="account-management-grid" />
 		<view type="form" name="account-management-form" />
 	</action-view>
@@ -426,7 +426,7 @@
 		title="Account types" action="account.conf.financial.account.type" />
 
 	<action-view name="account.conf.financial.account.type"
-		title="Account types" model="com.axelor.apps.account.db.AccountType" icon="img/icons/parameter_small.png">
+		title="Account types" model="com.axelor.apps.account.db.AccountType" icon="img/16px/parameterSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
@@ -435,7 +435,7 @@
 		title="V.A.T." action="account.conf.financial.vat" />
 
 	<action-view name="account.conf.financial.vat" title="V.A.T."
-		model="com.axelor.apps.account.db.Vat" icon="img/icons/account_small.png">
+		model="com.axelor.apps.account.db.Vat" icon="img/16px/accountSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
@@ -447,7 +447,7 @@
 		title="Analytic journals" action="account.conf.analytic.journal" />
 
 	<action-view name="account.conf.analytic.journal" title="Analytic journals"
-		model="com.axelor.apps.account.db.AnalyticJournal" icon="img/icons/parameter_small.png">
+		model="com.axelor.apps.account.db.AnalyticJournal" icon="img/16px/parameterSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
@@ -456,7 +456,7 @@
 		title="Analytic accounts" action="account.conf.analytic.account" />
 
 	<action-view name="account.conf.analytic.account" title="Analytic accounts"
-		model="com.axelor.apps.account.db.AnalyticAccount" icon="img/icons/parameter_small.png">
+		model="com.axelor.apps.account.db.AnalyticAccount" icon="img/16px/parameterSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
@@ -465,7 +465,7 @@
 		title="Analytic axis" action="account.conf.analytic.axis" />
 
 	<action-view name="account.conf.analytic.axis" title="Analytic axis"
-		model="com.axelor.apps.account.db.AnalyticAxis" icon="img/icons/parameter_small.png">
+		model="com.axelor.apps.account.db.AnalyticAxis" icon="img/16px/parameterSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
@@ -477,7 +477,7 @@
 		title="Payment modes" action="account.conf.payment.payment.mode" />
 
 	<action-view name="account.conf.payment.payment.mode"
-		title="Payment modes" model="com.axelor.apps.account.db.PaymentMode" icon="img/icons/parameter_small.png">
+		title="Payment modes" model="com.axelor.apps.account.db.PaymentMode" icon="img/16px/parameterSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
@@ -486,7 +486,7 @@
 		title="Paybox" action="account.conf.payment.paybox" />
 
 	<action-view name="account.conf.payment.paybox"
-		title="Paybox" model="com.axelor.apps.account.db.Paybox" icon="img/icons/parameter_small.png">
+		title="Paybox" model="com.axelor.apps.account.db.Paybox" icon="img/16px/parameterSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
@@ -498,7 +498,7 @@
 		title="Reject/Return reason codes" action="account.conf.reporting.interbank.code" />
 
 	<action-view name="account.conf.reporting.interbank.code"
-		title="Reject/Return reason codes" model="com.axelor.apps.account.db.InterbankCode" icon="img/icons/parameter_small.png">
+		title="Reject/Return reason codes" model="com.axelor.apps.account.db.InterbankCode" icon="img/16px/parameterSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
@@ -510,7 +510,7 @@
 		parent="mail-root-email" action="mail.root.email.debtrecovery" />
 
 	<action-view name="mail.root.email.debtrecovery" title="Reminder emails"
-		model="com.axelor.apps.base.db.Mail" icon="img/icons/mail_small.png">
+		model="com.axelor.apps.base.db.Mail" icon="img/16px/mailSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 		<domain>self.typeSelect = 0 AND self.objectConcernedSelect = 1</domain>
@@ -522,7 +522,7 @@
 		parent="mail-root-email" action="mail.root.email.reimboursement" />
 
 	<action-view name="mail.root.email.reimboursement" title="Reimbursement emails"
-		model="com.axelor.apps.base.db.Mail" icon="img/icons/mail_small.png">
+		model="com.axelor.apps.base.db.Mail" icon="img/16px/mailSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 		<domain>self.typeSelect = 0 AND self.objectConcernedSelect = 2</domain>
@@ -534,7 +534,7 @@
 		parent="mail-root-email" action="mail.root.email.reject.import" />
 
 	<action-view name="mail.root.email.reject.import" title="Reject emails"
-		model="com.axelor.apps.base.db.Mail" icon="img/icons/mail_small.png">
+		model="com.axelor.apps.base.db.Mail" icon="img/16px/mailSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 		<domain>self.typeSelect = 0 AND self.objectConcernedSelect = 3</domain>
@@ -546,7 +546,7 @@
 		parent="mail-root-email" action="mail.root.email.cash.register" />
 
 	<action-view name="mail.root.email.cash.register" title="Cash register emails"
-		model="com.axelor.apps.base.db.Mail" icon="img/icons/mail_small.png">
+		model="com.axelor.apps.base.db.Mail" icon="img/16px/mailSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 		<domain>self.typeSelect = 0 AND self.objectConcernedSelect = 4</domain>
@@ -558,7 +558,7 @@
 		parent="mail-root-mail" action="mail.root.mail.debtrecovery" />
 
 	<action-view name="mail.root.mail.debtrecovery" title="Reminder mails"
-		model="com.axelor.apps.base.db.Mail" icon="img/icons/mail_small.png">
+		model="com.axelor.apps.base.db.Mail" icon="img/16px/mailSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 		<domain>self.typeSelect = 1 AND self.objectConcernedSelect = 1</domain>
@@ -570,7 +570,7 @@
 		parent="mail-root-mail" action="mail.root.mail.reimboursement" />
 
 	<action-view name="mail.root.mail.reimboursement" title="Reimbursement mails"
-		model="com.axelor.apps.base.db.Mail" icon="img/icons/mail_small.png">
+		model="com.axelor.apps.base.db.Mail" icon="img/16px/mailSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 		<domain>self.typeSelect = 1 AND self.objectConcernedSelect = 2</domain>
@@ -582,7 +582,7 @@
 		parent="mail-root-mail" action="mail.root.mail.reject.import" />
 
 	<action-view name="mail.root.mail.reject.import" title="Bank Rejects mails"
-		model="com.axelor.apps.base.db.Mail" icon="img/icons/mail_small.png">
+		model="com.axelor.apps.base.db.Mail" icon="img/16px/mailSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 		<domain>self.typeSelect = 1 AND self.objectConcernedSelect = 3</domain>
@@ -594,7 +594,7 @@
 		parent="mail-root-mail" action="mail.root.mail.cash.register" />
 
 	<action-view name="mail.root.mail.cash.register" title="Cash register mails"
-		model="com.axelor.apps.base.db.Mail" icon="img/icons/mail_small.png">
+		model="com.axelor.apps.base.db.Mail" icon="img/16px/mailSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 		<domain>self.typeSelect = 1 AND self.objectConcernedSelect = 4</domain>
@@ -607,7 +607,7 @@
 		title="Accounting batches" action="admin.root.batch.accounting" />
 
 	<action-view name="admin.root.batch.accounting" title="Accounting batches"
-		model="com.axelor.apps.account.db.AccountingBatch" icon="img/icons/parameter_small.png">
+		model="com.axelor.apps.account.db.AccountingBatch" icon="img/16px/parameterSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>

@@ -9,10 +9,10 @@
     onSave="action-set-partner-seq,action-create-accounting-situation">
 	    <toolbar>
 	        <button name="sendByEmail" title="Send email" colSpan="1" onClick="save,action-send-by-email-with-template"/>
-	        <button name="showPartnerInfo" title="Print Informations" colSpan="1" icon="img/icons/print.png" onClick="save,action-partner-method-show-partner-info"/>
+	        <button name="showPartnerInfo" title="Print Informations" colSpan="1" icon="img/16px/print_16px.png" onClick="save,action-partner-method-show-partner-info"/>
 	    </toolbar>
 	    <menubar>
-	        <menu title="Actions" icon="img/icons/create.png" showTitle="true">
+	        <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true">
 	            <divider title="Create call" action="save,action-partner-view-create-call"/>
 	            <divider title="Schedule meeting" action="save,action-partner-view-create-meeting"/>
 	            <divider title="Create task" action="save,action-partner-view-create-task"/>
@@ -26,9 +26,9 @@
 	            </group>
 	            <break/>
 	            <group colSpan="1">
-	                <button name="facebook" showIf="id != null" css="sn-buttons" icon="img/facebook_logo.png" onClick="action-partner-view-sn-profile"/>
-	                <button name="linkedin" showIf="id != null" css="sn-buttons" icon="img/linkedin_logo.png" onClick="action-partner-view-sn-profile"/>
-	                <button name="twitter" showIf="id != null" css="sn-buttons" icon="img/twitter_logo.png" onClick="action-partner-view-sn-profile"/>
+	                <button name="facebook" showIf="id != null" css="sn-buttons" icon="img/Other/facebookLogo_75px.png" onClick="action-partner-view-sn-profile"/>
+	                <button name="linkedin" showIf="id != null" css="sn-buttons" icon="img/Other/linkedinLogo_57px.png" onClick="action-partner-view-sn-profile"/>
+	                <button name="twitter" showIf="id != null" css="sn-buttons" icon="img/Other/twitterLogo_54px.png" onClick="action-partner-view-sn-profile"/>
 	            </group>
 	        </group>
 	        <group colSpan="1">

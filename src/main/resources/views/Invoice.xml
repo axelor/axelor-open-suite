@@ -159,7 +159,7 @@
         <field name="inTaxTotal"/>
         <field name="inTaxTotalRemaining"/>
         <field name="status"/>
-        <button name="showInvoice" title="Print" onClick="action-invoice-method-show-invoice" icon="img/icons/print.png"/>
+        <button name="showInvoice" title="Print" onClick="action-invoice-method-show-invoice" icon="img/16px/print_16px.png"/>
     </grid>
     
     <form name="invoice-client-form" title="Invoice" model="com.axelor.apps.account.db.Invoice" cols="4">
