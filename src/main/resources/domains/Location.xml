@@ -16,6 +16,7 @@
     <boolean name="isDefaultLocation" title="Default location"/>
     <one-to-many name="locationLineList" ref="com.axelor.apps.supplychain.db.LocationLine" mappedBy="location" title="Location lines"/>
     <one-to-many name="detailsLocationLineList" ref="com.axelor.apps.supplychain.db.LocationLine" mappedBy="detailsLocation" title="Details Location lines"/>
+    <many-to-one name="address" ref="com.axelor.apps.base.db.Address" title="Address" />
     
   </entity>
 </domain-models>
