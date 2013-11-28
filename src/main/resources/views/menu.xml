@@ -7,7 +7,7 @@
 	
 
 <!-- 	<menuitem name="mail-root" title="Emails/Mails" priority="70" -->
-<!-- 		icon="img/icons/mail.png" groups="admins,erp"/> -->
+<!-- 		icon="img/64px/mail_64px.png" groups="admins,erp"/> -->
 
 <!-- 	title-f="Messagerie" -->
 	<menuitem name="mail-root-email-box" parent="mail-root" title="Email box" priority="100"/>
@@ -17,7 +17,7 @@
 		
 <!-- 	title-f="Boite de réception" -->
 	<action-view name="mail.root.email.inbox" title="Inbox" 
-		model="com.axelor.apps.message.db.Message" icon="img/icons/mail_small.png">
+		model="com.axelor.apps.message.db.Message" icon="img/16px/mailSmall_16px.png">
 		<view type="grid" name="message-grid"/>
 		<view type="form" name="message-form"/>
 		<domain>self.recipientUserInfo.internalUser.id = :_internalUser AND self.statusSelect = 2</domain>
@@ -29,7 +29,7 @@
 		
 <!-- 	title-f="Nouveau message -->
 	<action-view name="mail.root.email.new" title="New email"
-		model="com.axelor.apps.message.db.Message" icon="img/icons/mail_small.png">
+		model="com.axelor.apps.message.db.Message" icon="img/16px/mailSmall_16px.png">
 		<view type="form" name="message-form"/>
 		<domain>self.statusSelect = 1</domain>
 	</action-view>	
@@ -39,7 +39,7 @@
 		
 <!-- 	title-f="Brouillons" -->
 	<action-view name="mail.root.email.draft" title="Draft emails" 
-		model="com.axelor.apps.message.db.Message" icon="img/icons/mail_small.png">
+		model="com.axelor.apps.message.db.Message" icon="img/16px/mailSmall_16px.png">
 		<view type="grid" name="message-grid"/>
 		<view type="form" name="message-form"/>
 		<domain>self.statusSelect = 1 AND self.senderUserInfo.internalUser.id = :_internalUser</domain>
@@ -51,7 +51,7 @@
 		
 <!-- 	title-f="Messages envoyés" -->
 	<action-view name="mail.root.email.sended" title="Sentbox" 
-		model="com.axelor.apps.message.db.Message" icon="img/icons/mail_small.png">
+		model="com.axelor.apps.message.db.Message" icon="img/16px/mailSmall_16px.png">
 		<view type="grid" name="message-grid"/>
 		<view type="form" name="message-form"/>
 		<domain>self.senderUserInfo.internalUser.id = :_internalUser AND self.statusSelect = 2</domain>
@@ -63,7 +63,7 @@
 		
 <!-- 	title-f="Messages supprimés" -->
 	<action-view name="mail.root.email.trash" title="Trash" 
-		model="com.axelor.apps.message.db.Message" icon="img/icons/mail_small.png">
+		model="com.axelor.apps.message.db.Message" icon="img/16px/mailSmall_16px.png">
 		<view type="grid" name="message-grid"/>
 		<view type="form" name="message-form"/>
 		<domain>self.statusSelect = 3 AND (self.senderUserInfo.internalUser.id = :_internalUser OR self.recipientUserInfo.internalUser.id = :_internalUser)</domain>
@@ -75,7 +75,7 @@
 	<menuitem name="mail-root-email-conf-mail-account" parent="mail-root-email-conf" title="Email account" action="mail.root.email.conf.mail.account" />	
 		
 	<action-view name="mail.root.email.conf.mail.account" title="Email account" 
-		model="com.axelor.apps.message.db.MailAccount" icon="img/icons/parameter_small.png">
+		model="com.axelor.apps.message.db.MailAccount" icon="img/16px/parameterSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 		<domain>self.userInfo.internalUser.id = :_internalUser</domain>
@@ -85,7 +85,7 @@
 	<menuitem name="mail-root-email-conf-routing" parent="mail-root-email-conf" title="Routings" action="mail.root.email.conf.routing" />	
 		
 	<action-view name="mail.root.email.conf.routing" title="Routings" 
-		model="com.axelor.apps.base.db.Routing" icon="img/icons/parameter_small.png">
+		model="com.axelor.apps.base.db.Routing" icon="img/16px/parameterSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
@@ -93,7 +93,7 @@
 	<menuitem name="mail-root-email-conf-email-address" parent="mail-root-email-conf" title="Email addresses" action="mail.root.email.conf.email.address" />	
 		
 	<action-view name="mail.root.email.conf.email.address" title="Email addresses" 
-		model="com.axelor.apps.message.db.EmailAddress" icon="img/icons/parameter_small.png">
+		model="com.axelor.apps.message.db.EmailAddress" icon="img/16px/parameterSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
