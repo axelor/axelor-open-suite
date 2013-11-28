@@ -261,7 +261,7 @@
 	</action-view>
 
 	<menuitem name="account-root-debt-recovery" parent="account-root"
-		title="Debt recovery" icon="img/Other/reminder_55.png" />
+		title="Debt recovery" icon="img/Other/reminder_55px.png" />
 
 	<menuitem name="debt-recovery-root-reminders"
 		parent="account-root-debt-recovery" title="Reminders history"
