@@ -4,10 +4,10 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
 	
 	<menuitem name="menu-consultant-dashbord" title="My DashBord" groups="consultant" 
-		action="menu.consultant.dashbord" icon="img/icons/chart.png"/>
+		action="menu.consultant.dashbord" icon="img/16px/chart_16px.png"/>
 	
 	<action-view name="menu.consultant.dashbord" title="My DashBord"
-		icon="img/icons/chart.png">
+		icon="img/16px/chart_16px.png">
 		<view type="portal" name="consultant.dashboard.portal" />
     	<context name="_user" expr="eval:__user__"/>
 	</action-view>
@@ -66,10 +66,10 @@
 	</action-view>	
 	
 	<menuitem name="menu-consultant-create-timesheet" title="Create Timesheet" groups="consultant" 
-		action="menu.consultant.create.timesheet" icon="img/icons/new.png"/>	
+		action="menu.consultant.create.timesheet" icon="img/16px/new_16px.png"/>	
 	
 	<action-view name="menu.consultant.create.timesheet" title="Timesheets"
-		model="com.axelor.apps.organisation.db.Timesheet" icon="img/icons/new.png">
+		model="com.axelor.apps.organisation.db.Timesheet" icon="img/16px/new_16px.png">
 		<view type="form" name="timesheet-form" />
 	</action-view>
 	
@@ -88,10 +88,10 @@
 	</action-view>
 	
 	<menuitem name="menu-consultant-create-expense" title="Create Expense" groups="consultant" 
-		action="menu.consultant.create.expense" icon="img/icons/new.png"/>	
+		action="menu.consultant.create.expense" icon="img/16px/new_16px.png"/>	
 	
 	<action-view name="menu.consultant.create.expense" title="Expenses"
-		model="com.axelor.apps.organisation.db.Expense" icon="img/icons/new.png">
+		model="com.axelor.apps.organisation.db.Expense" icon="img/16px/new_16px.png">
 		<view type="form" name="expense-form" />
 	</action-view>
 	
@@ -110,18 +110,18 @@
 	</action-view>
 	
 	<menuitem name="menu-consultant-create-leave-request" title="Create Leave request" groups="consultant" 
-		action="menu.consultant.create.leave.request" icon="img/icons/new.png"/>	
+		action="menu.consultant.create.leave.request" icon="img/16px/new_16px.png"/>	
 	
 	<action-view name="menu.consultant.create.leave.request" title="Leave request"
-		model="com.axelor.apps.organisation.db.LeaveRequest" icon="img/icons/new.png">
+		model="com.axelor.apps.organisation.db.LeaveRequest" icon="img/16px/new_16px.png">
 		<view type="form" name="leave-request-form" />
 	</action-view>	
 	
 	<menuitem name="menu-consultant-leave-request-calendar" title="My Leave request calendar" groups="consultant" 
-		action="menu.consultant.create.leave.request.calendar" icon="img/icons/calendar-task.png"/>	
+		action="menu.consultant.create.leave.request.calendar" icon="img/16px/calendarTask_16px.png"/>	
 	
 	<action-view name="menu.consultant.create.leave.request.calendar" title="Leave request calendar"
-		model="com.axelor.apps.organisation.db.LeaveRequest" icon="img/icons/calendar-task.png">
+		model="com.axelor.apps.organisation.db.LeaveRequest" icon="img/16px/calendarTask_16px.png">
 		<view type="calendar" name="leave-request-calendar" />
 		<domain>self.employeeUserInfo = :_userInfo</domain>
 		<context name="_userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
