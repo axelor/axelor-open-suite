@@ -30,9 +30,15 @@
  */
 package com.axelor.apps.crm.web;
 
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.joda.time.Duration;
 
+import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.IAdministration;
+import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.IEvent;
@@ -50,6 +56,9 @@ public class EventController {
 	
 	@Inject
 	SequenceService sequenceService;
+	
+	@Inject
+	AddressService ads;
 	
 	public void computeStartDateTime(ActionRequest request, ActionResponse response) {
 		
@@ -129,4 +138,21 @@ public class EventController {
 		persistEvent.setTicketStatusSelect(event.getTicketStatusSelect());
 		eventService.saveEvent(persistEvent);
 	}
+	
+	public void viewMap(ActionRequest request, ActionResponse response)  {
+		Event event = request.getContext().asType(Event.class);
+		if(event.getLocation() != null){
+			Map<String,Object> result = ads.getMap(event.getLocation(), BigDecimal.ZERO, BigDecimal.ZERO);
+			if(result != null){
+				Map<String,Object> mapView = new HashMap<String,Object>();
+				mapView.put("title", "Map");
+				mapView.put("resource", result.get("url"));
+				mapView.put("viewType", "html");
+				response.setView(mapView);
+			}
+			else
+				response.setFlash(String.format("<B>%s</B> not found",event.getLocation()));
+		}else
+			response.setFlash("Input location please !");
+	}	
 }

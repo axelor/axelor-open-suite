@@ -173,7 +173,10 @@
 	        <separator title="Subject" colSpan="4" hideIf="$readonly()"/>
 	        <field name="subject" showTitle="false" colSpan="4" css="highlight" placeholder="Subject"/>
 	        <separator title="Location" colSpan="4"/>
-	        <field name="location" showTitle="false" colSpan="4" css="highlight" placeholder="Location"/>
+	        <group colSpan="4" cols="4">
+		        <field name="location" showTitle="false" colSpan="3" css="highlight" placeholder="Location"/>
+		        <button name="viewOnMap" title="View on Map" colSpan="1" onClick="com.axelor.apps.crm.web.EventController:viewMap" />
+	        </group>
 	        <separator title="Description" colSpan="4"/>
 	        <field name="description" colSpan="4" widget="TEXT[height=3]" showTitle="false" placeholder="Description"/>
 	        <break/>
@@ -190,9 +193,9 @@
 	            <field name="meetingType" widget="SuggestBox"/>
 	        </group>
 	        <group title="Linked to" colSpan="2" cols="2">
-	            <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
-	            <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
-	            <field name="lead"/>
+	            <field name="clientPartner" form-view="partner-form" grid-view="partner-grid" onChange="action-meeting-set-location-partner"/>
+	            <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid" onChange="action-meeting-set-location-contact"/>
+	            <field name="lead" onChange="action-meeting-set-location-lead"/>
 	            <field name="relatedToSelect" widget="RefSelect[related=relatedToSelectId]"/>
 	        </group>
 	    </group>
@@ -553,6 +556,16 @@
 	</action-record>
 	<action-record name="action-set-ticket-status-select-5" model="com.axelor.apps.crm.db.Event">
 		<field name="ticketStatusSelect" expr="eval:5"/>
+	</action-record>
+	
+	<action-record name="action-meeting-set-location-partner" model="com.axelor.apps.crm.db.Event">
+		<field name="location" expr="eval:clientPartner?.mainInvoicingAddress?.fullName"/>
+	</action-record>
+	<action-record name="action-meeting-set-location-contact" model="com.axelor.apps.crm.db.Event">
+		<field name="location" expr="eval:contactPartner?.mainInvoicingAddress?.fullName"/>
+	</action-record>
+	<action-record name="action-meeting-set-location-lead" model="com.axelor.apps.crm.db.Event">
+		<field name="location" expr="eval:(lead?.primaryAddress != null ? lead.primaryAddress+', ' : '')+(lead?.primaryPostalCode != null ? lead.primaryPostalCode+' ' : '')+(lead?.primaryCity != null ? lead.primaryCity: '')"/>
 	</action-record>
 	
 </object-views>
