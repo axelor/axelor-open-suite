@@ -11,7 +11,7 @@
 		<field name="internalContact.mobilePhone"/>
 		<field name="internalContact.fixedPhone"/>
 		<field name="internalContact.emailAddress.address" widget="Email" title="Email"/>
-		<button name="sendByEmail" title="Send by email" colSpan="1" onClick="action-send-by-email-with-template" icon="img/Mail.png"/>
+		<button name="sendByEmail" title="Send by email" colSpan="1" onClick="action-send-by-email-with-template" icon="img/Other/mail_19x14px.png"/>
 	</grid>
 
 	<form name="employee-form" title="Employee"	model="com.axelor.apps.organisation.db.Employee" cols="4"
