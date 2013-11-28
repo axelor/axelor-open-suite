@@ -307,12 +307,12 @@
 	<menuitem name="project-root" title="Project" priority="110"
 		icon="img/icons/project.png" groups="admins,erp"/>
 
-	<menuitem name="menu-gant1" parent="project-root"
-    title="Gantt Diagram" action="demo.gantt1"/>
+<!-- 	<menuitem name="menu-gant1" parent="project-root" -->
+<!--     title="Gantt Diagram" action="demo.gantt1"/> -->
     
-	<action-view name="demo.gantt1" title="Gantt Diagram" icon="img/icons/project_small.png">
-    	<view type="html" name="samples/gantt1.html" />
-  	</action-view>
+<!-- 	<action-view name="demo.gantt1" title="Gantt Diagram" icon="img/icons/project_small.png"> -->
+<!--     	<view type="html" name="samples/gantt1.html" /> -->
+<!--   	</action-view> -->
 
 
 	<menuitem name="project-root-project" parent="project-root"
