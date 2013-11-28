@@ -15,6 +15,7 @@
         <field name="company"/>
         <field name="partner"/>
         <field name="statusSelect"/>
+        <button name="viewDirection" icon="img/16px/link_16px.png" help="View Direction" onClick="com.axelor.apps.supplychain.web.StockMoveController:viewDirection" />
     </grid>
     
     <form name="stock-move-form" title="Stock move" model="com.axelor.apps.supplychain.db.StockMove" cols="4"
@@ -30,8 +31,8 @@
         		<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
     		</group>
     		<group title="Stock move informations"  colSpan="2" cols="2">
-        		<field name="fromLocation"/>
-        		<field name="toLocation"/>
+        		<field name="fromLocation" onChange="action-stock-move-set-from-address"/>
+        		<field name="toLocation" onChange="action-stock-move-set-to-address"/>
         		<field name="estimatedDate"/>
         		<field name="realDate"/>
         		<field name="fromAddress" showIf="typeSelect == 3"/>
@@ -44,6 +45,7 @@
 	        	<button name="draft" title="Draft" showIf="statusSelect == 4" onClick="save,action-stock-move-record-draft,save"/>
             	<button name="generateInvoice" title="Generate invoice" onClick="save,action-stock-move-method-generate-invoice"/>
             	<button name="printStockMove" title=" Print" onClick="save,action-print-stock-move" icon="img/16px/print_16px.png"/>
+            	<button name="viewDirection" title="View Direction" colSpan="1" icon="img/16px/link_16px.png" help="View Direction" onClick="com.axelor.apps.supplychain.web.StockMoveController:viewDirection" />
         	</group>
     	</group>
     	<break/>
@@ -107,6 +109,14 @@
 	    <field name="statusSelect" expr="eval: 1"/>
 	    <field name="estimatedDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
 	    <field name="typeSelect" expr="eval: _typeSelect"/>
+	</action-record>
+	
+	<action-record name="action-stock-move-set-from-address" model="com.axelor.apps.supplychain.db.StockMove">
+		<field name="fromAddress" expr="eval:fromLocation?.address" />
+	</action-record>
+	
+	<action-record name="action-stock-move-set-to-address" model="com.axelor.apps.supplychain.db.StockMove">
+		<field name="toAddress" expr="eval:toLocation?.address" />
 	</action-record>
 	
 	<action-method name="action-stock-move-method-plan">

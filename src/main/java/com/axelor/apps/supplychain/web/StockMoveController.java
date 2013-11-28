@@ -30,6 +30,7 @@
  */
 package com.axelor.apps.supplychain.web;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,6 +38,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.AxelorSettings;
+import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.supplychain.db.StockMove;
 import com.axelor.apps.supplychain.service.StockMoveService;
 import com.axelor.apps.tool.net.URLService;
@@ -51,6 +55,9 @@ public class StockMoveController {
 
 	@Inject
 	private StockMoveService stockMoveService;
+	
+	@Inject
+	private AddressService ads;
 	
 	public void plan(ActionRequest request, ActionResponse response) {
 		
@@ -122,5 +129,38 @@ public class StockMoveController {
 		else {
 			response.setFlash(urlNotExist);
 		}
+	}
+	
+	public void  viewDirection(ActionRequest request, ActionResponse response) {
+		
+		StockMove stockMove = request.getContext().asType(StockMove.class);
+		
+		Address fromAddress = stockMove.getFromAddress();
+		Address toAddress = stockMove.getToAddress();
+		String msg = "";
+		if(fromAddress == null)
+			msg = "From address is empty.";
+		if(toAddress == null)
+			msg = "To address is empty.";
+		if (!GeneralService.getGeneral().getMapApiSelect().equals("1"))
+			msg = "Feature currently not available with Open Street Maps.";
+		if(msg.isEmpty()){
+			String dString = fromAddress.getAddressL4()+" ,"+fromAddress.getAddressL6();
+			String aString = toAddress.getAddressL4()+" ,"+toAddress.getAddressL6();
+			BigDecimal dLat = fromAddress.getLatit();
+			BigDecimal dLon = fromAddress.getLongit();
+			BigDecimal aLat = toAddress.getLatit();
+			BigDecimal aLon =  toAddress.getLongit();
+			Map<String, Object> result = ads.getDirectionMapGoogle(dString, dLat, dLon, aString, aLat, aLon);
+			if(result != null){
+				Map<String,Object> mapView = new HashMap<String,Object>();
+				mapView.put("title", "Map");
+				mapView.put("resource", result.get("url"));
+				mapView.put("viewType", "html");
+			    response.setView(mapView);
+			}
+			else response.setFlash(String.format("<B>%s or %s</B> not found",dString,aString));
+		}else response.setFlash(msg);
+		
 	}
 }
