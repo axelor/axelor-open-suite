@@ -12,7 +12,7 @@
         <field name="typeSelect"/>
         <field name="subject"/>
         <field name="startDateTime"/>
-        <field name="duration"/>
+        <field name="duration" widget="duration[big=true]"/>
         <field name="userInfo"/>
         <field name="team"/>
     </grid>
@@ -108,7 +108,7 @@
 	            <separator title="Dates" colSpan="6"/>
 	            <field name="startDateTime" onChange="action-meeting-method-compute-start-date-time"/>
 	            <field name="endDateTime" onChange="action-meeting-method-compute-end-date-time"/>
-	            <field name="duration" onChange="action-meeting-method-compute-duration"/>
+	            <field name="duration" widget="duration[big=true]" onChange="action-meeting-method-compute-duration"/>
 	        </group>
 	    </group>
 	    <group colSpan="1" cols="2">
@@ -181,7 +181,7 @@
 	            <separator title="Dates" colSpan="6"/>
 	            <field name="startDateTime" onChange="action-meeting-method-compute-start-date-time"/>
 	            <field name="endDateTime" onChange="action-meeting-method-compute-end-date-time"/>
-	            <field name="duration" onChange="action-meeting-method-compute-duration"/>
+	            <field name="duration" widget="duration[big=true]" onChange="action-meeting-method-compute-duration"/>
 	        </group>
 	    </group>
 	    <group colSpan="1" cols="2">
@@ -244,7 +244,7 @@
 	            <separator title="Dates" colSpan="6"/>
 	            <field name="startDateTime" onChange="action-meeting-method-compute-start-date-time"/>
 	            <field name="endDateTime" onChange="action-meeting-method-compute-end-date-time"/>
-	            <field name="duration" onChange="action-meeting-method-compute-duration"/>
+	            <field name="duration" widget="duration[big=true]" onChange="action-meeting-method-compute-duration"/>
 	        </group>
 	    </group>
 	    <group colSpan="1" cols="2">
@@ -308,7 +308,7 @@
 	                <separator title="Dates" colSpan="6"/>
 	                <field name="startDateTime" onChange="action-meeting-method-compute-start-date-time"/>
 	                <field name="endDateTime" onChange="action-meeting-method-compute-end-date-time"/>
-	                <field name="duration" onChange="action-meeting-method-compute-duration"/>
+	                <field name="duration" widget="duration[big=true]" onChange="action-meeting-method-compute-duration"/>
 	        </group>
 	    </group>
 	    <group colSpan="1" cols="2">

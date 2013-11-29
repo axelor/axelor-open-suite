@@ -41,8 +41,6 @@ import com.google.inject.persist.Transactional;
 
 public class EventService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(EventService.class);
-	
 	public Duration computeDuration(LocalDateTime startDateTime, LocalDateTime endDateTime)  {
 		
 		return new Interval(startDateTime.toDateTime(), endDateTime.toDateTime()).toDuration();
