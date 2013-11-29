@@ -45,6 +45,7 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.ReportedBalance;
 import com.axelor.apps.account.db.ReportedBalanceLine;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.debtrecovery.ReminderService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;

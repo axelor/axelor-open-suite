@@ -28,7 +28,7 @@
  * All portions of the code written by Axelor are
  * Copyright (c) 2012-2013 Axelor. All Rights Reserved.
  */
-package com.axelor.apps.account.service;
+package com.axelor.apps.account.service.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
