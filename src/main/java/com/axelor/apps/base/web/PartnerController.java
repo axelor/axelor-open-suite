@@ -173,4 +173,39 @@ public class PartnerController {
 		}
 	}
 	
+
+	/* Fonction appeler par le bouton imprimer
+	 *
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	public void printClientSituation(ActionRequest request, ActionResponse response) {
+
+		AxelorSettings axelorSettings = AxelorSettings.get();
+		Partner partner = request.getContext().asType(Partner.class);
+
+		StringBuilder url = new StringBuilder();
+		User user = AuthUtils.getUser();
+		MetaUser metaUser = MetaUser.findByUser(user);
+
+		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/ClientSituation.rptdesign&__format=pdf&PartnerId="+partner.getId()+"&Locale="+metaUser.getLanguage()+"&UserId="+user.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
+		
+		LOG.debug("URL : {}", url);
+		String urlNotExist = URLService.notExist(url.toString());
+		if (urlNotExist == null){
+
+			LOG.debug("Impression de ma situation client");
+
+			Map<String,Object> mapView = new HashMap<String,Object>();
+			mapView.put("title", "Client Situation");
+			mapView.put("resource", url);
+			mapView.put("viewType", "html");
+			response.setView(mapView);		   
+		}
+		else {
+			response.setFlash(urlNotExist);
+		}
+	}
+	
 }

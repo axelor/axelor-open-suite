@@ -14,7 +14,7 @@
         <field name="productTypeSelect"/>
        	<field name="saleSupplySelect"/>
 		<field name="unit"/>
-		<button name="sendByEmail" title="Send Email" colSpan="1" icon="img/Mail.png" onClick="action-send-by-email-with-template"/>
+		<button name="sendByEmail" title="Send Email" colSpan="1" icon="img/Other/mail_19x14px.png" onClick="action-send-by-email-with-template"/>
     </grid>
     
     <form cols="2" onNew="action-product-record-default-new,action-product-record-sale-supply-select" name="product-form" title="Product" model="com.axelor.apps.base.db.Product" >
@@ -56,9 +56,10 @@
 					<group colSpan="2">
 						<separator title="Description" colSpan="2"/>
 						<break/>
-						<field name="description" showTitle="false" colSpan="2"/>
+						<field name="description" showTitle="false" colSpan="2" widget="html"/>
 					</group>
 					<group colSpan="2" cols="2" colWidths="40%,60%">
+						<button name="showProductSheet" title="Product sheet" colSpan="1" icon="img/16px/print_16px.png" onClick="save,action-product-method-show-product-sheet"/>
 					</group>
 				</group>
 			</page>
@@ -143,6 +144,10 @@
 	
 	<action-method name="action-print-product-catalog" >
 		<call class="com.axelor.apps.base.web.ProductController" method="printProductCatelog"/>
+	</action-method>
+	
+	<action-method name="action-product-method-show-product-sheet" >
+		<call class="com.axelor.apps.base.web.ProductController" method="printProductSheet"/>
 	</action-method>
     
     <action-validate name="action-product-validate-end-date">
