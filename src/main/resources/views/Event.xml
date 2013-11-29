@@ -93,8 +93,8 @@
 	    <field name="endDateTime"/>
 	    <field name="statusSelect"/>
 	    <field name="userInfo"/>
-	    <button name="accept" icon="img/icons/accept.png" help="Realize" onClick="action-set-status-select-2,action-save-event-status-select" />
-	    <button name="cancel" icon="img/icons/cancel.png" help="Cancel" onClick="action-set-status-select-3,action-save-event-status-select" />
+	    <button name="accept" icon="img/16px/accept_16px.png" help="Realize" onClick="action-set-status-select-2,action-save-event-status-select" />
+	    <button name="cancel" icon="img/16px/cancel_16px.png" help="Cancel" onClick="action-set-status-select-3,action-save-event-status-select" />
 	</grid>
     
     <form name="call-form" title="Call" model="com.axelor.apps.crm.db.Event" cols="2" colWidths="*,400" onNew="action-event-new-record">
@@ -164,8 +164,8 @@
 	    <field name="endDateTime"/>
 	    <field name="statusSelect"/>
 	    <field name="userInfo"/>
-	    <button name="accept" icon="img/icons/accept.png" help="Realize" onClick="action-set-status-select-2,action-save-event-status-select" />
-	    <button name="cancel" icon="img/icons/cancel.png" help="Cancel" onClick="action-set-status-select-3,action-save-event-status-select" />
+	    <button name="accept" icon="img/16px/accept_16px.png" help="Realize" onClick="action-set-status-select-2,action-save-event-status-select" />
+	    <button name="cancel" icon="img/16px/cancel_16px.png" help="Cancel" onClick="action-set-status-select-3,action-save-event-status-select" />
 	</grid>
     
     <form name="meeting-form" title="Meeting" model="com.axelor.apps.crm.db.Event" cols="2" colWidths="*,400" onNew="action-event-new-record">
@@ -173,7 +173,10 @@
 	        <separator title="Subject" colSpan="4" hideIf="$readonly()"/>
 	        <field name="subject" showTitle="false" colSpan="4" css="highlight" placeholder="Subject"/>
 	        <separator title="Location" colSpan="4"/>
-	        <field name="location" showTitle="false" colSpan="4" css="highlight" placeholder="Location"/>
+	        <group colSpan="4" cols="4">
+		        <field name="location" showTitle="false" colSpan="3" css="highlight" placeholder="Location"/>
+		        <button name="viewOnMap" title="View on Map" colSpan="1" onClick="com.axelor.apps.crm.web.EventController:viewMap" />
+	        </group>
 	        <separator title="Description" colSpan="4"/>
 	        <field name="description" colSpan="4" widget="TEXT[height=3]" showTitle="false" placeholder="Description"/>
 	        <break/>
@@ -190,9 +193,9 @@
 	            <field name="meetingType" widget="SuggestBox"/>
 	        </group>
 	        <group title="Linked to" colSpan="2" cols="2">
-	            <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
-	            <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
-	            <field name="lead"/>
+	            <field name="clientPartner" form-view="partner-form" grid-view="partner-grid" onChange="action-meeting-set-location-partner"/>
+	            <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid" onChange="action-meeting-set-location-contact"/>
+	            <field name="lead" onChange="action-meeting-set-location-lead"/>
 	            <field name="relatedToSelect" widget="RefSelect[related=relatedToSelectId]"/>
 	        </group>
 	    </group>
@@ -226,9 +229,9 @@
 	    <field name="taskStatusSelect"/>    
 	    <field name="prioritySelect"/>
 	    <field name="userInfo"/>
-	    <button name="start" icon="img/icons/start.png" help="On going" onClick="action-set-task-status-select-2,action-save-event-task-status-select" />
-	    <button name="accept" icon="img/icons/accept.png" help="Finished" onClick="action-set-task-status-select-3,action-save-event-task-status-select" />
-	    <button name="pause" icon="img/icons/pause.png" help="Pending" onClick="action-set-task-status-select-4,action-save-event-task-status-select" />
+	    <button name="start" icon="img/16px/start_16px.png" help="On going" onClick="action-set-task-status-select-2,action-save-event-task-status-select" />
+	    <button name="accept" icon="img/16px/accept_16px.png" help="Finished" onClick="action-set-task-status-select-3,action-save-event-task-status-select" />
+	    <button name="pause" icon="img/16px/pause_16px.png" help="Pending" onClick="action-set-task-status-select-4,action-save-event-task-status-select" />
 	</grid>
     
     <form name="crm-task-form" title="Task"  model="com.axelor.apps.crm.db.Event" cols="2" colWidths="*,400"  onNew="action-event-new-record">
@@ -281,9 +284,9 @@
 	    <field name="prioritySelect"/>
 	    <field name="ticketStatusSelect"/>
 	    <field name="progressSelect" widget="SelectProgress"/>
-	    <button name="start" icon="img/icons/start.png" help="In progress" onClick="action-set-ticket-status-select-2,action-save-event-ticket-status-select"/>
-	    <button name="accept" icon="img/icons/accept.png" help="Resolved" onClick="action-set-ticket-status-select-3,action-save-event-ticket-status-select"/>
-	    <button name="stop" icon="img/icons/stop.png" help="Closed" onClick="action-set-ticket-status-select-5,action-save-event-ticket-status-select"/>
+	    <button name="start" icon="img/16px/start_16px.png" help="In progress" onClick="action-set-ticket-status-select-2,action-save-event-ticket-status-select"/>
+	    <button name="accept" icon="img/16px/accept_16px.png" help="Resolved" onClick="action-set-ticket-status-select-3,action-save-event-ticket-status-select"/>
+	    <button name="stop" icon="img/16px/stop_16px.png" help="Closed" onClick="action-set-ticket-status-select-5,action-save-event-ticket-status-select"/>
 	</grid>
     
     <form name="ticket-form" title="Ticket" model="com.axelor.apps.crm.db.Event" cols="6" colWidths="*,400" 
@@ -553,6 +556,16 @@
 	</action-record>
 	<action-record name="action-set-ticket-status-select-5" model="com.axelor.apps.crm.db.Event">
 		<field name="ticketStatusSelect" expr="eval:5"/>
+	</action-record>
+	
+	<action-record name="action-meeting-set-location-partner" model="com.axelor.apps.crm.db.Event">
+		<field name="location" expr="eval:clientPartner?.mainInvoicingAddress?.fullName"/>
+	</action-record>
+	<action-record name="action-meeting-set-location-contact" model="com.axelor.apps.crm.db.Event">
+		<field name="location" expr="eval:contactPartner?.mainInvoicingAddress?.fullName"/>
+	</action-record>
+	<action-record name="action-meeting-set-location-lead" model="com.axelor.apps.crm.db.Event">
+		<field name="location" expr="eval:(lead?.primaryAddress != null ? lead.primaryAddress+', ' : '')+(lead?.primaryPostalCode != null ? lead.primaryPostalCode+' ' : '')+(lead?.primaryCity != null ? lead.primaryCity: '')"/>
 	</action-record>
 	
 </object-views>

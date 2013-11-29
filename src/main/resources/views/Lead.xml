@@ -12,9 +12,9 @@
 		<field name="contactDate"/>
 		<field name="userInfo"/>
         <field name="statusSelect"/>
-		<button name="logCall" title="Log Call" colSpan="1" icon="img/Phone.png" onClick="action-lead-view-create-call"/>
-		<button name="scheduleMeeting" title="Schedule Meeting" colSpan="1" icon="img/Meeting.png" onClick="action-lead-view-create-meeting"/>
-		<button name="sendByEmail" title="Send Email" colSpan="1" icon="img/Mail.png" onClick="action-send-by-email-with-template"/>
+		<button name="logCall" title="Log Call" colSpan="1" icon="img/16px/phone_16px.png" onClick="action-lead-view-create-call"/>
+		<button name="scheduleMeeting" title="Schedule Meeting" colSpan="1" icon="img/16px/meeting_16px.png" onClick="action-lead-view-create-meeting"/>
+		<button name="sendByEmail" title="Send Email" colSpan="1" icon="img/Other/mail_19x14px.png" onClick="action-send-by-email-with-template"/>
     </grid>
     
     <form name="lead-form" title="Lead" model="com.axelor.apps.crm.db.Lead" cols="4" 
@@ -25,7 +25,7 @@
 	        <button name="sendByEmail" title="Send email" colSpan="1" onClick="save,action-send-by-email-with-template"/>
 	    </toolbar>
 	    <menubar>
-	        <menu title="Actions" icon="img/icons/create.png" showTitle="true">
+	        <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true">
 	            <divider title="Create call" action="save,action-lead-view-create-call"/>
 	            <divider title="Schedule meeting" action="save,action-lead-view-create-meeting"/>
 	            <divider title="Create task" action="save,action-lead-view-create-task"/>

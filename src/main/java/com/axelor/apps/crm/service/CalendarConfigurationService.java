@@ -107,7 +107,7 @@ public class CalendarConfigurationService {
 		metaAction.setType("action-view");
 		
 		
-		String xml = "<action-view title=\""+title+"\" icon=\"img/icons/calendar-task.png\" model=\"com.axelor.apps.crm.db.Event\" name=\""+name+"\"> "+
+		String xml = "<action-view title=\""+title+"\" icon=\"img/16px/calendarTask_16px.png\" model=\"com.axelor.apps.crm.db.Event\" name=\""+name+"\"> "+
     "<view type=\"calendar\" name=\"event-calendar\"/>" +
     "<view type=\"grid\" name=\"event-grid\"/>" +
     "<view type=\"form\" name=\"event-form\"/>" +
