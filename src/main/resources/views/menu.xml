@@ -344,6 +344,15 @@
 	<menuitem name="account-conf" parent="account-root" title="Configuration"
 		icon="img/Other/parameter_59px.png" />
 
+	<menuitem name="account-conf-account-config" parent="account-conf"
+		title="Account configurations" action="account.conf.account.config" icon="img/Other/parameter_59px.png"/>
+		
+	<action-view name="account.conf.account.config" title="Account configurations"
+		model="com.axelor.apps.account.db.AccountConfig" icon="img/16px/parameterSmall_16px.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
+
 	<menuitem name="account-conf-cash-register" parent="account-conf"
 		title="Cash registers" action="account.conf.cash.register" />
 		
