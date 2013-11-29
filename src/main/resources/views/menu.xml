@@ -132,6 +132,10 @@
 	</action-view>
 
 
+
+<!-- ADMINISTRATION -->
+
+
 	<menuitem name="admin-root-batch-supplychain" parent="admin-root-batch"
 		title="Supplychain batches" action="admin.root.batch.supplychain" />
 
@@ -140,7 +144,20 @@
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
+	
+	
+	<menuitem name="admin-root-conf-supplychain-config" parent="admin-root-conf"
+		title="Supplychain configurations" action="admin.root.conf.supplychain.config" icon="img/Other/parameter_59px.png"/>
+		
+	<action-view name="admin.root.conf.supplychain.config" title="Supplychain configurations"
+		model="com.axelor.apps.supplychain.db.SupplychainConfig" icon="img/16px/parameterSmall_16px.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
 
+
+
+<!-- TOP MENU -->
 
 	<menuitem name="top-menu-create-so" parent="top-menu-utility" title="Create SO" action="supply.chain.root.sales.order" />
 	

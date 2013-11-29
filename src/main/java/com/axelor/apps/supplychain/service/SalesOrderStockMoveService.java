@@ -38,7 +38,6 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IProduct;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.supplychain.db.ILocation;
 import com.axelor.apps.supplychain.db.ISalesOrder;
 import com.axelor.apps.supplychain.db.Location;
@@ -46,7 +45,9 @@ import com.axelor.apps.supplychain.db.SalesOrder;
 import com.axelor.apps.supplychain.db.SalesOrderLine;
 import com.axelor.apps.supplychain.db.StockMove;
 import com.axelor.apps.supplychain.db.StockMoveLine;
+import com.axelor.apps.supplychain.db.SupplychainConfig;
 import com.axelor.apps.supplychain.exceptions.IExceptionMessage;
+import com.axelor.apps.supplychain.service.config.SupplychainConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.meta.service.MetaTranslations;
@@ -65,6 +66,8 @@ public class SalesOrderStockMoveService {
 	@Inject
 	private StockMoveLineService stockMoveLineService;
 
+	@Inject
+	private SupplychainConfigService supplychainConfigService;
 
 
 	/**
@@ -100,11 +103,8 @@ public class SalesOrderStockMoveService {
 		Location toLocation = Location.all().filter("self.isDefaultLocation = true and self.company = ?1 and self.typeSelect = ?2", company, ILocation.EXTERNAL).fetchOne();
 		
 		if(toLocation == null)  {
-			toLocation = company.getCustomerVirtualLocation();
-		}
-		if(toLocation == null)  {
-			throw new AxelorException(String.format("%s Veuillez configurer un entrepot virtuel client pour la société %s ",
-					GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
+			
+			toLocation = supplychainConfigService.getCustomerVirtualLocation(supplychainConfigService.getSupplychainConfig(company));
 		}
 		
 		StockMove stockMove = stockMoveService.createStockMove(
@@ -172,15 +172,17 @@ public class SalesOrderStockMoveService {
 	}
 	
 	
-	public boolean isStockMoveProduct(SalesOrderLine salesOrderLine)  {
+	public boolean isStockMoveProduct(SalesOrderLine salesOrderLine) throws AxelorException  {
 		
 		Company company = salesOrderLine.getSalesOrder().getCompany();
+		
+		SupplychainConfig supplychainConfig = supplychainConfigService.getSupplychainConfig(company);
 		
 		Product product = salesOrderLine.getProduct();
 		
 		if(product != null
-				&& ((product.getProductTypeSelect().equals(IProduct.PRODUCT_TYPE_SERVICE) && company.getHasOutSmForNonStorableProduct())
-						|| (product.getProductTypeSelect().equals(IProduct.PRODUCT_TYPE_STORABLE) && company.getHasOutSmForStorableProduct())) 
+				&& ((product.getProductTypeSelect().equals(IProduct.PRODUCT_TYPE_SERVICE) && supplychainConfig.getHasOutSmForNonStorableProduct())
+						|| (product.getProductTypeSelect().equals(IProduct.PRODUCT_TYPE_STORABLE) && supplychainConfig.getHasOutSmForStorableProduct())) 
 				&& salesOrderLine.getSaleSupplySelect() == IProduct.SALE_SUPPLY_FROM_STOCK)  {
 			
 			return true;

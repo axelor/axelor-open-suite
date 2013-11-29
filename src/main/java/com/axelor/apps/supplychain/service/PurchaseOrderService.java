@@ -57,6 +57,8 @@ import com.axelor.apps.supplychain.db.PurchaseOrderLine;
 import com.axelor.apps.supplychain.db.PurchaseOrderLineVat;
 import com.axelor.apps.supplychain.db.StockMove;
 import com.axelor.apps.supplychain.db.StockMoveLine;
+import com.axelor.apps.supplychain.db.SupplychainConfig;
+import com.axelor.apps.supplychain.service.config.SupplychainConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
@@ -83,6 +85,10 @@ public class PurchaseOrderService {
 	
 	@Inject
 	private SequenceService sequenceService;
+	
+	@Inject
+	private SupplychainConfigService supplychainConfigService;
+	
 	
 	public PurchaseOrder _computePurchaseOrderLines(PurchaseOrder purchaseOrder) throws AxelorException  {
 		
@@ -222,10 +228,12 @@ public class PurchaseOrderService {
 
 			Company company = purchaseOrder.getCompany();
 			
+			SupplychainConfig supplychainConfig = supplychainConfigService.getSupplychainConfig(company);
+			
 			Location startLocation = Location.all().filter("self.partner = ?1", purchaseOrder.getSupplierPartner()).fetchOne();
 			
 			if(startLocation == null)  {
-				startLocation = company.getSupplierVirtualLocation();
+				startLocation = supplychainConfigService.getSupplierVirtualLocation(supplychainConfig);
 			}
 			if(startLocation == null)  {
 				throw new AxelorException(String.format("%s Veuillez configurer un entrepot virtuel fournisseur pour la société %s ",
@@ -240,8 +248,8 @@ public class PurchaseOrderService {
 				
 				Product product = purchaseOrderLine.getProduct();
 				// Check if the company field 'hasInSmForStorableProduct' = true and productTypeSelect = 'storable' or 'hasInSmForNonStorableProduct' = true and productTypeSelect = 'service' or productTypeSelect = 'other'
-				if(product != null && ((company.getHasInSmForStorableProduct() && product.getProductTypeSelect().equals(IProduct.PRODUCT_TYPE_STORABLE)) 
-						|| (company.getHasInSmForNonStorableProduct() && !product.getProductTypeSelect().equals(IProduct.PRODUCT_TYPE_STORABLE)))) {
+				if(product != null && ((supplychainConfig.getHasInSmForStorableProduct() && product.getProductTypeSelect().equals(IProduct.PRODUCT_TYPE_STORABLE)) 
+						|| (supplychainConfig.getHasInSmForNonStorableProduct() && !product.getProductTypeSelect().equals(IProduct.PRODUCT_TYPE_STORABLE)))) {
 
 					StockMoveLine stockMoveLine = stockMoveLineService.createStockMoveLine(product, purchaseOrderLine.getQty(), purchaseOrderLine.getUnit(), 
 							purchaseOrderLineService.computeDiscount(purchaseOrderLine), stockMove, purchaseOrderLine.getProductVariant(), 2);

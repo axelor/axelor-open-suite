@@ -56,6 +56,7 @@ import com.axelor.apps.supplychain.db.Location;
 import com.axelor.apps.supplychain.db.LocationLine;
 import com.axelor.apps.supplychain.db.StockMove;
 import com.axelor.apps.supplychain.db.StockMoveLine;
+import com.axelor.apps.supplychain.service.config.SupplychainConfigService;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -78,6 +79,9 @@ public class InventoryService {
 	
 	@Inject
 	private SequenceService sequenceService;
+	
+	@Inject
+	private SupplychainConfigService supplychainConfigService;
 
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -247,6 +251,7 @@ public class InventoryService {
 
 	}
 
+	
 	public void generateStockMove(Inventory inventory) throws AxelorException {
 
 		Location toLocation = inventory.getLocation();
@@ -284,15 +289,19 @@ public class InventoryService {
 		}
 	}
 
+	
 	public StockMove createStockMoveHeader(Inventory inventory, Company company, Location toLocation, LocalDate inventoryDate, String name) throws AxelorException  {
 
-		StockMove stockMove = stockMoveService.createStockMove(null, company, null, company.getInventoryVirtualLocation(), toLocation, inventoryDate, inventoryDate);
+		StockMove stockMove = stockMoveService.createStockMove(null, company, null, 
+				supplychainConfigService.getInventoryVirtualLocation(supplychainConfigService.getSupplychainConfig(company)), toLocation, inventoryDate, inventoryDate);
+		
 		stockMove.setTypeSelect(IStockMove.TYPE_INTERNAL);
 		stockMove.setName(name);
 
 		return stockMove;
 	}
 
+	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public List<InventoryLine> fillInventoryLineList(Inventory inventory) throws AxelorException {
 
@@ -350,7 +359,6 @@ public class InventoryService {
 		return LocationLine.all().filter(query, params.toArray()).fetch();
 		
 	}
-	
 	
 	
 	public InventoryLine createInventoryLine(Inventory inventory, LocationLine locationLine)  {
