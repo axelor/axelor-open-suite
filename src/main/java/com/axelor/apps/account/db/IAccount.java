@@ -177,4 +177,27 @@ public interface IAccount {
 	// REMINDER TYPE
 	static final int REMINDER = 1;
 
+	
+	
+	/**
+	 * Static select in MoveLineReport
+	 */
+
+	// REPORT TYPE SELECT
+	static final int REPORT_PAYMENT_COLLECTION_JOURNAL = 1;
+	static final int REPORT_GENERAL_LEDGER = 2;
+	static final int REPORT_BALANCE = 3;
+	static final int REPORT_AGED_BALANCE = 4;
+	static final int REPORT_CHEQUE_DEPOSIT = 5;
+	static final int REPORT_CASH_PAYMENTS = 10;
+	static final int REPORT_JOURNAL = 11;
+	static final int REPORT_VAT_STATEMENT = 12;
+	static final int REPORT_PAYMENT_DIFFERENCES = 13;
+	
+	// REPORT TYPE SELECT EXPORT
+	static final int EXPORT_SALES = 6;
+	static final int EXPORT_REFUNDS = 7;
+	static final int EXPORT_TREASURY = 8;
+	static final int EXPORT_PURCHASES = 9;
+	
 }

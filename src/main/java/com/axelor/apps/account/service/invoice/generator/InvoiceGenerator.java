@@ -46,6 +46,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceLineVat;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.service.AccountConfigService;
 import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.invoice.generator.tax.VatInvoiceLine;
 import com.axelor.apps.base.db.Address;
@@ -237,7 +238,9 @@ public abstract class InvoiceGenerator {
 		
 		if(partnerAccount == null)  {
 			
-			partnerAccount = company.getCustomerAccount();
+			AccountConfigService accountConfigService = new AccountConfigService();
+			
+			partnerAccount = accountConfigService.getCustomerAccount(accountConfigService.getAccountConfig(company));
 			
 		}
 		

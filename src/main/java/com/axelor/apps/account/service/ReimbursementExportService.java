@@ -47,6 +47,7 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.IAccount;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
@@ -113,6 +114,9 @@ public class ReimbursementExportService {
 	@Inject
 	private BlockingService blockingService;
 	
+	@Inject
+	private AccountConfigService accountConfigService;
+	
 	private LocalDate today;
 
 	@Inject
@@ -154,14 +158,16 @@ public class ReimbursementExportService {
 		
 		BigDecimal total = this.getTotalAmountRemaining(moveLineList);
 		
+		AccountConfig accountConfig = company.getAccountConfig();
+		
 		// Seuil bas respecté et remboursement manuel autorisé
-		if(total.compareTo(company.getLowerThresholdReimbursement()) > 0 )  {
+		if(total.compareTo(accountConfig.getLowerThresholdReimbursement()) > 0 )  {
 			
 			Reimbursement reimbursement = createReimbursement(partner, company);
 			
 			fillMoveLineSet(reimbursement, moveLineList, total);
 			
-			if(total.compareTo(company.getUpperThresholdReimbursement()) > 0 || reimbursement.getBankDetails() == null)  {
+			if(total.compareTo(accountConfig.getUpperThresholdReimbursement()) > 0 || reimbursement.getBankDetails() == null)  {
 			// Seuil haut dépassé	
 				reimbursement.setStatus(Status.all().filter("self.code = 'tov'").fetchOne());
 			}
@@ -209,6 +215,9 @@ public class ReimbursementExportService {
 		Partner partner = null;
 		Move newMove = null;
 		boolean first = true;
+		
+		AccountConfig accountConfig = company.getAccountConfig();
+		
 		if(reimbursement.getMoveLineSet() != null && !reimbursement.getMoveLineSet().isEmpty())  {
 			int seq = 1;
 			for(MoveLine moveLine : reimbursement.getMoveLineSet())  {
@@ -220,7 +229,7 @@ public class ReimbursementExportService {
 					moveLine.setReimbursementStateSelect(IAccount.REIMBURSED);
 					
 					if(first)  {
-						newMove = moveService.createMove(company.getReimbursementJournal(), company, null, partner, null, false);
+						newMove = moveService.createMove(accountConfig.getReimbursementJournal(), company, null, partner, null, false);
 						first = false;
 					}
 					// Création d'une ligne au débit
@@ -238,7 +247,7 @@ public class ReimbursementExportService {
 				}			
 			}
 			// Création de la ligne au crédit
-			MoveLine newCreditMoveLine = moveLineService.createMoveLine(newMove, partner, company.getReimbursementAccount(), reimbursement.getAmountReimbursed(), false, false, today, seq, null);
+			MoveLine newCreditMoveLine = moveLineService.createMoveLine(newMove, partner, accountConfig.getReimbursementAccount(), reimbursement.getAmountReimbursed(), false, false, today, seq, null);
 		
 			newMove.getMoveLineList().add(newCreditMoveLine);
 			if(reimbursement.getDescription() != null && !reimbursement.getDescription().isEmpty())  {
@@ -258,20 +267,12 @@ public class ReimbursementExportService {
 	 * @throws AxelorException
 	 */
 	public void testCompanyField(Company company) throws AxelorException  {
-		if(company.getReimbursementAccount() == null)  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un compte de remboursement pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
-		}
-	
-		if(company.getReimbursementJournal() == null) {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un journal de remboursement pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
-		}
+
+		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 		
-		if(company.getLowerThresholdReimbursement() == null || company.getUpperThresholdReimbursement() == null)  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer les seuils inférieur et supérieur de remboursement pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
-		}
+		accountConfigService.getReimbursementAccount(accountConfig);
+		accountConfigService.getReimbursementJournal(accountConfig);
+		accountConfigService.getReimbursementExportFolderPath(accountConfig);
 		
 		String seq = sequenceService.getSequence(IAdministration.REIMBOURSEMENT, company, true);
 		if(seq == null) {
@@ -361,7 +362,7 @@ public class ReimbursementExportService {
 	 */
 	public void exportSepa(Company company, DateTime dateTime, List<Reimbursement> reimbursementList, BankDetails bankDetails) throws AxelorException, DatatypeConfigurationException, JAXBException, IOException {
 		
-		String exportFolderPath = company.getReimbursementExportFolderPath();
+		String exportFolderPath = accountConfigService.getReimbursementExportFolderPath(accountConfigService.getAccountConfig(company));
 		
 		if (exportFolderPath == null)  {
 			throw new AxelorException(String.format("Le dossier d'export des remboursement (format SEPA) n'est pas configuré pour la société %s.",
@@ -501,7 +502,7 @@ public class ReimbursementExportService {
 		 * Création du documemnt XML physique
 		 */
 		Marschaller.marschalFile(factory.createDocument(xml), "com.axelor.apps.xsd.sepa", 
-				company.getReimbursementExportFolderPath(), String.format("%s.xml", dateFormat.format(date)));
+				exportFolderPath, String.format("%s.xml", dateFormat.format(date)));
 		
 	}
 	
@@ -533,7 +534,7 @@ public class ReimbursementExportService {
 				
 			this.fillMoveLineSet(reimbursement, moveLineList, total);
 				
-			if(total.compareTo(company.getUpperThresholdReimbursement()) > 0 || reimbursement.getBankDetails() == null)  {
+			if(total.compareTo(company.getAccountConfig().getUpperThresholdReimbursement()) > 0 || reimbursement.getBankDetails() == null)  {
 			// Seuil haut dépassé	
 				reimbursement.setStatus(Status.all().filter("self.code = 'tov'").fetchOne());
 			}

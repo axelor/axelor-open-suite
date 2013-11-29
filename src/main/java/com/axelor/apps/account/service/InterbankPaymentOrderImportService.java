@@ -38,6 +38,7 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentVoucher;
@@ -68,6 +69,9 @@ public class InterbankPaymentOrderImportService {
 	@Inject
 	private BankDetailsService bds;
 	
+	@Inject
+	private AccountConfigService accountConfigService;
+	
 	private DateTime dateTime;
 
 	@Inject
@@ -81,7 +85,9 @@ public class InterbankPaymentOrderImportService {
 		
 		this.testCompanyField(company);
 		
-		String dest = ris.getDestCFONBFile(company.getInterbankPaymentOrderImportPathCFONB(), company.getTempInterbankPaymentOrderImportPathCFONB());
+		AccountConfig accountConfig = company.getAccountConfig();
+		
+		String dest = ris.getDestCFONBFile(accountConfig.getInterbankPaymentOrderImportPathCFONB(), accountConfig.getTempInterbankPaymentOrderImportPathCFONB());
 		
 		// Récupération des enregistrements
 		List<String[]> file = cs.importCFONB(dest, company, 3, 4);	
@@ -157,20 +163,18 @@ public class InterbankPaymentOrderImportService {
 	
 	
 	/**
-	 * Procédure permettant de vérifier les champs d'une société
+	 * Procédure permettant de vérifier les configurations comptables
 	 * @param company
 	 * 			Une société
 	 * @throws AxelorException
 	 */
 	public void testCompanyField(Company company) throws AxelorException  {
-		if(company.getInterbankPaymentOrderImportPathCFONB() == null || company.getInterbankPaymentOrderImportPathCFONB().isEmpty())  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un chemin d'import des paiements par TIP et TIP + chèque pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		if(company.getTempInterbankPaymentOrderImportPathCFONB() == null || company.getTempInterbankPaymentOrderImportPathCFONB().isEmpty())  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un chemin d'import temporaire des paiements par TIP et TIP + chèque pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
-		}
+		
+		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+		
+		accountConfigService.getInterbankPaymentOrderImportPathCFONB(accountConfig);
+		accountConfigService.getTempInterbankPaymentOrderImportPathCFONB(accountConfig);
+		
 	}
 	
 	

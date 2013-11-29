@@ -44,6 +44,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.IAccount;
 import com.axelor.apps.account.db.IInvoice;
 import com.axelor.apps.account.db.Invoice;
@@ -103,6 +104,9 @@ public class IrrecoverableService {
 	@Inject
 	private PaymentScheduleService paymentScheduleService;
 	
+	@Inject
+	private AccountConfigService accountConfigService;
+	
 	private LocalDate date;
 
 	@Inject
@@ -126,6 +130,10 @@ public class IrrecoverableService {
 		
 		this.testCompanyField(company);
 		
+		if(irrecoverable.getName() == null)  {
+			irrecoverable.setName(this.getSequence(company));
+		}
+		
 		irrecoverable.setInvoiceSet(new HashSet<Invoice>());
 		irrecoverable.getInvoiceSet().addAll(this.getInvoiceList(company));
 		irrecoverable.getInvoiceSet().addAll(this.getRejectInvoiceList(company));
@@ -133,14 +141,6 @@ public class IrrecoverableService {
 		irrecoverable.setPaymentScheduleLineSet(new HashSet<PaymentScheduleLine>());
 		irrecoverable.getPaymentScheduleLineSet().addAll(this.getPaymentScheduleLineList(company));
 		
-		if(irrecoverable.getName() == null)  {
-			String seq = sequenceService.getSequence(IAdministration.IRRECOVERABLE, company, false);
-			if(seq == null)  {
-				throw new AxelorException(String.format("%s :\n Veuillez configurer une séquence Passage en irrécouvrable pour la société %s",
-						GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
-			}
-			irrecoverable.setName(seq);
-		}
 		irrecoverable.save();
 	}
 	
@@ -349,6 +349,8 @@ public class IrrecoverableService {
 		EntityTransaction transaction = JPA.em().getTransaction();
 		
 		int anomaly = 0;
+		
+		this.testCompanyField(irrecoverable.getCompany());
 		
 		int i = 0;
 		if(irrecoverable.getInvoiceSet() != null && irrecoverable.getInvoiceSet().size() != 0)  {
@@ -561,7 +563,7 @@ public class IrrecoverableService {
 		
 		Company company = paymentScheduleLine.getPaymentSchedule().getCompany();
 		
-		Vat vat = company.getIrrecoverableStandardRateVat();
+		Vat vat = accountConfigService.getIrrecoverableStandardRateVat(accountConfigService.getAccountConfig(company));
 
 		ipsll.setIrrecoverableReportLineList(this.createIrrecoverableReportLineList(ipsll, paymentScheduleLine, vat));
 
@@ -766,8 +768,10 @@ public class IrrecoverableService {
 		Company company = invoice.getCompany();
 		Partner payerPartner = invoice.getPartner();
 		
+		AccountConfig accountConfig = company.getAccountConfig();
+		
 		// Move
-		Move move = moveService.createMove(company.getIrrecoverableJournal(), company, null, payerPartner, null, false);
+		Move move = moveService.createMove(accountConfig.getIrrecoverableJournal(), company, null, payerPartner, null, false);
 		
 		int seq = 1;
 		
@@ -795,13 +799,13 @@ public class IrrecoverableService {
 		}
 		
 		// Debit MoveLine 654 (irrecoverable account)
-		debitMoveLine = moveLineService.createMoveLine(move, payerPartner, company.getIrrecoverableAccount(), debitAmount, true, false, date, seq, null);
+		debitMoveLine = moveLineService.createMoveLine(move, payerPartner, accountConfig.getIrrecoverableAccount(), debitAmount, true, false, date, seq, null);
 		move.getMoveLineList().add(debitMoveLine);
 	
 		seq++;
 		
 		// Getting customer MoveLine from Facture
-		MoveLine customerMoveLine = moveService.getCustomerMoveLine(invoice, isInvoiceReject);
+		MoveLine customerMoveLine = moveService.getCustomerMoveLineByQuery(invoice);
 		if(customerMoveLine == null)  {
 			throw new AxelorException(String.format("%s :\n La facture %s ne possède pas de pièce comptable dont le restant à payer est positif",
 					GeneralService.getExceptionAccountingMsg(), invoice.getInvoiceId()), IException.INCONSISTENCY);
@@ -832,8 +836,10 @@ public class IrrecoverableService {
 		Partner payerPartner = moveLine.getPartner();
 		BigDecimal amount = moveLine.getAmountRemaining();
 		
+		AccountConfig accountConfig = company.getAccountConfig();
+		
 		// Move
-		Move move = moveService.createMove(company.getIrrecoverableJournal(), company, null, payerPartner, null, false);
+		Move move = moveService.createMove(accountConfig.getIrrecoverableJournal(), company, null, payerPartner, null, false);
 
 		int seq = 1;
 		
@@ -844,7 +850,7 @@ public class IrrecoverableService {
 		Reconcile reconcile = reconcileService.createReconcile(moveLine, creditMoveLine, amount);
 		reconcileService.confirmReconcile(reconcile);
 		
-		Vat vat = company.getIrrecoverableStandardRateVat();
+		Vat vat = accountConfig.getIrrecoverableStandardRateVat();
 		
 		BigDecimal vatRate = vatService.getVatRate(vat, date);
 		Account vatAccount = vatAccountService.getAccount(vat, company);
@@ -852,7 +858,7 @@ public class IrrecoverableService {
 		// Debit MoveLine 654. (irrecoverable account)
 		BigDecimal divid = vatRate.add(BigDecimal.ONE);
 		BigDecimal irrecoverableAmount = amount.divide(divid, 6, RoundingMode.HALF_EVEN).setScale(2, RoundingMode.HALF_EVEN);
-		MoveLine creditMoveLine1 = moveLineService.createMoveLine(move, payerPartner, company.getIrrecoverableAccount(), irrecoverableAmount, true, false, date, 2, null);
+		MoveLine creditMoveLine1 = moveLineService.createMoveLine(move, payerPartner, accountConfig.getIrrecoverableAccount(), irrecoverableAmount, true, false, date, 2, null);
 		move.getMoveLineList().add(creditMoveLine1);
 
 		// Debit MoveLine 445 (VAT account)
@@ -888,23 +894,25 @@ public class IrrecoverableService {
 	 * @throws AxelorException
 	 */
 	public void testCompanyField(Company company) throws AxelorException  {
-		if(company.getIrrecoverableAccount() == null)  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un compte de créance irrécouvrable pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		String seq = sequenceService.getSequence(IAdministration.IRRECOVERABLE, company, true);
+		
+		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+		accountConfigService.getIrrecoverableAccount(accountConfig);
+		accountConfigService.getIrrecoverableJournal(accountConfig);
+		accountConfigService.getIrrecoverableStandardRateVat(accountConfig);
+		
+	}
+	
+	
+	public String getSequence(Company company) throws AxelorException  {
+		
+		String seq = sequenceService.getSequence(IAdministration.IRRECOVERABLE, company, false);
 		if(seq == null) {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer une séquence de Passage en irrécouvrable pour la société %s",
 					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
 		}
-		if(company.getIrrecoverableJournal() == null)  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un journal irrécouvrable pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		if(company.getIrrecoverableStandardRateVat() == null)  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer une TVA taux normal pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
-		}
+		
+		return seq;
+		
 	}
 	
 	
@@ -922,31 +930,20 @@ public class IrrecoverableService {
 		
 		if(generateEvent)  {
 			Company company = invoice.getCompany();
-			if(company.getIrrecoverableReasonPassage() == null)  {
-				throw new AxelorException(String.format("%s :\n Veuillez configurer un motif de passage en irrécouvrable pour la société %s",
-						GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
-			}
 			
-			ManagementObject managementObject = this.createManagementObject("IRR", company.getIrrecoverableReasonPassage());
+			ManagementObject managementObject = this.createManagementObject("IRR", accountConfigService.getIrrecoverableReasonPassage(accountConfigService.getAccountConfig(company)));
 			invoice.setManagementObject(managementObject);
 			
-			if(invoice.getMove() != null)  {
-				if(invoice.getRejectMoveLine() != null)  {
-					this.passInIrrecoverable(invoice.getRejectMoveLine(), managementObject, false);
-				}
-				else  {
-					MoveLine moveLine = moveService.getCustomerMoveLine(invoice);
-					if(moveLine == null)  {
-						throw new AxelorException(String.format("%s :\n La facture %s ne possède pas de pièce comptable dont le restant à payer est positif",
-								GeneralService.getExceptionAccountingMsg(),invoice.getInvoiceId()), IException.INCONSISTENCY);
-					}
-					this.passInIrrecoverable(moveLine, managementObject, false);
-				}
+			MoveLine moveLine = moveService.getCustomerMoveLineByQuery(invoice);
+			
+			if(moveLine == null)  {
+				throw new AxelorException(String.format("%s :\n La facture %s ne possède pas de pièce comptable dont le restant à payer est positif",
+						GeneralService.getExceptionAccountingMsg(),invoice.getInvoiceId()), IException.INCONSISTENCY);
 			}
 			
-//			aes.createActionEvent(company.getIrrecoverableReasonPassage(), date, invoice.getPartner(), invoice, managementObject).save();
+			this.passInIrrecoverable(moveLine, managementObject, false);
+			
 		}
-		
 		
 		invoice.save();
 	}
@@ -963,19 +960,15 @@ public class IrrecoverableService {
 	public void passInIrrecoverable(Invoice invoice, ManagementObject managementObject) throws AxelorException  {
 		this.passInIrrecoverable(invoice, false);
 		invoice.setManagementObject(managementObject);
-		if(invoice.getMove() != null)  {
-			if(invoice.getRejectMoveLine() != null)  {
-				this.passInIrrecoverable(invoice.getRejectMoveLine(), managementObject, false);
-			}
-			else  {
-				MoveLine moveLine = moveService.getCustomerMoveLine(invoice);
-				if(moveLine == null)  {
-					throw new AxelorException(String.format("%s :\n La facture %s ne possède pas de pièce comptable dont le restant à payer est positif",
-							GeneralService.getExceptionAccountingMsg(),invoice.getInvoiceId()), IException.INCONSISTENCY);
-				}
-				this.passInIrrecoverable(moveLine, managementObject, false);
-			}
+		MoveLine moveLine = moveService.getCustomerMoveLineByQuery(invoice);
+		
+		if(moveLine == null)  {
+			throw new AxelorException(String.format("%s :\n La facture %s ne possède pas de pièce comptable dont le restant à payer est positif",
+					GeneralService.getExceptionAccountingMsg(),invoice.getInvoiceId()), IException.INCONSISTENCY);
 		}
+		
+		this.passInIrrecoverable(moveLine, managementObject, false);
+		
 		invoice.save();
 	}
 	
@@ -989,17 +982,13 @@ public class IrrecoverableService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void notPassInIrrecoverable(Invoice invoice) throws AxelorException  {
 		invoice.setIrrecoverableStateSelect(IInvoice.NOT_IRRECOUVRABLE);
-		if(invoice.getMove() != null)  {
-			if(invoice.getRejectMoveLine() != null)  {
-				this.notPassInIrrecoverable(invoice.getRejectMoveLine(), false);
-			}
-			else  {
-				MoveLine moveLine = moveService.getCustomerMoveLine(invoice);
-				if(moveLine != null)  {
-					this.notPassInIrrecoverable(moveLine, false);
-				}
-			}
+		
+		MoveLine moveLine = moveService.getCustomerMoveLineByQuery(invoice);
+		
+		if(moveLine != null)  {
+			this.notPassInIrrecoverable(moveLine, false);
 		}
+		
 		invoice.save();
 	}
 	
@@ -1022,12 +1011,7 @@ public class IrrecoverableService {
 		if(generateEvent)  {
 			Company company = moveLine.getMove().getCompany();
 
-			if(company.getIrrecoverableReasonPassage() == null)  {
-				throw new AxelorException(String.format("%s :\n Veuillez configurer un motif de passage en irrécouvrable pour la société %s",
-						GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
-			}
-			
-			managementObject = this.createManagementObject("IRR", company.getIrrecoverableReasonPassage());
+			managementObject = this.createManagementObject("IRR", accountConfigService.getIrrecoverableReasonPassage(accountConfigService.getAccountConfig(company)));
 			moveLine.setManagementObject(managementObject);
 			
 		}
@@ -1095,12 +1079,7 @@ public class IrrecoverableService {
 		
 		paymentSchedule.setIrrecoverableStateSelect(IInvoice.TO_PASS_IN_IRRECOUVRABLE);
 		
-		if(company.getIrrecoverableReasonPassage() == null)  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un motif de passage en irrécouvrable pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		
-		ManagementObject managementObject = this.createManagementObject("IRR", company.getIrrecoverableReasonPassage());
+		ManagementObject managementObject = this.createManagementObject("IRR", accountConfigService.getIrrecoverableReasonPassage(accountConfigService.getAccountConfig(company)));
 		paymentSchedule.setManagementObject(managementObject);
 		
 		List<MoveLine> paymentScheduleLineRejectMoveLineList = new ArrayList<MoveLine>();

@@ -39,6 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.CashRegister;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
@@ -80,6 +81,9 @@ public class MoveService {
 	
 	@Inject
 	private AccountCustomerService acs;
+	
+	@Inject
+	private AccountConfigService accountConfigService;
 	
 	private LocalDate toDay;
 	
@@ -242,7 +246,9 @@ public class MoveService {
 				
 				move.save();
 
-				invoice.setInTaxTotalRemaining(this.getInTaxTotalRemaining(invoice, account));
+				invoice.setMove(move);
+				
+				invoice.setInTaxTotalRemaining(this.getInTaxTotalRemaining(invoice));
 				this.validateMove(move);
 				
 			}
@@ -377,12 +383,14 @@ public class MoveService {
 	
 	/**
 	 * Fonction permettant de récuperer la ligne d'écriture (non complétement lettrée sur le compte client) de la facture
+	 * Récupération par boucle. A privilégié si les lignes d'écriture sont déjà managées par JPA ou si le nombre de lignes
+	 * d'écriture n'est pas important (< 100).
 	 * @param invoice
 	 * 			Une facture
 	 * @return
 	 * @throws AxelorException 
 	 */
-	public MoveLine getCustomerMoveLine(Invoice invoice) throws AxelorException  {
+	public MoveLine getInvoiceCustomerMoveLineByLoop(Invoice invoice) throws AxelorException  {
 		if(this.isDebitCustomer(invoice))  {
 			return mls.getDebitCustomerMoveLine(invoice);
 		}
@@ -393,7 +401,46 @@ public class MoveService {
 	
 	
 	/**
+	 * Fonction permettant de récuperer la ligne d'écriture (non complétement lettrée sur le compte client) de la facture
+	 * Récupération par requête. A privilégié si les lignes d'écritures ne sont pas managées par JPA ou si le nombre
+	 * d'écriture est très important (> 100)
+	 * @param invoice
+	 * 			Une facture
+	 * @return
+	 * @throws AxelorException 
+	 */
+	public MoveLine getInvoiceCustomerMoveLineByQuery(Invoice invoice) throws AxelorException  {
+		
+		if(this.isDebitCustomer(invoice))  {
+			return MoveLine.all().filter("self.move = ?1 AND self.account = ?2 AND self.debit > 0 AND self.amountRemaining > 0", 
+					invoice.getMove(), invoice.getPartnerAccount()).fetchOne();
+		}
+		else  {
+			return MoveLine.all().filter("self.move = ?1 AND self.account = ?2 AND self.credit > 0 AND self.amountRemaining > 0", 
+				invoice.getMove(), invoice.getPartnerAccount()).fetchOne();
+		}
+	}
+	
+	
+//	public MoveLine getCustomerMoveLineByQuerySum(Invoice invoice) throws AxelorException  {
+//		
+//		if(this.isDebitCustomer(invoice))  {
+//			JPA.
+//			return MoveLine.all().filter("self.move = ?1 AND self.account = ?2 AND self.debit > 0 AND self.amountRemaining > 0", 
+//					invoice.getMove(), invoice.getPartnerAccount()).fetchOne();
+//		}
+//		else  {
+//			return MoveLine.all().filter("self.move = ?1 AND self.account = ?2 AND self.credit > 0 AND self.amountRemaining > 0", 
+//				invoice.getMove(), invoice.getPartnerAccount()).fetchOne();
+//		}
+//	}
+	
+	
+	/**
 	 * Fonction permettant de récuperer la ligne d'écriture (en débit et non complétement payée sur le compte client) de la facture ou du rejet de facture
+	 * Récupération par boucle. A privilégié si les lignes d'écriture sont déjà managées par JPA ou si le nombre de lignes
+	 * d'écriture n'est pas important (< 100).
+	 * 
 	 * @param invoice
 	 * 			Une facture
 	 * @param isInvoiceReject
@@ -401,12 +448,34 @@ public class MoveService {
 	 * @return
 	 * @throws AxelorException 
 	 */
-	public MoveLine getCustomerMoveLine(Invoice invoice, boolean isInvoiceReject) throws AxelorException  {
-		if(isInvoiceReject)  {
+	public MoveLine getCustomerMoveLineByLoop(Invoice invoice) throws AxelorException  {
+		if(invoice.getRejectMoveLine() != null && invoice.getRejectMoveLine().getAmountRemaining().compareTo(BigDecimal.ZERO) > 0)  {
 			return invoice.getRejectMoveLine();
 		}
 		else  {
-			return this.getCustomerMoveLine(invoice);
+			return this.getInvoiceCustomerMoveLineByLoop(invoice);
+		}
+	}
+	
+	
+	/**
+	 * Fonction permettant de récuperer la ligne d'écriture (en débit et non complétement payée sur le compte client) de la facture ou du rejet de facture
+	 * Récupération par requête. A privilégié si les lignes d'écritures ne sont pas managées par JPA ou si le nombre
+	 * d'écriture est très important (> 100)
+	 * 
+	 * @param invoice
+	 * 			Une facture
+	 * @param isInvoiceReject
+	 * 			La facture est-elle rejetée?
+	 * @return
+	 * @throws AxelorException 
+	 */
+	public MoveLine getCustomerMoveLineByQuery(Invoice invoice) throws AxelorException  {
+		if(invoice.getRejectMoveLine() != null && invoice.getRejectMoveLine().getAmountRemaining().compareTo(BigDecimal.ZERO) > 0)  {
+			return invoice.getRejectMoveLine();
+		}
+		else  {
+			return this.getInvoiceCustomerMoveLineByQuery(invoice);
 		}
 	}
 	
@@ -468,7 +537,7 @@ public class MoveService {
 		Move move = null;
 		
 		// Récupération des dûs
-		MoveLine invoiceCustomerMoveLine = this.getCustomerMoveLine(invoice);
+		MoveLine invoiceCustomerMoveLine = this.getCustomerMoveLineByLoop(invoice);
 
 		List<MoveLine> debitMoveLines = pas.getInvoiceDue(invoice, true); //TODO ajouter parametrage general
 
@@ -492,9 +561,9 @@ public class MoveService {
 			if(remainingPaidAmount.compareTo(BigDecimal.ZERO) > 0 )  {
 				this.createExcessMove(invoice, company, partner, account, remainingPaidAmount, invoiceCustomerMoveLine);
 			}
+			
+			invoice.setInTaxTotalRemaining(this.getInTaxTotalRemaining(invoice));
 		}
-
-		invoice.setInTaxTotalRemaining(this.getInTaxTotalRemaining(invoice, account));
 	
 		return move;
 	}
@@ -504,20 +573,20 @@ public class MoveService {
 
 		Move move = null;
 		
+		Company company = invoice.getCompany();
+		
+		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+		
 		// Récupération des trop-perçus
-		List<MoveLine> creditMoveLineList = pas.getExcessPayment(invoice, invoice.getCompany().getCustomerAccount());
+		List<MoveLine> creditMoveLineList = pas.getExcessPayment(invoice, accountConfigService.getCustomerAccount(accountConfig));
 		
 		if(creditMoveLineList != null && creditMoveLineList.size() != 0)  {
 			
-			Company company = invoice.getCompany();
 			Partner partner = invoice.getPartner();
 			Account account = invoice.getPartnerAccount();
-			MoveLine invoiceCustomerMoveLine = this.getCustomerMoveLine(invoice);
+			MoveLine invoiceCustomerMoveLine = this.getCustomerMoveLineByLoop(invoice);
 			
-			if (company.getMiscOperationJournal() == null){
-				throw new AxelorException(String.format("Veuillez configurer un journal des O.D pour la société %s", company.getName()), IException.CONFIGURATION_ERROR);
-			}
-			Journal journal = company.getMiscOperationJournal();
+			Journal journal = accountConfigService.getMiscOperationJournal(accountConfig);
 	
 			// Si c'est le même compte sur les trop-perçus et sur la facture, alors on lettre directement
 			if(this.isSameAccount(creditMoveLineList, account))  {
@@ -552,7 +621,7 @@ public class MoveService {
 				}
 			}
 
-			invoice.setInTaxTotalRemaining(this.getInTaxTotalRemaining(invoice, account));
+			invoice.setInTaxTotalRemaining(this.getInTaxTotalRemaining(invoice));
 		}
 		return move;
 	}
@@ -611,10 +680,7 @@ public class MoveService {
 		Partner partner = invoice.getPartner();
 		Account account = invoice.getPartnerAccount();
 		
-		if (company.getMiscOperationJournal() == null){
-			throw new AxelorException(String.format("Veuillez configurer un journal des O.D pour la société %s", company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		Journal journal = company.getMiscOperationJournal();
+		Journal journal = accountConfigService.getMiscOperationJournal(accountConfigService.getAccountConfig(company));
 		
 		LOG.debug("Création d'une écriture comptable O.D. spécifique à l'emploie des trop-perçus {} (Société : {}, Journal : {})", new Object[]{invoice.getInvoiceId(), company.getName(), journal.getCode()});
 		
@@ -660,10 +726,8 @@ public class MoveService {
 	 * @throws AxelorException
 	 */
 	public void createExcessMove(Invoice refund, Company company, Partner partner, Account account, BigDecimal amount, MoveLine invoiceCustomerMoveLine) throws AxelorException  {
-		if (company.getMiscOperationJournal() == null){
-			throw new AxelorException(String.format("Veuillez configurer un journal des O.D pour la société %s", company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		Journal journal = company.getMiscOperationJournal();
+		
+		Journal journal = accountConfigService.getMiscOperationJournal(accountConfigService.getAccountConfig(company));
 		
 		Move excessMove = this.createMove(journal, company, refund, partner, null, false);
 		
@@ -853,73 +917,32 @@ public class MoveService {
 	}
 	
 	
-	
-	
-	
-	/**
-	 * Fonction permettant de connaître le reste à payer d'une facture.
-	 * 
-	 * @param move
-	 * 			L'écriture de facture
-	 * @param account
-	 * 			Le compte de facture
-	 * @return
-	 */
-	@Deprecated
-	public BigDecimal getInTaxTotalRemaining(Move move, Account account, boolean refund){
-		BigDecimal inTaxTotalRemaining = BigDecimal.ZERO;
-		if(refund) {
-			if (move != null){
-				for (MoveLine moveLine : move.getMoveLineList()){
-					if (moveLine.getAccount().equals(account) && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) == 1 && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0){
-						inTaxTotalRemaining = inTaxTotalRemaining.add(moveLine.getAmountRemaining());
-					}
-				}
-			}
-		}
-		else {
-			if (move != null){
-				for (MoveLine moveLine : move.getMoveLineList()){
-					if (moveLine.getAccount().equals(account) && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) == 1 && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0){
-						inTaxTotalRemaining = inTaxTotalRemaining.add(moveLine.getAmountRemaining());
-					}
-				}
-			}
-		}
-		return inTaxTotalRemaining;
-	}
-	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public BigDecimal getInTaxTotalRemaining(Invoice invoice, Account account) throws AxelorException{
+	public BigDecimal getInTaxTotalRemaining(Invoice invoice) throws AxelorException{
 		BigDecimal inTaxTotalRemaining = BigDecimal.ZERO;
 			
-		LOG.debug("invoice : {}", invoice);
-		LOG.debug("account : {}", account);
+		LOG.debug("Update Remaining amount of invoice : {}", invoice.getInvoiceId());
 		
 		if(invoice!=null)  {
 			
-			invoice.save();
-			List<MoveLine> moveLineList = null;
-
-			boolean isDebitCustomer = this.isDebitCustomer(invoice);
-			
 			boolean isMinus = this.isMinus(invoice);
 			
-			if(!isDebitCustomer)  {
-				moveLineList = MoveLine.all().filter("self.move.invoice = ?1 AND self.account = ?2 AND self.credit > 0 AND self.amountRemaining > 0", invoice, account).fetch();
-			}
-			else  {
-				moveLineList = MoveLine.all().filter("self.move.invoice = ?1 AND self.account = ?2 AND self.debit > 0 AND self.amountRemaining > 0", invoice, account).fetch();
-			}
+			LOG.debug("Methode 1 : debut"); //TODO
+			invoice.save();
+			LOG.debug("Methode 1 : milieu");
+			MoveLine moveLine = this.getCustomerMoveLineByLoop(invoice);
+			LOG.debug("Methode 1 : fin");
 			
-			LOG.debug("Nombre de ligne d'écriture de facture trouvées : {}", moveLineList.size());
+			LOG.debug("Methode 2 : debut");
+			MoveLine moveLine2 = this.getCustomerMoveLineByQuery(invoice);
+			LOG.debug("Methode 2 : fin");
 			
-			for(MoveLine moveLine : moveLineList)  {
+			if(moveLine != null)  {
 				inTaxTotalRemaining = inTaxTotalRemaining.add(moveLine.getAmountRemaining());
-			}
-			
-			if(isMinus)  {
-				inTaxTotalRemaining = inTaxTotalRemaining.negate();
+				
+				if(isMinus)  {
+					inTaxTotalRemaining = inTaxTotalRemaining.negate();
+				}
 			}
 		}
 		return inTaxTotalRemaining;

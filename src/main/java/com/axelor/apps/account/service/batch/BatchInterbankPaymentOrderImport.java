@@ -38,11 +38,12 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.service.CfonbService;
 import com.axelor.apps.account.service.InterbankPaymentOrderImportService;
 import com.axelor.apps.account.service.RejectImportService;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -97,7 +98,9 @@ public class BatchInterbankPaymentOrderImport extends BatchStrategy {
 			
 			try {
 				
-				String dest = rejectImportService.getDestCFONBFile(company.getInterbankPaymentOrderImportPathCFONB(), company.getTempInterbankPaymentOrderImportPathCFONB());
+				AccountConfig accountConfig = company.getAccountConfig();
+				
+				String dest = rejectImportService.getDestCFONBFile(accountConfig.getInterbankPaymentOrderImportPathCFONB(), accountConfig.getTempInterbankPaymentOrderImportPathCFONB());
 				
 				// Récupération des enregistrements
 				paymentFile = cfonbService.importCFONB(dest, company, 3, 4);	

@@ -40,6 +40,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
@@ -63,6 +66,9 @@ public class ReconcileService {
 	
 	@Inject
 	private AccountCustomerService acs;
+	
+	@Inject
+	private AccountConfigService accountConfigService;
 	
 	private LocalDate today;
 
@@ -97,14 +103,8 @@ public class ReconcileService {
 					reconcile.getLineDebit().setAmountPaid(reconcile.getLineDebit().getAmountPaid().subtract(reconcile.getAmount()));		
 					
 					// Update amount remaining on invoice or refund
-					if(reconcile.getLineDebit().getMove().getInvoice() != null)  {
-						reconcile.getLineDebit().getMove().getInvoice().setInTaxTotalRemaining(
-								ms.getInTaxTotalRemaining(reconcile.getLineDebit().getMove().getInvoice(), reconcile.getLineDebit().getMove().getInvoice().getPartnerAccount()));
-					}
-					if(reconcile.getLineCredit().getMove().getInvoice() != null)  {
-						reconcile.getLineCredit().getMove().getInvoice().setInTaxTotalRemaining(
-								ms.getInTaxTotalRemaining(reconcile.getLineCredit().getMove().getInvoice(), reconcile.getLineCredit().getMove().getInvoice().getPartnerAccount()));
-					}
+					this.updatePartnerAccountingSituation(reconcile, true);
+					this.updateInvoiceRemainingAmount(reconcile);
 					
 					reconcile.save();
 					LOG.debug("End Unreconcile.");
@@ -233,73 +233,67 @@ public class ReconcileService {
 	public String confirmReconcile(Reconcile reconcile, boolean updateCustomerAccount) throws AxelorException  {
 		
 		LOG.debug("In confirmReconcile ....");
-		if (reconcile != null)  {
-			if (reconcile.getLineCredit() != null && reconcile.getLineDebit() != null)  {
-				// Check if move lines accounts are the same (debit and credit)
-				LOG.debug("Compte ligne de credit : {} , Compte ligne de debit : {}",reconcile.getLineCredit().getAccount(),reconcile.getLineDebit().getAccount());
-				if (!reconcile.getLineCredit().getAccount().equals(reconcile.getLineDebit().getAccount())){
-					throw new AxelorException(String.format("%s :\nReconciliation %s: Les lignes d'écritures sélectionnées doivent concerner le même compte comptable.", 
-							GeneralService.getExceptionAccountingMsg(), reconcile.getFullName()), IException.CONFIGURATION_ERROR);		
-				}
-				// Check if the amount to reconcile is != zero
-				else if (reconcile.getAmount() == null || reconcile.getAmount().compareTo(BigDecimal.ZERO) == 0)  {
-					throw new AxelorException(String.format("%s :\nReconciliation %s: Le montant réconcilié doit être différent de zéro.", 
-							GeneralService.getExceptionAccountingMsg(), reconcile.getFullName()), IException.INCONSISTENCY);				
+		if (reconcile != null && reconcile.getLineCredit() != null && reconcile.getLineDebit() != null)  {
+			// Check if move lines accounts are the same (debit and credit)
+			LOG.debug("Compte ligne de credit : {} , Compte ligne de debit : {}",reconcile.getLineCredit().getAccount(),reconcile.getLineDebit().getAccount());
+			if (!reconcile.getLineCredit().getAccount().equals(reconcile.getLineDebit().getAccount())){
+				throw new AxelorException(String.format("%s :\nReconciliation %s: Les lignes d'écritures sélectionnées doivent concerner le même compte comptable.", 
+						GeneralService.getExceptionAccountingMsg(), reconcile.getFullName()), IException.CONFIGURATION_ERROR);		
+			}
+			// Check if the amount to reconcile is != zero
+			else if (reconcile.getAmount() == null || reconcile.getAmount().compareTo(BigDecimal.ZERO) == 0)  {
+				throw new AxelorException(String.format("%s :\nReconciliation %s: Le montant réconcilié doit être différent de zéro.", 
+						GeneralService.getExceptionAccountingMsg(), reconcile.getFullName()), IException.INCONSISTENCY);				
+						
+			}
+			else{
+				// Check if the amount to reconcile is less than the 2 moves credit and debit
+				LOG.debug("AMOUNT  : : : {}",reconcile.getAmount());
+				LOG.debug("credit - paid  : : : {}",reconcile.getLineCredit().getCredit().subtract(reconcile.getLineCredit().getAmountPaid()));
+				LOG.debug("debit - paid  : : : {}",reconcile.getLineDebit().getDebit().subtract(reconcile.getLineDebit().getAmountPaid()));
+			
+				if ((reconcile.getAmount().compareTo(reconcile.getLineCredit().getCredit().subtract(reconcile.getLineCredit().getAmountPaid())) > 0 
+						|| (reconcile.getAmount().compareTo(reconcile.getLineDebit().getDebit().subtract(reconcile.getLineDebit().getAmountPaid())) > 0))){
+					throw new AxelorException(String.format("%s :\nReconciliation %s: Le montant réconcilié doit être inférieur ou égale au montant restant à réconcilier des lignes d'écritures.", 
+							GeneralService.getExceptionAccountingMsg(), reconcile.getFullName()), IException.INCONSISTENCY);						
 							
 				}
 				else{
-					// Check if the amount to reconcile is less than the 2 moves credit and debit
-					LOG.debug("AMOUNT  : : : {}",reconcile.getAmount());
-					LOG.debug("credit - paid  : : : {}",reconcile.getLineCredit().getCredit().subtract(reconcile.getLineCredit().getAmountPaid()));
-					LOG.debug("debit - paid  : : : {}",reconcile.getLineDebit().getDebit().subtract(reconcile.getLineDebit().getAmountPaid()));
-				
-					if ((reconcile.getAmount().compareTo(reconcile.getLineCredit().getCredit().subtract(reconcile.getLineCredit().getAmountPaid())) > 0 
-							|| (reconcile.getAmount().compareTo(reconcile.getLineDebit().getDebit().subtract(reconcile.getLineDebit().getAmountPaid())) > 0))){
-						throw new AxelorException(String.format("%s :\nReconciliation %s: Le montant réconcilié doit être inférieur ou égale au montant restant à réconcilier des lignes d'écritures.", 
-								GeneralService.getExceptionAccountingMsg(), reconcile.getFullName()), IException.INCONSISTENCY);						
-								
-					}
-					else{
-						
-						//Add the reconciled amount to the reconciled amount in the move line
-						reconcile.getLineCredit().setAmountPaid(reconcile.getLineCredit().getAmountPaid().add(reconcile.getAmount()));
-						reconcile.getLineDebit().setAmountPaid(reconcile.getLineDebit().getAmountPaid().add(reconcile.getAmount()));
-						
-						// Update amount remaining on invoice or refund
-						if(reconcile.getLineDebit().getMove().getInvoice() != null)  {
-							reconcile.getLineDebit().getMove().getInvoice().setInTaxTotalRemaining(
-									ms.getInTaxTotalRemaining(reconcile.getLineDebit().getMove().getInvoice(), reconcile.getLineDebit().getMove().getInvoice().getPartnerAccount()));
-						}
-						if(reconcile.getLineCredit().getMove().getInvoice() != null)  {
-							reconcile.getLineCredit().getMove().getInvoice().setInTaxTotalRemaining(
-									ms.getInTaxTotalRemaining(reconcile.getLineCredit().getMove().getInvoice(), reconcile.getLineCredit().getMove().getInvoice().getPartnerAccount()));
-						}
 					
-						this.updatePartnerAccountingSituation(reconcile, updateCustomerAccount);
-						
-						// Change the state
-						reconcile.setState("2");
-						
-						if(reconcile.getCanBeZeroBalanceOk())  {
-							// Alors nous utilisons la règle de gestion consitant à imputer l'écart sur un compte transitoire si le seuil est respecté
-							canBeZeroBalance(reconcile);
-						}
-						
-						reconcile.save();
-						
-						LOG.debug("End confirmReconcile.");
-						return reconcile.getState();
+					//Add the reconciled amount to the reconciled amount in the move line
+					reconcile.getLineCredit().setAmountPaid(reconcile.getLineCredit().getAmountPaid().add(reconcile.getAmount()));
+					reconcile.getLineDebit().setAmountPaid(reconcile.getLineDebit().getAmountPaid().add(reconcile.getAmount()));
+					
+					// Update amount remaining on invoice or refund
+					if(reconcile.getLineDebit().getMove().getInvoice() != null)  {
+						reconcile.getLineDebit().getMove().getInvoice().setInTaxTotalRemaining(
+								ms.getInTaxTotalRemaining(reconcile.getLineDebit().getMove().getInvoice()));
 					}
+					if(reconcile.getLineCredit().getMove().getInvoice() != null)  {
+						reconcile.getLineCredit().getMove().getInvoice().setInTaxTotalRemaining(
+								ms.getInTaxTotalRemaining(reconcile.getLineCredit().getMove().getInvoice()));
+					}
+				
+					this.updatePartnerAccountingSituation(reconcile, updateCustomerAccount);
+					
+					// Change the state
+					reconcile.setState("2");
+					
+					if(reconcile.getCanBeZeroBalanceOk())  {
+						// Alors nous utilisons la règle de gestion consitant à imputer l'écart sur un compte transitoire si le seuil est respecté
+						canBeZeroBalance(reconcile);
+					}
+					
+					reconcile.save();
+					
+					LOG.debug("End confirmReconcile.");
+					return reconcile.getState();
 				}
-			}
-			else{
-				throw new AxelorException(String.format("%s :\nReconciliation %s: Merci de renseigner les lignes d'écritures concernées.", 
-						GeneralService.getExceptionAccountingMsg(), reconcile.getFullName()), IException.CONFIGURATION_ERROR);					
 			}
 		}
 		else{
-			LOG.debug("***************** ****** *** NO ID *** ****** **********************");
-			return null;
+			throw new AxelorException(String.format("%s :\nReconciliation %s: Merci de renseigner les lignes d'écritures concernées.", 
+					GeneralService.getExceptionAccountingMsg(), reconcile.getFullName()), IException.CONFIGURATION_ERROR);					
 		}
 	}
 	
@@ -340,6 +334,22 @@ public class ReconcileService {
 	}
 	
 	
+	public void updateInvoiceRemainingAmount(Reconcile reconcile) throws AxelorException  {
+		
+		Invoice creditInvoice = reconcile.getLineCredit().getMove().getInvoice();
+		Invoice debitInvoice = reconcile.getLineDebit().getMove().getInvoice();
+		
+		// Update amount remaining on invoice or refund
+		if(debitInvoice != null)  {
+			debitInvoice.setInTaxTotalRemaining(  ms.getInTaxTotalRemaining(debitInvoice)  );
+		}
+		if(creditInvoice != null)  {
+			creditInvoice.setInTaxTotalRemaining(  ms.getInTaxTotalRemaining(creditInvoice)  );
+		}
+		
+	}
+	
+	
 	/**
 	 * Méthode permettant de lettrer une écriture au débit avec une écriture au crédit
 	 * @param debitMoveLine
@@ -371,25 +381,26 @@ public class ReconcileService {
 		LOG.debug("Montant à payer / à lettrer au débit : {}", debitAmountRemaining);
 		if(debitAmountRemaining.compareTo(BigDecimal.ZERO) > 0)  {
 			Company company = reconcile.getLineDebit().getMove().getCompany();
-			if(debitAmountRemaining.plus().compareTo(company.getThresholdDistanceFromRegulation()) < 0 || reconcile.getMustBeZeroBalanceOk())  {
+			
+			AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+			
+			if(debitAmountRemaining.plus().compareTo(accountConfig.getThresholdDistanceFromRegulation()) < 0 || reconcile.getMustBeZeroBalanceOk())  {
 				
 				LOG.debug("Seuil respecté");
 				
 				Partner partner = debitMoveLine.getPartner();
 				Account account = debitMoveLine.getAccount();
 				
-				if(company.getMiscOperationJournal() == null)  {
-					throw new AxelorException(String.format("%s :\n Veuillez configurer un journal des O.D. pour la société %s",
-							GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
-				}
+				Journal miscOperationJournal = accountConfigService.getMiscOperationJournal(accountConfig);
 				
-				Move newMove = ms.createMove(company.getMiscOperationJournal(), company, null, partner, null, false);
+				Move newMove = ms.createMove(miscOperationJournal, company, null, partner, null, false);
 				
 				// Création de la ligne au crédit
 				MoveLine newCreditMoveLine = mls.createMoveLine(newMove, partner, account, debitAmountRemaining, false, false, today, 1, null);
 				
 				// Création de la ligne au debit
-				MoveLine newDebitMoveLine = mls.createMoveLine(newMove, partner, company.getCashPositionVariationAccount(), debitAmountRemaining, true, false, today, 2, null);
+				MoveLine newDebitMoveLine = mls.createMoveLine(
+						newMove, partner, accountConfigService.getCashPositionVariationAccount(accountConfig), debitAmountRemaining, true, false, today, 2, null);
 				
 				newMove.getMoveLineList().add(newCreditMoveLine);
 				newMove.getMoveLineList().add(newDebitMoveLine);
@@ -420,23 +431,23 @@ public class ReconcileService {
 			LOG.debug("Montant à payer / à lettrer au crédit : {}", creditAmountRemaining);
 
 			if(creditAmountRemaining.compareTo(BigDecimal.ZERO) > 0)  {
-				if(creditAmountRemaining.plus().compareTo(company.getThresholdDistanceFromRegulation()) < 0)  {
+				AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+				
+				if(creditAmountRemaining.plus().compareTo(accountConfig.getThresholdDistanceFromRegulation()) < 0)  {
 
 					LOG.debug("Seuil respecté");
 
 					Partner partner = creditMoveLine.getPartner();
 					Account account = creditMoveLine.getAccount();
 					
-					if(company.getMiscOperationJournal() == null)  {
-						throw new AxelorException(String.format("%s :\n Veuillez configurer un journal des O.D. pour la société %s",
-								GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
-					}
+					Journal miscOperationJournal = accountConfigService.getMiscOperationJournal(accountConfig);
 					
-					Move newMove = ms.createMove(company.getMiscOperationJournal(), company, null, partner, null, false);
+					Move newMove = ms.createMove(miscOperationJournal, company, null, partner, null, false);
 					
 					
 					// Création de la ligne au crédit
-					MoveLine newCreditMoveLine = mls.createMoveLine(newMove, partner, company.getCashPositionVariationAccount(), creditAmountRemaining, false, false, today, 2, null);
+					MoveLine newCreditMoveLine = mls.createMoveLine(
+							newMove, partner, accountConfigService.getCashPositionVariationAccount(accountConfig), creditAmountRemaining, false, false, today, 2, null);
 					
 					// Création de la ligne au débit
 					MoveLine newDebitMoveLine = mls.createMoveLine(newMove, partner, account, creditAmountRemaining, true, false, today, 1, null);

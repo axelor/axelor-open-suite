@@ -34,6 +34,7 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.CashRegisterLine;
 import com.axelor.apps.account.db.IAccount;
 import com.axelor.apps.base.db.Company;
@@ -85,7 +86,9 @@ public class CashRegisterLineService {
 					GeneralService.getExceptionAccountingMsg()), IException.CONFIGURATION_ERROR);
 		}
 		else  {
-			if(company.getCashRegisterAddressEmail() == null)  {
+			AccountConfig accountConfig = company.getAccountConfig();
+			
+			if(accountConfig.getCashRegisterAddressEmail() == null)  {
 				throw new AxelorException(String.format("%s :\n Veuillez configurer une adresse email Caisses pour la société %s",
 						GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
 			}
@@ -95,7 +98,7 @@ public class CashRegisterLineService {
 			cashRegisterLine.setStateSelect(IAccount.CLOSED_CASHREGISTERLINE);
 			cashRegisterLine.save();
 			
-			return ms.createCashRegisterLineMail(company.getCashRegisterAddressEmail(), company, cashRegisterLine).save();
+			return ms.createCashRegisterLineMail(accountConfig.getCashRegisterAddressEmail(), company, cashRegisterLine).save();
 			
 		}
 	}

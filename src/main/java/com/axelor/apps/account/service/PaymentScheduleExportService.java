@@ -40,6 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.DirectDebitManagement;
 import com.axelor.apps.account.db.IAccount;
@@ -98,6 +99,9 @@ public class PaymentScheduleExportService {
 	
 	@Inject
 	private BlockingService blockingService;
+	
+	@Inject
+	private AccountConfigService accountConfigService;
 
 	private LocalDate today;
 	
@@ -175,33 +179,6 @@ public class PaymentScheduleExportService {
 	
 	
 	/**
-	 * Procédure permettant de vérifier que les journaux sont bien configuré dans la société
-	 * @param company
-	 * @throws AxelorException
-	 */
-	public void checkCompanyJournal(Company company) throws AxelorException  {
-		if(company.getInvoiceDirectDebitJournal() == null)  {
-			throw new AxelorException(String.format(
-					"%s :\n Erreur : Veuillez configurer un Journal prélèvement facture pour la société %s"
-					,GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
-		}
-	}
-	
-	/**
-	 * Procédure permettant de vérifier que les journaux sont bien configuré dans la société
-	 * @param company
-	 * @throws AxelorException
-	 */
-	public void checkCompanyJournalMonthlyPayment(Company company) throws AxelorException  {
-		if(company.getScheduleDirectDebitJournal() == null)  {
-			throw new AxelorException(String.format(
-					"%s :\n Erreur : Veuillez configurer un Journal prélèvement échéancier pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
-		}
-	}
-	
-	
-	/**
 	 * Procédure permettant de vérifier que la date d'échéance est bien remplie
 	 * @param company
 	 * @throws AxelorException
@@ -213,22 +190,25 @@ public class PaymentScheduleExportService {
 					,GeneralService.getExceptionAccountingMsg(),accountingBatch.getCode()), IException.CONFIGURATION_ERROR);
 		}
 	}
+
+	
+	public void checkInvoiceExportCompany(Company company) throws AxelorException  {
+
+		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+		
+		accountConfigService.getCustomerAccount(accountConfig);
+		accountConfigService.getInvoiceDirectDebitJournal(accountConfig);
+		accountConfigService.getDirectDebitPaymentMode(accountConfig);
+	}
 	
 	
-	/**
-	 * Procédure permettant de vérifier que le mode de paiement par prélèvement est bien configuré dans la société
-	 * @return
-	 * 			Le mode de paiement par prélèvement
-	 * @throws AxelorException 
-	 */
-	public void checkDebitPaymentMode(Company company) throws AxelorException  {
+	public void checkMonthlyExportCompany(Company company) throws AxelorException  {
+
+		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 		
-		if(company.getDirectDebitPaymentMode() == null)  {
-			throw new AxelorException(String.format(
-					"%s :\n Erreur : Veuillez configurer un mode de paiement par prélèvement pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		
+		accountConfigService.getCustomerAccount(accountConfig);
+		accountConfigService.getScheduleDirectDebitJournal(accountConfig);
+		accountConfigService.getDirectDebitPaymentMode(accountConfig);
 	}
 	
 	
@@ -272,11 +252,11 @@ public class PaymentScheduleExportService {
 		
 		paymentScheduleLine.setStatus(statusVal);
 		
-		Account account;
+		AccountConfig accountConfig = company.getAccountConfig();
 		
-		this.setDebitNumber(pslList, paymentScheduleLine, company, company.getScheduleDirectDebitJournal());
+		this.setDebitNumber(pslList, paymentScheduleLine, company, accountConfig.getScheduleDirectDebitJournal());
 		
-		account = company.getCustomerAccount();
+		Account account = accountConfig.getCustomerAccount();
 			
 		LOG.debug("generateAllDeposit - psl.getInTaxAmount() : {}", paymentScheduleLine.getInTaxAmount());
 		
@@ -671,15 +651,16 @@ public class PaymentScheduleExportService {
 	 */
 	public Move createPaymentMove(Company company, MoveLine moveLine, PaymentMode paymentMode) throws AxelorException  {
 
-		LOG.debug("generateAllExportInvoice - Création de l'écriture");
+		LOG.debug("Create payment move");
 		
-		Move paymentMove = ms.createMove(company.getInvoiceDirectDebitJournal(), company, null, null, paymentMode, false);
+		Move paymentMove = ms.createMove(
+				company.getAccountConfig().getInvoiceDirectDebitJournal(), company, null, null, paymentMode, false);
 			
 		BigDecimal amountExported = moveLine.getAmountRemaining();
 		
 		this.createPaymentMoveLine(paymentMove, moveLine, 1);
 		
-		LOG.debug("generateAllExportInvoice - Création de la seconde ligne d'écriture");
+		LOG.debug("Create payment move line");
 		
 		Account paymentModeAccount = pms.getCompanyAccount(paymentMode, company);
 		
@@ -757,12 +738,7 @@ public class PaymentScheduleExportService {
 		
 		// Mise à jour du Numéro de prélèvement sur la facture
 		LOG.debug("Mise à jour du Numéro de prélèvement sur la facture");
-		String seqInvoice = sgs.getSequence(IAdministration.DEBIT,company,company.getInvoiceDirectDebitJournal(), false);
-		if(seqInvoice == null)  {
-			throw new AxelorException(String.format(
-							"%s :\n Erreur : Veuillez configurer une séquence Numéro de prélèvement pour la société %s et le journal %s",
-							GeneralService.getExceptionAccountingMsg(),company.getName(),company.getInvoiceDirectDebitJournal().getName()), IException.CONFIGURATION_ERROR);
-		}
+		String seqInvoice = this.getInvoiceDirectDebitSequence(company);
 		
 		if(this.hasOtherInvoice(mlList, moveLine))  {
 			DirectDebitManagement directDebitManagement = this.getDirectDebitManagement(mlList, moveLine);
@@ -778,6 +754,23 @@ public class PaymentScheduleExportService {
 		}
 		return invoice;
 	}
+	
+	
+	public String getInvoiceDirectDebitSequence(Company company) throws AxelorException  {
+		
+		Journal invoiceDirectDebitJournal = company.getAccountConfig().getInvoiceDirectDebitJournal();
+		
+		String seqInvoice = sgs.getSequence(IAdministration.DEBIT, company, invoiceDirectDebitJournal, false);
+		if(seqInvoice == null)  {
+			throw new AxelorException(String.format(
+							"%s :\n Erreur : Veuillez configurer une séquence Numéro de prélèvement pour la société %s et le journal %s",
+							GeneralService.getExceptionAccountingMsg(), company.getName(), invoiceDirectDebitJournal.getName()), IException.CONFIGURATION_ERROR);
+		}
+		
+		return seqInvoice;
+		
+	}
+	
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})

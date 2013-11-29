@@ -39,13 +39,13 @@ import com.axelor.apps.account.db.InterbankCodeLine;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Status;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
@@ -54,13 +54,16 @@ import com.google.inject.persist.Transactional;
 public class ChequeRejectionService {
 	
 	@Inject
-	private MoveService ms;
+	private MoveService moveService;
 	
 	@Inject
-	private MoveLineService mls;
+	private MoveLineService moveLineService;
 	
 	@Inject
-	private SequenceService sgs;
+	private SequenceService sequenceService;
+	
+	@Inject
+	private AccountConfigService accountConfigService;
 	
 	/**
 	 * procédure de validation du rejet de chèque
@@ -99,7 +102,7 @@ public class ChequeRejectionService {
 	public Move createChequeRejectionMove(ChequeRejection chequeRejection, Company company) throws AxelorException  {
 		this.testCompanyField(company);
 		
-		Journal journal = company.getRejectJournal();
+		Journal journal = company.getAccountConfig().getRejectJournal();
 
 		PaymentVoucher paymentVoucher = chequeRejection.getPaymentVoucher();
 		
@@ -114,7 +117,7 @@ public class ChequeRejectionService {
 		LocalDate rejectionDate = chequeRejection.getRejectionDate();
 		
 		// Move
-		Move move = ms.createMove(journal, company, null, partner, rejectionDate, null, false);
+		Move move = moveService.createMove(journal, company, null, partner, rejectionDate, null, false);
 		
 		int ref = 1;
 		
@@ -122,7 +125,7 @@ public class ChequeRejectionService {
 			
 			if(moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0)  {
 				// Debit MoveLine
-				MoveLine debitMoveLine = mls.createMoveLine(move, partner, moveLine.getAccount(), moveLine.getCredit(), true, false, rejectionDate, ref, null);
+				MoveLine debitMoveLine = moveLineService.createMoveLine(move, partner, moveLine.getAccount(), moveLine.getCredit(), true, false, rejectionDate, ref, null);
 				move.getMoveLineList().add(debitMoveLine);
 				debitMoveLine.setInterbankCodeLine(interbankCodeLine);
 				debitMoveLine.setDescription(description);
@@ -130,7 +133,7 @@ public class ChequeRejectionService {
 			}
 			else  {
 				// Credit MoveLine
-				MoveLine creditMoveLine = mls.createMoveLine(move, partner, moveLine.getAccount(), moveLine.getDebit(), false, false, rejectionDate, ref, null);
+				MoveLine creditMoveLine = moveLineService.createMoveLine(move, partner, moveLine.getAccount(), moveLine.getDebit(), false, false, rejectionDate, ref, null);
 				move.getMoveLineList().add(creditMoveLine);
 				creditMoveLine.setInterbankCodeLine(interbankCodeLine);
 				creditMoveLine.setDescription(description);
@@ -141,7 +144,7 @@ public class ChequeRejectionService {
 		
 		move.setRejectOk(true);
 		
-		ms.validateMove(move);
+		moveService.validateMove(move);
 		
 		return move;
 	}
@@ -154,10 +157,8 @@ public class ChequeRejectionService {
 	 * @throws AxelorException
 	 */
 	public void testCompanyField(Company company) throws AxelorException  {
-		if(company.getRejectJournal() == null)   {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un journal de rejet pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
-		}
+		
+		accountConfigService.getRejectJournal(accountConfigService.getAccountConfig(company));
 	}
 	
 	
@@ -169,7 +170,7 @@ public class ChequeRejectionService {
 	 * @throws AxelorException
 	 */
 	public void setSequence(ChequeRejection chequeRejection) throws AxelorException  {
-		String seq = sgs.getSequence(IAdministration.CHEQUE_REJECT, chequeRejection.getCompany(), false);
+		String seq = sequenceService.getSequence(IAdministration.CHEQUE_REJECT, chequeRejection.getCompany(), false);
 		if(seq == null)   {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer une séquence Rejet de chèque pour la société %s",
 					GeneralService.getExceptionAccountingMsg(),chequeRejection.getCompany().getName()), IException.CONFIGURATION_ERROR);

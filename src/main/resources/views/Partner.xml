@@ -155,7 +155,7 @@
 	
 	
 	<action-method name="action-create-accounting-situation" >
-		<call class="com.axelor.apps.base.web.PartnerController" method="createAccountingSituations"/>
+		<call class="com.axelor.apps.account.web.PartnerController" method="createAccountingSituations"/>
 	</action-method>
 	
 	</object-views>

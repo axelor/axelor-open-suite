@@ -39,12 +39,14 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.Reminder;
+import com.axelor.apps.account.service.AccountConfigService;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -66,6 +68,9 @@ public class ReminderService {
 	private ReminderActionService ras;
 	@Inject
 	private AccountCustomerService acs;
+	
+	@Inject
+	private AccountConfigService accountConfigService;
 
 	private LocalDate today;
 
@@ -73,6 +78,15 @@ public class ReminderService {
 	public ReminderService() {
 
 		this.today = GeneralService.getTodayDate();
+		
+	}
+	
+	
+	public void testCompanyField(Company company) throws AxelorException  {
+		
+		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+		
+		accountConfigService.getReminderConfigLineList(accountConfig);
 		
 	}
 	
@@ -206,13 +220,15 @@ public class ReminderService {
 
 		List<MoveLine> moveLineQuery = this.getMoveLine(partner, company);
 		
+		int mailTransitTime = company.getAccountConfig().getMailTransitTime();
+		
 		for(MoveLine moveLine : moveLineQuery)  {
 			if(moveLine.getMove()!=null && !moveLine.getMove().getIgnoreInReminderOk())  {
 				Move move = moveLine.getMove();
 				//facture exigibles non bloquée en relance et dont la date de facture + délai d'acheminement < date du jour
 				if(move.getInvoice()!=null && !move.getInvoice().getReminderBlockingOk() 
 						&& !move.getInvoice().getSchedulePaymentOk()
-						&& ((move.getInvoice().getInvoiceDate()).plusDays(company.getMailTransitTime())).isBefore(today))  {
+						&& ((move.getInvoice().getInvoiceDate()).plusDays(mailTransitTime)).isBefore(today))  {
 					if((moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) 
 							&& moveLine.getDueDate() != null
 							&&	(today.isAfter(moveLine.getDueDate())  || today.isEqual(moveLine.getDueDate())))  {

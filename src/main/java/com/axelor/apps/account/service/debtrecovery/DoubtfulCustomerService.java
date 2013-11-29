@@ -41,10 +41,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.service.AccountConfigService;
 import com.axelor.apps.account.service.MoveLineService;
 import com.axelor.apps.account.service.MoveService;
 import com.axelor.apps.account.service.ReconcileService;
@@ -55,7 +57,6 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserInfoService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -78,6 +79,9 @@ public class DoubtfulCustomerService {
 	@Inject
 	private UserInfoService uis;
 	
+	@Inject
+	private AccountConfigService accountConfigService;
+	
 	private LocalDate today;
 
 	@Inject
@@ -94,30 +98,14 @@ public class DoubtfulCustomerService {
 	 * @throws AxelorException
 	 */
 	public void testCompanyField(Company company) throws AxelorException  {
-		if(company.getDoubtfulCustomerAccount() == null)  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un compte client douteux pour la société %s",
-					GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		if(company.getSixMonthDebtPassReason() == null || company.getSixMonthDebtPassReason().isEmpty())  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un Motif de passage (créance de plus de six mois) pour la société %s",
-					GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		if(company.getThreeMonthDebtPassReason() == null || company.getThreeMonthDebtPassReason().isEmpty())  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un Motif de passage (créance de plus de trois mois) pour la société %s",
-					GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		if(company.getSixMonthDebtMonthNumber() == null)  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un nombre de mois pris en compte pour les créances de plus de six mois pour la société %s",
-					GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		if(company.getSixMonthDebtMonthNumber() == null)  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un nombre de mois pris en compte pour les créances de plus de trois mois pour la société %s",
-					GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		if(company.getMiscOperationJournal() == null)  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un journal des O.D. pour la société %s",
-					GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
-		}
+		
+		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+		
+		accountConfigService.getDoubtfulCustomerAccount(accountConfig);
+		accountConfigService.getMiscOperationJournal(accountConfig);
+		accountConfigService.getSixMonthDebtPassReason(accountConfig);
+		accountConfigService.getThreeMonthDebtPassReason(accountConfig);
+		
 	}
 	
 	
@@ -161,7 +149,7 @@ public class DoubtfulCustomerService {
 		BigDecimal totalAmountRemaining = BigDecimal.ZERO;
 		Company company = move.getCompany();
 		Partner partner = move.getPartner();
-		Move newMove = ms.createMove(company.getMiscOperationJournal(), company, move.getInvoice(), partner, move.getPaymentMode(), false);
+		Move newMove = ms.createMove(company.getAccountConfig().getMiscOperationJournal(), company, move.getInvoice(), partner, move.getPaymentMode(), false);
 
 		int ref = 1;
 		List<Reconcile> reconcileList = new ArrayList<Reconcile>();
@@ -232,7 +220,7 @@ public class DoubtfulCustomerService {
 		Company company = moveLine.getMove().getCompany();
 		Partner partner = moveLine.getPartner();
 		
-		Move newMove = ms.createMove(company.getMiscOperationJournal(), company, null, partner, moveLine.getMove().getPaymentMode(), false);
+		Move newMove = ms.createMove(company.getAccountConfig().getMiscOperationJournal(), company, null, partner, moveLine.getMove().getPaymentMode(), false);
 
 		List<Reconcile> reconcileList = new ArrayList<Reconcile>();
 
@@ -310,7 +298,7 @@ public class DoubtfulCustomerService {
 			invoice.setPartnerAccount(doubtfulCustomerAccount);
 			invoice.setDoubtfulCustomerOk(true);
 			// Recalcule du restant à payer de la facture
-			invoice.setInTaxTotalRemaining(ms.getInTaxTotalRemaining(invoice, doubtfulCustomerAccount));
+			invoice.setInTaxTotalRemaining(ms.getInTaxTotalRemaining(invoice));
 		}
 		return invoice;
 	}
@@ -360,12 +348,12 @@ public class DoubtfulCustomerService {
 		
 			//Créance de + 6 mois			
 			case 0 :
-				date = this.today.minusMonths(company.getSixMonthDebtMonthNumber());
+				date = this.today.minusMonths(company.getAccountConfig().getSixMonthDebtMonthNumber());
 				break;
 	
 			//Créance de + 3 mois
 			case 1 : 
-				date = this.today.minusMonths(company.getThreeMonthDebtMontsNumber());
+				date = this.today.minusMonths(company.getAccountConfig().getThreeMonthDebtMontsNumber());
 				break;
 				
 			default:
@@ -412,7 +400,7 @@ public class DoubtfulCustomerService {
 		
 			//Créance de + 6 mois			
 			case 0 :
-				date = this.today.minusMonths(company.getSixMonthDebtMonthNumber());
+				date = this.today.minusMonths(company.getAccountConfig().getSixMonthDebtMonthNumber());
 				moveLineList = MoveLine.all().filter("self.company = ?1 AND self.account.reconcileOk = 'true' " +
 						"AND self.invoiceReject IS NOT NULL AND self.amountRemaining > 0.00 AND self.debit > 0.00 AND self.dueDate < ?2 " +
 						"AND self.account != ?3",company, date, doubtfulCustomerAccount).fetch();
@@ -420,7 +408,7 @@ public class DoubtfulCustomerService {
 	
 			//Créance de + 3 mois
 			case 1 : 
-				date = this.today.minusMonths(company.getThreeMonthDebtMontsNumber());
+				date = this.today.minusMonths(company.getAccountConfig().getThreeMonthDebtMontsNumber());
 				moveLineList = MoveLine.all().filter("self.company = ?1 AND self.account.reconcileOk = 'true' " +
 						"AND self.invoiceReject IS NOT NULL AND self.amountRemaining > 0.00 AND self.debit > 0.00 AND self.dueDate < ?2 " +
 						"AND self.account != ?3",company, date, doubtfulCustomerAccount).fetch();

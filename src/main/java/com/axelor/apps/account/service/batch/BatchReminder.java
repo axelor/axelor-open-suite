@@ -38,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.service.debtrecovery.ReminderService;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Mail;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.MailService;
@@ -53,6 +54,8 @@ public class BatchReminder extends BatchStrategy {
 	protected int mailDone = 0;
 	protected int mailAnomaly = 0;
 	
+	private boolean stop = false;
+	
 	@Inject
 	public BatchReminder(ReminderService reminderService, MailService mailService) {
 		
@@ -61,12 +64,37 @@ public class BatchReminder extends BatchStrategy {
 
 
 	@Override
+	protected void start() throws IllegalArgumentException, IllegalAccessException {
+		
+		super.start();
+		
+		Company company = batch.getAccountingBatch().getCompany();
+				
+		try {
+			
+			reminderService.testCompanyField(company);
+			
+		} catch (AxelorException e) {
+			
+			TraceBackService.trace(new AxelorException("", e, e.getcategory()), IException.REMINDER, batch.getId());
+			incrementAnomaly();
+			stop = true;
+		}
+		
+		checkPoint();
+
+	}
+	
+	
+	@Override
 	protected void process() {
 		
-		this.reminderPartner();
+		if(!stop)  {
+			
+			this.reminderPartner();
 		
-		this.generateMail();
-		
+			this.generateMail();
+		}
 	}
 	
 	
@@ -103,9 +131,7 @@ public class BatchReminder extends BatchStrategy {
 				if (i % 10 == 0) { JPA.clear(); }
 	
 			}
-
 		}
-		
 	}
 	
 	

@@ -119,7 +119,7 @@ public class PayboxController {
                 
                 List<String> varList = new ArrayList<String>();
                 
-                String retourVars = paymentVoucher.getCompany().getPayboxRetour();
+                String retourVars = paymentVoucher.getCompany().getAccountConfig().getPayboxRetour();
                 String[] retours = retourVars.split(";");
                 
                 varList.add("idPV="+idPaymentVoucher);

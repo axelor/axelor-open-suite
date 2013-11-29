@@ -38,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerService;
@@ -91,9 +92,11 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
 		if(!stop)  {
 			Company company = batch.getAccountingBatch().getCompany();
 			
-			Account doubtfulCustomerAccount = company.getDoubtfulCustomerAccount();
-			String sixMonthDebtPassReason = company.getSixMonthDebtPassReason();
-			String threeMonthDebtPassReason = company.getThreeMonthDebtPassReason();
+			AccountConfig accountConfig = company.getAccountConfig();
+			
+			Account doubtfulCustomerAccount = accountConfig.getDoubtfulCustomerAccount();
+			String sixMonthDebtPassReason = accountConfig.getSixMonthDebtPassReason();
+			String threeMonthDebtPassReason = accountConfig.getThreeMonthDebtPassReason();
 		
 			// FACTURES
 			List<Move> moveList = doubtfulCustomerService.getMove(0, doubtfulCustomerAccount, company);

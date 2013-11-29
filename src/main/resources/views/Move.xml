@@ -17,7 +17,7 @@
     onNew="action-move-attrs-status,default-move-record,action-move-attrs-hidden-get-info-from-first-move-line-ok,action-move-attrs-hidden-date,action-move-method-get-period">
     	<notebook colSpan="4">
     	<page title="Informations" colSpan="4">
-	        <group title="Move header" colSpan="4">
+	        <group title="Move header" colSpan="4" readonlyIf="state = 'validated'">
 	            <field name="reference"/>
 	            <field name="date" onChange="action-move-method-get-period"/>
 	            <field name="company" widget="SuggestBox" onChange="action-move-method-get-period"/>
@@ -29,51 +29,51 @@
 	            <field name="paymentMode"/>
 	            <field name="paymentVoucher"/>
 	            <field name="getInfoFromFirstMoveLineOk"/>
-	            <field name="moveLineList" colSpan="4">
-	            	<grid title="Move lines">
-				        <field name="name"/>
-				        <field name="date"/>
-				        <field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form"/>
-				        <field name="account" onSelect="action-move-line-attrs-domain-account"/>
-				        <field name="move.company"/>
-				        <field name="debit"/>
-				        <field name="credit"/>
-				        <field name="amountRemaining"/>
-				    </grid>
-	            	<form title="Move line" onNew="action-move-line-attrs-collapse-irrecoverable-group,action-move-line-record-get-move-informations,action-move-line-record-get-first-move-line-informations,action-move-line-attrs-hidden-reconcileLists">
-					    <notebook colSpan="4">
-					    	<page title="Informations" colSpan="4">
-						        <field name="name"/>
-						        <break/>
-						        <field name="date"/>
-						        <field name="dueDate"/>
-						        <field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form"/>
-						        <break/>
-						        <field name="account" onSelect="action-move-line-attrs-domain-account"/>
-				    		    <break/>
-						        <field name="debit" onChange="action-move-line-debit-credit-validate,action-move-line-debit-credit-clean"/>
-						        <field name="credit" onChange="action-move-line-debit-credit-validate,action-move-line-debit-credit-clean"/>
-						        <field name="amountPaid"/>
-						        <field name="amountRemaining"/>
-						        <field name="interbankCodeLine"/>
-						        <field name="description"/>
-						        <group name="reconcileLists" title="Reconcile list" colSpan="4" cols="4">
-						            <field name="reconcileList1" colSpan="4"/>
-						            <field name="reconcileList2" colSpan="4"/>
-						        </group>						        
-						        <break/>
-						    </page>
-						    <page title="Analytics">
-						    	<field name="analyticAccountSet" colSpan="4"/>
-						    </page>
-						    <page title="Others" colSpan="4">
-						        <field name="exportedDirectDebitOk"/>
-						    </page>
-						</notebook>	
-	            	</form>
+	         </group>
+             <field name="moveLineList" colSpan="4" readonlyIf="state = 'validated'">
+            	<grid title="Move lines">
+			        <field name="name"/>
+			        <field name="date"/>
+			        <field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form"/>
+			        <field name="account" onSelect="action-move-line-attrs-domain-account"/>
+			        <field name="move.company"/>
+			        <field name="debit"/>
+			        <field name="credit"/>
+			        <field name="amountRemaining"/>
+			    </grid>
+            	<form title="Move line" onNew="action-move-line-attrs-collapse-irrecoverable-group,action-move-line-record-get-move-informations,action-move-line-record-get-first-move-line-informations,action-move-line-attrs-hidden-reconcileLists">
+				    <notebook colSpan="4">
+				    	<page title="Informations" colSpan="4">
+					        <field name="name"/>
+					        <break/>
+					        <field name="date"/>
+					        <field name="dueDate"/>
+					        <field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form"/>
+					        <break/>
+					        <field name="account" onSelect="action-move-line-attrs-domain-account"/>
+			    		    <break/>
+					        <field name="debit" onChange="action-move-line-debit-credit-validate,action-move-line-debit-credit-clean"/>
+					        <field name="credit" onChange="action-move-line-debit-credit-validate,action-move-line-debit-credit-clean"/>
+					        <field name="amountPaid"/>
+					        <field name="amountRemaining"/>
+					        <field name="interbankCodeLine"/>
+					        <field name="description"/>
+					        <group name="reconcileLists" title="Reconcile list" colSpan="4" cols="4">
+					            <field name="reconcileList1" colSpan="4"/>
+					            <field name="reconcileList2" colSpan="4"/>
+					        </group>						        
+					        <break/>
+					    </page>
+					    <page title="Analytics">
+					    	<field name="analyticAccountSet" colSpan="4"/>
+					    </page>
+					    <page title="Others" colSpan="4">
+					        <field name="exportedDirectDebitOk"/>
+					    </page>
+					</notebook>	
+            	</form>
 	            	
-	            </field>
-	        </group>
+            </field>
 	        <group title="Actions" colSpan="4" cols="6">
 	            <field name="state" readonly="true"/>
 	            <button name="validate" title="Validate" colSpan="2" onClick="save,action-move-method-validate,action-move-attrs-status,save"/>

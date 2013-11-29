@@ -45,6 +45,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticAccount;
+import com.axelor.apps.account.db.IAccount;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.Move;
@@ -69,24 +70,17 @@ public class MoveLineExportService {
 	private DateTime todayTime;
 	
 	@Inject
-	private MoveLineReportService mlrs;
+	private MoveLineReportService moveLineReportService;
 	
 	@Inject
-	private SequenceService sgs;
+	private SequenceService sequenceService;
+	
+	@Inject
+	private AccountConfigService accountConfigService;
 	
 	@Inject
 	public MoveLineExportService() {
 		todayTime = GeneralService.getTodayDateTime();
-	}
-	
-	public String getFilePath(Company company) throws AxelorException{
-		if(company.getExportPath()!=null) {
-			return company.getExportPath();
-		}
-		else  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un Chemin Fichier Exporté (si -> AGRESSO) pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
-		}
 	}
 	
 	
@@ -183,7 +177,7 @@ public class MoveLineExportService {
 	
 	public String getSaleExportNumber(Company company) throws AxelorException  {
 		
-		String exportNumber = sgs.getSequence(IAdministration.SALES_INTERFACE, company, false);
+		String exportNumber = sequenceService.getSequence(IAdministration.SALES_INTERFACE, company, false);
 		if(exportNumber == null)  {  
 			throw new AxelorException(String.format("%s :\n Erreur : Veuillez configurer une séquence Interface Vente pour la société %s",
 					GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
@@ -196,7 +190,7 @@ public class MoveLineExportService {
 	
 	public String getRefundExportNumber(Company company) throws AxelorException  {
 		
-		String exportNumber = sgs.getSequence(IAdministration.REFUND_INTERFACE, company, false);
+		String exportNumber = sequenceService.getSequence(IAdministration.REFUND_INTERFACE, company, false);
 		if(exportNumber == null)  {  
 			throw new AxelorException(String.format("%s :\n Erreur : Veuillez configurer une séquence Interface Avoir pour la société %s",
 					GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
@@ -209,7 +203,7 @@ public class MoveLineExportService {
 	
 	public String getTreasuryExportNumber(Company company) throws AxelorException  {
 		
-		String exportNumber = sgs.getSequence(IAdministration.TREASURY_INTERFACE, company, false);
+		String exportNumber = sequenceService.getSequence(IAdministration.TREASURY_INTERFACE, company, false);
 		if(exportNumber == null)  {  
 			throw new AxelorException(String.format("%s :\n Erreur : Veuillez configurer une séquence Interface Trésorerie pour la société %s",
 					GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
@@ -222,7 +216,7 @@ public class MoveLineExportService {
 	
 	public String getPurchaseExportNumber(Company company) throws AxelorException  {
 	
-		String exportNumber = sgs.getSequence(IAdministration.PURCHASE_INTERFACE, company, false);
+		String exportNumber = sequenceService.getSequence(IAdministration.PURCHASE_INTERFACE, company, false);
 		if(exportNumber == null)  {  
 			throw new AxelorException(String.format("%s :\n Erreur : Veuillez configurer une séquence Interface Achat pour la société %s",
 					GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
@@ -266,7 +260,7 @@ public class MoveLineExportService {
 		Company company = moveLineReport.getCompany();
 		
 		String dateQueryStr = " WHERE " + String.format("company = %s", company.getId());
-		JournalType journalType = mlrs.getJournalType(moveLineReport);
+		JournalType journalType = moveLineReportService.getJournalType(moveLineReport);
 		if(moveLineReport.getJournal()!=null) {
 			dateQueryStr += " AND " + String.format("journal = %s", moveLineReport.getJournal().getId());
 		}
@@ -374,7 +368,7 @@ public class MoveLineExportService {
 		}
 					
 		String fileName = "entete"+todayTime.toString("YYYYMMddHHmmss")+"ventes.dat";			
-		String filePath = this.getFilePath(company);
+		String filePath = accountConfigService.getExportPath(accountConfigService.getAccountConfig(company));
 		new File(filePath).mkdirs();
 		
 		LOG.debug("Full path to export : {}{}" , filePath, fileName);
@@ -418,7 +412,7 @@ public class MoveLineExportService {
 		Company company = moveLineReport.getCompany();
 		
 		String dateQueryStr = " WHERE " + String.format("company = %s", company.getId());
-		JournalType journalType = mlrs.getJournalType(moveLineReport);
+		JournalType journalType = moveLineReportService.getJournalType(moveLineReport);
 		if(moveLineReport.getJournal()!=null) {
 			dateQueryStr += " AND " + String.format("journal = %s", moveLineReport.getJournal().getId());
 		}
@@ -526,7 +520,7 @@ public class MoveLineExportService {
 		}
 					
 		String fileName = "entete"+todayTime.toString("YYYYMMddHHmmss")+"avoirs.dat";
-		String filePath = this.getFilePath(company);
+		String filePath = accountConfigService.getExportPath(accountConfigService.getAccountConfig(company));
 		new File(filePath).mkdirs();
 		
 		LOG.debug("Full path to export : {}{}" , filePath, fileName);
@@ -569,7 +563,7 @@ public class MoveLineExportService {
 		Company company = moveLineReport.getCompany();
 		
 		String dateQueryStr = " WHERE " + String.format("company = %s", company.getId());
-		JournalType journalType = mlrs.getJournalType(moveLineReport);
+		JournalType journalType = moveLineReportService.getJournalType(moveLineReport);
 		if(moveLineReport.getJournal()!=null) {
 			dateQueryStr += " AND " + String.format("journal = %s", moveLineReport.getJournal().getId());
 		}
@@ -677,7 +671,7 @@ public class MoveLineExportService {
 		}
 					
 		String fileName = "entete"+todayTime.toString("YYYYMMddHHmmss")+"tresorerie.dat";
-		String filePath = this.getFilePath(company);
+		String filePath = accountConfigService.getExportPath(accountConfigService.getAccountConfig(company));
 		new File(filePath).mkdirs();
 		
 		LOG.debug("Full path to export : {}{}" , filePath, fileName);
@@ -718,7 +712,7 @@ public class MoveLineExportService {
 		
 		Company company = moveLineReport.getCompany();
 		String dateQueryStr = " WHERE " + String.format("company = %s", company.getId());
-		JournalType journalType = mlrs.getJournalType(moveLineReport);
+		JournalType journalType = moveLineReportService.getJournalType(moveLineReport);
 		if(moveLineReport.getJournal() != null) {
 			dateQueryStr += " AND " + String.format("journal = %s", moveLineReport.getJournal().getId());
 		}
@@ -848,7 +842,7 @@ public class MoveLineExportService {
 		}
 					
 		String fileName = "entete"+todayTime.toString("YYYYMMddHHmmss")+"achats.dat";
-		String filePath = this.getFilePath(company);
+		String filePath = accountConfigService.getExportPath(accountConfigService.getAccountConfig(company));
 		new File(filePath).mkdirs();
 		
 		LOG.debug("Full path to export : {}{}" , filePath, fileName);
@@ -888,7 +882,7 @@ public class MoveLineExportService {
 		}
 		else  {
 			moveLineQueryStr += " AND ";
-			moveLineQueryStr += String.format("move.journal.type = %s", mlrs.getJournalType(moveLineReport).getId());  
+			moveLineQueryStr += String.format("move.journal.type = %s", moveLineReportService.getJournalType(moveLineReport).getId());  
 		}
 		
 		if(moveLineReport.getPeriod() != null)	{
@@ -1035,7 +1029,7 @@ public class MoveLineExportService {
 			}
 		}
 		
-		String filePath = this.getFilePath(company);
+		String filePath = accountConfigService.getExportPath(accountConfigService.getAccountConfig(company));
 		new File(filePath).mkdirs();
 		
 		LOG.debug("Full path to export : {}{}" , filePath, fileName);
@@ -1186,34 +1180,37 @@ public class MoveLineExportService {
 		return header.split(";");
 		
 	}
-	
+
 	
 	public void exportMoveLine(MoveLineReport moveLineReport) throws AxelorException, IOException  {
 		
-		mlrs.setStatus(moveLineReport);
+		moveLineReportService.setStatus(moveLineReport);
 		
+		switch (moveLineReport.getTypeSelect()) {
+		case IAccount.EXPORT_SALES:
 			
-		if(moveLineReport.getTypeSelect()==6){
+			this.exportMoveLineTypeSelect6(moveLineReport, false);
+			break;
 			
-			if(moveLineReport.getCompany().getExportPath()!=null) { this.exportMoveLineTypeSelect6(moveLineReport, false); }
+		case IAccount.EXPORT_REFUNDS:
 			
+			this.exportMoveLineTypeSelect7(moveLineReport, false);
+			break;
+			
+		case IAccount.EXPORT_TREASURY:
+			
+			this.exportMoveLineTypeSelect8(moveLineReport, false);
+			break;
+			
+		case IAccount.EXPORT_PURCHASES:
+			
+			this.exportMoveLineTypeSelect9(moveLineReport, false);
+			break;
+
+		default:
+			break;
 		}
-		else if(moveLineReport.getTypeSelect()==7){
 			
-			if(moveLineReport.getCompany().getExportPath()!=null) { this.exportMoveLineTypeSelect7(moveLineReport, false); }
-			
-		}
-		else if(moveLineReport.getTypeSelect()==8){
-			
-			if(moveLineReport.getCompany().getExportPath()!=null) { this.exportMoveLineTypeSelect8(moveLineReport, false); }
-			
-		}
-		else if(moveLineReport.getTypeSelect()==9){
-			
-			if(moveLineReport.getCompany().getExportPath()!=null) { this.exportMoveLineTypeSelect9(moveLineReport, false); }
-			
-		}
-		
 	}
 	
 	
@@ -1227,11 +1224,11 @@ public class MoveLineExportService {
 		moveLineReport.setDateTo(endDate);
 		moveLineReport.setStatus(Status.all().filter("self.code = 'dra'").fetchOne());
 		moveLineReport.setDate(todayTime.toLocalDate());
-		moveLineReport.setRef(mlrs.getSequence(moveLineReport));
+		moveLineReport.setRef(moveLineReportService.getSequence(moveLineReport));
 		
-		String queryFilter = mlrs.getMoveLineList(moveLineReport);
-		BigDecimal debitBalance = mlrs.getDebitBalance(queryFilter);
-		BigDecimal creditBalance = mlrs.getCreditBalance(queryFilter);
+		String queryFilter = moveLineReportService.getMoveLineList(moveLineReport);
+		BigDecimal debitBalance = moveLineReportService.getDebitBalance(queryFilter);
+		BigDecimal creditBalance = moveLineReportService.getCreditBalance(queryFilter);
 		
 		moveLineReport.setTotalDebit(debitBalance);
 		moveLineReport.setTotalCredit(creditBalance);

@@ -168,11 +168,6 @@ public class MoveLineReportController {
 		MoveLineReport moveLineReport = request.getContext().asType(MoveLineReport.class);
 		moveLineReport = MoveLineReport.find(moveLineReport.getId());		
 		
-		if(moveLineReport.getCompany().getExportPath() == null) {
-			response.setFlash("Veuillez configurer le chemin où le fichier exporté devra être stocké pour la société "+moveLineReport.getCompany().getName());
-			return;
-		}
-
 		try {
 			switch(moveLineReport.getTypeSelect()) {
 			
@@ -212,11 +207,9 @@ public class MoveLineReportController {
 			}
 
 			LOG.debug("Type selected : {}" , moveLineReport.getTypeSelect());
-			String msgExport = "Veuillez configurer le chemin où le fichier exporté devra être stocké pour la société "+moveLineReport.getCompany().getName();
 
 			MoveLineReportService moveLineReportService = moveLineReportProvider.get();
 			
-
 			if (moveLineReport.getRef() == null) {
 
 				String seq = moveLineReportService.getSequence(moveLineReport);
@@ -227,10 +220,6 @@ public class MoveLineReportController {
 
 			if(moveLineReport.getTypeSelect() >= 6 && moveLineReport.getTypeSelect() <= 9) {
 				
-				if(moveLineReport.getCompany().getExportPath() == null) {
-					response.setFlash(msgExport);
-					return;
-				}
 				MoveLineExportService moveLineExportService = moveLineExportProvider.get();
 
 				switch(moveLineReport.getTypeSelect()) {

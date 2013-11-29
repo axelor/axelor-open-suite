@@ -51,6 +51,7 @@ import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.service.AccountConfigService;
 import com.axelor.apps.account.service.MoveLineService;
 import com.axelor.apps.account.service.MoveService;
 import com.axelor.apps.account.service.PaymentScheduleService;
@@ -98,6 +99,9 @@ public class PaymentVoucherService  {
 	
 	@Inject
 	private CurrencyService cs;
+	
+	@Inject
+	private AccountConfigService accountConfigService;
 
 	private DateTime todayTime;
 
@@ -111,7 +115,7 @@ public class PaymentVoucherService  {
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public PaymentVoucher createPaymentVoucherIPO(Invoice invoice, DateTime dateTime, BigDecimal amount, PaymentMode paymentMode) throws AxelorException  {
-		MoveLine customerMoveLine = ms.getCustomerMoveLine(invoice, invoice.getRejectMoveLine() != null);
+		MoveLine customerMoveLine = ms.getCustomerMoveLineByQuery(invoice);
 		
 		if (LOG.isDebugEnabled())  {  LOG.debug("Création d'une saisie paiement par TIP ou TIP chèque - facture : {}",invoice.getInvoiceId());  }
 		if (LOG.isDebugEnabled())  {  LOG.debug("Création d'une saisie paiement par TIP ou TIP chèque - mode de paiement : {}",paymentMode.getCode());  }
@@ -772,7 +776,7 @@ public class PaymentVoucherService  {
 			if (paymentVoucher.getPaidAmount().compareTo(paidLineTotal) > 0){
 				BigDecimal remainingPaidAmount = paymentVoucher.getRemainingAmount();
 				
-				moveLine = mls.createMoveLine(move,paymentVoucher.getPartner(),company.getCustomerAccount(),
+				moveLine = mls.createMoveLine(move,paymentVoucher.getPartner(), company.getAccountConfig().getCustomerAccount(),
 						remainingPaidAmount,!isDebitToPay, false, paymentDate, moveLineNo++, null);
 				move.getMoveLineList().add(moveLine);
 				
@@ -854,10 +858,7 @@ public class PaymentVoucherService  {
 			throw new AxelorException(String.format("%s :\n Aucune ligne à payer.", GeneralService.getExceptionAccountingMsg()), IException.INCONSISTENCY);
 		}	
 		
-		if (company.getCustomerAccount() == null)  {
-			throw new AxelorException(String.format("%s :\n Veuillez paramétrer un compte client dans la société %s.", 
-					GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
-		}
+		accountConfigService.getCustomerAccount(accountConfigService.getAccountConfig(company));
 		
 		if(journal == null || paymentModeAccount == null)  {
 			throw new AxelorException(String.format("%s :\n Veuillez renseigner un journal et un compte de trésorerie dans le mode de règlement.", 

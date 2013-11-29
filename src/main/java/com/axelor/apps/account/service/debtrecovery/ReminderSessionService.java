@@ -82,7 +82,7 @@ public class ReminderSessionService {
 		AccountingSituation accountingSituation = reminder.getAccountingSituation();
 		Company company = accountingSituation.getCompany();
 		Partner partner = accountingSituation.getPartner();
-		List<ReminderConfigLine> reminderConfigLines = company.getReminderConfigLineList();
+		List<ReminderConfigLine> reminderConfigLines = company.getAccountConfig().getReminderConfigLineList();
 			
 		for(ReminderConfigLine reminderConfigLine : reminderConfigLines)  {
 			if(reminderConfigLine.getPartnerCategory().equals(partner.getPartnerCategory()))  {

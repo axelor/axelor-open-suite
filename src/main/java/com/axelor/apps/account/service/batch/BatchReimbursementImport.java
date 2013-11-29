@@ -40,6 +40,7 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reimbursement;
@@ -97,10 +98,12 @@ public class BatchReimbursementImport extends BatchStrategy {
 			
 			company = Company.find(company.getId());
 			
+			AccountConfig accountConfig = company.getAccountConfig();
+			
 			Map<List<String[]>,String> data = null;
 			
 			try  {
-				data = rejectImportService.getCFONBFileByLot(company.getReimbursementImportFolderPathCFONB(), company.getTempReimbImportFolderPathCFONB(),company, 0);
+				data = rejectImportService.getCFONBFileByLot(accountConfig.getReimbursementImportFolderPathCFONB(), accountConfig.getTempReimbImportFolderPathCFONB(),company, 0);
 
 				
 			} catch (AxelorException e) {

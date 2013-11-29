@@ -44,9 +44,11 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.DirectDebitManagement;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.Reimbursement;
@@ -54,17 +56,20 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.apps.tool.file.FileTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.google.inject.Inject;
 
 public class CfonbService {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(CfonbService.class);
 	
 	private List<String> importFile;
+	
+	@Inject
+	private AccountConfigService accountConfigService;
 	
 	/****************************************  Export CFONB  *****************************************************/
 	
@@ -101,7 +106,7 @@ public class CfonbService {
 		// Mise en majuscule des enregistrement
 		cFONB = this.toUpperCase(cFONB);
 		
-		this.createCFONBFile(cFONB, dateTime, company.getReimbursementExportFolderPathCFONB(), "virement");
+		this.createCFONBFile(cFONB, dateTime, company.getAccountConfig().getReimbursementExportFolderPathCFONB(), "virement");
 	}
 	
 	/**
@@ -148,7 +153,7 @@ public class CfonbService {
 		// Mise en majuscule des enregistrement
 		cFONB = this.toUpperCase(cFONB);
 		
-		this.createCFONBFile(cFONB, processingDateTime, company.getPaymentScheduleExportFolderPathCFONB(), "prelevement");
+		this.createCFONBFile(cFONB, processingDateTime, company.getAccountConfig().getPaymentScheduleExportFolderPathCFONB(), "prelevement");
 	}
 	
 	
@@ -201,7 +206,7 @@ public class CfonbService {
 		// Mise en majuscule des enregistrement
 		cFONB = this.toUpperCase(cFONB);
 		
-		this.createCFONBFile(cFONB, processingDateTime, company.getPaymentScheduleExportFolderPathCFONB(), "prelevement");
+		this.createCFONBFile(cFONB, processingDateTime, company.getAccountConfig().getPaymentScheduleExportFolderPathCFONB(), "prelevement");
 	}
 	
 	
@@ -274,7 +279,7 @@ public class CfonbService {
 		// Mise en majuscule des enregistrement
 		cFONB = this.toUpperCase(cFONB);
 		
-		this.createCFONBFile(cFONB, processingDateTime, company.getPaymentScheduleExportFolderPathCFONB(), "prelevement");
+		this.createCFONBFile(cFONB, processingDateTime, company.getAccountConfig().getPaymentScheduleExportFolderPathCFONB(), "prelevement");
 	}
 	
 	
@@ -329,15 +334,17 @@ public class CfonbService {
 		String date = ddmmFormat.format(dateTime.toDate());
 		date += String.format("%s", StringTool.truncLeft(String.format("%s",dateTime.getYear()), 1));
 		
+		AccountConfig accountConfig = company.getAccountConfig();
+		
 		// Récupération des valeurs
-		String a = company.getSenderRecordCodeExportCFONB();  		// Code enregistrement
-		String b1 = company.getTransferOperationCodeExportCFONB();	// Code opération
+		String a = accountConfig.getSenderRecordCodeExportCFONB();  		// Code enregistrement
+		String b1 = accountConfig.getTransferOperationCodeExportCFONB();	// Code opération
 		String b2 = "";												// Zone réservée
-		String b3 = company.getSenderNumExportCFONB();				// Numéro d'émetteur
+		String b3 = accountConfig.getSenderNumExportCFONB();				// Numéro d'émetteur
 		String c1One = "";											// Code CCD
 		String c1Two = "";											// Zone réservée	
 		String c1Three = date;										// Date d'échéance
-		String c2 = company.getSenderNameCodeExportCFONB();			// Nom/Raison sociale du donneur d'ordre
+		String c2 = accountConfig.getSenderNameCodeExportCFONB();			// Nom/Raison sociale du donneur d'ordre
 		String d1One = "";											// Référence de la remise
 		String d1Two = "";											// Zone réservée
 		String d2One = "";											// Zone réservée
@@ -399,14 +406,16 @@ public class CfonbService {
 		String date = ddmmFormat.format(localDate.toDateTimeAtCurrentTime().toDate());
 		date += String.format("%s", StringTool.truncLeft(String.format("%s",localDate.getYear()), 1));
 		
+		AccountConfig accountConfig = company.getAccountConfig();
+		
 		// Récupération des valeurs
-		String a = company.getSenderRecordCodeExportCFONB();  			// Code enregistrement
-		String b1 = company.getDirectDebitOperationCodeExportCFONB();	// Code opération
+		String a = accountConfig.getSenderRecordCodeExportCFONB();  			// Code enregistrement
+		String b1 = accountConfig.getDirectDebitOperationCodeExportCFONB();	// Code opération
 		String b2 = "";													// Zone réservée
-		String b3 = company.getSenderNumExportCFONB();					// Numéro d'émetteur
+		String b3 = accountConfig.getSenderNumExportCFONB();					// Numéro d'émetteur
 		String c1One = "";												// Zone réservée
 		String c1Two = date;											// Date d'échéance	
-		String c2 = company.getSenderNameCodeExportCFONB();				// Nom/Raison sociale du donneur d'ordre
+		String c2 = accountConfig.getSenderNameCodeExportCFONB();				// Nom/Raison sociale du donneur d'ordre
 		String d1One = "";												// Référence de la remise
 		String d1Two = "";												// Zone réservée
 		String d2 = "";													// Zone réservée
@@ -470,7 +479,7 @@ public class CfonbService {
 		
 		String ref = reimbursement.getRef();									// Référence
 		String partner = this.getPayeurPartnerName(reimbursement.getPartner());	// Nom/Raison sociale du bénéficiaire
-		String operationCode = company.getTransferOperationCodeExportCFONB();	// Code opération
+		String operationCode = company.getAccountConfig().getTransferOperationCodeExportCFONB();	// Code opération
 
 		return this.createRecipientCFONB(company, amount, ref, partner, bankDetails, operationCode);
 	}
@@ -505,7 +514,7 @@ public class CfonbService {
 			
 		String ref = paymentScheduleLine.getDebitNumber();							// Référence
 		String partnerName = this.getPayeurPartnerName(partner);					// Nom/Raison sociale du débiteur
-		String operationCode = company.getDirectDebitOperationCodeExportCFONB();	// Code opération
+		String operationCode = company.getAccountConfig().getDirectDebitOperationCodeExportCFONB();	// Code opération
 
 		return this.createRecipientCFONB(company, amount, ref, partnerName, bankDetails, operationCode);
 	}
@@ -554,7 +563,7 @@ public class CfonbService {
  
 		String ref = directDebitManagement.getDebitNumber();						// Référence
 
-		String operationCode = company.getDirectDebitOperationCodeExportCFONB();	// Code opération
+		String operationCode = company.getAccountConfig().getDirectDebitOperationCodeExportCFONB();	// Code opération
 
 		return this.createRecipientCFONB(company, amount, ref, partnerName, bankDetails, operationCode);
 	}
@@ -607,7 +616,7 @@ public class CfonbService {
 		
 		String ref = invoice.getDebitNumber();										// Référence
 		String partnerName = this.getPayeurPartnerName(partner);					// Nom/Raison sociale du débiteur
-		String operationCode = company.getDirectDebitOperationCodeExportCFONB();	// Code opération
+		String operationCode = company.getAccountConfig().getDirectDebitOperationCodeExportCFONB();	// Code opération
 
 		return this.createRecipientCFONB(company, amount, ref, partnerName, bankDetails, operationCode);
 	}
@@ -639,11 +648,13 @@ public class CfonbService {
 		
 		String amountFixed = amount.setScale(2).toString().replace(".","");
 
+		AccountConfig accountConfig = company.getAccountConfig();
+		
 		// Récupération des valeurs
-		String a = company.getRecipientRecordCodeExportCFONB(); // Code enregistrement
+		String a = accountConfig.getRecipientRecordCodeExportCFONB(); // Code enregistrement
 		String b1 = operationCode;								// Code opération
 		String b2 = "";											// Zone réservée
-		String b3 = company.getSenderNumExportCFONB();			// Numéro d'émetteur
+		String b3 = accountConfig.getSenderNumExportCFONB();			// Numéro d'émetteur
 		String c1 = ref;										// Référence
 		String c2 = partner;									// Nom/Raison sociale du bénéficiaire
 		String d1 = bankDetails.getBankAddress();				// Domiciliation
@@ -688,7 +699,7 @@ public class CfonbService {
 	public String createReimbursementTotalCFONB(Company company, BigDecimal amount)  {
 		
 		// Code opération
-		String operationCode = company.getTransferOperationCodeExportCFONB();	
+		String operationCode = company.getAccountConfig().getTransferOperationCodeExportCFONB();	
 		
 		return this.createTotalCFONB(company, amount, operationCode);
 	}	
@@ -706,7 +717,7 @@ public class CfonbService {
 	public String createPaymentScheduleTotalCFONB(Company company, BigDecimal amount)  {
 		
 		// Code opération
-		String operationCode = company.getDirectDebitOperationCodeExportCFONB();	
+		String operationCode = company.getAccountConfig().getDirectDebitOperationCodeExportCFONB();	
 		
 		return this.createTotalCFONB(company, amount, operationCode);
 	}
@@ -731,11 +742,13 @@ public class CfonbService {
 	public String createTotalCFONB(Company company, BigDecimal amount, String operationCode)  {
 		String totalAmount = amount.setScale(2).toString().replace(".","");
 		
+		AccountConfig accountConfig = company.getAccountConfig();
+		
 		// Récupération des valeurs
-		String a = company.getTotalRecordCodeExportCFONB();  	// Code enregistrement
+		String a = accountConfig.getTotalRecordCodeExportCFONB();  	// Code enregistrement
 		String b1 = operationCode;								// Code opération
 		String b2 = "";											// Zone réservée
-		String b3 = company.getSenderNumExportCFONB();			// Numéro d'émetteur
+		String b3 = accountConfig.getSenderNumExportCFONB();			// Numéro d'émetteur
 		String c1 = "";											// Zone réservée
 		String c2 = "";											// Zone réservée
 		String d1 = "";											// Zone réservée
@@ -1032,44 +1045,19 @@ public class CfonbService {
 	 * @throws AxelorException
 	 */
 	public void testCompanyExportCFONBField(Company company) throws AxelorException  {
-		if(company.getSenderRecordCodeExportCFONB() == null || company.getSenderRecordCodeExportCFONB().isEmpty())  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un Code enregistrement émetteur CFONB pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		if(company.getSenderNumExportCFONB() == null || company.getSenderNumExportCFONB().isEmpty()) {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un Numéro d'émetteur CFONB pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		if(company.getSenderNameCodeExportCFONB() == null || company.getSenderNameCodeExportCFONB().isEmpty()) {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un Nom/Raison sociale émetteur CFONB pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		if(company.getRecipientRecordCodeExportCFONB() == null || company.getRecipientRecordCodeExportCFONB().isEmpty()) {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un Code enregistrement destinataire CFONB pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		if(company.getTotalRecordCodeExportCFONB() == null || company.getTotalRecordCodeExportCFONB().isEmpty()) {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un Code enregistrement total CFONB pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		if(company.getTransferOperationCodeExportCFONB() == null || company.getTransferOperationCodeExportCFONB().isEmpty()) {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un Code opération Virement CFONB pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		if(company.getDirectDebitOperationCodeExportCFONB() == null || company.getDirectDebitOperationCodeExportCFONB().isEmpty()) {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un Code opération Prélèvement CFONB pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
-		}
 		
+		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 		
-		if(company.getReimbursementExportFolderPathCFONB() == null || company.getReimbursementExportFolderPathCFONB().isEmpty()) {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un Dossier d'export des remboursement au format CFONB pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		if(company.getPaymentScheduleExportFolderPathCFONB() == null  || company.getPaymentScheduleExportFolderPathCFONB().isEmpty()) {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un Dossier d'export des prélèvements au format CFONB pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
-		}
+		accountConfigService.getSenderRecordCodeExportCFONB(accountConfig);
+		accountConfigService.getSenderNumExportCFONB(accountConfig);
+		accountConfigService.getSenderNameCodeExportCFONB(accountConfig);
+		accountConfigService.getRecipientRecordCodeExportCFONB(accountConfig);
+		accountConfigService.getTotalRecordCodeExportCFONB(accountConfig);
+		accountConfigService.getTransferOperationCodeExportCFONB(accountConfig);
+		accountConfigService.getDirectDebitOperationCodeExportCFONB(accountConfig);
+		accountConfigService.getReimbursementExportFolderPathCFONB(accountConfig);
+		accountConfigService.getPaymentScheduleExportFolderPathCFONB(accountConfig);
+		
 	}
 	
 	
@@ -1439,10 +1427,10 @@ public class CfonbService {
 	public PaymentMode getPaymentMode(Company company, String code) throws AxelorException  {
 		LOG.debug("Récupération du mode de paiement depuis l'enregistrement CFONB : Société = {} , code CFONB = {}", new Object[]{company.getName(),code});
 		
-		if(code.equals(company.getIpoOperationCodeImportCFONB()))  {
+		if(code.equals(company.getAccountConfig().getIpoOperationCodeImportCFONB()))  {
 			return PaymentMode.all().filter("self.code = 'TIP'").fetchOne();
 		}
-		else if(code.equals(company.getIpoAndChequeOperationCodeImportCFONB()))  {
+		else if(code.equals(company.getAccountConfig().getIpoAndChequeOperationCodeImportCFONB()))  {
 			return PaymentMode.all().filter("self.code = 'TIC'").fetchOne();
 		}
 		throw new AxelorException(String.format("%s :\n Aucun mode de paiement trouvé pour le code %s et la société %s",
@@ -1457,38 +1445,17 @@ public class CfonbService {
 	 * @throws AxelorException
 	 */
 	public void testCompanyImportCFONBField(Company company) throws AxelorException  {
-		if(company.getHeaderRecordCodeImportCFONB() == null || company.getHeaderRecordCodeImportCFONB().isEmpty())  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un Code enregistrement en-tête CFONB pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		if(company.getDetailRecordCodeImportCFONB() == null || company.getDetailRecordCodeImportCFONB().isEmpty()) {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un Code enregistrement detail CFONB pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		if(company.getEndingRecordCodeImportCFONB() == null || company.getEndingRecordCodeImportCFONB().isEmpty()) {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un Code enregistrement fin CFONB pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		if(company.getTransferOperationCodeImportCFONB() == null || company.getTransferOperationCodeImportCFONB().isEmpty()) {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un Code opération Virement rejeté CFONB pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		if(company.getDirectDebitOperationCodeImportCFONB() == null || company.getDirectDebitOperationCodeImportCFONB().isEmpty()) {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un Code opération Prélèvement impayé CFONB pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		if(company.getIpoRejectOperationCodeImportCFONB() == null || company.getIpoRejectOperationCodeImportCFONB().isEmpty()) {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un Code opération TIP impayé CFONB pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		if(company.getIpoAndChequeOperationCodeImportCFONB() == null || company.getIpoAndChequeOperationCodeImportCFONB().isEmpty()) {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un Code opération TIP + chèque CFONB pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		if(company.getIpoOperationCodeImportCFONB() == null || company.getIpoOperationCodeImportCFONB().isEmpty()) {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un Code opération TIP CFONB pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
-		}
+		
+		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+		
+		accountConfigService.getHeaderRecordCodeImportCFONB(accountConfig);
+		accountConfigService.getDetailRecordCodeImportCFONB(accountConfig);
+		accountConfigService.getEndingRecordCodeImportCFONB(accountConfig);
+		accountConfigService.getTransferOperationCodeImportCFONB(accountConfig);
+		accountConfigService.getDirectDebitOperationCodeImportCFONB(accountConfig);
+		accountConfigService.getIpoRejectOperationCodeImportCFONB(accountConfig);
+		accountConfigService.getIpoAndChequeOperationCodeImportCFONB(accountConfig);
+		accountConfigService.getIpoOperationCodeImportCFONB(accountConfig);
 		
 	}
 	
@@ -1554,10 +1521,10 @@ public class CfonbService {
 	 */
 	public String getHeaderRecordCode(Company company, int operation)  {
 		if(operation == 0 || operation == 1 || operation == 2)  {
-			return company.getHeaderRecordCodeImportCFONB();
+			return company.getAccountConfig().getHeaderRecordCodeImportCFONB();
 		}
 		else if(operation == 3 || operation == 4)  {
-			return company.getSenderRecordCodeExportCFONB();
+			return company.getAccountConfig().getSenderRecordCodeExportCFONB();
 		}
 		return "999";
 	}
@@ -1623,10 +1590,10 @@ public class CfonbService {
 	 */
 	public String getDetailRecordCode(Company company, int operation)  {
 		if(operation == 0 || operation == 1 || operation == 2)  {
-			return company.getDetailRecordCodeImportCFONB();
+			return company.getAccountConfig().getDetailRecordCodeImportCFONB();
 		}
 		else if(operation == 3 || operation == 4)  {
-			return company.getRecipientRecordCodeExportCFONB();
+			return company.getAccountConfig().getRecipientRecordCodeExportCFONB();
 		}
 		return "999";
 	}
@@ -1687,10 +1654,10 @@ public class CfonbService {
 	 */
 	public String getEndingRecordCode(Company company, int operation)  {
 		if(operation == 0 || operation == 1 || operation == 2)  {
-			return company.getEndingRecordCodeImportCFONB();
+			return company.getAccountConfig().getEndingRecordCodeImportCFONB();
 		}
 		else if(operation == 3 || operation == 4)  {
-			return company.getTotalRecordCodeExportCFONB();
+			return company.getAccountConfig().getTotalRecordCodeExportCFONB();
 		}
 		return "999";
 	}
@@ -1718,19 +1685,19 @@ public class CfonbService {
 		String operationCode = "";
 		switch(operation)  {
 			case 0:
-				operationCode = company.getTransferOperationCodeImportCFONB();
+				operationCode = company.getAccountConfig().getTransferOperationCodeImportCFONB();
 				break;
 			case 1:
-				operationCode = company.getDirectDebitOperationCodeImportCFONB();
+				operationCode = company.getAccountConfig().getDirectDebitOperationCodeImportCFONB();
 				break;
 			case 2:
-				operationCode = company.getIpoRejectOperationCodeImportCFONB();
+				operationCode = company.getAccountConfig().getIpoRejectOperationCodeImportCFONB();
 				break;
 			case 3:
-				operationCode = company.getIpoOperationCodeImportCFONB();
+				operationCode = company.getAccountConfig().getIpoOperationCodeImportCFONB();
 				break;
 			case 4:
-				operationCode = company.getIpoAndChequeOperationCodeImportCFONB();
+				operationCode = company.getAccountConfig().getIpoAndChequeOperationCodeImportCFONB();
 				break;
 			default:
 				break;

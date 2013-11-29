@@ -38,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.InterbankCodeLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
@@ -47,7 +48,6 @@ import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.tool.file.FileTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -59,31 +59,34 @@ public class InterbankPaymentOrderRejectImportService {
 	private static final Logger LOG = LoggerFactory.getLogger(InterbankPaymentOrderRejectImportService.class); 
 	
 	@Inject
-	private RejectImportService ris;
+	private RejectImportService rejectImportService;
 	
 	@Inject
-	private CfonbService cs;
+	private CfonbService cfonbService;
 	
 	@Inject
-	private SequenceService sGeneralService;
+	private PaymentModeService paymentModeService;
 	
 	@Inject
-	private PaymentModeService pms;
+	private MoveService moveService;
 	
 	@Inject
-	private MoveService ms;
+	private MoveLineService moveLineService;
 	
 	@Inject
-	private MoveLineService mls;
+	private AccountConfigService accountConfigService;
 	
 
 	public List<String[]> getCFONBFile(Company company) throws AxelorException, IOException  {
-		String dest = ris.getDestFilename(company.getInterbankPaymentOrderRejectImportPathCFONB(), company.getTempInterbankPaymentOrderRejectImportPathCFONB());
+		
+		AccountConfig accountConfig = company.getAccountConfig();
+		
+		String dest = rejectImportService.getDestFilename(accountConfig.getInterbankPaymentOrderRejectImportPathCFONB(), accountConfig.getTempInterbankPaymentOrderRejectImportPathCFONB());
 		
 		// copie du fichier d'import dans un repetoire temporaire
-		FileTool.copy(company.getInterbankPaymentOrderRejectImportPathCFONB(), dest);
+		FileTool.copy(accountConfig.getInterbankPaymentOrderRejectImportPathCFONB(), dest);
 		
-		return cs.importCFONB(dest, company, 2);
+		return cfonbService.importCFONB(dest, company, 2);
 	}
 	
 	
@@ -99,7 +102,7 @@ public class InterbankPaymentOrderRejectImportService {
 			String dateReject = reject[0];
 			String refReject = reject[1];
 			BigDecimal amountReject = new BigDecimal(reject[2]);
-			InterbankCodeLine causeReject = ris.getInterbankCodeLine(reject[3], 0);
+			InterbankCodeLine causeReject = rejectImportService.getInterbankCodeLine(reject[3], 0);
 			
 			Invoice invoice = Invoice.all().filter("UPPER(self.invoiceId) = ?1 AND self.company = ?2", refReject, company).fetchOne();
 			if(invoice == null)  {
@@ -113,19 +116,21 @@ public class InterbankPaymentOrderRejectImportService {
 						GeneralService.getExceptionAccountingMsg(), refReject), IException.INCONSISTENCY);
 			}
 			
-			Account bankAccount = pms.getCompanyAccount(invoice.getPaymentMode(), company);
+			Account bankAccount = paymentModeService.getCompanyAccount(invoice.getPaymentMode(), company);
 			
-			Move move = ms.createMove(company.getRejectJournal(), company, null, partner, null, true);
+			AccountConfig accountConfig = company.getAccountConfig();
+			
+			Move move = moveService.createMove(accountConfig.getRejectJournal(), company, null, partner, null, true);
 			
 			// Création d'une ligne au crédit
-			MoveLine debitMoveLine = mls.createMoveLine(move , partner, company.getCustomerAccount(), amountReject, true, false, ris.createRejectDate(dateReject), 1, refReject);
+			MoveLine debitMoveLine = moveLineService.createMoveLine(move , partner, accountConfig.getCustomerAccount(), amountReject, true, false, rejectImportService.createRejectDate(dateReject), 1, refReject);
 			move.getMoveLineList().add(debitMoveLine);	
 			debitMoveLine.setInterbankCodeLine(causeReject);
 			
 			// Création d'une ligne au crédit
-			MoveLine creditMoveLine = mls.createMoveLine(move , partner, bankAccount, amountReject, false, false, ris.createRejectDate(dateReject), 2, null);
+			MoveLine creditMoveLine = moveLineService.createMoveLine(move , partner, bankAccount, amountReject, false, false, rejectImportService.createRejectDate(dateReject), 2, null);
 			move.getMoveLineList().add(creditMoveLine);		
-			ms.validateMove(move);
+			moveService.validateMove(move);
 			move.save();
 			
 			return invoice;
@@ -158,7 +163,7 @@ public class InterbankPaymentOrderRejectImportService {
 						GeneralService.getExceptionAccountingMsg()), IException.CONFIGURATION_ERROR);
 			}
 		}
-		return pms.getCompanyAccount(paymentMode, company);
+		return paymentModeService.getCompanyAccount(paymentMode, company);
 	}
 	
 	
@@ -171,22 +176,12 @@ public class InterbankPaymentOrderRejectImportService {
 	 */
 	public void testCompanyField(Company company) throws AxelorException  {
 	
-		if(company.getRejectJournal() == null)  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un journal de rejet pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
-		}
+		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 		
-		// Test si les champs d'import sont configuré dans la société
-		if(company.getInterbankPaymentOrderRejectImportPathCFONB() == null || company.getInterbankPaymentOrderRejectImportPathCFONB().isEmpty())  {
-			throw new AxelorException(
-					String.format("%s :\n Veuillez configurer un chemin pour le fichier d'imports des rejets de paiement par TIP et TIP chèque pour la société %s"
-							,GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		if(company.getTempInterbankPaymentOrderRejectImportPathCFONB() == null || company.getTempInterbankPaymentOrderRejectImportPathCFONB().isEmpty())  {
-			throw new AxelorException(
-					String.format("%s :\n Veuillez configurer un chemin pour le fichier des rejets de paiement par TIP et TIP chèque temporaire pour la société %s"
-							,GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
-		}
+		accountConfigService.getRejectJournal(accountConfig);
+		accountConfigService.getInterbankPaymentOrderRejectImportPathCFONB(accountConfig);
+		accountConfigService.getTempInterbankPaymentOrderRejectImportPathCFONB(accountConfig);
+		
 	}
 	
 	

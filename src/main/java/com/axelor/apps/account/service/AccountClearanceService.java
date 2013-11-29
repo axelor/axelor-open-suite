@@ -43,6 +43,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountClearance;
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.IAccount;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
@@ -107,7 +108,7 @@ public class AccountClearanceService {
 		List<MoveLine> moveLineList = MoveLine.all().filter("self.company = ?1 AND self.account.reconcileOk = 'true' AND self.fromSchedulePaymentOk = 'false' " +
 				"AND self.move.state = ?2 AND self.amountRemaining > 0 AND self.amountRemaining <= ?3 AND self.credit > 0 AND self.account in ?4 AND self.date <= ?5",
 				company, IAccount.VALIDATED_MOVE , accountClearance.getAmountThreshold(), 
-				company.getClearanceAccountSet(), accountClearance.getDateThreshold()).fetch();
+				company.getAccountConfig().getClearanceAccountSet(), accountClearance.getDateThreshold()).fetch();
 		
 		LOG.debug("Liste des trop perçus récupérés : {}", moveLineList);
 		
@@ -129,12 +130,14 @@ public class AccountClearanceService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void validateAccountClearance(AccountClearance accountClearance) throws AxelorException  {
 		Company company = accountClearance.getCompany();
-		Vat vat = company.getStandardRateVat();
+		AccountConfig accountConfig = company.getAccountConfig();
+		
+		Vat vat = accountConfig.getStandardRateVat();
 		
 		BigDecimal vatRate = vs.getVatRate(vat, todayTime.toLocalDate());
 		Account vatAccount = vas.getAccount(vat, company);
-		Account profitAccount = company.getProfitAccount();
-		Journal journal = company.getAccountClearanceJournal();
+		Account profitAccount = accountConfig.getProfitAccount();
+		Journal journal = accountConfig.getAccountClearanceJournal();
 		
 		Set<MoveLine> moveLineList = accountClearance.getMoveLineSet();
 		
@@ -206,17 +209,25 @@ public class AccountClearanceService {
 	 * @throws AxelorException
 	 */
 	public void testCompanyField(Company company) throws AxelorException  {
-		if(company.getProfitAccount() == null)  {
+		
+		AccountConfig accountConfig = company.getAccountConfig();
+		
+		if(accountConfig == null)  {
+			throw new AxelorException(String.format("%s :\n Veuillez configurer des informations comptables pour la société %s",
+					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
+		}
+		
+		if(accountConfig.getProfitAccount() == null)  {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un compte de profit pour la société %s",
 					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
 		}
 			
-		if(company.getStandardRateVat() == null) {
+		if(accountConfig.getStandardRateVat() == null) {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer une TVA taux normal pour la société %s",
 					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
 		}
 			
-		if(company.getClearanceAccountSet() == null || company.getClearanceAccountSet().size() == 0)  {
+		if(accountConfig.getClearanceAccountSet() == null || accountConfig.getClearanceAccountSet().size() == 0)  {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer les comptes d'apurements pour la société %s",
 					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
 		}
@@ -227,7 +238,7 @@ public class AccountClearanceService {
 					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
-		if(company.getAccountClearanceJournal() == null)  {
+		if(accountConfig.getAccountClearanceJournal() == null)  {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un journal d'apurements des trop-perçus pour la société %s",
 					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
 		}

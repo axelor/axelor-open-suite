@@ -41,6 +41,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.IAccount;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
@@ -91,8 +92,7 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 		case IAccount.INVOICE_EXPORT:
 			try {
 				paymentScheduleExportService.checkDebitDate(batch.getAccountingBatch());
-				paymentScheduleExportService.checkCompanyJournal(company);
-				paymentScheduleExportService.checkDebitPaymentMode(company);
+				paymentScheduleExportService.checkInvoiceExportCompany(company);
 				cfonbService.testCompanyExportCFONBField(company);
 				this.testAccountingBatchBankDetails(batch.getAccountingBatch());
 			} catch (AxelorException e) {
@@ -105,7 +105,7 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 		case IAccount.MONTHLY_EXPORT:
 			try {
 				paymentScheduleExportService.checkDebitDate(batch.getAccountingBatch());
-				paymentScheduleExportService.checkCompanyJournalMonthlyPayment(company);
+				paymentScheduleExportService.checkMonthlyExportCompany(company);
 				cfonbService.testCompanyExportCFONBField(company);
 				this.testAccountingBatchBankDetails(batch.getAccountingBatch());
 			} catch (AxelorException e) {
@@ -156,7 +156,9 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 	
 	public void exportMonthlyPaymentBatch(Company company)  {
 		
-		PaymentMode debitPaymentMode = company.getDirectDebitPaymentMode();
+		AccountConfig accountConfig = company.getAccountConfig();
+		
+		PaymentMode debitPaymentMode = accountConfig.getDirectDebitPaymentMode();
 		
 		List<PaymentScheduleLine> paymentScheduleLineList = paymentScheduleExportService.getPaymentScheduleLineToDebit(
 				company, Batch.find(batch.getId()).getAccountingBatch().getDebitDate(), 
@@ -172,7 +174,7 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 					paymentScheduleLineList, Company.find(company.getId()),
 					PaymentMode.find(debitPaymentMode.getId()),
 					Status.all().filter("code = 'val'").fetchOne(),
-					Company.find(company.getId()).getScheduleDirectDebitJournal());
+					AccountConfig.find(accountConfig.getId()).getScheduleDirectDebitJournal());
 		}
 		
 		// Création du fichier d'export au format CFONB
@@ -334,7 +336,7 @@ public class BatchPaymentScheduleExport extends BatchStrategy {
 		
 		List<Invoice> invoiceToExportList = this.exportInvoice(Company.find(company.getId()),
 				Batch.find(batch.getId()).getAccountingBatch().getDebitDate(), 
-				company.getDirectDebitPaymentMode(),
+				company.getAccountConfig().getDirectDebitPaymentMode(),
 				Batch.find(batch.getId()).getAccountingBatch().getCurrency());
 				
 		

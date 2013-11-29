@@ -41,6 +41,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.ReportedBalance;
 import com.axelor.apps.account.db.ReportedBalanceLine;
@@ -63,6 +64,9 @@ public class YearService {
 	
 	@Inject
 	private ReminderService rs;
+	
+	@Inject
+	private AccountConfigService accountConfigService;
 	
 	/**
 	 * Procédure permettant de cloturer un exercice comptable
@@ -97,6 +101,9 @@ public class YearService {
 		LOG.debug("Nombre total de tiers : {}", partnerListAll.size());
 		LOG.debug("Nombre de tiers récupéré : {}", partnerList.size());
 
+		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+		Account customerAccount = accountConfigService.getCustomerAccount(accountConfig);
+		Account doubtfulCustomerAccount = accountConfigService.getDoubtfulCustomerAccount(accountConfig);
 		
 		for(Partner partner : partnerList)  {
 			partner = Partner.find(partner.getId());
@@ -109,7 +116,7 @@ public class YearService {
 					
 					ReportedBalanceLine reportedBalanceLine = this.createReportedBalanceLine(
 							reportedBalance, 
-							this.computeReportedBalance(year.getFromDate(), year.getToDate(), partner, company.getCustomerAccount(), company.getDoubtfulCustomerAccount()),
+							this.computeReportedBalance(year.getFromDate(), year.getToDate(), partner, customerAccount, doubtfulCustomerAccount),
 							year);
 					LOG.debug("ReportedBalanceLine : {}",reportedBalanceLine);
 					reportedBalance.getReportedBalanceLineList().add(reportedBalanceLine);
@@ -125,7 +132,7 @@ public class YearService {
 				ReportedBalance reportedBalance = this.createReportedBalance(company, partner);
 				ReportedBalanceLine reportedBalanceLine = this.createReportedBalanceLine(
 						reportedBalance,
-						this.computeReportedBalance(year.getFromDate(), year.getToDate(), partner, company.getCustomerAccount(), company.getDoubtfulCustomerAccount()),
+						this.computeReportedBalance(year.getFromDate(), year.getToDate(), partner, customerAccount, doubtfulCustomerAccount),
 						year);
 //				year.getReportedBalanceLineList().add(reportedBalanceLine);
 				LOG.debug("ReportedBalanceLine : {}",reportedBalanceLine);

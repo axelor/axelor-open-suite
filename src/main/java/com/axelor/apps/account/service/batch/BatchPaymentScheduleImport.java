@@ -41,6 +41,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.InterbankCodeLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
@@ -112,7 +113,10 @@ public class BatchPaymentScheduleImport extends BatchStrategy {
 		
 		try {
 			company = Company.find(company.getId());
-			data = rejectImportService.getCFONBFileByLot(company.getRejectImportPathAndFileName(), company.getTempImportPathAndFileName(), company, 1);
+			
+			AccountConfig accountConfig = company.getAccountConfig();
+			
+			data = rejectImportService.getCFONBFileByLot(accountConfig.getRejectImportPathAndFileName(), accountConfig.getTempImportPathAndFileName(), company, 1);
 			
 		} catch (AxelorException e) {
 			
@@ -227,7 +231,7 @@ public class BatchPaymentScheduleImport extends BatchStrategy {
 				
 				LOG.debug("Création des écritures de rejets : Echéancier de lissage de paiement");
 				ref = this.createMajorAccountRejectMoveLines(pslListGC, Company.find(company.getId()), 
-						Company.find(company.getId()).getCustomerAccount(), Move.find(move.getId()), ref);
+						Company.find(company.getId()).getAccountConfig().getCustomerAccount(), Move.find(move.getId()), ref);
 				
 			}
 			
@@ -236,7 +240,7 @@ public class BatchPaymentScheduleImport extends BatchStrategy {
 				
 				LOG.debug("Création des écritures de rejets : Facture");
 				ref = this.createInvoiceRejectMoveLines(invoiceList, Company.find(company.getId()), 
-						Company.find(company.getId()).getCustomerAccount(), Move.find(move.getId()), ref);
+						Company.find(company.getId()).getAccountConfig().getCustomerAccount(), Move.find(move.getId()), ref);
 			}
 			
 	

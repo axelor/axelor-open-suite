@@ -41,6 +41,7 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -167,6 +168,14 @@ public class AccountCustomerService {
 	public BigDecimal getBalanceDueReminder(Partner partner, Company company)  {
 		LOG.debug("Compute balance due reminder (Partner : {}, Company : {})",partner.getName(),company.getName());
 		
+		int mailTransitTime = 0;
+		
+		AccountConfig accountConfig = company.getAccountConfig();
+		
+		if(accountConfig != null)  {
+			mailTransitTime = accountConfig.getMailTransitTime();
+		}
+		
 		Query query = JPA.em().createNativeQuery("SELECT SUM( COALESCE(m1.sum_remaining,0) - COALESCE(m2.sum_remaining,0) ) "+
 				"FROM public.account_move_line as ml  "+
 				"LEFT OUTER JOIN ( "+
@@ -186,7 +195,7 @@ public class AccountCustomerService {
 				"WHERE ml.partner = ?3 AND move.company = ?4 AND move.ignore_in_reminder_ok in ('false', null) " +
 				"AND move.ignore_in_accounting_ok IN ('false', null) AND account.reconcile_ok = 'true' "+
 				"AND move.state = 'validated' AND ml.amount_remaining > 0 ")
-				.setParameter(1, company.getMailTransitTime())
+				.setParameter(1, mailTransitTime)
 				.setParameter(2, today.toDate(), TemporalType.DATE)
 				.setParameter(3, partner)
 				.setParameter(4, company);

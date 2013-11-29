@@ -130,14 +130,10 @@ public class VentilateState extends WorkflowInvoice {
 	
 	protected void setMove( ) throws AxelorException {
 		
-		Move move = null;
-		
 		// Création de l'écriture comptable
-		move = moveService.createMove(invoice);
+		Move move = moveService.createMove(invoice);
 		
-		if (move != null){
-			
-			invoice.setMove(move);
+		if (move != null)  {
 			
 			moveService.createMoveUseExcessPaymentOrDue(invoice);
 			

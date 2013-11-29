@@ -57,13 +57,15 @@ import org.joda.time.format.ISODateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
+import com.axelor.apps.account.db.PaymentVoucher;
+import com.axelor.apps.account.service.AccountConfigService;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.debtrecovery.ReminderService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -79,6 +81,9 @@ public class PayboxService {
 	
 	@Inject
 	private AccountCustomerService acs;
+	
+	@Inject
+	private AccountConfigService accountConfigService;
 	
 	private final String CHARSET = "UTF-8";
 	
@@ -98,7 +103,6 @@ public class PayboxService {
 		this.checkPayboxPaymentVoucherFields(paymentVoucher);
 		
 		Company company = paymentVoucher.getCompany();
-		this.checkPayboxPaymentVoucherFields(company);
 		
 		BigDecimal paidAmount = paymentVoucher.getPaidAmount();
 		Partner payerPartner = paymentVoucher.getPartner();
@@ -106,21 +110,26 @@ public class PayboxService {
 		this.checkPaidAmount(payerPartner, company, paidAmount);
 		this.checkPaidAmount(paymentVoucher);
 		
-		String payboxUrl = company.getPayboxUrl();
-		String pbxSite = company.getPayboxSite();
-		String pbxRang = company.getPayboxRang();
-		String pbxDevise = company.getPayboxDevise();
+		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+		
+		// Vérification du remplissage du chemin de la clé publique Paybox
+		accountConfigService.getPayboxPublicKeyPath(accountConfig);
+		
+		String payboxUrl = accountConfigService.getPayboxUrl(accountConfig);
+		String pbxSite = accountConfigService.getPayboxSite(accountConfig);
+		String pbxRang = accountConfigService.getPayboxRang(accountConfig);
+		String pbxDevise = accountConfigService.getPayboxDevise(accountConfig);
 		String pbxTotal = paidAmount.setScale(2).toString().replace(".","");
 		String pbxCmd = paymentVoucher.getRef();  // Identifiant de la saisie paiement
 		String pbxPorteur = this.getPartnerEmail(paymentVoucher);
-		String pbxRetour = company.getPayboxRetour();
-//		String pbxEffectue = this.encodeUrl(this.replaceVariableInUrl(company.getPayboxRetourUrlEffectue(), paymentVoucher));
-		String pbxEffectue = this.replaceVariableInUrl(company.getPayboxRetourUrlEffectue(), paymentVoucher);
-		String pbxRefuse = this.replaceVariableInUrl(company.getPayboxRetourUrlRefuse(), paymentVoucher);
-		String pbxAnnule = this.replaceVariableInUrl(company.getPayboxRetourUrlAnnule(), paymentVoucher);
-		String pbxIdentifiant = company.getPayboxIdentifiant();
-		String pbxHash = company.getPayboxHashSelect();
-		String pbxHmac = company.getPayboxHmac();
+		String pbxRetour = accountConfigService.getPayboxRetour(accountConfig);
+//		String pbxEffectue = this.encodeUrl(this.replaceVariableInUrl(accountConfigService.getPayboxRetourUrlEffectue(accountConfig), paymentVoucher));
+		String pbxEffectue = this.replaceVariableInUrl(accountConfigService.getPayboxRetourUrlEffectue(accountConfig), paymentVoucher);
+		String pbxRefuse = this.replaceVariableInUrl(accountConfigService.getPayboxRetourUrlRefuse(accountConfig), paymentVoucher);
+		String pbxAnnule = this.replaceVariableInUrl(accountConfigService.getPayboxRetourUrlAnnule(accountConfig), paymentVoucher);
+		String pbxIdentifiant = accountConfigService.getPayboxIdentifiant(accountConfig);
+		String pbxHash = accountConfigService.getPayboxHashSelect(accountConfig);
+		String pbxHmac = accountConfigService.getPayboxHmac(accountConfig);
 		
 		//Date à laquelle l'empreinte HMAC a été calculée (format ISO8601)
 		String pbxTime = ISODateTimeFormat.dateHourMinuteSecond().print(new DateTime());
@@ -240,65 +249,7 @@ public class PayboxService {
 			return paymentVoucher.getEmail();
 		}
 		else  {
-			this.checkPayboxDefaultEmail(company);
-			return company.getPayboxDefaultEmail();
-		}
-	}
-	
-	
-	/**
-	 * Procédure permettant de vérifier le paramètrage propre à Paybox dans la société
-	 * @param company
-	 * @throws AxelorException
-	 */
-	public void checkPayboxPaymentVoucherFields(Company company) throws AxelorException  {
-		if (company.getPayboxSite() == null || company.getPayboxSite().isEmpty())  {
-			throw new AxelorException(String.format("%s :\n Veuillez paramétrer un Numéro de site dans la société %s.", 
-					GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		if (company.getPayboxRang() == null || company.getPayboxRang().isEmpty())  {
-			throw new AxelorException(String.format("%s :\n Veuillez paramétrer un Numéro de rang dans la société %s.", 
-					GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		if (company.getPayboxDevise() == null || company.getPayboxDevise().isEmpty())  {
-			throw new AxelorException(String.format("%s :\n Veuillez paramétrer une Devise des transactions dans la société %s.", 
-					GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		if (company.getPayboxRetour() == null || company.getPayboxRetour().isEmpty())  {
-			throw new AxelorException(String.format("%s :\n Veuillez paramétrer une Liste des variables à retourner par Paybox dans la société %s.", 
-					GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		if (company.getPayboxRetourUrlEffectue() == null || company.getPayboxRetourUrlEffectue().isEmpty())  {
-			throw new AxelorException(String.format("%s :\n Veuillez paramétrer une Url retourner par Paybox une fois le paiement effectué %s.", 
-					GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		if (company.getPayboxRetourUrlRefuse() == null || company.getPayboxRetourUrlRefuse().isEmpty())  {
-			throw new AxelorException(String.format("%s :\n Veuillez paramétrer une Url retourner par Paybox une fois le paiement refusé %s.", 
-					GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		if (company.getPayboxRetourUrlAnnule() == null || company.getPayboxRetourUrlAnnule().isEmpty())  {
-			throw new AxelorException(String.format("%s :\n Veuillez paramétrer une Url retourner par Paybox une fois le paiement annulé %s.", 
-					GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		if (company.getPayboxIdentifiant() == null || company.getPayboxIdentifiant().isEmpty())  {
-			throw new AxelorException(String.format("%s :\n Veuillez paramétrer un Identifiant interne dans la société %s.", 
-					GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		if (company.getPayboxHashSelect() == null || company.getPayboxHashSelect().isEmpty())  {
-			throw new AxelorException(String.format("%s :\n Veuillez selectionner un Type d'algorithme de hachage utilisé lors du calcul de l'empreinte dans la société %s.", 
-					GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		if (company.getPayboxHmac() == null || company.getPayboxHmac().isEmpty())  {
-			throw new AxelorException(String.format("%s :\n Veuillez paramétrer une Signature calculée avec la clé secrète dans la société %s.", 
-					GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		if (company.getPayboxUrl() == null || company.getPayboxUrl().isEmpty())  {
-			throw new AxelorException(String.format("%s :\n Veuillez paramétrer une Url de l'environnement dans la société %s.", 
-					GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		if (company.getPayboxPublicKeyPath() == null || company.getPayboxPublicKeyPath().isEmpty())  {
-			throw new AxelorException(String.format("%s :\n Veuillez paramétrer un Chemin de la clé publique Paybox dans la société %s.", 
-					GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
+			return accountConfigService.getPayboxDefaultEmail(accountConfigService.getAccountConfig(company));
 		}
 	}
 	
@@ -309,7 +260,7 @@ public class PayboxService {
 	 * @throws AxelorException
 	 */
 	public void checkPayboxPaymentVoucherFields(PaymentVoucher paymentVoucher) throws AxelorException  {
-		if (paymentVoucher.getPaidAmount() == null)  {
+		if (paymentVoucher.getPaidAmount() == null || paymentVoucher.getPaidAmount().compareTo(BigDecimal.ZERO) > 1)  {
 			throw new AxelorException(String.format("%s :\n Veuillez paramétrer un Montant réglé pour la saisie paiement %s.", 
 					GeneralService.getExceptionAccountingMsg(), paymentVoucher.getRef()), IException.CONFIGURATION_ERROR);
 		}
@@ -317,12 +268,6 @@ public class PayboxService {
 	
 	
 	
-	public void checkPayboxDefaultEmail(Company company) throws AxelorException  {
-		if (company.getPayboxDefaultEmail() == null || company.getPayboxDefaultEmail().isEmpty())  {
-			throw new AxelorException(String.format("%s :\n Veuillez paramétrer un Email de back-office Axelor pour Paybox pour la société %s.", 
-					GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
-		}
-	}
 	
 	/**
 	 * Procédure permettant de vérifier que le montant réglé par Paybox n'est pas supérieur au solde du payeur
@@ -438,7 +383,7 @@ public class PayboxService {
 	 */
 	public boolean checkPaybox(String signature, List<String> varUrl, Company company) throws Exception  {
 
-		boolean result =  this.checkPaybox(signature, varUrl, company.getPayboxPublicKeyPath());
+		boolean result =  this.checkPaybox(signature, varUrl, company.getAccountConfig().getPayboxPublicKeyPath());
 		
 		LOG.debug("Resultat de la verification de signature : {}",result);
 		

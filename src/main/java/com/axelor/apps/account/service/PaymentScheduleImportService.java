@@ -39,9 +39,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.DirectDebitManagement;
 import com.axelor.apps.account.db.InterbankCodeLine;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
@@ -97,6 +99,9 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 	private ReminderService rs;
 	
 	@Inject
+	private AccountConfigService accountConfigService;
+	
+	@Inject
 	private Injector injector;
 	
 	private LocalDate today;
@@ -129,21 +134,20 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 	
 	
 	public void checkCompanyFields(Company company) throws AxelorException  {
-		// Test si les champs d'import sont configurés dans la société
-		if(company.getRejectImportPathAndFileName() == null || company.getRejectImportPathAndFileName().isEmpty())  {
-			throw new AxelorException(
-					String.format("%s :\n Veuillez configurer un chemin pour le fichier de rejet pour la société %s"
-							,GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		if(company.getTempImportPathAndFileName() == null || company.getTempImportPathAndFileName().isEmpty())  {
-			throw new AxelorException(
-					String.format("%s :\n Veuillez configurer un chemin pour le fichier de rejet temporaire pour la société %s"
-							,GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		String seq = sgs.getSequence(IAdministration.DEBIT_REJECT,company,company.getRejectJournal(), true);
+		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+		
+		// Test si les champs d'import sont configurés pour la société
+		accountConfigService.getRejectImportPathAndFileName(accountConfig);
+		accountConfigService.getTempImportPathAndFileName(accountConfig);
+		accountConfigService.getRejectPaymentScheduleMailModel(accountConfig);
+		accountConfigService.getCustomerAccount(accountConfig);
+		
+		Journal rejectJournal = accountConfigService.getRejectJournal(accountConfig);
+		
+		String seq = sgs.getSequence(IAdministration.DEBIT_REJECT, company, rejectJournal, true);
 		if(seq == null)  {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer une séquence de rejet des prélèvements\n pour la société %s pour le journal %s", 
-					GeneralService.getExceptionAccountingMsg(),company.getName(),company.getRejectJournal().getName()), IException.CONFIGURATION_ERROR);
+					GeneralService.getExceptionAccountingMsg(), company.getName(), rejectJournal.getName()), IException.CONFIGURATION_ERROR);
 		}
 	}
 	
@@ -447,7 +451,9 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Move createRejectMove(Company company, LocalDate date) throws AxelorException  {
-		Move move = ms.createMove(company.getRejectJournal(), company, null, null, date, null, true);
+		Journal rejectJournal = company.getAccountConfig().getRejectJournal();
+		
+		Move move = ms.createMove(rejectJournal, company, null, null, date, null, true);
 		move.setRejectOk(true);
 		move.save();
 		return move;
@@ -632,11 +638,12 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 		PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
 		Company company = paymentSchedule.getCompany();
 		Partner partner = paymentSchedule.getPartner();
+		AccountConfig accountConfig = company.getAccountConfig();
 		
-		if(partner.getRejectCounter()>=company.getPaymentScheduleRejectNumLimit())  {
+		if(partner.getRejectCounter() >= accountConfig.getPaymentScheduleRejectNumLimit())  {
 			// Génération du COURRIER
 			LOG.debug("COURRIER Paiement");
-			mas.createImportRejectMail(partner, company, company.getRejectPaymentScheduleMailModel(), paymentScheduleLine.getRejectMoveLine()).save();
+			mas.createImportRejectMail(partner, company, accountConfig.getRejectPaymentScheduleMailModel(), paymentScheduleLine.getRejectMoveLine()).save();
 			// Changement du mode de paiement de l'échéancier, du tiers
 			this.setPaymentMode(paymentSchedule);
 			// Alarme générée dans l'historique du client ?
@@ -659,10 +666,12 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 		LOG.debug("Action suite à un rejet sur une facture");
 		Partner partner = invoice.getPartner();
 		Company company = invoice.getCompany();
-		if(partner.getRejectCounter()>=company.getInvoiceRejectNumLimit())  {
+		AccountConfig accountConfig = company.getAccountConfig();
+		
+		if(partner.getRejectCounter() >= accountConfig.getInvoiceRejectNumLimit())  {
 			// Génération du COURRIER
 			LOG.debug("COURRIER Facture");
-			mas.createImportRejectMail(invoice.getPartner(), company, company.getRejectPaymentScheduleMailModel(), invoice.getRejectMoveLine()).save();
+			mas.createImportRejectMail(invoice.getPartner(), company, accountConfig.getRejectPaymentScheduleMailModel(), invoice.getRejectMoveLine()).save();
 			// Mise à jour de la date de la dernière relance sur le tiers
 			rs.getReminder(partner, company).setReminderDate(today);
 			// Changement du mode de paiement de la facture, du tiers
@@ -681,8 +690,7 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 	 */
 	public void setPaymentMode(Invoice invoice)  {
 		Partner partner = invoice.getPartner();
-		Company company = invoice.getCompany();
-		PaymentMode paymentMode = company.getRejectionPaymentMode();
+		PaymentMode paymentMode = invoice.getCompany().getAccountConfig().getRejectionPaymentMode();
 		invoice.setPaymentMode(paymentMode);
 		partner.setPaymentMode(paymentMode);
 	}
@@ -695,8 +703,7 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 	 */
 	public void setPaymentMode(PaymentSchedule paymentSchedule)  {
 		Partner partner = paymentSchedule.getPartner();
-		Company company = paymentSchedule.getCompany();
-		PaymentMode paymentMode = company.getRejectionPaymentMode();
+		PaymentMode paymentMode = paymentSchedule.getCompany().getAccountConfig().getRejectionPaymentMode();
 		paymentSchedule.setPaymentMode(paymentMode);
 		partner.setPaymentMode(paymentMode);
 	}

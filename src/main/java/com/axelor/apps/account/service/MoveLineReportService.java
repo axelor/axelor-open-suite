@@ -39,6 +39,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.IAccount;
 import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.MoveLineReport;
 import com.axelor.apps.base.db.Company;
@@ -238,46 +240,35 @@ public class MoveLineReportService {
 
 	public JournalType getJournalType(MoveLineReport moveLineReport) throws AxelorException  {
 		Company company = moveLineReport.getCompany();
-		if(moveLineReport.getTypeSelect() ==  6)  {
-			if(company.getSaleJournalType() != null)  {
-				return company.getSaleJournalType();
-			}
-			else  {
-				throw new AxelorException(String.format("%s :\n Erreur : Veuillez configurer un type de journal ventes pour la société %s",
-						GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
-			}
+		
+		AccountConfigService accountConfigService = injector.getInstance(AccountConfigService.class);
+		
+		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+		
+		switch (moveLineReport.getTypeSelect()) {
+			case IAccount.EXPORT_SALES:
+				
+				return accountConfigService.getSaleJournalType(accountConfig);
+				
+			case IAccount.EXPORT_REFUNDS:
+				
+				return accountConfigService.getCreditNoteJournalType(accountConfig);
+				
+			case IAccount.EXPORT_TREASURY:
+				
+				return accountConfigService.getCashJournalType(accountConfig);
+				
+			case IAccount.EXPORT_PURCHASES:
+				
+				return accountConfigService.getPurchaseJournalType(accountConfig);
+	
+			default:
+				break;
 		}
-		else if(moveLineReport.getTypeSelect() ==  7)  {
-			if(company.getCreditNoteJournalType() != null)  {
-				return company.getCreditNoteJournalType();
-			}
-			else  {
-				throw new AxelorException(String.format("%s :\n Erreur : Veuillez configurer un type de journal avoirs pour la société %s",
-						GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
-			}
-		}
-		else if(moveLineReport.getTypeSelect() ==  8)  {
-			if(company.getCashJournalType() != null)  {
-				return company.getCashJournalType();
-			}
-			else  {
-				throw new AxelorException(String.format("%s :\n Erreur : Veuillez configurer un type de journal trésorerie pour la société %s",
-						GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
-			}
-		}
-		else if(moveLineReport.getTypeSelect() ==  9)  {
-			if(company.getPurchaseJournalType() != null)  {
-				return company.getPurchaseJournalType();
-			}
-			else  {
-				throw new AxelorException(String.format("%s :\n Erreur : Veuillez configurer un type de journal achats pour la société %s",
-						GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
-			}
-		}
+		
 		return null;
 	}
 	
-
 	public Account getAccount(MoveLineReport moveLineReport)  {
 		if(moveLineReport.getTypeSelect() ==  13 && moveLineReport.getCompany() != null)  {
 			return Account.all().filter("self.company = ?1 AND self.code LIKE '58%'", moveLineReport.getCompany()).fetchOne();

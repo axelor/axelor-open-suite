@@ -38,13 +38,13 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.InterbankCodeLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reimbursement;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -67,14 +67,19 @@ public class ReimbursementImportService {
 	@Inject
 	private RejectImportService ris;
 	
+	@Inject
+	private AccountConfigService accountConfigService;
+	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void runReimbursementImport(Company company) throws AxelorException, IOException  {
 
 		this.testCompanyField(company);
 		
+		AccountConfig accountConfig = company.getAccountConfig();
+		
 		this.createReimbursementRejectMove(
-				ris.getCFONBFile(company.getReimbursementImportFolderPathCFONB(), company.getTempReimbImportFolderPathCFONB(),company, 0),
+				ris.getCFONBFile(accountConfig.getReimbursementImportFolderPathCFONB(), accountConfig.getTempReimbImportFolderPathCFONB(),company, 0),
 				company);
 		
 	}
@@ -92,7 +97,7 @@ public class ReimbursementImportService {
 			}
 			if(move != null)  {
 			// Création d'une ligne au débit
-				MoveLine debitMoveLine = mls.createMoveLine(move , null, company.getReimbursementAccount(), this.getTotalAmount(move), true, false, rejectDate, seq, null);
+				MoveLine debitMoveLine = mls.createMoveLine(move , null, company.getAccountConfig().getReimbursementAccount(), this.getTotalAmount(move), true, false, rejectDate, seq, null);
 				move.getMoveLineList().add(debitMoveLine);	
 				this.validateMove(move);
 			}
@@ -116,7 +121,7 @@ public class ReimbursementImportService {
 		BigDecimal amount = reimbursement.getAmountReimbursed();
 		
 		// Création de la ligne au crédit
-		MoveLine creditMoveLine = mls.createMoveLine(move , partner, company.getCustomerAccount(), amount, false, false, rejectDate, seq, refReject);
+		MoveLine creditMoveLine = mls.createMoveLine(move , partner, company.getAccountConfig().getCustomerAccount(), amount, false, false, rejectDate, seq, refReject);
 		move.getMoveLineList().add(creditMoveLine);	
 		
 		creditMoveLine.save(); 
@@ -135,7 +140,7 @@ public class ReimbursementImportService {
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Move createMoveReject(Company company, LocalDate date) throws AxelorException  {
-		return ms.createMove(company.getRejectJournal(), company, null, null, date, null, false).save();
+		return ms.createMove(company.getAccountConfig().getRejectJournal(), company, null, null, date, null, false).save();
 
 	}
 	
@@ -153,7 +158,7 @@ public class ReimbursementImportService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public MoveLine createOppositeRejectMoveLine(Move move, int seq, LocalDate rejectDate) throws AxelorException  {
 		// Création d'une ligne au débit
-		MoveLine debitMoveLine = mls.createMoveLine(move , null, move.getCompany().getReimbursementAccount(), this.getTotalAmount(move), true, false, rejectDate, seq, null);
+		MoveLine debitMoveLine = mls.createMoveLine(move , null, move.getCompany().getAccountConfig().getReimbursementAccount(), this.getTotalAmount(move), true, false, rejectDate, seq, null);
 		move.getMoveLineList().add(debitMoveLine);	
 		move.save();
 		return debitMoveLine;
@@ -181,26 +186,13 @@ public class ReimbursementImportService {
 	 */
 	public void testCompanyField(Company company) throws AxelorException  {
 		LOG.debug("Test de la société {}", company.getName());	
-		if(company.getReimbursementAccount() == null)  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un compte de remboursement pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
-		}
-	
-		if(company.getRejectJournal() == null)  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer un journal de rejet pour la société %s",
-					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
-		}
 		
-		// Test si les champs d'import sont configuré dans la société
-		if(company.getReimbursementImportFolderPathCFONB() == null || company.getReimbursementImportFolderPathCFONB().isEmpty())  {
-			throw new AxelorException(
-					String.format("%s :\n Veuillez configurer un chemin pour le fichier d'imports des rejets des remboursements pour la société %s"
-							,GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
-		}
-		if(company.getTempReimbImportFolderPathCFONB() == null || company.getTempReimbImportFolderPathCFONB().isEmpty())  {
-			throw new AxelorException(
-					String.format("%s :\n Veuillez configurer un chemin pour le fichier des rejets des remboursements temporaire pour la société %s"
-							,GeneralService.getExceptionAccountingMsg(), company.getName()), IException.CONFIGURATION_ERROR);
-		}
+		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+		
+		accountConfigService.getReimbursementAccount(accountConfig);
+		accountConfigService.getRejectJournal(accountConfig);
+		accountConfigService.getReimbursementImportFolderPathCFONB(accountConfig);
+		accountConfigService.getTempReimbImportFolderPathCFONB(accountConfig);
+		
 	}
 }
