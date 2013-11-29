@@ -31,17 +31,14 @@
 package com.axelor.apps.base.web;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.AxelorSettings;
-import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
@@ -56,10 +53,7 @@ import com.google.inject.Inject;
 public class PartnerController {
 
 	@Inject
-	SequenceService sequenceService;
-
-	@Inject
-	PartnerService partnerService;
+	private SequenceService sequenceService;
 
 	private static final Logger LOG = LoggerFactory.getLogger(PartnerController.class);
 
@@ -179,16 +173,4 @@ public class PartnerController {
 		}
 	}
 	
-	public void createAccountingSituations(ActionRequest request, ActionResponse response) {
-		
-		Partner partner = request.getContext().asType(Partner.class);
-		
-		if(partner != null) {
-			List<AccountingSituation> accountingSituationList = partnerService.createAccountingSituation(partner);
-			
-			if(accountingSituationList != null) {
-				response.setValue("accountingSituationList", accountingSituationList);
-			}
-		}
-	}
 }

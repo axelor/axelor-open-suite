@@ -623,6 +623,8 @@
 		<view type="form" />
 	</action-view>
 	
+	<menuitem name="admin-root-conf" parent="admin-root"
+		title="Modules configurations" icon="img/Other/parameter_59px.png"/>
 	
 
 	<!-- Top Menu for Create new objects.... -->

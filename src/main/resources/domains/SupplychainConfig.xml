@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+  <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
+
+  <entity name="SupplychainConfig" lang="java">
+  	<integer name="importId"/>
+    <string name="name" title="Name" required="true"/>
+    <string name="code" title="Code" unique="true"/>
+    
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" unique="true"/>
+
+   	<many-to-one name="customerVirtualLocation" ref="com.axelor.apps.supplychain.db.Location" title="Customer virtual location"/>
+    <many-to-one name="supplierVirtualLocation" ref="com.axelor.apps.supplychain.db.Location" title="Supplier virtual location"/>
+    <many-to-one name="inventoryVirtualLocation" ref="com.axelor.apps.supplychain.db.Location" title="Inventory virtual location"/>
+    
+  	<boolean name="hasOutSmForStorableProduct" title="Generate out going stock move for storable product"/>
+  	<boolean name="hasOutSmForNonStorableProduct" title="Generate out going stock move for non storable product"/>
+  	<boolean name="hasInSmForStorableProduct" title="Generate incoming stock move for storable product"/>
+  	<boolean name="hasInSmForNonStorableProduct" title="Generate incoming stock move for non storable product"/>
+  	
+  	<integer name="salesOrderInvoicingTypeSelect" title="Sales order invoicing type" selection="sales.order.invoicing.type.select"/>
+  	<integer name="purchaseOrderInvoicingTypeSelect" title="Purchases order invoicing type" selection="supplychain.purchase.order.invoicing.type.select"/>
+  	
+  </entity>
+  
+</domain-models>

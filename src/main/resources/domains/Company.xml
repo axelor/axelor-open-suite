@@ -12,154 +12,28 @@
     <many-to-one name="address" ref="Address" title="Address"/>  <!-- A supprimer si Partner sur company  -->  
     
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
-    <many-to-one name="customerSalesJournal" ref="com.axelor.apps.account.db.Journal" title="Sales Journal"/>
-    <many-to-one name="customerCreditNoteJournal" ref="com.axelor.apps.account.db.Journal" title=" Cust. Credit note Journal"/>
-    <many-to-one name="supplierPurchaseJournal" ref="com.axelor.apps.account.db.Journal" title="Supplier Purchase Journal"/>
-    <many-to-one name="supplierCreditNoteJournal" ref="com.axelor.apps.account.db.Journal" title="Suppl. Credit Note Journal"/>
     <many-to-one name="parent" ref="Company" title="Parent company"/>
     <many-to-one name="administration" ref="com.axelor.apps.base.db.General" title="Administration"/>
-    <many-to-one name="customerAccount" ref="com.axelor.apps.account.db.Account" title="Customer account"/>
-    <many-to-one name="supplierAccount" ref="com.axelor.apps.account.db.Account" title="Supplier account"/>
-    <many-to-one name="doubtfulCustomerAccount" ref="com.axelor.apps.account.db.Account" title="Doubtful customers account" help="Utiliser pour le passage en client douteux"/>    
-    <many-to-one name="irrecoverableAccount" ref="com.axelor.apps.account.db.Account" title="Irrecoverable account"/>
-    
-    <many-to-one name="saleJournalType" ref="com.axelor.apps.account.db.JournalType" title="Sales journal type"/>
-    <many-to-one name="purchaseJournalType" ref="com.axelor.apps.account.db.JournalType" title="Purchase journal type"/>
-    <many-to-one name="cashJournalType" ref="com.axelor.apps.account.db.JournalType" title="Cash journal type"/>
-    <many-to-one name="creditNoteJournalType" ref="com.axelor.apps.account.db.JournalType" title="Credit note journal type"/>
     
     <string name="notes" large="true" title="Notes"/>
-    <many-to-one name="invoiceDirectDebitJournal" ref="com.axelor.apps.account.db.Journal" title="Invoice Direct Debit Journal"/>
-    <many-to-one name="scheduleDirectDebitJournal" ref="com.axelor.apps.account.db.Journal" title="Journal prèlèvement lissage de paiement"/>
-    <many-to-one name="rejectJournal" ref="com.axelor.apps.account.db.Journal" title="Rejects journal"/>
-    <many-to-one name="accountClearanceJournal" ref="com.axelor.apps.account.db.Journal" title="Account clearance journal"/>
-   	<many-to-one name="reimbursementJournal" ref="com.axelor.apps.account.db.Journal" title="Reimbursement Journal"/>
-   	<many-to-one name="irrecoverableJournal" ref="com.axelor.apps.account.db.Journal" title="Irrecoverable Journal"/>
-   	<many-to-one name="miscOperationJournal" ref="com.axelor.apps.account.db.Journal" title="Misc. Operation Journal"/>
     <string name="logoPath" title="Path to company logo" help="Fill inside this field the path to the company logo"/>
-    <decimal name="thresholdDistanceFromRegulation" title="Allowed Payment range"/>
-   	<many-to-one name="cashPositionVariationAccount" ref="com.axelor.apps.account.db.Account" title="Cashier Regulation account"/>
 
-   	<many-to-one name="cashRegisterMailModel" ref="com.axelor.apps.base.db.MailModel" title="Cashier email model"/>
-   	<string name="cashRegisterAddressEmail" title="Cashier email address"/>
-   	<many-to-one name="payingBackTaxVat" ref="com.axelor.apps.account.db.Vat" title="VAT for management fee"/>
-   	
+
+	<one-to-one name="accountConfig" ref="com.axelor.apps.account.db.AccountConfig" title="Account config" mappedBy="company"/>
+	<one-to-one name="supplychainConfig" ref="com.axelor.apps.supplychain.db.SupplychainConfig" title="Supplychain config" mappedBy="company"/>
+
    	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
 
 	<!--  Onglet Bank Details -->
 	<many-to-one name="defaultBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Default Bank Account"/>
 	<many-to-many name="bankDetailsSet" ref="com.axelor.apps.base.db.BankDetails" title="Bank accounts"/>
 
-   	<!--  Onglet Doubtful Cust. -->
-   	<string name="sixMonthDebtPassReason" title="Shift Reason (long term debt)" default="Receivables over 6 months"/>
-   	<string name="threeMonthDebtPassReason" title="Shift Reason (short term debt)" default="Receivables over 3 months"/>
-   	<integer name="sixMonthDebtMonthNumber" title="Long term debt duration (month)" default="6"/>
-   	<integer name="threeMonthDebtMontsNumber" title="Short term debt duration (month)" default="3"/>
-   	
-	<!-- DebtRecovery -->
-   	<one-to-many name="reminderConfigLineList" ref="com.axelor.apps.account.db.ReminderConfigLine" mappedBy="company"  title="Reminder Configuration Table"/>
-   	<integer name="mailTransitTime" title="Mail transit time"/>
-
-	<!-- Reimbursement -->
-   	<string name="reimbursementExportFolderPathCFONB" title="Path for reimbursement files (CFONB)" help="example : /home/axelor/reject.dat"/>
-   	<string name="reimbursementExportFolderPath" title="Path for reimbursement files (SEPA)" help="example : /home/axelor/reject.dat"/>
-   	<decimal name="lowerThresholdReimbursement" title="Lower reimbursement limit"/>
-   	<decimal name="upperThresholdReimbursement" title="Upper reimbursement limit"/>
-   	<many-to-one name="reimbursementAccount" ref="com.axelor.apps.account.db.Account" title="Reimbursement account"/>
-   	<many-to-one name="reimbursementMailModel" ref="com.axelor.apps.base.db.MailModel" title="Reimbursement mail model"/>
-	
-    <string name="reimbursementImportFolderPathCFONB" title="Filepath for rejected reimbursements"  help="example : /home/axelor/reject.dat"/>
-    <string name="tempReimbImportFolderPathCFONB" title="Filepath for temporary rejected reimbursements import" help="example : /home/axelor/reject.dat"/>
-   
-   	<string name="exportPath" title="Filepath for exported files (Accounting)"/>
-   	
-   	<!-- Export CFONB -->
-   	<string name="senderRecordCodeExportCFONB" title="Sender record code" default="03"/>
-   	<string name="senderNumExportCFONB" title="Sender Nbr"/>
-   	<string name="senderNameCodeExportCFONB" title="Sender Name"/>
-   	
-   	<string name="recipientRecordCodeExportCFONB" title="Recipient record code" default="06"/>
-   	
-   	<string name="totalRecordCodeExportCFONB" title="Total record code" default="08"/>
-   	
-   	<string name="transferOperationCodeExportCFONB" title="Wire transfer operation code" default="02"/>
-   	<string name="directDebitOperationCodeExportCFONB" title="Direct debit operation code" default="08"/>
-   	
-   	<!-- Import CFONB -->
-   	<string name="headerRecordCodeImportCFONB" title="Header record code" default="31"/>
-   	
-   	<string name="detailRecordCodeImportCFONB" title="Details record code" default="34"/>
-   	
-   	<string name="endingRecordCodeImportCFONB" title="Ending record code" default="39"/>
-   	
-   	<string name="transferOperationCodeImportCFONB" title="Rejected Wire transfer operation code" default="21"/>
-   	<string name="directDebitOperationCodeImportCFONB" title="Unpaid direct debit operation code" default="81"/>
-   	<string name="ipoRejectOperationCodeImportCFONB" title="Unpaid IPO operation code" default="71"/>
-   	<string name="ipoOperationCodeImportCFONB" title="IPO operation code" default="07"/>
-	<string name="ipoAndChequeOperationCodeImportCFONB" title="IPO and Cheque operation code" default="97"/>
-   	
-   	<!-- Onglet Prélèvements -->
-   	<string name="paymentScheduleExportFolderPathCFONB" title="Filepath for direct debit exports (CFONB)" help="exemple : /home/axelor/"/>
-   	
-   	<many-to-one name="directDebitPaymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode for direct debit"/>
-  	<many-to-one name="rejectionPaymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode after rejection"/>
-    <integer name="paymentScheduleRejectNumLimit" title="Max Nbr. for payment schedule rejection"/>
-    <integer name="invoiceRejectNumLimit" title="Max Nbr. of invoices rejection"/>
-    <string name="rejectImportPathAndFileName" title="Filepath to import rejected records"  help="example : /home/axelor/reject.dat"/>
-    <string name="tempImportPathAndFileName" title="Temporary filepath to import rejected records" help="example : /home/axelor/reject.dat"/>
-   	<many-to-one name="rejectPaymentScheduleMailModel" ref="com.axelor.apps.base.db.MailModel" title="Mail model for invoice and payment schedule rejections"/>
-   	
-   	<!--  Onglet Apurements -->
-   	<many-to-many name="clearanceAccountSet" ref="com.axelor.apps.account.db.Account" title="Clearance Accounts"/>
-   	<many-to-one name="profitAccount" ref="com.axelor.apps.account.db.Account" title="Profit accounts"/>
-   	<many-to-one name="standardRateVat" ref="com.axelor.apps.account.db.Vat" title="VAT Standard rate for clearance"/>
-   	
-   	<string name="irrecoverableReasonPassage" title="Irrecoverable shifting reason" default="Manual shift into irrecoverable receivables"/>
-   	<many-to-one name="irrecoverableStandardRateVat" ref="com.axelor.apps.account.db.Vat" title="VAT Standard rate for irrecoverables"/>
-   	
-	<!--  Onglet Paybox -->
-	<string name="payboxUrl" title="Environment Url"/>
-	<string name="payboxSite" title="Site Nbr" min="7" max="7"/>   
-	<string name="payboxRang" title="Rank number" min="2" max="2"/>
-	<string name="payboxDevise" title="Transaction currency" min="3" max="3" default="978"/>
-	<string name="payboxIdentifiant" title="Internal identifier" max="9"/>
-	<string name="payboxHashSelect" title="Algorithm hashing type to calculate the footprint" default="SHA512" selection="company.paybox.hash.select"/>
-	<string name="payboxHmac" title="Secret key"/>
-	<string name="payboxDefaultEmail" title="Axelor Backoffice email"/>
-	<string name="payboxRetour" title="Variables list returned by Paybox"/>
-	<string name="payboxRetourUrlEffectue" title="Url returned by Paybox once payment done" default="http://localhost:8080/axelor/#/ds/account.root.periodic.processing.account.voucher/edit/%id?retour=1"/>
-	<string name="payboxRetourUrlRefuse" title="Url returned by Paybox once payment refused" default="http://localhost:8080/axelor/#/ds/account.root.periodic.processing.account.voucher/edit/%id?retour=2"/>
-	<string name="payboxRetourUrlAnnule" title="Url returned by Paybox once payment cancelled" default="http://localhost:8080/axelor/#/ds/account.root.periodic.processing.account.voucher/edit/%id?retour=3"/>
-	<string name="payboxPublicKeyPath" title="Path to Paybox public key" default="/home/soregies/Paybox/pubkey.pem"/>
-  
-	<!-- Onglet Import des paiements par TIP et TIP chèque-->
-   	<string name="interbankPaymentOrderImportPathCFONB" title="Filepath to import IPO, and IPO and Cheque payments"  help="example : /home/axelor/reject.dat"/>
-    <string name="tempInterbankPaymentOrderImportPathCFONB" title="Temporary filepath to import IPO, and IPO and Cheque payments" help="example : /home/axelor/reject.dat"/>
-  	
-  	<string name="interbankPaymentOrderRejectImportPathCFONB" title="Filepath to import IPO, and IPO and Cheque payments rejects"  help="example : /home/axelor/reject.dat"/>
-    <string name="tempInterbankPaymentOrderRejectImportPathCFONB" title="Temporary filepath to import IPO, and IPO and Cheque payments rejects" help="example : /home/axelor/reject.dat"/>
-  
-  	<string name="indexExportPath" title="Chemin d'export du fichier de saisie des index" />
-  
   	<!--  Onglet Email/Courrier -->
     <string name="generatedMailFilePath" title="Filepath to export generated mails" help="example : /home/axelor/mail/"/>
     <string name="generatedEmailFilePath" title="Filepath to export generated emails" help="example : /home/axelor/email/"/>
     <string name="generatedMailFileName" title="Generated mail files name prefix" help="exemple : letter_"/>
     <string name="generatedEmailFileName" title="Generated email files name prefix" help="exemple : email_"/>
     
-    <!-- Onglet Facturation -->
-    <boolean name="showDetailsInInvoice" title="Show details in invoice"/>
-   
-   	<!-- Onglet Supply chain -->
-   	<many-to-one name="customerVirtualLocation" ref="com.axelor.apps.supplychain.db.Location" title="Customer virtual location"/>
-    <many-to-one name="supplierVirtualLocation" ref="com.axelor.apps.supplychain.db.Location" title="Supplier virtual location"/>
-    <many-to-one name="inventoryVirtualLocation" ref="com.axelor.apps.supplychain.db.Location" title="Inventory virtual location"/>
-  	<boolean name="hasOutSmForStorableProduct" title="Generate out going stock move for storable product"/>
-  	<boolean name="hasOutSmForNonStorableProduct" title="Generate out going stock move for non storable product"/>
-  	<boolean name="hasInSmForStorableProduct" title="Generate incoming stock move for storable product"/>
-  	<boolean name="hasInSmForNonStorableProduct" title="Generate incoming stock move for non storable product"/>
-  	<integer name="salesOrderInvoicingTypeSelect" title="Sales order invoicing type" selection="sales.order.invoicing.type.select"/>
-  	<integer name="purchaseOrderInvoicingTypeSelect" title="Purchases order invoicing type" selection="supplychain.purchase.order.invoicing.type.select"/>
   	<many-to-one name="printingSettings" ref="PrintingSettings" title="Printing Settings"/>
   	
 <!--   	Onglet Organisation -->

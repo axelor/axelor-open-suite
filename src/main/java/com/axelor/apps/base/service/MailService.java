@@ -42,6 +42,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.AxelorSettings;
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.CashRegisterLine;
 import com.axelor.apps.account.db.MoveLine;
@@ -95,12 +96,14 @@ public class MailService {
 		
 		LOG.debug("In createReimbursementMail");
 		
-		if(company.getReimbursementMailModel() == null)  {
+		AccountConfig accountConfig = company.getAccountConfig();
+		
+		if(accountConfig == null || accountConfig.getReimbursementMailModel() == null)  {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un model d'email Remboursement pour la société %s", 
 					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
 		}
 		return this.replaceTag(
-				this.createGenericMail(company.getReimbursementMailModel(), this.today, company, partner));
+				this.createGenericMail(accountConfig.getReimbursementMailModel(), this.today, company, partner));
 		
 	}
 	
@@ -115,11 +118,6 @@ public class MailService {
 	 */
 	public Mail createImportRejectMail(Partner partner, Company company, MailModel mailModel, MoveLine rejectMoveLine) throws AxelorException  {
 		LOG.debug("In createImportRejectMail");
-		
-		if(mailModel == null)  {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer les modèles de courrier Imports de rejet pour la société %s", 
-					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
-		}
 		
 		Mail mail = this.createGenericMail(mailModel, this.today, company, partner);
 		
@@ -140,11 +138,14 @@ public class MailService {
 	 */
 	public Mail createCashRegisterLineMail(String address, Company company, CashRegisterLine cashRegisterLine) throws AxelorException  {
 		LOG.debug("In createCashRegisterMail");
-		if(company.getCashRegisterMailModel() == null)  {
+		
+		AccountConfig accountConfig = company.getAccountConfig();
+		
+		if(accountConfig == null || accountConfig.getCashRegisterMailModel() == null)  {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer un model d'email Caisses pour la société %s", 
 					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
 		}
-		Mail mail = createGenericMail(company.getCashRegisterMailModel(), this.today, company, null);
+		Mail mail = createGenericMail(accountConfig.getCashRegisterMailModel(), this.today, company, null);
 		mail.setCashRegisterLine(cashRegisterLine);
 		mail.setAddressEmail(address);
 		
