@@ -38,7 +38,7 @@ import javax.inject.Singleton;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
-import com.axelor.apps.account.db.Vat;
+import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.General;
 import com.axelor.apps.base.db.Unit;
@@ -268,15 +268,15 @@ public final class GeneralService {
 
 
 
-// TVA 
+// Tax 
 	
 	/**
 	 * Obtenir la tva à 0%
 	 * 
 	 * @return
 	 */
-	public static Vat getDefaultExemptionVat(){
-		if (getGeneral() != null) { return getGeneral().getDefaultExemptionVat(); }
+	public static Tax getDefaultExemptionTax(){
+		if (getGeneral() != null) { return getGeneral().getDefaultExemptionTax(); }
 		else { return null; }
 	}
 	

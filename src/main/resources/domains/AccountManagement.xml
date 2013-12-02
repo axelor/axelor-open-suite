@@ -10,8 +10,8 @@
 	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
 	<many-to-one name="purchaseAccount" ref="com.axelor.apps.account.db.Account" title="Purchase account"/>
 	<many-to-one name="saleAccount" ref="com.axelor.apps.account.db.Account" title="Sale account"/>
-	<many-to-one name="purchaseVat" ref="com.axelor.apps.account.db.Vat" title="Purchase V.A.T."/>
-	<many-to-one name="saleVat" ref="com.axelor.apps.account.db.Vat" title="Sale V.A.T."/>
+	<many-to-one name="purchaseTax" ref="com.axelor.apps.account.db.Tax" title="Purchase Tax"/>
+	<many-to-one name="saleTax" ref="com.axelor.apps.account.db.Tax" title="Sale Tax"/>
 	<many-to-one name="cashAccount" ref="com.axelor.apps.account.db.Account" title="Payment account"/>
 	
 	<one-to-many name="analyticAccountManagementList" ref="AnalyticAccountManagement" mappedBy="accountManagement" title="Analytic accounts"/>

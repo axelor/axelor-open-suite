@@ -41,7 +41,7 @@
    	
    	<many-to-one name="cashRegisterMailModel" ref="com.axelor.apps.base.db.MailModel" title="Cashier email model"/>
    	<string name="cashRegisterAddressEmail" title="Cashier email address"/>
-   	<many-to-one name="payingBackTaxVat" ref="com.axelor.apps.account.db.Vat" title="VAT for management fee"/>
+   	<many-to-one name="payingBackTax" ref="com.axelor.apps.account.db.Tax" title="Tax for management fee"/>
    	
    	<!--  Onglet CFONB -->
 	<many-to-one name="cfonbConfig" ref="com.axelor.apps.account.db.CfonbConfig" title="Cfonb configuration"/>
@@ -83,10 +83,10 @@
    	<!--  Onglet Apurements -->
    	<many-to-many name="clearanceAccountSet" ref="com.axelor.apps.account.db.Account" title="Clearance Accounts"/>
    	<many-to-one name="profitAccount" ref="com.axelor.apps.account.db.Account" title="Profit accounts"/>
-   	<many-to-one name="standardRateVat" ref="com.axelor.apps.account.db.Vat" title="VAT Standard rate for clearance"/>
+   	<many-to-one name="standardRateTax" ref="com.axelor.apps.account.db.Tax" title="Tax Standard rate for clearance"/>
    	
    	<string name="irrecoverableReasonPassage" title="Irrecoverable shifting reason" default="Manual shift into irrecoverable receivables"/>
-   	<many-to-one name="irrecoverableStandardRateVat" ref="com.axelor.apps.account.db.Vat" title="VAT Standard rate for irrecoverables"/>
+   	<many-to-one name="irrecoverableStandardRateTax" ref="com.axelor.apps.account.db.Tax" title="Tax Standard rate for irrecoverables"/>
    	
 	<!--  Onglet Paybox -->
 	<many-to-one name="payboxConfig" ref="com.axelor.apps.account.db.PayboxConfig" title="Paybox configuration"/>

@@ -3,13 +3,12 @@
   
   <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
 
-  <entity sequential="true" name="PurchaseOrderLineVat" lang="java">
+  <entity sequential="true" name="PurchaseOrderLineTax" lang="java">
   
   	<many-to-one name="purchaseOrder" ref="PurchaseOrder" title="Purchase order"/>
-  	<many-to-one name="vatLine" ref="com.axelor.apps.account.db.VatLine" title="V.A.T."/>
-    <decimal name="exAllTaxBase" scale="2" precision="20" title="Base W.A.T."/>
+  	<many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="V.A.T."/>
     <decimal name="exTaxBase" scale="2" precision="20" title="Base W.T."/>
-    <decimal name="vatTotal" scale="2" precision="20" title="Amount V.A.T."/>
+    <decimal name="taxTotal" scale="2" precision="20" title="Amount Tax"/>
     <decimal name="inTaxTotal" scale="2" precision="20" title="Amount A.T.I."/>
 
   </entity>

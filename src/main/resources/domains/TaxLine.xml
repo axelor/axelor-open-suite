@@ -5,18 +5,18 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="VatLine" lang="java" cachable="true">
+  <entity name="TaxLine" lang="java" cachable="true">
   
     <integer name="importId"/>
-    <many-to-one name="vat" ref="Vat" title="V.A.T." />
+    <many-to-one name="tax" ref="Tax" title="Tax" />
     <date name="startDate" title="Application start Date" required="true"/>
     <date name="endDate" title="Run off Date" />
     <decimal name="value" title="Rate" scale="3" precision="20"/>
     
-    <string name="name" namecolumn="true" search="vat,startDate,endDate" title="Name">
+    <string name="name" namecolumn="true" search="tax,startDate,endDate" title="Name">
 	    <![CDATA[
 	    	String name = "";
-	    	if(vat != null)  { name += vat.getName();  }
+	    	if(tax != null)  { name += tax.getName();  }
 			name += " : " + startDate;
 			if (endDate != null) { name += " - " + endDate; }
 	    	return name;

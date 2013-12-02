@@ -125,8 +125,8 @@
 "com.axelor.apps.account.db.AccountManagement","company","field","Company","Société",,
 "com.axelor.apps.account.db.AccountManagement","purchaseAccount","field","Purchase account","Compte comptable à l'Achat",,"Compte utilisé pour les Achats à sélectionner dans le plan comptable de la société."
 "com.axelor.apps.account.db.AccountManagement","saleAccount","field","Sale account","Compte comptable à la vente",,"Compte utilisé pour les Ventes à sélectionner dans le plan comptable de la société."
-"com.axelor.apps.account.db.AccountManagement","purchaseVat","field","Purchase V.A.T.","T.V.A. à l'achat",,
-"com.axelor.apps.account.db.AccountManagement","saleVat","field","Sale V.A.T.","T.V.A. à la vente",,
+"com.axelor.apps.account.db.AccountManagement","purchaseTax","field","Purchase V.A.T.","T.V.A. à l'achat",,
+"com.axelor.apps.account.db.AccountManagement","saleTax","field","Sale V.A.T.","T.V.A. à la vente",,
 "com.axelor.apps.account.db.AccountManagement","cashAccount","field","Payment account","Compte comptable paiement",,"Compte utilisé pour les Paiements à sélectionner dans le plan comptable de la société."
 "com.axelor.apps.account.db.AccountManagement","analyticAccountManagementList","field","Analytic accounts","Comptes analytiques",,
 "com.axelor.apps.account.db.AccountManagement","product","field","Product","Produit",,"Produit auquel est associée la configuration."
@@ -465,7 +465,7 @@
 "com.axelor.apps.base.db.Company","cashPositionVariationAccount","field","Cashier Regulation account","Compte différence de caisse",,"Compte utilisé pour la contrepartie d'écriture en cas de différence de caisse."
 "com.axelor.apps.base.db.Company","cashRegisterMailModel","field","Cashier email model","Modèle d'email Caisse",,"*"
 "com.axelor.apps.base.db.Company","cashRegisterAddressEmail","field","Cashier email address","Adresse email caisse",,"*"
-"com.axelor.apps.base.db.Company","payingBackTaxVat","field","VAT for management fee","T.V.A. pour frais de gestion",,"*"
+"com.axelor.apps.base.db.Company","payingBackTaxTax","field","Tax for management fee","T.V.A. pour frais de gestion",,"*"
 "com.axelor.apps.base.db.Company","currency","field","Currency","Devise",,"Devise dans laquelle la comptabilité de la société est gérée."
 "com.axelor.apps.base.db.Company","defaultBankDetails","field","Default Bank Account","RIB par défaut",,"RIB qui sera utilisé par défaut pour communiquer les coordonnées bancaires de la société à des tiers (devis, factures...)."
 "com.axelor.apps.base.db.Company","bankDetailsSet","field","Bank accounts","Les RIB",,"Liste des coordonnées bancaires dont dispose la société."
@@ -509,9 +509,9 @@
 "com.axelor.apps.base.db.Company","rejectPaymentScheduleMailModel","field","Mail model for invoice and payment schedule rejections","Modèle de courrier rejet Facture et Echéancier de paiement",,
 "com.axelor.apps.base.db.Company","clearanceAccountSet","field","Clearance Accounts","Comptes d'apurements",,"Comptes comptables sur lesquels les trop-perçus seront apurés."
 "com.axelor.apps.base.db.Company","profitAccount","field","Profit accounts","Compte de profits",,"Compte comptable de type profit utilisé par défaut pour la contrepartie des écritures d'apurement de trop perçus."
-"com.axelor.apps.base.db.Company","standardRateVat","field","VAT Standard rate for clearance","T.V.A. taux normal",,"TVA à utiliser pour l'apurement des trop perçus."
+"com.axelor.apps.base.db.Company","standardRateTax","field","Tax Standard rate for clearance","T.V.A. taux normal",,"TVA à utiliser pour l'apurement des trop perçus."
 "com.axelor.apps.base.db.Company","irrecoverableReasonPassage","field","Irrecoverable shifting reason","Motif de passage en irrécouvrable",,"Motif qui sera reporté sur l'écriture de passage en irrcouvrable."
-"com.axelor.apps.base.db.Company","irrecoverableStandardRateVat","field","VAT Standard rate for irrecoverables","T.V.A. Pour passage en irrécouvrable",,
+"com.axelor.apps.base.db.Company","irrecoverableStandardRateTax","field","Tax Standard rate for irrecoverables","T.V.A. Pour passage en irrécouvrable",,
 "com.axelor.apps.base.db.Company","payboxUrl","field","Environment Url","Url de l'environnement",,"Url d'appel complétée par un point d'interrogation, exemple : https://preprod-tpeweb.paybox.com/cgi/MYchoix_pagepaiement.cgi? ."
 "com.axelor.apps.base.db.Company","payboxSite","field","Site Nbr","N° de site",,"N° de site (TPE) à 7 chiffres fourni par la banque du commerçant."
 "com.axelor.apps.base.db.Company","payboxRang","field","Rank number","N° de rang",,"N° de rang (ou ""machine"") à 2 chiffres fourni par la banque du commerçant."
@@ -735,7 +735,7 @@
 "com.axelor.apps.organisation.db.ExpenseLine","qty","field","Quantity","Qté",,"Par défaut égale à 1 lors de la sélection du produit."
 "com.axelor.apps.organisation.db.ExpenseLine","price","field","Unit price","Prix unitaire",,
 "com.axelor.apps.organisation.db.ExpenseLine","inTaxTotal","field","Total (TTC)","Total T.T.C.",,
-"com.axelor.apps.organisation.db.ExpenseLine","vatLine","field","V.A.T.","TVA",,"TVA applicable à cette dépense (déjà incluse dans le Total T.T.C.)"
+"com.axelor.apps.organisation.db.ExpenseLine","taxLine","field","V.A.T.","TVA",,"TVA applicable à cette dépense (déjà incluse dans le Total T.T.C.)"
 "com.axelor.apps.organisation.db.ExpenseLine","file","field","File","Fichier",,"Document à charger sur l'application (Preuve d'achat : Ticket de caisse, Facture …)"
 "com.axelor.apps.organisation.db.ExpenseLine","fileReceived","field","File received","Fichier reçu",,"Réservé à la direction ou au personnel administratif pour vérifier que la note de frais est complète."
 "com.axelor.apps.organisation.db.ExpenseLine","validationDate","field","Date de validation","Date de validation",,"Egal à la date de validation de la NDF."
@@ -781,7 +781,7 @@
 "com.axelor.apps.base.db.General","exceptionReminderMsg","field","Debt recovery message","Message pour recouvrement",,"*"
 "com.axelor.apps.base.db.General","exceptionMailMsg","field","Mail and Email message","Message pour email et courrier",,"*"
 "com.axelor.apps.base.db.General","exceptionSupplychainMsg","field","Supply chain message","Message pour les exception supply chain",,"*"
-"com.axelor.apps.base.db.General","defaultExemptionVat","field","VAT 0%","T.V.A. 0%",,"*"
+"com.axelor.apps.base.db.General","defaultExemptionTax","field","Tax 0%","T.V.A. 0%",,"*"
 "com.axelor.apps.base.db.General","qasWsdlUrl","field","URL to the QAS WSDL","URL vers le WSDL QAS","http://{serveur}:{port}/proweb.wsdl","URL pour interroger la webservice QAS permettant de vérifier l'existence d'une adresse."
 "com.axelor.apps.base.db.General","mapApiSelect","field","Mapping service provider","API pour cartes",,"Choix du service à utiliser pour visualiser le positionnement d'une adresse sur une carte."
 "com.axelor.apps.base.db.GeographicalArea","name","field","Area name","Nom zone",,
@@ -896,7 +896,7 @@
 "com.axelor.apps.account.db.Invoice","doubtfulCustomerOk","field","Doubtful Customer","Créance douteuse",,"Si cochée, indique que la créance restante à payer sur facture a été passée en créance douteuse."
 "com.axelor.apps.account.db.Invoice","currency","field","Currency","Devise","This currency defined the currency of the invoice. If the company accounting currency or journal currency is different from the invoice currency, the system will automatically convert the amounts into the accounting or journal currency.","Devise associée à la facture. Si la devise est différente de la devise configurée pour la Société, une conversion sera effectuée avant la ventilation de la facture en comptabilité."
 "com.axelor.apps.account.db.Invoice","invoiceLineList","field","Invoice Lines","Lignes de facture",,
-"com.axelor.apps.account.db.Invoice","invoiceLineVatList","field","VAT Lines","Lignes de T.V.A.",,
+"com.axelor.apps.account.db.Invoice","invoiceLineTaxList","field","Tax Lines","Lignes de T.V.A.",,
 "com.axelor.apps.account.db.Invoice","alreadyPrintedOk","field","Already printed ?","Impression générée ?","Field allowing to distinguish the original invoice from a copy/duplicata.","*"
 "com.axelor.apps.account.db.Invoice","previousInvoice","field","Previous invoice","Facture précédente",,"*"
 "com.axelor.apps.account.db.Invoice","refundInvoice","field","Refund","Avoir",,"Si une facture a fait l'objet d'un avoir, lien vers l'avoir en question."
@@ -923,12 +923,12 @@
 "com.axelor.apps.account.db.Invoice","directDebitAmount","field","Debited amount","Montant prélevé",,
 "com.axelor.apps.account.db.Invoice","paymentMove","field","Payment Move","Ecriture de paiement",,
 "com.axelor.apps.account.db.Invoice","note","field","Notes","Note",,
-"com.axelor.apps.account.db.Invoice","exTaxTotal","field","Total W.V.","Total H.T.","Total without VAT.","Egal à la somme des totaux hors taxes (H.T.) des lignes de facture."
-"com.axelor.apps.account.db.Invoice","vatTotal","field","Total V.A.T.","Total T.V.A.","Total VAT amount is a result of the sum of the VAT lines Amount.","Egal à la somme des montants TVA des lignes de T.V.A."
-"com.axelor.apps.account.db.Invoice","inTaxTotal","field","Total A.T.I.","Total T.T.C.","Total all taxes/VAT included.","Egal à la somme du total H.T. Et du total T.V.A."
+"com.axelor.apps.account.db.Invoice","exTaxTotal","field","Total W.V.","Total H.T.","Total without Tax.","Egal à la somme des totaux hors taxes (H.T.) des lignes de facture."
+"com.axelor.apps.account.db.Invoice","taxTotal","field","Total V.A.T.","Total T.V.A.","Total Tax amount is a result of the sum of the Tax lines Amount.","Egal à la somme des montants TVA des lignes de T.V.A."
+"com.axelor.apps.account.db.Invoice","inTaxTotal","field","Total A.T.I.","Total T.T.C.","Total all taxes included.","Egal à la somme du total H.T. Et du total T.V.A."
 "com.axelor.apps.account.db.Invoice","inTaxTotalRemaining","field","Remaining to pay","Restant à payer",,"Egal au total T.T.C. Diminué des paiements déjà effectués (lettrages) sur cette facture."
 "com.axelor.apps.account.db.Invoice","invoiceExTaxTotal","field","Total W.V.","Total H.T.",,"*"
-"com.axelor.apps.account.db.Invoice","invoiceVatTotal","field","Total V.A.T.","Total T.V.A.",,"*"
+"com.axelor.apps.account.db.Invoice","invoiceTaxTotal","field","Total V.A.T.","Total T.V.A.",,"*"
 "com.axelor.apps.account.db.Invoice","invoiceInTaxTotal","field","Total A.T.I.","Total T.T.C",,"*"
 "com.axelor.apps.account.db.Invoice","invoiceAmountPaid","field","Amount paid","Montant payé",,"*"
 "com.axelor.apps.account.db.Invoice","status","field","Status","Etat",,"Par défaut à l'état 'Brouillon'. Attention, la validation d'une facture n'implique pas sa ventilation comptable. Les écritures sont générées lors du passage à l'état 'Ventilé'"
@@ -952,7 +952,7 @@
 "com.axelor.apps.account.db.InvoiceLine","qty","field","Qty","Quantité nette à facturer",,
 "com.axelor.apps.account.db.InvoiceLine","exTaxTotal","field","Total W.T.","Total H.T.",,"Egal à la quantité multipliée par le prix unitaire (dans la devise de la facture)."
 "com.axelor.apps.account.db.InvoiceLine","accountingExTaxTotal","field","Total W.T. in accounting currency","Total H.T. (Devise Sté)",,
-"com.axelor.apps.account.db.InvoiceLine","vatLine","field","V.A.T.","T.V.A.",,"Champ rempli automatiquement lors de la sélection du produit avec la version de TVA active à la date d'avoir/facture. "
+"com.axelor.apps.account.db.InvoiceLine","taxLine","field","V.A.T.","T.V.A.",,"Champ rempli automatiquement lors de la sélection du produit avec la version de TVA active à la date d'avoir/facture. "
 "com.axelor.apps.account.db.InvoiceLine","discountAmount","field","Discount amount","Montant Remise",,"Montant associé au type de remise : négatif pour une remise (-5 pour -5€ ou -5%), positif pour une majoration (10 pour +10€ ou +10%)."
 "com.axelor.apps.account.db.InvoiceLine","discountTypeSelect","field","In % / fixed","Type remise",,"Fixe pour une remise en montant (dans la devise de facture, ex : -10€), % pour appliquer une remise en pourcentage (ex : -5%). Le montant de la remise est à renseigner dans le champ 'Montant Remise'. Champ pouvant être renseigné par défaut si l'avoir/facture est soumis à une liste de prix incluant des remises. "
 "com.axelor.apps.account.db.InvoiceLine","description","field","Description","Descriptif",,
@@ -973,14 +973,14 @@
 "com.axelor.apps.account.db.InvoiceLineType","importId","field",,"ID Import",,
 "com.axelor.apps.account.db.InvoiceLineType","name","field","Name","Nom",,
 "com.axelor.apps.account.db.InvoiceLineType","code","field","Code","Code",,"Le code doit être unique."
-"com.axelor.apps.account.db.InvoiceLineVat","invoice","field","Invoice","Facture",,"Avoir/Facture de rattachement de la ligne de TVA."
-"com.axelor.apps.account.db.InvoiceLineVat","exTaxBase","field","Base W.T.","Base HT",,"Egal à la somme des totaux hors taxes (H.T.) des lignes de facture associés à cette T.V.A."
-"com.axelor.apps.account.db.InvoiceLineVat","vatTotal","field","Amount V.A.T.","Montant T.V.A.",,"Egal au Taux de T.V.A. multiplié par la Base H.T."
-"com.axelor.apps.account.db.InvoiceLineVat","inTaxTotal","field","Amount A.T.I.","Montant T.T.C.",,"Egal à la somme de la base H.T. et du montant T.V.A."
-"com.axelor.apps.account.db.InvoiceLineVat","accountingExTaxBase","field","Base W.T. in accounting currency","Base HT (devise comptabilité)",,
-"com.axelor.apps.account.db.InvoiceLineVat","accountingVatTotal","field","Amount V.A.T. in accounting currency","Montant T.V.A. (Devise Sté)",,
-"com.axelor.apps.account.db.InvoiceLineVat","accountingInTaxTotal","field","Amount A.T.I. in accounting currency","Montant T.T.C. (Devise Sté)",,
-"com.axelor.apps.account.db.InvoiceLineVat","vatLine","field","V.A.T.","T.V.A.",,"Version de TVA utilisée sur la lignes de facture."
+"com.axelor.apps.account.db.InvoiceLineTax","invoice","field","Invoice","Facture",,"Avoir/Facture de rattachement de la ligne de TVA."
+"com.axelor.apps.account.db.InvoiceLineTax","exTaxBase","field","Base W.T.","Base HT",,"Egal à la somme des totaux hors taxes (H.T.) des lignes de facture associés à cette T.V.A."
+"com.axelor.apps.account.db.InvoiceLineTax","taxTotal","field","Amount V.A.T.","Montant T.V.A.",,"Egal au Taux de T.V.A. multiplié par la Base H.T."
+"com.axelor.apps.account.db.InvoiceLineTax","inTaxTotal","field","Amount A.T.I.","Montant T.T.C.",,"Egal à la somme de la base H.T. et du montant T.V.A."
+"com.axelor.apps.account.db.InvoiceLineTax","accountingExTaxBase","field","Base W.T. in accounting currency","Base HT (devise comptabilité)",,
+"com.axelor.apps.account.db.InvoiceLineTax","accountingTaxTotal","field","Amount V.A.T. in accounting currency","Montant T.V.A. (Devise Sté)",,
+"com.axelor.apps.account.db.InvoiceLineTax","accountingInTaxTotal","field","Amount A.T.I. in accounting currency","Montant T.T.C. (Devise Sté)",,
+"com.axelor.apps.account.db.InvoiceLineTax","taxLine","field","V.A.T.","T.V.A.",,"Version de TVA utilisée sur la lignes de facture."
 "com.axelor.apps.account.db.Irrecoverable","name","field","Nom","Nom",,
 "com.axelor.apps.account.db.Irrecoverable","irrecoverableCustomerLineList","field","Clients","Clients",,
 "com.axelor.apps.account.db.Irrecoverable","invoiceSet","field","Factures et rejets de factures","Factures et rejets de factures",,
@@ -1331,7 +1331,7 @@
 "com.axelor.apps.account.db.MoveLine","unrecocileMoveOk","field","Unreconciled move line","Ligne d'écriture non lettrée",,
 "com.axelor.apps.account.db.MoveLine","passageReason","field","Irrecoverable Shift Reason","Motif de passage",,
 "com.axelor.apps.account.db.MoveLine","usherPassageOk","field","Transfer(ed) to Usher ","Passage à l'huissier",,
-"com.axelor.apps.account.db.MoveLine","vatLine","field","VAT","T.V.A.",,
+"com.axelor.apps.account.db.MoveLine","taxLine","field","Tax","T.V.A.",,
 "com.axelor.apps.account.db.MoveLine","currencyRate","field","Currency Rate","Taux d'origine de conversion de devise",,
 "com.axelor.apps.account.db.MoveLine","currencyAmount","field","Amount in Currency","Montant en devise",,
 "com.axelor.apps.account.db.MoveLine","maxAmountToReconcile","field","Max Amount to reconcile","Montant max. à réconcilier",,
@@ -1482,7 +1482,7 @@
 "com.axelor.apps.base.db.Partner","nbrEmployees","field","N° of Employees","Nbre Employés",,
 "com.axelor.apps.base.db.Partner","salesTurnover","field","Turnover","CA",,
 "com.axelor.apps.base.db.Partner","registrationCode","field","Registration code","N° SIRET",,
-"com.axelor.apps.base.db.Partner","vatNbr","field","VAT N°","N° TVA",,
+"com.axelor.apps.base.db.Partner","taxNbr","field","Tax N°","N° TVA",,
 "com.axelor.apps.base.db.Partner","fullName","field","Nom du Contact","Nom complet",,
 "com.axelor.apps.base.db.PartnerCategory","importId","field",,"Id Import",,
 "com.axelor.apps.base.db.PartnerCategory","name","field","Name","Nom",,
@@ -1869,11 +1869,11 @@
 "com.axelor.apps.supplychain.db.PurchaseOrder","invoice","field","Invoice","Facture",,
 "com.axelor.apps.supplychain.db.PurchaseOrder","location","field","Location","Emplacement livraison",,
 "com.axelor.apps.supplychain.db.PurchaseOrder","externalReference","field","Supplier reference","Réf. Fourn.",,
-"com.axelor.apps.supplychain.db.PurchaseOrder","purchaseOrderLineVatList","field","V.A.T. Lines","Lignes de TVA",,
+"com.axelor.apps.supplychain.db.PurchaseOrder","purchaseOrderLineTaxList","field","V.A.T. Lines","Lignes de TVA",,
 "com.axelor.apps.supplychain.db.PurchaseOrder","validatedByUserInfo","field","Validated by","Validé par",,
 "com.axelor.apps.supplychain.db.PurchaseOrder","validationDate","field","Validation date","Date de validation",,
 "com.axelor.apps.supplychain.db.PurchaseOrder","exTaxTotal","field","Total W.V.","Total H.T.",,
-"com.axelor.apps.supplychain.db.PurchaseOrder","vatTotal","field","Total V.A.T.","Total T.V.A.",,
+"com.axelor.apps.supplychain.db.PurchaseOrder","taxTotal","field","Total V.A.T.","Total T.V.A.",,
 "com.axelor.apps.supplychain.db.PurchaseOrder","inTaxTotal","field","Total A.T.I.","Total T.T.C.",,
 "com.axelor.apps.supplychain.db.PurchaseOrder","amountRemainingToBeInvoiced","field","Amount remaining to invoice","Montant restant à payer",,
 "com.axelor.apps.supplychain.db.PurchaseOrder","notes","field","Notes","Notes",,
@@ -1883,7 +1883,7 @@
 "com.axelor.apps.supplychain.db.PurchaseOrderLine","qty","field","Qty","Qté",,
 "com.axelor.apps.supplychain.db.PurchaseOrderLine","productName","field","Label","Libellé",,
 "com.axelor.apps.supplychain.db.PurchaseOrderLine","price","field","Unit price","Prix unitaire",,
-"com.axelor.apps.supplychain.db.PurchaseOrderLine","vatLine","field","V.A.T.","T.V.A.",,
+"com.axelor.apps.supplychain.db.PurchaseOrderLine","taxLine","field","V.A.T.","T.V.A.",,
 "com.axelor.apps.supplychain.db.PurchaseOrderLine","exTaxTotal","field","Subtotal W.T.","Sous-total HT",,
 "com.axelor.apps.supplychain.db.PurchaseOrderLine","description","field","Description","Description",,
 "com.axelor.apps.supplychain.db.PurchaseOrderLine","unit","field","Unit","Unité",,
@@ -1898,12 +1898,12 @@
 "com.axelor.apps.supplychain.db.PurchaseOrderLine","deliveryDate","field","Delivery Date","Date de livraison",,
 "com.axelor.apps.supplychain.db.PurchaseOrderLine","productVariant","field",,"Variante produit",,
 "com.axelor.apps.supplychain.db.PurchaseOrderLine","companyExTaxTotal","field","Total W.T. in company currency","Total H.T. (Devise Sté)",,
-"com.axelor.apps.supplychain.db.PurchaseOrderLineVat","purchaseOrder","field","Purchase order","Devis/Cmde Fourn.",,
-"com.axelor.apps.supplychain.db.PurchaseOrderLineVat","vatLine","field","V.A.T.","T.V.A.",,
-"com.axelor.apps.supplychain.db.PurchaseOrderLineVat","exAllTaxBase","field","Base W.A.T.","Total H.T.T.",,
-"com.axelor.apps.supplychain.db.PurchaseOrderLineVat","exTaxBase","field","Base W.T.","Total H.T.",,
-"com.axelor.apps.supplychain.db.PurchaseOrderLineVat","vatTotal","field","Amount V.A.T.","Total T.V.A.",,
-"com.axelor.apps.supplychain.db.PurchaseOrderLineVat","inTaxTotal","field","Amount A.T.I.","Total T.T.C.",,
+"com.axelor.apps.supplychain.db.PurchaseOrderLineTax","purchaseOrder","field","Purchase order","Devis/Cmde Fourn.",,
+"com.axelor.apps.supplychain.db.PurchaseOrderLineTax","taxLine","field","V.A.T.","T.V.A.",,
+"com.axelor.apps.supplychain.db.PurchaseOrderLineTax","exAllTaxBase","field","Base W.A.T.","Total H.T.T.",,
+"com.axelor.apps.supplychain.db.PurchaseOrderLineTax","exTaxBase","field","Base W.T.","Total H.T.",,
+"com.axelor.apps.supplychain.db.PurchaseOrderLineTax","taxTotal","field","Amount V.A.T.","Total T.V.A.",,
+"com.axelor.apps.supplychain.db.PurchaseOrderLineTax","inTaxTotal","field","Amount A.T.I.","Total T.T.C.",,
 "com.axelor.apps.base.db.Querie","name","field","Name","Nom",,
 "com.axelor.apps.base.db.Querie","type","field","Type","Type",,
 "com.axelor.apps.base.db.Querie","query","field","Query","Requête",,
@@ -2048,9 +2048,9 @@
 "com.axelor.apps.supplychain.db.SalesOrder","invoicingTypeSelect","field","Invoicing type","Mode de facturation",,
 "com.axelor.apps.supplychain.db.SalesOrder","hasGlobalTask","field","Global task ?","Utiliser Tâche globale ?",,
 "com.axelor.apps.supplychain.db.SalesOrder","salesOrderLineList","field","Sale order lines","Lignes de devis",,
-"com.axelor.apps.supplychain.db.SalesOrder","salesOrderLineVatList","field","V.A.T. Lines","Lignes de TVA",,
+"com.axelor.apps.supplychain.db.SalesOrder","salesOrderLineTaxList","field","V.A.T. Lines","Lignes de TVA",,
 "com.axelor.apps.supplychain.db.SalesOrder","exTaxTotal","field","Total W.V.","Total H.T.",,
-"com.axelor.apps.supplychain.db.SalesOrder","vatTotal","field","Total V.A.T.","Total T.V.A.",,
+"com.axelor.apps.supplychain.db.SalesOrder","taxTotal","field","Total V.A.T.","Total T.V.A.",,
 "com.axelor.apps.supplychain.db.SalesOrder","inTaxTotal","field","Total A.T.I.","Total T.T.C.",,
 "com.axelor.apps.supplychain.db.SalesOrder","amountRemainingToBeInvoiced","field","Amount remaining to invoice","Solde restant à facturer",,
 "com.axelor.apps.supplychain.db.SalesOrder","statusSelect","field","Status","Etat",,
@@ -2080,7 +2080,7 @@
 "com.axelor.apps.supplychain.db.SalesOrderLine","productName","field","Product name","Libellé",,
 "com.axelor.apps.supplychain.db.SalesOrderLine","saleSupplySelect","field","Méthode d'appro. des ventes","Mode Appro. Ventes",,
 "com.axelor.apps.supplychain.db.SalesOrderLine","price","field","Unit price","Prix unitaire",,
-"com.axelor.apps.supplychain.db.SalesOrderLine","vatLine","field","V.A.T.","T.V.A.",,
+"com.axelor.apps.supplychain.db.SalesOrderLine","taxLine","field","V.A.T.","T.V.A.",,
 "com.axelor.apps.supplychain.db.SalesOrderLine","exTaxTotal","field","Total W.T.","Sous-total HT",,
 "com.axelor.apps.supplychain.db.SalesOrderLine","task","field","Task","Tâche associée",,
 "com.axelor.apps.supplychain.db.SalesOrderLine","employeeSet","field","Employees","Employés préssentis",,
@@ -2102,12 +2102,12 @@
 "com.axelor.apps.supplychain.db.SalesOrderLine","productVariant","field",,"Variante produit",,
 "com.axelor.apps.supplychain.db.SalesOrderLine","companyExTaxTotal","field","Total W.T. in company currency","Total H.T. (Devise Sté)",,
 "com.axelor.apps.supplychain.db.SalesOrderLine","companyCostPrice","field","Unit cost price in company currency","Coût de revient",,
-"com.axelor.apps.supplychain.db.SalesOrderLineVat","salesOrder","field","Sale order","Devis",,
-"com.axelor.apps.supplychain.db.SalesOrderLineVat","vatLine","field","V.A.T.","T.V.A.",,
-"com.axelor.apps.supplychain.db.SalesOrderLineVat","exAllTaxBase","field","Base W.A.T.","Base H.T.T.",,
-"com.axelor.apps.supplychain.db.SalesOrderLineVat","exTaxBase","field","Base W.T.","Base H.T.",,
-"com.axelor.apps.supplychain.db.SalesOrderLineVat","vatTotal","field","Amount V.A.T.","Montant T.V.A.",,
-"com.axelor.apps.supplychain.db.SalesOrderLineVat","inTaxTotal","field","Amount A.T.I.","Montant T.T.C.",,
+"com.axelor.apps.supplychain.db.SalesOrderLineTax","salesOrder","field","Sale order","Devis",,
+"com.axelor.apps.supplychain.db.SalesOrderLineTax","taxLine","field","V.A.T.","T.V.A.",,
+"com.axelor.apps.supplychain.db.SalesOrderLineTax","exAllTaxBase","field","Base W.A.T.","Base H.T.T.",,
+"com.axelor.apps.supplychain.db.SalesOrderLineTax","exTaxBase","field","Base W.T.","Base H.T.",,
+"com.axelor.apps.supplychain.db.SalesOrderLineTax","taxTotal","field","Amount V.A.T.","Montant T.V.A.",,
+"com.axelor.apps.supplychain.db.SalesOrderLineTax","inTaxTotal","field","Amount A.T.I.","Montant T.T.C.",,
 "com.axelor.apps.supplychain.db.SalesOrderScheduleLine","salesOrder","field","Devis","Devis",,
 "com.axelor.apps.supplychain.db.SalesOrderScheduleLine","sequence","field","Sequence","Séquence",,
 "com.axelor.apps.supplychain.db.SalesOrderScheduleLine","amountToBeInvoiced","field","Montant à facturer","Montant à facturer",,
@@ -2125,7 +2125,7 @@
 "com.axelor.apps.supplychain.db.SalesOrderSubLine","unit","field","Unit","Unité",,
 "com.axelor.apps.supplychain.db.SalesOrderSubLine","qty","field","Qty","Quantité",,
 "com.axelor.apps.supplychain.db.SalesOrderSubLine","price","field","Unit price","Prix unitaire",,
-"com.axelor.apps.supplychain.db.SalesOrderSubLine","vatLine","field","V.A.T.","Sous-total T.V.A.",,
+"com.axelor.apps.supplychain.db.SalesOrderSubLine","taxLine","field","V.A.T.","Sous-total T.V.A.",,
 "com.axelor.apps.supplychain.db.SalesOrderSubLine","exTaxTotal","field","Total W.T.","Sous-total HT",,
 "com.axelor.apps.supplychain.db.SalesOrderSubLine","discountAmount","field","Discount amount","Montant remise",,
 "com.axelor.apps.supplychain.db.SalesOrderSubLine","discountTypeSelect","field","In % / fixed","Type remise",,
@@ -2580,21 +2580,21 @@
 "com.axelor.apps.googleapps.db.UserProfile","emailId","field","Email Id","Identifiant Email",,
 "com.axelor.apps.googleapps.db.UserProfile","name","field","Name","Nom",,
 "com.axelor.apps.googleapps.db.UserProfile","permissionId","field","Account Id","ID Permission","Google Account Id/Permission Id to share File",
-"com.axelor.apps.account.db.Vat","importId","field",,"Id Import",,
-"com.axelor.apps.account.db.Vat","name","field","Name","Nom TVA",,
-"com.axelor.apps.account.db.Vat","code","field","Code","Code",,
-"com.axelor.apps.account.db.Vat","activeVatLine","field","V.A.T. active version","Version active",,
-"com.axelor.apps.account.db.Vat","vatLineList","field","VAT versions","Versions de TVA",,
-"com.axelor.apps.account.db.Vat","vatAccountList","field","VAT account configuration","Paramétrages comptes comptables",,
-"com.axelor.apps.account.db.VatAccount","vat","field","V.A.T.","T.V.A.",,
-"com.axelor.apps.account.db.VatAccount","company","field","Company","Société",,
-"com.axelor.apps.account.db.VatAccount","account","field","Account","Compte comptable",,
-"com.axelor.apps.account.db.VatLine","importId","field",,"ID Import",,
-"com.axelor.apps.account.db.VatLine","vat","field","V.A.T.","T.V.A.",,
-"com.axelor.apps.account.db.VatLine","startDate","field","Application start Date","Date début d'application",,
-"com.axelor.apps.account.db.VatLine","endDate","field","Run off Date","Date fin d'application",,
-"com.axelor.apps.account.db.VatLine","value","field","Rate","Taux",,
-"com.axelor.apps.account.db.VatLine","name","field","Name","Nom",,
+"com.axelor.apps.account.db.Tax","importId","field",,"Id Import",,
+"com.axelor.apps.account.db.Tax","name","field","Name","Nom TVA",,
+"com.axelor.apps.account.db.Tax","code","field","Code","Code",,
+"com.axelor.apps.account.db.Tax","activeTaxLine","field","V.A.T. active version","Version active",,
+"com.axelor.apps.account.db.Tax","taxLineList","field","Tax versions","Versions de TVA",,
+"com.axelor.apps.account.db.Tax","taxAccountList","field","Tax account configuration","Paramétrages comptes comptables",,
+"com.axelor.apps.account.db.TaxAccount","tax","field","V.A.T.","T.V.A.",,
+"com.axelor.apps.account.db.TaxAccount","company","field","Company","Société",,
+"com.axelor.apps.account.db.TaxAccount","account","field","Account","Compte comptable",,
+"com.axelor.apps.account.db.TaxLine","importId","field",,"ID Import",,
+"com.axelor.apps.account.db.TaxLine","tax","field","V.A.T.","T.V.A.",,
+"com.axelor.apps.account.db.TaxLine","startDate","field","Application start Date","Date début d'application",,
+"com.axelor.apps.account.db.TaxLine","endDate","field","Run off Date","Date fin d'application",,
+"com.axelor.apps.account.db.TaxLine","value","field","Rate","Taux",,
+"com.axelor.apps.account.db.TaxLine","name","field","Name","Nom",,
 "com.axelor.apps.base.db.ViewController","menus","field","Menu(s)","Menus",,
 "com.axelor.apps.base.db.ViewController","groups","field","Groups","Groupes",,
 "com.axelor.apps.base.db.Wizard","name","field","Name","Nom",,
@@ -3188,7 +3188,7 @@
 "com.axelor.apps.base.db.FormulaGenerator",,"group","Logs","Logs",,
 "com.axelor.apps.base.db.FormulaGenerator",,"page","Tax formula conditions of use","Taxe conditions de la formule d'utilisation",,
 "com.axelor.apps.base.db.FormulaGenerator",,"group","Logs","Logs",,
-"com.axelor.apps.base.db.FormulaGenerator",,"page","VAT formulas","Formules TVA",,
+"com.axelor.apps.base.db.FormulaGenerator",,"page","Tax formulas","Formules TVA",,
 "com.axelor.apps.base.db.FormulaGenerator",,"group","Logs","Logs",,
 "com.axelor.apps.base.db.FormulaGenerator",,"view","Formula generators","Générateur de formules",,
 "com.axelor.apps.base.db.General",,"button","New","Nouveau",,
@@ -3815,7 +3815,7 @@
 "partner-form","salesTurnover","documentation",,,,
 "partner-form","nbrEmployees","documentation",,,,
 "partner-form","registrationCode","documentation",,,,
-"partner-form","vatNbr","documentation",,,,
+"partner-form","taxNbr","documentation",,,,
 "partner-form","parentPartner","documentation",,,,
 "partner-form","deliveryAddress","documentation",,,,
 "partner-form","mainInvoicingAddress","documentation",,,,
@@ -4170,8 +4170,8 @@
 "company-form","ipoOperationCodeImportCFONB","documentation",,,,
 "company-form","ipoAndChequeOperationCodeImportCFONB","documentation",,,,
 "company-form","irrecoverableReasonPassage","documentation",,,,
-"company-form","irrecoverableStandardRateVat","documentation",,,,
-"company-form","payingBackTaxVat","documentation",,,,
+"company-form","irrecoverableStandardRateTax","documentation",,,,
+"company-form","payingBackTaxTax","documentation",,,,
 "company-form","currency","documentation",,,,
 "company-form","defaultBankDetails","documentation",,,,
 "company-form","bankDetailsSet","documentation",,,,
@@ -4200,7 +4200,7 @@
 "company-form","rejectPaymentScheduleMailModel","documentation",,,,
 "company-form","clearanceAccountSet","documentation",,,,
 "company-form","profitAccount","documentation",,,,
-"company-form","standardRateVat","documentation",,,,
+"company-form","standardRateTax","documentation",,,,
 "company-form","payboxUrl","documentation",,,,
 "company-form","payboxSite","documentation",,,,
 "company-form","payboxRang","documentation",,,,
@@ -4264,7 +4264,7 @@
 "general-form","today","documentation",,,,
 "general-form","logOk","documentation",,,,
 "general-form","defaultProjectUnit","documentation",,,,
-"general-form","defaultExemptionVat","documentation",,,,
+"general-form","defaultExemptionTax","documentation",,,,
 "general-form","isInvoiceMoveConsolidated","documentation",,,,
 "general-form","transferAndDirectDebitInterbankCode","documentation",,,,
 "general-form","chequeInterbankCode","documentation",,,,

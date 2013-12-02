@@ -28,7 +28,7 @@
 	    <field name="defaultProjectUnit"/>
 	    <notebook colSpan="6">
 	        <page title="Accounting" cols="4">
-	            <field name="defaultExemptionVat"/>
+	            <field name="defaultExemptionTax"/>
 	            <field name="isInvoiceMoveConsolidated"/>
 	            <separator title="Rejects reasons and codes list" colSpan="6"/>
 	            <field name="transferAndDirectDebitInterbankCode"/>

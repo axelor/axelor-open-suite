@@ -27,13 +27,13 @@
   	<string name="externalReference" title="Supplier reference"/>
   	
 <!-- Ligne de TVA -->	
-	<one-to-many name="purchaseOrderLineVatList" ref="com.axelor.apps.supplychain.db.PurchaseOrderLineVat" mappedBy="purchaseOrder" title="V.A.T. Lines"/>
+	<one-to-many name="purchaseOrderLineTaxList" ref="com.axelor.apps.supplychain.db.PurchaseOrderLineTax" mappedBy="purchaseOrder" title="Tax Lines"/>
 
 <!-- Validation and totals -->	
     <many-to-one name="validatedByUserInfo" ref="com.axelor.apps.base.db.UserInfo" readonly="true" title="Validated by"/> 
   	<date name="validationDate" title="Validation date" readonly="true"/>
     <decimal name="exTaxTotal" title="Total W.V." scale="2" precision="20" readonly="true"/>
-    <decimal name="vatTotal" title="Total V.A.T." scale="2" precision="20" readonly="true"/>
+    <decimal name="taxTotal" title="Total Tax" scale="2" precision="20" readonly="true"/>
     <decimal name="inTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true"/>
     <decimal name="amountRemainingToBeInvoiced" title="Amount remaining to invoice" readonly="true"/>
 

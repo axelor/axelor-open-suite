@@ -46,7 +46,7 @@
     
     <!-- Invoice content -->
     <one-to-many name="invoiceLineList" ref="InvoiceLine" mappedBy="invoice" title="Invoice Lines" />
-    <one-to-many name="invoiceLineVatList" ref="InvoiceLineVat" mappedBy="invoice" title="VAT Lines" readonly="true" />
+    <one-to-many name="invoiceLineTaxList" ref="InvoiceLineTax" mappedBy="invoice" title="Tax Lines" readonly="true" />
     
     <!-- Configuration -->
     <boolean name="alreadyPrintedOk" title="Already printed ?" default="true" help="Field allowing to distinguish the original invoice from a copy/duplicata."/>
@@ -87,14 +87,14 @@
     
 	<!--     Total based on the partner currency in the company accounts -->
 	<!--     TODO : To be renamed with the prefix 'accounting' -->
-    <decimal name="exTaxTotal" title="Total W.V." scale="2" precision="20" readonly="true" help="Total without VAT."/>
-    <decimal name="vatTotal" title="Total V.A.T." scale="2" precision="20" readonly="true" help="Total VAT amount is a result of the sum of the VAT lines Amount."/>
-    <decimal name="inTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true" help="Total all taxes/VAT included."/>
+    <decimal name="exTaxTotal" title="Total W.V." scale="2" precision="20" readonly="true" help="Total without Tax"/>
+    <decimal name="taxTotal" title="Total Tax" scale="2" precision="20" readonly="true" help="Total Tax amount is a result of the sum of the Tax lines Amount."/>
+    <decimal name="inTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true" help="Total all taxes included."/>
     <decimal name="inTaxTotalRemaining" title="Remaining to pay" readonly="true" />
     
 	<!--     Totals based on the invoice currency -->
     <decimal name="invoiceExTaxTotal" title="Total W.V." scale="2" precision="20" readonly="true"/>
-    <decimal name="invoiceVatTotal" title="Total V.A.T." scale="2" precision="20" readonly="true"/>
+    <decimal name="invoiceTaxTotal" title="Total Tax" scale="2" precision="20" readonly="true"/>
     <decimal name="invoiceInTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true"/>
     <decimal name="invoiceAmountPaid" title="Amount paid" readonly="true" />
     

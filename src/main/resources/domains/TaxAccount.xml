@@ -5,9 +5,9 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="VatAccount" lang="java">
+  <entity name="TaxAccount" lang="java">
   
-  	<many-to-one name="vat" ref="com.axelor.apps.account.db.Vat" title="V.A.T."/>
+  	<many-to-one name="tax" ref="com.axelor.apps.account.db.Tax" title="Tax"/>
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
     <many-to-one name="account" ref="com.axelor.apps.account.db.Account" title="Account" required="true"/>
   

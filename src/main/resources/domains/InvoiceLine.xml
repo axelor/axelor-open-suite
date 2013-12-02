@@ -18,7 +18,7 @@
     <decimal name="qty" title="Qty" precision="20" scale="2"/>
     <decimal name="exTaxTotal" title="Total W.T." precision="20" scale="2" readonly="true"/>
     <decimal name="accountingExTaxTotal" title="Total W.T. in accounting currency" precision="20" scale="2" hidden="true"/>
-    <many-to-one name="vatLine" ref="com.axelor.apps.account.db.VatLine" title="V.A.T."/>
+    <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
     
     <decimal name="discountAmount" title="Discount amount"/>
   	<integer name="discountTypeSelect" title="In % / fixed" selection="base.price.list.line.amount.type.select"/>

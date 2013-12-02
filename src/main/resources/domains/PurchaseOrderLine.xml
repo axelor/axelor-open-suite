@@ -13,7 +13,7 @@
   	<decimal name="qty" title="Qty" default="1"/>
   	<string name="productName" title="Label"/>
   	<decimal name="price" title="Unit price"/>
-  	<many-to-one name="vatLine" ref="com.axelor.apps.account.db.VatLine" title="V.A.T."/>
+  	<many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
   	<decimal name="exTaxTotal" title="Subtotal W.T."/>
   	
   	<string name="description" title="Description" large="true"/>

@@ -74,7 +74,7 @@
 	<integer name="nbrEmployees" title="N° of Employees"/>
 	<integer name="salesTurnover" title="Turnover"/>
 	<string name="registrationCode" title="Registration code"/>
-	<string name="vatNbr" title="VAT N°"/>
+	<string name="taxNbr" title="Tax N°"/>
 	
 	 <string name="fullName" title="Nom du Contact" namecolumn="true">
 	    <![CDATA[
