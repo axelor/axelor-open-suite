@@ -51,6 +51,25 @@
             </page>
         </notebook>
     </form>
+    
+    
+    <form name="company-lite-form" title="Company" model="com.axelor.apps.base.db.Company" cols="4">
+	    
+	    <group readonly="true">
+	    	<field name="administration" />
+	        <field name="name"/>
+	        <field name="code"/>
+	        <field name="parent"/>
+	        <field name="logoPath" />
+	        <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+	        <field name="address" colSpan="4"/>
+	        <field name="currency"/>
+	        <group title="Notes">
+	        	<field name="notes" showTitle="false"/>
+	        </group>
+	    </group>
+        
+    </form>
 	
 	
 </object-views>

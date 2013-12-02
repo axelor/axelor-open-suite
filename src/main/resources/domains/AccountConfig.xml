@@ -10,7 +10,7 @@
     <string name="name" title="Name" required="true"/>
     <string name="code" title="Code" unique="true"/>
     
-    <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" unique="true"/>
+    <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     
 <!--     JOURNAL -->
     <many-to-one name="customerSalesJournal" ref="com.axelor.apps.account.db.Journal" title="Sales Journal"/>
@@ -43,6 +43,9 @@
    	<string name="cashRegisterAddressEmail" title="Cashier email address"/>
    	<many-to-one name="payingBackTaxVat" ref="com.axelor.apps.account.db.Vat" title="VAT for management fee"/>
    	
+   	<!--  Onglet CFONB -->
+	<many-to-one name="cfonbConfig" ref="com.axelor.apps.account.db.CfonbConfig" title="Cfonb configuration"/>
+   	
    	<!--  Doubtful Cust. -->
    	<string name="sixMonthDebtPassReason" title="Shift Reason (long term debt)" default="Receivables over 6 months"/>
    	<string name="threeMonthDebtPassReason" title="Shift Reason (short term debt)" default="Receivables over 3 months"/>
@@ -66,31 +69,6 @@
    
    	<string name="exportPath" title="Filepath for exported files (Accounting)"/>
    	
-   	<!-- Export CFONB -->
-   	<string name="senderRecordCodeExportCFONB" title="Sender record code" default="03"/>
-   	<string name="senderNumExportCFONB" title="Sender Nbr"/>
-   	<string name="senderNameCodeExportCFONB" title="Sender Name"/>
-   	
-   	<string name="recipientRecordCodeExportCFONB" title="Recipient record code" default="06"/>
-   	
-   	<string name="totalRecordCodeExportCFONB" title="Total record code" default="08"/>
-   	
-   	<string name="transferOperationCodeExportCFONB" title="Wire transfer operation code" default="02"/>
-   	<string name="directDebitOperationCodeExportCFONB" title="Direct debit operation code" default="08"/>
-   	
-   	<!-- Import CFONB -->
-   	<string name="headerRecordCodeImportCFONB" title="Header record code" default="31"/>
-   	
-   	<string name="detailRecordCodeImportCFONB" title="Details record code" default="34"/>
-   	
-   	<string name="endingRecordCodeImportCFONB" title="Ending record code" default="39"/>
-   	
-   	<string name="transferOperationCodeImportCFONB" title="Rejected Wire transfer operation code" default="21"/>
-   	<string name="directDebitOperationCodeImportCFONB" title="Unpaid direct debit operation code" default="81"/>
-   	<string name="ipoRejectOperationCodeImportCFONB" title="Unpaid IPO operation code" default="71"/>
-   	<string name="ipoOperationCodeImportCFONB" title="IPO operation code" default="07"/>
-	<string name="ipoAndChequeOperationCodeImportCFONB" title="IPO and Cheque operation code" default="97"/>
-   	
    	<!-- Onglet Prélèvements -->
    	<string name="paymentScheduleExportFolderPathCFONB" title="Filepath for direct debit exports (CFONB)" help="exemple : /home/axelor/"/>
    	
@@ -111,20 +89,8 @@
    	<many-to-one name="irrecoverableStandardRateVat" ref="com.axelor.apps.account.db.Vat" title="VAT Standard rate for irrecoverables"/>
    	
 	<!--  Onglet Paybox -->
-	<string name="payboxUrl" title="Environment Url"/>
-	<string name="payboxSite" title="Site Nbr" min="7" max="7"/>   
-	<string name="payboxRang" title="Rank number" min="2" max="2"/>
-	<string name="payboxDevise" title="Transaction currency" min="3" max="3" default="978"/>
-	<string name="payboxIdentifiant" title="Internal identifier" max="9"/>
-	<string name="payboxHashSelect" title="Algorithm hashing type to calculate the footprint" default="SHA512" selection="company.paybox.hash.select"/>
-	<string name="payboxHmac" title="Secret key"/>
-	<string name="payboxDefaultEmail" title="Axelor Backoffice email"/>
-	<string name="payboxRetour" title="Variables list returned by Paybox"/>
-	<string name="payboxRetourUrlEffectue" title="Url returned by Paybox once payment done" default="http://localhost:8080/axelor/#/ds/account.root.periodic.processing.account.voucher/edit/%id?retour=1"/>
-	<string name="payboxRetourUrlRefuse" title="Url returned by Paybox once payment refused" default="http://localhost:8080/axelor/#/ds/account.root.periodic.processing.account.voucher/edit/%id?retour=2"/>
-	<string name="payboxRetourUrlAnnule" title="Url returned by Paybox once payment cancelled" default="http://localhost:8080/axelor/#/ds/account.root.periodic.processing.account.voucher/edit/%id?retour=3"/>
-	<string name="payboxPublicKeyPath" title="Path to Paybox public key" default="/home/soregies/Paybox/pubkey.pem"/>
-  
+	<many-to-one name="payboxConfig" ref="com.axelor.apps.account.db.PayboxConfig" title="Paybox configuration"/>
+	  
 	<!-- Onglet Import des paiements par TIP et TIP chèque-->
    	<string name="interbankPaymentOrderImportPathCFONB" title="Filepath to import IPO, and IPO and Cheque payments"  help="example : /home/axelor/reject.dat"/>
     <string name="tempInterbankPaymentOrderImportPathCFONB" title="Temporary filepath to import IPO, and IPO and Cheque payments" help="example : /home/axelor/reject.dat"/>
