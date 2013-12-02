@@ -177,7 +177,7 @@
 	                    <field name="salesTurnover"/>
 	                    <field name="nbrEmployees"/>
 	                    <field name="registrationCode"/>
-	                    <field name="vatNbr"/>
+	                    <field name="taxNbr"/>
 	                    <field name="parentPartner" hideIf="partnerTypeSelect != 1"/>
 	                </group>
 	            </group>
