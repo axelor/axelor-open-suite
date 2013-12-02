@@ -57,7 +57,7 @@ public class ExpenseLineController {
 
 				try  {
 					
-					response.setValue("vatLine", expenseLineService.getVatLine(expense, expenseLine));
+					response.setValue("taxLine", expenseLineService.getTaxLine(expense, expenseLine));
 					
 				}
 				catch(Exception e)  {

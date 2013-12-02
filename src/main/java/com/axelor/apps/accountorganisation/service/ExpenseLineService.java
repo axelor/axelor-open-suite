@@ -33,7 +33,7 @@ package com.axelor.apps.accountorganisation.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.db.VatLine;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.service.AccountManagementService;
 import com.axelor.apps.organisation.db.Expense;
 import com.axelor.apps.organisation.db.ExpenseLine;
@@ -50,9 +50,9 @@ public class ExpenseLineService {
 	private AccountManagementService accountManagementService;
 	
 	
-	public VatLine getVatLine(Expense expense, ExpenseLine expenseLine) throws AxelorException  {
+	public TaxLine getTaxLine(Expense expense, ExpenseLine expenseLine) throws AxelorException  {
 		
-		return accountManagementService.getVatLine(
+		return accountManagementService.getTaxLine(
 				expenseLine.getDate(), expenseLine.getProduct(), expense.getCompany(), true);
 		
 	}

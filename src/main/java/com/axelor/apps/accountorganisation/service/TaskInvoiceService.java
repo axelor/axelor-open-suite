@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.IInvoice;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.VatLine;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.accountorganisation.exceptions.IExceptionMessage;
@@ -203,9 +203,9 @@ public class TaskInvoiceService {
 	
 	
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, BigDecimal exTaxTotal, Product product, String productName, BigDecimal price, String description, BigDecimal qty,
-			Unit unit, VatLine vatLine, Task task, ProductVariant productVariant) throws AxelorException  {
+			Unit unit, TaxLine taxLine, Task task, ProductVariant productVariant) throws AxelorException  {
 		
-		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, productName, price, description, qty, unit, vatLine, task, 
+		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, productName, price, description, qty, unit, taxLine, task, 
 				product.getInvoiceLineType(), productVariant, BigDecimal.ZERO, 0, exTaxTotal, false) {
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
@@ -236,7 +236,7 @@ public class TaskInvoiceService {
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, ExpenseLine expenseLine) throws AxelorException  {
 		
 		return this.createInvoiceLine(invoice, expenseLine.getInTaxTotal(), expenseLine.getProduct(), expenseLine.getProduct().getName(), 
-				expenseLine.getPrice(), expenseLine.getShortDescription(), expenseLine.getQty(), expenseLine.getProduct().getUnit(), expenseLine.getVatLine(), 
+				expenseLine.getPrice(), expenseLine.getShortDescription(), expenseLine.getQty(), expenseLine.getProduct().getUnit(), expenseLine.getTaxLine(), 
 				expenseLine.getTask(), null);
 		
 	}
