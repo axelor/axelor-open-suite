@@ -19,7 +19,7 @@
 	        <field name="defaultTask" hideIf="!isTimeSheetImputable"/>
 	        <field name="clientPartner"/>
 	        <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
-	        <field name="company" widget="SuggestBox" readonlyIf="projectStatusSelect >= 3 || businessStatusSelect >= 2"/>
+	        <field name="company" widget="SuggestBox" form-view="company-lite-form" readonlyIf="projectStatusSelect >= 3 || businessStatusSelect >= 2"/>
 	    </group>
 	    <group showTitle="false" colSpan="2" cols="2">
 	    	<field name="projectStatusSelect" widget="NavSelect" showTitle="false" colSpan="2"/>
