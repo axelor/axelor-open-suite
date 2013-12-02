@@ -279,8 +279,15 @@
 	
 	<input file="account_analyticAccountManagement.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAccountManagement" />
 	
+	<input file="account_payboxConfig.csv" separator=";" type="com.axelor.apps.account.db.PayboxConfig"/>
+	
+	<input file="account_cfonbConfig.csv" separator=";" type="com.axelor.apps.account.db.CfonbConfig"/>
+	
+	<input file="account_accountConfig.csv" separator=";" type="com.axelor.apps.account.db.AccountConfig"/>
 	
 	<input file="account_reminderConfigLine.csv" separator=";" type="com.axelor.apps.account.db.ReminderConfigLine" />
+	
+	
 	
 	
 <!-- 	Deuxième passe sur le package 'base' pour prendre en compte les éléments du package account  -->
@@ -403,6 +410,8 @@
  		<bind to="endDateT" column="endDateT" eval="!endDateT.empty ? endDateT.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4}) ([0-9]{2}):([0-9]{2})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1'+'T$4'+':$5') : null"/>
  		<bind to="name" column="name_fr"/>
  	</input>	
+ 	
+ 	<input file="supplychain_supplychainConfig.csv" separator=";" type="com.axelor.apps.supplychain.db.SupplychainConfig"/>
  	
  	<input file="base_spentTime.csv" separator=";" type="com.axelor.apps.base.db.SpentTime"/>
 	  	
