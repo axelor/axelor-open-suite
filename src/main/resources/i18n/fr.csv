@@ -1428,3 +1428,205 @@
 "axelor-account",,"other","Invoice.purchaseRefundNo","AVOIR FOURNISSEUR N°",,
 "axelor-account",,"other","Invoice.invoiceNo","FACTURE N°",,
 "axelor-account",,"other","Invoice.refundNo","AVOIR N°",,
+"com.axelor.apps.base.db.AccountConfig","customerSalesJournal","field","Sales Journal","Journal des ventes clients",,"Journal utilisé par défaut pour les écritures de factures clients."
+"com.axelor.apps.base.db.AccountConfig","customerCreditNoteJournal","field"," Cust. Credit note Journal","Journal des avoirs clients",,"Journal utilisé par défaut pour les écritures des avoirs clients."
+"com.axelor.apps.base.db.AccountConfig","supplierPurchaseJournal","field","Supplier Purchase Journal","Journal des achats Fourn.",,"Journal utilisé par défaut pour les écritures de factures fournisseurs."
+"com.axelor.apps.base.db.AccountConfig","supplierCreditNoteJournal","field","Suppl. Credit Note Journal","Journal des avoirs fournisseurs",,"Journal utilisé par défaut pour les écritures des avoirs fournisseur."
+"com.axelor.apps.base.db.AccountConfig","customerAccount","field","Customer account","Compte client",,"Compte comptable utilisé par défaut à l'enregistrement de la fiche du Tiers et pour suivre sa situation financière."
+"com.axelor.apps.base.db.AccountConfig","supplierAccount","field","Supplier account","Compte comptable Fourn.",,"Compte comptable utilisé par défaut à l'enregistrement de la fiche du Tiers et pour suivre sa situation financière."
+"com.axelor.apps.base.db.AccountConfig","doubtfulCustomerAccount","field","Doubtful customers account","Compte client douteux","Utiliser pour le passage en client douteux","Compte utilisé pour la contrepartie du compte client lors du passage en créance douteuse."
+"com.axelor.apps.base.db.AccountConfig","irrecoverableAccount","field","Irrecoverable account","Compte créances irrécouvrables",,"Compte utilisé pour la contrepartie du compte client lors du passage en créance irrécouvrable."
+"com.axelor.apps.base.db.AccountConfig","invoiceDirectDebitJournal","field","Invoice Direct Debit Journal","Journal prélèvement facture et échéancier",,"Journal utilisé par défaut pour les écritures de paiement par prélèvement d'une facture."
+"com.axelor.apps.base.db.AccountConfig","majorAccountJournal","field","Journal prèlèvement lissage de paiement","Journal prèlèvement lissage de paiement",,
+"com.axelor.apps.base.db.AccountConfig","rejectJournal","field","Rejects journal","Journal des rejets",,"Journal utilisé par défaut pour les écritures générées par un rejet (chèque, prélèvement...)"
+"com.axelor.apps.base.db.AccountConfig","accountClearanceJournal","field","Account clearance journal","Journal d'apurement des trop-perçus",,"Journal utilisé par défaut pour les écritures d'apurement des trop perçus."
+"com.axelor.apps.base.db.AccountConfig","reimbursementJournal","field","Reimbursement Journal","Journal remboursement",,"Journal utilisé par défaut pour les écritures de remboursements."
+"com.axelor.apps.base.db.AccountConfig","irrecoverableJournal","field","Irrecoverable Journal","Journal irrécouvrable",,"Journal utilisé par défaut lors du passage d'une créance en irrécouvrable."
+"com.axelor.apps.base.db.AccountConfig","miscOperationJournal","field","Misc. Operation Journal","Journal des O.D.",,"Journal utilisé par défaut lors d'une écriture typée <Opération Diverses>."
+"com.axelor.apps.base.db.AccountConfig","technicalJournal","field","Technical Journal","Journal technique",,"*"
+"com.axelor.apps.base.db.AccountConfig","thresholdDistanceFromRegulation","field","Allowed Payment range","Seuil d'écart de règlement",,"*"
+"com.axelor.apps.base.db.AccountConfig","cashPositionVariationAccount","field","Cashier Regulation account","Compte différence de caisse",,"Compte utilisé pour la contrepartie d'écriture en cas de différence de caisse."
+"com.axelor.apps.base.db.AccountConfig","cashRegisterMailModel","field","Cashier email model","Modèle d'email Caisse",,"*"
+"com.axelor.apps.base.db.AccountConfig","cashRegisterAddressEmail","field","Cashier email address","Adresse email caisse",,"*"
+"com.axelor.apps.base.db.AccountConfig","payingBackTaxTax","field","Tax for management fee","T.V.A. pour frais de gestion",,"*"
+"com.axelor.apps.base.db.AccountConfig","sixMonthDebtPassReason","field","Shift Reason (long term debt)","Motif de passage (créance + 6 mois)",,"Message indiqué pour le passage en créance douteuse des créances de plus de six mois (paramétrable) non réglées ou réglées partiellement."
+"com.axelor.apps.base.db.AccountConfig","threeMonthDebtPassReason","field","Shift Reason (short term debt)","Motif de passage (créance + 3 mois)",,"Message indiqué pour le passage en créance douteuse des créances de plus de trois mois (paramétrable) non réglées ou réglées partiellement."
+"com.axelor.apps.base.db.AccountConfig","litigationDebtPassReason","field","Shift Reason (litigation)","Motif de passage (contentieux)",,"Message indiqué pour le passage en créance douteuse des créances de plus de trois mois (paramétrable) non réglées ou réglées partiellement."
+"com.axelor.apps.base.db.AccountConfig","sixMonthDebtMonthNumber","field","Long term debt duration (month)","Nombre de mois pris en compte (créance + 6 mois)",,"Paramètre nombre de mois pour créances longues (par défaut 6 mois)."
+"com.axelor.apps.base.db.AccountConfig","threeMonthDebtMontsNumber","field","Short term debt duration (month)","Nombre de mois pris en compte (créance + 3 mois)",,"Paramètre nombre de mois pour créances courtes (par défaut 3 mois)."
+"com.axelor.apps.base.db.AccountConfig","reminderConfigLineList","field","Reminder Configuration Table","Configurations du recouvrement",,"Tableau permettant de sélectionner pour chaque catégorie de tiers, une méthode de relance appropriée."
+"com.axelor.apps.base.db.AccountConfig","mailTransitTime","field","Mail transit time","Délai d'acheminement (j)",,"Temps nécessaire à l'acheminement du courrier au client en jours."
+"com.axelor.apps.base.db.AccountConfig","reimbursementExportFolderPathCFONB","field","Path for reimbursement files (CFONB)","Dossier d'export des Rbts (CFONB)","example : /home/axelor/reject.dat","Dossier sur le serveur où les remboursements via CFONB seront exportés, exemple : /home/axelor/Export_ERP/Export_Remboursements/ ."
+"com.axelor.apps.base.db.AccountConfig","reimbursementExportFolderPath","field","Path for reimbursement files (SEPA)","Dossier d'export des Rbts (SEPA)","example : /home/axelor/reject.dat","Dossier sur le serveur où les remboursements via SEPA seront exportés, exemple : /home/axelor/Export_ERP/Export_Remboursements/ ."
+"com.axelor.apps.base.db.AccountConfig","lowerThresholdReimbursement","field","Lower reimbursement limit","Seuil inférieur de remboursement",,"Seuil inférieur à partir duquel un remboursement sera généré."
+"com.axelor.apps.base.db.AccountConfig","upperThresholdReimbursement","field","Upper reimbursement limit","Seuil supérieur de remboursement",,"Seuil supérieur à partir duquel une validation manuelle est nécessaire."
+"com.axelor.apps.base.db.AccountConfig","reimbursementAccount","field","Reimbursement account","Compte de remboursement",,"Compte comptable utilisé par défaut pour la contrepartie des écritures de remboursements."
+"com.axelor.apps.base.db.AccountConfig","reimbursementMailModel","field","Reimbursement mail model","Modèle d'email de remboursement",,"Modèle d'email envoyé au bénéficiaire du remboursement"
+"com.axelor.apps.base.db.AccountConfig","reimbursementImportFolderPathCFONB","field","Filepath for rejected reimbursements","Chemin d'import des rejets des remboursements","example : /home/axelor/reject.dat","Chemin vers le fichier d'import des rejets de remboursement CFONB, exemple : /home/axelor/Import_ERP/Import_Rejets_Remboursements/rejet_axe.dat ."
+"com.axelor.apps.base.db.AccountConfig","tempReimbImportFolderPathCFONB","field","Filepath for temporary rejected reimbursements import","Chemin d'import temporaire des rejets des remboursements","example : /home/axelor/reject.dat","Chemin vers le fichier d'import des rejets de remboursement SEPA, exemple : /home/axelor/Import_ERP/Import_Rejets_Remboursements/rejet_axe.dat ."
+"com.axelor.apps.base.db.AccountConfig","exportPath","field","Filepath for exported files (Accounting)","Chemin fichier exporté (si -> AGRESSO)",,"Chemin vers le fichier d'export comptable"
+"com.axelor.apps.base.db.CfonbConfig","senderRecordCodeExportCFONB","field","Sender record code","Code enregistrement émetteur",,"Par défaut '03'"
+"com.axelor.apps.base.db.CfonbConfig","senderNumExportCFONB","field","Sender Nbr","N° d'émetteur",,"N° d'émetteur de la société"
+"com.axelor.apps.base.db.CfonbConfig","senderNameCodeExportCFONB","field","Sender Name","Nom/Raison sociale émetteur",,
+"com.axelor.apps.base.db.CfonbConfig","recipientRecordCodeExportCFONB","field","Recipient record code","Code enreg. destinataire",,"Par défaut '06'"
+"com.axelor.apps.base.db.CfonbConfig","totalRecordCodeExportCFONB","field","Total record code","Code enreg. total",,"Par défaut '08'"
+"com.axelor.apps.base.db.CfonbConfig","transferOperationCodeExportCFONB","field","Wire transfer operation code","Code opér. Virement",,"Par défaut '02'"
+"com.axelor.apps.base.db.CfonbConfig","directDebitOperationCodeExportCFONB","field","Direct debit operation code","Code opér. Prélèvement",,"Par défaut '08'"
+"com.axelor.apps.base.db.CfonbConfig","headerRecordCodeImportCFONB","field","Header record code","Code enreg. en-tête",,"Par défaut '31'"
+"com.axelor.apps.base.db.CfonbConfig","detailRecordCodeImportCFONB","field","Details record code","Code enreg. détail",,"Par défaut '34'"
+"com.axelor.apps.base.db.CfonbConfig","endingRecordCodeImportCFONB","field","Ending record code","Code enreg. fin",,"Par défaut '39'"
+"com.axelor.apps.base.db.CfonbConfig","transferOperationCodeImportCFONB","field","Rejected Wire transfer operation code","Code opér. Virement rejetés",,"Par défaut '21'"
+"com.axelor.apps.base.db.CfonbConfig","directDebitOperationCodeImportCFONB","field","Unpaid direct debit operation code","Code opér. Prélèvement impayés",,"Par défaut '81'"
+"com.axelor.apps.base.db.CfonbConfig","ipoRejectOperationCodeImportCFONB","field","Unpaid IPO operation code","Code opér. TIP impayés",,"Par défaut '71'"
+"com.axelor.apps.base.db.CfonbConfig","ipoOperationCodeImportCFONB","field","IPO operation code","Code opér. TIP",,
+"com.axelor.apps.base.db.CfonbConfig","ipoAndChequeOperationCodeImportCFONB","field","IPO and Cheque operation code","Code opér. TIP + chèque",,
+"com.axelor.apps.base.db.AccountConfig","paymentScheduleExportFolderPathCFONB","field","Filepath for direct debit exports (CFONB)","Dossier d'export des prélèvements (CFONB)","exemple : /home/axelor/","*"
+"com.axelor.apps.base.db.AccountConfig","rejectionPaymentMode","field","Payment mode after rejection","Mode de paiement après rejet",,"*"
+"com.axelor.apps.base.db.AccountConfig","paymentScheduleRejectNumLimit","field","Max Nbr. for payment schedule rejection","Nbre limite de rejet Echéancier de paiement",,"*"
+"com.axelor.apps.base.db.AccountConfig","invoiceRejectNumLimit","field","Max Nbr. of invoices rejection","Nbre limite de rejet Facture",,"*"
+"com.axelor.apps.base.db.AccountConfig","rejectImportPathAndFileName","field","Filepath to import rejected records","Chemin du fichier d'import","example : /home/axelor/reject.dat","*"
+"com.axelor.apps.base.db.AccountConfig","tempImportPathAndFileName","field","Temporary filepath to import rejected records","Chemin du fichier d'import temporaire","example : /home/axelor/reject.dat","*"
+"com.axelor.apps.base.db.AccountConfig","rejectPaymentScheduleMailModel","field","Mail model for invoice and payment schedule rejections","Modèle de courrier rejet Facture et Echéancier de paiement",,
+"com.axelor.apps.base.db.AccountConfig","clearanceAccountSet","field","Clearance Accounts","Comptes d'apurements",,"Comptes comptables sur lesquels les trop-perçus seront apurés."
+"com.axelor.apps.base.db.AccountConfig","profitAccount","field","Profit accounts","Compte de profits",,"Compte comptable de type profit utilisé par défaut pour la contrepartie des écritures d'apurement de trop perçus."
+"com.axelor.apps.base.db.AccountConfig","standardRateTax","field","Tax Standard rate for clearance","T.V.A. taux normal",,"TVA à utiliser pour l'apurement des trop perçus."
+"com.axelor.apps.base.db.AccountConfig","irrecoverableReasonPassage","field","Irrecoverable shifting reason","Motif de passage en irrécouvrable",,"Motif qui sera reporté sur l'écriture de passage en irrcouvrable."
+"com.axelor.apps.base.db.AccountConfig","irrecoverableStandardRateTax","field","Tax Standard rate for irrecoverables","T.V.A. Pour passage en irrécouvrable",,
+"com.axelor.apps.base.db.PayboxConfig","payboxUrl","field","Environment Url","Url de l'environnement",,"Url d'appel complétée par un point d'interrogation, exemple : https://preprod-tpeweb.paybox.com/cgi/MYchoix_pagepaiement.cgi? ."
+"com.axelor.apps.base.db.PayboxConfig","payboxSite","field","Site Nbr","N° de site",,"N° de site (TPE) à 7 chiffres fourni par la banque du commerçant."
+"com.axelor.apps.base.db.PayboxConfig","payboxRang","field","Rank number","N° de rang",,"N° de rang (ou ""machine"") à 2 chiffres fourni par la banque du commerçant."
+"com.axelor.apps.base.db.PayboxConfig","payboxDevise","field","Transaction currency","Devise des transactions",,"Code monnaie de la transaction à 3 chiffres suivant la norme ISO 4217 (exemple : Euro 978, Dollar 840)."
+"com.axelor.apps.base.db.PayboxConfig","payboxIdentifiant","field","Internal identifier","Identifiant interne",,"Identifiant Paybox de 1 à 9 chiffres fourni par Paybox au moment de l'inscription du commerçant. "
+"com.axelor.apps.base.db.PayboxConfig","payboxHashSelect","field","Algorithm hashing type to calculate the footprint","Type d'algorithme de hachage utilisé lors du calcul de l'empreinte",,"Défini l'algorithme de hachage utilisé lors du calcul du HMAC. Valeur par défaut SHA512."
+"com.axelor.apps.base.db.PayboxConfig","payboxHmac","field","Secret key","Clé secrète",,"Clé secrète fournie par Paybox, utilisée pour le calcul de l'empreinte."
+"com.axelor.apps.base.db.PayboxConfig","payboxDefaultEmail","field","Axelor Backoffice email","Email de back-office Axelor",,"*"
+"com.axelor.apps.base.db.PayboxConfig","payboxRetour","field","Variables list returned by Paybox","Liste des variables à retourner par Paybox",,"Listes des variables renvoyées par Paybox. Format: <nom de variable>:<lettre>"
+"com.axelor.apps.base.db.PayboxConfig","payboxRetourUrlEffectue","field","Url returned by Paybox once payment done","Url retourner par Paybox une fois le paiement effectué",,"Correspond à l’adresse appelée par Paybox si le paiement est validé."
+"com.axelor.apps.base.db.PayboxConfig","payboxRetourUrlRefuse","field","Url returned by Paybox once payment refused","Url retourner par Paybox une fois le paiement refusé",,"Correspond à l’adresse appelée par Paybox si le paiement est refusé."
+"com.axelor.apps.base.db.PayboxConfig","payboxRetourUrlAnnule","field","Url returned by Paybox once payment cancelled","Url retourner par Paybox une fois le paiement annulé",,"Correspond à l’adresse appelée par Paybox si le paiement est annulé."
+"com.axelor.apps.base.db.PayboxConfig","payboxPublicKeyPath","field","Path to Paybox public key","Chemin de la clé publique Paybox",,"Chemin de la clé public paybox (exemple : /home/soregies/Paybox/pubkey.pem)."
+"com.axelor.apps.base.db.AccountConfig","interbankPaymentOrderImportPathCFONB","field","Filepath to import IPO, and IPO and Cheque payments","Chemin d'import des paiements par TIP et TIP chèque","example : /home/axelor/reject.dat","Chemin vers le fichier d'import des paiements par TIP et TIP/Chèque, exemple : /home/axelor/Import_ERP/Import_Rejets_Remboursements/rejet_axe.dat ."
+"com.axelor.apps.base.db.AccountConfig","tempInterbankPaymentOrderImportPathCFONB","field","Temporary filepath to import IPO, and IPO and Cheque payments","Chemin d'import temporaire des paiements par TIP et TIP chèque","example : /home/axelor/reject.dat","Chemin vers le fichier d'import temporaire des paiements par TIP et TIP/Chèque, exemple : /home/axelor/Import_ERP/Import_Rejets_Remboursements/rejet_axe.dat ."
+"com.axelor.apps.base.db.AccountConfig","interbankPaymentOrderRejectImportPathCFONB","field","Filepath to import IPO, and IPO and Cheque payments rejects","Chemin d'import des rejets de paiement par TIP et TIP chèque","example : /home/axelor/reject.dat","Chemin vers le fichier d'import des rejets de paiements par TIP et TIP/Chèque, exemple : /home/axelor/Import_ERP/Import_Rejets_Remboursements/rejet_axe.dat ."
+"com.axelor.apps.base.db.AccountConfig","tempInterbankPaymentOrderRejectImportPathCFONB","field","Temporary filepath to import IPO, and IPO and Cheque payments rejects","Chemin d'import temporaire des rejets de paiement par TIP et TIP chèque","example : /home/axelor/reject.dat","Chemin vers le fichier d'import temporaire des paiements par TIP et TIP/Chèque, exemple : /home/axelor/Import_ERP/Import_Rejets_Remboursements/rejet_axe.dat ."
+"com.axelor.apps.base.db.AccountConfig","generatedMailFilePath","field","Filepath to export generated mails","Chemin d'export des courriers générés","example : /home/axelor/mail/","*"
+"com.axelor.apps.base.db.AccountConfig","generatedEmailFilePath","field","Filepath to export generated emails","Chemin d'export des emails générés","example : /home/axelor/email/","*"
+"com.axelor.apps.base.db.AccountConfig","generatedMailFileName","field","Generated mail files name prefix","Préfixe du nom de fichier d'export des courriers générés","exemple : letter_","Préfix du nom de fichier pour les courriers générés et stockés sur le serveur, exemple : 'courrier_' ."
+"com.axelor.apps.base.db.AccountConfig","generatedEmailFileName","field","Generated email files name prefix","Préfixe du nom de fichier d'export des emails générés","exemple : email_","Préfix du nom de fichier pour les emails générés et stockés sur le serveur, exemple : 'courrier_' ."
+"com.axelor.apps.base.db.AccountConfig","showDetailsInInvoice","field","Show details in invoice","Voir détails sur facture",,
+"com.axelor.apps.base.db.AccountConfig",,"separator","Journals","Journaux",,
+"com.axelor.apps.base.db.AccountConfig",,"separator","Accounts","Tiers",,
+"com.axelor.apps.base.db.AccountConfig",,"separator","Payment differences","Écart de règlement",,
+"com.axelor.apps.base.db.AccountConfig",,"separator","Exports","Exports",,
+"com.axelor.apps.base.db.AccountConfig",,"separator","Cashiers","Caisses",,
+"com.axelor.apps.base.db.CfonbConfig",,"separator","CFONB Export","Export CFONB",,
+"com.axelor.apps.base.db.CfonbConfig",,"separator","CFONB Import","Import CFONB",,
+"com.axelor.apps.base.db.AccountConfig",,"separator","Shift to irrecoverable","Passage en irrécouvrable",,
+"com.axelor.apps.base.db.AccountConfig",,"separator","Tax payment","Paiement des taxes",,
+"com.axelor.apps.base.db.AccountConfig",,"separator","Currency","Devise",,
+"com.axelor.apps.base.db.AccountConfig",,"page","Receivables recovery","Recouvrement créances",,
+"com.axelor.apps.base.db.AccountConfig",,"page","Reimbursement","Remboursement",,
+"com.axelor.apps.base.db.AccountConfig",,"separator","Configuration","Configuration",,
+"com.axelor.apps.base.db.AccountConfig",,"group","Reimbursements","Remboursements",,
+"com.axelor.apps.base.db.AccountConfig",,"group","Reimbursement rejects","Rejets remboursement",,
+"com.axelor.apps.base.db.AccountConfig",,"page","Doubtful receivables","Créances douteuses",,
+"com.axelor.apps.base.db.AccountConfig",,"page","Direct debit","Prélèvement",,
+"com.axelor.apps.base.db.AccountConfig",,"separator","Configuration","Configuration",,
+"com.axelor.apps.base.db.AccountConfig",,"group","Direct debits","Prélèvements",,
+"com.axelor.apps.base.db.AccountConfig",,"group","Direct debit rejects","Rejets de prélèvement",,
+"com.axelor.apps.base.db.AccountConfig",,"page","Acc. Clearance","Epurage compte",,
+"com.axelor.apps.base.db.AccountConfig",,"page","Paybox","Paybox",,
+"com.axelor.apps.base.db.AccountConfig",,"page","IPO Payments and IPO Cheque","TIP et TIP-Chèque",,
+"com.axelor.apps.base.db.AccountConfig",,"separator","Configuration","Configuration",,
+"com.axelor.apps.base.db.AccountConfig",,"group","Payments by IPO and IPO Cheque","Paiement par TIP et TIP-Chèque",,
+"com.axelor.apps.base.db.AccountConfig",,"group","Payments rejects by IPO and IPO Cheque","Rejets paiements par TIP et TIP-Chèque",,
+"com.axelor.apps.base.db.AccountConfig",,"page","Mails / Emails","Courriers / Emails",,
+"com.axelor.apps.base.db.AccountConfig",,"page","Supply chain","Chaîne d'approvisionnement",,
+"com.axelor.apps.base.db.AccountConfig",,"page","Invoicing","Facturation",,
+"account-config-form","showInvoice","documentation",,,,
+"account-config-form","customerSalesJournal","documentation",,,,
+"account-config-form","customerCreditNoteJournal","documentation",,,,
+"account-config-form","supplierPurchaseJournal","documentation",,,,
+"account-config-form","supplierCreditNoteJournal","documentation",,,,
+"account-config-form","technicalJournal","documentation",,,,
+"account-config-form","majorAccountJournal","documentation",,,,
+"account-config-form","invoiceDirectDebitJournal","documentation",,,,
+"account-config-form","rejectJournal","documentation",,,,
+"account-config-form","reimbursementJournal","documentation",,,,
+"account-config-form","accountClearanceJournal","documentation",,,,
+"account-config-form","irrecoverableJournal","documentation",,,,
+"account-config-form","miscOperationJournal","documentation",,,,
+"account-config-form","customerAccount","documentation",,,,
+"account-config-form","supplierAccount","documentation",,,,
+"account-config-form","doubtfulCustomerAccount","documentation",,,,
+"account-config-form","irrecoverableAccount","documentation",,,,
+"account-config-form","thresholdDistanceFromRegulation","documentation",,,,
+"account-config-form","cashPositionVariationAccount","documentation",,,,
+"account-config-form","exportPath","documentation",,,,
+"account-config-form","cashRegisterMailModel","documentation",,,,
+"account-config-form","cashRegisterAddressEmail","documentation",,,,
+"cfonb-config-form","senderRecordCodeExportCFONB","documentation",,,,
+"cfonb-config-form","senderNumExportCFONB","documentation",,,,
+"cfonb-config-form","senderNameCodeExportCFONB","documentation",,,,
+"cfonb-config-form","recipientRecordCodeExportCFONB","documentation",,,,
+"cfonb-config-form","totalRecordCodeExportCFONB","documentation",,,,
+"cfonb-config-form","transferOperationCodeExportCFONB","documentation",,,,
+"cfonb-config-form","directDebitOperationCodeExportCFONB","documentation",,,,
+"cfonb-config-form","headerRecordCodeImportCFONB","documentation",,,,
+"cfonb-config-form","detailRecordCodeImportCFONB","documentation",,,,
+"cfonb-config-form","endingRecordCodeImportCFONB","documentation",,,,
+"cfonb-config-form","transferOperationCodeImportCFONB","documentation",,,,
+"cfonb-config-form","directDebitOperationCodeImportCFONB","documentation",,,,
+"cfonb-config-form","ipoRejectOperationCodeImportCFONB","documentation",,,,
+"cfonb-config-form","ipoOperationCodeImportCFONB","documentation",,,,
+"cfonb-config-form","ipoAndChequeOperationCodeImportCFONB","documentation",,,,
+"account-config-form","irrecoverableReasonPassage","documentation",,,,
+"account-config-form","irrecoverableStandardRateTax","documentation",,,,
+"account-config-form","payingBackTaxTax","documentation",,,,
+"account-config-form","mailTransitTime","documentation",,,,
+"account-config-form","reminderConfigLineList","documentation",,,,
+"account-config-form","reimbursementExportFolderPath","documentation",,,,
+"account-config-form","reimbursementExportFolderPathCFONB","documentation",,,,
+"account-config-form","lowerThresholdReimbursement","documentation",,,,
+"account-config-form","upperThresholdReimbursement","documentation",,,,
+"account-config-form","reimbursementAccount","documentation",,,,
+"account-config-form","reimbursementMailModel","documentation",,,,
+"account-config-form","reimbursementImportFolderPathCFONB","documentation",,,,
+"account-config-form","tempReimbImportFolderPathCFONB","documentation",,,,
+"account-config-form","sixMonthDebtMonthNumber","documentation",,,,
+"account-config-form","threeMonthDebtMontsNumber","documentation",,,,
+"account-config-form","sixMonthDebtPassReason","documentation",,,,
+"account-config-form","threeMonthDebtPassReason","documentation",,,,
+"account-config-form","litigationDebtPassReason","documentation",,,,
+"account-config-form","paymentScheduleExportFolderPathCFONB","documentation",,,,
+"account-config-form","rejectionPaymentMode","documentation",,,,
+"account-config-form","paymentScheduleRejectNumLimit","documentation",,,,
+"account-config-form","invoiceRejectNumLimit","documentation",,,,
+"account-config-form","rejectImportPathAndFileName","documentation",,,,
+"account-config-form","tempImportPathAndFileName","documentation",,,,
+"account-config-form","rejectPaymentScheduleMailModel","documentation",,,,
+"account-config-form","clearanceAccountSet","documentation",,,,
+"account-config-form","profitAccount","documentation",,,,
+"account-config-form","standardRateTax","documentation",,,,
+"paybox-config-form","payboxUrl","documentation",,,,
+"paybox-config-form","payboxSite","documentation",,,,
+"paybox-config-form","payboxRang","documentation",,,,
+"paybox-config-form","payboxDevise","documentation",,,,
+"paybox-config-form","payboxIdentifiant","documentation",,,,
+"paybox-config-form","payboxHashSelect","documentation",,,,
+"paybox-config-form","payboxHmac","documentation",,,,
+"paybox-config-form","payboxDefaultEmail","documentation",,,,
+"paybox-config-form","payboxRetour","documentation",,,,
+"paybox-config-form","payboxRetourUrlEffectue","documentation",,,,
+"paybox-config-form","payboxRetourUrlRefuse","documentation",,,,
+"paybox-config-form","payboxRetourUrlAnnule","documentation",,,,
+"paybox-config-form","payboxPublicKeyPath","documentation",,,,
+"account-config-form","interbankPaymentOrderImportPathCFONB","documentation",,,,
+"account-config-form","tempInterbankPaymentOrderImportPathCFONB","documentation",,,,
+"account-config-form","interbankPaymentOrderRejectImportPathCFONB","documentation",,,,
+"account-config-form","tempInterbankPaymentOrderRejectImportPathCFONB","documentation",,,,
+"account-config-form","generatedMailFilePath","documentation",,,,
+"account-config-form","generatedEmailFilePath","documentation",,,,
+"account-config-form","generatedMailFileName","documentation",,,,
+"account-config-form","generatedEmailFileName","documentation",,,,
+"account-config-form","showDetailsInInvoice","documentation",,,,
