@@ -220,6 +220,7 @@
 	    <toolbar>
 	        <button name="sendByEmail" title="Send email" colSpan="1" onClick="save,action-send-by-email-with-template"/>
 	        <button name="showPartnerInfo" title="Print Informations" colSpan="1" icon="img/16px/print_16px.png" onClick="save,action-partner-method-show-partner-info"/>
+	        <button name="showClientSituationForm" title="Client Situation" colSpan="1" icon="img/16px/print_16px.png" onClick="save,action-partner-method-show-client-situation" showIf="isContact == false"/>
 	    </toolbar>
 	    <menubar>
 	        <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true">
