@@ -586,3 +586,24 @@
 "axelor-supplychain",,"other","StockMove.qtyUnit","Qté / Unité",,
 "axelor-supplychain",,"other","StockMove.lotNoRef","Lot N°/Réf",,
 "axelor-supplychain",,"other","StockMove.product","Produit",,
+"supplychain-config-form","customerVirtualLocation","documentation",,,,
+"supplychain-config-form","supplierVirtualLocation","documentation",,,,
+"supplychain-config-form","inventoryVirtualLocation","documentation",,,,
+"supplychain-config-form","hasOutSmForStorableProduct","documentation",,,,
+"supplychain-config-form","hasOutSmForNonStorableProduct","documentation",,,,
+"supplychain-config-form","hasInSmForStorableProduct","documentation",,,,
+"supplychain-config-form","hasInSmForNonStorableProduct","documentation",,,,
+"supplychain-config-form","salesOrderInvoicingTypeSelect","documentation",,,,
+"supplychain-config-form","purchaseOrderInvoicingTypeSelect","documentation",,,,
+"com.axelor.apps.base.db.SupplychainConfig","customerVirtualLocation","field","Customer virtual location","Empl. Virtuel Client",,"Emplacement utilisé par défaut comme destination pour les mouvements de type livraison."
+"com.axelor.apps.base.db.SupplychainConfig","supplierVirtualLocation","field","Supplier virtual location","Empl. Virtuel Fourn.",,"Emplacement utilisé par défaut comme source pour les mouvements de type réception."
+"com.axelor.apps.base.db.SupplychainConfig","inventoryVirtualLocation","field","Inventory virtual location","Empl. Virtuel Inv.",,"Emplacement utilisé par défaut comme source ou destination pour les mouvements d'inventaire."
+"com.axelor.apps.base.db.SupplychainConfig","hasOutSmForStorableProduct","field","Generate out going stock move for storable product","Générer BL pour produit stockable",,"Si la case est cochée, un mouvement de stock livraison (BL) sera déclenché pour les produits de type Stockable."
+"com.axelor.apps.base.db.SupplychainConfig","hasOutSmForNonStorableProduct","field","Generate out going stock move for non storable product","Générer BL pour produit non stockable",,"Si la case est cochée, un mouvement de stock livraison (BL) sera déclenché pour les produits de type Service (non-stockable)."
+"com.axelor.apps.base.db.SupplychainConfig","hasInSmForStorableProduct","field","Generate incoming stock move for storable product","Générer BR pour produit stockable",,"Si la case est cochée, un mouvement de stock réception (BR) sera déclenché pour les produits de type Stockable."
+"com.axelor.apps.base.db.SupplychainConfig","hasInSmForNonStorableProduct","field","Generate incoming stock move for non storable product","Générer BR pour produit non stockable",,"Si la case est cochée, un mouvement de stock réception (BR) sera déclenché pour les produits de type Service (non-stockable)."
+"com.axelor.apps.base.db.SupplychainConfig","salesOrderInvoicingTypeSelect","field","Sales order invoicing type","Type de fact. par défaut des devis Client",,"Type de facturation sélectionné par défaut lors de la création d'un devis client."
+"com.axelor.apps.base.db.SupplychainConfig","purchaseOrderInvoicingTypeSelect","field","Purchases order invoicing type","Type de fact. par défaut des devis Fourn.",,"Type de facturation sélectionné par défaut lors de la création d'une demande de devis fournisseur."
+"com.axelor.apps.base.db.SupplychainConfig",,"group","Virtual locations informations","Infos Empl. Virtuels",,
+"com.axelor.apps.base.db.SupplychainConfig",,"group","Stock move informations","Informations mouvement de stock",,
+"com.axelor.apps.base.db.SupplychainConfig",,"group","Invoicing informations","Informations de facturation",,
