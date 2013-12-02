@@ -129,7 +129,7 @@
 	                <field name="validatedByUserInfo"/>
 	            </group>
             </group>
-            <group title="Totals" colSpan="2" cols="2">
+            <group title="Totals" colSpan="2" cols="2" colWidths="50%,50%">
 <!-- 				<group name="accountingTotalGroup" title="Totals in accounting currency" colSpan="2" cols="2"> -->
 	                <field name="exTaxTotal"/>
 	                <field name="vatTotal"/>
