@@ -36,7 +36,7 @@ import java.math.RoundingMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.db.VatLine;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.service.AccountManagementService;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
@@ -97,9 +97,9 @@ public class SalesOrderLineService {
 	}
 	
 	
-	public VatLine getVatLine(SalesOrder salesOrder, SalesOrderLine salesOrderLine) throws AxelorException  {
+	public TaxLine getTaxLine(SalesOrder salesOrder, SalesOrderLine salesOrderLine) throws AxelorException  {
 		
-		return accountManagementService.getVatLine(
+		return accountManagementService.getTaxLine(
 				salesOrder.getCreationDate(), salesOrderLine.getProduct(), salesOrder.getCompany(), false);
 		
 	}

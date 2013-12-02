@@ -54,7 +54,7 @@ import com.axelor.apps.supplychain.db.IPurchaseOrder;
 import com.axelor.apps.supplychain.db.Location;
 import com.axelor.apps.supplychain.db.PurchaseOrder;
 import com.axelor.apps.supplychain.db.PurchaseOrderLine;
-import com.axelor.apps.supplychain.db.PurchaseOrderLineVat;
+import com.axelor.apps.supplychain.db.PurchaseOrderLineTax;
 import com.axelor.apps.supplychain.db.StockMove;
 import com.axelor.apps.supplychain.db.StockMoveLine;
 import com.axelor.apps.supplychain.db.SupplychainConfig;
@@ -75,7 +75,7 @@ public class PurchaseOrderService {
 	private CurrencyService currencyService;
 	
 	@Inject
-	private PurchaseOrderLineVatService purchaseOrderLineVatService;
+	private PurchaseOrderLineTaxService purchaseOrderLineVatService;
 	
 	@Inject
 	private StockMoveService stockMoveService;
@@ -132,7 +132,7 @@ public class PurchaseOrderService {
 		LOG.debug("Peupler une facture => lignes de devis: {} ", new Object[] { purchaseOrder.getPurchaseOrderLineList().size() });
 		
 		// create Tva lines
-		purchaseOrder.getPurchaseOrderLineVatList().addAll(purchaseOrderLineVatService.createsPurchaseOrderLineVat(purchaseOrder, purchaseOrder.getPurchaseOrderLineList()));
+		purchaseOrder.getPurchaseOrderLineTaxList().addAll(purchaseOrderLineVatService.createsPurchaseOrderLineTax(purchaseOrder, purchaseOrder.getPurchaseOrderLineList()));
 		
 	}
 	
@@ -148,14 +148,14 @@ public class PurchaseOrderService {
 	public void _computePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
 		
 		purchaseOrder.setExTaxTotal(BigDecimal.ZERO);
-		purchaseOrder.setVatTotal(BigDecimal.ZERO);
+		purchaseOrder.setTaxTotal(BigDecimal.ZERO);
 		purchaseOrder.setInTaxTotal(BigDecimal.ZERO);
 		
-		for (PurchaseOrderLineVat purchaseOrderLineVat : purchaseOrder.getPurchaseOrderLineVatList()) {
+		for (PurchaseOrderLineTax purchaseOrderLineVat : purchaseOrder.getPurchaseOrderLineTaxList()) {
 			
 			// Dans la devise de la comptabilité du tiers
 			purchaseOrder.setExTaxTotal(purchaseOrder.getExTaxTotal().add( purchaseOrderLineVat.getExTaxBase() ));
-			purchaseOrder.setVatTotal(purchaseOrder.getVatTotal().add( purchaseOrderLineVat.getVatTotal() ));
+			purchaseOrder.setTaxTotal(purchaseOrder.getTaxTotal().add( purchaseOrderLineVat.getTaxTotal() ));
 			purchaseOrder.setInTaxTotal(purchaseOrder.getInTaxTotal().add( purchaseOrderLineVat.getInTaxTotal() ));
 			
 		}
@@ -163,7 +163,7 @@ public class PurchaseOrderService {
 		purchaseOrder.setAmountRemainingToBeInvoiced(purchaseOrder.getInTaxTotal());
 		
 		LOG.debug("Montant de la facture: HTT = {},  HT = {}, TVA = {}, TTC = {}",
-			new Object[] { purchaseOrder.getExTaxTotal(), purchaseOrder.getVatTotal(), purchaseOrder.getInTaxTotal() });
+			new Object[] { purchaseOrder.getExTaxTotal(), purchaseOrder.getTaxTotal(), purchaseOrder.getInTaxTotal() });
 		
 	}
 
@@ -175,9 +175,9 @@ public class PurchaseOrderService {
 	 */
 	public void initPurchaseOrderLineVats(PurchaseOrder purchaseOrder) {
 		
-		if (purchaseOrder.getPurchaseOrderLineVatList() == null) { purchaseOrder.setPurchaseOrderLineVatList(new ArrayList<PurchaseOrderLineVat>()); }
+		if (purchaseOrder.getPurchaseOrderLineTaxList() == null) { purchaseOrder.setPurchaseOrderLineTaxList(new ArrayList<PurchaseOrderLineTax>()); }
 		
-		else { purchaseOrder.getPurchaseOrderLineVatList().clear(); }
+		else { purchaseOrder.getPurchaseOrderLineTaxList().clear(); }
 		
 	}
 	

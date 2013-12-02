@@ -47,7 +47,7 @@
 	            <field name="salesOrderLineList" colSpan="6"/>
 	            <group showTitle="false" colSpan="6" cols="3">
 	                <group colSpan="2" cols="2">
-	                    <field name="salesOrderLineVatList" showTitle="false" colSpan="2"/>
+	                    <field name="salesOrderLineTaxList" showTitle="false" colSpan="2"/>
 	                    <group title="Action(s)" colSpan="2" cols="2" colWidths="50%,50%">
 	                        <group colSpan="1" cols="1">
 	                            <button name="compute" title="Compute" hideIf="statusSelect == 3" colSpan="1" onClick="save,action-sales-order-method-compute,save"/>
@@ -69,7 +69,7 @@
 	                <group title="Totaux" colSpan="1" cols="1">
 	                    <group readonly="true" colSpan="1" css="subtotal" cols="2" colWidths="30%,50%">
 	                        <field name="exTaxTotal"/>
-	                        <field name="vatTotal"/>
+	                        <field name="taxTotal"/>
 	                        <field name="inTaxTotal" css="subtotal-total"/>
 	                        <field name="amountRemainingToBeInvoiced"/>
 	                    </group>
@@ -132,7 +132,7 @@
     
     <action-attrs name="action-sales-order-attrs-validated-read-only">
 <!--     	<attribute name="readonly" for="salesOrderLineList" expr="true"/> -->
-    	<attribute name="readonly" for="salesOrderLineVatList" expr="statusSelect == 3"/>
+    	<attribute name="readonly" for="salesOrderLineTaxList" expr="statusSelect == 3"/>
     	<attribute name="readonly" for="currency" expr="statusSelect == 3"/>
     	<attribute name="readonly" for="location" expr="statusSelect == 3"/>
     	<attribute name="readonly" for="company" expr="statusSelect == 3"/>

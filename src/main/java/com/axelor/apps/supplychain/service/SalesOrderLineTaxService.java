@@ -39,16 +39,16 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.db.VatLine;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.supplychain.db.SalesOrder;
 import com.axelor.apps.supplychain.db.SalesOrderLine;
-import com.axelor.apps.supplychain.db.SalesOrderLineVat;
+import com.axelor.apps.supplychain.db.SalesOrderLineTax;
 import com.axelor.apps.supplychain.db.SalesOrderSubLine;
 import com.google.inject.Inject;
 
-public class SalesOrderLineVatService {
+public class SalesOrderLineTaxService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(SalesOrderLineVatService.class); 
+	private static final Logger LOG = LoggerFactory.getLogger(SalesOrderLineTaxService.class); 
 	
 	@Inject
 	private SalesOrderToolService salesOrderToolService;
@@ -71,12 +71,12 @@ public class SalesOrderLineVatService {
 	 * @param invoiceLineTaxes
 	 *            Les lignes des taxes de la facture.
 	 * 
-	 * @return La liste des lignes de TVA de la facture.
+	 * @return La liste des lignes de taxe de la facture.
 	 */
-	public List<SalesOrderLineVat> createsSalesOrderLineVat(SalesOrder salesOrder, List<SalesOrderLine> salesOrderLineList) {
+	public List<SalesOrderLineTax> createsSalesOrderLineTax(SalesOrder salesOrder, List<SalesOrderLine> salesOrderLineList) {
 		
-		List<SalesOrderLineVat> vatLines = new ArrayList<SalesOrderLineVat>();
-		Map<VatLine, SalesOrderLineVat> map = new HashMap<VatLine, SalesOrderLineVat>();
+		List<SalesOrderLineTax> salesOrderLineTaxList = new ArrayList<SalesOrderLineTax>();
+		Map<TaxLine, SalesOrderLineTax> map = new HashMap<TaxLine, SalesOrderLineTax>();
 		
 		if (salesOrderLineList != null && !salesOrderLineList.isEmpty()) {
 
@@ -87,71 +87,71 @@ public class SalesOrderLineVatService {
 				if(salesOrderLine.getSalesOrderSubLineList() != null && !salesOrderLine.getSalesOrderSubLineList().isEmpty())  {
 					
 					for(SalesOrderSubLine salesOrderSubLine : salesOrderLine.getSalesOrderSubLineList())  {
-						VatLine vatLine = salesOrderSubLine.getVatLine();
-						LOG.debug("TVA {}", vatLine);
+						TaxLine taxLine = salesOrderSubLine.getTaxLine();
+						LOG.debug("Tax {}", taxLine);
 						
-						if (map.containsKey(vatLine)) {
+						if (map.containsKey(taxLine)) {
 						
-							SalesOrderLineVat salesOrderLineVat = map.get(vatLine);
+							SalesOrderLineTax salesOrderLineTax = map.get(taxLine);
 							
-							salesOrderLineVat.setExTaxBase(salesOrderLineVat.getExTaxBase().add(salesOrderSubLine.getExTaxTotal()));
+							salesOrderLineTax.setExTaxBase(salesOrderLineTax.getExTaxBase().add(salesOrderSubLine.getExTaxTotal()));
 							
 						}
 						else {
 							
-							SalesOrderLineVat salesOrderLineVat = new SalesOrderLineVat();
-							salesOrderLineVat.setSalesOrder(salesOrder);
+							SalesOrderLineTax salesOrderLineTax = new SalesOrderLineTax();
+							salesOrderLineTax.setSalesOrder(salesOrder);
 							
-							salesOrderLineVat.setExTaxBase(salesOrderSubLine.getExTaxTotal());
+							salesOrderLineTax.setExTaxBase(salesOrderSubLine.getExTaxTotal());
 							
-							salesOrderLineVat.setVatLine(vatLine);
-							map.put(vatLine, salesOrderLineVat);
+							salesOrderLineTax.setTaxLine(taxLine);
+							map.put(taxLine, salesOrderLineTax);
 							
 						}
 					}
 				}
 				else  {
 				
-					VatLine vatLine = salesOrderLine.getVatLine();
-					LOG.debug("TVA {}", vatLine);
+					TaxLine taxLine = salesOrderLine.getTaxLine();
+					LOG.debug("Tax {}", taxLine);
 					
-					if (map.containsKey(vatLine)) {
+					if (map.containsKey(taxLine)) {
 					
-						SalesOrderLineVat salesOrderLineVat = map.get(vatLine);
+						SalesOrderLineTax salesOrderLineTax = map.get(taxLine);
 						
-						salesOrderLineVat.setExTaxBase(salesOrderLineVat.getExTaxBase().add(salesOrderLine.getExTaxTotal()));
+						salesOrderLineTax.setExTaxBase(salesOrderLineTax.getExTaxBase().add(salesOrderLine.getExTaxTotal()));
 						
 					}
 					else {
 						
-						SalesOrderLineVat salesOrderLineVat = new SalesOrderLineVat();
-						salesOrderLineVat.setSalesOrder(salesOrder);
+						SalesOrderLineTax salesOrderLineTax = new SalesOrderLineTax();
+						salesOrderLineTax.setSalesOrder(salesOrder);
 						
-						salesOrderLineVat.setExTaxBase(salesOrderLine.getExTaxTotal());
+						salesOrderLineTax.setExTaxBase(salesOrderLine.getExTaxTotal());
 						
-						salesOrderLineVat.setVatLine(vatLine);
-						map.put(vatLine, salesOrderLineVat);
+						salesOrderLineTax.setTaxLine(taxLine);
+						map.put(taxLine, salesOrderLineTax);
 						
 					}
 				}
 			}
 		}
 			
-		for (SalesOrderLineVat vatLine : map.values()) {
+		for (SalesOrderLineTax salesOrderLineTax : map.values()) {
 			
 			// Dans la devise de la facture
-			BigDecimal vatExTaxBase = vatLine.getExTaxBase();
-			BigDecimal vatTotal = salesOrderToolService.computeAmount(vatExTaxBase, vatLine.getVatLine().getValue());
-			vatLine.setVatTotal(vatTotal);
-			vatLine.setInTaxTotal(vatExTaxBase.add(vatTotal));
+			BigDecimal exTaxBase = salesOrderLineTax.getExTaxBase();
+			BigDecimal taxTotal = salesOrderToolService.computeAmount(exTaxBase, salesOrderLineTax.getTaxLine().getValue());
+			salesOrderLineTax.setTaxTotal(taxTotal);
+			salesOrderLineTax.setInTaxTotal(exTaxBase.add(taxTotal));
 			
-			vatLines.add(vatLine);
+			salesOrderLineTaxList.add(salesOrderLineTax);
 
-			LOG.debug("Ligne de TVA : Total TVA => {}, Total HT => {}", new Object[] {vatLine.getVatTotal(), vatLine.getInTaxTotal()});
+			LOG.debug("Ligne de TVA : Total TVA => {}, Total HT => {}", new Object[] {salesOrderLineTax.getTaxTotal(), salesOrderLineTax.getInTaxTotal()});
 			
 		}
 
-		return vatLines;
+		return salesOrderLineTaxList;
 	}
 
 	

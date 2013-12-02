@@ -49,7 +49,7 @@
 	            </group>
 	            <field name="purchaseOrderLineList" colSpan="6" form-view="purchase-order-line-form" grid-view="purchase-order-line-grid"/>
 	            <group colSpan="3" cols="2">
-	                <field name="purchaseOrderLineVatList" showTitle="false" colSpan="2"/>
+	                <field name="purchaseOrderLineTaxList" showTitle="false" colSpan="2"/>
 	                <group title="Action(s)" colSpan="2" cols="2">
 	                    <group colSpan="1" cols="1">
 	                        <button name="compute" title="Compute" hideIf="statusSelect == 4" colSpan="1" onClick="save,action-purchase-order-method-compute,save"/>
@@ -72,7 +72,7 @@
 	            <group colSpan="3" cols="3">
 	                <group title="Totals" colSpan="3" cols="3" colWidths="50%,50%">
 	                    <spacer/><field name="exTaxTotal" />
-	                    <spacer/><field name="vatTotal" />
+	                    <spacer/><field name="taxTotal" />
 	                    
 	                     <spacer/> <spacer/><separator colSpan="1"/>
 	                    <spacer/><field name="inTaxTotal" css="highlight"/>

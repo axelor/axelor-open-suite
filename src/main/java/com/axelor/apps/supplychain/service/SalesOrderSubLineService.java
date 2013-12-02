@@ -36,16 +36,15 @@ import java.math.RoundingMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.db.VatLine;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.service.AccountManagementService;
-import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.supplychain.db.SalesOrder;
-import com.axelor.apps.supplychain.db.SalesOrderLine;
 import com.axelor.apps.supplychain.db.SalesOrderSubLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -95,9 +94,9 @@ public class SalesOrderSubLineService {
 	}
 	
 	
-	public VatLine getVatLine(SalesOrder salesOrder, SalesOrderSubLine salesOrderSubLine) throws AxelorException  {
+	public TaxLine getTaxLine(SalesOrder salesOrder, SalesOrderSubLine salesOrderSubLine) throws AxelorException  {
 		
-		return accountManagementService.getVatLine(
+		return accountManagementService.getTaxLine(
 				salesOrder.getCreationDate(), salesOrderSubLine.getProduct(), salesOrder.getCompany(), false);
 		
 	}

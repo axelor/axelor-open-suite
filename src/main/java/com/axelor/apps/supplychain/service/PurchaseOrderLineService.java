@@ -37,7 +37,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.db.VatLine;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.service.AccountManagementService;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
@@ -102,9 +102,9 @@ private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderLineServi
 	}
 	
 	
-	public VatLine getVatLine(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException  {
+	public TaxLine getTaxLine(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException  {
 		
-		return accountManagementService.getVatLine(
+		return accountManagementService.getTaxLine(
 				purchaseOrder.getOrderDate(), purchaseOrderLine.getProduct(), purchaseOrder.getCompany(), true);
 		
 	}
@@ -189,7 +189,7 @@ private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderLineServi
 		
 		purchaseOrderLine.setTask(task);
 		purchaseOrderLine.setUnit(unit);
-		purchaseOrderLine.setVatLine(this.getVatLine(purchaseOrder, purchaseOrderLine));
+		purchaseOrderLine.setTaxLine(this.getTaxLine(purchaseOrder, purchaseOrderLine));
 		
 		BigDecimal exTaxTotal = PurchaseOrderLineService.computeAmount(purchaseOrderLine.getQty(), this.computeDiscount(purchaseOrderLine));
 			

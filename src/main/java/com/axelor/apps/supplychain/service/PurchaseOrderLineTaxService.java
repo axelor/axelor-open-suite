@@ -39,15 +39,15 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.db.VatLine;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.supplychain.db.PurchaseOrder;
 import com.axelor.apps.supplychain.db.PurchaseOrderLine;
-import com.axelor.apps.supplychain.db.PurchaseOrderLineVat;
+import com.axelor.apps.supplychain.db.PurchaseOrderLineTax;
 import com.google.inject.Inject;
 
-public class PurchaseOrderLineVatService {
+public class PurchaseOrderLineTaxService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderLineVatService.class); 
+	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderLineTaxService.class); 
 	
 	@Inject
 	private PurchaseOrderToolService purchaseOrderToolService;
@@ -66,10 +66,10 @@ public class PurchaseOrderLineVatService {
 	 *            
 	 * @return La liste des lignes de TVA de la commande.
 	 */
-	public List<PurchaseOrderLineVat> createsPurchaseOrderLineVat(PurchaseOrder purchaseOrder, List<PurchaseOrderLine> purchaseOrderLineList) {
+	public List<PurchaseOrderLineTax> createsPurchaseOrderLineTax(PurchaseOrder purchaseOrder, List<PurchaseOrderLine> purchaseOrderLineList) {
 		
-		List<PurchaseOrderLineVat> vatLines = new ArrayList<PurchaseOrderLineVat>();
-		Map<VatLine, PurchaseOrderLineVat> map = new HashMap<VatLine, PurchaseOrderLineVat>();
+		List<PurchaseOrderLineTax> purchaseOrderLineTaxList = new ArrayList<PurchaseOrderLineTax>();
+		Map<TaxLine, PurchaseOrderLineTax> map = new HashMap<TaxLine, PurchaseOrderLineTax>();
 		
 		if (purchaseOrderLineList != null && !purchaseOrderLineList.isEmpty()) {
 
@@ -77,45 +77,45 @@ public class PurchaseOrderLineVatService {
 			
 			for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
 				
-				VatLine vatLine = purchaseOrderLine.getVatLine();
-				LOG.debug("TVA {}", vatLine);
+				TaxLine taxLine = purchaseOrderLine.getTaxLine();
+				LOG.debug("TVA {}", taxLine);
 				
-				if (map.containsKey(vatLine)) {
+				if (map.containsKey(taxLine)) {
 				
-					PurchaseOrderLineVat purchaseOrderLineVat = map.get(vatLine);
+					PurchaseOrderLineTax purchaseOrderLineVat = map.get(taxLine);
 					
 					purchaseOrderLineVat.setExTaxBase(purchaseOrderLineVat.getExTaxBase().add(purchaseOrderLine.getExTaxTotal()));
 					
 				}
 				else {
 					
-					PurchaseOrderLineVat purchaseOrderLineVat = new PurchaseOrderLineVat();
-					purchaseOrderLineVat.setPurchaseOrder(purchaseOrder);
+					PurchaseOrderLineTax purchaseOrderLineTax = new PurchaseOrderLineTax();
+					purchaseOrderLineTax.setPurchaseOrder(purchaseOrder);
 					
-					purchaseOrderLineVat.setExTaxBase(purchaseOrderLine.getExTaxTotal());
+					purchaseOrderLineTax.setExTaxBase(purchaseOrderLine.getExTaxTotal());
 					
-					purchaseOrderLineVat.setVatLine(vatLine);
-					map.put(vatLine, purchaseOrderLineVat);
+					purchaseOrderLineTax.setTaxLine(taxLine);
+					map.put(taxLine, purchaseOrderLineTax);
 					
 				}
 			}
 		}
 			
-		for (PurchaseOrderLineVat vatLine : map.values()) {
+		for (PurchaseOrderLineTax purchaseOrderLineTax : map.values()) {
 			
 			// Dans la devise de la commande
-			BigDecimal vatExTaxBase = vatLine.getExTaxBase();
-			BigDecimal vatTotal = purchaseOrderToolService.computeAmount(vatExTaxBase, vatLine.getVatLine().getValue());
-			vatLine.setVatTotal(vatTotal);
-			vatLine.setInTaxTotal(vatExTaxBase.add(vatTotal));
+			BigDecimal exTaxBase = purchaseOrderLineTax.getExTaxBase();
+			BigDecimal taxTotal = purchaseOrderToolService.computeAmount(exTaxBase, purchaseOrderLineTax.getTaxLine().getValue());
+			purchaseOrderLineTax.setTaxTotal(taxTotal);
+			purchaseOrderLineTax.setInTaxTotal(exTaxBase.add(taxTotal));
 			
-			vatLines.add(vatLine);
+			purchaseOrderLineTaxList.add(purchaseOrderLineTax);
 
-			LOG.debug("Ligne de TVA : Total TVA => {}, Total HT => {}", new Object[] {vatLine.getVatTotal(), vatLine.getInTaxTotal()});
+			LOG.debug("Ligne de TVA : Total TVA => {}, Total HT => {}", new Object[] {purchaseOrderLineTax.getTaxTotal(), purchaseOrderLineTax.getInTaxTotal()});
 			
 		}
 
-		return vatLines;
+		return purchaseOrderLineTaxList;
 	}
 
 	

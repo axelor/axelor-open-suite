@@ -9,7 +9,7 @@
 	    <field name="qty"/>
 	    <field name="unit"/>
 	    <field name="price"/>
-	    <field name="vatLine.value"/>
+	    <field name="taxLine.value"/>
 	    <field name="exTaxTotal"/>
 	</grid>
     
@@ -26,9 +26,9 @@
 	    <field name="qty" onChange="action-sales-order-line-method-get-discount,action-sales-order-line-method-compute"/>
 	    <field name="unit"/>
 	    <field name="price" onChange="action-sales-order-line-method-compute"/>
-	    <field name="vatLine" domain="self.endDate = null or self.endDate &gt; :__date__"/>
+	    <field name="taxLine" domain="self.endDate = null or self.endDate &gt; :__date__"/>
 	    <field name="exTaxTotal"/>
-	    <field name="vatLine.value"/>      
+	    <field name="taxLine.value"/>      
 	    <group name="discount" title="Discount" colSpan="4" cols="4" canCollapse="true">
 	        <field name="discountTypeSelect" onChange="action-sales-order-line-method-compute"/>
 	        <field name="discountAmount" onChange="action-sales-order-line-method-compute"/>

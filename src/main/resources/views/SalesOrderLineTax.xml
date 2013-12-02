@@ -3,21 +3,21 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
    
-    <grid name="sales-order-line-vat-grid" title="SO VAT lines" model="com.axelor.apps.supplychain.db.SalesOrderLineVat">
-		<field name="vatLine.vat"/>
-		<field name="vatLine.value"/>
+    <grid name="sales-order-line-tax-grid" title="SO Tax lines" model="com.axelor.apps.supplychain.db.SalesOrderLineTax">
+		<field name="taxLine.tax"/>
+		<field name="taxLine.value"/>
 		<field name="exTaxBase"/>
-		<field name="vatTotal"/>
+		<field name="taxTotal"/>
 		<field name="inTaxTotal"/>
     </grid>
     
-    <form name="sales-order-line-vat-form" title="SO VAT line" model="com.axelor.apps.supplychain.db.SalesOrderLineVat" cols="4">
-    	<field name="vatLine"/>
+    <form name="sales-order-line-tax-form" title="SO Tax line" model="com.axelor.apps.supplychain.db.SalesOrderLineTax" cols="4">
+    	<field name="taxLine"/>
     	<break/>
-		<field name="vatLine.vat.name"/>
-		<field name="vatLine.value"/>
+		<field name="taxLine.tax.name"/>
+		<field name="taxLine.value"/>
 		<field name="exTaxBase"/>
-		<field name="vatTotal"/>
+		<field name="taxTotal"/>
 		<field name="inTaxTotal"/>
     </form>
     

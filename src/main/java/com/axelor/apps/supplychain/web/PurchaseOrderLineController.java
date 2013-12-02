@@ -99,7 +99,7 @@ public class PurchaseOrderLineController {
 			try  {
 				BigDecimal price = purchaseOrderLineService.getUnitPrice(purchaseOrder, purchaseOrderLine);
 				
-				response.setValue("vatLine", purchaseOrderLineService.getVatLine(purchaseOrder, purchaseOrderLine));
+				response.setValue("taxLine", purchaseOrderLineService.getTaxLine(purchaseOrder, purchaseOrderLine));
 				response.setValue("productName", purchaseOrderLine.getProduct().getName());
 				response.setValue("unit", purchaseOrderLine.getProduct().getUnit());
 				

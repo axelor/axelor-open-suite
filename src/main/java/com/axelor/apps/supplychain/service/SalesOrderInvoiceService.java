@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.IInvoice;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.VatLine;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.Product;
@@ -73,7 +73,7 @@ public class SalesOrderInvoiceService {
 	private CurrencyService currencyService;
 	
 	@Inject
-	private SalesOrderLineVatService salesOrderLineVatService;
+	private SalesOrderLineTaxService salesOrderLineVatService;
 	
 	@Inject
 	private SchedulerService schedulerService;
@@ -326,9 +326,9 @@ public class SalesOrderInvoiceService {
 	
 	
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, Product product, String productName, BigDecimal price, String description, BigDecimal qty,
-			Unit unit, VatLine vatLine, Task task, ProductVariant productVariant, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal) throws AxelorException  {
+			Unit unit, TaxLine taxLine, Task task, ProductVariant productVariant, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal) throws AxelorException  {
 		
-		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, productName, price, description, qty, unit, vatLine, task, product.getInvoiceLineType(), 
+		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, productName, price, description, qty, unit, taxLine, task, product.getInvoiceLineType(), 
 				productVariant, discountAmount, discountTypeSelect, exTaxTotal, false)  {
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
@@ -349,7 +349,7 @@ public class SalesOrderInvoiceService {
 	public List<InvoiceLine> createInvoiceLine(Invoice invoice, SalesOrderLine salesOrderLine) throws AxelorException  {
 		
 		return this.createInvoiceLine(invoice, salesOrderLine.getProduct(), salesOrderLine.getProductName(), 
-				salesOrderLine.getPrice(), salesOrderLine.getDescription(), salesOrderLine.getQty(), salesOrderLine.getUnit(), salesOrderLine.getVatLine(), 
+				salesOrderLine.getPrice(), salesOrderLine.getDescription(), salesOrderLine.getQty(), salesOrderLine.getUnit(), salesOrderLine.getTaxLine(), 
 				salesOrderLine.getTask(), salesOrderLine.getProductVariant(), salesOrderLine.getDiscountAmount(), salesOrderLine.getDiscountTypeSelect(), salesOrderLine.getExTaxTotal());
 		
 		
@@ -360,7 +360,7 @@ public class SalesOrderInvoiceService {
 		
 		return this.createInvoiceLine(invoice, salesOrderSubLine.getProduct(), salesOrderSubLine.getProductName(), 
 				salesOrderSubLine.getPrice(), salesOrderSubLine.getDescription(), salesOrderSubLine.getQty(), salesOrderSubLine.getUnit(), 
-				salesOrderSubLine.getVatLine(), salesOrderSubLine.getSalesOrderLine().getTask(), salesOrderSubLine.getProductVariant(), 
+				salesOrderSubLine.getTaxLine(), salesOrderSubLine.getSalesOrderLine().getTask(), salesOrderSubLine.getProductVariant(), 
 				salesOrderSubLine.getDiscountAmount(), salesOrderSubLine.getDiscountTypeSelect(), salesOrderSubLine.getExTaxTotal());
 		
 	}

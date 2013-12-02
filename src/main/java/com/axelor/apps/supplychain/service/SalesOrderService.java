@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.supplychain.db.SalesOrder;
 import com.axelor.apps.supplychain.db.SalesOrderLine;
-import com.axelor.apps.supplychain.db.SalesOrderLineVat;
+import com.axelor.apps.supplychain.db.SalesOrderLineTax;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -55,10 +55,10 @@ public class SalesOrderService {
 	private CurrencyService currencyService;
 
 	@Inject
-	private SalesOrderLineVatService salesOrderLineVatService;
+	private SalesOrderLineTaxService salesOrderLineTaxService;
 
 
-	public SalesOrder _computeSalesOrderLines(SalesOrder salesOrder) throws AxelorException  {
+	public SalesOrder _computeSalesOrderLineList(SalesOrder salesOrder) throws AxelorException  {
 
 		if(salesOrder.getSalesOrderLineList() != null)  {
 			for(SalesOrderLine salesOrderLine : salesOrder.getSalesOrderLineList())  {
@@ -74,9 +74,9 @@ public class SalesOrderService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void computeSalesOrder(SalesOrder salesOrder) throws AxelorException  {
 
-		this.initSalesOrderLineVats(salesOrder);
+		this.initSalesOrderLineTaxList(salesOrder);
 
-		this._computeSalesOrderLines(salesOrder);
+		this._computeSalesOrderLineList(salesOrder);
 
 		this._populateSalesOrder(salesOrder);
 
@@ -101,7 +101,7 @@ public class SalesOrderService {
 		LOG.debug("Peupler un devis => lignes de devis: {} ", new Object[] { salesOrder.getSalesOrderLineList().size() });
 
 		// create Tva lines
-		salesOrder.getSalesOrderLineVatList().addAll(salesOrderLineVatService.createsSalesOrderLineVat(salesOrder, salesOrder.getSalesOrderLineList()));
+		salesOrder.getSalesOrderLineTaxList().addAll(salesOrderLineTaxService.createsSalesOrderLineTax(salesOrder, salesOrder.getSalesOrderLineList()));
 
 	}
 
@@ -118,22 +118,22 @@ public class SalesOrderService {
 	public void _computeSalesOrder(SalesOrder salesOrder) throws AxelorException {
 
 		salesOrder.setExTaxTotal(BigDecimal.ZERO);
-		salesOrder.setVatTotal(BigDecimal.ZERO);
+		salesOrder.setTaxTotal(BigDecimal.ZERO);
 		salesOrder.setInTaxTotal(BigDecimal.ZERO);
 
-		for (SalesOrderLineVat salesOrderLineVat : salesOrder.getSalesOrderLineVatList()) {
+		for (SalesOrderLineTax salesOrderLineVat : salesOrder.getSalesOrderLineTaxList()) {
 
 			// Dans la devise de la comptabilité du tiers
 			salesOrder.setExTaxTotal(salesOrder.getExTaxTotal().add( salesOrderLineVat.getExTaxBase() ));
-			salesOrder.setVatTotal(salesOrder.getVatTotal().add( salesOrderLineVat.getVatTotal() ));
+			salesOrder.setTaxTotal(salesOrder.getTaxTotal().add( salesOrderLineVat.getTaxTotal() ));
 			salesOrder.setInTaxTotal(salesOrder.getInTaxTotal().add( salesOrderLineVat.getInTaxTotal() ));
 
 		}
 
 		salesOrder.setAmountRemainingToBeInvoiced(salesOrder.getInTaxTotal());
 
-		LOG.debug("Montant de la facture: HTT = {},  HT = {}, TVA = {}, TTC = {}",
-				new Object[] { salesOrder.getExTaxTotal(), salesOrder.getVatTotal(), salesOrder.getInTaxTotal() });
+		LOG.debug("Montant de la facture: HTT = {},  HT = {}, Taxe = {}, TTC = {}",
+				new Object[] { salesOrder.getExTaxTotal(), salesOrder.getTaxTotal(), salesOrder.getInTaxTotal() });
 
 	}
 
@@ -143,11 +143,11 @@ public class SalesOrderService {
 	 * @param salesOrder
 	 * 			Un devis
 	 */
-	public void initSalesOrderLineVats(SalesOrder salesOrder) {
+	public void initSalesOrderLineTaxList(SalesOrder salesOrder) {
 
-		if (salesOrder.getSalesOrderLineVatList() == null) { salesOrder.setSalesOrderLineVatList(new ArrayList<SalesOrderLineVat>()); }
+		if (salesOrder.getSalesOrderLineTaxList() == null) { salesOrder.setSalesOrderLineTaxList(new ArrayList<SalesOrderLineTax>()); }
 
-		else { salesOrder.getSalesOrderLineVatList().clear(); }
+		else { salesOrder.getSalesOrderLineTaxList().clear(); }
 
 	}
 
