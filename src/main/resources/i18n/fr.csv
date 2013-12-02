@@ -1,1121 +1,1121 @@
 "domain","name","type","title","title_t","help","help_t"
-"","","menu","Business","Affaires","",""
-"","","menu","Business","Affaires","",""
-"","","menu","Business","Affaires","",""
-"","","menu","New Business","Nouv. Affaire","",""
-"","","menu","Sites","Sites","",""
-"","","menu","Human Resources","RH","",""
-"","","menu","Configuration","Configuration","",""
-"","","menu","Public holidays","Jours Fériés","",""
-"","","menu","Leave request reasons","Motifs de congés","",""
-"","","menu","Employees","Employés","",""
-"","","menu","History","Historique","",""
-"","","menu","Olds timesheets","Mes anciennes feuilles de temps","",""
-"","","menu","Input forms","Formulaires de saisie","",""
-"","","menu","My leave requests","Mes demandes de congé","",""
-"","","menu","My overtimes","Mes heures supplémentaires","",""
-"","","menu","My timesheet","Mes feuilles de temps à compléter","",""
-"","","menu","My travel expenses","Mes notes de frais","",""
-"","","menu","Mission order","Ordre de mission","",""
-"","","menu","My timesheet calendar","Calendrier Feuille de Tps","",""
-"","","menu","Payment forms","Paiements à réaliser","",""
-"","","menu","Overtimes to be paid","Heures sup à payer","",""
-"","","menu","Travel expenses to be paid","Notes de frais à rembourser","",""
-"","","menu","Plannings","Plannings","",""
-"","","menu","Recruitment","Recrutement","",""
-"","","menu","Candidates","Candidats","",""
-"","","menu","Working hours","Horaires de travail","",""
-"","","menu","Trainings","Formations","",""
-"","","menu","Validation forms","Formulaires à valider","",""
-"","","menu","Leave requests to validate","Demande de congé à valider","",""
-"","","menu","Overtimes to validate","Heures supplémentaires à valider","",""
-"","","menu","Timesheets to validate","Feuilles de temps à valider","",""
-"","","menu","Travel expenses to validate by commercial","Notes de frais à valider par Commercial","",""
-"","","menu","Travel expenses to validate by RSC Manager","Notes de frais à valider par Manager","",""
-"","","menu","Gantt Diagram","Diagramme de GANTT","",""
-"","","menu","Project","Projet","",""
-"","","menu","Projects","Les projets","",""
-"","","menu","Tasks","Tâches","",""
-"","","select","Reinvoiceable","Refacturable","",""
-"","","select","Not reinvoiceable","Non refacturable","",""
-"","","select","Yes","Oui","",""
-"","","select","No","Non","",""
-"","","select","Draft","Brouillon","",""
-"","","select","Submited","A valider","",""
-"","","select","Validated","Validé","",""
-"","","select","Paid","Payée","",""
-"","","select","Refused","Refusée","",""
-"","","select","Verified","Vérifié","",""
-"","","select","Waiting validation","En attente validation","",""
-"","","select","Immediate","Immédiat","",""
-"","","select","1 month","1 mois","",""
-"","","select","2 month","2 mois","",""
-"","","select","3 month","3 mois","",""
-"","","select","1 month negociable","1 mois négociable","",""
-"","","select","2 month negociable","2 mois négociable","",""
-"","","select","3 month negociable","3 mois négociable","",""
-"","","select","Junior","Junior","",""
-"","","select","Senior","Senior","",""
-"","","select","Expert","Expert","",""
-"","","select","Junior Manager (0 - 5 ans)","Cadre Junior (0 - 5 ans)","",""
-"","","select","Confirmed Manager(5 - 10 ans)","Cadre Confirmé (5 - 10 ans)","",""
-"","","select","Senior Manager ( > 10 ans)","Cadre Senior ( > 10 ans)","",""
-"","","select","Junior Worker Junior (0 - 5 ans)","Non-Cadre Junior (0 - 5 ans)","",""
-"","","select","Confirmed Worker (5 - 10 ans)","Non-Cadre Confirmé (5 - 10 ans)","",""
-"","","select","Senior Worker ( > 10 ans)","Non-Cadre Senior ( > 10 ans)","",""
-"","","select","High","Élevé","",""
-"","","select","Medium","Moyen","",""
-"","","select","Low","Faible","",""
-"","","select","1st RDV (green)","1er RDV","",""
-"","","select","2nd RDV (green)","2ème RDV","",""
-"","","select","3rd RDV (orange)","3ème RDV","",""
-"","","select","Proposal(red)","Proposition","",""
-"","","select","Signature (red)","Signature","",""
-"","","select","OK (red)","OK","",""
-"","","select","No feedback (orange)","Pas de réponse","",""
-"","","select","Negative (vert)","Négatif","",""
-"","","select","New application","Nouv. Application","",""
-"","","select","Pre-selected","Pré-sélectionné(e)","",""
-"","","select","First interview","1ère entretien","",""
-"","","select","Second interview","2ème entretien","",""
-"","","select","Third interview","3ème entretien","",""
-"","","select","Rejected","Rejeté(e)/Refusé(e)","",""
-"","","select","Offer proposed","Offre proposée","",""
-"","","select","Offer accepted","Offre acceptée","",""
-"","","select","Offer refused","Offre refusée","",""
-"","","select","Straight recruitment","Besoin interne","",""
-"","","select","Project recruitment","Besoin projet","",""
-"","","select","National","National","",""
-"","","select","International","International","",""
-"","","select","Reduced","Réduite","",""
-"","","select","Manager","Cadre","",""
-"","","select","Profile","Profil","",""
-"","","select","CDI","","",""
-"","","select","CDD","","",""
-"","","select","Communication","Communication","",""
-"","","select","1 yr Univ.","BAC + 1","",""
-"","","select","2 yrs Univ.","BAC + 2","",""
-"","","select","3 yrs Univ.","BAC + 3","",""
-"","","select","4 yrs Univ.","BAC + 4","",""
-"","","select","5 yrs Univ. or more","BAC + 5 et plus","",""
-"","","select","1 yr.","1 an","",""
-"","","select","2 yrs.","2 ans","",""
-"","","select","3 yrs.","3 ans","",""
-"","","select","4 yrs.","4 ans","",""
-"","","select","5 yrs.","5 ans","",""
-"","","select","6 yrs.","6 ans","",""
-"","","select","7 yrs.","7 ans","",""
-"","","select","8 yrs.","8 ans","",""
-"","","select","9 yrs.","9 ans","",""
-"","","select","10 yrs. or more","10 ans et plus","",""
-"","","select","from 25 to 35 k€","de 25 à 35 k€","",""
-"","","select","from 35 to 45 k€","","",""
-"","","select","from 45 to 55 k€","","",""
-"","","select","from 55 to 65 k€","","",""
-"","","select","from 65 to 75 k€","","",""
-"","","select","from 75 to 85 k€","de 75 à 85 k€","",""
-"","","select","from 85 to 95 k€","de 85 à 95 k€","",""
-"","","select","from 95 to 100 k€ or more","","",""
-"","","select","Included","Inclus","",""
-"","","select","Excluded","Exclus","",""
-"","","select","","","",""
-"","","select","CD","CD","",""
-"","","select","SD","SD","",""
-"","","select","OTAN","OTAN","",""
-"","","select","CEA","CEA","",""
-"","","select","Single","Célibataire","",""
-"","","select","Married","Marié(e)","",""
-"","","select","Civil Union","","",""
-"","","select","Divorced","","",""
-"","","select","Widowed","","",""
-"","","select","Very positive (green)","Très favorable","",""
-"","","select","Positive  (green)","Favorable","",""
-"","","select","Mixed opinion (orange)","Mitigé","",""
-"","","select","Unfavourable (red)","Défavorable","",""
-"","","select","Market","Marché","",""
-"","","select","Order form market","Marché à bon de commande","",""
-"","","select","Other","Autre","",""
-"","","select","Draft","Brouillon","",""
-"","","select","Submitted","Soumis(e)","",""
-"","","select","Accepted","Acceptée","",""
-"","","select","Refused","Refusée","",""
-"","","select","Sent","Envoyé","",""
-"","","select","Won","Gagné","",""
-"","","select","Lost","Perdu","",""
-"","","select","Fixed fee","Forfait","",""
-"","","select","Onsite","Régie","",""
-"","","select","TMA","TMA","",""
-"","","select","None","Aucun","",""
-"","","select","Progress","Avancement","",""
-"","","select","Subscription","Abonnement","",""
-"","","select","PDF","PDF","",""
-"","","select","XLS","Excel","",""
-"","","select","Draft","Brouillon","",""
-"","","select","Confirmed","Confirmé","",""
-"","","select","Started","Démarré","",""
-"","","select","Completed","Terminer","",""
-"","","select","Canceled","Annulé","",""
-"","","select","Day","Jour","",""
-"","","select","Month","Mois","",""
-"","","select","Year","Année","",""
-"","","select","Day","Jour","",""
-"","","select","Month","Mois","",""
-"","","select","Year","Année","",""
-"","","select","Task","Tâche","",""
-"","","select","Project","Projet","",""
-"","","select","On going","En cours","",""
-"","","select","Waiting candidate confirmation","Attente confirmation candidat","",""
-"","","select","OK","OK","",""
-"","","select","KO","KO","",""
-"","","select","Canceled","Annulé","",""
-"","","select","Initial estimated","Initial estimé","",""
-"","","select","Real estimated","Réel estimé","",""
-"","","select","Real invoiced","Réel facturé","",""
-"","","select","Revenue","Revenu","",""
-"","","select","Cost","Coût","",""
-"","","select","Weekly","Hebdomadaire","",""
-"","","select","Monthly","Mensuel","",""
-"","","select","Day","Jour","",""
-"","","select","Hour","Heure","",""
-"","","select","Internal","Interne","",""
-"","","select","Previous job","Ancien métier","",""
-"","","chart","Grade by skills","Note par critère évalué","",""
-"com.axelor.apps.organisation.db.Advance","","view","Advance","Avance","",""
-"com.axelor.apps.organisation.db.Advance","","view","Advances","Avances","",""
-"com.axelor.apps.organisation.db.Agency","","view","Agency","Agence","",""
-"com.axelor.apps.organisation.db.Agency","","view","Agencies","Agences","",""
-"com.axelor.apps.organisation.db.Bonus","","view","Bonus","Bonus","",""
-"com.axelor.apps.organisation.db.Bonus","","view","Bonuses","Les Bonus","",""
-"com.axelor.apps.organisation.db.Project","","view","Business","Affaire","",""
-"com.axelor.apps.organisation.db.Project","","placeholder","Name","Intitulé","",""
-"com.axelor.apps.organisation.db.Project","","group","Actions","Actions","",""
-"com.axelor.apps.organisation.db.Project","","button","Create quote","Créer Devis","",""
-"com.axelor.apps.organisation.db.Project","","button","Generate new project instance","Générer nouvelle instance du projet","",""
-"com.axelor.apps.organisation.db.Project","","button","Transform to project","Transformer en projet","",""
-"com.axelor.apps.organisation.db.Project","","button","Create pre-sales task","Créer Tâche avant vente","",""
-"com.axelor.apps.organisation.db.Project","","button","Update task progress","MàJ avancement tâche","",""
-"com.axelor.apps.organisation.db.Project","","group","Times","Temps","",""
-"com.axelor.apps.organisation.db.Project","","group","Description","Description","",""
-"com.axelor.apps.organisation.db.Project","","group","Specific settings","Configuration spécifique","",""
-"com.axelor.apps.organisation.db.Project","","page","Tasks","Tâches","",""
-"com.axelor.apps.organisation.db.Project","","page","Financial information","Informations financières","",""
-"com.axelor.apps.organisation.db.Project","","button","Voir rapport estimations","","",""
-"com.axelor.apps.organisation.db.Project","","group","Initial estimated","Initial estimé","",""
-"com.axelor.apps.organisation.db.Project","","group","Real estimated","Réel estimé","",""
-"com.axelor.apps.organisation.db.Project","","group","Real invoiced","Réel facturé","",""
-"com.axelor.apps.organisation.db.Project","","page","Links","Liens","",""
-"com.axelor.apps.organisation.db.Project","","page","Initial estimated","Initial estimé","",""
-"com.axelor.apps.organisation.db.Project","","page","Real estimated","Réel estimé","",""
-"com.axelor.apps.organisation.db.Project","","page","Real invoiced","Réel facturé","",""
-"com.axelor.apps.organisation.db.Project","","page","Membres","","",""
-"com.axelor.apps.organisation.db.Project","","page","Need","Besoin","",""
-"com.axelor.apps.organisation.db.Project","","view","Business","Affaire","",""
-"com.axelor.apps.organisation.db.Candidate","","button","Print CV","Imprimer le CV","",""
-"com.axelor.apps.organisation.db.Candidate","","button","Send email","Envoyer email","",""
-"com.axelor.apps.organisation.db.Candidate","","button","Transform into employee","Transformer en employé","",""
-"com.axelor.apps.organisation.db.Candidate","","view","Candidate","Candidat","",""
-"com.axelor.apps.organisation.db.Candidate","","group","Contact","Contact","",""
-"com.axelor.apps.organisation.db.Candidate","","placeholder","Civility","Civilité","",""
-"com.axelor.apps.organisation.db.Candidate","","placeholder","Name","Nom","",""
-"com.axelor.apps.organisation.db.Candidate","","placeholder","First Name","Prénom","",""
-"com.axelor.apps.organisation.db.Candidate","","placeholder","Function","Fonction","",""
-"com.axelor.apps.organisation.db.Candidate","","group","Main Contact details","Coordonnées","",""
-"com.axelor.apps.organisation.db.Candidate","","page","General","Général","",""
-"com.axelor.apps.organisation.db.Candidate","","group","Search criterias","Critères de recherche","",""
-"com.axelor.apps.organisation.db.Candidate","","group","Availability and Decision","Dispo et Décision","",""
-"com.axelor.apps.organisation.db.Candidate","","group","Follow-up","Suivi","",""
-"com.axelor.apps.organisation.db.Candidate","createdOn","field","","Créé le","",""
-"com.axelor.apps.organisation.db.Candidate","","button","New candidate","Nouv. candidat","",""
-"com.axelor.apps.organisation.db.Candidate","","button","Pre-selected","Pré-sélectionné","",""
-"com.axelor.apps.organisation.db.Candidate","","button","1st Interview","1ère entretien","",""
-"com.axelor.apps.organisation.db.Candidate","","button","2nd Interview","2ème entretien","",""
-"com.axelor.apps.organisation.db.Candidate","","button","3rd Interview","3ème entretien","",""
-"com.axelor.apps.organisation.db.Candidate","","button","Rejected","Rejeté(e)/Refusé(e)","",""
-"com.axelor.apps.organisation.db.Candidate","","button","Offer proposed","Offre proposée","",""
-"com.axelor.apps.organisation.db.Candidate","","button","Offer accepted","Offre acceptée","",""
-"com.axelor.apps.organisation.db.Candidate","","button","Offer refused","","",""
-"com.axelor.apps.organisation.db.Candidate","","page","Profile","Profil","",""
-"com.axelor.apps.organisation.db.Candidate","","group","Keywords","Mots clés","",""
-"com.axelor.apps.organisation.db.Candidate","","group","Recruitment Type","Type de recrutement","",""
-"com.axelor.apps.organisation.db.Candidate","","group","Education/Trainings","Éducation / Formations","",""
-"com.axelor.apps.organisation.db.Candidate","","page","Evaluation","Évaluation","",""
-"com.axelor.apps.organisation.db.Candidate","","button","Compute","Calculer","",""
-"com.axelor.apps.organisation.db.Candidate","","page","Additionnal information","Informations Complémentaires","",""
-"com.axelor.apps.organisation.db.Candidate","","page","Competences","Compétences","",""
-"com.axelor.apps.organisation.db.Candidate","","page","Other opportunities","Autres pistes","",""
-"com.axelor.apps.organisation.db.Candidate","","view","Candidates","Candidats","",""
-"com.axelor.apps.organisation.db.Candidate","","button","Send by email","Envoyer par email","",""
-"com.axelor.apps.organisation.db.CandidateOtherOpportunity","","view","Other opportunities","Autres pistes","",""
-"com.axelor.apps.organisation.db.CandidateOtherOpportunity","","view","Other opportunity","Autres pistes","",""
-"com.axelor.apps.organisation.db.CompetenceArea","","view","CompetenceArea","Domaine compétence","",""
-"com.axelor.apps.organisation.db.CompetenceArea","archived","field","","Archivé","",""
-"com.axelor.apps.organisation.db.CompetenceArea","","view","CompetenceArea","Domaine compétence","",""
-"com.axelor.apps.organisation.db.CompetenceArea","archived","field","","Archivé","",""
-"com.axelor.apps.organisation.db.Competence","","view","Competences","Compétences","",""
-"com.axelor.apps.organisation.db.Competence","","page","Expertises","Expertises","",""
-"com.axelor.apps.organisation.db.Competence","","page","Mastered Skills","Compétences Maîtrisées","",""
-"com.axelor.apps.organisation.db.Competence","","page","Awareness","Notions","",""
-"com.axelor.apps.organisation.db.Competence","","view","Competences","Compétences","",""
-"com.axelor.apps.organisation.db.Degree","","view","Degree","Diplômes","",""
-"com.axelor.apps.organisation.db.Degree","archived","field","","Archivé","",""
-"com.axelor.apps.organisation.db.Degree","","view","Degree","Diplômes","",""
-"com.axelor.apps.organisation.db.Degree","archived","field","","Archivé","",""
-"com.axelor.apps.organisation.db.Employee","","view","Employee filters","Filtres recherche employés","",""
-"com.axelor.apps.organisation.db.Employee","","filter","Current Employees","Employés actuels","",""
-"com.axelor.apps.organisation.db.Employee","","filter","Old Employees","Anciens Employés","",""
-"com.axelor.apps.organisation.db.Employee","","filter","Managers","Cadres","",""
-"com.axelor.apps.organisation.db.Employee","","filter","Skill workers","Employés","",""
-"com.axelor.apps.organisation.db.Employee","","button","Print CV","Imprimer CV","",""
-"com.axelor.apps.organisation.db.Employee","","button","Send email","Envoyer email","",""
-"com.axelor.apps.organisation.db.Employee","","view","Employee","Employés","",""
-"com.axelor.apps.organisation.db.Employee","","group","Contact","Coordonnées","",""
-"com.axelor.apps.organisation.db.Employee","","placeholder","Civility","Civilité","",""
-"com.axelor.apps.organisation.db.Employee","","placeholder","Name","Nom","",""
-"com.axelor.apps.organisation.db.Employee","","placeholder","First Name","Prénom","",""
-"com.axelor.apps.organisation.db.Employee","","separator","Function","Fonction","",""
-"com.axelor.apps.organisation.db.Employee","","placeholder","Function","Fonction","",""
-"com.axelor.apps.organisation.db.Employee","","separator","Department","Département","",""
-"com.axelor.apps.organisation.db.Employee","","group","Main Contact details","Coordonnées principales","",""
-"com.axelor.apps.organisation.db.Employee","","viewField","Email","Email","",""
-"com.axelor.apps.organisation.db.Employee","","separator","Emergency","Urgence","",""
-"com.axelor.apps.organisation.db.Employee","","page","Additionnal information","Informations Complémentaires","",""
-"com.axelor.apps.organisation.db.Employee","","group","Contract Details","Détails contact","",""
-"com.axelor.apps.organisation.db.Employee","","separator","Advantages","Avantages","",""
-"com.axelor.apps.organisation.db.Employee","","group","Hierarchy","Hiérarchie","",""
-"com.axelor.apps.organisation.db.Employee","","page","Profile","Profil","",""
-"com.axelor.apps.organisation.db.Employee","","group","Keywords","Mots clés","",""
-"com.axelor.apps.organisation.db.Employee","","group","Competences profile","Profil de compétences","",""
-"com.axelor.apps.organisation.db.Employee","","page","Salary","Salaires","",""
-"com.axelor.apps.organisation.db.Employee","","group","Fixed salary","Salaire fixe","",""
-"com.axelor.apps.organisation.db.Employee","","page","Travel expense","Notes de frais","",""
-"com.axelor.apps.organisation.db.Employee","","page","Leaves","Congés/Absences","",""
-"com.axelor.apps.organisation.db.Employee","","page","History","Historique","",""
-"com.axelor.apps.organisation.db.Employee","","separator","Recruitment","","",""
-"com.axelor.apps.organisation.db.Employee","","view","Employee","Employés","",""
-"com.axelor.apps.organisation.db.Employee","","viewField","Email","Email","",""
-"com.axelor.apps.organisation.db.Employee","","button","Send by email","Envoyer par email","",""
-"com.axelor.apps.organisation.db.EmployeeLeave","","view","Employee leave","","",""
-"com.axelor.apps.organisation.db.EmployeeLeave","","view","Employee leaves","","",""
-"com.axelor.apps.organisation.db.EvaluationLine","","view","Evaluation lines","Lignes d'évaluation","",""
-"com.axelor.apps.organisation.db.EvaluationLine","","view","Evaluation lines","Lignes d'évaluation","",""
-"com.axelor.apps.organisation.db.Expense","","view","Expenses","","",""
-"com.axelor.apps.organisation.db.ExpenseLine","","view","Expense Lines","Lignes de frais","",""
-"com.axelor.apps.organisation.db.Expense","","view","Expense","","",""
-"com.axelor.apps.organisation.db.Expense","","viewField","Total (TTC)","","",""
-"com.axelor.apps.organisation.db.Expense","","group","Action(s)","Action(s)","",""
-"com.axelor.apps.organisation.db.Expense","","button","Draft","Brouillon","",""
-"com.axelor.apps.organisation.db.Expense","","button","Submit","Envoyer","",""
-"com.axelor.apps.organisation.db.Expense","","button","Validate","Valider","",""
-"com.axelor.apps.organisation.db.Expense","","button","Validate","Valider","",""
-"com.axelor.apps.organisation.db.Expense","","button","Confirm","Confirmer","",""
-"com.axelor.apps.organisation.db.Expense","","button","Refuse","Refuser","",""
-"com.axelor.apps.organisation.db.Expense","","button","Compute","Calculer","",""
-"com.axelor.apps.organisation.db.Expense","","view","Expenses","","",""
-"com.axelor.apps.organisation.db.Expense","","viewField","Total (TTC)","","",""
-"com.axelor.apps.organisation.db.ExpenseLine","","view","Expense Line","Ligne de dépense","",""
-"com.axelor.apps.organisation.db.ExpenseLine","","group","Date","","",""
-"com.axelor.apps.organisation.db.ExpenseLine","","group","Context","Contexte","",""
-"com.axelor.apps.organisation.db.ExpenseLine","","group","Details","Détails","",""
-"com.axelor.apps.organisation.db.ExpenseLine","","group","Proofs","Preuves","",""
-"com.axelor.apps.organisation.db.ExpenseLine","","group","Validation/Invoicing","Validation/Facturation","",""
-"com.axelor.apps.organisation.db.ExpenseLine","","view","Expense Line","Ligne de dépense","",""
-"com.axelor.apps.organisation.db.FinancialInformationUpdate","","view","Mise à jour des informations financières","","",""
-"com.axelor.apps.organisation.db.FinancialInformationHistoryLine","","view","Mise à jour des informations financières","","",""
-"com.axelor.apps.organisation.db.FinancialInformationUpdate","","view","Les mises à jours des informations financières","","",""
-"com.axelor.apps.organisation.db.FinancialInformationHistoryLine","","view","Les mises à jours des informations financières","","",""
-"com.axelor.apps.organisation.db.InterventionType","","view","InterventionType","Types d'intervention","",""
-"com.axelor.apps.organisation.db.InterventionType","archived","field","","Archivé","",""
-"com.axelor.apps.organisation.db.InterventionType","","view","InterventionType","Types d'intervention","",""
-"com.axelor.apps.organisation.db.InterventionType","archived","field","","Archivé","",""
-"com.axelor.apps.organisation.db.JobOffer","","view","Job offer","Offre d'emploi","",""
-"com.axelor.apps.organisation.db.JobOffer","","group","Offer details","Détails de l'offre","",""
-"com.axelor.apps.organisation.db.JobOffer","","group","Profil candidat","Profil candidat(e) recherché(e)","",""
-"com.axelor.apps.organisation.db.JobOffer","","view","Job offers","Offres d'emploi","",""
-"com.axelor.apps.organisation.db.LeaveRequest","","view","Leave requests","Demandes de congés","",""
-"com.axelor.apps.organisation.db.LeaveRequest","","view","Leave request","Demande de congé(s)","",""
-"com.axelor.apps.organisation.db.LeaveRequest","","group","Leave period","Période de congés","",""
-"com.axelor.apps.organisation.db.LeaveRequest","","button","Confirm","Confirmer","",""
-"com.axelor.apps.organisation.db.LeaveRequest","","button","Cancel","Annuler","",""
-"com.axelor.apps.organisation.db.LeaveRequest","","button","Validate","Valider","",""
-"com.axelor.apps.organisation.db.LeaveRequest","","view","Leave requests","Demandes de congés","",""
-"com.axelor.apps.organisation.db.MissionOrder","","view","Mission order","Ordre de mission","",""
-"com.axelor.apps.organisation.db.MissionOrder","","group","Mission order","Ordre de mission","",""
-"com.axelor.apps.organisation.db.MissionOrder","","group","Mission information","Information mission","",""
-"com.axelor.apps.organisation.db.MissionOrder","","view","Mission orders","Ordres de mission","",""
-"com.axelor.apps.organisation.db.MobilityChoice","","view","Geographical mobility","Mobilité Géographique","",""
-"com.axelor.apps.organisation.db.MobilityChoice","","view","Geographical mobility","Mobilité Géographique","",""
-"com.axelor.apps.organisation.db.OfferLine","","view","Offer Line","Ligne d'offre","",""
-"com.axelor.apps.organisation.db.OfferLine","","view","Offer Lines","Lignes d'offre","",""
-"com.axelor.apps.organisation.db.Overtime","","view","Overtime","Heures supplémentaires","",""
-"com.axelor.apps.organisation.db.Overtime","","group","Action(s)","Action(s)","",""
-"com.axelor.apps.organisation.db.Overtime","","button","Draft","Brouillon","",""
-"com.axelor.apps.organisation.db.Overtime","","button","Submit","Envoyer","",""
-"com.axelor.apps.organisation.db.Overtime","","button","Validate","Valider","",""
-"com.axelor.apps.organisation.db.Overtime","","button","Validate","Valider","",""
-"com.axelor.apps.organisation.db.Overtime","","button","Confirm","Confirmer","",""
-"com.axelor.apps.organisation.db.Overtime","","button","Refuse","Refuser","",""
-"com.axelor.apps.organisation.db.Overtime","","view","Overtimes","Heures supplémentaires","",""
-"com.axelor.apps.organisation.db.OvertimeLine","","view","Overtime line","Heure supplémentaire","",""
-"com.axelor.apps.organisation.db.OvertimeLine","","button","Validate","Valider","",""
-"com.axelor.apps.organisation.db.OvertimeLine","","view","Overtime lines","Heures supplémentaires","",""
-"com.axelor.apps.crm.db.Participant","","view","Participant","Participant","",""
-"com.axelor.apps.crm.db.Participant","","view","Participants","Participants","",""
-"com.axelor.apps.organisation.db.PaySheet","","view","Pay sheet","Fiche de paie","",""
-"com.axelor.apps.organisation.db.PaySheet","","view","Pay sheets","","",""
-"com.axelor.apps.organisation.db.PaySheet","","view","Pay sheet","Fiche de paie","",""
-"com.axelor.apps.organisation.db.PaySheet","","view","Pay sheets","","",""
-"com.axelor.apps.organisation.db.PersonalInfo","","view","Additionnal information","Informations Complémentaires","",""
-"com.axelor.apps.organisation.db.PlacementFollowUp","","view","PlacementFollowUp","Suivi du placement","",""
-"com.axelor.apps.organisation.db.PlacementFollowUp","archived","field","","","",""
-"com.axelor.apps.organisation.db.PlacementFollowUp","","view","PlacementFollowUp","Suivi du placement","",""
-"com.axelor.apps.organisation.db.PlacementFollowUp","archived","field","","","",""
-"com.axelor.apps.organisation.db.Planning","","view","Planning","Planification","",""
-"com.axelor.apps.organisation.db.Planning","","group","Configuration","Configuration","",""
-"com.axelor.apps.organisation.db.Planning","","group","Complete time sheet configuration","Compléter la config. Feuille de Tps.","",""
-"com.axelor.apps.organisation.db.Planning","","button","Complete time sheet","Compléter le Feuille de Tps.","",""
-"com.axelor.apps.organisation.db.Planning","","view","Planning","Planification","",""
-"com.axelor.apps.organisation.db.PlanningLine","","view","Planning line","Ligne de planification","",""
-"com.axelor.apps.organisation.db.PlanningLine","","view","Planning lines","Lignes de planification","",""
-"com.axelor.apps.organisation.db.PlanningLine","","view","Planning line","Ligne de planification","",""
-"com.axelor.apps.organisation.db.PlanningLine","","view","Planning lines","Lignes de planification","",""
-"com.axelor.apps.organisation.db.Position","","view","Professional background","Parcours professionel","",""
-"com.axelor.apps.organisation.db.Position","","view","Professional background","Parcours professionel","",""
-"com.axelor.apps.organisation.db.Project","","view","Project filters","Filtres projets","",""
-"com.axelor.apps.organisation.db.Project","","filter","My Projects","Mes Projets","",""
-"com.axelor.apps.organisation.db.Project","","filter","Models","Projets modèles","",""
-"com.axelor.apps.organisation.db.Project","","filter","Billable","Facturable","",""
-"com.axelor.apps.organisation.db.Project","","view","Project","Projet","",""
-"com.axelor.apps.organisation.db.Project","","placeholder","Name","Intitulé","",""
-"com.axelor.apps.organisation.db.Project","","group","Actions","Actions","",""
-"com.axelor.apps.organisation.db.Project","","button","Generate new project instance","Générer nouvelle instance du projet","",""
-"com.axelor.apps.organisation.db.Project","","button","Generate draft invoice","Générer facture brouillon","",""
-"com.axelor.apps.organisation.db.Project","","button","Show tasks","Voir les tâches","",""
-"com.axelor.apps.organisation.db.Project","","button","Update task progress","MàJ avancement tâche","",""
-"com.axelor.apps.organisation.db.Project","","group","Times","Temps","",""
-"com.axelor.apps.organisation.db.Project","","group","Description","Description","",""
-"com.axelor.apps.organisation.db.Project","","group","Specific settings","Configuration spécifique","",""
-"com.axelor.apps.organisation.db.Project","","separator","Project model","Projet modèle ?","",""
-"com.axelor.apps.organisation.db.Project","","separator","Expense","NDF","",""
-"com.axelor.apps.organisation.db.Project","","separator","Timesheet","Feuille de temps","",""
-"com.axelor.apps.organisation.db.Project","","page","Tasks","Tâches","",""
-"com.axelor.apps.organisation.db.Project","","page","Membres","","",""
-"com.axelor.apps.organisation.db.Project","","view","Projects","Projets","",""
-"com.axelor.apps.organisation.db.PublicHolidaysLine","","view","Public holiday","Jours Fériés","",""
-"com.axelor.apps.organisation.db.PublicHolidaysLine","","view","Public holidays","Jours Fériés","",""
-"com.axelor.apps.organisation.db.PublicHolidays","","view","Public holidays","Jours Fériés","",""
-"com.axelor.apps.organisation.db.PublicHolidays","","view","Public holidays","Jours Fériés","",""
-"com.axelor.apps.organisation.db.RecuitmentProcessAdvancement","","view","Recruitment process progress","Avancement du recrutement","",""
-"com.axelor.apps.organisation.db.RecuitmentProcessAdvancement","","view","Recruitment process progresses","Avancement des processus de recrutement","",""
-"com.axelor.apps.organisation.db.RecuitmentProcessAdvancement","","view","Recruitment process advancement","Avancements processus recrutement","",""
-"com.axelor.apps.organisation.db.RecuitmentProcessAdvancement","","view","Recruitment process advancement","Avancements processus recrutement","",""
-"com.axelor.apps.organisation.db.Schedule","","view","Horaires","Horaires","",""
-"com.axelor.apps.organisation.db.Schedule","","view","Les horaires","Les horaires","",""
-"com.axelor.apps.organisation.db.ScheduleLine","","view","Working Time shift","Période horaire","",""
-"com.axelor.apps.organisation.db.ScheduleLine","","view","Working Time shifts","Les périodes horaires","",""
-"com.axelor.apps.organisation.db.ScheduleSubLine","","view","Working timeshift periods","Période journalière","",""
-"com.axelor.apps.organisation.db.ScheduleSubLine","","view","Working timeshift periods","Période journalière","",""
-"com.axelor.apps.organisation.db.SkillLine","","view","Skills","Compétences","",""
-"com.axelor.apps.organisation.db.SkillLine","","view","Skills","Compétences","",""
-"com.axelor.apps.organisation.db.SkillSet","","view","Skill","Compétence","",""
-"com.axelor.apps.organisation.db.Task","","view","Tasks","Tâches","",""
-"com.axelor.apps.organisation.db.Task","","view","Task","Tâche","",""
-"com.axelor.apps.organisation.db.Task","","placeholder","Task name","Nom tâche","",""
-"com.axelor.apps.organisation.db.Task","","group","Context","Contexte","",""
-"com.axelor.apps.organisation.db.Task","","group","Times","Temps","",""
-"com.axelor.apps.organisation.db.Task","","group","Progress","Avancement","",""
-"com.axelor.apps.organisation.db.Task","","button","Generate draft invoice","Générer facture brouillon","",""
-"com.axelor.apps.organisation.db.Task","","page","Planification and realization","Planification et réalisation","",""
-"com.axelor.apps.organisation.db.Task","","page","Invoicing follow-up","Suivi Facturation","",""
-"com.axelor.apps.organisation.db.Task","","page","Notes","Remarques","",""
-"com.axelor.apps.organisation.db.Task","","page","Financial information","Informations financières","",""
-"com.axelor.apps.organisation.db.Task","","button","View forecast report","Voir rapport estimations","",""
-"com.axelor.apps.organisation.db.Task","","group","Initial estimated","Initial estimé","",""
-"com.axelor.apps.organisation.db.Task","","separator","History","","",""
-"com.axelor.apps.organisation.db.Task","","button","Update and historize","MàJ et Historiser","",""
-"com.axelor.apps.organisation.db.Task","","group","Real estimated","Réel estimé","",""
-"com.axelor.apps.organisation.db.Task","","group","Real invoiced","Réel facturé","",""
-"com.axelor.apps.organisation.db.Task","","page","Links","Liens","",""
-"com.axelor.apps.organisation.db.Task","","group","Update financial information","MàJ infos. financières","",""
-"com.axelor.apps.organisation.db.Task","","page","Initial estimated","Initial estimé","",""
-"com.axelor.apps.organisation.db.Task","","page","Real estimated","Réel estimé","",""
-"com.axelor.apps.organisation.db.Task","","page","Real invoiced","Réel facturé","",""
-"com.axelor.apps.organisation.db.Task","","page","Description","Description","",""
-"com.axelor.apps.organisation.db.Task","","page","Spent times","Temps passés","",""
-"com.axelor.apps.organisation.db.Task","","view","Tasks","Tâches","",""
-"com.axelor.apps.organisation.db.Task","","view","Task","Tâche","",""
-"com.axelor.apps.organisation.db.Task","","placeholder","Task name","Nom tâche","",""
-"com.axelor.apps.organisation.db.Task","","group","Context","Contexte","",""
-"com.axelor.apps.organisation.db.Task","","page","Planification and realization","Planification et réalisation","",""
-"com.axelor.apps.organisation.db.Task","","page","Notes","Remarques","",""
-"com.axelor.apps.organisation.db.Task","","page","Description","Description","",""
-"com.axelor.apps.organisation.db.Task","","page","Spent times","Temps passés","",""
-"com.axelor.apps.organisation.db.Task","","view","Tasks","Tâches","",""
-"com.axelor.apps.organisation.db.Task","","view","Tasks","Tâches","",""
-"com.axelor.apps.organisation.db.Task","","view","Tasks filters","Filtres Tâches","",""
-"com.axelor.apps.organisation.db.Task","","filter","My Tasks","Mes Tâches","",""
-"com.axelor.apps.organisation.db.Task","","filter","My Today tasks","Mes Tâches du jour","",""
-"com.axelor.apps.organisation.db.Task","","filter","My Upcoming Tasks","Mes Tâches à venir","",""
-"com.axelor.apps.organisation.db.Task","","filter","Tasks Underevaluated","Tâches sous-évaluées","",""
-"com.axelor.apps.organisation.db.Task","","filter","Tasks To Invoice","Tâches à facturer","",""
-"com.axelor.apps.organisation.db.Timesheet","","view","Timesheet","Feuille de temps","",""
-"com.axelor.apps.organisation.db.Timesheet","","group","Satisfaction","Satisfaction","",""
-"com.axelor.apps.organisation.db.Timesheet","","separator","Project","Projet","",""
-"com.axelor.apps.organisation.db.Timesheet","","separator","Company","Société","",""
-"com.axelor.apps.organisation.db.Timesheet","","group","Unité","","",""
-"com.axelor.apps.organisation.db.Timesheet","","separator","Details of time spent on project/tasks","Lignes de temps passé sur les projets/tâche","",""
-"com.axelor.apps.organisation.db.Timesheet","","group","Configuration","Configuration","",""
-"com.axelor.apps.organisation.db.Timesheet","","button","Get past time","Récupérer les temps passés","",""
-"com.axelor.apps.organisation.db.Timesheet","","group","Complete time sheet configuration","Compléter la config. Feuille de Tps.","",""
-"com.axelor.apps.organisation.db.Timesheet","","button","Complete time sheet","Compléter la Feuille de Tps.","",""
-"com.axelor.apps.organisation.db.Timesheet","","group","Action(s)","Action(s)","",""
-"com.axelor.apps.organisation.db.Timesheet","","button","Confirm","Confirmer","",""
-"com.axelor.apps.organisation.db.Timesheet","","button","Validate","Valider","",""
-"com.axelor.apps.organisation.db.Timesheet","","button","Cancel","Annuler","",""
-"com.axelor.apps.organisation.db.Timesheet","","group","Totals","Totaux","",""
-"com.axelor.apps.organisation.db.Timesheet","","view","Timesheets","Feuilles de temps","",""
-"com.axelor.apps.organisation.db.TimesheetLine","","view","TImesheet project/task time input","Saisie feuille de temps","",""
-"com.axelor.apps.organisation.db.TimesheetLine","","view","Timesheet project/task time input","Ligne de feuille de temps","",""
-"com.axelor.apps.organisation.db.TimesheetLine","","viewField","Duration","Durée","",""
-"com.axelor.apps.organisation.db.TimesheetLine","","view","Timesheet project/task time inputs","Les lignes de feuille de temps","",""
-"com.axelor.apps.organisation.db.TimesheetLine","","viewField","Duration","Durée","",""
-"com.axelor.apps.organisation.db.TimesheetLine","","view","Timesheet project/task time input","Ligne de feuille de temps","",""
-"com.axelor.apps.organisation.db.TimesheetLine","","viewField","Duration","Durée","",""
-"com.axelor.apps.organisation.db.TimesheetLine","","view","Timesheet project/task time inputs","Les lignes de feuille de temps","",""
-"com.axelor.apps.organisation.db.TimesheetLine","","viewField","Duration (h)","Durée (h)","",""
-"com.axelor.apps.organisation.db.TimesheetLine","","view","Timesheet project/task time input","Ligne de feuille de temps","",""
-"com.axelor.apps.organisation.db.TimesheetLine","","viewField","Duration","Durée","",""
-"com.axelor.apps.organisation.db.TimesheetLine","","view","Timesheet project/task time inputs","Les lignes de feuille de temps","",""
-"com.axelor.apps.organisation.db.TimesheetLine","","viewField","Duration","Durée","",""
-"com.axelor.apps.organisation.db.TimesheetPeriodConfig","","view","Timesheet Period Config","Configuration période feuille de temps","",""
-"com.axelor.apps.organisation.db.TimesheetPeriodConfig","","group","Weekly","Hebdomadaire","",""
-"com.axelor.apps.organisation.db.TimesheetPeriodConfig","","group","Period","Période","",""
-"com.axelor.apps.organisation.db.TimesheetPeriodConfig","","group","Day/Hour of generation","Jour/heure de génération","",""
-"com.axelor.apps.organisation.db.TimesheetPeriodConfig","","group","Monthly","Mensuel","",""
-"com.axelor.apps.organisation.db.TimesheetPeriodConfig","","group","Day/Hour of generation","Jour/heure de génération","",""
-"com.axelor.apps.organisation.db.TimesheetPeriodConfig","","group","Reminder delay","Délai de relance","",""
-"com.axelor.apps.organisation.db.TimesheetPeriodConfig","","group","Limit","Limite","",""
-"com.axelor.apps.organisation.db.TimesheetPeriodConfig","","button","Generate Timesheets","Générer les feuilles de temps","",""
-"com.axelor.apps.organisation.db.TimesheetPeriodConfig","","view","Timesheets Period Config","Configuration période feuilles de temps","",""
-"com.axelor.apps.organisation.db.TimesheetTotalByType","","view","Total input per type","Total par type","",""
-"com.axelor.apps.organisation.db.TimesheetTotalByType","","view","Total input per types","Totaux par type","",""
-"com.axelor.apps.organisation.db.Topic","","view","Topic","Sujets","",""
-"com.axelor.apps.organisation.db.Topic","archived","field","","Archivé","",""
-"com.axelor.apps.organisation.db.Topic","","view","Topic","Sujets","",""
-"com.axelor.apps.organisation.db.Topic","archived","field","","Archivé","",""
-"com.axelor.apps.organisation.db.TrainingCenter","","view","TrainingCenter","Centres de formation","",""
-"com.axelor.apps.organisation.db.TrainingCenter","archived","field","","Archivé","",""
-"com.axelor.apps.organisation.db.TrainingCenter","","view","TrainingCenter","Centres de formation","",""
-"com.axelor.apps.organisation.db.TrainingCenter","archived","field","","Archivé","",""
-"com.axelor.apps.organisation.db.Training","","view","Training","Formations","",""
-"com.axelor.apps.organisation.db.Training","","label"," ","","",""
-"com.axelor.apps.organisation.db.Training","","view","Training","Formations","",""
-"com.axelor.apps.organisation.db.TrainingLine","","view","TrainingLine","Lignes de formation","",""
-"com.axelor.apps.organisation.db.TrainingLine","archived","field","","Archivée","",""
-"com.axelor.apps.organisation.db.TrainingLine","","view","TrainingLine","Lignes de formation","",""
-"com.axelor.apps.organisation.db.TrainingLine","archived","field","","Archivée","",""
-"","","action","Customer invoice lines","Lignes de facture client","",""
-"","","action","Travel expense lines","Lignes de Notes de frais","",""
-"","","action","Financial information updates","MàJ Infos. Financières","",""
-"","","action","Financial information updates","MàJ Infos. Financières","",""
-"","","action","Financial information updates","MàJ Infos. Financières","",""
-"","","action","Supplier invoice lines","Lignes Factures Fournisseur","",""
-"","","action","Timesheet lines","Lignes de Feuille de Tps","",""
-"","","action","Validated supplier order lines","Lignes de Cmde Fournisseur","",""
-"","","action","Validated Customer order lines","Lignes de Cmde Validées","",""
-"","","action","All supporting files have not been provided","Tous les fichiers justificatifs n'ont pas été fournis.","",""
-"","","action","The holiday period already started you can not cancel this holiday.","La période de congés ayant déjà commencée, vous ne pouvez pas l'annuler.","",""
-"","","action","Start date required.","Veuillez renseigner une date de départ en congés et la durée associée des congés.","",""
-"","","action","Leave request reason required.","Veuillez renseigner le motif de votre demande de congés.","",""
-"","","action","Request date required.","Veuillez renseigner la date de demande de congés.","",""
-"","","action","The holiday request date should be equal or before the today date.","La date de demande de congé doit être égale ou précéder la date du jour.","",""
-"","","action","Holiday requests duration must always be greater than 0.","La durée ne peut être négative.","",""
-"","","action","The holiday end date must be after the start date.","La date de fin de vacances doit être postérieure à la date de départ.","",""
-"","","action","The holiday request duration is greater than the remaining holidays. Please contact your supervisor to be credited with advance holidays permission.","La durée de demande de congés est supérieure aux vacances restantes. Merci de contacter votre superviseur pour bénéficier d'une avance de congés.","",""
-"","","action","You are not allowed to validate this holiday request, please refer to your supervisor (the supervisor is listed in the employee hierarchy notebook).","Vous n'êtes pas autorisé à valider cette demande de congés. Merci de contacter votre responsable (voir votre fiche employé(e)).","",""
-"","","action","Generating invoice is impossible, the fields clientPartner and contactPartner must be filled.","Merci de remplir les champs 'Client' et 'Contact' pour générer une facture.","",""
-"","","action","Generating invoice is impossible, please link the task to a saleOrderLine to do so.","La génération de la facture est impossible, merci de relier la tâche à une ligne de devis pour que cette opération soit possible.","",""
-"","","action","There is currently no task to invoice. If you need to generate an invoice from a task, please tick the checkbox 'To invoice' and make sure all necessary informations are filled in.","Aucune tâche n'est à facturer pour l'instant. Si vous souhaitez générer une ligne de facture à partir d'une tâche, veuillez cocher la case 'A facturer' et faire en sorte que toutes les informations nécessaires soient remplies.","",""
-"","","action","Tasks","Tâches","",""
-"","","action","Generating invoice is impossible, Please link the task to a saleOrderLine to do so.","Merci de relier la tâche à une ligne de devis/commande pour générer une facture.","",""
-"","","action","Customer invoice lines","Lignes de facture client","",""
-"","","action","Travel expense lines","Lignes de Notes de frais","",""
-"","","action","Financial information updates","MàJ Infos. Financières","",""
-"","","action","Financial information updates","MàJ Infos. Financières","",""
-"","","action","Financial information updates","MàJ Infos. Financières","",""
-"","","action","Supplier invoice lines","Lignes Factures Fournisseur","",""
-"","","action","Timesheet lines","Lignes de Feuille de Tps","",""
-"","","action","Validated supplier order lines","Lignes de Cmde Fournisseur","",""
-"","","action","Validated Customer order lines","Lignes de Cmde Validées","",""
-"","","action","Business","Affaire","",""
-"","","action","New Business","Nouv. Affaire","",""
-"","","action","Sites","Sites","",""
-"","","action","Gantt Diagram","Diagramme de GANTT","",""
-"","","action","Public holidays","Jours Fériés","",""
-"","","action","Leave request reasons","Motifs de congés","",""
-"","","action","Employees","Employés","",""
-"","","action","Olds timesheets","Mes anciennes feuilles de temps","",""
-"","","action","My leave requests","Mes demandes de congé","",""
-"","","action","My overtimes","Mes heures supplémentaires","",""
-"","","action","My timesheet","Mes feuilles de temps à compléter","",""
-"","","action","My travel expenses","Mes notes de frais","",""
-"","","action","Mission order","Ordre de mission","",""
-"","","action","My timesheet calendar","Calendrier Feuille de Tps","",""
-"","","action","Overtimes to be paid","Heures sup à payer","",""
-"","","action","Travel expenses to be paid","Notes de frais à rembourser","",""
-"","","action","Plannings","Plannings","",""
-"","","action","Candidates","Candidats","",""
-"","","action","Working hours","Horaires de travail","",""
-"","","action","Trainings","Formations","",""
-"","","action","Leave requests to validate","Demandes de congés à valider","",""
-"","","action","Overtimes to validate","Heures supplémentaires à valider","",""
-"","","action","Timesheets to validate","Feuilles de temps à valider","",""
-"","","action","Travel expenses to validate by commercial","Notes de frais à valider par Commercial","",""
-"","","action","Travel expenses to validate by RSC Manager","Notes de frais à valider par Manager","",""
-"","","action","Projects","Les projets","",""
-"","","action","Tasks","Tâches","",""
-"hr.root.employee","hr.root.employee","documentation","","","",""
-"hr.root.mission.order","hr.root.mission.order","documentation","","","",""
-"hr.root.recruitment.candidate","hr.root.recruitment.candidate","documentation","","","",""
-"hr.root.my.timesheet.line.calendar","hr.root.my.timesheet.line.calendar","documentation","","","",""
-"hr.root.inputforms.timesheet","hr.root.inputforms.timesheet","documentation","","","",""
-"hr.root.inputforms.travelexpenses","hr.root.inputforms.travelexpenses","documentation","","","",""
-"hr.root.inputforms.overtimes","hr.root.inputforms.overtimes","documentation","","","",""
-"hr.root.inputforms.leave.request","hr.root.inputforms.leave.request","documentation","","","",""
-"hr.root.validationforms.timesheet","hr.root.validationforms.timesheet","documentation","","","",""
-"hr.root.validationforms.travelexpenses.manager","hr.root.validationforms.travelexpenses.manager","documentation","","","",""
-"hr.root.validationforms.travelexpenses.commercial","hr.root.validationforms.travelexpenses.commercial","documentation","","","",""
-"hr.root.validationforms.overtimes","hr.root.validationforms.overtimes","documentation","","","",""
-"hr.root.validationforms.leave.request","hr.root.validationforms.leave.request","documentation","","","",""
-"hr.root.paymentforms.travelexpenses","hr.root.paymentforms.travelexpenses","documentation","","","",""
-"hr.root.paymentforms.overtimes","hr.root.paymentforms.overtimes","documentation","","","",""
-"hr.root.history.olds.timesheets","hr.root.history.olds.timesheets","documentation","","","",""
-"hr.root.training","hr.root.training","documentation","","","",""
-"hr.root.planning","hr.root.planning","documentation","","","",""
-"hr.root.schedule","hr.root.schedule","documentation","","","",""
-"hr.root.config.public.holidays","hr.root.config.public.holidays","documentation","","","",""
-"hr.root.conf.task.leave.request.reason","hr.root.conf.task.leave.request.reason","documentation","","","",""
-"business.root.site","business.root.site","documentation","","","",""
-"business.root.project.new.business","business.root.project.new.business","documentation","","","",""
-"business.root.project.all.business","business.root.project.all.business","documentation","","","",""
-"demo.gantt1","demo.gantt1","documentation","","","",""
-"project.root.project","project.root.project","documentation","","","",""
-"project.root.task","project.root.task","documentation","","","",""
-"timesheet-form","timesheet-form","documentation","","","",""
-"timesheet-form","userInfo","documentation","","","",""
-"timesheet-form","statusSelect","documentation","","","",""
-"timesheet-form","fromDate","documentation","","","",""
-"timesheet-form","toDate","documentation","","","",""
-"timesheet-form","unit","documentation","","","",""
-"timesheet-form","project","documentation","","","",""
-"timesheet-form","projectSatisfactionSelect","documentation","","","",""
-"timesheet-form","projectComment","documentation","","","",""
-"timesheet-form","companySatisfactionSelect","documentation","","","",""
-"timesheet-form","companyComment","documentation","","","",""
-"timesheet-form","hasToGetLeaveRequests","documentation","","","",""
-"timesheet-form","hasToGetSpentTimeFromTask","documentation","","","",""
-"timesheet-form","hasToGetPlanningLine","documentation","","","",""
-"timesheet-form","getSpentTimeButton","documentation","","","",""
-"timesheet-form","hasCompleteTimesheetLines","documentation","","","",""
-"timesheet-form","completeFromDate","documentation","","","",""
-"timesheet-form","completeToDate","documentation","","","",""
-"timesheet-form","completeDefaultTask","documentation","","","",""
-"timesheet-form","duration","documentation","","","",""
-"timesheet-form","completeTimeSheetButton","documentation","","","",""
-"timesheet-form","timesheetLineList","documentation","","","",""
-"timesheet-form","confirm","documentation","","","",""
-"timesheet-form","validate","documentation","","","",""
-"timesheet-form","cancel","documentation","","","",""
-"timesheet-form","validatedByUserInfo","documentation","","","",""
-"timesheet-form","validationDate","documentation","","","",""
-"timesheet-form","timesheetInputTotal","documentation","","","",""
-"timesheet-form","timesheetTotalByTypeList","documentation","","","",""
-"timesheet-line-form","timesheet-line-form","documentation","","","",""
-"timesheet-line-form","date","documentation","","","",""
-"timesheet-line-form","project","documentation","","","",""
-"timesheet-line-form","task","documentation","","","",""
-"timesheet-line-form","duration","documentation","","","",""
-"timesheet-line-form","timesheet.unit","documentation","","","",""
-"timesheet-line-form","isToInvoice","documentation","","","",""
-"timesheet-line-form","isInvoiced","documentation","","","",""
-"timesheet-total-by-type-form","timesheet-total-by-type-form","documentation","","","",""
-"timesheet-total-by-type-form","project","documentation","","","",""
-"timesheet-total-by-type-form","duration","documentation","","","",""
-"expense-form","expense-form","documentation","","","",""
-"expense-form","userInfo","documentation","","","",""
-"expense-form","statusSelect","documentation","","","",""
-"expense-form","date","documentation","","","",""
-"expense-form","company","documentation","","","",""
-"expense-form","totalAmount","documentation","","","",""
-"expense-form","currency","documentation","","","",""
-"expense-form","project","documentation","","","",""
-"expense-form","expenseLineList","documentation","","","",""
-"expense-form","paymentPeriod","documentation","","","",""
-"expense-form","refusalReason","documentation","","","",""
-"expense-form","draft","documentation","","","",""
-"expense-form","submit","documentation","","","",""
-"expense-form","validateManager","documentation","","","",""
-"expense-form","validateCommercial","documentation","","","",""
-"expense-form","confirm","documentation","","","",""
-"expense-form","refuse","documentation","","","",""
-"expense-form","compute","documentation","","","",""
-"expense-form","validatedByUserInfo","documentation","","","",""
-"expense-form","validationDate","documentation","","","",""
-"expense-form","validationStatusSelect","documentation","","","",""
-"expense-line-form","expense-line-form","documentation","","","",""
-"expense-line-form","date","documentation","","","",""
-"expense-line-form","expenseTypeSelect","documentation","","","",""
-"expense-line-form","task","documentation","","","",""
-"expense-line-form","product","documentation","","","",""
-"expense-line-form","shortDescription","documentation","","","",""
-"expense-line-form","qty","documentation","","","",""
-"expense-line-form","unit","documentation","","","",""
-"expense-line-form","price","documentation","","","",""
-"expense-line-form","inTaxTotal","documentation","","","",""
-"expense-line-form","vatLine","documentation","","","",""
-"expense-line-form","file","documentation","","","",""
-"expense-line-form","fileReceived","documentation","","","",""
-"expense-line-form","validationDate","documentation","","","",""
-"expense-line-form","istoInvoice","documentation","","","",""
-"expense-line-form","isInvoiced","documentation","","","",""
-"leave-request-form","leave-request-form","documentation","","","",""
-"leave-request-form","employeeUserInfo","documentation","","","",""
-"leave-request-form","statusSelect","documentation","","","",""
-"leave-request-form","requestDate","documentation","","","",""
-"leave-request-form","reasonTask","documentation","","","",""
-"leave-request-form","accounted","documentation","","","",""
-"leave-request-form","startDateT","documentation","","","",""
-"leave-request-form","endDateT","documentation","","","",""
-"leave-request-form","nbrOfDayOff","documentation","","","",""
-"leave-request-form","remainingDaysOnPeriod","documentation","","","",""
-"leave-request-form","managerUserInfo","documentation","","","",""
-"leave-request-form","approvalDate","documentation","","","",""
-"leave-request-form","confirm","documentation","","","",""
-"leave-request-form","cancel","documentation","","","",""
-"leave-request-form","validate","documentation","","","",""
-"participant-form","participant-form","documentation","","","",""
-"participant-form","partner","documentation","","","",""
-"participant-form","isComing","documentation","","","",""
-"employee-form","employee-form","documentation","","","",""
-"employee-form","showEmployee","documentation","","","",""
-"employee-form","sendByEmail","documentation","","","",""
-"employee-form","picture","documentation","","","",""
-"employee-form","titleSelect","documentation","","","",""
-"employee-form","name","documentation","","","",""
-"employee-form","firstName","documentation","","","",""
-"employee-form","function","documentation","","","",""
-"employee-form","companyDepartment","documentation","","","",""
-"employee-form","internalContact","documentation","","","",""
-"employee-form","internalContact.mobilePhone","documentation","","","",""
-"employee-form","internalContact.fixedPhone","documentation","","","",""
-"employee-form","phoneAtCustomer","documentation","","","",""
-"employee-form","internalContact.emailAddress.address","documentation","","","",""
-"employee-form","internalContact.mainInvoicingAddress","documentation","","","",""
-"employee-form","emergencyContact","documentation","","","",""
-"employee-form","emergencyNumber","documentation","","","",""
-"employee-form","contractTypeSelect","documentation","","","",""
-"employee-form","contractDuration","documentation","","","",""
-"employee-form","functionRanking","documentation","","","",""
-"employee-form","entryDate","documentation","","","",""
-"employee-form","macroCategorySelect","documentation","","","",""
-"employee-form","categorySelect","documentation","","","",""
-"employee-form","exitDate","documentation","","","",""
-"employee-form","advantages","documentation","","","",""
-"employee-form","supervisedBySelect","documentation","","","",""
-"employee-form","managerUserInfo","documentation","","","",""
-"employee-form","managerProfileProduct","documentation","","","",""
-"employee-form","profileProduct","documentation","","","",""
-"employee-form","personalInfo","documentation","","","",""
-"employee-form","toolKeywordSet","documentation","","","",""
-"employee-form","fieldKeywordSet","documentation","","","",""
-"employee-form","jobKeywordSet","documentation","","","",""
-"employee-form","competence","documentation","","","",""
-"employee-form","positionList","documentation","","","",""
-"employee-form","salaryFromDate","documentation","","","",""
-"employee-form","salaryAmount","documentation","","","",""
-"employee-form","dailySalaryCost","documentation","","","",""
-"employee-form","bonusList","documentation","","","",""
-"employee-form","advanceList","documentation","","","",""
-"employee-form","paySheetList","documentation","","","",""
-"employee-form","vehicleFiscalPower","documentation","","","",""
-"employee-form","commuteFee","documentation","","","",""
-"employee-form","commuteFeeRefundPerc","documentation","","","",""
-"employee-form","expenseList","documentation","","","",""
-"employee-form","employeeLeaveList","documentation","","","",""
-"employee-form","candidate","documentation","","","",""
-"position-form","position-form","documentation","","","",""
-"position-form","name","documentation","","","",""
-"position-form","startDate","documentation","","","",""
-"position-form","endDate","documentation","","","",""
-"position-form","employer","documentation","","","",""
-"position-form","description","documentation","","","",""
-"position-form","departureCause","documentation","","","",""
-"position-form","department","documentation","","","",""
-"position-form","duration","documentation","","","",""
-"position-form","referenceTitle","documentation","","","",""
-"position-form","context","documentation","","","",""
-"position-form","goals","documentation","","","",""
-"position-form","development","documentation","","","",""
-"position-form","result","documentation","","","",""
-"position-form","technicalEnvironment","documentation","","","",""
-"position-form","contact","documentation","","","",""
-"position-form","recommendationSelect","documentation","","","",""
-"position-form","comment","documentation","","","",""
-"bonus-form","bonus-form","documentation","","","",""
-"bonus-form","period","documentation","","","",""
-"bonus-form","name","documentation","","","",""
-"bonus-form","amount","documentation","","","",""
-"advance-form","advance-form","documentation","","","",""
-"advance-form","date","documentation","","","",""
-"advance-form","amount","documentation","","","",""
-"advance-form","reversalDate","documentation","","","",""
-"advance-form","comment","documentation","","","",""
-"pay-sheet-employee-form","pay-sheet-employee-form","documentation","","","",""
-"pay-sheet-employee-form","period","documentation","","","",""
-"pay-sheet-employee-form","paymentDate","documentation","","","",""
-"employee-leave-form","employee-leave-form","documentation","","","",""
-"employee-leave-form","reasonTask","documentation","","","",""
-"employee-leave-form","leaveBalances","documentation","","","",""
-"employee-leave-form","leaveRequestInProgress","documentation","","","",""
-"employee-leave-form","cumulation","documentation","","","",""
-"mission-order-form","mission-order-form","documentation","","","",""
-"mission-order-form","reference","documentation","","","",""
-"mission-order-form","date","documentation","","","",""
-"mission-order-form","company","documentation","","","",""
-"mission-order-form","project","documentation","","","",""
-"mission-order-form","employee","documentation","","","",""
-"mission-order-form","qualificationKeyword","documentation","","","",""
-"mission-order-form","missionPropose","documentation","","","",""
-"mission-order-form","missionStartDate","documentation","","","",""
-"mission-order-form","missionEndDate","documentation","","","",""
-"mission-order-form","dateTypeSelect","documentation","","","",""
-"mission-order-form","address","documentation","","","",""
-"mission-order-form","contactPartner","documentation","","","",""
-"mission-order-form","userInfo","documentation","","","",""
-"mission-order-form","workingTime","documentation","","","",""
-"candidate-form","candidate-form","documentation","","","",""
-"candidate-form","showCandidate","documentation","","","",""
-"candidate-form","sendByEmail","documentation","","","",""
-"candidate-form","transformInEmployee","documentation","","","",""
-"candidate-form","picture","documentation","","","",""
-"candidate-form","titleSelect","documentation","","","",""
-"candidate-form","name","documentation","","","",""
-"candidate-form","firstName","documentation","","","",""
-"candidate-form","currentJobKeyword","documentation","","","",""
-"candidate-form","mobilePhone","documentation","","","",""
-"candidate-form","fixedPhone","documentation","","","",""
-"candidate-form","email","documentation","","","",""
-"candidate-form","address","documentation","","","",""
-"candidate-form","contractType","documentation","","","",""
-"candidate-form","searchedJobKeyword","documentation","","","",""
-"candidate-form","salaryExpectation","documentation","","","",""
-"candidate-form","relocationSelect","documentation","","","",""
-"candidate-form","resume","documentation","","","",""
-"candidate-form","coverLetter","documentation","","","",""
-"candidate-form","availabilitySelect","documentation","","","",""
-"candidate-form","availabilityDate","documentation","","","",""
-"candidate-form","decisionDate","documentation","","","",""
-"candidate-form","userInfo","documentation","","","",""
-"candidate-form","recruitmentStatusSelect","documentation","","","",""
-"candidate-form","globalEvaluation","documentation","","","",""
-"candidate-form","createdOn","documentation","","","",""
-"candidate-form","newCandidate","documentation","","","",""
-"candidate-form","preSelection","documentation","","","",""
-"candidate-form","firstInterview","documentation","","","",""
-"candidate-form","secondInterview","documentation","","","",""
-"candidate-form","thirdInterview","documentation","","","",""
-"candidate-form","rejectRecruitmentAdvancement","documentation","","","",""
-"candidate-form","proposeOfferRecruitmentAdvancement","documentation","","","",""
-"candidate-form","acceptOfferRecruitmentAdvancement","documentation","","","",""
-"candidate-form","rejectOfferRecruitmentAdvancement","documentation","","","",""
-"candidate-form","recruitementDate","documentation","","","",""
-"candidate-form","note","documentation","","","",""
-"candidate-form","recruitmentProcessAdvancementList","documentation","","","",""
-"candidate-form","toolKeywordSet","documentation","","","",""
-"candidate-form","fieldKeywordSet","documentation","","","",""
-"candidate-form","jobKeywordSet","documentation","","","",""
-"candidate-form","recruitmentTypeSelect","documentation","","","",""
-"candidate-form","macroCategorySelect","documentation","","","",""
-"candidate-form","categorySelect","documentation","","","",""
-"candidate-form","positionList","documentation","","","",""
-"candidate-form","degree","documentation","","","",""
-"candidate-form","educationLevel","documentation","","","",""
-"candidate-form","trainingLineList","documentation","","","",""
-"candidate-form","evaluationLineList","documentation","","","",""
-"candidate-form","evaluationGrade","documentation","","","",""
-"candidate-form","compute","documentation","","","",""
-"candidate-form","drivingLicence","documentation","","","",""
-"candidate-form","source","documentation","","","",""
-"candidate-form","personalInfo","documentation","","","",""
-"candidate-form","competence","documentation","","","",""
-"candidate-form","candidateOtherOpportunityList","documentation","","","",""
-"recruitment-process-advancement-form","recruitment-process-advancement-form","documentation","","","",""
-"recruitment-process-advancement-form","candidate","documentation","","","",""
-"recruitment-process-advancement-form","statusSelect","documentation","","","",""
-"recruitment-process-advancement-form","dateT","documentation","","","",""
-"recruitment-process-advancement-form","note","documentation","","","",""
-"training-line-form","training-line-form","documentation","","","",""
-"training-line-form","candidate","documentation","","","",""
-"training-line-form","degree","documentation","","","",""
-"training-line-form","trainingCenter","documentation","","","",""
-"training-line-form","topicSet","documentation","","","",""
-"training-line-form","completionYear","documentation","","","",""
-"training-line-form","comment","documentation","","","",""
-"training-line-form","archived","documentation","","","",""
-"evaluation-line-form","evaluation-line-form","documentation","","","",""
-"evaluation-line-form","label","documentation","","","",""
-"evaluation-line-form","coefficient","documentation","","","",""
-"evaluation-line-form","gradeSelect","documentation","","","",""
-"candidate-other-opportunity-form","candidate-other-opportunity-form","documentation","","","",""
-"candidate-other-opportunity-form","ets","documentation","","","",""
-"candidate-other-opportunity-form","opportunity","documentation","","","",""
-"candidate-other-opportunity-form","contact","documentation","","","",""
-"candidate-other-opportunity-form","statusSelect","documentation","","","",""
-"candidate-other-opportunity-form","interestSelect","documentation","","","",""
-"timesheet-line-calendar-form","timesheet-line-calendar-form","documentation","","","",""
-"timesheet-line-calendar-form","date","documentation","","","",""
-"timesheet-line-calendar-form","project","documentation","","","",""
-"timesheet-line-calendar-form","task","documentation","","","",""
-"timesheet-line-calendar-form","timesheet.userInfo","documentation","","","",""
-"timesheet-line-calendar-form","duration","documentation","","","",""
-"timesheet-line-calendar-form","timesheet.unit","documentation","","","",""
-"timesheet-line-calendar-form","isToInvoice","documentation","","","",""
-"timesheet-line-calendar-form","isInvoiced","documentation","","","",""
-"overtime-form","overtime-form","documentation","","","",""
-"overtime-form","userInfo","documentation","","","",""
-"overtime-form","date","documentation","","","",""
-"overtime-form","statusSelect","documentation","","","",""
-"overtime-form","totalAmount","documentation","","","",""
-"overtime-form","currency","documentation","","","",""
-"overtime-form","overtimeLineList","documentation","","","",""
-"overtime-form","period","documentation","","","",""
-"overtime-form","motif","documentation","","","",""
-"overtime-form","draft","documentation","","","",""
-"overtime-form","submit","documentation","","","",""
-"overtime-form","validateManager","documentation","","","",""
-"overtime-form","validateCommercial","documentation","","","",""
-"overtime-form","confirm","documentation","","","",""
-"overtime-form","refuse","documentation","","","",""
-"overtime-form","validatedByUserInfo","documentation","","","",""
-"overtime-form","validationDate","documentation","","","",""
-"overtime-line-form","overtime-line-form","documentation","","","",""
-"overtime-line-form","description","documentation","","","",""
-"overtime-line-form","project","documentation","","","",""
-"overtime-line-form","quantity","documentation","","","",""
-"overtime-line-form","unit","documentation","","","",""
-"overtime-line-form","unitPrice","documentation","","","",""
-"overtime-line-form","total","documentation","","","",""
-"overtime-line-form","validate","documentation","","","",""
-"overtime-line-form","validationDate","documentation","","","",""
-"training-form","training-form","documentation","","","",""
-"training-form","experienceTypeSelect","documentation","","","",""
-"training-form","startDate","documentation","","","",""
-"training-form","endDate","documentation","","","",""
-"training-form","jobTitle","documentation","","","",""
-"training-form","service","documentation","","","",""
-"training-form","duration","documentation","","","",""
-"training-form","jobDescription","documentation","","","",""
-"training-form","referencePosition","documentation","","","",""
-"training-form","context","documentation","","","",""
-"training-form","aims","documentation","","","",""
-"training-form","progress","documentation","","","",""
-"training-form","technicalEnvironment","documentation","","","",""
-"training-form","result","documentation","","","",""
-"training-form","toolKeywordSet","documentation","","","",""
-"training-form","sectorKeywordSet","documentation","","","",""
-"planning-form","planning-form","documentation","","","",""
-"planning-form","period","documentation","","","",""
-"planning-form","userInfo","documentation","","","",""
-"planning-form","date","documentation","","","",""
-"planning-form","hasCompleteTimesheetLines","documentation","","","",""
-"planning-form","completeFromDate","documentation","","","",""
-"planning-form","completeToDate","documentation","","","",""
-"planning-form","completeDefaultTask","documentation","","","",""
-"planning-form","duration","documentation","","","",""
-"planning-form","completeTimeSheetButton","documentation","","","",""
-"planning-form","planningLineList","documentation","","","",""
-"planning-line-form","planning-line-form","documentation","","","",""
-"planning-line-form","product","documentation","","","",""
-"planning-line-form","employee","documentation","","","",""
-"planning-line-form","task","documentation","","","",""
-"planning-line-form","fromDateTime","documentation","","","",""
-"planning-line-form","toDateTime","documentation","","","",""
-"planning-line-form","duration","documentation","","","",""
-"planning-line-form","unit","documentation","","","",""
-"planning-line-form","timeSheet","documentation","","","",""
-"schedule-form","schedule-form","documentation","","","",""
-"schedule-form","name","documentation","","","",""
-"schedule-form","publicHolidays","documentation","","","",""
-"schedule-form","scheduleLineList","documentation","","","",""
-"schedule-line-form","schedule-line-form","documentation","","","",""
-"schedule-line-form","startDate","documentation","","","",""
-"schedule-line-form","scheduleSubLineList","documentation","","","",""
-"public-holidays-form","public-holidays-form","documentation","","","",""
-"public-holidays-form","name","documentation","","","",""
-"public-holidays-form","publicHolidaysLineList","documentation","","","",""
-"public-holiday-line-form","public-holiday-line-form","documentation","","","",""
-"public-holiday-line-form","date","documentation","","","",""
-"public-holiday-line-form","description","documentation","","","",""
-"task-leave-reason-form","task-leave-reason-form","documentation","","","",""
-"task-leave-reason-form","name","documentation","","","",""
-"task-leave-reason-form","statusSelect","documentation","","","",""
-"task-leave-reason-form","hasCummulation","documentation","","","",""
-"task-leave-reason-form","accountingDay","documentation","","","",""
-"task-leave-reason-form","project","documentation","","","",""
-"task-leave-reason-form","userInfo","documentation","","","",""
-"task-leave-reason-form","taskProgress","documentation","","","",""
-"task-leave-reason-form","startDateT","documentation","","","",""
-"task-leave-reason-form","endDateT","documentation","","","",""
-"task-leave-reason-form","totalTime","documentation","","","",""
-"task-leave-reason-form","planningLineList","documentation","","","",""
-"task-leave-reason-form","notes","documentation","","","",""
-"task-leave-reason-form","description","documentation","","","",""
-"task-leave-reason-form","spentTimeList","documentation","","","",""
-"planning-line-task-form","planning-line-task-form","documentation","","","",""
-"planning-line-task-form","product","documentation","","","",""
-"planning-line-task-form","employee","documentation","","","",""
-"planning-line-task-form","planning","documentation","","","",""
-"planning-line-task-form","fromDateTime","documentation","","","",""
-"planning-line-task-form","toDateTime","documentation","","","",""
-"planning-line-task-form","duration","documentation","","","",""
-"planning-line-task-form","unit","documentation","","","",""
-"planning-line-task-form","timeSheet","documentation","","","",""
-"business-project-form","business-project-form","documentation","","","",""
-"business-project-form","name","documentation","","","",""
-"business-project-form","businessStatusSelect","documentation","","","",""
-"business-project-form","responsibleUserInfo","documentation","","","",""
-"business-project-form","defaultTask","documentation","","","",""
-"business-project-form","company","documentation","","","",""
-"business-project-form","clientPartner","documentation","","","",""
-"business-project-form","contactPartner","documentation","","","",""
-"business-project-form","createSalesOrder","documentation","","","",""
-"business-project-form","generateNewInstanceOfProject","documentation","","","",""
-"business-project-form","transformToProject","documentation","","","",""
-"business-project-form","createPreSalesTask","documentation","","","",""
-"business-project-form","updateTaskProgression","documentation","","","",""
-"business-project-form","totalTime","documentation","","","",""
-"business-project-form","unit","documentation","","","",""
-"business-project-form","plannedTime","documentation","","","",""
-"business-project-form","spentTime","documentation","","","",""
-"business-project-form","remainingTime","documentation","","","",""
-"business-project-form","description","documentation","","","",""
-"business-project-form","isProject","documentation","","","",""
-"business-project-form","isBusiness","documentation","","","",""
-"business-project-form","isModel","documentation","","","",""
-"business-project-form","modelProject","documentation","","","",""
-"business-project-form","parentProject","documentation","","","",""
-"business-project-form","imputExpense","documentation","","","",""
-"business-project-form","typeProjectSelect","documentation","","","",""
-"business-project-form","isReinvoicingExpense","documentation","","","",""
-"business-project-form","isReinvoicingTime","documentation","","","",""
-"business-project-form","isTimeSheetImputable","documentation","","","",""
-"business-project-form","candidateSet","documentation","","","",""
-"business-project-form","employeeSet","documentation","","","",""
-"business-project-form","preSalesTask","documentation","","","",""
-"business-project-form","taskList","documentation","","","",""
-"business-project-form","realEstimatedMethodSelect","documentation","","","",""
-"business-project-form","company.currency","documentation","","","",""
-"business-project-form","exportTypeSelect","documentation","","","",""
-"business-project-form","printProject","documentation","","","",""
-"business-project-form","initialEstimatedTurnover","documentation","","","",""
-"business-project-form","initialEstimatedCost","documentation","","","",""
-"business-project-form","initialEstimatedMargin","documentation","","","",""
-"business-project-form","realEstimatedTurnover","documentation","","","",""
-"business-project-form","realEstimatedCost","documentation","","","",""
-"business-project-form","realEstimatedMargin","documentation","","","",""
-"business-project-form","realInvoicedTurnover","documentation","","","",""
-"business-project-form","realInvoicedCost","documentation","","","",""
-"business-project-form","realInvoicedMargin","documentation","","","",""
-"business-project-form","memberUserInfoSet","documentation","","","",""
-"business-project-form","needTypeSelect","documentation","","","",""
-"business-project-form","marketTypeSelect","documentation","","","",""
-"business-project-form","consultationDate","documentation","","","",""
-"business-project-form","deadline","documentation","","","",""
-"business-project-form","complexity","documentation","","","",""
-"business-project-form","competition","documentation","","","",""
-"business-project-form","plannedBudget","documentation","","","",""
-"business-project-form","answerDate","documentation","","","",""
-"business-project-form","specificationFile","documentation","","","",""
-"business-project-form","needDescription","documentation","","","",""
-"task-form","task-form","documentation","","","",""
-"task-form","name","documentation","","","",""
-"task-form","statusSelect","documentation","","","",""
-"task-form","project","documentation","","","",""
-"task-form","startDateT","documentation","","","",""
-"task-form","endDateT","documentation","","","",""
-"task-form","userInfo","documentation","","","",""
-"task-form","totalTime","documentation","","","",""
-"task-form","project.unit","documentation","","","",""
-"task-form","plannedTime","documentation","","","",""
-"task-form","spentTime","documentation","","","",""
-"task-form","remainingTime","documentation","","","",""
-"task-form","taskProgress","documentation","","","",""
-"task-form","delays","documentation","","","",""
-"task-form","advance","documentation","","","",""
-"task-form","generateDraftInvoice","documentation","","","",""
-"task-form","planningLineList","documentation","","","",""
-"task-form","salesOrderLine","documentation","","","",""
-"task-form","product","documentation","","","",""
-"task-form","qty","documentation","","","",""
-"task-form","price","documentation","","","",""
-"task-form","isToInvoice","documentation","","","",""
-"task-form","isTimesheetAffected","documentation","","","",""
-"task-form","invoicingDate","documentation","","","",""
-"task-form","amountToInvoice","documentation","","","",""
-"task-form","notes","documentation","","","",""
-"task-form","realEstimatedMethodSelect","documentation","","","",""
-"task-form","estimatedAmount","documentation","","","",""
-"task-form","project.company.currency","documentation","","","",""
-"task-form","exportTypeSelect","documentation","","","",""
-"task-form","printTask","documentation","","","",""
-"task-form","initialEstimatedTurnover","documentation","","","",""
-"task-form","initialEstimatedCost","documentation","","","",""
-"task-form","initialEstimatedMargin","documentation","","","",""
-"task-form","updateInitialEstimatedAmounts","documentation","","","",""
-"task-form","financialInformationHistoryLineList","documentation","","","",""
-"task-form","realEstimatedTurnover","documentation","","","",""
-"task-form","realEstimatedCost","documentation","","","",""
-"task-form","realEstimatedMargin","documentation","","","",""
-"task-form","realInvoicedTurnover","documentation","","","",""
-"task-form","realInvoicedCost","documentation","","","",""
-"task-form","realInvoicedMargin","documentation","","","",""
-"task-form","financialInformationUpdateList","documentation","","","",""
-"task-form","description","documentation","","","",""
-"task-form","spentTimeList","documentation","","","",""
-"project-form","project-form","documentation","","","",""
-"project-form","name","documentation","","","",""
-"project-form","responsibleUserInfo","documentation","","","",""
-"project-form","defaultTask","documentation","","","",""
-"project-form","clientPartner","documentation","","","",""
-"project-form","contactPartner","documentation","","","",""
-"project-form","company","documentation","","","",""
-"project-form","projectStatusSelect","documentation","","","",""
-"project-form","generateNewInstanceOfProject","documentation","","","",""
-"project-form","generateDraftInvoice","documentation","","","",""
-"project-form","showTask","documentation","","","",""
-"project-form","updateTaskProgression","documentation","","","",""
-"project-form","totalTime","documentation","","","",""
-"project-form","unit","documentation","","","",""
-"project-form","plannedTime","documentation","","","",""
-"project-form","spentTime","documentation","","","",""
-"project-form","remainingTime","documentation","","","",""
-"project-form","description","documentation","","","",""
-"project-form","isProject","documentation","","","",""
-"project-form","isBusiness","documentation","","","",""
-"project-form","parentProject","documentation","","","",""
-"project-form","isModel","documentation","","","",""
-"project-form","modelProject","documentation","","","",""
-"project-form","imputExpense","documentation","","","",""
-"project-form","typeProjectSelect","documentation","","","",""
-"project-form","isReinvoicingExpense","documentation","","","",""
-"project-form","isReinvoicingTime","documentation","","","",""
-"project-form","isTimeSheetImputable","documentation","","","",""
-"project-form","taskList","documentation","","","",""
-"project-form","memberUserInfoSet","documentation","","","",""
-"financial-information-update-form","financial-information-update-form","documentation","","","",""
-"financial-information-update-form","date","documentation","","","",""
-"financial-information-update-form","userInfo","documentation","","","",""
-"financial-information-update-form","product","documentation","","","",""
-"financial-information-update-form","amount","documentation","","","",""
-"financial-information-update-form","typeSelect","documentation","","","",""
-"financial-information-update-form","applicationSelect","documentation","","","",""
-"financial-information-update-form","description","documentation","","","",""
+,,"menu","Business","Affaires",,
+,,"menu","Business","Affaires",,
+,,"menu","Business","Affaires",,
+,,"menu","New Business","Nouv. Affaire",,
+,,"menu","Sites","Sites",,
+,,"menu","Human Resources","RH",,
+,,"menu","Configuration","Configuration",,
+,,"menu","Public holidays","Jours Fériés",,
+,,"menu","Leave request reasons","Motifs de congés",,
+,,"menu","Employees","Employés",,
+,,"menu","History","Historique",,
+,,"menu","Olds timesheets","Mes anciennes feuilles de temps",,
+,,"menu","Input forms","Formulaires de saisie",,
+,,"menu","My leave requests","Mes demandes de congé",,
+,,"menu","My overtimes","Mes heures supplémentaires",,
+,,"menu","My timesheet","Mes feuilles de temps à compléter",,
+,,"menu","My travel expenses","Mes notes de frais",,
+,,"menu","Mission order","Ordre de mission",,
+,,"menu","My timesheet calendar","Calendrier Feuille de Tps",,
+,,"menu","Payment forms","Paiements à réaliser",,
+,,"menu","Overtimes to be paid","Heures sup à payer",,
+,,"menu","Travel expenses to be paid","Notes de frais à rembourser",,
+,,"menu","Plannings","Plannings",,
+,,"menu","Recruitment","Recrutement",,
+,,"menu","Candidates","Candidats",,
+,,"menu","Working hours","Horaires de travail",,
+,,"menu","Trainings","Formations",,
+,,"menu","Validation forms","Formulaires à valider",,
+,,"menu","Leave requests to validate","Demande de congé à valider",,
+,,"menu","Overtimes to validate","Heures supplémentaires à valider",,
+,,"menu","Timesheets to validate","Feuilles de temps à valider",,
+,,"menu","Travel expenses to validate by commercial","Notes de frais à valider par Commercial",,
+,,"menu","Travel expenses to validate by RSC Manager","Notes de frais à valider par Manager",,
+,,"menu","Gantt Diagram","Diagramme de GANTT",,
+,,"menu","Project","Projet",,
+,,"menu","Projects","Les projets",,
+,,"menu","Tasks","Tâches",,
+,,"select","Reinvoiceable","Refacturable",,
+,,"select","Not reinvoiceable","Non refacturable",,
+,,"select","Yes","Oui",,
+,,"select","No","Non",,
+,,"select","Draft","Brouillon",,
+,,"select","Submited","A valider",,
+,,"select","Validated","Validé",,
+,,"select","Paid","Payée",,
+,,"select","Refused","Refusée",,
+,,"select","Verified","Vérifié",,
+,,"select","Waiting validation","En attente validation",,
+,,"select","Immediate","Immédiat",,
+,,"select","1 month","1 mois",,
+,,"select","2 month","2 mois",,
+,,"select","3 month","3 mois",,
+,,"select","1 month negociable","1 mois négociable",,
+,,"select","2 month negociable","2 mois négociable",,
+,,"select","3 month negociable","3 mois négociable",,
+,,"select","Junior","Junior",,
+,,"select","Senior","Senior",,
+,,"select","Expert","Expert",,
+,,"select","Junior Manager (0 - 5 ans)","Cadre Junior (0 - 5 ans)",,
+,,"select","Confirmed Manager(5 - 10 ans)","Cadre Confirmé (5 - 10 ans)",,
+,,"select","Senior Manager ( > 10 ans)","Cadre Senior ( > 10 ans)",,
+,,"select","Junior Worker Junior (0 - 5 ans)","Non-Cadre Junior (0 - 5 ans)",,
+,,"select","Confirmed Worker (5 - 10 ans)","Non-Cadre Confirmé (5 - 10 ans)",,
+,,"select","Senior Worker ( > 10 ans)","Non-Cadre Senior ( > 10 ans)",,
+,,"select","High","Élevé",,
+,,"select","Medium","Moyen",,
+,,"select","Low","Faible",,
+,,"select","1st RDV (green)","1er RDV",,
+,,"select","2nd RDV (green)","2ème RDV",,
+,,"select","3rd RDV (orange)","3ème RDV",,
+,,"select","Proposal(red)","Proposition",,
+,,"select","Signature (red)","Signature",,
+,,"select","OK (red)","OK",,
+,,"select","No feedback (orange)","Pas de réponse",,
+,,"select","Negative (vert)","Négatif",,
+,,"select","New application","Nouv. Application",,
+,,"select","Pre-selected","Pré-sélectionné(e)",,
+,,"select","First interview","1ère entretien",,
+,,"select","Second interview","2ème entretien",,
+,,"select","Third interview","3ème entretien",,
+,,"select","Rejected","Rejeté(e)/Refusé(e)",,
+,,"select","Offer proposed","Offre proposée",,
+,,"select","Offer accepted","Offre acceptée",,
+,,"select","Offer refused","Offre refusée",,
+,,"select","Straight recruitment","Besoin interne",,
+,,"select","Project recruitment","Besoin projet",,
+,,"select","National","National",,
+,,"select","International","International",,
+,,"select","Reduced","Réduite",,
+,,"select","Manager","Cadre",,
+,,"select","Profile","Profil",,
+,,"select","CDI",,,
+,,"select","CDD",,,
+,,"select","Communication","Communication",,
+,,"select","1 yr Univ.","BAC + 1",,
+,,"select","2 yrs Univ.","BAC + 2",,
+,,"select","3 yrs Univ.","BAC + 3",,
+,,"select","4 yrs Univ.","BAC + 4",,
+,,"select","5 yrs Univ. or more","BAC + 5 et plus",,
+,,"select","1 yr.","1 an",,
+,,"select","2 yrs.","2 ans",,
+,,"select","3 yrs.","3 ans",,
+,,"select","4 yrs.","4 ans",,
+,,"select","5 yrs.","5 ans",,
+,,"select","6 yrs.","6 ans",,
+,,"select","7 yrs.","7 ans",,
+,,"select","8 yrs.","8 ans",,
+,,"select","9 yrs.","9 ans",,
+,,"select","10 yrs. or more","10 ans et plus",,
+,,"select","from 25 to 35 k€","de 25 à 35 k€",,
+,,"select","from 35 to 45 k€",,,
+,,"select","from 45 to 55 k€",,,
+,,"select","from 55 to 65 k€",,,
+,,"select","from 65 to 75 k€",,,
+,,"select","from 75 to 85 k€","de 75 à 85 k€",,
+,,"select","from 85 to 95 k€","de 85 à 95 k€",,
+,,"select","from 95 to 100 k€ or more",,,
+,,"select","Included","Inclus",,
+,,"select","Excluded","Exclus",,
+,,"select",,,,
+,,"select","CD","CD",,
+,,"select","SD","SD",,
+,,"select","OTAN","OTAN",,
+,,"select","CEA","CEA",,
+,,"select","Single","Célibataire",,
+,,"select","Married","Marié(e)",,
+,,"select","Civil Union",,,
+,,"select","Divorced",,,
+,,"select","Widowed",,,
+,,"select","Very positive (green)","Très favorable",,
+,,"select","Positive  (green)","Favorable",,
+,,"select","Mixed opinion (orange)","Mitigé",,
+,,"select","Unfavourable (red)","Défavorable",,
+,,"select","Market","Marché",,
+,,"select","Order form market","Marché à bon de commande",,
+,,"select","Other","Autre",,
+,,"select","Draft","Brouillon",,
+,,"select","Submitted","Soumis(e)",,
+,,"select","Accepted","Acceptée",,
+,,"select","Refused","Refusée",,
+,,"select","Sent","Envoyé",,
+,,"select","Won","Gagné",,
+,,"select","Lost","Perdu",,
+,,"select","Fixed fee","Forfait",,
+,,"select","Onsite","Régie",,
+,,"select","TMA","TMA",,
+,,"select","None","Aucun",,
+,,"select","Progress","Avancement",,
+,,"select","Subscription","Abonnement",,
+,,"select","PDF","PDF",,
+,,"select","XLS","Excel",,
+,,"select","Draft","Brouillon",,
+,,"select","Confirmed","Confirmé",,
+,,"select","Started","Démarré",,
+,,"select","Completed","Terminer",,
+,,"select","Canceled","Annulé",,
+,,"select","Day","Jour",,
+,,"select","Month","Mois",,
+,,"select","Year","Année",,
+,,"select","Day","Jour",,
+,,"select","Month","Mois",,
+,,"select","Year","Année",,
+,,"select","Task","Tâche",,
+,,"select","Project","Projet",,
+,,"select","On going","En cours",,
+,,"select","Waiting candidate confirmation","Attente confirmation candidat",,
+,,"select","OK","OK",,
+,,"select","KO","KO",,
+,,"select","Canceled","Annulé",,
+,,"select","Initial estimated","Initial estimé",,
+,,"select","Real estimated","Réel estimé",,
+,,"select","Real invoiced","Réel facturé",,
+,,"select","Revenue","Revenu",,
+,,"select","Cost","Coût",,
+,,"select","Weekly","Hebdomadaire",,
+,,"select","Monthly","Mensuel",,
+,,"select","Day","Jour",,
+,,"select","Hour","Heure",,
+,,"select","Internal","Interne",,
+,,"select","Previous job","Ancien métier",,
+,,"chart","Grade by skills","Note par critère évalué",,
+"com.axelor.apps.organisation.db.Advance",,"view","Advance","Avance",,
+"com.axelor.apps.organisation.db.Advance",,"view","Advances","Avances",,
+"com.axelor.apps.organisation.db.Agency",,"view","Agency","Agence",,
+"com.axelor.apps.organisation.db.Agency",,"view","Agencies","Agences",,
+"com.axelor.apps.organisation.db.Bonus",,"view","Bonus","Bonus",,
+"com.axelor.apps.organisation.db.Bonus",,"view","Bonuses","Les Bonus",,
+"com.axelor.apps.organisation.db.Project",,"view","Business","Affaire",,
+"com.axelor.apps.organisation.db.Project",,"placeholder","Name","Intitulé",,
+"com.axelor.apps.organisation.db.Project",,"group","Actions","Actions",,
+"com.axelor.apps.organisation.db.Project",,"button","Create quote","Créer Devis",,
+"com.axelor.apps.organisation.db.Project",,"button","Generate new project instance","Générer nouvelle instance du projet",,
+"com.axelor.apps.organisation.db.Project",,"button","Transform to project","Transformer en projet",,
+"com.axelor.apps.organisation.db.Project",,"button","Create pre-sales task","Créer Tâche avant vente",,
+"com.axelor.apps.organisation.db.Project",,"button","Update task progress","MàJ avancement tâche",,
+"com.axelor.apps.organisation.db.Project",,"group","Times","Temps",,
+"com.axelor.apps.organisation.db.Project",,"group","Description","Description",,
+"com.axelor.apps.organisation.db.Project",,"group","Specific settings","Configuration spécifique",,
+"com.axelor.apps.organisation.db.Project",,"page","Tasks","Tâches",,
+"com.axelor.apps.organisation.db.Project",,"page","Financial information","Informations financières",,
+"com.axelor.apps.organisation.db.Project",,"button","Voir rapport estimations",,,
+"com.axelor.apps.organisation.db.Project",,"group","Initial estimated","Initial estimé",,
+"com.axelor.apps.organisation.db.Project",,"group","Real estimated","Réel estimé",,
+"com.axelor.apps.organisation.db.Project",,"group","Real invoiced","Réel facturé",,
+"com.axelor.apps.organisation.db.Project",,"page","Links","Liens",,
+"com.axelor.apps.organisation.db.Project",,"page","Initial estimated","Initial estimé",,
+"com.axelor.apps.organisation.db.Project",,"page","Real estimated","Réel estimé",,
+"com.axelor.apps.organisation.db.Project",,"page","Real invoiced","Réel facturé",,
+"com.axelor.apps.organisation.db.Project",,"page","Membres",,,
+"com.axelor.apps.organisation.db.Project",,"page","Need","Besoin",,
+"com.axelor.apps.organisation.db.Project",,"view","Business","Affaire",,
+"com.axelor.apps.organisation.db.Candidate",,"button","Print CV","Imprimer le CV",,
+"com.axelor.apps.organisation.db.Candidate",,"button","Send email","Envoyer email",,
+"com.axelor.apps.organisation.db.Candidate",,"button","Transform into employee","Transformer en employé",,
+"com.axelor.apps.organisation.db.Candidate",,"view","Candidate","Candidat",,
+"com.axelor.apps.organisation.db.Candidate",,"group","Contact","Contact",,
+"com.axelor.apps.organisation.db.Candidate",,"placeholder","Civility","Civilité",,
+"com.axelor.apps.organisation.db.Candidate",,"placeholder","Name","Nom",,
+"com.axelor.apps.organisation.db.Candidate",,"placeholder","First Name","Prénom",,
+"com.axelor.apps.organisation.db.Candidate",,"placeholder","Function","Fonction",,
+"com.axelor.apps.organisation.db.Candidate",,"group","Main Contact details","Coordonnées",,
+"com.axelor.apps.organisation.db.Candidate",,"page","General","Général",,
+"com.axelor.apps.organisation.db.Candidate",,"group","Search criterias","Critères de recherche",,
+"com.axelor.apps.organisation.db.Candidate",,"group","Availability and Decision","Dispo et Décision",,
+"com.axelor.apps.organisation.db.Candidate",,"group","Follow-up","Suivi",,
+"com.axelor.apps.organisation.db.Candidate","createdOn","field",,"Créé le",,
+"com.axelor.apps.organisation.db.Candidate",,"button","New candidate","Nouv. candidat",,
+"com.axelor.apps.organisation.db.Candidate",,"button","Pre-selected","Pré-sélectionné",,
+"com.axelor.apps.organisation.db.Candidate",,"button","1st Interview","1ère entretien",,
+"com.axelor.apps.organisation.db.Candidate",,"button","2nd Interview","2ème entretien",,
+"com.axelor.apps.organisation.db.Candidate",,"button","3rd Interview","3ème entretien",,
+"com.axelor.apps.organisation.db.Candidate",,"button","Rejected","Rejeté(e)/Refusé(e)",,
+"com.axelor.apps.organisation.db.Candidate",,"button","Offer proposed","Offre proposée",,
+"com.axelor.apps.organisation.db.Candidate",,"button","Offer accepted","Offre acceptée",,
+"com.axelor.apps.organisation.db.Candidate",,"button","Offer refused",,,
+"com.axelor.apps.organisation.db.Candidate",,"page","Profile","Profil",,
+"com.axelor.apps.organisation.db.Candidate",,"group","Keywords","Mots clés",,
+"com.axelor.apps.organisation.db.Candidate",,"group","Recruitment Type","Type de recrutement",,
+"com.axelor.apps.organisation.db.Candidate",,"group","Education/Trainings","Éducation / Formations",,
+"com.axelor.apps.organisation.db.Candidate",,"page","Evaluation","Évaluation",,
+"com.axelor.apps.organisation.db.Candidate",,"button","Compute","Calculer",,
+"com.axelor.apps.organisation.db.Candidate",,"page","Additionnal information","Informations Complémentaires",,
+"com.axelor.apps.organisation.db.Candidate",,"page","Competences","Compétences",,
+"com.axelor.apps.organisation.db.Candidate",,"page","Other opportunities","Autres pistes",,
+"com.axelor.apps.organisation.db.Candidate",,"view","Candidates","Candidats",,
+"com.axelor.apps.organisation.db.Candidate",,"button","Send by email","Envoyer par email",,
+"com.axelor.apps.organisation.db.CandidateOtherOpportunity",,"view","Other opportunities","Autres pistes",,
+"com.axelor.apps.organisation.db.CandidateOtherOpportunity",,"view","Other opportunity","Autres pistes",,
+"com.axelor.apps.organisation.db.CompetenceArea",,"view","CompetenceArea","Domaine compétence",,
+"com.axelor.apps.organisation.db.CompetenceArea","archived","field",,"Archivé",,
+"com.axelor.apps.organisation.db.CompetenceArea",,"view","CompetenceArea","Domaine compétence",,
+"com.axelor.apps.organisation.db.CompetenceArea","archived","field",,"Archivé",,
+"com.axelor.apps.organisation.db.Competence",,"view","Competences","Compétences",,
+"com.axelor.apps.organisation.db.Competence",,"page","Expertises","Expertises",,
+"com.axelor.apps.organisation.db.Competence",,"page","Mastered Skills","Compétences Maîtrisées",,
+"com.axelor.apps.organisation.db.Competence",,"page","Awareness","Notions",,
+"com.axelor.apps.organisation.db.Competence",,"view","Competences","Compétences",,
+"com.axelor.apps.organisation.db.Degree",,"view","Degree","Diplômes",,
+"com.axelor.apps.organisation.db.Degree","archived","field",,"Archivé",,
+"com.axelor.apps.organisation.db.Degree",,"view","Degree","Diplômes",,
+"com.axelor.apps.organisation.db.Degree","archived","field",,"Archivé",,
+"com.axelor.apps.organisation.db.Employee",,"view","Employee filters","Filtres recherche employés",,
+"com.axelor.apps.organisation.db.Employee",,"filter","Current Employees","Employés actuels",,
+"com.axelor.apps.organisation.db.Employee",,"filter","Old Employees","Anciens Employés",,
+"com.axelor.apps.organisation.db.Employee",,"filter","Managers","Cadres",,
+"com.axelor.apps.organisation.db.Employee",,"filter","Skill workers","Employés",,
+"com.axelor.apps.organisation.db.Employee",,"button","Print CV","Imprimer CV",,
+"com.axelor.apps.organisation.db.Employee",,"button","Send email","Envoyer email",,
+"com.axelor.apps.organisation.db.Employee",,"view","Employee","Employés",,
+"com.axelor.apps.organisation.db.Employee",,"group","Contact","Coordonnées",,
+"com.axelor.apps.organisation.db.Employee",,"placeholder","Civility","Civilité",,
+"com.axelor.apps.organisation.db.Employee",,"placeholder","Name","Nom",,
+"com.axelor.apps.organisation.db.Employee",,"placeholder","First Name","Prénom",,
+"com.axelor.apps.organisation.db.Employee",,"separator","Function","Fonction",,
+"com.axelor.apps.organisation.db.Employee",,"placeholder","Function","Fonction",,
+"com.axelor.apps.organisation.db.Employee",,"separator","Department","Département",,
+"com.axelor.apps.organisation.db.Employee",,"group","Main Contact details","Coordonnées principales",,
+"com.axelor.apps.organisation.db.Employee",,"viewField","Email","Email",,
+"com.axelor.apps.organisation.db.Employee",,"separator","Emergency","Urgence",,
+"com.axelor.apps.organisation.db.Employee",,"page","Additionnal information","Informations Complémentaires",,
+"com.axelor.apps.organisation.db.Employee",,"group","Contract Details","Détails contact",,
+"com.axelor.apps.organisation.db.Employee",,"separator","Advantages","Avantages",,
+"com.axelor.apps.organisation.db.Employee",,"group","Hierarchy","Hiérarchie",,
+"com.axelor.apps.organisation.db.Employee",,"page","Profile","Profil",,
+"com.axelor.apps.organisation.db.Employee",,"group","Keywords","Mots clés",,
+"com.axelor.apps.organisation.db.Employee",,"group","Competences profile","Profil de compétences",,
+"com.axelor.apps.organisation.db.Employee",,"page","Salary","Salaires",,
+"com.axelor.apps.organisation.db.Employee",,"group","Fixed salary","Salaire fixe",,
+"com.axelor.apps.organisation.db.Employee",,"page","Travel expense","Notes de frais",,
+"com.axelor.apps.organisation.db.Employee",,"page","Leaves","Congés/Absences",,
+"com.axelor.apps.organisation.db.Employee",,"page","History","Historique",,
+"com.axelor.apps.organisation.db.Employee",,"separator","Recruitment",,,
+"com.axelor.apps.organisation.db.Employee",,"view","Employee","Employés",,
+"com.axelor.apps.organisation.db.Employee",,"viewField","Email","Email",,
+"com.axelor.apps.organisation.db.Employee",,"button","Send by email","Envoyer par email",,
+"com.axelor.apps.organisation.db.EmployeeLeave",,"view","Employee leave",,,
+"com.axelor.apps.organisation.db.EmployeeLeave",,"view","Employee leaves",,,
+"com.axelor.apps.organisation.db.EvaluationLine",,"view","Evaluation lines","Lignes d'évaluation",,
+"com.axelor.apps.organisation.db.EvaluationLine",,"view","Evaluation lines","Lignes d'évaluation",,
+"com.axelor.apps.organisation.db.Expense",,"view","Expenses",,,
+"com.axelor.apps.organisation.db.ExpenseLine",,"view","Expense Lines","Lignes de frais",,
+"com.axelor.apps.organisation.db.Expense",,"view","Expense",,,
+"com.axelor.apps.organisation.db.Expense",,"viewField","Total (TTC)",,,
+"com.axelor.apps.organisation.db.Expense",,"group","Action(s)","Action(s)",,
+"com.axelor.apps.organisation.db.Expense",,"button","Draft","Brouillon",,
+"com.axelor.apps.organisation.db.Expense",,"button","Submit","Envoyer",,
+"com.axelor.apps.organisation.db.Expense",,"button","Validate","Valider",,
+"com.axelor.apps.organisation.db.Expense",,"button","Validate","Valider",,
+"com.axelor.apps.organisation.db.Expense",,"button","Confirm","Confirmer",,
+"com.axelor.apps.organisation.db.Expense",,"button","Refuse","Refuser",,
+"com.axelor.apps.organisation.db.Expense",,"button","Compute","Calculer",,
+"com.axelor.apps.organisation.db.Expense",,"view","Expenses",,,
+"com.axelor.apps.organisation.db.Expense",,"viewField","Total (TTC)",,,
+"com.axelor.apps.organisation.db.ExpenseLine",,"view","Expense Line","Ligne de dépense",,
+"com.axelor.apps.organisation.db.ExpenseLine",,"group","Date",,,
+"com.axelor.apps.organisation.db.ExpenseLine",,"group","Context","Contexte",,
+"com.axelor.apps.organisation.db.ExpenseLine",,"group","Details","Détails",,
+"com.axelor.apps.organisation.db.ExpenseLine",,"group","Proofs","Preuves",,
+"com.axelor.apps.organisation.db.ExpenseLine",,"group","Validation/Invoicing","Validation/Facturation",,
+"com.axelor.apps.organisation.db.ExpenseLine",,"view","Expense Line","Ligne de dépense",,
+"com.axelor.apps.organisation.db.FinancialInformationUpdate",,"view","Mise à jour des informations financières",,,
+"com.axelor.apps.organisation.db.FinancialInformationHistoryLine",,"view","Mise à jour des informations financières",,,
+"com.axelor.apps.organisation.db.FinancialInformationUpdate",,"view","Les mises à jours des informations financières",,,
+"com.axelor.apps.organisation.db.FinancialInformationHistoryLine",,"view","Les mises à jours des informations financières",,,
+"com.axelor.apps.organisation.db.InterventionType",,"view","InterventionType","Types d'intervention",,
+"com.axelor.apps.organisation.db.InterventionType","archived","field",,"Archivé",,
+"com.axelor.apps.organisation.db.InterventionType",,"view","InterventionType","Types d'intervention",,
+"com.axelor.apps.organisation.db.InterventionType","archived","field",,"Archivé",,
+"com.axelor.apps.organisation.db.JobOffer",,"view","Job offer","Offre d'emploi",,
+"com.axelor.apps.organisation.db.JobOffer",,"group","Offer details","Détails de l'offre",,
+"com.axelor.apps.organisation.db.JobOffer",,"group","Profil candidat","Profil candidat(e) recherché(e)",,
+"com.axelor.apps.organisation.db.JobOffer",,"view","Job offers","Offres d'emploi",,
+"com.axelor.apps.organisation.db.LeaveRequest",,"view","Leave requests","Demandes de congés",,
+"com.axelor.apps.organisation.db.LeaveRequest",,"view","Leave request","Demande de congé(s)",,
+"com.axelor.apps.organisation.db.LeaveRequest",,"group","Leave period","Période de congés",,
+"com.axelor.apps.organisation.db.LeaveRequest",,"button","Confirm","Confirmer",,
+"com.axelor.apps.organisation.db.LeaveRequest",,"button","Cancel","Annuler",,
+"com.axelor.apps.organisation.db.LeaveRequest",,"button","Validate","Valider",,
+"com.axelor.apps.organisation.db.LeaveRequest",,"view","Leave requests","Demandes de congés",,
+"com.axelor.apps.organisation.db.MissionOrder",,"view","Mission order","Ordre de mission",,
+"com.axelor.apps.organisation.db.MissionOrder",,"group","Mission order","Ordre de mission",,
+"com.axelor.apps.organisation.db.MissionOrder",,"group","Mission information","Information mission",,
+"com.axelor.apps.organisation.db.MissionOrder",,"view","Mission orders","Ordres de mission",,
+"com.axelor.apps.organisation.db.MobilityChoice",,"view","Geographical mobility","Mobilité Géographique",,
+"com.axelor.apps.organisation.db.MobilityChoice",,"view","Geographical mobility","Mobilité Géographique",,
+"com.axelor.apps.organisation.db.OfferLine",,"view","Offer Line","Ligne d'offre",,
+"com.axelor.apps.organisation.db.OfferLine",,"view","Offer Lines","Lignes d'offre",,
+"com.axelor.apps.organisation.db.Overtime",,"view","Overtime","Heures supplémentaires",,
+"com.axelor.apps.organisation.db.Overtime",,"group","Action(s)","Action(s)",,
+"com.axelor.apps.organisation.db.Overtime",,"button","Draft","Brouillon",,
+"com.axelor.apps.organisation.db.Overtime",,"button","Submit","Envoyer",,
+"com.axelor.apps.organisation.db.Overtime",,"button","Validate","Valider",,
+"com.axelor.apps.organisation.db.Overtime",,"button","Validate","Valider",,
+"com.axelor.apps.organisation.db.Overtime",,"button","Confirm","Confirmer",,
+"com.axelor.apps.organisation.db.Overtime",,"button","Refuse","Refuser",,
+"com.axelor.apps.organisation.db.Overtime",,"view","Overtimes","Heures supplémentaires",,
+"com.axelor.apps.organisation.db.OvertimeLine",,"view","Overtime line","Heure supplémentaire",,
+"com.axelor.apps.organisation.db.OvertimeLine",,"button","Validate","Valider",,
+"com.axelor.apps.organisation.db.OvertimeLine",,"view","Overtime lines","Heures supplémentaires",,
+"com.axelor.apps.crm.db.Participant",,"view","Participant","Participant",,
+"com.axelor.apps.crm.db.Participant",,"view","Participants","Participants",,
+"com.axelor.apps.organisation.db.PaySheet",,"view","Pay sheet","Fiche de paie",,
+"com.axelor.apps.organisation.db.PaySheet",,"view","Pay sheets",,,
+"com.axelor.apps.organisation.db.PaySheet",,"view","Pay sheet","Fiche de paie",,
+"com.axelor.apps.organisation.db.PaySheet",,"view","Pay sheets",,,
+"com.axelor.apps.organisation.db.PersonalInfo",,"view","Additionnal information","Informations Complémentaires",,
+"com.axelor.apps.organisation.db.PlacementFollowUp",,"view","PlacementFollowUp","Suivi du placement",,
+"com.axelor.apps.organisation.db.PlacementFollowUp","archived","field",,,,
+"com.axelor.apps.organisation.db.PlacementFollowUp",,"view","PlacementFollowUp","Suivi du placement",,
+"com.axelor.apps.organisation.db.PlacementFollowUp","archived","field",,,,
+"com.axelor.apps.organisation.db.Planning",,"view","Planning","Planification",,
+"com.axelor.apps.organisation.db.Planning",,"group","Configuration","Configuration",,
+"com.axelor.apps.organisation.db.Planning",,"group","Complete time sheet configuration","Compléter la config. Feuille de Tps.",,
+"com.axelor.apps.organisation.db.Planning",,"button","Complete time sheet","Compléter le Feuille de Tps.",,
+"com.axelor.apps.organisation.db.Planning",,"view","Planning","Planification",,
+"com.axelor.apps.organisation.db.PlanningLine",,"view","Planning line","Ligne de planification",,
+"com.axelor.apps.organisation.db.PlanningLine",,"view","Planning lines","Lignes de planification",,
+"com.axelor.apps.organisation.db.PlanningLine",,"view","Planning line","Ligne de planification",,
+"com.axelor.apps.organisation.db.PlanningLine",,"view","Planning lines","Lignes de planification",,
+"com.axelor.apps.organisation.db.Position",,"view","Professional background","Parcours professionel",,
+"com.axelor.apps.organisation.db.Position",,"view","Professional background","Parcours professionel",,
+"com.axelor.apps.organisation.db.Project",,"view","Project filters","Filtres projets",,
+"com.axelor.apps.organisation.db.Project",,"filter","My Projects","Mes Projets",,
+"com.axelor.apps.organisation.db.Project",,"filter","Models","Projets modèles",,
+"com.axelor.apps.organisation.db.Project",,"filter","Billable","Facturable",,
+"com.axelor.apps.organisation.db.Project",,"view","Project","Projet",,
+"com.axelor.apps.organisation.db.Project",,"placeholder","Name","Intitulé",,
+"com.axelor.apps.organisation.db.Project",,"group","Actions","Actions",,
+"com.axelor.apps.organisation.db.Project",,"button","Generate new project instance","Générer nouvelle instance du projet",,
+"com.axelor.apps.organisation.db.Project",,"button","Generate draft invoice","Générer facture brouillon",,
+"com.axelor.apps.organisation.db.Project",,"button","Show tasks","Voir les tâches",,
+"com.axelor.apps.organisation.db.Project",,"button","Update task progress","MàJ avancement tâche",,
+"com.axelor.apps.organisation.db.Project",,"group","Times","Temps",,
+"com.axelor.apps.organisation.db.Project",,"group","Description","Description",,
+"com.axelor.apps.organisation.db.Project",,"group","Specific settings","Configuration spécifique",,
+"com.axelor.apps.organisation.db.Project",,"separator","Project model","Projet modèle ?",,
+"com.axelor.apps.organisation.db.Project",,"separator","Expense","NDF",,
+"com.axelor.apps.organisation.db.Project",,"separator","Timesheet","Feuille de temps",,
+"com.axelor.apps.organisation.db.Project",,"page","Tasks","Tâches",,
+"com.axelor.apps.organisation.db.Project",,"page","Membres",,,
+"com.axelor.apps.organisation.db.Project",,"view","Projects","Projets",,
+"com.axelor.apps.organisation.db.PublicHolidaysLine",,"view","Public holiday","Jours Fériés",,
+"com.axelor.apps.organisation.db.PublicHolidaysLine",,"view","Public holidays","Jours Fériés",,
+"com.axelor.apps.organisation.db.PublicHolidays",,"view","Public holidays","Jours Fériés",,
+"com.axelor.apps.organisation.db.PublicHolidays",,"view","Public holidays","Jours Fériés",,
+"com.axelor.apps.organisation.db.RecuitmentProcessAdvancement",,"view","Recruitment process progress","Avancement du recrutement",,
+"com.axelor.apps.organisation.db.RecuitmentProcessAdvancement",,"view","Recruitment process progresses","Avancement des processus de recrutement",,
+"com.axelor.apps.organisation.db.RecuitmentProcessAdvancement",,"view","Recruitment process advancement","Avancements processus recrutement",,
+"com.axelor.apps.organisation.db.RecuitmentProcessAdvancement",,"view","Recruitment process advancement","Avancements processus recrutement",,
+"com.axelor.apps.organisation.db.Schedule",,"view","Horaires","Horaires",,
+"com.axelor.apps.organisation.db.Schedule",,"view","Les horaires","Les horaires",,
+"com.axelor.apps.organisation.db.ScheduleLine",,"view","Working Time shift","Période horaire",,
+"com.axelor.apps.organisation.db.ScheduleLine",,"view","Working Time shifts","Les périodes horaires",,
+"com.axelor.apps.organisation.db.ScheduleSubLine",,"view","Working timeshift periods","Période journalière",,
+"com.axelor.apps.organisation.db.ScheduleSubLine",,"view","Working timeshift periods","Période journalière",,
+"com.axelor.apps.organisation.db.SkillLine",,"view","Skills","Compétences",,
+"com.axelor.apps.organisation.db.SkillLine",,"view","Skills","Compétences",,
+"com.axelor.apps.organisation.db.SkillSet",,"view","Skill","Compétence",,
+"com.axelor.apps.organisation.db.Task",,"view","Tasks","Tâches",,
+"com.axelor.apps.organisation.db.Task",,"view","Task","Tâche",,
+"com.axelor.apps.organisation.db.Task",,"placeholder","Task name","Nom tâche",,
+"com.axelor.apps.organisation.db.Task",,"group","Context","Contexte",,
+"com.axelor.apps.organisation.db.Task",,"group","Times","Temps",,
+"com.axelor.apps.organisation.db.Task",,"group","Progress","Avancement",,
+"com.axelor.apps.organisation.db.Task",,"button","Generate draft invoice","Générer facture brouillon",,
+"com.axelor.apps.organisation.db.Task",,"page","Planification and realization","Planification et réalisation",,
+"com.axelor.apps.organisation.db.Task",,"page","Invoicing follow-up","Suivi Facturation",,
+"com.axelor.apps.organisation.db.Task",,"page","Notes","Remarques",,
+"com.axelor.apps.organisation.db.Task",,"page","Financial information","Informations financières",,
+"com.axelor.apps.organisation.db.Task",,"button","View forecast report","Voir rapport estimations",,
+"com.axelor.apps.organisation.db.Task",,"group","Initial estimated","Initial estimé",,
+"com.axelor.apps.organisation.db.Task",,"separator","History",,,
+"com.axelor.apps.organisation.db.Task",,"button","Update and historize","MàJ et Historiser",,
+"com.axelor.apps.organisation.db.Task",,"group","Real estimated","Réel estimé",,
+"com.axelor.apps.organisation.db.Task",,"group","Real invoiced","Réel facturé",,
+"com.axelor.apps.organisation.db.Task",,"page","Links","Liens",,
+"com.axelor.apps.organisation.db.Task",,"group","Update financial information","MàJ infos. financières",,
+"com.axelor.apps.organisation.db.Task",,"page","Initial estimated","Initial estimé",,
+"com.axelor.apps.organisation.db.Task",,"page","Real estimated","Réel estimé",,
+"com.axelor.apps.organisation.db.Task",,"page","Real invoiced","Réel facturé",,
+"com.axelor.apps.organisation.db.Task",,"page","Description","Description",,
+"com.axelor.apps.organisation.db.Task",,"page","Spent times","Temps passés",,
+"com.axelor.apps.organisation.db.Task",,"view","Tasks","Tâches",,
+"com.axelor.apps.organisation.db.Task",,"view","Task","Tâche",,
+"com.axelor.apps.organisation.db.Task",,"placeholder","Task name","Nom tâche",,
+"com.axelor.apps.organisation.db.Task",,"group","Context","Contexte",,
+"com.axelor.apps.organisation.db.Task",,"page","Planification and realization","Planification et réalisation",,
+"com.axelor.apps.organisation.db.Task",,"page","Notes","Remarques",,
+"com.axelor.apps.organisation.db.Task",,"page","Description","Description",,
+"com.axelor.apps.organisation.db.Task",,"page","Spent times","Temps passés",,
+"com.axelor.apps.organisation.db.Task",,"view","Tasks","Tâches",,
+"com.axelor.apps.organisation.db.Task",,"view","Tasks","Tâches",,
+"com.axelor.apps.organisation.db.Task",,"view","Tasks filters","Filtres Tâches",,
+"com.axelor.apps.organisation.db.Task",,"filter","My Tasks","Mes Tâches",,
+"com.axelor.apps.organisation.db.Task",,"filter","My Today tasks","Mes Tâches du jour",,
+"com.axelor.apps.organisation.db.Task",,"filter","My Upcoming Tasks","Mes Tâches à venir",,
+"com.axelor.apps.organisation.db.Task",,"filter","Tasks Underevaluated","Tâches sous-évaluées",,
+"com.axelor.apps.organisation.db.Task",,"filter","Tasks To Invoice","Tâches à facturer",,
+"com.axelor.apps.organisation.db.Timesheet",,"view","Timesheet","Feuille de temps",,
+"com.axelor.apps.organisation.db.Timesheet",,"group","Satisfaction","Satisfaction",,
+"com.axelor.apps.organisation.db.Timesheet",,"separator","Project","Projet",,
+"com.axelor.apps.organisation.db.Timesheet",,"separator","Company","Société",,
+"com.axelor.apps.organisation.db.Timesheet",,"group","Unité",,,
+"com.axelor.apps.organisation.db.Timesheet",,"separator","Details of time spent on project/tasks","Lignes de temps passé sur les projets/tâche",,
+"com.axelor.apps.organisation.db.Timesheet",,"group","Configuration","Configuration",,
+"com.axelor.apps.organisation.db.Timesheet",,"button","Get past time","Récupérer les temps passés",,
+"com.axelor.apps.organisation.db.Timesheet",,"group","Complete time sheet configuration","Compléter la config. Feuille de Tps.",,
+"com.axelor.apps.organisation.db.Timesheet",,"button","Complete time sheet","Compléter la Feuille de Tps.",,
+"com.axelor.apps.organisation.db.Timesheet",,"group","Action(s)","Action(s)",,
+"com.axelor.apps.organisation.db.Timesheet",,"button","Confirm","Confirmer",,
+"com.axelor.apps.organisation.db.Timesheet",,"button","Validate","Valider",,
+"com.axelor.apps.organisation.db.Timesheet",,"button","Cancel","Annuler",,
+"com.axelor.apps.organisation.db.Timesheet",,"group","Totals","Totaux",,
+"com.axelor.apps.organisation.db.Timesheet",,"view","Timesheets","Feuilles de temps",,
+"com.axelor.apps.organisation.db.TimesheetLine",,"view","TImesheet project/task time input","Saisie feuille de temps",,
+"com.axelor.apps.organisation.db.TimesheetLine",,"view","Timesheet project/task time input","Ligne de feuille de temps",,
+"com.axelor.apps.organisation.db.TimesheetLine",,"viewField","Duration","Durée",,
+"com.axelor.apps.organisation.db.TimesheetLine",,"view","Timesheet project/task time inputs","Les lignes de feuille de temps",,
+"com.axelor.apps.organisation.db.TimesheetLine",,"viewField","Duration","Durée",,
+"com.axelor.apps.organisation.db.TimesheetLine",,"view","Timesheet project/task time input","Ligne de feuille de temps",,
+"com.axelor.apps.organisation.db.TimesheetLine",,"viewField","Duration","Durée",,
+"com.axelor.apps.organisation.db.TimesheetLine",,"view","Timesheet project/task time inputs","Les lignes de feuille de temps",,
+"com.axelor.apps.organisation.db.TimesheetLine",,"viewField","Duration (h)","Durée (h)",,
+"com.axelor.apps.organisation.db.TimesheetLine",,"view","Timesheet project/task time input","Ligne de feuille de temps",,
+"com.axelor.apps.organisation.db.TimesheetLine",,"viewField","Duration","Durée",,
+"com.axelor.apps.organisation.db.TimesheetLine",,"view","Timesheet project/task time inputs","Les lignes de feuille de temps",,
+"com.axelor.apps.organisation.db.TimesheetLine",,"viewField","Duration","Durée",,
+"com.axelor.apps.organisation.db.TimesheetPeriodConfig",,"view","Timesheet Period Config","Configuration période feuille de temps",,
+"com.axelor.apps.organisation.db.TimesheetPeriodConfig",,"group","Weekly","Hebdomadaire",,
+"com.axelor.apps.organisation.db.TimesheetPeriodConfig",,"group","Period","Période",,
+"com.axelor.apps.organisation.db.TimesheetPeriodConfig",,"group","Day/Hour of generation","Jour/heure de génération",,
+"com.axelor.apps.organisation.db.TimesheetPeriodConfig",,"group","Monthly","Mensuel",,
+"com.axelor.apps.organisation.db.TimesheetPeriodConfig",,"group","Day/Hour of generation","Jour/heure de génération",,
+"com.axelor.apps.organisation.db.TimesheetPeriodConfig",,"group","Reminder delay","Délai de relance",,
+"com.axelor.apps.organisation.db.TimesheetPeriodConfig",,"group","Limit","Limite",,
+"com.axelor.apps.organisation.db.TimesheetPeriodConfig",,"button","Generate Timesheets","Générer les feuilles de temps",,
+"com.axelor.apps.organisation.db.TimesheetPeriodConfig",,"view","Timesheets Period Config","Configuration période feuilles de temps",,
+"com.axelor.apps.organisation.db.TimesheetTotalByType",,"view","Total input per type","Total par type",,
+"com.axelor.apps.organisation.db.TimesheetTotalByType",,"view","Total input per types","Totaux par type",,
+"com.axelor.apps.organisation.db.Topic",,"view","Topic","Sujets",,
+"com.axelor.apps.organisation.db.Topic","archived","field",,"Archivé",,
+"com.axelor.apps.organisation.db.Topic",,"view","Topic","Sujets",,
+"com.axelor.apps.organisation.db.Topic","archived","field",,"Archivé",,
+"com.axelor.apps.organisation.db.TrainingCenter",,"view","TrainingCenter","Centres de formation",,
+"com.axelor.apps.organisation.db.TrainingCenter","archived","field",,"Archivé",,
+"com.axelor.apps.organisation.db.TrainingCenter",,"view","TrainingCenter","Centres de formation",,
+"com.axelor.apps.organisation.db.TrainingCenter","archived","field",,"Archivé",,
+"com.axelor.apps.organisation.db.Training",,"view","Training","Formations",,
+"com.axelor.apps.organisation.db.Training",,"label"," ",,,
+"com.axelor.apps.organisation.db.Training",,"view","Training","Formations",,
+"com.axelor.apps.organisation.db.TrainingLine",,"view","TrainingLine","Lignes de formation",,
+"com.axelor.apps.organisation.db.TrainingLine","archived","field",,"Archivée",,
+"com.axelor.apps.organisation.db.TrainingLine",,"view","TrainingLine","Lignes de formation",,
+"com.axelor.apps.organisation.db.TrainingLine","archived","field",,"Archivée",,
+,,"action","Customer invoice lines","Lignes de facture client",,
+,,"action","Travel expense lines","Lignes de Notes de frais",,
+,,"action","Financial information updates","MàJ Infos. Financières",,
+,,"action","Financial information updates","MàJ Infos. Financières",,
+,,"action","Financial information updates","MàJ Infos. Financières",,
+,,"action","Supplier invoice lines","Lignes Factures Fournisseur",,
+,,"action","Timesheet lines","Lignes de Feuille de Tps",,
+,,"action","Validated supplier order lines","Lignes de Cmde Fournisseur",,
+,,"action","Validated Customer order lines","Lignes de Cmde Validées",,
+,,"action","All supporting files have not been provided","Tous les fichiers justificatifs n'ont pas été fournis.",,
+,,"action","The holiday period already started you can not cancel this holiday.","La période de congés ayant déjà commencée, vous ne pouvez pas l'annuler.",,
+,,"action","Start date required.","Veuillez renseigner une date de départ en congés et la durée associée des congés.",,
+,,"action","Leave request reason required.","Veuillez renseigner le motif de votre demande de congés.",,
+,,"action","Request date required.","Veuillez renseigner la date de demande de congés.",,
+,,"action","The holiday request date should be equal or before the today date.","La date de demande de congé doit être égale ou précéder la date du jour.",,
+,,"action","Holiday requests duration must always be greater than 0.","La durée ne peut être négative.",,
+,,"action","The holiday end date must be after the start date.","La date de fin de vacances doit être postérieure à la date de départ.",,
+,,"action","The holiday request duration is greater than the remaining holidays. Please contact your supervisor to be credited with advance holidays permission.","La durée de demande de congés est supérieure aux vacances restantes. Merci de contacter votre superviseur pour bénéficier d'une avance de congés.",,
+,,"action","You are not allowed to validate this holiday request, please refer to your supervisor (the supervisor is listed in the employee hierarchy notebook).","Vous n'êtes pas autorisé à valider cette demande de congés. Merci de contacter votre responsable (voir votre fiche employé(e)).",,
+,,"action","Generating invoice is impossible, the fields clientPartner and contactPartner must be filled.","Merci de remplir les champs 'Client' et 'Contact' pour générer une facture.",,
+,,"action","Generating invoice is impossible, please link the task to a saleOrderLine to do so.","La génération de la facture est impossible, merci de relier la tâche à une ligne de devis pour que cette opération soit possible.",,
+,,"action","There is currently no task to invoice. If you need to generate an invoice from a task, please tick the checkbox 'To invoice' and make sure all necessary informations are filled in.","Aucune tâche n'est à facturer pour l'instant. Si vous souhaitez générer une ligne de facture à partir d'une tâche, veuillez cocher la case 'A facturer' et faire en sorte que toutes les informations nécessaires soient remplies.",,
+,,"action","Tasks","Tâches",,
+,,"action","Generating invoice is impossible, Please link the task to a saleOrderLine to do so.","Merci de relier la tâche à une ligne de devis/commande pour générer une facture.",,
+,,"action","Customer invoice lines","Lignes de facture client",,
+,,"action","Travel expense lines","Lignes de Notes de frais",,
+,,"action","Financial information updates","MàJ Infos. Financières",,
+,,"action","Financial information updates","MàJ Infos. Financières",,
+,,"action","Financial information updates","MàJ Infos. Financières",,
+,,"action","Supplier invoice lines","Lignes Factures Fournisseur",,
+,,"action","Timesheet lines","Lignes de Feuille de Tps",,
+,,"action","Validated supplier order lines","Lignes de Cmde Fournisseur",,
+,,"action","Validated Customer order lines","Lignes de Cmde Validées",,
+,,"action","Business","Affaire",,
+,,"action","New Business","Nouv. Affaire",,
+,,"action","Sites","Sites",,
+,,"action","Gantt Diagram","Diagramme de GANTT",,
+,,"action","Public holidays","Jours Fériés",,
+,,"action","Leave request reasons","Motifs de congés",,
+,,"action","Employees","Employés",,
+,,"action","Olds timesheets","Mes anciennes feuilles de temps",,
+,,"action","My leave requests","Mes demandes de congé",,
+,,"action","My overtimes","Mes heures supplémentaires",,
+,,"action","My timesheet","Mes feuilles de temps à compléter",,
+,,"action","My travel expenses","Mes notes de frais",,
+,,"action","Mission order","Ordre de mission",,
+,,"action","My timesheet calendar","Calendrier Feuille de Tps",,
+,,"action","Overtimes to be paid","Heures sup à payer",,
+,,"action","Travel expenses to be paid","Notes de frais à rembourser",,
+,,"action","Plannings","Plannings",,
+,,"action","Candidates","Candidats",,
+,,"action","Working hours","Horaires de travail",,
+,,"action","Trainings","Formations",,
+,,"action","Leave requests to validate","Demandes de congés à valider",,
+,,"action","Overtimes to validate","Heures supplémentaires à valider",,
+,,"action","Timesheets to validate","Feuilles de temps à valider",,
+,,"action","Travel expenses to validate by commercial","Notes de frais à valider par Commercial",,
+,,"action","Travel expenses to validate by RSC Manager","Notes de frais à valider par Manager",,
+,,"action","Projects","Les projets",,
+,,"action","Tasks","Tâches",,
+"hr.root.employee","hr.root.employee","documentation",,,,
+"hr.root.mission.order","hr.root.mission.order","documentation",,,,
+"hr.root.recruitment.candidate","hr.root.recruitment.candidate","documentation",,,,
+"hr.root.my.timesheet.line.calendar","hr.root.my.timesheet.line.calendar","documentation",,,,
+"hr.root.inputforms.timesheet","hr.root.inputforms.timesheet","documentation",,,,
+"hr.root.inputforms.travelexpenses","hr.root.inputforms.travelexpenses","documentation",,,,
+"hr.root.inputforms.overtimes","hr.root.inputforms.overtimes","documentation",,,,
+"hr.root.inputforms.leave.request","hr.root.inputforms.leave.request","documentation",,,,
+"hr.root.validationforms.timesheet","hr.root.validationforms.timesheet","documentation",,,,
+"hr.root.validationforms.travelexpenses.manager","hr.root.validationforms.travelexpenses.manager","documentation",,,,
+"hr.root.validationforms.travelexpenses.commercial","hr.root.validationforms.travelexpenses.commercial","documentation",,,,
+"hr.root.validationforms.overtimes","hr.root.validationforms.overtimes","documentation",,,,
+"hr.root.validationforms.leave.request","hr.root.validationforms.leave.request","documentation",,,,
+"hr.root.paymentforms.travelexpenses","hr.root.paymentforms.travelexpenses","documentation",,,,
+"hr.root.paymentforms.overtimes","hr.root.paymentforms.overtimes","documentation",,,,
+"hr.root.history.olds.timesheets","hr.root.history.olds.timesheets","documentation",,,,
+"hr.root.training","hr.root.training","documentation",,,,
+"hr.root.planning","hr.root.planning","documentation",,,,
+"hr.root.schedule","hr.root.schedule","documentation",,,,
+"hr.root.config.public.holidays","hr.root.config.public.holidays","documentation",,,,
+"hr.root.conf.task.leave.request.reason","hr.root.conf.task.leave.request.reason","documentation",,,,
+"business.root.site","business.root.site","documentation",,,,
+"business.root.project.new.business","business.root.project.new.business","documentation",,,,
+"business.root.project.all.business","business.root.project.all.business","documentation",,,,
+"demo.gantt1","demo.gantt1","documentation",,,,
+"project.root.project","project.root.project","documentation",,,,
+"project.root.task","project.root.task","documentation",,,,
+"timesheet-form","timesheet-form","documentation",,,,
+"timesheet-form","userInfo","documentation",,,,
+"timesheet-form","statusSelect","documentation",,,,
+"timesheet-form","fromDate","documentation",,,,
+"timesheet-form","toDate","documentation",,,,
+"timesheet-form","unit","documentation",,,,
+"timesheet-form","project","documentation",,,,
+"timesheet-form","projectSatisfactionSelect","documentation",,,,
+"timesheet-form","projectComment","documentation",,,,
+"timesheet-form","companySatisfactionSelect","documentation",,,,
+"timesheet-form","companyComment","documentation",,,,
+"timesheet-form","hasToGetLeaveRequests","documentation",,,,
+"timesheet-form","hasToGetSpentTimeFromTask","documentation",,,,
+"timesheet-form","hasToGetPlanningLine","documentation",,,,
+"timesheet-form","getSpentTimeButton","documentation",,,,
+"timesheet-form","hasCompleteTimesheetLines","documentation",,,,
+"timesheet-form","completeFromDate","documentation",,,,
+"timesheet-form","completeToDate","documentation",,,,
+"timesheet-form","completeDefaultTask","documentation",,,,
+"timesheet-form","duration","documentation",,,,
+"timesheet-form","completeTimeSheetButton","documentation",,,,
+"timesheet-form","timesheetLineList","documentation",,,,
+"timesheet-form","confirm","documentation",,,,
+"timesheet-form","validate","documentation",,,,
+"timesheet-form","cancel","documentation",,,,
+"timesheet-form","validatedByUserInfo","documentation",,,,
+"timesheet-form","validationDate","documentation",,,,
+"timesheet-form","timesheetInputTotal","documentation",,,,
+"timesheet-form","timesheetTotalByTypeList","documentation",,,,
+"timesheet-line-form","timesheet-line-form","documentation",,,,
+"timesheet-line-form","date","documentation",,,,
+"timesheet-line-form","project","documentation",,,,
+"timesheet-line-form","task","documentation",,,,
+"timesheet-line-form","duration","documentation",,,,
+"timesheet-line-form","timesheet.unit","documentation",,,,
+"timesheet-line-form","isToInvoice","documentation",,,,
+"timesheet-line-form","isInvoiced","documentation",,,,
+"timesheet-total-by-type-form","timesheet-total-by-type-form","documentation",,,,
+"timesheet-total-by-type-form","project","documentation",,,,
+"timesheet-total-by-type-form","duration","documentation",,,,
+"expense-form","expense-form","documentation",,,,
+"expense-form","userInfo","documentation",,,,
+"expense-form","statusSelect","documentation",,,,
+"expense-form","date","documentation",,,,
+"expense-form","company","documentation",,,,
+"expense-form","totalAmount","documentation",,,,
+"expense-form","currency","documentation",,,,
+"expense-form","project","documentation",,,,
+"expense-form","expenseLineList","documentation",,,,
+"expense-form","paymentPeriod","documentation",,,,
+"expense-form","refusalReason","documentation",,,,
+"expense-form","draft","documentation",,,,
+"expense-form","submit","documentation",,,,
+"expense-form","validateManager","documentation",,,,
+"expense-form","validateCommercial","documentation",,,,
+"expense-form","confirm","documentation",,,,
+"expense-form","refuse","documentation",,,,
+"expense-form","compute","documentation",,,,
+"expense-form","validatedByUserInfo","documentation",,,,
+"expense-form","validationDate","documentation",,,,
+"expense-form","validationStatusSelect","documentation",,,,
+"expense-line-form","expense-line-form","documentation",,,,
+"expense-line-form","date","documentation",,,,
+"expense-line-form","expenseTypeSelect","documentation",,,,
+"expense-line-form","task","documentation",,,,
+"expense-line-form","product","documentation",,,,
+"expense-line-form","shortDescription","documentation",,,,
+"expense-line-form","qty","documentation",,,,
+"expense-line-form","unit","documentation",,,,
+"expense-line-form","price","documentation",,,,
+"expense-line-form","inTaxTotal","documentation",,,,
+"expense-line-form","vatLine","documentation",,,,
+"expense-line-form","file","documentation",,,,
+"expense-line-form","fileReceived","documentation",,,,
+"expense-line-form","validationDate","documentation",,,,
+"expense-line-form","istoInvoice","documentation",,,,
+"expense-line-form","isInvoiced","documentation",,,,
+"leave-request-form","leave-request-form","documentation",,,,
+"leave-request-form","employeeUserInfo","documentation",,,,
+"leave-request-form","statusSelect","documentation",,,,
+"leave-request-form","requestDate","documentation",,,,
+"leave-request-form","reasonTask","documentation",,,,
+"leave-request-form","accounted","documentation",,,,
+"leave-request-form","startDateT","documentation",,,,
+"leave-request-form","endDateT","documentation",,,,
+"leave-request-form","nbrOfDayOff","documentation",,,,
+"leave-request-form","remainingDaysOnPeriod","documentation",,,,
+"leave-request-form","managerUserInfo","documentation",,,,
+"leave-request-form","approvalDate","documentation",,,,
+"leave-request-form","confirm","documentation",,,,
+"leave-request-form","cancel","documentation",,,,
+"leave-request-form","validate","documentation",,,,
+"participant-form","participant-form","documentation",,,,
+"participant-form","partner","documentation",,,,
+"participant-form","isComing","documentation",,,,
+"employee-form","employee-form","documentation",,,,
+"employee-form","showEmployee","documentation",,,,
+"employee-form","sendByEmail","documentation",,,,
+"employee-form","picture","documentation",,,,
+"employee-form","titleSelect","documentation",,,,
+"employee-form","name","documentation",,,,
+"employee-form","firstName","documentation",,,,
+"employee-form","function","documentation",,,,
+"employee-form","companyDepartment","documentation",,,,
+"employee-form","internalContact","documentation",,,,
+"employee-form","internalContact.mobilePhone","documentation",,,,
+"employee-form","internalContact.fixedPhone","documentation",,,,
+"employee-form","phoneAtCustomer","documentation",,,,
+"employee-form","internalContact.emailAddress.address","documentation",,,,
+"employee-form","internalContact.mainInvoicingAddress","documentation",,,,
+"employee-form","emergencyContact","documentation",,,,
+"employee-form","emergencyNumber","documentation",,,,
+"employee-form","contractTypeSelect","documentation",,,,
+"employee-form","contractDuration","documentation",,,,
+"employee-form","functionRanking","documentation",,,,
+"employee-form","entryDate","documentation",,,,
+"employee-form","macroCategorySelect","documentation",,,,
+"employee-form","categorySelect","documentation",,,,
+"employee-form","exitDate","documentation",,,,
+"employee-form","advantages","documentation",,,,
+"employee-form","supervisedBySelect","documentation",,,,
+"employee-form","managerUserInfo","documentation",,,,
+"employee-form","managerProfileProduct","documentation",,,,
+"employee-form","profileProduct","documentation",,,,
+"employee-form","personalInfo","documentation",,,,
+"employee-form","toolKeywordSet","documentation",,,,
+"employee-form","fieldKeywordSet","documentation",,,,
+"employee-form","jobKeywordSet","documentation",,,,
+"employee-form","competence","documentation",,,,
+"employee-form","positionList","documentation",,,,
+"employee-form","salaryFromDate","documentation",,,,
+"employee-form","salaryAmount","documentation",,,,
+"employee-form","dailySalaryCost","documentation",,,,
+"employee-form","bonusList","documentation",,,,
+"employee-form","advanceList","documentation",,,,
+"employee-form","paySheetList","documentation",,,,
+"employee-form","vehicleFiscalPower","documentation",,,,
+"employee-form","commuteFee","documentation",,,,
+"employee-form","commuteFeeRefundPerc","documentation",,,,
+"employee-form","expenseList","documentation",,,,
+"employee-form","employeeLeaveList","documentation",,,,
+"employee-form","candidate","documentation",,,,
+"position-form","position-form","documentation",,,,
+"position-form","name","documentation",,,,
+"position-form","startDate","documentation",,,,
+"position-form","endDate","documentation",,,,
+"position-form","employer","documentation",,,,
+"position-form","description","documentation",,,,
+"position-form","departureCause","documentation",,,,
+"position-form","department","documentation",,,,
+"position-form","duration","documentation",,,,
+"position-form","referenceTitle","documentation",,,,
+"position-form","context","documentation",,,,
+"position-form","goals","documentation",,,,
+"position-form","development","documentation",,,,
+"position-form","result","documentation",,,,
+"position-form","technicalEnvironment","documentation",,,,
+"position-form","contact","documentation",,,,
+"position-form","recommendationSelect","documentation",,,,
+"position-form","comment","documentation",,,,
+"bonus-form","bonus-form","documentation",,,,
+"bonus-form","period","documentation",,,,
+"bonus-form","name","documentation",,,,
+"bonus-form","amount","documentation",,,,
+"advance-form","advance-form","documentation",,,,
+"advance-form","date","documentation",,,,
+"advance-form","amount","documentation",,,,
+"advance-form","reversalDate","documentation",,,,
+"advance-form","comment","documentation",,,,
+"pay-sheet-employee-form","pay-sheet-employee-form","documentation",,,,
+"pay-sheet-employee-form","period","documentation",,,,
+"pay-sheet-employee-form","paymentDate","documentation",,,,
+"employee-leave-form","employee-leave-form","documentation",,,,
+"employee-leave-form","reasonTask","documentation",,,,
+"employee-leave-form","leaveBalances","documentation",,,,
+"employee-leave-form","leaveRequestInProgress","documentation",,,,
+"employee-leave-form","cumulation","documentation",,,,
+"mission-order-form","mission-order-form","documentation",,,,
+"mission-order-form","reference","documentation",,,,
+"mission-order-form","date","documentation",,,,
+"mission-order-form","company","documentation",,,,
+"mission-order-form","project","documentation",,,,
+"mission-order-form","employee","documentation",,,,
+"mission-order-form","qualificationKeyword","documentation",,,,
+"mission-order-form","missionPropose","documentation",,,,
+"mission-order-form","missionStartDate","documentation",,,,
+"mission-order-form","missionEndDate","documentation",,,,
+"mission-order-form","dateTypeSelect","documentation",,,,
+"mission-order-form","address","documentation",,,,
+"mission-order-form","contactPartner","documentation",,,,
+"mission-order-form","userInfo","documentation",,,,
+"mission-order-form","workingTime","documentation",,,,
+"candidate-form","candidate-form","documentation",,,,
+"candidate-form","showCandidate","documentation",,,,
+"candidate-form","sendByEmail","documentation",,,,
+"candidate-form","transformInEmployee","documentation",,,,
+"candidate-form","picture","documentation",,,,
+"candidate-form","titleSelect","documentation",,,,
+"candidate-form","name","documentation",,,,
+"candidate-form","firstName","documentation",,,,
+"candidate-form","currentJobKeyword","documentation",,,,
+"candidate-form","mobilePhone","documentation",,,,
+"candidate-form","fixedPhone","documentation",,,,
+"candidate-form","email","documentation",,,,
+"candidate-form","address","documentation",,,,
+"candidate-form","contractType","documentation",,,,
+"candidate-form","searchedJobKeyword","documentation",,,,
+"candidate-form","salaryExpectation","documentation",,,,
+"candidate-form","relocationSelect","documentation",,,,
+"candidate-form","resume","documentation",,,,
+"candidate-form","coverLetter","documentation",,,,
+"candidate-form","availabilitySelect","documentation",,,,
+"candidate-form","availabilityDate","documentation",,,,
+"candidate-form","decisionDate","documentation",,,,
+"candidate-form","userInfo","documentation",,,,
+"candidate-form","recruitmentStatusSelect","documentation",,,,
+"candidate-form","globalEvaluation","documentation",,,,
+"candidate-form","createdOn","documentation",,,,
+"candidate-form","newCandidate","documentation",,,,
+"candidate-form","preSelection","documentation",,,,
+"candidate-form","firstInterview","documentation",,,,
+"candidate-form","secondInterview","documentation",,,,
+"candidate-form","thirdInterview","documentation",,,,
+"candidate-form","rejectRecruitmentAdvancement","documentation",,,,
+"candidate-form","proposeOfferRecruitmentAdvancement","documentation",,,,
+"candidate-form","acceptOfferRecruitmentAdvancement","documentation",,,,
+"candidate-form","rejectOfferRecruitmentAdvancement","documentation",,,,
+"candidate-form","recruitementDate","documentation",,,,
+"candidate-form","note","documentation",,,,
+"candidate-form","recruitmentProcessAdvancementList","documentation",,,,
+"candidate-form","toolKeywordSet","documentation",,,,
+"candidate-form","fieldKeywordSet","documentation",,,,
+"candidate-form","jobKeywordSet","documentation",,,,
+"candidate-form","recruitmentTypeSelect","documentation",,,,
+"candidate-form","macroCategorySelect","documentation",,,,
+"candidate-form","categorySelect","documentation",,,,
+"candidate-form","positionList","documentation",,,,
+"candidate-form","degree","documentation",,,,
+"candidate-form","educationLevel","documentation",,,,
+"candidate-form","trainingLineList","documentation",,,,
+"candidate-form","evaluationLineList","documentation",,,,
+"candidate-form","evaluationGrade","documentation",,,,
+"candidate-form","compute","documentation",,,,
+"candidate-form","drivingLicence","documentation",,,,
+"candidate-form","source","documentation",,,,
+"candidate-form","personalInfo","documentation",,,,
+"candidate-form","competence","documentation",,,,
+"candidate-form","candidateOtherOpportunityList","documentation",,,,
+"recruitment-process-advancement-form","recruitment-process-advancement-form","documentation",,,,
+"recruitment-process-advancement-form","candidate","documentation",,,,
+"recruitment-process-advancement-form","statusSelect","documentation",,,,
+"recruitment-process-advancement-form","dateT","documentation",,,,
+"recruitment-process-advancement-form","note","documentation",,,,
+"training-line-form","training-line-form","documentation",,,,
+"training-line-form","candidate","documentation",,,,
+"training-line-form","degree","documentation",,,,
+"training-line-form","trainingCenter","documentation",,,,
+"training-line-form","topicSet","documentation",,,,
+"training-line-form","completionYear","documentation",,,,
+"training-line-form","comment","documentation",,,,
+"training-line-form","archived","documentation",,,,
+"evaluation-line-form","evaluation-line-form","documentation",,,,
+"evaluation-line-form","label","documentation",,,,
+"evaluation-line-form","coefficient","documentation",,,,
+"evaluation-line-form","gradeSelect","documentation",,,,
+"candidate-other-opportunity-form","candidate-other-opportunity-form","documentation",,,,
+"candidate-other-opportunity-form","ets","documentation",,,,
+"candidate-other-opportunity-form","opportunity","documentation",,,,
+"candidate-other-opportunity-form","contact","documentation",,,,
+"candidate-other-opportunity-form","statusSelect","documentation",,,,
+"candidate-other-opportunity-form","interestSelect","documentation",,,,
+"timesheet-line-calendar-form","timesheet-line-calendar-form","documentation",,,,
+"timesheet-line-calendar-form","date","documentation",,,,
+"timesheet-line-calendar-form","project","documentation",,,,
+"timesheet-line-calendar-form","task","documentation",,,,
+"timesheet-line-calendar-form","timesheet.userInfo","documentation",,,,
+"timesheet-line-calendar-form","duration","documentation",,,,
+"timesheet-line-calendar-form","timesheet.unit","documentation",,,,
+"timesheet-line-calendar-form","isToInvoice","documentation",,,,
+"timesheet-line-calendar-form","isInvoiced","documentation",,,,
+"overtime-form","overtime-form","documentation",,,,
+"overtime-form","userInfo","documentation",,,,
+"overtime-form","date","documentation",,,,
+"overtime-form","statusSelect","documentation",,,,
+"overtime-form","totalAmount","documentation",,,,
+"overtime-form","currency","documentation",,,,
+"overtime-form","overtimeLineList","documentation",,,,
+"overtime-form","period","documentation",,,,
+"overtime-form","motif","documentation",,,,
+"overtime-form","draft","documentation",,,,
+"overtime-form","submit","documentation",,,,
+"overtime-form","validateManager","documentation",,,,
+"overtime-form","validateCommercial","documentation",,,,
+"overtime-form","confirm","documentation",,,,
+"overtime-form","refuse","documentation",,,,
+"overtime-form","validatedByUserInfo","documentation",,,,
+"overtime-form","validationDate","documentation",,,,
+"overtime-line-form","overtime-line-form","documentation",,,,
+"overtime-line-form","description","documentation",,,,
+"overtime-line-form","project","documentation",,,,
+"overtime-line-form","quantity","documentation",,,,
+"overtime-line-form","unit","documentation",,,,
+"overtime-line-form","unitPrice","documentation",,,,
+"overtime-line-form","total","documentation",,,,
+"overtime-line-form","validate","documentation",,,,
+"overtime-line-form","validationDate","documentation",,,,
+"training-form","training-form","documentation",,,,
+"training-form","experienceTypeSelect","documentation",,,,
+"training-form","startDate","documentation",,,,
+"training-form","endDate","documentation",,,,
+"training-form","jobTitle","documentation",,,,
+"training-form","service","documentation",,,,
+"training-form","duration","documentation",,,,
+"training-form","jobDescription","documentation",,,,
+"training-form","referencePosition","documentation",,,,
+"training-form","context","documentation",,,,
+"training-form","aims","documentation",,,,
+"training-form","progress","documentation",,,,
+"training-form","technicalEnvironment","documentation",,,,
+"training-form","result","documentation",,,,
+"training-form","toolKeywordSet","documentation",,,,
+"training-form","sectorKeywordSet","documentation",,,,
+"planning-form","planning-form","documentation",,,,
+"planning-form","period","documentation",,,,
+"planning-form","userInfo","documentation",,,,
+"planning-form","date","documentation",,,,
+"planning-form","hasCompleteTimesheetLines","documentation",,,,
+"planning-form","completeFromDate","documentation",,,,
+"planning-form","completeToDate","documentation",,,,
+"planning-form","completeDefaultTask","documentation",,,,
+"planning-form","duration","documentation",,,,
+"planning-form","completeTimeSheetButton","documentation",,,,
+"planning-form","planningLineList","documentation",,,,
+"planning-line-form","planning-line-form","documentation",,,,
+"planning-line-form","product","documentation",,,,
+"planning-line-form","employee","documentation",,,,
+"planning-line-form","task","documentation",,,,
+"planning-line-form","fromDateTime","documentation",,,,
+"planning-line-form","toDateTime","documentation",,,,
+"planning-line-form","duration","documentation",,,,
+"planning-line-form","unit","documentation",,,,
+"planning-line-form","timeSheet","documentation",,,,
+"schedule-form","schedule-form","documentation",,,,
+"schedule-form","name","documentation",,,,
+"schedule-form","publicHolidays","documentation",,,,
+"schedule-form","scheduleLineList","documentation",,,,
+"schedule-line-form","schedule-line-form","documentation",,,,
+"schedule-line-form","startDate","documentation",,,,
+"schedule-line-form","scheduleSubLineList","documentation",,,,
+"public-holidays-form","public-holidays-form","documentation",,,,
+"public-holidays-form","name","documentation",,,,
+"public-holidays-form","publicHolidaysLineList","documentation",,,,
+"public-holiday-line-form","public-holiday-line-form","documentation",,,,
+"public-holiday-line-form","date","documentation",,,,
+"public-holiday-line-form","description","documentation",,,,
+"task-leave-reason-form","task-leave-reason-form","documentation",,,,
+"task-leave-reason-form","name","documentation",,,,
+"task-leave-reason-form","statusSelect","documentation",,,,
+"task-leave-reason-form","hasCummulation","documentation",,,,
+"task-leave-reason-form","accountingDay","documentation",,,,
+"task-leave-reason-form","project","documentation",,,,
+"task-leave-reason-form","userInfo","documentation",,,,
+"task-leave-reason-form","taskProgress","documentation",,,,
+"task-leave-reason-form","startDateT","documentation",,,,
+"task-leave-reason-form","endDateT","documentation",,,,
+"task-leave-reason-form","totalTime","documentation",,,,
+"task-leave-reason-form","planningLineList","documentation",,,,
+"task-leave-reason-form","notes","documentation",,,,
+"task-leave-reason-form","description","documentation",,,,
+"task-leave-reason-form","spentTimeList","documentation",,,,
+"planning-line-task-form","planning-line-task-form","documentation",,,,
+"planning-line-task-form","product","documentation",,,,
+"planning-line-task-form","employee","documentation",,,,
+"planning-line-task-form","planning","documentation",,,,
+"planning-line-task-form","fromDateTime","documentation",,,,
+"planning-line-task-form","toDateTime","documentation",,,,
+"planning-line-task-form","duration","documentation",,,,
+"planning-line-task-form","unit","documentation",,,,
+"planning-line-task-form","timeSheet","documentation",,,,
+"business-project-form","business-project-form","documentation",,,,
+"business-project-form","name","documentation",,,,
+"business-project-form","businessStatusSelect","documentation",,,,
+"business-project-form","responsibleUserInfo","documentation",,,,
+"business-project-form","defaultTask","documentation",,,,
+"business-project-form","company","documentation",,,,
+"business-project-form","clientPartner","documentation",,,,
+"business-project-form","contactPartner","documentation",,,,
+"business-project-form","createSalesOrder","documentation",,,,
+"business-project-form","generateNewInstanceOfProject","documentation",,,,
+"business-project-form","transformToProject","documentation",,,,
+"business-project-form","createPreSalesTask","documentation",,,,
+"business-project-form","updateTaskProgression","documentation",,,,
+"business-project-form","totalTime","documentation",,,,
+"business-project-form","unit","documentation",,,,
+"business-project-form","plannedTime","documentation",,,,
+"business-project-form","spentTime","documentation",,,,
+"business-project-form","remainingTime","documentation",,,,
+"business-project-form","description","documentation",,,,
+"business-project-form","isProject","documentation",,,,
+"business-project-form","isBusiness","documentation",,,,
+"business-project-form","isModel","documentation",,,,
+"business-project-form","modelProject","documentation",,,,
+"business-project-form","parentProject","documentation",,,,
+"business-project-form","imputExpense","documentation",,,,
+"business-project-form","typeProjectSelect","documentation",,,,
+"business-project-form","isReinvoicingExpense","documentation",,,,
+"business-project-form","isReinvoicingTime","documentation",,,,
+"business-project-form","isTimeSheetImputable","documentation",,,,
+"business-project-form","candidateSet","documentation",,,,
+"business-project-form","employeeSet","documentation",,,,
+"business-project-form","preSalesTask","documentation",,,,
+"business-project-form","taskList","documentation",,,,
+"business-project-form","realEstimatedMethodSelect","documentation",,,,
+"business-project-form","company.currency","documentation",,,,
+"business-project-form","exportTypeSelect","documentation",,,,
+"business-project-form","printProject","documentation",,,,
+"business-project-form","initialEstimatedTurnover","documentation",,,,
+"business-project-form","initialEstimatedCost","documentation",,,,
+"business-project-form","initialEstimatedMargin","documentation",,,,
+"business-project-form","realEstimatedTurnover","documentation",,,,
+"business-project-form","realEstimatedCost","documentation",,,,
+"business-project-form","realEstimatedMargin","documentation",,,,
+"business-project-form","realInvoicedTurnover","documentation",,,,
+"business-project-form","realInvoicedCost","documentation",,,,
+"business-project-form","realInvoicedMargin","documentation",,,,
+"business-project-form","memberUserInfoSet","documentation",,,,
+"business-project-form","needTypeSelect","documentation",,,,
+"business-project-form","marketTypeSelect","documentation",,,,
+"business-project-form","consultationDate","documentation",,,,
+"business-project-form","deadline","documentation",,,,
+"business-project-form","complexity","documentation",,,,
+"business-project-form","competition","documentation",,,,
+"business-project-form","plannedBudget","documentation",,,,
+"business-project-form","answerDate","documentation",,,,
+"business-project-form","specificationFile","documentation",,,,
+"business-project-form","needDescription","documentation",,,,
+"task-form","task-form","documentation",,,,
+"task-form","name","documentation",,,,
+"task-form","statusSelect","documentation",,,,
+"task-form","project","documentation",,,,
+"task-form","startDateT","documentation",,,,
+"task-form","endDateT","documentation",,,,
+"task-form","userInfo","documentation",,,,
+"task-form","totalTime","documentation",,,,
+"task-form","project.unit","documentation",,,,
+"task-form","plannedTime","documentation",,,,
+"task-form","spentTime","documentation",,,,
+"task-form","remainingTime","documentation",,,,
+"task-form","taskProgress","documentation",,,,
+"task-form","delays","documentation",,,,
+"task-form","advance","documentation",,,,
+"task-form","generateDraftInvoice","documentation",,,,
+"task-form","planningLineList","documentation",,,,
+"task-form","salesOrderLine","documentation",,,,
+"task-form","product","documentation",,,,
+"task-form","qty","documentation",,,,
+"task-form","price","documentation",,,,
+"task-form","isToInvoice","documentation",,,,
+"task-form","isTimesheetAffected","documentation",,,,
+"task-form","invoicingDate","documentation",,,,
+"task-form","amountToInvoice","documentation",,,,
+"task-form","notes","documentation",,,,
+"task-form","realEstimatedMethodSelect","documentation",,,,
+"task-form","estimatedAmount","documentation",,,,
+"task-form","project.company.currency","documentation",,,,
+"task-form","exportTypeSelect","documentation",,,,
+"task-form","printTask","documentation",,,,
+"task-form","initialEstimatedTurnover","documentation",,,,
+"task-form","initialEstimatedCost","documentation",,,,
+"task-form","initialEstimatedMargin","documentation",,,,
+"task-form","updateInitialEstimatedAmounts","documentation",,,,
+"task-form","financialInformationHistoryLineList","documentation",,,,
+"task-form","realEstimatedTurnover","documentation",,,,
+"task-form","realEstimatedCost","documentation",,,,
+"task-form","realEstimatedMargin","documentation",,,,
+"task-form","realInvoicedTurnover","documentation",,,,
+"task-form","realInvoicedCost","documentation",,,,
+"task-form","realInvoicedMargin","documentation",,,,
+"task-form","financialInformationUpdateList","documentation",,,,
+"task-form","description","documentation",,,,
+"task-form","spentTimeList","documentation",,,,
+"project-form","project-form","documentation",,,,
+"project-form","name","documentation",,,,
+"project-form","responsibleUserInfo","documentation",,,,
+"project-form","defaultTask","documentation",,,,
+"project-form","clientPartner","documentation",,,,
+"project-form","contactPartner","documentation",,,,
+"project-form","company","documentation",,,,
+"project-form","projectStatusSelect","documentation",,,,
+"project-form","generateNewInstanceOfProject","documentation",,,,
+"project-form","generateDraftInvoice","documentation",,,,
+"project-form","showTask","documentation",,,,
+"project-form","updateTaskProgression","documentation",,,,
+"project-form","totalTime","documentation",,,,
+"project-form","unit","documentation",,,,
+"project-form","plannedTime","documentation",,,,
+"project-form","spentTime","documentation",,,,
+"project-form","remainingTime","documentation",,,,
+"project-form","description","documentation",,,,
+"project-form","isProject","documentation",,,,
+"project-form","isBusiness","documentation",,,,
+"project-form","parentProject","documentation",,,,
+"project-form","isModel","documentation",,,,
+"project-form","modelProject","documentation",,,,
+"project-form","imputExpense","documentation",,,,
+"project-form","typeProjectSelect","documentation",,,,
+"project-form","isReinvoicingExpense","documentation",,,,
+"project-form","isReinvoicingTime","documentation",,,,
+"project-form","isTimeSheetImputable","documentation",,,,
+"project-form","taskList","documentation",,,,
+"project-form","memberUserInfoSet","documentation",,,,
+"financial-information-update-form","financial-information-update-form","documentation",,,,
+"financial-information-update-form","date","documentation",,,,
+"financial-information-update-form","userInfo","documentation",,,,
+"financial-information-update-form","product","documentation",,,,
+"financial-information-update-form","amount","documentation",,,,
+"financial-information-update-form","typeSelect","documentation",,,,
+"financial-information-update-form","applicationSelect","documentation",,,,
+"financial-information-update-form","description","documentation",,,,
