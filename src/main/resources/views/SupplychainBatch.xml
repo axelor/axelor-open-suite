@@ -16,7 +16,7 @@
     onNew="action-supplychain-batch-record-on-new,action-supplychain-batch-attrs-action-select">
     	<field name="actionSelect" onChange="action-supplychain-batch-attrs-action-select"/>
     	<field name="code" />
-    	<field name="company" widget="SuggestBox"/>
+    	<field name="company" widget="SuggestBox" form-view="company-lite-form"/>
     	<break/>
     	<notebook colSpan="4">
     		<page name="InvoicingPage" title="Invoicing page" cols="4">

@@ -13,20 +13,20 @@
 	    
         <field name="name"/>
         <field name="code"/>
-        <field name="company"/>
+        <field name="company" form-view="company-lite-form"/>
 
-		<group title="Virtual locations informations" colWidths="30%,30%,30%,30%">    
+		<group title="Virtual locations informations" colWidths="30%,30%,30%,30%" colSpan="4">    
 			<field name="customerVirtualLocation" domain="self.typeSelect = 3"/>
 			<field name="supplierVirtualLocation" domain="self.typeSelect = 3"/>
 			<field name="inventoryVirtualLocation" domain="self.typeSelect = 3"/>
 		</group>
-          	<group title="Stock move informations" colWidths="30%,30%,30%,30%">	
+       	<group title="Stock move informations" colWidths="30%,30%,30%,30%" colSpan="4">	
 			<field name="hasOutSmForStorableProduct" />
 			<field name="hasOutSmForNonStorableProduct" />
 			<field name="hasInSmForStorableProduct" />
 			<field name="hasInSmForNonStorableProduct" />
 		</group>
-		<group title="Invoicing informations" colWidths="30%,30%,30%,30%">	
+		<group title="Invoicing informations" colWidths="30%,30%,30%,30%" colSpan="4">	
 			<field name="salesOrderInvoicingTypeSelect" />
 			<field name="purchaseOrderInvoicingTypeSelect" />
 		</group>

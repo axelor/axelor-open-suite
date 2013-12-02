@@ -28,7 +28,7 @@
 	    <group colSpan="4" cols="6">
 	        <field name="purchaseOrderSeq" css="highlight"/>
 	        <field name="orderDate"/>
-	        <field name="company" widget="SuggestBox" onChange="action-purchase-order-record-company-configuration,action-purchase-order-method-get-location"/>
+	        <field name="company" widget="SuggestBox" form-view="company-lite-form" onChange="action-purchase-order-record-company-configuration,action-purchase-order-method-get-location"/>
 	        <field name="externalReference"/>
 	        <field name="currency"/>
 	        <field name="project" domain="self.isBusiness = true"/>
@@ -99,7 +99,7 @@
     
     <action-record name="action-purchase-order-record-company-configuration" model="com.axelor.apps.supplychain.db.PurchaseOrder">
 	    <field name="currency" expr="eval: company?.currency"/>
-	    <field name="invoicingTypeSelect" expr="eval: company?.purchaseOrderInvoicingTypeSelect" if="eval: company?.purchaseOrderInvoicingTypeSelect != 0"/>
+	    <field name="invoicingTypeSelect" expr="eval: company?.supplychainConfig?.purchaseOrderInvoicingTypeSelect" if="eval: company?.supplychainConfig?.purchaseOrderInvoicingTypeSelect != 0"/>
 	</action-record>
 	
     <action-record name="action-purchase-order-record-partner" model="com.axelor.apps.supplychain.db.PurchaseOrder">
