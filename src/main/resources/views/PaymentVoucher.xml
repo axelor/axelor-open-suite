@@ -26,7 +26,7 @@
 			<field name="operationTypeSelect" onChange="action-payment-voucher-hidden-fields-if-purchase"/>
 			<field name="userInfo" />
 			<field name="paymentDateTime" />
-			<field name="company" widget="SuggestBox" />
+			<field name="company" widget="SuggestBox" form-view="company-lite-form"/>
 			<field name="cashRegister" />
 			<field name="autoOk" />
 		</group>

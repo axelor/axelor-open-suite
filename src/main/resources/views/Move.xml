@@ -20,7 +20,7 @@
 	        <group title="Move header" colSpan="4" readonlyIf="state = 'validated'">
 	            <field name="reference"/>
 	            <field name="date" onChange="action-move-method-get-period"/>
-	            <field name="company" widget="SuggestBox" onChange="action-move-method-get-period"/>
+	            <field name="company" widget="SuggestBox" form-view="company-lite-form" onChange="action-move-method-get-period"/>
 	            <field name="period"/>
 	            <field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form"/>
 	            <field name="cashRegister"/>

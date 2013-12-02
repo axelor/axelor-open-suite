@@ -21,7 +21,7 @@
         <field name="code"/>
         <field name="name"/>
         <field name="accountType"/>
-        <field name="company" widget="SuggestBox" onChange="action-account-clean-company,action-account-validate"/>
+        <field name="company" widget="SuggestBox" form-view="company-lite-form" onChange="action-account-clean-company,action-account-validate"/>
 		<field name="parent" domain="self.company = :company" onChange="action-account-clean-company,action-account-validate"/>
         <field name="reconcileOk"/>
     </form>

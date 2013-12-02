@@ -6,7 +6,6 @@
     <grid name="account-config-grid" title="Account configurations" model="com.axelor.apps.account.db.AccountConfig">
         <field name="name"/>
         <field name="code"/>
-        <field name="address"/>
     </grid>
     
     <form name="account-config-form" title="Account configuration" model="com.axelor.apps.account.db.AccountConfig" cols="4">
@@ -38,43 +37,27 @@
 	                <field name="miscOperationJournal" domain="self.inactiveOk != true"/>
 	                <break/>
 	            <separator title="Accounts" colSpan="6"/>
-	                <field name="customerAccount" domain="self.company.code = :code"/>
-	                <field name="supplierAccount" domain="self.company.code = :code"/>
-  	           	 	<field name="doubtfulCustomerAccount" domain="self.company.code = :code"/>
-	                <field name="irrecoverableAccount" domain="self.company.code = :code"/>
+	                <field name="customerAccount" domain="self.company = :company"/>
+	                <field name="supplierAccount" domain="self.company = :company"/>
+  	           	 	<field name="doubtfulCustomerAccount" domain="self.company = :company"/>
+	                <field name="irrecoverableAccount" domain="self.company = :company"/>
 	     			<break/>
                 <separator title="Payment differences" colSpan="6"/>
 	                <field name="thresholdDistanceFromRegulation"/>
-	                <field name="cashPositionVariationAccount" domain="self.company.code = :code"/>
+	                <field name="cashPositionVariationAccount" domain="self.company = :company"/>
 	            <separator title="Exports" colSpan="6"/>
 	            	<field name="exportPath"/>
 	            <separator title="Cashiers" colSpan="6"/>
 	               	<field name="cashRegisterMailModel"/>
 	               	<field name="cashRegisterAddressEmail"/>
-            	<separator title="CFONB Export" colSpan="6"/>
-	            	<field name="senderRecordCodeExportCFONB"/>
-	            	<field name="senderNumExportCFONB"/>
-	            	<field name="senderNameCodeExportCFONB"/>
-	            	<field name="recipientRecordCodeExportCFONB"/>
-	            	<field name="totalRecordCodeExportCFONB"/>
-	            	<field name="transferOperationCodeExportCFONB"/>
-	            	<field name="directDebitOperationCodeExportCFONB"/>
-	            <separator title="CFONB Import" colSpan="6"/>
-	            	<field name="headerRecordCodeImportCFONB"/>
-	            	<field name="detailRecordCodeImportCFONB"/>
-	            	<field name="endingRecordCodeImportCFONB"/>
-	            	<field name="transferOperationCodeImportCFONB"/>
-	            	<field name="directDebitOperationCodeImportCFONB"/>
-	            	<field name="ipoRejectOperationCodeImportCFONB"/>
-	            	<field name="ipoOperationCodeImportCFONB"/>
-	            	<field name="ipoAndChequeOperationCodeImportCFONB"/>
    	            <separator title="Shift to irrecoverable" colSpan="6"/>
    	            	<field name="irrecoverableReasonPassage"/>
    	            	<field name="irrecoverableStandardRateVat"/>
    	            <separator title="Tax payment" colSpan="6"/>
    	            	<field name="payingBackTaxVat"/>
-           		<separator title="Currency" colSpan="6"/>
-           			<field name="currency"/>
+            </page>
+            <page title="CFONB" cols="4">
+            	<field name="cfonbConfig" showTitle="false" widget="NestedEditor" form-view="cfonb-config-form" summary-view="true" colSpan="4"/>
             </page>
             <page title="Receivables recovery" cols="4">
             	<field name="mailTransitTime"/>
@@ -88,7 +71,7 @@
     	       		<field name="reimbursementExportFolderPathCFONB"/>
         	    	<field name="lowerThresholdReimbursement"/>
             		<field name="upperThresholdReimbursement"/>
-          	  		<field name="reimbursementAccount" domain="self.company.code = :code"/>
+          	  		<field name="reimbursementAccount" domain="self.company = :company"/>
             		<field name="reimbursementMailModel"/>
             	</group>
             	<group title="Reimbursement rejects" colSpan="4">
@@ -118,24 +101,12 @@
           		</group>
             </page>
             <page title="Acc. Clearance" cols="4">
-             	<field name="clearanceAccountSet" domain="self.reconcileOk = 'true' AND self.company.code = :code" colSpan="4"/>
-             	<field name="profitAccount" domain="self.company.code = :code"/>
+             	<field name="clearanceAccountSet" domain="self.reconcileOk = 'true' AND self.company = :company" colSpan="4"/>
+             	<field name="profitAccount" domain="self.company = :company"/>
              	<field name="standardRateVat"/>
             </page>
             <page title="Paybox" cols="4">
-            	<field name="payboxUrl"/>
-            	<field name="payboxSite"/>
-            	<field name="payboxRang"/>
-            	<field name="payboxDevise"/>
-            	<field name="payboxIdentifiant"/>
-            	<field name="payboxHashSelect"/>
-       			<field name="payboxHmac"/>
-       			<field name="payboxDefaultEmail"/>
-       			<field name="payboxRetour"/>
-            	<field name="payboxRetourUrlEffectue"/>
-            	<field name="payboxRetourUrlRefuse"/>
-            	<field name="payboxRetourUrlAnnule"/>
-       			<field name="payboxPublicKeyPath"/>
+            	<field name="payboxConfig" showTitle="false" widget="NestedEditor" form-view="paybox-config-form" summary-view="true" colSpan="4"/>
             </page>
             <page title="IPO Payments and IPO Cheque" cols="4">
           		<separator title="Configuration" colSpan="4"/>

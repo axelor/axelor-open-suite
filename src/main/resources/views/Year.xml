@@ -20,7 +20,7 @@
         <field name="fromDate" />
         <field name="toDate"  />
         <field name="reportedBalanceDate"/>
-        <field name="company" widget="SuggestBox"/>
+        <field name="company" widget="SuggestBox" form-view="company-lite-form"/>
         <separator colSpan="4"/>
 <!--         <field name="reportedBalanceLineList" colSpan="4"/> -->
         <field name="status"/>

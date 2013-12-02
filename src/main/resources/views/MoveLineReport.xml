@@ -32,7 +32,7 @@
     	<field name="date"/>
     	<field name="typeSelect" selection="move.line.report.type.select" onChange="action-move-line-report-record,action-move-line-report-method-get-journal-type,action-move-line-report-record-default,action-move-line-report-method-get-account"/>
 		<field name="exportTypeSelect"/>
-		<field name="company" widget="SuggestBox" onChange="action-move-line-report-method-get-account" readonlyIf="ref != null"/>
+		<field name="company" widget="SuggestBox" form-view="company-lite-form" onChange="action-move-line-report-method-get-account" readonlyIf="ref != null"/>
 		<break/>
 		<separator colSpan="4"/>
 	    <button name="search" title="Search" onClick="save,action-move-line-report-method-search-move-line,save" colSpan="2" hideIf="typeSelect == 12" />

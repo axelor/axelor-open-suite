@@ -28,7 +28,7 @@
         <field name="invoiceId"/>
         <field name="operationTypeSelect" onChange="action-invoice-method-get-journal,action-invoice-record-partner-change,action-set-partner-domain" readonlyIf="status.code != 'dra'"/>
         <group name="partnerGroup" title="Invoicing informations" colSpan="4" cols="4" canCollapse="true">
-            <field name="company" widget="SuggestBox" onChange="action-invoice-method-get-journal,action-invoice-record-company-change" readonlyIf="status.code != 'dra'"/>
+            <field name="company" widget="SuggestBox" form-view="company-lite-form" onChange="action-invoice-method-get-journal,action-invoice-record-company-change" readonlyIf="status.code != 'dra'"/>
             <field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form" onChange="action-invoice-record-partner-change,action-invoice-record-due-date,action-set-partner-domain" readonlyIf="status.code != 'dra'" />
        		<field name="contactPartner"  form-view="partner-contact-form" grid-view="partner-contact-grid" domain="self.isContact = true"/>
             <field name="paymentMode" widget="SuggestBox"/>

@@ -94,6 +94,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 			try {
 				this.testAccountingBatchBankDetails(batch.getAccountingBatch());
 				reimbursementExportService.testCompanyField(company);
+				cfonbService.testCompanyExportCFONBField(company);
 			} catch (AxelorException e) {
 				TraceBackService.trace(new AxelorException("", e, e.getcategory()), IException.REIMBURSEMENT, batch.getId());
 				incrementAnomaly();

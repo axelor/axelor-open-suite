@@ -57,11 +57,11 @@ import org.joda.time.format.ISODateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
+import com.axelor.apps.account.db.PayboxConfig;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.service.AccountCustomerService;
-import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.config.PayboxConfigService;
 import com.axelor.apps.account.service.debtrecovery.ReminderService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -83,7 +83,7 @@ public class PayboxService {
 	private AccountCustomerService acs;
 	
 	@Inject
-	private AccountConfigService accountConfigService;
+	private PayboxConfigService payboxConfigService;
 	
 	private final String CHARSET = "UTF-8";
 	
@@ -110,26 +110,26 @@ public class PayboxService {
 		this.checkPaidAmount(payerPartner, company, paidAmount);
 		this.checkPaidAmount(paymentVoucher);
 		
-		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+		PayboxConfig payboxConfig = payboxConfigService.getPayboxConfig(company);
 		
 		// Vérification du remplissage du chemin de la clé publique Paybox
-		accountConfigService.getPayboxPublicKeyPath(accountConfig);
+		payboxConfigService.getPayboxPublicKeyPath(payboxConfig);
 		
-		String payboxUrl = accountConfigService.getPayboxUrl(accountConfig);
-		String pbxSite = accountConfigService.getPayboxSite(accountConfig);
-		String pbxRang = accountConfigService.getPayboxRang(accountConfig);
-		String pbxDevise = accountConfigService.getPayboxDevise(accountConfig);
+		String payboxUrl = payboxConfigService.getPayboxUrl(payboxConfig);
+		String pbxSite = payboxConfigService.getPayboxSite(payboxConfig);
+		String pbxRang = payboxConfigService.getPayboxRang(payboxConfig);
+		String pbxDevise = payboxConfigService.getPayboxDevise(payboxConfig);
 		String pbxTotal = paidAmount.setScale(2).toString().replace(".","");
 		String pbxCmd = paymentVoucher.getRef();  // Identifiant de la saisie paiement
 		String pbxPorteur = this.getPartnerEmail(paymentVoucher);
-		String pbxRetour = accountConfigService.getPayboxRetour(accountConfig);
+		String pbxRetour = payboxConfigService.getPayboxRetour(payboxConfig);
 //		String pbxEffectue = this.encodeUrl(this.replaceVariableInUrl(accountConfigService.getPayboxRetourUrlEffectue(accountConfig), paymentVoucher));
-		String pbxEffectue = this.replaceVariableInUrl(accountConfigService.getPayboxRetourUrlEffectue(accountConfig), paymentVoucher);
-		String pbxRefuse = this.replaceVariableInUrl(accountConfigService.getPayboxRetourUrlRefuse(accountConfig), paymentVoucher);
-		String pbxAnnule = this.replaceVariableInUrl(accountConfigService.getPayboxRetourUrlAnnule(accountConfig), paymentVoucher);
-		String pbxIdentifiant = accountConfigService.getPayboxIdentifiant(accountConfig);
-		String pbxHash = accountConfigService.getPayboxHashSelect(accountConfig);
-		String pbxHmac = accountConfigService.getPayboxHmac(accountConfig);
+		String pbxEffectue = this.replaceVariableInUrl(payboxConfigService.getPayboxRetourUrlEffectue(payboxConfig), paymentVoucher);
+		String pbxRefuse = this.replaceVariableInUrl(payboxConfigService.getPayboxRetourUrlRefuse(payboxConfig), paymentVoucher);
+		String pbxAnnule = this.replaceVariableInUrl(payboxConfigService.getPayboxRetourUrlAnnule(payboxConfig), paymentVoucher);
+		String pbxIdentifiant = payboxConfigService.getPayboxIdentifiant(payboxConfig);
+		String pbxHash = payboxConfigService.getPayboxHashSelect(payboxConfig);
+		String pbxHmac = payboxConfigService.getPayboxHmac(payboxConfig);
 		
 		//Date à laquelle l'empreinte HMAC a été calculée (format ISO8601)
 		String pbxTime = ISODateTimeFormat.dateHourMinuteSecond().print(new DateTime());
@@ -249,7 +249,7 @@ public class PayboxService {
 			return paymentVoucher.getEmail();
 		}
 		else  {
-			return accountConfigService.getPayboxDefaultEmail(accountConfigService.getAccountConfig(company));
+			return payboxConfigService.getPayboxDefaultEmail(payboxConfigService.getPayboxConfig(company));
 		}
 	}
 	
@@ -383,7 +383,7 @@ public class PayboxService {
 	 */
 	public boolean checkPaybox(String signature, List<String> varUrl, Company company) throws Exception  {
 
-		boolean result =  this.checkPaybox(signature, varUrl, company.getAccountConfig().getPayboxPublicKeyPath());
+		boolean result =  this.checkPaybox(signature, varUrl, company.getAccountConfig().getPayboxConfig().getPayboxPublicKeyPath());
 		
 		LOG.debug("Resultat de la verification de signature : {}",result);
 		

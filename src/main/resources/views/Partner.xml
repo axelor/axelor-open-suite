@@ -110,7 +110,7 @@
 	            <field name="partnerSeq"/>
 	            <field name="languageSelect" hideIf="isContact || partnerTypeSelect == 1"/>
 	            <group title="Assigned to" colSpan="4" cols="4" canCollapse="true">
-	                <field name="companySet" colSpan="4" widget="TagSelect[create=name]" onChange="action-partner-company-set-validate"/>
+	                <field name="companySet" colSpan="4" widget="TagSelect[create=name]" form-view="company-lite-form" onChange="action-partner-company-set-validate"/>
 	                <break/>
 	                <field name="userInfo"/>
 	                <field name="team"/>
