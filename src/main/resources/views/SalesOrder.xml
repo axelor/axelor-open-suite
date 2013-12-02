@@ -56,7 +56,7 @@
 	                            <button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2" colSpan="1" onClick="save,action-sales-order-record-cancel"/>
 	                            <button name="generateInvoice" title="Generate invoice" showIf="statusSelect == 3 &amp;&amp; (invoicingTypeSelect == 1 || invoicingTypeSelect == 5)" colSpan="2" onClick="save,action-sales-order-method-generate-invoice"/>
 	                        </group>
-	                        <group colSpan="1" cols="2">
+	                        <group colSpan="1" cols="2" colWidths="50%,50%">
 	                            <field name="creationDate" readonly="true"/>
 	                            <field name="validatedByUserInfo" colSpan="1" readonly="true"/>
 	                            <field name="validationDate" colSpan="1" readonly="true"/>

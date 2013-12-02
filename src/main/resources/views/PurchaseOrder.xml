@@ -63,7 +63,7 @@
 	                        <button name="showSupplierInvoice" title="Show invoice" colSpan="1" onClick="action-purchase-order-show-supplier-invoice"/>
 	                        <button name="generateControlInvoice" title="Generate control invoice" showIf="statusSelect == 4" colSpan="1" onClick="save,action-purchase-order-method-generate-control-invoice"/>
 	                    </group>
-	                    <group readonly="true" colSpan="1" cols="2">
+	                    <group readonly="true" colSpan="1" cols="2" colWidths="50%,50%">
 	                        <field name="validatedByUserInfo" colSpan="1"/>
 	                        <field name="validationDate" colSpan="1"/>
 	                    </group>
