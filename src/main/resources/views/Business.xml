@@ -46,7 +46,7 @@
 	        <group title="Description" colSpan="6">
             	<field name="description" showTitle="false" widget="Html[lite=true]"/>
         	</group>
-	        <group name="specificSettings" title="Specific settings" colSpan="6" canCollapse="true">
+	        <group name="specificSettings" title="Specific settings" colSpan="6" canCollapse="true" colWidths="25%,25%,25%,25%">
 	        	<field name="isProject"/>
 	        	<field name="isBusiness"/>
 	            <field name="isModel"/>
