@@ -41,15 +41,15 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.InvoiceLineVat;
-import com.axelor.apps.account.db.VatLine;
+import com.axelor.apps.account.db.InvoiceLineTax;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.service.invoice.generator.TaxGenerator;
 
-public class VatInvoiceLine extends TaxGenerator {
+public class TaxInvoiceLine extends TaxGenerator {
 
-	private static final Logger LOG = LoggerFactory.getLogger(VatInvoiceLine.class);
+	private static final Logger LOG = LoggerFactory.getLogger(TaxInvoiceLine.class);
 	
-	public VatInvoiceLine(Invoice invoice, List<InvoiceLine> invoiceLines) {
+	public TaxInvoiceLine(Invoice invoice, List<InvoiceLine> invoiceLines) {
 		
 		super(invoice, invoiceLines);
 		
@@ -68,10 +68,10 @@ public class VatInvoiceLine extends TaxGenerator {
 	 * @return La liste des lignes de TVA de la facture.
 	 */
 	@Override
-	public List<InvoiceLineVat> creates() {
+	public List<InvoiceLineTax> creates() {
 		
-		List<InvoiceLineVat> vatLines = new ArrayList<InvoiceLineVat>();
-		Map<VatLine, InvoiceLineVat> map = new HashMap<VatLine, InvoiceLineVat>();
+		List<InvoiceLineTax> invoiceLineTaxList = new ArrayList<InvoiceLineTax>();
+		Map<TaxLine, InvoiceLineTax> map = new HashMap<TaxLine, InvoiceLineTax>();
 		
 		if (invoiceLines != null && !invoiceLines.isEmpty()) {
 
@@ -79,59 +79,59 @@ public class VatInvoiceLine extends TaxGenerator {
 			
 			for (InvoiceLine invoiceLine : invoiceLines) {
 
-				VatLine vatLine = invoiceLine.getVatLine();
-				LOG.debug("TVA {}", vatLine);
+				TaxLine taxLine = invoiceLine.getTaxLine();
+				LOG.debug("TVA {}", taxLine);
 				
-				if (map.containsKey(vatLine)) {
+				if (map.containsKey(taxLine)) {
 				
-					InvoiceLineVat invoiceLineVat = map.get(vatLine);
+					InvoiceLineTax invoiceLineTax = map.get(taxLine);
 					
 					// Dans la devise de la facture
-					invoiceLineVat.setExTaxBase(invoiceLineVat.getExTaxBase().add(invoiceLine.getExTaxTotal()));
+					invoiceLineTax.setExTaxBase(invoiceLineTax.getExTaxBase().add(invoiceLine.getExTaxTotal()));
 					
 					// Dans la devise de la comptabilité du tiers
-					invoiceLineVat.setAccountingExTaxBase(invoiceLineVat.getAccountingExTaxBase().add(invoiceLine.getAccountingExTaxTotal()));
+					invoiceLineTax.setAccountingExTaxBase(invoiceLineTax.getAccountingExTaxBase().add(invoiceLine.getAccountingExTaxTotal()));
 					
 				}
 				else {
 					
-					InvoiceLineVat invoiceLineVat = new InvoiceLineVat();
-					invoiceLineVat.setInvoice(invoice);
+					InvoiceLineTax invoiceLineTax = new InvoiceLineTax();
+					invoiceLineTax.setInvoice(invoice);
 					
 					// Dans la devise de la facture
-					invoiceLineVat.setExTaxBase(invoiceLine.getExTaxTotal());
+					invoiceLineTax.setExTaxBase(invoiceLine.getExTaxTotal());
 					
 					// Dans la devise de la comptabilité du tiers
-					invoiceLineVat.setAccountingExTaxBase(invoiceLine.getAccountingExTaxTotal());
+					invoiceLineTax.setAccountingExTaxBase(invoiceLine.getAccountingExTaxTotal());
 					
-					invoiceLineVat.setVatLine(vatLine);
-					map.put(vatLine, invoiceLineVat);
+					invoiceLineTax.setTaxLine(taxLine);
+					map.put(taxLine, invoiceLineTax);
 					
 				}
 			}
 		}
 			
-		for (InvoiceLineVat vatLine : map.values()) {
+		for (InvoiceLineTax invoiceLineTax : map.values()) {
 			
 			// Dans la devise de la facture
-			BigDecimal vatExTaxBase = vatLine.getExTaxBase();
-			BigDecimal vatTotal = computeAmount(vatExTaxBase, vatLine.getVatLine().getValue());
-			vatLine.setVatTotal(vatTotal);
-			vatLine.setInTaxTotal(vatExTaxBase.add(vatTotal));
+			BigDecimal exTaxBase = invoiceLineTax.getExTaxBase();
+			BigDecimal taxTotal = computeAmount(exTaxBase, invoiceLineTax.getTaxLine().getValue());
+			invoiceLineTax.setTaxTotal(taxTotal);
+			invoiceLineTax.setInTaxTotal(exTaxBase.add(taxTotal));
 			
 			// Dans la devise de la comptabilité du tiers
-			BigDecimal accountingVatExTaxBase = vatLine.getAccountingExTaxBase();
-			BigDecimal accountingVatTotal = computeAmount(accountingVatExTaxBase, vatLine.getVatLine().getValue());
-			vatLine.setAccountingVatTotal(accountingVatTotal);
-			vatLine.setAccountingInTaxTotal(accountingVatExTaxBase.add(accountingVatTotal));
+			BigDecimal accountingExTaxBase = invoiceLineTax.getAccountingExTaxBase();
+			BigDecimal accountingTaxTotal = computeAmount(accountingExTaxBase, invoiceLineTax.getTaxLine().getValue());
+			invoiceLineTax.setAccountingTaxTotal(accountingTaxTotal);
+			invoiceLineTax.setAccountingInTaxTotal(accountingExTaxBase.add(accountingTaxTotal));
 			
-			vatLines.add(vatLine);
+			invoiceLineTaxList.add(invoiceLineTax);
 
-			LOG.debug("Ligne de TVA : Total TVA => {}, Total HT => {}", new Object[] {vatLine.getVatTotal(), vatLine.getInTaxTotal()});
+			LOG.debug("Ligne de TVA : Total TVA => {}, Total HT => {}", new Object[] {invoiceLineTax.getTaxTotal(), invoiceLineTax.getInTaxTotal()});
 			
 		}
 
-		return vatLines;
+		return invoiceLineTaxList;
 	}
 
 }

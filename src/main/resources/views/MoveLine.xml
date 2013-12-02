@@ -66,7 +66,7 @@
 		    	<field name="analyticAccountSet" colSpan="4"/>
 		    </page>
 		    <page title="Others" colSpan="4" readonly="true">
-		        <field name="vatLine"/>
+		        <field name="taxLine"/>
 		        <field name="exportedDirectDebitOk"/>
 		    </page>
         </notebook>
@@ -113,7 +113,7 @@
 	    	<field name="analyticAccountSet" colSpan="4"/>
 	    </page>
 	    <page title="Others" colSpan="4" readonly="true">
-	        <field name="vatLine"/>
+	        <field name="taxLine"/>
 	        <field name="exportedDirectDebitOk"/>
 	    </page>
         </notebook>

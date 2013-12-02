@@ -10,7 +10,7 @@
         <field name="price"/>
         <field name="product.unit"/>
         <field name="exTaxTotal"/>
-        <field name="vatLine.vat"/>
+        <field name="taxLine.tax"/>
     </grid>
     
     <form name="invoice-line-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine" cols="4" 
@@ -26,10 +26,10 @@
 		        <field name="product.unit"/>
 		        <field name="exTaxTotal"/>
 		        <field name="task"/>
-		        <group title="V.A.T informations" colSpan="4" cols="4">
-		    		<field name="vatLine"/>
-					<field name="vatLine.vat.name"/>
-					<field name="vatLine.value"/>
+		        <group title="Tax informations" colSpan="4" cols="4">
+		    		<field name="taxLine"/>
+					<field name="taxLine.tax.name"/>
+					<field name="taxLine.value"/>
 				</group>
 				 <group name="discount" title="Discount" colSpan="4" cols="4" canCollapse="true">
 			        <field name="discountTypeSelect" onChange="action-invoice-line-method-compute"/>
@@ -51,7 +51,7 @@
         <field name="price"/>
         <field name="product.unit"/>
         <field name="exTaxTotal"/>
-        <field name="vatLine.vat"/>
+        <field name="taxLine.vat"/>
     </grid>
     
     <form name="tax-invoice-line-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine" cols="4" 
@@ -63,9 +63,9 @@
         <field name="price" onChange="action-invoice-line-method-compute"/>
         <field name="product.unit"/>
         <field name="exTaxTotal"/>
-    	<field name="vatLine"/>
-		<field name="vatLine.vat.name"/>
-		<field name="vatLine.value"/>
+    	<field name="taxLine"/>
+		<field name="taxLine.tax.name"/>
+		<field name="taxLine.value"/>
     </form>
     
     <action-record name="action-invoice-line-record-new" model="com.axelor.apps.supplychain.db.PurchaseOrderLine">

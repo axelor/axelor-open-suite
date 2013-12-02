@@ -49,8 +49,8 @@ import com.axelor.apps.account.db.IAccount;
 import com.axelor.apps.account.db.IInvoice;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.InvoiceLineType;
-import com.axelor.apps.account.db.InvoiceLineVat;
 import com.axelor.apps.account.db.Irrecoverable;
 import com.axelor.apps.account.db.IrrecoverableCustomerLine;
 import com.axelor.apps.account.db.IrrecoverableInvoiceLine;
@@ -62,7 +62,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.Reconcile;
-import com.axelor.apps.account.db.Vat;
+import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
@@ -94,13 +94,13 @@ public class IrrecoverableService {
 	private ReconcileService reconcileService;
 	
 	@Inject
-	private VatService vatService;
+	private TaxService taxService;
 	
 	@Inject
 	private AccountManagementService accountManagementService;
 	
 	@Inject
-	private VatAccountService vatAccountService;
+	private TaxAccountService taxAccountService;
 	
 	@Inject
 	private PaymentScheduleService paymentScheduleService;
@@ -564,9 +564,9 @@ public class IrrecoverableService {
 		
 		Company company = paymentScheduleLine.getPaymentSchedule().getCompany();
 		
-		Vat vat = accountConfigService.getIrrecoverableStandardRateVat(accountConfigService.getAccountConfig(company));
+		Tax tax = accountConfigService.getIrrecoverableStandardRateTax(accountConfigService.getAccountConfig(company));
 
-		ipsll.setIrrecoverableReportLineList(this.createIrrecoverableReportLineList(ipsll, paymentScheduleLine, vat));
+		ipsll.setIrrecoverableReportLineList(this.createIrrecoverableReportLineList(ipsll, paymentScheduleLine, tax));
 
 		LOG.debug("Ligne échéance rejetée : {}", ipsll);
 		
@@ -613,8 +613,8 @@ public class IrrecoverableService {
 			irlList.add(this.createIrrecoverableReportLine(iil, invoiceLine.getInvoiceLineType().getName(), invoiceLine.getExTaxTotal().multiply(prorataRate).setScale(2, RoundingMode.HALF_EVEN), seq));
 			seq++;
 		}
-		for(InvoiceLineVat invoiceLineVat : invoice.getInvoiceLineVatList())  {
-			irlList.add(this.createIrrecoverableReportLine(iil, invoiceLineVat.getVatLine().getVat().getName(), invoiceLineVat.getVatTotal().multiply(prorataRate).setScale(2, RoundingMode.HALF_EVEN), seq));
+		for(InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList())  {
+			irlList.add(this.createIrrecoverableReportLine(iil, invoiceLineTax.getTaxLine().getTax().getName(), invoiceLineTax.getTaxTotal().multiply(prorataRate).setScale(2, RoundingMode.HALF_EVEN), seq));
 			seq++;
 		}
 		// Afin de ne pas modifier les valeurs des lignes de factures, on les recharges depuis la base
@@ -634,24 +634,24 @@ public class IrrecoverableService {
 	 * @return
 	 * @throws AxelorException 
 	 */
-	public List<IrrecoverableReportLine> createIrrecoverableReportLineList(IrrecoverablePaymentScheduleLineLine ipsll, PaymentScheduleLine paymentScheduleLine, Vat vat) throws AxelorException  {
+	public List<IrrecoverableReportLine> createIrrecoverableReportLineList(IrrecoverablePaymentScheduleLineLine ipsll, PaymentScheduleLine paymentScheduleLine, Tax tax) throws AxelorException  {
 		List<IrrecoverableReportLine> irlList = new ArrayList<IrrecoverableReportLine>();
 
-		BigDecimal vatRate = vatService.getVatRate(vat, date);
+		BigDecimal taxRate = taxService.getTaxRate(tax, date);
 		
 		BigDecimal amount = paymentScheduleLine.getInTaxAmount();
 
-		BigDecimal divid = vatRate.add(BigDecimal.ONE);
+		BigDecimal divid = taxRate.add(BigDecimal.ONE);
 		
-		// Montant hors-TVA
+		// Montant hors-Taxe
 		BigDecimal irrecoverableAmount = amount.divide(divid, 6, RoundingMode.HALF_EVEN).setScale(2, RoundingMode.HALF_EVEN);
 		
-		// Montant TVA
-		BigDecimal vatAmount = amount.subtract(irrecoverableAmount);
+		// Montant Tax
+		BigDecimal taxAmount = amount.subtract(irrecoverableAmount);
 		
 		irlList.add(this.createIrrecoverableReportLine(ipsll, "HT", irrecoverableAmount, 1));
 		
-		irlList.add(this.createIrrecoverableReportLine(ipsll, vat.getName(), vatAmount, 2));
+		irlList.add(this.createIrrecoverableReportLine(ipsll, tax.getName(), taxAmount, 2));
 	
 		return irlList;
 	}
@@ -790,10 +790,10 @@ public class IrrecoverableService {
 		}
 		
 		// Debits MoveLines Tva
-		for(InvoiceLineVat invoiceLineVat : invoice.getInvoiceLineVatList())  {
-			amount = (invoiceLineVat.getVatTotal().multiply(prorataRate)).setScale(2, RoundingMode.HALF_EVEN);
+		for(InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList())  {
+			amount = (invoiceLineTax.getTaxTotal().multiply(prorataRate)).setScale(2, RoundingMode.HALF_EVEN);
 			debitMoveLine = moveLineService.createMoveLine(
-					move, payerPartner, vatAccountService.getAccount(invoiceLineVat.getVatLine().getVat(), company), amount, true, false, date, seq, null);
+					move, payerPartner, taxAccountService.getAccount(invoiceLineTax.getTaxLine().getTax(), company), amount, true, false, date, seq, null);
 			move.getMoveLineList().add(debitMoveLine);
 			seq++;
 			debitAmount = debitAmount.subtract(amount);
@@ -851,20 +851,20 @@ public class IrrecoverableService {
 		Reconcile reconcile = reconcileService.createReconcile(moveLine, creditMoveLine, amount);
 		reconcileService.confirmReconcile(reconcile);
 		
-		Vat vat = accountConfig.getIrrecoverableStandardRateVat();
+		Tax tax = accountConfig.getIrrecoverableStandardRateTax();
 		
-		BigDecimal vatRate = vatService.getVatRate(vat, date);
-		Account vatAccount = vatAccountService.getAccount(vat, company);
+		BigDecimal taxRate = taxService.getTaxRate(tax, date);
 		
 		// Debit MoveLine 654. (irrecoverable account)
-		BigDecimal divid = vatRate.add(BigDecimal.ONE);
+		BigDecimal divid = taxRate.add(BigDecimal.ONE);
 		BigDecimal irrecoverableAmount = amount.divide(divid, 6, RoundingMode.HALF_EVEN).setScale(2, RoundingMode.HALF_EVEN);
 		MoveLine creditMoveLine1 = moveLineService.createMoveLine(move, payerPartner, accountConfig.getIrrecoverableAccount(), irrecoverableAmount, true, false, date, 2, null);
 		move.getMoveLineList().add(creditMoveLine1);
 
-		// Debit MoveLine 445 (VAT account)
-		BigDecimal vatAmount = amount.subtract(irrecoverableAmount);
-		MoveLine creditMoveLine2 = moveLineService.createMoveLine(move, payerPartner, vatAccount, vatAmount, true, false, date, 3, null);
+		// Debit MoveLine 445 (Tax account)
+		Account taxAccount = taxAccountService.getAccount(tax, company);
+		BigDecimal taxAmount = amount.subtract(irrecoverableAmount);
+		MoveLine creditMoveLine2 = moveLineService.createMoveLine(move, payerPartner, taxAccount, taxAmount, true, false, date, 3, null);
 		move.getMoveLineList().add(creditMoveLine2);
 		
 		return move;
@@ -899,7 +899,7 @@ public class IrrecoverableService {
 		AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 		accountConfigService.getIrrecoverableAccount(accountConfig);
 		accountConfigService.getIrrecoverableJournal(accountConfig);
-		accountConfigService.getIrrecoverableStandardRateVat(accountConfig);
+		accountConfigService.getIrrecoverableStandardRateTax(accountConfig);
 		
 	}
 	

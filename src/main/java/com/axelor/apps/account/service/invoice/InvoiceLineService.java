@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.VatLine;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.service.AccountManagementService;
 import com.axelor.apps.base.db.IPriceListLine;
 import com.axelor.apps.base.db.PriceList;
@@ -63,9 +63,9 @@ public class InvoiceLineService {
 	private PriceListService priceListService;
 	
 	
-	public VatLine getVatLine(Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase) throws AxelorException  {
+	public TaxLine getTaxLine(Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase) throws AxelorException  {
 		
-		return accountManagementService.getVatLine(invoice.getInvoiceDate(), invoiceLine.getProduct(), invoice.getCompany(), isPurchase);
+		return accountManagementService.getTaxLine(invoice.getInvoiceDate(), invoiceLine.getProduct(), invoice.getCompany(), isPurchase);
 		
 	}
 	

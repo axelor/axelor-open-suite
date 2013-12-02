@@ -2,25 +2,25 @@
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
-    <grid name="vat-account-grid" title="VAT accounting configurations" model="com.axelor.apps.account.db.VatAccount">
+    <grid name="tax-account-grid" title="Tax accounting configurations" model="com.axelor.apps.account.db.TaxAccount">
         <field name="company"/>
         <field name="account"/>
     </grid>
-    <form name="vat-account-form" title="VAT accounting configuration" model="com.axelor.apps.account.db.VatAccount" cols="4"
-    onNew="action-vat-account-record-new">
-        <field name="company" widget="SuggestBox" onChange="action-vat-account-clean-company,action-vat-account-validate"/>
-        <field name="account" domain="self.company = :company" onChange="action-vat-account-clean-company,action-vat-account-validate"/>
+    <form name="tax-account-form" title="Tax accounting configuration" model="com.axelor.apps.account.db.TaxAccount" cols="4"
+    onNew="action-tax-account-record-new">
+        <field name="company" widget="SuggestBox" onChange="action-tax-account-clean-company,action-tax-account-validate"/>
+        <field name="account" domain="self.company = :company" onChange="action-tax-account-clean-company,action-tax-account-validate"/>
     </form>
     
-    <action-record name="action-vat-account-record-new" model="com.axelor.apps.account.db.VatAccount">
+    <action-record name="action-tax-account-record-new" model="com.axelor.apps.account.db.TaxAccount">
     	<field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
     </action-record>
     
-    <action-validate name="action-vat-account-validate">
+    <action-validate name="action-tax-account-validate">
      	<error message="The account is associated to another company. Please make sure to select the right account in the company chart before changing the company." if="account != null &amp;&amp; company != null &amp;&amp; account?.company?.id != company?.id"/>
     </action-validate>
     
-    <action-record name="action-vat-account-clean-company" model="com.axelor.apps.account.db.VatAccount">
+    <action-record name="action-tax-account-clean-company" model="com.axelor.apps.account.db.TaxAccount">
         <field name="company"  expr="eval:null" if="account != null &amp;&amp; company != null &amp;&amp; account?.company?.id != company?.id"/>
     </action-record>
     

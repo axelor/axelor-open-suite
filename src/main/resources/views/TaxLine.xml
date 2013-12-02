@@ -2,14 +2,14 @@
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
-    <grid name="vat-line-grid" title="VAT Rates" model="com.axelor.apps.account.db.VatLine">
-        <field name="vat"/>
+    <grid name="tax-line-grid" title="Tax Rates" model="com.axelor.apps.account.db.TaxLine">
+        <field name="tax"/>
         <field name="startDate"/>
         <field name="endDate"/>
         <field name="value"/>
     </grid>
-    <form name="vat-line-form" title="VAT Rate" model="com.axelor.apps.account.db.VatLine" cols="4">
-        <field name="vat"/>
+    <form name="tax-line-form" title="Tax Rate" model="com.axelor.apps.account.db.TaxLine" cols="4">
+        <field name="tax"/>
         <field name="value"/>
         <field name="startDate"/>
         <field name="endDate"/>

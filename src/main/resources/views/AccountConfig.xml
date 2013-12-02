@@ -52,9 +52,9 @@
 	               	<field name="cashRegisterAddressEmail"/>
    	            <separator title="Shift to irrecoverable" colSpan="6"/>
    	            	<field name="irrecoverableReasonPassage"/>
-   	            	<field name="irrecoverableStandardRateVat"/>
+   	            	<field name="irrecoverableStandardRateTax"/>
    	            <separator title="Tax payment" colSpan="6"/>
-   	            	<field name="payingBackTaxVat"/>
+   	            	<field name="payingBackTax"/>
             </page>
             <page title="CFONB" cols="4">
             	<field name="cfonbConfig" showTitle="false" widget="NestedEditor" form-view="cfonb-config-form" summary-view="true" colSpan="4"/>
@@ -103,7 +103,7 @@
             <page title="Acc. Clearance" cols="4">
              	<field name="clearanceAccountSet" domain="self.reconcileOk = 'true' AND self.company = :company" colSpan="4"/>
              	<field name="profitAccount" domain="self.company = :company"/>
-             	<field name="standardRateVat"/>
+             	<field name="standardRateTax"/>
             </page>
             <page title="Paybox" cols="4">
             	<field name="payboxConfig" showTitle="false" widget="NestedEditor" form-view="paybox-config-form" summary-view="true" colSpan="4"/>

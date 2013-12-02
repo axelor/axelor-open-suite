@@ -3,24 +3,24 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
 	
-    <grid name="vat-grid" title="VAT" model="com.axelor.apps.account.db.Vat">
+    <grid name="tax-grid" title="Tax" model="com.axelor.apps.account.db.Tax">
         <field name="code"/>
         <field name="name"/>
     </grid>
     
-    <form name="vat-form" title="VAT" model="com.axelor.apps.account.db.Vat" cols="4">
+    <form name="tax-form" title="Tax" model="com.axelor.apps.account.db.Tax" cols="4">
         <field name="code"/>
         <field name="name"/>
         <notebook colSpan="4">
-        	<page title="VAT rate list">
-        		<field name="activeVatLine"/>
-		        <field name="vatLineList" colSpan="4">
-		            <grid title="VAT rate lines">
+        	<page title="Tax rate list">
+        		<field name="activeTaxLine"/>
+		        <field name="taxLineList" colSpan="4">
+		            <grid title="Tax rate lines">
 		                <field name="startDate"/>
 		                <field name="endDate"/>
 		                <field name="value"/>
 		            </grid>
-		            <form title="VAT rate" cols="6">
+		            <form title="Tax rate" cols="6">
 		                <field name="value"/>
 		                <field name="startDate"/>
 		                <field name="endDate"/>
@@ -28,7 +28,7 @@
 		        </field>
         	</page>
         	<page title="Accounting configuration">
-				<field name="vatAccountList" colSpan="4"/>
+				<field name="taxAccountList" colSpan="4"/>
         	</page>
         </notebook>
     </form>

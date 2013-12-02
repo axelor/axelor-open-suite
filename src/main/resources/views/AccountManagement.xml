@@ -24,9 +24,9 @@
         	<page name="productPage" title="Product" cols="4">
         		<field name="product"/>
        		</page>
-        	<page name="vatPage" title="VAT" cols="2">
-		     	<field name="purchaseVat"/>
-		     	<field name="saleVat"/>
+        	<page name="taxPage" title="Tax" cols="2">
+		     	<field name="purchaseTax"/>
+		     	<field name="saleTax"/>
         	</page>
         	<page name="paymentModePage" title="Payment mode" cols="2">
      			<field name="paymentMode" colSpan="2"/>
@@ -52,9 +52,9 @@
         	<page name="analyticAccountManagementPage" title="Comptes analytiques" cols="2">
         		<field name="analyticAccountManagementList" colSpan="2"/>
         	</page>
-        	<page name="vatPage" title="TVA" cols="2">
-		     	<field name="purchaseVat"/>
-		     	<field name="saleVat"/>
+        	<page name="taxPage" title="Tax" cols="2">
+		     	<field name="purchaseTax"/>
+		     	<field name="saleTax"/>
         	</page>
         </notebook>
     </form>

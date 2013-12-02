@@ -47,9 +47,8 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.IAccount;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
-import com.axelor.apps.account.db.Vat;
+import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
@@ -58,6 +57,7 @@ import com.axelor.apps.base.db.UserInfo;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserInfoService;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
@@ -80,10 +80,10 @@ public class AccountClearanceService {
 	private ReconcileService rs;
 	
 	@Inject
-	private VatService vs;
+	private TaxService vs;
 	
 	@Inject
-	private VatAccountService vas;
+	private TaxAccountService vas;
 	
 	@Inject
 	private AccountManagementService ams;
@@ -132,17 +132,17 @@ public class AccountClearanceService {
 		Company company = accountClearance.getCompany();
 		AccountConfig accountConfig = company.getAccountConfig();
 		
-		Vat vat = accountConfig.getStandardRateVat();
+		Tax tax = accountConfig.getStandardRateTax();
 		
-		BigDecimal vatRate = vs.getVatRate(vat, todayTime.toLocalDate());
-		Account vatAccount = vas.getAccount(vat, company);
+		BigDecimal taxRate = vs.getTaxRate(tax, todayTime.toLocalDate());
+		Account taxAccount = vas.getAccount(tax, company);
 		Account profitAccount = accountConfig.getProfitAccount();
 		Journal journal = accountConfig.getAccountClearanceJournal();
 		
 		Set<MoveLine> moveLineList = accountClearance.getMoveLineSet();
 		
 		for(MoveLine moveLine : moveLineList)  {
-			Move move = this.createAccountClearanceMove(moveLine, vatRate, vatAccount, profitAccount, company, journal, accountClearance);
+			Move move = this.createAccountClearanceMove(moveLine, taxRate, taxAccount, profitAccount, company, journal, accountClearance);
 			ms.validateMove(move);
 		}
 		
@@ -153,7 +153,7 @@ public class AccountClearanceService {
 	}
 	
 	
-	public Move createAccountClearanceMove(MoveLine moveLine, BigDecimal vatRate, Account vatAccount, Account profitAccount, Company company, Journal journal, AccountClearance accountClearance) throws AxelorException  {
+	public Move createAccountClearanceMove(MoveLine moveLine, BigDecimal taxRate, Account taxAccount, Account profitAccount, Company company, Journal journal, AccountClearance accountClearance) throws AxelorException  {
 		Partner partner = moveLine.getPartner();
 		
 		// Move
@@ -165,14 +165,14 @@ public class AccountClearanceService {
 		move.getMoveLineList().add(debitMoveLine);
 		
 		// Credit MoveLine 77. (profit account)
-		BigDecimal divid = vatRate.add(BigDecimal.ONE);
+		BigDecimal divid = taxRate.add(BigDecimal.ONE);
 		BigDecimal profitAmount = amount.divide(divid, 2, RoundingMode.HALF_EVEN).setScale(2, RoundingMode.HALF_EVEN);
 		MoveLine creditMoveLine1 = mls.createMoveLine(move, partner, profitAccount, profitAmount, false, false, todayTime.toLocalDate(), 2, null);
 		move.getMoveLineList().add(creditMoveLine1);
 
-		// Credit MoveLine 445 (VAT account)
-		BigDecimal vatAmount = amount.subtract(profitAmount);
-		MoveLine creditMoveLine2 = mls.createMoveLine(move, partner, vatAccount, vatAmount, false, false, todayTime.toLocalDate(), 3, null);
+		// Credit MoveLine 445 (Tax account)
+		BigDecimal taxAmount = amount.subtract(profitAmount);
+		MoveLine creditMoveLine2 = mls.createMoveLine(move, partner, taxAccount, taxAmount, false, false, todayTime.toLocalDate(), 3, null);
 		move.getMoveLineList().add(creditMoveLine2);
 		
 		Reconcile reconcile = rs.createReconcile(debitMoveLine, moveLine, amount);
@@ -222,8 +222,8 @@ public class AccountClearanceService {
 					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
 		}
 			
-		if(accountConfig.getStandardRateVat() == null) {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer une TVA taux normal pour la société %s",
+		if(accountConfig.getStandardRateTax() == null) {
+			throw new AxelorException(String.format("%s :\n Veuillez configurer une taxe taux normal pour la société %s",
 					GeneralService.getExceptionAccountingMsg(),company.getName()), IException.CONFIGURATION_ERROR);
 		}
 			

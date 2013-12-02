@@ -102,7 +102,7 @@ public class InvoiceLineController {
 				
 				BigDecimal price = invoiceLineService.getUnitPrice(invoice, invoiceLine, isPurchase);
 				
-				response.setValue("vatLine", invoiceLineService.getVatLine(invoice, invoiceLine, isPurchase));
+				response.setValue("taxLine", invoiceLineService.getTaxLine(invoice, invoiceLine, isPurchase));
 				response.setValue("productName", invoiceLine.getProduct().getName());
 				
 				PriceList priceList = invoice.getPriceList();

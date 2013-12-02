@@ -38,7 +38,7 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.Vat;
+import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.MailModel;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -385,14 +385,14 @@ public class AccountConfigService {
 	
 	/******************************** TVA ********************************************/
 	
-	public Vat getIrrecoverableStandardRateVat(AccountConfig accountConfig) throws AxelorException  {
+	public Tax getIrrecoverableStandardRateTax(AccountConfig accountConfig) throws AxelorException  {
 		
-		if(accountConfig.getIrrecoverableStandardRateVat() == null)   {
-			throw new AxelorException(String.format("%s :\n Veuillez configurer une TVA taux normal pour la société %s",
+		if(accountConfig.getIrrecoverableStandardRateTax() == null)   {
+			throw new AxelorException(String.format("%s :\n Veuillez configurer une taxe taux normal pour la société %s",
 					GeneralService.getExceptionAccountingMsg(),accountConfig.getCompany().getName()), IException.CONFIGURATION_ERROR);
 		}
 		
-		return accountConfig.getIrrecoverableStandardRateVat();
+		return accountConfig.getIrrecoverableStandardRateTax();
 	}
 	
 	/******************************** PAYMENT MODE ********************************************/

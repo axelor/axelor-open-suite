@@ -38,8 +38,8 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
-import com.axelor.apps.account.db.Vat;
-import com.axelor.apps.account.db.VatLine;
+import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductFamily;
@@ -52,11 +52,11 @@ public class AccountManagementService {
 	private static final Logger LOG = LoggerFactory.getLogger(AccountManagementService.class);
 
 	@Inject
-	private VatService vs;
+	private TaxService taxService;
 	
 	public AccountManagementService() {
 		
-		this.vs = new VatService();
+		this.taxService = new TaxService();
 		
 	}	
 	
@@ -171,7 +171,7 @@ public class AccountManagementService {
 	
 	
 	/**
-	 * Obtenir le compte comptable d'une TVA.
+	 * Obtenir le compte comptable d'une taxe.
 	 * 
 	 * @param product
 	 * @param company
@@ -179,12 +179,12 @@ public class AccountManagementService {
 	 * @return
 	 * @throws AxelorException 
 	 */
-	public Vat getProductVat(Product product, Company company, boolean isPurchase) throws AxelorException{
+	public Tax getProductTax(Product product, Company company, boolean isPurchase) throws AxelorException{
 		
 		LOG.debug("Obtention du compte comptable pour le produit {} (société : {}, achat ? {})",
 			new Object[]{product.getCode(), company, isPurchase});
 		
-		return this.getProductVat(
+		return this.getProductTax(
 				this.getAccountManagement(product, company), 
 				isPurchase);
 			
@@ -192,38 +192,38 @@ public class AccountManagementService {
 	
 	
 	/**
-	 * Obtenir le compte comptable d'une TVA.
+	 * Obtenir le compte comptable d'une taxe.
 	 * 
 	 * @param product
 	 * @param company
 	 * @param isPurchase
 	 * @return
 	 */
-	public Vat getProductVat(AccountManagement accountManagement, boolean isPurchase){
+	public Tax getProductTax(AccountManagement accountManagement, boolean isPurchase){
 		
-		if(isPurchase)  { return accountManagement.getPurchaseVat(); }
-		else { return accountManagement.getSaleVat(); }
+		if(isPurchase)  { return accountManagement.getPurchaseTax(); }
+		else { return accountManagement.getSaleTax(); }
 			
 	}
 	
 	
 	
 	/**
-	 * Obtenir la version de TVA d'un produit.
+	 * Obtenir la version de taxe d'un produit.
 	 * 
 	 * @param product
 	 * @param amendment
 	 * @return
 	 * @throws AxelorException 
 	 */
-	public VatLine getVatLine(LocalDate date, Product product, Company company, boolean isPurchase) throws AxelorException {
+	public TaxLine getTaxLine(LocalDate date, Product product, Company company, boolean isPurchase) throws AxelorException {
 
-		VatLine vatLine = vs.getVatLine(this.getProductVat(product, company, isPurchase), date);
-		if(vatLine != null)  {
-			return vatLine;
+		TaxLine taxLine = taxService.getTaxLine(this.getProductTax(product, company, isPurchase), date);
+		if(taxLine != null)  {
+			return taxLine;
 		}
 
-		throw new AxelorException(String.format("Aucune TVA trouvée pour le produit %s", product.getCode()), IException.CONFIGURATION_ERROR);
+		throw new AxelorException(String.format("Aucune taxe trouvée pour le produit %s", product.getCode()), IException.CONFIGURATION_ERROR);
 		
 	}
 	

@@ -34,25 +34,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.Vat;
-import com.axelor.apps.account.db.VatAccount;
+import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.TaxAccount;
 import com.axelor.apps.base.db.Company;
-import com.google.inject.Inject;
 
-public class VatAccountService {
+public class TaxAccountService {
 	
-	private static final Logger LOG = LoggerFactory.getLogger(VatAccountService.class);
+	private static final Logger LOG = LoggerFactory.getLogger(TaxAccountService.class);
 
-	@Inject
-	private VatService vs;
 	
-	
-	public Account getAccount(Vat vat, Company company)  {
+	public Account getAccount(Tax tax, Company company)  {
 		
-		VatAccount vatAccount =  this.getVatAccount(vat, company);
+		TaxAccount taxAccount =  this.getTaxAccount(tax, company);
 		
-		if(vatAccount != null)  {
-			return vatAccount.getAccount();
+		if(taxAccount != null)  {
+			return taxAccount.getAccount();
 		}
 		
 		return null;
@@ -60,15 +56,15 @@ public class VatAccountService {
 	}
 	
 	
-	public VatAccount getVatAccount(Vat vat, Company company)  {
+	public TaxAccount getTaxAccount(Tax tax, Company company)  {
 		
-		if(vat.getVatAccountList()!= null)  {
+		if(tax.getTaxAccountList() != null)  {
 			
 			
-			for(VatAccount vatAccount : vat.getVatAccountList())  {
+			for(TaxAccount taxAccount : tax.getTaxAccountList())  {
 				
-				if(vatAccount.getCompany().equals(company))  {
-					return vatAccount;
+				if(taxAccount.getCompany().equals(company))  {
+					return taxAccount;
 				}
 			}
 		}

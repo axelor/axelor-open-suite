@@ -43,12 +43,12 @@ import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.IInvoice;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.InvoiceLineVat;
+import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.invoice.generator.tax.VatInvoiceLine;
+import com.axelor.apps.account.service.invoice.generator.tax.TaxInvoiceLine;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -277,7 +277,7 @@ public abstract class InvoiceGenerator {
 		invoice.getInvoiceLineList().addAll(invoiceLines);
 		
 		// create Tva lines
-		invoice.getInvoiceLineVatList().addAll((new VatInvoiceLine(invoice, invoiceLines)).creates());
+		invoice.getInvoiceLineTaxList().addAll((new TaxInvoiceLine(invoice, invoiceLines)).creates());
 		
 		computeInvoice(invoice);
 		
@@ -291,8 +291,8 @@ public abstract class InvoiceGenerator {
 	 */
 	protected void initCollections(Invoice invoice){
 
-		initInvoiceLineVats(invoice);
-		initInvoiceLines(invoice);
+		initInvoiceLineTaxList(invoice);
+		initInvoiceLineList(invoice);
 		
 	}
 	
@@ -301,7 +301,7 @@ public abstract class InvoiceGenerator {
 	 * 
 	 * @param invoice
 	 */
-	protected void initInvoiceLines(Invoice invoice) {
+	protected void initInvoiceLineList(Invoice invoice) {
 		
 		if (invoice.getInvoiceLineList() == null) { invoice.setInvoiceLineList(new ArrayList<InvoiceLine>()); }
 		else  {  invoice.getInvoiceLineList().clear();  }
@@ -314,10 +314,10 @@ public abstract class InvoiceGenerator {
 	 * 
 	 * @param invoice
 	 */
-	protected void initInvoiceLineVats(Invoice invoice) {
+	protected void initInvoiceLineTaxList(Invoice invoice) {
 		
-		if (invoice.getInvoiceLineVatList() == null) { invoice.setInvoiceLineVatList(new ArrayList<InvoiceLineVat>()); }
-		else { invoice.getInvoiceLineVatList().clear(); }
+		if (invoice.getInvoiceLineTaxList() == null) { invoice.setInvoiceLineTaxList(new ArrayList<InvoiceLineTax>()); }
+		else { invoice.getInvoiceLineTaxList().clear(); }
 		
 	}
 
@@ -328,37 +328,36 @@ public abstract class InvoiceGenerator {
 	 * </p>
 	 * 
 	 * @param invoice
-	 * @param vatLines
 	 * @throws AxelorException 
 	 */
 	public void computeInvoice(Invoice invoice) throws AxelorException {
 		
 		// Dans la devise de la comptabilité du tiers
 		invoice.setExTaxTotal( BigDecimal.ZERO );
-		invoice.setVatTotal( BigDecimal.ZERO );
+		invoice.setTaxTotal( BigDecimal.ZERO );
 		invoice.setInTaxTotal( BigDecimal.ZERO );
 		
 		// Dans la devise de la facture
 		invoice.setInvoiceExTaxTotal(BigDecimal.ZERO);
-		invoice.setInvoiceVatTotal(BigDecimal.ZERO);
+		invoice.setInvoiceTaxTotal(BigDecimal.ZERO);
 		invoice.setInvoiceInTaxTotal(BigDecimal.ZERO);
 		
-		for (InvoiceLineVat vatLine : invoice.getInvoiceLineVatList()) {
+		for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
 			
 			// Dans la devise de la comptabilité du tiers
-			invoice.setExTaxTotal(invoice.getExTaxTotal().add( vatLine.getAccountingExTaxBase() ));
-			invoice.setVatTotal(invoice.getVatTotal().add( vatLine.getAccountingVatTotal() ));
-			invoice.setInTaxTotal(invoice.getInTaxTotal().add( vatLine.getAccountingInTaxTotal() ));
+			invoice.setExTaxTotal(invoice.getExTaxTotal().add( invoiceLineTax.getAccountingExTaxBase() ));
+			invoice.setTaxTotal(invoice.getTaxTotal().add( invoiceLineTax.getAccountingTaxTotal() ));
+			invoice.setInTaxTotal(invoice.getInTaxTotal().add( invoiceLineTax.getAccountingInTaxTotal() ));
 			
 			// Dans la devise de la facture
-			invoice.setInvoiceExTaxTotal(invoice.getInvoiceExTaxTotal().add( vatLine.getExTaxBase() ));
-			invoice.setInvoiceVatTotal(invoice.getInvoiceVatTotal().add( vatLine.getVatTotal() ));
-			invoice.setInvoiceInTaxTotal(invoice.getInvoiceInTaxTotal().add( vatLine.getInTaxTotal() ));
+			invoice.setInvoiceExTaxTotal(invoice.getInvoiceExTaxTotal().add( invoiceLineTax.getExTaxBase() ));
+			invoice.setInvoiceTaxTotal(invoice.getInvoiceTaxTotal().add( invoiceLineTax.getTaxTotal() ));
+			invoice.setInvoiceInTaxTotal(invoice.getInvoiceInTaxTotal().add( invoiceLineTax.getInTaxTotal() ));
 			
 		}
 		
 		LOG.debug("Montant de la facture: HT = {}, TVA = {}, TTC = {}",
-			new Object[] { invoice.getExTaxTotal(), invoice.getVatTotal(), invoice.getInTaxTotal() });
+			new Object[] { invoice.getExTaxTotal(), invoice.getTaxTotal(), invoice.getInTaxTotal() });
 		
 	}
 

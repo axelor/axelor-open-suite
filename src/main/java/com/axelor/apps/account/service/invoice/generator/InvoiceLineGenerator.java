@@ -42,7 +42,7 @@ import com.axelor.apps.account.db.IInvoice;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceLineType;
-import com.axelor.apps.account.db.VatLine;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.service.AccountManagementService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.db.Alarm;
@@ -81,7 +81,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 	protected String description; 
 	protected BigDecimal qty;
 	protected Unit unit; 
-	protected VatLine vatLine; 
+	protected TaxLine taxLine; 
 	protected Task task; 
 	protected LocalDate today;
 	protected boolean isTaxInvoice; 
@@ -114,7 +114,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 	
 
 	protected InvoiceLineGenerator( Invoice invoice, Product product, String productName, BigDecimal price, String description, BigDecimal qty,
-			Unit unit, VatLine vatLine, Task task, InvoiceLineType invoiceLineType, ProductVariant productVariant, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal, boolean isTaxInvoice) {
+			Unit unit, TaxLine taxLine, Task task, InvoiceLineType invoiceLineType, ProductVariant productVariant, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal, boolean isTaxInvoice) {
 
         this.invoice = invoice;
         this.product = product;
@@ -123,7 +123,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
         this.description = description;
         this.qty = qty;
         this.unit = unit;
-        this.vatLine = vatLine;
+        this.taxLine = taxLine;
         this.task = task;
         this.invoiceLineType = invoiceLineType;
         this.productVariant = productVariant;
@@ -225,14 +225,14 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 		
 		invoiceLine.setPricingListUnit(unit);
 		
-		if(vatLine == null)  {
+		if(taxLine == null)  {
 			boolean isPurchase = false;
 			if(invoice.getOperationTypeSelect() == IInvoice.SUPPLIER_PURCHASE || invoice.getOperationTypeSelect() == IInvoice.SUPPLIER_REFUND)  {
 				isPurchase = true;
 			}
-			vatLine =  new AccountManagementService().getVatLine(invoice.getInvoiceDate(), product, invoice.getCompany(), isPurchase);
+			taxLine =  new AccountManagementService().getTaxLine(invoice.getInvoiceDate(), product, invoice.getCompany(), isPurchase);
 		}
-		invoiceLine.setVatLine(vatLine);
+		invoiceLine.setTaxLine(taxLine);
 		
 		invoiceLine.setTask(task);
 		invoiceLine.setInvoiceLineType(invoiceLineType);
