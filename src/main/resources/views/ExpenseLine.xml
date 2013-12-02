@@ -14,7 +14,7 @@
 		<field name="unit" />
 		<field name="price" onChange="action-expense-line-method-compute"/>
 		<field name="inTaxTotal" />
-		<field name="vatLine"/>
+		<field name="taxLine"/>
 		<field name="file" />
 		<field name="fileReceived" onChange="action-expense-line-record-validation-date"/>
 		<field name="validationDate" />
@@ -32,7 +32,7 @@
 		<field name="unit" />
 		<field name="price" />
 		<field name="inTaxTotal" />
-		<field name="vatLine"/>
+		<field name="taxLine"/>
 		<field name="file" />
 		<field name="fileReceived" />
 		<field name="validationDate" />
@@ -57,7 +57,7 @@
 	        <field name="unit"/>
 	        <field name="price" onChange="action-expense-line-method-compute"/>
 	        <field name="inTaxTotal"/>
-	        <field name="vatLine"/>
+	        <field name="taxLine"/>
 	    </group>
 	    <break/>
 	    <group title="Proofs" colSpan="4">

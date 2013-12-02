@@ -80,8 +80,8 @@ public class ExpenseLineService {
 		BigDecimal unitPrice = currencyService.getAmountCurrencyConverted(
 			product.getPurchaseCurrency(), expense.getCurrency(), product.getPurchasePrice(), expenseLine.getDate());  
 		
-		if(expenseLine.getVatLine() != null)  {
-			unitPrice = unitPrice.add(expenseLine.getVatLine().getValue().multiply(unitPrice));
+		if(expenseLine.getTaxLine() != null)  {
+			unitPrice = unitPrice.add(expenseLine.getTaxLine().getValue().multiply(unitPrice));
 		}
 		
 		return unitPrice;
