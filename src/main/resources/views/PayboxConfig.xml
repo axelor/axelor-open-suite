@@ -9,26 +9,26 @@
         <field name="address"/>
     </grid>
     
-    <form name="paybox-config-form" title="Paybox configuration" model="com.axelor.apps.account.db.PayboxConfig" cols="4">
+    <form name="paybox-config-form" title="Paybox configuration" model="com.axelor.apps.account.db.PayboxConfig" cols="4" colWidths="25%,25%,25%,25%">
 	    
         <field name="name"/>
         <field name="code"/>
         
         <separator colSpan="4"/>
         
-        <field name="payboxUrl"/>
+       	<field name="payboxUrl" colSpan="4"/>
        	<field name="payboxSite"/>
        	<field name="payboxRang"/>
        	<field name="payboxDevise"/>
        	<field name="payboxIdentifiant"/>
        	<field name="payboxHashSelect"/>
-		<field name="payboxHmac"/>
-		<field name="payboxDefaultEmail"/>
-		<field name="payboxRetour"/>
-       	<field name="payboxRetourUrlEffectue"/>
-       	<field name="payboxRetourUrlRefuse"/>
-       	<field name="payboxRetourUrlAnnule"/>
-		<field name="payboxPublicKeyPath"/>
+       	<field name="payboxDefaultEmail"/>
+		<field name="payboxRetour" colSpan="4"/>
+		<field name="payboxHmac" colSpan="4"/>
+       	<field name="payboxRetourUrlEffectue" colSpan="4"/>
+       	<field name="payboxRetourUrlRefuse" colSpan="4"/>
+       	<field name="payboxRetourUrlAnnule" colSpan="4"/>
+		<field name="payboxPublicKeyPath" colSpan="4"/>
         
     </form>
 	

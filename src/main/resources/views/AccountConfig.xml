@@ -18,8 +18,8 @@
         <field name="code"/>
         <field name="company"/>
         <notebook colSpan="4">
-            <page title="Accounting" cols="4" >
-            	<separator title="Journals" colSpan="6"/>
+            <page title="Accounting" cols="4" colWidths="20%,30%,20%,30%">
+            	<separator title="Journals" colSpan="4"/>
     				<field name="saleJournalType"/>
     				<field name="purchaseJournalType"/>
     				<field name="cashJournalType"/>
@@ -36,24 +36,24 @@
 	                <field name="irrecoverableJournal" domain="self.inactiveOk != true"/>
 	                <field name="miscOperationJournal" domain="self.inactiveOk != true"/>
 	                <break/>
-	            <separator title="Accounts" colSpan="6"/>
+	            <separator title="Accounts" colSpan="4"/>
 	                <field name="customerAccount" domain="self.company = :company"/>
 	                <field name="supplierAccount" domain="self.company = :company"/>
   	           	 	<field name="doubtfulCustomerAccount" domain="self.company = :company"/>
 	                <field name="irrecoverableAccount" domain="self.company = :company"/>
 	     			<break/>
-                <separator title="Payment differences" colSpan="6"/>
+                <separator title="Payment differences" colSpan="4"/>
 	                <field name="thresholdDistanceFromRegulation"/>
 	                <field name="cashPositionVariationAccount" domain="self.company = :company"/>
-	            <separator title="Exports" colSpan="6"/>
+	            <separator title="Exports" colSpan="4"/>
 	            	<field name="exportPath"/>
-	            <separator title="Cashiers" colSpan="6"/>
+	            <separator title="Cashiers" colSpan="4"/>
 	               	<field name="cashRegisterMailModel"/>
 	               	<field name="cashRegisterAddressEmail"/>
-   	            <separator title="Shift to irrecoverable" colSpan="6"/>
+   	            <separator title="Shift to irrecoverable" colSpan="4"/>
    	            	<field name="irrecoverableReasonPassage"/>
    	            	<field name="irrecoverableStandardRateTax"/>
-   	            <separator title="Tax payment" colSpan="6"/>
+   	            <separator title="Tax payment" colSpan="4"/>
    	            	<field name="payingBackTax"/>
             </page>
             <page title="CFONB" cols="4">
@@ -64,43 +64,39 @@
             	<break/>
                 <field name="reminderConfigLineList" showTitle="false" colSpan="4"/>
             </page>
-            <page title="Reimbursement" cols="4">
-            	<separator title="Configuration" colSpan="6"/>
-            	<group title="Reimbursements" colSpan="4" >
-	            	<field name="reimbursementExportFolderPath"/>
-    	       		<field name="reimbursementExportFolderPathCFONB"/>
-        	    	<field name="lowerThresholdReimbursement"/>
-            		<field name="upperThresholdReimbursement"/>
-          	  		<field name="reimbursementAccount" domain="self.company = :company"/>
-            		<field name="reimbursementMailModel"/>
-            	</group>
-            	<group title="Reimbursement rejects" colSpan="4">
-            		<field name="reimbursementImportFolderPathCFONB"/>
-            		<field name="tempReimbImportFolderPathCFONB"/>
-           		</group>
+            <page title="Reimbursement" cols="4" colWidths="25%,25%,25%,25%">
+            	<separator title="Reimbursements" colSpan="4"/>
+            	<field name="reimbursementExportFolderPath" colSpan="4"/>
+   	       		<field name="reimbursementExportFolderPathCFONB" colSpan="4"/>
+       	    	<field name="lowerThresholdReimbursement"/>
+           		<field name="upperThresholdReimbursement"/>
+       	  		<field name="reimbursementAccount" domain="self.company = :company"/>
+           		<field name="reimbursementMailModel"/>
+           		
+            	<separator title="Reimbursement rejects" colSpan="4"/>
+           		<field name="reimbursementImportFolderPathCFONB" colSpan="4"/>
+           		<field name="tempReimbImportFolderPathCFONB" colSpan="4"/>
             </page>
-            <page title="Doubtful receivables" cols="4">
+            <page title="Doubtful receivables" cols="4" colWidths="20%,30%,20%,30%">
            	 	<field name="sixMonthDebtMonthNumber"/>
            	 	<field name="threeMonthDebtMontsNumber"/>
            	 	<field name="sixMonthDebtPassReason"/>
            	 	<field name="threeMonthDebtPassReason"/>
             </page>
-            <page title="Direct debit" cols="4">
-          		<separator title="Configuration" colSpan="4"/>
-          		<group title="Direct debits" colSpan="4">
-          			<field name="paymentScheduleExportFolderPathCFONB"/>
-          			<field name="directDebitPaymentMode"/>
-          		</group>
-          		<group title="Direct debit rejects" colSpan="4">
-          			<field name="rejectionPaymentMode"/>
-	                <field name="paymentScheduleRejectNumLimit"/>
-	                <field name="invoiceRejectNumLimit"/>
-                	<field name="rejectImportPathAndFileName"/>
-                	<field name="tempImportPathAndFileName"/>
-                	<field name="rejectPaymentScheduleMailModel"/>
-          		</group>
+            <page title="Direct debit" cols="4" colWidths="25%,25%,25%,25%">
+          		<separator title="Direct debits" colSpan="4"/>
+       			<field name="paymentScheduleExportFolderPathCFONB"/>
+       			<field name="directDebitPaymentMode"/>
+       			
+          		<separator title="Direct debit rejects" colSpan="4"/>
+       			<field name="rejectionPaymentMode"/>
+                <field name="paymentScheduleRejectNumLimit"/>
+                <field name="invoiceRejectNumLimit"/>
+                <field name="rejectPaymentScheduleMailModel"/>
+               	<field name="rejectImportPathAndFileName" colSpan="4"/>
+               	<field name="tempImportPathAndFileName" colSpan="4"/>
             </page>
-            <page title="Acc. Clearance" cols="4">
+            <page title="Acc. Clearance" cols="4" colWidths="20%,30%,20%,30%">
              	<field name="clearanceAccountSet" domain="self.reconcileOk = 'true' AND self.company = :company" colSpan="4"/>
              	<field name="profitAccount" domain="self.company = :company"/>
              	<field name="standardRateTax"/>
@@ -108,22 +104,16 @@
             <page title="Paybox" cols="4">
             	<field name="payboxConfig" showTitle="false" widget="NestedEditor" form-view="paybox-config-form" summary-view="true" colSpan="4"/>
             </page>
-            <page title="IPO Payments and IPO Cheque" cols="4">
+            <page title="IPO Payments and IPO Cheque" cols="4" colWidths="20%,30%,20%,30%">
           		<separator title="Configuration" colSpan="4"/>
-          		<group title="Payments by IPO and IPO Cheque" colSpan="4">
-          			<field name="interbankPaymentOrderImportPathCFONB"/>
-          			<field name="tempInterbankPaymentOrderImportPathCFONB"/>
+          		<group title="Payments by IPO and IPO Cheque" colSpan="4" colWidths="20%,30%,20%,30%">
+          			<field name="interbankPaymentOrderImportPathCFONB" colSpan="4"/>
+          			<field name="tempInterbankPaymentOrderImportPathCFONB" colSpan="4"/>
  				</group>
-          		<group title="Payments rejects by IPO and IPO Cheque" colSpan="4">	
-          			<field name="interbankPaymentOrderRejectImportPathCFONB"/>
-          			<field name="tempInterbankPaymentOrderRejectImportPathCFONB"/>
+          		<group title="Payments rejects by IPO and IPO Cheque" colSpan="4" colWidths="20%,30%,20%,30%">	
+          			<field name="interbankPaymentOrderRejectImportPathCFONB" colSpan="4"/>
+          			<field name="tempInterbankPaymentOrderRejectImportPathCFONB" colSpan="4"/>
        			</group>
-            </page>
-            <page title="Mails / Emails" cols="4">
-            	<field name="generatedMailFilePath" />
-            	<field name="generatedEmailFilePath" />
-            	<field name="generatedMailFileName" />
-            	<field name="generatedEmailFileName" />
             </page>
             <page title="Invoicing" cols="4">
             	<field name="showDetailsInInvoice"/>
