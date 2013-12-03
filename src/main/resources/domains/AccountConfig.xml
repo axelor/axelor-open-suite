@@ -98,12 +98,6 @@
   	<string name="interbankPaymentOrderRejectImportPathCFONB" title="Filepath to import IPO, and IPO and Cheque payments rejects"  help="example : /home/axelor/reject.dat"/>
     <string name="tempInterbankPaymentOrderRejectImportPathCFONB" title="Temporary filepath to import IPO, and IPO and Cheque payments rejects" help="example : /home/axelor/reject.dat"/>
   
-  	<!--  Onglet Email/Courrier -->
-    <string name="generatedMailFilePath" title="Filepath to export generated mails" help="example : /home/axelor/mail/"/>
-    <string name="generatedEmailFilePath" title="Filepath to export generated emails" help="example : /home/axelor/email/"/>
-    <string name="generatedMailFileName" title="Generated mail files name prefix" help="exemple : letter_"/>
-    <string name="generatedEmailFileName" title="Generated email files name prefix" help="exemple : email_"/>
-    
     <!-- Onglet Facturation -->
     <boolean name="showDetailsInInvoice" title="Show details in invoice"/>
    

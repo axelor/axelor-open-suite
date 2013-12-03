@@ -13,7 +13,7 @@
 <!--         <field name="name"/> -->
 <!--     </tree> -->
     
-    <form name="company-form" title="Company" model="com.axelor.apps.base.db.Company" cols="4">
+    <form name="company-form" title="Company" model="com.axelor.apps.base.db.Company" cols="4" colWidths="20%,30%,20%,30%">
 	    
         <field name="administration"/>
         <field name="name"/>
@@ -34,7 +34,7 @@
              	<field name="defaultBankDetails" colSpan="2"/>
                 <field name="bankDetailsSet" grid-view="bank-details-grid" form-view="bank-details-form" colSpan="4" showTitle="false"/>
             </page>
-            <page title="Mails / Emails" cols="4">
+            <page title="Mails / Emails" cols="4" colWidths="20%,30%,20%,30%">
             	<field name="generatedMailFilePath" />
             	<field name="generatedEmailFilePath" />
             	<field name="generatedMailFileName" />
@@ -53,7 +53,7 @@
     </form>
     
     
-    <form name="company-lite-form" title="Company" model="com.axelor.apps.base.db.Company" cols="4">
+    <form name="company-lite-form" title="Company" model="com.axelor.apps.base.db.Company" cols="4"  colWidths="20%,30%,20%,30%">
 	    
 	    <group readonly="true">
 	    	<field name="administration" />
@@ -64,8 +64,8 @@
 	        <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
 	        <field name="address" colSpan="4"/>
 	        <field name="currency"/>
-	        <group title="Notes">
-	        	<field name="notes" showTitle="false"/>
+	        <group title="Notes" colSpan="4">
+	        	<field name="notes" showTitle="false" colSpan="4"/>
 	        </group>
 	    </group>
         
