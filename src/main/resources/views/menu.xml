@@ -440,8 +440,8 @@
 
 	<action-view name="admin.root.base.company" title="Companies"
 		model="com.axelor.apps.base.db.Company" icon="img/16px/organisationSmall_16px.png">
-		<view type="grid" name="company-form"/>
-		<view type="form" name="company-grid"/>
+		<view type="grid" name="company-grid"/>
+		<view type="form" name="company-form"/>
 	</action-view>
 
 	<menuitem name="admin-root-templating" parent="admin-root"
