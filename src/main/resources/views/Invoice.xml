@@ -132,13 +132,13 @@
             <group title="Totals" colSpan="2" cols="2" colWidths="50%,50%">
 <!-- 				<group name="accountingTotalGroup" title="Totals in accounting currency" colSpan="2" cols="2"> -->
 	                <field name="exTaxTotal"/>
-	                <field name="vatTotal"/>
+	                <field name="taxTotal"/>
 	                <field name="inTaxTotal"/>
 	                <field name="inTaxTotalRemaining"/>
 <!-- 	            </group> -->
 <!-- 	            <group name="invoiceTotalGroup" title="Totals in invoice currency" colSpan="2" cols="2"> -->
 <!-- 	                <field name="invoiceExTaxTotal"/> -->
-<!-- 	                <field name="invoiceVatTotal"/> -->
+<!-- 	                <field name="invoiceTaxTotal"/> -->
 <!-- 	                <field name="invoiceInTaxTotal"/> -->
 <!-- 	                <field name="invoiceAmountPaid"/> -->
 <!-- 	            </group> -->
@@ -182,7 +182,7 @@
         <notebook colSpan="4" readonly="true">
             <page title="Invoice content" cols="4">
 	    		<field name="invoiceLineList" grid-view="invoice-line-grid" form-view="invoice-line-form" colSpan="4"/>
-                <field name="invoiceLineVatList" grid-view="invoice-line-vat-grid" form-view="invoice-line-vat-form" colSpan="4" />
+                <field name="invoiceLineTaxList" grid-view="invoice-line-tax-grid" form-view="invoice-line-tax-form" colSpan="4" />
             </page>
         </notebook>
         <group colSpan="4" cols="4" readonly="true">
@@ -191,7 +191,7 @@
             </group>
             <group title="Totals" colSpan="2" cols="2">
 	                <field name="exTaxTotal"/>
-	                <field name="vatTotal"/>
+	                <field name="taxTotal"/>
 	                <field name="inTaxTotal"/>
 	                <field name="inTaxTotalRemaining"/>
             </group>
