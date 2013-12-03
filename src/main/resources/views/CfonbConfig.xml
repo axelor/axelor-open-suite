@@ -8,7 +8,7 @@
         <field name="code"/>
     </grid>
     
-    <form name="cfonb-config-form" title="Cfonb configuration" model="com.axelor.apps.account.db.CfonbConfig" cols="4">
+    <form name="cfonb-config-form" title="Cfonb configuration" model="com.axelor.apps.account.db.CfonbConfig" cols="4" colWidths="25%,25%,25%,25%">
 	    
         <field name="name"/>
         <field name="code"/>
