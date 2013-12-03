@@ -26,7 +26,7 @@
 		<field name="userInfo"/>
    	 	<field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="2"/>
         <field name="date" />
-        <field name="company"/>
+        <field name="company" form-view="company-lite-form" widget="SuggestBox"/>
         <field name="totalAmount" title="Total (TTC)"/>
        	<field name="currency" />
        	<field name="project" />

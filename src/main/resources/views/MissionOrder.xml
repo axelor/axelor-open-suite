@@ -19,7 +19,7 @@
         	<field name="reference"/>
         	<field name="date"/>
         	<break/>
-        	<field name="company"/>
+        	<field name="company" form-view="company-lite-form" widget="SuggestBox"/>
         	<field name="project" domain="self.isBusiness = true" grid-view="business-project-grid" form-view="business-project-form"/>
        		<field name="employee"/>
         	<field name="qualificationKeyword" colSpan="2" domain="self.typeSelect = '3'" form-view="keyword-profession-form" grid-view="keyword-profession-grid"/>

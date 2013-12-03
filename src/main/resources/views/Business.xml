@@ -22,7 +22,7 @@
     	<group showTitle="false" cols="4">
         	<field name="responsibleUserInfo"/>
         	<field name="defaultTask" hideIf="!isTimeSheetImputable"/>
-        	<field name="company" widget="SuggestBox" readonlyIf="projectStatusSelect >= 3 || businessStatusSelect >= 2"/>
+        	<field name="company" widget="SuggestBox" form-view="company-lite-form" readonlyIf="projectStatusSelect >= 3 || businessStatusSelect >= 2"/>
 	        <field name="clientPartner"/>
 	        <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
  		</group>
@@ -46,7 +46,7 @@
 	        <group title="Description" colSpan="6">
             	<field name="description" showTitle="false" widget="Html[lite=true]"/>
         	</group>
-	        <group name="specificSettings" title="Specific settings" colSpan="6" canCollapse="true">
+	        <group name="specificSettings" title="Specific settings" colSpan="6" canCollapse="true" colWidths="25%,25%,25%,25%">
 	        	<field name="isProject"/>
 	        	<field name="isBusiness"/>
 	            <field name="isModel"/>
@@ -70,7 +70,7 @@
 	        	<field name="realEstimatedMethodSelect"/>
 	        	<field name="company.currency"/>
 	        	<field name="exportTypeSelect"/>
-                <button name="printProject" colSpan="2" title="View forecast report" onClick="action-print-project-report" icon="img/icons/print.png"/>
+                <button name="printProject" colSpan="2" title="View forecast report" onClick="action-print-project-report" icon="img/16px/print_16px.png"/>
 	            <group title="Initial estimated" colSpan="4" cols="6" hideIf="realEstimatedMethodSelect == 1">
 	                <field name="initialEstimatedTurnover"/>
 	                <field name="initialEstimatedCost"/>

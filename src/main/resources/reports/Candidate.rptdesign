@@ -3747,7 +3747,7 @@ where Candidate.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'candidatePersonalInfo'</value>
+                                    <value type="javascript">'Candidate.personalInfo'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -3787,7 +3787,7 @@ where Candidate.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'candidateDob'</value>
+                                    <value type="javascript">'Candidate.dob'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -3831,7 +3831,7 @@ where Candidate.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'candidateCitizenshipCountry'</value>
+                                    <value type="javascript">'Candidate.citizenshipCountry'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -3875,7 +3875,7 @@ where Candidate.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'candidateMaritalStatusSelect'</value>
+                                    <value type="javascript">'Candidate.maritalStatusSelect'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -3951,7 +3951,7 @@ where Candidate.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'candidateMobilityChoiceSet'</value>
+                                    <value type="javascript">'Candidate.mobilityChoiceSet'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -4232,7 +4232,7 @@ where Candidate.id = ?]]></xml-property>
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'candidatePositionList'</value>
+                                        <value type="javascript">'Candidate.positionList'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -4276,7 +4276,7 @@ where Candidate.id = ?]]></xml-property>
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'candidateStartdate'</value>
+                                        <value type="javascript">'Candidate.startdate'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -4317,7 +4317,7 @@ where Candidate.id = ?]]></xml-property>
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'candidateEnddate'</value>
+                                        <value type="javascript">'Candidate.enddate'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -4358,7 +4358,7 @@ where Candidate.id = ?]]></xml-property>
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'candidateEmployer'</value>
+                                        <value type="javascript">'Candidate.employer'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -4387,7 +4387,7 @@ where Candidate.id = ?]]></xml-property>
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'candidatePositionName'</value>
+                                        <value type="javascript">'Candidate.positionName'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -4591,7 +4591,7 @@ where Candidate.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'candidateEducationTraining'</value>
+                                    <value type="javascript">'Candidate.educationTraining'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -4633,7 +4633,7 @@ where Candidate.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'candidateSignificantDegree'</value>
+                                    <value type="javascript">'Candidate.significantDegree'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -4737,7 +4737,7 @@ where Candidate.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'candidateTrainingLineList'</value>
+                                    <value type="javascript">'Candidate.trainingLineList'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -4843,7 +4843,7 @@ where Candidate.id = ?]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'candidateDegree'</value>
+                                                    <value type="javascript">'Candidate.degree'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -4875,7 +4875,7 @@ where Candidate.id = ?]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'candidateTrainingCenter'</value>
+                                                    <value type="javascript">'Candidate.trainingCenter'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -4907,7 +4907,7 @@ where Candidate.id = ?]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'candidateYear'</value>
+                                                    <value type="javascript">'Candidate.year'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -4936,7 +4936,7 @@ where Candidate.id = ?]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'candidateComment'</value>
+                                                    <value type="javascript">'Candidate.comment'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -5125,7 +5125,7 @@ where Candidate.id = ?]]></xml-property>
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'candidateEvaluationLineList'</value>
+                                        <value type="javascript">'Candidate.evaluationLineList'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -5169,7 +5169,7 @@ where Candidate.id = ?]]></xml-property>
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'candidateCriteriaEvaluated'</value>
+                                        <value type="javascript">'Candidate.criteriaEvaluated'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -5210,7 +5210,7 @@ where Candidate.id = ?]]></xml-property>
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'candidateCoefficient'</value>
+                                        <value type="javascript">'Candidate. coefficient'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -5251,7 +5251,7 @@ where Candidate.id = ?]]></xml-property>
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'candidateGrade'</value>
+                                        <value type="javascript">'Candidate.grade'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -5386,7 +5386,7 @@ where Candidate.id = ?]]></xml-property>
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'candidateGlobalGrade'</value>
+                                        <value type="javascript">'Candidate.globalGrade'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -5483,7 +5483,7 @@ where Candidate.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'candidateCompetence'</value>
+                                    <value type="javascript">'Candidate.competence'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -5529,7 +5529,7 @@ where Candidate.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'candidateInterventionTypeSet'</value>
+                                    <value type="javascript">'Candidate.interventionTypeSet'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -5561,7 +5561,7 @@ where Candidate.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'candidateCompetenceAreaSet'</value>
+                                    <value type="javascript">'Candidate.competenceAreaSet'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -5723,7 +5723,7 @@ where Candidate.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'candidateLanguageSet'</value>
+                                    <value type="javascript">'Candidate.languageSet'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -5803,7 +5803,7 @@ where Candidate.id = ?]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'candidateLanguageName'</value>
+                                                    <value type="javascript">'Candidate.languageName'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -5838,7 +5838,7 @@ where Candidate.id = ?]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'candidateLanguageLavel'</value>
+                                                    <value type="javascript">'Candidate.languageLavel'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -5901,7 +5901,7 @@ where Candidate.id = ?]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'candidateLanguageExpert'</value>
+                                                    <value type="javascript">'Candidate.languageExpert'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -6051,7 +6051,7 @@ where Candidate.id = ?]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'candidateLanguageMaster'</value>
+                                                    <value type="javascript">'Candidate.languageMaster'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -6201,7 +6201,7 @@ where Candidate.id = ?]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'candidateLanguageAware'</value>
+                                                    <value type="javascript">'Candidate.languageAware'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -6285,7 +6285,7 @@ where Candidate.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'candidateSkillLineList'</value>
+                                    <value type="javascript">'Candidate.skillLineList'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -6371,7 +6371,7 @@ where Candidate.id = ?]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'candidateSkillName'</value>
+                                                    <value type="javascript">'Candidate.skillName'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -6400,7 +6400,7 @@ where Candidate.id = ?]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'candidateSkillLavel'</value>
+                                                    <value type="javascript">'Candidate.skillLavel'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -6450,7 +6450,7 @@ where Candidate.id = ?]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'candidateSkillExpert'</value>
+                                                    <value type="javascript">'Candidate.skillExpert'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -6591,7 +6591,7 @@ where Candidate.id = ?]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'candidateSkillMastered'</value>
+                                                    <value type="javascript">'Candidate.skillMastered'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -6732,7 +6732,7 @@ where Candidate.id = ?]]></xml-property>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'candidateSkillAware'</value>
+                                                    <value type="javascript">'Candidate.skillAware'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>

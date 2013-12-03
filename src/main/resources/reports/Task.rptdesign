@@ -5186,7 +5186,7 @@ LangTranslate.domain = 'axelor-organisation' and LangTranslate.type = 'others']]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'taskExpectedRevenue'</value>
+                                    <value type="javascript">'Task.expectedRevenue'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -5309,7 +5309,7 @@ LangTranslate.domain = 'axelor-organisation' and LangTranslate.type = 'others']]
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'taskDate'</value>
+                                                    <value type="javascript">'Task.date'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -5356,7 +5356,7 @@ LangTranslate.domain = 'axelor-organisation' and LangTranslate.type = 'others']]
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'taskClient'</value>
+                                                    <value type="javascript">'Task.client'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -5403,7 +5403,7 @@ LangTranslate.domain = 'axelor-organisation' and LangTranslate.type = 'others']]
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'taskProductName'</value>
+                                                    <value type="javascript">'Task.productName'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -5450,7 +5450,7 @@ LangTranslate.domain = 'axelor-organisation' and LangTranslate.type = 'others']]
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'taskAmount'</value>
+                                                    <value type="javascript">'Task.amount'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -5497,7 +5497,7 @@ LangTranslate.domain = 'axelor-organisation' and LangTranslate.type = 'others']]
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'taskCommercial'</value>
+                                                    <value type="javascript">'Task.commercial'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -5658,7 +5658,7 @@ LangTranslate.domain = 'axelor-organisation' and LangTranslate.type = 'others']]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'taskTaskCost'</value>
+                                    <value type="javascript">'Task.cost'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -5687,7 +5687,7 @@ LangTranslate.domain = 'axelor-organisation' and LangTranslate.type = 'others']]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'taskPurchase'</value>
+                                    <value type="javascript">'Task.purchase'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -5812,7 +5812,7 @@ LangTranslate.domain = 'axelor-organisation' and LangTranslate.type = 'others']]
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'taskDate'</value>
+                                                    <value type="javascript">'Task.date'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -5854,6 +5854,29 @@ LangTranslate.domain = 'axelor-organisation' and LangTranslate.type = 'others']]
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderTopColor">#3C3C3C</property>
                                         <property name="borderTopStyle">solid</property>
+                                        <property name="dataSet">TranslationDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'Task.supplier'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">key</property>
+                                                <text-property name="displayName">key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                     </text>
@@ -5883,7 +5906,7 @@ LangTranslate.domain = 'axelor-organisation' and LangTranslate.type = 'others']]
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'taskProductName'</value>
+                                                    <value type="javascript">'Task.productName'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -5930,7 +5953,7 @@ LangTranslate.domain = 'axelor-organisation' and LangTranslate.type = 'others']]
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'taskAmount'</value>
+                                                    <value type="javascript">'Task.amount'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -5977,7 +6000,7 @@ LangTranslate.domain = 'axelor-organisation' and LangTranslate.type = 'others']]
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'taskPurchaser'</value>
+                                                    <value type="javascript">'Task.purchaser'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -6194,7 +6217,7 @@ LangTranslate.domain = 'axelor-organisation' and LangTranslate.type = 'others']]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'taskTotalTurnover'</value>
+                                    <value type="javascript">'Task.totalTurnover'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -6249,7 +6272,7 @@ LangTranslate.domain = 'axelor-organisation' and LangTranslate.type = 'others']]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'taskTotalCost'</value>
+                                    <value type="javascript">'Task.totalCost'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -6292,7 +6315,7 @@ LangTranslate.domain = 'axelor-organisation' and LangTranslate.type = 'others']]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'taskForecastMargin'</value>
+                                    <value type="javascript">'Task.forecastMargin'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -6405,7 +6428,7 @@ LangTranslate.domain = 'axelor-organisation' and LangTranslate.type = 'others']]
                 <structure>
                     <property name="paramName">param_1</property>
                     <simple-property-list name="expression">
-                        <value type="javascript">'projectForecastMargin'</value>
+                        <value type="javascript">'Task.forecastMargin'</value>
                     </simple-property-list>
                 </structure>
             </list-property>
