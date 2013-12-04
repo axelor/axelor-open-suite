@@ -1821,7 +1821,7 @@ LangTranslate.domain = 'axelor-supplychain' and LangTranslate.type = 'other']]><
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> <VALUE-OF>row._outer["salesOrderSeq"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> <VALUE-OF format="^">" "</VALUE-OF> <VALUE-OF>row._outer["salesOrderSeq"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="3366"/>
@@ -2587,6 +2587,14 @@ row["ClientPartFirstName"]
                             <property name="borderTopWidth">thin</property>
                             <property name="textAlign">center</property>
                             <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'SalesOrder.priceExclTax'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
                             <list-property name="boundDataColumns">
                                 <structure>
                                     <property name="name">key</property>
