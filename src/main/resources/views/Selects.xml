@@ -46,7 +46,7 @@
 		<option value='2'>Reimbursed</option>
 	</selection>
 	
-	<selection name='reconcile.state.select'>
+	<selection name='account.reconcile.status.select'>
 		<option value='1'>Draft</option>
 		<option value='2'>Confirmed</option>
 		<option value='3'>Canceled</option>

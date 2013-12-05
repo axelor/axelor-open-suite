@@ -200,4 +200,13 @@ public interface IAccount {
 	static final int EXPORT_TREASURY = 8;
 	static final int EXPORT_PURCHASES = 9;
 	
+	
+	/**
+	 * Static select in Reconcile
+	 */
+	// STATUS SELECT
+	static final int RECONCILE_STATUS_DRAFT = 1;
+	static final int RECONCILE_STATUS_CONFIRMED = 2;
+	static final int RECONCILE_STATUS_CANCELED = 3;
+	
 }
