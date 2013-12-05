@@ -33,8 +33,6 @@ package com.axelor.apps.crm.service;
 import org.joda.time.Duration;
 import org.joda.time.Interval;
 import org.joda.time.LocalDateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.crm.db.Event;
 import com.google.inject.persist.Transactional;

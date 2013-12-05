@@ -19,12 +19,14 @@
     
     
     <calendar name="event-calendar-color-by-user-info" title="Meetings" mode="month" colorBy="userInfo" 
-    	eventStart="startDateTime" eventStop="endDateTime" eventLength="1" model="com.axelor.apps.crm.db.Event">
+    	eventStart="startDateTime" eventStop="endDateTime" eventLength="1" model="com.axelor.apps.crm.db.Event"
+    	onChange="action-event-method-compute-from-calendar">
     	<field name="subject" />
  	</calendar>
  	
  	<calendar name="event-calendar-color-by-calendar" title="Meetings" mode="month" colorBy="calendar" 
-    	eventStart="startDateTime" eventStop="endDateTime" eventLength="1" model="com.axelor.apps.crm.db.Event">
+    	eventStart="startDateTime" eventStop="endDateTime" eventLength="1" model="com.axelor.apps.crm.db.Event"
+    	onChange="action-event-method-compute-from-calendar">
     	<field name="subject" />
  	</calendar>
     
@@ -44,9 +46,9 @@
 	        <break/>
 	        <group colSpan="4" css="groupTitle" cols="6" colWidths="25*">
 	            <separator title="Dates" colSpan="6"/>
-	            <field name="startDateTime" onChange="action-meeting-method-compute-start-date-time"/>
-	            <field name="endDateTime" onChange="action-meeting-method-compute-end-date-time"/>
-	            <field name="duration" widget="duration[big=true]" onChange="action-meeting-method-compute-duration"/>
+	            <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time"/>
+	            <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time"/>
+	            <field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration"/>
 	        </group>
 	    </group>
 	    <group colSpan="1" cols="2">
@@ -106,9 +108,9 @@
 	        <break/>
 	        <group colSpan="4" css="groupTitle" cols="6" colWidths="25*">
 	            <separator title="Dates" colSpan="6"/>
-	            <field name="startDateTime" onChange="action-meeting-method-compute-start-date-time"/>
-	            <field name="endDateTime" onChange="action-meeting-method-compute-end-date-time"/>
-	            <field name="duration" widget="duration[big=true]" onChange="action-meeting-method-compute-duration"/>
+	            <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time"/>
+	            <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time"/>
+	            <field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration"/>
 	        </group>
 	    </group>
 	    <group colSpan="1" cols="2">
@@ -182,9 +184,9 @@
 	        <break/>
 	        <group colSpan="4" css="groupTitle" cols="6" colWidths="25*">
 	            <separator title="Dates" colSpan="6"/>
-	            <field name="startDateTime" onChange="action-meeting-method-compute-start-date-time"/>
-	            <field name="endDateTime" onChange="action-meeting-method-compute-end-date-time"/>
-	            <field name="duration" widget="duration[big=true]" onChange="action-meeting-method-compute-duration"/>
+	            <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time"/>
+	            <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time"/>
+	            <field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration"/>
 	        </group>
 	    </group>
 	    <group colSpan="1" cols="2">
@@ -245,9 +247,9 @@
 	        <break/>
 	        <group colSpan="4" css="groupTitle" cols="6" colWidths="25*">
 	            <separator title="Dates" colSpan="6"/>
-	            <field name="startDateTime" onChange="action-meeting-method-compute-start-date-time"/>
-	            <field name="endDateTime" onChange="action-meeting-method-compute-end-date-time"/>
-	            <field name="duration" widget="duration[big=true]" onChange="action-meeting-method-compute-duration"/>
+	            <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time"/>
+	            <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time"/>
+	            <field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration"/>
 	        </group>
 	    </group>
 	    <group colSpan="1" cols="2">
@@ -309,9 +311,9 @@
 	        </group>
 	        <group colSpan="4" css="groupTitle" cols="6">
 	                <separator title="Dates" colSpan="6"/>
-	                <field name="startDateTime" onChange="action-meeting-method-compute-start-date-time"/>
-	                <field name="endDateTime" onChange="action-meeting-method-compute-end-date-time"/>
-	                <field name="duration" widget="duration[big=true]" onChange="action-meeting-method-compute-duration"/>
+	                <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time"/>
+	                <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time"/>
+	                <field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration"/>
 	        </group>
 	    </group>
 	    <group colSpan="1" cols="2">
@@ -383,20 +385,24 @@
     	<field name="typeSelect" expr="eval: _typeSelect"/>
     </action-record>
     
-    <action-method name="action-meeting-method-compute-start-date-time">
-    	<call class="com.axelor.apps.crm.web.EventController" method="computeStartDateTime"/>
-    </action-method>
-    
     <action-method name="action-event-set-sequence">
 		<call class="com.axelor.apps.crm.web.EventController" method="setSequence" />
 	</action-method>
 	
-    <action-method name="action-meeting-method-compute-end-date-time">
-    	<call class="com.axelor.apps.crm.web.EventController" method="computeEndDateTime"/>
+	<action-method name="action-event-method-compute-from-start-date-time">
+    	<call class="com.axelor.apps.crm.web.EventController" method="computeFromStartDateTime"/>
+    </action-method>
+	
+    <action-method name="action-event-method-compute-from-end-date-time">
+    	<call class="com.axelor.apps.crm.web.EventController" method="computeFromEndDateTime"/>
     </action-method>
     
-    <action-method name="action-meeting-method-compute-duration">
-    	<call class="com.axelor.apps.crm.web.EventController" method="computeDuration" />
+    <action-method name="action-event-method-compute-from-duration">
+    	<call class="com.axelor.apps.crm.web.EventController" method="computeFromDuration" />
+    </action-method>
+    
+    <action-method name="action-event-method-compute-from-calendar">
+    	<call class="com.axelor.apps.crm.web.EventController" method="computeFromCalendar" />
     </action-method>
     
     <action-method name="action-save-event-status-select">

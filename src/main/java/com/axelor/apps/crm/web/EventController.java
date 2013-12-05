@@ -35,8 +35,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.joda.time.Duration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -51,6 +52,8 @@ import com.google.inject.Inject;
 
 public class EventController {
 
+	private static final Logger LOG = LoggerFactory.getLogger(EventController.class);
+	
 	@Inject
 	private EventService eventService;
 	
@@ -60,9 +63,11 @@ public class EventController {
 	@Inject
 	AddressService ads;
 	
-	public void computeStartDateTime(ActionRequest request, ActionResponse response) {
+	public void computeFromStartDateTime(ActionRequest request, ActionResponse response) {
 		
 		Event event = request.getContext().asType(Event.class);
+		
+		LOG.debug("event : {}", event);
 		
 		if(event.getStartDateTime() != null) {
 			if(event.getEndDateTime() != null) {
@@ -75,9 +80,11 @@ public class EventController {
 		}
 	}
 	
-	public void computeEndDateTime(ActionRequest request, ActionResponse response) {
+	public void computeFromEndDateTime(ActionRequest request, ActionResponse response) {
 		
 		Event event = request.getContext().asType(Event.class);
+		
+		LOG.debug("event : {}", event);
 		
 		if(event.getEndDateTime() != null) {
 			if(event.getStartDateTime() != null) {
@@ -90,9 +97,11 @@ public class EventController {
 		}
 	}
 	
-	public void computeDuration(ActionRequest request, ActionResponse response) {
+	public void computeFromDuration(ActionRequest request, ActionResponse response) {
 		
 		Event event = request.getContext().asType(Event.class);
+		
+		LOG.debug("event : {}", event);
 		
 		if(event.getDuration() != null)  {
 			if(event.getStartDateTime() != null)  {
@@ -103,6 +112,20 @@ public class EventController {
 			}
 		}
 	}
+	
+	
+	public void computeFromCalendar(ActionRequest request, ActionResponse response) {
+		
+		Event event = request.getContext().asType(Event.class);
+		
+		LOG.debug("event : {}", event);
+		
+		if(event.getStartDateTime() != null && event.getEndDateTime() != null) {
+			Duration duration =  eventService.computeDuration(event.getStartDateTime(), event.getEndDateTime());
+			response.setValue("duration", eventService.getDuration(duration));
+		}
+	}
+	
 	
 	public void setSequence(ActionRequest request, ActionResponse response) throws AxelorException {
 		
