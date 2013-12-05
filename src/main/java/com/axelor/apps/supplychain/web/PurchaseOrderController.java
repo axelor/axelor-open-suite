@@ -116,7 +116,7 @@ public class PurchaseOrderController {
 		AxelorSettings axelorSettings = AxelorSettings.get();
 		String language = purchaseOrder.getSupplierPartner().getLanguageSelect() != null? purchaseOrder.getSupplierPartner().getLanguageSelect() : purchaseOrder.getCompany().getPrintingSettings().getLanguageSelect() != null ? purchaseOrder.getCompany().getPrintingSettings().getLanguageSelect() : "en" ; 
 
-		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/PurchaseOrder.rptdesign&__format=pdf&PurchaseOrderId="+purchaseOrder.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
+		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/PurchaseOrder.rptdesign&__format=pdf&PurchaseOrderId="+purchaseOrder.getId()+"&__locale=fr_FR&Locale="+language+axelorSettings.get("axelor.report.engine.datasource"));
 		LOG.debug("URL : {}", url);
 		String urlNotExist = URLService.notExist(url.toString());
 		
@@ -130,7 +130,7 @@ public class PurchaseOrderController {
 			}
 			
 			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", "Devis "+title);
+			mapView.put("title", title);
 			mapView.put("resource", url);
 			mapView.put("viewType", "html");
 			response.setView(mapView);	
