@@ -42,14 +42,18 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
-import com.google.inject.Inject;
 
 public class JournalService {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(JournalService.class);
 	
-	@Inject
 	private AccountConfigService accountConfigService;
+	
+	public JournalService()  {
+		
+		this.accountConfigService = new AccountConfigService();
+		
+	}
 	
 	
 	/**
