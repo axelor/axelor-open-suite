@@ -105,7 +105,7 @@ private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderLineServi
 	public TaxLine getTaxLine(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException  {
 		
 		return accountManagementService.getTaxLine(
-				purchaseOrder.getOrderDate(), purchaseOrderLine.getProduct(), purchaseOrder.getCompany(), true);
+				purchaseOrder.getOrderDate(), purchaseOrderLine.getProduct(), purchaseOrder.getCompany(), purchaseOrder.getSupplierPartner().getFiscalPosition(), true);
 		
 	}
 	

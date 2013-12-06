@@ -97,7 +97,7 @@ public class SalesOrderSubLineService {
 	public TaxLine getTaxLine(SalesOrder salesOrder, SalesOrderSubLine salesOrderSubLine) throws AxelorException  {
 		
 		return accountManagementService.getTaxLine(
-				salesOrder.getCreationDate(), salesOrderSubLine.getProduct(), salesOrder.getCompany(), false);
+				salesOrder.getCreationDate(), salesOrderSubLine.getProduct(), salesOrder.getCompany(), salesOrder.getClientPartner().getFiscalPosition(), false);
 		
 	}
 	
