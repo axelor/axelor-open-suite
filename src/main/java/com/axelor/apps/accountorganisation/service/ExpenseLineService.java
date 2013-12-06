@@ -53,7 +53,7 @@ public class ExpenseLineService {
 	public TaxLine getTaxLine(Expense expense, ExpenseLine expenseLine) throws AxelorException  {
 		
 		return accountManagementService.getTaxLine(
-				expenseLine.getDate(), expenseLine.getProduct(), expense.getCompany(), true);
+				expenseLine.getDate(), expenseLine.getProduct(), expense.getCompany(), null, true);
 		
 	}
 	
