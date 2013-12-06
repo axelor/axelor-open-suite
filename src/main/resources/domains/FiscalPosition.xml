@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="FiscalPosition" lang="java">
+  
+  	<integer name="importId" />
+    <string name="name" title="Name" required="true"/>
+    <string name="code" title="Code" required="true"/>
+
+	<one-to-many name="accountEquivList" ref="com.axelor.apps.account.db.AccountEquiv" title="Accounts equivalences" mappedBy="fiscalPosition"/>
+	<one-to-many name="taxEquivList" ref="com.axelor.apps.account.db.TaxEquiv" title="Taxes equivalences" mappedBy="fiscalPosition"/>
+    
+  </entity>
+
+</domain-models>
