@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
    
     <grid name="invoice-line-tax-grid" title="Tax Lines" model="com.axelor.apps.account.db.InvoiceLineTax">
-		<field name="taxLine.vat"/>
+		<field name="taxLine.tax"/>
 		<field name="taxLine.value"/>
 		<field name="exTaxBase"/>
 		<field name="taxTotal"/>

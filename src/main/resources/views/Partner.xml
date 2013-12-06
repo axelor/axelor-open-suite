@@ -121,7 +121,7 @@
 	            <field name="accountingSituationList" colSpan="4" widget="MasterDetail" grid-view="accounting-situation-partner-grid" form-view="accounting-situation-partner-form" onSelect="action-account-accounting-situation-method-update-customer-account"/>
 	        </page>
 	        <page name="blocking" title="Blockings" hideIf="isContact">
-	            <field name="blockingList" colSpan="4" widget="MasterDetails" showTitle="false"/>
+	            <field name="blockingList" colSpan="4" widget="MasterDetail" showTitle="false"/>
 	        </page>
 	        <page name="reportedBalance" title="Reported balance" hideIf="isContact">
 	            <field name="reportedBalanceList" colSpan="4">
