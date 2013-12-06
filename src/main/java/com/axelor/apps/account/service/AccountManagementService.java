@@ -38,6 +38,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Company;
@@ -54,11 +55,8 @@ public class AccountManagementService {
 	@Inject
 	private TaxService taxService;
 	
-	public AccountManagementService() {
-		
-		this.taxService = new TaxService();
-		
-	}	
+	@Inject
+	private FiscalPositionService fiscalPositionService;
 	
 
 	/**
@@ -179,14 +177,16 @@ public class AccountManagementService {
 	 * @return
 	 * @throws AxelorException 
 	 */
-	public Tax getProductTax(Product product, Company company, boolean isPurchase) throws AxelorException{
+	public Tax getProductTax(Product product, Company company, FiscalPosition fiscalPosition, boolean isPurchase) throws AxelorException{
 		
 		LOG.debug("Obtention du compte comptable pour le produit {} (société : {}, achat ? {})",
 			new Object[]{product.getCode(), company, isPurchase});
 		
-		return this.getProductTax(
-				this.getAccountManagement(product, company), 
-				isPurchase);
+		return fiscalPositionService.getTax(
+					fiscalPosition,
+					this.getProductTax(
+						this.getAccountManagement(product, company), 
+						isPurchase));
 			
 	}
 	
@@ -216,9 +216,9 @@ public class AccountManagementService {
 	 * @return
 	 * @throws AxelorException 
 	 */
-	public TaxLine getTaxLine(LocalDate date, Product product, Company company, boolean isPurchase) throws AxelorException {
+	public TaxLine getTaxLine(LocalDate date, Product product, Company company, FiscalPosition fiscalPosition, boolean isPurchase) throws AxelorException {
 
-		TaxLine taxLine = taxService.getTaxLine(this.getProductTax(product, company, isPurchase), date);
+		TaxLine taxLine = taxService.getTaxLine(this.getProductTax(product, company, fiscalPosition, isPurchase), date);
 		if(taxLine != null)  {
 			return taxLine;
 		}

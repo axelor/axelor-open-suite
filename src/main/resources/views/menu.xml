@@ -626,6 +626,17 @@
 	
 	
 	
+	<menuitem name="contact-conf-fiscal-position" parent="contact-conf"
+		title="Fiscal positions" action="contact.conf.fiscal.position" />
+
+	<action-view name="contact.conf.fiscal.position" title="Fiscal position"
+		model="com.axelor.apps.account.db.FiscalPosition" icon="img/16px/parameterSmall_16px.png">
+		<view type="grid" name="fiscal-position-grid" />
+		<view type="form" name="fiscal-position-form" />
+	</action-view>	
+	
+	
+	
 	<menuitem name="top-invoice" title="Invoices/Refunds" groups="admins,erp" top="true" left="false"/>	
 	
 	<menuitem name="top-invoice-custinvoices" title="Cust. Invoices" action="top.invoice.custinvoices" parent="top-invoice" groups="admins,erp" top="true" left="false"/>		

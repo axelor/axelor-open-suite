@@ -65,7 +65,8 @@ public class InvoiceLineService {
 	
 	public TaxLine getTaxLine(Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase) throws AxelorException  {
 		
-		return accountManagementService.getTaxLine(invoice.getInvoiceDate(), invoiceLine.getProduct(), invoice.getCompany(), isPurchase);
+		return accountManagementService.getTaxLine(
+				invoice.getInvoiceDate(), invoiceLine.getProduct(), invoice.getCompany(), invoice.getPartner().getFiscalPosition(), isPurchase);
 		
 	}
 	

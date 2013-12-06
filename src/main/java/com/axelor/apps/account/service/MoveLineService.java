@@ -118,10 +118,17 @@ public class MoveLineService {
 		
 		moveLine.setMove(move);
 		moveLine.setPartner(partner);
+		
+		if(partner != null)  {
+			FiscalPositionService fiscalPositionService = injector.getInstance(FiscalPositionService.class);
+			account = fiscalPositionService.getAccount(partner.getFiscalPosition(), account);
+		}
+		
+		moveLine.setAccount(account);
+		
 		moveLine.setDate(date);
 		//TODO à rétablir si date d'échéance
 		moveLine.setDueDate(dueDate);
-		moveLine.setAccount(account);
 		moveLine.setCounter(Integer.toString(ref));
 		moveLine.setAnalyticAccountSet(new HashSet<AnalyticAccount>());
 		
@@ -183,130 +190,6 @@ public class MoveLineService {
 		return this.createMoveLine(move, partner, account, amount, isDebit, isMinus, toDay, dueDate, ref, descriptionOption);
 	}
 
-	/**
-	 * Créer une ligne d'écriture comptable
-	 * 
-	 * @param move
-	 * @param partner
-	 * @param account
-	 * @param amount
-	 * 		
-	 * @param dueDate
-	 * 		Date d'échécance
-	 * @param ref
-	 * @param ignoreInAccountingOk
-	 * 		<code>true = ignoré en compta</code>
-	 * @param ignoreInReminderOk
-	 * 		<code>true = ignoré en relance</code>
-	 * @param fromSchedulePaymentOk
-	 * 		<code>true = proviens d'un échéancier</code>
-	 * 
-	 * @return
-	 */
-	public MoveLine createMoveLine(Move move, Partner partner, Account account, BigDecimal amount, LocalDate date,
-			LocalDate dueDate, int ref, String descriptionOption){
-		
-		boolean isDebit = false;
-		boolean isMinus = false;
-		
-		if (amount.compareTo(BigDecimal.ZERO) == -1){
-			isDebit = true;
-			isMinus = true;
-		}
-		
-		return this.createMoveLine(move, partner, account, amount, isDebit, isMinus, date, dueDate, ref, descriptionOption);
-	}
-
-	/**
-	 * Créer une ligne d'écriture comptable
-	 * 
-	 * @param move
-	 * @param partner
-	 * @param account
-	 * @param amount
-	 * 		
-	 * @param dueDate
-	 * 		Date d'échécance
-	 * @param ref
-	 * @param ignoreInAccountingOk
-	 * 		<code>true = ignoré en compta</code>
-	 * @param ignoreInReminderOk
-	 * 		<code>true = ignoré en relance</code>
-	 * @param fromSchedulePaymentOk
-	 * 		<code>true = proviens d'un échéancier</code>
-	 * 
-	 * @return
-	 */
-	public MoveLine createMoveLine(Move move, Partner partner, Account account, BigDecimal amount,
-			LocalDate dueDate, int ref, boolean ignoreInAccountingOk, boolean ignoreInReminderOk, String descriptionOption){
-		
-		return this.createMoveLine(move, partner, account, amount, toDay, dueDate, ref, descriptionOption);
-	}
-
-	/**
-	 * Créer une ligne d'écriture comptable
-	 * 
-	 * @param move
-	 * @param partner
-	 * @param account
-	 * @param amount
-	 * 		
-	 * @param dueDate
-	 * 		Date d'échécance
-	 * @param ref
-	 * @param isPurchase
-	 * 		<code>true = provient d'une facture d'achat</code>
-	 * 
-	 * @return
-	 */
-	public MoveLine createMoveLine(Move move, Partner partner, Account account, BigDecimal amount, LocalDate date, 
-			LocalDate dueDate, int ref, boolean isPurchase, String descriptionOption){
-		
-		boolean isDebit = true;
-		boolean isMinus = false;
-		
-		if (isPurchase){
-			isDebit = false;
-			isMinus = true;
-			if (amount.compareTo(BigDecimal.ZERO) == -1){
-				
-				isDebit = true;
-				isMinus = false;
-				
-			}	
-		}
-		else {
-			if (amount.compareTo(BigDecimal.ZERO) == -1){
-				isDebit = false;
-				isMinus = true;
-			}
-		}
-		
-		return this.createMoveLine(move, partner, account, amount, isDebit, isMinus, date, dueDate, ref, descriptionOption);
-	}
-
-	/**
-	 * Créer une ligne d'écriture comptable
-	 * 
-	 * @param move
-	 * @param partner
-	 * @param account
-	 * @param amount
-	 * 		
-	 * @param dueDate
-	 * 		Date d'échécance
-	 * @param ref
-	 * @param isPurchase
-	 * 		<code>true = proviens d'une facture d'achat</code>
-	 * 
-	 * @return
-	 */
-	public MoveLine createMoveLine(Move move, Partner partner, Account account, BigDecimal amount,
-			LocalDate dueDate, int ref, boolean isPurchase, String descriptionOption){
-		
-		return this.createMoveLine(move, partner, account, amount, toDay, dueDate, ref, isPurchase, descriptionOption);
-	}
-	
 	
 	/**
 	 * Créer les lignes d'écritures comptables d'une facture.

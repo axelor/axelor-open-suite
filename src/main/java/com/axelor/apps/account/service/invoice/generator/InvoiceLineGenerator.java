@@ -230,7 +230,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 			if(invoice.getOperationTypeSelect() == IInvoice.SUPPLIER_PURCHASE || invoice.getOperationTypeSelect() == IInvoice.SUPPLIER_REFUND)  {
 				isPurchase = true;
 			}
-			taxLine =  new AccountManagementService().getTaxLine(invoice.getInvoiceDate(), product, invoice.getCompany(), isPurchase);
+			taxLine =  new AccountManagementService().getTaxLine(invoice.getInvoiceDate(), product, invoice.getCompany(), partner.getFiscalPosition(), isPurchase);
 		}
 		invoiceLine.setTaxLine(taxLine);
 		

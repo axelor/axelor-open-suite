@@ -100,6 +100,7 @@
 	            <field name="paymentMode"/>
 	            <field name="paymentCondition"/>
 	            <field name="currency"/>
+	            <field name="fiscalPosition"/>
 	            <field name="payerQuality"/>
 	            <field name="bankDetails" widget="SuggestBox" domain="self.partner.id = :id"/>
 	            <field name="bankDetailsList" showTitle="false" colSpan="4" form-view="bank-details-form" grid-view="bank-details-grid"/>

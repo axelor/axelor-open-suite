@@ -130,6 +130,7 @@ public abstract class InvoiceGenerator {
 		
 		this.today = GeneralService.getTodayDate();
 		this.exceptionMsg = GeneralService.getExceptionInvoiceMsg();
+		this.journalService = new JournalService();
 		
 	}
 	
