@@ -26,10 +26,10 @@
 	    </toolbar>
 	    <menubar>
 	        <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true">
-	            <divider title="Create call" action="save,action-lead-view-create-call"/>
-	            <divider title="Schedule meeting" action="save,action-lead-view-create-meeting"/>
-	            <divider title="Create task" action="save,action-lead-view-create-task"/>
-	            <divider title="Create opportunity" action="save,action-lead-view-create-opportunity"/>
+	            <item title="Create call" action="save,action-lead-view-create-call"/>
+	            <item title="Schedule meeting" action="save,action-lead-view-create-meeting"/>
+	            <item title="Create task" action="save,action-lead-view-create-task"/>
+	            <item title="Create opportunity" action="save,action-lead-view-create-opportunity"/>
 	        </menu>
 	    </menubar>
 	    <group colSpan="6" cols="6">
