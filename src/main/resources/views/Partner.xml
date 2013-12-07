@@ -13,10 +13,10 @@
 	    </toolbar>
 	    <menubar>
 	        <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true">
-	            <divider title="Create call" action="save,action-partner-view-create-call"/>
-	            <divider title="Schedule meeting" action="save,action-partner-view-create-meeting"/>
-	            <divider title="Create task" action="save,action-partner-view-create-task"/>
-	            <divider title="Create opportunity" action="save,action-partner-view-create-opportunity"/>
+	            <item title="Create call" action="save,action-partner-view-create-call"/>
+	            <item title="Schedule meeting" action="save,action-partner-view-create-meeting"/>
+	            <item title="Create task" action="save,action-partner-view-create-task"/>
+	            <item title="Create opportunity" action="save,action-partner-view-create-opportunity"/>
 	        </menu>
 	    </menubar>
 	    <group colSpan="6" cols="6">
