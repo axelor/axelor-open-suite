@@ -5,12 +5,12 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="VatAccount" lang="java">
+  <entity name="TaxEquiv" lang="java">
   
-  	<many-to-one name="vat" ref="com.axelor.apps.account.db.Vat" title="V.A.T."/>
-  	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
-    <many-to-one name="account" ref="com.axelor.apps.account.db.Account" title="Account" required="true"/>
-  
+    <many-to-one name="fiscalPosition" ref="com.axelor.apps.account.db.FiscalPosition" title="Fiscal position"/>
+    <many-to-one name="fromTax" ref="com.axelor.apps.account.db.Tax" title="From Tax"/>
+    <many-to-one name="toTax" ref="com.axelor.apps.account.db.Tax" title="ToTax"/>
+    
   </entity>
 
 </domain-models>

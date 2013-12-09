@@ -125,8 +125,8 @@
 "com.axelor.apps.account.db.AccountManagement","company","field","Company","Société",,
 "com.axelor.apps.account.db.AccountManagement","purchaseAccount","field","Purchase account","Compte comptable à l'Achat",,"Compte utilisé pour les Achats à sélectionner dans le plan comptable de la société."
 "com.axelor.apps.account.db.AccountManagement","saleAccount","field","Sale account","Compte comptable à la vente",,"Compte utilisé pour les Ventes à sélectionner dans le plan comptable de la société."
-"com.axelor.apps.account.db.AccountManagement","purchaseVat","field","Purchase V.A.T.","T.V.A. à l'achat",,
-"com.axelor.apps.account.db.AccountManagement","saleVat","field","Sale V.A.T.","T.V.A. à la vente",,
+"com.axelor.apps.account.db.AccountManagement","purchaseTax","field","Purchase V.A.T.","T.V.A. à l'achat",,
+"com.axelor.apps.account.db.AccountManagement","saleTax","field","Sale V.A.T.","T.V.A. à la vente",,
 "com.axelor.apps.account.db.AccountManagement","cashAccount","field","Payment account","Compte comptable paiement",,"Compte utilisé pour les Paiements à sélectionner dans le plan comptable de la société."
 "com.axelor.apps.account.db.AccountManagement","analyticAccountManagementList","field","Analytic accounts","Comptes analytiques",,
 "com.axelor.apps.account.db.AccountManagement","product","field","Product","Produit",,"Produit auquel est associée la configuration."
@@ -441,109 +441,14 @@
 "com.axelor.apps.base.db.Company","code","field","Code","Code",,
 "com.axelor.apps.base.db.Company","address","field","Address","Adresse",,"Adresse du siège social de la société."
 "com.axelor.apps.base.db.Company","partner","field","Partner","Tiers",,
-"com.axelor.apps.base.db.Company","customerSalesJournal","field","Sales Journal","Journal des ventes clients",,"Journal utilisé par défaut pour les écritures de factures clients."
-"com.axelor.apps.base.db.Company","customerCreditNoteJournal","field"," Cust. Credit note Journal","Journal des avoirs clients",,"Journal utilisé par défaut pour les écritures des avoirs clients."
-"com.axelor.apps.base.db.Company","supplierPurchaseJournal","field","Supplier Purchase Journal","Journal des achats Fourn.",,"Journal utilisé par défaut pour les écritures de factures fournisseurs."
-"com.axelor.apps.base.db.Company","supplierCreditNoteJournal","field","Suppl. Credit Note Journal","Journal des avoirs fournisseurs",,"Journal utilisé par défaut pour les écritures des avoirs fournisseur."
 "com.axelor.apps.base.db.Company","parent","field","Parent company","Parent",,"Maison mère, à titre purement informatif."
 "com.axelor.apps.base.db.Company","administration","field","Administration","Administration",,"Indique quelle configuration générale utilise la société. La configuration générale peut être partagée par plusieurs sociétés."
-"com.axelor.apps.base.db.Company","customerAccount","field","Customer account","Compte client",,"Compte comptable utilisé par défaut à l'enregistrement de la fiche du Tiers et pour suivre sa situation financière."
-"com.axelor.apps.base.db.Company","supplierAccount","field","Supplier account","Compte comptable Fourn.",,"Compte comptable utilisé par défaut à l'enregistrement de la fiche du Tiers et pour suivre sa situation financière."
-"com.axelor.apps.base.db.Company","doubtfulCustomerAccount","field","Doubtful customers account","Compte client douteux","Utiliser pour le passage en client douteux","Compte utilisé pour la contrepartie du compte client lors du passage en créance douteuse."
-"com.axelor.apps.base.db.Company","irrecoverableAccount","field","Irrecoverable account","Compte créances irrécouvrables",,"Compte utilisé pour la contrepartie du compte client lors du passage en créance irrécouvrable."
 "com.axelor.apps.base.db.Company","notes","field","Notes","Notes",,
-"com.axelor.apps.base.db.Company","invoiceDirectDebitJournal","field","Invoice Direct Debit Journal","Journal prélèvement facture et échéancier",,"Journal utilisé par défaut pour les écritures de paiement par prélèvement d'une facture."
-"com.axelor.apps.base.db.Company","majorAccountJournal","field","Journal prèlèvement lissage de paiement","Journal prèlèvement lissage de paiement",,
-"com.axelor.apps.base.db.Company","rejectJournal","field","Rejects journal","Journal des rejets",,"Journal utilisé par défaut pour les écritures générées par un rejet (chèque, prélèvement...)"
-"com.axelor.apps.base.db.Company","accountClearanceJournal","field","Account clearance journal","Journal d'apurement des trop-perçus",,"Journal utilisé par défaut pour les écritures d'apurement des trop perçus."
-"com.axelor.apps.base.db.Company","reimbursementJournal","field","Reimbursement Journal","Journal remboursement",,"Journal utilisé par défaut pour les écritures de remboursements."
-"com.axelor.apps.base.db.Company","irrecoverableJournal","field","Irrecoverable Journal","Journal irrécouvrable",,"Journal utilisé par défaut lors du passage d'une créance en irrécouvrable."
-"com.axelor.apps.base.db.Company","miscOperationJournal","field","Misc. Operation Journal","Journal des O.D.",,"Journal utilisé par défaut lors d'une écriture typée <Opération Diverses>."
-"com.axelor.apps.base.db.Company","technicalJournal","field","Technical Journal","Journal technique",,"*"
 "com.axelor.apps.base.db.Company","logoPath","field","Path to company logo","Chemin vers le logo société","Fill inside this field the path to the company logo","Chemin local permettant de récupérer le logo de la société."
-"com.axelor.apps.base.db.Company","thresholdDistanceFromRegulation","field","Allowed Payment range","Seuil d'écart de règlement",,"*"
-"com.axelor.apps.base.db.Company","cashPositionVariationAccount","field","Cashier Regulation account","Compte différence de caisse",,"Compte utilisé pour la contrepartie d'écriture en cas de différence de caisse."
-"com.axelor.apps.base.db.Company","cashRegisterMailModel","field","Cashier email model","Modèle d'email Caisse",,"*"
-"com.axelor.apps.base.db.Company","cashRegisterAddressEmail","field","Cashier email address","Adresse email caisse",,"*"
-"com.axelor.apps.base.db.Company","payingBackTaxVat","field","VAT for management fee","T.V.A. pour frais de gestion",,"*"
 "com.axelor.apps.base.db.Company","currency","field","Currency","Devise",,"Devise dans laquelle la comptabilité de la société est gérée."
 "com.axelor.apps.base.db.Company","defaultBankDetails","field","Default Bank Account","RIB par défaut",,"RIB qui sera utilisé par défaut pour communiquer les coordonnées bancaires de la société à des tiers (devis, factures...)."
 "com.axelor.apps.base.db.Company","bankDetailsSet","field","Bank accounts","Les RIB",,"Liste des coordonnées bancaires dont dispose la société."
-"com.axelor.apps.base.db.Company","sixMonthDebtPassReason","field","Shift Reason (long term debt)","Motif de passage (créance + 6 mois)",,"Message indiqué pour le passage en créance douteuse des créances de plus de six mois (paramétrable) non réglées ou réglées partiellement."
-"com.axelor.apps.base.db.Company","threeMonthDebtPassReason","field","Shift Reason (short term debt)","Motif de passage (créance + 3 mois)",,"Message indiqué pour le passage en créance douteuse des créances de plus de trois mois (paramétrable) non réglées ou réglées partiellement."
-"com.axelor.apps.base.db.Company","litigationDebtPassReason","field","Shift Reason (litigation)","Motif de passage (contentieux)",,"Message indiqué pour le passage en créance douteuse des créances de plus de trois mois (paramétrable) non réglées ou réglées partiellement."
-"com.axelor.apps.base.db.Company","sixMonthDebtMonthNumber","field","Long term debt duration (month)","Nombre de mois pris en compte (créance + 6 mois)",,"Paramètre nombre de mois pour créances longues (par défaut 6 mois)."
-"com.axelor.apps.base.db.Company","threeMonthDebtMontsNumber","field","Short term debt duration (month)","Nombre de mois pris en compte (créance + 3 mois)",,"Paramètre nombre de mois pour créances courtes (par défaut 3 mois)."
-"com.axelor.apps.base.db.Company","reminderConfigLineList","field","Reminder Configuration Table","Configurations du recouvrement",,"Tableau permettant de sélectionner pour chaque catégorie de tiers, une méthode de relance appropriée."
-"com.axelor.apps.base.db.Company","mailTransitTime","field","Mail transit time","Délai d'acheminement (j)",,"Temps nécessaire à l'acheminement du courrier au client en jours."
-"com.axelor.apps.base.db.Company","reimbursementExportFolderPathCFONB","field","Path for reimbursement files (CFONB)","Dossier d'export des Rbts (CFONB)","example : /home/axelor/reject.dat","Dossier sur le serveur où les remboursements via CFONB seront exportés, exemple : /home/axelor/Export_ERP/Export_Remboursements/ ."
-"com.axelor.apps.base.db.Company","reimbursementExportFolderPath","field","Path for reimbursement files (SEPA)","Dossier d'export des Rbts (SEPA)","example : /home/axelor/reject.dat","Dossier sur le serveur où les remboursements via SEPA seront exportés, exemple : /home/axelor/Export_ERP/Export_Remboursements/ ."
-"com.axelor.apps.base.db.Company","lowerThresholdReimbursement","field","Lower reimbursement limit","Seuil inférieur de remboursement",,"Seuil inférieur à partir duquel un remboursement sera généré."
-"com.axelor.apps.base.db.Company","upperThresholdReimbursement","field","Upper reimbursement limit","Seuil supérieur de remboursement",,"Seuil supérieur à partir duquel une validation manuelle est nécessaire."
-"com.axelor.apps.base.db.Company","reimbursementAccount","field","Reimbursement account","Compte de remboursement",,"Compte comptable utilisé par défaut pour la contrepartie des écritures de remboursements."
-"com.axelor.apps.base.db.Company","reimbursementMailModel","field","Reimbursement mail model","Modèle d'email de remboursement",,"Modèle d'email envoyé au bénéficiaire du remboursement"
-"com.axelor.apps.base.db.Company","reimbursementImportFolderPathCFONB","field","Filepath for rejected reimbursements","Chemin d'import des rejets des remboursements","example : /home/axelor/reject.dat","Chemin vers le fichier d'import des rejets de remboursement CFONB, exemple : /home/axelor/Import_ERP/Import_Rejets_Remboursements/rejet_axe.dat ."
-"com.axelor.apps.base.db.Company","tempReimbImportFolderPathCFONB","field","Filepath for temporary rejected reimbursements import","Chemin d'import temporaire des rejets des remboursements","example : /home/axelor/reject.dat","Chemin vers le fichier d'import des rejets de remboursement SEPA, exemple : /home/axelor/Import_ERP/Import_Rejets_Remboursements/rejet_axe.dat ."
-"com.axelor.apps.base.db.Company","exportPath","field","Filepath for exported files (Accounting)","Chemin fichier exporté (si -> AGRESSO)",,"Chemin vers le fichier d'export comptable"
-"com.axelor.apps.base.db.Company","senderRecordCodeExportCFONB","field","Sender record code","Code enregistrement émetteur",,"Par défaut '03'"
-"com.axelor.apps.base.db.Company","senderNumExportCFONB","field","Sender Nbr","N° d'émetteur",,"N° d'émetteur de la société"
-"com.axelor.apps.base.db.Company","senderNameCodeExportCFONB","field","Sender Name","Nom/Raison sociale émetteur",,
-"com.axelor.apps.base.db.Company","recipientRecordCodeExportCFONB","field","Recipient record code","Code enreg. destinataire",,"Par défaut '06'"
-"com.axelor.apps.base.db.Company","totalRecordCodeExportCFONB","field","Total record code","Code enreg. total",,"Par défaut '08'"
-"com.axelor.apps.base.db.Company","transferOperationCodeExportCFONB","field","Wire transfer operation code","Code opér. Virement",,"Par défaut '02'"
-"com.axelor.apps.base.db.Company","directDebitOperationCodeExportCFONB","field","Direct debit operation code","Code opér. Prélèvement",,"Par défaut '08'"
-"com.axelor.apps.base.db.Company","headerRecordCodeImportCFONB","field","Header record code","Code enreg. en-tête",,"Par défaut '31'"
-"com.axelor.apps.base.db.Company","detailRecordCodeImportCFONB","field","Details record code","Code enreg. détail",,"Par défaut '34'"
-"com.axelor.apps.base.db.Company","endingRecordCodeImportCFONB","field","Ending record code","Code enreg. fin",,"Par défaut '39'"
-"com.axelor.apps.base.db.Company","transferOperationCodeImportCFONB","field","Rejected Wire transfer operation code","Code opér. Virement rejetés",,"Par défaut '21'"
-"com.axelor.apps.base.db.Company","directDebitOperationCodeImportCFONB","field","Unpaid direct debit operation code","Code opér. Prélèvement impayés",,"Par défaut '81'"
-"com.axelor.apps.base.db.Company","ipoRejectOperationCodeImportCFONB","field","Unpaid IPO operation code","Code opér. TIP impayés",,"Par défaut '71'"
-"com.axelor.apps.base.db.Company","ipoOperationCodeImportCFONB","field","IPO operation code","Code opér. TIP",,
-"com.axelor.apps.base.db.Company","ipoAndChequeOperationCodeImportCFONB","field","IPO and Cheque operation code","Code opér. TIP + chèque",,
-"com.axelor.apps.base.db.Company","paymentScheduleExportFolderPathCFONB","field","Filepath for direct debit exports (CFONB)","Dossier d'export des prélèvements (CFONB)","exemple : /home/axelor/","*"
-"com.axelor.apps.base.db.Company","rejectionPaymentMode","field","Payment mode after rejection","Mode de paiement après rejet",,"*"
-"com.axelor.apps.base.db.Company","paymentScheduleRejectNumLimit","field","Max Nbr. for payment schedule rejection","Nbre limite de rejet Echéancier de paiement",,"*"
-"com.axelor.apps.base.db.Company","invoiceRejectNumLimit","field","Max Nbr. of invoices rejection","Nbre limite de rejet Facture",,"*"
-"com.axelor.apps.base.db.Company","rejectImportPathAndFileName","field","Filepath to import rejected records","Chemin du fichier d'import","example : /home/axelor/reject.dat","*"
-"com.axelor.apps.base.db.Company","tempImportPathAndFileName","field","Temporary filepath to import rejected records","Chemin du fichier d'import temporaire","example : /home/axelor/reject.dat","*"
-"com.axelor.apps.base.db.Company","rejectPaymentScheduleMailModel","field","Mail model for invoice and payment schedule rejections","Modèle de courrier rejet Facture et Echéancier de paiement",,
-"com.axelor.apps.base.db.Company","clearanceAccountSet","field","Clearance Accounts","Comptes d'apurements",,"Comptes comptables sur lesquels les trop-perçus seront apurés."
-"com.axelor.apps.base.db.Company","profitAccount","field","Profit accounts","Compte de profits",,"Compte comptable de type profit utilisé par défaut pour la contrepartie des écritures d'apurement de trop perçus."
-"com.axelor.apps.base.db.Company","standardRateVat","field","VAT Standard rate for clearance","T.V.A. taux normal",,"TVA à utiliser pour l'apurement des trop perçus."
-"com.axelor.apps.base.db.Company","irrecoverableReasonPassage","field","Irrecoverable shifting reason","Motif de passage en irrécouvrable",,"Motif qui sera reporté sur l'écriture de passage en irrcouvrable."
-"com.axelor.apps.base.db.Company","irrecoverableStandardRateVat","field","VAT Standard rate for irrecoverables","T.V.A. Pour passage en irrécouvrable",,
-"com.axelor.apps.base.db.Company","payboxUrl","field","Environment Url","Url de l'environnement",,"Url d'appel complétée par un point d'interrogation, exemple : https://preprod-tpeweb.paybox.com/cgi/MYchoix_pagepaiement.cgi? ."
-"com.axelor.apps.base.db.Company","payboxSite","field","Site Nbr","N° de site",,"N° de site (TPE) à 7 chiffres fourni par la banque du commerçant."
-"com.axelor.apps.base.db.Company","payboxRang","field","Rank number","N° de rang",,"N° de rang (ou ""machine"") à 2 chiffres fourni par la banque du commerçant."
-"com.axelor.apps.base.db.Company","payboxDevise","field","Transaction currency","Devise des transactions",,"Code monnaie de la transaction à 3 chiffres suivant la norme ISO 4217 (exemple : Euro 978, Dollar 840)."
-"com.axelor.apps.base.db.Company","payboxIdentifiant","field","Internal identifier","Identifiant interne",,"Identifiant Paybox de 1 à 9 chiffres fourni par Paybox au moment de l'inscription du commerçant. "
-"com.axelor.apps.base.db.Company","payboxHashSelect","field","Algorithm hashing type to calculate the footprint","Type d'algorithme de hachage utilisé lors du calcul de l'empreinte",,"Défini l'algorithme de hachage utilisé lors du calcul du HMAC. Valeur par défaut SHA512."
-"com.axelor.apps.base.db.Company","payboxHmac","field","Secret key","Clé secrète",,"Clé secrète fournie par Paybox, utilisée pour le calcul de l'empreinte."
-"com.axelor.apps.base.db.Company","payboxDefaultEmail","field","Axelor Backoffice email","Email de back-office Axelor",,"*"
-"com.axelor.apps.base.db.Company","payboxRetour","field","Variables list returned by Paybox","Liste des variables à retourner par Paybox",,"Listes des variables renvoyées par Paybox. Format: <nom de variable>:<lettre>"
-"com.axelor.apps.base.db.Company","payboxRetourUrlEffectue","field","Url returned by Paybox once payment done","Url retourner par Paybox une fois le paiement effectué",,"Correspond à l’adresse appelée par Paybox si le paiement est validé."
-"com.axelor.apps.base.db.Company","payboxRetourUrlRefuse","field","Url returned by Paybox once payment refused","Url retourner par Paybox une fois le paiement refusé",,"Correspond à l’adresse appelée par Paybox si le paiement est refusé."
-"com.axelor.apps.base.db.Company","payboxRetourUrlAnnule","field","Url returned by Paybox once payment cancelled","Url retourner par Paybox une fois le paiement annulé",,"Correspond à l’adresse appelée par Paybox si le paiement est annulé."
-"com.axelor.apps.base.db.Company","payboxPublicKeyPath","field","Path to Paybox public key","Chemin de la clé publique Paybox",,"Chemin de la clé public paybox (exemple : /home/soregies/Paybox/pubkey.pem)."
-"com.axelor.apps.base.db.Company","interbankPaymentOrderImportPathCFONB","field","Filepath to import IPO, and IPO and Cheque payments","Chemin d'import des paiements par TIP et TIP chèque","example : /home/axelor/reject.dat","Chemin vers le fichier d'import des paiements par TIP et TIP/Chèque, exemple : /home/axelor/Import_ERP/Import_Rejets_Remboursements/rejet_axe.dat ."
-"com.axelor.apps.base.db.Company","tempInterbankPaymentOrderImportPathCFONB","field","Temporary filepath to import IPO, and IPO and Cheque payments","Chemin d'import temporaire des paiements par TIP et TIP chèque","example : /home/axelor/reject.dat","Chemin vers le fichier d'import temporaire des paiements par TIP et TIP/Chèque, exemple : /home/axelor/Import_ERP/Import_Rejets_Remboursements/rejet_axe.dat ."
-"com.axelor.apps.base.db.Company","interbankPaymentOrderRejectImportPathCFONB","field","Filepath to import IPO, and IPO and Cheque payments rejects","Chemin d'import des rejets de paiement par TIP et TIP chèque","example : /home/axelor/reject.dat","Chemin vers le fichier d'import des rejets de paiements par TIP et TIP/Chèque, exemple : /home/axelor/Import_ERP/Import_Rejets_Remboursements/rejet_axe.dat ."
-"com.axelor.apps.base.db.Company","tempInterbankPaymentOrderRejectImportPathCFONB","field","Temporary filepath to import IPO, and IPO and Cheque payments rejects","Chemin d'import temporaire des rejets de paiement par TIP et TIP chèque","example : /home/axelor/reject.dat","Chemin vers le fichier d'import temporaire des paiements par TIP et TIP/Chèque, exemple : /home/axelor/Import_ERP/Import_Rejets_Remboursements/rejet_axe.dat ."
 "com.axelor.apps.base.db.Company","indexExportPath","field","Chemin d'export du fichier de saisie des index","Chemin d'export du fichier de saisie des index",,"*"
-"com.axelor.apps.base.db.Company","generatedMailFilePath","field","Filepath to export generated mails","Chemin d'export des courriers générés","example : /home/axelor/mail/","*"
-"com.axelor.apps.base.db.Company","generatedEmailFilePath","field","Filepath to export generated emails","Chemin d'export des emails générés","example : /home/axelor/email/","*"
-"com.axelor.apps.base.db.Company","generatedMailFileName","field","Generated mail files name prefix","Préfixe du nom de fichier d'export des courriers générés","exemple : letter_","Préfix du nom de fichier pour les courriers générés et stockés sur le serveur, exemple : 'courrier_' ."
-"com.axelor.apps.base.db.Company","generatedEmailFileName","field","Generated email files name prefix","Préfixe du nom de fichier d'export des emails générés","exemple : email_","Préfix du nom de fichier pour les emails générés et stockés sur le serveur, exemple : 'courrier_' ."
-"com.axelor.apps.base.db.Company","showDetailsInInvoice","field","Show details in invoice","Voir détails sur facture",,
-"com.axelor.apps.base.db.Company","customerVirtualLocation","field","Customer virtual location","Empl. Virtuel Client",,"Emplacement utilisé par défaut comme destination pour les mouvements de type livraison."
-"com.axelor.apps.base.db.Company","supplierVirtualLocation","field","Supplier virtual location","Empl. Virtuel Fourn.",,"Emplacement utilisé par défaut comme source pour les mouvements de type réception."
-"com.axelor.apps.base.db.Company","inventoryVirtualLocation","field","Inventory virtual location","Empl. Virtuel Inv.",,"Emplacement utilisé par défaut comme source ou destination pour les mouvements d'inventaire."
-"com.axelor.apps.base.db.Company","hasOutSmForStorableProduct","field","Generate out going stock move for storable product","Générer BL pour produit stockable",,"Si la case est cochée, un mouvement de stock livraison (BL) sera déclenché pour les produits de type Stockable."
-"com.axelor.apps.base.db.Company","hasOutSmForNonStorableProduct","field","Generate out going stock move for non storable product","Générer BL pour produit non stockable",,"Si la case est cochée, un mouvement de stock livraison (BL) sera déclenché pour les produits de type Service (non-stockable)."
-"com.axelor.apps.base.db.Company","hasInSmForStorableProduct","field","Generate incoming stock move for storable product","Générer BR pour produit stockable",,"Si la case est cochée, un mouvement de stock réception (BR) sera déclenché pour les produits de type Stockable."
-"com.axelor.apps.base.db.Company","hasInSmForNonStorableProduct","field","Generate incoming stock move for non storable product","Générer BR pour produit non stockable",,"Si la case est cochée, un mouvement de stock réception (BR) sera déclenché pour les produits de type Service (non-stockable)."
-"com.axelor.apps.base.db.Company","salesOrderInvoicingTypeSelect","field","Sales order invoicing type","Type de fact. par défaut des devis Client",,"Type de facturation sélectionné par défaut lors de la création d'un devis client."
-"com.axelor.apps.base.db.Company","purchaseOrderInvoicingTypeSelect","field","Purchases order invoicing type","Type de fact. par défaut des devis Fourn.",,"Type de facturation sélectionné par défaut lors de la création d'une demande de devis fournisseur."
 "com.axelor.apps.base.db.Company","printingSettings","field","Printing Settings","Impressions",,"Rubrique dédiée à la configuration d'éléments d'impressions (en-tête, pied de page …)"
 "com.axelor.apps.base.db.CompanyDepartment","importId","field",,"Id Import",,
 "com.axelor.apps.base.db.CompanyDepartment","name","field","Name","Nom",,
@@ -735,7 +640,7 @@
 "com.axelor.apps.organisation.db.ExpenseLine","qty","field","Quantity","Qté",,"Par défaut égale à 1 lors de la sélection du produit."
 "com.axelor.apps.organisation.db.ExpenseLine","price","field","Unit price","Prix unitaire",,
 "com.axelor.apps.organisation.db.ExpenseLine","inTaxTotal","field","Total (TTC)","Total T.T.C.",,
-"com.axelor.apps.organisation.db.ExpenseLine","vatLine","field","V.A.T.","TVA",,"TVA applicable à cette dépense (déjà incluse dans le Total T.T.C.)"
+"com.axelor.apps.organisation.db.ExpenseLine","taxLine","field","V.A.T.","TVA",,"TVA applicable à cette dépense (déjà incluse dans le Total T.T.C.)"
 "com.axelor.apps.organisation.db.ExpenseLine","file","field","File","Fichier",,"Document à charger sur l'application (Preuve d'achat : Ticket de caisse, Facture …)"
 "com.axelor.apps.organisation.db.ExpenseLine","fileReceived","field","File received","Fichier reçu",,"Réservé à la direction ou au personnel administratif pour vérifier que la note de frais est complète."
 "com.axelor.apps.organisation.db.ExpenseLine","validationDate","field","Date de validation","Date de validation",,"Egal à la date de validation de la NDF."
@@ -781,7 +686,7 @@
 "com.axelor.apps.base.db.General","exceptionReminderMsg","field","Debt recovery message","Message pour recouvrement",,"*"
 "com.axelor.apps.base.db.General","exceptionMailMsg","field","Mail and Email message","Message pour email et courrier",,"*"
 "com.axelor.apps.base.db.General","exceptionSupplychainMsg","field","Supply chain message","Message pour les exception supply chain",,"*"
-"com.axelor.apps.base.db.General","defaultExemptionVat","field","VAT 0%","T.V.A. 0%",,"*"
+"com.axelor.apps.base.db.General","defaultExemptionTax","field","Tax 0%","T.V.A. 0%",,"*"
 "com.axelor.apps.base.db.General","qasWsdlUrl","field","URL to the QAS WSDL","URL vers le WSDL QAS","http://{serveur}:{port}/proweb.wsdl","URL pour interroger la webservice QAS permettant de vérifier l'existence d'une adresse."
 "com.axelor.apps.base.db.General","mapApiSelect","field","Mapping service provider","API pour cartes",,"Choix du service à utiliser pour visualiser le positionnement d'une adresse sur une carte."
 "com.axelor.apps.base.db.GeographicalArea","name","field","Area name","Nom zone",,
@@ -896,7 +801,7 @@
 "com.axelor.apps.account.db.Invoice","doubtfulCustomerOk","field","Doubtful Customer","Créance douteuse",,"Si cochée, indique que la créance restante à payer sur facture a été passée en créance douteuse."
 "com.axelor.apps.account.db.Invoice","currency","field","Currency","Devise","This currency defined the currency of the invoice. If the company accounting currency or journal currency is different from the invoice currency, the system will automatically convert the amounts into the accounting or journal currency.","Devise associée à la facture. Si la devise est différente de la devise configurée pour la Société, une conversion sera effectuée avant la ventilation de la facture en comptabilité."
 "com.axelor.apps.account.db.Invoice","invoiceLineList","field","Invoice Lines","Lignes de facture",,
-"com.axelor.apps.account.db.Invoice","invoiceLineVatList","field","VAT Lines","Lignes de T.V.A.",,
+"com.axelor.apps.account.db.Invoice","invoiceLineTaxList","field","Tax Lines","Lignes de T.V.A.",,
 "com.axelor.apps.account.db.Invoice","alreadyPrintedOk","field","Already printed ?","Impression générée ?","Field allowing to distinguish the original invoice from a copy/duplicata.","*"
 "com.axelor.apps.account.db.Invoice","previousInvoice","field","Previous invoice","Facture précédente",,"*"
 "com.axelor.apps.account.db.Invoice","refundInvoice","field","Refund","Avoir",,"Si une facture a fait l'objet d'un avoir, lien vers l'avoir en question."
@@ -923,12 +828,12 @@
 "com.axelor.apps.account.db.Invoice","directDebitAmount","field","Debited amount","Montant prélevé",,
 "com.axelor.apps.account.db.Invoice","paymentMove","field","Payment Move","Ecriture de paiement",,
 "com.axelor.apps.account.db.Invoice","note","field","Notes","Note",,
-"com.axelor.apps.account.db.Invoice","exTaxTotal","field","Total W.V.","Total H.T.","Total without VAT.","Egal à la somme des totaux hors taxes (H.T.) des lignes de facture."
-"com.axelor.apps.account.db.Invoice","vatTotal","field","Total V.A.T.","Total T.V.A.","Total VAT amount is a result of the sum of the VAT lines Amount.","Egal à la somme des montants TVA des lignes de T.V.A."
-"com.axelor.apps.account.db.Invoice","inTaxTotal","field","Total A.T.I.","Total T.T.C.","Total all taxes/VAT included.","Egal à la somme du total H.T. Et du total T.V.A."
+"com.axelor.apps.account.db.Invoice","exTaxTotal","field","Total W.V.","Total H.T.","Total without Tax.","Egal à la somme des totaux hors taxes (H.T.) des lignes de facture."
+"com.axelor.apps.account.db.Invoice","taxTotal","field","Total V.A.T.","Total T.V.A.","Total Tax amount is a result of the sum of the Tax lines Amount.","Egal à la somme des montants TVA des lignes de T.V.A."
+"com.axelor.apps.account.db.Invoice","inTaxTotal","field","Total A.T.I.","Total T.T.C.","Total all taxes included.","Egal à la somme du total H.T. Et du total T.V.A."
 "com.axelor.apps.account.db.Invoice","inTaxTotalRemaining","field","Remaining to pay","Restant à payer",,"Egal au total T.T.C. Diminué des paiements déjà effectués (lettrages) sur cette facture."
 "com.axelor.apps.account.db.Invoice","invoiceExTaxTotal","field","Total W.V.","Total H.T.",,"*"
-"com.axelor.apps.account.db.Invoice","invoiceVatTotal","field","Total V.A.T.","Total T.V.A.",,"*"
+"com.axelor.apps.account.db.Invoice","invoiceTaxTotal","field","Total V.A.T.","Total T.V.A.",,"*"
 "com.axelor.apps.account.db.Invoice","invoiceInTaxTotal","field","Total A.T.I.","Total T.T.C",,"*"
 "com.axelor.apps.account.db.Invoice","invoiceAmountPaid","field","Amount paid","Montant payé",,"*"
 "com.axelor.apps.account.db.Invoice","status","field","Status","Etat",,"Par défaut à l'état 'Brouillon'. Attention, la validation d'une facture n'implique pas sa ventilation comptable. Les écritures sont générées lors du passage à l'état 'Ventilé'"
@@ -952,7 +857,7 @@
 "com.axelor.apps.account.db.InvoiceLine","qty","field","Qty","Quantité nette à facturer",,
 "com.axelor.apps.account.db.InvoiceLine","exTaxTotal","field","Total W.T.","Total H.T.",,"Egal à la quantité multipliée par le prix unitaire (dans la devise de la facture)."
 "com.axelor.apps.account.db.InvoiceLine","accountingExTaxTotal","field","Total W.T. in accounting currency","Total H.T. (Devise Sté)",,
-"com.axelor.apps.account.db.InvoiceLine","vatLine","field","V.A.T.","T.V.A.",,"Champ rempli automatiquement lors de la sélection du produit avec la version de TVA active à la date d'avoir/facture. "
+"com.axelor.apps.account.db.InvoiceLine","taxLine","field","V.A.T.","T.V.A.",,"Champ rempli automatiquement lors de la sélection du produit avec la version de TVA active à la date d'avoir/facture. "
 "com.axelor.apps.account.db.InvoiceLine","discountAmount","field","Discount amount","Montant Remise",,"Montant associé au type de remise : négatif pour une remise (-5 pour -5€ ou -5%), positif pour une majoration (10 pour +10€ ou +10%)."
 "com.axelor.apps.account.db.InvoiceLine","discountTypeSelect","field","In % / fixed","Type remise",,"Fixe pour une remise en montant (dans la devise de facture, ex : -10€), % pour appliquer une remise en pourcentage (ex : -5%). Le montant de la remise est à renseigner dans le champ 'Montant Remise'. Champ pouvant être renseigné par défaut si l'avoir/facture est soumis à une liste de prix incluant des remises. "
 "com.axelor.apps.account.db.InvoiceLine","description","field","Description","Descriptif",,
@@ -973,14 +878,14 @@
 "com.axelor.apps.account.db.InvoiceLineType","importId","field",,"ID Import",,
 "com.axelor.apps.account.db.InvoiceLineType","name","field","Name","Nom",,
 "com.axelor.apps.account.db.InvoiceLineType","code","field","Code","Code",,"Le code doit être unique."
-"com.axelor.apps.account.db.InvoiceLineVat","invoice","field","Invoice","Facture",,"Avoir/Facture de rattachement de la ligne de TVA."
-"com.axelor.apps.account.db.InvoiceLineVat","exTaxBase","field","Base W.T.","Base HT",,"Egal à la somme des totaux hors taxes (H.T.) des lignes de facture associés à cette T.V.A."
-"com.axelor.apps.account.db.InvoiceLineVat","vatTotal","field","Amount V.A.T.","Montant T.V.A.",,"Egal au Taux de T.V.A. multiplié par la Base H.T."
-"com.axelor.apps.account.db.InvoiceLineVat","inTaxTotal","field","Amount A.T.I.","Montant T.T.C.",,"Egal à la somme de la base H.T. et du montant T.V.A."
-"com.axelor.apps.account.db.InvoiceLineVat","accountingExTaxBase","field","Base W.T. in accounting currency","Base HT (devise comptabilité)",,
-"com.axelor.apps.account.db.InvoiceLineVat","accountingVatTotal","field","Amount V.A.T. in accounting currency","Montant T.V.A. (Devise Sté)",,
-"com.axelor.apps.account.db.InvoiceLineVat","accountingInTaxTotal","field","Amount A.T.I. in accounting currency","Montant T.T.C. (Devise Sté)",,
-"com.axelor.apps.account.db.InvoiceLineVat","vatLine","field","V.A.T.","T.V.A.",,"Version de TVA utilisée sur la lignes de facture."
+"com.axelor.apps.account.db.InvoiceLineTax","invoice","field","Invoice","Facture",,"Avoir/Facture de rattachement de la ligne de TVA."
+"com.axelor.apps.account.db.InvoiceLineTax","exTaxBase","field","Base W.T.","Base HT",,"Egal à la somme des totaux hors taxes (H.T.) des lignes de facture associés à cette T.V.A."
+"com.axelor.apps.account.db.InvoiceLineTax","taxTotal","field","Amount V.A.T.","Montant T.V.A.",,"Egal au Taux de T.V.A. multiplié par la Base H.T."
+"com.axelor.apps.account.db.InvoiceLineTax","inTaxTotal","field","Amount A.T.I.","Montant T.T.C.",,"Egal à la somme de la base H.T. et du montant T.V.A."
+"com.axelor.apps.account.db.InvoiceLineTax","accountingExTaxBase","field","Base W.T. in accounting currency","Base HT (devise comptabilité)",,
+"com.axelor.apps.account.db.InvoiceLineTax","accountingTaxTotal","field","Amount V.A.T. in accounting currency","Montant T.V.A. (Devise Sté)",,
+"com.axelor.apps.account.db.InvoiceLineTax","accountingInTaxTotal","field","Amount A.T.I. in accounting currency","Montant T.T.C. (Devise Sté)",,
+"com.axelor.apps.account.db.InvoiceLineTax","taxLine","field","V.A.T.","T.V.A.",,"Version de TVA utilisée sur la lignes de facture."
 "com.axelor.apps.account.db.Irrecoverable","name","field","Nom","Nom",,
 "com.axelor.apps.account.db.Irrecoverable","irrecoverableCustomerLineList","field","Clients","Clients",,
 "com.axelor.apps.account.db.Irrecoverable","invoiceSet","field","Factures et rejets de factures","Factures et rejets de factures",,
@@ -1331,7 +1236,7 @@
 "com.axelor.apps.account.db.MoveLine","unrecocileMoveOk","field","Unreconciled move line","Ligne d'écriture non lettrée",,
 "com.axelor.apps.account.db.MoveLine","passageReason","field","Irrecoverable Shift Reason","Motif de passage",,
 "com.axelor.apps.account.db.MoveLine","usherPassageOk","field","Transfer(ed) to Usher ","Passage à l'huissier",,
-"com.axelor.apps.account.db.MoveLine","vatLine","field","VAT","T.V.A.",,
+"com.axelor.apps.account.db.MoveLine","taxLine","field","Tax","T.V.A.",,
 "com.axelor.apps.account.db.MoveLine","currencyRate","field","Currency Rate","Taux d'origine de conversion de devise",,
 "com.axelor.apps.account.db.MoveLine","currencyAmount","field","Amount in Currency","Montant en devise",,
 "com.axelor.apps.account.db.MoveLine","maxAmountToReconcile","field","Max Amount to reconcile","Montant max. à réconcilier",,
@@ -1482,7 +1387,7 @@
 "com.axelor.apps.base.db.Partner","nbrEmployees","field","N° of Employees","Nbre Employés",,
 "com.axelor.apps.base.db.Partner","salesTurnover","field","Turnover","CA",,
 "com.axelor.apps.base.db.Partner","registrationCode","field","Registration code","N° SIRET",,"Format proposé pour le SIRET Français : XXXXXXXXX/YYYYY"
-"com.axelor.apps.base.db.Partner","vatNbr","field","VAT N°","N° TVA",,
+"com.axelor.apps.base.db.Partner","taxNbr","field","Tax N°","N° TVA",,
 "com.axelor.apps.base.db.Partner","fullName","field","Nom du Contact","Nom complet",,
 "com.axelor.apps.base.db.PartnerCategory","importId","field",,"Id Import",,
 "com.axelor.apps.base.db.PartnerCategory","name","field","Name","Nom",,
@@ -1869,11 +1774,11 @@
 "com.axelor.apps.supplychain.db.PurchaseOrder","invoice","field","Invoice","Facture",,
 "com.axelor.apps.supplychain.db.PurchaseOrder","location","field","Location","Emplacement livraison",,
 "com.axelor.apps.supplychain.db.PurchaseOrder","externalReference","field","Supplier reference","Réf. Fourn.",,
-"com.axelor.apps.supplychain.db.PurchaseOrder","purchaseOrderLineVatList","field","V.A.T. Lines","Lignes de TVA",,
+"com.axelor.apps.supplychain.db.PurchaseOrder","purchaseOrderLineTaxList","field","V.A.T. Lines","Lignes de TVA",,
 "com.axelor.apps.supplychain.db.PurchaseOrder","validatedByUserInfo","field","Validated by","Validé par",,
 "com.axelor.apps.supplychain.db.PurchaseOrder","validationDate","field","Validation date","Date de validation",,
 "com.axelor.apps.supplychain.db.PurchaseOrder","exTaxTotal","field","Total W.V.","Total H.T.",,
-"com.axelor.apps.supplychain.db.PurchaseOrder","vatTotal","field","Total V.A.T.","Total T.V.A.",,
+"com.axelor.apps.supplychain.db.PurchaseOrder","taxTotal","field","Total V.A.T.","Total T.V.A.",,
 "com.axelor.apps.supplychain.db.PurchaseOrder","inTaxTotal","field","Total A.T.I.","Total T.T.C.",,
 "com.axelor.apps.supplychain.db.PurchaseOrder","amountRemainingToBeInvoiced","field","Amount remaining to invoice","Montant restant à payer",,
 "com.axelor.apps.supplychain.db.PurchaseOrder","notes","field","Notes","Notes",,
@@ -1883,7 +1788,7 @@
 "com.axelor.apps.supplychain.db.PurchaseOrderLine","qty","field","Qty","Qté",,
 "com.axelor.apps.supplychain.db.PurchaseOrderLine","productName","field","Label","Libellé",,
 "com.axelor.apps.supplychain.db.PurchaseOrderLine","price","field","Unit price","Prix unitaire",,
-"com.axelor.apps.supplychain.db.PurchaseOrderLine","vatLine","field","V.A.T.","T.V.A.",,
+"com.axelor.apps.supplychain.db.PurchaseOrderLine","taxLine","field","V.A.T.","T.V.A.",,
 "com.axelor.apps.supplychain.db.PurchaseOrderLine","exTaxTotal","field","Subtotal W.T.","Sous-total HT",,
 "com.axelor.apps.supplychain.db.PurchaseOrderLine","description","field","Description","Description",,
 "com.axelor.apps.supplychain.db.PurchaseOrderLine","unit","field","Unit","Unité",,
@@ -1898,12 +1803,12 @@
 "com.axelor.apps.supplychain.db.PurchaseOrderLine","deliveryDate","field","Delivery Date","Date de livraison",,
 "com.axelor.apps.supplychain.db.PurchaseOrderLine","productVariant","field",,"Variante produit",,
 "com.axelor.apps.supplychain.db.PurchaseOrderLine","companyExTaxTotal","field","Total W.T. in company currency","Total H.T. (Devise Sté)",,
-"com.axelor.apps.supplychain.db.PurchaseOrderLineVat","purchaseOrder","field","Purchase order","Devis/Cmde Fourn.",,
-"com.axelor.apps.supplychain.db.PurchaseOrderLineVat","vatLine","field","V.A.T.","T.V.A.",,
-"com.axelor.apps.supplychain.db.PurchaseOrderLineVat","exAllTaxBase","field","Base W.A.T.","Total H.T.T.",,
-"com.axelor.apps.supplychain.db.PurchaseOrderLineVat","exTaxBase","field","Base W.T.","Total H.T.",,
-"com.axelor.apps.supplychain.db.PurchaseOrderLineVat","vatTotal","field","Amount V.A.T.","Total T.V.A.",,
-"com.axelor.apps.supplychain.db.PurchaseOrderLineVat","inTaxTotal","field","Amount A.T.I.","Total T.T.C.",,
+"com.axelor.apps.supplychain.db.PurchaseOrderLineTax","purchaseOrder","field","Purchase order","Devis/Cmde Fourn.",,
+"com.axelor.apps.supplychain.db.PurchaseOrderLineTax","taxLine","field","V.A.T.","T.V.A.",,
+"com.axelor.apps.supplychain.db.PurchaseOrderLineTax","exAllTaxBase","field","Base W.A.T.","Total H.T.T.",,
+"com.axelor.apps.supplychain.db.PurchaseOrderLineTax","exTaxBase","field","Base W.T.","Total H.T.",,
+"com.axelor.apps.supplychain.db.PurchaseOrderLineTax","taxTotal","field","Amount V.A.T.","Total T.V.A.",,
+"com.axelor.apps.supplychain.db.PurchaseOrderLineTax","inTaxTotal","field","Amount A.T.I.","Total T.T.C.",,
 "com.axelor.apps.base.db.Querie","name","field","Name","Nom",,
 "com.axelor.apps.base.db.Querie","type","field","Type","Type",,
 "com.axelor.apps.base.db.Querie","query","field","Query","Requête",,
@@ -2048,9 +1953,9 @@
 "com.axelor.apps.supplychain.db.SalesOrder","invoicingTypeSelect","field","Invoicing type","Mode de facturation",,
 "com.axelor.apps.supplychain.db.SalesOrder","hasGlobalTask","field","Global task ?","Utiliser Tâche globale ?",,
 "com.axelor.apps.supplychain.db.SalesOrder","salesOrderLineList","field","Sale order lines","Lignes de devis",,
-"com.axelor.apps.supplychain.db.SalesOrder","salesOrderLineVatList","field","V.A.T. Lines","Lignes de TVA",,
+"com.axelor.apps.supplychain.db.SalesOrder","salesOrderLineTaxList","field","V.A.T. Lines","Lignes de TVA",,
 "com.axelor.apps.supplychain.db.SalesOrder","exTaxTotal","field","Total W.V.","Total H.T.",,
-"com.axelor.apps.supplychain.db.SalesOrder","vatTotal","field","Total V.A.T.","Total T.V.A.",,
+"com.axelor.apps.supplychain.db.SalesOrder","taxTotal","field","Total V.A.T.","Total T.V.A.",,
 "com.axelor.apps.supplychain.db.SalesOrder","inTaxTotal","field","Total A.T.I.","Total T.T.C.",,
 "com.axelor.apps.supplychain.db.SalesOrder","amountRemainingToBeInvoiced","field","Amount remaining to invoice","Solde restant à facturer",,
 "com.axelor.apps.supplychain.db.SalesOrder","statusSelect","field","Status","Etat",,
@@ -2080,7 +1985,7 @@
 "com.axelor.apps.supplychain.db.SalesOrderLine","productName","field","Product name","Libellé",,
 "com.axelor.apps.supplychain.db.SalesOrderLine","saleSupplySelect","field","Méthode d'appro. des ventes","Mode Appro. Ventes",,
 "com.axelor.apps.supplychain.db.SalesOrderLine","price","field","Unit price","Prix unitaire",,
-"com.axelor.apps.supplychain.db.SalesOrderLine","vatLine","field","V.A.T.","T.V.A.",,
+"com.axelor.apps.supplychain.db.SalesOrderLine","taxLine","field","V.A.T.","T.V.A.",,
 "com.axelor.apps.supplychain.db.SalesOrderLine","exTaxTotal","field","Total W.T.","Sous-total HT",,
 "com.axelor.apps.supplychain.db.SalesOrderLine","task","field","Task","Tâche associée",,
 "com.axelor.apps.supplychain.db.SalesOrderLine","employeeSet","field","Employees","Employés préssentis",,
@@ -2102,12 +2007,12 @@
 "com.axelor.apps.supplychain.db.SalesOrderLine","productVariant","field",,"Variante produit",,
 "com.axelor.apps.supplychain.db.SalesOrderLine","companyExTaxTotal","field","Total W.T. in company currency","Total H.T. (Devise Sté)",,
 "com.axelor.apps.supplychain.db.SalesOrderLine","companyCostPrice","field","Unit cost price in company currency","Coût de revient",,
-"com.axelor.apps.supplychain.db.SalesOrderLineVat","salesOrder","field","Sale order","Devis",,
-"com.axelor.apps.supplychain.db.SalesOrderLineVat","vatLine","field","V.A.T.","T.V.A.",,
-"com.axelor.apps.supplychain.db.SalesOrderLineVat","exAllTaxBase","field","Base W.A.T.","Base H.T.T.",,
-"com.axelor.apps.supplychain.db.SalesOrderLineVat","exTaxBase","field","Base W.T.","Base H.T.",,
-"com.axelor.apps.supplychain.db.SalesOrderLineVat","vatTotal","field","Amount V.A.T.","Montant T.V.A.",,
-"com.axelor.apps.supplychain.db.SalesOrderLineVat","inTaxTotal","field","Amount A.T.I.","Montant T.T.C.",,
+"com.axelor.apps.supplychain.db.SalesOrderLineTax","salesOrder","field","Sale order","Devis",,
+"com.axelor.apps.supplychain.db.SalesOrderLineTax","taxLine","field","V.A.T.","T.V.A.",,
+"com.axelor.apps.supplychain.db.SalesOrderLineTax","exAllTaxBase","field","Base W.A.T.","Base H.T.T.",,
+"com.axelor.apps.supplychain.db.SalesOrderLineTax","exTaxBase","field","Base W.T.","Base H.T.",,
+"com.axelor.apps.supplychain.db.SalesOrderLineTax","taxTotal","field","Amount V.A.T.","Montant T.V.A.",,
+"com.axelor.apps.supplychain.db.SalesOrderLineTax","inTaxTotal","field","Amount A.T.I.","Montant T.T.C.",,
 "com.axelor.apps.supplychain.db.SalesOrderScheduleLine","salesOrder","field","Devis","Devis",,
 "com.axelor.apps.supplychain.db.SalesOrderScheduleLine","sequence","field","Sequence","Séquence",,
 "com.axelor.apps.supplychain.db.SalesOrderScheduleLine","amountToBeInvoiced","field","Montant à facturer","Montant à facturer",,
@@ -2125,7 +2030,7 @@
 "com.axelor.apps.supplychain.db.SalesOrderSubLine","unit","field","Unit","Unité",,
 "com.axelor.apps.supplychain.db.SalesOrderSubLine","qty","field","Qty","Quantité",,
 "com.axelor.apps.supplychain.db.SalesOrderSubLine","price","field","Unit price","Prix unitaire",,
-"com.axelor.apps.supplychain.db.SalesOrderSubLine","vatLine","field","V.A.T.","Sous-total T.V.A.",,
+"com.axelor.apps.supplychain.db.SalesOrderSubLine","taxLine","field","V.A.T.","Sous-total T.V.A.",,
 "com.axelor.apps.supplychain.db.SalesOrderSubLine","exTaxTotal","field","Total W.T.","Sous-total HT",,
 "com.axelor.apps.supplychain.db.SalesOrderSubLine","discountAmount","field","Discount amount","Montant remise",,
 "com.axelor.apps.supplychain.db.SalesOrderSubLine","discountTypeSelect","field","In % / fixed","Type remise",,
@@ -2580,21 +2485,21 @@
 "com.axelor.apps.googleapps.db.UserProfile","emailId","field","Email Id","Identifiant Email",,
 "com.axelor.apps.googleapps.db.UserProfile","name","field","Name","Nom",,
 "com.axelor.apps.googleapps.db.UserProfile","permissionId","field","Account Id","ID Permission","Google Account Id/Permission Id to share File",
-"com.axelor.apps.account.db.Vat","importId","field",,"Id Import",,
-"com.axelor.apps.account.db.Vat","name","field","Name","Nom TVA",,
-"com.axelor.apps.account.db.Vat","code","field","Code","Code",,
-"com.axelor.apps.account.db.Vat","activeVatLine","field","V.A.T. active version","Version active",,
-"com.axelor.apps.account.db.Vat","vatLineList","field","VAT versions","Versions de TVA",,
-"com.axelor.apps.account.db.Vat","vatAccountList","field","VAT account configuration","Paramétrages comptes comptables",,
-"com.axelor.apps.account.db.VatAccount","vat","field","V.A.T.","T.V.A.",,
-"com.axelor.apps.account.db.VatAccount","company","field","Company","Société",,
-"com.axelor.apps.account.db.VatAccount","account","field","Account","Compte comptable",,
-"com.axelor.apps.account.db.VatLine","importId","field",,"ID Import",,
-"com.axelor.apps.account.db.VatLine","vat","field","V.A.T.","T.V.A.",,
-"com.axelor.apps.account.db.VatLine","startDate","field","Application start Date","Date début d'application",,
-"com.axelor.apps.account.db.VatLine","endDate","field","Run off Date","Date fin d'application",,
-"com.axelor.apps.account.db.VatLine","value","field","Rate","Taux",,
-"com.axelor.apps.account.db.VatLine","name","field","Name","Nom",,
+"com.axelor.apps.account.db.Tax","importId","field",,"Id Import",,
+"com.axelor.apps.account.db.Tax","name","field","Name","Nom TVA",,
+"com.axelor.apps.account.db.Tax","code","field","Code","Code",,
+"com.axelor.apps.account.db.Tax","activeTaxLine","field","V.A.T. active version","Version active",,
+"com.axelor.apps.account.db.Tax","taxLineList","field","Tax versions","Versions de TVA",,
+"com.axelor.apps.account.db.Tax","taxAccountList","field","Tax account configuration","Paramétrages comptes comptables",,
+"com.axelor.apps.account.db.TaxAccount","tax","field","V.A.T.","T.V.A.",,
+"com.axelor.apps.account.db.TaxAccount","company","field","Company","Société",,
+"com.axelor.apps.account.db.TaxAccount","account","field","Account","Compte comptable",,
+"com.axelor.apps.account.db.TaxLine","importId","field",,"ID Import",,
+"com.axelor.apps.account.db.TaxLine","tax","field","V.A.T.","T.V.A.",,
+"com.axelor.apps.account.db.TaxLine","startDate","field","Application start Date","Date début d'application",,
+"com.axelor.apps.account.db.TaxLine","endDate","field","Run off Date","Date fin d'application",,
+"com.axelor.apps.account.db.TaxLine","value","field","Rate","Taux",,
+"com.axelor.apps.account.db.TaxLine","name","field","Name","Nom",,
 "com.axelor.apps.base.db.ViewController","menus","field","Menu(s)","Menus",,
 "com.axelor.apps.base.db.ViewController","groups","field","Groups","Groupes",,
 "com.axelor.apps.base.db.Wizard","name","field","Name","Nom",,
@@ -3109,40 +3014,8 @@
 "com.axelor.apps.base.db.Company",,"button","Invoices","Factures",,
 "com.axelor.apps.base.db.Company",,"view","Company","Société",,
 "com.axelor.apps.base.db.Company",,"page","Accounting","Comptabilité",,
-"com.axelor.apps.base.db.Company",,"separator","Journals","Journaux",,
-"com.axelor.apps.base.db.Company",,"separator","Accounts","Tiers",,
-"com.axelor.apps.base.db.Company",,"separator","Payment differences","Écart de règlement",,
-"com.axelor.apps.base.db.Company",,"separator","Exports","Exports",,
-"com.axelor.apps.base.db.Company",,"separator","Cashiers","Caisses",,
-"com.axelor.apps.base.db.Company",,"separator","CFONB Export","Export CFONB",,
-"com.axelor.apps.base.db.Company",,"separator","CFONB Import","Import CFONB",,
-"com.axelor.apps.base.db.Company",,"separator","Shift to irrecoverable","Passage en irrécouvrable",,
-"com.axelor.apps.base.db.Company",,"separator","Tax payment","Paiement des taxes",,
-"com.axelor.apps.base.db.Company",,"separator","Currency","Devise",,
 "com.axelor.apps.base.db.Company",,"page","Bank details","Coordonnées bancaires",,
 "com.axelor.apps.base.db.Company",,"page","Notes","Remarques",,
-"com.axelor.apps.base.db.Company",,"page","Receivables recovery","Recouvrement créances",,
-"com.axelor.apps.base.db.Company",,"page","Reimbursement","Remboursement",,
-"com.axelor.apps.base.db.Company",,"separator","Configuration","Configuration",,
-"com.axelor.apps.base.db.Company",,"group","Reimbursements","Remboursements",,
-"com.axelor.apps.base.db.Company",,"group","Reimbursement rejects","Rejets remboursement",,
-"com.axelor.apps.base.db.Company",,"page","Doubtful receivables","Créances douteuses",,
-"com.axelor.apps.base.db.Company",,"page","Direct debit","Prélèvement",,
-"com.axelor.apps.base.db.Company",,"separator","Configuration","Configuration",,
-"com.axelor.apps.base.db.Company",,"group","Direct debits","Prélèvements",,
-"com.axelor.apps.base.db.Company",,"group","Direct debit rejects","Rejets de prélèvement",,
-"com.axelor.apps.base.db.Company",,"page","Acc. Clearance","Epurage compte",,
-"com.axelor.apps.base.db.Company",,"page","Paybox","Paybox",,
-"com.axelor.apps.base.db.Company",,"page","IPO Payments and IPO Cheque","TIP et TIP-Chèque",,
-"com.axelor.apps.base.db.Company",,"separator","Configuration","Configuration",,
-"com.axelor.apps.base.db.Company",,"group","Payments by IPO and IPO Cheque","Paiement par TIP et TIP-Chèque",,
-"com.axelor.apps.base.db.Company",,"group","Payments rejects by IPO and IPO Cheque","Rejets paiements par TIP et TIP-Chèque",,
-"com.axelor.apps.base.db.Company",,"page","Mails / Emails","Courriers / Emails",,
-"com.axelor.apps.base.db.Company",,"page","Supply chain","Chaîne d'approvisionnement",,
-"com.axelor.apps.base.db.Company",,"group","Virtual locations informations","Infos Empl. Virtuels",,
-"com.axelor.apps.base.db.Company",,"group","Stock move informations","Informations mouvement de stock",,
-"com.axelor.apps.base.db.Company",,"group","Invoicing informations","Informations de facturation",,
-"com.axelor.apps.base.db.Company",,"page","Invoicing","Facturation",,
 "com.axelor.apps.base.db.Company",,"page","Printing","Impressions",,
 "com.axelor.apps.base.db.Company",,"view","Companies","Sociétés",,
 ,,"view","Dashboard","Tableau de bord",,
@@ -3188,7 +3061,7 @@
 "com.axelor.apps.base.db.FormulaGenerator",,"group","Logs","Logs",,
 "com.axelor.apps.base.db.FormulaGenerator",,"page","Tax formula conditions of use","Taxe conditions de la formule d'utilisation",,
 "com.axelor.apps.base.db.FormulaGenerator",,"group","Logs","Logs",,
-"com.axelor.apps.base.db.FormulaGenerator",,"page","VAT formulas","Formules TVA",,
+"com.axelor.apps.base.db.FormulaGenerator",,"page","Tax formulas","Formules TVA",,
 "com.axelor.apps.base.db.FormulaGenerator",,"group","Logs","Logs",,
 "com.axelor.apps.base.db.FormulaGenerator",,"view","Formula generators","Générateur de formules",,
 "com.axelor.apps.base.db.General",,"button","New","Nouveau",,
@@ -3815,7 +3688,7 @@
 "partner-form","salesTurnover","documentation",,,,
 "partner-form","nbrEmployees","documentation",,,,
 "partner-form","registrationCode","documentation",,,,
-"partner-form","vatNbr","documentation",,,,
+"partner-form","taxNbr","documentation",,,,
 "partner-form","parentPartner","documentation",,,,
 "partner-form","deliveryAddress","documentation",,,,
 "partner-form","mainInvoicingAddress","documentation",,,,
@@ -4125,7 +3998,6 @@
 "team-form","name","documentation",,,,
 "team-form","userInfoSet","documentation",,,,
 "company-form","company-form","documentation",,,,
-"company-form","showInvoice","documentation",,,,
 "company-form","administration","documentation",,,,
 "company-form","name","documentation",,,,
 "company-form","code","documentation",,,,
@@ -4133,105 +4005,10 @@
 "company-form","logoPath","documentation",,,,
 "company-form","partner","documentation",,,,
 "company-form","address","documentation",,,,
-"company-form","customerSalesJournal","documentation",,,,
-"company-form","customerCreditNoteJournal","documentation",,,,
-"company-form","supplierPurchaseJournal","documentation",,,,
-"company-form","supplierCreditNoteJournal","documentation",,,,
-"company-form","technicalJournal","documentation",,,,
-"company-form","majorAccountJournal","documentation",,,,
-"company-form","invoiceDirectDebitJournal","documentation",,,,
-"company-form","rejectJournal","documentation",,,,
-"company-form","reimbursementJournal","documentation",,,,
-"company-form","accountClearanceJournal","documentation",,,,
-"company-form","irrecoverableJournal","documentation",,,,
-"company-form","miscOperationJournal","documentation",,,,
-"company-form","customerAccount","documentation",,,,
-"company-form","supplierAccount","documentation",,,,
-"company-form","doubtfulCustomerAccount","documentation",,,,
-"company-form","irrecoverableAccount","documentation",,,,
-"company-form","thresholdDistanceFromRegulation","documentation",,,,
-"company-form","cashPositionVariationAccount","documentation",,,,
-"company-form","exportPath","documentation",,,,
-"company-form","cashRegisterMailModel","documentation",,,,
-"company-form","cashRegisterAddressEmail","documentation",,,,
-"company-form","senderRecordCodeExportCFONB","documentation",,,,
-"company-form","senderNumExportCFONB","documentation",,,,
-"company-form","senderNameCodeExportCFONB","documentation",,,,
-"company-form","recipientRecordCodeExportCFONB","documentation",,,,
-"company-form","totalRecordCodeExportCFONB","documentation",,,,
-"company-form","transferOperationCodeExportCFONB","documentation",,,,
-"company-form","directDebitOperationCodeExportCFONB","documentation",,,,
-"company-form","headerRecordCodeImportCFONB","documentation",,,,
-"company-form","detailRecordCodeImportCFONB","documentation",,,,
-"company-form","endingRecordCodeImportCFONB","documentation",,,,
-"company-form","transferOperationCodeImportCFONB","documentation",,,,
-"company-form","directDebitOperationCodeImportCFONB","documentation",,,,
-"company-form","ipoRejectOperationCodeImportCFONB","documentation",,,,
-"company-form","ipoOperationCodeImportCFONB","documentation",,,,
-"company-form","ipoAndChequeOperationCodeImportCFONB","documentation",,,,
-"company-form","irrecoverableReasonPassage","documentation",,,,
-"company-form","irrecoverableStandardRateVat","documentation",,,,
-"company-form","payingBackTaxVat","documentation",,,,
 "company-form","currency","documentation",,,,
 "company-form","defaultBankDetails","documentation",,,,
 "company-form","bankDetailsSet","documentation",,,,
 "company-form","notes","documentation",,,,
-"company-form","mailTransitTime","documentation",,,,
-"company-form","reminderConfigLineList","documentation",,,,
-"company-form","reimbursementExportFolderPath","documentation",,,,
-"company-form","reimbursementExportFolderPathCFONB","documentation",,,,
-"company-form","lowerThresholdReimbursement","documentation",,,,
-"company-form","upperThresholdReimbursement","documentation",,,,
-"company-form","reimbursementAccount","documentation",,,,
-"company-form","reimbursementMailModel","documentation",,,,
-"company-form","reimbursementImportFolderPathCFONB","documentation",,,,
-"company-form","tempReimbImportFolderPathCFONB","documentation",,,,
-"company-form","sixMonthDebtMonthNumber","documentation",,,,
-"company-form","threeMonthDebtMontsNumber","documentation",,,,
-"company-form","sixMonthDebtPassReason","documentation",,,,
-"company-form","threeMonthDebtPassReason","documentation",,,,
-"company-form","litigationDebtPassReason","documentation",,,,
-"company-form","paymentScheduleExportFolderPathCFONB","documentation",,,,
-"company-form","rejectionPaymentMode","documentation",,,,
-"company-form","paymentScheduleRejectNumLimit","documentation",,,,
-"company-form","invoiceRejectNumLimit","documentation",,,,
-"company-form","rejectImportPathAndFileName","documentation",,,,
-"company-form","tempImportPathAndFileName","documentation",,,,
-"company-form","rejectPaymentScheduleMailModel","documentation",,,,
-"company-form","clearanceAccountSet","documentation",,,,
-"company-form","profitAccount","documentation",,,,
-"company-form","standardRateVat","documentation",,,,
-"company-form","payboxUrl","documentation",,,,
-"company-form","payboxSite","documentation",,,,
-"company-form","payboxRang","documentation",,,,
-"company-form","payboxDevise","documentation",,,,
-"company-form","payboxIdentifiant","documentation",,,,
-"company-form","payboxHashSelect","documentation",,,,
-"company-form","payboxHmac","documentation",,,,
-"company-form","payboxDefaultEmail","documentation",,,,
-"company-form","payboxRetour","documentation",,,,
-"company-form","payboxRetourUrlEffectue","documentation",,,,
-"company-form","payboxRetourUrlRefuse","documentation",,,,
-"company-form","payboxRetourUrlAnnule","documentation",,,,
-"company-form","payboxPublicKeyPath","documentation",,,,
-"company-form","interbankPaymentOrderImportPathCFONB","documentation",,,,
-"company-form","tempInterbankPaymentOrderImportPathCFONB","documentation",,,,
-"company-form","interbankPaymentOrderRejectImportPathCFONB","documentation",,,,
-"company-form","tempInterbankPaymentOrderRejectImportPathCFONB","documentation",,,,
-"company-form","generatedMailFilePath","documentation",,,,
-"company-form","generatedEmailFilePath","documentation",,,,
-"company-form","generatedMailFileName","documentation",,,,
-"company-form","generatedEmailFileName","documentation",,,,
-"company-form","customerVirtualLocation","documentation",,,,
-"company-form","supplierVirtualLocation","documentation",,,,
-"company-form","inventoryVirtualLocation","documentation",,,,
-"company-form","hasOutSmForStorableProduct","documentation",,,,
-"company-form","hasOutSmForNonStorableProduct","documentation",,,,
-"company-form","hasInSmForStorableProduct","documentation",,,,
-"company-form","hasInSmForNonStorableProduct","documentation",,,,
-"company-form","salesOrderInvoicingTypeSelect","documentation",,,,
-"company-form","purchaseOrderInvoicingTypeSelect","documentation",,,,
-"company-form","showDetailsInInvoice","documentation",,,,
 "company-form","printingSettings","documentation",,,,
 "template-rule-form","template-rule-form","documentation",,,,
 "template-rule-form","name","documentation",,,,
@@ -4264,7 +4041,7 @@
 "general-form","today","documentation",,,,
 "general-form","logOk","documentation",,,,
 "general-form","defaultProjectUnit","documentation",,,,
-"general-form","defaultExemptionVat","documentation",,,,
+"general-form","defaultExemptionTax","documentation",,,,
 "general-form","isInvoiceMoveConsolidated","documentation",,,,
 "general-form","transferAndDirectDebitInterbankCode","documentation",,,,
 "general-form","chequeInterbankCode","documentation",,,,

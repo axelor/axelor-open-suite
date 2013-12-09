@@ -11,8 +11,8 @@
     <decimal name="debit" title="Debit"/>
     <decimal name="credit" title="Credit"/>
     <many-to-one name="account" ref="Account" required="true" title="Account"/>
-    <one-to-many name="reconcileList1" ref="Reconcile" title="Debit Reconcile list" mappedBy="lineDebit" readonly="false"/>
-    <one-to-many name="reconcileList2" ref="Reconcile" title="Credit Reconcile List" mappedBy="lineCredit" readonly="false"/>
+    <one-to-many name="reconcileList1" ref="Reconcile" title="Debit Reconcile list" mappedBy="debitMoveLine" readonly="false"/>
+    <one-to-many name="reconcileList2" ref="Reconcile" title="Credit Reconcile List" mappedBy="creditMoveLine" readonly="false"/>
     <decimal name="amountPaid" title="Amount paid/reconciled" default="0.0" readonly="true"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
     <string name="counter" title="Line Nbr." help="This sequence is unique per Move, automatically reset to 1 for a new moveline"/>
@@ -26,7 +26,7 @@
     <boolean name="unrecocileMoveOk" title="Unreconciled move line" default="false"/>
     <string name="passageReason" title="Irrecoverable Shift Reason" readonly="true"/>
     <boolean name="usherPassageOk" title="Transfer(ed) to Usher "/>
-    <many-to-one name="vatLine" ref="com.axelor.apps.account.db.VatLine" title="VAT" />
+    <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax" />
    
     <decimal name="currencyRate" title="Currency Rate"/>
     <decimal name="currencyAmount" title="Amount in Currency"/>

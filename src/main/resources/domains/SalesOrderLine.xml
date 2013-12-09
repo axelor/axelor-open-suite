@@ -16,7 +16,7 @@
   	<string name="productName" title="Product name"/>
   	<integer name="saleSupplySelect" title="Méthode d'appro. des ventes" selection="product.sale.supply.select"/>
   	<decimal name="price" title="Unit price"/>
-  	<many-to-one name="vatLine" ref="com.axelor.apps.account.db.VatLine" title="V.A.T."/>
+  	<many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
   	<decimal name="exTaxTotal" title="Total W.T."/>
   	
   	<many-to-one name="task" ref="com.axelor.apps.organisation.db.Task" title="Task"/>

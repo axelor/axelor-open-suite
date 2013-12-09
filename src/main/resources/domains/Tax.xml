@@ -5,16 +5,16 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="Vat" lang="java" cachable="true">
+  <entity name="Tax" lang="java" cachable="true">
   
     <integer name="importId"/>
     <string name="name" title="Name" required="true"/>
     <string name="code" title="Code" required="true" unique="true"/>
-    <many-to-one name="activeVatLine" ref="com.axelor.apps.account.db.VatLine" title="V.A.T. active version"/>
+    <many-to-one name="activeTaxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax active version"/>
     
-    <one-to-many name="vatLineList" ref="com.axelor.apps.account.db.VatLine" mappedBy="vat" title="VAT versions"/>
+    <one-to-many name="taxLineList" ref="com.axelor.apps.account.db.TaxLine" mappedBy="tax" title="Tax versions"/>
     
-  	<one-to-many name="vatAccountList" ref="com.axelor.apps.account.db.VatAccount" mappedBy="vat" title="VAT account configuration"/>
+  	<one-to-many name="taxAccountList" ref="com.axelor.apps.account.db.TaxAccount" mappedBy="tax" title="Tax account configuration"/>
   
  	<unique-constraint columns="code,name"/>
   

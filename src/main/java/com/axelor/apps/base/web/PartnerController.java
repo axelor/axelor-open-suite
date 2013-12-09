@@ -31,15 +31,19 @@
 package com.axelor.apps.base.web;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.AxelorSettings;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.user.UserInfoService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -54,6 +58,9 @@ public class PartnerController {
 
 	@Inject
 	private SequenceService sequenceService;
+	
+	@Inject
+	UserInfoService userInfoService;
 
 	private static final Logger LOG = LoggerFactory.getLogger(PartnerController.class);
 
@@ -206,6 +213,12 @@ public class PartnerController {
 		else {
 			response.setFlash(urlNotExist);
 		}
+	}
+	
+	public Set<Company> getActiveCompany(){
+		Set<Company> companySet = new HashSet<Company>();
+		companySet.add(userInfoService.getUserInfo().getActiveCompany());	
+		return companySet;
 	}
 	
 }

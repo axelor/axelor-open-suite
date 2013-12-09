@@ -34,12 +34,11 @@
 	<boolean name="hasGlobalTask" title="Global task ?"/>
 	<one-to-many name="salesOrderLineList" ref="com.axelor.apps.supplychain.db.SalesOrderLine" mappedBy="salesOrder" title="Sale order lines"/>
 
-<!--   	Ligne de TVA -->	
-	<one-to-many name="salesOrderLineVatList" ref="com.axelor.apps.supplychain.db.SalesOrderLineVat" mappedBy="salesOrder" title="V.A.T. Lines"/>
+<!--   	Ligne de Taxe -->	
+	<one-to-many name="salesOrderLineTaxList" ref="com.axelor.apps.supplychain.db.SalesOrderLineTax" mappedBy="salesOrder" title="Tax Lines"/>
   	
-<!--   	<decimal name="exAllTaxTotal" title="Total HTT" scale="2" precision="20" readonly="true"/> -->
     <decimal name="exTaxTotal" title="Total W.V." scale="2" precision="20" readonly="true"/>
-    <decimal name="vatTotal" title="Total V.A.T." scale="2" precision="20" readonly="true"/>
+    <decimal name="taxTotal" title="Total V.A.T." scale="2" precision="20" readonly="true"/>
     <decimal name="inTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true"/>
     <decimal name="amountRemainingToBeInvoiced" title="Amount remaining to invoice" readonly="true"/>
     <integer name="statusSelect" title="Status" selection="default.status.select" readonly="true"/>

@@ -8,8 +8,7 @@
 	        <button name="printPhoneBook" title="PhoneBook" icon="img/16px/print_16px.png" onClick="action-print-phonebook"/>
 	        <button name="printCompanyPhoneBook" title="Company phoneBook" icon="img/16px/print_16px.png" onClick="action-print-compnay-phonebook"/>
 	    </toolbar>
-	    <field name="name"/>
-	    <field name="firstName"/>
+	    <field name="fullName"/>
 	    <field name="mainInvoicingAddress"/>
 	    <field name="fixedPhone"/>
 		<field name="emailAddress.address"/>
@@ -21,8 +20,7 @@
 	</grid>
     
     <grid name="partner-contact-grid" title="Contacts" model="com.axelor.apps.base.db.Partner">
-	    <field name="name"/>
-	    <field name="firstName"/>
+	    <field name="fullName"/>
 	    <field name="fixedPhone"/>
 	    <field name="mobilePhone"/>
 	    <field name="emailAddress.address"/>
@@ -33,8 +31,7 @@
 	</grid>
     
      <grid name="partner-grid-group" title="Partner" model="com.axelor.apps.base.db.Partner" groupBy="userInfo">
-        <field name="name"/>
-        <field name="firstName"/>
+        <field name="fullName"/>
         <field name="mainInvoicingAddress"/>
         <field name="fixedPhone"/>
 		<field name="mobilePhone"/>
@@ -53,10 +50,10 @@
 	    </toolbar>
 	    <menubar>
 	        <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true">
-	            <divider title="Create call" action="save,action-partner-view-create-call"/>
-	            <divider title="Schedule meeting" action="save,action-partner-view-create-meeting"/>
-	            <divider title="Create task" action="save,action-partner-view-create-task"/>
-	            <divider title="Create opportunity" action="save,action-partner-view-create-opportunity"/>
+	            <item title="Create call" action="save,action-partner-view-create-call"/>
+	            <item title="Schedule meeting" action="save,action-partner-view-create-meeting"/>
+	            <item title="Create task" action="save,action-partner-view-create-task"/>
+	            <item title="Create opportunity" action="save,action-partner-view-create-opportunity"/>
 	        </menu>
 	    </menubar>
 	    <group colSpan="6" cols="6">
@@ -110,7 +107,7 @@
 	                    <field name="salesTurnover"/>
 	                    <field name="nbrEmployees"/>
 	                    <field name="registrationCode"/>
-	                    <field name="vatNbr"/>
+	                    <field name="taxNbr"/>
 	                    <field name="parentPartner" hideIf="partnerTypeSelect != 1"/>
 	                </group>
 	            </group>
@@ -159,8 +156,7 @@
 	</form>
 	
 	<grid name="partner-light-grid" title="Contacts" model="com.axelor.apps.base.db.Partner">
-        <field name="name"/>
-        <field name="firstName"/>
+        <field name="fullName"/>
         <field name="mainInvoicingAddress"/>
         <field name="fixedPhone"/>
 		<field name="mobilePhone"/>
@@ -224,10 +220,10 @@
 	    </toolbar>
 	    <menubar>
 	        <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true">
-	            <divider title="Create call" action="save,action-partner-view-create-call"/>
-	            <divider title="Schedule meeting" action="save,action-partner-view-create-meeting"/>
-	            <divider title="Create task" action="save,action-partner-view-create-task"/>
-	            <divider title="Create opportunity" action="save,action-partner-view-create-opportunity"/>
+	            <item title="Create call" action="save,action-partner-view-create-call"/>
+	            <item title="Schedule meeting" action="save,action-partner-view-create-meeting"/>
+	            <item title="Create task" action="save,action-partner-view-create-task"/>
+	            <item title="Create opportunity" action="save,action-partner-view-create-opportunity"/>
 	        </menu>
 	    </menubar>
 	    <group colSpan="6" cols="6">
@@ -421,6 +417,7 @@
     	<field name="invoiceSendingFormatSelect" expr="eval:'emailpaper'" if="!isContact"/>
     	<field name="userInfo"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
     	<field name="team"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
+    	<field name="companySet" expr="call:com.axelor.apps.base.web.PartnerController:getActiveCompany()"/>
     </action-record>
     
     <action-record name="action-partner-contact-record-default" model="com.axelor.apps.base.db.Partner">

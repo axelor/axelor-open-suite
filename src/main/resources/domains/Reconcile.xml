@@ -5,11 +5,10 @@
   
   <entity sequential="true" name="Reconcile" lang="java">
   
-    <string name="fullName" title="Name" namecolumn="true"/>
     <decimal name="amount" title="Amount reconciled" default="0.0"/>
-    <many-to-one name="lineDebit" ref="MoveLine" title="Debit line" required="true"/>
-    <many-to-one name="lineCredit" ref="MoveLine" title="Credit line" required="true"/>
-    <string name="state" title="Status" default="1" readonly="true" selection="reconcile.state.select"/>
+    <many-to-one name="debitMoveLine" ref="MoveLine" title="Debit line" required="true"/>
+    <many-to-one name="creditMoveLine" ref="MoveLine" title="Credit line" required="true"/>
+    <integer name="statusSelect" title="Status" default="1" readonly="true" selection="account.reconcile.status.select"/>
     
     <!--  Will be fully reconciled if the payment amount is with a range of +/-20 cts compare to the amount remaining to pay  -->
     <boolean name="canBeZeroBalanceOk" title="Clear remaining amount" default="false"/>
@@ -17,19 +16,6 @@
     <!--  Will be fully reconciled if there is a currency delta amount -->
     <boolean name="mustBeZeroBalanceOk" title="Must be solded out" default="false" />
     
-    <decimal name="debit"  title="Debit amount" readonly="true">
-	    
-		    if (lineDebit == null) return BigDecimal.ZERO;
-		    else return lineDebit.getDebit();
-	    
-    </decimal>
-    <decimal name="credit" title="Credit amount" readonly="true">
-	    
-		    if (lineCredit == null) return BigDecimal.ZERO;
-		    else return lineCredit.getCredit();
-	    
-    </decimal>
-  
   </entity>
 
 </domain-models>
