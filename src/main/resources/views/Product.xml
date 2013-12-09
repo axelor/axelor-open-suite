@@ -84,7 +84,7 @@
 	        <page title="Stock" showIf="productTypeSelect != 'service" colSpan="2" cols="4">
             <separator title="Procurement settings" colSpan="4"/>
 				<field name="procurementMethodSelect" requiredIf="productTypeSelect == 'storable'"/>
-				<field name="isRawMaterial" showIf="productTypeSelect != 'service"/>
+				<field name="isRawMaterial" showIf="productTypeSelect != 'service'"/>
 				<spacer/>
 				<break/>
 				<portlet colSpan="4" action="action-product-view-stock"/>
