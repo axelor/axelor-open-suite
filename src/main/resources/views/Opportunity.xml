@@ -35,41 +35,41 @@
         <field name="amount" aggregate="sum"/>
     </grid>
 	 
-    <form name="opportunity-form" title="Opportunity" model="com.axelor.apps.crm.db.Opportunity" cols="4"
-    	onNew="action-opportunity-group-new">
-         <group title="Informations" colSpan="4" cols="6">
-	        <group title="Context" colSpan="4" cols="6">
-		        <field name="name"/>
-		        <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" />
-		        <field name="lead"/>
-		        <field name="opportunityType" widget="SuggestBox"/>
-	        </group>
-	        <group title="Follow-up" colSpan="4" cols="6">
+    <form cols="6" onNew="action-opportunity-group-new" name="opportunity-form" title="Opportunity" model="com.axelor.apps.crm.db.Opportunity">
+		<group colSpan="4" cols="4">
+			<group title="Context" colSpan="4" cols="4">
+				<field name="name"/>
+				<field name="opportunityType" widget="SuggestBox"/>
+			</group>
+			<group title="Follow-up" colSpan="4" cols="4">
 				<field name="salesStageSelect"/>
 				<field name="source"/>
-				<field name="expectedCloseDate"/>
 				<field name="nextStep"/>
-				<field name="probability"/>
-				<field name="campaign"/>	
-	        </group>
-	        <group colSpan="4" cols="6">
-                <group title="Financial terms" colSpan="2" cols="4">
-        	        <field name="amount"/>
-    		        <field name="currency"/>
-    		        <field name="bestCase"/>
-    		        <field name="worstCase"/>
-    		    </group>
-    	        <group colSpan="2">
-                    <field name="description" colSpan="2"/>
-                </group>
-	        </group>
-	    </group>    
-        <group title="Assigned to" canCollapse="true">
-	        <field name="userInfo"/>
-	    	<field name="team"/>
-	        <field name="company" widget="SuggestBox"/>
-        </group>
-    </form>
+				<field name="expectedCloseDate"/>
+				<field name="probability"/>   
+			</group>
+			<group title="Financial terms" colSpan="2" cols="4">
+				<field name="amount"/>
+				<field name="currency"/>
+				<field name="bestCase"/>
+				<field name="worstCase"/>
+			</group>
+		</group>
+		<group colSpan="2" cols="2">
+			<group title="Linked to" colSpan="2" cols="2">
+					<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+					<field name="lead"/>
+					<field name="campaign"/>
+			</group>
+			<group title="Assigned to" colSpan="2" cols="2" canCollapse="true">
+				<field name="userInfo"/>
+				<field name="team"/>
+				<field name="company" widget="SuggestBox"/>
+			</group>
+		</group>
+		<separator title="Description" colSpan="6"/>
+		<field name="description" colSpan="6" showTitle="false"/>
+	</form>
     
     <action-group name="action-opportunity-group-new">
     	<action name="action-opportunity-record-new"/>
