@@ -1156,8 +1156,8 @@
 "com.axelor.apps.message.db.MailAccount","port","field","Port","Port",,
 "com.axelor.apps.message.db.MailAccount","securitySelect","field","SSL/TLS","SSL/TLS",,
 "com.axelor.apps.message.db.MailAccount","userInfo","field","User","Utilisateur",,
-"com.axelor.apps.message.db.MailAccount","isDefault","field","Default account ?","Par défaut ?",,
-"com.axelor.apps.message.db.MailAccount","signature","field","Signature","Signature",,
+"com.axelor.apps.message.db.MailAccount","isDefault","field","Default account ?","Par défaut ?",,"Ce compte email sera utilisé par défaut pour l'envoi des emails pour l'utilisateur associé. Seul un compte peut être défini par défaut par utilisateur. "
+"com.axelor.apps.message.db.MailAccount","signature","field","Signature","Signature",,"La signature sera reprise automatiquement sur les emails, qu'il aient été créés via l'assistant d'envoi d'email, via les modèles d'email ou des templates."
 "com.axelor.apps.base.db.MailModel","importId","field",,"Id Import",,
 "com.axelor.apps.base.db.MailModel","code","field","Code","Code",,
 "com.axelor.apps.base.db.MailModel","name","field","Label","Libellé",,
@@ -1244,23 +1244,23 @@
 "com.axelor.apps.crm.db.MeetingType","importId","field",,"Id Import",,
 "com.axelor.apps.crm.db.MeetingType","name","field","Name","Nom",,
 "com.axelor.apps.crm.db.MeetingType","code","field","Code","Code",,
-"com.axelor.apps.message.db.Message","typeSelect","field","Type","Type",,
+"com.axelor.apps.message.db.Message","typeSelect","field","Type","Type",,"Un message peut-être de type 'Reçu' ou 'Envoyé'. Si 'Reçu', il apparaîtra dans la boite de réception. Si 'Envoyé', il apparaîtra dans la boîte d'envoi."
 "com.axelor.apps.message.db.Message","subject","field","Subject","Objet",,
 "com.axelor.apps.message.db.Message","content","field","Content","Contenu",,
 "com.axelor.apps.message.db.Message","sendedDateT","field","Sended date","Date d'envoi",,
-"com.axelor.apps.message.db.Message","relatedTo1Select","field","Related to","Associé à (1)",,
+"com.axelor.apps.message.db.Message","relatedTo1Select","field","Related to","Associé à (1)",,"1er Type de Document / Document auquel est associé ce message."
 "com.axelor.apps.message.db.Message","relatedTo1SelectId","field",,"Relatif à",,
-"com.axelor.apps.message.db.Message","relatedTo2Select","field","Related to","Associé à (2)",,
+"com.axelor.apps.message.db.Message","relatedTo2Select","field","Related to","Associé à (2)",,"2ème Type de Document / Document auquel est associé ce message."
 "com.axelor.apps.message.db.Message","relatedTo2SelectId","field",,"Relatif à",,
-"com.axelor.apps.message.db.Message","statusSelect","field","Status","Statut",,
-"com.axelor.apps.message.db.Message","filePath","field","File path","Chemin vers fichier",,
-"com.axelor.apps.message.db.Message","toEmailAddressSet","field","To","A",,
-"com.axelor.apps.message.db.Message","ccEmailAddressSet","field","Cc","Cc","Carbon copy",
-"com.axelor.apps.message.db.Message","bccEmailAddressSet","field","Bcc","Bcc","Blind carbon copy",
-"com.axelor.apps.message.db.Message","fromEmailAddress","field","Sender (Email)","De",,
+"com.axelor.apps.message.db.Message","statusSelect","field","Status","Statut",,"Par défaut mis à 'Brouillon'. L'email peut soit avoir été 'Envoyé', soit 'Supprimé'."
+"com.axelor.apps.message.db.Message","filePath","field","File path","Chemin vers fichier",,"Lien vers le fichier associé."
+"com.axelor.apps.message.db.Message","toEmailAddressSet","field","To","A",,"Destinataires principaux de l'email."
+"com.axelor.apps.message.db.Message","ccEmailAddressSet","field","Cc","Cc","Carbon copy","Destinataires en copie de l'email."
+"com.axelor.apps.message.db.Message","bccEmailAddressSet","field","Bcc","Bcc","Blind carbon copy","Destinataires en copie cachée de l'email."
+"com.axelor.apps.message.db.Message","fromEmailAddress","field","Sender (Email)","De (email)",,"Adresse de l'expéditeur de l'email."
 "com.axelor.apps.message.db.Message","sentByEmail","field","Sent by email","Envoyé par email",,
-"com.axelor.apps.message.db.Message","mailAccount","field","Mail account","Compte Email",,
-"com.axelor.apps.message.db.Message","senderUserInfo","field","Sender (User)","De",,
+"com.axelor.apps.message.db.Message","mailAccount","field","Mail account","Compte Email",,"Compte email ayant été utilisé pour l'envoi (pour rappel un utilisateur peut avoir plusieurs compte dont un par défaut)."
+"com.axelor.apps.message.db.Message","senderUserInfo","field","Sender (User)","De (utilisateur)",,
 "com.axelor.apps.message.db.Message","recipientUserInfo","field","Recipient","A",,
 "com.axelor.apps.message.db.Message","event","field","Event","Evènement",,
 "com.axelor.apps.supplychain.db.MinStockRules","name","field","Name","Nom",,
@@ -1381,23 +1381,23 @@
 "com.axelor.apps.organisation.db.OfferLine","margeEuros","field","Marge €","Marge en €",,
 "com.axelor.apps.organisation.db.OfferLine","margePourcent","field","Marge %","% Marge",,
 "com.axelor.apps.crm.db.Opportunity","name","field","Name","Nom",,
-"com.axelor.apps.crm.db.Opportunity","partner","field","Partner","Client",,
-"com.axelor.apps.crm.db.Opportunity","currency","field","Currency","Devise",,
-"com.axelor.apps.crm.db.Opportunity","expectedCloseDate","field","Expected close date","Date prévue clôture",,
-"com.axelor.apps.crm.db.Opportunity","amount","field","Amount","Montant",,
+"com.axelor.apps.crm.db.Opportunity","partner","field","Partner","Client",,"Client associé à l'opportunité. Si ce champ est rempli, l'opportunité apparaîtra sur la fiche Client."
+"com.axelor.apps.crm.db.Opportunity","currency","field","Currency","Devise",,"Devise associée aux montants de l'opportunité."
+"com.axelor.apps.crm.db.Opportunity","expectedCloseDate","field","Expected close date","Date prévue clôture",,"Date limite de réponse, d'envoi de l'offre/devis"
+"com.axelor.apps.crm.db.Opportunity","amount","field","Amount","Montant",,"Montant de l'opportunité dans la devise mentionné"
 "com.axelor.apps.crm.db.Opportunity","opportunityType","field","Type","Type Aff.",,
 "com.axelor.apps.crm.db.Opportunity","bestCase","field","Best case","Au mieux",,
 "com.axelor.apps.crm.db.Opportunity","worstCase","field","Worst case","Au pire",,
 "com.axelor.apps.crm.db.Opportunity","salesStageSelect","field","Sales stage","Etape vente",,
-"com.axelor.apps.crm.db.Opportunity","probability","field","Probability (%)","Probabilité (%)",,
-"com.axelor.apps.crm.db.Opportunity","campaign","field","Campaign","Campagne",,
-"com.axelor.apps.crm.db.Opportunity","nextStep","field","Next step","Etape suivante",,
+"com.axelor.apps.crm.db.Opportunity","probability","field","Probability (%)","Probabilité (%)",,"Probabilité pour que l'opportunité soit remportée par le commercial ou son équipe."
+"com.axelor.apps.crm.db.Opportunity","campaign","field","Campaign","Campagne",,"Si un lead nous à contacté suite à une campagne, lien vers la campagne en question."
+"com.axelor.apps.crm.db.Opportunity","nextStep","field","Next step","Etape suivante",,"Indication à suivre pour passer à l'étape suivante."
 "com.axelor.apps.crm.db.Opportunity","description","field","Description","Description",,
-"com.axelor.apps.crm.db.Opportunity","source","field","Source","Source",,
+"com.axelor.apps.crm.db.Opportunity","source","field","Source","Source",,"Indique la manière dont la piste a eu connaissance de la société, de ses produits (Salon, Séminaire ...)"
 "com.axelor.apps.crm.db.Opportunity","company","field","Company","Société",,
 "com.axelor.apps.crm.db.Opportunity","lead","field","Lead","Piste",,
-"com.axelor.apps.crm.db.Opportunity","userInfo","field","Assigned to","Assignée à ",,
-"com.axelor.apps.crm.db.Opportunity","team","field","Team","Equipe",,
+"com.axelor.apps.crm.db.Opportunity","userInfo","field","Assigned to","Assignée à ",,"Responsable du suivi de l'opportunité. Le responsable doit appartenir à l'équipe renseignée."
+"com.axelor.apps.crm.db.Opportunity","team","field","Team","Equipe",,"Equipe à laquelle est associée cette opportunité."
 "com.axelor.apps.crm.db.OpportunityType","name","field","Name","Nom",,
 "com.axelor.apps.crm.db.OpportunityType","code","field","Code","Code",,
 "com.axelor.apps.organisation.db.Overtime","userInfo","field","Employee","Employé",,
@@ -1432,61 +1432,61 @@
 "com.axelor.apps.crm.db.Participant","isComing","field","Present ?","Présent ?",,
 "com.axelor.apps.base.db.Partner","importId","field",,"Id Import",,
 "com.axelor.apps.base.db.Partner","partnerCategory","field","Category","Catégorie",,
-"com.axelor.apps.base.db.Partner","partnerSeq","field","Reference","Référence",,
-"com.axelor.apps.base.db.Partner","partnerTypeSelect","field","Partner Type","Type de tiers",,
+"com.axelor.apps.base.db.Partner","partnerSeq","field","Reference","Référence",,"Séquence remplie automatiquement à l'enregistrement du formulaire. La séquence est configurable dans l'administration via le champ 'document concerné' = Tiers."
+"com.axelor.apps.base.db.Partner","partnerTypeSelect","field","Partner Type","Type de tiers",,"Individu pour le B2C, Société pour le B2B. Par défaut renseigné avec 'Société'. Une société peut avoir des contacts associés à l'instar de l'individu. "
 "com.axelor.apps.base.db.Partner","titleSelect","field","Civility","Civilité",,
 "com.axelor.apps.base.db.Partner","name","field","Name/Company Name","Nom/Raison Sociale",,
 "com.axelor.apps.base.db.Partner","firstName","field","First Name","Prénom",,
-"com.axelor.apps.base.db.Partner","jobTitle","field","Job Title","Fonction",,
+"com.axelor.apps.base.db.Partner","jobTitle","field","Job Title","Fonction",,"Fonction ou intitulé du poste occupé par la personne."
 "com.axelor.apps.base.db.Partner","picture","field","Photo","Photo",,
 "com.axelor.apps.base.db.Partner","isCustomer","field","Customer ?","Client ?",,
 "com.axelor.apps.base.db.Partner","isSupplier","field","Supplier ?","Fournisseur ?",,
-"com.axelor.apps.base.db.Partner","customerTypeSelect","field","Customer Type","Type Client",,
-"com.axelor.apps.base.db.Partner","supplierTypeSelect","field","Supplier Type","Type Fournisseur",,
-"com.axelor.apps.base.db.Partner","isContact","field","Contact ?","Est Contact ?",,
-"com.axelor.apps.base.db.Partner","languageSelect","field","Language","Langue d'échange",,
+"com.axelor.apps.base.db.Partner","customerTypeSelect","field","Customer Type","Type Client",,"Non, valeur par défaut qui signifie que le tiers ne pourra être sélectionné sur un devis client. <br> Prospect, si un devis a été envoyé au tiers. <br> Oui, si le tiers a validé un devis ou passé commande."
+"com.axelor.apps.base.db.Partner","supplierTypeSelect","field","Supplier Type","Type Fournisseur",,"Non, valeur par défaut qui signifie que le tiers ne pourra être sélectionné sur un devis fournisseur. <br> Oui, des commandes d'achats peuvent être effectuées auprès du tiers. <br> Oui (Approuvé), si une commande a déjà été passée au tiers."
+"com.axelor.apps.base.db.Partner","isContact","field","Contact ?","Est Contact ?",,"Champ non affiché et rempli automatiquement lors de la création d'un contact (tiers et contact sont des éléments identiques)."
+"com.axelor.apps.base.db.Partner","languageSelect","field","Language","Langue d'échange",,"Langue utilisée pour gérer les impressions PDF auprès de ce Tiers."
 "com.axelor.apps.base.db.Partner","parentPartner","field","Mother company","Société Mère",,
-"com.axelor.apps.base.db.Partner","mainInvoicingAddress","field","Invoicing Address","Adresse de facturation",,
-"com.axelor.apps.base.db.Partner","deliveryAddress","field","Delivery Address","Adresse de livraison",,
+"com.axelor.apps.base.db.Partner","mainInvoicingAddress","field","Invoicing Address","Adresse de facturation",,"Adresse utilisée par défaut pour la facturation du tiers."
+"com.axelor.apps.base.db.Partner","deliveryAddress","field","Delivery Address","Adresse de livraison",,"Adresse utilisée par défaut sur les devis et les BL."
 "com.axelor.apps.base.db.Partner","contactPartnerSet","field","Contacts","Contacts",,
-"com.axelor.apps.base.db.Partner","mainPartner","field","Main partner","Entreprise principale",,
-"com.axelor.apps.base.db.Partner","source","field","Source","Source",,
+"com.axelor.apps.base.db.Partner","mainPartner","field","Main partner","Entreprise principale",,"Société mère, uniquement pour les société appartenant à un groupe."
+"com.axelor.apps.base.db.Partner","source","field","Source","Source",,"Indique la manière dont le tiers a eu connaissance de la société, de ses produits (Salon, Séminaire ...)"
 "com.axelor.apps.base.db.Partner","commune","field","City - Commune","Ville - Commune",,
-"com.axelor.apps.base.db.Partner","emailAddress","field","Email","Email",,
+"com.axelor.apps.base.db.Partner","emailAddress","field","Email","Email",,"Attention, le champ email est soumis à un contrôle de format."
 "com.axelor.apps.base.db.Partner","fax","field","Fax","Fax",,
-"com.axelor.apps.base.db.Partner","fixedPhone","field","Fixed phone","N° Fixe",,
-"com.axelor.apps.base.db.Partner","mobilePhone","field","Mobile phone","N° Mobile",,
-"com.axelor.apps.base.db.Partner","webSite","field","Website","Site web",,
+"com.axelor.apps.base.db.Partner","fixedPhone","field","Fixed phone","N° Fixe",,"Nomenclature proposée +33 (0)XXXXXXXXX"
+"com.axelor.apps.base.db.Partner","mobilePhone","field","Mobile phone","N° Mobile",,"Nomenclature proposée +33 (0)XXXXXXXXX"
+"com.axelor.apps.base.db.Partner","webSite","field","Website","Site web",,"Un contrôle sur le format de l'Url du site internet est effectif (exemple : www.axelor.com  et non axelor.com)"
 "com.axelor.apps.base.db.Partner","snProfile","field","Social Network Profile","Profil Rés. Sociaux",,
-"com.axelor.apps.base.db.Partner","site","field","Site","Site",,
-"com.axelor.apps.base.db.Partner","department","field","Department","Département",,
-"com.axelor.apps.base.db.Partner","payerQuality","field","Payer quality","Qualité payeur",,
-"com.axelor.apps.base.db.Partner","reportedBalanceList","field","Reported Balance","Reports à nouveaux",,
-"com.axelor.apps.base.db.Partner","companySet","field","Companies associated to","Sociétés",,
-"com.axelor.apps.base.db.Partner","accountingSituationList","field","Accounting situation","Situation comptable",,
+"com.axelor.apps.base.db.Partner","site","field","Site","Site",,"Intitulé du site ou de l'établissement associé à cette société. Le site est associé à un numéro d'identification national, il sera donc facturé et non simplement affiché sur la facture."
+"com.axelor.apps.base.db.Partner","department","field","Department","Département",,"Département interne à l'entreprise."
+"com.axelor.apps.base.db.Partner","payerQuality","field","Payer quality","Qualité payeur",,"La qualité payeur est calculée en fonction d'un tableau de poids à configurer dans l'administration générale."
+"com.axelor.apps.base.db.Partner","reportedBalanceList","field","Reported Balance","Reports à nouveaux",,"Reporting comptable listant par année fiscale et pour chaque société le montant du rapport à nouveau."
+"com.axelor.apps.base.db.Partner","companySet","field","Companies associated to","Sociétés",,"Liste des sociétés de rattachement de ce Tiers permettant ensuite de filtrer les tiers selon l'environnement."
+"com.axelor.apps.base.db.Partner","accountingSituationList","field","Accounting situation","Situation comptable",,"Situation comptable du tiers pour l'ensemble des sociétés auquel il est associé. Les comptes utilisés ici sont modifiables et seront les comptes utilisés par défaut pour définir l'état du compte client ou fournisseur."
 "com.axelor.apps.base.db.Partner","bankDetailsList","field","Bank Details list","Les RIBs",,
 "com.axelor.apps.base.db.Partner","bankDetails","field","Bank Details","RIB principal",,
-"com.axelor.apps.base.db.Partner","invoiceSendingFormatSelect","field","Invoice sending format","Format d'envoi des factures",,
-"com.axelor.apps.base.db.Partner","paymentMode","field","Payment Mode","Mode de règlement",,
-"com.axelor.apps.base.db.Partner","paymentCondition","field","Payment condition","Condition de paiement",,
-"com.axelor.apps.base.db.Partner","currency","field","Currency","Devise",,
-"com.axelor.apps.base.db.Partner","blocking","field","Blocking follow-up List","Blocages",,
-"com.axelor.apps.base.db.Partner","reminder","field","Reminder follow-up list ","Relance",,
+"com.axelor.apps.base.db.Partner","invoiceSendingFormatSelect","field","Invoice sending format","Format d'envoi des factures",,"*"
+"com.axelor.apps.base.db.Partner","paymentMode","field","Payment Mode","Mode de règlement",,"Mode de règlement à utiliser par défaut pour ce tiers. Le mode de règlement reste modifiable à postériori sur chaque document (devis, facture...)."
+"com.axelor.apps.base.db.Partner","paymentCondition","field","Payment condition","Condition de paiement",,"Condition de paiement à utiliser par défaut pour ce tiers. Le condition de paiement reste modifiable à postériori sur chaque document (devis, facture...)."
+"com.axelor.apps.base.db.Partner","currency","field","Currency","Devise",,"Devise à utiliser pour les transactions avec le tiers. Cette devise sera reprise par défaut sur chaque document (devis, facture, paiement...)"
+"com.axelor.apps.base.db.Partner","blocking","field","Blocking follow-up List","Blocages",,"Tableau permettant de configurer par société les blocages à appliquer au tiers (facturation, prélèvement, remboursement, relance)."
+"com.axelor.apps.base.db.Partner","reminder","field","Reminder follow-up list ","Relance",,"*"
 "com.axelor.apps.base.db.Partner","rejectCounter","field","Reject counter","Compteur de rejet",,
 "com.axelor.apps.base.db.Partner","batchSet","field","Batchs","Batchs",,
-"com.axelor.apps.base.db.Partner","userInfo","field","Assigned to","Assigné à",,
-"com.axelor.apps.base.db.Partner","team","field","Team","Equipe",,
-"com.axelor.apps.base.db.Partner","reportsTo","field","Reports to","Rapporte à",,
+"com.axelor.apps.base.db.Partner","userInfo","field","Assigned to","Assigné à",,"Personne en charge du suivi de ce tiers."
+"com.axelor.apps.base.db.Partner","team","field","Team","Equipe",,"Equipe de rattachement de ce tiers (champ utilisé majoritairement pour les reportings),"
+"com.axelor.apps.base.db.Partner","reportsTo","field","Reports to","Rapporte à",,"Champ permettant d'indiquer les liens relationnels entre des contacts."
 "com.axelor.apps.base.db.Partner","description","field","description","Description",,
 "com.axelor.apps.base.db.Partner","industrySectorSelect","field","Industry","Secteur d'Activité",,
 "com.axelor.apps.base.db.Partner","nbrEmployees","field","N° of Employees","Nbre Employés",,
 "com.axelor.apps.base.db.Partner","salesTurnover","field","Turnover","CA",,
-"com.axelor.apps.base.db.Partner","registrationCode","field","Registration code","N° SIRET",,
+"com.axelor.apps.base.db.Partner","registrationCode","field","Registration code","N° SIRET",,"Format proposé pour le SIRET Français : XXXXXXXXX/YYYYY"
 "com.axelor.apps.base.db.Partner","vatNbr","field","VAT N°","N° TVA",,
 "com.axelor.apps.base.db.Partner","fullName","field","Nom du Contact","Nom complet",,
 "com.axelor.apps.base.db.PartnerCategory","importId","field",,"Id Import",,
 "com.axelor.apps.base.db.PartnerCategory","name","field","Name","Nom",,
-"com.axelor.apps.base.db.PartnerCategory","code","field","Code","Code",,
+"com.axelor.apps.base.db.PartnerCategory","code","field","Code","Code",,"Le code doit être unique."
 "com.axelor.apps.base.db.PartnerList","code","field","Code","Code",,
 "com.axelor.apps.base.db.PartnerList","description","field","Description","Description",,
 "com.axelor.apps.base.db.PartnerList","partnerSet","field","Partners","Tiers",,
@@ -1501,12 +1501,12 @@
 "com.axelor.apps.account.db.PayerQualityConfigLine","name","field","Label","Libellé",,
 "com.axelor.apps.account.db.PayerQualityConfigLine","burden","field","Burden (weight)","Poids",,
 "com.axelor.apps.account.db.PayerQualityConfigLine","description","field","Description","Remarque",,
-"com.axelor.apps.account.db.PaymentCondition","name","field","Name","Nom",,
-"com.axelor.apps.account.db.PaymentCondition","code","field","Code","Code",,
-"com.axelor.apps.account.db.PaymentCondition","paymentTime","field","Payment period","Délai de paiement",,
-"com.axelor.apps.account.db.PaymentCondition","typeSelect","field","Type","Modalité",,
-"com.axelor.apps.account.db.PaymentCondition","daySelect","field","Day","Jour dans le mois",,
-"com.axelor.apps.account.db.PaymentCondition","isFree","field","Free ?","Libre",,
+"com.axelor.apps.account.db.PaymentCondition","name","field","Name","Nom",,"Libellé de la condition de paiement telle qu'elle apparaîtra sur les impressions."
+"com.axelor.apps.account.db.PaymentCondition","code","field","Code","Code",,"Le code doit être unique."
+"com.axelor.apps.account.db.PaymentCondition","paymentTime","field","Payment period","Délai de paiement",,"Délai à appliquer sur la modalité de paiement (valeur n)."
+"com.axelor.apps.account.db.PaymentCondition","typeSelect","field","Type","Modalité",,"Type statique définissant les règles de paiement : <br> Net : Date du jour ou de référence + Délai de paiement. <br> Fin de mois + n jours : 1ère méthode de calcul de N jours fin de mois (ou N = valeur du délai de paiement) <br>  n jours + Fin de mois : 2 ème méthode de calcul de N jours fin de mois <br> n jours + Fin de mois le : Méthode de calcul de N jours fin de mois, le X du mois suivant (N = délai de paiement et X = Jour dans le mois).       "
+"com.axelor.apps.account.db.PaymentCondition","daySelect","field","Day","Jour dans le mois",,"Uniquement affiché pour la modalité 'n jours fin de mois le', indique le jour du mois suivant (après la fin de mois) à laquelle l'échéance aura lieu (Exemple : Facture le 10/12, si méthode de 15 jours fin de mois le 10, la date d'échéance sera le : 10/12 + 15 jours = 25/12, fin de mois le 31/12, le 10 du mois suivant soit le 10/01,"
+"com.axelor.apps.account.db.PaymentCondition","isFree","field","Free ?","Libre",,"*"
 "com.axelor.apps.account.db.PaymentInvoice","dueDate","field","Due date","Échéance",,
 "com.axelor.apps.account.db.PaymentInvoice","moveLine","field","Move Line","Ligne d'écriture",,
 "com.axelor.apps.account.db.PaymentInvoice","invoiceAmount","field","Invoice Amount","Montant facture",,
@@ -1530,10 +1530,10 @@
 "com.axelor.apps.account.db.PaymentInvoiceToPay","remainingAmountAfterPayment","field","Remaining to pay after cashing","Restant à payer après l'encaissement",,
 "com.axelor.apps.account.db.PaymentMode","importId","field",,"ID Import",,
 "com.axelor.apps.account.db.PaymentMode","name","field","Label","Intitulé",,
-"com.axelor.apps.account.db.PaymentMode","code","field","Code","Code",,
-"com.axelor.apps.account.db.PaymentMode","accountManagementList","field","Accounts by paymentMode","Paramétrages comptes comptables",,
-"com.axelor.apps.account.db.PaymentMode","bankJournal","field","Journal","Journal",,
-"com.axelor.apps.account.db.PaymentMode","invoiceLabel","field","Invoice label","Libellé facture","Label to be displayed on invoice PDF",
+"com.axelor.apps.account.db.PaymentMode","code","field","Code","Code",,"Le code doit être unique."
+"com.axelor.apps.account.db.PaymentMode","accountManagementList","field","Accounts by paymentMode","Paramétrages comptes comptables",,"Configuration du compte à utiliser pour chaque société pour la contrepartie du compte client."
+"com.axelor.apps.account.db.PaymentMode","bankJournal","field","Journal","Journal",,"Journal auquel une écriture associée à ce mode de paiement sera rattaché."
+"com.axelor.apps.account.db.PaymentMode","invoiceLabel","field","Invoice label","Libellé facture","Label to be displayed on invoice PDF","Libellé qui sera affiché sur le PDF."
 "com.axelor.apps.account.db.PaymentSchedule","scheduleId","field","Reference","Référence",,
 "com.axelor.apps.account.db.PaymentSchedule","creationDate","field","Creation Date","Date de création",,
 "com.axelor.apps.account.db.PaymentSchedule","startDate","field","Schedule start Date","Date de début des échéances",,
@@ -1749,7 +1749,7 @@
 "com.axelor.apps.base.db.Product","startDate","field","Product launch Date","Date de mise en application du produit",,
 "com.axelor.apps.base.db.Product","endDate","field","Product pulled off market Date","Date de fin d'application du produit",,
 "com.axelor.apps.base.db.Product","invoiceLineType","field","Invoice line type","Type de ligne de facture",,
-"com.axelor.apps.base.db.Product","accountManagementList","field","Accounts","Comptes comptables",,
+"com.axelor.apps.base.db.Product","accountManagementList","field","Accounts","Comptes comptables",,"Paramétrage des règles comptables à l'achat et à la vente lors que la génération des factures (comptes de produit, de charge et de TVA)."
 "com.axelor.apps.base.db.Product","priceList","field","Prices","Listes de prix",,
 "com.axelor.apps.base.db.Product","supplierCatalogList","field","Supplier Catalog Lines","Lignes catalogue fournisseur",,
 "com.axelor.apps.base.db.Product","snStatusUpdates","field",,"Mises à jour statuts",,
