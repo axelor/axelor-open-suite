@@ -70,6 +70,7 @@
 				<field name="costPrice"/>
 				<field name="purchaseCurrency"/>
 				<break/>
+				<field name="defaultSupplierPartner"/>
 				<separator title="Suppliers catalog" colSpan="4"/>
 				<field name="supplierCatalogList" colSpan="4"/>        
 			</page>

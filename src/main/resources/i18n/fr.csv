@@ -1639,7 +1639,7 @@
 "com.axelor.apps.base.db.Product","description","field","Description","Description",,
 "com.axelor.apps.base.db.Product","picture","field","Picture","Image",,
 "com.axelor.apps.base.db.Product","productCategory","field","Product category","Catégorie de produit",,
-"com.axelor.apps.base.db.Product","productFamily","field","Family","Famille produit",,
+"com.axelor.apps.base.db.Product","productFamily","field","Family","Famille produit",,"Champ obligatoire, la famille contient les configurations comptables par défaut "
 "com.axelor.apps.base.db.Product","unit","field","Unit","Unité",,
 "com.axelor.apps.base.db.Product","applicationTypeSelect","field","Application type","Type d'application",,
 "com.axelor.apps.base.db.Product","saleSupplySelect","field","Méthode d'appro. des ventes","Mode Appro. Ventes",,
@@ -1658,7 +1658,7 @@
 "com.axelor.apps.base.db.Product","priceList","field","Prices","Listes de prix",,
 "com.axelor.apps.base.db.Product","supplierCatalogList","field","Supplier Catalog Lines","Lignes catalogue fournisseur",,
 "com.axelor.apps.base.db.Product","snStatusUpdates","field",,"Mises à jour statuts",,
-"com.axelor.apps.base.db.Product","trackingNumberConfiguration","field","Tracking Number Configuration","Configuration N° Suivi/Lot",,
+"com.axelor.apps.base.db.Product","trackingNumberConfiguration","field","Tracking Number Configuration","Configuration N° Suivi/Lot",,"Outil de configuration des numéro de suivi, à l'achat, à la vente et pour la production."
 "com.axelor.apps.base.db.Product","hasWarranty","field","Warranty ?","Garantie ?",,
 "com.axelor.apps.base.db.Product","isPerishable","field","Perishable ?","Périssable ?",,
 "com.axelor.apps.base.db.Product","warrantyNbrOfMonths","field","Warranty length (in months)","Durée de la garantie (Mois)",,
