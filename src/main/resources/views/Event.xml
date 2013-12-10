@@ -95,8 +95,8 @@
 	    <field name="endDateTime"/>
 	    <field name="statusSelect"/>
 	    <field name="userInfo"/>
-	    <button name="accept" icon="img/16px/accept_16px.png" help="Realize" onClick="action-set-status-select-2,action-save-event-status-select" />
-	    <button name="cancel" icon="img/16px/cancel_16px.png" help="Cancel" onClick="action-set-status-select-3,action-save-event-status-select" />
+	    <button name="accept" icon="img/16px/accept_16px.png" help="Realize" onClick="action-set-status-select-2,action-save-event-status-select" readonlyIf="statusSelect &gt; 1" />
+	    <button name="cancel" icon="img/16px/cancel_16px.png" help="Cancel" onClick="action-set-status-select-3,action-save-event-status-select" readonlyIf="statusSelect &gt; 2"/>
 	</grid>
     
     <form name="call-form" title="Call" model="com.axelor.apps.crm.db.Event" cols="2" colWidths="*,400" onNew="action-event-new-record">
@@ -166,8 +166,8 @@
 	    <field name="endDateTime"/>
 	    <field name="statusSelect"/>
 	    <field name="userInfo"/>
-	    <button name="accept" icon="img/16px/accept_16px.png" help="Realize" onClick="action-set-status-select-2,action-save-event-status-select" />
-	    <button name="cancel" icon="img/16px/cancel_16px.png" help="Cancel" onClick="action-set-status-select-3,action-save-event-status-select" />
+	    <button name="accept" icon="img/16px/accept_16px.png" help="Realize" onClick="action-set-status-select-2,action-save-event-status-select" readonlyIf="statusSelect &gt; 1"/>
+	    <button name="cancel" icon="img/16px/cancel_16px.png" help="Cancel" onClick="action-set-status-select-3,action-save-event-status-select" readonlyIf="statusSelect &gt; 2"/>
 	</grid>
     
     <form name="meeting-form" title="Meeting" model="com.axelor.apps.crm.db.Event" cols="2" colWidths="*,400" onNew="action-event-new-record">
@@ -231,9 +231,9 @@
 	    <field name="taskStatusSelect"/>    
 	    <field name="prioritySelect"/>
 	    <field name="userInfo"/>
-	    <button name="start" icon="img/16px/start_16px.png" help="On going" onClick="action-set-task-status-select-2,action-save-event-task-status-select" />
-	    <button name="accept" icon="img/16px/accept_16px.png" help="Finished" onClick="action-set-task-status-select-3,action-save-event-task-status-select" />
-	    <button name="pause" icon="img/16px/pause_16px.png" help="Pending" onClick="action-set-task-status-select-4,action-save-event-task-status-select" />
+	    <button name="start" icon="img/16px/start_16px.png" help="On going" onClick="action-set-task-status-select-2,action-save-event-task-status-select" readonlyIf="taskStatusSelect &gt; 1"/>
+	    <button name="accept" icon="img/16px/accept_16px.png" help="Finished" onClick="action-set-task-status-select-3,action-save-event-task-status-select" readonlyIf="taskStatusSelect &gt; 2"/>
+	    <button name="pause" icon="img/16px/pause_16px.png" help="Pending" onClick="action-set-task-status-select-4,action-save-event-task-status-select" readonlyIf="taskStatusSelect &gt; 3"/>
 	</grid>
     
     <form name="crm-task-form" title="Task"  model="com.axelor.apps.crm.db.Event" cols="2" colWidths="*,400"  onNew="action-event-new-record">
@@ -277,6 +277,10 @@
     
     
 	<grid name="ticket-grid" title="Ticket" model="com.axelor.apps.crm.db.Event" orderBy="ticketNumberSeq" >
+	    <hilite background="info" if="prioritySelect == 1 &amp;&amp; ticketStatusSelect != 5" />
+        <hilite background="warning" if="prioritySelect == 4 &amp;&amp; ticketStatusSelect != 5" />
+        <hilite background="danger" if="prioritySelect == 5 &amp;&amp; ticketStatusSelect != 5" />
+        <hilite background="success" if="ticketStatusSelect == 5" />
 	    <field name="ticketNumberSeq"/>
 	    <field name="subject"/>
 	    <field name="eventCategory"/>
@@ -286,9 +290,9 @@
 	    <field name="prioritySelect"/>
 	    <field name="ticketStatusSelect"/>
 	    <field name="progressSelect" widget="SelectProgress"/>
-	    <button name="start" icon="img/16px/start_16px.png" help="In progress" onClick="action-set-ticket-status-select-2,action-save-event-ticket-status-select"/>
-	    <button name="accept" icon="img/16px/accept_16px.png" help="Resolved" onClick="action-set-ticket-status-select-3,action-save-event-ticket-status-select"/>
-	    <button name="stop" icon="img/16px/stop_16px.png" help="Closed" onClick="action-set-ticket-status-select-5,action-save-event-ticket-status-select"/>
+	    <button name="start" icon="img/16px/start_16px.png" help="In progress" onClick="action-set-ticket-status-select-2,action-save-event-ticket-status-select" readonlyIf="ticketStatusSelect &gt; 1"/>
+	    <button name="accept" icon="img/16px/accept_16px.png" help="Resolved" onClick="action-set-ticket-status-select-3,action-save-event-ticket-status-select" readonlyIf="ticketStatusSelect &gt; 2"/>
+	    <button name="stop" icon="img/16px/stop_16px.png" help="Closed" onClick="action-set-ticket-status-select-5,action-save-event-ticket-status-select" readonlyIf="ticketStatusSelect &gt; 4" />
 	</grid>
     
     <form name="ticket-form" title="Ticket" model="com.axelor.apps.crm.db.Event" cols="6" colWidths="*,400" 
