@@ -636,6 +636,7 @@
 		
 	<action-view name="top.new.partner.view" title="Create Partner" model="com.axelor.apps.base.db.Partner" >
 		<view type="form" name="partner-form"/>
+		<view type="grid" name="partner-grid" />
 		<context name="_partnerTypeSelect" expr="eval:1" />
 	</action-view>
 	
