@@ -10,7 +10,7 @@
   	<integer name="typeSelect" title="Type" selection="message.type.select" readonly="true"/>
   	<string name="subject" title="Subject"/>
   	<string name="content" title="Content" large="true"/>
-	<datetime name="sendedDateT" title="Sended date" readonly="true"/>
+	<datetime name="sentDateT" title="Sent date" readonly="true"/>
 	<string name="relatedTo1Select" title="Related to" selection="message.related.to.select"/>
   	<integer name="relatedTo1SelectId"/>
   	<string name="relatedTo2Select" title="Related to" selection="message.related.to.select"/>

@@ -19,7 +19,7 @@
     <decimal name="depositedAmount" title="Deposited Amount"/>
     <decimal name="cashRegisterAmount" title="Cash Register Amount"/>
     <integer name="stateSelect" title="Status" readonly="true" selection="cash.register.state.select"/>
-    <boolean name="emailSendedOk" title="Email sent ?" default="false" readonly="true"/>
+    <boolean name="emailSentOk" title="Email sent ?" default="false" readonly="true"/>
   
   </entity>
   
