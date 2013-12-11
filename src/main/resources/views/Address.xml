@@ -5,6 +5,8 @@
 	
 	<grid name="address-grid" title="Address list" model="com.axelor.apps.base.db.Address">
 		<field name="fullName" />
+		<button name="map" icon="icon-map-marker" help="Locate" onClick="com.axelor.apps.base.web.AddressController:viewMap,save" />
+		<button name="directions" icon="icon-location-arrow" help="Direction" onClick="com.axelor.apps.base.web.AddressController:directionsMap" />
 	</grid>
 	
 	<form name="address-form" title="Address" model="com.axelor.apps.base.db.Address"
