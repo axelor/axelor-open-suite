@@ -5,8 +5,8 @@
     
     <grid name="partner-grid" title="Partners" model="com.axelor.apps.base.db.Partner" orderBy="name">
 	    <toolbar>
-	        <button name="printPhoneBook" title="PhoneBook" icon="img/16px/print_16px.png" onClick="action-print-phonebook"/>
-	        <button name="printCompanyPhoneBook" title="Company phoneBook" icon="img/16px/print_16px.png" onClick="action-print-compnay-phonebook"/>
+	        <button name="printPhoneBook" title="PhoneBook" icon="icon-print" onClick="action-print-phonebook"/>
+	        <button name="printCompanyPhoneBook" title="Company phoneBook" icon="icon-print" onClick="action-print-compnay-phonebook"/>
 	    </toolbar>
 	    <field name="fullName"/>
 	    <field name="mainInvoicingAddress"/>
@@ -16,7 +16,7 @@
 		<button name="logCall" title="Log Call" colSpan="1" icon="icon-phone" help="Log Call" onClick="action-partner-view-create-call"/>
 		<button name="scheduleMeeting" title="Schedule Meeting" colSpan="1" help="Schedule Meeting" icon="icon-group" onClick="action-partner-view-create-meeting"/>
 		<button name="sendByEmail" title="Send Email" colSpan="1" help="Send Email" icon="icon-envelope" onClick="action-send-by-email-with-template"/>
-		<button name="showClientSituationGrid" title="Client Situation" colSpan="1" icon="img/16px/print_16px.png" onClick="action-partner-method-show-client-situation" showIf="isContact == false"/>
+		<button name="showClientSituationGrid" title="Client Situation" colSpan="1" icon="icon-print" onClick="action-partner-method-show-client-situation" showIf="isContact == false"/>
 	</grid>
     
     <grid name="partner-contact-grid" title="Contacts" model="com.axelor.apps.base.db.Partner">
@@ -27,7 +27,7 @@
 	    <button name="logCall" title="Log Call" colSpan="1" icon="icon-phone" help="Log Call" onClick="action-partner-view-create-call"/>
 		<button name="scheduleMeeting" title="Schedule Meeting" colSpan="1" help="Schedule Meeting" icon="icon-group" onClick="action-partner-view-create-meeting"/>
 		<button name="sendByEmail" title="Send Email" colSpan="1" help="Send Email" icon="icon-envelope" onClick="action-send-by-email-with-template"/>
-		<button name="showClientSituationGrid" title="Client Situation" colSpan="1" icon="img/16px/print_16px.png" onClick="action-partner-method-show-client-situation" showIf="isContact == false"/>
+		<button name="showClientSituationGrid" title="Client Situation" colSpan="1" icon="icon-print" onClick="action-partner-method-show-client-situation" showIf="isContact == false"/>
 	</grid>
     
      <grid name="partner-grid-group" title="Partner" model="com.axelor.apps.base.db.Partner" groupBy="userInfo">
@@ -44,9 +44,9 @@
     onLoad="action-partner-attrs-change-name,action-partner-attrs-hide-tabs" 
     onSave="save,action-set-partner-seq,action-create-accounting-situation">
 	    <toolbar>
-	        <button name="sendByEmail" title="Send email" colSpan="1" icon="img/Other/mail_19x14px.png" onClick="save,action-send-by-email-with-template"/>
-	        <button name="showPartnerInfo" title="Print Informations" colSpan="1" icon="img/16px/print_16px.png" onClick="save,action-partner-method-show-partner-info"/>
-	        <button name="showClientSituationForm" title="Client Situation" colSpan="1" icon="img/16px/print_16px.png" onClick="save,action-partner-method-show-client-situation" showIf="isContact == false"/>
+	        <button name="sendByEmail" title="Send email" colSpan="1" icon="icon-envelope" onClick="save,action-send-by-email-with-template"/>
+	        <button name="showPartnerInfo" title="Print Informations" colSpan="1" icon="icon-print" onClick="save,action-partner-method-show-partner-info"/>
+	        <button name="showClientSituationForm" title="Client Situation" colSpan="1" icon="icon-print" onClick="save,action-partner-method-show-client-situation" showIf="isContact == false"/>
 	    </toolbar>
 	    <menubar>
 	        <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true">
@@ -215,8 +215,8 @@
 	onSave="save,action-set-partner-seq">
 	    <toolbar>
 	        <button name="sendByEmail" title="Send email" colSpan="1" onClick="save,action-send-by-email-with-template"/>
-	        <button name="showPartnerInfo" title="Print Informations" colSpan="1" icon="img/16px/print_16px.png" onClick="save,action-partner-method-show-partner-info"/>
-	        <button name="showClientSituationForm" title="Client Situation" colSpan="1" icon="img/16px/print_16px.png" onClick="save,action-partner-method-show-client-situation" showIf="isContact == false"/>
+	        <button name="showPartnerInfo" title="Print Informations" colSpan="1" icon="icon-print" onClick="save,action-partner-method-show-partner-info"/>
+	        <button name="showClientSituationForm" title="Client Situation" colSpan="1" icon="icon-print" onClick="save,action-partner-method-show-client-situation" showIf="isContact == false"/>
 	    </toolbar>
 	    <menubar>
 	        <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true">

@@ -43,7 +43,7 @@
         	<field name="cashRegisterLine"/>
         	<field name="rejectMoveLine"/>
         </group> 
-        <button name="printMail" title="Print" colSpan="2" icon="img/16px/print_16px.png" onClick="save,action-mail-method-print-mail"/>
+        <button name="printMail" title="Print" colSpan="2" icon="icon-print" onClick="save,action-mail-method-print-mail"/>
     </form>
 
 	<action-attrs name="action-mail-hidden-attrs">
