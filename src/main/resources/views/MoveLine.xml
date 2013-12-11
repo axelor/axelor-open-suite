@@ -48,7 +48,6 @@
 			        <field name="passageReason"/>
 			        <field name="usherPassageOk" onChange="save,com.axelor.apps.account.web.MoveLineController:usherProcess"/>
 			        <field name="description"/>
-			        <field name="mailSelect"/>
 			        <field name="reimbursementStateSelect"/>
 	    		</group>
 		        <group name="irrecoverable" title="Irrecoverable" colSpan="4" canCollapse="true" >
@@ -95,7 +94,6 @@
 		        <field name="passageReason"/>
 		        <field name="usherPassageOk" onChange="save,com.axelor.apps.account.web.MoveLineController:usherProcess"/>
 		        <field name="description"/>
-		        <field name="mailSelect"/>
 		        <field name="reimbursementStateSelect"/>
 	        </group>
 	        <group name="irrecoverable" title="Irrecoverable" colSpan="4" canCollapse="true" >

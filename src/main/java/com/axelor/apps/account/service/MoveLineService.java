@@ -129,7 +129,7 @@ public class MoveLineService {
 		moveLine.setDate(date);
 		//TODO à rétablir si date d'échéance
 		moveLine.setDueDate(dueDate);
-		moveLine.setCounter(Integer.toString(ref));
+		moveLine.setCounter(ref);
 		moveLine.setAnalyticAccountSet(new HashSet<AnalyticAccount>());
 		
 		if (isMinus){
@@ -343,19 +343,19 @@ public class MoveLineService {
 				if (debit.compareTo(credit) == 1){
 					moveLine.setDebit(debit.subtract(credit));
 					moveLine.setCredit(BigDecimal.ZERO);
-					moveLine.setCounter(Integer.toString(moveLineId++));
+					moveLine.setCounter(moveLineId++);
 					moveLines.add(moveLine);
 				}
 				else if (credit.compareTo(debit) == 1){
 					moveLine.setCredit(credit.subtract(debit));
 					moveLine.setDebit(BigDecimal.ZERO);
-					moveLine.setCounter(Integer.toString(moveLineId++));
+					moveLine.setCounter(moveLineId++);
 					moveLines.add(moveLine);
 				}
 				
 			}
 			else if (debit.compareTo(BigDecimal.ZERO) == 1 || credit.compareTo(BigDecimal.ZERO) == 1){
-				moveLine.setCounter(Integer.toString(moveLineId++));
+				moveLine.setCounter(moveLineId++);
 				moveLines.add(moveLine);
 			}
 		}

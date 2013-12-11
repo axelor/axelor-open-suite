@@ -814,7 +814,7 @@ public class MoveService {
 			}
 			
 			moveLine.setPartner(partner);
-			moveLine.setCounter(Integer.toString(counter));
+			moveLine.setCounter(counter);
 			counter++;
 		}
 		
