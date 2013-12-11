@@ -96,7 +96,7 @@
 	    	<page title="Attendees" colSpan="4">
 	    		<group colSpan="2" cols="4">
 	                <separator title="Contacts" colSpan="4"/>
-	                <field name="contactEventAttendeeList" showTitle="false" colSpan="4" form-view="event-attendee-contact-form" grid-view="event-attendee-contact-grid"/>
+	                <field name="eventAttendeeList" showTitle="false" colSpan="4" form-view="event-attendee-contact-form" grid-view="event-attendee-contact-grid"/>
 	            </group>
 	            <portlet colSpan="4" action="action-event-view-lead"/>
 	            <portlet colSpan="4" action="action-event-view-contact"/>
@@ -111,7 +111,7 @@
     	<view type="form" name="lead-event-form"/>
     </action-view>
     
-    <action-view name="action-event-view-contact" title="Contacts" model="com.axelor.apps.crm.db.Partner">
+    <action-view name="action-event-view-contact" title="Contacts" model="com.axelor.apps.base.db.Partner">
     	<view type="grid" name="contact-event-grid"/>
     	<view type="form" name="contact-event-form"/>
     	<domain>self.isContact = true</domain>
