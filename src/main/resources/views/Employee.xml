@@ -11,14 +11,14 @@
 		<field name="internalContact.mobilePhone"/>
 		<field name="internalContact.fixedPhone"/>
 		<field name="internalContact.emailAddress.address" widget="Email" title="Email"/>
-		<button name="sendByEmail" title="Send by email" colSpan="1" onClick="action-send-by-email-with-template" icon="img/Other/mail_19x14px.png"/>
+		<button name="sendByEmail" title="Send by email" colSpan="1" onClick="action-send-by-email-with-template" icon="icon-envelope"/>
 	</grid>
 
 	<form name="employee-form" title="Employee"	model="com.axelor.apps.organisation.db.Employee" cols="4"
 	onNew="action-employee-default-record">
 		<toolbar>
-			<button name="showEmployee" title="Print CV" onClick="save,action-partner-method-show-employee"/>
-			<button name="sendByEmail" title="Send email" onClick="save,action-send-by-email-with-template"/>
+			<button name="showEmployee" title="Print CV" icon="icon-print" onClick="save,action-partner-method-show-employee"/>
+			<button name="sendByEmail" title="Send email" icon="icon-envelope" onClick="save,action-send-by-email-with-template"/>
 		</toolbar>
 		<group name="header" colSpan="6" cols="6">
 			<group colSpan="1">

@@ -13,7 +13,7 @@
     <form name="timesheet-form" title="Timesheet" model="com.axelor.apps.organisation.db.Timesheet" cols="4"
     onNew="action-timesheet-default-record,action-timesheet-getPeriod">
      	<toolbar>
-            <button name="print" title="Print" icon="img/16px/print_16px.png" onClick="save,action-print-pdf-timesheet"/>
+            <button name="print" title="Print" icon="icon-print" onClick="save,action-print-pdf-timesheet"/>
 	    </toolbar>
         <field name="userInfo" readonlyIf="statusSelect >= 3"/>
 		<spacer/>
