@@ -144,7 +144,7 @@ public class MessageService {
 	
 	
 	private Message createMessage(String content, EmailAddress fromEmailAddress, UserInfo recipientUserInfo, String relatedTo1Select, int relatedTo1SelectId,
-			String relatedTo2Select, int relatedTo2SelectId, LocalDateTime sendedDate, UserInfo senderUserInfo, boolean sentByEmail, int statusSelect, 
+			String relatedTo2Select, int relatedTo2SelectId, LocalDateTime sentDate, UserInfo senderUserInfo, boolean sentByEmail, int statusSelect, 
 			String subject, int typeSelect, List<EmailAddress> toEmailAddressList, List<EmailAddress> ccEmailAddressList, List<EmailAddress> bccEmailAddressList, 
 			MailAccount mailAccount, String filePath)  {
 		Message message = new Message();
@@ -155,7 +155,7 @@ public class MessageService {
 		message.setRelatedTo1SelectId(relatedTo1SelectId);
 		message.setRelatedTo2Select(relatedTo2Select);
 		message.setRelatedTo2SelectId(relatedTo2SelectId);
-		message.setSendedDateT(sendedDate);
+		message.setSentDateT(sentDate);
 		message.setSenderUserInfo(senderUserInfo);
 		message.setSentByEmail(sentByEmail);
 		message.setStatusSelect(statusSelect);

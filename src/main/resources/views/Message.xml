@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
 	
     <grid name="message-grid" title="Emails" model="com.axelor.apps.message.db.Message" orderBy="-sendedDateT">
-        <field name="sendedDateT"/>
+        <field name="sentDateT"/>
         <field name="senderUserInfo"/>
         <field name="subject"/>
     </grid>
@@ -12,7 +12,7 @@
     <form name="message-form" title="Email" model="com.axelor.apps.message.db.Message" cols="4"
     onNew="action-message-record-default,action-message-record-mail-account,action-message-record-get-signature">
     	<group title="Informations" colSpan="4" readonlyIf="statusSelect == 2 || statusSelect == 3">
-            <field name="sendedDateT"/>
+            <field name="sentDateT"/>
             <field name="fromEmailAddress" />
             <field name="senderUserInfo"/>
             <field name="mailAccount" widget="SuggestBox" onChange="action-message-record-get-signature"/>
@@ -44,7 +44,7 @@
     
     
 	<action-record name="action-message-record-default" model="com.axelor.apps.message.db.Message">
-    	<field name="sendedDateT" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()"/>
+    	<field name="sentDateT" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()"/>
     	<field name="statusSelect" expr="eval: 1"/>
     	<field name="typeSelect" expr="eval: 2"/>
     	<field name="senderUserInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
