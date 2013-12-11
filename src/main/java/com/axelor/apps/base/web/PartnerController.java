@@ -66,6 +66,7 @@ public class PartnerController {
 
 	public void setPartnerSequence(ActionRequest request, ActionResponse response) throws AxelorException {
 		Partner partner = request.getContext().asType(Partner.class);
+		partner = Partner.find(partner.getId());
 		if(partner.getPartnerSeq() ==  null) {
 			String ref = sequenceService.getSequence(IAdministration.PARTNER,false);
 			if (ref == null)  
