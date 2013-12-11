@@ -4,23 +4,14 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
     <grid name="event-attendee-contact-grid" title="Contacts" model="com.axelor.apps.crm.db.EventAttendee">
+		<field name="name"/>
         <field name="statusSelect"/>
-        <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
     </grid>
     
     <form name="event-attendee-contact-form" title="Contact" model="com.axelor.apps.crm.db.EventAttendee" cols="2" colWidths="*,400">
     	<field name="statusSelect"/>
-        <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
-    </form>
-    
-     <grid name="event-attendee-lead-grid" title="Leads" model="com.axelor.apps.crm.db.EventAttendee">
-        <field name="statusSelect"/>
-        <field name="lead"/>
-    </grid>
-    
-    <form name="event-attendee-lead-form" title="Lead" model="com.axelor.apps.crm.db.EventAttendee" cols="2" colWidths="*,400">
-    	<field name="statusSelect"/>
-        <field name="lead"/>
+        <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid" showIf="contactPartner"/>
+        <field name="lead" showIf="lead"/>
     </form>
     
 </object-views>

@@ -43,6 +43,7 @@ import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.IEvent;
+import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.service.EventService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -178,4 +179,23 @@ public class EventController {
 		}else
 			response.setFlash("Input location please !");
 	}	
+	
+	
+	public void addLeadAttendee(ActionRequest request, ActionResponse response)  {
+		Lead lead = request.getContext().asType(Lead.class);
+		
+		if(lead != null)  {
+			
+			Event event = request.getContext().getParentContext().asType(Event.class);
+			
+			if(event != null)  {
+				
+				eventService.addLeadAttendee(event, lead, null);
+				response.setReload(true);
+				
+			}
+			
+		}
+		
+	}
 }

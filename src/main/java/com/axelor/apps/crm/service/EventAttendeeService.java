@@ -30,60 +30,40 @@
  */
 package com.axelor.apps.crm.service;
 
-import org.joda.time.Duration;
-import org.joda.time.Interval;
-import org.joda.time.LocalDateTime;
-
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.crm.db.Event;
+import com.axelor.apps.crm.db.EventAttendee;
 import com.axelor.apps.crm.db.Lead;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 
-public class EventService {
-	
-	@Inject
-	private EventAttendeeService eventAttendeeService;
+public class EventAttendeeService {
 
-	public Duration computeDuration(LocalDateTime startDateTime, LocalDateTime endDateTime)  {
+	
+	public EventAttendee createEventAttendee(Event event, Lead lead, Partner contactPartner)  {
 		
-		return new Interval(startDateTime.toDateTime(), endDateTime.toDateTime()).toDuration();
+		EventAttendee eventAttendee = new EventAttendee();
+		eventAttendee.setEvent(event);
+		eventAttendee.setLead(lead);
+		eventAttendee.setContactPartner(contactPartner);
+
+		eventAttendee.setName(this.getName(eventAttendee));
+		
+		return eventAttendee;
 		
 	}
 	
-	public int getDuration(Duration duration)  {
+	public String getName(EventAttendee eventAttendee)  {
 		
-		return duration.toStandardSeconds().getSeconds();
+		if(eventAttendee.getContactPartner() != null)  {
+			return eventAttendee.getContactPartner().getFullName();
+		}
+		if(eventAttendee.getLead() != null)  {
+			return eventAttendee.getLead().getFullName();
+		}
 		
-	}
-	
-	public LocalDateTime computeStartDateTime(int duration, LocalDateTime endDateTime)  {
-			
-		return endDateTime.minusSeconds(duration);	
-		
-	}
-	
-	public LocalDateTime computeEndDateTime(LocalDateTime startDateTime, int duration)  {
-		
-		return startDateTime.plusSeconds(duration);
+		return "";
 		
 	}
-	
-	@Transactional
-	public void saveEvent(Event event){
-		event.save();
-	}
-	
-	
-	@Transactional
-	public void addLeadAttendee(Event event, Lead lead, Partner contactPartner)  {
-		
-		event.addEventAttendeeListItem(eventAttendeeService.createEventAttendee(event, lead, contactPartner));
-		event.save();
-		
-	}
-	
-	
+ 	
 	
 	
 	
