@@ -15,15 +15,13 @@
     <one-to-many name="reconcileList2" ref="Reconcile" title="Credit Reconcile List" mappedBy="creditMoveLine" readonly="false"/>
     <decimal name="amountPaid" title="Amount paid/reconciled" default="0.0" readonly="true"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
-    <string name="counter" title="Line Nbr." help="This sequence is unique per Move, automatically reset to 1 for a new moveline"/>
+    <integer name="counter" title="Line Nbr." help="This sequence is unique per Move, automatically reset to 1 for a new moveline"/>
     <many-to-one name="invoiceReject" ref="com.axelor.apps.account.db.Invoice" title="Invoice rejected"/>
     <boolean name="exportedDirectDebitOk" title="Exported Direct Debit" default="false"/>
     <many-to-one name="interbankCodeLine" ref="com.axelor.apps.account.db.InterbankCodeLine" title="Reject reason"/>
     <string name="description" title="Description"/>
     <many-to-many name="analyticAccountSet" ref="AnalyticAccount" title="Analytic account"/>
-    <integer name="mailSelect" title="Mail status" default="0" selection="move.line.mail.select"/>
     <integer name="reimbursementStateSelect" title="Reimbursement status" default="0" selection="move.line.reimbursement.state.select"/>
-    <boolean name="unrecocileMoveOk" title="Unreconciled move line" default="false"/>
     <string name="passageReason" title="Irrecoverable Shift Reason" readonly="true"/>
     <boolean name="usherPassageOk" title="Transfer(ed) to Usher "/>
     <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax" />
@@ -46,18 +44,11 @@
     
     <string name="name" title="Name" namecolumn="true">
     	<![CDATA[
-    	if (move != null){
-    		if (counter != null){
-    			if (move.getReference() != null){
-    				return move.getReference() + "-" + counter;
-    			}
-    			else return counter;
-    		}
-    		else return "-";
+    	if (move != null && move.getReference() != null){
+    		return move.getReference() + "-" + Integer.toString(counter);
     	}
 		else {
-			if (counter != null) return counter;
-		 	else return "-";
+			return Integer.toString(counter);
 		 }
 	    ]]>
     </string>
