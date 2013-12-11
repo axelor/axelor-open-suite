@@ -36,6 +36,7 @@
 	        <button name="importCalendar" title="Import calendar" colSpan="1" onClick="com.axelor.apps.crm.web.CalendarController:importCalendar"/>
 	        <button name="synchronizeCalendars" title="Synchronize calendars" colSpan="1" onClick="com.axelor.apps.crm.web.CalendarController:synchronizeCalendars"/>
 	    </toolbar>
+	    <field name="typeSelect" widget="RadioSelect"/>
 	    <group colSpan="1" cols="4">
 	        <separator title="Subject" colSpan="4" hideIf="$readonly()"/>
 	        <field name="subject" showTitle="false" colSpan="4" css="highlight" placeholder="Subject"/>
