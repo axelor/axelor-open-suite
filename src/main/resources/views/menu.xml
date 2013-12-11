@@ -47,10 +47,10 @@
 	</action-view>	
 		
 <!-- 	title-f="Messages envoyés" -->
-	<menuitem name="mail-root-email-sended" parent="mail-root-email-box" title="Sentbox" action="mail.root.email.sended" />	
+	<menuitem name="mail-root-email-sent" parent="mail-root-email-box" title="Sentbox" action="mail.root.email.sent" />	
 		
 <!-- 	title-f="Messages envoyés" -->
-	<action-view name="mail.root.email.sended" title="Sentbox" 
+	<action-view name="mail.root.email.sent" title="Sentbox" 
 		model="com.axelor.apps.message.db.Message" icon="img/16px/mailSmall_16px.png">
 		<view type="grid" name="message-grid"/>
 		<view type="form" name="message-form"/>
