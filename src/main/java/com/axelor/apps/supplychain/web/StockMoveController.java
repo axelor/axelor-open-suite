@@ -38,7 +38,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.AxelorSettings;
+import com.axelor.apps.account.db.IAccount;
 import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.supplychain.db.StockMove;
@@ -142,7 +144,7 @@ public class StockMoveController {
 			msg = "From address is empty.";
 		if(toAddress == null)
 			msg = "To address is empty.";
-		if (!GeneralService.getGeneral().getMapApiSelect().equals("1"))
+		if (GeneralService.getGeneral().getMapApiSelect() == IAdministration.MAP_API_OSM)
 			msg = "Feature currently not available with Open Street Maps.";
 		if(msg.isEmpty()){
 			String dString = fromAddress.getAddressL4()+" ,"+fromAddress.getAddressL6();
