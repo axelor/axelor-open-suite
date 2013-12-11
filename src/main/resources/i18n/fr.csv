@@ -604,7 +604,7 @@
 "ticket-form","contactPartner","documentation",,,,
 "ticket-form","description","documentation",,,,
 "ticket-form","messageList","documentation",,,,
-"ticket-form","sendedDate","documentation",,,,
+"ticket-form","sentDate","documentation",,,,
 "ticket-form","sender","documentation",,,,
 "ticket-form","content","documentation",,,,
 "ticket-form","userInfoSet","documentation",,,,
