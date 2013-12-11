@@ -8,8 +8,8 @@
     onLoad="action-partner-attrs-change-name,action-partner-attrs-hide-tabs,action-partner-attrs-set-readonly" 
     onSave="save,action-set-partner-seq,action-create-accounting-situation">
 	    <toolbar>
-	        <button name="sendByEmail" title="Send email" colSpan="1" onClick="save,action-send-by-email-with-template"/>
-	        <button name="showPartnerInfo" title="Print Informations" colSpan="1" icon="img/16px/print_16px.png" onClick="save,action-partner-method-show-partner-info"/>
+	        <button name="sendByEmail" title="Send email" icon="icon-envelope" onClick="save,action-send-by-email-with-template"/>
+	        <button name="showPartnerInfo" title="Print Informations" icon="icon-print" onClick="save,action-partner-method-show-partner-info"/>
 	    </toolbar>
 	    <menubar>
 	        <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true">

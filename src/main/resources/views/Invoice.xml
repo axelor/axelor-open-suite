@@ -15,14 +15,16 @@
         <field name="inTaxTotal"/>
         <field name="inTaxTotalRemaining"/>
         <field name="status"/>
+        <button name="showInvoice" title="Print" icon="icon-print" onClick="action-invoice-method-show-invoice"/>
+        <button name="sendByEmail" title="Send email" icon="icon-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
     
     <form name="invoice-form" title="Invoice" model="com.axelor.apps.account.db.Invoice" cols="4" 
     	onNew="action-invoice-record-default,action-invoice-attrs-collapse-irrecoverable-group,action-invoice-method-get-journal,action-set-partner-domain"
     	onLoad="action-set-partner-domain,action-invoice-attrs-collapse-irrecoverable-group">
     	<toolbar>
-    		<button name="showInvoice" title="Print" onClick="save,action-invoice-method-show-invoice"/>
-	        <button name="sendByEmail" title="Send email" onClick="save,action-send-by-email-with-template"/>
+    		<button name="showInvoice" title="Print" icon="icon-print" onClick="save,action-invoice-method-show-invoice"/>
+	        <button name="sendByEmail" title="Send email" icon="icon-envelope" onClick="save,action-send-by-email-with-template"/>
 	    </toolbar>
 <!--         <field name="endOfCycleOk"/> -->
         <field name="invoiceId"/>
@@ -159,7 +161,7 @@
         <field name="inTaxTotal"/>
         <field name="inTaxTotalRemaining"/>
         <field name="status"/>
-        <button name="showInvoice" title="Print" onClick="action-invoice-method-show-invoice" icon="img/16px/print_16px.png"/>
+        <button name="showInvoice" title="Print" onClick="action-invoice-method-show-invoice" icon="icon-print"/>
     </grid>
     
     <form name="invoice-client-form" title="Invoice" model="com.axelor.apps.account.db.Invoice" cols="4">

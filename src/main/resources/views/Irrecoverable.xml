@@ -28,7 +28,7 @@
         	</group>
         	<group title="Print settings" colSpan="2" cols="2">
             	<field name="exportTypeSelect"/>
-            	<button name="printReport" title="Print" colSpan="2" icon="img/16px/print_16px.png" onClick="save,com.axelor.apps.account.web.IrrecoverableController:printIrrecoverable"/>
+            	<button name="printReport" title="Print" colSpan="2" icon="icon-print" onClick="save,com.axelor.apps.account.web.IrrecoverableController:printIrrecoverable"/>
         	</group>
     	</group>
     	<group title="Irrecoverable Execution" colSpan="4" cols="4">
