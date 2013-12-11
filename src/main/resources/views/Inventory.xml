@@ -17,7 +17,7 @@
 	    <field name="location" domain="self.typeSelect = 1 OR self.typeSelect = 2"/>
 	    <group title="Export" colSpan="2" showIf="statusSelect == 2 || statusSelect == 3">
 	    	<field name="formatSelect"/>
-	    	<button name="showInventory" title="Print" colSpan="1" icon="img/16px/print_16px.png" onClick="save,action-inventory-method-show-inventory" showIf="formatSelect != null"/>
+	    	<button name="showInventory" title="Print" colSpan="1" icon="icon-print" onClick="save,action-inventory-method-show-inventory" showIf="formatSelect != null"/>
 	    </group>
 	    <field name="dateT"/>
 	    <group title="Import" colSpan="2" hideIf="statusSelect != 2" cols="2">
