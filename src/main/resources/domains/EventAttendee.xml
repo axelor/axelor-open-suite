@@ -7,11 +7,13 @@
 
   <entity name="EventAttendee" lang="java">
 	
+	<many-to-one name="event" ref="com.axelor.apps.crm.db.Event" title="Event"/>
+	
 	<integer name="statusSelect" title="Status" selection="crm.event.attendee.status.select"/>
 	<many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Contact"/>
 	<many-to-one name="lead" ref="com.axelor.apps.crm.db.Lead" title="Lead"/>
-	<many-to-one name="contactEvent" ref="com.axelor.apps.crm.db.Event" title="Event (Contact)"/>
-	<many-to-one name="leadEvent" ref="com.axelor.apps.crm.db.Event" title="Event (Lead)"/>
+	
+	<string name="name" title="Attendee"/>
 	
   </entity>
 
