@@ -56,6 +56,7 @@ import au.com.bytecode.opencsv.CSVWriter;
 
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Country;
+import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
@@ -288,7 +289,7 @@ public class AddressService {
 	
 	public HashMap<String,Object> getMap(String qString, BigDecimal latitude, BigDecimal longitude){
 		LOG.debug("qString = {}", qString);
-		if (GeneralService.getGeneral().getMapApiSelect().equals("1")) 
+		if (GeneralService.getGeneral().getMapApiSelect() == IAdministration.MAP_API_GOOGLE) 
 			return getMapGoogle(qString,latitude,longitude);
 		else
 			return getMapOsm(qString,latitude,longitude);

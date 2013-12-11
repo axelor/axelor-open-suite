@@ -105,4 +105,12 @@ public interface IAdministration {
 	static final String INCOMING = "inStockMove";
 	static final String PRODUCT_TRACKING_NUMBER = "productTrackingNumber";
 	
+	
+	/**
+	 * Static select in General
+	 */
+
+	// TYPE
+	static final int MAP_API_GOOGLE = 1;
+	static final int MAP_API_OSM = 2;
 }
