@@ -34,12 +34,6 @@
 		<option value='view'>View</option>
 	</selection>
 	
-	<selection name='move.line.mail.select'>
-		<option value='1'>Do not send mail</option>
-		<option value='2'>Mail to send</option>
-		<option value='3'>Mail sent</option>
-	</selection>
-	
 	<selection name='move.line.reimbursement.state.select'>
 		<option value='0'></option>
 		<option value='1'>Reimbursement ongoing</option>

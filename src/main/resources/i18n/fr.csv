@@ -1136,7 +1136,7 @@
 "cash-register-line-form","cashRegisterDate","documentation",,,,
 "cash-register-line-form","cashRegisterAmount","documentation",,,,
 "cash-register-line-form","depositedAmount","documentation",,,,
-"cash-register-line-form","emailSendedOk","documentation",,,,
+"cash-register-line-form","emailSentOk","documentation",,,,
 "cash-register-line-form","closeCashRegister","documentation",,,,
 "cash-register-line-form","openCashRegister","documentation",,,,
 "cash-register-line-form","stateSelect","documentation",,,,

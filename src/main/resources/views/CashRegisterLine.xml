@@ -27,7 +27,7 @@
         	<field name="depositedAmount"/>
     	</group>
     	<group title="Follow-up" colSpan="2">
-        	<field name="emailSendedOk"/>    
+        	<field name="emailSentOk"/>    
     	</group>
     	<break/>
     	<group title="Actions" colSpan="4" cols="4">
@@ -50,15 +50,15 @@
     </action-record>
     
     <action-attrs name="action-cash-register-line-attrs-hidden-button">
-    	<attribute name="hidden" for="closeCashRegister" expr="eval: emailSendedOk || (stateSelect == 1)"/>
-      	<attribute name="hidden" for="openCashRegister" expr="eval: emailSendedOk || (stateSelect == 0)"/>	
+    	<attribute name="hidden" for="closeCashRegister" expr="eval: emailSentOk || (stateSelect == 1)"/>
+      	<attribute name="hidden" for="openCashRegister" expr="eval: emailSentOk || (stateSelect == 0)"/>	
     </action-attrs>
 
 	<action-attrs name="action-cash-register-line-attrs-readonly">
-		<attribute name="readonly" for="cashRegister" expr="eval: emailSendedOK "/>
-		<attribute name="readonly" for="cashRegisterDate" expr="eval: emailSendedOK "/>
-		<attribute name="readonly" for="cashRegisterAmount" expr="eval: emailSendedOK "/>
-		<attribute name="readonly" for="depositedAmount" expr="eval: emailSendedOK "/>
+		<attribute name="readonly" for="cashRegister" expr="eval: emailSentOK "/>
+		<attribute name="readonly" for="cashRegisterDate" expr="eval: emailSentOK "/>
+		<attribute name="readonly" for="cashRegisterAmount" expr="eval: emailSentOK "/>
+		<attribute name="readonly" for="depositedAmount" expr="eval: emailSentOK "/>
 	</action-attrs>
 
 </object-views>

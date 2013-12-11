@@ -95,10 +95,6 @@ public interface IAccount {
 	/**
 	 * Static select in MoveLine
 	 */
-	// MAIL
-	static final int NO_SENDED = 0;
-	static final int TO_SEND = 1;
-	static final int SENDED = 2;
 
 	// REIMBURSEMENT STATE
 	static final int NULL = 0;
