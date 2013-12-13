@@ -322,7 +322,7 @@
          <group title="Informations" colSpan="4" cols="6">
 	        <group title="Context" colSpan="4" cols="6">
 		        <field name="name"/>
-		        <field name="opportunityType" widget="TagSelect[create=name,code]"/>
+		        <field name="opportunityType" widget="SuggestBox"/>
 	        </group>
 	        <group title="Follow-up" colSpan="4" cols="6">
 				<field name="salesStageSelect"/>
