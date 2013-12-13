@@ -52,7 +52,7 @@ public class CrmBatchController {
 	 * @param request
 	 * @param response
 	 */
-	public void actionReminder(ActionRequest request, ActionResponse response){
+	public void actionEventReminder(ActionRequest request, ActionResponse response){
 		
 		CrmBatch crmBatch = request.getContext().asType(CrmBatch.class);
 		

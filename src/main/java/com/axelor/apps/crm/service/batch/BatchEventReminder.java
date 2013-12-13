@@ -39,7 +39,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Batch;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.crm.db.EventReminder;
 import com.axelor.apps.crm.service.EventReminderService;
 import com.axelor.apps.crm.service.EventReminderThread;
@@ -76,7 +75,7 @@ public class BatchEventReminder extends BatchStrategy {
 	protected void process() {
 	
 		this.markEventReminderProcess();
-		
+		this.generateMessageProcess();
 		
 	}
 	
@@ -90,7 +89,7 @@ public class BatchEventReminder extends BatchStrategy {
 			LocalDateTime today = new LocalDateTime();
 			
 			List<EventReminder> eventReminderList = EventReminder.all()
-					.filter("self.event.startDateTime - ?1 > ?2", today).fetch();
+					.filter("(self.event.startDateTime - ?1) > ?1", today).fetch();
 			/**
 			 * TODO  A debugger
 			 */
