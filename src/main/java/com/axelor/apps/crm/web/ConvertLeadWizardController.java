@@ -103,6 +103,8 @@ public class ConvertLeadWizardController {
 		}
 		
 		leadService.convertLead(lead, partner, contactPartner, opportunity, callEvent, meetingEvent, taskEvent);
+		
+		response.setFlash("Prospect converti");
 	}
 	
 	
