@@ -42,8 +42,16 @@
         		<field name="twtPersonalCredential" grid-view="twt-credential-grid" form-view="twt-credential-form"/>
         		<field name="lnPersonalCredential" grid-view="ln-credential-grid" form-view="ln-credential-form"/>
         	</page>
+        	<page title="Calendars">
+        		<field name="followersCalUserInfoSet"/>
+        		<field name="authorizeCalUserInfoSet"/>
+        	</page>
         </notebook>
+        
     </form>
+    
+    
+    
     
     <action-record name="action-user-language-record" model="com.axelor.apps.base.db.UserInfo">
     	<field name="language" expr="fr"/>
