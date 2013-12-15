@@ -39,7 +39,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.crm.db.EventReminder;
+import com.axelor.apps.crm.db.IEventReminder;
 import com.axelor.apps.crm.service.EventReminderService;
 import com.axelor.apps.crm.service.EventReminderThread;
 import com.axelor.db.JPA;
@@ -52,6 +54,7 @@ public class BatchEventReminder extends BatchStrategy {
 	private static final Logger LOG = LoggerFactory.getLogger(BatchEventReminder.class);
 
 	private boolean stop = false;
+	private LocalDateTime today;
 	
 	@Inject
 	private Injector injector;
@@ -60,6 +63,7 @@ public class BatchEventReminder extends BatchStrategy {
 	public BatchEventReminder(EventReminderService eventReminderService) {
 		
 		super(eventReminderService);
+		this.today = GeneralService.getTodayDateTime().toLocalDateTime();
 	}
 	
 	
@@ -86,22 +90,24 @@ public class BatchEventReminder extends BatchStrategy {
 			
 			int i = 0;
 			
-			LocalDateTime today = new LocalDateTime();
+			int durationTypeSelect = batch.getCrmBatch().getDurationTypeSelect();
 			
 			List<EventReminder> eventReminderList = EventReminder.all()
-					.filter("(self.event.startDateTime - ?1) > ?1", today).fetch();
-			/**
-			 * TODO  A debugger
-			 */
+					.filter("self.event.startDateTime > ?1 AND self.durationTypeSelect = ?2", today, durationTypeSelect).fetch();
 			
 			
 			for(EventReminder eventReminder : eventReminderList)  {
 				
 				try {
-				
-					eventReminder.setIsReminded(true);
-					updateEventReminder(eventReminder);
-					i++;
+					
+					eventReminder = EventReminder.find(eventReminder.getId());
+					
+					if(this.isExpired(eventReminder, durationTypeSelect))  {
+						eventReminder.setIsReminded(true);
+						updateEventReminder(eventReminder);
+						i++;
+					}
+					
 					
 				} catch (Exception e) {
 					
@@ -119,6 +125,42 @@ public class BatchEventReminder extends BatchStrategy {
 				}	
 			}
 		}
+	}
+	
+	
+	private boolean isExpired(EventReminder eventReminder, int durationTypeSelect)  {
+		
+		LocalDateTime startDateTime = eventReminder.getEvent().getStartDateTime();
+		
+		switch (durationTypeSelect) {
+		case IEventReminder.DURATION_MINUTES:
+			
+			if(startDateTime != null && (startDateTime.minusMinutes(eventReminder.getDuration())).isBefore(today))  {
+				return true;
+			}
+			
+		case IEventReminder.DURATION_HOURS:
+								
+			if(startDateTime != null && (startDateTime.minusHours(eventReminder.getDuration())).isBefore(today))  {
+				return true;
+			}
+								
+		case IEventReminder.DURATION_DAYS:
+			
+			if(startDateTime != null && (startDateTime.minusDays(eventReminder.getDuration())).isBefore(today))  {
+				return true;
+			}
+			
+		case IEventReminder.DURATION_WEEKS:
+			
+			if(startDateTime != null && (startDateTime.minusWeeks(eventReminder.getDuration())).isBefore(today))  {
+				return true;
+			}
+
+		default:
+			return false;
+		}
+		
 	}
 	
 	

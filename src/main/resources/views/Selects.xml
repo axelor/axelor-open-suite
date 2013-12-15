@@ -138,7 +138,6 @@
 	
 	<selection name="crm.event.reminder.type.select">
 		<option value="1">Email</option>
-		<option value="2">SMS</option>
 	</selection>
 	
 	<selection name="crm.eventReminder.duration.type.select">

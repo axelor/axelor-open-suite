@@ -20,6 +20,7 @@
     	<break/>
     	<notebook colSpan="4">
     		<page name="eventReminderPage" title="Event reminder page" cols="4">
+    			<field name="durationTypeSelect"/>
     			<button name="eventReminderBatch" title="Event reminder batch" colSpan="4" onClick="save,action-crm-batch-method-action-event-reminder" />
     		</page>
     		<page name="targetPage" title="Target page" cols="4">
