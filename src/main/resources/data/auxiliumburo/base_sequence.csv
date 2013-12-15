@@ -1,0 +1,3 @@
+"code";"name";"nextNum";"padding";"prefixe";"suffixe";"toBeAdded";"yearlyResetOk";"company.id"
+"partner";"Numéro identifiant tiers";400;10;"T";;1;0;1
+"eventTicket";"Numéro de ticket";1;5;;;1;0;1
