@@ -27,24 +27,9 @@
             <page title="Notes" cols="1">
                 <field name="notes" showTitle="false"/>
             </page>
-            <page title="Account configuration" cols="4">
-                <field name="accountConfig" showTitle="false" widget="NestedEditor" canSelect="false" form-view="account-config-form" summary-view="true" colSpan="4"/>
-            </page>
             <page title="Bank details" cols="4">
              	<field name="defaultBankDetails" colSpan="2"/>
                 <field name="bankDetailsSet" grid-view="bank-details-grid" form-view="bank-details-form" colSpan="4" showTitle="false"/>
-            </page>
-            <page title="Mails / Emails" cols="4" colWidths="20%,30%,20%,30%">
-            	<field name="generatedMailFilePath" />
-            	<field name="generatedEmailFilePath" />
-            	<field name="generatedMailFileName" />
-            	<field name="generatedEmailFileName" />
-            </page>
-            <page title="Supply chain configuration" cols="2">
-				<field name="supplychainConfig" showTitle="false" widget="NestedEditor" canSelect="false" form-view="supplychain-config-form" summary-view="true" colSpan="4"/>
-        	</page>
-            <page title="Organisation">
-            	<field name="taskProduct"/>
             </page>
             <page title="Printing">
             	<field name="printingSettings" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="printing-setting-form"  summary-view="true"/>

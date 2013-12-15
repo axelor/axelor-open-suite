@@ -16,7 +16,6 @@
 		<button name="logCall" title="Log Call" colSpan="1" icon="icon-phone" help="Log Call" onClick="action-partner-view-create-call"/>
 		<button name="scheduleMeeting" title="Schedule Meeting" colSpan="1" help="Schedule Meeting" icon="icon-group" onClick="action-partner-view-create-meeting"/>
 		<button name="sendByEmail" title="Send Email" colSpan="1" help="Send Email" icon="icon-envelope" onClick="action-send-by-email-with-template"/>
-		<button name="showClientSituationGrid" title="Client Situation" colSpan="1" icon="icon-print" onClick="action-partner-method-show-client-situation" showIf="isContact == false"/>
 	</grid>
     
     <grid name="partner-contact-grid" title="Contacts" model="com.axelor.apps.base.db.Partner">
@@ -27,7 +26,6 @@
 	    <button name="logCall" title="Log Call" colSpan="1" icon="icon-phone" help="Log Call" onClick="action-partner-view-create-call"/>
 		<button name="scheduleMeeting" title="Schedule Meeting" colSpan="1" help="Schedule Meeting" icon="icon-group" onClick="action-partner-view-create-meeting"/>
 		<button name="sendByEmail" title="Send Email" colSpan="1" help="Send Email" icon="icon-envelope" onClick="action-send-by-email-with-template"/>
-		<button name="showClientSituationGrid" title="Client Situation" colSpan="1" icon="icon-print" onClick="action-partner-method-show-client-situation" showIf="isContact == false"/>
 	</grid>
     
      <grid name="partner-grid-group" title="Partner" model="com.axelor.apps.base.db.Partner" groupBy="userInfo">
@@ -46,7 +44,6 @@
 	    <toolbar>
 	        <button name="sendByEmail" title="Send email" colSpan="1" icon="icon-envelope" onClick="save,action-send-by-email-with-template"/>
 	        <button name="showPartnerInfo" title="Print Informations" colSpan="1" icon="icon-print" onClick="save,action-partner-method-show-partner-info"/>
-	        <button name="showClientSituationForm" title="Client Situation" colSpan="1" icon="icon-print" onClick="save,action-partner-method-show-client-situation" showIf="isContact == false"/>
 	    </toolbar>
 	    <menubar>
 	        <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true">
@@ -60,12 +57,6 @@
 	        <group colSpan="1" cols="1">
 	            <group colSpan="1">
 	                <field name="picture" showTitle="false"/>
-	            </group>
-	            <break/>
-	            <group colSpan="1">
-	                <button name="facebook" showIf="id != null" css="sn-buttons" icon="img/Other/facebookLogo_75px.png" onClick="action-partner-view-sn-profile"/>
-	                <button name="linkedin" showIf="id != null" css="sn-buttons" icon="img/Other/linkedinLogo_57px.png" onClick="action-partner-view-sn-profile"/>
-	                <button name="twitter" showIf="id != null" css="sn-buttons" icon="img/Other/twitterLogo_54px.png" onClick="action-partner-view-sn-profile"/>
 	            </group>
 	        </group>
 	        <group colSpan="1">
@@ -145,11 +136,9 @@
 	            </group>
 	        </page>
 	        <page name="activities" title="Activities" >
-	        	<button name="showProject" title="Show projects" colSpan="3" onClick="save,action-partner-view-partner-project"/>
 			    <portlet colSpan="6" action="action-partner-view-upcoming-events"/>
 			    <portlet colSpan="6" action="action-partner-view-historical-events-completed"/>
 			    <portlet colSpan="6" action="action-partner-view-opportunities"/>
-			    <portlet colSpan="6" action="action-partner-view-sales-orders"/>
 			    <portlet colSpan="6" action="action-partner-view-tickets"/>
 	        </page>
 	    </notebook>
@@ -216,7 +205,6 @@
 	    <toolbar>
 	        <button name="sendByEmail" title="Send email" colSpan="1" onClick="save,action-send-by-email-with-template"/>
 	        <button name="showPartnerInfo" title="Print Informations" colSpan="1" icon="icon-print" onClick="save,action-partner-method-show-partner-info"/>
-	        <button name="showClientSituationForm" title="Client Situation" colSpan="1" icon="icon-print" onClick="save,action-partner-method-show-client-situation" showIf="isContact == false"/>
 	    </toolbar>
 	    <menubar>
 	        <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true">
@@ -230,12 +218,6 @@
 	        <group colSpan="1" cols="1">
 	            <group colSpan="1">
 	                <field name="picture" showTitle="false"/>
-	            </group>
-	            <break/>
-	            <group colSpan="1">
-	                <button name="facebook" showIf="id != null" css="sn-buttons" icon="img/Other/facebookLogo_75px.png" onClick="action-partner-view-sn-profile"/>
-	                <button name="linkedin" showIf="id != null" css="sn-buttons" icon="img/Other/linkedinLogo_57px.png" onClick="action-partner-view-sn-profile"/>
-	                <button name="twitter" showIf="id != null" css="sn-buttons" icon="img/Other/twitterLogo_54px.png" onClick="action-partner-view-sn-profile"/>
 	            </group>
 	        </group>
 	        <group colSpan="1" cols="1">
@@ -275,11 +257,9 @@
 	            </group>
 	        </page>
 		    <page name="activities" title="Activities" >
-	        	<button name="showProject" title="Show projects" colSpan="3" onClick="save,action-partner-view-partner-project"/>
 			    <portlet colSpan="6" action="action-partner-view-upcoming-events"/>
 			    <portlet colSpan="6" action="action-partner-view-historical-events-completed"/>
 			    <portlet colSpan="6" action="action-partner-view-opportunities"/>
-			    <portlet colSpan="6" action="action-partner-view-sales-orders"/>
 			    <portlet colSpan="6" action="action-partner-view-tickets"/>
 	        </page>
 	    </notebook>

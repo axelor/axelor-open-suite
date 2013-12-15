@@ -13,9 +13,6 @@
         <field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form"/>
         <field name="activeCompany" widget="SuggestBox"/>
         <field name="today"/>
-        <field name="activeCashRegister"/>
-        <field name="timesheetPeriodConfig"/>
-        <field name="employee"/>
         <notebook colSpan="4">
         	<page title="User login settings">
 	        	<field widget="NestedEditor" canSelect="false" summary-view="true" name="internalUser" showTitle="false">
@@ -33,14 +30,6 @@
         	<page title="Teams">
         		<field name="activeTeam" colSpan="2"/>
         		<field name="teamSet" showTitle="false" colSpan="4"/>
-        	</page>
-        	<page title="Projects">
-        		<field name="projectSet" showTitle="false" colSpan="4"/>
-        	</page>
-        	<page title="Social Network" colSpan="4" cols="2" colWidths="50%,50%">
-        		<field name="fbPersonalCredential" grid-view="fb-credential-grid" form-view="fb-credential-form"/>
-        		<field name="twtPersonalCredential" grid-view="twt-credential-grid" form-view="twt-credential-form"/>
-        		<field name="lnPersonalCredential" grid-view="ln-credential-grid" form-view="ln-credential-form"/>
         	</page>
         	<page title="Calendars">
         		<field name="followersCalUserInfoSet"/>
