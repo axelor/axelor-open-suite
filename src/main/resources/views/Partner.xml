@@ -44,16 +44,16 @@
     onLoad="action-partner-attrs-change-name,action-partner-attrs-hide-tabs" 
     onSave="save,action-set-partner-seq,action-create-accounting-situation">
 	    <toolbar>
-	        <button name="sendByEmail" title="Send email" colSpan="1" icon="icon-envelope" onClick="save,action-send-by-email-with-template"/>
-	        <button name="showPartnerInfo" title="Print Informations" colSpan="1" icon="icon-print" onClick="save,action-partner-method-show-partner-info"/>
-	        <button name="showClientSituationForm" title="Client Situation" colSpan="1" icon="icon-print" onClick="save,action-partner-method-show-client-situation" showIf="isContact == false"/>
+	        <button name="sendByEmail" title="Send email" icon="icon-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="id == null"/>
+	        <button name="showPartnerInfo" title="Print Informations" icon="icon-print" onClick="save,action-partner-method-show-partner-info" readonlyIf="id == null"/>
+	        <button name="showClientSituationForm" title="Client Situation" icon="icon-print" onClick="save,action-partner-method-show-client-situation" showIf="isContact == false" readonlyIf="id == null"/>
 	    </toolbar>
 	    <menubar>
 	        <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true">
-	            <item title="Create call" action="save,action-partner-view-create-call"/>
-	            <item title="Schedule meeting" action="save,action-partner-view-create-meeting"/>
-	            <item title="Create task" action="save,action-partner-view-create-task"/>
-	            <item title="Create opportunity" action="save,action-partner-view-create-opportunity"/>
+	            <item title="Create call" action="save,action-partner-view-create-call" readonlyIf="id == null"/>
+	            <item title="Schedule meeting" action="save,action-partner-view-create-meeting" readonlyIf="id == null"/>
+	            <item title="Create task" action="save,action-partner-view-create-task" readonlyIf="id == null"/>
+	            <item title="Create opportunity" action="save,action-partner-view-create-opportunity" readonlyIf="id == null"/>
 	        </menu>
 	    </menubar>
 	    <group colSpan="6" cols="6">
@@ -62,10 +62,10 @@
 	                <field name="picture" showTitle="false"/>
 	            </group>
 	            <break/>
-	            <group colSpan="1">
-	                <button name="facebook" showIf="id != null" css="sn-buttons" icon="img/Other/facebookLogo_75px.png" onClick="action-partner-view-sn-profile"/>
-	                <button name="linkedin" showIf="id != null" css="sn-buttons" icon="img/Other/linkedinLogo_57px.png" onClick="action-partner-view-sn-profile"/>
-	                <button name="twitter" showIf="id != null" css="sn-buttons" icon="img/Other/twitterLogo_54px.png" onClick="action-partner-view-sn-profile"/>
+	            <group colSpan="1" showIf="id != null">
+	                <button name="facebook" css="sn-buttons" icon="img/Other/facebookLogo_75px.png" onClick="action-partner-view-sn-profile"/>
+	                <button name="linkedin" css="sn-buttons" icon="img/Other/linkedinLogo_57px.png" onClick="action-partner-view-sn-profile"/>
+	                <button name="twitter" css="sn-buttons" icon="img/Other/twitterLogo_54px.png" onClick="action-partner-view-sn-profile"/>
 	            </group>
 	        </group>
 	        <group colSpan="1">
@@ -144,7 +144,7 @@
 	                <field name="team"/>
 	            </group>
 	        </page>
-	        <page name="activities" title="Activities" >
+	        <page name="activities" title="Activities" showIf="id != null">
 	        	<button name="showProject" title="Show projects" colSpan="3" onClick="save,action-partner-view-partner-project"/>
 			    <portlet colSpan="6" action="action-partner-view-upcoming-events"/>
 			    <portlet colSpan="6" action="action-partner-view-historical-events-completed"/>
@@ -169,7 +169,7 @@
 	    onSave="save,action-set-partner-seq">
 	    
 	    <toolbar>
-    		<button name="sendByEmail" title="Send email" onClick="save,action-send-by-email-with-template" colSpan="1"/>
+    		<button name="sendByEmail" title="Send email" onClick="save,action-send-by-email-with-template" colSpan="1" readonlyIf="id == null"/>
     	</toolbar>
     	
 	    <group colSpan="1">
@@ -214,16 +214,16 @@
 	onLoad="action-partner-attrs-change-name,action-partner-attrs-hide-tabs" 
 	onSave="save,action-set-partner-seq">
 	    <toolbar>
-	        <button name="sendByEmail" title="Send email" colSpan="1" onClick="save,action-send-by-email-with-template"/>
-	        <button name="showPartnerInfo" title="Print Informations" colSpan="1" icon="icon-print" onClick="save,action-partner-method-show-partner-info"/>
-	        <button name="showClientSituationForm" title="Client Situation" colSpan="1" icon="icon-print" onClick="save,action-partner-method-show-client-situation" showIf="isContact == false"/>
+	        <button name="sendByEmail" title="Send email" onClick="save,action-send-by-email-with-template" readonlyIf="id == null"/>
+	        <button name="showPartnerInfo" title="Print Informations" icon="icon-print" onClick="save,action-partner-method-show-partner-info"  readonlyIf="id == null"/>
+	        <button name="showClientSituationForm" title="Client Situation" icon="icon-print" onClick="save,action-partner-method-show-client-situation" showIf="isContact == false"  readonlyIf="id == null"/>
 	    </toolbar>
 	    <menubar>
 	        <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true">
-	            <item title="Create call" action="save,action-partner-view-create-call"/>
-	            <item title="Schedule meeting" action="save,action-partner-view-create-meeting"/>
-	            <item title="Create task" action="save,action-partner-view-create-task"/>
-	            <item title="Create opportunity" action="save,action-partner-view-create-opportunity"/>
+	            <item title="Create call" action="save,action-partner-view-create-call" readonlyIf="id == null"/>
+	            <item title="Schedule meeting" action="save,action-partner-view-create-meeting" readonlyIf="id == null"/>
+	            <item title="Create task" action="save,action-partner-view-create-task" readonlyIf="id == null"/>
+	            <item title="Create opportunity" action="save,action-partner-view-create-opportunity" readonlyIf="id == null"/>
 	        </menu>
 	    </menubar>
 	    <group colSpan="6" cols="6">
@@ -232,10 +232,10 @@
 	                <field name="picture" showTitle="false"/>
 	            </group>
 	            <break/>
-	            <group colSpan="1">
-	                <button name="facebook" showIf="id != null" css="sn-buttons" icon="img/Other/facebookLogo_75px.png" onClick="action-partner-view-sn-profile"/>
-	                <button name="linkedin" showIf="id != null" css="sn-buttons" icon="img/Other/linkedinLogo_57px.png" onClick="action-partner-view-sn-profile"/>
-	                <button name="twitter" showIf="id != null" css="sn-buttons" icon="img/Other/twitterLogo_54px.png" onClick="action-partner-view-sn-profile"/>
+	            <group colSpan="1" showIf="id != null">
+	                <button name="facebook" css="sn-buttons" icon="img/Other/facebookLogo_75px.png" onClick="action-partner-view-sn-profile"/>
+	                <button name="linkedin" css="sn-buttons" icon="img/Other/linkedinLogo_57px.png" onClick="action-partner-view-sn-profile"/>
+	                <button name="twitter" css="sn-buttons" icon="img/Other/twitterLogo_54px.png" onClick="action-partner-view-sn-profile"/>
 	            </group>
 	        </group>
 	        <group colSpan="1" cols="1">
@@ -274,7 +274,7 @@
 	                <field name="team"/>
 	            </group>
 	        </page>
-		    <page name="activities" title="Activities" >
+		    <page name="activities" title="Activities" showIf="id != null">
 	        	<button name="showProject" title="Show projects" colSpan="3" onClick="save,action-partner-view-partner-project"/>
 			    <portlet colSpan="6" action="action-partner-view-upcoming-events"/>
 			    <portlet colSpan="6" action="action-partner-view-historical-events-completed"/>
