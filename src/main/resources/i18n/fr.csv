@@ -415,7 +415,7 @@
 "com.axelor.apps.account.db.CashRegisterLine","depositedAmount","field","Deposited Amount","Dépot du jour",,
 "com.axelor.apps.account.db.CashRegisterLine","cashRegisterAmount","field","Cash Register Amount","Solde de la caisse",,
 "com.axelor.apps.account.db.CashRegisterLine","stateSelect","field","Status","Etat",,
-"com.axelor.apps.account.db.CashRegisterLine","emailSendedOk","field","Email sent ?","Email envoyé ?",,"Coché si email envoyé."
+"com.axelor.apps.account.db.CashRegisterLine","emailSentOk","field","Email sent ?","Email envoyé ?",,"Coché si email envoyé."
 "com.axelor.apps.account.db.ChequeRejection","name","field","Reference","Référence",,
 "com.axelor.apps.account.db.ChequeRejection","company","field","Company","Société",,
 "com.axelor.apps.account.db.ChequeRejection","dateTime","field","Date","Date",,
@@ -1152,7 +1152,7 @@
 "com.axelor.apps.message.db.Message","typeSelect","field","Type","Type",,"Un message peut-être de type 'Reçu' ou 'Envoyé'. Si 'Reçu', il apparaîtra dans la boite de réception. Si 'Envoyé', il apparaîtra dans la boîte d'envoi."
 "com.axelor.apps.message.db.Message","subject","field","Subject","Objet",,
 "com.axelor.apps.message.db.Message","content","field","Content","Contenu",,
-"com.axelor.apps.message.db.Message","sendedDateT","field","Sended date","Date d'envoi",,
+"com.axelor.apps.message.db.Message","sentDateT","field","Sent date","Date d'envoi",,
 "com.axelor.apps.message.db.Message","relatedTo1Select","field","Related to","Associé à (1)",,"1er Type de Document / Document auquel est associé ce message."
 "com.axelor.apps.message.db.Message","relatedTo1SelectId","field",,"Relatif à",,
 "com.axelor.apps.message.db.Message","relatedTo2Select","field","Related to","Associé à (2)",,"2ème Type de Document / Document auquel est associé ce message."

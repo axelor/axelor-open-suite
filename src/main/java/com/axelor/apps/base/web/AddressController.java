@@ -30,15 +30,6 @@
  */
 package com.axelor.apps.base.web;
 
-import groovy.json.JsonBuilder;
-import groovy.json.JsonOutput;
-import groovy.lang.Closure;
-import groovy.util.XmlSlurper;
-import groovy.util.slurpersupport.GPathResult;
-import groovy.util.slurpersupport.Node;
-import groovy.util.slurpersupport.NodeChild;
-import groovy.util.slurpersupport.NodeChildren;
-
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -51,17 +42,11 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import wslite.json.JSONArray;
-import wslite.json.JSONException;
-import wslite.json.JSONObject;
-import wslite.rest.ContentType;
-import wslite.rest.RESTClient;
-import wslite.rest.Response;
-
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.AddressExport;
 import com.axelor.apps.base.db.General;
+import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Import;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerList;
@@ -72,7 +57,6 @@ import com.axelor.apps.base.service.user.UserInfoService;
 import com.axelor.data.Importer;
 import com.axelor.data.csv.CSVImporter;
 import com.axelor.data.xml.XMLImporter;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -293,7 +277,7 @@ public class AddressController {
 			Address arrivalAddress = request.getContext().asType(Address.class);
 			String aString = arrivalAddress.getAddressL4()+" ,"+arrivalAddress.getAddressL6();
 			String dString = departureAddress.getAddressL4()+" ,"+departureAddress.getAddressL6();
-			if (GeneralService.getGeneral().getMapApiSelect().equals("1")) {
+			if (GeneralService.getGeneral().getMapApiSelect() == IAdministration.MAP_API_GOOGLE) {
 				BigDecimal dLat = departureAddress.getLatit();
 				BigDecimal dLon = departureAddress.getLongit();
 				BigDecimal aLat = arrivalAddress.getLatit();
@@ -326,7 +310,7 @@ public class AddressController {
 	@Transactional
 	public void viewSalesMap(ActionRequest request, ActionResponse response)  {
 		// Only allowed for google maps to prevent overloading OSM
-		if (GeneralService.getGeneral().getMapApiSelect() == "1") {
+		if (GeneralService.getGeneral().getMapApiSelect() == IAdministration.MAP_API_GOOGLE) {
 			PartnerList partnerList = request.getContext().asType(PartnerList.class);
 
 			File file = new File("/home/axelor/www/HTML/latlng_"+partnerList.getId()+".csv");

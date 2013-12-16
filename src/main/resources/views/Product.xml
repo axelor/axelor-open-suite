@@ -14,10 +14,13 @@
         <field name="productTypeSelect"/>
        	<field name="saleSupplySelect"/>
 		<field name="unit"/>
-		<button name="sendByEmail" title="Send Email" colSpan="1" icon="img/Other/mail_19x14px.png" onClick="action-send-by-email-with-template"/>
+		<button name="sendByEmail" title="Send Email" icon="icon-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
     
     <form cols="2" onNew="action-product-record-default-new,action-product-record-sale-supply-select" name="product-form" title="Product" model="com.axelor.apps.base.db.Product" >
+    	<toolbar>
+    		<button name="sendByEmail" title="Send Email" icon="icon-envelope" onClick="action-send-by-email-with-template"/>
+    	</toolbar>
 	    <group colWidths="15%,85%" colSpan="6" cols="2">
 	            <group colSpan="1">
 	                <field name="picture" showTitle="false"/>
@@ -59,7 +62,7 @@
 						<field name="description" showTitle="false" colSpan="2" widget="html"/>
 					</group>
 					<group colSpan="2" cols="2" colWidths="40%,60%">
-						<button name="showProductSheet" title="Product sheet" colSpan="1" icon="img/16px/print_16px.png" onClick="save,action-product-method-show-product-sheet"/>
+						<button name="showProductSheet" title="Product sheet" colSpan="1" icon="icon-print" onClick="save,action-product-method-show-product-sheet"/>
 					</group>
 				</group>
 			</page>
@@ -81,10 +84,10 @@
 	<!--             	<button name="showBillsOfMaterial" title="Show bills of material"/> -->
 	<!--             	 <portlet action="chart:chart.planned.qty.by.location" height="200" colSpan="2"/> -->
 	<!--             </page> -->
-	        <page title="Stock" showIf="productTypeSelect != 'service" colSpan="2" cols="4">
+	        <page title="Stock" showIf="productTypeSelect == 'storable'" colSpan="2" cols="4">
             <separator title="Procurement settings" colSpan="4"/>
 				<field name="procurementMethodSelect" requiredIf="productTypeSelect == 'storable'"/>
-				<field name="isRawMaterial" showIf="productTypeSelect != 'service"/>
+				<field name="isRawMaterial" showIf="productTypeSelect != 'service'"/>
 				<spacer/>
 				<break/>
 				<portlet colSpan="4" action="action-product-view-stock"/>

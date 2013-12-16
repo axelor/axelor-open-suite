@@ -34,9 +34,7 @@
 		<string name="qasWsdlUrl" title="URL to the QAS WSDL" help="http://{serveur}:{port}/proweb.wsdl" />
 
 		<!-- Mapping API -->
-		<string name="mapApiSelect" title="Mapping service provider" 
-			selection="base.general.map.api.select" 
-			default="1" />
+		<integer name="mapApiSelect" title="Mapping service provider" selection="base.general.map.api.select" default="1" />
 
 	</entity>
 

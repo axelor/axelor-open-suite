@@ -27,8 +27,7 @@
     <many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="Assigned to"/>
   	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team"/>
   	
-  	<one-to-many name="contactEventAttendeeList" ref="com.axelor.apps.crm.db.EventAttendee" mappedBy="contactEvent" title="Contacts"/>
-  	<one-to-many name="leadEventAttendeeList" ref="com.axelor.apps.crm.db.EventAttendee" mappedBy="leadEvent" title="Leads"/>
+  	<one-to-many name="eventAttendeeList" ref="com.axelor.apps.crm.db.EventAttendee" mappedBy="event" title="Attendees"/>
 	
 	<many-to-one name="calendar" ref="com.axelor.apps.crm.db.Calendar" title="Calendar" />
 	<string name="calendarEventUid" title="UID (Calendar)"/>

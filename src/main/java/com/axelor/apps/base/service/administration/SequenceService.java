@@ -117,13 +117,13 @@ public class SequenceService {
 		if (code != null){
 			Sequence seq = null;
 			if (company == null){
-				seq = Sequence.all().filter("code = ?1",code).fetchOne();
+				seq = Sequence.all().filter("self.code = ?1",code).fetchOne();
 			}
 			else if (journal == null){
-				seq = Sequence.all().filter("company = ?1 and code = ?2",company,code).fetchOne();
+				seq = Sequence.all().filter("self.company = ?1 and self.code = ?2",company,code).fetchOne();
 			}
 			else{
-				 seq = Sequence.all().filter("company = ?1 and code = ?2 and journal = ?3",company,code,journal).fetchOne();
+				 seq = Sequence.all().filter("self.company = ?1 and self.code = ?2 and self.journal = ?3",company,code,journal).fetchOne();
 			}
 			if (seq != null)  {
 				if (!check)  {
@@ -155,13 +155,13 @@ public class SequenceService {
 		if (code != null){
 			Sequence seq = null;
 			if (company == null){
-				seq = Sequence.all().filter("code = ?1",code).fetchOne();
+				seq = Sequence.all().filter("self.code = ?1",code).fetchOne();
 			}
 			else if (product == null){
-				seq = Sequence.all().filter("company = ?1 and code = ?2",company,code).fetchOne();
+				seq = Sequence.all().filter("self.company = ?1 and self.code = ?2",company,code).fetchOne();
 			}
 			else{
-				 seq = Sequence.all().filter("company = ?1 and code = ?2 and product = ?3",company,code,product).fetchOne();
+				 seq = Sequence.all().filter("self.company = ?1 and self.code = ?2 and self.product = ?3",company,code,product).fetchOne();
 			}
 			if (seq != null)  {
 				if (!check)  {
