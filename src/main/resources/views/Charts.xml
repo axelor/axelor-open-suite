@@ -40,29 +40,41 @@
 	  <chart name="chart.stock.report.for.product" title="Stock">
 	    <dataset type="sql">
 	    <![CDATA[
-		SELECT stock.date AS estimated_date,
-		       stock.location AS location,
-		       CASE 
-			   WHEN MIN(stock.date) OVER (ORDER BY stock.date) = stock.date THEN stock.qty+stock.current_qty
-		           WHEN MIN(stock.date) OVER (ORDER BY stock.date) != stock.date THEN SUM(stock.qty) OVER (ORDER BY stock.date) 
-		       END AS qty 
-		FROM  (select move.estimated_date as date, 
-		       location.name as location, 
-		       SUM(CASE 
-			      when move.to_location = location.id then line.qty 
-			      when move.from_location = location.id then -1*line.qty 
-		           END) AS QTY,
-		       MAX(ll.current_qty) AS current_qty 
-		       FROM supplychain_stock_move_line line
-		       LEFT JOIN supplychain_stock_move move  ON (line.stock_move  = move.id) 
-		       LEFT JOIN supplychain_location location ON (move.to_location = location.id OR move.from_location = location.id)
-		       LEFT JOIN supplychain_location_line ll  ON (ll.location = location.id AND ll.product = :id) 
-		       WHERE location.type_select = 1 AND line.product = :id AND move.status_select = 2 AND move.estimated_date >= current_date
-		       GROUP BY move.estimated_date, location.name) stock;
+		  SELECT estimatedate,locat,SUM(qty) OVER (PARTITION BY locat ORDER BY locat,estimatedate) AS qty FROM ((SELECT current_date AS estimatedate,location.name AS locat,
+			                SUM(loc_line.current_qty+COALESCE((SELECT SUM(CASE WHEN move.from_location = location.id THEN -1*qty
+										        WHEN move.to_location = location.id THEN qty
+										   END) AS qty	    														 
+							                FROM supplychain_stock_move_line line,
+			                                                supplychain_stock_move move,
+			                                                supplychain_location location 
+				                                        WHERE line.stock_move = move.id 
+					                                AND move.estimated_date < current_date
+					                                AND move.status_select = 2
+									AND line.product = :id
+									AND (move.from_location = location.id OR move.to_location = location.id)
+									AND location.type_select = 1),0)) AS qty
+			FROM supplychain_location_line loc_line, supplychain_location location
+			WHERE loc_line.location = location.id 
+			AND location.type_select = 1 
+			AND loc_line.product = :id
+			GROUP BY location.id) UNION ALL(
+			SELECT estimated_date AS dt,locat,sum(qty)
+			FROM (SELECT location.name AS locat,move.estimated_date AS estimated_date,
+				   CASE WHEN move.from_location = location.id THEN -1*line.qty
+					WHEN move.to_location = location.id THEN line.qty
+			           END AS qty
+			    FROM supplychain_stock_move_line line 
+			    LEFT JOIN supplychain_stock_move move ON (line.stock_move = move.id)
+			    LEFT JOIN supplychain_location location ON (move.from_location = location.id OR move.to_location = location.id)
+			    WHERE  line.product = :id
+			    AND move.status_select = 2
+			    AND move.estimated_date >= current_date
+			    AND location.type_select = 1) location
+			GROUP BY estimated_date,locat) ORDER BY locat,estimatedate) location_stock; 
 	    ]]>
 	    </dataset>
 	    <category key="estimatedate" type="date"/>
-	    <series key="qty" groupBy="location" type="line" aggregate="sum"/>
+	    <series key="qty" groupBy="locat" type="line" aggregate="sum"/>
 	  </chart>
 	  
 	  
