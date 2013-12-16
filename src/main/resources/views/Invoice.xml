@@ -6,6 +6,9 @@
     <!-- VUE GENERALE -->
     
     <grid name="invoice-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
+    	<toolbar>
+			<button name="printInvoices" title="Print invoices" icon="icon-print" onClick="action-invoice-method-show-invoice"/>
+    	</toolbar>   
         <field name="invoiceId"/>
         <field name="operationTypeSelect" />
         <field name="partner"/>
@@ -311,7 +314,7 @@
 	<action-method name="action-invoice-method-show-invoice">
 		<call class="com.axelor.apps.account.web.InvoiceController" method="showInvoice"/>
 	</action-method>
-	
+		
 	<action-method name="action-invoice-method-validate">
 		<call class="com.axelor.apps.account.web.InvoiceController" method="validate"/>
 	</action-method>

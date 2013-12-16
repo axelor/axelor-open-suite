@@ -31,6 +31,7 @@
 package com.axelor.apps.account.web;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -41,7 +42,10 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.tool.net.URLService;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
@@ -215,6 +219,7 @@ public class InvoiceController {
 	}
 	
 	
+	
 	/**
 	 * Fonction appeler par le bouton imprimer
 	 *
@@ -225,33 +230,57 @@ public class InvoiceController {
 	public void showInvoice(ActionRequest request, ActionResponse response) {
 
 		Invoice invoice = request.getContext().asType(Invoice.class);
+		String invoiceIds = "";
 
-		StringBuilder url = new StringBuilder();			
-		AxelorSettings axelorSettings = AxelorSettings.get();
-		String language = invoice.getPartner().getLanguageSelect() != null? invoice.getPartner().getLanguageSelect() : invoice.getCompany().getPrintingSettings().getLanguageSelect() != null ? invoice.getCompany().getPrintingSettings().getLanguageSelect() : "en" ; 
-
-		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Invoice.rptdesign&__format=pdf&Locale="+language+"&InvoiceId="+invoice.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
-
-		LOG.debug("URL : {}", url);
-		
-		String urlNotExist = URLService.notExist(url.toString());
-		if (urlNotExist == null){
-		
-			LOG.debug("Impression de la facture "+invoice.getInvoiceId()+" : "+url.toString());
-			
-			String title = "Facture ";
-			if(invoice.getInvoiceId() != null)  {
-				title += invoice.getInvoiceId();
+		@SuppressWarnings("unchecked")
+		List<Integer> lstSelectedPartner = (List<Integer>) request.getContext().get("_ids");
+		if(lstSelectedPartner != null){
+			for(Integer it : lstSelectedPartner) {
+				invoiceIds+= it.toString()+",";
 			}
+		}	
 			
-			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", title);
-			mapView.put("resource", url);
-			mapView.put("viewType", "html");
-			response.setView(mapView);		
+		if(!invoiceIds.equals("")){
+			invoiceIds = "&InvoiceId="+invoiceIds.substring(0, invoiceIds.length()-1);	
+			invoice = Invoice.find(new Long(lstSelectedPartner.get(0)));
+		}else if(invoice.getId() != null){
+			invoiceIds = "&InvoiceId="+invoice.getId();			
 		}
-		else {
-			response.setFlash(urlNotExist);
-		}
+		
+		System.out.println("SS" +invoiceIds);
+		if(!invoiceIds.equals("")){
+			System.out.println("INvoice ids. "+ invoiceIds);
+			StringBuilder url = new StringBuilder();			
+			AxelorSettings axelorSettings = AxelorSettings.get();
+			String language = invoice.getPartner().getLanguageSelect() != null? invoice.getPartner().getLanguageSelect() : invoice.getCompany().getPrintingSettings().getLanguageSelect() != null ? invoice.getCompany().getPrintingSettings().getLanguageSelect() : "en" ; 
+	
+			url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Invoice.rptdesign&__format=pdf&Locale="+language+invoiceIds+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
+	
+			LOG.debug("URL : {}", url);
+			
+			String urlNotExist = URLService.notExist(url.toString());
+			if (urlNotExist == null){
+			
+				LOG.debug("Impression de la facture "+invoice.getInvoiceId()+" : "+url.toString());
+				
+				String title = "Facture ";
+				if(invoice.getInvoiceId() != null)  {
+					title += invoice.getInvoiceId();
+				}
+				
+				Map<String,Object> mapView = new HashMap<String,Object>();
+				mapView.put("title", title);
+				mapView.put("resource", url);
+				mapView.put("viewType", "html");
+				response.setView(mapView);		
+			}
+			else {
+				response.setFlash(urlNotExist);
+			}
+		}else{
+			response.setFlash("Please select the invoice(s) to print.");
+		}	
 	}
+	
+	
 }
