@@ -4,6 +4,74 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
 
 
+	<menuitem name="menu-dashboards" priority="200"
+    	title="Dashboards" icon="img/16px/chart_16px.png" groups="admins,erp"/> 	
+
+	<menuitem name="menu-salesman-dashboard" parent="menu-dashboards"
+		title="Salesman Dashboard" action="portal.salesman.dashboard.view" />
+		
+	<action-view name="portal.salesman.dashboard.view" title="Salesman Dashboard"
+	icon="img/16px/crmSmall_16px.png">
+		<view type="portal" name="salesman.dashboard.portal" />
+    	<context name="_user" expr="eval:__user__"/>
+    	<context name="_user_id" expr="eval:__user__.id"/>
+    	<context name="_past_month" expr="eval: __date__.minusMonths(1)"/>
+	</action-view>
+		
+<!-- 	<menuitem name="menu-sales-manager-dashboard" parent="menu-dashboards" -->
+<!-- 		title="Sales Manager Dashboard" action="portal.sales.manager.dashboard.view" />	 -->
+
+<!-- 	<action-view name="portal.sales.manager.dashboard.view" title="Sales Manager Dashboard" -->
+<!-- 		icon="img/16px/crmSmall_16px.png"> -->
+<!-- 		<view type="portal" name="sales.manager.dashboard.portal" /> -->
+<!--     	<context name="_past_month" expr="eval: __date__.minusMonths(1)"/> -->
+<!-- 	</action-view> -->
+		
+	<menuitem name="menu-purchase-buyer-dashboard" parent="menu-dashboards"
+		title="Purchase Buyer Dashboard" action="portal.purchase.buyer.dashboard.view" />	
+
+	<action-view name="portal.purchase.buyer.dashboard.view" title="Purchase Buyer Dashboard"
+		icon="img/16px/crmSmall_16px.png">
+		<view type="portal" name="purchase.buyer.dashboard.portal" />
+    	<context name="_user" expr="eval:__user__"/>
+    	<context name="_user_id" expr="eval:__user__.id"/>
+	</action-view>
+	
+	<menuitem name="menu-purchase-manager-dashboard" parent="menu-dashboards"
+		title="Purchase Manager Dashboard" action="portal.purchase.manager.dashboard.view" />	
+
+	<action-view name="portal.purchase.manager.dashboard.view" title="Purchase Manager Dashboard"
+		icon="img/16px/crmSmall_16px.png">
+		<view type="portal" name="purchase.manager.dashboard.portal" />
+	</action-view>
+	
+	<menuitem name="menu-human-resources-dashboard" parent="menu-dashboards"
+		title="Human Resources Dashboard" action="portal.human.resources.dashboard.view" />	
+
+	<action-view name="portal.human.resources.dashboard.view" title="Human Resources Dashboard"
+		icon="img/16px/crmSmall_16px.png">
+		<view type="portal" name="human.resources.dashboard.portal" />
+		<context name="_user_id" expr="eval:__user__.id"/>
+	</action-view>
+	
+	<menuitem name="menu-manufacturing-dashboard" parent="menu-dashboards"
+		title="Manufacturing Dashboard" action="portal.manufacturing.dashboard.view" groups="axelordemo"/>	
+
+	<action-view name="portal.manufacturing.dashboard.view" title="Manufacturing Dashboard"
+		icon="img/16px/crmSmall_16px.png">
+		<view type="portal" name="manufacturing.dashboard.portal" />
+	    <context name="_today" expr="eval: __date__.toDate()"/>
+	</action-view>
+	
+	<menuitem name="menu-stock-dashboard" parent="menu-dashboards"
+		title="Stock Dashboard" action="portal.stock.dashboard.view"/>	
+
+	<action-view name="portal.stock.dashboard.view" title="Stock Dashboard"
+		icon="img/16px/crmSmall_16px.png">
+		<view type="portal" name="stock.dashboard.portal" />
+	    <context name="_newDate" expr="eval: __date__.plusDays(5)"/>
+	</action-view>
+	
 	<menuitem name="contact-root" title="Companies/Contacts" priority="190"
 		icon="img/64px/partner_64px.png" groups="admins,erp,crm"/>
 
@@ -60,6 +128,15 @@
 		<view type="form" />
 	</action-view>
 
+	<menuitem name="contact-conf-invoice-bic" parent="contact-conf"
+		title="SWIFT codes" action="contact.conf.invoice.bic" />
+
+	<action-view name="contact.conf.invoice.bic"
+		title="SWIFT codes" model="com.axelor.apps.base.db.Bic" icon="img/16px/parameterSmall_16px.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
+
 	<menuitem name="contact-conf-invoice-sources" parent="contact-conf"
 		title="Sources" action="contact.conf.invoice.sources" />
 
@@ -77,6 +154,15 @@
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
+	
+	<menuitem name="contact-conf-price-list" parent="contact-conf"
+		title="Price lists" action="contact.conf.price.list" />
+
+	<action-view name="contact.conf.price.list" title="Price lists"
+		model="com.axelor.apps.base.db.PriceList" icon="img/16px/parameterSmall_16px.png">
+		<view type="grid" name="price-list-grid" />
+		<view type="form" name="price-list-form" />
+	</action-view>	
 	
 	
 <!-- 	<menuitem name="contact-conf-geographical-area" parent="contact-conf" -->
@@ -98,13 +184,168 @@
 <!-- 	</action-view> -->
 	
 	
+	<menuitem name="product-root" title="Products" priority="170"
+		icon="img/Other/product_65px.png" groups="admins,erp,crm"/>
+
+	<menuitem name="product-root-product" parent="product-root"
+		title="Products" action="product.root.product" />
+
+	<action-view name="product.root.product" title="Products"
+		model="com.axelor.apps.base.db.Product" icon="img/16px/productSmall_16px.png">
+		<view type="grid" />
+		<view type="form" />
+		<view-param name="search-filters" value="products-filters"/>
+		<context name="_activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+	</action-view>
+	
+	<menuitem name="product-conf" parent="product-root" title="Configuration"
+		icon="img/Other/parameter_59px.png" />
+
+	<menuitem name="product-conf-product-category" parent="product-conf"
+		title="Product categories" action="product.conf.product.category" />
+
+	<action-view name="product.conf.product.category" title="Product categories"
+		model="com.axelor.apps.base.db.ProductCategory" icon="img/16px/parameterSmall_16px.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
+
+	<menuitem name="product-conf-product-family" parent="product-conf"
+		title="Product families" action="product.conf.product.family" />
+
+	<action-view name="product.conf.product.family" title="Product families"
+		model="com.axelor.apps.base.db.ProductFamily" icon="img/16px/parameterSmall_16px.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
+
+	<menuitem name="product-conf-tracking-number-config" parent="product-conf"
+		title="Tracking number configuration" action="product.conf.tracking.number.config" />
+
+	<action-view name="product.conf.tracking.number.config" title="Tracking number configuration"
+		model="com.axelor.apps.base.db.TrackingNumberConfiguration" icon="img/16px/parameterSmall_16px.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
+	
+
+	<menuitem name="alarm-root" title="Alarmes" priority="80"
+		icon="img/Other/alert_60px.png" groups="admins,erp"/>
+
+	<menuitem name="alarm-root-alarm-other" parent="alarm-root" title="All Alarms"
+		action="alarm.root.alarm.other" />
+
+	<action-view name="alarm.root.alarm.other" title="All Alarms"
+		model="com.axelor.apps.base.db.Alarm" icon="img/16px/alertSmall_16px.png">
+		<view type="grid" name="alarm-grid" />
+		<view type="form" name="alarm-form" />
+	</action-view>
+
+	<menuitem name="alarm-conf" parent="alarm-root" title="Configuration"
+		icon="img/Other/parameter_59px.png" />
+	
+	<menuitem name="alarm-conf-alarm-engine" parent="alarm-conf"
+		title="Alarm engines" action="alarm.conf.alarm.engine" />
+
+	<action-view name="alarm.conf.alarm.engine" title="Alarm engines"
+		model="com.axelor.apps.base.db.AlarmEngine" icon="img/16px/parameterSmall_16px.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
+
+	<menuitem name="alarm-conf-message" parent="alarm-conf" title="All Messages"
+		action="alarm.conf.message" />
+
+	<action-view name="alarm.conf.message" title="All Messages"
+		model="com.axelor.apps.base.db.AlarmMessage" icon="img/16px/parameterSmall_16px.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
+	
+	<menuitem name="alarm-conf-alarm-engine-batch" parent="alarm-conf"
+		title="Alarm batches" action="alarm.conf.alarm.engine.batch" />
+
+	<action-view name="alarm.conf.alarm.engine.batch" title="Alarm batches"
+		model="com.axelor.apps.base.db.AlarmEngineBatch" icon="img/16px/parameterSmall_16px.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
+	
+	
 
 	<menuitem name="mail-root" title="Emails/Mails" priority="70"
 		icon="img/64px/mail_64px.png" groups="admins,erp"/>
 
+	<menuitem name="mail-root-email" parent="mail-root" title="All batchs emails"/>
+
+	<menuitem name="mail-root-email-all" title="All Emails"
+		parent="mail-root-email" action="mail.root.email.all" />
+
+	<action-view name="mail.root.email.all" title="All Emails"
+		model="com.axelor.apps.base.db.Mail" icon="img/16px/mailSmall_16px.png">
+		<view type="grid" />
+		<view type="form" />
+		<domain>self.typeSelect = 0</domain>
+		<context name="typeSelect" expr="0" />
+	</action-view>
+
+	
+
+	<menuitem name="mail-root-mail" parent="mail-root" title="All batchs mails" />
+
+	<menuitem name="mail-root-mail-all" title="All Mails"
+		parent="mail-root-mail" action="mail.root.mail.all" />
+
+	<action-view name="mail.root.mail.all" title="All mails"
+		model="com.axelor.apps.base.db.Mail" icon="img/16px/mailSmall_16px.png">
+		<view type="grid" />
+		<view type="form" />
+		<domain>self.typeSelect = 1</domain>
+		<context name="typeSelect" expr="1" />
+	</action-view>
 
 	<menuitem name="mail-conf" parent="mail-root"
 		title="Configuration" icon="img/Other/parameter_59px.png" />
+
+	<menuitem name="mail-conf-email-model" title="Email models"
+		parent="mail-conf" action="mail.conf.email.model" />
+
+	<action-view name="mail.conf.email.model" title="Email models"
+		model="com.axelor.apps.base.db.MailModel" icon="img/16px/parameterSmall_16px.png">
+		<view type="grid" />
+		<view type="form" />
+		<domain>self.typeSelect = 0</domain>
+		<context name="typeSelect" expr="0" />
+	</action-view>
+
+	<menuitem name="mail-conf-mail-model" title="Mail models"
+		parent="mail-conf" action="mail.conf.mail.model" />
+
+	<action-view name="mail.conf.mail.model" title="Mail models"
+		model="com.axelor.apps.base.db.MailModel" icon="img/16px/parameterSmall_16px.png">
+		<view type="grid" />
+		<view type="form" />
+		<domain>self.typeSelect = 1</domain>
+		<context name="typeSelect" expr="1" />
+	</action-view>
+	
+	<menuitem name="mail-conf-mail-model-tag" title="Email/Mail model tags"
+		parent="mail-conf" action="mail.conf.mail.model.tag" />
+
+	<action-view name="mail.conf.mail.model.tag" title="Les balises de modèles de courrier"
+		model="com.axelor.apps.base.db.MailModelTag" icon="img/16px/parameterSmall_16px.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
+	
+	<menuitem name="mail-conf-email-list" title="Partners lists"
+		parent="mail-conf" action="mail.conf.partner.list" />
+
+	<action-view name="mail.conf.partner.list" title="Partners lists"
+		model="com.axelor.apps.base.db.PartnerList" icon="img/16px/parameterSmall_16px.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
 
 
 
@@ -133,6 +374,15 @@
 		<view type="form" />
 	</action-view>
 
+	<menuitem name="admin-root-organisation-territory-department"
+		parent="admin-root-organisation-territory" title="Departments"
+		action="admin.root.organisation.territory.department" />
+
+	<action-view name="admin.root.organisation.territory.department"
+		title="Departments" model="com.axelor.apps.base.db.Department" icon="img/16px/organisationSmall_16px.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
 
 	<menuitem name="admin-root-organisation-region"
 		parent="admin-root-organisation" title="Regions"
@@ -150,6 +400,16 @@
 
 	<action-view name="admin.root.organisation.country"
 		title="Countries" model="com.axelor.apps.base.db.Country" icon="img/16px/organisationSmall_16px.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
+
+	<menuitem name="admin-root-organisation-territory-canton"
+		parent="admin-root-organisation-territory" title="Cantons"
+		action="admin.root.organisation.territory.canton" />
+
+	<action-view name="admin.root.organisation.territory.canton"
+		title="Cantons" model="com.axelor.apps.base.db.Canton" icon="img/16px/organisationSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
@@ -223,6 +483,14 @@
 	<menuitem name="admin-conf-general" parent="admin-root-general"
 		title="Configuration" icon="img/Other/parameter_59px.png" />
 
+	<menuitem name="admin-conf-general-status" parent="admin-conf-general"
+		title="All Status" action="admin.conf.general.status" />
+
+	<action-view name="admin.conf.general.status" title="All Status"
+		model="com.axelor.apps.base.db.Status" icon="img/16px/parameterSmall_16px.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
 
 	<menuitem name="admin-conf-general-unit" parent="admin-conf-general"
 		title="Units" action="admin.conf.general.unit" />
@@ -252,6 +520,24 @@
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
+	
+	<menuitem name="admin-conf-general-year" parent="admin-conf-general"
+		title="Years" action="admin.conf.general.year" />
+
+	<action-view name="admin.conf.general.year" title="Years"
+		model="com.axelor.apps.base.db.Year" icon="img/16px/parameterSmall_16px.png">
+		<view type="grid" name="year-grid"/>
+		<view type="form" name="year-form"/>
+	</action-view>
+	
+	<menuitem name="admin-conf-general-period" parent="admin-conf-general"
+		title="Periods" action="admin.conf.general.period" />
+
+	<action-view name="admin.conf.general.period" title="Periods"
+		model="com.axelor.apps.base.db.Period" icon="img/16px/parameterSmall_16px.png">
+		<view type="grid" name="period-grid"/>
+		<view type="form" name="period-form"/>
+	</action-view>
 
 	<menuitem name="admin-conf-general-sequence-generic"
 		parent="admin-conf-general" title="Sequences"
@@ -261,6 +547,16 @@
 		title="Sequences" model="com.axelor.apps.base.db.Sequence" icon="img/16px/parameterSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
+	</action-view>
+	
+	<menuitem name="admin-conf-general-keyword"
+		parent="admin-conf-general" title="Keywords"
+		action="admin.conf.general.keyword" />
+
+	<action-view name="admin.conf.general.keyword"
+		title="Keywords" model="com.axelor.apps.base.db.Keyword" icon="img/16px/parameterSmall_16px.png">
+		<view type="grid" name="keyword-grid"/>
+		<view type="form" name="keyword-form"/>
 	</action-view>
 	
 	<menuitem name="admin-conf-general-source"
@@ -318,6 +614,17 @@
 	<menuitem name="admin-root-batch" parent="admin-root"
 		title="Batches" action="admin.root.batch"/>
 	
+	<menuitem name="admin-root-batch-base" parent="admin-root-batch"
+		title="Base batches" action="admin.root.batch.base" />
+
+	<action-view name="admin.root.batch.base" title="Base batches"
+		model="com.axelor.apps.base.db.BaseBatch" icon="img/16px/parameterSmall_16px.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
+	
+	<menuitem name="admin-root-conf" parent="admin-root"
+		title="Modules configurations" icon="img/Other/parameter_59px.png"/>
 	
 
 	<!-- Top Menu for Create new objects.... -->

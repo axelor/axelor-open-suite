@@ -25,15 +25,37 @@
 		</toolbar>
 	    <field name="today"/>
 	    <field name="logOk"/>
+	    <field name="defaultProjectUnit"/>
 	    <notebook colSpan="6">
+	        <page title="Accounting" cols="4">
+	            <field name="defaultExemptionTax"/>
+	            <field name="isInvoiceMoveConsolidated"/>
+	            <separator title="Rejects reasons and codes list" colSpan="6"/>
+	            <field name="transferAndDirectDebitInterbankCode"/>
+	            <field name="chequeInterbankCode"/>
+	            <separator title="Payer quality" colSpan="4"/>
+	            <field name="payerQualityConfigLineList" colSpan="4"/>
+	            <button name="payerQualityProcess" title="Compute payers quality" colSpan="2" onClick="action-general-method-payer-quality-process"/>
+	            <separator title="Currency conversion" colSpan="4"/>
+	            <field name="currencyConversionLineList" colSpan="4"/>
+	        </page>
 	        <page title="Interfaces" cols="4">
 	            <group name="map" title="Mapping" colSpan="4">
 	                <field name="mapApiSelect"/>
 	                <button name="checkMapApi" title="Test mapping service connection" colSpan="2" onClick="com.axelor.apps.base.web.AddressController:checkMapApi"/>
 	            </group>
+	            <group name="qas" title="Addresses validation" colSpan="4">
+	                <field name="qasWsdlUrl"/>
+	                <button name="checkQasWsdl" title="Test connection to QAS webservice" colSpan="2" onClick="com.axelor.apps.base.web.AddressController:check"/>
+	            </group>
 	        </page>
 	        <page title="Exceptions" cols="4">
 	            <field name="exceptionDefaultMsg" colSpan="4"/>
+	            <field name="exceptionInvoiceMsg" colSpan="4"/>
+	            <field name="exceptionAccountingMsg" colSpan="4"/>
+	            <field name="exceptionReminderMsg" colSpan="4"/>
+	            <field name="exceptionMailMsg" colSpan="4"/>
+	            <field name="exceptionSupplychainMsg" colSpan="4"/>
 	        </page>
 	    </notebook>
 	</form>

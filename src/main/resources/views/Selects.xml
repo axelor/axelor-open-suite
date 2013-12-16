@@ -367,7 +367,34 @@
 	<selection name="sequence.generic.code.select">
 		<option value="partner">Partner (Cust/Suppl)</option>
 		<option value="move">Move</option>
+		<option value="customerInvoice">Customer invoice</option>
+		<option value="supplierInvoice">Supplier invoice</option>
+		<option value="customerRefund">Customer Refund</option>
+		<option value="supplierRefund">Supplier Refund</option>
+		<option value="paymentSchedule">Payment schedule</option>
+		<option value="paymentVoucher">Payment voucher</option>
+		<option value="debit">Direct debit</option>
+		<option value="debitReject">Direct debit reject</option>
+		<option value="moveLineReport">Accounting reports</option>
+		<option value="reimbursement">Reimbursements</option>
+		<option value="paymentVoucherReceiptNo">Receipt N°(Payment voucher)</option>
+		<option value="accountClearance">Overpayment clearance</option>
+		<option value="irrecoverable">Shift to irrecoverable</option>
+		<option value="chequeReject">Cheque reject</option>
+		<option value="salesInterface">Sale interface</option>
+		<option value="refundInterface">Refund interface</option>
+		<option value="treasuryInterface">Treasury interface</option>
+		<option value="purchaseInterface">Purchase interface</option>
+		<option value="moveLineExport">Accounting export</option>
+		<option value="doubtfulCustomer">Shift to doubtful receivables</option>
+		<option value="salesOrder">Sales order</option>
+		<option value="purchaseOrder">Purchase order</option>
 		<option value="eventTicket">Ticket</option>
+		<option value="intStockMove">Internal stock move</option>
+		<option value="outStockMove">Delivery stock move</option>
+		<option value="inStockMove">Receipt stock move</option>
+		<option value="inventory">Inventory</option>
+		<option value="productTrackingNumber">Product tracking number</option>
 	</selection>
 
 	<selection name="company.paybox.hash.select">
