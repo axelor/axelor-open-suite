@@ -510,6 +510,7 @@
     	<action name="action-event-record-call-status-select" if="typeSelect == 1 &amp;&amp; (_lead != null || _partner != null)"/>
     	<action name="action-event-record-status-select" if="typeSelect == 2 || typeSelect == 1"/>
     	<action name="action-event-record-task-status-select" if="typeSelect == 3"/>
+    	<action name="action-event-record-event-from-sales-order" if="_salesOrder != null" />
     </action-group>
     
     <action-record name="action-event-record-event-from-lead" model="com.axelor.apps.crm.db.Event">
@@ -518,6 +519,12 @@
     	<field name="userInfo" expr="eval: _lead.userInfo"/>
     	<field name="team" expr="eval: _lead.team"/>
     </action-record>
+    
+    <action-record model="com.axelor.apps.crm.db.Event" name="action-event-record-event-from-sales-order">
+	    <field name="clientPartner" expr="eval:_salesOrder.clientPartner?.id != null ? com.axelor.apps.base.db.Partner.find(_salesOrder.clientPartner.id) : _salesOrder.clientPartner"/>
+	    <field name="contactPartner" expr="eval:_salesOrder.contactPartner?.id != null ? com.axelor.apps.base.db.Partner.find(_salesOrder.contactPartner.id) : _salesOrder.contactPartner"/>
+	    <field if="_salesOrder.id != null" name="relatedToSelect" expr="eval:'com.axelor.apps.supplychain.db.SalesOrder'"/>
+	</action-record>
     
     <action-record name="action-event-record-event-from-partner" model="com.axelor.apps.crm.db.Event">
     	<field name="clientPartner" expr="eval: _partner" if="_partner.isContact == false"/>
