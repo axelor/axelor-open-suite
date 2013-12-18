@@ -225,7 +225,7 @@ public class AddressService {
 				}
 			}
 			if(BigDecimal.ZERO.compareTo(latitude) != 0 && BigDecimal.ZERO.compareTo(longitude) != 0){
-				result.put("url",String.format("map/gmaps.html?x=%f&y=%f&z=18",latitude,longitude));
+				result.put("url","map/gmaps.html?x="+latitude+"&y="+longitude+"&z=18");
 				result.put("latitude", latitude);
 				result.put("longitude",longitude);
 				return result;
@@ -275,7 +275,7 @@ public class AddressService {
 				}
 			}
 			if(BigDecimal.ZERO.compareTo(latitude) != 0 && BigDecimal.ZERO.compareTo(longitude) != 0){
-				result.put("url",String.format("map/oneMarker.html?x=%f&y=%f&z=18",latitude,longitude));
+				result.put("url","map/oneMarker.html?x="+latitude+"&y="+longitude+"&z=18");
 				result.put("latitude", latitude);
 				result.put("longitude",longitude);
 				return result;
@@ -318,7 +318,7 @@ public class AddressService {
 			LOG.debug("arrivalLat = {}, arrivalLng={}", aLat,aLon);
 			if(BigDecimal.ZERO.compareTo(dLat) != 0  && BigDecimal.ZERO.compareTo(dLon) != 0){ 
 				if(BigDecimal.ZERO.compareTo(aLat) != 0 && BigDecimal.ZERO.compareTo(aLon) != 0){ 
-					result.put("url",String.format("map/directions.html?dx=%f&dy=%f&ax=%f&ay=%f",dLat,dLon,aLat,aLon));
+					result.put("url","map/directions.html?dx="+dLat+"&dy="+dLon+"&ax="+aLat+"&ay="+aLon);
 					result.put("aLat", aLat);
 					result.put("dLat", dLat);
 					return result;
