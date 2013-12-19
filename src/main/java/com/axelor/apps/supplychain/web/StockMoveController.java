@@ -32,13 +32,14 @@ package com.axelor.apps.supplychain.web;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.AxelorSettings;
-import com.axelor.apps.account.db.IAccount;
+
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.service.AddressService;
@@ -94,6 +95,7 @@ public class StockMoveController {
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}
 	
+
 	/**
 	 * Fonction appeler par le bouton imprimer
 	 *
@@ -103,35 +105,59 @@ public class StockMoveController {
 	 */
 	public void printStockMove(ActionRequest request, ActionResponse response) {
 
-		StockMove stockMove = request.getContext().asType(StockMove.class);
 
-		StringBuilder url = new StringBuilder();
-		AxelorSettings axelorSettings = AxelorSettings.get();
-		String language = stockMove.getPartner().getLanguageSelect() != null? stockMove.getPartner().getLanguageSelect() : stockMove.getCompany().getPrintingSettings().getLanguageSelect() != null ? stockMove.getCompany().getPrintingSettings().getLanguageSelect() : "en" ; 
-		language = language == "" ? "en": language;
-		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/StockMove.rptdesign&__format=pdf&Locale="+language+"&StockMoveId="+stockMove.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
-		LOG.debug("URL : {}", url);
-		String urlNotExist = URLService.notExist(url.toString());
-		
-		if(urlNotExist == null) {
-		
-			LOG.debug("Impression du stock move "+stockMove.getStockMoveSeq()+" : "+url.toString());
-			
-			String title = "StockMove ";
-			if(stockMove.getStockMoveSeq() != null)  {
-				title += stockMove.getStockMoveSeq();
+		StockMove stockMove = request.getContext().asType(StockMove.class);
+		String stockMoveIds = "";
+
+		@SuppressWarnings("unchecked")
+		List<Integer> lstSelectedMove = (List<Integer>) request.getContext().get("_ids");
+		if(lstSelectedMove != null){
+			for(Integer it : lstSelectedMove) {
+				stockMoveIds+= it.toString()+",";
 			}
+		}	
 			
-			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", "StockMove "+title);
-			mapView.put("resource", url);
-			mapView.put("viewType", "html");
-			response.setView(mapView);	
+		if(!stockMoveIds.equals("")){
+			stockMoveIds = "&StockMoveId="+stockMoveIds.substring(0, stockMoveIds.length()-1);	
+			stockMove = StockMove.find(new Long(lstSelectedMove.get(0)));
+		}else if(stockMove.getId() != null){
+			stockMoveIds = "&StockMoveId="+stockMove.getId();			
 		}
-		else {
-			response.setFlash(urlNotExist);
-		}
+		
+		if(!stockMoveIds.equals("")){
+			StringBuilder url = new StringBuilder();			
+			AxelorSettings axelorSettings = AxelorSettings.get();
+			String language = stockMove.getPartner().getLanguageSelect() != null? stockMove.getPartner().getLanguageSelect() : stockMove.getCompany().getPrintingSettings().getLanguageSelect() != null ? stockMove.getCompany().getPrintingSettings().getLanguageSelect() : "en" ; 
+			url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/StockMove.rptdesign&__format=pdf&Locale="+language+stockMoveIds+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
+
+			LOG.debug("URL : {}", url);
+			
+			String urlNotExist = URLService.notExist(url.toString());
+			if (urlNotExist == null){
+				LOG.debug("Impression du stock move "+stockMove.getStockMoveSeq()+" : "+url.toString());
+				
+				String title = " ";
+				if(stockMove.getStockMoveSeq() != null)  {
+					title += lstSelectedMove == null ? "StockMove "+stockMove.getStockMoveSeq():"StockMove(s)";
+				}
+				
+				Map<String,Object> mapView = new HashMap<String,Object>();
+				mapView.put("title", title);
+				mapView.put("resource", url);
+				mapView.put("viewType", "html");
+				response.setView(mapView);	
+					
+			}
+			else {
+				response.setFlash(urlNotExist);
+			}
+		}else{
+			response.setFlash("Please select the StockMove(s) to print.");
+		}	
 	}
+	
+	
+	
 	
 	public void  viewDirection(ActionRequest request, ActionResponse response) {
 		
