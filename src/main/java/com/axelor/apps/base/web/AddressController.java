@@ -251,9 +251,13 @@ public class AddressController {
 
 	public void viewMap(ActionRequest request, ActionResponse response)  {
 		Address address = request.getContext().asType(Address.class);
+		if(address.getId() != null)
+			address = Address.find(address.getId());
 		String qString = address.getAddressL4()+" ,"+address.getAddressL6();
 		BigDecimal latitude = address.getLatit();
 		BigDecimal longitude = address.getLongit();
+		LOG.debug("latitude...."+latitude);
+		LOG.debug("longitude...."+longitude);
 		Map<String,Object> result = ads.getMap(qString, latitude, longitude);
 		if(result != null){
 			Map<String,Object> mapView = new HashMap<String,Object>();
@@ -275,6 +279,8 @@ public class AddressController {
 		Address departureAddress = currPartner.getDeliveryAddress();
 		if (departureAddress != null) {
 			Address arrivalAddress = request.getContext().asType(Address.class);
+			if(arrivalAddress.getId() != null)
+				arrivalAddress = Address.find(arrivalAddress.getId());
 			String aString = arrivalAddress.getAddressL4()+" ,"+arrivalAddress.getAddressL6();
 			String dString = departureAddress.getAddressL4()+" ,"+departureAddress.getAddressL6();
 			if (GeneralService.getGeneral().getMapApiSelect() == IAdministration.MAP_API_GOOGLE) {

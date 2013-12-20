@@ -225,6 +225,7 @@ public class AddressService {
 				}
 			}
 			if(BigDecimal.ZERO.compareTo(latitude) != 0 && BigDecimal.ZERO.compareTo(longitude) != 0){
+				LOG.debug("URL:"+"map/gmaps.html?x="+latitude+"&y="+longitude+"&z=18");
 				result.put("url","map/gmaps.html?x="+latitude+"&y="+longitude+"&z=18");
 				result.put("latitude", latitude);
 				result.put("longitude",longitude);
