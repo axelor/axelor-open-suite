@@ -4,6 +4,13 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
     <grid name="sales-order-grid" title="Sale orders" model="com.axelor.apps.supplychain.db.SalesOrder" orderBy="-creationDate">
+    	<menubar>
+	        <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true">
+	            <item title="Plan a meeting" action="action-sales-order-view-plan-meeting" />
+	            <item title="Plan a call" action="action-sales-order-view-plan-call" />
+	            <item title="Plan a task" action="action-sales-order-view-plan-task"/>
+	        </menu>
+	    </menubar>
         <field name="salesOrderSeq"/>
         <field name="company"/>
         <field name="currency"/>
@@ -258,19 +265,19 @@
 	
 	<action-view name="action-sales-order-view-plan-meeting" title="Plan a meeting" model="com.axelor.apps.crm.db.Event">
     	<view type="form" name="meeting-form"/>
-    	<context name="_salesOrder" expr="eval: __self__"/>
+    	<context name="_salesOrder" expr="eval:_ids != null ? com.axelor.apps.supplychain.db.SalesOrder.find(_ids.get(0)) : __this__"/>
     	<context name="_typeSelect" expr="2"/>
     </action-view>
     
     <action-view name="action-sales-order-view-plan-call" title="Plan a call" model="com.axelor.apps.crm.db.Event">
     	<view type="form" name="call-form"/>
-    	<context name="_salesOrder" expr="eval: __self__"/>
+    	<context name="_salesOrder" expr="eval:_ids != null ? com.axelor.apps.supplychain.db.SalesOrder.find(_ids.get(0)) : __this__"/>
     	<context name="_typeSelect" expr="1"/>
     </action-view>
     
     <action-view name="action-sales-order-view-plan-task" title="Plan a task" model="com.axelor.apps.crm.db.Event">
     	<view type="form" name="crm-task-form"/>
-    	<context name="_salesOrder" expr="eval: __self__"/>
+    	<context name="_salesOrder" expr="eval:_ids != null ? com.axelor.apps.supplychain.db.SalesOrder.find(_ids.get(0)) : __this__"/>
     	<context name="_typeSelect" expr="3"/>
     </action-view>
 	
