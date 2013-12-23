@@ -8,7 +8,7 @@
 	<menuitem name="invoice-root" title="Invoice" priority="100"
 		icon="img/Other/invoice_67px.png" groups="admins,erp"/>
 		
-	<menuitem name="invoice-root-cust-invoice" parent="invoice-root"
+	<menuitem name="invoice-root-cust-invoice" parent="invoice-root" icon="img/16px/create_16px.png"
 		title="New cust. invoice" action="invoice.root.cust.invoice" />
 
 	<action-view name="invoice.root.cust.invoice" title="New cust. invoice"
@@ -19,7 +19,7 @@
 		<context name="_operationTypeSelect" expr="eval:3"/>
 	</action-view>	
 	
-	<menuitem name="invoice-root-sup-invoice" parent="invoice-root"
+	<menuitem name="invoice-root-sup-invoice" parent="invoice-root" icon="img/16px/create_16px.png"
 		title="New sup. invoice" action="invoice.root.sup.invoice" />
 
 	<action-view name="invoice.root.sup.invoice" title="New sup. invoice"
@@ -155,7 +155,7 @@
 		<view-param name="search-filters" value="payment-voucher-filters"/>
 	</action-view>
 	
-	<menuitem name="account-root-payments-new-cust-payment"
+	<menuitem name="account-root-payments-new-cust-payment" icon="img/16px/create_16px.png"
 		parent="account-root-payments" title="Create Cust. Payment"
 		action="account.root.payments.new.cust.payment" />
 
@@ -167,7 +167,7 @@
 		<context name="_operationTypeSelect" expr="eval:3"/>
 	</action-view>
 	
-	<menuitem name="account-root-payments-new-cust-refund"
+	<menuitem name="account-root-payments-new-cust-refund" icon="img/16px/create_16px.png"
 		parent="account-root-payments" title="Create Cust. Refund"
 		action="account.root.payments.new.cust.refund" />
 
@@ -179,7 +179,7 @@
 		<context name="_operationTypeSelect" expr="eval:4"/>
 	</action-view>
 	
-	<menuitem name="account-root-payments-new-suppl-payment"
+	<menuitem name="account-root-payments-new-suppl-payment" icon="img/16px/create_16px.png"
 		parent="account-root-payments" title="Create Suppl. Payment"
 		action="account.root.payments.new.suppl.payment" />
 
@@ -191,7 +191,7 @@
 		<context name="_operationTypeSelect" expr="eval:1"/>
 	</action-view>
 	
-	<menuitem name="account-root-payments-new-suppl-refund"
+	<menuitem name="account-root-payments-new-suppl-refund" icon="img/16px/create_16px.png"
 		parent="account-root-payments" title="Create Suppl. Refund"
 		action="account.root.payments.new.suppl.refund" />
 
