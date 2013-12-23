@@ -12,10 +12,10 @@
 		title="Create"/>
 		
 	<menuitem name="crm-root-create-task" parent="crm-root-create"
-		title="Task" action="crm.root.create.task" icon="img/16px/new_16px.png"/>
+		title="Task" action="crm.root.create.task" icon="img/16px/create_16px.png"/>
 
 	<action-view name="crm.root.create.task" title="Task"
-		model="com.axelor.apps.crm.db.Event" icon="img/16px/new_16px.png">
+		model="com.axelor.apps.crm.db.Event" icon="img/16px/create_16px.png">
 		<view type="form" name="crm-task-form"/>
 		<view type="grid" name="crm-task-grid"/>
 		<context name="_typeSelect" expr="3"/>
@@ -23,10 +23,10 @@
 	</action-view>
 	
 	<menuitem name="crm-root-create-meeting" parent="crm-root-create"
-		title="Meeting" action="crm.root.create.meeting" icon="img/16px/new_16px.png"/>
+		title="Meeting" action="crm.root.create.meeting" icon="img/16px/create_16px.png"/>
 
 	<action-view name="crm.root.create.meeting" title="Meeting"
-		model="com.axelor.apps.crm.db.Event" icon="img/16px/new_16px.png">
+		model="com.axelor.apps.crm.db.Event" icon="img/16px/create_16px.png">
 		<view type="form" name="meeting-form"/>
 		<view type="grid" name="meeting-grid"/>
 		<context name="_typeSelect" expr="2"/>
@@ -34,10 +34,10 @@
 	</action-view>
 	
 	<menuitem name="crm-root-create-call" parent="crm-root-create"
-		title="Call" action="crm.root.create.call" icon="img/16px/new_16px.png"/>
+		title="Call" action="crm.root.create.call" icon="img/16px/create_Yellow16px.png"/>
 
 	<action-view name="crm.root.create.call" title="Call"
-		model="com.axelor.apps.crm.db.Event" icon="img/16px/new_16px.png">
+		model="com.axelor.apps.crm.db.Event" icon="img/16px/create_Yellow16px.png">
 		<view type="form" name="call-form"/>
 		<view type="grid" name="call-grid"/>
 		<context name="_typeSelect" expr="1"/>
@@ -45,10 +45,10 @@
 	</action-view>
 	
 	<menuitem name="crm-root-create-ticket" parent="crm-root-create"
-		title="Ticket" action="crm.root.create.ticket" icon="img/16px/new_16px.png"/>
+		title="Ticket" action="crm.root.create.ticket" icon="img/16px/create_Yellow16px.png"/>
 
 	<action-view name="crm.root.create.ticket" title="Ticket"
-		model="com.axelor.apps.crm.db.Event" icon="img/16px/new_16px.png">
+		model="com.axelor.apps.crm.db.Event" icon="img/16px/create_Yellow16px.png">
 		<view type="form" name="ticket-form"/>
 		<view type="grid" name="ticket-grid"/>
 		<context name="_typeSelect" expr="5"/>
