@@ -34,10 +34,10 @@
 	</action-view>
 	
 	<menuitem name="crm-root-create-call" parent="crm-root-create"
-		title="Call" action="crm.root.create.call" icon="img/16px/create_Yellow16px.png"/>
+		title="Call" action="crm.root.create.call" icon="img/16px/create_16px.png"/>
 
 	<action-view name="crm.root.create.call" title="Call"
-		model="com.axelor.apps.crm.db.Event" icon="img/16px/create_Yellow16px.png">
+		model="com.axelor.apps.crm.db.Event" icon="img/16px/create_16px.png">
 		<view type="form" name="call-form"/>
 		<view type="grid" name="call-grid"/>
 		<context name="_typeSelect" expr="1"/>
@@ -45,10 +45,10 @@
 	</action-view>
 	
 	<menuitem name="crm-root-create-ticket" parent="crm-root-create"
-		title="Ticket" action="crm.root.create.ticket" icon="img/16px/create_Yellow16px.png"/>
+		title="Ticket" action="crm.root.create.ticket" icon="img/16px/create_16px.png"/>
 
 	<action-view name="crm.root.create.ticket" title="Ticket"
-		model="com.axelor.apps.crm.db.Event" icon="img/16px/create_Yellow16px.png">
+		model="com.axelor.apps.crm.db.Event" icon="img/16px/create_16px.png">
 		<view type="form" name="ticket-form"/>
 		<view type="grid" name="ticket-grid"/>
 		<context name="_typeSelect" expr="5"/>
@@ -303,14 +303,14 @@
 	<menuitem name="top-menu-activity-create-meeting" icon="img/16px/calendar_16px.png" parent="top-menu-crm-activities" 	title="Create Meeting" action="crm.root.create.meeting" />
 		
 	
-	<menuitem name="top-menu-create-opportunity" parent="top-menu-utility" title="Create Opportunity" action="top.new.opportunity.view" />
+	<menuitem name="top-menu-create-opportunity" parent="top-menu-utility" title="Create Opportunity" action="top.new.opportunity.view" icon="img/16px/create_16px.png" />
 
 	<action-view name="top.new.opportunity.view" title="Create Opportunity" model="com.axelor.apps.crm.db.Opportunity" >
 		<view type="form" name="opportunity-form"/>
 		<view type="grid" name="opportunity-grid"/>
 	</action-view>
 	
-	<menuitem name="top-menu-create-lead" parent="top-menu-utility"	title="Create Lead" action="top.new.lead.view" />
+	<menuitem name="top-menu-create-lead" parent="top-menu-utility"	title="Create Lead" action="top.new.lead.view"  icon="img/16px/create_16px.png"/>
 		
 	<action-view name="top.new.lead.view" title="Create Lead" icon="img/16px/addressBook_16px.png" model="com.axelor.apps.crm.db.Lead" >
 		<view type="form" name="lead-form" />
