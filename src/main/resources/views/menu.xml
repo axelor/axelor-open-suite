@@ -283,7 +283,7 @@
 	<menuitem name="business-root-project" parent="business-root"
 		title="Business" />
 		
-	<menuitem name="business-root-project-new-business" parent="business-root-project"
+	<menuitem name="business-root-project-new-business" parent="business-root-project" icon="img/16px/create_16px.png"
 		title="New Business" action="business.root.project.new.business" />
 
 	<action-view name="business.root.project.new.business" title="New Business"
