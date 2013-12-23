@@ -32,54 +32,56 @@
 <!--         <field name="endOfCycleOk"/> -->
         <field name="invoiceId"/>
         <field name="operationTypeSelect" onChange="action-invoice-method-get-journal,action-invoice-record-partner-change,action-set-partner-domain" readonlyIf="status.code != 'dra'"/>
-        <group name="partnerGroup" title="Invoicing informations" colSpan="4" cols="4" canCollapse="true">
-            <field name="company" widget="SuggestBox" form-view="company-lite-form" onChange="action-invoice-method-get-journal,action-invoice-record-company-change" readonlyIf="status.code != 'dra'"/>
-            <field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form" onChange="action-invoice-record-partner-change,action-invoice-record-due-date,action-set-partner-domain" readonlyIf="status.code != 'dra'" />
-       		<field name="contactPartner"  form-view="partner-contact-form" grid-view="partner-contact-grid" domain="self.isContact = true"/>
-            <field name="paymentMode" widget="SuggestBox"/>
-            <field name="paymentCondition" widget="SuggestBox" onChange="action-invoice-record-due-date" readonlyIf="status.code == 'dis'"/>
-            <field name="currency" onChange="action-invoice-attrs-change-total-title" readonlyIf="status.code != 'dra'"/>
-            <field name="bankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" hideIf="operationTypeSelect >= 3" domain="self.partner = :partner"/>
-            <field name="partnerAccount" domain="self.company = :company" onSelect="action-invoice-partner-account-domain" readonlyIf="status.code == 'dis'"/>
-            <field name="address" colSpan="2"/>
-            <field name="priceList" domain="((self.typeSelect = 2 and (:operationTypeSelect = 1 or :operationTypeSelect = 2)) or (self.typeSelect = 1 and (:operationTypeSelect = 3 or :operationTypeSelect = 4)) or :operationTypeSelect = null or :operationTypeSelect = 0) and (self.partner = null or self.partner = :partner) and (self.validFromDate &lt;= :__date__ or self.validFromDate = null) and (self.validToDate &gt;= :__date__ or self.validToDate = null)" readonlyIf="status.code != 'dra'"/>
-            <field name="project" domain="self.isBusiness = true"/>
-        </group>
-        <group title="Reference documents" cols="4" colSpan="4" canCollapse="true">
-        	<field name="internalReference"/>
-        	<field name="externalReference"/>
-        </group>
-        <group name="dateGroup" title="Dates" colSpan="4" cols="4" canCollapse="true" readonlyIf="status.code == 'dis'">
+        <field name="company" readonlyIf="status.code != 'dra'" widget="SuggestBox" onChange="action-invoice-method-get-journal,action-invoice-record-company-change" form-view="company-lite-form"/>
+		<field name="currency" readonlyIf="status.code != 'dra'" onChange="action-invoice-attrs-change-total-title"/>
+		<group name="dateGroup" title="Dates" colSpan="4" cols="4" canCollapse="true" readonlyIf="status.code == 'dis'">
             <field name="invoiceDate" onChange="action-invoice-record-due-date"/>
             <field name="dueDate"/>
             <separator title="Subscription dates" colSpan="4" showIf="isSubscription"/>
             <field name="subscriptionFromDate" showIf="isSubscription"/>
             <field name="subscriptionToDate" showIf="isSubscription"/>
         </group>
-        <group name="accountGroup" title="Accounting details" colSpan="4" cols="4" canCollapse="true">
-        	<field name="journal" domain="self.inactiveOk != true" readonlyIf="status.code == 'dis'"/>
-            <field name="move"/>
-        	<group colSpan="4">
-        		<field name="doubtfulCustomerOk" readonly="true" showIf="doubtfulCustomerOk"/>
-        		<field name="oldMove" showIf="oldMove"/>
-        	</group>
-            <group colSpan="4">
-        		<field name="schedulePaymentOk" readonly="true" showIf="schedulePaymentOk"/>
-        		<field name="paymentSchedule" readonly="true" showIf="schedulePaymentOk"/>
-        	</group>
+		<group name="partnerGroup" title="Invoicing informations" colSpan="4" cols="4" canCollapse="true">
+            <field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form" onChange="action-invoice-record-partner-change,action-invoice-record-due-date,action-set-partner-domain" readonlyIf="status.code != 'dra'" />
+       		<field name="contactPartner"  form-view="partner-contact-form" grid-view="partner-contact-grid" domain="self.isContact = true"/>
+			<field name="address" colSpan="2"/>
+			<break/>
+            <field name="paymentMode" widget="SuggestBox"/>
+            <field name="paymentCondition" widget="SuggestBox" onChange="action-invoice-record-due-date" readonlyIf="status.code == 'dis'"/>
+            <field name="bankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" hideIf="operationTypeSelect >= 3" domain="self.partner = :partner"/>
+        </group>
+        <group title="Reference documents" cols="4" colSpan="4" canCollapse="true">
+        	<field name="internalReference"/>
+        	<field name="externalReference"/>
+			<field name="priceList" domain="((self.typeSelect = 2 and (:operationTypeSelect = 1 or :operationTypeSelect = 2)) or (self.typeSelect = 1 and (:operationTypeSelect = 3 or :operationTypeSelect = 4)) or :operationTypeSelect = null or :operationTypeSelect = 0) and (self.partner = null or self.partner = :partner) and (self.validFromDate &lt;= :__date__ or self.validFromDate = null) and (self.validToDate &gt;= :__date__ or self.validToDate = null)" readonlyIf="status.code != 'dra'"/>
+            <field name="project" domain="self.isBusiness = true"/>
         </group>
         <notebook colSpan="4">
             <page title="Invoice content" cols="4" readonlyIf="status.code != 'dra'">
 	    		<field name="invoiceLineList" grid-view="invoice-line-grid" form-view="invoice-line-form" colSpan="4"/>
                 <field name="invoiceLineTaxList" grid-view="invoice-line-tax-grid" form-view="invoice-line-tax-form" colSpan="4" />
             </page>
-            <page title="Configuration" cols="6" showIf="status.code == 'dis'">
-            	<group name="refundGroup" colSpan="6" cols="4" readonlyIf="status.code != 'dis'">
-	            	<separator title="Refund" colSpan="4"/>
+            <page title="Accounting" cols="6" showIf="status.code == 'dis'">
+				<group name="accountGroup" title="Accounting details" colSpan="6" cols="4" canCollapse="true">
+					<field name="journal" domain="self.inactiveOk != true" readonlyIf="status.code == 'dis'"/>
+					<field name="partnerAccount" domain="self.company = :company" onSelect="action-invoice-partner-account-domain" readonlyIf="status.code == 'dis'"/>
+					<field name="move"/>
+				</group>
+            	<group name="refundGroup" title="Refund" colSpan="6" cols="4" readonlyIf="status.code != 'dis'">
 	                <button name="createRefund" title="Generate refund" colSpan="2" onClick="save,action-invoice-method-create-refund,save"/>
 	                <field name="refundInvoice" />
 	                <field name="originalInvoiceList" colSpan="4"/>
                 </group>
+				<separator title="Debt Recovery" colSpan="6"/>
+				<field name="doubtfulCustomerOk" readonly="true" showIf="doubtfulCustomerOk"/>
+				<field name="usherPassageOk" onChange="save,com.axelor.apps.account.web.InvoiceController:usherProcess"/>
+				<field name="oldMove" showIf="oldMove"/>
+				<group name="irrecoverableGroup" title="Irrecoverable" colSpan="6" cols="4" canCollapse="true">
+					<field name="irrecoverableStateSelect"/>
+					<field name="managementObject"/>
+					<button name="passInIrrecoverable" title="Shift to irrecoverable" colSpan="2" onClick="com.axelor.apps.account.web.InvoiceController:passInIrrecoverable"/>
+					<button name="notPassInIrrecoverable" title="Do not shit into irrecoverable" colSpan="2" onClick="com.axelor.apps.account.web.InvoiceController:notPassInIrrecoverable"/>
+				</group>
             </page>
             <page title="Blockings" cols="6" showIf="status.code == 'dis'">
                 <field name="debitBlockingOk"/>
@@ -98,7 +100,11 @@
                 </group>
             </page>
             <page name="paymentPage" title="Payment" cols="4" showIf="status.code == 'dis'">
-            	<group name="directDebitGroup" title="Direct debit" colSpan="4" cols="4">
+            	<group name="paymentScheduleGroup" title="Payment schedule" colSpan="4">
+						<field name="schedulePaymentOk" readonly="true" showIf="schedulePaymentOk"/>
+						<field name="paymentSchedule" readonly="true" showIf="schedulePaymentOk"/>
+				</group>
+				<group name="directDebitGroup" title="Direct debit" colSpan="4" cols="4">
 	                <field name="debitNumber"/>
 	           		<field name="directDebitManagement" form-view="direct-debit-management-form-invoice"/>
 	                <field name="paymentMove"/>
@@ -108,13 +114,6 @@
    					<field name="rejectDate"/>
    					<field name="interbankCodeLine"/>
 				</group>
-   				<field name="usherPassageOk" onChange="save,com.axelor.apps.account.web.InvoiceController:usherProcess"/>
-   				<group name="irrecoverableGroup" title="Irrecoverable" colSpan="6" cols="4" canCollapse="true">
-        			<field name="irrecoverableStateSelect"/>
-       				<field name="managementObject"/>
-       				<button name="passInIrrecoverable" title="Shift to irrecoverable" colSpan="2" onClick="com.axelor.apps.account.web.InvoiceController:passInIrrecoverable"/>
-       				<button name="notPassInIrrecoverable" title="Do not shit into irrecoverable" colSpan="2" onClick="com.axelor.apps.account.web.InvoiceController:notPassInIrrecoverable"/>
-        		</group>
             </page>
             <page title="Notes" cols="4" colSpan="4">
     			<field name="note" colSpan="4" showTitle="false"/>
