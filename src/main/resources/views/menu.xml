@@ -83,11 +83,11 @@
 	<menuitem name="sc-root-sales" title="Sales" priority="150"
 		icon="img/32px/order_32px.png" groups="admins,erp,crm"/>
 			
-	<menuitem name="sc-root-sales-new-so" title="New Sale order" priority="2"
+	<menuitem name="sc-root-sales-new-so" title="New Sale order" priority="2" icon="img/16px/create_Yellow16px.png"
 		 groups="admins,erp" action="sc.root.sales.new.so" parent="sc-root-sales"/>
 		
 	<action-view name="sc.root.sales.new.so" title="New Sale order"
-		model="com.axelor.apps.supplychain.db.SalesOrder" icon="img/16px/orderSmall_16px.png">
+		model="com.axelor.apps.supplychain.db.SalesOrder" icon="img/16px/create_Yellow16px.png">
 		<view type="form" name="sales-order-form"/>
 		<view type="grid" name="sales-order-grid"/>
 		<view-param name="search-filters" value="sales-order-filters"/>
@@ -108,10 +108,10 @@
 	</action-view>	
 	
 	
-	<menuitem name="sc-root-purchases" title="Purchases" priority="150"
+	<menuitem name="sc-root-purchases" title="Purchases" priority="150" 
 		icon="img/32px/order_32px.png" groups="admins,erp"/>
 		
-	<menuitem name="sc-root-purchase-order-new" title="New Purchase order" priority="2"
+	<menuitem name="sc-root-purchase-order-new" title="New Purchase order" priority="2" icon="img/16px/create_Yellow16px.png"
 		groups="admins,erp" action="sc.root.purchase.order.new" parent="sc-root-purchases"/>
 		
 	<action-view name="sc.root.purchase.order.new" title="New Purchase order"
