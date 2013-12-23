@@ -30,10 +30,9 @@
  */
 package com.axelor.apps.account.service.invoice.workflow.ventilate;
 
-import java.math.BigDecimal;
-
 import org.joda.time.LocalDate;
 
+import com.axelor.apps.account.db.IInvoice;
 import com.axelor.apps.account.db.IPaymentCondition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
@@ -162,11 +161,31 @@ public class VentilateState extends WorkflowInvoice {
 	 */
 	protected void setInvoiceId( ) throws AxelorException{
 		
-		if(invoice.getInTaxTotal().compareTo(BigDecimal.ZERO) == -1) {
-			invoice.setInvoiceId(SequenceService.getSequence(IAdministration.CUSTOMER_REFUND, invoice.getCompany(), false));
-		}
-		else { 
+		switch (invoice.getOperationTypeSelect()) {
+		
+				
+		case IInvoice.SUPPLIER_PURCHASE:
+			
+			invoice.setInvoiceId(SequenceService.getSequence(IAdministration.SUPPLIER_INVOICE, invoice.getCompany(), false));
+			break;
+			
+		case IInvoice.SUPPLIER_REFUND:
+			
+			invoice.setInvoiceId(SequenceService.getSequence(IAdministration.SUPPLIER_REFUND, invoice.getCompany(), false));
+			break;
+
+		case IInvoice.CLIENT_SALE:
+			
 			invoice.setInvoiceId(SequenceService.getSequence(IAdministration.CUSTOMER_INVOICE, invoice.getCompany(), false));
+			break;
+			
+		case IInvoice.CLIENT_REFUND:
+				
+			invoice.setInvoiceId(SequenceService.getSequence(IAdministration.CUSTOMER_REFUND, invoice.getCompany(), false));
+			break;
+			
+		default:
+			break;
 		}
 		
 		if (invoice.getInvoiceId() == null) {
