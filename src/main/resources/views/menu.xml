@@ -25,7 +25,7 @@
 	</action-view>	
 		
 <!-- 	title-f="Nouveau message" -->
-	<menuitem name="mail-root-email-new" parent="mail-root-email-box" title="New email" action="mail.root.email.new"/>	
+	<menuitem name="mail-root-email-new" parent="mail-root-email-box" title="New email" icon="img/16px/create_16px.png" action="mail.root.email.new"/>	
 		
 <!-- 	title-f="Nouveau message -->
 	<action-view name="mail.root.email.new" title="New email"
