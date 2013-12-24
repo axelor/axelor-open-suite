@@ -111,8 +111,9 @@ public class ProjectController {
 		AxelorSettings axelorSettings = AxelorSettings.get();
 
 		MetaUser metaUser = MetaUser.findByUser( AuthUtils.getUser());
-		
-		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Project.rptdesign&__format="+project.getExportTypeSelect()+"&Locale="+metaUser.getLanguage()+"&ProjectId="+project.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
+		String language = metaUser != null? (metaUser.getLanguage() == null || metaUser.getLanguage().equals(""))? "en" : metaUser.getLanguage() : "en"; 
+
+		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Project.rptdesign&__format="+project.getExportTypeSelect()+"&Locale="+language+"&ProjectId="+project.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
 
 		String urlNotExist = URLService.notExist(url.toString());
 		if (urlNotExist == null){

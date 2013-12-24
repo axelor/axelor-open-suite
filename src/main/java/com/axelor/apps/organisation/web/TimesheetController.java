@@ -113,7 +113,7 @@ public class TimesheetController {
 		StringBuilder url = new StringBuilder();
 		AxelorSettings axelorSettings = AxelorSettings.get();
 		String language = timesheet.getUserInfo().getPartner().getLanguageSelect() != null? timesheet.getUserInfo().getPartner().getLanguageSelect() : timesheet.getUserInfo().getActiveCompany().getPrintingSettings().getLanguageSelect() != null ? timesheet.getUserInfo().getActiveCompany().getPrintingSettings().getLanguageSelect() : "en" ; 
-		language = language == ""? "en": language;
+		language = language.equals("")? "en": language;
 		
 		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Timesheet.rptdesign&__format=pdf&TimesheetId="+timesheet.getId()+"&Locale="+language+axelorSettings.get("axelor.report.engine.datasource"));
 
