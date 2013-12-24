@@ -74,6 +74,8 @@ public interface IAdministration {
 	static final String INVENTORY = "inventory";
 	static final String PARTNER = "partner";
 	static final String MOVE = "move";
+	static final String SUPPLIER_INVOICE = "supplierInvoice";
+	static final String SUPPLIER_REFUND = "supplierRefund";
 	static final String CUSTOMER_INVOICE = "customerInvoice";
 	static final String INVOICE_DRAFT = "invoiceDraft";
 	static final String TERM_INVOICE = "termInvoice";

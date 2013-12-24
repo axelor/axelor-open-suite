@@ -443,6 +443,15 @@
 		<view type="grid" name="company-grid"/>
 		<view type="form" name="company-form"/>
 	</action-view>
+	
+	<menuitem name="admin-root-import-permission" parent="admin-root-user"
+		title="Import permissions" action="admin.root.import.permission" />
+
+	<action-view name="admin.root.import.permission" title="Import permissions"
+		model="com.axelor.apps.base.db.Import" >
+		<view type="grid" name="import-permission-grid"/>
+		<view type="form" name="import-permission-form"/>
+	</action-view>
 
 	<menuitem name="admin-root-templating" parent="admin-root"
 		title="Templating"/>
