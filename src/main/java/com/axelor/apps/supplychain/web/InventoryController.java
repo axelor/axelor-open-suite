@@ -74,7 +74,9 @@ public class InventoryController {
 		AxelorSettings axelorSettings = AxelorSettings.get();
 
 		MetaUser metaUser = MetaUser.findByUser(AuthUtils.getUser());
-		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Inventory.rptdesign&__format="+((format == 1) ? "pdf":(format == 2) ? "xls":"pdf")+"&InventoryId="+inventory.getId()+"&Locale="+metaUser.getLanguage()+axelorSettings.get("axelor.report.engine.datasource"));
+		String language = metaUser != null? (metaUser.getLanguage() == null || metaUser.getLanguage().equals(""))? "en" : metaUser.getLanguage() : "en"; 
+
+		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Inventory.rptdesign&__format="+((format == 1) ? "pdf":(format == 2) ? "xls":"pdf")+"&InventoryId="+inventory.getId()+"&Locale="+language+axelorSettings.get("axelor.report.engine.datasource"));
 		
 		LOG.debug("URL : {}", url);
 		String urlNotExist = URLService.notExist(url.toString());

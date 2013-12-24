@@ -18,6 +18,7 @@
         <field name="company"/>
         <field name="partner"/>
         <field name="statusSelect"/>
+         <button name="printStockMove" title=" Print" icon="icon-print" onClick="action-print-stock-move"/>
         <button name="viewDirection" icon="img/16px/link_16px.png" help="View Direction" onClick="com.axelor.apps.supplychain.web.StockMoveController:viewDirection" />
     </grid>
     

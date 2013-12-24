@@ -127,7 +127,15 @@ public class StockMoveController {
 		if(!stockMoveIds.equals("")){
 			StringBuilder url = new StringBuilder();			
 			AxelorSettings axelorSettings = AxelorSettings.get();
-			String language = stockMove.getPartner().getLanguageSelect() != null? stockMove.getPartner().getLanguageSelect() : stockMove.getCompany().getPrintingSettings().getLanguageSelect() != null ? stockMove.getCompany().getPrintingSettings().getLanguageSelect() : "en" ; 
+			
+			String language="";
+			try{
+				language = stockMove.getPartner().getLanguageSelect() != null? stockMove.getPartner().getLanguageSelect() : stockMove.getCompany().getPrintingSettings().getLanguageSelect() != null ? stockMove.getCompany().getPrintingSettings().getLanguageSelect() : "en" ;
+			}catch (NullPointerException e) {
+				language = "en";
+			}
+			language = language.equals("")? "en": language;
+
 			url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/StockMove.rptdesign&__format=pdf&Locale="+language+stockMoveIds+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
 
 			LOG.debug("URL : {}", url);
