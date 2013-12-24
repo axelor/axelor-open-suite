@@ -1492,6 +1492,13 @@ LangTranslate.domain = 'axelor-account' and LangTranslate.type = 'other']]></xml
                     <property name="dataType">string</property>
                 </structure>
             </list-property>
+            <list-property name="sort">
+                <structure>
+                    <expression name="key" type="javascript">row["invoice_id"]</expression>
+                    <property name="direction">asc</property>
+                    <property name="strength">-1</property>
+                </structure>
+            </list-property>
             <column id="3684"/>
             <detail>
                 <row id="3680">
@@ -2982,6 +2989,12 @@ row["PartnerFirstName"]
                                 <cell id="3487"/>
                             </row>
                             <row id="3488">
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">row["note"] == null</expression>
+                                    </structure>
+                                </list-property>
                                 <cell id="3489">
                                     <property name="colSpan">2</property>
                                     <property name="rowSpan">1</property>
@@ -2993,6 +3006,7 @@ row["PartnerFirstName"]
                                         <property name="fontWeight">bold</property>
                                         <property name="color">#606062</property>
                                         <property name="dataSet">TranslateDS</property>
+                                        <list-property name="visibility"/>
                                         <list-property name="paramBindings">
                                             <structure>
                                                 <property name="paramName">param_1</property>
