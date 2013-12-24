@@ -1,0 +1,4 @@
+"name","object","read","write","delete","create","export","group"
+"Topic","com.axelor.apps.organisation.db.Topic","true",,,,,"OPTS"
+"Topic Managment","com.axelor.apps.organisation.db.Topic","true","true","true","true","true","MNGT"
+"Sale","com.axelor.apps.supplychain.db.SalesOrder","true","true","true","true","true","SALE|MNGT"
