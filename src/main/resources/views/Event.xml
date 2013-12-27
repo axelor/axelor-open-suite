@@ -342,10 +342,10 @@
     
     
 	<grid name="ticket-grid" title="Ticket" model="com.axelor.apps.crm.db.Event" orderBy="ticketNumberSeq" >
-	    <hilite background="info" if="prioritySelect == 1 &amp;&amp; ticketStatusSelect != 5" />
-        <hilite background="warning" if="prioritySelect == 4 &amp;&amp; ticketStatusSelect != 5" />
-        <hilite background="danger" if="prioritySelect == 5 &amp;&amp; ticketStatusSelect != 5" />
-        <hilite background="success" if="ticketStatusSelect == 5" />
+	    <hilite color="info" if="prioritySelect == 1 &amp;&amp; ticketStatusSelect != 5" />
+        <hilite color="warning" if="prioritySelect == 4 &amp;&amp; ticketStatusSelect != 5" />
+        <hilite color="danger" if="prioritySelect == 5 &amp;&amp; ticketStatusSelect != 5" />
+        <hilite color="success" if="ticketStatusSelect == 5" />
 	    <field name="ticketNumberSeq"/>
 	    <field name="subject"/>
 	    <field name="eventCategory"/>
@@ -502,7 +502,7 @@
     </action-record>
     
     <action-record name="action-event-record-default-duration" model="com.axelor.apps.crm.db.Event">
-    	<field name="duration" expr="100"/>
+    	<field name="duration" expr="3600"/>
     </action-record>
     
     <action-group name="action-event-new-record">
