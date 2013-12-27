@@ -12,6 +12,10 @@
 		<field name="probability"/>
         <field name="expectedCloseDate"/>
         <field name="userInfo"/>
+        <button name="previous-stage" icon="icon-chevron-sign-left" help="Previous Stage" onClick="action-opportunity-set-previous-stage,action-opportunity-save-sales-stage-select" readonlyIf="salesStageSelect &lt; 2" />
+        <button name="next-stage" icon="icon-chevron-sign-right" help="Next Stage" onClick="action-opportunity-set-next-stage,action-opportunity-save-sales-stage-select" readonlyIf="salesStageSelect &gt; 7" />
+        <button name="closed-won" icon="icon-ok-sign" help="Closed won" onClick="action-opportunity-set-closed-won,action-opportunity-save-sales-stage-select" readonlyIf="salesStageSelect &gt; 8" />
+        <button name="closed-lost" icon="icon-minus-sign" help="Closed lost" onClick="action-opportunity-set-closed-lost,action-opportunity-save-sales-stage-select" readonlyIf="salesStageSelect &gt; 8" />
     </grid>
 	
    <grid groupBy="partner" name="opportunity-grid-group" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity">
@@ -36,26 +40,32 @@
     </grid>
 	 
     <form cols="6" onNew="action-opportunity-group-new" name="opportunity-form" title="Opportunity" model="com.axelor.apps.crm.db.Opportunity">
+    	<toolbar>
+    		<button name="previous-stage" icon="icon-chevron-sign-left" help="Previous Stage" onClick="action-opportunity-set-previous-stage,save" readonlyIf="salesStageSelect &lt; 2" />
+        	<button name="next-stage" icon="icon-chevron-sign-right" help="Next Stage" onClick="action-opportunity-set-next-stage,save" readonlyIf="salesStageSelect &gt; 7" />
+        	<button name="closed-won" icon="icon-ok-sign" help="Closed won" onClick="action-opportunity-set-closed-won,save" readonlyIf="salesStageSelect &gt; 8" />
+        	<button name="closed-lost" icon="icon-minus-sign" help="Closed lost" onClick="action-opportunity-set-closed-lost,save" readonlyIf="salesStageSelect &gt; 8" />
+    	</toolbar>
 		<group colSpan="4" cols="4">
-			<group title="Context" colSpan="4" cols="4">
+			<group title="Context" colSpan="4" cols="4" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10">
 				<field name="name"/>
 				<field name="opportunityType" widget="SuggestBox"/>
 			</group>
 			<group title="Follow-up" colSpan="4" cols="4">
 				<field name="salesStageSelect"/>
-				<field name="source"/>
-				<field name="nextStep"/>
-				<field name="expectedCloseDate"/>
-				<field name="probability"/>   
+				<field name="source" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10" />
+				<field name="nextStep" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10" />
+				<field name="expectedCloseDate" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10" />
+				<field name="probability" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10"/>   
 			</group>
-			<group title="Financial terms" colSpan="2" cols="4">
+			<group title="Financial terms" colSpan="2" cols="4" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10">
 				<field name="amount"/>
 				<field name="currency"/>
 				<field name="bestCase"/>
 				<field name="worstCase"/>
 			</group>
 		</group>
-		<group colSpan="2" cols="2">
+		<group colSpan="2" cols="2" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10">
 			<group title="Linked to" colSpan="2" cols="2">
 					<field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
 					<field name="lead"/>
@@ -68,7 +78,7 @@
 			</group>
 		</group>
 		<separator title="Description" colSpan="6"/>
-		<field name="description" colSpan="6" showTitle="false"/>
+		<field name="description" colSpan="6" showTitle="false" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10"/>
 	</form>
     
     <action-group name="action-opportunity-group-new">
@@ -131,5 +141,26 @@
 			<domain>self.team = :_myActiveTeam</domain>
 		</filter>
 	</search-filters>
+	
+	<action-record name="action-opportunity-set-previous-stage" model="com.axelor.apps.crm.db.Opportunity">
+		<field name="salesStageSelect" expr="eval: salesStageSelect > 8 ? 8 : salesStageSelect-1 "/>
+	</action-record>
+	
+	<action-record name="action-opportunity-set-next-stage" model="com.axelor.apps.crm.db.Opportunity">
+		<field name="salesStageSelect" expr="eval: salesStageSelect+1"/>
+	</action-record>
+	
+	<action-record name="action-opportunity-set-closed-won" model="com.axelor.apps.crm.db.Opportunity">
+		<field name="salesStageSelect" expr="eval:9"/>
+	</action-record>
+	
+	<action-record name="action-opportunity-set-closed-lost" model="com.axelor.apps.crm.db.Opportunity">
+		<field name="salesStageSelect" expr="eval:10"/>
+	</action-record>
+	
+	<action-method name="action-opportunity-save-sales-stage-select">
+    	<call class="com.axelor.apps.crm.web.OpportunityController" method="saveOpportunitySalesStage" />
+    </action-method>
+	
 	
 </object-views>
