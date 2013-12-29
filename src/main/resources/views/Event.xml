@@ -163,8 +163,8 @@
 	        <group colSpan="4" css="groupTitle" cols="6" colWidths="25*">
 	            <separator title="Dates" colSpan="6"/>
 	            <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time"/>
+				<field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration"/>
 	            <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time"/>
-	            <field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration"/>
 	        </group>
 	    </group>
 	    <group colSpan="1" cols="2">
@@ -287,6 +287,7 @@
     <grid name="crm-task-grid" title="Tasks" model="com.axelor.apps.crm.db.Event" orderBy="-startDateTime">
 	    <field name="subject"/>
 	    <field name="contactPartner"/>
+		<field name="startDateTime"/>
 	    <field name="endDateTime"/>
 	    <field name="taskStatusSelect"/>    
 	    <field name="prioritySelect"/>
