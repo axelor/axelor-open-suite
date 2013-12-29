@@ -6,7 +6,9 @@
     <grid name="account-management-grid" title="Account management list" model="com.axelor.apps.account.db.AccountManagement">
     	<field name="typeSelect" />
         <field name="company"/>
-        <field name="account"/>
+		<field name="saleAccount"/>
+        <field name="purchaseAccount"/>
+		<field name="cashAccount"/>
     </grid>
     
     <form name="account-management-form" title="Account management" model="com.axelor.apps.account.db.AccountManagement" cols="4"
@@ -35,9 +37,9 @@
     </form>
     
     <grid name="account-management-product-grid" title="Account management" model="com.axelor.apps.account.db.AccountManagement">
-        <field name="saleVat"/>
         <field name="company"/>
-        <field name="saleAccount"/>
+		<field name="saleAccount"/>
+		<field name="saleVat"/>
         <field name="purchaseAccount"/>
         <field name="purchaseVat"/>
     </grid>
