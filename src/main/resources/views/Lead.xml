@@ -21,18 +21,18 @@
     onNew="action-account-record-new,action-lead-default-record-new" 
     onLoad="action-lead-attrs-readonly-other-address">
 	    <toolbar>
-	        <button name="convertLead" title="Convert lead" hideIf="statusSelect == 4" onClick="save,action-lead-view-convert-lead"/>
-	        <button name="sendByEmail" title="Send email" icon="icon-envelope" onClick="save,action-send-by-email-with-template"/>
+	        <button name="convertLead" title="Convert lead" hideIf="statusSelect == 4" onClick="save,action-lead-view-convert-lead" readonlyIf="statusSelect == 4 || statusSelect == 6"/>
+	        <button name="sendByEmail" title="Send email" icon="icon-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="statusSelect == 4 || statusSelect == 6"/>
 	    </toolbar>
 	    <menubar>
-	        <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true">
+	        <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true" >
 	            <item title="Create call" action="save,action-lead-view-create-call"/>
 	            <item title="Schedule meeting" action="save,action-lead-view-create-meeting"/>
 	            <item title="Create task" action="save,action-lead-view-create-task"/>
 	            <item title="Create opportunity" action="save,action-lead-view-create-opportunity"/>
 	        </menu>
 	    </menubar>
-	    <group colSpan="6" cols="6">
+	    <group colSpan="6" cols="6" readonlyIf="statusSelect == 4 || statusSelect == 6">
 	        <group colSpan="1" cols="1">
 	            <field name="picture" widget="image" showTitle="false"/>
 	        </group>
@@ -68,15 +68,15 @@
 	        </group>  
          </group>  
 	    <notebook colSpan="4">
-	        <page name="information" title="Informations">
-		        <group title="Primary address" colSpan="2" cols="2">
+	        <page name="information" title="Informations" >
+		        <group title="Primary address" colSpan="2" cols="2" readonlyIf="statusSelect == 4 || statusSelect == 6">
 		            <field name="primaryAddress"/>
 		            <field name="primaryCity"/>
 		            <field name="primaryState"/>
 		            <field name="primaryPostalCode"/>
 		            <field name="primaryCountry"/>
 		        </group>
-		        <group title="Other address" colSpan="2" cols="2">
+		        <group title="Other address" colSpan="2" cols="2" readonlyIf="statusSelect == 4 || statusSelect == 6">
 		            <field name="otherAddress"/>
 		            <field name="otherCity"/>
 		            <field name="otherState"/>
@@ -84,30 +84,30 @@
 		            <field name="otherCountry"/>
 		            <field name="isCopyAddress" onChange="action-lead-record-other-address,action-lead-attrs-readonly-other-address"/>
 		        </group>
-		        <group title="Extra information" colSpan="4" css="groupTitle" cols="6">
+		        <group title="Extra information" colSpan="4" css="groupTitle" cols="6" readonlyIf="statusSelect == 4 || statusSelect == 6">
 		            <field name="officeName"/>
 		            <field name="department"/>
 		            <field name="webSite"/>
 		            <field name="description" colSpan="6" widget="TEXT[height=3]"/>
 		        </group>
 		        <break/>
-		        <group title="Status details" colSpan="2" css="groupTitle" cols="2">
+		        <group title="Status details" colSpan="2" css="groupTitle" cols="2" >
 		            <field name="statusSelect"/>
 		            <field name="statusDescription"/>
 		        </group>
-		        <group title="Source details" colSpan="2" css="groupTitle" cols="2">
+		        <group title="Source details" colSpan="2" css="groupTitle" cols="2" readonlyIf="statusSelect == 4 || statusSelect == 6">
 		            <field name="source"/>
 		            <field name="sourceDescription"/>
 		        </group>
-		        <group title="Marketing" colSpan="4" css="groupTitle" cols="6">
+		        <group title="Marketing" colSpan="4" css="groupTitle" cols="6" readonlyIf="statusSelect == 4 || statusSelect == 6">
 		            <field name="campaign"/>
 		            <field name="referredBy"/>
 		            <field name="isDoNotCall"/>
 		            <field name="isDoNotSendEmail"/>
 		        </group>
-		        <field name="opportunityAmount"/>
+		        <field name="opportunityAmount" readonlyIf="statusSelect == 4 || statusSelect == 6" />
 		   </page>
-	    	<page name="activities" title="Activities" >
+	    	<page name="activities" title="Activities" readonlyIf="statusSelect == 4 || statusSelect == 6">
 		        <portlet colSpan="4" action="action-lead-view-upcoming-events"/>
 		        <portlet colSpan="4" action="action-lead-view-historical-events-completed"/>
 		        <portlet colSpan="4" action="action-lead-view-opportunity"/>

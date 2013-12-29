@@ -154,7 +154,7 @@
     		<button name="accept" icon="icon-ok" help="Validate" onClick="action-set-status-select-2,save" readonlyIf="statusSelect &gt; 1" />
 	    	<button name="cancel" icon="icon-remove-sign" help="Cancel" onClick="action-set-status-select-3,save" readonlyIf="statusSelect &gt; 2"/>
     	</toolbar>
-	    <group colSpan="1" cols="4">
+	    <group colSpan="1" cols="4" readonlyIf="statusSelect == 2">
 	        <separator title="Subject" colSpan="4" hideIf="$readonly()"/>
 	        <field name="subject" showTitle="false" colSpan="4" css="highlight" placeholder="Subject"/>
 	        <separator title="Description" colSpan="4"/>
@@ -169,10 +169,10 @@
 	    </group>
 	    <group colSpan="1" cols="2">
 	        <group title="Attributes" colSpan="2" cols="3" colWidths="20%,40%,40%">
-	            <field name="callStatusSelect" colSpan="2"/>
+	            <field name="callStatusSelect" colSpan="2" readonlyIf="statusSelect == 2"/>
 	            <field name="statusSelect" showTitle="false" colSpan="1"/>
 	        </group>
-	        <group title="Linked to" colSpan="2" cols="2">
+	        <group title="Linked to" colSpan="2" cols="2" readonlyIf="statusSelect == 2">
 	            <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
 	            <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 	            <field name="lead"/>
@@ -181,11 +181,11 @@
 	    </group>
 	    <spacer/>
 	    <break/>
-	    <group title="Assigned to" colSpan="2" cols="4" canCollapse="true">
+	    <group title="Assigned to" colSpan="2" cols="4" canCollapse="true" readonlyIf="statusSelect == 2">
 	        <field name="userInfo"/>
 	        <field name="team" onSelect="action-event-attrs-team-domain"/>
 	    </group>
-	    <group colSpan="2" cols="2">
+	    <group colSpan="2" cols="2" readonlyIf="statusSelect == 2">
 	        <group title="Reminders" colSpan="1" cols="2">
 	                <field name="eventReminderList" showTitle="false" colSpan="2" widget="MasterDetail"/>
 	        </group>
@@ -230,7 +230,7 @@
     		<button name="accept" icon="icon-ok" help="Validate" onClick="action-set-status-select-2,save" readonlyIf="statusSelect &gt; 1"/>
 	    	<button name="cancel" icon="icon-remove-sign" help="Cancel" onClick="action-set-status-select-3,save" readonlyIf="statusSelect &gt; 2"/>
     	</toolbar>
-	    <group colSpan="1" cols="4">
+	    <group colSpan="1" cols="4" readonlyIf="statusSelect == 2">
 	        <separator title="Subject" colSpan="4" hideIf="$readonly()"/>
 	        <field name="subject" showTitle="false" colSpan="4" css="highlight" placeholder="Subject"/>
 	        <separator title="Location" colSpan="4"/>
@@ -251,9 +251,9 @@
 	    <group colSpan="1" cols="2">
 	        <group title="Attributes" colSpan="2" cols="2" colWidths="10%,90%">
 	            <field name="statusSelect"/>
-	            <field name="meetingType" widget="SuggestBox"/>
+	            <field name="meetingType" widget="SuggestBox" readonlyIf="statusSelect == 2"/>
 	        </group>
-	        <group title="Linked to" colSpan="2" cols="2">
+	        <group title="Linked to" colSpan="2" cols="2" readonlyIf="statusSelect == 2">
 	            <field name="clientPartner" form-view="partner-form" grid-view="partner-grid" onChange="action-meeting-set-location-partner"/>
 	            <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid" onChange="action-meeting-set-location-contact"/>
 	            <field name="lead" onChange="action-meeting-set-location-lead"/>
@@ -262,11 +262,11 @@
 	    </group>
 	    <spacer/>
 	    <break/>
-	    <group title="Assigned to" colSpan="2" cols="4" canCollapse="true">
+	    <group title="Assigned to" colSpan="2" cols="4" canCollapse="true" readonlyIf="statusSelect == 2">
 	        <field name="userInfo"/>
 	        <field name="team" onSelect="action-event-attrs-team-domain"/>
 	    </group>
-	    <group colSpan="2" cols="2">
+	    <group colSpan="2" cols="2" readonlyIf="statusSelect == 2">
 	        <group title="Reminders" colSpan="1" cols="2">
 	                <field name="eventReminderList" showTitle="false" colSpan="2" widget="MasterDetail"/>
 	        </group>
@@ -303,7 +303,7 @@
 	    	<button name="pause" icon="icon-pause" help="Pause" onClick="action-set-task-status-select-4,save" readonlyIf="taskStatusSelect == 4 || taskStatusSelect == 3"/>
 	    	<button name="accept" icon="icon-off" help="Finish" onClick="action-set-task-status-select-3,save" readonlyIf="taskStatusSelect == 3"/>
     	</toolbar>
-	    <group colSpan="1" cols="4">
+	    <group colSpan="1" cols="4" readonlyIf="taskStatusSelect == 3">
 	        <separator title="Subject" colSpan="4"/>
 	        <field name="subject" showTitle="false" placeholder="Subject" />
 	        <separator title="Location" colSpan="4"/>
@@ -321,9 +321,9 @@
 	    <group colSpan="1" cols="2">
 	        <group title="Attributes" colSpan="2" cols="2" colWidths="10%,90%">
 	            <field name="taskStatusSelect"/>
-	            <field name="prioritySelect"/>
+	            <field name="prioritySelect" readonlyIf="taskStatusSelect == 3"/>
 	        </group>
-	        <group title="Linked to" colSpan="2" cols="2">
+	        <group title="Linked to" colSpan="2" cols="2" readonlyIf="taskStatusSelect == 3">
 	            <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
 	            <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 	            <field name="lead"/>
@@ -332,21 +332,21 @@
 	    </group>
 	    <spacer/>
 	    <break/>
-	    <group title="Assigned to" colSpan="2" cols="4" canCollapse="true">
+	    <group title="Assigned to" colSpan="2" cols="4" canCollapse="true" readonlyIf="taskStatusSelect == 3">
 	        <field name="userInfo"/>
 	        <field name="team" onSelect="action-event-attrs-team-domain"/>
 	    </group>
-	    <group title="Reminders" colSpan="4" cols="2">
+	    <group title="Reminders" colSpan="4" cols="2"  readonlyIf="taskStatusSelect == 3">
 	            <field name="eventReminderList" showTitle="false" colSpan="2" widget="MasterDetail"/>
 	    </group>
 	</form>
     
     
 	<grid name="ticket-grid" title="Ticket" model="com.axelor.apps.crm.db.Event" orderBy="ticketNumberSeq" >
-	    <hilite background="info" if="prioritySelect == 1 &amp;&amp; ticketStatusSelect != 5" />
-        <hilite background="warning" if="prioritySelect == 4 &amp;&amp; ticketStatusSelect != 5" />
-        <hilite background="danger" if="prioritySelect == 5 &amp;&amp; ticketStatusSelect != 5" />
-        <hilite background="success" if="ticketStatusSelect == 5" />
+	    <hilite color="info" if="prioritySelect == 1 &amp;&amp; ticketStatusSelect != 5" />
+        <hilite color="warning" if="prioritySelect == 4 &amp;&amp; ticketStatusSelect != 5" />
+        <hilite color="danger" if="prioritySelect == 5 &amp;&amp; ticketStatusSelect != 5" />
+        <hilite color="success" if="ticketStatusSelect == 5" />
 	    <field name="ticketNumberSeq"/>
 	    <field name="subject"/>
 	    <field name="eventCategory"/>
@@ -365,7 +365,12 @@
     onLoad="action-event-ticket-attrs-default" 
     onSave="action-event-set-sequence" 
     onNew="action-event-new-record,action-event-ticket-attrs-default">
-	    <group colSpan="1" cols="4">
+    	<toolbar>
+    		<button name="start" icon="icon-play" help="Start" onClick="action-set-ticket-status-select-2,save" readonlyIf="ticketStatusSelect &gt; 1"/>
+	    	<button name="accept" icon="icon-ok" help="Validate" onClick="action-set-ticket-status-select-3,save" readonlyIf="ticketStatusSelect &gt; 2"/>
+	    	<button name="stop" icon="icon-off" help="Finish" onClick="action-set-ticket-status-select-5,save" readonlyIf="ticketStatusSelect &gt; 4" />
+    	</toolbar>
+	    <group colSpan="1" cols="4" readonlyIf="ticketStatusSelect == 5">
 	        <group colSpan="2" cols="2" colWidths="100,*">
 	            <separator title="Ticket N°" colSpan="1" hideIf="$readonly()"/>
 	            <separator title="Subject" colSpan="1" hideIf="$readonly()"/>
@@ -389,21 +394,21 @@
 	    <group colSpan="1" cols="2">
 	        <group title="Attributes" colSpan="2" cols="2" colWidths="10%,90%">
 	            <field name="ticketStatusSelect"/>
-	            <field name="prioritySelect"/>
-	            <field name="progressSelect" widget="SelectProgress"/>
+	            <field name="prioritySelect" readonlyIf="ticketStatusSelect == 5"/>
+	            <field name="progressSelect" widget="SelectProgress" readonlyIf="ticketStatusSelect == 5"/>
 	        </group>
-	        <group title="Linked to" colSpan="2" cols="2">
+	        <group title="Linked to" colSpan="2" cols="2" readonlyIf="ticketStatusSelect == 5">
 	            <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
 	            <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 	        </group>
 	    </group>
 	    <spacer/>
 	    <break/>
-	    <notebook colSpan="6">
-	        <page title="Description">
+	    <notebook colSpan="6"  >
+	        <page title="Description" readonlyIf="ticketStatusSelect == 5">
 	            <field name="description" showTitle="false" colSpan="6" widget="Html[lite=true]"/>
 	        </page>
-	        <page title="Comments">
+	        <page title="Comments" readonlyIf="ticketStatusSelect == 5">
 	            <field name="messageList" showTitle="false" colSpan="6">
                      <grid title="Comments">
                         <field name="sentDate"/>
@@ -421,7 +426,7 @@
 	                </form>
 	            </field>
 	        </page>
-	        <page title="Watchers">
+	        <page title="Watchers" readonlyIf="ticketStatusSelect == 5">
 	            <field name="userInfoSet" showTitle="false" colSpan="6" widget="TagSelect" onSelect="action-event-attrs-watchers-domain"/>
 	        </page>
 	    </notebook>
@@ -498,7 +503,7 @@
     </action-record>
     
     <action-record name="action-event-record-default-duration" model="com.axelor.apps.crm.db.Event">
-    	<field name="duration" expr="100"/>
+    	<field name="duration" expr="3600"/>
     </action-record>
     
     <action-group name="action-event-new-record">
