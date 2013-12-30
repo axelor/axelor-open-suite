@@ -431,11 +431,11 @@
 		<view type="form" />
 	</action-view>
 	
-	<menuitem name="account-conf-financial-vat" parent="account-conf-financial"
-		title="V.A.T." action="account.conf.financial.vat" />
+	<menuitem name="account-conf-financial-tax" parent="account-conf-financial"
+		title="V.A.T." action="account.conf.financial.tax" />
 
-	<action-view name="account.conf.financial.vat" title="V.A.T."
-		model="com.axelor.apps.account.db.Vat" icon="img/16px/accountSmall_16px.png">
+	<action-view name="account.conf.financial.tax" title="V.A.T."
+		model="com.axelor.apps.account.db.Tax" icon="img/16px/accountSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
