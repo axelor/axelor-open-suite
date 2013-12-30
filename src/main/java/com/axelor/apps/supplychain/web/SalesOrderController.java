@@ -128,8 +128,15 @@ public class SalesOrderController {
 
 		StringBuilder url = new StringBuilder();
 		AxelorSettings axelorSettings = AxelorSettings.get();
-		String language = salesOrder.getClientPartner().getLanguageSelect() != null? salesOrder.getClientPartner().getLanguageSelect() : salesOrder.getCompany().getPrintingSettings().getLanguageSelect() != null ? salesOrder.getCompany().getPrintingSettings().getLanguageSelect() : "en" ; 
 		
+		String language="";
+		try{
+			language = salesOrder.getClientPartner().getLanguageSelect() != null? salesOrder.getClientPartner().getLanguageSelect() : salesOrder.getCompany().getPrintingSettings().getLanguageSelect() != null ? salesOrder.getCompany().getPrintingSettings().getLanguageSelect() : "en" ; 
+		}catch (NullPointerException e) {
+			language = "en";
+		}
+		language = language.equals("")? "en": language;
+
 		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/SalesOrder.rptdesign&__format=pdf&Locale="+language+"&SalesOrderId="+salesOrder.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
 		LOG.debug("URL : {}", url);
 		String urlNotExist = URLService.notExist(url.toString());
