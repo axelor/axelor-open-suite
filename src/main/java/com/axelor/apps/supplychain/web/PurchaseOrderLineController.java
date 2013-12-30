@@ -120,8 +120,24 @@ public class PurchaseOrderLineController {
 			}
 			catch(Exception e) {
 				response.setFlash(e.getMessage());
+				this.resetProductInformation(response);
 			}
 		}
+		else  {
+			this.resetProductInformation(response);
+		}
+	}
+	
+	
+	public void resetProductInformation(ActionResponse response)  {
+		
+		response.setValue("taxLine", null);
+		response.setValue("productName", null);
+		response.setValue("unit", null);
+		response.setValue("discountAmount", null);
+		response.setValue("discountTypeSelect", null);
+		response.setValue("price", null);
+		
 	}
 	
 	
