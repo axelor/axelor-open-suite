@@ -136,8 +136,9 @@ public class TaskController {
 
 		StringBuilder url = new StringBuilder();
 		AxelorSettings axelorSettings = AxelorSettings.get();
+		String language = metaUser != null? (metaUser.getLanguage() == null || metaUser.getLanguage().equals(""))? "en" : metaUser.getLanguage() : "en"; 
 
-		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Task.rptdesign&__format="+task.getExportTypeSelect()+"&TaskId="+task.getId()+"&Local="+metaUser.getLanguage()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
+		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Task.rptdesign&__format="+task.getExportTypeSelect()+"&TaskId="+task.getId()+"&Local="+language+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
 
 
 		String urlNotExist = URLService.notExist(url.toString());
