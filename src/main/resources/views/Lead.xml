@@ -4,6 +4,12 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
     <grid name="lead-grid" title="Leads" model="com.axelor.apps.crm.db.Lead" orderBy="enterpriseName">
+    	<hilite color="primary" if="statusSelect == 1"/>
+    	<hilite color="warning" if="statusSelect == 1 &amp;&amp; (userInfo == null || contactDate == null) &amp;&amp; $moment(createdOn)  &lt; __time__.minusDays(15)"/>
+    	<hilite color="danger" if="(statusSelect in [2,3] &amp;&amp; $moment(updatedOn) &lt; $moment(__time__.minusDays(15))"/>
+    	<hilite color="success" if="statusSelect == 4"/>
+    	<field name="createdOn" hidden="true"/>
+    	<field name="updatedOn" hidden="true"/>
         <field name="name"/>
         <field name="firstName"/>
 		<field name="enterpriseName"/>
