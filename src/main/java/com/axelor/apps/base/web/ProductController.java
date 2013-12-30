@@ -79,7 +79,7 @@ public class ProductController {
 		}
 
 		MetaUser metaUser = MetaUser.findByUser( AuthUtils.getUser());
-		String language = metaUser.getLanguage() != null? metaUser.getLanguage() : "en"; 
+		String language = metaUser != null? (metaUser.getLanguage() == null || metaUser.getLanguage().equals(""))? "en" : metaUser.getLanguage() : "en"; 
 		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/ProductCatalog_PGQL.rptdesign&Locale="+language+"&__format=pdf"+productIds+"&UserId="+user.getId()+"&CurrYear="+currentYear+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
 		
 		LOG.debug("URL : {}", url);
@@ -108,8 +108,8 @@ public class ProductController {
 	
 		StringBuilder url = new StringBuilder();
 				
-		MetaUser metaUser = MetaUser.findByUser( AuthUtils.getUser());
-		String language = metaUser.getLanguage() != null? metaUser.getLanguage() : "en"; 
+		MetaUser metaUser = MetaUser.findByUser(AuthUtils.getUser());
+		String language = metaUser != null? (metaUser.getLanguage() == null || metaUser.getLanguage().equals(""))? "en" : metaUser.getLanguage() : "en"; 
 		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/ProductSheet.rptdesign&Locale="+language+"&__format=pdf&ProductId="+product.getId()+"&CompanyId="+userInfo.getActiveCompany().getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
 		
 		LOG.debug("URL : {}", url);
@@ -119,7 +119,7 @@ public class ProductController {
 			LOG.debug("Impression des informations sur le partenaire Product "+product.getName());
 			
 			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", "Product Catelog "+product.getCode());
+			mapView.put("title", "Product "+product.getCode());
 			mapView.put("resource", url);
 			mapView.put("viewType", "html");
 			response.setView(mapView);		

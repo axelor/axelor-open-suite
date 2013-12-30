@@ -91,7 +91,7 @@ public class PartnerController {
 
 		StringBuilder url = new StringBuilder();
 		AxelorSettings axelorSettings = AxelorSettings.get();
-		String language = partner.getLanguageSelect() != null? partner.getLanguageSelect() : metaUser.getLanguage();
+		String language = (partner.getLanguageSelect() == null || partner.getLanguageSelect().equals(""))? metaUser != null? (metaUser.getLanguage() == null || metaUser.getLanguage().equals(""))? "en" : metaUser.getLanguage() : "en" : partner.getLanguageSelect(); 
 		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Partner.rptdesign&__format=pdf&Locale="+language+"&PartnerId="+partner.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
 		
 		LOG.debug("URL : {}", url);
@@ -126,8 +126,8 @@ public class PartnerController {
 		StringBuilder url = new StringBuilder();
 		User user = AuthUtils.getUser();
 		MetaUser metaUser = MetaUser.findByUser(user);
-
-		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/PhoneBook.rptdesign&__format=html&Locale="+metaUser.getLanguage()+"&UserId="+user.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
+		String language = metaUser != null? (metaUser.getLanguage() == null || metaUser.getLanguage().equals(""))? "en" : metaUser.getLanguage() : "en"; 
+		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/PhoneBook.rptdesign&__format=html&Locale="+language+"&UserId="+user.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
 		
 		LOG.debug("URL : {}", url);
 		String urlNotExist = URLService.notExist(url.toString());
@@ -161,8 +161,9 @@ public class PartnerController {
 
 		User user = AuthUtils.getUser();
 		MetaUser metaUser = MetaUser.findByUser(user);
+		String language = metaUser != null? (metaUser.getLanguage() == null || metaUser.getLanguage().equals(""))? "en" : metaUser.getLanguage() : "en"; 
 
-		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/CompanyPhoneBook.rptdesign&__format=html&Locale="+metaUser.getLanguage()+"&UserId="+user.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
+		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/CompanyPhoneBook.rptdesign&__format=html&Locale="+language+"&UserId="+user.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
 
 		LOG.debug("URL : {}", url);
 		String urlNotExist = URLService.notExist(url.toString());
@@ -196,8 +197,8 @@ public class PartnerController {
 		StringBuilder url = new StringBuilder();
 		User user = AuthUtils.getUser();
 		MetaUser metaUser = MetaUser.findByUser(user);
-
-		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/ClientSituation.rptdesign&__format=pdf&PartnerId="+partner.getId()+"&Locale="+metaUser.getLanguage()+"&UserId="+user.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
+		String language = (partner.getLanguageSelect() == null || partner.getLanguageSelect().equals(""))? metaUser != null? (metaUser.getLanguage() == null || metaUser.getLanguage().equals(""))? "en" : metaUser.getLanguage() : "en" : partner.getLanguageSelect(); 
+		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/ClientSituation.rptdesign&__format=pdf&PartnerId="+partner.getId()+"&Locale="+language+"&UserId="+user.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
 		
 		LOG.debug("URL : {}", url);
 		String urlNotExist = URLService.notExist(url.toString());
