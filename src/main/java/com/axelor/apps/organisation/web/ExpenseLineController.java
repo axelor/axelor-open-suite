@@ -83,27 +83,37 @@ public class ExpenseLineController {
 
 		ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
 
-		if(expenseLine != null) {
-			Expense expense = expenseLine.getExpense();
-			if(expense == null)  {
-				expense = request.getContext().getParentContext().asType(Expense.class);
+		Expense expense = expenseLine.getExpense();
+		if(expense == null)  {
+			expense = request.getContext().getParentContext().asType(Expense.class);
+		}
+
+		if(expense != null && expenseLine.getProduct() != null) {
+
+			try  {
+				
+				response.setValue("productName", expenseLine.getProduct().getName());
+				response.setValue("unit", expenseLine.getProduct().getUnit());
+				
+				response.setValue("price", expenseLineService.getUnitPrice(expense, expenseLine));
+				
 			}
-
-			if(expense != null && expenseLine.getProduct() != null) {
-
-				try  {
-					
-					response.setValue("productName", expenseLine.getProduct().getName());
-					response.setValue("saleSupplySelect", expenseLine.getProduct().getSaleSupplySelect());
-					response.setValue("unit", expenseLine.getProduct().getUnit());
-					
-					response.setValue("price", expenseLineService.getUnitPrice(expense, expenseLine));
-					
-				}
-				catch(Exception e)  {
-					response.setFlash(e.getMessage()); 
-				}
+			catch(Exception e)  {
+				response.setFlash(e.getMessage()); 
+				this.resetProductInformation(response);
 			}
 		}
+		else {
+			this.resetProductInformation(response);
+		}
+	}
+	
+	
+	public void resetProductInformation(ActionResponse response)  {
+		
+		response.setValue("productName", null);
+		response.setValue("unit", null);
+		response.setValue("price", null);
+		
 	}
 }
