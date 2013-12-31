@@ -1,6 +1,6 @@
-"importId";"name";"name_en_EN";"parent.importId";"company.importId";"partner.importId";"typeSelect"
-1;"Entrepôt principal";"Main Warehouse";;1;90000;1
-2;"Client";"Customer";;1;90000;2
-3;"Fournisseur";"Supplier";;1;90000;2
-4;"Inventaire";"Inventory";;1;90000;3
-5;"Production";"Production";;1;90000;3
+"importId";"name";"name_en_EN";"parent.importId";"company.importId";"partner.importId";"typeSelect";"isDefaultLocation";"address.importId"
+1;"Entrepôt principal";"Main Warehouse";;1;90000;1;"true";90000
+2;"Client";"Customer";;1;90000;2;"false";
+3;"Fournisseur";"Supplier";;1;90000;2;"false";
+4;"Inventaire";"Inventory";;1;90000;3;"false";
+5;"Production";"Production";;1;90000;3;"false";
