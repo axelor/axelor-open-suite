@@ -423,6 +423,14 @@
  	<input file="supplychain_supplychainConfig.csv" separator=";" type="com.axelor.apps.supplychain.db.SupplychainConfig"/>
  	
  	<input file="base_spentTime.csv" separator=";" type="com.axelor.apps.base.db.SpentTime"/>
+ 	
+ 	<input file="supplychain_purchaseOrder.csv" separator=";" type="com.axelor.apps.supplychain.db.PurchaseOrder">
+ 		<bind to="createdOn" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(creationDate)" />
+ 		<bind to="deliveryDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(deliveryDate)" column="deliveryDate"/>
+ 		<bind to="orderDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(orderDate)" />
+ 	</input>
+ 	
+ 	<input file="supplychain_purchaseOrderLine.csv" separator=";" type="com.axelor.apps.supplychain.db.PurchaseOrderLine"/>
 	  	
 </csv-inputs>
 
