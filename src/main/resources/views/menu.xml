@@ -491,6 +491,15 @@
 		<view type="form" />
 	</action-view>
 	
+	<menuitem name="account-conf-payment-payment-condition" parent="account-conf-payment" 
+		title="Payment conditions" action="account.conf.payment.payment.condition" />
+
+	<action-view name="account.conf.payment.payment.condition"
+		title="Payment conditions" model="com.axelor.apps.account.db.PaymentCondition">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
+	
 	<menuitem name="account-conf-reporting" parent="account-conf"
 		title="Reportings/Exports" />
 
