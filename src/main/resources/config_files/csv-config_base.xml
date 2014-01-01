@@ -431,6 +431,12 @@
  	</input>
  	
  	<input file="supplychain_purchaseOrderLine.csv" separator=";" type="com.axelor.apps.supplychain.db.PurchaseOrderLine"/>
+	
+	<input file="supplychain_salesOrder.csv" separator=";" type="com.axelor.apps.supplychain.db.SalesOrder"/>
+	
+	<input file="supplychain_stockMove.csv" separator=";" type="com.axelor.apps.supplychain.db.StockMove"/>
+	
+	<input file="supplychain_stockMoveLine.csv" separator=";" type="com.axelor.apps.supplychain.db.StockMoveLine"/>
 	  	
 </csv-inputs>
 
