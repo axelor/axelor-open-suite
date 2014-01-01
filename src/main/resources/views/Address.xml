@@ -26,9 +26,9 @@
 			</group>
 		</group>
 		<group name="actions" title="Actions" cols="1" colSpan="1" hideIf="$popup()">
-			<button name="map" title="View map" 
+			<button name="map" title="View map" icon="icon-map-marker"
 				onClick="com.axelor.apps.base.web.AddressController:viewMap,save" />
-			<button name="directions" title="Get directions" 
+			<button name="directions" title="Get directions" icon="icon-location-arrow"
 				onClick="com.axelor.apps.base.web.AddressController:directionsMap" />
 		</group>
 		<group colSpan="2" cols="4" title="QAS certification" >

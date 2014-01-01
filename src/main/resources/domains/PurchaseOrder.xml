@@ -7,6 +7,7 @@
 
   <entity name="PurchaseOrder" lang="java">
   
+  	<integer name="importId" />
   	<string name="purchaseOrderSeq" title="Reference" readonly="true"/>
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" title="Company"/>
   	

@@ -8,7 +8,9 @@
   <entity name="StockMoveLine" lang="java">
   
   	<many-to-one name="stockMove" ref="com.axelor.apps.supplychain.db.StockMove" title="Stock move"/>
-  
+  	
+  	<integer name="importId" />
+  	
 	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>    
 	<decimal name="qty" title="Qty"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>

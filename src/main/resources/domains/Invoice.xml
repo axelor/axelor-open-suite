@@ -4,7 +4,8 @@
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity sequential="true" name="Invoice" lang="java">
- 
+  
+ 	<integer name="importId" />
     <!-- NOT DISPLAY -->
   	<many-to-one name="canceledPaymentSchedule" ref="com.axelor.apps.account.db.PaymentSchedule"/> <!--  Champs non affiché, utilisé pour le passage en irrécouvrable d'un échéancier de paiement -->
   	

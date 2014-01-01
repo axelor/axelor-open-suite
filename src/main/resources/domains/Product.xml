@@ -9,7 +9,7 @@
     <string name="name" title="Name" required="true" namecolumn="true"/>
     <string name="code" title="Code" required="true"/>
     <string name="description" large="true" title="Description"/>
-    <binary name="picture" image="true" title="Picture"/>
+    <many-to-one name="picture" image="true" title="Picture" ref="com.axelor.meta.db.MetaFile"/>
     <many-to-one name="productCategory" ref="ProductCategory" title="Product category"/>
     <many-to-one name="productFamily" ref="ProductFamily" title="Family"/>
     <many-to-one name="unit" ref="Unit" title="Unit"/>
