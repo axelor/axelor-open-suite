@@ -424,10 +424,17 @@
  	
  	<input file="base_spentTime.csv" separator=";" type="com.axelor.apps.base.db.SpentTime"/>
  	
+ 	<input file="account_invoice.csv" separator=";" type="com.axelor.apps.account.db.Invoice">
+ 		<bind to="invoiceDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(invoiceDate)" column="invoiceDate"/>
+ 		<bind to="dueDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(dueDate)" column="dueDate"/>
+ 	</input>
+ 	
+ 	<input file="account_invoice_line.csv" separator=";" type="com.axelor.apps.account.db.InvoiceLine" />
+ 	
  	<input file="supplychain_purchaseOrder.csv" separator=";" type="com.axelor.apps.supplychain.db.PurchaseOrder">
- 		<bind to="createdOn" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(creationDate)" />
+ 		<bind to="createdOn" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(creationDate)" column="creationDate"/>
  		<bind to="deliveryDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(deliveryDate)" column="deliveryDate"/>
- 		<bind to="orderDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(orderDate)" />
+ 		<bind to="orderDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(orderDate)" column="orderDate"/>
  	</input>
  	
  	<input file="supplychain_purchaseOrderLine.csv" separator=";" type="com.axelor.apps.supplychain.db.PurchaseOrderLine"/>
