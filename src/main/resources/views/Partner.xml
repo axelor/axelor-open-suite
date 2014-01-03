@@ -5,7 +5,7 @@
     
     <form name="partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" cols="6" colWidths="25*" 
     onNew="action-partner-record-partner-type-select,action-partner-record-set-default,action-partner-attrs-set-readonly"
-    onLoad="action-partner-attrs-change-name,action-partner-attrs-hide-tabs,action-partner-attrs-set-readonly" 
+    onLoad="action-partner-attrs-change-name,action-partner-attrs-set-readonly" 
     onSave="save,action-set-partner-seq,action-create-accounting-situation">
 	    <toolbar>
 	        <button name="sendByEmail" title="Send email" icon="icon-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="id == null"/>
@@ -39,7 +39,7 @@
 	            <break/>
 	            <field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name" onChange="action-partner-record-full-name"/>
 	            <break/>
-	            <field name="partnerTypeSelect" showTitle="false" onChange="action-partner-attrs-change-name,action-partner-attrs-hide-tabs"/>
+	            <field name="partnerTypeSelect" showTitle="false" onChange="action-partner-attrs-change-name"/>
 	        </group>
 	        <group colSpan="4" cols="4">
 	            <field name="contactPartnerSet" hideIf="isContact || partnerTypeSelect == 2" colSpan="4" domain="self.isContact = 'true'" form-view="partner-contact-form" grid-view="partner-contact-grid"/>    
@@ -100,7 +100,7 @@
 	            <field name="invoiceSendingFormatSelect"/>
 	            <field name="paymentMode"/>
 	            <field name="paymentCondition"/>
-	            <field name="currency"/>
+	            <field name="currency" requiredIf="!isContact &amp;&amp; partnerTypeSelect != 2"/>
 	            <field name="fiscalPosition"/>
 	            <field name="payerQuality"/>
 	            <field name="bankDetails" widget="SuggestBox" domain="self.partner.id = :id"/>
