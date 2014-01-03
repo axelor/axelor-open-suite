@@ -71,9 +71,9 @@
 	        <group colSpan="1">
 	            <field name="titleSelect" showTitle="false" hideIf="partnerTypeSelect != 2" placeholder="Civility"/>
 	            <break/>
-	            <field name="name" showTitle="false" css="highlight" placeholder="Name"/>
+	            <field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-partner-record-full-name"/>
 	            <break/>
-	            <field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name"/>
+	            <field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name" onChange="action-partner-record-full-name"/>
 	            <break/>
 	            <field name="partnerTypeSelect" showTitle="false" onChange="action-partner-attrs-change-name,action-partner-attrs-hide-tabs"/>
 	        </group>
@@ -177,8 +177,8 @@
 	    </group>
 	    <group colSpan="3" cols="6">
 	        <field name="titleSelect" hideIf="partnerTypeSelect != 2" css="highlight"/>
-	        <field name="name" css="highlight"/>
-	        <field name="firstName" hideIf="partnerTypeSelect != 2" css="highlight"/>
+	        <field name="name" css="highlight" onChange="action-partner-record-full-name"/>
+	        <field name="firstName" hideIf="partnerTypeSelect != 2" css="highlight" onChange="action-partner-record-full-name"/>
 	        <break/>
 	        <field name="partnerCategory" widget="SuggestBox"/>
 	        <field name="partnerTypeSelect" onChange="action-partner-attrs-change-name"/>
@@ -241,9 +241,9 @@
 	        <group colSpan="1" cols="1">
 	            <field name="titleSelect" showTitle="false" placeholder="Civility"/>
 	            <break/>
-	            <field name="name" showTitle="false" css="highlight" placeholder="Name"/>
+	            <field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-partner-record-full-name"/>
 	            <break/>
-	            <field name="firstName" showTitle="false" css="highlight" placeholder="First name"/>
+	            <field name="firstName" showTitle="false" css="highlight" placeholder="First name" onChange="action-partner-record-full-name"/>
 	            <break/>
 	            <separator title="Company"/>
 	            <field name="mainPartner"/>
@@ -408,6 +408,10 @@
 	
 	<action-record name="action-partner-record-partner-type-select" model="com.axelor.apps.base.db.Partner" >
     	<field name="partnerTypeSelect" expr="eval:_partnerTypeSelect"/>
+    </action-record>
+    
+    <action-record name="action-partner-record-full-name" model="com.axelor.apps.base.db.Partner" >
+    	<field name="fullName" expr="eval: name + ' ' + firstName" />
     </action-record>
     
     <action-record name="action-partner-record-set-default" model="com.axelor.apps.base.db.Partner">
