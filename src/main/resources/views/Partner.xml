@@ -35,9 +35,9 @@
 	        <group colSpan="1">
 	            <field name="titleSelect" showTitle="false" hideIf="partnerTypeSelect != 2" placeholder="Civility"/>
 	            <break/>
-	            <field name="name" showTitle="false" css="highlight" placeholder="Name"/>
+	            <field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-partner-record-full-name"/>
 	            <break/>
-	            <field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name"/>
+	            <field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name" onChange="action-partner-record-full-name"/>
 	            <break/>
 	            <field name="partnerTypeSelect" showTitle="false" onChange="action-partner-attrs-change-name,action-partner-attrs-hide-tabs"/>
 	        </group>
