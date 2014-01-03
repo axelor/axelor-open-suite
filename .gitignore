@@ -11,3 +11,5 @@ src-gen
 *~
 .#*
 [#]*#
+/target
+/target
