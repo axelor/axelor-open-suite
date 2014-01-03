@@ -56,7 +56,6 @@ public class BatchEventReminder extends BatchStrategy {
 	private boolean stop = false;
 	private LocalDateTime today;
 	
-	@Inject
 	private Injector injector;
 	
 	@Inject
@@ -135,25 +134,25 @@ public class BatchEventReminder extends BatchStrategy {
 		switch (durationTypeSelect) {
 		case IEventReminder.DURATION_MINUTES:
 			
-			if(startDateTime != null && (startDateTime.minusMinutes(eventReminder.getDuration())).isBefore(today))  {
+			if((startDateTime.minusMinutes(eventReminder.getDuration())).isBefore(today))  {
 				return true;
 			}
 			
 		case IEventReminder.DURATION_HOURS:
 								
-			if(startDateTime != null && (startDateTime.minusHours(eventReminder.getDuration())).isBefore(today))  {
+			if((startDateTime.minusHours(eventReminder.getDuration())).isBefore(today))  {
 				return true;
 			}
 								
 		case IEventReminder.DURATION_DAYS:
 			
-			if(startDateTime != null && (startDateTime.minusDays(eventReminder.getDuration())).isBefore(today))  {
+			if((startDateTime.minusDays(eventReminder.getDuration())).isBefore(today))  {
 				return true;
 			}
 			
 		case IEventReminder.DURATION_WEEKS:
 			
-			if(startDateTime != null && (startDateTime.minusWeeks(eventReminder.getDuration())).isBefore(today))  {
+			if((startDateTime.minusWeeks(eventReminder.getDuration())).isBefore(today))  {
 				return true;
 			}
 
