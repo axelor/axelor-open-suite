@@ -490,6 +490,7 @@
     <action-record name="action-event-record-task-status-select" model="com.axelor.apps.crm.db.Event">
     	<field name="taskStatusSelect" expr="1" if="typeSelect == 3"/>
     	<field name="progressSelect" expr="0"/>
+    	<field name="prioritySelect" expr="2" />
     </action-record>
     
     <action-record name="action-event-record-status-select" model="com.axelor.apps.crm.db.Event">
