@@ -335,6 +335,7 @@
 		<bind to="emailAddress" search="self.address = :email">
 			<bind to="address" column="email" />
 		</bind>
+		<bind to="contactDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(contactDate)" column="contactDate"/>
 	</input>
 	
 	<input file="crm_meetingType.csv" separator=";" type="com.axelor.apps.crm.db.MeetingType">
@@ -343,13 +344,15 @@
 	</input>
 	
 	<input file="crm_event.csv" separator=";" type="com.axelor.apps.crm.db.Event">
-		<bind to="startDateTime" column="startDateTime" eval="!startDateTime.empty ? startDateTime.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4}) ([0-9]{2}):([0-9]{2})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1'+'T$4'+':$5') : null"/>
-		<bind to="endDateTime" column="endDateTime" eval="!endDateTime.empty ? endDateTime.replaceAll('([0-9]{1,2})/([0-9]{1,2})/([0-9]{4}) ([0-9]{2}):([0-9]{2})','$3'.padLeft(2,'0')+'-'+'$2'.padLeft(2,'0')+'-$1'+'T$4'+':$5') : null"/>
+		<bind to="startDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDateTime)" column="startDateTime"/>
+		<bind to="endDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDate(endDateTime)" column="endDateTime"/>
 	</input>
 	
 	<input file="crm_opportunityType.csv" separator=";" type="com.axelor.apps.crm.db.OpportunityType" />
 	
-	<input file="crm_opportunity.csv" separator=";" type="com.axelor.apps.crm.db.Opportunity" />
+	<input file="crm_opportunity.csv" separator=";" type="com.axelor.apps.crm.db.Opportunity">
+		<bind to="expectedCloseDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(expectedCloseDate)" column="expectedCloseDate"/>
+	</input>
 	
 	
 <!--     IMPORT DU PACKAGE 'ORGANISATION' --> 	
@@ -406,9 +409,17 @@
 	
 	<input file="supplychain_inventoryLine.csv" separator=";" type="com.axelor.apps.supplychain.db.InventoryLine" />
 	
-	<input file="supplychain_salesOrder.csv" separator=";" type="com.axelor.apps.supplychain.db.SalesOrder" />
+	<input file="supplychain_salesOrder.csv" separator=";" type="com.axelor.apps.supplychain.db.SalesOrder">
+		<bind to="creationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(creationDate)" column="creationDate"/>
+		<bind to="validationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(validationDate)" column="validationDate"/>
+	</input>
+	
 	<input file="supplychain_salesOrderLine.csv" separator=";" type="com.axelor.apps.supplychain.db.SalesOrderLine" />
-	<input file="supplychain_salesOrder.csv" separator=";" type="com.axelor.apps.supplychain.db.SalesOrder" call="com.axelor.csv.script.ImportSalesOrder:importSalesOrder" search="self.importId = :importId" update="true"/>
+	<input file="supplychain_salesOrder.csv" separator=";" type="com.axelor.apps.supplychain.db.SalesOrder" call="com.axelor.csv.script.ImportSalesOrder:importSalesOrder" search="self.importId = :importId" update="true">
+		<bind to="creationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(creationDate)" column="creationDate"/>
+		<bind to="validationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(validationDate)" column="validationDate"/>
+	</input>
+	
 	  	
  	<input file="organisation_project.csv" separator=";" type="com.axelor.apps.organisation.db.Project">
  		<bind column="memberUserInfoSet_id" to="memberUserInfoSet" search="self.importId in :memberUserInfoSet_id" eval="memberUserInfoSet_id.split('\\|') as List"/>
@@ -438,8 +449,6 @@
  	</input>
  	
  	<input file="supplychain_purchaseOrderLine.csv" separator=";" type="com.axelor.apps.supplychain.db.PurchaseOrderLine"/>
-	
-	<input file="supplychain_salesOrder.csv" separator=";" type="com.axelor.apps.supplychain.db.SalesOrder"/>
 	
 	<input file="supplychain_stockMove.csv" separator=";" type="com.axelor.apps.supplychain.db.StockMove"/>
 	
