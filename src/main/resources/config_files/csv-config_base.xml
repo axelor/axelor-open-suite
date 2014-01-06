@@ -344,8 +344,8 @@
 	</input>
 	
 	<input file="crm_event.csv" separator=";" type="com.axelor.apps.crm.db.Event">
-		<bind to="startDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDateTime)" column="startDateTime"/>
-		<bind to="endDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDate(endDateTime)" column="endDateTime"/>
+		<bind to="startDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(startDateTime)" column="startDateTime"/>
+		<bind to="endDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(endDateTime)" column="endDateTime"/>
 	</input>
 	
 	<input file="crm_opportunityType.csv" separator=";" type="com.axelor.apps.crm.db.OpportunityType" />
@@ -440,7 +440,7 @@
  		<bind to="dueDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(dueDate)" column="dueDate"/>
  	</input>
  	
- 	<input file="account_invoice_line.csv" separator=";" type="com.axelor.apps.account.db.InvoiceLine" />
+ 	<input file="account_invoiceLine.csv" separator=";" type="com.axelor.apps.account.db.InvoiceLine" />
  	
  	<input file="supplychain_purchaseOrder.csv" separator=";" type="com.axelor.apps.supplychain.db.PurchaseOrder">
  		<bind to="createdOn" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(creationDate)" column="creationDate"/>
