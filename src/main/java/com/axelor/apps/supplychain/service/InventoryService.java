@@ -252,7 +252,7 @@ public class InventoryService {
 	}
 
 	
-	public void generateStockMove(Inventory inventory) throws AxelorException {
+	public StockMove generateStockMove(Inventory inventory) throws AxelorException {
 
 		Location toLocation = inventory.getLocation();
 		Company company = toLocation.getCompany();
@@ -287,6 +287,7 @@ public class InventoryService {
 		if (stockMove.getStockMoveLineList() != null) {
 			stockMoveService.plan(stockMove);
 		}
+		return stockMove;
 	}
 
 	

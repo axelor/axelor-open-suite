@@ -30,9 +30,17 @@
  */
 package com.axelor.csv.script
 
+import com.axelor.apps.account.db.Invoice
+import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.supplychain.service.SalesOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SalesOrderService;
+import com.axelor.apps.supplychain.service.SalesOrderStockMoveService;
+import com.axelor.apps.supplychain.service.StockMoveInvoiceService
+import com.axelor.apps.supplychain.service.StockMoveService;
 import com.axelor.apps.supplychain.db.SalesOrder;
+import com.axelor.apps.supplychain.db.StockMove
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 
 class ImportSalesOrder {
@@ -40,11 +48,47 @@ class ImportSalesOrder {
 		@Inject
 		SalesOrderService salesOrderService;
 		
+		@Inject
+		SalesOrderStockMoveService salesOrderStockMoveService;
+		
+		@Inject
+		SalesOrderInvoiceService salesOrderInvoiceService;
+		
+		@Inject
+		StockMoveService stockMoveService;
+		
+		@Inject
+		StockMoveInvoiceService stockMoveInvoiceService;
+		
+		@Inject
+		InvoiceService invoiceService;
+		
+		@Transactional
 		Object importSalesOrder(Object bean, Map values) {
 			assert bean instanceof SalesOrder
 	        try{
 				SalesOrder salesOrder = (SalesOrder) bean
 				salesOrderService.computeSalesOrder(salesOrder);
+				if(salesOrder.statusSelect == 3){
+					salesOrderStockMoveService.createStocksMovesFromSalesOrder(salesOrder)
+					if(salesOrder.invoicingTypeSelect in [1,5]){
+						Invoice invoice = salesOrderInvoiceService.createInvoice(salesOrder)
+						invoiceService.compute(invoice)
+//						invoiceService.validate(invoice)
+//						invoiceService.ventilate(invoice)
+					}
+//					else {
+//						List<StockMove> stockMoves = StockMove.all().filter("salesOrder = ?1",salesOrder).fetch()
+//						for(StockMove stockMove : stockMoves){
+//							stockMoveService.validate(stockMove);
+//							Invoice invoice = stockMoveInvoiceService.createInvoiceFromSalesOrder(stockMove, salesOrder)
+//							invoiceService.compute(invoice)
+//							invoiceService.validate(invoice)
+//							invoiceService.ventilate(invoice)
+//						}
+//					}		
+				
+				}
 				return salesOrder
 	        }catch(Exception e){
 	            e.printStackTrace()
