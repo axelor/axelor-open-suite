@@ -8,6 +8,11 @@
 		<bind to="statusSelect" eval="3" />
 	</input>
 	
+	<input file="supplychain_inventory.csv" separator=";" type="com.axelor.apps.supplychain.db.Inventory"  
+	search="self.inventorySeq = :inventorySeq" call="com.axelor.csv.script.ImportInventory:realizeMove" update="true">
+		<bind to="statusSelect" eval="3" />
+	</input>
+	
 	<input file="supplychain_salesOrder.csv" update="true" separator=";" type="com.axelor.apps.supplychain.db.SalesOrder" 
 	call="com.axelor.csv.script.ImportSalesOrder:importSalesOrder" search="self.importId = :importId">
 		<bind to="creationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(creationDate)" column="creationDate"/>
