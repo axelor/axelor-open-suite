@@ -46,18 +46,27 @@ class ImportInventory {
 		@Inject 
 		StockMoveService stockMoveService;
 	
-		@Transactional
 		Object importInventory(Object bean, Map values) {
 			assert bean instanceof Inventory
 	        try{
 				Inventory inventory = (Inventory) bean
-				StockMove stockMove = inventoryService.generateStockMove(inventory)
-				inventory.setStatusSelect(3);
-				stockMoveService.realize(stockMove);
+				inventoryService.generateStockMove(inventory)
 				return inventory
 	        }catch(Exception e){
 	            e.printStackTrace()
 	        }
+		}
+		
+		Object realizeMove(Object bean, Map values) {
+			assert bean instanceof Inventory
+			try{
+				Inventory inventory = (Inventory) bean
+				for(StockMove stockMove: StockMove.all().filter("statusSelect = 2").fetch())
+					stockMoveService.realize(stockMove)
+				return inventory
+			}catch(Exception e){
+				e.printStackTrace()
+			}
 		}
 		
 }

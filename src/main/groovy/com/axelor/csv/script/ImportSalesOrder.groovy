@@ -72,21 +72,21 @@ class ImportSalesOrder {
 				if(salesOrder.statusSelect == 3){
 					salesOrderStockMoveService.createStocksMovesFromSalesOrder(salesOrder)
 					if(salesOrder.invoicingTypeSelect in [1,5]){
-						Invoice invoice = salesOrderInvoiceService.createInvoice(salesOrder)
+						Invoice invoice = salesOrderInvoiceService.generatePerOrderInvoice(salesOrder)
 						invoiceService.compute(invoice)
-//						invoiceService.validate(invoice)
-//						invoiceService.ventilate(invoice)
+						invoiceService.validate(invoice)
+						invoiceService.ventilate(invoice)
 					}
-//					else {
-//						List<StockMove> stockMoves = StockMove.all().filter("salesOrder = ?1",salesOrder).fetch()
-//						for(StockMove stockMove : stockMoves){
-//							stockMoveService.validate(stockMove);
-//							Invoice invoice = stockMoveInvoiceService.createInvoiceFromSalesOrder(stockMove, salesOrder)
-//							invoiceService.compute(invoice)
-//							invoiceService.validate(invoice)
-//							invoiceService.ventilate(invoice)
-//						}
-//					}		
+					else {
+						List<StockMove> stockMoves = StockMove.all().filter("salesOrder = ?1",salesOrder).fetch()
+						for(StockMove stockMove : stockMoves){
+							stockMoveService.validate(stockMove);
+							Invoice invoice = stockMoveInvoiceService.createInvoiceFromSalesOrder(stockMove, salesOrder)
+							invoiceService.compute(invoice)
+							invoiceService.validate(invoice)
+							invoiceService.ventilate(invoice)
+						}
+					}		
 				
 				}
 				return salesOrder
