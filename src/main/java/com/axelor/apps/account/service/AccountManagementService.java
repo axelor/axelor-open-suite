@@ -180,7 +180,7 @@ public class AccountManagementService {
 	public Tax getProductTax(Product product, Company company, FiscalPosition fiscalPosition, boolean isPurchase) throws AxelorException{
 		
 		LOG.debug("Obtention du compte comptable pour le produit {} (société : {}, achat ? {})",
-			new Object[]{product.getCode(), company, isPurchase});
+			new Object[]{product.getCode(), company.getName(), isPurchase});
 		
 		return fiscalPositionService.getTax(
 					fiscalPosition,

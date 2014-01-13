@@ -39,9 +39,9 @@
     <grid name="account-management-product-grid" title="Account management" model="com.axelor.apps.account.db.AccountManagement">
         <field name="company"/>
 		<field name="saleAccount"/>
-		<field name="saleVat"/>
+		<field name="saleTax"/>
         <field name="purchaseAccount"/>
-        <field name="purchaseVat"/>
+        <field name="purchaseTax"/>
     </grid>
     
     <form name="account-management-product-form" title="Gestion de compte comptable" model="com.axelor.apps.account.db.AccountManagement" cols="4"
