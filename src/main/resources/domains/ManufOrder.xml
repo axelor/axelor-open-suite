@@ -12,7 +12,7 @@
   
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
   
-    <string name="manufOrderSeq" title="MO Sequence"/>
+    <string name="manufOrderSeq" title="MO Sequence" namecolumn="true"/>
     <many-to-one name="billOfMaterial" ref="com.axelor.apps.production.db.BillOfMaterial" title="BOM"/>
     
 <!--     Champ pointé ? -->

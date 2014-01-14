@@ -7,7 +7,7 @@
 
   <entity name="ManufOrderPlanning" lang="java">
   
-  	<string name="manufOrderPlanningSeq" title="Name"/>
+  	<string name="manufOrderPlanningSeq" title="Name" namecolumn="true"/>
   	<date name="startDate" title="Date de départ"/>
 	<date name="endDate" title="Date de fin"/>
     <one-to-many name="manufOrderPlanningLineList" ref="com.axelor.apps.production.db.ManufOrderPlanningLine" mappedBy="manufOrderPlanning" title="Manufacturing orders"/>

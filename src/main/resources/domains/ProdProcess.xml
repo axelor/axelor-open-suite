@@ -11,6 +11,7 @@
     <decimal name="capacityPerHour" title="Capacity / hours"/>
     <boolean name="hasStockCheckout" title="Stock checkout ?"/>
     <integer name="duration" title="Duration (min)"/>
+    <string name="name" title="Label"/>
     
   </entity>
 </domain-models>

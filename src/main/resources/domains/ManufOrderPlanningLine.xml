@@ -9,7 +9,7 @@
   
   	<many-to-one name="manufOrderPlanning" ref="com.axelor.apps.production.db.ManufOrderPlanning" title="Manufacturing order planning"/>
   	<many-to-one name="manufOrder" ref="com.axelor.apps.production.db.ManufOrder" title="Manufacturing order"/>
-    <string name="manufOrderPlanningLineSeq" title="Sequence"/>
+    <string name="manufOrderPlanningLineSeq" title="Sequence" namecolumn="true"/>
     	
   </entity>
 </domain-models>
