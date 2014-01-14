@@ -21,7 +21,7 @@
         <field name="manufOrderSeq"/>
         <field name="statusSelect" widget="NavSelect"/>
         <field name="company"/>
-        <field name="billOfMaterial"/>
+        <field name="billOfMaterial" domain="self.isRawMaterial = false"/>
         <field name="billOfMaterial.product"/>
         <field name="prodProcess"/>
         

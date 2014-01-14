@@ -4,17 +4,24 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
     <grid name="prod-process-grid" title="Production process" model="com.axelor.apps.production.db.ProdProcess">
+    	<field name="name"/>
         <field name="prodResource"/>
         <field name="capacityPerHour"/>
         <field name="hasStockCheckout"/>
         <field name="duration"/>
     </grid>
     
-    <form name="prod-process-form" title="Production process" model="com.axelor.apps.production.db.ProdProcess" cols="4">
+    <form name="prod-process-form" title="Production process" model="com.axelor.apps.production.db.ProdProcess" cols="4"
+    	onSave="action-prod-process-record-name">
+    	<field name="name"/>
         <field name="prodResource"/>
         <field name="capacityPerHour"/>
         <field name="hasStockCheckout"/>
         <field name="duration"/>
     </form>
+    
+    <action-record name="action-prod-process-record-name" model="com.axelor.apps.production.db.ProdProcess">
+    	<field name="name" expr="eval: prodResource.label + ' - ' + duration"/>
+    </action-record>
     
 </object-views>
