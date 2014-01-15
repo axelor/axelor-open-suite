@@ -18,8 +18,9 @@
         <field name="company"/>
         <field name="partner"/>
         <field name="statusSelect"/>
-         <button name="printStockMove" title=" Print" icon="icon-print" onClick="action-print-stock-move"/>
-        <button name="viewDirection" icon="img/16px/link_16px.png" help="View Direction" onClick="com.axelor.apps.supplychain.web.StockMoveController:viewDirection" />
+        <field name="typeSelect" hidden="true" />
+        <button name="printStockMove" title="Print" icon="icon-print" onClick="action-print-stock-move"/>
+        <button name="viewDirection" icon="icon-location-arrow" help="View Direction" onClick="com.axelor.apps.supplychain.web.StockMoveController:viewDirection" readonlyIf="typeSelect != 2"/>
     </grid>
     
     <form name="stock-move-form" title="Stock move" model="com.axelor.apps.supplychain.db.StockMove" cols="4"
@@ -49,7 +50,7 @@
 	        	<button name="draft" title="Draft" showIf="statusSelect == 4" onClick="save,action-stock-move-record-draft,save"/>
             	<button name="generateInvoice" title="Generate invoice" onClick="save,action-stock-move-method-generate-invoice"/>
             	<button name="printStockMove" title=" Print" onClick="save,action-print-stock-move" icon="icon-print"/>
-            	<button name="viewDirection" title="View Direction" colSpan="1" icon="icon-location-arrow" help="View Direction" onClick="com.axelor.apps.supplychain.web.StockMoveController:viewDirection" />
+            	<button name="viewDirection" title="View Direction" colSpan="1" icon="icon-location-arrow" help="View Direction" onClick="com.axelor.apps.supplychain.web.StockMoveController:viewDirection" showIf="typeSelect == 2"/>
         	</group>
     	</group>
     	<break/>
