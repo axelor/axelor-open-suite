@@ -5,16 +5,16 @@
   
   <entity sequential="true" name="Reconcile" lang="java">
   
-    <decimal name="amount" title="Amount reconciled" default="0.0"/>
-    <many-to-one name="debitMoveLine" ref="MoveLine" title="Debit line" required="true"/>
-    <many-to-one name="creditMoveLine" ref="MoveLine" title="Credit line" required="true"/>
-    <integer name="statusSelect" title="Status" default="1" readonly="true" selection="account.reconcile.status.select"/>
+    <decimal name="amount" title="Amount reconciled" default="0.0" initParam="true"/>
+    <many-to-one name="debitMoveLine" ref="MoveLine" title="Debit line" required="true" initParam="true"/>
+    <many-to-one name="creditMoveLine" ref="MoveLine" title="Credit line" required="true" initParam="true"/>
+    <integer name="statusSelect" title="Status" default="1" readonly="true" selection="account.reconcile.status.select" initParam="true"/>
     
     <!--  Will be fully reconciled if the payment amount is with a range of +/-20 cts compare to the amount remaining to pay  -->
-    <boolean name="canBeZeroBalanceOk" title="Clear remaining amount" default="false"/>
+    <boolean name="canBeZeroBalanceOk" title="Clear remaining amount" default="false" initParam="true"/>
     
     <!--  Will be fully reconciled if there is a currency delta amount -->
-    <boolean name="mustBeZeroBalanceOk" title="Must be solded out" default="false" />
+    <boolean name="mustBeZeroBalanceOk" title="Must be solded out" default="false" initParam="true"/>
     
   </entity>
 

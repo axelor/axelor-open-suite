@@ -5,21 +5,25 @@
   
   <entity name="MoveLine" lang="java">
   
-    <many-to-one name="move" ref="Move" title="Move"/>
-    <date name="date" title="Input Date"/>
-    <date name="dueDate" title="Due Date"/>
-    <decimal name="debit" title="Debit"/>
-    <decimal name="credit" title="Credit"/>
-    <many-to-one name="account" ref="Account" required="true" title="Account"/>
+    <many-to-one name="move" ref="Move" title="Move" initParam="true"/>
+    
+    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner" initParam="true"/>
+    <many-to-one name="account" ref="Account" required="true" title="Account" initParam="true"/>
+    <date name="date" title="Input Date" initParam="true"/>
+    <date name="dueDate" title="Due Date" initParam="true"/>
+    <integer name="counter" title="Line Nbr." initParam="true" help="This sequence is unique per Move, automatically reset to 1 for a new moveline"/>
+    <decimal name="debit" title="Debit" initParam="true"/>
+    <decimal name="credit" title="Credit" initParam="true"/>
+    <string name="description" title="Description" initParam="true"/>
+    
     <one-to-many name="reconcileList1" ref="Reconcile" title="Debit Reconcile list" mappedBy="debitMoveLine" readonly="false"/>
     <one-to-many name="reconcileList2" ref="Reconcile" title="Credit Reconcile List" mappedBy="creditMoveLine" readonly="false"/>
     <decimal name="amountPaid" title="Amount paid/reconciled" default="0.0" readonly="true"/>
-    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
-    <integer name="counter" title="Line Nbr." help="This sequence is unique per Move, automatically reset to 1 for a new moveline"/>
+    
     <many-to-one name="invoiceReject" ref="com.axelor.apps.account.db.Invoice" title="Invoice rejected"/>
     <boolean name="exportedDirectDebitOk" title="Exported Direct Debit" default="false"/>
     <many-to-one name="interbankCodeLine" ref="com.axelor.apps.account.db.InterbankCodeLine" title="Reject reason"/>
-    <string name="description" title="Description"/>
+    
     <many-to-many name="analyticAccountSet" ref="AnalyticAccount" title="Analytic account"/>
     <integer name="reimbursementStateSelect" title="Reimbursement status" default="0" selection="move.line.reimbursement.state.select"/>
     <string name="passageReason" title="Irrecoverable Shift Reason" readonly="true"/>
