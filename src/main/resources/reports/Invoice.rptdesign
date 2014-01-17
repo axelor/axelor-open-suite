@@ -1739,36 +1739,6 @@ LangTranslate.domain = 'axelor-account' and LangTranslate.type = 'other']]></xml
                                                 <property name="dataType">integer</property>
                                             </structure>
                                             <structure>
-                                                <property name="name">invAddress2</property>
-                                                <text-property name="displayName">invAddress2</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["invAddress2"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">invAddress3</property>
-                                                <text-property name="displayName">invAddress3</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["invAddress3"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">invAddress4</property>
-                                                <text-property name="displayName">invAddress4</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["invAddress4"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">invAddress5</property>
-                                                <text-property name="displayName">invAddress5</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["invAddress5"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">invAddress6</property>
-                                                <text-property name="displayName">invAddress6</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["invAddress6"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
                                                 <property name="name">invoicecountry</property>
                                                 <text-property name="displayName">invoicecountry</text-property>
                                                 <expression name="expression" type="javascript">dataSetRow["invoicecountry"]</expression>
@@ -1787,15 +1757,15 @@ LangTranslate.domain = 'axelor-account' and LangTranslate.type = 'other']]></xml
                                                 <property name="dataType">integer</property>
                                             </structure>
                                             <structure>
-                                                <property name="name">parnterName</property>
-                                                <text-property name="displayName">parnterName</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["parnterName"]</expression>
+                                                <property name="name">partnerName</property>
+                                                <text-property name="displayName">partnerName</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["partnerName"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
-                                                <property name="name">PartnerFirstName</property>
-                                                <text-property name="displayName">PartnerFirstName</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["PartnerFirstName"]</expression>
+                                                <property name="name">partnerFirstName</property>
+                                                <text-property name="displayName">partnerFirstName</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["partnerFirstName"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -1805,15 +1775,15 @@ LangTranslate.domain = 'axelor-account' and LangTranslate.type = 'other']]></xml
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
-                                                <property name="name">name</property>
-                                                <text-property name="displayName">name</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["name"]</expression>
+                                                <property name="name">contactName</property>
+                                                <text-property name="displayName">contactName</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["contactName"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
-                                                <property name="name">first_name</property>
-                                                <text-property name="displayName">first_name</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["first_name"]</expression>
+                                                <property name="name">contactFirstName</property>
+                                                <text-property name="displayName">contactFirstName</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["contactFirstName"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -2305,36 +2275,6 @@ row["partnerFirstName"]
                                                 <property name="dataType">integer</property>
                                             </structure>
                                             <structure>
-                                                <property name="name">invAddress2</property>
-                                                <text-property name="displayName">invAddress2</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["invAddress2"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">invAddress3</property>
-                                                <text-property name="displayName">invAddress3</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["invAddress3"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">invAddress4</property>
-                                                <text-property name="displayName">invAddress4</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["invAddress4"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">invAddress5</property>
-                                                <text-property name="displayName">invAddress5</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["invAddress5"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">invAddress6</property>
-                                                <text-property name="displayName">invAddress6</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["invAddress6"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
                                                 <property name="name">invoicecountry</property>
                                                 <text-property name="displayName">invoicecountry</text-property>
                                                 <expression name="expression" type="javascript">dataSetRow["invoicecountry"]</expression>
@@ -2353,15 +2293,15 @@ row["partnerFirstName"]
                                                 <property name="dataType">integer</property>
                                             </structure>
                                             <structure>
-                                                <property name="name">parnterName</property>
-                                                <text-property name="displayName">parnterName</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["parnterName"]</expression>
+                                                <property name="name">partnerName</property>
+                                                <text-property name="displayName">partnerName</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["partnerName"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
-                                                <property name="name">PartnerFirstName</property>
-                                                <text-property name="displayName">PartnerFirstName</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["PartnerFirstName"]</expression>
+                                                <property name="name">partnerFirstName</property>
+                                                <text-property name="displayName">partnerFirstName</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["partnerFirstName"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
@@ -2371,15 +2311,15 @@ row["partnerFirstName"]
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
-                                                <property name="name">name</property>
-                                                <text-property name="displayName">name</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["name"]</expression>
+                                                <property name="name">contactName</property>
+                                                <text-property name="displayName">contactName</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["contactName"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
-                                                <property name="name">first_name</property>
-                                                <text-property name="displayName">first_name</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["first_name"]</expression>
+                                                <property name="name">contactFirstName</property>
+                                                <text-property name="displayName">contactFirstName</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["contactFirstName"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
