@@ -105,32 +105,18 @@ public class MoveLineService {
 	 * @return
 	 */
 	public MoveLine createMoveLine(Move move, Partner partner, Account account, BigDecimal amount, boolean isDebit, boolean isMinus, LocalDate date,
-			LocalDate dueDate, int ref, String descriptionOption){
+			LocalDate dueDate, int counter, String descriptionOption){
 		
 		LOG.debug("Création d'une ligne d'écriture comptable (compte comptable : {}, montant : {}, debit ? : {}, moins ? : {}," +
-			" date d'échéance : {}, référence : {}", 
-			new Object[]{account.getName(), amount, isDebit, isMinus, dueDate, ref});
-		
-		BigDecimal debit = BigDecimal.ZERO;
-		BigDecimal credit = BigDecimal.ZERO;
-		
-		MoveLine moveLine= new MoveLine();
-		
-		moveLine.setMove(move);
-		moveLine.setPartner(partner);
+			" date d'échéance : {}, référence : {}",  new Object[]{account.getName(), amount, isDebit, isMinus, dueDate, counter});
 		
 		if(partner != null)  {
 			FiscalPositionService fiscalPositionService = injector.getInstance(FiscalPositionService.class);
 			account = fiscalPositionService.getAccount(partner.getFiscalPosition(), account);
 		}
 		
-		moveLine.setAccount(account);
-		
-		moveLine.setDate(date);
-		//TODO à rétablir si date d'échéance
-		moveLine.setDueDate(dueDate);
-		moveLine.setCounter(ref);
-		moveLine.setAnalyticAccountSet(new HashSet<AnalyticAccount>());
+		BigDecimal debit = BigDecimal.ZERO;
+		BigDecimal credit = BigDecimal.ZERO;
 		
 		if (isMinus){
 			
@@ -151,12 +137,7 @@ public class MoveLineService {
 			}
 		}
 		
-		moveLine.setDebit(debit);
-		moveLine.setCredit(credit);
-		
-		moveLine.setDescription(this.determineDescriptionMoveLine(move.getJournal(), descriptionOption));
-		
-		return moveLine;
+		return new MoveLine(move, partner, account, date, dueDate, counter, debit, credit, this.determineDescriptionMoveLine(move.getJournal(), descriptionOption));
 	}
 
 	/**
@@ -262,7 +243,7 @@ public class MoveLineService {
 			LOG.debug("Traitement de la ligne de facture : compte comptable = {}, montant = {}", new Object[]{account2.getName(), exTaxTotal});
 			
 			MoveLine moveLine = this.createMoveLine(move, partner, account2, exTaxTotal, !isDebitCustomer, isMinus, invoice.getInvoiceDate(), null, moveLineId++, invoice.getInvoiceId());
-			moveLine.getAnalyticAccountSet().addAll(analyticAccounts);
+			moveLine.setAnalyticAccountSet(analyticAccounts);
 			moveLine.setTaxLine(invoiceLine.getTaxLine());
 			
 			moveLines.add(moveLine);
