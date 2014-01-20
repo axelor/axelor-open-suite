@@ -57,7 +57,8 @@ public class UserInfoService {
 			user = AuthUtils.getUser();
 		}
 		catch(Exception ex){}
-		
+		if(user == null)
+			user = User.all().filter("self.code = 'admin'").fetchOne();
 		if (user != null){
 			UserInfo userInfo = UserInfo.all().filter("internalUser = ?1", user).fetchOne();
 			if (userInfo != null) { return userInfo; }
