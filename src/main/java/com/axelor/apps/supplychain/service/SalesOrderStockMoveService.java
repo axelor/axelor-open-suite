@@ -75,7 +75,7 @@ public class SalesOrderStockMoveService {
 	 * @param salesOrder l'objet salesOrder
 	 * @throws AxelorException Aucune séquence de StockMove (Livraison) n'a été configurée
 	 */
-	public void createStocksMovesFromSalesOrder(SalesOrder salesOrder) throws AxelorException {
+	public StockMove createStocksMovesFromSalesOrder(SalesOrder salesOrder) throws AxelorException {
 		
 		Company company = salesOrder.getCompany();
 		
@@ -94,7 +94,9 @@ public class SalesOrderStockMoveService {
 			if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
 				stockMoveService.plan(stockMove);
 			}
+			return stockMove;
 		}
+		return null;
 	}
 	
 	

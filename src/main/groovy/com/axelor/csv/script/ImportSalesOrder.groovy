@@ -70,24 +70,24 @@ class ImportSalesOrder {
 				SalesOrder salesOrder = (SalesOrder) bean
 				salesOrderService.computeSalesOrder(salesOrder);
 				if(salesOrder.statusSelect == 3){
-					salesOrderStockMoveService.createStocksMovesFromSalesOrder(salesOrder)
+					StockMove stockMove = salesOrderStockMoveService.createStocksMovesFromSalesOrder(salesOrder)
 					if(salesOrder.invoicingTypeSelect in [1,5]){
 						Invoice invoice = salesOrderInvoiceService.generatePerOrderInvoice(salesOrder)
+						invoice.setInvoiceDate(salesOrder.validationDate)
 						invoiceService.compute(invoice)
 						invoiceService.validate(invoice)
 						invoiceService.ventilate(invoice)
 					}
-					else {
-						List<StockMove> stockMoves = StockMove.all().filter("salesOrder = ?1",salesOrder).fetch()
-						for(StockMove stockMove : stockMoves){
-							stockMoveService.validate(stockMove);
+					if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
+						stockMoveService.validate(stockMove);
+						stockMove.realDate = salesOrder.validationDate
+						if(salesOrder.invoicingTypeSelect == 4){
 							Invoice invoice = stockMoveInvoiceService.createInvoiceFromSalesOrder(stockMove, salesOrder)
 							invoiceService.compute(invoice)
 							invoiceService.validate(invoice)
 							invoiceService.ventilate(invoice)
 						}
-					}		
-				
+					}
 				}
 				return salesOrder
 	        }catch(Exception e){
