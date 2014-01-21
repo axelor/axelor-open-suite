@@ -66,7 +66,7 @@
 "purchaseOrder";"Cotations/Cmde fournisseur";2;5;;;1;0;1;
 "eventTicket";"Numéro de ticket";1;5;;;1;0;1;
 "intStockMove";"Numéro de bon de transfert de marchandise";1;4;;;1;0;1;
-"outStockMove";"Numéro de bon de livraison";2;4;;;1;0;1;
+"outStockMove";"Numéro de bon de livraison";1;4;;;1;0;1;
 "inStockMove";"Numéro de bon de réception";1;4;;;1;0;1;
 "inventory";"Numéro inventaire";2;4;;;1;0;1;
 "productTrackingNumber";"Numéro de suivi";1;5;;;1;0;1;
