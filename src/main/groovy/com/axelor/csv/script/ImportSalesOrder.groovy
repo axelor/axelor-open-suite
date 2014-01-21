@@ -70,7 +70,7 @@ class ImportSalesOrder {
 				SalesOrder salesOrder = (SalesOrder) bean
 				salesOrderService.computeSalesOrder(salesOrder);
 				if(salesOrder.statusSelect == 3){
-					StockMove stockMove = salesOrderStockMoveService.createStocksMovesFromSalesOrder(salesOrder)
+					salesOrderStockMoveService.createStocksMovesFromSalesOrder(salesOrder)
 					if(salesOrder.invoicingTypeSelect in [1,5]){
 						Invoice invoice = salesOrderInvoiceService.generatePerOrderInvoice(salesOrder)
 						invoice.setInvoiceDate(salesOrder.validationDate)
@@ -78,7 +78,8 @@ class ImportSalesOrder {
 						invoiceService.validate(invoice)
 						invoiceService.ventilate(invoice)
 					}
-					if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
+					StockMove stockMove = StockMove.all().filter("salesOrder = ?1",salesOrder).fetchOne()
+					if(stockMove != null && stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
 						stockMoveService.validate(stockMove);
 						stockMove.realDate = salesOrder.validationDate
 						if(salesOrder.invoicingTypeSelect == 4){

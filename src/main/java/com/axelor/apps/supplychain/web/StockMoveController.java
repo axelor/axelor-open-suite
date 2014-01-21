@@ -174,9 +174,11 @@ public class StockMoveController {
 		Address toAddress = stockMove.getToAddress();
 		String msg = "";
 		if(fromAddress == null)
-			msg = "From address is empty.";
+			fromAddress =  stockMove.getCompany().getAddress();
 		if(toAddress == null)
-			msg = "To address is empty.";
+			toAddress =  stockMove.getCompany().getAddress();
+		if(fromAddress == null || toAddress == null)
+			msg = "Company address is empty.";
 		if (GeneralService.getGeneral().getMapApiSelect() == IAdministration.MAP_API_OSM)
 			msg = "Feature currently not available with Open Street Maps.";
 		if(msg.isEmpty()){
