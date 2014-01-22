@@ -18,8 +18,8 @@
 		<field name="contactDate"/>
 		<field name="userInfo"/>
         <field name="statusSelect"/>
-		<button name="logCall" title="Log Call" icon="img/16px/phone_16px.png" onClick="action-lead-view-create-call"/>
-		<button name="scheduleMeeting" title="Schedule Meeting" icon="img/16px/meeting_16px.png" onClick="action-lead-view-create-meeting"/>
+		<button name="logCall" title="Log Call" icon="icon-phone" onClick="action-lead-view-create-call"/>
+		<button name="scheduleMeeting" title="Schedule Meeting" icon="icon-group" onClick="action-lead-view-create-meeting"/>
 		<button name="sendByEmail" title="Send Email" icon="icon-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
     
