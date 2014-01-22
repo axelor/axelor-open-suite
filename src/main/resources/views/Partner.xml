@@ -16,7 +16,6 @@
 		<button name="logCall" title="Log Call" colSpan="1" icon="icon-phone" help="Log Call" onClick="action-partner-view-create-call"/>
 		<button name="scheduleMeeting" title="Schedule Meeting" colSpan="1" help="Schedule Meeting" icon="icon-group" onClick="action-partner-view-create-meeting"/>
 		<button name="sendByEmail" title="Send Email" colSpan="1" help="Send Email" icon="icon-envelope" onClick="action-send-by-email-with-template"/>
-		<button name="showClientSituationGrid" title="Client Situation" colSpan="1" icon="icon-print" onClick="action-partner-method-show-client-situation" showIf="isContact == false"/>
 	</grid>
     
     <grid name="partner-contact-grid" title="Contacts" model="com.axelor.apps.base.db.Partner">
@@ -27,7 +26,6 @@
 	    <button name="logCall" title="Log Call" colSpan="1" icon="icon-phone" help="Log Call" onClick="action-partner-view-create-call"/>
 		<button name="scheduleMeeting" title="Schedule Meeting" colSpan="1" help="Schedule Meeting" icon="icon-group" onClick="action-partner-view-create-meeting"/>
 		<button name="sendByEmail" title="Send Email" colSpan="1" help="Send Email" icon="icon-envelope" onClick="action-send-by-email-with-template"/>
-		<button name="showClientSituationGrid" title="Client Situation" colSpan="1" icon="icon-print" onClick="action-partner-method-show-client-situation" showIf="isContact == false"/>
 	</grid>
     
      <grid name="partner-grid-group" title="Partner" model="com.axelor.apps.base.db.Partner" groupBy="userInfo">
