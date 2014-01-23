@@ -41,10 +41,12 @@
    		<field name="partner" expr="eval: _parent.clientPartner" if="_parent._model == 'com.axelor.apps.supplychain.db.SalesOrder'"/>
    		<field name="partner" expr="eval: _parent.supplierPartner" if="_parent._model == 'com.axelor.apps.supplychain.db.PurchaseOrder'"/>
    		<field name="partner" expr="eval: _parent.partner" if="_parent._model == 'com.axelor.apps.account.db.Invoice'"/>
+   		<field name="partner" expr="eval: _parent.clientPartner" if="_parent._model == 'com.axelor.apps.protraining.db.ProTraining'"/>
    		<field name="typeSelect" expr="1" if="_parent._model == 'com.axelor.apps.supplychain.db.SalesOrder'"/>
    		<field name="typeSelect" expr="2" if="_parent._model == 'com.axelor.apps.supplychain.db.PurchaseOrder'"/>
    		<field name="typeSelect" expr="1" if="_parent._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; (_parent.operationTypeSelect == 3 || _parent.operationTypeSelect == 4)"/>
    		<field name="typeSelect" expr="2" if="_parent._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; (_parent.operationTypeSelect == 1 || _parent.operationTypeSelect == 2)"/>
+   		<field name="typeSelect" expr="1" if="_parent._model == 'com.axelor.apps.protraining.db.ProTraining'"/>
    		<field name="isActive" expr="true"/>
    		<field name="isDisplayed" expr="true"/>
    		<field name="validFromDate" expr="eval: __date__"/>

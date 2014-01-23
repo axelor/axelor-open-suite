@@ -171,14 +171,15 @@
 	</selection>
 
 	<selection name="partner.customer.type.select">
-		<option value="1">None</option>
+		<option value="1">No</option>
 		<option value="2">Prospect</option>
-		<option value="3">Client</option>
+		<option value="3">Yes</option>
 	</selection>
 	
 	<selection name="partner.supplier.type.select">
-		<option value="1">None</option>
-		<option value="2">Approval</option>
+		<option value="1">No</option>
+		<option value="2">Yes</option>
+		<option value="3">Yes (Approved)</option>
 	</selection>
 	
 	<selection name="partner.partner.type.select">
@@ -395,6 +396,7 @@
 		<option value="inStockMove">Receipt stock move</option>
 		<option value="inventory">Inventory</option>
 		<option value="productTrackingNumber">Product tracking number</option>
+		<option value="proTraining">Professional training</option>
 	</selection>
 
 	<selection name="company.paybox.hash.select">
