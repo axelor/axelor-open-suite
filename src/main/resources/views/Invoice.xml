@@ -284,10 +284,10 @@
     <!-- ACTION ATTRS -->
 	
 	<action-attrs name="action-set-partner-domain">
-		<attribute name="domain" for="partner" expr="eval:'self.isCustomer = true'" if="operationTypeSelect == 1"/>
-		<attribute name="domain" for="partner" expr="eval:'self.isCustomer = true'" if="operationTypeSelect == 2"/>
-		<attribute name="domain" for="partner" expr="eval:'self.isSupplier = true'" if="operationTypeSelect == 3"/>
-		<attribute name="domain" for="partner" expr="eval:'self.isSupplier = true'" if="operationTypeSelect == 4"/>
+		<attribute name="domain" for="partner" expr="eval:'self.customerTypeSelect = 3'" if="operationTypeSelect == 1"/>
+		<attribute name="domain" for="partner" expr="eval:'self.customerTypeSelect = 3'" if="operationTypeSelect == 2"/>
+		<attribute name="domain" for="partner" expr="eval:'self.supplierTypeSelect > 1'" if="operationTypeSelect == 3"/>
+		<attribute name="domain" for="partner" expr="eval:'self.supplierTypeSelect > 1'" if="operationTypeSelect == 4"/>
 		<attribute name="domain" for="contactPartner" expr="eval: &quot;self.id IN (${partner.contactPartnerSet?.collect{it.id}.join(',')})&quot;" if="partner != null"/>
 	</action-attrs>
 	

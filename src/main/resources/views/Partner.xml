@@ -49,15 +49,8 @@
 	    <notebook colSpan="4">
 	        <page name="information" title="Informations">
 	            <group colSpan="4" cols="4" hideIf="isContact">
-	                <group colSpan="2" cols="4" colWidths="20%,20%,40%,20%">
-	                    <field name="isCustomer" hideIf="partnerTypeSelect == 2"/>
-	                    <field name="customerTypeSelect" showTitle="false" hideIf="(isContact &amp;&amp; partnerTypeSelect == 2) || !isCustomer"/>
-	                    <spacer/>
-	                </group>
-	                <group colSpan="2" cols="4" colWidths="20%,20%,40%,20%">
-	                    <field name="isSupplier" hideIf="partnerTypeSelect == 2" onChange="action-set-supplier-type-select"/>
-	                    <field name="supplierTypeSelect" showTitle="false" hideIf="partnerTypeSelect == 2 || isContact || !isSupplier"/>
-	                </group>
+                    <field name="customerTypeSelect" hideIf="(isContact &amp;&amp; partnerTypeSelect == 2)"/>
+                    <field name="supplierTypeSelect" hideIf="partnerTypeSelect == 2 || isContact"/>
 	            </group>
 	            <group title="Partner Details" hideIf="partnerTypeSelect == 2" colSpan="4" cols="4">
 	                <group colSpan="2" cols="2">
