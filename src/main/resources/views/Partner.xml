@@ -83,15 +83,8 @@
 	    <notebook colSpan="4">
 	        <page name="information" title="Informations">
 	            <group colSpan="4" cols="4" hideIf="isContact">
-	                <group colSpan="2" cols="4" colWidths="20%,20%,40%,20%">
-	                    <field name="isCustomer" hideIf="partnerTypeSelect == 2"/>
-	                    <field name="customerTypeSelect" showTitle="false" hideIf="(isContact &amp;&amp; partnerTypeSelect == 2) || !isCustomer"/>
-	                    <spacer/>
-	                </group>
-	                <group colSpan="2" cols="4" colWidths="20%,20%,40%,20%">
-	                    <field name="isSupplier" hideIf="partnerTypeSelect == 2" onChange="action-set-supplier-type-select"/>
-	                    <field name="supplierTypeSelect" showTitle="false" hideIf="partnerTypeSelect == 2 || isContact || !isSupplier"/>
-	                </group>
+                    <field name="customerTypeSelect" hideIf="(isContact &amp;&amp; partnerTypeSelect == 2)"/>
+                    <field name="supplierTypeSelect" hideIf="partnerTypeSelect == 2 || isContact"/>
 	            </group>
 	            <group title="Partner Details" hideIf="partnerTypeSelect == 2" colSpan="4" cols="4">
 	                <group colSpan="2" cols="2">
@@ -412,8 +405,8 @@
     </action-record>
     
     <action-record name="action-partner-record-set-default" model="com.axelor.apps.base.db.Partner">
-    	<field name="isCustomer" expr="eval:true" />
-    	<field name="isSupplier" expr="eval:partnerTypeSelect != 2"/>
+    	<field name="customerTypeSelect" expr="eval: 1" />
+    	<field name="supplierTypeSelect" expr="eval:1"/>
     	<field name="currency" expr="eval:com.axelor.apps.base.db.UserInfo.all().filter('internalUser = ?1',__user__).fetchOne()?.activeCompany?.currency" if="!isContact"/>
     	<field name="invoiceSendingFormatSelect" expr="eval:'emailpaper'" if="!isContact"/>
     	<field name="userInfo"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
@@ -436,10 +429,6 @@
     	<field name="currency" expr="eval:null" if="!isContact"/>
     	<field name="invoiceSendingFormatSelect" expr="eval:null" if="!isContact"/>
     </action-record>
-	
-	<action-record name="action-set-supplier-type-select" model="com.axelor.apps.base.db.Partner">
-		<field name="supplierTypeSelect" expr="eval:isSupplier ? 1 : null"/>
-	</action-record>
 	
 	<action-method name="action-set-partner-seq" >
 		<call class="com.axelor.apps.base.web.PartnerController" method="setPartnerSequence"/>
