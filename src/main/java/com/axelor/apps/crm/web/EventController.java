@@ -32,6 +32,7 @@ package com.axelor.apps.crm.web;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.joda.time.Duration;
@@ -41,6 +42,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.user.UserInfoService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.IEvent;
 import com.axelor.apps.crm.db.Lead;
@@ -63,6 +65,9 @@ public class EventController {
 	
 	@Inject
 	AddressService ads;
+	
+	@Inject
+	UserInfoService  uis;
 	
 	public void computeFromStartDateTime(ActionRequest request, ActionResponse response) {
 		
@@ -196,6 +201,26 @@ public class EventController {
 			}
 			
 		}
+		
+	}
+	
+	public void assignToMe(ActionRequest request, ActionResponse response)  {
+		if(request.getContext().get("id") != null){
+			Lead lead = Lead.find((Long)request.getContext().get("id"));
+			lead.setUserInfo(uis.getUserInfo());
+			if(lead.getStatusSelect() == 1)
+				lead.setStatusSelect(2);
+			eventService.saveLead(lead);
+		}
+		else if(!((List)request.getContext().get("_ids")).isEmpty()){
+			for(Lead lead : Lead.all().filter("id in ?1",request.getContext().get("_ids")).fetch()){
+				lead.setUserInfo(uis.getUserInfo());
+				if(lead.getStatusSelect() == 1)
+					lead.setStatusSelect(2);
+				eventService.saveLead(lead);
+			}
+		}
+		response.setReload(true);
 		
 	}
 }
