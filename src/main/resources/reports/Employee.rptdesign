@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 3.7.2.v20120213 Build &lt;3.7.2.v20120214-1408></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.2.2.v201301221637 Build &lt;4.2.2.v20130206-1509></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -11,6 +11,35 @@
             <property name="name">odaUser</property>
             <property name="id">7</property>
             <expression name="value" type="javascript">params["UserName"].value</expression>
+        </structure>
+        <structure>
+            <property name="name">odaDriverClass</property>
+            <property name="id">7</property>
+        </structure>
+        <structure>
+            <property name="name">odaAutoCommit</property>
+            <property name="id">7</property>
+        </structure>
+        <structure>
+            <property name="name">odaIsolationMode</property>
+            <property name="id">7</property>
+        </structure>
+        <structure>
+            <property name="name">odaPassword</property>
+            <property name="id">7</property>
+            <expression name="value" type="javascript">params["Password"].value</expression>
+        </structure>
+        <structure>
+            <property name="name">odaJndiName</property>
+            <property name="id">7</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileName</property>
+            <property name="id">7</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileStorePath</property>
+            <property name="id">7</property>
         </structure>
     </list-property>
     <property name="units">in</property>
@@ -2542,91 +2571,6 @@ where Employee.id = ?]]></xml-property>
                 <cell id="4712">
                     <property name="colSpan">1</property>
                     <property name="rowSpan">3</property>
-                    <image id="4276">
-                        <property name="height">144px</property>
-                        <property name="width">262px</property>
-                        <property name="dataSet">CandidateDS</property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">name</property>
-                                <expression name="expression" type="javascript">dataSetRow["name"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">first_name</property>
-                                <expression name="expression" type="javascript">dataSetRow["first_name"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">mobile_phone</property>
-                                <expression name="expression" type="javascript">dataSetRow["mobile_phone"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">fixed_phone</property>
-                                <expression name="expression" type="javascript">dataSetRow["fixed_phone"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">email</property>
-                                <expression name="expression" type="javascript">dataSetRow["email"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">picture</property>
-                                <expression name="expression" type="javascript">dataSetRow["picture"]</expression>
-                                <property name="dataType">blob</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">addressl4</property>
-                                <expression name="expression" type="javascript">dataSetRow["addressl4"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">addressl6</property>
-                                <expression name="expression" type="javascript">dataSetRow["addressl6"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">start_date</property>
-                                <expression name="expression" type="javascript">dataSetRow["start_date"]</expression>
-                                <property name="dataType">date</property>
-                            </structure>
-                            <structure>
-                                <property name="name">end_date</property>
-                                <expression name="expression" type="javascript">dataSetRow["end_date"]</expression>
-                                <property name="dataType">date</property>
-                            </structure>
-                            <structure>
-                                <property name="name">position_name</property>
-                                <expression name="expression" type="javascript">dataSetRow["position_name"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">partner_name</property>
-                                <expression name="expression" type="javascript">dataSetRow["partner_name"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">description</property>
-                                <expression name="expression" type="javascript">dataSetRow["description"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">title</property>
-                                <expression name="expression" type="javascript">dataSetRow["title"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">name_join_select</property>
-                                <expression name="expression" type="javascript">dataSetRow["name_join_select"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="source">embed</property>
-                        <property name="imageName">logo_trsb.jpg</property>
-                    </image>
                 </cell>
             </row>
             <row id="4713">
