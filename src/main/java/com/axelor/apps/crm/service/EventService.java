@@ -84,6 +84,10 @@ public class EventService {
 	}
 	
 	
+	@Transactional
+	public void saveLead(Lead lead){
+		lead.save();
+	}
 	
 	
 	
