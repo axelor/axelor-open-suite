@@ -154,6 +154,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
         this.isTaxInvoice = isTaxInvoice;
         this.today = GeneralService.getTodayDate();
         this.currencyService = new CurrencyService(this.today);
+        this.accountManagementService = new AccountManagementService();
     }
 	
 	public Invoice getInvoice() {
@@ -230,7 +231,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 			if(invoice.getOperationTypeSelect() == IInvoice.SUPPLIER_PURCHASE || invoice.getOperationTypeSelect() == IInvoice.SUPPLIER_REFUND)  {
 				isPurchase = true;
 			}
-			taxLine =  new AccountManagementService().getTaxLine(invoice.getInvoiceDate(), product, invoice.getCompany(), partner.getFiscalPosition(), isPurchase);
+			taxLine =  accountManagementService.getTaxLine(invoice.getInvoiceDate(), product, invoice.getCompany(), partner.getFiscalPosition(), isPurchase);
 		}
 		invoiceLine.setTaxLine(taxLine);
 		

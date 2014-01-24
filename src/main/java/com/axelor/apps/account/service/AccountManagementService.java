@@ -46,18 +46,11 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductFamily;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
-import com.google.inject.Inject;
 
 public class AccountManagementService {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(AccountManagementService.class);
 
-	@Inject
-	private TaxService taxService;
-	
-	@Inject
-	private FiscalPositionService fiscalPositionService;
-	
 
 	/**
 	 * Obtenir la bonne configuration comptable en fonction du produit et de la société.
@@ -182,7 +175,7 @@ public class AccountManagementService {
 		LOG.debug("Obtention du compte comptable pour le produit {} (société : {}, achat ? {})",
 			new Object[]{product.getCode(), company.getName(), isPurchase});
 		
-		return fiscalPositionService.getTax(
+		return new FiscalPositionService().getTax(
 					fiscalPosition,
 					this.getProductTax(
 						this.getAccountManagement(product, company), 
@@ -218,7 +211,7 @@ public class AccountManagementService {
 	 */
 	public TaxLine getTaxLine(LocalDate date, Product product, Company company, FiscalPosition fiscalPosition, boolean isPurchase) throws AxelorException {
 
-		TaxLine taxLine = taxService.getTaxLine(this.getProductTax(product, company, fiscalPosition, isPurchase), date);
+		TaxLine taxLine = new TaxService().getTaxLine(this.getProductTax(product, company, fiscalPosition, isPurchase), date);
 		if(taxLine != null)  {
 			return taxLine;
 		}
