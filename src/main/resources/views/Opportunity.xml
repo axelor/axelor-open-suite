@@ -3,7 +3,10 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    <grid name="opportunity-grid" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity">
+    <grid name="opportunity-grid" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" orderBy="-salesStageSelect">
+    	<toolbar>
+    		<button name="grabLeads" help="Assign to me" icon="icon-suitcase" onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe" />
+    	</toolbar>
 		<field name="name"/>
         <field name="partner"/>
 		<field name="lead"/>
@@ -12,13 +15,13 @@
 		<field name="probability"/>
         <field name="expectedCloseDate"/>
         <field name="userInfo"/>
-        <button name="previous-stage" icon="icon-chevron-sign-left" help="Previous Stage" onClick="action-opportunity-set-previous-stage,action-opportunity-save-sales-stage-select" readonlyIf="salesStageSelect &lt; 2" />
+        <button name="grabLead" help="Assign to me" icon="icon-suitcase" onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe" readonlyIf="userInfo != null" />
         <button name="next-stage" icon="icon-chevron-sign-right" help="Next Stage" onClick="action-opportunity-set-next-stage,action-opportunity-save-sales-stage-select" readonlyIf="salesStageSelect &gt; 7" />
         <button name="closed-won" icon="icon-ok-sign" help="Closed won" onClick="action-opportunity-set-closed-won,action-opportunity-save-sales-stage-select" readonlyIf="salesStageSelect &gt; 8" />
         <button name="closed-lost" icon="icon-minus-sign" help="Closed lost" onClick="action-opportunity-set-closed-lost,action-opportunity-save-sales-stage-select" readonlyIf="salesStageSelect &gt; 8" />
     </grid>
-	
-   <grid groupBy="partner" name="opportunity-grid-group" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity">
+	 
+   <grid name="opportunity-grid-group" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" groupBy="partner"> 
    		<field name="name"/>
    		<field name="userInfo"/>
         <field name="partner"/>
@@ -73,6 +76,8 @@
 			</group>
 			<group title="Assigned to" colSpan="2" cols="2" canCollapse="true">
 				<field name="userInfo"/>
+				<label title="" />
+				<button name="grabLead" colSpan="1" title="Assign to me" icon="icon-suitcase" onClick="save,com.axelor.apps.crm.web.OpportunityController:assignToMe" />
 				<field name="team"/>
 				<field name="company" widget="SuggestBox"/>
 			</group>

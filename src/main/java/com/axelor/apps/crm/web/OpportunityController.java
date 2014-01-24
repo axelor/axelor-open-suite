@@ -30,6 +30,10 @@
  */
 package com.axelor.apps.crm.web;
 
+import java.util.List;
+
+import com.axelor.apps.base.service.user.UserInfoService;
+import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.service.OpportunityService;
 import com.axelor.exception.AxelorException;
@@ -41,10 +45,29 @@ public class OpportunityController {
 	@Inject
 	OpportunityService ose;
 	
+	@Inject
+	UserInfoService uis;
+	
 	public void saveOpportunitySalesStage(ActionRequest request, ActionResponse response) throws AxelorException {
 		Opportunity opportunity = request.getContext().asType(Opportunity.class);
 		Opportunity persistOpportunity = Opportunity.find(opportunity.getId());
 		persistOpportunity.setSalesStageSelect(opportunity.getSalesStageSelect());
 		ose.saveOpportunity(persistOpportunity);
 	}
+	
+	public void assignToMe(ActionRequest request, ActionResponse response)  {
+		if(request.getContext().get("id") != null){
+			Opportunity opportunity = Opportunity.find((Long)request.getContext().get("id"));
+			opportunity.setUserInfo(uis.getUserInfo());
+			ose.saveOpportunity(opportunity);
+		}
+		else if(!((List)request.getContext().get("_ids")).isEmpty()){
+			for(Opportunity opportunity : Opportunity.all().filter("id in ?1",request.getContext().get("_ids")).fetch()){
+				opportunity.setUserInfo(uis.getUserInfo());
+				ose.saveOpportunity(opportunity);
+			}
+		}
+		response.setReload(true);
+	}
+	
 }
