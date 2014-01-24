@@ -27,6 +27,7 @@
         <structure>
             <property name="name">odaPassword</property>
             <property name="id">23</property>
+            <expression name="value" type="javascript">params["Password"].value</expression>
         </structure>
         <structure>
             <property name="name">odaJndiName</property>
