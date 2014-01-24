@@ -13,6 +13,7 @@
 	<integer name="statusSelect" title="Status" selection="crm.event.status.select"/>  
   	<datetime name="startDateTime" title="Start Date"/>
   	<datetime name="endDateTime" title="End Date"/>
+	<date name="limitDateT" title="Limit Date"/>
   	
   	<long name="duration" title="Duration"/>
   	
