@@ -288,7 +288,7 @@
 	    <field name="subject"/>
 	    <field name="contactPartner"/>
 		<field name="startDateTime"/>
-	    <field name="endDateTime"/>
+	    <field name="limitDateT"/>
 	    <field name="taskStatusSelect"/>    
 	    <field name="prioritySelect"/>
 	    <field name="userInfo"/>
@@ -311,11 +311,12 @@
 	        <separator title="Description" colSpan="4"/>
 	        <field name="description" colSpan="4" widget="TEXT[height=3]" showTitle="false" placeholder="Description"/>
 	        <break/>
-	        <group colSpan="4" css="groupTitle" cols="6" colWidths="25*">
-	            <separator title="Dates" colSpan="6"/>
+	        <group colSpan="4" css="groupTitle" cols="4" colWidths="25*">
+	            <separator title="Dates" colSpan="4"/>
 	            <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time"/>
+				<field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration"/>
 	            <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time"/>
-	            <field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration"/>
+				<field name="limitDateT"/>
 	        </group>
 	    </group>
 	    <group colSpan="1" cols="2">
@@ -384,11 +385,12 @@
 	            <field name="userInfo" onChange="action-event-record-ticket-responsible-user-info"/>
 	            <field name="responsibleUserInfo"/>
 	        </group>
-	        <group colSpan="4" css="groupTitle" cols="6">
-	                <separator title="Dates" colSpan="6"/>
+	        <group colSpan="4" css="groupTitle" cols="4">
+	                <separator title="Dates" colSpan="4"/>
 	                <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time"/>
+					<field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration"/>
 	                <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time"/>
-	                <field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration"/>
+					<field name="limitDateT"/>
 	        </group>
 	    </group>
 	    <group colSpan="1" cols="2">
