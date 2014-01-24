@@ -60,7 +60,6 @@
 	                        <button name="validate" title="Validate" showIf="statusSelect == 3" colSpan="1" onClick="action-purchase-order-validate-location,save,action-purchase-order-create-stock-move,action-purchase-order-record-validate,save"/>
 	                        <button name="completed" title="Completed" showIf="statusSelect == 4" colSpan="1" onClick="action-purchase-order-record-completed,save"/>
 	                        <button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2" colSpan="1" onClick="save,action-purchase-order-record-cancel"/>
-	                        <button name="generateDeliveryOrder" title="Generate delivery" showIf="statusSelect == 4" colSpan="1"/>
 	                        <button name="showSupplierInvoice" title="Show invoice" colSpan="1" onClick="action-purchase-order-show-supplier-invoice"/>
 	                        <button name="generateControlInvoice" title="Generate control invoice" showIf="statusSelect == 4" colSpan="1" onClick="save,action-purchase-order-method-generate-control-invoice"/>
 	                    </group>

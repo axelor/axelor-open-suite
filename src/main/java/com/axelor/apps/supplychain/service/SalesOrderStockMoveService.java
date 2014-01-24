@@ -108,6 +108,7 @@ public class SalesOrderStockMoveService {
 		}
 		
 		StockMove stockMove = stockMoveService.createStockMove(
+				null,
 				salesOrder.getDeliveryAddress(), 
 				company, 
 				salesOrder.getClientPartner(), 

@@ -124,9 +124,9 @@ public class StockMoveService {
 	 * @return l'objet StockMove
 	 * @throws AxelorException Aucune séquence de StockMove (Livraison) n'a été configurée
 	 */
-	public StockMove createStockMove(Address toAddress, Company company, Partner clientPartner, Location fromLocation, Location toLocation, LocalDate estimatedDate) throws AxelorException {
+	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, Location fromLocation, Location toLocation, LocalDate estimatedDate) throws AxelorException {
 
-		return this.createStockMove(toAddress, company, clientPartner, fromLocation, toLocation, null, estimatedDate);
+		return this.createStockMove(fromAddress, toAddress, company, clientPartner, fromLocation, toLocation, null, estimatedDate);
 	}
 	
 	
@@ -139,9 +139,10 @@ public class StockMoveService {
 	 * @return l'objet StockMove
 	 * @throws AxelorException Aucune séquence de StockMove (Livraison) n'a été configurée
 	 */
-	public StockMove createStockMove(Address toAddress, Company company, Partner clientPartner, Location fromLocation, Location toLocation, LocalDate realDate, LocalDate estimatedDate) throws AxelorException {
+	public StockMove createStockMove(Address fromAddress, Address toAddress, Company company, Partner clientPartner, Location fromLocation, Location toLocation, LocalDate realDate, LocalDate estimatedDate) throws AxelorException {
 
 		StockMove stockMove = new StockMove();
+		stockMove.setFromAddress(fromAddress);
 		stockMove.setToAddress(toAddress);
 		stockMove.setCompany(company);
 		stockMove.setStatusSelect(IStockMove.STATUS_DRAFT);

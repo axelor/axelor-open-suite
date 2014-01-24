@@ -293,7 +293,7 @@ public class InventoryService {
 	
 	public StockMove createStockMoveHeader(Inventory inventory, Company company, Location toLocation, LocalDate inventoryDate, String name) throws AxelorException  {
 
-		StockMove stockMove = stockMoveService.createStockMove(null, company, null, 
+		StockMove stockMove = stockMoveService.createStockMove(null, null, company, null, 
 				supplychainConfigService.getInventoryVirtualLocation(supplychainConfigService.getSupplychainConfig(company)), toLocation, inventoryDate, inventoryDate);
 		
 		stockMove.setTypeSelect(IStockMove.TYPE_INTERNAL);
