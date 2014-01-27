@@ -76,7 +76,8 @@ public class TaskInvoiceService {
 		
 		Project project = task.getProject();
 		
-		InvoiceGenerator invoiceGenerator = new InvoiceGenerator(IInvoice.CLIENT_SALE, project.getCompany(), project.getClientPartner(), project.getContactPartner(), project, null) {	
+		InvoiceGenerator invoiceGenerator = new InvoiceGenerator(IInvoice.CLIENT_SALE, project.getCompany(), project.getClientPartner(), 
+				project.getContactPartner(), project, null, project.getName(), null) {	
 			@Override
 			public Invoice generate() throws AxelorException {
 				
