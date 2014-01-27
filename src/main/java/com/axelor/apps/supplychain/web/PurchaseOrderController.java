@@ -37,8 +37,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.AxelorSettings;
+import com.axelor.apps.base.db.IPartner;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.supplychain.db.PurchaseOrder;
+import com.axelor.apps.supplychain.db.SalesOrder;
 import com.axelor.apps.supplychain.service.PurchaseOrderService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.exception.AxelorException;
@@ -100,6 +103,17 @@ public class PurchaseOrderController {
 			response.setValue("location", purchaseOrderService.getLocation(purchaseOrder.getCompany()));
 		}
 	}
+	
+	
+	public void validateSupplier(ActionRequest request, ActionResponse response) {
+		
+		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+			
+		response.setValue("supplierPartner", purchaseOrderService.validateSupplier(purchaseOrder));
+		
+	}
+	
+	
 	
 	/**
 	 * Fonction appeler par le bouton imprimer

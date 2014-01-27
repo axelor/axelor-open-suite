@@ -38,6 +38,8 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.AxelorSettings;
 import com.axelor.apps.base.db.IAdministration;
+import com.axelor.apps.base.db.IPartner;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.UserInfo;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.googleapps.db.GoogleFile;
@@ -201,4 +203,14 @@ public class SalesOrderController {
 			}
 		}
 	}
+	
+	
+	public void validateCustomer(ActionRequest request, ActionResponse response) {
+		
+		SalesOrder salesOrder = request.getContext().asType(SalesOrder.class);
+		
+		response.setValue("clientPartner", salesOrderService.get().validateCustomer(salesOrder));
+		
+	}
+	
 }

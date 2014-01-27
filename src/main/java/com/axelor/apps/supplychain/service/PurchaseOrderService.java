@@ -40,6 +40,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.IAdministration;
+import com.axelor.apps.base.db.IPartner;
 import com.axelor.apps.base.db.IProduct;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
@@ -55,6 +56,7 @@ import com.axelor.apps.supplychain.db.Location;
 import com.axelor.apps.supplychain.db.PurchaseOrder;
 import com.axelor.apps.supplychain.db.PurchaseOrderLine;
 import com.axelor.apps.supplychain.db.PurchaseOrderLineTax;
+import com.axelor.apps.supplychain.db.SalesOrder;
 import com.axelor.apps.supplychain.db.StockMove;
 import com.axelor.apps.supplychain.db.StockMoveLine;
 import com.axelor.apps.supplychain.db.SupplychainConfig;
@@ -270,5 +272,15 @@ public class PurchaseOrderService {
 	public Location getLocation(Company company)  {
 		
 		return Location.all().filter("company = ? and isDefaultLocation = ? and typeSelect = ?", company, true, ILocation.INTERNAL).fetchOne();
+	}
+	
+	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public Partner validateSupplier(PurchaseOrder purchaseOrder)  {
+		
+		Partner supplierPartner = Partner.find(purchaseOrder.getSupplierPartner().getId());
+		supplierPartner.setSupplierTypeSelect(IPartner.SUPPLIER_TYPE_SELECT_APPROVED);
+		
+		return supplierPartner.save();
 	}
 }

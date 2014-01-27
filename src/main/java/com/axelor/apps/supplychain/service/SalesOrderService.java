@@ -36,6 +36,8 @@ import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.base.db.IPartner;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.supplychain.db.SalesOrder;
 import com.axelor.apps.supplychain.db.SalesOrderLine;
@@ -151,5 +153,14 @@ public class SalesOrderService {
 
 	}
 
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public Partner validateCustomer(SalesOrder salesOrder)  {
+		
+		Partner clientPartner = Partner.find(salesOrder.getClientPartner().getId());
+		clientPartner.setCustomerTypeSelect(IPartner.CUSTOMER_TYPE_SELECT_YES);
+		
+		return clientPartner.save();
+	}
+	
 }
 

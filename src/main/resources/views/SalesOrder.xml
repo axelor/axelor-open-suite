@@ -68,7 +68,7 @@
 	                        <group colSpan="1" cols="1">
 	                            <button name="compute" title="Compute" hideIf="statusSelect == 3" colSpan="1" onClick="save,action-sales-order-method-compute,save"/>
 	                            <button name="confirm" title="Confirm" showIf="statusSelect == 1 || statusSelect == 4" colSpan="1" onClick="save,action-sales-order-set-sequence,action-sales-order-method-compute,action-sales-order-record-confirm,save"/>
-	                            <button name="validate" title="Validate" showIf="statusSelect == 2" colSpan="1" onClick="save,action-sale-order-validate-check-location,action-sales-order-create-tasks,action-sales-order-record-validate,action-sales-order-attrs-validated-read-only,save,action-sales-order-create-stock-move"/>
+	                            <button name="validate" title="Validate" showIf="statusSelect == 2" colSpan="1" onClick="save,action-sale-order-validate-check-location,action-sales-order-create-tasks,action-sales-order-record-validate,action-sales-order-attrs-validated-read-only,save,action-sales-order-create-stock-move,action-sales-order-method-validate-customer,save"/>
 	                            <button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2" colSpan="1" onClick="save,action-sales-order-record-cancel"/>
 	                            <button name="generateInvoice" title="Generate invoice" showIf="statusSelect == 3 &amp;&amp; (invoicingTypeSelect == 1 || invoicingTypeSelect == 5)" colSpan="2" onClick="save,action-sales-order-method-generate-invoice"/>
 	                        </group>
@@ -210,7 +210,11 @@
     </action-method>
     
     <action-method name="action-sales-order-method-compute">
-    	<call class="com.axelor.apps.supplychain.web.SalesOrderController" method="compute"/>
+        <call class="com.axelor.apps.supplychain.web.SalesOrderController" method="compute"/>
+  	</action-method>
+    
+    <action-method name="action-sales-order-method-validate-customer">
+    	<call class="com.axelor.apps.supplychain.web.SalesOrderController" method="validateCustomer"/>
     </action-method>
     
     <action-method name="action-sales-order-method-generate-invoice">
