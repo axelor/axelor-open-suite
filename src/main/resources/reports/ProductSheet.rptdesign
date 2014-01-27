@@ -116,6 +116,17 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
+        <scalar-parameter name="Password" id="3675">
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
     </parameters>
     <data-sources>
         <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Data Source" id="209">
@@ -941,7 +952,7 @@ LangTranslate.domain = 'axelor-base' and LangTranslate.type = 'other']]></xml-pr
                     <property name="borderTopStyle">solid</property>
                     <property name="borderTopWidth">thin</property>
                     <text id="3930">
-                        <property name="marginTop">-5pt</property>
+                        <property name="marginTop">0pt</property>
                         <property name="marginLeft">4pt</property>
                         <property name="marginBottom">4pt</property>
                         <property name="marginRight">4pt</property>
