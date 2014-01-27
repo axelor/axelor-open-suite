@@ -204,7 +204,7 @@ public class EventController {
 		
 	}
 	
-	public void assignToMe(ActionRequest request, ActionResponse response)  {
+	public void assignToMeLead(ActionRequest request, ActionResponse response)  {
 		if(request.getContext().get("id") != null){
 			Lead lead = Lead.find((Long)request.getContext().get("id"));
 			lead.setUserInfo(uis.getUserInfo());
@@ -218,6 +218,22 @@ public class EventController {
 				if(lead.getStatusSelect() == 1)
 					lead.setStatusSelect(2);
 				eventService.saveLead(lead);
+			}
+		}
+		response.setReload(true);
+		
+	}
+	
+	public void assignToMeEvent(ActionRequest request, ActionResponse response)  {
+		if(request.getContext().get("id") != null){
+			Event event = Event.find((Long)request.getContext().get("id"));
+			event.setUserInfo(uis.getUserInfo());
+			eventService.saveEvent(event);
+		}
+		else if(!((List)request.getContext().get("_ids")).isEmpty()){
+			for(Event event : Event.all().filter("id in ?1",request.getContext().get("_ids")).fetch()){
+				event.setUserInfo(uis.getUserInfo());
+				eventService.saveEvent(event);
 			}
 		}
 		response.setReload(true);
