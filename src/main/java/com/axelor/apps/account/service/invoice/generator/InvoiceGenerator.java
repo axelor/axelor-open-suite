@@ -80,9 +80,13 @@ public abstract class InvoiceGenerator {
 	protected Project project;
 	protected LocalDate today;
 	protected PriceList priceList;
+	protected String internalReference;
+	protected String externalReference;
+	
+	
 	
 	protected InvoiceGenerator(int operationType, Company company,PaymentCondition paymentCondition, PaymentMode paymentMode, Address mainInvoicingAddress, 
-			Partner partner, Partner contactPartner, Currency currency, Project project, PriceList priceList) throws AxelorException {
+			Partner partner, Partner contactPartner, Currency currency, Project project, PriceList priceList, String internalReference, String externalReference) throws AxelorException {
 		
 		this.operationType = operationType;
 		this.company = company;
@@ -94,6 +98,8 @@ public abstract class InvoiceGenerator {
 		this.project = project;
 		this.currency = currency;
 		this.priceList = priceList;
+		this.internalReference = internalReference;
+		this.externalReference = externalReference;
 		
 		this.today = GeneralService.getTodayDate();
 		this.exceptionMsg = GeneralService.getExceptionInvoiceMsg();
@@ -110,7 +116,8 @@ public abstract class InvoiceGenerator {
 	 * @param contactPartner
 	 * @throws AxelorException
 	 */
-	protected InvoiceGenerator(int operationType, Company company, Partner partner, Partner contactPartner, Project project, PriceList priceList) throws AxelorException {
+	protected InvoiceGenerator(int operationType, Company company, Partner partner, Partner contactPartner, Project project, PriceList priceList, 
+			String internalReference, String externalReference) throws AxelorException {
 		
 		this.operationType = operationType;
 		this.company = company;
@@ -118,6 +125,8 @@ public abstract class InvoiceGenerator {
 		this.contactPartner = contactPartner;
 		this.priceList = priceList;
 		this.project = project;
+		this.internalReference = internalReference;
+		this.externalReference = externalReference;
 		
 		this.today = GeneralService.getTodayDate();
 		this.exceptionMsg = GeneralService.getExceptionInvoiceMsg();
@@ -217,6 +226,10 @@ public abstract class InvoiceGenerator {
 		invoice.setStatus(Status.all().filter("code = 'dra'").fetchOne());
 		
 		invoice.setPriceList(priceList);
+		
+		invoice.setInternalReference(internalReference);
+		
+		invoice.setExternalReference(externalReference);
 		
 		initCollections(invoice);
 		
