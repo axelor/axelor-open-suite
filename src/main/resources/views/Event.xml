@@ -85,7 +85,7 @@
 			    <break/>
 			     <group title="Linked to" colSpan="4" cols="4">
 			            <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
-			            <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
+			            <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid" onChange="action-event-record-client-partner" onSelect="action-event-attrs-contact-partner-domain"/>
 			            <field name="lead"/>
 			            <break/>
 			            <separator title="Related to" colSpan="4"/>
@@ -174,7 +174,7 @@
 	        </group>
 	        <group title="Linked to" colSpan="2" cols="2" readonlyIf="statusSelect == 2">
 	            <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
-	            <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
+	            <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid" onChange="action-event-record-client-partner" onSelect="action-event-attrs-contact-partner-domain"/>
 	            <field name="lead"/>
 	            <field name="relatedToSelect" widget="RefSelect[related=relatedToSelectId]"/>
 	        </group>
@@ -255,7 +255,7 @@
 	        </group>
 	        <group title="Linked to" colSpan="2" cols="2" readonlyIf="statusSelect == 2">
 	            <field name="clientPartner" form-view="partner-form" grid-view="partner-grid" onChange="action-meeting-set-location-partner"/>
-	            <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid" onChange="action-meeting-set-location-contact"/>
+	            <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid" onChange="action-event-record-client-partner,action-meeting-set-location-contact" onSelect="action-event-attrs-contact-partner-domain"/>
 	            <field name="lead" onChange="action-meeting-set-location-lead"/>
 	            <field name="relatedToSelect" widget="RefSelect[related=relatedToSelectId]"/>
 	        </group>
@@ -326,7 +326,7 @@
 	        </group>
 	        <group title="Linked to" colSpan="2" cols="2" readonlyIf="taskStatusSelect == 3">
 	            <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
-	            <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
+	            <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid" onChange="action-event-record-client-partner" onSelect="action-event-attrs-contact-partner-domain"/>
 	            <field name="lead"/>
 	            <field name="relatedToSelect" widget="RefSelect[related=relatedToSelectId]"/>
 	        </group>
@@ -401,7 +401,7 @@
 	        </group>
 	        <group title="Linked to" colSpan="2" cols="2" readonlyIf="ticketStatusSelect == 5">
 	            <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
-	            <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
+	            <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid" onChange="action-event-record-client-partner" onSelect="action-event-attrs-contact-partner-domain"/>
 	        </group>
 	    </group>
 	    <spacer/>
@@ -434,10 +434,74 @@
 	    </notebook>
 	</form>
     
+
+   
+<!--    ACTION GROUP -->
+    
+    <action-group name="action-event-new-record">
+    	<action name="action-event-default-record"/>
+    	<action name="action-event-record-default-duration" if="typeSelect != 5"/>
+    	<action name="action-ticket-record-new" if="typeSelect == 5"/> <!-- typeSelect == 5: ticket -->
+    	<action name="action-event-default-record-userinfo" if="_lead == null &amp;&amp; _partner == null"/>
+    	<action name="action-event-record-event-from-lead" if="_lead != null"/>
+    	<action name="action-event-record-event-from-partner" if="_partner != null"/>
+    	<action name="action-event-record-call-status-select" if="typeSelect == 1 &amp;&amp; (_lead != null || _partner != null)"/>
+    	<action name="action-event-record-status-select" if="typeSelect == 2 || typeSelect == 1"/>
+    	<action name="action-event-record-task-status-select" if="typeSelect == 3"/>
+    	<action name="action-event-record-event-from-sales-order" if="_salesOrder != null" />
+    </action-group>
+    
+    
+<!--     ACTION ATTRIBUTS -->
+    
     <action-attrs name="action-event-attrs-watchers-domain">
     	<attribute name="domain" for="userInfoSet" expr="eval: &quot; self.id IN (${project?.memberUserInfoSet?.collect{it.id}.join(',')})&quot;" if="project?.memberUserInfoSet?.collect{it.id}?.size() > 0"/>
     	<attribute name="domain" for="userInfoSet" expr="eval:" if="project?.memberUserInfoSet?.collect{it.id}?.size() == 0"/>
     </action-attrs>
+    
+    <action-attrs name="action-event-ticket-attrs-default">
+    	<attribute name="hidden" for="responsibleUserInfo" expr="eval: true" if="_clientView"/>
+    	<attribute name="required" for="project" expr="eval: true" if="typeSelect == 5"/>
+    </action-attrs>
+    
+    <action-attrs name="action-event-attrs-team-domain">
+    	<attribute name="domain" for="team" expr="eval: &quot;self.id IN (${userInfo?.teamSet?.collect{it.id}.join(',')})&quot;" if="userInfo?.teamSet?.collect{it.id}?.size() > 0"/>
+    </action-attrs>
+    
+    <action-attrs name="action-event-attrs-contact-partner-domain">
+    	<attribute name="domain" for="contactPartner" expr="eval: &quot;self.isContact = true AND self.id IN (${(clientPartner?.contactPartnerSet != null &amp;&amp; !clientPartner.contactPartnerSet.empty)?clientPartner.contactPartnerSet.collect{it.id}.join(','):'null,null'})&quot;" if="clientPartner"/>
+    </action-attrs>
+    
+<!--     ACTION RECORD -->
+
+ 	<action-record name="action-event-record-client-partner" model="com.axelor.apps.crm.db.Event">
+    	<field name="clientPartner" expr="eval: contactPartner?.mainPartner"/>
+    </action-record>
+    
+   	<action-record name="action-event-default-record" model="com.axelor.apps.crm.db.Event">
+    	<field name="startDateTime" expr="eval: __time__" if="startDateTime == null"/>
+    	<field name="typeSelect" expr="eval: _typeSelect"/>
+    </action-record>
+    
+    <action-record name="action-event-record-task-status-select" model="com.axelor.apps.crm.db.Event">
+    	<field name="taskStatusSelect" expr="1" if="typeSelect == 3"/>
+    	<field name="progressSelect" expr="0"/>
+    	<field name="prioritySelect" expr="2" />
+    </action-record>
+    
+    <action-record name="action-event-record-status-select" model="com.axelor.apps.crm.db.Event">
+    	<field name="statusSelect" expr="1" if="typeSelect == 1 || typeSelect == 2"/>
+    </action-record>
+    
+    <action-record name="action-ticket-record-new" model="com.axelor.apps.crm.db.Event">
+    	<field name="ticketStatusSelect" expr="1"/>
+    	<field name="prioritySelect" expr="eval: _prioritySelect"/>
+    	<field name="progressSelect" expr="0"/>
+    </action-record>
+    
+    <action-record name="action-event-record-default-duration" model="com.axelor.apps.crm.db.Event">
+    	<field name="duration" expr="3600"/>
+    </action-record>
     
     <action-record name="action-event-default-record-userinfo" model="com.axelor.apps.crm.db.Event">
     	<field name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" if="typeSelect == 1 || typeSelect == 2 || typeSelect == 3"/>
@@ -448,16 +512,75 @@
     	<field name="responsibleUserInfo" expr="eval: userInfo" if="responsibleUserInfo == null"/>
     </action-record>
     
-    <action-attrs name="action-event-attrs-team-domain">
-    	<attribute name="domain" for="team" expr="eval: &quot;self.id IN (${userInfo?.teamSet?.collect{it.id}.join(',')})&quot;" if="userInfo?.teamSet?.collect{it.id}?.size() > 0"/>
-    </action-attrs>
-    
-    <action-record name="action-event-default-record" model="com.axelor.apps.crm.db.Event">
-    	<field name="startDateTime" expr="eval: __time__" if="startDateTime == null"/>
-    	<field name="typeSelect" expr="eval: _typeSelect"/>
+    <action-record name="action-event-record-event-from-lead" model="com.axelor.apps.crm.db.Event">
+    	<field name="lead" expr="eval: _lead"/>
+    	<field name="description" expr="eval: _lead.description"/>
+    	<field name="userInfo" expr="eval: _lead.userInfo"/>
+    	<field name="team" expr="eval: _lead.team"/>
     </action-record>
     
-    <action-method name="action-event-set-sequence">
+    <action-record model="com.axelor.apps.crm.db.Event" name="action-event-record-event-from-sales-order">
+	    <field name="clientPartner" expr="eval:_salesOrder.clientPartner?.id != null ? com.axelor.apps.base.db.Partner.find(_salesOrder.clientPartner.id) : _salesOrder.clientPartner"/>
+	    <field name="contactPartner" expr="eval:_salesOrder.contactPartner?.id != null ? com.axelor.apps.base.db.Partner.find(_salesOrder.contactPartner.id) : _salesOrder.contactPartner"/>
+	    <field if="_salesOrder.id != null" name="relatedToSelect" expr="eval:'com.axelor.apps.supplychain.db.SalesOrder'"/>
+	</action-record>
+    
+    <action-record name="action-event-record-event-from-partner" model="com.axelor.apps.crm.db.Event">
+    	<field name="clientPartner" expr="eval: _partner" if="_partner.isContact == false"/>
+    	<field name="clientPartner" expr="eval: _partner.mainPartner" if="_partner.isContact == true"/>
+    	<field name="contactPartner" expr="eval: _partner" if="_partner.isContact == true"/>
+    	<field name="description" expr="eval: _partner.description"/>
+    	<field name="userInfo" expr="eval: _partner.userInfo"/>
+    	<field name="team" expr="eval: _partner.team"/>
+    </action-record>
+    
+    <action-record name="action-meeting-set-location-partner" model="com.axelor.apps.crm.db.Event">
+		<field name="location" expr="eval:clientPartner?.mainInvoicingAddress?.fullName"/>
+	</action-record>
+	<action-record name="action-meeting-set-location-contact" model="com.axelor.apps.crm.db.Event">
+		<field name="location" expr="eval:contactPartner?.mainInvoicingAddress?.fullName"/>
+	</action-record>
+	<action-record name="action-meeting-set-location-lead" model="com.axelor.apps.crm.db.Event">
+		<field name="location" expr="eval:(lead?.primaryAddress != null ? lead.primaryAddress+', ' : '')+(lead?.primaryPostalCode != null ? lead.primaryPostalCode+' ' : '')+(lead?.primaryCity != null ? lead.primaryCity: '')"/>
+	</action-record>
+    
+  
+	<!-- ACTIONS TO SET SELECTS -->
+	<action-record name="action-set-status-select-2" model="com.axelor.apps.crm.db.Event">
+		<field name="statusSelect" expr="eval:2"/>
+	</action-record>
+	<action-record name="action-set-status-select-3" model="com.axelor.apps.crm.db.Event">
+		<field name="statusSelect" expr="eval:3"/>
+	</action-record>
+	
+	<action-record name="action-set-task-status-select-2" model="com.axelor.apps.crm.db.Event">
+		<field name="taskStatusSelect" expr="eval:2"/>
+	</action-record>	
+	<action-record name="action-set-task-status-select-3" model="com.axelor.apps.crm.db.Event">
+		<field name="taskStatusSelect" expr="eval:3"/>
+	</action-record>	
+	<action-record name="action-set-task-status-select-4" model="com.axelor.apps.crm.db.Event">
+		<field name="taskStatusSelect" expr="eval:4"/>
+	</action-record>	
+	
+	<action-record name="action-set-ticket-status-select-2" model="com.axelor.apps.crm.db.Event">
+		<field name="ticketStatusSelect" expr="eval:2"/>
+	</action-record>	
+	<action-record name="action-set-ticket-status-select-3" model="com.axelor.apps.crm.db.Event">
+		<field name="ticketStatusSelect" expr="eval:3"/>
+	</action-record>
+	<action-record name="action-set-ticket-status-select-5" model="com.axelor.apps.crm.db.Event">
+		<field name="ticketStatusSelect" expr="eval:5"/>
+	</action-record>
+	
+	<action-record name="action-event-record-call-status-select" model="com.axelor.apps.crm.db.Event">
+    	<field name="callStatusSelect" expr="2"/>
+    </action-record>
+	
+	
+<!-- 	ACTION METHOD -->
+	
+	 <action-method name="action-event-set-sequence">
 		<call class="com.axelor.apps.crm.web.EventController" method="setSequence" />
 	</action-method>
 	
@@ -488,72 +611,11 @@
     <action-method name="action-save-event-ticket-status-select">
     	<call class="com.axelor.apps.crm.web.EventController" method="saveEventTicketStatusSelect" />
     </action-method>
-    
-    <action-record name="action-event-record-task-status-select" model="com.axelor.apps.crm.db.Event">
-    	<field name="taskStatusSelect" expr="1" if="typeSelect == 3"/>
-    	<field name="progressSelect" expr="0"/>
-    	<field name="prioritySelect" expr="2" />
-    </action-record>
-    
-    <action-record name="action-event-record-status-select" model="com.axelor.apps.crm.db.Event">
-    	<field name="statusSelect" expr="1" if="typeSelect == 1 || typeSelect == 2"/>
-    </action-record>
-    
-    <action-record name="action-ticket-record-new" model="com.axelor.apps.crm.db.Event">
-    	<field name="ticketStatusSelect" expr="1"/>
-    	<field name="prioritySelect" expr="eval: _prioritySelect"/>
-    	<field name="progressSelect" expr="0"/>
-    </action-record>
-    
-    <action-record name="action-event-record-default-duration" model="com.axelor.apps.crm.db.Event">
-    	<field name="duration" expr="3600"/>
-    </action-record>
-    
-    <action-group name="action-event-new-record">
-    	<action name="action-event-default-record"/>
-    	<action name="action-event-record-default-duration" if="typeSelect != 5"/>
-    	<action name="action-ticket-record-new" if="typeSelect == 5"/> <!-- typeSelect == 5: ticket -->
-    	<action name="action-event-default-record-userinfo" if="_lead == null &amp;&amp; _partner == null"/>
-    	<action name="action-event-record-event-from-lead" if="_lead != null"/>
-    	<action name="action-event-record-event-from-partner" if="_partner != null"/>
-    	<action name="action-event-record-call-status-select" if="typeSelect == 1 &amp;&amp; (_lead != null || _partner != null)"/>
-    	<action name="action-event-record-status-select" if="typeSelect == 2 || typeSelect == 1"/>
-    	<action name="action-event-record-task-status-select" if="typeSelect == 3"/>
-    	<action name="action-event-record-event-from-sales-order" if="_salesOrder != null" />
-    </action-group>
-    
-    <action-record name="action-event-record-event-from-lead" model="com.axelor.apps.crm.db.Event">
-    	<field name="lead" expr="eval: _lead"/>
-    	<field name="description" expr="eval: _lead.description"/>
-    	<field name="userInfo" expr="eval: _lead.userInfo"/>
-    	<field name="team" expr="eval: _lead.team"/>
-    </action-record>
-    
-    <action-record model="com.axelor.apps.crm.db.Event" name="action-event-record-event-from-sales-order">
-	    <field name="clientPartner" expr="eval:_salesOrder.clientPartner?.id != null ? com.axelor.apps.base.db.Partner.find(_salesOrder.clientPartner.id) : _salesOrder.clientPartner"/>
-	    <field name="contactPartner" expr="eval:_salesOrder.contactPartner?.id != null ? com.axelor.apps.base.db.Partner.find(_salesOrder.contactPartner.id) : _salesOrder.contactPartner"/>
-	    <field if="_salesOrder.id != null" name="relatedToSelect" expr="eval:'com.axelor.apps.supplychain.db.SalesOrder'"/>
-	</action-record>
-    
-    <action-record name="action-event-record-event-from-partner" model="com.axelor.apps.crm.db.Event">
-    	<field name="clientPartner" expr="eval: _partner" if="_partner.isContact == false"/>
-    	<field name="clientPartner" expr="eval: _partner.mainPartner" if="_partner.isContact == true"/>
-    	<field name="contactPartner" expr="eval: _partner" if="_partner.isContact == true"/>
-    	<field name="description" expr="eval: _partner.description"/>
-    	<field name="userInfo" expr="eval: _partner.userInfo"/>
-    	<field name="team" expr="eval: _partner.team"/>
-    </action-record>
-    
-    <action-record name="action-event-record-call-status-select" model="com.axelor.apps.crm.db.Event">
-    	<field name="callStatusSelect" expr="2"/>
-    </action-record>
-    
-    <action-attrs name="action-event-ticket-attrs-default">
-    	<attribute name="hidden" for="responsibleUserInfo" expr="eval: true" if="_clientView"/>
-    	<attribute name="required" for="project" expr="eval: true" if="typeSelect == 5"/>
-    </action-attrs>
-    
-    <search-filters name="tasks-filters" model="com.axelor.apps.crm.db.Event" title="Tasks filters">
+	
+	
+<!-- 	FILTERS -->
+	
+	<search-filters name="tasks-filters" model="com.axelor.apps.crm.db.Event" title="Tasks filters">
 		<filter title="My Tasks">
 			<domain>self.userInfo.internalUser.id = :_internalUser</domain>
 		</filter>
@@ -616,42 +678,5 @@
 		</filter>
 	</search-filters>
 	
-	<!-- ACTIONS TO SET SELECTS -->
-	<action-record name="action-set-status-select-2" model="com.axelor.apps.crm.db.Event">
-		<field name="statusSelect" expr="eval:2"/>
-	</action-record>
-	<action-record name="action-set-status-select-3" model="com.axelor.apps.crm.db.Event">
-		<field name="statusSelect" expr="eval:3"/>
-	</action-record>
-	
-	<action-record name="action-set-task-status-select-2" model="com.axelor.apps.crm.db.Event">
-		<field name="taskStatusSelect" expr="eval:2"/>
-	</action-record>	
-	<action-record name="action-set-task-status-select-3" model="com.axelor.apps.crm.db.Event">
-		<field name="taskStatusSelect" expr="eval:3"/>
-	</action-record>	
-	<action-record name="action-set-task-status-select-4" model="com.axelor.apps.crm.db.Event">
-		<field name="taskStatusSelect" expr="eval:4"/>
-	</action-record>	
-	
-	<action-record name="action-set-ticket-status-select-2" model="com.axelor.apps.crm.db.Event">
-		<field name="ticketStatusSelect" expr="eval:2"/>
-	</action-record>	
-	<action-record name="action-set-ticket-status-select-3" model="com.axelor.apps.crm.db.Event">
-		<field name="ticketStatusSelect" expr="eval:3"/>
-	</action-record>
-	<action-record name="action-set-ticket-status-select-5" model="com.axelor.apps.crm.db.Event">
-		<field name="ticketStatusSelect" expr="eval:5"/>
-	</action-record>
-	
-	<action-record name="action-meeting-set-location-partner" model="com.axelor.apps.crm.db.Event">
-		<field name="location" expr="eval:clientPartner?.mainInvoicingAddress?.fullName"/>
-	</action-record>
-	<action-record name="action-meeting-set-location-contact" model="com.axelor.apps.crm.db.Event">
-		<field name="location" expr="eval:contactPartner?.mainInvoicingAddress?.fullName"/>
-	</action-record>
-	<action-record name="action-meeting-set-location-lead" model="com.axelor.apps.crm.db.Event">
-		<field name="location" expr="eval:(lead?.primaryAddress != null ? lead.primaryAddress+', ' : '')+(lead?.primaryPostalCode != null ? lead.primaryPostalCode+' ' : '')+(lead?.primaryCity != null ? lead.primaryCity: '')"/>
-	</action-record>
 	
 </object-views>
