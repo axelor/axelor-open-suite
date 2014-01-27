@@ -64,7 +64,11 @@ public class StockMoveInvoiceService {
 		Invoice invoice = invoiceGenerator.generate();
 		
 		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, stockMove.getStockMoveLineList()));
+		
 		if (invoice != null) {
+		
+			this.extendInternalReference(stockMove, invoice);
+			
 			stockMove.setInvoice(invoice);
 			stockMove.save();
 		}
@@ -80,12 +84,25 @@ public class StockMoveInvoiceService {
 		Invoice invoice = invoiceGenerator.generate();
 		
 		invoiceGenerator.populate(invoice, this.createInvoiceLines(invoice, stockMove.getStockMoveLineList()));
+		
 		if (invoice != null) {
+			
+			this.extendInternalReference(stockMove, invoice);
+			
 			stockMove.setInvoice(invoice);
 			stockMove.save();
 		}
 		return invoice;	
 	}
+	
+	
+	public Invoice extendInternalReference(StockMove stockMove, Invoice invoice)  {
+		
+		invoice.setInternalReference(stockMove.getStockMoveSeq()+":"+invoice.getInternalReference());
+		
+		return invoice;
+	}
+	
 	
 	private List<InvoiceLine> createInvoiceLines(Invoice invoice,
 			List<StockMoveLine> stockMoveLineList) throws AxelorException {
