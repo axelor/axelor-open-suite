@@ -363,6 +363,16 @@
  	<action-view name="portal.event.graph.dashboard.view" title="Event Graph Report" icon="img/16px/calendar_16px.png"> 
  		<view type="portal" name="crm.event.graph.portal" />
 	</action-view> 
+	<menuitem name="portal.crm.event" parent="menu-crm-dashboards" title="Event List Report" action="portal.event.dashboard.view" /> 
+
+ 	<action-view name="portal.event.dashboard.view" title="Event List Report" icon="img/16px/calendar_16px.png"> 
+ 		<view type="portal" name="crm.event.portal" />
+	</action-view> 
+	<menuitem name="portal.crm.lead.list" parent="menu-crm-dashboards" title="Lead List Report" action="portal.lead.dashboard.view" />
+
+	<action-view name="portal.lead.dashboard.view" title="Lead List Report" icon="img/16px/calendar_16px.png">
+		<view type="portal" name="crm.lead.portal" />
+	</action-view>
 	
 	<menuitem name="portal.base.crm.partner.graph" parent="menu-crm-dashboards" title="Partner List Report" action="portal.base.partner.list.dashboard.view" />
 
