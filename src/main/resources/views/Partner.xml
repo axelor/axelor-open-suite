@@ -103,7 +103,7 @@
 	        </page>
 	        <page title="Settings" cols="4">
 	            <field name="partnerSeq"/>
-	            <field name="languageSelect" hideIf="isContact || partnerTypeSelect == 1"/>
+	            <field name="languageSelect"/>
 	            <group title="Assigned to" colSpan="4" cols="4" canCollapse="true">
 	                <field name="companySet" colSpan="4" widget="TagSelect[create=name]" form-view="company-lite-form" onChange="action-partner-company-set-validate"/>
 	                <break/>
