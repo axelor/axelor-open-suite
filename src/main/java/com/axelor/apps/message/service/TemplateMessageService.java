@@ -140,6 +140,7 @@ public class TemplateMessageService {
 			filePath = template.getFilePath();
 		}
 		
+		JPA.clear();
 		Message message = messageService.createMessage(
 				model, 
 				new Long(objectId).intValue(), 
