@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.2.2.v201301221637 Build &lt;4.2.2.v20130206-1509></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 3.7.2.v20120213 Build &lt;3.7.2.v20120214-1408></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -13,33 +13,9 @@
             <expression name="value" type="javascript">params["UserName"].value</expression>
         </structure>
         <structure>
-            <property name="name">odaDriverClass</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">odaAutoCommit</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">odaIsolationMode</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
             <property name="name">odaPassword</property>
             <property name="id">209</property>
             <expression name="value" type="javascript">params["Password"].value</expression>
-        </structure>
-        <structure>
-            <property name="name">odaJndiName</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">OdaConnProfileName</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">OdaConnProfileStorePath</property>
-            <property name="id">209</property>
         </structure>
     </list-property>
     <property name="units">in</property>
@@ -413,10 +389,10 @@ order by ProductFamily.name, ProductCategory.name
                     <text-property name="heading">fax</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">fixed_phone1</property>
+                    <property name="columnName">fixed_phone</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">fixed_phone1</text-property>
-                    <text-property name="heading">fixed_phone1</text-property>
+                    <text-property name="displayName">fixed_phone</text-property>
+                    <text-property name="heading">fixed_phone</text-property>
                 </structure>
             </list-property>
             <list-property name="parameters">
@@ -427,6 +403,7 @@ order by ProductFamily.name, ProductCategory.name
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
                     <property name="position">1</property>
+                    <property name="isOptional">false</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -460,7 +437,7 @@ order by ProductFamily.name, ProductCategory.name
                     </structure>
                     <structure>
                         <property name="position">6</property>
-                        <property name="name">fixed_phone1</property>
+                        <property name="name">fixed_phone</property>
                         <property name="dataType">string</property>
                     </structure>
                 </list-property>
@@ -504,18 +481,19 @@ order by ProductFamily.name, ProductCategory.name
                 </structure>
                 <structure>
                     <property name="position">6</property>
-                    <property name="name">fixed_phone1</property>
-                    <property name="nativeName">fixed_phone1</property>
+                    <property name="name">fixed_phone</property>
+                    <property name="nativeName">fixed_phone</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select Company.logo_path, Address.full_name, Partner.web_site, Partner.email, Partner.fax, Partner.fixed_phone1
+            <xml-property name="queryText"><![CDATA[select Company.logo_path, Address.full_name, Partner.web_site, Email.address as email, Partner.fax, Partner.fixed_phone
 from auth_user as Users 
 inner join base_user_info as UserInfo on (UserInfo.internal_user = Users.id)
 left outer join base_company as Company on (UserInfo.active_company = Company.id)
 left outer join base_address as Address on (Company.address = Address.id)
 left outer join base_partner as Partner on (Company.partner = Partner.id)
+left outer join message_email_address as Email on (Email.id = Partner.email_address)
 where Users.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -854,6 +832,24 @@ and LangTranslate.domain = 'axelor-base' and LangTranslate.type = 'other']]></xm
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
+                    <property name="name">email</property>
+                    <text-property name="displayName">email</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["email"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">fax</property>
+                    <text-property name="displayName">fax</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["fax"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">fixed_phone</property>
+                    <text-property name="displayName">fixed_phone</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["fixed_phone"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
                     <property name="name">Address</property>
                     <text-property name="displayName">Address</text-property>
                     <expression name="expression" type="javascript">dataSetRow["full_name"]</expression>
@@ -880,7 +876,7 @@ and LangTranslate.domain = 'axelor-base' and LangTranslate.type = 'other']]></xm
                     <image id="3440">
                         <property name="height">2.169583333333333cm</property>
                         <property name="width">6.138333333333333cm</property>
-                        <property name="source">url</property>
+                        <property name="source">file</property>
                         <expression name="uri" type="javascript">row["logo_path"]</expression>
                         <list-property name="action">
                             <structure>
@@ -1115,7 +1111,7 @@ and LangTranslate.domain = 'axelor-base' and LangTranslate.type = 'other']]></xm
                     <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
                     <table id="332">
-                        <property name="backgroundColor">#BFBFBF</property>
+                        <property name="backgroundColor">#E5E5E5</property>
                         <property name="width">7.65625in</property>
                         <property name="dataSet">ProductDS</property>
                         <list-property name="boundDataColumns">
@@ -1223,7 +1219,8 @@ and LangTranslate.domain = 'axelor-base' and LangTranslate.type = 'other']]></xm
                             </structure>
                             <structure>
                                 <property name="name">Column Binding</property>
-                                <expression name="expression" type="javascript">row["PrevFamilyCount"] -row["FamilyCount"]</expression>
+                                <text-property name="displayName">TotalCount</text-property>
+                                <expression name="expression" type="javascript">row["PrevFamilyCount"]  - row["FamilyCount"]</expression>
                                 <property name="dataType">decimal</property>
                                 <property name="allowExport">true</property>
                             </structure>
@@ -1241,10 +1238,10 @@ and LangTranslate.domain = 'axelor-base' and LangTranslate.type = 'other']]></xm
                             </structure>
                         </list-property>
                         <column id="345">
-                            <property name="width">1.5in</property>
+                            <property name="width">1.7395833333333333in</property>
                         </column>
                         <column id="346">
-                            <property name="width">0.7395833333333334in</property>
+                            <property name="width">0.5in</property>
                         </column>
                         <column id="347">
                             <property name="width">4.958333333333333in</property>
@@ -1257,6 +1254,7 @@ and LangTranslate.domain = 'axelor-base' and LangTranslate.type = 'other']]></xm
                         </column>
                         <header>
                             <row id="333">
+                                <property name="backgroundColor">#E5E5E5</property>
                                 <cell id="334"/>
                                 <cell id="335"/>
                                 <cell id="336"/>
@@ -1274,11 +1272,13 @@ and LangTranslate.domain = 'axelor-base' and LangTranslate.type = 'other']]></xm
                             <header>
                                 <row id="358">
                                     <property name="height">0.2708333333333333in</property>
+                                    <property name="backgroundColor">#E5E5E5</property>
                                     <cell id="359">
-                                        <property name="backgroundColor">#BFBFBF</property>
+                                        <property name="backgroundColor">#E5E5E5</property>
                                         <data id="366">
                                             <property name="fontSize">13pt</property>
                                             <property name="fontWeight">bold</property>
+                                            <property name="marginLeft">3pt</property>
                                             <property name="resultSetColumn">ProductFamily</property>
                                             <list-property name="action">
                                                 <structure>
@@ -1291,16 +1291,16 @@ and LangTranslate.domain = 'axelor-base' and LangTranslate.type = 'other']]></xm
                                     <cell id="360">
                                         <property name="colSpan">2</property>
                                         <property name="rowSpan">1</property>
-                                        <property name="backgroundColor">#BFBFBF</property>
+                                        <property name="backgroundColor">#E5E5E5</property>
                                         <text id="388">
                                             <property name="fontWeight">bold</property>
                                             <property name="textAlign">justify</property>
                                             <property name="contentType">auto</property>
-                                            <text-property name="content"><![CDATA[...........................................................................................................................................]]></text-property>
+                                            <text-property name="content"><![CDATA[..........................................................................................................................................................]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="384">
-                                        <property name="backgroundColor">#BFBFBF</property>
+                                        <property name="backgroundColor">#E5E5E5</property>
                                         <text id="377">
                                             <property name="fontSize">13pt</property>
                                             <property name="fontWeight">bold</property>
@@ -1370,11 +1370,11 @@ and LangTranslate.domain = 'axelor-base' and LangTranslate.type = 'other']]></xm
                                             </list-property>
                                             <structure name="toc"/>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>BirtMath.roundDown(BirtMath.divide(row["Column Binding"], 5),0)+3</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>BirtMath.roundDown(BirtMath.divide(row._outer["Column Binding"], 5),0)+3</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="3713">
-                                        <property name="backgroundColor">#BFBFBF</property>
+                                        <property name="backgroundColor">#E5E5E5</property>
                                     </cell>
                                 </row>
                             </header>
@@ -1389,10 +1389,11 @@ and LangTranslate.domain = 'axelor-base' and LangTranslate.type = 'other']]></xm
                             <header>
                                 <row id="368">
                                     <property name="height">0.23958333333333334in</property>
+                                    <property name="backgroundColor">#E5E5E5</property>
                                     <cell id="369">
                                         <property name="colSpan">2</property>
                                         <property name="rowSpan">1</property>
-                                        <property name="backgroundColor">#BFBFBF</property>
+                                        <property name="backgroundColor">#E5E5E5</property>
                                         <data id="376">
                                             <property name="fontSize">11pt</property>
                                             <property name="marginLeft">20pt</property>
@@ -1406,15 +1407,15 @@ and LangTranslate.domain = 'axelor-base' and LangTranslate.type = 'other']]></xm
                                         </data>
                                     </cell>
                                     <cell id="371">
-                                        <property name="backgroundColor">#BFBFBF</property>
+                                        <property name="backgroundColor">#E5E5E5</property>
                                         <text id="389">
                                             <property name="textAlign">justify</property>
                                             <property name="contentType">auto</property>
-                                            <text-property name="content"><![CDATA[..........................................................................................................................]]></text-property>
+                                            <text-property name="content"><![CDATA[............................................................................................................................................]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="385">
-                                        <property name="backgroundColor">#BFBFBF</property>
+                                        <property name="backgroundColor">#E5E5E5</property>
                                         <text id="390">
                                             <property name="marginLeft">0pt</property>
                                             <property name="textAlign">right</property>
@@ -1427,7 +1428,7 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                                         </text>
                                     </cell>
                                     <cell id="3714">
-                                        <property name="backgroundColor">#BFBFBF</property>
+                                        <property name="backgroundColor">#E5E5E5</property>
                                     </cell>
                                 </row>
                             </header>
@@ -1564,10 +1565,10 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
             </group>
             <detail>
                 <row id="234">
-                    <property name="height">1.6354166666666667in</property>
+                    <property name="height">1.59375in</property>
                     <cell id="235">
                         <grid id="239">
-                            <property name="height">1.4895833333333333in</property>
+                            <property name="height">1.40625in</property>
                             <property name="width">7.875in</property>
                             <column id="240">
                                 <property name="width">2.5625in</property>
@@ -1669,7 +1670,7 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                                 </cell>
                             </row>
                             <row id="285">
-                                <property name="height">0.4166666666666667in</property>
+                                <property name="height">0.3333333333333333in</property>
                                 <property name="backgroundColor">#F5F5F5</property>
                                 <cell id="286"/>
                                 <cell id="287">
@@ -1748,13 +1749,14 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">fixed_phone1</property>
-                    <text-property name="displayName">fixed_phone1</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["fixed_phone1"]</expression>
+                    <property name="name">fixed_phone</property>
+                    <text-property name="displayName">fixed_phone</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["fixed_phone"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
                     <property name="name">Address</property>
+                    <text-property name="displayName">Address</text-property>
                     <expression name="expression" type="javascript">dataSetRow["full_name"]</expression>
                     <property name="dataType">string</property>
                     <property name="allowExport">true</property>
@@ -1789,7 +1791,7 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                         <property name="marginLeft">8pt</property>
                         <property name="height">2.169583333333333cm</property>
                         <property name="width">6.138333333333333cm</property>
-                        <property name="source">url</property>
+                        <property name="source">file</property>
                         <expression name="uri" type="javascript">row["logo_path"]</expression>
                     </image>
                     <text id="3723"/>
@@ -1811,7 +1813,7 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                         <property name="marginBottom">1px</property>
                         <property name="textAlign">center</property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[Tél : <VALUE-OF>row["fixed_phone1"]</VALUE-OF><br>
+                        <text-property name="content"><![CDATA[Tél : <VALUE-OF>row["fixed_phone"]</VALUE-OF><br>
 Fax : <VALUE-OF>row["fax"]</VALUE-OF><br>
 Email : <VALUE-OF>row["email"]</VALUE-OF>]]></text-property>
                     </text>
