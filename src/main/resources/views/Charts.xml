@@ -8,21 +8,21 @@
 	 <chart name="chart.dashboard.opportunities.sales.stage.amount.bar" title="Opportunities By Sale Stage">
 	    <dataset type="sql">
 	    <![CDATA[
-		SELECT
-          SUM(self.amount) AS amount,
-	      selection_item.title as _sales_stage
-	    FROM
-	        crm_opportunity self
-	    LEFT JOIN
-	        meta_select as selection ON selection.name = 'crm.opportunity.sales.stage.select'
-	    LEFT JOIN 
-	    	meta_select_item as selection_item ON selection_item.select_id = selection.id
-		WHERE
-			cast(selection_item.value as decimal) = self.sales_stage_select			
-	    GROUP BY
-		   _sales_stage
-		ORDER BY
-		   _sales_stage
+			SELECT
+	          SUM(self.amount) AS amount,
+		      selection_item.title as _sales_stage
+		    FROM
+		        crm_opportunity self
+		    LEFT JOIN
+		        meta_select as selection ON selection.name = 'crm.opportunity.sales.stage.select'
+		    LEFT JOIN 
+		    	meta_select_item as selection_item ON selection_item.select_id = selection.id
+			WHERE
+				cast(selection_item.value as decimal) = self.sales_stage_select			
+		    GROUP BY
+			   _sales_stage
+			ORDER BY
+			   _sales_stage
 	    ]]>
 	    </dataset>
 	    <category key="_sales_stage" type="text"/>
@@ -32,21 +32,21 @@
 	  <chart name="chart.dashboard.opportunities.by.stage.type.bar" title="Pipeline by Stage and Type">
 	    <dataset type="sql">
 	    <![CDATA[
-		SELECT
-          SUM(self.amount) AS amount,
-	      selection_item.title as _sales_stage
-	    FROM
-	        crm_opportunity self
-	    LEFT JOIN
-	        meta_select as selection ON selection.name = 'crm.opportunity.sales.stage.select'
-	    LEFT JOIN 
-	    	meta_select_item as selection_item ON selection_item.select_id = selection.id
-		WHERE
-			cast(selection_item.value as decimal) = self.sales_stage_select	and self.sales_stage_select not in (9, 10)		
-	    GROUP BY
-		   _sales_stage
-		ORDER BY
-		   _sales_stage
+			SELECT
+	          SUM(self.amount) AS amount,
+		      selection_item.title as _sales_stage
+		    FROM
+		        crm_opportunity self
+		    LEFT JOIN
+		        meta_select as selection ON selection.name = 'crm.opportunity.sales.stage.select'
+		    LEFT JOIN 
+		    	meta_select_item as selection_item ON selection_item.select_id = selection.id
+			WHERE
+				cast(selection_item.value as decimal) = self.sales_stage_select	and self.sales_stage_select not in (9, 10)		
+		    GROUP BY
+			   _sales_stage
+			ORDER BY
+			   _sales_stage
 	    ]]>
 	    </dataset>
 	    <category key="_sales_stage" type="text"/>
@@ -73,7 +73,7 @@
     	<series key="amount" type="bar"/>
 	  </chart>
 	  
-	   <chart name="chart.dashboard.opportunities.type.amount.bar" title="Opportunities By Source">
+	   <chart name="chart.dashboard.opportunities.type.amount.bar" title="Opportunities By Type">
 	    <dataset type="sql">
 		    <![CDATA[
 			SELECT
@@ -84,36 +84,36 @@
 	    	LEFT JOIN
 	        	crm_opportunity_type as opportunity_type ON self.opportunity_type = opportunity_type.id
 	    	GROUP BY
-		    	_opportunity_type
+		    	opportunity_type.name
 			ORDER BY
-		   		_opportunity_type
+		   		opportunity_type.name
 		 ]]>
 	    </dataset>
 	    <category key="_opportunity_type" type="text"/>
     	<series key="amount" type="bar"/>
 	  </chart>
 	  	
-	  <chart name="chart.dashboard.opportunities.won.by.leadsource.bar" title="Opportunities By Source">
+	  <chart name="chart.dashboard.opportunities.won.by.leadsource.bar" title="Opportunities Won By Lead Source">
 	    <dataset type="sql">
 		    <![CDATA[
 			SELECT
-	          count(self.id) AS lead_won,
-		      Source.name as _source
-		    FROM
-		        crm_opportunity self
-		    LEFT JOIN
-		        base_source as Source ON self.source = Source.id
-		    GROUP BY
-			    _source
+ 				 count(*) AS lead_won,
+ 				 Source.name as _source
+			FROM
+    			crm_opportunity self
+ 			JOIN
+    			base_source as Source ON self.source = Source.id and self.sales_stage_select = 9
+			GROUP BY
+    			_source
 			ORDER BY
-			    _source
+    			_source
 		 ]]>
 	    </dataset>
 	    <category key="_source" type="text"/>
     	<series key="lead_won" type="pie"/>
 	  </chart>
 	  	  
-	  	  <chart name="chart.dashboard.opportunities.won.by.salesman.bar" title="Opportunities By Source">
+	  	  <chart name="chart.dashboard.opportunities.won.by.salesman.bar" title="Opportunities Won By Salesman">
 	    <dataset type="sql">
 		    <![CDATA[
 			SELECT
@@ -165,27 +165,31 @@
 	<chart name="chart.opportunities.pipeline.next.90d" title="Pipeline next 90 days" stacked="true">
 		<dataset type="sql">
 		    <![CDATA[
-		    SELECT
-		        '90 days period' as period,
-    		    SUM(self.amount)    AS amount,
-			    selection_item.title AS stage
-			FROM
-			    crm_opportunity self
-			LEFT JOIN
-	        	meta_select as selection ON selection.name = 'crm.opportunity.sales.stage.select'
-	    	LEFT JOIN 
-	    		meta_select_item as selection_item ON selection_item.select_id = selection.id
-			WHERE
-				expected_close_date < current_date and selection_item.value = cast(self.sales_stage_select as char)
-			GROUP BY
-			    selection_item.title,
-			    period
-			ORDER BY
-			    selection_item.title,
-			    period
+		SELECT  
+    		SUM(self.amount)    AS amount,
+    		selection_item.title AS stage,
+    		'Pipeline' as pipeline
+		FROM
+			crm_opportunity self
+		JOIN
+			meta_select as selection ON selection.name = 'crm.opportunity.sales.stage.select'
+		JOIN 
+	 		meta_select_item as selection_item ON selection_item.select_id = selection.id
+		WHERE
+			selection_item.value = cast(self.sales_stage_select as char)
+		AND
+    		self.expected_close_date < current_date+ interval '90 day' 
+		AND 
+    		self.sales_stage_select <9
+                
+		GROUP BY
+			selection_item.title, pipeline
+		ORDER BY
+			selection_item.title
+
 		    ]]>
 	    </dataset>
-	    <category key="period" type="text"/>
+	    <category key="pipeline" type="text"/>
 	    <series key="amount" groupBy="stage" type="bar"/>
 	</chart>
 	
@@ -217,7 +221,7 @@
 			    Country country,Partner partner
 			WHERE 
 			    partner.mainInvoicingAddress.addressL7Country.id = country.id AND
-			    partner.customerTypeSelect = 3
+			    partner.isCustomer = true AND partner.customerTypeSelect = 3
 			GROUP BY
 			    country.id
 			ORDER BY
@@ -469,7 +473,7 @@
 			   	_sales_man
 			  ]]>
 	    </dataset>
-	    <category key="_status" type="text"/>
+	    <category key="_sales_man" type="text"/>
 	    <series key="_total_calls" type="bar"/>
 	</chart>  	
 	

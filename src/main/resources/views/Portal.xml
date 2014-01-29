@@ -2,338 +2,420 @@
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
-	
-	
-	<!--  Opportunity Grid view Dashboard  -->
-	
-	
-	<portal title="Opportunity Dashboard" name="crm.opportunity.portal" cols="2">
-	    <portlet action="portal.close.opportunity" height="350" colSpan="1" canSearch="true"/>
-	    <portlet action="portal.open.opportunity" height="350" colSpan="1" canSearch="true"/>
-	    <portlet action="portal.unassigned.opportunities" height="350" colSpan="1" canSearch="true"/>
-	    <portlet action="portal.team.closed.opportunities" height="350" colSpan="1" canSearch="true"/>
-	    <portlet action="portal.team.open.opportunities" height="350" colSpan="1" canSearch="true"/>
-	    <portlet action="portal.opportunities.won.by.account" height="350" colSpan="1" canSearch="true"/>
-	    <portlet action="portal.opportunities.recent.opps" height="350" colSpan="1" canSearch="true"/>
-	    <portlet action="portal.opportunities.top.deals" height="350" colSpan="1" canSearch="true"/>
-	    <portlet action="portal.opportunities.key.account" height="350" colSpan="1" canSearch="true"/>
-	    <portlet action="portal.opportunities.lost.deals" height="350" colSpan="1" canSearch="true"/>
-	    <portlet action="portal.my.open.opportunities" colSpan="1" height="350" canSearch="true"/>
-	    <portlet action="portal.my.closed.opportunities" colSpan="1" height="350" canSearch="true"/>	   
-  	</portal>
-  	
-  	
 
- 
-	<action-view name="portal.close.opportunity" title="Close Opportunities" model="com.axelor.apps.crm.db.Opportunity">
-		<view type="grid" name="opportunity-grid"/>
-		<view type="form" name="opportunity-form"/>
+
+	<!-- Opportunity Grid view Dashboard -->
+
+	<portal title="Opportunity Dashboard" name="crm.opportunity.portal"
+		cols="2">
+		<portlet action="portal.closed.opportunities" height="350"
+			colSpan="1" canSearch="true" />
+		<portlet action="portal.open.opportunities" height="350"
+			colSpan="1" canSearch="true" />
+		<portlet action="portal.unassigned.opportunities" height="350"
+			colSpan="1" canSearch="true" />
+		<portlet action="portal.team.closed.opportunities" height="350"
+			colSpan="1" canSearch="true" />
+		<portlet action="portal.team.open.opportunities" height="350"
+			colSpan="1" canSearch="true" />
+		<portlet action="portal.opportunities.won.by.partner" height="350"
+			colSpan="1" canSearch="true" />
+		<portlet action="portal.opportunities.recent.opps" height="350"
+			colSpan="1" canSearch="true" />
+		<portlet action="portal.opportunities.top.deals" height="350"
+			colSpan="1" canSearch="true" />
+		<portlet action="portal.opportunities.key.account" height="350"
+			colSpan="1" canSearch="true" />
+		<portlet action="portal.opportunities.lost.deals" height="350"
+			colSpan="1" canSearch="true" />
+		<portlet action="portal.my.open.opportunities" colSpan="1"
+			height="350" canSearch="true" />
+		<portlet action="portal.my.closed.opportunities" colSpan="1"
+			height="350" canSearch="true" />
+	</portal>
+
+
+
+
+	<action-view name="portal.closed.opportunities" title="Closed Opportunities"
+		model="com.axelor.apps.crm.db.Opportunity">
+		<view type="grid" name="opportunity-grid" />
+		<view type="form" name="opportunity-form" />
 		<domain>self.salesStageSelect in (9, 10)</domain>
 	</action-view>
-	
-	<action-view name="portal.open.opportunity" title="Open Opportunities" model="com.axelor.apps.crm.db.Opportunity">
-	    <view type="grid" name="opportunity-grid"/>
-	    <view type="form" name="opportunity-form"/>
-	    <domain>self.salesStageSelect not in (9, 10)</domain>
-	</action-view>
-	
-	<action-view name="portal.unassigned.opportunities" title="Unassigned Opportunities" model="com.axelor.apps.crm.db.Opportunity">
-		<view type="grid" name="opportunity-grid"/>
-		<view type="form" name="opportunity-form"/>
-		<domain>self.userInfo is null and self.salesStageSelect = 1</domain>
-	</action-view>
-	
-	<action-view name="portal.team.closed.opportunities" title="My Team Closed Opportunities" model="com.axelor.apps.crm.db.Opportunity">
-		<view type="grid" name="opportunity-grid"/>
-		<view type="form" name="opportunity-form"/>
-		<domain>self.salesStageSelect in (9,10)  AND self.team = :active_team</domain>
-		<context name="active_team" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
-	</action-view>
-	
-	<action-view name="portal.team.open.opportunities" title="My Team Open Opportunities" model="com.axelor.apps.crm.db.Opportunity">
-		<view type="grid" name="opportunity-grid"/>
-		<view type="form" name="opportunity-form"/>
-		<domain>self.salesStageSelect not in (9,10)  AND self.team = :active_team</domain>
-		<context name="active_team" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
-	</action-view>
-	
-	<action-view name="portal.opportunities.won.by.account" title="Opportunities Won By Partner"
+
+
+	<action-view name="portal.open.opportunities" title="Open Opportunities"
 		model="com.axelor.apps.crm.db.Opportunity">
-		<view type="grid" name="opportunity-grid-group"/>
-		<view type="form" name="opportunity-form"/>
-		<domain>self.salesStageSelect = 9</domain>
-	</action-view>
-	
-  	<action-view name="portal.opportunities.top.deals" title="Best Open Deals" model="com.axelor.apps.crm.db.Opportunity">
-		<view type="grid" name="opportunity-top-deal-grid"/>
-		<view type="form" name="opportunity-form"/>
+		<view type="grid" name="opportunity-grid" />
+		<view type="form" name="opportunity-form" />
 		<domain>self.salesStageSelect not in (9, 10)</domain>
 	</action-view>
-	
-	 <action-view name="portal.opportunities.key.account" title="Key accounts" model="com.axelor.apps.crm.db.Opportunity">
-		<view type="grid" name="opportunity-key-account-grid"/>
-		<view type="form" name="opportunity-form"/>
+	<action-view name="portal.unassigned.opportunities" title="Unassigned Opportunities"
+		model="com.axelor.apps.crm.db.Opportunity">
+		<view type="grid" name="opportunity-grid" />
+		<view type="form" name="opportunity-form" />
+		<domain>self.userInfo is null and self.salesStageSelect = 1</domain>
+	</action-view>
+
+
+	<action-view name="portal.team.closed.opportunities" title="My Team Closed Opportunities"
+		model="com.axelor.apps.crm.db.Opportunity">
+		<view type="grid" name="opportunity-grid" />
+		<view type="form" name="opportunity-form" />
+		<domain>self.salesStageSelect in (9,10)  AND self.team = :active_team</domain>
+		<context name="active_team"
+			expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()" />
+	</action-view>
+
+	<action-view name="portal.team.open.opportunities" title="My Team Open Opportunities"
+		model="com.axelor.apps.crm.db.Opportunity">
+		<view type="grid" name="opportunity-grid" />
+		<view type="form" name="opportunity-form" />
+		<domain>self.salesStageSelect not in (9,10)  AND self.team = :active_team</domain>
+		<context name="active_team"
+			expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()" />
+	</action-view>
+
+
+
+	<action-view name="portal.opportunities.won.by.partner"
+		title="Opportunities Won By Partner" model="com.axelor.apps.crm.db.Opportunity">
+		<view type="grid" name="opportunity-grid-group" />
+		<view type="form" name="opportunity-form" />
+		<domain>self.salesStageSelect = 9</domain>
+	</action-view>
+
+	<action-view name="portal.opportunities.top.deals" title="Best Open Deals"
+		model="com.axelor.apps.crm.db.Opportunity">
+		<view type="grid" name="opportunity-top-deal-grid" />
+		<view type="form" name="opportunity-form" />
+		<domain>self.salesStageSelect not in (9, 10)</domain>
+	</action-view>
+
+	<action-view name="portal.opportunities.key.account" title="Key accounts"
+		model="com.axelor.apps.crm.db.Opportunity">
+		<view type="grid" name="opportunity-key-account-grid" />
+		<view type="form" name="opportunity-form" />
 		<domain>self.salesStageSelect in (9, 10)</domain>
 	</action-view>
-	
-	<action-view name="portal.opportunities.recent.opps" title="Recently created opportunities" model="com.axelor.apps.crm.db.Opportunity">
-		<view type="grid" name="opportunity-grid"/>
-		<view type="form" name="opportunity-form"/>
-		<domain>self.createdOn &gt; date(now())-15</domain>
+
+	<action-view name="portal.opportunities.recent.opps" title="Recently created opportunities"
+		model="com.axelor.apps.crm.db.Opportunity">
+		<view type="grid" name="opportunity-grid" />
+		<view type="form" name="opportunity-form" />
+		<domain>self.createdOn &gt;= date(now())-15</domain>
 	</action-view>
-	
-	<action-view name="portal.opportunities.lost.deals" title="Recent lost deals" model="com.axelor.apps.crm.db.Opportunity">
-		<view type="grid" name="opportunity-grid"/>
-		<view type="form" name="opportunity-form"/>
+
+	<action-view name="portal.opportunities.lost.deals" title="Recent lost deals"
+		model="com.axelor.apps.crm.db.Opportunity">
+		<view type="grid" name="opportunity-grid" />
+		<view type="form" name="opportunity-form" />
 		<domain>self.updatedOn &gt; date(now())-30 and self.salesStageSelect = 10</domain>
 	</action-view>
-	<action-view title="My Closed Opportunities" model="com.axelor.apps.crm.db.Opportunity" name="portal.my.closed.opportunities">
-    <view type="grid" name="opportunity-grid"/>
-    <view type="form" name="opportunity-form"/>
-    <domain>self.salesStageSelect in (9, 10) AND self.userInfo =:user_info</domain>
-    <context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
-</action-view>
+	<action-view title="My Closed Opportunities" model="com.axelor.apps.crm.db.Opportunity"
+		name="portal.my.closed.opportunities">
+		<view type="grid" name="opportunity-grid" />
+		<view type="form" name="opportunity-form" />
+		<domain>self.salesStageSelect in (9, 10) AND self.userInfo =:user_info</domain>
+		<context name="user_info"
+			expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" />
+	</action-view>
 
-<action-view title="My Open Opportunities" model="com.axelor.apps.crm.db.Opportunity" name="portal.my.open.opportunities">
-    <view type="grid" name="opportunity-grid"/>
-    <view type="form" name="opportunity-form"/>
-    <domain>self.salesStageSelect NOT in (9, 10) AND self.userInfo =:user_info</domain>
-    <context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
-</action-view>
+	<action-view title="My Open Opportunities" model="com.axelor.apps.crm.db.Opportunity"
+		name="portal.my.open.opportunities">
+		<view type="grid" name="opportunity-grid" />
+		<view type="form" name="opportunity-form" />
+		<domain>self.salesStageSelect NOT in (9, 10) AND self.userInfo =:user_info</domain>
+		<context name="user_info"
+			expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" />
+	</action-view>
 
+	<!-- Opportunity Graph View Dashboard -->
 
-	
-<!--  Opportunity Graph View Dashboard  -->
-	
-	<portal title="Dashboard" name="crm.opportunity.graph.portal" cols="2">
-		<portlet action="portal.opportunities.by.source" height="350"/>
-	    <portlet action="portal.opportunities.by.salestage" height="350"/>
-	    <portlet action="portal.opportunities.by.type"  height="350" colSpan="1"/>
-	    <portlet action="portal.opportunities.won.by.leadsource" height="350"/>
-	    <portlet action="portal.opportunities.won.by.salesman" height="350"/>
-	    <portlet action="chart:chart.opportunities.by.origin.by.stage" height="350"/>
-	    <portlet action="chart:chart.opportunities.pipeline.next.90d" height="350"/>
-	 </portal>
-  	
-  	
-  	<action-view name="portal.opportunities.by.source" title="Chart">
-    	<view type="chart" name="chart.dashboard.opportunities.source.amount.bar" />
- 	</action-view>
- 	
- 	<action-view name="portal.opportunities.by.salestage" title="Opportunities By Sale Stage">
-    	<view type="chart" name="chart.dashboard.opportunities.sales.stage.amount.bar" />
-  	</action-view>
-  	
-  	
-   	<action-view name="portal.opportunities.by.type" title="Opportunities By Type">
-   		<view type="chart" name="chart.dashboard.opportunities.type.amount.bar" />
-  	</action-view>
-  	
-  	<action-view name="portal.opportunities.byStage.byType" title="Pipeline by Stage and Type">
-   		<view type="chart" name="chart.dashboard.opportunities.by.stage.type.bar" />
-  	</action-view>
-  	
-  	
-	
-	<action-view name="portal.opportunities.won.by.leadsource" title="Opportunities Won By Lead Source">
-    	<view type="chart" name="chart.dashboard.opportunities.won.by.leadsource.bar" />
-  	</action-view>
-  
-    <action-view name="portal.opportunities.won.by.salesman" title="Opportunities Won By Salesman">
-    	<view type="chart" name="chart.dashboard.opportunities.won.by.salesman.bar" />
-  	</action-view>
-  	
-  	
-  
-  	
-  	
-
- <!--  Lead Graph view Dashboard  -->
-  	
-  	
-  	<portal title="Lead Graph Dashboard" name="crm.lead.graph.portal" cols="2">
-		<portlet action="portal.leads.by.source" height="350"/>
-	    <portlet action="portal.leads.by.country" height="350"/>
-	    <portlet action="portal.leads.by.team.by.status" height="350" colSpan="1"/>
-	    <portlet action="portal.leads.by.salesman.by.status" height="350"/>
-	    <portlet action="portal.leads.recent.leads" height="350" colSpan="1" canSearch="true"/>
+	<portal title="Dashboard" name="crm.opportunity.graph.portal"
+		cols="2">
+		<portlet action="portal.opportunities.by.source" height="350" />
+		<portlet action="portal.opportunities.by.salestage" height="350" />
+		<portlet action="portal.opportunities.by.type" height="350"
+			colSpan="1" title="Opportunities By Type" />
+		<portlet action="portal.opportunities.byStage.byType" height="350"
+			colSpan="1" />
+		<portlet action="portal.opportunities.won.by.leadsource"
+			height="350" title="Opportunities Won By Lead Source" />
+		<portlet action="portal.opportunities.won.by.salesman" height="350"
+			title="Opportunities Won By Salesman" />
+		<portlet action="portal.opportunities.by.origin.by.stage"
+			height="350" />
+		<portlet action="portal.opportunities.pipeline.next.90d"
+			height="350" />
 	</portal>
-	 
-  	<action-view name="portal.leads.by.source" title="Leads by Source">
-    	<view type="chart" name="chart.leads.by.source.bar" />
-  	</action-view>
-  
+
+
+	<action-view name="portal.opportunities.by.source" title="Chart">
+		<view type="chart" name="chart.dashboard.opportunities.source.amount.bar" />
+	</action-view>
+
+	<action-view name="portal.opportunities.by.salestage"
+		title="Opportunities By Sale Stage">
+		<view type="chart" name="chart.dashboard.opportunities.sales.stage.amount.bar" />
+	</action-view>
+
+
+	<action-view name="portal.opportunities.by.type" title="Opportunities By Type">
+		<view type="chart" name="chart.dashboard.opportunities.type.amount.bar" />
+	</action-view>
+
+	<action-view name="portal.opportunities.byStage.byType"
+		title="Pipeline by Stage and Type">
+		<view type="chart" name="chart.dashboard.opportunities.by.stage.type.bar" />
+	</action-view>
+
+
+
+	<action-view name="portal.opportunities.won.by.leadsource"
+		title="Opportunities Won By Lead Source">
+		<view type="chart" name="chart.dashboard.opportunities.won.by.leadsource.bar" />
+	</action-view>
+
+	<action-view name="portal.opportunities.won.by.salesman"
+		title="Opportunities Won By Salesman">
+		<view type="chart" name="chart.dashboard.opportunities.won.by.salesman.bar" />
+	</action-view>
+
+	<action-view name="portal.opportunities.by.origin.by.stage"
+		title="Chart">
+		<view type="chart" name="chart.opportunities.by.origin.by.stage" />
+	</action-view>
+
+	<action-view name="portal.opportunities.pipeline.next.90d"
+		title="Chart">
+		<view type="chart" name="chart.opportunities.pipeline.next.90d" />
+	</action-view>
+
+
+	<!-- Lead Graph view Dashboard -->
+
+
+	<portal title="Lead Graph Dashboard" name="crm.lead.graph.portal"
+		cols="2">
+		<portlet action="portal.leads.by.source" height="350" />
+		<portlet action="portal.leads.by.country" height="350" />
+		<portlet action="portal.leads.by.team.by.status" height="350"
+			colSpan="1" />
+		<portlet action="portal.leads.by.salesman.by.status" height="350" />
+		<portlet action="portal.leads.recent.leads" height="350"
+			colSpan="1" canSearch="true" />
+	</portal>
+
+	<action-view name="portal.leads.by.source" title="Leads by Source">
+		<view type="chart" name="chart.leads.by.source.bar" />
+	</action-view>
+
 	<action-view name="portal.leads.by.country" title="Leads by Country">
-	   	<view type="chart" name="chart.leads.by.country.bar" />
+		<view type="chart" name="chart.leads.by.country.bar" />
 	</action-view>
-	  
+
 	<action-view name="portal.leads.by.team.by.status" title="Leads by Team by Status">
-	  	<view type="chart" name="chart.leads.by.team.by.status.bar" />
+		<view type="chart" name="chart.leads.by.team.by.status.bar" />
 	</action-view>
-	  
-	<action-view name="portal.leads.by.salesman.by.status" title="Leads by Salesman by Status">
-	  	<view type="chart" name="chart.leads.by.salesman.by.status.bar" />
+
+	<action-view name="portal.leads.by.salesman.by.status"
+		title="Leads by Salesman by Status">
+		<view type="chart" name="chart.leads.by.salesman.by.status.bar" />
 	</action-view>
-	
-	
-  
-	<!--  Lead Grid view Dashboard  -->
-  	 
-  	 <portal title="Lead List Dashboard" name="crm.lead.portal" cols="2">
-	    <portlet action="portal.my.leads" height="350" />
-	    <portlet action="portal.unassigned.leads" height="350"/>
-	    <portlet action="portal.team.leads" height="350"/>
+
+
+	<!-- Lead Grid view Dashboard -->
+
+	<portal title="Lead List Dashboard" name="crm.lead.portal" cols="2">
+		<portlet action="portal.my.leads" height="350" />
+		<portlet action="portal.unassigned.leads" height="350" />
+		<portlet action="portal.team.leads" height="350" />
 	</portal>
 
-	<action-view name="portal.my.leads" title="My Leads" model="com.axelor.apps.crm.db.Lead">
-  		<view type="grid" name="lead-grid"/>
-		<view type="form" name="lead-form"/>
+	<action-view name="portal.my.leads" title="My Leads"
+		model="com.axelor.apps.crm.db.Lead">
+		<view type="grid" name="lead-grid" />
+		<view type="form" name="lead-form" />
 		<domain>self.userInfo =:user_info</domain>
-		<context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
-  	</action-view>
-  	
-  	<action-view name="portal.unassigned.leads" title="Unassigned Leads"  model="com.axelor.apps.crm.db.Lead">
-  		<view type="grid" name="lead-grid"/>
-		<view type="form" name="lead-form"/>
+		<context name="user_info"
+			expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" />
+	</action-view>
+
+	<action-view name="portal.unassigned.leads" title="Unassigned Leads"
+		model="com.axelor.apps.crm.db.Lead">
+		<view type="grid" name="lead-grid" />
+		<view type="form" name="lead-form" />
 		<domain>self.userInfo is null</domain>
-  	</action-view>
-  	
-  	<action-view name="portal.team.leads" title="My Team Leads"  model="com.axelor.apps.crm.db.Lead">
-  		<view type="grid" name="lead-grid"/>
-		<view type="form" name="lead-form"/>
+	</action-view>
+
+	<action-view name="portal.team.leads" title="My Team Leads"
+		model="com.axelor.apps.crm.db.Lead">
+		<view type="grid" name="lead-grid" />
+		<view type="form" name="lead-form" />
 		<domain>self.team =:user_active_team</domain>
-		<context name="user_active_team" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
-  	</action-view>
-	
-  	<!--  Event  Graph view Dashboard  -->
-  
-  
-	  <portal title="Event Graph Dashboard" name="crm.event.graph.portal" cols="2">
-			<portlet action="portal.calls.types.by.user" height="350"/>
-		    <portlet action="portal.calls.types.by.team" height="350"/>
-		    <portlet action="portal.calls.by.team.by.user" height="350"/>
-		    <portlet action="portal.open.tickets.by.priority" height="350"/>
-		    <portlet action="portal.open.tickets.by.status" height="350"/>
-			<portlet action="portal.agents.by.open.cases" height="350"/>
-			<portlet action="portal.customer.by.open.cases" height="350"/>
-			<portlet action="portal.open.ticket.priority.distribution" height="350"/>
-			<portlet action="chart:chart.due.open.ticket.gauge.bar" height="350"/>
-		</portal>
-	 
-  	<action-view name="portal.calls.types.by.user" title="Calls type by user">
-    	<view type="chart" name="chart.calls.types.by.user.bar" />
-  	</action-view>
-  
-  	<action-view name="portal.calls.types.by.team" title="Calls type by team">
-    	<view type="chart" name="chart.calls.types.by.team.bar" />
-  	</action-view>
-  
-  	<action-view name="portal.calls.by.team.by.user" title="Calls by team by user">
-    	<view type="chart" name="chart.calls.types.by.team.by.user.bar" />
-  	</action-view>
-  
-  	<action-view name="portal.open.tickets.by.priority" title="Open tickets by priority">
-    	<view type="chart" name="chart.open.tickets.by.priority.bar" />
-  	</action-view>
-	
-	
-	 <action-view name="portal.open.tickets.by.status" title="Open tickets by status">
-    	<view type="chart" name="chart.open.tickets.by.status.bar" />
-  	</action-view>
-  
-  	<action-view name="portal.agents.by.open.cases" title="Calls by team by user">
-    	<view type="chart" name="chart.agents.by.open.cases.bar" />
-  	</action-view>
-  
-  	<action-view name="portal.customer.by.open.cases" title="Top clients by Open Cases">
-    	<view type="chart" name="chart.customer.by.open.cases.bar" />
-  	</action-view>
-	
-	<action-view name="portal.open.ticket.priority.distribution" title="Ticket distribution by Priority">
-    	<view type="chart" name="chart.open.ticket.priority.distribution.bar" />
-  	</action-view>
-  	
-  	
-  	
-  	<!-- EVENT Grid View DashBoard -->
-  	
-  	<portal name="crm.event.portal" title="Event List Report" cols="2">
-  		<portlet action="portal.my.urgent.tickets" height="350" canSearch="true"/>
-		<portlet action="portal.my.active.tickets" height="350" canSearch="true"/> 
-		<portlet action="portal.my.new.tickets" canSearch="true" height="350"/>
-		<portlet action="portal.urgent.tickets" canSearch="true" height="350"/>
-  		<portlet action="portal.new.tickets" canSearch="true" height="350"/>
-  		<portlet action="portal.new.urgent.tickets" canSearch="true" height="350"/>
-  		<portlet action="portal.my.new.urgent.tickets" canSearch="true" height="350"/>
-  		<portlet action="portal.my.today.support.activities" canSearch="true" height="350"/>
-  		<portlet action="portal.my.late.tickets" canSearch="true" height="350"/>
-  		<portlet action="portal.late.tickets" canSearch="true" height="350"/>
-  	</portal>
-  	<action-view name="portal.my.urgent.tickets" title="My Urgent Tickets" model="com.axelor.apps.crm.db.Event">
-		<view type="grid" name="event-grid"/>
-		<view type="form" name="event-form"/>
+		<context name="user_active_team"
+			expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()" />
+	</action-view>
+
+	<!-- Event Graph view Dashboard -->
+
+
+	<portal title="Event Graph Dashboard" name="crm.event.graph.portal"
+		cols="2">
+		<portlet action="portal.calls.types.by.user" height="350" />
+		<portlet action="portal.calls.types.by.team" height="350" />
+		<portlet action="portal.calls.by.team.by.user" height="350" />
+		<portlet action="portal.open.tickets.by.priority" height="350" />
+		<portlet action="portal.open.tickets.by.status" height="350" />
+		<portlet action="portal.agents.by.open.cases" height="350" />
+		<portlet action="portal.customers.by.open.cases" height="350" />
+		<portlet action="portal.open.ticket.priority.distribution"
+			height="350" />
+		<portlet action="portal.due.open.ticket.gauge" height="350" />
+	</portal>
+
+	<action-view name="portal.calls.types.by.user" title="Calls type by user">
+		<view type="chart" name="chart.calls.types.by.user.bar" />
+	</action-view>
+
+	<action-view name="portal.calls.types.by.team" title="Calls type by team">
+		<view type="chart" name="chart.calls.types.by.team.bar" />
+	</action-view>
+
+	<action-view name="portal.calls.by.team.by.user" title="Calls by team by user">
+		<view type="chart" name="chart.calls.types.by.team.by.user.bar" />
+	</action-view>
+
+	<action-view name="portal.open.tickets.by.priority" title="Open tickets by priority">
+		<view type="chart" name="chart.open.tickets.by.priority.bar" />
+	</action-view>
+
+
+	<action-view name="portal.open.tickets.by.status" title="Open tickets by status">
+		<view type="chart" name="chart.open.tickets.by.status.bar" />
+	</action-view>
+
+	<action-view name="portal.agents.by.open.cases" title="Top agents by Open Tickets">
+		<view type="chart" name="chart.agents.by.open.cases.bar" />
+	</action-view>
+
+	<action-view name="portal.customers.by.open.cases" title="Top clients by Open Cases">
+		<view type="chart" name="chart.customer.by.open.cases.bar" />
+	</action-view>
+
+	<action-view name="portal.open.ticket.priority.distribution"
+		title="Ticket distribution by Priority">
+		<view type="chart" name="chart.open.ticket.priority.distribution.bar" />
+	</action-view>
+
+	<action-view name="portal.due.open.ticket.gauge" title="Due Open Tickets">
+		<view type="chart" name="chart.due.open.ticket.gauge.bar" />
+	</action-view>
+
+	<!-- EVENT Grid View DashBoard -->
+
+	<portal name="crm.event.portal" title="Event List Report" cols="2">
+		<portlet action="portal.my.urgent.tickets" height="350"
+			canSearch="true" />
+		<portlet action="portal.my.active.tickets" height="350"
+			canSearch="true" />
+		<portlet action="portal.my.new.tickets" canSearch="true"
+			height="350" />
+		<portlet action="portal.urgent.tickets" canSearch="true"
+			height="350" />
+		<portlet action="portal.new.tickets" canSearch="true" height="350" />
+		<portlet action="portal.new.urgent.tickets" canSearch="true"
+			height="350" />
+		<portlet action="portal.my.new.urgent.tickets" canSearch="true"
+			height="350" />
+		<portlet action="portal.my.today.support.activities"
+			canSearch="true" height="350" />
+		<portlet action="portal.my.late.tickets" canSearch="true"
+			height="350" />
+		<portlet action="portal.late.tickets" canSearch="true" height="350" />
+	</portal>
+	<action-view name="portal.my.urgent.tickets" title="My Urgent Tickets"
+		model="com.axelor.apps.crm.db.Event">
+		<view type="grid" name="event-grid" />
+		<view type="form" name="event-form" />
 		<domain>self.typeSelect = 5 AND self.ticketStatusSelect != 5 AND self.prioritySelect in (4,5) AND self.userInfo =:user_info</domain>
-		<context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>  		
+		<context name="user_info"
+			expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" />
 	</action-view>
 
-	<action-view name="portal.my.active.tickets" title="My Active Tickets" model="com.axelor.apps.crm.db.Event">
-		<view type="grid" name="event-grid"/>
-		<view type="form" name="event-form"/>
+	<action-view name="portal.my.active.tickets" title="My Active Tickets"
+		model="com.axelor.apps.crm.db.Event">
+		<view type="grid" name="event-grid" />
+		<view type="form" name="event-form" />
 		<domain>self.typeSelect = 5 AND self.ticketStatusSelect != 5 AND self.userInfo =:user_info</domain>
-		<context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+		<context name="user_info"
+			expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" />
 	</action-view>
-	
- 	<action-view name="portal.my.new.tickets" title="My New Tickets" model="com.axelor.apps.crm.db.Event">
-  		<view type="grid" name="event-grid"/>
-  		<view type="form" name="event-form"/>
-  		<domain>self.typeSelect = 5 AND self.ticketStatusSelect = 1 AND self.userInfo = :active_user</domain>
-  		<context name="active_user" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
-  	</action-view>
-  	
-  	<action-view name="portal.urgent.tickets" title="Urgent Tickets" model="com.axelor.apps.crm.db.Event">
-  		<view type="grid" name="event-grid"/>
-  		<view type="form" name="event-form"/>
-  		<domain>self.typeSelect = 5 AND self.ticketStatusSelect != 5 AND self.prioritySelect in (4,5)</domain>
-  	</action-view>
- 
-  	<action-view name="portal.new.urgent.tickets" title="New Urgent Tickets" model="com.axelor.apps.crm.db.Event">
-  		<view type="grid" name="event-grid"/>
-  		<view type="form" name="event-form"/>
-  		<domain>self.typeSelect = 5 AND self.ticketStatusSelect = 1 AND self.prioritySelect in (4,5)</domain>
-  	</action-view>
-  	
-  	<action-view name="portal.new.tickets" title="New Tickets" model="com.axelor.apps.crm.db.Event">
-  		<view type="grid" name="event-grid"/>
-  		<view type="form" name="event-form"/>
-  		<domain>self.typeSelect = 5 AND self.ticketStatusSelect = 1</domain>
-  	</action-view>
-  	
-  	<action-view title="My New Urgent Tickets" model="com.axelor.apps.crm.db.Event" name="portal.my.new.urgent.tickets">
-	    <view type="grid" name="event-grid"/>
-	    <view type="form" name="event-form"/>
-	    <domain>self.typeSelect=5 AND self.ticketStatusSelect=1 AND self.prioritySelect IN (4,5) AND self.userInfo =:user_info</domain>
-	    <context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+	<action-view name="portal.my.new.tickets" title="My New Tickets"
+		model="com.axelor.apps.crm.db.Event">
+		<view type="grid" name="event-grid" />
+		<view type="form" name="event-form" />
+		<domain>self.typeSelect = 5 AND self.ticketStatusSelect = 1 AND self.userInfo = :active_user</domain>
+		<context name="active_user"
+			expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" />
+	</action-view>
+	<action-view name="portal.urgent.tickets" title="Urgent Tickets"
+		model="com.axelor.apps.crm.db.Event">
+		<view type="grid" name="event-grid" />
+		<view type="form" name="event-form" />
+		<domain>self.typeSelect = 5 AND self.ticketStatusSelect != 5 AND self.prioritySelect in (4,5)</domain>
 	</action-view>
 
-	<action-view title="My Today Support Activities" model="com.axelor.apps.crm.db.Event" name="portal.my.today.support.activities">
-	    <view type="grid" name="event-grid"/>
-	    <view type="form" name="event-form"/>
-	    <domain>self.typeSelect=5 AND self.updatedOn=date(now())</domain>    
+	<action-view name="portal.new.urgent.tickets" title="New Urgent Tickets"
+		model="com.axelor.apps.crm.db.Event">
+		<view type="grid" name="event-grid" />
+		<view type="form" name="event-form" />
+		<domain>self.typeSelect = 5 AND self.ticketStatusSelect = 1 AND self.prioritySelect in (4,5)</domain>
+	</action-view>
+	<action-view name="portal.new.tickets" title="New Tickets"
+		model="com.axelor.apps.crm.db.Event">
+		<view type="grid" name="event-grid" />
+		<view type="form" name="event-form" />
+		<domain>self.typeSelect = 5 AND self.ticketStatusSelect = 1</domain>
 	</action-view>
 
 
-	<action-view title="My Late Tickets" model="com.axelor.apps.crm.db.Event" name="portal.my.late.tickets">
-	    <view type="grid" name="event-grid"/>
-	    <view type="form" name="event-form"/>
-	    <domain>self.typeSelect = 5 AND self.ticketStatusSelect != 5 AND self.userInfo =:user_info AND self.endDateTime &lt; date(now())</domain>
-	    <context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+
+
+
+	<action-view title="My New Urgent Tickets" model="com.axelor.apps.crm.db.Event"
+		name="portal.my.new.urgent.tickets">
+		<view type="grid" name="event-grid" />
+		<view type="form" name="event-form" />
+		<domain>self.typeSelect=5 AND self.ticketStatusSelect=1 AND self.prioritySelect IN (4,5) AND self.userInfo =:user_info</domain>
+		<context name="user_info"
+			expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" />
 	</action-view>
 
-	<action-view title="Late Tickets" model="com.axelor.apps.crm.db.Event" name="portal.late.tickets">
-	    <view type="grid" name="event-grid"/>
-	    <view type="form" name="event-form"/>
-	    <domain>self.typeSelect = 5 AND self.ticketStatusSelect != 5 AND self.endDateTime &lt; date(now())</domain>    
+	<action-view title="My Today Support Activities" model="com.axelor.apps.crm.db.Event"
+		name="portal.my.today.support.activities">
+		<view type="grid" name="event-grid" />
+		<view type="form" name="event-form" />
+		<domain>self.typeSelect=5 AND self.updatedOn=date(now())</domain>
 	</action-view>
-  	
-  	
+
+
+	<action-view title="My Late Tickets" model="com.axelor.apps.crm.db.Event"
+		name="portal.my.late.tickets">
+		<view type="grid" name="event-grid" />
+		<view type="form" name="event-form" />
+		<domain>self.typeSelect = 5 AND self.ticketStatusSelect != 5 AND self.userInfo =:user_info AND self.endDateTime &lt; date(now())</domain>
+		<context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" />
+	</action-view>
+
+	<action-view title="Late Tickets" model="com.axelor.apps.crm.db.Event"
+		name="portal.late.tickets">
+		<view type="grid" name="event-grid" />
+		<view type="form" name="event-form" />
+		<domain>self.typeSelect = 5 AND self.ticketStatusSelect != 5 AND self.endDateTime &lt; date(now())</domain>
+	</action-view>
+
+
 </object-views>
