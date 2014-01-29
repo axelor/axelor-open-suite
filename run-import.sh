@@ -86,14 +86,6 @@ elif [ $1 = "demo" ]; then
 	args=`echo "-c src/main/resources/config_files/csv-config_demo.xml -d src/main/resources/data/demo/ "`
 	(exec mvn -q exec:java -Dexec.mainClass="com.axelor.erp.data.Main" -Dexec.args="$args" > $PATHLOG/axelor_demo_$DATE.log)
 	backupDb $DATABASE $PATHDUMP/axelor_demo_$DATE
-elif [ $1 = "auxilium" ]; then
-	echo "Run auxilium import"
-	args=`echo "-c src/main/resources/config_files/auxiliumburo/csv-config_base.xml -d src/main/resources/data/auxiliumburo/ "`
-	(exec mvn -q exec:java -Dexec.mainClass="com.axelor.erp.data.Main" -Dexec.args="$args" > $PATHLOG/auxiliumBase_$DATE.log)
-	backupDb $DATABASE $PATHDUMP/auxiliumBase_$DATE
-	args=`echo "-c src/main/resources/config_files/auxiliumburo/csv-config_auxilium.xml -d src/main/resources/data/auxiliumburo/ "`
-	(exec mvn -q exec:java -Dexec.mainClass="com.axelor.erp.data.Main" -Dexec.args="$args" > $PATHLOG/auxilium_$DATE.log)
-	backupDb $DATABASE $PATHDUMP/auxilium_$DATE
 fi
 
 echo "Import Done !"
