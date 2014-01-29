@@ -30,6 +30,7 @@
  */
 package com.axelor.apps.base.service.wizard;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -40,6 +41,7 @@ import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.exception.AxelorException;
+import com.google.common.collect.Lists;
 
 public class ConvertWizardService {
 
@@ -69,10 +71,28 @@ public class ConvertWizardService {
 					}	
 	
 					if(value instanceof Map)  {
+						LOG.debug("Map");	
 						Map map = (Map) value;
 						Object id = map.get("id");
 						value = JPA.find((Class) p.getTarget(), Long.parseLong(id.toString()));
 					} 
+					if(value instanceof List)  {
+						LOG.debug("List");	
+						
+						List<Object> valueList = (List<Object>) value;
+						List<Object> resultList = Lists.newArrayList();
+						
+						if(valueList != null)  {
+							for(Object object : valueList)  {
+								Map map = (Map) object;
+								Object id = map.get("id");
+								resultList.add(JPA.find((Class) p.getTarget(), Long.parseLong(id.toString())));
+							}
+						}
+						value = resultList;
+						
+					}
+					
 					p.set(obj, value);
 				}
 			}
