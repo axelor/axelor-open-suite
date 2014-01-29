@@ -9,15 +9,16 @@
 		<portlet action="portal.my.recent.customers" height="350" colSpan="1" canSearch="true"/> 
 	    <portlet action="portal.partner.by.salesman" height="350" colSpan="1" canSearch="true"/>
 		<portlet action="portal.partner.recent.partners" height="350" colSpan="1" canSearch="true"/>	
-		<portlet action="portal.partner.by.industry.sector" height="350" colSpan="1" canSearch="true"/>
+		<portlet action="portal.partner.by.industrySector" height="350" colSpan="1" canSearch="true"/>
 		<portlet action="portal.my.customers" height="350" colSpan="1" canSearch="true"/>
-	 	<portlet title="Customers by country" action="chart:chart.customers.by.country.bar" height="350"/>
+	 	<portlet action="portal.customers.by.country" height="350" colSpan="1" canSearch="true"/>
   	</portal>
 	
 	<action-view name="portal.my.recent.customers" title="My Recent Customers" model="com.axelor.apps.base.db.Partner">
 		<view type="grid" name="partner-grid"/>
 		<view type="form" name="partner-form"/>
-    	<domain>self.updatedOn &gt; date(now())-30</domain>
+    	<domain>self.updatedOn &gt;= date(now())-30 AND self.userInfo=:user_info</domain>
+    	<context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
     </action-view>
 	
 	<action-view name="portal.partner.by.salesman" title="Customers by salesman" model="com.axelor.apps.base.db.Partner">
@@ -25,10 +26,10 @@
 		<view type="form" name="partner-form"/>
 	</action-view>
 	
-	<action-view title="Recently created partners" model="com.axelor.apps.base.db.Partner" name="portal.partner.recent.partners">
+	<action-view name="portal.partner.recent.partners" title="Recently created partners" model="com.axelor.apps.base.db.Partner" >
     	<view type="grid" name="partner-grid"/>
     	<view type="form" name="partner-form"/>
-    	<domain>self.createdOn &gt; date(now())-15</domain>
+    	<domain>self.createdOn &gt;= date(now())-15</domain>
 	</action-view>
 	
 	<action-view name="portal.my.customers" title="My Customers" model="com.axelor.apps.base.db.Partner">
@@ -38,8 +39,11 @@
 		 <context name="userInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
     </action-view>
 	
-	<action-view name="portal.partner.by.industry.sector" title="Partners by Industry Sector" model="com.axelor.apps.base.db.Partner">
+	<action-view name="portal.partner.by.industrySector" title="Partners by Industry Sector" model="com.axelor.apps.base.db.Partner">
 		<view type="chart" name="chart.partner.by.industry.sector.bar" />
+	</action-view>
+	<action-view name="portal.customers.by.country" title="Customers by country" model="com.axelor.apps.base.db.Partner">
+		<view type="chart" name="chart.customers.by.country.bar"/>
 	</action-view>
   	
 </object-views>
