@@ -226,7 +226,7 @@
 	<action-record name="action-convert-lead-wizard-record-default-partner" model="com.axelor.apps.base.db.Partner">
 		<field name="isContact" expr="eval: false"/>
     	<field name="name" expr="eval: _lead.name"/>
-    	<field name="firstName" expr="eval: _lead.firstName"/>
+<!--     	<field name="firstName" expr="eval: _lead.firstName"/> -->
     	<field name="titleSelect" expr="eval: _lead.titleSelect"/>
     	<field name="emailAddress" expr="eval: _lead.emailAddress"/>
     	<field name="fax" expr="eval: _lead.fax"/>

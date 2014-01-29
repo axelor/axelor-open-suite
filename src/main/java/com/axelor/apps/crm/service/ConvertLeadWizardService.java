@@ -39,6 +39,7 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.wizard.ConvertWizardService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.Lead;
@@ -58,6 +59,9 @@ public class ConvertLeadWizardService {
 	
 	@Inject 
 	private AddressService addressService;
+	
+	@Inject 
+	private PartnerService partnerService;
 	
 	private static final Logger LOG = LoggerFactory.getLogger(ConvertLeadWizardService.class);
 	
@@ -79,10 +83,13 @@ public class ConvertLeadWizardService {
 		
 		partner.setPartnerSeq(leadService.getSequence());
 		
+		partnerService.setPartnerFullName(partner);
+		
 		this.setAddress(partner, context);
 		
 		return partner;
 	}
+	
 	
 	
 	public void setEmailAddress(Partner partner)  {
