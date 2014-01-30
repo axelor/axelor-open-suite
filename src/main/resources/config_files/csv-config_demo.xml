@@ -13,6 +13,7 @@
     
     <input file="auth_user.csv" separator=";" type="com.axelor.auth.db.User"  />
 	
+    <input file="base_printSetting.csv" separator=";" type="com.axelor.apps.base.db.PrintingSettings" />
     
 <!--     IMPORT DU PACKAGE 'BASE' -->   
 	<input file="base_status.csv" separator=";" type="com.axelor.apps.base.db.Status">
