@@ -17,10 +17,11 @@
 	    <button name="sendByEmail" title="Send Email" icon="icon-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
     
-    <form cols="2" onNew="action-product-record-default-new,action-product-record-sale-supply-select" name="product-form" title="Product" model="com.axelor.apps.base.db.Product" >
+    <form cols="2" onLoad="action-product-set-today-date"  onNew="action-product-set-today-date,action-product-record-default-new,action-product-record-sale-supply-select" name="product-form" title="Product" model="com.axelor.apps.base.db.Product" >
     	<toolbar>
     		<button name="sendByEmail" title="Send Email" icon="icon-envelope" onClick="action-send-by-email-with-template"/>
     	</toolbar>
+    	<field name="todayDate" widget="DATE" hidden="true"/>
 	    <group colWidths="15%,85%" colSpan="6" cols="2">
 	            <group colSpan="1">
 	                <field name="picture" showTitle="false"/>
@@ -124,6 +125,10 @@
     	<field name="purchasePrice" expr="1"/>
     	<field name="saleCurrency" expr="eval: _activeCompany.currency"/>
     	<field name="purchaseCurrency" expr="eval: _activeCompany.currency"/>
+    </action-record>
+    
+    <action-record name="action-product-set-today-date" model="com.axelor.apps.base.db.Product">
+    	<field name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
     </action-record>
     
     <action-record name="action-product-record-sale-supply-select" model="com.axelor.apps.base.db.Product">
