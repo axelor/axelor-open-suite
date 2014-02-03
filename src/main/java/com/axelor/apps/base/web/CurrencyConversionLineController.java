@@ -30,12 +30,27 @@
  */
 package com.axelor.apps.base.web;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.CurrencyConversionLine;
+import com.axelor.apps.base.service.CurrencyConversionService;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
+import com.google.inject.Inject;
 
 public class CurrencyConversionLineController {
-
+	
+	@Inject
+	CurrencyConversionService ccs;
+	
+	@Inject
+	GeneralService gs;
+	
 	public void checkDate(ActionRequest request, ActionResponse response) {
 	
 		CurrencyConversionLine ccl = request.getContext().asType(CurrencyConversionLine.class);
@@ -50,4 +65,22 @@ public class CurrencyConversionLineController {
 			response.setFlash(msg);
 		}
 	}
+	
+	public void getLatest(ActionRequest request, ActionResponse response) {
+		CurrencyConversionLine ccl = request.getContext().asType(CurrencyConversionLine.class);
+		Currency fromCurrency = ccl.getStartCurrency();
+		Currency toCurrency = ccl.getEndCurrency();
+		if(fromCurrency != null && toCurrency != null){
+			BigDecimal currentRate = ccs.convert(fromCurrency, toCurrency);
+			if(currentRate != null){
+				CurrencyConversionLine cl = CurrencyConversionLine.all().filter("self.startCurrency = ?1 and self.endCurrency = ?2 and self.toDate != null",ccl.getStartCurrency(),ccl.getEndCurrency()).order("toDate").fetchOne();
+				if(cl != null)
+					response.setValue("variations", ccs.getVariations(currentRate, cl.getConversionRate()));
+				response.setValue("conversionRate", currentRate);
+			}
+			else 
+				response.setFlash("Error in conversion. Please check log");
+		}
+	}
+	
 }

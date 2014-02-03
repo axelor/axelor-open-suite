@@ -14,9 +14,7 @@
     <decimal name="conversionRate" scale="4" precision="20" title="Exchange rate"/>
     <date name="fromDate" title="From Date" required="true"/>
     <date name="toDate" title="To Date"/>
-   
-    
-    
+    <string name="variations"  title="Variations"/>
   </entity>
   
 </domain-models>
