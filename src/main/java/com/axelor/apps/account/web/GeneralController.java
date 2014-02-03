@@ -30,7 +30,19 @@
  */
 package com.axelor.apps.account.web;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.List;
+
+import javax.swing.text.html.CSS;
+
+import org.joda.time.LocalDate;
+
 import com.axelor.apps.account.service.debtrecovery.PayerQualityService;
+import com.axelor.apps.base.db.CurrencyConversionLine;
+import com.axelor.apps.base.db.General;
+import com.axelor.apps.base.service.CurrencyConversionService;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -42,6 +54,12 @@ public class GeneralController {
 	@Inject
 	private Injector injector;
 	
+	@Inject
+	GeneralService gs;
+	
+	@Inject 
+	CurrencyConversionService ccs;
+	
 	public void payerQualityProcess(ActionRequest request, ActionResponse response)  {
 		
 		try  {
@@ -49,5 +67,22 @@ public class GeneralController {
 			pqs.payerQualityProcess();
 		}
 		catch (Exception e) { TraceBackService.trace(response, e); }
+	}
+	
+	public void updateCurrencyConversion(ActionRequest request, ActionResponse response){
+		 General general = request.getContext().asType(General.class);
+		 for(CurrencyConversionLine ccl : general.getCurrencyConversionLineList()){
+			if(ccl.isSelected() && ccl.getToDate() == null){
+				LocalDate today = gs.getTodayDate(); 
+				ccl = CurrencyConversionLine.find(ccl.getId());
+				ccl.setToDate(today.minusDays(1));
+				ccs.saveCurrencyConversionLine(ccl);
+				BigDecimal currentRate = ccs.convert(ccl.getStartCurrency(), ccl.getEndCurrency());
+				BigDecimal previousRate = ccl.getConversionRate();
+				String variations = ccs.getVariations(currentRate, previousRate);
+				ccs.createCurrencyConversionLine(ccl.getStartCurrency(), ccl.getEndCurrency(), today, currentRate, General.find(general.getId()), variations);
+			}
+		 }
+		 response.setReload(true);
 	}
 }
