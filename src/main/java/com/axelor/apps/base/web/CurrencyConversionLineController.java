@@ -55,15 +55,19 @@ public class CurrencyConversionLineController {
 	
 		CurrencyConversionLine ccl = request.getContext().asType(CurrencyConversionLine.class);
 		
-		if (CurrencyConversionLine.all().filter("self.startCurrency = ?1 and self.endCurrency = ?2 and self.toDate = null",ccl.getStartCurrency(),ccl.getEndCurrency()).count() > 0) {
-			String msg = "WARNING : Last conversion rate period has not been closed";
-			response.setFlash(msg);
+		if (ccl.getId() == null && CurrencyConversionLine.all().filter("self.startCurrency = ?1 and self.endCurrency = ?2 and self.toDate = null",ccl.getStartCurrency(),ccl.getEndCurrency()).count() > 0) {
+			response.setFlash("WARNING : Last conversion rate period has not been closed");
 			response.setValue("fromDate", "");		
 		}
 		else if (CurrencyConversionLine.all().filter("self.startCurrency = ?1 and self.endCurrency = ?2 and self.toDate >= ?3",ccl.getStartCurrency(),ccl.getEndCurrency(),ccl.getFromDate()).count() > 0) {
-			String msg = "WARNING : Last conversion rate period has not ended";
-			response.setFlash(msg);
+			response.setFlash("WARNING : Last conversion rate period has not ended");
+			response.setValue("fromDate", "");
 		}
+		else if(ccl.getFromDate() != null && ccl.getToDate() != null && ccl.getFromDate().isBefore(ccl.getToDate())){
+			response.setFlash("WARNING : To Date must be after or equals to From Date");
+			response.setValue("fromDate", "");
+		}
+	
 	}
 	
 	public void getLatest(ActionRequest request, ActionResponse response) {
@@ -73,7 +77,7 @@ public class CurrencyConversionLineController {
 		if(fromCurrency != null && toCurrency != null){
 			BigDecimal currentRate = ccs.convert(fromCurrency, toCurrency);
 			if(currentRate != null){
-				CurrencyConversionLine cl = CurrencyConversionLine.all().filter("self.startCurrency = ?1 and self.endCurrency = ?2 and self.toDate != null",ccl.getStartCurrency(),ccl.getEndCurrency()).order("toDate").fetchOne();
+				CurrencyConversionLine cl = CurrencyConversionLine.all().filter("self.startCurrency = ?1 and self.endCurrency = ?2 and self.toDate != null",ccl.getStartCurrency(),ccl.getEndCurrency()).order("-toDate").fetchOne();
 				if(cl != null)
 					response.setValue("variations", ccs.getVariations(currentRate, cl.getConversionRate()));
 				response.setValue("conversionRate", currentRate);

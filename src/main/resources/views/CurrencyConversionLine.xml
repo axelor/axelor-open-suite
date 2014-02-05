@@ -13,14 +13,15 @@
     </grid>
     
     <form name="currency-conversion-line-form" title="Currency conversion line" model="com.axelor.apps.base.db.CurrencyConversionLine" cols="4"
-    onNew="action-currency-conversion-line-default-record">
+    onNew="action-currency-conversion-line-default-record"
+    onSave="action-currency-conversion-line-method-check-date">
         <field name="startCurrency"/>
         <field name="endCurrency" />
-        <field name="fromDate" />
-        <field name="toDate"/>
+        <field name="fromDate" onChange="action-currency-conversion-line-check-from-to-date" />
+        <field name="toDate" onChange="action-currency-conversion-line-check-from-to-date" />
         <field name="conversionRate"/>
-        <field name="variations" showTitle="false"/>
-        <button showIf="toDate == null" name="getLatest" colSpan="1" title="Get latest" icon="icon-repeat" onClick="action-currency-conversion-line-method-get-latest,save" />
+        <field name="variations" showTitle="false" />
+        <button showIf="toDate == null" name="getLatest" colSpan="1" title="Get latest" icon="icon-repeat" onClick="action-currency-conversion-line-method-check-date,action-currency-conversion-line-method-get-latest,save" />
     </form>
     
     <form name="wizard-check-currency-rate-form" title="Check currency conversion rates" model="com.axelor.apps.base.db.Wizard" cols="4">
@@ -46,4 +47,13 @@
     	<field name="conversionRate" expr="call:com.axelor.apps.base.service.CurrencyConversionService:convert(fromCurrency as Currency,toCurrency as Currency)" />
     </action-record>
     
+    <action-validate name="action-currency-conversion-line-check-from-to-date">
+    	<error message="To Date must be after or equals to From Date" if="fromDate != null &amp;&amp; toDate != null &amp;&amp; fromDate &gt; toDate"  action="action-currency-conversion-line-reset-dates" />
+    </action-validate>
+    
+    <action-record name="action-currency-conversion-line-reset-dates" model="com.axelor.apps.base.db.CurrencyConversionLine">
+    	<field name="fromDate" expr="eval:null" />
+    	<field name="toDate" expr="eval:null" />
+    </action-record>
+
 </object-views>

@@ -6,7 +6,7 @@
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity name="AccountConfig" lang="java">
-  	<integer name="importId"/>
+  	<integer name="importId" />
     <string name="name" title="Name" required="true"/>
     <string name="code" title="Code" unique="true"/>
     
