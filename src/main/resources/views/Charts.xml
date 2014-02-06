@@ -1,0 +1,648 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+	  
+	  
+	
+	  
+	  <chart name="chart.sales.manager.dashboard.team.turnover" title="Turnover per team over past 30 days">
+	    <dataset type="sql">
+	    <![CDATA[
+		select
+			team.name as _team_name,
+			coalesce(sum(self.ex_tax_total),0) as amount
+		from 
+			supplychain_sales_order self
+		RIGHT JOIN
+			base_team team
+		ON
+			team.id=self.team
+		where
+			self.creation_date
+		BETWEEN
+			(current_date-interval'30days')
+		AND
+			current_date
+		AND
+			self.status_select=3
+		GROUP BY
+			team.name
+	    ]]>
+	    </dataset>
+	    <category key="_team_name" type="text"/>
+    	<series key="amount"  type="bar"/>
+	  </chart>
+	  
+	  <chart name="chart.sales.manager.dashboard.salesman.turnover" title="Turnover per salesman over past 30 days">
+	    <dataset type="sql">
+	    <![CDATA[
+		SELECT
+			sum(self.ex_tax_total) as amount,
+			salesman.full_name as name
+		FROM
+			supplychain_sales_order self
+		JOIN
+			base_user_info salesman
+		ON
+			salesman.id=self.salesman_user_info
+		WHERE
+			self.creation_date
+		BETWEEN
+			(current_date-interval'30days')
+		AND
+			current_date
+		AND
+			self.status_select=3
+		GROUP BY
+			name
+	    ]]>
+	    </dataset>
+	    <category key="name" type="text"/>
+    	<series key="amount" type="bar"/>
+	  </chart>
+	  
+	  <chart name="chart.sales.manager.dashboard.family.product.sales" title="Sales per product family over past 12 months">	    
+	    <dataset type="sql">
+	    <![CDATA[
+		select
+				sum(self.ex_tax_total) as amount,
+				family.name as family_name
+			FROM
+				supplychain_sales_order self
+			JOIN
+				supplychain_sales_order_line _line
+			ON
+				_line.sales_order=self.id
+			JOIN
+				base_product products
+			ON
+				products.id=_line.product
+			JOIN
+				base_product_family family
+			ON
+				products.product_family=family.id
+				
+			WHERE
+				self.status_select=3
+			AND
+				self.creation_date
+			BETWEEN
+				(current_date-interval'1year')
+			AND
+				current_date
+			GROUP BY
+				family_name
+	    ]]>
+	    </dataset>
+	    <category key="family_name" type="text"/>
+		<series key="amount"  type="pie"/>
+	  </chart>
+	  <chart name="chart.sales.manager.dashboard.category.product.sales" title="Sales per product category over past 12 months in volume">
+	    <dataset type="sql">
+	    <![CDATA[
+		SELECT
+			    category.name as category_name,
+				coalesce(sum(orders.qty) ,0) as amount
+			from
+				supplychain_sales_order_line orders
+			JOIN
+				supplychain_sales_order self
+			ON
+				(self.id=orders.sales_order
+				)
+			JOIN
+				base_product product
+			ON
+				product.id=orders.product
+			JOIN
+				base_product_category category
+			ON
+				product.product_category=category.id
+			WHERE
+				self.creation_date
+				BETWEEN
+					(current_date-interval'1year')
+				AND
+					current_date
+			and
+				self.status_select=3
+				
+			GROUP BY
+				category_name
+	    ]]>
+	    </dataset>
+	    <category key="category_name" type="text"/>
+    	<series key="amount" type="pie"/>
+	  </chart>
+	  
+	  <chart name="chart.sales.manager.dashboard.country.sales" title="Sales per country over past 12 months">
+	    <dataset type="sql">
+	    <![CDATA[
+		SELECT
+				country.name as name,
+				coalesce(sum(self.ex_tax_total),0) as amount
+			FROM
+				supplychain_sales_order self
+			JOIN
+				base_address address
+			ON
+				address.id=self.main_invoicing_address
+			JOIN
+				base_country country
+			ON
+				country.id=address.addressl7country
+			WHERE
+				self.creation_date
+				BETWEEN
+					(current_date-interval'1year')
+				AND
+					current_date
+			and
+				self.status_select=3
+			GROUP BY
+				name
+	    ]]>
+	    </dataset>
+	    <category key="name" type="text"/>
+    	<series key="amount" type="pie"/>
+	  </chart>
+	   
+	  <chart name="chart.salesman.dashboard.total.turnover" title="Turnover over past 6 months" stacked="true">
+	    <dataset type="sql">
+	    <![CDATA[
+		SELECT
+    		coalesce(sum(orders.ex_tax_total),0) as amount,
+			result.status_value as status_select,
+			result.month_value as month_name,
+        	cast(result.month as int) as month
+		FROM
+			supplychain_sales_order orders
+		RIGHT OUTER JOIN
+			(SELECT
+				item.title as status_value,
+				item.value as status,
+				month_item.value as month,
+				month_item.title as month_value
+			FROM
+				meta_select_item item,
+				meta_select_item month_item
+			WHERE
+				item.select_id=(SELECT id
+								FROM
+									meta_select
+								where
+									name='default.status.select')
+			AND
+				month_item.select_id=(SELECT id
+										FROM 
+											meta_select
+										WHERE
+											name='iadministration.month.select')
+	
+			AND
+				item.value!='4'
+			AND
+				cast(month_item.value  as int)!=(extract(month from current_date))
+			AND
+				cast(month_item.value  as int)>=(extract(month from (current_date-interval'6months'))))as result
+		ON
+			(orders.status_select=cast(result.status as int)
+			AND
+				extract(month from orders.creation_date)=cast(result.month as int))
+	
+		GROUP BY
+			result.status_value,result.month_value,cast(result.month as int)
+		ORDER BY month;
+			
+	    ]]> 
+	    </dataset>
+	    <category key="month" type="month" />
+    	<series key="amount" type="bar" groupBy="status_select" />
+	  </chart>
+	  <chart name="chart.prod.turnover.sales.last.12m" title="Turnover On Customer Sales on Last 12 Month" stacked="true">
+        <dataset type="sql">
+        <![CDATA[
+        SELECT 
+            cast(_meta._select_month_value as int) AS _month_no, 
+            coalesce(_product._product_type, 'other') AS product, 
+            coalesce(SUM(_sales._turn_over),00) AS _turn_over
+        FROM 
+            (SELECT
+                _sales_order.id AS _order_id,
+                date_part('mon',_sales_order.creation_date) AS _month,
+                _sales_order.ex_tax_total AS _turn_over,
+                _line.product AS _line_product
+                FROM
+                    supplychain_sales_order AS _sales_order
+                JOIN
+                    supplychain_sales_order_line AS _line ON _sales_order.id = _line.sales_order
+                WHERE
+                    _sales_order.creation_date >= now() - INTERVAL '12 month' AND _sales_order.status_select=3
+                GROUP BY _sales_order.id, _line_product
+                ORDER BY _turn_over DESC) AS _sales
+        RIGHT JOIN 
+             (SELECT _category.name AS _product_type, _product.id AS _product_id
+                FROM 
+                    base_product AS _product
+                RIGHT JOIN
+                    base_product_category AS _category ON _product.product_category=_category.id AND _category.name IS NOT NULL) AS _product 
+
+        ON _sales._line_product=_product._product_id
+
+        RIGHT JOIN 
+
+             (SELECT _month_select.title AS _select_month_title, _month_select.value AS _select_month_value
+                FROM meta_select AS _selection
+                JOIN meta_select_item AS _month_select ON _month_select.select_id=_selection.id
+                WHERE _selection.name='iadministration.month.select'
+                ORDER BY _month_select.value) AS _meta
+
+        ON _sales._month=to_number(_meta._select_month_value,'00')
+
+        GROUP BY _meta._select_month_title, _product._product_type, _meta._select_month_value
+        ORDER BY _month_no
+        ]]>
+        </dataset>
+        <category key="_month_no" type="month"/>
+        <series key="_turn_over" type="bar" groupBy="product" title="TurnOver" aggregate="sum" />
+      </chart>
+	<chart name="chart.prod.qty.sales.last.12m" title="Number Of Units On Customer Sales on Last 12 Month" stacked="true">
+        <dataset type="sql">
+        <![CDATA[
+        SELECT 
+            cast(_meta._select_month_value as int) AS _month_no, 
+               coalesce(_product._product_type, 'other') AS product, 
+               coalesce(SUM(_sales._turn_over),00) AS _turn_over
+        FROM 
+            (SELECT
+                _sales_order.id AS _order_id,
+                date_part('mon',_sales_order.creation_date) AS _month,
+                _line.qty AS _turn_over,
+                _line.product AS _line_product
+            FROM
+                supplychain_sales_order AS _sales_order
+            JOIN
+                supplychain_sales_order_line AS _line ON _sales_order.id = _line.sales_order
+            WHERE
+                _sales_order.creation_date >= now() - INTERVAL '12 month' AND _sales_order.status_select=3
+            GROUP BY _sales_order.id, _line_product, _turn_over
+            ORDER BY _turn_over DESC) AS _sales
+
+        RIGHT JOIN 
+
+            (SELECT _category.name AS _product_type, _product.id AS _product_id
+            FROM 
+                base_product AS _product
+            RIGHT JOIN
+                base_product_category AS _category ON _product.product_category=_category.id AND _category.name IS NOT NULL) AS _product 
+        
+        ON _sales._line_product=_product._product_id
+
+        RIGHT JOIN 
+
+            (SELECT _month_select.title AS _select_month_title, _month_select.value AS _select_month_value
+                FROM meta_select AS _selection
+            JOIN meta_select_item AS _month_select ON _month_select.select_id=_selection.id
+                WHERE _selection.name='iadministration.month.select'
+            ORDER BY _month_select.value) AS _meta
+
+        ON _sales._month=to_number(_meta._select_month_value,'00')
+
+        GROUP BY _meta._select_month_title, _product._product_type, _meta._select_month_value
+        ORDER BY _month_no
+        ]]>
+        </dataset>
+        <category key="_month_no" type="month"/>
+        <series key="_turn_over" type="bar" groupBy="product" title="No Of Units" aggregate="sum" />
+</chart>
+	  <chart name="chart.purchase.buyer.dashboard.family.product.purchase.volume" title="My purchases orders per product family over past month in volume">
+	    <dataset type="sql">
+	    <![CDATA[
+		SELECT
+            SUM(supplychain_purchase_order_line.qty) AS amount,
+	        base_product_family.name AS _product_family
+	    FROM
+	        supplychain_purchase_order self
+	    LEFT JOIN
+	        supplychain_purchase_order_line  ON supplychain_purchase_order_line.purchase_order = self.id
+	    LEFT JOIN
+	        base_product ON base_product.id = supplychain_purchase_order_line.product
+	    LEFT JOIN
+	        base_product_family ON base_product_family.id = base_product.product_family
+	    LEFT JOIN
+	        base_user_info ON base_user_info.id = self.buyer_user_info
+	    WHERE
+	        self.created_on >= current_timestamp - INTERVAL '1 month' AND self.created_on <= current_timestamp
+	    AND
+	        self.status_select > 3 AND self.status_select < 6
+	    AND
+		base_user_info.internal_user = :_user_id
+	    GROUP BY
+	        base_product_family.name
+	    ORDER BY
+	        base_product_family.name
+	    ]]>
+	    </dataset>
+	    <category key="_product_family" type="text"/>
+    	<series key="amount" type="pie"/>
+	  </chart>
+	  
+	  
+	  
+	  
+	    <chart name="chart.purchase.buyer.dashboard.family.product.purchase.turnover" title="My purchases orders per product family over past month in turnover">
+	    <dataset type="sql">
+	    <![CDATA[
+		SELECT
+            SUM(supplychain_purchase_order_line.ex_tax_total) AS amount,
+	        base_product_family.name AS _product_family,
+	        base_product_category.name AS _product_category
+	    FROM
+	        supplychain_purchase_order self
+	    LEFT JOIN
+	        supplychain_purchase_order_line ON supplychain_purchase_order_line.purchase_order = self.id
+	    LEFT JOIN
+	        base_product ON base_product.id = supplychain_purchase_order_line.product
+	    LEFT JOIN
+	        base_product_family ON base_product_family.id = base_product.product_family
+	    LEFT JOIN
+	        base_product_category ON base_product_category.id = base_product.product_category
+	    LEFT JOIN
+	        base_user_info ON base_user_info.id = self.buyer_user_info
+	    WHERE
+	        self.created_on >= current_timestamp - INTERVAL '1 month' AND self.created_on <= current_timestamp
+	    AND
+	        self.status_select > 3 AND self.status_select < 6
+	    AND
+		base_user_info.internal_user = :_user_id
+	    GROUP BY
+	        base_product_family.name,
+	        base_product_category.name
+	    ORDER BY
+	        base_product_family.name
+	    ]]>
+	    </dataset>
+	    <category key="_product_family" type="text"/>
+    	<series key="amount" groupBy="_product_category" type="bar"/>
+	  </chart>
+	  
+	   
+	  <chart name="chart.purchase.manager.dashboard.buyer.purchase.volume" title="Purchases orders per buyer over past month in volume">
+	    <dataset type="sql">
+	    <![CDATA[
+		select
+			sum(_line.qty) as qty,
+			buyer.full_name buyer_name	
+		FROM
+			supplychain_purchase_order_line _line
+		JOIN
+			supplychain_purchase_order self
+		ON
+			_line.purchase_order=self.id
+		JOIN
+			base_user_info buyer
+		ON
+			buyer.id=self.buyer_user_info
+		where
+			self.created_on >=(current_date-interval'1month')
+		AND
+			self.status_select in(4,5)
+		group by buyer_name
+	    ]]>
+	    </dataset>
+	    <category key="buyer_name" type="text"/>
+    	<series key="qty" type="bar"/>
+	  </chart>
+	  
+	  
+	  <chart name="chart.purchase.manager.dashboard.family.product.purchase.turnover" title="Purchases orders per family product over six month">
+	    <dataset type="sql">
+	    <![CDATA[
+		SELECT
+				family.name as family_name,
+				coalesce(sum(self.ex_tax_total) ,0) as amount
+			FROM
+				supplychain_purchase_order_line orders
+			JOIN
+				supplychain_purchase_order self
+			ON
+				(self.id=orders.purchase_order
+				AND self.created_on
+				BETWEEN
+					(current_date-interval'6month')
+				AND
+					current_date)
+			JOIN
+				base_product product
+			ON
+				product.id=orders.product
+			JOIN
+				base_product_family family
+			ON
+				product.product_family=family.id
+			WHERE
+				self.status_select in(4,5)	
+			GROUP BY
+				family_name
+	    ]]>
+	    </dataset>
+	    <category key="family_name" type="text"/>
+    	<series key="amount" type="bar"/>
+	  </chart>
+	  
+	  
+	  <chart name="chart.purchase.manager.dashboard.family.product.purchase.percent" title="Purchases orders per family product over six month in percentage">
+	    <dataset type="sql">
+	    <![CDATA[
+		SELECT
+             
+	        base_product_family.name AS _family_product,
+	        TRUNC((SUM(supplychain_purchase_order_line.ex_tax_total) * 100)/(SELECT
+		        	SUM(supplychain_purchase_order_line.ex_tax_total)
+		        FROM
+		        	supplychain_purchase_order self
+		        LEFT JOIN
+		        	supplychain_purchase_order_line ON supplychain_purchase_order_line.purchase_order = self.id
+		        WHERE
+			        self.created_on >= current_timestamp - INTERVAL '6 month' AND self.created_on <= current_timestamp
+			    AND
+			        self.status_select > 3 AND self.status_select < 6),2) AS _percent
+	    FROM
+	        supplychain_purchase_order self
+	    LEFT JOIN
+	        supplychain_purchase_order_line ON supplychain_purchase_order_line.purchase_order = self.id
+	    LEFT JOIN
+	        base_product ON base_product.id = supplychain_purchase_order_line.product
+	    LEFT JOIN
+	        base_product_family ON base_product_family.id = base_product.product_family
+	    WHERE
+	        self.created_on >= current_timestamp - INTERVAL '6 month' AND self.created_on <= current_timestamp
+	    AND
+	        self.status_select > 3 AND self.status_select < 6
+	    GROUP BY
+	        base_product_family.name
+	    ORDER BY
+	        base_product_family.name
+	    ]]>
+	    </dataset>
+	    <category key="_family_product" type="text"/>
+    	<series key="_percent" type="pie"/>
+	  </chart>
+	  
+	  <chart name="chart.purchase.buyer.dashboard.prod.amout.purchases.last.12m" title="Turnover On Purchase orders on Last 12 Month">
+	    <dataset type="sql">
+	    <![CDATA[
+			SELECT cast(_meta._select_month_value as int) AS _month,
+					coalesce(_purchases._turn_over,00) AS _turn_over 
+			FROM 	(SELECT
+						date_part('month',_purchase_order.created_on) AS _month,
+    					sum(_purchase_order.ex_tax_total) AS _turn_over
+    				FROM
+						supplychain_purchase_order AS _purchase_order
+    				WHERE
+    					_purchase_order.created_on >=(current_date - INTERVAL '12 months') 
+    				AND
+					_purchase_order.status_select=4
+    				GROUP BY
+    					 _month
+    				ORDER BY _turn_over DESC) AS _purchases
+			RIGHT JOIN 
+    				(SELECT
+    					 _month_select.title AS _select_month_title, _month_select.value AS _select_month_value
+    				FROM 
+    					meta_select AS _selection
+    				JOIN 
+    					meta_select_item AS _month_select ON _month_select.select_id=_selection.id
+    				WHERE
+    					 _selection.name='iadministration.month.select'
+    				ORDER BY
+    					 _month_select.value) AS _meta
+			ON 
+				_purchases._month=to_number(_meta._select_month_value,'00')
+			GROUP BY 
+				_meta._select_month_title,_meta._select_month_value,_turn_over
+			ORDER BY 
+				_month	
+	    ]]>
+	    </dataset>
+	    <category key="_month" type="month"/>
+    	<series key="_turn_over"  type="bar" title="Turn Over" />
+	  </chart>
+	  
+	   <chart name="chart.purchase.buyer.dashboard.prod.qty.purchases.last.12m" title="Number Of Units Purchase orders on Last 12 Month">
+	    <dataset type="sql">
+	    <![CDATA[
+		   
+		SELECT 
+			cast(_meta._select_month_value as int) AS _month,coalesce(_purchases._qty,00) AS _amount
+		FROM (SELECT
+        	 	date_part('month',_purchase_order.created_on) AS _month,
+    		 	sum(_line.qty) AS _qty
+    		 FROM
+		     	supplychain_purchase_order AS _purchase_order
+    		 LEFT JOIN
+    	 		supplychain_purchase_order_line AS _line ON _purchase_order.id = _line.purchase_order
+    		 WHERE
+    			_purchase_order.created_on >=(current_date - INTERVAL '12 months') 
+    		AND
+					_purchase_order.status_select=4
+    		GROUP BY 
+    			_month
+ 			) AS _purchases
+		RIGHT JOIN 
+    		(SELECT 
+    			_month_select.title AS _select_month_title, _month_select.value AS _select_month_value
+    		FROM 
+    			meta_select AS _selection
+    		JOIN 
+    			meta_select_item AS _month_select ON _month_select.select_id=_selection.id
+    		WHERE 
+    			_selection.name='iadministration.month.select'
+    		ORDER BY 
+    			_month_select.value) AS _meta
+		ON 
+			_purchases._month=to_number(_meta._select_month_value,'00')
+		GROUP BY 
+			_meta._select_month_title,_meta._select_month_value,_amount
+		ORDER BY 
+			_month
+
+
+
+	    ]]>
+	    </dataset>
+	    <category key="_month" type="month"/>
+    	<series key="_amount"  type="bar" title="Units" />
+	  </chart>
+	  <chart name="chart.purchase.manager.dashboard.portal.supplier.order.per.month" title="Number Of Supplier Orders Per Month">
+	    <dataset type="sql">
+	    <![CDATA[
+				SELECT  cast(_meta._select_month_value as int) AS _month,
+						count(_purchase_orders._orders) AS _amount
+				FROM
+					(SELECT
+						_purchase_order.id as _orders,
+        	 			date_part('month',_purchase_order.created_on) AS _month
+    		 		FROM
+		     			supplychain_purchase_order AS _purchase_order
+    		 		WHERE
+    					_purchase_order.created_on >=(current_date - INTERVAL '12 months') 
+					AND
+						_purchase_order.status_select=4
+    				GROUP BY 
+    					_month,_orders
+ 					) AS _purchase_orders
+				RIGHT JOIN
+					(SELECT
+						_month_select.title AS _select_month_title, _month_select.value AS _select_month_value
+					FROM
+						meta_select AS _selection
+					JOIN
+						meta_select_item AS _month_select
+					ON 
+						_month_select.select_id=_selection.id
+					WHERE
+						_selection.name='iadministration.month.select'
+					ORDER BY
+						_month_select.value) AS _meta
+				ON 
+					_purchase_orders._month=to_number(_meta._select_month_value,'00')
+				GROUP BY 
+					_purchase_orders._month,_meta._select_month_value,_meta._select_month_title 
+				ORDER BY 
+					_month	
+	    ]]>
+	    </dataset>
+	    <category key="_month" type="month"/>
+    	<series key="_amount" type="bar"/>
+	  </chart>
+	  
+	<chart name="chart.partner.by.industry.sector" title="Purchase Orders last 6 month per product family">
+			    <dataset type="sql">
+			    <![CDATA[
+				SELECT
+			    SUM(supplychain_purchase_order_line.ex_tax_total) AS amount,
+				base_product_family.name AS _family_product
+			    FROM
+				supplychain_purchase_order self
+			    LEFT JOIN
+				supplychain_purchase_order_line ON supplychain_purchase_order_line.purchase_order = self.id
+			    LEFT JOIN
+				base_product ON base_product.id = supplychain_purchase_order_line.product
+			    LEFT JOIN
+				base_product_family ON base_product_family.id = base_product.product_family
+			    WHERE
+				self.created_on >= current_timestamp - INTERVAL '6 month' AND self.created_on <= current_timestamp
+			    AND
+				self.status_select > 3 AND self.status_select < 6
+			    GROUP BY
+				base_product_family.name
+			    ORDER BY
+				base_product_family.name
+			    ]]>
+			    </dataset>
+			    <category key="_family_product" type="text"/>
+		    	<series key="amount" type="bar"/>
+	</chart>
+</object-views>
