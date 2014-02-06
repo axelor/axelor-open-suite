@@ -12,27 +12,27 @@
 		
 	<action-view name="portal.salesman.dashboard.view" title="Salesman Dashboard"
 	icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="salesman.dashboard.portal" />
+		<view type="portal" name="supplychain.salesman.dashboard.portal" />
     	<context name="_user" expr="eval:__user__"/>
     	<context name="_user_id" expr="eval:__user__.id"/>
     	<context name="_past_month" expr="eval: __date__.minusMonths(1)"/>
 	</action-view>
 		
-<!-- 	<menuitem name="menu-sales-manager-dashboard" parent="menu-dashboards" -->
-<!-- 		title="Sales Manager Dashboard" action="portal.sales.manager.dashboard.view" />	 -->
+	<menuitem name="menu-sales-manager-dashboard" parent="menu-dashboards"
+		title="Sales Manager Dashboard" action="portal.sales.manager.dashboard.view" />	
 
-<!-- 	<action-view name="portal.sales.manager.dashboard.view" title="Sales Manager Dashboard" -->
-<!-- 		icon="img/16px/crmSmall_16px.png"> -->
-<!-- 		<view type="portal" name="sales.manager.dashboard.portal" /> -->
-<!--     	<context name="_past_month" expr="eval: __date__.minusMonths(1)"/> -->
-<!-- 	</action-view> -->
+	<action-view name="portal.sales.manager.dashboard.view" title="Sales Manager Dashboard"
+		icon="img/16px/crmSmall_16px.png">
+		<view type="portal" name="supplychain.sales.manager.dashboard.portal" />
+    	<context name="_past_month" expr="eval: __date__.minusMonths(1)"/>
+	</action-view>
 		
 	<menuitem name="menu-purchase-buyer-dashboard" parent="menu-dashboards"
 		title="Purchase Buyer Dashboard" action="portal.purchase.buyer.dashboard.view" />	
 
 	<action-view name="portal.purchase.buyer.dashboard.view" title="Purchase Buyer Dashboard"
 		icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="purchase.buyer.dashboard.portal" />
+		<view type="portal" name="supplychain.purchase.buyer.dashboard.portal" />
     	<context name="_user" expr="eval:__user__"/>
     	<context name="_user_id" expr="eval:__user__.id"/>
 	</action-view>
@@ -42,9 +42,15 @@
 
 	<action-view name="portal.purchase.manager.dashboard.view" title="Purchase Manager Dashboard"
 		icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="purchase.manager.dashboard.portal" />
+		<view type="portal" name="supplychain.purchase.manager.dashboard.portal" />
 	</action-view>
-	
+	<menuitem name="menu-organisation-dashboard" parent="menu-dashboards"
+		title="Organisation Dashboard" action="portal.organisation.dashboard.view"/>	
+
+	<action-view name="portal.organisation.dashboard.view" title="Organisation Dashboard"
+		icon="img/16px/crmSmall_16px.png">
+		<view type="portal" name="org.project.dashboard.portal" />	    
+	</action-view>
 	<menuitem name="menu-human-resources-dashboard" parent="menu-dashboards"
 		title="Human Resources Dashboard" action="portal.human.resources.dashboard.view" />	
 
@@ -655,8 +661,13 @@
 		<view type="form" name="partner-form"/>
 		<context name="_partnerTypeSelect" expr="eval:2" />
 	</action-view>
-	
-	
+	<menuitem name="menu-account-invoice-dashboard" parent="menu-dashboards"
+    title="Account Dashboard" action="portal.account.invoice.dashboard.view"/>    
+
+    <action-view name="portal.account.invoice.dashboard.view" title="Account Dashboard"
+        icon="img/16px/crmSmall_16px.png">
+        <view type="portal" name="account.invoice.dashboard.portal" />        
+    </action-view>
 	<menuitem name="top-menu-create-contact" parent="top-menu-utility" title="Create Contact" action="top.new.contact.view" />
 		
 	<action-view name="top.new.contact.view" title="Create Contact" model="com.axelor.apps.base.db.Partner" >
@@ -666,9 +677,4 @@
 	<menuitem name="top-relations" title="Relations" groups="admins,erp" top="true" left="false"/>
 	<menuitem name="top-relations-partners" title="Accounts" action="contact.root.partner" parent="top-relations" groups="admins,erp" top="true" left="false"/> 	
 	<menuitem name="top-relations-contacts" title="Contacts" action="contact.root.contact" parent="top-relations" groups="admins,erp" top="true" left="false"/>		  
-	
-	
-	
-		
-
 </object-views>

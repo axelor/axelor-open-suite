@@ -40,448 +40,75 @@
 	  <chart name="chart.stock.report.for.product" title="Stock">
 	    <dataset type="sql">
 	    <![CDATA[
-		SELECT estimatedate,locat,SUM(qty) OVER (PARTITION BY locat ORDER BY locat,estimatedate) AS qty 
-		FROM ((SELECT DATE(:todayDate) AS estimatedate,location.name AS locat,
-		               (SELECT SUM(CASE WHEN move.from_location = loc.id THEN -1*qty
-		                                WHEN move.to_location = loc.id THEN qty
-		                           END) AS qty                                                                 
-		               FROM supplychain_stock_move_line line,
-		                    supplychain_stock_move move,
-		                    supplychain_location loc 
-		               WHERE line.stock_move = move.id 
-		                     AND move.real_date <= DATE(:todayDate)
-		                     AND move.status_select in (2,3)
-		                     AND line.product = :id
-		                 AND loc.id = location.id
-			             AND (move.from_location = loc.id OR move.to_location = loc.id)
-			             AND loc.type_select = 1) AS qty
-		      FROM supplychain_location_line loc_line, supplychain_location location
-		      WHERE loc_line.location = location.id 
-		      AND location.type_select = 1 
-		      AND loc_line.product = :id
-		      GROUP BY location.id) 
-		      UNION ALL(SELECT estimated_date AS dt,locat,sum(qty)
-		                FROM (SELECT location.name AS locat,move.estimated_date AS estimated_date,
-		         	            CASE WHEN move.from_location = location.id THEN -1*line.qty
-		                                 WHEN move.to_location = location.id THEN line.qty
-		                            END AS qty
-		                     FROM supplychain_stock_move_line line 
-		                     LEFT JOIN supplychain_stock_move move ON (line.stock_move = move.id)
-		                     LEFT JOIN supplychain_location location ON (move.from_location = location.id OR move.to_location = location.id)
-		      	             WHERE  line.product = :id
-		                     AND move.estimated_date > DATE(:todayDate)
-		                     AND location.type_select = 1) location
-               GROUP BY estimated_date,locat) ORDER BY locat,estimatedate) location_stock;  
+		  SELECT estimatedate,locat,SUM(qty) OVER (PARTITION BY locat ORDER BY locat,estimatedate) AS qty FROM ((SELECT current_date AS estimatedate,location.name AS locat,
+			                SUM(loc_line.current_qty+COALESCE((SELECT SUM(CASE WHEN move.from_location = location.id THEN -1*qty
+										        WHEN move.to_location = location.id THEN qty
+										   END) AS qty	    														 
+							                FROM supplychain_stock_move_line line,
+			                                                supplychain_stock_move move,
+			                                                supplychain_location location 
+				                                        WHERE line.stock_move = move.id 
+					                                AND move.estimated_date < current_date
+					                                AND move.status_select = 2
+									AND line.product = :id
+									AND (move.from_location = location.id OR move.to_location = location.id)
+									AND location.type_select = 1),0)) AS qty
+			FROM supplychain_location_line loc_line, supplychain_location location
+			WHERE loc_line.location = location.id 
+			AND location.type_select = 1 
+			AND loc_line.product = :id
+			GROUP BY location.id) UNION ALL(
+			SELECT estimated_date AS dt,locat,sum(qty)
+			FROM (SELECT location.name AS locat,move.estimated_date AS estimated_date,
+				   CASE WHEN move.from_location = location.id THEN -1*line.qty
+					WHEN move.to_location = location.id THEN line.qty
+			           END AS qty
+			    FROM supplychain_stock_move_line line 
+			    LEFT JOIN supplychain_stock_move move ON (line.stock_move = move.id)
+			    LEFT JOIN supplychain_location location ON (move.from_location = location.id OR move.to_location = location.id)
+			    WHERE  line.product = :id
+			    AND move.status_select = 2
+			    AND move.estimated_date >= current_date
+			    AND location.type_select = 1) location
+			GROUP BY estimated_date,locat) ORDER BY locat,estimatedate) location_stock; 
 	    ]]>
 	    </dataset>
 	    <category key="estimatedate" type="date"/>
 	    <series key="qty" groupBy="locat" type="line" aggregate="sum"/>
 	  </chart>
 	  
-	  
-	  <chart name="chart.salesman.dashboard.total.turnover" title="Turnover over past 6 months">
-	    <dataset type="sql">
-	    <![CDATA[
-		SELECT
-		    SUM(self.ex_tax_total) AS amount,
-		    concat(date_part('year',self.creation_date),'/',date_part('month',self.creation_date)) AS month_year,
-		    self.status_select AS slct
-		FROM
-		    supplychain_sales_order self
-		LEFT JOIN
-		    base_user_info ON base_user_info.id = self.salesman_user_info
-		WHERE
-		    self.creation_date >= current_date - INTERVAL '6 month' AND self.creation_date <= current_date
-		AND
-		    self.status_select = 3
-		AND
-		    base_user_info.internal_user = :_user_id
-		GROUP BY
-		    concat(date_part('year',self.creation_date),'/',date_part('month',self.creation_date)),
-		    self.status_select
-		ORDER BY
-		    concat(date_part('year',self.creation_date),'/',date_part('month',self.creation_date))
-	    ]]> 
-	    </dataset>
-	    <category key="month_year" type="text"/>
-    	<series key="amount" type="bar"/>
-	  </chart>
+	 
 	  
 	  
 	  
 	  
 	  
-	  <chart name="chart.sales.manager.dashboard.team.turnover" title="Turnover per team over past 30 days">
-	    <dataset type="jpql">
-	    <![CDATA[
-		SELECT
-            SUM(self.exTaxTotal) AS amount,
-		    _team.name AS _team_name,
-            self.statusSelect AS slct
-		FROM
-		    SalesOrder self
-		LEFT JOIN
-		    self.team AS _team
-		WHERE
-		    self.creationDate >= :_past_month AND self.creationDate <= current_date
-		AND
-			self.statusSelect > 0 AND self.statusSelect < 4
-		GROUP BY
-            self.statusSelect,
-		    _team.name
-		ORDER BY
-		    _team.name
-	    ]]>
-	    </dataset>
-	    <category key="_team_name" type="text"/>
-    	<series key="amount" groupBy="slct" type="bar"/>
-	  </chart>
-	  
-	  
-	  <chart name="chart.sales.manager.dashboard.family.product.sales" title="Sales per product family over past 12 months">	    
-	    <dataset type="sql">
-	    <![CDATA[
-		SELECT * FROM (
-		    SELECT
-		        SUM(supplychain_sales_order_line.ex_tax_total) AS amount,
-		        base_currency.name AS currency,
-		        base_product_family.name AS _product_family
-		    FROM
-		        supplychain_sales_order self
-		    LEFT JOIN
-		        supplychain_sales_order_line ON supplychain_sales_order_line.sales_order = self.id
-		    LEFT JOIN
-		        base_product ON base_product.id = supplychain_sales_order_line.product
-		    LEFT JOIN
-		        base_product_family ON base_product_family.id = base_product.product_family
-		    LEFT JOIN
-		        base_currency ON base_currency.id = self.currency
-		    WHERE
-		        self.creation_date >= current_date - INTERVAL '12 month' AND self.creation_date <= current_date
-		    AND
-		        self.status_select = 3
-		    AND
-		    	supplychain_sales_order_line.id NOT IN (SELECT sales_order_line FROM supplychain_sales_order_sub_line)
-		    GROUP BY
-		        base_product_family.name,
-		        base_currency.name
-		    ORDER BY
-		        base_product_family.name
-		)s1
-		UNION
-		SELECT * FROM (    
-		    SELECT
-		        SUM(supplychain_sales_order_sub_line.ex_tax_total) AS amount,
-		        base_currency.name AS currency,
-		        base_product_family.name AS _product_family
-		    FROM
-		        supplychain_sales_order self
-		    LEFT JOIN
-		        supplychain_sales_order_line ON supplychain_sales_order_line.sales_order = self.id
-		    RIGHT JOIN
-		        supplychain_sales_order_sub_line ON supplychain_sales_order_sub_line.sales_order_line = supplychain_sales_order_line.id
-		    LEFT JOIN
-		        base_product ON base_product.id = supplychain_sales_order_sub_line.product
-		    LEFT JOIN
-		        base_product_family ON base_product_family.id = base_product.product_family
-		    LEFT JOIN
-		        base_currency ON base_currency.id = self.currency
-		    WHERE
-		        self.creation_date >= current_date - INTERVAL '12 month' AND self.creation_date <= current_date
-		    AND
-		        self.status_select = 3
-		    GROUP BY
-		        base_product_family.name,
-		        base_currency.name
-		    ORDER BY
-		        base_product_family.name
-		)s2
-	    ]]>
-	    </dataset>
-	    <category key="_product_family" type="text"/>
-		<series key="amount" groupBy="currency" type="pie"/>
-	  </chart>
-	  
-	  
-	  <chart name="chart.sales.manager.dashboard.category.product.sales" title="Sales per product category over past 12 months in volume">
-	    <dataset type="sql">
-	    <![CDATA[
-		SELECT * FROM (
-			SELECT
-		        SUM(supplychain_sales_order_line.qty) AS amount,
-		        base_product_category.name AS _product_category
-		    FROM
-		        supplychain_sales_order self
-		    LEFT JOIN
-		        supplychain_sales_order_line ON supplychain_sales_order_line.sales_order = self.id
-		    LEFT JOIN
-		        base_product ON base_product.id = supplychain_sales_order_line.product
-		    LEFT JOIN
-		        base_product_category ON base_product_category.id = base_product.product_category
-		    WHERE
-		        self.creation_date >= current_date - INTERVAL '12 month' AND self.creation_date <= current_date
-		    AND
-		        self.status_select = 3
-		    AND
-		        supplychain_sales_order_line.product is not NULL
-		    GROUP BY
-		        base_product_category.name
-		    ORDER BY	
-		        base_product_category.name
-		)s1
-		UNION
-		SELECT * FROM (    
-		    SELECT
-		        SUM(supplychain_sales_order_sub_line.qty) AS amount,
-		        base_product_category.name AS _product_category
-		    FROM
-		        supplychain_sales_order self
-		    LEFT JOIN
-		        supplychain_sales_order_line ON supplychain_sales_order_line.sales_order = self.id
-		    RIGHT JOIN
-		        supplychain_sales_order_sub_line ON supplychain_sales_order_sub_line.sales_order_line = supplychain_sales_order_line.id
-		    LEFT JOIN
-		        base_product ON base_product.id = supplychain_sales_order_sub_line.product
-		    LEFT JOIN
-		        base_product_category ON base_product_category.id = base_product.product_category
-		    WHERE
-		        self.creation_date >= current_date - INTERVAL '12 month' AND self.creation_date <= current_date
-		    AND
-		        self.status_select = 3
-		    GROUP BY
-		        base_product_category.name
-		    ORDER BY
-		        base_product_category.name
-		)s2
-	    ]]>
-	    </dataset>
-	    <category key="_product_category" type="text"/>
-    	<series key="amount" type="pie"/>
-	  </chart>
-	  
-	  
-	  <chart name="chart.sales.manager.dashboard.country.sales" title="Sales per country over past 12 months">
-	    <dataset type="sql">
-	    <![CDATA[
-		SELECT
-		    SUM(self.ex_tax_total) AS amount,
-		    base_country.name AS _country_sale
-		FROM
-		    supplychain_sales_order self
-		LEFT JOIN
-		    base_address ON base_address.id = self.delivery_address
-		LEFT JOIN
-		    base_country ON base_country.id = base_address.addressl7country
-		WHERE
-		    self.creation_date >= current_date - INTERVAL '1 year' AND self.creation_date <= current_date
-		AND
-		    self.status_select = 3
-		GROUP BY
-		    base_country.name
-		ORDER BY
-		    base_country.name
-	    ]]>
-	    </dataset>
-	    <category key="_country_sale" type="text"/>
-    	<series key="amount" type="pie"/>
-	  </chart>
-	  
-	  
-	  <chart name="chart.sales.manager.dashboard.salesman.turnover" title="Turnover per salesman over past 30 days">
-	    <dataset type="sql">
-	    <![CDATA[
-		SELECT
-		    SUM(self.ex_tax_total) AS amount,
-		    base_user_info.full_name AS _salesman_name,
-		    self.status_select AS slct
-		FROM
-		    supplychain_sales_order self
-		LEFT JOIN
-		    base_user_info ON base_user_info.id = self.salesman_user_info
-		WHERE
-		    self.creation_date >= current_date - INTERVAL '1 month' AND self.creation_date <= current_date
-		AND
-		    self.status_select > 0 AND self.status_select < 4
-		GROUP BY
-		    self.status_select,
-		    base_user_info.full_name
-		ORDER BY
-		    base_user_info.full_name
-	    ]]>
-	    </dataset>
-	    <category key="_salesman_name" type="text"/>
-    	<series key="amount" groupBy="slct" type="pie"/>
-	  </chart>
+	 
 	  
 	  
 	  
 	  
 	  
-	  <chart name="chart.purchase.buyer.dashboard.family.product.purchase.volume" title="My purchases orders per product family over past month in volume">
-	    <dataset type="sql">
-	    <![CDATA[
-		SELECT
-            SUM(supplychain_purchase_order_line.qty) AS amount,
-	        base_product_family.name AS _product_family
-	    FROM
-	        supplychain_purchase_order self
-	    LEFT JOIN
-	        supplychain_purchase_order_line ON supplychain_purchase_order_line.purchase_order = self.id
-	    LEFT JOIN
-	        base_product ON base_product.id = supplychain_purchase_order_line.product
-	    LEFT JOIN
-	        base_product_family ON base_product_family.id = base_product.product_family
-	    LEFT JOIN
-	        base_user_info ON base_user_info.id = self.buyer_user_info
-	    WHERE
-	        self.created_on >= current_timestamp - INTERVAL '1 month' AND self.created_on <= current_timestamp
-	    AND
-	        self.status_select > 3 AND self.status_select < 6
-		AND
-		    base_user_info.internal_user = :_user_id
-	    GROUP BY
-	        base_product_family.name
-	    ORDER BY
-	        base_product_family.name
-	    ]]>
-	    </dataset>
-	    <category key="_product_family" type="text"/>
-    	<series key="amount" type="pie"/>
-	  </chart>
-	  
-	  
-	  <chart name="chart.purchase.buyer.dashboard.family.product.purchase.turnover" title="My purchases orders per product family over past month">
-	    <dataset type="sql">
-	    <![CDATA[
-		SELECT
-            SUM(supplychain_purchase_order_line.ex_tax_total) AS amount,
-	        base_product_family.name AS _product_family,
-	        base_product_category.name AS _product_category
-	    FROM
-	        supplychain_purchase_order self
-	    LEFT JOIN
-	        supplychain_purchase_order_line ON supplychain_purchase_order_line.purchase_order = self.id
-	    LEFT JOIN
-	        base_product ON base_product.id = supplychain_purchase_order_line.product
-	    LEFT JOIN
-	        base_product_family ON base_product_family.id = base_product.product_family
-	    LEFT JOIN
-	        base_product_category ON base_product_category.id = base_product.product_category
-	    LEFT JOIN
-	        base_user_info ON base_user_info.id = self.buyer_user_info
-	    WHERE
-	        self.created_on >= current_timestamp - INTERVAL '1 month' AND self.created_on <= current_timestamp
-	    AND
-	        self.status_select > 3 AND self.status_select < 6
-		AND
-		    base_user_info.internal_user = :_user_id
-	    GROUP BY
-	        base_product_family.name,
-	        base_product_category.name
-	    ORDER BY
-	        base_product_family.name
-	    ]]>
-	    </dataset>
-	    <category key="_product_family" type="text"/>
-    	<series key="amount" groupBy="_product_category" type="bar"/>
-	  </chart>
 	  
 	  
 	  
 	  
 	  
-	  <chart name="chart.purchase.manager.dashboard.buyer.purchase.volume" title="Purchases orders per buyer over past month in volume">
-	    <dataset type="sql">
-	    <![CDATA[
-		SELECT
-            SUM(supplychain_purchase_order_line.qty) AS amount,
-	        base_user_info.full_name AS _buyer
-	    FROM
-	        supplychain_purchase_order self
-	    LEFT JOIN
-	        supplychain_purchase_order_line ON supplychain_purchase_order_line.purchase_order = self.id
-	    LEFT JOIN
-	        base_user_info ON base_user_info.id = self.buyer_user_info
-	    WHERE
-	        self.created_on >= current_timestamp - INTERVAL '1 month' AND self.created_on <= current_timestamp
-	    AND
-	        self.status_select > 3 AND self.status_select < 6
-	    GROUP BY
-	        base_user_info.full_name
-	    ORDER BY
-	        base_user_info.full_name
-	    ]]>
-	    </dataset>
-	    <category key="_buyer" type="text"/>
-    	<series key="amount" type="bar"/>
-	  </chart>
 	  
 	  
-	  <chart name="chart.purchase.manager.dashboard.family.product.purchase.turnover" title="Purchases orders per family product over six month">
-	    <dataset type="sql">
-	    <![CDATA[
-		SELECT
-            SUM(supplychain_purchase_order_line.ex_tax_total) AS amount,
-	        base_product_family.name AS _family_product
-	    FROM
-	        supplychain_purchase_order self
-	    LEFT JOIN
-	        supplychain_purchase_order_line ON supplychain_purchase_order_line.purchase_order = self.id
-	    LEFT JOIN
-	        base_product ON base_product.id = supplychain_purchase_order_line.product
-	    LEFT JOIN
-	        base_product_family ON base_product_family.id = base_product.product_family
-	    WHERE
-	        self.created_on >= current_timestamp - INTERVAL '6 month' AND self.created_on <= current_timestamp
-	    AND
-	        self.status_select > 3 AND self.status_select < 6
-	    GROUP BY
-	        base_product_family.name
-	    ORDER BY
-	        base_product_family.name
-	    ]]>
-	    </dataset>
-	    <category key="_family_product" type="text"/>
-    	<series key="amount" type="bar"/>
-	  </chart>
 	  
 	  
-	  <chart name="chart.purchase.manager.dashboard.family.product.purchase.percent" title="Purchases orders per family product over six month in percentage">
-	    <dataset type="sql">
-	    <![CDATA[
-		SELECT
-             
-	        base_product_family.name AS _family_product,
-	        TRUNC((SUM(supplychain_purchase_order_line.ex_tax_total) * 100)/(SELECT
-		        	SUM(supplychain_purchase_order_line.ex_tax_total)
-		        FROM
-		        	supplychain_purchase_order self
-		        LEFT JOIN
-		        	supplychain_purchase_order_line ON supplychain_purchase_order_line.purchase_order = self.id
-		        WHERE
-			        self.created_on >= current_timestamp - INTERVAL '6 month' AND self.created_on <= current_timestamp
-			    AND
-			        self.status_select > 3 AND self.status_select < 6),2) AS _percent
-	    FROM
-	        supplychain_purchase_order self
-	    LEFT JOIN
-	        supplychain_purchase_order_line ON supplychain_purchase_order_line.purchase_order = self.id
-	    LEFT JOIN
-	        base_product ON base_product.id = supplychain_purchase_order_line.product
-	    LEFT JOIN
-	        base_product_family ON base_product_family.id = base_product.product_family
-	    WHERE
-	        self.created_on >= current_timestamp - INTERVAL '6 month' AND self.created_on <= current_timestamp
-	    AND
-	        self.status_select > 3 AND self.status_select < 6
-	    GROUP BY
-	        base_product_family.name
-	    ORDER BY
-	        base_product_family.name
-	    ]]>
-	    </dataset>
-	    <category key="_family_product" type="text"/>
-    	<series key="_percent" type="pie"/>
-	  </chart>
+	  
+	 
+	  
+	  
+	  
+	  
+	 
+	  
+	  
+	 
+	  
+
 	  
 </object-views>

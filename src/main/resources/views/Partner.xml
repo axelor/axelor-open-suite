@@ -205,7 +205,7 @@
 	onLoad="action-partner-attrs-change-name" 
 	onSave="save,action-set-partner-seq">
 	    <toolbar>
-	        <button name="sendByEmail" title="Send email" onClick="save,action-send-by-email-with-template" readonlyIf="id == null"/>
+	        <button name="sendByEmail" title="Send email" icon="icon-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="id == null"/>
 	        <button name="showPartnerInfo" title="Print Informations" icon="icon-print" onClick="save,action-partner-method-show-partner-info"  readonlyIf="id == null"/>
 	        <button name="showClientSituationForm" title="Client Situation" icon="icon-print" onClick="save,action-partner-method-show-client-situation" showIf="isContact == false"  readonlyIf="id == null"/>
 	    </toolbar>
