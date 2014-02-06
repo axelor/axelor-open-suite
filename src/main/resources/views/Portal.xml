@@ -407,7 +407,8 @@
 		<view type="grid" name="event-grid" />
 		<view type="form" name="event-form" />
 		<domain>self.typeSelect = 5 AND self.ticketStatusSelect != 5 AND self.userInfo =:user_info AND self.endDateTime &lt; date(now())</domain>
-		<context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" />
+		<context name="user_info"
+			expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" />
 	</action-view>
 
 	<action-view title="Late Tickets" model="com.axelor.apps.crm.db.Event"
@@ -416,6 +417,12 @@
 		<view type="form" name="event-form" />
 		<domain>self.typeSelect = 5 AND self.ticketStatusSelect != 5 AND self.endDateTime &lt; date(now())</domain>
 	</action-view>
-
+	<action-view name="portal.human.resources.dashboard.upcoming.holidays"
+		title="All Upcoming Holidays" model="com.axelor.apps.crm.db.Event">
+		<view type="grid" name="crm-task-grid" />
+		<view type="form" name="crm-task-form" />
+		<domain>self.endDateTime &gt;= :_today and self.typeSelect = 4</domain>
+		<context name="_today" expr="eval: __date__.toDateTimeAtStartOfDay()" />
+	</action-view>
 
 </object-views>
