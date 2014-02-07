@@ -397,6 +397,8 @@
 		<option value="inventory">Inventory</option>
 		<option value="productTrackingNumber">Product tracking number</option>
 		<option value="proTraining">Professional training</option>
+		<option value="productionOrder">Production order</option>
+		<option value="manufOrder">Manufacturing order</option>
 	</selection>
 
 	<selection name="company.paybox.hash.select">

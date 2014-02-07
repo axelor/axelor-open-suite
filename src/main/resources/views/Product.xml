@@ -89,6 +89,7 @@
             <separator title="Procurement settings" colSpan="4"/>
 				<field name="procurementMethodSelect" requiredIf="productTypeSelect == 'storable'"/>
 				<field name="isRawMaterial" showIf="productTypeSelect != 'service'"/>
+				<button name="createProductionOrder" title="Create production order" colSpan="2" onClick="save,action-product-view-create-production-order"/>
 				<spacer/>
 				<break/>
 				<portlet colSpan="4" action="action-product-view-stock"/>
@@ -113,7 +114,7 @@
     <action-view name="action-product-view-stock" title="Stock" model="com.axelor.apps.supplychain.db.LocationLine">
     	<view type="grid" name="location-line-product-grid"/>
     	<view type="form" name="location-line-product-form"/>
-    	<domain>self.product.id = :id</domain>
+    	<domain>self.product.id = :id and self.location.typeSelect = 1</domain>
     </action-view>
     
     <action-record name="action-product-record-default-new" model="com.axelor.apps.base.db.Product">
@@ -193,5 +194,16 @@
 			<domain>CURRENT_DATE &gt; self.endDate</domain>
 		</filter>
 	</search-filters>
+	
+	
+<!-- 	PRODUCTION -->
+
+	<action-view name="action-product-view-create-production-order" title="Create production order" model="com.axelor.apps.base.db.Wizard">
+		<view type="form" name="production-order-wizard-form"/>
+		<view-param name="popup" value="reload"/>
+  		<view-param name="show-toolbar" value="false"/>
+  		<view-param name="show-confirm" value="false" />
+  		<context name="_productId" expr="eval: __self__"/>
+	</action-view>
 	
 </object-views>

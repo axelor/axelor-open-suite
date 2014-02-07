@@ -105,6 +105,8 @@ public interface IAdministration {
 	static final String INCOMING = "inStockMove";
 	static final String PRODUCT_TRACKING_NUMBER = "productTrackingNumber";
 	static final String PRO_TRAINING = "proTraining";
+	static final String PRODUCTION_ORDER = "productionOrder";
+	static final String MANUF_ORDER = "manufOrder";
 	
 	
 	/**

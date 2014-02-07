@@ -53,6 +53,9 @@
   
   	<many-to-one name="defaultSupplierPartner" ref="com.axelor.apps.base.db.Partner" title="Default supplier"/>
   
+<!--   	A Deplacer dans production :  -->
+	<decimal name="lastProductionPrice" title="Last production price" precision="20" scale="5"/>
+  
   </entity>
 
 </domain-models>
