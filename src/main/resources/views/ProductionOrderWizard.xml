@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    
+    <form cols="4" name="production-order-wizard-form" title="Production order wizard" model="com.axelor.apps.base.db.Wizard" onNew="action-production-order-wizard-record-default">
+
+		<field name="qty" widget="Decimal" title="Quantity"/>
+		<field name="billOfMaterial" widget="ManyToOne[target=com.axelor.apps.production.db.BillOfMaterial]" title="BOM" domain="self.isRawMaterial = 'false' and self.product.id = :_productId.id"/>
+		<button name="validate" title="Validate" onClick="action-production-order-wizard-method-validate"/>
+
+	</form>
+
+	<action-record name="action-production-order-wizard-record-default" model="com.axelor.apps.base.db.Wizard">
+		<field name="qty" expr="eval: 1"/>
+		<field name="billOfMaterial" expr="eval: com.axelor.apps.production.db.BillOfMaterial.filter('self.product.id = ?1 ORDER BY self.id DESC',_productId.id).fetchOne()"/>
+	</action-record>
+
+    <action-method name="action-production-order-wizard-method-validate">
+		<call class="com.axelor.apps.production.web.ProductionOrderWizardController" method="validate"/>
+    </action-method>
+    
+</object-views>

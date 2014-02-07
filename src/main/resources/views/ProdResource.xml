@@ -4,16 +4,79 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
     <grid name="prod-resource-grid" title="Resources" model="com.axelor.apps.production.db.ProdResource">
-        <field name="label"/>
+        <field name="name"/>
+        <field name="code"/>
         <field name="machine"/>
-        <field name="planning"/>
+        <field name="resourceTypeSelect"/>
     </grid>
     
     <form name="prod-resource-form" title="Resource" model="com.axelor.apps.production.db.ProdResource" cols="4">
-        <field name="label"/>
+        <field name="name"/>
+        <field name="code"/>
         <field name="machine"/>
-        <field name="planning"/>
-        <field name="prodResouceLineList" colSpan="4"/>
+        <field name="resourceTypeSelect"/>
+        <notebook colSpan="4">
+        	<page title="Default Machine informations">
+	        	<group colSpan="4" cols="4">
+		        	<group title="Capacity information" colSpan="2" cols="2">
+		        		<field name="capacityPerCycle"/>
+				        <field name="maxCapacityPerCycle"/>
+				        <field name="durationPerCycle" widget="duration[big=true|seconds=true]"/>
+				        <field name="startingDuration" widget="duration[big=true|seconds=true]"/>
+				        <field name="setupDuration" widget="duration[big=true|seconds=true]"/>
+				        <field name="endingDuration" widget="duration[big=true|seconds=true]"/>
+		        	</group>
+		        	<group title="Costing information" colSpan="2" cols="2">
+		        		<field name="product"/>
+				        <field name="costTypeSelect"/>
+				        <field name="costAmount"/>
+		        	</group>
+		        </group>
+        	</page>
+        	<page name="humanResource" title="Human resources">
+        		<field name="prodHumanResourceList" colSpan="4"/>
+        	</page>
+        	<page name="Machines" title="Machines">
+        		<field name="prodResourceList" colSpan="4" form-view="prod-resource-machine-form" grid-view="prod-resource-machine-grid"/>
+        	</page>
+        </notebook>
     </form>
     
+    <grid name="prod-resource-machine-grid" title="Machines" model="com.axelor.apps.production.db.ProdResource">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="machine"/>
+    </grid>
+    
+    <form name="prod-resource-machine-form" title="Machine" model="com.axelor.apps.production.db.ProdResource" cols="4">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="machine"/>
+        <notebook colSpan="4">
+        	<page title="Default Machine informations">
+	        	<group colSpan="4" cols="4">
+		        	<group title="Capacity information" colSpan="2" cols="2">
+		        		<field name="capacityPerCycle"/>
+				        <field name="maxCapacityPerCycle"/>
+				        <field name="durationPerCycle" widget="duration[big=true|seconds=true]"/>
+				        <field name="startingDuration" widget="duration[big=true|seconds=true]"/>
+				        <field name="setupDuration" widget="duration[big=true|seconds=true]"/>
+				        <field name="endingDuration" widget="duration[big=true|seconds=true]"/>
+		        	</group>
+		        	<group title="Costing information" colSpan="2" cols="2">
+		        		<field name="product"/>
+				        <field name="costTypeSelect"/>
+				        <field name="costAmount"/>
+		        	</group>
+		        </group>
+        	</page>
+        </notebook>
+    </form>
+    
+    <action-record name="action-prod-resource-record-default" model="com.axelor.apps.production.db.ProdResource">
+    	<field name="product" expr="eval: "/>
+    
+    </action-record>
+    
 </object-views>
+

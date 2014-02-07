@@ -3,11 +3,21 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    <grid name="manuf-order-grid" title="Manufacturing orders" model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq">
-        <field name="manufOrderSeq"/>
-        <field name="company"/>
-        <field name="billOfMaterial"/>
-        <field name="prodProcess"/>
+    <calendar name="operation-order-planned-calendar" model="com.axelor.apps.production.db.OperationOrder" 
+    eventStart="plannedStartDateT" eventStop="plannedEndDateT" title="Planned operations" colorBy="manufOrder">
+    	<field name="name"/>
+    </calendar>
+    
+    <calendar name="operation-order-real-calendar" model="com.axelor.apps.production.db.OperationOrder" 
+    eventStart="realStartDateT" eventStop="realEndDateT" title="Real operations" colorBy="manufOrder">
+    	<field name="name"/>
+    </calendar>
+    
+    <grid name="operation-order-grid" title="Manufacturing orders" model="com.axelor.apps.production.db.OperationOrder">
+        <field name="priority"/>
+        <field name="prodResource"/>
+        <field name="machineProdResource"/>
+        <field name="prodProcessLine"/>
         <field name="outStockMove"/>
         <field name="plannedStartDateT"/>
         <field name="plannedEndDateT"/>
@@ -16,22 +26,21 @@
         <field name="statusSelect"/>
     </grid>
     
-    <form name="manuf-order-form" title="Manufacturing order" model="com.axelor.apps.production.db.ManufOrder" cols="4"
-    onNew="action-manuf-order-default-record">
-        <field name="manufOrderSeq"/>
-        <field name="priority"/>
+    <form name="operation-order-form" title="Manufacturing order" model="com.axelor.apps.production.db.OperationOrder" cols="4"
+    onNew="action-operation-order-default-record"
+    onSave="action-operation-order-name">
+    	<field name="priority"/>
+        <field name="manufOrder" onChange="action-operation-order-name"/>
         <field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="2"/>
-        <field name="company"/>
-        <field name="billOfMaterial" domain="self.isRawMaterial = false"/>
-        <field name="billOfMaterial.product"/>
-        <field name="qty"/>
-        <field name="billOfMaterial.prodProcess"/>
-        <field name="isManagedConsumedProduct"/>
-        <field name="isToInvoice" onChange="save,action-manuf-order-method-is-to-invoice"/>
+        <field name="manufOrder.company"/>
+        <field name="prodResource"/>
+        <field name="machineProdResource"/>
+        <field name="prodHumanResourceList" colSpan="4"/>
+        <field name="prodProcessLine"/>
+        <field name="isToInvoice"/>
+<!--         <field name="qty"/> -->
+        
         <notebook colSpan="4">
-        	<page title="Operation orders">
-	        	<field name="operationOrderList" colSpan="4"/>
-        	</page>
         	<page title="Dates">
         		<group showTitle="false" colSpan="2" cols="2">
 	         		<separator title="Planned dates" colSpan="2"/>
@@ -58,6 +67,7 @@
         		<field name="toConsumeProdProductList" colSpan="2"/>
         		<field name="consumedProdProductList" colSpan="2"/>
         		<field name="diffConsumeProdProductList" colSpan="2"/>
+        		
         	</page>
         	<page title="Finished products">
 	        	<field name="toProduceProdProductList" colSpan="2"/>
@@ -67,18 +77,22 @@
 	        		<field name="wasteProdDescription" showTitle="false" colSpan="2"/>
 	        	</group>
         	</page>
+        	<page title="Stock moves">
+        	
+        	</page>
         
         </notebook>
     </form>
     
-    <action-record name="action-manuf-order-default-record" model="com.axelor.apps.production.db.ManufOrder">
+    
+    <action-record name="action-operation-order-default-record" model="com.axelor.apps.production.db.OperationOrder">
     	<field name="statusSelect" expr="eval: 1"/>
-    	<field name="plannedStartDateT" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="startDate == null"/>
+    	<field name="plannedStartDateT" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
     </action-record>
     
-    <action-method name="action-manuf-order-method-is-to-invoice">
-    	<call class="com.axelor.apps.production.web.ManufOrderController" method="propagateIsToInvoice"/>
-    </action-method>
+    <action-record name="action-operation-order-name" model="com.axelor.apps.production.db.OperationOrder">
+    	<field name="name" expr="eval: manufOrder?.manufOrderSeq + ' - ' + priority"/>
+    </action-record>
     
     
 </object-views>

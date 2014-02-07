@@ -5,23 +5,17 @@
     
     <grid name="prod-process-grid" title="Production process" model="com.axelor.apps.production.db.ProdProcess">
     	<field name="name"/>
-        <field name="prodResource"/>
-        <field name="capacityPerHour"/>
-        <field name="hasStockCheckout"/>
-        <field name="duration"/>
+    	<field name="code"/>
+        <field name="location"/>
+        <field name="prodProcessLineList"/>
     </grid>
     
     <form name="prod-process-form" title="Production process" model="com.axelor.apps.production.db.ProdProcess" cols="4"
     	onSave="action-prod-process-record-name">
     	<field name="name"/>
-        <field name="prodResource"/>
-        <field name="capacityPerHour"/>
-        <field name="hasStockCheckout"/>
-        <field name="duration"/>
+    	<field name="code"/>
+        <field name="location"/>
+        <field name="prodProcessLineList" colSpan="4"/>
     </form>
-    
-    <action-record name="action-prod-process-record-name" model="com.axelor.apps.production.db.ProdProcess">
-    	<field name="name" expr="eval: prodResource.label + ' - ' + duration"/>
-    </action-record>
     
 </object-views>

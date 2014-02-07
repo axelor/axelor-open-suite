@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="production-order-grid" title="Production orders" model="com.axelor.apps.production.db.ProductionOrder" orderBy="-productionOrderSeq">
+        <field name="productionOrderSeq"/>
+        <field name="businessProject"/>
+    </grid>
+    
+    <form name="production-order-form" title="Production order" model="com.axelor.apps.production.db.ProductionOrder" cols="4">
+        <field name="productionOrderSeq"/>
+        <field name="businessProject"/>
+        <field name="isToInvoice" onChange="save,action-production-order-method-is-to-invoice"/>
+        <field name="manufOrderList" colSpan="4"/>
+        <portlet colSpan="4" action="action-production-order-view-operation-order"/>
+    </form>
+    
+    
+    <action-method name="action-production-order-method-is-to-invoice">
+    	<call class="com.axelor.apps.production.web.ProductionOrderController" method="propagateIsToInvoice"/>
+    </action-method>
+    
+    <action-view name="action-production-order-view-operation-order" title="Operation orders" model="com.axelor.apps.production.db.OperationOrder">
+  		<view type="grid" name="production-order-grid"/>
+		<view type="form" name="production-order-form"/>
+  		<domain>self.manufOrder.productionOrder = :id</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+    
+    
+</object-views>

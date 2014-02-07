@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+  <module name="production" package="com.axelor.apps.production.db"/>
+
+  <entity name="ProdProcessLine" lang="java">
+  
+  	<many-to-one name="prodResource" ref="com.axelor.apps.production.db.ProdResource" title="Resource"/>
+    <string name="name" title="Label"/>
+    <integer name="priority" title="Priority"/>
+    <string name="description" title="Description" large="true"/>
+    
+    <one-to-many name="toConsumeProdProductList" ref="com.axelor.apps.production.db.ProdProduct" mappedBy="toConsumeProdProcessLine" title="Products to consume"/>
+  	<one-to-many name="toProduceProdProductList" ref="com.axelor.apps.production.db.ProdProduct" mappedBy="toProduceProdProcessLine" title="Products to produce"/>
+    
+  </entity>
+</domain-models>

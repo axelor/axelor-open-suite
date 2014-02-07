@@ -3,14 +3,16 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    <grid name="prod-resource-line-grid" title="Prod. Human resources" model="com.axelor.apps.production.db.ProdResourceLine">
+    <grid name="prod-human-resource-grid" title="Prod. Human resources" model="com.axelor.apps.production.db.ProdHumanResource">
         <field name="product"/>
         <field name="employee"/>
+        <field name="duration" widget="duration[big=true]"/>
     </grid>
     
-    <form name="prod-resource-line-form" title="Prod. Human resource" model="com.axelor.apps.production.db.ProdResourceLine" cols="4">
+    <form name="prod-human-resource-form" title="Prod. Human resource" model="com.axelor.apps.production.db.ProdHumanResource" cols="4">
         <field name="product"/>
         <field name="employee"/>
+        <field name="duration" widget="duration[big=true]"/>
     </form>
     
 </object-views>

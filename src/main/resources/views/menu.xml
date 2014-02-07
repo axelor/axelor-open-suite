@@ -28,6 +28,15 @@
 		<view type="form" name="prod-process-form" />
 	</action-view>
 		
+	<menuitem name="manufacturing-root-production-order" parent="manufacturing-root"
+		title="Productions orders" action="manufacturing.root.production.order" />
+
+	<action-view name="manufacturing.root.production.order" title="Productions orders"
+		model="com.axelor.apps.production.db.ProductionOrder" icon="img/16px/wheel_16px.png">
+		<view type="grid" name="production-order-grid" />
+		<view type="form" name="production-order-form" />
+	</action-view>	
+	
 	<menuitem name="manufacturing-root-manuf-order" parent="manufacturing-root"
 		title="Manufacturing orders" action="manufacturing.root.manuf.order" />
 
@@ -36,14 +45,34 @@
 		<view type="grid" name="manuf-order-grid" />
 		<view type="form" name="manuf-order-form" />
 	</action-view>	
-		
-	<menuitem name="manufacturing-root-manuf-order-planning" parent="manufacturing-root"
-		title="MO plannings" action="manufacturing.root.manuf.order.planning" />
+	
+	<menuitem name="manufacturing-root-operation-order" parent="manufacturing-root"
+		title="Operations orders" action="manufacturing.root.operation.order" />
 
-	<action-view name="manufacturing.root.manuf.order.planning" title="MO plannings"
-		model="com.axelor.apps.production.db.ManufOrderPlanning" icon="img/16px/wheel_16px.png">
-		<view type="grid" name="manuf-order-planning-grid" />
-		<view type="form" name="manuf-order-planning-form" />
+	<action-view name="manufacturing.root.operation.order" title="Operation orders"
+		model="com.axelor.apps.production.db.OperationOrder" icon="img/16px/wheel_16px.png">
+		<view type="grid" name="operation-order-grid" />
+		<view type="form" name="operation-order-form" />
+	</action-view>	
+	
+	<menuitem name="manufacturing-root-operation-order-planned-calendar" parent="manufacturing-root"
+		title="Planned operations" action="manufacturing.root.operation.order.planned.calendar" />
+
+	<action-view name="manufacturing.root.operation.order.planned.calendar" title="Planned operations"
+		model="com.axelor.apps.production.db.OperationOrder" icon="img/16px/wheel_16px.png">
+		<view type="calendar" name="operation-order-planned-calendar"/>
+		<view type="grid" name="operation-order-grid" />
+		<view type="form" name="operation-order-form" />
+	</action-view>
+	
+	<menuitem name="manufacturing-root-operation-order-real-calendar" parent="manufacturing-root"
+		title="Real operations" action="manufacturing.root.operation.order.real.calendar" />
+
+	<action-view name="manufacturing.root.operation.order.real.calendar" title="Real operations"
+		model="com.axelor.apps.production.db.OperationOrder" icon="img/16px/wheel_16px.png">
+		<view type="calendar" name="operation-order-real-calendar"/>
+		<view type="grid" name="operation-order-grid" />
+		<view type="form" name="operation-order-form" />
 	</action-view>
 
 	<menuitem name="manufacturing-conf" parent="manufacturing-root" title="Configurations"
@@ -65,6 +94,18 @@
 		model="com.axelor.apps.production.db.Machine" icon="img/16px/parameterSmall_16px.png">
 		<view type="grid" name="machine-grid" />
 		<view type="form" name="machine-form" />
+	</action-view>
+	
+	
+	
+	
+	<menuitem name="admin-root-conf-production-config" parent="admin-root-conf"
+		title="Production configurations" action="admin.root.conf.production.config" icon="img/Other/parameter_59px.png"/>
+		
+	<action-view name="admin.root.conf.production.config" title="Production configurations"
+		model="com.axelor.apps.production.db.ProductionConfig" icon="img/16px/parameterSmall_16px.png">
+		<view type="grid" />
+		<view type="form" />
 	</action-view>
 	
 
