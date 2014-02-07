@@ -55,4 +55,7 @@ public interface IExceptionMessage {
 	static final String UNIT_CONVERSION_1 = "Veuillez configurer les conversions d'unités de '%s' à '%s'.";
 	static final String UNIT_CONVERSION_2 = "Veuillez configurer les conversions d'unités.";
 	
+	static final String CURRENCY_CONVERSION_1 = "WARNING : Please close the current conversion period before creating new one";
+	static final String CURRENCY_CONVERSION_2 = "WARNING : To Date must be after or equals to From Date";
+	
 }

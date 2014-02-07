@@ -10,25 +10,36 @@
         <field name="variations" />
         <field name="fromDate"/>
         <field name="toDate"/>
+        <button name="checkRate" title="Check rate" icon="icon-repeat" onClick="wizard-check-currency-conversion-rate-line" />
     </grid>
     
     <form name="currency-conversion-line-form" title="Currency conversion line" model="com.axelor.apps.base.db.CurrencyConversionLine" cols="4"
-    onNew="action-currency-conversion-line-default-record"
-    onSave="action-currency-conversion-line-method-check-date">
+    onNew="action-currency-conversion-line-default-record">
         <field name="startCurrency"/>
         <field name="endCurrency" />
-        <field name="fromDate" onChange="action-currency-conversion-line-check-from-to-date" />
-        <field name="toDate" onChange="action-currency-conversion-line-check-from-to-date" />
+        <field name="fromDate" onChange="action-currency-conversion-line-method-check-date" />
+        <field name="toDate" onChange="action-currency-conversion-line-method-check-date" />
         <field name="conversionRate"/>
         <field name="variations" showTitle="false" />
-        <button showIf="toDate == null" name="getLatest" colSpan="1" title="Get latest" icon="icon-repeat" onClick="action-currency-conversion-line-method-check-date,action-currency-conversion-line-method-get-latest,save" />
     </form>
     
-    <form name="wizard-check-currency-rate-form" title="Check currency conversion rates" model="com.axelor.apps.base.db.Wizard" cols="4">
+    <form onNew="action-currency-conversion-line-wizard-set-today,action-currency-conversion-line-set-current-rate" name="wizard-check-currency-rate-form" title="Check currency conversion rates" model="com.axelor.apps.base.db.Wizard" cols="4">
     	<field name="fromCurrency" widget="MANY_TO_ONE[target=com.axelor.apps.base.db.Currency|targetName=code]" title="Source Currency"/>
     	<field name="toCurrency" widget="MANY_TO_ONE[target=com.axelor.apps.base.db.Currency|targetName=code]" title="Destination Currency" />
-    	<field name="conversionRate" widget="DECIMAL" title="Exchange rate" />
-    	<button title="Check rate" onClick="action-currency-conversion-line-set-conversion-rate" name="checkRate"/>
+    	<field name="general" widget="MANY_TO_ONE[target=com.axelor.apps.base.db.General|targetName=today]" title="General" hidden="true" />
+    	<group colSpan="4" cols="6" title="System rates">
+    		<field name="date" widget="DATE" title="Current Date" />
+	    	<field name="currentRate" widget="DECIMAL" title="Current Rate" />
+	    	<button title="Get Rate" help="Get rate at the 'Current Date'" readonlyIf="fromCurrency == null || toCurrency == null || date == null" onClick="action-currency-conversion-line-set-current-rate" name="getRate"/>
+	    	<label title="" />
+	    </group>
+	    <group colSpan="4" cols="6" title="New Rates">
+	    	<field name="conversionRate" widget="DECIMAL" title="New rate" />
+	    	<field name="variation" title="Variation" />
+	    	<button title="Get new rates" help="Get new rate at present from internet" readonlyIf="fromCurrency == null || toCurrency == null" onClick="action-currency-conversion-line-set-conversion-rate,action-currency-conversion-line-set-varation-rate" name="checkRate"/>
+	    	<label title="" />
+	    </group>
+	    <button name="updateRate"  title="Apply Currency Conversion Rate" help="Update currency conversion lines with new rate" onClick="action-currency-conversion-line-method-apply-conversion-rate" colSpan="4" readonlyIf="fromCurrency == null || toCurrency == null || conversionRate == null"/>
     </form>
     
     <action-method name="action-currency-conversion-line-method-getTodayDate">
@@ -39,21 +50,42 @@
     	<call class="com.axelor.apps.base.web.CurrencyConversionLineController" method="checkDate"/>
     </action-method>
     
-    <action-method name="action-currency-conversion-line-method-get-latest">
-    	<call class="com.axelor.apps.base.web.CurrencyConversionLineController" method="getLatest"/>
+    <action-method name="action-currency-conversion-line-method-apply-conversion-rate">
+    	<call class="com.axelor.apps.base.web.CurrencyConversionLineController" method="applyConversionRate"/>
     </action-method>
     
     <action-record name="action-currency-conversion-line-set-conversion-rate" model="com.axelor.apps.base.db.Wizard">
     	<field name="conversionRate" expr="call:com.axelor.apps.base.service.CurrencyConversionService:convert(fromCurrency as Currency,toCurrency as Currency)" />
     </action-record>
     
-    <action-validate name="action-currency-conversion-line-check-from-to-date">
-    	<error message="To Date must be after or equals to From Date" if="fromDate != null &amp;&amp; toDate != null &amp;&amp; fromDate &gt; toDate"  action="action-currency-conversion-line-reset-dates" />
-    </action-validate>
+    <action-record name="action-currency-conversion-line-set-varation-rate" model="com.axelor.apps.base.db.Wizard">
+    	<field name="variation" expr="call:com.axelor.apps.base.service.CurrencyConversionService:getVariations(conversionRate as BigDecimal, currentRate as BigDecimal)" />
+    </action-record>
     
     <action-record name="action-currency-conversion-line-reset-dates" model="com.axelor.apps.base.db.CurrencyConversionLine">
     	<field name="fromDate" expr="eval:null" />
     	<field name="toDate" expr="eval:null" />
     </action-record>
+    
+    <action-record name="action-currency-conversion-line-set-current-rate" model="com.axelor.apps.base.db.Wizard">
+    	<field name="currentRate" if="fromCurrency != null &amp;&amp; toCurrency != null &amp;&amp; date != null" expr="call:com.axelor.apps.base.service.CurrencyConversionService:getRate(fromCurrency as Currency,toCurrency as Currency, new LocalDate(date))" />
+    </action-record>
+    
+     <action-record name="action-currency-conversion-line-wizard-set-today" model="com.axelor.apps.base.db.Wizard">
+    	<field name="date" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+    	<field name="fromCurrency" expr="eval : _fromCurrency" if="_fromCurrency != null"/>
+    	<field name="toCurrency" expr="eval : _toCurrency" if="_toCurrency != null"/>
+    	<field name="general" expr="eval: _general" />
+    </action-record>
+    
+    <action-view title="Check currency conversion rate" model="com.axelor.apps.base.db.Wizard" name="wizard-check-currency-conversion-rate-line">
+	    <view type="form" name="wizard-check-currency-rate-form"/>
+	    <view-param name="popup" value="true"/>
+	    <view-param name="forceEdit" value="true"/> 
+	    <view-param name="width" value="800" />
+	    <view-param name="show-confirm" value="false" />
+	    <context name="_fromCurrency" expr="eval: Currency.find(startCurrency)" if="startcurrency != null" />
+	    <context name="_toCurrency" expr="eval: Currency.find(endCurrency)" if="endCurrency != null" />
+	</action-view>
 
 </object-views>

@@ -30,16 +30,22 @@
  */
 package com.axelor.apps.base.service;
 
+import groovy.util.Proxy;
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URL;
 
+import org.hamcrest.core.IsInstanceOf;
 import org.joda.time.LocalDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.General;
+import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -51,40 +57,68 @@ import wslite.http.HTTPResponse;
 
 public class CurrencyConversionService {
 	
+	private static final Logger LOG = LoggerFactory.getLogger(CurrencyConversionService.class);
+	
 	@Inject
-	TraceBackService tb;
+	private TraceBackService tb;
+	
+	@Inject
+	private GeneralService gs;
+	 
 
 	public BigDecimal convert(Currency currencyFrom, Currency currencyTo){
-		BigDecimal rate = null;
-		try{
-	        HTTPClient httpclient = new HTTPClient();
-	        HTTPRequest request = new HTTPRequest();
-	        URL url = new URL("http://quote.yahoo.com/d/quotes.csv?s=" + currencyFrom.getCode() + currencyTo.getCode() + "=X&f=l1&e=.csv");
-	        request.setUrl(url);
-	        request.setMethod(HTTPMethod.GET);
-	        HTTPResponse response = httpclient.execute(request);
-	        Float rt = Float.parseFloat(response.getContentAsString());
-	        rate = BigDecimal.valueOf(rt).setScale(4,RoundingMode.HALF_EVEN);
-		}catch(Exception e){
-			e.printStackTrace();
-			tb.trace(e);
+		BigDecimal rate = null; 
+		
+		LOG.debug("Currerncy conversion From: {} To: {}",new Object[] { currencyFrom,currencyTo});
+		String wsUrl = gs.getGeneral().getCurrencyWsURL();
+		if(wsUrl == null){
+			LOG.info("Currency WS URL not configured");
+			return rate;
 		}
+		
+		if(currencyFrom != null && currencyTo != null){
+			try{
+		        HTTPClient httpclient = new HTTPClient();
+		        HTTPRequest request = new HTTPRequest();
+		        URL url = new URL(String.format(wsUrl,currencyFrom.getCode(),currencyTo.getCode()));
+		        LOG.debug("Currency conversion webservice URL: {}" ,new Object[]{url.toString()});
+		        request.setUrl(url);
+		        request.setMethod(HTTPMethod.GET);
+		        HTTPResponse response = httpclient.execute(request);
+		        Float rt = Float.parseFloat(response.getContentAsString());
+		        rate = BigDecimal.valueOf(rt).setScale(4,RoundingMode.HALF_EVEN);
+			}catch(Exception e){
+				e.printStackTrace();
+				tb.trace(e);
+			}
+		}
+		
+		else
+			LOG.info("Currency from and to must be filled to get rate");
+		LOG.debug("Currerncy conversion rate: {}",new Object[] {rate});
 		return rate;
 	}
 	
 	public String getVariations(BigDecimal currentRate, BigDecimal previousRate){
 		String variations = null;
-		if(previousRate.compareTo(BigDecimal.ZERO) != 0){
+		LOG.debug("Currency rate variation calculation for CurrentRate: {} PreviousRate: {}", new Object[]{currentRate,previousRate});
+		
+		if(currentRate != null && previousRate != null && previousRate.compareTo(BigDecimal.ZERO) != 0){
 			BigDecimal diffRate = currentRate.subtract(previousRate);
 			BigDecimal variation = diffRate.multiply(new BigDecimal(100)).divide(previousRate,RoundingMode.HALF_EVEN);
 			variation = variation.setScale(2,RoundingMode.HALF_EVEN);
 			variations = variation.toString()+"%";
 		}
+		
+		LOG.debug("Currency rate variation result: {}",new Object[]{variations});
 		return variations;
 	}
 	
 	@Transactional
 	public void createCurrencyConversionLine(Currency currencyFrom, Currency currencyTo, LocalDate fromDate, BigDecimal rate, General general, String variations){
+		LOG.debug("Create new currency conversion line CurrencyFrom: {}, CurrencyTo: {},FromDate: {},ConversionRate: {}, General: {}, Variations: {}",
+				   new Object[]{currencyFrom,currencyTo,fromDate,rate,general,variations});
+		
 		CurrencyConversionLine ccl = new CurrencyConversionLine();
 		ccl.setStartCurrency(currencyFrom);
 		ccl.setEndCurrency(currencyTo);
@@ -93,6 +127,7 @@ public class CurrencyConversionService {
 		ccl.setGeneral(general);
 		ccl.setVariations(variations);
 		ccl.save();
+		
 	}
 	
 	@Transactional 
@@ -100,4 +135,23 @@ public class CurrencyConversionService {
 		ccl.save();
 	}
 	
+	
+	public BigDecimal getRate(Currency currencyFrom, Currency currencyTo, LocalDate rateDate){
+		
+		LOG.debug("Get Last rate for CurrencyFrom: {} CurrencyTo: {} RateDate: {}",new Object[]{currencyFrom,currencyTo,rateDate});
+		
+		BigDecimal rate = null;
+		
+		if(currencyFrom != null && currencyTo != null && rateDate != null){
+			currencyFrom = Currency.find(currencyFrom.getId());
+			currencyTo = Currency.find(currencyTo.getId());
+			CurrencyConversionLine ccl = CurrencyConversionLine.all().filter("startCurrency = ?1 AND endCurrency = ?2 AND fromDate <= ?3 AND (toDate >= ?3 OR toDate = null)",currencyFrom,currencyTo,rateDate).fetchOne();
+			if(ccl != null)
+				rate =  ccl.getConversionRate();
+		}
+		
+		LOG.debug("Current Rate: {}",new Object[]{rate});
+		
+		return rate;
+	}
 }
