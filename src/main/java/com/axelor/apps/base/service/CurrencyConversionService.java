@@ -30,14 +30,10 @@
  */
 package com.axelor.apps.base.service;
 
-import groovy.util.Proxy;
-
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URL;
 
-import org.hamcrest.core.IsInstanceOf;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
