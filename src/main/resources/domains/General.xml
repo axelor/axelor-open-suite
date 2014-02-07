@@ -35,6 +35,9 @@
 
 		<!-- Mapping API -->
 		<integer name="mapApiSelect" title="Mapping service provider" selection="base.general.map.api.select" default="1" />
+		
+		<!-- Currency Conversion Webservice URL -->
+		<string name="currencyWsURL" title="Currency Ws URL" />
 
 	</entity>
 
