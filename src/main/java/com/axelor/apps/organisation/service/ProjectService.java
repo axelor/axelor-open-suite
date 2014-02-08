@@ -56,6 +56,8 @@ import com.google.inject.persist.Transactional;
 
 public class ProjectService {
 	
+	static final String DEFAULT_EXPORT_TYPE = "pdf";
+	
 	@Inject
 	private Injector injector;
 
@@ -88,7 +90,7 @@ public class ProjectService {
 		defaultTask.setProject(project);
 		defaultTask.setRealEstimatedMethodSelect(project.getRealEstimatedMethodSelect());
 		project.setDefaultTask(defaultTask);
-		defaultTask.setExportTypeSelect("pdf");
+		defaultTask.setExportTypeSelect(DEFAULT_EXPORT_TYPE);
 		defaultTask.setStatusSelect(ITask.STATUS_DRAFT);
 		defaultTask.setStartDateT(todayTime);
 		defaultTask.setAmountToInvoice(BigDecimal.ZERO);
