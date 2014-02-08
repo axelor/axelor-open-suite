@@ -10,7 +10,13 @@
         <field name="name"/>
         <field name="isModel"/>
     </grid>
-    
+    <grid name="project-byclient-grid" title="Projects by Client Partner" model="com.axelor.apps.organisation.db.Project" groupBy='clientPartner'>
+	    <field name="clientPartner"/>
+	    <field name="contactPartner"/>
+	    <field name="company"/>
+	    <field name="name"/>
+	    <field name="isModel"/>
+	</grid>
     <form cols="6" onNew="action-project-group-default" name="project-form" title="Project" model="com.axelor.apps.organisation.db.Project"
     onSave="action-project-method-create-default-task-on-save">
 	    <group showTitle="false" colSpan="4">
