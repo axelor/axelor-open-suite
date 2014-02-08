@@ -31,17 +31,35 @@ package com.axelor.apps.production.service;
  */
 
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.app.production.db.IProdResource;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.production.db.BillOfMaterial;
+import com.axelor.apps.production.db.ProdHumanResource;
+import com.axelor.apps.production.db.ProdProcess;
+import com.axelor.apps.production.db.ProdProcessLine;
+import com.axelor.apps.production.db.ProdResource;
+import com.axelor.exception.AxelorException;
+import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 public class BillOfMaterialService {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
+	
+	@Inject 
+	private UnitConversionService unitConversionService;
+	
+	static final String UNIT_MIN_CODE = "MIN";
+	
+	static final String UNIT_DAY_CODE = "JR";
 	
 	
 	public List<BillOfMaterial> getBillOfMaterialList(Product product)  {
@@ -50,6 +68,142 @@ public class BillOfMaterialService {
 		
 		
 	}
+	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void computeCostPrice(BillOfMaterial billOfMaterial) throws AxelorException  {
+		
+		billOfMaterial.setCostPrice(this._computeCostPrice(billOfMaterial));
+		
+		billOfMaterial.save();
+	}
+	
+	
+	private BigDecimal _computeCostPrice(BillOfMaterial billOfMaterial) throws AxelorException  {
+		
+		BigDecimal costPrice = BigDecimal.ZERO;
+		
+		// Cout des composants
+		costPrice = costPrice.add(this._computeToConsumeProduct(billOfMaterial));
+		
+		// Cout des operations
+		costPrice = costPrice.add(this._computeProcess(billOfMaterial.getProdProcess()));
+		
+		return costPrice;
+		
+	}
+	
+	
+	private BigDecimal _computeToConsumeProduct(BillOfMaterial billOfMaterial) throws AxelorException  {
+		
+		BigDecimal costPrice = BigDecimal.ZERO;
+		
+		if(billOfMaterial.getBillOfMaterialList() != null)  {
+			
+			for(BillOfMaterial billOfMaterialLine : billOfMaterial.getBillOfMaterialList())  {
+				
+				Product product = billOfMaterialLine.getProduct();
+					
+				if(product != null)  {
+					if(billOfMaterialLine.getIsRawMaterial())  {
+						costPrice = costPrice.add(product.getCostPrice());
+					}
+					else  {
+						costPrice = costPrice.add(this._computeCostPrice(billOfMaterialLine));
+					}
+				}
+			}
+		}
+		
+		return costPrice;
+	}
+	
+	
+	
+	private BigDecimal _computeProcess(ProdProcess prodProcess) throws AxelorException  {
+		
+		BigDecimal costPrice = BigDecimal.ZERO;
+		
+		if(prodProcess != null && prodProcess.getProdProcessLineList() != null)  {
+			
+			for(ProdProcessLine prodProcessLine : prodProcess.getProdProcessLineList())  {
+				
+				ProdResource prodResource = prodProcessLine.getProdResource();
+				
+				if(prodResource != null)  {
+
+					int resourceType = prodResource.getResourceTypeSelect();
+					
+					if(resourceType == IProdResource.RESOURCE_HUMAN || resourceType == IProdResource.RESOURCE_BOTH)  {
+						
+						costPrice = costPrice.add(this._computeHumanResourceCost(prodResource));
+						
+					}
+					if(resourceType == IProdResource.RESOURCE_MACHINE || resourceType == IProdResource.RESOURCE_BOTH)  {
+						
+						costPrice = costPrice.add(this._computeMachineCost(prodResource));
+						
+					}
+					
+				}
+			}
+		}
+		
+		return costPrice;
+	}
+	
+	
+	private BigDecimal _computeMachineCost(ProdResource prodResource)  {
+		
+		int costType = prodResource.getCostTypeSelect();
+		
+		if(costType == IProdResource.COST_PER_CYCLE)  {
+			
+			return prodResource.getCostAmount();
+		}
+		else if(costType == IProdResource.COST_PER_HOUR)  {
+			
+			return (prodResource.getCostAmount().divide(new BigDecimal(3600))).multiply(new BigDecimal(prodResource.getDurationPerCycle()));
+			
+		}
+		
+		return BigDecimal.ZERO;
+	}
+	
+	
+	private BigDecimal _computeHumanResourceCost(ProdResource prodResource) throws AxelorException  {
+		
+		BigDecimal costPrice = BigDecimal.ZERO;
+		
+		if(prodResource.getProdHumanResourceList() != null)  {
+			
+			for(ProdHumanResource prodHumanResource : prodResource.getProdHumanResourceList())  {
+				
+				if(prodHumanResource.getEmployee() != null)  {
+					
+					BigDecimal costPerMin = unitConversionService.convert(Unit.findByCode(UNIT_DAY_CODE), Unit.findByCode(UNIT_MIN_CODE), prodHumanResource.getEmployee().getDailySalaryCost());
+					
+					costPrice = costPrice.add((costPerMin).multiply(new BigDecimal(prodHumanResource.getDuration()/60)));
+					
+				}
+				else if(prodHumanResource.getProduct() != null)  {
+					
+					Product product = prodHumanResource.getProduct();
+					
+					BigDecimal costPerMin = unitConversionService.convert(product.getUnit(), Unit.findByCode(UNIT_MIN_CODE), product.getCostPrice());
+					
+					costPrice = costPrice.add((costPerMin).multiply(new BigDecimal(prodHumanResource.getDuration()/60)));
+					
+				}
+			}
+			
+		}
+		
+		
+		return costPrice;
+	}
+	
+	
+	
 	
 	
 }

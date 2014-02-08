@@ -56,20 +56,20 @@
 	</action-view>	
 	
 	<menuitem name="manufacturing-root-operation-order-planned-calendar" parent="manufacturing-root"
-		title="Planned operations" action="manufacturing.root.operation.order.planned.calendar" />
+		title="Planned operations" action="manufacturing.root.operation.order.planned.calendar" icon="img/16px/calendarTask_16px.png"/>
 
 	<action-view name="manufacturing.root.operation.order.planned.calendar" title="Planned operations"
-		model="com.axelor.apps.production.db.OperationOrder" icon="img/16px/wheel_16px.png">
+		model="com.axelor.apps.production.db.OperationOrder" icon="img/16px/calendarTask_16px.png">
 		<view type="calendar" name="operation-order-planned-calendar"/>
 		<view type="grid" name="operation-order-grid" />
 		<view type="form" name="operation-order-form" />
 	</action-view>
 	
 	<menuitem name="manufacturing-root-operation-order-real-calendar" parent="manufacturing-root"
-		title="Real operations" action="manufacturing.root.operation.order.real.calendar" />
+		title="Real operations" action="manufacturing.root.operation.order.real.calendar" icon="img/16px/calendarTask_16px.png"/>
 
 	<action-view name="manufacturing.root.operation.order.real.calendar" title="Real operations"
-		model="com.axelor.apps.production.db.OperationOrder" icon="img/16px/wheel_16px.png">
+		model="com.axelor.apps.production.db.OperationOrder" icon="img/16px/calendarTask_16px.png">
 		<view type="calendar" name="operation-order-real-calendar"/>
 		<view type="grid" name="operation-order-grid" />
 		<view type="form" name="operation-order-form" />

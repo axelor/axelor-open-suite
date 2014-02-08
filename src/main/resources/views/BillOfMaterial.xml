@@ -26,8 +26,8 @@
         		<field name="prodRemainsList" colSpan="4"/>
         	</page>
         	<page title="Cost">
-        		<button name="computeCostPrice" title="Compute cost price" colSpan="2"/>
-        		<field name="costPrice"/>
+        		<button name="computeCostPrice" title="Compute cost price" colSpan="2" onClick="save,action-bill-of-material-method-compute-cost-price"/>
+        		<field name="costPrice" readonly="true"/>
         	</page>
         </notebook>
     </form>
@@ -79,6 +79,10 @@
      <action-record name="action-bill-of-material-record-name" model="com.axelor.apps.production.db.ProdProcess">
     	<field name="name" expr="eval: product.name + ' - ' + qty + unit.code + ' - ' + id"/>
     </action-record>
+    
+    <action-method name="action-bill-of-material-method-compute-cost-price">
+    	<call class="com.axelor.apps.production.web.BillOfMaterialController" method="computeCostPrice"/>
+    </action-method>
     
 </object-views>
 

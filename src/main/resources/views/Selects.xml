@@ -16,4 +16,15 @@
 		
 	</selection>
 	
+	<selection name="iproduction.prod.resource.resource.type.select">
+		<option value="1">Human</option>
+		<option value="2">Machine</option>
+		<option value="3">Human and Machine</option>
+	</selection>
+	
+	<selection name="iproduction.prod.resource.cost.type.select">
+		<option value="1">Per hour</option>
+		<option value="2">Per Cycle</option>
+	</selection>
+	
 </object-views>
