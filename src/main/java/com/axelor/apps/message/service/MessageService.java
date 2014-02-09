@@ -196,14 +196,16 @@ public class MessageService {
 			
 			if(mailAccount != null)  {
 			
-				List<String> recipients = new ArrayList<String>();
+				List<String> toRecipients = new ArrayList<String>();
+				List<String> ccRecipients = new ArrayList<String>();
+				List<String> bccRecipients = new ArrayList<String>();
 				
 				/** Ajout des destinataires  **/
 				for(EmailAddress emailAddress : message.getToEmailAddressSet())  {
 					
 					if(emailAddress.getAddress() != null && !emailAddress.getAddress().isEmpty())  {
 					
-						recipients.add(emailAddress.getAddress());
+						toRecipients.add(emailAddress.getAddress());
 					}
 				}
 				
@@ -212,7 +214,7 @@ public class MessageService {
 					
 					if(emailAddress.getAddress() != null && !emailAddress.getAddress().isEmpty())  {
 					
-						recipients.add(emailAddress.getAddress());
+						ccRecipients.add(emailAddress.getAddress());
 					}
 				}
 				
@@ -221,36 +223,35 @@ public class MessageService {
 					
 					if(emailAddress.getAddress() != null && !emailAddress.getAddress().isEmpty())  {
 					
-						recipients.add(emailAddress.getAddress());
+						bccRecipients.add(emailAddress.getAddress());
 					}
 				}
 				
-				if(!recipients.isEmpty())  {
 					
-					Map<String, String> attachment = Maps.newHashMap();
-					if(message.getFilePath() != null && !message.getFilePath().isEmpty())   {
-						attachment.put("File 1", message.getFilePath());
-					}	
-						
-					// Init the sender
-					MailSender sender = new MailSender(
-							"smtp", 
-							mailAccount.getHost(), 
-							mailAccount.getPort().toString(), 
-							mailAccount.getLogin(),
-							mailAccount.getName(),
-							mailAccount.getPassword());
+				Map<String, String> attachment = Maps.newHashMap();
+				if(message.getFilePath() != null && !message.getFilePath().isEmpty())   {
+					attachment.put("File 1", message.getFilePath());
+				}	
 					
-					
-					// Create the Message
-					javax.mail.Message msg = sender.createMessage(message.getContent(), message.getSubject(), recipients, attachment);
-					// Send
-					Transport.send(msg);
-					
-					message.setSentByEmail(true);
-					message.setStatusSelect(IMessage.STATUS_SENT);
-					message.save();
-				}
+				// Init the sender
+				MailSender sender = new MailSender(
+						"smtp", 
+						mailAccount.getHost(), 
+						mailAccount.getPort().toString(), 
+						mailAccount.getLogin(),
+						mailAccount.getName(),
+						mailAccount.getPassword());
+				
+				
+				// Create the Message
+				javax.mail.Message msg = sender.createMessage(message.getContent(), message.getSubject(), toRecipients, ccRecipients, bccRecipients, attachment);
+				// Send
+				Transport.send(msg);
+				
+				message.setSentByEmail(true);
+				message.setStatusSelect(IMessage.STATUS_SENT);
+				message.save();
+				
 			}
 			if(!message.getSentByEmail() && message.getRecipientUserInfo()!=null)  {
 				message.setStatusSelect(IMessage.STATUS_SENT);

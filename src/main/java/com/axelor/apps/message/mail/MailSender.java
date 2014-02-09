@@ -98,25 +98,9 @@ public class MailSender extends MailConnection {
 	}
 	
 	
-	public void send(String content, String subject, List<String> recipients) throws MessagingException, UnsupportedEncodingException {
-		Preconditions.checkArgument(recipients != null && recipients.size() > 0, "Recipients can not be null or empty");
+	public void send(String content, String subject, List<String> recipientsTo, List<String> recipientsCc, List<String> recipientsBcc, Map<String, String> files) throws MessagingException, UnsupportedEncodingException {
 
-		Message msg = new MimeMessage(getSession());
-		InternetAddress from = new InternetAddress(getUserName(), getAliasName());
-		msg.setFrom(from);
-
-		InternetAddress[] toAddresses = new InternetAddress[recipients.size()];
-		int i = 0;
-		for (String recipient : recipients) {
-			toAddresses[i] = new InternetAddress(recipient);
-			i++;
-		}
-		msg.setRecipients(Message.RecipientType.TO, toAddresses);
-
-		msg.setSubject(subject);
-		msg.setContent(this.createMultiPart(content, null));
-
-		Transport.send(msg);
+		Transport.send(this.createMessage(content, subject, recipientsTo, recipientsCc, recipientsBcc, files));
 	}
 	
 
@@ -124,6 +108,51 @@ public class MailSender extends MailConnection {
 		Transport.send(msg);
 	}
 
+	
+	public Message createMessage(String content, String subject, List<String> recipientsTo, List<String> recipientsCc, List<String> recipientsBcc, Map<String, String> files) throws UnsupportedEncodingException, MessagingException {
+		Preconditions.checkArgument(recipientsTo != null && recipientsTo.size() > 0 && recipientsCc != null && recipientsCc.size() > 0 && recipientsBcc != null && recipientsBcc.size() > 0, 
+				"Recipients can not be null or empty");
+
+		Message msg = new MimeMessage(getSession());
+		InternetAddress from = new InternetAddress(getUserName(), getAliasName());
+		msg.setFrom(from);
+
+		InternetAddress[] toAddresses = new InternetAddress[recipientsTo.size()];
+		InternetAddress[] ccAddresses = new InternetAddress[recipientsCc.size()];
+		InternetAddress[] bccAddresses = new InternetAddress[recipientsBcc.size()];
+		int i = 0;
+		
+		if(recipientsTo != null)  {
+			for (String recipient : recipientsTo) {
+				toAddresses[i] = new InternetAddress(recipient);
+				i++;
+			}
+			msg.setRecipients(Message.RecipientType.TO, toAddresses);
+		}
+		
+		if(recipientsCc != null)  {
+			for (String recipient : recipientsCc) {
+				ccAddresses[i] = new InternetAddress(recipient);
+				i++;
+			}
+			msg.setRecipients(Message.RecipientType.CC, ccAddresses);
+		}
+		
+		if(recipientsBcc != null)  {
+			for (String recipient : recipientsBcc) {
+				bccAddresses[i] = new InternetAddress(recipient);
+				i++;
+			}
+			msg.setRecipients(Message.RecipientType.BCC, bccAddresses);
+		}
+
+		msg.setSubject(subject);
+		msg.setContent(this.createMultiPart(content, files));
+
+		return msg;
+	}
+	
+	
 	public Message createMessage(String content, String subject, String[] recipients) throws UnsupportedEncodingException, MessagingException {
 		Preconditions.checkArgument(recipients != null && recipients.length > 0, "Recipients can not be null or empty");
 
@@ -162,27 +191,6 @@ public class MailSender extends MailConnection {
 		return msg;
 	}
 	
-	public Message createMessage(String content, String subject, List<String> recipients, Map<String, String> files) throws UnsupportedEncodingException, MessagingException {
-		Preconditions.checkArgument(recipients != null && recipients.size() > 0, "Recipients can not be null or empty");
-
-		Message msg = new MimeMessage(getSession());
-		InternetAddress from = new InternetAddress(getUserName(), getAliasName());
-		msg.setFrom(from);
-
-		InternetAddress[] toAddresses = new InternetAddress[recipients.size()];
-		int i = 0;
-		for (String recipient : recipients) {
-			toAddresses[i] = new InternetAddress(recipient);
-			i++;
-		}
-		
-		msg.setRecipients(Message.RecipientType.TO, toAddresses);
-
-		msg.setSubject(subject);
-		msg.setContent(this.createMultiPart(content, files));
-
-		return msg;
-	}
 
 	private Multipart createMultiPart(String content, Map<String, String> files) throws MessagingException {
 		Multipart mp = new MimeMultipart();
