@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_0.9.xsd">
+
+  <module name="production" package="com.axelor.apps.production.db"/>
+
+  <entity name="ProdResource" lang="java">
+  
+    <string name="name" title="Label"/>
+    <string name="code" title="Code"/>
+    <many-to-one name="machine" ref="com.axelor.apps.production.db.Machine" title="Default Machine"/>
+    <integer name="resourceTypeSelect" title="Type of resource" selection="iproduction.prod.resource.resource.type.select"/>
+    <decimal name="capacityPerCycle" title="Capacity / cycle"/>
+    <decimal name="maxCapacityPerCycle" title="Max. capacity / cycle"/>
+    <long name="durationPerCycle" title="Duration / cycle (hh:mm)"/>
+    <long name="startingDuration" title="Starting duration (hh:mm)"/>
+    <long name="setupDuration" title="Duration between two cycles (hh:mm)"/>
+    <long name="endingDuration" title="Ending duration (hh:mm)"/>
+	
+	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+	
+	<integer name="costTypeSelect" title="Type of cost" selection="iproduction.prod.resource.cost.type.select"/>    
+    <decimal name="costAmount" title="Cost (H.T.)"/>
+    
+    <one-to-many name="prodHumanResourceList" ref="com.axelor.apps.production.db.ProdHumanResource" mappedBy="prodResource" title="Human resources"/>
+    
+    <one-to-many name="prodResourceList" ref="com.axelor.apps.production.db.ProdResource" mappedBy="parentProdResource" title="Machines"/>
+    <many-to-one name="parentProdResource" ref="com.axelor.apps.production.db.ProdResource" title="Resource"/>
+    
+    <many-to-one name="operationOrder" ref="com.axelor.apps.production.db.OperationOrder" title="Operation order"/>
+    
+  </entity>
+</domain-models>
