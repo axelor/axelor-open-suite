@@ -317,8 +317,7 @@ public class ManufOrderService {
 		if(billOfMaterial != null && billOfMaterial.getProdProcess() != null && billOfMaterial.getProdProcess().getProdProcessLineList() != null)  {
 			for(ProdProcessLine prodProcessLine : billOfMaterial.getProdProcess().getProdProcessLineList())  {
 				
-				if((prodProcessLine.getToConsumeProdProductList() != null && !prodProcessLine.getToConsumeProdProductList().isEmpty())
-						|| (prodProcessLine.getToProduceProdProductList() != null && !prodProcessLine.getToProduceProdProductList().isEmpty()))  {
+				if((prodProcessLine.getToConsumeProdProductList() != null && !prodProcessLine.getToConsumeProdProductList().isEmpty()))  {
 					
 					return true;
 					

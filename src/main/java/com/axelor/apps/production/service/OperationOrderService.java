@@ -114,7 +114,6 @@ public class OperationOrderService {
 				this.computeDuration(operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT())));
 		
 		this._createToConsumeProdProductList(operationOrder, prodProcessLine);
-		this._createToProduceProdProductList(operationOrder, prodProcessLine);
 		
 		this._createHumanResourceList(operationOrder, machineProdResource);
 		
@@ -203,24 +202,6 @@ public class OperationOrderService {
 			for(ProdProduct prodProduct : prodProcessLine.getToConsumeProdProductList())  {
 				
 				operationOrder.addToConsumeProdProductListItem(
-						new ProdProduct(prodProduct.getProduct(), prodProduct.getQty().multiply(manufOrderQty), prodProduct.getUnit()));
-				
-			}
-			
-		}
-		
-	}
-	
-	
-	private void _createToProduceProdProductList(OperationOrder operationOrder, ProdProcessLine prodProcessLine)  {
-		
-		BigDecimal manufOrderQty = operationOrder.getManufOrder().getQty();
-		
-		if(prodProcessLine.getToProduceProdProductList() != null)  {
-			
-			for(ProdProduct prodProduct : prodProcessLine.getToProduceProdProductList())  {
-				
-				operationOrder.addToProduceProdProductListItem(
 						new ProdProduct(prodProduct.getProduct(), prodProduct.getQty().multiply(manufOrderQty), prodProduct.getUnit()));
 				
 			}

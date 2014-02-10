@@ -19,9 +19,8 @@
     		<page title="Description" colSpan="4" cols="4">
     			<field name="description" showTitle="false" colSpan="4"/>
     		</page>
-    		<page title="To consume/To produce">
+    		<page title="To consume products">
     			<field name="toConsumeProdProductList" colSpan="4"/>
-    			<field name="toProduceProdProductList" colSpan="4"/>
     		</page>
     	</notebook>
         
