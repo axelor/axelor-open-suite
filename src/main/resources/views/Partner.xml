@@ -105,6 +105,7 @@
 	            <group title="Postal addresses" colSpan="4" cols="4">
 	                <field name="deliveryAddress" onChange="action-partner-record-main-invoicing-address"/>
 	                <field name="mainInvoicingAddress"/>
+	                <field name="deliveryDelay" showIf="supplierTypeSelect == 2 || supplierTypeSelect == 3"/>
 	            </group>
 	            <group title="Contact" colSpan="4" cols="4">
 	                <field name="fixedPhone"/>

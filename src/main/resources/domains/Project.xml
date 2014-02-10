@@ -66,8 +66,6 @@
     <string name="needDescription" title="Need Description" large="true"/>
     <binary name="specificationFile" title="Attach specification"/> 
     <datetime name="answerDate" title="Answer Date"/>
-    <many-to-many name="candidateSet" title="Candidates" ref="com.axelor.apps.organisation.db.Candidate"/>
-    <many-to-many name="employeeSet" title="Employees" ref="com.axelor.apps.organisation.db.Employee"/>
     <integer name="marketTypeSelect" title="Market Type" selection="organisation.project.business.market.type.select"/>
     <string name="exportTypeSelect" title="Export Type" selection="organisation.project.report.type.select"/>
 

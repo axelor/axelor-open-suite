@@ -449,7 +449,7 @@
 		<option value="2">With payment schedule</option>
 		<option value="3">Per task</option>
 		<option value="4">Per shipment</option>
-		<option value="5">Free</option>
+		<option value="5">Free / Business</option>
 		<option value="6">Subscription</option>
 	</selection>
 

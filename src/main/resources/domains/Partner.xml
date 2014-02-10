@@ -29,6 +29,9 @@
     <many-to-one name="parentPartner" ref="com.axelor.apps.base.db.Partner" title="Mother company"/>
     <many-to-one name="mainInvoicingAddress" ref="com.axelor.apps.base.db.Address" title="Invoicing Address"/>
     <many-to-one name="deliveryAddress" ref="com.axelor.apps.base.db.Address" title="Delivery Address"/>
+    
+    <integer name="deliveryDelay" title="Delivery delay (day)"/>
+    
     <many-to-many name="contactPartnerSet" ref="com.axelor.apps.base.db.Partner" title="Contacts"/>
     <many-to-one name="mainPartner" ref="com.axelor.apps.base.db.Partner" title="Main partner"/>
     <many-to-one name="source" ref="com.axelor.apps.base.db.Source" title="Source"/>

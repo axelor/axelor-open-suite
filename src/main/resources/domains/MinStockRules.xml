@@ -10,8 +10,8 @@
   	<string name="name" title="Name"/>
 	
 	<many-to-one name="location" ref="com.axelor.apps.supplychain.db.Location" title="Location"/>  	
-  	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
-  	<integer name="minQty" title="Minimum quantity"/>
+  	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>
+  	<decimal name="minQty" title="Minimum quantity"/>
   	<decimal name="reOrderQty" title="Re-order quantity"/>
   	<integer name="typeSelect" title="Type" selection="supplychain.min.stock.rules.type.select"/>
   	

@@ -55,6 +55,10 @@
   	<decimal name="companyCostPrice" title="Unit cost price in company currency" hidden="true"/>
   	
   	
+<!--   	TODO a déplacer dans PRODUCTION -->
+  	<many-to-one name="billOfMaterial" ref="com.axelor.apps.production.db.BillOfMaterial" title="BOM"/>
+  	
+  	
   </entity>
 
 </domain-models>
