@@ -74,6 +74,15 @@
 		<view type="grid" name="operation-order-grid" />
 		<view type="form" name="operation-order-form" />
 	</action-view>
+	
+	<menuitem name="manufacturing-root-charge-by-machine-dashboard" parent="manufacturing-root"
+		title="Charge by machine" action="manufacturing.root.charge.by.machine.dashboardr" icon="img/16px/chart_16px.png"/>
+
+	<action-view name="manufacturing.root.charge.by.machine.dashboardr" title="Charge by machine"
+		icon="img/16px/chart_16px.png">
+		<view type="portal" name="charge.by.machine.dashboard.portal" />
+		<context name="today" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+	</action-view>
 
 	<menuitem name="manufacturing-conf" parent="manufacturing-root" title="Configurations"
 		icon="img/Other/parameter_59px.png" />

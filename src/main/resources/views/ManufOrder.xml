@@ -18,6 +18,15 @@
     
     <form name="manuf-order-form" title="Manufacturing order" model="com.axelor.apps.production.db.ManufOrder" cols="4"
     onNew="action-manuf-order-default-record">
+<!--     TODO avec propagation -->
+    	<toolbar>
+    		<button name="start" title="Start" onClick="save,action-manuf-order-record-start,save" showIf="statusSelect == 3"/>
+    		<button name="cancel" title="Cancel" onClick="save,action-manuf-order-record-cancel,save" showIf="statusSelect == 1 || statusSelect == 3"/>
+    		<button name="finish" title="Finish" onClick="save,action-manuf-order-record-finish,save" showIf="statusSelect == 4"/>
+    		<button name="pause" title="Pause" onClick="save,action-manuf-order-record-pause,save" showIf="statusSelect == 4"/>
+    		<button name="resume" title="Resume" onClick="save,action-manuf-order-record-resume,save" showIf="statusSelect == 5"/>
+    	</toolbar>
+    
         <field name="manufOrderSeq"/>
         <field name="priority"/>
         <field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="2"/>
@@ -58,10 +67,12 @@
         		<field name="toConsumeProdProductList" colSpan="2"/>
         		<field name="consumedProdProductList" colSpan="2"/>
         		<field name="diffConsumeProdProductList" colSpan="2"/>
+        		<button name="copyToConsume" title="Fill consumed products" colSpan="2" onClick="save,action-manuf-order-method-copy-to-consume"/>
         	</page>
         	<page title="Finished products">
 	        	<field name="toProduceProdProductList" colSpan="2"/>
 	        	<field name="producedProdProductList" colSpan="2"/>
+	        	<button name="copyToProduce" title="Fill produced products" colSpan="2" onClick="save,action-manuf-order-method-copy-to-produce"/>
 	        	<field name="wasteProdProductList" colSpan="2"/>
 	        	<group title="Description" colSpan="2" cols="2">
 	        		<field name="wasteProdDescription" showTitle="false" colSpan="2"/>
@@ -73,11 +84,19 @@
     
     <action-record name="action-manuf-order-default-record" model="com.axelor.apps.production.db.ManufOrder">
     	<field name="statusSelect" expr="eval: 1"/>
-    	<field name="plannedStartDateT" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="startDate == null"/>
+    	<field name="plannedStartDateT" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()" if="startDate == null"/>
     </action-record>
     
     <action-method name="action-manuf-order-method-is-to-invoice">
     	<call class="com.axelor.apps.production.web.ManufOrderController" method="propagateIsToInvoice"/>
+    </action-method>
+    
+    <action-method name="action-manuf-order-method-copy-to-consume">
+    	<call class="com.axelor.apps.production.web.ManufOrderController" method="copyToConsume"/>
+    </action-method>
+    
+     <action-method name="action-manuf-order-method-copy-to-produce">
+    	<call class="com.axelor.apps.production.web.ManufOrderController" method="copyToProduce"/>
     </action-method>
     
     

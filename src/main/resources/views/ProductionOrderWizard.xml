@@ -7,14 +7,15 @@
     <form cols="4" name="production-order-wizard-form" title="Production order wizard" model="com.axelor.apps.base.db.Wizard" onNew="action-production-order-wizard-record-default">
 
 		<field name="qty" widget="Decimal" title="Quantity"/>
-		<field name="billOfMaterial" widget="ManyToOne[target=com.axelor.apps.production.db.BillOfMaterial]" title="BOM" domain="self.isRawMaterial = 'false' and self.product.id = :_productId.id"/>
+		<field name="billOfMaterial" widget="ManyToOne[target=com.axelor.apps.production.db.BillOfMaterial]" title="BOM" domain="self.isRawMaterial = 'false' and self.product.id = :product_id"/>
 		<button name="validate" title="Validate" onClick="action-production-order-wizard-method-validate"/>
 
 	</form>
 
 	<action-record name="action-production-order-wizard-record-default" model="com.axelor.apps.base.db.Wizard">
+    	<field name="product_id" expr="eval: _productId?.id"/>
 		<field name="qty" expr="eval: 1"/>
-		<field name="billOfMaterial" expr="eval: com.axelor.apps.production.db.BillOfMaterial.filter('self.product.id = ?1 ORDER BY self.id DESC',_productId.id).fetchOne()"/>
+		<field name="billOfMaterial" expr="eval: com.axelor.apps.production.db.BillOfMaterial.filter('self.id = ?1',_productId.defaultBillOfMaterial.id).fetchOne()"/>
 	</action-record>
 
     <action-method name="action-production-order-wizard-method-validate">

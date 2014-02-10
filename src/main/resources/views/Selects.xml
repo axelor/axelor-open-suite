@@ -27,4 +27,10 @@
 		<option value="2">Per Cycle</option>
 	</selection>
 	
+	<selection name="iproduction.project.prod.inv.type.select">
+		<option value="1">None</option>
+		<option value="2">Yes (Fixed)</option>
+		<option value="3">Yes (Real)</option>
+	</selection>
+	
 </object-views>
