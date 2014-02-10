@@ -41,7 +41,9 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.TrackingNumber;
 import com.axelor.apps.base.service.ProductVariantService;
+import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.supplychain.db.ILocation;
+import com.axelor.apps.supplychain.db.IMinStockRules;
 import com.axelor.apps.supplychain.db.Location;
 import com.axelor.apps.supplychain.db.LocationLine;
 import com.axelor.exception.AxelorException;
@@ -57,12 +59,14 @@ public class LocationLineService {
 	@Inject
 	private ProductVariantService productVariantService;
 	
+	@Inject
+	private MinStockRulesService minStockRulesService;
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void updateLocation(Location location, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement, 
-			LocalDate lastFutureStockMoveDate, TrackingNumber trackingNumber, ProductVariant productVariant) throws AxelorException  {
+			LocalDate lastFutureStockMoveDate, TrackingNumber trackingNumber, ProductVariant productVariant, Project businessProject) throws AxelorException  {
 		
-		this.updateLocation(location, product, qty, current, future, isIncrement, lastFutureStockMoveDate);
+		this.updateLocation(location, product, qty, current, future, isIncrement, lastFutureStockMoveDate, businessProject);
 		
 		if(trackingNumber != null || productVariant != null)  {
 			this.updateDetailLocation(location, product, qty, current, future, isIncrement, lastFutureStockMoveDate, productVariant, trackingNumber);
@@ -72,7 +76,8 @@ public class LocationLineService {
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void updateLocation(Location location, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement, LocalDate lastFutureStockMoveDate) throws AxelorException  {
+	public void updateLocation(Location location, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement, 
+			LocalDate lastFutureStockMoveDate, Project businessProject) throws AxelorException  {
 		
 		LocationLine locationLine = this.getLocationLine(location, product);
 		
@@ -82,6 +87,13 @@ public class LocationLineService {
 		locationLine = this.updateLocation(locationLine, qty, current, future, isIncrement, lastFutureStockMoveDate);
 		
 		this.checkStockMin(locationLine, false);
+		
+		if(current)  {
+			minStockRulesService.generatePurchaseOrder(product, qty, location, businessProject, IMinStockRules.TYPE_CURRENT);			
+		}
+		if(future)  {
+			minStockRulesService.generatePurchaseOrder(product, qty, location, businessProject, IMinStockRules.TYPE_FUTURE);
+		}
 		
 		locationLine.save();
 		

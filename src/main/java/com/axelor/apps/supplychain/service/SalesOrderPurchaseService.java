@@ -39,6 +39,7 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.base.db.IProduct;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.UserInfo;
@@ -93,13 +94,16 @@ public class SalesOrderPurchaseService {
 		
 		for(SalesOrderLine salesOrderLine : salesOrderLineList)  {
 			
-			Partner supplierPartner = salesOrderLine.getSupplierPartner();
+			if(salesOrderLine.getSaleSupplySelect() == IProduct.SALE_SUPPLY_PURCHASE)  {
 			
-			if(!salesOrderLinesBySupplierPartner.containsKey(supplierPartner))  {
-				salesOrderLinesBySupplierPartner.put(supplierPartner, new ArrayList<SalesOrderLine>());
+				Partner supplierPartner = salesOrderLine.getSupplierPartner();
+				
+				if(!salesOrderLinesBySupplierPartner.containsKey(supplierPartner))  {
+					salesOrderLinesBySupplierPartner.put(supplierPartner, new ArrayList<SalesOrderLine>());
+				}
+				
+				salesOrderLinesBySupplierPartner.get(supplierPartner).add(salesOrderLine);
 			}
-			
-			salesOrderLinesBySupplierPartner.get(supplierPartner).add(salesOrderLine);
 			
 		}
 		

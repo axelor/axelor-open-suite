@@ -21,7 +21,7 @@
 		    <field name="isToPrintLineSubTotal"/>
 	    </group>
 	    <separator colSpan="4"/>
-	    <field name="product" onChange="action-sales-order-line-record-product-variant,action-sales-order-line-method-get-product-information,action-sales-order-line-method-compute,action-sales-order-line-attrs-ressources-planning,action-sales-order-line-attrs-hide-product-variant" domain="self.endDate = null or self.endDate &gt; :__date__"/>
+	    <field name="product" onChange="action-sales-order-line-record-product-variant,action-sales-order-line-method-get-product-information,action-sales-order-line-method-compute,action-sales-order-line-attrs-ressources-planning,action-sales-order-line-attrs-hide-product-variant,action-sales-order-line-get-production-information" domain="self.endDate = null or self.endDate &gt; :__date__"/>
 	    <field name="productName"/>
 	    <field name="qty" onChange="action-sales-order-line-method-get-discount,action-sales-order-line-method-compute"/>
 	    <field name="unit"/>
@@ -38,8 +38,9 @@
 	            <group colSpan="6" cols="4" colWidths="30%,10%,30%,10%">
 	                <field name="saleSupplySelect"/>
 	                <break/>
-	                <field name="supplierPartner" domain="self.partnerTypeSelect = 2"/>
+	                <field name="supplierPartner" domain="self.isContact = false"/>
 	                <field name="task"/>
+	                <field name="billOfMaterial" domain="self.product.id = :id" showIf="saleSupplySelect == 3"/>
 	            </group>
 	        </page>
 	        <page title="Notes">
@@ -80,6 +81,10 @@
     
     <action-record name="action-sales-order-line-record-product-variant" model="com.axelor.apps.supplychain.db.SalesOrderLine">
     	<field name="productVariant" expr="action:action-product-variant-record-on-new" if="product != null &amp;&amp; product.productVariantConfiguration != null"/>
+    </action-record>
+    
+    <action-record name="action-sales-order-line-get-production-information" model="com.axelor.apps.supplychain.db.SalesOrderLine">
+    	<field name="billOfMaterial" expr="eval: product?.defaultBillOfMaterial" if="saleSupplySelect == 3"/>
     </action-record>
    	
    	<!-- ACTION METHOD -->

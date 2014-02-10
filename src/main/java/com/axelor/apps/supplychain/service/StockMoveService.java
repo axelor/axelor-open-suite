@@ -40,6 +40,7 @@ import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.supplychain.db.ILocation;
 import com.axelor.apps.supplychain.db.IStockMove;
 import com.axelor.apps.supplychain.db.Location;
@@ -178,6 +179,17 @@ public class StockMoveService {
 		
 	}
 	
+	public Project getBusinessProject(StockMove stockMove)  {
+		
+		if(stockMove.getSalesOrder() != null)  {
+			
+			return stockMove.getSalesOrder().getProject();
+			
+		}
+		
+		return null;
+	}
+	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void plan(StockMove stockMove) throws AxelorException  {
@@ -222,7 +234,8 @@ public class StockMoveService {
 				stockMove.getStatusSelect(), 
 				IStockMove.STATUS_PLANNED, 
 				stockMove.getStockMoveLineList(),
-				stockMove.getEstimatedDate());
+				stockMove.getEstimatedDate(),
+				this.getBusinessProject(stockMove));
 		
 		if(stockMove.getEstimatedDate() == null)  {
 			stockMove.setEstimatedDate(this.today);
@@ -233,7 +246,6 @@ public class StockMoveService {
 		stockMove.save();
 		
 	}
-	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void realize(StockMove stockMove) throws AxelorException  {
@@ -246,7 +258,8 @@ public class StockMoveService {
 				stockMove.getStatusSelect(), 
 				IStockMove.STATUS_REALIZED, 
 				stockMove.getStockMoveLineList(),
-				stockMove.getEstimatedDate());
+				stockMove.getEstimatedDate(),
+				this.getBusinessProject(stockMove));
 		
 		stockMove.setStatusSelect(IStockMove.STATUS_REALIZED);
 		stockMove.setRealDate(this.today);
@@ -265,7 +278,8 @@ public class StockMoveService {
 				stockMove.getStatusSelect(), 
 				IStockMove.STATUS_CANCELED, 
 				stockMove.getStockMoveLineList(),
-				stockMove.getEstimatedDate());
+				stockMove.getEstimatedDate(),
+				this.getBusinessProject(stockMove));
 		
 		stockMove.setStatusSelect(IStockMove.STATUS_CANCELED);
 		stockMove.setRealDate(this.today);

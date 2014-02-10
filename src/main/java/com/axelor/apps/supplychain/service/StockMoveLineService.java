@@ -45,6 +45,7 @@ import com.axelor.apps.base.db.TrackingNumberConfiguration;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.ProductVariantService;
 import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.supplychain.db.IStockMove;
 import com.axelor.apps.supplychain.db.Location;
 import com.axelor.apps.supplychain.db.LocationLine;
@@ -220,7 +221,7 @@ public class StockMoveLineService {
 	
 	
 
-	public void updateLocations(Location fromLocation, Location toLocation, int fromStatus, int toStatus, List<StockMoveLine> stockMoveLineList, LocalDate lastFutureStockMoveDate) throws AxelorException  {
+	public void updateLocations(Location fromLocation, Location toLocation, int fromStatus, int toStatus, List<StockMoveLine> stockMoveLineList, LocalDate lastFutureStockMoveDate, Project businessProject) throws AxelorException  {
 		
 		for(StockMoveLine stockMoveLine : stockMoveLineList)  {
 			
@@ -232,7 +233,7 @@ public class StockMoveLineService {
 				qty = new UnitConversionService().convert(stockMoveLineUnit, productUnit, qty);
 			}
 			
-			this.updateLocations(fromLocation, toLocation, stockMoveLine.getProduct(), qty, fromStatus, toStatus, lastFutureStockMoveDate, stockMoveLine.getProductVariant(), stockMoveLine.getTrackingNumber());
+			this.updateLocations(fromLocation, toLocation, stockMoveLine.getProduct(), qty, fromStatus, toStatus, lastFutureStockMoveDate, stockMoveLine.getProductVariant(), stockMoveLine.getTrackingNumber(), businessProject);
 			
 		}
 		
@@ -240,17 +241,17 @@ public class StockMoveLineService {
 	
 	
 	public void updateLocations(Location fromLocation, Location toLocation, Product product, BigDecimal qty, int fromStatus, int toStatus, LocalDate 
-			lastFutureStockMoveDate, ProductVariant productVariant, TrackingNumber trackingNumber ) throws AxelorException  {
+			lastFutureStockMoveDate, ProductVariant productVariant, TrackingNumber trackingNumber, Project businessProject) throws AxelorException  {
 		
 		switch(fromStatus)  {
 			case IStockMove.STATUS_PLANNED:
-				locationLineService.updateLocation(fromLocation, product, qty, false, true, true, null, trackingNumber, productVariant);
-				locationLineService.updateLocation(toLocation, product, qty, false, true, false, null, trackingNumber, productVariant);
+				locationLineService.updateLocation(fromLocation, product, qty, false, true, true, null, trackingNumber, productVariant, businessProject);
+				locationLineService.updateLocation(toLocation, product, qty, false, true, false, null, trackingNumber, productVariant, businessProject);
 				break;
 				
 			case IStockMove.STATUS_REALIZED:
-				locationLineService.updateLocation(fromLocation, product, qty, true, true, true, null, trackingNumber, productVariant);
-				locationLineService.updateLocation(toLocation, product, qty, true, true, false, null, trackingNumber, productVariant);
+				locationLineService.updateLocation(fromLocation, product, qty, true, true, true, null, trackingNumber, productVariant, businessProject);
+				locationLineService.updateLocation(toLocation, product, qty, true, true, false, null, trackingNumber, productVariant, businessProject);
 				break;
 			
 			default:
@@ -259,13 +260,13 @@ public class StockMoveLineService {
 		
 		switch(toStatus)  {
 			case IStockMove.STATUS_PLANNED:
-				locationLineService.updateLocation(fromLocation, product, qty, false, true, false, lastFutureStockMoveDate, trackingNumber, productVariant);
-				locationLineService.updateLocation(toLocation, product, qty, false, true, true, lastFutureStockMoveDate, trackingNumber, productVariant);
+				locationLineService.updateLocation(fromLocation, product, qty, false, true, false, lastFutureStockMoveDate, trackingNumber, productVariant, businessProject);
+				locationLineService.updateLocation(toLocation, product, qty, false, true, true, lastFutureStockMoveDate, trackingNumber, productVariant, businessProject);
 				break;
 				
 			case IStockMove.STATUS_REALIZED:
-				locationLineService.updateLocation(fromLocation, product, qty, true, true, false, null, trackingNumber, productVariant);
-				locationLineService.updateLocation(toLocation, product, qty, true, true, true, null, trackingNumber, productVariant);
+				locationLineService.updateLocation(fromLocation, product, qty, true, true, false, null, trackingNumber, productVariant, businessProject);
+				locationLineService.updateLocation(toLocation, product, qty, true, true, true, null, trackingNumber, productVariant, businessProject);
 				break;
 			
 			default:

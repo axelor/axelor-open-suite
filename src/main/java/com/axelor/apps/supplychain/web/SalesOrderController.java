@@ -38,14 +38,13 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.AxelorSettings;
 import com.axelor.apps.base.db.IAdministration;
-import com.axelor.apps.base.db.IPartner;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.UserInfo;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.googleapps.db.GoogleFile;
 import com.axelor.apps.supplychain.db.ILocation;
 import com.axelor.apps.supplychain.db.Location;
 import com.axelor.apps.supplychain.db.SalesOrder;
+import com.axelor.apps.supplychain.service.SalesOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SalesOrderService;
 import com.axelor.apps.supplychain.service.SalesOrderStockMoveService;
 import com.axelor.apps.tool.net.URLService;
@@ -70,6 +69,9 @@ public class SalesOrderController {
 	
 	@Inject
 	private Provider<SalesOrderStockMoveService> salesOrderStockMoveService;
+	
+	@Inject
+	private Provider<SalesOrderPurchaseService> salesOrderPurchaseService;
 	
 	@Inject
 	private Provider<SequenceService> sequenceService;
@@ -211,6 +213,16 @@ public class SalesOrderController {
 		
 		response.setValue("clientPartner", salesOrderService.get().validateCustomer(salesOrder));
 		
+	}
+	
+	public void createPurchaseOrders(ActionRequest request, ActionResponse response) throws AxelorException {
+		
+		SalesOrder salesOrder = request.getContext().asType(SalesOrder.class);
+		
+		if(salesOrder.getId() != null) {
+			
+			salesOrderPurchaseService.get().createPurchaseOrders(SalesOrder.find(salesOrder.getId()));
+		}
 	}
 	
 }
