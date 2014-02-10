@@ -4,13 +4,13 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
     <calendar name="operation-order-planned-calendar" model="com.axelor.apps.production.db.OperationOrder" 
-    eventStart="plannedStartDateT" eventStop="plannedEndDateT" title="Planned operations" colorBy="manufOrder"
+    eventStart="plannedStartDateT" eventStop="plannedEndDateT" title="Planned operations" colorBy="machineProdResource.machine"
     onChange="action-operation-order-method-compute-duration">
     	<field name="name"/>
     </calendar>
     
     <calendar name="operation-order-real-calendar" model="com.axelor.apps.production.db.OperationOrder" 
-    eventStart="realStartDateT" eventStop="realEndDateT" title="Real operations" colorBy="manufOrder" 
+    eventStart="realStartDateT" eventStop="realEndDateT" title="Real operations" colorBy="machineProdResource.machine" 
     onChange="action-operation-order-method-compute-duration">
     	<field name="name"/>
     </calendar>
