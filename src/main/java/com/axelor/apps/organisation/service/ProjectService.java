@@ -32,7 +32,6 @@ package com.axelor.apps.organisation.service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashSet;
 
 import javax.persistence.Query;
 
@@ -41,8 +40,6 @@ import org.joda.time.LocalDateTime;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.organisation.db.Candidate;
-import com.axelor.apps.organisation.db.Employee;
 import com.axelor.apps.organisation.db.IProject;
 import com.axelor.apps.organisation.db.ITask;
 import com.axelor.apps.organisation.db.ITaskUpdateLine;
@@ -407,11 +404,9 @@ public class ProjectService {
 		Project project = new Project();
 		project.setName(name);
 		project.setBusinessStatusSelect(businessStatusSelect);
-		project.setCandidateSet(new HashSet<Candidate>());
 		project.setClientPartner(clientPartner);
 		project.setCompany(company);
 		project.setContactPartner(contactPartner);
-		project.setEmployeeSet(new HashSet<Employee>());
 		project.setExportTypeSelect(IProject.REPORT_TYPE_PDF);
 		project.setIsBusiness(isBusiness);
 		project.setIsProject(isProject);
