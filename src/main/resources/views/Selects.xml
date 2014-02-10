@@ -260,4 +260,11 @@
 		<option value="3">TMA</option>
 	</selection>
 	
+		
+	
+	<selection name="iorganisation.timesheet.line.type.select">
+		<option value="0">Day</option>
+		<option value="1">Night</option>
+	</selection>
+	
 </object-views>

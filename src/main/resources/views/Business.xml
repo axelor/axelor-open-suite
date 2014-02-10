@@ -87,7 +87,7 @@
 	                <field name="realInvoicedMargin"/>
 	            </group>
 	        </page>
-	        <page title="Links" colSpan="4">
+	        <page title="Links" colSpan="4" >
 	        	<notebook>
 	        		<page title="Initial estimated" hideIf="realEstimatedMethodSelect == 1">
 	        			<portlet colSpan="4" action="action-business-project-view-validated-sales-order-line"/>
@@ -108,6 +108,11 @@
 			     		<portlet colSpan="4" action="action-business-project-view-real-invoiced-financial-information-update"/>
 	        		</page>
 	        	</notebook>
+	        </page>
+	        <page title="Production informations">
+<!-- 	        	<include view="business-project-production-form" from="axelor-production"/> -->
+	        	<field name="prodInvTypeSelect"/>
+   				<portlet colSpan="4" action="action-business-project-view-production-operation-order"/>
 	        </page>
 	        <page title="members" colSpan="4">
 	            <field name="memberUserInfoSet" colSpan="6"/>
@@ -229,5 +234,5 @@
   		<domain>self.applicationSelect = 3 and self.task.project.id = :id</domain>
   		<context name="id" expr="eval: id"/>
   	</action-view>
-		
+  	
 </object-views>

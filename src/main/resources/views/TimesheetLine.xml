@@ -15,6 +15,7 @@
         <field name="timesheet.userInfo"/>
         <field name="duration" title="Duration"/>
         <field name="timesheet.unit"/>
+        <field name="dayNightSelect"/>
     </grid>
     
     <form name="timesheet-line-calendar-form" title="Timesheet project/task time input" model="com.axelor.apps.organisation.db.TimesheetLine" cols="4" 
@@ -25,6 +26,7 @@
         <field name="timesheet.userInfo"/>
         <field name="duration" title="Duration"/>
         <field name="timesheet.unit"/>
+        <field name="dayNightSelect"/>
         <field name="isToInvoice"/>
         <field name="isInvoiced"/>
     </form>
@@ -35,6 +37,7 @@
         <field name="task"/>
         <field name="duration" title="Duration"/>
         <field name="timesheet.unit"/>
+        <field name="dayNightSelect"/>
     </grid>
     
     <form name="timesheet-line-form" title="Timesheet project/task time input" model="com.axelor.apps.organisation.db.TimesheetLine" cols="4" 
@@ -44,6 +47,7 @@
         <field name="task" onChange="action-timesheet-line-record-project" domain="self.project = :project or :project = null"/>
         <field name="duration" title="Duration"/>
         <field name="timesheet.unit"/>
+        <field name="dayNightSelect"/>
         <field name="isToInvoice"/>
         <field name="isInvoiced"/>
     </form>
@@ -55,6 +59,7 @@
         <field name="timesheet.userInfo"/>
         <field name="duration" title="Duration"/>
         <field name="timesheet.unit"/>
+        <field name="dayNightSelect"/>
     </grid>
     
     <form name="timesheet-line-task-form" title="Timesheet project/task time input" model="com.axelor.apps.organisation.db.TimesheetLine" cols="4" 
@@ -65,6 +70,7 @@
         <field name="timesheet.userInfo"/>
         <field name="duration" title="Duration"/>
         <field name="timesheet.unit"/>
+        <field name="dayNightSelect"/>
         <field name="isToInvoice"/>
         <field name="isInvoiced"/>
     </form>
@@ -75,6 +81,7 @@
         <field name="task" onChange="action-timesheet-line-record-project"/>
         <field name="duration" title="Duration"/>
         <field name="timesheet.unit"/>
+        <field name="dayNightSelect"/>
     </grid>
     
      <form name="timesheet-line-employee-form" title="Timesheet project/task time input" model="com.axelor.apps.organisation.db.TimesheetLine" cols="4" 
@@ -84,9 +91,32 @@
         <field name="task" onChange="action-timesheet-line-record-project" domain="self.project = :project or :project = null"/>
         <field name="duration" title="Duration"/>
         <field name="timesheet.unit"/>
+        <field name="dayNightSelect"/>
         <field name="isToInvoice"/>
         <field name="isInvoiced"/>
     </form>
+    
+    <grid name="timesheet-line-production-grid" title="Timesheet project/task time inputs" model="com.axelor.apps.organisation.db.TimesheetLine">
+        <field name="date"/>
+        <field name="timesheet" title="Employee"/>
+        <field name="project"/>
+        <field name="duration" title="Duration"/>
+        <field name="timesheet.unit"/>
+        <field name="dayNightSelect"/>
+    </grid>
+    
+    <form name="timesheet-line-production-form" title="Timesheet project/task time input" model="com.axelor.apps.organisation.db.TimesheetLine" cols="4" 
+    onNew="action-timesheet-line-record-default,action-timesheet-line-record-default-duration">
+        <field name="date"/>
+        <field name="timesheet" title="Employee" domain="self.statusSelect = 1 OR self.statusSelect = 2"/>
+        <field name="project"/>
+        <field name="duration" title="Duration"/>
+        <field name="timesheet.unit"/>
+        <field name="dayNightSelect"/>
+        <field name="isToInvoice"/>
+        <field name="isInvoiced"/>
+    </form>
+    
     
     <action-record name="action-timesheet-line-record-default" model="com.axelor.apps.organisation.db.TimesheetLine">
 	    <field name="date" expr="eval: startDateT.toLocalDate()" if="startDateT != null"/>
