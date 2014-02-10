@@ -32,7 +32,6 @@
   	
 <!--   	Prod process line -->
   	<many-to-one name="toConsumeProdProcessLine" ref="com.axelor.apps.production.db.ProdProcessLine"/>
-  	<many-to-one name="toProduceProdProcessLine" ref="com.axelor.apps.production.db.ProdProcessLine"/>
   	
   	
   </entity>

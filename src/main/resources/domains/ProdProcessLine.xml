@@ -14,7 +14,6 @@
     <string name="description" title="Description" large="true"/>
     
     <one-to-many name="toConsumeProdProductList" ref="com.axelor.apps.production.db.ProdProduct" mappedBy="toConsumeProdProcessLine" title="Products to consume"/>
-  	<one-to-many name="toProduceProdProductList" ref="com.axelor.apps.production.db.ProdProduct" mappedBy="toProduceProdProcessLine" title="Products to produce"/>
     
   </entity>
 </domain-models>
