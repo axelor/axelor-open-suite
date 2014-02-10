@@ -63,24 +63,23 @@ package com.axelor.apps.production.web;
 
 import javax.inject.Inject;
 
-import com.axelor.apps.production.db.ProductionOrder;
-import com.axelor.apps.production.service.ProductionOrderService;
+import com.axelor.apps.production.service.ProductionOrderSalesOrderService;
+import com.axelor.apps.supplychain.db.SalesOrder;
+import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 
-public class ProductionOrderController {
+public class ProductionOrderSalesOrderController {
 
 	@Inject
-	ProductionOrderService productionOrderService;
+	ProductionOrderSalesOrderService productionOrderSalesOrderService;
 	
-	public void propagateIsToInvoice (ActionRequest request, ActionResponse response) {
+	public void generatePOFromSalesOrder(ActionRequest request, ActionResponse response) throws AxelorException {
 
-		ProductionOrder productionOrder = request.getContext().asType( ProductionOrder.class );
-
-		productionOrderService.propagateIsToInvoice(ProductionOrder.find(productionOrder.getId()));
+		SalesOrder salesOrder = request.getContext().asType( SalesOrder.class );
 		
-		response.setReload(true);
-		
+		productionOrderSalesOrderService.generateProductionOrder(salesOrder);
+			
 	}
 	
 	

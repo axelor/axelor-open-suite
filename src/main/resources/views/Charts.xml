@@ -3,9 +3,9 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
 
-
+<!-- 		SUM(_operationOrder.planned_duration)/36 AS charge -->
 	<chart name="chart.real.charge.by.machine" title="Charge réelle par machine">
-		<dataset type="jpql">
+		<dataset type="sql">
 	    <![CDATA[
 		        SELECT
 		0 as hour,
@@ -455,7 +455,7 @@
 	
 	
 	<chart name="chart.planned.charge.by.machine" title="Charge previsionnelle par machine">
-		<dataset type="jpql">
+		<dataset type="sql">
 	    <![CDATA[
 			    SELECT
 		0 as hour,

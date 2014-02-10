@@ -17,15 +17,17 @@
     
     <grid name="operation-order-grid" title="Manufacturing orders" model="com.axelor.apps.production.db.OperationOrder">
         <field name="priority"/>
-        <field name="prodResource"/>
         <field name="machineProdResource"/>
         <field name="prodProcessLine"/>
-        <field name="outStockMove"/>
         <field name="plannedStartDateT"/>
         <field name="plannedEndDateT"/>
         <field name="realStartDateT"/>
         <field name="realEndDateT"/>
         <field name="statusSelect"/>
+        <button name="start" title="Start" onClick="save,action-operation-order-record-start,action-operation-order-method-compute-duration,save" readonlyIf="statusSelect != 3"/>
+   		<button name="pause" title="Pause" onClick="save,action-operation-order-record-pause,save" readonlyIf="statusSelect != 4"/>
+   		<button name="resume" title="Resume" onClick="save,action-operation-order-record-resume,save" readonlyIf="statusSelect != 5"/>
+   		<button name="finish" title="Finish" onClick="save,action-operation-order-record-finish,action-operation-order-method-compute-duration,save" readonlyIf="statusSelect != 4"/>
     </grid>
     
     <form name="operation-order-form" title="Manufacturing order" model="com.axelor.apps.production.db.OperationOrder" cols="4"
@@ -33,7 +35,7 @@
     onSave="action-operation-order-name">
     	<toolbar>
     		<button name="start" title="Start" onClick="save,action-operation-order-record-start,action-operation-order-method-compute-duration,save" showIf="statusSelect == 3"/>
-    		<button name="cancel" title="Cancel" onClick="save,action-operation-order-record-cancel,save" showIf="statusSelect == 1 || statusSelect == 3"/>
+    		<button name="cancel" title="Cancel" onClick="save,action-operation-order-record-cancel,save" showIf="statusSelect != 0"/>
     		<button name="finish" title="Finish" onClick="save,action-operation-order-record-finish,action-operation-order-method-compute-duration,save" showIf="statusSelect == 4"/>
     		<button name="pause" title="Pause" onClick="save,action-operation-order-record-pause,save" showIf="statusSelect == 4"/>
     		<button name="resume" title="Resume" onClick="save,action-operation-order-record-resume,save" showIf="statusSelect == 5"/>

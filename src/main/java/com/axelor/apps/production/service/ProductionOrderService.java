@@ -138,11 +138,11 @@ public class ProductionOrderService {
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public ProductionOrder generateProductionOrder(BillOfMaterial billOfMaterial, BigDecimal qty) throws AxelorException  {
+	public ProductionOrder generateProductionOrder(BillOfMaterial billOfMaterial, BigDecimal qtyRequested) throws AxelorException  {
 		
 		ProductionOrder productionOrder = this.createProductionOrder(null, false);
 		
-		
+		BigDecimal qty = qtyRequested.divide(billOfMaterial.getQty());
 		
 		ManufOrder manufOrder = manufOrderService.generateManufOrder(
 				qty, 

@@ -47,7 +47,13 @@ public interface IExceptionMessage {
 	static final String PRODUCTION_ORDER_SEQ = "Aucune séquence configurée pour les Ordres de production";
 	
 	
-
+	/**
+	 * Production order sales order service
+	 */
+	
+	static final String PRODUCTION_ORDER_SALES_ORDER_NO_BOM = "Aucune nomenclature définie pour le produit %s (%s)";
+	
+	
 	
 	/**
 	 * Manuf order service
