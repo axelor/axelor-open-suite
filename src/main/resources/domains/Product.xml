@@ -55,6 +55,7 @@
   
 <!--   	A Deplacer dans production :  -->
 	<decimal name="lastProductionPrice" title="Last production price" precision="20" scale="5"/>
+	<many-to-one name="defaultBillOfMaterial" ref="com.axelor.apps.production.db.BillOfMaterial" title="Default BOM"/>
   
   </entity>
 

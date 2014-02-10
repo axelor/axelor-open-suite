@@ -89,11 +89,15 @@
             <separator title="Procurement settings" colSpan="4"/>
 				<field name="procurementMethodSelect" requiredIf="productTypeSelect == 'storable'"/>
 				<field name="isRawMaterial" showIf="productTypeSelect != 'service'"/>
-				<button name="createProductionOrder" title="Create production order" colSpan="2" onClick="save,action-product-view-create-production-order"/>
 				<spacer/>
 				<break/>
 				<portlet colSpan="4" action="action-product-view-stock"/>
 				<portlet action="chart:chart.stock.report.for.product" height="200" colSpan="4"/>
+			</page>
+			<page title="Production informations">
+				<field name="defaultBillOfMaterial" domain="self.product.id = :id"/>
+				<field name="lastProductionPrice" readonly="true"/>
+				<button name="createProductionOrder" title="Create production order" colSpan="2" onClick="save,action-product-view-create-production-order"/>
 			</page>
 	        <page title="Tracking number" colSpan="2" cols="4" showIf="productTypeSelect != 'service" >
 	            <field name="hasWarranty" colSpan="4"/>
@@ -203,7 +207,7 @@
 		<view-param name="popup" value="reload"/>
   		<view-param name="show-toolbar" value="false"/>
   		<view-param name="show-confirm" value="false" />
-  		<context name="_productId" expr="eval: __self__"/>
+  		<context name="_productId" expr="eval: __self__.id"/>
 	</action-view>
 	
 </object-views>

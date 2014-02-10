@@ -71,6 +71,9 @@
     <integer name="marketTypeSelect" title="Market Type" selection="organisation.project.business.market.type.select"/>
     <string name="exportTypeSelect" title="Export Type" selection="organisation.project.report.type.select"/>
 
+<!-- 	TODO : A DEPLACER DANS LE MODULE PRODUCTION -->
+	<integer name="prodInvTypeSelect" title="Production invoicing type" selection="iproduction.project.prod.inv.type.select"/>
+	
   </entity>
 
 </domain-models>

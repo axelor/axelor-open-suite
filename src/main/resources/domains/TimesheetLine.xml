@@ -19,6 +19,10 @@
 	
 	<datetime name="startDateT"/>
 	<datetime name="endDateT"/>
+	
+	<integer name="dayNightSelect" title="Day/Night" selection="iorganisation.timesheet.line.type.select"/>
+	<many-to-one name="operationOrder" ref="com.axelor.apps.production.db.OperationOrder" title="Operation order"/>
+	
 	<string name="name" title="Name">
 		<![CDATA[
 	    String name = "";
