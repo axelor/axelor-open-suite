@@ -1,968 +1,968 @@
-"domain","name","type","title","title_t","help","help_t"
-"","","menu","CRM batches","Traitements de masse CRM","",""
-"","","menu","Configuration","Configuration","",""
-"","","menu","Calendars","Calendriers","",""
-"","","menu","Calendar Configurations","Configuration Calendriers","",""
-"","","menu","Event Categories","Catégories d’événements","",""
-"","","menu","Leads Source","Provenances des prospects","",""
-"","","menu","Meeting Types","Types de rendez-vous","",""
-"","","menu","Meeting Participants","Participants aux rendez-vous","",""
-"","","menu","Targets","Objectifs","",""
-"","","menu","Targets configurations","Configuration des objectifs","",""
-"","","menu","CRM","CRM","",""
-"","","menu","Calls","Appels","",""
-"","","menu","Create","Créer","",""
-"","","menu","Call","Appel","",""
-"","","menu","Meeting","Rendez-vous","",""
-"","","menu","Task","Tâche","",""
-"","","menu","Ticket","Ticket","",""
-"","","menu","Leads","Pistes","",""
-"","","menu","Meetings","Rendez-vous","",""
-"","","menu","My Calendar","Mon Calendrier","",""
-"","","menu","Team Calendar","Calendrier de mon équipe","",""
-"","","menu","Opportunities","Opportunités","",""
-"","","menu","Tasks","Tâches","",""
-"","","menu","Tickets","Tickets","",""
-"","","menu","CRM Dashboards","Tableaux de bords CRM","",""
-"","","menu","Target team Dashboard","Tableau de bord des objectifs équipes","",""
-"","","menu","Target user Dashboard","Tableau de bord des objectifs utilisateurs","",""
-"","","menu","Partner List Report","Reporting Tiers","",""
-"","","menu","Event List Report","","",""
-"","","menu","Event Chart Report","Reporting des évènements","",""
-"","","menu","Lead Chart Report","Graphique des Pistes","",""
-"","","menu","Lead List Report","","",""
-"","","menu","Opportunity List Report","Reporting Opportunités","",""
-"","","menu","Opportunity Chart Report","Graphique des opportunités","",""
-"","","menu","Create Call","Créer appel","",""
-"","","menu","Create Meeting","Créer Rendez-vous","",""
-"","","menu","Create Task","Créer tâche","",""
-"","","menu","My Calendar","Mon Calendrier","",""
-"","","menu","My Team Calendar","Calendrier Equipe","",""
-"","","menu","Create Lead","Créer Piste","",""
-"","","menu","Create Opportunity","Créer Opportunité","",""
-"","","menu","Activity","Activités","",""
-"","","menu","Prospection","Prospection","",""
-"","","menu","Leads","Pistes","",""
-"","","menu","Opportunities","Opportunités","",""
-"","","select","CHANDLER","","",""
-"","","select","CGP","","",""
-"","","select","KMS","","",""
-"","","select","ZIMBRA","","",""
-"","","select","GCAL","","",""
-"","","select","CALENDAR_SERVER","Serveur calendrier","",""
-"","","select","ICAL_SERVER","Serveur ICAL","",""
-"","","select","Required participant","Participants requis","",""
-"","","select","Optional participant","Participant optionnel","",""
-"","","select","Non-participant","Non-participant","",""
-"","","select","45","45","",""
-"","","select","30","30","",""
-"","","select","15","15","",""
-"","","select","00","00","",""
-"","","select","Outgoing","Sortant","",""
-"","","select","Incoming","Entrant","",""
-"","","select","Confirmed","Confirmé","",""
-"","","select","Tentative","Tentative","",""
-"","","select","Task (Project)","Tâche (Projet)","",""
-"","","select","Project/Business","Projet/Affaire","",""
-"","","select","Quote/Order","Devis/Commande","",""
-"","","select","Event","Événement","",""
-"","","select","Product","Produit","",""
-"","","select","Opportunity","Opportunité","",""
-"","","select","Lead","Prospect","",""
-"","","select","Partner/Contact","Tiers/Contact","",""
-"","","select","For all","Pour tous","",""
-"","","select","For me","Pour moi","",""
-"","","select","Weeks","Semaines","",""
-"","","select","Days","Jours","",""
-"","","select","Hours","Heures","",""
-"","","select","Minutes","Minutes","",""
-"","","select","Email","Email","",""
-"","","select","Canceled","Annulé","",""
-"","","select","Realized","Réalisé","",""
-"","","select","Planified","Planifié","",""
-"","","select","High","Élevé","",""
-"","","select","Medium","Moyen","",""
-"","","select","Low","Faible","",""
-"","","select","Reported","Reporté","",""
-"","","select","Pending","En attente","",""
-"","","select","Finished","Terminé","",""
-"","","select","On going","En cours","",""
-"","","select","Not started","Non démarré","",""
-"","","select","Immediate","Immédiat","",""
-"","","select","Urgent","Urgent","",""
-"","","select","High","Élevé","",""
-"","","select","Normal","Moyen","",""
-"","","select","Low","Faible","",""
-"","","select","100 %","100 %","",""
-"","","select","90 %","","",""
-"","","select","80 %","","",""
-"","","select","70 %","70 %","",""
-"","","select","60 %","","",""
-"","","select","50 %","","",""
-"","","select","40 %","","",""
-"","","select","30 %","","",""
-"","","select","20 %","20 %","",""
-"","","select","10 %","10 %","",""
-"","","select","0 %","0 %","",""
-"","","select","Closed","Fermé","",""
-"","","select","Feedback","Retour","",""
-"","","select","Resolved","Résolu","",""
-"","","select","In progress","En cours","",""
-"","","select","New","Nouveau","",""
-"","","select","Event","Événement","",""
-"","","select","Ticket","Ticket","",""
-"","","select","Holiday","Congés","",""
-"","","select","Task","Tâche","",""
-"","","select","Meeting","Rendez-vous","",""
-"","","select","Call","Appel","",""
-"","","select","Dead","Perdu","",""
-"","","select","Recycled","Recyclé","",""
-"","","select","Converted","Converti","",""
-"","","select","In process","En cours","",""
-"","","select","Assigned","Assigné","",""
-"","","select","New","Nouveau","",""
-"","","select","Closed lost","Fermée Perdue","",""
-"","","select","Closed won","Fermée Gagnée","",""
-"","","select","Negociation","Négociation","",""
-"","","select","Proposal/Quote","Proposition / Demande de prix","",""
-"","","select","Analysis","Analyse","",""
-"","","select","Identify deciders","Identification des décideurs","",""
-"","","select","Proposition","Proposition","",""
-"","","select","Needs analysis","Analyse des besoins","",""
-"","","select","Qualification","Qualification","",""
-"","","select","Prospection","Prospection","",""
-"","","select","New business","Nouveau marché","",""
-"","","select","Existing business","Client existant","",""
-"","","select","Daily","Journalier","",""
-"","","select","Weekly","Hebdomadaire","",""
-"","","select","Monthly","Mensuel","",""
-"","","select","None","Aucun","",""
-"","","select","Target","Objectifs","",""
-"","","select","Event reminder","Rappel d'évènement","",""
-"","","chart","Top agents by Open Tickets","Meilleurs agents par Tickets ouverts","",""
-"","","chart","Calls type by team","Appels par équipe","",""
-"","","chart","Calls by team by user","Appels par équipe et par utilisateur","",""
-"","","chart","Calls type by user","Appels par utilisateur","",""
-"","","chart","Top clients by Open Cases","Meilleures Opportunités Clients","",""
-"","","chart","Customers by country","Clients par Pays","",""
-"","","chart","Pipeline by Stage and Type","Pipeline par Etape par Type","",""
-"","","chart","Opportunities By Sale Stage","Opp. par Etape","",""
-"","","chart","Opportunities By Source","Opportunités par source","",""
-"","","chart","Opportunities By Type","","",""
-"","","chart","Opportunities Won By Lead Source","","",""
-"","","chart","Opportunities Won By Salesman","","",""
-"","","chart","Due Open Tickets","","",""
-"","","chart","Leads by Country","Pistes par pays","",""
-"","","chart","Leads by Salesman by Status","Pistes par commercial par état","",""
-"","","chart","Leads by Source","Pistes par provenance","",""
-"","","chart","Leads by Team by Status","Piste par Equipe par Etat","",""
-"","","chart","Ticket distribution by Priority","Répartition des tickets par priorité","",""
-"","","chart","Open tickets by priority","Tickets ouverts par priorité","",""
-"","","chart","Open tickets by status","Tickets ouverts par statut","",""
-"","","chart","Opportunities By Origin By Stage","Opp. par Origine par Etape","",""
-"","","chart","Pipeline next 90 days","","",""
-"","","chart","Partners by Industry Sector","Tiers par Secteur d'activité","",""
-"","","chart","Calls emitted historical","Historique des appels émis","",""
-"","","chart","Calls emitted target completed (%)","Objectif des Appels émis réalisés (%)","",""
-"","","chart","Meeting number historical","Historique Nbre Rendez-vous","",""
-"","","chart","Meetings number target completed (%)","Objectif Nbre de Rdv réalisés (%)","",""
-"","","chart","Opportunities amount won historical","Opportunités gagnées","",""
-"","","chart","Opportunities amount won target competed (%)","","",""
-"","","chart","Opportunities created number historical","Historique du nombre opportunités crées","",""
-"","","chart","Opportunities created number target completed (%)","Objectif Nbre d'Opportunités gagnées (%)","",""
-"","","chart","Opportunities created won historical","","",""
-"","","chart","Opportunities created won target completed (%)","","",""
-"","","chart","Sales orders amount won historical","Historique Devis/Cmdes signés","",""
-"","","chart","Sales orders amount won target completed (%)","","",""
-"","","chart","Sales orders created number historical","Nbre de devis réalisés","",""
-"","","chart","Sales orders created number target completed (%)","","",""
-"","","chart","Sales orders created won historical","","",""
-"","","chart","Sales orders created won target completed","","",""
-"","","chart","Call emitted historical","Histo. appels émis","",""
-"","","chart","Calls emitted target completed (%)","Objectif des Appels émis réalisés (%)","",""
-"","","chart","Meetings number historical","Historique Nbre Rendez-vous","",""
-"","","chart","Meetings number target completed (%)","Objectif Nbre de Rdv réalisés (%)","",""
-"","","chart","Opportunities amount won historical","Opportunités gagnées","",""
-"","","chart","Opportunities amount won target completed (%)","","",""
-"","","chart","Opportunities created number historical","Historique du nombre opportunités crées","",""
-"","","chart","Opportunities created number target completed (%)","Objectif Nbre d'Opportunités gagnées (%)","",""
-"","","chart","Opportunities created won historical","","",""
-"","","chart","Opportunities created won target completed (%)","","",""
-"","","chart","Sales orders amount won historical","Historique Devis/Cmdes signés","",""
-"","","chart","Sales orders amount won target completed (%)","","",""
-"","","chart","Sales orders created number historical","Nbre de devis réalisés","",""
-"","","chart","Sales orders created number target completed (%)","","",""
-"","","chart","Sales orders created won historical","","",""
-"","","chart","Sales orders created won target completed (%)","","",""
-"com.axelor.apps.crm.db.Calendar","","view","Calendar","Calendrier","",""
-"com.axelor.apps.crm.db.Calendar","","group","Connection settings","Paramètres de connexion","",""
-"com.axelor.apps.crm.db.Calendar","","separator","Credentials","Identifiants","",""
-"com.axelor.apps.crm.db.Calendar","","view","Calendar","Calendrier","",""
-"com.axelor.apps.crm.db.Calendar","archived","field","","","",""
-"com.axelor.apps.crm.db.Calendar","","view","Calendars","Calendriers","",""
-"com.axelor.apps.crm.db.Calendar","","view","Calendar","Calendrier","",""
-"com.axelor.apps.crm.db.Calendar","archived","field","","","",""
-"com.axelor.apps.crm.db.Event","","view","Call filters","Filtres Appels","",""
-"com.axelor.apps.crm.db.Event","","filter","My Calls","Mes Appels","",""
-"com.axelor.apps.crm.db.Event","","filter","My Today Calls","Mes Appels du jour","",""
-"com.axelor.apps.crm.db.Event","","filter","My Team Calls","Les Appels de mon Equipe","",""
-"com.axelor.apps.crm.db.Event","","button","Validate","","",""
-"com.axelor.apps.crm.db.Event","","button","Cancel","","",""
-"com.axelor.apps.crm.db.Event","","button","Assign to me","","",""
-"com.axelor.apps.crm.db.Event","","view","Call","Appel","",""
-"com.axelor.apps.crm.db.Event","","separator","Subject","Sujet","",""
-"com.axelor.apps.crm.db.Event","","placeholder","Subject","Sujet","",""
-"com.axelor.apps.crm.db.Event","","separator","Description","Description","",""
-"com.axelor.apps.crm.db.Event","","placeholder","Description","Description","",""
-"com.axelor.apps.crm.db.Event","","separator","Dates","Dates","",""
-"com.axelor.apps.crm.db.Event","","group","Attributes","Attributs","",""
-"com.axelor.apps.crm.db.Event","","group","Linked to","Lié à","",""
-"com.axelor.apps.crm.db.Event","","group","Assigned to","Assigné à","",""
-"com.axelor.apps.crm.db.Event","","button","Assign to me","","",""
-"com.axelor.apps.crm.db.Event","","group","Reminders","Rappels","",""
-"com.axelor.apps.crm.db.Event","","group","Attendees","Participants","",""
-"com.axelor.apps.crm.db.Event","","separator","Contacts","Contacts","",""
-"com.axelor.apps.crm.db.Event","","separator","Leads","Pistes","",""
-"com.axelor.apps.crm.db.Event","","button","Assign to me","","",""
-"com.axelor.apps.crm.db.Event","","view","Calls","Appels","",""
-"com.axelor.apps.crm.db.Event","","button","Assign to me","","",""
-"com.axelor.apps.crm.db.Event","","button","Validate","","",""
-"com.axelor.apps.crm.db.Event","","button","Cancel","","",""
-"com.axelor.apps.crm.db.Event","","view","Call","Appel","",""
-"com.axelor.apps.crm.db.Event","","group","Informations","Informations","",""
-"com.axelor.apps.crm.db.Event","","group","Meeting date","Date du rendez-vous","",""
-"com.axelor.apps.crm.db.Event","","group","Description","Description","",""
-"com.axelor.apps.crm.db.Event","","group","Assignment","Assignation","",""
-"com.axelor.apps.base.db.Partner","","view","Contact","Contact","",""
-"com.axelor.apps.base.db.Partner","","placeholder","Civility","Civilité","",""
-"com.axelor.apps.base.db.Partner","","placeholder","Name","Nom","",""
-"com.axelor.apps.base.db.Partner","","placeholder","First name","Prénom","",""
-"com.axelor.apps.base.db.Partner","","separator","Company","Société","",""
-"com.axelor.apps.base.db.Partner","","group","Contact","Contact","",""
-"com.axelor.apps.base.db.Partner","","group","Address","Adresse","",""
-"com.axelor.apps.base.db.Partner","","viewField","Address","Adresse","",""
-"com.axelor.apps.base.db.Partner","","viewField","City","Ville","",""
-"com.axelor.apps.base.db.Partner","","viewField","State","Statut","",""
-"com.axelor.apps.base.db.Partner","","viewField","Postal code","Code Postal","",""
-"com.axelor.apps.base.db.Partner","","viewField","Country","Pays","",""
-"com.axelor.apps.base.db.Partner","","page","Notes","Remarques","",""
-"com.axelor.apps.base.db.Partner","","page","Settings","Configurations","",""
-"com.axelor.apps.base.db.Partner","","group","Assigned to","Assigné à","",""
-"com.axelor.apps.base.db.Wizard","","button","Validate","Valider","",""
-"com.axelor.apps.base.db.Wizard","","view","Convert lead","Convertir le prospect","",""
-"com.axelor.apps.base.db.Wizard","","viewField","Convert into Contact ?","Convertir en Contact ?","",""
-"com.axelor.apps.base.db.Wizard","","viewField","Or Select Contact","Sélectionner Contact existant ?","",""
-"com.axelor.apps.base.db.Wizard","","viewField","Contact","Contact","",""
-"com.axelor.apps.base.db.Wizard","","viewField","Convert into Partner ?","Convertir en Tiers ?","",""
-"com.axelor.apps.base.db.Wizard","","viewField","Or Select Partner","Sélectionner Tiers existant ?","",""
-"com.axelor.apps.base.db.Wizard","","viewField","Partner","Tiers","",""
-"com.axelor.apps.base.db.Wizard","","viewField","Create into Opportunity ?","Créer Opportunité ?","",""
-"com.axelor.apps.base.db.Wizard","","viewField","Opportunity","Opportunité","",""
-"com.axelor.apps.base.db.Wizard","","viewField","Log a call ?","Notifier un Appel ?","",""
-"com.axelor.apps.base.db.Wizard","","viewField","Call","Appel","",""
-"com.axelor.apps.base.db.Wizard","","viewField","Schedule a meeting ?","Planifier un Meeting ?","",""
-"com.axelor.apps.base.db.Wizard","","viewField","Meeting","Rendez-vous","",""
-"com.axelor.apps.base.db.Wizard","","viewField","Create a task ?","Créer une tâche ?","",""
-"com.axelor.apps.base.db.Wizard","","viewField","Task","Tâche","",""
-"com.axelor.apps.crm.db.CrmBatch","","view","CrmBatch","","",""
-"com.axelor.apps.crm.db.CrmBatch","archived","field","","","",""
-"com.axelor.apps.crm.db.CrmBatch","","view","CRM Batch","","",""
-"com.axelor.apps.crm.db.CrmBatch","","page","Event reminder page","","",""
-"com.axelor.apps.crm.db.CrmBatch","","button","Event reminder batch","Batch rappels d'évènement","",""
-"com.axelor.apps.crm.db.CrmBatch","","page","Target page","Page obejctif","",""
-"com.axelor.apps.crm.db.CrmBatch","","button","Target batch","Batch objectifs","",""
-"com.axelor.apps.crm.db.CrmBatch","","page","Information","Information","",""
-"com.axelor.apps.crm.db.CrmBatch","","viewField","Created on","Créé le","",""
-"com.axelor.apps.crm.db.CrmBatch","","viewField","Created by","Créé par","",""
-"com.axelor.apps.crm.db.CrmBatch","","view","CrmBatch","","",""
-"com.axelor.apps.crm.db.CrmBatch","archived","field","","","",""
-"com.axelor.apps.crm.db.CrmBatch","","view","CRM batches","","",""
-"com.axelor.apps.crm.db.CrmBatch","createdOn","field","","Créé le","",""
-"com.axelor.apps.crm.db.CrmBatch","createdBy","field","","Créé par","",""
-"","","view","Event Graph Dashboard","Tableau de bord Evènements","",""
-"","","view","Event List Report","","",""
-"","","view","Lead Graph Dashboard","Tableau de bord des Pistes","",""
-"","","view","Lead List Dashboard","","",""
-"","","view","Dashboard","Tableau de bord","",""
-"","","portlet","Opportunities By Type","","",""
-"","","portlet","Opportunities Won By Lead Source","","",""
-"","","portlet","Opportunities Won By Salesman","","",""
-"","","view","Opportunity Dashboard","Tblx Bord Opportunités","",""
-"com.axelor.apps.crm.db.Event","","button","Start","","",""
-"com.axelor.apps.crm.db.Event","","button","Pause","","",""
-"com.axelor.apps.crm.db.Event","","button","Finish","","",""
-"com.axelor.apps.crm.db.Event","","view","Task","Tâche","",""
-"com.axelor.apps.crm.db.Event","","separator","Subject","Sujet","",""
-"com.axelor.apps.crm.db.Event","","placeholder","Subject","Sujet","",""
-"com.axelor.apps.crm.db.Event","","separator","Location","Lieu","",""
-"com.axelor.apps.crm.db.Event","","placeholder","Location","Lieu","",""
-"com.axelor.apps.crm.db.Event","","separator","Description","Description","",""
-"com.axelor.apps.crm.db.Event","","placeholder","Description","Description","",""
-"com.axelor.apps.crm.db.Event","","separator","Dates","Dates","",""
-"com.axelor.apps.crm.db.Event","","group","Attributes","Attributs","",""
-"com.axelor.apps.crm.db.Event","","group","Linked to","Lié à","",""
-"com.axelor.apps.crm.db.Event","","group","Assigned to","Assigné à","",""
-"com.axelor.apps.crm.db.Event","","group","Reminders","Rappels","",""
-"com.axelor.apps.crm.db.Event","","view","Tasks","Tâches","",""
-"com.axelor.apps.crm.db.Event","","button","Start","","",""
-"com.axelor.apps.crm.db.Event","","button","Pause","","",""
-"com.axelor.apps.crm.db.Event","","button","Finish","","",""
-"com.axelor.apps.crm.db.Event","","view","Task","Tâche","",""
-"com.axelor.apps.crm.db.Event","","group","Informations","Informations","",""
-"com.axelor.apps.crm.db.Event","","group","Task date","Date de tâches","",""
-"com.axelor.apps.crm.db.Event","","group","Description","Description","",""
-"com.axelor.apps.crm.db.Event","","group","Assigned to","Assigné à","",""
-"com.axelor.apps.crm.db.EventAttendee","","view","Contact","Contact","",""
-"com.axelor.apps.crm.db.EventAttendee","","view","Contacts","Contacts","",""
-"com.axelor.apps.crm.db.EventAttendee","","view","EventAttendee","","",""
-"com.axelor.apps.crm.db.EventAttendee","archived","field","","","",""
-"com.axelor.apps.crm.db.EventAttendee","","view","EventAttendee","","",""
-"com.axelor.apps.crm.db.EventAttendee","archived","field","","","",""
-"com.axelor.apps.crm.db.Event","","view","Meetings","Rendez-vous","",""
-"com.axelor.apps.crm.db.Event","","view","Meetings","Rendez-vous","",""
-"com.axelor.apps.crm.db.EventCategory","","view","Event configuration categories","Les configuration de catégories d'événement","",""
-"com.axelor.apps.crm.db.EventCategory","","view","Event category","Catégorie d’événements","",""
-"com.axelor.apps.crm.db.EventCategory","","view","EventCategory","","",""
-"com.axelor.apps.crm.db.EventCategory","archived","field","","","",""
-"com.axelor.apps.crm.db.EventCategory","","view","EventCategory","","",""
-"com.axelor.apps.crm.db.EventCategory","archived","field","","","",""
-"com.axelor.apps.crm.db.EventCategory","","view","Event categories","Catégories d’événements","",""
-"com.axelor.apps.crm.db.Event","","view","Event","","",""
-"com.axelor.apps.crm.db.Event","archived","field","","","",""
-"com.axelor.apps.crm.db.Event","","button","Export calendar","Exporter Calendrier","",""
-"com.axelor.apps.crm.db.Event","","button","Import calendar","Importer calendrier","",""
-"com.axelor.apps.crm.db.Event","","button","Synchronize calendars","Synchroniser calendriers","",""
-"com.axelor.apps.crm.db.Event","","view","Events","Événements","",""
-"com.axelor.apps.crm.db.Event","","button","Yes","","",""
-"com.axelor.apps.crm.db.Event","","button","No","","",""
-"com.axelor.apps.crm.db.Event","","button","Perhaps","","",""
-"com.axelor.apps.crm.db.Event","","page","Informations","","",""
-"com.axelor.apps.crm.db.Event","","separator","Subject","Sujet","",""
-"com.axelor.apps.crm.db.Event","","placeholder","Subject","Sujet","",""
-"com.axelor.apps.crm.db.Event","","separator","Location","Lieu","",""
-"com.axelor.apps.crm.db.Event","","placeholder","Location","Lieu","",""
-"com.axelor.apps.crm.db.Event","","placeholder","Location","Lieu","",""
-"com.axelor.apps.crm.db.Event","","separator","Description","Description","",""
-"com.axelor.apps.crm.db.Event","","placeholder","Description","Description","",""
-"com.axelor.apps.crm.db.Event","","separator","Attributes","","",""
-"com.axelor.apps.crm.db.Event","","separator","Dates","Dates","",""
-"com.axelor.apps.crm.db.Event","","group","Linked to","Lié à","",""
-"com.axelor.apps.crm.db.Event","","separator","Related to","","",""
-"com.axelor.apps.crm.db.Event","","group","Assigned to","Assigné à","",""
-"com.axelor.apps.crm.db.Event","","page","Reminders","","",""
-"com.axelor.apps.crm.db.Event","","page","Attendees","","",""
-"com.axelor.apps.crm.db.Event","","separator","Contacts","Contacts","",""
-"com.axelor.apps.crm.db.Event","","button","Add","","",""
-"com.axelor.apps.crm.db.Event","","button","Export calendar","Exporter Calendrier","",""
-"com.axelor.apps.crm.db.Event","","button","Import calendar","Importer calendrier","",""
-"com.axelor.apps.crm.db.Event","","button","Synchronize calendar","Synchroniser calendrier","",""
-"com.axelor.apps.crm.db.Event","","view","Events","Événements","",""
-"com.axelor.apps.crm.db.Event","","view","Event","","",""
-"com.axelor.apps.crm.db.Event","archived","field","","","",""
-"com.axelor.apps.crm.db.EventReminder","","view","Event reminder","Rappel d'évènement","",""
-"com.axelor.apps.crm.db.EventReminder","","view","EventReminder","","",""
-"com.axelor.apps.crm.db.EventReminder","archived","field","","","",""
-"com.axelor.apps.crm.db.EventReminder","","view","Event reminders","Rappel d'évènement","",""
-"com.axelor.apps.crm.db.EventReminder","","view","EventReminder","","",""
-"com.axelor.apps.crm.db.EventReminder","archived","field","","","",""
-"com.axelor.apps.crm.db.Lead","","view","Leads","Pistes","",""
-"com.axelor.apps.crm.db.Lead","","button","Add","","",""
-"com.axelor.apps.crm.db.Lead","","view","Lead filters","Filtres Pistes","",""
-"com.axelor.apps.crm.db.Lead","","filter","My Leads","Mes Pistes","",""
-"com.axelor.apps.crm.db.Lead","","filter","Unassigned Leads","Pistes non assignées","",""
-"com.axelor.apps.crm.db.Lead","","filter","My Team Leads","Pistes de mon Equipe","",""
-"com.axelor.apps.crm.db.Lead","","button","Convert lead","Convertir le prospect","",""
-"com.axelor.apps.crm.db.Lead","","button","Send email","Envoyer Email","",""
-"com.axelor.apps.crm.db.Lead","","button","Actions","Actions","",""
-"com.axelor.apps.crm.db.Lead","","button","Create call","Créer Appel","",""
-"com.axelor.apps.crm.db.Lead","","button","Schedule meeting","Planifier Rendez-vous","",""
-"com.axelor.apps.crm.db.Lead","","button","Create task","Créer tâche","",""
-"com.axelor.apps.crm.db.Lead","","button","Create opportunity","Créer Opportunité","",""
-"com.axelor.apps.crm.db.Lead","","view","Lead","Prospect","",""
-"com.axelor.apps.crm.db.Lead","","group","Contact","Contact","",""
-"com.axelor.apps.crm.db.Lead","","placeholder","Civility","Civilité","",""
-"com.axelor.apps.crm.db.Lead","","placeholder","Name","Nom","",""
-"com.axelor.apps.crm.db.Lead","","placeholder","First name","Prénom","",""
-"com.axelor.apps.crm.db.Lead","","placeholder","Enterprise name","Entreprise","",""
-"com.axelor.apps.crm.db.Lead","","placeholder","Function","Fonction","",""
-"com.axelor.apps.crm.db.Lead","","group","Coordonnées","Coordonnées","",""
-"com.axelor.apps.crm.db.Lead","","group","Assigned to","Assigné à","",""
-"com.axelor.apps.crm.db.Lead","","button","Assign to me","","",""
-"com.axelor.apps.crm.db.Lead","","page","Informations","Informations","",""
-"com.axelor.apps.crm.db.Lead","","group","Primary address","Adresse","",""
-"com.axelor.apps.crm.db.Lead","","group","Other address","Autre adresse","",""
-"com.axelor.apps.crm.db.Lead","","group","Extra information","Autres informations","",""
-"com.axelor.apps.crm.db.Lead","","group","Status details","États","",""
-"com.axelor.apps.crm.db.Lead","","group","Source details","Sources","",""
-"com.axelor.apps.crm.db.Lead","","group","Marketing","Marketing","",""
-"com.axelor.apps.crm.db.Lead","","page","Activities","Activités","",""
-"com.axelor.apps.crm.db.Lead","","view","Lead","Prospect","",""
-"com.axelor.apps.crm.db.Lead","archived","field","","","",""
-"com.axelor.apps.crm.db.Lead","","view","Lead","Prospect","",""
-"com.axelor.apps.crm.db.Lead","archived","field","","","",""
-"com.axelor.apps.crm.db.Lead","","button","Assign to me","","",""
-"com.axelor.apps.crm.db.Lead","","view","Leads","Pistes","",""
-"com.axelor.apps.crm.db.Lead","createdOn","field","","","",""
-"com.axelor.apps.crm.db.Lead","updatedOn","field","","","",""
-"com.axelor.apps.crm.db.Lead","","button","Assign to me","","",""
-"com.axelor.apps.crm.db.Lead","","button","Log Call","Planifier un appel","",""
-"com.axelor.apps.crm.db.Lead","","button","Schedule Meeting","Planifier un rendez-vous","",""
-"com.axelor.apps.crm.db.Lead","","button","Send Email","Envoyer email","",""
-"com.axelor.apps.crm.db.Event","","view","Meetings","Rendez-vous","",""
-"com.axelor.apps.crm.db.Event","","view","Meeting filters","Filtres sur les meetings","",""
-"com.axelor.apps.crm.db.Event","","filter","My Meetings","Mes Rendez-vous","",""
-"com.axelor.apps.crm.db.Event","","filter","My Upcoming Meetings","Mes prochains Rendez-vous","",""
-"com.axelor.apps.crm.db.Event","","filter","My Team Meetings","Rendez-vous de mon Equipe","",""
-"com.axelor.apps.crm.db.Event","","button","Validate","","",""
-"com.axelor.apps.crm.db.Event","","button","Cancel","","",""
-"com.axelor.apps.crm.db.Event","","view","Meeting","Rendez-vous","",""
-"com.axelor.apps.crm.db.Event","","separator","Subject","Sujet","",""
-"com.axelor.apps.crm.db.Event","","placeholder","Subject","Sujet","",""
-"com.axelor.apps.crm.db.Event","","separator","Location","Lieu","",""
-"com.axelor.apps.crm.db.Event","","placeholder","Location","Lieu","",""
-"com.axelor.apps.crm.db.Event","","separator","Description","Description","",""
-"com.axelor.apps.crm.db.Event","","placeholder","Description","Description","",""
-"com.axelor.apps.crm.db.Event","","separator","Dates","Dates","",""
-"com.axelor.apps.crm.db.Event","","group","Attributes","Attributs","",""
-"com.axelor.apps.crm.db.Event","","group","Linked to","Lié à","",""
-"com.axelor.apps.crm.db.Event","","group","Assigned to","Assigné à","",""
-"com.axelor.apps.crm.db.Event","","group","Reminders","Rappels","",""
-"com.axelor.apps.crm.db.Event","","group","Attendees","Participants","",""
-"com.axelor.apps.crm.db.Event","","separator","Contacts","Contacts","",""
-"com.axelor.apps.crm.db.Event","","separator","Leads","Pistes","",""
-"com.axelor.apps.crm.db.Event","","view","Meetings","Rendez-vous","",""
-"com.axelor.apps.crm.db.Event","","button","Validate","","",""
-"com.axelor.apps.crm.db.Event","","button","Cancel","","",""
-"com.axelor.apps.crm.db.Event","","view","Meeting","Rendez-vous","",""
-"com.axelor.apps.crm.db.Event","","group","Informations","Informations","",""
-"com.axelor.apps.crm.db.Event","","group","Meeting date","Date du rendez-vous","",""
-"com.axelor.apps.crm.db.Event","","group","Description","Description","",""
-"com.axelor.apps.crm.db.Event","","group","Assignment","Assignation","",""
-"com.axelor.apps.crm.db.MeetingType","","view","MeetingType","","",""
-"com.axelor.apps.crm.db.MeetingType","archived","field","","","",""
-"com.axelor.apps.crm.db.MeetingType","","view","Meeting type","Type de rendez-vous","",""
-"com.axelor.apps.crm.db.MeetingType","","view","MeetingType","","",""
-"com.axelor.apps.crm.db.MeetingType","archived","field","","","",""
-"com.axelor.apps.crm.db.MeetingType","","view","Meeting types","Type de rendez-vous","",""
-"com.axelor.apps.crm.db.Opportunity","","view","Opportunities filters","Filtres Opportunités","",""
-"com.axelor.apps.crm.db.Opportunity","","filter","My Opportunities","Mes Opportunités","",""
-"com.axelor.apps.crm.db.Opportunity","","filter","Unassigned Opportunities","Opportunités non-assignées","",""
-"com.axelor.apps.crm.db.Opportunity","","filter","My Team Opportunities","Opportunités de mon Equipe","",""
-"com.axelor.apps.crm.db.Opportunity","","view","Opportunity","Opportunité","",""
-"com.axelor.apps.crm.db.Opportunity","archived","field","","","",""
-"com.axelor.apps.crm.db.Opportunity","","button","Previous Stage","","",""
-"com.axelor.apps.crm.db.Opportunity","","button","Next Stage","","",""
-"com.axelor.apps.crm.db.Opportunity","","button","Closed won","","",""
-"com.axelor.apps.crm.db.Opportunity","","button","Closed lost","","",""
-"com.axelor.apps.crm.db.Opportunity","","view","Opportunity","Opportunité","",""
-"com.axelor.apps.crm.db.Opportunity","","group","Context","Contexte","",""
-"com.axelor.apps.crm.db.Opportunity","","group","Follow-up","Suivi","",""
-"com.axelor.apps.crm.db.Opportunity","","group","Financial terms","Termes financiers","",""
-"com.axelor.apps.crm.db.Opportunity","","group","Linked to","","",""
-"com.axelor.apps.crm.db.Opportunity","","group","Assigned to","Assignée à","",""
-"com.axelor.apps.crm.db.Opportunity","","button","Assign to me","","",""
-"com.axelor.apps.crm.db.Opportunity","","separator","Description","","",""
-"com.axelor.apps.crm.db.Opportunity","","view","Opportunity","Opportunité","",""
-"com.axelor.apps.crm.db.Opportunity","archived","field","","","",""
-"com.axelor.apps.crm.db.Opportunity","","button","Assign to me","","",""
-"com.axelor.apps.crm.db.Opportunity","","view","Opportunities","Opportunités","",""
-"com.axelor.apps.crm.db.Opportunity","","button","Assign to me","","",""
-"com.axelor.apps.crm.db.Opportunity","","button","Next Stage","","",""
-"com.axelor.apps.crm.db.Opportunity","","button","Closed won","","",""
-"com.axelor.apps.crm.db.Opportunity","","button","Closed lost","","",""
-"com.axelor.apps.crm.db.Opportunity","","view","Opportunities","Opportunités","",""
-"com.axelor.apps.crm.db.Opportunity","","view","Opportunities","Opportunités","",""
-"com.axelor.apps.crm.db.Opportunity","","view","Opportunity","Opportunité","",""
-"com.axelor.apps.crm.db.Opportunity","","group","Informations","Informations","",""
-"com.axelor.apps.crm.db.Opportunity","","group","Context","Contexte","",""
-"com.axelor.apps.crm.db.Opportunity","","group","Follow-up","Suivi","",""
-"com.axelor.apps.crm.db.Opportunity","","group","Financial terms","Termes financiers","",""
-"com.axelor.apps.crm.db.Opportunity","","group","Assigned to","Assignée à","",""
-"com.axelor.apps.crm.db.Opportunity","","view","Opportunities","Opportunités","",""
-"com.axelor.apps.crm.db.OpportunityType","","view","OpportunityType","","",""
-"com.axelor.apps.crm.db.OpportunityType","archived","field","","","",""
-"com.axelor.apps.crm.db.OpportunityType","","view","Opportunity type","Type d'opportunité","",""
-"com.axelor.apps.crm.db.OpportunityType","","view","OpportunityType","","",""
-"com.axelor.apps.crm.db.OpportunityType","archived","field","","","",""
-"com.axelor.apps.crm.db.OpportunityType","","view","Opportunity types","Types d'opportunité","",""
-"com.axelor.apps.crm.db.Participant","","view","Participant","Participant","",""
-"com.axelor.apps.crm.db.Participant","archived","field","","","",""
-"com.axelor.apps.crm.db.Participant","","view","Participant","Participant","",""
-"com.axelor.apps.crm.db.Participant","archived","field","","","",""
-"com.axelor.apps.base.db.Partner","","view","Partner","Tiers","",""
-"com.axelor.apps.base.db.Partner","","placeholder","Civility","Civilité","",""
-"com.axelor.apps.base.db.Partner","","placeholder","Name","Nom","",""
-"com.axelor.apps.base.db.Partner","","placeholder","First name","Prénom","",""
-"com.axelor.apps.base.db.Partner","","page","Informations","Informations","",""
-"com.axelor.apps.base.db.Partner","","group","Partner Details","Détails du tiers","",""
-"com.axelor.apps.base.db.Partner","","group","Postal addresses","Les adresses postales","",""
-"com.axelor.apps.base.db.Partner","","group","Invoicing address","Adresse facturation","",""
-"com.axelor.apps.base.db.Partner","","viewField","Address","Adresse","",""
-"com.axelor.apps.base.db.Partner","","viewField","City","Ville","",""
-"com.axelor.apps.base.db.Partner","","viewField","State","Statut","",""
-"com.axelor.apps.base.db.Partner","","viewField","Postal code","Code Postal","",""
-"com.axelor.apps.base.db.Partner","","viewField","Country","Pays","",""
-"com.axelor.apps.base.db.Partner","","group","Delivery address","Adresse livraison","",""
-"com.axelor.apps.base.db.Partner","","viewField","Address","Adresse","",""
-"com.axelor.apps.base.db.Partner","","viewField","City","Ville","",""
-"com.axelor.apps.base.db.Partner","","viewField","State","Statut","",""
-"com.axelor.apps.base.db.Partner","","viewField","Postal code","Code Postal","",""
-"com.axelor.apps.base.db.Partner","","viewField","Country","Pays","",""
-"com.axelor.apps.base.db.Partner","","group","Contact","Contact","",""
-"com.axelor.apps.base.db.Partner","","page","Notes","Remarques","",""
-"com.axelor.apps.base.db.Partner","","page","Invoicing/Payment","Facturation/Paiement","",""
-"com.axelor.apps.base.db.Partner","","page","Settings","Configurations","",""
-"com.axelor.apps.base.db.Partner","","group","Assigned to","Assigné à","",""
-"com.axelor.apps.crm.db.TargetConfiguration","","view","Target configuration","Configuration objectifs","",""
-"com.axelor.apps.crm.db.TargetConfiguration","","group","Concerns","Concerne","",""
-"com.axelor.apps.crm.db.TargetConfiguration","","group","Period","Période","",""
-"com.axelor.apps.crm.db.TargetConfiguration","","group","Targets","Objectifs","",""
-"com.axelor.apps.crm.db.TargetConfiguration","","separator","Opportunities","Opportunités","",""
-"com.axelor.apps.crm.db.TargetConfiguration","","separator","Calls","Appels","",""
-"com.axelor.apps.crm.db.TargetConfiguration","","separator","Meetings","Rendez-vous","",""
-"com.axelor.apps.crm.db.TargetConfiguration","","view","TargetConfiguration","","",""
-"com.axelor.apps.crm.db.TargetConfiguration","archived","field","","","",""
-"com.axelor.apps.crm.db.TargetConfiguration","","view","TargetConfiguration","","",""
-"com.axelor.apps.crm.db.TargetConfiguration","archived","field","","","",""
-"com.axelor.apps.crm.db.TargetConfiguration","","view","Target configurations","Configuration objectifs","",""
-"com.axelor.apps.crm.db.Target","","view","Target","Objectifs","",""
-"com.axelor.apps.crm.db.Target","archived","field","","","",""
-"com.axelor.apps.crm.db.Target","","view","Target","Objectifs","",""
-"com.axelor.apps.crm.db.Target","","group","Information","Information","",""
-"com.axelor.apps.crm.db.Target","","group","Period","Période","",""
-"com.axelor.apps.crm.db.Target","","group","Opportunity","Opportunité","",""
-"com.axelor.apps.crm.db.Target","","separator","Target","Objectifs","",""
-"com.axelor.apps.crm.db.Target","","separator","Real","Réel","",""
-"com.axelor.apps.crm.db.Target","","label","Vs","Vs","",""
-"com.axelor.apps.crm.db.Target","","label","Vs","Vs","",""
-"com.axelor.apps.crm.db.Target","","label","Vs","Vs","",""
-"com.axelor.apps.crm.db.Target","","group","Events","Événements","",""
-"com.axelor.apps.crm.db.Target","","separator","Target","Objectifs","",""
-"com.axelor.apps.crm.db.Target","","separator","Real","Réel","",""
-"com.axelor.apps.crm.db.Target","","label","Vs","Vs","",""
-"com.axelor.apps.crm.db.Target","","label","Vs","Vs","",""
-"com.axelor.apps.crm.db.Target","","view","Target","Objectifs","",""
-"com.axelor.apps.crm.db.Target","archived","field","","","",""
-"com.axelor.apps.crm.db.Target","","view","Targets","Objectifs","",""
-"","","view","Target team Dashboard","Tableau de bord des objectifs équipes","",""
-"","","view","Target User Dashboard","Tableau de bord des objectifs utilisateurs","",""
-"com.axelor.apps.crm.db.Event","","view","Tasks filters","Filtres Tâches","",""
-"com.axelor.apps.crm.db.Event","","filter","My Tasks","Mes tâches","",""
-"com.axelor.apps.crm.db.Event","","filter","My Today Tasks","Mes tâches du jour","",""
-"com.axelor.apps.crm.db.Event","","filter","My Upcoming Tasks","Mes tâches à venir","",""
-"com.axelor.apps.crm.db.Event","","filter","My Team Tasks","Tâches de mon Equipe","",""
-"com.axelor.apps.crm.db.Event","","view","Ticket filters","","",""
-"com.axelor.apps.crm.db.Event","","filter","My Tickets","Mes tickets","",""
-"com.axelor.apps.crm.db.Event","","filter","My Team Tickets","Tickets de mon Equipe","",""
-"com.axelor.apps.crm.db.Event","","filter","Unassigned Tickets","Tickets","",""
-"com.axelor.apps.crm.db.Event","","filter","Urgent Tickets","Tickets urgents","",""
-"com.axelor.apps.crm.db.Event","","filter","New Tickets","Nouveaux Tickets","",""
-"com.axelor.apps.crm.db.Event","","filter","Ongoing Tickets","Tickets en Cours","",""
-"com.axelor.apps.crm.db.Event","","filter","Closed Tickets","Tickets Clôturés","",""
-"com.axelor.apps.crm.db.Event","","button","Assign to me","","",""
-"com.axelor.apps.crm.db.Event","","button","Start","","",""
-"com.axelor.apps.crm.db.Event","","button","Validate","","",""
-"com.axelor.apps.crm.db.Event","","button","Finish","","",""
-"com.axelor.apps.crm.db.Event","","view","Ticket","Ticket","",""
-"com.axelor.apps.crm.db.Event","","separator","Ticket N°","Ticket N°","",""
-"com.axelor.apps.crm.db.Event","","separator","Subject","Sujet","",""
-"com.axelor.apps.crm.db.Event","","placeholder","Subject","Sujet","",""
-"com.axelor.apps.crm.db.Event","","separator","Details","Détails","",""
-"com.axelor.apps.crm.db.Event","createdBy","field","","Créé par","",""
-"com.axelor.apps.crm.db.Event","","separator","Dates","Dates","",""
-"com.axelor.apps.crm.db.Event","","group","Attributes","Attributs","",""
-"com.axelor.apps.crm.db.Event","","group","Linked to","Lié à","",""
-"com.axelor.apps.crm.db.Event","","page","Description","Description","",""
-"com.axelor.apps.crm.db.Event","","page","Comments","Commentaires","",""
-"com.axelor.apps.message.db.Message","","view","Comments","Commentaires","",""
-"com.axelor.apps.message.db.Message","","view","Comment","Commentaire","",""
-"com.axelor.apps.message.db.Message","","group","Informations","Informations","",""
-"com.axelor.apps.message.db.Message","","group","Content","Contenu","",""
-"com.axelor.apps.crm.db.Event","","page","Watchers","Observateurs","",""
-"com.axelor.apps.crm.db.Event","","button","Assign to me","","",""
-"com.axelor.apps.crm.db.Event","","view","Ticket","Ticket","",""
-"com.axelor.apps.crm.db.Event","","button","Assign to me","","",""
-"com.axelor.apps.crm.db.Event","","button","Start","","",""
-"com.axelor.apps.crm.db.Event","","button","Validate","","",""
-"com.axelor.apps.crm.db.Event","","button","Finish","","",""
-"","","action","Contacts","Contacts","",""
-"","","action","Leads","Pistes","",""
-"","","action","Convert lead","Convertir le prospect","",""
-"","","action","Create call","Créer Appel","",""
-"","","action","Create meeting","Créer Rendez-vous","",""
-"","","action","Create opportunity","Créer Opportunité","",""
-"","","action","Create task","Créer Tâche","",""
-"","","action","Tickets","Tickets","",""
-"","","action","Historical events completed","Historique des évènements","",""
-"","","action","Opportunities","Opportunités","",""
-"","","action","Upcoming events","Prochains Evènements","",""
-"","","action","From date must be less than the to date","La *date de* doit être inférieur à la *date à*.","",""
-"","","action","CRM batches","","",""
-"","","action","Calendars","Calendriers","",""
-"","","action","Calendar Configurations","Configuration Calendriers","",""
-"","","action","Event Categories","Catégories d’événements","",""
-"","","action","Leads Source","Provenances des prospects","",""
-"","","action","Meeting Types","Types de rendez-vous","",""
-"","","action","Meeting Participants","Participants aux rendez-vous","",""
-"","","action","Target","Objectifs","",""
-"","","action","Targets Configurations","Configuration objectifs","",""
-"","","action","Calls","Appels","",""
-"","","action","Call","Appel","",""
-"","","action","Meeting","Rendez-vous","",""
-"","","action","Task","Tâche","",""
-"","","action","Ticket","Ticket","",""
-"","","action","Leads","Pistes","",""
-"","","action","Meetings","Rendez-vous","",""
-"","","action","My Meetings Calendar","Mon Calendrier","",""
-"","","action","Team Calendar","Calendrier de mon équipe","",""
-"","","action","Opportunities","Opportunités","",""
-"","","action","Tasks","Tâches","",""
-"","","action","Tickets","Tickets","",""
-"","","action","Top agents by Open Tickets","","",""
-"","","action","Partner List Report","Reporting Tiers","",""
-"","","action","Calls by team by user","Appels par équipe et par utilisateur","",""
-"","","action","Calls type by team","Appels par équipe","",""
-"","","action","Calls type by user","Appels par utilisateur","",""
-"","","action","Closed Opportunities","","",""
-"","","action","Top clients by Open Cases","Meilleures Opportunités Clients","",""
-"","","action","Due Open Tickets","","",""
-"","","action","Event List Report","","",""
-"","","action","Event Graph Report","Graphique des évènements","",""
-"","","action","All Upcoming Holidays","Tous les congés à venir","",""
-"","","action","Late Tickets","","",""
-"","","action","Lead List Report","","",""
-"","","action","Lead Graph Report","Graphique des Pistes","",""
-"","","action","Leads by Country","Pistes par pays","",""
-"","","action","Leads by Salesman by Status","Pistes par commercial par état","",""
-"","","action","Leads by Source","Pistes par provenance","",""
-"","","action","Leads by Team by Status","Pistes par Equipe par Etat","",""
-"","","action","My Active Tickets","","",""
-"","","action","My Closed Opportunities","","",""
-"","","action","My Late Tickets","","",""
-"","","action","My Leads","","",""
-"","","action","My New Tickets","","",""
-"","","action","My New Urgent Tickets","","",""
-"","","action","My Open Opportunities","","",""
-"","","action","My Today Support Activities","","",""
-"","","action","My Urgent Tickets","","",""
-"","","action","New Tickets","","",""
-"","","action","New Urgent Tickets","","",""
-"","","action","Open Opportunities","Opportunités en cours","",""
-"","","action","Ticket distribution by Priority","Répartition des tickets par priorité","",""
-"","","action","Open tickets by priority","Tickets ouverts par priorité","",""
-"","","action","Open tickets by status","Tickets ouverts par statut","",""
-"","","action","Chart","Graphique","",""
-"","","action","Opportunities By Sale Stage","Opportunités par Etape","",""
-"","","action","Chart","Graphique","",""
-"","","action","Pipeline by Stage and Type","Pipeline par Etape par Type","",""
-"","","action","Opportunities By Type","Opportunités par type","",""
-"","","action","Key accounts","Compte clé","",""
-"","","action","Recent lost deals","Opp. récemment perdues","",""
-"","","action","Chart","Graphique","",""
-"","","action","Recently created opportunities","Opp. récemment créées","",""
-"","","action","Best Open Deals","Meilleures Opp. en cours","",""
-"","","action","Opportunities Won By Lead Source","Opportunités gagnées par source","",""
-"","","action","Opportunities Won By Partner","Opportunités gagnées par commercial","",""
-"","","action","Opportunities Won By Salesman","Opp. Gagnées par Salesman","",""
-"","","action","Opportunity","Opportunité","",""
-"","","action","Opportunity Report","Reporting des opportunités","",""
-"","","action","Target team Dashboard","Tableau de bord des objectifs équipes","",""
-"","","action","Target user Dashboard","Tableau de bord des objectifs utilisateurs","",""
-"","","action","My Team Closed Opportunities","","",""
-"","","action","My Team Leads","","",""
-"","","action","My Team Open Opportunities","","",""
-"","","action","Unassigned Leads","","",""
-"","","action","Unassigned Opportunities","","",""
-"","","action","Urgent Tickets","","",""
-"","","action","Create Lead","Créer Piste","",""
-"","","action","Create Opportunity","Créer Opportunité","",""
-"","","action","Leads","Pistes","",""
-"","","action","Opportunities","Opportunités","",""
-"top.propsection.leads","top.propsection.leads","documentation","","","",""
-"top.prospection.opportunity","top.prospection.opportunity","documentation","","","",""
-"top.new.opportunity.view","top.new.opportunity.view","documentation","","","",""
-"top.new.lead.view","top.new.lead.view","documentation","","","",""
-"portal.opportunity.dashboard.view","portal.opportunity.dashboard.view","documentation","","","",""
-"portal.opportunity.graph.dashboard.view","portal.opportunity.graph.dashboard.view","documentation","","","",""
-"portal.lead.graph.dashboard.view","portal.lead.graph.dashboard.view","documentation","","","",""
-"portal.event.graph.dashboard.view","portal.event.graph.dashboard.view","documentation","","","",""
-"portal.event.dashboard.view","portal.event.dashboard.view","documentation","","","",""
-"portal.lead.dashboard.view","portal.lead.dashboard.view","documentation","","","",""
-"portal.base.partner.list.dashboard.view","portal.base.partner.list.dashboard.view","documentation","","","",""
-"portal.target.user.dashboard.view","portal.target.user.dashboard.view","documentation","","","",""
-"portal.target.team.dashboard.view","portal.target.team.dashboard.view","documentation","","","",""
-"crm.root.create.task","crm.root.create.task","documentation","","","",""
-"crm.root.create.meeting","crm.root.create.meeting","documentation","","","",""
-"crm.root.create.call","crm.root.create.call","documentation","","","",""
-"crm.root.create.ticket","crm.root.create.ticket","documentation","","","",""
-"crm.root.task","crm.root.task","documentation","","","",""
-"crm.root.meeting","crm.root.meeting","documentation","","","",""
-"crm.root.call","crm.root.call","documentation","","","",""
-"crm.root.ticket","crm.root.ticket","documentation","","","",""
-"crm.root.lead","crm.root.lead","documentation","","","",""
-"crm.root.opportunity","crm.root.opportunity","documentation","","","",""
-"crm.root.meeting.my.calendar","crm.root.meeting.my.calendar","documentation","","","",""
-"crm.root.meeting.team.calendar","crm.root.meeting.team.calendar","documentation","","","",""
-"crm.conf.lead.source","crm.conf.lead.source","documentation","","","",""
-"crm.conf.meeting.type","crm.conf.meeting.type","documentation","","","",""
-"crm.conf.participant","crm.conf.participant","documentation","","","",""
-"crm.conf.event.category","crm.conf.event.category","documentation","","","",""
-"crm.conf.calendar","crm.conf.calendar","documentation","","","",""
-"crm.conf.calendar.configuration","crm.conf.calendar.configuration","documentation","","","",""
-"crm.conf.target.configuration","crm.conf.target.configuration","documentation","","","",""
-"crm.conf.target","crm.conf.target","documentation","","","",""
-"admin.root.batch.crm","admin.root.batch.crm","documentation","","","",""
-"crm-task-form","crm-task-form","documentation","","","",""
-"crm-task-form","start","documentation","","","Start",""
-"crm-task-form","pause","documentation","","","Pause",""
-"crm-task-form","accept","documentation","","","Finish",""
-"crm-task-form","subject","documentation","","","",""
-"crm-task-form","location","documentation","","","",""
-"crm-task-form","description","documentation","","","",""
-"crm-task-form","startDateTime","documentation","","","",""
-"crm-task-form","duration","documentation","","","",""
-"crm-task-form","endDateTime","documentation","","","",""
-"crm-task-form","limitDateT","documentation","","","",""
-"crm-task-form","taskStatusSelect","documentation","","","","Statut utilisé uniquement pour les tâches. Par défaut, la valeur est  'Non-Démarrée'."
-"crm-task-form","prioritySelect","documentation","","","","Degré de priorité associé à un ticket."
-"crm-task-form","clientPartner","documentation","","","","Tiers entreprise (B2B) ou indiviuel (B2C) concerné par cet événement. Si un tiers est sélectionné, l'évènement apparaîtra dans le suivi d'activités sur la fiche Tiers."
-"crm-task-form","contactPartner","documentation","","","","Dans le cas d'un tiers entreprise, le contact principal concerné par cet événement."
-"crm-task-form","lead","documentation","","","","Piste concernée par cet événement. Si une piste est sélectionnée ici, l'évènement apparaîtra dans le suivi d'activités sur la fiche Piste."
-"crm-task-form","relatedToSelect","documentation","","","","Défini le lien entre cet enregistrement et un autre enregistrement de l'application. D'abord sélectionner le type de document à associer, puis sélectionner l'enregistrement correspondant au type sélectionné (exemple : Produit, Etude)"
-"crm-task-form","userInfo","documentation","","","","Employé en charge ou concerné par cet enregistrement. Selon les règles à configurer dans l'administration, un employé selon son groupe pourra voir tout ou partie des enregistrements de la base."
-"crm-task-form","team","documentation","","","","Equipe en charge ou concernée par cet enregistrement. Selon les règles à configurer dans l'administration, un employé pourra voir selon son groupe pourra voir tout ou partie des enregistrements de la base associé à son équipe."
-"crm-task-form","eventReminderList","documentation","","","","Liste des rappels configurés pour l'évènement."
-"event-reminder-form","event-reminder-form","documentation","","","",""
-"event-reminder-form","typeSelect","documentation","","","","Dans le cadre des rappels, vérifiez bien que l'employé (via sa fiche Contact Interne) ou le reste des participants à un N° de mobile ou un email de renseigné."
-"event-reminder-form","assignToSelect","documentation","","","","Un rappel peut-être envoyé au titulaire de l'évènement uniquement, ou alors à l'ensemble des participants."
-"event-reminder-form","duration","documentation","","","","Durée (quantité) associée au type de durée ci-après. Si type durée = heures, en rentrant 2, un rappel sera envoyé à l'employé ou à tous les participants 2 heures avant la date et l'heure prévue de l'évènement."
-"event-reminder-form","durationTypeSelect","documentation","","","","Unité associée à la quantité pour définir la temporalité du rappel par rapport au début de l'évènement."
-"ticket-form","ticket-form","documentation","","","",""
-"ticket-form","grabEvent","documentation","","","Assign to me",""
-"ticket-form","start","documentation","","","Start",""
-"ticket-form","accept","documentation","","","Validate",""
-"ticket-form","stop","documentation","","","Finish",""
-"ticket-form","ticketNumberSeq","documentation","","","","Séquence à définir dans la rubrique séquence du menu (cf Administration ERP > Général > Configuration)."
-"ticket-form","subject","documentation","","","",""
-"ticket-form","eventCategory","documentation","","","","Catégorie associée à un ticket pour les classer efficacement. Les catégories sont configurables dans le menu Configuration du CRM."
-"ticket-form","createdBy","documentation","","","",""
-"ticket-form","userInfo","documentation","","","","Employé en charge ou concerné par cet enregistrement. Selon les règles à configurer dans l'administration, un employé selon son groupe pourra voir tout ou partie des enregistrements de la base."
-"ticket-form","responsibleUserInfo","documentation","","","","Employé (utilisateur) en charge de résoudre le ticket. Ce champ peut-être vide à la création du ticket, puis  assigné à tel ou tel employé selon sa compétence."
-"ticket-form","startDateTime","documentation","","","",""
-"ticket-form","duration","documentation","","","",""
-"ticket-form","endDateTime","documentation","","","",""
-"ticket-form","limitDateT","documentation","","","",""
-"ticket-form","ticketStatusSelect","documentation","","","","Statut utilisé uniquement pour les tickets. Par défaut, la valeur est  'Nouveau'."
-"ticket-form","prioritySelect","documentation","","","","Degré de priorité associé à un ticket."
-"ticket-form","progressSelect","documentation","","","","L'avancement est à définir manuellement par la personne en charge de répondre au ticket."
-"ticket-form","clientPartner","documentation","","","","Tiers entreprise (B2B) ou indiviuel (B2C) concerné par cet événement. Si un tiers est sélectionné, l'évènement apparaîtra dans le suivi d'activités sur la fiche Tiers."
-"ticket-form","contactPartner","documentation","","","","Dans le cas d'un tiers entreprise, le contact principal concerné par cet événement."
-"ticket-form","description","documentation","","","",""
-"ticket-form","messageList","documentation","","","",""
-"ticket-form","sentDate","documentation","","","",""
-"ticket-form","sender","documentation","","","",""
-"ticket-form","content","documentation","","","",""
-"ticket-form","userInfoSet","documentation","","","","Utilisateurs internes qui sont susceptibles d'être intéressées par le ticket et qui souhaitent être averties lors de sa résolution."
-"lead-form","lead-form","documentation","","","",""
-"lead-form","convertLead","documentation","","","",""
-"lead-form","sendByEmail","documentation","","","",""
-"lead-form","picture","documentation","","","",""
-"lead-form","titleSelect","documentation","","","",""
-"lead-form","name","documentation","","","",""
-"lead-form","firstName","documentation","","","",""
-"lead-form","enterpriseName","documentation","","","",""
-"lead-form","partner","documentation","","","","Champ rempli automatiquement lorsque la Piste est convertie en Tiers (lien vers le Tiers créé)."
-"lead-form","jobTitle","documentation","","","",""
-"lead-form","fixedPhone","documentation","","","",""
-"lead-form","fax","documentation","","","",""
-"lead-form","mobilePhone","documentation","","","",""
-"lead-form","emailAddress","documentation","","","",""
-"lead-form","contactDate","documentation","","","",""
-"lead-form","grabLead","documentation","","","",""
-"lead-form","userInfo","documentation","","","","Utilisateur (employé) en charge du suivi de cette Piste."
-"lead-form","team","documentation","","","","Equipe en charge du suivi de cette Piste"
-"lead-form","primaryAddress","documentation","","","","Champ correspondant à l'adresse L4 de la norme postale."
-"lead-form","primaryCity","documentation","","","","Si le code postal associé est un cedex, le nom de la ville devra comporter un cedex (exemple : Paris Cedex 2, Rouen Cedex)"
-"lead-form","primaryState","documentation","","","","Utilisé seulement pour certains pays comme les Etats-Unis, la Chine..."
-"lead-form","primaryPostalCode","documentation","","","",""
-"lead-form","primaryCountry","documentation","","","",""
-"lead-form","otherAddress","documentation","","","","Champ correspondant à l'adresse L4 de la norme postale."
-"lead-form","otherCity","documentation","","","","Si le code postal associé est un cedex, le nom de la ville devra comporter un cedex (exemple : Paris Cedex 2, Rouen Cedex)"
-"lead-form","otherState","documentation","","","","Utilisé seulement pour certains pays comme les Etats-Unis, la Chine..."
-"lead-form","otherPostalCode","documentation","","","",""
-"lead-form","otherCountry","documentation","","","",""
-"lead-form","isCopyAddress","documentation","","","","Champ permettant de recopier les données d'adressee à gauche pour compléter l'adresse secondaire à droite."
-"lead-form","officeName","documentation","","","",""
-"lead-form","department","documentation","","","",""
-"lead-form","webSite","documentation","","","",""
-"lead-form","description","documentation","","","",""
-"lead-form","statusSelect","documentation","","","",""
-"lead-form","statusDescription","documentation","","","","Champ permettant de renseigner des informations complémentaires relatives à un changement d'Etat."
-"lead-form","source","documentation","","","","Source (canal) de provenance de la Piste."
-"lead-form","sourceDescription","documentation","","","","Champ permettant de renseigner des informations complémentaires relatives à la provenance de la Piste.."
-"lead-form","campaign","documentation","","","","Dans le cas où le lead aient pris contact avec la société suite à une campagne, choisir la campagne associée."
-"lead-form","referredBy","documentation","","","","Personne ayant apporté ce contact."
-"lead-form","isDoNotCall","documentation","","","","Si cochée, indique que la piste ne souhaite pas recevoir d'appels dans le cadre d'une campagne téléphonique."
-"lead-form","isDoNotSendEmail","documentation","","","","Si cochée, indique que la piste ne souhaite pas recevoir d'emails dans le cadre d'une campagne téléphonique."
-"lead-form","opportunityAmount","documentation","","","","Montant d'une éventuelle opportunité associée à cette Piste à qualifier."
-"opportunity-form","opportunity-form","documentation","","","",""
-"opportunity-form","previous-stage","documentation","","","Previous Stage",""
-"opportunity-form","next-stage","documentation","","","Next Stage",""
-"opportunity-form","closed-won","documentation","","","Closed won",""
-"opportunity-form","closed-lost","documentation","","","Closed lost",""
-"opportunity-form","name","documentation","","","",""
-"opportunity-form","opportunityType","documentation","","","",""
-"opportunity-form","salesStageSelect","documentation","","","",""
-"opportunity-form","source","documentation","","","","Indique la manière dont la piste a eu connaissance de la société, de ses produits (Salon, Séminaire ...)"
-"opportunity-form","nextStep","documentation","","","","Indication à suivre pour passer à l'étape suivante."
-"opportunity-form","expectedCloseDate","documentation","","","","Date limite de réponse, d'envoi de l'offre/devis"
-"opportunity-form","probability","documentation","","","","Probabilité pour que l'opportunité soit remportée par le commercial ou son équipe."
-"opportunity-form","amount","documentation","","","","Montant de l'opportunité dans la devise mentionné"
-"opportunity-form","currency","documentation","","","","Devise associée aux montants de l'opportunité."
-"opportunity-form","bestCase","documentation","","","",""
-"opportunity-form","worstCase","documentation","","","",""
-"opportunity-form","partner","documentation","","","","Client associé à l'opportunité. Si ce champ est rempli, l'opportunité apparaîtra sur la fiche Client."
-"opportunity-form","lead","documentation","","","",""
-"opportunity-form","campaign","documentation","","","","Si un lead nous à contacté suite à une campagne, lien vers la campagne en question."
-"opportunity-form","userInfo","documentation","","","","Responsable du suivi de l'opportunité. Le responsable doit appartenir à l'équipe renseignée."
-"opportunity-form","grabLead","documentation","","","",""
-"opportunity-form","team","documentation","","","","Equipe à laquelle est associée cette opportunité."
-"opportunity-form","company","documentation","","","",""
-"opportunity-form","description","documentation","","","",""
-"meeting-form","meeting-form","documentation","","","",""
-"meeting-form","accept","documentation","","","Validate",""
-"meeting-form","cancel","documentation","","","Cancel",""
-"meeting-form","subject","documentation","","","",""
-"meeting-form","location","documentation","","","",""
-"meeting-form","viewOnMap","documentation","","","",""
-"meeting-form","description","documentation","","","",""
-"meeting-form","startDateTime","documentation","","","",""
-"meeting-form","endDateTime","documentation","","","",""
-"meeting-form","duration","documentation","","","",""
-"meeting-form","statusSelect","documentation","","","","Statut utilisé pour les rendez-vous. Par défaut, la valeur est planifié."
-"meeting-form","meetingType","documentation","","","","Type de rendez-vous pour les classer efficacement ou effectuer des reportings détaillés d'activité. Les types de rendez-vous sont configurables dans le menu Configuration du CRM."
-"meeting-form","clientPartner","documentation","","","","Tiers entreprise (B2B) ou indiviuel (B2C) concerné par cet événement. Si un tiers est sélectionné, l'évènement apparaîtra dans le suivi d'activités sur la fiche Tiers."
-"meeting-form","contactPartner","documentation","","","","Dans le cas d'un tiers entreprise, le contact principal concerné par cet événement."
-"meeting-form","lead","documentation","","","","Piste concernée par cet événement. Si une piste est sélectionnée ici, l'évènement apparaîtra dans le suivi d'activités sur la fiche Piste."
-"meeting-form","relatedToSelect","documentation","","","","Défini le lien entre cet enregistrement et un autre enregistrement de l'application. D'abord sélectionner le type de document à associer, puis sélectionner l'enregistrement correspondant au type sélectionné (exemple : Produit, Etude)"
-"meeting-form","userInfo","documentation","","","","Employé en charge ou concerné par cet enregistrement. Selon les règles à configurer dans l'administration, un employé selon son groupe pourra voir tout ou partie des enregistrements de la base."
-"meeting-form","team","documentation","","","","Equipe en charge ou concernée par cet enregistrement. Selon les règles à configurer dans l'administration, un employé pourra voir selon son groupe pourra voir tout ou partie des enregistrements de la base associé à son équipe."
-"meeting-form","eventReminderList","documentation","","","","Liste des rappels configurés pour l'évènement."
-"meeting-form","contactEventAttendeeList","documentation","","","",""
-"meeting-form","leadEventAttendeeList","documentation","","","",""
-"call-form","call-form","documentation","","","",""
-"call-form","accept","documentation","","","Validate",""
-"call-form","cancel","documentation","","","Cancel",""
-"call-form","grabEvent","documentation","","","Assign to me",""
-"call-form","subject","documentation","","","",""
-"call-form","description","documentation","","","",""
-"call-form","startDateTime","documentation","","","",""
-"call-form","duration","documentation","","","",""
-"call-form","endDateTime","documentation","","","",""
-"call-form","callStatusSelect","documentation","","","","Appel reçu (par défaut) ou appel émis"
-"call-form","statusSelect","documentation","","","","Statut utilisé pour les rendez-vous. Par défaut, la valeur est planifié."
-"call-form","clientPartner","documentation","","","","Tiers entreprise (B2B) ou indiviuel (B2C) concerné par cet événement. Si un tiers est sélectionné, l'évènement apparaîtra dans le suivi d'activités sur la fiche Tiers."
-"call-form","contactPartner","documentation","","","","Dans le cas d'un tiers entreprise, le contact principal concerné par cet événement."
-"call-form","lead","documentation","","","","Piste concernée par cet événement. Si une piste est sélectionnée ici, l'évènement apparaîtra dans le suivi d'activités sur la fiche Piste."
-"call-form","relatedToSelect","documentation","","","","Défini le lien entre cet enregistrement et un autre enregistrement de l'application. D'abord sélectionner le type de document à associer, puis sélectionner l'enregistrement correspondant au type sélectionné (exemple : Produit, Etude)"
-"call-form","userInfo","documentation","","","","Employé en charge ou concerné par cet enregistrement. Selon les règles à configurer dans l'administration, un employé selon son groupe pourra voir tout ou partie des enregistrements de la base."
-"call-form","team","documentation","","","","Equipe en charge ou concernée par cet enregistrement. Selon les règles à configurer dans l'administration, un employé pourra voir selon son groupe pourra voir tout ou partie des enregistrements de la base associé à son équipe."
-"call-form","eventReminderList","documentation","","","","Liste des rappels configurés pour l'évènement."
-"call-form","contactEventAttendeeList","documentation","","","",""
-"call-form","leadEventAttendeeList","documentation","","","",""
-"event-form","event-form","documentation","","","",""
-"event-form","exportCalendar","documentation","","","",""
-"event-form","importCalendar","documentation","","","",""
-"event-form","synchronizeCalendars","documentation","","","",""
-"event-form","typeSelect","documentation","","","","Selon le type d'évènement choisi, les propriétés d'affichage seront modifiées."
-"event-form","yes","documentation","","","",""
-"event-form","no","documentation","","","",""
-"event-form","perhaps","documentation","","","",""
-"event-form","subject","documentation","","","",""
-"event-form","location","documentation","","","",""
-"event-form","viewOnMap","documentation","","","",""
-"event-form","description","documentation","","","",""
-"event-form","statusSelect","documentation","","","","Statut utilisé pour les rendez-vous. Par défaut, la valeur est planifié."
-"event-form","callStatusSelect","documentation","","","","Appel reçu (par défaut) ou appel émis"
-"event-form","meetingType","documentation","","","","Type de rendez-vous pour les classer efficacement ou effectuer des reportings détaillés d'activité. Les types de rendez-vous sont configurables dans le menu Configuration du CRM."
-"event-form","taskStatusSelect","documentation","","","","Statut utilisé uniquement pour les tâches. Par défaut, la valeur est  'Non-Démarrée'."
-"event-form","prioritySelect","documentation","","","","Degré de priorité associé à un ticket."
-"event-form","calendar","documentation","","","","Calendrier interne auquel est associé l'évènement."
-"event-form","startDateTime","documentation","","","",""
-"event-form","endDateTime","documentation","","","",""
-"event-form","duration","documentation","","","",""
-"event-form","clientPartner","documentation","","","","Tiers entreprise (B2B) ou indiviuel (B2C) concerné par cet événement. Si un tiers est sélectionné, l'évènement apparaîtra dans le suivi d'activités sur la fiche Tiers."
-"event-form","contactPartner","documentation","","","","Dans le cas d'un tiers entreprise, le contact principal concerné par cet événement."
-"event-form","lead","documentation","","","","Piste concernée par cet événement. Si une piste est sélectionnée ici, l'évènement apparaîtra dans le suivi d'activités sur la fiche Piste."
-"event-form","relatedToSelect","documentation","","","","Défini le lien entre cet enregistrement et un autre enregistrement de l'application. D'abord sélectionner le type de document à associer, puis sélectionner l'enregistrement correspondant au type sélectionné (exemple : Produit, Etude)"
-"event-form","userInfo","documentation","","","","Employé en charge ou concerné par cet enregistrement. Selon les règles à configurer dans l'administration, un employé selon son groupe pourra voir tout ou partie des enregistrements de la base."
-"event-form","team","documentation","","","","Equipe en charge ou concernée par cet enregistrement. Selon les règles à configurer dans l'administration, un employé pourra voir selon son groupe pourra voir tout ou partie des enregistrements de la base associé à son équipe."
-"event-form","eventReminderList","documentation","","","","Liste des rappels configurés pour l'évènement."
-"event-form","eventAttendeeList","documentation","","","",""
-"event-form","add","documentation","","","",""
-"event-attendee-contact-form","event-attendee-contact-form","documentation","","","",""
-"event-attendee-contact-form","statusSelect","documentation","","","","Défini le degré d'importance de la présence d'une personne (contact ou piste) à la réunion."
-"event-attendee-contact-form","contactPartner","documentation","","","",""
-"event-attendee-contact-form","lead","documentation","","","",""
-"meeting-type-form","meeting-type-form","documentation","","","",""
-"meeting-type-form","name","documentation","","","",""
-"meeting-type-form","code","documentation","","","",""
-"participant-form","participant-form","documentation","","","",""
-"participant-form","partner","documentation","","","",""
-"participant-form","isComing","documentation","","","",""
-"participant-form","archived","documentation","","","",""
-"event-category-form","event-category-form","documentation","","","",""
-"event-category-form","name","documentation","","","",""
-"event-category-form","code","documentation","","","",""
-"event-category-form","typeSelect","documentation","","","","Type utilisé pour filtré les catégories en fonction du type d'évènement."
-"calendar-form","calendar-form","documentation","","","",""
-"calendar-form","title","documentation","","","",""
-"calendar-form","url","documentation","","","","URL Publique du calendrier"
-"calendar-form","typeSelect","documentation","","","","Format de synchronisation du calendrier."
-"calendar-form","isSslConnection","documentation","","","",""
-"calendar-form","port","documentation","","","",""
-"calendar-form","login","documentation","","","",""
-"calendar-form","password","documentation","","","",""
-"target-configuration-form","target-configuration-form","documentation","","","",""
-"target-configuration-form","name","documentation","","","",""
-"target-configuration-form","code","documentation","","","",""
-"target-configuration-form","userInfo","documentation","","","",""
-"target-configuration-form","team","documentation","","","",""
-"target-configuration-form","periodTypeSelect","documentation","","","",""
-"target-configuration-form","fromDate","documentation","","","",""
-"target-configuration-form","toDate","documentation","","","",""
-"target-configuration-form","opportunityAmountWon","documentation","","","",""
-"target-configuration-form","opportunityCreatedNumber","documentation","","","",""
-"target-configuration-form","opportunityCreatedWon","documentation","","","",""
-"target-configuration-form","callEmittedNumber","documentation","","","",""
-"target-configuration-form","meetingNumber","documentation","","","",""
-"target-form","target-form","documentation","","","",""
-"target-form","name","documentation","","","",""
-"target-form","code","documentation","","","",""
-"target-form","userInfo","documentation","","","",""
-"target-form","team","documentation","","","",""
-"target-form","periodTypeSelect","documentation","","","",""
-"target-form","fromDate","documentation","","","",""
-"target-form","toDate","documentation","","","",""
-"target-form","opportunityAmountWonTarget","documentation","","","",""
-"target-form","opportunityAmountWon","documentation","","","",""
-"target-form","opportunityCreatedNumberTarget","documentation","","","",""
-"target-form","opportunityCreatedNumber","documentation","","","",""
-"target-form","opportunityCreatedWonTarget","documentation","","","",""
-"target-form","opportunityCreatedWon","documentation","","","",""
-"target-form","callEmittedNumberTarget","documentation","","","",""
-"target-form","callEmittedNumber","documentation","","","",""
-"target-form","meetingNumberTarget","documentation","","","",""
-"target-form","meetingNumber","documentation","","","",""
-"crm-batch-form","crm-batch-form","documentation","","","",""
-"crm-batch-form","actionSelect","documentation","","","",""
-"crm-batch-form","code","documentation","","","",""
-"crm-batch-form","company","documentation","","","",""
-"crm-batch-form","durationTypeSelect","documentation","","","",""
-"crm-batch-form","eventReminderBatch","documentation","","","",""
-"crm-batch-form","targetConfigurationSet","documentation","","","",""
-"crm-batch-form","targetBatch","documentation","","","",""
-"crm-batch-form","createdOn","documentation","","","",""
-"crm-batch-form","createdBy","documentation","","","",""
-"crm-batch-form","description","documentation","","","",""
-"crm-batch-form","batchList","documentation","","","",""
+"domain";"name";"type";"title";"title_t";"help";"help_t"
+;;"menu";"CRM batches";"Traitements de masse CRM";;
+;;"menu";"Configuration";"Configuration";;
+;;"menu";"Calendars";"Calendriers";;
+;;"menu";"Calendar Configurations";"Configuration Calendriers";;
+;;"menu";"Event Categories";"Catégories d’événements";;
+;;"menu";"Leads Source";"Provenances des prospects";;
+;;"menu";"Meeting Types";"Types de rendez-vous";;
+;;"menu";"Meeting Participants";"Participants aux rendez-vous";;
+;;"menu";"Targets";"Objectifs";;
+;;"menu";"Targets configurations";"Configuration des objectifs";;
+;;"menu";"CRM";"CRM";;
+;;"menu";"Calls";"Appels";;
+;;"menu";"Create";"Créer";;
+;;"menu";"Call";"Appel";;
+;;"menu";"Meeting";"Rendez-vous";;
+;;"menu";"Task";"Tâche";;
+;;"menu";"Ticket";"Ticket";;
+;;"menu";"Leads";"Pistes";;
+;;"menu";"Meetings";"Rendez-vous";;
+;;"menu";"My Calendar";"Mon Calendrier";;
+;;"menu";"Team Calendar";"Calendrier de mon équipe";;
+;;"menu";"Opportunities";"Opportunités";;
+;;"menu";"Tasks";"Tâches";;
+;;"menu";"Tickets";"Tickets";;
+;;"menu";"CRM Dashboards";"Tableaux de bords CRM";;
+;;"menu";"Target team Dashboard";"Tableau de bord des objectifs équipes";;
+;;"menu";"Target user Dashboard";"Tableau de bord des objectifs utilisateurs";;
+;;"menu";"Partner List Report";"Reporting Tiers";;
+;;"menu";"Event List Report";"Liste des reportings d'évènement";;
+;;"menu";"Event Chart Report";"Reporting des évènements";;
+;;"menu";"Lead Chart Report";"Graphique des Pistes";;
+;;"menu";"Lead List Report";"Liste des Pistes";;
+;;"menu";"Opportunity List Report";"Reporting Opportunités";;
+;;"menu";"Opportunity Chart Report";"Graphique des opportunités";;
+;;"menu";"Create Call";"Créer appel";;
+;;"menu";"Create Meeting";"Créer Rendez-vous";;
+;;"menu";"Create Task";"Créer tâche";;
+;;"menu";"My Calendar";"Mon Calendrier";;
+;;"menu";"My Team Calendar";"Calendrier Equipe";;
+;;"menu";"Create Lead";"Créer Piste";;
+;;"menu";"Create Opportunity";"Créer Opportunité";;
+;;"menu";"Activity";"Activités";;
+;;"menu";"Prospection";"Prospection";;
+;;"menu";"Leads";"Pistes";;
+;;"menu";"Opportunities";"Opportunités";;
+;;"select";"CHANDLER";;;
+;;"select";"CGP";;;
+;;"select";"KMS";;;
+;;"select";"ZIMBRA";;;
+;;"select";"GCAL";;;
+;;"select";"CALENDAR_SERVER";"Serveur calendrier";;
+;;"select";"ICAL_SERVER";"Serveur ICAL";;
+;;"select";"Required participant";"Participants requis";;
+;;"select";"Optional participant";"Participant optionnel";;
+;;"select";"Non-participant";"Non-participant";;
+;;"select";"45";"45";;
+;;"select";"30";"30";;
+;;"select";"15";"15";;
+;;"select";"00";"00";;
+;;"select";"Outgoing";"Sortant";;
+;;"select";"Incoming";"Entrant";;
+;;"select";"Confirmed";"Confirmé";;
+;;"select";"Tentative";"Tentative";;
+;;"select";"Task (Project)";"Tâche (Projet)";;
+;;"select";"Project/Business";"Projet/Affaire";;
+;;"select";"Quote/Order";"Devis/Commande";;
+;;"select";"Event";"Événement";;
+;;"select";"Product";"Produit";;
+;;"select";"Opportunity";"Opportunité";;
+;;"select";"Lead";"Prospect";;
+;;"select";"Partner/Contact";"Tiers/Contact";;
+;;"select";"For all";"Pour tous";;
+;;"select";"For me";"Pour moi";;
+;;"select";"Weeks";"Semaines";;
+;;"select";"Days";"Jours";;
+;;"select";"Hours";"Heures";;
+;;"select";"Minutes";"Minutes";;
+;;"select";"Email";"Email";;
+;;"select";"Canceled";"Annulé";;
+;;"select";"Realized";"Réalisé";;
+;;"select";"Planified";"Planifié";;
+;;"select";"High";"Élevé";;
+;;"select";"Medium";"Moyen";;
+;;"select";"Low";"Faible";;
+;;"select";"Reported";"Reporté";;
+;;"select";"Pending";"En attente";;
+;;"select";"Finished";"Terminé";;
+;;"select";"On going";"En cours";;
+;;"select";"Not started";"Non démarré";;
+;;"select";"Immediate";"Immédiat";;
+;;"select";"Urgent";"Urgent";;
+;;"select";"High";"Élevé";;
+;;"select";"Normal";"Moyen";;
+;;"select";"Low";"Faible";;
+;;"select";"100 %";"100 %";;
+;;"select";"90 %";"90 %";;
+;;"select";"80 %";"80 %";;
+;;"select";"70 %";"70 %";;
+;;"select";"60 %";"60 %";;
+;;"select";"50 %";"50 %";;
+;;"select";"40 %";"40 %";;
+;;"select";"30 %";"30 %";;
+;;"select";"20 %";"20 %";;
+;;"select";"10 %";"10 %";;
+;;"select";"0 %";"0 %";;
+;;"select";"Closed";"Fermé";;
+;;"select";"Feedback";"Retour";;
+;;"select";"Resolved";"Résolu";;
+;;"select";"In progress";"En cours";;
+;;"select";"New";"Nouveau";;
+;;"select";"Event";"Événement";;
+;;"select";"Ticket";"Ticket";;
+;;"select";"Holiday";"Congés";;
+;;"select";"Task";"Tâche";;
+;;"select";"Meeting";"Rendez-vous";;
+;;"select";"Call";"Appel";;
+;;"select";"Dead";"Perdu";;
+;;"select";"Recycled";"Recyclé";;
+;;"select";"Converted";"Converti";;
+;;"select";"In process";"En cours";;
+;;"select";"Assigned";"Assigné";;
+;;"select";"New";"Nouveau";;
+;;"select";"Closed lost";"Fermée Perdue";;
+;;"select";"Closed won";"Fermée Gagnée";;
+;;"select";"Negociation";"Négociation";;
+;;"select";"Proposal/Quote";"Proposition / Demande de prix";;
+;;"select";"Analysis";"Analyse";;
+;;"select";"Identify deciders";"Identification des décideurs";;
+;;"select";"Proposition";"Proposition";;
+;;"select";"Needs analysis";"Analyse des besoins";;
+;;"select";"Qualification";"Qualification";;
+;;"select";"Prospection";"Prospection";;
+;;"select";"New business";"Nouveau marché";;
+;;"select";"Existing business";"Client existant";;
+;;"select";"Daily";"Journalier";;
+;;"select";"Weekly";"Hebdomadaire";;
+;;"select";"Monthly";"Mensuel";;
+;;"select";"None";"Aucun";;
+;;"select";"Target";"Objectifs";;
+;;"select";"Event reminder";"Rappel d'évènement";;
+;;"chart";"Top agents by Open Tickets";"Meilleurs agents par Tickets ouverts";;
+;;"chart";"Calls type by team";"Appels par équipe";;
+;;"chart";"Calls by team by user";"Appels par équipe et par utilisateur";;
+;;"chart";"Calls type by user";"Appels par utilisateur";;
+;;"chart";"Top clients by Open Cases";"Meilleures Opportunités Clients";;
+;;"chart";"Customers by country";"Clients par Pays";;
+;;"chart";"Pipeline by Stage and Type";"Pipeline par Etape par Type";;
+;;"chart";"Opportunities By Sale Stage";"Opp. par Etape";;
+;;"chart";"Opportunities By Source";"Opportunités par source";;
+;;"chart";"Opportunities By Type";"Opportunités par type";;
+;;"chart";"Opportunities Won By Lead Source";"Opportunités gagnées par source";;
+;;"chart";"Opportunities Won By Salesman";"Opportunités gagnées par commercial";;
+;;"chart";"Due Open Tickets";"Tickets ouverts échus";;
+;;"chart";"Leads by Country";"Pistes par pays";;
+;;"chart";"Leads by Salesman by Status";"Pistes par commercial par état";;
+;;"chart";"Leads by Source";"Pistes par provenance";;
+;;"chart";"Leads by Team by Status";"Piste par Equipe par Etat";;
+;;"chart";"Ticket distribution by Priority";"Répartition des tickets par priorité";;
+;;"chart";"Open tickets by priority";"Tickets ouverts par priorité";;
+;;"chart";"Open tickets by status";"Tickets ouverts par statut";;
+;;"chart";"Opportunities By Origin By Stage";"Opp. par Origine par Etape";;
+;;"chart";"Pipeline next 90 days";"Pipeline à 90 jrs.";;
+;;"chart";"Partners by Industry Sector";"Tiers par Secteur d'activité";;
+;;"chart";"Calls emitted historical";"Historique des appels émis";;
+;;"chart";"Calls emitted target completed (%)";"Objectif des Appels émis réalisés (%)";;
+;;"chart";"Meeting number historical";"Historique Nbre Rendez-vous";;
+;;"chart";"Meetings number target completed (%)";"Objectif Nbre de Rdv réalisés (%)";;
+;;"chart";"Opportunities amount won historical";"Opportunités gagnées";;
+;;"chart";"Opportunities amount won target competed (%)";"Opportunités gagnées / objectif";;
+;;"chart";"Opportunities created number historical";"Historique du nombre opportunités crées";;
+;;"chart";"Opportunities created number target completed (%)";"Objectif Nbre d'Opportunités gagnées (%)";;
+;;"chart";"Opportunities created won historical";;;
+;;"chart";"Opportunities created won target completed (%)";"Opportunités crées / objectif (%)";;
+;;"chart";"Sales orders amount won historical";"Historique Devis/Cmdes signés";;
+;;"chart";"Sales orders amount won target completed (%)";;;
+;;"chart";"Sales orders created number historical";"Nbre de devis réalisés";;
+;;"chart";"Sales orders created number target completed (%)";;;
+;;"chart";"Sales orders created won historical";;;
+;;"chart";"Sales orders created won target completed";;;
+;;"chart";"Call emitted historical";"Histo. appels émis";;
+;;"chart";"Calls emitted target completed (%)";"Objectif des Appels émis réalisés (%)";;
+;;"chart";"Meetings number historical";"Historique Nbre Rendez-vous";;
+;;"chart";"Meetings number target completed (%)";"Objectif Nbre de Rdv réalisés (%)";;
+;;"chart";"Opportunities amount won historical";"Opportunités gagnées";;
+;;"chart";"Opportunities amount won target completed (%)";;;
+;;"chart";"Opportunities created number historical";"Historique du nombre opportunités crées";;
+;;"chart";"Opportunities created number target completed (%)";"Objectif Nbre d'Opportunités gagnées (%)";;
+;;"chart";"Opportunities created won historical";;;
+;;"chart";"Opportunities created won target completed (%)";;;
+;;"chart";"Sales orders amount won historical";"Historique Devis/Cmdes signés";;
+;;"chart";"Sales orders amount won target completed (%)";;;
+;;"chart";"Sales orders created number historical";"Nbre de devis réalisés";;
+;;"chart";"Sales orders created number target completed (%)";;;
+;;"chart";"Sales orders created won historical";;;
+;;"chart";"Sales orders created won target completed (%)";;;
+"com.axelor.apps.crm.db.Calendar";;"view";"Calendar";"Calendrier";;
+"com.axelor.apps.crm.db.Calendar";;"group";"Connection settings";"Paramètres de connexion";;
+"com.axelor.apps.crm.db.Calendar";;"separator";"Credentials";"Identifiants";;
+"com.axelor.apps.crm.db.Calendar";;"view";"Calendar";"Calendrier";;
+"com.axelor.apps.crm.db.Calendar";"archived";"field";;;;
+"com.axelor.apps.crm.db.Calendar";;"view";"Calendars";"Calendriers";;
+"com.axelor.apps.crm.db.Calendar";;"view";"Calendar";"Calendrier";;
+"com.axelor.apps.crm.db.Calendar";"archived";"field";;;;
+"com.axelor.apps.crm.db.Event";;"view";"Call filters";"Filtres Appels";;
+"com.axelor.apps.crm.db.Event";;"filter";"My Calls";"Mes Appels";;
+"com.axelor.apps.crm.db.Event";;"filter";"My Today Calls";"Mes Appels du jour";;
+"com.axelor.apps.crm.db.Event";;"filter";"My Team Calls";"Les Appels de mon Equipe";;
+"com.axelor.apps.crm.db.Event";;"button";"Validate";"Valider";;
+"com.axelor.apps.crm.db.Event";;"button";"Cancel";"Annuler";;
+"com.axelor.apps.crm.db.Event";;"button";"Assign to me";"Prendre en charge";;
+"com.axelor.apps.crm.db.Event";;"view";"Call";"Appel";;
+"com.axelor.apps.crm.db.Event";;"separator";"Subject";"Sujet";;
+"com.axelor.apps.crm.db.Event";;"placeholder";"Subject";"Sujet";;
+"com.axelor.apps.crm.db.Event";;"separator";"Description";"Description";;
+"com.axelor.apps.crm.db.Event";;"placeholder";"Description";"Description";;
+"com.axelor.apps.crm.db.Event";;"separator";"Dates";"Dates";;
+"com.axelor.apps.crm.db.Event";;"group";"Attributes";"Attributs";;
+"com.axelor.apps.crm.db.Event";;"group";"Linked to";"Lié à";;
+"com.axelor.apps.crm.db.Event";;"group";"Assigned to";"Assigné à";;
+"com.axelor.apps.crm.db.Event";;"button";"Assign to me";"Prendre en charge";;
+"com.axelor.apps.crm.db.Event";;"group";"Reminders";"Rappels";;
+"com.axelor.apps.crm.db.Event";;"group";"Attendees";"Participants";;
+"com.axelor.apps.crm.db.Event";;"separator";"Contacts";"Contacts";;
+"com.axelor.apps.crm.db.Event";;"separator";"Leads";"Pistes";;
+"com.axelor.apps.crm.db.Event";;"button";"Assign to me";"Prendre en charge";;
+"com.axelor.apps.crm.db.Event";;"view";"Calls";"Appels";;
+"com.axelor.apps.crm.db.Event";;"button";"Assign to me";"Prendre en charge";;
+"com.axelor.apps.crm.db.Event";;"button";"Validate";"Valider";;
+"com.axelor.apps.crm.db.Event";;"button";"Cancel";"Annuler";;
+"com.axelor.apps.crm.db.Event";;"view";"Call";"Appel";;
+"com.axelor.apps.crm.db.Event";;"group";"Informations";"Informations";;
+"com.axelor.apps.crm.db.Event";;"group";"Meeting date";"Date du rendez-vous";;
+"com.axelor.apps.crm.db.Event";;"group";"Description";"Description";;
+"com.axelor.apps.crm.db.Event";;"group";"Assignment";"Assignation";;
+"com.axelor.apps.base.db.Partner";;"view";"Contact";"Contact";;
+"com.axelor.apps.base.db.Partner";;"placeholder";"Civility";"Civilité";;
+"com.axelor.apps.base.db.Partner";;"placeholder";"Name";"Nom";;
+"com.axelor.apps.base.db.Partner";;"placeholder";"First name";"Prénom";;
+"com.axelor.apps.base.db.Partner";;"separator";"Company";"Société";;
+"com.axelor.apps.base.db.Partner";;"group";"Contact";"Contact";;
+"com.axelor.apps.base.db.Partner";;"group";"Address";"Adresse";;
+"com.axelor.apps.base.db.Partner";;"viewField";"Address";"Adresse";;
+"com.axelor.apps.base.db.Partner";;"viewField";"City";"Ville";;
+"com.axelor.apps.base.db.Partner";;"viewField";"State";"Statut";;
+"com.axelor.apps.base.db.Partner";;"viewField";"Postal code";"Code Postal";;
+"com.axelor.apps.base.db.Partner";;"viewField";"Country";"Pays";;
+"com.axelor.apps.base.db.Partner";;"page";"Notes";"Remarques";;
+"com.axelor.apps.base.db.Partner";;"page";"Settings";"Configurations";;
+"com.axelor.apps.base.db.Partner";;"group";"Assigned to";"Assigné à";;
+"com.axelor.apps.base.db.Wizard";;"button";"Validate";"Valider";;
+"com.axelor.apps.base.db.Wizard";;"view";"Convert lead";"Convertir le prospect";;
+"com.axelor.apps.base.db.Wizard";;"viewField";"Convert into Contact ?";"Convertir en Contact ?";;
+"com.axelor.apps.base.db.Wizard";;"viewField";"Or Select Contact";"Sélectionner Contact existant ?";;
+"com.axelor.apps.base.db.Wizard";;"viewField";"Contact";"Contact";;
+"com.axelor.apps.base.db.Wizard";;"viewField";"Convert into Partner ?";"Convertir en Tiers ?";;
+"com.axelor.apps.base.db.Wizard";;"viewField";"Or Select Partner";"Sélectionner Tiers existant ?";;
+"com.axelor.apps.base.db.Wizard";;"viewField";"Partner";"Tiers";;
+"com.axelor.apps.base.db.Wizard";;"viewField";"Create into Opportunity ?";"Créer Opportunité ?";;
+"com.axelor.apps.base.db.Wizard";;"viewField";"Opportunity";"Opportunité";;
+"com.axelor.apps.base.db.Wizard";;"viewField";"Log a call ?";"Notifier un Appel ?";;
+"com.axelor.apps.base.db.Wizard";;"viewField";"Call";"Appel";;
+"com.axelor.apps.base.db.Wizard";;"viewField";"Schedule a meeting ?";"Planifier un Meeting ?";;
+"com.axelor.apps.base.db.Wizard";;"viewField";"Meeting";"Rendez-vous";;
+"com.axelor.apps.base.db.Wizard";;"viewField";"Create a task ?";"Créer une tâche ?";;
+"com.axelor.apps.base.db.Wizard";;"viewField";"Task";"Tâche";;
+"com.axelor.apps.crm.db.CrmBatch";;"view";"CrmBatch";;;
+"com.axelor.apps.crm.db.CrmBatch";"archived";"field";;;;
+"com.axelor.apps.crm.db.CrmBatch";;"view";"CRM Batch";;;
+"com.axelor.apps.crm.db.CrmBatch";;"page";"Event reminder page";;;
+"com.axelor.apps.crm.db.CrmBatch";;"button";"Event reminder batch";"Batch rappels d'évènement";;
+"com.axelor.apps.crm.db.CrmBatch";;"page";"Target page";"Page obejctif";;
+"com.axelor.apps.crm.db.CrmBatch";;"button";"Target batch";"Batch objectifs";;
+"com.axelor.apps.crm.db.CrmBatch";;"page";"Information";"Information";;
+"com.axelor.apps.crm.db.CrmBatch";;"viewField";"Created on";"Créé le";;
+"com.axelor.apps.crm.db.CrmBatch";;"viewField";"Created by";"Créé par";;
+"com.axelor.apps.crm.db.CrmBatch";;"view";"CrmBatch";;;
+"com.axelor.apps.crm.db.CrmBatch";"archived";"field";;;;
+"com.axelor.apps.crm.db.CrmBatch";;"view";"CRM batches";;;
+"com.axelor.apps.crm.db.CrmBatch";"createdOn";"field";;"Créé le";;
+"com.axelor.apps.crm.db.CrmBatch";"createdBy";"field";;"Créé par";;
+;;"view";"Event Graph Dashboard";"Tableau de bord Evènements";;
+;;"view";"Event List Report";;;
+;;"view";"Lead Graph Dashboard";"Tableau de bord des Pistes";;
+;;"view";"Lead List Dashboard";;;
+;;"view";"Dashboard";"Tableau de bord";;
+;;"portlet";"Opportunities By Type";"Opportunités par type";;
+;;"portlet";"Opportunities Won By Lead Source";"Opportunités gagnées par source";;
+;;"portlet";"Opportunities Won By Salesman";"Opportunités gagnées par commercial";;
+;;"view";"Opportunity Dashboard";"Tblx Bord Opportunités";;
+"com.axelor.apps.crm.db.Event";;"button";"Start";"Démarrer";;
+"com.axelor.apps.crm.db.Event";;"button";"Pause";"Pause";;
+"com.axelor.apps.crm.db.Event";;"button";"Finish";"Terminer";;
+"com.axelor.apps.crm.db.Event";;"view";"Task";"Tâche";;
+"com.axelor.apps.crm.db.Event";;"separator";"Subject";"Sujet";;
+"com.axelor.apps.crm.db.Event";;"placeholder";"Subject";"Sujet";;
+"com.axelor.apps.crm.db.Event";;"separator";"Location";"Lieu";;
+"com.axelor.apps.crm.db.Event";;"placeholder";"Location";"Lieu";;
+"com.axelor.apps.crm.db.Event";;"separator";"Description";"Description";;
+"com.axelor.apps.crm.db.Event";;"placeholder";"Description";"Description";;
+"com.axelor.apps.crm.db.Event";;"separator";"Dates";"Dates";;
+"com.axelor.apps.crm.db.Event";;"group";"Attributes";"Attributs";;
+"com.axelor.apps.crm.db.Event";;"group";"Linked to";"Lié à";;
+"com.axelor.apps.crm.db.Event";;"group";"Assigned to";"Assigné à";;
+"com.axelor.apps.crm.db.Event";;"group";"Reminders";"Rappels";;
+"com.axelor.apps.crm.db.Event";;"view";"Tasks";"Tâches";;
+"com.axelor.apps.crm.db.Event";;"button";"Start";"Démarrer";;
+"com.axelor.apps.crm.db.Event";;"button";"Pause";"Pause";;
+"com.axelor.apps.crm.db.Event";;"button";"Finish";"Terminer";;
+"com.axelor.apps.crm.db.Event";;"view";"Task";"Tâche";;
+"com.axelor.apps.crm.db.Event";;"group";"Informations";"Informations";;
+"com.axelor.apps.crm.db.Event";;"group";"Task date";"Date de tâches";;
+"com.axelor.apps.crm.db.Event";;"group";"Description";"Description";;
+"com.axelor.apps.crm.db.Event";;"group";"Assigned to";"Assigné à";;
+"com.axelor.apps.crm.db.EventAttendee";;"view";"Contact";"Contact";;
+"com.axelor.apps.crm.db.EventAttendee";;"view";"Contacts";"Contacts";;
+"com.axelor.apps.crm.db.EventAttendee";;"view";"EventAttendee";"Participants";;
+"com.axelor.apps.crm.db.EventAttendee";"archived";"field";;;;
+"com.axelor.apps.crm.db.EventAttendee";;"view";"EventAttendee";"Participants";;
+"com.axelor.apps.crm.db.EventAttendee";"archived";"field";;;;
+"com.axelor.apps.crm.db.Event";;"view";"Meetings";"Rendez-vous";;
+"com.axelor.apps.crm.db.Event";;"view";"Meetings";"Rendez-vous";;
+"com.axelor.apps.crm.db.EventCategory";;"view";"Event configuration categories";"Les configuration de catégories d'événement";;
+"com.axelor.apps.crm.db.EventCategory";;"view";"Event category";"Catégorie d’événements";;
+"com.axelor.apps.crm.db.EventCategory";;"view";"EventCategory";"Catégorie d’événements";;
+"com.axelor.apps.crm.db.EventCategory";"archived";"field";;;;
+"com.axelor.apps.crm.db.EventCategory";;"view";"EventCategory";"Catégorie d’événements";;
+"com.axelor.apps.crm.db.EventCategory";"archived";"field";;;;
+"com.axelor.apps.crm.db.EventCategory";;"view";"Event categories";"Catégories d’événements";;
+"com.axelor.apps.crm.db.Event";;"view";"Event";"Evènement";;
+"com.axelor.apps.crm.db.Event";"archived";"field";;;;
+"com.axelor.apps.crm.db.Event";;"button";"Export calendar";"Exporter Calendrier";;
+"com.axelor.apps.crm.db.Event";;"button";"Import calendar";"Importer calendrier";;
+"com.axelor.apps.crm.db.Event";;"button";"Synchronize calendars";"Synchroniser calendriers";;
+"com.axelor.apps.crm.db.Event";;"view";"Events";"Événements";;
+"com.axelor.apps.crm.db.Event";;"button";"Yes";"Oui";;
+"com.axelor.apps.crm.db.Event";;"button";"No";"Non";;
+"com.axelor.apps.crm.db.Event";;"button";"Perhaps";"Peut-être";;
+"com.axelor.apps.crm.db.Event";;"page";"Informations";;;
+"com.axelor.apps.crm.db.Event";;"separator";"Subject";"Sujet";;
+"com.axelor.apps.crm.db.Event";;"placeholder";"Subject";"Sujet";;
+"com.axelor.apps.crm.db.Event";;"separator";"Location";"Lieu";;
+"com.axelor.apps.crm.db.Event";;"placeholder";"Location";"Lieu";;
+"com.axelor.apps.crm.db.Event";;"placeholder";"Location";"Lieu";;
+"com.axelor.apps.crm.db.Event";;"separator";"Description";"Description";;
+"com.axelor.apps.crm.db.Event";;"placeholder";"Description";"Description";;
+"com.axelor.apps.crm.db.Event";;"separator";"Attributes";"Attributs";;
+"com.axelor.apps.crm.db.Event";;"separator";"Dates";"Dates";;
+"com.axelor.apps.crm.db.Event";;"group";"Linked to";"Lié à";;
+"com.axelor.apps.crm.db.Event";;"separator";"Related to";"Associé à ";;
+"com.axelor.apps.crm.db.Event";;"group";"Assigned to";"Assigné à";;
+"com.axelor.apps.crm.db.Event";;"page";"Reminders";"Rappels";;
+"com.axelor.apps.crm.db.Event";;"page";"Attendees";"Participants";;
+"com.axelor.apps.crm.db.Event";;"separator";"Contacts";"Contacts";;
+"com.axelor.apps.crm.db.Event";;"button";"Add";"Ajouter";;
+"com.axelor.apps.crm.db.Event";;"button";"Export calendar";"Exporter Calendrier";;
+"com.axelor.apps.crm.db.Event";;"button";"Import calendar";"Importer calendrier";;
+"com.axelor.apps.crm.db.Event";;"button";"Synchronize calendar";"Synchroniser calendrier";;
+"com.axelor.apps.crm.db.Event";;"view";"Events";"Événements";;
+"com.axelor.apps.crm.db.Event";;"view";"Event";"Evènement";;
+"com.axelor.apps.crm.db.Event";"archived";"field";;;;
+"com.axelor.apps.crm.db.EventReminder";;"view";"Event reminder";"Rappel d'évènement";;
+"com.axelor.apps.crm.db.EventReminder";;"view";"EventReminder";"Rappel d'évènement";;
+"com.axelor.apps.crm.db.EventReminder";"archived";"field";;;;
+"com.axelor.apps.crm.db.EventReminder";;"view";"Event reminders";"Rappel d'évènement";;
+"com.axelor.apps.crm.db.EventReminder";;"view";"EventReminder";"Rappel d'évènement";;
+"com.axelor.apps.crm.db.EventReminder";"archived";"field";;;;
+"com.axelor.apps.crm.db.Lead";;"view";"Leads";"Pistes";;
+"com.axelor.apps.crm.db.Lead";;"button";"Add";"Ajouter";;
+"com.axelor.apps.crm.db.Lead";;"view";"Lead filters";"Filtres Pistes";;
+"com.axelor.apps.crm.db.Lead";;"filter";"My Leads";"Mes Pistes";;
+"com.axelor.apps.crm.db.Lead";;"filter";"Unassigned Leads";"Pistes non assignées";;
+"com.axelor.apps.crm.db.Lead";;"filter";"My Team Leads";"Pistes de mon Equipe";;
+"com.axelor.apps.crm.db.Lead";;"button";"Convert lead";"Convertir le prospect";;
+"com.axelor.apps.crm.db.Lead";;"button";"Send email";"Envoyer Email";;
+"com.axelor.apps.crm.db.Lead";;"button";"Actions";"Actions";;
+"com.axelor.apps.crm.db.Lead";;"button";"Create call";"Créer Appel";;
+"com.axelor.apps.crm.db.Lead";;"button";"Schedule meeting";"Planifier Rendez-vous";;
+"com.axelor.apps.crm.db.Lead";;"button";"Create task";"Créer tâche";;
+"com.axelor.apps.crm.db.Lead";;"button";"Create opportunity";"Créer Opportunité";;
+"com.axelor.apps.crm.db.Lead";;"view";"Lead";"Prospect";;
+"com.axelor.apps.crm.db.Lead";;"group";"Contact";"Contact";;
+"com.axelor.apps.crm.db.Lead";;"placeholder";"Civility";"Civilité";;
+"com.axelor.apps.crm.db.Lead";;"placeholder";"Name";"Nom";;
+"com.axelor.apps.crm.db.Lead";;"placeholder";"First name";"Prénom";;
+"com.axelor.apps.crm.db.Lead";;"placeholder";"Enterprise name";"Entreprise";;
+"com.axelor.apps.crm.db.Lead";;"placeholder";"Function";"Fonction";;
+"com.axelor.apps.crm.db.Lead";;"group";"Coordonnées";"Coordonnées";;
+"com.axelor.apps.crm.db.Lead";;"group";"Assigned to";"Assigné à";;
+"com.axelor.apps.crm.db.Lead";;"button";"Assign to me";"Prendre en charge";;
+"com.axelor.apps.crm.db.Lead";;"page";"Informations";"Informations";;
+"com.axelor.apps.crm.db.Lead";;"group";"Primary address";"Adresse";;
+"com.axelor.apps.crm.db.Lead";;"group";"Other address";"Autre adresse";;
+"com.axelor.apps.crm.db.Lead";;"group";"Extra information";"Autres informations";;
+"com.axelor.apps.crm.db.Lead";;"group";"Status details";"États";;
+"com.axelor.apps.crm.db.Lead";;"group";"Source details";"Sources";;
+"com.axelor.apps.crm.db.Lead";;"group";"Marketing";"Marketing";;
+"com.axelor.apps.crm.db.Lead";;"page";"Activities";"Activités";;
+"com.axelor.apps.crm.db.Lead";;"view";"Lead";"Prospect";;
+"com.axelor.apps.crm.db.Lead";"archived";"field";;;;
+"com.axelor.apps.crm.db.Lead";;"view";"Lead";"Prospect";;
+"com.axelor.apps.crm.db.Lead";"archived";"field";;;;
+"com.axelor.apps.crm.db.Lead";;"button";"Assign to me";"Prendre en charge";;
+"com.axelor.apps.crm.db.Lead";;"view";"Leads";"Pistes";;
+"com.axelor.apps.crm.db.Lead";"createdOn";"field";;;;
+"com.axelor.apps.crm.db.Lead";"updatedOn";"field";;;;
+"com.axelor.apps.crm.db.Lead";;"button";"Assign to me";"Prendre en charge";;
+"com.axelor.apps.crm.db.Lead";;"button";"Log Call";"Planifier un appel";;
+"com.axelor.apps.crm.db.Lead";;"button";"Schedule Meeting";"Planifier un rendez-vous";;
+"com.axelor.apps.crm.db.Lead";;"button";"Send Email";"Envoyer email";;
+"com.axelor.apps.crm.db.Event";;"view";"Meetings";"Rendez-vous";;
+"com.axelor.apps.crm.db.Event";;"view";"Meeting filters";"Filtres sur les meetings";;
+"com.axelor.apps.crm.db.Event";;"filter";"My Meetings";"Mes Rendez-vous";;
+"com.axelor.apps.crm.db.Event";;"filter";"My Upcoming Meetings";"Mes prochains Rendez-vous";;
+"com.axelor.apps.crm.db.Event";;"filter";"My Team Meetings";"Rendez-vous de mon Equipe";;
+"com.axelor.apps.crm.db.Event";;"button";"Validate";"Valider";;
+"com.axelor.apps.crm.db.Event";;"button";"Cancel";"Annuler";;
+"com.axelor.apps.crm.db.Event";;"view";"Meeting";"Rendez-vous";;
+"com.axelor.apps.crm.db.Event";;"separator";"Subject";"Sujet";;
+"com.axelor.apps.crm.db.Event";;"placeholder";"Subject";"Sujet";;
+"com.axelor.apps.crm.db.Event";;"separator";"Location";"Lieu";;
+"com.axelor.apps.crm.db.Event";;"placeholder";"Location";"Lieu";;
+"com.axelor.apps.crm.db.Event";;"separator";"Description";"Description";;
+"com.axelor.apps.crm.db.Event";;"placeholder";"Description";"Description";;
+"com.axelor.apps.crm.db.Event";;"separator";"Dates";"Dates";;
+"com.axelor.apps.crm.db.Event";;"group";"Attributes";"Attributs";;
+"com.axelor.apps.crm.db.Event";;"group";"Linked to";"Lié à";;
+"com.axelor.apps.crm.db.Event";;"group";"Assigned to";"Assigné à";;
+"com.axelor.apps.crm.db.Event";;"group";"Reminders";"Rappels";;
+"com.axelor.apps.crm.db.Event";;"group";"Attendees";"Participants";;
+"com.axelor.apps.crm.db.Event";;"separator";"Contacts";"Contacts";;
+"com.axelor.apps.crm.db.Event";;"separator";"Leads";"Pistes";;
+"com.axelor.apps.crm.db.Event";;"view";"Meetings";"Rendez-vous";;
+"com.axelor.apps.crm.db.Event";;"button";"Validate";"Valider";;
+"com.axelor.apps.crm.db.Event";;"button";"Cancel";"Annuler";;
+"com.axelor.apps.crm.db.Event";;"view";"Meeting";"Rendez-vous";;
+"com.axelor.apps.crm.db.Event";;"group";"Informations";"Informations";;
+"com.axelor.apps.crm.db.Event";;"group";"Meeting date";"Date du rendez-vous";;
+"com.axelor.apps.crm.db.Event";;"group";"Description";"Description";;
+"com.axelor.apps.crm.db.Event";;"group";"Assignment";"Assignation";;
+"com.axelor.apps.crm.db.MeetingType";;"view";"MeetingType";"Type de rendez-vous";;
+"com.axelor.apps.crm.db.MeetingType";"archived";"field";;;;
+"com.axelor.apps.crm.db.MeetingType";;"view";"Meeting type";"Type de rendez-vous";;
+"com.axelor.apps.crm.db.MeetingType";;"view";"MeetingType";"Type de rendez-vous";;
+"com.axelor.apps.crm.db.MeetingType";"archived";"field";;;;
+"com.axelor.apps.crm.db.MeetingType";;"view";"Meeting types";"Type de rendez-vous";;
+"com.axelor.apps.crm.db.Opportunity";;"view";"Opportunities filters";"Filtres Opportunités";;
+"com.axelor.apps.crm.db.Opportunity";;"filter";"My Opportunities";"Mes Opportunités";;
+"com.axelor.apps.crm.db.Opportunity";;"filter";"Unassigned Opportunities";"Opportunités non-assignées";;
+"com.axelor.apps.crm.db.Opportunity";;"filter";"My Team Opportunities";"Opportunités de mon Equipe";;
+"com.axelor.apps.crm.db.Opportunity";;"view";"Opportunity";"Opportunité";;
+"com.axelor.apps.crm.db.Opportunity";"archived";"field";;;;
+"com.axelor.apps.crm.db.Opportunity";;"button";"Previous Stage";"Etape précédente";;
+"com.axelor.apps.crm.db.Opportunity";;"button";"Next Stage";"Etape suivante";;
+"com.axelor.apps.crm.db.Opportunity";;"button";"Closed won";"Fermée gagnée";;
+"com.axelor.apps.crm.db.Opportunity";;"button";"Closed lost";"Fermée perdue";;
+"com.axelor.apps.crm.db.Opportunity";;"view";"Opportunity";"Opportunité";;
+"com.axelor.apps.crm.db.Opportunity";;"group";"Context";"Contexte";;
+"com.axelor.apps.crm.db.Opportunity";;"group";"Follow-up";"Suivi";;
+"com.axelor.apps.crm.db.Opportunity";;"group";"Financial terms";"Termes financiers";;
+"com.axelor.apps.crm.db.Opportunity";;"group";"Linked to";"Reliée à";;
+"com.axelor.apps.crm.db.Opportunity";;"group";"Assigned to";"Assignée à";;
+"com.axelor.apps.crm.db.Opportunity";;"button";"Assign to me";"Prendre en charge";;
+"com.axelor.apps.crm.db.Opportunity";;"separator";"Description";;;
+"com.axelor.apps.crm.db.Opportunity";;"view";"Opportunity";"Opportunité";;
+"com.axelor.apps.crm.db.Opportunity";"archived";"field";;;;
+"com.axelor.apps.crm.db.Opportunity";;"button";"Assign to me";"Prendre en charge";;
+"com.axelor.apps.crm.db.Opportunity";;"view";"Opportunities";"Opportunités";;
+"com.axelor.apps.crm.db.Opportunity";;"button";"Assign to me";"Prendre en charge";;
+"com.axelor.apps.crm.db.Opportunity";;"button";"Next Stage";"Etape suivante";;
+"com.axelor.apps.crm.db.Opportunity";;"button";"Closed won";"Fermée gagnée";;
+"com.axelor.apps.crm.db.Opportunity";;"button";"Closed lost";"Fermée perdue";;
+"com.axelor.apps.crm.db.Opportunity";;"view";"Opportunities";"Opportunités";;
+"com.axelor.apps.crm.db.Opportunity";;"view";"Opportunities";"Opportunités";;
+"com.axelor.apps.crm.db.Opportunity";;"view";"Opportunity";"Opportunité";;
+"com.axelor.apps.crm.db.Opportunity";;"group";"Informations";"Informations";;
+"com.axelor.apps.crm.db.Opportunity";;"group";"Context";"Contexte";;
+"com.axelor.apps.crm.db.Opportunity";;"group";"Follow-up";"Suivi";;
+"com.axelor.apps.crm.db.Opportunity";;"group";"Financial terms";"Termes financiers";;
+"com.axelor.apps.crm.db.Opportunity";;"group";"Assigned to";"Assignée à";;
+"com.axelor.apps.crm.db.Opportunity";;"view";"Opportunities";"Opportunités";;
+"com.axelor.apps.crm.db.OpportunityType";;"view";"OpportunityType";"Type d'opportunité";;
+"com.axelor.apps.crm.db.OpportunityType";"archived";"field";;;;
+"com.axelor.apps.crm.db.OpportunityType";;"view";"Opportunity type";"Type d'opportunité";;
+"com.axelor.apps.crm.db.OpportunityType";;"view";"OpportunityType";"Type d'opportunité";;
+"com.axelor.apps.crm.db.OpportunityType";"archived";"field";;;;
+"com.axelor.apps.crm.db.OpportunityType";;"view";"Opportunity types";"Types d'opportunité";;
+"com.axelor.apps.crm.db.Participant";;"view";"Participant";"Participant";;
+"com.axelor.apps.crm.db.Participant";"archived";"field";;;;
+"com.axelor.apps.crm.db.Participant";;"view";"Participant";"Participant";;
+"com.axelor.apps.crm.db.Participant";"archived";"field";;;;
+"com.axelor.apps.base.db.Partner";;"view";"Partner";"Tiers";;
+"com.axelor.apps.base.db.Partner";;"placeholder";"Civility";"Civilité";;
+"com.axelor.apps.base.db.Partner";;"placeholder";"Name";"Nom";;
+"com.axelor.apps.base.db.Partner";;"placeholder";"First name";"Prénom";;
+"com.axelor.apps.base.db.Partner";;"page";"Informations";"Informations";;
+"com.axelor.apps.base.db.Partner";;"group";"Partner Details";"Détails du tiers";;
+"com.axelor.apps.base.db.Partner";;"group";"Postal addresses";"Les adresses postales";;
+"com.axelor.apps.base.db.Partner";;"group";"Invoicing address";"Adresse facturation";;
+"com.axelor.apps.base.db.Partner";;"viewField";"Address";"Adresse";;
+"com.axelor.apps.base.db.Partner";;"viewField";"City";"Ville";;
+"com.axelor.apps.base.db.Partner";;"viewField";"State";"Statut";;
+"com.axelor.apps.base.db.Partner";;"viewField";"Postal code";"Code Postal";;
+"com.axelor.apps.base.db.Partner";;"viewField";"Country";"Pays";;
+"com.axelor.apps.base.db.Partner";;"group";"Delivery address";"Adresse livraison";;
+"com.axelor.apps.base.db.Partner";;"viewField";"Address";"Adresse";;
+"com.axelor.apps.base.db.Partner";;"viewField";"City";"Ville";;
+"com.axelor.apps.base.db.Partner";;"viewField";"State";"Statut";;
+"com.axelor.apps.base.db.Partner";;"viewField";"Postal code";"Code Postal";;
+"com.axelor.apps.base.db.Partner";;"viewField";"Country";"Pays";;
+"com.axelor.apps.base.db.Partner";;"group";"Contact";"Contact";;
+"com.axelor.apps.base.db.Partner";;"page";"Notes";"Remarques";;
+"com.axelor.apps.base.db.Partner";;"page";"Invoicing/Payment";"Facturation/Paiement";;
+"com.axelor.apps.base.db.Partner";;"page";"Settings";"Configurations";;
+"com.axelor.apps.base.db.Partner";;"group";"Assigned to";"Assigné à";;
+"com.axelor.apps.crm.db.TargetConfiguration";;"view";"Target configuration";"Configuration objectifs";;
+"com.axelor.apps.crm.db.TargetConfiguration";;"group";"Concerns";"Concerne";;
+"com.axelor.apps.crm.db.TargetConfiguration";;"group";"Period";"Période";;
+"com.axelor.apps.crm.db.TargetConfiguration";;"group";"Targets";"Objectifs";;
+"com.axelor.apps.crm.db.TargetConfiguration";;"separator";"Opportunities";"Opportunités";;
+"com.axelor.apps.crm.db.TargetConfiguration";;"separator";"Calls";"Appels";;
+"com.axelor.apps.crm.db.TargetConfiguration";;"separator";"Meetings";"Rendez-vous";;
+"com.axelor.apps.crm.db.TargetConfiguration";;"view";"TargetConfiguration";"Configuration des objectifs";;
+"com.axelor.apps.crm.db.TargetConfiguration";"archived";"field";;;;
+"com.axelor.apps.crm.db.TargetConfiguration";;"view";"TargetConfiguration";"Configuration des objectifs";;
+"com.axelor.apps.crm.db.TargetConfiguration";"archived";"field";;;;
+"com.axelor.apps.crm.db.TargetConfiguration";;"view";"Target configurations";"Configuration objectifs";;
+"com.axelor.apps.crm.db.Target";;"view";"Target";"Objectifs";;
+"com.axelor.apps.crm.db.Target";"archived";"field";;;;
+"com.axelor.apps.crm.db.Target";;"view";"Target";"Objectifs";;
+"com.axelor.apps.crm.db.Target";;"group";"Information";"Information";;
+"com.axelor.apps.crm.db.Target";;"group";"Period";"Période";;
+"com.axelor.apps.crm.db.Target";;"group";"Opportunity";"Opportunité";;
+"com.axelor.apps.crm.db.Target";;"separator";"Target";"Objectifs";;
+"com.axelor.apps.crm.db.Target";;"separator";"Real";"Réel";;
+"com.axelor.apps.crm.db.Target";;"label";"Vs";"Vs";;
+"com.axelor.apps.crm.db.Target";;"label";"Vs";"Vs";;
+"com.axelor.apps.crm.db.Target";;"label";"Vs";"Vs";;
+"com.axelor.apps.crm.db.Target";;"group";"Events";"Événements";;
+"com.axelor.apps.crm.db.Target";;"separator";"Target";"Objectifs";;
+"com.axelor.apps.crm.db.Target";;"separator";"Real";"Réel";;
+"com.axelor.apps.crm.db.Target";;"label";"Vs";"Vs";;
+"com.axelor.apps.crm.db.Target";;"label";"Vs";"Vs";;
+"com.axelor.apps.crm.db.Target";;"view";"Target";"Objectifs";;
+"com.axelor.apps.crm.db.Target";"archived";"field";;;;
+"com.axelor.apps.crm.db.Target";;"view";"Targets";"Objectifs";;
+;;"view";"Target team Dashboard";"Tableau de bord des objectifs équipes";;
+;;"view";"Target User Dashboard";"Tableau de bord des objectifs utilisateurs";;
+"com.axelor.apps.crm.db.Event";;"view";"Tasks filters";"Filtres Tâches";;
+"com.axelor.apps.crm.db.Event";;"filter";"My Tasks";"Mes tâches";;
+"com.axelor.apps.crm.db.Event";;"filter";"My Today Tasks";"Mes tâches du jour";;
+"com.axelor.apps.crm.db.Event";;"filter";"My Upcoming Tasks";"Mes tâches à venir";;
+"com.axelor.apps.crm.db.Event";;"filter";"My Team Tasks";"Tâches de mon Equipe";;
+"com.axelor.apps.crm.db.Event";;"view";"Ticket filters";"Filtres tickets";;
+"com.axelor.apps.crm.db.Event";;"filter";"My Tickets";"Mes tickets";;
+"com.axelor.apps.crm.db.Event";;"filter";"My Team Tickets";"Tickets de mon Equipe";;
+"com.axelor.apps.crm.db.Event";;"filter";"Unassigned Tickets";"Tickets";;
+"com.axelor.apps.crm.db.Event";;"filter";"Urgent Tickets";"Tickets urgents";;
+"com.axelor.apps.crm.db.Event";;"filter";"New Tickets";"Nouveaux Tickets";;
+"com.axelor.apps.crm.db.Event";;"filter";"Ongoing Tickets";"Tickets en Cours";;
+"com.axelor.apps.crm.db.Event";;"filter";"Closed Tickets";"Tickets Clôturés";;
+"com.axelor.apps.crm.db.Event";;"button";"Assign to me";"Prendre en charge";;
+"com.axelor.apps.crm.db.Event";;"button";"Start";"Démarrer";;
+"com.axelor.apps.crm.db.Event";;"button";"Validate";"Valider";;
+"com.axelor.apps.crm.db.Event";;"button";"Finish";"Clôturer";;
+"com.axelor.apps.crm.db.Event";;"view";"Ticket";"Ticket";;
+"com.axelor.apps.crm.db.Event";;"separator";"Ticket N°";"Ticket N°";;
+"com.axelor.apps.crm.db.Event";;"separator";"Subject";"Sujet";;
+"com.axelor.apps.crm.db.Event";;"placeholder";"Subject";"Sujet";;
+"com.axelor.apps.crm.db.Event";;"separator";"Details";"Détails";;
+"com.axelor.apps.crm.db.Event";"createdBy";"field";;"Créé par";;
+"com.axelor.apps.crm.db.Event";;"separator";"Dates";"Dates";;
+"com.axelor.apps.crm.db.Event";;"group";"Attributes";"Attributs";;
+"com.axelor.apps.crm.db.Event";;"group";"Linked to";"Lié à";;
+"com.axelor.apps.crm.db.Event";;"page";"Description";"Description";;
+"com.axelor.apps.crm.db.Event";;"page";"Comments";"Commentaires";;
+"com.axelor.apps.message.db.Message";;"view";"Comments";"Commentaires";;
+"com.axelor.apps.message.db.Message";;"view";"Comment";"Commentaire";;
+"com.axelor.apps.message.db.Message";;"group";"Informations";"Informations";;
+"com.axelor.apps.message.db.Message";;"group";"Content";"Contenu";;
+"com.axelor.apps.crm.db.Event";;"page";"Watchers";"Observateurs";;
+"com.axelor.apps.crm.db.Event";;"button";"Assign to me";"Prendre en charge";;
+"com.axelor.apps.crm.db.Event";;"view";"Ticket";"Ticket";;
+"com.axelor.apps.crm.db.Event";;"button";"Assign to me";"Prendre en charge";;
+"com.axelor.apps.crm.db.Event";;"button";"Start";"Démarrer";;
+"com.axelor.apps.crm.db.Event";;"button";"Validate";"Valider";;
+"com.axelor.apps.crm.db.Event";;"button";"Finish";"Terminer";;
+;;"action";"Contacts";"Contacts";;
+;;"action";"Leads";"Pistes";;
+;;"action";"Convert lead";"Convertir le prospect";;
+;;"action";"Create call";"Créer Appel";;
+;;"action";"Create meeting";"Créer Rendez-vous";;
+;;"action";"Create opportunity";"Créer Opportunité";;
+;;"action";"Create task";"Créer Tâche";;
+;;"action";"Tickets";"Tickets";;
+;;"action";"Historical events completed";"Historique des évènements";;
+;;"action";"Opportunities";"Opportunités";;
+;;"action";"Upcoming events";"Prochains Evènements";;
+;;"action";"From date must be less than the to date";"La *date de* doit être inférieur à la *date à*.";;
+;;"action";"CRM batches";;;
+;;"action";"Calendars";"Calendriers";;
+;;"action";"Calendar Configurations";"Configuration Calendriers";;
+;;"action";"Event Categories";"Catégories d’événements";;
+;;"action";"Leads Source";"Provenances des prospects";;
+;;"action";"Meeting Types";"Types de rendez-vous";;
+;;"action";"Meeting Participants";"Participants aux rendez-vous";;
+;;"action";"Target";"Objectifs";;
+;;"action";"Targets Configurations";"Configuration objectifs";;
+;;"action";"Calls";"Appels";;
+;;"action";"Call";"Appel";;
+;;"action";"Meeting";"Rendez-vous";;
+;;"action";"Task";"Tâche";;
+;;"action";"Ticket";"Ticket";;
+;;"action";"Leads";"Pistes";;
+;;"action";"Meetings";"Rendez-vous";;
+;;"action";"My Meetings Calendar";"Mon Calendrier";;
+;;"action";"Team Calendar";"Calendrier de mon équipe";;
+;;"action";"Opportunities";"Opportunités";;
+;;"action";"Tasks";"Tâches";;
+;;"action";"Tickets";"Tickets";;
+;;"action";"Top agents by Open Tickets";"Meilleurs agents par ticket ouvert";;
+;;"action";"Partner List Report";"Reporting Tiers";;
+;;"action";"Calls by team by user";"Appels par équipe et par utilisateur";;
+;;"action";"Calls type by team";"Appels par équipe";;
+;;"action";"Calls type by user";"Appels par utilisateur";;
+;;"action";"Closed Opportunities";"Opportunités fermées";;
+;;"action";"Top clients by Open Cases";"Meilleures Opportunités Clients";;
+;;"action";"Due Open Tickets";"Ticket ouvert échus";;
+;;"action";"Event List Report";"Rapport des évènements";;
+;;"action";"Event Graph Report";"Graphique des évènements";;
+;;"action";"All Upcoming Holidays";"Tous les congés à venir";;
+;;"action";"Late Tickets";"Tickets en retard";;
+;;"action";"Lead List Report";"Liste des pistes";;
+;;"action";"Lead Graph Report";"Graphique des Pistes";;
+;;"action";"Leads by Country";"Pistes par pays";;
+;;"action";"Leads by Salesman by Status";"Pistes par commercial par état";;
+;;"action";"Leads by Source";"Pistes par provenance";;
+;;"action";"Leads by Team by Status";"Pistes par Equipe par Etat";;
+;;"action";"My Active Tickets";"Mes tickets en cours";;
+;;"action";"My Closed Opportunities";"Mes Opportunités fermées";;
+;;"action";"My Late Tickets";"Mes Tickets en retard";;
+;;"action";"My Leads";"Mes Pistes";;
+;;"action";"My New Tickets";"Mes nouveaux Tickets";;
+;;"action";"My New Urgent Tickets";"Mes nouveaux Tickets urgents";;
+;;"action";"My Open Opportunities";"Mes Opportunités en cours";;
+;;"action";"My Today Support Activities";"Mes Activités support du jour";;
+;;"action";"My Urgent Tickets";"Mes Tickets urgent";;
+;;"action";"New Tickets";"Nouveaux Tickets";;
+;;"action";"New Urgent Tickets";"Nouveaux Tickets urgents";;
+;;"action";"Open Opportunities";"Opportunités en cours";;
+;;"action";"Ticket distribution by Priority";"Répartition des tickets par priorité";;
+;;"action";"Open tickets by priority";"Tickets ouverts par priorité";;
+;;"action";"Open tickets by status";"Tickets ouverts par statut";;
+;;"action";"Chart";"Graphique";;
+;;"action";"Opportunities By Sale Stage";"Opportunités par Etape";;
+;;"action";"Chart";"Graphique";;
+;;"action";"Pipeline by Stage and Type";"Pipeline par Etape par Type";;
+;;"action";"Opportunities By Type";"Opportunités par type";;
+;;"action";"Key accounts";"Compte clé";;
+;;"action";"Recent lost deals";"Opp. récemment perdues";;
+;;"action";"Chart";"Graphique";;
+;;"action";"Recently created opportunities";"Opp. récemment créées";;
+;;"action";"Best Open Deals";"Meilleures Opp. en cours";;
+;;"action";"Opportunities Won By Lead Source";"Opportunités gagnées par source";;
+;;"action";"Opportunities Won By Partner";"Opportunités gagnées par commercial";;
+;;"action";"Opportunities Won By Salesman";"Opp. Gagnées par Salesman";;
+;;"action";"Opportunity";"Opportunité";;
+;;"action";"Opportunity Report";"Reporting des opportunités";;
+;;"action";"Target team Dashboard";"Tableau de bord des objectifs équipes";;
+;;"action";"Target user Dashboard";"Tableau de bord des objectifs utilisateurs";;
+;;"action";"My Team Closed Opportunities";"Opp. Fermées de mon Equipe";;
+;;"action";"My Team Leads";"Pistes de mon Equipe";;
+;;"action";"My Team Open Opportunities";"Opp. Ouvertes de mon Equipe";;
+;;"action";"Unassigned Leads";"Pistes non-assignées";;
+;;"action";"Unassigned Opportunities";"Opportunités non-assignées";;
+;;"action";"Urgent Tickets";"Tickets urgents";;
+;;"action";"Create Lead";"Créer Piste";;
+;;"action";"Create Opportunity";"Créer Opportunité";;
+;;"action";"Leads";"Pistes";;
+;;"action";"Opportunities";"Opportunités";;
+"top.propsection.leads";"top.propsection.leads";"documentation";;;;
+"top.prospection.opportunity";"top.prospection.opportunity";"documentation";;;;
+"top.new.opportunity.view";"top.new.opportunity.view";"documentation";;;;
+"top.new.lead.view";"top.new.lead.view";"documentation";;;;
+"portal.opportunity.dashboard.view";"portal.opportunity.dashboard.view";"documentation";;;;
+"portal.opportunity.graph.dashboard.view";"portal.opportunity.graph.dashboard.view";"documentation";;;;
+"portal.lead.graph.dashboard.view";"portal.lead.graph.dashboard.view";"documentation";;;;
+"portal.event.graph.dashboard.view";"portal.event.graph.dashboard.view";"documentation";;;;
+"portal.event.dashboard.view";"portal.event.dashboard.view";"documentation";;;;
+"portal.lead.dashboard.view";"portal.lead.dashboard.view";"documentation";;;;
+"portal.base.partner.list.dashboard.view";"portal.base.partner.list.dashboard.view";"documentation";;;;
+"portal.target.user.dashboard.view";"portal.target.user.dashboard.view";"documentation";;;;
+"portal.target.team.dashboard.view";"portal.target.team.dashboard.view";"documentation";;;;
+"crm.root.create.task";"crm.root.create.task";"documentation";;;;
+"crm.root.create.meeting";"crm.root.create.meeting";"documentation";;;;
+"crm.root.create.call";"crm.root.create.call";"documentation";;;;
+"crm.root.create.ticket";"crm.root.create.ticket";"documentation";;;;
+"crm.root.task";"crm.root.task";"documentation";;;;
+"crm.root.meeting";"crm.root.meeting";"documentation";;;;
+"crm.root.call";"crm.root.call";"documentation";;;;
+"crm.root.ticket";"crm.root.ticket";"documentation";;;;
+"crm.root.lead";"crm.root.lead";"documentation";;;;
+"crm.root.opportunity";"crm.root.opportunity";"documentation";;;;
+"crm.root.meeting.my.calendar";"crm.root.meeting.my.calendar";"documentation";;;;
+"crm.root.meeting.team.calendar";"crm.root.meeting.team.calendar";"documentation";;;;
+"crm.conf.lead.source";"crm.conf.lead.source";"documentation";;;;
+"crm.conf.meeting.type";"crm.conf.meeting.type";"documentation";;;;
+"crm.conf.participant";"crm.conf.participant";"documentation";;;;
+"crm.conf.event.category";"crm.conf.event.category";"documentation";;;;
+"crm.conf.calendar";"crm.conf.calendar";"documentation";;;;
+"crm.conf.calendar.configuration";"crm.conf.calendar.configuration";"documentation";;;;
+"crm.conf.target.configuration";"crm.conf.target.configuration";"documentation";;;;
+"crm.conf.target";"crm.conf.target";"documentation";;;;
+"admin.root.batch.crm";"admin.root.batch.crm";"documentation";;;;
+"crm-task-form";"crm-task-form";"documentation";;;;
+"crm-task-form";"start";"documentation";;;"Start";
+"crm-task-form";"pause";"documentation";;;"Pause";
+"crm-task-form";"accept";"documentation";;;"Finish";
+"crm-task-form";"subject";"documentation";;;;
+"crm-task-form";"location";"documentation";;;;
+"crm-task-form";"description";"documentation";;;;
+"crm-task-form";"startDateTime";"documentation";;;;
+"crm-task-form";"duration";"documentation";;;;
+"crm-task-form";"endDateTime";"documentation";;;;
+"crm-task-form";"limitDateT";"documentation";;;;
+"crm-task-form";"taskStatusSelect";"documentation";;;;"Statut utilisé uniquement pour les tâches. Par défaut, la valeur est  'Non-Démarrée'."
+"crm-task-form";"prioritySelect";"documentation";;;;"Degré de priorité associé à un ticket."
+"crm-task-form";"clientPartner";"documentation";;;;"Tiers entreprise (B2B) ou indiviuel (B2C) concerné par cet événement. Si un tiers est sélectionné, l'évènement apparaîtra dans le suivi d'activités sur la fiche Tiers."
+"crm-task-form";"contactPartner";"documentation";;;;"Dans le cas d'un tiers entreprise, le contact principal concerné par cet événement."
+"crm-task-form";"lead";"documentation";;;;"Piste concernée par cet événement. Si une piste est sélectionnée ici, l'évènement apparaîtra dans le suivi d'activités sur la fiche Piste."
+"crm-task-form";"relatedToSelect";"documentation";;;;"Défini le lien entre cet enregistrement et un autre enregistrement de l'application. D'abord sélectionner le type de document à associer, puis sélectionner l'enregistrement correspondant au type sélectionné (exemple : Produit, Etude)"
+"crm-task-form";"userInfo";"documentation";;;;"Employé en charge ou concerné par cet enregistrement. Selon les règles à configurer dans l'administration, un employé selon son groupe pourra voir tout ou partie des enregistrements de la base."
+"crm-task-form";"team";"documentation";;;;"Equipe en charge ou concernée par cet enregistrement. Selon les règles à configurer dans l'administration, un employé pourra voir selon son groupe pourra voir tout ou partie des enregistrements de la base associé à son équipe."
+"crm-task-form";"eventReminderList";"documentation";;;;"Liste des rappels configurés pour l'évènement."
+"event-reminder-form";"event-reminder-form";"documentation";;;;
+"event-reminder-form";"typeSelect";"documentation";;;;"Dans le cadre des rappels, vérifiez bien que l'employé (via sa fiche Contact Interne) ou le reste des participants à un N° de mobile ou un email de renseigné."
+"event-reminder-form";"assignToSelect";"documentation";;;;"Un rappel peut-être envoyé au titulaire de l'évènement uniquement, ou alors à l'ensemble des participants."
+"event-reminder-form";"duration";"documentation";;;;"Durée (quantité) associée au type de durée ci-après. Si type durée = heures, en rentrant 2, un rappel sera envoyé à l'employé ou à tous les participants 2 heures avant la date et l'heure prévue de l'évènement."
+"event-reminder-form";"durationTypeSelect";"documentation";;;;"Unité associée à la quantité pour définir la temporalité du rappel par rapport au début de l'évènement."
+"ticket-form";"ticket-form";"documentation";;;;
+"ticket-form";"grabEvent";"documentation";;;"Assign to me";
+"ticket-form";"start";"documentation";;;"Start";
+"ticket-form";"accept";"documentation";;;"Validate";
+"ticket-form";"stop";"documentation";;;"Finish";
+"ticket-form";"ticketNumberSeq";"documentation";;;;"Séquence à définir dans la rubrique séquence du menu (cf Administration ERP > Général > Configuration)."
+"ticket-form";"subject";"documentation";;;;
+"ticket-form";"eventCategory";"documentation";;;;"Catégorie associée à un ticket pour les classer efficacement. Les catégories sont configurables dans le menu Configuration du CRM."
+"ticket-form";"createdBy";"documentation";;;;
+"ticket-form";"userInfo";"documentation";;;;"Employé en charge ou concerné par cet enregistrement. Selon les règles à configurer dans l'administration, un employé selon son groupe pourra voir tout ou partie des enregistrements de la base."
+"ticket-form";"responsibleUserInfo";"documentation";;;;"Employé (utilisateur) en charge de résoudre le ticket. Ce champ peut-être vide à la création du ticket, puis  assigné à tel ou tel employé selon sa compétence."
+"ticket-form";"startDateTime";"documentation";;;;
+"ticket-form";"duration";"documentation";;;;
+"ticket-form";"endDateTime";"documentation";;;;
+"ticket-form";"limitDateT";"documentation";;;;
+"ticket-form";"ticketStatusSelect";"documentation";;;;"Statut utilisé uniquement pour les tickets. Par défaut, la valeur est  'Nouveau'."
+"ticket-form";"prioritySelect";"documentation";;;;"Degré de priorité associé à un ticket."
+"ticket-form";"progressSelect";"documentation";;;;"L'avancement est à définir manuellement par la personne en charge de répondre au ticket."
+"ticket-form";"clientPartner";"documentation";;;;"Tiers entreprise (B2B) ou indiviuel (B2C) concerné par cet événement. Si un tiers est sélectionné, l'évènement apparaîtra dans le suivi d'activités sur la fiche Tiers."
+"ticket-form";"contactPartner";"documentation";;;;"Dans le cas d'un tiers entreprise, le contact principal concerné par cet événement."
+"ticket-form";"description";"documentation";;;;
+"ticket-form";"messageList";"documentation";;;;
+"ticket-form";"sentDate";"documentation";;;;
+"ticket-form";"sender";"documentation";;;;
+"ticket-form";"content";"documentation";;;;
+"ticket-form";"userInfoSet";"documentation";;;;"Utilisateurs internes qui sont susceptibles d'être intéressées par le ticket et qui souhaitent être averties lors de sa résolution."
+"lead-form";"lead-form";"documentation";;;;
+"lead-form";"convertLead";"documentation";;;;
+"lead-form";"sendByEmail";"documentation";;;;
+"lead-form";"picture";"documentation";;;;
+"lead-form";"titleSelect";"documentation";;;;
+"lead-form";"name";"documentation";;;;
+"lead-form";"firstName";"documentation";;;;
+"lead-form";"enterpriseName";"documentation";;;;
+"lead-form";"partner";"documentation";;;;"Champ rempli automatiquement lorsque la Piste est convertie en Tiers (lien vers le Tiers créé)."
+"lead-form";"jobTitle";"documentation";;;;
+"lead-form";"fixedPhone";"documentation";;;;
+"lead-form";"fax";"documentation";;;;
+"lead-form";"mobilePhone";"documentation";;;;
+"lead-form";"emailAddress";"documentation";;;;
+"lead-form";"contactDate";"documentation";;;;
+"lead-form";"grabLead";"documentation";;;;
+"lead-form";"userInfo";"documentation";;;;"Utilisateur (employé) en charge du suivi de cette Piste."
+"lead-form";"team";"documentation";;;;"Equipe en charge du suivi de cette Piste"
+"lead-form";"primaryAddress";"documentation";;;;"Champ correspondant à l'adresse L4 de la norme postale."
+"lead-form";"primaryCity";"documentation";;;;"Si le code postal associé est un cedex, le nom de la ville devra comporter un cedex (exemple : Paris Cedex 2, Rouen Cedex)"
+"lead-form";"primaryState";"documentation";;;;"Utilisé seulement pour certains pays comme les Etats-Unis, la Chine..."
+"lead-form";"primaryPostalCode";"documentation";;;;
+"lead-form";"primaryCountry";"documentation";;;;
+"lead-form";"otherAddress";"documentation";;;;"Champ correspondant à l'adresse L4 de la norme postale."
+"lead-form";"otherCity";"documentation";;;;"Si le code postal associé est un cedex, le nom de la ville devra comporter un cedex (exemple : Paris Cedex 2, Rouen Cedex)"
+"lead-form";"otherState";"documentation";;;;"Utilisé seulement pour certains pays comme les Etats-Unis, la Chine..."
+"lead-form";"otherPostalCode";"documentation";;;;
+"lead-form";"otherCountry";"documentation";;;;
+"lead-form";"isCopyAddress";"documentation";;;;"Champ permettant de recopier les données d'adressee à gauche pour compléter l'adresse secondaire à droite."
+"lead-form";"officeName";"documentation";;;;
+"lead-form";"department";"documentation";;;;
+"lead-form";"webSite";"documentation";;;;
+"lead-form";"description";"documentation";;;;
+"lead-form";"statusSelect";"documentation";;;;
+"lead-form";"statusDescription";"documentation";;;;"Champ permettant de renseigner des informations complémentaires relatives à un changement d'Etat."
+"lead-form";"source";"documentation";;;;"Source (canal) de provenance de la Piste."
+"lead-form";"sourceDescription";"documentation";;;;"Champ permettant de renseigner des informations complémentaires relatives à la provenance de la Piste.."
+"lead-form";"campaign";"documentation";;;;"Dans le cas où le lead aient pris contact avec la société suite à une campagne, choisir la campagne associée."
+"lead-form";"referredBy";"documentation";;;;"Personne ayant apporté ce contact."
+"lead-form";"isDoNotCall";"documentation";;;;"Si cochée, indique que la piste ne souhaite pas recevoir d'appels dans le cadre d'une campagne téléphonique."
+"lead-form";"isDoNotSendEmail";"documentation";;;;"Si cochée, indique que la piste ne souhaite pas recevoir d'emails dans le cadre d'une campagne téléphonique."
+"lead-form";"opportunityAmount";"documentation";;;;"Montant d'une éventuelle opportunité associée à cette Piste à qualifier."
+"opportunity-form";"opportunity-form";"documentation";;;;
+"opportunity-form";"previous-stage";"documentation";;;"Previous Stage";
+"opportunity-form";"next-stage";"documentation";;;"Next Stage";
+"opportunity-form";"closed-won";"documentation";;;"Closed won";
+"opportunity-form";"closed-lost";"documentation";;;"Closed lost";
+"opportunity-form";"name";"documentation";;;;
+"opportunity-form";"opportunityType";"documentation";;;;
+"opportunity-form";"salesStageSelect";"documentation";;;;
+"opportunity-form";"source";"documentation";;;;"Indique la manière dont la piste a eu connaissance de la société, de ses produits (Salon, Séminaire ...)"
+"opportunity-form";"nextStep";"documentation";;;;"Indication à suivre pour passer à l'étape suivante."
+"opportunity-form";"expectedCloseDate";"documentation";;;;"Date limite de réponse, d'envoi de l'offre/devis"
+"opportunity-form";"probability";"documentation";;;;"Probabilité pour que l'opportunité soit remportée par le commercial ou son équipe."
+"opportunity-form";"amount";"documentation";;;;"Montant de l'opportunité dans la devise mentionné"
+"opportunity-form";"currency";"documentation";;;;"Devise associée aux montants de l'opportunité."
+"opportunity-form";"bestCase";"documentation";;;;
+"opportunity-form";"worstCase";"documentation";;;;
+"opportunity-form";"partner";"documentation";;;;"Client associé à l'opportunité. Si ce champ est rempli, l'opportunité apparaîtra sur la fiche Client."
+"opportunity-form";"lead";"documentation";;;;
+"opportunity-form";"campaign";"documentation";;;;"Si un lead nous à contacté suite à une campagne, lien vers la campagne en question."
+"opportunity-form";"userInfo";"documentation";;;;"Responsable du suivi de l'opportunité. Le responsable doit appartenir à l'équipe renseignée."
+"opportunity-form";"grabLead";"documentation";;;;
+"opportunity-form";"team";"documentation";;;;"Equipe à laquelle est associée cette opportunité."
+"opportunity-form";"company";"documentation";;;;
+"opportunity-form";"description";"documentation";;;;
+"meeting-form";"meeting-form";"documentation";;;;
+"meeting-form";"accept";"documentation";;;"Validate";
+"meeting-form";"cancel";"documentation";;;"Cancel";
+"meeting-form";"subject";"documentation";;;;
+"meeting-form";"location";"documentation";;;;
+"meeting-form";"viewOnMap";"documentation";;;;
+"meeting-form";"description";"documentation";;;;
+"meeting-form";"startDateTime";"documentation";;;;
+"meeting-form";"endDateTime";"documentation";;;;
+"meeting-form";"duration";"documentation";;;;
+"meeting-form";"statusSelect";"documentation";;;;"Statut utilisé pour les rendez-vous. Par défaut, la valeur est planifié."
+"meeting-form";"meetingType";"documentation";;;;"Type de rendez-vous pour les classer efficacement ou effectuer des reportings détaillés d'activité. Les types de rendez-vous sont configurables dans le menu Configuration du CRM."
+"meeting-form";"clientPartner";"documentation";;;;"Tiers entreprise (B2B) ou indiviuel (B2C) concerné par cet événement. Si un tiers est sélectionné, l'évènement apparaîtra dans le suivi d'activités sur la fiche Tiers."
+"meeting-form";"contactPartner";"documentation";;;;"Dans le cas d'un tiers entreprise, le contact principal concerné par cet événement."
+"meeting-form";"lead";"documentation";;;;"Piste concernée par cet événement. Si une piste est sélectionnée ici, l'évènement apparaîtra dans le suivi d'activités sur la fiche Piste."
+"meeting-form";"relatedToSelect";"documentation";;;;"Défini le lien entre cet enregistrement et un autre enregistrement de l'application. D'abord sélectionner le type de document à associer, puis sélectionner l'enregistrement correspondant au type sélectionné (exemple : Produit, Etude)"
+"meeting-form";"userInfo";"documentation";;;;"Employé en charge ou concerné par cet enregistrement. Selon les règles à configurer dans l'administration, un employé selon son groupe pourra voir tout ou partie des enregistrements de la base."
+"meeting-form";"team";"documentation";;;;"Equipe en charge ou concernée par cet enregistrement. Selon les règles à configurer dans l'administration, un employé pourra voir selon son groupe pourra voir tout ou partie des enregistrements de la base associé à son équipe."
+"meeting-form";"eventReminderList";"documentation";;;;"Liste des rappels configurés pour l'évènement."
+"meeting-form";"contactEventAttendeeList";"documentation";;;;
+"meeting-form";"leadEventAttendeeList";"documentation";;;;
+"call-form";"call-form";"documentation";;;;
+"call-form";"accept";"documentation";;;"Validate";
+"call-form";"cancel";"documentation";;;"Cancel";
+"call-form";"grabEvent";"documentation";;;"Assign to me";
+"call-form";"subject";"documentation";;;;
+"call-form";"description";"documentation";;;;
+"call-form";"startDateTime";"documentation";;;;
+"call-form";"duration";"documentation";;;;
+"call-form";"endDateTime";"documentation";;;;
+"call-form";"callStatusSelect";"documentation";;;;"Appel reçu (par défaut) ou appel émis"
+"call-form";"statusSelect";"documentation";;;;"Statut utilisé pour les rendez-vous. Par défaut, la valeur est planifié."
+"call-form";"clientPartner";"documentation";;;;"Tiers entreprise (B2B) ou indiviuel (B2C) concerné par cet événement. Si un tiers est sélectionné, l'évènement apparaîtra dans le suivi d'activités sur la fiche Tiers."
+"call-form";"contactPartner";"documentation";;;;"Dans le cas d'un tiers entreprise, le contact principal concerné par cet événement."
+"call-form";"lead";"documentation";;;;"Piste concernée par cet événement. Si une piste est sélectionnée ici, l'évènement apparaîtra dans le suivi d'activités sur la fiche Piste."
+"call-form";"relatedToSelect";"documentation";;;;"Défini le lien entre cet enregistrement et un autre enregistrement de l'application. D'abord sélectionner le type de document à associer, puis sélectionner l'enregistrement correspondant au type sélectionné (exemple : Produit, Etude)"
+"call-form";"userInfo";"documentation";;;;"Employé en charge ou concerné par cet enregistrement. Selon les règles à configurer dans l'administration, un employé selon son groupe pourra voir tout ou partie des enregistrements de la base."
+"call-form";"team";"documentation";;;;"Equipe en charge ou concernée par cet enregistrement. Selon les règles à configurer dans l'administration, un employé pourra voir selon son groupe pourra voir tout ou partie des enregistrements de la base associé à son équipe."
+"call-form";"eventReminderList";"documentation";;;;"Liste des rappels configurés pour l'évènement."
+"call-form";"contactEventAttendeeList";"documentation";;;;
+"call-form";"leadEventAttendeeList";"documentation";;;;
+"event-form";"event-form";"documentation";;;;
+"event-form";"exportCalendar";"documentation";;;;
+"event-form";"importCalendar";"documentation";;;;
+"event-form";"synchronizeCalendars";"documentation";;;;
+"event-form";"typeSelect";"documentation";;;;"Selon le type d'évènement choisi, les propriétés d'affichage seront modifiées."
+"event-form";"yes";"documentation";;;;
+"event-form";"no";"documentation";;;;
+"event-form";"perhaps";"documentation";;;;
+"event-form";"subject";"documentation";;;;
+"event-form";"location";"documentation";;;;
+"event-form";"viewOnMap";"documentation";;;;
+"event-form";"description";"documentation";;;;
+"event-form";"statusSelect";"documentation";;;;"Statut utilisé pour les rendez-vous. Par défaut, la valeur est planifié."
+"event-form";"callStatusSelect";"documentation";;;;"Appel reçu (par défaut) ou appel émis"
+"event-form";"meetingType";"documentation";;;;"Type de rendez-vous pour les classer efficacement ou effectuer des reportings détaillés d'activité. Les types de rendez-vous sont configurables dans le menu Configuration du CRM."
+"event-form";"taskStatusSelect";"documentation";;;;"Statut utilisé uniquement pour les tâches. Par défaut, la valeur est  'Non-Démarrée'."
+"event-form";"prioritySelect";"documentation";;;;"Degré de priorité associé à un ticket."
+"event-form";"calendar";"documentation";;;;"Calendrier interne auquel est associé l'évènement."
+"event-form";"startDateTime";"documentation";;;;
+"event-form";"endDateTime";"documentation";;;;
+"event-form";"duration";"documentation";;;;
+"event-form";"clientPartner";"documentation";;;;"Tiers entreprise (B2B) ou indiviuel (B2C) concerné par cet événement. Si un tiers est sélectionné, l'évènement apparaîtra dans le suivi d'activités sur la fiche Tiers."
+"event-form";"contactPartner";"documentation";;;;"Dans le cas d'un tiers entreprise, le contact principal concerné par cet événement."
+"event-form";"lead";"documentation";;;;"Piste concernée par cet événement. Si une piste est sélectionnée ici, l'évènement apparaîtra dans le suivi d'activités sur la fiche Piste."
+"event-form";"relatedToSelect";"documentation";;;;"Défini le lien entre cet enregistrement et un autre enregistrement de l'application. D'abord sélectionner le type de document à associer, puis sélectionner l'enregistrement correspondant au type sélectionné (exemple : Produit, Etude)"
+"event-form";"userInfo";"documentation";;;;"Employé en charge ou concerné par cet enregistrement. Selon les règles à configurer dans l'administration, un employé selon son groupe pourra voir tout ou partie des enregistrements de la base."
+"event-form";"team";"documentation";;;;"Equipe en charge ou concernée par cet enregistrement. Selon les règles à configurer dans l'administration, un employé pourra voir selon son groupe pourra voir tout ou partie des enregistrements de la base associé à son équipe."
+"event-form";"eventReminderList";"documentation";;;;"Liste des rappels configurés pour l'évènement."
+"event-form";"eventAttendeeList";"documentation";;;;
+"event-form";"add";"documentation";;;;
+"event-attendee-contact-form";"event-attendee-contact-form";"documentation";;;;
+"event-attendee-contact-form";"statusSelect";"documentation";;;;"Défini le degré d'importance de la présence d'une personne (contact ou piste) à la réunion."
+"event-attendee-contact-form";"contactPartner";"documentation";;;;
+"event-attendee-contact-form";"lead";"documentation";;;;
+"meeting-type-form";"meeting-type-form";"documentation";;;;
+"meeting-type-form";"name";"documentation";;;;
+"meeting-type-form";"code";"documentation";;;;
+"participant-form";"participant-form";"documentation";;;;
+"participant-form";"partner";"documentation";;;;
+"participant-form";"isComing";"documentation";;;;
+"participant-form";"archived";"documentation";;;;
+"event-category-form";"event-category-form";"documentation";;;;
+"event-category-form";"name";"documentation";;;;
+"event-category-form";"code";"documentation";;;;
+"event-category-form";"typeSelect";"documentation";;;;"Type utilisé pour filtré les catégories en fonction du type d'évènement."
+"calendar-form";"calendar-form";"documentation";;;;
+"calendar-form";"title";"documentation";;;;
+"calendar-form";"url";"documentation";;;;"URL Publique du calendrier"
+"calendar-form";"typeSelect";"documentation";;;;"Format de synchronisation du calendrier."
+"calendar-form";"isSslConnection";"documentation";;;;
+"calendar-form";"port";"documentation";;;;
+"calendar-form";"login";"documentation";;;;
+"calendar-form";"password";"documentation";;;;
+"target-configuration-form";"target-configuration-form";"documentation";;;;
+"target-configuration-form";"name";"documentation";;;;
+"target-configuration-form";"code";"documentation";;;;
+"target-configuration-form";"userInfo";"documentation";;;;
+"target-configuration-form";"team";"documentation";;;;
+"target-configuration-form";"periodTypeSelect";"documentation";;;;
+"target-configuration-form";"fromDate";"documentation";;;;
+"target-configuration-form";"toDate";"documentation";;;;
+"target-configuration-form";"opportunityAmountWon";"documentation";;;;
+"target-configuration-form";"opportunityCreatedNumber";"documentation";;;;
+"target-configuration-form";"opportunityCreatedWon";"documentation";;;;
+"target-configuration-form";"callEmittedNumber";"documentation";;;;
+"target-configuration-form";"meetingNumber";"documentation";;;;
+"target-form";"target-form";"documentation";;;;
+"target-form";"name";"documentation";;;;
+"target-form";"code";"documentation";;;;
+"target-form";"userInfo";"documentation";;;;
+"target-form";"team";"documentation";;;;
+"target-form";"periodTypeSelect";"documentation";;;;
+"target-form";"fromDate";"documentation";;;;
+"target-form";"toDate";"documentation";;;;
+"target-form";"opportunityAmountWonTarget";"documentation";;;;
+"target-form";"opportunityAmountWon";"documentation";;;;
+"target-form";"opportunityCreatedNumberTarget";"documentation";;;;
+"target-form";"opportunityCreatedNumber";"documentation";;;;
+"target-form";"opportunityCreatedWonTarget";"documentation";;;;
+"target-form";"opportunityCreatedWon";"documentation";;;;
+"target-form";"callEmittedNumberTarget";"documentation";;;;
+"target-form";"callEmittedNumber";"documentation";;;;
+"target-form";"meetingNumberTarget";"documentation";;;;
+"target-form";"meetingNumber";"documentation";;;;
+"crm-batch-form";"crm-batch-form";"documentation";;;;
+"crm-batch-form";"actionSelect";"documentation";;;;
+"crm-batch-form";"code";"documentation";;;;
+"crm-batch-form";"company";"documentation";;;;
+"crm-batch-form";"durationTypeSelect";"documentation";;;;
+"crm-batch-form";"eventReminderBatch";"documentation";;;;
+"crm-batch-form";"targetConfigurationSet";"documentation";;;;
+"crm-batch-form";"targetBatch";"documentation";;;;
+"crm-batch-form";"createdOn";"documentation";;;;
+"crm-batch-form";"createdBy";"documentation";;;;
+"crm-batch-form";"description";"documentation";;;;
+"crm-batch-form";"batchList";"documentation";;;;
