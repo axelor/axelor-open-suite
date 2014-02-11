@@ -37,11 +37,14 @@ import java.util.List;
 import javax.swing.text.html.CSS;
 
 import org.joda.time.LocalDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.service.debtrecovery.PayerQualityService;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.General;
 import com.axelor.apps.base.service.CurrencyConversionService;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
@@ -50,6 +53,8 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 
 public class GeneralController {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(CurrencyService.class);
 
 	@Inject
 	private Injector injector;
@@ -71,9 +76,11 @@ public class GeneralController {
 	
 	public void updateCurrencyConversion(ActionRequest request, ActionResponse response){
 		 General general = request.getContext().asType(General.class);
+		 LocalDate today = gs.getTodayDate(); 
 		 for(CurrencyConversionLine ccl : general.getCurrencyConversionLineList()){
-			if(ccl.isSelected() && ccl.getToDate() == null){
-				LocalDate today = gs.getTodayDate(); 
+			CurrencyConversionLine cclCoverd = CurrencyConversionLine.all().filter("startCurrency = ?1 AND endCurrency = ?2 AND fromDate >= ?3 AND (toDate <= ?3 OR toDate = null)",ccl.getStartCurrency(),ccl.getEndCurrency(),today).fetchOne();
+			LOG.info("Currency Conversion Line for {} already convered : {}",today,ccl);
+			if(ccl.isSelected() && ccl.getToDate() == null & cclCoverd == null){
 				ccl = CurrencyConversionLine.find(ccl.getId());
 				ccl.setToDate(today.minusDays(1));
 				ccs.saveCurrencyConversionLine(ccl);
