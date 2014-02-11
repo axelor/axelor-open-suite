@@ -17,8 +17,8 @@
     <decimal name="latit" title="Latitude" scale="10" precision="20"/>
     <decimal name="longit" title="Longitude" scale="10" precision="20"/>
     <integer name="zoom" title="Default zoom"/>
-    <string name="inseeCode" title="INSEE Code" readonly="true"/>
-    <boolean name="certifiedOk" title="Adress certified by QAS engine" default="false" readonly="true"/>
+    <string name="inseeCode" title="National Code" readonly="true"/>
+    <boolean name="certifiedOk" title="Address certified by QAS engine" default="false" readonly="true"/>
     <one-to-many name="pickList" ref="com.axelor.apps.base.db.PickListEntry" title="QAS Proposal lists" mappedBy="address"/>
     
     

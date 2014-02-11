@@ -21,7 +21,7 @@
 		<integer name="macroCategorySelect" title="Macro-Category" selection="organisation.candidate.macroCategory.select"/>
 		<integer name="categorySelect" title="Category"	selection="organisation.candidate.category.select"/>
 		
-		<integer name="contractTypeSelect" title="Type de contrat" selection="organisation.job.offer.contract.type.select"/>
+		<integer name="contractTypeSelect" title="Contract type" selection="organisation.job.offer.contract.type.select"/>
 		<integer name="contractDuration" title="Duration"/>
 		<string name="functionRanking" title="Function Coeff."/>
         <string name="advantages" title="Advantages" large="true" multiline="true"/>

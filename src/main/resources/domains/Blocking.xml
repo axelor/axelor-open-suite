@@ -19,7 +19,7 @@
     <many-to-one name="debitBlockingByUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="Blocking done by"/>
 	<!-- GROUP Reminder Blocking -->
     <boolean name="reminderBlockingOk" title="Block Reminders ?"/>
-    <date name="reminderBlockingToDate" title="Blocage jusqu au"/>
+    <date name="reminderBlockingToDate" title="Block until"/>
     <many-to-one name="reminderBlockingReason" ref="com.axelor.apps.base.db.StopReason" title="Blocking reason"/>
     <many-to-one name="reminderBlockingByUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="Blocking done by"/>
 	<!-- GROUP Blocage Facturation -->
@@ -33,7 +33,7 @@
     <many-to-one name="reimbursementBlockingReason" ref="com.axelor.apps.base.db.StopReason" title="Blocking reason"/>
     <many-to-one name="reimbursementBlockingByUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="Blocking done by"/>
         
-    <string name="name" title="Référence" search="company,partner">
+    <string name="name" title="Reference" search="company,partner">
 	    <![CDATA[
 	    if(company != null && partner != null)
 	    	return company.getCode() + " - " + partner.getName();    

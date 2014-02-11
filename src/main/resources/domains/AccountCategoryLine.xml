@@ -7,11 +7,11 @@
 
   <entity name="AccountCategoryLine" lang="java">
     
-    <many-to-one name="accountCategory" ref="AccountCategory" title="Catégorie de compte"/>
+    <many-to-one name="accountCategory" ref="AccountCategory" title="Account category"/>
     <string name="sign" max="1" title="Signe"/>
-    <many-to-one name="category" ref="AccountCategory" title="Catégorie"/>
+    <many-to-one name="category" ref="AccountCategory" title="Category"/>
    
-    <string name="fullName" namecolumn="true" search="accountCategory,sign" title="Nom">
+    <string name="fullName" namecolumn="true" search="accountCategory,sign" title="Name">
 	    <![CDATA[
 		    String name = "Nouvelle ligne de catégorie";
 		    if (accountCategory != null) name = accountCategory.getName();

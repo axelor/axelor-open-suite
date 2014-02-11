@@ -17,7 +17,7 @@
   	<many-to-one name="status" ref="com.axelor.apps.base.db.Status" title="Status" readonly="true"/>
   	<many-to-one name="move" ref="com.axelor.apps.account.db.Move" title="Rejection MoveLine"/>
   	<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment Mode" hidden="true"/>
-    <string title="Description" name="description" default="Rejet chèque"/>
+    <string title="Description" name="description" default="Cheque rejection"/>
   </entity>
 
 </domain-models>

@@ -7,7 +7,7 @@
 
  	<entity name="CandidateOtherOpportunity" lang="java">
 		<many-to-one name="candidate" ref="Candidate"/>
-		<many-to-one name="ets" ref="com.axelor.apps.base.db.Partner" title="Société" help="Etablissement"/>
+		<many-to-one name="ets" ref="com.axelor.apps.base.db.Partner" title="Other Partner" help="Etablissement"/>
 		<string name="opportunity" title="Position title"/>
 		<many-to-one name="contact" ref="com.axelor.apps.base.db.Partner" title="Contact"/>
 		<string name="statusSelect" title="Status" selection="organisation.candidate.other.opportunity.status.select"/>

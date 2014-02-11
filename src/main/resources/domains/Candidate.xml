@@ -11,7 +11,7 @@
 		<!-- Header Candidate -->
 		<binary name="picture" image="true" title="Photo"/>
 		<integer name="titleSelect" title="Civility" selection="partner.title.type.select"/>
-		<string name="name" title="Family Name" required="true"/>
+		<string name="name" title="Last Name" required="true"/>
 		<string name="firstName" title="First Name" required="true"/>
 		<many-to-one name="currentJobKeyword" ref="com.axelor.apps.base.db.Keyword" title="Current Function"/>
 		
@@ -23,7 +23,7 @@
 		<!-- Candidate queries -->
 		<integer name="contractType" title="Contract Type" selection="organisation.job.offer.contract.type.select"/>
 		<many-to-one name="searchedJobKeyword" ref="com.axelor.apps.base.db.Keyword" title="Function searched"/>
-		<integer name="relocationSelect" title="Mobilité Géographique" selection="organisation.candidate.relocation.select" help="Non modifiable, automatique en fonction du champs 'Mobilité Géographique' dans l'onglet 'autres infos'" />
+		<integer name="relocationSelect" title="Relocation choice" selection="organisation.candidate.relocation.select" help="Non modifiable, automatique en fonction du champs 'Mobilité Géographique' dans l'onglet 'autres infos'" />
 		<integer name="salaryExpectation" title="Salary expectation"/>
 		<binary name="resume" title="CV" />
 		<binary name="coverLetter" title="Cover Letter" />
@@ -34,7 +34,7 @@
 		<date name="decisionDate" title="Decision Date"/>
 		
 		<!-- Candidate follow-up -->
-		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="Titulaire"/>
+		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="Followed by"/>
 		<integer name="recruitmentStatusSelect" title="Recruitment state" selection="organisation.candidate.recruitment.state.select"/>
 		<date name="recruitementDate" title="Recruitment date"/>		
 		<decimal name="globalEvaluation" title="Global grade" help="The grade is calculated based on the page 'Appraisal'" />
@@ -49,7 +49,7 @@
 		<one-to-many name="positionList" ref="Position" title="Professional experience" mappedBy="candidate"/>
 		
 		<many-to-one name="degree" ref="Degree" title="Significant Degree"/>
-		<integer name="educationLevel" title="Niveau d'études" selection="organisation.job.offer.education.level.select"/>
+		<integer name="educationLevel" title="Education level" selection="organisation.job.offer.education.level.select"/>
 		<one-to-many name="trainingLineList" ref="TrainingLine" title="Academic background/Trainings" mappedBy="candidate"/>
 		
 		<!-- Recruitment type -->

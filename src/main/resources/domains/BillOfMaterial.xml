@@ -8,7 +8,7 @@
   <entity name="BillOfMaterial" lang="java">
   
   	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
-  	<decimal name="qty" title="Quantity"/>
+  	<decimal name="qty" title="Qty"/>
   	<integer name="priority" title="Priority"/>
     <boolean name="isRawMaterial" title="Raw material"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>

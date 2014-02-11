@@ -10,6 +10,30 @@
         <field name="metaModel"/>
     </grid>
     
+	<form name="template-form" title="Template" model="com.axelor.apps.base.db.Template" cols="4" 
+		onSave="action-template-check-receptor" 
+		onNew="action-template-record-new">
+		
+		<field name="name"/>
+		<field name="isDefault"/>
+		<field name="metaModel"/>
+		<field name="target"/>
+		<field name="birtTemplate"/>
+		<field name="filePath" widget="url"/>
+		<field name="templateContext" colSpan="4"/>
+		<group name="recipientGroup" title="Destinated to" colSpan="4" cols="2">
+			<field name="toRecipients"/>
+			<field name="ccRecipients"/>
+			<field name="bccRecipients"/>
+		</group>
+		<group name="recipientGroup" colSpan="4" cols="2">
+			<separator title="Subject" colSpan="4"/>
+			<field name="subject" showTitle="false"/>
+			<separator title="Content" colSpan="4"/>
+			<field name="content" showTitle="false" colSpan="4" widget="Html[lite=false]"/>
+		</group>
+	</form>
+	
     <form name="template-form" title="Template" model="com.axelor.apps.base.db.Template" cols="4"
     	onNew="action-template-record-new"
     	onSave="action-template-check-receptor">

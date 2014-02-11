@@ -38,7 +38,7 @@
     <boolean name="updateDueReminderCustAccountOk" title="Solde exigible relançable"/>
     
     <!--     MOVE LINE EXPORT -->
-    <integer title="Type d'export" name="moveLineExportTypeSelect" selection="move.line.report.type.select.export"/>
+    <integer title="Export type" name="moveLineExportTypeSelect" selection="move.line.report.type.select.export"/>
     <date name="startDate" title="Start date"/>
     <date name="endDate" title="End date"/>
     

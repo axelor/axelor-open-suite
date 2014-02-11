@@ -9,8 +9,8 @@
   
     <integer name="importId"/>
     <string name="code" title="Code" required="true" unique="true"/>
-    <string name="name" title="Nom" required="true" unique="true"/>
-    <many-to-one name="analyticAxis" ref="com.axelor.apps.account.db.AnalyticAxis" title="Analytique Axis"/>
+    <string name="name" title="Name" required="true" unique="true"/>
+    <many-to-one name="analyticAxis" ref="com.axelor.apps.account.db.AnalyticAxis" title="Analytic Axis"/>
     <many-to-one name="parent" ref="com.axelor.apps.account.db.AnalyticAccount" title="Parent Analytic Acc."/>
     
   </entity>
