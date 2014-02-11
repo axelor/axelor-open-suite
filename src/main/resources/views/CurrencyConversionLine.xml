@@ -10,6 +10,7 @@
         <field name="variations" />
         <field name="fromDate"/>
         <field name="toDate"/>
+        <field name="general" hidden="true" />
         <button name="checkRate" title="Check rate" icon="icon-repeat" onClick="wizard-check-currency-conversion-rate-line" />
     </grid>
     
@@ -39,7 +40,7 @@
 	    	<button title="Get new rates" help="Get new rate at present from internet" readonlyIf="fromCurrency == null || toCurrency == null" onClick="action-currency-conversion-line-set-conversion-rate,action-currency-conversion-line-set-varation-rate" name="checkRate"/>
 	    	<label title="" />
 	    </group>
-	    <button name="updateRate"  title="Apply Currency Conversion Rate" help="Update currency conversion lines with new rate" onClick="action-currency-conversion-line-method-apply-conversion-rate" colSpan="4" readonlyIf="fromCurrency == null || toCurrency == null || conversionRate == null"/>
+	    <button name="updateRate"  title="Apply Currency Conversion Rate"  help="Update currency conversion lines with new rate" onClick="action-currency-conversion-line-method-apply-conversion-rate" colSpan="4" readonlyIf="fromCurrency == null || toCurrency == null || conversionRate == null"/>
     </form>
     
     <action-method name="action-currency-conversion-line-method-getTodayDate">
@@ -55,7 +56,7 @@
     </action-method>
     
     <action-record name="action-currency-conversion-line-set-conversion-rate" model="com.axelor.apps.base.db.Wizard">
-    	<field name="conversionRate" expr="call:com.axelor.apps.base.service.CurrencyConversionService:convert(fromCurrency as Currency,toCurrency as Currency)" />
+    	<field name="conversionRate" expr="call:com.axelor.apps.base.service.CurrencyConversionService:convert(Currency.find(fromCurrency.id),Currency.find(toCurrency.id))" />
     </action-record>
     
     <action-record name="action-currency-conversion-line-set-varation-rate" model="com.axelor.apps.base.db.Wizard">
@@ -68,24 +69,25 @@
     </action-record>
     
     <action-record name="action-currency-conversion-line-set-current-rate" model="com.axelor.apps.base.db.Wizard">
-    	<field name="currentRate" if="fromCurrency != null &amp;&amp; toCurrency != null &amp;&amp; date != null" expr="call:com.axelor.apps.base.service.CurrencyConversionService:getRate(fromCurrency as Currency,toCurrency as Currency, new LocalDate(date))" />
+    	<field name="currentRate" if="fromCurrency != null &amp;&amp; toCurrency != null &amp;&amp; date != null" expr="call:com.axelor.apps.base.service.CurrencyConversionService:getRate(Currency.find(fromCurrency.id),Currency.find(toCurrency.id), new LocalDate(date))" />
     </action-record>
     
      <action-record name="action-currency-conversion-line-wizard-set-today" model="com.axelor.apps.base.db.Wizard">
     	<field name="date" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
-    	<field name="fromCurrency" expr="eval : _fromCurrency" if="_fromCurrency != null"/>
-    	<field name="toCurrency" expr="eval : _toCurrency" if="_toCurrency != null"/>
-    	<field name="general" expr="eval: _general" />
+    	<field name="fromCurrency" expr="eval:Currency.find(_fromCurrency.id)" if="_fromCurrency != null"/>
+    	<field name="toCurrency" expr="eval:Currency.find(_toCurrency.id)" if="_toCurrency != null"/>
+    	<field name="general" expr="eval:_general"  />
     </action-record>
     
     <action-view title="Check currency conversion rate" model="com.axelor.apps.base.db.Wizard" name="wizard-check-currency-conversion-rate-line">
 	    <view type="form" name="wizard-check-currency-rate-form"/>
-	    <view-param name="popup" value="true"/>
+	    <view-param name="popup" value="reload"/>
 	    <view-param name="forceEdit" value="true"/> 
 	    <view-param name="width" value="800" />
 	    <view-param name="show-confirm" value="false" />
-	    <context name="_fromCurrency" expr="eval: Currency.find(startCurrency)" if="startcurrency != null" />
-	    <context name="_toCurrency" expr="eval: Currency.find(endCurrency)" if="endCurrency != null" />
+	    <context name="_fromCurrency" expr="eval:startCurrency" if="startCurrency != null" />
+	    <context name="_toCurrency" expr="eval:endCurrency" if="endCurrency != null" />
+	    <context name="_general" expr="eval:general"/>
 	</action-view>
 
 </object-views>

@@ -68,6 +68,8 @@ public class CurrencyConversionLineController {
 	public void checkDate(ActionRequest request, ActionResponse response) {
 	
 		CurrencyConversionLine ccl = request.getContext().asType(CurrencyConversionLine.class);
+		
+		LOG.debug("Currency Conversion Line Id : {}",ccl.getId());
 
 		if (ccl.getId() != null && CurrencyConversionLine.all().filter("self.startCurrency.id = ?1 and self.endCurrency.id = ?2 and (self.toDate = null OR  self.toDate >= ?3) and self.id != ?4)",ccl.getStartCurrency().getId(),ccl.getEndCurrency().getId(),ccl.getFromDate(),ccl.getId()).count() > 0) {
 			response.setFlash("ATTENTION : Veuillez clôturer la période actuelle de conversion pour en créer une nouvelle.");
@@ -96,22 +98,31 @@ public class CurrencyConversionLineController {
 		if(currencyFrom.get("id") != null && currencyTo.get("id") != null){
 			Currency fromCurrency = Currency.find(Long.parseLong(currencyFrom.get("id").toString()));
 			Currency toCurrency  = Currency.find(Long.parseLong(currencyTo.get("id").toString()));
-			CurrencyConversionLine ccl = CurrencyConversionLine.all().filter("startCurrency = ?1 AND endCurrency = ?2",context.get("fromCurrency"),context.get("toCurrency")).order("-fromDate").fetchOne();
 			LocalDate today = gs.getTodayDate();
+			CurrencyConversionLine cclCoverd = CurrencyConversionLine.all().filter("startCurrency = ?1 AND endCurrency = ?2 AND fromDate >= ?3 AND (toDate <= ?3 OR toDate = null)",fromCurrency,toCurrency,today).fetchOne();
 			
-			if(ccl != null && ccl.getToDate() == null){
-				ccl.setToDate(today.minusDays(1));
-				ccs.saveCurrencyConversionLine(ccl);
+			if(cclCoverd == null){
+				CurrencyConversionLine ccl = CurrencyConversionLine.all().filter("startCurrency = ?1 AND endCurrency = ?2",fromCurrency,toCurrency).order("-fromDate").fetchOne();
+				LOG.debug("Last conversion line {}",ccl);
+				
+				if(ccl != null && ccl.getToDate() == null){
+					ccl.setToDate(today.minusDays(1));
+					ccs.saveCurrencyConversionLine(ccl);
+				}
+				
+				BigDecimal rate = new BigDecimal(context.get("conversionRate").toString());
+				String variation = null;
+			    if(ccl != null)
+			    	variation = ccs.getVariations(rate, ccl.getConversionRate());
+			    General general = null;
+			    
+			    if(context.get("general") != null && ((HashMap)context.get("general")).get("id") != null)
+			    	general = General.find(Long.parseLong(((HashMap)context.get("general")).get("id").toString()));
+			    
+				ccs.createCurrencyConversionLine(fromCurrency,toCurrency,today,rate,general,variation);
 			}
-			BigDecimal rate = new BigDecimal(context.get("conversionRate").toString());
-			String variation = null;
-		    if(ccl != null)
-		    	variation = ccs.getVariations(rate, ccl.getConversionRate());
-		    
-		    General general = null;
-		    if(context.get("general") != null && ((HashMap)context.get("general")).get("id") != null)
-		    	general = General.find(Long.parseLong(((HashMap)context.get("general")).get("id").toString()));
-			ccs.createCurrencyConversionLine(fromCurrency,toCurrency,today,rate,general,variation);
+			else
+				response.setFlash("ATTENTION : Veuillez clôturer la période actuelle de conversion pour en créer une nouvelle");
 		}
 		else
 			response.setFlash("Both currencies must be saved before apply");
