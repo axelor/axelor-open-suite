@@ -10,7 +10,7 @@
 	<integer name="importId" />
 
 	<string name="stockMoveSeq" namecolumn="true" title="Reference" readonly="true"/>
-    <string name="name" title="Name" required="true"/>
+    <string name="name" title="Name"/>
     <many-to-one name="fromLocation" ref="com.axelor.apps.supplychain.db.Location" title="From location"/>
     <many-to-one name="toLocation" ref="com.axelor.apps.supplychain.db.Location" title="To location"/>
     

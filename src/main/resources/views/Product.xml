@@ -21,7 +21,7 @@
     	<toolbar>
     		<button name="sendByEmail" title="Send Email" icon="icon-envelope" onClick="action-send-by-email-with-template"/>
     	</toolbar>
-    	<field name="todayDate" widget="DATE" hidden="true"/>
+    	<field name="$todayDate" widget="DATE" hidden="true"/>
 	    <group colWidths="15%,85%" colSpan="6" cols="2">
 	            <group colSpan="1">
 	                <field name="picture" showTitle="false"/>
@@ -92,7 +92,7 @@
 				<spacer/>
 				<break/>
 				<portlet colSpan="4" action="action-product-view-stock"/>
-				<portlet action="chart:chart.stock.report.for.product" height="200" colSpan="4"/>
+<!-- 				<portlet action="chart:chart.stock.report.for.product" height="200" colSpan="4"/> -->
 			</page>
 			<page title="Production informations">
 				<field name="defaultBillOfMaterial" domain="self.product.id = :id"/>
@@ -133,7 +133,7 @@
     </action-record>
     
     <action-record name="action-product-set-today-date" model="com.axelor.apps.base.db.Product">
-    	<field name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+    	<field name="$todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
     </action-record>
     
     <action-record name="action-product-record-sale-supply-select" model="com.axelor.apps.base.db.Product">
@@ -207,7 +207,7 @@
 		<view-param name="popup" value="reload"/>
   		<view-param name="show-toolbar" value="false"/>
   		<view-param name="show-confirm" value="false" />
-  		<context name="_productId" expr="eval: __self__.id"/>
+  		<context name="_productId" expr="eval: __self__"/>
 	</action-view>
 	
 </object-views>

@@ -23,16 +23,16 @@
     
     
     <one-to-many name="toConsumeProdProductList" ref="com.axelor.apps.production.db.ProdProduct" mappedBy="toConsumeManufOrder" title="Products to consume"/>
-  	<one-to-many name="consumedProdProductList" ref="com.axelor.apps.production.db.ProdProduct" mappedBy="consumedManufOrder" title="Consumed products"/>
+  	<one-to-many name="consumedStockMoveLineList" ref="com.axelor.apps.supplychain.db.StockMoveLine" mappedBy="consumedManufOrder" title="Consumed products"/>
   	<one-to-many name="diffConsumeProdProductList" ref="com.axelor.apps.production.db.ProdProduct" mappedBy="diffConsumeManufOrder" title="Difference"/>
   
   
   	<one-to-many name="toProduceProdProductList" ref="com.axelor.apps.production.db.ProdProduct" mappedBy="toProduceManufOrder" title="Products to produce"/>
-  	<one-to-many name="producedProdProductList" ref="com.axelor.apps.production.db.ProdProduct" mappedBy="producedManufOrder" title="Produced products"/>
+  	<one-to-many name="producedStockMoveLineList" ref="com.axelor.apps.supplychain.db.StockMoveLine" mappedBy="producedManufOrder" title="Produced products"/>
   	<one-to-many name="wasteProdProductList" ref="com.axelor.apps.production.db.ProdProduct" mappedBy="wasteManufOrder" title="Waste"/>
     
     
-    <boolean name="isManagedConsumedProduct" title="Manage consumed products?" initParam="true"/>
+    <boolean name="isConsProOnOperation" title="Manage consumed products on operations?" initParam="true"/>
     
     <many-to-one name="billOfMaterial" ref="com.axelor.apps.production.db.BillOfMaterial" title="BOM" initParam="true"/>
     

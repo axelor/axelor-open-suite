@@ -34,30 +34,6 @@
 		</group>
 	</form>
 	
-    <form name="template-form" title="Template" model="com.axelor.apps.base.db.Template" cols="4"
-    	onNew="action-template-record-new"
-    	onSave="action-template-check-receptor">
-        <field name="name"/>
-        <field name="metaModel"/>
-        <field name="target"/>
-        <field name="birtTemplate"/>
-        <field name="filePath" widget="url"/>
-        <field name="isDefault"/>
-        <field name="templateContext" colSpan="4"/>
-        <notebook colSpan="4">
-        	<page title="Subject">
-        		<field name="subject" colSpan="4" showTitle="false"/>
-        	</page>
-        	<page title="Content">
-        		<field name="content" colSpan="4" widget="Html[lite=false]" showTitle="false"/>
-        	</page>
-        	<page title="Recipients">
-        		<field name="toRecipients" colSpan="4"/>
-        		<field name="ccRecipients" colSpan="4"/>
-        		<field name="bccRecipients" colSpan="4"/>
-        	</page>
-        </notebook>
-    </form>
     
     <action-record name="action-template-record-new" model="com.axelor.apps.base.db.Template">
     	<field name="metaModel" expr="eval: _parent?.targetSelect == 1 ? com.axelor.meta.db.MetaModel.all().filter('self.name = \'Partner\'').fetchOne() : (_parent?.targetSelect == 2 ? com.axelor.meta.db.MetaModel.all().filter('self.name = \'Lead\'').fetchOne() : null)" if="_parent?.targetSelect"/>
