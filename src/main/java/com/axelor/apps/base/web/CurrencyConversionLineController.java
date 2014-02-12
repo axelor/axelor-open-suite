@@ -125,9 +125,24 @@ public class CurrencyConversionLineController {
 				response.setFlash("ATTENTION : Veuillez clôturer la période actuelle de conversion pour en créer une nouvelle");
 		}
 		else
-			response.setFlash("Both currencies must be saved before apply");
+			response.setFlash("Both currencies must be saved before currency rate apply");
 		
 	}
 	
+	public void convert(ActionRequest request, ActionResponse response) {
+		Context context = request.getContext();
+		
+		Currency fromCurrency = (Currency)context.get("fromCurrency");
+		Currency toCurrency =  (Currency)context.get("toCurrency");
+		if(fromCurrency.getId() != null && toCurrency.getId() != null){
+			fromCurrency = Currency.find(fromCurrency.getId());
+			toCurrency  = Currency.find(toCurrency.getId());
+			BigDecimal rate = ccs.convert(fromCurrency, toCurrency);
+			if(rate.compareTo(new BigDecimal(-1)) == 0)
+				response.setFlash("Currency conversion webservice not working");
+			else
+				response.setValue("conversionRate", rate);
+		}
+	}
 	
 }

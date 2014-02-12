@@ -32,8 +32,11 @@ package com.axelor.apps.base.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
 
+import org.hamcrest.core.IsInstanceOf;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,7 +72,7 @@ public class CurrencyConversionService {
 		String wsUrl = gs.getGeneral().getCurrencyWsURL();
 		if(wsUrl == null){
 			LOG.info("Currency WS URL not configured");
-			return rate;
+			return new BigDecimal(-1);
 		}
 		
 		if(currencyFrom != null && currencyTo != null){
@@ -81,14 +84,18 @@ public class CurrencyConversionService {
 		        request.setUrl(url);
 		        request.setMethod(HTTPMethod.GET);
 		        HTTPResponse response = httpclient.execute(request);
+		        LOG.debug("Webservice response code: {}, reponse mesasage: {}",response.getStatusCode(),response.getStatusMessage());
+		        if(response.getStatusCode() != 200)
+		        	return new BigDecimal(-1);
 		        Float rt = Float.parseFloat(response.getContentAsString());
 		        rate = BigDecimal.valueOf(rt).setScale(4,RoundingMode.HALF_EVEN);
-			}catch(Exception e){
-				e.printStackTrace();
+			} catch (Exception e) {
+				if(e.getClass().equals(UnknownHostException.class))
+					return new BigDecimal(-1);
 				tb.trace(e);
+				e.printStackTrace();
 			}
 		}
-		
 		else
 			LOG.info("Currency from and to must be filled to get rate");
 		LOG.debug("Currerncy conversion rate: {}",new Object[] {rate});
