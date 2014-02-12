@@ -110,7 +110,7 @@ public class MailSender extends MailConnection {
 
 	
 	public Message createMessage(String content, String subject, List<String> recipientsTo, List<String> recipientsCc, List<String> recipientsBcc, Map<String, String> files) throws UnsupportedEncodingException, MessagingException {
-		Preconditions.checkArgument(recipientsTo != null && recipientsTo.size() > 0 && recipientsCc != null && recipientsCc.size() > 0 && recipientsBcc != null && recipientsBcc.size() > 0, 
+		Preconditions.checkArgument((recipientsTo != null && recipientsTo.size() > 0) || (recipientsCc != null && recipientsCc.size() > 0) || (recipientsBcc != null && recipientsBcc.size() > 0), 
 				"Recipients can not be null or empty");
 
 		Message msg = new MimeMessage(getSession());
