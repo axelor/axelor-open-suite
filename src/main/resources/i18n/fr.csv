@@ -1,762 +1,766 @@
 "domain","name","type","title","title_t","help","help_t"
-,,"menu","Supplychain batches",,,
-,,"menu","Supplychain configurations","Configs. Supply Chain",,
-,,"menu","New Purchase order","Nouv. Devis/Cmde Fourn.",,
-,,"menu","Purchase orders","Devis/Commandes",,
-,,"menu","Purchases","Achats",,
-,,"menu","Sales","Vente",,
-,,"menu","New Sale order","Nouv. Devis/Cmde Fourn.",,
-,,"menu","Sale orders","Devis/Commandes",,
-,,"menu","Stock management","Stocks",,
-,,"menu","Configuration","Configuration",,
-,,"menu","Minimum stock rules","Règles de stock minimum",,
-,,"menu","Customer Deliveries","Livraisons Client",,
-,,"menu","Internal Stock Moves","Mouvements Internes",,
-,,"menu","Periodical processing","Traitements Périodiques",,
-,,"menu","Inventories","Inventaires",,
-,,"menu","Stock Locations","Emplacements de stock",,
-,,"menu","Supplier Arrivals","Livraisons Fournisseur",,
-,,"menu","Create SO","Créer Devis",,
-,,"menu","Purchases","Achats",,
-,,"menu","Orders","Commandes",,
-,,"menu","RFQ","Demandes de cotation",,
-,,"menu","Sales","Vente",,
-,,"menu","Quotes","Devis",,
-,,"menu","Orders","Commandes",,
-,,"menu","Stock","Stock",,
-,,"menu","Customer deliveries","Livraisons clients",,
-,,"menu","Internal moves","Mouvements internes",,
-,,"menu","Supplier deliveries","Livraisons fournisseurs",,
-,,"select","Produce","Produire",,
-,,"select","Purchase","Achat",,
-,,"select","FromStock","Stock",,
-,,"select","Invoicing","Facturation",,
-,,"select","XLS","Excel",,
-,,"select","PDF","PDF",,
-,,"select","Canceled","Annulé",,
-,,"select","Realized","Réalisé",,
-,,"select","Planned","Planifié",,
-,,"select","Draft","Brouillon",,
-,,"select","Draft invoice N days after order validation","Facture brouillons N jrs après validation Cmde",,
-,,"select","When a task is over","Lorsqu'une tâche est terminée",,
-,,"select","Virtual","Virtuel",,
-,,"select","External","Externe",,
-,,"select","Internal","Interne",,
-,,"select","Production order","Ordre de fabrication",,
-,,"select","Purchase order","Devis fournisseurs",,
-,,"select","Alert","Alerte",,
-,,"select","Future","Futur",,
-,,"select","Current","Actuel",,
-,,"select","Canceled","Annulé",,
-,,"select","Finished","Terminé",,
-,,"select","Validated","Validé",,
-,,"select","Received","Reçu",,
-,,"select","Requested","Demandé",,
-,,"select","Draft","Brouillon",,
-,,"select","Canceled","Annulé",,
-,,"select","Realized","Réalisé",,
-,,"select","Planned","Planifié",,
-,,"select","Draft","Brouillon",,
-,,"select","Incoming move","Mvt Stock Réception",,
-,,"select","Outgoing move","Mvt Stock Livraison",,
-,,"select","Internal move","Mouvement Interne",,
-,,"chart","Purchase Orders last 6 month per product family","Cmde Achat par famille produit sur 6 mois",,
-,,"chart","Number Of Units On Customer Sales on Last 12 Month","Nbre Produits vendus (Cmdes) sur 12 mois",,
-,,"chart","Turnover On Customer Sales on Last 12 Month","CA Produits vendus (Cmdes) sur 12 mois",,
-,,"chart","My purchases orders per product family over past month in turnover","Mes Cmdes achat par famille produit en montant",,
-,,"chart","My purchases orders per product family over past month in volume","Mes Cmdes achat par famille produit en volume",,
-,,"chart","Turnover On Purchase orders on Last 12 Month","Montant Produits achetés (Cmdes) sur 12 mois",,
-,,"chart","Number Of Units Purchase orders on Last 12 Month","Nbre Produits achetés (Cmdes) sur 12 mois",,
-,,"chart","Purchases orders per buyer over past month in volume","Cmdes achats par acheteur sur les derniers moins en volume",,
-,,"chart","Purchases orders per family product over six month in percentage","Achats par famille produit sur 6 mois en %",,
-,,"chart","Purchases orders per family product over six month","Cmdes Achats par famille produit sur 6 derniers mois",,
-,,"chart","Number Of Supplier Orders Per Month","Nbre Cmdes Achat par mois",,
-,,"chart","Sales per product category over past 12 months in volume","Ventes par catégorie de produit sur les 12 derniers mois",,
-,,"chart","Sales per country over past 12 months","Ventes par pays sur les 12 derniers mois",,
-,,"chart","Sales per product family over past 12 months","Ventes par famille de produit sur 12 derniers mois",,
-,,"chart","Turnover per salesman over past 30 days","CA par commercial sur 30 derniers jours",,
-,,"chart","Turnover per team over past 30 days","CA par équipe sur 30 derniers jrs",,
-,,"chart","Turnover over past 6 months","CA sur les 6 derniers mois",,
-"com.axelor.apps.base.db.Wizard",,"view","Create inventory","Créer inventaire",,
-"com.axelor.apps.base.db.Wizard",,"viewField","Location","Emplacement/Entrepôt",,
-"com.axelor.apps.base.db.Wizard",,"viewField","Inventory date","Date inventaire",,
-"com.axelor.apps.base.db.Wizard",,"viewField","Description","Description",,
-"com.axelor.apps.base.db.Wizard",,"group","Fill inventory with","Remplir l'inventaire avec",,
-"com.axelor.apps.base.db.Wizard",,"viewField","Product family","Famille produit",,
-"com.axelor.apps.base.db.Wizard",,"viewField","Product category","Catégorie produit",,
-"com.axelor.apps.base.db.Wizard",,"viewField","Exclude out of stock products ?","Exclure produits sans stock ?",,
-"com.axelor.apps.base.db.Wizard",,"viewField","Include obsolete products ?","Inclure les produits obsolètes ?",,
-"com.axelor.apps.base.db.Wizard",,"button","Validate","Valider",,
-"com.axelor.apps.supplychain.db.StockMove",,"view","Customer deliveries filters","Livraisons Clients",,
-"com.axelor.apps.supplychain.db.StockMove",,"filter","Deliveries to prepare","Livraisons à préparer",,
-"com.axelor.apps.supplychain.db.StockMove",,"filter","Late Deliveries","Livraisons en retard",,
-"com.axelor.apps.supplychain.db.StockMove",,"filter","Deliveries History","Historique des Livraisons",,
-"com.axelor.apps.supplychain.db.StockMove",,"filter","Deliveries Cancelled","Livraisons annulées",,
-"com.axelor.apps.supplychain.db.StockMove",,"view","Internal Stock Move filters","Filtres Mvt Stock internes",,
-"com.axelor.apps.supplychain.db.StockMove",,"filter","Moves To Prepare","Mouvement à préparer",,
-"com.axelor.apps.supplychain.db.StockMove",,"filter","Moves History","Historique des Mouvements",,
-"com.axelor.apps.supplychain.db.StockMove",,"filter","Moves Cancelled","Mouvements annulés",,
-"com.axelor.apps.supplychain.db.Inventory",,"view","Inventories filters","Filtres inventaires",,
-"com.axelor.apps.supplychain.db.Inventory",,"filter","Planned Inventories","Inventaires Planifiés",,
-"com.axelor.apps.supplychain.db.Inventory",,"filter","Inventories History","Historique d'inventaire",,
-"com.axelor.apps.supplychain.db.Inventory",,"view","Inventory","Inventaires",,
-"com.axelor.apps.supplychain.db.Inventory","archived","field",,"Archivé ? ",,
-"com.axelor.apps.supplychain.db.Inventory",,"view","Inventory","Inventaires",,
-"com.axelor.apps.supplychain.db.Inventory",,"group","Export","Export",,
-"com.axelor.apps.supplychain.db.Inventory",,"button","Print","Imprimer",,
-"com.axelor.apps.supplychain.db.Inventory",,"group","Import","Import",,
-"com.axelor.apps.supplychain.db.Inventory",,"button","Import","Import",,
-"com.axelor.apps.supplychain.db.Inventory",,"group","Description","Description",,
-"com.axelor.apps.supplychain.db.Inventory",,"group","Fill inventory with","Remplir l'inventaire avec",,
-"com.axelor.apps.supplychain.db.Inventory",,"button","Fill inventory","Compléter l'inventaire",,
-"com.axelor.apps.supplychain.db.Inventory",,"group","Actions","Actions",,
-"com.axelor.apps.supplychain.db.Inventory",,"button","Plan","Planifier",,
-"com.axelor.apps.supplychain.db.Inventory",,"button","Realize","Réalisé",,
-"com.axelor.apps.supplychain.db.Inventory",,"button","Cancel","Annuler",,
-"com.axelor.apps.supplychain.db.Inventory",,"button","Draft","Brouillon",,
-"com.axelor.apps.supplychain.db.Inventory",,"view","Inventory","Inventaires",,
-"com.axelor.apps.supplychain.db.Inventory",,"view","Inventory","Inventaires",,
-"com.axelor.apps.supplychain.db.Inventory","archived","field",,"Archivé ? ",,
-"com.axelor.apps.supplychain.db.InventoryLine",,"view","Inventory line","Ligne d'inventaire",,
-"com.axelor.apps.supplychain.db.InventoryLine",,"group","Product Variants","Variantes produit",,
-"com.axelor.apps.supplychain.db.InventoryLine",,"view","InventoryLine","Ligne d'inventaire",,
-"com.axelor.apps.supplychain.db.InventoryLine","archived","field",,"Archivée ? ",,
-"com.axelor.apps.supplychain.db.InventoryLine",,"view","Inventory lines","Lignes d'inventaire",,
-"com.axelor.apps.supplychain.db.InventoryLine",,"view","InventoryLine","Ligne d'inventaire",,
-"com.axelor.apps.supplychain.db.InventoryLine","archived","field",,"Archivée ? ",,
-"com.axelor.apps.supplychain.db.Location",,"view","Location","Emplacement stock",,
-"com.axelor.apps.supplychain.db.Location","archived","field",,"Archivé ? ",,
-"com.axelor.apps.supplychain.db.Location",,"button","Create inventory","Créer inventaire",,
-"com.axelor.apps.supplychain.db.Location",,"view","Stock Location","Emplacement",,
-"com.axelor.apps.supplychain.db.Location",,"button","View location content","Voir contenu de l'emplacement",,
-"com.axelor.apps.supplychain.db.Location",,"page","Stock","Stock",,
-"com.axelor.apps.supplychain.db.Location",,"page","Stock Details","Détail des stocks",,
-"com.axelor.apps.supplychain.db.Location",,"view","Location","Emplacement stock",,
-"com.axelor.apps.supplychain.db.Location","archived","field",,"Archivé ? ",,
-"com.axelor.apps.supplychain.db.Location",,"view","Stock Locations","Emplacements de stock",,
-"com.axelor.apps.supplychain.db.LocationLine",,"view","Stock Location content","Contenu emplacement",,
-"com.axelor.apps.supplychain.db.LocationLine",,"view","Stock Locations content","Contenus emplacement",,
-"com.axelor.apps.supplychain.db.LocationLine",,"view","Stock Location content","Contenu emplacement",,
-"com.axelor.apps.supplychain.db.LocationLine",,"view","LocationLine","Contenu emplacement",,
-"com.axelor.apps.supplychain.db.LocationLine","archived","field",,,,
-"com.axelor.apps.supplychain.db.LocationLine",,"view","Stock Locations content","Contenus emplacement",,
-"com.axelor.apps.supplychain.db.LocationLine",,"view","LocationLine",,,
-"com.axelor.apps.supplychain.db.LocationLine","archived","field",,,,
-"com.axelor.apps.supplychain.db.LocationLine",,"view","Stock Location content","Contenu emplacement",,
-"com.axelor.apps.supplychain.db.LocationLine",,"view","Stock Locations content","Contenus emplacement",,
-"com.axelor.apps.production.db.Machine",,"view","Machine","Machine",,
-"com.axelor.apps.production.db.Machine",,"view","Machines","Machines",,
-"com.axelor.apps.supplychain.db.MinStockRules",,"view","Minimum stock rule","Les Règles de stock minimum",,
-"com.axelor.apps.supplychain.db.MinStockRules",,"view","MinStockRules",,,
-"com.axelor.apps.supplychain.db.MinStockRules","archived","field",,,,
-"com.axelor.apps.supplychain.db.MinStockRules",,"view","Minimum stock rules","Règles de stock minimum",,
-"com.axelor.apps.supplychain.db.MinStockRules",,"view","MinStockRules",,,
-"com.axelor.apps.supplychain.db.MinStockRules","archived","field",,,,
-"com.axelor.apps.supplychain.db.PurchaseOrder",,"view","PurchaseOrder",,,
-"com.axelor.apps.supplychain.db.PurchaseOrder","archived","field",,,,
-"com.axelor.apps.supplychain.db.PurchaseOrder",,"button","Print","Imprimer",,
-"com.axelor.apps.supplychain.db.PurchaseOrder",,"button","Send email","Envoyer Email",,
-"com.axelor.apps.supplychain.db.PurchaseOrder",,"view","Supplier RFQ/PO","Devis/Commande fournisseur",,
-"com.axelor.apps.supplychain.db.PurchaseOrder",,"page","PO information","Information OA",,
-"com.axelor.apps.supplychain.db.PurchaseOrder",,"group","Contacts","Contacts",,
-"com.axelor.apps.supplychain.db.PurchaseOrder",,"group","Delivery","Livraison",,
-"com.axelor.apps.supplychain.db.PurchaseOrder",,"group","Action(s)","Action(s)",,
-"com.axelor.apps.supplychain.db.PurchaseOrder",,"button","Compute","Calculer",,
-"com.axelor.apps.supplychain.db.PurchaseOrder",,"button","Draft","Brouillon",,
-"com.axelor.apps.supplychain.db.PurchaseOrder",,"button","Requested","Demandé",,
-"com.axelor.apps.supplychain.db.PurchaseOrder",,"button","Receipt","Reçu",,
-"com.axelor.apps.supplychain.db.PurchaseOrder",,"button","Validate","Valider",,
-"com.axelor.apps.supplychain.db.PurchaseOrder",,"button","Completed","Terminer",,
-"com.axelor.apps.supplychain.db.PurchaseOrder",,"button","Cancel","Annuler",,
-"com.axelor.apps.supplychain.db.PurchaseOrder",,"button","Show invoice","Factures fournisseurs",,
-"com.axelor.apps.supplychain.db.PurchaseOrder",,"button","Generate control invoice","Générer facture",,
-"com.axelor.apps.supplychain.db.PurchaseOrder",,"group","Totals","Totaux",,
-"com.axelor.apps.supplychain.db.PurchaseOrder",,"page","Notes","Notes",,
-"com.axelor.apps.supplychain.db.PurchaseOrder",,"button","Print","Imprimer",,
-"com.axelor.apps.supplychain.db.PurchaseOrder",,"view","Supplier RFQs/POs","Devis/Commandes",,
-"com.axelor.apps.supplychain.db.PurchaseOrder",,"button","Print","Imprimer",,
-"com.axelor.apps.supplychain.db.PurchaseOrder",,"button","Send Email","Envoyer email",,
-"com.axelor.apps.supplychain.db.PurchaseOrder",,"view","PurchaseOrder","Devis/Cmde Achat",,
-"com.axelor.apps.supplychain.db.PurchaseOrder","archived","field",,"Archivé ? ",,
-"com.axelor.apps.supplychain.db.PurchaseOrderLine",,"view","PurchaseOrderLine","Ligne de Devis/Cmde Achat",,
-"com.axelor.apps.supplychain.db.PurchaseOrderLine","archived","field",,"Archivée ? ",,
-"com.axelor.apps.supplychain.db.PurchaseOrderLine",,"view","PO line","Ligne de commande fournisseur",,
-"com.axelor.apps.supplychain.db.PurchaseOrderLine",,"group","Discount","Remise",,
-"com.axelor.apps.supplychain.db.PurchaseOrderLine",,"page","Details","Détails",,
-"com.axelor.apps.supplychain.db.PurchaseOrderLine",,"page","Links","Liens",,
-"com.axelor.apps.supplychain.db.PurchaseOrderLine",,"view","PurchaseOrderLine","Ligne de Devis/Cmde Achat",,
-"com.axelor.apps.supplychain.db.PurchaseOrderLine","archived","field",,"Archivé ? ",,
-"com.axelor.apps.supplychain.db.PurchaseOrderLine",,"view","PO lines","Lignes de commande fournisseur",,
-"com.axelor.apps.supplychain.db.PurchaseOrderLineTax",,"view","SO Tax line","Ligne de TVA",,
-"com.axelor.apps.supplychain.db.PurchaseOrderLineTax",,"view","PurchaseOrderLineTax","Ligne de TVA",,
-"com.axelor.apps.supplychain.db.PurchaseOrderLineTax","archived","field",,"Archivé ? ",,
-"com.axelor.apps.supplychain.db.PurchaseOrderLineTax",,"view","SO Tax lines","Les lignes de TVA",,
-"com.axelor.apps.supplychain.db.PurchaseOrderLineTax",,"view","PurchaseOrderLineTax","Ligne de TVA",,
-"com.axelor.apps.supplychain.db.PurchaseOrderLineTax","archived","field",,"Archivé ? ",,
-"com.axelor.apps.supplychain.db.PurchaseOrder",,"view","Purchases Order filters","Filtres Achats",,
-"com.axelor.apps.supplychain.db.PurchaseOrder",,"filter","My RFQs","Mes devis fournisseurs",,
-"com.axelor.apps.supplychain.db.PurchaseOrder",,"filter","My Sales","Mes Achats",,
-"com.axelor.apps.supplychain.db.SalesOrder",,"view","Sales Order filters","Filtres Devis/Cmdes Clients",,
-"com.axelor.apps.supplychain.db.SalesOrder",,"filter","My Proposals","Mes Propositions Commerciales",,
-"com.axelor.apps.supplychain.db.SalesOrder",,"filter","My Sales","Mes Ventes",,
-"com.axelor.apps.supplychain.db.SalesOrder",,"filter","My Team Proposals","Propositions Commerciales de mon Equipe",,
-"com.axelor.apps.supplychain.db.SalesOrder",,"filter","My Team Sales","Ventes de mon Equipe",,
-"com.axelor.apps.supplychain.db.SalesOrder",,"button","Print","Imprimer",,
-"com.axelor.apps.supplychain.db.SalesOrder",,"button","Send email","Envoyer Email",,
-"com.axelor.apps.supplychain.db.SalesOrder",,"button","Actions",,,
-"com.axelor.apps.supplychain.db.SalesOrder",,"button","Plan a meeting","Planifier un rendez-vous",,
-"com.axelor.apps.supplychain.db.SalesOrder",,"button","Plan a call","Planifier un appel",,
-"com.axelor.apps.supplychain.db.SalesOrder",,"button","Plan a task","Planifier une tâche",,
-"com.axelor.apps.supplychain.db.SalesOrder",,"view","Sale order","Devis",,
-"com.axelor.apps.supplychain.db.SalesOrder",,"page","Customer information","Informations client",,
-"com.axelor.apps.supplychain.db.SalesOrder",,"group","Specific settings","Configuration spécifique",,
-"com.axelor.apps.supplychain.db.SalesOrder",,"separator","Sale order content","Lignes de devis",,
-"com.axelor.apps.supplychain.db.SalesOrder",,"group","Action(s)","Action(s)",,
-"com.axelor.apps.supplychain.db.SalesOrder",,"button","Compute","Calculer",,
-"com.axelor.apps.supplychain.db.SalesOrder",,"button","Confirm","Confirmer",,
-"com.axelor.apps.supplychain.db.SalesOrder",,"button","Validate","Valider",,
-"com.axelor.apps.supplychain.db.SalesOrder",,"button","Cancel","Annuler",,
-"com.axelor.apps.supplychain.db.SalesOrder",,"button","Generate invoice","Générer facture",,
-"com.axelor.apps.supplychain.db.SalesOrder",,"group","Totaux","Totaux",,
-"com.axelor.apps.supplychain.db.SalesOrder",,"page","Other informations","Autres informations",,
-"com.axelor.apps.supplychain.db.SalesOrder",,"group","Sales follow-up","Suivi devis",,
-"com.axelor.apps.supplychain.db.SalesOrder",,"group","Financial terms","Termes financiers",,
-"com.axelor.apps.supplychain.db.SalesOrder",,"group","Marketing","Marketing",,
-"com.axelor.apps.supplychain.db.SalesOrder",,"group","Invoicing","Facturation",,
-"com.axelor.apps.supplychain.db.SalesOrder",,"page","Schedule","Echéancier",,
-"com.axelor.apps.supplychain.db.SalesOrder",,"page","Invoicing","Facturation",,
-"com.axelor.apps.supplychain.db.SalesOrder",,"button","Show Invoices","Les factures",,
-"com.axelor.apps.supplychain.db.SalesOrder",,"page","Subscription","Abonnement",,
-"com.axelor.apps.supplychain.db.SalesOrder",,"separator","Subscription dates","Date d'abonnement",,
-"com.axelor.apps.supplychain.db.SalesOrder",,"separator","Invoices dates","Dates de factures",,
-"com.axelor.apps.supplychain.db.SalesOrder",,"view","SalesOrder","Devis / Cmdes Ventes",,
-"com.axelor.apps.supplychain.db.SalesOrder","archived","field",,,,
-"com.axelor.apps.supplychain.db.SalesOrder",,"button","Actions",,,
-"com.axelor.apps.supplychain.db.SalesOrder",,"button","Plan a meeting","Planifier un rendez-vous",,
-"com.axelor.apps.supplychain.db.SalesOrder",,"button","Plan a call","Planifier un appel",,
-"com.axelor.apps.supplychain.db.SalesOrder",,"button","Plan a task","Planifier une tâche",,
-"com.axelor.apps.supplychain.db.SalesOrder",,"view","Sale orders","Devis/Commandes",,
-"com.axelor.apps.supplychain.db.SalesOrder",,"button","Print","Imprimer",,
-"com.axelor.apps.supplychain.db.SalesOrder",,"button","Send email","Envoyer Email",,
-"com.axelor.apps.supplychain.db.SalesOrder",,"view","SalesOrder","Devis/Cmde Vente",,
-"com.axelor.apps.supplychain.db.SalesOrder","archived","field",,"Archivé(e) ?",,
-"com.axelor.apps.supplychain.db.SalesOrderLine",,"view","SalesOrderLine","Ligne de Devis/Cmde Vente",,
-"com.axelor.apps.supplychain.db.SalesOrderLine","archived","field",,"Archivé(e) ?",,
-"com.axelor.apps.supplychain.db.SalesOrderLine",,"view","SO line","Ligne de devis",,
-"com.axelor.apps.supplychain.db.SalesOrderLine",,"group","Discount","Remise",,
-"com.axelor.apps.supplychain.db.SalesOrderLine",,"page","Settings","Configurations",,
-"com.axelor.apps.supplychain.db.SalesOrderLine",,"page","Notes","Remarques",,
-"com.axelor.apps.supplychain.db.SalesOrderLine",,"page","SO line details","Détails",,
-"com.axelor.apps.supplychain.db.SalesOrderLine",,"page","Invoicing follow-up","Suivi facturation",,
-"com.axelor.apps.supplychain.db.SalesOrderLine",,"page","Ressources Planning","Planning des ressources",,
-"com.axelor.apps.supplychain.db.SalesOrderLine",,"view","SalesOrderLine",,,
-"com.axelor.apps.supplychain.db.SalesOrderLine","archived","field",,"Archivé(e) ?",,
-"com.axelor.apps.supplychain.db.SalesOrderLine",,"view","SO lines","Lignes de devis",,
-"com.axelor.apps.supplychain.db.SalesOrderLineTax",,"view","SO Tax line","Ligne de TVA",,
-"com.axelor.apps.supplychain.db.SalesOrderLineTax",,"view","SalesOrderLineTax","Ligne de TVA",,
-"com.axelor.apps.supplychain.db.SalesOrderLineTax","archived","field",,,,
-"com.axelor.apps.supplychain.db.SalesOrderLineTax",,"view","SalesOrderLineTax","Ligne de TVA",,
-"com.axelor.apps.supplychain.db.SalesOrderLineTax","archived","field",,,,
-"com.axelor.apps.supplychain.db.SalesOrderLineTax",,"view","SO Tax lines","Les lignes de TVA",,
-"com.axelor.apps.supplychain.db.SalesOrderScheduleLine",,"view","SO schedule line","Ligne d'échéance de devis",,
-"com.axelor.apps.supplychain.db.SalesOrderScheduleLine",,"view","SalesOrderScheduleLine",,,
-"com.axelor.apps.supplychain.db.SalesOrderScheduleLine","archived","field",,,,
-"com.axelor.apps.supplychain.db.SalesOrderScheduleLine",,"view","SalesOrderScheduleLine",,,
-"com.axelor.apps.supplychain.db.SalesOrderScheduleLine","archived","field",,,,
-"com.axelor.apps.supplychain.db.SalesOrderScheduleLine",,"view","SO schedule lines","Lignes d'échéances de devis",,
-"com.axelor.apps.supplychain.db.SalesOrderSubLine",,"view","SalesOrderSubLine","Sous-ligne de devis/cmde",,
-"com.axelor.apps.supplychain.db.SalesOrderSubLine","archived","field",,,,
-"com.axelor.apps.supplychain.db.SalesOrderSubLine",,"view","SO subline","Sous-ligne de devis/cmde",,
-"com.axelor.apps.supplychain.db.SalesOrderSubLine",,"group","Discount","Remise",,
-"com.axelor.apps.supplychain.db.SalesOrderSubLine",,"view","SalesOrderSubLine","Sous-ligne de devis/cmde",,
-"com.axelor.apps.supplychain.db.SalesOrderSubLine","archived","field",,,,
-"com.axelor.apps.supplychain.db.SalesOrderSubLine",,"view","SO sublines","Sous-lignes de devis",,
-,,"view","Dashboard","Tableau de bord",,
-"com.axelor.apps.supplychain.db.StockMove",,"view","StockMove","Mouvement de stock",,
-"com.axelor.apps.supplychain.db.StockMove","archived","field",,"Archivé ? ",,
-"com.axelor.apps.supplychain.db.StockMove",,"view","Stock move","Mouvement de stock",,
-"com.axelor.apps.supplychain.db.StockMove",,"group","Stock move reference","Références mouvement de stock",,
-"com.axelor.apps.supplychain.db.StockMove",,"group","Stock move informations","Informations mouvement de stock",,
-"com.axelor.apps.supplychain.db.StockMove",,"group","Action(s)","Action(s)",,
-"com.axelor.apps.supplychain.db.StockMove",,"button","Plan","Planifier",,
-"com.axelor.apps.supplychain.db.StockMove",,"button","Realize","Réalisé",,
-"com.axelor.apps.supplychain.db.StockMove",,"button","Cancel","Annuler",,
-"com.axelor.apps.supplychain.db.StockMove",,"button","Draft","Brouillon",,
-"com.axelor.apps.supplychain.db.StockMove",,"button","Generate invoice","Générer facture",,
-"com.axelor.apps.supplychain.db.StockMove",,"button"," Print","Imprimer BL/BR/BT",,
-"com.axelor.apps.supplychain.db.StockMove",,"button","View Direction","Voir itinéraire",,
-"com.axelor.apps.supplychain.db.StockMove",,"button","View Direction","Voir itinéraire",,
-"com.axelor.apps.supplychain.db.StockMove",,"page","Stock move details","Détails mouvement de stock",,
-"com.axelor.apps.supplychain.db.StockMove",,"page","Configuration","Configuration",,
-"com.axelor.apps.supplychain.db.StockMove",,"view","StockMove","Mouvement de stock",,
-"com.axelor.apps.supplychain.db.StockMove","archived","field",,"Archivé ? ",,
-"com.axelor.apps.supplychain.db.StockMove",,"button","Print StockMove(s)","Imprimer",,
-"com.axelor.apps.supplychain.db.StockMove",,"view","Stock moves","Mouvements de stock",,
-"com.axelor.apps.supplychain.db.StockMove",,"button","Print","Imprimer",,
-"com.axelor.apps.supplychain.db.StockMove",,"button","Print StockMove(s)","Imprimer",,
-"com.axelor.apps.supplychain.db.StockMove",,"view","Stock moves","Mouvements de stock",,
-"com.axelor.apps.supplychain.db.StockMove",,"button","Print","Imprimer",,
-"com.axelor.apps.supplychain.db.StockMove",,"button","View Direction","Voir itinéraire",,
-"com.axelor.apps.supplychain.db.StockMoveLine",,"view","Stock move line","Ligne mvt. de stock",,
-"com.axelor.apps.supplychain.db.StockMoveLine",,"view","StockMoveLine","Ligne de mvt. de stock",,
-"com.axelor.apps.supplychain.db.StockMoveLine","archived","field",,,,
-"com.axelor.apps.supplychain.db.StockMoveLine",,"view","StockMoveLine","Ligne de mvt. de stock",,
-"com.axelor.apps.supplychain.db.StockMoveLine","archived","field",,,,
-"com.axelor.apps.supplychain.db.StockMoveLine",,"view","Stock move lines","Lignes mvt. de stock",,
-"com.axelor.apps.supplychain.db.StockMove",,"button","Print StockMove(s)","Imprimer",,
-"com.axelor.apps.supplychain.db.StockMove",,"view","Stock moves","Mouvements de stock",,
-"com.axelor.apps.supplychain.db.StockMove",,"button","Print","Imprimer",,
-"com.axelor.apps.supplychain.db.StockMove",,"button","View Direction","Voir itinéraire",,
-"com.axelor.apps.supplychain.db.StockMove",,"view","Supplier arrivals filters","Filtres Arrivages fournisseurs",,
-"com.axelor.apps.supplychain.db.StockMove",,"filter","Today Arrivals","Réceptions du jour",,
-"com.axelor.apps.supplychain.db.StockMove",,"filter","Upcoming arrivals","Réceptions à venir",,
-"com.axelor.apps.supplychain.db.StockMove",,"filter","Arrivals History","Historique réceptions",,
-"com.axelor.apps.supplychain.db.StockMove",,"filter","Cancelled Arrivals","Réceptions annulées",,
-"com.axelor.apps.supplychain.db.SupplychainBatch",,"view","SupplychainBatch","Batch de Supply Chain",,
-"com.axelor.apps.supplychain.db.SupplychainBatch","archived","field",,,,
-"com.axelor.apps.supplychain.db.SupplychainBatch",,"view","supplychain Batch","Batch Supply Chain",,
-"com.axelor.apps.supplychain.db.SupplychainBatch",,"page","Invoicing page","Facturation",,
-"com.axelor.apps.supplychain.db.SupplychainBatch",,"button","Invoicing batch","Batch Facturation",,
-"com.axelor.apps.supplychain.db.SupplychainBatch",,"page","Information",,,
-"com.axelor.apps.supplychain.db.SupplychainBatch",,"viewField","Created on","Créé le",,
-"com.axelor.apps.supplychain.db.SupplychainBatch",,"viewField","Created by","Créé par",,
-"com.axelor.apps.supplychain.db.SupplychainBatch",,"view","supplychain batches","Batches de supply chain",,
-"com.axelor.apps.supplychain.db.SupplychainBatch","createdOn","field",,"Créé le",,
-"com.axelor.apps.supplychain.db.SupplychainBatch","createdBy","field",,"Créé par",,
-"com.axelor.apps.supplychain.db.SupplychainBatch",,"view","SupplychainBatch",,,
-"com.axelor.apps.supplychain.db.SupplychainBatch","archived","field",,,,
-"com.axelor.apps.supplychain.db.SupplychainConfig",,"view","Supply chain configuration",,,
-"com.axelor.apps.supplychain.db.SupplychainConfig",,"group","Virtual locations informations","Informations Stocks Virtuels",,
-"com.axelor.apps.supplychain.db.SupplychainConfig",,"group","Stock move informations","Informations sur Stocks Internes",,
-"com.axelor.apps.supplychain.db.SupplychainConfig",,"group","Invoicing informations","Informations Facturation",,
-"com.axelor.apps.supplychain.db.SupplychainConfig",,"view","SupplychainConfig","Config. Supply Chain",,
-"com.axelor.apps.supplychain.db.SupplychainConfig","archived","field",,"Archivée ? ",,
-"com.axelor.apps.supplychain.db.SupplychainConfig",,"view","SupplychainConfig","Config. Supply Chain",,
-"com.axelor.apps.supplychain.db.SupplychainConfig","archived","field",,"Archivée ? ",,
-"com.axelor.apps.supplychain.db.SupplychainConfig",,"view","Supply chain configurations",,,
-,,"view","Dashboard","Tableau de bord",,
-,,"view","Dashboard","Tableau de bord",,
-,,"view","Dashboard","Tableau de bord",,
-,,"view","Dashboard","Tableau de bord",,
-,,"action","Create inventory","Créer inventaire",,
-,,"action","Inventory generated","Inventaire généré",,
-,,"action","Supplier invoices","Factures fournisseur",,
-,,"action","The field 'Location' must be filled.","Le champ Entrepôt doit être complété.""""",,
-,,"action","The location must be filled.","Merci de remplir le champ 'Location' afin de générer les mouvements de stocks.",,
-,,"action","Invoices","Factures",,
-,,"action","Plan a call","Planifier un appel",,
-,,"action","Plan a meeting","Planifier un meeting",,
-,,"action","Plan a task","Planifier une tâche",,
-,,"action","Supplychain batches",,,
-,,"action","Supplychain configurations",,,
-,,"action","50 Latest Supplier Orders","50 Dernières Cmdes d'Achat",,
-,,"action","Turnover On Purchase orders on Last 12 Month","Montant des achats (Cmdes) sur 12 mois",,
-,,"action","Number Of Units Purchase orders on Last 12 Month","Nbre de produits achetés (Cmdes) sur 12 mois",,
-,,"action","Number Of Units On Customer Sales on Last 12 Month","Nbre de produits vendus (Cmdes) sur 12 mois",,
-,,"action","Turnover On Customer Sales on Last 12 Month","CA ventes (Cmdes) sur 12 mois",,
-,,"action","My purchases orders per product family over past month","*",,
-,,"action","My Purchases orders per buyer over past month in volume","*",,
-,,"action","My Purchase Orders","Mes devis fournisseurs",,
-,,"action","My RFQ And PO To Validate","Mes RFQ et PO à valider",,
-,,"action","My Validated Purchase Orders","Mes devis fournisseurs validés",,
-,,"action","Purchases orders per buyer over past month in volume",,,
-,,"action","Purchases orders per family product over six month in percentage",,,
-,,"action","Purchases orders per family product over six month",,,
-,,"action","RFQ And PO To Validate","RFQ et PO à valider",,
-,,"action","Current Purchase Orders","Devis fournisseurs actuels",,
-,,"action","Sales per product category over past 12 months in volume",,,
-,,"action","Sales per country over past 12 months",,,
-,,"action","Sales per product family over past 12 months",,,
-,,"action","Turnover per salesman over past 30 days","CA par Commercial sur 30 jours",,
-,,"action","Turnover per team over past 30 days","CA par Equipe sur 30 jours",,
-,,"action","Today Activities","Activités d'aujourd'hui",,
-,,"action","My Current Leads","Mes Prospects en cours",,
-,,"action","My Opportunities","Mes Opportunités",,
-,,"action","My Sales Orders","Mes devis clients",,
-,,"action","Turnover over past 6 months","CA sur 6 mois",,
-,,"action","Late arrivals","Réceptions tardives",,
-,,"action","Late deliveries","Livraisons tardives",,
-,,"action","Product out of stock","Produits indiponibles",,
-,,"action","Upcoming arrivals","Prochaines réceptions",,
-,,"action","Upcoming deliveries","Prochaines livraisons",,
-,,"action","Purchase Orders last 6 month per product family","Montant achats par famille produit sur 6 mois",,
-,,"action","Number Of Supplier Orders Per Month","Nbre de cmde fournisseur par mois",,
-,,"action","New Purchase order","Nouv. Devis/Cmde Fourn.",,
-,,"action","Purchase orders","Devis/Commandes",,
-,,"action","New Sale order","Nouv. Devis/Cmde Client",,
-,,"action","Sale orders","Devis/Commandes",,
-,,"action","Minimum stock rules","Règles de stock minimum",,
-,,"action","Customer Deliveries","Livraisons Client",,
-,,"action","Internal Stock Moves","Mouvements Internes",,
-,,"action","Inventories","Inventaires",,
-,,"action","Stock Locations","Emplacements de stock",,
-,,"action","Supplier Arrivals","Livraisons Fournisseur",,
-,,"action","Sales order","Devis clients",,
-,,"action","Orders","Commandes",,
-,,"action","RFQ","RFQ",,
-,,"action","Quotes","Devis",,
-,,"action","Orders","Commandes",,
-,,"action","Customer deliveries","Livraisons Client",,
-,,"action","Internal moves","Mouvements internes",,
-,,"action","Supplier deliveries","Livraisons fournisseurs",,
-"axelor-supplychain",,"other","Inventory.code","Code",,
-"axelor-supplychain",,"other","Inventory.date","Date",,
-"axelor-supplychain",,"other","Inventory.description","Description",,
-"axelor-supplychain",,"other","Inventory.location","Emplacement",,
-"axelor-supplychain",,"other","Inventory.name","Nom",,
-"axelor-supplychain",,"other","Inventory.realQty","Qté",,
-"axelor-supplychain",,"other","Inventory.title","INVENTAIRE",,
-"axelor-supplychain",,"other","Inventory.unit","Unité",,
-"axelor-supplychain",,"other","PurchaseOrder.bankDetails","Coordonnées bancaires",,
-"axelor-supplychain",,"other","PurchaseOrder.bankingInfo","Informations bancaires",,
-"axelor-supplychain",,"other","PurchaseOrder.base","Base",,
-"axelor-supplychain",,"other","PurchaseOrder.cheque","Chèque",,
-"axelor-supplychain",,"other","PurchaseOrder.customer","Client",,
-"axelor-supplychain",,"other","PurchaseOrder.customerRef","Réf. Client",,
-"axelor-supplychain",,"other","PurchaseOrder.deliveryDate","Date de facture",,
-"axelor-supplychain",,"other","PurchaseOrder.note","Remarques",,
-"axelor-supplychain",,"other","PurchaseOrder.paymentCondition","Conditions de paiement",,
-"axelor-supplychain",,"other","PurchaseOrder.paymentMode","Mode de paiement",,
-"axelor-supplychain",,"other","PurchaseOrder.priceExclTax","Prix H.T.",,
-"axelor-supplychain",,"other","PurchaseOrder.productDescription","Produit/Description",,
-"axelor-supplychain",,"other","PurchaseOrder.purchaseInfo","Commande N°",,
-"axelor-supplychain",,"other","PurchaseOrder.qtyUnit","Qté / Unité",,
-"axelor-supplychain",,"other","PurchaseOrder.state","Etat",,
-"axelor-supplychain",,"other","PurchaseOrder.supplier","Fournisseur",,
-"axelor-supplychain",,"other","PurchaseOrder.supplyRef","Réf. Fournisseur",,
-"axelor-supplychain",,"other","PurchaseOrder.tax","T.V.A",,
-"axelor-supplychain",,"other","PurchaseOrder.taxAmount","Montant T.V.A.",,
-"axelor-supplychain",,"other","PurchaseOrder.totalExclTax","Total H.T.",,
-"axelor-supplychain",,"other","PurchaseOrder.totalInclTax","Total T.T.C.",,
-"axelor-supplychain",,"other","PurchaseOrder.totalTax","Total T.V.A.",,
-"axelor-supplychain",,"other","PurchaseOrder.unitPrice","Prix unitaire",,
-"axelor-supplychain",,"other","SalesOrder.bankDetails","Coordonnées bancaires",,
-"axelor-supplychain",,"other","SalesOrder.bankingInfo","Informations bancaires",,
-"axelor-supplychain",,"other","SalesOrder.base","Base",,
-"axelor-supplychain",,"other","SalesOrder.cheque","Chèque",,
-"axelor-supplychain",,"other","SalesOrder.customer","Client",,
-"axelor-supplychain",,"other","SalesOrder.customerRef","Réf. Client",,
-"axelor-supplychain",,"other","SalesOrder.date","Date de facture",,
-"axelor-supplychain",,"other","SalesOrder.deliveryAddress","Adresse de livraison",,
-"axelor-supplychain",,"other","SalesOrder.invoicingAddrs","Adresse de facturation",,
-"axelor-supplychain",,"other","SalesOrder.no","Commande N°",,
-"axelor-supplychain",,"other","SalesOrder.note","Remarques",,
-"axelor-supplychain",,"other","SalesOrder.paymentCondition","Conditions de paiement",,
-"axelor-supplychain",,"other","SalesOrder.paymentMode","Mode de paiement",,
-"axelor-supplychain",,"other","SalesOrder.priceExclTax","Prix H.T.",,
-"axelor-supplychain",,"other","SalesOrder.productDescription","Produit/Description",,
-"axelor-supplychain",,"other","SalesOrder.qtyUnit","Qté / Unité",,
-"axelor-supplychain",,"other","SalesOrder.supplier","Fournisseur",,
-"axelor-supplychain",,"other","SalesOrder.supplyRef","Réf. Fournisseur",,
-"axelor-supplychain",,"other","SalesOrder.tax","T.V.A",,
-"axelor-supplychain",,"other","SalesOrder.taxAmount","Montant T.V.A.",,
-"axelor-supplychain",,"other","SalesOrder.totalExclTax","Total H.T.",,
-"axelor-supplychain",,"other","SalesOrder.totalInclTax","Total T.T.C.",,
-"axelor-supplychain",,"other","SalesOrder.totalTax","Total T.V.A.",,
-"axelor-supplychain",,"other","SalesOrder.unitPrice","Prix unitaire",,
-"axelor-supplychain",,"other","StockMove.customer","Client",,
-"axelor-supplychain",,"other","StockMove.date","Date",,
-"axelor-supplychain",,"other","StockMove.deliveryAddress","Adresse de livraison",,
-"axelor-supplychain",,"other","StockMove.deliveryDetails","Détail de la livraison",,
-"axelor-supplychain",,"other","StockMove.deliveryOrder","Bon Livraison",,
-"axelor-supplychain",,"other","StockMove.internalMove","Mvt Interne",,
-"axelor-supplychain",,"other","StockMove.lotNoRef","Lot N°/Réf",,
-"axelor-supplychain",,"other","StockMove.movePreparedBy","Mvt préparé par",,
-"axelor-supplychain",,"other","StockMove.product","Produit",,
-"axelor-supplychain",,"other","StockMove.purchaseOrder","Commande",,
-"axelor-supplychain",,"other","StockMove.qtyUnit","Qté / Unité",,
-"axelor-supplychain",,"other","StockMove.receivedBy","Cmde reçue par",,
-"axelor-supplychain",,"other","StockMove.receptionOrder","Bon Réception",,
-"axelor-supplychain",,"other","StockMove.reference","Référence",,
-"axelor-supplychain",,"other","StockMove.stockPreparedBy","Cmde préparée par",,
-"axelor-supplychain",,"other","StockMove.variant","Variant",,
-"axelor-supplychain",,"other","StockMove.weight","Weight",,
-"top.sales.offers","top.sales.offers","documentation",,,,
-"top.sales.orders","top.sales.orders","documentation",,,,
-"top.purchase.quotes","top.purchase.quotes","documentation",,,,
-"top.purchase.orders","top.purchase.orders","documentation",,,,
-"top.stock.cust.deliveries","top.stock.cust.deliveries","documentation",,,,
-"top.stock.internal.moves","top.stock.internal.moves","documentation",,,,
-"top.stock.suppl.deliveries","top.stock.suppl.deliveries","documentation",,,,
-"supply.chain.root.sales.order","supply.chain.root.sales.order","documentation",,,,
-"sc.root.sales.new.so","sc.root.sales.new.so","documentation",,,,
-"sc.root.sales.orders","sc.root.sales.orders","documentation",,,,
-"sc.root.purchase.order.new","sc.root.purchase.order.new","documentation",,,,
-"sc.root.purchase.orders","sc.root.purchase.orders","documentation",,,,
-"stock.root.custdeliveries","stock.root.custdeliveries","documentation",,,,
-"stock.root.suparrivals","stock.root.suparrivals","documentation",,,,
-"stock.root.internal","stock.root.internal","documentation",,,,
-"stock.root.inventories.draft","stock.root.inventories.draft","documentation",,,,
-"stock.root.location","stock.root.location","documentation",,,,
-"stock.root.conf.min.Stock.rules","stock.root.conf.min.Stock.rules","documentation",,,,
-"admin.root.batch.supplychain","admin.root.batch.supplychain","documentation",,,,
-"admin.root.conf.supplychain.config","admin.root.conf.supplychain.config","documentation",,,,
-"sales-order-form","sales-order-form","documentation",,,,
-"sales-order-form","print","documentation",,,,
-"sales-order-form","sendByEmail","documentation",,,,
-"sales-order-form","salesOrderSeq","documentation",,,,
-"sales-order-form","project","documentation",,,,
-"sales-order-form","company","documentation",,,,
-"sales-order-form","externalReference","documentation",,,,
-"sales-order-form","location","documentation",,,,
-"sales-order-form","currency","documentation",,,,
-"sales-order-form","clientPartner","documentation",,,,
-"sales-order-form","mainInvoicingAddress","documentation",,,,
-"sales-order-form","invoicingTypeSelect","documentation",,,,
-"sales-order-form","contactPartner","documentation",,,,
-"sales-order-form","deliveryAddress","documentation",,,,
-"sales-order-form","priceList","documentation",,,,
-"sales-order-form","isToPrintLineSubTotal","documentation",,,,
-"sales-order-form","hasGlobalTask","documentation",,,,
-"sales-order-form","salesOrderLineList","documentation",,,,
-"sales-order-form","salesOrderLineTaxList","documentation",,,,
-"sales-order-form","compute","documentation",,,,
-"sales-order-form","confirm","documentation",,,,
-"sales-order-form","validate","documentation",,,,
-"sales-order-form","cancel","documentation",,,,
-"sales-order-form","generateInvoice","documentation",,,,
-"sales-order-form","creationDate","documentation",,,,
-"sales-order-form","validatedByUserInfo","documentation",,,,
-"sales-order-form","validationDate","documentation",,,,
-"sales-order-form","orderDate","documentation",,,,
-"sales-order-form","orderNumber","documentation",,,,
-"sales-order-form","shipmentDate","documentation",,,,
-"sales-order-form","exTaxTotal","documentation",,,,
-"sales-order-form","taxTotal","documentation",,,,
-"sales-order-form","inTaxTotal","documentation",,,,
-"sales-order-form","amountRemainingToBeInvoiced","documentation",,,,
-"sales-order-form","statusSelect","documentation",,,,
-"sales-order-form","salesmanUserInfo","documentation",,,,
-"sales-order-form","team","documentation",,,,
-"sales-order-form","paymentMode","documentation",,,,
-"sales-order-form","paymentCondition","documentation",,,,
-"sales-order-form","source","documentation",,,,
-"sales-order-form","showDetailsInInvoice","documentation",,,,
-"sales-order-form","invoicingMomentSelect","documentation",,,,
-"sales-order-form","salesOrderScheduleLineList","documentation",,,,
-"sales-order-form","showInvoice","documentation",,,,
-"sales-order-form","invoiceSet","documentation",,,,
-"sales-order-form","subscriptionStartDate","documentation",,,,
-"sales-order-form","subscriptionEndDate","documentation",,,,
-"sales-order-form","invoicedFirstDate","documentation",,,,
-"sales-order-form","nextInvPeriodStartDate","documentation",,,,
-"sales-order-form","schedulerInstance","documentation",,,,
-"sales-order-form","schedulerInstance.lastTheoreticalExecutionDate","documentation",,,,
-"sales-order-line-form","sales-order-line-form","documentation",,,,
-"sales-order-line-form","sequence","documentation",,,,
-"sales-order-line-form","isToPrintLineSubTotal","documentation",,,,
-"sales-order-line-form","product","documentation",,,,
-"sales-order-line-form","productName","documentation",,,,
-"sales-order-line-form","qty","documentation",,,,
-"sales-order-line-form","unit","documentation",,,,
-"sales-order-line-form","price","documentation",,,,
-"sales-order-line-form","taxLine","documentation",,,,
-"sales-order-line-form","exTaxTotal","documentation",,,,
-"sales-order-line-form","taxLine.value","documentation",,,,
-"sales-order-line-form","discountTypeSelect","documentation",,,,
-"sales-order-line-form","discountAmount","documentation",,,,
-"sales-order-line-form","saleSupplySelect","documentation",,,,
-"sales-order-line-form","supplierPartner","documentation",,,,
-"sales-order-line-form","task","documentation",,,,
-"sales-order-line-form","billOfMaterial","documentation",,,,
-"sales-order-line-form","description","documentation",,,,
-"sales-order-line-form","productVariant","documentation",,,,
-"sales-order-line-form","salesOrderSubLineList","documentation",,,,
-"sales-order-line-form","isToInvoice","documentation",,,,
-"sales-order-line-form","isInvoiced","documentation",,,,
-"sales-order-line-form","invoicingDate","documentation",,,,
-"sales-order-line-form","amountInvoiced","documentation",,,,
-"sales-order-line-form","amountRemainingToBeInvoiced","documentation",,,,
-"sales-order-line-form","invoiceSet","documentation",,,,
-"sales-order-line-form","employeeSet","documentation",,,,
-"sales-order-line-form","candidateSet","documentation",,,,
-"sales-order-line-tax-form","sales-order-line-tax-form","documentation",,,,
-"sales-order-line-tax-form","taxLine","documentation",,,,
-"sales-order-line-tax-form","taxLine.tax.name","documentation",,,,
-"sales-order-line-tax-form","taxLine.value","documentation",,,,
-"sales-order-line-tax-form","exTaxBase","documentation",,,,
-"sales-order-line-tax-form","taxTotal","documentation",,,,
-"sales-order-line-tax-form","inTaxTotal","documentation",,,,
-"sales-order-schedule-line-form","sales-order-schedule-line-form","documentation",,,,
-"sales-order-schedule-line-form","sequence","documentation",,,,
-"sales-order-schedule-line-form","amountToBeInvoiced","documentation",,,,
-"sales-order-schedule-line-form","invoicingPercentage","documentation",,,,
-"sales-order-schedule-line-form","salesOrderLine","documentation",,,,
-"sales-order-schedule-line-form","accumulatedInvoicingPercentage","documentation",,,,
-"sales-order-schedule-line-form","nbOfDay","documentation",,,,
-"sales-order-schedule-line-form","invoice","documentation",,,,
-"purchase-order-form","purchase-order-form","documentation",,,,
-"purchase-order-form","print","documentation",,,,
-"purchase-order-form","sendByEmail","documentation",,,,
-"purchase-order-form","purchaseOrderSeq","documentation",,,,"Séquence remplie automatiquement à l'enregistrement du formulaire. La séquence est configurable dans l'administration via le champ 'document concerné' = Commande fournisseur."
-"purchase-order-form","orderDate","documentation",,,,
-"purchase-order-form","company","documentation",,,,
-"purchase-order-form","externalReference","documentation",,,,"Référence devis ou commande du fournisseur à rappeler. Cette référence sera recopiée sur la facture et sur le bon de réception des marchandises."
-"purchase-order-form","currency","documentation",,,,"Devise globale dans laquelle le devis est exprimé. La devise est reprise par défaut de la fiche du tiers fournisseur.*"
-"purchase-order-form","project","documentation",,,,"Si la commande d'achat est rattachée à un projet ou une affaire, la commande aura un impact financier sur l'affaire."
-"purchase-order-form","supplierPartner","documentation",,,,
-"purchase-order-form","contactPartner","documentation",,,,
-"purchase-order-form","invoicingTypeSelect","documentation",,,,"Le mode de facturation va influer sur le comportement de l'application."
-"purchase-order-form","buyerUserInfo","documentation",,,,"Utilisateur à l'origine de la commande."
-"purchase-order-form","priceList","documentation",,,,"L'utiisation d'une liste de prix peut modifier le prix unitaire d'achat spécifié sur la fiche produit. *"
-"purchase-order-form","invoice","documentation",,,,"Facture associée à la commande."
-"purchase-order-form","location","documentation",,,,"Emplacement de destination où seront envoyés les produits achetés (repris sur le bordereau de réception)."
-"purchase-order-form","deliveryDate","documentation",,,,"Date à laquelle le bon de réception sera créé."
-"purchase-order-form","purchaseOrderLineList","documentation",,,,
-"purchase-order-form","purchaseOrderLineTaxList","documentation",,,,
-"purchase-order-form","compute","documentation",,,,
-"purchase-order-form","draft","documentation",,,,
-"purchase-order-form","requested","documentation",,,,
-"purchase-order-form","receipt","documentation",,,,
-"purchase-order-form","validate","documentation",,,,
-"purchase-order-form","completed","documentation",,,,
-"purchase-order-form","cancel","documentation",,,,
-"purchase-order-form","showSupplierInvoice","documentation",,,,
-"purchase-order-form","generateControlInvoice","documentation",,,,
-"purchase-order-form","validatedByUserInfo","documentation",,,,
-"purchase-order-form","validationDate","documentation",,,,
-"purchase-order-form","exTaxTotal","documentation",,,,
-"purchase-order-form","taxTotal","documentation",,,,
-"purchase-order-form","inTaxTotal","documentation",,,,
-"purchase-order-form","amountRemainingToBeInvoiced","documentation",,,,
-"purchase-order-form","statusSelect","documentation",,,,
-"purchase-order-form","notes","documentation",,,,
-"purchase-order-line-form","purchase-order-line-form","documentation",,,,
-"purchase-order-line-form","product","documentation",,,,
-"purchase-order-line-form","productName","documentation",,,,"Champ rempli automatiquement avec la description du produit lors de sa sélection."
-"purchase-order-line-form","qty","documentation",,,,"Par défaut définie à 1."
-"purchase-order-line-form","unit","documentation",,,,
-"purchase-order-line-form","price","documentation",,,,"*"
-"purchase-order-line-form","taxLine","documentation",,,,"Champ rempli automatiquement avec la configuration comptable définie sur le produit ou le cas échéant, par la TVA de remplacement définie dans la position fiscale associée au Tiers."
-"purchase-order-line-form","exTaxTotal","documentation",,,,"Qté * Prix unitaire"
-"purchase-order-line-form","taxLine.value","documentation",,,,
-"purchase-order-line-form","discountTypeSelect","documentation",,,,
-"purchase-order-line-form","discountAmount","documentation",,,,"*"
-"purchase-order-line-form","deliveryDate","documentation",,,,
-"purchase-order-line-form","productVariant","documentation",,,,
-"purchase-order-line-form","task","documentation",,,,
-"purchase-order-line-tax-form","purchase-order-line-tax-form","documentation",,,,
-"purchase-order-line-tax-form","taxLine","documentation",,,,
-"purchase-order-line-tax-form","taxLine.tax.name","documentation",,,,
-"purchase-order-line-tax-form","taxLine.value","documentation",,,,
-"purchase-order-line-tax-form","exTaxBase","documentation",,,,
-"purchase-order-line-tax-form","taxTotal","documentation",,,,
-"purchase-order-line-tax-form","inTaxTotal","documentation",,,,
-"stock-move-form","stock-move-form","documentation",,,,
-"stock-move-form","typeSelect","documentation",,,,
-"stock-move-form","statusSelect","documentation",,,,
-"stock-move-form","stockMoveSeq","documentation",,,,
-"stock-move-form","name","documentation",,,,
-"stock-move-form","company","documentation",,,,
-"stock-move-form","partner","documentation",,,,
-"stock-move-form","fromLocation","documentation",,,,
-"stock-move-form","toLocation","documentation",,,,
-"stock-move-form","estimatedDate","documentation",,,,
-"stock-move-form","realDate","documentation",,,,
-"stock-move-form","fromAddress","documentation",,,,
-"stock-move-form","toAddress","documentation",,,,
-"stock-move-form","plan","documentation",,,,
-"stock-move-form","realize","documentation",,,,
-"stock-move-form","cancel","documentation",,,,
-"stock-move-form","draft","documentation",,,,
-"stock-move-form","generateInvoice","documentation",,,,
-"stock-move-form","printStockMove","documentation",,,,
-"stock-move-form","viewDirection","documentation",,,"View Direction",
-"stock-move-form","stockMoveLineList","documentation",,,,
-"stock-move-form","salesOrder","documentation",,,,
-"stock-move-form","purchaseOrder","documentation",,,,
-"stock-move-form","invoice","documentation",,,,
-"stock-move-line-form","stock-move-line-form","documentation",,,,
-"stock-move-line-form","product","documentation",,,,
-"stock-move-line-form","qty","documentation",,,,
-"stock-move-line-form","unit","documentation",,,,
-"stock-move-line-form","price","documentation",,,,
-"stock-move-line-form","trackingNumber","documentation",,,,
-"stock-move-line-form","productVariant","documentation",,,,
-"inventory-form","inventory-form","documentation",,,,
-"inventory-form","inventorySeq","documentation",,,,"Séquence remplie automatiquement à l'enregistrement du formulaire. La séquence est configurable dans l'administration via le champ 'document concerné' = Inventaire."
-"inventory-form","statusSelect","documentation",,,,"Par défaut, à l'état Brouillon. L'inventaire n'est effectif qu'à l'état Réalisé."
-"inventory-form","location","documentation",,,,"Emplacement de stock sur lequel l'inventaire est effectué."
-"inventory-form","formatSelect","documentation",,,,"Choix du format d'export du contenu de l'inventaire pour le réaliser sur une autre application."
-"inventory-form","showInventory","documentation",,,,
-"inventory-form","dateT","documentation",,,,
-"inventory-form","importFilePath","documentation",,,,"Chemin local vers le fichier contenant les données inventoriées à importer."
-"inventory-form","importFile","documentation",,,,
-"inventory-form","description","documentation",,,,
-"inventory-form","productFamily","documentation",,,,"Seuls les produits appartenant à cette famille seront remontés pour l'inventaire."
-"inventory-form","productCategory","documentation",,,,"Seuls les produits appartenant à cette catégorie seront remontés pour l'inventaire."
-"inventory-form","excludeOutOfStock","documentation",,,,"Les produits ayant un stock nul dans l'emplacement sélectionné ne seront pas remontés pour l'inventaire."
-"inventory-form","includeObsolete","documentation",,,,"Les produits obsolètes ( de ne seront pas remontés pour l'inventaire."
-"inventory-form","fillInventory","documentation",,,,
-"inventory-form","inventoryLineList","documentation",,,,"Liste du contenu de l'emplacement qui a été inventorié."
-"inventory-form","plan","documentation",,,,
-"inventory-form","realize","documentation",,,,
-"inventory-form","cancel","documentation",,,,
-"inventory-form","draft","documentation",,,,
-"inventory-line-form","inventory-line-form","documentation",,,,
-"inventory-line-form","product","documentation",,,,"Les produits avec une variante ou un numéro de suivi doivent nécessairement avoir leur variante ou numéro de renseigné sur chaque ligne."
-"inventory-line-form","currentQty","documentation",,,,"Quantité actuelle sur l'ERP dans l'emplacement à inventorier."
-"inventory-line-form","realQty","documentation",,,,"Quantité réellement présente dans l'emplacement à inventorier."
-"inventory-line-form","description","documentation",,,,
-"inventory-line-form","productVariant","documentation",,,,"Variante associé au produit sélectionné."
-"inventory-line-form","trackingNumber","documentation",,,,"N° associé au produit sélectionné."
-"location-form","location-form","documentation",,,,
-"location-form","createInventory","documentation",,,,
-"location-form","name","documentation",,,,
-"location-form","parent","documentation",,,,"Champ permettant de définir une hiérarchie entre les emplacements."
-"location-form","typeSelect","documentation",,,,
-"location-form","company","documentation",,,,"*"
-"location-form","partner","documentation",,,,"*"
-"location-form","address","documentation",,,,
-"location-form","isDefaultLocation","documentation",,,,"Un seul emplacement par défaut, par type et par société est possible."
-"location-form","viewContent","documentation",,,,
-"location-form","locationLineList","documentation",,,,"Liste des produits présents dans l'entrepôt avec leurs stocks associés."
-"location-form","detailsLocationLineList","documentation",,,,"Liste des produits présents dans l'entrepôt avec leurs stocks associés avec le détail par N° lot/série et variantes."
-"location-line-form","location-line-form","documentation",,,,
-"location-line-form","product","documentation",,,,
-"location-line-form","currentQty","documentation",,,,"Quantité actuelle sur l'ERP dans l'emplacement."
-"location-line-form","futureQty","documentation",,,,"Quantité future tenant compte des arrivages et livraisons de produit à venir (mouvements de stock au statut 'Planifié')"
-"location-line-details-form","location-line-details-form","documentation",,,,
-"location-line-details-form","product","documentation",,,,
-"location-line-details-form","currentQty","documentation",,,,"Quantité actuelle sur l'ERP dans l'emplacement."
-"location-line-details-form","futureQty","documentation",,,,"Quantité future tenant compte des arrivages et livraisons de produit à venir (mouvements de stock au statut 'Planifié')"
-"location-line-details-form","trackingNumber","documentation",,,,
-"location-line-details-form","productVariant","documentation",,,,
-"min-stock-rules-form","min-stock-rules-form","documentation",,,,
-"min-stock-rules-form","location","documentation",,,,
-"min-stock-rules-form","product","documentation",,,,
-"min-stock-rules-form","minQty","documentation",,,,
-"min-stock-rules-form","reOrderQty","documentation",,,,
-"min-stock-rules-form","typeSelect","documentation",,,,
-"min-stock-rules-form","orderAlertSelect","documentation",,,,
-"min-stock-rules-form","userInfo","documentation",,,,
-"min-stock-rules-form","team","documentation",,,,
-"machine-form","machine-form","documentation",,,,
-"machine-form","name","documentation",,,,
-"machine-form","serialNumber","documentation",,,,
-"machine-form","location","documentation",,,,
-"machine-form","startingDuration","documentation",,,,
-"machine-form","setupDuration","documentation",,,,
-"machine-form","description","documentation",,,,
-"supplychain-batch-form","supplychain-batch-form","documentation",,,,
-"supplychain-batch-form","actionSelect","documentation",,,,
-"supplychain-batch-form","code","documentation",,,,
-"supplychain-batch-form","company","documentation",,,,
-"supplychain-batch-form","invoicingBatch","documentation",,,,
-"supplychain-batch-form","createdOn","documentation",,,,
-"supplychain-batch-form","createdBy","documentation",,,,
-"supplychain-batch-form","description","documentation",,,,
-"supplychain-batch-form","batchList","documentation",,,,
-"supplychain-config-form","supplychain-config-form","documentation",,,,
-"supplychain-config-form","name","documentation",,,,
-"supplychain-config-form","code","documentation",,,,
-"supplychain-config-form","company","documentation",,,,
-"supplychain-config-form","customerVirtualLocation","documentation",,,,
-"supplychain-config-form","supplierVirtualLocation","documentation",,,,
-"supplychain-config-form","inventoryVirtualLocation","documentation",,,,
-"supplychain-config-form","hasOutSmForStorableProduct","documentation",,,,
-"supplychain-config-form","hasOutSmForNonStorableProduct","documentation",,,,
-"supplychain-config-form","hasInSmForStorableProduct","documentation",,,,
-"supplychain-config-form","hasInSmForNonStorableProduct","documentation",,,,
-"supplychain-config-form","salesOrderInvoicingTypeSelect","documentation",,,,
-"supplychain-config-form","purchaseOrderInvoicingTypeSelect","documentation",,,,
+"","","menu","Supplychain batches","Batch chaine d'approvisionnement","",""
+"","","menu","Supplychain configurations","Configs. Supply Chain","",""
+"","","menu","New Purchase order","Nouv. Devis/Cmde Fourn.","",""
+"","","menu","Purchase orders","Devis/Commandes","",""
+"","","menu","Purchases","Achats","",""
+"","","menu","Sales","Vente","",""
+"","","menu","New Sale order","Nouv. Devis/Cmde Fourn.","",""
+"","","menu","Sale orders","Devis/Commandes","",""
+"","","menu","Stock management","Stocks","",""
+"","","menu","Configuration","Configuration","",""
+"","","menu","Minimum stock rules","Règles de stock minimum","",""
+"","","menu","Customer Deliveries","Livraisons Client","",""
+"","","menu","Internal Stock Moves","Mouvements Internes","",""
+"","","menu","Periodical processing","Traitements Périodiques","",""
+"","","menu","Inventories","Inventaires","",""
+"","","menu","Stock Locations","Emplacements de stock","",""
+"","","menu","Supplier Arrivals","Livraisons Fournisseur","",""
+"","","menu","Create SO","Créer Devis","",""
+"","","menu","Purchases","Achats","",""
+"","","menu","Orders","Commandes","",""
+"","","menu","RFQ","Demandes de cotation","",""
+"","","menu","Sales","Vente","",""
+"","","menu","Quotes","Devis","",""
+"","","menu","Orders","Commandes","",""
+"","","menu","Stock","Stock","",""
+"","","menu","Customer deliveries","Livraisons clients","",""
+"","","menu","Internal moves","Mouvements internes","",""
+"","","menu","Supplier deliveries","Livraisons fournisseurs","",""
+"","","select","FromStock","Stock","",""
+"","","select","Purchase","Achat","",""
+"","","select","Produce","Produire","",""
+"","","select","Invoicing","Facturation","",""
+"","","select","PDF","PDF","",""
+"","","select","XLS","Excel","",""
+"","","select","Draft","Brouillon","",""
+"","","select","Planned","Planifié","",""
+"","","select","Realized","Réalisé","",""
+"","","select","Canceled","Annulé","",""
+"","","select","When a task is over","Lorsqu'une tâche est terminée","",""
+"","","select","Draft invoice N days after order validation","Facture brouillons N jrs après validation Cmde","",""
+"","","select","Internal","Interne","",""
+"","","select","External","Externe","",""
+"","","select","Virtual","Virtuel","",""
+"","","select","Alert","Alerte","",""
+"","","select","Purchase order","Devis fournisseurs","",""
+"","","select","Production order","Ordre de fabrication","",""
+"","","select","Current","Actuel","",""
+"","","select","Future","Futur","",""
+"","","select","Draft","Brouillon","",""
+"","","select","Requested","Demandé","",""
+"","","select","Received","Reçu","",""
+"","","select","Validated","Validé","",""
+"","","select","Finished","Terminé","",""
+"","","select","Canceled","Annulé","",""
+"","","select","Draft","Brouillon","",""
+"","","select","Planned","Planifié","",""
+"","","select","Realized","Réalisé","",""
+"","","select","Canceled","Annulé","",""
+"","","select","Internal move","Mouvement Interne","",""
+"","","select","Outgoing move","Mvt Stock Livraison","",""
+"","","select","Incoming move","Mvt Stock Réception","",""
+"","","chart","Purchase Orders last 6 month per product family","Cmde Achat par famille produit sur 6 mois","",""
+"","","chart","Number Of Units On Customer Sales on Last 12 Month","Nbre Produits vendus (Cmdes) sur 12 mois","",""
+"","","chart","Turnover On Customer Sales on Last 12 Month","CA Produits vendus (Cmdes) sur 12 mois","",""
+"","","chart","My purchases orders per product family over past month in turnover","Mes Cmdes achat par famille produit en montant","",""
+"","","chart","My purchases orders per product family over past month in volume","Mes Cmdes achat par famille produit en volume","",""
+"","","chart","Turnover On Purchase orders on Last 12 Month","Montant Produits achetés (Cmdes) sur 12 mois","",""
+"","","chart","Number Of Units Purchase orders on Last 12 Month","Nbre Produits achetés (Cmdes) sur 12 mois","",""
+"","","chart","Purchases orders per buyer over past month in volume","Cmdes achats par acheteur sur les derniers moins en volume","",""
+"","","chart","Purchases orders per family product over six month in percentage","Achats par famille produit sur 6 mois en %","",""
+"","","chart","Purchases orders per family product over six month","Cmdes Achats par famille produit sur 6 derniers mois","",""
+"","","chart","Number Of Supplier Orders Per Month","Nbre Cmdes Achat par mois","",""
+"","","chart","Sales per product category over past 12 months in volume","Ventes par catégorie de produit sur les 12 derniers mois","",""
+"","","chart","Sales per country over past 12 months","Ventes par pays sur les 12 derniers mois","",""
+"","","chart","Sales per product family over past 12 months","Ventes par famille de produit sur 12 derniers mois","",""
+"","","chart","Turnover per salesman over past 30 days","CA par commercial sur 30 derniers jours","",""
+"","","chart","Turnover per team over past 30 days","CA par équipe sur 30 derniers jrs","",""
+"","","chart","Turnover over past 6 months","CA sur les 6 derniers mois","",""
+"com.axelor.apps.base.db.Wizard","","view","Create inventory","Créer inventaire","",""
+"com.axelor.apps.base.db.Wizard","","viewField","Location","Emplacement/Entrepôt","",""
+"com.axelor.apps.base.db.Wizard","","viewField","Inventory date","Date inventaire","",""
+"com.axelor.apps.base.db.Wizard","","viewField","Description","Description","",""
+"com.axelor.apps.base.db.Wizard","","group","Fill inventory with","Remplir l'inventaire avec","",""
+"com.axelor.apps.base.db.Wizard","","viewField","Product family","Famille produit","",""
+"com.axelor.apps.base.db.Wizard","","viewField","Product category","Catégorie produit","",""
+"com.axelor.apps.base.db.Wizard","","viewField","Exclude out of stock products ?","Exclure produits sans stock ?","",""
+"com.axelor.apps.base.db.Wizard","","viewField","Include obsolete products ?","Inclure les produits obsolètes ?","",""
+"com.axelor.apps.base.db.Wizard","","button","Validate","Valider","",""
+"com.axelor.apps.supplychain.db.StockMove","","view","Customer deliveries filters","Livraisons Clients","",""
+"com.axelor.apps.supplychain.db.StockMove","","filter","Deliveries to prepare","Livraisons à préparer","",""
+"com.axelor.apps.supplychain.db.StockMove","","filter","Late Deliveries","Livraisons en retard","",""
+"com.axelor.apps.supplychain.db.StockMove","","filter","Deliveries History","Historique des Livraisons","",""
+"com.axelor.apps.supplychain.db.StockMove","","filter","Deliveries Cancelled","Livraisons annulées","",""
+"com.axelor.apps.supplychain.db.StockMove","","view","Internal Stock Move filters","Filtres Mvt Stock internes","",""
+"com.axelor.apps.supplychain.db.StockMove","","filter","Moves To Prepare","Mouvement à préparer","",""
+"com.axelor.apps.supplychain.db.StockMove","","filter","Moves History","Historique des Mouvements","",""
+"com.axelor.apps.supplychain.db.StockMove","","filter","Moves Cancelled","Mouvements annulés","",""
+"com.axelor.apps.supplychain.db.Inventory","","view","Inventories filters","Filtres inventaires","",""
+"com.axelor.apps.supplychain.db.Inventory","","filter","Planned Inventories","Inventaires Planifiés","",""
+"com.axelor.apps.supplychain.db.Inventory","","filter","Inventories History","Historique d'inventaire","",""
+"com.axelor.apps.supplychain.db.Inventory","","view","Inventory","Inventaires","",""
+"com.axelor.apps.supplychain.db.Inventory","","group","Export","Export","",""
+"com.axelor.apps.supplychain.db.Inventory","","button","Print","Imprimer","",""
+"com.axelor.apps.supplychain.db.Inventory","","group","Import","Import","",""
+"com.axelor.apps.supplychain.db.Inventory","","button","Import","Import","",""
+"com.axelor.apps.supplychain.db.Inventory","","group","Description","Description","",""
+"com.axelor.apps.supplychain.db.Inventory","","group","Fill inventory with","Remplir l'inventaire avec","",""
+"com.axelor.apps.supplychain.db.Inventory","","button","Fill inventory","Compléter l'inventaire","",""
+"com.axelor.apps.supplychain.db.Inventory","","group","Actions","Actions","",""
+"com.axelor.apps.supplychain.db.Inventory","","button","Plan","Planifier","",""
+"com.axelor.apps.supplychain.db.Inventory","","button","Realize","Réalisé","",""
+"com.axelor.apps.supplychain.db.Inventory","","button","Cancel","Annuler","",""
+"com.axelor.apps.supplychain.db.Inventory","","button","Draft","Brouillon","",""
+"com.axelor.apps.supplychain.db.Inventory","","view","Inventory","Inventaires","",""
+"com.axelor.apps.supplychain.db.Inventory","archived","field","","Archivé ? ","",""
+"com.axelor.apps.supplychain.db.Inventory","","view","Inventory","Inventaires","",""
+"com.axelor.apps.supplychain.db.Inventory","archived","field","","Archivé ? ","",""
+"com.axelor.apps.supplychain.db.Inventory","","view","Inventory","Inventaires","",""
+"com.axelor.apps.supplychain.db.InventoryLine","","view","Inventory line","Ligne d'inventaire","",""
+"com.axelor.apps.supplychain.db.InventoryLine","","group","Product Variants","Variantes produit","",""
+"com.axelor.apps.supplychain.db.InventoryLine","","view","InventoryLine","Ligne d'inventaire","",""
+"com.axelor.apps.supplychain.db.InventoryLine","archived","field","","Archivée ? ","",""
+"com.axelor.apps.supplychain.db.InventoryLine","","view","Inventory lines","Lignes d'inventaire","",""
+"com.axelor.apps.supplychain.db.InventoryLine","","view","InventoryLine","Ligne d'inventaire","",""
+"com.axelor.apps.supplychain.db.InventoryLine","archived","field","","Archivée ? ","",""
+"com.axelor.apps.supplychain.db.Location","","view","Location","Emplacement stock","",""
+"com.axelor.apps.supplychain.db.Location","archived","field","","Archivé ? ","",""
+"com.axelor.apps.supplychain.db.Location","","button","Create inventory","Créer inventaire","",""
+"com.axelor.apps.supplychain.db.Location","","view","Stock Location","Emplacement","",""
+"com.axelor.apps.supplychain.db.Location","","button","View location content","Voir contenu de l'emplacement","",""
+"com.axelor.apps.supplychain.db.Location","","page","Stock","Stock","",""
+"com.axelor.apps.supplychain.db.Location","","page","Stock Details","Détail des stocks","",""
+"com.axelor.apps.supplychain.db.Location","","view","Location","Emplacement stock","",""
+"com.axelor.apps.supplychain.db.Location","archived","field","","Archivé ? ","",""
+"com.axelor.apps.supplychain.db.Location","","view","Stock Locations","Emplacements de stock","",""
+"com.axelor.apps.supplychain.db.LocationLine","","view","Stock Location content","Contenu emplacement","",""
+"com.axelor.apps.supplychain.db.LocationLine","","view","Stock Locations content","Contenus emplacement","",""
+"com.axelor.apps.supplychain.db.LocationLine","","view","LocationLine","","",""
+"com.axelor.apps.supplychain.db.LocationLine","archived","field","","","",""
+"com.axelor.apps.supplychain.db.LocationLine","","view","Stock Location content","Contenu emplacement","",""
+"com.axelor.apps.supplychain.db.LocationLine","","view","Stock Locations content","Contenus emplacement","",""
+"com.axelor.apps.supplychain.db.LocationLine","","view","LocationLine","","",""
+"com.axelor.apps.supplychain.db.LocationLine","archived","field","","","",""
+"com.axelor.apps.supplychain.db.LocationLine","","view","Stock Location content","Contenu emplacement","",""
+"com.axelor.apps.supplychain.db.LocationLine","","view","Stock Locations content","Contenus emplacement","",""
+"com.axelor.apps.production.db.Machine","","view","Machine","Machine","",""
+"com.axelor.apps.production.db.Machine","","view","Machines","Machines","",""
+"com.axelor.apps.supplychain.db.MinStockRules","","view","Minimum stock rule","Les Règles de stock minimum","",""
+"com.axelor.apps.supplychain.db.MinStockRules","","view","MinStockRules","","",""
+"com.axelor.apps.supplychain.db.MinStockRules","archived","field","","","",""
+"com.axelor.apps.supplychain.db.MinStockRules","","view","MinStockRules","","",""
+"com.axelor.apps.supplychain.db.MinStockRules","archived","field","","","",""
+"com.axelor.apps.supplychain.db.MinStockRules","","view","Minimum stock rules","Règles de stock minimum","",""
+"com.axelor.apps.supplychain.db.PurchaseOrder","","button","Print","Imprimer","",""
+"com.axelor.apps.supplychain.db.PurchaseOrder","","button","Send email","Envoyer Email","",""
+"com.axelor.apps.supplychain.db.PurchaseOrder","","view","Supplier RFQ/PO","Devis/Commande fournisseur","",""
+"com.axelor.apps.supplychain.db.PurchaseOrder","","page","PO information","Information OA","",""
+"com.axelor.apps.supplychain.db.PurchaseOrder","","group","Contacts","Contacts","",""
+"com.axelor.apps.supplychain.db.PurchaseOrder","","group","Delivery","Livraison","",""
+"com.axelor.apps.supplychain.db.PurchaseOrder","","group","Action(s)","Action(s)","",""
+"com.axelor.apps.supplychain.db.PurchaseOrder","","button","Compute","Calculer","",""
+"com.axelor.apps.supplychain.db.PurchaseOrder","","button","Draft","Brouillon","",""
+"com.axelor.apps.supplychain.db.PurchaseOrder","","button","Requested","Demandé","",""
+"com.axelor.apps.supplychain.db.PurchaseOrder","","button","Receipt","Reçu","",""
+"com.axelor.apps.supplychain.db.PurchaseOrder","","button","Validate","Valider","",""
+"com.axelor.apps.supplychain.db.PurchaseOrder","","button","Completed","Terminer","",""
+"com.axelor.apps.supplychain.db.PurchaseOrder","","button","Cancel","Annuler","",""
+"com.axelor.apps.supplychain.db.PurchaseOrder","","button","Show invoice","Factures fournisseurs","",""
+"com.axelor.apps.supplychain.db.PurchaseOrder","","button","Generate control invoice","Générer facture","",""
+"com.axelor.apps.supplychain.db.PurchaseOrder","","group","Totals","Totaux","",""
+"com.axelor.apps.supplychain.db.PurchaseOrder","","page","Notes","Notes","",""
+"com.axelor.apps.supplychain.db.PurchaseOrder","","view","PurchaseOrder","Devis/Cmde Achat","",""
+"com.axelor.apps.supplychain.db.PurchaseOrder","archived","field","","Archivé ? ","",""
+"com.axelor.apps.supplychain.db.PurchaseOrder","","view","PurchaseOrder","Devis/Cmde Achat","",""
+"com.axelor.apps.supplychain.db.PurchaseOrder","archived","field","","Archivé ? ","",""
+"com.axelor.apps.supplychain.db.PurchaseOrder","","button","Print","Imprimer","",""
+"com.axelor.apps.supplychain.db.PurchaseOrder","","view","Supplier RFQs/POs","Devis/Commandes","",""
+"com.axelor.apps.supplychain.db.PurchaseOrder","","button","Print","Imprimer","",""
+"com.axelor.apps.supplychain.db.PurchaseOrder","","button","Send Email","Envoyer email","",""
+"com.axelor.apps.supplychain.db.PurchaseOrderLine","","view","PO line","Ligne de commande fournisseur","",""
+"com.axelor.apps.supplychain.db.PurchaseOrderLine","","group","Discount","Remise","",""
+"com.axelor.apps.supplychain.db.PurchaseOrderLine","","page","Details","Détails","",""
+"com.axelor.apps.supplychain.db.PurchaseOrderLine","","page","Links","Liens","",""
+"com.axelor.apps.supplychain.db.PurchaseOrderLine","","view","PurchaseOrderLine","Ligne de Devis/Cmde Achat","",""
+"com.axelor.apps.supplychain.db.PurchaseOrderLine","archived","field","","Archivé ? ","",""
+"com.axelor.apps.supplychain.db.PurchaseOrderLine","","view","PO lines","Lignes de commande fournisseur","",""
+"com.axelor.apps.supplychain.db.PurchaseOrderLine","","view","PurchaseOrderLine","Ligne de Devis/Cmde Achat","",""
+"com.axelor.apps.supplychain.db.PurchaseOrderLine","archived","field","","Archivé ? ","",""
+"com.axelor.apps.supplychain.db.PurchaseOrderLineTax","","view","PurchaseOrderLineTax","Ligne de TVA","",""
+"com.axelor.apps.supplychain.db.PurchaseOrderLineTax","archived","field","","Archivé ? ","",""
+"com.axelor.apps.supplychain.db.PurchaseOrderLineTax","","view","SO Tax line","Ligne de TVA","",""
+"com.axelor.apps.supplychain.db.PurchaseOrderLineTax","","view","SO Tax lines","Les lignes de TVA","",""
+"com.axelor.apps.supplychain.db.PurchaseOrderLineTax","","view","PurchaseOrderLineTax","Ligne de TVA","",""
+"com.axelor.apps.supplychain.db.PurchaseOrderLineTax","archived","field","","Archivé ? ","",""
+"com.axelor.apps.supplychain.db.PurchaseOrder","","view","Purchases Order filters","Filtres Achats","",""
+"com.axelor.apps.supplychain.db.PurchaseOrder","","filter","My RFQs","Mes devis fournisseurs","",""
+"com.axelor.apps.supplychain.db.PurchaseOrder","","filter","My Sales","Mes Achats","",""
+"com.axelor.apps.supplychain.db.SalesOrder","","view","Sales Order filters","Filtres Devis/Cmdes Clients","",""
+"com.axelor.apps.supplychain.db.SalesOrder","","filter","My Proposals","Mes Propositions Commerciales","",""
+"com.axelor.apps.supplychain.db.SalesOrder","","filter","My Sales","Mes Ventes","",""
+"com.axelor.apps.supplychain.db.SalesOrder","","filter","My Team Proposals","Propositions Commerciales de mon Equipe","",""
+"com.axelor.apps.supplychain.db.SalesOrder","","filter","My Team Sales","Ventes de mon Equipe","",""
+"com.axelor.apps.supplychain.db.SalesOrder","","view","SalesOrder","Devis/Cmde Vente","",""
+"com.axelor.apps.supplychain.db.SalesOrder","archived","field","","Archivé(e) ?","",""
+"com.axelor.apps.supplychain.db.SalesOrder","","button","Print","Imprimer","",""
+"com.axelor.apps.supplychain.db.SalesOrder","","button","Send email","Envoyer Email","",""
+"com.axelor.apps.supplychain.db.SalesOrder","","button","Actions","","",""
+"com.axelor.apps.supplychain.db.SalesOrder","","button","Plan a meeting","Planifier un rendez-vous","",""
+"com.axelor.apps.supplychain.db.SalesOrder","","button","Plan a call","Planifier un appel","",""
+"com.axelor.apps.supplychain.db.SalesOrder","","button","Plan a task","Planifier une tâche","",""
+"com.axelor.apps.supplychain.db.SalesOrder","","view","Sale order","Devis","",""
+"com.axelor.apps.supplychain.db.SalesOrder","","page","Customer information","Informations client","",""
+"com.axelor.apps.supplychain.db.SalesOrder","","group","Specific settings","Configuration spécifique","",""
+"com.axelor.apps.supplychain.db.SalesOrder","","separator","Sale order content","Lignes de devis","",""
+"com.axelor.apps.supplychain.db.SalesOrder","","group","Action(s)","Action(s)","",""
+"com.axelor.apps.supplychain.db.SalesOrder","","button","Compute","Calculer","",""
+"com.axelor.apps.supplychain.db.SalesOrder","","button","Confirm","Confirmer","",""
+"com.axelor.apps.supplychain.db.SalesOrder","","button","Validate","Valider","",""
+"com.axelor.apps.supplychain.db.SalesOrder","","button","Cancel","Annuler","",""
+"com.axelor.apps.supplychain.db.SalesOrder","","button","Generate invoice","Générer facture","",""
+"com.axelor.apps.supplychain.db.SalesOrder","","group","Totaux","Totaux","",""
+"com.axelor.apps.supplychain.db.SalesOrder","","page","Other informations","Autres informations","",""
+"com.axelor.apps.supplychain.db.SalesOrder","","group","Sales follow-up","Suivi devis","",""
+"com.axelor.apps.supplychain.db.SalesOrder","","group","Financial terms","Termes financiers","",""
+"com.axelor.apps.supplychain.db.SalesOrder","","group","Marketing","Marketing","",""
+"com.axelor.apps.supplychain.db.SalesOrder","","group","Invoicing","Facturation","",""
+"com.axelor.apps.supplychain.db.SalesOrder","","page","Schedule","Echéancier","",""
+"com.axelor.apps.supplychain.db.SalesOrder","","page","Invoicing","Facturation","",""
+"com.axelor.apps.supplychain.db.SalesOrder","","button","Show Invoices","Les factures","",""
+"com.axelor.apps.supplychain.db.SalesOrder","","page","Subscription","Abonnement","",""
+"com.axelor.apps.supplychain.db.SalesOrder","","separator","Subscription dates","Date d'abonnement","",""
+"com.axelor.apps.supplychain.db.SalesOrder","","separator","Invoices dates","Dates de factures","",""
+"com.axelor.apps.supplychain.db.SalesOrder","","view","SalesOrder","Devis/Cmde Vente","",""
+"com.axelor.apps.supplychain.db.SalesOrder","archived","field","","Archivé(e) ?","",""
+"com.axelor.apps.supplychain.db.SalesOrder","","button","Actions","","",""
+"com.axelor.apps.supplychain.db.SalesOrder","","button","Plan a meeting","Planifier un rendez-vous","",""
+"com.axelor.apps.supplychain.db.SalesOrder","","button","Plan a call","Planifier un appel","",""
+"com.axelor.apps.supplychain.db.SalesOrder","","button","Plan a task","Planifier une tâche","",""
+"com.axelor.apps.supplychain.db.SalesOrder","","view","Sale orders","Devis/Commandes","",""
+"com.axelor.apps.supplychain.db.SalesOrder","","button","Print","Imprimer","",""
+"com.axelor.apps.supplychain.db.SalesOrder","","button","Send email","Envoyer Email","",""
+"com.axelor.apps.supplychain.db.SalesOrderLine","","view","SO line","Ligne de devis","",""
+"com.axelor.apps.supplychain.db.SalesOrderLine","","group","Discount","Remise","",""
+"com.axelor.apps.supplychain.db.SalesOrderLine","","page","Settings","Configurations","",""
+"com.axelor.apps.supplychain.db.SalesOrderLine","","page","Notes","Remarques","",""
+"com.axelor.apps.supplychain.db.SalesOrderLine","","page","SO line details","Détails","",""
+"com.axelor.apps.supplychain.db.SalesOrderLine","","page","Invoicing follow-up","Suivi facturation","",""
+"com.axelor.apps.supplychain.db.SalesOrderLine","","page","Ressources Planning","Planning des ressources","",""
+"com.axelor.apps.supplychain.db.SalesOrderLine","","view","SalesOrderLine","","",""
+"com.axelor.apps.supplychain.db.SalesOrderLine","archived","field","","Archivé(e) ?","",""
+"com.axelor.apps.supplychain.db.SalesOrderLine","","view","SalesOrderLine","","",""
+"com.axelor.apps.supplychain.db.SalesOrderLine","archived","field","","Archivé(e) ?","",""
+"com.axelor.apps.supplychain.db.SalesOrderLine","","view","SO lines","Lignes de devis","",""
+"com.axelor.apps.supplychain.db.SalesOrderLineTax","","view","SO Tax line","Ligne de TVA","",""
+"com.axelor.apps.supplychain.db.SalesOrderLineTax","","view","SalesOrderLineTax","Ligne de TVA","",""
+"com.axelor.apps.supplychain.db.SalesOrderLineTax","archived","field","","","",""
+"com.axelor.apps.supplychain.db.SalesOrderLineTax","","view","SalesOrderLineTax","Ligne de TVA","",""
+"com.axelor.apps.supplychain.db.SalesOrderLineTax","archived","field","","","",""
+"com.axelor.apps.supplychain.db.SalesOrderLineTax","","view","SO Tax lines","Les lignes de TVA","",""
+"com.axelor.apps.supplychain.db.SalesOrderScheduleLine","","view","SalesOrderScheduleLine","","",""
+"com.axelor.apps.supplychain.db.SalesOrderScheduleLine","archived","field","","","",""
+"com.axelor.apps.supplychain.db.SalesOrderScheduleLine","","view","SO schedule line","Ligne d'échéance de devis","",""
+"com.axelor.apps.supplychain.db.SalesOrderScheduleLine","","view","SO schedule lines","Lignes d'échéances de devis","",""
+"com.axelor.apps.supplychain.db.SalesOrderScheduleLine","","view","SalesOrderScheduleLine","","",""
+"com.axelor.apps.supplychain.db.SalesOrderScheduleLine","archived","field","","","",""
+"com.axelor.apps.supplychain.db.SalesOrderSubLine","","view","SO subline","Sous-ligne de devis/cmde","",""
+"com.axelor.apps.supplychain.db.SalesOrderSubLine","","group","Discount","Remise","",""
+"com.axelor.apps.supplychain.db.SalesOrderSubLine","","view","SalesOrderSubLine","Sous-ligne de devis/cmde","",""
+"com.axelor.apps.supplychain.db.SalesOrderSubLine","archived","field","","","",""
+"com.axelor.apps.supplychain.db.SalesOrderSubLine","","view","SO sublines","Sous-lignes de devis","",""
+"com.axelor.apps.supplychain.db.SalesOrderSubLine","","view","SalesOrderSubLine","Sous-ligne de devis/cmde","",""
+"com.axelor.apps.supplychain.db.SalesOrderSubLine","archived","field","","","",""
+"","","view","Dashboard","Tableau de bord","",""
+"com.axelor.apps.supplychain.db.StockMove","","view","StockMove","Mouvement de stock","",""
+"com.axelor.apps.supplychain.db.StockMove","archived","field","","Archivé ? ","",""
+"com.axelor.apps.supplychain.db.StockMove","","view","Stock move","Mouvement de stock","",""
+"com.axelor.apps.supplychain.db.StockMove","","group","Stock move reference","Références mouvement de stock","",""
+"com.axelor.apps.supplychain.db.StockMove","","group","Stock move informations","Informations mouvement de stock","",""
+"com.axelor.apps.supplychain.db.StockMove","","group","Action(s)","Action(s)","",""
+"com.axelor.apps.supplychain.db.StockMove","","button","Plan","Planifier","",""
+"com.axelor.apps.supplychain.db.StockMove","","button","Realize","Réalisé","",""
+"com.axelor.apps.supplychain.db.StockMove","","button","Cancel","Annuler","",""
+"com.axelor.apps.supplychain.db.StockMove","","button","Draft","Brouillon","",""
+"com.axelor.apps.supplychain.db.StockMove","","button","Generate invoice","Générer facture","",""
+"com.axelor.apps.supplychain.db.StockMove","","button"," Print","Imprimer BL/BR/BT","",""
+"com.axelor.apps.supplychain.db.StockMove","","button","View Direction","Voir itinéraire","",""
+"com.axelor.apps.supplychain.db.StockMove","","button","View Direction","Voir itinéraire","",""
+"com.axelor.apps.supplychain.db.StockMove","","page","Stock move details","Détails mouvement de stock","",""
+"com.axelor.apps.supplychain.db.StockMove","","page","Configuration","Configuration","",""
+"com.axelor.apps.supplychain.db.StockMove","","view","StockMove","Mouvement de stock","",""
+"com.axelor.apps.supplychain.db.StockMove","archived","field","","Archivé ? ","",""
+"com.axelor.apps.supplychain.db.StockMove","","button","Print StockMove(s)","Imprimer","",""
+"com.axelor.apps.supplychain.db.StockMove","","view","Stock moves","Mouvements de stock","",""
+"com.axelor.apps.supplychain.db.StockMove","","button","Print","Imprimer","",""
+"com.axelor.apps.supplychain.db.StockMove","","button","Print StockMove(s)","Imprimer","",""
+"com.axelor.apps.supplychain.db.StockMove","","view","Stock moves","Mouvements de stock","",""
+"com.axelor.apps.supplychain.db.StockMove","","button","Print","Imprimer","",""
+"com.axelor.apps.supplychain.db.StockMove","","button","View Direction","Voir itinéraire","",""
+"com.axelor.apps.supplychain.db.StockMoveLine","","view","Stock move line","Ligne mvt. de stock","",""
+"com.axelor.apps.supplychain.db.StockMoveLine","","view","StockMoveLine","Ligne de mvt. de stock","",""
+"com.axelor.apps.supplychain.db.StockMoveLine","archived","field","","","",""
+"com.axelor.apps.supplychain.db.StockMoveLine","","view","StockMoveLine","Ligne de mvt. de stock","",""
+"com.axelor.apps.supplychain.db.StockMoveLine","archived","field","","","",""
+"com.axelor.apps.supplychain.db.StockMoveLine","","view","Stock move lines","Lignes mvt. de stock","",""
+"com.axelor.apps.supplychain.db.StockMoveLine","","view","Stock move line","Ligne mvt. de stock","",""
+"com.axelor.apps.supplychain.db.StockMoveLine","","view","Stock move lines","Lignes mvt. de stock","",""
+"com.axelor.apps.supplychain.db.StockMove","","button","Print StockMove(s)","Imprimer","",""
+"com.axelor.apps.supplychain.db.StockMove","","view","Stock moves","Mouvements de stock","",""
+"com.axelor.apps.supplychain.db.StockMove","","button","Print","Imprimer","",""
+"com.axelor.apps.supplychain.db.StockMove","","button","View Direction","Voir itinéraire","",""
+"com.axelor.apps.supplychain.db.StockMove","","view","Supplier arrivals filters","Filtres Arrivages fournisseurs","",""
+"com.axelor.apps.supplychain.db.StockMove","","filter","Today Arrivals","Réceptions du jour","",""
+"com.axelor.apps.supplychain.db.StockMove","","filter","Upcoming arrivals","Réceptions à venir","",""
+"com.axelor.apps.supplychain.db.StockMove","","filter","Arrivals History","Historique réceptions","",""
+"com.axelor.apps.supplychain.db.StockMove","","filter","Cancelled Arrivals","Réceptions annulées","",""
+"com.axelor.apps.supplychain.db.SupplychainBatch","","view","SupplychainBatch","","",""
+"com.axelor.apps.supplychain.db.SupplychainBatch","archived","field","","","",""
+"com.axelor.apps.supplychain.db.SupplychainBatch","","view","supplychain Batch","Batch Supply Chain","",""
+"com.axelor.apps.supplychain.db.SupplychainBatch","","page","Invoicing page","Facturation","",""
+"com.axelor.apps.supplychain.db.SupplychainBatch","","button","Invoicing batch","Batch Facturation","",""
+"com.axelor.apps.supplychain.db.SupplychainBatch","","page","Information","","",""
+"com.axelor.apps.supplychain.db.SupplychainBatch","","viewField","Created on","Créé le","",""
+"com.axelor.apps.supplychain.db.SupplychainBatch","","viewField","Created by","Créé par","",""
+"com.axelor.apps.supplychain.db.SupplychainBatch","","view","SupplychainBatch","","",""
+"com.axelor.apps.supplychain.db.SupplychainBatch","archived","field","","","",""
+"com.axelor.apps.supplychain.db.SupplychainBatch","","view","supplychain batches","Batches de supply chain","",""
+"com.axelor.apps.supplychain.db.SupplychainBatch","createdOn","field","","Créé le","",""
+"com.axelor.apps.supplychain.db.SupplychainBatch","createdBy","field","","Créé par","",""
+"com.axelor.apps.supplychain.db.SupplychainConfig","","view","SupplychainConfig","Config. Supply Chain","",""
+"com.axelor.apps.supplychain.db.SupplychainConfig","archived","field","","Archivée ? ","",""
+"com.axelor.apps.supplychain.db.SupplychainConfig","","view","Supply chain configuration","","",""
+"com.axelor.apps.supplychain.db.SupplychainConfig","","group","Virtual locations informations","Informations Stocks Virtuels","",""
+"com.axelor.apps.supplychain.db.SupplychainConfig","","group","Stock move informations","Informations sur Stocks Internes","",""
+"com.axelor.apps.supplychain.db.SupplychainConfig","","group","Invoicing informations","Informations Facturation","",""
+"com.axelor.apps.supplychain.db.SupplychainConfig","","view","Supply chain configurations","","",""
+"com.axelor.apps.supplychain.db.SupplychainConfig","","view","SupplychainConfig","Config. Supply Chain","",""
+"com.axelor.apps.supplychain.db.SupplychainConfig","archived","field","","Archivée ? ","",""
+"","","view","Dashboard","Tableau de bord","",""
+"","","view","Dashboard","Tableau de bord","",""
+"","","view","Dashboard","Tableau de bord","",""
+"","","view","Dashboard","Tableau de bord","",""
+"","","action","Create inventory","Créer inventaire","",""
+"","","action","Inventory generated","Inventaire généré","",""
+"","","action","Supplier invoices","Factures fournisseur","",""
+"","","action","The field 'Location' must be filled.","Le champ Entrepôt doit être complété.""","",""
+"","","action","The location must be filled.","Merci de remplir le champ 'Location' afin de générer les mouvements de stocks.","",""
+"","","action","Invoices","Factures","",""
+"","","action","Plan a call","Planifier un appel","",""
+"","","action","Plan a meeting","Planifier un meeting","",""
+"","","action","Plan a task","Planifier une tâche","",""
+"","","action","Supplychain batches","","",""
+"","","action","Supplychain configurations","","",""
+"","","action","50 Latest Supplier Orders","50 Dernières Cmdes d'Achat","",""
+"","","action","Turnover On Purchase orders on Last 12 Month","Montant des achats (Cmdes) sur 12 mois","",""
+"","","action","Number Of Units Purchase orders on Last 12 Month","Nbre de produits achetés (Cmdes) sur 12 mois","",""
+"","","action","Number Of Units On Customer Sales on Last 12 Month","Nbre de produits vendus (Cmdes) sur 12 mois","",""
+"","","action","Turnover On Customer Sales on Last 12 Month","CA ventes (Cmdes) sur 12 mois","",""
+"","","action","My purchases orders per product family over past month","*","",""
+"","","action","My Purchases orders per buyer over past month in volume","*","",""
+"","","action","My Purchase Orders","Mes devis fournisseurs","",""
+"","","action","My RFQ And PO To Validate","Mes RFQ et PO à valider","",""
+"","","action","My Validated Purchase Orders","Mes devis fournisseurs validés","",""
+"","","action","Purchases orders per buyer over past month in volume","","",""
+"","","action","Purchases orders per family product over six month in percentage","","",""
+"","","action","Purchases orders per family product over six month","","",""
+"","","action","RFQ And PO To Validate","RFQ et PO à valider","",""
+"","","action","Current Purchase Orders","Devis fournisseurs actuels","",""
+"","","action","Sales per product category over past 12 months in volume","","",""
+"","","action","Sales per country over past 12 months","","",""
+"","","action","Sales per product family over past 12 months","","",""
+"","","action","Turnover per salesman over past 30 days","CA par Commercial sur 30 jours","",""
+"","","action","Turnover per team over past 30 days","CA par Equipe sur 30 jours","",""
+"","","action","Today Activities","Activités d'aujourd'hui","",""
+"","","action","My Current Leads","Mes Prospects en cours","",""
+"","","action","My Opportunities","Mes Opportunités","",""
+"","","action","My Sales Orders","Mes devis clients","",""
+"","","action","Turnover over past 6 months","CA sur 6 mois","",""
+"","","action","Late arrivals","Réceptions tardives","",""
+"","","action","Late deliveries","Livraisons tardives","",""
+"","","action","Product out of stock","Produits indiponibles","",""
+"","","action","Upcoming arrivals","Prochaines réceptions","",""
+"","","action","Upcoming deliveries","Prochaines livraisons","",""
+"","","action","Purchase Orders last 6 month per product family","Montant achats par famille produit sur 6 mois","",""
+"","","action","Number Of Supplier Orders Per Month","Nbre de cmde fournisseur par mois","",""
+"","","action","New Purchase order","Nouv. Devis/Cmde Fourn.","",""
+"","","action","Purchase orders","Devis/Commandes","",""
+"","","action","New Sale order","Nouv. Devis/Cmde Client","",""
+"","","action","Sale orders","Devis/Commandes","",""
+"","","action","Minimum stock rules","Règles de stock minimum","",""
+"","","action","Customer Deliveries","Livraisons Client","",""
+"","","action","Internal Stock Moves","Mouvements Internes","",""
+"","","action","Inventories","Inventaires","",""
+"","","action","Stock Locations","Emplacements de stock","",""
+"","","action","Supplier Arrivals","Livraisons Fournisseur","",""
+"","","action","Sales order","Devis clients","",""
+"","","action","Orders","Commandes","",""
+"","","action","RFQ","RFQ","",""
+"","","action","Quotes","Devis","",""
+"","","action","Orders","Commandes","",""
+"","","action","Customer deliveries","Livraisons Client","",""
+"","","action","Internal moves","Mouvements internes","",""
+"","","action","Supplier deliveries","Livraisons fournisseurs","",""
+"axelor-supplychain","","other","Inventory.code","Code","",""
+"axelor-supplychain","","other","Inventory.date","Date","",""
+"axelor-supplychain","","other","Inventory.description","Description","",""
+"axelor-supplychain","","other","Inventory.location","Emplacement","",""
+"axelor-supplychain","","other","Inventory.name","Nom","",""
+"axelor-supplychain","","other","Inventory.realQty","Qté","",""
+"axelor-supplychain","","other","Inventory.title","INVENTAIRE","",""
+"axelor-supplychain","","other","Inventory.unit","Unité","",""
+"axelor-supplychain","","other","PurchaseOrder.bankDetails","Coordonnées bancaires","",""
+"axelor-supplychain","","other","PurchaseOrder.bankingInfo","Informations bancaires","",""
+"axelor-supplychain","","other","PurchaseOrder.base","Base","",""
+"axelor-supplychain","","other","PurchaseOrder.cheque","Chèque","",""
+"axelor-supplychain","","other","PurchaseOrder.customer","Client","",""
+"axelor-supplychain","","other","PurchaseOrder.customerRef","Réf. Client","",""
+"axelor-supplychain","","other","PurchaseOrder.deliveryDate","Date de facture","",""
+"axelor-supplychain","","other","PurchaseOrder.note","Remarques","",""
+"axelor-supplychain","","other","PurchaseOrder.paymentCondition","Conditions de paiement","",""
+"axelor-supplychain","","other","PurchaseOrder.paymentMode","Mode de paiement","",""
+"axelor-supplychain","","other","PurchaseOrder.priceExclTax","Prix H.T.","",""
+"axelor-supplychain","","other","PurchaseOrder.productDescription","Produit/Description","",""
+"axelor-supplychain","","other","PurchaseOrder.purchaseInfo","Commande N°","",""
+"axelor-supplychain","","other","PurchaseOrder.qtyUnit","Qté / Unité","",""
+"axelor-supplychain","","other","PurchaseOrder.state","Etat","",""
+"axelor-supplychain","","other","PurchaseOrder.supplier","Fournisseur","",""
+"axelor-supplychain","","other","PurchaseOrder.supplyRef","Réf. Fournisseur","",""
+"axelor-supplychain","","other","PurchaseOrder.tax","T.V.A","",""
+"axelor-supplychain","","other","PurchaseOrder.taxAmount","Montant T.V.A.","",""
+"axelor-supplychain","","other","PurchaseOrder.totalExclTax","Total H.T.","",""
+"axelor-supplychain","","other","PurchaseOrder.totalInclTax","Total T.T.C.","",""
+"axelor-supplychain","","other","PurchaseOrder.totalTax","Total T.V.A.","",""
+"axelor-supplychain","","other","PurchaseOrder.unitPrice","Prix unitaire","",""
+"axelor-supplychain","","other","SalesOrder.bankDetails","Coordonnées bancaires","",""
+"axelor-supplychain","","other","SalesOrder.bankingInfo","Informations bancaires","",""
+"axelor-supplychain","","other","SalesOrder.base","Base","",""
+"axelor-supplychain","","other","SalesOrder.cheque","Chèque","",""
+"axelor-supplychain","","other","SalesOrder.customer","Client","",""
+"axelor-supplychain","","other","SalesOrder.customerRef","Réf. Client","",""
+"axelor-supplychain","","other","SalesOrder.date","Date de facture","",""
+"axelor-supplychain","","other","SalesOrder.deliveryAddress","Adresse de livraison","",""
+"axelor-supplychain","","other","SalesOrder.invoicingAddrs","Adresse de facturation","",""
+"axelor-supplychain","","other","SalesOrder.no","Commande N°","",""
+"axelor-supplychain","","other","SalesOrder.note","Remarques","",""
+"axelor-supplychain","","other","SalesOrder.paymentCondition","Conditions de paiement","",""
+"axelor-supplychain","","other","SalesOrder.paymentMode","Mode de paiement","",""
+"axelor-supplychain","","other","SalesOrder.priceExclTax","Prix H.T.","",""
+"axelor-supplychain","","other","SalesOrder.productDescription","Produit/Description","",""
+"axelor-supplychain","","other","SalesOrder.qtyUnit","Qté / Unité","",""
+"axelor-supplychain","","other","SalesOrder.supplier","Fournisseur","",""
+"axelor-supplychain","","other","SalesOrder.supplyRef","Réf. Fournisseur","",""
+"axelor-supplychain","","other","SalesOrder.tax","T.V.A","",""
+"axelor-supplychain","","other","SalesOrder.taxAmount","Montant T.V.A.","",""
+"axelor-supplychain","","other","SalesOrder.totalExclTax","Total H.T.","",""
+"axelor-supplychain","","other","SalesOrder.totalInclTax","Total T.T.C.","",""
+"axelor-supplychain","","other","SalesOrder.totalTax","Total T.V.A.","",""
+"axelor-supplychain","","other","SalesOrder.unitPrice","Prix unitaire","",""
+"axelor-supplychain","","other","StockMove.customer","Client","",""
+"axelor-supplychain","","other","StockMove.date","Date","",""
+"axelor-supplychain","","other","StockMove.deliveryAddress","Adresse de livraison","",""
+"axelor-supplychain","","other","StockMove.deliveryDetails","Détail de la livraison","",""
+"axelor-supplychain","","other","StockMove.deliveryOrder","Bon Livraison","",""
+"axelor-supplychain","","other","StockMove.internalMove","Mvt Interne","",""
+"axelor-supplychain","","other","StockMove.lotNoRef","Lot N°/Réf","",""
+"axelor-supplychain","","other","StockMove.movePreparedBy","Mvt préparé par","",""
+"axelor-supplychain","","other","StockMove.product","Produit","",""
+"axelor-supplychain","","other","StockMove.purchaseOrder","Commande","",""
+"axelor-supplychain","","other","StockMove.qtyUnit","Qté / Unité","",""
+"axelor-supplychain","","other","StockMove.receivedBy","Cmde reçue par","",""
+"axelor-supplychain","","other","StockMove.receptionOrder","Bon Réception","",""
+"axelor-supplychain","","other","StockMove.reference","Référence","",""
+"axelor-supplychain","","other","StockMove.stockPreparedBy","Cmde préparée par","",""
+"axelor-supplychain","","other","StockMove.variant","Variant","",""
+"axelor-supplychain","","other","StockMove.weight","Weight","",""
+"top.sales.offers","top.sales.offers","documentation","","","",""
+"top.sales.orders","top.sales.orders","documentation","","","",""
+"top.purchase.quotes","top.purchase.quotes","documentation","","","",""
+"top.purchase.orders","top.purchase.orders","documentation","","","",""
+"top.stock.cust.deliveries","top.stock.cust.deliveries","documentation","","","",""
+"top.stock.internal.moves","top.stock.internal.moves","documentation","","","",""
+"top.stock.suppl.deliveries","top.stock.suppl.deliveries","documentation","","","",""
+"supply.chain.root.sales.order","supply.chain.root.sales.order","documentation","","","",""
+"sc.root.sales.new.so","sc.root.sales.new.so","documentation","","","",""
+"sc.root.sales.orders","sc.root.sales.orders","documentation","","","",""
+"sc.root.purchase.order.new","sc.root.purchase.order.new","documentation","","","",""
+"sc.root.purchase.orders","sc.root.purchase.orders","documentation","","","",""
+"stock.root.custdeliveries","stock.root.custdeliveries","documentation","","","",""
+"stock.root.suparrivals","stock.root.suparrivals","documentation","","","",""
+"stock.root.internal","stock.root.internal","documentation","","","",""
+"stock.root.inventories.draft","stock.root.inventories.draft","documentation","","","",""
+"stock.root.location","stock.root.location","documentation","","","",""
+"stock.root.conf.min.Stock.rules","stock.root.conf.min.Stock.rules","documentation","","","",""
+"admin.root.batch.supplychain","admin.root.batch.supplychain","documentation","","","",""
+"admin.root.conf.supplychain.config","admin.root.conf.supplychain.config","documentation","","","",""
+"sales-order-form","sales-order-form","documentation","","","",""
+"sales-order-form","company","documentation","","","",""
+"sales-order-form","importId","documentation","","","",""
+"sales-order-form","salesOrderSeq","documentation","","","",""
+"sales-order-form","project","documentation","","","",""
+"sales-order-form","currency","documentation","","","",""
+"sales-order-form","externalReference","documentation","","","",""
+"sales-order-form","creationDate","documentation","","","",""
+"sales-order-form","validationDate","documentation","","","",""
+"sales-order-form","location","documentation","","","",""
+"sales-order-form","shipmentDate","documentation","","","",""
+"sales-order-form","batchSet","documentation","","","",""
+"sales-order-form","clientPartner","documentation","","","",""
+"sales-order-form","contactPartner","documentation","","","",""
+"sales-order-form","mainInvoicingAddress","documentation","","","",""
+"sales-order-form","priceList","documentation","","","",""
+"sales-order-form","deliveryAddress","documentation","","","",""
+"sales-order-form","isToPrintLineSubTotal","documentation","","","",""
+"sales-order-form","hasSubLineDefaultValue","documentation","","","",""
+"sales-order-form","invoicingTypeSelect","documentation","","","",""
+"sales-order-form","hasGlobalTask","documentation","","","",""
+"sales-order-form","salesOrderLineList","documentation","","","",""
+"sales-order-form","salesOrderLineTaxList","documentation","","","",""
+"sales-order-form","exTaxTotal","documentation","","","",""
+"sales-order-form","taxTotal","documentation","","","",""
+"sales-order-form","inTaxTotal","documentation","","","",""
+"sales-order-form","amountRemainingToBeInvoiced","documentation","","","",""
+"sales-order-form","statusSelect","documentation","","","",""
+"sales-order-form","salesmanUserInfo","documentation","","","",""
+"sales-order-form","team","documentation","","","",""
+"sales-order-form","paymentMode","documentation","","","",""
+"sales-order-form","paymentCondition","documentation","","","",""
+"sales-order-form","source","documentation","","","",""
+"sales-order-form","showDetailsInInvoice","documentation","","","",""
+"sales-order-form","invoicingMomentSelect","documentation","","","",""
+"sales-order-form","salesOrderScheduleLineList","documentation","","","",""
+"sales-order-form","invoiceSet","documentation","","","",""
+"sales-order-form","orderDate","documentation","","","",""
+"sales-order-form","orderNumber","documentation","","","",""
+"sales-order-form","schedulerInstance","documentation","","","",""
+"sales-order-form","subscriptionStartDate","documentation","","","",""
+"sales-order-form","invoicedFirstDate","documentation","","","",""
+"sales-order-form","nextInvPeriodStartDate","documentation","","","",""
+"sales-order-form","subscriptionEndDate","documentation","","","",""
+"sales-order-form","validatedByUserInfo","documentation","","","",""
+"sales-order-form","archived","documentation","","","",""
+"sales-order-line-form","sales-order-line-form","documentation","","","",""
+"sales-order-line-form","salesOrder","documentation","","","",""
+"sales-order-line-form","sequence","documentation","","","",""
+"sales-order-line-form","importId","documentation","","","",""
+"sales-order-line-form","product","documentation","","","",""
+"sales-order-line-form","qty","documentation","","","",""
+"sales-order-line-form","isToPrintLineSubTotal","documentation","","","",""
+"sales-order-line-form","productName","documentation","","","",""
+"sales-order-line-form","saleSupplySelect","documentation","","","",""
+"sales-order-line-form","price","documentation","","","",""
+"sales-order-line-form","taxLine","documentation","","","",""
+"sales-order-line-form","exTaxTotal","documentation","","","",""
+"sales-order-line-form","task","documentation","","","",""
+"sales-order-line-form","employeeSet","documentation","","","",""
+"sales-order-line-form","candidateSet","documentation","","","",""
+"sales-order-line-form","description","documentation","","","",""
+"sales-order-line-form","unit","documentation","","","",""
+"sales-order-line-form","invoicingDate","documentation","","","",""
+"sales-order-line-form","supplierPartner","documentation","","","",""
+"sales-order-line-form","discountAmount","documentation","","","",""
+"sales-order-line-form","discountTypeSelect","documentation","","","",""
+"sales-order-line-form","isToInvoice","documentation","","","",""
+"sales-order-line-form","isInvoiced","documentation","","","",""
+"sales-order-line-form","amountInvoiced","documentation","","","",""
+"sales-order-line-form","amountRemainingToBeInvoiced","documentation","","","",""
+"sales-order-line-form","salesOrderSubLineList","documentation","","","",""
+"sales-order-line-form","invoiceSet","documentation","","","",""
+"sales-order-line-form","deliveryDate","documentation","","","",""
+"sales-order-line-form","isInvoiceControlled","documentation","","","",""
+"sales-order-line-form","productVariant","documentation","","","",""
+"sales-order-line-form","companyExTaxTotal","documentation","","","",""
+"sales-order-line-form","companyCostPrice","documentation","","","",""
+"sales-order-line-form","billOfMaterial","documentation","","","",""
+"sales-order-line-form","archived","documentation","","","",""
+"sales-order-line-tax-form","sales-order-line-tax-form","documentation","","","",""
+"sales-order-line-tax-form","salesOrder","documentation","","","",""
+"sales-order-line-tax-form","taxLine","documentation","","","",""
+"sales-order-line-tax-form","exTaxBase","documentation","","","",""
+"sales-order-line-tax-form","taxTotal","documentation","","","",""
+"sales-order-line-tax-form","inTaxTotal","documentation","","","",""
+"sales-order-line-tax-form","archived","documentation","","","",""
+"sales-order-schedule-line-form","sales-order-schedule-line-form","documentation","","","",""
+"sales-order-schedule-line-form","salesOrder","documentation","","","",""
+"sales-order-schedule-line-form","sequence","documentation","","","",""
+"sales-order-schedule-line-form","amountToBeInvoiced","documentation","","","",""
+"sales-order-schedule-line-form","invoicingPercentage","documentation","","","",""
+"sales-order-schedule-line-form","salesOrderLine","documentation","","","",""
+"sales-order-schedule-line-form","accumulatedInvoicingPercentage","documentation","","","",""
+"sales-order-schedule-line-form","nbOfDay","documentation","","","",""
+"sales-order-schedule-line-form","invoice","documentation","","","",""
+"sales-order-schedule-line-form","archived","documentation","","","",""
+"purchase-order-form","purchase-order-form","documentation","","","",""
+"purchase-order-form","importId","documentation","","","",""
+"purchase-order-form","purchaseOrderSeq","documentation","","","","Séquence remplie automatiquement à l'enregistrement du formulaire. La séquence est configurable dans l'administration via le champ 'document concerné' = Commande fournisseur."
+"purchase-order-form","company","documentation","","","",""
+"purchase-order-form","supplierPartner","documentation","","","",""
+"purchase-order-form","contactPartner","documentation","","","",""
+"purchase-order-form","priceList","documentation","","","","L'utiisation d'une liste de prix peut modifier le prix unitaire d'achat spécifié sur la fiche produit. *"
+"purchase-order-form","project","documentation","","","","Si la commande d'achat est rattachée à un projet ou une affaire, la commande aura un impact financier sur l'affaire."
+"purchase-order-form","buyerUserInfo","documentation","","","","Utilisateur à l'origine de la commande."
+"purchase-order-form","currency","documentation","","","","Devise globale dans laquelle le devis est exprimé. La devise est reprise par défaut de la fiche du tiers fournisseur.*"
+"purchase-order-form","deliveryDate","documentation","","","","Date à laquelle le bon de réception sera créé."
+"purchase-order-form","orderDate","documentation","","","",""
+"purchase-order-form","purchaseOrderLineList","documentation","","","",""
+"purchase-order-form","statusSelect","documentation","","","",""
+"purchase-order-form","invoicingTypeSelect","documentation","","","","Le mode de facturation va influer sur le comportement de l'application."
+"purchase-order-form","invoice","documentation","","","","Facture associée à la commande."
+"purchase-order-form","location","documentation","","","","Emplacement de destination où seront envoyés les produits achetés (repris sur le bordereau de réception)."
+"purchase-order-form","externalReference","documentation","","","","Référence devis ou commande du fournisseur à rappeler. Cette référence sera recopiée sur la facture et sur le bon de réception des marchandises."
+"purchase-order-form","purchaseOrderLineTaxList","documentation","","","",""
+"purchase-order-form","validatedByUserInfo","documentation","","","",""
+"purchase-order-form","validationDate","documentation","","","",""
+"purchase-order-form","exTaxTotal","documentation","","","",""
+"purchase-order-form","taxTotal","documentation","","","",""
+"purchase-order-form","inTaxTotal","documentation","","","",""
+"purchase-order-form","amountRemainingToBeInvoiced","documentation","","","",""
+"purchase-order-form","notes","documentation","","","",""
+"purchase-order-form","archived","documentation","","","",""
+"purchase-order-line-form","purchase-order-line-form","documentation","","","",""
+"purchase-order-line-form","purchaseOrder","documentation","","","",""
+"purchase-order-line-form","sequence","documentation","","","","Séquence manuelle permettant d'ordonnancer les lignes."
+"purchase-order-line-form","product","documentation","","","",""
+"purchase-order-line-form","qty","documentation","","","","Par défaut définie à 1."
+"purchase-order-line-form","productName","documentation","","","","Champ rempli automatiquement avec la description du produit lors de sa sélection."
+"purchase-order-line-form","price","documentation","","","","*"
+"purchase-order-line-form","taxLine","documentation","","","","Champ rempli automatiquement avec la configuration comptable définie sur le produit ou le cas échéant, par la TVA de remplacement définie dans la position fiscale associée au Tiers."
+"purchase-order-line-form","exTaxTotal","documentation","","","","Qté * Prix unitaire"
+"purchase-order-line-form","description","documentation","","","",""
+"purchase-order-line-form","unit","documentation","","","",""
+"purchase-order-line-form","discountAmount","documentation","","","","*"
+"purchase-order-line-form","discountTypeSelect","documentation","","","",""
+"purchase-order-line-form","isOrdered","documentation","","","",""
+"purchase-order-line-form","isInvoiced","documentation","","","",""
+"purchase-order-line-form","amountInvoiced","documentation","","","",""
+"purchase-order-line-form","amountRemainingToBeInvoiced","documentation","","","",""
+"purchase-order-line-form","task","documentation","","","",""
+"purchase-order-line-form","invoiceSet","documentation","","","",""
+"purchase-order-line-form","deliveryDate","documentation","","","",""
+"purchase-order-line-form","productVariant","documentation","","","",""
+"purchase-order-line-form","companyExTaxTotal","documentation","","","",""
+"purchase-order-line-form","archived","documentation","","","",""
+"purchase-order-line-tax-form","purchase-order-line-tax-form","documentation","","","",""
+"purchase-order-line-tax-form","purchaseOrder","documentation","","","",""
+"purchase-order-line-tax-form","taxLine","documentation","","","",""
+"purchase-order-line-tax-form","exTaxBase","documentation","","","",""
+"purchase-order-line-tax-form","taxTotal","documentation","","","",""
+"purchase-order-line-tax-form","inTaxTotal","documentation","","","",""
+"purchase-order-line-tax-form","archived","documentation","","","",""
+"stock-move-form","stock-move-form","documentation","","","",""
+"stock-move-form","importId","documentation","","","",""
+"stock-move-form","stockMoveSeq","documentation","","","",""
+"stock-move-form","name","documentation","","","",""
+"stock-move-form","fromLocation","documentation","","","",""
+"stock-move-form","toLocation","documentation","","","",""
+"stock-move-form","estimatedDate","documentation","","","",""
+"stock-move-form","realDate","documentation","","","",""
+"stock-move-form","statusSelect","documentation","","","",""
+"stock-move-form","typeSelect","documentation","","","",""
+"stock-move-form","fromAddress","documentation","","","",""
+"stock-move-form","toAddress","documentation","","","",""
+"stock-move-form","company","documentation","","","",""
+"stock-move-form","partner","documentation","","","",""
+"stock-move-form","stockMoveLineList","documentation","","","",""
+"stock-move-form","salesOrder","documentation","","","",""
+"stock-move-form","purchaseOrder","documentation","","","",""
+"stock-move-form","invoice","documentation","","","",""
+"stock-move-form","archived","documentation","","","",""
+"stock-move-line-form","stock-move-line-form","documentation","","","",""
+"stock-move-line-form","stockMove","documentation","","","",""
+"stock-move-line-form","importId","documentation","","","",""
+"stock-move-line-form","product","documentation","","","",""
+"stock-move-line-form","qty","documentation","","","",""
+"stock-move-line-form","unit","documentation","","","",""
+"stock-move-line-form","price","documentation","","","",""
+"stock-move-line-form","trackingNumber","documentation","","","",""
+"stock-move-line-form","productVariant","documentation","","","",""
+"stock-move-line-form","consumedManufOrder","documentation","","","",""
+"stock-move-line-form","producedManufOrder","documentation","","","",""
+"stock-move-line-form","consumedOperationOrder","documentation","","","",""
+"stock-move-line-form","archived","documentation","","","",""
+"inventory-form","inventory-form","documentation","","","",""
+"inventory-form","inventorySeq","documentation","","","","Séquence remplie automatiquement à l'enregistrement du formulaire. La séquence est configurable dans l'administration via le champ 'document concerné' = Inventaire."
+"inventory-form","location","documentation","","","","Emplacement de stock sur lequel l'inventaire est effectué."
+"inventory-form","statusSelect","documentation","","","","Par défaut, à l'état Brouillon. L'inventaire n'est effectif qu'à l'état Réalisé."
+"inventory-form","dateT","documentation","","","",""
+"inventory-form","description","documentation","","","",""
+"inventory-form","inventoryLineList","documentation","","","","Liste du contenu de l'emplacement qui a été inventorié."
+"inventory-form","formatSelect","documentation","","","","Choix du format d'export du contenu de l'inventaire pour le réaliser sur une autre application."
+"inventory-form","importFilePath","documentation","","","","Chemin local vers le fichier contenant les données inventoriées à importer."
+"inventory-form","productFamily","documentation","","","","Seuls les produits appartenant à cette famille seront remontés pour l'inventaire."
+"inventory-form","productCategory","documentation","","","","Seuls les produits appartenant à cette catégorie seront remontés pour l'inventaire."
+"inventory-form","excludeOutOfStock","documentation","","","","Les produits ayant un stock nul dans l'emplacement sélectionné ne seront pas remontés pour l'inventaire."
+"inventory-form","includeObsolete","documentation","","","","Les produits obsolètes ( de ne seront pas remontés pour l'inventaire."
+"inventory-form","archived","documentation","","","",""
+"inventory-line-form","inventory-line-form","documentation","","","",""
+"inventory-line-form","inventory","documentation","","","",""
+"inventory-line-form","product","documentation","","","","Les produits avec une variante ou un numéro de suivi doivent nécessairement avoir leur variante ou numéro de renseigné sur chaque ligne."
+"inventory-line-form","currentQty","documentation","","","","Quantité actuelle sur l'ERP dans l'emplacement à inventorier."
+"inventory-line-form","realQty","documentation","","","","Quantité réellement présente dans l'emplacement à inventorier."
+"inventory-line-form","description","documentation","","","",""
+"inventory-line-form","productVariant","documentation","","","","Variante associé au produit sélectionné."
+"inventory-line-form","trackingNumber","documentation","","","","N° associé au produit sélectionné."
+"inventory-line-form","archived","documentation","","","",""
+"location-form","location-form","documentation","","","",""
+"location-form","importId","documentation","","","",""
+"location-form","name","documentation","","","",""
+"location-form","parent","documentation","","","","Champ permettant de définir une hiérarchie entre les emplacements."
+"location-form","company","documentation","","","","*"
+"location-form","partner","documentation","","","","*"
+"location-form","typeSelect","documentation","","","",""
+"location-form","isDefaultLocation","documentation","","","","Un seul emplacement par défaut, par type et par société est possible."
+"location-form","locationLineList","documentation","","","","Liste des produits présents dans l'entrepôt avec leurs stocks associés."
+"location-form","detailsLocationLineList","documentation","","","","Liste des produits présents dans l'entrepôt avec leurs stocks associés avec le détail par N° lot/série et variantes."
+"location-form","address","documentation","","","",""
+"location-form","archived","documentation","","","",""
+"location-line-form","location-line-form","documentation","","","",""
+"location-line-form","location","documentation","","","",""
+"location-line-form","product","documentation","","","",""
+"location-line-form","currentQty","documentation","","","","Quantité actuelle sur l'ERP dans l'emplacement."
+"location-line-form","futureQty","documentation","","","","Quantité future tenant compte des arrivages et livraisons de produit à venir (mouvements de stock au statut 'Planifié')"
+"location-line-form","lastFutureStockMoveDate","documentation","","","",""
+"location-line-form","trackingNumber","documentation","","","",""
+"location-line-form","productVariant","documentation","","","",""
+"location-line-form","detailsLocation","documentation","","","",""
+"location-line-form","archived","documentation","","","",""
+"min-stock-rules-form","min-stock-rules-form","documentation","","","",""
+"min-stock-rules-form","name","documentation","","","",""
+"min-stock-rules-form","location","documentation","","","",""
+"min-stock-rules-form","product","documentation","","","",""
+"min-stock-rules-form","minQty","documentation","","","",""
+"min-stock-rules-form","reOrderQty","documentation","","","",""
+"min-stock-rules-form","typeSelect","documentation","","","",""
+"min-stock-rules-form","orderAlertSelect","documentation","","","",""
+"min-stock-rules-form","userInfo","documentation","","","",""
+"min-stock-rules-form","team","documentation","","","",""
+"min-stock-rules-form","archived","documentation","","","",""
+"machine-form","machine-form","documentation","","","",""
+"machine-form","name","documentation","","","",""
+"machine-form","serialNumber","documentation","","","",""
+"machine-form","location","documentation","","","",""
+"machine-form","startingDuration","documentation","","","",""
+"machine-form","setupDuration","documentation","","","",""
+"machine-form","description","documentation","","","",""
+"supplychain-batch-form","supplychain-batch-form","documentation","","","",""
+"supplychain-batch-form","code","documentation","","","",""
+"supplychain-batch-form","actionSelect","documentation","","","",""
+"supplychain-batch-form","company","documentation","","","",""
+"supplychain-batch-form","description","documentation","","","",""
+"supplychain-batch-form","batchList","documentation","","","",""
+"supplychain-batch-form","archived","documentation","","","",""
+"supplychain-config-form","supplychain-config-form","documentation","","","",""
+"supplychain-config-form","importId","documentation","","","",""
+"supplychain-config-form","name","documentation","","","",""
+"supplychain-config-form","code","documentation","","","",""
+"supplychain-config-form","company","documentation","","","",""
+"supplychain-config-form","customerVirtualLocation","documentation","","","",""
+"supplychain-config-form","supplierVirtualLocation","documentation","","","",""
+"supplychain-config-form","inventoryVirtualLocation","documentation","","","",""
+"supplychain-config-form","hasOutSmForStorableProduct","documentation","","","",""
+"supplychain-config-form","hasOutSmForNonStorableProduct","documentation","","","",""
+"supplychain-config-form","hasInSmForStorableProduct","documentation","","","",""
+"supplychain-config-form","hasInSmForNonStorableProduct","documentation","","","",""
+"supplychain-config-form","salesOrderInvoicingTypeSelect","documentation","","","",""
+"supplychain-config-form","purchaseOrderInvoicingTypeSelect","documentation","","","",""
+"supplychain-config-form","archived","documentation","","","",""
