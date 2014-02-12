@@ -76,15 +76,20 @@ public class GeneralController {
 	
 	public void updateCurrencyConversion(ActionRequest request, ActionResponse response){
 		 General general = request.getContext().asType(General.class);
-		 LocalDate today = gs.getTodayDate(); 
+		 LocalDate today = gs.getTodayDate();
+		 
 		 for(CurrencyConversionLine ccl : general.getCurrencyConversionLineList()){
 			CurrencyConversionLine cclCoverd = CurrencyConversionLine.all().filter("startCurrency = ?1 AND endCurrency = ?2 AND fromDate >= ?3 AND (toDate <= ?3 OR toDate = null)",ccl.getStartCurrency(),ccl.getEndCurrency(),today).fetchOne();
-			LOG.info("Currency Conversion Line for {} already convered : {}",today,ccl);
+			LOG.info("Currency Conversion Line for {} already covered : {}",today,ccl);
 			if(ccl.isSelected() && ccl.getToDate() == null & cclCoverd == null){
+				BigDecimal currentRate = ccs.convert(ccl.getStartCurrency(), ccl.getEndCurrency());
+				if(currentRate.compareTo(new BigDecimal(-1)) == 0){
+					response.setFlash("Currency conversion webservice not working");
+					break;
+				}
 				ccl = CurrencyConversionLine.find(ccl.getId());
 				ccl.setToDate(today.minusDays(1));
 				ccs.saveCurrencyConversionLine(ccl);
-				BigDecimal currentRate = ccs.convert(ccl.getStartCurrency(), ccl.getEndCurrency());
 				BigDecimal previousRate = ccl.getConversionRate();
 				String variations = ccs.getVariations(currentRate, previousRate);
 				ccs.createCurrencyConversionLine(ccl.getStartCurrency(), ccl.getEndCurrency(), today, currentRate, General.find(general.getId()), variations);
