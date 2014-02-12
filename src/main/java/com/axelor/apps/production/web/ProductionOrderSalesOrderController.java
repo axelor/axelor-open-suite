@@ -74,7 +74,7 @@ public class ProductionOrderSalesOrderController {
 	@Inject
 	ProductionOrderSalesOrderService productionOrderSalesOrderService;
 	
-	public void generatePOFromSalesOrder(ActionRequest request, ActionResponse response) throws AxelorException {
+	public void createProductionOrders(ActionRequest request, ActionResponse response) throws AxelorException {
 
 		SalesOrder salesOrder = request.getContext().asType( SalesOrder.class );
 		

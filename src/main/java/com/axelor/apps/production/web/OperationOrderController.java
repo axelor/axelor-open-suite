@@ -68,34 +68,36 @@ import org.joda.time.Duration;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.service.OperationOrderService;
+import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.inject.persist.Transactional;
 
 public class OperationOrderController {
 
 	@Inject
 	OperationOrderService operationOrderService;
 	
-	public void copyToConsume (ActionRequest request, ActionResponse response) {
-
-		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
-
-		operationOrderService.copyToConsume(OperationOrder.find(operationOrder.getId()));
-		
-		response.setReload(true);
-		
-	}
+//	public void copyToConsume (ActionRequest request, ActionResponse response) {
+//
+//		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
+//
+//		operationOrderService.copyToConsume(OperationOrder.find(operationOrder.getId()));
+//		
+//		response.setReload(true);
+//		
+//	}
 	
 	
-	public void copyToProduce (ActionRequest request, ActionResponse response) {
-
-		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
-
-		operationOrderService.copyToProduce(OperationOrder.find(operationOrder.getId()));
-		
-		response.setReload(true);
-		
-	}
+//	public void copyToProduce (ActionRequest request, ActionResponse response) {
+//
+//		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
+//
+//		operationOrderService.copyToProduce(OperationOrder.find(operationOrder.getId()));
+//		
+//		response.setReload(true);
+//		
+//	}
 	
 	
 	public void computeDuration(ActionRequest request, ActionResponse response) {
@@ -115,4 +117,33 @@ public class OperationOrderController {
 		}
 	}
 	
+	public void finish (ActionRequest request, ActionResponse response) throws AxelorException {
+
+		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
+
+		operationOrderService.finish(OperationOrder.find(operationOrder.getId()));
+		
+		response.setReload(true);
+		
+	}
+	
+	
+	
+	
+//	TODO A SUPPRIMER UNE FOIS BUG FRAMEWORK CORRIGE
+	public void saveOperationOrder(ActionRequest request, ActionResponse response) throws AxelorException {
+		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
+		OperationOrder persistOperationOrder = OperationOrder.find(operationOrder.getId());
+		persistOperationOrder.setStatusSelect(operationOrder.getStatusSelect());
+		persistOperationOrder.setRealStartDateT(operationOrder.getRealStartDateT());
+		persistOperationOrder.setRealEndDateT(operationOrder.getRealEndDateT());
+		
+		this.saveOperationOrder(persistOperationOrder);
+	}
+	
+	
+	@Transactional
+	public void saveOperationOrder(OperationOrder operationOrder){
+		operationOrder.save();
+	}
 }

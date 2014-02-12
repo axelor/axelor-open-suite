@@ -84,25 +84,25 @@ public class ManufOrderController {
 	}
 	
 	
-	public void copyToConsume (ActionRequest request, ActionResponse response) {
-
-		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
-
-		manufOrderService.copyToConsume(ManufOrder.find(manufOrder.getId()));
-		
-		response.setReload(true);
-		
-	}
+//	public void copyToConsume (ActionRequest request, ActionResponse response) {
+//
+//		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
+//
+//		manufOrderService.copyToConsume(ManufOrder.find(manufOrder.getId()));
+//		
+//		response.setReload(true);
+//		
+//	}
 	
 	
-	public void copyToProduce (ActionRequest request, ActionResponse response) {
-	
-		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
-
-		manufOrderService.copyToProduce(ManufOrder.find(manufOrder.getId()));
-		
-		response.setReload(true);
-		
-	}
+//	public void copyToProduce (ActionRequest request, ActionResponse response) {
+//	
+//		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
+//
+//		manufOrderService.copyToProduce(ManufOrder.find(manufOrder.getId()));
+//		
+//		response.setReload(true);
+//		
+//	}
 	
 }

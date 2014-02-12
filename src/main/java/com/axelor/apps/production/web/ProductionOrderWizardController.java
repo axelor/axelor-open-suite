@@ -79,6 +79,7 @@ public class ProductionOrderWizardController {
 	@Inject
 	ProductionOrderService productionOrderService;
 	
+	@SuppressWarnings("unchecked")
 	public void validate (ActionRequest request, ActionResponse response) throws AxelorException {
 
 		Context context = request.getContext();
@@ -97,8 +98,8 @@ public class ProductionOrderWizardController {
 			Integer qty = (Integer) context.get("qty");
 //			BigDecimal qty = (BigDecimal) context.get("qty");
 			
-			ProductionOrder productionOrder = productionOrderService.generateProductionOrder(billOfMaterial, new BigDecimal(qty));
-//			ProductionOrder productionOrder = productionOrderService.generateProductionOrder(billOfMaterial, qty);
+			ProductionOrder productionOrder = productionOrderService.generateProductionOrder(billOfMaterial, new BigDecimal(qty), null);
+//			ProductionOrder productionOrder = productionOrderService.generateProductionOrder(billOfMaterial, qty, null);
 			
 			if(productionOrder != null)  {
 				response.setFlash("Ordre de production créé ("+productionOrder.getProductionOrderSeq()+")");

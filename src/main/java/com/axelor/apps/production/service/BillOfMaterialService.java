@@ -102,7 +102,18 @@ public class BillOfMaterialService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void computeCostPrice(BillOfMaterial billOfMaterial) throws AxelorException  {
 		
-		billOfMaterial.setCostPrice(this._computeCostPrice(billOfMaterial));
+		billOfMaterial.setCostPrice(this._computeCostPrice(billOfMaterial).setScale(5, BigDecimal.ROUND_HALF_EVEN));
+		
+		billOfMaterial.getProduct().setCostPrice(billOfMaterial.getCostPrice());
+		
+		billOfMaterial.save();
+	}
+	
+	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void updateProductCostPrice(BillOfMaterial billOfMaterial) throws AxelorException  {
+		
+		billOfMaterial.getProduct().setCostPrice(billOfMaterial.getCostPrice());
 		
 		billOfMaterial.save();
 	}
@@ -184,19 +195,23 @@ public class BillOfMaterialService {
 	
 	private BigDecimal _computeMachineCost(ProdResource prodResource)  {
 		
+		BigDecimal costPrice = BigDecimal.ZERO;
+		
 		int costType = prodResource.getCostTypeSelect();
 		
 		if(costType == IProdResource.COST_PER_CYCLE)  {
 			
-			return prodResource.getCostAmount();
+			costPrice = prodResource.getCostAmount();
 		}
 		else if(costType == IProdResource.COST_PER_HOUR)  {
 			
-			return (prodResource.getCostAmount().divide(new BigDecimal(3600))).multiply(new BigDecimal(prodResource.getDurationPerCycle()));
+			costPrice = (prodResource.getCostAmount().multiply(new BigDecimal(prodResource.getDurationPerCycle())).divide(new BigDecimal(3600), BigDecimal.ROUND_HALF_EVEN));
 			
 		}
 		
-		return BigDecimal.ZERO;
+		logger.debug("Machine cost : {} (Resource : {})",costPrice, prodResource.getName());
+		
+		return costPrice;
 	}
 	
 	
@@ -210,7 +225,7 @@ public class BillOfMaterialService {
 				
 				if(prodHumanResource.getEmployee() != null)  {
 					
-					BigDecimal costPerMin = unitConversionService.convert(Unit.findByCode(UNIT_DAY_CODE), Unit.findByCode(UNIT_MIN_CODE), prodHumanResource.getEmployee().getDailySalaryCost());
+					BigDecimal costPerMin = unitConversionService.convert(Unit.findByCode(UNIT_MIN_CODE), Unit.findByCode(UNIT_DAY_CODE), prodHumanResource.getEmployee().getDailySalaryCost());
 					
 					costPrice = costPrice.add((costPerMin).multiply(new BigDecimal(prodHumanResource.getDuration()/60)));
 					
@@ -219,7 +234,7 @@ public class BillOfMaterialService {
 					
 					Product product = prodHumanResource.getProduct();
 					
-					BigDecimal costPerMin = unitConversionService.convert(product.getUnit(), Unit.findByCode(UNIT_MIN_CODE), product.getCostPrice());
+					BigDecimal costPerMin = unitConversionService.convert(Unit.findByCode(UNIT_MIN_CODE), product.getUnit(), product.getCostPrice());
 					
 					costPrice = costPrice.add((costPerMin).multiply(new BigDecimal(prodHumanResource.getDuration()/60)));
 					
@@ -228,6 +243,7 @@ public class BillOfMaterialService {
 			
 		}
 		
+		logger.debug("Human resource cost : {} (Resource : {})",costPrice, prodResource.getName());
 		
 		return costPrice;
 	}

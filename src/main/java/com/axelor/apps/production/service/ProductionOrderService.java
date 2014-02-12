@@ -138,9 +138,9 @@ public class ProductionOrderService {
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public ProductionOrder generateProductionOrder(BillOfMaterial billOfMaterial, BigDecimal qtyRequested) throws AxelorException  {
+	public ProductionOrder generateProductionOrder(BillOfMaterial billOfMaterial, BigDecimal qtyRequested, Project businessProject) throws AxelorException  {
 		
-		ProductionOrder productionOrder = this.createProductionOrder(null, false);
+		ProductionOrder productionOrder = this.createProductionOrder(businessProject, false);
 		
 		BigDecimal qty = qtyRequested.divide(billOfMaterial.getQty());
 		
@@ -153,7 +153,7 @@ public class ProductionOrderService {
 				new LocalDateTime());
 		
 		
-		
+		manufOrder = manufOrderService.plan(manufOrder);
 				
 		
 		productionOrder.addManufOrderListItem(manufOrder);

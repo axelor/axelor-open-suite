@@ -14,7 +14,7 @@
     onNew="action-bill-of-material-default-record"
     onSave="action-bill-of-material-record-name">
         <field name="product" domain="self.productTypeSelect = 'storable'"  onChange="action-bill-of-material-record-product"/>
-        <field name="company"/>
+        <field name="company" widget="SuggestBox" form-view="company-lite-form"/>
         <field name="qty"/>
         <field name="unit"/>
         <field name="prodProcess"/>
@@ -28,6 +28,7 @@
         	<page title="Cost">
         		<button name="computeCostPrice" title="Compute cost price" colSpan="2" onClick="save,action-bill-of-material-method-compute-cost-price"/>
         		<field name="costPrice" readonly="true"/>
+        		<button name="updateProductCostPrice" title="update product cost price" colSpan="2" onClick="save,action-bill-of-material-method-update-product-cost-price"/>
         	</page>
         </notebook>
     </form>
@@ -64,6 +65,7 @@
     
     <action-record name="action-bill-of-material-default-record" model="com.axelor.apps.production.db.BillOfMaterial">
     	<field name="qty" expr="1"/>
+    	<field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
     </action-record>
     
      <action-record name="action-bill-of-material-line-default-record" model="com.axelor.apps.production.db.BillOfMaterial">
@@ -83,6 +85,11 @@
     <action-method name="action-bill-of-material-method-compute-cost-price">
     	<call class="com.axelor.apps.production.web.BillOfMaterialController" method="computeCostPrice"/>
     </action-method>
+    
+    <action-method name="action-bill-of-material-method-update-product-cost-price">
+    	<call class="com.axelor.apps.production.web.BillOfMaterialController" method="updateProductCostPrice"/>
+    </action-method>
+    
     
 </object-views>
 

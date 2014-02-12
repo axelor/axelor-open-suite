@@ -90,7 +90,7 @@ public class OperationOrderService {
 	@Inject
 	private ProdProductService prodProductService;
 	
-	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public OperationOrder createOperationOrder(ManufOrder manufOrder, int priority, boolean isToInvoice, ProdResource prodResource, ProdResource machineProdResource,
 			ProdProcessLine prodProcessLine, LocalDateTime plannedStartDateT) throws AxelorException  {
 		
@@ -107,27 +107,33 @@ public class OperationOrderService {
 				prodProcessLine, 
 				plannedStartDateT);
 		
+		this._createToConsumeProdProductList(operationOrder, prodProcessLine);
+		
+		this._createHumanResourceList(operationOrder, machineProdResource);
+		
+		operationOrder.setStatusSelect(IOperationOrder.STATUS_DRAFT);
+		
+		return operationOrder.save();
+	}
+	
+	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public OperationOrder plan(OperationOrder operationOrder) throws AxelorException  {
+		
 		operationOrder.setPlannedEndDateT(this.computePlannedEndDateT(operationOrder));
 		
 		operationOrder.setPlannedDuration(
 				this.getDuration(
 				this.computeDuration(operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT())));
 		
-		this._createToConsumeProdProductList(operationOrder, prodProcessLine);
-		
-		this._createHumanResourceList(operationOrder, machineProdResource);
-		
-		operationOrder = operationOrder.save();
-		
 		operationOrderStockMoveService.createToConsumeStockMove(operationOrder);
-		
-		operationOrderStockMoveService.createToProduceStockMove(operationOrder);
-		
 		
 		operationOrder.setStatusSelect(IOperationOrder.STATUS_PLANNED);
 		
-		return operationOrder;
+		return operationOrder.save();
+		
 	}
+	
 	
 	
 	private void _createHumanResourceList(OperationOrder operationOrder, ProdResource prodResource)  {
@@ -236,40 +242,40 @@ public class OperationOrderService {
 //	}
 	
 	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void copyToProduce(OperationOrder operationOrder)  {
-		
-		if(operationOrder.getToProduceProdProductList() != null)  {
-			
-			for(ProdProduct prodProduct : operationOrder.getToProduceProdProductList())  {
-				
-				operationOrder.addProducedProdProductListItem(new ProdProduct(prodProduct.getProduct(), prodProduct.getQty(), prodProduct.getUnit()));
-
-			}
-			
-		}
-		
-		operationOrder.save();
-		
-	}
-	
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void copyToConsume(OperationOrder operationOrder)  {
-		
-		if(operationOrder.getToConsumeProdProductList() != null)  {
-			
-			for(ProdProduct prodProduct : operationOrder.getToConsumeProdProductList())  {
-				
-				operationOrder.addConsumedProdProductListItem(new ProdProduct(prodProduct.getProduct(), prodProduct.getQty(), prodProduct.getUnit()));
-
-			}
-			
-		}
-		
-		operationOrder.save();
-		
-	}
+//	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+//	public void copyToProduce(OperationOrder operationOrder)  {
+//		
+//		if(operationOrder.getToProduceProdProductList() != null)  {
+//			
+//			for(ProdProduct prodProduct : operationOrder.getToProduceProdProductList())  {
+//				
+//				operationOrder.addProducedProdProductListItem(new ProdProduct(prodProduct.getProduct(), prodProduct.getQty(), prodProduct.getUnit()));
+//
+//			}
+//			
+//		}
+//		
+//		operationOrder.save();
+//		
+//	}
+//	
+//	
+//	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+//	public void copyToConsume(OperationOrder operationOrder)  {
+//		
+//		if(operationOrder.getToConsumeProdProductList() != null)  {
+//			
+//			for(ProdProduct prodProduct : operationOrder.getToConsumeProdProductList())  {
+//				
+//				operationOrder.addConsumedProdProductListItem(new ProdProduct(prodProduct.getProduct(), prodProduct.getQty(), prodProduct.getUnit()));
+//
+//			}
+//			
+//		}
+//		
+//		operationOrder.save();
+//		
+//	}
 	
 	
 	
@@ -285,6 +291,15 @@ public class OperationOrderService {
 		
 	}
 	
-	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void finish(OperationOrder operationOrder) throws AxelorException  {
+		
+		if(operationOrder.getInStockMove() != null)  {
+			
+			operationOrderStockMoveService.finish(operationOrder.getInStockMove());
+			
+		}
+		
+	}
 }
 

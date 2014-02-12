@@ -84,4 +84,15 @@ public class BillOfMaterialController {
 		
 	}
 	
+	
+	public void updateProductCostPrice (ActionRequest request, ActionResponse response) throws AxelorException {
+
+		BillOfMaterial billOfMaterial = request.getContext().asType( BillOfMaterial.class );
+
+		billOfMaterialService.updateProductCostPrice(BillOfMaterial.find(billOfMaterial.getId()));
+		
+		response.setReload(true);
+		
+	}
+	
 }

@@ -96,7 +96,7 @@ public class ProductionOrderSalesOrderService {
 				
 			}
 			
-			return productionOrderService.generateProductionOrder(billOfMaterial, salesOrderLine.getQty()).save();
+			return productionOrderService.generateProductionOrder(billOfMaterial, salesOrderLine.getQty(), salesOrderLine.getSalesOrder().getProject()).save();
 		
 		}
 		

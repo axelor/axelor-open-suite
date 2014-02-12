@@ -68,6 +68,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.service.config.ProductionConfigService;
+import com.axelor.apps.supplychain.db.IStockMove;
 import com.axelor.apps.supplychain.db.Location;
 import com.axelor.apps.supplychain.db.StockMove;
 import com.axelor.apps.supplychain.db.StockMoveLine;
@@ -100,7 +101,9 @@ public class OperationOrderStockMoveService {
 			
 			for(ProdProduct prodProduct: operationOrder.getToConsumeProdProductList()) {
 				
-				stockMove.addStockMoveLineListItem(this._createStockMoveLine(prodProduct));
+				StockMoveLine stockMoveLine = this._createStockMoveLine(prodProduct);
+				stockMove.addStockMoveLineListItem(stockMoveLine);
+				operationOrder.addConsumedStockMoveLineListItem(stockMoveLine);
 				
 			}
 			
@@ -131,47 +134,6 @@ public class OperationOrderStockMoveService {
 	
 	
 	
-	public void createToProduceStockMove(OperationOrder operationOrder) throws AxelorException {
-		
-		Company company = operationOrder.getManufOrder().getCompany();
-		
-		if(operationOrder.getToProduceProdProductList() != null && company != null) {
-			
-			StockMove stockMove = this._createToProduceStockMove(operationOrder, company);
-			
-			for(ProdProduct prodProduct: operationOrder.getToProduceProdProductList()) {
-				
-				stockMove.addStockMoveLineListItem(this._createStockMoveLine(prodProduct));
-				
-			}
-			
-			if(stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
-				stockMoveService.plan(stockMove);
-				operationOrder.setOutStockMove(stockMove);
-			}
-		}
-		
-	}
-	
-	
-	private StockMove _createToProduceStockMove(OperationOrder operationOrder, Company company) throws AxelorException  {
-		
-		Location virtualLocation = productionConfigService.getProductionVirtualLocation(productionConfigService.getProductionConfig(company));
-		
-		StockMove stockMove = stockMoveService.createStockMove(
-				null, 
-				null, 
-				company, 
-				null, 
-				virtualLocation, 
-				operationOrder.getProdProcessLine().getProdProcess().getLocation(), 
-				operationOrder.getPlannedEndDateT().toLocalDate());
-		
-		return stockMove;
-	}
-	
-	
-	
 	
 	private StockMoveLine _createStockMoveLine(ProdProduct prodProduct) throws AxelorException  {
 		
@@ -187,6 +149,14 @@ public class OperationOrderStockMoveService {
 	}
 	
 	
-	
+	public void finish(StockMove stockMove) throws AxelorException  {
+		
+		if(stockMove.getStatusSelect() == IStockMove.STATUS_PLANNED && stockMove.getStockMoveLineList() != null)  {
+			
+			stockMoveService.realize(stockMove);
+			
+		}
+		
+	}
 }
 

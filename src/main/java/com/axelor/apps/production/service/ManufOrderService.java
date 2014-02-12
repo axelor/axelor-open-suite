@@ -131,32 +131,39 @@ public class ManufOrderService {
 	}
 
 	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public ManufOrder generateManufOrder(BigDecimal qty, int priority, boolean isToInvoice, Company company,
 			BillOfMaterial billOfMaterial, LocalDateTime plannedStartDateT) throws AxelorException  {
 		
 		ManufOrder manufOrder = this.createManufOrder(qty, priority, IS_TO_INVOICE, company, billOfMaterial, plannedStartDateT);
 		
 		
-		if(manufOrder.getIsManagedConsumedProduct())  {
-			//TODO
-			
+		if(!manufOrder.getIsConsProOnOperation())  {
+			this.createToConsumeProdProductList(manufOrder, billOfMaterial);
 		}
 		
-		this.createToConsumeProdProductList(manufOrder, billOfMaterial);
 		this.createToProduceProdProductList(manufOrder, billOfMaterial);
 		
-		manufOrder = manufOrder.save();
+		manufOrder.setStatusSelect(IManufOrder.STATUS_DRAFT);
+		
+		return manufOrder.save();
+		
+	}
+	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public ManufOrder plan(ManufOrder manufOrder) throws AxelorException  {
 		
 		manufOrder.setPlannedEndDateT(this.computePlannedEndDateT(manufOrder));
 		
-		manufOrderStockMoveService.createToConsumeStockMove(manufOrder);
+		if(!manufOrder.getIsConsProOnOperation())  {
+			manufOrderStockMoveService.createToConsumeStockMove(manufOrder);
+		}
 
 		manufOrderStockMoveService.createToProduceStockMove(manufOrder);
 		
 		manufOrder.setStatusSelect(IManufOrder.STATUS_PLANNED);
 		
-		return manufOrder;
-		
+		return manufOrder.save();
 	}
 	
 	
@@ -225,28 +232,28 @@ public class ManufOrderService {
 				plannedStartDateT, 
 				IManufOrder.STATUS_DRAFT);
 		
-		if(manufOrder.getIsManagedConsumedProduct())  {
 			
-			OperationOrder previousOperationOrder = null;
+		OperationOrder previousOperationOrder = null;
+		
+		for(ProdProcessLine prodProcessLine : this._sortProdProcessLineByPriority(prodProcess.getProdProcessLineList()))  {
 			
-			for(ProdProcessLine prodProcessLine : this._sortProdProcessLineByPriority(prodProcess.getProdProcessLineList()))  {
-				
-				OperationOrder operationOrder = operationOrderService.createOperationOrder(
-						manufOrder,
-						prodProcessLine.getPriority(), 
-						isToInvoice, 
-						prodProcessLine.getProdResource(), 
-						prodProcessLine.getProdResource(), 
-						prodProcessLine, 
-						this.getLastPlannedStartDateT(prodProcessLine, previousOperationOrder, plannedStartDateT));
-				
-				manufOrder.addOperationOrderListItem(operationOrder);
-				
-				previousOperationOrder = operationOrder;
-				
-			}
+			OperationOrder operationOrder = operationOrderService.createOperationOrder(
+					manufOrder,
+					prodProcessLine.getPriority(), 
+					isToInvoice, 
+					prodProcessLine.getProdResource(), 
+					prodProcessLine.getProdResource(), 
+					prodProcessLine, 
+					this.getLastPlannedStartDateT(prodProcessLine, previousOperationOrder, plannedStartDateT));
+			
+			operationOrder = operationOrderService.plan(operationOrder);
+			
+			manufOrder.addOperationOrderListItem(operationOrder);
+			
+			previousOperationOrder = operationOrder;
 			
 		}
+			
 		
 		return manufOrder; 
 		
@@ -334,39 +341,39 @@ public class ManufOrderService {
 	
 	
 
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void copyToProduce(ManufOrder manufOrder)  {
-		
-		if(manufOrder.getToProduceProdProductList() != null)  {
-			
-			for(ProdProduct prodProduct : manufOrder.getToProduceProdProductList())  {
-				
-				manufOrder.addProducedProdProductListItem(new ProdProduct(prodProduct.getProduct(), prodProduct.getQty(), prodProduct.getUnit()));
-
-			}
-			
-		}
-		
-		manufOrder.save();
-		
-	}
-	
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void copyToConsume(ManufOrder manufOrder)  {
-		
-		if(manufOrder.getToConsumeProdProductList() != null)  {
-			
-			for(ProdProduct prodProduct : manufOrder.getToConsumeProdProductList())  {
-				
-				manufOrder.addConsumedProdProductListItem(new ProdProduct(prodProduct.getProduct(), prodProduct.getQty(), prodProduct.getUnit()));
-
-			}
-			
-		}
-		
-		manufOrder.save();
-		
-	}
+//	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+//	public void copyToProduce(ManufOrder manufOrder)  {
+//		
+//		if(manufOrder.getToProduceProdProductList() != null)  {
+//			
+//			for(ProdProduct prodProduct : manufOrder.getToProduceProdProductList())  {
+//				
+//				manufOrder.addProducedProdProductListItem(new ProdProduct(prodProduct.getProduct(), prodProduct.getQty(), prodProduct.getUnit()));
+//
+//			}
+//			
+//		}
+//		
+//		manufOrder.save();
+//		
+//	}
+//	
+//	
+//	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+//	public void copyToConsume(ManufOrder manufOrder)  {
+//		
+//		if(manufOrder.getToConsumeProdProductList() != null)  {
+//			
+//			for(ProdProduct prodProduct : manufOrder.getToConsumeProdProductList())  {
+//				
+//				manufOrder.addConsumedProdProductListItem(new ProdProduct(prodProduct.getProduct(), prodProduct.getQty(), prodProduct.getUnit()));
+//
+//			}
+//			
+//		}
+//		
+//		manufOrder.save();
+//		
+//	}
 	
 }

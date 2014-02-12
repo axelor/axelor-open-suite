@@ -17,15 +17,15 @@
     </grid>
     
     <form name="manuf-order-form" title="Manufacturing order" model="com.axelor.apps.production.db.ManufOrder" cols="4"
-    onNew="action-manuf-order-default-record">
+    onNew="action-manuf-order-default-record,action-manuf-order-attrs-is-cons-pro-on-operation" onLoad="action-manuf-order-attrs-is-cons-pro-on-operation">
 <!--     TODO avec propagation -->
-    	<toolbar>
-    		<button name="start" title="Start" onClick="save,action-manuf-order-record-start,save" showIf="statusSelect == 3"/>
-    		<button name="cancel" title="Cancel" onClick="save,action-manuf-order-record-cancel,save" showIf="statusSelect == 1 || statusSelect == 3"/>
-    		<button name="finish" title="Finish" onClick="save,action-manuf-order-record-finish,save" showIf="statusSelect == 4"/>
-    		<button name="pause" title="Pause" onClick="save,action-manuf-order-record-pause,save" showIf="statusSelect == 4"/>
-    		<button name="resume" title="Resume" onClick="save,action-manuf-order-record-resume,save" showIf="statusSelect == 5"/>
-    	</toolbar>
+<!--     	<toolbar> -->
+<!--     		<button name="start" title="Start" onClick="save,action-manuf-order-record-start,save" showIf="statusSelect == 3"/> -->
+<!--     		<button name="cancel" title="Cancel" onClick="save,action-manuf-order-record-cancel,save" showIf="statusSelect == 1 || statusSelect == 3"/> -->
+<!--     		<button name="finish" title="Finish" onClick="save,action-manuf-order-record-finish,save" showIf="statusSelect == 4"/> -->
+<!--     		<button name="pause" title="Pause" onClick="save,action-manuf-order-record-pause,save" showIf="statusSelect == 4"/> -->
+<!--     		<button name="resume" title="Resume" onClick="save,action-manuf-order-record-resume,save" showIf="statusSelect == 5"/> -->
+<!--     	</toolbar> -->
     
         <field name="manufOrderSeq"/>
         <field name="priority"/>
@@ -35,7 +35,7 @@
         <field name="billOfMaterial.product"/>
         <field name="qty"/>
         <field name="billOfMaterial.prodProcess"/>
-        <field name="isManagedConsumedProduct"/>
+        <field name="isConsProOnOperation"/>
         <field name="isToInvoice" onChange="save,action-manuf-order-method-is-to-invoice"/>
         <notebook colSpan="4">
         	<page title="Operation orders">
@@ -63,16 +63,19 @@
 			        <field name="wasteStockMove"/>
 		        </group>
         	</page>
-        	<page title="Consumed products">
-        		<field name="toConsumeProdProductList" colSpan="2"/>
-        		<field name="consumedProdProductList" colSpan="2"/>
+        	<page name="consumedProductPage" title="Consumed products">
+        		<field name="toConsumeProdProductList" colSpan="2" readonlyIf="statusSelect >= 4"/>
+        		<field name="consumedStockMoveLineList" colSpan="2" form-view="stock-move-line-production-form" grid-view="stock-move-line-production-grid"/>
         		<field name="diffConsumeProdProductList" colSpan="2"/>
-        		<button name="copyToConsume" title="Fill consumed products" colSpan="2" onClick="save,action-manuf-order-method-copy-to-consume"/>
+        	</page>
+        	<page name="consumedProductOperationPage" title="Consumed products">
+        		<portlet colSpan="2" action="action-manuf-order-view-operation-order-to-consume-product" readonlyIf="statusSelect >= 4"/>
+        		<portlet colSpan="2" action="action-manuf-order-view-operation-order-diff-consume-product"/>
+        		<portlet colSpan="2" action="action-manuf-order-view-operation-order-consumed-product"/>
         	</page>
         	<page title="Finished products">
-	        	<field name="toProduceProdProductList" colSpan="2"/>
-	        	<field name="producedProdProductList" colSpan="2"/>
-	        	<button name="copyToProduce" title="Fill produced products" colSpan="2" onClick="save,action-manuf-order-method-copy-to-produce"/>
+	        	<field name="toProduceProdProductList" colSpan="2" readonlyIf="statusSelect >= 4"/>
+	        	<field name="producedStockMoveLineList" colSpan="2" form-view="stock-move-line-production-form" grid-view="stock-move-line-production-grid"/>
 	        	<field name="wasteProdProductList" colSpan="2"/>
 	        	<group title="Description" colSpan="2" cols="2">
 	        		<field name="wasteProdDescription" showTitle="false" colSpan="2"/>
@@ -85,6 +88,7 @@
     <action-record name="action-manuf-order-default-record" model="com.axelor.apps.production.db.ManufOrder">
     	<field name="statusSelect" expr="eval: 1"/>
     	<field name="plannedStartDateT" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()" if="startDate == null"/>
+    	<field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
     </action-record>
     
     <action-method name="action-manuf-order-method-is-to-invoice">
@@ -99,5 +103,31 @@
     	<call class="com.axelor.apps.production.web.ManufOrderController" method="copyToProduce"/>
     </action-method>
     
+     <action-attrs name="action-manuf-order-attrs-is-cons-pro-on-operation">
+    	<attribute name="hidden" for="consumedProductPage" expr="eval: isConsProOnOperation"/>
+    	<attribute name="hidden" for="inStockMove" expr="eval: isConsProOnOperation"/>
+    	<attribute name="hidden" for="consumedProductOperationPage" expr="eval: !isConsProOnOperation"/>
+    </action-attrs>
+    
+   	<action-view name="action-manuf-order-view-operation-order-to-consume-product" title="To consume products" model="com.axelor.apps.production.db.ProdProduct">
+  		<view type="grid" name="prod-product-grid"/>
+		<view type="form" name="prod-product-form"/>
+  		<domain>self.toConsumeOperationOrder.manufOrder = :id</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
+  	<action-view name="action-manuf-order-view-operation-order-diff-consume-product" title="Differences " model="com.axelor.apps.production.db.ProdProduct">
+  		<view type="grid" name="prod-product-grid"/>
+		<view type="form" name="prod-product-form"/>
+  		<domain>self.diffConsumeOperationOrder.manufOrder = :id</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+  	
+  	<action-view name="action-manuf-order-view-operation-order-consumed-product" title="Consumed products" model="com.axelor.apps.supplychain.db.StockMoveLine">
+  		<view type="grid" name="stock-move-line-production-grid"/>
+		<view type="form" name="stock-move-line-production-form"/>
+  		<domain>self.consumedOperationOrder.manufOrder = :id</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
     
 </object-views>
