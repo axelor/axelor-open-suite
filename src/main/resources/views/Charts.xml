@@ -221,7 +221,7 @@
 			    Country country,Partner partner
 			WHERE 
 			    partner.mainInvoicingAddress.addressL7Country.id = country.id AND
-			    partner.isCustomer = true AND partner.customerTypeSelect = 3
+			    partner.customerTypeSelect = 3
 			GROUP BY
 			    country.id
 			ORDER BY
