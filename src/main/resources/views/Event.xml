@@ -40,11 +40,11 @@
 	    </toolbar>
 <!-- 	    <field name="typeSelect" widget="RadioSelect" domain="self.value IN ('1','2','3')" colSpan="2"/> -->
 	    <field name="typeSelect" domain="self.value IN ('1','2','3')" colSpan="2"/>
-	    <group colSpan="2" cols="3">
-	    	<button name="yes" title="Yes" colSpan="1" onClick=""/>
-	    	<button name="no" title="No" colSpan="1" onClick=""/>
-	    	<button name="perhaps" title="Perhaps" colSpan="1" onClick=""/>
-	    </group>
+<!-- 	    <group colSpan="2" cols="3"> -->
+<!-- 	    	<button name="yes" title="Yes" colSpan="1" onClick=""/> -->
+<!-- 	    	<button name="no" title="No" colSpan="1" onClick=""/> -->
+<!-- 	    	<button name="perhaps" title="Perhaps" colSpan="1" onClick=""/> -->
+<!-- 	    </group> -->
 	    <notebook colSpan="4">
 	    	<page title="Informations" colSpan="4">
 	    		<group colSpan="4" cols="4">

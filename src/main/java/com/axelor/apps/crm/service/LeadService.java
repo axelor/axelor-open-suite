@@ -58,7 +58,7 @@ public class LeadService {
 	 * @return
 	 * @throws AxelorException
 	 */
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Lead convertLead(Lead lead, Partner partner, Partner contactPartner, Opportunity opportunity, Event callEvent, Event meetingEvent, Event taskEvent) throws AxelorException  {
 		
 //		lead.setEvent(meeting);

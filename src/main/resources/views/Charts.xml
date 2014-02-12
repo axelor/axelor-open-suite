@@ -20,9 +20,9 @@
 			WHERE
 				cast(selection_item.value as decimal) = self.sales_stage_select			
 		    GROUP BY
-			   _sales_stage
+			   selection_item.id
 			ORDER BY
-			   _sales_stage
+			   selection_item.id
 	    ]]>
 	    </dataset>
 	    <category key="_sales_stage" type="text"/>
@@ -44,9 +44,9 @@
 			WHERE
 				cast(selection_item.value as decimal) = self.sales_stage_select	and self.sales_stage_select not in (9, 10)		
 		    GROUP BY
-			   _sales_stage
+			   selection_item.id
 			ORDER BY
-			   _sales_stage
+			   selection_item.id
 	    ]]>
 	    </dataset>
 	    <category key="_sales_stage" type="text"/>
@@ -151,10 +151,10 @@
 			WHERE
 				selection_item.value = cast(self.sales_stage_select as char)		
 			GROUP BY
-			    selection_item.title,
+			    selection_item.id,
 			    src.name
 			ORDER BY
-			    selection_item.title,
+			    selection_item.id,
 			    src.name
 		    ]]>
 	    </dataset>
@@ -183,9 +183,9 @@
     		self.sales_stage_select <9
                 
 		GROUP BY
-			selection_item.title, pipeline
+			selection_item.id, pipeline
 		ORDER BY
-			selection_item.title
+			selection_item.id
 
 		    ]]>
 	    </dataset>

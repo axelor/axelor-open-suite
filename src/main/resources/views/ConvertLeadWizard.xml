@@ -225,8 +225,7 @@
 	
 	<action-record name="action-convert-lead-wizard-record-default-partner" model="com.axelor.apps.base.db.Partner">
 		<field name="isContact" expr="eval: false"/>
-    	<field name="name" expr="eval: _lead.name"/>
-<!--     	<field name="firstName" expr="eval: _lead.firstName"/> -->
+    	<field name="name" expr="eval: _lead.enterpriseName"/>
     	<field name="titleSelect" expr="eval: _lead.titleSelect"/>
     	<field name="emailAddress" expr="eval: _lead.emailAddress"/>
     	<field name="fax" expr="eval: _lead.fax"/>
@@ -237,6 +236,7 @@
     	<field name="department" expr="eval: _lead.department"/>
     	<field name="userInfo" expr="eval: _lead.userInfo"/>
     	<field name="team" expr="eval: _lead.team"/>
+    	<field name="customerTypeSelect" expr="eval: 2"/>
     </action-record>
     
     <action-record name="action-convert-lead-wizard-record-default-partner-address" model="com.axelor.apps.base.db.Partner">
@@ -244,12 +244,12 @@
 		<field name="primaryCity" expr="eval: _parent._lead.primaryCity"/>
 		<field name="primaryState" expr="eval: _parent._lead.primaryState"/>
 		<field name="primaryPostalCode" expr="eval: _parent._lead.primaryPostalCode"/>
-    	<field name="primaryCountry" expr="action:action-country-record-find-primary-country-by-id"/>
+    	<field name="primaryCountry" expr="action:action-country-record-find-primary-country-by-id" if="_lead.primaryCountry"/>
     	<field name="otherAddress" expr="eval: _parent._lead.otherAddress"/>
 		<field name="otherCity" expr="eval: _parent._lead.otherCity"/>
 		<field name="otherState" expr="eval: _parent._lead.otherState"/>
 		<field name="otherPostalCode" expr="eval: _parent._lead.otherPostalCode"/>
-    	<field name="otherCountry" expr="action:action-country-record-find-other-country-by-id"/>
+    	<field name="otherCountry" expr="action:action-country-record-find-other-country-by-id" if="_lead.otherCountry"/>
     </action-record>
     
     
@@ -288,7 +288,7 @@
 		<field name="primaryCity" expr="eval: _parent._lead.primaryCity"/>
 		<field name="primaryState" expr="eval: _parent._lead.primaryState"/>
 		<field name="primaryPostalCode" expr="eval: _parent._lead.primaryPostalCode"/>
-    	<field name="primaryCountry" expr="action:action-country-record-find-primary-country-by-id"/>
+    	<field name="primaryCountry" expr="action:action-country-record-find-primary-country-by-id" if="_lead.primaryCountry"/>
     </action-record>
     
 <!--     <action-attrs name="action-convert-lead-wizard-attrs-default-contact"> -->

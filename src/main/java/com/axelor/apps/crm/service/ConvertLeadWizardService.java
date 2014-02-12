@@ -129,7 +129,7 @@ public class ConvertLeadWizardService {
 		Address address = addressService.getAddress(null, null, addressL4, addressL5, addressL6, addressL7Country);
 		
 		if(address == null)  {
-			addressService.createAddress(null, null, addressL4, addressL5, addressL6, addressL7Country);
+			address = addressService.createAddress(null, null, addressL4, addressL5, addressL6, addressL7Country);
 		}
 		
 		return address;
@@ -151,7 +151,7 @@ public class ConvertLeadWizardService {
 		Address address = addressService.getAddress(null, null, addressL4, addressL5, addressL6, addressL7Country);
 		
 		if(address == null)  {
-			addressService.createAddress(null, null, addressL4, addressL5, addressL6, addressL7Country);
+			address = addressService.createAddress(null, null, addressL4, addressL5, addressL6, addressL7Country);
 		}
 		
 		return address;
