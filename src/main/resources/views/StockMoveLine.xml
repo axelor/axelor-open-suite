@@ -21,6 +21,21 @@
         <field name="productVariant" readonly="true"/>
     </form>
     
+    <grid name="stock-move-line-production-grid" title="Stock move lines" model="com.axelor.apps.supplychain.db.StockMoveLine">
+        <field name="product"/>
+        <field name="qty"/>
+        <field name="unit"/>
+        <field name="trackingNumber"/>
+    </grid>
+    
+    <form name="stock-move-line-production-form" title="Stock move line" model="com.axelor.apps.supplychain.db.StockMoveLine" cols="4"
+    	onNew="action-stock-move-line-record-new">
+        <field name="product" domain="self.applicationTypeSelect = 1" onChange="action-stock-move-line-set-product-price-unit"/>
+        <field name="qty"/>
+        <field name="unit"/>
+        <field name="trackingNumber" readonly="true"/>
+    </form>
+    
     <action-record name="action-stock-move-line-record-new" model="com.axelor.apps.supplychain.db.StockMoveLine">
 	    <field name="qty" expr="1"/>
 	</action-record>

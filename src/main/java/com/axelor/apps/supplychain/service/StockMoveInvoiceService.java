@@ -39,6 +39,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.organisation.db.Task;
 import com.axelor.apps.supplychain.db.PurchaseOrder;
 import com.axelor.apps.supplychain.db.SalesOrder;
 import com.axelor.apps.supplychain.db.StockMove;
@@ -122,9 +123,14 @@ public class StockMoveInvoiceService {
 		
 		if (product == null)
 			throw new AxelorException(String.format("Produit incorrect dans le mouvement de stock %s ", stockMoveLine.getStockMove().getStockMoveSeq()), IException.CONFIGURATION_ERROR);
+
+		Task task = null;
+		if(invoice.getProject() != null)  {
+			task = invoice.getProject().getDefaultTask();
+		}
 		
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), stockMoveLine.getPrice(), 
-				product.getDescription(), stockMoveLine.getQty(), stockMoveLine.getUnit(), null, product.getInvoiceLineType(), stockMoveLine.getProductVariant(), BigDecimal.ZERO, 0, null, false)  {
+				product.getDescription(), stockMoveLine.getQty(), stockMoveLine.getUnit(), task, product.getInvoiceLineType(), stockMoveLine.getProductVariant(), BigDecimal.ZERO, 0, null, false)  {
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
 				

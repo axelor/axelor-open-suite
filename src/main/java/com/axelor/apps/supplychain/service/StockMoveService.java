@@ -118,10 +118,10 @@ public class StockMoveService {
 	
 	/**
 	 * Méthode générique permettant de créer un StockMove.
+	 * @param fromAddress l'adresse destination
 	 * @param toAddress l'adresse destination
 	 * @param company la société
 	 * @param clientPartner le tier client
-	 * @param refSequence la séquence du StockMove
 	 * @return l'objet StockMove
 	 * @throws AxelorException Aucune séquence de StockMove (Livraison) n'a été configurée
 	 */

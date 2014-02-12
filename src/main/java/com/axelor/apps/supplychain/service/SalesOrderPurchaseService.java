@@ -50,6 +50,7 @@ import com.axelor.apps.supplychain.db.PurchaseOrder;
 import com.axelor.apps.supplychain.db.SalesOrder;
 import com.axelor.apps.supplychain.db.SalesOrderLine;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -88,7 +89,7 @@ public class SalesOrderPurchaseService {
 	}
 	
 	
-	public Map<Partner,List<SalesOrderLine>> splitBySupplierPartner(List<SalesOrderLine> salesOrderLineList)  {
+	public Map<Partner,List<SalesOrderLine>> splitBySupplierPartner(List<SalesOrderLine> salesOrderLineList) throws AxelorException  {
 		
 		Map<Partner,List<SalesOrderLine>> salesOrderLinesBySupplierPartner = new HashMap<Partner,List<SalesOrderLine>>();
 		
@@ -97,6 +98,11 @@ public class SalesOrderPurchaseService {
 			if(salesOrderLine.getSaleSupplySelect() == IProduct.SALE_SUPPLY_PURCHASE)  {
 			
 				Partner supplierPartner = salesOrderLine.getSupplierPartner();
+				
+				if(supplierPartner == null)  {
+					
+					throw new AxelorException(String.format("Veuillez choisir un fournisseur pour la ligne {}", salesOrderLine.getProductName()), IException.CONFIGURATION_ERROR);
+				}
 				
 				if(!salesOrderLinesBySupplierPartner.containsKey(supplierPartner))  {
 					salesOrderLinesBySupplierPartner.put(supplierPartner, new ArrayList<SalesOrderLine>());
@@ -113,6 +119,9 @@ public class SalesOrderPurchaseService {
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void createPurchaseOrder(Partner supplierPartner, List<SalesOrderLine> salesOrderLineList, SalesOrder salesOrder) throws AxelorException  {
+		
+		LOG.debug("Création d'une commande fournisseur pour le devis client : {}",
+				new Object[] { salesOrder.getSalesOrderSeq() });
 		
 		PurchaseOrder purchaseOrder = purchaseOrderService.createPurchaseOrder(
 				salesOrder.getProject(), 

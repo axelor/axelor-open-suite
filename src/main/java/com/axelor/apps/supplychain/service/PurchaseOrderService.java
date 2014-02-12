@@ -56,7 +56,6 @@ import com.axelor.apps.supplychain.db.Location;
 import com.axelor.apps.supplychain.db.PurchaseOrder;
 import com.axelor.apps.supplychain.db.PurchaseOrderLine;
 import com.axelor.apps.supplychain.db.PurchaseOrderLineTax;
-import com.axelor.apps.supplychain.db.SalesOrder;
 import com.axelor.apps.supplychain.db.StockMove;
 import com.axelor.apps.supplychain.db.StockMoveLine;
 import com.axelor.apps.supplychain.db.SupplychainConfig;
@@ -187,6 +186,10 @@ public class PurchaseOrderService {
 	
 	public PurchaseOrder createPurchaseOrder(Project project, UserInfo buyerUserInfo, Company company, Partner contactPartner, Currency currency, 
 			LocalDate deliveryDate, String externalReference, int invoicingTypeSelect, Location location, LocalDate orderDate, PriceList priceList, Partner supplierPartner) throws AxelorException  {
+		
+		LOG.debug("Création d'une commande fournisseur : Société = {},  Reference externe = {}, Fournisseur = {}",
+				new Object[] { company.getName(), externalReference, supplierPartner.getFullName() });
+		
 		PurchaseOrder purchaseOrder = new PurchaseOrder();
 		purchaseOrder.setProject(project);
 		purchaseOrder.setBuyerUserInfo(buyerUserInfo);

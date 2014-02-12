@@ -89,7 +89,7 @@
     	<break/>
     	<notebook colSpan="4">
         	<page title="Stock move details">
-            	<field name="stockMoveLineList" colSpan="4" readonlyIf="statusSelect == 3"/>
+            	<field name="stockMoveLineList" colSpan="4" form-view="stock-move-line-form" grid-view="stock-move-line-grid" readonlyIf="statusSelect == 3"/>
         	</page>
         	<page title="Configuration">
            		<field name="salesOrder"/>

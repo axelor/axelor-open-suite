@@ -139,11 +139,15 @@ private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderLineServi
 	
 	public PurchaseOrderLine createPurchaseOrderLine(PurchaseOrder purchaseOrder, SalesOrderLine salesOrderLine) throws AxelorException  {
 
+		LOG.debug("Création d'une ligne de commande fournisseur pour le produit : {}",
+				new Object[] { salesOrderLine.getProductName() });
+		
 		return this.createPurchaseOrderLine(
 				purchaseOrder, 
 				salesOrderLine.getProduct(), 
 				salesOrderLine.getDescription(), 
-				productVariantService.copyProductVariant(salesOrderLine.getProductVariant(), false), 
+//				productVariantService.copyProductVariant(salesOrderLine.getProductVariant(), false), TODO doit disparaître
+				null,
 				salesOrderLine.getQty(), 
 				salesOrderLine.getUnit(), 
 				salesOrderLine.getTask());
@@ -154,6 +158,7 @@ private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderLineServi
 	public PurchaseOrderLine createPurchaseOrderLine(PurchaseOrder purchaseOrder, Product product, String description, ProductVariant productVariant, BigDecimal qty, Unit unit, Task task) throws AxelorException  {
 		
 		PurchaseOrderLine purchaseOrderLine = new PurchaseOrderLine();
+		purchaseOrderLine.setPurchaseOrder(purchaseOrder);
 		purchaseOrderLine.setAmountInvoiced(BigDecimal.ZERO);
 		
 		purchaseOrderLine.setDeliveryDate(purchaseOrder.getDeliveryDate());
@@ -161,6 +166,18 @@ private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderLineServi
 		
 		purchaseOrderLine.setIsInvoiced(false);
 		purchaseOrderLine.setIsOrdered(false);
+		
+		purchaseOrderLine.setProduct(product);
+		purchaseOrderLine.setProductName(product.getName());
+		purchaseOrderLine.setProductVariant(productVariant);
+		
+		purchaseOrderLine.setQty(qty);
+		purchaseOrderLine.setSequence(sequence);
+		sequence++;
+		
+		purchaseOrderLine.setTask(task);
+		purchaseOrderLine.setUnit(unit);
+		purchaseOrderLine.setTaxLine(this.getTaxLine(purchaseOrder, purchaseOrderLine));
 		
 		BigDecimal price = this.getUnitPrice(purchaseOrder, purchaseOrderLine);
 		
@@ -177,19 +194,7 @@ private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderLineServi
 				price = (BigDecimal) discounts.get("price");
 			}
 		}
-		
 		purchaseOrderLine.setPrice(price);
-		purchaseOrderLine.setProduct(product);
-		purchaseOrderLine.setProductName(product.getName());
-		purchaseOrderLine.setProductVariant(productVariant);
-		purchaseOrderLine.setPurchaseOrder(purchaseOrder);
-		purchaseOrderLine.setQty(qty);
-		purchaseOrderLine.setSequence(sequence);
-		sequence++;
-		
-		purchaseOrderLine.setTask(task);
-		purchaseOrderLine.setUnit(unit);
-		purchaseOrderLine.setTaxLine(this.getTaxLine(purchaseOrder, purchaseOrderLine));
 		
 		BigDecimal exTaxTotal = PurchaseOrderLineService.computeAmount(purchaseOrderLine.getQty(), this.computeDiscount(purchaseOrderLine));
 			
