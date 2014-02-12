@@ -14,7 +14,7 @@
     <form name="business-project-form" title="Business" model="com.axelor.apps.organisation.db.Project" cols="6" 
     onLoad="action-project-method-update-financial-information,save"
     onNew="action-business-project-group-default"
-    onSave="action-business-project-method-create-default-task-on-save">
+    onSave="save,action-business-project-method-create-default-task-on-save">
     	<group showTitle="false" cols="6" colSpan="6">
 	    	<field name="name" showTitle="false" css="highlight" placeholder="Name" colSpan="4"/>
 	       	<field name="businessStatusSelect" widget="NavSelect" showTitle="false"/>
