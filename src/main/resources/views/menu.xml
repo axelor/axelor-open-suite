@@ -51,7 +51,7 @@
 
 	<action-view name="manufacturing.root.operation.order" title="Operation orders"
 		model="com.axelor.apps.production.db.OperationOrder" icon="img/16px/wheel_16px.png">
-		<view type="grid" name="operation-order-grid" />
+		<view type="grid" name="operation-order-group-grid" />
 		<view type="form" name="operation-order-form" />
 	</action-view>	
 	

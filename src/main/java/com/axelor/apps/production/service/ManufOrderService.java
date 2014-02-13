@@ -29,37 +29,6 @@
  * Copyright (c) 2012-2014 Axelor. All Rights Reserved.
  */
 package com.axelor.apps.production.service;
-/**
- * Copyright (c) 2012-2014 Axelor. All Rights Reserved.
- *
- * The contents of this file are subject to the Common Public
- * Attribution License Version 1.0 (the “License”); you may not use
- * this file except in compliance with the License. You may obtain a
- * copy of the License at:
- *
- * http://license.axelor.com/.
- *
- * The License is based on the Mozilla Public License Version 1.1 but
- * Sections 14 and 15 have been added to cover use of software over a
- * computer network and provide for limited attribution for the
- * Original Developer. In addition, Exhibit A has been modified to be
- * consistent with Exhibit B.
- *
- * Software distributed under the License is distributed on an “AS IS”
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
- * the License for the specific language governing rights and limitations
- * under the License.
- *
- * The Original Code is part of "Axelor Business Suite", developed by
- * Axelor exclusively.
- *
- * The Original Developer is the Initial Developer. The Initial Developer of
- * the Original Code is Axelor.
- *
- * All portions of the code written by Axelor are
- * Copyright (c) 2012-2014 Axelor. All Rights Reserved.
- */
-
 
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -106,6 +75,9 @@ public class ManufOrderService {
 	private OperationOrderService operationOrderService;
 	
 	@Inject
+	private OperationOrderWorkflowService operationOrderWorkflowService;
+	
+	@Inject
 	private ManufOrderStockMoveService manufOrderStockMoveService;
 	
 	
@@ -148,22 +120,6 @@ public class ManufOrderService {
 		
 		return manufOrder.save();
 		
-	}
-	
-	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public ManufOrder plan(ManufOrder manufOrder) throws AxelorException  {
-		
-		manufOrder.setPlannedEndDateT(this.computePlannedEndDateT(manufOrder));
-		
-		if(!manufOrder.getIsConsProOnOperation())  {
-			manufOrderStockMoveService.createToConsumeStockMove(manufOrder);
-		}
-
-		manufOrderStockMoveService.createToProduceStockMove(manufOrder);
-		
-		manufOrder.setStatusSelect(IManufOrder.STATUS_PLANNED);
-		
-		return manufOrder.save();
 	}
 	
 	
@@ -233,8 +189,6 @@ public class ManufOrderService {
 				IManufOrder.STATUS_DRAFT);
 		
 			
-		OperationOrder previousOperationOrder = null;
-		
 		for(ProdProcessLine prodProcessLine : this._sortProdProcessLineByPriority(prodProcess.getProdProcessLineList()))  {
 			
 			OperationOrder operationOrder = operationOrderService.createOperationOrder(
@@ -243,14 +197,11 @@ public class ManufOrderService {
 					isToInvoice, 
 					prodProcessLine.getProdResource(), 
 					prodProcessLine.getProdResource(), 
-					prodProcessLine, 
-					this.getLastPlannedStartDateT(prodProcessLine, previousOperationOrder, plannedStartDateT));
+					prodProcessLine);
 			
-			operationOrder = operationOrderService.plan(operationOrder);
+			operationOrder = operationOrderWorkflowService.plan(operationOrder);
 			
 			manufOrder.addOperationOrderListItem(operationOrder);
-			
-			previousOperationOrder = operationOrder;
 			
 		}
 			
@@ -259,20 +210,6 @@ public class ManufOrderService {
 		
 	}
 	
-	
-	public LocalDateTime getLastPlannedStartDateT(ProdProcessLine prodProcessLine, OperationOrder previousOperationOrder, LocalDateTime manufOrderPlannedStartDateT)  {
-		
-		if(previousOperationOrder == null)  {
-			return manufOrderPlannedStartDateT;
-		}
-		else if(prodProcessLine.getPriority() == previousOperationOrder.getPriority())  {
-			return previousOperationOrder.getPlannedStartDateT();
-		}
-		else  {
-			return previousOperationOrder.getPlannedEndDateT();
-		}
-		
-	}
 	
 	/**
 	 * Trier une liste de ligne de règle de template
@@ -304,20 +241,6 @@ public class ManufOrderService {
 		return seq;
 	}
 
-	public LocalDateTime computePlannedEndDateT(ManufOrder manufOrder)  {
-		
-		OperationOrder lastOperationOrder = OperationOrder.filter("self.manufOrder = ?1 ORDER BY self.plannedEndDateT DESC", manufOrder).fetchOne();
-		
-		if(lastOperationOrder != null)  {
-			
-			return lastOperationOrder.getPlannedEndDateT();
-			
-		}
-		
-		return manufOrder.getPlannedStartDateT();
-		
-	}
-	
 	
 	public boolean isManagedConsumedProduct(BillOfMaterial billOfMaterial)  {
 		

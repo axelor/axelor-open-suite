@@ -22,7 +22,7 @@
     </action-method>
     
     <action-view name="action-production-order-view-operation-order" title="Operation orders" model="com.axelor.apps.production.db.OperationOrder">
-  		<view type="grid" name="operation-order-grid"/>
+  		<view type="grid" name="operation-order-group-grid"/>
 		<view type="form" name="operation-order-form"/>
   		<domain>self.manufOrder.productionOrder.id = :id</domain>
   		<context name="id" expr="eval: id"/>

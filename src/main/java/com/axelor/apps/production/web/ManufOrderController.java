@@ -65,19 +65,25 @@ import javax.inject.Inject;
 
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.service.ManufOrderService;
+import com.axelor.apps.production.service.ManufOrderWorkflowService;
+import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.inject.Provider;
 
 public class ManufOrderController {
 
 	@Inject
-	ManufOrderService manufOrderService;
+	private Provider<ManufOrderService> manufOrderProvider;
+
+	@Inject
+	private Provider<ManufOrderWorkflowService> manufOrderWorkflowProvider;
 	
 	public void propagateIsToInvoice (ActionRequest request, ActionResponse response) {
 
 		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
 
-		manufOrderService.propagateIsToInvoice(ManufOrder.find(manufOrder.getId()));
+		manufOrderProvider.get().propagateIsToInvoice(ManufOrder.find(manufOrder.getId()));
 		
 		response.setReload(true);
 		
@@ -104,5 +110,56 @@ public class ManufOrderController {
 //		response.setReload(true);
 //		
 //	}
+	
+	
+	public void start (ActionRequest request, ActionResponse response) {
+		
+		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
+
+		manufOrderWorkflowProvider.get().start(ManufOrder.find(manufOrder.getId()));
+		
+		response.setReload(true);
+		
+	}
+	
+	public void pause (ActionRequest request, ActionResponse response) {
+		
+		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
+
+		manufOrderWorkflowProvider.get().pause(ManufOrder.find(manufOrder.getId()));
+		
+		response.setReload(true);
+		
+	}
+	
+	public void resume (ActionRequest request, ActionResponse response) {
+		
+		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
+
+		manufOrderWorkflowProvider.get().resume(ManufOrder.find(manufOrder.getId()));
+		
+		response.setReload(true);
+		
+	}
+	
+	public void finish (ActionRequest request, ActionResponse response) throws AxelorException {
+		
+		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
+
+		manufOrderWorkflowProvider.get().finish(ManufOrder.find(manufOrder.getId()));
+		
+		response.setReload(true);
+		
+	}
+	
+	public void cancel (ActionRequest request, ActionResponse response) throws AxelorException {
+		
+		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
+
+		manufOrderWorkflowProvider.get().cancel(ManufOrder.find(manufOrder.getId()));
+		
+		response.setReload(true);
+		
+	}
 	
 }

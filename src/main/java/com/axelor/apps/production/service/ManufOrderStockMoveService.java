@@ -68,6 +68,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.service.config.ProductionConfigService;
+import com.axelor.apps.supplychain.db.IStockMove;
 import com.axelor.apps.supplychain.db.Location;
 import com.axelor.apps.supplychain.db.StockMove;
 import com.axelor.apps.supplychain.db.StockMoveLine;
@@ -100,7 +101,9 @@ public class ManufOrderStockMoveService {
 			
 			for(ProdProduct prodProduct: manufOrder.getToConsumeProdProductList()) {
 				
-				stockMove.addStockMoveLineListItem(this._createStockMoveLine(prodProduct));
+				StockMoveLine stockMoveLine = this._createStockMoveLine(prodProduct);
+				stockMove.addStockMoveLineListItem(stockMoveLine);
+				manufOrder.addConsumedStockMoveLineListItem(stockMoveLine);
 				
 			}
 			
@@ -140,7 +143,9 @@ public class ManufOrderStockMoveService {
 			
 			for(ProdProduct prodProduct: manufOrder.getToProduceProdProductList()) {
 				
-				stockMove.addStockMoveLineListItem(this._createStockMoveLine(prodProduct));
+				StockMoveLine stockMoveLine = this._createStockMoveLine(prodProduct);
+				stockMove.addStockMoveLineListItem(stockMoveLine);
+				manufOrder.addProducedStockMoveLineListItem(stockMoveLine);
 				
 			}
 			
@@ -181,6 +186,23 @@ public class ManufOrderStockMoveService {
 				null, 
 				StockMoveLineService.TYPE_PRODUCTIONS);
 			
+	}
+	
+	
+	public void finish(ManufOrder manufOrder) throws AxelorException  {
+		
+		if(manufOrder.getInStockMove() != null && manufOrder.getInStockMove().getStatusSelect() == IStockMove.STATUS_PLANNED)  {
+			
+			stockMoveService.realize(manufOrder.getInStockMove());
+			
+		}
+		
+		if(manufOrder.getOutStockMove() != null && manufOrder.getOutStockMove().getStatusSelect() == IStockMove.STATUS_PLANNED)  {
+			
+			stockMoveService.realize(manufOrder.getOutStockMove());
+			
+		}
+		
 	}
 	
 	
