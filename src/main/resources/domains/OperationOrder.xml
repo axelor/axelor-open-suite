@@ -31,7 +31,7 @@
     
     <many-to-one name="prodProcessLine" ref="com.axelor.apps.production.db.ProdProcessLine" title="Operation" initParam="true"/> 
   
-    <datetime name="plannedStartDateT" title="Planned start date" initParam="true"/>
+    <datetime name="plannedStartDateT" title="Planned start date"/>
   	<datetime name="plannedEndDateT" title="Planned end date"/>
   	
  	<datetime name="realStartDateT" title="Real start date"/>
