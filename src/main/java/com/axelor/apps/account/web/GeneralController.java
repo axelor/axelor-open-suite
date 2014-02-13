@@ -90,7 +90,7 @@ public class GeneralController {
 				ccl = CurrencyConversionLine.find(ccl.getId());
 				ccl.setToDate(today.minusDays(1));
 				ccs.saveCurrencyConversionLine(ccl);
-				BigDecimal previousRate = ccl.getConversionRate();
+				BigDecimal previousRate = ccl.getExchangeRate();
 				String variations = ccs.getVariations(currentRate, previousRate);
 				ccs.createCurrencyConversionLine(ccl.getStartCurrency(), ccl.getEndCurrency(), today, currentRate, General.find(general.getId()), variations);
 			}
