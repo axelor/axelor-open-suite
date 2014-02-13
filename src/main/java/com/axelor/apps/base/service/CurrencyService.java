@@ -73,7 +73,7 @@ public class CurrencyService {
 		
 		CurrencyConversionLine currencyConversionLine = this.getCurrencyConversionLine(startCurrency, endCurrency, today);
 		if(currencyConversionLine != null)  {
-			return currencyConversionLine.getConversionRate();
+			return currencyConversionLine.getExchangeRate();
 		}
 		else  {
 			currencyConversionLine = this.getCurrencyConversionLine(endCurrency, startCurrency, today);
@@ -83,7 +83,7 @@ public class CurrencyService {
 			throw new AxelorException(String.format(metaTranslations.get(IExceptionMessage.CURRENCY_1), startCurrency, endCurrency, today), IException.CONFIGURATION_ERROR);
 		}
 		
-		return currencyConversionLine.getConversionRate();
+		return currencyConversionLine.getExchangeRate();
 		
 	}
 	
@@ -113,7 +113,7 @@ public class CurrencyService {
 			
 			CurrencyConversionLine currencyConversionLine = this.getCurrencyConversionLine(currencyStart, currencyEnd, localDate);
 			if(currencyConversionLine != null)  {
-				return amountToPay.multiply(currencyConversionLine.getConversionRate()).setScale(2, RoundingMode.HALF_UP);
+				return amountToPay.multiply(currencyConversionLine.getExchangeRate()).setScale(2, RoundingMode.HALF_UP);
 			}
 			else  {
 				currencyConversionLine = this.getCurrencyConversionLine(currencyEnd, currencyStart, localDate);
@@ -124,7 +124,7 @@ public class CurrencyService {
 						currencyStart.getName(), currencyEnd.getName(), today), IException.CONFIGURATION_ERROR);
 			}
 			
-			return amountToPay.divide(currencyConversionLine.getConversionRate(), 2, RoundingMode.HALF_UP).setScale(2, RoundingMode.HALF_UP);
+			return amountToPay.divide(currencyConversionLine.getExchangeRate(), 2, RoundingMode.HALF_UP).setScale(2, RoundingMode.HALF_UP);
 		}
 		
 		return amountToPay;

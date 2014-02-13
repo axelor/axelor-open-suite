@@ -32,11 +32,9 @@ package com.axelor.apps.base.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
 
-import org.hamcrest.core.IsInstanceOf;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,7 +101,7 @@ public class CurrencyConversionService {
 	}
 	
 	public String getVariations(BigDecimal currentRate, BigDecimal previousRate){
-		String variations = null;
+		String variations = "0";
 		LOG.debug("Currency rate variation calculation for CurrentRate: {} PreviousRate: {}", new Object[]{currentRate,previousRate});
 		
 		if(currentRate != null && previousRate != null && previousRate.compareTo(BigDecimal.ZERO) != 0){
@@ -126,7 +124,7 @@ public class CurrencyConversionService {
 		ccl.setStartCurrency(currencyFrom);
 		ccl.setEndCurrency(currencyTo);
 		ccl.setFromDate(fromDate);
-		ccl.setConversionRate(rate);
+		ccl.setExchangeRate(rate);
 		ccl.setGeneral(general);
 		ccl.setVariations(variations);
 		ccl.save();
@@ -150,7 +148,7 @@ public class CurrencyConversionService {
 			currencyTo = Currency.find(currencyTo.getId());
 			CurrencyConversionLine ccl = CurrencyConversionLine.all().filter("startCurrency = ?1 AND endCurrency = ?2 AND fromDate <= ?3 AND (toDate >= ?3 OR toDate = null)",currencyFrom,currencyTo,rateDate).fetchOne();
 			if(ccl != null)
-				rate =  ccl.getConversionRate();
+				rate =  ccl.getExchangeRate();
 		}
 		
 		LOG.debug("Current Rate: {}",new Object[]{rate});

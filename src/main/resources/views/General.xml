@@ -38,8 +38,7 @@
 	            <button name="payerQualityProcess" title="Compute payers quality" colSpan="2" onClick="action-general-method-payer-quality-process"/>
 	            <separator title="Currency conversion" colSpan="4"/>
 	            <button name="updateCurrencyConversion" title="Update &amp; Historize conversion rate" colSpan="1" onClick="save,action-general-method-update-currency-conversion" />
-	            <button name="checkConversionRate" title="Check conversion rate" colSpan="1" onClick="wizard-check-currency-rate" />
-	            <label title="" /> 
+	            <label title="" colSpan="3"/> 
 	            <field name="currencyConversionLineList" colSpan="4" />
 	        </page>
 	        <page title="Interfaces" cols="4">
@@ -75,15 +74,5 @@
 	<action-method name="action-general-method-update-currency-conversion">
 		<call class="com.axelor.apps.account.web.GeneralController" method="updateCurrencyConversion" />
 	</action-method>
-	
-	
-	<action-view title="Check currency conversion rate" model="com.axelor.apps.base.db.Wizard" name="wizard-check-currency-rate">
-	    <view type="form" name="wizard-check-currency-rate-form"/>
-	    <view-param name="popup" value="reload"/>
-	    <view-param name="forceEdit" value="true"/> 
-	    <view-param name="width" value="800" />
-	    <view-param name="show-confirm" value="false" />
-	    <context name="_general" expr="eval:__this__"/>
-	</action-view>
 	
 </object-views>

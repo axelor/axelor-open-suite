@@ -87,13 +87,13 @@ public class CurrencyConversionLineController {
 	
 	}
 	
-	public void applyConversionRate(ActionRequest request, ActionResponse response) {
+	public void applyExchangeRate(ActionRequest request, ActionResponse response) {
 		Context context = request.getContext();
 		
 		LOG.debug("Apply Conversion Rate Context: {}",new Object[]{context});
 		
-		HashMap currencyFrom = (HashMap)context.get("fromCurrency");
-		HashMap currencyTo = (HashMap)context.get("toCurrency");
+		HashMap currencyFrom = (HashMap)context.get("startCurrency");
+		HashMap currencyTo = (HashMap)context.get("endCurrency");
 		
 		if(currencyFrom.get("id") != null && currencyTo.get("id") != null){
 			Currency fromCurrency = Currency.find(Long.parseLong(currencyFrom.get("id").toString()));
@@ -110,10 +110,10 @@ public class CurrencyConversionLineController {
 					ccs.saveCurrencyConversionLine(ccl);
 				}
 				
-				BigDecimal rate = new BigDecimal(context.get("conversionRate").toString());
+				BigDecimal rate = new BigDecimal(context.get("newExchangeRate").toString());
 				String variation = null;
 			    if(ccl != null)
-			    	variation = ccs.getVariations(rate, ccl.getConversionRate());
+			    	variation = ccs.getVariations(rate, ccl.getExchangeRate());
 			    General general = null;
 			    
 			    if(context.get("general") != null && ((HashMap)context.get("general")).get("id") != null)
@@ -131,17 +131,35 @@ public class CurrencyConversionLineController {
 	
 	public void convert(ActionRequest request, ActionResponse response) {
 		Context context = request.getContext();
+		Currency fromCurrency = (Currency)context.get("startCurrency");
+		Currency toCurrency =  (Currency)context.get("endCurrency");
+		CurrencyConversionLine prevLine = null;
 		
-		Currency fromCurrency = (Currency)context.get("fromCurrency");
-		Currency toCurrency =  (Currency)context.get("toCurrency");
 		if(fromCurrency.getId() != null && toCurrency.getId() != null){
+			
+			if(context.get("id") != null)
+				prevLine = CurrencyConversionLine.all().filter("startCurrency.id = ?1 AND endCurrency.id = ?2 AND id != ?3",fromCurrency.getId(),toCurrency.getId(),context.get("id")).order("-fromDate").fetchOne();
+			else
+				prevLine = CurrencyConversionLine.all().filter("startCurrency.id = ?1 AND endCurrency.id = ?2",fromCurrency.getId(),toCurrency.getId()).order("-fromDate").fetchOne();
+
+			LOG.debug("Previous currency conversion line: {}",prevLine);
 			fromCurrency = Currency.find(fromCurrency.getId());
 			toCurrency  = Currency.find(toCurrency.getId());
 			BigDecimal rate = ccs.convert(fromCurrency, toCurrency);
+			
 			if(rate.compareTo(new BigDecimal(-1)) == 0)
 				response.setFlash("Currency conversion webservice not working");
-			else
-				response.setValue("conversionRate", rate);
+			else {
+				response.setValue("variations", "0");
+				if(context.get("_model").equals("com.axelor.apps.base.db.Wizard"))
+					response.setValue("newExchangeRate", rate);
+				else
+					response.setValue("exchangeRate", rate);
+				response.setValue("fromDate", gs.getTodayDate());
+				if(prevLine != null)
+					response.setValue("variations", ccs.getVariations(rate, prevLine.getExchangeRate()));
+			}
+			
 		}
 	}
 	
