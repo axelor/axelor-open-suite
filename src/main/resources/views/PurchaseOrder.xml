@@ -26,7 +26,7 @@
             <button name="print" title="Print" icon="icon-print" onClick="save,action-purchase-order-method-show-purchase-order"/>
 	        <button name="sendByEmail" title="Send email" icon="icon-envelope" onClick="save,action-send-by-email-with-template"/>
 	    </toolbar>
-	    <group colSpan="4" cols="6">
+	    <group colSpan="4" cols="6" readonlyIf="statusSelect == 5">
 	        <field name="purchaseOrderSeq" css="highlight"/>
 	        <field name="orderDate"/>
 	        <field name="company" widget="SuggestBox" form-view="company-lite-form" onChange="action-purchase-order-record-company-configuration,action-purchase-order-method-get-location"/>
@@ -36,7 +36,7 @@
 	    </group>
 	    <notebook colSpan="4">
 	        <page title="PO information" colSpan="4" cols="6">
-	            <group title="Contacts" colSpan="6" cols="6">
+	            <group title="Contacts" colSpan="6" cols="6" readonlyIf="statusSelect == 5">
 	                <field name="supplierPartner" form-view="partner-form" onChange="action-purchase-order-record-partner" domain="self.isContact = false"/>
 	                <field name="contactPartner" domain="self.isContact = true AND self.mainPartner = :supplierPartner" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 	                <field name="invoicingTypeSelect"/>
@@ -48,7 +48,7 @@
 	                <field name="location" domain="self.company = :company and self.typeSelect = 1"/>
 	                <field name="deliveryDate"/>
 	            </group>
-	            <field name="purchaseOrderLineList" colSpan="6" form-view="purchase-order-line-form" grid-view="purchase-order-line-grid"/>
+	            <field name="purchaseOrderLineList" colSpan="6" form-view="purchase-order-line-form" grid-view="purchase-order-line-grid" readonlyIf="statusSelect == 5"/>
 	            <group colSpan="3" cols="2">
 	                <field name="purchaseOrderLineTaxList" showTitle="false" colSpan="2"/>
 	                <group title="Action(s)" colSpan="2" cols="2">
@@ -57,7 +57,7 @@
 	                        <button name="draft" title="Draft" showIf="statusSelect == 6" colSpan="1" onClick="action-purchase-order-record-draft,save"/>
 	                        <button name="requested" title="Requested" showIf="statusSelect == 1" colSpan="1" onClick="action-purchase-order-record-requested,save"/>
 	                        <button name="receipt" title="Receipt" showIf="statusSelect == 2" colSpan="1" onClick="action-purchase-order-record-receipt,save"/>
-	                        <button name="validate" title="Validate" showIf="statusSelect == 3" colSpan="1" onClick="action-purchase-order-validate-location,save,action-purchase-order-create-stock-move,action-purchase-order-record-validate,action-sales-order-method-validate-supplier,save"/>
+	                        <button name="validate" title="Validate" showIf="statusSelect == 3" colSpan="1" onClick="action-purchase-order-validate-location,save,action-purchase-order-method-compute,save,action-purchase-order-create-stock-move,action-purchase-order-record-validate,action-sales-order-method-validate-supplier,save"/>
 	                        <button name="completed" title="Completed" showIf="statusSelect == 4" colSpan="1" onClick="action-purchase-order-record-completed,save"/>
 	                        <button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2" colSpan="1" onClick="save,action-purchase-order-record-cancel"/>
 	                        <button name="showSupplierInvoice" title="Show invoice" showIf="statusSelect == 4 || statusSelect == 5" colSpan="1" onClick="action-purchase-order-show-supplier-invoice"/>

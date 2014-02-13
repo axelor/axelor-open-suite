@@ -144,6 +144,8 @@ public class SalesOrderPurchaseService {
 			
 		}
 		
+		purchaseOrderService.computePurchaseOrder(purchaseOrder);
+		
 		purchaseOrder.save();
 	}
 }

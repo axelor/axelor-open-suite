@@ -117,6 +117,7 @@ public class MinStockRulesService {
 									product.getUnit(), 
 									null));
 						
+					purchaseOrderService.computePurchaseOrder(purchaseOrder);
 					
 					purchaseOrder.save();
 					
