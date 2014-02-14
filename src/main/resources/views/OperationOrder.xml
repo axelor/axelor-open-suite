@@ -91,7 +91,6 @@
         	</page>
         	<page title="Stock moves" readonlyIf="statusSelect == 6">
 		        <field name="inStockMove"/>
-		        <field name="outStockMove"/>
         	</page>
         	<page name="consumedProductPage" title="Consumed products" readonlyIf="statusSelect == 6">
         		<field name="toConsumeProdProductList" colSpan="2" readonlyIf="statusSelect >= 4"/>

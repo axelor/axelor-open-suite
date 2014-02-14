@@ -41,7 +41,7 @@
         <field name="billOfMaterial.product"/>
         <field name="qty" readonlyIf="statusSelect > 1"/>
         <field name="billOfMaterial.prodProcess"/>
-        <field name="isConsProOnOperation" readonlyIf="statusSelect > 1"/>
+        <field name="isConsProOnOperation" readonlyIf="statusSelect > 1" onChange="action-manuf-order-attrs-is-cons-pro-on-operation"/>
         <field name="isToInvoice" onChange="save,action-manuf-order-method-is-to-invoice"/>
         <notebook colSpan="4">
         	<page title="Operation orders" readonlyIf="statusSelect == 6">

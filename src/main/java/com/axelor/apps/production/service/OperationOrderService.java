@@ -59,6 +59,23 @@ public class OperationOrderService {
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public OperationOrder createOperationOrder(ManufOrder manufOrder, ProdProcessLine prodProcessLine, boolean isToInvoice) throws AxelorException  {
+		
+		OperationOrder operationOrder = this.createOperationOrder(
+				manufOrder,
+				prodProcessLine.getPriority(), 
+				isToInvoice, 
+				prodProcessLine.getProdResource(), 
+				prodProcessLine.getProdResource(), 
+				prodProcessLine);
+		
+		return operationOrder.save();
+	}
+	
+	
+	
+	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public OperationOrder createOperationOrder(ManufOrder manufOrder, int priority, boolean isToInvoice, ProdResource prodResource, ProdResource machineProdResource,
 			ProdProcessLine prodProcessLine) throws AxelorException  {
 		
@@ -77,8 +94,6 @@ public class OperationOrderService {
 		this._createToConsumeProdProductList(operationOrder, prodProcessLine);
 		
 		this._createHumanResourceList(operationOrder, machineProdResource);
-		
-		operationOrder.setStatusSelect(IOperationOrder.STATUS_DRAFT);
 		
 		return operationOrder.save();
 	}

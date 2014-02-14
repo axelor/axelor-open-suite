@@ -91,9 +91,6 @@ public class ProductionOrderService {
 	private ManufOrderService manufOrderService;
 	
 	@Inject
-	private ManufOrderWorkflowService manufOrderWorkflowService;
-	
-	@Inject
 	private SequenceService sequenceService;
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -154,10 +151,6 @@ public class ProductionOrderService {
 				billOfMaterial.getCompany(), 
 				billOfMaterial, 
 				new LocalDateTime());
-		
-		
-		manufOrder = manufOrderWorkflowService.plan(manufOrder);
-				
 		
 		productionOrder.addManufOrderListItem(manufOrder);
 		

@@ -75,10 +75,10 @@ public class ManufOrderService {
 	private OperationOrderService operationOrderService;
 	
 	@Inject
-	private OperationOrderWorkflowService operationOrderWorkflowService;
+	private ManufOrderStockMoveService manufOrderStockMoveService;
 	
 	@Inject
-	private ManufOrderStockMoveService manufOrderStockMoveService;
+	private ManufOrderWorkflowService manufOrderWorkflowService;
 	
 	
 	
@@ -109,14 +109,7 @@ public class ManufOrderService {
 		
 		ManufOrder manufOrder = this.createManufOrder(qty, priority, IS_TO_INVOICE, company, billOfMaterial, plannedStartDateT);
 		
-		
-		if(!manufOrder.getIsConsProOnOperation())  {
-			this.createToConsumeProdProductList(manufOrder, billOfMaterial);
-		}
-		
-		this.createToProduceProdProductList(manufOrder, billOfMaterial);
-		
-		manufOrder.setStatusSelect(IManufOrder.STATUS_DRAFT);
+		manufOrder = manufOrderWorkflowService.plan(manufOrder);
 		
 		return manufOrder.save();
 		
@@ -164,11 +157,6 @@ public class ManufOrderService {
 	}
 	
 	
-	
-	
-	
-	
-	
 	public ManufOrder createManufOrder(BigDecimal qty, int priority, boolean isToInvoice, Company company,
 			BillOfMaterial billOfMaterial, LocalDateTime plannedStartDateT) throws AxelorException  {
 		
@@ -191,20 +179,16 @@ public class ManufOrderService {
 			
 		for(ProdProcessLine prodProcessLine : this._sortProdProcessLineByPriority(prodProcess.getProdProcessLineList()))  {
 			
-			OperationOrder operationOrder = operationOrderService.createOperationOrder(
-					manufOrder,
-					prodProcessLine.getPriority(), 
-					isToInvoice, 
-					prodProcessLine.getProdResource(), 
-					prodProcessLine.getProdResource(), 
-					prodProcessLine);
-			
-			operationOrder = operationOrderWorkflowService.plan(operationOrder);
-			
-			manufOrder.addOperationOrderListItem(operationOrder);
+			manufOrder.addOperationOrderListItem(
+					operationOrderService.createOperationOrder(manufOrder, prodProcessLine, isToInvoice));
 			
 		}
 			
+		if(!manufOrder.getIsConsProOnOperation())  {
+			this.createToConsumeProdProductList(manufOrder, billOfMaterial);
+		}
+		
+		this.createToProduceProdProductList(manufOrder, billOfMaterial);
 		
 		return manufOrder; 
 		
