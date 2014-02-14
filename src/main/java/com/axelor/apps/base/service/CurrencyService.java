@@ -124,7 +124,14 @@ public class CurrencyService {
 						currencyStart.getName(), currencyEnd.getName(), today), IException.CONFIGURATION_ERROR);
 			}
 			
-			return amountToPay.divide(currencyConversionLine.getExchangeRate(), 2, RoundingMode.HALF_UP).setScale(2, RoundingMode.HALF_UP);
+			BigDecimal exchangeRate = currencyConversionLine.getExchangeRate();
+			
+			if(exchangeRate == null || exchangeRate.compareTo(BigDecimal.ZERO) == 0)  {
+				throw new AxelorException(String.format(metaTranslations.get(IExceptionMessage.CURRENCY_2), 
+						currencyStart.getName(), currencyEnd.getName(), today), IException.CONFIGURATION_ERROR);
+			}
+			
+			return amountToPay.divide(exchangeRate, 2, RoundingMode.HALF_UP).setScale(2, RoundingMode.HALF_UP);
 		}
 		
 		return amountToPay;

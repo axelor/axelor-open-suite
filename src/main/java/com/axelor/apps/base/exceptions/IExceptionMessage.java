@@ -45,6 +45,7 @@ public interface IExceptionMessage {
 	 */
 	
 	static final String CURRENCY_1 = "Aucune conversion trouvée de la devise '%s' à la devise '%s' à la date du %s";
+	static final String CURRENCY_2 = "Le taux de conversion de la devise '%s' à la devise '%s' à la date du %s doit être différent de zéro";
 	
 	
 
