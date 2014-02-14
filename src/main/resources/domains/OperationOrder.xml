@@ -38,11 +38,6 @@
   	<datetime name="realEndDateT" title="Real end date"/>
     
     <many-to-one name="inStockMove" ref="com.axelor.apps.supplychain.db.StockMove" title="Stock move in"/>
-    <many-to-one name="outStockMove" ref="com.axelor.apps.supplychain.db.StockMove" title="Stock move out"/>
-    
-    <many-to-one name="wasteStockMove" ref="com.axelor.apps.supplychain.db.StockMove" title="Stock move out"/>
-    
-    <string name="wasteProdDescription" title="Description" large="true"/>
     
     <one-to-many name="timesheetLineList" ref="com.axelor.apps.organisation.db.TimesheetLine" mappedBy="operationOrder" title="Timesheet lines"/>
     
