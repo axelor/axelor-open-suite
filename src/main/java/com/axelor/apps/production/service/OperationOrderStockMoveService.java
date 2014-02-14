@@ -139,6 +139,12 @@ public class OperationOrderStockMoveService {
 			
 			stockMoveService.cancel(stockMove);
 			
+			for(StockMoveLine stockMoveLine : stockMove.getStockMoveLineList())  {
+				
+				stockMoveLine.setConsumedOperationOrder(null);
+				
+			}
+			
 		}
 		
 	}

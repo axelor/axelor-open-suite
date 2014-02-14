@@ -6,7 +6,7 @@
     
     <form cols="4" name="production-order-wizard-form" title="Production order wizard" model="com.axelor.apps.base.db.Wizard" onNew="action-production-order-wizard-record-default">
 
-		<field name="qty" widget="Decimal" title="Quantity"/>
+		<field name="qty" widget="decimal" title="Quantity"/>
 		<field name="billOfMaterial" widget="ManyToOne[target=com.axelor.apps.production.db.BillOfMaterial]" title="BOM" domain="self.isRawMaterial = 'false' and self.product.id = :product_id"/>
 		<button name="validate" title="Validate" onClick="action-production-order-wizard-method-validate"/>
 

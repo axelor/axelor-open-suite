@@ -158,19 +158,20 @@ public class ManufOrderWorkflowService {
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void cancel(ManufOrder manufOrder)  {
+	public void cancel(ManufOrder manufOrder) throws AxelorException  {
 		
 		if(manufOrder.getOperationOrderList() != null)  {
 			
 			for(OperationOrder operationOrder : manufOrder.getOperationOrderList())  {
 				
-				
-				
-				operationOrder.setStatusSelect(IOperationOrder.STATUS_CANCELED);
-				
+				if(operationOrder.getStatusSelect() != IOperationOrder.STATUS_CANCELED)  {
+					operationOrderWorkflowService.cancel(operationOrder);
+				}
 			}
 			
 		}
+		
+		manufOrderStockMoveService.cancel(manufOrder);
 		
 		manufOrder.setStatusSelect(IManufOrder.STATUS_CANCELED);
 		

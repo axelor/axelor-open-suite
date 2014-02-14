@@ -33,7 +33,6 @@ package com.axelor.apps.production.web;
 import javax.inject.Inject;
 
 import com.axelor.apps.production.db.OperationOrder;
-import com.axelor.apps.production.service.OperationOrderService;
 import com.axelor.apps.production.service.OperationOrderWorkflowService;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
