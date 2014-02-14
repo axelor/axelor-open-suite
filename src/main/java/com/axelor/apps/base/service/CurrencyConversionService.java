@@ -64,13 +64,13 @@ public class CurrencyConversionService {
 	 
 
 	public BigDecimal convert(Currency currencyFrom, Currency currencyTo){
-		BigDecimal rate = null; 
+		BigDecimal rate = new BigDecimal(-1); 
 		
 		LOG.debug("Currerncy conversion From: {} To: {}",new Object[] { currencyFrom,currencyTo});
 		String wsUrl = gs.getGeneral().getCurrencyWsURL();
 		if(wsUrl == null){
 			LOG.info("Currency WS URL not configured");
-			return new BigDecimal(-1);
+			return rate;
 		}
 		
 		if(currencyFrom != null && currencyTo != null){
@@ -84,12 +84,10 @@ public class CurrencyConversionService {
 		        HTTPResponse response = httpclient.execute(request);
 		        LOG.debug("Webservice response code: {}, reponse mesasage: {}",response.getStatusCode(),response.getStatusMessage());
 		        if(response.getStatusCode() != 200)
-		        	return new BigDecimal(-1);
+		        	return rate;
 		        Float rt = Float.parseFloat(response.getContentAsString());
 		        rate = BigDecimal.valueOf(rt).setScale(4,RoundingMode.HALF_EVEN);
 			} catch (Exception e) {
-				if(e.getClass().equals(UnknownHostException.class))
-					return new BigDecimal(-1);
 				tb.trace(e);
 				e.printStackTrace();
 			}

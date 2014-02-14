@@ -18,8 +18,7 @@
     onNew="action-currency-conversion-line-default-record">
         <field name="startCurrency"/>
         <field name="endCurrency" />
-        <button title="Get rate" readonlyIf="startCurrency == null || endCurrency == null || toDate != null" onClick="action-currency-conversion-line-validate-rate-change,action-currency-conversion-line-method-convert" name="getRate"/>
-        <label colSpan="3" title="" />
+        <button title="Get rate" colSpan="2" readonlyIf="startCurrency == null || endCurrency == null || toDate != null" onClick="action-currency-conversion-line-validate-rate-change,action-currency-conversion-line-method-convert" name="getRate"/>
         <group title="Applicable dates" colSpan="4">
 	        <field name="fromDate" onChange="action-currency-conversion-line-method-check-date" />
 	        <field name="toDate" onChange="action-currency-conversion-line-method-check-date" readonlyIf="fromDate == null"/>
