@@ -17,13 +17,14 @@
 	<action-view name="portal.my.recent.customers" title="My Recent Customers" model="com.axelor.apps.base.db.Partner">
 		<view type="grid" name="partner-grid"/>
 		<view type="form" name="partner-form"/>
-    	<domain>self.updatedOn &gt;= date(now())-30 AND self.userInfo=:user_info</domain>
-    	<context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
-    </action-view>
+		<domain>self.updatedOn &gt;= date(now())-30 AND self.userInfo=:user_info AND self.customerTypeSelect=3</domain>
+	 	<context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+	</action-view>
 	
 	<action-view name="portal.partner.by.salesman" title="Customers by salesman" model="com.axelor.apps.base.db.Partner">
 		<view type="grid" name="partner-grid-group"/>
 		<view type="form" name="partner-form"/>
+		<domain>self.customerTypeSelect=3</domain>
 	</action-view>
 	
 	<action-view name="portal.partner.recent.partners" title="Recently created partners" model="com.axelor.apps.base.db.Partner" >
@@ -35,9 +36,9 @@
 	<action-view name="portal.my.customers" title="My Customers" model="com.axelor.apps.base.db.Partner">
 		<view type="grid" name="partner-grid"/>
 		<view type="form" name="partner-form"/>
-		 <domain>self.userInfo = :userInfoId</domain>
+		 <domain>self.userInfo = :userInfoId AND self.customerTypeSelect=3</domain>
 		 <context name="userInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
-    </action-view>
+	</action-view>
 	
 	<action-view name="portal.partner.by.industrySector" title="Partners by Industry Sector" model="com.axelor.apps.base.db.Partner">
 		<view type="chart" name="chart.partner.by.industry.sector.bar" />

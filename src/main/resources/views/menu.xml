@@ -44,6 +44,15 @@
 		icon="img/16px/crmSmall_16px.png">
 		<view type="portal" name="supplychain.purchase.manager.dashboard.portal" />
 	</action-view>
+	
+	<menuitem name="menu-purchase-order-dashboard" parent="menu-dashboards"
+		title="Purchase Order Dashboard" action="supply.chain.purchase.order.dashboard.portal.view" />	
+		
+	<action-view name="supply.chain.purchase.order.dashboard.portal.view" title="Purchase Order Dashboard"
+		icon="img/16px/crmSmall_16px.png">
+		<view type="portal" name="supply.chain.purchase.order.dashboard.portal" />	    
+	</action-view>
+	
 	<menuitem name="menu-organisation-dashboard" parent="menu-dashboards"
 		title="Organisation Dashboard" action="portal.organisation.dashboard.view"/>	
 
