@@ -56,6 +56,7 @@ public class LocationLineService {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(LocationLineService.class); 
 	
+	
 	@Inject
 	private ProductVariantService productVariantService;
 	
@@ -84,18 +85,27 @@ public class LocationLineService {
 		LOG.debug("Mise à jour du stock : Entrepot? {}, Produit? {}, Quantité? {}, Actuel? {}, Futur? {}, Incrément? {}, Date? {}, Num de suivi? {} ", 
 				new Object[] { location.getName(), product.getCode(), qty, current, future, isIncrement, lastFutureStockMoveDate });
 		
+		if(!isIncrement)  {
+			this.minStockRules(product, qty, locationLine, businessProject, current, future);
+		}
+		
 		locationLine = this.updateLocation(locationLine, qty, current, future, isIncrement, lastFutureStockMoveDate);
 		
 		this.checkStockMin(locationLine, false);
 		
+		locationLine.save();
+		
+	}
+	
+	
+	public void minStockRules(Product product, BigDecimal qty, LocationLine locationLine, Project businessProject, boolean current, boolean future) throws AxelorException  {
+		
 		if(current)  {
-			minStockRulesService.generatePurchaseOrder(product, qty, location, businessProject, IMinStockRules.TYPE_CURRENT);			
+			minStockRulesService.generatePurchaseOrder(product, qty, locationLine, businessProject, IMinStockRules.TYPE_CURRENT);			
 		}
 		if(future)  {
-			minStockRulesService.generatePurchaseOrder(product, qty, location, businessProject, IMinStockRules.TYPE_FUTURE);
+			minStockRulesService.generatePurchaseOrder(product, qty, locationLine, businessProject, IMinStockRules.TYPE_FUTURE);
 		}
-		
-		locationLine.save();
 		
 	}
 	

@@ -108,7 +108,6 @@ public class SalesOrderSubLineController {
 				response.setValue("taxLine", salesOrderSubLineService.getTaxLine(salesOrder, salesOrderSubLine));
 				response.setValue("price", salesOrderSubLineService.getUnitPrice(salesOrder, salesOrderSubLine));
 				response.setValue("productName", salesOrderSubLine.getProduct().getName());
-				response.setValue("supplierPartner", salesOrderSubLine.getProduct().getDefaultSupplierPartner());
 				response.setValue("unit", salesOrderSubLine.getProduct().getUnit());
 				response.setValue("companyCostPrice", salesOrderSubLineService.getCompanyCostPrice(salesOrder, salesOrderSubLine));
 				
@@ -147,7 +146,6 @@ public class SalesOrderSubLineController {
 		response.setValue("discountAmount", null);
 		response.setValue("discountTypeSelect", null);
 		response.setValue("price", null);
-		response.setValue("supplierPartner", null);
 		
 	}
 	

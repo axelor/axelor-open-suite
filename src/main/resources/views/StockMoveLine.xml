@@ -29,12 +29,19 @@
     </grid>
     
     <form name="stock-move-line-production-form" title="Stock move line" model="com.axelor.apps.supplychain.db.StockMoveLine" cols="4"
-    	onNew="action-stock-move-line-record-new">
+    	onNew="action-stock-move-line-record-new,stock-move-line-production-record-default">
         <field name="product" domain="self.applicationTypeSelect = 1" onChange="action-stock-move-line-set-product-price-unit"/>
         <field name="qty"/>
         <field name="unit"/>
         <field name="trackingNumber" readonly="true"/>
+        <field name="stockMove" hidden="true"/>
     </form>
+    
+    <action-record name="stock-move-line-production-record-default" model="com.axelor.apps.supplychain.db.StockMoveLine">
+    	<field name="stockMove" expr="eval: _parent.inStockMove" if="_parent._model == 'com.axelor.apps.production.db.OperationOrder'"/>
+    	<field name="stockMove" expr="eval: _parent.inStockMove" if="_parent._model == 'com.axelor.apps.production.db.ManufOrder' &amp;&amp; _parent?.selectedPage == 'consumed'"/>
+    	<field name="stockMove" expr="eval: _parent.outStockMove" if="_parent._model == 'com.axelor.apps.production.db.ManufOrder' &amp;&amp; _parent?.selectedPage == 'produced'"/>
+    </action-record>
     
     <action-record name="action-stock-move-line-record-new" model="com.axelor.apps.supplychain.db.StockMoveLine">
 	    <field name="qty" expr="1"/>

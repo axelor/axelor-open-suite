@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
-    <grid name="stock-move-grid" title="Stock moves" model="com.axelor.apps.supplychain.db.StockMove">
+    <grid name="stock-move-grid" title="Stock moves" model="com.axelor.apps.supplychain.db.StockMove" orderBy="-estimatedDate">
     	<toolbar>
 			<button name="printStockMoveGrid" title="Print StockMove(s)" onClick="action-print-stock-move" icon="icon-print"/>
     	</toolbar>
@@ -20,7 +20,7 @@
 <!--         <button name="viewDirection" icon="icon-location-arrow" help="View Direction" onClick="com.axelor.apps.supplychain.web.StockMoveController:viewDirection" readonlyIf="typeSelect != 2"/> -->
     </grid>
     
-     <grid name="stock-move-out-grid" title="Stock moves" model="com.axelor.apps.supplychain.db.StockMove">
+     <grid name="stock-move-out-grid" title="Stock moves" model="com.axelor.apps.supplychain.db.StockMove" orderBy="-estimatedDate">
     	<toolbar>
 			<button name="printStockMoveGrid" title="Print StockMove(s)" onClick="action-print-stock-move" icon="icon-print"/>
     	</toolbar>
@@ -38,7 +38,7 @@
         <button name="viewDirection" icon="icon-location-arrow" help="View Direction" onClick="com.axelor.apps.supplychain.web.StockMoveController:viewDirection" readonlyIf="typeSelect != 2"/>
     </grid>
     
-    <grid name="stock-move-in-grid" title="Stock moves" model="com.axelor.apps.supplychain.db.StockMove">
+    <grid name="stock-move-in-grid" title="Stock moves" model="com.axelor.apps.supplychain.db.StockMove" orderBy="-estimatedDate">
     	<toolbar>
 			<button name="printStockMoveGrid" title="Print StockMove(s)" onClick="action-print-stock-move" icon="icon-print"/>
     	</toolbar>
