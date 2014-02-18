@@ -69,12 +69,12 @@
 			        <field name="wasteStockMove"/>
 		        </group>
         	</page>
-        	<page name="consumedProductPage" title="Consumed products">
+        	<page name="consumedProductPage" title="Consumed products" onSelect="action-manuf-order-record-selected-page-consumed">
         		<field name="toConsumeProdProductList" colSpan="2" readonlyIf="statusSelect >= 4"/>
         		<field name="consumedStockMoveLineList" colSpan="2" form-view="stock-move-line-production-form" grid-view="stock-move-line-production-grid" readonlyIf="statusSelect == 6"/>
         		<field name="diffConsumeProdProductList" colSpan="2"/>
         	</page>
-        	<page name="consumedProductOperationPage" title="Consumed products">
+        	<page name="consumedProductOperationPage" title="Consumed products" onSelect="action-manuf-order-record-selected-page-produced">
         		<portlet colSpan="2" action="action-manuf-order-view-operation-order-to-consume-product" readonlyIf="statusSelect >= 4"/>
         		<portlet colSpan="2" action="action-manuf-order-view-operation-order-diff-consume-product"/>
         		<portlet colSpan="2" action="action-manuf-order-view-operation-order-consumed-product" readonlyIf="statusSelect == 6"/>
@@ -90,6 +90,15 @@
         
         </notebook>
     </form>
+    
+     
+    <action-record name="action-manuf-order-record-selected-page-consumed" model="com.axelor.apps.production.db.ManufOrder">
+    	<field name="selectedPage" expr="eval: 'consumed'"/>
+    </action-record>
+    
+    <action-record name="action-manuf-order-record-selected-page-produced" model="com.axelor.apps.production.db.ManufOrder">
+    	<field name="selectedPage" expr="eval: 'produced'"/>
+    </action-record>
     
     <action-record name="action-manuf-order-default-record" model="com.axelor.apps.production.db.ManufOrder">
     	<field name="statusSelect" expr="eval: 1"/>
