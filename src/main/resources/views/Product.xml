@@ -99,7 +99,7 @@
 				<field name="lastProductionPrice" readonly="true"/>
 				<button name="createProductionOrder" title="Create production order" colSpan="2" onClick="save,action-product-view-create-production-order"/>
 			</page>
-	        <page title="Tracking number" colSpan="2" cols="4" showIf="productTypeSelect != 'service" >
+	        <page title="Tracking number" colSpan="2" cols="4" showIf="productTypeSelect != 'service'" >
 	            <field name="hasWarranty" colSpan="4"/>
 	            <field name="warrantyNbrOfMonths" showIf="hasWarranty"/>
 	            <break/>
