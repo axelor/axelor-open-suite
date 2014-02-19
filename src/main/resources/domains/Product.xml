@@ -8,31 +8,33 @@
     <integer name="importId"/>
     <string name="name" title="Name" required="true" namecolumn="true"/>
     <string name="code" title="Code" required="true"/>
-    <string name="description" large="true" title="Description"/>
-    <binary name="picture" image="true" title="Picture"/>
-    <many-to-one name="productCategory" ref="ProductCategory" title="Product category"/>
-    <many-to-one name="productFamily" ref="ProductFamily" title="Family"/>
-    <many-to-one name="unit" ref="Unit" title="Unit"/>
+    <string name="description" large="true" title="Description" initParam="true"/>
+    <binary name="picture" image="true" title="Picture" initParam="true"/>
+    <many-to-one name="productCategory" ref="ProductCategory" title="Product category" initParam="true"/>
+    <many-to-one name="productFamily" ref="ProductFamily" title="Family" initParam="true"/>
+    <many-to-one name="unit" ref="Unit" title="Unit" initParam="true"/>
      
-    <integer name="applicationTypeSelect" title="Application type" selection="product.application.type.select"/>
-    <integer name="saleSupplySelect" title="Méthode d'appro. des ventes" selection="product.sale.supply.select"/>
+    <integer name="applicationTypeSelect" title="Application type" selection="product.application.type.select" initParam="true"/>
+    <integer name="saleSupplySelect" title="Méthode d'appro. des ventes" selection="product.sale.supply.select" initParam="true"/>
      
-    <string name="productTypeSelect" title="Product type" required="true" selection="product.product.type.select"/>
-    <string name="procurementMethodSelect" title="Procurement method" selection="product.procurement.method.select"/>
-    <boolean name="isRawMaterial" title="Raw material"/>
+    <string name="productTypeSelect" title="Product type" required="true" selection="product.product.type.select" initParam="true"/>
+    <string name="procurementMethodSelect" title="Procurement method" selection="product.procurement.method.select" initParam="true"/>
+    <boolean name="isRawMaterial" title="Raw material" initParam="true"/>
     
     <decimal name="salePrice" title="Sale price W.T." precision="20" scale="5"/>
-    <many-to-one name="saleCurrency" ref="com.axelor.apps.base.db.Currency" title="Sale currency"/>
+    <many-to-one name="saleCurrency" ref="com.axelor.apps.base.db.Currency" title="Sale currency" initParam="true"/>
     <decimal name="purchasePrice" title="Purchase price W.T." precision="20" scale="5"/>
-    <many-to-one name="purchaseCurrency" ref="com.axelor.apps.base.db.Currency" title="Purchase / Cost currency"/>
+    <many-to-one name="purchaseCurrency" ref="com.axelor.apps.base.db.Currency" title="Purchase / Cost currency" initParam="true"/>
     
     <decimal name="costPrice" title="Cost price" precision="20" scale="5"/>
     
-    <date name="startDate" title="Product launch Date"/>
-    <date name="endDate" title="Product pulled off market Date"/>
+    <decimal name="managPriceCoef" title="Management coef."/>
+    
+    <date name="startDate" title="Product launch Date" initParam="true"/>
+    <date name="endDate" title="Product pulled off market Date" initParam="true"/>
    
     
-    <many-to-one name="invoiceLineType" ref="com.axelor.apps.account.db.InvoiceLineType" title="Invoice line type"/>
+    <many-to-one name="invoiceLineType" ref="com.axelor.apps.account.db.InvoiceLineType" title="Invoice line type" initParam="true"/>
         
     <one-to-many name="accountManagementList" ref="com.axelor.apps.account.db.AccountManagement" mappedBy="product" title="Accounts"/>
   
@@ -52,6 +54,9 @@
     <many-to-one name="productVariantConfiguration" ref="com.axelor.apps.base.db.ProductVariantConfiguration"/>
   
   	<many-to-one name="defaultSupplierPartner" ref="com.axelor.apps.base.db.Partner" title="Default supplier"/>
+  	
+  	<many-to-one name="parentProduct" ref="com.axelor.apps.base.db.Product" title="Parent product" help="Used for variants"/>
+  	
   
 <!--   	A Deplacer dans production :  -->
 	<decimal name="lastProductionPrice" title="Last production price" precision="20" scale="5"/>

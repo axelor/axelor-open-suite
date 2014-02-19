@@ -36,6 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Product;
+import com.axelor.exception.AxelorException;
 
 public class ProductService {
 
@@ -56,6 +57,20 @@ public class ProductService {
 		else  {  return product.getSalePrice();  }
 
 	}
+	
+	
+	public void updateSalePrice(Product product) throws AxelorException  {
+		
+		BigDecimal costPrice = product.getCostPrice();
+		BigDecimal managePriceCoef = product.getManagPriceCoef();
+		
+		if(costPrice != null && managePriceCoef != null)  {
+			
+			product.setSalePrice(costPrice.multiply(managePriceCoef));
+			
+		}
+	}
+	
 	
 	
 }

@@ -25,6 +25,8 @@
   	<integer name="businessStatusSelect" title="Statut" selection="organisation.project.business.status.select"/>
   	<integer name="realEstimatedMethodSelect" title="Real estimated compute method" selection="organisation.project.real.estimated.method.select"/>
   	
+  	<decimal name="marginCoef" title="Margin coef"/>
+  	
   	<!-- Financial informations -->
   	<decimal name="initialEstimatedTurnover" title="Turnover" readonly="true"/>
   	<decimal name="initialEstimatedCost" title="Cost" readonly="true"/>

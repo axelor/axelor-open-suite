@@ -10,6 +10,8 @@
   	<integer name="priority" title="Priority" initParam="true"/>
 <!--     Ajouter action-record pour concatener seq + priority -->
     <string name="name" title="Name" initParam="true"/> 
+    
+    <string name="operationName" title="Operation name" initParam="true"/>
   
   	<boolean name="isToInvoice" title="To invoice ?" initParam="true"/>
   	

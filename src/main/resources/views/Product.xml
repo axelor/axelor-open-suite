@@ -71,8 +71,9 @@
 				<separator title="Purchases" colSpan="2"/>
 				<separator title="Costs" colSpan="2"/>
 				<field name="purchasePrice"/>
-				<field name="costPrice"/>
+				<field name="costPrice" onChange="action-product-record-compute-sale-price"/>
 				<field name="purchaseCurrency"/>
+				<field name="managPriceCoef" onChange="action-product-record-compute-sale-price"/>
 				<break/>
 				<field name="defaultSupplierPartner"/>
 				<separator title="Suppliers catalog" colSpan="4"/>
@@ -89,6 +90,7 @@
             <separator title="Procurement settings" colSpan="4"/>
 				<field name="procurementMethodSelect" requiredIf="productTypeSelect == 'storable'"/>
 				<field name="isRawMaterial" showIf="productTypeSelect != 'service'"/>
+				<button name="showAllStockMoveLine" title="Show all stock move" colSpan="2" onClick="action-product-view-stock-move-line"/>
 				<spacer/>
 				<break/>
 				<portlet colSpan="4" action="action-product-view-stock"/>
@@ -130,6 +132,7 @@
     	<field name="purchasePrice" expr="1"/>
     	<field name="saleCurrency" expr="eval: _activeCompany.currency"/>
     	<field name="purchaseCurrency" expr="eval: _activeCompany.currency"/>
+    	<field name="managPriceCoef" expr="1"/>
     </action-record>
     
     <action-record name="action-product-set-today-date" model="com.axelor.apps.base.db.Product">
@@ -143,6 +146,11 @@
     
     <action-record name="action-set-product-type-select" model="com.axelor.apps.base.db.Product">
     	<field name="productTypeSelect" expr="eval:(applicationTypeSelect == 2 || applicationTypeSelect == 3)?'service':null" />
+    </action-record>
+    
+    <action-record name="action-product-record-compute-sale-price" model="com.axelor.apps.base.db.Product">
+    	<field name="price" expr="eval: managPriceCoef*costPrice" if="costPrice != null &amp;&amp; managPriceCoef != null"/>
+    
     </action-record>
     
     <action-attrs name="action-hide-product-field">
@@ -209,5 +217,14 @@
   		<view-param name="show-confirm" value="false" />
   		<context name="_productId" expr="eval: __self__"/>
 	</action-view>
+	
+	
+<!-- 	SUPPLYCHAIN -->
+
+	<action-view name="action-product-view-stock-move-line" title="Stock Moves Lines"
+		model="com.axelor.apps.supplychain.db.StockMoveLine">
+		<view type="grid" name="stock-move-line-all-grid"/>
+		<view type="form" name="stock-move-line-all-form"/>
+	</action-view>	
 	
 </object-views>

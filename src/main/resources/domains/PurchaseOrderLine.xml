@@ -29,6 +29,8 @@
   	
   	<many-to-one name="task" ref="com.axelor.apps.organisation.db.Task" title="Task"/>
   	
+  	<decimal name="saleMinPrice" title="Min sale price"/>
+  	
 <!--   Onglet Historique -->
   	<many-to-many name="invoiceSet" ref="com.axelor.apps.account.db.Invoice" title="Associated Invoice lines"/>
   	
@@ -39,6 +41,8 @@
   	
   	<!--   	Champ technique non affiché, utilisé pour les reportings -->
   	<decimal name="companyExTaxTotal" title="Total W.T. in company currency" hidden="true"/>
+<!--   	Highlight -->
+  	<decimal name="salePrice"/> 
   	
   	
   </entity>

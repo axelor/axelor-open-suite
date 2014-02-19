@@ -15,6 +15,7 @@
 	<date name="updateDate" title="Last update"/>
   	<string name="description" title="Description" large="true"/>
 	<decimal name="calculatedPrice" title="Calculated price/Qty"/>
+	<decimal name="minQty" title="Quantity min"/>
   </entity>
 
 </domain-models>

@@ -888,10 +888,10 @@ LangTranslate.domain = 'axelor-base' and LangTranslate.type = 'other']]></xml-pr
                         <property name="borderTopColor">#606062</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <property name="height">120px</property>
-                        <property name="width">120px</property>
-                        <property name="source">expr</property>
-                        <expression name="valueExpr">row["product_picture"]</expression>
+                        <property name="height">18px</property>
+                        <property name="width">330px</property>
+                        <property name="source">url</property>
+                        <expression name="uri" type="constant">http://localhost:8080/barbecue/BarcodeServlet?data=1212312356&amp;type=Code128B</expression>
                     </image>
                 </cell>
                 <cell id="4065">

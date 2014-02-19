@@ -58,6 +58,9 @@
 <!--    Onglet historique -->
 	<many-to-many name="invoiceSet" ref="com.axelor.apps.account.db.Invoice" title="Linked invoices"/>
 
+<!-- 	Onglet description -->
+	<string name="description" title="Description" large="true"/>
+
 <!-- 	Onglet Commande Client -->
     <date name="orderDate" title="Order Date"/>
     <string name="orderNumber" title="Order Number"/>

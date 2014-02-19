@@ -7,7 +7,7 @@
 
   <entity name="BillOfMaterial" lang="java">
   
-  	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+  	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>
   	<decimal name="qty" title="Qty"/>
   	<integer name="priority" title="Priority"/>
     <boolean name="isRawMaterial" title="Raw material"/>
@@ -19,6 +19,7 @@
   	<string name="name" title="Label"/>
   	<decimal name="costPrice" title="Cost price" precision="20" scale="5"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+    <boolean name="hasNoManageStock" title="Not manage stock"/>
     
   </entity>
 </domain-models>
