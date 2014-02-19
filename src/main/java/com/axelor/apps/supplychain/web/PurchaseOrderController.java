@@ -113,6 +113,15 @@ public class PurchaseOrderController {
 		
 	}
 	
+	public void clearPurchaseOrder(ActionRequest request, ActionResponse response) throws AxelorException {
+		
+		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+			
+		purchaseOrderService.clearPurchaseOrder(purchaseOrder);
+		
+	}
+	
+	
 	
 	
 	/**

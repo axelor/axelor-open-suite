@@ -30,6 +30,8 @@
 <!-- 	        <button name="createDocument" title="Create Document" onClick="com.axelor.apps.supplychain.web.SalesOrderController:saveDocumentForOrder"/> -->
             <button name="print" title="Print" icon="icon-print" onClick="save,action-sales-order-method-show-sales-order"/>
 	        <button name="sendByEmail" title="Send email" icon="icon-envelope" onClick="save,action-send-by-email-with-template"/>
+	        <button name="excelExport" title="Excel Export" icon="icon-file-text" onClick="save,action-sales-order-method-export-sales-order-excel"/>
+	        <button name="wordExport" title="Word Export" icon="icon-file-text" onClick="save,action-sales-order-method-export-sales-order-word"/>
 	    </toolbar>
 	    <menubar>
 	        <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true">
@@ -110,6 +112,9 @@
 	            <group title="Invoicing" colSpan="2">
 	                <field name="showDetailsInInvoice"/>
 	            </group>
+	            <group title="Description" colSpan="4">
+	            	<field name="description" colSpan="4" showTitle="false" widget="Html[lite=true]"/>
+            	</group>
 	        </page>
 	        <page title="Schedule" showIf="invoicingTypeSelect == 2">
 	            <field name="invoicingMomentSelect" colSpan="3"/>
@@ -161,6 +166,14 @@
     
     <action-method name="action-sales-order-method-show-sales-order">
 		<call class="com.axelor.apps.supplychain.web.SalesOrderController" method="showSalesOrder"/>
+	</action-method>
+	
+	<action-method name="action-sales-order-method-export-sales-order-excel">
+		<call class="com.axelor.apps.supplychain.web.SalesOrderController" method="exportSalesOrderExcel"/>
+	</action-method>
+	
+	<action-method name="action-sales-order-method-export-sales-order-word">
+		<call class="com.axelor.apps.supplychain.web.SalesOrderController" method="exportSalesOrderWord"/>
 	</action-method>
     
     <action-record name="action-sales-order-record-confirm" model="com.axelor.apps.supplychain.db.SalesOrder">

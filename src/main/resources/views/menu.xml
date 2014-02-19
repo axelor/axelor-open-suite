@@ -58,6 +58,14 @@
 		<view-param name="search-filters" value="inventories-filters"/>
 	</action-view>
 	
+	<menuitem name="stock-root-all-line" parent="stock-root"
+		title="Stock Moves Lines" action="stock.root.all.line" />
+
+	<action-view name="stock.root.all.line" title="Stock Moves Lines"
+		model="com.axelor.apps.supplychain.db.StockMoveLine" icon="img/16px/productSmall_16px.png">
+		<view type="grid" name="stock-move-line-grid"/>
+		<view type="form" name="stock-move-line-form"/>
+	</action-view>		
 		
 	<menuitem name="stock-root-conf" parent="stock-root" title="Configuration"
 		icon="img/Other/parameter_59px.png" />

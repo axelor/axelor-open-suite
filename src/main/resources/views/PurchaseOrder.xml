@@ -46,6 +46,7 @@
 	            </group>
 	            <group title="Delivery" colSpan="6" cols="6">
 	                <field name="location" domain="self.company = :company and self.typeSelect = 1"/>
+	                <field name="location.address"/>
 	                <field name="deliveryDate"/>
 	            </group>
 	            <field name="purchaseOrderLineList" colSpan="6" form-view="purchase-order-line-form" grid-view="purchase-order-line-grid" readonlyIf="statusSelect == 5"/>
@@ -62,6 +63,7 @@
 	                        <button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2" colSpan="1" onClick="save,action-purchase-order-record-cancel"/>
 	                        <button name="showSupplierInvoice" title="Show invoice" showIf="statusSelect == 4 || statusSelect == 5" colSpan="1" onClick="action-purchase-order-show-supplier-invoice"/>
 	                        <button name="generateControlInvoice" title="Generate control invoice" showIf="statusSelect == 4" colSpan="1" onClick="save,action-purchase-order-method-generate-control-invoice"/>
+	                        <button name="clearPurchaseOrder" title="Clear purchase order" showIf="statusSelect >= 4" colSpan="1" onClick="save,action-purchase-order-method-clear-purchase-order"/>
 	                    </group>
 	                    <group readonly="true" colSpan="1" cols="2" colWidths="50%,50%">
 	                        <field name="validatedByUserInfo" colSpan="1"/>
@@ -162,6 +164,10 @@
     <action-method name="action-purchase-order-method-show-purchase-order">
 		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="showPurchaseOrder"/>
 	</action-method>
+    
+    <action-method name="action-purchase-order-method-clear-purchase-order">
+    	<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="clearPurchaseOrder"/>
+    </action-method>
     
     
     <action-view name="action-purchase-order-show-supplier-invoice" title="Supplier invoices"

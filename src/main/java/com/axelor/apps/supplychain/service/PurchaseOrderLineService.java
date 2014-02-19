@@ -39,14 +39,17 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.service.AccountManagementService;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductVariant;
+import com.axelor.apps.base.db.SupplierCatalog;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductVariantService;
+import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.organisation.db.Task;
 import com.axelor.apps.supplychain.db.PurchaseOrder;
 import com.axelor.apps.supplychain.db.PurchaseOrderLine;
@@ -98,6 +101,29 @@ private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderLineServi
 		
 		return currencyService.getAmountCurrencyConverted(
 			product.getPurchaseCurrency(), purchaseOrder.getCurrency(), product.getPurchasePrice(), purchaseOrder.getOrderDate());  
+		
+	}
+	
+	public BigDecimal getMinSalePrice(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException  {
+		
+		Product product = purchaseOrderLine.getProduct();
+		
+		return currencyService.getAmountCurrencyConverted(
+			product.getPurchaseCurrency(), purchaseOrder.getCurrency(), product.getSalePrice(), purchaseOrder.getOrderDate());  
+		
+	}
+	
+	public BigDecimal getSalePrice(PurchaseOrder purchaseOrder, BigDecimal price) throws AxelorException  {
+		
+		Project project = purchaseOrder.getProject();
+		
+		if(project != null)  {
+			
+			return project.getMarginCoef().multiply(price);
+			
+		}
+		
+		return price;  
 		
 	}
 	
@@ -206,4 +232,54 @@ private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderLineServi
 			
 		return purchaseOrderLine;
 	}
+	
+	
+	public BigDecimal getQty(PurchaseOrderLine purchaseOrderLine)  {
+		
+		SupplierCatalog supplierCatalog = this.getSupplierCatalog(purchaseOrderLine);
+		
+		if(supplierCatalog != null)  {
+			
+			return supplierCatalog.getMinQty();
+			
+		}
+		
+		return BigDecimal.ONE;
+		
+	}
+	
+	public SupplierCatalog getSupplierCatalog(PurchaseOrderLine purchaseOrderLine)  {
+		
+		Product product = purchaseOrderLine.getProduct();
+		
+		SupplierCatalog supplierCatalog = this.getSupplierCatalog(product, purchaseOrderLine.getPurchaseOrder().getSupplierPartner());
+		
+		if(supplierCatalog == null)  {
+			
+			supplierCatalog = this.getSupplierCatalog(product, product.getDefaultSupplierPartner());
+		}
+		
+		return supplierCatalog;
+		
+	}
+	
+	
+	public SupplierCatalog getSupplierCatalog(Product product, Partner supplierPartner)  {
+		
+		if(product.getSupplierCatalogList() != null)  {
+			
+			for(SupplierCatalog supplierCatalog : product.getSupplierCatalogList())  {
+				
+				if(supplierCatalog.getSupplierPartner().equals(supplierPartner))  {
+					return supplierCatalog;
+				}
+				
+			}
+			
+		}
+		return null;
+		
+	}
+	
+	
 }

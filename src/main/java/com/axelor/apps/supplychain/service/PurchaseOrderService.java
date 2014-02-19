@@ -32,6 +32,7 @@ package com.axelor.apps.supplychain.service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
@@ -286,4 +287,23 @@ public class PurchaseOrderService {
 		
 		return supplierPartner.save();
 	}
+	
+	
+	public void clearPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException  {
+		
+		List<StockMove> stockMoveList = StockMove.filter("self.purchaseOrder = ?1 AND self.statusSelect = 2", purchaseOrder).fetch();
+		
+		for(StockMove stockMove : stockMoveList)  {
+			
+			stockMoveService.cancel(stockMove);
+			
+		}
+		
+		
+	}
+	
+	
+	
+	
+	
 }

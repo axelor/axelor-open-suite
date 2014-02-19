@@ -165,6 +165,89 @@ public class SalesOrderController {
 		}
 	}
 	
+	
+	public void exportSalesOrderExcel(ActionRequest request, ActionResponse response) {
+
+		SalesOrder salesOrder = request.getContext().asType(SalesOrder.class);
+
+		StringBuilder url = new StringBuilder();
+		AxelorSettings axelorSettings = AxelorSettings.get();
+		
+		String language="";
+		try{
+			language = salesOrder.getClientPartner().getLanguageSelect() != null? salesOrder.getClientPartner().getLanguageSelect() : salesOrder.getCompany().getPrintingSettings().getLanguageSelect() != null ? salesOrder.getCompany().getPrintingSettings().getLanguageSelect() : "en" ; 
+		}catch (NullPointerException e) {
+			language = "en";
+		}
+		language = language.equals("")? "en": language;
+
+		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/SalesOrder.rptdesign&__format=xls&Locale="+language+"&SalesOrderId="+salesOrder.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
+		LOG.debug("URL : {}", url);
+		String urlNotExist = URLService.notExist(url.toString());
+		
+		if(urlNotExist == null) {
+		
+			LOG.debug("Impression du devis "+salesOrder.getSalesOrderSeq()+" : "+url.toString());
+			
+			String title = "Devis ";
+			if(salesOrder.getSalesOrderSeq() != null)  {
+				title += salesOrder.getSalesOrderSeq();
+			}
+			
+			Map<String,Object> mapView = new HashMap<String,Object>();
+			mapView.put("title", "Devis "+title);
+			mapView.put("resource", url);
+			mapView.put("viewType", "html");
+			response.setView(mapView);	
+		}
+		else {
+			response.setFlash(urlNotExist);
+		}
+	}
+	
+	
+	
+	public void exportSalesOrderWord(ActionRequest request, ActionResponse response) {
+
+		SalesOrder salesOrder = request.getContext().asType(SalesOrder.class);
+
+		StringBuilder url = new StringBuilder();
+		AxelorSettings axelorSettings = AxelorSettings.get();
+		
+		String language="";
+		try{
+			language = salesOrder.getClientPartner().getLanguageSelect() != null? salesOrder.getClientPartner().getLanguageSelect() : salesOrder.getCompany().getPrintingSettings().getLanguageSelect() != null ? salesOrder.getCompany().getPrintingSettings().getLanguageSelect() : "en" ; 
+		}catch (NullPointerException e) {
+			language = "en";
+		}
+		language = language.equals("")? "en": language;
+
+		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/SalesOrder.rptdesign&__format=doc&Locale="+language+"&SalesOrderId="+salesOrder.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
+		LOG.debug("URL : {}", url);
+		String urlNotExist = URLService.notExist(url.toString());
+		
+		if(urlNotExist == null) {
+		
+			LOG.debug("Impression du devis "+salesOrder.getSalesOrderSeq()+" : "+url.toString());
+			
+			String title = "Devis ";
+			if(salesOrder.getSalesOrderSeq() != null)  {
+				title += salesOrder.getSalesOrderSeq();
+			}
+			
+			Map<String,Object> mapView = new HashMap<String,Object>();
+			mapView.put("title", "Devis "+title);
+			mapView.put("resource", url);
+			mapView.put("viewType", "html");
+			response.setView(mapView);	
+		}
+		else {
+			response.setFlash(urlNotExist);
+		}
+	}
+	
+	
+	
 	public void setSequence(ActionRequest request, ActionResponse response) throws AxelorException {
 		
 		SalesOrder salesOrder = request.getContext().asType(SalesOrder.class);

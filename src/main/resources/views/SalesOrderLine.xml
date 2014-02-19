@@ -44,7 +44,7 @@
 	            </group>
 	        </page>
 	        <page title="Notes">
-	            <field name="description" colSpan="4" showTitle="false"/>
+	            <field name="description" colSpan="4" showTitle="false" widget="Html[lite=true]"/>
 	        </page>
 	         
 	        <page title="SO line details">

@@ -61,6 +61,7 @@ public class PurchaseOrderLineController {
 			if (purchaseOrderLine.getPrice() != null && purchaseOrderLine.getQty() != null){
 				
 				exTaxTotal = PurchaseOrderLineService.computeAmount(purchaseOrderLine.getQty(), purchaseOrderLineService.computeDiscount(purchaseOrderLine));
+			
 			}
 			
 			if(exTaxTotal != null) {
@@ -74,6 +75,9 @@ public class PurchaseOrderLineController {
 				if(purchaseOrder != null) {
 					companyExTaxTotal = purchaseOrderLineService.getCompanyExTaxTotal(exTaxTotal, purchaseOrder);
 				}
+				
+				response.setValue("saleMinPrice", purchaseOrderLineService.getMinSalePrice(purchaseOrder, purchaseOrderLine));
+				response.setValue("salePrice", purchaseOrderLineService.getSalePrice(purchaseOrder, purchaseOrderLine.getPrice()));
 			}
 			
 			response.setValue("exTaxTotal", exTaxTotal);
@@ -102,6 +106,10 @@ public class PurchaseOrderLineController {
 				response.setValue("taxLine", purchaseOrderLineService.getTaxLine(purchaseOrder, purchaseOrderLine));
 				response.setValue("productName", purchaseOrderLine.getProduct().getName());
 				response.setValue("unit", purchaseOrderLine.getProduct().getUnit());
+				response.setValue("qty", purchaseOrderLineService.getQty(purchaseOrderLine));
+				
+				response.setValue("saleMinPrice", purchaseOrderLineService.getMinSalePrice(purchaseOrder, purchaseOrderLine));
+				response.setValue("salePrice", purchaseOrderLineService.getSalePrice(purchaseOrder, price));
 				
 				PriceList priceList = purchaseOrder.getPriceList();
 				if(priceList != null)  {

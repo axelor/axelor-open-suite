@@ -5,7 +5,8 @@
     
     <grid name="stock-move-line-grid" title="Stock move lines" model="com.axelor.apps.supplychain.db.StockMoveLine" editable="true">
         <field name="product" onChange="action-inventory-line-attrs-tracking-number,action-stock-move-line-set-product-price-unit"/>
-        <field name="qty"/>
+        <field name="qty" onChange="action-stock-move-line-record-qty"/>
+        <field name="realQty"/>
         <field name="unit"/>
         <field name="price"/>
         <field name="trackingNumber"/>
@@ -14,13 +15,47 @@
     <form name="stock-move-line-form" title="Stock move line" model="com.axelor.apps.supplychain.db.StockMoveLine" cols="4"
     	onNew="action-stock-move-line-record-new" onLoad="action-inventory-line-attrs-tracking-number">
         <field name="product" domain="self.applicationTypeSelect = 1" onChange="action-inventory-line-attrs-tracking-number,action-stock-move-line-set-product-price-unit"/>
-        <field name="qty"/>
+        <field name="qty" onChange="action-stock-move-line-record-qty"/>
+        <field name="realQty"/>
         <field name="unit"/>
         <field name="price"/>
-        <field name="trackingNumber" readonly="true"/>
+        <field name="trackingNumber"/>
         <field name="productVariant" readonly="true"/>
     </form>
     
+    <grid name="stock-move-line-all-grid" title="Stock move lines" model="com.axelor.apps.supplychain.db.StockMoveLine">
+    	<field name="stockMove.stockMoveSeq"/>
+        <field name="stockMove.fromLocation"/>
+        <field name="stockMove.toLocation"/>
+        <field name="stockMove.estimatedDate"/>
+        <field name="stockMove.realDate"/>
+        <field name="stockMove.company"/>
+        <field name="product"/>
+        <field name="qty"/>
+        <field name="realQty"/>
+        <field name="unit"/>
+        <field name="price"/>
+        <field name="trackingNumber"/>
+        <field name="stockMove.statusSelect"/>
+    </grid>
+    
+    <form name="stock-move-line-all-form" title="Stock move line" model="com.axelor.apps.supplychain.db.StockMoveLine" cols="4"
+    	onNew="action-stock-move-line-record-new" onLoad="action-inventory-line-attrs-tracking-number">
+    	<field name="stockMove.stockMoveSeq"/>
+        <field name="stockMove.fromLocation"/>
+        <field name="stockMove.toLocation"/>
+        <field name="stockMove.estimatedDate"/>
+        <field name="stockMove.realDate"/>
+        <field name="stockMove.company"/>
+        <field name="product" domain="self.applicationTypeSelect = 1" onChange="action-inventory-line-attrs-tracking-number,action-stock-move-line-set-product-price-unit"/>
+        <field name="qty" onChange="action-stock-move-line-record-qty"/>
+        <field name="realQty"/>
+        <field name="unit"/>
+        <field name="price"/>
+        <field name="trackingNumber"/>
+        <field name="stockMove.statusSelect"/>
+    </form>
+
     <grid name="stock-move-line-production-grid" title="Stock move lines" model="com.axelor.apps.supplychain.db.StockMoveLine">
         <field name="product"/>
         <field name="qty"/>
@@ -31,9 +66,9 @@
     <form name="stock-move-line-production-form" title="Stock move line" model="com.axelor.apps.supplychain.db.StockMoveLine" cols="4"
     	onNew="action-stock-move-line-record-new,stock-move-line-production-record-default">
         <field name="product" domain="self.applicationTypeSelect = 1" onChange="action-stock-move-line-set-product-price-unit"/>
-        <field name="qty"/>
+        <field name="qty" onChange="action-stock-move-line-record-qty"/>
         <field name="unit"/>
-        <field name="trackingNumber" readonly="true"/>
+        <field name="trackingNumber"/>
         <field name="stockMove" hidden="true"/>
     </form>
     
@@ -45,11 +80,16 @@
     
     <action-record name="action-stock-move-line-record-new" model="com.axelor.apps.supplychain.db.StockMoveLine">
 	    <field name="qty" expr="1"/>
+	    <field name="realQty" expr="1"/>
+	</action-record>
+	
+	<action-record name="action-stock-move-line-record-qty" model="com.axelor.apps.supplychain.db.StockMoveLine">
+		<field name="realQty" expr="eval: qty" if="_parent?.statusSelect == 1"/>
 	</action-record>
 	
 	<action-record name="action-stock-move-line-set-product-price-unit" model="com.axelor.apps.supplychain.db.StockMoveLine">
 	    <field name="unit" expr="eval: product.unit"/>
 	    <field name="price" expr="eval: product.costPrice"/>
 	</action-record>
-    
+	
 </object-views>

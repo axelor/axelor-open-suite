@@ -5,31 +5,55 @@
     
     
     <grid name="purchase-order-line-grid" title="PO lines" model="com.axelor.apps.supplychain.db.PurchaseOrderLine">
+    	<hilite background="danger" if="salePrice &gt; saleMinPrice"/>
+    	<field name="purchaseOrder"/>
     	<field name="product"/>
+    	<field name="deliveryDate"/>
         <field name="qty"/>
-        <field name="price"/>
         <field name="unit"/>
+        <field name="price"/>
         <field name="exTaxTotal"/>
-        <field name="deliveryDate"/>
+        <field name="saleMinPrice"/>
+        <field name="createdBy"/>
+        <field name="createdOn"/>
+        <field name="salePrice" hidden="true"/>
+    </grid>
+    
+    <grid name="purchase-order-line-purchase-order-grid" title="PO lines" model="com.axelor.apps.supplychain.db.PurchaseOrderLine">
+    	<hilite background="danger" if="salePrice &gt; saleMinPrice"/>
+    	<field name="product"/>
+    	<field name="deliveryDate"/>
+        <field name="qty"/>
+        <field name="unit"/>
+        <field name="price"/>
+        <field name="exTaxTotal"/>
+        <field name="saleMinPrice"/>
+        <field name="salePrice" hidden="true"/>
     </grid>
     
     <form name="purchase-order-line-form" title="PO line" model="com.axelor.apps.supplychain.db.PurchaseOrderLine" cols="4" 
     onNew="action-purchase-order-line-record-new,action-purchase-order-line-attrs-hide-product-variant"
-    onLoad="action-purchase-order-line-attrs-task-readonly,action-purchase-order-line-attrs-hide-product-variant">
+    onLoad="action-purchase-order-line-attrs-task-readonly,action-purchase-order-line-attrs-hide-product-variant,action-purchase-order-line-record-dummy-sale-price">
 	    <field name="product" onChange="action-purchase-order-line-method-get-product-information,action-purchase-order-line-method-compute,action-purchase-order-line-record-product-variant,action-purchase-order-line-attrs-hide-product-variant" domain="self.endDate = null or self.endDate &gt; :__date__"/>
 	    <field name="productName"/>
 	    <field name="qty" onChange="action-purchase-order-line-method-get-discount,action-purchase-order-line-method-compute"/>
 	    <field name="unit"/>
-	    <field name="price" onChange="action-purchase-order-line-method-compute"/>
+	    <field name="price" onChange="action-purchase-order-line-method-compute,action-purchase-order-line-record-sale-price,save">
+	    	<hilite color="danger" if="salePrice &lt; saleMinPrice"/>
+	    </field>
 	    <field name="taxLine" domain="self.endDate = null or self.endDate &gt; :__date__"/>
 	    <field name="exTaxTotal"/>
 	    <field name="taxLine.value"/>
+	    <field name="saleMinPrice" readonly="true"/>
+	    <field name="salePrice" hidden="true"/>
 	    <group name="discount" title="Discount" colSpan="4" cols="4" canCollapse="true">
 	        <field name="discountTypeSelect" onChange="action-purchase-order-line-method-compute"/>
 	        <field name="discountAmount" onChange="action-purchase-order-line-method-compute"/>
 	    </group>
 	    <notebook colSpan="4">
 	        <page title="Details" colSpan="4" cols="4">
+	        	<field name="purchaseOrder.createdbBy"/>
+        		<field name="purchaseOrder.createdOn"/>
 	            <field name="deliveryDate"/>
 	            <break/>
 	            <field name="productVariant" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="product-variant-form" summary-view="true" hidden="true"/>
@@ -51,7 +75,7 @@
     <action-record name="action-purchase-order-line-record-product-variant" model="com.axelor.apps.supplychain.db.PurchaseOrderLine">
     	<field name="productVariant" expr="action:action-product-variant-record-on-new" if="product?.productVariantConfiguration != null"/>
     </action-record>
-   
+    
    	<!-- ACTION METHOD -->
 	
 	<action-method name="action-purchase-order-line-method-compute">
