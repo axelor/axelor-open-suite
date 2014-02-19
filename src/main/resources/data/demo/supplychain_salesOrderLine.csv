@@ -1,22 +1,22 @@
 "importId";"salesOrder.id";"sequence";"product.id";"productName";"qty";"unit.code";"price";"taxLine.id";"exTaxTotal";"hasToCreateTask";"isOrdered";"saleSupplySelect"
-1;1;1;3;"Serveur haute performance";10;"U";2500;1;25000;"true";"true";1
-2;1;2;6;"Imprimante Laser";6;"U";429;1;2574;"true";"true";1
-3;2;1;4;"Serveur classique";18;"U";1500;1;27000;"true";"true";1
-4;2;2;5;"Imprimante Jet d'encre";2;"U";329;1;658;"true";"true";1
-5;3;1;5;"Imprimante Jet d'encre";14;"U";329;1;4606;"true";"true";1
-6;3;2;4;"Serveur classique";1;"U";1500;1;1500;"true";"true";1
-7;4;1;6;"Imprimante Laser";8;"U";429;1;3432;"true";"true";1
-8;4;2;3;"Serveur haute performance";5;"U";2500;1;12500;"true";"true";1
-9;5;1;3;"Serveur haute performance";10;"U";2500;1;25000;"true";"true";1
-10;5;2;4;"Serveur classique";4;"U";1500;1;6000;"true";"true";1
-11;5;3;6;"Imprimante Laser";10;"U";429;1;4290;"true";"true";1
-12;5;4;17;"Cartouche encre laser";12;"U";"424.9";1;"5098.8";"true";"true";1
-13;5;5;18;"Ramette 500 Feuilles A4 Standard 80 g";20;"U";"6.99";1;"139.8";"true";"true";1
-14;6;1;23;"Consultant";15;"JR";800;1;12000;"true";"true";3
-15;7;1;22;"Chef de projet";10;"JR";1000;1;10000;"true";"true";3
-16;7;2;3;"Serveur haute performance";2;"U";2500;1;5000;"true";"true";1
-17;7;3;4;"Serveur classique";1;"U";1500;1;1500;"true";"true";1
-18;7;4;6;"Imprimante Laser";4;"U";429;1;1716;"true";"true";1
+1;1;1;111;"Serveur haute performance";10;"U";2500;1;25000;"true";"true";1
+2;1;2;121;"Imprimante Laser";6;"U";429;1;2574;"true";"true";1
+3;2;1;110;"Serveur classique";18;"U";1500;1;27000;"true";"true";1
+4;2;2;120;"Imprimante Jet d'encre";2;"U";329;1;658;"true";"true";1
+5;3;1;120;"Imprimante Jet d'encre";14;"U";329;1;4606;"true";"true";1
+6;3;2;110;"Serveur classique";1;"U";1500;1;1500;"true";"true";1
+7;4;1;121;"Imprimante Laser";8;"U";429;1;3432;"true";"true";1
+8;4;2;111;"Serveur haute performance";5;"U";2500;1;12500;"true";"true";1
+9;5;1;111;"Serveur haute performance";10;"U";2500;1;25000;"true";"true";1
+10;5;2;110;"Serveur classique";4;"U";1500;1;6000;"true";"true";1
+11;5;3;121;"Imprimante Laser";10;"U";429;1;4290;"true";"true";1
+12;5;4;303;"Cartouche encre laser";12;"U";"424.9";1;"5098.8";"true";"true";1
+13;5;5;304;"Ramette 500 Feuilles A4 Standard 80 g";20;"U";"6.99";1;"139.8";"true";"true";1
+14;6;1;411;"Consultant";15;"JR";800;1;12000;"true";"true";3
+15;7;1;410;"Chef de projet";10;"JR";1000;1;10000;"true";"true";3
+16;7;2;111;"Serveur haute performance";2;"U";2500;1;5000;"true";"true";1
+17;7;3;110;"Serveur classique";1;"U";1500;1;1500;"true";"true";1
+18;7;4;121;"Imprimante Laser";4;"U";429;1;1716;"true";"true";1
 19;7;5;2;"Maintenance annuelle";1;"ANNEE";2000;1;2000;"true";"true";1
-20;8;1;24;"Etude";1;"U";8000;1;8000;"true";"true";1
-21;8;2;22;"Chef de projet";20;"JR";1000;1;20000;"true";"true";3
+20;8;1;400;"Etude";1;"U";8000;1;8000;"true";"true";1
+21;8;2;410;"Chef de projet";20;"JR";1000;1;20000;"true";"true";3
