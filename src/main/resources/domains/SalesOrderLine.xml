@@ -35,6 +35,8 @@
   	<decimal name="amountInvoiced" title="Montant facturé"/>
   	<decimal name="amountRemainingToBeInvoiced" title="Reste à facturer"/>
   	
+  	<date name="estimatedDelivDate" title="Estimated delivery date"/>
+  	
 <!--   	Onglet Détail de la ligne de devis -->
 	<one-to-many name="salesOrderSubLineList" ref="com.axelor.apps.supplychain.db.SalesOrderSubLine" mappedBy="salesOrderLine" title="Les sous-lignes de devis"/>
   

@@ -34,7 +34,8 @@
 <!--   Onglet Historique -->
   	<many-to-many name="invoiceSet" ref="com.axelor.apps.account.db.Invoice" title="Associated Invoice lines"/>
   	
-	<date name="deliveryDate" title="Delivery Date"/>
+	<date name="estimatedDelivDate" title="Estimated delivery date" help="Estimated by supplier"/>
+	<date name="desiredDelivDate" title="Desired delivery date"/>
 
 	<many-to-one name="productVariant" ref="com.axelor.apps.base.db.ProductVariant"/>
   	
