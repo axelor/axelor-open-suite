@@ -149,7 +149,7 @@
     </action-record>
     
     <action-record name="action-product-record-compute-sale-price" model="com.axelor.apps.base.db.Product">
-    	<field name="price" expr="eval: managPriceCoef*costPrice" if="costPrice != null &amp;&amp; managPriceCoef != null"/>
+    	<field name="salePrice" expr="eval: managPriceCoef*costPrice" if="costPrice != null &amp;&amp; managPriceCoef != null"/>
     
     </action-record>
     
