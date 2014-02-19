@@ -7,6 +7,8 @@
 
   <entity name="ProductionOrder" lang="java">
   
+  	<integer name="importId"/>
+  
   	<string name="productionOrderSeq" title="Name" namecolumn="true" initParam="true"/>
   	<boolean name="isToInvoice" title="To invoice ?" initParam="true"/>
     <many-to-one name="businessProject" ref="com.axelor.apps.organisation.db.Project" title="Business" initParam="true"/>

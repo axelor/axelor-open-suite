@@ -7,6 +7,8 @@
 
   <entity name="ProdProcess" lang="java">
   
+  	<integer name="importId"/>
+  
   	<one-to-many name="prodProcessLineList" ref="com.axelor.apps.production.db.ProdProcessLine" mappedBy="prodProcess" title="Operations"/>
   	<string name="name" title="Label"/>
   	<string name="code" title="Code"/>

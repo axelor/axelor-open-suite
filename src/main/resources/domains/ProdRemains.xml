@@ -6,6 +6,8 @@
   <module name="production" package="com.axelor.apps.production.db"/>
 
   <entity name="ProdRemains" lang="java">
+  	
+  	<integer name="importId"/>
   
   	<many-to-one name="billOfMaterial" ref="com.axelor.apps.production.db.BillOfMaterial" title="BOM"/>
 	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>

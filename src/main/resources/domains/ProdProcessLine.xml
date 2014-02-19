@@ -7,6 +7,8 @@
 
   <entity name="ProdProcessLine" lang="java">
   
+  	<integer name="importId"/>
+  
  	<many-to-one name="prodProcess" ref="com.axelor.apps.production.db.ProdProcess" title="Production process"/>
   	<many-to-one name="prodResource" ref="com.axelor.apps.production.db.ProdResource" title="Resource"/>
     <string name="name" title="Label"/>

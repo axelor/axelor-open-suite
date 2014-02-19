@@ -7,6 +7,8 @@
 
   <entity name="BillOfMaterial" lang="java">
   
+  	<integer name="importId"/>
+  
   	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>
   	<decimal name="qty" title="Qty"/>
   	<integer name="priority" title="Priority"/>

@@ -7,6 +7,8 @@
 
   <entity name="Machine" lang="java">
   	
+  	<integer name="importId"/>
+  	
   	<string name="name" title="Name"/>
     <string name="serialNumber" title="Serial number"/>
     <string name="description" title="Description" large="true"/>

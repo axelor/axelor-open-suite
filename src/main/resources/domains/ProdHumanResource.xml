@@ -7,6 +7,8 @@
 
   <entity name="ProdHumanResource" lang="java">
   
+  	<integer name="importId"/>
+  
   	<many-to-one name="prodResource" ref="com.axelor.apps.production.db.ProdResource" title="Resource"/>
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Profil" initParam="true"/>
     <many-to-one name="employee" ref="com.axelor.apps.organisation.db.Employee" title="Employee" initParam="true"/>
