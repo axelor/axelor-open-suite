@@ -65,7 +65,7 @@ public class PrepareCsv {
 	public void prepareCsv(){
 		String xmlDir = System.getProperty("xmlDir");
 		String csvDir = System.getProperty("csvDir");
-		List<String> ignoreType = Arrays.asList("many-to-one","one-to-one","many-to-many","one-to-many");
+		List<String> ignoreType = Arrays.asList("one-to-one","many-to-many","one-to-many");
 		try{
 			if(xmlDir != null && csvDir != null){
 				File xDir = new File(xmlDir);
@@ -75,6 +75,7 @@ public class PrepareCsv {
 				DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 				if(xDir.isDirectory() && cDir.isDirectory()){
 					for(File xf : xDir.listFiles()){
+						System.out.println("INFO# Processing XML: "+xf.getName());
 						List<String> fieldList = new ArrayList<String>();
 						Document doc = dBuilder.parse(xf);
 						NodeList nList = doc.getElementsByTagName("entity");
@@ -86,8 +87,23 @@ public class PrepareCsv {
 								Node field = fields.item(count);
 								NamedNodeMap attrs = field.getAttributes();
 								String type = field.getNodeName();
-								if(attrs != null && attrs.getNamedItem("name") != null && !ignoreType.contains(type))
-									fieldList.add(attrs.getNamedItem("name").getNodeValue());
+								if(attrs != null && attrs.getNamedItem("name") != null && !ignoreType.contains(type)){
+									String fieldName = attrs.getNamedItem("name").getNodeValue();
+									if(type.equals("many-to-one")){
+										String[] objName = attrs.getNamedItem("ref").getNodeValue().split("\\.");
+										String refName = objName[objName.length-1];
+										String nameColumn = getNameColumn(xmlDir+"/"+refName+".xml");
+										if(nameColumn != null)
+											fieldList.add(fieldName+"."+nameColumn);
+										else{
+											fieldList.add(fieldName);
+											System.out.println("#Warrning: No name column found for "+refName+", field '"+attrs.getNamedItem("name").getNodeValue()+"'");
+										}
+									}
+									else
+										fieldList.add(fieldName);
+								}
+									
 								count++;
 							}
 							cTool.csvWriter(csvDir, csvFileName, ';',StringUtils.join(fieldList,",").split(","), blankData);
@@ -104,6 +120,39 @@ public class PrepareCsv {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
+	}
+
+	private String getNameColumn(String fileName) throws SAXException, IOException, ParserConfigurationException {
+		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+		File domainFile = new File(fileName);
+		if(!domainFile.exists())
+			return null;
+		Document doc = dBuilder.parse(domainFile);
+		NodeList nList = doc.getElementsByTagName("entity");
+		if(nList != null){
+			NodeList fields = nList.item(0).getChildNodes();
+			Integer count = 0;
+			while(count < fields.getLength()){
+				NamedNodeMap attrs = fields.item(count).getAttributes();
+				count++;
+				if(attrs != null && attrs.getNamedItem("name") != null){
+					String name = attrs.getNamedItem("name").getNodeValue();
+					switch(name){
+					case "importId":
+						return "importId";
+					case "code":
+					    return "code";
+					case "name":
+						return "name";
+					default:
+						continue;
+					}
+				}
+				
+			}
+		}
+		return null;
 	}
 
 }
