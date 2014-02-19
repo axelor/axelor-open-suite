@@ -67,6 +67,9 @@
 	        <page title="Financial information" colSpan="4">
 	        	<field name="realEstimatedMethodSelect"/>
 	        	<field name="company.currency"/>
+	        	<field name="marginCoef"/>
+				<spacer/>
+				<break/>
 <!-- 	        	<field name="exportTypeSelect"/> -->
 <!--                 <button name="printProject" colSpan="2" title="View forecast report" onClick="action-print-project-report" icon="icon-print"/> -->
 	            <group title="Initial estimated" colSpan="4" cols="6" hideIf="realEstimatedMethodSelect == 1">
@@ -144,6 +147,7 @@
 		<field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
 		<field name="businessStatusSelect" expr="1"/>		
 		<field name="unit" expr="eval: company?.administration?.unit"/>
+		<field name="marginCoef" expr="1"/>
 	</action-record>
 	
 	<action-record name="action-business-project-record-unit" model="com.axelor.apps.organisation.db.Project">
