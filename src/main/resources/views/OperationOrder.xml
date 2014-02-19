@@ -19,8 +19,8 @@
     <grid name="operation-order-group-grid" title="Manufacturing orders" model="com.axelor.apps.production.db.OperationOrder" groupBy="manufOrder" orderBy="-manufOrder,priority">
     	<field name="manufOrder"/>
         <field name="priority"/>
+        <field name="operationName" readonlyIf="statusSelect == 6"/>
         <field name="machineProdResource"/>
-        <field name="prodProcessLine"/>
         <field name="plannedStartDateT"/>
         <field name="plannedEndDateT"/>
         <field name="realStartDateT"/>
@@ -36,8 +36,8 @@
     
     <grid name="operation-order-grid" title="Manufacturing orders" model="com.axelor.apps.production.db.OperationOrder" orderBy="priority">
         <field name="priority"/>
+        <field name="operationName" readonlyIf="statusSelect == 6"/>
         <field name="machineProdResource"/>
-        <field name="prodProcessLine"/>
         <field name="plannedStartDateT"/>
         <field name="plannedEndDateT"/>
         <field name="realStartDateT"/>
@@ -70,6 +70,7 @@
         <field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="2" readonly="true"/>
         <field name="manufOrder.company" readonlyIf="statusSelect == 6"/>
         <field name="prodResource" readonlyIf="statusSelect == 6"/>
+        <field name="operationName" readonlyIf="statusSelect == 6"/>
         <field name="machineProdResource" readonlyIf="statusSelect == 6"/>
         <field name="prodHumanResourceList" colSpan="4" readonlyIf="statusSelect == 6"/>
         <field name="prodProcessLine" readonlyIf="statusSelect == 6"/>

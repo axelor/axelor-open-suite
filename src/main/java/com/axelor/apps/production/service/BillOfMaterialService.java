@@ -39,6 +39,7 @@ import org.slf4j.LoggerFactory;
 import com.axelor.app.production.db.IProdResource;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProdHumanResource;
@@ -55,6 +56,9 @@ public class BillOfMaterialService {
 	
 	@Inject 
 	private UnitConversionService unitConversionService;
+	
+	@Inject
+	private ProductService productService;
 	
 	static final String UNIT_MIN_CODE = "MIN";
 	
@@ -82,7 +86,11 @@ public class BillOfMaterialService {
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void updateProductCostPrice(BillOfMaterial billOfMaterial) throws AxelorException  {
 		
-		billOfMaterial.getProduct().setCostPrice(billOfMaterial.getCostPrice());
+		Product product = billOfMaterial.getProduct();
+		
+		product.setCostPrice(billOfMaterial.getCostPrice());
+		
+		productService.updateSalePrice(product);
 		
 		billOfMaterial.save();
 	}

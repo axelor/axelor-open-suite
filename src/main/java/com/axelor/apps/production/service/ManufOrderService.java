@@ -124,9 +124,10 @@ public class ManufOrderService {
 			
 			for(BillOfMaterial billOfMaterialLine : billOfMaterial.getBillOfMaterialList())  {
 				
-				manufOrder.addToConsumeProdProductListItem(
-						new ProdProduct(billOfMaterialLine.getProduct(), billOfMaterialLine.getQty().multiply(manufOrderQty), billOfMaterialLine.getUnit()));
-				
+				if(!billOfMaterialLine.getHasNoManageStock())  {
+					manufOrder.addToConsumeProdProductListItem(
+							new ProdProduct(billOfMaterialLine.getProduct(), billOfMaterialLine.getQty().multiply(manufOrderQty), billOfMaterialLine.getUnit()));
+				}
 			}
 			
 		}

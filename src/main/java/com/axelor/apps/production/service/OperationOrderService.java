@@ -81,9 +81,12 @@ public class OperationOrderService {
 		
 		logger.debug("Création d'une opération {} pour l'OF {}", priority, manufOrder.getManufOrderSeq());
 		
+		String operationName = prodProcessLine.getName();
+		
 		OperationOrder operationOrder = new OperationOrder(
 				priority, 
-				this.computeName(manufOrder, priority), 
+				this.computeName(manufOrder, priority, operationName), 
+				operationName,
 				isToInvoice, 
 				manufOrder, 
 				prodResource, 
@@ -116,7 +119,7 @@ public class OperationOrderService {
 	}
 
 	
-	public String computeName(ManufOrder manufOrder, int priority)  {
+	public String computeName(ManufOrder manufOrder, int priority, String operationName)  {
 		
 		String name = "";
 		if(manufOrder != null)  {
@@ -130,7 +133,7 @@ public class OperationOrderService {
 			
 		}
 		
-		name += "-" + priority;
+		name += "-" + priority + "-" + operationName;
 		
 		return name;
 	}

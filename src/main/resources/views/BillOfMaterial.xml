@@ -40,6 +40,7 @@
         <field name="qty"/>
         <field name="unit"/>
         <field name="isRawMaterial"/>
+        <field name="hasNoManageStock"/>
         <field name="prodProcess" readonlyIf="isRawMaterial"/>
     </grid>
     
@@ -52,6 +53,7 @@
         <field name="qty"/>
         <field name="unit"/>
         <field name="isRawMaterial"/>
+        <field name="hasNoManageStock"/>
         <field name="prodProcess" hideIf="isRawMaterial"/>
         <notebook colSpan="4" hideIf="isRawMaterial">
         	<page title="Bill of material">
