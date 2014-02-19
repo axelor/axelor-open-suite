@@ -136,7 +136,7 @@
 	  <![CDATA[
 		SELECT 
 			_category.name AS _product_category, 
-			coalesce(SUM(_invoice.in_tax_total), 0) AS _revenue
+			coalesce(SUM(_line.ex_tax_total), 0) AS _revenue
 		FROM
 			account_invoice_line AS _line
 		LEFT JOIN
