@@ -463,6 +463,9 @@
 		<filter title="All Suppliers">
 			<domain>self.supplierTypeSelect = 2 AND self.isContact = false</domain>
 		</filter>
+		<filter title="All qualified supplier">
+			<domain>self.supplierTypeSelect = 3 AND self.isContact = false</domain>
+		</filter>
 	</search-filters>
 	
 	

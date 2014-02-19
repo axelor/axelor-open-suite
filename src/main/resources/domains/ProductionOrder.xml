@@ -11,7 +11,17 @@
   	<boolean name="isToInvoice" title="To invoice ?" initParam="true"/>
     <many-to-one name="businessProject" ref="com.axelor.apps.organisation.db.Project" title="Business" initParam="true"/>
     <one-to-many name="manufOrderList" ref="com.axelor.apps.production.db.ManufOrder" mappedBy="productionOrder" title="Manufacturing orders"/>
-    
+    <boolean name="isClosed" >
+	    <![CDATA[
+	    if(manufOrderList == null || manufOrderList.isEmpty())
+	      	return false;
+	   	for(ManufOrder mf : manufOrderList){
+	   		if(mf.getStatusSelect() != 2 && mf.getStatusSelect() != 6 )
+	   		   return false;
+	    }    
+    	return true;
+	    ]]>
+    </boolean>
     
     
   </entity>
