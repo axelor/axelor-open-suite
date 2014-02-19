@@ -35,6 +35,7 @@
 		model="com.axelor.apps.production.db.ProductionOrder" icon="img/16px/wheel_16px.png">
 		<view type="grid" name="production-order-grid" />
 		<view type="form" name="production-order-form" />
+		<view-param name="search-filters" value="production-order-filters"/>
 	</action-view>	
 	
 	<menuitem name="manufacturing-root-manuf-order" parent="manufacturing-root"
@@ -44,6 +45,8 @@
 		model="com.axelor.apps.production.db.ManufOrder" icon="img/16px/wheel_16px.png">
 		<view type="grid" name="manuf-order-grid" />
 		<view type="form" name="manuf-order-form" />
+		<view-param name="search-filters" value="manuf-order-filters"/>
+		<context name="_todayDateTime" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()"/>
 	</action-view>	
 	
 	<menuitem name="manufacturing-root-operation-order" parent="manufacturing-root"
@@ -53,6 +56,8 @@
 		model="com.axelor.apps.production.db.OperationOrder" icon="img/16px/wheel_16px.png">
 		<view type="grid" name="operation-order-group-grid" />
 		<view type="form" name="operation-order-form" />
+		<view-param name="search-filters" value="operation-order-filters"/>
+		<context name="_todayDateTime" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()"/>
 	</action-view>	
 	
 	<menuitem name="manufacturing-root-operation-order-planned-calendar" parent="manufacturing-root"
