@@ -46,6 +46,14 @@
     <long name="plannedDuration" title="Planned duration"/>
     <long name="realDuration" title="Real duration"/>
     
+    <boolean name="isWithDifference" >
+	    <![CDATA[
+	    if(diffConsumeProdProductList == null || diffConsumeProdProductList.isEmpty())
+	      	return false;
+    	return true;
+	    ]]>
+    </boolean>
+    
 <!--     temp en heure et temp pour un cycle ?? -->
     
   </entity>
