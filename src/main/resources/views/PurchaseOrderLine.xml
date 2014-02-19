@@ -7,8 +7,9 @@
     <grid name="purchase-order-line-grid" title="PO lines" model="com.axelor.apps.supplychain.db.PurchaseOrderLine">
     	<hilite background="danger" if="salePrice &gt; saleMinPrice"/>
     	<field name="purchaseOrder"/>
-    	<field name="product"/>
-    	<field name="deliveryDate"/>
+    	<field name="productName"/>
+    	<field name="desiredDelivDate"/>
+    	<field name="estimatedDelivDate"/>
         <field name="qty"/>
         <field name="unit"/>
         <field name="price"/>
@@ -21,8 +22,9 @@
     
     <grid name="purchase-order-line-purchase-order-grid" title="PO lines" model="com.axelor.apps.supplychain.db.PurchaseOrderLine">
     	<hilite background="danger" if="salePrice &gt; saleMinPrice"/>
-    	<field name="product"/>
-    	<field name="deliveryDate"/>
+    	<field name="productName"/>
+    	<field name="desiredDelivDate"/>
+    	<field name="estimatedDelivDate"/>
         <field name="qty"/>
         <field name="unit"/>
         <field name="price"/>
@@ -38,7 +40,7 @@
 	    <field name="productName"/>
 	    <field name="qty" onChange="action-purchase-order-line-method-get-discount,action-purchase-order-line-method-compute"/>
 	    <field name="unit"/>
-	    <field name="price" onChange="action-purchase-order-line-method-compute,action-purchase-order-line-record-sale-price,save">
+	    <field name="price" onChange="action-purchase-order-line-method-compute,save">
 	    	<hilite color="danger" if="salePrice &lt; saleMinPrice"/>
 	    </field>
 	    <field name="taxLine" domain="self.endDate = null or self.endDate &gt; :__date__"/>
@@ -52,11 +54,14 @@
 	    </group>
 	    <notebook colSpan="4">
 	        <page title="Details" colSpan="4" cols="4">
-	        	<field name="purchaseOrder.createdbBy"/>
-        		<field name="purchaseOrder.createdOn"/>
-	            <field name="deliveryDate"/>
-	            <break/>
+	        	<field name="createdBy"/>
+        		<field name="createdOn"/>
 	            <field name="productVariant" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="product-variant-form" summary-view="true" hidden="true"/>
+	        </page>
+	        <page title="Delivery" colSpan="4" cols="4">
+	        	<field name="desiredDelivDate"/>
+    			<field name="estimatedDelivDate"/>
+	        	<portlet action="action-purchase-order-line-view-stock-move-line" colSpan="4"/>
 	        </page>
 	        <page title="Links" colSpan="4" cols="4">
 	            <field name="task"/>    
@@ -99,5 +104,13 @@
 	<action-attrs name="action-purchase-order-line-attrs-hide-product-variant">
     	<attribute name="hidden" for="productVariant" expr="eval: product?.productVariantConfiguration == null"/>
     </action-attrs>
+    
+<!--     ACTION VIEW -->
+    <action-view name="action-purchase-order-line-view-stock-move-line" title="" model="com.axelor.apps.supplychain.db.StockMoveLine">
+  		<view type="grid" name="stock-move-line-all-grid"/>
+		<view type="form" name="stock-move-line-all-form"/>
+  		<domain>self.stockMove.purchaseOrder.id = :id</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
 	
 </object-views>

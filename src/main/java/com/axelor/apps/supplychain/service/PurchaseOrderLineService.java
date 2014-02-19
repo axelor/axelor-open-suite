@@ -58,7 +58,7 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
 public class PurchaseOrderLineService {
-private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderLineService.class); 
+	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderLineService.class); 
 	
 	@Inject
 	private CurrencyService currencyService;
@@ -109,7 +109,7 @@ private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderLineServi
 		Product product = purchaseOrderLine.getProduct();
 		
 		return currencyService.getAmountCurrencyConverted(
-			product.getPurchaseCurrency(), purchaseOrder.getCurrency(), product.getSalePrice(), purchaseOrder.getOrderDate());  
+			product.getSaleCurrency(), purchaseOrder.getCurrency(), product.getSalePrice(), purchaseOrder.getOrderDate());  
 		
 	}
 	
@@ -187,7 +187,7 @@ private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderLineServi
 		purchaseOrderLine.setPurchaseOrder(purchaseOrder);
 		purchaseOrderLine.setAmountInvoiced(BigDecimal.ZERO);
 		
-		purchaseOrderLine.setDeliveryDate(purchaseOrder.getDeliveryDate());
+		purchaseOrderLine.setEstimatedDelivDate(purchaseOrder.getDeliveryDate());
 		purchaseOrderLine.setDescription(description);
 		
 		purchaseOrderLine.setIsInvoiced(false);

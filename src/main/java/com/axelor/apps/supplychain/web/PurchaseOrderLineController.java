@@ -33,6 +33,9 @@ package com.axelor.apps.supplychain.web;
 import java.math.BigDecimal;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.service.PriceListService;
@@ -45,6 +48,8 @@ import com.google.inject.Inject;
 
 public class PurchaseOrderLineController {
 
+	private static final Logger LOG = LoggerFactory.getLogger(PurchaseOrderLineController.class); 
+	
 	@Inject
 	private PurchaseOrderLineService purchaseOrderLineService;
 	
@@ -74,10 +79,10 @@ public class PurchaseOrderLineController {
 
 				if(purchaseOrder != null) {
 					companyExTaxTotal = purchaseOrderLineService.getCompanyExTaxTotal(exTaxTotal, purchaseOrder);
+					response.setValue("saleMinPrice", purchaseOrderLineService.getMinSalePrice(purchaseOrder, purchaseOrderLine));
+					response.setValue("salePrice", purchaseOrderLineService.getSalePrice(purchaseOrder, purchaseOrderLine.getPrice()));
 				}
 				
-				response.setValue("saleMinPrice", purchaseOrderLineService.getMinSalePrice(purchaseOrder, purchaseOrderLine));
-				response.setValue("salePrice", purchaseOrderLineService.getSalePrice(purchaseOrder, purchaseOrderLine.getPrice()));
 			}
 			
 			response.setValue("exTaxTotal", exTaxTotal);
@@ -145,6 +150,8 @@ public class PurchaseOrderLineController {
 		response.setValue("discountAmount", null);
 		response.setValue("discountTypeSelect", null);
 		response.setValue("price", null);
+		response.setValue("saleMinPrice", null);
+		response.setValue("salePrice", null);
 		
 	}
 	

@@ -6,6 +6,7 @@
     <grid name="sales-order-line-grid" title="SO lines" model="com.axelor.apps.supplychain.db.SalesOrderLine" orderBy="sequence">
     	<field name="sequence"/>
 	    <field name="productName"/>
+	    <field name="estimatedDelivDate"/>
 	    <field name="qty"/>
 	    <field name="unit"/>
 	    <field name="price"/>
@@ -16,7 +17,7 @@
     <form name="sales-order-line-form" title="SO line" model="com.axelor.apps.supplychain.db.SalesOrderLine" cols="4" 
     onNew="action-sales-order-line-record-new,action-sales-order-line-record-sequence,action-sales-order-line-attrs-hide-product-variant"
     onLoad="action-sales-order-line-attrs-ressources-planning,action-sales-order-line-attrs-hide-product-variant,action-sales-order-line-attrs-task-readonly">
-	    <group colSpan="4" cols="6" colWidths="10%,10%,30%,10%,30%,10%">
+	    <group colSpan="4" cols="4">
 		    <field name="sequence"/>
 		    <field name="isToPrintLineSubTotal"/>
 	    </group>
@@ -33,9 +34,9 @@
 	        <field name="discountTypeSelect" onChange="action-sales-order-line-method-compute"/>
 	        <field name="discountAmount" onChange="action-sales-order-line-method-compute"/>
 	    </group>
-	    <notebook colSpan="6">
+	    <notebook colSpan="4">
 	        <page title="Settings">
-	            <group colSpan="6" cols="4" colWidths="30%,10%,30%,10%">
+	            <group colSpan="4" cols="4" colWidths="30%,10%,30%,10%">
 	                <field name="saleSupplySelect" onChange="action-sales-order-line-get-production-information"/>
 	                <break/>
 	                <field name="supplierPartner" domain="self.isContact = false" showIf="saleSupplySelect == 2"/>
@@ -46,10 +47,15 @@
 	        <page title="Notes">
 	            <field name="description" colSpan="4" showTitle="false" widget="Html[lite=true]"/>
 	        </page>
-	         
+	        <page title="Delivery" colSpan="4" cols="4">
+    			<field name="estimatedDelivDate"/>
+    			<spacer/>
+    			<break/>
+	        	<portlet action="action-sales-order-line-view-stock-move-line" colSpan="4"/>
+	        </page> 
 	        <page title="SO line details">
 	            <field name="productVariant" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="product-variant-form" summary-view="true" hidden="true"/>
-	            <field name="salesOrderSubLineList" colSpan="6"/>
+	            <field name="salesOrderSubLineList" colSpan="4"/>
 	        </page>
 	        <page title="Invoicing follow-up">
 	            <field name="isToInvoice"/>
@@ -113,5 +119,13 @@
     <action-attrs name="action-sales-order-line-attrs-task-readonly">
 		<attribute name="readonly" for="task" expr="eval: (_parent.statusSelect = 2 || _parent.statusSelect = 3 || _parent.statusSelect = 4) &amp;&amp; task != null"/>
 	</action-attrs>
+	
+<!-- 	ACTION VIEW -->
+	<action-view name="action-sales-order-line-view-stock-move-line" title="" model="com.axelor.apps.supplychain.db.StockMoveLine">
+  		<view type="grid" name="stock-move-line-all-grid"/>
+		<view type="form" name="stock-move-line-all-form"/>
+  		<domain>self.stockMove.salesOrder.id = :id</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
     
 </object-views>
