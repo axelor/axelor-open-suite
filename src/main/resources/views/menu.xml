@@ -407,9 +407,7 @@
 
 	<action-view name="account.conf.financial.accounting.plan"
 		title="Chart of Accounts" model="com.axelor.apps.account.db.Account" icon="img/16px/parameterSmall_16px.png">
-		<view type="grid" />
-		<view type="form" />
-<!-- 		<view type="tree"/> -->
+		<view type="tree" name="account-tree"/>
 	</action-view>
 
 	<menuitem name="account-conf-financial-account-management"

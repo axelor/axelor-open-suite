@@ -12,9 +12,18 @@
         <field name="company"/>
     </grid>
     
-<!--     <tree name="account-tree" title="Chart of account" model="com.axelor.apps.account.db.Account"> -->
-<!--         <field name="name"/> -->
-<!--     </tree> -->
+    <tree name="account-tree" title="Comptes Comptables">
+        <column name="name" type="string"/>
+         <column name="code" type="string"/>
+        <node model="com.axelor.apps.account.db.Account">
+            <field as="name" name="name"/>
+             <field as="code" name="code"/>
+        </node>
+        <node model="com.axelor.apps.account.db.Account" parent="parent" draggable="true">
+            <field as="name" name="name"/>
+            <field as="code" name="code"/>
+        </node>
+    </tree>
 
     <form name="account-form" title="Account" model="com.axelor.apps.account.db.Account" cols="4"
     	onNew="action-account-record-new">
