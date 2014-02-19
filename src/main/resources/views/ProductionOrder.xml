@@ -28,5 +28,14 @@
   		<context name="id" expr="eval: id"/>
   	</action-view>
     
-    
+    <search-filters name="production-order-filters" model="com.axelor.apps.production.db.ProductionOrder" title="Production order filters">
+		<filter title="Production orders to invoice">
+			<domain>self.isToInvoice = true</domain>
+		</filter>
+		<filter title="Production orders closed">
+			<domain>self.isClosed = true</domain>
+		</filter>
+	</search-filters>
+	
+	
 </object-views>

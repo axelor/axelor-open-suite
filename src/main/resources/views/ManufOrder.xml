@@ -174,5 +174,35 @@
   		<domain>self.consumedOperationOrder.manufOrder.id = :id</domain>
   		<context name="id" expr="eval: id"/>
   	</action-view>
+  	
+  	<search-filters name="manuf-order-filters" model="com.axelor.apps.production.db.ManufOrder" title="Manufacturing order filters">
+		<filter title="Draft MOs">
+			<domain>self.statusSelect = 1</domain>
+		</filter>
+		<filter title="Planned MOs">
+			<domain>self.statusSelect = 3</domain>
+		</filter>
+		<filter title="MOs In Progress">
+			<domain>self.statusSelect = 4</domain>
+		</filter>
+		<filter title="MOs In Standby">
+			<domain>self.statusSelect = 5</domain>
+		</filter>
+		<filter title="Finished MOs">
+			<domain>self.statusSelect = 6</domain>
+		</filter>
+		<filter title="Cancelled MOs">
+			<domain>self.statusSelect = 2</domain>
+		</filter>
+		<filter title="MOs to invoice">
+			<domain>self.isToInvoice = true</domain>
+		</filter>
+		<filter title="Late Planned MOs">
+			<domain>self.statusSelect = 3 AND self.plannedStartDateT &lt; :_todayDateTime</domain>
+		</filter>
+		<filter title="MOs Finished late">
+			<domain>self.statusSelect = 6 AND self.plannedEndDateT &lt; self.realEndDateT</domain>
+		</filter>
+	</search-filters>
     
 </object-views>
