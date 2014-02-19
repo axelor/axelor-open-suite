@@ -161,4 +161,37 @@
     	<call class="com.axelor.apps.production.web.OperationOrderController" method="saveOperationOrder" />
     </action-method>
     
+    <search-filters name="operation-order-filters" model="com.axelor.apps.production.db.OperationOrder" title="Operation order filters">
+		<filter title="Draft Operations">
+			<domain>self.statusSelect = 1</domain>
+		</filter>
+		<filter title="Planned Operations">
+			<domain>self.statusSelect = 3</domain>
+		</filter>
+		<filter title="Operations In Progress">
+			<domain>self.statusSelect = 4</domain>
+		</filter>
+		<filter title="Operations In Standby">
+			<domain>self.statusSelect = 5</domain>
+		</filter>
+		<filter title="Finished Operations">
+			<domain>self.statusSelect = 6</domain>
+		</filter>
+		<filter title="Cancelled Operations">
+			<domain>self.statusSelect = 2</domain>
+		</filter>
+		<filter title="Operations to invoice">
+			<domain>self.isToInvoice = true</domain>
+		</filter>
+		<filter title="Late Planned Operations">
+			<domain>self.statusSelect = 3 AND self.plannedStartDateT &lt; :_todayDateTime</domain>
+		</filter>
+		<filter title="Operations Finished late">
+			<domain>self.statusSelect = 6 AND self.plannedEndDateT &lt; self.realEndDateT</domain>
+		</filter>
+		<filter title="Operations with difference">
+			<domain>self.isWithDifference = true</domain>
+		</filter>
+	</search-filters>
+	
 </object-views>
