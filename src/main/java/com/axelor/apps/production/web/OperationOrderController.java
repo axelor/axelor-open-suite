@@ -30,13 +30,26 @@
  */
 package com.axelor.apps.production.web;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.axelor.apps.AxelorSettings;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.service.OperationOrderWorkflowService;
+import com.axelor.apps.tool.net.URLService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.db.MetaUser;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.api.client.repackaged.com.google.common.base.Strings;
 import com.google.inject.Provider;
 import com.google.inject.persist.Transactional;
 
@@ -45,6 +58,7 @@ public class OperationOrderController {
 	@Inject
 	private Provider<OperationOrderWorkflowService> operationOrderWorkflowProvider;
 
+	private static final Logger LOG = LoggerFactory.getLogger(ManufOrderController.class);
 	
 //	public void copyToConsume (ActionRequest request, ActionResponse response) {
 //
@@ -128,4 +142,89 @@ public class OperationOrderController {
 	public void saveOperationOrder(OperationOrder operationOrder){
 		operationOrder.save();
 	}
+	
+	
+	
+	/**
+	 * Fonction appeler par le bouton imprimer
+	 *
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	public void print(ActionRequest request, ActionResponse response) {
+
+
+		OperationOrder operationOrder = request.getContext().asType( OperationOrder.class );
+		String operationOrderIds = "";
+
+		@SuppressWarnings("unchecked")
+		List<Integer> lstSelectedOperationOrder = (List<Integer>) request.getContext().get("_ids");
+		if(lstSelectedOperationOrder != null){
+			for(Integer it : lstSelectedOperationOrder) {
+				operationOrderIds+= it.toString()+",";
+			}
+		}	
+			
+		if(!operationOrderIds.equals("")){
+			operationOrderIds = "&OperationOrderId="+operationOrderIds.substring(0, operationOrderIds.length()-1);	
+			operationOrder = OperationOrder.find(new Long(lstSelectedOperationOrder.get(0)));
+		}else if(operationOrder.getId() != null){
+			operationOrderIds = "&OperationId="+operationOrder.getId();			
+		}
+		
+		if(!operationOrderIds.equals("")){
+			StringBuilder url = new StringBuilder();			
+			AxelorSettings axelorSettings = AxelorSettings.get();
+			
+			MetaUser metaUser = MetaUser.findByUser( AuthUtils.getUser());
+			
+			Company company = null;
+			if(operationOrder.getManufOrder() != null)  {
+				company = operationOrder.getManufOrder().getCompany();
+			}
+			
+			String language = "en";
+			if(metaUser != null && !Strings.isNullOrEmpty(metaUser.getLanguage()))  {
+				language = metaUser.getLanguage();
+			}
+			else if(company != null && company.getPrintingSettings() != null && !Strings.isNullOrEmpty(company.getPrintingSettings().getLanguageSelect())) {
+				language = company.getPrintingSettings().getLanguageSelect();
+			}
+
+			url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/OperationOrder.rptdesign&__format=pdf&Locale="+language+operationOrderIds+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
+
+			LOG.debug("URL : {}", url);
+			
+			String urlNotExist = URLService.notExist(url.toString());
+			if (urlNotExist == null){
+				LOG.debug("Impression de l'Opération de production "+operationOrder.getName()+" : "+url.toString());
+				
+				String title = " ";
+				if(operationOrder.getName() != null)  {
+					title += lstSelectedOperationOrder == null ? "Op "+operationOrder.getName():"Ops";
+				}
+				
+				Map<String,Object> mapView = new HashMap<String,Object>();
+				mapView.put("title", title);
+				mapView.put("resource", url);
+				mapView.put("viewType", "html");
+				response.setView(mapView);	
+					
+			}
+			else {
+				response.setFlash(urlNotExist);
+			}
+		}else{
+			response.setFlash("Please select the Operation order(s) to print.");
+		}	
+	}
+	
+	
+	
+	
+	
+	
+	
 }
+

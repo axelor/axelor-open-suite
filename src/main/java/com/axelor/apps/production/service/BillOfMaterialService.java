@@ -123,7 +123,8 @@ public class BillOfMaterialService {
 					
 				if(product != null)  {
 					if(billOfMaterialLine.getIsRawMaterial())  {
-						costPrice = costPrice.add(product.getCostPrice());
+						BigDecimal unitPrice = unitConversionService.convert(product.getUnit(), billOfMaterialLine.getUnit(), product.getCostPrice());
+						costPrice = costPrice.add(unitPrice.multiply(billOfMaterialLine.getQty()));
 					}
 					else  {
 						costPrice = costPrice.add(this._computeCostPrice(billOfMaterialLine));

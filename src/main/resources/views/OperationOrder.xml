@@ -31,6 +31,7 @@
        	<button name="pause" icon="icon-pause" help="Pause" onClick="action-operation-order-record-pause,action-save-operation-order" readonlyIf="statusSelect != 4"/>
    		<button name="finish" icon="icon-off" help="Finish" onClick="action-operation-order-method-finish,action-operation-order-method-compute-duration" readonlyIf="statusSelect != 4"/>
    		<button name="cancel" icon="icon-remove-sign" help="Cancel"  onClick="action-operation-order-record-cancel,action-save-operation-order" readonlyIf="statusSelect == 2"/>
+   		<button name="print" title="Print" onClick="action-operation-order-record-cancel"/>
     </grid>
     
     
@@ -48,6 +49,7 @@
        	<button name="pause" icon="icon-pause" help="Pause" onClick="action-operation-order-record-pause,action-save-operation-order" readonlyIf="statusSelect != 4"/>
    		<button name="finish" icon="icon-off" help="Finish" onClick="action-operation-order-method-finish,action-operation-order-method-compute-duration" readonlyIf="statusSelect != 4"/>
    		<button name="cancel" icon="icon-remove-sign" help="Cancel" onClick="action-operation-order-record-cancel,action-save-operation-order" readonlyIf="statusSelect == 2"/>
+   		<button name="print" title="Print" onClick="action-operation-order-record-cancel"/>
     </grid>
     
      
@@ -63,6 +65,7 @@
     		<button name="finish" title="Finish" onClick="save,action-operation-order-method-finish,save,action-operation-order-method-compute-duration,save" showIf="statusSelect == 4"/>
     		<button name="pause" title="Pause" onClick="save,action-operation-order-record-pause,save" showIf="statusSelect == 4"/>
     		<button name="resume" title="Resume" onClick="save,action-operation-order-record-resume,save" showIf="statusSelect == 5"/>
+    		<button name="print" title="Print" onClick="action-operation-order-record-cancel"/>
     	</toolbar>
     
     	<field name="priority" readonlyIf="statusSelect == 6"/>
@@ -131,6 +134,10 @@
     <action-record name="action-operation-order-record-resume" model="com.axelor.apps.production.db.OperationOrder">
     	<field name="statusSelect" expr="eval: 4"/>
     </action-record>
+    
+    <action-method name="action-operation-order-method-print">
+		<call class="com.axelor.apps.production.web.OperationOrderController" method="print"/>
+	</action-method>
     
     <action-method name="action-operation-order-method-copy-to-consume">
     	<call class="com.axelor.apps.production.web.OperationOrderController" method="copyToConsume"/>

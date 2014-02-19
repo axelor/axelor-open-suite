@@ -11,7 +11,7 @@
 	<action-view name="action-business-project-view-production-operation-order" title="Operation orders" model="com.axelor.apps.production.db.OperationOrder">
   		<view type="grid" name="operation-order-grid"/>
 		<view type="form" name="operation-order-form"/>
-  		<domain>self.manufOrder.productionOrder.businessProject = :id</domain>
+  		<domain>self.manufOrder.productionOrder.businessProject.id = :id</domain>
   		<context name="id" expr="eval: id"/>
   	</action-view>
 		

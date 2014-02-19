@@ -30,14 +30,27 @@
  */
 package com.axelor.apps.production.web;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.axelor.apps.AxelorSettings;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.service.ManufOrderService;
 import com.axelor.apps.production.service.ManufOrderWorkflowService;
+import com.axelor.apps.tool.net.URLService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.db.MetaUser;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.api.client.repackaged.com.google.common.base.Strings;
 import com.google.inject.Provider;
 
 public class ManufOrderController {
@@ -47,6 +60,8 @@ public class ManufOrderController {
 
 	@Inject
 	private Provider<ManufOrderWorkflowService> manufOrderWorkflowProvider;
+	
+	private static final Logger LOG = LoggerFactory.getLogger(ManufOrderController.class);
 	
 	public void propagateIsToInvoice (ActionRequest request, ActionResponse response) {
 
@@ -130,5 +145,79 @@ public class ManufOrderController {
 		response.setReload(true);
 		
 	}
+	
+	
+	
+	/**
+	 * Fonction appeler par le bouton imprimer
+	 *
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	public void print(ActionRequest request, ActionResponse response) {
+
+
+		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
+		String manufOrderIds = "";
+
+		@SuppressWarnings("unchecked")
+		List<Integer> lstSelectedManufOrder = (List<Integer>) request.getContext().get("_ids");
+		if(lstSelectedManufOrder != null){
+			for(Integer it : lstSelectedManufOrder) {
+				manufOrderIds+= it.toString()+",";
+			}
+		}	
+			
+		if(!manufOrderIds.equals("")){
+			manufOrderIds = "&ManufOrderId="+manufOrderIds.substring(0, manufOrderIds.length()-1);	
+			manufOrder = ManufOrder.find(new Long(lstSelectedManufOrder.get(0)));
+		}else if(manufOrder.getId() != null){
+			manufOrderIds = "&ManufOrderId="+manufOrder.getId();			
+		}
+		
+		if(!manufOrderIds.equals("")){
+			StringBuilder url = new StringBuilder();			
+			AxelorSettings axelorSettings = AxelorSettings.get();
+			
+			MetaUser metaUser = MetaUser.findByUser( AuthUtils.getUser());
+			Company company = manufOrder.getCompany();
+			
+			String language = "en";
+			if(metaUser != null && !Strings.isNullOrEmpty(metaUser.getLanguage()))  {
+				language = metaUser.getLanguage();
+			}
+			else if(company != null && company.getPrintingSettings() != null && !Strings.isNullOrEmpty(company.getPrintingSettings().getLanguageSelect())) {
+				language = company.getPrintingSettings().getLanguageSelect();
+			}
+
+			url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/ManufOrder.rptdesign&__format=pdf&Locale="+language+manufOrderIds+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
+
+			LOG.debug("URL : {}", url);
+			
+			String urlNotExist = URLService.notExist(url.toString());
+			if (urlNotExist == null){
+				LOG.debug("Impression de l'O.F.  "+manufOrder.getManufOrderSeq()+" : "+url.toString());
+				
+				String title = " ";
+				if(manufOrder.getManufOrderSeq() != null)  {
+					title += lstSelectedManufOrder == null ? "OF "+manufOrder.getManufOrderSeq():"OFs";
+				}
+				
+				Map<String,Object> mapView = new HashMap<String,Object>();
+				mapView.put("title", title);
+				mapView.put("resource", url);
+				mapView.put("viewType", "html");
+				response.setView(mapView);	
+					
+			}
+			else {
+				response.setFlash(urlNotExist);
+			}
+		}else{
+			response.setFlash("Please select the Manufacturing order(s) to print.");
+		}	
+	}
+	
 	
 }
