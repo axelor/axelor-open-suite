@@ -180,6 +180,8 @@ public class OperationOrderWorkflowService {
 		
 		long entireCycleDuration = 0;
 		
+		//TODO a faire en fonction de human, machine...
+		
 		entireCycleDuration += prodResource.getStartingDuration();
 		
 		BigDecimal durationPerCycle = new BigDecimal(prodResource.getDurationPerCycle());
