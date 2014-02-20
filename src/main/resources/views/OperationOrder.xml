@@ -17,6 +17,9 @@
     
     
     <grid name="operation-order-group-grid" title="Manufacturing orders" model="com.axelor.apps.production.db.OperationOrder" groupBy="manufOrder" orderBy="-manufOrder,priority">
+    	<toolbar>
+    		<button name="print" title="Print" icon="icon-print" onClick="action-operation-order-method-print"/>
+    	</toolbar>
     	<field name="manufOrder"/>
         <field name="priority"/>
         <field name="operationName" readonlyIf="statusSelect == 6"/>
@@ -31,7 +34,7 @@
        	<button name="pause" icon="icon-pause" help="Pause" onClick="action-operation-order-record-pause,action-save-operation-order" readonlyIf="statusSelect != 4"/>
    		<button name="finish" icon="icon-off" help="Finish" onClick="action-operation-order-method-finish,action-operation-order-method-compute-duration" readonlyIf="statusSelect != 4"/>
    		<button name="cancel" icon="icon-remove-sign" help="Cancel"  onClick="action-operation-order-record-cancel,action-save-operation-order" readonlyIf="statusSelect == 2"/>
-   		<button name="print" title="Print" onClick="action-operation-order-record-cancel"/>
+   		<button name="print" title="Print" icon="icon-print" onClick="action-operation-order-method-print"/>
     </grid>
     
     

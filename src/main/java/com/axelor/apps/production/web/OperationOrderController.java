@@ -170,7 +170,7 @@ public class OperationOrderController {
 			operationOrderIds = "&OperationOrderId="+operationOrderIds.substring(0, operationOrderIds.length()-1);	
 			operationOrder = OperationOrder.find(new Long(lstSelectedOperationOrder.get(0)));
 		}else if(operationOrder.getId() != null){
-			operationOrderIds = "&OperationId="+operationOrder.getId();			
+			operationOrderIds = "&OperationOrderId="+operationOrder.getId();			
 		}
 		
 		if(!operationOrderIds.equals("")){

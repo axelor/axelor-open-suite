@@ -4,6 +4,9 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
     <grid name="manuf-order-grid" title="Manufacturing orders" model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq">
+    	<toolbar>
+    		<button name="print" title="Print" icon="icon-print" onClick="action-manuf-order-method-print"/>
+    	</toolbar>
         <field name="manufOrderSeq"/>
         <field name="company"/>
         <field name="billOfMaterial"/>
