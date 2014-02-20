@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    <grid name="machine-grid" title="Machines" model="com.axelor.apps.production.db.Machine">
+        <field name="serialNumber"/>
+        <field name="location"/>
+        <field name="planning"/>
+        <field name="startingDuration"/>
+        <field name="setupDuration"/>
+    </grid>
+    
+    <form name="machine-form" title="Machine" model="com.axelor.apps.production.db.Machine" cols="4">
+    	<field name="name"/>
+        <field name="serialNumber"/>
+        <field name="location"/>
+        <field name="planning"/>
+        <break/>
+        <field name="startingDuration"/>
+        <field name="setupDuration"/>
+		<field name="description"/>        
+    </form>
+    
+</object-views>
