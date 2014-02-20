@@ -26,5 +26,9 @@
 	
 	<many-to-one name="consumedOperationOrder" ref="com.axelor.apps.production.db.OperationOrder" title="Operation order"/>
     
+    
+    <many-to-one name="salesOrderLine" ref="com.axelor.apps.supplychain.db.SalesOrderLine" title="Sales order line"/>
+    <many-to-one name="purchaseOrderLine" ref="com.axelor.apps.supplychain.db.PurchaseOrderLine" title="Purchase order line"/>
+    
   </entity>
 </domain-models>

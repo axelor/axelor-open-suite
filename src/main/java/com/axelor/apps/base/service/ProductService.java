@@ -64,10 +64,13 @@ public class ProductService {
 		BigDecimal costPrice = product.getCostPrice();
 		BigDecimal managePriceCoef = product.getManagPriceCoef();
 		
+		LOG.debug("costPrice : {}",costPrice);
+		LOG.debug("managePriceCoef : {}",costPrice);
 		if(costPrice != null && managePriceCoef != null)  {
 			
-			product.setSalePrice(costPrice.multiply(managePriceCoef));
 			
+			product.setSalePrice((costPrice.multiply(managePriceCoef)).setScale(5, BigDecimal.ROUND_HALF_UP));
+			LOG.debug("salePrice : {}",product.getSalePrice());
 		}
 	}
 	
