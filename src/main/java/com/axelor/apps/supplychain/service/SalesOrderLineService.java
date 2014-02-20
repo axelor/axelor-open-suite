@@ -43,11 +43,14 @@ import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.supplychain.db.SalesOrder;
 import com.axelor.apps.supplychain.db.SalesOrderLine;
 import com.axelor.apps.supplychain.db.SalesOrderSubLine;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 public class SalesOrderLineService {
 
@@ -153,4 +156,18 @@ public class SalesOrderLineService {
 		return priceListService.computeDiscount(salesOrderLine.getPrice(), salesOrderLine.getDiscountTypeSelect(), salesOrderLine.getDiscountAmount());
 		
 	}
+	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public BillOfMaterial customizeBillOfMaterial(SalesOrderLine salesOrderLine)  {
+		
+		BillOfMaterial billOfMaterial = salesOrderLine.getBillOfMaterial();
+		
+		if(billOfMaterial != null)  {
+			return JPA.copy(billOfMaterial, true);
+		}
+		
+		return null;
+		
+	}
+	
 }

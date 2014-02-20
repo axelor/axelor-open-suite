@@ -42,6 +42,7 @@
 	                <field name="supplierPartner" domain="self.isContact = false" showIf="saleSupplySelect == 2"/>
 	                <field name="task"/>
 	                <field name="billOfMaterial" domain="self.product = :product" showIf="saleSupplySelect == 3"/>
+	                <button name="customizeBOM" title="Customize BOM" colSpan="2" onClick="action-method-customize-bill-of-material" showIf="saleSupplySelect == 3"/>
 	            </group>
 	        </page>
 	        <page title="Notes">
@@ -105,6 +106,10 @@
 	
 	<action-method name="action-sales-order-line-method-get-discount">
 		<call class="com.axelor.apps.supplychain.web.SalesOrderLineController" method="getDiscount"/>
+	</action-method>
+	
+	<action-method name="action-method-customize-bill-of-material">
+		<call class="com.axelor.apps.supplychain.web.SalesOrderLineController" method="customizeBillOfMaterial"/>
 	</action-method>
         
   	<!-- ACTION ATTRS -->

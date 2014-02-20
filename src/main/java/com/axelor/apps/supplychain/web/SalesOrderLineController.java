@@ -36,6 +36,7 @@ import java.util.Map;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.supplychain.db.SalesOrder;
 import com.axelor.apps.supplychain.db.SalesOrderLine;
 import com.axelor.apps.supplychain.service.SalesOrderLineService;
@@ -182,4 +183,19 @@ public class SalesOrderLineController {
 			}
 		}
 	}
+	
+	public void customizeBillOfMaterial(ActionRequest request, ActionResponse response) {
+
+		SalesOrderLine salesOrderLine = request.getContext().asType(SalesOrderLine.class);
+		
+		BillOfMaterial copyBillOfMaterial = salesOrderLineService.customizeBillOfMaterial(salesOrderLine);
+		
+		if(copyBillOfMaterial != null)  {
+		
+			response.setValue("billOfMaterial", copyBillOfMaterial);
+			response.setFlash("Nomenclature personnalisé créée");
+		}
+		
+	}
+	
 }
