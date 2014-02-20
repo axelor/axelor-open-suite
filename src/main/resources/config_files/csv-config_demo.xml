@@ -432,6 +432,7 @@
 	</input>
 	
 	<input file="supplychain_salesOrderLine.csv" separator=";" type="com.axelor.apps.supplychain.db.SalesOrderLine" />
+	
 	<input file="supplychain_salesOrder.csv" separator=";" type="com.axelor.apps.supplychain.db.SalesOrder" call="com.axelor.csv.script.ImportSalesOrder:importSalesOrder" search="self.importId = :importId" update="true">
 		<bind to="creationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(creationDate)" column="creationDate"/>
 		<bind to="validationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(validationDate)" column="validationDate"/>
@@ -470,29 +471,28 @@
 	
 <!-- 	<input file="supplychain_stockMoveLine.csv" separator=";" type="com.axelor.apps.supplychain.db.StockMoveLine"/> -->
 	
-	<!-- Production module -->
-	<input file="production_billOfMaterial.csv" separator=";" type="com.axelor.apps.production.db.BillOfMaterial">
-	    	<bind to="name" column="name_FR" />
-	</input>
 	
-	<!-- Update parent BOM -->
-	<input file="production_prodResource.csv" separator=";" type="com.axelor.apps.production.db.ProdResource"/>
-	
-	<input file="production_billOfMaterial.csv" separator=";" type="com.axelor.apps.production.db.BillOfMaterial" search="self.importId = :importId" update="true" />
-	
+<!-- 	  	PRODUCTION -->
 	<input file="production_machine.csv" separator=";" type="com.axelor.apps.production.db.Machine"/>
+	
+	<input file="production_prodResource.csv" separator=";" type="com.axelor.apps.production.db.ProdResource"/>
 	
 	<input file="production_prodHumanResource.csv" separator=";" type="com.axelor.apps.production.db.ProdHumanResource"/>
 	
 	<input file="production_prodProcess.csv" separator=";" type="com.axelor.apps.production.db.ProdProcess"/>
 	
 	<input file="production_prodProcessLine.csv" separator=";" type="com.axelor.apps.production.db.ProdProcessLine"/>
+
+	<input file="production_billOfMaterial.csv" separator=";" type="com.axelor.apps.production.db.BillOfMaterial">
+	    	<bind to="name" column="name_FR" />
+	</input>
 	
-	<!-- Update parent ProdResource -->
-	<input file="production_prodResource.csv" separator=";" type="com.axelor.apps.production.db.ProdResource" search="self.importId = :importId" update="true" />
+	<input file="production_prodProduct.csv" separator=";" type="com.axelor.apps.production.db.ProdProduct"/>
 	
 	<input file="production_productionConfig.csv" separator=";" type="com.axelor.apps.production.db.ProductionConfig"/>
 	
+<!-- 	Update default BOM -->
+	<input file="base_product.csv" separator=";" type="com.axelor.apps.base.db.Product" search="self.importId = :importId" update="true"/>
 	
 </csv-inputs>
 
