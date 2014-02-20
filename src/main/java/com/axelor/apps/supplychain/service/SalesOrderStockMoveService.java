@@ -138,6 +138,8 @@ public class SalesOrderStockMoveService {
 					salesOrderLine.getProductVariant(), 
 					1);
 			
+			stockMoveLine.setSalesOrderLine(salesOrderLine);
+			
 			if(stockMoveLine != null) {
 				stockMove.getStockMoveLineList().add(stockMoveLine);
 			}

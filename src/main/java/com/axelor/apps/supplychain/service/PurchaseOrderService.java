@@ -262,6 +262,9 @@ public class PurchaseOrderService {
 					StockMoveLine stockMoveLine = stockMoveLineService.createStockMoveLine(product, purchaseOrderLine.getQty(), purchaseOrderLine.getUnit(), 
 							purchaseOrderLineService.computeDiscount(purchaseOrderLine), stockMove, purchaseOrderLine.getProductVariant(), 2);
 					if(stockMoveLine != null) {
+						
+						stockMoveLine.setPurchaseOrderLine(purchaseOrderLine);
+						
 						stockMove.getStockMoveLineList().add(stockMoveLine);
 					}
 				}	
