@@ -13,6 +13,7 @@
     <form name="bill-of-material-form" title="Bill of material" model="com.axelor.apps.production.db.BillOfMaterial" cols="4"
     onNew="action-bill-of-material-default-record"
     onSave="action-bill-of-material-record-name">
+    	<field name="name"/>
         <field name="product" domain="self.productTypeSelect = 'storable'"  onChange="action-bill-of-material-record-product"/>
         <field name="company" widget="SuggestBox" form-view="company-lite-form"/>
         <field name="qty"/>
