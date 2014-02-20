@@ -1,4 +1,4 @@
-"prodResource.importId";"product.importId";"employee.importId";"duration";"operationOrder.importId"
+"prodResource.importId";"product.importId";"employee.importId";"duration";"operationOrder.operationName"
 10;413;;1020;"Poste Montage Proc"
 20;412;;720;"Poste Vissage"
 30;413;;1380;"Poste Connectique"
