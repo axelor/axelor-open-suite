@@ -345,16 +345,15 @@
     <action-view name="action-partner-view-upcoming-events" title="Upcoming events" model="com.axelor.apps.crm.db.Event">
 		<view type="grid" name="event-grid"/>
 		<view type="form" name="event-form"/>
-		<domain>((self.clientPartner.id = :id AND :_isContact = false) OR (self.contactPartner.id = :id AND :_isContact = true)) and self.startDateTime > :_todayTime and self.typeSelect != 5</domain>
+		<domain>(self.clientPartner.id = :id OR self.contactPartner.id = :id) and self.startDateTime > :_todayTime and self.typeSelect != 5</domain>
 		<context name="id" expr="eval: id"/>
 		<context name="_todayTime" expr="eval: __datetime__"/>
-		<context name="_isContact" expr="eval: isContact"/>
 	</action-view>
 	
 	<action-view name="action-partner-view-historical-events-completed" title="Historical events completed" model="com.axelor.apps.crm.db.Event">
 		<view type="grid" name="event-grid"/>
 		<view type="form" name="event-form"/>
-		<domain>((self.clientPartner.id = :id AND :_isContact = false) OR (self.contactPartner.id = :id AND :_isContact = true)) and self.endDateTime &lt; :_todayTime and self.typeSelect != 5</domain>
+		<domain>(self.clientPartner.id = :id OR self.contactPartner.id = :id) and self.endDateTime &lt; :_todayTime and self.typeSelect != 5</domain>
 		<context name="id" expr="eval: id"/>
 		<context name="_todayTime" expr="eval: __datetime__"/>
 		<context name="_isContact" expr="eval: isContact"/>
@@ -365,13 +364,12 @@
 		<view type="form" name="opportunity-form"/>
 		<domain>self.partner.id = :id</domain>
 		<context name="id" expr="eval: id"/>
-		<context name="_isContact" expr="eval: isContact"/>
 	</action-view>
     
     <action-view name="action-partner-view-sales-orders" title="Sales orders" model="com.axelor.apps.supplychain.db.SalesOrder">
 		<view type="grid" name="sales-order-grid"/>
 		<view type="form" name="sales-order-form"/>
-		<domain>(self.clientPartner.id = :id AND :_isContact = false) OR (self.contactPartner.id = :id AND :_isContact = true)</domain>
+		<domain>(self.clientPartner.id = :id OR self.contactPartner.id = :id)</domain>
 		<context name="id" expr="eval: id"/>
 		<context name="_isContact" expr="eval: isContact"/>
 	</action-view>
@@ -379,7 +377,7 @@
 	<action-view name="action-partner-view-tickets" title="Tickets" model="com.axelor.apps.crm.db.Event">
 		<view type="grid" name="ticket-grid"/>
 		<view type="form" name="ticket-form"/>
-		<domain>((self.clientPartner.id = :id AND :_isContact = false) OR (self.contactPartner.id = :id AND :_isContact = true)) AND self.typeSelect = 5</domain>
+		<domain>(self.clientPartner.id = :id OR self.contactPartner.id = :id) AND self.typeSelect = 5</domain>
 		<context name="id" expr="eval: id"/>
 		<context name="_isContact" expr="eval: isContact"/>
 	</action-view>
