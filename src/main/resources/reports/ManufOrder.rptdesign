@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.2.2.v201301221637 Build &lt;4.2.2.v20130206-1509></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 3.7.2.v20120213 Build &lt;3.7.2.v20120214-1408></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -15,7 +15,6 @@
         <structure>
             <property name="name">odaPassword</property>
             <property name="id">209</property>
-            <expression name="value" type="javascript">params["Password"].value</expression>
         </structure>
         <structure>
             <property name="name">odaDriverClass</property>
@@ -998,6 +997,7 @@ LEFT JOIN
     </page-setup>
     <body>
         <table id="4224">
+            <property name="width">19.817291666666666cm</property>
             <property name="dataSet">ManufOrderDS</property>
             <list-property name="boundDataColumns">
                 <structure>
@@ -1055,7 +1055,9 @@ LEFT JOIN
                     <property name="dataType">date-time</property>
                 </structure>
             </list-property>
-            <column id="4231"/>
+            <column id="4231">
+                <property name="width">19.817291666666666cm</property>
+            </column>
             <detail>
                 <row id="4227">
                     <property name="height">15.345833333333335cm</property>
@@ -1064,7 +1066,7 @@ LEFT JOIN
                         <grid id="3342">
                             <property name="marginLeft">2pt</property>
                             <property name="height">2.0729166666666665in</property>
-                            <property name="width">19.923125cm</property>
+                            <property name="width">19.076458333333335cm</property>
                             <column id="3343">
                                 <property name="width">1.6770833333333333in</property>
                             </column>
@@ -1078,10 +1080,10 @@ LEFT JOIN
                                 <property name="width">0.20833333333333334in</property>
                             </column>
                             <column id="3347">
-                                <property name="width">3.3958333333333335in</property>
+                                <property name="width">7.752291666666667cm</property>
                             </column>
                             <column id="3348">
-                                <property name="width">1.349375cm</property>
+                                <property name="width">1.3758333333333332cm</property>
                             </column>
                             <row id="3349">
                                 <property name="height">1.4166666666666667in</property>
@@ -1192,7 +1194,7 @@ LEFT JOIN
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF format="dd/MM/yyyy">row._outer["planned_start_datet"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF format="dd/MM/yyy hh:mm">row._outer["planned_start_datet"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="4221">
@@ -1461,7 +1463,7 @@ LEFT JOIN
                             </row>
                         </grid>
                         <table id="4102">
-                            <property name="width">19.52625cm</property>
+                            <property name="width">19.473333333333333cm</property>
                             <property name="dataSet">ManufOrderLineDS</property>
                             <list-property name="boundDataColumns">
                                 <structure>
@@ -1543,28 +1545,28 @@ LEFT JOIN
                                 </structure>
                             </list-property>
                             <column id="4130">
-                                <property name="width">1.7727083333333333cm</property>
+                                <property name="width">1.349375cm</property>
                             </column>
                             <column id="4131">
-                                <property name="width">3.175cm</property>
+                                <property name="width">0.96875in</property>
                             </column>
                             <column id="4132">
-                                <property name="width">2.5664583333333337cm</property>
+                                <property name="width">1.0625in</property>
                             </column>
                             <column id="4133">
-                                <property name="width">2.6193750000000002cm</property>
+                                <property name="width">1.2291666666666667in</property>
                             </column>
                             <column id="4134">
-                                <property name="width">2.5929166666666665cm</property>
+                                <property name="width">1.0729166666666667in</property>
                             </column>
                             <column id="4135">
-                                <property name="width">2.38125cm</property>
+                                <property name="width">2.6722916666666667cm</property>
                             </column>
                             <column id="4136">
-                                <property name="width">2.301875cm</property>
+                                <property name="width">2.6722916666666667cm</property>
                             </column>
                             <column id="4137">
-                                <property name="width">2.06375cm</property>
+                                <property name="width">1.7727083333333333cm</property>
                             </column>
                             <header>
                                 <row id="4138">
@@ -2056,6 +2058,7 @@ LEFT JOIN
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <text id="4157">
+                                            <property name="fontSize">9pt</property>
                                             <property name="fontWeight">bold</property>
                                             <property name="textAlign">center</property>
                                             <property name="contentType">html</property>
@@ -2076,6 +2079,7 @@ LEFT JOIN
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <text id="4158">
+                                            <property name="fontSize">9pt</property>
                                             <property name="fontWeight">normal</property>
                                             <property name="textAlign">left</property>
                                             <property name="contentType">html</property>
@@ -2096,6 +2100,7 @@ LEFT JOIN
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <text id="4159">
+                                            <property name="fontSize">9pt</property>
                                             <property name="fontWeight">normal</property>
                                             <property name="textAlign">left</property>
                                             <property name="contentType">html</property>
@@ -2116,10 +2121,11 @@ LEFT JOIN
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <text id="4160">
+                                            <property name="fontSize">9pt</property>
                                             <property name="fontWeight">normal</property>
                                             <property name="textAlign">center</property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["planned_start_datet"]</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyy hh:mm">row["planned_start_datet"]</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="4117">
@@ -2136,10 +2142,11 @@ LEFT JOIN
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <text id="4161">
+                                            <property name="fontSize">9pt</property>
                                             <property name="fontWeight">normal</property>
                                             <property name="textAlign">center</property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["planned_end_datet"]</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyy hh:mm">row["planned_end_datet"]</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="4118">
@@ -2156,10 +2163,11 @@ LEFT JOIN
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <text id="4162">
+                                            <property name="fontSize">9pt</property>
                                             <property name="fontWeight">normal</property>
                                             <property name="textAlign">center</property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["real_start_datet"]</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyy hh:mm">row["real_start_datet"]</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="4119">
@@ -2176,10 +2184,11 @@ LEFT JOIN
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <text id="4163">
+                                            <property name="fontSize">9pt</property>
                                             <property name="fontWeight">normal</property>
                                             <property name="textAlign">center</property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["real_end_datet"]</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyy hh:mm">row["real_end_datet"]</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="4120">
@@ -2196,6 +2205,7 @@ LEFT JOIN
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <text id="4164">
+                                            <property name="fontSize">9pt</property>
                                             <property name="textAlign">center</property>
                                             <property name="contentType">html</property>
                                             <text-property name="content"><![CDATA[<VALUE-OF>if(row["status_select"]== "1"){
