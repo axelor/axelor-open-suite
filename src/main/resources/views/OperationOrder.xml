@@ -49,7 +49,7 @@
        	<button name="pause" icon="icon-pause" help="Pause" onClick="action-operation-order-record-pause,action-save-operation-order" readonlyIf="statusSelect != 4"/>
    		<button name="finish" icon="icon-off" help="Finish" onClick="action-operation-order-method-finish,action-operation-order-method-compute-duration" readonlyIf="statusSelect != 4"/>
    		<button name="cancel" icon="icon-remove-sign" help="Cancel" onClick="action-operation-order-record-cancel,action-save-operation-order" readonlyIf="statusSelect == 2"/>
-   		<button name="print" title="Print" onClick="action-operation-order-record-cancel"/>
+   		<button name="print" title="Print" icon="icon-print" onClick="action-operation-order-method-print"/>
     </grid>
     
      
@@ -65,7 +65,7 @@
     		<button name="finish" title="Finish" onClick="save,action-operation-order-method-finish,save,action-operation-order-method-compute-duration,save" showIf="statusSelect == 4"/>
     		<button name="pause" title="Pause" onClick="save,action-operation-order-record-pause,save" showIf="statusSelect == 4"/>
     		<button name="resume" title="Resume" onClick="save,action-operation-order-record-resume,save" showIf="statusSelect == 5"/>
-    		<button name="print" title="Print" onClick="action-operation-order-record-cancel"/>
+    		<button name="print" title="Print" icon="icon-print" onClick="action-operation-order-method-print"/>
     	</toolbar>
     
     	<field name="priority" readonlyIf="statusSelect == 6"/>

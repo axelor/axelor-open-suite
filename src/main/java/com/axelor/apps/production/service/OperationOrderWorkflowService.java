@@ -39,8 +39,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.app.production.db.IOperationOrder;
+import com.axelor.app.production.db.IProdResource;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.ProdResource;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -178,19 +180,69 @@ public class OperationOrderWorkflowService {
 
 	public long computeEntireCycleDuration(ProdResource prodResource, BigDecimal qty)  {
 		
-		long entireCycleDuration = 0;
+		long machineDuration = this.computeMachineDuration(prodResource, qty);
 		
-		//TODO a faire en fonction de human, machine...
+		long humanDuration = this.computeHumanDuration(prodResource, qty);
 		
-		entireCycleDuration += prodResource.getStartingDuration();
+		if(machineDuration >= humanDuration)  {
+			return machineDuration;
+		}
+		else  {
+			return humanDuration;
+		}
 		
-		BigDecimal durationPerCycle = new BigDecimal(prodResource.getDurationPerCycle());
-		
-		entireCycleDuration += (qty.divide(prodResource.getCapacityPerCycle())).multiply(durationPerCycle).longValue();
-		
-		entireCycleDuration += prodResource.getEndingDuration();
-		
-		return entireCycleDuration;
 	}
+	
+	
+	public long computeMachineDuration(ProdResource prodResource, BigDecimal qty)  {
+		
+		long duration = 0;
+		
+		int resourceType = prodResource.getResourceTypeSelect();
+		
+		if(resourceType == IProdResource.RESOURCE_MACHINE || resourceType == IProdResource.RESOURCE_BOTH)  {
+			
+			duration += prodResource.getStartingDuration();
+			
+			BigDecimal durationPerCycle = new BigDecimal(prodResource.getDurationPerCycle());
+			
+			duration += (qty.divide(prodResource.getCapacityPerCycle())).multiply(durationPerCycle).longValue();
+			
+			duration += prodResource.getEndingDuration();
+			
+		}
+		
+		return duration;
+	}
+	
+	
+	public long computeHumanDuration(ProdResource prodResource, BigDecimal qty)  {
+		
+		long duration = 0;
+		
+		int resourceType = prodResource.getResourceTypeSelect();
+		
+		if(resourceType == IProdResource.RESOURCE_HUMAN || resourceType == IProdResource.RESOURCE_BOTH)  {
+			
+			if(prodResource.getProdHumanResourceList() != null)  {
+				
+				for(ProdHumanResource prodHumanResource : prodResource.getProdHumanResourceList())  {
+					
+					duration += prodHumanResource.getDuration();
+					
+				}
+				
+			}
+			
+		}
+		
+		return qty.multiply(new BigDecimal(duration)).longValue();
+	}
+	
+	
+	
+	
+	
+	
 }
 
