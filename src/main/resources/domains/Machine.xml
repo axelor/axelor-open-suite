@@ -16,5 +16,8 @@
     <integer name="startingDuration" title="Starting duration (min)"/>
     <integer name="setupDuration" title="Setup duration (min)"/>
     
+<!--     TODO A DEPLACER DANS LE MODULE BASE -->
+    <many-to-one name="planning" ref="com.axelor.apps.organisation.db.Schedule" title="Planning"/>
+    
   </entity>
 </domain-models>

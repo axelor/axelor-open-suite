@@ -101,15 +101,22 @@
 				<field name="lastProductionPrice" readonly="true"/>
 				<button name="createProductionOrder" title="Create production order" colSpan="2" onClick="save,action-product-view-create-production-order"/>
 			</page>
-	        <page title="Tracking number" colSpan="2" cols="4" showIf="productTypeSelect != 'service'" >
-	            <field name="hasWarranty" colSpan="4"/>
-	            <field name="warrantyNbrOfMonths" showIf="hasWarranty"/>
-	            <break/>
-	            <field name="isPerishable" colSpan="4"/>
-	            <field name="perishableNbrOfMonths" showIf="isPerishable"/>
-	            <break/>
-	            <field name="trackingNumberConfiguration" colSpan="2"/>
-	            <spacer colSpan="2"/>
+	        <page title="Tracking number" colSpan="2" cols="4" showIf="productTypeSelect != 'service'"  colWidths="20%,30%,20%,30%">
+	        	<group colSpan="4" cols="4" colWidths="20%,30%,20%,30%">
+	        		<group colSpan="4" cols="4">
+	        			<field name="hasWarranty" colSpan="2"/>
+		            	<field name="warrantyNbrOfMonths" colSpan="2" showIf="hasWarranty"/>
+	        	 		<field name="isPerishable" colSpan="2"/>
+		            	<field name="perishableNbrOfMonths" colSpan="2" showIf="isPerishable"/>
+	        	 	</group>
+	        	 	<group colSpan="2" cols="2">
+			            <field name="trackingNumberConfiguration" colSpan="2"/>
+		            </group>
+		            <group colSpan="2" cols="2">
+		            	<spacer colSpan="2"/>
+		            </group>
+	        	</group>
+	           
 	        </page>
 	        <page title="Variants">
 	            <field name="productVariantConfiguration" showTitle="false" widget="NestedEditor" canSelect="true" edit-window="self" form-view="product-variant-configuration-form" summary-view="true"/>
