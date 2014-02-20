@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.2.2.v201301221637 Build &lt;4.2.2.v20130206-1509></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 3.7.2.v20120213 Build &lt;3.7.2.v20120214-1408></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -15,7 +15,6 @@
         <structure>
             <property name="name">odaPassword</property>
             <property name="id">209</property>
-            <expression name="value" type="javascript">params["Password"].value</expression>
         </structure>
         <structure>
             <property name="name">odaDriverClass</property>
@@ -1192,7 +1191,7 @@ LEFT JOIN
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF format="dd/MM/yyyy">row._outer["planned_start_datet"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF format="dd/MM/yyy hh:mm">row._outer["planned_start_datet"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="4221">
@@ -2119,7 +2118,7 @@ LEFT JOIN
                                             <property name="fontWeight">normal</property>
                                             <property name="textAlign">center</property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["planned_start_datet"]</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyy hh:mm">row["planned_start_datet"]</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="4117">
@@ -2139,7 +2138,7 @@ LEFT JOIN
                                             <property name="fontWeight">normal</property>
                                             <property name="textAlign">center</property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["planned_end_datet"]</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyy hh:mm">row["planned_end_datet"]</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="4118">
@@ -2159,7 +2158,7 @@ LEFT JOIN
                                             <property name="fontWeight">normal</property>
                                             <property name="textAlign">center</property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["real_start_datet"]</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyy hh:mm">row["real_start_datet"]</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="4119">
@@ -2179,7 +2178,7 @@ LEFT JOIN
                                             <property name="fontWeight">normal</property>
                                             <property name="textAlign">center</property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["real_end_datet"]</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyy hh:mm">row["real_end_datet"]</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="4120">
