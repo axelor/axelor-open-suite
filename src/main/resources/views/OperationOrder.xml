@@ -16,7 +16,7 @@
     </calendar>
     
     
-    <grid name="operation-order-group-grid" title="Manufacturing orders" model="com.axelor.apps.production.db.OperationOrder" groupBy="manufOrder" orderBy="-manufOrder,priority">
+    <grid name="operation-order-group-grid" title="Operations" model="com.axelor.apps.production.db.OperationOrder" groupBy="manufOrder" orderBy="-manufOrder,priority">
     	<toolbar>
     		<button name="print" title="Print" icon="icon-print" onClick="action-operation-order-method-print"/>
     	</toolbar>
@@ -38,7 +38,7 @@
     </grid>
     
     
-    <grid name="operation-order-grid" title="Manufacturing orders" model="com.axelor.apps.production.db.OperationOrder" orderBy="priority">
+    <grid name="operation-order-grid" title="Operations" model="com.axelor.apps.production.db.OperationOrder" orderBy="priority">
         <field name="priority"/>
         <field name="operationName" readonlyIf="statusSelect == 6"/>
         <field name="machineProdResource"/>
@@ -57,7 +57,7 @@
     
      
     
-    <form name="operation-order-form" title="Manufacturing order" model="com.axelor.apps.production.db.OperationOrder" cols="4"
+    <form name="operation-order-form" title="Operation" model="com.axelor.apps.production.db.OperationOrder" cols="4"
     onNew="action-operation-order-default-record"
     onLoad="action-operation-order-attrs-is-cons-pro-on-operation"
     onSave="action-operation-order-name">
