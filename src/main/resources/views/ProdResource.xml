@@ -16,7 +16,7 @@
         <field name="machine"/>
         <field name="resourceTypeSelect"/>
         <notebook colSpan="4">
-        	<page title="Default Machine informations">
+        	<page title="Default Machine informations" showIf="resourceTypeSelect == 2 || resourceTypeSelect == 3">
 	        	<group colSpan="4" cols="4">
 		        	<group title="Capacity information" colSpan="2" cols="2">
 		        		<field name="capacityPerCycle"/>
@@ -33,10 +33,10 @@
 		        	</group>
 		        </group>
         	</page>
-        	<page name="humanResource" title="Human resources">
+        	<page name="humanResource" title="Human resources" showIf="resourceTypeSelect == 1 || resourceTypeSelect == 3">
         		<field name="prodHumanResourceList" colSpan="4"/>
         	</page>
-        	<page name="Machines" title="Machines">
+        	<page name="Machines" title="Machines" showIf="resourceTypeSelect == 2 || resourceTypeSelect == 3">
         		<field name="prodResourceList" colSpan="4" form-view="prod-resource-machine-form" grid-view="prod-resource-machine-grid"/>
         	</page>
         </notebook>
