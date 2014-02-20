@@ -70,3 +70,5 @@
 "inStockMove";"Numéro de bon de réception";1;4;;;1;0;1;
 "inventory";"Numéro inventaire";2;4;;;1;0;1;
 "productTrackingNumber";"Numéro de suivi";1;5;;;1;0;1;
+"productionOrder";"Ordre de fabrication";1;5;;;1;0;1;
+"manufacturingOrder";"Ordre de production";1;5;;;1;0;1;

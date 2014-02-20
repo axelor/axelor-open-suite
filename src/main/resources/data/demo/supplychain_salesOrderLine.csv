@@ -1,4 +1,4 @@
-"importId";"salesOrder.id";"sequence";"product.id";"productName";"qty";"unit.code";"price";"taxLine.id";"exTaxTotal";"hasToCreateTask";"isOrdered";"saleSupplySelect"
+"importId";"salesOrder.id";"sequence";"product.importId";"productName";"qty";"unit.code";"price";"taxLine.id";"exTaxTotal";"hasToCreateTask";"isOrdered";"saleSupplySelect"
 1;1;1;111;"Serveur haute performance";10;"U";2500;1;25000;"true";"true";1
 2;1;2;121;"Imprimante Laser";6;"U";429;1;2574;"true";"true";1
 3;2;1;110;"Serveur classique";18;"U";1500;1;27000;"true";"true";1
