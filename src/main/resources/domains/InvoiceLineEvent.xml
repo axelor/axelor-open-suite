@@ -9,7 +9,7 @@
   
     <string name="articleId" title="Article code"/>
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
-    <string name="summaryId" title="Code Récap"/>
+    <string name="summaryId" title="Summary code"/>
     <date name="startDate" title="Start Date"/>
     <date name="endDate" title="End Date"/>
     <decimal name="qty" title="Qty"/>

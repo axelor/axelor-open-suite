@@ -9,7 +9,7 @@
   
     <many-to-one name="fiscalPosition" ref="com.axelor.apps.account.db.FiscalPosition" title="Fiscal position"/>
     <many-to-one name="fromTax" ref="com.axelor.apps.account.db.Tax" title="From Tax"/>
-    <many-to-one name="toTax" ref="com.axelor.apps.account.db.Tax" title="ToTax"/>
+    <many-to-one name="toTax" ref="com.axelor.apps.account.db.Tax" title="To Tax"/>
     
   </entity>
 

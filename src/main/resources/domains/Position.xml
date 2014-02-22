@@ -8,27 +8,27 @@
  	<entity name="Position" lang="java">
 		<many-to-one name="candidate" ref="Candidate"></many-to-one>
 		<many-to-one name="employee" ref="Employee"></many-to-one>
-		<string name="name" title="Intitulé du poste" />
-		<date name="startDate" title="Date de début"></date>
-		<date name="endDate" title="Date de fin"></date>
+		<string name="name" title="Function name" />
+		<date name="startDate" title="From"></date>
+		<date name="endDate" title="To"></date>
 		<many-to-one name="employer" ref="com.axelor.apps.base.db.Partner"
-			title="Société"></many-to-one>
-		<string name="description" title="Description de poste" />
-		<string name="departureCause" title="Raison du départ" />
-		<string name="department" title="Service" />
+			title="Employer"></many-to-one>
+		<string name="description" title="Function description" />
+		<string name="departureCause" title="Departure cause" />
+		<string name="department" title="Dep./Div." />
 
-		<string name="duration" title="Durée" />
-		<string name="referenceTitle" title="Titre de la référence" />
-		<string name="context" title="Contexte" />
-		<string name="goals" title="Objectifs" />
-		<string name="development" title="Déroulement" />
+		<string name="duration" title="Duration" />
+		<string name="referenceTitle" title="Reference title" />
+		<string name="context" title="Context" />
+		<string name="goals" title="Objectives" />
+		<string name="development" title="Development" />
 
-		<string name="result" title="Résultat" />
-		<string name="technicalEnvironment" title="Environnement technique" />
-		<string name="contact" title="Nom contact" />
-		<string name="recommendationSelect" title="Avis contact"
+		<string name="result" title="Results" />
+		<string name="technicalEnvironment" title="Technical environment" />
+		<string name="contact" title="Contact name" />
+		<string name="recommendationSelect" title="Contact opinion"
 			selection="organisation.position.recommendation.select" />
-		<string name="comment" title="Commentaire du contact" />
+		<string name="comment" title="Contact comments" />
 	</entity>
 
 </domain-models>

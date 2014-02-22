@@ -7,10 +7,10 @@
 
   <entity name="IrrecoverableCustomerLine" lang="java">
   
-  	<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Tiers"/>
-  	<many-to-many name="paymentScheduleLineSet" ref="com.axelor.apps.account.db.PaymentScheduleLine" title="Echéances rejetées"/>
-  	<one-to-many name="irrecoverableInvoiceLineList" ref="com.axelor.apps.account.db.IrrecoverableInvoiceLine" mappedBy="irrecoverableCustomerLine" title="Factures"/>
-  	<one-to-many name="irrecoverablePaymentScheduleLineLineList" ref="com.axelor.apps.account.db.IrrecoverablePaymentScheduleLineLine" mappedBy="irrecoverableCustomerLine" title="Factures"/>
+  	<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
+  	<many-to-many name="paymentScheduleLineSet" ref="com.axelor.apps.account.db.PaymentScheduleLine" title="Payment(s) schedule(s) rejected"/>
+  	<one-to-many name="irrecoverableInvoiceLineList" ref="com.axelor.apps.account.db.IrrecoverableInvoiceLine" mappedBy="irrecoverableCustomerLine" title="Invoices"/>
+  	<one-to-many name="irrecoverablePaymentScheduleLineLineList" ref="com.axelor.apps.account.db.IrrecoverablePaymentScheduleLineLine" mappedBy="irrecoverableCustomerLine" title="Invoices"/>
     <many-to-one name="irrecoverable" ref="com.axelor.apps.account.db.Irrecoverable"/>
  
   </entity>

@@ -5,7 +5,7 @@
   
   <entity name="PaymentSchedule" lang="java">
   
-    <string name="scheduleId" title="Reference" unique="false" required="false" namecolumn="true" readonly="true"/>
+    <string name="scheduleId" title="Ref." unique="false" required="false" namecolumn="true" readonly="true"/>
     <date name="creationDate" title="Creation Date"/>
     <date name="startDate" title="Schedule start Date"/>
     <many-to-one name="invoice" ref="com.axelor.apps.account.db.Invoice" title="Invoice"/>

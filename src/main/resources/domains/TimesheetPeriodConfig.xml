@@ -17,13 +17,13 @@
  	<integer name="lastDayAdjustement" title="+/- n day(s)"/>
  	
  	<integer name="dayOfMonth" title="Day" selection="day.month.select"/>
-  	<integer name="hourReminderDelay" title="Number of hours"/>
-  	<integer name="dayReminderDelay" title="Number of days"/>
+  	<integer name="hourReminderDelay" title="Nbr. of hours"/>
+  	<integer name="dayReminderDelay" title="Nbr. of days"/>
   	
-  	<integer name="hourLimitDelay" title="Number of hours"/>
-  	<integer name="dayLimitDelay" title="Number of days"/>
+  	<integer name="hourLimitDelay" title="Nbr. of hours"/>
+  	<integer name="dayLimitDelay" title="Nbr. of days"/>
   	
-  	<boolean name="isReminderAtTimesheetCreation" title="Is reminder at timesheet creation"/>
+  	<boolean name="isReminderAtTimesheetCreation" title="Reminder at timesheet creation ?"/>
   	
   </entity>
 

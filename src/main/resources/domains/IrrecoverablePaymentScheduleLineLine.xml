@@ -9,10 +9,10 @@
   
   	<many-to-one name="irrecoverableCustomerLine" ref="com.axelor.apps.account.db.IrrecoverableCustomerLine" title="Client"/>
 
-  	<many-to-one name="paymentScheduleLine" ref="com.axelor.apps.account.db.PaymentScheduleLine" title="Echéance rejetée"/>
+  	<many-to-one name="paymentScheduleLine" ref="com.axelor.apps.account.db.PaymentScheduleLine" title="Rejected Schedule line"/>
   	<one-to-many name="irrecoverableReportLineList" ref="com.axelor.apps.account.db.IrrecoverableReportLine" mappedBy="irrecoverablePaymentScheduleLineLine" title="Reportings"/>
  	
- 	<string name="name" title="Nom">
+ 	<string name="name" title="Name">
  		<![CDATA[
 	    	if (paymentScheduleLine != null) return paymentScheduleLine.getName();
 	    	else return "";

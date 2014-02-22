@@ -10,7 +10,7 @@
     <integer name="importId"/>
   	<many-to-one name="reminderLevel"  ref="com.axelor.apps.account.db.ReminderLevel" title="Level" />
   	<string name="reminderLevelLabel" namecolumn="true" title="Label"/>
-  	<integer name="standardDeadline" title="Standard delay (j)"/> 
+  	<integer name="standardDeadline" title="Standard delay (days)"/> 
   	<decimal name="minThreshold" title="Min. amount (€)"/>
   	<many-to-one name="reminderMailModel" ref="com.axelor.apps.base.db.MailModel" title="Mail model"/>
   	<boolean name="manualValidationOk" title="Manual validation"/>

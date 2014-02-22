@@ -12,7 +12,7 @@
     <string name="name" title="Label"/>
     <string name="code" title="Code"/>
     <many-to-one name="machine" ref="com.axelor.apps.production.db.Machine" title="Default Machine"/>
-    <integer name="resourceTypeSelect" title="Type of resource" selection="iproduction.prod.resource.resource.type.select"/>
+    <integer name="resourceTypeSelect" title="Resource type" selection="iproduction.prod.resource.resource.type.select"/>
     <decimal name="capacityPerCycle" title="Capacity / cycle"/>
     <decimal name="maxCapacityPerCycle" title="Max. capacity / cycle"/>
     <long name="durationPerCycle" title="Duration / cycle (hh:mm)"/>
@@ -22,8 +22,8 @@
 	
 	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
 	
-	<integer name="costTypeSelect" title="Type of cost" selection="iproduction.prod.resource.cost.type.select"/>    
-    <decimal name="costAmount" title="Cost (H.T.)"/>
+	<integer name="costTypeSelect" title="Cost type" selection="iproduction.prod.resource.cost.type.select"/>    
+    <decimal name="costAmount" title="Cost (W.T.)"/>
     
     <one-to-many name="prodHumanResourceList" ref="com.axelor.apps.production.db.ProdHumanResource" mappedBy="prodResource" title="Human resources"/>
     

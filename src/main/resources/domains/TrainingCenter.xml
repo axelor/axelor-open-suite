@@ -7,8 +7,8 @@
 
  	<entity name="TrainingCenter" lang="java">
  		<string name="importId"/>
-		<string name="name" title="Ecole" />
-		<many-to-one name="country" ref="com.axelor.apps.base.db.Country" title="Pays"/>
+		<string name="name" title="Center" />
+		<many-to-one name="country" ref="com.axelor.apps.base.db.Country" title="Country"/>
 	</entity>
 
 </domain-models>

@@ -15,8 +15,8 @@
 		<integer name="statusSelect" title="Status" selection="organisation.resource.status.select"/>
 		<many-to-one name="salesOrder"  title="Sale Order" ref="com.axelor.apps.supplychain.db.SalesOrder"/>
 		<many-to-one name="project" ref="com.axelor.apps.organisation.db.Project" title="Business"/>
-		<string name="lostReasonSelect" title="Reason of the lost" selection="consulting.resource.lost.reason.select"/>
-		<string name="lostReasonNote" title="Commentary of the lost"/>
+		<string name="lostReasonSelect" title="Lost reason" selection="consulting.resource.lost.reason.select"/>
+		<string name="lostReasonNote" title="Lost comments"/>
 		<many-to-one name="product"  title="Profile" ref="com.axelor.apps.base.db.Product"/>
 		<many-to-one name="candidate" ref="com.axelor.apps.organisation.db.Candidate" title="Candidate"/>
 		

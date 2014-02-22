@@ -12,8 +12,8 @@
 	<many-to-one name="productVariant" ref="com.axelor.apps.base.db.ProductVariant" title="Variants"/>
 	<date name="warrantyExpirationDate" title="Warranty expiration date" readonly="true"/>
 	<date name="perishableExpirationDate" title="Perishable expiration date" readonly="true"/>
-	<string name="trackingNumberSeq" namecolumn="true" title="Tracking number"/>
-	<integer name="counter" title="Compteur"/>
+	<string name="trackingNumberSeq" namecolumn="true" title="Tracking Nbr."/>
+	<integer name="counter" title="Counter"/>
 	
   </entity>
 

@@ -16,7 +16,7 @@
     <string name="titleSelect" title="Civility" selection="partner.title.type.select"/>
     <string name="name" title="Name/Company Name"/>
     <string name="firstName" title="First Name"/>
-    <string name="jobTitle" title="Job Title"/>
+    <string name="jobTitle" title="Function"/>
     <binary name="picture" image="true" title="Photo"/>
     
     
@@ -37,7 +37,7 @@
     <many-to-one name="source" ref="com.axelor.apps.base.db.Source" title="Source"/>
     
     <!-- From contact -->
-    <many-to-one name="commune" ref="com.axelor.apps.base.db.Commune" title="City - Commune"/>
+    <many-to-one name="commune" ref="com.axelor.apps.base.db.Commune" title="Zip - City"/>
     <one-to-one name="emailAddress" ref="com.axelor.apps.message.db.EmailAddress" title="Email"/>
     <string name="fax" title="Fax"/>
     <string name="fixedPhone" title="Fixed phone"/>
@@ -47,7 +47,7 @@
     <one-to-one name="snProfile" ref="com.axelor.apps.socialnetwork.db.SnProfile" title="Social Network Profile"/>
     
     <many-to-one name="site" ref="com.axelor.apps.consulting.db.Site" title="Site"/>
-    <string name="department" title="Department"/>
+    <string name="department" title="Dep./Div."/>
     
     <decimal name="payerQuality" title="Payer quality" readonly="true"/>
     <one-to-many name="reportedBalanceList" ref="com.axelor.apps.account.db.ReportedBalance" mappedBy="partner" title="Reported Balance"/>
@@ -75,7 +75,7 @@
     <many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="Assigned to"/>
 	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team"/>
 	<many-to-one name="reportsTo" ref="com.axelor.apps.base.db.Partner" title="Reports to"/>
-    <string name="description" title="description"  large="true"/>
+    <string name="description" title="Description"  large="true"/>
    	<integer name="industrySectorSelect" title="Industry" selection="partner.industry.sectory.select"/> 
 	<integer name="nbrEmployees" title="N° of Employees"/>
 	<integer name="salesTurnover" title="Turnover"/>

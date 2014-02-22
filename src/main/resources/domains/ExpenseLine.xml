@@ -11,7 +11,7 @@
   	<many-to-one name="task" ref="com.axelor.apps.organisation.db.Task" title="Task"/>
   	<string name="expenseTypeSelect" title="Type of expense" selection="expense.line.expense.type.select" />
   	<many-to-one name="product" title="Product" ref="com.axelor.apps.base.db.Product"/>
-  	<many-to-one name="unit" title="UOM" ref="com.axelor.apps.base.db.Unit"/>
+  	<many-to-one name="unit" title="UoM" ref="com.axelor.apps.base.db.Unit"/>
   	<string name="shortDescription" title="Short description" />
   	<date name="date" title="Date" />
   	<decimal name="qty" title="Quantity"/>
@@ -20,9 +20,9 @@
   	<many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
   	<binary name="file" title="File" />
   	<integer name="fileReceived" title="File received" selection="hr.expense.line.file.received.select"/>
-  	<date name="validationDate" title="Date de validation" readonly="true"/>
-  	<boolean name="isToInvoice" title="A facturer"/>
-  	<boolean name="isInvoiced" title="Facturé" readonly="true"/>
+  	<date name="validationDate" title="Validation Date" readonly="true"/>
+  	<boolean name="isToInvoice" title="To invoice ?"/>
+  	<boolean name="isInvoiced" title="Invoiced" readonly="true"/>
   	
   	<!--   	Champ technique non affiché, utilisé pour les reportings -->
   	<decimal name="companyTotal" title="Total W.T. in company currency" hidden="true"/>

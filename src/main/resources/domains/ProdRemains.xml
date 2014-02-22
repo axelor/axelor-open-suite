@@ -9,9 +9,9 @@
   	
   	<integer name="importId"/>
   
-  	<many-to-one name="billOfMaterial" ref="com.axelor.apps.production.db.BillOfMaterial" title="BOM"/>
+  	<many-to-one name="billOfMaterial" ref="com.axelor.apps.production.db.BillOfMaterial" title="BoM"/>
 	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
-    <decimal name="qty" title="Quantity"/>
+    <decimal name="qty" title="Qty"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
     
   </entity>

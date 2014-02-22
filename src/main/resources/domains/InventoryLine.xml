@@ -9,8 +9,8 @@
   
   	<many-to-one name="inventory" ref="com.axelor.apps.supplychain.db.Inventory" title="Inventory"/>
 	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>    
-	<decimal name="currentQty" title="Current Quantity"/>
-	<decimal name="realQty" title="Real Quantity"/>
+	<decimal name="currentQty" title="Current Qty"/>
+	<decimal name="realQty" title="Real Qty"/>
 	<string name="description" title="Description"/>
 	
 	<many-to-one name="productVariant" ref="com.axelor.apps.base.db.ProductVariant" title="Variants"/>

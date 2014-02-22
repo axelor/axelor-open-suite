@@ -9,7 +9,7 @@
   
     <many-to-one name="startUnit" ref="Unit" title="From Unit" required="true"/>
     <many-to-one name="endUnit" ref="Unit" title="To Unit" required="true"/>
-    <decimal name="coef" title="Coefficient" required="true" precision="30" scale="12"/>
+    <decimal name="coef" title="Coeff." required="true" precision="30" scale="12"/>
   
     <string name="name" search="startUnit,endUnit" title="Name">
     	<![CDATA[

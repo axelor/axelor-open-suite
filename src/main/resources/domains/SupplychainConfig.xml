@@ -16,10 +16,10 @@
     <many-to-one name="supplierVirtualLocation" ref="com.axelor.apps.supplychain.db.Location" title="Supplier virtual location"/>
     <many-to-one name="inventoryVirtualLocation" ref="com.axelor.apps.supplychain.db.Location" title="Inventory virtual location"/>
     
-  	<boolean name="hasOutSmForStorableProduct" title="Generate out going stock move for storable product"/>
-  	<boolean name="hasOutSmForNonStorableProduct" title="Generate out going stock move for non storable product"/>
-  	<boolean name="hasInSmForStorableProduct" title="Generate incoming stock move for storable product"/>
-  	<boolean name="hasInSmForNonStorableProduct" title="Generate incoming stock move for non storable product"/>
+  	<boolean name="hasOutSmForStorableProduct" title="Generate out. moves for storable products ?"/>
+  	<boolean name="hasOutSmForNonStorableProduct" title="Generate out. moves for non storable products ?"/>
+  	<boolean name="hasInSmForStorableProduct" title="Generate inc. moves for storable products ?"/>
+  	<boolean name="hasInSmForNonStorableProduct" title="Generate inc. moves for non storable products ?"/>
   	
   	<integer name="salesOrderInvoicingTypeSelect" title="Sales order invoicing type" selection="sales.order.invoicing.type.select"/>
   	<integer name="purchaseOrderInvoicingTypeSelect" title="Purchases order invoicing type" selection="supplychain.purchase.order.invoicing.type.select"/>

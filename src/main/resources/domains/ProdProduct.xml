@@ -10,7 +10,7 @@
   	<integer name="importId"/>
   
 	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" initParam="true"/>  	
-  	<decimal name="qty" title="Quantity" initParam="true"/>
+  	<decimal name="qty" title="Qty" initParam="true"/>
   	<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit" initParam="true"/>
   	
 <!--   	Contreparties - Non affiché  -->

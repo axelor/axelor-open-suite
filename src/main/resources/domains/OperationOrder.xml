@@ -26,8 +26,7 @@
   
   	<one-to-many name="toConsumeProdProductList" ref="com.axelor.apps.production.db.ProdProduct" mappedBy="toConsumeOperationOrder" title="Products to consume"/>
   	<one-to-many name="consumedStockMoveLineList" ref="com.axelor.apps.supplychain.db.StockMoveLine" mappedBy="consumedOperationOrder" title="Consumed products"/>
-  	<one-to-many name="diffConsumeProdProductList" ref="com.axelor.apps.production.db.ProdProduct" mappedBy="diffConsumeOperationOrder" title="Difference"/>
-  
+  	<one-to-many name="diffConsumeProdProductList" ref="com.axelor.apps.production.db.ProdProduct" mappedBy="diffConsumeOperationOrder" title="Differences"/>
   
     <integer name="statusSelect" title="Status" selection="production.manuf.order.status.select" initParam="true"/>
     

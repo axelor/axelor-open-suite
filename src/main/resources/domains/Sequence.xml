@@ -12,7 +12,7 @@
     <string name="code" title="Document concerned" required="true" selection="sequence.generic.code.select"/> 
     <string name="prefixe" title="Prefix"/>
     <string name="suffixe" title="Suffix"/>
-    <integer name="padding" title="Paddinge" required="true"/>
+    <integer name="padding" title="Padding" required="true"/>
     <integer name="toBeAdded" title="Increment" required="true"/>
     <integer name="nextNum" title="Next N°" required="true"/>
     <many-to-one name="journal" ref="com.axelor.apps.account.db.Journal" title="Journal"/>

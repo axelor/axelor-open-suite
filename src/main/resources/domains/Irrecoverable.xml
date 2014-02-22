@@ -7,16 +7,16 @@
 
   <entity name="Irrecoverable" lang="java">
   
-  	<string name="name" title="Nom" readonly="true"/>
-  	<one-to-many name="irrecoverableCustomerLineList" mappedBy="irrecoverable" ref="com.axelor.apps.account.db.IrrecoverableCustomerLine" title="Clients"/>
-  	<many-to-many name="invoiceSet" ref="com.axelor.apps.account.db.Invoice" title="Factures et rejets de factures"/>
-  	<many-to-many name="paymentScheduleLineSet" ref="com.axelor.apps.account.db.PaymentScheduleLine" title="Echéance rejetées"/>
-  	<many-to-many name="moveSet" ref="com.axelor.apps.account.db.Move" title="Ecritures générées"/>
-  	<many-to-one name="status" ref="com.axelor.apps.base.db.Status" title="Statut" readonly="true"/>
+  	<string name="name" title="Name" readonly="true"/>
+  	<one-to-many name="irrecoverableCustomerLineList" mappedBy="irrecoverable" ref="com.axelor.apps.account.db.IrrecoverableCustomerLine" title="Customer"/>
+  	<many-to-many name="invoiceSet" ref="com.axelor.apps.account.db.Invoice" title="Invoice & Rejects"/>
+  	<many-to-many name="paymentScheduleLineSet" ref="com.axelor.apps.account.db.PaymentScheduleLine" title="Payment schedule rejected"/>
+  	<many-to-many name="moveSet" ref="com.axelor.apps.account.db.Move" title="Moves generated"/>
+  	<many-to-one name="status" ref="com.axelor.apps.base.db.Status" title="Status" readonly="true"/>
   	<datetime name="dateTime" title="Date" tz="true" readonly="true"/>
-  	<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="Utilisateur" readonly="true"/>
-  	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Société" required="true"/>
-  	<string name="exportTypeSelect" title="Type d'impression" selection="iadministration.export.type.select"/>
+  	<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="User" readonly="true"/>
+  	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
+  	<string name="exportTypeSelect" title="Export file type" selection="iadministration.export.type.select"/>
   
   </entity>
 

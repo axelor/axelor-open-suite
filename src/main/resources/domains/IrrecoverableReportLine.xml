@@ -7,13 +7,13 @@
 
   <entity name="IrrecoverableReportLine" lang="java">
   
-  	<many-to-one name="irrecoverableInvoiceLine" ref="com.axelor.apps.account.db.IrrecoverableInvoiceLine" title="Facture"/>
-  	<many-to-one name="irrecoverablePaymentScheduleLineLine" ref="com.axelor.apps.account.db.IrrecoverablePaymentScheduleLineLine" title="Echéance rejetée"/>
-  	<integer name="reportLineSeq" title="Référence"/>
-  	<string name="label" title="Libellé" readonly="true"/>
-  	<decimal name="value" title="Valeur" readonly="true"/>
+  	<many-to-one name="irrecoverableInvoiceLine" ref="com.axelor.apps.account.db.IrrecoverableInvoiceLine" title="Invoice"/>
+  	<many-to-one name="irrecoverablePaymentScheduleLineLine" ref="com.axelor.apps.account.db.IrrecoverablePaymentScheduleLineLine" title="Rejected Schedule line"/>
+  	<integer name="reportLineSeq" title="Reference"/>
+  	<string name="label" title="Label" readonly="true"/>
+  	<decimal name="value" title="Value" readonly="true"/>
   
-  	<string name="name" title="Nom">
+  	<string name="name" title="Name">
   		<![CDATA[
 	    	if (irrecoverableInvoiceLine != null) return irrecoverableInvoiceLine.getInvoiceLineSeq() + " - " + reportLineSeq;
 	    	if (irrecoverablePaymentScheduleLineLine != null) return irrecoverablePaymentScheduleLineLine.getName() + " - " + reportLineSeq;

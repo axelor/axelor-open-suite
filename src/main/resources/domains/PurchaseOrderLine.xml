@@ -8,7 +8,7 @@
   <entity name="PurchaseOrderLine" lang="java">
   
   	<many-to-one name="purchaseOrder" ref="com.axelor.apps.supplychain.db.PurchaseOrder" title="Purchase order"/>
-  	<integer name="sequence" title="Sequence"/>
+  	<integer name="sequence" title="Seq."/>
   	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>
   	<decimal name="qty" title="Qty" default="1"/>
   	<string name="productName" title="Label"/>
@@ -34,7 +34,7 @@
 <!--   Onglet Historique -->
   	<many-to-many name="invoiceSet" ref="com.axelor.apps.account.db.Invoice" title="Associated Invoice lines"/>
   	
-	<date name="estimatedDelivDate" title="Estimated delivery date" help="Estimated by supplier"/>
+	<date name="estimatedDelivDate" title="Estim. delivery date" help="Estimated by supplier"/>
 	<date name="desiredDelivDate" title="Desired delivery date"/>
 
 	<many-to-one name="productVariant" ref="com.axelor.apps.base.db.ProductVariant"/>

@@ -12,17 +12,17 @@
     
 	<string name="payboxUrl" title="Environment Url"/>
 	<string name="payboxSite" title="Site Nbr" min="7" max="7"/>   
-	<string name="payboxRang" title="Rank number" min="2" max="2"/>
+	<string name="payboxRang" title="Rank Nbr" min="2" max="2"/>
 	<string name="payboxDevise" title="Transaction currency" min="3" max="3" default="978"/>
 	<string name="payboxIdentifiant" title="Internal identifier" max="9"/>
-	<string name="payboxHashSelect" title="Algorithm hashing type to calculate the footprint" default="SHA512" selection="company.paybox.hash.select"/>
+	<string name="payboxHashSelect" title="Algorithm hashing type to calculate footprint" default="SHA512" selection="company.paybox.hash.select"/>
 	<string name="payboxHmac" title="Secret key"/>
 	<string name="payboxDefaultEmail" title="Axelor Backoffice email"/>
 	<string name="payboxRetour" title="Variables list returned by Paybox"/>
 	<string name="payboxRetourUrlEffectue" title="Url returned by Paybox once payment done" default="http://localhost:8080/axelor/#/ds/account.root.periodic.processing.account.voucher/edit/%id?retour=1"/>
 	<string name="payboxRetourUrlRefuse" title="Url returned by Paybox once payment refused" default="http://localhost:8080/axelor/#/ds/account.root.periodic.processing.account.voucher/edit/%id?retour=2"/>
 	<string name="payboxRetourUrlAnnule" title="Url returned by Paybox once payment cancelled" default="http://localhost:8080/axelor/#/ds/account.root.periodic.processing.account.voucher/edit/%id?retour=3"/>
-	<string name="payboxPublicKeyPath" title="Path to Paybox public key" default="/home/soregies/Paybox/pubkey.pem"/>
+	<string name="payboxPublicKeyPath" title="Path to Paybox public key" default="/home/axelor/Paybox/pubkey.pem"/>
   
   	
   </entity>

@@ -15,7 +15,7 @@
     <many-to-one name="unit" ref="Unit" title="Unit" initParam="true"/>
      
     <integer name="applicationTypeSelect" title="Application type" selection="product.application.type.select" initParam="true"/>
-    <integer name="saleSupplySelect" title="Méthode d'appro. des ventes" selection="product.sale.supply.select" initParam="true"/>
+    <integer name="saleSupplySelect" title="Sale supply default method" selection="product.sale.supply.select" initParam="true"/>
      
     <string name="productTypeSelect" title="Product type" required="true" selection="product.product.type.select" initParam="true"/>
     <string name="procurementMethodSelect" title="Procurement method" selection="product.procurement.method.select" initParam="true"/>
@@ -36,7 +36,7 @@
     
     <many-to-one name="invoiceLineType" ref="com.axelor.apps.account.db.InvoiceLineType" title="Invoice line type" initParam="true"/>
         
-    <one-to-many name="accountManagementList" ref="com.axelor.apps.account.db.AccountManagement" mappedBy="product" title="Accounts"/>
+    <one-to-many name="accountManagementList" ref="com.axelor.apps.account.db.AccountManagement" mappedBy="product" title="Accounts configuration" help="If this table is empty, the default account configuration will be retrieved from the product family 'Accounts configurations' table. However, this table will has the highest priority if filled."/>
   
   	<one-to-many name="priceList" ref="com.axelor.apps.base.db.Price" mappedBy="product" title="Prices"/>
   	
@@ -45,7 +45,7 @@
   	<!-- SOCIAL NETWORKING INTEGRATION FOR PRODUCT -->
     <many-to-one name="snStatusUpdates" ref="com.axelor.apps.socialnetwork.db.SnStatusUpdates" required="false" orphan="true" default="null"/>
   
-    <many-to-one name="trackingNumberConfiguration" ref="com.axelor.apps.base.db.TrackingNumberConfiguration" title="Tracking Number Configuration"/>
+    <many-to-one name="trackingNumberConfiguration" ref="com.axelor.apps.base.db.TrackingNumberConfiguration" title="Tracking Nbr. Config."/>
     <boolean name="hasWarranty" title="Warranty ?"/>
     <boolean name="isPerishable" title="Perishable ?"/>
     <integer name="warrantyNbrOfMonths" title="Warranty length (in months)"/>

@@ -8,13 +8,13 @@
   <entity name="SalesOrderLine" lang="java">
   
   	<many-to-one name="salesOrder" ref="com.axelor.apps.supplychain.db.SalesOrder" title="Sale order"/>
-  	<integer name="sequence" title="Sequence"/>
+  	<integer name="sequence" title="Seq."/>
   	<integer name="importId" />
   	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>
   	<decimal name="qty" title="Qty" default="1"/>
-  	<boolean name="isToPrintLineSubTotal" title="Print subtotal per line"/>
+  	<boolean name="isToPrintLineSubTotal" title="Print subtotal / line"/>
   	<string name="productName" title="Product name"/>
-  	<integer name="saleSupplySelect" title="Méthode d'appro. des ventes" selection="product.sale.supply.select"/>
+  	<integer name="saleSupplySelect" title="Supply method" selection="product.sale.supply.select"/>
   	<decimal name="price" title="Unit price"/>
   	<many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
   	<decimal name="exTaxTotal" title="Total W.T."/>
@@ -30,25 +30,25 @@
   	<decimal name="discountAmount" title="Discount amount"/>
   	<integer name="discountTypeSelect" title="In % / fixed" selection="base.price.list.line.amount.type.select"/>
   	
-  	<boolean name="isToInvoice" title="A facturer ?"/>
-  	<boolean name="isInvoiced" title="Facturé ?"/>
-  	<decimal name="amountInvoiced" title="Montant facturé"/>
-  	<decimal name="amountRemainingToBeInvoiced" title="Reste à facturer"/>
+  	<boolean name="isToInvoice" title="To invoice?"/>
+  	<boolean name="isInvoiced" title="Invoiced ?"/>
+  	<decimal name="amountInvoiced" title="Amount invoiced"/>
+  	<decimal name="amountRemainingToBeInvoiced" title="Remaining to invoice"/>
   	
   	<date name="estimatedDelivDate" title="Estimated delivery date"/>
   	
 <!--   	Onglet Détail de la ligne de devis -->
-	<one-to-many name="salesOrderSubLineList" ref="com.axelor.apps.supplychain.db.SalesOrderSubLine" mappedBy="salesOrderLine" title="Les sous-lignes de devis"/>
+	<one-to-many name="salesOrderSubLineList" ref="com.axelor.apps.supplychain.db.SalesOrderSubLine" mappedBy="salesOrderLine" title="Sale order sub-lines"/>
   
 <!--   Onglet Historique -->
-  	<many-to-many name="invoiceSet" ref="com.axelor.apps.account.db.Invoice" title="Lignes de Factures associées"/>
+  	<many-to-many name="invoiceSet" ref="com.axelor.apps.account.db.Invoice" title="Associated invoice lines"/>
   	
   	
 <!--   	Devis-commande fournisseur -->
-	<date name="deliveryDate" title="Date de livraison"/>
+	<date name="deliveryDate" title="Delivery date"/>
 
 <!-- Bon de livraison -->
-  	<boolean name="isInvoiceControlled" title="Facture controllée"/>
+  	<boolean name="isInvoiceControlled" title="Invoice controlled"/>
   	
   	<many-to-one name="productVariant" ref="com.axelor.apps.base.db.ProductVariant"/>
   	
@@ -58,7 +58,7 @@
   	
   	
 <!--   	TODO a déplacer dans PRODUCTION -->
-  	<many-to-one name="billOfMaterial" ref="com.axelor.apps.production.db.BillOfMaterial" title="BOM"/>
+  	<many-to-one name="billOfMaterial" ref="com.axelor.apps.production.db.BillOfMaterial" title="BoM"/>
   	
   	
   </entity>

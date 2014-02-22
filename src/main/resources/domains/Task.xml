@@ -15,7 +15,7 @@
   	<decimal name="totalTime" title="Total time"/>
   	<decimal name="plannedTime" title="Planned time" readonly="true"/>
   	<decimal name="spentTime" title="Spent time" readonly="true"/>
-  	<decimal name="remainingTime" title="Reminaing time" readonly="true"/>
+  	<decimal name="remainingTime" title="Remaining time" readonly="true"/>
   	<decimal name="delays" title="Delays" readonly="true"/>
   	<decimal name="advance" title="Advance" readonly="true"/>
   	<integer name="taskProgress" title="Task Progress" selection="grade.0.up.to.100.select"/>
@@ -56,7 +56,7 @@
   	
   	<!--   	Onglet facturation -->
   	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
-  	<decimal name="qty" title="Quantity" default="1"/>
+  	<decimal name="qty" title="Qty" default="1"/>
   	<decimal name="price" title="Unit price"/>
   	
 	<!--   	Onglet Temps passés -->
@@ -64,7 +64,7 @@
   	
   	
 <!--   	Leave request reasons field -->
-  	<boolean name="hasCummulation" title="Cumulation ?"/>
+  	<boolean name="hasCummulation" title="Cumulate ?"/>
   	<integer name="accountingDay" title="Accounting day" selection="day.month.select"/>
   	
   	<string name="exportTypeSelect" title="Export Type" selection="organisation.project.report.type.select"/>

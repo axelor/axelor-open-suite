@@ -21,7 +21,7 @@
     <many-to-one name="cashRegister" ref="com.axelor.apps.account.db.CashRegister" title="Cash register"/>
     <many-to-one name="year" ref="com.axelor.apps.base.db.Year" title="Fiscal year"/>
     <date name="date" title="Creation Date" required="true"/>
-    <datetime name="publicationDateTime" title="Date de dernière édition" tz="true" readonly="true"/>
+    <datetime name="publicationDateTime" title="Last print date" tz="true" readonly="true"/>
     <boolean name="global" title="Global" default="false"/>
     <boolean name="globalByPartner" title="Subtotal by partner" default="false"/>
     <boolean name="globalByPost" title="Subtotal by cash register" default="false"/>

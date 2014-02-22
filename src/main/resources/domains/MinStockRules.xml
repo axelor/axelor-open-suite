@@ -11,11 +11,11 @@
 	
 	<many-to-one name="location" ref="com.axelor.apps.supplychain.db.Location" title="Location"/>  	
   	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>
-  	<decimal name="minQty" title="Minimum quantity"/>
-  	<decimal name="reOrderQty" title="Re-order quantity"/>
+  	<decimal name="minQty" title="Min. Qty"/>
+  	<decimal name="reOrderQty" title="Refill Qty"/>
   	<integer name="typeSelect" title="Type" selection="supplychain.min.stock.rules.type.select"/>
   	
-  	<integer name="orderAlertSelect" title="Order alert select" selection="supplychain.min.stock.rules.order.alert.select"/>
+  	<integer name="orderAlertSelect" title="Refill type" selection="supplychain.min.stock.rules.order.alert.select"/>
   	
   	<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="User"/>
   	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team"/>

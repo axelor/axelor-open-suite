@@ -8,7 +8,7 @@
   <entity name="Opportunity" lang="java">
   
     <string name="name" title="Name" required="true"/>
-    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
+    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
    	<date name="expectedCloseDate" title="Expected close date"/>
     <decimal name="amount" title="Amount"/>

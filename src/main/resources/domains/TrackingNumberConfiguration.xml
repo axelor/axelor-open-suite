@@ -7,20 +7,20 @@
 
   <entity name="TrackingNumberConfiguration" lang="java">
 	
-	<boolean name="isPurchaseTrackingManaged" title="Manage purchase tracking number ?"/>
-	<boolean name="isProductionTrackingManaged"  title="Manage production tracking number ?"/>
-	<boolean name="isSaleTrackingManaged"  title="Manage sale tracking number ?"/>
+	<boolean name="isPurchaseTrackingManaged" title="Manage purchase tracking Nbr. ?"/>
+	<boolean name="isProductionTrackingManaged"  title="Manage production tracking Nbr. ?"/>
+	<boolean name="isSaleTrackingManaged"  title="Manage sale tracking Nbr. ?"/>
 	
-	<boolean name="generatePurchaseAutoTrackingNbr"  title="Generate new purchase auto tracking number ?"/>
-	<boolean name="generateProductionAutoTrackingNbr"  title="Generate new production auto tracking number ?"/>
-	<boolean name="generateSaleAutoTrackingNbr"  title="Generate new sale auto tracking number ?"/>
+	<boolean name="generatePurchaseAutoTrackingNbr"  title="Generate new purchase auto tracking Nbr. ?"/>
+	<boolean name="generateProductionAutoTrackingNbr"  title="Generate new production auto tracking Nbr. ?"/>
+	<boolean name="generateSaleAutoTrackingNbr"  title="Generate new sale auto tracking Nbr. ?"/>
 	
-	<boolean name="hasSaleAutoSelectTrackingNbr"  title="Auto select sale tracking number ?"/>
-	<integer name="saleAutoTrackingNbrOrderSelect"  title="Auto sale tracking number order" selection="base.tracking.number.configuration.sale.tracking.order.select"/>
+	<boolean name="hasSaleAutoSelectTrackingNbr"  title="Auto select sale tracking Nbr. ?"/>
+	<integer name="saleAutoTrackingNbrOrderSelect"  title="Auto sale tracking Nbr. order" selection="base.tracking.number.configuration.sale.tracking.order.select"/>
 	
-	<integer name="saleQtyByTracking"  title="Sale quantity by tracking"/>
-	<integer name="purchaseQtyByTracking"  title="Purchase quantity by tracking"/>
-	<integer name="productionQtyByTracking"  title="Production quantity by tracking"/>
+	<integer name="saleQtyByTracking"  title="Sale Qty by tracking"/>
+	<integer name="purchaseQtyByTracking"  title="Purchase Qty by tracking"/>
+	<integer name="productionQtyByTracking"  title="Production Qty by tracking"/>
 
   </entity>
 

@@ -15,7 +15,7 @@
   	
   	<one-to-many name="operationOrderList" ref="com.axelor.apps.production.db.OperationOrder" title="Operation orders"/>
   
-  	<decimal name="qty" title="Quantity" initParam="true"/>
+  	<decimal name="qty" title="Qty" initParam="true"/>
   
 <!--   	Not display -->
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" initParam="true"/>
@@ -36,7 +36,7 @@
     
     <boolean name="isConsProOnOperation" title="Manage consumed products on operations?" initParam="true"/>
     
-    <many-to-one name="billOfMaterial" ref="com.axelor.apps.production.db.BillOfMaterial" title="BOM" initParam="true"/>
+    <many-to-one name="billOfMaterial" ref="com.axelor.apps.production.db.BillOfMaterial" title="BoM" initParam="true"/>
     
 <!--     Champ pointé ? -->
     <many-to-one name="prodProcess" ref="com.axelor.apps.production.db.ProdProcess" title="Production process" initParam="true"/> 

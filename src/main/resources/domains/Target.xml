@@ -14,11 +14,11 @@
   	
 <!-- Opportunity -->
     <decimal name="opportunityAmountWon" title="Amount won" readonly="true"/>
-    <integer name="opportunityCreatedNumber" title="Created number" readonly="true"/>
-    <integer name="opportunityCreatedWon" title="Created won" readonly="true"/>
-    <decimal name="opportunityAmountWonTarget" title="Amount won"/>
-    <integer name="opportunityCreatedNumberTarget" title="Created number"/>
-    <integer name="opportunityCreatedWonTarget" title="Created won"/>
+    <integer name="opportunityCreatedNumber" title="Created Nbr." readonly="true"/>
+    <integer name="opportunityCreatedWon" title="Created Won" readonly="true"/>
+    <decimal name="opportunityAmountWonTarget" title="Amount Won"/>
+    <integer name="opportunityCreatedNumberTarget" title="Created Nbr."/>
+    <integer name="opportunityCreatedWonTarget" title="Created Won"/>
     
 <!-- Sales order -->
 <!-- 	<decimal name="salesOrderAmountWon" title="Amount won"/> -->
@@ -29,10 +29,10 @@
 <!--     <integer name="salesOrderCreatedWonTarget" title="Created won"/> -->
 
 <!-- Call -->
-    <integer name="callEmittedNumber" title="Call emitted number" readonly="true"/>
-    <integer name="meetingNumber" title="Meeting number" readonly="true"/>
-    <integer name="callEmittedNumberTarget" title="Call emitted number"/>
-    <integer name="meetingNumberTarget" title="Meeting number"/>
+    <integer name="callEmittedNumber" title="Call emitted Nbr." readonly="true"/>
+    <integer name="meetingNumber" title="Meeting Nbr." readonly="true"/>
+    <integer name="callEmittedNumberTarget" title="Call emitted Nbr."/>
+    <integer name="meetingNumberTarget" title="Meeting Nbr."/>
     
     <integer name="periodTypeSelect" title="Period type" selection="crm.target.configuration.period.type.select"/>
     
