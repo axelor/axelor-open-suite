@@ -31,7 +31,7 @@
   	<datetime name="endDateT" title="End Date Time"/>
   	<decimal name="estimatedAmount" title="Estimated amount"/>
   	
-  	<boolean name="isLeaveResquest" title="Leave request ?" help="Is used as a leave request reason"/>
+  	<boolean name="isLeaveRequest" title="Leave request ?" help="Is used as a leave request reason"/>
   	
 <!--   	Notebook Planning and execution -->
 	<one-to-many name="planningLineList" ref="com.axelor.apps.organisation.db.PlanningLine" mappedBy="task" title="Resources planning"/>

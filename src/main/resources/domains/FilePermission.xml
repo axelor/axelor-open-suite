@@ -5,7 +5,7 @@
 	<module name="googleapps" package="com.axelor.apps.googleapps.db" />
 		<entity name="FilePermission">	
 		
-			<boolean name="editable"  help="Reader & Writer Role"/>
+			<boolean name="editable"  help="Reader &amp; Writer Role"/>
 			<boolean name="notifyEmail" default="false" help="Notify email to user"/>
 			<many-to-one name="sharingUser" ref="com.axelor.apps.googleapps.db.UserProfile"  orphan="true" help="Sharing User Profile"/>
 			<many-to-one name="googleFile" ref="com.axelor.apps.googleapps.db.GoogleFile" orphan="true" help="Google File to share"/>

@@ -29,7 +29,7 @@
         </group>
     </form>
     
-    <form onNew="action-currency-conversion-line-wizard-set-today,action-currency-conversion-line-set-exchange-rate,action-currency-conversion-line-method-convert" 
+    <form onNew="action-currency-conversion-line-wizard-set-date,action-currency-conversion-line-set-exchange-rate,action-currency-conversion-line-method-convert" 
     name="wizard-check-currency-rate-form" title="Check currency exhange rates" model="com.axelor.apps.base.db.Wizard" cols="4">
     	<field name="startCurrency" widget="MANY_TO_ONE[target=com.axelor.apps.base.db.Currency|targetName=code]" title="Source Currency"/>
     	<field name="endCurrency" widget="MANY_TO_ONE[target=com.axelor.apps.base.db.Currency|targetName=code]" title="Destination Currency" />
@@ -72,8 +72,8 @@
     	<field name="exchangeRate" if="startCurrency != null &amp;&amp; endCurrency != null &amp;&amp; date != null" expr="call:com.axelor.apps.base.service.CurrencyConversionService:getRate(Currency.find(startCurrency.id),Currency.find(endCurrency.id), new LocalDate(date))" />
     </action-record>
     
-     <action-record name="action-currency-conversion-line-wizard-set-today" model="com.axelor.apps.base.db.Wizard">
-    	<field name="date" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+     <action-record name="action-currency-conversion-line-wizard-set-date" model="com.axelor.apps.base.db.Wizard">
+    	<field name="date" expr="eval:_date" />
     	<field name="startCurrency" expr="eval:Currency.find(_startCurrency.id)" if="_startCurrency != null"/>
     	<field name="endCurrency" expr="eval:Currency.find(_endCurrency.id)" if="_endCurrency != null"/>
     	<field name="general" expr="eval:_general"  />
@@ -88,6 +88,7 @@
 	    <context name="_startCurrency" expr="eval:startCurrency" if="startCurrency != null" />
 	    <context name="_endCurrency" expr="eval:endCurrency" if="endCurrency != null" />
 	    <context name="_general" expr="eval:general"/>
+	    <context name="_date" expr="eval:fromDate" />
 	</action-view>
 	
 	<action-validate name="action-currency-conversion-line-validate-rate-change" >
