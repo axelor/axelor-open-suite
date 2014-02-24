@@ -265,7 +265,7 @@
 		model="com.axelor.apps.organisation.db.Task" icon="img/16px/projectSmall_16px.png">
 		<view type="grid" name="task-leave-reason-grid" />
 		<view type="form" name="task-leave-reason-form" />
-		<domain>self.isLeaveResquest = true</domain>
+		<domain>self.isLeaveRequest = true</domain>
 	</action-view>
 
 	<menuitem name="business-root" title="Business" priority="120"
