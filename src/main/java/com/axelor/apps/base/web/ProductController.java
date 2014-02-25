@@ -46,7 +46,6 @@ import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.meta.db.MetaUser;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.apps.base.service.user.UserInfoService;
@@ -78,8 +77,7 @@ public class ProductController {
 			productIds = "&ProductIds="+productIds.substring(0, productIds.length()-1);	
 		}
 
-		MetaUser metaUser = MetaUser.findByUser( AuthUtils.getUser());
-		String language = metaUser != null? (metaUser.getLanguage() == null || metaUser.getLanguage().equals(""))? "en" : metaUser.getLanguage() : "en"; 
+		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
 		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/ProductCatalog_PGQL.rptdesign&Locale="+language+"&__format=pdf"+productIds+"&UserId="+user.getId()+"&CurrYear="+currentYear+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
 		
 		LOG.debug("URL : {}", url);
@@ -108,8 +106,8 @@ public class ProductController {
 	
 		StringBuilder url = new StringBuilder();
 				
-		MetaUser metaUser = MetaUser.findByUser(AuthUtils.getUser());
-		String language = metaUser != null? (metaUser.getLanguage() == null || metaUser.getLanguage().equals(""))? "en" : metaUser.getLanguage() : "en"; 
+		User user = AuthUtils.getUser();
+		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
 		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/ProductSheet.rptdesign&Locale="+language+"&__format=pdf&ProductId="+product.getId()+"&CompanyId="+userInfo.getActiveCompany().getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
 		
 		LOG.debug("URL : {}", url);
