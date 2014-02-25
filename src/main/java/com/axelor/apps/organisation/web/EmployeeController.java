@@ -40,7 +40,7 @@ import com.axelor.apps.AxelorSettings;
 import com.axelor.apps.organisation.db.Employee;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
-import com.axelor.meta.db.MetaUser;
+import com.axelor.auth.db.User;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 
@@ -63,8 +63,8 @@ public class EmployeeController {
 		StringBuilder url = new StringBuilder();
 		AxelorSettings axelorSettings = AxelorSettings.get();
 		
-		MetaUser metaUser = MetaUser.findByUser( AuthUtils.getUser());
-		String language = metaUser != null? (metaUser.getLanguage() == null || metaUser.getLanguage().equals(""))? "en" : metaUser.getLanguage() : "en"; 
+		User user = AuthUtils.getUser();
+		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
 
 		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Employee.rptdesign&__format=pdf&EmployeeId="+employee.getId()+"&Locale="+language+axelorSettings.get("axelor.report.engine.datasource"));
 
