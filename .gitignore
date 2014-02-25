@@ -6,6 +6,7 @@ src-gen
 .project
 .classpath
 .settings
+.externalToolBuilders
 .~*
 *.sw[nop]
 *~
