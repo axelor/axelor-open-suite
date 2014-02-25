@@ -48,8 +48,8 @@ import com.axelor.apps.organisation.db.RecuitmentProcessAdvancement;
 import com.axelor.apps.organisation.service.EmployeeService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.service.TraceBackService;
-import com.axelor.meta.db.MetaUser;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -128,8 +128,8 @@ public class CandidateController {
 		StringBuilder url = new StringBuilder();
 		AxelorSettings axelorSettings = AxelorSettings.get();
 		
-		MetaUser metaUser = MetaUser.findByUser( AuthUtils.getUser());
-		String language = metaUser != null? (metaUser.getLanguage() == null || metaUser.getLanguage().equals(""))? "en" : metaUser.getLanguage() : "en"; 
+		User user = AuthUtils.getUser();
+		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
 
 		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Candidate.rptdesign&__format=pdf&CandidateId="+candidate.getId()+"&Locale="+language+axelorSettings.get("axelor.report.engine.datasource"));
 		

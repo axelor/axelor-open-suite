@@ -41,8 +41,8 @@ import com.axelor.apps.organisation.service.FinancialInformationHistoryService;
 import com.axelor.apps.organisation.service.TaskService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
-import com.axelor.meta.db.MetaUser;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -132,11 +132,11 @@ public class TaskController {
 
 		Task task = request.getContext().asType(Task.class);
 
-		MetaUser metaUser = MetaUser.findByUser( AuthUtils.getUser());
+		User user = AuthUtils.getUser();
 
 		StringBuilder url = new StringBuilder();
 		AxelorSettings axelorSettings = AxelorSettings.get();
-		String language = metaUser != null? (metaUser.getLanguage() == null || metaUser.getLanguage().equals(""))? "en" : metaUser.getLanguage() : "en"; 
+		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
 
 		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Task.rptdesign&__format="+task.getExportTypeSelect()+"&TaskId="+task.getId()+"&Local="+language+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
 
