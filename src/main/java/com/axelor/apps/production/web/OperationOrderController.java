@@ -45,8 +45,8 @@ import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.service.OperationOrderWorkflowService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
-import com.axelor.meta.db.MetaUser;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.api.client.repackaged.com.google.common.base.Strings;
@@ -177,7 +177,7 @@ public class OperationOrderController {
 			StringBuilder url = new StringBuilder();			
 			AxelorSettings axelorSettings = AxelorSettings.get();
 			
-			MetaUser metaUser = MetaUser.findByUser( AuthUtils.getUser());
+			User user = AuthUtils.getUser();
 			
 			Company company = null;
 			if(operationOrder.getManufOrder() != null)  {
@@ -185,8 +185,8 @@ public class OperationOrderController {
 			}
 			
 			String language = "en";
-			if(metaUser != null && !Strings.isNullOrEmpty(metaUser.getLanguage()))  {
-				language = metaUser.getLanguage();
+			if(user != null && !Strings.isNullOrEmpty(user.getLanguage()))  {
+				language = user.getLanguage();
 			}
 			else if(company != null && company.getPrintingSettings() != null && !Strings.isNullOrEmpty(company.getPrintingSettings().getLanguageSelect())) {
 				language = company.getPrintingSettings().getLanguageSelect();
