@@ -12,7 +12,7 @@
     <form name="reminder-method-line-form" title="Reminder method line" model="com.axelor.apps.account.db.ReminderMethodLine" colWidths="*,400" cols="4">
         <group title="Reminder level" cols="2" colSpan="2">
         	 <field onChange="action-reminder-level-selected" widget="NestedEditor" canSelect="true" summary-view="true" form-view="matrix-line-reminder-form" edit-window="self" name="reminderLevel" >
-	            <form title="ReminderLevel" name="matrix-line-reminder-form">
+	            <form title="ReminderLevel" >
 	                <field readonly="true" name="label"/>
 	            </form>
 	        </field>
