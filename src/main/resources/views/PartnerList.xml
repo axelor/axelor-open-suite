@@ -17,7 +17,7 @@
          <field name="code"/>
         <field name="description" colSpan="4"/>
     </grid>
-	<form cols="2" colWidths="*,200" name="partner-list-map-form" title="Sales map">
+	<form cols="2" colWidths="*,200" name="partner-list-map-form" title="Sales map" model="com.axelor.apps.base.db.PartnerList">
 	    <group title="" colSpan="1" cols="2" colWidths="140,*">
 	        <field name="code"/>
 	        <field name="description" colSpan="2"/>
