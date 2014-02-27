@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,8 +50,8 @@ import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.meta.TemplateHelper;
 import com.axelor.meta.service.MetaModelService;
+import com.axelor.text.Templates;
 import com.google.inject.Inject;
 
 /**
@@ -61,6 +62,8 @@ public class AlarmEngineService <T extends Model>  {
 	private static final Logger LOG = LoggerFactory.getLogger(AlarmEngineService.class);
 		
 	private DateTime dateTime;
+	
+	private Templates templates;
 
 	@Inject
 	public AlarmEngineService() {
@@ -231,6 +234,6 @@ public class AlarmEngineService <T extends Model>  {
 	}
 	
 	protected String content(AlarmMessage alarmMessage, T t){
-		return TemplateHelper.make(alarmMessage.getMessage(), new Binding(Mapper.toMap(t)));
+		return templates.fromText(alarmMessage.getMessage()).make(Mapper.toMap(t)).render();
 	}
 }

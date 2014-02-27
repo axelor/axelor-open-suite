@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
     
-	<form name="printing-setting-form" title="Printing Setting" model="com.axelor.apps.base.db.PrintingSetting" cols="6">
+	<form name="printing-setting-form" title="Printing Setting" model="com.axelor.apps.base.db.PrintingSettings" cols="6">
 		<field name="languageSelect"/>
 		<spacer colSpan="4"/>
 		<break/>

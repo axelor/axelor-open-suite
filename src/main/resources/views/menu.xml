@@ -651,7 +651,7 @@
 	
 	
 	<menuitem name="admin-root-batch" parent="admin-root"
-		title="Batches" action="admin.root.batch"/>
+		title="Batches" />
 	
 	<menuitem name="admin-root-batch-base" parent="admin-root-batch"
 		title="Base batches" action="admin.root.batch.base" />
