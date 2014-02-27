@@ -951,7 +951,7 @@ and LangTranslate.domain = 'axelor-base' and LangTranslate.type = 'other']]></xm
                         <property name="borderTopStyle">solid</property>
                         <property name="textAlign">center</property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[CATALOGUE <VALUE-OF>params["CurrYear"].value</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[CATALOG <VALUE-OF>params["CurrYear"].value</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
             </row>
@@ -1076,7 +1076,7 @@ and LangTranslate.domain = 'axelor-base' and LangTranslate.type = 'other']]></xm
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'ProductCatalog.summery'</value>
+                                    <value type="javascript">'ProductCatalog.summary'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -1596,9 +1596,9 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                                         <row id="259">
                                             <cell id="260">
                                                 <text id="268">
-                                                    <property name="fontSize">13pt</property>
+                                                    <property name="fontSize">14pt</property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<B>Nom :</B> <VALUE-OF>row["ProductName"]</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["ProductName"]</VALUE-OF></B> ]]></text-property>
                                                 </text>
                                             </cell>
                                         </row>
@@ -1714,7 +1714,7 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
         <grid id="393">
             <property name="marginTop">0in</property>
             <property name="masterPage">NewSimpleMasterPage</property>
-            <property name="height">10.364583333333334in</property>
+            <property name="height">10.395833333333334in</property>
             <property name="width">7.71875in</property>
             <property name="dataSet">CompanyDS</property>
             <list-property name="boundDataColumns">
@@ -1786,20 +1786,11 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                     <property name="colSpan">1</property>
                     <property name="rowSpan">2</property>
                     <property name="backgroundColor">#68B022</property>
-                    <image id="3419">
-                        <property name="marginTop">22cm</property>
-                        <property name="marginLeft">8pt</property>
-                        <property name="height">2.169583333333333cm</property>
-                        <property name="width">6.138333333333333cm</property>
-                        <property name="source">file</property>
-                        <expression name="uri" type="javascript">row["logo_path"]</expression>
-                    </image>
-                    <text id="3723"/>
                     <data id="3732">
                         <property name="fontSize">10pt</property>
                         <property name="fontWeight">bold</property>
                         <property name="color">#FFFFFF</property>
-                        <property name="marginTop">0cm</property>
+                        <property name="marginTop">21cm</property>
                         <property name="marginBottom">0pt</property>
                         <property name="textAlign">center</property>
                         <property name="resultSetColumn">Address</property>
@@ -1817,10 +1808,34 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
 Fax : <VALUE-OF>row["fax"]</VALUE-OF><br>
 Email : <VALUE-OF>row["email"]</VALUE-OF>]]></text-property>
                     </text>
+                    <text id="3723"/>
                 </cell>
             </row>
             <row id="401">
-                <property name="height">6.958333333333333in</property>
+                <property name="height">5.635416666666667in</property>
+            </row>
+            <row id="3741">
+                <property name="height">0.9583333333333334in</property>
+                <cell id="3742">
+                    <property name="backgroundColor">#FFFFFF</property>
+                </cell>
+                <cell id="3743">
+                    <property name="backgroundColor">#FFFFFF</property>
+                </cell>
+                <cell id="3744">
+                    <property name="backgroundColor">#FFFFFF</property>
+                </cell>
+                <cell id="3745">
+                    <property name="backgroundColor">#FFFFFF</property>
+                    <image id="3419">
+                        <property name="marginTop">0cm</property>
+                        <property name="marginLeft">8pt</property>
+                        <property name="height">2.169583333333333cm</property>
+                        <property name="width">6.138333333333333cm</property>
+                        <property name="source">file</property>
+                        <expression name="uri" type="javascript">row["logo_path"]</expression>
+                    </image>
+                </cell>
             </row>
         </grid>
     </body>
