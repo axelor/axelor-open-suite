@@ -10,11 +10,11 @@
  		<field name="company" widget="SuggestBox" form-view="company-lite-form"/>
  		<field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form"/>
  		<field name="reportedBalanceLineList" colSpan="4">
- 			<grid name="reported-balance-line-grid" title="Reported balance lines" model="com.axelor.apps.account.db.ReportedBalanceLine">
+ 			<grid title="Reported balance lines" >
  				<field name="year"/>
  				<field name="amount"/>
     		</grid>
- 			<form name="reported-balance-line-form" title="Reported balance line" model="com.axelor.apps.account.db.ReportedBalanceLine" cols="4">
+ 			<form title="Reported balance line" cols="4">
  				<field name="year"/>
  				<field name="amount"/>
     		</form>
