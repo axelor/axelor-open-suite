@@ -210,7 +210,7 @@
     
     
     
-	<calendar name="meeting-calendar" title="Meetings" mode="month" colorBy="userInfo" 
+	<calendar name="meeting-calendar" title="Meetings" mode="month" colorBy="userInfo" model="com.axelor.apps.crm.db.Event"
 	    eventStart="startDateTime" 
 	    eventStop="endDateTime" 
 	    eventLength="1">
