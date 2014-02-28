@@ -5,6 +5,7 @@
     
     
     <calendar name="leave-request-calendar" title="Leave requests" mode="month" colorBy="employeeUserInfo" 
+        model="com.axelor.apps.organisation.db.LeaveRequest"
 	    eventStart="startDateT" 
 	    eventStop="endDateT" 
 	    eventLength="1">

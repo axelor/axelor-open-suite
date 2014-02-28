@@ -147,7 +147,7 @@
 	</action-view>
 	
 	<menuitem name="hr-root-validationforms-Expenses-commercial" parent="hr-root-validationforms"
-		title="Expenses to validate by commercial" action="hr.root.validationforms.Expenses.commercial"/>
+		title="Expenses to validate by commercial" />
 		
 	<action-view name="hr.root.validationforms.expenses.commercial" title="Expenses to validate by commercial"
 		model="com.axelor.apps.organisation.db.Expense" icon="img/16px/organisationSmall_16px.png">
