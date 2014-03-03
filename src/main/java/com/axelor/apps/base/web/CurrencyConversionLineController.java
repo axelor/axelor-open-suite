@@ -120,6 +120,8 @@ public class CurrencyConversionLineController {
 			    	general = General.find(Long.parseLong(((HashMap)context.get("general")).get("id").toString()));
 			    
 				ccs.createCurrencyConversionLine(fromCurrency,toCurrency,today,rate,general,variation);
+				LOG.debug("Set can close for wizard");
+				response.setCanClose(true);
 			}
 			else
 				response.setFlash("ATTENTION : Veuillez clôturer la période actuelle de conversion pour en créer une nouvelle");

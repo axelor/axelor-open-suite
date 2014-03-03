@@ -44,7 +44,7 @@
 	    	<button title="Check / Update rate" help="Get new rate at present from internet" readonlyIf="startCurrency == null || endCurrency == null" onClick="action-currency-conversion-line-method-convert" name="checkRate"/>
 	    	<label title="" />
 	    </group>
-	    <button name="updateRate"  title="Save new rate"  help="Create currency conversion lines with new rate" onClick="action-currency-conversion-line-method-apply-conversion-rate" colSpan="4" readonlyIf="startCurrency == null || endCurrency == null || exchangeRate == null"/>
+	    <button name="updateRate"  title="Save new rate"  help="Create currency conversion lines with new rate" onClick="action-currency-conversion-line-method-apply-conversion-rate" colSpan="4" readonlyIf="startCurrency == null || endCurrency == null || newExchangeRate == null"/>
     </form>
     
     <action-method name="action-currency-conversion-line-method-getTodayDate">
