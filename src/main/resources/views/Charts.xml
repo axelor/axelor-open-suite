@@ -37,7 +37,10 @@
 
 
 
-	<chart name="chart.stock.report.for.product" title="Stock">
+	<chart name="chart.stock.report.for.product" title="Stock" onInit="action-product-set-today-date">
+	    <search-fields>
+		    <field name="todayDate" type="date" widget="[required=true]"/>
+	  	</search-fields>
 		<dataset type="sql">
 	    <![CDATA[
   			SELECT estimatedate,locat,SUM(qty) OVER (PARTITION BY locat ORDER BY locat,estimatedate) AS qty 
@@ -80,8 +83,9 @@
 		<series key="qty" groupBy="locat" type="line" aggregate="sum" />
 	</chart>
 
-
-
+	 <action-record name="action-product-set-today-date" model="com.axelor.apps.base.db.Product">
+    	<field name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+    </action-record>
 
 
 
