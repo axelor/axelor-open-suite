@@ -11,7 +11,7 @@
         <field name="fromDate"/>
         <field name="toDate" />
         <field name="general" hidden="true" />
-        <button name="checkRate" title="Check rate" readonlyIf="toDate != null" icon="icon-repeat" onClick="wizard-check-currency-conversion-rate-line" />
+        <button name="checkRate" title="Check rate" readonlyIf="toDate != null" icon="fa-repeat" onClick="wizard-check-currency-conversion-rate-line" />
     </grid>
     
     <form name="currency-conversion-line-form" title="Currency conversion line" model="com.axelor.apps.base.db.CurrencyConversionLine" cols="4"
