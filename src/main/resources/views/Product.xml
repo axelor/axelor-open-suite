@@ -14,7 +14,7 @@
 	    <field name="productTypeSelect" width="100"/>
 	    <field name="saleSupplySelect"/>
 	    <field name="unit" width="70"/>
-	    <button name="sendByEmail" title="Send Email" icon="icon-envelope" onClick="action-send-by-email-with-template"/>
+	    <button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
     
     <grid name="product-product-variant-grid" title="Products" model="com.axelor.apps.base.db.Product" orderBy="name">
@@ -27,11 +27,11 @@
     
     <form cols="2" onLoad="action-product-set-today-date"  onNew="action-product-set-today-date,action-product-record-default-new,action-product-record-sale-supply-select" name="product-form" title="Product" model="com.axelor.apps.base.db.Product" >
     	<toolbar>
-    		<button name="sendByEmail" title="Send Email" icon="icon-envelope" onClick="action-send-by-email-with-template"/>
+    		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     	</toolbar>
 	    <group colWidths="15%,85%" colSpan="6" cols="2">
 	            <group colSpan="1">
-	                <field name="picture" showTitle="false"/>
+	                <field name="picture" showTitle="false" widget="BinaryImage"/>
 	            </group>
 	            <group colSpan="1" cols="6">
 					<field name="name" showTitle="false" colSpan="3" css="highlight" placeholder="Name"/>

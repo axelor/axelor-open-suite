@@ -10,7 +10,7 @@
     <string name="code" title="Code" required="true" initParam="true"/>
     <string name="description" large="true" title="Description" initParam="true"/>
     <string name="internalDescription" large="true" title="Internal description" initParam="true"/>
-    <binary name="picture" image="true" title="Picture" initParam="true"/>
+    <many-to-one name="picture" ref="com.axelor.meta.db.MetaFile"  initParam="true"/>
     <many-to-one name="productCategory" ref="ProductCategory" title="Product category" initParam="true"/>
     <many-to-one name="productFamily" ref="ProductFamily" title="Family" initParam="true"/>
     <many-to-one name="unit" ref="Unit" title="Unit" initParam="true"/>

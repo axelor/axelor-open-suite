@@ -5,8 +5,8 @@
 	
 	<grid name="address-grid" title="Address list" model="com.axelor.apps.base.db.Address">
 		<field name="fullName" />
-		<button name="map" icon="icon-map-marker" help="Locate" onClick="com.axelor.apps.base.web.AddressController:viewMap,save" />
-		<button name="directions" icon="icon-location-arrow" help="Direction" onClick="com.axelor.apps.base.web.AddressController:directionsMap" />
+		<button name="map" icon="fa-map-marker" help="Locate" onClick="com.axelor.apps.base.web.AddressController:viewMap,save" />
+		<button name="directions" icon="fa-location-arrow" help="Direction" onClick="com.axelor.apps.base.web.AddressController:directionsMap" />
 	</grid>
 	
 	<form name="address-form" title="Address" model="com.axelor.apps.base.db.Address"
@@ -26,9 +26,9 @@
 			</group>
 		</group>
 		<group name="actions" title="Actions" cols="1" colSpan="1" hideIf="$popup()">
-			<button name="map" title="View map" icon="icon-map-marker"
+			<button name="map" title="View map" icon="fa-map-marker"
 				onClick="com.axelor.apps.base.web.AddressController:viewMap,save" />
-			<button name="directions" title="Get directions" icon="icon-location-arrow"
+			<button name="directions" title="Get directions" icon="fa-location-arrow"
 				onClick="com.axelor.apps.base.web.AddressController:directionsMap" />
 		</group>
 		<group colSpan="2" cols="4" title="QAS certification" >
