@@ -5,7 +5,7 @@
     
     <grid name="manuf-order-grid" title="Manufacturing orders" model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq">
     	<toolbar>
-    		<button name="print" title="Print" icon="icon-print" onClick="action-manuf-order-method-print"/>
+    		<button name="print" title="Print" icon="fa-print" onClick="action-manuf-order-method-print"/>
     	</toolbar>
         <field name="manufOrderSeq"/>
         <field name="company"/>
@@ -17,12 +17,12 @@
         <field name="realStartDateT"/>
         <field name="realEndDateT"/>
         <field name="statusSelect"/>
-        <button name="plan" icon="icon-calendar" help="Plan" onClick="action-manuf-order-method-plan" readonlyIf="statusSelect > 2"/>
-        <button name="start" icon="icon-play" help="Start" onClick="action-manuf-order-method-start-or-resume" readonlyIf="statusSelect != 3"/>
-   		<button name="pause" icon="icon-pause" help="Pause" onClick="action-manuf-order-method-pause" readonlyIf="statusSelect != 4"/>
-   		<button name="finish" icon="icon-off" help="Finish" onClick="action-manuf-order-method-finish" readonlyIf="statusSelect != 4"/>
-   		<button name="cancel" icon="icon-remove-sign" help="Cancel" onClick="action-manuf-order-method-cancel" readonlyIf="statusSelect == 2"/>
-   		<button name="print" title="Print" icon="icon-print" onClick="action-manuf-order-method-print"/>
+        <button name="plan" icon="fa-calendar" help="Plan" onClick="action-manuf-order-method-plan" readonlyIf="statusSelect > 2"/>
+        <button name="start" icon="fa-play" help="Start" onClick="action-manuf-order-method-start-or-resume" readonlyIf="statusSelect != 3"/>
+   		<button name="pause" icon="fa-pause" help="Pause" onClick="action-manuf-order-method-pause" readonlyIf="statusSelect != 4"/>
+   		<button name="finish" icon="fa-off" help="Finish" onClick="action-manuf-order-method-finish" readonlyIf="statusSelect != 4"/>
+   		<button name="cancel" icon="fa-remove-sign" help="Cancel" onClick="action-manuf-order-method-cancel" readonlyIf="statusSelect == 2"/>
+   		<button name="print" title="Print" icon="fa-print" onClick="action-manuf-order-method-print"/>
     </grid>
     
     <form name="manuf-order-form" title="Manufacturing order" model="com.axelor.apps.production.db.ManufOrder" cols="4"
@@ -35,7 +35,7 @@
     		<button name="resume" title="Resume" onClick="save,action-manuf-order-method-resume,save" showIf="statusSelect == 5"/>
     		<button name="finish" title="Finish" onClick="save,action-manuf-order-method-finish,save" showIf="statusSelect == 4"/>
     		<button name="cancel" title="Cancel" onClick="save,action-manuf-order-method-cancel,save" showIf="statusSelect != 2"/>
-    		<button name="print" title="Print" icon="icon-print" onClick="action-manuf-order-method-print"/>
+    		<button name="print" title="Print" icon="fa-print" onClick="action-manuf-order-method-print"/>
     	</toolbar>
     
         <field name="manufOrderSeq" readonlyIf="statusSelect > 1"/>
