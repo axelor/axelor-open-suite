@@ -18,7 +18,7 @@
     
     <grid name="operation-order-group-grid" title="Operations" model="com.axelor.apps.production.db.OperationOrder" groupBy="manufOrder" orderBy="-manufOrder,priority">
     	<toolbar>
-    		<button name="print" title="Print" icon="icon-print" onClick="action-operation-order-method-print"/>
+    		<button name="print" title="Print" icon="fa-print" onClick="action-operation-order-method-print"/>
     	</toolbar>
     	<field name="manufOrder"/>
         <field name="priority"/>
@@ -29,12 +29,12 @@
         <field name="realStartDateT"/>
         <field name="realEndDateT"/>
         <field name="statusSelect"/>
-        <button name="plan" icon="icon-calendar" help="Plan" onClick="action-operation-order-method-plan" readonlyIf="statusSelect >= 3"/>
-        <button name="start" icon="icon-play" help="Start" onClick="action-operation-order-record-start,action-save-operation-order,action-operation-order-method-compute-duration" readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
-       	<button name="pause" icon="icon-pause" help="Pause" onClick="action-operation-order-record-pause,action-save-operation-order" readonlyIf="statusSelect != 4"/>
-   		<button name="finish" icon="icon-off" help="Finish" onClick="action-operation-order-method-finish,action-operation-order-method-compute-duration" readonlyIf="statusSelect != 4"/>
-   		<button name="cancel" icon="icon-remove-sign" help="Cancel"  onClick="action-operation-order-record-cancel,action-save-operation-order" readonlyIf="statusSelect == 2"/>
-   		<button name="print" title="Print" icon="icon-print" onClick="action-operation-order-method-print"/>
+        <button name="plan" icon="fa-calendar" help="Plan" onClick="action-operation-order-method-plan" readonlyIf="statusSelect >= 3"/>
+        <button name="start" icon="fa-play" help="Start" onClick="action-operation-order-record-start,action-save-operation-order,action-operation-order-method-compute-duration" readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
+       	<button name="pause" icon="fa-pause" help="Pause" onClick="action-operation-order-record-pause,action-save-operation-order" readonlyIf="statusSelect != 4"/>
+   		<button name="finish" icon="fa-off" help="Finish" onClick="action-operation-order-method-finish,action-operation-order-method-compute-duration" readonlyIf="statusSelect != 4"/>
+   		<button name="cancel" icon="fa-remove-sign" help="Cancel"  onClick="action-operation-order-record-cancel,action-save-operation-order" readonlyIf="statusSelect == 2"/>
+   		<button name="print" title="Print" icon="fa-print" onClick="action-operation-order-method-print"/>
     </grid>
     
     
@@ -47,12 +47,12 @@
         <field name="realStartDateT"/>
         <field name="realEndDateT"/>
         <field name="statusSelect"/>
-        <button name="plan" icon="icon-calendar" help="Plan" onClick="action-operation-order-method-plan" readonlyIf="statusSelect >= 3"/>
-        <button name="start" icon="icon-play" help="Start" onClick="action-operation-order-record-start,action-save-operation-order,action-operation-order-method-compute-duration" readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
-       	<button name="pause" icon="icon-pause" help="Pause" onClick="action-operation-order-record-pause,action-save-operation-order" readonlyIf="statusSelect != 4"/>
-   		<button name="finish" icon="icon-off" help="Finish" onClick="action-operation-order-method-finish,action-operation-order-method-compute-duration" readonlyIf="statusSelect != 4"/>
-   		<button name="cancel" icon="icon-remove-sign" help="Cancel" onClick="action-operation-order-record-cancel,action-save-operation-order" readonlyIf="statusSelect == 2"/>
-   		<button name="print" title="Print" icon="icon-print" onClick="action-operation-order-method-print"/>
+        <button name="plan" icon="fa-calendar" help="Plan" onClick="action-operation-order-method-plan" readonlyIf="statusSelect >= 3"/>
+        <button name="start" icon="fa-play" help="Start" onClick="action-operation-order-record-start,action-save-operation-order,action-operation-order-method-compute-duration" readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
+       	<button name="pause" icon="fa-pause" help="Pause" onClick="action-operation-order-record-pause,action-save-operation-order" readonlyIf="statusSelect != 4"/>
+   		<button name="finish" icon="fa-off" help="Finish" onClick="action-operation-order-method-finish,action-operation-order-method-compute-duration" readonlyIf="statusSelect != 4"/>
+   		<button name="cancel" icon="fa-remove-sign" help="Cancel" onClick="action-operation-order-record-cancel,action-save-operation-order" readonlyIf="statusSelect == 2"/>
+   		<button name="print" title="Print" icon="fa-print" onClick="action-operation-order-method-print"/>
     </grid>
     
      
@@ -68,7 +68,7 @@
     		<button name="finish" title="Finish" onClick="save,action-operation-order-method-finish,save,action-operation-order-method-compute-duration,save" showIf="statusSelect == 4"/>
     		<button name="pause" title="Pause" onClick="save,action-operation-order-record-pause,save" showIf="statusSelect == 4"/>
     		<button name="resume" title="Resume" onClick="save,action-operation-order-record-resume,save" showIf="statusSelect == 5"/>
-    		<button name="print" title="Print" icon="icon-print" onClick="action-operation-order-method-print"/>
+    		<button name="print" title="Print" icon="fa-print" onClick="action-operation-order-method-print"/>
     	</toolbar>
     
     	<field name="priority" readonlyIf="statusSelect == 6"/>
