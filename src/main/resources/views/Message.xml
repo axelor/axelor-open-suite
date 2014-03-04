@@ -38,8 +38,8 @@
         </group>
 <!--         <button name="printMail" title="Imprimer" colSpan="2" onClick="save,action-mail-method-print-mail"/> -->
 <!--         <button name="reply" title="Reply" showIf="!canReply" onClick="com.axelor.dyndemo.web.DynController:showReply"/> -->
-        <button name="send" title="Send" icon="icon-envelope" onClick="save,action-message-method-send-by-email,save" showIf="statusSelect == 1 "/>
-        <button name="delete" title="Delete" icon="icon-trash" onClick="save,action-message-record-delete-status,save" showIf="statusSelect != 3"/>
+        <button name="send" title="Send" icon="fa-envelope" onClick="save,action-message-method-send-by-email,save" showIf="statusSelect == 1 "/>
+        <button name="delete" title="Delete" icon="fa-trash" onClick="save,action-message-record-delete-status,save" showIf="statusSelect != 3"/>
     </form>
     
     
