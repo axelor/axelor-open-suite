@@ -19,8 +19,8 @@
         <field name="creationDate"/>
         <field name="inTaxTotal"/>
         <field name="statusSelect"/>
-        <button name="print" title="Print" icon="icon-print" onClick="action-sales-order-method-show-sales-order"/>
-        <button name="sendByEmail" title="Send email" icon="icon-envelope" onClick="action-send-by-email-with-template"/>
+        <button name="print" title="Print" icon="fa-print" onClick="action-sales-order-method-show-sales-order"/>
+        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
     
 	<form name="sales-order-form" title="Sale order" model="com.axelor.apps.supplychain.db.SalesOrder" cols="4" 
@@ -28,10 +28,10 @@
 	onSave="action-sales-order-set-sequence" onLoad="action-sales-order-attrs-collapse-specific-settings-group,action-sales-order-attrs-validated-read-only,action-sales-order-domain-on-contact-partner">
 	    <toolbar>
 <!-- 	        <button name="createDocument" title="Create Document" onClick="com.axelor.apps.supplychain.web.SalesOrderController:saveDocumentForOrder"/> -->
-            <button name="print" title="Print" icon="icon-print" onClick="save,action-sales-order-method-show-sales-order"/>
-	        <button name="sendByEmail" title="Send email" icon="icon-envelope" onClick="save,action-send-by-email-with-template"/>
-	        <button name="excelExport" title="Excel Export" icon="icon-file-text" onClick="save,action-sales-order-method-export-sales-order-excel"/>
-	        <button name="wordExport" title="Word Export" icon="icon-file-text" onClick="save,action-sales-order-method-export-sales-order-word"/>
+            <button name="print" title="Print" icon="fa-print" onClick="save,action-sales-order-method-show-sales-order"/>
+	        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
+	        <button name="excelExport" title="Excel Export" icon="fa-file-text" onClick="save,action-sales-order-method-export-sales-order-excel"/>
+	        <button name="wordExport" title="Word Export" icon="fa-file-text" onClick="save,action-sales-order-method-export-sales-order-word"/>
 	    </toolbar>
 	    <menubar>
 	        <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true">

@@ -5,7 +5,7 @@
     
     <grid name="purchase-order-grid" title="Supplier RFQs/POs" model="com.axelor.apps.supplychain.db.PurchaseOrder" orderBy="-orderDate,-purchaseOrderSeq">
     	<toolbar>
-            <button name="print" title="Print" icon="icon-print" onClick="action-purchase-order-method-show-purchase-order"/>
+            <button name="print" title="Print" icon="fa-print" onClick="action-purchase-order-method-show-purchase-order"/>
 		</toolbar>
 		<field name="purchaseOrderSeq"/>
         <field name="supplierPartner"/>
@@ -15,16 +15,16 @@
         <field name="buyerUserInfo"/>
         <field name="inTaxTotal"/>
         <field name="statusSelect"/>
-        <button name="print" title="Print" icon="icon-print" onClick="action-purchase-order-method-show-purchase-order"/>
-		<button name="sendByEmail" title="Send Email" icon="icon-envelope" onClick="action-send-by-email-with-template"/>
+        <button name="print" title="Print" icon="fa-print" onClick="action-purchase-order-method-show-purchase-order"/>
+		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
     
     <form name="purchase-order-form" title="Supplier RFQ/PO" model="com.axelor.apps.supplychain.db.PurchaseOrder" cols="4" 
     onNew="action-purchase-order-record-new,action-purchase-order-record-company-configuration,action-purchase-order-method-get-location" 
     onSave="action-purchase-order-set-sequence">
     	<toolbar>
-            <button name="print" title="Print" icon="icon-print" onClick="save,action-purchase-order-method-show-purchase-order"/>
-	        <button name="sendByEmail" title="Send email" icon="icon-envelope" onClick="save,action-send-by-email-with-template"/>
+            <button name="print" title="Print" icon="fa-print" onClick="save,action-purchase-order-method-show-purchase-order"/>
+	        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
 	    </toolbar>
 	    <group colSpan="4" cols="6" readonlyIf="statusSelect == 5">
 	        <field name="purchaseOrderSeq" css="highlight"/>
