@@ -33,7 +33,7 @@
         <group title="Actions" colSpan="1" cols="1">
             <button name="confirmPaymentVoucher" title="Confirm payment" onClick="save,com.axelor.apps.account.web.PaymentVoucherController:confirmPaymentVoucher,action-attrs-payment-voucher-readonly-status"/>
             <button name="showMoveLines" title="Show move lines" onClick="com.axelor.apps.account.web.PaymentVoucherControllerSimple:showMoveLines"/>
-            <button name="printPaymentVoucher" title="Print receipt" icon="icon-print" onClick="save,com.axelor.apps.account.web.PaymentVoucherController:printPaymentVoucher"/>
+            <button name="printPaymentVoucher" title="Print receipt" icon="fa-print" onClick="save,com.axelor.apps.account.web.PaymentVoucherController:printPaymentVoucher"/>
         </group>
 		<separator title="" colSpan="4" />
 		<group name="toPayGroup" colSpan="4" cols="4" colWidths="10%,40%">

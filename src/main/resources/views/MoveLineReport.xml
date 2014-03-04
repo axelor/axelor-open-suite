@@ -36,7 +36,7 @@
 		<break/>
 		<separator colSpan="4"/>
 	    <button name="search" title="Search" onClick="save,action-move-line-report-method-search-move-line,save" colSpan="2" hideIf="typeSelect == 12" />
-        <button name="export" title="Print" icon="icon-print" onClick="save,action-move-line-report-method-print-export-moveLine,action-move-line-report-method-get-reload,action-move-line-report-button-hidden,action-move-line-report-date-readonly" colSpan="2"/>
+        <button name="export" title="Print" icon="fa-print" onClick="save,action-move-line-report-method-print-export-moveLine,action-move-line-report-method-get-reload,action-move-line-report-button-hidden,action-move-line-report-date-readonly" colSpan="2"/>
 		<field name="status"/>
 		<field name="publicationDateTime"/>
 		<break/>
