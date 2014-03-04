@@ -5,7 +5,7 @@
     
     <grid name="lead-grid" title="Leads" model="com.axelor.apps.crm.db.Lead" orderBy="-contactDate,statusSelect">
     	<toolbar>
-    		<button name="grabLeads" help="Assign to me" icon="icon-suitcase" onClick="com.axelor.apps.crm.web.EventController:assignToMeLead" />
+    		<button name="grabLeads" help="Assign to me" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.EventController:assignToMeLead" />
     	</toolbar>
     	<hilite color="primary" if="statusSelect == 1"/>
     	<hilite color="warning" if="statusSelect == 1 &amp;&amp; (userInfo == null || contactDate == null) &amp;&amp; $moment(createdOn)  &lt; __time__.minusDays(15)"/>
@@ -21,10 +21,10 @@
 		<field name="contactDate"/>
 		<field name="userInfo"/>
         <field name="statusSelect"/>
-        <button name="grabLead" help="Assign to me" icon="icon-suitcase" onClick="com.axelor.apps.crm.web.EventController:assignToMeLead" readonlyIf="userInfo != null"/>
-		<button name="logCall" title="Log Call" icon="icon-phone" onClick="action-lead-view-create-call"/>
-		<button name="scheduleMeeting" title="Schedule Meeting" icon="icon-group" onClick="action-lead-view-create-meeting"/>
-		<button name="sendByEmail" title="Send Email" icon="icon-envelope" onClick="action-send-by-email-with-template"/>
+        <button name="grabLead" help="Assign to me" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.EventController:assignToMeLead" readonlyIf="userInfo != null"/>
+		<button name="logCall" title="Log Call" icon="fa-phone" onClick="action-lead-view-create-call"/>
+		<button name="scheduleMeeting" title="Schedule Meeting" icon="fa-group" onClick="action-lead-view-create-meeting"/>
+		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
     
     <form name="lead-form" title="Lead" model="com.axelor.apps.crm.db.Lead" cols="4" 
@@ -32,7 +32,7 @@
     onLoad="action-lead-attrs-readonly-other-address">
 	    <toolbar>
 	        <button name="convertLead" title="Convert lead" hideIf="statusSelect == 4" onClick="save,action-lead-view-convert-lead" readonlyIf="statusSelect == 4 || statusSelect == 6"/>
-	        <button name="sendByEmail" title="Send email" icon="icon-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="statusSelect == 4 || statusSelect == 6"/>
+	        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="statusSelect == 4 || statusSelect == 6"/>
 	    </toolbar>
 	    <menubar>
 	        <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true" >
@@ -71,7 +71,7 @@
 	            </group>
 	            <group title="Assigned to" colSpan="4">
 	                <field name="contactDate"/>
-	                <button name="grabLead" colSpan="2" title="Assign to me" icon="icon-suitcase" onClick="save,com.axelor.apps.crm.web.EventController:assignToMeLead" />
+	                <button name="grabLead" colSpan="2" title="Assign to me" icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.EventController:assignToMeLead" />
 	                <field name="userInfo"/>
 	                <field name="team"/>
 	            </group>
@@ -136,7 +136,7 @@
 		<field name="contactDate"/>
 		<field name="userInfo"/>
         <field name="statusSelect"/>
-		<button name="add" title="Add" icon="icon-plus" onClick="action-lead-event-add-attendee"/>
+		<button name="add" title="Add" icon="fa-plus" onClick="action-lead-event-add-attendee"/>
     </grid>
 	
 	

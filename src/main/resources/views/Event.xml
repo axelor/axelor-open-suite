@@ -57,7 +57,7 @@
 				        <field name="location" showTitle="false" colSpan="2" css="highlight" placeholder="Location" hideIf="typeSelect == 2"/>
 				        <group colSpan="2" cols="4" showIf="typeSelect == 2">
 					        <field name="location" showTitle="false" colSpan="3" css="highlight" placeholder="Location"/>
-					        <button name="viewOnMap" icon="icon-map-marker" colSpan="1" onClick="com.axelor.apps.crm.web.EventController:viewMap" />
+					        <button name="viewOnMap" icon="fa-map-marker" colSpan="1" onClick="com.axelor.apps.crm.web.EventController:viewMap" />
 				        </group>
 			        </group>
 			        <separator title="Description" colSpan="4"/>
@@ -108,7 +108,7 @@
 	            </group>
 	            <portlet colSpan="4" action="action-event-view-lead"/>
 	            <portlet colSpan="4" action="action-event-view-contact"/>
-	            <button name="add" title="Add" icon="icon-plus" onClick="action-event-add-attendee"/>
+	            <button name="add" title="Add" icon="fa-plus" onClick="action-event-add-attendee"/>
 	    	</page>
 	    
 	    </notebook>
@@ -139,7 +139,7 @@
     
     <grid name="call-grid" title="Calls" model="com.axelor.apps.crm.db.Event" orderBy="-startDateTime">
     	<toolbar>
-    		<button name="grabEvent" help="Assign to me" icon="icon-suitcase" onClick="com.axelor.apps.crm.web.EventController:assignToMeEvent" />
+    		<button name="grabEvent" help="Assign to me" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.EventController:assignToMeEvent" />
     	</toolbar>
 	    <field name="subject"/>
 	    <field name="callStatusSelect"/>
@@ -148,16 +148,16 @@
 	    <field name="endDateTime"/>
 	    <field name="statusSelect"/>
 	    <field name="userInfo"/>
-	    <button name="grabEvent" help="Assign to me" icon="icon-suitcase" onClick="com.axelor.apps.crm.web.EventController:assignToMeEvent" readonlyIf="userInfo != null" />
-	    <button name="accept" icon="icon-ok" help="Validate" onClick="action-set-status-select-2,action-save-event-status-select" readonlyIf="statusSelect &gt; 1" />
-	    <button name="cancel" icon="icon-remove-sign" help="Cancel" onClick="action-set-status-select-3,action-save-event-status-select" readonlyIf="statusSelect &gt; 2"/>
+	    <button name="grabEvent" help="Assign to me" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.EventController:assignToMeEvent" readonlyIf="userInfo != null" />
+	    <button name="accept" icon="fa-ok" help="Validate" onClick="action-set-status-select-2,action-save-event-status-select" readonlyIf="statusSelect &gt; 1" />
+	    <button name="cancel" icon="fa-remove-sign" help="Cancel" onClick="action-set-status-select-3,action-save-event-status-select" readonlyIf="statusSelect &gt; 2"/>
 	</grid>
     
     <form name="call-form" title="Call" model="com.axelor.apps.crm.db.Event" cols="2" colWidths="*,400" onNew="action-event-new-record">
     	<toolbar>
-    		<button name="accept" icon="icon-ok" help="Validate" onClick="action-set-status-select-2,save" readonlyIf="statusSelect &gt; 1" />
-	    	<button name="cancel" icon="icon-remove-sign" help="Cancel" onClick="action-set-status-select-3,save" readonlyIf="statusSelect &gt; 2"/>
-	    	<button name="grabEvent" help="Assign to me" icon="icon-suitcase" onClick="save,com.axelor.apps.crm.web.EventController:assignToMeEvent" />
+    		<button name="accept" icon="fa-ok" help="Validate" onClick="action-set-status-select-2,save" readonlyIf="statusSelect &gt; 1" />
+	    	<button name="cancel" icon="fa-remove-sign" help="Cancel" onClick="action-set-status-select-3,save" readonlyIf="statusSelect &gt; 2"/>
+	    	<button name="grabEvent" help="Assign to me" icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.EventController:assignToMeEvent" />
     	</toolbar>
 	    <group colSpan="1" cols="4" readonlyIf="statusSelect == 2">
 	        <separator title="Subject" colSpan="4" hideIf="$readonly()"/>
@@ -188,7 +188,7 @@
 	    <break/>
 	    <group title="Assigned to" colSpan="2" cols="5" canCollapse="true" readonlyIf="statusSelect == 2">
 	        <field name="userInfo"/>
-	        <button name="grabEvent" title="Assign to me" icon="icon-suitcase" onClick="com.axelor.apps.crm.web.EventController:assignToMeEvent" />
+	        <button name="grabEvent" title="Assign to me" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.EventController:assignToMeEvent" />
 	        <field name="team" onSelect="action-event-attrs-team-domain"/>
 	    </group>
 	    <group colSpan="2" cols="2" readonlyIf="statusSelect == 2">
@@ -227,14 +227,14 @@
 	    <field name="endDateTime"/>
 	    <field name="statusSelect"/>
 	    <field name="userInfo"/>
-	    <button name="accept" icon="icon-ok" help="Validate" onClick="action-set-status-select-2,action-save-event-status-select" readonlyIf="statusSelect &gt; 1"/>
-	    <button name="cancel" icon="icon-remove-sign" help="Cancel" onClick="action-set-status-select-3,action-save-event-status-select" readonlyIf="statusSelect &gt; 2"/>
+	    <button name="accept" icon="fa-ok" help="Validate" onClick="action-set-status-select-2,action-save-event-status-select" readonlyIf="statusSelect &gt; 1"/>
+	    <button name="cancel" icon="fa-remove-sign" help="Cancel" onClick="action-set-status-select-3,action-save-event-status-select" readonlyIf="statusSelect &gt; 2"/>
 	</grid>
     
     <form name="meeting-form" title="Meeting" model="com.axelor.apps.crm.db.Event" cols="2" colWidths="*,400" onNew="action-event-new-record">
     	<toolbar>
-    		<button name="accept" icon="icon-ok" help="Validate" onClick="action-set-status-select-2,save" readonlyIf="statusSelect &gt; 1"/>
-	    	<button name="cancel" icon="icon-remove-sign" help="Cancel" onClick="action-set-status-select-3,save" readonlyIf="statusSelect &gt; 2"/>
+    		<button name="accept" icon="fa-ok" help="Validate" onClick="action-set-status-select-2,save" readonlyIf="statusSelect &gt; 1"/>
+	    	<button name="cancel" icon="fa-remove-sign" help="Cancel" onClick="action-set-status-select-3,save" readonlyIf="statusSelect &gt; 2"/>
     	</toolbar>
 	    <group colSpan="1" cols="4" readonlyIf="statusSelect == 2">
 	        <separator title="Subject" colSpan="4" hideIf="$readonly()"/>
@@ -242,7 +242,7 @@
 	        <separator title="Location" colSpan="4"/>
 	        <group colSpan="4" cols="4">
 		        <field name="location" showTitle="false" colSpan="3" css="highlight" placeholder="Location"/>
-		        <button name="viewOnMap" icon="icon-map-marker" colSpan="1" onClick="com.axelor.apps.crm.web.EventController:viewMap" />
+		        <button name="viewOnMap" icon="fa-map-marker" colSpan="1" onClick="com.axelor.apps.crm.web.EventController:viewMap" />
 	        </group>
 	        <separator title="Description" colSpan="4"/>
 	        <field name="description" colSpan="4" widget="TEXT[height=3]" showTitle="false" placeholder="Description"/>
@@ -298,16 +298,16 @@
 	    <field name="taskStatusSelect"/>    
 	    <field name="prioritySelect"/>
 	    <field name="userInfo"/>
-	    <button name="start" icon="icon-play" help="Start" onClick="action-set-task-status-select-2,action-save-event-task-status-select" readonlyIf="taskStatusSelect == 2 || taskStatusSelect == 3"/>
-	    <button name="pause" icon="icon-pause" help="Pause" onClick="action-set-task-status-select-4,action-save-event-task-status-select" readonlyIf="taskStatusSelect == 4 || taskStatusSelect == 3"/>
-	    <button name="accept" icon="icon-off" help="Finish" onClick="action-set-task-status-select-3,action-save-event-task-status-select" readonlyIf="taskStatusSelect == 3"/>
+	    <button name="start" icon="fa-play" help="Start" onClick="action-set-task-status-select-2,action-save-event-task-status-select" readonlyIf="taskStatusSelect == 2 || taskStatusSelect == 3"/>
+	    <button name="pause" icon="fa-pause" help="Pause" onClick="action-set-task-status-select-4,action-save-event-task-status-select" readonlyIf="taskStatusSelect == 4 || taskStatusSelect == 3"/>
+	    <button name="accept" icon="fa-off" help="Finish" onClick="action-set-task-status-select-3,action-save-event-task-status-select" readonlyIf="taskStatusSelect == 3"/>
 	</grid>
     
     <form name="crm-task-form" title="Task"  model="com.axelor.apps.crm.db.Event" cols="2" colWidths="*,400"  onNew="action-event-new-record">
     	<toolbar>
-    		<button name="start" icon="icon-play" help="Start" onClick="action-set-task-status-select-2,save" readonlyIf="taskStatusSelect == 2 || taskStatusSelect == 3"/>
-	    	<button name="pause" icon="icon-pause" help="Pause" onClick="action-set-task-status-select-4,save" readonlyIf="taskStatusSelect == 4 || taskStatusSelect == 3"/>
-	    	<button name="accept" icon="icon-off" help="Finish" onClick="action-set-task-status-select-3,save" readonlyIf="taskStatusSelect == 3"/>
+    		<button name="start" icon="fa-play" help="Start" onClick="action-set-task-status-select-2,save" readonlyIf="taskStatusSelect == 2 || taskStatusSelect == 3"/>
+	    	<button name="pause" icon="fa-pause" help="Pause" onClick="action-set-task-status-select-4,save" readonlyIf="taskStatusSelect == 4 || taskStatusSelect == 3"/>
+	    	<button name="accept" icon="fa-off" help="Finish" onClick="action-set-task-status-select-3,save" readonlyIf="taskStatusSelect == 3"/>
     	</toolbar>
 	    <group colSpan="1" cols="4" readonlyIf="taskStatusSelect == 3">
 	        <separator title="Subject" colSpan="4"/>
@@ -351,7 +351,7 @@
     
 	<grid name="ticket-grid" title="Ticket" model="com.axelor.apps.crm.db.Event" orderBy="ticketNumberSeq" >
 		<toolbar>
-    		<button name="grabEvent" help="Assign to me" icon="icon-suitcase" onClick="com.axelor.apps.crm.web.EventController:assignToMeEvent" />
+    		<button name="grabEvent" help="Assign to me" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.EventController:assignToMeEvent" />
     	</toolbar>
 	    <hilite color="info" if="prioritySelect == 1 &amp;&amp; ticketStatusSelect != 5" />
         <hilite color="warning" if="prioritySelect == 4 &amp;&amp; ticketStatusSelect != 5" />
@@ -366,10 +366,10 @@
 	    <field name="prioritySelect"/>
 	    <field name="ticketStatusSelect"/>
 	    <field name="progressSelect" widget="SelectProgress"/>
-	    <button name="grabEvent" help="Assign to me" icon="icon-suitcase" readonlyIf="ticketStatusSelect == 5 || userInfo != null" onClick="com.axelor.apps.crm.web.EventController:assignToMeEvent" />
-	    <button name="start" icon="icon-play" help="Start" onClick="action-set-ticket-status-select-2,action-save-event-ticket-status-select" readonlyIf="ticketStatusSelect &gt; 1"/>
-	    <button name="accept" icon="icon-ok" help="Validate" onClick="action-set-ticket-status-select-3,action-save-event-ticket-status-select" readonlyIf="ticketStatusSelect &gt; 2"/>
-	    <button name="stop" icon="icon-off" help="Finish" onClick="action-set-ticket-status-select-5,action-save-event-ticket-status-select" readonlyIf="ticketStatusSelect &gt; 4" />
+	    <button name="grabEvent" help="Assign to me" icon="fa-suitcase" readonlyIf="ticketStatusSelect == 5 || userInfo != null" onClick="com.axelor.apps.crm.web.EventController:assignToMeEvent" />
+	    <button name="start" icon="fa-play" help="Start" onClick="action-set-ticket-status-select-2,action-save-event-ticket-status-select" readonlyIf="ticketStatusSelect &gt; 1"/>
+	    <button name="accept" icon="fa-ok" help="Validate" onClick="action-set-ticket-status-select-3,action-save-event-ticket-status-select" readonlyIf="ticketStatusSelect &gt; 2"/>
+	    <button name="stop" icon="fa-off" help="Finish" onClick="action-set-ticket-status-select-5,action-save-event-ticket-status-select" readonlyIf="ticketStatusSelect &gt; 4" />
 	</grid>
     
     <form name="ticket-form" title="Ticket" model="com.axelor.apps.crm.db.Event" cols="6" colWidths="*,400" 
@@ -377,10 +377,10 @@
     onSave="action-event-set-sequence" 
     onNew="action-event-new-record,action-event-ticket-attrs-default">
     	<toolbar>
-    	    <button name="grabEvent" help="Assign to me" icon="icon-suitcase" onClick="save,com.axelor.apps.crm.web.EventController:assignToMeEvent" />
-    		<button name="start" icon="icon-play" help="Start" onClick="action-set-ticket-status-select-2,save" readonlyIf="ticketStatusSelect &gt; 1"/>
-	    	<button name="accept" icon="icon-ok" help="Validate" onClick="action-set-ticket-status-select-3,save" readonlyIf="ticketStatusSelect &gt; 2"/>
-	    	<button name="stop" icon="icon-off" help="Finish" onClick="action-set-ticket-status-select-5,save" readonlyIf="ticketStatusSelect &gt; 4" />
+    	    <button name="grabEvent" help="Assign to me" icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.EventController:assignToMeEvent" />
+    		<button name="start" icon="fa-play" help="Start" onClick="action-set-ticket-status-select-2,save" readonlyIf="ticketStatusSelect &gt; 1"/>
+	    	<button name="accept" icon="fa-ok" help="Validate" onClick="action-set-ticket-status-select-3,save" readonlyIf="ticketStatusSelect &gt; 2"/>
+	    	<button name="stop" icon="fa-off" help="Finish" onClick="action-set-ticket-status-select-5,save" readonlyIf="ticketStatusSelect &gt; 4" />
     	</toolbar>
 	    <group colSpan="1" cols="4" readonlyIf="ticketStatusSelect == 5">
 	        <group colSpan="2" cols="2" colWidths="100,*">
