@@ -5,7 +5,7 @@
     
     <grid name="opportunity-grid" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" orderBy="-salesStageSelect">
     	<toolbar>
-    		<button name="grabLeads" help="Assign to me" icon="icon-suitcase" onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe" />
+    		<button name="grabLeads" help="Assign to me" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe" />
     	</toolbar>
 		<field name="name"/>
         <field name="partner"/>
@@ -15,10 +15,10 @@
 		<field name="probability"/>
         <field name="expectedCloseDate"/>
         <field name="userInfo"/>
-        <button name="grabLead" help="Assign to me" icon="icon-suitcase" onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe" readonlyIf="userInfo != null" />
-        <button name="next-stage" icon="icon-chevron-sign-right" help="Next Stage" onClick="action-opportunity-set-next-stage,action-opportunity-save-sales-stage-select" readonlyIf="salesStageSelect &gt; 7" />
-        <button name="closed-won" icon="icon-ok-sign" help="Closed won" onClick="action-opportunity-set-closed-won,action-opportunity-save-sales-stage-select" readonlyIf="salesStageSelect &gt; 8" />
-        <button name="closed-lost" icon="icon-minus-sign" help="Closed lost" onClick="action-opportunity-set-closed-lost,action-opportunity-save-sales-stage-select" readonlyIf="salesStageSelect &gt; 8" />
+        <button name="grabLead" help="Assign to me" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe" readonlyIf="userInfo != null" />
+        <button name="next-stage" icon="fa-chevron-sign-right" help="Next Stage" onClick="action-opportunity-set-next-stage,action-opportunity-save-sales-stage-select" readonlyIf="salesStageSelect &gt; 7" />
+        <button name="closed-won" icon="fa-ok-sign" help="Closed won" onClick="action-opportunity-set-closed-won,action-opportunity-save-sales-stage-select" readonlyIf="salesStageSelect &gt; 8" />
+        <button name="closed-lost" icon="fa-minus-sign" help="Closed lost" onClick="action-opportunity-set-closed-lost,action-opportunity-save-sales-stage-select" readonlyIf="salesStageSelect &gt; 8" />
     </grid>
 	 
    <grid name="opportunity-grid-group" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" groupBy="partner"> 
@@ -44,10 +44,10 @@
 	 
     <form cols="6" onNew="action-opportunity-group-new" name="opportunity-form" title="Opportunity" model="com.axelor.apps.crm.db.Opportunity">
     	<toolbar>
-    		<button name="previous-stage" icon="icon-chevron-sign-left" help="Previous Stage" onClick="action-opportunity-set-previous-stage,save" readonlyIf="salesStageSelect &lt; 2" />
-        	<button name="next-stage" icon="icon-chevron-sign-right" help="Next Stage" onClick="action-opportunity-set-next-stage,save" readonlyIf="salesStageSelect &gt; 7" />
-        	<button name="closed-won" icon="icon-ok-sign" help="Closed won" onClick="action-opportunity-set-closed-won,save" readonlyIf="salesStageSelect &gt; 8" />
-        	<button name="closed-lost" icon="icon-minus-sign" help="Closed lost" onClick="action-opportunity-set-closed-lost,save" readonlyIf="salesStageSelect &gt; 8" />
+    		<button name="previous-stage" icon="fa-chevron-sign-left" help="Previous Stage" onClick="action-opportunity-set-previous-stage,save" readonlyIf="salesStageSelect &lt; 2" />
+        	<button name="next-stage" icon="fa-chevron-sign-right" help="Next Stage" onClick="action-opportunity-set-next-stage,save" readonlyIf="salesStageSelect &gt; 7" />
+        	<button name="closed-won" icon="fa-ok-sign" help="Closed won" onClick="action-opportunity-set-closed-won,save" readonlyIf="salesStageSelect &gt; 8" />
+        	<button name="closed-lost" icon="fa-minus-sign" help="Closed lost" onClick="action-opportunity-set-closed-lost,save" readonlyIf="salesStageSelect &gt; 8" />
     	</toolbar>
 		<group colSpan="4" cols="4">
 			<group title="Context" colSpan="4" cols="4" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10">
@@ -77,7 +77,7 @@
 			<group title="Assigned to" colSpan="2" cols="2" canCollapse="true">
 				<field name="userInfo"/>
 				<label title="" />
-				<button name="grabLead" colSpan="1" title="Assign to me" icon="icon-suitcase" onClick="save,com.axelor.apps.crm.web.OpportunityController:assignToMe" />
+				<button name="grabLead" colSpan="1" title="Assign to me" icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.OpportunityController:assignToMe" />
 				<field name="team"/>
 				<field name="company" widget="SuggestBox"/>
 			</group>
