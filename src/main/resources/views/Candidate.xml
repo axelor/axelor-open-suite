@@ -14,7 +14,7 @@
 		<field name="currentJobKeyword" domain="self.typeSelect = '3'"/>
 		<field name="searchedJobKeyword" domain="self.typeSelect = '3'"/>		
 		<field name="salaryExpectation" />
-		<button name="sendByEmail" title="Send by email" colSpan="1" onClick="action-send-by-email-with-template" icon="icon-envelope"/>
+		<button name="sendByEmail" title="Send by email" colSpan="1" onClick="action-send-by-email-with-template" icon="fa-envelope"/>
 	</grid>
 
 
@@ -22,8 +22,8 @@
 	onNew="action-record-candidate-default,action-method-candidate-default-record,action-attrs-candidate-recruitment-advancement" 
 	onSave="action-organisation-candidate-save-record">
 	    <toolbar>
-	        <button name="showCandidate" title="Print CV" icon="icon-print" onClick="save,action-partner-method-show-candidate"/>
-	        <button name="sendByEmail" title="Send email" icon="icon-envelope" onClick="save,action-send-by-email-with-template"/>
+	        <button name="showCandidate" title="Print CV" icon="fa-print" onClick="save,action-partner-method-show-candidate"/>
+	        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
 	        <button name="transformInEmployee" title="Transform into employee" onClick="save,action-candidate-method-transform-in-employee"/>
 	    </toolbar>
 	    <group colSpan="6" cols="6">
