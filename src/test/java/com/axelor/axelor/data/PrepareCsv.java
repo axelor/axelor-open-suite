@@ -138,16 +138,14 @@ public class PrepareCsv {
 				count++;
 				if(attrs != null && attrs.getNamedItem("name") != null){
 					String name = attrs.getNamedItem("name").getNodeValue();
-					switch(name){
-					case "importId":
+					if(name.equals("importId"))
 						return "importId";
-					case "code":
+					else if(name.equals("code"))
 					    return "code";
-					case "name":
+					else if(name.equals("name"))
 						return "name";
-					default:
+					else
 						continue;
-					}
 				}
 				
 			}

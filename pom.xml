@@ -11,10 +11,10 @@
   </repositories>
   
   <parent>
-    <artifactId>axelor-module-parent</artifactId>
+    <artifactId>axelor-erp-parent</artifactId>
     <groupId>com.axelor</groupId>
     <version>2.0.0-SNAPSHOT</version>
-    <relativePath>../axelor-module-parent/pom.xml</relativePath>
+    <relativePath></relativePath>
   </parent>
 
   <artifactId>axelor-erp-data</artifactId>
