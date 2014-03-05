@@ -53,7 +53,7 @@
 	    </group>
 	    <separator title="Product specific attributes" colSpan="2"/>
 	    <notebook colSpan="2">
-			<page title="Sale" colSpan="2" cols="4">
+			<page title="Sale" colSpan="2" cols="4">	
 				<group colSpan="4" colWidths="20%,30%,20%,30%">
 					<separator title="Sales" colSpan="2"/>
 					<separator title="Product dates" colSpan="2"/>
