@@ -13,7 +13,7 @@
     <groupId>com.axelor</groupId>
     <artifactId>axelor-erp-parent</artifactId>
     <version>2.0.0-SNAPSHOT</version>
-    <relativePath></relativePath>
+    <relativePath>../axelor-erp-parent/pom.xml</relativePath>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
