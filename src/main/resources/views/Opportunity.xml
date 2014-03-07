@@ -16,9 +16,9 @@
         <field name="expectedCloseDate" width="70"/>
         <field name="userInfo"/>
         <button name="grabLead" help="Assign to me" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe" readonlyIf="userInfo != null" />
-        <button name="next-stage" icon="fa-chevron-sign-right" help="Next Stage" onClick="action-opportunity-set-next-stage,action-opportunity-save-sales-stage-select" readonlyIf="salesStageSelect &gt; 7" />
-        <button name="closed-won" icon="fa-ok-sign" help="Closed won" onClick="action-opportunity-set-closed-won,action-opportunity-save-sales-stage-select" readonlyIf="salesStageSelect &gt; 8" />
-        <button name="closed-lost" icon="fa-minus-sign" help="Closed lost" onClick="action-opportunity-set-closed-lost,action-opportunity-save-sales-stage-select" readonlyIf="salesStageSelect &gt; 8" />
+        <button name="next-stage" icon="fa-chevron-circle-right" help="Next Stage" onClick="action-opportunity-set-next-stage,action-opportunity-save-sales-stage-select" readonlyIf="salesStageSelect &gt; 7" />
+        <button name="closed-won" icon="fa-check-circle" help="Closed won" onClick="action-opportunity-set-closed-won,action-opportunity-save-sales-stage-select" readonlyIf="salesStageSelect &gt; 8" />
+        <button name="closed-lost" icon="fa-minus-circle" help="Closed lost" onClick="action-opportunity-set-closed-lost,action-opportunity-save-sales-stage-select" readonlyIf="salesStageSelect &gt; 8" />
     </grid>
 	 
    <grid name="opportunity-grid-group" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" groupBy="partner"> 
@@ -44,10 +44,10 @@
 	 
     <form cols="6" onNew="action-opportunity-group-new" name="opportunity-form" title="Opportunity" model="com.axelor.apps.crm.db.Opportunity">
     	<toolbar>
-    		<button name="previous-stage" icon="fa-chevron-sign-left" help="Previous Stage" onClick="action-opportunity-set-previous-stage,save" readonlyIf="salesStageSelect &lt; 2" />
-        	<button name="next-stage" icon="fa-chevron-sign-right" help="Next Stage" onClick="action-opportunity-set-next-stage,save" readonlyIf="salesStageSelect &gt; 7" />
-        	<button name="closed-won" icon="fa-ok-sign" help="Closed won" onClick="action-opportunity-set-closed-won,save" readonlyIf="salesStageSelect &gt; 8" />
-        	<button name="closed-lost" icon="fa-minus-sign" help="Closed lost" onClick="action-opportunity-set-closed-lost,save" readonlyIf="salesStageSelect &gt; 8" />
+    		<button name="previous-stage" icon="fa-chevron-circle-left" help="Previous Stage" onClick="action-opportunity-set-previous-stage,save" readonlyIf="salesStageSelect &lt; 2" />
+        	<button name="next-stage" icon="fa-chevron-circle-right" help="Next Stage" onClick="action-opportunity-set-next-stage,save" readonlyIf="salesStageSelect &gt; 7" />
+        	<button name="closed-won" icon="fa-check-circle" help="Closed won" onClick="action-opportunity-set-closed-won,save" readonlyIf="salesStageSelect &gt; 8" />
+        	<button name="closed-lost" icon="fa-minus-circle" help="Closed lost" onClick="action-opportunity-set-closed-lost,save" readonlyIf="salesStageSelect &gt; 8" />
     	</toolbar>
 		<group colSpan="4" cols="4">
 			<group title="Context" colSpan="4" cols="4" readonlyIf="salesStageSelect == 9 || salesStageSelect == 10">
