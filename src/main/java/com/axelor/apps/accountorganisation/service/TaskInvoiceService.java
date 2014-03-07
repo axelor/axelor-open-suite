@@ -207,7 +207,7 @@ public class TaskInvoiceService {
 			Unit unit, TaxLine taxLine, Task task, ProductVariant productVariant) throws AxelorException  {
 		
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, productName, price, description, qty, unit, taxLine, task, 
-				product.getInvoiceLineType(), productVariant, BigDecimal.ZERO, 0, exTaxTotal, false) {
+				product.getInvoiceLineType(), BigDecimal.ZERO, 0, exTaxTotal, false) {
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
 				
