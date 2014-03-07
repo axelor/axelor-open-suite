@@ -32,8 +32,8 @@
         <button name="plan" icon="fa-calendar" help="Plan" onClick="action-operation-order-method-plan" readonlyIf="statusSelect >= 3"/>
         <button name="start" icon="fa-play" help="Start" onClick="action-operation-order-record-start,action-save-operation-order,action-operation-order-method-compute-duration" readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
        	<button name="pause" icon="fa-pause" help="Pause" onClick="action-operation-order-record-pause,action-save-operation-order" readonlyIf="statusSelect != 4"/>
-   		<button name="finish" icon="fa-off" help="Finish" onClick="action-operation-order-method-finish,action-operation-order-method-compute-duration" readonlyIf="statusSelect != 4"/>
-   		<button name="cancel" icon="fa-remove-sign" help="Cancel"  onClick="action-operation-order-record-cancel,action-save-operation-order" readonlyIf="statusSelect == 2"/>
+   		<button name="finish" icon="fa-power-off" help="Finish" onClick="action-operation-order-method-finish,action-operation-order-method-compute-duration" readonlyIf="statusSelect != 4"/>
+   		<button name="cancel" icon="fa-times-circle" help="Cancel"  onClick="action-operation-order-record-cancel,action-save-operation-order" readonlyIf="statusSelect == 2"/>
    		<button name="print" title="Print" icon="fa-print" onClick="action-operation-order-method-print"/>
     </grid>
     
@@ -50,8 +50,8 @@
         <button name="plan" icon="fa-calendar" help="Plan" onClick="action-operation-order-method-plan" readonlyIf="statusSelect >= 3"/>
         <button name="start" icon="fa-play" help="Start" onClick="action-operation-order-record-start,action-save-operation-order,action-operation-order-method-compute-duration" readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
        	<button name="pause" icon="fa-pause" help="Pause" onClick="action-operation-order-record-pause,action-save-operation-order" readonlyIf="statusSelect != 4"/>
-   		<button name="finish" icon="fa-off" help="Finish" onClick="action-operation-order-method-finish,action-operation-order-method-compute-duration" readonlyIf="statusSelect != 4"/>
-   		<button name="cancel" icon="fa-remove-sign" help="Cancel" onClick="action-operation-order-record-cancel,action-save-operation-order" readonlyIf="statusSelect == 2"/>
+   		<button name="finish" icon="fa-power-off" help="Finish" onClick="action-operation-order-method-finish,action-operation-order-method-compute-duration" readonlyIf="statusSelect != 4"/>
+   		<button name="cancel" icon="fa-times-circle" help="Cancel" onClick="action-operation-order-record-cancel,action-save-operation-order" readonlyIf="statusSelect == 2"/>
    		<button name="print" title="Print" icon="fa-print" onClick="action-operation-order-method-print"/>
     </grid>
     
