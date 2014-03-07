@@ -3800,7 +3800,7 @@
 "axelor-base","","other","ProductCatalog.description","Description","",""
 "axelor-base","","other","ProductCatalog.price","Price","",""
 "axelor-base","","other","ProductCatalog.reference","Reference","",""
-"axelor-base","","other","ProductCatalog.summery","Summery","",""
+"axelor-base","","other","ProductCatalog.summary","Summary","",""
 "axelor-base","","other","ProductSheet.description","Description","",""
 "axelor-base","","other","ProductSheet.price","Price","",""
 "axelor-base","","other","ProductSheet.title","PRODUCT DATA SHEET","",""

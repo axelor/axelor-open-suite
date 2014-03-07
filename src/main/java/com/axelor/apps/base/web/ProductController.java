@@ -117,7 +117,7 @@ public class ProductController {
 			LOG.debug("Impression des informations sur le partenaire Product Catelog "+currentYear);
 			
 			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", "Product Catelog "+currentYear);
+			mapView.put("title", "Product Catalog "+currentYear);
 			mapView.put("resource", url);
 			mapView.put("viewType", "html");
 			response.setView(mapView);		
