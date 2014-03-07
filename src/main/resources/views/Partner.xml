@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
     <form name="partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" cols="6" colWidths="25*" 
-    onNew="action-partner-record-partner-type-select,action-partner-record-set-default,action-partner-attrs-set-readonly"
+    onNew="action-partner-record-partner-type-select,action-partner-record-set-default,action-partner-record-customer-supplier-type,action-partner-attrs-set-readonly"
     onLoad="action-partner-attrs-change-name,action-partner-attrs-set-readonly" 
     onSave="save,action-set-partner-seq,action-create-accounting-situation">
 	    <toolbar>
