@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
+    
+    
+    <form cols="4" name="generate-product-variant-wizard-form" title="Generate product variant wizard" model="com.axelor.apps.base.db.Wizard" 
+    onNew="action-generate-product-variant-wizard-record-default">
+
+
+
+
+		<field name="qty" widget="decimal" title="Quantity"/>
+		<field name="billOfMaterial" widget="ManyToOne[target=com.axelor.apps.production.db.BillOfMaterial]" title="BOM" domain="self.isRawMaterial = 'false' and self.product.id = :product_id"/>
+		<button name="generate" title="Generate" onClick="com.axelor.apps.base.web.GenerateProductVariantWizardController"/>
+
+	</form>
+
+	<action-record name="action-generate-product-variant-wizard-record-default" model="com.axelor.apps.base.db.Wizard">
+    	<field name="product_id" expr="eval: _productId?.id"/>
+		<field name="qty" expr="eval: 1.0"/>
+		<field name="billOfMaterial" expr="eval: com.axelor.apps.production.db.BillOfMaterial.filter('self.id = ?1',_productId.defaultBillOfMaterial.id).fetchOne()"/>
+	</action-record>
+
+    <action-method name="action-generate-product-variant-wizard-method-validate">
+		<call class="com.axelor.apps.base.web.GenerateProductVariantWizardController" method="generate"/>
+    </action-method>
+    
+</object-views>

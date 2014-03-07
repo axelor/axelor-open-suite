@@ -589,6 +589,11 @@
 		<option value="6">Saturday</option>
 		<option value="7">Sunday</option>
 	</selection>
+	
+	<selection name="ibase.product.variant.value.application.price.select">
+		<option value="0">Sale price</option>
+		<option value="1">cost price</option>
+	</selection>
 
 
 </object-views>

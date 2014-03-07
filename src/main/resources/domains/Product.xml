@@ -6,9 +6,10 @@
   <entity name="Product" lang="java">
   
     <integer name="importId"/>
-    <string name="name" title="Name" required="true" namecolumn="true"/>
-    <string name="code" title="Code" required="true"/>
+    <string name="name" title="Name" required="true" namecolumn="true" initParam="true"/>
+    <string name="code" title="Code" required="true" initParam="true"/>
     <string name="description" large="true" title="Description" initParam="true"/>
+    <string name="internalDescription" large="true" title="Internal description" initParam="true"/>
     <binary name="picture" image="true" title="Picture" initParam="true"/>
     <many-to-one name="productCategory" ref="ProductCategory" title="Product category" initParam="true"/>
     <many-to-one name="productFamily" ref="ProductFamily" title="Family" initParam="true"/>
@@ -51,11 +52,13 @@
     <integer name="warrantyNbrOfMonths" title="Warranty length (in months)"/>
     <integer name="perishableNbrOfMonths" title="Time before expiry (in months)"/>
     
-    <many-to-one name="productVariantConfiguration" ref="com.axelor.apps.base.db.ProductVariantConfiguration"/>
+    <many-to-one name="productVariantConfig" ref="com.axelor.apps.base.db.ProductVariantConfig"/>
+    <many-to-one name="productVariant" ref="com.axelor.apps.base.db.ProductVariant"/>
+   	<many-to-one name="parentProduct" ref="com.axelor.apps.base.db.Product" title="Parent product" help="Used for variants"/>
+  	<boolean name="isModel" title="Is model?"/>
   
   	<many-to-one name="defaultSupplierPartner" ref="com.axelor.apps.base.db.Partner" title="Default supplier"/>
   	
-  	<many-to-one name="parentProduct" ref="com.axelor.apps.base.db.Product" title="Parent product" help="Used for variants"/>
   	
   
 <!--   	A Deplacer dans production :  -->

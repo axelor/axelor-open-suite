@@ -5,12 +5,12 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="ProductVariantConfiguration" lang="java">
+  <entity name="ProductVariantConfig" lang="java">
 	
-	<many-to-one name="productVariantAttribute1" ref="com.axelor.apps.base.db.ProductVariantAttribute"/>
-	<many-to-one name="productVariantAttribute2" ref="com.axelor.apps.base.db.ProductVariantAttribute"/>
-	<many-to-one name="productVariantAttribute3" ref="com.axelor.apps.base.db.ProductVariantAttribute"/>
-	<many-to-one name="productVariantAttribute4" ref="com.axelor.apps.base.db.ProductVariantAttribute"/>
+	<many-to-one name="productVariantAttr1" ref="com.axelor.apps.base.db.ProductVariantAttr"/>
+	<many-to-one name="productVariantAttr2" ref="com.axelor.apps.base.db.ProductVariantAttr"/>
+	<many-to-one name="productVariantAttr3" ref="com.axelor.apps.base.db.ProductVariantAttr"/>
+	<many-to-one name="productVariantAttr4" ref="com.axelor.apps.base.db.ProductVariantAttr"/>
 	<many-to-many name="productVariantValue1Set" ref="com.axelor.apps.base.db.ProductVariantValue"/>
 	<many-to-many name="productVariantValue2Set" ref="com.axelor.apps.base.db.ProductVariantValue"/>
 	<many-to-many name="productVariantValue3Set" ref="com.axelor.apps.base.db.ProductVariantValue"/>

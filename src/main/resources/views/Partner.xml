@@ -286,28 +286,11 @@
 		<call class="com.axelor.apps.base.web.PartnerController" method="showPartnerInfo"/>
 	</action-method>
     
-    <action-view name="action-partner-view-partner-invoice" title="Invoices" model="com.axelor.apps.account.db.Invoice">
-		<view type="grid" name="invoice-grid"/>
-		<view type="form" name="invoice-form"/>
-		<domain>(self.partner = :id AND :_isContact = false) OR (self.contactPartner = :id AND :_isContact = true)</domain>
-		<context name="id" expr="eval: id"/>
-		<context name="_isContact" expr="eval: isContact"/>
-	</action-view>
-	
-	<action-view name="action-partner-view-contact-invoice" title="Invoices" model="com.axelor.apps.account.db.Invoice">
-		<view type="grid" name="invoice-grid"/>
-		<view type="form" name="invoice-form"/>
-		<domain>(self.partner = :id AND :_isContact = false) OR (self.contactPartner = :id AND :_isContact = true)</domain>
-		<context name="id" expr="eval: id"/>
-		<context name="_isContact" expr="eval: isContact"/>
-	</action-view>
-	
 	<action-view name="action-partner-view-partner-sales-order" title="Sales orders" model="com.axelor.apps.supplychain.db.SalesOrder">
 		<view type="grid" name="sales-order-grid"/>
 		<view type="form" name="sales-order-form"/>
-		<domain>(self.clientPartner = :id AND :_isContact = false) OR (self.contactPartner = :id AND :_isContact = true)</domain>
+		<domain>self.clientPartner.id = :id OR self.contactPartner.id = :id</domain>
 		<context name="id" expr="eval: id"/>
-		<context name="_isContact" expr="eval: isContact"/>
 	</action-view>
 	
 	<action-view name="action-partner-view-sn-profile" title="Profiles" model="com.axelor.apps.socialnetwork.db.SnProfile">
@@ -356,7 +339,6 @@
 		<domain>(self.clientPartner.id = :id OR self.contactPartner.id = :id) and self.endDateTime &lt; :_todayTime and self.typeSelect != 5</domain>
 		<context name="id" expr="eval: id"/>
 		<context name="_todayTime" expr="eval: __datetime__"/>
-		<context name="_isContact" expr="eval: isContact"/>
 	</action-view>
    	
    	<action-view name="action-partner-view-opportunities" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity">
@@ -371,7 +353,6 @@
 		<view type="form" name="sales-order-form"/>
 		<domain>(self.clientPartner.id = :id OR self.contactPartner.id = :id)</domain>
 		<context name="id" expr="eval: id"/>
-		<context name="_isContact" expr="eval: isContact"/>
 	</action-view>
 	
 	<action-view name="action-partner-view-tickets" title="Tickets" model="com.axelor.apps.crm.db.Event">
@@ -379,7 +360,6 @@
 		<view type="form" name="ticket-form"/>
 		<domain>(self.clientPartner.id = :id OR self.contactPartner.id = :id) AND self.typeSelect = 5</domain>
 		<context name="id" expr="eval: id"/>
-		<context name="_isContact" expr="eval: isContact"/>
 	</action-view>
     
     <action-record name="action-partner-record-main-invoicing-address" model="com.axelor.apps.base.db.Partner">
