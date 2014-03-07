@@ -7,7 +7,7 @@
     <form cols="4" name="production-order-wizard-form" title="Production order wizard" model="com.axelor.apps.base.db.Wizard" onNew="action-production-order-wizard-record-default">
 
 		<field name="qty" widget="decimal" title="Quantity"/>
-		<field name="billOfMaterial" widget="ManyToOne[target=com.axelor.apps.production.db.BillOfMaterial]" title="BOM" domain="self.isRawMaterial = 'false' and self.product.id = :product_id"/>
+		<field name="billOfMaterial" widget="ManyToOne[target=com.axelor.apps.production.db.BillOfMaterial]" title="BOM" onSelect="action-production-order-wizard-attrs-bill-of-material-domain"/>
 		<button name="validate" title="Validate" onClick="action-production-order-wizard-method-validate"/>
 
 	</form>
@@ -15,11 +15,16 @@
 	<action-record name="action-production-order-wizard-record-default" model="com.axelor.apps.base.db.Wizard">
     	<field name="product_id" expr="eval: _productId?.id"/>
 		<field name="qty" expr="eval: 1.0"/>
-		<field name="billOfMaterial" expr="eval: com.axelor.apps.production.db.BillOfMaterial.filter('self.id = ?1',_productId.defaultBillOfMaterial.id).fetchOne()"/>
+		<field name="billOfMaterial" expr="eval: com.axelor.apps.production.db.BillOfMaterial.filter('self.id = ?1',_productId.parentProduct.defaultBillOfMaterial.id).fetchOne()" if="_productId?.parentProduct?.defaultBillOfMaterial?.id"/>
+		<field name="billOfMaterial" expr="eval: com.axelor.apps.production.db.BillOfMaterial.filter('self.id = ?1',_productId.defaultBillOfMaterial.id).fetchOne()" if="_productId?.defaultBillOfMaterial?.id"/>
 	</action-record>
 
     <action-method name="action-production-order-wizard-method-validate">
 		<call class="com.axelor.apps.production.web.ProductionOrderWizardController" method="validate"/>
     </action-method>
+    
+    <action-attrs name="action-production-order-wizard-attrs-bill-of-material-domain">
+		<attribute name="domain" for="billOfMaterial" expr="eval: &quot;(self.product.id = ${_productId?.parentProduct?.id} OR self.product.id = ${product_id}) AND self.isRawMaterial = 'false' &quot;"/>
+	</action-attrs>
     
 </object-views>

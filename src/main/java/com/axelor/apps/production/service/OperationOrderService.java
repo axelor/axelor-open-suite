@@ -177,42 +177,6 @@ public class OperationOrderService {
 //	}
 	
 	
-//	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-//	public void copyToProduce(OperationOrder operationOrder)  {
-//		
-//		if(operationOrder.getToProduceProdProductList() != null)  {
-//			
-//			for(ProdProduct prodProduct : operationOrder.getToProduceProdProductList())  {
-//				
-//				operationOrder.addProducedProdProductListItem(new ProdProduct(prodProduct.getProduct(), prodProduct.getQty(), prodProduct.getUnit()));
-//
-//			}
-//			
-//		}
-//		
-//		operationOrder.save();
-//		
-//	}
-//	
-//	
-//	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-//	public void copyToConsume(OperationOrder operationOrder)  {
-//		
-//		if(operationOrder.getToConsumeProdProductList() != null)  {
-//			
-//			for(ProdProduct prodProduct : operationOrder.getToConsumeProdProductList())  {
-//				
-//				operationOrder.addConsumedProdProductListItem(new ProdProduct(prodProduct.getProduct(), prodProduct.getQty(), prodProduct.getUnit()));
-//
-//			}
-//			
-//		}
-//		
-//		operationOrder.save();
-//		
-//	}
-	
-	
 	
 }
 

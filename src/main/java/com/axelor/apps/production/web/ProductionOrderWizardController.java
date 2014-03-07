@@ -35,6 +35,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.service.ProductionOrderService;
@@ -65,7 +66,9 @@ public class ProductionOrderWizardController {
 			
 			BigDecimal qty = new BigDecimal((String)context.get("qty"));
 			
-			ProductionOrder productionOrder = productionOrderService.generateProductionOrder(billOfMaterial, qty, null);
+			Product product = Product.find(((Integer) context.get("product_id")).longValue());
+			
+			ProductionOrder productionOrder = productionOrderService.generateProductionOrder(product, billOfMaterial, qty, null);
 			
 			if(productionOrder != null)  {
 				response.setFlash("Ordre de production créé ("+productionOrder.getProductionOrderSeq()+")");

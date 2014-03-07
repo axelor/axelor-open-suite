@@ -111,7 +111,6 @@ public class OperationOrderStockMoveService {
 				prodProduct.getQty(), 
 				prodProduct.getUnit(), 
 				null, 
-				null,
 				null, 
 				StockMoveLineService.TYPE_PRODUCTIONS);
 			

@@ -40,9 +40,9 @@ import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.supplychain.db.SalesOrder;
 import com.axelor.apps.supplychain.db.SalesOrderLine;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
-import com.axelor.meta.service.MetaTranslations;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -52,9 +52,6 @@ public class ProductionOrderSalesOrderService {
 	
 	@Inject
 	private ProductionOrderService productionOrderService;
-	
-	@Inject
-	private MetaTranslations metaTranslations;
 	
 	
 	public void generateProductionOrder(SalesOrder salesOrder) throws AxelorException  {
@@ -68,7 +65,6 @@ public class ProductionOrderSalesOrderService {
 			}
 			
 		}
-		
 		
 	}
 	
@@ -88,18 +84,23 @@ public class ProductionOrderSalesOrderService {
 				
 			}
 			
+			if(billOfMaterial == null && product.getParentProduct() != null)  {
+				
+				billOfMaterial = product.getParentProduct().getDefaultBillOfMaterial();
+				
+			}
+			
 			if(billOfMaterial == null)  {
 				
 				throw new AxelorException(
-						String.format(metaTranslations.get(IExceptionMessage.PRODUCTION_ORDER_SALES_ORDER_NO_BOM), product.getName(), product.getCode()), 
+						String.format(JPA.translate(IExceptionMessage.PRODUCTION_ORDER_SALES_ORDER_NO_BOM), product.getName(), product.getCode()), 
 						IException.CONFIGURATION_ERROR);
 				
 			}
 			
-			return productionOrderService.generateProductionOrder(billOfMaterial, salesOrderLine.getQty(), salesOrderLine.getSalesOrder().getProject()).save();
+			return productionOrderService.generateProductionOrder(product, billOfMaterial, salesOrderLine.getQty(), salesOrderLine.getSalesOrder().getProject()).save();
 		
 		}
-		
 		
 		return null;
 		

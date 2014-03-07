@@ -37,24 +37,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.IAdministration;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProductionOrder;
+import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
-import com.axelor.meta.service.MetaTranslations;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class ProductionOrderService {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
-	
-	@Inject
-	private MetaTranslations metaTranslations;
 	
 	@Inject
 	private ManufOrderService manufOrderService;
@@ -99,7 +97,7 @@ public class ProductionOrderService {
 		String seq = sequenceService.getSequence(IAdministration.PRODUCTION_ORDER, false);
 		
 		if(seq == null)  {
-			throw new AxelorException(metaTranslations.get(IExceptionMessage.PRODUCTION_ORDER_SEQ), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(JPA.translate(IExceptionMessage.PRODUCTION_ORDER_SEQ), IException.CONFIGURATION_ERROR);
 		}
 		
 		return seq;
@@ -107,13 +105,14 @@ public class ProductionOrderService {
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public ProductionOrder generateProductionOrder(BillOfMaterial billOfMaterial, BigDecimal qtyRequested, Project businessProject) throws AxelorException  {
+	public ProductionOrder generateProductionOrder(Product product, BillOfMaterial billOfMaterial, BigDecimal qtyRequested, Project businessProject) throws AxelorException  {
 		
 		ProductionOrder productionOrder = this.createProductionOrder(businessProject, false);
 		
 		BigDecimal qty = qtyRequested.divide(billOfMaterial.getQty());
 		
 		ManufOrder manufOrder = manufOrderService.generateManufOrder(
+				product, 
 				qty, 
 				ManufOrderService.DEFAULT_PRIORITY, 
 				ManufOrderService.IS_TO_INVOICE, 

@@ -9,9 +9,9 @@
     	</toolbar>
         <field name="manufOrderSeq"/>
         <field name="company"/>
+        <field name="product"/>
         <field name="billOfMaterial"/>
         <field name="prodProcess"/>
-        <field name="outStockMove"/>
         <field name="plannedStartDateT"/>
         <field name="plannedEndDateT"/>
         <field name="realStartDateT"/>
@@ -43,7 +43,7 @@
         <field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="2" readonly="true"/>
         <field name="company" readonlyIf="statusSelect > 1"/>
         <field name="billOfMaterial" domain="self.isRawMaterial = false" readonlyIf="statusSelect > 1"/>
-        <field name="billOfMaterial.product"/>
+        <field name="product"/>
         <field name="qty" readonlyIf="statusSelect > 1"/>
         <field name="billOfMaterial.prodProcess"/>
         <field name="isConsProOnOperation" readonlyIf="statusSelect > 1" onChange="action-manuf-order-attrs-is-cons-pro-on-operation"/>

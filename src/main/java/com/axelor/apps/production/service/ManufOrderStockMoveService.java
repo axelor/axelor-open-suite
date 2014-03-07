@@ -150,7 +150,6 @@ public class ManufOrderStockMoveService {
 				prodProduct.getProduct(), 
 				prodProduct.getQty(), 
 				prodProduct.getUnit(), 
-				null, 
 				null,
 				null, 
 				StockMoveLineService.TYPE_PRODUCTIONS);

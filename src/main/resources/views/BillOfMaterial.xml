@@ -4,6 +4,7 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_0.9.xsd">
     
     <grid name="bill-of-material-grid" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">
+    	<field name="name"/>
         <field name="product" domain="self.productTypeSelect = 'storable'"  onChange="action-bill-of-material-record-product"/>
         <field name="qty"/>
         <field name="unit"/>

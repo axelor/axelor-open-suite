@@ -42,6 +42,8 @@ import org.slf4j.LoggerFactory;
 import com.axelor.app.production.db.IManufOrder;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.ProductVariantService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
@@ -51,9 +53,9 @@ import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.ProdRemains;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
-import com.axelor.meta.service.MetaTranslations;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -64,9 +66,6 @@ public class ManufOrderService {
 	public static int DEFAULT_PRIORITY = 10;
 	public static int DEFAULT_PRIORITY_INTERVAL = 10;
 	public static boolean IS_TO_INVOICE = false;
-	
-	@Inject
-	private MetaTranslations metaTranslations;
 	
 	@Inject
 	private SequenceService sequenceService;
@@ -80,6 +79,8 @@ public class ManufOrderService {
 	@Inject
 	private ManufOrderWorkflowService manufOrderWorkflowService;
 	
+	@Inject
+	private ProductVariantService productVariantService;
 	
 	
 	
@@ -104,10 +105,10 @@ public class ManufOrderService {
 
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public ManufOrder generateManufOrder(BigDecimal qty, int priority, boolean isToInvoice, Company company,
+	public ManufOrder generateManufOrder(Product product, BigDecimal qty, int priority, boolean isToInvoice, Company company,
 			BillOfMaterial billOfMaterial, LocalDateTime plannedStartDateT) throws AxelorException  {
 		
-		ManufOrder manufOrder = this.createManufOrder(qty, priority, IS_TO_INVOICE, company, billOfMaterial, plannedStartDateT);
+		ManufOrder manufOrder = this.createManufOrder(product, qty, priority, IS_TO_INVOICE, company, billOfMaterial, plannedStartDateT);
 		
 		manufOrder = manufOrderWorkflowService.plan(manufOrder);
 		
@@ -116,17 +117,22 @@ public class ManufOrderService {
 	}
 	
 	
-	public void createToConsumeProdProductList(ManufOrder manufOrder, BillOfMaterial billOfMaterial)  {
+	public void createToConsumeProdProductList(ManufOrder manufOrder)  {
 		
 		BigDecimal manufOrderQty = manufOrder.getQty();
+		
+		BillOfMaterial billOfMaterial = manufOrder.getBillOfMaterial();
 		
 		if(billOfMaterial.getBillOfMaterialList() != null)  {
 			
 			for(BillOfMaterial billOfMaterialLine : billOfMaterial.getBillOfMaterialList())  {
 				
 				if(!billOfMaterialLine.getHasNoManageStock())  {
+					
+					Product product = productVariantService.getProductVariant(manufOrder.getProduct(), billOfMaterialLine.getProduct());
+					
 					manufOrder.addToConsumeProdProductListItem(
-							new ProdProduct(billOfMaterialLine.getProduct(), billOfMaterialLine.getQty().multiply(manufOrderQty), billOfMaterialLine.getUnit()));
+							new ProdProduct(product, billOfMaterialLine.getQty().multiply(manufOrderQty), billOfMaterialLine.getUnit()));
 				}
 			}
 			
@@ -135,21 +141,25 @@ public class ManufOrderService {
 	}
 	
 	
-	public void createToProduceProdProductList(ManufOrder manufOrder, BillOfMaterial billOfMaterial)  {
+	public void createToProduceProdProductList(ManufOrder manufOrder)  {
 		
 		BigDecimal manufOrderQty = manufOrder.getQty();
 		
-		// AJout du produit final
+		BillOfMaterial billOfMaterial = manufOrder.getBillOfMaterial();
+		
+		// Ajout du produit final
 		manufOrder.addToProduceProdProductListItem(
-				new ProdProduct(billOfMaterial.getProduct(), billOfMaterial.getQty().multiply(manufOrderQty), billOfMaterial.getUnit()));
+				new ProdProduct(manufOrder.getProduct(), billOfMaterial.getQty().multiply(manufOrderQty), billOfMaterial.getUnit()));
 		
 		// Ajout des restes
 		if(billOfMaterial.getProdRemainsList() != null)  {
 			
 			for(ProdRemains prodRemains : billOfMaterial.getProdRemainsList())  {
+
+				Product product = productVariantService.getProductVariant(manufOrder.getProduct(), prodRemains.getProduct());
 				
 				manufOrder.addToProduceProdProductListItem(
-						new ProdProduct(prodRemains.getProduct(), prodRemains.getQty().multiply(manufOrderQty), prodRemains.getUnit()));
+						new ProdProduct(product, prodRemains.getQty().multiply(manufOrderQty), prodRemains.getUnit()));
 				
 			}
 			
@@ -158,7 +168,7 @@ public class ManufOrderService {
 	}
 	
 	
-	public ManufOrder createManufOrder(BigDecimal qty, int priority, boolean isToInvoice, Company company,
+	public ManufOrder createManufOrder(Product product, BigDecimal qty, int priority, boolean isToInvoice, Company company,
 			BillOfMaterial billOfMaterial, LocalDateTime plannedStartDateT) throws AxelorException  {
 		
 		logger.debug("Création d'un OF {}", priority);
@@ -173,23 +183,25 @@ public class ManufOrderService {
 				priority, 
 				this.isManagedConsumedProduct(billOfMaterial), 
 				billOfMaterial, 
+				product,
 				prodProcess, 
 				plannedStartDateT, 
 				IManufOrder.STATUS_DRAFT);
-		
 			
-		for(ProdProcessLine prodProcessLine : this._sortProdProcessLineByPriority(prodProcess.getProdProcessLineList()))  {
-			
-			manufOrder.addOperationOrderListItem(
-					operationOrderService.createOperationOrder(manufOrder, prodProcessLine, isToInvoice));
-			
-		}
+		if(prodProcess != null && prodProcess.getProdProcessLineList() != null)  {
+			for(ProdProcessLine prodProcessLine : this._sortProdProcessLineByPriority(prodProcess.getProdProcessLineList()))  {
+				
+				manufOrder.addOperationOrderListItem(
+						operationOrderService.createOperationOrder(manufOrder, prodProcessLine, isToInvoice));
+				
+			}
+		}	
 			
 		if(!manufOrder.getIsConsProOnOperation())  {
-			this.createToConsumeProdProductList(manufOrder, billOfMaterial);
+			this.createToConsumeProdProductList(manufOrder);
 		}
 		
-		this.createToProduceProdProductList(manufOrder, billOfMaterial);
+		this.createToProduceProdProductList(manufOrder);
 		
 		return manufOrder; 
 		
@@ -220,7 +232,7 @@ public class ManufOrderService {
 		String seq = sequenceService.getSequence(IAdministration.MANUF_ORDER, false);
 		
 		if(seq == null)  {
-			throw new AxelorException(metaTranslations.get(IExceptionMessage.MANUF_ORDER_SEQ), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(JPA.translate(IExceptionMessage.MANUF_ORDER_SEQ), IException.CONFIGURATION_ERROR);
 		}
 		
 		return seq;
@@ -245,43 +257,5 @@ public class ManufOrderService {
 		
 	}
 	
-	
-	
-	
-
-//	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-//	public void copyToProduce(ManufOrder manufOrder)  {
-//		
-//		if(manufOrder.getToProduceProdProductList() != null)  {
-//			
-//			for(ProdProduct prodProduct : manufOrder.getToProduceProdProductList())  {
-//				
-//				manufOrder.addProducedProdProductListItem(new ProdProduct(prodProduct.getProduct(), prodProduct.getQty(), prodProduct.getUnit()));
-//
-//			}
-//			
-//		}
-//		
-//		manufOrder.save();
-//		
-//	}
-//	
-//	
-//	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-//	public void copyToConsume(ManufOrder manufOrder)  {
-//		
-//		if(manufOrder.getToConsumeProdProductList() != null)  {
-//			
-//			for(ProdProduct prodProduct : manufOrder.getToConsumeProdProductList())  {
-//				
-//				manufOrder.addConsumedProdProductListItem(new ProdProduct(prodProduct.getProduct(), prodProduct.getQty(), prodProduct.getUnit()));
-//
-//			}
-//			
-//		}
-//		
-//		manufOrder.save();
-//		
-//	}
 	
 }
