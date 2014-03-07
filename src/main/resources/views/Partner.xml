@@ -38,7 +38,7 @@
     </grid>
     
     <form name="partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" cols="6" colWidths="25*" 
-    onNew="action-partner-record-partner-type-select,action-partner-record-set-default" 
+    onNew="action-partner-record-partner-type-select,action-partner-record-set-default,action-partner-record-customer-supplier-type" 
     onLoad="action-partner-attrs-change-name" 
     onSave="save,action-set-partner-seq,action-create-accounting-situation">
 	    <toolbar>
@@ -383,9 +383,12 @@
     	<field name="fullName" expr="eval: id" if="firstName == null &amp;&amp; name == null"/>
     </action-record>
     
-    <action-record name="action-partner-record-set-default" model="com.axelor.apps.base.db.Partner">
+    <action-record name="action-partner-record-customer-supplier-type" model="com.axelor.apps.base.db.Partner">
     	<field name="customerTypeSelect" expr="eval: 1" />
     	<field name="supplierTypeSelect" expr="eval:1"/>
+    </action-record>
+    
+    <action-record name="action-partner-record-set-default" model="com.axelor.apps.base.db.Partner">
     	<field name="currency" expr="eval:com.axelor.apps.base.db.UserInfo.all().filter('internalUser = ?1',__user__).fetchOne()?.activeCompany?.currency" if="!isContact"/>
     	<field name="invoiceSendingFormatSelect" expr="eval:'emailpaper'" if="!isContact"/>
     	<field name="userInfo"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
