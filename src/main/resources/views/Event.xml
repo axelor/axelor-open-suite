@@ -9,8 +9,8 @@
     		<button name="importCalendar" title="Import calendar" onClick="com.axelor.apps.crm.web.CalendarController:importCalendar" colSpan="1"/>
     		<button name="synchronizeCalendars" title="Synchronize calendar" onClick="com.axelor.apps.crm.web.CalendarController:synchronizeCalendars" colSpan="1"/>
     	</toolbar>
+    	<field name="subject"/>
         <field name="typeSelect"/>
-        <field name="subject"/>
         <field name="startDateTime"/>
         <field name="duration" widget="duration[big=true]"/>
         <field name="userInfo"/>
@@ -220,8 +220,8 @@
     
     <grid name="meeting-grid" title="Meetings" model="com.axelor.apps.crm.db.Event" orderBy="-startDateTime">
     	<hilite color="warning" if="startDateTime > __time__"/>
+    	<field name="subject"/>
 	    <field name="meetingType"/>
-	    <field name="subject"/>
 	    <field name="relatedToSelect"/>
 	    <field name="startDateTime"/>
 	    <field name="endDateTime"/>
