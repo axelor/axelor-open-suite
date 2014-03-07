@@ -234,7 +234,7 @@
     	<field name="webSite" expr="eval: _lead.website"/>
     	<field name="source" expr="eval: _lead.source"/>
     	<field name="department" expr="eval: _lead.department"/>
-    	<field name="userInfo" expr="eval: _lead.userInfo"/>
+    	<field name="userInfo" expr="eval: com.axelor.apps.base.db.UserInfoi_lead.userInfo"/>
     	<field name="team" expr="eval: _lead.team"/>
     	<field name="customerTypeSelect" expr="eval: 2"/>
     </action-record>
@@ -281,6 +281,7 @@
     	<field name="department" expr="eval: _lead.department"/>
     	<field name="userInfo" expr="eval: _lead.userInfo"/>
     	<field name="team" expr="eval: _lead.team"/>
+    	<field name="jobTitle" expr="eval: _lead.jobTitle"/>
     </action-record>
     
     <action-record name="action-convert-lead-wizard-attrs-default-contact-address" model="com.axelor.apps.base.db.Partner">
@@ -351,13 +352,14 @@
         	<field name="callStatusSelect" colSpan="2"/>
             <field name="statusSelect" showTitle="false" colSpan="1"/>
 	        <spacer/><break/>
-	        <group title="Meeting date" colSpan="4" cols="5" css="groupTitle">
-	        	<field name="startDateTime" colSpan="2"/>
-	         	<field name="durationHours" colSpan="2"/>
-		        <field name="durationMinutesSelect" showTitle="false" colSpan="1"/>
-	        </group>
 	        <group title="Description" colSpan="4" cols="2" css="groupTitle">
 	        	<field name="description" widget="TEXT[height=4]" colSpan="2" showTitle="false"/>
+	        </group>
+	        <group colSpan="4" css="groupTitle" cols="6" colWidths="25*">
+	            <separator title="Dates" colSpan="6"/>
+	            <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time"/>
+				<field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration"/>
+	            <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time"/>
 	        </group>
         </group>
         <group title="Assignment" cols="4" colSpan="4" canCollapse="true">
@@ -375,8 +377,7 @@
     	<field name="team" expr="eval: _lead.team"/>
     	<field name="statusSelect" expr="1"/>
     	<field name="startDateTime" expr="eval: __time__"/>
-    	<field name="durationHours" expr="1"/>
-    	<field name="durationMinutesSelect" expr="0"/>
+    	<field name="duration" expr="0"/>
     	<field name="callStatusSelect" expr="2"/>
     </action-record>
 	
@@ -386,13 +387,14 @@
         	<field name="statusSelect"/>
             <field name="meetingType" widget="SuggestBox"/>
 	        <spacer/><break/>
-	        <group title="Meeting date" colSpan="4" cols="5" css="groupTitle">
-	        	<field name="startDateTime" colSpan="2"/>
-	         	<field name="durationHours" colSpan="2"/>
-		        <field name="durationMinutesSelect" showTitle="false" colSpan="1"/>
-	        </group>
 	        <group title="Description" colSpan="4" cols="2" css="groupTitle">
 	        	<field name="description" widget="TEXT[height=4]" colSpan="2" showTitle="false"/>
+	        </group>
+	        <group colSpan="4" css="groupTitle" cols="6" colWidths="25*">
+	            <separator title="Dates" colSpan="6"/>
+	            <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time"/>
+	            <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time"/>
+	            <field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration"/>
 	        </group>
         </group>
         <group title="Assignment" cols="4" colSpan="4" canCollapse="true">
@@ -409,8 +411,7 @@
     	<field name="team" expr="eval: _lead.team"/>
     	<field name="statusSelect" expr="1"/>
     	<field name="startDateTime" expr="eval: __time__"/>
-    	<field name="durationHours" expr="1"/>
-    	<field name="durationMinutesSelect" expr="0"/>
+    	<field name="duration" expr="0"/>
     </action-record>
     
     
@@ -420,13 +421,15 @@
 	        <field name="taskStatusSelect"/>
             <field name="prioritySelect"/>
 	        <spacer/><break/>
-         	<group title="Task date" colSpan="4" cols="4" colWidths="25*" css="groupTitle">
-		        <field name="startDateTime" onChange="action-meeting-method-compute-start-date-time"/>
-		        <field name="endDateTime" onChange="action-meeting-method-compute-end-date-time"/>
-		        <field name="durationHours" onChange="action-meeting-method-compute-duration"/>
-	        </group>
 	        <group title="Description" colSpan="4" cols="2" css="groupTitle">
 	        	<field name="description" widget="TEXT[height=4]" colSpan="2" showTitle="false"/>
+	        </group>
+	        <group colSpan="4" css="groupTitle" cols="4" colWidths="25*">
+	            <separator title="Dates" colSpan="4"/>
+	            <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time"/>
+				<field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration"/>
+	            <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time"/>
+				<field name="limitDateT"/>
 	        </group>
         </group>
         <group title="Assigned to" cols="4" colSpan="4" canCollapse="true">
@@ -444,8 +447,7 @@
     	<field name="taskStatusSelect" expr="1"/>
     	<field name="startDateTime" expr="eval: __time__"/>
     	<field name="progressSelect" expr="0"/>
-    	<field name="durationHours" expr="1"/>
-    	<field name="durationMinutesSelect" expr="0"/>
+    	<field name="duration" expr="0"/>
     </action-record>
     
     <action-method name="action-lead-method-convert-lead">
