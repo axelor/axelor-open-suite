@@ -99,7 +99,7 @@
 	            <field name="bankDetails" widget="SuggestBox" domain="self.partner.id = :id"/>
 	            <field name="bankDetailsList" showTitle="false" colSpan="4" form-view="bank-details-form" grid-view="bank-details-grid"/>
 	            <button name="showAllInvoices" title="Show invoices" colSpan="2" onClick="save,action-partner-view-partner-invoice"/>
-	            <button name="showUnpaidInvoice" title="View all unpaid invoices" colSpan="2" onClick="save,action-partner-method-show-invoice"/>
+	            <button name="showUnpaidInvoice" title="View all unpaid invoices" colSpan="2" onClick="save,action-partner-view-show-unpaid-invoice"/>
 	        </page>
 	        <page title="Settings" cols="4">
 	            <field name="partnerSeq"/>
@@ -152,5 +152,19 @@
 	<action-method name="action-create-accounting-situation" >
 		<call class="com.axelor.apps.account.web.PartnerController" method="createAccountingSituations"/>
 	</action-method>
+	
+	<action-view name="action-partner-view-partner-invoice" title="Invoices" model="com.axelor.apps.account.db.Invoice">
+		<view type="grid" name="invoice-grid"/>
+		<view type="form" name="invoice-form"/>
+		<domain>self.partner.id = :id</domain>
+		<context name="id" expr="eval: id"/>
+	</action-view>
+	
+	<action-view name="action-partner-view-show-unpaid-invoice" title="Unpaid invoices" model="com.axelor.apps.account.db.Invoice">
+		<view type="grid" name="invoice-grid"/>
+		<view type="form" name="invoice-form"/>
+		<domain>self.partner.id = :id AND self.inTaxTotalRemaining > 0</domain>
+		<context name="id" expr="eval: id"/>
+	</action-view>
 	
 	</object-views>
