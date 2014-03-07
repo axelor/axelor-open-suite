@@ -130,7 +130,7 @@ public class StockMoveInvoiceService {
 		}
 		
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, product.getName(), stockMoveLine.getPrice(), 
-				product.getDescription(), stockMoveLine.getQty(), stockMoveLine.getUnit(), task, product.getInvoiceLineType(), stockMoveLine.getProductVariant(), BigDecimal.ZERO, 0, null, false)  {
+				product.getDescription(), stockMoveLine.getQty(), stockMoveLine.getUnit(), task, product.getInvoiceLineType(), BigDecimal.ZERO, 0, null, false)  {
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
 				

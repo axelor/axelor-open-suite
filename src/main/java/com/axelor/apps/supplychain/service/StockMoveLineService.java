@@ -39,11 +39,9 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.IProduct;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.TrackingNumber;
 import com.axelor.apps.base.db.TrackingNumberConfiguration;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.service.ProductVariantService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.supplychain.db.IStockMove;
@@ -60,9 +58,6 @@ public class StockMoveLineService {
 
 	@Inject 
 	private LocationLineService locationLineService;
-	
-	@Inject
-	private ProductVariantService productVariantService;
 	
 	@Inject
 	private TrackingNumberService trackingNumberService;
@@ -85,16 +80,11 @@ public class StockMoveLineService {
 	 * @return l'objet StockMoveLine
 	 * @throws AxelorException 
 	 */
-	public StockMoveLine createStockMoveLine(Product product, BigDecimal quantity, Unit unit, BigDecimal price, StockMove stockMove, ProductVariant productVariant, int type ) throws AxelorException {
+	public StockMoveLine createStockMoveLine(Product product, BigDecimal quantity, Unit unit, BigDecimal price, StockMove stockMove, int type ) throws AxelorException {
 
 		if(product != null && product.getApplicationTypeSelect() == IProduct.APPLICATION_TYPE_PRODUCT) {
 
-			ProductVariant stockProductVariant = productVariant;
-			if(productVariant != null && !productVariant.getUsedForStock())  {
-				stockProductVariant = productVariantService.getStockProductVariant(productVariant);
-			}
-			
-			StockMoveLine stockMoveLine = this.createStockMoveLine(product, quantity, unit, price, stockMove, stockProductVariant, null);
+			StockMoveLine stockMoveLine = this.createStockMoveLine(product, quantity, unit, price, stockMove, null);
 			
 			TrackingNumberConfiguration trackingNumberConfiguration = product.getTrackingNumberConfiguration();
 			if(trackingNumberConfiguration != null)  {
@@ -105,26 +95,26 @@ public class StockMoveLineService {
 							if(trackingNumberConfiguration.getGenerateSaleAutoTrackingNbr())  {
 								// Générer numéro de série si case cochée
 								stockMoveLine.setTrackingNumber(
-										trackingNumberService.getTrackingNumber(product, stockProductVariant, trackingNumberConfiguration.getSaleQtyByTracking(), stockMove.getCompany(), stockMove.getEstimatedDate()));
+										trackingNumberService.getTrackingNumber(product, trackingNumberConfiguration.getSaleQtyByTracking(), stockMove.getCompany(), stockMove.getEstimatedDate()));
 							}
 						}
 						else if(trackingNumberConfiguration.getIsPurchaseTrackingManaged() || trackingNumberConfiguration.getIsProductionTrackingManaged())  {
 							// Rechercher le numéro de suivi d'apèrs FIFO/LIFO
-							this.assignTrackingNumber(stockMoveLine, product, stockMove.getFromLocation(), stockProductVariant);
+							this.assignTrackingNumber(stockMoveLine, product, stockMove.getFromLocation());
 						}
 						break;
 					case 2:
 						if(trackingNumberConfiguration.getIsPurchaseTrackingManaged() && trackingNumberConfiguration.getGeneratePurchaseAutoTrackingNbr())  {
 							// Générer numéro de série si case cochée
 							stockMoveLine.setTrackingNumber(
-									trackingNumberService.getTrackingNumber(product, stockProductVariant, trackingNumberConfiguration.getPurchaseQtyByTracking(), stockMove.getCompany(), stockMove.getEstimatedDate()));
+									trackingNumberService.getTrackingNumber(product, trackingNumberConfiguration.getPurchaseQtyByTracking(), stockMove.getCompany(), stockMove.getEstimatedDate()));
 						}
 						break;
 					case 3:
 						if(trackingNumberConfiguration.getIsProductionTrackingManaged() && trackingNumberConfiguration.getGenerateProductionAutoTrackingNbr())  {
 							// Générer numéro de série si case cochée
 							stockMoveLine.setTrackingNumber(
-									trackingNumberService.getTrackingNumber(product, stockProductVariant, trackingNumberConfiguration.getProductionQtyByTracking(), stockMove.getCompany(), stockMove.getEstimatedDate()));
+									trackingNumberService.getTrackingNumber(product, trackingNumberConfiguration.getProductionQtyByTracking(), stockMove.getCompany(), stockMove.getEstimatedDate()));
 						}
 						break;
 	
@@ -150,8 +140,7 @@ public class StockMoveLineService {
 	 * @return
 	 * @throws AxelorException
 	 */
-	public StockMoveLine createStockMoveLine(Product product, BigDecimal quantity, Unit unit, BigDecimal price, StockMove stockMove, 
-			ProductVariant productVariant, TrackingNumber trackingNumber) throws AxelorException {
+	public StockMoveLine createStockMoveLine(Product product, BigDecimal quantity, Unit unit, BigDecimal price, StockMove stockMove, TrackingNumber trackingNumber) throws AxelorException {
 
 		StockMoveLine stockMoveLine = new StockMoveLine();
 		stockMoveLine.setStockMove(stockMove);
@@ -159,7 +148,6 @@ public class StockMoveLineService {
 		stockMoveLine.setQty(quantity);
 		stockMoveLine.setUnit(unit);
 		stockMoveLine.setPrice(price);
-		stockMoveLine.setProductVariant(productVariant);
 		stockMoveLine.setTrackingNumber(trackingNumber);
 		
 		return stockMoveLine;
@@ -167,9 +155,9 @@ public class StockMoveLineService {
 	
 	
 	
-	public void assignTrackingNumber(StockMoveLine stockMoveLine, Product product, Location location, ProductVariant productVariant) throws AxelorException  {
+	public void assignTrackingNumber(StockMoveLine stockMoveLine, Product product, Location location) throws AxelorException  {
 		
-		List<LocationLine> locationLineList = this.getLocationLines(product, location, productVariant);
+		List<LocationLine> locationLineList = this.getLocationLines(product, location);
 		
 		if(locationLineList != null)  {
 			for(LocationLine locationLine : locationLineList)  {
@@ -189,11 +177,11 @@ public class StockMoveLineService {
 	
 	
 	
-	public List<LocationLine> getLocationLines(Product product, Location location, ProductVariant productVariant) throws AxelorException  {
+	public List<LocationLine> getLocationLines(Product product, Location location) throws AxelorException  {
 		
 		List<LocationLine> locationLineList = LocationLine.all()
-				.filter("self.product = ?1 AND self.futureQty > 0 AND self.trackingNumber IS NOT NULL AND self.detailsLocation = ?2 AND self.productVariant = ?3"
-						+trackingNumberService.getOrderMethod(product.getTrackingNumberConfiguration()), product, location, productVariant).fetch();
+				.filter("self.product = ?1 AND self.futureQty > 0 AND self.trackingNumber IS NOT NULL AND self.detailsLocation = ?2"
+						+trackingNumberService.getOrderMethod(product.getTrackingNumberConfiguration()), product, location).fetch();
 		
 		return locationLineList;
 		
@@ -209,7 +197,6 @@ public class StockMoveLineService {
 				stockMoveLine.getUnit(), 
 				stockMoveLine.getPrice(), 
 				stockMoveLine.getStockMove(), 
-				stockMoveLine.getProductVariant(),
 				trackingNumber);
 		
 		stockMoveLine.getStockMove().getStockMoveLineList().add(newStockMoveLine);
@@ -221,7 +208,8 @@ public class StockMoveLineService {
 	
 	
 
-	public void updateLocations(Location fromLocation, Location toLocation, int fromStatus, int toStatus, List<StockMoveLine> stockMoveLineList, LocalDate lastFutureStockMoveDate, Project businessProject) throws AxelorException  {
+	public void updateLocations(Location fromLocation, Location toLocation, int fromStatus, int toStatus, List<StockMoveLine> stockMoveLineList, 
+			LocalDate lastFutureStockMoveDate, Project businessProject) throws AxelorException  {
 		
 		for(StockMoveLine stockMoveLine : stockMoveLineList)  {
 			
@@ -233,7 +221,8 @@ public class StockMoveLineService {
 				qty = new UnitConversionService().convert(stockMoveLineUnit, productUnit, qty);
 			}
 			
-			this.updateLocations(fromLocation, toLocation, stockMoveLine.getProduct(), qty, fromStatus, toStatus, lastFutureStockMoveDate, stockMoveLine.getProductVariant(), stockMoveLine.getTrackingNumber(), businessProject);
+			this.updateLocations(fromLocation, toLocation, stockMoveLine.getProduct(), qty, fromStatus, toStatus, 
+					lastFutureStockMoveDate, stockMoveLine.getTrackingNumber(), businessProject);
 			
 		}
 		
@@ -241,17 +230,17 @@ public class StockMoveLineService {
 	
 	
 	public void updateLocations(Location fromLocation, Location toLocation, Product product, BigDecimal qty, int fromStatus, int toStatus, LocalDate 
-			lastFutureStockMoveDate, ProductVariant productVariant, TrackingNumber trackingNumber, Project businessProject) throws AxelorException  {
+			lastFutureStockMoveDate, TrackingNumber trackingNumber, Project businessProject) throws AxelorException  {
 		
 		switch(fromStatus)  {
 			case IStockMove.STATUS_PLANNED:
-				locationLineService.updateLocation(fromLocation, product, qty, false, true, true, null, trackingNumber, productVariant, businessProject);
-				locationLineService.updateLocation(toLocation, product, qty, false, true, false, null, trackingNumber, productVariant, businessProject);
+				locationLineService.updateLocation(fromLocation, product, qty, false, true, true, null, trackingNumber, businessProject);
+				locationLineService.updateLocation(toLocation, product, qty, false, true, false, null, trackingNumber, businessProject);
 				break;
 				
 			case IStockMove.STATUS_REALIZED:
-				locationLineService.updateLocation(fromLocation, product, qty, true, true, true, null, trackingNumber, productVariant, businessProject);
-				locationLineService.updateLocation(toLocation, product, qty, true, true, false, null, trackingNumber, productVariant, businessProject);
+				locationLineService.updateLocation(fromLocation, product, qty, true, true, true, null, trackingNumber, businessProject);
+				locationLineService.updateLocation(toLocation, product, qty, true, true, false, null, trackingNumber, businessProject);
 				break;
 			
 			default:
@@ -260,13 +249,13 @@ public class StockMoveLineService {
 		
 		switch(toStatus)  {
 			case IStockMove.STATUS_PLANNED:
-				locationLineService.updateLocation(fromLocation, product, qty, false, true, false, lastFutureStockMoveDate, trackingNumber, productVariant, businessProject);
-				locationLineService.updateLocation(toLocation, product, qty, false, true, true, lastFutureStockMoveDate, trackingNumber, productVariant, businessProject);
+				locationLineService.updateLocation(fromLocation, product, qty, false, true, false, lastFutureStockMoveDate, trackingNumber, businessProject);
+				locationLineService.updateLocation(toLocation, product, qty, false, true, true, lastFutureStockMoveDate, trackingNumber, businessProject);
 				break;
 				
 			case IStockMove.STATUS_REALIZED:
-				locationLineService.updateLocation(fromLocation, product, qty, true, true, false, null, trackingNumber, productVariant, businessProject);
-				locationLineService.updateLocation(toLocation, product, qty, true, true, true, null, trackingNumber, productVariant, businessProject);
+				locationLineService.updateLocation(fromLocation, product, qty, true, true, false, null, trackingNumber, businessProject);
+				locationLineService.updateLocation(toLocation, product, qty, true, true, true, null, trackingNumber, businessProject);
 				break;
 			
 			default:

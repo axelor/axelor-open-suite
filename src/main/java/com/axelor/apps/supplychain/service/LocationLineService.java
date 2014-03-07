@@ -38,9 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.TrackingNumber;
-import com.axelor.apps.base.service.ProductVariantService;
 import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.supplychain.db.ILocation;
 import com.axelor.apps.supplychain.db.IMinStockRules;
@@ -58,19 +56,16 @@ public class LocationLineService {
 	
 	
 	@Inject
-	private ProductVariantService productVariantService;
-	
-	@Inject
 	private MinStockRulesService minStockRulesService;
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void updateLocation(Location location, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement, 
-			LocalDate lastFutureStockMoveDate, TrackingNumber trackingNumber, ProductVariant productVariant, Project businessProject) throws AxelorException  {
+			LocalDate lastFutureStockMoveDate, TrackingNumber trackingNumber, Project businessProject) throws AxelorException  {
 		
 		this.updateLocation(location, product, qty, current, future, isIncrement, lastFutureStockMoveDate, businessProject);
 		
-		if(trackingNumber != null || productVariant != null)  {
-			this.updateDetailLocation(location, product, qty, current, future, isIncrement, lastFutureStockMoveDate, productVariant, trackingNumber);
+		if(trackingNumber != null)  {
+			this.updateDetailLocation(location, product, qty, current, future, isIncrement, lastFutureStockMoveDate, trackingNumber);
 		}
 		
 	}
@@ -112,12 +107,12 @@ public class LocationLineService {
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void updateDetailLocation(Location location, Product product, BigDecimal qty, boolean current, boolean future, boolean isIncrement, 
-			LocalDate lastFutureStockMoveDate, ProductVariant productVariant, TrackingNumber trackingNumber) throws AxelorException  {
+			LocalDate lastFutureStockMoveDate, TrackingNumber trackingNumber) throws AxelorException  {
 		
-		LocationLine detailLocationLine = this.getDetailLocationLine(location, product, productVariant, trackingNumber);
+		LocationLine detailLocationLine = this.getDetailLocationLine(location, product, trackingNumber);
 		
-		LOG.debug("Mise à jour du detail du stock : Entrepot? {}, Produit? {}, Quantité? {}, Actuel? {}, Futur? {}, Incrément? {}, Date? {}, Variante? {}, Num de suivi? {} ", 
-				new Object[] { location.getName(), product.getCode(), qty, current, future, isIncrement, lastFutureStockMoveDate, productVariant, trackingNumber});
+		LOG.debug("Mise à jour du detail du stock : Entrepot? {}, Produit? {}, Quantité? {}, Actuel? {}, Futur? {}, Incrément? {}, Date? {}, Num de suivi? {} ", 
+				new Object[] { location.getName(), product.getCode(), qty, current, future, isIncrement, lastFutureStockMoveDate, trackingNumber});
 		
 		detailLocationLine = this.updateLocation(detailLocationLine, qty, current, future, isIncrement, lastFutureStockMoveDate);
 		
@@ -134,18 +129,14 @@ public class LocationLineService {
 					locationLine.getProduct().getName(), locationLine.getProduct().getCode()), IException.CONFIGURATION_ERROR);
 		}
 		else if(isDetailLocationLine && locationLine.getCurrentQty().compareTo(BigDecimal.ZERO) == -1 && locationLine.getLocation().getTypeSelect() == ILocation.INTERNAL)  {
-			String variantName = "";
-			if(locationLine.getProductVariant() != null)  {
-				variantName = locationLine.getProductVariant().getName();
-			}
-			
+
 			String trackingNumber = "";
 			if(locationLine.getTrackingNumber() != null)  {
 				trackingNumber = locationLine.getTrackingNumber().getTrackingNumberSeq();
 			}
 			
-			throw new AxelorException(String.format("Les stocks du produit %s (%s), variante {}, numéro de suivi {}  sont insuffisants pour réaliser la livraison", 
-					locationLine.getProduct().getName(), locationLine.getProduct().getCode(), variantName, trackingNumber), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format("Les stocks du produit %s (%s), numéro de suivi {}  sont insuffisants pour réaliser la livraison", 
+					locationLine.getProduct().getName(), locationLine.getProduct().getCode(), trackingNumber), IException.CONFIGURATION_ERROR);
 		}
 	}
 	
@@ -204,30 +195,23 @@ public class LocationLineService {
 	 * 			Entrepot détaillé
 	 * @param product
 	 * 			Produit concerné
-	 * @param productVariant
-	 * 			La variante de produit concernée
 	 * @param trackingNumber
 	 * 			Le numéro de suivi concerné
 	 * @return
 	 * 			Une ligne détaillée de stock
 	 */
-	public LocationLine getDetailLocationLine(Location detailLocation, Product product, ProductVariant productVariant, TrackingNumber trackingNumber)  {
+	public LocationLine getDetailLocationLine(Location detailLocation, Product product, TrackingNumber trackingNumber)  {
 		
-		LocationLine detailLocationLine = this.getDetailLocationLine(detailLocation.getDetailsLocationLineList(), product, productVariant, trackingNumber);
+		LocationLine detailLocationLine = this.getDetailLocationLine(detailLocation.getDetailsLocationLineList(), product, trackingNumber);
 		
 		if(detailLocationLine == null)  {
 			
-			ProductVariant stockProductVariant = productVariant;
-			if(productVariant != null && !productVariant.getUsedForStock())  {
-				stockProductVariant = productVariantService.getStockProductVariant(productVariant);
-			}
-			detailLocationLine = this.createDetailLocationLine(detailLocation, product, stockProductVariant, trackingNumber);
+			detailLocationLine = this.createDetailLocationLine(detailLocation, product, trackingNumber);
 		}
 		
 		LOG.debug("Récupération ligne de détail de stock: Entrepot? {}, Produit? {}, Qté actuelle? {}, Qté future? {}, Date? {}, Variante? {}, Num de suivi? {} ", 
 				new Object[] { detailLocationLine.getDetailsLocation().getName(), product.getCode(), 
-				detailLocationLine.getCurrentQty(), detailLocationLine.getFutureQty(), detailLocationLine.getLastFutureStockMoveDate(), 
-				detailLocationLine.getProductVariant(), detailLocationLine.getTrackingNumber() });
+				detailLocationLine.getCurrentQty(), detailLocationLine.getFutureQty(), detailLocationLine.getLastFutureStockMoveDate(), detailLocationLine.getTrackingNumber() });
 		
 		return detailLocationLine;
 	}
@@ -262,19 +246,16 @@ public class LocationLineService {
 	 * 		Une liste de ligne détaillée de stock
 	 * @param product
 	 * 		Un produit
-	 * @param productVariant
-	 * 		Une variante de produit
 	 * @param trackingNumber
 	 * 		Un numéro de suivi
 	 * @return
 	 * 		Un ligne de stock
 	 */
-	public LocationLine getDetailLocationLine(List<LocationLine> detailLocationLineList, Product product, ProductVariant productVariant, TrackingNumber trackingNumber)  {
+	public LocationLine getDetailLocationLine(List<LocationLine> detailLocationLineList, Product product, TrackingNumber trackingNumber)  {
 		
 		for(LocationLine detailLocationLine : detailLocationLineList)  {
 			
 			if(detailLocationLine.getProduct().equals(product) 
-					&& productVariantService.equals(detailLocationLine.getProductVariant(),productVariant)
 					&& detailLocationLine.getTrackingNumber().equals(trackingNumber))  {
 				return detailLocationLine;
 			}
@@ -317,17 +298,15 @@ public class LocationLineService {
 	 * 		Un entrepot
 	 * @param product
 	 * 		Un produit
-	 * @param productVariant
-	 * 		Une variante de produit
 	 * @param trackingNumber
 	 * 		Un numéro de suivi
 	 * @return
 	 * 		La ligne détaillée de stock
 	 */
-	public LocationLine createDetailLocationLine(Location location, Product product, ProductVariant productVariant, TrackingNumber trackingNumber)  {
+	public LocationLine createDetailLocationLine(Location location, Product product, TrackingNumber trackingNumber)  {
 		
-		LOG.debug("Création d'une ligne de détail de stock : Entrepot? {}, Produit? {}, Variante? {}, Num de suivi? {} ", 
-				new Object[] { location.getName(), product.getCode(), productVariant, trackingNumber.getTrackingNumberSeq() });
+		LOG.debug("Création d'une ligne de détail de stock : Entrepot? {}, Produit? {}, Num de suivi? {} ", 
+				new Object[] { location.getName(), product.getCode(), trackingNumber.getTrackingNumberSeq() });
 		
 		LocationLine detailLocationLine = new LocationLine();
 		
@@ -335,7 +314,6 @@ public class LocationLineService {
 		detailLocationLine.setProduct(product);
 		detailLocationLine.setCurrentQty(BigDecimal.ZERO);
 		detailLocationLine.setFutureQty(BigDecimal.ZERO);
-		detailLocationLine.setProductVariant(productVariant);
 		detailLocationLine.setTrackingNumber(trackingNumber);
 		
 		

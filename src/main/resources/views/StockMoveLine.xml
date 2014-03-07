@@ -20,7 +20,6 @@
         <field name="unit"/>
         <field name="price"/>
         <field name="trackingNumber"/>
-        <field name="productVariant" readonly="true"/>
     </form>
     
     <grid name="stock-move-line-all-grid" title="Stock move lines" model="com.axelor.apps.supplychain.db.StockMoveLine">

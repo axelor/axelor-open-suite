@@ -135,7 +135,6 @@ public class SalesOrderStockMoveService {
 					salesOrderLine.getUnit(), 
 					salesOrderLineService.computeDiscount(salesOrderLine), 
 					stockMove,
-					salesOrderLine.getProductVariant(), 
 					1);
 			
 			stockMoveLine.setSalesOrderLine(salesOrderLine);

@@ -118,7 +118,7 @@ public class PurchaseOrderInvoiceService {
 			Unit unit, TaxLine taxLine, ProductVariant productVariant, BigDecimal discountAmount, int discountTypeSelect, BigDecimal exTaxTotal) throws AxelorException  {
 		
 		InvoiceLineGenerator invoiceLineGenerator = new InvoiceLineGenerator(invoice, product, productName, price, description, qty, unit, taxLine, null, product.getInvoiceLineType(), 
-				productVariant, discountAmount, discountTypeSelect, exTaxTotal, false)  {
+				discountAmount, discountTypeSelect, exTaxTotal, false)  {
 			@Override
 			public List<InvoiceLine> creates() throws AxelorException {
 				

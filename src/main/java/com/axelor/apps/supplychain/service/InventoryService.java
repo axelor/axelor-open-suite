@@ -44,9 +44,7 @@ import com.axelor.apps.base.db.IProduct;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.ProductFamily;
-import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.TrackingNumber;
-import com.axelor.apps.base.service.ProductVariantService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.supplychain.db.IInventory;
 import com.axelor.apps.supplychain.db.IStockMove;
@@ -74,9 +72,6 @@ public class InventoryService {
 	@Inject
 	private StockMoveLineService stockMoveLineService;
 
-	@Inject
-	private ProductVariantService productVariantService;
-	
 	@Inject
 	private SequenceService sequenceService;
 	
@@ -156,7 +151,6 @@ public class InventoryService {
 				throw new AxelorException("An error occurred while importing the file data. Please contact your application administrator to check Traceback logs.", IException.CONFIGURATION_ERROR);
 
 			String code = line[1].replace("\"", "");
-			String productVariant = line[2].replace("\"", "");
 			String trackingNumberSeq = line[3].replace("\"", "");
 
 			Integer realQty = 0;
@@ -189,7 +183,6 @@ public class InventoryService {
 				inventoryLine.setCurrentQty(new BigDecimal(currentQty));
 				inventoryLine.setRealQty(new BigDecimal(realQty));
 				inventoryLine.setDescription(description);
-				inventoryLine.setProductVariant(ProductVariant.findByName(productVariant)); // TODO remplacer par un split sur les paramètres depuis le nom
 				inventoryLine.setTrackingNumber(this.getTrackingNumber(trackingNumberSeq));
 				inventoryLineList.add(inventoryLine);
 			}
@@ -227,9 +220,6 @@ public class InventoryService {
 			if(line.getProduct() != null)  {
 				key += line.getProduct().getCode();
 			}	
-			if(line.getProductVariant() != null)  {
-				key += line.getProductVariant().getName();
-			}
 			if(line.getTrackingNumber() != null)  {
 				key += line.getTrackingNumber().getTrackingNumberSeq();
 			}
@@ -273,7 +263,7 @@ public class InventoryService {
 			if (currentQty.compareTo(realQty) != 0) {
 				BigDecimal diff = realQty.subtract(currentQty);
 
-				StockMoveLine stockMoveLine = stockMoveLineService.createStockMoveLine(product, diff, product.getUnit(), null, stockMove, inventoryLine.getProductVariant(), 0);
+				StockMoveLine stockMoveLine = stockMoveLineService.createStockMoveLine(product, diff, product.getUnit(), null, stockMove, 0);
 				if (stockMoveLine == null)  {
 					throw new AxelorException("Produit incorrect dans la ligne de l'inventaire "+inventorySeq, IException.CONFIGURATION_ERROR);
 				}
@@ -368,8 +358,7 @@ public class InventoryService {
 				inventory, 
 				locationLine.getProduct(), 
 				locationLine.getCurrentQty(), 
-				locationLine.getTrackingNumber(), 
-				locationLine.getProductVariant());
+				locationLine.getTrackingNumber());
 		
 	}
 	

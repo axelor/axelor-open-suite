@@ -260,7 +260,7 @@ public class PurchaseOrderService {
 						|| (supplychainConfig.getHasInSmForNonStorableProduct() && !product.getProductTypeSelect().equals(IProduct.PRODUCT_TYPE_STORABLE)))) {
 
 					StockMoveLine stockMoveLine = stockMoveLineService.createStockMoveLine(product, purchaseOrderLine.getQty(), purchaseOrderLine.getUnit(), 
-							purchaseOrderLineService.computeDiscount(purchaseOrderLine), stockMove, purchaseOrderLine.getProductVariant(), 2);
+							purchaseOrderLineService.computeDiscount(purchaseOrderLine), stockMove, 2);
 					if(stockMoveLine != null) {
 						
 						stockMoveLine.setPurchaseOrderLine(purchaseOrderLine);

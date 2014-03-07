@@ -33,21 +33,19 @@ package com.axelor.apps.supplychain.service;
 import java.math.BigDecimal;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.TrackingNumber;
 import com.axelor.apps.supplychain.db.Inventory;
 import com.axelor.apps.supplychain.db.InventoryLine;
 
 public class InventoryLineService {
 
-	public InventoryLine createInventoryLine(Inventory inventory, Product product, BigDecimal currentQty, TrackingNumber trackingNumber, ProductVariant productVariant)  {
+	public InventoryLine createInventoryLine(Inventory inventory, Product product, BigDecimal currentQty, TrackingNumber trackingNumber)  {
 		
 		InventoryLine inventoryLine = new InventoryLine();
 		inventoryLine.setInventory(inventory);
 		inventoryLine.setProduct(product);
 		inventoryLine.setCurrentQty(currentQty);
 		inventoryLine.setTrackingNumber(trackingNumber);
-		inventoryLine.setProductVariant(productVariant);
 		
 		return inventoryLine;
 		
