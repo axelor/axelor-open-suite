@@ -1,0 +1,14 @@
+"id";"code";"name";"navigation";"permissions"
+1;"admins";"ADMINS";;
+2;"user";"Users";;
+3;"workflow";"workflow";;
+4;"client";"Client";"hidden";"perms.user-info"
+5;"consultant";"Consultant";;"perms.user-info"
+6;"crm";"CRM";;"perms.user-info"
+7;"erp";"ERP";;"perms.user-info"
+8;"SALE";"Sales";;
+9;"PURCH";"Purchases";;
+10;"ACCO";"Accounting";;
+11;"HRSC";"Human Resources";;
+12;"OPTS";"Operations";;
+13;"MNGT";"Management";;
