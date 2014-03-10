@@ -11,20 +11,20 @@
  		
  		<group colSpan="4" cols="4" colWidths="25%,25%,25%,25%">
 			<field name="hasConvertIntoContact" widget="Boolean" title="Convert into Contact ?"/>
-			<field name="selectContactPartner" widget="ManyToOne[target=com.axelor.apps.base.db.Partner]" title="Or Select Contact" domain="self.isContact = 'true'"
+			<field name="selectContactPartner" widget="ManyToOne" x-target="com.axelor.apps.base.db.Partner" title="Or Select Contact" domain="self.isContact = 'true'"
 			form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 		</group>
 		<group colSpan="4" showIf="hasConvertIntoContact" showTitle="false">
-			<field name="contactPartner" widget="NestedEditor[type=MANY_TO_ONE|target=com.axelor.apps.base.db.Partner]" summary-view="true" 
+			<field name="contactPartner" widget="NestedEditor" x-type="MANY_TO_ONE" x-target="com.axelor.apps.base.db.Partner" summary-view="true" 
 			form-view="contact-lead-converted-form" edit-window="self" canSelect="false" title="Contact" showTitle="false"/>
 		</group>
 		<group colSpan="4" cols="4" colWidths="25%,25%,25%,25%">
 			<field name="hasConvertIntoPartner" widget="Boolean" title="Convert into Partner ?"/>
-			<field name="selectPartner" widget="ManyToOne[target=com.axelor.apps.base.db.Partner]" title="Or Select Partner" domain="self.isContact = 'false'"
+			<field name="selectPartner" widget="ManyToOne" x-target="com.axelor.apps.base.db.Partner" title="Or Select Partner" domain="self.isContact = 'false'"
 			form-view="partner-form" grid-view="partner-grid"/>
 		</group>
 		<group colSpan="4" showIf="hasConvertIntoPartner" showTitle="false">
-			<field name="partner" widget="NestedEditor[type=MANY_TO_ONE|target=com.axelor.apps.base.db.Partner]" summary-view="true" 
+			<field name="partner" widget="NestedEditor" x-type="MANY_TO_ONE" x-target="com.axelor.apps.base.db.Partner" summary-view="true" 
 			form-view="partner-lead-converted-form" edit-window="self" canSelect="false" title="Partner" showTitle="false"/>
 		</group>
 		<group colSpan="4" cols="4" colWidths="25%,25%,25%,25%">
@@ -33,7 +33,7 @@
 			<spacer/>
 		</group>
 		<group colSpan="4" showIf="hasConvertIntoOpportunity"  showTitle="false">
-			<field name="opportunity" widget="NestedEditor[type=MANY_TO_ONE|target=com.axelor.apps.crm.db.Opportunity]" summary-view="true" 
+			<field name="opportunity" widget="NestedEditor" x-type="MANY_TO_ONE" x-target="com.axelor.apps.crm.db.Opportunity" summary-view="true" 
 			form-view="opportunity-lead-converted-form" edit-window="self" canSelect="false" title="Opportunity" showTitle="false"/>
 		</group>
 		<group colSpan="4" cols="4" colWidths="25%,25%,25%,25%">
@@ -42,7 +42,7 @@
 			<spacer/>
 		</group>
 		<group colSpan="4" showIf="hasConvertIntoCall"  showTitle="false">
-			<field name="callEvent" widget="NestedEditor[type=MANY_TO_ONE|target=com.axelor.apps.crm.db.Event]" summary-view="true" 
+			<field name="callEvent" widget="NestedEditor" x-type="MANY_TO_ONE" x-target="com.axelor.apps.crm.db.Event" summary-view="true" 
 			form-view="call-lead-converted-form" edit-window="self" canSelect="false" title="Call" showTitle="false"/>
 		</group>
 		<group colSpan="4" cols="4" colWidths="25%,25%,25%,25%">
@@ -51,7 +51,7 @@
 			<spacer/>
 		</group>
 		<group colSpan="4" showIf="hasConvertIntoMeeting"  showTitle="false">
-			<field name="meetingEvent" widget="NestedEditor[type=MANY_TO_ONE|target=com.axelor.apps.crm.db.Event]" canNew="true" canRemove="false" canView="true" 
+			<field name="meetingEvent" widget="NestedEditor" x-type="MANY_TO_ONE" x-target="com.axelor.apps.crm.db.Event" canNew="true" canRemove="false" canView="true" 
 			canSelect="false"  summary-view="true" form-view="meeting-lead-converted-form"  edit-window="self" title="Meeting" showTitle="false"/>
  		</group>
  		<group colSpan="4" cols="4" colWidths="25%,25%,25%,25%">
@@ -60,7 +60,7 @@
 			<spacer/>
 		</group>
 		<group colSpan="4" showIf="hasConvertIntoTask">
-			<field name="taskEvent" widget="NestedEditor[type=MANY_TO_ONE|target=com.axelor.apps.crm.db.Event]" canNew="true" canRemove="false" canView="true" 
+			<field name="taskEvent" widget="NestedEditor" x-type="MANY_TO_ONE" x-target="com.axelor.apps.crm.db.Event" canNew="true" canRemove="false" canView="true" 
 			canSelect="false"  summary-view="true" form-view="crm-task-lead-converted-form"  edit-window="self" title="Task" showTitle="false"/>
  		</group>
  		
@@ -107,23 +107,23 @@
 	            <field name="emailAddress" canSelect="false" form-view="email-address-simple-form"/>
 	            <field name="fax"/>
 	            <group title="Address" colSpan="4" cols="4">
-		    		<field name="primaryAddress" widget="STRING[type=STRING]" title="Address"/>
+		    		<field name="primaryAddress" widget="STRING" x-type="STRING" title="Address"/>
 		    		<field name="primaryCity" title="City"/>
 		    		<field name="primaryState" title="State"/>
 		    		<field name="primaryPostalCode" title="Postal code"/>
-		    		<field name="primaryCountry" widget="ManyToOne[target=com.axelor.apps.base.db.Country|targetName=name]" title="Country"/>
+		    		<field name="primaryCountry" widget="ManyToOne" x-target="com.axelor.apps.base.db.Country" x-targetName="name" title="Country"/>
 		    	</group>
 	        </group>
 	    </group>
 	    <break/>
 	    <notebook colSpan="4">
 	        <page title="Notes">
-	            <field name="description" showTitle="false" colSpan="4" widget="Html[lite=true]"/>
+	            <field name="description" showTitle="false" colSpan="4" widget="Html" x-lite="true"/>
 	        </page>
 	        <page title="Settings" cols="4">
 	            <field name="languageSelect"/>
 	            <group title="Assigned to" colSpan="4" cols="4" canCollapse="true">
-	                <field name="companySet" colSpan="4" widget="TagSelect[create=name]" onChange="action-partner-company-set-validate"/>
+	                <field name="companySet" colSpan="4" widget="TagSelect" x-create="name" onChange="action-partner-company-set-validate"/>
 	                <break/>
 	                <field name="userInfo"/>
 	                <field name="team"/>
@@ -180,14 +180,14 @@
 			    		<field name="primaryCity" title="City"/>
 			    		<field name="primaryState" title="State"/>
 			    		<field name="primaryPostalCode" title="Postal code"/>
-			    		<field name="primaryCountry" widget="ManyToOne[target=com.axelor.apps.base.db.Country|targetName=name]" title="Country"/>
+			    		<field name="primaryCountry" widget="ManyToOne" x-target="com.axelor.apps.base.db.Country" x-targetName="name" title="Country"/>
 			    	</group>
 			    	<group title="Delivery address" colSpan="2" cols="2">
 			    		<field name="otherAddress" title="Address"/>
 			    		<field name="otherCity" title="City"/>
 			    		<field name="otherState" title="State"/>
 			    		<field name="otherPostalCode" title="Postal code"/>
-			    		<field name="otherCountry" widget="ManyToOne[target=com.axelor.apps.base.db.Country|targetName=name]" title="Country"/>
+			    		<field name="otherCountry" widget="ManyToOne" x-target="com.axelor.apps.base.db.Country" x-targetName="name" title="Country"/>
 			    	</group>
 	            </group>
 	            <group title="Contact" colSpan="4" cols="4">
@@ -199,7 +199,7 @@
 	            </group>
 	        </page>
 	        <page title="Notes">
-	            <field name="description" showTitle="false" colSpan="4" widget="Html[lite=true]"/>
+	            <field name="description" showTitle="false" colSpan="4" widget="Html" x-lite="true"/>
 	        </page>
 	        <page name="payment" title="Invoicing/Payment" hideIf="partnerTypeSelect == 2 || isContact" colSpan="4" cols="4">
 	            <field name="invoiceSendingFormatSelect"/>
@@ -212,7 +212,7 @@
 	        <page title="Settings" cols="4">
 	            <field name="languageSelect"/>
 	            <group title="Assigned to" colSpan="4" cols="4" canCollapse="true">
-	                <field name="companySet" colSpan="4" widget="TagSelect[create=name]" onChange="action-partner-company-set-validate"/>
+	                <field name="companySet" colSpan="4" widget="TagSelect" x-create="name" onChange="action-partner-company-set-validate"/>
 	                <break/>
 	                <field name="userInfo"/>
 	                <field name="team"/>
@@ -357,7 +357,7 @@
 		        <field name="durationMinutesSelect" showTitle="false" colSpan="1"/>
 	        </group>
 	        <group title="Description" colSpan="4" cols="2" css="groupTitle">
-	        	<field name="description" widget="TEXT[height=4]" colSpan="2" showTitle="false"/>
+	        	<field name="description" widget="TEXT" x-height="4" colSpan="2" showTitle="false"/>
 	        </group>
         </group>
         <group title="Assignment" cols="4" colSpan="4" canCollapse="true">
@@ -392,7 +392,7 @@
 		        <field name="durationMinutesSelect" showTitle="false" colSpan="1"/>
 	        </group>
 	        <group title="Description" colSpan="4" cols="2" css="groupTitle">
-	        	<field name="description" widget="TEXT[height=4]" colSpan="2" showTitle="false"/>
+	        	<field name="description" widget="TEXT" x-height="4" colSpan="2" showTitle="false"/>
 	        </group>
         </group>
         <group title="Assignment" cols="4" colSpan="4" canCollapse="true">
@@ -426,7 +426,7 @@
 		        <field name="durationHours" onChange="action-meeting-method-compute-duration"/>
 	        </group>
 	        <group title="Description" colSpan="4" cols="2" css="groupTitle">
-	        	<field name="description" widget="TEXT[height=4]" colSpan="2" showTitle="false"/>
+	        	<field name="description" widget="TEXT" x-height="4" colSpan="2" showTitle="false"/>
 	        </group>
         </group>
         <group title="Assigned to" cols="4" colSpan="4" canCollapse="true">

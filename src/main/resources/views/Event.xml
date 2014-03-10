@@ -12,7 +12,7 @@
         <field name="typeSelect"/>
         <field name="subject"/>
         <field name="startDateTime"/>
-        <field name="duration" widget="duration[big=true]"/>
+        <field name="duration" widget="duration" x-big="true"/>
         <field name="userInfo"/>
         <field name="team"/>
     </grid>
@@ -61,7 +61,7 @@
 				        </group>
 			        </group>
 			        <separator title="Description" colSpan="4"/>
-			        <field name="description" colSpan="4" widget="TEXT[height=3]" showTitle="false" placeholder="Description"/>
+			        <field name="description" colSpan="4" widget="TEXT" x-height="3" showTitle="false" placeholder="Description"/>
 			        <break/>
 			    </group>
 			    <group colSpan="4" cols="4">
@@ -78,7 +78,7 @@
 			            <separator title="Dates" colSpan="2"/>
 			            <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time"/>
 			            <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time"/>
-			            <field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration"/>
+			            <field name="duration" widget="duration" x-big="true" onChange="action-event-method-compute-from-duration"/>
 			        </group>
 			    </group>
 			    <spacer/>
@@ -89,7 +89,7 @@
 			            <field name="lead"/>
 			            <break/>
 			            <separator title="Related to" colSpan="4"/>
-		            	<field name="relatedToSelect" widget="RefSelect[related=relatedToSelectId]" showTitle="false" colSpan="4"/>
+		            	<field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId" showTitle="false" colSpan="4"/>
 		        </group>
 			    
 			    <group title="Assigned to" colSpan="4" cols="4" canCollapse="true">
@@ -163,12 +163,12 @@
 	        <separator title="Subject" colSpan="4" hideIf="$readonly()"/>
 	        <field name="subject" showTitle="false" colSpan="4" css="highlight" placeholder="Subject"/>
 	        <separator title="Description" colSpan="4"/>
-	        <field name="description" colSpan="4" widget="TEXT[height=3]" showTitle="false" placeholder="Description"/>
+	        <field name="description" colSpan="4" widget="TEXT" x-height="3" showTitle="false" placeholder="Description"/>
 	        <break/>
 	        <group colSpan="4" css="groupTitle" cols="6" colWidths="25*">
 	            <separator title="Dates" colSpan="6"/>
 	            <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time"/>
-				<field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration"/>
+				<field name="duration" widget="duration" x-big="true" onChange="action-event-method-compute-from-duration"/>
 	            <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time"/>
 	        </group>
 	    </group>
@@ -181,7 +181,7 @@
 	            <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
 	            <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid" onChange="action-event-record-client-partner" onSelect="action-event-attrs-contact-partner-domain"/>
 	            <field name="lead"/>
-	            <field name="relatedToSelect" widget="RefSelect[related=relatedToSelectId]"/>
+	            <field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId"/>
 	        </group>
 	    </group>
 	    <spacer/>
@@ -245,13 +245,13 @@
 		        <button name="viewOnMap" icon="fa-map-marker" colSpan="1" onClick="com.axelor.apps.crm.web.EventController:viewMap" />
 	        </group>
 	        <separator title="Description" colSpan="4"/>
-	        <field name="description" colSpan="4" widget="TEXT[height=3]" showTitle="false" placeholder="Description"/>
+	        <field name="description" colSpan="4" widget="TEXT" x-height="3" showTitle="false" placeholder="Description"/>
 	        <break/>
 	        <group colSpan="4" css="groupTitle" cols="6" colWidths="25*">
 	            <separator title="Dates" colSpan="6"/>
 	            <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time"/>
 	            <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time"/>
-	            <field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration"/>
+	            <field name="duration" widget="duration" x-big="true" onChange="action-event-method-compute-from-duration"/>
 	        </group>
 	    </group>
 	    <group colSpan="1" cols="2">
@@ -263,7 +263,7 @@
 	            <field name="clientPartner" form-view="partner-form" grid-view="partner-grid" onChange="action-meeting-set-location-partner"/>
 	            <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid" onChange="action-event-record-client-partner,action-meeting-set-location-contact" onSelect="action-event-attrs-contact-partner-domain"/>
 	            <field name="lead" onChange="action-meeting-set-location-lead"/>
-	            <field name="relatedToSelect" widget="RefSelect[related=relatedToSelectId]"/>
+	            <field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId"/>
 	        </group>
 	    </group>
 	    <spacer/>
@@ -315,12 +315,12 @@
 	        <separator title="Location" colSpan="4"/>
 	        <field name="location" showTitle="false" colSpan="4" css="highlight" placeholder="Location"/>
 	        <separator title="Description" colSpan="4"/>
-	        <field name="description" colSpan="4" widget="TEXT[height=3]" showTitle="false" placeholder="Description"/>
+	        <field name="description" colSpan="4" widget="TEXT" x-height="3" showTitle="false" placeholder="Description"/>
 	        <break/>
 	        <group colSpan="4" css="groupTitle" cols="4" colWidths="25*">
 	            <separator title="Dates" colSpan="4"/>
 	            <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time"/>
-				<field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration"/>
+				<field name="duration" widget="duration" x-big="true" onChange="action-event-method-compute-from-duration"/>
 	            <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time"/>
 				<field name="limitDateT"/>
 	        </group>
@@ -334,7 +334,7 @@
 	            <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
 	            <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid" onChange="action-event-record-client-partner" onSelect="action-event-attrs-contact-partner-domain"/>
 	            <field name="lead"/>
-	            <field name="relatedToSelect" widget="RefSelect[related=relatedToSelectId]"/>
+	            <field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId"/>
 	        </group>
 	    </group>
 	    <spacer/>
@@ -399,7 +399,7 @@
 	        <group colSpan="4" css="groupTitle" cols="4">
 	                <separator title="Dates" colSpan="4"/>
 	                <field name="startDateTime" onChange="action-event-method-compute-from-start-date-time"/>
-					<field name="duration" widget="duration[big=true]" onChange="action-event-method-compute-from-duration"/>
+					<field name="duration" widget="duration" x-big="true" onChange="action-event-method-compute-from-duration"/>
 	                <field name="endDateTime" onChange="action-event-method-compute-from-end-date-time"/>
 					<field name="limitDateT"/>
 	        </group>
@@ -419,14 +419,14 @@
 	    <break/>
 	    <notebook colSpan="6"  >
 	        <page title="Description" readonlyIf="ticketStatusSelect == 5">
-	            <field name="description" showTitle="false" colSpan="6" widget="Html[lite=true]"/>
+	            <field name="description" showTitle="false" colSpan="6" widget="Html" x-lite="true"/>
 	        </page>
 	        <page title="Comments" readonlyIf="ticketStatusSelect == 5">
 	            <field name="messageList" showTitle="false" colSpan="6">
                      <grid title="Comments">
                         <field name="sentDate"/>
                         <field name="sender"/>
-                        <field name="content" showTitle="false" colSpan="4" widget="Html[lite=true]"/>
+                        <field name="content" showTitle="false" colSpan="4" widget="Html" x-lite="true"/>
                     </grid>
 	                <form title="Comment">
 	                    <group title="Informations" readonly="true" colSpan="4">
@@ -434,7 +434,7 @@
 	                        <field name="sender"/>
 	                    </group>
 	                    <group title="Content" colSpan="4">
-	                        <field name="content" showTitle="false" colSpan="4" widget="Html[lite=true]"/>
+	                        <field name="content" showTitle="false" colSpan="4" widget="Html" x-lite="true"/>
 	                    </group>
 	                </form>
 	            </field>
