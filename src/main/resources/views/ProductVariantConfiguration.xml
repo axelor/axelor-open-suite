@@ -37,6 +37,4 @@
     	<attribute name="domain" for="productVariantValue3Set" expr="eval: (productVariantAttribute3?.productVariantValueList?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${productVariantAttribute3?.productVariantValueList?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
     	<attribute name="domain" for="productVariantValue4Set" expr="eval: (productVariantAttribute4?.productVariantValueList?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${productVariantAttribute4?.productVariantValueList?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
     </action-attrs>
-    
-    
 </object-views>
