@@ -14,7 +14,7 @@
         <field name="name"/>
         <field name="metaModel"/>
         <field name="type"/>
-        <field name="query" widget="CodeEditor[syntax=sql]" hideIf="type == 3" colSpan="4"/>
+        <field name="query" widget="CodeEditor" x-syntax="sql" hideIf="type == 3" colSpan="4"/>
         <button name="checkQuery" title="Check query" colSpan="4" onClick="action-querie-check-query"/>
     </form>
     
