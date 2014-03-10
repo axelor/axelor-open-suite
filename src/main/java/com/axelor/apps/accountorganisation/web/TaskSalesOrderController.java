@@ -49,6 +49,5 @@ public class TaskSalesOrderController {
 		
 		taskSalesOrderService.createTasks(SalesOrder.find(salesOrder.getId()));
 	
-//		response.setReload(true);
 	}
 }
