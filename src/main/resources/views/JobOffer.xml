@@ -38,8 +38,8 @@
 		<group title="Profil candidat" canCollapse="true" cols="6" colSpan="6">
 			<field name="educationLevelSelect"/>
 			<field name="experienceTypeSelect"/>
-			<field name="languageSet" widget="TagSelect[create=name,code]"/>
-			<field name="trainingLineSet" widget="TagSelect[create=candidate,degree]"/>
+			<field name="languageSet" widget="TagSelect" x-create="name,code"/>
+			<field name="trainingLineSet" widget="TagSelect" x-create="candidate,degree"/>
 			<field name="branch"/>
 		</group>
 	</form>

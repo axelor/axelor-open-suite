@@ -44,7 +44,7 @@
 	            <field name="remainingTime"/>
 	        </group>
 	        <group title="Description" colSpan="6">
-            	<field name="description" showTitle="false" widget="Html[lite=true]"/>
+            	<field name="description" showTitle="false" widget="Html" x-lite="true"/>
         	</group>
 	        <group name="specificSettings" title="Specific settings" colSpan="6" canCollapse="true" colWidths="25%,25%,25%,25%">
 	        	<field name="isProject"/>
