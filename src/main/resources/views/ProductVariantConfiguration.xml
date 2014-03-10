@@ -17,16 +17,16 @@
     <form name="product-variant-configuration-form" title="Product variant configuration" model="com.axelor.apps.base.db.ProductVariantConfiguration" cols="4"
     	onLoad="action-product-variant-configuration-attrs-domain" onNew="action-product-variant-configuration-attrs-domain">
         <field name="productVariantAttribute1" onChange="action-product-variant-configuration-attrs-domain"/>
-        <field name="productVariantValue1Set" widget="TagSelect[create=name,code,priceExtra]"/>
+        <field name="productVariantValue1Set" widget="TagSelect" x-create="name,code,priceExtra"/>
         <break/>
         <field name="productVariantAttribute2" onChange="action-product-variant-configuration-attrs-domain"/>
-        <field name="productVariantValue2Set" widget="TagSelect[create=name,code,priceExtra]"/>
+        <field name="productVariantValue2Set" widget="TagSelect" x-create="name,code,priceExtra"/>
         <break/>
         <field name="productVariantAttribute3" onChange="action-product-variant-configuration-attrs-domain"/>
-        <field name="productVariantValue3Set" widget="TagSelect[create=name,code,priceExtra]"/>
+        <field name="productVariantValue3Set" widget="TagSelect" x-create="name,code,priceExtra"/>
         <break/>
         <field name="productVariantAttribute4" onChange="action-product-variant-configuration-attrs-domain"/>
-        <field name="productVariantValue4Set" widget="TagSelect[create=name,code,priceExtra]"/>
+        <field name="productVariantValue4Set" widget="TagSelect" x-create="name,code,priceExtra"/>
     </form>
     
     <!-- ACTION ATTRS -->

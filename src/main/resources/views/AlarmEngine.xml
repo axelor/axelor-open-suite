@@ -35,7 +35,7 @@
         </group>
         <notebook colSpan="4">
         	<page name="queryPage" title="Query" cols="4">
-        		<field name="query" colSpan="4" showTitle="false" widget="CodeEditor[syntax=sql]" />
+        		<field name="query" colSpan="4" showTitle="false" widget="CodeEditor" x-syntax="sql" />
         	</page>
         	<page title="Description" cols="4">
         		<field name="description" colSpan="4" showTitle="false" />

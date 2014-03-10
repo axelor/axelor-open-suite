@@ -30,7 +30,7 @@
 			<separator title="Subject" colSpan="4"/>
 			<field name="subject" showTitle="false"/>
 			<separator title="Content" colSpan="4"/>
-			<field name="content" showTitle="false" colSpan="4" widget="Html[lite=false]"/>
+			<field name="content" showTitle="false" colSpan="4" widget="Html" x-lite="false"/>
 		</group>
 	</form>
 	

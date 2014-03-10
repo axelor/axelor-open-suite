@@ -12,6 +12,6 @@
     <form name="jpql-query-form" title="Query" model="com.axelor.apps.base.db.JpqlQuery" cols="4">
         <field name="code"/>
         <field name="description"/>
-        <field name="queryString" widget="CodeEditor[syntax=sql]" colSpan="4"/>
+        <field name="queryString" widget="CodeEditor" x-syntax="sql" colSpan="4"/>
     </form>
 </object-views>
