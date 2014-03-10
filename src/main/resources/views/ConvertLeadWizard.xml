@@ -80,7 +80,7 @@
 	
 	
 	<form name="contact-lead-converted-form" title="Contact" model="com.axelor.apps.base.db.Partner" cols="6" colWidths="25*" 
-	onNew="action-partner-record-partner-type-select,action-partner-contact-record-default" 
+	onNew="action-partner-contact-record-default" 
 	onLoad="action-convert-lead-wizard-attrs-default-contact-address">
 	    <group colSpan="6" cols="6">
 	        <group colSpan="1" cols="1">
@@ -134,7 +134,7 @@
 	
 	
 	<form name="partner-lead-converted-form" title="Partner" model="com.axelor.apps.base.db.Partner" cols="6" colWidths="25*" 
-    onNew="action-partner-record-partner-type-select,action-partner-record-set-default"
+    onNew="action-partner-record-set-default"
     onLoad="action-convert-lead-wizard-record-default-partner-address">
 	    <group colSpan="6" cols="6">
 	        <group colSpan="1" cols="1">
@@ -234,9 +234,10 @@
     	<field name="webSite" expr="eval: _lead.website"/>
     	<field name="source" expr="eval: _lead.source"/>
     	<field name="department" expr="eval: _lead.department"/>
-    	<field name="userInfo" expr="eval: com.axelor.apps.base.db.UserInfoi_lead.userInfo"/>
+<!--     	<field name="userInfo" expr="eval: com.axelor.apps.base.db.UserInfoi_lead.userInfo"/> //TODO -->
     	<field name="team" expr="eval: _lead.team"/>
     	<field name="customerTypeSelect" expr="eval: 2"/>
+    	<field name="partnerTypeSelect" expr="eval: 1"/>
     </action-record>
     
     <action-record name="action-convert-lead-wizard-record-default-partner-address" model="com.axelor.apps.base.db.Partner">
@@ -373,7 +374,7 @@
     	<field name="typeSelect" expr="eval: 1"/>
     	<field name="lead" expr="eval: _lead"/>
     	<field name="description" expr="eval: _lead.description"/>
-    	<field name="userInfo" expr="eval: _lead.userInfo"/>
+    	<field name="userInfo" expr="eval: com.axelor.apps.base.db.UserInfo.find(_lead.userInfo.id)"/>
     	<field name="team" expr="eval: _lead.team"/>
     	<field name="statusSelect" expr="1"/>
     	<field name="startDateTime" expr="eval: __time__"/>
@@ -407,7 +408,7 @@
     	<field name="typeSelect" expr="eval: 2"/>
     	<field name="lead" expr="eval: _lead"/>
     	<field name="description" expr="eval: _lead.description"/>
-    	<field name="userInfo" expr="eval: _lead.userInfo"/>
+    	<field name="userInfo" expr="eval: com.axelor.apps.base.db.UserInfo.find(_lead.userInfo.id)"/>
     	<field name="team" expr="eval: _lead.team"/>
     	<field name="statusSelect" expr="1"/>
     	<field name="startDateTime" expr="eval: __time__"/>
@@ -442,7 +443,7 @@
     	<field name="typeSelect" expr="eval: 3"/>
     	<field name="lead" expr="eval: _lead"/>
     	<field name="description" expr="eval: _lead.description"/>
-    	<field name="userInfo" expr="eval: _lead.userInfo"/>
+    	<field name="userInfo" expr="eval: com.axelor.apps.base.db.UserInfo.find(_lead.userInfo.id)"/>
     	<field name="team" expr="eval: _lead.team"/>
     	<field name="taskStatusSelect" expr="1"/>
     	<field name="startDateTime" expr="eval: __time__"/>
