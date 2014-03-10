@@ -15,7 +15,7 @@
     	<group title="Informations" colSpan="4">
             <field name="name"/>
             <field name="userInfo"/>
-        	<field name="signature" widget="Html[lite=true]" colSpan="4"/>
+        	<field name="signature" widget="Html" x-lite="true" colSpan="4"/>
         	<field name="isDefault" onChange="action-mail-account-validate-is-default"/>
         </group>
         <group title="Login" colSpan="4">

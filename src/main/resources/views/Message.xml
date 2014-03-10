@@ -20,11 +20,11 @@
 <!--             <field name="sentByEmail"/> -->
         </group>
         <group title="Recipients" colSpan="4" readonlyIf="statusSelect == 2 || statusSelect == 3">
-        	<field name="toEmailAddressSet" widget="TagSelect[create=emailAddress]" form-view="email-address-form" colSpan="4"/>
-        	<field name="ccEmailAddressSet" widget="TagSelect[create=emailAddress]" form-view="email-address-form" colSpan="4"/>
-        	<field name="bccEmailAddressSet" widget="TagSelect[create=emailAddress]" form-view="email-address-form" colSpan="4"/>
+        	<field name="toEmailAddressSet" widget="TagSelect" x-create="emailAddress" form-view="email-address-form" colSpan="4"/>
+        	<field name="ccEmailAddressSet" widget="TagSelect" x-create="emailAddress" form-view="email-address-form" colSpan="4"/>
+        	<field name="bccEmailAddressSet" widget="TagSelect" x-create="emailAddress" form-view="email-address-form" colSpan="4"/>
         	<separator title="" colSpan="4"/>
-        	<field name="recipientUserInfo" widget="TagSelect[create=name]" colSpan="4" help="Internal Message"/>
+        	<field name="recipientUserInfo" widget="TagSelect" x-create="name" colSpan="4" help="Internal Message"/>
         </group>
         <group title="Content" colSpan="4" readonlyIf="statusSelect == 2 || statusSelect == 3">
         	<field name="subject" colSpan="4"/>
@@ -32,8 +32,8 @@
        	 	<field name="content" colSpan="4" showTitle="false" widget="html"/>
         </group>
         <group title="Related to" colSpan="1" cols="2" readonlyIf="statusSelect == 3">
-	        <field name="relatedTo1Select" widget="RefSelect[related=relatedTo1SelectId]"/>
-	        <field name="relatedTo2Select" widget="RefSelect[related=relatedTo2SelectId]"/>
+	        <field name="relatedTo1Select" widget="RefSelect" x-related="relatedTo1SelectId"/>
+	        <field name="relatedTo2Select" widget="RefSelect" x-related="relatedTo2SelectId"/>
 	        <field name="filePath" widget="url"/>
         </group>
 <!--         <button name="printMail" title="Imprimer" colSpan="2" onClick="save,action-mail-method-print-mail"/> -->
