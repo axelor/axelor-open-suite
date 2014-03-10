@@ -21,10 +21,10 @@
 		        	<group title="Capacity information" colSpan="2" cols="2">
 		        		<field name="capacityPerCycle"/>
 				        <field name="maxCapacityPerCycle"/>
-				        <field name="durationPerCycle" widget="duration[big=true|seconds=true]"/>
-				        <field name="startingDuration" widget="duration[big=true|seconds=true]"/>
-				        <field name="setupDuration" widget="duration[big=true|seconds=true]"/>
-				        <field name="endingDuration" widget="duration[big=true|seconds=true]"/>
+				        <field name="durationPerCycle" widget="duration" x-big="true" x-seconds="true"/>
+				        <field name="startingDuration" widget="duration" x-big="true" x-seconds="true"/>
+				        <field name="setupDuration" widget="duration" x-big="true" x-seconds="true"/>
+				        <field name="endingDuration" widget="duration" x-big="true" x-seconds="true"/>
 		        	</group>
 		        	<group title="Costing information" colSpan="2" cols="2">
 		        		<field name="product"/>
@@ -58,10 +58,10 @@
 		        	<group title="Capacity information" colSpan="2" cols="2">
 		        		<field name="capacityPerCycle"/>
 				        <field name="maxCapacityPerCycle"/>
-				        <field name="durationPerCycle" widget="duration[big=true|seconds=true]"/>
-				        <field name="startingDuration" widget="duration[big=true|seconds=true]"/>
-				        <field name="setupDuration" widget="duration[big=true|seconds=true]"/>
-				        <field name="endingDuration" widget="duration[big=true|seconds=true]"/>
+				        <field name="durationPerCycle" widget="duration" x-big="true" x-seconds="true"/>
+				        <field name="startingDuration" widget="duration" x-big="true" x-seconds="true"/>
+				        <field name="setupDuration" widget="duration" x-big="true" x-seconds="true"/>
+				        <field name="endingDuration" widget="duration" x-big="true" x-seconds="true"/>
 		        	</group>
 		        	<group title="Costing information" colSpan="2" cols="2">
 		        		<field name="product"/>
