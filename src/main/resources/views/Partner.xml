@@ -202,7 +202,7 @@
 	
 
 	<form name="partner-contact-form" title="Contact" model="com.axelor.apps.base.db.Partner" cols="6" colWidths="25*" 
-	onNew="action-partner-record-partner-type-select,action-partner-contact-record-default" 
+	onNew="action-partner-contact-record-default" 
 	onLoad="action-partner-attrs-change-name" 
 	onSave="save,action-set-partner-seq">
 	    <toolbar>

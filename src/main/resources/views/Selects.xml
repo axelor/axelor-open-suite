@@ -157,11 +157,6 @@
 		<option value="100">100</option>
 	</selection>
 
-	<selection name="partner.base.type.select">
-		<option value="1">Company</option>
-		<option value="2">Individual</option>
-	</selection>
-
 	<selection name="partner.title.type.select">
 		<option value="1">M.</option>
 		<option value="2">Ms.</option>
