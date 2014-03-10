@@ -113,7 +113,7 @@
 	                <field name="showDetailsInInvoice"/>
 	            </group>
 	            <group title="Description" colSpan="4">
-	            	<field name="description" colSpan="4" showTitle="false" widget="Html[lite=true]"/>
+	            	<field name="description" colSpan="4" showTitle="false" widget="Html" x-lite="true"/>
             	</group>
 	        </page>
 	        <page title="Schedule" showIf="invoicingTypeSelect == 2">
