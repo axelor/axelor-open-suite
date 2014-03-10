@@ -116,7 +116,7 @@
 	            </group>
 	        </page>
 	        <page title="Notes">
-	            <field name="description" showTitle="false" colSpan="4" widget="Html[lite=true]"/>
+	            <field name="description" showTitle="false" colSpan="4" widget="Html" x-lite="true"/>
 	        </page>
 	        <page name="payment" title="Invoicing/Payment" hideIf="partnerTypeSelect == 2" colSpan="4" cols="4">
 	            <field name="invoiceSendingFormatSelect"/>
@@ -130,7 +130,7 @@
 	            <field name="partnerSeq"/>
 	            <field name="languageSelect"/>
 	            <group title="Assigned to" colSpan="4" cols="4" canCollapse="true">
-	                <field name="companySet" colSpan="4" widget="TagSelect[create=name]" onChange="action-partner-company-set-validate"/>
+	                <field name="companySet" colSpan="4" widget="TagSelect" x-create="name" onChange="action-partner-company-set-validate"/>
 	                <break/>
 	                <field name="userInfo"/>
 	                <field name="team"/>
@@ -254,13 +254,13 @@
 	    <break/>
 	    <notebook colSpan="4">
 	        <page title="Notes">
-	            <field name="description" showTitle="false" colSpan="4" widget="Html[lite=true]"/>
+	            <field name="description" showTitle="false" colSpan="4" widget="Html" x-lite="true"/>
 	        </page>
 	        <page title="Settings" cols="4">
 	            <field name="partnerSeq"/>
 	            <field name="languageSelect"/>
 	            <group title="Assigned to" colSpan="4" cols="4" canCollapse="true">
-	                <field name="companySet" colSpan="4" widget="TagSelect[create=name]" onChange="action-partner-company-set-validate"/>
+	                <field name="companySet" colSpan="4" widget="TagSelect" x-create="name" onChange="action-partner-company-set-validate"/>
 	                <break/>
 	                <field name="userInfo"/>
 	                <field name="team"/>
