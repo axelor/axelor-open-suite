@@ -79,9 +79,9 @@
 			<page title="Profile">
 				<group colSpan="4" cols="4">
 					<group title="Keywords" colSpan="2">
-						<field name="toolKeywordSet" colSpan="2" widget="TagSelect[create=keyWord]" domain="self.typeSelect = '1'" form-view="keyword-tool-form" grid-view="keyword-tool-grid"/>
-						<field name="fieldKeywordSet" colSpan="2" widget="TagSelect[create=keyWord]" domain="self.typeSelect = '2'" form-view="keyword-area-form" grid-view="keyword-area-grid"/>
-						<field name="jobKeywordSet" colSpan="2" widget="TagSelect[create=keyWord]" domain="self.typeSelect = '3'" form-view="keyword-profession-form" grid-view="keyword-profession-grid"/>
+						<field name="toolKeywordSet" colSpan="2" widget="TagSelect" x-create="keyWord" domain="self.typeSelect = '1'" form-view="keyword-tool-form" grid-view="keyword-tool-grid"/>
+						<field name="fieldKeywordSet" colSpan="2" widget="TagSelect" x-create="keyWord" domain="self.typeSelect = '2'" form-view="keyword-area-form" grid-view="keyword-area-grid"/>
+						<field name="jobKeywordSet" colSpan="2" widget="TagSelect" x-create="keyWord" domain="self.typeSelect = '3'" form-view="keyword-profession-form" grid-view="keyword-profession-grid"/>
 					</group>
 					<group title="Competences profile" colSpan="2">
 						<field name="competence"/>
