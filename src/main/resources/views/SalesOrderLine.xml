@@ -47,7 +47,7 @@
 	            </group>
 	        </page>
 	        <page title="Notes">
-	            <field name="description" colSpan="4" showTitle="false" widget="Html[lite=true]"/>
+	            <field name="description" colSpan="4" showTitle="false" widget="Html" x-lite="true"/>
 	        </page>
 	        <page title="Delivery" colSpan="4" cols="4">
     			<field name="estimatedDelivDate"/>

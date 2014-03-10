@@ -86,7 +86,7 @@
 	            </group>
 	        </page>
 			<page title="Notes" colSpan="4" cols="6">
-				<field name="notes" showTitle="false" colSpan="6" widget="Html[lite=true]"/>
+				<field name="notes" showTitle="false" colSpan="6" widget="Html" x-lite="true"/>
 			</page>
 	    </notebook>
 	</form>
