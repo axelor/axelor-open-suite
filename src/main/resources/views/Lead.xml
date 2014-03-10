@@ -98,7 +98,7 @@
 		            <field name="officeName"/>
 		            <field name="department"/>
 		            <field name="webSite"/>
-		            <field name="description" colSpan="6" widget="TEXT[height=3]"/>
+		            <field name="description" colSpan="6" widget="TEXT" x-height="3"/>
 		        </group>
 		        <break/>
 		        <group title="Status details" colSpan="2" css="groupTitle" cols="2" >
