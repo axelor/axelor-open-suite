@@ -24,7 +24,7 @@
 	    <field name="costPrice" width="120"/>
 	    <field name="salePrice" width="120"/>
     </grid>
-    
+
     <form cols="2" onNew="action-product-record-default-new,action-product-record-sale-supply-select" name="product-form" title="Product" model="com.axelor.apps.base.db.Product" >
     	<toolbar>
     		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
