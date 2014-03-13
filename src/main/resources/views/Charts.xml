@@ -582,7 +582,10 @@
 	    	<config name="max" value="200"/>
 		</chart>
 		
-		<chart name="chart.user.call.target.bar" title="Call emitted historical">
+		<chart name="chart.user.call.target.bar" title="Call emitted historical" onInit="action.chart.crm.chart.set.active.user">
+		    <search-fields>
+		        <field name="activeUser" type="reference" title="User" target="com.axelor.auth.db.User" widget="[required=true]" />
+		    </search-fields>
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -591,7 +594,7 @@
 				    self.periodTypeSelect as _period,
 				    self.toDate as _toDate
 				FROM Target self 
-				WHERE self.userInfo.internalUser.id = :user
+				WHERE self.userInfo.internalUser = :activeUser
 				GROUP BY
 				    self.periodTypeSelect,
 				    self.toDate
@@ -603,6 +606,10 @@
 		    <series key="_callEmittedNumber" type="bar"/>
 <!-- 		    <series key="_callEmittedNumberTarget" type="bar"/> -->
 		</chart>
+		
+		<action-record name="action.chart.crm.chart.set.active.user" model="com.axelor.apps.crm.db.Event">
+		    <field name="activeUser" expr="eval:com.axelor.auth.db.User.find(__user__.id)" />
+		</action-record>
 		
 		<chart name="chart.user.meeting.target.gauge" title="Meetings number target completed (%)">
 			<dataset type="jpql">
@@ -619,7 +626,10 @@
 	    	<config name="max" value="200"/>
 		</chart>
 		
-		<chart name="chart.user.meeting.target.bar" title="Meetings number historical">
+		<chart name="chart.user.meeting.target.bar" title="Meetings number historical" onInit="action.chart.crm.chart.set.active.user">
+		     <search-fields>
+		        <field name="activeUser" type="reference" title="User" target="com.axelor.auth.db.User" widget="[required=true]" />
+		    </search-fields>
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -628,7 +638,7 @@
 				    self.periodTypeSelect as _period,
 				    self.toDate as _toDate
 				FROM Target self 
-				WHERE self.userInfo.internalUser.id = :user
+				WHERE self.userInfo.internalUser = :activeUser
 				GROUP BY
 				    self.periodTypeSelect,
 				    self.toDate
@@ -656,7 +666,7 @@
 	    	<config name="max" value="200"/>
 		</chart>
 		
-		<chart name="chart.user.opportunity.amount.won.target.bar" title="Opportunities amount won historical">
+		<chart name="chart.user.opportunity.amount.won.target.bar" title="Opportunities amount won historical" onInit="action.chart.crm.chart.set.active.user">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -665,7 +675,7 @@
 				    self.periodTypeSelect as _period,
 				    self.toDate as _toDate
 				FROM Target self 
-				WHERE self.userInfo.internalUser.id = :user
+				WHERE self.userInfo.internalUser = :activeUser
 				GROUP BY
 				    self.periodTypeSelect,
 				    self.toDate
@@ -693,7 +703,7 @@
 	    	<config name="max" value="200"/>
 		</chart>
 		
-		<chart name="chart.user.opportunity.created.number.target.bar" title="Opportunities created number historical">
+		<chart name="chart.user.opportunity.created.number.target.bar" title="Opportunities created number historical" onInit="action.chart.crm.chart.set.active.user">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -702,7 +712,7 @@
 				    self.periodTypeSelect as _period,
 				    self.toDate as _toDate
 				FROM Target self 
-				WHERE self.userInfo.internalUser.id = :user
+				WHERE self.userInfo.internalUser = :activeUser
 				GROUP BY
 				    self.periodTypeSelect,
 				    self.toDate
@@ -730,7 +740,7 @@
 	    	<config name="max" value="200"/>
 		</chart>
 		
-		<chart name="chart.user.opportunity.created.won.target.bar" title="Opportunities created won historical">
+		<chart name="chart.user.opportunity.created.won.target.bar" title="Opportunities created won historical" onInit="action.chart.crm.chart.set.active.user">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -739,7 +749,7 @@
 				    self.periodTypeSelect as _period,
 				    self.toDate as _toDate
 				FROM Target self 
-				WHERE self.userInfo.internalUser.id = :user
+				WHERE self.userInfo.internalUser = :activeUser
 				GROUP BY
 				    self.periodTypeSelect,
 				    self.toDate
@@ -767,7 +777,7 @@
 	    	<config name="max" value="200"/>
 		</chart>
 		
-		<chart name="chart.user.sales.order.amount.won.target.bar" title="Sales orders amount won historical">
+		<chart name="chart.user.sales.order.amount.won.target.bar" title="Sales orders amount won historical" onInit="action.chart.crm.chart.set.active.user">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -776,7 +786,7 @@
 				    self.periodTypeSelect as _period,
 				    self.toDate as _toDate
 				FROM Target self 
-				WHERE self.userInfo.internalUser.id = :user
+				WHERE self.userInfo.internalUser = :activeUser
 				GROUP BY
 				    self.periodTypeSelect,
 				    self.toDate
@@ -789,7 +799,7 @@
 <!-- 		    <series key="_salesOrderAmountWonTarget" type="bar"/> -->
 		</chart>
 		
-		<chart name="chart.user.sales.order.created.number.target.gauge" title="Sales orders created number target completed (%)">
+		<chart name="chart.user.sales.order.created.number.target.gauge" title="Sales orders created number target completed (%)" >
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -804,7 +814,7 @@
 	    	<config name="max" value="200"/>
 		</chart>
 		
-		<chart name="chart.user.sales.order.created.number.target.bar" title="Sales orders created number historical">
+		<chart name="chart.user.sales.order.created.number.target.bar" title="Sales orders created number historical" onInit="action.chart.crm.chart.set.active.user">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -813,7 +823,7 @@
 				    self.periodTypeSelect as _period,
 				    self.toDate as _toDate
 				FROM Target self 
-				WHERE self.userInfo.internalUser.id = :user
+				WHERE self.userInfo.internalUser = :activeUser
 				GROUP BY
 				    self.periodTypeSelect,
 				    self.toDate
@@ -841,7 +851,7 @@
 	    	<config name="max" value="200"/>
 		</chart>
 		
-		<chart name="chart.user.sales.order.created.won.target.bar" title="Sales orders created won historical">
+		<chart name="chart.user.sales.order.created.won.target.bar" title="Sales orders created won historical" onInit="action.chart.crm.chart.set.active.user">
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -850,7 +860,7 @@
 				    self.periodTypeSelect as _period,
 				    self.toDate as _toDate
 				FROM Target self 
-				WHERE self.userInfo.internalUser.id = :user
+				WHERE self.userInfo.internalUser = :activeUser
 				GROUP BY
 				    self.periodTypeSelect,
 				    self.toDate
