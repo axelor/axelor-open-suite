@@ -14,6 +14,7 @@
     <many-to-one name="productCategory" ref="ProductCategory" title="Product category" initParam="true" massUpdate="true"/>
     <many-to-one name="productFamily" ref="ProductFamily" title="Famly" initParam="true"/>
     <many-to-one name="unit" ref="Unit" title="Unit" initParam="true" massUpdate="true"/>
+
     <integer name="applicationTypeSelect" title="Application type" selection="product.application.type.select" initParam="true"/>
     <integer name="saleSupplySelect" title="Sale supply default method" selection="product.sale.supply.select" initParam="true"/>
      
@@ -57,7 +58,6 @@
   	<boolean name="isModel" title="Is model?"/>
   
   	<many-to-one name="defaultSupplierPartner" ref="com.axelor.apps.base.db.Partner" title="Default supplier" />
-  	
 <!--   	A Deplacer dans production :  -->
 	<decimal name="lastProductionPrice" title="Last production price" precision="20" scale="5"/>
 	<many-to-one name="defaultBillOfMaterial" ref="com.axelor.apps.production.db.BillOfMaterial" title="Default BOM"/>
