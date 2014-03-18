@@ -1,9 +1,9 @@
-"prodResource.importId";"product.importId";"employee.importId";"duration";"operationOrder.operationName"
-10;413;;1020;"Poste Montage Proc"
-20;412;;720;"Poste Vissage"
-30;413;;1380;"Poste Connectique"
-40;413;;360;"Contrôle Qualité"
-50;412;;300;"Nettoyage"
-60;412;;600;"Emballage"
-70;413;;4020;"Banc de test"
-80;412;;360;"Récup Art. Stock"
+"prodResource.importId";"product.importId";"employee.importId";"duration";"operationOrder.importId"
+10;413;;1020;10
+20;412;;720;20
+30;413;;1380;30
+40;413;;360;40
+50;412;;300;50
+60;412;;600;60
+70;413;;4020;70
+80;412;;360;80

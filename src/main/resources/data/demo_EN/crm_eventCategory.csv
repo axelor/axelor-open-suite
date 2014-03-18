@@ -1,8 +1,8 @@
-"name";"code";"name_fr";"code_fr";"typeSelect"
-"Technical Support";"TSUP";"Support technique";"SUPT";5
-"Functionnal Support";"FSUP";"Support fonctionnel";"SUPF";5
-"Anomaly";"ANOM";"Anomalie";"ANOM";5
-"Failure";"FAIL";"Panne";"PANN";5
-"Defect";"DFCT";"Défaut";"DEFT";5
-"Updates";"UPDT";"Mise à jour";"MAJR";5
-"Administration";"ADMN";"Administration";"ADMN";5
+"name";"code";"typeSelect"
+"Technical Support";"TSUP";5
+"Functionnal Support";"FSUP";5
+"Anomaly";"ANOM";5
+"Failure";"FAIL";5
+"Defect";"DFCT";5
+"Updates";"UPDT";5
+"Administration";"ADMN";5

@@ -1,12 +1,17 @@
-name;date;publicHolidays.importId;description
-Jour de l'An;2013-01-01;1;Jour de l'An
-L. de Pâques;2013-04-01;1;L. de Pâques
-Fête du travail;2013-05-01;1;Fête du travail
-Victoire 1945;2013-05-08;1;Victoire 1945
-Ascension;2013-05-09;1;Ascension
-Lundi de Pentecôte;2013-05-20;1;Lundi de Pentecôte
-Fête nationale;2013-05-20;1;Fête nationale
-Assomption;2013-08-15;1;Assomption
-Toussaint;2013-11-01;1;Toussaint
-Armistice 1918;2013-11-11;1;Armistice 1918
-Noël;2013-12-25;1;Noël
+"name";"date";"publicHolidays.importId";"description"
+"New Year's Day";"2014-01-01";1;"New Year's Day"
+"Good Friday";"2014-04-18";1;"Good Friday"
+"Easter Monday";"2014-04-21";1;"Easter Monday"
+"Early May bank holiday";"2014-05-05";1;"Early May bank holiday"
+"Spring bank holiday";"2014-05-26";1;"Spring bank holiday"
+"Summer bank holiday";"2014-08-25";1;"Summer bank holiday"
+"Christmas Day";"2015-12-25";1;"Christmas Day"
+"Boxing Day";"2015-12-26";1;"Boxing Day"
+"New Year's Day";"2015-01-01";1;"New Year's Day"
+"Good Friday";"2015-04-03";1;"Good Friday"
+"Easter Monday";"2015-04-06";1;"Easter Monday"
+"Early May bank holiday";"2015-05-04";1;"Early May bank holiday"
+"Spring bank holiday";"2015-05-25";1;"Spring bank holiday"
+"Summer bank holiday";"2015-08-31";1;"Summer bank holiday"
+"Christmas Day";"2015-12-25";1;"Christmas Day"
+"Boxing Day";"2015-12-28";1;"Boxing Day"
