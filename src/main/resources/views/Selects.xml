@@ -157,11 +157,6 @@
 		<option value="100">100</option>
 	</selection>
 
-	<selection name="partner.base.type.select">
-		<option value="1">Company</option>
-		<option value="2">Individual</option>
-	</selection>
-
 	<selection name="partner.title.type.select">
 		<option value="1">M.</option>
 		<option value="2">Ms.</option>
@@ -588,6 +583,11 @@
 		<option value="5">Friday</option>
 		<option value="6">Saturday</option>
 		<option value="7">Sunday</option>
+	</selection>
+	
+	<selection name="ibase.product.variant.value.application.price.select">
+		<option value="0">Sale price</option>
+		<option value="1">cost price</option>
 	</selection>
 
 

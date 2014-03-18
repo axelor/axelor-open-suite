@@ -17,6 +17,14 @@
 	    <button name="sendByEmail" title="Send Email" icon="icon-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
     
+    <grid name="product-product-variant-grid" title="Products" model="com.axelor.apps.base.db.Product" orderBy="name">
+	    <field name="code" width="120"/>
+	    <field name="name"/>
+	    <field name="productVariant" width="200"/>
+	    <field name="costPrice" width="120"/>
+	    <field name="salePrice" width="120"/>
+    </grid>
+    
     <form cols="2" onLoad="action-product-set-today-date"  onNew="action-product-set-today-date,action-product-record-default-new,action-product-record-sale-supply-select" name="product-form" title="Product" model="com.axelor.apps.base.db.Product" >
     	<toolbar>
     		<button name="sendByEmail" title="Send Email" icon="icon-envelope" onClick="action-send-by-email-with-template"/>
@@ -55,6 +63,7 @@
 					<field name="saleCurrency"/>
 					<field name="endDate" onChange="action-product-validate-end-date,action-product-method-reset-end-date"/>
 					<field name="unit"/>
+					<button name="showProductSheet" title="Product sheet" colSpan="2" icon="icon-print" onClick="save,action-product-method-show-product-sheet"/>
 				</group>
 				<group colSpan="4">
 					<group colSpan="2">
@@ -62,8 +71,10 @@
 						<break/>
 						<field name="description" showTitle="false" colSpan="2" widget="html"/>
 					</group>
-					<group colSpan="2" cols="2" colWidths="40%,60%">
-						<button name="showProductSheet" title="Product sheet" colSpan="1" icon="icon-print" onClick="save,action-product-method-show-product-sheet"/>
+					<group colSpan="2">
+						<separator title="Internal description" colSpan="2"/>
+						<break/>
+						<field name="internalDescription" showTitle="false" colSpan="2" widget="html"/>
 					</group>
 				</group>
 			</page>
@@ -96,8 +107,9 @@
 				<portlet colSpan="4" action="action-product-view-stock"/>
 <!-- 				<portlet action="chart:chart.stock.report.for.product" height="200" colSpan="4"/> -->
 			</page>
+
 			<page title="Production informations" showIf="productTypeSelect != 'service'">
-				<field name="defaultBillOfMaterial" domain="self.product.id = :id"/>
+				<field name="defaultBillOfMaterial" domain="self.product.id = :id" onSelect="action-product-attrs-bill-of-material-domain"/>
 				<field name="lastProductionPrice" readonly="true"/>
 				<button name="createProductionOrder" title="Create production order" colSpan="2" onClick="save,action-product-view-create-production-order"/>
 			</page>
@@ -119,7 +131,17 @@
 	           
 	        </page>
 	        <page title="Variants">
-	            <field name="productVariantConfiguration" showTitle="false" widget="NestedEditor" canSelect="true" edit-window="self" form-view="product-variant-configuration-form" summary-view="true"/>
+	        	<group name="parentVariant" showIf="!parentProduct" colSpan="4">
+	        		<field name="productVariantConfig" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="product-variant-config-form" summary-view="true"/>
+	            	<button name="generateProductVariant" title="Generate product variants" colSpan="2" onClick="save,action-product-method-generate-product-variant"/>
+	        		<portlet action="action-product-view-product-variant" colSpan="4"/>
+	        	</group>
+	            <group name="childVariant" showIf="parentProduct" colSpan="4">
+	            	<field name="productVariant" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="product-variant-form" summary-view="true"/>
+	        		<field name="parentProduct"/>
+	        		<portlet action="action-product-view-other-product-variant" colSpan="4"/>
+	            </group>
+            	<button name="updateProductsPrices" title="Update products prices" colSpan="2" onClick="save,action-product-method-update-products-prices" help="Update current product prices and variants"/>
 	        </page>
 	    </notebook>
 	</form>    
@@ -140,6 +162,7 @@
     	<field name="saleCurrency" expr="eval: _activeCompany.currency"/>
     	<field name="purchaseCurrency" expr="eval: _activeCompany.currency"/>
     	<field name="managPriceCoef" expr="1"/>
+    	<field name="isModel" expr="eval: _isModel"/>
     </action-record>
     
     <action-record name="action-product-set-today-date" model="com.axelor.apps.base.db.Product">
@@ -178,7 +201,15 @@
 	<action-method name="action-product-method-show-product-sheet" >
 		<call class="com.axelor.apps.base.web.ProductController" method="printProductSheet"/>
 	</action-method>
-    
+	
+	<action-method name="action-product-method-generate-product-variant" >
+		<call class="com.axelor.apps.base.web.ProductController" method="generateProductVariants"/>
+	</action-method>
+	
+	<action-method name="action-product-method-update-products-prices" >
+		<call class="com.axelor.apps.base.web.ProductController" method="updateProductsPrices"/>
+	</action-method>
+	
     <action-validate name="action-product-validate-end-date">
     	<alert message="The product pulled-off date must be greater than the launch date." if="endDate &lt; startDate"/>
     </action-validate>
@@ -186,6 +217,25 @@
     <action-record name="action-product-method-reset-end-date" model="com.axelor.apps.base.db.Product">
     	<field name="endDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="endDate &lt; startDate"/>
     </action-record>
+    
+    <action-view name="action-product-view-product-variant" title="Products variants"
+		model="com.axelor.apps.base.db.Product">
+		<view type="grid" name="product-product-variant-grid"/>
+		<view type="form" name="product-form"/>
+		<domain>self.parentProduct.id = :id</domain>
+	</action-view>	
+	
+	<action-view name="action-product-view-other-product-variant" title="Other variants"
+		model="com.axelor.apps.base.db.Product">
+		<view type="grid" name="product-product-variant-grid"/>
+		<view type="form" name="product-form"/>
+		<domain>self.parentProduct.id = :parentId</domain>
+		<context name="parentId" expr="eval: parentProduct?.id"/>
+	</action-view>	
+	
+	<action-attrs name="action-product-attrs-bill-of-material-domain">
+		<attribute name="domain" for="defaultBillOfMaterial" expr="eval: &quot;(self.product.id = ${parentProduct?.id} OR self.product.id = ${id}) AND self.isRawMaterial = 'false'&quot;"/>
+	</action-attrs>
 	
     <search-filters name="products-filters" model="com.axelor.apps.base.db.Product" title="Products filters">
 		<filter title="Current Products">
@@ -198,7 +248,7 @@
 			<domain>(self.endDate IS NULL or CURRENT_DATE &lt; self.endDate) and self.productTypeSelect = 'service'</domain>
 		</filter>
 		<filter title="Products With Variant">
-			<domain>self.productVariantConfiguration != null</domain>
+			<domain>self.productVariantConfig != null</domain>
 		</filter>
 		<filter title="Raw Materials">
 			<domain>self.isRawMaterial = true</domain>
@@ -232,6 +282,10 @@
 		model="com.axelor.apps.supplychain.db.StockMoveLine">
 		<view type="grid" name="stock-move-line-all-grid"/>
 		<view type="form" name="stock-move-line-all-form"/>
+		<domain>self.product.id = :_id</domain>
+		<context name="_id" expr="eval: id"/>
 	</action-view>	
+	
+	
 	
 </object-views>

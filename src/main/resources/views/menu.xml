@@ -210,7 +210,22 @@
 		<view type="grid" />
 		<view type="form" />
 		<view-param name="search-filters" value="products-filters"/>
+		<domain>self.isModel = false</domain>
 		<context name="_activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+		<context name="_isModel" expr="false"/>
+	</action-view>
+	
+	<menuitem name="product-root-product-model" parent="product-root"
+		title="Products models" action="product.root.product.model" />
+
+	<action-view name="product.root.product.model" title="Products models"
+		model="com.axelor.apps.base.db.Product" icon="img/16px/productSmall_16px.png">
+		<view type="grid" />
+		<view type="form" />
+		<view-param name="search-filters" value="products-filters"/>
+		<domain>self.isModel = true</domain>
+		<context name="_activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+		<context name="_isModel" expr="true"/>
 	</action-view>
 	
 	<menuitem name="product-conf" parent="product-root" title="Configuration"

@@ -38,7 +38,7 @@
     </grid>
     
     <form name="partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" cols="6" colWidths="25*" 
-    onNew="action-partner-record-partner-type-select,action-partner-record-set-default" 
+    onNew="action-partner-record-partner-type-select,action-partner-record-set-default,action-partner-record-customer-supplier-type" 
     onLoad="action-partner-attrs-change-name" 
     onSave="save,action-set-partner-seq,action-create-accounting-situation">
 	    <toolbar>
@@ -202,7 +202,7 @@
 	
 
 	<form name="partner-contact-form" title="Contact" model="com.axelor.apps.base.db.Partner" cols="6" colWidths="25*" 
-	onNew="action-partner-record-partner-type-select,action-partner-contact-record-default" 
+	onNew="action-partner-contact-record-default" 
 	onLoad="action-partner-attrs-change-name" 
 	onSave="save,action-set-partner-seq">
 	    <toolbar>
@@ -286,28 +286,11 @@
 		<call class="com.axelor.apps.base.web.PartnerController" method="showPartnerInfo"/>
 	</action-method>
     
-    <action-view name="action-partner-view-partner-invoice" title="Invoices" model="com.axelor.apps.account.db.Invoice">
-		<view type="grid" name="invoice-grid"/>
-		<view type="form" name="invoice-form"/>
-		<domain>(self.partner = :id AND :_isContact = false) OR (self.contactPartner = :id AND :_isContact = true)</domain>
-		<context name="id" expr="eval: id"/>
-		<context name="_isContact" expr="eval: isContact"/>
-	</action-view>
-	
-	<action-view name="action-partner-view-contact-invoice" title="Invoices" model="com.axelor.apps.account.db.Invoice">
-		<view type="grid" name="invoice-grid"/>
-		<view type="form" name="invoice-form"/>
-		<domain>(self.partner = :id AND :_isContact = false) OR (self.contactPartner = :id AND :_isContact = true)</domain>
-		<context name="id" expr="eval: id"/>
-		<context name="_isContact" expr="eval: isContact"/>
-	</action-view>
-	
 	<action-view name="action-partner-view-partner-sales-order" title="Sales orders" model="com.axelor.apps.supplychain.db.SalesOrder">
 		<view type="grid" name="sales-order-grid"/>
 		<view type="form" name="sales-order-form"/>
-		<domain>(self.clientPartner = :id AND :_isContact = false) OR (self.contactPartner = :id AND :_isContact = true)</domain>
+		<domain>self.clientPartner.id = :id OR self.contactPartner.id = :id</domain>
 		<context name="id" expr="eval: id"/>
-		<context name="_isContact" expr="eval: isContact"/>
 	</action-view>
 	
 	<action-view name="action-partner-view-sn-profile" title="Profiles" model="com.axelor.apps.socialnetwork.db.SnProfile">
@@ -356,7 +339,6 @@
 		<domain>(self.clientPartner.id = :id OR self.contactPartner.id = :id) and self.endDateTime &lt; :_todayTime and self.typeSelect != 5</domain>
 		<context name="id" expr="eval: id"/>
 		<context name="_todayTime" expr="eval: __datetime__"/>
-		<context name="_isContact" expr="eval: isContact"/>
 	</action-view>
    	
    	<action-view name="action-partner-view-opportunities" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity">
@@ -371,7 +353,6 @@
 		<view type="form" name="sales-order-form"/>
 		<domain>(self.clientPartner.id = :id OR self.contactPartner.id = :id)</domain>
 		<context name="id" expr="eval: id"/>
-		<context name="_isContact" expr="eval: isContact"/>
 	</action-view>
 	
 	<action-view name="action-partner-view-tickets" title="Tickets" model="com.axelor.apps.crm.db.Event">
@@ -379,7 +360,6 @@
 		<view type="form" name="ticket-form"/>
 		<domain>(self.clientPartner.id = :id OR self.contactPartner.id = :id) AND self.typeSelect = 5</domain>
 		<context name="id" expr="eval: id"/>
-		<context name="_isContact" expr="eval: isContact"/>
 	</action-view>
     
     <action-record name="action-partner-record-main-invoicing-address" model="com.axelor.apps.base.db.Partner">
@@ -403,9 +383,12 @@
     	<field name="fullName" expr="eval: id" if="firstName == null &amp;&amp; name == null"/>
     </action-record>
     
-    <action-record name="action-partner-record-set-default" model="com.axelor.apps.base.db.Partner">
+    <action-record name="action-partner-record-customer-supplier-type" model="com.axelor.apps.base.db.Partner">
     	<field name="customerTypeSelect" expr="eval: 1" />
     	<field name="supplierTypeSelect" expr="eval:1"/>
+    </action-record>
+    
+    <action-record name="action-partner-record-set-default" model="com.axelor.apps.base.db.Partner">
     	<field name="currency" expr="eval:com.axelor.apps.base.db.UserInfo.all().filter('internalUser = ?1',__user__).fetchOne()?.activeCompany?.currency" if="!isContact"/>
     	<field name="invoiceSendingFormatSelect" expr="eval:'emailpaper'" if="!isContact"/>
     	<field name="userInfo"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>

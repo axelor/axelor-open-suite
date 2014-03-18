@@ -8,10 +8,10 @@
   <entity name="ProductVariant" lang="java">
 	
 	<integer name="importId" />
-	<many-to-one name="productVariantAttribute1" ref="com.axelor.apps.base.db.ProductVariantAttribute"/>
-	<many-to-one name="productVariantAttribute2" ref="com.axelor.apps.base.db.ProductVariantAttribute"/>
-	<many-to-one name="productVariantAttribute3" ref="com.axelor.apps.base.db.ProductVariantAttribute"/>
-	<many-to-one name="productVariantAttribute4" ref="com.axelor.apps.base.db.ProductVariantAttribute"/>
+	<many-to-one name="productVariantAttr1" ref="com.axelor.apps.base.db.ProductVariantAttr"/>
+	<many-to-one name="productVariantAttr2" ref="com.axelor.apps.base.db.ProductVariantAttr"/>
+	<many-to-one name="productVariantAttr3" ref="com.axelor.apps.base.db.ProductVariantAttr"/>
+	<many-to-one name="productVariantAttr4" ref="com.axelor.apps.base.db.ProductVariantAttr"/>
 	<many-to-one name="productVariantValue1" ref="com.axelor.apps.base.db.ProductVariantValue"/>
 	<many-to-one name="productVariantValue2" ref="com.axelor.apps.base.db.ProductVariantValue"/>
 	<many-to-one name="productVariantValue3" ref="com.axelor.apps.base.db.ProductVariantValue"/>
@@ -22,18 +22,18 @@
 	<string name="name" title="Name">
 		<![CDATA[
 		String name = "";
-		if(productVariantAttribute1 != null && productVariantValue1 != null)  {  name += productVariantAttribute1.getName()+" : "+productVariantValue1.getName();  }
-		if(productVariantAttribute2 != null && productVariantValue2 != null)  { 
+		if(productVariantAttr1 != null && productVariantValue1 != null)  {  name += productVariantAttr1.getName()+" : "+productVariantValue1.getName();  }
+		if(productVariantAttr2 != null && productVariantValue2 != null)  { 
 			if(!name.equals(""))  {  name += ", ";  }
-		 	name += productVariantAttribute2.getName()+" : "+productVariantValue2.getName();
+		 	name += productVariantAttr2.getName()+" : "+productVariantValue2.getName();
 		}
-		if(productVariantAttribute3 != null && productVariantValue3 != null)  { 
+		if(productVariantAttr3 != null && productVariantValue3 != null)  { 
 			if(!name.equals(""))  {  name += ", ";  }
-		 	name += productVariantAttribute3.getName()+" : "+productVariantValue3.getName();
+		 	name += productVariantAttr3.getName()+" : "+productVariantValue3.getName();
 		}
-		if(productVariantAttribute4 != null && productVariantValue4 != null)  { 
+		if(productVariantAttr4 != null && productVariantValue4 != null)  { 
 			if(!name.equals(""))  {  name += ", ";  }
-		 	name += productVariantAttribute4.getName()+" : "+productVariantValue4.getName();
+		 	name += productVariantAttr4.getName()+" : "+productVariantValue4.getName();
 		}
 		return name;
 	    ]]>
