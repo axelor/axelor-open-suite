@@ -12,8 +12,8 @@
     <string name="partnerSeq" title="Reference" readonly="true"/>
     
     <!-- ERP -->
-    <integer name="partnerTypeSelect" title="Partner Type" selection="partner.partner.type.select"/>
-    <string name="titleSelect" title="Civility" selection="partner.title.type.select"/>
+    <integer name="partnerTypeSelect" title="Partner Type" selection="partner.partner.type.select" />
+    <string name="titleSelect" title="Civility" selection="partner.title.type.select" massUpdate="true"/>
     <string name="name" title="Name/Company Name"/>
     <string name="firstName" title="First Name"/>
     <string name="jobTitle" title="Function"/>
@@ -22,11 +22,11 @@
     
     <integer name="customerTypeSelect" title="Customer Type" selection="partner.customer.type.select"/>
     <integer name="supplierTypeSelect" title="Supplier Type" selection="partner.supplier.type.select"/>
-    <boolean name="isContact" title="Contact ?" default="false"/>
+    <boolean name="isContact" title="Contact ?" default="false" />
     
     
-    <string name="languageSelect" title="Language" selection="select.language"/>
-    <many-to-one name="parentPartner" ref="com.axelor.apps.base.db.Partner" title="Mother company"/>
+    <string name="languageSelect" title="Language" selection="select.language" massUpdate="true"/>
+    <many-to-one name="parentPartner" ref="com.axelor.apps.base.db.Partner" title="Mother company" massUpdate="true"/>
     <many-to-one name="mainInvoicingAddress" ref="com.axelor.apps.base.db.Address" title="Invoicing Address"/>
     <many-to-one name="deliveryAddress" ref="com.axelor.apps.base.db.Address" title="Delivery Address"/>
     
@@ -74,7 +74,7 @@
    
     <many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="Assigned to"/>
 	<many-to-one name="team" ref="com.axelor.apps.base.db.Team" title="Team"/>
-	<many-to-one name="reportsTo" ref="com.axelor.apps.base.db.Partner" title="Reports to"/>
+	<many-to-one name="reportsTo" ref="com.axelor.apps.base.db.Partner" title="Reports to" massUpdate="true"/>
     <string name="description" title="Description"  large="true"/>
    	<integer name="industrySectorSelect" title="Industry" selection="partner.industry.sectory.select"/> 
 	<integer name="nbrEmployees" title="N° of Employees"/>

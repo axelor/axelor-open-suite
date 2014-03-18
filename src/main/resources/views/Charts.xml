@@ -39,7 +39,7 @@
 
 	<chart name="chart.stock.report.for.product" title="Stock" onInit="action-product-set-today-date">
 	    <search-fields>
-		    <field name="todayDate" type="date" widget=""/>
+		    <field name="todayDate" type="date" title="Today"/>
 	  	</search-fields>
 		<dataset type="sql">
 	    <![CDATA[
