@@ -96,7 +96,7 @@
 				<portlet colSpan="4" action="action-product-view-stock"/>
 <!-- 				<portlet action="chart:chart.stock.report.for.product" height="200" colSpan="4"/> -->
 			</page>
-			<page title="Production informations">
+			<page title="Production informations" showIf="productTypeSelect != 'service'">
 				<field name="defaultBillOfMaterial" domain="self.product.id = :id"/>
 				<field name="lastProductionPrice" readonly="true"/>
 				<button name="createProductionOrder" title="Create production order" colSpan="2" onClick="save,action-product-view-create-production-order"/>
