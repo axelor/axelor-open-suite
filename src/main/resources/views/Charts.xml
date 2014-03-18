@@ -667,6 +667,9 @@
 		</chart>
 		
 		<chart name="chart.user.opportunity.amount.won.target.bar" title="Opportunities amount won historical" onInit="action.chart.crm.chart.set.active.user">
+			<search-fields>
+		        <field name="activeUser" type="reference" title="User" target="com.axelor.auth.db.User" widget="[required=true]" />
+		    </search-fields>
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -704,6 +707,9 @@
 		</chart>
 		
 		<chart name="chart.user.opportunity.created.number.target.bar" title="Opportunities created number historical" onInit="action.chart.crm.chart.set.active.user">
+			<search-fields>
+		        <field name="activeUser" type="reference" title="User" target="com.axelor.auth.db.User" widget="[required=true]" />
+		    </search-fields>
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -741,6 +747,9 @@
 		</chart>
 		
 		<chart name="chart.user.opportunity.created.won.target.bar" title="Opportunities created won historical" onInit="action.chart.crm.chart.set.active.user">
+			<search-fields>
+		        <field name="activeUser" type="reference" title="User" target="com.axelor.auth.db.User" widget="[required=true]" />
+		    </search-fields>
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -778,6 +787,9 @@
 		</chart>
 		
 		<chart name="chart.user.sales.order.amount.won.target.bar" title="Sales orders amount won historical" onInit="action.chart.crm.chart.set.active.user">
+			<search-fields>
+		        <field name="activeUser" type="reference" title="User" target="com.axelor.auth.db.User" widget="[required=true]" />
+		    </search-fields>
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -815,6 +827,9 @@
 		</chart>
 		
 		<chart name="chart.user.sales.order.created.number.target.bar" title="Sales orders created number historical" onInit="action.chart.crm.chart.set.active.user">
+			<search-fields>
+		        <field name="activeUser" type="reference" title="User" target="com.axelor.auth.db.User" widget="[required=true]" />
+		    </search-fields>
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -852,6 +867,9 @@
 		</chart>
 		
 		<chart name="chart.user.sales.order.created.won.target.bar" title="Sales orders created won historical" onInit="action.chart.crm.chart.set.active.user">
+			<search-fields>
+		        <field name="activeUser" type="reference" title="User" target="com.axelor.auth.db.User" widget="[required=true]" />
+		    </search-fields>
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -891,7 +909,10 @@
 	    	<config name="max" value="200"/>
 		</chart>
 		
-		<chart name="chart.team.call.target.bar" title="Calls emitted historical">
+		<chart name="chart.team.call.target.bar" title="Calls emitted historical" onInit="action.chart.crm.chart.set.active.team">
+		    <search-fields>
+		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.apps.base.db.Team" widget="[required=true]" />
+		    </search-fields>
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -900,7 +921,7 @@
 				    self.periodTypeSelect as _period,
 				    self.toDate as _toDate
 				FROM Target self 
-				WHERE self.team.id = :team
+				WHERE self.team = :activeTeam
 				GROUP BY
 				    self.periodTypeSelect,
 				    self.toDate
@@ -912,6 +933,10 @@
 		    <series key="_callEmittedNumber" type="bar"/>
 <!-- 		    <series key="_callEmittedNumberTarget" type="bar"/> -->
 		</chart>
+		
+		<action-record name="action.chart.crm.chart.set.active.team" model="com.axelor.apps.crm.db.Event">
+		    <field name="activeTeam" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()" />
+		</action-record>
 		
 		<chart name="chart.team.meeting.target.gauge" title="Meetings number target completed (%)">
 			<dataset type="jpql">
@@ -928,7 +953,10 @@
 	    	<config name="max" value="200"/>
 		</chart>
 		
-		<chart name="chart.team.meeting.target.bar" title="Meeting number historical">
+		<chart name="chart.team.meeting.target.bar" title="Meeting number historical" onInit="action.chart.crm.chart.set.active.team">
+		    <search-fields>
+		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.apps.base.db.Team" widget="[required=true]" />
+		    </search-fields>
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -937,7 +965,7 @@
 				    self.periodTypeSelect as _period,
 				    self.toDate as _toDate
 				FROM Target self 
-				WHERE self.team.id = :team
+				WHERE self.team = :activeTeam
 				GROUP BY
 				    self.periodTypeSelect,
 				    self.toDate
@@ -965,7 +993,10 @@
 	    	<config name="max" value="200"/>
 		</chart>
 		
-		<chart name="chart.team.opportunity.amount.won.target.bar" title="Opportunities amount won historical">
+		<chart name="chart.team.opportunity.amount.won.target.bar" title="Opportunities amount won historical" onInit="action.chart.crm.chart.set.active.team">
+			<search-fields>
+		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.apps.base.db.Team" widget="[required=true]" />
+		    </search-fields>
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -974,7 +1005,7 @@
 				    self.periodTypeSelect as _period,
 				    self.toDate as _toDate
 				FROM Target self 
-				WHERE self.team.id = :team
+				WHERE self.team = :activeTeam
 				GROUP BY
 				    self.periodTypeSelect,
 				    self.toDate
@@ -1002,7 +1033,10 @@
 	    	<config name="max" value="200"/>
 		</chart>
 		
-		<chart name="chart.team.opportunity.created.number.target.bar" title="Opportunities created number historical">
+		<chart name="chart.team.opportunity.created.number.target.bar" title="Opportunities created number historical" onInit="action.chart.crm.chart.set.active.team">
+			<search-fields>
+		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.apps.base.db.Team" widget="[required=true]" />
+		    </search-fields>
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -1011,7 +1045,7 @@
 				    self.periodTypeSelect as _period,
 				    self.toDate as _toDate
 				FROM Target self 
-				WHERE self.team.id = :team
+				WHERE self.team = :activeTeam
 				GROUP BY
 				    self.periodTypeSelect,
 				    self.toDate
@@ -1039,7 +1073,10 @@
 	    	<config name="max" value="200"/>
 		</chart>
 		
-		<chart name="chart.team.opportunity.created.won.target.bar" title="Opportunities created won historical">
+		<chart name="chart.team.opportunity.created.won.target.bar" title="Opportunities created won historical" onInit="action.chart.crm.chart.set.active.team">
+			<search-fields>
+		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.apps.base.db.Team" widget="[required=true]" />
+		    </search-fields>
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -1048,7 +1085,7 @@
 				    self.periodTypeSelect as _period,
 				    self.toDate as _toDate
 				FROM Target self 
-				WHERE self.team.id = :team
+				WHERE self.team = :activeTeam
 				GROUP BY
 				    self.periodTypeSelect,
 				    self.toDate
@@ -1076,7 +1113,10 @@
 	    	<config name="max" value="200"/>
 		</chart>
 		
-		<chart name="chart.team.sales.order.amount.won.target.bar" title="Sales orders amount won historical">
+		<chart name="chart.team.sales.order.amount.won.target.bar" title="Sales orders amount won historical" onInit="action.chart.crm.chart.set.active.team">
+			<search-fields>
+		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.apps.base.db.Team" widget="[required=true]" />
+		    </search-fields>
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -1085,7 +1125,7 @@
 				    self.periodTypeSelect as _period,
 				    self.toDate as _toDate
 				FROM Target self 
-				WHERE self.team.id = :team
+				WHERE self.team = :activeTeam
 				GROUP BY
 				    self.periodTypeSelect,
 				    self.toDate
@@ -1113,7 +1153,10 @@
 	    	<config name="max" value="200"/>
 		</chart>
 		
-		<chart name="chart.team.sales.order.created.number.target.bar" title="Sales orders created number historical">
+		<chart name="chart.team.sales.order.created.number.target.bar" title="Sales orders created number historical" onInit="action.chart.crm.chart.set.active.team">
+			<search-fields>
+		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.apps.base.db.Team" widget="[required=true]" />
+		    </search-fields>
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -1122,7 +1165,7 @@
 				    self.periodTypeSelect as _period,
 				    self.toDate as _toDate
 				FROM Target self 
-				WHERE self.team.id = :team
+				WHERE self.team = :activeTeam
 				GROUP BY
 				    self.periodTypeSelect,
 				    self.toDate
@@ -1150,7 +1193,10 @@
 	    	<config name="max" value="200"/>
 		</chart>
 		
-		<chart name="chart.team.sales.order.created.won.target.bar" title="Sales orders created won historical">
+		<chart name="chart.team.sales.order.created.won.target.bar" title="Sales orders created won historical" onInit="action.chart.crm.chart.set.active.team">
+			<search-fields>
+		        <field name="activeTeam" type="reference" title="Team" target="com.axelor.apps.base.db.Team" widget="[required=true]" />
+		    </search-fields>
 			<dataset type="jpql">
 			    <![CDATA[
 			    SELECT
@@ -1159,7 +1205,7 @@
 				    self.periodTypeSelect as _period,
 				    self.toDate as _toDate
 				FROM Target self 
-				WHERE self.team.id = :team
+				WHERE self.team = :activeTeam
 				GROUP BY
 				    self.periodTypeSelect,
 				    self.toDate
