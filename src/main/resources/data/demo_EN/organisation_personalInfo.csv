@@ -1,4 +1,4 @@
-"importId";"candidate.id";"employee.importId";"dob";"citizenshipCountry.code";"clearanceSelect";"maritalStatusSelect";"childrenNbr";"spouseProfession";"mobilityChoiceSet.id"
+"importId";"candidate.importId";"employee.importId";"dob";"citizenshipCountry.code";"clearanceSelect";"maritalStatusSelect";"childrenNbr";"spouseProfession";"mobilityChoiceSet.id"
 1;1;;"1979-02-14";"USA";0;1;0;;4
 2;2;;"1982-07-18";"GBR";0;1;0;;4
 3;3;;"1977-05-27";"USA";0;2;2;;4

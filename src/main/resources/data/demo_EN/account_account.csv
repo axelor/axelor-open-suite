@@ -1,4 +1,4 @@
-"importId";"code";"parent_code";"name";"accountType.nameSelect";"reconcileOk";"company.id"
+"importId";"code";"parent_code";"name";"accountType.nameSelect";"reconcileOk";"company.importId"
 1;0;;"Chart of Account Root";"view";;1
 2;"CL1_5";0;"Balance sheet accounts";"view";;1
 3;"CL6_7";0;"Management accounts";"view";;1
