@@ -1,2 +1,2 @@
 "importId";"purchaseOrderSeq";"externalReference";"invoicingTypeSelect";"supplierPartner.importId";"contactPartner.importId";"buyerUserInfo.importId";"currency.code";"creationDate";"statusSelect";"company.importId";"location.id";"deliveryDate";"orderDate";"exTaxTotal";"taxTotal";"inTaxTotal";"amountRemainingToBeInvoiced";"invoice.importId"
-1;"00001";"SC45213";1;170;171;14;"USD";"TODAY[-1d]";3;1;1;"TODAY[-7d]";"TODAY";3782.1;0;3782.1;3782.1;1
+1;"PO00001";"SC45213";1;170;171;14;"USD";"TODAY[-1d]";3;1;1;"TODAY[-7d]";"TODAY";"3782.1";0;"3782.1";"3782.1";1
