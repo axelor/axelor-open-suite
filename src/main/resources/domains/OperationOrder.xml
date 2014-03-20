@@ -6,7 +6,9 @@
   <module name="production" package="com.axelor.apps.production.db"/>
 
   <entity name="OperationOrder" lang="java">
-  
+  	
+    <integer name="importId"/>
+    
   	<integer name="priority" title="Priority" initParam="true"/>
 <!--     Ajouter action-record pour concatener seq + priority -->
     <string name="name" title="Name" initParam="true"/> 
