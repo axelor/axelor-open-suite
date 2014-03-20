@@ -1,36 +1,24 @@
 /**
- * Copyright (c) 2012-2014 Axelor. All Rights Reserved.
+ * Axelor Business Solutions
  *
- * The contents of this file are subject to the Common Public
- * Attribution License Version 1.0 (the "License"); you may not use
- * this file except in compliance with the License. You may obtain a
- * copy of the License at:
+ * Copyright (C) 2012-2014 Axelor (<http://axelor.com>).
  *
- * http://license.axelor.com/.
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
  *
- * The License is based on the Mozilla Public License Version 1.1 but
- * Sections 14 and 15 have been added to cover use of software over a
- * computer network and provide for limited attribution for the
- * Original Developer. In addition, Exhibit A has been modified to be
- * consistent with Exhibit B.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
- * the License for the specific language governing rights and limitations
- * under the License.
- *
- * The Original Code is part of "Axelor Business Suite", developed by
- * Axelor exclusively.
- *
- * The Original Developer is the Initial Developer. The Initial Developer of
- * the Original Code is Axelor.
- *
- * All portions of the code written by Axelor are
- * Copyright (c) 2012-2014 Axelor. All Rights Reserved.
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.supplychain.web;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -137,6 +125,22 @@ public class PurchaseOrderController {
 
 		StringBuilder url = new StringBuilder();
 		AxelorSettings axelorSettings = AxelorSettings.get();
+		String purchaseOrderIds = "";
+
+		@SuppressWarnings("unchecked")
+		List<Integer> lstSelectedPurchaseOrder = (List<Integer>) request.getContext().get("_ids");
+		if(lstSelectedPurchaseOrder != null){
+			for(Integer it : lstSelectedPurchaseOrder) {
+				purchaseOrderIds+= it.toString()+",";
+			}
+		}
+			
+		if(!purchaseOrderIds.equals("")){
+			purchaseOrderIds = "&PurchaseOrderId="+purchaseOrderIds.substring(0,purchaseOrderIds.length()-1);
+			purchaseOrder = purchaseOrder.find(new Long(lstSelectedPurchaseOrder.get(0)));
+		}else if(purchaseOrder.getId() != null){
+			purchaseOrderIds = "&PurchaseOrderId="+purchaseOrder.getId();
+		}
 		String language="";
 		try{
 			language = purchaseOrder.getSupplierPartner().getLanguageSelect() != null? purchaseOrder.getSupplierPartner().getLanguageSelect() : purchaseOrder.getCompany().getPrintingSettings().getLanguageSelect() != null ? purchaseOrder.getCompany().getPrintingSettings().getLanguageSelect() : "en" ; 
@@ -146,7 +150,7 @@ public class PurchaseOrderController {
 		language = language.equals("")? "en": language;
 
 		
-		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/PurchaseOrder.rptdesign&__format=pdf&PurchaseOrderId="+purchaseOrder.getId()+"&__locale=fr_FR&Locale="+language+axelorSettings.get("axelor.report.engine.datasource"));
+		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/PurchaseOrder.rptdesign&__format=pdf"+purchaseOrderIds+"&__locale=fr_FR&Locale="+language+axelorSettings.get("axelor.report.engine.datasource"));
 		LOG.debug("URL : {}", url);
 		String urlNotExist = URLService.notExist(url.toString());
 		
