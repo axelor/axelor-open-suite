@@ -25,26 +25,26 @@
 24;104400;104000;"Premium conversion of bonds into shares";"equity";;1
 25;104500;104000;"Good Stock";"equity";;1
 26;105000;10;"Revaluation";"equity";;1
-27;105100;105000;"special revaluation reserve";"equity";;1
-28;105200;105000;"voluntary revaluation reserve";"equity";;1
+27;105100;105000;"Special revaluation reserve";"equity";;1
+28;105200;105000;"Voluntary revaluation reserve";"equity";;1
 29;105300;105000;"Revaluation reserve";"equity";;1
-30;105500;105000;" unrealized surplus from the appreciation of assets/Revaluation Surplus (other legal transactions)";"equity";;1
+30;105500;105000;"Unrealized surplus from the appreciation of assets/Revaluation Surplus (other legal transactions)";"equity";;1
 31;105700;105000;"Other revaluation reserves in France";"equity";;1
 32;105800;105000;"Other revaluation reserves in England";"equity";;1
 33;106000;10;"Reserves";"equity";;1
 34;106100;106000;"Legal Reserves";"equity";;1
-35;106110;106100;"general statutory reserve";"equity";;1
-36;106120;106100;" long-term capital gain ";"equity";;1
-37;106200;106000;"restricted reserve";"equity";;1
+35;106110;106100;"General statutory reserve";"equity";;1
+36;106120;106100;"Long-term capital gain ";"equity";;1
+37;106200;106000;"Restricted reserve";"equity";;1
 38;106300;106000;"Statutory or contractual reserves";"equity";;1
-39;106400;106000;"special regulatory reserve";"equity";;1
-40;106410;106400;" long-term capital gain ";"equity";;1
+39;106400;106000;"Special regulatory reserve";"equity";;1
+40;106410;106400;"Long-term capital gain ";"equity";;1
 41;106430;106400;"Reserves resulting from the granting of investment subsidies";"equity";;1
 42;106480;106400;"Other special regulatory reserve";"equity";;1
 43;106800;106000;"Other Reserves";"equity";;1
 44;106810;106800;"self-insurance reserve";"equity";;1
 45;106880;106800;"Various reserves";"equity";;1
-46;107000;10;"equity method evaluation difference";"equity";;1
+46;107000;10;"Equity method evaluation difference";"equity";;1
 47;108000;10;"Behalf of the operator";"equity";;1
 48;109000;10;"Shareholders: issued capital - uncalled";"asset";;1
 49;11;"CL1";"Retained earnings (credit or debit balance)";"view";;1
@@ -92,56 +92,56 @@
 91;151100;151000;"dispute and litigation reserve";"provision";;1
 92;151200;151000;"Provisions for customer warranties";"provision";;1
 93;151300;151000;"Provision for loses in futures markets";"provision";;1
-94;151400;151000;"reserve for fines and penalties";"provision";;1
-95;151500;151000;"reserve for foreign exchange losses";"provision";;1
+94;151400;151000;"Reserve for fines and penalties";"provision";;1
+95;151500;151000;"Reserve for foreign exchange losses";"provision";;1
 96;151600;151000;"Provisions for losses on contracts";"provision";;1
 97;151800;151000;"Other risk provisions";"provision";;1
 98;153000;15;"Provisions for pensions and similar obligations";"provision";;1
 99;154000;15;"Provisions for restructuring";"provision";;1
 100;155000;15;"Provisions for taxes";"provision";;1
 101;156000;15;"Provisions for renewal of fixed assets (concessionaires)";"provision";;1
-102;157000;15;"reserve for deferred charges";"provision";;1
+102;157000;15;"Reserve for deferred charges";"provision";;1
 103;157200;157000;"Provisions for major repairs or major overhauls";"provision";;1
 104;158000;15;"Other provisions for charges";"provision";;1
 105;158100;158000;"Provision for reclamation";"provision";;1
 106;16;"CL1";"Debentures and similar debt";"view";;1
-107;161000;16;"Convertible bonds";"dettes";;1
-108;163000;16;"Autres emprunts obligataires ";"dettes";;1
-109;164000;16;"Other bonds";"dettes";;1
-110;165000;16;"Deposits and guarantees received";"dettes";;1
-111;165100;165000;"Deposits";"dettes";;1
-112;165500;165000;"Deposits";"dettes";;1
-113;166000;16;"Employee profit participation";"dettes";;1
-114;166100;166000;"Blocked accounts";"dettes";;1
-115;166200;166000;"Participation Fund";"dettes";;1
-116;167000;16;"Loans and debt Special Terms";"dettes";;1
-117;167100;167000;"Issuing equity securities";"dettes";;1
-118;167400;167000;"Conditional advances the state";"dettes";;1
-119;167500;167000;"Participating loans";"dettes";;1
-120;168000;16;"Other loans and similar debts";"dettes";;1
-121;168100;168000;"Other loans";"dettes";;1
-122;168500;168000;"Annuities capitalized";"dettes";;1
-123;168700;168000;"Other liabilities";"dettes";;1
-124;168800;168000;"Accrued Interest";"dettes";;1
-125;168810;168800;"On convertible bonds";"dettes";;1
-126;168830;168800;"On other bonds debenture loans";"dettes";;1
-127;168840;168800;"Borrowings from credit institutions";"dettes";;1
-128;168850;168800;"Deposits received";"dettes";;1
-129;168860;168800;"On employee participation results";"dettes";;1
-130;168870;168800;"Borrowings on special terms";"dettes";;1
-131;168880;168800;"On other loans and similar debts";"dettes";;1
-132;169000;16;"Bond redemption premiums";"dettes";;1
+107;161000;16;"Convertible bonds";"debt";;1
+108;163000;16;"Autres emprunts obligataires ";"debt";;1
+109;164000;16;"Other bonds";"debt";;1
+110;165000;16;"Deposits and guarantees received";"debt";;1
+111;165100;165000;"Deposits";"debt";;1
+112;165500;165000;"Deposits";"debt";;1
+113;166000;16;"Employee profit participation";"debt";;1
+114;166100;166000;"Blocked accounts";"debt";;1
+115;166200;166000;"Participation Fund";"debt";;1
+116;167000;16;"Loans and debt Special Terms";"debt";;1
+117;167100;167000;"Issuing equity securities";"debt";;1
+118;167400;167000;"Conditional advances the state";"debt";;1
+119;167500;167000;"Participating loans";"debt";;1
+120;168000;16;"Other loans and similar debts";"debt";;1
+121;168100;168000;"Other loans";"debt";;1
+122;168500;168000;"Annuities capitalized";"debt";;1
+123;168700;168000;"Other liabilities";"debt";;1
+124;168800;168000;"Accrued Interest";"debt";;1
+125;168810;168800;"On convertible bonds";"debt";;1
+126;168830;168800;"On other bonds debenture loans";"debt";;1
+127;168840;168800;"Borrowings from credit institutions";"debt";;1
+128;168850;168800;"Deposits received";"debt";;1
+129;168860;168800;"On employee participation results";"debt";;1
+130;168870;168800;"Borrowings on special terms";"debt";;1
+131;168880;168800;"On other loans and similar debts";"debt";;1
+132;169000;16;"Bond redemption premiums";"debt";;1
 133;17;"CL1";"Liabilities to subsidiaries";"view";;1
-134;171000;17;"Liabilities to subsidiaries (Group)";"dettes";;1
-135;174000;17;"Debt to equity investments (excluding Group)";"dettes";;1
-136;178000;17;"Debts related to joint ventures";"dettes";;1
-137;178100;178000;"Main";"dettes";;1
-138;178800;178000;"Accrued Interest";"dettes";;1
+134;171000;17;"Liabilities to subsidiaries (Group)";"debt";;1
+135;174000;17;"Debt to equity investments (excluding Group)";"debt";;1
+136;178000;17;"Debts related to joint ventures";"debt";;1
+137;178100;178000;"Main";"debt";;1
+138;178800;178000;"Accrued Interest";"debt";;1
 139;18;"CL1";"Liaison accounts of institutions and ventures";"view";;1
-140;181000;18;"Accounts Liaison institutions";"dettes";;1
-141;186000;18;"Goods and services exchanged between institutions (expense)";"dettes";;1
-142;187000;18;"Goods and services exchanged between businesses (products)";"dettes";;1
-143;188000;18;"Accounts Liaison ventures";"dettes";;1
+140;181000;18;"Accounts Liaison institutions";"debt";;1
+141;186000;18;"Goods and services exchanged between institutions (expense)";"debt";;1
+142;187000;18;"Goods and services exchanged between businesses (products)";"debt";;1
+143;188000;18;"Accounts Liaison ventures";"debt";;1
 144;20;"CL2";"Intangible assets";"view";;1
 145;201000;20;"Facility Fee";"immobilization";;1
 146;201100;201000;"Formation expenses";"immobilization";;1
@@ -300,74 +300,74 @@
 299;297500;297000;"Deposits and guarantees paid (same breakdown as the account 275)";"immobilization";;1
 300;297600;297000;"Other long term receivables (same breakdown as Account 276)";"immobilization";;1
 301;31;"CL3";"Raw materials (and delivery)";"view";;1
-302;311000;31;"Material (or group) A";"current asset";;1
-303;312000;31;"Material (or group) B";"current asset";;1
-304;317000;31;"Supplies A, B, C, ..";"current asset";;1
+302;311000;31;"Material (or group) A";"currentAsset";;1
+303;312000;31;"Material (or group) B";"currentAsset";;1
+304;317000;31;"Supplies A, B, C, ..";"currentAsset";;1
 305;32;"CL3";"Other supplies";"view";;1
-306;321000;32;"Consumables";"current asset";;1
-307;321100;321000;"Material (or group) C";"current asset";;1
-308;321200;321000;"Material (or group) D";"current asset";;1
-309;322000;32;"Consumables";"current asset";;1
-310;322100;322000;"Fuels";"current asset";;1
-311;322200;322000;"Cleaning Products";"current asset";;1
-312;322300;322000;"Shop Supplies and plant";"current asset";;1
-313;322400;322000;"Store supplies";"current asset";;1
-314;322500;322000;"Office Supplies";"current asset";;1
-315;326000;32;"Packaging";"current asset";;1
-316;326100;326000;"Packaging waste";"current asset";;1
-317;326500;326000;"Returnable packaging unidentifiable";"current asset";;1
-318;326700;326000;"Mixed-use packaging";"current asset";;1
+306;321000;32;"Consumables";"currentAsset";;1
+307;321100;321000;"Material (or group) C";"currentAsset";;1
+308;321200;321000;"Material (or group) D";"currentAsset";;1
+309;322000;32;"Consumables";"currentAsset";;1
+310;322100;322000;"Fuels";"currentAsset";;1
+311;322200;322000;"Cleaning Products";"currentAsset";;1
+312;322300;322000;"Shop Supplies and plant";"currentAsset";;1
+313;322400;322000;"Store supplies";"currentAsset";;1
+314;322500;322000;"Office Supplies";"currentAsset";;1
+315;326000;32;"Packaging";"currentAsset";;1
+316;326100;326000;"Packaging waste";"currentAsset";;1
+317;326500;326000;"Returnable packaging unidentifiable";"currentAsset";;1
+318;326700;326000;"Mixed-use packaging";"currentAsset";;1
 319;33;"CL3";"In-process goods";"view";;1
-320;331000;33;"Products in";"current asset";;1
-321;331100;331000;"Product in P 1";"current asset";;1
-322;331200;331000;"Product in P 2";"current asset";;1
-323;335000;33;"Work in progress";"current asset";;1
-324;335100;335000;"Work in Progress T 1";"current asset";;1
-325;335200;335000;"Work in Progress T 2";"current asset";;1
+320;331000;33;"Products in";"currentAsset";;1
+321;331100;331000;"Product in P 1";"currentAsset";;1
+322;331200;331000;"Product in P 2";"currentAsset";;1
+323;335000;33;"Work in progress";"currentAsset";;1
+324;335100;335000;"Work in Progress T 1";"currentAsset";;1
+325;335200;335000;"Work in Progress T 2";"currentAsset";;1
 326;34;"CL3";"In-process services";"view";;1
-327;341000;34;"Ongoing Studies";"current asset";;1
-328;341100;341000;"Ongoing Studies E 1";"current asset";;1
-329;341200;341000;"Ongoing studies E 2";"current asset";;1
-330;345000;34;"Services being";"current asset";;1
-331;345100;345000;"Services S 1";"current asset";;1
-332;345200;345000;"Services S 2";"current asset";;1
+327;341000;34;"Ongoing Studies";"currentAsset";;1
+328;341100;341000;"Ongoing Studies E 1";"currentAsset";;1
+329;341200;341000;"Ongoing studies E 2";"currentAsset";;1
+330;345000;34;"Services being";"currentAsset";;1
+331;345100;345000;"Services S 1";"currentAsset";;1
+332;345200;345000;"Services S 2";"currentAsset";;1
 333;35;"CL3";"Product Stocks";"view";;1
-334;351000;35;"Intermediates";"current asset";;1
-335;351100;351000;"Intermediate products (or group) A";"current asset";;1
-336;351200;351000;"Intermediate products (or group) B";"current asset";;1
-337;355000;35;"Finished Products";"current asset";;1
-338;355100;355000;"Finished goods (or group) A";"current asset";;1
-339;355200;355000;"Finished goods (or group) B";"current asset";;1
-340;358000;35;"Residual products (or material recovery)";"current asset";;1
-341;358100;358000;"Waste";"current asset";;1
-342;358500;358000;"Garbage";"current asset";;1
-343;358600;358000;"Materials recovery";"current asset";;1
+334;351000;35;"Intermediates";"currentAsset";;1
+335;351100;351000;"Intermediate products (or group) A";"currentAsset";;1
+336;351200;351000;"Intermediate products (or group) B";"currentAsset";;1
+337;355000;35;"Finished Products";"currentAsset";;1
+338;355100;355000;"Finished goods (or group) A";"currentAsset";;1
+339;355200;355000;"Finished goods (or group) B";"currentAsset";;1
+340;358000;35;"Residual products (or material recovery)";"currentAsset";;1
+341;358100;358000;"Waste";"currentAsset";;1
+342;358500;358000;"Garbage";"currentAsset";;1
+343;358600;358000;"Materials recovery";"currentAsset";;1
 344;36;"CL3";"Stocks from capital";"view";;1
 345;37;"CL3";"Merchandise inventories";"view";;1
-346;371000;37;"Goods (or group) A";"current asset";;1
-347;372000;37;"Goods (or group) B";"current asset";;1
+346;371000;37;"Goods (or group) A";"currentAsset";;1
+347;372000;37;"Goods (or group) B";"currentAsset";;1
 348;38;"CL3";"Inventory en route";"view";;1
 349;39;"CL3";"Impairment of inventory and WIP";"view";;1
-350;391000;39;"Impairment of raw materials (supplies)";"current asset";;1
-351;391100;391000;"Subjects (or group) A";"current asset";;1
-352;391200;391000;"Material (or group) B";"current asset";;1
-353;391700;391000;"Supplies A, B, C, ..";"current asset";;1
-354;392000;39;"Impairment of other supplies";"current asset";;1
-355;392100;392000;"Consumables (same breakdown as the account 321)";"current asset";;1
-356;392200;392000;"Consumables (same breakdown as the account 322)";"current asset";;1
-357;392600;392000;"Packaging (same breakdown as the account 326)";"current asset";;1
-358;393000;39;"Impairment of in-process goods";"current asset";;1
-359;393100;393000;"Products in (same breakdown as Account 331)";"current asset";;1
-360;393500;393000;"Work in progress (same breakdown as the account 335)";"current asset";;1
-361;394000;39;"Impairment of in-process services";"current asset";;1
-362;394100;394000;"Ongoing studies (same breakdown as the account 341)";"current asset";;1
-363;394500;394000;"Services in progress (same breakdown as Account 345)";"current asset";;1
-364;395000;39;"Impairment of inventories of";"current asset";;1
-365;395100;395000;"Intermediate products (same breakdown as the account 351)";"current asset";;1
-366;395500;395000;"Finished goods (same breakdown as the account 355)";"current asset";;1
-367;397000;39;"Provisions for depreciation of stocks of goods";"current asset";;1
-368;397100;397000;"Goods (or group) A";"current asset";;1
-369;397200;397000;"Goods (or group) B";"current asset";;1
+350;391000;39;"Impairment of raw materials (supplies)";"currentAsset";;1
+351;391100;391000;"Subjects (or group) A";"currentAsset";;1
+352;391200;391000;"Material (or group) B";"currentAsset";;1
+353;391700;391000;"Supplies A, B, C, ..";"currentAsset";;1
+354;392000;39;"Impairment of other supplies";"currentAsset";;1
+355;392100;392000;"Consumables (same breakdown as the account 321)";"currentAsset";;1
+356;392200;392000;"Consumables (same breakdown as the account 322)";"currentAsset";;1
+357;392600;392000;"Packaging (same breakdown as the account 326)";"currentAsset";;1
+358;393000;39;"Impairment of in-process goods";"currentAsset";;1
+359;393100;393000;"Products in (same breakdown as Account 331)";"currentAsset";;1
+360;393500;393000;"Work in progress (same breakdown as the account 335)";"currentAsset";;1
+361;394000;39;"Impairment of in-process services";"currentAsset";;1
+362;394100;394000;"Ongoing studies (same breakdown as the account 341)";"currentAsset";;1
+363;394500;394000;"Services in progress (same breakdown as Account 345)";"currentAsset";;1
+364;395000;39;"Impairment of inventories of";"currentAsset";;1
+365;395100;395000;"Intermediate products (same breakdown as the account 351)";"currentAsset";;1
+366;395500;395000;"Finished goods (same breakdown as the account 355)";"currentAsset";;1
+367;397000;39;"Provisions for depreciation of stocks of goods";"currentAsset";;1
+368;397100;397000;"Goods (or group) A";"currentAsset";;1
+369;397200;397000;"Goods (or group) B";"currentAsset";;1
 370;40;"CL4";"Trade accounts payable";"view";;1
 371;400000;40;"Trade accounts payable";"payable";"true";1
 372;401;40;"Suppliers";"payable";;1
@@ -383,12 +383,12 @@
 382;408400;408000;"Fixed asset suppliers";"payable";"true";1
 383;408800;408000;"Suppliers - Accrued interest";"payable";"true";1
 384;409;40;"Receivables from suppliers";"payable";;1
-385;409100;409000;"Suppliers - Advances and prepayments";"current asset";"true";1
-386;409600;409000;"Suppliers - Claims for packaging and equipment to make";"current asset";"true";1
-387;409700;409000;"Suppliers - Other assets";"current asset";"true";1
-388;409710;409700;"Providers operating";"current asset";"true";1
-389;409740;409700;"Fixed asset suppliers";"current asset";"true";1
-390;409800;409000;"Discounts, rebates, discounts available and other assets not yet received";"current asset";"true";1
+385;409100;409000;"Suppliers - Advances and prepayments";"currentAsset";"true";1
+386;409600;409000;"Suppliers - Claims for packaging and equipment to make";"currentAsset";"true";1
+387;409700;409000;"Suppliers - Other assets";"currentAsset";"true";1
+388;409710;409700;"Providers operating";"currentAsset";"true";1
+389;409740;409700;"Fixed asset suppliers";"currentAsset";"true";1
+390;409800;409000;"Discounts, rebates, discounts available and other assets not yet received";"currentAsset";"true";1
 391;41;"CL4";"Accounts receivable";"view";;1
 392;410000;41;"Accounts receivable";"receivable";"true";1
 393;411;41;"Customer";"receivable";;1
@@ -400,30 +400,30 @@
 399;418100;418000;"Customer - Unbilled";"receivable";"true";1
 400;418800;418000;"Customer - Accrued interest";"receivable";"true";1
 401;419000;41;"Customer prepayments";"receivable";;1
-402;419100;419000;"Customer - Advances received on orders";"dettes";"true";1
-403;419600;419000;"Customer - Debts for returnable packaging and material";"dettes";"true";1
-404;419700;419000;"Customer - Other assets";"dettes";"true";1
-405;419800;419000;"Rebates, discounts, rebates and other funds to grant to establish";"dettes";"true";1
+402;419100;419000;"Customer - Advances received on orders";"debt";"true";1
+403;419600;419000;"Customer - Debts for returnable packaging and material";"debt";"true";1
+404;419700;419000;"Customer - Other assets";"debt";"true";1
+405;419800;419000;"Rebates, discounts, rebates and other funds to grant to establish";"debt";"true";1
 406;42;"CL4";"Personnel and related accounts";"view";;1
-407;421000;42;"Personnel - Compensation due";"dettes";;1
-408;422000;42;"Works of establishment";"dettes";;1
-409;424000;42;"Employee profit participation";"dettes";;1
-410;424600;424000;"Special reserve";"dettes";;1
-411;424800;424000;"Current accounts";"dettes";;1
+407;421000;42;"Personnel - Compensation due";"debt";;1
+408;422000;42;"Works of establishment";"debt";;1
+409;424000;42;"Employee profit participation";"debt";;1
+410;424600;424000;"Special reserve";"debt";;1
+411;424800;424000;"Current accounts";"debt";;1
 412;425000;42;"People – Advances and prepayment";"receivable";;1
-413;426000;42;"Staff - Deposits";"dettes";;1
-414;427000;42;"Staff - Objections";"dettes";;1
-415;428000;42;"Staff - Accounts payable and accruals";"dettes";;1
-416;428200;428000;"Accrued liabilities for vacation pay";"dettes";;1
-417;428400;428000;"Debts accrued for employee profit sharing results";"dettes";;1
-418;428600;428000;"Other accrued liabilities";"dettes";;1
+413;426000;42;"Staff - Deposits";"debt";;1
+414;427000;42;"Staff - Objections";"debt";;1
+415;428000;42;"Staff - Accounts payable and accruals";"debt";;1
+416;428200;428000;"Accrued liabilities for vacation pay";"debt";;1
+417;428400;428000;"Debts accrued for employee profit sharing results";"debt";;1
+418;428600;428000;"Other accrued liabilities";"debt";;1
 419;428700;428000;"Accrued income";"receivable";;1
 420;43;"CL4";"Social Security and other social agencies";"view";;1
-421;431000;43;"Social Security";"dettes";;1
-422;437000;43;"Other social agencies";"dettes";;1
-423;438000;43;"Social organizations - Accrued expenses and accrued income";"dettes";;1
-424;438200;438000;"Payroll tax on holiday pay";"dettes";;1
-425;438600;438000;"Other accrued liabilities";"dettes";;1
+421;431000;43;"Social Security";"debt";;1
+422;437000;43;"Other social agencies";"debt";;1
+423;438000;43;"Social organizations - Accrued expenses and accrued income";"debt";;1
+424;438200;438000;"Payroll tax on holiday pay";"debt";;1
+425;438600;438000;"Other accrued liabilities";"debt";;1
 426;438700;438000;"Accrued income";"receivable";;1
 427;44;"CL4";"State and other public";"view";;1
 428;441000;44;"State - Grants receivable";"receivable";;1
@@ -494,17 +494,17 @@
 493;456400;456000;"Associates - Advance payments";"receivable";;1
 494;456600;456000;"Shareholders failed";"receivable";;1
 495;456700;456000;"Associate - Capital repayment";"receivable";;1
-496;457000;45;"Shareholders - Dividends payable";"dettes";;1
+496;457000;45;"Shareholders - Dividends payable";"debt";;1
 497;458000;45;"Associates - joint ventures and GIE";"receivable";;1
 498;458100;458000;"Current Operations";"receivable";;1
 499;458800;458000;"Accrued Interest";"receivable";;1
 500;46;"CL4";"Sundry debtors and sundry creditors";"view";;1
 501;462000;46;"Receivables from sale of property";"receivable";;1
-502;464000;46;"Debt related to acquisition of investment securities";"dettes";;1
+502;464000;46;"Debt related to acquisition of investment securities";"debt";;1
 503;465000;46;"Receivables from sales of marketable securities";"receivable";;1
 504;467000;46;"Other accounts receivable or payable";"view";;1
 505;468000;46;"Miscellaneous - Accrued expenses and accrued income";"receivable";;1
-506;468600;468000;"Accruals";"dettes";;1
+506;468600;468000;"Accruals";"debt";;1
 507;468700;468000;"Accrued income";"receivable";;1
 508;47;"CL4";"Prepayments or waiting";"view";;1
 509;471000;47;"Suspense Accounts 1";"receivable";;1
@@ -516,26 +516,26 @@
 515;476100;476000;"Decrease in receivables";"receivable";;1
 516;476200;476000;"Increase in payables";"receivable";;1
 517;476800;476000;"Differences offset by hedging";"receivable";;1
-518;477000;47;"Translation differences - Liabilities";"dettes";;1
-519;477100;477000;"Increase in receivables";"dettes";;1
-520;477200;477000;"Decrease in debt";"dettes";;1
-521;477800;477000;"Differences offset by hedging";"dettes";;1
+518;477000;47;"Translation differences - Liabilities";"debt";;1
+519;477100;477000;"Increase in receivables";"debt";;1
+520;477200;477000;"Decrease in debt";"debt";;1
+521;477800;477000;"Differences offset by hedging";"debt";;1
 522;478000;47;"Other transitory accounts";"view";;1
 523;48;"CL4";"Accruals";"view";;1
 524;481000;48;"Accrued Deferred";"receivable";;1
 525;481600;481000;"Issue costs of borrowings";"receivable";;1
 526;486000;48;"Prepaid expenses";"receivable";;1
-527;487000;48;"Deferred income";"dettes";;1
+527;487000;48;"Deferred income";"debt";;1
 528;488000;48;"Accounts of periodic distribution of income and expense";"view";;1
-529;488600;488000;"Charges";"dettes";;1
+529;488600;488000;"Charges";"debt";;1
 530;488700;488000;"Products";"receivable";;1
 531;489000;48;"Emission allowances allocated by the State";"receivable";;1
 532;49;"CL4";"Impairment of accounts of others";"view";;1
-533;491000;49;"Impairment of client accounts";"dettes";;1
-534;495000;49;"Depreciation of the group and associates";"dettes";;1
-535;495100;495000;"Group accounts";"dettes";;1
-536;495500;495000;"Current accounts of shareholders";"dettes";;1
-537;495800;495000;"Joint ventures and GIE";"dettes";;1
+533;491000;49;"Impairment of client accounts";"debt";;1
+534;495000;49;"Depreciation of the group and associates";"debt";;1
+535;495100;495000;"Group accounts";"debt";;1
+536;495500;495000;"Current accounts of shareholders";"debt";;1
+537;495800;495000;"Joint ventures and GIE";"debt";;1
 538;496000;49;"Impairment of sundry debtors";"receivable";;1
 539;496200;496000;"Receivables from sale of property";"receivable";;1
 540;496500;496000;"Receivables from sales of marketable securities";"receivable";;1
