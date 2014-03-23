@@ -6,7 +6,8 @@
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity name="PaymentCondition" lang="java">
-  
+  	
+    <integer name="importId" />
     <string name="name" title="Name" />
     <string name="code" title="Code" />
 	<integer name="paymentTime" title="Payment period"/>    
