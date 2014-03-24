@@ -143,162 +143,162 @@
 142;187000;18;"Goods and services exchanged between businesses (products)";"debt";;1
 143;188000;18;"Accounts Liaison ventures";"debt";;1
 144;20;"CL2";"Intangible assets";"view";;1
-145;201000;20;"Facility Fee";"immobilization";;1
-146;201100;201000;"Formation expenses";"immobilization";;1
-147;201200;201000;"Start-up costs";"immobilization";;1
-148;201210;201200;"Exploration expenses";"immobilization";;1
-149;201220;201200;"Advertising costs";"immobilization";;1
-150;201300;201000;"Capital increase expenses and miscellaneous transactions (mergers, conversions)";"immobilization";;1
-151;203000;20;"Costs of research and development";"immobilization";;1
-152;205000;20;"Concessions and similar rights, patents, licenses, trademarks, processes, software, similar rights and assets";"immobilization";;1
-153;206000;20;"Lease rights";"immobilization";;1
-154;207000;20;"Goodwill";"immobilization";;1
-155;208000;20;"Other intangible assets";"immobilization";;1
+145;201000;20;"Facility Fee";"immobilisation";;1
+146;201100;201000;"Formation expenses";"immobilisation";;1
+147;201200;201000;"Start-up costs";"immobilisation";;1
+148;201210;201200;"Exploration expenses";"immobilisation";;1
+149;201220;201200;"Advertising costs";"immobilisation";;1
+150;201300;201000;"Capital increase expenses and miscellaneous transactions (mergers, conversions)";"immobilisation";;1
+151;203000;20;"Costs of research and development";"immobilisation";;1
+152;205000;20;"Concessions and similar rights, patents, licenses, trademarks, processes, software, similar rights and assets";"immobilisation";;1
+153;206000;20;"Lease rights";"immobilisation";;1
+154;207000;20;"Goodwill";"immobilisation";;1
+155;208000;20;"Other intangible assets";"immobilisation";;1
 156;21;"CL2";"Tangible assets";"view";;1
-157;211000;21;"Land";"immobilization";;1
-158;211100;211000;"Unimproved";"immobilization";;1
-159;211200;211000;"Developed land";"immobilization";;1
-160;211300;211000;"Basements and cellars";"immobilization";;1
-161;211400;211000;"Lots of deposit";"immobilization";;1
-162;211410;211400;"Careers";"immobilization";;1
-163;211500;211000;"Unimproved";"immobilization";;1
-164;211510;211500;"Industrial building complexes (A, B, ...)";"immobilization";;1
-165;211550;211500;"Administrative and selling housing developments (A, B, ...)";"immobilization";;1
-166;211580;211500;"Other housing estates";"immobilization";;1
-167;211581;211580;"Allocated to business operations (A, B, ...)";"immobilization";;1
-168;211588;211580;"Assigned to non-business operations (A, B, ...)";"immobilization";;1
-169;211600;211000;"Order on capital account";"immobilization";;1
-170;212000;21;"Fixtures and land improvements (same breakdown as the total of 211)";"immobilization";;1
-171;213000;21;"Constructions";"immobilization";;1
-172;213100;213000;"Buildings";"immobilization";;1
-173;213110;213100;"Industrial building complexes (A, B, ...)";"immobilization";;1
-174;213150;213100;"Administrative and selling housing developments (A, B, ...)";"immobilization";;1
-175;213180;213100;"Other housing estates";"immobilization";;1
-176;213181;213180;"Allocated to business operations (A, B, ...)";"immobilization";;1
-177;213188;213180;"Assigned to non-business operations (A, B, ...)";"immobilization";;1
-178;213500;213000;"General facilities, fixtures and fittings of buildings (same breakdown as Account 2131)";"immobilization";;1
-179;213800;213000;"Infrastructure works";"immobilization";;1
-180;213810;213800;"Tract of land";"immobilization";;1
-181;213820;213800;"Assault Iron";"immobilization";;1
-182;213830;213800;"Waterways";"immobilization";;1
-183;213840;213800;"Dams";"immobilization";;1
-184;213850;213800;"Airfield runways";"immobilization";;1
-185;214000;21;"Buildings on land of another (same breakdown as Account 213)";"immobilization";;1
-186;215000;21;"Technical facilities equipment and tooling";"immobilization";;1
-187;215100;215000;"Specialized complex installations";"immobilization";;1
-188;215110;215100;"On own land";"immobilization";;1
-189;215140;215100;"On other land";"immobilization";;1
-190;215300;215000;"Facilities to specific character";"immobilization";;1
-191;215310;215300;"On own land";"immobilization";;1
-192;215340;215300;"On other land";"immobilization";;1
-193;215400;215000;"Industrial equipment";"immobilization";;1
-194;215500;215000;"Industrial Machinery";"immobilization";;1
-195;215700;215000;"Fixtures and fittings of industrial machinery and equipment";"immobilization";;1
-196;218000;21;"Other tangible assets";"immobilization";;1
-197;218100;218000;"General facilities, fixtures and fittings various";"immobilization";;1
-198;218200;218000;"Transportation equipment";"immobilization";;1
-199;218300;218000;"Office equipment and computer hardware";"immobilization";;1
-200;218400;218000;"Furniture";"immobilization";;1
-201;218500;218000;"Livestock";"immobilization";;1
-202;218600;218000;"Returnable packaging";"immobilization";;1
+157;211000;21;"Land";"immobilisation";;1
+158;211100;211000;"Unimproved";"immobilisation";;1
+159;211200;211000;"Developed land";"immobilisation";;1
+160;211300;211000;"Basements and cellars";"immobilisation";;1
+161;211400;211000;"Lots of deposit";"immobilisation";;1
+162;211410;211400;"Careers";"immobilisation";;1
+163;211500;211000;"Unimproved";"immobilisation";;1
+164;211510;211500;"Industrial building complexes (A, B, ...)";"immobilisation";;1
+165;211550;211500;"Administrative and selling housing developments (A, B, ...)";"immobilisation";;1
+166;211580;211500;"Other housing estates";"immobilisation";;1
+167;211581;211580;"Allocated to business operations (A, B, ...)";"immobilisation";;1
+168;211588;211580;"Assigned to non-business operations (A, B, ...)";"immobilisation";;1
+169;211600;211000;"Order on capital account";"immobilisation";;1
+170;212000;21;"Fixtures and land improvements (same breakdown as the total of 211)";"immobilisation";;1
+171;213000;21;"Constructions";"immobilisation";;1
+172;213100;213000;"Buildings";"immobilisation";;1
+173;213110;213100;"Industrial building complexes (A, B, ...)";"immobilisation";;1
+174;213150;213100;"Administrative and selling housing developments (A, B, ...)";"immobilisation";;1
+175;213180;213100;"Other housing estates";"immobilisation";;1
+176;213181;213180;"Allocated to business operations (A, B, ...)";"immobilisation";;1
+177;213188;213180;"Assigned to non-business operations (A, B, ...)";"immobilisation";;1
+178;213500;213000;"General facilities, fixtures and fittings of buildings (same breakdown as Account 2131)";"immobilisation";;1
+179;213800;213000;"Infrastructure works";"immobilisation";;1
+180;213810;213800;"Tract of land";"immobilisation";;1
+181;213820;213800;"Assault Iron";"immobilisation";;1
+182;213830;213800;"Waterways";"immobilisation";;1
+183;213840;213800;"Dams";"immobilisation";;1
+184;213850;213800;"Airfield runways";"immobilisation";;1
+185;214000;21;"Buildings on land of another (same breakdown as Account 213)";"immobilisation";;1
+186;215000;21;"Technical facilities equipment and tooling";"immobilisation";;1
+187;215100;215000;"Specialized complex installations";"immobilisation";;1
+188;215110;215100;"On own land";"immobilisation";;1
+189;215140;215100;"On other land";"immobilisation";;1
+190;215300;215000;"Facilities to specific character";"immobilisation";;1
+191;215310;215300;"On own land";"immobilisation";;1
+192;215340;215300;"On other land";"immobilisation";;1
+193;215400;215000;"Industrial equipment";"immobilisation";;1
+194;215500;215000;"Industrial Machinery";"immobilisation";;1
+195;215700;215000;"Fixtures and fittings of industrial machinery and equipment";"immobilisation";;1
+196;218000;21;"Other tangible assets";"immobilisation";;1
+197;218100;218000;"General facilities, fixtures and fittings various";"immobilisation";;1
+198;218200;218000;"Transportation equipment";"immobilisation";;1
+199;218300;218000;"Office equipment and computer hardware";"immobilisation";;1
+200;218400;218000;"Furniture";"immobilisation";;1
+201;218500;218000;"Livestock";"immobilisation";;1
+202;218600;218000;"Returnable packaging";"immobilisation";;1
 203;22;"CL2";"Assets in concession";"view";;1
 204;23;"CL2";"Assets under construction";"view";;1
-205;231000;23;"Assets under construction";"immobilization";;1
-206;231200;231000;"Land";"immobilization";;1
-207;231300;231000;"Constructions";"immobilization";;1
-208;231500;231000;"Technical equipment industrial machinery and equipment";"immobilization";;1
-209;231800;231000;"Other tangible assets";"immobilization";;1
-210;232000;23;"Intangible assets under";"immobilization";;1
-211;237000;23;"Advances and prepayments of intangible assets";"immobilization";;1
-212;238000;23;"Advances and prepayments of fixed assets";"immobilization";;1
-213;238200;238000;"Land";"immobilization";;1
-214;238300;238000;"Construction";"immobilization";;1
-215;238500;238000;"Technical equipment industrial machinery and equipment";"immobilization";;1
-216;238800;238000;"Other tangible assets";"immobilization";;1
+205;231000;23;"Assets under construction";"immobilisation";;1
+206;231200;231000;"Land";"immobilisation";;1
+207;231300;231000;"Constructions";"immobilisation";;1
+208;231500;231000;"Technical equipment industrial machinery and equipment";"immobilisation";;1
+209;231800;231000;"Other tangible assets";"immobilisation";;1
+210;232000;23;"Intangible assets under";"immobilisation";;1
+211;237000;23;"Advances and prepayments of intangible assets";"immobilisation";;1
+212;238000;23;"Advances and prepayments of fixed assets";"immobilisation";;1
+213;238200;238000;"Land";"immobilisation";;1
+214;238300;238000;"Construction";"immobilisation";;1
+215;238500;238000;"Technical equipment industrial machinery and equipment";"immobilisation";;1
+216;238800;238000;"Other tangible assets";"immobilisation";;1
 217;25;"CL2";"Shares in affiliated undertakings and amounts receivable in affiliated enterprises";"view";;1
 218;26;"CL2";"Investments and advances in subsidiaries";"view";;1
-219;261000;26;"Equity";"immobilization";;1
-220;261100;261000;"Actions";"immobilization";;1
-221;261800;261000;"Other titles";"immobilization";;1
-222;262000;26;"Investments stated at equity";"immobilization";;1
-223;266000;26;"Forms of participation";"immobilization";;1
-224;267000;26;"Receivables from participations";"immobilization";;1
-225;267100;267000;"Receivables from affiliates (Group)";"immobilization";;1
-226;267400;267000;"Receivables from affiliates (excluding Group)";"immobilization";;1
-227;267500;267000;"Payments representing unfunded contributions (fundraising)";"immobilization";;1
-228;267600;267000;"Advances's consolidating";"immobilization";;1
-229;267700;267000;"Other receivables from participations";"immobilization";;1
-230;267800;267000;"Accrued Interest";"immobilization";;1
-231;268000;26;"Receivables from joint ventures";"immobilization";;1
-232;268100;268000;"Main";"immobilization";;1
-233;268800;268000;"Accrued Interest";"immobilization";;1
-234;269000;26;"Payments outstanding equity securities on an undischarged";"immobilization";;1
+219;261000;26;"Equity";"immobilisation";;1
+220;261100;261000;"Actions";"immobilisation";;1
+221;261800;261000;"Other titles";"immobilisation";;1
+222;262000;26;"Investments stated at equity";"immobilisation";;1
+223;266000;26;"Forms of participation";"immobilisation";;1
+224;267000;26;"Receivables from participations";"immobilisation";;1
+225;267100;267000;"Receivables from affiliates (Group)";"immobilisation";;1
+226;267400;267000;"Receivables from affiliates (excluding Group)";"immobilisation";;1
+227;267500;267000;"Payments representing unfunded contributions (fundraising)";"immobilisation";;1
+228;267600;267000;"Advances's consolidating";"immobilisation";;1
+229;267700;267000;"Other receivables from participations";"immobilisation";;1
+230;267800;267000;"Accrued Interest";"immobilisation";;1
+231;268000;26;"Receivables from joint ventures";"immobilisation";;1
+232;268100;268000;"Main";"immobilisation";;1
+233;268800;268000;"Accrued Interest";"immobilisation";;1
+234;269000;26;"Payments outstanding equity securities on an undischarged";"immobilisation";;1
 235;27;"CL2";"Other financial assets";"view";;1
-236;271000;27;"Other investments other than investment securities portfolio activity (property)";"immobilization";;1
-237;271100;271000;"Actions";"immobilization";;1
-238;271800;271000;"Other titles";"immobilization";;1
-239;272000;27;"Term investments (debt)";"immobilization";;1
-240;272100;272000;"Bonds";"immobilization";;1
-241;272200;272000;"Good";"immobilization";;1
-242;273000;27;"Investment securities portfolio activity (portfolio investments)";"immobilization";;1
-243;274000;27;"Loans";"immobilization";;1
-244;274100;274000;"Equity loans";"immobilization";;1
-245;274200;274000;"Loans to associates";"immobilization";;1
-246;274300;274000;"Staff loans";"immobilization";;1
-247;274800;274000;"Other loans";"immobilization";;1
-248;275000;27;"Deposits and guarantees paid";"immobilization";;1
-249;275100;275000;"Deposits";"immobilization";;1
-250;275500;275000;"Deposits";"immobilization";;1
-251;276000;27;"Other long term receivables";"immobilization";;1
-252;276100;276000;"Other receivables";"immobilization";;1
-253;276800;276000;"Accrued Interest";"immobilization";;1
-254;276820;276800;"On investment securities (debt)";"immobilization";;1
-255;276840;276800;"Loan";"immobilization";;1
-256;276850;276800;"On deposits and bonds";"immobilization";;1
-257;276880;276800;"Various credit";"immobilization";;1
-258;277000;27;"Own shares or own shares";"immobilization";;1
-259;277100;277000;"Own shares or own shares";"immobilization";;1
-260;277200;277000;"Own shares or own shares in the cancellation";"immobilization";;1
-261;279000;27;"Payments outstanding on an undischarged term investments";"immobilization";;1
+236;271000;27;"Other investments other than investment securities portfolio activity (property)";"immobilisation";;1
+237;271100;271000;"Actions";"immobilisation";;1
+238;271800;271000;"Other titles";"immobilisation";;1
+239;272000;27;"Term investments (debt)";"immobilisation";;1
+240;272100;272000;"Bonds";"immobilisation";;1
+241;272200;272000;"Good";"immobilisation";;1
+242;273000;27;"Investment securities portfolio activity (portfolio investments)";"immobilisation";;1
+243;274000;27;"Loans";"immobilisation";;1
+244;274100;274000;"Equity loans";"immobilisation";;1
+245;274200;274000;"Loans to associates";"immobilisation";;1
+246;274300;274000;"Staff loans";"immobilisation";;1
+247;274800;274000;"Other loans";"immobilisation";;1
+248;275000;27;"Deposits and guarantees paid";"immobilisation";;1
+249;275100;275000;"Deposits";"immobilisation";;1
+250;275500;275000;"Deposits";"immobilisation";;1
+251;276000;27;"Other long term receivables";"immobilisation";;1
+252;276100;276000;"Other receivables";"immobilisation";;1
+253;276800;276000;"Accrued Interest";"immobilisation";;1
+254;276820;276800;"On investment securities (debt)";"immobilisation";;1
+255;276840;276800;"Loan";"immobilisation";;1
+256;276850;276800;"On deposits and bonds";"immobilisation";;1
+257;276880;276800;"Various credit";"immobilisation";;1
+258;277000;27;"Own shares or own shares";"immobilisation";;1
+259;277100;277000;"Own shares or own shares";"immobilisation";;1
+260;277200;277000;"Own shares or own shares in the cancellation";"immobilisation";;1
+261;279000;27;"Payments outstanding on an undischarged term investments";"immobilisation";;1
 262;28;"CL2";"Amortization of capital assets";"view";;1
-263;280000;28;"Amortization of intangible assets";"immobilization";;1
-264;280100;280000;"Expenses (same breakdown as the account 201)";"immobilization";;1
-265;280300;280000;"Costs of research and development";"immobilization";;1
-266;280500;280000;"Concessions and similar rights, patents, licenses, software, similar rights and assets";"immobilization";;1
-267;280700;280000;"Goodwill";"immobilization";;1
-268;280800;280000;"Other intangible assets";"immobilization";;1
-269;281000;28;"Depreciation of fixed assets";"immobilization";;1
-270;281100;281000;"Lots of deposit";"immobilization";;1
-271;281200;281000;"Fixtures and fittings of land (same breakdown as the account 212)";"immobilization";;1
-272;281300;281000;"Structures (same breakdown as the account 213)";"immobilization";;1
-273;281400;281000;"Buildings on land of another (same breakdown as Account 214)";"immobilization";;1
-274;281500;281000;"Industrial machinery and equipment installations (same breakdown as Account 215)";"immobilization";;1
-275;281800;281000;"Other intangible assets (same breakdown as the account 218)";"immobilization";;1
-276;282000;28;"Depreciation of fixed assets in concession";"immobilization";;1
+263;280000;28;"Amortization of intangible assets";"immobilisation";;1
+264;280100;280000;"Expenses (same breakdown as the account 201)";"immobilisation";;1
+265;280300;280000;"Costs of research and development";"immobilisation";;1
+266;280500;280000;"Concessions and similar rights, patents, licenses, software, similar rights and assets";"immobilisation";;1
+267;280700;280000;"Goodwill";"immobilisation";;1
+268;280800;280000;"Other intangible assets";"immobilisation";;1
+269;281000;28;"Depreciation of fixed assets";"immobilisation";;1
+270;281100;281000;"Lots of deposit";"immobilisation";;1
+271;281200;281000;"Fixtures and fittings of land (same breakdown as the account 212)";"immobilisation";;1
+272;281300;281000;"Structures (same breakdown as the account 213)";"immobilisation";;1
+273;281400;281000;"Buildings on land of another (same breakdown as Account 214)";"immobilisation";;1
+274;281500;281000;"Industrial machinery and equipment installations (same breakdown as Account 215)";"immobilisation";;1
+275;281800;281000;"Other intangible assets (same breakdown as the account 218)";"immobilisation";;1
+276;282000;28;"Depreciation of fixed assets in concession";"immobilisation";;1
 277;29;"CL2";"Impairment of assets";"view";;1
-278;290000;29;"Impairment of intangible assets";"immobilization";;1
-279;290500;290000;"Marks, processes, rights and similar values";"immobilization";;1
-280;290600;290000;"Lease rights";"immobilization";;1
-281;290700;290000;"Goodwill";"immobilization";;1
-282;290800;290000;"Other intangible assets";"immobilization";;1
-283;291000;29;"Impairment of fixed assets (same breakdown as the account 21)";"immobilization";;1
-284;291100;291000;"Land (other than land of deposit)";"immobilization";;1
-285;292000;29;"Impairment of fixed assets in concession";"immobilization";;1
-286;293000;29;"Impairment of assets under";"immobilization";;1
-287;293100;293000;"Assets under construction";"immobilization";;1
-288;293200;293000;"Intangible assets under";"immobilization";;1
-289;296000;29;"Impairment of investments and advances to subsidiaries";"immobilization";;1
-290;296100;296000;"Equity";"immobilization";;1
-291;296600;296000;"Forms of participation";"immobilization";;1
-292;296700;296000;"Receivables from affiliates (same breakdown as the 267)";"immobilization";;1
-293;296800;296000;"Receivables from associated companies (same breakdown as Account 268)";"immobilization";;1
-294;297000;29;"Impairment of other investments";"immobilization";;1
-295;297100;297000;"Other investments other than investment securities portfolio of activity - property rights (breakdown: 271)";"immobilization";;1
-296;297200;297000;"Investment securities - debt securities (same breakdown as Account 272)";"immobilization";;1
-297;297300;297000;"Investment securities portfolio activity";"immobilization";;1
-298;297400;297000;"Loans (same breakdown as Account 274)";"immobilization";;1
-299;297500;297000;"Deposits and guarantees paid (same breakdown as the account 275)";"immobilization";;1
-300;297600;297000;"Other long term receivables (same breakdown as Account 276)";"immobilization";;1
+278;290000;29;"Impairment of intangible assets";"immobilisation";;1
+279;290500;290000;"Marks, processes, rights and similar values";"immobilisation";;1
+280;290600;290000;"Lease rights";"immobilisation";;1
+281;290700;290000;"Goodwill";"immobilisation";;1
+282;290800;290000;"Other intangible assets";"immobilisation";;1
+283;291000;29;"Impairment of fixed assets (same breakdown as the account 21)";"immobilisation";;1
+284;291100;291000;"Land (other than land of deposit)";"immobilisation";;1
+285;292000;29;"Impairment of fixed assets in concession";"immobilisation";;1
+286;293000;29;"Impairment of assets under";"immobilisation";;1
+287;293100;293000;"Assets under construction";"immobilisation";;1
+288;293200;293000;"Intangible assets under";"immobilisation";;1
+289;296000;29;"Impairment of investments and advances to subsidiaries";"immobilisation";;1
+290;296100;296000;"Equity";"immobilisation";;1
+291;296600;296000;"Forms of participation";"immobilisation";;1
+292;296700;296000;"Receivables from affiliates (same breakdown as the 267)";"immobilisation";;1
+293;296800;296000;"Receivables from associated companies (same breakdown as Account 268)";"immobilisation";;1
+294;297000;29;"Impairment of other investments";"immobilisation";;1
+295;297100;297000;"Other investments other than investment securities portfolio of activity - property rights (breakdown: 271)";"immobilisation";;1
+296;297200;297000;"Investment securities - debt securities (same breakdown as Account 272)";"immobilisation";;1
+297;297300;297000;"Investment securities portfolio activity";"immobilisation";;1
+298;297400;297000;"Loans (same breakdown as Account 274)";"immobilisation";;1
+299;297500;297000;"Deposits and guarantees paid (same breakdown as the account 275)";"immobilisation";;1
+300;297600;297000;"Other long term receivables (same breakdown as Account 276)";"immobilisation";;1
 301;31;"CL3";"Raw materials (and delivery)";"view";;1
 302;311000;31;"Material (or group) A";"currentAsset";;1
 303;312000;31;"Material (or group) B";"currentAsset";;1
