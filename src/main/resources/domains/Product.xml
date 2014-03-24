@@ -58,7 +58,6 @@
   	<boolean name="isModel" title="Is model?"/>
   
   	<many-to-one name="defaultSupplierPartner" ref="com.axelor.apps.base.db.Partner" title="Default supplier" />
-  	<many-to-one name="parentProduct" ref="com.axelor.apps.base.db.Product" title="Parent product" help="Used for variants" />
 <!--   	A Deplacer dans production :  -->
 	<decimal name="lastProductionPrice" title="Last production price" precision="20" scale="5"/>
 	<many-to-one name="defaultBillOfMaterial" ref="com.axelor.apps.production.db.BillOfMaterial" title="Default BOM"/>
