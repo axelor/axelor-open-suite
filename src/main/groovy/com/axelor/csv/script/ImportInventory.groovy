@@ -63,6 +63,7 @@ class ImportInventory {
 				Inventory inventory = (Inventory) bean
 				for(StockMove stockMove: StockMove.all().filter("statusSelect = 2").fetch())
 					stockMoveService.realize(stockMove)
+				inventory.setStatusSelect(3);
 				return inventory
 			}catch(Exception e){
 				e.printStackTrace()
