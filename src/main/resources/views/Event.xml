@@ -310,8 +310,8 @@
 	    	<button name="accept" icon="icon-off" help="Finish" onClick="action-set-task-status-select-3,save" readonlyIf="taskStatusSelect == 3"/>
     	</toolbar>
 	    <group colSpan="1" cols="4" readonlyIf="taskStatusSelect == 3">
-	        <separator title="Subject" colSpan="4"/>
-	        <field name="subject" showTitle="false" placeholder="Subject" />
+	        <separator title="Subject" colSpan="4" hideIf="$readonly()"/>
+	        <field name="subject" showTitle="false" css="highlight" placeholder="Subject" />
 	        <separator title="Location" colSpan="4"/>
 	        <field name="location" showTitle="false" colSpan="4" css="highlight" placeholder="Location"/>
 	        <separator title="Description" colSpan="4"/>
@@ -422,6 +422,7 @@
 	            <field name="description" showTitle="false" colSpan="6" widget="Html[lite=true]"/>
 	        </page>
 	        <page title="Comments" readonlyIf="ticketStatusSelect == 5">
+				<field name="userInfoSet" colSpan="6" widget="TagSelect" onSelect="action-event-attrs-watchers-domain"/>
 	            <field name="messageList" showTitle="false" colSpan="6">
                      <grid title="Comments">
                         <field name="sentDate"/>
@@ -438,9 +439,6 @@
 	                    </group>
 	                </form>
 	            </field>
-	        </page>
-	        <page title="Watchers" readonlyIf="ticketStatusSelect == 5">
-	            <field name="userInfoSet" showTitle="false" colSpan="6" widget="TagSelect" onSelect="action-event-attrs-watchers-domain"/>
 	        </page>
 	    </notebook>
 	</form>

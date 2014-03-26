@@ -7,13 +7,13 @@
     	<toolbar>
     		<button name="grabLeads" help="Assign to me" icon="icon-suitcase" onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe" />
     	</toolbar>
-		<field name="name"/>
+		<field name="name" width="300"/>
         <field name="partner"/>
 		<field name="lead"/>
 		<field name="salesStageSelect"/>
 		<field name="amount"/>
-		<field name="probability"/>
-        <field name="expectedCloseDate"/>
+		<field name="probability" width="45"/>
+        <field name="expectedCloseDate" width="70"/>
         <field name="userInfo"/>
         <button name="grabLead" help="Assign to me" icon="icon-suitcase" onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe" readonlyIf="userInfo != null" />
         <button name="next-stage" icon="icon-chevron-sign-right" help="Next Stage" onClick="action-opportunity-set-next-stage,action-opportunity-save-sales-stage-select" readonlyIf="salesStageSelect &gt; 7" />
