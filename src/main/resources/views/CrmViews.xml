@@ -36,7 +36,6 @@
 	        </group>
 	        <group title="Linked to" colSpan="2" cols="2">
    	            <field name="project" domain="self.clientPartner = :clientPartner OR self.contactPartner = :contactPartner OR (:contactPartner = null AND :clientPartner = null)" required="true" form-view="project-form"/>
-	            <field name="project" domain="self.clientPartner = :clientPartner OR self.contactPartner = :contactPartner OR (:contactPartner = null AND :clientPartner = null)" form-view="project-form"/>
 	            <field name="task" domain="self.project = :project"/>
 	            <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
 	            <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
@@ -49,7 +48,8 @@
 	            <field name="description" showTitle="false" colSpan="6" widget="Html[lite=true]"/>
 	        </page>
 	        <page title="Comments">
-	            <field name="messageList" showTitle="false" colSpan="6">
+	            <field name="userInfoSet" showTitle="false" colSpan="6" widget="TagSelect" onSelect="action-event-attrs-watchers-domain"/>
+				<field name="messageList" showTitle="false" colSpan="6">
                      <grid title="Comments">
                         <field name="sentDate"/>
                         <field name="sender"/>
@@ -65,9 +65,6 @@
 	                    </group>
 	                </form>
 	            </field>
-	        </page>
-	        <page title="Watchers">
-	            <field name="userInfoSet" showTitle="false" colSpan="6" widget="TagSelect" onSelect="action-event-attrs-watchers-domain"/>
 	        </page>
 	        <page title="Spent times" showIf="task != null">
 	            <field name="spentTimeList" showTitle="false" colSpan="6" form-view="spent-time-ticket-form" grid-view="spent-time-ticket-grid"/>
