@@ -86,4 +86,5 @@
 	 <action-record name="action-product-set-today-date" model="com.axelor.apps.base.db.Product">
     	<field name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
     </action-record>
+
 </object-views>
