@@ -1,4 +1,4 @@
-"importId";"typeSelect";"subject";"statusSelect";"startDateTime";"endDateTime";"duration";"eventCategory.name";"prioritySelect";"relatedToSelect";"relatedToSelectId";"description";"userInfo.importId";"team.importId";"clientPartner.importId";"contactPartner.importId";"lead.importId";"callStatusSelect";"meetingType.importId";"location";"taskStatusSelect";"ticketNumberSeq";"ticketStatusSelect";"Project.importId";"task.importId"
+"importId";"typeSelect";"subject";"statusSelect";"startDateTime";"endDateTime";"duration";"eventCategory.name";"prioritySelect";"relatedToSelect";"relatedToSelectId";"description";"userInfo.importId";"team.importId";"clientPartner.importId";"contactPartner.importId";"lead.importId";"callStatusSelect";"meetingType.importId";"location";"taskStatusSelect";"ticketNumberSeq";"ticketStatusSelect";"project.importId";"task.importId"
 1;1;"Call 123 Services";2;"NOW[-5M09H00m]";"NOW[-5M09H30m]";1800;;;;;;9;1;88;89;;2;;;;;;;
 2;1;"Call APOLLO";2;"NOW[-4M09H00m]";"NOW[-4M09H45m]";2700;;;;;;11;2;20;21;;2;;;;;;;
 3;1;"Call BLUEBERRY TELECOM";2;"NOW[-3M09H15m]";"NOW[-3M09H45m]";1800;;;;;;12;2;44;45;;2;;;;;;;

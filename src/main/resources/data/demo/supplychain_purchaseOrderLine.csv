@@ -1,3 +1,3 @@
-"importId";"purchaseOrder.id";"sequence";"product.id";"productName";"qty";"unit.code";"price";"taxLine.importId";"exTaxTotal";"discountAmount";"discountTypeSelect"
-1;1;1;5;"PRINTO Inkjet / Ref 6541241";5;"U";"302.02";24;"1510.1";;
-2;1;2;13;"RAMEXTRA 16 Go DDR3 / Ref. 8000026";20;"U";"113.60";24;2272;;
+"importId";"purchaseOrder.id";"sequence";"product.id";"productName";"qty";"unit.importId";"price";"taxLine.importId";"exTaxTotal";"discountAmount";"discountTypeSelect"
+1;1;1;5;"PRINTO Inkjet / Ref 6541241";5;1;"302.02";24;"1510.1";;
+2;1;2;13;"RAMEXTRA 16 Go DDR3 / Ref. 8000026";20;1;"113.60";24;2272;;
