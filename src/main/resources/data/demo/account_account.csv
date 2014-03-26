@@ -813,7 +813,7 @@
 812;678300;678000;"Malis provenant du rachat par l'entreprise d'actions et obligations émises par elle-même";"expense";;1
 813;678800;678000;"Charges exceptionnelles diverses";"expense";;1
 814;68;"CL6";"Dotations aux amortissements, dépréciations et provisions";"view";;1
-815;681000;68;"Dotations aux amortissements, dépréciations et provisions - Charges d'exploitation, Amortisation, depreciation and provisions - Operating expenses";;"AXG";
+815;681000;68;"Dotations aux amortissements, dépréciations et provisions - Charges d'exploitation, Amortisation, depreciation and provisions - Operating expenses";"expense";;1
 816;681100;681000;"Dotations aux amortissements des immobilisations incorporelles et corporelles ";"expense";;1
 817;681110;681100;"Immobilisations incorporelles";"expense";;1
 818;681120;681100;"Immobilisations corporelles";"expense";;1

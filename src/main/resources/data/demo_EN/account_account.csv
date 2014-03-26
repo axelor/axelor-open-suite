@@ -813,7 +813,7 @@
 812;678300;678000;"Malis from the repurchase by the Company of shares and bonds issued by itself";"expense";;1
 813;678800;678000;"Various exceptional charges";"expense";;1
 814;68;"CL6";"Depreciation, amortization and provisions";"view";;1
-815;681000;68;"expense";;"AXG";
+815;681000;68;"expense";"expense";;1
 816;681100;681000;"Amortisation of intangible and tangible";"expense";;1
 817;681110;681100;"Intangible assets";"expense";;1
 818;681120;681100;"Tangible assets";"expense";;1
