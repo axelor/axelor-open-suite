@@ -1,3 +1,5 @@
-"importId";"task.importId";"userInfo.importId";"date";"duration";"unit.importId"
-1;1;5;2013-10-04;"0.5";7
-2;1;8;2013-10-05;"0.5";7
+"importId";"task.importId";"userInfo.importId";"date";"duration";"unit.importId";"event.importId"
+1;1;5;"TODAY[-5M]";"0.5";103;
+2;1;8;"TODAY[-5M+1d]";"0.5";103;
+3;2;7;"TODAY[-4M]";1;103;
+4;10;17;"TODAY";"0.5";101;500
