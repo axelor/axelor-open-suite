@@ -28,6 +28,7 @@
     <form cols="2" onLoad="action-product-set-today-date"  onNew="action-product-set-today-date,action-product-record-default-new,action-product-record-sale-supply-select" name="product-form" title="Product" model="com.axelor.apps.base.db.Product" >
     	<toolbar>
     		<button name="sendByEmail" title="Send Email" icon="icon-envelope" onClick="action-send-by-email-with-template"/>
+			<button name="showProductSheet" title="Product sheet" icon="icon-print" onClick="save,action-product-method-show-product-sheet"/>
     	</toolbar>
     	<field name="$todayDate" widget="DATE" hidden="true"/>
 	    <group colWidths="15%,85%" colSpan="6" cols="2">
@@ -63,7 +64,6 @@
 					<field name="saleCurrency"/>
 					<field name="endDate" onChange="action-product-validate-end-date,action-product-method-reset-end-date"/>
 					<field name="unit"/>
-					<button name="showProductSheet" title="Product sheet" colSpan="2" icon="icon-print" onClick="save,action-product-method-show-product-sheet"/>
 				</group>
 				<group colSpan="4">
 					<group colSpan="2">
@@ -124,11 +124,7 @@
 	        	 	<group colSpan="2" cols="2">
 			            <field name="trackingNumberConfiguration" colSpan="2"/>
 		            </group>
-		            <group colSpan="2" cols="2">
-		            	<spacer colSpan="2"/>
-		            </group>
 	        	</group>
-	           
 	        </page>
 	        <page title="Variants">
 	        	<group name="parentVariant" showIf="!parentProduct" colSpan="4">
