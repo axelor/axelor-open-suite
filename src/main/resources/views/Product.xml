@@ -31,7 +31,7 @@
     	</toolbar>
 	    <group colWidths="15%,85%" colSpan="6" cols="2">
 	            <group colSpan="1">
-	                <field name="picture" showTitle="false" widget="BinaryImage"/>
+	                <field name="picture" showTitle="false" widget="Image"/>
 	            </group>
 	            <group colSpan="1" cols="6">
 					<field name="name" showTitle="false" colSpan="3" css="highlight" placeholder="Name"/>
