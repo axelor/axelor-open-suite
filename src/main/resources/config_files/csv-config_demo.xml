@@ -344,6 +344,24 @@
 		<bind column="code" to="code"/>
 	</input>
 	
+	<input file="organisation_project.csv" separator=";" type="com.axelor.apps.organisation.db.Project">
+ 	    <bind to="consultationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(consultationDate)" column="consultationDate"/>
+ 	    <bind to="deadline" eval="call:com.axelor.csv.script.ImportDateTime:importDate(deadline)" column="deadline"/>
+ 	    <bind column="memberUserInfoSet_id" to="memberUserInfoSet" search="self.importId in :memberUserInfoSet_id" eval="memberUserInfoSet_id.split('\\|') as List"/>
+ 	</input>	
+
+	<input file="organisation_project.csv" separator=";" type="com.axelor.apps.organisation.db.Project" search="self.importId = :importId" update="true">
+ 	    <bind to="consultationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(consultationDate)" column="consultationDate"/>
+ 	    <bind to="deadline" eval="call:com.axelor.csv.script.ImportDateTime:importDate(deadline)" column="deadline"/>
+ 	    <bind column="memberUserInfoSet_id" to="memberUserInfoSet" search="self.importId in :memberUserInfoSet_id" eval="memberUserInfoSet_id.split('\\|') as List"/>
+ 	</input>	
+ 	
+ 	<input file="organisation_task.csv" separator=";" type="com.axelor.apps.organisation.db.Task">
+ 		<bind to="startDateT" column="startDateT" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDateT)"/>
+ 		<bind to="endDateT" column="endDateT" eval="call:com.axelor.csv.script.ImportDateTime:importDate(endDateT)"/>
+ 		<bind to="name" column="name"/>
+ 	</input>	
+ 	
 	<input file="crm_event.csv" separator=";" type="com.axelor.apps.crm.db.Event">
 		<bind to="startDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(startDateTime)" column="startDateTime"/>
 		<bind to="endDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(endDateTime)" column="endDateTime"/>
@@ -440,18 +458,6 @@
 	</input>
 	
 	  	
- 	<input file="organisation_project.csv" separator=";" type="com.axelor.apps.organisation.db.Project">
- 	    <bind to="consultationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(consultationDate)" column="consultationDate"/>
- 	    <bind to="deadline" eval="call:com.axelor.csv.script.ImportDateTime:importDate(deadline)" column="deadline"/>
- 		<bind column="memberUserInfoSet_id" to="memberUserInfoSet" search="self.importId in :memberUserInfoSet_id" eval="memberUserInfoSet_id.split('\\|') as List"/>
- 	</input>	
- 	
- 	<input file="organisation_task.csv" separator=";" type="com.axelor.apps.organisation.db.Task">
- 		<bind to="startDateT" column="startDateT" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDateT)"/>
- 		<bind to="endDateT" column="endDateT" eval="call:com.axelor.csv.script.ImportDateTime:importDate(endDateT)"/>
- 		<bind to="name" column="name"/>
- 	</input>	
- 	
  	<input file="base_spentTime.csv" separator=";" type="com.axelor.apps.base.db.SpentTime">
  	    <bind to="date" column="date" eval="call:com.axelor.csv.script.ImportDateTime:importDate(date)"/>
  	</input>
