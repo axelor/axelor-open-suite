@@ -29,6 +29,6 @@
 28;2;"Rdv Q&L Solutions";1;"NOW[-2M+7d14H00m]";"NOW[-2M+7d14H30m]";1800;;;;;;9;1;;;11;;3;"STRASBOURG";;;;;;;
 300;3;"Préparer le support commerciale";;"NOW[10H00m]";"NOW[11H00m]";3600;;2;;;;9;1;;;;;;;3;;;;;;
 301;3;"Sortir le bilan d'activité";;"NOW[14H00m]";"NOW[15H00m]";3600;;4;;;;9;1;;;;;;;1;;;;;;
-302;3;"Rédiger fiche produit";;"NOW[16H00m]";"NOW[17H30m]";5400;;3;"com.axelor.apps.base.db.Product";100;;8;4;;;;;;;1;;;;;;
+302;3;"Rédiger fiche produit";;"NOW[16H00m]";"NOW[17H30m]";5400;;3;"com.axelor.apps.base.db.Product";3;;8;4;;;;;;;1;;;;;;
 500;5;"Impossible de se connecter avec le user Admin";;"NOW[-1d10H00m]";"NOW[09H30m]";1800;1;3;;;;17;1;88;90;;;;;;"TKT0001";3;100;17;3;10
 501;5;"Comment rattacher une pièce jointe ?";;"NOW[10H00m]";;;2;2;;;;17;1;88;90;;;;;;"TKT0002";1;0;17;3;10
