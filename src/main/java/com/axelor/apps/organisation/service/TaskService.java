@@ -32,6 +32,7 @@ package com.axelor.apps.organisation.service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Query;
 
@@ -462,7 +463,8 @@ public class TaskService {
 	
 	public BigDecimal getPlanningLinesAmount(Task task, LocalDate startDate) throws AxelorException  {
 		BigDecimal planningLinesAmount = BigDecimal.ZERO;
-		
+		if(task.getPlanningLineList() == null)
+			return planningLinesAmount;
 		for(PlanningLine planningLine : task.getPlanningLineList())  {
 			if(startDate == null || planningLine.getFromDateTime().isAfter(startDate))  {
 				Employee employee = planningLine.getEmployee();
@@ -620,6 +622,19 @@ public class TaskService {
 		}
 		
 		return laterDate;
+	}
+	
+	public Task importTask(Object bean, Map values) {
+        try{
+        	Task task = (Task) bean;
+        	task.setSpentTime(getSpentTime(task));
+        	task.setPlannedTime(getPlannedTime(task));
+        	updateFinancialInformation(task);
+			return task;
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return null;
 	}
 	
 }
