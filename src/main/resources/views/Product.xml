@@ -28,6 +28,7 @@
     <form cols="2" onNew="action-product-record-default-new,action-product-record-sale-supply-select" name="product-form" title="Product" model="com.axelor.apps.base.db.Product" >
     	<toolbar>
     		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+			<button name="showProductSheet" title="Product sheet" icon="fa-print" onClick="save,action-product-method-show-product-sheet"/>
     	</toolbar>
 	    <group colWidths="15%,85%" colSpan="6" cols="2">
 	            <group colSpan="1">
@@ -62,7 +63,6 @@
 					<field name="saleCurrency"/>
 					<field name="endDate" onChange="action-product-validate-end-date,action-product-method-reset-end-date"/>
 					<field name="unit"/>
-					<button name="showProductSheet" title="Product sheet" colSpan="2" icon="icon-print" onClick="save,action-product-method-show-product-sheet"/>
 				</group>
 				<group colSpan="4">
 					<group colSpan="2">
@@ -106,8 +106,9 @@
 				<portlet colSpan="4" action="action-product-view-stock"/>
 				<portlet action="chart:chart.stock.report.for.product" height="200" colSpan="4"/>
 			</page>
-			<page title="Production informations">
-				<field name="defaultBillOfMaterial" onSelect="action-product-attrs-bill-of-material-domain"/>
+
+			<page title="Production informations" showIf="productTypeSelect != 'service'">
+				<field name="defaultBillOfMaterial" domain="self.product.id = :id" onSelect="action-product-attrs-bill-of-material-domain"/>
 				<field name="lastProductionPrice" readonly="true"/>
 				<button name="createProductionOrder" title="Create production order" colSpan="2" onClick="save,action-product-view-create-production-order"/>
 			</page>
@@ -122,11 +123,7 @@
 	        	 	<group colSpan="2" cols="2">
 			            <field name="trackingNumberConfiguration" colSpan="2"/>
 		            </group>
-		            <group colSpan="2" cols="2">
-		            	<spacer colSpan="2"/>
-		            </group>
 	        	</group>
-	           
 	        </page>
 	        <page title="Variants">
 	        	<group name="parentVariant" showIf="!parentProduct" colSpan="4">

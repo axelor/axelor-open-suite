@@ -6,9 +6,8 @@
   <module name="crm" package="com.axelor.apps.crm.db"/>
 
   <entity name="EventCategory" lang="java">
-
 	<integer name="importId" />
-        <string name="name" title="Name"/>
+    <string name="name" title="Name"/>
   	<string name="code" title="Code"/>
   	<integer name="typeSelect" title="Type" selection="crm.event.type.select" default="2"/>
   	
