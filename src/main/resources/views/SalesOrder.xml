@@ -25,7 +25,7 @@
     
 	<form name="sales-order-form" title="Sale order" model="com.axelor.apps.supplychain.db.SalesOrder" cols="4" 
 	onNew="action-sales-order-record-default,action-sales-order-record-company-configuration,action-sales-order-method-get-location,action-sales-order-record-currency,action-sales-order-attrs-collapse-specific-settings-group"
-	onSave="action-sales-order-set-sequence" onLoad="action-sales-order-attrs-collapse-specific-settings-group,action-sales-order-attrs-validated-read-only,action-sales-order-domain-on-contact-partner">
+	onSave="action-sales-order-set-sequence" onLoad="action-sales-order-attrs-collapse-specific-settings-group,action-sales-order-attrs-validated-read-only">
 	    <toolbar>
 <!-- 	        <button name="createDocument" title="Create Document" onClick="com.axelor.apps.supplychain.web.SalesOrderController:saveDocumentForOrder"/> -->
             <button name="print" title="Print" icon="fa-print" onClick="save,action-sales-order-method-show-sales-order"/>
@@ -53,7 +53,7 @@
 	            <field name="clientPartner" form-view="partner-form" grid-view="partner-grid" onChange="action-sales-order-record-partner" domain="self.isContact = 'false'"/>
 	            <field name="mainInvoicingAddress"/>
 	            <field name="invoicingTypeSelect"/>
-	            <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
+	            <field name="contactPartner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid" onSelect="action-sales-order-domain-on-contact-partner"/>
 	            <field name="deliveryAddress"/>
 	            <field name="priceList" domain="self.typeSelect = 1 and (self.partner = null or self.partner = :clientPartner) and (self.validFromDate &lt;= :__date__ or self.validFromDate = null) and (self.validToDate &gt;= :__date__ or self.validToDate = null)"/>
 	            <group name="specificSettings" title="Specific settings" colSpan="6" cols="6" canCollapse="true">
