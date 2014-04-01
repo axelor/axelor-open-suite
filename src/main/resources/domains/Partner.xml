@@ -17,7 +17,7 @@
     <string name="name" title="Name/Company Name"/>
     <string name="firstName" title="First Name"/>
     <string name="jobTitle" title="Function"/>
-    <binary name="picture" image="true" title="Photo"/>
+    <many-to-one name="picture" ref="com.axelor.meta.db.MetaFile" title="Photo" />
     
     
     <integer name="customerTypeSelect" title="Customer Type" selection="partner.customer.type.select"/>
