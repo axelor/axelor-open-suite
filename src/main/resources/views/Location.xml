@@ -28,7 +28,7 @@
         <break/>
         <spacer/>
         <break/>
-        <button name="viewContent" title="View location content" colSpan="6"/>
+        <button name="viewContent" title="View location content" colSpan="6" onClick="action-location-view-location-content"/>
         <break/>
         <spacer/>
         <break/>
@@ -54,5 +54,12 @@
 		<view type="form" name="create-inventory-wizard-form"/>
 		<context name="_location" expr="eval: __self__"/>
 	</action-view>
+	
+    <action-view name="action-location-view-location-content" title="Location content" model="com.axelor.apps.supplychain.db.LocationLine">
+		<view type="grid" name="location-line-grid" />
+		<view type="form" name="location-line-form" />
+		<domain>self.location.id =:locationId AND self.currentQty != 0</domain>
+  		<context name="locationId" expr="eval:__self__.id" />
+    </action-view>
 
 </object-views>

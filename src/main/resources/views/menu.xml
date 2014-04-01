@@ -63,8 +63,8 @@
 
 	<action-view name="stock.root.all.line" title="Stock Moves Lines"
 		model="com.axelor.apps.supplychain.db.StockMoveLine" icon="img/16px/productSmall_16px.png">
-		<view type="grid" name="stock-move-line-grid"/>
-		<view type="form" name="stock-move-line-form"/>
+		<view type="grid" name="stock-move-line-all-grid"/>
+		<view type="form" name="stock-move-line-all-form"/>
 	</action-view>		
 		
 	<menuitem name="stock-root-conf" parent="stock-root" title="Configuration"
