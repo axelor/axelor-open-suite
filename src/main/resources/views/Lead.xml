@@ -7,10 +7,10 @@
     	<toolbar>
     		<button name="grabLeads" help="Assign to me" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.EventController:assignToMeLead" />
     	</toolbar>
-    	<hilite color="primary" if="statusSelect == 1"/>
-    	<hilite color="warning" if="statusSelect == 1 &amp;&amp; (userInfo == null || contactDate == null) &amp;&amp; $moment(createdOn)  &lt; __time__.minusDays(15)"/>
-    	<hilite color="danger" if="(statusSelect in [2,3] &amp;&amp; $moment(updatedOn) &lt; $moment(__time__.minusDays(15))"/>
-    	<hilite color="success" if="statusSelect == 4"/>
+    	<hilite color="warning" if="statusSelect == 1 &amp;&amp; (userInfo == null || contactDate == null) &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 15"/>
+	    <hilite color="primary" if="statusSelect == 1"/>
+	    <hilite color="danger" if="(statusSelect == 2 || statusSelect == 3) &amp;&amp; $moment(todayDate).diff(updatedOn,'days') &gt;= 15"/>
+	    <hilite color="success" if="statusSelect == 4"/>
   	  	<field name="createdOn" hidden="true"/>
     	<field name="updatedOn" hidden="true"/>
         <field name="name"/>

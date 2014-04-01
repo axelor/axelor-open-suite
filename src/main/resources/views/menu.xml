@@ -128,6 +128,7 @@
 		<view-param name="search-filters" value="lead-filters"/>
 		<context name="_internalUser" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
+		<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
 	</action-view>
 	
 	<menuitem name="crm-root-opportunity" parent="crm-root"
@@ -140,6 +141,7 @@
 		<view-param name="search-filters" value="opportunity-filters"/>
 		<context name="_internalUser" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
+		<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
 	</action-view>
 		
 	<menuitem name="crm-root-meeting-my-calendar" parent="crm-root"
@@ -315,6 +317,7 @@
 	<action-view name="top.new.lead.view" title="Create Lead" icon="img/16px/addressBook_16px.png" model="com.axelor.apps.crm.db.Lead" >
 		<view type="form" name="lead-form" />
 		<view type="grid" name="lead-grid" />
+		<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
 	</action-view>
 	
 	<menuitem name="top-prospection" title="Prospection" groups="admins,erp" top="true" left="false"/>
@@ -323,12 +326,14 @@
 	<action-view name="top.propsection.leads" title="Leads" model="com.axelor.apps.crm.db.Lead" >
 		<view type="grid" name="lead-grid" />
 		<view type="form" name="lead-form" />
+		<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
 	</action-view>
 	
 	<menuitem name="top-prospection-opportunity" title="Opportunities" action="top.prospection.opportunity" parent="top-prospection"  groups="admins,erp,crm" top="true" left="false"/> 	
 	<action-view name="top.prospection.opportunity" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" >
 		<view type="grid" name="opportunity-grid" />
 		<view type="form" name="opportunity-form" />
+		<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
 	</action-view>
 	
 	

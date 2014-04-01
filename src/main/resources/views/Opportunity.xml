@@ -3,11 +3,17 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
     
-    <grid name="opportunity-grid" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" orderBy="-salesStageSelect">
+    <grid name="opportunity-grid" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" orderBy="salesStageSelect,expectedCloseDate">
     	<toolbar>
     		<button name="grabLeads" help="Assign to me" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe" />
     	</toolbar>
+    	<hilite color="danger" if="salesStageSelect != 9 &amp;&amp; salesStageSelect != 10 &amp;&amp;  $moment(expectedCloseDate).diff(todayDate,'days') &lt;= 7"/>
+  		<hilite color="warning" if="salesStageSelect != 9 &amp;&amp; salesStageSelect != 10 &amp;&amp; $moment(expectedCloseDate).diff(todayDate,'days') &lt;= 15" />
+  		<hilite color="primary" if="salesStageSelect != 9 &amp;&amp; salesStageSelect != 10 &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 7"/>
+  		<hilite background="success" if="salesStageSelect == 9"/>
+  		<hilite background="danger" if="salesStageSelect == 10"/>
 		<field name="name" width="300"/>
+		<field name="createdOn" hidden="true"/>
         <field name="partner"/>
 		<field name="lead"/>
 		<field name="salesStageSelect"/>
