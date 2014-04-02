@@ -44,7 +44,7 @@
 	            <field name="remainingTime"/>
 	        </group>
 	        <group title="Description" colSpan="6">
-            	<field name="description" showTitle="false" widget="Html[lite=true]"/>
+            	<field name="description" showTitle="false" widget="Html" x-lite="true"/>
         	</group>
 	        <group name="specificSettings" title="Specific settings" colSpan="6" canCollapse="true" colWidths="25%,25%,25%,25%">
 	        	<field name="isProject"/>
@@ -71,7 +71,7 @@
 				<spacer/>
 				<break/>
 <!-- 	        	<field name="exportTypeSelect"/> -->
-<!--                 <button name="printProject" colSpan="2" title="View forecast report" onClick="action-print-project-report" icon="icon-print"/> -->
+<!--                 <button name="printProject" colSpan="2" title="View forecast report" onClick="action-print-project-report" icon="fa-print"/> -->
 	            <group title="Initial estimated" colSpan="4" cols="6" hideIf="realEstimatedMethodSelect == 1">
 	                <field name="initialEstimatedTurnover"/>
 	                <field name="initialEstimatedCost"/>

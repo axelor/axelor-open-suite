@@ -29,8 +29,8 @@
 		<field name="result" />
 		<break/>
 <!-- 		<field name="business" /> -->
-		<field name="toolKeywordSet" widget="TagSelect[create=keyWord]" domain="self.typeSelect = '1'" grid-view="keyword-tool-grid" form-view="keyword-tool-form"/>
-        <field name="sectorKeywordSet" widget="TagSelect[create=keyWord]" domain="self.typeSelect = '2'" grid-view="keyword-area-grid" form-view="keyword-area-form"/>
+		<field name="toolKeywordSet" widget="TagSelect" x-create="keyWord" domain="self.typeSelect = '1'" grid-view="keyword-tool-grid" form-view="keyword-tool-form"/>
+        <field name="sectorKeywordSet" widget="TagSelect" x-create="keyWord" domain="self.typeSelect = '2'" grid-view="keyword-area-grid" form-view="keyword-area-form"/>
         
     </form>
     

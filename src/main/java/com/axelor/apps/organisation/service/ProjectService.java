@@ -32,6 +32,9 @@ package com.axelor.apps.organisation.service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Map;
+
+import javassist.compiler.ast.InstanceOfExpr;
 
 import javax.persistence.Query;
 
@@ -413,6 +416,19 @@ public class ProjectService {
 		project.setUnit(GeneralService.getUnit());
 		
 		return project;
+	}
+	
+	public Project importProject(Object bean, Map values) {
+        try{
+        	Project project = (Project) bean;
+			createDefaultTask(project);
+			updateFinancialInformation(project);
+			updateTaskProgress(project);
+			return project;
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return null;
 	}
 	
 }

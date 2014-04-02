@@ -75,7 +75,7 @@
 	        	<field name="estimatedAmount"/>
 	        	<field name="project.company.currency"/>
 	        	<field name="exportTypeSelect"/>
-	            <button name="printTask" colSpan="2" title="View forecast report" onClick="action-print-task-report" icon="icon-print"/>
+	            <button name="printTask" colSpan="2" title="View forecast report" onClick="action-print-task-report" icon="fa-print"/>
 				<group title="Initial estimated" colSpan="4" cols="6" hideIf="realEstimatedMethodSelect == 1">
 	                <field name="initialEstimatedTurnover"/>
 	                <field name="initialEstimatedCost"/>
