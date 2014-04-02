@@ -52,7 +52,7 @@
 	    <notebook>
 	        <page title="General" colSpan="6" cols="6">
 	            <group title="Search criterias" colSpan="6" cols="6">
-	                    <field name="contractType"/>
+	                    <field name="contractTypeSelect"/>
 	                    <field name="searchedJobKeyword" domain="self.typeSelect = '3'" form-view="keyword-profession-form" grid-view="keyword-profession-grid"/>
 	                    <field name="salaryExpectation"/>
 						<field name="relocationSelect"/>
