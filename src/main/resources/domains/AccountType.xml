@@ -7,6 +7,7 @@
 
   <entity name="AccountType" lang="java">
     <string name="nameSelect" title="Type" required="true" unique="true" selection="account.account.type.select"/>
+	<string name="name" title="Label"/>
   </entity>
 
 </domain-models>

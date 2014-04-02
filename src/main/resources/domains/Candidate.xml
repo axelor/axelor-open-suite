@@ -21,7 +21,7 @@
 		<many-to-one name="address" ref="com.axelor.apps.base.db.Address" title="Address"/>
 		
 		<!-- Candidate queries -->
-		<integer name="contractType" title="Contract Type" selection="organisation.job.offer.contract.type.select"/>
+		<integer name="contractTypeSelect" title="Contract Type" selection="organisation.job.offer.contract.type.select"/>
 		<many-to-one name="searchedJobKeyword" ref="com.axelor.apps.base.db.Keyword" title="Function searched"/>
 		<integer name="relocationSelect" title="Relocation choice" selection="organisation.candidate.relocation.select" help="Non modifiable, automatique en fonction du champs 'Mobilité Géographique' dans l'onglet 'autres infos'" />
 		<integer name="salaryExpectation" title="Salary expectation"/>
