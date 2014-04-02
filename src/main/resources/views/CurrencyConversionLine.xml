@@ -11,7 +11,7 @@
         <field name="fromDate"/>
         <field name="toDate" />
         <field name="general" hidden="true" />
-        <button name="checkRate" title="Check rate" readonlyIf="toDate != null" icon="icon-repeat" onClick="wizard-check-currency-conversion-rate-line" />
+        <button name="checkRate" title="Check rate" readonlyIf="toDate != null" icon="fa-repeat" onClick="wizard-check-currency-conversion-rate-line" />
     </grid>
     
     <form name="currency-conversion-line-form" title="Currency conversion line" model="com.axelor.apps.base.db.CurrencyConversionLine" cols="4"
@@ -31,9 +31,9 @@
     
     <form onNew="action-currency-conversion-line-wizard-set-date,action-currency-conversion-line-set-exchange-rate,action-currency-conversion-line-method-convert" 
     name="wizard-check-currency-rate-form" title="Check currency exhange rates" model="com.axelor.apps.base.db.Wizard" cols="4">
-    	<field name="startCurrency" widget="MANY_TO_ONE[target=com.axelor.apps.base.db.Currency|targetName=code]" title="Source Currency"/>
-    	<field name="endCurrency" widget="MANY_TO_ONE[target=com.axelor.apps.base.db.Currency|targetName=code]" title="Destination Currency" />
-    	<field name="general" widget="MANY_TO_ONE[target=com.axelor.apps.base.db.General|targetName=today]" title="General" hidden="true" />
+    	<field name="startCurrency" widget="MANY_TO_ONE" x-target="com.axelor.apps.base.db.Currency" x-targetName="code" title="Source Currency"/>
+    	<field name="endCurrency" widget="MANY_TO_ONE" x-target="com.axelor.apps.base.db.Currency" x-targetName="code" title="Destination Currency" />
+    	<field name="general" widget="MANY_TO_ONE" x-target="com.axelor.apps.base.db.General" x-targetName="today" title="General" hidden="true" />
     	<group colSpan="4" cols="6" title="System active rate">
     		<field name="date" widget="DATE" title="Rate Date" readonly="true" />
 	    	<field name="exchangeRate" widget="DECIMAL" title="Exchange rate" readonly="true"/>

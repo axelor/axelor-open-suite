@@ -7,14 +7,14 @@
         <field name="name"/>
         <field name="code"/>
         <field name="priceExtra"/>
+        <field name="applicationPriceSelect"/>
     </grid>
     
     <form name="product-variant-value-form" title="Product variant value" model="com.axelor.apps.base.db.ProductVariantValue" cols="4">
         <field name="name"/>
         <field name="code"/>
         <field name="priceExtra"/>
-        <break/>
-        <field name="productVariantAttribute"/>
+        <field name="applicationPriceSelect"/>
     </form>   
 
 </object-views>

@@ -13,12 +13,11 @@
   	
 	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>    
 	<decimal name="qty" title="Qty"/>
-	<decimal name="realQty" title="Real qty"/>
+	<decimal name="realQty" title="RealQty"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
     <decimal name="price" title="Unit price"/>
     
     <many-to-one name="trackingNumber" ref="com.axelor.apps.base.db.TrackingNumber" title="Tracking Nbr."/>
-    <many-to-one name="productVariant" ref="com.axelor.apps.base.db.ProductVariant" title="Variants"/>
     
 <!--     TODO a deplacer dans Production -->
 	<many-to-one name="consumedManufOrder" ref="com.axelor.apps.production.db.ManufOrder" title="Manufacturing order"/>

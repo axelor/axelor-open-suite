@@ -8,6 +8,7 @@
   <entity name="Event" lang="java">
 
 <!-- Commun   -->
+	<integer name="importId" />
   	<integer name="typeSelect" title="Type" selection="crm.event.type.select" default="2"/>
   	<string name="subject" namecolumn="true" title="Subject" />
 	<integer name="statusSelect" title="Status" selection="crm.event.status.select"/>  

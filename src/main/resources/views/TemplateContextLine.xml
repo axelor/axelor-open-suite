@@ -11,7 +11,7 @@
     <form name="template-context-line-form" title="Template Context Line" model="com.axelor.apps.base.db.TemplateContextLine" cols="4">
         <field name="name"/>
         <field name="key"/>
-        <field name="query" colSpan="4" widget="CodeEditor[syntax=sql]"/>
+        <field name="query" colSpan="4" widget="CodeEditor" x-syntax="sql"/>
     </form>
     
 </object-views>

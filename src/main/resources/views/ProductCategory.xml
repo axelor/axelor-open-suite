@@ -11,9 +11,19 @@
     </grid>
     
     <form name="product-category-form" title="Product category" model="com.axelor.apps.base.db.ProductCategory" cols="6">
+	    <toolbar>
+			<button name="viewProducts" title="View Products" onClick="action-view-product-by-category"/>
+		</toolbar>
         <field name="name"/>
         <field name="code"/>
         <field name="productFamily"/>
         <field name="parentProductCategory"/>
     </form>
+    
+     <action-view name="action-view-product-by-category" title="Products" model="com.axelor.apps.base.db.Product">
+		<view type="grid" name="product-grid"/>
+		<view type="form" name="product-form"/>
+		<domain>self.productCategory.id = :_productCategoryId</domain>
+		<context name="_productCategoryId" expr="eval: __this__.id"/>
+	</action-view>
 </object-views>

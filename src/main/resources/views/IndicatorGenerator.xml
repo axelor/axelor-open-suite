@@ -14,7 +14,7 @@
 		<field name="code"/>
 		<field name="name" colSpan="4"/>
 		<field name="requestLanguage" />
-		<field name="request" colSpan="4" widget="CodeEditor[syntax=sql]"/>
+		<field name="request" colSpan="4" widget="CodeEditor" x-syntax="sql"/>
 		<button name="run" title="Execute" colSpan="4" onClick="save,com.axelor.apps.base.web.IndicatorGeneratorController:run" />
 		<field name="result" colSpan="4" />
 		<field name="log" colSpan="4" />

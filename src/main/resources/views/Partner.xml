@@ -5,17 +5,17 @@
     
     <grid name="partner-grid" title="Partners" model="com.axelor.apps.base.db.Partner" orderBy="name">
 	    <toolbar>
-	        <button name="printPhoneBook" title="PhoneBook" icon="icon-print" onClick="action-print-phonebook"/>
-	        <button name="printCompanyPhoneBook" title="Company phoneBook" icon="icon-print" onClick="action-print-compnay-phonebook"/>
+	        <button name="printPhoneBook" title="PhoneBook" icon="fa-print" onClick="action-print-phonebook"/>
+	        <button name="printCompanyPhoneBook" title="Company phoneBook" icon="fa-print" onClick="action-print-compnay-phonebook"/>
 	    </toolbar>
 	    <field name="fullName"/>
 	    <field name="mainInvoicingAddress"/>
 	    <field name="fixedPhone"/>
 		<field name="emailAddress.address"/>
 	    <field name="partnerCategory"/>
-		<button name="logCall" title="Log Call" colSpan="1" icon="icon-phone" help="Log Call" onClick="action-partner-view-create-call"/>
-		<button name="scheduleMeeting" title="Schedule Meeting" colSpan="1" help="Schedule Meeting" icon="icon-group" onClick="action-partner-view-create-meeting"/>
-		<button name="sendByEmail" title="Send Email" colSpan="1" help="Send Email" icon="icon-envelope" onClick="action-send-by-email-with-template"/>
+		<button name="logCall" title="Log Call" colSpan="1" icon="fa-phone" help="Log Call" onClick="action-partner-view-create-call"/>
+		<button name="scheduleMeeting" title="Schedule Meeting" colSpan="1" help="Schedule Meeting" icon="fa-group" onClick="action-partner-view-create-meeting"/>
+		<button name="sendByEmail" title="Send Email" colSpan="1" help="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
 	</grid>
     
     <grid name="partner-contact-grid" title="Contacts" model="com.axelor.apps.base.db.Partner">
@@ -23,9 +23,9 @@
 	    <field name="fixedPhone"/>
 	    <field name="mobilePhone"/>
 	    <field name="emailAddress.address"/>
-	    <button name="logCall" title="Log Call" colSpan="1" icon="icon-phone" help="Log Call" onClick="action-partner-view-create-call"/>
-		<button name="scheduleMeeting" title="Schedule Meeting" colSpan="1" help="Schedule Meeting" icon="icon-group" onClick="action-partner-view-create-meeting"/>
-		<button name="sendByEmail" title="Send Email" colSpan="1" help="Send Email" icon="icon-envelope" onClick="action-send-by-email-with-template"/>
+	    <button name="logCall" title="Log Call" colSpan="1" icon="fa-phone" help="Log Call" onClick="action-partner-view-create-call"/>
+		<button name="scheduleMeeting" title="Schedule Meeting" colSpan="1" help="Schedule Meeting" icon="fa-group" onClick="action-partner-view-create-meeting"/>
+		<button name="sendByEmail" title="Send Email" colSpan="1" help="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
 	</grid>
     
      <grid name="partner-grid-group" title="Partner" model="com.axelor.apps.base.db.Partner" groupBy="userInfo">
@@ -38,13 +38,13 @@
     </grid>
     
     <form name="partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" cols="6" colWidths="25*" 
-    onNew="action-partner-record-partner-type-select,action-partner-record-set-default" 
+    onNew="action-partner-record-partner-type-select,action-partner-record-set-default,action-partner-record-customer-supplier-type" 
     onLoad="action-partner-attrs-change-name" 
     onSave="save,action-set-partner-seq,action-create-accounting-situation">
 	    <toolbar>
-	        <button name="sendByEmail" title="Send email" icon="icon-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="id == null"/>
-	        <button name="showPartnerInfo" title="Print Informations" icon="icon-print" onClick="save,action-partner-method-show-partner-info" readonlyIf="id == null"/>
-	        <button name="showClientSituationForm" title="Client Situation" icon="icon-print" onClick="save,action-partner-method-show-client-situation" showIf="isContact == false" readonlyIf="id == null"/>
+	        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="id == null"/>
+	        <button name="showPartnerInfo" title="Print Informations" icon="fa-print" onClick="save,action-partner-method-show-partner-info" readonlyIf="id == null"/>
+	        <button name="showClientSituationForm" title="Client Situation" icon="fa-print" onClick="save,action-partner-method-show-client-situation" showIf="isContact == false" readonlyIf="id == null"/>
 	    </toolbar>
 	    <menubar>
 	        <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true">
@@ -116,7 +116,7 @@
 	            </group>
 	        </page>
 	        <page title="Notes">
-	            <field name="description" showTitle="false" colSpan="4" widget="Html[lite=true]"/>
+	            <field name="description" showTitle="false" colSpan="4" widget="Html" x-lite="true"/>
 	        </page>
 	        <page name="payment" title="Invoicing/Payment" hideIf="partnerTypeSelect == 2" colSpan="4" cols="4">
 	            <field name="invoiceSendingFormatSelect"/>
@@ -130,7 +130,7 @@
 	            <field name="partnerSeq"/>
 	            <field name="languageSelect"/>
 	            <group title="Assigned to" colSpan="4" cols="4" canCollapse="true">
-	                <field name="companySet" colSpan="4" widget="TagSelect[create=name]" onChange="action-partner-company-set-validate"/>
+	                <field name="companySet" colSpan="4" widget="TagSelect" x-create="name" onChange="action-partner-company-set-validate"/>
 	                <break/>
 	                <field name="userInfo"/>
 	                <field name="team"/>
@@ -202,13 +202,13 @@
 	
 
 	<form name="partner-contact-form" title="Contact" model="com.axelor.apps.base.db.Partner" cols="6" colWidths="25*" 
-	onNew="action-partner-record-partner-type-select,action-partner-contact-record-default" 
+	onNew="action-partner-contact-record-default" 
 	onLoad="action-partner-attrs-change-name" 
 	onSave="save,action-set-partner-seq">
 	    <toolbar>
-	        <button name="sendByEmail" title="Send email" icon="icon-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="id == null"/>
-	        <button name="showPartnerInfo" title="Print Informations" icon="icon-print" onClick="save,action-partner-method-show-partner-info"  readonlyIf="id == null"/>
-	        <button name="showClientSituationForm" title="Client Situation" icon="icon-print" onClick="save,action-partner-method-show-client-situation" showIf="isContact == false"  readonlyIf="id == null"/>
+	        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="id == null"/>
+	        <button name="showPartnerInfo" title="Print Informations" icon="fa-print" onClick="save,action-partner-method-show-partner-info"  readonlyIf="id == null"/>
+	        <button name="showClientSituationForm" title="Client Situation" icon="fa-print" onClick="save,action-partner-method-show-client-situation" showIf="isContact == false"  readonlyIf="id == null"/>
 	    </toolbar>
 	    <menubar>
 	        <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true">
@@ -254,13 +254,13 @@
 	    <break/>
 	    <notebook colSpan="4">
 	        <page title="Notes">
-	            <field name="description" showTitle="false" colSpan="4" widget="Html[lite=true]"/>
+	            <field name="description" showTitle="false" colSpan="4" widget="Html" x-lite="true"/>
 	        </page>
 	        <page title="Settings" cols="4">
 	            <field name="partnerSeq"/>
 	            <field name="languageSelect"/>
 	            <group title="Assigned to" colSpan="4" cols="4" canCollapse="true">
-	                <field name="companySet" colSpan="4" widget="TagSelect[create=name]" onChange="action-partner-company-set-validate"/>
+	                <field name="companySet" colSpan="4" widget="TagSelect" x-create="name" onChange="action-partner-company-set-validate"/>
 	                <break/>
 	                <field name="userInfo"/>
 	                <field name="team"/>
@@ -286,28 +286,11 @@
 		<call class="com.axelor.apps.base.web.PartnerController" method="showPartnerInfo"/>
 	</action-method>
     
-    <action-view name="action-partner-view-partner-invoice" title="Invoices" model="com.axelor.apps.account.db.Invoice">
-		<view type="grid" name="invoice-grid"/>
-		<view type="form" name="invoice-form"/>
-		<domain>(self.partner = :id AND :_isContact = false) OR (self.contactPartner = :id AND :_isContact = true)</domain>
-		<context name="id" expr="eval: id"/>
-		<context name="_isContact" expr="eval: isContact"/>
-	</action-view>
-	
-	<action-view name="action-partner-view-contact-invoice" title="Invoices" model="com.axelor.apps.account.db.Invoice">
-		<view type="grid" name="invoice-grid"/>
-		<view type="form" name="invoice-form"/>
-		<domain>(self.partner = :id AND :_isContact = false) OR (self.contactPartner = :id AND :_isContact = true)</domain>
-		<context name="id" expr="eval: id"/>
-		<context name="_isContact" expr="eval: isContact"/>
-	</action-view>
-	
 	<action-view name="action-partner-view-partner-sales-order" title="Sales orders" model="com.axelor.apps.supplychain.db.SalesOrder">
 		<view type="grid" name="sales-order-grid"/>
 		<view type="form" name="sales-order-form"/>
-		<domain>(self.clientPartner = :id AND :_isContact = false) OR (self.contactPartner = :id AND :_isContact = true)</domain>
+		<domain>self.clientPartner.id = :id OR self.contactPartner.id = :id</domain>
 		<context name="id" expr="eval: id"/>
-		<context name="_isContact" expr="eval: isContact"/>
 	</action-view>
 	
 	<action-view name="action-partner-view-sn-profile" title="Profiles" model="com.axelor.apps.socialnetwork.db.SnProfile">
@@ -356,7 +339,6 @@
 		<domain>(self.clientPartner.id = :id OR self.contactPartner.id = :id) and self.endDateTime &lt; :_todayTime and self.typeSelect != 5</domain>
 		<context name="id" expr="eval: id"/>
 		<context name="_todayTime" expr="eval: __datetime__"/>
-		<context name="_isContact" expr="eval: isContact"/>
 	</action-view>
    	
    	<action-view name="action-partner-view-opportunities" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity">
@@ -371,7 +353,6 @@
 		<view type="form" name="sales-order-form"/>
 		<domain>(self.clientPartner.id = :id OR self.contactPartner.id = :id)</domain>
 		<context name="id" expr="eval: id"/>
-		<context name="_isContact" expr="eval: isContact"/>
 	</action-view>
 	
 	<action-view name="action-partner-view-tickets" title="Tickets" model="com.axelor.apps.crm.db.Event">
@@ -379,7 +360,6 @@
 		<view type="form" name="ticket-form"/>
 		<domain>(self.clientPartner.id = :id OR self.contactPartner.id = :id) AND self.typeSelect = 5</domain>
 		<context name="id" expr="eval: id"/>
-		<context name="_isContact" expr="eval: isContact"/>
 	</action-view>
     
     <action-record name="action-partner-record-main-invoicing-address" model="com.axelor.apps.base.db.Partner">
@@ -403,9 +383,12 @@
     	<field name="fullName" expr="eval: id" if="firstName == null &amp;&amp; name == null"/>
     </action-record>
     
-    <action-record name="action-partner-record-set-default" model="com.axelor.apps.base.db.Partner">
+    <action-record name="action-partner-record-customer-supplier-type" model="com.axelor.apps.base.db.Partner">
     	<field name="customerTypeSelect" expr="eval: 1" />
     	<field name="supplierTypeSelect" expr="eval:1"/>
+    </action-record>
+    
+    <action-record name="action-partner-record-set-default" model="com.axelor.apps.base.db.Partner">
     	<field name="currency" expr="eval:com.axelor.apps.base.db.UserInfo.all().filter('internalUser = ?1',__user__).fetchOne()?.activeCompany?.currency" if="!isContact"/>
     	<field name="invoiceSendingFormatSelect" expr="eval:'emailpaper'" if="!isContact"/>
     	<field name="userInfo"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>

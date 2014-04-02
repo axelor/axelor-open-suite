@@ -15,7 +15,6 @@
 	<date name="lastFutureStockMoveDate" title="Last Future Stock Move"/>
 	
 	<many-to-one name="trackingNumber" ref="com.axelor.apps.base.db.TrackingNumber" title="Tracking Nbr"/>
-    <many-to-one name="productVariant" ref="com.axelor.apps.base.db.ProductVariant" title="Variants"/>
 	<many-to-one name="detailsLocation" ref="com.axelor.apps.supplychain.db.Location" title="Location Details"/>
 	
   </entity>

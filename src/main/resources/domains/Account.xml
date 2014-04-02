@@ -10,10 +10,10 @@
   	<integer name="importId" />
     <string name="name" title="Name" required="true"/>
     <string name="code" title="Code" required="true" help="The account code is usually a number (e.g. : 101000). The account code help to locate the account in the chart of account. This code must be unique per company account chart."/>
-    <many-to-one name="parent" ref="Account" title="Parent Account" help="The parent account helps to define the company chart of accounts. Depending on the company field, you will be only entitled to select parent accounts associated to the same company."/>
-    <many-to-one name="accountType" ref="AccountType" title="Account Type" help="The account type is an attribute attached to the account that will impact the way accounting documents will be printed or filtered. Account Types are as follow : asset, cash, commitment, current asset (stock), debt, equity, expense, immobilisation, income, payable, provision, receivable, special, tax, view"/>
-    <boolean name="reconcileOk" title="Reconcilable ?" help="The checkbox reconcilable helps to filter, within the reconcile interface the entrylines to reconcile. The accounts of type receivable and payable will usually be ticked as reconcilable."/>
-    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" help="Each account is linked to a chart of account, and thus to a company."/>
+    <many-to-one name="parent" ref="Account" title="Parent Account"  help="The parent account helps to define the company chart of accounts. Depending on the company field, you will be only entitled to select parent accounts associated to the same company." massUpdate="true"/>
+    <many-to-one name="accountType" ref="AccountType" massUpdate="true" title="Account Type"  help="The account type is an attribute attached to the account that will impact the way accounting documents will be printed or filtered. Account Types are as follow : asset, cash, commitment, current asset (stock), debt, equity, expense, immobilisation, income, payable, provision, receivable, special, tax, view"/>
+    <boolean name="reconcileOk" massUpdate="true" title="Reconcilable ?" help="The checkbox reconcilable helps to filter, within the reconcile interface the entrylines to reconcile. The accounts of type receivable and payable will usually be ticked as reconcilable."/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" help="Each account is linked to a chart of account, and thus to a company." massUpdate="true"/>
     <string name="label" namecolumn="true" search="code,name,company">
 	    <![CDATA[
 	    if(company != null)

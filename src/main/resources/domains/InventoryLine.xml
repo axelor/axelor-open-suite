@@ -13,7 +13,6 @@
 	<decimal name="realQty" title="Real Qty"/>
 	<string name="description" title="Description"/>
 	
-	<many-to-one name="productVariant" ref="com.axelor.apps.base.db.ProductVariant" title="Variants"/>
 	<many-to-one name="trackingNumber" ref="com.axelor.apps.base.db.TrackingNumber" title="TrackingNumber"/>
     
   </entity>

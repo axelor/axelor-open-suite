@@ -7,10 +7,11 @@
 
   <entity name="ProductVariantValue" lang="java">
 	
-	<string name="name" required="true" title="Name"/>
-	<string name="code" title="Code"/>
+	<string name="name" title="Name" required="true"/>
+	<string name="code" title="Code" required="true"/>
 	<decimal name="priceExtra" title="Price Extra"/>
-	<many-to-one name="productVariantAttribute" ref="com.axelor.apps.base.db.ProductVariantAttribute"/>
+	<integer name="applicationPriceSelect" title="Application" selection="ibase.product.variant.value.application.price.select"/>
+	<many-to-one name="productVariantAttr" ref="com.axelor.apps.base.db.ProductVariantAttr"/>
 	
   </entity>
 
