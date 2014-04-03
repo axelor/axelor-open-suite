@@ -115,7 +115,7 @@
 	</action-view>
 	<action-view title="My Closed Opportunities" model="com.axelor.apps.crm.db.Opportunity"
 		name="portal.my.closed.opportunities">
-		<view type="grid" name="opportunity-grid" />
+		<view type="grid" name="opportunity-my-grid" />
 		<view type="form" name="opportunity-form" />
 		<domain>self.salesStageSelect in (9, 10) AND self.userInfo =:user_info</domain>
 		<context name="user_info"
@@ -124,7 +124,7 @@
 
 	<action-view title="My Open Opportunities" model="com.axelor.apps.crm.db.Opportunity"
 		name="portal.my.open.opportunities">
-		<view type="grid" name="opportunity-grid" />
+		<view type="grid" name="opportunity-my-grid" />
 		<view type="form" name="opportunity-form" />
 		<domain>self.salesStageSelect NOT in (9, 10) AND self.userInfo =:user_info</domain>
 		<context name="user_info"
@@ -236,7 +236,7 @@
 
 	<action-view name="portal.my.leads" title="My Leads"
 		model="com.axelor.apps.crm.db.Lead">
-		<view type="grid" name="lead-grid" />
+		<view type="grid" name="lead-my-grid" />
 		<view type="form" name="lead-form" />
 		<domain>self.userInfo =:user_info</domain>
 		<context name="user_info"

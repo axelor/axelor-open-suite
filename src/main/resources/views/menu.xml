@@ -139,6 +139,7 @@
 		<view type="grid" name="opportunity-grid"/>
 		<view type="form" name="opportunity-form"/>
 		<view-param name="search-filters" value="opportunity-filters"/>
+		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 		<context name="_internalUser" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
 		<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />

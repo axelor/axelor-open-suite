@@ -71,7 +71,7 @@
 	            </group>
 	            <group title="Assigned to" colSpan="4">
 	                <field name="contactDate"/>
-	                <button name="grabLead" colSpan="2" title="Assign to me" icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.EventController:assignToMeLead" />
+	                <button name="grabLead" colSpan="2" title="Assign to me" icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.EventController:assignToMeLead" hideIf="userInfo.internalUser.id == _internalUser"/>
 	                <field name="userInfo"/>
 	                <field name="team"/>
 	            </group>
@@ -139,6 +139,24 @@
 		<button name="add" title="Add" icon="fa-plus" onClick="action-lead-event-add-attendee"/>
     </grid>
 	
+	<grid orderBy="-contactDate,statusSelect" edit-icon="true" name="lead-my-grid" title="My Leads" model="com.axelor.apps.crm.db.Lead">
+		<hilite color="warning" if="statusSelect == 1 &amp;&amp; (userInfo == null || contactDate == null) &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 15"/>
+	    <hilite color="primary" if="statusSelect == 1"/>
+	    <hilite color="danger" if="(statusSelect == 2 || statusSelect == 3) &amp;&amp; $moment(todayDate).diff(updatedOn,'days') &gt;= 15"/>
+	    <hilite color="success" if="statusSelect == 4"/>
+		<field name="createdOn" hidden="true"/>
+		<field name="updatedOn" hidden="true"/>
+		<field name="name"/>
+		<field name="firstName"/>
+		<field name="enterpriseName"/>
+		<field name="fixedPhone"/>
+		<field name="mobilePhone"/>
+		<field name="emailAddress.address"/>
+		<field name="statusSelect"/>
+		<button name="logCall" title="Log Call" icon="fa-phone" onClick="action-lead-view-create-call"/>
+		<button name="scheduleMeeting" title="Schedule Meeting" icon="fa-group" onClick="action-lead-view-create-meeting"/>
+		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+	</grid>
 	
 	<action-method name="action-lead-event-add-attendee">
 		<call class="com.axelor.apps.crm.web.EventController" method="addLeadAttendee"/>
