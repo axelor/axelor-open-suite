@@ -425,4 +425,127 @@
 		<context name="_today" expr="eval: __date__.toDateTimeAtStartOfDay()" />
 	</action-view>
 
+	<!-- Target User Graph Dashboard -->
+
+	<portal title="Target User Dashboard" name="crm.target.user.dashboard.portal" cols="2">
+		<portlet action="portal.user.call.target.gauge" height="350" />
+		<portlet action="portal.user.call.target.bar" height="350"/>
+		<portlet action="portal.user.meeting.target.gauge" height="350"/>
+		<portlet action="portal.user.meeting.target.bar" height="350"/>
+		<portlet action="portal.user.opportunity.amount.won.target.gauge" height="350"/>
+		<portlet action="portal.user.opportunity.amount.won.target.bar" height="350"/>
+		<portlet action="portal.user.opportunity.created.number.target.gauge" height="350"/>
+		<portlet action="portal.user.opportunity.created.number.target.bar" height="350"/>
+		<portlet action="portal.user.opportunity.created.won.target.gauge" height="350"/>
+		<portlet action="portal.user.opportunity.created.won.target.bar" height="350"/>
+<!-- 		<portlet action="chart:chart.user.sales.order.amount.won.target.gauge" height="350"/> -->
+<!-- 		<portlet action="chart:chart.user.sales.order.amount.won.target.bar" height="350"/> -->
+<!-- 		<portlet action="chart:chart.user.sales.order.created.number.target.gauge" height="350"/> -->
+<!-- 		<portlet action="chart:chart.user.sales.order.created.number.target.bar" height="350"/> -->
+<!-- 		<portlet action="chart:chart.user.sales.order.created.won.target.gauge" height="350"/> -->
+<!-- 		<portlet action="chart:chart.user.sales.order.created.won.target.bar" height="350"/> -->
+	</portal>
+
+	<action-view name="portal.user.call.target.gauge" title="Calls emitted target completed (%)" model="com.axelor.apps.crm.db.Target">
+		<view type="chart" name="chart.user.call.target.gauge"/>
+	</action-view>
+	
+	<action-view name="portal.user.call.target.bar" title="Call emitted historical">
+		<view type="chart" name="chart.user.call.target.bar"/>
+	</action-view>
+
+	<action-view name="portal.user.meeting.target.gauge" title="Meetings number target completed (%)">
+		<view type="chart" name="chart.user.meeting.target.gauge"/>
+	</action-view>
+	
+	<action-view name="portal.user.meeting.target.bar" title="Meetings number historical">
+		<view type="chart" name="chart.user.meeting.target.bar"/>
+	</action-view>
+	
+	<action-view name="portal.user.opportunity.amount.won.target.gauge" title="Opportunities amount won target completed (%)">
+		<view type="chart" name="chart.user.opportunity.amount.won.target.gauge"/>
+	</action-view>
+	
+	<action-view name="portal.user.opportunity.amount.won.target.bar" title="Opportunities amount won historical">
+		<view type="chart" name="chart.user.opportunity.amount.won.target.bar"/>
+	</action-view>
+	
+	<action-view name="portal.user.opportunity.created.number.target.gauge" title="Opportunities created number target completed (%)">
+		<view type="chart" name="chart.user.opportunity.created.number.target.gauge"/>
+	</action-view>
+
+	<action-view name="portal.user.opportunity.created.number.target.bar" title="Opportunities created number historical">
+		<view type="chart" name="chart.user.opportunity.created.number.target.bar"/>
+	</action-view>
+	
+	<action-view name="portal.user.opportunity.created.won.target.gauge" title="Opportunities created won target completed (%)">
+		<view type="chart" name="chart.user.opportunity.created.won.target.gauge"/>
+	</action-view>
+	
+	<action-view name="portal.user.opportunity.created.won.target.bar" title="Opportunities created won historical">
+		<view type="chart" name="chart.user.opportunity.created.won.target.bar"/>
+	</action-view>
+	
+	<!-- Target Team Graph Dashboard -->
+	
+	<portal title="Target team Dashboard" name="crm.target.team.dashboard.portal" cols="2">
+		<portlet action="portal.team.call.target.gauge" height="350" />
+		<portlet action="portal.team.call.target.bar" height="350"/>
+		<portlet action="portal.team.meeting.target.gauge" height="350"/>
+		<portlet action="portal.team.meeting.target.bar" height="350"/>
+		<portlet action="portal.team.opportunity.amount.won.target.gauge" height="350"/>
+		<portlet action="portal.team.opportunity.amount.won.target.bar" height="350"/>
+		<portlet action="portal.team.opportunity.created.number.target.gauge" height="350"/>
+		<portlet action="portal.team.opportunity.created.number.target.bar" height="350"/>
+		<portlet action="portal.team.opportunity.created.won.target.gauge" height="350"/>
+		<portlet action="portal.team.opportunity.created.won.target.bar" height="350"/>
+<!-- 		<portlet action="chart:chart.team.sales.order.amount.won.target.gauge" height="350"/> -->
+<!-- 		<portlet action="chart:chart.team.sales.order.amount.won.target.bar" height="350"/> -->
+<!-- 		<portlet action="chart:chart.team.sales.order.created.number.target.gauge" height="350"/> -->
+<!-- 		<portlet action="chart:chart.team.sales.order.created.number.target.bar" height="350"/> -->
+<!-- 		<portlet action="chart:chart.team.sales.order.created.won.target.gauge" height="350"/> -->
+<!-- 		<portlet action="chart:chart.team.sales.order.created.won.target.bar" height="350"/> -->
+	</portal>
+
+
+	<action-view name="portal.team.call.target.gauge" title="Calls emitted target completed (%)">
+		<view type="chart" name="chart.team.call.target.gauge"/>
+	</action-view>
+	
+	<action-view name="portal.team.call.target.bar" title="Calls emitted historical">
+		<view type="chart" name="chart.team.call.target.bar"/>
+	</action-view>
+	
+	<action-view name="portal.team.meeting.target.gauge" title="Meetings number target completed (%)">
+		<view type="chart" name="chart.team.meeting.target.gauge"/>
+	</action-view>
+	
+	<action-view name="portal.team.meeting.target.bar" title="Meeting number historical">
+		<view type="chart" name="chart.team.meeting.target.bar"/>
+	</action-view>
+	
+	<action-view name="portal.team.opportunity.amount.won.target.gauge" title="Opportunities amount won target competed (%)">
+		<view type="chart" name="chart.team.opportunity.amount.won.target.gauge"/>
+	</action-view>
+	
+	<action-view name="portal.team.opportunity.amount.won.target.bar" title="Opportunities amount won historical">
+		<view type="chart" name="chart.team.opportunity.amount.won.target.bar"/>
+	</action-view>
+	
+	<action-view name="portal.team.opportunity.created.number.target.gauge" title="Opportunities created number target completed (%)">
+		<view type="chart" name="chart.team.opportunity.created.number.target.gauge"/>
+	</action-view>
+	
+	<action-view name="portal.team.opportunity.created.number.target.bar" title="Opportunities created number historical">
+		<view type="chart" name="chart.team.opportunity.created.number.target.bar"/>
+	</action-view>
+	
+	<action-view name="portal.team.opportunity.created.won.target.gauge" title="Opportunities created won target completed (%)">
+		<view type="chart" name="chart.team.opportunity.created.won.target.gauge"/>
+	</action-view>
+	
+	<action-view name="portal.team.opportunity.created.won.target.bar" title="Opportunities created won historical">
+		<view type="chart" name="chart.team.opportunity.created.won.target.bar"/>
+	</action-view>
+
 </object-views>

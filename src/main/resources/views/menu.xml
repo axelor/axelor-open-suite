@@ -386,21 +386,21 @@
 	</action-view>
 	
 	<menuitem name="menu-target-user-dashboard" parent="menu-crm-dashboards"
-		title="Target user Dashboard" action="portal.target.user.dashboard.view"/>	
+		title="Target user Dashboard" action="crm.portal.target.user.dashboard.view"/>	
 	
-	<action-view name="portal.target.user.dashboard.view" title="Target user Dashboard"
+	<action-view name="crm.portal.target.user.dashboard.view" title="Target user Dashboard"
 		icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="target.user.dashboard.portal" />
+		<view type="portal" name="crm.target.user.dashboard.portal" />
 		<context name="date" expr="eval: __date__"/>
-		<context name="user" expr="eval: __user__.id"/>
+		<context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
 	</action-view>
 	
 	<menuitem name="menu-target-team-dashboard" parent="menu-crm-dashboards"
-		title="Target team Dashboard" action="portal.target.team.dashboard.view"/>	
+		title="Target team Dashboard" action="crm.portal.target.team.dashboard.view"/>	
 
-	<action-view name="portal.target.team.dashboard.view" title="Target team Dashboard"
+	<action-view name="crm.portal.target.team.dashboard.view" title="Target team Dashboard"
 		icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="target.team.dashboard.portal" />
+		<view type="portal" name="crm.target.team.dashboard.portal" />
 		<context name="team" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeamId()"/>
 		<context name="date" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
 	</action-view>

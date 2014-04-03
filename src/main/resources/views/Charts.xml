@@ -212,25 +212,26 @@
 	</chart>
 	
 	<chart name="chart.customers.by.country.bar" title="Customers by country">
-		<dataset type="jpql">
+		<dataset type="sql">
 		    <![CDATA[
-		    SELECT
-			    COUNT(*) as partners,
-			    country.name as countryName
+			SELECT
+			    count(_partner.id) AS partners,
+			    _country.name AS country_name
 			FROM
-			    Country country,Partner partner
-			WHERE 
-			    partner.mainInvoicingAddress.addressL7Country.id = country.id AND
-			    partner.customerTypeSelect = 3
+				base_partner AS _partner
+			JOIN
+				base_address AS _address ON _address.id = _partner.main_invoicing_address
+			JOIN
+				base_country AS _country ON _country.id = _address.addressL7country
+			WHERE
+				_partner.customer_type_select = 3
 			GROUP BY
-			    country.id
-			ORDER BY
-			    country.name
+				_country.name
 		    ]]>
 	    </dataset>
-	    <category key="countryName" type="text"/>
-	    <series key="partners"  type="bar"/>
-	</chart>
+	    <category key="country_name" type="text"/>
+	    <series key="partners"  type="pie"/>
+	 </chart>
 	  	
 	 <chart name="chart.leads.by.team.by.status.bar" title="Leads by Team by Status" stacked="true">
 		<dataset type="sql">
@@ -290,62 +291,76 @@
 	    <series key="_opportunity_amount" groupBy="_status" type="bar"/>
 	</chart>
 	
-	<chart name="chart.calls.types.by.user.bar" title="Calls type by user">
+	<chart name="chart.calls.types.by.user.bar" title="Calls type by user" stacked="true">
 		<dataset type="sql">
 		    <![CDATA[
-		    SELECT
-			    COUNT(self.id)			AS 	_total_calls,
-			    sales_man.full_name		AS 	_sales_man,
-			    selection_item.title	AS 	_status
-			FROM
-			    crm_event 				AS self
-			LEFT JOIN
-	        	base_user_info as sales_man 		ON self.user_info = sales_man.id
-			LEFT JOIN
-	        	meta_select as selection 			ON selection.name = 'crm.event.call.status.select'
-	    	LEFT JOIN 
-	    		meta_select_item as selection_item 	ON selection_item.select_id = selection.id
-			WHERE
-				cast(selection_item.value as decimal) = self.call_status_select			
-	    	GROUP BY
-			  	_status,
-			  	_sales_man
-			ORDER BY
-			   	_status,
-			   	_sales_man	
+				SELECT    
+				    COUNT(case when _meta._select_value = _event.call_status_select
+					then _event.id end) AS _total_calls,
+					_user.full_name AS _user_name,
+					_meta._select_title AS _call_status
+				FROM
+					crm_event AS _event
+				LEFT JOIN
+					base_user_info AS _user
+					ON _event.user_info = _user.id
+					
+				CROSS JOIN
+					(SELECT 
+						cast(_item.value as int) AS _select_value,
+				        _item.title AS _select_title
+					FROM	
+						meta_select AS _selection		
+					JOIN
+						meta_select_item AS _item
+						ON _selection.name = 'crm.event.call.status.select'
+						AND _item.select_id = _selection.id	
+					) AS _meta
+				
+				GROUP BY
+					_user_name, _call_status
+				ORDER BY
+					_user_name, _total_calls DESC	
 			  ]]>
 	    </dataset>
-	    <category key="_sales_man" type="text"/>
-	    <series key="_total_calls" groupBy="_status" type="bar"/>
+	    <category key="_user_name" type="text"/>
+	    <series key="_total_calls" groupBy="_call_status" type="bar"/>
 	</chart>
 	  	
-	 <chart name="chart.calls.types.by.team.bar" title="Calls type by team">
+	<chart name="chart.calls.types.by.team.bar" title="Calls type by team" stacked="true">
 		<dataset type="sql">
 		    <![CDATA[
-		    SELECT
-			    COUNT(self.id)    		AS 	_total_calls,
-			    team.name 				AS 	_team,
-			    selection_item.title 	AS 	_status
-			FROM
-			    crm_event as self
-			LEFT JOIN
-	        	base_team as team 					ON self.team = team.id
-			LEFT JOIN
-	        	meta_select as selection 			ON selection.name = 'crm.event.call.status.select'
-	    	LEFT JOIN 
-	    		meta_select_item as selection_item 	ON selection_item.select_id = selection.id
-			WHERE
-				cast(selection_item.value as decimal) = self.call_status_select			
-	    	GROUP BY
-			  	_status,
-			  	_team
-			ORDER BY
-			   	_team,
-			   	_status	
-			  ]]>
+				SELECT    
+				    COUNT(case when _meta._select_value = _event.call_status_select
+					then _event.id end) AS _total_calls,
+					_team.name AS _team_name,
+					_meta._select_title AS _call_status
+				FROM
+					crm_event AS _event
+				LEFT JOIN
+					base_team AS _team
+					ON _event.team = _team.id
+						
+				CROSS JOIN
+					(SELECT 
+						cast(_item.value as int) AS _select_value,
+				        _item.title AS _select_title
+					FROM	
+						meta_select AS _selection		
+					JOIN
+						meta_select_item AS _item
+						ON _selection.name = 'crm.event.call.status.select'
+						AND _item.select_id = _selection.id	
+					) AS _meta
+				
+				GROUP BY
+					_team_name, _call_status
+				ORDER BY
+					_team_name, _total_calls DESC
+		  ]]>
 	    </dataset>
-	    <category key="_team" type="text"/>
-	    <series key="_total_calls" groupBy="_status" type="bar"/>
+	    <category key="_team_name" type="text"/>
+	    <series key="_total_calls" groupBy="_call_status" type="bar"/>
 	</chart>  	
 	  	
 	<chart name="chart.calls.types.by.team.by.user.bar" title="Calls by team by user">
@@ -573,7 +588,7 @@
 			    SELECT
 				    self.callEmittedNumber*100/self.callEmittedNumberTarget   		AS 	_callEmittedNumber
 				FROM Target self 
-				WHERE self.userInfo.internalUser.id = :user and self.fromDate <= :date and self.toDate >= :date and self.callEmittedNumberTarget > 0
+				WHERE self.userInfo = :user_info and :date between self.fromDate and self.toDate and self.callEmittedNumberTarget > 0
 				  ]]>
 		    </dataset>
 		    <category key="_callEmittedNumber" type="text"/>
@@ -617,7 +632,7 @@
 			    SELECT
 				    self.meetingNumber*100/self.meetingNumberTarget   		AS 	_meetingNumber
 				FROM Target self 
-				WHERE self.userInfo.internalUser.id = :user and self.fromDate <= :date and self.toDate >= :date and self.meetingNumberTarget > 0
+				WHERE self.userInfo = :user_info and :date between self.fromDate and self.toDate and self.meetingNumberTarget > 0
 				  ]]>
 		    </dataset>
 		    <category key="_meetingNumber" type="text"/>
@@ -657,7 +672,7 @@
 			    SELECT
 				    self.opportunityAmountWon*100/self.opportunityAmountWonTarget   		AS 	_opportunityAmountWon
 				FROM Target self 
-				WHERE self.userInfo.internalUser.id = :user and self.fromDate <= :date and self.toDate >= :date and self.opportunityAmountWonTarget > 0
+				WHERE self.userInfo = :user_info and :date between self.fromDate and self.toDate and self.opportunityAmountWonTarget > 0
 				  ]]>
 		    </dataset>
 		    <category key="_opportunityAmountWon" type="text"/>
@@ -697,7 +712,7 @@
 			    SELECT
 				    self.opportunityCreatedNumber*100/self.opportunityCreatedNumberTarget 		AS 	_opportunityCreatedNumber
 				FROM Target self 
-				WHERE self.userInfo.internalUser.id = :user and self.fromDate <= :date and self.toDate >= :date and self.opportunityCreatedNumberTarget > 0
+				WHERE self.userInfo = :user_info and :date between self.fromDate and self.toDate and self.opportunityCreatedNumberTarget > 0
 				  ]]>
 		    </dataset>
 		    <category key="_opportunityCreatedNumber" type="text"/>
@@ -737,7 +752,7 @@
 			    SELECT
 				    self.opportunityCreatedWon*100/self.opportunityCreatedWonTarget   		AS 	_opportunityCreatedWon
 				FROM Target self 
-				WHERE self.userInfo.internalUser.id = :user and self.fromDate <= :date and self.toDate >= :date and self.opportunityCreatedWonTarget > 0
+				WHERE self.userInfo = :user_info and :date between self.fromDate and self.toDate and self.opportunityCreatedWonTarget > 0
 				  ]]>
 		    </dataset>
 		    <category key="_opportunityCreatedWon" type="text"/>
