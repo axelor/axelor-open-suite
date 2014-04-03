@@ -6,6 +6,8 @@
     <!--  Account Invoice Dashboard  -->    
     
 	<portal title="Invoice Dashboard" name="account.invoice.dashboard.portal" cols="2">
+		 <portlet action="portal.account.invoice.summary" colSpan="1" height="350" canSearch="true"/>
+		 <portlet action="portal.invoiced.turnover.ytd.vs.lastyear" colSpan="1" height="350" canSearch="true"/>    	
 		 <portlet action="portal.prod.turnover.cust.invoices.last.12m" colSpan="1" height="350" canSearch="true"/>
 		 <portlet action="portal.prod.qty.cust.invoices.last.12m" colSpan="1" height="350" canSearch="true"/>
 		 <portlet action="portal.total.revenue.by.each.product" colSpan="1" height="350" canSearch="true"/>
@@ -16,6 +18,16 @@
 	   	 <portlet action="portal.supplier.invoices.due" canSearch="true" height="350" />
 		 <portlet action="portal.customer.invoices.to.collect" colSpan="1" height="350" canSearch="true"/>
 	</portal>    
+
+	<action-view name="portal.account.invoice.summary" title="Account Invoice Summary" model="com.axelor.apps.account.db.Invoice">
+		<view type="chart" name="chart.account.invoice.summary"/>
+	</action-view>	
+
+	<action-view name="portal.invoiced.turnover.ytd.vs.lastyear" title="Invoiced Turnover This year vs Last year" model="com.axelor.apps.account.db.Invoice">
+	    <view type="chart" name="chart.invoiced.turnover.ytd.vs.lastyear"/>        
+	    <domain>self.company=:active_company</domain>
+	    <context name="active_company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
+	</action-view>	
 
 	<action-view name="portal.prod.turnover.cust.invoices.last.12m" title="Turnover On Customer Invoices on Last 12 Month" model="com.axelor.apps.account.db.Invoice">
         <view type="chart" name="chart.prod.turnover.cust.invoices.last.12m"/>            
