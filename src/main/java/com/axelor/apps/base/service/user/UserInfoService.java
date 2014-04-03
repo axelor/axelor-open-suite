@@ -67,6 +67,22 @@ public class UserInfoService {
 		return null;
 	}
 	
+	public Long getUserInfoId() {
+		User user = null;
+		try{
+			user = AuthUtils.getUser();
+		}
+		catch(Exception ex){}
+		if(user == null)
+			user = User.all().filter("self.code = 'admin'").fetchOne();
+		if (user != null){
+			UserInfo userInfo = UserInfo.all().filter("internalUser = ?1", user).fetchOne();
+			if (userInfo != null) { return userInfo.getId(); }
+		}
+	
+		return null;
+	}
+	
 	
 	 /**
      * Méthode qui retourne l'agence de l'utilisateur connecté

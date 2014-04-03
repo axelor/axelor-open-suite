@@ -57,7 +57,7 @@
 	    <group colSpan="6" cols="6">
 	        <group colSpan="1" cols="1">
 	            <group colSpan="1">
-	                <field name="picture" showTitle="false"/>
+	                <field name="picture" showTitle="false" widget="Image"/>
 	            </group>
 	            <break/>
 	            <group colSpan="1" showIf="id != null">
