@@ -9,6 +9,10 @@
     	<toolbar>
 			<button name="printInvoices" title="Print invoices" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
     	</toolbar>   
+    	<hilite color="info" if="status !=  null &amp;&amp; status.code == 'dra'"/>
+	    <hilite color="danger" if="status !=  null &amp;&amp; status.code == 'dis' &amp;&amp; inTaxTotalRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
+	    <hilite color="warning" if="status !=  null &amp;&amp; status.code == 'dis' &amp;&amp; inTaxTotalRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
+	    <hilite color="success" if="status !=  null &amp;&amp; status.code == 'dis' &amp;&amp; inTaxTotalRemaining == 0"/>
         <field name="invoiceId"/>
         <field name="operationTypeSelect" />
         <field name="partner"/>
