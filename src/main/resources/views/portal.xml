@@ -54,6 +54,7 @@
 			<!-- 	SALES MANAGER DASHBOARD -->
 	
 	<portal title="Dashboard" name="supplychain.sales.manager.dashboard.portal" cols="2">
+		<portlet action="portal.sales.turnover.ytd.vs.lastyear" height="350"/>  	
 		<portlet action="portal.sales.manager.dashboard.team.turnover" height="350" />
 		<portlet action="portal.sales.manager.dashboard.salesman.turnover" height="350" />
 		<portlet action="portal.sales.manager.dashboard.family.product.sales" height="350" />
@@ -63,6 +64,11 @@
    	    <portlet action="portal.prod.qty.sales.last.12m" height="350" />
 	</portal>
 	
+	<action-view name="portal.sales.turnover.ytd.vs.lastyear" title="Sales Turnover This year vs Last year" model="com.axelor.apps.supplychain.db.SalesOrder">
+	    <view type="chart" name="chart.sales.turnover.ytd.vs.lastyear"/>        
+	    <domain>self.company=:active_company</domain>
+	    <context name="active_company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
+	</action-view>
 	
 	<action-view name="portal.sales.manager.dashboard.team.turnover" title="Turnover per team over past 30 days">
 		<view type="chart" name="chart.sales.manager.dashboard.team.turnover"/>
@@ -212,7 +218,9 @@
 		<portlet action="portal.stock.dashboard.late.deliveries" canSearch="true" height="350" />
 		<portlet action="portal.stock.dashboard.upcoming.arrivals" height="350" canSearch="true" />
 		<portlet action="portal.stock.dashboard.late.arrivals" canSearch="true" height="350" />
-		<portlet action="portal.stock.dashboard.product.out.stock.bylocation" canSearch="true" height="350" />	
+		<portlet action="portal.stock.dashboard.product.out.stock.bylocation" canSearch="true" height="350" />
+	    <portlet action="portal.production.stock.move.in.planned"  height="350" canSearch="true"/>    
+	    <portlet action="portal.production.stock.move.out.planned" height="350" canSearch="true"/>       			
 	</portal>
 
 	<action-view name="portal.stock.dashboard.upcoming.deliveries" title="Upcoming deliveries"
@@ -249,4 +257,61 @@
 		<view type="form" name="location-line-form" />
 		<domain>self.futureQty &lt; 0</domain>
 	</action-view>
+	
+	<action-view title="Production Stock Move in Planned" icon="img/16px/productSmall_16px.png" model="com.axelor.apps.supplychain.db.StockMove" name="portal.production.stock.move.in.planned">
+	    <view type="grid" name="stock-move-in-grid"/>
+	    <view type="form"/>
+	    <domain>self.id IN (SELECT inStockMove FROM ManufOrder WHERE statusSelect=3) OR self.id IN (SELECT inStockMove FROM OperationOrder where statusSelect=3)</domain>
+	</action-view>
+	
+	<action-view title="Production Stock Move out Planned" icon="img/16px/productSmall_16px.png" model="com.axelor.apps.supplychain.db.StockMove" name="portal.production.stock.move.out.planned">
+	    <view type="grid" name="stock-move-out-grid"/>
+	    <view type="form"/>
+	    <domain>self.id IN (SELECT outStockMove FROM ManufOrder WHERE statusSelect=3)</domain>
+	</action-view>
+	
+	<!-- Purchase Order Dashboard -->
+		
+	<portal name="supply.chain.purchase.order.dashboard.portal" title="Dashboard">
+		<portlet action="portal.my.purchase.orders.to.execute" canSearch="true" height="350" />
+		<portlet action="portal.ongoing.purchase.orders" canSearch="true" height="350" />
+		<portlet action="portal.my.ongoing.purchase.orders" canSearch="true" height="350" />
+		<portlet action="portal.closed.purchase.orders" canSearch="true" height="350" />
+		<portlet action="portal.my.closed.purchase.orders" canSearch="true" height="350" />
+	</portal>
+	
+	<action-view title="My Orders to process" model="com.axelor.apps.supplychain.db.PurchaseOrder" name="portal.my.purchase.orders.to.execute">
+	    <view type="grid" name="purchase-order-grid"/>
+	    <view type="form" name="purchase-order-form"/>
+	    <domain>self.statusSelect=3 AND self.buyerUserInfo =:user_info</domain>
+	    <context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+	</action-view>
+	
+	<action-view title="Ongoing Purchase orders" model="com.axelor.apps.supplychain.db.PurchaseOrder" name="portal.ongoing.purchase.orders">
+	    <view type="grid" name="purchase-order-grid"/>
+	    <view type="form" name="purchase-order-form"/>
+	    <domain>self.statusSelect=4</domain>    
+	</action-view>
+	
+	<action-view title="My Ongoing Purchase Orders" model="com.axelor.apps.supplychain.db.PurchaseOrder" name="portal.my.ongoing.purchase.orders">
+	    <view type="grid" name="purchase-order-grid"/>
+	    <view type="form" name="purchase-order-form"/>
+	    <domain>self.statusSelect=4 AND self.buyerUserInfo =:user_info</domain>
+	    <context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+	</action-view>
+	
+	<action-view title="Closed Purchase orders" model="com.axelor.apps.supplychain.db.PurchaseOrder" name="portal.closed.purchase.orders">
+	    <view type="grid" name="purchase-order-grid"/>
+	    <view type="form" name="purchase-order-form"/>
+	    <domain>self.statusSelect=5</domain>    
+	</action-view>
+	
+	<action-view title="My Closed Purchase Orders" model="com.axelor.apps.supplychain.db.PurchaseOrder" name="portal.my.closed.purchase.orders">
+	    <view type="grid" name="purchase-order-grid"/>
+	    <view type="form" name="purchase-order-form"/>
+	    <domain>self.statusSelect=5 AND self.buyerUserInfo =:user_info</domain>
+	    <context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+	</action-view>
+	
+	
 </object-views>

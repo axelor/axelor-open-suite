@@ -4,7 +4,27 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
 	  
 	  
-	
+	<chart name="chart.sales.turnover.ytd.vs.lastyear" title="Sales turnover this year vs last year">
+	    <dataset type="sql">
+	    <![CDATA[
+			SELECT
+				SUM(_order.ex_tax_total) AS _turn_over,
+				DATE_PART('year',_order.creation_date) AS _year
+			FROM
+				supplychain_sales_order AS _order	
+			WHERE
+				_order.status_select=3
+				AND DATE_PART('year',_order.creation_date) 
+				IN (DATE_PART('year',CURRENT_DATE) - 1, DATE_PART('year',CURRENT_DATE) )
+			GROUP BY
+				_year
+			ORDER BY
+				_year    
+	    ]]>
+	    </dataset>
+	    <category key="_year" type="text" title="Year" />
+		<series key="_turn_over" type="bar" title="TurnOver"/>
+	</chart>
 	  
 	  <chart name="chart.sales.manager.dashboard.team.turnover" title="Turnover per team over past 30 days">
 	    <dataset type="sql">
