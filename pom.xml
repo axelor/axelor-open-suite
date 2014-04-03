@@ -34,6 +34,12 @@
       <version>${project.version}</version>
     </dependency>
     
+     <dependency>
+    	<groupId>com.axelor</groupId>
+    	<artifactId>axelor-organisation</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    
     
     <dependency>
       <groupId>net.sourceforge.javacsv</groupId>
