@@ -203,6 +203,29 @@
 	  <series key="_revenue" type="pie" title="Revenue" />
 	</chart>      
 	
+	<chart name="chart.total.revenue.by.geo.region" title="Revenue Genenerated by Geographical Region" >
+	  <dataset type="sql">
+	  <![CDATA[
+		SELECT 
+			_country.name AS _geo_region, 
+			coalesce(SUM(_line.ex_tax_total), 0.00) AS _revenue
+		FROM
+			account_invoice_line AS _line
+		JOIN
+			account_invoice AS _invoice ON _invoice.id = _line.invoice AND _invoice.operation_type_select=3
+		LEFT JOIN
+			base_address AS _address ON _address.id = _invoice.address
+		LEFT JOIN
+			base_country AS _country ON _country.id = _address.addressl7country
+		GROUP BY
+			_geo_region  
+	  ]]>
+	  </dataset>
+	  <category key="_geo_region" type="text" title="Country"/>
+	  <series key="_revenue" type="pie" title="Revenue" />
+	</chart>  
+	
+	
     <chart name="chart.purchase.buyer.dashboard.prod.qty.suppl.invoices.last.12m" stacked="true" title="Number Of Units On Supplier Invoices On Last 12 Month">
 	   <dataset type="sql">
 	     <![CDATA[
