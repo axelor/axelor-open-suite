@@ -55,6 +55,7 @@
 	
 	<portal title="Dashboard" name="supplychain.sales.manager.dashboard.portal" cols="2">
 		<portlet action="portal.sales.turnover.ytd.vs.lastyear" height="350"/>  	
+		<portlet action="portal.sales.turnover.by.product.ytd.vs.lastyear" height="350"/>
 		<portlet action="portal.sales.manager.dashboard.team.turnover" height="350" />
 		<portlet action="portal.sales.manager.dashboard.salesman.turnover" height="350" />
 		<portlet action="portal.sales.manager.dashboard.family.product.sales" height="350" />
@@ -66,6 +67,12 @@
 	
 	<action-view name="portal.sales.turnover.ytd.vs.lastyear" title="Sales Turnover This year vs Last year" model="com.axelor.apps.supplychain.db.SalesOrder">
 	    <view type="chart" name="chart.sales.turnover.ytd.vs.lastyear"/>        
+	    <domain>self.company=:active_company</domain>
+	    <context name="active_company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
+	</action-view>
+	
+	<action-view name="portal.sales.turnover.by.product.ytd.vs.lastyear" title="Sales TurnOver by Product this year vs last year" model="com.axelor.apps.supplychain.db.SalesOrder">
+	    <view type="chart" name="chart.sales.turnover.by.product.ytd.vs.lastyear"/>
 	    <domain>self.company=:active_company</domain>
 	    <context name="active_company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
 	</action-view>
@@ -221,6 +228,8 @@
 		<portlet action="portal.stock.dashboard.product.out.stock.bylocation" canSearch="true" height="350" />
 	    <portlet action="portal.production.stock.move.in.planned"  height="350" canSearch="true"/>    
 	    <portlet action="portal.production.stock.move.out.planned" height="350" canSearch="true"/>       			
+	    <portlet action="portal.production.stock.move.in.realized" height="350" canSearch="true"/>
+	    <portlet action="portal.production.stock.move.out.realized" height="350" canSearch="true"/>       			
 	</portal>
 
 	<action-view name="portal.stock.dashboard.upcoming.deliveries" title="Upcoming deliveries"
@@ -270,6 +279,18 @@
 	    <domain>self.id IN (SELECT outStockMove FROM ManufOrder WHERE statusSelect=3)</domain>
 	</action-view>
 	
+	<action-view title="Production stock move in realized" model="com.axelor.apps.supplychain.db.StockMove" name="portal.production.stock.move.in.realized">
+	    <view type="grid" name="stock-move-in-grid"/>
+	    <view type="form"/>
+	    <domain>self.id IN (SELECT inStockMove FROM ManufOrder WHERE statusSelect IN (4,5)) OR self.id IN (SELECT inStockMove FROM OperationOrder where statusSelect IN (4,5))</domain>
+	</action-view>
+	
+	<action-view title="Production stock move out realized" model="com.axelor.apps.supplychain.db.StockMove" name="portal.production.stock.move.out.realized">
+	    <view type="grid" name="stock-move-out-grid"/>
+	    <view type="form"/>
+	    <domain>self.id IN (SELECT outStockMove FROM ManufOrder WHERE statusSelect IN (4,5))</domain>
+	</action-view>
+
 	<!-- Purchase Order Dashboard -->
 		
 	<portal name="supply.chain.purchase.order.dashboard.portal" title="Dashboard">

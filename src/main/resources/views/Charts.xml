@@ -26,6 +26,32 @@
 		<series key="_turn_over" type="bar" title="TurnOver"/>
 	</chart>
 	  
+	<chart name="chart.sales.turnover.by.product.ytd.vs.lastyear" title="Sales TurnOver by Product this year vs last year" stacked="true">
+	    <dataset type="sql">
+	    <![CDATA[
+		SELECT
+			SUM(_line.ex_tax_total) AS _turn_over,
+			DATE_PART('year',_order.creation_date) AS _year,
+			_line.product_name AS _product
+		FROM
+			supplychain_sales_order AS _order 
+		LEFT JOIN
+			supplychain_sales_order_line AS _line 
+			ON _line.sales_order = _order.id
+		WHERE
+			_order.status_select=3
+			AND DATE_PART('year',_order.creation_date) 
+			IN (DATE_PART('year',CURRENT_DATE) - 1, DATE_PART('year',CURRENT_DATE) )
+		GROUP BY
+			_year, _product
+		ORDER BY
+			_year    
+	    ]]>
+	    </dataset>
+	    <category key="_year" type="text" title="Year" />
+		<series key="_turn_over" type="bar" groupBy="_product" title="TurnOver"/>
+	</chart>
+	  
 	  <chart name="chart.sales.manager.dashboard.team.turnover" title="Turnover per team over past 30 days">
 	    <dataset type="sql">
 	    <![CDATA[
