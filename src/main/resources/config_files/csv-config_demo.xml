@@ -11,6 +11,8 @@
       <bind column="permissions" to="permissions" search="self.name in :permissions" eval="permissions.split('\\|') as List"/>
     </input>
     
+    <input file="meta_file.csv" separator=";" type="com.axelor.meta.db.MetaFile" />
+    
     <input file="auth_user.csv" separator=";" type="com.axelor.auth.db.User"  />
 	
     <input file="base_printSetting.csv" separator=";" type="com.axelor.apps.base.db.PrintingSettings" />
