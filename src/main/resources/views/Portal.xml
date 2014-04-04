@@ -274,6 +274,7 @@
 		<portlet action="portal.open.ticket.priority.distribution"
 			height="350" />
 		<portlet action="portal.due.open.ticket.gauge" height="350" />
+		<portlet action="portal.created.tickets.by.month.by.priority" height="350"/>
 	</portal>
 
 	<action-view name="portal.calls.types.by.user" title="Calls type by user">
@@ -312,6 +313,10 @@
 
 	<action-view name="portal.due.open.ticket.gauge" title="Due Open Tickets">
 		<view type="chart" name="chart.due.open.ticket.gauge.bar" />
+	</action-view>
+	
+	<action-view name="portal.created.tickets.by.month.by.priority" title="Total created tickets by month by priority">
+		<view type="chart" name="chart.created.tickets.by.month.by.priority.bar" />
 	</action-view>
 
 	<!-- EVENT Grid View DashBoard -->

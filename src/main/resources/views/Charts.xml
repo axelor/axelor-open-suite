@@ -591,6 +591,41 @@
     	<config name="max" value="_total_ticket"/>
 	</chart> 
 	
+	<chart name="chart.created.tickets.by.month.by.priority.bar" title="Total created tickets by month by priority" stacked="true">
+      <dataset type="sql">
+      <![CDATA[
+      		SELECT
+			COUNT(_ticket.id) AS _tickets,	
+			_meta_status.status_title AS _priority,
+			DATE_PART('month', _ticket.created_on) AS _month
+		FROM
+			crm_event AS _ticket	
+		JOIN
+			(SELECT		
+				cast(_item.value as int) AS status_value,
+				_item.title AS status_title
+			FROM
+				meta_select AS _selection
+			LEFT JOIN
+				meta_select_item AS _item
+			ON
+				_selection.name = 'crm.event.ticket.priority.select'		
+			WHERE
+				_selection.id = _item.select_id		
+				) AS _meta_status
+		ON
+			_ticket.priority_select = _meta_status.status_value	
+		WHERE 
+			_ticket.type_select=5 AND _ticket.created_on BETWEEN now() - INTERVAL '6 month' AND now()
+		GROUP BY
+			_priority, _month
+   		ORDER BY
+   		     _priority
+      ]]>
+      </dataset>
+      <category key="_month" type="month" title="Month"/>
+      <series key="_tickets" type="bar" groupBy="_priority" aggregate="sum" title="No of Tickets" />
+    </chart>
 	
 	<!-- 	  Target user charts -->
 	  
