@@ -15,7 +15,7 @@
 			
 			<!-- Groupe Offre -->
 			<string name="description" title="Description" large="true" multiline="true"/>
-			<integer name="contractTypeSelect" title="Contract type" selection="organisation.job.offer.contract.type.select"/>
+			<integer name="contractTypeSelect" title="Contract type" selection="organisation.working.contract.type.select"/>
 			<integer name="remunerationTypeSelect" title="Gross annual salary" selection="organisation.job.offer.remuneration.type.select"/>
 			<string name="advantages" title="Advantages" large="true" multiline="true"/>
 			<many-to-one name="region" ref="com.axelor.apps.base.db.Region" title="Geo. Zone"/>
