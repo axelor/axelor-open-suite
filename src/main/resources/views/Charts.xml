@@ -316,7 +316,9 @@
 						ON _selection.name = 'crm.event.call.status.select'
 						AND _item.select_id = _selection.id	
 					) AS _meta
-				
+					
+				WHERE
+        			_event.type_select = 1
 				GROUP BY
 					_user_name, _call_status
 				ORDER BY
@@ -352,7 +354,8 @@
 						ON _selection.name = 'crm.event.call.status.select'
 						AND _item.select_id = _selection.id	
 					) AS _meta
-				
+				WHERE
+        			_event.type_select = 1 
 				GROUP BY
 					_team_name, _call_status
 				ORDER BY
@@ -376,6 +379,8 @@
 	        	base_user_info as sales_man ON self.user_info = sales_man.id
 			LEFT JOIN
 	        	base_team as team ON self.team = team.id
+	        WHERE
+	        	self.type_select = 1
 	    	GROUP BY
 			  	_team,
 			  	_sales_man
@@ -392,21 +397,23 @@
 	<chart name="chart.open.tickets.by.priority.bar" title="Open tickets by priority">
 		<dataset type="sql">
 		    <![CDATA[
-		    SELECT
-			    COUNT(self.id)    		AS 	_total_calls,
-			    selection_item.title 	AS 	_priority
-			FROM
-			    crm_event as self
-			LEFT JOIN
-	        	meta_select as selection 			ON selection.name = 'crm.event.ticket.priority.select'
-	    	LEFT JOIN 
-	    		meta_select_item as selection_item 	ON selection_item.select_id = selection.id
-			WHERE
-				cast(selection_item.value as decimal) = self.priority_select and self.ticket_status_select != 5		
-	    	GROUP BY
-			  	_priority
-			ORDER BY
-			   	_priority	
+				SELECT
+				    COUNT(self.id)  AS _total_calls,
+				    selection_item.title AS _priority
+				FROM
+				    crm_event as self
+				RIGHT JOIN 
+				    meta_select_item as selection_item     
+				ON 
+				    (cast(selection_item.value as int) = self.priority_select 
+				    and self.ticket_status_select != 5)    
+				WHERE            
+				    selection_item.select_id =(select id from meta_select where name='crm.event.ticket.priority.select')
+				    AND self.type_select = 5
+				GROUP BY
+				    _priority
+				ORDER BY
+				    _priority    
 			  ]]>
 	    </dataset>
 	    <category key="_priority" type="text"/>
@@ -416,21 +423,22 @@
 	<chart name="chart.open.ticket.priority.distribution.bar" title="Ticket distribution by Priority">
 		<dataset type="sql">
 		    <![CDATA[
-		    SELECT
-			    cast(cast(COUNT(*) as decimal)/(select Count(*) from crm_event as event where event.ticket_status_select !=5 and event.priority_select > 0) * 100 as decimal (5,2)) AS 	_total_calls,
-			    selection_item.title 	AS 	_priority
-			FROM
-			    crm_event as self
-			LEFT JOIN
-	        	meta_select as selection 			ON selection.name = 'crm.event.ticket.priority.select'
-	    	LEFT JOIN 
-	    		meta_select_item as selection_item 	ON selection_item.select_id = selection.id
-			WHERE
-				cast(selection_item.value as decimal) = self.priority_select and self.ticket_status_select != 5		
-	    	GROUP BY
-			  	_priority
-			ORDER BY
-			   	_priority	
+			    select
+			        (count(self.id)*100/(select CASE WHEN count(*)=0 THEN 1 ELSE count(*) END from crm_event where ticket_status_select!=5 and priority_select is not null)) as _total_calls,
+			        selection_item.title as _priority
+			    from
+			        crm_event self
+			    RIGHT JOIN
+			        meta_select_item selection_item
+			    ON
+			        (cast(selection_item.value as int)=self.priority_select
+			        and
+			        self.ticket_status_select!=5)
+			    where
+			        selection_item.select_id=(select id from meta_select where name='crm.event.ticket.priority.select')
+			        AND self.type_select = 5
+			    group by
+			        _priority
 			  ]]>
 	    </dataset>
 	    <category key="_priority" type="text"/>
@@ -441,21 +449,25 @@
 	<chart name="chart.open.tickets.by.status.bar" title="Open tickets by status">
 		<dataset type="sql">
 		    <![CDATA[
-		    SELECT
-			    COUNT(self.id)    		AS 	_total_calls,
-			    selection_item.title 	AS 	_status
-			FROM
-			    crm_event as self
-			LEFT JOIN
-	        	meta_select as selection 			ON selection.name = 'crm.event.status.select'
-	    	LEFT JOIN 
-	    		meta_select_item as selection_item 	ON selection_item.select_id = selection.id
-			WHERE
-				cast(selection_item.value as decimal) = self.status_select and self.ticket_status_select != 5		
-	    	GROUP BY
-			  	_status
-			ORDER BY
-			   	_status	
+			    SELECT
+			      COUNT(self.id)    AS     _total_calls,
+			      selection_item.title     AS     _status
+			    FROM
+			        crm_event as self
+			    RIGHT JOIN 
+			        meta_select_item as selection_item     
+			    ON 
+			        (cast(selection_item.value as decimal) = self.status_select and self.ticket_status_select != 5)
+			    WHERE
+			        selection_item.select_id = (select id from meta_select where name = 'crm.event.ticket.status.select')
+			    AND
+			        cast(selection_item.value as int)!=5
+			    AND
+			        self.type_select = 5
+			    GROUP BY
+			        _status
+			    ORDER BY
+			        _status     
 			  ]]>
 	    </dataset>
 	    <category key="_status" type="text"/>
