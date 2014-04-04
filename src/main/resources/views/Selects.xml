@@ -196,9 +196,9 @@
 		<option value="3">Year</option>
 	</selection>
 	
-	<selection name="organisation.job.offer.contract.type.select">
-		<option value="1">CDI</option>
-		<option value="2">CDD</option>
+	<selection name="organisation.working.contract.type.select">
+		<option value="1">Permanent</option>
+		<option value="2">Fixed-term</option>
 	</selection>
 	
 	<selection name="organisation.job.offer.remuneration.type.select">

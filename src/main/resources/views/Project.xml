@@ -73,7 +73,7 @@
 	        <page title="Tasks">
 	            <field name="taskList" grid-view="task-project-grid" form-view="task-form" colSpan="6"/>
 	        </page>
-	        <page title="Membres" colSpan="4">
+	        <page title="Members" colSpan="4">
 	            <field name="memberUserInfoSet" colSpan="6"/>
 	        </page>
 	    </notebook>
