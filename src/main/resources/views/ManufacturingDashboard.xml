@@ -13,14 +13,16 @@
 		model="com.axelor.apps.production.db.ManufOrder">
 		<view type="grid" name="manuf-order-grid"/>
 		<view type="form" name="manuf-order-form"/>
-		<domain>self.startDate &gt;= :_today</domain>
+		 <domain>self.plannedStartDateT &gt;= :_today</domain>
+  		<context name="_today" expr="eval: __date__.toDateTimeAtStartOfDay()" />
 	</action-view>
 	
 	<action-view name="manufacturing.dashboard.portal.current.production.orders" title="All Current Manufacturing Orders"
 		model="com.axelor.apps.production.db.ManufOrder">
 		<view type="grid" name="manuf-order-grid"/>
 		<view type="form" name="manuf-order-form"/>
-		<domain>self.startDate &lt;= :_today and self.endDate &gt;= :_today</domain>
+		<domain>self.realStartDateT &lt;= :_today and self.realEndDateT &gt;= :_today</domain>
+ 		<context name="_today" expr="eval: __date__.toDateTimeAtStartOfDay()" />
 	</action-view>
 
 	<action-view name="manufacturing.dashboard.portal.production.orders.plannings" title="All Manufacturing Order Plannings"
@@ -28,6 +30,7 @@
 		<view type="grid" name="manuf-order-planning-grid" />
 		<view type="form" name="manuf-order-planning-form" />
 	</action-view>
+
 
 
 </object-views>
