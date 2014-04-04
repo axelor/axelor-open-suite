@@ -28,6 +28,16 @@
 	</action-view>	
 	
 	<menuitem name="hr-root-recruitment" title="Recruitment" parent="hr-root"/>
+	
+	<menuitem name="hr-root-recruitment-jobOffer" parent="hr-root-recruitment"
+		title="Job Offer" action="hr.root.recruitment.jobOffer" />
+
+	<action-view name="hr.root.recruitment.jobOffer" title="Job Offer"
+		model="com.axelor.apps.organisation.db.JobOffer" >
+		<view type="grid" name="job-offer-grid" />
+		<view type="form" name="job-offer-form" />
+	</action-view>
+	
 		
 	<menuitem name="hr-root-recruitment-candidate" parent="hr-root-recruitment"
 		title="Candidates" action="hr.root.recruitment.candidate" />
@@ -37,7 +47,8 @@
 		<view type="grid" name="candidate-grid" />
 		<view type="form" name="candidate-form" />
 	</action-view>
-
+	
+	
 <!-- 	<menuitem name="hr-root-recruitment-managers" parent="hr-root-recruitment" -->
 <!-- 		title="Manager candidates" action="hr.root.recruitment.managers" /> -->
 
