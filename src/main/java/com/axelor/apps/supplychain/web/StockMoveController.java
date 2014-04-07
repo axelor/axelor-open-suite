@@ -44,6 +44,7 @@ import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.supplychain.db.StockMove;
+import com.axelor.apps.supplychain.db.StockMoveLine;
 import com.axelor.apps.supplychain.service.StockMoveService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.exception.service.TraceBackService;
@@ -200,4 +201,37 @@ public class StockMoveController {
 		}else response.setFlash(msg);
 		
 	}
+	
+	public void  splitStockMoveLinesUnit(ActionRequest request, ActionResponse response) {
+		List<StockMoveLine> stockMoveLines = (List<StockMoveLine>) request.getContext().get("stockMoveLineList");
+		if(stockMoveLines == null){
+			response.setFlash("No move lines to split");
+			return;
+		}
+		Boolean selected = stockMoveService.splitStockMoveLinesUnit(stockMoveLines, new BigDecimal(1));
+		
+		if(!selected)
+			response.setFlash("Please select lines to split");
+		response.setReload(true);
+		response.setCanClose(true);
+	}
+	
+	public void  splitStockMoveLinesSpecial(ActionRequest request, ActionResponse response) {
+		List<HashMap> stockMoveLines = (List<HashMap>) request.getContext().get("stockMoveLineList");
+		if(stockMoveLines == null){
+			response.setFlash("No move lines to split");
+			return;
+		}
+		Integer splitQty = (Integer)request.getContext().get("splitQty");
+		if(splitQty < 1){
+			response.setFlash("Please entry proper split qty");
+			return ;
+		}
+		Boolean selected = stockMoveService.splitStockMoveLinesSpecial(stockMoveLines, new BigDecimal(splitQty));
+		if(!selected)
+			response.setFlash("Please select lines to split");
+		response.setReload(true);
+		response.setCanClose(true);
+	}
+	
 }

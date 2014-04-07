@@ -30,6 +30,10 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
+
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +49,8 @@ import com.axelor.apps.supplychain.db.ILocation;
 import com.axelor.apps.supplychain.db.IStockMove;
 import com.axelor.apps.supplychain.db.Location;
 import com.axelor.apps.supplychain.db.StockMove;
+import com.axelor.apps.supplychain.db.StockMoveLine;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
@@ -286,6 +292,68 @@ public class StockMoveService {
 		stockMove.save();
 	}
 	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public Boolean splitStockMoveLinesUnit(List<StockMoveLine> stockMoveLines, BigDecimal splitQty){
+		
+		Boolean selected = false;
+
+		for(StockMoveLine moveLine : stockMoveLines){
+			if(moveLine.isSelected()){
+				selected = true;
+				StockMoveLine line = StockMoveLine.find(moveLine.getId());
+				BigDecimal totalQty = line.getQty();
+				LOG.debug("Move Line selected: {}, Qty: {}",new Object[]{line,totalQty});
+				while(splitQty.compareTo(totalQty) < 0){
+					totalQty = totalQty.subtract(splitQty);
+					StockMoveLine newLine = JPA.copy(line, false);
+					newLine.setQty(splitQty);
+					newLine.save();
+				}
+				LOG.debug("Qty remains: {}",totalQty);
+				if(totalQty.compareTo(BigDecimal.ZERO) > 0){
+					StockMoveLine newLine = JPA.copy(line, false);
+					newLine.setQty(totalQty);
+					newLine.save();
+					LOG.debug("New line created: {}",newLine.save());
+				}
+				line.remove();
+			}
+		}
+		
+		return selected;
+	}
 	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public Boolean splitStockMoveLinesSpecial(List<HashMap> stockMoveLines, BigDecimal splitQty){
+		
+		Boolean selected = false;
+		LOG.debug("SplitQty: {}",new Object[] {splitQty});
+		
+		for(HashMap moveLine : stockMoveLines){
+			LOG.debug("Move line: {}",new Object[]{moveLine});
+			if((Boolean)(moveLine.get("selected"))){
+				selected = true;
+				StockMoveLine line = StockMoveLine.find(Long.parseLong(moveLine.get("id").toString()));
+				BigDecimal totalQty = line.getQty();
+				LOG.debug("Move Line selected: {}, Qty: {}",new Object[]{line,totalQty});
+				while(splitQty.compareTo(totalQty) < 0){
+					totalQty = totalQty.subtract(splitQty);
+					StockMoveLine newLine = JPA.copy(line, false);
+					newLine.setQty(splitQty);
+					newLine.save();
+				}
+				LOG.debug("Qty remains: {}",totalQty);
+				if(totalQty.compareTo(BigDecimal.ZERO) > 0){
+					StockMoveLine newLine = JPA.copy(line, false);
+					newLine.setQty(totalQty);
+					newLine.save();
+					LOG.debug("New line created: {}",newLine.save());
+				}
+				line.remove();
+			}
+		}
+		
+		return selected;
+	}
 	
 }
