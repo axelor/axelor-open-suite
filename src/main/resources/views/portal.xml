@@ -15,8 +15,11 @@
 		<portlet action="portal.human.resources.dashboard.my.travel.expenses" canSearch="true" height="350" />
 		<portlet action="portal.human.resources.dashboard.my.overtimes" canSearch="true" height="350" />
 		<portlet action="portal.human.resources.dashboard.my.leaverequest" canSearch="true" height="350" />
+		<portlet action="portal.hr.employees.gender.distribution" height="350" />
 		<portlet action="portal.hr.nbr.of.employees.by.gender" height="350" />
-		<portlet action="portal.hr.nbr.of.employees.by.category" height="350" />		
+		<portlet action="portal.hr.employees.by.category.distribution" height="350" />
+		<portlet action="portal.hr.nbr.of.employees.by.category" height="350" />	
+		<portlet action="portal.hr.employees.contract.type.distribution" height="350" />	
 	</portal>
 
 	
@@ -83,12 +86,25 @@
 		<context name="_user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" /> 
 	</action-view> 
 
+
+	<action-view title="Employees gender distribution" name="portal.hr.employees.gender.distribution" model="com.axelor.apps.organisation.db.Employee" >
+	  <view type="chart" name="chart.human.resources.dashboard.portal.hr.employees.gender.distribution"/>
+	</action-view>
+	
 	<action-view name="portal.hr.nbr.of.employees.by.gender" title="Employees by gender" model="com.axelor.apps.organisation.db.Employee">
 	  <view type="chart" name="chart.hr.nbr.of.employees.by.gender"/>
 	</action-view>
 	
+	<action-view title="Employees by macro-category" name="portal.hr.employees.by.category.distribution" model="com.axelor.apps.organisation.db.Employee" >
+  		<view type="chart" name="chart.hr.employees.by.category.distribution"/>
+	</action-view>
+
 	<action-view name="portal.hr.nbr.of.employees.by.category" title="Employees by macro-category" model="com.axelor.apps.organisation.db.Employee">
 	  <view type="chart" name="chart.hr.nbr.of.employees.by.category"/>
+	</action-view>
+	
+	<action-view title="Employees contract type distribution" name="portal.hr.employees.contract.type.distribution" model="com.axelor.apps.organisation.db.Employee">
+ 		 <view type="chart" name="chart.hr.employees.contract.type.distribution"/>
 	</action-view>
 	
 	<portal title="Project Dashboard" name="org.project.dashboard.portal" cols="2">
