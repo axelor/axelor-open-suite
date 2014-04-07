@@ -104,7 +104,7 @@
 			<group title="Assigned to" colSpan="2" cols="2" canCollapse="true">
 				<field name="userInfo"/>
 				<label title="" />
-				<button name="grabLead" colSpan="1" title="Assign to me" icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.OpportunityController:assignToMe" hideIf="userInfo.internalUser.id == _internalUser"/>
+				<button name="grabLead" colSpan="1" title="Assign to me" icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.OpportunityController:assignToMe" hideIf="userInfo.id == _internalUserInfoId"/>
 				<field name="team"/>
 				<field name="company" widget="SuggestBox"/>
 			</group>

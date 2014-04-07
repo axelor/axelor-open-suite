@@ -71,7 +71,7 @@
 	            </group>
 	            <group title="Assigned to" colSpan="4">
 	                <field name="contactDate"/>
-	                <button name="grabLead" colSpan="2" title="Assign to me" icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.EventController:assignToMeLead" hideIf="userInfo.internalUser.id == _internalUser"/>
+	                <button name="grabLead" colSpan="2" title="Assign to me" icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.EventController:assignToMeLead" hideIf="userInfo.id == _internalUserInfoId"/>
 	                <field name="userInfo"/>
 	                <field name="team"/>
 	            </group>

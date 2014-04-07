@@ -42,6 +42,7 @@
 		<view type="grid" name="opportunity-grid" />
 		<view type="form" name="opportunity-form" />
 		<domain>self.salesStageSelect in (9, 10)</domain>
+		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
 
 
@@ -50,12 +51,14 @@
 		<view type="grid" name="opportunity-grid" />
 		<view type="form" name="opportunity-form" />
 		<domain>self.salesStageSelect not in (9, 10)</domain>
+		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
 	<action-view name="portal.unassigned.opportunities" title="Unassigned Opportunities"
 		model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="opportunity-grid" />
 		<view type="form" name="opportunity-form" />
 		<domain>self.userInfo is null and self.salesStageSelect = 1</domain>
+		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
 
 
@@ -66,6 +69,7 @@
 		<domain>self.salesStageSelect in (9,10)  AND self.team = :active_team</domain>
 		<context name="active_team"
 			expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()" />
+		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
 
 	<action-view name="portal.team.open.opportunities" title="My Team Open Opportunities"
@@ -75,6 +79,7 @@
 		<domain>self.salesStageSelect not in (9,10)  AND self.team = :active_team</domain>
 		<context name="active_team"
 			expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()" />
+		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
 
 
@@ -84,6 +89,7 @@
 		<view type="grid" name="opportunity-grid-group" />
 		<view type="form" name="opportunity-form" />
 		<domain>self.salesStageSelect = 9</domain>
+		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
 
 	<action-view name="portal.opportunities.top.deals" title="Best Open Deals"
@@ -91,6 +97,7 @@
 		<view type="grid" name="opportunity-top-deal-grid" />
 		<view type="form" name="opportunity-form" />
 		<domain>self.salesStageSelect not in (9, 10)</domain>
+		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
 
 	<action-view name="portal.opportunities.key.account" title="Key accounts"
@@ -98,6 +105,7 @@
 		<view type="grid" name="opportunity-key-account-grid" />
 		<view type="form" name="opportunity-form" />
 		<domain>self.salesStageSelect in (9, 10)</domain>
+		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
 
 	<action-view name="portal.opportunities.recent.opps" title="Recently created opportunities"
@@ -105,6 +113,7 @@
 		<view type="grid" name="opportunity-grid" />
 		<view type="form" name="opportunity-form" />
 		<domain>self.createdOn &gt;= date(now())-15</domain>
+		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
 
 	<action-view name="portal.opportunities.lost.deals" title="Recent lost deals"
@@ -112,6 +121,7 @@
 		<view type="grid" name="opportunity-grid" />
 		<view type="form" name="opportunity-form" />
 		<domain>self.updatedOn &gt; date(now())-30 and self.salesStageSelect = 10</domain>
+		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
 	<action-view title="My Closed Opportunities" model="com.axelor.apps.crm.db.Opportunity"
 		name="portal.my.closed.opportunities">
@@ -120,6 +130,7 @@
 		<domain>self.salesStageSelect in (9, 10) AND self.userInfo =:user_info</domain>
 		<context name="user_info"
 			expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" />
+		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
 
 	<action-view title="My Open Opportunities" model="com.axelor.apps.crm.db.Opportunity"
@@ -129,6 +140,7 @@
 		<domain>self.salesStageSelect NOT in (9, 10) AND self.userInfo =:user_info</domain>
 		<context name="user_info"
 			expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" />
+		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
 
 	<!-- Opportunity Graph View Dashboard -->
@@ -241,6 +253,7 @@
 		<domain>self.userInfo =:user_info</domain>
 		<context name="user_info"
 			expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" />
+		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
 
 	<action-view name="portal.unassigned.leads" title="Unassigned Leads"
@@ -248,6 +261,7 @@
 		<view type="grid" name="lead-grid" />
 		<view type="form" name="lead-form" />
 		<domain>self.userInfo is null</domain>
+		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
 
 	<action-view name="portal.team.leads" title="My Team Leads"
@@ -257,6 +271,7 @@
 		<domain>self.team =:user_active_team</domain>
 		<context name="user_active_team"
 			expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()" />
+		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
 
 	<!-- Event Graph view Dashboard -->

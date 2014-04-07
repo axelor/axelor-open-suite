@@ -129,6 +129,7 @@
 		<context name="_internalUser" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
 		<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
 	
 	<menuitem name="crm-root-opportunity" parent="crm-root"
@@ -311,6 +312,7 @@
 	<action-view name="top.new.opportunity.view" title="Create Opportunity" model="com.axelor.apps.crm.db.Opportunity" >
 		<view type="form" name="opportunity-form"/>
 		<view type="grid" name="opportunity-grid"/>
+		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
 	
 	<menuitem name="top-menu-create-lead" parent="top-menu-utility"	title="Create Lead" action="top.new.lead.view"  icon="img/16px/create_16px.png"/>
@@ -319,6 +321,7 @@
 		<view type="form" name="lead-form" />
 		<view type="grid" name="lead-grid" />
 		<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
 	
 	<menuitem name="top-prospection" title="Prospection" groups="admins,erp" top="true" left="false"/>
@@ -328,6 +331,7 @@
 		<view type="grid" name="lead-grid" />
 		<view type="form" name="lead-form" />
 		<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
 	
 	<menuitem name="top-prospection-opportunity" title="Opportunities" action="top.prospection.opportunity" parent="top-prospection"  groups="admins,erp,crm" top="true" left="false"/> 	
@@ -335,6 +339,7 @@
 		<view type="grid" name="opportunity-grid" />
 		<view type="form" name="opportunity-form" />
 		<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
 	
 	
