@@ -128,7 +128,9 @@ public class LocationLineService {
 			throw new AxelorException(String.format("Les stocks du produit %s (%s) sont insuffisants pour réaliser la livraison", 
 					locationLine.getProduct().getName(), locationLine.getProduct().getCode()), IException.CONFIGURATION_ERROR);
 		}
-		else if(isDetailLocationLine && locationLine.getCurrentQty().compareTo(BigDecimal.ZERO) == -1 && locationLine.getLocation().getTypeSelect() == ILocation.INTERNAL)  {
+		else if(isDetailLocationLine && locationLine.getCurrentQty().compareTo(BigDecimal.ZERO) == -1 
+				&& ((locationLine.getLocation() != null && locationLine.getLocation().getTypeSelect() == ILocation.INTERNAL)
+				    || (locationLine.getDetailsLocation() != null && locationLine.getDetailsLocation().getTypeSelect() == ILocation.INTERNAL)))  {
 
 			String trackingNumber = "";
 			if(locationLine.getTrackingNumber() != null)  {

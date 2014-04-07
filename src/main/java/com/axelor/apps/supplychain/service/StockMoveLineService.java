@@ -97,10 +97,10 @@ public class StockMoveLineService {
 								stockMoveLine.setTrackingNumber(
 										trackingNumberService.getTrackingNumber(product, trackingNumberConfiguration.getSaleQtyByTracking(), stockMove.getCompany(), stockMove.getEstimatedDate()));
 							}
-						}
-						else if(trackingNumberConfiguration.getIsPurchaseTrackingManaged() || trackingNumberConfiguration.getIsProductionTrackingManaged())  {
-							// Rechercher le numéro de suivi d'apèrs FIFO/LIFO
-							this.assignTrackingNumber(stockMoveLine, product, stockMove.getFromLocation());
+							else  {
+								// Rechercher le numéro de suivi d'apèrs FIFO/LIFO
+								this.assignTrackingNumber(stockMoveLine, product, stockMove.getFromLocation());
+							}
 						}
 						break;
 					case 2:
