@@ -56,6 +56,8 @@
 	<portal title="Dashboard" name="supplychain.sales.manager.dashboard.portal" cols="2">
 		<portlet action="portal.sales.turnover.ytd.vs.lastyear" height="350"/>  	
 		<portlet action="portal.sales.turnover.by.product.ytd.vs.lastyear" height="350"/>
+		<portlet action="portal.sales.turnover.ytd.vs.lastyear.by.family" height="350" />
+		<portlet action="portal.sales.turnover.by.family.ytd.vs.lastyear" height="350" />		
 		<portlet action="portal.sales.manager.dashboard.team.turnover" height="350" />
 		<portlet action="portal.sales.manager.dashboard.salesman.turnover" height="350" />
 		<portlet action="portal.sales.manager.dashboard.family.product.sales" height="350" />
@@ -77,6 +79,18 @@
 	    <context name="active_company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
 	</action-view>
 	
+	<action-view name="portal.sales.turnover.ytd.vs.lastyear.by.family" title="Sales Turnover YTD vs Last year by Product Family" model="com.axelor.apps.supplychain.db.SalesOrderLine">
+	  <view type="chart" name="chart.sales.turnover.ytd.vs.lastyear.by.family"/>
+	  <domain>self.salesOrder.company=:active_company</domain>
+	  <context name="active_company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
+	</action-view>
+	
+	<action-view name="portal.sales.turnover.by.family.ytd.vs.lastyear" title="Product Family Sales Turnover this year vs last year" model="com.axelor.apps.supplychain.db.SalesOrderLine">
+	  <view type="chart" name="chart.sales.turnover.by.family.ytd.vs.lastyear"/>
+	  <domain>self.salesOrder.company=:active_company</domain>
+	  <context name="active_company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
+	</action-view>
+
 	<action-view name="portal.sales.manager.dashboard.team.turnover" title="Turnover per team over past 30 days">
 		<view type="chart" name="chart.sales.manager.dashboard.team.turnover"/>
 	</action-view>

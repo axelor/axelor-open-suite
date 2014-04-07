@@ -51,6 +51,70 @@
 	    <category key="_year" type="text" title="Year" />
 		<series key="_turn_over" type="bar" groupBy="_product" title="TurnOver"/>
 	</chart>
+	
+	<chart name="chart.sales.turnover.ytd.vs.lastyear.by.family" title="Sales Turnover YTD vs Last year by Product Family" stacked="true">
+	  <dataset type="sql">
+	    
+	    SELECT
+	      coalesce(SUM(_line.ex_tax_total), 0.00) AS _turn_over,
+	      _family.name AS _product_family,
+	      DATE_PART('year', _order.validation_date) AS _year
+	    FROM
+	      supplychain_sales_order_line AS _line
+	    JOIN
+	      supplychain_sales_order AS _order
+	    ON
+	      _order.id = _line.sales_order
+	    JOIN
+	      base_product AS _product
+	    ON
+	      _product.id = _line.product
+	    JOIN
+	      base_product_family AS _family
+	    ON
+	      _family.id = _product.product_family
+	    WHERE
+	      DATE_PART('year', _order.validation_date) IN 
+	      (DATE_PART('year', CURRENT_DATE), DATE_PART('year', CURRENT_DATE - INTERVAL '1 year'))
+	    GROUP BY
+	      _product_family, _year
+	    
+	  </dataset>
+	  <category key="_year" type="text"/>
+	  <series key="_turn_over" groupBy="_product_family" type="bar"/>
+	</chart>
+	
+	<chart name="chart.sales.turnover.by.family.ytd.vs.lastyear" title="Product Family Sales Turnover this year vs last year">
+	  <dataset type="sql">
+	    
+	    SELECT
+	      coalesce(SUM(_line.ex_tax_total), 0.00) AS _turn_over,
+	      _family.name AS _product_family,
+	      DATE_PART('year', _order.validation_date) AS _year
+	    FROM
+	      supplychain_sales_order_line AS _line
+	    JOIN
+	      supplychain_sales_order AS _order
+	    ON
+	      _order.id = _line.sales_order
+	    JOIN
+	      base_product AS _product
+	    ON
+	      _product.id = _line.product
+	    JOIN
+	      base_product_family AS _family
+	    ON
+	      _family.id = _product.product_family
+	    WHERE
+	      DATE_PART('year', _order.validation_date) IN 
+	      (DATE_PART('year', CURRENT_DATE), DATE_PART('year', CURRENT_DATE - INTERVAL '1 year'))
+	    GROUP BY
+	      _product_family, _year
+	    
+	  </dataset>
+	  <category key="_product_family" type="text"/>
+	  <series key="_turn_over" groupBy="_year" type="bar"/>
+	</chart>
 	  
 	  <chart name="chart.sales.manager.dashboard.team.turnover" title="Turnover per team over past 30 days">
 	    <dataset type="sql">
