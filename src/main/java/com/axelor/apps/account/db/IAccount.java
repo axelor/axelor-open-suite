@@ -42,7 +42,6 @@ public interface IAccount {
 	// EXPORT TYPE
 	static final int MONTHLY_EXPORT = 0;
 	static final int INVOICE_EXPORT = 1;
-	static final int MEMORY_EXPORT = 2;
 
 	// STATE
 	static final int DRAFT_EXPORT = 0;
@@ -64,24 +63,6 @@ public interface IAccount {
 	static final int NOT_IRRECOUVRABLE = 0;
 	static final int TO_PASS_IN_IRRECOUVRABLE = 1;
 	static final int PASSED_IN_IRRECOUVRABLE = 2;
-
-	// TYPE
-	static final String MONTHLY_TYPE = "EMS";
-	static final String INDEBTEDNESS_TYPE = "ESU";
-	static final String RJ_TYPE = "ERJ";
-	static final String LJ_TYPE = "ELJ";
-	static final String DELAY_PAYMENT_TYPE = "EDL";
-	static final String USHER_TYPE = "EHU";
-
-	// SUB TYPE
-	static final String MONTHLY_SUB_TYPE = "MSU";
-	static final String INDEBTEDNESS_SUB_TYPE = "PSS";
-	static final String RJ_SUB_TYPE = "RJU";
-	static final String LJ_SUB_TYPE = "LJU";
-	static final String DELAY_PAYMENT_SUB_TYPE = "DPM";
-	static final String USHER_SUB_TYPE = "HUI";
-	static final String SOCIAL_SUB_TYPE = "AID";
-	static final String FR_BANK_SUB_TYPE = "BDF";
 
 	/**
 	 * Static select in Move
