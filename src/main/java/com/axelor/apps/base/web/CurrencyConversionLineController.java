@@ -73,16 +73,16 @@ public class CurrencyConversionLineController {
 
 		if (ccl.getId() != null && CurrencyConversionLine.all().filter("self.startCurrency.id = ?1 and self.endCurrency.id = ?2 and (self.toDate = null OR  self.toDate >= ?3) and self.id != ?4)",ccl.getStartCurrency().getId(),ccl.getEndCurrency().getId(),ccl.getFromDate(),ccl.getId()).count() > 0) {
 			response.setFlash("ATTENTION : Veuillez clôturer la période actuelle de conversion pour en créer une nouvelle.");
-			response.setValue("fromDate", "");
+//			response.setValue("fromDate", "");
 		}
 		else if(ccl.getId() == null && CurrencyConversionLine.all().filter("self.startCurrency.id = ?1 and self.endCurrency.id = ?2 and (self.toDate = null OR  self.toDate >= ?3))",ccl.getStartCurrency().getId(),ccl.getEndCurrency().getId(),ccl.getFromDate()).count() > 0) {
 			response.setFlash("ATTENTION : Veuillez clôturer la période actuelle de conversion pour en créer une nouvelle.");
-			response.setValue("fromDate", "");
+//			response.setValue("fromDate", "");
 		}
 		
 		if(ccl.getFromDate() != null && ccl.getToDate() != null && ccl.getFromDate().isAfter(ccl.getToDate())){
 			response.setFlash("La date de fin doit impérativement être égale ou supérieur à la date de début.");
-			response.setValue("fromDate", "");
+//			response.setValue("fromDate", "");
 		}
 	
 	}
