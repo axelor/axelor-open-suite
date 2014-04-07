@@ -13,6 +13,8 @@
     <one-to-many name="accountManagementList" ref="com.axelor.apps.account.db.AccountManagement" mappedBy="paymentMode" title="Accounts by paymentMode"/>
     <many-to-one name="bankJournal" ref="com.axelor.apps.account.db.Journal" title="Journal"/>
     <string name="invoiceLabel" title="Invoice label" help="Label to be displayed on invoice PDF"/>
+  	<integer name="typeSelect" title="type" selection="iaccount.payment.mode.type.select"/>
+  	<integer name="salesPurchasesSelect" title="Sales / Purchases ?" selection="iaccount.payment.mode.sales.purchases.selects"/>
   
   </entity>
 
