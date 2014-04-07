@@ -137,6 +137,13 @@
 	                </form>
 	            </field>
 	        </page>
+	        
+<!-- 	        TODO ajouter boolean prelevement sepa sur mode de paiement -->
+         	<page title="Prélèvement SEPA" cols="4" showIf="paymentMode.code == 'IN_DD'">   
+                 <field name="activeRum" colSpan="2" canNew="false" domain="self.partner.id = :id"/>
+                 <separator title="Historique" colSpan="4"/>
+                 <field name="rumList" showTitle="false" colSpan="4"/>
+            </page>
 		    <page name="activities" title="Activities" showIf="id != null">
 	        	<button name="showProject" title="Show projects" colSpan="3" onClick="save,action-partner-view-partner-project"/>
 			    <portlet colSpan="6" action="action-partner-view-upcoming-events"/>
