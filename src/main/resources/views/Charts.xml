@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	  
+	<chart name="chart.hr.nbr.of.employees.by.gender" title="Employees by gender">
+	  <dataset type="sql">
+	
+	    SELECT
+	      COUNT(_employee.id) AS _num_emp,
+	      (case 
+	        when _employee.title_select in (1) then 'Men' 
+	        when _employee.title_select in (2,3) then 'Women' end
+	      ) AS _gender	
+	    FROM
+	      organisation_employee AS _employee
+	    GROUP BY
+	      _gender
+	    
+	  </dataset>
+	  <category key="_gender" type="text"/>
+	  <series key="_num_emp" type="bar"/>
+	</chart>
+	
+	<chart name="chart.hr.nbr.of.employees.by.category" title="Employees by macro-category">
+	  <dataset type="sql">
+	
+		SELECT
+			COUNT(case when cast(_item.value as int) = _employee.macro_category_select then _employee.id end) AS _num_emp,
+			_item.title AS _macro_category,
+			_item.order_seq
+		FROM
+			organisation_employee AS _employee
+		JOIN
+			meta_select AS _selection
+		ON
+			_selection.name = 'organisation.candidate.macroCategory.select'
+		JOIN
+			meta_select_item AS _item
+		ON
+			_item.select_id = _selection.id
+		GROUP BY
+			_macro_category, _item.order_seq
+		ORDER BY
+			_item.order_seq    
+			
+	  </dataset>
+	  <category key="_macro_category" type="text"/>
+	  <series key="_num_emp" type="bar"/>
+	</chart>	  
+	
+</object-views>

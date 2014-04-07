@@ -15,6 +15,8 @@
 		<portlet action="portal.human.resources.dashboard.my.travel.expenses" canSearch="true" height="350" />
 		<portlet action="portal.human.resources.dashboard.my.overtimes" canSearch="true" height="350" />
 		<portlet action="portal.human.resources.dashboard.my.leaverequest" canSearch="true" height="350" />
+		<portlet action="portal.hr.nbr.of.employees.by.gender" height="350" />
+		<portlet action="portal.hr.nbr.of.employees.by.category" height="350" />		
 	</portal>
 
 	
@@ -81,6 +83,13 @@
 		<context name="_user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" /> 
 	</action-view> 
 
+	<action-view name="portal.hr.nbr.of.employees.by.gender" title="Employees by gender" model="com.axelor.apps.organisation.db.Employee">
+	  <view type="chart" name="chart.hr.nbr.of.employees.by.gender"/>
+	</action-view>
+	
+	<action-view name="portal.hr.nbr.of.employees.by.category" title="Employees by macro-category" model="com.axelor.apps.organisation.db.Employee">
+	  <view type="chart" name="chart.hr.nbr.of.employees.by.category"/>
+	</action-view>
 	
 	<portal title="Project Dashboard" name="org.project.dashboard.portal" cols="2">
 	    <portlet action="portal.projects.by.client.partner" colSpan="1" height="350" canSearch="true"/>	    
