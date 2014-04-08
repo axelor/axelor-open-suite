@@ -107,8 +107,6 @@
 "PaymentScheduleLine MANAGE","com.axelor.apps.account.db.PaymentScheduleLine","true","true","true","true","true","ACCO|"
 "PaymentVoucher READ","com.axelor.apps.account.db.PaymentVoucher","true",,,,,"SALE|PURCH|HRSC|OPTS"
 "PaymentVoucher MANAGE","com.axelor.apps.account.db.PaymentVoucher","true","true","true","true","true","ACCO|"
-"ReasonExemption READ","com.axelor.apps.account.db.ReasonExemption","true",,,,,"SALE|PURCH|HRSC|OPTS"
-"ReasonExemption MANAGE","com.axelor.apps.account.db.ReasonExemption","true","true","true","true","true","ACCO|"
 "Reconcile READ","com.axelor.apps.account.db.Reconcile","true",,,,,"SALE|PURCH|HRSC|OPTS"
 "Reconcile MANAGE","com.axelor.apps.account.db.Reconcile","true","true","true","true","true","ACCO|"
 "Reimbursement READ","com.axelor.apps.account.db.Reimbursement","true",,,,,"SALE|PURCH|HRSC|OPTS"
