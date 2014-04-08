@@ -30,6 +30,8 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import java.math.BigDecimal;
+
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +47,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 public class TrackingNumberService {
 	
@@ -63,15 +66,16 @@ public class TrackingNumberService {
 	}
 	
 	
-	public TrackingNumber getTrackingNumber(Product product, int sizeOfLot, Company company, LocalDate date) throws AxelorException  {
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public TrackingNumber getTrackingNumber(Product product, BigDecimal sizeOfLot, Company company, LocalDate date) throws AxelorException  {
 		
 		TrackingNumber trackingNumber = TrackingNumber.all().filter("self.product = ?1 AND self.counter < ?2", product, sizeOfLot).fetchOne();
 	
 		if(trackingNumber == null)  {
-			trackingNumber = this.createTrackingNumber(product, company, date);
+			trackingNumber = this.createTrackingNumber(product, company, date).save();
 		}
 		
-		trackingNumber.setCounter(trackingNumber.getCounter()+1);
+		trackingNumber.setCounter(trackingNumber.getCounter().add(sizeOfLot));
 		
 		return trackingNumber;
 		
@@ -106,7 +110,7 @@ public class TrackingNumberService {
 		}
 		
 		trackingNumber.setProduct(product);
-		trackingNumber.setCounter(0);
+		trackingNumber.setCounter(BigDecimal.ZERO);
 		
 		String seq = sequenceService.getSequence(IAdministration.PRODUCT_TRACKING_NUMBER, product, company, false);
 		if (seq == null)  {

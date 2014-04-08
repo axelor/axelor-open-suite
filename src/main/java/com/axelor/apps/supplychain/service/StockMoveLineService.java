@@ -94,8 +94,8 @@ public class StockMoveLineService {
 						if(trackingNumberConfiguration.getIsSaleTrackingManaged())  {
 							if(trackingNumberConfiguration.getGenerateSaleAutoTrackingNbr())  {
 								// Générer numéro de série si case cochée
-								stockMoveLine.setTrackingNumber(
-										trackingNumberService.getTrackingNumber(product, trackingNumberConfiguration.getSaleQtyByTracking(), stockMove.getCompany(), stockMove.getEstimatedDate()));
+								this.generateTrackingNumber(stockMoveLine, trackingNumberConfiguration, product, trackingNumberConfiguration.getSaleQtyByTracking());
+				
 							}
 							else  {
 								// Rechercher le numéro de suivi d'apèrs FIFO/LIFO
@@ -106,15 +106,15 @@ public class StockMoveLineService {
 					case 2:
 						if(trackingNumberConfiguration.getIsPurchaseTrackingManaged() && trackingNumberConfiguration.getGeneratePurchaseAutoTrackingNbr())  {
 							// Générer numéro de série si case cochée
-							stockMoveLine.setTrackingNumber(
-									trackingNumberService.getTrackingNumber(product, trackingNumberConfiguration.getPurchaseQtyByTracking(), stockMove.getCompany(), stockMove.getEstimatedDate()));
+							this.generateTrackingNumber(stockMoveLine, trackingNumberConfiguration, product, trackingNumberConfiguration.getPurchaseQtyByTracking());
+							
 						}
 						break;
 					case 3:
 						if(trackingNumberConfiguration.getIsProductionTrackingManaged() && trackingNumberConfiguration.getGenerateProductionAutoTrackingNbr())  {
 							// Générer numéro de série si case cochée
-							stockMoveLine.setTrackingNumber(
-									trackingNumberService.getTrackingNumber(product, trackingNumberConfiguration.getProductionQtyByTracking(), stockMove.getCompany(), stockMove.getEstimatedDate()));
+							this.generateTrackingNumber(stockMoveLine, trackingNumberConfiguration, product, trackingNumberConfiguration.getProductionQtyByTracking());
+
 						}
 						break;
 	
@@ -126,6 +126,26 @@ public class StockMoveLineService {
 			return stockMoveLine;
 		}
 		return null;
+	}
+	
+	
+	public void generateTrackingNumber(StockMoveLine stockMoveLine, TrackingNumberConfiguration trackingNumberConfiguration, Product product, BigDecimal qtyByTracking) throws AxelorException  {
+		
+		StockMove stockMove = stockMoveLine.getStockMove();
+		
+		while(stockMoveLine.getQty().compareTo(trackingNumberConfiguration.getSaleQtyByTracking()) == 1)  {
+			
+			BigDecimal minQty = stockMoveLine.getQty().min(qtyByTracking);
+			
+			this.splitStockMoveLine(stockMoveLine, minQty, trackingNumberService.getTrackingNumber(product, qtyByTracking, stockMove.getCompany(), stockMove.getEstimatedDate()));
+			
+		}
+		if(stockMoveLine.getTrackingNumber() == null)  {
+			
+			stockMoveLine.setTrackingNumber(trackingNumberService.getTrackingNumber(product, qtyByTracking, stockMove.getCompany(), stockMove.getEstimatedDate()));
+			
+		}
+		
 	}
 	
 	
