@@ -5,7 +5,7 @@
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
-	<entity name="Department" lang="java">
+	<entity name="Department" lang="java" cachable="true">
 
 	<integer name="importId"/>
 	<string name="name" title="Department Name" required="true"/>
@@ -13,8 +13,6 @@
 	<many-to-one name="region" ref="com.axelor.apps.base.db.Region" title="Region"/>
 	<one-to-many name="communeList" ref="Commune" mappedBy="department" title="Department Communes List"/>
 	<one-to-many name="cantonList" ref="Canton" mappedBy="department" title="Department Cantons List"/>
-
-	<many-to-one name="departmentParameter" ref="com.axelor.apps.account.db.Parameter" title="Pricing list parameter"/>
 
 	</entity>
 

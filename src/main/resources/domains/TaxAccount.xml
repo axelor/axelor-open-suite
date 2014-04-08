@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="TaxAccount" lang="java">
+  <entity name="TaxAccount" lang="java" cachable="true">
   
   	<many-to-one name="tax" ref="com.axelor.apps.account.db.Tax" title="Tax"/>
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>

@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="AccountCategoryLine" lang="java">
+  <entity name="AccountCategoryLine" lang="java" cachable="true">
     
     <many-to-one name="accountCategory" ref="AccountCategory" title="Account category"/>
     <string name="sign" max="1" title="Signe"/>

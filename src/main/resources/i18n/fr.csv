@@ -1990,8 +1990,6 @@
 "com.axelor.apps.base.db.Querie","type","field","Type","Type",,
 "com.axelor.apps.base.db.Querie","query","field","Query","Requête",,
 "com.axelor.apps.base.db.Querie","metaModel","field","Model","Objet",,
-"com.axelor.apps.account.db.ReasonExemption","name","field","Reason label","Libellé du motif",,
-"com.axelor.apps.account.db.ReasonExemption","code","field","Code","Code",,
 "com.axelor.apps.account.db.Reconcile","amount","field","Amount reconciled","Montant lettré",,"Le montant lettré ne peut être supérieur au restant à lettré des écritures de débit et crédit."
 "com.axelor.apps.account.db.Reconcile","debitMoveLine","field","Debit line","Ligne d'Ecrit. Débit",,
 "com.axelor.apps.account.db.Reconcile","creditMoveLine","field","Credit line","Ligne d'Ecrit. Crédit",,

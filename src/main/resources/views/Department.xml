@@ -13,7 +13,6 @@
         <field name="name"/>
         <field name="code"/>
         <field name="region"/>
-        <field name="departmentParameter" domain="self.parameterType.code = 'depart'" />
         <field name="communeList" colSpan="2"/>
         <field name="cantonList" colSpan="2"/>
     </form>

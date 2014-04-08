@@ -5,7 +5,7 @@
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
-	<entity name="PrintingSettings" lang="java">
+	<entity name="PrintingSettings" lang="java" cachable="true">
 		<string name="importId" hashKey="false" unique="true"/>
         <string name="languageSelect" title="Language" selection="select.language"/>
 		<string name="pdfHeader" large="true" title="Company Header"/>

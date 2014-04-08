@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="Status" lang="java">
+  <entity name="Status" lang="java" cachable="true">
   
     <string name="name" title="Name" required="true" unique="true"/>
     <string name="code" title="Code"/>

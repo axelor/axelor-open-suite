@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="Source" lang="java">
+  <entity name="Source" lang="java" cachable="true">
   	
   	<integer name="importId" />
     <string name="name" title="Name"/>

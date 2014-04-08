@@ -5,7 +5,7 @@
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
-  <entity name="ProductionConfig" lang="java">
+  <entity name="ProductionConfig" lang="java" cachable="true">
   	<integer name="importId"/>
     <string name="name" title="Name" required="true"/>
     <string name="code" title="Code" unique="true"/>

@@ -1981,8 +1981,6 @@
 "com.axelor.apps.base.db.Querie","type","field","Type","","",""
 "com.axelor.apps.base.db.Querie","query","field","Query","","",""
 "com.axelor.apps.base.db.Querie","metaModel","field","Model","","",""
-"com.axelor.apps.account.db.ReasonExemption","name","field","Reason label","","",""
-"com.axelor.apps.account.db.ReasonExemption","code","field","Code","","",""
 "com.axelor.apps.account.db.Reconcile","amount","field","Amount reconciled","","",""
 "com.axelor.apps.account.db.Reconcile","debitMoveLine","field","Debit line","","",""
 "com.axelor.apps.account.db.Reconcile","creditMoveLine","field","Credit line","","",""

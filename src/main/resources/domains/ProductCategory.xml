@@ -3,7 +3,7 @@
   
   <module name="base" package="com.axelor.apps.base.db"/>
   
-  <entity name="ProductCategory" lang="java">
+  <entity name="ProductCategory" lang="java" cachable="true">
   
     <integer name="importId"/>
     <string name="code" title="Code" unique="true"/>

@@ -5,7 +5,7 @@
 
   <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
 
-  <entity name="SupplychainConfig" lang="java">
+  <entity name="SupplychainConfig" lang="java" cachable="true">
   	<integer name="importId"/>
     <string name="name" title="Name" required="true"/>
     <string name="code" title="Code" unique="true"/>

@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="AccountType" lang="java">
+  <entity name="AccountType" lang="java" cachable="true">
     <string name="nameSelect" title="Type" required="true" unique="true" selection="account.account.type.select"/>
 	<string name="name" title="Label"/>
   </entity>

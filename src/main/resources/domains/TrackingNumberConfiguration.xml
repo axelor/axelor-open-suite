@@ -18,9 +18,9 @@
 	<boolean name="hasSaleAutoSelectTrackingNbr"  title="Auto select sale tracking Nbr. ?"/>
 	<integer name="saleAutoTrackingNbrOrderSelect"  title="Auto sale tracking Nbr. order" selection="base.tracking.number.configuration.sale.tracking.order.select"/>
 	
-	<integer name="saleQtyByTracking"  title="Sale Qty by tracking"/>
-	<integer name="purchaseQtyByTracking"  title="Purchase Qty by tracking"/>
-	<integer name="productionQtyByTracking"  title="Production Qty by tracking"/>
+	<decimal name="saleQtyByTracking"  title="Sale Qty by tracking"/>
+	<decimal name="purchaseQtyByTracking"  title="Purchase Qty by tracking"/>
+	<decimal name="productionQtyByTracking"  title="Production Qty by tracking"/>
 
   </entity>
 

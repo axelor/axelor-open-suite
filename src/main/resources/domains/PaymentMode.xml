@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="PaymentMode" lang="java">
+  <entity name="PaymentMode" lang="java" cachable="true">
   
   	<integer name="importId"/>
     <string name="name" required="true" unique="true" title="Label"/>

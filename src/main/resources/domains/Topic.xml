@@ -5,7 +5,7 @@
 
 	<module name="organisation" package="com.axelor.apps.organisation.db" />
 
- 	<entity name="Topic" lang="java">
+ 	<entity name="Topic" lang="java" cachable="true">
 		<string name="name" title="Technical topic" />
 	</entity>
 

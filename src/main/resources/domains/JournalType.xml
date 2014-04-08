@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="JournalType" lang="java">
+  <entity name="JournalType" lang="java" cachable="true">
   
     <integer name="importId"/>
     <string name="name" title="Name" required="true" unique="true"/>

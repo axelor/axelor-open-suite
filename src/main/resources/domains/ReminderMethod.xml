@@ -3,7 +3,7 @@
  
   <module name="account" package="com.axelor.apps.account.db"/>
  
-  <entity name="ReminderMethod" lang="java">
+  <entity name="ReminderMethod" lang="java" cachable="true">
   
     <integer name="importId"/>
     <string name="name" title="Method name" />

@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="AccountCategory" lang="java">
+  <entity name="AccountCategory" lang="java" cachable="true">
   
     <string name="name" title="Name"/>
     <string name="type" title="Type"/>

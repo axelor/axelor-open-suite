@@ -669,7 +669,7 @@
 	<!-- Top Menu for Create new objects.... -->
 
 
-	<menuitem name="top-menu-utility" priority="300"  title="Create" icon="img/16px/create_16px.png" groups="admins,erp" top="true" left="false"/> 	
+	<menuitem name="top-menu-utility" priority="300"  title="Create" groups="admins,erp" top="true" left="false"/> 	
 
 	<menuitem name="top-menu-create-partner" parent="top-menu-utility" title="Create Partner" action="top.new.partner.view" top="true" left="false"/> 	
 		
