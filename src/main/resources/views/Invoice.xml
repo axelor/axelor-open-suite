@@ -46,7 +46,7 @@
             <field name="subscriptionToDate" showIf="isSubscription"/>
         </group>
 		<group name="partnerGroup" title="Invoicing informations" colSpan="4" cols="4" canCollapse="true">
-            <field name="partner" domain="self.isContact = false" grid-view="partner-grid" form-view="partner-form" onChange="action-invoice-record-partner-change,action-invoice-record-due-date,action-set-partner-domain" readonlyIf="status.code != 'dra'" />
+            <field name="partner"  grid-view="partner-grid" form-view="partner-form" onChange="action-invoice-record-partner-change,action-invoice-record-due-date,action-set-partner-domain" readonlyIf="status.code != 'dra'" />
        		<field name="contactPartner"  form-view="partner-contact-form" grid-view="partner-contact-grid" domain="self.isContact = true"/>
 			<field name="address" colSpan="2"/>
 			<break/>
@@ -288,8 +288,8 @@
     <!-- ACTION ATTRS -->
 	
 	<action-attrs name="action-set-partner-domain">
-		<attribute name="domain" for="partner" expr="eval:'self.supplierTypeSelect > 1'" if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
-		<attribute name="domain" for="partner" expr="eval:'self.customerTypeSelect > 1'" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
+		<attribute name="domain" for="partner" expr="eval:'self.isContact = false AND self.supplierTypeSelect > 1'" if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
+		<attribute name="domain" for="partner" expr="eval:'self.isContact = false AND self.customerTypeSelect > 1'" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
 		<attribute name="domain" for="contactPartner" expr="eval: &quot;self.id IN (${partner.contactPartnerSet?.collect{it.id}.join(',')})&quot;" if="partner != null"/>
 	</action-attrs>
 	
