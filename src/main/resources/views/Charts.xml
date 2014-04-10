@@ -425,7 +425,7 @@
         </dataset>
         <category key="_month_no" type="month"/>
         <series key="_turn_over" type="bar" groupBy="product" title="No Of Units" aggregate="sum" />
-</chart>
+	</chart>
 	  <chart name="chart.purchase.buyer.dashboard.family.product.purchase.volume" title="My purchases orders per product family over past month in volume">
 	    <dataset type="sql">
 	    <![CDATA[
@@ -755,4 +755,27 @@
 			    <category key="_family_product" type="text"/>
 		    	<series key="amount" type="bar"/>
 	</chart>
+	
+	<chart name="chart.nbr.product.per.family" title="Number of Product per Family">
+	  <dataset type="sql">
+	  
+	    SELECT
+	      COUNT(_product.id) AS _num_prod,
+	      _family.name AS _prod_family
+	    FROM
+	      base_product AS _product
+	    RIGHT JOIN
+	      base_product_family AS _family
+	    ON
+	      _family.id = _product.product_family
+	    GROUP BY
+	      _prod_family
+	    ORDER BY
+	      _prod_family
+	  
+	  </dataset>
+	  <category key="_prod_family" type="text" title="Product Family"/>
+	  <series key="_num_prod" type="bar" title="Products"/>
+	</chart>
+	
 </object-views>

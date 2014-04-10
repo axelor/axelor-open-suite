@@ -120,7 +120,6 @@
     </action-view>
 	
 	
-	
 <!--   	Purchase Buyer Dashboard -->
 	
 	<portal title="Dashboard" name="supplychain.purchase.buyer.dashboard.portal" cols="2">
@@ -243,7 +242,8 @@
 	    <portlet action="portal.production.stock.move.in.planned"  height="350" canSearch="true"/>    
 	    <portlet action="portal.production.stock.move.out.planned" height="350" canSearch="true"/>       			
 	    <portlet action="portal.production.stock.move.in.realized" height="350" canSearch="true"/>
-	    <portlet action="portal.production.stock.move.out.realized" height="350" canSearch="true"/>       			
+	    <portlet action="portal.production.stock.move.out.realized" height="350" canSearch="true"/>  
+	    <portlet action="portal.nbr.product.per.family" height="350" canSearch="true"/>       			
 	</portal>
 
 	<action-view name="portal.stock.dashboard.upcoming.deliveries" title="Upcoming deliveries"
@@ -303,6 +303,10 @@
 	    <view type="grid" name="stock-move-out-grid"/>
 	    <view type="form"/>
 	    <domain>self.id IN (SELECT outStockMove FROM ManufOrder WHERE statusSelect IN (4,5))</domain>
+	</action-view>
+
+	<action-view name="portal.nbr.product.per.family" title="Number of Product per Family" model="com.axelor.apps.base.db.Product">
+	  <view type="chart" name="chart.nbr.product.per.family"/>
 	</action-view>
 
 	<!-- Purchase Order Dashboard -->
