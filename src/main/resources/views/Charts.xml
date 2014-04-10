@@ -87,4 +87,40 @@
     	<field name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
     </action-record>
 
+	<chart name="chart.customer.sales.lastYear.vs.ytd.by.family" title="Customer Sales turnover this year vs last year by family" stacked="true">
+	
+	  <dataset type="jpql">
+	  
+	    SELECT
+	    
+	      COALESCE(SUM(salesOrderLine.exTaxTotal), 0.00) AS turnOver,
+	      productFamily.name AS family,
+	      YEAR(salesOrder.validationDate) AS _year      
+	    
+	    FROM
+	      SalesOrderLine salesOrderLine,
+	      SalesOrder salesOrder,
+	      Product product,
+	      ProductFamily productFamily
+	    
+	    WHERE    
+	      salesOrder = salesOrderLine.salesOrder
+	    AND
+	      product = salesOrderLine.product
+	    AND
+	      productFamily = product.productFamily
+	    AND
+	      YEAR(salesOrder.validationDate) IN (YEAR(CURRENT_DATE), YEAR(CURRENT_DATE) - 1)
+	    AND
+	      salesOrder.clientPartner.id=:id
+	    
+	    GROUP BY
+	      productFamily.name,
+	      YEAR(salesOrder.validationDate)
+	  
+	  </dataset>
+	  <category key="_year" type="text" title="Year"/>
+	  <series key="turnOver" type="bar" title="Turnover" aggregate="sum" groupBy="family"/>
+	</chart>
+
 </object-views>

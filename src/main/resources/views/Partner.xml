@@ -144,6 +144,9 @@
 			    <portlet colSpan="6" action="action-partner-view-sales-orders"/>
 			    <portlet colSpan="6" action="action-partner-view-tickets"/>
 	        </page>
+			<page name="turnover" title="Sales" showIf="id != null" colSpan="3">
+			  <portlet action="portal.customer.sales.lastYear.vs.ytd.by.family" height="350" colSpan="3"/>
+			</page>
 	    </notebook>
 	</form>
 	
