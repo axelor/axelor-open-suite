@@ -121,5 +121,46 @@
  <category key="contract_type" type="text"/>
  <series key="_num_emp" type="pie"/>
 </chart>
+
+	<chart onInit="action-product-set-today-date" name="chart.hr.employees.turnover.ytd.vs.lastYear" title="Employees turnover per year">
+	  
+	  <search-fields>
+	    <field name="todayDate" title="End Date" type="date" />
+	  </search-fields>
+	  
+	  <dataset type="sql">
+	  
+	    SELECT
+	      COUNT(_employee.id) AS _count,
+	      (case 
+	
+	      when
+	        _employee.entry_date &lt;= DATE(:todayDate)
+	        AND DATE_PART('year', _employee.entry_date) = DATE_PART('year', DATE(:todayDate))		
+	      then 'Arrived'
+	
+	      when 	_employee.entry_date &lt;= DATE(:todayDate)
+	        AND (_employee.exit_date IS NULL OR _employee.exit_date >= DATE(:todayDate))
+	      then 'Present'
+	
+	      when 
+	        _employee.exit_date &lt;= DATE(:todayDate)
+	        AND DATE_PART('year', _employee.exit_date) = DATE_PART('year', DATE(:todayDate))
+	      then 'Departed'
+	
+	      when
+	        DATE_PART('year', _employee.entry_date) &gt; DATE_PART('year', DATE(:todayDate))		
+	      then 'Future Join'
+	    
+	      end) AS _status      
+	    FROM
+	      organisation_employee AS _employee    
+	    GROUP BY
+	      _status
+	  
+	  </dataset>
+	  <category key="_status" type="text" title="Status"/>
+	  <series key="_count" type="bar" title="Employees"/>
+	</chart>
 	
 </object-views>
