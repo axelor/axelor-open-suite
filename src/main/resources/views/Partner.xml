@@ -147,6 +147,9 @@
 			<page name="turnover" title="Sales" showIf="id != null" colSpan="3">
 			  <portlet action="portal.customer.sales.lastYear.vs.ytd.by.family" height="350" colSpan="3"/>
 			</page>
+			<page name="events" title="Events" showIf="id != null">
+     			 <portlet colSpan="6" action="portal.customer.crm.activities"/>
+			</page>
 	    </notebook>
 	</form>
 	
@@ -430,6 +433,12 @@
 	<action-method name="action-partner-method-show-client-situation" >
 		<call class="com.axelor.apps.base.web.PartnerController" method="printClientSituation"/>
 	</action-method>
+	
+	<!-- CRM EVENTS REPORT FOR PARTNER -->
+	<action-view title="CRM Activities" model="com.axelor.apps.base.db.Partner" name="portal.customer.crm.activities">
+  		<view type="chart" name="chart.customer.crm.activities"/>
+  		<context name="id" expr="eval: id"/>
+	</action-view>
 	
 	<search-filters name="partner-filters" model="com.axelor.apps.base.db.Partner" title="Partner filters">
 		<filter title="All Enterprises">
