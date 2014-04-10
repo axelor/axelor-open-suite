@@ -163,4 +163,25 @@
 	  <series key="_count" type="bar" title="Employees"/>
 	</chart>
 	
+	<chart onInit="action-product-set-today-date" name="chart.hr.nbr.of.employees.evolution" title="Number of Employees">
+	  <search-fields>
+	    <field name="todayDate" title="End Date" type="date" widget="[default='2014-12-31']"/>
+	  </search-fields>
+	  <dataset type="sql">
+	    SELECT 
+	       date_part('year',self.entry_date) As _year,
+	       COUNT(self.id) AS _num_emp
+	    FROM organisation_employee self
+	    WHERE   
+	       date_part('year',self.entry_date)&gt;date_part('year',DATE(:todayDate))-6  
+	       AND date_part('year',self.entry_date) &lt; date_part('year',DATE(:todayDate)) 
+	       AND (date_part('year',self.exit_date)&gt;date_part('year',self.entry_date) 
+	       OR date_part('year',self.exit_date) IS NULL)
+	    GROUP BY 
+	       date_part('year',self.entry_date)
+	   </dataset>
+	  <category key="_year" type="text"/>
+	  <series key="_num_emp" type="bar"/>
+	</chart>
+	
 </object-views>

@@ -21,6 +21,7 @@
 		<portlet action="portal.hr.nbr.of.employees.by.category" height="350" />	
 		<portlet action="portal.hr.employees.contract.type.distribution" height="350" />	
 		<portlet action="portal.hr.employees.turnover.ytd.vs.lastYear" height="350" />
+		<portlet action="portal.hr.nbr.of.employees.evolution" height="350" />
 	</portal>
 
 	
@@ -110,6 +111,10 @@
 	
 	<action-view name="portal.hr.employees.turnover.ytd.vs.lastYear" title="Employees turnover per year" model="com.axelor.apps.organisation.db.Employee">
 	  <view type="chart" name="chart.hr.employees.turnover.ytd.vs.lastYear"/>  
+	</action-view>
+	
+	<action-view  name="portal.hr.nbr.of.employees.evolution" model="com.axelor.apps.organisation.db.Employee"  title="Number of Employees">
+  		<view type="chart" name="chart.hr.nbr.of.employees.evolution"/>
 	</action-view>
 	
 	<portal title="Project Dashboard" name="org.project.dashboard.portal" cols="2">
