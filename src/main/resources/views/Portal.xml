@@ -50,8 +50,7 @@
   	<!-- This Portlet is called in Partner-Form -->
 	<action-view name="portal.customer.sales.lastYear.vs.ytd.by.family" title="Customer Sales turnover this year vs last year by family" model="com.axelor.apps.supplychain.db.SalesOrderLine">
 	  <view type="chart" name="chart.customer.sales.lastYear.vs.ytd.by.family"/>
-	  <domain>self.salesOrder.statusSelect=3 AND self.salesOrder.company=_company</domain>
-	  <context name="_company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
+	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
 	</action-view>
   	
 </object-views>

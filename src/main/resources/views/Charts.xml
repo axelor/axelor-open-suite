@@ -106,6 +106,10 @@
 	    WHERE    
 	      salesOrder = salesOrderLine.salesOrder
 	    AND
+	      salesOrder.statusSelect=3
+	    AND
+	      salesOrder.company =:activeCompany
+	    AND
 	      product = salesOrderLine.product
 	    AND
 	      productFamily = product.productFamily
