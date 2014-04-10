@@ -390,4 +390,39 @@
 	    <category key="_month" type="month" />
 	    <series key="_amount"  type="bar" title="Units" />
 	  </chart>
+	  
+ 	  <chart name="chart.paymentVoucher.customer.paymentMode.distribution.nbr" onInit="action.account.portal.set.date" title="Customer Payment mode distribution by transactions">
+ 	    <search-fields>
+ 	        <field name="fromDate" type="datetime" widget="[required=true]" />
+ 	        <field name="toDate" type="datetime" widget="[required=true]" />
+ 	    </search-fields>
+	    <dataset type="jpql">
+	     <![CDATA[
+	     	SELECT 
+	     		COUNT(self.id) AS total,
+	     		_paymentMode.name AS paymentMode
+	     	FROM 
+	     		PaymentVoucher self
+	     	LEFT JOIN
+	     		self.paymentMode AS _paymentMode
+	     	WHERE
+				self.operationTypeSelect=3 
+			AND
+				self.paymentDateTime >= :fromDate 
+			AND 
+				self.paymentDateTime <= :toDate
+	     	GROUP BY
+	     		_paymentMode
+	     	
+	    ]]>
+	    </dataset>
+	    <category key="paymentMode" type="text" />
+	    <series key="total" type="pie" title="Payments" />
+	  </chart>
+	  
+ 	  <action-record name="action.account.portal.set.date" model="com.axelor.apps.account.db.Account">
+ 	      <field name="toDate" expr="eval:todayDate" />
+ 	      <field name="fromDate" expr="eval:LocalDate.parse(todayDate).withDayOfMonth(1).withMonthOfYear(1)"/>
+ 	  </action-record> 
+	     
 </object-views>

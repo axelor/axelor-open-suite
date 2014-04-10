@@ -18,6 +18,7 @@
 	   	 <portlet action="portal.supplier.invoices.unpaid" canSearch="true" height="350" />
 	   	 <portlet action="portal.supplier.invoices.due" canSearch="true" height="350" />
 		 <portlet action="portal.customer.invoices.to.collect" colSpan="1" height="350" canSearch="true"/>
+		 <portlet action="portal.paymentVoucher.customer.paymentMode.distribution.nbr" colSpan="1" height="350" canSearch="true"/>
 	</portal>    
 
 	<action-view name="portal.account.invoice.summary" title="Account Invoice Summary" model="com.axelor.apps.account.db.Invoice">
@@ -75,6 +76,11 @@
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>        
 		<domain>self.operationTypeSelect=3 AND self.inTaxTotalRemaining &gt; 0</domain>
+	</action-view>
+	
+	<action-view name="portal.paymentVoucher.customer.paymentMode.distribution.nbr" title="Customer Payment mode distribution by transactions" model="com.axelor.apps.account.db.PaymentVoucher">
+	    <view type="chart" name="chart.paymentVoucher.customer.paymentMode.distribution.nbr"/>
+	    <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
 	</action-view>
 	
 </object-views>
