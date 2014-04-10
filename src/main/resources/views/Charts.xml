@@ -1340,4 +1340,27 @@
 		    <series key="_salesOrderCreatedWon" type="bar"/>
 <!-- 		    <series key="_salesOrderCreatedWonTarget" type="bar"/> -->
 		</chart>
+		
+	<!-- CRM EVENT ASSOCIATED TO PARTNER -->
+		<chart name="chart.customer.crm.activities" title="CRM Activities">
+		  <dataset type="sql">
+		       SELECT 
+		        coalesce(COUNT(_event.id),0) AS _num_event, 
+		        selection_item.title AS _type
+		      FROM 
+		            meta_select as selection        
+		      JOIN 
+		            meta_select_item as selection_item   ON selection_item.select_id = selection.id
+		      LEFT JOIN 
+		           crm_event as _event 
+		             ON _event.type_select=cast(selection_item.value as int) AND _event.contact_partner=:id  
+		      WHERE 
+		            selection.name = 'crm.event.type.select'
+		      GROUP BY
+		            _type    
+		  </dataset>
+		  <category key="_type" type="text" title="Events"/>
+		  <series key="_num_event" type="bar" />
+		</chart>
+		
 </object-views>
