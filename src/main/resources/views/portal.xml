@@ -25,6 +25,9 @@
 		 <portlet action="portal.invoice.purchase.amount.by.month"  height="350"/>
 		 <portlet action="portal.invoice.purchase.amount.by.currency"  height="350"/>
 		 <portlet action="portal.invoice.purchase.paymentCondition.distribution"  height="350"/>
+		 <portlet action="portal.invoice.sale.refund.situation" colSpan="1" height="350"/>
+		 <portlet action="portal.invoice.sale.situation" colSpan="1" height="350"/>   
+		 <portlet action="portal.invoice.purchase.situation" colSpan="1" height="350"/>
 	</portal>    
 
 	<action-view name="portal.account.invoice.summary" title="Account Invoice Summary" model="com.axelor.apps.account.db.Invoice">
@@ -119,10 +122,31 @@
 		  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
 	</action-view>
 	
+	<action-view name="portal.invoice.sale.refund.situation" title="Invoice and Refunds Sale situation (tax incl.)" >
+	  <view type="chart" name="chart.invoice.sale.refund.situation"/>
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>    
+	</action-view>
+	
+	<action-view name="portal.invoice.sale.situation" title="Invoice Sale situation (tax incl.)">
+	  <view type="chart" name="chart.invoice.sale.situation"/>
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>    
+	</action-view>
+	
+	<action-view name="portal.invoice.purchase.situation" title="Invoice Purchase situation (tax incl.)">
+	  <view type="chart" name="chart.invoice.purchase.situation"/>
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>    
+	</action-view>	
+	
 	<!-- 	Action Record for selection of fromDate to toDate   -->
 	<action-record model="com.axelor.apps.base.db.Product" name="action-account-set-from-to-date-range">
 		  <field name="toDate" expr="eval:todayDate"/>
 		  <field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusYears(1)" /> 
+	</action-record>
+	
+	<!-- 	Action Record for fromDate to toDate range 6 months  -->
+	<action-record name="action-account-set-from-to-date-range-6m" model="com.axelor.apps.organisation.db.Timesheet">
+	  <field name="toDate" expr="eval:todayDate"/>
+	  <field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusMonths(6)" /> 
 	</action-record>
 	
 	<!-- 	Action Record For Retrieving UserInfo.activeCompany  -->

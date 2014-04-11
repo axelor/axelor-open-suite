@@ -651,5 +651,290 @@
 	  <category key="_payment_condition" type="month"/>
 	  <series key="ex_tax_total" type="pie"/>
 	</chart>
-	     
+	<chart onInit="action-user-info-set-value-user-id,action-account-set-from-to-date-range" name="chart.invoice.sale.refund.situation" title="Invoice and Refunds Sale situation (tax incl.)">
+	
+	  <search-fields>
+	    <field name="fromDate" type="datetime" widget="[required=true]" />
+	    <field name="toDate" type="datetime" widget="[required=true]" />
+	  </search-fields>
+	  
+	  <dataset type="sql">
+	
+	    SELECT
+	      coalesce(SUM(_sum),0.00) AS _amount,
+	      _label AS _situation
+	    FROM
+	    (
+	      (SELECT 
+	        'Invoices' as _label,
+	        self.in_tax_total as _sum
+	      FROM
+	        account_invoice AS self
+	      JOIN
+	        base_status AS _status
+	        ON _status.code != 'dra'
+	        AND _status.id = self.status
+	      JOIN
+	        base_user_info AS _user
+	        ON _user.id = :id
+	      JOIN
+	        base_company AS _company
+	        ON  _company.id = _user.active_company
+	        AND _company.id = self.company
+	      WHERE
+	        self.invoice_date BETWEEN DATE(:fromDate) AND DATE(:toDate) AND 
+	        self.operation_type_select=3 
+	      )	 
+	    UNION ALL
+	      (SELECT 
+	        'Inv. Unpaid' as _label,
+	        self.in_tax_total_remaining as _sum
+	      FROM
+	        account_invoice AS self
+	      JOIN
+	        base_status AS _status
+	        ON _status.code != 'dra'
+	        AND _status.id = self.status
+	      JOIN
+	        base_user_info AS _user
+	        ON _user.id = :id
+	      JOIN
+	        base_company AS _company
+	        ON  _company.id = _user.active_company
+	        AND _company.id = self.company
+	      WHERE
+	        self.invoice_date BETWEEN DATE(:fromDate) AND DATE(:toDate) AND 
+	        self.operation_type_select=3 
+	      )	 
+	    UNION ALL
+	      (SELECT
+	        'Refunds' AS _label,
+	        self.in_tax_total AS _sum		
+	      FROM
+	        account_invoice AS self
+	      JOIN
+	        base_status AS _status
+	        ON _status.code != 'dra'
+	        AND _status.id = self.status
+	      JOIN
+	        base_user_info AS _user
+	        ON _user.id = :id
+	      JOIN
+	        base_company AS _company
+	        ON  _company.id = _user.active_company
+	        AND _company.id = self.company
+	      WHERE
+	        self.invoice_date BETWEEN DATE(:fromDate) AND DATE(:toDate) AND 
+	        self.operation_type_select=4 
+	      )
+	    UNION ALL
+	      (SELECT
+	        'Ref. Unpaid' AS _label,
+	        self.in_tax_total_remaining AS _sum		
+	      FROM
+	        account_invoice AS self
+	      JOIN
+	        base_status AS _status
+	        ON _status.code != 'dra'
+	        AND _status.id = self.status
+	      JOIN
+	        base_user_info AS _user
+	        ON _user.id = :id
+	      JOIN
+	        base_company AS _company
+	        ON  _company.id = _user.active_company
+	        AND _company.id = self.company
+	      WHERE
+	        self.invoice_date BETWEEN DATE(:fromDate) AND DATE(:toDate) AND 
+	        self.operation_type_select=4 
+	      )
+	    ) situation
+	
+	    GROUP BY
+	      _label
+	    ORDER BY
+	      _label    
+	      
+	  </dataset>
+	  <category key="_situation" type="text" title="Situation"/>
+	  <series key="_amount" type="bar" title="Amount" />
+	</chart>
+
+	<chart onInit="action-user-info-set-value-user-id,action-account-set-from-to-date-range-6m" name="chart.invoice.sale.situation" title="Invoice Sale situation (tax incl.)">
+	
+	  <search-fields>
+	    <field name="fromDate" type="datetime" widget="[required=true]" />
+	    <field name="toDate" type="datetime" widget="[required=true]" />
+	  </search-fields>
+	  
+	  <dataset type="sql">
+	
+	    SELECT
+	      coalesce(SUM(_sum),0.00) AS _amount,
+	      _label AS _situation
+	    FROM
+	    (
+	      (SELECT 
+	        'Invoiced Amount' as _label,
+	        self.in_tax_total as _sum
+	      FROM
+	        account_invoice AS self
+	      JOIN
+	        base_status AS _status
+	        ON _status.code != 'dra'
+	        AND _status.id = self.status
+	      JOIN
+	        base_user_info AS _user
+	        ON _user.id = :id
+	      JOIN
+	        base_company AS _company
+	        ON  _company.id = _user.active_company
+	        AND _company.id = self.company
+	      WHERE
+	        self.invoice_date BETWEEN DATE(:fromDate) AND DATE(:toDate) AND 
+	        self.operation_type_select=3 
+	      )	 
+	    UNION ALL
+	      (SELECT 
+	        'Unpaid Inv.' as _label,
+	        self.in_tax_total_remaining as _sum
+	      FROM
+	        account_invoice AS self
+	      JOIN
+	        base_status AS _status
+	        ON _status.code != 'dra'
+	        AND _status.id = self.status
+	      JOIN
+	        base_user_info AS _user
+	        ON _user.id = :id
+	      JOIN
+	        base_company AS _company
+	        ON  _company.id = _user.active_company
+	        AND _company.id = self.company
+	      WHERE
+	        self.invoice_date BETWEEN DATE(:fromDate) AND DATE(:toDate) AND 
+	        self.operation_type_select=3 
+	      )	 
+	    UNION ALL
+	      (SELECT
+	        'Unpaid Inv. due' AS _label,
+	        self.in_tax_total_remaining AS _sum		
+	      FROM
+	        account_invoice AS self
+	      JOIN
+	        base_status AS _status
+	        ON _status.code != 'dra'
+	        AND _status.id = self.status
+	      JOIN
+	        base_user_info AS _user
+	        ON _user.id = :id
+	      JOIN
+	        base_company AS _company
+	        ON  _company.id = _user.active_company
+	        AND _company.id = self.company
+	      WHERE
+	        self.invoice_date BETWEEN DATE(:fromDate) AND DATE(:toDate) AND 
+	        self.due_date &lt; CURRENT_DATE AND
+	        self.operation_type_select=3
+	      )
+	    ) situation
+	
+	    GROUP BY
+	      _situation
+	    ORDER BY
+	      _situation
+	      
+	  </dataset>
+	  <category key="_situation" type="text" title="Situation"/>
+	  <series key="_amount" type="bar" title="Amount" />
+	</chart>	
+	
+	<chart onInit="action-user-info-set-value-user-id,action-account-set-from-to-date-range-6m" name="chart.invoice.purchase.situation" title="Invoice Purchase situation (tax incl.)">
+	
+	  <search-fields>
+	    <field name="fromDate" type="datetime" widget="[required=true]" />
+	    <field name="toDate" type="datetime" widget="[required=true]" />
+	  </search-fields>
+	  
+	  <dataset type="sql">
+	
+	    SELECT
+	      coalesce(SUM(_sum),0.00) AS _amount,
+	      _label AS _situation
+	    FROM
+	    (
+	      (SELECT 
+	        'Invoiced Amount' as _label,
+	        self.in_tax_total as _sum
+	      FROM
+	        account_invoice AS self
+	      JOIN
+	        base_status AS _status
+	        ON _status.code != 'dra'
+	        AND _status.id = self.status
+	      JOIN
+	        base_user_info AS _user
+	        ON _user.id = :id
+	      JOIN
+	        base_company AS _company
+	        ON  _company.id = _user.active_company
+	        AND _company.id = self.company
+	      WHERE
+	        self.invoice_date BETWEEN DATE(:fromDate) AND DATE(:toDate) AND
+	        self.operation_type_select=1
+	      )	 
+	    UNION ALL
+	      (SELECT 
+	        'Unpaid Inv.' as _label,
+	        self.in_tax_total_remaining as _sum
+	      FROM
+	        account_invoice AS self
+	      JOIN
+	        base_status AS _status
+	        ON _status.code != 'dra'
+	        AND _status.id = self.status
+	      JOIN
+	        base_user_info AS _user
+	        ON _user.id = :id
+	      JOIN
+	        base_company AS _company
+	        ON  _company.id = _user.active_company
+	        AND _company.id = self.company
+	      WHERE
+	        self.invoice_date BETWEEN DATE(:fromDate) AND DATE(:toDate) AND
+	        self.operation_type_select=1 
+	      )	 
+	    UNION ALL
+	      (SELECT
+	        'Unpaid Inv. due' AS _label,
+	        self.in_tax_total_remaining AS _sum		
+	      FROM
+	        account_invoice AS self
+	      JOIN
+	        base_status AS _status
+	        ON _status.code != 'dra'
+	        AND _status.id = self.status
+	      JOIN
+	        base_user_info AS _user
+	        ON _user.id = :id
+	      JOIN
+	        base_company AS _company
+	        ON  _company.id = _user.active_company
+	        AND _company.id = self.company
+	      WHERE
+	        self.invoice_date BETWEEN DATE(:fromDate) AND DATE(:toDate) AND
+	        self.due_date &lt; CURRENT_DATE AND
+	        self.operation_type_select=1
+	      )
+	    ) situation
+	
+	    GROUP BY
+	      _label
+	    ORDER BY
+	      _label    
+	    
+	  </dataset>
+	  <category key="_situation" type="text" title="Situation"/>
+	  <series key="_amount" type="bar" title="Amount" />
+	</chart>		     
 </object-views>
