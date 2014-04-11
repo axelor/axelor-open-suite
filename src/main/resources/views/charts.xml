@@ -425,4 +425,231 @@
  	      <field name="fromDate" expr="eval:LocalDate.parse(todayDate).withDayOfMonth(1).withMonthOfYear(1)"/>
  	  </action-record> 
 	     
+	  <chart onInit="action-account-set-from-to-date-range,action-user-info-set-value-user-id" name="chart.invoice.sale.amount.by.month" title="Invoice Sale by month (tax excl.)">
+		 <search-fields>
+		    <field name="fromDate" title="From Date" type="date"  widget="[required=true]"/>
+		    <field name="toDate" title="To Date" type="date"  widget="[required=true]" />
+		 </search-fields>
+ 		 <dataset type="sql">
+		    SELECT
+			    coalesce(SUM(CASE WHEN cast(_meta._select_month_value as int)=date_part('month',self.invoice_date) 
+			    THEN self.ex_tax_total end),0.00)  AS ex_tax_total,
+			    cast(_meta._select_month_value as int) AS _month 
+			FROM
+			  account_invoice self
+			JOIN
+				base_status AS _status
+				ON _status.code != 'dra' AND _status.id = self.status
+	        JOIN
+			            base_user_info AS _user
+			            ON _user.id = :id
+			JOIN
+			            base_company AS _company
+			            ON  _company.id = _user.active_company
+			            AND _company.id = self.company
+			CROSS JOIN
+				    (SELECT
+			    		  _month_select.title AS _select_month_title, _month_select.value AS _select_month_value
+			    	FROM
+			      		   meta_select AS _selection
+			   		JOIN
+			     		  meta_select_item AS _month_select
+			      	ON _month_select.select_id=_selection.id
+			    	WHERE
+			      		_selection.name='iadministration.month.select'
+			    	ORDER BY
+			     		 _month_select.value) AS _meta
+		  WHERE self.operation_type_select=3 AND self.invoice_date &lt; DATE(:toDate) AND self.invoice_date > DATE(:fromDate)  
+		  GROUP BY cast(_meta._select_month_value as int)
+	  </dataset>
+	  <category key="_month" type="month"/>
+	  <series key="ex_tax_total" type="bar"/>
+	</chart>
+
+	<chart onInit="action-account-set-from-to-date-range,action-user-info-set-value-user-id" name="chart.invoice.sale.amount.by.currency" title="Invoice Sale by currency (tax excl.)">
+	  <search-fields>
+	    <field name="fromDate" title="From Date" type="date"  widget="[required=true]" />
+	    <field name="toDate" title="To Date" type="date"  widget="[required=true]" />
+	  </search-fields>
+	  <dataset type="sql">
+	    SELECT
+		     coalesce(SUM(_account_invoice._ex_tax_total),0) AS ex_tax_total,
+		    _currency.name AS _currency
+		FROM
+			base_currency AS _currency
+		CROSS JOIN (SELECT _invoice.ex_tax_total As _ex_tax_total,
+						  _invoice.currency AS _currency
+				    FROM account_invoice _invoice
+				    JOIN 
+				        base_status AS _status
+						ON _status.code != 'dra' AND _status.id = _invoice.status
+				 	JOIN 
+				 	    base_user_info AS _user
+		        		ON _user.id = :id
+		      		JOIN 
+		      		    base_company AS _company
+		        		ON  _company.id = _user.active_company
+		        		AND _company.id = _invoice.company
+			     	WHERE _invoice.operation_type_select=3 
+			     		AND _invoice.invoice_date &lt; DATE(:toDate) 
+			     		AND _invoice.invoice_date > DATE(:fromDate) 
+			   ) AS _account_invoice
+		WHERE _currency.id=_account_invoice._currency	 
+		GROUP BY _currency.name
+	  </dataset>
+	  <category key="_currency" type="month"/>
+	  <series key="ex_tax_total" type="bar"/>
+	</chart>
+	
+	<chart onInit="action-account-set-from-to-date-range,action-user-info-set-value-user-id" name="chart.invoice.sale.paymentCondition.distribution" title="Invoice Sale Payment Condition distribution">
+	  <search-fields>
+	    <field name="fromDate" title="From Date" type="date"  widget="[required=true]"/>
+	    <field name="toDate" title="To Date" type="date"  widget="[required=true]" />
+	  </search-fields>
+	  <dataset type="sql">
+	    SELECT
+	         coalesce(SUM(_account_invoice._ex_tax_total),0) AS ex_tax_total,
+	        _payment_condition.name AS _payment_condition 
+	    FROM
+	  	    account_payment_condition AS _payment_condition
+	    CROSS JOIN 
+	            	(SELECT _invoice.ex_tax_total As _ex_tax_total,
+	                   _invoice.payment_condition AS _payment_condition
+	                FROM account_invoice _invoice
+	                JOIN 
+	                    base_status AS _status
+	                    ON _status.code != 'dra' AND _status.id = _invoice.status
+			        JOIN 
+			            base_user_info AS _user
+	                    ON _user.id = :id
+	                JOIN
+	                    base_company AS _company
+	                    ON  _company.id = _user.active_company
+	                    AND _company.id = _invoice.company
+	                WHERE _invoice.operation_type_select=3 
+	                	AND _invoice.invoice_date &lt; DATE(:toDate) 
+	                	AND _invoice.invoice_date > DATE(:fromDate)
+	            ) AS _account_invoice
+	    WHERE 
+	        _payment_condition.id=_account_invoice._payment_condition	 
+	    GROUP BY 
+	        _payment_condition.name
+	 </dataset>
+	  <category key="_payment_condition" type="month"/>
+	  <series key="ex_tax_total" type="pie"/>
+	</chart>
+	
+	<chart onInit="action-account-set-from-to-date-range,action-user-info-set-value-user-id" name="chart.invoice.purchase.amount.by.month" title="Invoice Purchase by month (tax excl.)">
+	  <search-fields>
+	    <field name="fromDate" title="From Date" type="date"  widget="[required=true]" />
+	    <field name="toDate" title="To Date" type="date"  widget="[required=true]" />
+	  </search-fields>
+	  <dataset type="sql">
+	      
+	    SELECT
+		    coalesce(SUM(CASE WHEN cast(_meta._select_month_value as int)=date_part('month',self.invoice_date) 
+		    THEN self.ex_tax_total end),0.00)  AS ex_tax_total,
+		    cast(_meta._select_month_value as int) AS _month 
+		FROM
+	 		 account_invoice self
+		JOIN 
+		       base_status AS _status
+		       ON _status.code != 'dra' AND _status.id = self.status
+		JOIN   
+		       base_user_info AS _user
+	           ON _user.id = :id
+	    JOIN   
+	            base_company AS _company
+	            ON  _company.id = _user.active_company
+	            AND _company.id = self.company
+		CROSS JOIN
+		    (SELECT
+		      _month_select.title AS _select_month_title, _month_select.value AS _select_month_value
+		    FROM
+		      meta_select AS _selection
+		    JOIN
+		      meta_select_item AS _month_select
+		      ON _month_select.select_id=_selection.id
+		    WHERE
+		      _selection.name='iadministration.month.select'
+		    ORDER BY
+		      _month_select.value) AS _meta
+	    WHERE self.operation_type_select=1 AND self.invoice_date &lt; DATE(:toDate) AND self.invoice_date > DATE(:fromDate)  
+     	GROUP BY cast(_meta._select_month_value as int)
+	  </dataset>
+	  <category key="_month" type="month"/>
+	  <series key="ex_tax_total" type="bar"/>
+	</chart>
+	
+	<chart onInit="action-account-set-from-to-date-range,action-user-info-set-value-user-id" name="chart.invoice.purchase.amount.by.currency" title="Invoice Purchase by currency (tax excl.)">
+	  <search-fields>
+	    <field name="fromDate" title="From Date" type="date"  widget="[required=true]" />
+	    <field name="toDate" title="To Date" type="date"  widget="[required=true]" />
+	  </search-fields>
+	  <dataset type="sql">
+	      
+	    SELECT
+	  	   	 coalesce(SUM(_account_invoice._ex_tax_total),0) AS ex_tax_total,
+	   		 _currency.name AS _currency
+	    FROM
+			base_currency AS _currency
+    	CROSS JOIN 
+    		(SELECT _invoice.ex_tax_total As _ex_tax_total,
+					_invoice.currency AS _currency
+		     FROM account_invoice _invoice
+		     JOIN 
+		          base_status AS _status
+				  ON _status.code != 'dra' AND _status.id = _invoice.status
+			 JOIN
+			        base_user_info AS _user
+			        ON _user.id = :id
+	      	JOIN
+		        base_company AS _company
+		        ON  _company.id = _user.active_company
+		        AND _company.id = _invoice.company
+		    WHERE _invoice.operation_type_select=1 AND _invoice.invoice_date &lt; DATE(:toDate) AND _invoice.invoice_date > DATE(:fromDate) 
+		   ) AS _account_invoice
+	   WHERE _currency.id=_account_invoice._currency	 
+	   GROUP BY _currency.name
+	  </dataset>
+	  <category key="_currency" type="text"/>
+	  <series key="ex_tax_total" type="bar"/>
+	</chart>
+	
+	<chart onInit="action-account-set-from-to-date-range,action-user-info-set-value-user-id" name="chart.invoice.purchase.paymentCondition.distribution" title="Invoice Purchase Payment Condition distribution">
+	  <search-fields>
+	    <field name="fromDate" title="From Date" type="date"  widget="[required=true]" />
+	    <field name="toDate" title="To Date" type="date"  widget="[required=true]" />
+	  </search-fields>
+	  <dataset type="sql">
+	    SELECT
+	         coalesce(SUM(_account_invoice._ex_tax_total),0) AS ex_tax_total,
+	        _payment_condition.name AS _payment_condition 
+	    FROM
+	  	    account_payment_condition AS _payment_condition
+	    CROSS JOIN 
+	            (SELECT _invoice.ex_tax_total As _ex_tax_total,
+	                  _invoice.payment_condition AS _payment_condition
+	                FROM account_invoice _invoice
+	                JOIN 
+	                    base_status AS _status
+	                    ON _status.code != 'dra' AND _status.id = _invoice.status
+			        JOIN  
+			             base_user_info AS _user
+	                     ON _user.id = :id
+	                JOIN 
+	                     base_company AS _company
+	                     ON  _company.id = _user.active_company
+	                     AND _company.id = _invoice.company
+	                WHERE _invoice.operation_type_select=1 AND _invoice.invoice_date &lt; DATE(:toDate) AND _invoice.invoice_date > DATE(:fromDate)
+	            ) AS _account_invoice
+	    WHERE 
+	        _payment_condition.id=_account_invoice._payment_condition	 
+	    GROUP BY 
+	        _payment_condition.name
+	 </dataset>
+	  <category key="_payment_condition" type="month"/>
+	  <series key="ex_tax_total" type="pie"/>
+	</chart>
+	     
 </object-views>
