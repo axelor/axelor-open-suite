@@ -18,16 +18,18 @@
 	   	 <portlet action="portal.supplier.invoices.unpaid" canSearch="true" height="350" />
 	   	 <portlet action="portal.supplier.invoices.due" canSearch="true" height="350" />
 		 <portlet action="portal.customer.invoices.to.collect" colSpan="1" height="350" canSearch="true"/>
+<!-- 		 <portlet action="portal.invoice.sale.amount.by.month"  height="350"/> -->
+<!-- 		 <portlet action="portal.invoice.sale.amount.by.currency"  height="350"/> -->
+<!-- 		 <portlet action="portal.invoice.sale.paymentCondition.distribution"  height="350"/> -->
+<!-- 		 <portlet action="portal.invoice.purchase.amount.by.month"  height="350"/> -->
+<!-- 		 <portlet action="portal.invoice.purchase.amount.by.currency"  height="350"/> -->
+<!-- 		 <portlet action="portal.invoice.purchase.paymentCondition.distribution"  height="350"/> -->
+<!-- 		 <portlet action="portal.invoice.sale.refund.situation" colSpan="1" height="350"/> -->
+<!-- 		 <portlet action="portal.invoice.sale.situation" colSpan="1" height="350"/>    -->
+<!-- 		 <portlet action="portal.invoice.purchase.situation" colSpan="1" height="350"/> -->
 		 <portlet action="portal.paymentVoucher.customer.paymentMode.distribution.nbr" colSpan="1" height="350" canSearch="true"/>
-		 <portlet action="portal.invoice.sale.amount.by.month"  height="350"/>
-		 <portlet action="portal.invoice.sale.amount.by.currency"  height="350"/>
-		 <portlet action="portal.invoice.sale.paymentCondition.distribution"  height="350"/>
-		 <portlet action="portal.invoice.purchase.amount.by.month"  height="350"/>
-		 <portlet action="portal.invoice.purchase.amount.by.currency"  height="350"/>
-		 <portlet action="portal.invoice.purchase.paymentCondition.distribution"  height="350"/>
-		 <portlet action="portal.invoice.sale.refund.situation" colSpan="1" height="350"/>
-		 <portlet action="portal.invoice.sale.situation" colSpan="1" height="350"/>   
-		 <portlet action="portal.invoice.purchase.situation" colSpan="1" height="350"/>
+		 <portlet action="portal.paymentVoucher.customer.paymentMode.distribution.amount" colSpan="1" height="350" canSearch="true"/>
+		 <portlet action="portal.paymentVoucher.customer.paymentMode.by.amount" colSpan="1" height="350" canSearch="true"/>
 	</portal>    
 
 	<action-view name="portal.account.invoice.summary" title="Account Invoice Summary" model="com.axelor.apps.account.db.Invoice">
@@ -89,7 +91,17 @@
 	
 	<action-view name="portal.paymentVoucher.customer.paymentMode.distribution.nbr" title="Customer Payment mode distribution by transactions" model="com.axelor.apps.account.db.PaymentVoucher">
 	    <view type="chart" name="chart.paymentVoucher.customer.paymentMode.distribution.nbr"/>
-	    <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+	    <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />        
+	</action-view>
+	
+	<action-view name="portal.paymentVoucher.customer.paymentMode.distribution.amount" title="Customer Payment mode distribution by amount" model="com.axelor.apps.account.db.PaymentVoucher">
+	    <view type="chart" name="chart.paymentVoucher.customer.paymentMode.distribution.amount"/>
+	    <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />        
+	</action-view>
+	
+	<action-view name="portal.paymentVoucher.customer.paymentMode.by.amount" title="Customer Payment mode by amount" model="com.axelor.apps.account.db.PaymentVoucher">
+	    <view type="chart" name="chart.paymentVoucher.customer.paymentMode.by.amount"/>
+	    <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />        
 	</action-view>
 	
 	<action-view title="Invoice Sale by month (tax excl.)" name="portal.invoice.sale.amount.by.month">

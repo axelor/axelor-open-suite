@@ -423,7 +423,66 @@
  	  <action-record name="action.account.portal.set.date" model="com.axelor.apps.account.db.Account">
  	      <field name="toDate" expr="eval:todayDate" />
  	      <field name="fromDate" expr="eval:LocalDate.parse(todayDate).withDayOfMonth(1).withMonthOfYear(1)"/>
- 	  </action-record> 
+ 	  </action-record>
+ 	  
+ 	  <chart name="chart.paymentVoucher.customer.paymentMode.distribution.amount" onInit="action.account.portal.set.date" title="Customer Payment mode distribution by amount">
+ 	    <search-fields>
+ 	        <field name="fromDate" type="datetime" widget="[required=true]" />
+ 	        <field name="toDate" type="datetime" widget="[required=true]" />
+ 	    </search-fields>
+	    <dataset type="jpql">
+	     <![CDATA[
+	     	SELECT 
+	     		SUM(self.paidAmount) AS total,
+	     		_paymentMode.name AS paymentMode
+	     	FROM 
+	     		PaymentVoucher self
+	     	LEFT JOIN
+	     		self.paymentMode AS _paymentMode
+	     	WHERE
+				self.operationTypeSelect=3 
+			AND
+				self.paymentDateTime >= :fromDate 
+			AND 
+				self.paymentDateTime <= :toDate
+	     	GROUP BY
+	     		_paymentMode
+	     	
+	    ]]>
+	    </dataset>
+	    <category key="paymentMode" type="text" />
+	    <series key="total" type="pie" title="Amount paid" />
+	  </chart>
+	  
+ 	  
+ 	  <chart name="chart.paymentVoucher.customer.paymentMode.by.amount" onInit="action.account.portal.set.date" title="Customer Payment mode by amount">
+ 	    <search-fields>
+ 	        <field name="fromDate" type="datetime" widget="[required=true]" />
+ 	        <field name="toDate" type="datetime" widget="[required=true]" />
+ 	    </search-fields>
+	    <dataset type="jpql">
+	     <![CDATA[
+	     	SELECT 
+	     		SUM(self.paidAmount) AS total,
+	     		_paymentMode.name AS paymentMode
+	     	FROM 
+	     		PaymentVoucher self
+	     	LEFT JOIN
+	     		self.paymentMode AS _paymentMode
+	     	WHERE
+				self.operationTypeSelect=3 
+			AND
+				self.paymentDateTime >= :fromDate 
+			AND 
+				self.paymentDateTime <= :toDate
+	     	GROUP BY
+	     		_paymentMode
+	     	
+	    ]]>
+	    </dataset>
+	    <category key="paymentMode" type="text" />
+	    <series key="total" type="bar" title="Amount paid" />
+	  </chart>
 	     
 	  <chart onInit="action-account-set-from-to-date-range,action-user-info-set-value-user-id" name="chart.invoice.sale.amount.by.month" title="Invoice Sale by month (tax excl.)">
 		 <search-fields>
