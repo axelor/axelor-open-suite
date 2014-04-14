@@ -484,7 +484,7 @@
 	    <series key="total" type="bar" title="Amount paid" />
 	  </chart>
 	     
-	  <chart onInit="action-account-set-from-to-date-range,action-user-info-set-value-user-id" name="chart.invoice.sale.amount.by.month" title="Invoice Sale by month (tax excl.)">
+	  <chart onInit="action-account-set-from-to-date-range" name="chart.invoice.sale.amount.by.month" title="Invoice Sale by month (tax excl.)">
 		 <search-fields>
 		    <field name="fromDate" title="From Date" type="date"  widget="[required=true]"/>
 		    <field name="toDate" title="To Date" type="date"  widget="[required=true]" />
@@ -525,7 +525,7 @@
 	  <series key="ex_tax_total" type="bar"/>
 	</chart>
 
-	<chart onInit="action-account-set-from-to-date-range,action-user-info-set-value-user-id" name="chart.invoice.sale.amount.by.currency" title="Invoice Sale by currency (tax excl.)">
+	<chart onInit="action-account-set-from-to-date-range" name="chart.invoice.sale.amount.by.currency" title="Invoice Sale by currency (tax excl.)">
 	  <search-fields>
 	    <field name="fromDate" title="From Date" type="date"  widget="[required=true]" />
 	    <field name="toDate" title="To Date" type="date"  widget="[required=true]" />
@@ -560,7 +560,7 @@
 	  <series key="ex_tax_total" type="bar"/>
 	</chart>
 	
-	<chart onInit="action-account-set-from-to-date-range,action-user-info-set-value-user-id" name="chart.invoice.sale.paymentCondition.distribution" title="Invoice Sale Payment Condition distribution">
+	<chart onInit="action-account-set-from-to-date-range" name="chart.invoice.sale.paymentCondition.distribution" title="Invoice Sale Payment Condition distribution">
 	  <search-fields>
 	    <field name="fromDate" title="From Date" type="date"  widget="[required=true]"/>
 	    <field name="toDate" title="To Date" type="date"  widget="[required=true]" />
@@ -598,7 +598,7 @@
 	  <series key="ex_tax_total" type="pie"/>
 	</chart>
 	
-	<chart onInit="action-account-set-from-to-date-range,action-user-info-set-value-user-id" name="chart.invoice.purchase.amount.by.month" title="Invoice Purchase by month (tax excl.)">
+	<chart onInit="action-account-set-from-to-date-range" name="chart.invoice.purchase.amount.by.month" title="Invoice Purchase by month (tax excl.)">
 	  <search-fields>
 	    <field name="fromDate" title="From Date" type="date"  widget="[required=true]" />
 	    <field name="toDate" title="To Date" type="date"  widget="[required=true]" />
@@ -640,7 +640,7 @@
 	  <series key="ex_tax_total" type="bar"/>
 	</chart>
 	
-	<chart onInit="action-account-set-from-to-date-range,action-user-info-set-value-user-id" name="chart.invoice.purchase.amount.by.currency" title="Invoice Purchase by currency (tax excl.)">
+	<chart onInit="action-account-set-from-to-date-range" name="chart.invoice.purchase.amount.by.currency" title="Invoice Purchase by currency (tax excl.)">
 	  <search-fields>
 	    <field name="fromDate" title="From Date" type="date"  widget="[required=true]" />
 	    <field name="toDate" title="To Date" type="date"  widget="[required=true]" />
@@ -675,7 +675,7 @@
 	  <series key="ex_tax_total" type="bar"/>
 	</chart>
 	
-	<chart onInit="action-account-set-from-to-date-range,action-user-info-set-value-user-id" name="chart.invoice.purchase.paymentCondition.distribution" title="Invoice Purchase Payment Condition distribution">
+	<chart onInit="action-account-set-from-to-date-range" name="chart.invoice.purchase.paymentCondition.distribution" title="Invoice Purchase Payment Condition distribution">
 	  <search-fields>
 	    <field name="fromDate" title="From Date" type="date"  widget="[required=true]" />
 	    <field name="toDate" title="To Date" type="date"  widget="[required=true]" />
@@ -710,7 +710,7 @@
 	  <category key="_payment_condition" type="month"/>
 	  <series key="ex_tax_total" type="pie"/>
 	</chart>
-	<chart onInit="action-user-info-set-value-user-id,action-account-set-from-to-date-range" name="chart.invoice.sale.refund.situation" title="Invoice and Refunds Sale situation (tax incl.)">
+	<chart onInit="action-account-set-from-to-date-range" name="chart.invoice.sale.refund.situation" title="Invoice and Refunds Sale situation (tax incl.)">
 	
 	  <search-fields>
 	    <field name="fromDate" type="datetime" widget="[required=true]" />
@@ -819,7 +819,7 @@
 	  <series key="_amount" type="bar" title="Amount" />
 	</chart>
 
-	<chart onInit="action-user-info-set-value-user-id,action-account-set-from-to-date-range-6m" name="chart.invoice.sale.situation" title="Invoice Sale situation (tax incl.)">
+	<chart onInit="action-account-set-from-to-date-range-6m" name="chart.invoice.sale.situation" title="Invoice Sale situation (tax incl.)">
 	
 	  <search-fields>
 	    <field name="fromDate" type="datetime" widget="[required=true]" />
@@ -908,7 +908,7 @@
 	  <series key="_amount" type="bar" title="Amount" />
 	</chart>	
 	
-	<chart onInit="action-user-info-set-value-user-id,action-account-set-from-to-date-range-6m" name="chart.invoice.purchase.situation" title="Invoice Purchase situation (tax incl.)">
+	<chart onInit="action-account-set-from-to-date-range-6m" name="chart.invoice.purchase.situation" title="Invoice Purchase situation (tax incl.)">
 	
 	  <search-fields>
 	    <field name="fromDate" type="datetime" widget="[required=true]" />
