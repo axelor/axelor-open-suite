@@ -696,4 +696,12 @@
 		<context name="_operationTypeSelect" expr="eval:2"/>
 	</action-view>	
 	
+	<menuitem name="menu-account-invoice-dashboard" parent="menu-dashboards-sample" priority="145"
+    title="Account Dashboard" action="portal.account.invoice.dashboard.view"/>    
+
+    <action-view name="portal.account.invoice.dashboard.view" title="Account Dashboard"
+        icon="img/16px/crmSmall_16px.png">
+        <view type="portal" name="account.invoice.dashboard.portal" />        
+    </action-view>
+	
 </object-views>
