@@ -6,6 +6,9 @@
 
 	<menuitem name="menu-dashboards" priority="200"
     	title="Dashboards" icon="img/16px/chart_16px.png" groups="admins,erp"/> 	
+    	
+	<menuitem name="menu-dashboards-sample" priority="200" parent="menu-dashboards"
+    	title="Sample"  groups="admins,erp"/> 	
 
 	<menuitem name="menu-salesman-dashboard" parent="menu-dashboards"
 		title="Salesman Dashboard" action="portal.salesman.dashboard.view" />
