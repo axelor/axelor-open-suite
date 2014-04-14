@@ -197,9 +197,9 @@
 		<option value="9">Transfer</option>
 	</selection>		
 	
-	<selection name="iaccount.payment.mode.sales.purchases.selects">
-		<option value="1">Sales</option>
-		<option value="2">Purchases</option>
+	<selection name="iaccount.payment.mode.in.out.select">
+		<option value="1">In</option>
+		<option value="2">Out</option>
 	</selection>	
 
 </object-views>

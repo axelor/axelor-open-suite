@@ -6,7 +6,7 @@
     <form name="partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" cols="6" colWidths="25*" 
     onNew="action-partner-record-partner-type-select,action-partner-record-set-default,action-partner-record-customer-supplier-type,action-partner-attrs-set-readonly"
     onLoad="action-partner-attrs-change-name,action-partner-attrs-set-readonly" 
-    onSave="save,action-set-partner-seq,action-create-accounting-situation">
+    onSave="save,action-set-partner-seq,action-create-accounting-situation" id="partner-account-form">
 	    <toolbar>
 	        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="id == null"/>
 	        <button name="showPartnerInfo" title="Print Informations" icon="fa-print" onClick="save,action-partner-method-show-partner-info" readonlyIf="id == null"/>

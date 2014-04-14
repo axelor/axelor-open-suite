@@ -15,7 +15,7 @@
         <field name="bankJournal"/>
         <field name="invoiceLabel" />
         <field name="typeSelect"/>
-		<field name="salesPurchasesSelect"/>
+		<field name="inOutSelect"/>
         <field name="accountManagementList" grid-view="account-management-payment-mode-grid" form-view="account-management-payment-mode-form"
         domain="self.typeSelect = 3" colSpan="4" showTitle="false"/>
     </form>
