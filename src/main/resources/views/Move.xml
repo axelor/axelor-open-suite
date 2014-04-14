@@ -76,6 +76,7 @@
             </field>
 	        <group title="Actions" colSpan="4" cols="6">
 	            <field name="state" readonly="true"/>
+	            <field name="validationDate" readonly="true"/>
 	            <button name="validate" title="Validate" colSpan="2" onClick="save,action-move-method-validate,action-move-attrs-status,save"/>
 	        </group>
         

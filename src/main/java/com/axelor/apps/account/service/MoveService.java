@@ -860,6 +860,9 @@ public class MoveService {
 		else  {
 			this.flagPartners(move);
 		}
+		
+		move.setValidationDate(toDay);
+	
 	}
 	
 	
