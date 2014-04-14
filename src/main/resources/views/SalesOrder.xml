@@ -103,7 +103,7 @@
 	                <field name="team" onSelect="action-sales-order-domain-on-team"/>
 	            </group>
 	            <group title="Financial terms" colSpan="2" cols="2">
-	                <field name="paymentMode"/>
+	                <field name="paymentMode" domain="self.inOutSelect = 1"/>
 	                <field name="paymentCondition"/>
 	            </group>
 	            <group title="Marketing" colSpan="2">
