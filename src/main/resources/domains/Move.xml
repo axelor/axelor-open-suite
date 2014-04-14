@@ -26,6 +26,7 @@
    	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
     <boolean name="ignoreInAccountingOk" title="Ignore in accounting" default="false"/>
     <boolean name="ignoreInReminderOk" title="Ignore in remind process" default="false"/>
+    <date name="validationDate" title="Validation date"/>
     
   </entity>
 </domain-models>
