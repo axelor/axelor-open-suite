@@ -186,7 +186,7 @@ public class PurchaseOrderService {
 	
 	
 	public PurchaseOrder createPurchaseOrder(Project project, UserInfo buyerUserInfo, Company company, Partner contactPartner, Currency currency, 
-			LocalDate deliveryDate, String externalReference, int invoicingTypeSelect, Location location, LocalDate orderDate, PriceList priceList, Partner supplierPartner) throws AxelorException  {
+			LocalDate deliveryDate, String internalReference, String externalReference, int invoicingTypeSelect, Location location, LocalDate orderDate, PriceList priceList, Partner supplierPartner) throws AxelorException  {
 		
 		LOG.debug("Création d'une commande fournisseur : Société = {},  Reference externe = {}, Fournisseur = {}",
 				new Object[] { company.getName(), externalReference, supplierPartner.getFullName() });
@@ -198,6 +198,7 @@ public class PurchaseOrderService {
 		purchaseOrder.setContactPartner(contactPartner);
 		purchaseOrder.setCurrency(currency);
 		purchaseOrder.setDeliveryDate(deliveryDate);
+		purchaseOrder.setInternalReference(internalReference);
 		purchaseOrder.setExternalReference(externalReference);
 		purchaseOrder.setInvoicingTypeSelect(invoicingTypeSelect);
 		purchaseOrder.setLocation(location);

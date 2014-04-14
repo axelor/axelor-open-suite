@@ -30,6 +30,7 @@
 	        <field name="purchaseOrderSeq" css="highlight"/>
 	        <field name="orderDate"/>
 	        <field name="company" widget="SuggestBox" form-view="company-lite-form" onChange="action-purchase-order-record-company-configuration,action-purchase-order-method-get-location"/>
+	        <field name="internalReference"/>
 	        <field name="externalReference"/>
 	        <field name="currency"/>
 	        <field name="project" domain="self.isBusiness = true"/>
@@ -85,6 +86,10 @@
 	                </group>
 	            </group>
 	        </page>
+	        <page title="Financial terms" colSpan="4" cols="6">
+                <field name="paymentMode" domain="self.inOutSelect = 2"/>
+                <field name="paymentCondition"/>
+	        </page>
 			<page title="Notes" colSpan="4" cols="6">
 				<field name="notes" showTitle="false" colSpan="6" widget="Html" x-lite="true"/>
 			</page>
@@ -106,6 +111,8 @@
 	
     <action-record name="action-purchase-order-record-partner" model="com.axelor.apps.supplychain.db.PurchaseOrder">
  		<field name="currency" expr="eval: supplierPartner?.currency"/>
+ 		<field name="paymentCondition" expr="eval: supplierPartner?.paymentCondition"/>
+ 		<field name="paymentMode" expr="eval: supplierPartner?.paymentMode"/>
  		<field name="priceList" expr="eval: com.axelor.apps.base.db.PriceList.all().filter('self.partner = ?1 AND self.isActive = true AND self.typeSelect = 2 AND (self.validFromDate &lt;= ?2 or self.validFromDate = null) AND (self.validToDate &gt;= ?2 or self.validToDate = null)',supplierPartner, __date__).fetchOne()"/>
  	</action-record>
     

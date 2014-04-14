@@ -112,6 +112,7 @@ public class MinStockRulesService {
 							null, 
 							supplierPartner.getCurrency(), 
 							this.today.plusDays(supplierPartner.getDeliveryDelay()), 
+							minStockRules.getName(),
 							null, 
 							supplychainConfigService.getSupplychainConfig(company).getSalesOrderInvoicingTypeSelect(), 
 							location, 
