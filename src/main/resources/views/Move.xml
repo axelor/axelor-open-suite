@@ -17,7 +17,7 @@
     onNew="action-move-attrs-status,default-move-record,action-move-attrs-hidden-get-info-from-first-move-line-ok,action-move-attrs-hidden-date,action-move-method-get-period">
     	<notebook colSpan="4">
     	<page title="Informations" colSpan="4">
-	        <group title="Move header" colSpan="4" readonlyIf="state = 'validated'">
+	        <group title="Move header" colSpan="4" readonlyIf="state == 'validated'">
 	            <field name="reference"/>
 	            <field name="date" onChange="action-move-method-get-period"/>
 	            <field name="company" widget="SuggestBox" form-view="company-lite-form" onChange="action-move-method-get-period"/>
@@ -30,7 +30,7 @@
 	            <field name="paymentVoucher"/>
 	            <field name="getInfoFromFirstMoveLineOk"/>
 	         </group>
-             <field name="moveLineList" colSpan="4" readonlyIf="state = 'validated'">
+             <field name="moveLineList" colSpan="4" readonlyIf="state == 'validated'">
             	<grid title="Move lines">
 			        <field name="name"/>
 			        <field name="date"/>
