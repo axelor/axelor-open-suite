@@ -6,86 +6,9 @@
 
 	<menuitem name="menu-dashboards" priority="200"
     	title="Dashboards" icon="img/16px/chart_16px.png" groups="admins,erp"/> 	
-
-	<menuitem name="menu-salesman-dashboard" parent="menu-dashboards"
-		title="Salesman Dashboard" action="portal.salesman.dashboard.view" />
-		
-	<action-view name="portal.salesman.dashboard.view" title="Salesman Dashboard"
-	icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="supplychain.salesman.dashboard.portal" />
-    	<context name="_user" expr="eval:__user__"/>
-    	<context name="_user_id" expr="eval:__user__.id"/>
-    	<context name="_past_month" expr="eval: __date__.minusMonths(1)"/>
-	</action-view>
-		
-	<menuitem name="menu-sales-manager-dashboard" parent="menu-dashboards"
-		title="Sales Manager Dashboard" action="portal.sales.manager.dashboard.view" />	
-
-	<action-view name="portal.sales.manager.dashboard.view" title="Sales Manager Dashboard"
-		icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="supplychain.sales.manager.dashboard.portal" />
-    	<context name="_past_month" expr="eval: __date__.minusMonths(1)"/>
-	</action-view>
-		
-	<menuitem name="menu-purchase-buyer-dashboard" parent="menu-dashboards"
-		title="Purchase Buyer Dashboard" action="portal.purchase.buyer.dashboard.view" />	
-
-	<action-view name="portal.purchase.buyer.dashboard.view" title="Purchase Buyer Dashboard"
-		icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="supplychain.purchase.buyer.dashboard.portal" />
-    	<context name="_user" expr="eval:__user__"/>
-    	<context name="_user_id" expr="eval:__user__.id"/>
-	</action-view>
-	
-	<menuitem name="menu-purchase-manager-dashboard" parent="menu-dashboards"
-		title="Purchase Manager Dashboard" action="portal.purchase.manager.dashboard.view" />	
-
-	<action-view name="portal.purchase.manager.dashboard.view" title="Purchase Manager Dashboard"
-		icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="supplychain.purchase.manager.dashboard.portal" />
-	</action-view>
-	
-	<menuitem name="menu-purchase-order-dashboard" parent="menu-dashboards"
-		title="Purchase Order Dashboard" action="supply.chain.purchase.order.dashboard.portal.view" />	
-		
-	<action-view name="supply.chain.purchase.order.dashboard.portal.view" title="Purchase Order Dashboard"
-		icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="supply.chain.purchase.order.dashboard.portal" />	    
-	</action-view>
-	
-	<menuitem name="menu-organisation-dashboard" parent="menu-dashboards"
-		title="Organisation Dashboard" action="portal.organisation.dashboard.view"/>	
-
-	<action-view name="portal.organisation.dashboard.view" title="Organisation Dashboard"
-		icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="org.project.dashboard.portal" />	    
-	</action-view>
-	<menuitem name="menu-human-resources-dashboard" parent="menu-dashboards"
-		title="Human Resources Dashboard" action="portal.human.resources.dashboard.view" />	
-
-	<action-view name="portal.human.resources.dashboard.view" title="Human Resources Dashboard"
-		icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="human.resources.dashboard.portal" />
-		<context name="_user_id" expr="eval:__user__.id"/>
-	</action-view>
-	
-	<menuitem name="menu-manufacturing-dashboard" parent="menu-dashboards"
-		title="Manufacturing Dashboard" action="portal.manufacturing.dashboard.view" groups="axelordemo"/>	
-
-	<action-view name="portal.manufacturing.dashboard.view" title="Manufacturing Dashboard"
-		icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="manufacturing.dashboard.portal" />
-	    <context name="_today" expr="eval: __date__.toDate()"/>
-	</action-view>
-	
-	<menuitem name="menu-stock-dashboard" parent="menu-dashboards"
-		title="Stock Dashboard" action="portal.stock.dashboard.view"/>	
-
-	<action-view name="portal.stock.dashboard.view" title="Stock Dashboard"
-		icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="stock.dashboard.portal" />
-	    <context name="_newDate" expr="eval: __date__.plusDays(5)"/>
-	</action-view>
+    	
+	<menuitem name="menu-dashboards-sample" priority="200" parent="menu-dashboards"
+    	title="Sample"  groups="admins,erp"/> 	
 	
 	<menuitem name="contact-root" title="Companies/Contacts" priority="190"
 		icon="img/64px/partner_64px.png" groups="admins,erp,crm"/>
@@ -685,13 +608,7 @@
 		<view type="form" name="partner-form"/>
 		<context name="_partnerTypeSelect" expr="eval:2" />
 	</action-view>
-	<menuitem name="menu-account-invoice-dashboard" parent="menu-dashboards"
-    title="Account Dashboard" action="portal.account.invoice.dashboard.view"/>    
-
-    <action-view name="portal.account.invoice.dashboard.view" title="Account Dashboard"
-        icon="img/16px/crmSmall_16px.png">
-        <view type="portal" name="account.invoice.dashboard.portal" />        
-    </action-view>
+	
 	<menuitem name="top-menu-create-contact" parent="top-menu-utility" title="Create Contact" action="top.new.contact.view" />
 		
 	<action-view name="top.new.contact.view" title="Create Contact" model="com.axelor.apps.base.db.Partner" >
