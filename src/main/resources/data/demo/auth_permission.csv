@@ -1,2 +1,13 @@
-name;object;canRead;canWrite;canCreate;canRemove;readCondition;readParams;writeCondition;writeParams;createCondition;createParams;removeCondition;removeParams
-perms.user-info;com.axelor.apps.base.db.UserInfo;true;false;false;false;;;;;;;;
+"name";"object";"canRead";"canWrite";"canCreate";"canRemove";"canExport";"readCondition";"readParams";"writeCondition";"writeParams";"createCondition";"createParams";"removeCondition";"removeParams"
+"perms.user-info";"com.axelor.apps.base.db.UserInfo";"true";"false";"false";"false";"true";;;;;;;;
+"perm.base.all";"com.axelor.apps.base.db.*";"true";"true";"true";"true";"true";;;;;;;;
+"perm.base.rw";"com.axelor.apps.base.db.*";"true";"true";"false";"false";"true";;;;;;;;
+"perm.account.all";"com.axelor.apps.account.db.*";"true";"true";"true";"true";"true";;;;;;;;
+"perm.account.rw";"com.axelor.apps.account.db.*";"true";"true";"false";"false";"true";;;;;;;;
+"perm.organisation.all";"com.axelor.apps.organisation.db.*";"true";"true";"true";"true";"true";;;;;;;;
+"perm.organisation.rwc";"com.axelor.apps.organisation.db.*";"true";"true";"true";"false";"true";;;;;;;;
+"perm.production.all";"com.axelor.apps.production.db.*";"true";"true";"true";"true";"true";;;;;;;;
+"perm.production.rwc";"com.axelor.apps.production.db.*";"true";"true";"true";"false";"true";;;;;;;;
+"perm.crm.all";"com.axelor.apps.crm.db.*";"true";"true";"true";"true";"true";;;;;;;;
+"perm.supplychain.all";"com.axelor.apps.supplychain.db.*";"true";"true";"true";"true";"true";;;;;;;;
+"perm.supplychain.rwc";"com.axelor.apps.supplychain.db.*";"true";"true";"true";"false";"true";;;;;;;;
