@@ -314,4 +314,42 @@
 	    <context name="_newDate" expr="eval: __date__.plusDays(5)"/>
 	</action-view>
 	
+	
+	<menuitem name="menu-stock-dashboard" parent="menu-dashboards" 
+		title="Stock Dashboard" action="portal.stock.dashboard.view" priority="80" />	
+
+	<action-view name="portal.stock.dashboard.view" title="Stock Dashboard"
+		icon="img/16px/crmSmall_16px.png"  >
+		<view type="portal" name="stock.dashboard.portal" />
+	    <context name="_newDate" expr="eval: __date__.plusDays(5)"/>
+	</action-view>
+	
+	<menuitem name="menu-purchases-dashboard" parent="menu-dashboards"  
+		title="Purchases Dashboard" priority="60" />	
+	
+	<menuitem name="menu-purchases-dashboard.1" parent="menu-purchases-dashboard"  
+		title="Purchases Dashboard 1" action="supply.chain.purchases.dashboard.1.portal" />	
+		
+	<action-view name="supply.chain.purchases.dashboard.1.portal" title="Purchases Dashboard 1"
+		icon="img/16px/crmSmall_16px.png">
+		<view type="portal" name="supply.chain.purchases.dashboard.1.portal" />	 
+		<context name="_user_id" expr="eval:__user__.id"/>   
+	</action-view>
+	
+	<menuitem name="menu-purchases-dashboard.2" parent="menu-purchases-dashboard"  
+		title="Purchases Dashboard 2" action="supply.chain.purchases.dashboard.2.portal" />	
+		
+	<action-view name="supply.chain.purchases.dashboard.2.portal" title="Purchases Dashboard 2"
+		icon="img/16px/crmSmall_16px.png">
+		<view type="portal" name="supply.chain.purchases.dashboard.2.portal" />	    
+	</action-view>
+	
+	<menuitem name="menu-purchases-dashboard.3" parent="menu-purchases-dashboard"  
+		title="Purchases Dashboard 3" action="supply.chain.purchases.dashboard.3.portal" />	
+		
+	<action-view name="supply.chain.purchases.dashboard.3.portal" title="Purchases Dashboard 3"
+		icon="img/16px/crmSmall_16px.png">
+		<view type="portal" name="supply.chain.purchases.dashboard.3.portal" />	    
+	</action-view>
+	
 </object-views>
