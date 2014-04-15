@@ -65,6 +65,9 @@
 		<portlet action="portal.sales.manager.dashboard.country.sales" height="350" />
 		<portlet action="portal.prod.turnover.sales.last.12m" height="350" />    
    	    <portlet action="portal.prod.qty.sales.last.12m" height="350" />
+   	    <portlet action="portal.stockMove.nbr.delivery.by.country" height="350"/>  
+   	    <portlet action="portal.stockMoveLine.product.delivery.by.country" height="350"/>  
+   	    <portlet action="portal.stockMoveLine.product.delivery.by.country.by.family" height="350"/> 
 	</portal>
 	
 	<action-view name="portal.sales.turnover.ytd.vs.lastyear" title="Sales Turnover This year vs Last year" model="com.axelor.apps.supplychain.db.SalesOrder">
@@ -119,7 +122,24 @@
         <view type="chart" name="chart.prod.qty.sales.last.12m"/>
     </action-view>
 	
+	<action-view title="Customer deliveries by country" name="portal.stockMove.nbr.delivery.by.country">
+	  <view type="chart" name="chart.stockMove.nbr.delivery.by.country"/>
+	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+	</action-view>
 	
+	<action-view title="Product deliveries in qty by country" name="portal.stockMoveLine.product.delivery.by.country">
+	  <view type="chart" name="chart.stockMoveLine.product.delivery.by.country"/>
+	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+	</action-view>
+	
+	<action-view title="Product deliveries in qty by country by family" name="portal.stockMoveLine.product.delivery.by.country.by.family">
+	  <view type="chart" name="chart.stockMoveLine.product.delivery.by.country.by.family"/>
+	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+	</action-view>
+
 <!--   	Purchase Buyer Dashboard -->
 	
 	<portal title="Dashboard" name="supplychain.purchase.buyer.dashboard.portal" cols="2">
