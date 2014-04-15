@@ -5,7 +5,7 @@
 	
 		<!-- SALES MAN DASHBOARD -->
 		
-	<portal title="Dashboard" name="supplychain.salesman.dashboard.portal" cols="2">
+	<portal title="Dashboard" name="supplychain.salesman.dashboard.portal.sample" cols="2">
 		<portlet action="portal.salesman.dashboard.orders" height="350" canSearch="true" />
 		<portlet action="portal.salesman.dashboard.total.turnover" height="350" />
 		<portlet action="portal.salesman.dashboard.leads" canSearch="true" height="350" />
@@ -53,7 +53,7 @@
 	
 			<!-- 	SALES MANAGER DASHBOARD -->
 	
-	<portal title="Dashboard" name="supplychain.sales.manager.dashboard.portal" cols="2">
+	<portal title="Dashboard" name="supplychain.sales.manager.dashboard.portal.sample" cols="2">
 		<portlet action="portal.sales.turnover.ytd.vs.lastyear" height="350"/>  	
 		<portlet action="portal.sales.turnover.by.product.ytd.vs.lastyear" height="350"/>
 		<portlet action="portal.sales.turnover.ytd.vs.lastyear.by.family" height="350" />
@@ -142,7 +142,7 @@
 
 <!--   	Purchase Buyer Dashboard -->
 	
-	<portal title="Dashboard" name="supplychain.purchase.buyer.dashboard.portal" cols="2">
+	<portal title="Dashboard" name="supplychain.purchase.buyer.dashboard.portal.sample" cols="2">
 		<portlet action="portal.purchase.buyer.dashboard.validated.orders" height="350" canSearch="true" />
 		<portlet action="portal.purchase.buyer.dashboard.orders" canSearch="true" height="350" />
 		<portlet action="portal.purchase.buyer.dashboard.order.to.validate" canSearch="true" height="350" />
@@ -211,7 +211,7 @@
 	<!-- 	Purchase Manager Dashboard -->
 	
 	
-	<portal title="Dashboard" name="supplychain.purchase.manager.dashboard.portal" cols="2">
+	<portal title="Dashboard" name="supplychain.purchase.manager.dashboard.portal.sample" cols="2">
 		<portlet action="portal.purchase.manager.dashboard.validated.orders" height="350" canSearch="true" />
 		<portlet action="portal.purchase.manager.dashboard.order.to.validate" canSearch="true" height="350" />
 		<portlet action="portal.purchase.manager.dashboard.buyer.purchase.volume" height="350"/>
@@ -253,7 +253,7 @@
 	
 <!-- 	Stock Dashboard -->
 	
-	<portal title="Dashboard" name="stock.dashboard.portal" cols="2">		
+	<portal title="Dashboard" name="stock.dashboard.portal.sample" cols="2">		
 		<portlet action="portal.stock.dashboard.upcoming.deliveries" canSearch="true" height="350" />
 		<portlet action="portal.stock.dashboard.late.deliveries" canSearch="true" height="350" />
 		<portlet action="portal.stock.dashboard.upcoming.arrivals" height="350" canSearch="true" />
@@ -331,7 +331,7 @@
 
 	<!-- Purchase Order Dashboard -->
 		
-	<portal name="supply.chain.purchase.order.dashboard.portal" title="Dashboard">
+	<portal name="supply.chain.purchase.order.dashboard.portal.sample" title="Dashboard">
 		<portlet action="portal.my.purchase.orders.to.execute" canSearch="true" height="350" />
 		<portlet action="portal.ongoing.purchase.orders" canSearch="true" height="350" />
 		<portlet action="portal.my.ongoing.purchase.orders" canSearch="true" height="350" />
