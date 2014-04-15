@@ -130,4 +130,13 @@
 	    <context name="_today" expr="eval: __date__.toDate()"/>
 	</action-view>
 
+	<menuitem name="menu-manufacturing-dashboard" parent="menu-dashboards" 
+		title="Manufacturing Dashboard" action="portal.manufacturing.dashboard.view" groups="admins,axelordemo"/>	
+
+	<action-view name="portal.manufacturing.dashboard.view" title="Manufacturing Dashboard"
+		icon="img/16px/crmSmall_16px.png">
+		<view type="portal" name="manufacturing.dashboard.portal" />
+	    <context name="_today" expr="eval: __date__.toDate()"/>
+	</action-view>
+
 </object-views>

@@ -9,6 +9,12 @@
 		<portlet action="manufacturing.dashboard.portal.production.orders.plannings" canSearch="true" height="350" />
 	</portal>
 
+	<portal title="Dashboard" name="manufacturing.dashboard.portal" cols="2">
+		<portlet action="manufacturing.dashboard.portal.upcoming.production.orders" height="350" canSearch="true" />
+		<portlet action="manufacturing.dashboard.portal.current.production.orders" canSearch="true" height="350" />
+		<portlet action="manufacturing.dashboard.portal.production.orders.plannings" canSearch="true" height="350" />
+	</portal>
+
 	<action-view name="manufacturing.dashboard.portal.upcoming.production.orders" title="All Upcoming Manufacturing Orders"
 		model="com.axelor.apps.production.db.ManufOrder">
 		<view type="grid" name="manuf-order-grid"/>
