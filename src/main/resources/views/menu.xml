@@ -121,12 +121,12 @@
 		<view type="form" />
 	</action-view>
 	
-	<menuitem name="menu-manufacturing-dashboard" parent="menu-dashboards-sample" priority="155"
-		title="Manufacturing Dashboard" action="portal.manufacturing.dashboard.view" groups="axelordemo"/>	
+	<menuitem name="menu-manufacturing-dashboard-sample" parent="menu-dashboards-sample" priority="155"
+		title="Manufacturing Dashboard" action="portal.manufacturing.dashboard.view.sample" groups="admins,axelordemo"/>	
 
-	<action-view name="portal.manufacturing.dashboard.view" title="Manufacturing Dashboard"
+	<action-view name="portal.manufacturing.dashboard.view.sample" title="Manufacturing Dashboard"
 		icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="manufacturing.dashboard.portal" />
+		<view type="portal" name="manufacturing.dashboard.portal.sample" />
 	    <context name="_today" expr="eval: __date__.toDate()"/>
 	</action-view>
 
