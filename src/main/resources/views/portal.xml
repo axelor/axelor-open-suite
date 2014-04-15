@@ -126,6 +126,31 @@
     	<view type="form" name="project-form"/> 
     	<view-param name="search-filters" value="project-filters"/>
     	<domain>self.isProject = true</domain>
-</action-view>
+	</action-view>
+
+    <portal title="Human Resources DB 1" name="human.resources.dashboard.1.portal" cols="2">
+		<portlet action="portal.human.resources.dashboard.upcoming.holidays" height="350" canSearch="true" />
+		<portlet action="portal.human.resources.dashboard.candidates" canSearch="true" height="350" />
+		<portlet action="portal.human.resources.dashboard.timesheets" canSearch="true" height="350" />
+		<portlet action="portal.human.resources.dashboard.travel.expenses" canSearch="true" height="350" />
+		<portlet action="portal.human.resources.dashboard.overtimes" canSearch="true" height="350" />
+		<portlet action="portal.human.resources.dashboard.leaverequest" canSearch="true" height="350" />
+		<portlet action="portal.human.resources.dashboard.my.timesheets" canSearch="true" height="350" />
+		<portlet action="portal.human.resources.dashboard.my.travel.expenses" canSearch="true" height="350" />
+		<portlet action="portal.human.resources.dashboard.my.overtimes" canSearch="true" height="350" />
+		<portlet action="portal.human.resources.dashboard.my.leaverequest" canSearch="true" height="350" />
+	</portal>
+		
+	<portal title="Human Resources DB 2" name="human.resources.dashboard.2.portal" cols="2">
+		<portlet action="portal.hr.employees.gender.distribution" height="350" />
+		<portlet action="portal.hr.nbr.of.employees.by.gender" height="350" />
+		<portlet action="portal.hr.employees.by.category.distribution" height="350" />
+		<portlet action="portal.hr.nbr.of.employees.by.category" height="350" />	
+		<portlet action="portal.hr.employees.contract.type.distribution" height="350" />	
+		<portlet action="portal.hr.employees.turnover.ytd.vs.lastYear" height="350" />
+		<portlet action="portal.hr.nbr.of.employees.evolution" height="350" />
+	</portal>
+
+
 </object-views>
   
