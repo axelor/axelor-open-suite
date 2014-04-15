@@ -5,7 +5,7 @@
     
     <!--  Account Invoice Dashboard  -->    
     
-	<portal title="Invoice Dashboard" name="account.invoice.dashboard.portal" cols="2">
+	<portal title="Invoice Dashboard" name="account.invoice.dashboard.portal.sample" cols="2">
 		 <portlet action="portal.account.invoice.summary" colSpan="1" height="350" canSearch="true"/>
 		 <portlet action="portal.invoiced.turnover.ytd.vs.lastyear" colSpan="1" height="350" canSearch="true"/>    	
 		 <portlet action="portal.prod.turnover.cust.invoices.last.12m" colSpan="1" height="350" canSearch="true"/>
