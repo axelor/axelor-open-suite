@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
 
 
-	<portal title="Dashboard" name="human.resources.dashboard.portal" cols="2">
+	<portal title="Dashboard" name="human.resources.dashboard.portal.sample" cols="2">
 		<portlet action="portal.human.resources.dashboard.upcoming.holidays" height="350" canSearch="true" />
 		<portlet action="portal.human.resources.dashboard.candidates" canSearch="true" height="350" />
 		<portlet action="portal.human.resources.dashboard.timesheets" canSearch="true" height="350" />
@@ -117,7 +117,7 @@
   		<view type="chart" name="chart.hr.nbr.of.employees.evolution"/>
 	</action-view>
 	
-	<portal title="Project Dashboard" name="org.project.dashboard.portal" cols="2">
+	<portal title="Project Dashboard" name="org.project.dashboard.portal.sample" cols="2">
 	    <portlet action="portal.projects.by.client.partner" colSpan="1" height="350" canSearch="true"/>	    
  	</portal>
 

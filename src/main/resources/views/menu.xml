@@ -351,20 +351,20 @@
 		<context name="_newDate" expr="eval: __datetime__.plusDays(5)"/>
 	</action-view>
 	
-	<menuitem name="menu-organisation-dashboard" parent="menu-dashboards-sample" priority="165"
-		title="Organisation Dashboard" action="portal.organisation.dashboard.view"/>	
+	<menuitem name="menu-organisation-dashboard-sample" parent="menu-dashboards-sample" priority="165"
+		title="Organisation Dashboard" action="portal.organisation.dashboard.view.sample"/>	
 
-	<action-view name="portal.organisation.dashboard.view" title="Organisation Dashboard"
+	<action-view name="portal.organisation.dashboard.view.sample" title="Organisation Dashboard"
 		icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="org.project.dashboard.portal" />	    
+		<view type="portal" name="org.project.dashboard.portal.sample" />	    
 	</action-view>
 	
-	<menuitem name="menu-human-resources-dashboard" parent="menu-dashboards-sample" priority="160"
-		title="Human Resources Dashboard" action="portal.human.resources.dashboard.view" />	
+	<menuitem name="menu-human-resources-dashboard-sample" parent="menu-dashboards-sample" priority="160"
+		title="Human Resources Dashboard" action="portal.human.resources.dashboard.view.sample" />	
 
-	<action-view name="portal.human.resources.dashboard.view" title="Human Resources Dashboard"
+	<action-view name="portal.human.resources.dashboard.view.sample" title="Human Resources Dashboard"
 		icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="human.resources.dashboard.portal" />
+		<view type="portal" name="human.resources.dashboard.portal.sample" />
 		<context name="_user_id" expr="eval:__user__.id"/>
 	</action-view>
 
