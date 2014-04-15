@@ -68,6 +68,8 @@
    	    <portlet action="portal.stockMove.nbr.delivery.by.country" height="350"/>  
    	    <portlet action="portal.stockMoveLine.product.delivery.by.country" height="350"/>  
    	    <portlet action="portal.stockMoveLine.product.delivery.by.country.by.family" height="350"/> 
+   	    <portlet action="portal.stockMove.deliveries.time.delay.in.nbr" height="350"/>
+   	    <portlet action="portal.stockMove.average.delivery.time.delay" height="350"/> 
 	</portal>
 	
 	<action-view name="portal.sales.turnover.ytd.vs.lastyear" title="Sales Turnover This year vs Last year" model="com.axelor.apps.supplychain.db.SalesOrder">
@@ -122,6 +124,11 @@
         <view type="chart" name="chart.prod.qty.sales.last.12m"/>
     </action-view>
 	
+	<action-record model="com.axelor.apps.supplychain.db.StockMove" name="action.supplychain.portal.set.date">
+	  <field name="toDate" expr="eval:todayDate"/>
+	  <field name="fromDate" expr="eval:LocalDate.parse(todayDate).withDayOfMonth(1).withMonthOfYear(1)"/>
+	</action-record>	
+	
 	<action-view title="Customer deliveries by country" name="portal.stockMove.nbr.delivery.by.country">
 	  <view type="chart" name="chart.stockMove.nbr.delivery.by.country"/>
 	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
@@ -138,6 +145,18 @@
 	  <view type="chart" name="chart.stockMoveLine.product.delivery.by.country.by.family"/>
 	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
 	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+	</action-view>
+	
+	<action-view title="Customer deliveries statistics" name="portal.stockMove.deliveries.time.delay.in.nbr">
+	  <view type="chart" name="chart.stockMove.deliveries.time.delay.in.nbr"/>  
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+	  <context name="id" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()" />
+	</action-view>
+	
+	<action-view title="Customer average delivery delay" name="portal.stockMove.average.delivery.time.delay">
+	  <view type="chart" name="chart.stockMove.average.delivery.time.delay"/>  
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+	  <context name="id" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()" />
 	</action-view>
 
 <!--   	Purchase Buyer Dashboard -->

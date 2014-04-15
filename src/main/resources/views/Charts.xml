@@ -427,7 +427,7 @@
         <series key="_turn_over" type="bar" groupBy="product" title="No Of Units" aggregate="sum" />
 	</chart>
 	
-	<chart onInit="action.account.portal.set.date" name="chart.stockMove.nbr.delivery.by.country" title="Customer deliveries by country">
+	<chart onInit="action.supplychain.portal.set.date" name="chart.stockMove.nbr.delivery.by.country" title="Customer deliveries by country">
 	  
 	  <search-fields>
 	    <field type="date" name="fromDate" widget="[required=true]"/>
@@ -461,7 +461,7 @@
 	  <series key="_moves" type="bar" title="Moves"/>
 	</chart>	
 	
-	<chart onInit="action.account.portal.set.date" name="chart.stockMoveLine.product.delivery.by.country" title="Product deliveries in qty by country">
+	<chart onInit="action.supplychain.portal.set.date" name="chart.stockMoveLine.product.delivery.by.country" title="Product deliveries in qty by country">
 	  
 	  <search-fields>
 	    <field type="date" name="fromDate" widget="[required=true]"/>
@@ -499,7 +499,7 @@
 	  <series key="_qty" type="bar" title="Quantity"/>
 	</chart>
 
-	<chart onInit="action.account.portal.set.date" name="chart.stockMoveLine.product.delivery.by.country.by.family" 
+	<chart onInit="action.supplychain.portal.set.date" name="chart.stockMoveLine.product.delivery.by.country.by.family" 
 	       title="Product deliveries in qty by country by family" stacked="true">
 	  
 	  <search-fields>
@@ -539,6 +539,77 @@
 	  </dataset>
 	  <category key="_country" type="text" title="Country"/>
 	  <series key="_qty" type="bar" title="Quantity" groupBy="_family"/>
+	</chart>
+
+	<chart onInit="action.supplychain.portal.set.date" name="chart.stockMove.deliveries.time.delay.in.nbr" 
+	       title="Customer deliveries statistics" >
+	  
+	  <search-fields>
+	    <field type="date" name="fromDate" widget="[required=true]"/>
+	    <field type="date" name="toDate" widget="[required=true]"/>
+	  </search-fields>
+	  
+	  <dataset type="sql">
+	    SELECT
+	      COUNT(self.id) AS moves,
+	      (CASE 
+	            when self.estimated_date >= self.real_date then 'OnTime Deliveries'
+	            when self.estimated_date &lt; self.real_date then 'Late Deliveries'                        
+	      END) AS status    
+	    FROM
+	      supplychain_stock_move AS self
+	    JOIN
+	      base_user_info AS _user
+	      ON _user.id = :id
+	      AND self.company = _user.active_company      
+	    JOIN
+	      supplychain_location AS _location
+	      ON _location.type_select = 2
+	      AND self.to_location = _location.id
+	    WHERE
+	      self.type_select = 2 AND
+	      self.status_select = 3 AND                 
+	      self.real_date BETWEEN DATE(:fromDate) AND DATE(:toDate)    
+	    GROUP BY
+	      status    
+	  </dataset>
+	  
+	  <category key="status" type="text" title="Status"/>
+	  <series key="moves" type="pie" title="Moves" />
+	</chart>
+
+	<chart onInit="action.supplychain.portal.set.date" name="chart.stockMove.average.delivery.time.delay" 
+	       title="Customer average delivery delay" >
+	  
+	  <search-fields>
+	    <field type="date" name="fromDate" widget="[required=true]"/>
+	    <field type="date" name="toDate" widget="[required=true]"/>
+	  </search-fields>
+	  
+	  <dataset type="sql">    
+	    SELECT
+	      ROUND(AVG((self.estimated_date - self.real_date)*-1)) AS moves,
+	      'Average Delay' AS label
+	    FROM
+	      supplychain_stock_move AS self
+	    JOIN
+	      base_user_info AS _user
+	      ON _user.id = :id 
+	      AND self.company = _user.active_company
+	    JOIN
+	      supplychain_location AS _location
+	      ON self.to_location = _location.id
+	      AND _location.type_select = 2
+	    WHERE
+	      self.type_select = 2 AND
+	      self.status_select = 3 AND
+	      self.real_date BETWEEN DATE(:fromDate) AND DATE(:toDate)
+	    GROUP BY
+	      label    
+	  </dataset>
+	  
+	  <category key="label" type="text"/>
+	  <series key="moves" type="bar" title="Moves"/>
 	</chart>
 
 	  <chart name="chart.purchase.buyer.dashboard.family.product.purchase.volume" title="My purchases orders per product family over past month in volume">
