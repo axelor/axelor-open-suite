@@ -32,6 +32,43 @@
 		 <portlet action="portal.paymentVoucher.customer.paymentMode.by.amount" colSpan="1" height="350" canSearch="true"/>
 	</portal>    
 
+	
+	<portal title="Invoice Dashboard 1" name="account.invoice.dashboard.1.portal" cols="2">
+		 <portlet action="portal.account.invoice.summary" colSpan="1" height="350" canSearch="true"/>
+		 <portlet action="portal.invoiced.turnover.ytd.vs.lastyear" colSpan="1" height="350" canSearch="true"/>    	
+		 <portlet action="portal.prod.turnover.cust.invoices.last.12m" colSpan="1" height="350" canSearch="true"/>
+		 <portlet action="portal.prod.qty.cust.invoices.last.12m" colSpan="1" height="350" canSearch="true"/>
+		 <portlet action="portal.total.revenue.by.each.product" colSpan="1" height="350" canSearch="true"/>
+		 <portlet action="portal.total.revenue.by.geo.region" colSpan="1" height="350" canSearch="true"/>
+		 <portlet action="portal.prod.qty.suppl.invoices.last.12m" canSearch="true" height="350"/>
+		 <portlet action="portal.prod.turnover.suppl.invoices.last.12m" canSearch="true" height="350"/>
+		 <portlet action="portal.supplier.invoices.per.month" canSearch="true" height="350"/>
+	   	 <portlet action="portal.supplier.invoices.unpaid" canSearch="true" height="350" />
+	</portal>    
+	
+	<portal title="Invoice Dashboard 2" name="account.invoice.dashboard.2.portal" cols="2">
+	   	 <portlet action="portal.supplier.invoices.due" canSearch="true" height="350" />
+		 <portlet action="portal.customer.invoices.to.collect" colSpan="1" height="350" canSearch="true"/>
+		 <portlet action="portal.invoice.sale.amount.by.month"  height="350"/>
+		 <portlet action="portal.invoice.sale.amount.by.currency"  height="350"/>
+		 <portlet action="portal.invoice.sale.paymentCondition.distribution"  height="350"/>
+		 <portlet action="portal.invoice.purchase.amount.by.month"  height="350"/>
+		 <portlet action="portal.invoice.purchase.amount.by.currency"  height="350"/>
+		 <portlet action="portal.invoice.purchase.paymentCondition.distribution"  height="350"/>
+		 <portlet action="portal.invoice.sale.refund.situation" colSpan="1" height="350"/>
+		 <portlet action="portal.invoice.sale.situation" colSpan="1" height="350"/>   
+	</portal>  
+	
+	<portal title="Invoice Dashboard 3" name="account.invoice.dashboard.3.portal" cols="2">
+		 <portlet action="portal.invoice.purchase.situation" colSpan="1" height="350"/>
+	</portal>  
+	
+	<portal title="Accounting Dashboard" name="accounting.dashboard.portal.sample" cols="2">
+		 <portlet action="portal.paymentVoucher.customer.paymentMode.distribution.nbr" colSpan="1" height="350" canSearch="true"/>
+		 <portlet action="portal.paymentVoucher.customer.paymentMode.distribution.amount" colSpan="1" height="350" canSearch="true"/>
+		 <portlet action="portal.paymentVoucher.customer.paymentMode.by.amount" colSpan="1" height="350" canSearch="true"/>
+	</portal>    
+
 	<action-view name="portal.account.invoice.summary" title="Account Invoice Summary" model="com.axelor.apps.account.db.Invoice">
 		<view type="chart" name="chart.account.invoice.summary"/>
 	</action-view>	
