@@ -49,7 +49,7 @@
 			</group>
 	        <group title="Payer" colSpan="2" cols="2" colWidths="20%,80%">
 	                <field name="partner" domain=":company MEMBER OF self.companySet AND self.partnerTypeSelect = 1 and self.isContact = false"  onChange="action-pv-moveLine-domain-4" form-view="partner-form" grid-view="partner-grid"/>
-	                <field name="paymentMode" widget="SuggestBox" onChange="action-pv-attrs-hidden-bankCardTransactionNumber,action-pv-hide-confirm-button,action-attrs-payment-voucher-hidden-receipt,action-attrs-payment-voucher-readonly-status"/>
+	                <field name="paymentMode" onSelect="action-set-payment-mode-domain" widget="SuggestBox" onChange="action-pv-attrs-hidden-bankCardTransactionNumber,action-pv-hide-confirm-button,action-attrs-payment-voucher-hidden-receipt,action-attrs-payment-voucher-readonly-status"/>
 	       			<field name="currency"/>
 	        </group>
 		</group>
@@ -261,5 +261,11 @@
 	<action-record name="action-payment-voucher-create-cust-payment" model="com.axelor.apps.account.db.PaymentVoucher">
 		<field name="operationTypeSelect" expr="eval:'3'" />
 	</action-record>	
+	
+	
+	<action-attrs name="action-set-payment-mode-domain">
+		<attribute name="domain" for="paymentMode" expr="eval:'self.inOutSelect = 1'" if="operationTypeSelect == 1 || operationTypeSelect == 4"/>
+		<attribute name="domain" for="paymentMode" expr="eval:'self.inOutSelect = 2'" if="operationTypeSelect == 2 || operationTypeSelect == 3"/>
+	</action-attrs>
 	
 </object-views>
