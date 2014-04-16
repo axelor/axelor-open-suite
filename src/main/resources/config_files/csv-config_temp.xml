@@ -3,21 +3,8 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://apps.axelor.com/xml/ns/data-import http://apps.axelor.com/xml/ns/data-import/data-import_0.9.xsd">
   
-	<input file="supplychain_inventory.csv" separator=";" type="com.axelor.apps.supplychain.db.Inventory"  
-	search="self.inventorySeq = :inventorySeq" call="com.axelor.csv.script.ImportInventory:importInventory" update="true">
-		<bind to="statusSelect" eval="3" />
-	</input>
-	
-	<input file="supplychain_inventory.csv" separator=";" type="com.axelor.apps.supplychain.db.Inventory"  
-	search="self.inventorySeq = :inventorySeq" call="com.axelor.csv.script.ImportInventory:realizeMove" update="true">
-		<bind to="statusSelect" eval="3" />
-	</input>
-	
-	<input file="supplychain_salesOrder.csv" update="true" separator=";" type="com.axelor.apps.supplychain.db.SalesOrder" 
-	call="com.axelor.csv.script.ImportSalesOrder:importSalesOrder" search="self.importId = :importId">
-		<bind to="creationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(creationDate)" column="creationDate"/>
-		<bind to="validationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(validationDate)" column="validationDate"/>
-		<bind to="shipmentDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(shipmentDate)" column="shipmentDate"/>
+	<input file="access_rights.csv" separator=";" type="com.axelor.meta.db.MetaMenu" search="self.name = :name" update="true">
+		<bind column="groups" to="groups" search="self.code in :groups" eval="groups.split('\\|') as List"/>
 	</input>
 	
 </csv-inputs>

@@ -7,11 +7,16 @@
 
     <input file="auth_permission.csv" separator=";" type="com.axelor.auth.db.Permission" />
     
-    <input file="auth_group.csv" separator=";" type="com.axelor.auth.db.Group" >
-      <bind column="permissions" to="permissions" search="self.name in :permissions" eval="permissions.split('\\|') as List"/>
+    <input file="meta_file.csv" separator=";" type="com.axelor.meta.db.MetaFile" />
+    
+    <input file="auth_role.csv" separator=";" type="com.axelor.auth.db.Role"  >
+        <bind column="permissions" to="permissions" search="self.name in :permissions" eval="permissions.split('\\|') as List"/>
     </input>
     
-    <input file="meta_file.csv" separator=";" type="com.axelor.meta.db.MetaFile" />
+    <input file="auth_group.csv" separator=";" type="com.axelor.auth.db.Group" >
+      <bind column="permissions" to="permissions" search="self.name in :permissions" eval="permissions.split('\\|') as List"/>
+      <bind column="roles" to="roles" search="self.name in :roles" eval="roles.split('\\|') as List"/>
+    </input>
     
     <input file="auth_user.csv" separator=";" type="com.axelor.auth.db.User"  />
 	
