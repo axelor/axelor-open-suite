@@ -375,4 +375,26 @@
 		<view type="portal" name="supplychain.purchases.dashboard.3.portal" />	    
 	</action-view>
 	
+	<menuitem name="menu-products-dashboard" parent="menu-dashboards-products-goods"  
+		title="Products Dashboard" priority="10" />	
+	
+	<menuitem name="menu-products-dashboard.1" parent="menu-products-dashboard"  
+		title="Product DB 1" action="supplychain.products.dashboard.1.portal" />	
+		
+	<action-view name="supplychain.products.dashboard.1.portal" title="Product DB 1"
+		icon="img/16px/crmSmall_16px.png">
+		<view type="portal" name="supplychain.products.dashboard.1.portal.view" />	 
+	</action-view>
+
+	<menuitem name="menu-category-dashboard" parent="menu-dashboards-products-goods"  
+		title="Category Dashboard" priority="20" />	
+		
+	<menuitem name="menu-family-dashboard" parent="menu-dashboards-products-goods"  
+		title="Family Dashboard" priority="30" action="supplychain.products.family.dashboard.portal" />	
+	
+	<action-view name="supplychain.products.family.dashboard.portal" title="Family Dashboard"
+		icon="img/16px/crmSmall_16px.png">
+		<view type="portal" name="supplychain.products.family.dashboard.1.portal.view" />	 
+	</action-view>
+	
 </object-views>
