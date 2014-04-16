@@ -37,7 +37,7 @@
         <field name="userInfo"/>
     </grid>
     
-    <form name="partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" cols="6" colWidths="25*" 
+    <form name="partner-form" id="base-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" cols="6" colWidths="25*" 
     onNew="action-partner-record-partner-type-select,action-partner-record-set-default,action-partner-record-customer-supplier-type" 
     onLoad="action-partner-attrs-change-name" 
     onSave="save,action-set-partner-seq,action-create-accounting-situation">
@@ -61,9 +61,9 @@
 	            </group>
 	            <break/>
 	            <group colSpan="1" showIf="id != null">
-	                <button name="facebook" css="sn-buttons" icon="img/Other/facebookLogo_75px.png" onClick="action-partner-view-sn-profile"/>
-	                <button name="linkedin" css="sn-buttons" icon="img/Other/linkedinLogo_57px.png" onClick="action-partner-view-sn-profile"/>
-	                <button name="twitter" css="sn-buttons" icon="img/Other/twitterLogo_54px.png" onClick="action-partner-view-sn-profile"/>
+	                <button name="facebook" css="img-button" icon="img/Other/facebookLogo_75px.png" onClick="action-partner-view-sn-profile"/>
+	                <button name="linkedin" css="img-button" icon="img/Other/linkedinLogo_57px.png" onClick="action-partner-view-sn-profile"/>
+	                <button name="twitter" css="img-button" icon="img/Other/twitterLogo_54px.png" onClick="action-partner-view-sn-profile"/>
 	            </group>
 	        </group>
 	        <group colSpan="1">
@@ -231,9 +231,9 @@
 	            </group>
 	            <break/>
 	            <group colSpan="1" showIf="id != null">
-	                <button name="facebook" css="sn-buttons" icon="img/Other/facebookLogo_75px.png" onClick="action-partner-view-sn-profile"/>
-	                <button name="linkedin" css="sn-buttons" icon="img/Other/linkedinLogo_57px.png" onClick="action-partner-view-sn-profile"/>
-	                <button name="twitter" css="sn-buttons" icon="img/Other/twitterLogo_54px.png" onClick="action-partner-view-sn-profile"/>
+	                <button name="facebook" css="img-button" icon="img/Other/facebookLogo_75px.png" onClick="action-partner-view-sn-profile"/>
+	                <button name="linkedin" css="img-button" icon="img/Other/linkedinLogo_57px.png" onClick="action-partner-view-sn-profile"/>
+	                <button name="twitter" css="img-button" icon="img/Other/twitterLogo_54px.png" onClick="action-partner-view-sn-profile"/>
 	            </group>
 	        </group>
 	        <group colSpan="1" cols="1">
