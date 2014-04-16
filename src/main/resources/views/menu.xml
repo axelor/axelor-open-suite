@@ -696,12 +696,48 @@
 		<context name="_operationTypeSelect" expr="eval:2"/>
 	</action-view>	
 	
-	<menuitem name="menu-account-invoice-dashboard" parent="menu-dashboards-sample" priority="145"
-    title="Account Dashboard" action="portal.account.invoice.dashboard.view"/>    
+	<menuitem name="menu-account-invoice-dashboard-sample" parent="menu-dashboards-sample" priority="145"
+    title="Account Dashboard" action="portal.account.invoice.dashboard.view.sample"/>    
 
-    <action-view name="portal.account.invoice.dashboard.view" title="Account Dashboard"
+    <action-view name="portal.account.invoice.dashboard.view.sample" title="Account Dashboard"
         icon="img/16px/crmSmall_16px.png">
-        <view type="portal" name="account.invoice.dashboard.portal" />        
+        <view type="portal" name="account.invoice.dashboard.portal.sample" />        
     </action-view>
+
+	<menuitem name="menu-account-invoice-dashboard" parent="menu-dashboards" 
+    title="Invoice Dashboard" priority="100"/>    
+	
+			<menuitem name="menu-account-invoice-dashboard-db1" parent="menu-account-invoice-dashboard" 
+		    title="Invoice DB 1" action="portal.account.invoice.dashboard.1.view"/>    
+			
+		    <action-view name="portal.account.invoice.dashboard.1.view" title="Invoice Dashboard"
+		        icon="img/16px/crmSmall_16px.png">
+		        <view type="portal" name="account.invoice.dashboard.1.portal" />        
+		    </action-view>
+		    
+		    <menuitem name="menu-account-invoice-dashboard-db2" parent="menu-account-invoice-dashboard"
+		    title="Invoice DB 2" action="portal.account.invoice.dashboard.2.view"/>    
+			
+		    <action-view name="portal.account.invoice.dashboard.2.view" title="Invoice Dashboard"
+		        icon="img/16px/crmSmall_16px.png">
+		        <view type="portal" name="account.invoice.dashboard.2.portal" />        
+		    </action-view>
+		    
+		    <menuitem name="menu-account-invoice-dashboard-db3" parent="menu-account-invoice-dashboard" 
+		    title="Invoice DB 3" action="portal.account.invoice.dashboard.3.view"/>    
+			
+		    <action-view name="portal.account.invoice.dashboard.3.view" title="Invoice Dashboard"
+		        icon="img/16px/crmSmall_16px.png">
+		        <view type="portal" name="account.invoice.dashboard.3.portal" />        
+		    </action-view>
+	
+	<menuitem name="menu-accounting-dashboard" parent="menu-dashboards" 
+    title="Accounting" action="portal.accounting.dashboard.view" priority="110"/>    
+
+	    <action-view name="portal.accounting.dashboard.view" title="Accounting"
+	        icon="img/16px/crmSmall_16px.png">
+	        <view type="portal" name="accounting.dashboard.portal.sample" />        
+	    </action-view>
+	
 	
 </object-views>

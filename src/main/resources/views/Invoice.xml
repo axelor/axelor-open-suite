@@ -50,7 +50,7 @@
        		<field name="contactPartner"  form-view="partner-contact-form" grid-view="partner-contact-grid" domain="self.isContact = true"/>
 			<field name="address" colSpan="2"/>
 			<break/>
-            <field name="paymentMode" widget="SuggestBox"/>
+            <field name="paymentMode" widget="SuggestBox" onSelect="action-set-payment-mode-domain"/>
             <field name="paymentCondition" widget="SuggestBox" onChange="action-invoice-record-due-date" readonlyIf="status.code == 'dis'"/>
             <field name="bankDetails" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" hideIf="operationTypeSelect >= 3" domain="self.partner = :partner"/>
         </group>
