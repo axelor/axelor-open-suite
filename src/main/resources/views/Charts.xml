@@ -206,7 +206,7 @@
 	    ]]>
 	    </dataset>
 	    <category key="family_name" type="text"/>
-		<series key="amount"  type="pie"/>
+		<series key="amount"  type="donut"/>
 	  </chart>
 	  <chart name="chart.sales.manager.dashboard.category.product.sales" title="Sales per product category over past 12 months in volume">
 	    <dataset type="sql">
@@ -243,7 +243,7 @@
 	    ]]>
 	    </dataset>
 	    <category key="category_name" type="text"/>
-    	<series key="amount" type="pie"/>
+    	<series key="amount" type="donut"/>
 	  </chart>
 	  
 	  <chart name="chart.sales.manager.dashboard.country.sales" title="Sales per country over past 12 months">
@@ -275,7 +275,7 @@
 	    ]]>
 	    </dataset>
 	    <category key="name" type="text"/>
-    	<series key="amount" type="pie"/>
+    	<series key="amount" type="donut"/>
 	  </chart>
 	   
 	  <chart name="chart.salesman.dashboard.total.turnover" title="Turnover over past 6 months" stacked="true">
@@ -575,7 +575,7 @@
 	  </dataset>
 	  
 	  <category key="status" type="text" title="Status"/>
-	  <series key="moves" type="pie" title="Moves" />
+	  <series key="moves" type="donut" title="Moves" />
 	</chart>
 
 	<chart onInit="action.supplychain.portal.set.date" name="chart.stockMove.average.delivery.time.delay" 
@@ -641,7 +641,7 @@
 	    ]]>
 	    </dataset>
 	    <category key="_product_family" type="text"/>
-    	<series key="amount" type="pie"/>
+    	<series key="amount" type="donut"/>
 	  </chart>
 	  
 	  
@@ -783,7 +783,7 @@
 	    ]]>
 	    </dataset>
 	    <category key="_family_product" type="text"/>
-    	<series key="_percent" type="pie"/>
+    	<series key="_percent" type="donut"/>
 	  </chart>
 	  
 	  <chart name="chart.purchase.buyer.dashboard.prod.amout.purchases.last.12m" title="Turnover On Purchase orders on Last 12 Month">
