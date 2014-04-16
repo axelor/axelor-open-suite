@@ -362,27 +362,18 @@
 		<view type="portal" name="crm.opportunity.graph.portal" />
 	</action-view>
 
-	<menuitem name="portal.crm.lead.graph" parent="menu-crm-dashboards" title="Lead Chart Report" action="portal.lead.graph.dashboard.view" />
-
-	<action-view name="portal.lead.graph.dashboard.view" title="Lead Graph Report" icon="img/16px/calendar_16px.png">
-		<view type="portal" name="crm.lead.graph.portal" />
-	</action-view>
-	
 		
- 	<menuitem name="portal.crm.event.graph" parent="menu-crm-dashboards" title="Event Chart Report" action="portal.event.graph.dashboard.view" /> 
+ 	<menuitem name="menu-event-dashboard-one" parent="menu-crm-dashboards" title="Event Dashboard 1" action="crm.event.dashboard.portal.one.view" /> 
 
- 	<action-view name="portal.event.graph.dashboard.view" title="Event Graph Report" icon="img/16px/calendar_16px.png"> 
- 		<view type="portal" name="crm.event.graph.portal" />
-	</action-view> 
-	<menuitem name="portal.crm.event" parent="menu-crm-dashboards" title="Event List Report" action="portal.event.dashboard.view" /> 
+ 	<action-view name="crm.event.dashboard.portal.one.view" title="Event Dashboard 1" icon="img/16px/calendar_16px.png"> 
+ 		<view type="portal" name="crm.event.dashboard.portal.one" />
+	</action-view>
+	 
+	<menuitem name="menu-lead-dashboard" parent="menu-crm-dashboards" title="Lead Dashboards" />
+	<menuitem name="menu-lead-dashboard-one" parent="menu-lead-dashboard" title="Lead Dashboard 1" action="crm.lead.dashboard.portal.one.view" />
 
- 	<action-view name="portal.event.dashboard.view" title="Event List Report" icon="img/16px/calendar_16px.png"> 
- 		<view type="portal" name="crm.event.portal" />
-	</action-view> 
-	<menuitem name="portal.crm.lead.list" parent="menu-crm-dashboards" title="Lead List Report" action="portal.lead.dashboard.view" />
-
-	<action-view name="portal.lead.dashboard.view" title="Lead List Report" icon="img/16px/calendar_16px.png">
-		<view type="portal" name="crm.lead.portal" />
+	<action-view name="crm.lead.dashboard.portal.one.view" title="Lead Dashboard 1" icon="img/16px/calendar_16px.png">
+		<view type="portal" name="crm.lead.dashboard.portal.one" />
 	</action-view>
 	
 	<menuitem name="portal.base.crm.partner.graph" parent="menu-crm-dashboards" title="Partner List Report" action="portal.base.partner.list.dashboard.view" />
