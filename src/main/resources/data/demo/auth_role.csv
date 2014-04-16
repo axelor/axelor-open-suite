@@ -5,3 +5,5 @@
 4;"role.accounting";"Accès à l'ensemble des objets du module Account";"perm.base.all|perm.crm.all|perm.organisation.all|perm.supplychain.rwc|perm.account.all"
 5;"role.hr";"Accès à l'ensemble des fonctionnalités RH";"perm.base.all|perm.organisation.allperm.crm.all"
 6;"role.manager";"Accès à l'ensemble des fonctionnalités";"perm.base.all|perm.account.all|perm.organisation.all|perm.production.all|perm.crm.all|perm.supplychain.all"
+7;"role.client";"Accès au portail client";"perms.user-info|perm.supplyChain.salesOrder.r|perm.supplyChain.salesOrderLine.r|perm.crm.event.r|perm.crm.eventCategory.r|perm.account.invoice.r|perm.account.invoiceLine.r|perm.base.partner.r"
+8;"role.consultant";"Accès au portail consultant";

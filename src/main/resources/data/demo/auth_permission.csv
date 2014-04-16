@@ -11,3 +11,10 @@
 "perm.crm.all";"com.axelor.apps.crm.db.*";"true";"true";"true";"true";"true";;;;;;;;
 "perm.supplychain.all";"com.axelor.apps.supplychain.db.*";"true";"true";"true";"true";"true";;;;;;;;
 "perm.supplychain.rwc";"com.axelor.apps.supplychain.db.*";"true";"true";"true";"false";"true";;;;;;;;
+"perm.supplyChain.salesOrder.r";"com.axelor.apps.supplychain.db.SalesOrder";"true";"false";"false";"false";"false";;;;;;;;
+"perm.supplyChain.salesOrderLine.r";"com.axelor.apps.supplychain.db.SalesOrderLine";"true";"false";"false";"false";"false";;;;;;;;
+"perm.crm.event.r";"com.axelor.apps.crm.db.Event";"true";"true";"true";"false";"false";;;;;;;;
+"perm.crm.eventCategory.r";"com.axelor.apps.crm.db.EventCategory";"true";"false";"false";"false";"false";;;;;;;;
+"perm.account.invoice.r";"com.axelor.apps.account.db.Invoice";"true";"false";"false";"false";"false";;;;;;;;
+"perm.account.invoiceLine.r";"com.axelor.apps.account.db.InvoiceLine";"true";"false";"false";"false";"false";;;;;;;;
+"perm.base.partner.r";"com.axelor.apps.base.db.Partner";"true";"false";"false";"false";"false";;;;;;;;

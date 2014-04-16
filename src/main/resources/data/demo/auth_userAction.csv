@@ -6,8 +6,8 @@
 "dirpro";
 "chefpro";
 "consultant";
-"demoerp";
-"democrm";
+"demoerp";"portal.opportunity.graph.dashboard.view"
+"democrm";"portal.lead.dashboard.view"
 "comn";
 "coms1";
 "coms2";
@@ -19,4 +19,4 @@
 "supp2";
 "dirrh";
 "compta";
-"client";
+"client";"Wizard-client-view"

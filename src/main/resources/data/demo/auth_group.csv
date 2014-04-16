@@ -2,8 +2,8 @@
 1;"admins";"Administrateur";"visible";;"true";
 2;"user";"Utilisateur";"visible";;"false";
 3;"BPM";"BPM";"visible";;"false";
-4;"CLT";"Client";"hidden";"perms.user-info";"false";
-5;"CST";"Consultant";"visible";;"false";
+4;"CLT";"Client";"hidden";"perms.user-info";"false";"role.client"
+5;"CST";"Consultant";"visible";;"false";"role.consultant"
 6;"CRM";"CRM";"visible";;"false";"role.crm"
 7;"ERP";"ERP";"visible";;"false";"role.manager"
 8;"VTE";"Ventes";"visible";;"false";"role.supplychain"
