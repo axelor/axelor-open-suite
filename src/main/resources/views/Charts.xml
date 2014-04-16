@@ -110,7 +110,7 @@
 		 ]]>
 	    </dataset>
 	    <category key="_source" type="text"/>
-    	<series key="lead_won" type="pie"/>
+    	<series key="lead_won" type="donut"/>
 	  </chart>
 	  	  
 	  	  <chart name="chart.dashboard.opportunities.won.by.salesman.bar" title="Opportunities Won By Salesman">
@@ -230,7 +230,7 @@
 		    ]]>
 	    </dataset>
 	    <category key="country_name" type="text"/>
-	    <series key="partners"  type="pie"/>
+	    <series key="partners"  type="donut"/>
 	 </chart>
 	  	
 	 <chart name="chart.leads.by.team.by.status.bar" title="Leads by Team by Status" stacked="true">
@@ -442,7 +442,7 @@
 			  ]]>
 	    </dataset>
 	    <category key="_priority" type="text"/>
-	    <series key="_total_calls" type="pie"/>
+	    <series key="_total_calls" type="donut"/>
 	</chart>  	
 	
 	
@@ -573,7 +573,7 @@
 	    ]]>
 	    </dataset>
 	    <category key="_industry_sector" type="text"/>
-    	<series key="_total_partner" type="pie"/>
+    	<series key="_total_partner" type="donut"/>
 	 </chart>
 	 <chart name="chart.due.open.ticket.gauge.bar" title="Due Open Tickets">
 		<dataset type="sql">
