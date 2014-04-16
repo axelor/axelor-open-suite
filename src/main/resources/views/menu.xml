@@ -378,10 +378,6 @@
 	
 	<menuitem name="portal.base.crm.partner.graph" parent="menu-crm-dashboards" title="Partner List Report" action="portal.base.partner.list.dashboard.view" />
 
-	<action-view name="portal.base.partner.list.dashboard.view" title="Partner List Report">
-		<view type="portal" name="base.partner.list.portal" />
-	</action-view>
-	
 	<menuitem name="menu-target-user-dashboard" parent="menu-crm-dashboards"
 		title="Target user Dashboard" action="crm.portal.target.user.dashboard.view"/>	
 	
