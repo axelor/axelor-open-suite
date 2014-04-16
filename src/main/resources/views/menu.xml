@@ -324,6 +324,29 @@
 	    <context name="_newDate" expr="eval: __date__.plusDays(5)"/>
 	</action-view>
 	
+	<menuitem name="menu-sales-dashboard" parent="menu-dashboards"  
+		title="Sales Dashboard" priority="50" />	
+	
+	<menuitem name="menu-sales-dashboard.1" parent="menu-sales-dashboard"  
+		title="Sales Dashboard 1" action="supplychain.sales.dashboard.1.portal" />	
+		
+	<action-view name="supplychain.sales.dashboard.1.portal" title="Sales Dashboard 1"
+		icon="img/16px/crmSmall_16px.png">
+		<view type="portal" name="supplychain.sales.dashboard.1.portal.view" />	 
+		<context name="_user" expr="eval:__user__"/>
+    	<context name="_user_id" expr="eval:__user__.id"/>
+    	<context name="_past_month" expr="eval: __date__.minusMonths(1)"/>  
+	</action-view>
+	
+	<menuitem name="menu-sales-dashboard.2" parent="menu-sales-dashboard"  
+		title="Sales Dashboard 2" action="supplychain.sales.dashboard.2.portal" />	
+		
+	<action-view name="supplychain.sales.dashboard.2.portal" title="Sales Dashboard 2"
+		icon="img/16px/crmSmall_16px.png">
+		<view type="portal" name="supplychain.sales.dashboard.2.portal.view" />	 
+		<context name="_past_month" expr="eval: __date__.minusMonths(1)"/> 
+	</action-view>
+	
 	<menuitem name="menu-purchases-dashboard" parent="menu-dashboards"  
 		title="Purchases Dashboard" priority="60" />	
 	

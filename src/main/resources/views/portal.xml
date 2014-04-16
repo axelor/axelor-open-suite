@@ -285,6 +285,17 @@
 	    <portlet action="portal.nbr.product.per.family" height="350" canSearch="true"/>       			
 	</portal>
 
+	<portal title="Dashboard" name="stock.dashboard.portal" cols="2">	
+		<portlet action="portal.stock.dashboard.upcoming.deliveries" canSearch="true" height="350" />	
+		<portlet action="portal.stock.dashboard.late.deliveries" canSearch="true" height="350" />	
+		<portlet action="portal.stock.dashboard.upcoming.arrivals" canSearch="true" height="350" />	
+		<portlet action="portal.stock.dashboard.late.arrivals" canSearch="true" height="350" />	
+		<portlet action="portal.production.stock.move.in.planned" canSearch="true" height="350" />	
+		<portlet action="portal.production.stock.move.in.realized" canSearch="true" height="350" />	
+		<portlet action="portal.production.stock.move.out.planned" canSearch="true" height="350" />	
+		<portlet action="portal.production.stock.move.out.realized" canSearch="true" height="350" />	
+	</portal>
+
 	<action-view name="portal.stock.dashboard.upcoming.deliveries" title="Upcoming deliveries"
 		model="com.axelor.apps.supplychain.db.StockMove">
 		<view type="grid" name="stock-move-grid" />
@@ -425,4 +436,26 @@
 		<portlet action="portal.my.closed.purchase.orders" canSearch="true" height="350" />
 	</portal>
 	
+	
+	<!-- Sales DashBoard -->
+	
+	<portal name="supplychain.sales.dashboard.1.portal.view" title="Sales Dashboard 1">
+		<portlet action="portal.salesman.dashboard.orders" canSearch="true" height="350" />
+		<portlet action="portal.salesman.dashboard.total.turnover" canSearch="true" height="350" />
+		<portlet action="portal.sales.manager.dashboard.team.turnover" canSearch="true" height="350" />
+		<portlet action="portal.sales.manager.dashboard.salesman.turnover" canSearch="true" height="350" />
+		<portlet action="portal.sales.manager.dashboard.family.product.sales" canSearch="true" height="350" />
+		<portlet action="portal.sales.manager.dashboard.category.product.sales" canSearch="true" height="350" />
+		<portlet action="portal.sales.manager.dashboard.country.sales" canSearch="true" height="350" />
+		<portlet action="portal.prod.turnover.sales.last.12m" canSearch="true" height="350" />
+		<portlet action="portal.prod.qty.sales.last.12m" canSearch="true" height="350" />
+	</portal>
+	
+	<portal name="supplychain.sales.dashboard.2.portal.view" title="Sales Dashboard 2">
+		<portlet action="portal.sales.turnover.by.product.ytd.vs.lastyear" canSearch="true" height="350" />
+		<portlet action="portal.sales.turnover.ytd.vs.lastyear" canSearch="true" height="350" />
+		<portlet action="portal.sales.turnover.ytd.vs.lastyear.by.family" canSearch="true" height="350" />
+		<portlet action="portal.sales.turnover.by.family.ytd.vs.lastyear" canSearch="true" height="350" />
+	</portal>
+		
 </object-views>
