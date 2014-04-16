@@ -23,6 +23,9 @@
 		<view type="portal" name="base.partner.list.portal" />
 	</action-view>
 	
+	<menuitem name="menu-dashboards-products-goods" priority="40" parent="menu-dashboards"
+    	title="Products/Goods"  groups="admins,erp"/>
+	
 	<menuitem name="contact-root" title="Companies/Contacts" priority="190"
 		icon="img/64px/partner_64px.png" groups="admins,erp,crm"/>
 
