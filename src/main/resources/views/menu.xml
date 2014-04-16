@@ -348,7 +348,7 @@
 
 
 
-	<menuitem name="menu-crm-dashboards" priority="200" title="CRM Dashboards" icon="img/16px/chart_16px.png" groups="admins,erp,crm"/> 
+	<menuitem name="menu-crm-dashboards" priority="200" title="CRM Dashboards" parent="menu-dashboards" groups="admins,erp,crm"/> 
 	
 	<menuitem name="portal.opportunities" parent="menu-crm-dashboards" title="Opportunity List Report" action="portal.opportunity.dashboard.view" />
 		
