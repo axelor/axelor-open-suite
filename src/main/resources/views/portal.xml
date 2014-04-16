@@ -5,7 +5,7 @@
 	
 		<!-- SALES MAN DASHBOARD -->
 		
-	<portal title="Dashboard" name="supplychain.salesman.dashboard.portal" cols="2">
+	<portal title="Dashboard" name="supplychain.salesman.dashboard.portal.sample" cols="2">
 		<portlet action="portal.salesman.dashboard.orders" height="350" canSearch="true" />
 		<portlet action="portal.salesman.dashboard.total.turnover" height="350" />
 		<portlet action="portal.salesman.dashboard.leads" canSearch="true" height="350" />
@@ -53,7 +53,7 @@
 	
 			<!-- 	SALES MANAGER DASHBOARD -->
 	
-	<portal title="Dashboard" name="supplychain.sales.manager.dashboard.portal" cols="2">
+	<portal title="Dashboard" name="supplychain.sales.manager.dashboard.portal.sample" cols="2">
 		<portlet action="portal.sales.turnover.ytd.vs.lastyear" height="350"/>  	
 		<portlet action="portal.sales.turnover.by.product.ytd.vs.lastyear" height="350"/>
 		<portlet action="portal.sales.turnover.ytd.vs.lastyear.by.family" height="350" />
@@ -65,6 +65,11 @@
 		<portlet action="portal.sales.manager.dashboard.country.sales" height="350" />
 		<portlet action="portal.prod.turnover.sales.last.12m" height="350" />    
    	    <portlet action="portal.prod.qty.sales.last.12m" height="350" />
+   	    <portlet action="portal.stockMove.nbr.delivery.by.country" height="350"/>  
+   	    <portlet action="portal.stockMoveLine.product.delivery.by.country" height="350"/>  
+   	    <portlet action="portal.stockMoveLine.product.delivery.by.country.by.family" height="350"/> 
+   	    <portlet action="portal.stockMove.deliveries.time.delay.in.nbr" height="350"/>
+   	    <portlet action="portal.stockMove.average.delivery.time.delay" height="350"/> 
 	</portal>
 	
 	<action-view name="portal.sales.turnover.ytd.vs.lastyear" title="Sales Turnover This year vs Last year" model="com.axelor.apps.supplychain.db.SalesOrder">
@@ -119,10 +124,44 @@
         <view type="chart" name="chart.prod.qty.sales.last.12m"/>
     </action-view>
 	
+	<action-record model="com.axelor.apps.supplychain.db.StockMove" name="action.supplychain.portal.set.date">
+	  <field name="toDate" expr="eval:todayDate"/>
+	  <field name="fromDate" expr="eval:LocalDate.parse(todayDate).withDayOfMonth(1).withMonthOfYear(1)"/>
+	</action-record>	
 	
+	<action-view title="Customer deliveries by country" name="portal.stockMove.nbr.delivery.by.country">
+	  <view type="chart" name="chart.stockMove.nbr.delivery.by.country"/>
+	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+	</action-view>
+	
+	<action-view title="Product deliveries in qty by country" name="portal.stockMoveLine.product.delivery.by.country">
+	  <view type="chart" name="chart.stockMoveLine.product.delivery.by.country"/>
+	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+	</action-view>
+	
+	<action-view title="Product deliveries in qty by country by family" name="portal.stockMoveLine.product.delivery.by.country.by.family">
+	  <view type="chart" name="chart.stockMoveLine.product.delivery.by.country.by.family"/>
+	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+	</action-view>
+	
+	<action-view title="Customer deliveries statistics" name="portal.stockMove.deliveries.time.delay.in.nbr">
+	  <view type="chart" name="chart.stockMove.deliveries.time.delay.in.nbr"/>  
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+	  <context name="id" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()" />
+	</action-view>
+	
+	<action-view title="Customer average delivery delay" name="portal.stockMove.average.delivery.time.delay">
+	  <view type="chart" name="chart.stockMove.average.delivery.time.delay"/>  
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+	  <context name="id" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()" />
+	</action-view>
+
 <!--   	Purchase Buyer Dashboard -->
 	
-	<portal title="Dashboard" name="supplychain.purchase.buyer.dashboard.portal" cols="2">
+	<portal title="Dashboard" name="supplychain.purchase.buyer.dashboard.portal.sample" cols="2">
 		<portlet action="portal.purchase.buyer.dashboard.validated.orders" height="350" canSearch="true" />
 		<portlet action="portal.purchase.buyer.dashboard.orders" canSearch="true" height="350" />
 		<portlet action="portal.purchase.buyer.dashboard.order.to.validate" canSearch="true" height="350" />
@@ -191,7 +230,7 @@
 	<!-- 	Purchase Manager Dashboard -->
 	
 	
-	<portal title="Dashboard" name="supplychain.purchase.manager.dashboard.portal" cols="2">
+	<portal title="Dashboard" name="supplychain.purchase.manager.dashboard.portal.sample" cols="2">
 		<portlet action="portal.purchase.manager.dashboard.validated.orders" height="350" canSearch="true" />
 		<portlet action="portal.purchase.manager.dashboard.order.to.validate" canSearch="true" height="350" />
 		<portlet action="portal.purchase.manager.dashboard.buyer.purchase.volume" height="350"/>
@@ -233,7 +272,7 @@
 	
 <!-- 	Stock Dashboard -->
 	
-	<portal title="Dashboard" name="stock.dashboard.portal" cols="2">		
+	<portal title="Dashboard" name="stock.dashboard.portal.sample" cols="2">		
 		<portlet action="portal.stock.dashboard.upcoming.deliveries" canSearch="true" height="350" />
 		<portlet action="portal.stock.dashboard.late.deliveries" canSearch="true" height="350" />
 		<portlet action="portal.stock.dashboard.upcoming.arrivals" height="350" canSearch="true" />
@@ -244,6 +283,17 @@
 	    <portlet action="portal.production.stock.move.in.realized" height="350" canSearch="true"/>
 	    <portlet action="portal.production.stock.move.out.realized" height="350" canSearch="true"/>  
 	    <portlet action="portal.nbr.product.per.family" height="350" canSearch="true"/>       			
+	</portal>
+
+	<portal title="Dashboard" name="stock.dashboard.portal" cols="2">	
+		<portlet action="portal.stock.dashboard.upcoming.deliveries" canSearch="true" height="350" />	
+		<portlet action="portal.stock.dashboard.late.deliveries" canSearch="true" height="350" />	
+		<portlet action="portal.stock.dashboard.upcoming.arrivals" canSearch="true" height="350" />	
+		<portlet action="portal.stock.dashboard.late.arrivals" canSearch="true" height="350" />	
+		<portlet action="portal.production.stock.move.in.planned" canSearch="true" height="350" />	
+		<portlet action="portal.production.stock.move.in.realized" canSearch="true" height="350" />	
+		<portlet action="portal.production.stock.move.out.planned" canSearch="true" height="350" />	
+		<portlet action="portal.production.stock.move.out.realized" canSearch="true" height="350" />	
 	</portal>
 
 	<action-view name="portal.stock.dashboard.upcoming.deliveries" title="Upcoming deliveries"
@@ -311,7 +361,7 @@
 
 	<!-- Purchase Order Dashboard -->
 		
-	<portal name="supply.chain.purchase.order.dashboard.portal" title="Dashboard">
+	<portal name="supply.chain.purchase.order.dashboard.portal.sample" title="Dashboard">
 		<portlet action="portal.my.purchase.orders.to.execute" canSearch="true" height="350" />
 		<portlet action="portal.ongoing.purchase.orders" canSearch="true" height="350" />
 		<portlet action="portal.my.ongoing.purchase.orders" canSearch="true" height="350" />
@@ -353,4 +403,71 @@
 	</action-view>
 	
 	
+	<!-- 	Purchases Dashboard -->
+	
+	<portal name="supplychain.purchases.dashboard.1.portal" title="Purchases Dashboard 1">
+		<portlet action="portal.purchase.buyer.dashboard.validated.orders" canSearch="true" height="350" />
+		<portlet action="portal.purchase.buyer.dashboard.orders" canSearch="true" height="350" />
+		<portlet action="portal.purchase.buyer.dashboard.order.to.validate" canSearch="true" height="350" />
+		<portlet action="portal.purchase.buyer.dashboard.family.product.purchase.volume" canSearch="true" height="350" />
+		<portlet action="portal.purchase.buyer.dashboard.family.product.purchase.turnover" canSearch="true" height="350" />
+		<portlet action="portal.supplier.order.per.month" canSearch="true" height="350" />
+		<portlet action="portal.supplier.orders.per.month" canSearch="true" height="350" />
+		<portlet action="portal.prod.amout.purchases.last.12m" canSearch="true" height="350" />
+		<portlet action="portal.prod.qty.purchases.last.12m" canSearch="true" height="350" />
+		<portlet action="portal.purchase.manager.dashboard.validated.orders" canSearch="true" height="350" />
+		</portal>
+	
+	<portal name="supplychain.purchases.dashboard.2.portal" title="Purchases Dashboard 2">
+		<portlet action="portal.purchase.manager.dashboard.order.to.validate" canSearch="true" height="350" />
+		<portlet action="portal.purchase.manager.dashboard.buyer.purchase.volume" canSearch="true" height="350" />
+		<portlet action="portal.purchase.manager.dashboard.family.product.purchase.turnover" canSearch="true" height="350" />
+		<portlet action="portal.purchase.manager.dashboard.family.product.purchase.percent" canSearch="true" height="350" />
+		<portlet action="portal.ongoing.supplier.rfq" canSearch="true" height="350" />
+		<portlet action="portal.my.ongoing.supplier.rfq" canSearch="true" height="350" />
+		<portlet action="portal.purchase.orders.to.execute" canSearch="true" height="350" />
+		<portlet action="portal.my.purchase.orders.to.execute" canSearch="true" height="350" />
+		<portlet action="portal.ongoing.purchase.orders" canSearch="true" height="350" />
+		<portlet action="portal.my.ongoing.purchase.orders" canSearch="true" height="350" />
+	</portal>
+	
+	<portal name="supplychain.purchases.dashboard.3.portal" title="Purchases Dashboard 3">
+		<portlet action="portal.closed.purchase.orders" canSearch="true" height="350" />
+		<portlet action="portal.my.closed.purchase.orders" canSearch="true" height="350" />
+	</portal>
+	
+	
+	<!-- Sales DashBoard -->
+	
+	<portal name="supplychain.sales.dashboard.1.portal.view" title="Sales Dashboard 1">
+		<portlet action="portal.salesman.dashboard.orders" canSearch="true" height="350" />
+		<portlet action="portal.salesman.dashboard.total.turnover" canSearch="true" height="350" />
+		<portlet action="portal.sales.manager.dashboard.team.turnover" canSearch="true" height="350" />
+		<portlet action="portal.sales.manager.dashboard.salesman.turnover" canSearch="true" height="350" />
+		<portlet action="portal.sales.manager.dashboard.family.product.sales" canSearch="true" height="350" />
+		<portlet action="portal.sales.manager.dashboard.category.product.sales" canSearch="true" height="350" />
+		<portlet action="portal.sales.manager.dashboard.country.sales" canSearch="true" height="350" />
+		<portlet action="portal.prod.turnover.sales.last.12m" canSearch="true" height="350" />
+		<portlet action="portal.prod.qty.sales.last.12m" canSearch="true" height="350" />
+	</portal>
+	
+	<portal name="supplychain.sales.dashboard.2.portal.view" title="Sales Dashboard 2">
+		<portlet action="portal.sales.turnover.by.product.ytd.vs.lastyear" canSearch="true" height="350" />
+		<portlet action="portal.sales.turnover.ytd.vs.lastyear" canSearch="true" height="350" />
+		<portlet action="portal.sales.turnover.ytd.vs.lastyear.by.family" canSearch="true" height="350" />
+		<portlet action="portal.sales.turnover.by.family.ytd.vs.lastyear" canSearch="true" height="350" />
+	</portal>
+		
+		
+	<!--  Product/Goods DashBorad	 -->
+	
+	<portal name="supplychain.products.dashboard.1.portal.view" title="Products DB 1">
+		<portlet action="portal.nbr.product.per.family" canSearch="true" height="350" />
+	</portal>
+	
+	<portal name="supplychain.products.family.dashboard.1.portal.view" title="Family Dashboard">
+		<portlet action="portal.nbr.product.per.family" canSearch="true" height="350" />
+	</portal>
+	
+		
 </object-views>

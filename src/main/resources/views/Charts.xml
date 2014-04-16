@@ -206,7 +206,7 @@
 	    ]]>
 	    </dataset>
 	    <category key="family_name" type="text"/>
-		<series key="amount"  type="pie"/>
+		<series key="amount"  type="donut"/>
 	  </chart>
 	  <chart name="chart.sales.manager.dashboard.category.product.sales" title="Sales per product category over past 12 months in volume">
 	    <dataset type="sql">
@@ -243,7 +243,7 @@
 	    ]]>
 	    </dataset>
 	    <category key="category_name" type="text"/>
-    	<series key="amount" type="pie"/>
+    	<series key="amount" type="donut"/>
 	  </chart>
 	  
 	  <chart name="chart.sales.manager.dashboard.country.sales" title="Sales per country over past 12 months">
@@ -275,7 +275,7 @@
 	    ]]>
 	    </dataset>
 	    <category key="name" type="text"/>
-    	<series key="amount" type="pie"/>
+    	<series key="amount" type="donut"/>
 	  </chart>
 	   
 	  <chart name="chart.salesman.dashboard.total.turnover" title="Turnover over past 6 months" stacked="true">
@@ -426,6 +426,192 @@
         <category key="_month_no" type="month"/>
         <series key="_turn_over" type="bar" groupBy="product" title="No Of Units" aggregate="sum" />
 	</chart>
+	
+	<chart onInit="action.supplychain.portal.set.date" name="chart.stockMove.nbr.delivery.by.country" title="Customer deliveries by country">
+	  
+	  <search-fields>
+	    <field type="date" name="fromDate" widget="[required=true]"/>
+	    <field type="date" name="toDate" widget="[required=true]"/>
+	  </search-fields>
+	  
+	  <dataset type="jpql">
+	
+	    SELECT
+	      COUNT(self.id) AS _moves,
+	      country.code AS _country
+	    FROM
+	      StockMove self,    
+	      Location location,    
+	      Address address,
+	      Country country      
+	    WHERE
+	      self.typeSelect = 2 AND
+	      self.statusSelect = 3 AND
+	      self.company =:activeCompany AND    
+	      self.toLocation = location AND
+	      location.typeSelect = 2 AND
+	      self.toAddress = address AND
+	      address.addressL7Country = country AND
+	      self.realDate BETWEEN :fromDate AND :toDate
+	    GROUP BY
+	      country.code    
+	        
+	  </dataset>
+	  <category key="_country" type="text" title="Country"/>
+	  <series key="_moves" type="bar" title="Moves"/>
+	</chart>	
+	
+	<chart onInit="action.supplychain.portal.set.date" name="chart.stockMoveLine.product.delivery.by.country" title="Product deliveries in qty by country">
+	  
+	  <search-fields>
+	    <field type="date" name="fromDate" widget="[required=true]"/>
+	    <field type="date" name="toDate" widget="[required=true]"/>
+	  </search-fields>
+	  
+	  <dataset type="jpql">
+	
+	    SELECT
+	      COUNT(self.realQty) AS _qty,
+	      country.code AS _country
+	    FROM
+	      StockMoveLine self,    
+	      StockMove stockMove,
+	      Location location,
+	      Address address,
+	      Country country
+	      
+	    WHERE
+	      stockMove.typeSelect = 2 AND
+	      stockMove.statusSelect = 3 AND
+	      stockMove.company = :activeCompany AND
+	      stockMove.realDate BETWEEN :fromDate AND :toDate AND
+	      self.stockMove = stockMove AND
+	      stockMove.toLocation = location AND
+	      location.typeSelect = 2 AND
+	      stockMove.toAddress = address AND
+	      address.addressL7Country = country
+	    
+	    GROUP BY
+	      country.code    
+	   
+	  </dataset>
+	  <category key="_country" type="text" title="Country"/>
+	  <series key="_qty" type="bar" title="Quantity"/>
+	</chart>
+
+	<chart onInit="action.supplychain.portal.set.date" name="chart.stockMoveLine.product.delivery.by.country.by.family" 
+	       title="Product deliveries in qty by country by family" stacked="true">
+	  
+	  <search-fields>
+	    <field type="date" name="fromDate" widget="[required=true]"/>
+	    <field type="date" name="toDate" widget="[required=true]"/>
+	  </search-fields>
+	  
+	  <dataset type="jpql">
+	
+	    SELECT
+	      COUNT(self.realQty) AS _qty,
+	      country.code AS _country,
+	      productFamily.name AS _family
+	    FROM
+	      StockMoveLine self,    
+	      StockMove stockMove,
+	      Location location,
+	      Address address,
+	      Country country,
+	      ProductFamily productFamily
+	      
+	    WHERE
+	      stockMove.typeSelect = 2 AND
+	      stockMove.statusSelect = 3 AND
+	      stockMove.company = :activeCompany AND
+	      stockMove.realDate BETWEEN :fromDate AND :toDate AND
+	      self.stockMove = stockMove AND
+	      stockMove.toLocation = location AND
+	      location.typeSelect = 2 AND
+	      stockMove.toAddress = address AND
+	      address.addressL7Country = country AND
+	      self.product.productFamily = productFamily
+	    
+	    GROUP BY
+	      country.code, productFamily.name    
+	   
+	  </dataset>
+	  <category key="_country" type="text" title="Country"/>
+	  <series key="_qty" type="bar" title="Quantity" groupBy="_family"/>
+	</chart>
+
+	<chart onInit="action.supplychain.portal.set.date" name="chart.stockMove.deliveries.time.delay.in.nbr" 
+	       title="Customer deliveries statistics" >
+	  
+	  <search-fields>
+	    <field type="date" name="fromDate" widget="[required=true]"/>
+	    <field type="date" name="toDate" widget="[required=true]"/>
+	  </search-fields>
+	  
+	  <dataset type="sql">
+	    SELECT
+	      COUNT(self.id) AS moves,
+	      (CASE 
+	            when self.estimated_date >= self.real_date then 'OnTime Deliveries'
+	            when self.estimated_date &lt; self.real_date then 'Late Deliveries'                        
+	      END) AS status    
+	    FROM
+	      supplychain_stock_move AS self
+	    JOIN
+	      base_user_info AS _user
+	      ON _user.id = :id
+	      AND self.company = _user.active_company      
+	    JOIN
+	      supplychain_location AS _location
+	      ON _location.type_select = 2
+	      AND self.to_location = _location.id
+	    WHERE
+	      self.type_select = 2 AND
+	      self.status_select = 3 AND                 
+	      self.real_date BETWEEN DATE(:fromDate) AND DATE(:toDate)    
+	    GROUP BY
+	      status    
+	  </dataset>
+	  
+	  <category key="status" type="text" title="Status"/>
+	  <series key="moves" type="donut" title="Moves" />
+	</chart>
+
+	<chart onInit="action.supplychain.portal.set.date" name="chart.stockMove.average.delivery.time.delay" 
+	       title="Customer average delivery delay" >
+	  
+	  <search-fields>
+	    <field type="date" name="fromDate" widget="[required=true]"/>
+	    <field type="date" name="toDate" widget="[required=true]"/>
+	  </search-fields>
+	  
+	  <dataset type="sql">    
+	    SELECT
+	      ROUND(AVG((self.estimated_date - self.real_date)*-1)) AS moves,
+	      'Average Delay' AS label
+	    FROM
+	      supplychain_stock_move AS self
+	    JOIN
+	      base_user_info AS _user
+	      ON _user.id = :id 
+	      AND self.company = _user.active_company
+	    JOIN
+	      supplychain_location AS _location
+	      ON self.to_location = _location.id
+	      AND _location.type_select = 2
+	    WHERE
+	      self.type_select = 2 AND
+	      self.status_select = 3 AND
+	      self.real_date BETWEEN DATE(:fromDate) AND DATE(:toDate)
+	    GROUP BY
+	      label    
+	  </dataset>
+	  
+	  <category key="label" type="text"/>
+	  <series key="moves" type="bar" title="Moves"/>
+	</chart>
+
 	  <chart name="chart.purchase.buyer.dashboard.family.product.purchase.volume" title="My purchases orders per product family over past month in volume">
 	    <dataset type="sql">
 	    <![CDATA[
@@ -455,7 +641,7 @@
 	    ]]>
 	    </dataset>
 	    <category key="_product_family" type="text"/>
-    	<series key="amount" type="pie"/>
+    	<series key="amount" type="donut"/>
 	  </chart>
 	  
 	  
@@ -597,7 +783,7 @@
 	    ]]>
 	    </dataset>
 	    <category key="_family_product" type="text"/>
-    	<series key="_percent" type="pie"/>
+    	<series key="_percent" type="donut"/>
 	  </chart>
 	  
 	  <chart name="chart.purchase.buyer.dashboard.prod.amout.purchases.last.12m" title="Turnover On Purchase orders on Last 12 Month">
