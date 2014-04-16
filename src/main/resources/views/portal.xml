@@ -394,7 +394,7 @@
 	
 	<!-- 	Purchases Dashboard -->
 	
-	<portal name="supply.chain.purchases.dashboard.1.portal" title="Purchases Dashboard 1">
+	<portal name="supplychain.purchases.dashboard.1.portal" title="Purchases Dashboard 1">
 		<portlet action="portal.purchase.buyer.dashboard.validated.orders" canSearch="true" height="350" />
 		<portlet action="portal.purchase.buyer.dashboard.orders" canSearch="true" height="350" />
 		<portlet action="portal.purchase.buyer.dashboard.order.to.validate" canSearch="true" height="350" />
@@ -407,7 +407,7 @@
 		<portlet action="portal.purchase.manager.dashboard.validated.orders" canSearch="true" height="350" />
 		</portal>
 	
-	<portal name="supply.chain.purchases.dashboard.2.portal" title="Purchases Dashboard 2">
+	<portal name="supplychain.purchases.dashboard.2.portal" title="Purchases Dashboard 2">
 		<portlet action="portal.purchase.manager.dashboard.order.to.validate" canSearch="true" height="350" />
 		<portlet action="portal.purchase.manager.dashboard.buyer.purchase.volume" canSearch="true" height="350" />
 		<portlet action="portal.purchase.manager.dashboard.family.product.purchase.turnover" canSearch="true" height="350" />
@@ -420,7 +420,7 @@
 		<portlet action="portal.my.ongoing.purchase.orders" canSearch="true" height="350" />
 	</portal>
 	
-	<portal name="supply.chain.purchases.dashboard.3.portal" title="Purchases Dashboard 3">
+	<portal name="supplychain.purchases.dashboard.3.portal" title="Purchases Dashboard 3">
 		<portlet action="portal.closed.purchase.orders" canSearch="true" height="350" />
 		<portlet action="portal.my.closed.purchase.orders" canSearch="true" height="350" />
 	</portal>
