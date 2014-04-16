@@ -6,12 +6,12 @@
 	<!--  Partner Dashboard  -->
 	
 	<portal title="Partner Dashboard" name="base.partner.list.portal" cols="2">
+	    <portlet action="portal.customers.by.country" height="350" colSpan="1" canSearch="true"/>
+	    <portlet action="portal.partner.by.industrySector" height="350" colSpan="1" canSearch="true"/>
 		<portlet action="portal.my.recent.customers" height="350" colSpan="1" canSearch="true"/> 
 	    <portlet action="portal.partner.by.salesman" height="350" colSpan="1" canSearch="true"/>
 		<portlet action="portal.partner.recent.partners" height="350" colSpan="1" canSearch="true"/>	
-		<portlet action="portal.partner.by.industrySector" height="350" colSpan="1" canSearch="true"/>
-		<portlet action="portal.my.customers" height="350" colSpan="1" canSearch="true"/>
-	 	<portlet action="portal.customers.by.country" height="350" colSpan="1" canSearch="true"/>
+		<portlet action="portal.my.customers" height="350" colSpan="1" canSearch="true"/>	 	
   	</portal>
 	
 	<action-view name="portal.my.recent.customers" title="My Recent Customers" model="com.axelor.apps.base.db.Partner">
