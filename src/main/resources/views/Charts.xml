@@ -27,7 +27,7 @@
          	 
  		 </dataset>
 		 <category key="_gender" type="text"/>
-		 <series key="_num_emp" type="pie"/>
+		 <series key="_num_emp" type="donut"/>
 	</chart>
 	  
 	  
@@ -69,7 +69,7 @@
 			      _macro_Category
 	  </dataset>
 	 <category key="_macro_category" type="text"/>
-	 <series key="_num_emp" type="pie"/>
+	 <series key="_num_emp" type="donut"/>
 	</chart>
 	
 	<chart name="chart.hr.nbr.of.employees.by.category" title="Employees by macro-category">
@@ -119,7 +119,7 @@
           contract_type
   </dataset>
  <category key="contract_type" type="text"/>
- <series key="_num_emp" type="pie"/>
+ <series key="_num_emp" type="donut"/>
 </chart>
 
 	<chart onInit="action-product-set-today-date" name="chart.hr.employees.turnover.ytd.vs.lastYear" title="Employees turnover per year">
