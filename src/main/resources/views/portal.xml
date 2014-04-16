@@ -120,7 +120,11 @@
 	<portal title="Project Dashboard" name="org.project.dashboard.portal.sample" cols="2">
 	    <portlet action="portal.projects.by.client.partner" colSpan="1" height="350" canSearch="true"/>	    
  	</portal>
-
+ 	
+	<portal cols="2" name="org.project.dashboard.portal" title="Project/Business Dashboard">
+	  <portlet colSpan="1" height="350" action="portal.projects.by.client.partner" canSearch="true"/>
+	</portal>
+	
 	<action-view title="Projects by Client Partner" model="com.axelor.apps.organisation.db.Project" name="portal.projects.by.client.partner">
     	<view type="grid" name="project-byclient-grid"/>
     	<view type="form" name="project-form"/> 

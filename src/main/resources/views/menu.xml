@@ -359,6 +359,13 @@
 		<view type="portal" name="org.project.dashboard.portal.sample" />	    
 	</action-view>
 	
+	<menuitem name="menu-organisation-dashboard" parent="menu-dashboards" priority="120"
+		title="Project/Business Dashboard" action="portal.organisation.dashboard.view"/>	
+	
+	<action-view title="Project/Business Dashboard" icon="img/16px/crmSmall_16px.png" name="portal.organisation.dashboard.view">
+	  <view type="portal" name="org.project.dashboard.portal"/>
+	</action-view>
+	
 	<menuitem name="menu-human-resources-dashboard-sample" parent="menu-dashboards-sample" priority="160"
 		title="Human Resources Dashboard" action="portal.human.resources.dashboard.view.sample" />	
 
