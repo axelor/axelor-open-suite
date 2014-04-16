@@ -163,6 +163,39 @@
 			height="350" />
 	</portal>
 
+	<portal title="Dashboard" name="crm.opportunities.dashboard.1.portal" cols="2">
+		<portlet action="portal.salesman.dashboard.opportunities" height="350" />
+		<portlet action="portal.closed.opportunities" height="350" />
+		<portlet action="portal.open.opportunities" height="350" />
+		<portlet action="portal.my.closed.opportunities" height="350" />
+		<portlet action="portal.my.open.opportunities" height="350" />
+		<portlet action="portal.unassigned.opportunities" height="350" />
+		<portlet action="portal.team.closed.opportunities" height="350" />
+		<portlet action="portal.team.open.opportunities" height="350" />
+		<portlet action="portal.opportunities.by.source" height="350" />
+		<portlet action="portal.opportunities.by.salestage" height="350" />
+	</portal>
+	
+	<portal title="Dashboard" name="crm.opportunities.dashboard.2.portal" cols="2">
+		<portlet action="portal.opportunities.by.type" height="350" />
+		<portlet action="portal.opportunities.byStage.byType" height="350" />
+		<portlet action="portal.opportunities.won.by.partner" height="350" />
+		<portlet action="portal.opportunities.won.by.leadsource" height="350" />
+		<portlet action="portal.opportunities.won.by.salesman" height="350" />
+		<portlet action="portal.opportunities.by.origin.by.stage" height="350" />
+		<portlet action="portal.opportunities.recent.opps" height="350" />
+		<portlet action="portal.opportunities.top.deals" height="350" />
+		<portlet action="portal.opportunities.key.account" height="350" />
+		<portlet action="portal.opportunities.lost.deals" height="350" />
+	</portal>
+	
+	<portal title="Dashboard" name="crm.opportunities.dashboard.3.portal" cols="2">
+		<portlet action="portal.opportunities.pipeline.next.90d" height="350" />
+		<portlet action="portal.opportunities.my.top.deals" height="350" />
+		<portlet action="portal.opportunities.my.team.top.deals" height="350" />
+		<portlet action="portal.opportunities.my.key.account" height="350" />
+		<portlet action="portal.opportunities.my.team.key.account" height="350" />
+	</portal>
 
 	<action-view name="portal.opportunities.by.source" title="Chart">
 		<view type="chart" name="chart.dashboard.opportunities.source.amount.bar" />
@@ -265,6 +298,41 @@
 			expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()" />
 		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
+
+	<!-- Event Call Dashboard -->
+	
+	<portal title="Calls Dashboard" name="crm.calls.dashboard.portal" cols="2">
+		<portlet action="portal.calls.types.by.user" height="350" />
+		<portlet action="portal.calls.types.by.team" height="350" />
+		<portlet action="portal.calls.by.team.by.user" height="350" />
+	</portal>
+	
+	<!-- Event Tickets Dashboard -->
+	
+	<portal title="Tickets Dashboard" name="crm.tickets.dashboard.1.portal" cols="2">
+		<portlet action="portal.open.tickets.by.priority" height="350" />
+		<portlet action="portal.open.ticket.priority.distribution" height="350" />
+		<portlet action="portal.open.tickets.by.status" height="350" />
+		<portlet action="portal.agents.by.open.cases" height="350" />
+		<portlet action="portal.customers.by.open.cases" height="350" />
+		<portlet action="portal.due.open.ticket.gauge" height="350" />
+		<portlet action="portal.my.urgent.tickets" height="350" />
+		<portlet action="portal.my.active.tickets" height="350" />
+		<portlet action="portal.urgent.tickets" height="350" />
+		<portlet action="portal.my.new.tickets" height="350" />
+	</portal>
+	
+	<portal title="Tickets Dashboard" name="crm.tickets.dashboard.2.portal" cols="2">
+		<portlet action="portal.new.tickets" height="350" />
+		<portlet action="portal.new.urgent.tickets" height="350" />
+		<portlet action="portal.my.new.urgent.tickets" height="350" />
+		<portlet action="portal.my.today.support.activities" height="350" />
+		<portlet action="portal.my.late.tickets" height="350" />
+		<portlet action="portal.late.tickets" height="350" />
+		<portlet action="portal.created.tickets.by.month.by.priority" height="350" />
+		<portlet action="portal.created.tickets.by.month.by.status" height="350" />
+		<portlet action="portal.open.tickets.by.month.by.agent" height="350" />
+	</portal>
 
 	<!-- Event Dashboard 1 -->
 

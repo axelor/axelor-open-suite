@@ -401,4 +401,69 @@
 		<context name="team" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeamId()"/>
 		<context name="date" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
 	</action-view>
+	
+	
+	<menuitem name="menu-opportunities-dashboard" parent="menu-crm-dashboards"
+		title="Opportunities Dashboard" priority="20" />	
+	
+	<menuitem name="menu-opportunities-dashboard.1" parent="menu-opportunities-dashboard"
+		title="Opportunities DB 1" action="crm.portal.opportunities.dashboard.1.view"/>	
+
+	<action-view name="crm.portal.opportunities.dashboard.1.view" title="Opportunities DB 1"
+		icon="img/16px/crmSmall_16px.png">
+		<view type="portal" name="crm.opportunities.dashboard.1.portal" />
+	</action-view>
+	
+	<menuitem name="menu-opportunities-dashboard.2" parent="menu-opportunities-dashboard"
+		title="Opportunities DB 2" action="crm.portal.opportunities.dashboard.2.view"/>	
+
+	<action-view name="crm.portal.opportunities.dashboard.2.view" title="Opportunities DB 2"
+		icon="img/16px/crmSmall_16px.png">
+		<view type="portal" name="crm.opportunities.dashboard.2.portal" />
+	</action-view>
+	
+	<menuitem name="menu-opportunities-dashboard.3" parent="menu-opportunities-dashboard"
+		title="Opportunities DB 3" action="crm.portal.opportunities.dashboard.3.view"/>	
+
+	<action-view name="crm.portal.opportunities.dashboard.3.view" title="Opportunities DB 3"
+		icon="img/16px/crmSmall_16px.png">
+		<view type="portal" name="crm.opportunities.dashboard.3.portal" />
+	</action-view>
+	
+	<menuitem name="menu-tasks-dashboard" parent="menu-crm-dashboards"
+		title="Tasks Dashboard" priority="30" />	
+		
+	<menuitem name="menu-meetings-dashboard" parent="menu-crm-dashboards"
+		title="Meetings Dashboard" priority="40" />	
+		
+	<menuitem name="menu-calls-dashboard" parent="menu-crm-dashboards"
+		title="Calls Dashboard" priority="50" action="crm.portal.calls.dashboard.view"/>	
+	
+	<action-view name="crm.portal.calls.dashboard.view" title="calls Dashboard"
+		icon="img/16px/crmSmall_16px.png">
+		<view type="portal" name="crm.calls.dashboard.portal" />
+	</action-view>	
+	
+	<menuitem name="menu-tickets-dashboard" parent="menu-crm-dashboards"
+		title="Tickets Dashboard" priority="60"   />
+		
+	<menuitem name="menu-tickets-dashboard.1" parent="menu-tickets-dashboard"
+		title="Tickets Dashboard 1" action="crm.portal.tickets.dashboard.1.view"/>	
+
+	<action-view name="crm.portal.tickets.dashboard.1.view" title="Tickets Dashboard 1"
+		icon="img/16px/crmSmall_16px.png">
+		<view type="portal" name="crm.tickets.dashboard.1.portal" />
+	</action-view>
+	
+	<menuitem name="menu-tickets-dashboard.2" parent="menu-tickets-dashboard"
+		title="Tickets Dashboard 2" action="crm.portal.tickets.dashboard.2.view"/>	
+
+	<action-view name="crm.portal.tickets.dashboard.2.view" title="Tickets Dashboard 2"
+		icon="img/16px/crmSmall_16px.png">
+		<view type="portal" name="crm.tickets.dashboard.2.portal" />
+	</action-view>
+	
+	<menuitem name="menu-holidays-dashboard" parent="menu-crm-dashboards"
+		title="Holidays Dashboard" priority="70" />
+	
 </object-views>
