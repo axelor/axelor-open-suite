@@ -200,7 +200,7 @@
 	  ]]>
 	  </dataset>
 	  <category key="_product_category" type="text" title="Product Category"/>
-	  <series key="_revenue" type="pie" title="Revenue" />
+	  <series key="_revenue" type="donut" title="Revenue" />
 	</chart>      
 	
 	<chart name="chart.total.revenue.by.geo.region" title="Revenue Genenerated by Geographical Region" >
@@ -222,7 +222,7 @@
 	  ]]>
 	  </dataset>
 	  <category key="_geo_region" type="text" title="Country"/>
-	  <series key="_revenue" type="pie" title="Revenue" />
+	  <series key="_revenue" type="donut" title="Revenue" />
 	</chart>  
 	
 	
@@ -417,7 +417,7 @@
 	    ]]>
 	    </dataset>
 	    <category key="paymentMode" type="text" />
-	    <series key="total" type="pie" title="Payments" />
+	    <series key="total" type="donut" title="Payments" />
 	  </chart>
 	  
  	  <action-record name="action.account.portal.set.date" model="com.axelor.apps.account.db.Account">
@@ -451,7 +451,7 @@
 	    ]]>
 	    </dataset>
 	    <category key="paymentMode" type="text" />
-	    <series key="total" type="pie" title="Amount paid" />
+	    <series key="total" type="donut" title="Amount paid" />
 	  </chart>
 	  
  	  
@@ -595,7 +595,7 @@
 	        _payment_condition.name
 	 </dataset>
 	  <category key="_payment_condition" type="month"/>
-	  <series key="ex_tax_total" type="pie"/>
+	  <series key="ex_tax_total" type="donut"/>
 	</chart>
 	
 	<chart onInit="action-account-set-from-to-date-range" name="chart.invoice.purchase.amount.by.month" title="Invoice Purchase by month (tax excl.)">
@@ -708,7 +708,7 @@
 	        _payment_condition.name
 	 </dataset>
 	  <category key="_payment_condition" type="month"/>
-	  <series key="ex_tax_total" type="pie"/>
+	  <series key="ex_tax_total" type="donut"/>
 	</chart>
 	<chart onInit="action-account-set-from-to-date-range" name="chart.invoice.sale.refund.situation" title="Invoice and Refunds Sale situation (tax incl.)">
 	
