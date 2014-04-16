@@ -78,8 +78,15 @@ public class StockMoveController {
 		StockMove stockMove = request.getContext().asType(StockMove.class);
 
 		try {
-			stockMoveService.realize(StockMove.find(stockMove.getId()));
+			StockMove newStockMove = stockMoveService.realize(StockMove.find(stockMove.getId()));
+			
 			response.setReload(true);
+			
+			if(newStockMove != null)  {
+				
+				response.setFlash(String.format("A partial stock move has been generated (%s)", newStockMove.getStockMoveSeq()));
+				
+			}
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
 	}

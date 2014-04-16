@@ -229,14 +229,21 @@ public class StockMoveLineService {
 	
 
 	public void updateLocations(Location fromLocation, Location toLocation, int fromStatus, int toStatus, List<StockMoveLine> stockMoveLineList, 
-			LocalDate lastFutureStockMoveDate, Project businessProject) throws AxelorException  {
+			LocalDate lastFutureStockMoveDate, Project businessProject, boolean realQty) throws AxelorException  {
 		
 		for(StockMoveLine stockMoveLine : stockMoveLineList)  {
 			
 			Unit productUnit = stockMoveLine.getProduct().getUnit();
 			Unit stockMoveLineUnit = stockMoveLine.getUnit();
 			
-			BigDecimal qty = stockMoveLine.getQty();
+			BigDecimal qty = null;
+			if(realQty)  {
+				qty = stockMoveLine.getRealQty();
+			}
+			else  {
+				qty = stockMoveLine.getQty();
+			}
+			
 			if(!productUnit.equals(stockMoveLineUnit))  {
 				qty = new UnitConversionService().convert(stockMoveLineUnit, productUnit, qty);
 			}

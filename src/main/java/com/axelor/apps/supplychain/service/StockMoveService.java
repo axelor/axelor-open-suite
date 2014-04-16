@@ -241,7 +241,8 @@ public class StockMoveService {
 				IStockMove.STATUS_PLANNED, 
 				stockMove.getStockMoveLineList(),
 				stockMove.getEstimatedDate(),
-				this.getBusinessProject(stockMove));
+				this.getBusinessProject(stockMove),
+				false);
 		
 		if(stockMove.getEstimatedDate() == null)  {
 			stockMove.setEstimatedDate(this.today);
@@ -254,7 +255,7 @@ public class StockMoveService {
 	}
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public void realize(StockMove stockMove) throws AxelorException  {
+	public StockMove realize(StockMove stockMove) throws AxelorException  {
 	
 		LOG.debug("Réalisation du mouvement de stock : {} ", new Object[] { stockMove.getStockMoveSeq() });
 		
@@ -265,12 +266,62 @@ public class StockMoveService {
 				IStockMove.STATUS_REALIZED, 
 				stockMove.getStockMoveLineList(),
 				stockMove.getEstimatedDate(),
-				this.getBusinessProject(stockMove));
+				this.getBusinessProject(stockMove),
+				true);
 		
 		stockMove.setStatusSelect(IStockMove.STATUS_REALIZED);
 		stockMove.setRealDate(this.today);
 		stockMove.save();
+		
+		if(this.mustBeSplit(stockMove.getStockMoveLineList()))  {
+			return this.copyAndSplitStockMove(stockMove);
+		}
+		
+		return null;
 	}
+	
+	public boolean mustBeSplit(List<StockMoveLine> stockMoveLineList)  {
+		
+		for(StockMoveLine stockMoveLine : stockMoveLineList)  {
+			
+			if(stockMoveLine.getRealQty().compareTo(stockMoveLine.getQty()) != 0)  {
+				
+				return true;
+				
+			}
+			
+		}
+		
+		return false;
+		
+	}
+
+	
+	public StockMove copyAndSplitStockMove(StockMove stockMove) throws AxelorException  {
+		
+		StockMove newStockMove = JPA.copy(stockMove, false);
+		
+		for(StockMoveLine stockMoveLine : stockMove.getStockMoveLineList())  {
+			
+			if(stockMoveLine.getQty().compareTo(stockMoveLine.getRealQty()) != 0)   {
+				StockMoveLine newStockMoveLine = JPA.copy(stockMoveLine, false);
+				
+				newStockMoveLine.setRealQty(BigDecimal.ZERO);
+				newStockMoveLine.setQty(stockMoveLine.getQty().subtract(stockMoveLine.getRealQty()));
+				
+				newStockMove.addStockMoveLineListItem(newStockMoveLine);
+			}
+		}
+		
+		newStockMove.setStatusSelect(IStockMove.STATUS_PLANNED);
+		newStockMove.setRealDate(null);
+		newStockMove.setStockMoveSeq(this.getSequenceStockMove(newStockMove.getTypeSelect(), newStockMove.getCompany()));
+		newStockMove.setName(newStockMove.getStockMoveSeq() + " Partial stock move (From " + stockMove.getStockMoveSeq() + " )" );
+		
+		return newStockMove.save();
+		
+	}
+	
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -285,7 +336,8 @@ public class StockMoveService {
 				IStockMove.STATUS_CANCELED, 
 				stockMove.getStockMoveLineList(),
 				stockMove.getEstimatedDate(),
-				this.getBusinessProject(stockMove));
+				this.getBusinessProject(stockMove),
+				false);
 		
 		stockMove.setStatusSelect(IStockMove.STATUS_CANCELED);
 		stockMove.setRealDate(this.today);
