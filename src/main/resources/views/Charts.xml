@@ -963,5 +963,22 @@
 	  <category key="_prod_family" type="text" title="Product Family"/>
 	  <series key="_num_prod" type="bar" title="Products"/>
 	</chart>
+
+	<!-- This chart is used in location-form -->
+	<chart name="chart.locationLine.location.value" title="Location value">
+	  <dataset type="jpql">
+	    
+	    SELECT
+	      SUM(self.currentQty * self.product.costPrice) AS value,
+	      'Stock Value' AS label
+	    FROM
+	      LocationLine AS self
+	    WHERE
+	      self.location.id =:id
+	      
+	  </dataset>
+	  <category key="label" type="text"/>
+	  <series key="value" type="bar"/>
+	</chart>
 	
 </object-views>

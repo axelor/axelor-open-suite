@@ -358,6 +358,11 @@
 	<action-view name="portal.nbr.product.per.family" title="Number of Product per Family" model="com.axelor.apps.base.db.Product">
 	  <view type="chart" name="chart.nbr.product.per.family"/>
 	</action-view>
+	
+	<!-- This portlet is used in location-form -->
+	<action-view title="Location value" name="portal.locationLine.location.value">
+	  <view type="chart" name="chart.locationLine.location.value"/>
+	</action-view>
 
 	<!-- Purchase Order Dashboard -->
 		

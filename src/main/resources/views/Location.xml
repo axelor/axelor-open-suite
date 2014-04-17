@@ -39,6 +39,9 @@
         	<page title="Stock Details">
         		<field name="detailsLocationLineList" colSpan="6" grid-view="location-line-details-grid" form-view="location-line-details-form"/>
         	</page>
+			<page title="Stock Value">
+				<portlet action="portal.locationLine.location.value" height="350" colSpan="2" />
+			</page>        	
         </notebook>
     </form>
     
