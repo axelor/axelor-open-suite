@@ -359,10 +359,13 @@
 		<view type="portal" name="org.project.dashboard.portal.sample" />	    
 	</action-view>
 	
-	<menuitem name="menu-organisation-dashboard" parent="menu-dashboards" priority="120"
-		title="Project/Business Dashboard" action="portal.organisation.dashboard.view"/>	
+	<menuitem name="menu-project-business-dashboard" parent="menu-dashboards" priority="120"
+		title="Project/Business" />	
 	
-	<action-view title="Project/Business Dashboard" icon="img/16px/crmSmall_16px.png" name="portal.organisation.dashboard.view">
+	<menuitem name="menu-project-business-dashboard-1" parent="menu-project-business-dashboard" 
+		title="Project/Business Db" icon="img/16px/chart_16px.png" action="portal.project.business.dashboard.view"/>	
+	
+	<action-view title="Project/Business Db"  name="portal.project.business.dashboard.view">
 	  <view type="portal" name="org.project.dashboard.portal"/>
 	</action-view>
 	
