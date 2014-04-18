@@ -697,7 +697,7 @@
 	</action-view>	
 	
 	<menuitem name="menu-account-invoice-dashboard-sample" parent="menu-dashboards-sample" priority="145"
-    title="Account Dashboard" action="portal.account.invoice.dashboard.view.sample"/>    
+    title="Account Dashboard" icon="img/16px/chart_16px.png" action="portal.account.invoice.dashboard.view.sample"/>    
 
     <action-view name="portal.account.invoice.dashboard.view.sample" title="Account Dashboard"
         icon="img/16px/crmSmall_16px.png">
