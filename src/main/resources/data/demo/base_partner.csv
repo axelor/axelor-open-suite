@@ -6,7 +6,7 @@
 44;"T00005";1;"false";"BLUEBERRY TELECOM";;"BLUEBERRY TELECOM";;"fr";13002;13002;"info@blueberry-telecom.fr";"04.73.67.88.99";;2;"emailpaper";6;6;"SME";"EUR";;;1;411100;401100;;3;2;22;12;2;7;;"44_120px.png"
 45;"T00006";2;"true";"ROUSSEAU";"Élisabeth";"ROUSSEAU Élisabeth";2;"fr";13001;13001;"e.rousseau@blueberry-telecom.fr";"04.86.61.79.99";"06.14.62.29.99";;;;;;;;;1;;;44;;;;;;;;
 46;"T00007";2;"true";"BLANC";"Bernard";"BLANC Bernard";1;"fr";13001;13001;"b.blanc@blueberry-telecom.fr";"04.32.13.60.99";"07.83.63.98.99";;;;;;;;;1;;;44;;;;;;;;
-70;"T00008";1;"false";"MASSON Logistics";;"MASSON Logistics";;"fr";311;311;"contact@masson.fr";"05.44.40.54.99";;3;"emailpaper";5;2;"SME";"EUR";;;1;411100;401100;;3;2;21;11;2;3;;
+70;"T00008";1;"false";"MASSON Logistics";;"MASSON Logistics";;"fr";311;311;"contact@masson.fr";"05.44.40.54.99";;3;"emailpaper";5;2;"SME";"EUR";;;1;411100;401100;;3;2;21;11;2;3;;"70_120px.png"
 71;"T00009";2;"true";"MASSON";"Xavier";"MASSON Xavier";1;"fr";311;311;"x.masson@masson.fr";"05.15.60.89.99";"07.76.18.65.99";;;;;;;;;1;;;70;;;;;;;;
 72;"T00010";2;"true";"SANCHEZ";"Catherine";"SANCHEZ Catherine";2;"fr";311;311;"c.sanchez@masson.fr";"05.27.69.43.99";"07.59.17.99.99";;;;;;;;;1;;;70;;;;;;;;
 77;"T00011";1;"false";"GERARD Solutions";;"GERARD Solutions";;"fr";330;330;"contact@gerard-solutions.fr";"05.22.62.48.99";;4;"emailpaper";5;2;"SME";"EUR";;;1;411100;401100;;2;2;4;12;2;12;;
@@ -20,7 +20,7 @@
 133;"T00019";2;"true";"BOURGEOIS";"Luc";"BOURGEOIS Luc";1;"fr";940;940;"l.bourgeois@bourgeois-industries.fr";"01.42.72.29.99";"06.86.42.41.99";;;;;;;;;1;;;132;;;;;;;;
 134;"T00020";2;"true";"ARAFI";"Zohra";"ARAFI Zohra";2;"fr";940;940;"z.arafi@bourgeois-industries.fr";"01.72.29.71.99";"06.43.52.92.99";;;;;;;;;1;;;132;;;;;;;;
 135;"T00021";2;"true";"CHARLES";"Jeannot";"CHARLES Jeannot";1;"fr";940;940;"j.charles@bourgeois-industries.fr";"01.87.59.46.99";"07.72.53.10.99";;;;;;;;;1;;;132;;;;;;;;
-136;"T00022";1;"false";"Banque GUILLOT";;"Banque GUILLOT";;"fr";950;950;"contact@banqueguillot.fr";"01.38.33.50.99";;7;"emailpaper";5;2;"SME";"EUR";;;1;411100;401100;;2;2;2;13;3;5;;
+136;"T00022";1;"false";"Banque GUILLOT";;"Banque GUILLOT";;"fr";950;950;"contact@banqueguillot.fr";"01.38.33.50.99";;7;"emailpaper";5;2;"SME";"EUR";;;1;411100;401100;;2;2;2;13;3;5;;"136_120px.png"
 137;"T00023";2;"true";"GUILLOT";"Kévin";"GUILLOT Kévin";1;"fr";950;950;"k.guillot@banqueguillot.fr";"01.73.34.26.99";"06.63.55.39.99";;;;;;;;;1;;;136;;;;;;;;
 138;"T00024";2;"true";"NOEL";"Jean Nicolas";"NOEL Jean Nicolas";1;"fr";950;950;"j.noel@banqueguillot.fr";"01.13.96.92.99";"07.44.77.73.99";;;;;;;;;1;;;136;;;;;;;;
 139;"T00025";2;"true";"MEUNIER";"Paul";"MEUNIER Paul";1;"fr";950;950;"p.meunier@banqueguillot.fr";"01.22.82.15.99";"07.67.21.50.99";;;;;;;;;1;;;136;;;;;;;;
