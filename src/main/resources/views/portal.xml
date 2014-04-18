@@ -123,11 +123,10 @@
 	<action-view title="Number Of Units On Customer Sales on Last 12 Month" name="portal.prod.qty.sales.last.12m">
         <view type="chart" name="chart.prod.qty.sales.last.12m"/>
     </action-view>
-	
-	<action-record model="com.axelor.apps.supplychain.db.StockMove" name="action.supplychain.portal.set.date">
-	  <field name="toDate" expr="eval:todayDate"/>
-	  <field name="fromDate" expr="eval:LocalDate.parse(todayDate).withDayOfMonth(1).withMonthOfYear(1)"/>
-	</action-record>	
+ 		
+	<action-record model="com.axelor.apps.supplychain.db.SalesOrder" name="action.supplychain.portal.default.month.value">
+	  <field name="monthSelect" expr="eval:12"/>
+	</action-record>
 	
 	<action-view title="Customer deliveries by country" name="portal.stockMove.nbr.delivery.by.country">
 	  <view type="chart" name="chart.stockMove.nbr.delivery.by.country"/>

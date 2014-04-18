@@ -427,11 +427,10 @@
         <series key="_turn_over" type="bar" groupBy="product" title="No Of Units" aggregate="sum" />
 	</chart>
 	
-	<chart onInit="action.supplychain.portal.set.date" name="chart.stockMove.nbr.delivery.by.country" title="Customer deliveries by country">
+	<chart onInit="action.supplychain.portal.default.month.value" name="chart.stockMove.nbr.delivery.by.country" title="Customer deliveries by country">
 	  
 	  <search-fields>
-	    <field type="date" name="fromDate" widget="[required=true]"/>
-	    <field type="date" name="toDate" widget="[required=true]"/>
+	    <field type="string" name="monthSelect" title="Past Months" selection="account.year.period.duration.select"/>
 	  </search-fields>
 	  
 	  <dataset type="jpql">
@@ -452,7 +451,7 @@
 	      location.typeSelect = 2 AND
 	      self.toAddress = address AND
 	      address.addressL7Country = country AND
-	      self.realDate BETWEEN :fromDate AND :toDate
+	      self.realDate BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * 30 AND DATE(:todayDate)
 	    GROUP BY
 	      country.code    
 	        
@@ -461,11 +460,10 @@
 	  <series key="_moves" type="bar" title="Moves"/>
 	</chart>	
 	
-	<chart onInit="action.supplychain.portal.set.date" name="chart.stockMoveLine.product.delivery.by.country" title="Product deliveries in qty by country">
+	<chart onInit="action.supplychain.portal.default.month.value" name="chart.stockMoveLine.product.delivery.by.country" title="Product deliveries in qty by country">
 	  
 	  <search-fields>
-	    <field type="date" name="fromDate" widget="[required=true]"/>
-	    <field type="date" name="toDate" widget="[required=true]"/>
+	    <field type="string" name="monthSelect" title="Past Months" selection="account.year.period.duration.select"/>
 	  </search-fields>
 	  
 	  <dataset type="jpql">
@@ -484,7 +482,7 @@
 	      stockMove.typeSelect = 2 AND
 	      stockMove.statusSelect = 3 AND
 	      stockMove.company = :activeCompany AND
-	      stockMove.realDate BETWEEN :fromDate AND :toDate AND
+	      stockMove.realDate BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * 30 AND DATE(:todayDate) AND
 	      self.stockMove = stockMove AND
 	      stockMove.toLocation = location AND
 	      location.typeSelect = 2 AND
@@ -499,12 +497,11 @@
 	  <series key="_qty" type="bar" title="Quantity"/>
 	</chart>
 
-	<chart onInit="action.supplychain.portal.set.date" name="chart.stockMoveLine.product.delivery.by.country.by.family" 
+	<chart onInit="action.supplychain.portal.default.month.value" name="chart.stockMoveLine.product.delivery.by.country.by.family" 
 	       title="Product deliveries in qty by country by family" stacked="true">
 	  
 	  <search-fields>
-	    <field type="date" name="fromDate" widget="[required=true]"/>
-	    <field type="date" name="toDate" widget="[required=true]"/>
+	    <field type="string" name="monthSelect" title="Past Months" selection="account.year.period.duration.select"/>
 	  </search-fields>
 	  
 	  <dataset type="jpql">
@@ -525,7 +522,7 @@
 	      stockMove.typeSelect = 2 AND
 	      stockMove.statusSelect = 3 AND
 	      stockMove.company = :activeCompany AND
-	      stockMove.realDate BETWEEN :fromDate AND :toDate AND
+	      stockMove.realDate BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * 30 AND DATE(:todayDate) AND
 	      self.stockMove = stockMove AND
 	      stockMove.toLocation = location AND
 	      location.typeSelect = 2 AND
@@ -541,12 +538,11 @@
 	  <series key="_qty" type="bar" title="Quantity" groupBy="_family"/>
 	</chart>
 
-	<chart onInit="action.supplychain.portal.set.date" name="chart.stockMove.deliveries.time.delay.in.nbr" 
+	<chart onInit="action.supplychain.portal.default.month.value" name="chart.stockMove.deliveries.time.delay.in.nbr" 
 	       title="Customer deliveries statistics" >
 	  
 	  <search-fields>
-	    <field type="date" name="fromDate" widget="[required=true]"/>
-	    <field type="date" name="toDate" widget="[required=true]"/>
+	    <field type="string" name="monthSelect" title="Past Months" selection="account.year.period.duration.select"/>
 	  </search-fields>
 	  
 	  <dataset type="sql">
@@ -569,7 +565,7 @@
 	    WHERE
 	      self.type_select = 2 AND
 	      self.status_select = 3 AND                 
-	      self.real_date BETWEEN DATE(:fromDate) AND DATE(:toDate)    
+	      self.real_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate)    
 	    GROUP BY
 	      status    
 	  </dataset>
@@ -578,12 +574,11 @@
 	  <series key="moves" type="donut" title="Moves" />
 	</chart>
 
-	<chart onInit="action.supplychain.portal.set.date" name="chart.stockMove.average.delivery.time.delay" 
+	<chart onInit="action.supplychain.portal.default.month.value" name="chart.stockMove.average.delivery.time.delay" 
 	       title="Customer average delivery delay" >
 	  
-	  <search-fields>
-	    <field type="date" name="fromDate" widget="[required=true]"/>
-	    <field type="date" name="toDate" widget="[required=true]"/>
+	  <search-fields>	    
+	        <field type="string" name="monthSelect" title="Past Months" selection="account.year.period.duration.select"/>
 	  </search-fields>
 	  
 	  <dataset type="sql">    
@@ -603,7 +598,7 @@
 	    WHERE
 	      self.type_select = 2 AND
 	      self.status_select = 3 AND
-	      self.real_date BETWEEN DATE(:fromDate) AND DATE(:toDate)
+	      self.real_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate)
 	    GROUP BY
 	      label    
 	  </dataset>
