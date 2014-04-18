@@ -376,24 +376,25 @@
 	</action-view>
 
 	<menuitem name="menu-human-resources-dashboard" parent="menu-dashboards" 
-		title="Human Resources Dashboard" priority="120" />	
+		title="Human Resources" priority="100" />	
 	
 	<menuitem name="menu-human-resources-dashboard-db-1" parent="menu-human-resources-dashboard" 
-		title="Human Resources DB 1" action="portal.human.resources.dashboard.db1.view" />	
+		title="Human Resources Db 1" icon="img/16px/chart_16px.png" action="portal.human.resources.dashboard.db1.view" />	
 	
-	<action-view name="portal.human.resources.dashboard.db1.view" title="Human Resources DB 1"
+	<action-view name="portal.human.resources.dashboard.db1.view" title="Human Resources Db 1"
 		icon="img/16px/crmSmall_16px.png">
 		<view type="portal" name="human.resources.dashboard.1.portal" />
 		<context name="_user_id" expr="eval:__user__.id"/>
 	</action-view>
 	
 	<menuitem name="menu-human-resources-dashboard-db-2" parent="menu-human-resources-dashboard" 
-		title="Human Resources DB 2" action="portal.human.resources.dashboard.db2.view" />	
+		title="Human Resources Db 2" icon="img/16px/chart_16px.png" action="portal.human.resources.dashboard.db2.view" />	
 
-	<action-view name="portal.human.resources.dashboard.db2.view" title="Human Resources DB 2"
+	<action-view name="portal.human.resources.dashboard.db2.view" title="Human Resources Db 2"
 		icon="img/16px/crmSmall_16px.png">
 		<view type="portal" name="human.resources.dashboard.2.portal" />
 		<context name="_user_id" expr="eval:__user__.id"/>
 	</action-view>
+
 
 </object-views>
