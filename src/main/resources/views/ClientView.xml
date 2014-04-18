@@ -18,8 +18,8 @@
 	
 	<action-view name="wizard-client-form-open-my-sale-order" title="My sales orders"
 		model="com.axelor.apps.supplychain.db.SalesOrder" icon="img/16px/orderSmall_16px.png">
-		<view type="grid" name="sales-order-grid"/>
-		<view type="form" name="sales-order-form" />
+		<view type="grid" name="sales-order-grid-client"/>
+		<view type="form" name="sales-order-form-client" />
 		<domain>self.clientPartner = :_myPartner</domain>
 		<context name="_myPartner" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserPartner()"/>
 	</action-view>
