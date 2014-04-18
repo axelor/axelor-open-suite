@@ -144,62 +144,56 @@
 	<action-view title="Invoice Sale by month (tax excl.)" name="portal.invoice.sale.amount.by.month">
 		    <view type="chart" name="chart.invoice.sale.amount.by.month"/>
 			<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+			<context name="id" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
 		
 	<action-view title="Invoice Sale by currency (tax excl.)" name="portal.invoice.sale.amount.by.currency">
 			  <view type="chart" name="chart.invoice.sale.amount.by.currency"/>
 			<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+			<context name="id" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
 		
 	<action-view title="Invoice Sale Payment Condition distribution" name="portal.invoice.sale.paymentCondition.distribution">
 	  		<view type="chart" name="chart.invoice.sale.paymentCondition.distribution"/>
-			<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>	
+			<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+			<context name="id" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>	
 	</action-view>
 	
 	<action-view title="Invoice Purchase by month (tax excl.)" name="portal.invoice.purchase.amount.by.month">
 	  		<view type="chart" name="chart.invoice.purchase.amount.by.month"/>
 			<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+			<context name="id" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
 	
 	<action-view title="Invoice Purchase by currency (tax excl.)" name="portal.invoice.purchase.amount.by.currency">
 	  		<view type="chart" name="chart.invoice.purchase.amount.by.currency"/>
 			<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+			<context name="id" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
 	
 	<action-view title="Invoice Purchase Payment Condition distribution" name="portal.invoice.purchase.paymentCondition.distribution">
 		  <view type="chart" name="chart.invoice.purchase.paymentCondition.distribution"/>
 		  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+		  <context name="id" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
 	
 	<action-view name="portal.invoice.sale.refund.situation" title="Invoice and Refunds Sale situation (tax incl.)" >
 	  <view type="chart" name="chart.invoice.sale.refund.situation"/>
-	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>    
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+	  <context name="id" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>    
 	</action-view>
 	
 	<action-view name="portal.invoice.sale.situation" title="Invoice Sale situation (tax incl.)">
 	  <view type="chart" name="chart.invoice.sale.situation"/>
-	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>    
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+	  <context name="id" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>    
 	</action-view>
 	
 	<action-view name="portal.invoice.purchase.situation" title="Invoice Purchase situation (tax incl.)">
 	  <view type="chart" name="chart.invoice.purchase.situation"/>
-	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>    
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+	  <context name="id" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>    
 	</action-view>	
-	
-	<!-- 	Action Record for selection of fromDate to toDate   -->
-	<action-record model="com.axelor.apps.base.db.Product" name="action-account-set-from-to-date-range">
-		  <field name="toDate" expr="eval:todayDate"/>
-		  <field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusYears(1)" />
-		  <field name="id" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/> 
-	</action-record>
-	
-	<!-- 	Action Record for fromDate to toDate range 6 months  -->
-	<action-record name="action-account-set-from-to-date-range-6m" model="com.axelor.apps.organisation.db.Timesheet">
-	  <field name="toDate" expr="eval:todayDate"/>
-	  <field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusMonths(6)" />
-	  <field name="id" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/> 
-	</action-record>
-	
 	
 </object-views>
 

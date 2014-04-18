@@ -391,10 +391,9 @@
 	    <series key="_amount"  type="bar" title="Units" />
 	  </chart>
 	  
- 	  <chart name="chart.paymentVoucher.customer.paymentMode.distribution.nbr" onInit="action.account.portal.set.date" title="Customer Payment mode distribution by transactions">
+ 	  <chart name="chart.paymentVoucher.customer.paymentMode.distribution.nbr" onInit="action.account.portal.default.month.value" title="Customer Payment mode distribution by transactions">
  	    <search-fields>
- 	        <field name="fromDate" type="datetime" widget="[required=true]" />
- 	        <field name="toDate" type="datetime" widget="[required=true]" />
+ 	        <field type="string" name="monthSelect" title="Past Months" selection="account.year.period.duration.select"/>
  	    </search-fields>
 	    <dataset type="jpql">
 	     <![CDATA[
@@ -408,9 +407,9 @@
 	     	WHERE
 				self.operationTypeSelect=3 
 			AND
-				self.paymentDateTime >= :fromDate 
+				self.paymentDateTime >= DATE(:todayDate) - (CAST(:monthSelect as int)*30)  
 			AND 
-				self.paymentDateTime <= :toDate
+				self.paymentDateTime <= DATE(:todayDate)
 	     	GROUP BY
 	     		_paymentMode
 	     	
@@ -425,10 +424,13 @@
  	      <field name="fromDate" expr="eval:LocalDate.parse(todayDate).withDayOfMonth(1).withMonthOfYear(1)"/>
  	  </action-record>
  	  
- 	  <chart name="chart.paymentVoucher.customer.paymentMode.distribution.amount" onInit="action.account.portal.set.date" title="Customer Payment mode distribution by amount">
- 	    <search-fields>
- 	        <field name="fromDate" type="datetime" widget="[required=true]" />
- 	        <field name="toDate" type="datetime" widget="[required=true]" />
+	  <action-record model="com.axelor.apps.account.db.Account" name="action.account.portal.default.month.value">
+	      <field name="monthSelect" expr="eval:12"/>
+	  </action-record>
+ 	  
+ 	  <chart name="chart.paymentVoucher.customer.paymentMode.distribution.amount" onInit="action.account.portal.default.month.value" title="Customer Payment mode distribution by amount">
+ 	    <search-fields> 	        
+ 	        <field type="string" name="monthSelect" title="Past Months" selection="account.year.period.duration.select"/>
  	    </search-fields>
 	    <dataset type="jpql">
 	     <![CDATA[
@@ -442,9 +444,9 @@
 	     	WHERE
 				self.operationTypeSelect=3 
 			AND
-				self.paymentDateTime >= :fromDate 
+				self.paymentDateTime >= DATE(:todayDate) - (CAST(:monthSelect as int)* 30) 
 			AND 
-				self.paymentDateTime <= :toDate
+				self.paymentDateTime <= DATE(:todayDate)
 	     	GROUP BY
 	     		_paymentMode
 	     	
@@ -455,10 +457,9 @@
 	  </chart>
 	  
  	  
- 	  <chart name="chart.paymentVoucher.customer.paymentMode.by.amount" onInit="action.account.portal.set.date" title="Customer Payment mode by amount">
+ 	  <chart name="chart.paymentVoucher.customer.paymentMode.by.amount" onInit="action.account.portal.default.month.value" title="Customer Payment mode by amount">
  	    <search-fields>
- 	        <field name="fromDate" type="datetime" widget="[required=true]" />
- 	        <field name="toDate" type="datetime" widget="[required=true]" />
+ 	        <field type="string" name="monthSelect" title="Past Months" selection="account.year.period.duration.select"/>
  	    </search-fields>
 	    <dataset type="jpql">
 	     <![CDATA[
@@ -472,9 +473,9 @@
 	     	WHERE
 				self.operationTypeSelect=3 
 			AND
-				self.paymentDateTime >= :fromDate 
+				self.paymentDateTime >= DATE(:todayDate) - (CAST(:monthSelect as int)* 30) 
 			AND 
-				self.paymentDateTime <= :toDate
+				self.paymentDateTime <= DATE(:todayDate)
 	     	GROUP BY
 	     		_paymentMode
 	     	
@@ -484,10 +485,9 @@
 	    <series key="total" type="bar" title="Amount paid" />
 	  </chart>
 	     
-	  <chart onInit="action-account-set-from-to-date-range" name="chart.invoice.sale.amount.by.month" title="Invoice Sale by month (tax excl.)">
+	  <chart onInit="action.account.portal.default.month.value" name="chart.invoice.sale.amount.by.month" title="Invoice Sale by month (tax excl.)">
 		 <search-fields>
-		    <field name="fromDate" title="From Date" type="date"  widget="[required=true]"/>
-		    <field name="toDate" title="To Date" type="date"  widget="[required=true]" />
+		    <field type="string" name="monthSelect" title="Past Months" selection="account.year.period.duration.select"/>
 		 </search-fields>
  		 <dataset type="sql">
 		    SELECT
@@ -518,17 +518,17 @@
 			      		_selection.name='iadministration.month.select'
 			    	ORDER BY
 			     		 _month_select.value) AS _meta
-		  WHERE self.operation_type_select=3 AND self.invoice_date &lt; DATE(:toDate) AND self.invoice_date > DATE(:fromDate)  
+		  WHERE self.operation_type_select=3 AND self.invoice_date &lt; DATE(:todayDate) 
+		  		AND self.invoice_date > DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month'  
 		  GROUP BY cast(_meta._select_month_value as int)
 	  </dataset>
 	  <category key="_month" type="month"/>
 	  <series key="ex_tax_total" type="bar"/>
 	</chart>
 
-	<chart onInit="action-account-set-from-to-date-range" name="chart.invoice.sale.amount.by.currency" title="Invoice Sale by currency (tax excl.)">
+	<chart onInit="action.account.portal.default.month.value"  name="chart.invoice.sale.amount.by.currency" title="Invoice Sale by currency (tax excl.)">
 	  <search-fields>
-	    <field name="fromDate" title="From Date" type="date"  widget="[required=true]" />
-	    <field name="toDate" title="To Date" type="date"  widget="[required=true]" />
+	    <field type="string" name="monthSelect" title="Past Months" selection="account.year.period.duration.select"/>
 	  </search-fields>
 	  <dataset type="sql">
 	    SELECT
@@ -550,8 +550,8 @@
 		        		ON  _company.id = _user.active_company
 		        		AND _company.id = _invoice.company
 			     	WHERE _invoice.operation_type_select=3 
-			     		AND _invoice.invoice_date &lt; DATE(:toDate) 
-			     		AND _invoice.invoice_date > DATE(:fromDate) 
+			     		AND _invoice.invoice_date &lt; DATE(:todayDate) 
+			     		AND _invoice.invoice_date > DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' 
 			   ) AS _account_invoice
 		WHERE _currency.id=_account_invoice._currency	 
 		GROUP BY _currency.name
@@ -560,10 +560,9 @@
 	  <series key="ex_tax_total" type="bar"/>
 	</chart>
 	
-	<chart onInit="action-account-set-from-to-date-range" name="chart.invoice.sale.paymentCondition.distribution" title="Invoice Sale Payment Condition distribution">
+	<chart onInit="action.account.portal.default.month.value"  name="chart.invoice.sale.paymentCondition.distribution" title="Invoice Sale Payment Condition distribution">
 	  <search-fields>
-	    <field name="fromDate" title="From Date" type="date"  widget="[required=true]"/>
-	    <field name="toDate" title="To Date" type="date"  widget="[required=true]" />
+	    <field type="string" name="monthSelect" title="Past Months" selection="account.year.period.duration.select"/>
 	  </search-fields>
 	  <dataset type="sql">
 	    SELECT
@@ -586,8 +585,8 @@
 	                    ON  _company.id = _user.active_company
 	                    AND _company.id = _invoice.company
 	                WHERE _invoice.operation_type_select=3 
-	                	AND _invoice.invoice_date &lt; DATE(:toDate) 
-	                	AND _invoice.invoice_date > DATE(:fromDate)
+	                	AND _invoice.invoice_date &lt; DATE(:todayDate) 
+	                	AND _invoice.invoice_date > DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month'
 	            ) AS _account_invoice
 	    WHERE 
 	        _payment_condition.id=_account_invoice._payment_condition	 
@@ -598,10 +597,9 @@
 	  <series key="ex_tax_total" type="donut"/>
 	</chart>
 	
-	<chart onInit="action-account-set-from-to-date-range" name="chart.invoice.purchase.amount.by.month" title="Invoice Purchase by month (tax excl.)">
+	<chart onInit="action.account.portal.default.month.value" name="chart.invoice.purchase.amount.by.month" title="Invoice Purchase by month (tax excl.)">
 	  <search-fields>
-	    <field name="fromDate" title="From Date" type="date"  widget="[required=true]" />
-	    <field name="toDate" title="To Date" type="date"  widget="[required=true]" />
+	    <field type="string" name="monthSelect" title="Past Months" selection="account.year.period.duration.select"/>
 	  </search-fields>
 	  <dataset type="sql">
 	      
@@ -633,17 +631,16 @@
 		      _selection.name='iadministration.month.select'
 		    ORDER BY
 		      _month_select.value) AS _meta
-	    WHERE self.operation_type_select=1 AND self.invoice_date &lt; DATE(:toDate) AND self.invoice_date > DATE(:fromDate)  
+	    WHERE self.operation_type_select=1 AND self.invoice_date &lt; DATE(:todayDate) AND self.invoice_date > DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month'   
      	GROUP BY cast(_meta._select_month_value as int)
 	  </dataset>
 	  <category key="_month" type="month"/>
 	  <series key="ex_tax_total" type="bar"/>
 	</chart>
 	
-	<chart onInit="action-account-set-from-to-date-range" name="chart.invoice.purchase.amount.by.currency" title="Invoice Purchase by currency (tax excl.)">
+	<chart onInit="action.account.portal.default.month.value"  name="chart.invoice.purchase.amount.by.currency" title="Invoice Purchase by currency (tax excl.)">
 	  <search-fields>
-	    <field name="fromDate" title="From Date" type="date"  widget="[required=true]" />
-	    <field name="toDate" title="To Date" type="date"  widget="[required=true]" />
+	    <field type="string" name="monthSelect" title="Past Months" selection="account.year.period.duration.select"/>
 	  </search-fields>
 	  <dataset type="sql">
 	      
@@ -666,7 +663,7 @@
 		        base_company AS _company
 		        ON  _company.id = _user.active_company
 		        AND _company.id = _invoice.company
-		    WHERE _invoice.operation_type_select=1 AND _invoice.invoice_date &lt; DATE(:toDate) AND _invoice.invoice_date > DATE(:fromDate) 
+		    WHERE _invoice.operation_type_select=1 AND _invoice.invoice_date &lt; DATE(:todayDate) AND _invoice.invoice_date > DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' 
 		   ) AS _account_invoice
 	   WHERE _currency.id=_account_invoice._currency	 
 	   GROUP BY _currency.name
@@ -675,10 +672,9 @@
 	  <series key="ex_tax_total" type="bar"/>
 	</chart>
 	
-	<chart onInit="action-account-set-from-to-date-range" name="chart.invoice.purchase.paymentCondition.distribution" title="Invoice Purchase Payment Condition distribution">
+	<chart onInit="action.account.portal.default.month.value" name="chart.invoice.purchase.paymentCondition.distribution" title="Invoice Purchase Payment Condition distribution">
 	  <search-fields>
-	    <field name="fromDate" title="From Date" type="date"  widget="[required=true]" />
-	    <field name="toDate" title="To Date" type="date"  widget="[required=true]" />
+	    <field type="string" name="monthSelect" title="Past Months" selection="account.year.period.duration.select"/>
 	  </search-fields>
 	  <dataset type="sql">
 	    SELECT
@@ -700,7 +696,7 @@
 	                     base_company AS _company
 	                     ON  _company.id = _user.active_company
 	                     AND _company.id = _invoice.company
-	                WHERE _invoice.operation_type_select=1 AND _invoice.invoice_date &lt; DATE(:toDate) AND _invoice.invoice_date > DATE(:fromDate)
+	                WHERE _invoice.operation_type_select=1 AND _invoice.invoice_date &lt; DATE(:todayDate) AND _invoice.invoice_date > DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month'
 	            ) AS _account_invoice
 	    WHERE 
 	        _payment_condition.id=_account_invoice._payment_condition	 
@@ -710,11 +706,10 @@
 	  <category key="_payment_condition" type="month"/>
 	  <series key="ex_tax_total" type="donut"/>
 	</chart>
-	<chart onInit="action-account-set-from-to-date-range" name="chart.invoice.sale.refund.situation" title="Invoice and Refunds Sale situation (tax incl.)">
+	<chart onInit="action.account.portal.default.month.value" name="chart.invoice.sale.refund.situation" title="Invoice and Refunds Sale situation (tax incl.)">
 	
 	  <search-fields>
-	    <field name="fromDate" type="datetime" widget="[required=true]" />
-	    <field name="toDate" type="datetime" widget="[required=true]" />
+	    <field type="string" name="monthSelect" title="Past Months" selection="account.year.period.duration.select"/>
 	  </search-fields>
 	  
 	  <dataset type="sql">
@@ -741,7 +736,7 @@
 	        ON  _company.id = _user.active_company
 	        AND _company.id = self.company
 	      WHERE
-	        self.invoice_date BETWEEN DATE(:fromDate) AND DATE(:toDate) AND 
+	        self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
 	        self.operation_type_select=3 
 	      )	 
 	    UNION ALL
@@ -762,7 +757,7 @@
 	        ON  _company.id = _user.active_company
 	        AND _company.id = self.company
 	      WHERE
-	        self.invoice_date BETWEEN DATE(:fromDate) AND DATE(:toDate) AND 
+	        self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
 	        self.operation_type_select=3 
 	      )	 
 	    UNION ALL
@@ -783,7 +778,7 @@
 	        ON  _company.id = _user.active_company
 	        AND _company.id = self.company
 	      WHERE
-	        self.invoice_date BETWEEN DATE(:fromDate) AND DATE(:toDate) AND 
+	        self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
 	        self.operation_type_select=4 
 	      )
 	    UNION ALL
@@ -804,7 +799,7 @@
 	        ON  _company.id = _user.active_company
 	        AND _company.id = self.company
 	      WHERE
-	        self.invoice_date BETWEEN DATE(:fromDate) AND DATE(:toDate) AND 
+	        self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
 	        self.operation_type_select=4 
 	      )
 	    ) situation
@@ -819,11 +814,10 @@
 	  <series key="_amount" type="bar" title="Amount" />
 	</chart>
 
-	<chart onInit="action-account-set-from-to-date-range-6m" name="chart.invoice.sale.situation" title="Invoice Sale situation (tax incl.)">
+	<chart onInit="action.account.portal.default.month.value" name="chart.invoice.sale.situation" title="Invoice Sale situation (tax incl.)">
 	
 	  <search-fields>
-	    <field name="fromDate" type="datetime" widget="[required=true]" />
-	    <field name="toDate" type="datetime" widget="[required=true]" />
+	    <field type="string" name="monthSelect" title="Past Months" selection="account.year.period.duration.select"/>
 	  </search-fields>
 	  
 	  <dataset type="sql">
@@ -850,7 +844,7 @@
 	        ON  _company.id = _user.active_company
 	        AND _company.id = self.company
 	      WHERE
-	        self.invoice_date BETWEEN DATE(:fromDate) AND DATE(:toDate) AND 
+	        self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
 	        self.operation_type_select=3 
 	      )	 
 	    UNION ALL
@@ -871,7 +865,7 @@
 	        ON  _company.id = _user.active_company
 	        AND _company.id = self.company
 	      WHERE
-	        self.invoice_date BETWEEN DATE(:fromDate) AND DATE(:toDate) AND 
+	        self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
 	        self.operation_type_select=3 
 	      )	 
 	    UNION ALL
@@ -892,7 +886,7 @@
 	        ON  _company.id = _user.active_company
 	        AND _company.id = self.company
 	      WHERE
-	        self.invoice_date BETWEEN DATE(:fromDate) AND DATE(:toDate) AND 
+	        self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
 	        self.due_date &lt; CURRENT_DATE AND
 	        self.operation_type_select=3
 	      )
@@ -908,11 +902,10 @@
 	  <series key="_amount" type="bar" title="Amount" />
 	</chart>	
 	
-	<chart onInit="action-account-set-from-to-date-range-6m" name="chart.invoice.purchase.situation" title="Invoice Purchase situation (tax incl.)">
+	<chart onInit="action.account.portal.default.month.value" name="chart.invoice.purchase.situation" title="Invoice Purchase situation (tax incl.)">
 	
 	  <search-fields>
-	    <field name="fromDate" type="datetime" widget="[required=true]" />
-	    <field name="toDate" type="datetime" widget="[required=true]" />
+	    <field type="string" name="monthSelect" title="Past Months" selection="account.year.period.duration.select"/>
 	  </search-fields>
 	  
 	  <dataset type="sql">
@@ -939,7 +932,7 @@
 	        ON  _company.id = _user.active_company
 	        AND _company.id = self.company
 	      WHERE
-	        self.invoice_date BETWEEN DATE(:fromDate) AND DATE(:toDate) AND
+	        self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND
 	        self.operation_type_select=1
 	      )	 
 	    UNION ALL
@@ -960,7 +953,7 @@
 	        ON  _company.id = _user.active_company
 	        AND _company.id = self.company
 	      WHERE
-	        self.invoice_date BETWEEN DATE(:fromDate) AND DATE(:toDate) AND
+	        self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND
 	        self.operation_type_select=1 
 	      )	 
 	    UNION ALL
@@ -981,8 +974,8 @@
 	        ON  _company.id = _user.active_company
 	        AND _company.id = self.company
 	      WHERE
-	        self.invoice_date BETWEEN DATE(:fromDate) AND DATE(:toDate) AND
-	        self.due_date &lt; CURRENT_DATE AND
+	        self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND
+	        self.due_date &lt; DATE(:todayDate) AND
 	        self.operation_type_select=1
 	      )
 	    ) situation
