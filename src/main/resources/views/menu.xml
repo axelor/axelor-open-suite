@@ -16,13 +16,13 @@
 	<menuitem name="menu-dashboards-partner" priority="100" parent="menu-dashboards-partner-contact"
     	title="Partner"  groups="admins,erp" />
 	
-	<menuitem name="menu-dashboards-partner-1"  parent="menu-dashboards-partner-contact"
+	<menuitem name="menu-dashboards-partner-1"  parent="menu-dashboards-partner"
     	title="Partner DB"   action="portal.base.partner.list.dashboard.view"/>
 	
 	<menuitem name="menu-dashboards-contact" priority="90" parent="menu-dashboards-partner-contact"
     	title="Contacts"  groups="admins,erp"/>	
     	    
-	<menuitem name="menu-dashboards-contact-1"  parent="menu-dashboards-partner-contact"
+	<menuitem name="menu-dashboards-contact-1"  parent="menu-dashboards-contact"
     	title="Contacts Db"  />		
 	
 	<action-view name="portal.base.partner.list.dashboard.view" title="Partner List Report">
