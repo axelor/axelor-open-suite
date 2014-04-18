@@ -260,7 +260,7 @@
 
 	
 	<menuitem name="menu-salesman-dashboard-sample" parent="menu-dashboards-sample" priority="205"
-		title="Salesman Dashboard" icon="img/16px/chart_16px.png" action="portal.salesman.dashboard.view.sample" />
+		title="Salesman Db" icon="img/16px/chart_16px.png" action="portal.salesman.dashboard.view.sample" />
 		
 	<action-view name="portal.salesman.dashboard.view.sample" title="Salesman Dashboard" 
 	icon="img/16px/crmSmall_16px.png">
@@ -271,7 +271,7 @@
 	</action-view>
 		
 	<menuitem name="menu-sales-manager-dashboard-sample" parent="menu-dashboards-sample" priority="200"
-		title="Sales Manager Dashboard" icon="img/16px/chart_16px.png" action="portal.sales.manager.dashboard.view.sample" />	
+		title="Sales Manager Db" icon="img/16px/chart_16px.png" action="portal.sales.manager.dashboard.view.sample" />	
 
 	<action-view name="portal.sales.manager.dashboard.view.sample" title="Sales Manager Dashboard"
 		icon="img/16px/crmSmall_16px.png">
@@ -280,7 +280,7 @@
 	</action-view>
 		
 	<menuitem name="menu-purchase-buyer-dashboard-sample" parent="menu-dashboards-sample" priority="190"
-		title="Purchase Buyer Dashboard" icon="img/16px/chart_16px.png" action="portal.purchase.buyer.dashboard.view.sample" />	
+		title="Purchase Buyer Db" icon="img/16px/chart_16px.png" action="portal.purchase.buyer.dashboard.view.sample" />	
 
 	<action-view name="portal.purchase.buyer.dashboard.view.sample" title="Purchase Buyer Dashboard"
 		icon="img/16px/crmSmall_16px.png">
@@ -290,7 +290,7 @@
 	</action-view>
 	
 	<menuitem name="menu-purchase-manager-dashboard-sample" parent="menu-dashboards-sample" priority="180"
-		title="Purchase Manager Dashboard" icon="img/16px/chart_16px.png" action="portal.purchase.manager.dashboard.view.sample" />	
+		title="Purchase Manager Db" icon="img/16px/chart_16px.png" action="portal.purchase.manager.dashboard.view.sample" />	
 
 	<action-view name="portal.purchase.manager.dashboard.view.sample" title="Purchase Manager Dashboard"
 		icon="img/16px/crmSmall_16px.png">
@@ -298,7 +298,7 @@
 	</action-view>
 	
 	<menuitem name="menu-purchase-order-dashboard-sample" parent="menu-dashboards-sample"  priority="170"
-		title="Purchase Order Dashboard" icon="img/16px/chart_16px.png" action="supply.chain.purchase.order.dashboard.portal.view.sample" />	
+		title="Purchase Order Db" icon="img/16px/chart_16px.png" action="supply.chain.purchase.order.dashboard.portal.view.sample" />	
 		
 	<action-view name="supply.chain.purchase.order.dashboard.portal.view.sample" title="Purchase Order Dashboard"
 		icon="img/16px/crmSmall_16px.png">
