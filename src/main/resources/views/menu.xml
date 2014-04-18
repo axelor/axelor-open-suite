@@ -705,34 +705,54 @@
     </action-view>
 
 	<menuitem name="menu-account-invoice-dashboard" parent="menu-dashboards" 
-    title="Invoice Dashboard" priority="100"/>    
+    title="Invoice" priority="100"/>    
 	
-			<menuitem name="menu-account-invoice-dashboard-db1" parent="menu-account-invoice-dashboard" 
-		    title="Invoice DB 1" action="portal.account.invoice.dashboard.1.view"/>    
+			<menuitem name="menu-account-sales-invoice-dashboard" parent="menu-account-invoice-dashboard" 
+		    title="Sales Invoice" priority="15" /> 
+		    
+			<menuitem name="menu-account-sales-invoice-dashboard-1" parent="menu-account-sales-invoice-dashboard" 
+		    title="Sales Invoice Db 1" icon="img/16px/chart_16px.png" action="portal.account.sales.invoice.dashboard.1.view" />    
 			
-		    <action-view name="portal.account.invoice.dashboard.1.view" title="Invoice Dashboard"
+		    <action-view name="portal.account.sales.invoice.dashboard.1.view" title="Sales Invoice Db 1"
 		        icon="img/16px/crmSmall_16px.png">
-		        <view type="portal" name="account.invoice.dashboard.1.portal" />        
+		        <view type="portal" name="account.sales.invoice.dashboard.1.portal" />        
 		    </action-view>
 		    
-		    <menuitem name="menu-account-invoice-dashboard-db2" parent="menu-account-invoice-dashboard"
-		    title="Invoice DB 2" action="portal.account.invoice.dashboard.2.view"/>    
+		    <menuitem name="menu-account-sales-invoice-dashboard-2" parent="menu-account-sales-invoice-dashboard" 
+		    title="Sales Invoice Db 2" icon="img/16px/chart_16px.png" action="portal.account.sales.invoice.dashboard.2.view" />    
 			
-		    <action-view name="portal.account.invoice.dashboard.2.view" title="Invoice Dashboard"
+		    <action-view name="portal.account.sales.invoice.dashboard.2.view" title="Sales Invoice Db 2"
 		        icon="img/16px/crmSmall_16px.png">
-		        <view type="portal" name="account.invoice.dashboard.2.portal" />        
+		        <view type="portal" name="account.sales.invoice.dashboard.2.portal" />        
 		    </action-view>
 		    
-		    <menuitem name="menu-account-invoice-dashboard-db3" parent="menu-account-invoice-dashboard" 
-		    title="Invoice DB 3" action="portal.account.invoice.dashboard.3.view"/>    
+		    <menuitem name="menu-account-purchases-invoice-dashboard" parent="menu-account-invoice-dashboard"
+		    title="Purchase Invoice" priority="10" />    
 			
-		    <action-view name="portal.account.invoice.dashboard.3.view" title="Invoice Dashboard"
+		    <menuitem name="menu-account-purchases-invoice-dashboard-1" parent="menu-account-purchases-invoice-dashboard"
+		    title="Purchase Invoice Db" icon="img/16px/chart_16px.png" action="portal.account.purchases.invoice.dashboard.2.view"/>    
+			
+		    <action-view name="portal.account.purchases.invoice.dashboard.2.view" title="Purchase Invoice Db"
 		        icon="img/16px/crmSmall_16px.png">
-		        <view type="portal" name="account.invoice.dashboard.3.portal" />        
+		        <view type="portal" name="account.purchases.invoice.dashboard.1.portal" />        
+		    </action-view>
+		    
+		    <menuitem name="menu-account-mix-invoice-dashboard" parent="menu-account-invoice-dashboard" 
+		    title="Invoices" priority="5"/>    
+			
+		    <menuitem name="menu-account-mix-invoice-dashboard-1" parent="menu-account-mix-invoice-dashboard" 
+		    title="Invoice Db" icon="img/16px/chart_16px.png" action="portal.account.mix.invoice.dashboard.1.view"/>    
+			
+		    <action-view name="portal.account.mix.invoice.dashboard.1.view" title="Invoice Db"
+		        icon="img/16px/crmSmall_16px.png">
+		        <view type="portal" name="account.mix.invoice.dashboard.portal" />        
 		    </action-view>
 	
 	<menuitem name="menu-accounting-dashboard" parent="menu-dashboards" 
-    title="Accounting" action="portal.accounting.dashboard.view" priority="110"/>    
+    title="Accounting"  priority="110"/>    
+	
+	 <menuitem name="menu-accounting-dashboard-1" parent="menu-accounting-dashboard" 
+        title="Accounting Db" icon="img/16px/chart_16px.png" action="portal.accounting.dashboard.view" />    
 
 	    <action-view name="portal.accounting.dashboard.view" title="Accounting"
 	        icon="img/16px/crmSmall_16px.png">
