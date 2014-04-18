@@ -138,6 +138,65 @@
 	    </notebook>
 	</form>
 	
+	<grid name="sales-order-grid-client" title="Sale orders" model="com.axelor.apps.supplychain.db.SalesOrder" orderBy="-creationDate">
+        <field name="salesOrderSeq"/>
+        <field name="company"/>
+        <field name="currency"/>
+        <field name="clientPartner"/>
+        <field name="clientReference"/>
+        <field name="creationDate"/>
+        <field name="inTaxTotal"/>
+        <field name="statusSelect"/>
+        <button name="print" title="Print" icon="fa-print" onClick="action-sales-order-method-show-sales-order"/>
+    </grid>
+	
+	
+	<form name="sales-order-form-client" title="Sale order" model="com.axelor.apps.supplychain.db.SalesOrder" cols="4" 
+	onNew="action-sales-order-record-default,action-sales-order-record-company-configuration,action-sales-order-method-get-location,action-sales-order-record-currency,action-sales-order-attrs-collapse-specific-settings-group"
+	onSave="action-sales-order-set-sequence" onLoad="action-sales-order-attrs-collapse-specific-settings-group,action-sales-order-attrs-validated-read-only">
+		<toolbar>
+            <button name="print" title="Print" icon="fa-print" onClick="save,action-sales-order-method-show-sales-order"/>
+	    </toolbar>
+	    <group colSpan="4" cols="4">
+		    <field name="salesOrderSeq" css="highlight"/>
+		    <field name="company" widget="SuggestBox" onChange="action-sales-order-record-company-configuration,action-sales-order-method-get-location" form-view="company-lite-form"/>
+		    <field name="externalReference"/>
+		    <field name="currency"/>
+		</group>
+		<notebook colSpan="4">
+		    <page title="Customer information" colSpan="4" cols="4">
+		      <field name="clientPartner" onChange="action-sales-order-record-partner" domain="self.isContact = 'false'" form-view="partner-form" grid-view="partner-grid"/>
+		      <field name="mainInvoicingAddress"/>
+		      <field name="contactPartner" onSelect="action-sales-order-domain-on-contact-partner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
+		      <field name="deliveryAddress"/>
+		      <break/>
+		      <separator title="Sale order content" colSpan="4"/>
+		      <field name="salesOrderLineList" colSpan="4"/>
+		      <field name="salesOrderLineTaxList" showTitle="false" colSpan="2"/>
+		      <group colSpan="1" cols="2">
+		        <field name="validationDate" readonly="true"/>
+		        <field name="creationDate" readonly="true"/>
+		        <field name="orderDate" readonly="true"/>
+		        <field name="shipmentDate" readonly="true"/>
+		        <field name="salesmanUserInfo"/>
+		      </group>
+		      <group title="Totaux" colSpan="1" cols="1">
+		          <group readonly="true" colSpan="1" css="subtotal" cols="2" colWidths="30%,50%">
+		            <field name="exTaxTotal"/>
+		            <field name="taxTotal"/>
+		            <field name="inTaxTotal" css="subtotal-total"/>
+		            <field name="amountRemainingToBeInvoiced"/>
+		          </group>
+		          <group colSpan="1" cols="1">
+		            <field name="statusSelect" widget="NavSelect"/>
+		          </group>
+		        </group>
+		    </page>
+		    <page title="Invoicing" showIf="statusSelect == 3">
+		      <field name="invoiceSet" colSpan="4" form-view="invoice-client-form" grid-view="invoice-client-grid"/>
+		    </page>
+		 </notebook>
+	</form>
 	
 	<action-record name="action-sales-order-record-first-execution-date" model="com.axelor.apps.supplychain.db.SalesOrder">
 		<field name="schedulerInstance" expr="action: action-scheduler-instance-record-first-execution-date" if="schedulerInstance != null"/>
