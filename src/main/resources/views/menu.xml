@@ -306,7 +306,7 @@
 	</action-view>
 	
 	<menuitem name="menu-stock-dashboard-sample" parent="menu-dashboards-sample" priority="150" 
-		title="Stock Dashboard" icon="img/16px/chart_16px.png"  action="portal.stock.dashboard.view.sample"/>	
+		title="Stock Db" icon="img/16px/chart_16px.png"  action="portal.stock.dashboard.view.sample"/>	
 
 	<action-view name="portal.stock.dashboard.view.sample" title="Stock Dashboard"
 		icon="img/16px/crmSmall_16px.png">
