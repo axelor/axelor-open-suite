@@ -122,7 +122,7 @@
 	</action-view>
 	
 	<menuitem name="menu-manufacturing-dashboard-sample" parent="menu-dashboards-sample" priority="155"
-		title="Manufacturing Dashboard" action="portal.manufacturing.dashboard.view.sample" groups="admins,axelordemo"/>	
+		title="Manufacturing Dashboard" icon="img/16px/chart_16px.png" action="portal.manufacturing.dashboard.view.sample" groups="admins,axelordemo"/>	
 
 	<action-view name="portal.manufacturing.dashboard.view.sample" title="Manufacturing Dashboard"
 		icon="img/16px/crmSmall_16px.png">
