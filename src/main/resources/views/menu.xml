@@ -14,10 +14,16 @@
     	title="Partners/Contacts"  groups="admins,erp"/>
 	
 	<menuitem name="menu-dashboards-partner" priority="100" parent="menu-dashboards-partner-contact"
-    	title="Partner DB"  groups="admins,erp" action="portal.base.partner.list.dashboard.view"/>
+    	title="Partner"  groups="admins,erp" />
+	
+	<menuitem name="menu-dashboards-partner-1"  parent="menu-dashboards-partner-contact"
+    	title="Partner DB"   action="portal.base.partner.list.dashboard.view"/>
 	
 	<menuitem name="menu-dashboards-contact" priority="90" parent="menu-dashboards-partner-contact"
-    	title="Contacts DB"  groups="admins,erp"/>	
+    	title="Contacts"  groups="admins,erp"/>	
+    	    
+	<menuitem name="menu-dashboards-contact-1"  parent="menu-dashboards-partner-contact"
+    	title="Contacts Db"  />		
 	
 	<action-view name="portal.base.partner.list.dashboard.view" title="Partner List Report">
 		<view type="portal" name="base.partner.list.portal" />
