@@ -316,7 +316,10 @@
 	
 	
 	<menuitem name="menu-stock-dashboard" parent="menu-dashboards" 
-		title="Stock Dashboard" action="portal.stock.dashboard.view" priority="80" />	
+		title="Stock"  priority="80" />	
+		
+	<menuitem name="menu-stock-dashboard-1" parent="menu-stock-dashboard" 
+		title="Stock Db" icon="img/16px/chart_16px.png" action="portal.stock.dashboard.view" />	
 
 	<action-view name="portal.stock.dashboard.view" title="Stock Dashboard"
 		icon="img/16px/crmSmall_16px.png"  >
@@ -325,12 +328,12 @@
 	</action-view>
 	
 	<menuitem name="menu-sales-dashboard" parent="menu-dashboards"  
-		title="Sales Dashboard" priority="50" />	
+		title="Sales" priority="50" />	
 	
-	<menuitem name="menu-sales-dashboard.1" parent="menu-sales-dashboard"  
-		title="Sales Dashboard 1" action="supplychain.sales.dashboard.1.portal" />	
+	<menuitem name="menu-sales-dashboard-1" parent="menu-sales-dashboard"  
+		title="Sales Db 1" icon="img/16px/chart_16px.png" action="supplychain.sales.dashboard.1.portal" />	
 		
-	<action-view name="supplychain.sales.dashboard.1.portal" title="Sales Dashboard 1"
+	<action-view name="supplychain.sales.dashboard.1.portal" title="Sales Db 1"
 		icon="img/16px/crmSmall_16px.png">
 		<view type="portal" name="supplychain.sales.dashboard.1.portal.view" />	 
 		<context name="_user" expr="eval:__user__"/>
@@ -338,63 +341,70 @@
     	<context name="_past_month" expr="eval: __date__.minusMonths(1)"/>  
 	</action-view>
 	
-	<menuitem name="menu-sales-dashboard.2" parent="menu-sales-dashboard"  
-		title="Sales Dashboard 2" action="supplychain.sales.dashboard.2.portal" />	
+	<menuitem name="menu-sales-dashboard-2" parent="menu-sales-dashboard"  
+		title="Sales Db 2" icon="img/16px/chart_16px.png" action="supplychain.sales.dashboard.2.portal" />	
 		
-	<action-view name="supplychain.sales.dashboard.2.portal" title="Sales Dashboard 2"
+	<action-view name="supplychain.sales.dashboard.2.portal" title="Sales Db 2"
 		icon="img/16px/crmSmall_16px.png">
 		<view type="portal" name="supplychain.sales.dashboard.2.portal.view" />	 
 		<context name="_past_month" expr="eval: __date__.minusMonths(1)"/> 
 	</action-view>
 	
 	<menuitem name="menu-purchases-dashboard" parent="menu-dashboards"  
-		title="Purchases Dashboard" priority="60" />	
+		title="Purchases" priority="60" />	
 	
-	<menuitem name="menu-purchases-dashboard.1" parent="menu-purchases-dashboard"  
-		title="Purchases Dashboard 1" action="supplychain.purchases.dashboard.1.portal" />	
+	<menuitem name="menu-purchases-dashboard-1" parent="menu-purchases-dashboard"  
+		title="Purchases Db 1" icon="img/16px/chart_16px.png" action="supplychain.purchases.dashboard.1.portal" />	
 		
-	<action-view name="supplychain.purchases.dashboard.1.portal" title="Purchases Dashboard 1"
+	<action-view name="supplychain.purchases.dashboard.1.portal" title="Purchases Db 1"
 		icon="img/16px/crmSmall_16px.png">
 		<view type="portal" name="supplychain.purchases.dashboard.1.portal" />	 
 		<context name="_user_id" expr="eval:__user__.id"/>   
 	</action-view>
 	
-	<menuitem name="menu-purchases-dashboard.2" parent="menu-purchases-dashboard"  
-		title="Purchases Dashboard 2" action="supplychain.purchases.dashboard.2.portal" />	
+	<menuitem name="menu-purchases-dashboard-2" parent="menu-purchases-dashboard"  
+		title="Purchases Db 2" icon="img/16px/chart_16px.png" action="supplychain.purchases.dashboard.2.portal" />	
 		
-	<action-view name="supplychain.purchases.dashboard.2.portal" title="Purchases Dashboard 2"
+	<action-view name="supplychain.purchases.dashboard.2.portal" title="Purchases Db 2"
 		icon="img/16px/crmSmall_16px.png">
 		<view type="portal" name="supplychain.purchases.dashboard.2.portal" />	    
 	</action-view>
 	
-	<menuitem name="menu-purchases-dashboard.3" parent="menu-purchases-dashboard"  
-		title="Purchases Dashboard 3" action="supplychain.purchases.dashboard.3.portal" />	
+	<menuitem name="menu-purchases-dashboard-3" parent="menu-purchases-dashboard"  
+		title="Purchases Db 3" icon="img/16px/chart_16px.png" action="supplychain.purchases.dashboard.3.portal" />	
 		
-	<action-view name="supplychain.purchases.dashboard.3.portal" title="Purchases Dashboard 3"
+	<action-view name="supplychain.purchases.dashboard.3.portal" title="Purchases Db 3"
 		icon="img/16px/crmSmall_16px.png">
 		<view type="portal" name="supplychain.purchases.dashboard.3.portal" />	    
 	</action-view>
 	
 	<menuitem name="menu-products-dashboard" parent="menu-dashboards-products-goods"  
-		title="Products Dashboard" priority="10" />	
+		title="Products" priority="10" />	
 	
-	<menuitem name="menu-products-dashboard.1" parent="menu-products-dashboard"  
-		title="Product DB 1" action="supplychain.products.dashboard.1.portal" />	
+	<menuitem name="menu-products-dashboard-1" parent="menu-products-dashboard"  
+		title="Product Db" icon="img/16px/chart_16px.png" action="supplychain.products.dashboard.1.portal" />	
 		
-	<action-view name="supplychain.products.dashboard.1.portal" title="Product DB 1"
+	<action-view name="supplychain.products.dashboard.1.portal" title="Product Db"
 		icon="img/16px/crmSmall_16px.png">
 		<view type="portal" name="supplychain.products.dashboard.1.portal.view" />	 
 	</action-view>
 
 	<menuitem name="menu-category-dashboard" parent="menu-dashboards-products-goods"  
-		title="Category Dashboard" priority="20" />	
+		title="Category" priority="20" />	
+		
+	<menuitem name="menu-category-dashboard-1" parent="menu-category-dashboard"  
+		title="Category Db" icon="img/16px/chart_16px.png" />		
 		
 	<menuitem name="menu-family-dashboard" parent="menu-dashboards-products-goods"  
-		title="Family Dashboard" priority="30" action="supplychain.products.family.dashboard.portal" />	
+		title="Family" priority="30"  />	
 	
+	<menuitem name="menu-family-dashboard-1" parent="menu-family-dashboard"  
+		title="Family Db" icon="img/16px/chart_16px.png" action="supplychain.products.family.dashboard.portal" />	
+		
 	<action-view name="supplychain.products.family.dashboard.portal" title="Family Dashboard"
 		icon="img/16px/crmSmall_16px.png">
 		<view type="portal" name="supplychain.products.family.dashboard.1.portal.view" />	 
 	</action-view>
+
 	
 </object-views>
