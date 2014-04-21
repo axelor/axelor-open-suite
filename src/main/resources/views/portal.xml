@@ -293,6 +293,11 @@
 		<portlet action="portal.production.stock.move.in.realized" canSearch="true" height="350" />	
 		<portlet action="portal.production.stock.move.out.planned" canSearch="true" height="350" />	
 		<portlet action="portal.production.stock.move.out.realized" canSearch="true" height="350" />	
+	    <portlet action="portal.stockMove.nbr.delivery.by.country" height="350"/>  
+  	    <portlet action="portal.stockMoveLine.product.delivery.by.country" height="350"/>  
+  	    <portlet action="portal.stockMoveLine.product.delivery.by.country.by.family" height="350"/> 
+  	    <portlet action="portal.stockMove.deliveries.time.delay.in.nbr" height="350"/>
+  	    <portlet action="portal.stockMove.average.delivery.time.delay" height="350"/>		
 	</portal>
 
 	<action-view name="portal.stock.dashboard.upcoming.deliveries" title="Upcoming deliveries"
