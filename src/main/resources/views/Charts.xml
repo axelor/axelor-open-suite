@@ -193,7 +193,17 @@
 	    <series key="amount" groupBy="stage" type="bar"/>
 	</chart>
 	
-	<chart name="chart.leads.by.source.bar" title="Leads by Source">
+	<action-record model="com.axelor.apps.crm.db.Lead" name="action.crm.portal.set.date">
+	  <field name="toDate" expr="eval:todayDate"/>
+	  <field name="fromDate" expr="eval:LocalDate.parse(todayDate).withDayOfMonth(1).withMonthOfYear(1)"/>
+	</action-record>
+	
+	<chart onInit="action.crm.portal.set.date" name="chart.leads.by.source.bar" title="Leads by Source">
+		<search-fields> 	        
+		    <field type="datetime" name="fromDate" />
+		    <field type="datetime" name="toDate" />
+		</search-fields>
+	
 		<dataset type="jpql">
 		    <![CDATA[
 		    SELECT
@@ -201,6 +211,8 @@
 		        self.source.name AS source
 		    FROM
 		        Lead self
+		    WHERE
+		      self.createdOn BETWEEN :fromDate AND :toDate		       
 		    GROUP BY
 		    	self.source.name
 		    ORDER BY
@@ -224,7 +236,7 @@
 			JOIN
 				base_country AS _country ON _country.id = _address.addressL7country
 			WHERE
-				_partner.customer_type_select = 3
+				_partner.customer_type_select = 3				
 			GROUP BY
 				_country.name
 		    ]]>
@@ -233,7 +245,11 @@
 	    <series key="partners"  type="donut"/>
 	 </chart>
 	  	
-	 <chart name="chart.leads.by.team.by.status.bar" title="Leads by Team by Status" stacked="true">
+	 <chart onInit="action.crm.portal.set.date" name="chart.leads.by.team.by.status.bar" title="Leads by Team by Status" stacked="true">
+		<search-fields> 	        
+		    <field type="datetime" name="fromDate" />
+		    <field type="datetime" name="toDate" />
+		</search-fields>
 		<dataset type="sql">
 		    <![CDATA[
 		    SELECT
@@ -249,7 +265,8 @@
 	    	LEFT JOIN 
 	    		meta_select_item as selection_item ON selection_item.select_id = selection.id
 			WHERE
-				selection_item.value = cast(self.status_select as char)			
+				selection_item.value = cast(self.status_select as char)	AND
+				self.created_on BETWEEN DATE(:fromDate) AND DATE(:toDate)		
 	    	GROUP BY
 			  	_status,
 			  	_team
@@ -262,7 +279,11 @@
 	    <series key="_opportunity_amount" groupBy="_status" type="bar"/>
 	</chart>
 	
-	<chart name="chart.leads.by.salesman.by.status.bar" title="Leads by Salesman by Status" stacked="true">
+	<chart onInit="action.crm.portal.set.date" name="chart.leads.by.salesman.by.status.bar" title="Leads by Salesman by Status" stacked="true">
+		<search-fields> 	        
+		    <field type="datetime" name="fromDate" />
+		    <field type="datetime" name="toDate" />
+		</search-fields>
 		<dataset type="sql">
 		    <![CDATA[
 		    SELECT
@@ -278,7 +299,8 @@
 	    	LEFT JOIN 
 	    		meta_select_item as selection_item ON selection_item.select_id = selection.id
 			WHERE
-				selection_item.value = cast(self.status_select as char)	and sales_man.full_name != ''	
+				selection_item.value = cast(self.status_select as char)	and sales_man.full_name != '' AND
+				self.created_on BETWEEN DATE(:fromDate) AND DATE(:toDate)	
 	    	GROUP BY
 			  	_status,
 			  	_sales_man
@@ -533,7 +555,11 @@
 	    <series key="_total_calls" groupBy="_status"  type="bar"/>
 	</chart>  	
 	
-	<chart name="chart.leads.by.country.bar" title="Leads by Country">
+	<chart onInit="action.crm.portal.set.date" name="chart.leads.by.country.bar" title="Leads by Country">
+		<search-fields> 	        
+		    <field type="datetime" name="fromDate" />
+		    <field type="datetime" name="toDate" />
+		</search-fields>
 		<dataset type="sql">
 		    <![CDATA[
 		    SELECT
@@ -543,6 +569,8 @@
 			  	crm_lead as self
 			LEFT JOIN
 	        	base_country as country ON self.primary_country = country.id
+	        WHERE
+	        	self.created_on BETWEEN DATE(:fromDate) AND DATE(:toDate)
 	    	GROUP BY
 			  	_country
 			ORDER BY

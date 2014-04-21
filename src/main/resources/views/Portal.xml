@@ -257,19 +257,23 @@
 
 	<action-view name="portal.leads.by.source" title="Leads by Source">
 		<view type="chart" name="chart.leads.by.source.bar" />
+		<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
 	</action-view>
 
 	<action-view name="portal.leads.by.country" title="Leads by Country">
 		<view type="chart" name="chart.leads.by.country.bar" />
+		<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
 	</action-view>
 
 	<action-view name="portal.leads.by.team.by.status" title="Leads by Team by Status">
 		<view type="chart" name="chart.leads.by.team.by.status.bar" />
+		<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
 	</action-view>
 
 	<action-view name="portal.leads.by.salesman.by.status"
 		title="Leads by Salesman by Status">
 		<view type="chart" name="chart.leads.by.salesman.by.status.bar" />
+		<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
 	</action-view>
 	
 	<action-view name="portal.my.leads" title="My Leads"
