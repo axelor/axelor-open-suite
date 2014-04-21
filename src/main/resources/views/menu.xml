@@ -350,19 +350,6 @@
 
 	<menuitem name="menu-crm-dashboards" priority="200" title="CRM" parent="menu-dashboards" groups="admins,erp,crm"/>  
 	
-	<menuitem name="portal.opportunities" parent="menu-crm-dashboards" title="Opportunity List Report" action="portal.opportunity.dashboard.view" />
-		
-	<action-view name="portal.opportunity.dashboard.view" title="Opportunity" icon="img/16px/crmSmall_16px.png">
-		<view type="portal" name="crm.opportunity.portal" />
-	</action-view>
-
-	<menuitem name="portal.opportunities.graph" parent="menu-crm-dashboards" title="Opportunity Chart Report" action="portal.opportunity.graph.dashboard.view" />
-		
-	<action-view name="portal.opportunity.graph.dashboard.view" title="Opportunity Report" icon="img/16px/calendar_16px.png">
-		<view type="portal" name="crm.opportunity.graph.portal" />
-	</action-view>
-
-		
  	<menuitem name="menu-event-dashboard" parent="menu-crm-dashboards" title="Event" priority="5"/> 
 		
  	<menuitem name="menu-event-dashboard-one" parent="menu-event-dashboard" title="Event Db" icon="img/16px/chart_16px.png" action="crm.event.dashboard.portal.one.view" /> 
@@ -379,10 +366,10 @@
 		<view type="portal" name="crm.lead.dashboard.portal.one" />
 	</action-view>
 	
-	<menuitem name="portal.base.crm.partner.graph" parent="menu-crm-dashboards" title="Partner List Report" action="portal.base.partner.list.dashboard.view" />
-
-	<menuitem name="menu-target-user-dashboard" parent="menu-crm-dashboards"
-		title="Target user Dashboard" action="crm.portal.target.user.dashboard.view"/>	
+	<menuitem name="menu-target-dashboard" parent="menu-crm-dashboards"	title="Target" />
+		
+	<menuitem name="menu-target-user-dashboard" parent="menu-target-dashboard"
+		title="Target User Db" action="crm.portal.target.user.dashboard.view"/>	
 	
 	<action-view name="crm.portal.target.user.dashboard.view" title="Target user Dashboard"
 		icon="img/16px/crmSmall_16px.png">
@@ -391,8 +378,8 @@
 		<context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
 	</action-view>
 	
-	<menuitem name="menu-target-team-dashboard" parent="menu-crm-dashboards"
-		title="Target team Dashboard" action="crm.portal.target.team.dashboard.view"/>	
+	<menuitem name="menu-target-team-dashboard" parent="menu-target-dashboard"
+		title="Target Team Db" action="crm.portal.target.team.dashboard.view"/>	
 
 	<action-view name="crm.portal.target.team.dashboard.view" title="Target team Dashboard"
 		icon="img/16px/crmSmall_16px.png">

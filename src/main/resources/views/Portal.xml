@@ -4,36 +4,6 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
 
 
-	<!-- Opportunity Grid view Dashboard -->
-
-	<portal title="Opportunity Dashboard" name="crm.opportunity.portal"
-		cols="2">
-		<portlet action="portal.closed.opportunities" height="350"
-			colSpan="1" canSearch="true" />
-		<portlet action="portal.open.opportunities" height="350"
-			colSpan="1" canSearch="true" />
-		<portlet action="portal.unassigned.opportunities" height="350"
-			colSpan="1" canSearch="true" />
-		<portlet action="portal.team.closed.opportunities" height="350"
-			colSpan="1" canSearch="true" />
-		<portlet action="portal.team.open.opportunities" height="350"
-			colSpan="1" canSearch="true" />
-		<portlet action="portal.opportunities.won.by.partner" height="350"
-			colSpan="1" canSearch="true" />
-		<portlet action="portal.opportunities.recent.opps" height="350"
-			colSpan="1" canSearch="true" />
-		<portlet action="portal.opportunities.top.deals" height="350"
-			colSpan="1" canSearch="true" />
-		<portlet action="portal.opportunities.key.account" height="350"
-			colSpan="1" canSearch="true" />
-		<portlet action="portal.opportunities.lost.deals" height="350"
-			colSpan="1" canSearch="true" />
-		<portlet action="portal.my.open.opportunities" colSpan="1"
-			height="350" canSearch="true" />
-		<portlet action="portal.my.closed.opportunities" colSpan="1"
-			height="350" canSearch="true" />
-	</portal>
-
 
 
 
@@ -143,25 +113,6 @@
 		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
 
-	<!-- Opportunity Graph View Dashboard -->
-
-	<portal title="Dashboard" name="crm.opportunity.graph.portal"
-		cols="2">
-		<portlet action="portal.opportunities.by.source" height="350" />
-		<portlet action="portal.opportunities.by.salestage" height="350" />
-		<portlet action="portal.opportunities.by.type" height="350"
-			colSpan="1" title="Opportunities By Type" />
-		<portlet action="portal.opportunities.byStage.byType" height="350"
-			colSpan="1" />
-		<portlet action="portal.opportunities.won.by.leadsource"
-			height="350" title="Opportunities Won By Lead Source" />
-		<portlet action="portal.opportunities.won.by.salesman" height="350"
-			title="Opportunities Won By Salesman" />
-		<portlet action="portal.opportunities.by.origin.by.stage"
-			height="350" />
-		<portlet action="portal.opportunities.pipeline.next.90d"
-			height="350" />
-	</portal>
 
 	<portal title="Dashboard" name="crm.opportunities.dashboard.1.portal" cols="2">
 		<portlet action="portal.salesman.dashboard.opportunities" height="350" />
