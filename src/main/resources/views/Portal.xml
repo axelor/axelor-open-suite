@@ -252,6 +252,7 @@
 		<portlet action="portal.my.leads" height="350" />
 		<portlet action="portal.unassigned.leads" height="350" />		
 		<portlet action="portal.team.leads" height="350" />		
+		<portlet action="portal.created.leads.per.month" height="350" />
 	</portal>
 
 	<action-view name="portal.leads.by.source" title="Leads by Source">
@@ -297,6 +298,11 @@
 		<context name="user_active_team"
 			expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()" />
 		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
+	</action-view>
+
+	<action-view name="portal.created.leads.per.month" title="Created leads per month" model="com.axelor.apps.crm.db.Lead">
+	  <view type="chart" name="chart.created.leads.per.month"/>
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
 	</action-view>
 
 	<!-- Event Call Dashboard -->

@@ -551,7 +551,31 @@
 	    </dataset>
 	    <category key="_country" type="text"/>
 	    <series key="_total_leads"  type="bar"/>
-	</chart>  			
+	</chart>  		
+	
+	<action-record model="com.axelor.apps.crm.db.Lead" name="action.crm.portal.default.month.value.6m">
+	  <field name="monthSelect" expr="eval:6"/>
+	</action-record>
+	
+	<chart onInit="action.crm.portal.default.month.value.6m" name="chart.created.leads.per.month" title="Created leads per month">
+	  <search-fields>
+	    <field type="string" name="monthSelect" title="Past Months" selection="account.year.period.duration.select"/>
+	  </search-fields>
+	  <dataset type="sql">  
+	    SELECT
+	      COUNT(self.id) AS _leads,
+	      DATE_PART('month', self.created_on) AS _month
+	    FROM
+	      crm_lead self
+	    WHERE
+	      self.created_on BETWEEN DATE(:todayDate) - CAST(:monthSelect as int) * INTERVAL '1 month' AND DATE(:todayDate)
+	    GROUP BY
+	      _month
+	  </dataset>
+	  <category key="_month" type="month"/>
+	  <series key="_leads" type="bar" title="Leads"/>
+	</chart>
+
 	<chart name="chart.partner.by.industry.sector.bar" title="Partners by Industry Sector">
 	    <dataset type="sql">
 	    <![CDATA[
