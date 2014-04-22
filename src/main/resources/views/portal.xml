@@ -284,7 +284,7 @@
 	    <portlet action="portal.nbr.product.per.family" height="350" canSearch="true"/>       			
 	</portal>
 
-	<portal title="Dashboard" name="stock.dashboard.portal" cols="2">	
+	<portal title="Dashboard" name="stock.dashboard.portal.one" cols="2">	
 		<portlet action="portal.stock.dashboard.upcoming.deliveries" canSearch="true" height="350" />	
 		<portlet action="portal.stock.dashboard.late.deliveries" canSearch="true" height="350" />	
 		<portlet action="portal.stock.dashboard.upcoming.arrivals" canSearch="true" height="350" />	
@@ -293,13 +293,16 @@
 		<portlet action="portal.production.stock.move.in.realized" canSearch="true" height="350" />	
 		<portlet action="portal.production.stock.move.out.planned" canSearch="true" height="350" />	
 		<portlet action="portal.production.stock.move.out.realized" canSearch="true" height="350" />	
+	</portal>
+
+	<portal title="Dashboard" name="stock.dashboard.portal.two" cols="2">
 	    <portlet action="portal.stockMove.nbr.delivery.by.country" height="350"/>  
   	    <portlet action="portal.stockMoveLine.product.delivery.by.country" height="350"/>  
   	    <portlet action="portal.stockMoveLine.product.delivery.by.country.by.family" height="350"/> 
   	    <portlet action="portal.stockMove.deliveries.time.delay.in.nbr" height="350"/>
-  	    <portlet action="portal.stockMove.average.delivery.time.delay" height="350"/>		
+  	    <portlet action="portal.stockMove.average.delivery.time.delay" height="350"/>
 	</portal>
-
+	
 	<action-view name="portal.stock.dashboard.upcoming.deliveries" title="Upcoming deliveries"
 		model="com.axelor.apps.supplychain.db.StockMove">
 		<view type="grid" name="stock-move-grid" />
@@ -361,6 +364,10 @@
 
 	<action-view name="portal.nbr.product.per.family" title="Number of Product per Family" model="com.axelor.apps.base.db.Product">
 	  <view type="chart" name="chart.nbr.product.per.family"/>
+	</action-view>
+	
+	<action-view name="portal.nbr.product.per.category" title="Number of Product per Category" model="com.axelor.apps.base.db.Product">
+	  <view type="chart" name="chart.nbr.product.per.category"/>
 	</action-view>
 	
 	<!-- This portlet is used in location-form -->
@@ -472,11 +479,15 @@
 	
 	<portal name="supplychain.products.dashboard.1.portal.view" title="Products DB 1">
 		<portlet action="portal.nbr.product.per.family" canSearch="true" height="350" />
+		<portlet action="portal.nbr.product.per.category" canSearch="true" height="350" />
 	</portal>
 	
 	<portal name="supplychain.products.family.dashboard.1.portal.view" title="Family Dashboard">
 		<portlet action="portal.nbr.product.per.family" canSearch="true" height="350" />
 	</portal>
 	
+	<portal name="supplychain.products.category.dashboard.1.portal.view" title="Family Dashboard">
+		<portlet action="portal.nbr.product.per.category" canSearch="true" height="350" />
+	</portal>
 		
 </object-views>

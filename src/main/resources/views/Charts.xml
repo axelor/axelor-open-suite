@@ -958,7 +958,29 @@
 	  <category key="_prod_family" type="text" title="Product Family"/>
 	  <series key="_num_prod" type="bar" title="Products"/>
 	</chart>
-
+		
+	<chart name="chart.nbr.product.per.category" title="Number of Product per Category">
+	  <dataset type="sql">
+	  
+	    SELECT
+	      COUNT(_product.id) AS _num_prod,
+	      _category.name AS _prod_category
+	    FROM
+	      base_product AS _product
+	    JOIN
+	      base_product_category AS _category
+	    ON
+	      _category.id = _product.product_category
+	    GROUP BY
+	      _prod_category
+	    ORDER BY
+	      _prod_category
+	  
+	  </dataset>
+	  <category key="_prod_category" type="text" title="Product Category"/>
+	  <series key="_num_prod" type="donut" title="Products"/>
+	</chart>
+	
 	<!-- This chart is used in location-form -->
 	<chart name="chart.locationLine.location.value" title="Location value">
 	  <dataset type="jpql">

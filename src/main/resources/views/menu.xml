@@ -319,12 +319,20 @@
 		title="Stock"  priority="80" />	
 		
 	<menuitem name="menu-stock-dashboard-1" parent="menu-stock-dashboard" 
-		title="Stock Db" icon="img/16px/chart_16px.png" action="portal.stock.dashboard.view" />	
+		title="Stock Db 1" icon="img/16px/chart_16px.png" action="portal.stock.dashboard.one.view" />	
 
-	<action-view name="portal.stock.dashboard.view" title="Stock Dashboard"
+	<action-view name="portal.stock.dashboard.one.view" title="Stock Dashboard 1"
 		icon="img/16px/crmSmall_16px.png"  >
-		<view type="portal" name="stock.dashboard.portal" />
+		<view type="portal" name="stock.dashboard.portal.one" />
 	    <context name="_newDate" expr="eval: __date__.plusDays(5)"/>
+	</action-view>
+	
+	<menuitem name="menu-stock-dashboard-2" parent="menu-stock-dashboard" 
+		title="Stock Db 2" icon="img/16px/chart_16px.png" action="portal.stock.dashboard.two.view" />	
+
+	<action-view name="portal.stock.dashboard.two.view" title="Stock Dashboard 2"
+		icon="img/16px/crmSmall_16px.png"  >
+		<view type="portal" name="stock.dashboard.portal.two" />	    
 	</action-view>
 	
 	<menuitem name="menu-sales-dashboard" parent="menu-dashboards"  
@@ -393,7 +401,7 @@
 		title="Category" priority="20" />	
 		
 	<menuitem name="menu-category-dashboard-1" parent="menu-category-dashboard"  
-		title="Category Db" icon="img/16px/chart_16px.png" />		
+		title="Category Db" icon="img/16px/chart_16px.png" action="supplychain.products.category.dashboard.portal" />		
 		
 	<menuitem name="menu-family-dashboard" parent="menu-dashboards-products-goods"  
 		title="Family" priority="30"  />	
@@ -401,6 +409,11 @@
 	<menuitem name="menu-family-dashboard-1" parent="menu-family-dashboard"  
 		title="Family Db" icon="img/16px/chart_16px.png" action="supplychain.products.family.dashboard.portal" />	
 		
+	<action-view name="supplychain.products.category.dashboard.portal" title="Category Dashboard"
+		icon="img/16px/crmSmall_16px.png">
+		<view type="portal" name="supplychain.products.category.dashboard.1.portal.view" />	 
+	</action-view>
+	
 	<action-view name="supplychain.products.family.dashboard.portal" title="Family Dashboard"
 		icon="img/16px/crmSmall_16px.png">
 		<view type="portal" name="supplychain.products.family.dashboard.1.portal.view" />	 
