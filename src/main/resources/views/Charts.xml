@@ -313,12 +313,15 @@
 	    <series key="_opportunity_amount" groupBy="_status" type="bar"/>
 	</chart>
 	
-	<chart name="chart.calls.types.by.user.bar" title="Calls type by user" stacked="true">
+	<chart onInit="action.crm.portal.set.date" name="chart.calls.types.by.user.bar" title="Calls type by user" stacked="true">
+		<search-fields> 	        
+		    <field type="datetime" name="fromDate" />
+		    <field type="datetime" name="toDate" />
+		</search-fields>
 		<dataset type="sql">
 		    <![CDATA[
 				SELECT    
-				    COUNT(case when _meta._select_value = _event.call_status_select
-					then _event.id end) AS _total_calls,
+				    COUNT(_event.id) AS _total_calls,
 					_user.full_name AS _user_name,
 					_meta._select_title AS _call_status
 				FROM
@@ -327,7 +330,7 @@
 					base_user_info AS _user
 					ON _event.user_info = _user.id
 					
-				CROSS JOIN
+				JOIN
 					(SELECT 
 						cast(_item.value as int) AS _select_value,
 				        _item.title AS _select_title
@@ -338,9 +341,11 @@
 						ON _selection.name = 'crm.event.call.status.select'
 						AND _item.select_id = _selection.id	
 					) AS _meta
-					
+				ON
+					_meta._select_value = _event.call_status_select	
 				WHERE
-        			_event.type_select = 1
+        			_event.type_select = 1 AND
+        			_event.created_on BETWEEN DATE(:fromDate) AND DATE(:toDate)
 				GROUP BY
 					_user_name, _call_status
 				ORDER BY
@@ -351,12 +356,15 @@
 	    <series key="_total_calls" groupBy="_call_status" type="bar"/>
 	</chart>
 	  	
-	<chart name="chart.calls.types.by.team.bar" title="Calls type by team" stacked="true">
+	<chart onInit="action.crm.portal.set.date" name="chart.calls.types.by.team.bar" title="Calls type by team" stacked="true">
+		<search-fields> 	        
+		    <field type="datetime" name="fromDate" />
+		    <field type="datetime" name="toDate" />
+		</search-fields>
 		<dataset type="sql">
 		    <![CDATA[
 				SELECT    
-				    COUNT(case when _meta._select_value = _event.call_status_select
-					then _event.id end) AS _total_calls,
+				    COUNT(_event.id) AS _total_calls,
 					_team.name AS _team_name,
 					_meta._select_title AS _call_status
 				FROM
@@ -365,7 +373,7 @@
 					base_team AS _team
 					ON _event.team = _team.id
 						
-				CROSS JOIN
+				JOIN
 					(SELECT 
 						cast(_item.value as int) AS _select_value,
 				        _item.title AS _select_title
@@ -376,8 +384,11 @@
 						ON _selection.name = 'crm.event.call.status.select'
 						AND _item.select_id = _selection.id	
 					) AS _meta
+				ON
+					_meta._select_value = _event.call_status_select
 				WHERE
-        			_event.type_select = 1 
+        			_event.type_select = 1 AND 
+        			_event.created_on BETWEEN DATE(:fromDate) AND DATE(:toDate)
 				GROUP BY
 					_team_name, _call_status
 				ORDER BY
@@ -388,31 +399,33 @@
 	    <series key="_total_calls" groupBy="_call_status" type="bar"/>
 	</chart>  	
 	  	
-	<chart name="chart.calls.types.by.team.by.user.bar" title="Calls by team by user">
-		<dataset type="sql">
+	<chart onInit="action.crm.portal.set.date" name="chart.calls.types.by.team.by.user.bar" title="Calls by team by user">
+		<search-fields> 	        
+		    <field type="datetime" name="fromDate" />
+		    <field type="reference" name="team" target="com.axelor.apps.base.db.Team" widget="[required=true]" />
+		</search-fields>
+		<dataset type="jpql">
 		    <![CDATA[
-		    SELECT
-			    COUNT(self.id)    AS _total_calls,
-			    sales_man.full_name as _sales_man,
-			    team.name as _team
-			FROM
-			    crm_event as self
-			LEFT JOIN
-	        	base_user_info as sales_man ON self.user_info = sales_man.id
-			LEFT JOIN
-	        	base_team as team ON self.team = team.id
-	        WHERE
-	        	self.type_select = 1
-	    	GROUP BY
-			  	_team,
-			  	_sales_man
-			ORDER BY
-			   	_team,
-			   	_sales_man	
+				SELECT
+			      COUNT(self.id) AS _total_calls,
+			      salesMan.fullName AS _sales_man			      
+			    FROM
+			      Event self,    
+			      UserInfo salesMan      
+			    
+			    WHERE
+			      self.typeSelect = 1 AND
+			      self.userInfo = salesMan AND
+			      self.team = :team AND
+			      self.createdOn BETWEEN DATE(:fromDate) AND DATE(:todayDate)
+			    GROUP BY        
+			        salesMan.fullName
+			    ORDER BY         
+			         salesMan.fullName
 			  ]]>
 	    </dataset>
-	    <category key="_team" type="text"/>
-	    <series key="_total_calls" groupBy="_sales_man" type="bar"/>
+	    <category key="_sales_man" type="text"/>
+	    <series key="_total_calls" type="bar"/>
 	</chart> 
 	
 	

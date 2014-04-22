@@ -305,14 +305,17 @@
 
 	<action-view name="portal.calls.types.by.user" title="Calls type by user">
 		<view type="chart" name="chart.calls.types.by.user.bar" />
+		<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
 	</action-view>
 
 	<action-view name="portal.calls.types.by.team" title="Calls type by team">
 		<view type="chart" name="chart.calls.types.by.team.bar" />
+		<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
 	</action-view>
 
 	<action-view name="portal.calls.by.team.by.user" title="Calls by team by user">
 		<view type="chart" name="chart.calls.types.by.team.by.user.bar" />
+		<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
 	</action-view>
 
 	<action-view name="portal.open.tickets.by.priority" title="Open tickets by priority">
