@@ -981,6 +981,129 @@
 	  <series key="_num_prod" type="donut" title="Products"/>
 	</chart>
 	
+	<chart name="chart.product.type.distribution" title="Product type distribution">
+	  <dataset type="sql">
+	  
+	    SELECT
+	      COUNT(self.id) AS _num_prod,
+	      _item.title AS _type
+	    FROM
+	      base_product AS self
+	    JOIN
+	      meta_select AS selection
+	      ON selection.name = 'product.product.type.select'
+	    JOIN
+	      meta_select_item AS _item
+	      ON _item.select_id = selection.id
+	      AND _item.value = self.product_type_select
+	    GROUP BY
+	      _type
+	    
+	  </dataset>
+	  <category key="_type" type="text" title="Product Type"/>
+	  <series key="_num_prod" type="donut" title="Products"/>
+	</chart>
+	
+	<action-record model="com.axelor.apps.supplychain.db.SalesOrder" name="action.supplychain.portal.set.date.6m">
+	  <field name="toDate" expr="eval:todayDate"/>
+	  <field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusMonths(6)"/>
+	</action-record>
+	
+	<chart onInit="action.supplychain.portal.set.date.6m" name="chart.product.launches.withdrawal.each.month" title="Product launches/withdrawal each month">
+	  <search-fields>
+	    <field type="date" name="fromDate" />
+    	<field type="date" name="toDate" />	    
+	  </search-fields>
+	  <dataset type="sql">
+	  
+	    SELECT
+	      _num_prod,
+	      _month,
+	      _label
+	    FROM
+	    (
+	        (SELECT
+	          COUNT(self.id) AS _num_prod,
+	          DATE_PART('month', self.start_date) AS _month,
+	          'Launch' AS _label
+	        FROM
+	          base_product AS self
+	        WHERE
+	          self.start_date BETWEEN DATE(:fromDate) AND DATE(:toDate)
+	        GROUP BY
+	          _month)
+	
+	      UNION ALL
+	
+	        (SELECT
+	          COUNT(self.id) AS _num_prod,
+	          DATE_PART('month', self.end_date) AS _month,
+	          'Withdrawal' AS _label
+	        FROM
+	          base_product AS self
+	        WHERE
+	          self.end_date BETWEEN DATE(:fromDate)  AND DATE(:toDate)
+	        GROUP BY
+	          _month)
+	    ) prod_status
+	    
+	  </dataset>
+	  <category key="_month" type="month" title="Month"/>
+	  <series key="_num_prod" type="bar" title="Products" groupBy="_label"/>
+	</chart>
+	
+	<!-- This chart is used in product-form (base)  -->
+	<chart onInit="action.supplychain.portal.set.date.6m" name="chart.product.sales.turnover.per.month" title="Product sales turnover (Excl. Tax) per month">
+	  <search-fields>
+	    <field type="date" name="fromDate" />
+    	<field type="date" name="toDate" />	    
+	  </search-fields>
+	  <dataset type="jpql">
+	  
+		  SELECT
+		    SUM(self.exTaxTotal) AS _amount,
+		    EXTRACT(MONTH FROM self.salesOrder.validationDate) AS _month
+		  FROM
+		    SalesOrderLine self
+		  WHERE
+		    self.salesOrder.statusSelect = 3
+		    AND self.salesOrder.company = :activeCompany
+		    AND self.product.id = :id
+		    AND self.salesOrder.validationDate BETWEEN DATE(:fromDate) AND DATE(:toDate)
+		  GROUP BY
+		    EXTRACT(MONTH FROM self.salesOrder.validationDate)
+	    
+	  </dataset>
+	  <category key="_month" type="month" title="Month"/>
+	  <series key="_amount" type="bar" title="Turnover"/>
+	</chart>
+	
+	<chart onInit="action.supplychain.portal.set.date.6m" name="chart.product.sales.turnover.last.12.month" title="Product sales turnover (Excl. Tax) last 12 month">
+	  <search-fields>
+	    <field type="date" name="toDate" />
+    	<field type="reference" name="product" target="com.axelor.apps.base.db.Product" />
+	  </search-fields>
+	  <dataset type="jpql">
+	  
+	    SELECT
+	      SUM(self.exTaxTotal) AS _amount,
+	      EXTRACT(MONTH FROM self.salesOrder.validationDate) AS _month
+	    FROM
+	      SalesOrderLine AS self
+	      
+	    WHERE
+	      self.salesOrder.statusSelect = 3    
+	      AND self.salesOrder.company = :activeCompany
+	      AND self.product = :product
+	      AND self.salesOrder.validationDate BETWEEN DATE(:toDate) - 365 AND DATE(:toDate)
+	    GROUP BY
+	      EXTRACT(MONTH FROM self.salesOrder.validationDate)
+	    
+	  </dataset>
+	  <category key="_month" type="month" title="Month"/>
+	  <series key="_amount" type="bar" title="Turnover"/>
+	</chart>
+	
 	<!-- This chart is used in location-form -->
 	<chart name="chart.locationLine.location.value" title="Location value">
 	  <dataset type="jpql">

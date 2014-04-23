@@ -370,6 +370,28 @@
 	  <view type="chart" name="chart.nbr.product.per.category"/>
 	</action-view>
 	
+	<action-view name="portal.product.type.distribution" title="Product type distribution" model="com.axelor.apps.base.db.Product">
+	  <view type="chart" name="chart.product.type.distribution"/>
+	</action-view>
+	
+	<action-view name="portal.product.launches.withdrawal.each.month" title="Product launches/withdrawal each month" model="com.axelor.apps.base.db.Product">
+	  <view type="chart" name="chart.product.launches.withdrawal.each.month"/>
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+	</action-view>
+	
+	<!-- This portal is used in product-form (base) -->
+	<action-view name="portal.product.sales.turnover.per.month" title="Product sales turnover (Excl. Tax) per month" model="com.axelor.apps.base.db.Product">
+	  <view type="chart" name="chart.product.sales.turnover.per.month"/>
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+	</action-view>
+	
+	<action-view name="portal.product.sales.turnover.last.12.month" title="Product sales turnover (Excl. Tax) last 12 month" model="com.axelor.apps.base.db.Product">
+	  <view type="chart" name="chart.product.sales.turnover.last.12.month"/>
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+	</action-view>
+	
 	<!-- This portlet is used in location-form -->
 	<action-view title="Location value" name="portal.locationLine.location.value">
 	  <view type="chart" name="chart.locationLine.location.value"/>
@@ -478,8 +500,11 @@
 	<!--  Product/Goods DashBorad	 -->
 	
 	<portal name="supplychain.products.dashboard.1.portal.view" title="Products DB 1">
-		<portlet action="portal.nbr.product.per.family" canSearch="true" height="350" />
-		<portlet action="portal.nbr.product.per.category" canSearch="true" height="350" />
+		<portlet action="portal.nbr.product.per.family" height="350" />
+		<portlet action="portal.nbr.product.per.category" height="350" />
+		<portlet action="portal.product.type.distribution" height="350"/>
+		<portlet action="portal.product.launches.withdrawal.each.month" height="350"/>
+		<portlet action="portal.product.sales.turnover.last.12.month" height="350"/>		
 	</portal>
 	
 	<portal name="supplychain.products.family.dashboard.1.portal.view" title="Family Dashboard">
