@@ -32,16 +32,16 @@
 		<context name="_myPartner" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserPartner()"/>
 	</action-view>
 	
-	<action-view name="wizard-client-form-open-my-tickets" title="My tickets"
-		model="com.axelor.apps.crm.db.Event" icon="img/16px/crmSmall_16px.png">
+	<action-view title="My tickets" icon="img/16px/crmSmall_16px.png" model="com.axelor.apps.crm.db.Event" name="wizard-client-form-open-my-tickets">
 		<view type="grid" name="ticket-grid"/>
 		<view type="form" name="ticket-form"/>
-		<domain>self.createdBy = :_user</domain>
+		<domain>(self.clientPartner = :_myPartner or self.createdBy =:_user) and (self.typeSelect =:_typeSelect)</domain>
 		<context name="_typeSelect" expr="5"/>
 		<context name="_prioritySelect" expr="2"/>
-		<context name="_internalUser" expr="eval: __user__.id"/>
-    	<context name="_user" expr="eval:__user__"/>
-    	<context name="_clientView" expr="eval: true"/>
+		<context name="_internalUser" expr="eval: user.id"/>
+		<context name="_user" expr="eval:__user__"/>
+		<context name="_clientView" expr="eval: true"/>
+		<context name="_myPartner" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserPartner()"/>
 	</action-view>
 	
 </object-views>
