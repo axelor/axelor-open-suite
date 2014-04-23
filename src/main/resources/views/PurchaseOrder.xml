@@ -50,7 +50,7 @@
 	                <field name="location.address"/>
 	                <field name="deliveryDate"/>
 	            </group>
-	            <field name="purchaseOrderLineList" colSpan="6" form-view="purchase-order-line-form" grid-view="purchase-order-line-grid" readonlyIf="statusSelect == 5"/>
+	            <field name="purchaseOrderLineList" colSpan="6" form-view="purchase-order-line-form" grid-view="purchase-order-line-purchase-order-grid" readonlyIf="statusSelect == 5"/>
 	            <group colSpan="3" cols="2">
 	                <field name="purchaseOrderLineTaxList" showTitle="false" colSpan="2"/>
 	                <group title="Action(s)" colSpan="2" cols="2">

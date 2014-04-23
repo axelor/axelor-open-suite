@@ -107,15 +107,13 @@ public class PurchaseOrderLineController {
 			
 			try  {
 				BigDecimal price = purchaseOrderLineService.getUnitPrice(purchaseOrder, purchaseOrderLine);
-				
 				response.setValue("taxLine", purchaseOrderLineService.getTaxLine(purchaseOrder, purchaseOrderLine));
 				response.setValue("productName", purchaseOrderLine.getProduct().getName());
 				response.setValue("unit", purchaseOrderLine.getProduct().getUnit());
-				response.setValue("qty", purchaseOrderLineService.getQty(purchaseOrderLine));
+				response.setValue("qty", purchaseOrderLineService.getQty(purchaseOrder,purchaseOrderLine));
 				
 				response.setValue("saleMinPrice", purchaseOrderLineService.getMinSalePrice(purchaseOrder, purchaseOrderLine));
 				response.setValue("salePrice", purchaseOrderLineService.getSalePrice(purchaseOrder, price));
-				
 				PriceList priceList = purchaseOrder.getPriceList();
 				if(priceList != null)  {
 					PriceListLine priceListLine = purchaseOrderLineService.getPriceListLine(purchaseOrderLine, priceList);
@@ -128,10 +126,10 @@ public class PurchaseOrderLineController {
 						price = (BigDecimal) discounts.get("price");
 					}
 				}
-				
 				response.setValue("price", price);
 			}
 			catch(Exception e) {
+				e.printStackTrace();
 				response.setFlash(e.getMessage());
 				this.resetProductInformation(response);
 			}

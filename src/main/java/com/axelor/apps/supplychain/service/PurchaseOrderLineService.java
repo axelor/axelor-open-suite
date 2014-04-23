@@ -234,9 +234,9 @@ public class PurchaseOrderLineService {
 	}
 	
 	
-	public BigDecimal getQty(PurchaseOrderLine purchaseOrderLine)  {
+	public BigDecimal getQty(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine)  {
 		
-		SupplierCatalog supplierCatalog = this.getSupplierCatalog(purchaseOrderLine);
+		SupplierCatalog supplierCatalog = this.getSupplierCatalog(purchaseOrder,purchaseOrderLine);
 		
 		if(supplierCatalog != null)  {
 			
@@ -248,11 +248,11 @@ public class PurchaseOrderLineService {
 		
 	}
 	
-	public SupplierCatalog getSupplierCatalog(PurchaseOrderLine purchaseOrderLine)  {
+	public SupplierCatalog getSupplierCatalog(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine)  {
 		
 		Product product = purchaseOrderLine.getProduct();
 		
-		SupplierCatalog supplierCatalog = this.getSupplierCatalog(product, purchaseOrderLine.getPurchaseOrder().getSupplierPartner());
+		SupplierCatalog supplierCatalog = this.getSupplierCatalog(product, purchaseOrder.getSupplierPartner());
 		
 		if(supplierCatalog == null)  {
 			
