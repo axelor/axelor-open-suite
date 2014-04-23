@@ -138,6 +138,9 @@
 	            </group>
             	<button name="updateProductsPrices" title="Update products prices" colSpan="2" onClick="save,action-product-method-update-products-prices" help="Update current product prices and variants"/>
 	        </page>
+	        <page title="Turnover">
+  				<portlet action="portal.product.sales.turnover.per.month" height="350" colSpan="4" />      
+			</page>	        
 	    </notebook>
 	</form>    
     
