@@ -492,7 +492,7 @@
 			    RIGHT JOIN 
 			        meta_select_item as selection_item     
 			    ON 
-			        (cast(selection_item.value as decimal) = self.status_select and self.ticket_status_select != 5)
+			        (cast(selection_item.value as decimal) = self.ticket_status_select and self.ticket_status_select != 5)
 			    WHERE
 			        selection_item.select_id = (select id from meta_select where name = 'crm.event.ticket.status.select')
 			    AND
