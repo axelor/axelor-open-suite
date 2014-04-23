@@ -290,7 +290,7 @@
 	<action-attrs name="action-set-partner-domain">
 		<attribute name="domain" for="partner" expr="eval:'self.isContact = false AND self.supplierTypeSelect > 1'" if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
 		<attribute name="domain" for="partner" expr="eval:'self.isContact = false AND self.customerTypeSelect > 1'" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
-		<attribute name="domain" for="contactPartner" expr="eval: &quot;self.id IN (${partner.contactPartnerSet?.collect{it.id}.join(',')})&quot;" if="partner != null"/>
+		<attribute for="contactPartner"  name="domain" expr="eval: partner != null ? &quot;self.id IN (${partner.contactPartnerSet?.collect{it.id}.join(',')})&quot; : null"/>
 	</action-attrs>
 	
 	<action-attrs name="action-invoice-attrs-collapse-irrecoverable-group">
