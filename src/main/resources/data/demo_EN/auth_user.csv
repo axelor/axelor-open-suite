@@ -1,22 +1,22 @@
-"code";"name";"password";"group.code";"language"
-"admin";"Admin";"axadmin";"admins";"en"
-"demo";"Demo";"axdemo";"user";"en"
-"dirg";"Yoann MARQUES";"dirg";"erp";"en"
-"assist";"Lucy ROBERT";"assist";"erp";"en"
-"dirpro";"Lucas RICHARD";"dirpro";"erp";"en"
-"chefpro";"Daniel SILVA";"chefpro";"erp";"en"
-"consultant";"Charles MARTIN";"consultant";"consultant";"en"
-"demoerp";"Kevin DEMOERP";"demoerp";"erp";"en"
-"democrm";"Charles DEMOCRM";"democrm";"crm";"en"
-"comn";"Tony RAYMOND";"comn";"erp";"en"
-"coms1";"Thomas LAMY";"coms1";"erp";"en"
-"coms2";"Anne GIRAULT";"coms2";"erp";"en"
-"comi";"Dimitri GEOFFROY";"comi";"erp";"en"
-"achat";"Alex DAVID";"achat";"erp";"en"
-"dirinfo";"William ANDRE";"dirinfo";"erp";"en"
-"dirsupp";"David MAURIN";"dirsupp";"crm";"en"
-"supp1";"Cyril MARCHAL";"supp1";"crm";"en"
-"supp2";"Robin COSTA";"supp2";"crm";"en"
-"dirrh";"Romane COLIN";"dirrh";"erp";"en"
-"compta";"Victoria LOUIS";"compta";"erp";"en"
-"client";"123 Service";"client";"client";"en"
+"code";"name";"password";"group.code";"language";"homeAction"
+"admin";"Admin";"axadmin";"admins";"en";
+"demo";"Demo";"axdemo";"user";"en";
+"dirg";"Yoann MARQUES";"dirg";"MGT";"en";
+"assist";"Lucy ROBERT";"assist";"MGT";"en";
+"dirpro";"Lucas RICHARD";"dirpro";"MGT";"en";
+"chefpro";"Daniel SILVA";"chefpro";"ERP";"en";
+"consultant";"Charles MARTIN";"consultant";"CST";"en";
+"demoerp";"Kevin DEMOERP";"demoerp";"ERP";"en";"portal.opportunity.graph.dashboard.view"
+"democrm";"Charles DEMOCRM";"democrm";"CRM";"en";"crm.portal.opportunities.dashboard.2.view"
+"comn";"Tony RAYMOND";"comn";"SAL";"en";
+"coms1";"Thomas LAMY";"coms1";"SAL";"en";
+"coms2";"Anne GIRAULT";"coms2";"SAL";"en";
+"comi";"Dimitri GEOFFROY";"comi";"SAL";"en";
+"achat";"Alex DAVID";"achat";"PCH";"en";
+"dirinfo";"William ANDRE";"dirinfo";"OPS";"en";
+"dirsupp";"David MAURIN";"dirsupp";"OPS";"en";
+"supp1";"Cyril MARCHAL";"supp1";"OPS";"en";
+"supp2";"Robin COSTA";"supp2";"OPS";"en";
+"dirrh";"Romane COLIN";"dirrh";"HRM";"en";
+"compta";"Victoria LOUIS";"compta";"ACC";"en";
+"client";"123 Service";"client";"CLT";"en";"wizard-client-view"

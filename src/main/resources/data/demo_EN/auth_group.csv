@@ -1,14 +1,14 @@
-"id";"code";"name";"navigation";"permissions"
-1;"admins";"ADMINS";;
-2;"user";"Users";;
-3;"workflow";"workflow";;
-4;"client";"Client";"hidden";"perms.user-info"
-5;"consultant";"Consultant";;"perms.user-info"
-6;"crm";"CRM";;"perms.user-info"
-7;"erp";"ERP";;"perms.user-info"
-8;"SALE";"Sales";;
-9;"PURCH";"Purchases";;
-10;"ACCO";"Accounting";;
-11;"HRSC";"Human Resources";;
-12;"OPTS";"Operations";;
-13;"MNGT";"Management";;
+"id";"code";"name";"navigation";"permissions";"technicalStaff";"roles"
+1;"admins";"ADMINS";;;"true";
+2;"user";"Users";;;"false";
+3;"BPM";"BPM";;;"false";
+4;"CLT";"Client";"hidden";"perms.user-info";"false";"role.client"
+5;"CST";"Consultant";;;"false";"role.consultant"
+6;"CRM";"CRM";;;"false";"role.crm"
+7;"ERP";"ERP";;;"false";"role.manager"
+8;"SALE";"Sales";;;"false";"role.supplychain"
+9;"PURCH";"Purchases";;;"false";"role.supplychain"
+10;"ACCO";"Accounting";;;"false";"role.accounting"
+11;"HRSC";"Human Resources";;;"false";"role.hr"
+12;"OPTS";"Operations";;;"false";"role.operations"
+13;"MNGT";"Management";;;"false";"role.manager"
