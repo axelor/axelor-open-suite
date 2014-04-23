@@ -32,13 +32,14 @@
 		<context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
 	</action-view>
 	
-	<action-view name="portal.salesman.dashboard.activities" title="Today Activities"
+	<action-view name="portal.salesman.dashboard.activities" title="My Today Activities"
 		model="com.axelor.apps.crm.db.Event">
 		<view type="grid" name="event-grid"/>
 		<view type="form" />
-	    <domain>self.startDateTime between :_today and :_tomorrow</domain>
+	    <domain>self.startDateTime between :_today and :_tomorrow and self.userInfo =:_activeUser</domain>
 	    <context name="_tomorrow" expr="eval: __date__.plusDays(1).toDateTimeAtStartOfDay()"/>
 	    <context name="_today" expr="eval: __date__.toDateTimeAtStartOfDay()"/>
+	    <context name="_activeUser" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" />
 	</action-view>
 	
 	<action-view name="portal.salesman.dashboard.opportunities" title="My Opportunities"
