@@ -126,5 +126,73 @@
 	  <category key="_year" type="text" title="Year"/>
 	  <series key="turnOver" type="bar" title="Turnover" aggregate="sum" groupBy="family"/>
 	</chart>
+	
+	<chart name="chart.customers.by.country.bar" title="Customers by country">
+		<dataset type="sql">
+		    <![CDATA[
+			SELECT
+			    count(_partner.id) AS partners,
+			    _country.name AS country_name
+			FROM
+				base_partner AS _partner
+			JOIN
+				base_address AS _address ON _address.id = _partner.main_invoicing_address
+			JOIN
+				base_country AS _country ON _country.id = _address.addressL7country
+			WHERE
+				_partner.customer_type_select = 3				
+			GROUP BY
+				_country.name
+		    ]]>
+	    </dataset>
+	    <category key="country_name" type="text"/>
+	    <series key="partners"  type="donut"/>
+	 </chart>
+	  	
+	<chart name="chart.partner.by.industry.sector.bar" title="Partners by Industry Sector">
+	    <dataset type="sql">
+	    <![CDATA[
+		SELECT
+          COUNT(self.id) AS _total_partner,
+	      selection_item.title as _industry_sector
+	    FROM
+	        base_partner as self
+	    LEFT JOIN
+	        meta_select as selection ON selection.name = 'partner.industry.sectory.select'
+	    LEFT JOIN 
+	    	meta_select_item as selection_item ON selection_item.select_id = selection.id
+		WHERE
+			cast(selection_item.value as decimal) = self.industry_sector_select	and self.is_contact != true		
+	    GROUP BY
+		   _industry_sector
+		ORDER BY
+		   _industry_sector
+	    ]]>
+	    </dataset>
+	    <category key="_industry_sector" type="text"/>
+    	<series key="_total_partner" type="donut"/>
+	 </chart>
+
+	<chart name="chart.suppliers.by.country.bar" title="Suppliers by country">
+	  <dataset type="sql">
+	    
+	    SELECT
+	      count(_partner.id) AS partners,
+	      _country.name AS country_name
+	    FROM
+	      base_partner AS _partner
+	    JOIN
+	      base_address AS _address ON _address.id = _partner.main_invoicing_address
+	    JOIN
+	      base_country AS _country ON _country.id = _address.addressL7country
+	    WHERE
+	      _partner.supplier_type_select = 3        
+	    GROUP BY
+	      _country.name
+	    
+	  </dataset>
+	  <category key="country_name" type="text"/>
+	  <series key="partners" type="donut"/>
+	</chart>
 
 </object-views>

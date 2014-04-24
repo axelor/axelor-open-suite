@@ -8,6 +8,7 @@
 	<portal title="Partner Dashboard" name="base.partner.list.portal" cols="2">
 	    <portlet action="portal.customers.by.country" height="350" colSpan="1" canSearch="true"/>
 	    <portlet action="portal.partner.by.industrySector" height="350" colSpan="1" canSearch="true"/>
+	    <portlet action="portal.suppliers.by.country" colSpan="1" height="350"/>
 		<portlet action="portal.my.recent.customers" height="350" colSpan="1" canSearch="true"/> 
 	    <portlet action="portal.partner.by.salesman" height="350" colSpan="1" canSearch="true"/>
 		<portlet action="portal.partner.recent.partners" height="350" colSpan="1" canSearch="true"/>	
@@ -45,6 +46,9 @@
 	</action-view>
 	<action-view name="portal.customers.by.country" title="Customers by country" model="com.axelor.apps.base.db.Partner">
 		<view type="chart" name="chart.customers.by.country.bar"/>
+	</action-view>
+	<action-view name="portal.suppliers.by.country" title="Suppliers by country" model="com.axelor.apps.base.db.Partner">
+	  <view type="chart" name="chart.suppliers.by.country.bar"/>
 	</action-view>
   	
   	<!-- This Portlet is called in Partner-Form -->
