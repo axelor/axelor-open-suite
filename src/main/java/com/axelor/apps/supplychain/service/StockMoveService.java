@@ -408,7 +408,7 @@ public class StockMoveService {
 		return selected;
 	}
 	
-	@Transactional
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void copyQtyToRealQty(StockMove stockMove){
 		for(StockMoveLine line : stockMove.getStockMoveLineList())
 			line.setRealQty(line.getQty());

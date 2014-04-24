@@ -276,6 +276,8 @@ public class InventoryService {
 		}
 		if (stockMove.getStockMoveLineList() != null) {
 			stockMoveService.plan(stockMove);
+			stockMoveService.copyQtyToRealQty(stockMove);
+			stockMoveService.realize(stockMove);
 		}
 		return stockMove;
 	}
