@@ -241,4 +241,10 @@ public class StockMoveController {
 		response.setCanClose(true);
 	}
 	
+	public void shipReciveAllProducts(ActionRequest request, ActionResponse response) {
+		StockMove stockMove = request.getContext().asType(StockMove.class);
+		stockMoveService.copyQtyToRealQty(StockMove.find(stockMove.getId()));
+		response.setReload(true);
+	}
+	
 }

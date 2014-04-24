@@ -408,4 +408,11 @@ public class StockMoveService {
 		return selected;
 	}
 	
+	@Transactional
+	public void copyQtyToRealQty(StockMove stockMove){
+		for(StockMoveLine line : stockMove.getStockMoveLineList())
+			line.setRealQty(line.getQty());
+		stockMove.save();
+	}
+	
 }

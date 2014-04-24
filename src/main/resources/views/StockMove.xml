@@ -91,6 +91,7 @@
         	<page title="Stock move details">
         	    <button name="splitByUnit" title="Split by unit" onClick="save,action-stock-move-method-split-stock-move-lines-unit" showIf="statusSelect == 1 || statusSelect == 2" />
         	    <button name="specialSplit" title="Special split" onClick="save,action-stock-move-wizard-special-split" showIf="statusSelect == 1 || statusSelect == 2" />
+        	    <button name="shipReciveAllProducts" title="Ship/Receive all products" onClick="save,action-stock-move-ship-recieve-all-products" showIf="statusSelect == 1 || statusSelect == 2" />
             	<field name="stockMoveLineList" colSpan="4" form-view="stock-move-line-form" grid-view="stock-move-line-grid" readonlyIf="statusSelect == 3"/>
         	</page>
         	<page title="Configuration">
@@ -200,6 +201,10 @@
 	
 	<action-method name="action-stock-move-method-split-stock-move-lines-unit">
 		<call class="com.axelor.apps.supplychain.web.StockMoveController" method="splitStockMoveLinesUnit"/>
+	</action-method>
+	
+	<action-method name="action-stock-move-ship-recieve-all-products">
+	    <call class="com.axelor.apps.supplychain.web.StockMoveController" method="shipReciveAllProducts"/>
 	</action-method>
 	
 	<action-attrs name="action-stock-move-attrs-hide-button-generate-invoice">
