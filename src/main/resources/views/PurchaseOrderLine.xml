@@ -56,7 +56,6 @@
 	        <page title="Details" colSpan="4" cols="4">
 	        	<field name="createdBy"/>
         		<field name="createdOn"/>
-	            <field name="productVariant" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="product-variant-form" summary-view="true" hidden="true"/>
 	        </page>
 	        <page title="Delivery" colSpan="4" cols="4">
 	        	<field name="desiredDelivDate"/>
@@ -77,9 +76,6 @@
     	<field name="task" expr="eval: _parent?.project?.defaultTask"/>
     </action-record>
     
-    <action-record name="action-purchase-order-line-record-product-variant" model="com.axelor.apps.supplychain.db.PurchaseOrderLine">
-    	<field name="productVariant" expr="action:action-product-variant-record-on-new" if="product?.productVariantConfiguration != null"/>
-    </action-record>
     
    	<!-- ACTION METHOD -->
 	

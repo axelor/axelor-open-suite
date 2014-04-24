@@ -33,7 +33,6 @@
 	        <field name="discountTypeSelect" onChange="action-sales-order-sub-line-method-compute"/>
 	        <field name="discountAmount" onChange="action-sales-order-sub-line-method-compute"/>
 	    </group>
-        <field name="productVariant" widget="NestedEditor" summary-view="true" colSpan="4" form-view="product-variant-form" edit-window="self" canSelect="false" showTitle="false" hidden="true"/>
     </form>
     
     <action-record name="action-sales-order-sub-line-record-new" model="com.axelor.apps.supplychain.db.SalesOrderSubLine">
@@ -43,10 +42,6 @@
     <action-record name="action-sales-order-sub-line-record-sequence" model="com.axelor.apps.supplychain.db.SalesOrderSubLine">
     	<field name="sequence" expr="1" if="eval: _parent?.salesOrderSubLineList == null"/>
     	<field name="sequence" expr="eval: _parent?.salesOrderSubLineList.size()+1" if="eval: _parent?.salesOrderSubLineList != null"/>
-    </action-record>
-    
-    <action-record name="action-sales-order-sub-line-record-product-variant" model="com.axelor.apps.supplychain.db.SalesOrderSubLine">
-    	<field name="productVariant" expr="action:action-product-variant-record-on-new" if="product?.productVariantConfiguration != null"/>
     </action-record>
     
     <!-- ACTION METHOD -->

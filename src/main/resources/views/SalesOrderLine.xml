@@ -43,7 +43,6 @@
 	                <field name="task"/>
 	                <field name="billOfMaterial" onSelect="action-sales-order-line-attrs-bill-of-material-domain" showIf="saleSupplySelect == 3"/>
 	                <button name="customizeBOM" title="Customize BOM" colSpan="2" onClick="action-method-customize-bill-of-material" showIf="saleSupplySelect == 3"/>
-       	            <field name="productVariant" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="product-variant-form" summary-view="true" hidden="true"/>
 	            </group>
 	        </page>
 	        <page title="Notes">
@@ -84,10 +83,6 @@
 	<action-record name="action-sales-order-line-record-sequence" model="com.axelor.apps.supplychain.db.SalesOrderLine">
     	<field name="sequence" expr="1" if="eval: _parent?.salesOrderLineList == null"/>
     	<field name="sequence" expr="eval: _parent?.salesOrderLineList.size()+1" if="eval: _parent?.salesOrderLineList != null"/>
-    </action-record>
-    
-    <action-record name="action-sales-order-line-record-product-variant" model="com.axelor.apps.supplychain.db.SalesOrderLine">
-    	<field name="productVariant" expr="action:action-product-variant-record-on-new" if="product != null &amp;&amp; product.productVariantConfiguration != null"/>
     </action-record>
     
     <action-record name="action-sales-order-line-get-production-information" model="com.axelor.apps.supplychain.db.SalesOrderLine">
