@@ -7,7 +7,7 @@
 		
 	<portal title="Dashboard" name="supplychain.salesman.dashboard.portal.sample" cols="2">
 		<portlet action="portal.salesman.dashboard.orders" height="350" canSearch="true" />
-		<portlet action="portal.salesman.dashboard.total.turnover" height="350" />
+		<portlet action="portal.my.turnover.per.month" height="350" />
 		<portlet action="portal.salesman.dashboard.leads" canSearch="true" height="350" />
 		<portlet action="portal.salesman.dashboard.activities" canSearch="true" height="350" />
 		<portlet action="portal.salesman.dashboard.opportunities" canSearch="true" height="350" />
@@ -20,8 +20,10 @@
 	    <context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
 	</action-view>
 	
-	<action-view name="portal.salesman.dashboard.total.turnover" title="Turnover over past 6 months">
-		<view type="chart" name="chart.salesman.dashboard.total.turnover"/>
+	<action-view title="My Turnover per month" name="portal.my.turnover.per.month">
+	  <view type="chart" name="chart.my.turnover.per.month"/>
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+	  <context name="id" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()" />
 	</action-view>
 	
 	<action-view name="portal.salesman.dashboard.leads" title="My Current Leads"
@@ -59,13 +61,13 @@
 		<portlet action="portal.sales.turnover.by.product.ytd.vs.lastyear" height="350"/>
 		<portlet action="portal.sales.turnover.ytd.vs.lastyear.by.family" height="350" />
 		<portlet action="portal.sales.turnover.by.family.ytd.vs.lastyear" height="350" />		
-		<portlet action="portal.sales.manager.dashboard.team.turnover" height="350" />
-		<portlet action="portal.sales.manager.dashboard.salesman.turnover" height="350" />
-		<portlet action="portal.sales.manager.dashboard.family.product.sales" height="350" />
-		<portlet action="portal.sales.manager.dashboard.category.product.sales" height="350" />
-		<portlet action="portal.sales.manager.dashboard.country.sales" height="350" />
-		<portlet action="portal.prod.turnover.sales.last.12m" height="350" />    
-   	    <portlet action="portal.prod.qty.sales.last.12m" height="350" />
+		<portlet action="portal.sales.manager.dashboard.turnover.per.team" height="350" />
+		<portlet action="portal.sales.manager.dashboard.turnover.per.salesman" height="350" />
+		<portlet action="portal.sales.manager.dashboard.sales.distribution.per.family" height="350" />
+		<portlet action="portal.sales.manager.dashboard.product.sales.per.category" height="350" />
+		<portlet action="portal.sales.manager.dashboard.sales.per.country" height="350" />
+		<portlet action="portal.turnover.sales.by.month.by.category" height="350" />    
+   	    <portlet action="portal.units.sold.on.cust.sales.by.category" height="350" />
    	    <portlet action="portal.stockMove.nbr.delivery.by.country" height="350"/>  
    	    <portlet action="portal.stockMoveLine.product.delivery.by.country" height="350"/>  
    	    <portlet action="portal.stockMoveLine.product.delivery.by.country.by.family" height="350"/> 
@@ -97,33 +99,40 @@
 	  <context name="active_company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
 	</action-view>
 
-	<action-view name="portal.sales.manager.dashboard.team.turnover" title="Turnover per team over past 30 days">
-		<view type="chart" name="chart.sales.manager.dashboard.team.turnover"/>
+	<action-view name="portal.sales.manager.dashboard.turnover.per.team" title="Turnover per team">
+	  <view type="chart" name="chart.sales.manager.dashboard.turnover.per.team"/>
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
 	</action-view>
 	
-	<action-view name="portal.sales.manager.dashboard.salesman.turnover" title="Turnover per salesman over past 30 days">
-		<view type="chart" name="chart.sales.manager.dashboard.salesman.turnover"/>
+	<action-view name="portal.sales.manager.dashboard.turnover.per.salesman" title="Turnover per salesman">
+	  <view type="chart" name="chart.sales.manager.dashboard.turnover.per.salesman"/>
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
 	</action-view>
 	
-	<action-view name="portal.sales.manager.dashboard.family.product.sales" title="Sales per product family over past 12 months">
-		<view type="chart" name="chart.sales.manager.dashboard.family.product.sales"/>
+	<action-view name="portal.sales.manager.dashboard.sales.distribution.per.family" title="Sales distribution per product family">
+	  <view type="chart" name="chart.sales.manager.dashboard.sales.distribution.per.family"/>
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
 	</action-view>
 	
-	<action-view name="portal.sales.manager.dashboard.category.product.sales" title="Sales per product category over past 12 months in volume">
-		<view type="chart" name="chart.sales.manager.dashboard.category.product.sales"/>
+	<action-view name="portal.sales.manager.dashboard.product.sales.per.category" title="Sales distribution per product category">
+	  <view type="chart" name="chart.sales.manager.dashboard.product.sales.per.category"/>
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
 	</action-view>
 	
-	<action-view name="portal.sales.manager.dashboard.country.sales" title="Sales per country over past 12 months">
-		<view type="chart" name="chart.sales.manager.dashboard.country.sales"/>
+	<action-view name="portal.sales.manager.dashboard.sales.per.country" title="Sales per country">
+	  <view type="chart" name="chart.sales.manager.dashboard.sales.per.country"/>
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
 	</action-view>
 	
-	<action-view title="Turnover On Customer Sales on Last 12 Month" name="portal.prod.turnover.sales.last.12m">
-        <view type="chart" name="chart.prod.turnover.sales.last.12m"/>
-    </action-view>
+	<action-view name="portal.turnover.sales.by.month.by.category" title="Turnover amount on customer sales by month by category">
+	  <view type="chart" name="chart.turnover.sales.by.month.by.category"/>
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+	</action-view>
 
-	<action-view title="Number Of Units On Customer Sales on Last 12 Month" name="portal.prod.qty.sales.last.12m">
-        <view type="chart" name="chart.prod.qty.sales.last.12m"/>
-    </action-view>
+	<action-view name="portal.units.sold.on.cust.sales.by.category" title="Nbr of Units sold on Cust. Sales by category" >
+	  <view type="chart" name="chart.units.sold.on.cust.sales.by.category"/>
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+	</action-view>
  		
 	<action-record model="com.axelor.apps.supplychain.db.SalesOrder" name="action.supplychain.portal.default.month.value">
 	  <field name="monthSelect" expr="eval:12"/>
@@ -480,14 +489,14 @@
 	
 	<portal name="supplychain.sales.dashboard.1.portal.view" title="Sales Dashboard 1">
 		<portlet action="portal.salesman.dashboard.orders" canSearch="true" height="350" />
-		<portlet action="portal.salesman.dashboard.total.turnover" canSearch="true" height="350" />
-		<portlet action="portal.sales.manager.dashboard.team.turnover" canSearch="true" height="350" />
-		<portlet action="portal.sales.manager.dashboard.salesman.turnover" canSearch="true" height="350" />
-		<portlet action="portal.sales.manager.dashboard.family.product.sales" canSearch="true" height="350" />
-		<portlet action="portal.sales.manager.dashboard.category.product.sales" canSearch="true" height="350" />
-		<portlet action="portal.sales.manager.dashboard.country.sales" canSearch="true" height="350" />
-		<portlet action="portal.prod.turnover.sales.last.12m" canSearch="true" height="350" />
-		<portlet action="portal.prod.qty.sales.last.12m" canSearch="true" height="350" />
+		<portlet action="portal.my.turnover.per.month"  height="350" />
+		<portlet action="portal.sales.manager.dashboard.turnover.per.team"  height="350" />
+		<portlet action="portal.sales.manager.dashboard.turnover.per.salesman"  height="350" />
+		<portlet action="portal.sales.manager.dashboard.sales.distribution.per.family"  height="350" />
+		<portlet action="portal.sales.manager.dashboard.product.sales.per.category"  height="350" />
+		<portlet action="portal.sales.manager.dashboard.sales.per.country"  height="350" />
+		<portlet action="portal.turnover.sales.by.month.by.category"  height="350" />
+		<portlet action="portal.units.sold.on.cust.sales.by.category"  height="350" />
 	</portal>
 	
 	<portal name="supplychain.sales.dashboard.2.portal.view" title="Sales Dashboard 2">
