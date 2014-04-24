@@ -6,6 +6,7 @@
     <grid name="lead-grid" title="Leads" model="com.axelor.apps.crm.db.Lead" orderBy="-contactDate,statusSelect">
     	<toolbar>
     		<button name="grabLeads" help="Assign to me" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.EventController:assignToMeLead" />
+    		<button name="print" title="Print" icon="fa-print" onClick="action-crm-lead-method-print"/>
     	</toolbar>
     	<hilite color="warning" if="statusSelect == 1 &amp;&amp; (userInfo == null || contactDate == null) &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 15"/>
 	    <hilite color="primary" if="statusSelect == 1"/>
@@ -33,6 +34,7 @@
 	    <toolbar>
 	        <button name="convertLead" title="Convert lead" hideIf="statusSelect == 4" onClick="save,action-lead-view-convert-lead" readonlyIf="statusSelect == 4 || statusSelect == 6"/>
 	        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template" readonlyIf="statusSelect == 4 || statusSelect == 6"/>
+	  		<button name="print" title="Print" icon="fa-print" onClick="action-crm-lead-method-print"/>
 	    </toolbar>
 	    <menubar>
 	        <menu title="Actions" icon="img/16px/create_16px.png" showTitle="true" >
@@ -162,7 +164,9 @@
 		<call class="com.axelor.apps.crm.web.EventController" method="addLeadAttendee"/>
 	</action-method>
 	
-	
+	<action-method name="action-crm-lead-method-print">
+		<call method="print" class="com.axelor.apps.crm.web.EventController"/>
+	</action-method>
     
     <action-record name="action-lead-record-new" model="com.axelor.apps.crm.db.Lead">
     	<field name="company"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
