@@ -45,6 +45,7 @@ import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 /**
  * SchedulerService est une classe implémentant l'ensemble des services des
@@ -330,6 +331,7 @@ public class SchedulerService {
 	 * 
 	 * @throws AxelorException
 	 */
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void addInHistory(SchedulerInstance schedulerI, LocalDate currentDay, boolean isImmediate) throws AxelorException {
 		
 		LocalDate date = this.getTheoricalExecutionDate(schedulerI);
