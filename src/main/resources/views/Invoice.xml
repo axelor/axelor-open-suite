@@ -27,15 +27,15 @@
     </grid>
     
     <form name="invoice-form" title="Invoice" model="com.axelor.apps.account.db.Invoice" cols="4" 
-    	onNew="action-invoice-record-default,action-invoice-attrs-collapse-irrecoverable-group,action-invoice-method-get-journal,action-set-partner-domain"
-    	onLoad="action-set-partner-domain,action-invoice-attrs-collapse-irrecoverable-group">
+    	onNew="action-invoice-record-default,action-invoice-attrs-collapse-irrecoverable-group,action-invoice-method-get-journal"
+    	onLoad="action-invoice-attrs-collapse-irrecoverable-group">
     	<toolbar>
     		<button name="showInvoice" title="Print" icon="fa-print" onClick="save,action-invoice-method-show-invoice"/>
 	        <button name="sendByEmail" title="Send email" icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
 	    </toolbar>
 <!--         <field name="endOfCycleOk"/> -->
         <field name="invoiceId"/>
-        <field name="operationTypeSelect" onChange="action-invoice-method-get-journal,action-invoice-record-partner-change,action-set-partner-domain" readonlyIf="status.code != 'dra'"/>
+        <field name="operationTypeSelect" onChange="action-invoice-method-get-journal,action-invoice-record-partner-change" readonlyIf="status.code != 'dra'"/>
         <field name="company" readonlyIf="status.code != 'dra'" widget="SuggestBox" onChange="action-invoice-method-get-journal,action-invoice-record-company-change" form-view="company-lite-form"/>
 		<field name="currency" readonlyIf="status.code != 'dra'" onChange="action-invoice-attrs-change-total-title"/>
 		<group name="dateGroup" title="Dates" colSpan="4" cols="4" canCollapse="true" readonlyIf="status.code == 'dis'">
@@ -46,8 +46,8 @@
             <field name="subscriptionToDate" showIf="isSubscription"/>
         </group>
 		<group name="partnerGroup" title="Invoicing informations" colSpan="4" cols="4" canCollapse="true">
-            <field name="partner"  grid-view="partner-grid" form-view="partner-form" onChange="action-invoice-record-partner-change,action-invoice-record-due-date,action-set-partner-domain" readonlyIf="status.code != 'dra'" />
-       		<field name="contactPartner"  form-view="partner-contact-form" grid-view="partner-contact-grid" domain="self.isContact = true"/>
+            <field name="partner" onSelect="action-set-partner-domain" grid-view="partner-grid" form-view="partner-form" onChange="action-invoice-record-partner-change,action-invoice-record-due-date" readonlyIf="status.code != 'dra'" />
+       		<field name="contactPartner"  onSelect="action-set-partner-domain" form-view="partner-contact-form" grid-view="partner-contact-grid" domain="self.isContact = true"/>
 			<field name="address" colSpan="2"/>
 			<break/>
             <field name="paymentMode" widget="SuggestBox" onSelect="action-set-payment-mode-domain"/>
