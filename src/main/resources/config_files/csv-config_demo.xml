@@ -215,10 +215,7 @@
 	
 	<input file="account_paymentMode.csv" separator=";" type="com.axelor.apps.account.db.PaymentMode" />
 	
-	<input file="account_paymentCondition.csv" separator=";" type="com.axelor.apps.account.db.PaymentCondition">
-		<bind column="name" to="name"/>
-		<bind column="code" to="code"/>
-	</input>
+	<input file="account_paymentCondition.csv" separator=";" type="com.axelor.apps.account.db.PaymentCondition" />
 	
 	<input file="account_analyticAxis.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAxis" />
 	
@@ -409,7 +406,6 @@
 	<input file="organisation_universities.csv" separator=";" type="com.axelor.apps.organisation.db.TrainingCenter"/>
 	
 	<input file="organisation_candidate.csv" separator=";" type="com.axelor.apps.organisation.db.Candidate">
-	
 		<bind column="toolKeywordSet_importId" to="toolKeywordSet" search="self.importId in :toolKeywordSet_importId" eval="toolKeywordSet_importId.split('\\|') as List"/>
 		<bind column="fieldKeywordSet_importId" to="fieldKeywordSet" search="self.importId in :fieldKeywordSet_importId" eval="fieldKeywordSet_importId.split('\\|') as List"/>
 		<bind column="jobKeywordSet_importId" to="jobKeywordSet" search="self.importId in :jobKeywordSet_importId" eval="jobKeywordSet_importId.split('\\|') as List"/>
@@ -430,6 +426,12 @@
 	<input file="organisation_mobilityChoice.csv" separator=";" type="com.axelor.apps.organisation.db.MobilityChoice"/>
 	
 	<input file="organisation_personalInfo.csv" separator=";" type="com.axelor.apps.organisation.db.PersonalInfo"/>
+	
+	<input file="organisation_candidate.csv" separator=";" type="com.axelor.apps.organisation.db.Candidate" search="self.importId = :importId" update="true">
+		<bind column="toolKeywordSet_importId" to="toolKeywordSet" search="self.importId in :toolKeywordSet_importId" eval="toolKeywordSet_importId.split('\\|') as List"/>
+		<bind column="fieldKeywordSet_importId" to="fieldKeywordSet" search="self.importId in :fieldKeywordSet_importId" eval="fieldKeywordSet_importId.split('\\|') as List"/>
+		<bind column="jobKeywordSet_importId" to="jobKeywordSet" search="self.importId in :jobKeywordSet_importId" eval="jobKeywordSet_importId.split('\\|') as List"/>
+	</input>
 	
 	<input file="organisation_employee_Serv.csv" separator=";" type="com.axelor.apps.organisation.db.Employee" search="self.importId  = :importId" update="true" />
 	
@@ -519,6 +521,11 @@
 <!-- 	<input file="production_prodProduct.csv" separator=";" type="com.axelor.apps.production.db.ProdProduct"/> -->
 	
 	<input file="production_productionConfig.csv" separator=";" type="com.axelor.apps.production.db.ProductionConfig"/>
+	
+	<input file="crm_event.csv" separator=";" type="com.axelor.apps.crm.db.Event" search="self.importId = :importId" update="true">
+		<bind to="startDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(startDateTime)" column="startDateTime"/>
+		<bind to="endDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(endDateTime)" column="endDateTime"/>
+	</input>
 	
 <!-- 	Update default BOM -->
 	<input file="base_product.csv" separator=";" type="com.axelor.apps.base.db.Product" search="self.importId = :importId" update="true"/>

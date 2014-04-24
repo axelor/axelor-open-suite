@@ -1,22 +1,22 @@
 "code";"name";"password";"group.code";"language";"homeAction"
 "admin";"Admin";"axadmin";"admins";"en";
 "demo";"Demo";"axdemo";"user";"en";
-"dirg";"Yoann MARQUES";"dirg";"MGT";"en";
-"assist";"Lucy ROBERT";"assist";"MGT";"en";
-"dirpro";"Lucas RICHARD";"dirpro";"MGT";"en";
+"dirg";"Yoann MARQUES";"dirg";"MNGT";"en";
+"assist";"Lucy ROBERT";"assist";"MNGT";"en";
+"dirpro";"Lucas RICHARD";"dirpro";"MNGT";"en";
 "chefpro";"Daniel SILVA";"chefpro";"ERP";"en";
 "consultant";"Charles MARTIN";"consultant";"CST";"en";
 "demoerp";"Kevin DEMOERP";"demoerp";"ERP";"en";"portal.opportunity.graph.dashboard.view"
 "democrm";"Charles DEMOCRM";"democrm";"CRM";"en";"crm.portal.opportunities.dashboard.2.view"
-"comn";"Tony RAYMOND";"comn";"SAL";"en";
-"coms1";"Thomas LAMY";"coms1";"SAL";"en";
-"coms2";"Anne GIRAULT";"coms2";"SAL";"en";
-"comi";"Dimitri GEOFFROY";"comi";"SAL";"en";
-"achat";"Alex DAVID";"achat";"PCH";"en";
-"dirinfo";"William ANDRE";"dirinfo";"OPS";"en";
-"dirsupp";"David MAURIN";"dirsupp";"OPS";"en";
-"supp1";"Cyril MARCHAL";"supp1";"OPS";"en";
-"supp2";"Robin COSTA";"supp2";"OPS";"en";
-"dirrh";"Romane COLIN";"dirrh";"HRM";"en";
-"compta";"Victoria LOUIS";"compta";"ACC";"en";
+"comn";"Tony RAYMOND";"comn";"SALE";"en";
+"coms1";"Thomas LAMY";"coms1";"SALE";"en";
+"coms2";"Anne GIRAULT";"coms2";"SALE";"en";
+"comi";"Dimitri GEOFFROY";"comi";"SALE";"en";
+"achat";"Alex DAVID";"achat";"PURCH";"en";
+"dirinfo";"William ANDRE";"dirinfo";"OPTS";"en";
+"dirsupp";"David MAURIN";"dirsupp";"OPTS";"en";
+"supp1";"Cyril MARCHAL";"supp1";"OPTS";"en";
+"supp2";"Robin COSTA";"supp2";"OPTS";"en";
+"dirrh";"Romane COLIN";"dirrh";"HRSC";"en";
+"compta";"Victoria LOUIS";"compta";"ACCO";"en";
 "client";"123 Service";"client";"CLT";"en";"wizard-client-view"
