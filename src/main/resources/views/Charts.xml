@@ -223,28 +223,6 @@
 	    <series key="leads"  type="bar"/>
 	</chart>
 	
-	<chart name="chart.customers.by.country.bar" title="Customers by country">
-		<dataset type="sql">
-		    <![CDATA[
-			SELECT
-			    count(_partner.id) AS partners,
-			    _country.name AS country_name
-			FROM
-				base_partner AS _partner
-			JOIN
-				base_address AS _address ON _address.id = _partner.main_invoicing_address
-			JOIN
-				base_country AS _country ON _country.id = _address.addressL7country
-			WHERE
-				_partner.customer_type_select = 3				
-			GROUP BY
-				_country.name
-		    ]]>
-	    </dataset>
-	    <category key="country_name" type="text"/>
-	    <series key="partners"  type="donut"/>
-	 </chart>
-	  	
 	 <chart onInit="action.crm.portal.set.date" name="chart.leads.by.team.by.status.bar" title="Leads by Team by Status" stacked="true">
 		<search-fields> 	        
 		    <field type="datetime" name="fromDate" />
@@ -509,64 +487,68 @@
 	    <series key="_total_calls" type="bar"/>
 	</chart>  	
 	  	
-	  	
-	  <chart name="chart.agents.by.open.cases.bar" title="Top agents by Open Tickets">
-		<dataset type="sql">
-		    <![CDATA[
-		    SELECT
-			    COUNT(self.id)    		AS 	_total_calls,
-			    sales_man.full_name as _sales_man,
-			    selection_item.title 	AS 	_status
-			FROM
-			  	crm_event as self
-			LEFT JOIN
-	        	base_user_info as sales_man ON self.user_info = sales_man.id
-			LEFT JOIN
-	        	meta_select as selection 			ON selection.name = 'crm.event.status.select'
-	    	LEFT JOIN 
-	    		meta_select_item as selection_item 	ON selection_item.select_id = selection.id
-			WHERE
-				cast(selection_item.value as decimal) = self.status_select and self.ticket_status_select != 5		
-	    	GROUP BY
-			  	_status,
-			  	_sales_man
-			ORDER BY
-			   	_status,	
-			   	_sales_man
-			  ]]>
-	    </dataset>
-	    <category key="_sales_man" type="text"/>
-	    <series key="_total_calls" type="bar"/>
-	</chart>  	
+	<chart name="chart.user.by.open.cases.bar" title="Open Cases by Agents" stacked="true">
+	  <dataset type="sql">
+	    
+	    SELECT
+	      COUNT(self.id)      AS   _cases,
+	      sales_man.full_name AS _sales_man,
+	      selection_item.title   AS   _status
+	    FROM
+	        crm_event as self
+	    JOIN
+	      base_user_info as sales_man ON self.user_info = sales_man.id
+	    JOIN
+	      meta_select as selection    ON selection.name = 'crm.event.status.select'
+	    JOIN 
+	      meta_select_item as selection_item  ON selection_item.select_id = selection.id
+	    WHERE
+	      self.type_select = 5
+	      AND self.ticket_status_select != 5    
+	      AND cast(selection_item.value as decimal) = self.ticket_status_select       
+	    GROUP BY
+	        _status,
+	        _sales_man
+	    ORDER BY
+	         _status,  
+	         _sales_man
+	      
+	  </dataset>
+	  <category key="_sales_man" type="text"/>
+	  <series key="_cases" type="bar" groupBy="_status"/>
+	</chart>
 	
-	<chart name="chart.customer.by.open.cases.bar" title="Top clients by Open Cases">
-		<dataset type="sql">
-		    <![CDATA[
-		    SELECT
-			    COUNT(self.id)    		AS 	_total_calls,
-			    partner.full_name 		AS 	_partner,
-			    selection_item.title 	AS 	_status
-			FROM
-			  	crm_event as self
-			LEFT JOIN
-	        	base_partner as partner ON self.client_partner = partner.id
-			LEFT JOIN
-	        	meta_select as selection 			ON selection.name = 'crm.event.status.select'
-	    	LEFT JOIN 
-	    		meta_select_item as selection_item 	ON selection_item.select_id = selection.id
-			WHERE
-				cast(selection_item.value as decimal) = self.status_select and self.ticket_status_select != 5		
-	    	GROUP BY
-			  	_status,
-			  	_partner
-			ORDER BY
-			   	_status,	
-			   	_partner
-			  ]]>
-	    </dataset>
-	    <category key="_partner" type="text"/>
-	    <series key="_total_calls" groupBy="_status"  type="bar"/>
-	</chart>  	
+	<chart onInit="action.crm.portal.set.date" name="chart.customer.by.open.cases.bar" title="New Cases by Customer" stacked="true">
+	  <search-fields>
+	    <field type="datetime" name="fromDate" />
+	    <field type="datetime" name="toDate" />
+	  </search-fields>
+	  <dataset type="jpql">
+	    
+	    SELECT
+	      COUNT(self.id)      AS   _cases,
+	      self.clientPartner.fullName     AS   _partner,
+	      selection_item.title   AS   _status
+	    FROM
+	        Event self,        
+	        MetaSelectItem selection_item
+	    WHERE
+	      self.typeSelect = 5
+	      AND self.ticketStatusSelect != 5
+	      AND self.createdOn >= :fromDate AND self.createdOn &lt;= :toDate        
+	      AND selection_item.select.name = 'crm.event.status.select'
+	      AND cast(selection_item.value as int) = self.ticketStatusSelect    
+	    GROUP BY
+	        selection_item.title,
+	        self.clientPartner.fullName
+	    ORDER BY
+	         selection_item.title,  
+	         self.clientPartner.fullName
+	      
+	  </dataset>
+	  <category key="_partner" type="text"/>
+	  <series key="_cases" groupBy="_status" type="bar"/>
+	</chart>	
 	
 	<chart onInit="action.crm.portal.set.date" name="chart.leads.by.country.bar" title="Leads by Country">
 		<search-fields> 	        
@@ -617,29 +599,6 @@
 	  <series key="_leads" type="bar" title="Leads"/>
 	</chart>
 
-	<chart name="chart.partner.by.industry.sector.bar" title="Partners by Industry Sector">
-	    <dataset type="sql">
-	    <![CDATA[
-		SELECT
-          COUNT(self.id) AS _total_partner,
-	      selection_item.title as _industry_sector
-	    FROM
-	        base_partner as self
-	    LEFT JOIN
-	        meta_select as selection ON selection.name = 'partner.industry.sectory.select'
-	    LEFT JOIN 
-	    	meta_select_item as selection_item ON selection_item.select_id = selection.id
-		WHERE
-			cast(selection_item.value as decimal) = self.industry_sector_select	and self.is_contact != true		
-	    GROUP BY
-		   _industry_sector
-		ORDER BY
-		   _industry_sector
-	    ]]>
-	    </dataset>
-	    <category key="_industry_sector" type="text"/>
-    	<series key="_total_partner" type="donut"/>
-	 </chart>
 	 <chart name="chart.due.open.ticket.gauge.bar" title="Due Open Tickets">
 		<dataset type="sql">
 		    <![CDATA[

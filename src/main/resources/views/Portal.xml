@@ -274,7 +274,7 @@
 		<portlet action="portal.open.tickets.by.priority" height="350" />
 		<portlet action="portal.open.ticket.priority.distribution" height="350" />
 		<portlet action="portal.open.tickets.by.status" height="350" />
-		<portlet action="portal.agents.by.open.cases" height="350" />
+		<portlet action="portal.user.by.open.cases" height="350" />
 		<portlet action="portal.customers.by.open.cases" height="350" />
 		<portlet action="portal.due.open.ticket.gauge" height="350" />
 		<portlet action="portal.my.urgent.tickets" height="350" />
@@ -327,12 +327,13 @@
 		<view type="chart" name="chart.open.tickets.by.status.bar" />
 	</action-view>
 
-	<action-view name="portal.agents.by.open.cases" title="Top agents by Open Tickets">
-		<view type="chart" name="chart.agents.by.open.cases.bar" />
+	<action-view title="Open Cases by Agents" name="portal.user.by.open.cases">
+	  <view type="chart" name="chart.user.by.open.cases.bar"/>
 	</action-view>
 
-	<action-view name="portal.customers.by.open.cases" title="Top clients by Open Cases">
-		<view type="chart" name="chart.customer.by.open.cases.bar" />
+	<action-view title="New Cases by Customer" name="portal.customers.by.open.cases">
+	  <view type="chart" name="chart.customer.by.open.cases.bar"/>
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
 	</action-view>
 
 	<action-view name="portal.open.ticket.priority.distribution"
