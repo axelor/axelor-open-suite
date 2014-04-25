@@ -9,7 +9,7 @@
 70;"T00008";1;"false";"MASSON Logistics";;"MASSON Logistics";;"fr";311;311;"contact@masson.fr";"05.44.40.54.99";;3;"emailpaper";5;2;"SME";"EUR";;;1;411100;401100;;3;2;21;11;2;3;;"70_120px.png"
 71;"T00009";2;"true";"MASSON";"Xavier";"MASSON Xavier";1;"fr";311;311;"x.masson@masson.fr";"05.15.60.89.99";"07.76.18.65.99";;;;;;;;;1;;;70;;;;;;;;
 72;"T00010";2;"true";"SANCHEZ";"Catherine";"SANCHEZ Catherine";2;"fr";311;311;"c.sanchez@masson.fr";"05.27.69.43.99";"07.59.17.99.99";;;;;;;;;1;;;70;;;;;;;;
-77;"T00011";1;"false";"GERARD Solutions";;"GERARD Solutions";;"fr";330;330;"contact@gerard-solutions.fr";"05.22.62.48.99";;4;"emailpaper";5;2;"SME";"EUR";;;1;411100;401100;;2;2;4;12;2;12;;
+77;"T00011";1;"false";"GERARD Solutions";;"GERARD Solutions";;"fr";330;330;"contact@gerard-solutions.fr";"05.22.62.48.99";;4;"emailpaper";5;2;"SME";"EUR";;;1;411100;401100;;2;2;4;12;2;12;;"77_128px.png"
 78;"T00012";2;"true";"GERARD";"Fabrice";"GERARD Fabrice";1;"fr";330;330;"f.gerard@gerard-solutions.fr";"05.12.44.47.99";"06.90.75.97.99";;;;;;;;;1;;;77;;;;;;;;
 79;"T00013";2;"true";"NGUYEN";"Xavier";"NGUYEN Xavier";1;"fr";330;330;"x.nguyen@gerard-solutions.fr";"05.57.53.68.99";"06.97.90.53.99";;;;;;;;;1;;;77;;;;;;;;
 88;"T00014";1;"false";"123 Services";;"123 Services";;"fr";590;590;"contact@123-services.fr";"03.35.52.63.99";;5;"emailpaper";5;2;"SME";"EUR";;;1;411100;401100;;3;2;7;9;1;1;;"88_120px.png"
@@ -24,11 +24,11 @@
 137;"T00023";2;"true";"GUILLOT";"Kévin";"GUILLOT Kévin";1;"fr";950;950;"k.guillot@banqueguillot.fr";"01.73.34.26.99";"06.63.55.39.99";;;;;;;;;1;;;136;;;;;;;;
 138;"T00024";2;"true";"NOEL";"Jean Nicolas";"NOEL Jean Nicolas";1;"fr";950;950;"j.noel@banqueguillot.fr";"01.13.96.92.99";"07.44.77.73.99";;;;;;;;;1;;;136;;;;;;;;
 139;"T00025";2;"true";"MEUNIER";"Paul";"MEUNIER Paul";1;"fr";950;950;"p.meunier@banqueguillot.fr";"01.22.82.15.99";"07.67.21.50.99";;;;;;;;;1;;;136;;;;;;;;
-148;"T00026";1;"false";"TOP Components";;"TOP Components";;"en";2004;2004;"contact@top-components.com";"+86 21 5198 9999";;;"emailpaper";8;5;"SME";"USD";;;1;411100;401100;;2;2;9;13;3;5;2;
+148;"T00026";1;"false";"TOP Components";;"TOP Components";;"en";2004;2004;"contact@top-components.com";"+86 21 5198 9999";;;"emailpaper";8;5;"SME";"USD";;;1;411100;401100;;2;2;9;13;3;5;2;"148_128px.png"
 149;"T00027";2;"true";"ZHANG";"Annie";"ZHANG Annie";2;"en";2004;2004;"a.zhang@top-components.com";"+86 21 5198 9999";"+86 139 1658 8799";;;;;;;;;1;;;148;;;;;;;;
-152;"T00028";1;"false";"SILVER Electronics";;"SILVER Electronics";;"en";2006;2006;"contact@silverelec.com";"+86 755 8396 9999";;;"emailpaper";8;5;"SME";"USD";;;1;411100;401100;;2;2;9;13;3;2;2;
+152;"T00028";1;"false";"SILVER Electronics";;"SILVER Electronics";;"en";2006;2006;"contact@silverelec.com";"+86 755 8396 9999";;;"emailpaper";8;5;"SME";"USD";;;1;411100;401100;;2;2;9;13;3;2;2;"152_128px.png"
 153;"T00029";2;"true";"LI";"Yang";"LI Yang";1;"en";2006;2006;"y.li@silverelec.com";"+86 755 8396 9999";"+86 138 2479 7599";;;;;;;;;1;;;152;;;;;;;;
-170;"T00030";1;"false";"SASAKI Components";;"SASAKI Components";;"en";6001;6001;"info@sasaki-components.com";"+81 3 5850 9999";;;"emailpaper";8;5;"SME";"USD";;;1;411100;401100;;2;2;16;13;3;12;2;
+170;"T00030";1;"false";"SASAKI Components";;"SASAKI Components";;"en";6001;6001;"info@sasaki-components.com";"+81 3 5850 9999";;;"emailpaper";8;5;"SME";"USD";;;1;411100;401100;;2;2;16;13;3;12;2;"170_128px.png"
 171;"T00031";2;"true";"SASAKI";"Amaya";"SASAKI Amaya";1;"en";6001;6001;"a.sasaki@sasaki-components.com";"+81 3 5850 9999";"+81 90 5136 7506";;;;;;;;;1;;;170;;;;;;;;
 185;"T00032";1;"false";"DE KIMPE Engineering";;"DE KIMPE Engineering";;"en";1002;1002;"contact@dekimpe-eng.com";"+32 2 234 99 99";;;"emailpaper";8;5;"SME";"EUR";;;1;411100;401100;;2;2;3;13;3;8;1;"185_120px.png"
 186;"T00033";2;"true";"DE KIMPE";"Joos";"DE KIMPE Joos";1;"en";1002;1002;"j.de kimpe@dekimpe-eng.com";"+32 2 234 99 99";"+32 495 680 999";;;;;;;;;1;;;185;;;;;;;;
@@ -36,16 +36,16 @@
 198;"T00035";2;"true";"DE GROOT";"Matthijs";"DE GROOT Matthijs";1;"en";8002;8002;"m.de groot@dg-technologies.com";"+31 20 530 79 99";"+31 (0)6 51 59 69 99";;;;;;;;;1;;;197;;;;;;;;
 205;"T00036";1;"false";"AZ Inno";;"AZ Inno";;"en";3002;3002;"info@azinno.com";"+49 89 17301999";;;"emailpaper";8;5;"SME";"EUR";;;1;411100;401100;;2;2;7;13;3;1;1;"205_120px.png"
 206;"T00037";2;"true";"MULLER";"Jan";"MULLER Jan";1;"en";3002;3002;"j.muller@azinno.com";"+49 89 17301999";"+49 175 5440999";;;;;;;;;1;;;205;;;;;;;;
-224;"T00038";1;"false";"WM Cinetics";;"WM Cinetics";;"en";10010;10011;"contact@wm-cinetics.com";"+1 415 490 2999";;;"emailpaper";8;5;"SME";"USD";;;1;411100;401100;;2;2;17;13;3;6;2;
+224;"T00038";1;"false";"WM Cinetics";;"WM Cinetics";;"en";10010;10011;"contact@wm-cinetics.com";"+1 415 490 2999";;;"emailpaper";8;5;"SME";"USD";;;1;411100;401100;;2;2;17;13;3;6;2;"224_128px.png"
 225;"T00039";2;"true";"WILSON";"Charles";"WILSON Charles";1;"en";10010;10011;"c.wilson@wm-cinetics.com";"+1 415 490 2999";"+1 415 780 2999";;;;;;;;;1;;;224;;;;;;;;
-237;"T00040";1;"false";"TGM Consulting";;"TGM Consulting";;"en";10019;10019;"info@tgm-consulting.com";"+1 408 572 9991";;;"emailpaper";8;5;"SME";"USD";;;1;411100;401100;;2;2;13;13;3;7;2;
+237;"T00040";1;"false";"TGM Consulting";;"TGM Consulting";;"en";10019;10019;"info@tgm-consulting.com";"+1 408 572 9991";;;"emailpaper";8;5;"SME";"USD";;;1;411100;401100;;2;2;13;13;3;7;2;"237_128px.png"
 238;"T00041";2;"true";"THOMPSON";"Kenneth";"THOMPSON Kenneth";1;"en";10019;10019;"k.thompson@tgm-consulting.com";"+1 408 572 9992";;;;;;;;;;1;;;237;;;;;;;;
 239;"T00042";2;"true";"GARCIA";"Steven";"GARCIA Steven";1;"en";10019;10019;"s.garcia@tgm-consulting.com";"+1 408 572 9993";;;;;;;;;;1;;;237;;;;;;;;
 240;"T00043";2;"true";"MARTINEZ";"Edward";"MARTINEZ Edward";1;"en";10019;10019;"e.martinez@tgm-consulting.com";"+1 408 572 9994";;;;;;;;;;1;;;237;;;;;;;;
-1012;"T00044";2;"false";"PICARD";"Anna";"PICARD Anna";2;"fr";331;331;"a.picard@msn.com";"04.79.67.80.99";"06.45.25.47.99";8;"email";5;2;"INDIV";"EUR";;;1;411100;401100;;2;;;12;2;8;;
-1033;"T00045";2;"false";"MEYER";"Philippe";"MEYER Philippe";1;"fr";75019;75019;"p.meyer@yahoo.com";"04.52.66.34.99";"07.31.30.96.99";9;"email";5;2;"INDIV";"EUR";;;1;411100;401100;;2;;;8;3;9;;
-1039;"T00046";2;"false";"MITCHELL";"Sandra";"MITCHELL Sandra";2;"en";4008;4008;"s.mitchell@yahoo.com";"+44 151 227 8999";;;"email";8;5;"INDIV";"USD";;;1;411100;401100;;2;;;13;3;12;2;
-1045;"T00047";2;"false";"PARKER";"Laura";"PARKER Laura";2;"en";10027;10027;"l.parker@msn.com";"+1 305 507 7799";;;"email";8;5;"INDIV";"USD";;;1;411100;401100;;2;;;13;3;11;2;
+1012;"T00044";2;"false";"PICARD";"Anna";"PICARD Anna";2;"fr";331;331;"a.picard@msn.com";"04.79.67.80.99";"06.45.25.47.99";8;"email";5;2;"INDIV";"EUR";;;1;411100;401100;;2;;;12;2;8;;"1012_128px.png"
+1033;"T00045";2;"false";"MEYER";"Philippe";"MEYER Philippe";1;"fr";75019;75019;"p.meyer@yahoo.com";"04.52.66.34.99";"07.31.30.96.99";9;"email";5;2;"INDIV";"EUR";;;1;411100;401100;;2;;;8;3;9;;"1033_128px.png"
+1039;"T00046";2;"false";"MITCHELL";"Sandra";"MITCHELL Sandra";2;"en";4008;4008;"s.mitchell@yahoo.com";"+44 151 227 8999";;;"email";8;5;"INDIV";"USD";;;1;411100;401100;;2;;;13;3;12;2;"1039_128px.png"
+1045;"T00047";2;"false";"PARKER";"Laura";"PARKER Laura";2;"en";10027;10027;"l.parker@msn.com";"+1 305 507 7799";;;"email";8;5;"INDIV";"USD";;;1;411100;401100;;2;;;13;3;11;2;"1045_128px.png"
 90000;"T00048";1;"false";"Axelor";;"Axelor";;"fr";90000;90000;"info@axelor.com";"01.83.64.06.50";;90000;"emailpaper";6;6;"SME";"EUR";;;1;411100;401100;;;;;;;;;
 90001;"T00049";2;"true";"MARQUES";"Yoann";"MARQUES Yoann";1;"fr";90000;90000;"y.marques@axelor.com";"01.10.79.99.70";;;;;;;;;;1;;;;;;;;;;;
 90002;"T00050";2;"true";"ROBERT";"Lucy";"ROBERT Lucy";2;"fr";90000;90000;"l.robert@axelor.com";"01.10.79.99.71";;;;;;;;;;1;;;;;;;;;;;
