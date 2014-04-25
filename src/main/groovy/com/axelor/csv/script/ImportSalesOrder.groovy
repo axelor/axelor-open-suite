@@ -80,6 +80,7 @@ class ImportSalesOrder {
 					}
 					StockMove stockMove = StockMove.all().filter("salesOrder = ?1",salesOrder).fetchOne()
 					if(stockMove != null && stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
+						stockMoveService.copyQtyToRealQty(stockMove);
 						stockMoveService.validate(stockMove);
 						stockMove.realDate = salesOrder.validationDate
 						if(salesOrder.invoicingTypeSelect == 4){
