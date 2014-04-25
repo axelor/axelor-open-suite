@@ -194,14 +194,14 @@
 	</chart>
 	
 	<action-record model="com.axelor.apps.crm.db.Lead" name="action.crm.portal.set.date">
-	  <field name="toDate" expr="eval:todayDate"/>
-	  <field name="fromDate" expr="eval:LocalDate.parse(todayDate).withDayOfMonth(1).withMonthOfYear(1)"/>
+	  <field name="toDateT" expr="eval:LocalDateTime.parse(todayDate).withHourOfDay(23).withMinuteOfHour(59)"/>
+	  <field name="fromDateT" expr="eval:LocalDate.parse(todayDate).withDayOfMonth(1).withMonthOfYear(1)"/>
 	</action-record>
 	
 	<chart onInit="action.crm.portal.set.date" name="chart.leads.by.source.bar" title="Leads by Source">
 		<search-fields> 	        
-		    <field type="datetime" name="fromDate" />
-		    <field type="datetime" name="toDate" />
+		    <field type="datetime" name="fromDateT" title="From Date" />
+		    <field type="datetime" name="toDateT" title="To Date" />
 		</search-fields>
 	
 		<dataset type="jpql">
@@ -212,7 +212,7 @@
 		    FROM
 		        Lead self
 		    WHERE
-		      self.createdOn BETWEEN :fromDate AND :toDate		       
+		      self.createdOn BETWEEN :fromDateT AND :toDateT		       
 		    GROUP BY
 		    	self.source.name
 		    ORDER BY
@@ -225,8 +225,8 @@
 	
 	 <chart onInit="action.crm.portal.set.date" name="chart.leads.by.team.by.status.bar" title="Leads by Team by Status" stacked="true">
 		<search-fields> 	        
-		    <field type="datetime" name="fromDate" />
-		    <field type="datetime" name="toDate" />
+		    <field type="datetime" name="fromDateT" title="From Date" />
+		    <field type="datetime" name="toDateT" title="To Date" />
 		</search-fields>
 		<dataset type="sql">
 		    <![CDATA[
@@ -244,7 +244,7 @@
 	    		meta_select_item as selection_item ON selection_item.select_id = selection.id
 			WHERE
 				selection_item.value = cast(self.status_select as char)	AND
-				self.created_on BETWEEN DATE(:fromDate) AND DATE(:toDate)		
+				self.created_on BETWEEN DATE(:fromDateT) AND DATE(:toDateT)		
 	    	GROUP BY
 			  	_status,
 			  	_team
@@ -259,8 +259,8 @@
 	
 	<chart onInit="action.crm.portal.set.date" name="chart.leads.by.salesman.by.status.bar" title="Leads by Salesman by Status" stacked="true">
 		<search-fields> 	        
-		    <field type="datetime" name="fromDate" />
-		    <field type="datetime" name="toDate" />
+		    <field type="datetime" name="fromDateT" title="From Date" />
+		    <field type="datetime" name="toDateT" title="To Date" />
 		</search-fields>
 		<dataset type="sql">
 		    <![CDATA[
@@ -278,7 +278,7 @@
 	    		meta_select_item as selection_item ON selection_item.select_id = selection.id
 			WHERE
 				selection_item.value = cast(self.status_select as char)	and sales_man.full_name != '' AND
-				self.created_on BETWEEN DATE(:fromDate) AND DATE(:toDate)	
+				self.created_on BETWEEN DATE(:fromDateT) AND DATE(:toDateT)	
 	    	GROUP BY
 			  	_status,
 			  	_sales_man
@@ -293,8 +293,8 @@
 	
 	<chart onInit="action.crm.portal.set.date" name="chart.calls.types.by.user.bar" title="Calls type by user" stacked="true">
 		<search-fields> 	        
-		    <field type="datetime" name="fromDate" />
-		    <field type="datetime" name="toDate" />
+		    <field type="datetime" name="fromDateT" title="From Date" />
+		    <field type="datetime" name="toDateT" title="To Date" />
 		</search-fields>
 		<dataset type="sql">
 		    <![CDATA[
@@ -323,7 +323,7 @@
 					_meta._select_value = _event.call_status_select	
 				WHERE
         			_event.type_select = 1 AND
-        			_event.created_on BETWEEN DATE(:fromDate) AND DATE(:toDate)
+        			_event.created_on BETWEEN DATE(:fromDateT) AND DATE(:toDateT)
 				GROUP BY
 					_user_name, _call_status
 				ORDER BY
@@ -336,8 +336,8 @@
 	  	
 	<chart onInit="action.crm.portal.set.date" name="chart.calls.types.by.team.bar" title="Calls type by team" stacked="true">
 		<search-fields> 	        
-		    <field type="datetime" name="fromDate" />
-		    <field type="datetime" name="toDate" />
+		    <field type="datetime" name="fromDateT" title="From Date" />
+		    <field type="datetime" name="toDateT" title="To Date" />
 		</search-fields>
 		<dataset type="sql">
 		    <![CDATA[
@@ -366,7 +366,7 @@
 					_meta._select_value = _event.call_status_select
 				WHERE
         			_event.type_select = 1 AND 
-        			_event.created_on BETWEEN DATE(:fromDate) AND DATE(:toDate)
+        			_event.created_on BETWEEN DATE(:fromDateT) AND DATE(:toDateT)
 				GROUP BY
 					_team_name, _call_status
 				ORDER BY
@@ -379,7 +379,7 @@
 	  	
 	<chart onInit="action.crm.portal.set.date" name="chart.calls.types.by.team.by.user.bar" title="Calls by team by user">
 		<search-fields> 	        
-		    <field type="datetime" name="fromDate" />
+		    <field type="datetime" name="fromDateT" title="From Date" />
 		    <field type="reference" name="team" target="com.axelor.apps.base.db.Team" widget="[required=true]" />
 		</search-fields>
 		<dataset type="jpql">
@@ -395,7 +395,7 @@
 			      self.typeSelect = 1 AND
 			      self.userInfo = salesMan AND
 			      self.team = :team AND
-			      self.createdOn BETWEEN DATE(:fromDate) AND DATE(:todayDate)
+			      self.createdOn BETWEEN DATE(:fromDateT) AND DATE(:todayDate)
 			    GROUP BY        
 			        salesMan.fullName
 			    ORDER BY         
@@ -499,7 +499,7 @@
 	    JOIN
 	      base_user_info as sales_man ON self.user_info = sales_man.id
 	    JOIN
-	      meta_select as selection    ON selection.name = 'crm.event.status.select'
+	      meta_select as selection    ON selection.name = 'crm.event.ticket.status.select'
 	    JOIN 
 	      meta_select_item as selection_item  ON selection_item.select_id = selection.id
 	    WHERE
@@ -519,10 +519,10 @@
 	</chart>
 	
 	<chart onInit="action.crm.portal.set.date" name="chart.customer.by.open.cases.bar" title="New Cases by Customer" stacked="true">
-	  <search-fields>
-	    <field type="datetime" name="fromDate" />
-	    <field type="datetime" name="toDate" />
-	  </search-fields>
+		<search-fields> 	        
+		    <field type="datetime" name="fromDateT" title="From Date" />
+		    <field type="datetime" name="toDateT" title="To Date" />
+		</search-fields>
 	  <dataset type="jpql">
 	    
 	    SELECT
@@ -535,8 +535,8 @@
 	    WHERE
 	      self.typeSelect = 5
 	      AND self.ticketStatusSelect != 5
-	      AND self.createdOn >= :fromDate AND self.createdOn &lt;= :toDate        
-	      AND selection_item.select.name = 'crm.event.status.select'
+	      AND self.createdOn >= :fromDateT AND self.createdOn &lt;= :toDateT        
+	      AND selection_item.select.name = 'crm.event.ticket.status.select'
 	      AND cast(selection_item.value as int) = self.ticketStatusSelect    
 	    GROUP BY
 	        selection_item.title,
@@ -552,8 +552,8 @@
 	
 	<chart onInit="action.crm.portal.set.date" name="chart.leads.by.country.bar" title="Leads by Country">
 		<search-fields> 	        
-		    <field type="datetime" name="fromDate" />
-		    <field type="datetime" name="toDate" />
+		    <field type="datetime" name="fromDateT" title="From Date" />
+		    <field type="datetime" name="toDateT" title="To Date" />
 		</search-fields>
 		<dataset type="sql">
 		    <![CDATA[
@@ -565,7 +565,7 @@
 			LEFT JOIN
 	        	base_country as country ON self.primary_country = country.id
 	        WHERE
-	        	self.created_on BETWEEN DATE(:fromDate) AND DATE(:toDate)
+	        	self.created_on BETWEEN DATE(:fromDateT) AND DATE(:toDateT)
 	    	GROUP BY
 			  	_country
 			ORDER BY
