@@ -38,7 +38,7 @@
        	<group title="Action(s)" colSpan="4">
    			<group colSpan="1" cols="1">
    				<button name="draft" title="Draft" colSpan="2" onClick="save,action-expense-record-draft,save" showIf="statusSelect == 6"/>
-        		<button name="submit" title="Submit" colSpan="2" onClick="save,action-expense-record-submit,action-expense-method-check-validation-status,save" showIf="statusSelect == 1"/>
+        		<button name="submit" title="Submit" colSpan="2" onClick="action-expense-compute-expense-line,save,action-expense-record-submit,action-expense-method-check-validation-status,save" showIf="statusSelect == 1"/>
 	            <button name="validateManager" title="Validate" colSpan="1" onClick="save,action-expense-method-check-validation-status,action-expense-record-validate-manager,action-expense-alert-validate,action-expense-record-validation-info,save" showIf="statusSelect == 2"/>
 	            <button name="validateCommercial" title="Validate" colSpan="1" onClick="save,action-expense-record-validate-commercial,action-expense-record-validation-info,save" showIf="statusSelect == 3"/>
 	         	<button name="confirm" title="Confirm" colSpan="1" onClick="save,action-expense-record-confirm,save" showIf="statusSelect == 4"/>

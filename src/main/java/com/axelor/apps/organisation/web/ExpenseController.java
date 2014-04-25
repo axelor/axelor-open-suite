@@ -55,6 +55,7 @@ public class ExpenseController {
 		}
 		if ((list != null && list.isEmpty()) || checkFileReceived) {
 			response.setValue("validationStatusSelect", 2);
+			response.setFlash("All expenses proof haven't been provided (file received for each expense line).");
 		}
 		else {
 			response.setValue("validationStatusSelect", 1);

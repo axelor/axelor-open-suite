@@ -32,6 +32,7 @@ package com.axelor.apps.organisation.web;
 
 import java.math.BigDecimal;
 
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.organisation.db.Expense;
 import com.axelor.apps.organisation.db.ExpenseLine;
 import com.axelor.apps.organisation.service.ExpenseLineService;
@@ -80,7 +81,7 @@ public class ExpenseLineController {
 	
 	
 	public void getProductInformation(ActionRequest request, ActionResponse response) {
-
+		
 		ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
 
 		Expense expense = expenseLine.getExpense();
@@ -91,7 +92,9 @@ public class ExpenseLineController {
 		if(expense != null && expenseLine.getProduct() != null) {
 
 			try  {
-				
+				TaxLine tline = expenseLineService.getTaxLine(expense,expenseLine);
+				System.out.println("tline......"+tline);
+				response.setValue("taxLine", tline);
 				response.setValue("productName", expenseLine.getProduct().getName());
 				response.setValue("unit", expenseLine.getProduct().getUnit());
 				
@@ -99,6 +102,7 @@ public class ExpenseLineController {
 				
 			}
 			catch(Exception e)  {
+				e.printStackTrace();
 				response.setFlash(e.getMessage()); 
 				this.resetProductInformation(response);
 			}
