@@ -54,7 +54,7 @@
 	
 	
 	
-			<!-- 	SALES MANAGER DASHBOARD -->
+	<!-- 	SALES MANAGER DASHBOARD -->
 	
 	<portal title="Dashboard" name="supplychain.sales.manager.dashboard.portal.sample" cols="2">
 		<portlet action="portal.sales.turnover.ytd.vs.lastyear" height="350"/>  	
@@ -504,8 +504,42 @@
 		<portlet action="portal.sales.turnover.ytd.vs.lastyear" canSearch="true" height="350" />
 		<portlet action="portal.sales.turnover.ytd.vs.lastyear.by.family" canSearch="true" height="350" />
 		<portlet action="portal.sales.turnover.by.family.ytd.vs.lastyear" canSearch="true" height="350" />
+		<portlet action="portal.turnover.per.month.per.salesman.over.6mth" canSearch="true" height="350"/>
+	    <portlet action="portal.turnover.per.month.per.salesman.over.4mth" canSearch="true" height="350"/>
+	    <portlet action="portal.sales.turnover.per.customer.type" canSearch="true" height="350"/>
+	    <portlet action="portal.sales.turnover.per.customer.category" canSearch="true" height="350"/>
+	    <portlet action="portal.sales.turnover.per.customer.sector" canSearch="true" height="350"/>
 	</portal>
-		
+	
+    <action-view title="Turnover per month per salesman (6 month)" model="com.axelor.apps.supplychain.db.SalesOrder" name="portal.turnover.per.month.per.salesman.over.6mth">
+		  <view type="chart" name="chart.turnover.per.month.per.salesman.over.6mth"/>
+		  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+		  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+	</action-view>
+	
+	<action-view title="Turnover per month per salesman (4 month)" model="com.axelor.apps.supplychain.db.SalesOrder" name="portal.turnover.per.month.per.salesman.over.4mth">
+		  <view type="chart" name="chart.turnover.per.month.per.salesman.over.4mth"/>
+		  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+		  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+	</action-view>
+	
+	<action-view title="Turnover per customer type" model="com.axelor.apps.supplychain.db.SalesOrder" name="portal.sales.turnover.per.customer.type">
+		  <view type="chart" name="chart.sales.turnover.per.customer.type"/>
+		  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+		  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+	</action-view>
+
+	<action-view title="Turnover per customer category" model="com.axelor.apps.supplychain.db.SalesOrder" name="portal.sales.turnover.per.customer.category">
+		  <view type="chart" name="chart.sales.turnover.per.customer.category"/>
+		  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+		  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+	</action-view>
+
+	<action-view title="Turnover per customer sector" model="com.axelor.apps.supplychain.db.SalesOrder" name="portal.sales.turnover.per.customer.sector">
+		  <view type="chart" name="chart.sales.turnover.per.customer.sector"/>
+		  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+		  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+	</action-view>
 		
 	<!--  Product/Goods DashBorad	 -->
 	
