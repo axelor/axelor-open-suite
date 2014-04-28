@@ -766,6 +766,8 @@ public class MoveService {
 	public List<MoveLine> getOrignalInvoiceFromRefund(Invoice invoice)  {
 		List<MoveLine> debitMoveLines = new ArrayList<MoveLine>();
 		List<Invoice> originalInvoiceList = invoice.getOriginalInvoiceList();
+		if(originalInvoiceList == null)
+			return debitMoveLines;
 		for(Invoice originalInvoice : originalInvoiceList)  {
 			if(originalInvoice.getMove() != null)  {
 				for(MoveLine moveLine : originalInvoice.getMove().getMoveLineList())  {

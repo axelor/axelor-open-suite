@@ -93,7 +93,7 @@ public class VentilateState extends WorkflowInvoice {
 	
 	protected void checkInvoiceDate() throws AxelorException  {
 		
-		if(Invoice.all().filter("self.status.code = 'dis' AND self.invoiceDate > ?1", invoice.getInvoiceDate()).count() > 0)  {
+		if(Invoice.all().filter("self.status.code = 'dis' AND self.invoiceDate > ?1 AND self.operationTypeSelect = ?2", invoice.getInvoiceDate(),invoice.getOperationTypeSelect()).count() > 0)  {
 			throw new AxelorException(String.format("La date de facture ou d'avoir ne peut être antérieure à la date de la dernière facture ventilée"), IException.CONFIGURATION_ERROR);
 		}
 		
