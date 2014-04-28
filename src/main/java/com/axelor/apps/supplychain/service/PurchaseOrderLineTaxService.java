@@ -105,7 +105,9 @@ public class PurchaseOrderLineTaxService {
 			
 			// Dans la devise de la commande
 			BigDecimal exTaxBase = purchaseOrderLineTax.getExTaxBase();
-			BigDecimal taxTotal = purchaseOrderToolService.computeAmount(exTaxBase, purchaseOrderLineTax.getTaxLine().getValue());
+			BigDecimal taxTotal = BigDecimal.ZERO;
+			if(purchaseOrderLineTax.getTaxLine() != null)
+				taxTotal = purchaseOrderToolService.computeAmount(exTaxBase, purchaseOrderLineTax.getTaxLine().getValue());
 			purchaseOrderLineTax.setTaxTotal(taxTotal);
 			purchaseOrderLineTax.setInTaxTotal(exTaxBase.add(taxTotal));
 			
