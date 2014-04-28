@@ -37,6 +37,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.joda.time.LocalDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
@@ -62,6 +64,8 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class InventoryService {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(InventoryService.class); 
 
 	@Inject
 	private InventoryLineService inventoryLineService;
@@ -241,7 +245,6 @@ public class InventoryService {
 
 	}
 
-	
 	public StockMove generateStockMove(Inventory inventory) throws AxelorException {
 
 		Location toLocation = inventory.getLocation();
@@ -268,13 +271,11 @@ public class InventoryService {
 					throw new AxelorException("Produit incorrect dans la ligne de l'inventaire "+inventorySeq, IException.CONFIGURATION_ERROR);
 				}
 
-				if(stockMove.getStockMoveLineList() == null) {
-					stockMove.setStockMoveLineList(new ArrayList<StockMoveLine>());
-				}
-				stockMove.getStockMoveLineList().add(stockMoveLine);
+				stockMove.addStockMoveLineListItem(stockMoveLine);
 			}
 		}
 		if (stockMove.getStockMoveLineList() != null) {
+			
 			stockMoveService.plan(stockMove);
 			stockMoveService.copyQtyToRealQty(stockMove);
 			stockMoveService.realize(stockMove);

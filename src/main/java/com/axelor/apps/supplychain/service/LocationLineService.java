@@ -176,6 +176,7 @@ public class LocationLineService {
 		
 		if(locationLine == null)  {
 			locationLine = this.createLocationLine(location, product);
+			
 		}
 		
 		LOG.debug("Récupération ligne de stock: Entrepot? {}, Produit? {}, Qté actuelle? {}, Qté future? {}, Date? {} ", 
@@ -209,6 +210,7 @@ public class LocationLineService {
 		if(detailLocationLine == null)  {
 			
 			detailLocationLine = this.createDetailLocationLine(detailLocation, product, trackingNumber);
+			
 		}
 		
 		LOG.debug("Récupération ligne de détail de stock: Entrepot? {}, Produit? {}, Qté actuelle? {}, Qté future? {}, Date? {}, Variante? {}, Num de suivi? {} ", 
@@ -285,6 +287,7 @@ public class LocationLineService {
 		LocationLine locationLine = new LocationLine();
 		
 		locationLine.setLocation(location);
+		location.addLocationLineListItem(locationLine);
 		locationLine.setProduct(product);
 		locationLine.setCurrentQty(BigDecimal.ZERO);
 		locationLine.setFutureQty(BigDecimal.ZERO);
@@ -313,6 +316,7 @@ public class LocationLineService {
 		LocationLine detailLocationLine = new LocationLine();
 		
 		detailLocationLine.setDetailsLocation(location);
+		location.addDetailsLocationLineListItem(detailLocationLine);
 		detailLocationLine.setProduct(product);
 		detailLocationLine.setCurrentQty(BigDecimal.ZERO);
 		detailLocationLine.setFutureQty(BigDecimal.ZERO);
