@@ -61,6 +61,9 @@ class ImportPurchaseOrder {
 		@Inject
 		InvoiceService invoiceService;
 		
+		@Inject
+		StockMoveService stockMoveService;
+		
 		@Transactional
 		Object importPurchaseOrder(Object bean, Map values) {
 			assert bean instanceof PurchaseOrder
@@ -71,6 +74,11 @@ class ImportPurchaseOrder {
 						return purchaseOrder
 					purchaseOrderService.computePurchaseOrder(purchaseOrder)
 					purchaseOrderService.createStocksMoves(purchaseOrder)
+					StockMove stockMove = StockMove.all().filter("purchaseOrder.id = ?1",purchaseOrder.getId()).fetchOne()
+					if(stockMove != null){
+						stockMoveService.copyQtyToRealQty(stockMove);
+						stockMoveService.realize(stockMove);
+					}
 					purchaseOrder.setValidationDate(gs.getTodayDate());
 					purchaseOrder.setValidatedByUserInfo(userInfoSerivce.getUserInfo());
 					purchaseOrder.setSupplierPartner(purchaseOrderService.validateSupplier(purchaseOrder));
