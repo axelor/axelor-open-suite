@@ -85,6 +85,7 @@ class ImportSalesOrder {
 						stockMove.realDate = salesOrder.validationDate
 						if(salesOrder.invoicingTypeSelect == 4){
 							Invoice invoice = stockMoveInvoiceService.createInvoiceFromSalesOrder(stockMove, salesOrder)
+							invoice.setInvoiceDate(salesOrder.validationDate)
 							invoiceService.compute(invoice)
 							invoiceService.validate(invoice)
 							invoiceService.ventilate(invoice)

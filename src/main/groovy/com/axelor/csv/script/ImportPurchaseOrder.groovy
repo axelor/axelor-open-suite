@@ -53,9 +53,6 @@ class ImportPurchaseOrder {
 		PurchaseOrderInvoiceService purchaseOrderInvoiceService
 		
 		@Inject
-		GeneralService gs;
-		
-		@Inject
 		UserInfoService userInfoSerivce;
 		
 		@Inject
@@ -79,7 +76,7 @@ class ImportPurchaseOrder {
 						stockMoveService.copyQtyToRealQty(stockMove);
 						stockMoveService.realize(stockMove);
 					}
-					purchaseOrder.setValidationDate(gs.getTodayDate());
+					purchaseOrder.setValidationDate(purchaseOrder.getOrderDate());
 					purchaseOrder.setValidatedByUserInfo(userInfoSerivce.getUserInfo());
 					purchaseOrder.setSupplierPartner(purchaseOrderService.validateSupplier(purchaseOrder));
 					Invoice invoice = purchaseOrderInvoiceService.generateInvoice(purchaseOrder)
