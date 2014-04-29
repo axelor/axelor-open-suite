@@ -116,15 +116,16 @@
 	  <series key="_turn_over" groupBy="_year" type="bar"/>
 	</chart>
 	
-	<action-record model="com.axelor.apps.supplychain.db.SalesOrder" name="action.supplychain.portal.set.date.1m">
-	  <field name="toDate" expr="eval:todayDate"/>
-	  <field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusMonths(1)"/>
+	<action-record model="com.axelor.apps.supplychain.db.SalesOrder" name="action.supplychain.portal.set.date">
+	  <field name="toDate" expr="eval:LocalDate.parse(todayDate)" />
+	  <field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusYears(1)" />
+	  <field name="monthSelect" expr="eval:12" />
 	</action-record>
 	  
 	<chart onInit="action.supplychain.portal.set.date.1m" name="chart.sales.manager.dashboard.turnover.per.team" title="Turnover per team">
 	  <search-fields>
-	    <field type="date" name="fromDate" />
-	    <field type="date" name="toDate" />
+	    <field type="date" name="fromDate" title="From Date"/>
+	    <field type="date" name="toDate"  title="To Date"/>
 	  </search-fields>
 	  <dataset type="sql">
 	  
@@ -151,8 +152,8 @@
 	  
 	<chart onInit="action.supplychain.portal.set.date.1m" name="chart.sales.manager.dashboard.turnover.per.salesman" title="Turnover per salesman">
 	  <search-fields>
-	    <field type="date" name="fromDate" />
-	    <field type="date" name="toDate" />
+	    <field type="date" name="fromDate" title="From Date" />
+	    <field type="date" name="toDate"  title="To Date"/>
 	  </search-fields>
 	  <dataset type="sql">
 	  
@@ -177,14 +178,14 @@
 	</chart>
 	
 	<action-record model="com.axelor.apps.supplychain.db.SalesOrder" name="action.supplychain.portal.set.date">
-	  <field name="toDate" expr="eval:todayDate"/>
-	  <field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusYears(1)"/>
+	  <field name="toDate" expr="eval:todayDate" />
+	  <field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusYears(1)" />
 	</action-record>
 	  
 	<chart onInit="action.supplychain.portal.set.date" name="chart.sales.manager.dashboard.sales.distribution.per.family" title="Sales distribution per product family">
 	  <search-fields>
-	    <field type="date" name="fromDate" />
-	    <field type="date" name="toDate" />
+	    <field type="date" name="fromDate" title="From Date" />
+	    <field type="date" name="toDate"  title="To Date"/>
 	  </search-fields>
 	  <dataset type="sql">
 	  
@@ -220,8 +221,8 @@
 
 	<chart onInit="action.supplychain.portal.set.date" name="chart.sales.manager.dashboard.product.sales.per.category" title="Sales distribution per product category">
 	  <search-fields>
-	    <field type="date" name="fromDate" />
-	    <field type="date" name="toDate" />
+	    <field type="date" name="fromDate" title="From Date" />
+	    <field type="date" name="toDate"  title="To Date"/>
 	  </search-fields>
 	  <dataset type="sql">
 	  
@@ -253,8 +254,8 @@
 	  
 	<chart onInit="action.supplychain.portal.set.date" name="chart.sales.manager.dashboard.sales.per.country" title="Sales per country">
 	  <search-fields>
-	    <field type="date" name="fromDate" />
-	    <field type="date" name="toDate" />
+	    <field type="date" name="fromDate" title="From Date" />
+	    <field type="date" name="toDate"  title="To Date"/>
 	  </search-fields>
 	  <dataset type="sql">
 	  
@@ -282,8 +283,8 @@
 	   
 	<chart onInit="action.supplychain.portal.set.date.6m" stacked="true" name="chart.my.turnover.per.month" title="My Turnover per month">
 	  <search-fields>
-	    <field type="date" name="fromDate" />
-	    <field type="date" name="toDate" />
+	    <field type="date" name="fromDate" title="From Date" />
+	    <field type="date" name="toDate"  title="To Date"/>
 	  </search-fields>
 	  <dataset type="sql">
 	  
@@ -305,8 +306,8 @@
 
 	<chart onInit="action.supplychain.portal.set.date" stacked="true" name="chart.turnover.sales.by.month.by.category" title="Turnover amount on customer sales by month by category">
 	  <search-fields>
-	    <field type="date" name="fromDate" />
-	    <field type="date" name="toDate" />
+	    <field type="date" name="fromDate" title="From Date" />
+	    <field type="date" name="toDate"  title="To Date"/>
 	  </search-fields>  
 	  <dataset type="sql">
 	  
@@ -358,8 +359,8 @@
 
 	<chart onInit="action.supplychain.portal.set.date" stacked="true" name="chart.units.sold.on.cust.sales.by.category" title="Nbr of Units sold on Cust. Sales by category">
 	  <search-fields>
-	    <field type="date" name="fromDate" />
-	    <field type="date" name="toDate" />
+	    <field type="date" name="fromDate" title="From Date" />
+	    <field type="date" name="toDate"  title="To Date"/>
 	  </search-fields>
 	  <dataset type="sql">
 	  
@@ -591,76 +592,69 @@
 	  <series key="moves" type="bar" title="Moves"/>
 	</chart>
 
-	  <chart name="chart.purchase.buyer.dashboard.family.product.purchase.volume" title="My purchases orders per product family over past month in volume">
-	    <dataset type="sql">
-	    <![CDATA[
-		SELECT
-            SUM(supplychain_purchase_order_line.qty) AS amount,
-	        base_product_family.name AS _product_family
-	    FROM
-	        supplychain_purchase_order self
-	    LEFT JOIN
-	        supplychain_purchase_order_line  ON supplychain_purchase_order_line.purchase_order = self.id
-	    LEFT JOIN
-	        base_product ON base_product.id = supplychain_purchase_order_line.product
-	    LEFT JOIN
-	        base_product_family ON base_product_family.id = base_product.product_family
-	    LEFT JOIN
-	        base_user_info ON base_user_info.id = self.buyer_user_info
-	    WHERE
-	        self.created_on >= current_timestamp - INTERVAL '1 month' AND self.created_on <= current_timestamp
-	    AND
-	        self.status_select > 3 AND self.status_select < 6
-	    AND
-		base_user_info.internal_user = :_user_id
-	    GROUP BY
-	        base_product_family.name
-	    ORDER BY
-	        base_product_family.name
-	    ]]>
-	    </dataset>
-	    <category key="_product_family" type="text"/>
-    	<series key="amount" type="donut"/>
-	  </chart>
+	<chart onInit="action.supplychain.portal.set.date.6m" name="chart.my.purchases.per.product.family.volume" title="My Purchases per product family in volume">
+	  <search-fields>
+	    <field type="date" name="fromDate" title="From Date"/>
+	    <field type="date" name="toDate" title="To Date"/>
+	  </search-fields>
+	  <dataset type="jpql">
+	  
+	  SELECT
+	    SUM(self.qty) AS amount,
+	    product.productFamily.name AS _product_family
+	  FROM
+	    PurchaseOrderLine self,  
+	    Product product
+	    
+	  WHERE
+	    self.product = product
+	    AND self.purchaseOrder.validationDate &gt;= :fromDate 
+	    AND self.purchaseOrder.validationDate &lt;= :toDate
+	    AND self.purchaseOrder.statusSelect &gt; 3 
+	    AND self.purchaseOrder.statusSelect &lt; 6
+	    AND self.purchaseOrder.buyerUserInfo = :activeUser
+	  GROUP BY
+	    product.productFamily.name
+	  ORDER BY
+	    product.productFamily.name
+	  
+	  </dataset>
+	  <category key="_product_family" type="text"/>
+	  <series key="amount" type="donut"/>
+	</chart>
 	  
 	  
 	  
 	  
-	    <chart name="chart.purchase.buyer.dashboard.family.product.purchase.turnover" title="My purchases orders per product family over past month in turnover">
-	    <dataset type="sql">
-	    <![CDATA[
-		SELECT
-            SUM(supplychain_purchase_order_line.ex_tax_total) AS amount,
-	        base_product_family.name AS _product_family,
-	        base_product_category.name AS _product_category
-	    FROM
-	        supplychain_purchase_order self
-	    LEFT JOIN
-	        supplychain_purchase_order_line ON supplychain_purchase_order_line.purchase_order = self.id
-	    LEFT JOIN
-	        base_product ON base_product.id = supplychain_purchase_order_line.product
-	    LEFT JOIN
-	        base_product_family ON base_product_family.id = base_product.product_family
-	    LEFT JOIN
-	        base_product_category ON base_product_category.id = base_product.product_category
-	    LEFT JOIN
-	        base_user_info ON base_user_info.id = self.buyer_user_info
-	    WHERE
-	        self.created_on >= current_timestamp - INTERVAL '1 month' AND self.created_on <= current_timestamp
-	    AND
-	        self.status_select > 3 AND self.status_select < 6
-	    AND
-		base_user_info.internal_user = :_user_id
-	    GROUP BY
-	        base_product_family.name,
-	        base_product_category.name
-	    ORDER BY
-	        base_product_family.name
-	    ]]>
-	    </dataset>
-	    <category key="_product_family" type="text"/>
-    	<series key="amount" groupBy="_product_category" type="bar"/>
-	  </chart>
+	<chart onInit="action.supplychain.portal.set.date.6m" name="chart.my.purchase.amount.per.product.family" title="My purchase amount per product family">
+	  <search-fields>
+	    <field type="date" name="fromDate" title="From Date"/>
+	    <field type="date" name="toDate" title="To Date"/>
+	  </search-fields>
+	  <dataset type="jpql">
+	  
+	  SELECT
+	    SUM(self.exTaxTotal) AS amount,
+	    product.productFamily.name AS _product_family    
+	  FROM
+	    PurchaseOrderLine self,
+	    Product product
+	    
+	  WHERE
+	    self.purchaseOrder.buyerUserInfo = :activeUser
+	    AND self.purchaseOrder.validationDate &gt;= :fromDate AND self.purchaseOrder.validationDate &lt;= :toDate
+	    AND self.purchaseOrder.createdOn &lt;= CURRENT_TIMESTAMP
+	    AND self.purchaseOrder.statusSelect &gt; 3 AND self.purchaseOrder.statusSelect &lt; 6
+	    AND self.product = product  
+	  GROUP BY
+	    product.productFamily.name    
+	  ORDER BY
+	    product.productFamily.name
+	  
+	  </dataset>
+	  <category key="_product_family" type="text"/>
+	  <series key="amount" type="bar"/>
+	</chart>
 	  
 	   
 	  <chart name="chart.purchase.manager.dashboard.buyer.purchase.volume" title="Purchases orders per buyer over past month in volume">
@@ -765,160 +759,179 @@
     	<series key="_percent" type="donut"/>
 	  </chart>
 	  
-	  <chart name="chart.purchase.buyer.dashboard.prod.amout.purchases.last.12m" title="Turnover On Purchase orders on Last 12 Month">
-	    <dataset type="sql">
-	    <![CDATA[
-			SELECT cast(_meta._select_month_value as int) AS _month,
-					coalesce(_purchases._turn_over,00) AS _turn_over 
-			FROM 	(SELECT
-						date_part('month',_purchase_order.created_on) AS _month,
-    					sum(_purchase_order.ex_tax_total) AS _turn_over
-    				FROM
-						supplychain_purchase_order AS _purchase_order
-    				WHERE
-    					_purchase_order.created_on >=(current_date - INTERVAL '12 months') 
-    				AND
-					_purchase_order.status_select=4
-    				GROUP BY
-    					 _month
-    				ORDER BY _turn_over DESC) AS _purchases
-			RIGHT JOIN 
-    				(SELECT
-    					 _month_select.title AS _select_month_title, _month_select.value AS _select_month_value
-    				FROM 
-    					meta_select AS _selection
-    				JOIN 
-    					meta_select_item AS _month_select ON _month_select.select_id=_selection.id
-    				WHERE
-    					 _selection.name='iadministration.month.select'
-    				ORDER BY
-    					 _month_select.value) AS _meta
-			ON 
-				_purchases._month=to_number(_meta._select_month_value,'00')
-			GROUP BY 
-				_meta._select_month_title,_meta._select_month_value,_turn_over
-			ORDER BY 
-				_month	
-	    ]]>
-	    </dataset>
-	    <category key="_month" type="month"/>
-    	<series key="_turn_over"  type="bar" title="Turn Over" />
-	  </chart>
+	<chart onInit="action.supplychain.portal.set.date" name="chart.total.purchase.amount" title="Total Purchase amount">
+	  <search-fields>
+	    <field type="date" name="fromDate" title="From Date"/>
+	    <field name="monthSelect" selection="account.year.period.duration.select" title="Nbr of Months"/>
+	  </search-fields>
+	  <dataset type="sql">
 	  
-	   <chart name="chart.purchase.buyer.dashboard.prod.qty.purchases.last.12m" title="Number Of Units Purchase orders on Last 12 Month">
-	    <dataset type="sql">
-	    <![CDATA[
-		   
-		SELECT 
-			cast(_meta._select_month_value as int) AS _month,coalesce(_purchases._qty,00) AS _amount
-		FROM (SELECT
-        	 	date_part('month',_purchase_order.created_on) AS _month,
-    		 	sum(_line.qty) AS _qty
-    		 FROM
-		     	supplychain_purchase_order AS _purchase_order
-    		 LEFT JOIN
-    	 		supplychain_purchase_order_line AS _line ON _purchase_order.id = _line.purchase_order
-    		 WHERE
-    			_purchase_order.created_on >=(current_date - INTERVAL '12 months') 
-    		AND
-					_purchase_order.status_select=4
-    		GROUP BY 
-    			_month
- 			) AS _purchases
-		RIGHT JOIN 
-    		(SELECT 
-    			_month_select.title AS _select_month_title, _month_select.value AS _select_month_value
-    		FROM 
-    			meta_select AS _selection
-    		JOIN 
-    			meta_select_item AS _month_select ON _month_select.select_id=_selection.id
-    		WHERE 
-    			_selection.name='iadministration.month.select'
-    		ORDER BY 
-    			_month_select.value) AS _meta
-		ON 
-			_purchases._month=to_number(_meta._select_month_value,'00')
-		GROUP BY 
-			_meta._select_month_title,_meta._select_month_value,_amount
-		ORDER BY 
-			_month
-
-
-
-	    ]]>
-	    </dataset>
-	    <category key="_month" type="month"/>
-    	<series key="_amount"  type="bar" title="Units" />
-	  </chart>
-	  <chart name="chart.purchase.manager.dashboard.portal.supplier.order.per.month" title="Number Of Supplier Orders Per Month">
-	    <dataset type="sql">
-	    <![CDATA[
-				SELECT  cast(_meta._select_month_value as int) AS _month,
-						count(_purchase_orders._orders) AS _amount
-				FROM
-					(SELECT
-						_purchase_order.id as _orders,
-        	 			date_part('month',_purchase_order.created_on) AS _month
-    		 		FROM
-		     			supplychain_purchase_order AS _purchase_order
-    		 		WHERE
-    					_purchase_order.created_on >=(current_date - INTERVAL '12 months') 
-					AND
-						_purchase_order.status_select=4
-    				GROUP BY 
-    					_month,_orders
- 					) AS _purchase_orders
-				RIGHT JOIN
-					(SELECT
-						_month_select.title AS _select_month_title, _month_select.value AS _select_month_value
-					FROM
-						meta_select AS _selection
-					JOIN
-						meta_select_item AS _month_select
-					ON 
-						_month_select.select_id=_selection.id
-					WHERE
-						_selection.name='iadministration.month.select'
-					ORDER BY
-						_month_select.value) AS _meta
-				ON 
-					_purchase_orders._month=to_number(_meta._select_month_value,'00')
-				GROUP BY 
-					_purchase_orders._month,_meta._select_month_value,_meta._select_month_title 
-				ORDER BY 
-					_month	
-	    ]]>
-	    </dataset>
-	    <category key="_month" type="month"/>
-    	<series key="_amount" type="bar"/>
-	  </chart>
+	    SELECT cast(_meta._select_month_value as int) AS _month,
+	        coalesce(_purchases._turn_over,00) AS _turn_over 
+	    FROM   (SELECT
+	          date_part('month',_purchase_order.validation_date) AS _month,
+	          sum(_purchase_order.ex_tax_total) AS _turn_over
+	        FROM
+	          supplychain_purchase_order AS _purchase_order
+	        WHERE
+	          _purchase_order.validation_date &gt;= DATE(:fromDate) 
+	          AND _purchase_order.validation_date &lt;= DATE(:fromDate) + CAST(:monthSelect as int) * INTERVAL '1 month'
+	        AND
+	        _purchase_order.status_select=4
+	        GROUP BY
+	           _month
+	        ORDER BY _turn_over DESC) AS _purchases
+	    RIGHT JOIN 
+	        (SELECT
+	           _month_select.title AS _select_month_title, _month_select.value AS _select_month_value
+	        FROM 
+	          meta_select AS _selection
+	        JOIN 
+	          meta_select_item AS _month_select ON _month_select.select_id=_selection.id
+	        WHERE
+	           _selection.name='iadministration.month.select'
+	        ORDER BY
+	           _month_select.value) AS _meta
+	    ON 
+	      _purchases._month=to_number(_meta._select_month_value,'00')
+	    GROUP BY 
+	      _meta._select_month_title,_meta._select_month_value,_turn_over
+	    ORDER BY 
+	      _month  
 	  
-	<chart name="chart.partner.by.industry.sector" title="Purchase Orders last 6 month per product family">
-			    <dataset type="sql">
-			    <![CDATA[
-				SELECT
-			    SUM(supplychain_purchase_order_line.ex_tax_total) AS amount,
-				base_product_family.name AS _family_product
-			    FROM
-				supplychain_purchase_order self
-			    LEFT JOIN
-				supplychain_purchase_order_line ON supplychain_purchase_order_line.purchase_order = self.id
-			    LEFT JOIN
-				base_product ON base_product.id = supplychain_purchase_order_line.product
-			    LEFT JOIN
-				base_product_family ON base_product_family.id = base_product.product_family
-			    WHERE
-				self.created_on >= current_timestamp - INTERVAL '6 month' AND self.created_on <= current_timestamp
-			    AND
-				self.status_select > 3 AND self.status_select < 6
-			    GROUP BY
-				base_product_family.name
-			    ORDER BY
-				base_product_family.name
-			    ]]>
-			    </dataset>
-			    <category key="_family_product" type="text"/>
-		    	<series key="amount" type="bar"/>
+	  </dataset>
+	  <category key="_month" type="month"/>
+	  <series key="_turn_over" type="bar" title="Turn Over"/>
+	</chart>	  
+	
+	<chart  onInit="action.supplychain.portal.set.date" name="chart.total.purchase.qty" title="Total Purchase Qty">
+	  <search-fields>
+	    <field type="date" name="fromDate" title="From Date"/>
+	    <field name="monthSelect" selection="account.year.period.duration.select" title="Nbr of Months"/>
+	  </search-fields>
+	  <dataset type="sql">
+	  
+	  SELECT 
+	    cast(_meta._select_month_value as int) AS _month,coalesce(_purchases._qty,00) AS _amount
+	  FROM (SELECT
+	       date_part('month',_purchase_order.validation_date) AS _month,
+	       sum(_line.qty) AS _qty
+	     FROM
+	       supplychain_purchase_order AS _purchase_order
+	     LEFT JOIN
+	       supplychain_purchase_order_line AS _line ON _purchase_order.id = _line.purchase_order
+	     WHERE
+	      _purchase_order.validation_date &gt;= DATE(:fromDate) 
+	      AND _purchase_order.validation_date &lt;= DATE(:fromDate) + CAST(:monthSelect as int) * INTERVAL '1 month'
+	    AND
+	        _purchase_order.status_select=4
+	    GROUP BY 
+	      _month
+	       ) AS _purchases
+	  RIGHT JOIN 
+	    (SELECT 
+	      _month_select.title AS _select_month_title, _month_select.value AS _select_month_value
+	    FROM 
+	      meta_select AS _selection
+	    JOIN 
+	      meta_select_item AS _month_select ON _month_select.select_id=_selection.id
+	    WHERE 
+	      _selection.name='iadministration.month.select'
+	    ORDER BY 
+	      _month_select.value) AS _meta
+	  ON 
+	    _purchases._month=to_number(_meta._select_month_value,'00')
+	  GROUP BY 
+	    _meta._select_month_title,_meta._select_month_value,_amount
+	  ORDER BY 
+	    _month
+	
+	
+	
+	  
+	  </dataset>
+	  <category key="_month" type="month"/>
+	  <series key="_amount" type="bar" title="Units"/>
+	</chart>
+	  
+	<chart onInit="action.supplychain.portal.set.date.6m" name="chart.nbr.of.po.per.month" title="Nbr of PO per month">
+	  <search-fields>
+	    <field type="date" name="fromDate" title="From Date"/>
+	    <field name="monthSelect" selection="account.year.period.duration.select" title="Nbr of Months"/>
+	  </search-fields>
+	  <dataset type="sql">
+	  
+	      SELECT  cast(_meta._select_month_value as int) AS _month,
+	          count(_purchase_orders._orders) AS _amount
+	      FROM
+	        (SELECT
+	          _purchase_order.id as _orders,
+	           date_part('month',_purchase_order.validation_date) AS _month
+	         FROM
+	           supplychain_purchase_order AS _purchase_order
+	         WHERE
+	          _purchase_order.validation_date BETWEEN DATE(:fromDate) AND DATE(:fromDate) + CAST(:monthSelect as int) * INTERVAL '1 month'
+	        AND
+	          _purchase_order.status_select=4
+	        GROUP BY 
+	          _month,_orders
+	           ) AS _purchase_orders
+	      RIGHT JOIN
+	        (SELECT
+	          _month_select.title AS _select_month_title, _month_select.value AS _select_month_value
+	        FROM
+	          meta_select AS _selection
+	        JOIN
+	          meta_select_item AS _month_select
+	        ON 
+	          _month_select.select_id=_selection.id
+	        WHERE
+	          _selection.name='iadministration.month.select'
+	        ORDER BY
+	          _month_select.value) AS _meta
+	      ON 
+	        _purchase_orders._month=to_number(_meta._select_month_value,'00')
+	      GROUP BY 
+	        _purchase_orders._month,_meta._select_month_value,_meta._select_month_title 
+	      ORDER BY 
+	        _month  
+	  
+	  </dataset>
+	  <category key="_month" type="month"/>
+	  <series key="_amount" type="bar"/>
+	</chart>	  
+	
+	<chart onInit="action.supplychain.portal.set.date.6m" name="chart.purchase.amount.per.product.family" title="Purchase amount per product family">
+	  <search-fields>
+	    <field type="date" name="fromDate" title="From Date"/>
+	    <field type="date" name="toDate" title="To Date"/>
+	  </search-fields>
+	  <dataset type="jpql">
+	      
+	      SELECT
+	        SUM(self.exTaxTotal) AS amount,
+	        product.productFamily.name AS _family_product
+	      FROM
+	        PurchaseOrder self,
+	        PurchaseOrderLine line,
+	        Product product
+	      
+	      WHERE
+	        line.purchaseOrder = self
+	        AND line.product = product      
+	        AND self.validationDate &gt;= :fromDate 
+	        AND self.validationDate &lt;= :toDate  
+	        AND self.createdOn &lt;= CURRENT_TIMESTAMP      
+	        AND self.statusSelect &gt; 3 
+	        AND self.statusSelect &lt; 6
+	      GROUP BY
+	        product.productFamily.name
+	      ORDER BY
+	        product.productFamily.name
+	      
+	      </dataset>
+	  <category key="_family_product" type="text"/>
+	  <series key="amount" type="bar"/>
 	</chart>
 	
 	<chart name="chart.nbr.product.per.family" title="Number of Product per Family">
@@ -989,14 +1002,15 @@
 	</chart>
 	
 	<action-record model="com.axelor.apps.supplychain.db.SalesOrder" name="action.supplychain.portal.set.date.6m">
-	  <field name="toDate" expr="eval:todayDate"/>
+	  <field name="toDate" expr="eval:LocalDate.parse(todayDate)"/>
 	  <field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusMonths(6)"/>
+	  <field name="monthSelect" expr="eval:6" />
 	</action-record>
 	
 	<chart onInit="action.supplychain.portal.set.date.6m" name="chart.product.launches.withdrawal.each.month" title="Product launches/withdrawal each month">
 	  <search-fields>
-	    <field type="date" name="fromDate" />
-    	<field type="date" name="toDate" />	    
+	    <field type="date" name="fromDate" title="From Date"/>
+    	<field type="date" name="toDate"  title="To Date"/>	    
 	  </search-fields>
 	  <dataset type="sql">
 	  
@@ -1039,8 +1053,8 @@
 	<!-- This chart is used in product-form (base)  -->
 	<chart onInit="action.supplychain.portal.set.date.6m" name="chart.product.sales.turnover.per.month" title="Product sales turnover (Excl. Tax) per month">
 	  <search-fields>
-	    <field type="date" name="fromDate" />
-    	<field type="date" name="toDate" />	    
+	    <field type="date" name="fromDate"  title="From Date"/>
+    	<field type="date" name="toDate"  title="To Date"/>	    
 	  </search-fields>
 	  <dataset type="jpql">
 	  
@@ -1064,7 +1078,7 @@
 	
 	<chart onInit="action.supplychain.portal.set.date.6m" name="chart.product.sales.turnover.last.12.month" title="Product sales turnover (Excl. Tax) last 12 month">
 	  <search-fields>
-	    <field type="date" name="toDate" />
+	    <field type="date" name="toDate"  title="To Date"/>
     	<field type="reference" name="product" target="com.axelor.apps.base.db.Product" />
 	  </search-fields>
 	  <dataset type="jpql">
@@ -1130,7 +1144,7 @@
 	</chart>
 	
 	<action-record model="com.axelor.apps.supplychain.db.SalesOrder" name="action.supplychain.portal.set.from.date.and.salesman.6m">
-		   <field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusMonths(6)"/>
+		   <field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusMonths(6)" />
 		   <field name="salesmanUserInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
 	</action-record>
 	
@@ -1160,7 +1174,7 @@
 	</chart>
 	
 	<action-record model="com.axelor.apps.supplychain.db.SalesOrder" name="action.supplychain.portal.set.from.date.and.salesman.4m">
-		   <field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusMonths(4)"/>
+		   <field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusMonths(4)" />
 		   <field name="salesmanUserInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
 	</action-record>
 	

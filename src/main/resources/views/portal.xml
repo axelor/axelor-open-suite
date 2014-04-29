@@ -174,12 +174,12 @@
 		<portlet action="portal.purchase.buyer.dashboard.validated.orders" height="350" canSearch="true" />
 		<portlet action="portal.purchase.buyer.dashboard.orders" canSearch="true" height="350" />
 		<portlet action="portal.purchase.buyer.dashboard.order.to.validate" canSearch="true" height="350" />
-		<portlet action="portal.purchase.buyer.dashboard.family.product.purchase.volume" height="350"/>
-	    <portlet action="portal.purchase.buyer.dashboard.family.product.purchase.turnover" height="350"/>
-		<portlet action="portal.supplier.order.per.month" canSearch="true" height="350"/>
-		<portlet action="portal.supplier.orders.per.month"  canSearch="true" height="350" />
-		<portlet action="portal.prod.amout.purchases.last.12m" canSearch="true" height="350"/>
-		<portlet action="portal.prod.qty.purchases.last.12m" canSearch="true" height="350"/>
+		<portlet action="portal.my.purchases.per.product.family.volume" height="350"/>
+	    <portlet action="portal.my.purchase.amount.per.product.family" height="350"/>
+		<portlet action="portal.purchase.amount.per.product.family" canSearch="true" height="350"/>
+		<portlet action="portal.nbr.of.po.per.month"  canSearch="true" height="350" />
+		<portlet action="portal.total.purchase.amount" canSearch="true" height="350"/>
+		<portlet action="portal.total.purchase.qty" canSearch="true" height="350"/>
 	</portal>
 
 
@@ -207,33 +207,38 @@
     	<context name="_user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" /> 
 	</action-view>
 	
-	<action-view name="portal.purchase.buyer.dashboard.family.product.purchase.volume" title="My Purchases orders per buyer over past month in volume">
-		<view type="chart" name="chart.purchase.buyer.dashboard.family.product.purchase.volume"/>
+	<action-view title="My Purchases per product family in volume" name="portal.my.purchases.per.product.family.volume">
+	  <view type="chart" name="chart.my.purchases.per.product.family.volume"/>
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+	  <context name="activeUser" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" />
 	</action-view>
 
-	<action-view name="portal.purchase.buyer.dashboard.family.product.purchase.turnover" title="My purchases orders per product family over past month">
-		<view type="chart" name="chart.purchase.buyer.dashboard.family.product.purchase.turnover"/>
+	<action-view title="My purchase amount per product family" name="portal.my.purchase.amount.per.product.family">
+	  <view type="chart" name="chart.my.purchase.amount.per.product.family"/>
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+	  <context name="activeUser" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" />
 	</action-view>
 
-	<action-view name="portal.supplier.order.per.month" title="Purchase Orders last 6 month per product family"
-		model="com.axelor.apps.supplychain.db.PurchaseOrder">
-		<view type="chart" name="chart.partner.by.industry.sector"/>
+	<action-view title="Purchase amount per product family" model="com.axelor.apps.supplychain.db.PurchaseOrder" name="portal.purchase.amount.per.product.family">
+	  <view type="chart" name="chart.purchase.amount.per.product.family"/>
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
 	</action-view>
 
-	<action-view name="portal.supplier.orders.per.month" title="Number Of Supplier Orders Per Month">
-		<view type="chart" name="chart.purchase.manager.dashboard.portal.supplier.order.per.month"/>
+	<action-view title="Nbr of PO per month" name="portal.nbr.of.po.per.month">
+	  <view type="chart" name="chart.nbr.of.po.per.month"/>
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
 	</action-view>
 	
-	<action-view name="portal.prod.amout.purchases.last.12m" title="Turnover On Purchase orders on Last 12 Month"
-		model="com.axelor.apps.supplychain.db.PurchaseOrder">
-		<view type="chart" name="chart.purchase.buyer.dashboard.prod.amout.purchases.last.12m"/>
+	<action-view title="Total Purchase amount" model="com.axelor.apps.supplychain.db.PurchaseOrder" name="portal.total.purchase.amount">
+	  <view type="chart" name="chart.total.purchase.amount"/>
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
 	</action-view>
 	
 	
-	<action-view name="portal.prod.qty.purchases.last.12m" title="Number Of Units Purchase orders on Last 12 Month"
-		model="com.axelor.apps.supplychain.db.PurchaseOrder">
-		<view type="chart" name="chart.purchase.buyer.dashboard.prod.qty.purchases.last.12m"/>
-	</action-view>	
+	<action-view title="Total Purchase Qty" model="com.axelor.apps.supplychain.db.PurchaseOrder" name="portal.total.purchase.qty">
+	  <view type="chart" name="chart.total.purchase.qty"/>
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+	</action-view>
 
 	
 	<!-- 	Purchase Manager Dashboard -->
@@ -457,12 +462,12 @@
 		<portlet action="portal.purchase.buyer.dashboard.validated.orders" canSearch="true" height="350" />
 		<portlet action="portal.purchase.buyer.dashboard.orders" canSearch="true" height="350" />
 		<portlet action="portal.purchase.buyer.dashboard.order.to.validate" canSearch="true" height="350" />
-		<portlet action="portal.purchase.buyer.dashboard.family.product.purchase.volume" canSearch="true" height="350" />
-		<portlet action="portal.purchase.buyer.dashboard.family.product.purchase.turnover" canSearch="true" height="350" />
-		<portlet action="portal.supplier.order.per.month" canSearch="true" height="350" />
-		<portlet action="portal.supplier.orders.per.month" canSearch="true" height="350" />
-		<portlet action="portal.prod.amout.purchases.last.12m" canSearch="true" height="350" />
-		<portlet action="portal.prod.qty.purchases.last.12m" canSearch="true" height="350" />
+		<portlet action="portal.my.purchases.per.product.family.volume" canSearch="true" height="350" />
+		<portlet action="portal.my.purchase.amount.per.product.family" canSearch="true" height="350" />
+		<portlet action="portal.purchase.amount.per.product.family" canSearch="true" height="350" />
+		<portlet action="portal.nbr.of.po.per.month" canSearch="true" height="350" />
+		<portlet action="portal.total.purchase.amount" canSearch="true" height="350" />
+		<portlet action="portal.total.purchase.qty" canSearch="true" height="350" />
 		<portlet action="portal.purchase.manager.dashboard.validated.orders" canSearch="true" height="350" />
 		</portal>
 	
