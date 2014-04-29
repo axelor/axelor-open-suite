@@ -283,8 +283,8 @@
 	   
 	<chart stacked="true" onInit="action.supplychain.portal.set.date.6m" name="chart.my.turnover.per.month" title="My Turnover per month">
 	  <search-fields>
-	    <field type="date" name="fromDate"/>
-	    <field type="date" name="toDate"/>
+	    <field type="date" name="fromDate" title="From Date"/>
+	    <field type="date" name="toDate" title="To Date"/>
 	  </search-fields>
 	  <dataset type="sql">
 	  
@@ -306,8 +306,8 @@
 
 	<chart stacked="true" onInit="action.supplychain.portal.set.date" name="chart.turnover.sales.by.month.by.category" title="Turnover amount on customer sales by month by category">
 	  <search-fields>
-	    <field type="date" name="fromDate"/>
-	    <field type="date" name="toDate"/>
+	    <field type="date" name="fromDate" title="From Date"/>
+	    <field type="date" name="toDate" title="To Date"/>
 	  </search-fields>
 	  <dataset type="sql">
 	  
@@ -349,8 +349,8 @@
 	
 	<chart stacked="true" onInit="action.supplychain.portal.set.date" name="chart.units.sold.on.cust.sales.by.category" title="Nbr of Units sold on Cust. Sales by category">
 	  <search-fields>
-	    <field type="date" name="fromDate"/>
-	    <field type="date" name="toDate"/>
+	    <field type="date" name="fromDate" title="From Date"/>
+	    <field type="date" name="toDate" title="To Date"/>
 	  </search-fields>
 	  <dataset type="sql">
 	  
@@ -987,8 +987,8 @@
 	
 	<chart onInit="action.supplychain.portal.set.date.6m" name="chart.product.launches.withdrawal.each.month" title="Product launches/withdrawal each month">
 	  <search-fields>
-	    <field type="date" name="fromDate"/>
-	    <field type="date" name="toDate"/>
+	    <field type="date" name="fromDate" title="From Date"/>
+	    <field type="date" name="toDate" title="To Date"/>
 	  </search-fields>
 	  <dataset type="sql">
 	  
@@ -1033,8 +1033,8 @@
 	
 	<chart onInit="action.supplychain.portal.set.date.6m" name="chart.product.sales.turnover.per.month" title="Product sales turnover (Excl. Tax) per month">
 	  <search-fields>
-	    <field type="date" name="fromDate"/>
-	    <field type="date" name="toDate"/>
+	    <field type="date" name="fromDate" title="From Date"/>
+	    <field type="date" name="toDate" title="To Date"/>
 	  </search-fields>
 	  <dataset type="jpql">
 	    SELECT
@@ -1058,7 +1058,7 @@
 		
 	<chart onInit="action.supplychain.portal.set.date.6m" name="chart.product.sales.turnover.last.12.month" title="Product sales turnover (Excl. Tax) last 12 month">
 	  <search-fields>
-	    <field type="date" name="toDate"/>
+	    <field type="date" name="toDate" title="To Date"/>
 	    <field type="reference" target="com.axelor.apps.base.db.Product" name="product"/>
 	  </search-fields>
 	  <dataset type="jpql">
