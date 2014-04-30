@@ -18,7 +18,19 @@
         <field name="code"/>
         <field name="productFamily"/>
         <field name="parentProductCategory"/>
+	<break />
+	<notebook colSpan="4">
+		<page title="Sales Turnover" cols="3" colWidths="20%,30%,20%,30%">
+			<portlet action="portal.category.sales.turnover.per.month" colSpan="4" height="350" />
+		</page>
+	</notebook>
     </form>
+    
+    <action-view title="Category sales turnover (Excl. Tax) per month" model="com.axelor.apps.base.db.Product" name="portal.category.sales.turnover.per.month">
+		  <view type="chart" name="chart.category.sales.turnover.per.month"/>
+		  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+		  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+	</action-view>
     
      <action-view name="action-view-product-by-category" title="Products" model="com.axelor.apps.base.db.Product">
 		<view type="grid" name="product-grid"/>
