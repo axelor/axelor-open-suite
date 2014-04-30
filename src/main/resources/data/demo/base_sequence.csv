@@ -63,7 +63,7 @@
 "treasuryInterface";"Interface trésorerie";1;10;"INTTRESO_%Y_";;1;1;1;
 "partner";"Numéro identifiant tiers";400;10;"T";;1;0;1;
 "salesOrder";"Devis/Cmde client";9;5;"VTE";;1;0;1;
-"purchaseOrder";"Cotations/Cmde fournisseur";2;5;"ACH";;1;0;1;
+"purchaseOrder";"Cotations/Cmde fournisseur";10;5;"ACH";;1;0;1;
 "eventTicket";"N° de ticket";6;4;"TKT";;1;0;1;
 "intStockMove";"N° de bon de transfert de marchandise";1;4;"BT";;1;0;1;
 "outStockMove";"N° de bon de livraison";1;4;"BL";;1;0;1;
