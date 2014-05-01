@@ -335,12 +335,14 @@
 	<input file="crm_eventCategory.csv" separator=";" type="com.axelor.apps.crm.db.EventCategory" />
 	
 	<input file="crm_lead.csv" separator=";" type="com.axelor.apps.crm.db.Lead">
-		<bind column="description" to="description"/>
-		<bind column="jobTitle" to="jobTitle"/>
-		<bind to="emailAddress" search="self.address = :email">
-			<bind to="address" column="email" />
-		</bind>
-		<bind to="contactDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(contactDate)" column="contactDate"/>
+			<bind column="description" to="description"/>
+			<bind column="jobTitle" to="jobTitle"/>
+			<bind to="emailAddress" search="self.address = :email">
+				<bind to="address" column="email" />
+			</bind>
+			<bind to="contactDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(contactDate)" column="contactDate"/>
+			<bind to="createdOn" eval="call:com.axelor.csv.script.ImportDateTime:importDate(contactDate)" column="contactDate"/>
+			<bind to="createdBy" eval="call:com.axelor.apps.crm.service.ImportLead:importCreatedBy(:userInfo.importId)"/>
 	</input>
 	
 	<input file="crm_meetingType.csv" separator=";" type="com.axelor.apps.crm.db.MeetingType">
