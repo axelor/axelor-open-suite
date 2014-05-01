@@ -7,19 +7,27 @@
 	<chart name="chart.sales.turnover.ytd.vs.lastyear" title="Sales turnover this year vs last year">
 	    <dataset type="sql">
 	    <![CDATA[
-			SELECT
-				SUM(_order.ex_tax_total) AS _turn_over,
-				DATE_PART('year',_order.creation_date) AS _year
-			FROM
-				supplychain_sales_order AS _order	
-			WHERE
-				_order.status_select=3
-				AND DATE_PART('year',_order.creation_date) 
-				IN (DATE_PART('year',CURRENT_DATE) - 1, DATE_PART('year',CURRENT_DATE) )
-			GROUP BY
-				_year
-			ORDER BY
-				_year    
+		    SELECT
+		      SUM(_order.ex_tax_total) AS _turn_over,
+		      DATE_PART('year',_order.validation_date) AS _year
+		    FROM
+		      supplychain_sales_order AS _order  
+		    JOIN
+		      base_user_info AS _user
+		      ON _user.id = :_user_id
+		    WHERE
+		      _order.status_select=3
+		      AND _order.company = _user.active_company    
+		      AND ( ( _order.validation_date >= TO_DATE(DATE_PART('year',CURRENT_DATE - INTERVAL '1 year') || '-01-01','YYYY-MM-DD') 
+		              AND _order.validation_date <= CURRENT_DATE - INTERVAL '1 year')
+		            OR
+		            ( _order.validation_date >= TO_DATE(DATE_PART('year',CURRENT_DATE) || '-01-01','YYYY-MM-DD') 
+		              AND _order.validation_date <= CURRENT_DATE)
+		          )           
+		    GROUP BY
+		      _year
+		    ORDER BY
+		      _year  
 	    ]]>
 	    </dataset>
 	    <category key="_year" type="text" title="Year" />
@@ -82,6 +90,33 @@
 	  </dataset>
 	  <category key="_year" type="text" title="Year"/>
 	  <series key="_turn_over" groupBy="_product_family" type="bar" title="Turnover"/>
+	</chart>
+	
+	<chart name="chart.sales.turnover.ytd.vs.lastyear.whole" title="Sales turnover this year YTD vs last year">
+	  <dataset type="sql">
+	  
+	    SELECT
+	      SUM(_order.ex_tax_total) AS _turn_over,
+	      DATE_PART('year',_order.validation_date) AS _year
+	    FROM
+	      supplychain_sales_order AS _order  
+	    JOIN
+	      base_user_info AS _user
+	      ON _user.id = :_user_id
+	    WHERE
+	      _order.status_select=3
+	      AND _order.company = _user.active_company    
+	      AND DATE_PART('year',_order.validation_date) 
+	      IN (DATE_PART('year',CURRENT_DATE) - 1, DATE_PART('year',CURRENT_DATE) )
+	      AND _order.validation_date &lt;= CURRENT_DATE
+	    GROUP BY
+	      _year
+	    ORDER BY
+	      _year  
+	  
+	  </dataset>
+	  <category key="_year" type="text" title="Year"/>
+	  <series key="_turn_over" type="bar" title="TurnOver"/>
 	</chart>
 	
 	<chart name="chart.sales.turnover.by.family.ytd.vs.lastyear" title="Product Family Sales Turnover this year vs last year">

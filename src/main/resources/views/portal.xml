@@ -57,7 +57,8 @@
 	<!-- 	SALES MANAGER DASHBOARD -->
 	
 	<portal title="Dashboard" name="supplychain.sales.manager.dashboard.portal.sample" cols="2">
-		<portlet action="portal.sales.turnover.ytd.vs.lastyear" height="350"/>  	
+		<portlet action="portal.sales.turnover.ytd.vs.lastyear" height="350"/>
+		<portlet action="portal.sales.turnover.ytd.vs.lastyear.whole" height="350"/>  	
 		<portlet action="portal.sales.turnover.by.product.ytd.vs.lastyear" height="350"/>
 		<portlet action="portal.sales.turnover.ytd.vs.lastyear.by.family" height="350" />
 		<portlet action="portal.sales.turnover.by.family.ytd.vs.lastyear" height="350" />		
@@ -76,9 +77,13 @@
 	</portal>
 	
 	<action-view name="portal.sales.turnover.ytd.vs.lastyear" title="Sales Turnover This year vs Last year" model="com.axelor.apps.supplychain.db.SalesOrder">
-	    <view type="chart" name="chart.sales.turnover.ytd.vs.lastyear"/>        
-	    <domain>self.company=:active_company</domain>
-	    <context name="active_company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
+	    <view type="chart" name="chart.sales.turnover.ytd.vs.lastyear"/>
+	    <context name="_user_id" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
+	</action-view>
+	
+	<action-view title="Sales turnover this year YTD vs last year" model="com.axelor.apps.supplychain.db.SalesOrder" name="portal.sales.turnover.ytd.vs.lastyear.whole">
+	  <view type="chart" name="chart.sales.turnover.ytd.vs.lastyear.whole"/>  
+	  <context name="_user_id" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
 	
 	<action-view name="portal.sales.turnover.by.product.ytd.vs.lastyear" title="Sales TurnOver by Product this year vs last year" model="com.axelor.apps.supplychain.db.SalesOrder">
@@ -507,6 +512,7 @@
 	<portal name="supplychain.sales.dashboard.2.portal.view" title="Sales Dashboard 2">
 		<portlet action="portal.sales.turnover.by.product.ytd.vs.lastyear" canSearch="true" height="350" />
 		<portlet action="portal.sales.turnover.ytd.vs.lastyear" canSearch="true" height="350" />
+		<portlet action="portal.sales.turnover.ytd.vs.lastyear.whole" height="350" />
 		<portlet action="portal.sales.turnover.ytd.vs.lastyear.by.family" canSearch="true" height="350" />
 		<portlet action="portal.sales.turnover.by.family.ytd.vs.lastyear" canSearch="true" height="350" />
 		<portlet action="portal.turnover.per.month.per.salesman.over.6mth" canSearch="true" height="350"/>
