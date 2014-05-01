@@ -28,7 +28,7 @@
 	
 	<action-view name="portal.salesman.dashboard.leads" title="My Current Leads"
 		model="com.axelor.apps.crm.db.Lead">
-		<view type="grid" name="lead-grid" />
+		<view type="grid" name="my-lead-grid" />
 		<view type="form" name="lead-form" />
 		<domain>self.userInfo.internalUser = :user_info and self.statusSelect in (1, 2)</domain>
 		<context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
@@ -36,7 +36,7 @@
 	
 	<action-view name="portal.salesman.dashboard.activities" title="My Today Activities"
 		model="com.axelor.apps.crm.db.Event">
-		<view type="grid" name="event-grid"/>
+		<view type="grid" name="my-event-grid"/>
 		<view type="form" />
 	    <domain>self.startDateTime between :_today and :_tomorrow and self.userInfo =:_activeUser</domain>
 	    <context name="_tomorrow" expr="eval: __date__.plusDays(1).toDateTimeAtStartOfDay()"/>
@@ -46,7 +46,7 @@
 	
 	<action-view name="portal.salesman.dashboard.opportunities" title="My Opportunities"
 		model="com.axelor.apps.crm.db.Opportunity">
-		<view type="grid" name="opportunity-grid" />
+		<view type="grid" name="my-opportunity-grid" />
 		<view type="form" name="opportunity-form" />
 		<domain>self.userInfo.internalUser = :user_info</domain>
 		<context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
@@ -185,7 +185,7 @@
 
 	<action-view name="portal.purchase.buyer.dashboard.validated.orders" title="My Validated Purchase Orders"
 		model="com.axelor.apps.supplychain.db.PurchaseOrder">
-		<view type="grid" name="purchase-order-grid" />
+		<view type="grid" name="my-purchase-order-grid" />
 		<view type="form" name="purchase-order-form" />
 		<domain>self.buyerUserInfo =:_user_info and self.statusSelect = 4</domain>
     	<context name="_user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" /> 
@@ -193,7 +193,7 @@
 	
 	<action-view name="portal.purchase.buyer.dashboard.orders" title="My Purchase Orders"
 		model="com.axelor.apps.supplychain.db.PurchaseOrder">
-		<view type="grid" name="purchase-order-grid" />
+		<view type="grid" name="my-purchase-order-grid" />
 		<view type="form" name="purchase-order-form" />
 		<domain>self.buyerUserInfo =:_user_info</domain>
     	<context name="_user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" /> 
@@ -201,7 +201,7 @@
 
 	<action-view name="portal.purchase.buyer.dashboard.order.to.validate" title="My RFQ And PO To Validate"
 		model="com.axelor.apps.supplychain.db.PurchaseOrder">
-		<view type="grid" name="purchase-order-grid" />
+		<view type="grid" name="my-purchase-order-grid" />
 		<view type="form" name="purchase-order-form" />
 		<domain>self.buyerUserInfo =:_user_info and self.statusSelect in (2,3)</domain>
     	<context name="_user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" /> 
@@ -423,7 +423,7 @@
 	</portal>
 	
 	<action-view title="My Orders to process" model="com.axelor.apps.supplychain.db.PurchaseOrder" name="portal.my.purchase.orders.to.execute">
-	    <view type="grid" name="purchase-order-grid"/>
+	    <view type="grid" name="my-purchase-order-grid"/>
 	    <view type="form" name="purchase-order-form"/>
 	    <domain>self.statusSelect=3 AND self.buyerUserInfo =:user_info</domain>
 	    <context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
@@ -436,7 +436,7 @@
 	</action-view>
 	
 	<action-view title="My Ongoing Purchase Orders" model="com.axelor.apps.supplychain.db.PurchaseOrder" name="portal.my.ongoing.purchase.orders">
-	    <view type="grid" name="purchase-order-grid"/>
+	    <view type="grid" name="my-purchase-order-grid"/>
 	    <view type="form" name="purchase-order-form"/>
 	    <domain>self.statusSelect=4 AND self.buyerUserInfo =:user_info</domain>
 	    <context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
@@ -449,7 +449,7 @@
 	</action-view>
 	
 	<action-view title="My Closed Purchase Orders" model="com.axelor.apps.supplychain.db.PurchaseOrder" name="portal.my.closed.purchase.orders">
-	    <view type="grid" name="purchase-order-grid"/>
+	    <view type="grid" name="my-purchase-order-grid"/>
 	    <view type="form" name="purchase-order-form"/>
 	    <domain>self.statusSelect=5 AND self.buyerUserInfo =:user_info</domain>
 	    <context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
