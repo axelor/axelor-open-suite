@@ -30,6 +30,13 @@
     	<field name="subject" />
  	</calendar>
     
+    <grid orderBy="startDateTime" edit-icon="true" name="my-event-grid" title="Events" model="com.axelor.apps.crm.db.Event">
+	  <field name="subject"/>
+	  <field name="typeSelect"/>
+	  <field name="startDateTime"/>
+	  <field name="duration" widget="duration" x-big="true"/>
+	</grid>
+    
     <form name="event-form" title="Events" model="com.axelor.apps.crm.db.Event" cols="4" colWidths="800,*" 
     onNew="action-event-new-record,action-event-record-current-user-info,action-event-attrs-yes-no-attendee-button"
     onLoad="action-event-record-current-user-info,action-event-attrs-yes-no-attendee-button">

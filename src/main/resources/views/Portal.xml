@@ -25,7 +25,7 @@
 	</action-view>
 	<action-view name="portal.unassigned.opportunities" title="Unassigned Opportunities"
 		model="com.axelor.apps.crm.db.Opportunity">
-		<view type="grid" name="opportunity-grid" />
+		<view type="grid" name="my-opportunity-grid" />
 		<view type="form" name="opportunity-form" />
 		<domain>self.userInfo is null and self.salesStageSelect = 1</domain>
 		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
@@ -34,7 +34,7 @@
 
 	<action-view name="portal.team.closed.opportunities" title="My Team Closed Opportunities"
 		model="com.axelor.apps.crm.db.Opportunity">
-		<view type="grid" name="opportunity-grid" />
+		<view type="grid" name="my-opportunity-grid" />
 		<view type="form" name="opportunity-form" />
 		<domain>self.salesStageSelect in (9,10)  AND self.team = :active_team</domain>
 		<context name="active_team"
@@ -44,7 +44,7 @@
 
 	<action-view name="portal.team.open.opportunities" title="My Team Open Opportunities"
 		model="com.axelor.apps.crm.db.Opportunity">
-		<view type="grid" name="opportunity-grid" />
+		<view type="grid" name="my-opportunity-grid" />
 		<view type="form" name="opportunity-form" />
 		<domain>self.salesStageSelect not in (9,10)  AND self.team = :active_team</domain>
 		<context name="active_team"
@@ -95,7 +95,7 @@
 	</action-view>
 	<action-view title="My Closed Opportunities" model="com.axelor.apps.crm.db.Opportunity"
 		name="portal.my.closed.opportunities">
-		<view type="grid" name="opportunity-my-grid" />
+		<view type="grid" name="my-opportunity-grid" />
 		<view type="form" name="opportunity-form" />
 		<domain>self.salesStageSelect in (9, 10) AND self.userInfo =:user_info</domain>
 		<context name="user_info"
@@ -105,7 +105,7 @@
 
 	<action-view title="My Open Opportunities" model="com.axelor.apps.crm.db.Opportunity"
 		name="portal.my.open.opportunities">
-		<view type="grid" name="opportunity-my-grid" />
+		<view type="grid" name="my-opportunity-grid" />
 		<view type="form" name="opportunity-form" />
 		<domain>self.salesStageSelect NOT in (9, 10) AND self.userInfo =:user_info</domain>
 		<context name="user_info"
@@ -229,7 +229,7 @@
 	
 	<action-view name="portal.my.leads" title="My Leads"
 		model="com.axelor.apps.crm.db.Lead">
-		<view type="grid" name="lead-my-grid" />
+		<view type="grid" name="my-lead-grid" />
 		<view type="form" name="lead-form" />
 		<domain>self.userInfo =:user_info</domain>
 		<context name="user_info"
@@ -239,7 +239,7 @@
 
 	<action-view name="portal.unassigned.leads" title="Unassigned Leads"
 		model="com.axelor.apps.crm.db.Lead">
-		<view type="grid" name="lead-grid" />
+		<view type="grid" name="my-lead-grid" />
 		<view type="form" name="lead-form" />
 		<domain>self.userInfo is null</domain>
 		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
@@ -247,7 +247,7 @@
 
 	<action-view name="portal.team.leads" title="My Team Leads"
 		model="com.axelor.apps.crm.db.Lead">
-		<view type="grid" name="lead-grid" />
+		<view type="grid" name="my-lead-grid" />
 		<view type="form" name="lead-form" />
 		<domain>self.team =:user_active_team</domain>
 		<context name="user_active_team"
@@ -362,7 +362,7 @@
 
 	<action-view name="portal.my.urgent.tickets" title="My Urgent Tickets"
 		model="com.axelor.apps.crm.db.Event">
-		<view type="grid" name="event-grid" />
+		<view type="grid" name="my-event-grid" />
 		<view type="form" name="event-form" />
 		<domain>self.typeSelect = 5 AND self.ticketStatusSelect != 5 AND self.prioritySelect in (4,5) AND self.userInfo =:user_info</domain>
 		<context name="user_info"
@@ -371,7 +371,7 @@
 
 	<action-view name="portal.my.active.tickets" title="My Active Tickets"
 		model="com.axelor.apps.crm.db.Event">
-		<view type="grid" name="event-grid" />
+		<view type="grid" name="my-event-grid" />
 		<view type="form" name="event-form" />
 		<domain>self.typeSelect = 5 AND self.ticketStatusSelect != 5 AND self.userInfo =:user_info</domain>
 		<context name="user_info"
@@ -379,7 +379,7 @@
 	</action-view>
 	<action-view name="portal.my.new.tickets" title="My New Tickets"
 		model="com.axelor.apps.crm.db.Event">
-		<view type="grid" name="event-grid" />
+		<view type="grid" name="my-event-grid" />
 		<view type="form" name="event-form" />
 		<domain>self.typeSelect = 5 AND self.ticketStatusSelect = 1 AND self.userInfo = :active_user</domain>
 		<context name="active_user"
@@ -387,7 +387,7 @@
 	</action-view>
 	<action-view name="portal.urgent.tickets" title="Urgent Tickets"
 		model="com.axelor.apps.crm.db.Event">
-		<view type="grid" name="event-grid" />
+		<view type="grid" name="my-event-grid" />
 		<view type="form" name="event-form" />
 		<domain>self.typeSelect = 5 AND self.ticketStatusSelect != 5 AND self.prioritySelect in (4,5)</domain>
 	</action-view>
@@ -411,7 +411,7 @@
 
 	<action-view title="My New Urgent Tickets" model="com.axelor.apps.crm.db.Event"
 		name="portal.my.new.urgent.tickets">
-		<view type="grid" name="event-grid" />
+		<view type="grid" name="my-event-grid" />
 		<view type="form" name="event-form" />
 		<domain>self.typeSelect=5 AND self.ticketStatusSelect=1 AND self.prioritySelect IN (4,5) AND self.userInfo =:user_info</domain>
 		<context name="user_info"
@@ -420,7 +420,7 @@
 
 	<action-view title="My Today Support Activities" model="com.axelor.apps.crm.db.Event"
 		name="portal.my.today.support.activities">
-		<view type="grid" name="event-grid" />
+		<view type="grid" name="my-event-grid" />
 		<view type="form" name="event-form" />
 		<domain>self.typeSelect=5 AND self.updatedOn=date(now())</domain>
 	</action-view>
@@ -428,7 +428,7 @@
 
 	<action-view title="My Late Tickets" model="com.axelor.apps.crm.db.Event"
 		name="portal.my.late.tickets">
-		<view type="grid" name="event-grid" />
+		<view type="grid" name="my-event-grid" />
 		<view type="form" name="event-form" />
 		<domain>self.typeSelect = 5 AND self.ticketStatusSelect != 5 AND self.userInfo =:user_info AND self.endDateTime &lt; date(now())</domain>
 		<context name="user_info"

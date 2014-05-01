@@ -27,7 +27,7 @@
         <button name="closed-lost" icon="fa-minus-circle" help="Closed lost" onClick="action-opportunity-set-closed-lost,action-opportunity-save-sales-stage-select" readonlyIf="salesStageSelect &gt; 8" />
     </grid>
 
-   <grid orderBy="salesStageSelect,expectedCloseDate" edit-icon="true" name="opportunity-my-grid" title="My Opportunities" model="com.axelor.apps.crm.db.Opportunity">
+   <grid orderBy="salesStageSelect,expectedCloseDate" edit-icon="true" name="my-opportunity-grid" title="My Opportunities" model="com.axelor.apps.crm.db.Opportunity">
 		<hilite color="danger" if="salesStageSelect != 9 &amp;&amp; salesStageSelect != 10 &amp;&amp;  $moment(expectedCloseDate).diff(todayDate,'days') &lt;= 7"/>
   		<hilite color="warning" if="salesStageSelect != 9 &amp;&amp; salesStageSelect != 10 &amp;&amp; $moment(expectedCloseDate).diff(todayDate,'days') &lt;= 15" />
   		<hilite color="primary" if="salesStageSelect != 9 &amp;&amp; salesStageSelect != 10 &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 7"/>
