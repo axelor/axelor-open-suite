@@ -25,6 +25,18 @@
         <field name="statusSelect"/>
     </grid>
     
+    <grid edit-icon="true" name="my-leave-request-grid" title="My Leave requests" model="com.axelor.apps.organisation.db.LeaveRequest">
+		  <field name="requestDate"/>
+		  <field name="startDateT"/>
+		  <field name="endDateT"/>
+		  <field name="nbrOfDayOff"/>
+		  <field name="reasonTask"/>
+		  <field name="managerUserInfo"/>
+		  <field name="approvalDate"/>
+		  <field name="remainingDaysOnPeriod"/>
+		  <field name="statusSelect"/>
+	</grid>
+    
     <form name="leave-request-form" title="Leave request" model="com.axelor.apps.organisation.db.LeaveRequest" cols="4"
     	onNew="action-leave-request-record-new">
 		<field name="employeeUserInfo"/>

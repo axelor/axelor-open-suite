@@ -10,6 +10,12 @@
         <field name="statusSelect"/>
     </grid>
     
+    <grid edit-icon="true" name="my-timesheet-grid" title="My Timesheets" model="com.axelor.apps.organisation.db.Timesheet">
+	  <field name="fromDate"/>
+	  <field name="toDate"/>
+	  <field name="statusSelect"/>
+	</grid>
+    
     <form name="timesheet-form" title="Timesheet" model="com.axelor.apps.organisation.db.Timesheet" cols="4"
     onNew="action-timesheet-default-record,action-timesheet-getPeriod">
      	<toolbar>

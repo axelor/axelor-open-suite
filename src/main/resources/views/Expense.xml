@@ -21,6 +21,17 @@
         <field name="statusSelect"/>
     </grid>
     
+    
+	<grid edit-icon="true" name="my-expense-grid" title="My Expenses" model="com.axelor.apps.organisation.db.Expense">
+	  <field name="date"/>
+	  <field name="company"/>
+	  <field name="totalAmount" title="Total (TTC)"/>
+	  <field name="currency"/>
+	  <field name="paymentPeriod"/>
+	  <field name="statusSelect"/>
+	</grid>
+	    
+    
     <form name="expense-form" title="Expense" model="com.axelor.apps.organisation.db.Expense" cols="4"
     onNew="action-expense-group-default" onLoad="action-expense-method-check-validation-status">
 		<field name="userInfo"/>

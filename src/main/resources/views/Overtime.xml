@@ -13,6 +13,15 @@
         <field name="period"/>
     </grid>
     
+    <grid edit-icon="true" name="my-overtime-grid" title="My Overtimes" model="com.axelor.apps.organisation.db.Overtime">
+		<field name="date" />
+		<field name="totalAmount" />
+		<field name="currency" />
+		<field name="statusSelect" />
+		<field name="validationDate" />
+		<field name="period" />
+	</grid>
+    
     <form name="overtime-form" title="Overtime" model="com.axelor.apps.organisation.db.Overtime" cols="6"
     onNew="action-overtime-default-record">
         <field name="userInfo"/>
