@@ -31,8 +31,8 @@
 		    MONTH(_stockMove.estimatedDate)
 	    ]]>
 	    </dataset>
-		<category key="month" type="month" />
-		<series key="qty" groupBy="location" type="bar" aggregate="sum" />
+		<category key="month" type="month" title="Month"/>
+		<series key="qty" groupBy="location" type="bar" aggregate="sum" title="Quantity"/>
 	</chart>
 
 
@@ -79,8 +79,8 @@
               						 GROUP BY estimated_date,locat) ORDER BY locat,estimatedate) location_stock;  
 	    ]]>
 	    </dataset>
-		<category key="estimatedate" type="date" />
-		<series key="qty" groupBy="locat" type="line" aggregate="sum" />
+		<category key="estimatedate" type="date" title="Estimated Date"/>
+		<series key="qty" groupBy="locat" type="line" aggregate="sum" title="Quantity"/>
 	</chart>
 
 	 <action-record name="action-product-set-today-date" model="com.axelor.apps.base.db.Product">
@@ -145,11 +145,11 @@
 				_country.name
 		    ]]>
 	    </dataset>
-	    <category key="country_name" type="text"/>
-	    <series key="partners"  type="donut"/>
+	    <category key="country_name" type="text" title="Country"/>
+	    <series key="partners"  type="donut" title="Customers"/>
 	 </chart>
 	  	
-	<chart name="chart.partner.by.industry.sector.bar" title="Partners by Industry Sector">
+	<chart name="chart.customers.by.industrySector.bar" title="Customers by Industry Sector">
 	    <dataset type="sql">
 	    <![CDATA[
 		SELECT
@@ -162,15 +162,16 @@
 	    LEFT JOIN 
 	    	meta_select_item as selection_item ON selection_item.select_id = selection.id
 		WHERE
-			cast(selection_item.value as decimal) = self.industry_sector_select	and self.is_contact != true		
+			cast(selection_item.value as decimal) = self.industry_sector_select	
+			and self.is_contact != true and self.customer_type_select = 3		
 	    GROUP BY
 		   _industry_sector
 		ORDER BY
 		   _industry_sector
 	    ]]>
 	    </dataset>
-	    <category key="_industry_sector" type="text"/>
-    	<series key="_total_partner" type="donut"/>
+	    <category key="_industry_sector" type="text" title="Industry Sector"/>
+    	<series key="_total_partner" type="donut" title="Customers"/>
 	 </chart>
 
 	<chart name="chart.suppliers.by.country.bar" title="Suppliers by country">
@@ -191,8 +192,55 @@
 	      _country.name
 	    
 	  </dataset>
-	  <category key="country_name" type="text"/>
-	  <series key="partners" type="donut"/>
+	  <category key="country_name" type="text" title="Country"/>
+	  <series key="partners" type="donut" title="Suppliers"/>
 	</chart>
-
+	
+	<chart onInit="action.supplychain.portal.set.date.6m" name="chart.category.sales.turnover.per.month" title="Category sales turnover (Excl. Tax) per month">
+	  <search-fields>
+	    <field type="date" name="fromDate" title="From Date"/>
+	    <field type="date" name="toDate" title="To Date"/>
+	  </search-fields>
+	  <dataset type="jpql">
+	  SELECT
+		  SUM(self.exTaxTotal) AS _amount,
+		  YEAR(self.salesOrder.validationDate) || '-' || MONTH(self.salesOrder.validationDate) || '-01' AS _month
+	  FROM
+		  SalesOrderLine self
+	  WHERE
+		  self.salesOrder.statusSelect = 3
+		  AND self.salesOrder.company = :activeCompany
+		  AND self.product.productCategory.id = :id
+		  AND self.salesOrder.validationDate BETWEEN DATE(:fromDate) AND DATE(:toDate)
+	  GROUP BY
+	 	 YEAR(self.salesOrder.validationDate) || '-' || MONTH(self.salesOrder.validationDate) || '-01'  
+	  </dataset>
+	  <category key="_month" type="month" title="Month"/>
+	  <series key="_amount" type="bar" title="Turnover"/>
+	</chart>
+	
+	<chart onInit="action.supplychain.portal.set.date.6m" name="chart.family.sales.turnover.per.month" title="Family sales turnover (Excl. Tax) per month">
+	  <search-fields>
+	    <field type="date" name="fromDate" title="From Date"/>
+	    <field type="date" name="toDate" title="To Date"/>
+	  </search-fields>
+	  <dataset type="jpql">
+	  SELECT
+		  SUM(self.exTaxTotal) AS _amount,
+		  YEAR(self.salesOrder.validationDate) || '-' || MONTH(self.salesOrder.validationDate) || '-01' AS _month
+	  FROM
+	 	 SalesOrderLine self
+	  WHERE
+		  self.salesOrder.statusSelect = 3
+		  AND self.salesOrder.company = :activeCompany
+		  AND self.product.productFamily.id = :id
+		  AND self.salesOrder.validationDate BETWEEN DATE(:fromDate) AND DATE(:toDate)
+	  GROUP BY
+		  YEAR(self.salesOrder.validationDate) || '-' || MONTH(self.salesOrder.validationDate) || '-01'  
+	  </dataset>
+	  <category key="_month" type="month" title="Month"/>
+	  <series key="_amount" type="bar" title="Turnover"/>
+	</chart>
+	
+	
 </object-views>
