@@ -239,9 +239,9 @@
 	        <group colSpan="1" cols="1">
 	            <field name="titleSelect" showTitle="false" placeholder="Civility"/>
 	            <break/>
-	            <field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-partner-record-full-name"/>
+	            <field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-check-string-capital-case,action-partner-record-full-name"/>
 	            <break/>
-	            <field name="firstName" showTitle="false" css="highlight" placeholder="First name" onChange="action-partner-record-full-name"/>
+	            <field name="firstName" showTitle="false" css="highlight" placeholder="First name" onChange="action-check-string-camel-case,action-partner-record-full-name"/>
 	            <break/>
 	            <separator title="Company"/>
 	            <field name="mainPartner"/>

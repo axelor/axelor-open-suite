@@ -75,4 +75,12 @@
 		<call class="com.axelor.apps.account.web.GeneralController" method="updateCurrencyConversion" />
 	</action-method>
 	
+	<action-validate name="action-check-string-camel-case">
+		<error message="Please input first character as capital and other as lower case" if="firstName != null &amp;&amp; !firstName.matches('^[A-Z][a-z]*')" />
+	</action-validate>
+	
+	<action-validate name="action-check-string-capital-case">
+		<error message="Please input all character as capital" if="name != null &amp;&amp; !name.matches('^[A-Z]*')" />
+	</action-validate>
+	
 </object-views>
