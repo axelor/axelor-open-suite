@@ -264,8 +264,8 @@
 	
 	
 	<action-attrs name="action-set-payment-mode-domain">
-		<attribute name="domain" for="paymentMode" expr="eval:'self.inOutSelect = 1'" if="operationTypeSelect == 1 || operationTypeSelect == 4"/>
-		<attribute name="domain" for="paymentMode" expr="eval:'self.inOutSelect = 2'" if="operationTypeSelect == 2 || operationTypeSelect == 3"/>
+		<attribute name="domain" for="paymentMode" expr="eval:'self.inOutSelect = 2'" if="operationTypeSelect == 1 || operationTypeSelect == 4"/>
+		<attribute name="domain" for="paymentMode" expr="eval:'self.inOutSelect = 1'" if="operationTypeSelect == 2 || operationTypeSelect == 3"/>
 	</action-attrs>
 	
 </object-views>

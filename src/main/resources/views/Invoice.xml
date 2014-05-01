@@ -106,7 +106,7 @@
             <page name="paymentPage" title="Payment" cols="4" showIf="status.code == 'dis'">
             	<group name="paymentScheduleGroup" title="Payment schedule" colSpan="4">
 						<field name="schedulePaymentOk" readonly="true" showIf="schedulePaymentOk"/>
-						<field name="paymentSchedule" readonly="true" showIf="schedulePaymentOk"/>
+						<field name="paymentSchedule" readonly="true" showIf="schedulePaymentOk" domain="self.company = :company AND self.partner = :partner"/>
 				</group>
 				<group name="directDebitGroup" title="Direct debit" colSpan="4" cols="4">
 	                <field name="debitNumber"/>
