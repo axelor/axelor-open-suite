@@ -342,7 +342,8 @@
 			</bind>
 			<bind to="contactDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(contactDate)" column="contactDate"/>
 			<bind to="createdOn" eval="call:com.axelor.csv.script.ImportDateTime:importDate(contactDate)" column="contactDate"/>
-			<bind to="createdBy" eval="call:com.axelor.apps.crm.service.ImportLead:importCreatedBy(:userInfo.importId)"/>
+			<bind to="createdBy" eval="call:com.axelor.csv.script.ImportLead:importCreatedBy(userInfo)"/>
+			<bind to="userInfo" search="self.importId = :userInfo" update="true" column="userInfo"/>
 	</input>
 	
 	<input file="crm_meetingType.csv" separator=";" type="com.axelor.apps.crm.db.MeetingType">
