@@ -70,6 +70,7 @@
 		 <portlet action="portal.paymentVoucher.customer.paymentMode.distribution.nbr" colSpan="1" height="350" canSearch="true"/>
 		 <portlet action="portal.paymentVoucher.customer.paymentMode.distribution.amount" colSpan="1" height="350" canSearch="true"/>
 		 <portlet action="portal.paymentVoucher.customer.paymentMode.by.amount" colSpan="1" height="350" canSearch="true"/>
+		 <portlet action="portal.moveLines.revenues.vs.expenses" colSpan="1" height="350"  />
 	</portal>    
 
 	<action-view name="portal.account.invoice.summary" title="Account Invoice Summary" model="com.axelor.apps.account.db.Invoice">
@@ -142,6 +143,12 @@
 	<action-view name="portal.paymentVoucher.customer.paymentMode.by.amount" title="Customer Payment mode by amount" model="com.axelor.apps.account.db.PaymentVoucher">
 	    <view type="chart" name="chart.paymentVoucher.customer.paymentMode.by.amount"/>
 	    <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />        
+	</action-view>
+	
+	<action-view name="portal.moveLines.revenues.vs.expenses" title="Revenues vs Expenses" model="com.axelor.apps.account.db.MoveLine">
+	  <view type="chart" name="chart.moveLines.revenues.vs.expenses"/>
+	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
 	</action-view>
 	
 	<action-view title="Invoice Sale by month (tax excl.)" name="portal.invoice.sale.amount.by.month">
