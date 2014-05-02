@@ -141,8 +141,8 @@
 
 	<action-view name="account.root.move.move.line" title="Move Lines"
 		model="com.axelor.apps.account.db.MoveLine" icon="img/16px/accountSmall_16px.png">
-		<view type="grid" />
-		<view type="form" />
+		<view type="move-line-grid" />
+		<view type="move-line-form" />
 		<view-param name="search-filters" value="move-line-filters"/>
 	</action-view>
 	

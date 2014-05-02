@@ -65,7 +65,7 @@
 	                    <field name="nbrEmployees"/>
 	                    <field name="registrationCode"/>
 	                    <field name="taxNbr"/>
-	                    <field name="parentPartner" hideIf="partnerTypeSelect != 1"/>
+	                    <field name="parentPartner" hideIf="partnerTypeSelect != 1" domain="self.iscontact = false AND self.partnerTypeSelect = 1"/>
 	                </group>
 	            </group>
 	            <group title="Contacts details" hideIf="partnerTypeSelect == 2 || !isContact" colSpan="4" cols="4">
