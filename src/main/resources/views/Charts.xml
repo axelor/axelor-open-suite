@@ -594,6 +594,8 @@
 	    self.created_on BETWEEN DATE(:todayDate) - CAST(:monthSelect as int) * INTERVAL '1 month' AND DATE(:todayDate)
 	  GROUP BY
 	    _month
+	  ORDER BY
+  		_month    
 	  </dataset>
 	  <category key="_month" type="month"/>
 	  <series key="_leads" type="bar" title="Leads"/>
@@ -645,8 +647,8 @@
 	    _ticket.type_select=5 AND _ticket.created_on BETWEEN now() - INTERVAL '6 month' AND now()
 	  GROUP BY
 	    _priority, _month
-	       ORDER BY
-	          _priority
+	  ORDER BY
+    	 _month, _priority
 	  
 	  </dataset>
 	  <category key="_month" type="month" title="Month"/>
@@ -684,7 +686,8 @@
 	    AND _ticket.type_select=5
 	  GROUP BY
 	    _status, _month
-	      
+	   ORDER BY
+ 		  _month,_tickets DESC     
 	  </dataset>
 	  <category key="_month" type="month" title="Month"/>
 	  <series key="_tickets" groupBy="_status" type="bar" title="Tickets"/>
@@ -708,6 +711,8 @@
 	    AND _ticket.type_select != 5
 	  GROUP BY
 	    _agent, _month
+	  ORDER BY
+  		 _month   
 	    
 	  </dataset>
 	  <category key="_month" type="month" title="Month"/>
