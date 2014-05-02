@@ -338,6 +338,8 @@
 	    AND self.salesman_user_info = :id
 	  GROUP BY
 	    _month
+	  ORDER BY
+ 		 _month  
 	  
 	  </dataset>
 	  <category key="_month" type="month" title="Month"/>
@@ -998,6 +1000,8 @@
 	    GROUP BY
 	      _month)
 	  ) prod_status
+	  ORDER BY
+       _month 
 	  
 	  </dataset>
 	  <category key="_month" type="month" title="Month"/>
@@ -1025,6 +1029,7 @@
 	    AND self.salesOrder.validationDate BETWEEN DATE(:fromDate) AND DATE(:toDate)
 	    GROUP BY
 	    YEAR(self.salesOrder.validationDate) || '-' || MONTH(self.salesOrder.validationDate) || '-01'  
+	    ORDER BY  _month 
 	  </dataset>
 	  <category key="_month" type="month" title="Month"/>
 	  <series key="_amount" type="bar" title="Turnover"/>
@@ -1052,7 +1057,7 @@
 	    AND self.salesOrder.validationDate BETWEEN DATE(:toDate) - 365 AND DATE(:toDate)
 	  GROUP BY
 	    YEAR(self.salesOrder.validationDate) || '-' || MONTH(self.salesOrder.validationDate) || '-01'
-	  
+	   ORDER BY _month
 	  </dataset>
 	  <category key="_month" type="month" title="Month"/>
 	  <series key="_amount" type="bar" title="Turnover"/>
@@ -1094,6 +1099,8 @@
 	    AND self.salesOrder.company = :activeCompany
 	    GROUP BY
 	    YEAR(self.salesOrder.validationDate) || '-' || MONTH(self.salesOrder.validationDate) || '-01'
+	    ORDER BY
+  		_month 
 	  
 	  </dataset>
 	  <category key="_month" type="month" title="Month"/>
@@ -1125,6 +1132,8 @@
 	    AND self.salesOrder.company = :activeCompany
 	    GROUP BY
 	    YEAR(self.salesOrder.validationDate) || '-' || MONTH(self.salesOrder.validationDate) || '-01'
+	    ORDER BY
+ 		_month 
 	  
 	  </dataset>
 	  <category key="_month" type="month" title="Month"/>
