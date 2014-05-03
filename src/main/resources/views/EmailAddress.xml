@@ -9,11 +9,19 @@
     
     <form name="email-address-form" title="Email address" model="com.axelor.apps.message.db.EmailAddress" cols="2">
 		<field name="partner"/>
-		<field name="address" widget="Email"/>
+		<field name="address" widget="Email" onChange="action-check-string-email-address" />
     </form>
     
     <form name="email-address-simple-form" title="Email address" model="com.axelor.apps.message.db.EmailAddress" cols="2">
-		<field name="address" widget="Email"/>
+		<field name="address" widget="Email" onChange="action-check-string-email-address" />
     </form>
     
+	<action-validate name="action-check-string-email-address">
+		<error message="Please input valid email address" if="address != null &amp;&amp; !address.matches('^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@+[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$')" action="action-check-string-email-address-clear"/>
+	</action-validate>
+    
+    <action-record name="action-check-string-email-address-clear" model="com.axelor.apps.base.db.General">
+		<field name="address"  expr="eval:null"/>
+	</action-record>
+	
 </object-views>
