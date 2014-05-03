@@ -85,7 +85,7 @@
 				<field name="purchaseCurrency"/>
 				<field name="managPriceCoef" onChange="action-product-record-compute-sale-price"/>
 				<break/>
-				<field name="defaultSupplierPartner"/>
+				<field name="defaultSupplierPartner" domain="self.isContact = false AND self.supplierTypeSelect in (2,3)"/>
 				<separator title="Suppliers catalog" colSpan="4"/>
 				<field name="supplierCatalogList" colSpan="4"/>        
 			</page>
