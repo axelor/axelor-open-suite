@@ -19,10 +19,11 @@
     </input>
     
     <input file="auth_user.csv" separator=";" type="com.axelor.auth.db.User"  />
-	
-    <input file="base_printSetting.csv" separator=";" type="com.axelor.apps.base.db.PrintingSettings" />
     
-<!--     IMPORT DU PACKAGE 'BASE' -->   
+<!--     IMPORT DU PACKAGE 'BASE' -->
+	
+	<input file="base_printSetting.csv" separator=";" type="com.axelor.apps.base.db.PrintingSettings" />
+	     
 	<input file="base_status.csv" separator=";" type="com.axelor.apps.base.db.Status">
 		<bind column="statut_id" to="koalaId" />
 		<bind column="statut_libelle" to="name" />
@@ -75,6 +76,9 @@
 	<input file="base_partnerCategory.csv" separator=";" type="com.axelor.apps.base.db.PartnerCategory">
 		<bind column="name" to="name"/>	
 	</input>
+	
+	<input file="base_scheduler.csv" separator=";" type="com.axelor.apps.base.db.Scheduler" />
+	
 	
 <!-- 	<input file="base_partner.csv" separator=";" type="com.axelor.apps.base.db.AccountingSituation" call="com.axelor.csv.script.ImportPartner:importAccountingSituation"> -->
 <!-- 		<bind column="partner" to="accountingSituationList"/> -->
@@ -509,6 +513,14 @@
  	</input>
  	
  	<input file="account_invoiceLine.csv" separator=";" type="com.axelor.apps.account.db.InvoiceLine" />
+ 	
+ 	<input file="account_paymentVoucher.csv" separator=";" type="com.axelor.apps.account.db.PaymentVoucher" >
+ 		<bind to="paymentDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(paymentDateTime)" column="paymentDateTime"/>
+ 	</input>
+ 	
+ 	<input file="account_paymentVoucher.csv" separator=";" type="com.axelor.apps.account.db.PaymentVoucher" search="self.importId = :importId" update="true" call="com.axelor.csv.script.ImportPaymentVoucher:importPaymentVoucher">
+ 		<bind to="paymentDateTime" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(paymentDateTime)" column="paymentDateTime"/>
+ 	</input>
  	
 <!-- 	<input file="supplychain_stockMove.csv" separator=";" type="com.axelor.apps.supplychain.db.StockMove"/> -->
 	

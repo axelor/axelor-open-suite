@@ -1,6 +1,6 @@
 "inventory.inventorySeq";"product.importId";"currentQty";"realQty";"description";"productVariant_importId";"trackingNumber_importId"
 "INV0001";111;"0.00";"25.00";;;
-"INV0001";110;"0.00";"25.00";;;
+"INV0001";110;"0.00";"35.00";;;
 "INV0001";120;"0.00";"40.00";;;
 "INV0001";121;"0.00";"20.00";;;
 "INV0001";130;"0.00";"15.00";;;
