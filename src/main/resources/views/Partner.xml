@@ -37,7 +37,7 @@
 	            <break/>
 	            <field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-partner-record-full-name"/>
 	            <break/>
-	            <field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name" onChange="action-partner-record-full-name"/>
+	            <field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name" onChange="action-check-string-camel-case,action-partner-record-full-name"/>
 	            <break/>
 	            <field name="partnerTypeSelect" showTitle="false" onChange="action-partner-attrs-change-name"/>
 	        </group>
@@ -65,7 +65,7 @@
 	                    <field name="nbrEmployees"/>
 	                    <field name="registrationCode"/>
 	                    <field name="taxNbr"/>
-	                    <field name="parentPartner" hideIf="partnerTypeSelect != 1"/>
+	                    <field name="parentPartner" hideIf="partnerTypeSelect != 1" domain="self.iscontact = false AND self.partnerTypeSelect = 1"/>
 	                </group>
 	            </group>
 	            <group title="Contacts details" hideIf="partnerTypeSelect == 2 || !isContact" colSpan="4" cols="4">

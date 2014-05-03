@@ -51,133 +51,104 @@
 		<series key="_turn_over"  type="bar" title="TurnOver" />
 	</chart>
     
-	<chart name="chart.prod.turnover.cust.invoices.last.12m" title="Turnover On Customer Invoices on Last 12 Month" stacked="true">
-      <dataset type="sql">
-      <![CDATA[
-        SELECT 
-            cast(_meta._select_month_value as int) AS _month_no,
-            coalesce(_product._product_type,'other') AS product,
-            coalesce(SUM(_invoice._turn_over), 00) AS _turn_over
-        FROM
-            (SELECT 
-                _invoice.id AS _invoice_id,
-                date_part('mon', _invoice.invoice_date) AS _month,
-                _line.ex_tax_total AS _turn_over,
-                _line.product AS _line_product
-            FROM
-                account_invoice AS _invoice
-            JOIN
-                account_invoice_line AS _line 
-                ON _line.invoice=_invoice.id
-            LEFT JOIN
-                base_status AS _status
-                ON _status.id = _invoice.status AND _status.code != 'dra'                
-            WHERE
-                _invoice.invoice_date >= now() - INTERVAL '12 month' 
-                AND _invoice.operation_type_select=3
-                
-            GROUP BY 
-                _invoice_id, _line_product, _turn_over, _month) AS _invoice
-        
-        RIGHT JOIN
-
-            (SELECT 
-                _category.name AS _product_type, _product.id AS _product_id
-            FROM
-                base_product AS _product
-            JOIN
-                base_product_category AS _category 
-                ON _product.product_category=_category.id AND _category.name IS NOT NULL) AS _product
-
-        ON _invoice._line_product=_product._product_id
-
-        RIGHT JOIN
-
-            (SELECT
-                _month_select.title AS _select_month_title, _month_select.value AS _select_month_value
-            FROM
-                meta_select AS _selection
-            JOIN
-                meta_select_item AS _month_select
-                ON _month_select.select_id=_selection.id
-            WHERE
-                _selection.name='iadministration.month.select') AS _meta
-
-        ON _invoice._month=to_number(_meta._select_month_value,'00')
-                
-        GROUP BY _meta._select_month_title, _product._product_type, _meta._select_month_value
-        ORDER BY _month_no, _turn_over DESC
-         ]]>
-      </dataset>
-      <category key="_month_no" type="month" title="Month"/>
-      <series key="_turn_over" type="bar" groupBy="product" aggregate="sum" title="TurnOver" />
+	<chart stacked="true" name="chart.prod.turnover.cust.invoices.last.12m" title="Turnover On Customer Invoices on Last 12 Month">
+	  <dataset type="sql">
+	  
+	  SELECT 
+	    date_part('year',_invoice.invoice_date) || '-' || date_part('mon',_invoice.invoice_date) || '-01' AS _month_no,
+	    coalesce(_product._product_type,'other') AS product,
+	    coalesce(SUM(_invoice._turn_over), 00) AS _turn_over
+	  FROM
+	    (SELECT 
+	      _invoice.id AS _invoice_id,
+	      _invoice.invoice_date as invoice_date,
+	      date_part('mon', _invoice.invoice_date) AS _month,
+	      _line.ex_tax_total AS _turn_over,
+	      _line.product AS _line_product
+	    FROM
+	      account_invoice AS _invoice
+	    JOIN
+	      account_invoice_line AS _line 
+	      ON _line.invoice=_invoice.id
+	    LEFT JOIN
+	      base_status AS _status
+	      ON _status.id = _invoice.status AND _status.code != 'dra'        
+	    WHERE
+	      _invoice.invoice_date &gt;= now() - INTERVAL '12 month' 
+	      AND _invoice.operation_type_select=3
+	      
+	    GROUP BY 
+	      _invoice_id, _line_product, _turn_over, _month) AS _invoice
+	  
+	  JOIN
+	
+	    (SELECT 
+	      _category.name AS _product_type, _product.id AS _product_id
+	    FROM
+	      base_product AS _product
+	    JOIN
+	      base_product_category AS _category 
+	      ON _product.product_category=_category.id AND _category.name IS NOT NULL) AS _product
+	
+	  ON _invoice._line_product=_product._product_id
+	  GROUP BY _month_no, _product._product_type
+	  ORDER BY _month_no, _turn_over DESC
+	   
+	  </dataset>
+	  <category key="_month_no" type="month" title="Month"/>
+	  <series key="_turn_over" groupBy="product" type="bar" title="TurnOver" aggregate="sum"/>
 	</chart>
 
-	<chart name="chart.prod.qty.cust.invoices.last.12m" title="Number Of Units On Customer Invoices on Last 12 Month" stacked="true">
-      <dataset type="sql">
-      <![CDATA[
-      SELECT 
-            cast(_meta._select_month_value as int) AS _month_no,
-            coalesce(_product._product_type,'other') AS product,
-            coalesce(SUM(_invoice._turn_over), 00) AS _turn_over
-        FROM
-            (SELECT 
-                _invoice.id AS _invoice_id,
-                date_part('mon', _invoice.invoice_date) AS _month,
-                _line.qty AS _turn_over,
-                _line.product AS _line_product
-            FROM
-                account_invoice AS _invoice
-            JOIN
-                account_invoice_line AS _line 
-                ON _line.invoice=_invoice.id
-            LEFT JOIN
-                base_status AS _status
-                ON _status.id = _invoice.status AND _status.code != 'dra'                
-            WHERE
-                _invoice.invoice_date >= now() - INTERVAL '12 month' 
-                AND _invoice.operation_type_select=3
-                
-            GROUP BY 
-                _invoice_id, _line_product, _turn_over, _month
-            ORDER BY 
-                _turn_over) AS _invoice
-        
-        RIGHT JOIN
-
-            (SELECT 
-                _category.name AS _product_type, _product.id AS _product_id
-            FROM
-                base_product AS _product
-            JOIN
-                base_product_category AS _category 
-                ON _product.product_category=_category.id AND _category.name IS NOT NULL) AS _product
-
-        ON _invoice._line_product=_product._product_id
-        
-        RIGHT JOIN
-
-            (SELECT
-                _month_select.title AS _select_month_title, _month_select.value AS _select_month_value
-            FROM
-                meta_select AS _selection
-            JOIN
-                meta_select_item AS _month_select
-                ON _month_select.select_id=_selection.id
-            WHERE
-                _selection.name='iadministration.month.select'
-            ORDER BY
-                _month_select.value) AS _meta
-
-        ON _invoice._month=to_number(_meta._select_month_value,'00')
-
-        GROUP BY _meta._select_month_title, _product._product_type, _meta._select_month_value
-        ORDER BY _month_no, _turn_over DESC
-      ]]>
-      </dataset>
-      <category key="_month_no" type="month" title="Month"/>
-      <series key="_turn_over" type="bar" groupBy="product" aggregate="sum" title="No of Units" />
-    </chart>
+	
+	<chart stacked="true" name="chart.prod.qty.cust.invoices.last.12m" title="Number Of Units On Customer Invoices on Last 12 Month">
+	  <dataset type="sql">
+	  
+	  SELECT 
+	     date_part('year',_invoice._invoice_date) || '-' || date_part('mon',_invoice._invoice_date) || '-01' AS _month_no,
+	    coalesce(_product._product_type,'other') AS product,
+	    coalesce(SUM(_invoice._turn_over), 00) AS _turn_over
+	  FROM
+	    (SELECT 
+	      _invoice.id AS _invoice_id,
+	     _invoice.invoice_date AS _invoice_date,
+	      _line.qty AS _turn_over,
+	      _line.product AS _line_product
+	    FROM
+	      account_invoice AS _invoice
+	    JOIN
+	      account_invoice_line AS _line 
+	      ON _line.invoice=_invoice.id
+	    LEFT JOIN
+	      base_status AS _status
+	      ON _status.id = _invoice.status AND _status.code != 'dra'        
+	    WHERE
+	      _invoice.invoice_date &gt;= now() - INTERVAL '12 month' 
+	      AND _invoice.operation_type_select=3
+	      
+	    GROUP BY 
+	      _invoice_id, _line_product, _turn_over
+	    ORDER BY 
+	      _turn_over) AS _invoice
+	  
+	  JOIN
+	
+	    (SELECT 
+	      _category.name AS _product_type, _product.id AS _product_id
+	    FROM
+	      base_product AS _product
+	    JOIN
+	      base_product_category AS _category 
+	      ON _product.product_category=_category.id AND _category.name IS NOT NULL) AS _product
+	
+	  ON _invoice._line_product=_product._product_id
+	  
+	  GROUP BY _month_no, _product._product_type
+	  ORDER BY _month_no, _turn_over DESC
+	  
+	  </dataset>
+	  <category key="_month_no" type="month" title="Month"/>
+	  <series key="_turn_over" groupBy="product" type="bar" title="No of Units" aggregate="sum"/>
+	</chart>
       
 	<chart name="chart.total.revenue.by.each.product" title="Total Revenue Generated By Each Product" >
 	  <dataset type="sql">
@@ -226,170 +197,131 @@
 	</chart>  
 	
 	
-    <chart name="chart.purchase.buyer.dashboard.prod.qty.suppl.invoices.last.12m" stacked="true" title="Number Of Units On Supplier Invoices On Last 12 Month">
-	   <dataset type="sql">
-	     <![CDATA[
-		   
-						SELECT  cast(_meta._select_month_value as int) AS _month,
-					coalesce(_product._product_type,'other') AS _product,
-					SUM(_invoice._qty) AS _qty
-				FROM	
-					(SELECT 
-						_invoice.id AS _invoice_id,
-						date_part('month', _invoice.invoice_date) AS _month,
-						_line.qty AS _qty,
-						_line.product AS _line_product
-					FROM
-						account_invoice AS _invoice
-					JOIN
-						account_invoice_line AS _line 
-						ON _line.invoice=_invoice.id
-					LEFT JOIN
-						base_status AS _status
-						ON _status.id = _invoice.status AND _status.code != 'dra'				
-					WHERE
-						_invoice.invoice_date >= now() - INTERVAL '12 month' 
-						AND _invoice.operation_type_select=1
-						
-					GROUP BY 
-						_invoice_id, _line_product, _qty, _month
-					ORDER BY 
-						_qty) AS _invoice
-				RIGHT JOIN
-					(SELECT 
-						_category.name AS _product_type, _product.id AS _product_id
-					FROM
-						base_product AS _product
-					JOIN
-						base_product_category AS _category 
-						ON _product.product_category=_category.id AND _category.name IS NOT NULL) AS _product
-				
-				ON _invoice._line_product=_product._product_id
-				RIGHT JOIN
-					(SELECT
-						_month_select.title AS _select_month_title, _month_select.value AS _select_month_value
-					FROM
-						meta_select AS _selection
-					JOIN
-						meta_select_item AS _month_select
-						ON _month_select.select_id=_selection.id
-					WHERE
-						_selection.name='iadministration.month.select'
-					ORDER BY
-						_month_select.value) AS _meta
-				
-				ON _invoice._month=to_number(_meta._select_month_value,'00')
-				GROUP BY _invoice._month,_product._product_type,_meta._select_month_value,_meta._select_month_title 
-				ORDER BY _month	
-	    ]]>
-	    </dataset>
-	    <category key="_month" type="month"/>
-	    <series key="_qty" groupBy="_product" type="bar" title="Units" />
-	  </chart>
+   
+	<chart stacked="true" name="chart.purchase.buyer.dashboard.prod.qty.suppl.invoices.last.12m" title="Number Of Units On Supplier Invoices On Last 12 Month">
+	  <dataset type="sql">
+	   
+	     
+	      SELECT 
+	        date_part('year',_invoice._invoice_date) || '-' || date_part('mon',_invoice._invoice_date) || '-01' AS _month,
+	        coalesce(_product._product_type,'other') AS _product,
+	        SUM(_invoice._qty) AS _qty
+	      FROM  
+	        (SELECT 
+	          _invoice.id AS _invoice_id,
+	         _invoice.invoice_date AS _invoice_date,
+	          _line.qty AS _qty,
+	          _line.product AS _line_product
+	        FROM
+	          account_invoice AS _invoice
+	        JOIN
+	          account_invoice_line AS _line 
+	          ON _line.invoice=_invoice.id
+	        LEFT JOIN
+	          base_status AS _status
+	          ON _status.id = _invoice.status AND _status.code != 'dra'        
+	        WHERE
+	          _invoice.invoice_date &gt;= now() - INTERVAL '12 month' 
+	          AND _invoice.operation_type_select=1
+	          
+	        GROUP BY 
+	          _invoice_id, _line_product, _qty, _invoice_date
+	        ORDER BY 
+	          _qty) AS _invoice
+	      JOIN
+	        (SELECT 
+	          _category.name AS _product_type, _product.id AS _product_id
+	        FROM
+	          base_product AS _product
+	        JOIN
+	          base_product_category AS _category 
+	          ON _product.product_category=_category.id AND _category.name IS NOT NULL) AS _product
+	      
+	      ON _invoice._line_product=_product._product_id
+	      GROUP BY _product._product_type,_month
+	      ORDER BY _month  
 	  
-	  <chart name="chart.purchase.buyer.dashboard.prod.turnover.suppl.invoices.last.12m" stacked="true" title="Turnover On Supplier Invoices On Last 12 Month">
-	    <dataset type="sql">
-	     <![CDATA[
-		   
-		SELECT  cast(_meta._select_month_value as int) AS _month,
-			coalesce(_product._product_type,'other') AS _product,
-			coalesce(SUM(_invoice._turn_over),00) AS _turn_over
-		FROM	
-			(SELECT 
-				_invoice.id AS _invoice_id,
-				date_part('month', _invoice.invoice_date) AS _month,
-				_line.ex_tax_total AS _turn_over,
-				_line.product AS _line_product
-			FROM
-				account_invoice AS _invoice
-			JOIN
-				account_invoice_line AS _line 
-				ON _line.invoice=_invoice.id
-			LEFT JOIN
-				base_status AS _status
-				ON _status.id = _invoice.status AND _status.code != 'dra'				
-			WHERE
-				_invoice.invoice_date >= now() - INTERVAL '12 month' 
-				AND _invoice.operation_type_select=1
-				
-			GROUP BY 
-				_invoice_id, _line_product, _turn_over, _month
-			ORDER BY 
-				_turn_over) AS _invoice
-		RIGHT JOIN
-			(SELECT 
-				_category.name AS _product_type, _product.id AS _product_id
-			FROM
-				base_product AS _product
-			JOIN
-				base_product_category AS _category 
-				ON _product.product_category=_category.id AND _category.name IS NOT NULL) AS _product
-		
-		ON _invoice._line_product=_product._product_id
-		RIGHT JOIN
-			(SELECT
-				_month_select.title AS _select_month_title, _month_select.value AS _select_month_value
-			FROM
-				meta_select AS _selection
-			JOIN
-				meta_select_item AS _month_select
-				ON _month_select.select_id=_selection.id
-			WHERE
-				_selection.name='iadministration.month.select'
-			ORDER BY
-				_month_select.value) AS _meta
-		
-		ON _invoice._month=to_number(_meta._select_month_value,'00')
-		GROUP BY _invoice._month,_product._product_type,_meta._select_month_value,_meta._select_month_title 
-		ORDER BY _month		
-	    ]]>
-	    </dataset>
-	    <category key="_month" type="month" />
-	    <series key="_turn_over" groupBy="_product" type="bar" title="Units" />
-	  </chart>
+	  </dataset>
+	  <category key="_month" type="month"/>
+	  <series key="_qty" groupBy="_product" type="bar" title="Units"/>
+	</chart>
+
 	  
- 	  <chart name="chart.purchase.buyer.dashboard.supplier.invoices.per.month"  title="Number Of Supplier Invoices Per Month">
-	    <dataset type="sql">
-	     <![CDATA[
-			SELECT  cast(_meta._select_month_value as int) AS _month,
-					SUM(_invoices._amount) AS _amount
-			FROM
-					(SELECT 
-						count(_invoice.id) AS _amount,
-						date_part('month', _invoice.invoice_date) AS _month
-					FROM
-							account_invoice AS _invoice
-					WHERE
-						_invoice.invoice_date >= now() - INTERVAL '12 month' 
-					AND 
-						_invoice.operation_type_select=1
-					GROUP BY 
-		 				_month) AS _invoices
-			RIGHT JOIN
-					(SELECT
-						_month_select.title AS _select_month_title, _month_select.value AS _select_month_value
-						FROM
-							meta_select AS _selection
-						JOIN
-							meta_select_item AS _month_select
-						ON 
-							_month_select.select_id=_selection.id
-						WHERE
-							_selection.name='iadministration.month.select'
-						ORDER BY
-							_month_select.value) AS _meta
-			ON 
-				_invoices._month=to_number(_meta._select_month_value,'00')
-			GROUP BY
-				 _invoices._month,_meta._select_month_value,_meta._select_month_title 
-			ORDER BY 
-				_month	
-	
-	    ]]>
-	    </dataset>
-	    <category key="_month" type="month" />
-	    <series key="_amount"  type="bar" title="Units" />
-	  </chart>
+	<chart stacked="true" name="chart.purchase.buyer.dashboard.prod.turnover.suppl.invoices.last.12m" title="Turnover On Supplier Invoices On Last 12 Month">
+	  <dataset type="sql">
+	   
+	     
+	  SELECT 
+	     date_part('year',_invoice._invoice_date) || '-' || date_part('mon',_invoice._invoice_date) || '-01' AS _month,
+	    coalesce(_product._product_type,'other') AS _product,
+	    coalesce(SUM(_invoice._turn_over),00) AS _turn_over
+	  FROM  
+	    (SELECT 
+	      _invoice.id AS _invoice_id,
+	      _invoice.invoice_date AS _invoice_date,
+	      _line.ex_tax_total AS _turn_over,
+	      _line.product AS _line_product
+	    FROM
+	      account_invoice AS _invoice
+	    JOIN
+	      account_invoice_line AS _line 
+	      ON _line.invoice=_invoice.id
+	    LEFT JOIN
+	      base_status AS _status
+	      ON _status.id = _invoice.status AND _status.code != 'dra'        
+	    WHERE
+	      _invoice.invoice_date &gt;= now() - INTERVAL '12 month' 
+	      AND _invoice.operation_type_select=1
+	      
+	    GROUP BY 
+	      _invoice_id, _line_product, _turn_over, _invoice_date
+	    ORDER BY 
+	      _turn_over) AS _invoice
+	  JOIN
+	   (SELECT 
+	      _category.name AS _product_type, _product.id AS _product_id
+	    FROM
+	      base_product AS _product
+	    JOIN
+	      base_product_category AS _category 
+	      ON _product.product_category=_category.id AND _category.name IS NOT NULL) AS _product
+	  
+	  ON _invoice._line_product=_product._product_id
+	  GROUP BY _product._product_type,_month 
+	  ORDER BY _month    
+	  
+	  </dataset>
+	  <category key="_month" type="month"/>
+	  <series key="_turn_over" groupBy="_product" type="bar" title="Units"/>
+	</chart>
+	  
+	 <chart name="chart.purchase.buyer.dashboard.supplier.invoices.per.month" title="Number Of Supplier Invoices Per Month">
+	  <dataset type="sql">
+	   
+	    SELECT  
+	    date_part('year',_invoices._invoice_date) || '-' || date_part('mon',_invoices._invoice_date) || '-01' AS _month,
+	        SUM(_invoices._amount) AS _amount
+	    FROM
+	        (SELECT 
+	          count(_invoice.id) AS _amount,
+	         _invoice.invoice_date AS _invoice_date
+	        FROM
+	            account_invoice AS _invoice
+	        WHERE
+	          _invoice.invoice_date &gt;= now() - INTERVAL '12 month' 
+	        AND 
+	          _invoice.operation_type_select=1
+	        GROUP BY 
+	           _invoice_date) AS _invoices
+	    GROUP BY
+	       _month 
+	    ORDER BY 
+	      _month  
+	  </dataset>
+	  <category key="_month" type="month"/>
+	  <series key="_amount" type="bar" title="Units"/>
+	</chart>
+
 	  
  	  <chart name="chart.paymentVoucher.customer.paymentMode.distribution.nbr" onInit="action.account.portal.default.month.value" title="Customer Payment mode distribution by transactions">
  	    <search-fields>
@@ -484,43 +416,74 @@
 	    <category key="paymentMode" type="text" />
 	    <series key="total" type="bar" title="Amount paid" />
 	  </chart>
+
+	<action-record name="action.account.active.fiscal.year" model="com.axelor.apps.account.db.Move">
+	  <field name="year" expr="eval:com.axelor.apps.base.db.Year.all().filter('self.company=?1 AND ?2 BETWEEN self.fromDate AND self.toDate',activeCompany,todayDate).fetchOne()" />  
+	</action-record>
+	
+	<chart onInit="action.account.active.fiscal.year" name="chart.moveLines.revenues.vs.expenses" title="Revenues vs Expenses">
+	  
+	  <search-fields>
+	    <field name="year" type="reference" target="com.axelor.apps.base.db.Year" title="Year" />
+	    <field name="period" type="reference" target="com.axelor.apps.base.db.Period" title="Period" domain="self.year=:year"/>    
+	  </search-fields>
+	  
+	  <dataset type="jpql">
+	    
+	    SELECT
+	      SUM(
+	        (CASE     
+	          WHEN self.account.accountType.nameSelect = 'income' then self.credit
+	          WHEN self.account.accountType.nameSelect = 'expense' then self.debit
+	        END)
+	      ) AS _amount,
+	      item.title AS _label
+	      
+	    FROM
+	      MoveLine self,
+	      MetaSelect meta,
+	      MetaSelectItem item
+	    
+	    WHERE  
+	      meta.name = 'account.account.type.select'
+	      AND item.select = meta
+	      AND self.account.accountType.nameSelect = item.value  
+	      AND self.move.state = 'validated'
+	      AND self.move.period.year = :year
+	      AND (self.move.period = :period OR :period IS NULL)
+	      AND self.move.company = :activeCompany
+	      AND item.value IN ('income','expense')
+	    GROUP BY
+	      item.title  
+	    
+	  </dataset>
+	  <category key="_label" type="text"/>
+	  <series key="_amount" type="bar"/>
+	</chart>
 	     
-	  <chart onInit="action.account.portal.default.month.value" name="chart.invoice.sale.amount.by.month" title="Invoice Sale by month (tax excl.)">
-		 <search-fields>
-		    <field type="string" name="monthSelect" title="Past Months" selection="account.year.period.duration.select"/>
-		 </search-fields>
- 		 <dataset type="sql">
-		    SELECT
-			    coalesce(SUM(CASE WHEN cast(_meta._select_month_value as int)=date_part('month',self.invoice_date) 
-			    THEN self.ex_tax_total end),0.00)  AS ex_tax_total,
-			    cast(_meta._select_month_value as int) AS _month 
-			FROM
-			  account_invoice self
-			JOIN
-				base_status AS _status
-				ON _status.code != 'dra' AND _status.id = self.status
-	        JOIN
-			            base_user_info AS _user
-			            ON _user.id = :id
-			JOIN
-			            base_company AS _company
-			            ON  _company.id = _user.active_company
-			            AND _company.id = self.company
-			CROSS JOIN
-				    (SELECT
-			    		  _month_select.title AS _select_month_title, _month_select.value AS _select_month_value
-			    	FROM
-			      		   meta_select AS _selection
-			   		JOIN
-			     		  meta_select_item AS _month_select
-			      	ON _month_select.select_id=_selection.id
-			    	WHERE
-			      		_selection.name='iadministration.month.select'
-			    	ORDER BY
-			     		 _month_select.value) AS _meta
-		  WHERE self.operation_type_select=3 AND self.invoice_date &lt; DATE(:todayDate) 
-		  		AND self.invoice_date > DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month'  
-		  GROUP BY cast(_meta._select_month_value as int)
+	 <chart onInit="action.account.portal.default.month.value" name="chart.invoice.sale.amount.by.month" title="Invoice Sale by month (tax excl.)">
+	  <search-fields>
+	    <field type="string" name="monthSelect" title="Past Months" selection="account.year.period.duration.select"/>
+	  </search-fields>
+	  <dataset type="sql">
+	    SELECT
+	      coalesce(SUM(self.ex_tax_total),0.00)  AS ex_tax_total,
+	     date_part('year',self.invoice_date) || '-' || date_part('mon',self.invoice_date) || '-01' AS _month
+	    FROM
+	      account_invoice self
+	    JOIN
+	      base_status AS _status
+	      ON _status.code != 'dra' AND _status.id = self.status
+	    JOIN
+	          base_user_info AS _user
+	          ON _user.id = :id
+	    JOIN
+	          base_company AS _company
+	          ON  _company.id = _user.active_company
+	          AND _company.id = self.company
+	    WHERE self.operation_type_select=3 AND self.invoice_date &lt; DATE(:todayDate) 
+	        AND self.invoice_date &gt; DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month'  
+	    GROUP BY _month
 	  </dataset>
 	  <category key="_month" type="month"/>
 	  <series key="ex_tax_total" type="bar"/>
@@ -602,41 +565,32 @@
 	    <field type="string" name="monthSelect" title="Past Months" selection="account.year.period.duration.select"/>
 	  </search-fields>
 	  <dataset type="sql">
-	      
-	    SELECT
-		    coalesce(SUM(CASE WHEN cast(_meta._select_month_value as int)=date_part('month',self.invoice_date) 
-		    THEN self.ex_tax_total end),0.00)  AS ex_tax_total,
-		    cast(_meta._select_month_value as int) AS _month 
-		FROM
-	 		 account_invoice self
-		JOIN 
-		       base_status AS _status
-		       ON _status.code != 'dra' AND _status.id = self.status
-		JOIN   
-		       base_user_info AS _user
-	           ON _user.id = :id
-	    JOIN   
-	            base_company AS _company
-	            ON  _company.id = _user.active_company
-	            AND _company.id = self.company
-		CROSS JOIN
-		    (SELECT
-		      _month_select.title AS _select_month_title, _month_select.value AS _select_month_value
-		    FROM
-		      meta_select AS _selection
-		    JOIN
-		      meta_select_item AS _month_select
-		      ON _month_select.select_id=_selection.id
-		    WHERE
-		      _selection.name='iadministration.month.select'
-		    ORDER BY
-		      _month_select.value) AS _meta
-	    WHERE self.operation_type_select=1 AND self.invoice_date &lt; DATE(:todayDate) AND self.invoice_date > DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month'   
-     	GROUP BY cast(_meta._select_month_value as int)
+	    
+	  SELECT
+	    coalesce(SUM(self.ex_tax_total),0.00)  AS ex_tax_total,
+	     date_part('year',self.invoice_date) || '-' || date_part('mon',self.invoice_date) || '-01' AS _month
+	  FROM
+	      account_invoice self
+	  JOIN 
+	       base_status AS _status
+	       ON _status.code != 'dra' AND _status.id = self.status
+	  JOIN   
+	       base_user_info AS _user
+	       ON _user.id = :id
+	  JOIN   
+	      base_company AS _company
+	      ON  _company.id = _user.active_company
+	      AND _company.id = self.company
+	  WHERE 
+	     self.operation_type_select=1 AND self.invoice_date &lt; DATE(:todayDate) AND self.invoice_date &gt; DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month'   
+	  GROUP BY _month
+	  ORDER BY
+    	_month
 	  </dataset>
 	  <category key="_month" type="month"/>
 	  <series key="ex_tax_total" type="bar"/>
 	</chart>
+
 	
 	<chart onInit="action.account.portal.default.month.value"  name="chart.invoice.purchase.amount.by.currency" title="Invoice Purchase by currency (tax excl.)">
 	  <search-fields>

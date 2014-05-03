@@ -130,6 +130,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
         this.isTaxInvoice = isTaxInvoice;
         this.today = GeneralService.getTodayDate();
         this.currencyService = new CurrencyService(this.today);
+        this.accountManagementService = new AccountManagementService();
     }
 	
 	protected InvoiceLineGenerator( Invoice invoice, Product product, String productName, BigDecimal price, String description, BigDecimal qty,
