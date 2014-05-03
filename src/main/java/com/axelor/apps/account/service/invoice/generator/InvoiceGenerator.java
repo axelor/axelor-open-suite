@@ -219,7 +219,7 @@ public abstract class InvoiceGenerator {
 		
 		invoice.setCompany(company);
 		
-		invoice.setPartnerAccount(this.getCustomerAccount(partner, company));
+		invoice.setPartnerAccount(this.getPartnerAccount(partner, company, operationType == IInvoice.SUPPLIER_PURCHASE || operationType == IInvoice.SUPPLIER_REFUND));
 		
 		invoice.setJournal(journalService.getJournal(invoice)); 
 		
@@ -237,38 +237,93 @@ public abstract class InvoiceGenerator {
 	}
 	
 
-	public Account getCustomerAccount(Partner partner, Company company) throws AxelorException  {
+	public Account getPartnerAccount(Partner partner, Company company, boolean isSupplierInvoice) throws AxelorException  {
 			
-		Account partnerAccount = null;
+		if(isSupplierInvoice)  {  return this.getSupplierAccount(partner, company);  }
+		
+		else  {  return this.getCustomerAccount(partner, company);  }
+			
+	}
+	
+	
+	public Account getCustomerAccount(Partner partner, Company company) throws AxelorException  {
+		
+		Account customerAccount = null;
+		
+		AccountingSituation accountingSituation = this.getAccountingSituation(company);
+		
+		if(accountingSituation != null)   {
+			
+			customerAccount = accountingSituation.getCustomerAccount();
+		}
+		
+		if(customerAccount == null)  {
+			
+			AccountConfigService accountConfigService = new AccountConfigService();
+			
+			customerAccount = accountConfigService.getCustomerAccount(accountConfigService.getAccountConfig(company));
+			
+		}
+		
+		if(customerAccount == null)  {
+			
+			throw new AxelorException(String.format("%s :\nCompte comptable Client manquant pour la société %s", 
+					GeneralService.getExceptionInvoiceMsg(), company.getName()), IException.MISSING_FIELD);			
+			
+		}
+		
+		return customerAccount;
+			
+	}
+	
+	
+	public Account getSupplierAccount(Partner partner, Company company) throws AxelorException  {
+		
+		Account supplierAccount = null;
+		
+		AccountingSituation accountingSituation = this.getAccountingSituation(company);
+		
+		if(accountingSituation != null)   {
+			
+			supplierAccount = accountingSituation.getSupplierAccount();
+		}
+		
+		if(supplierAccount == null)  {
+			
+			AccountConfigService accountConfigService = new AccountConfigService();
+			
+			supplierAccount = accountConfigService.getSupplierAccount(accountConfigService.getAccountConfig(company));
+			
+		}
+		
+		if(supplierAccount == null)  {
+			
+			throw new AxelorException(String.format("%s :\nCompte comptable Fournisseur manquant pour la société %s", 
+					GeneralService.getExceptionInvoiceMsg(), company.getName()), IException.MISSING_FIELD);			
+			
+		}
+		
+		return supplierAccount;
+			
+	}
+	
+	
+	public AccountingSituation getAccountingSituation(Company company)  {
+		
+		if(partner.getAccountingSituationList() == null)  {  return null;  }
 		
 		for(AccountingSituation accountingSituation : partner.getAccountingSituationList())  {
 			
 			if(accountingSituation.getCompany().equals(company))  {
 				
-				partnerAccount = accountingSituation.getCustomerAccount();
+				return accountingSituation;
 				
 			}
 		}
 		
-		if(partnerAccount == null)  {
-			
-			AccountConfigService accountConfigService = new AccountConfigService();
-			
-			partnerAccount = accountConfigService.getCustomerAccount(accountConfigService.getAccountConfig(company));
-			
-		}
+		return null;
 		
-		if(partnerAccount == null)  {
-			
-			throw new AxelorException(String.format("%s :\nCompte comptable manquant pour la société %s", 
-					GeneralService.getExceptionInvoiceMsg(), company.getName()), IException.MISSING_FIELD);			
-			
-		}
-		
-		return partnerAccount;
-			
 	}
-	
 	
 	
 	/**
