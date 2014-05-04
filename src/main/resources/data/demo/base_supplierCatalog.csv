@@ -19,8 +19,8 @@
 250;152;"Power Supply ";"POWS-21471S";"30.4";"2013-04-20";;5
 300;88;"Set connectique serveur";"C.ER0142";16;"2013-06-01";;10
 301;88;"Set visserie serveur";"C.RM4571";"2.8";"2013-06-01";;10
-302;88;"Cartouche jet d'encre FLUID";"C.MH0100";"276.36";"2013-06-01";;20
-303;88;"Cartouche encre laser POWDER";"C.TH0850";"352.667";"2013-06-01";;20
+302;88;"Cartouche jet d'encre FLUID";"C.MH0100";21;"2013-06-01";;20
+303;88;"Cartouche encre laser POWDER";"C.TH0850";54;"2013-06-01";;20
 304;88;"Ramette 500 Feuilles A4 Standard 80 g";"P.AS8005";"4.9629";"2013-06-01";;100
 305;88;"Stylos billes medium (Bte 50)";"F.SM74851";12;"2013-06-01";;10
 306;88;"Café moulu 250g";"A.CF0005";"2.43";"2013-06-01";;5
