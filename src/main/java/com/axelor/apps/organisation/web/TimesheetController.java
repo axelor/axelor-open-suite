@@ -36,14 +36,13 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.app.AppSettings;
 import com.axelor.apps.AxelorSettings;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.PeriodService;
-import com.axelor.apps.organisation.db.Employee;
 import com.axelor.apps.organisation.db.Timesheet;
 import com.axelor.apps.organisation.service.TimesheetService;
 import com.axelor.apps.tool.net.URLService;
-import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
@@ -110,12 +109,12 @@ public class TimesheetController {
 		Timesheet timesheet = request.getContext().asType(Timesheet.class);
 
 		StringBuilder url = new StringBuilder();
-		AxelorSettings axelorSettings = AxelorSettings.get();
+		AppSettings appSettings = AppSettings.get();
 		String language = timesheet.getUserInfo().getPartner().getLanguageSelect() != null? timesheet.getUserInfo().getPartner().getLanguageSelect() : timesheet.getUserInfo().getActiveCompany().getPrintingSettings().getLanguageSelect() != null ? timesheet.getUserInfo().getActiveCompany().getPrintingSettings().getLanguageSelect() : "en" ; 
 		language = language.equals("")? "en": language;
 		
-		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Timesheet.rptdesign&__format=pdf&TimesheetId="+timesheet.getId()+"&Locale="+language+axelorSettings.get("axelor.report.engine.datasource"));
-
+		url.append(appSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Timesheet.rptdesign&__format=pdf&TimesheetId="+timesheet.getId()+"&Locale="+language+AxelorSettings.getAxelorReportEngineDatasource());
+		
 		LOG.debug("URL : {}", url);
 		
 		String urlNotExist = URLService.notExist(url.toString());

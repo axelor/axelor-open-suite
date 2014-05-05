@@ -33,6 +33,7 @@ package com.axelor.apps.organisation.web;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.axelor.app.AppSettings;
 import com.axelor.apps.AxelorSettings;
 import com.axelor.apps.organisation.db.ITask;
 import com.axelor.apps.organisation.db.Task;
@@ -135,11 +136,10 @@ public class TaskController {
 		User user = AuthUtils.getUser();
 
 		StringBuilder url = new StringBuilder();
-		AxelorSettings axelorSettings = AxelorSettings.get();
+		AppSettings appSettings = AppSettings.get();
 		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
 
-		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Task.rptdesign&__format="+task.getExportTypeSelect()+"&TaskId="+task.getId()+"&Local="+language+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
-
+		url.append(appSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Task.rptdesign&__format="+task.getExportTypeSelect()+"&TaskId="+task.getId()+"&Local="+language+"&__locale=fr_FR"+AxelorSettings.getAxelorReportEngineDatasource());
 
 		String urlNotExist = URLService.notExist(url.toString());
 		if (urlNotExist == null){
