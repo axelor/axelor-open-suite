@@ -38,6 +38,7 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.app.AppSettings;
 import com.axelor.apps.AxelorSettings;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.ProductCategory;
@@ -146,7 +147,7 @@ public class LocationController {
 		
 		if(!locationIds.equals("")){
 			StringBuilder url = new StringBuilder();			
-			AxelorSettings axelorSettings = AxelorSettings.get();
+			AppSettings appSettings = AppSettings.get();
 			
 			User user = AuthUtils.getUser();
 			Company company = location.getCompany();
@@ -159,8 +160,8 @@ public class LocationController {
 				language = company.getPrintingSettings().getLanguageSelect();
 			}
 
-			url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/StockLocation.rptdesign&__format=pdf&Locale="+language+locationIds+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
-
+			url.append(appSettings.get("axelor.report.engine", "")+"/frameset?__report=report/StockLocation.rptdesign&__format=pdf&Locale="+language+locationIds+"&__locale=fr_FR"+AxelorSettings.getAxelorReportEngineDatasource());
+			
 			LOG.debug("URL : {}", url);
 			
 			String urlNotExist = URLService.notExist(url.toString());

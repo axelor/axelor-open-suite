@@ -38,6 +38,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.app.AppSettings;
 import com.axelor.apps.AxelorSettings;
 import com.axelor.apps.supplychain.db.Inventory;
 import com.axelor.apps.supplychain.db.InventoryLine;
@@ -71,12 +72,12 @@ public class InventoryController {
 		int format = inventory.getFormatSelect();
 
 		StringBuilder url = new StringBuilder();
-		AxelorSettings axelorSettings = AxelorSettings.get();
+		AppSettings appSettings = AppSettings.get();
 
 		User user = AuthUtils.getUser();
 		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
 
-		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Inventory.rptdesign&__format="+((format == 1) ? "pdf":(format == 2) ? "xls":"pdf")+"&InventoryId="+inventory.getId()+"&Locale="+language+axelorSettings.get("axelor.report.engine.datasource"));
+		url.append(appSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Inventory.rptdesign&__format="+((format == 1) ? "pdf":(format == 2) ? "xls":"pdf")+"&InventoryId="+inventory.getId()+"&Locale="+language+AxelorSettings.getAxelorReportEngineDatasource());
 		
 		LOG.debug("URL : {}", url);
 		String urlNotExist = URLService.notExist(url.toString());

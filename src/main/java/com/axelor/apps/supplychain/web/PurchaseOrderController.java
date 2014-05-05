@@ -24,12 +24,10 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.app.AppSettings;
 import com.axelor.apps.AxelorSettings;
-import com.axelor.apps.base.db.IPartner;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.supplychain.db.PurchaseOrder;
-import com.axelor.apps.supplychain.db.SalesOrder;
 import com.axelor.apps.supplychain.service.PurchaseOrderService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.exception.AxelorException;
@@ -124,7 +122,7 @@ public class PurchaseOrderController {
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 
 		StringBuilder url = new StringBuilder();
-		AxelorSettings axelorSettings = AxelorSettings.get();
+		AppSettings appSettings = AppSettings.get();
 		String purchaseOrderIds = "";
 
 		@SuppressWarnings("unchecked")
@@ -148,9 +146,9 @@ public class PurchaseOrderController {
 			language = "en";
 		}
 		language = language.equals("")? "en": language;
-
 		
-		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/PurchaseOrder.rptdesign&__format=pdf"+purchaseOrderIds+"&__locale=fr_FR&Locale="+language+axelorSettings.get("axelor.report.engine.datasource"));
+		url.append(appSettings.get("axelor.report.engine", "")+"/frameset?__report=report/PurchaseOrder.rptdesign&__format=pdf"+purchaseOrderIds+"&__locale=fr_FR&Locale="+language+AxelorSettings.getAxelorReportEngineDatasource());
+	
 		LOG.debug("URL : {}", url);
 		String urlNotExist = URLService.notExist(url.toString());
 		
