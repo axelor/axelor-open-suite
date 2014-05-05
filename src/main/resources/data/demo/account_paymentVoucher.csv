@@ -1,5 +1,5 @@
 "importId";"company.importId";"operationTypeSelect";"partner.importId";"account.importId";"paymentMode.importId";"paymentDateTime";"paidAmount";"currency.code";"cashRegister.importId";"allocatedAmount";"invoiceToPay.invoiceId";"userInfo.importId";"state"
-1;1;3;88;394;5;"NOW[-4M14H00m]";"33088.8";"EUR";2;;"FC_140000001";20;2
+1;1;3;88;394;5;"NOW[-4M14H00m]";"32978.50";"EUR";2;;"FC_140000001";20;2
 2;1;1;170;373;8;"NOW[-4M+22d11H00m]";2400;"USD";1;;"FF_140000001";20;2
 3;1;3;20;394;5;"NOW[-4M+14d16H30m]";"33189.60";"EUR";3;;"FC_140000002";20;2
 4;1;1;152;373;8;"NOW[-2M+7d14H00m]";30132;"USD";1;;"FF_140000003";20;2

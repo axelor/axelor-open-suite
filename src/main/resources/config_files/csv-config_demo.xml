@@ -454,7 +454,7 @@
 	<input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company" search="self.importId = :importId" update="true"/> 	
 	
 	<input file="supplychain_inventory.csv" separator=";" type="com.axelor.apps.supplychain.db.Inventory">
-<!-- 		<bind column="dateT" to="dateT" eval="call:com.axelor.csv.script.ImportDateTime:importDate(dateT)"/> -->
+		<bind column="dateT" to="dateT" eval="call:com.axelor.csv.script.ImportDateTime:importDate(dateT)"/>
 	</input>
 	
 	<input file="supplychain_supplychainConfig.csv" separator=";" type="com.axelor.apps.supplychain.db.SupplychainConfig"/>
@@ -464,6 +464,7 @@
 	<input file="supplychain_inventory.csv" separator=";" type="com.axelor.apps.supplychain.db.Inventory"  
 	search="self.inventorySeq = :inventorySeq" call="com.axelor.csv.script.ImportInventory:importInventory" update="true">
 		<bind to="statusSelect" eval="3" />
+		<bind column="dateT" to="dateT" eval="call:com.axelor.csv.script.ImportDateTime:importDate(dateT)"/>
 	</input>
 	
 <!-- 	<input file="supplychain_inventory.csv" separator=";" type="com.axelor.apps.supplychain.db.Inventory"   -->
