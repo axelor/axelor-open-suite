@@ -325,7 +325,7 @@
 	  
  	  <chart name="chart.paymentVoucher.customer.paymentMode.distribution.nbr" onInit="action.account.portal.default.month.value" title="Customer Payment mode distribution by transactions">
  	    <search-fields>
- 	        <field type="string" name="monthSelect" title="Past Months" selection="account.year.period.duration.select"/>
+ 	        <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
  	    </search-fields>
 	    <dataset type="jpql">
 	     <![CDATA[
@@ -362,7 +362,7 @@
  	  
  	  <chart name="chart.paymentVoucher.customer.paymentMode.distribution.amount" onInit="action.account.portal.default.month.value" title="Customer Payment mode distribution by amount">
  	    <search-fields> 	        
- 	        <field type="string" name="monthSelect" title="Past Months" selection="account.year.period.duration.select"/>
+ 	        <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
  	    </search-fields>
 	    <dataset type="jpql">
 	     <![CDATA[
@@ -391,7 +391,7 @@
  	  
  	  <chart name="chart.paymentVoucher.customer.paymentMode.by.amount" onInit="action.account.portal.default.month.value" title="Customer Payment mode by amount">
  	    <search-fields>
- 	        <field type="string" name="monthSelect" title="Past Months" selection="account.year.period.duration.select"/>
+ 	        <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
  	    </search-fields>
 	    <dataset type="jpql">
 	     <![CDATA[
@@ -463,7 +463,7 @@
 	     
 	 <chart onInit="action.account.portal.default.month.value" name="chart.invoice.sale.amount.by.month" title="Invoice Sale by month (tax excl.)">
 	  <search-fields>
-	    <field type="string" name="monthSelect" title="Past Months" selection="account.year.period.duration.select"/>
+	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
 	  </search-fields>
 	  <dataset type="sql">
 	    SELECT
@@ -491,7 +491,7 @@
 
 	<chart onInit="action.account.portal.default.month.value"  name="chart.invoice.sale.amount.by.currency" title="Invoice Sale by currency (tax excl.)">
 	  <search-fields>
-	    <field type="string" name="monthSelect" title="Past Months" selection="account.year.period.duration.select"/>
+	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
 	  </search-fields>
 	  <dataset type="sql">
 	    SELECT
@@ -525,7 +525,7 @@
 	
 	<chart onInit="action.account.portal.default.month.value"  name="chart.invoice.sale.paymentCondition.distribution" title="Invoice Sale Payment Condition distribution">
 	  <search-fields>
-	    <field type="string" name="monthSelect" title="Past Months" selection="account.year.period.duration.select"/>
+	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
 	  </search-fields>
 	  <dataset type="sql">
 	    SELECT
@@ -562,7 +562,7 @@
 	
 	<chart onInit="action.account.portal.default.month.value" name="chart.invoice.purchase.amount.by.month" title="Invoice Purchase by month (tax excl.)">
 	  <search-fields>
-	    <field type="string" name="monthSelect" title="Past Months" selection="account.year.period.duration.select"/>
+	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
 	  </search-fields>
 	  <dataset type="sql">
 	    
@@ -594,7 +594,7 @@
 	
 	<chart onInit="action.account.portal.default.month.value"  name="chart.invoice.purchase.amount.by.currency" title="Invoice Purchase by currency (tax excl.)">
 	  <search-fields>
-	    <field type="string" name="monthSelect" title="Past Months" selection="account.year.period.duration.select"/>
+	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
 	  </search-fields>
 	  <dataset type="sql">
 	      
@@ -628,7 +628,7 @@
 	
 	<chart onInit="action.account.portal.default.month.value" name="chart.invoice.purchase.paymentCondition.distribution" title="Invoice Purchase Payment Condition distribution">
 	  <search-fields>
-	    <field type="string" name="monthSelect" title="Past Months" selection="account.year.period.duration.select"/>
+	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
 	  </search-fields>
 	  <dataset type="sql">
 	    SELECT
@@ -663,7 +663,7 @@
 	<chart onInit="action.account.portal.default.month.value" name="chart.invoice.sale.refund.situation" title="Invoice and Refunds Sale situation (tax incl.)">
 	
 	  <search-fields>
-	    <field type="string" name="monthSelect" title="Past Months" selection="account.year.period.duration.select"/>
+	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
 	  </search-fields>
 	  
 	  <dataset type="sql">
@@ -771,7 +771,7 @@
 	<chart onInit="action.account.portal.default.month.value" name="chart.invoice.sale.situation" title="Invoice Sale situation (tax incl.)">
 	
 	  <search-fields>
-	    <field type="string" name="monthSelect" title="Past Months" selection="account.year.period.duration.select"/>
+	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
 	  </search-fields>
 	  
 	  <dataset type="sql">
@@ -859,7 +859,7 @@
 	<chart onInit="action.account.portal.default.month.value" name="chart.invoice.purchase.situation" title="Invoice Purchase situation (tax incl.)">
 	
 	  <search-fields>
-	    <field type="string" name="monthSelect" title="Past Months" selection="account.year.period.duration.select"/>
+	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
 	  </search-fields>
 	  
 	  <dataset type="sql">
