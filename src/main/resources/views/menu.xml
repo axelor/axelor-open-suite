@@ -614,7 +614,7 @@
 	<!-- Top Menu for Create new objects.... -->
 
 
-	<menuitem name="top-menu-utility" priority="300"  title="Create" groups="admins,erp" top="true" left="false"/> 	
+	<menuitem name="top-menu-utility" priority="200"  title="Create" groups="admins,erp" top="true" left="false"/> 	
 
 	<menuitem name="top-menu-create-partner" parent="top-menu-utility" title="Create Partner" action="top.new.partner.view" top="true" left="false"/> 	
 		
@@ -637,7 +637,7 @@
 		<view type="form" name="partner-form"/>
 	</action-view>
 
-	<menuitem name="top-relations" title="Relations" groups="admins,erp" top="true" left="false"/>
+	<menuitem name="top-relations" title="Relations" groups="admins,erp" top="true" left="false" priority="190"/>
 	<menuitem name="top-relations-partners" title="Accounts" action="contact.root.partner" parent="top-relations" groups="admins,erp" top="true" left="false"/> 	
 	<menuitem name="top-relations-contacts" title="Contacts" action="contact.root.contact" parent="top-relations" groups="admins,erp" top="true" left="false"/>		  
 </object-views>

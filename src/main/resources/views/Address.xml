@@ -14,11 +14,11 @@
 		onNew="default-address-record">
 		<group name="main" title="Address details" cols="1" colSpan="1">
 			<group colSpan="4" cols="2" colWidths="25%,*">
-				<field name="addressL2" />
-				<field name="addressL3" />
-				<field name="addressL4" />
-				<field name="addressL5" />
-				<field name="addressL6" required="true" />
+				<field name="addressL2" onChange="action-check-string-capital-case"/>
+				<field name="addressL3" onChange="action-check-string-capital-case"/>
+				<field name="addressL4" onChange="action-check-string-capital-case"/>
+				<field name="addressL5" onChange="action-check-string-capital-case"/>
+				<field name="addressL6" required="true" onChange="action-check-string-capital-case"/>
 				<field name="addressL7Country" required="true" />
 				<field name="inseeCode"/>
 				<field name="latit" />

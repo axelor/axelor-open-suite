@@ -7,7 +7,7 @@
 	
 	<portal title="Partner Dashboard" name="base.partner.list.portal" cols="2">
 	    <portlet action="portal.customers.by.country" height="350" colSpan="1" canSearch="true"/>
-	    <portlet action="portal.partner.by.industrySector" height="350" colSpan="1" canSearch="true"/>
+	    <portlet action="portal.customers.by.industrySector" height="350" colSpan="1" canSearch="true"/>
 	    <portlet action="portal.suppliers.by.country" colSpan="1" height="350"/>
 		<portlet action="portal.my.recent.customers" height="350" colSpan="1" canSearch="true"/> 
 	    <portlet action="portal.partner.by.salesman" height="350" colSpan="1" canSearch="true"/>
@@ -41,8 +41,8 @@
 		 <context name="userInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
 	</action-view>
 	
-	<action-view name="portal.partner.by.industrySector" title="Partners by Industry Sector" model="com.axelor.apps.base.db.Partner">
-		<view type="chart" name="chart.partner.by.industry.sector.bar" />
+	<action-view name="portal.customers.by.industrySector" title="Partners by Industry Sector" model="com.axelor.apps.base.db.Partner">
+		<view type="chart" name="chart.customers.by.industrySector.bar" />
 	</action-view>
 	<action-view name="portal.customers.by.country" title="Customers by country" model="com.axelor.apps.base.db.Partner">
 		<view type="chart" name="chart.customers.by.country.bar"/>

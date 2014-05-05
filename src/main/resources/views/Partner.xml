@@ -99,7 +99,7 @@
 	                    <field name="nbrEmployees"/>
 	                    <field name="registrationCode"/>
 	                    <field name="taxNbr"/>
-	                    <field name="parentPartner" hideIf="partnerTypeSelect != 1"/>
+	                    <field name="parentPartner" hideIf="partnerTypeSelect != 1" domain="self.iscontact = false AND self.partnerTypeSelect = 1"/>
 	                </group>
 	            </group>
 	            <group title="Postal addresses" colSpan="4" cols="4">
@@ -239,9 +239,9 @@
 	        <group colSpan="1" cols="1">
 	            <field name="titleSelect" showTitle="false" placeholder="Civility"/>
 	            <break/>
-	            <field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-partner-record-full-name"/>
+	            <field name="name" showTitle="false" css="highlight" placeholder="Name" onChange="action-check-string-capital-case,action-partner-record-full-name"/>
 	            <break/>
-	            <field name="firstName" showTitle="false" css="highlight" placeholder="First name" onChange="action-partner-record-full-name"/>
+	            <field name="firstName" showTitle="false" css="highlight" placeholder="First name" onChange="action-check-string-camel-case,action-partner-record-full-name"/>
 	            <break/>
 	            <separator title="Company"/>
 	            <field name="mainPartner"/>
