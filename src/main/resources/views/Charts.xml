@@ -525,7 +525,7 @@
 	  <dataset type="jpql">
 	
 	    SELECT
-	      COUNT(self.realQty) AS _qty,
+	      SUM(self.realQty) AS _qty,
 	      country.code AS _country
 	    FROM
 	      StockMoveLine self,    
@@ -563,7 +563,7 @@
 	  <dataset type="jpql">
 	
 	    SELECT
-	      COUNT(self.realQty) AS _qty,
+	      SUM(self.realQty) AS _qty,
 	      country.code AS _country,
 	      productFamily.name AS _family
 	    FROM
