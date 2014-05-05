@@ -62,7 +62,7 @@
 	                        <button name="validate" title="Validate" showIf="statusSelect == 3" colSpan="1" onClick="action-purchase-order-validate-location,save,action-purchase-order-method-compute,save,action-purchase-order-create-stock-move,action-purchase-order-record-validate,action-sales-order-method-validate-supplier,save"/>
 	                        <button name="completed" title="Completed" showIf="statusSelect == 4" colSpan="1" onClick="action-purchase-order-record-completed,save"/>
 	                        <button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2" colSpan="1" onClick="save,action-purchase-order-record-cancel"/>
-	                        <button name="showSupplierInvoice" title="Show invoice" showIf="statusSelect == 4 || statusSelect == 5" colSpan="1" onClick="action-purchase-order-show-supplier-invoice"/>
+	                        <button name="showInvoice" title="Show invoice" showIf="statusSelect == 4 || statusSelect == 5" colSpan="1" onClick="action-purchase-order-show-invoice"/>
 	                        <button name="generateControlInvoice" title="Generate control invoice" showIf="statusSelect == 4" colSpan="1" onClick="save,action-purchase-order-method-generate-control-invoice"/>
 	                        <button name="clearPurchaseOrder" title="Clear purchase order" showIf="statusSelect >= 4" colSpan="1" onClick="save,action-purchase-order-method-clear-purchase-order"/>
 	                    </group>
@@ -86,12 +86,15 @@
 	                </group>
 	            </group>
 	        </page>
-	        <page title="Financial terms" colSpan="4" cols="6">
+	        <page title="Financial terms" colSpan="4" cols="4">
                 <field name="paymentMode" domain="self.inOutSelect = 2"/>
                 <field name="paymentCondition"/>
 	        </page>
-			<page title="Notes" colSpan="4" cols="6">
-				<field name="notes" showTitle="false" colSpan="6" widget="Html" x-lite="true"/>
+			<page title="Notes" colSpan="4" cols="4">
+				<field name="notes" showTitle="false" colSpan="4" widget="Html" x-lite="true"/>
+			</page>
+			<page title="Suppliers managements" colSpan="4" cols="4" if-module="axelor-suppliermanagement">
+				<include view="purchase-order-supplier-form"/>
 			</page>
 	    </notebook>
 	</form>
@@ -177,7 +180,8 @@
     </action-method>
     
     
-    <action-view name="action-purchase-order-show-supplier-invoice" title="Supplier invoices"
+    
+    <action-view name="action-purchase-order-show-invoice" title="Supplier invoices"
 		model="com.axelor.apps.account.db.Invoice">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
