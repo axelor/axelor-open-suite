@@ -760,6 +760,8 @@
 	    </action-view>
 	
 	<menuitem name="top-payments" title="Payments" groups="admins,erp" top="true" left="false"/>
+	
+	<menuitem name="top-payments-all" title="All Payments" groups="admins,erp"  parent="top-payments" action="account.root.payments.payment.voucher" top="true" left="false"/>
 			
 	<menuitem name="top-payments-customers" title="Cust. Payments" parent="top-payments" action="top.payments.customers" groups="admins,erp" top="true" left="false"/>
 	
