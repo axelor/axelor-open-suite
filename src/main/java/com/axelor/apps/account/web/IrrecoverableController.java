@@ -36,6 +36,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.app.AppSettings;
 import com.axelor.apps.AxelorSettings;
 import com.axelor.apps.account.db.Irrecoverable;
 import com.axelor.apps.account.service.IrrecoverableService;
@@ -98,10 +99,11 @@ public class IrrecoverableController {
 			response.setFlash("Veuillez selectionner un type d'impression"); 
 		} 
 		else {
-			AxelorSettings gieSettings = AxelorSettings.get();
+			AppSettings appSettings = AppSettings.get();
 			StringBuilder url = new StringBuilder();
 			
-			url.append(gieSettings.get("gie.report.engine", "")+"/frameset?__report=report/Irrecoverable.rptdesign&__format="+irrecoverable.getExportTypeSelect()+"&IrrecoverableID="+irrecoverable.getId()+gieSettings.get("gie.report.engine.datasource"));
+			url.append(appSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Irrecoverable.rptdesign&__format="+irrecoverable.getExportTypeSelect()+"&IrrecoverableID="+irrecoverable.getId()+AxelorSettings.getAxelorReportEngineDatasource());
+			
 			LOG.debug("URL : {}", url);
 
 			Map<String,Object> mapView = new HashMap<String,Object>();

@@ -37,6 +37,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.app.AppSettings;
 import com.axelor.apps.AxelorSettings;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.IrrecoverableService;
@@ -248,14 +249,14 @@ public class InvoiceController {
 		if(!invoiceIds.equals("")){
 			System.out.println("INvoice ids. "+ invoiceIds);
 			StringBuilder url = new StringBuilder();			
-			AxelorSettings axelorSettings = AxelorSettings.get();
+			AppSettings appSettings = AppSettings.get();
 			String language;
 			try{
 				language = invoice.getPartner().getLanguageSelect() != null? invoice.getPartner().getLanguageSelect() : invoice.getCompany().getPrintingSettings().getLanguageSelect() != null ? invoice.getCompany().getPrintingSettings().getLanguageSelect() : "en" ;
 			}catch (NullPointerException e){
 				language = "en";
 			}	 
-			url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Invoice.rptdesign&__format=pdf&Locale="+language+invoiceIds+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
+			url.append(appSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Invoice.rptdesign&__format=pdf&Locale="+language+invoiceIds+"&__locale=fr_FR"+AxelorSettings.getAxelorReportEngineDatasource());
 	
 			LOG.debug("URL : {}", url);
 			
