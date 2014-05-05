@@ -157,7 +157,6 @@
     
     <action-record name="action-stock-move-record-draft" model="com.axelor.apps.supplychain.db.StockMove">
     	<field name="statusSelect" expr="eval: 1"/>
-	    <field name="realDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
     </action-record>
     
     <action-record name="action-stock-move-record-new" model="com.axelor.apps.supplychain.db.StockMove">

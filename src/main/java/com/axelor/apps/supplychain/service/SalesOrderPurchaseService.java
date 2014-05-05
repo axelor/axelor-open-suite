@@ -101,7 +101,7 @@ public class SalesOrderPurchaseService {
 				
 				if(supplierPartner == null)  {
 					
-					throw new AxelorException(String.format("Veuillez choisir un fournisseur pour la ligne {}", salesOrderLine.getProductName()), IException.CONFIGURATION_ERROR);
+					throw new AxelorException(String.format("Veuillez choisir un fournisseur pour la ligne %s", salesOrderLine.getProductName()), IException.CONFIGURATION_ERROR);
 				}
 				
 				if(!salesOrderLinesBySupplierPartner.containsKey(supplierPartner))  {
