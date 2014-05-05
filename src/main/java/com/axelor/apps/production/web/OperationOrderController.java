@@ -39,6 +39,7 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.app.AppSettings;
 import com.axelor.apps.AxelorSettings;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.production.db.OperationOrder;
@@ -175,7 +176,7 @@ public class OperationOrderController {
 		
 		if(!operationOrderIds.equals("")){
 			StringBuilder url = new StringBuilder();			
-			AxelorSettings axelorSettings = AxelorSettings.get();
+			AppSettings appSettings = AppSettings.get();
 			
 			User user = AuthUtils.getUser();
 			
@@ -192,7 +193,7 @@ public class OperationOrderController {
 				language = company.getPrintingSettings().getLanguageSelect();
 			}
 
-			url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/OperationOrder.rptdesign&__format=pdf&Locale="+language+operationOrderIds+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
+			url.append(appSettings.get("axelor.report.engine", "")+"/frameset?__report=report/OperationOrder.rptdesign&__format=pdf&Locale="+language+operationOrderIds+"&__locale=fr_FR"+AxelorSettings.getAxelorReportEngineDatasource());
 
 			LOG.debug("URL : {}", url);
 			

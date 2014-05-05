@@ -39,6 +39,7 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.app.AppSettings;
 import com.axelor.apps.AxelorSettings;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.production.db.ManufOrder;
@@ -178,7 +179,7 @@ public class ManufOrderController {
 		
 		if(!manufOrderIds.equals("")){
 			StringBuilder url = new StringBuilder();			
-			AxelorSettings axelorSettings = AxelorSettings.get();
+			AppSettings appSettings = AppSettings.get();
 			
 			User user = AuthUtils.getUser();
 			Company company = manufOrder.getCompany();
@@ -191,7 +192,7 @@ public class ManufOrderController {
 				language = company.getPrintingSettings().getLanguageSelect();
 			}
 
-			url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/ManufOrder.rptdesign&__format=pdf&Locale="+language+manufOrderIds+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
+			url.append(appSettings.get("axelor.report.engine", "")+"/frameset?__report=report/ManufOrder.rptdesign&__format=pdf&Locale="+language+manufOrderIds+"&__locale=fr_FR"+AxelorSettings.getAxelorReportEngineDatasource());
 
 			LOG.debug("URL : {}", url);
 			
