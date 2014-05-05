@@ -30,103 +30,16 @@
  */
 package com.axelor.apps;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Properties;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.axelor.app.AppSettings;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.persistence.EntityManagerFactory;
-
-import com.axelor.db.JPA;
-import com.google.common.base.Charsets;
-import com.google.common.io.CharStreams;
-
-@Singleton
 public class AxelorSettings {
 
-	private Properties properties;
-
-	private static AxelorSettings INSTANCE;
-
-	@Inject
-	private AxelorSettings() {
-			
-		InputStream is = Thread.currentThread().getContextClassLoader()
-				.getResourceAsStream("axelor.properties");
-
-		if (is == null) {
-			throw new RuntimeException(
-					"Unable to locate application configuration file.");
-		}
-
-		properties = new Properties();
+	public static String getAxelorReportEngineDatasource()  {
 		
-		try {
-			
-			EntityManagerFactory emf = JPA.em().getEntityManagerFactory();
-			
-			properties.load(is);
-			properties.put("axelor.jdbc.url", emf.getProperties().get("javax.persistence.jdbc.url"));
-			properties.put("axelor.jdbc.user", emf.getProperties().get("javax.persistence.jdbc.user"));
-			InputStream res = Thread.currentThread().getContextClassLoader().getResourceAsStream("META-INF/persistence.xml");
-			String text = CharStreams.toString(new InputStreamReader(res, Charsets.UTF_8));
-			Pattern pat = Pattern.compile("<property\\s*name=\"javax.persistence.jdbc.password\"\\s*value=\"(.*?)\"\\s*/>", Pattern.CASE_INSENSITIVE);
-			Matcher mat = pat.matcher(text);
-			while (mat.find()) {
-				 properties.put("axelor.jdbc.password", mat.group(1));
-			}
-			
-			String dataSource = String.format("&DBName=%s&UserName=%s&Password=%s",
-					properties.get("axelor.jdbc.url"), properties.get("axelor.jdbc.user"), properties.get("axelor.jdbc.password"));
-			
-			properties.put("axelor.report.engine.datasource",dataSource);
-			
-			
-		} catch (Exception e) {
-			throw new RuntimeException("Error reading application configuration.");
-		}
+		AppSettings appSettings = AppSettings.get();
+		
+		return String.format("&DBName=%s&UserName=%s&Password=%s",
+				appSettings.get("db.default.url"), appSettings.get("db.default.user"), appSettings.get("db.default.password"));
 	}
 
-	public static AxelorSettings get() {
-		if (INSTANCE == null)
-			INSTANCE = new AxelorSettings();
-		return INSTANCE;
-	}
-
-	public String get(String key) {
-		return properties.getProperty(key);
-	}
-
-	public String get(String key, String defaultValue) {
-		String value = properties.getProperty(key, defaultValue);
-		if (value == null || "".equals(value.trim()))  {
-			return defaultValue;
-		}
-		return value;
-	}
-	
-	public int getInt(String key, int defaultValue) {
-		try {
-			return Integer.parseInt(get(key).toString());
-		} catch (Exception e){}
-		return defaultValue;
-	}
-	
-	public boolean getBoolean(String key, boolean defaultValue) {
-		try {
-			return Boolean.parseBoolean(get(key).toString());
-		} catch (Exception e){}
-		return defaultValue;
-	}
-	
-	public void putAll(Properties properties) {
-		this.properties.putAll(properties);
-	}
-	
-	public Properties getProperties() {
-		return properties;
-	}
 }

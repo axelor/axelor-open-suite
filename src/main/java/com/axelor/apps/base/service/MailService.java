@@ -41,6 +41,7 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.app.AppSettings;
 import com.axelor.apps.AxelorSettings;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
@@ -424,7 +425,7 @@ public class MailService {
 	
 	public void generatePdfMail(Mail mail) throws AxelorException {
 
-		AxelorSettings gieSettings = AxelorSettings.get();
+		AppSettings appSettings = AppSettings.get();
 		
 		MailModel mailModel = mail.getMailModel();
 		
@@ -440,7 +441,7 @@ public class MailService {
 //					GeneralService.getExceptionMailMsg(), mail.getName()), IException.CONFIGURATION_ERROR);
 		}
 		else  {
-			String url = gieSettings.get("gie.report.engine", "")+"/frameset?__report=report/"+pdfName+"&__format=pdf&MailId="+mail.getId()+"&__locale=fr_FR"+gieSettings.get("gie.report.engine.datasource");
+			String url = appSettings.get("axelor.report.engine", "")+"/frameset?__report=report/"+pdfName+"&__format=pdf&MailId="+mail.getId()+"&__locale=fr_FR"+AxelorSettings.getAxelorReportEngineDatasource();
 			
 			LOG.debug("URL : {}", url);
 			

@@ -38,6 +38,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.app.AppSettings;
 import com.axelor.apps.AxelorSettings;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
@@ -89,9 +90,10 @@ public class PartnerController {
 		User user = AuthUtils.getUser();
 
 		StringBuilder url = new StringBuilder();
-		AxelorSettings axelorSettings = AxelorSettings.get();
+		AppSettings appSettings = AppSettings.get();
+		
 		String language = (partner.getLanguageSelect() == null || partner.getLanguageSelect().equals(""))? user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en" : partner.getLanguageSelect(); 
-		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Partner.rptdesign&__format=pdf&Locale="+language+"&PartnerId="+partner.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
+		url.append(appSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Partner.rptdesign&__format=pdf&Locale="+language+"&PartnerId="+partner.getId()+"&__locale=fr_FR"+AxelorSettings.getAxelorReportEngineDatasource());
 		
 		LOG.debug("URL : {}", url);
 
@@ -120,12 +122,12 @@ public class PartnerController {
 	 */
 	public void printContactPhonebook(ActionRequest request, ActionResponse response) {
 
-		AxelorSettings axelorSettings = AxelorSettings.get();
+		AppSettings appSettings = AppSettings.get();
 
 		StringBuilder url = new StringBuilder();
 		User user = AuthUtils.getUser();
 		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
-		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/PhoneBook.rptdesign&__format=html&Locale="+language+"&UserId="+user.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
+		url.append(appSettings.get("axelor.report.engine", "")+"/frameset?__report=report/PhoneBook.rptdesign&__format=html&Locale="+language+"&UserId="+user.getId()+"&__locale=fr_FR"+AxelorSettings.getAxelorReportEngineDatasource());
 		
 		LOG.debug("URL : {}", url);
 		String urlNotExist = URLService.notExist(url.toString());
@@ -153,14 +155,14 @@ public class PartnerController {
 	 */
 	public void printCompanyPhonebook(ActionRequest request, ActionResponse response) {
 
-		AxelorSettings axelorSettings = AxelorSettings.get();
+		AppSettings appSettings = AppSettings.get();
 
 		StringBuilder url = new StringBuilder();
 
 		User user = AuthUtils.getUser();
 		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
 
-		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/CompanyPhoneBook.rptdesign&__format=html&Locale="+language+"&UserId="+user.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
+		url.append(appSettings.get("axelor.report.engine", "")+"/frameset?__report=report/CompanyPhoneBook.rptdesign&__format=html&Locale="+language+"&UserId="+user.getId()+"&__locale=fr_FR"+AxelorSettings.getAxelorReportEngineDatasource());
 
 		LOG.debug("URL : {}", url);
 		String urlNotExist = URLService.notExist(url.toString());
@@ -188,13 +190,13 @@ public class PartnerController {
 	 */
 	public void printClientSituation(ActionRequest request, ActionResponse response) {
 
-		AxelorSettings axelorSettings = AxelorSettings.get();
+		AppSettings appSettings = AppSettings.get();
 		Partner partner = request.getContext().asType(Partner.class);
 
 		StringBuilder url = new StringBuilder();
 		User user = AuthUtils.getUser();
 		String language = (partner.getLanguageSelect() == null || partner.getLanguageSelect().equals(""))? user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en" : partner.getLanguageSelect(); 
-		url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/ClientSituation.rptdesign&__format=pdf&PartnerId="+partner.getId()+"&Locale="+language+"&UserId="+user.getId()+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
+		url.append(appSettings.get("axelor.report.engine", "")+"/frameset?__report=report/ClientSituation.rptdesign&__format=pdf&PartnerId="+partner.getId()+"&Locale="+language+"&UserId="+user.getId()+"&__locale=fr_FR"+AxelorSettings.getAxelorReportEngineDatasource());
 		
 		LOG.debug("URL : {}", url);
 		String urlNotExist = URLService.notExist(url.toString());
