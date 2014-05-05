@@ -39,8 +39,8 @@ import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.app.AppSettings;
 import com.axelor.apps.AxelorSettings;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -49,7 +49,6 @@ import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.IEvent;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.service.EventService;
-import com.axelor.apps.supplychain.db.Location;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -278,7 +277,7 @@ public class EventController {
 		
 		if(!leadIds.equals("")){
 			StringBuilder url = new StringBuilder();			
-			AxelorSettings axelorSettings = AxelorSettings.get();
+			AppSettings appSettings = AppSettings.get();
 			
 			User user = AuthUtils.getUser();
 			String language = "en";
@@ -292,7 +291,7 @@ public class EventController {
 				} 
 			}catch(Exception e){}
 			
-			url.append(axelorSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Lead.rptdesign&__format=pdf&Locale="+language+leadIds+"&__locale=fr_FR"+axelorSettings.get("axelor.report.engine.datasource"));
+			url.append(appSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Lead.rptdesign&__format=pdf&Locale="+language+leadIds+"&__locale=fr_FR"+AxelorSettings.getAxelorReportEngineDatasource());
 
 			LOG.debug("URL : {}", url);
 			
