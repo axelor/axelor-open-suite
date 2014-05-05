@@ -231,7 +231,7 @@
 		<dataset type="sql">
 		    <![CDATA[
 		    SELECT
-			    COUNT(self.opportunity_amount) AS _opportunity_amount,
+			    SUM(self.opportunity_amount) AS _opportunity_amount,
 			    team.name AS _team,
 			    selection_item.title as _status
 			FROM
@@ -265,7 +265,7 @@
 		<dataset type="sql">
 		    <![CDATA[
 		    SELECT
-			    COUNT(self.opportunity_amount)    AS _opportunity_amount,
+			    SUM(self.opportunity_amount)    AS _opportunity_amount,
 			    sales_man.full_name as _sales_man,
 			    selection_item.title as _status
 			FROM
