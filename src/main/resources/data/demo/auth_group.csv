@@ -12,3 +12,4 @@
 11;"HRM";"RH";"visible";;"false";"role.hr"
 12;"OPS";"Opérations";"visible";;"false";"role.operations"
 13;"MGT";"Manager";"visible";;"false";"role.manager"
+14;"FRN";"Fournisseur";"hidden";"perms.user-info";"false";"role.supplier"
