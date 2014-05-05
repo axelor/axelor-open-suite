@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+	
+	<grid name="purchase-order-supplier-line-grid" title="suppliers requests" model="com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine">
+		<field name="supplierPartner"/>
+		<field name="availableQty"/>
+		<field name="unit"/>
+		<field name="price"/>
+		<field name="estimatedDelivDate"/>
+		<field name="stateSelect"/>
+	</grid>
+	
+	<form name="purchase-order-supplier-line-form" title="Supplier request" model="com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine" cols="2" colWidths="*,200"
+		onNew="action-purchase-order-supplier-line-record-request">
+		<field name="supplierPartner"/>
+		<field name="availableQty"/>
+		<field name="unit"/>
+		<field name="price"/>
+		<field name="estimatedDelivDate"/>
+		<break/>
+		<field name="comment" colSpan="4"/>
+		<field name="stateSelect" readonly="true"/>
+		<button name="accept" title="Accept" colSpan="2" onClick="save,action-purchase-order-supplier-line-record-accept,save" showIf="stateSelect == 3"/>
+		<button name="notAccept" title="Not accept" colSpan="2" onClick="save,action-purchase-order-supplier-line-record-not-accept,save" showIf="stateSelect == 4"/>
+		<button name="cancel" title="Cancel" colSpan="2" onClick="save,action-purchase-order-supplier-line-record-cancel,save" hideIf="stateSelect == 5"/>
+		<button name="request" title="Request" colSpan="2" onClick="save,action-purchase-order-supplier-line-record-request,save" showIf="stateSelect == 5"/>
+	</form>
+	
+	
+	<grid name="purchase-order-supplier-line-supplier-grid" title="suppliers requests" model="com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine">
+		<field name="purchaseOrderLine.product"/>
+		<field name="purchaseOrderLine.qty"/>
+		<field name="purchaseOrderLine.desiredDelivDate"/>
+		<field name="availableQty"/>
+		<field name="unit"/>
+		<field name="price"/>
+		<field name="estimatedDelivDate"/>
+		<field name="comment"/>
+		<field name="stateSelect"/>
+	</grid>
+	
+	
+	<form name="purchase-order-supplier-line-supplier-form" title="Supplier request" model="com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine" cols="2" colWidths="*,200">
+		<field name="stateSelect" readonly="true" colSpan="4"/>
+		<field name="purchaseOrderLine.product"/>
+		<field name="purchaseOrderLine.qty"/>
+		<field name="purchaseOrderLine.desiredDelivDate"/>
+		<field name="availableQty"/>
+		<field name="unit"/>
+		<field name="price"/>
+		<field name="estimatedDelivDate"/>
+		<field name="comment" colSpan="4"/>
+		<button name="submit" title="Submit" colSpan="2" onClick="save,action-purchase-order-supplier-line-record-submit,save" showIf="stateSelect == 2"/>
+	</form>
+	
+	
+	<action-record name="action-purchase-order-supplier-line-record-request" model="com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine">
+		<field name="stateSelect" expr="1"/>
+	</action-record>
+	
+	<action-record name="action-purchase-order-supplier-line-record-submit" model="com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine">
+		<field name="stateSelect" expr="2"/>
+	</action-record>
+	
+	<action-record name="action-purchase-order-supplier-line-record-accept" model="com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine">
+		<field name="stateSelect" expr="3"/>
+	</action-record>
+	
+	<action-record name="action-purchase-order-supplier-line-record-not-accept" model="com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine">
+		<field name="stateSelect" expr="4"/>
+	</action-record>
+	
+	<action-record name="action-purchase-order-supplier-line-record-cancel" model="com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine">
+		<field name="stateSelect" expr="5"/>
+	</action-record>
+
+	<action-method name="action-purchase-order-supplier-line-method-accept">
+		<call class="com.axelor.apps.suppliermanagement.web.PurchaseOrderSupplierLineController" method="accept"/>
+	</action-method>
+
+
+
+</object-views>
