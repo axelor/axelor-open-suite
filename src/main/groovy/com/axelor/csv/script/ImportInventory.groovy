@@ -45,12 +45,16 @@ class ImportInventory {
 		
 		@Inject 
 		StockMoveService stockMoveService;
-	
+		
+		@Transactional
 		Object importInventory(Object bean, Map values) {
 			assert bean instanceof Inventory
 	        try{
 				Inventory inventory = (Inventory) bean
-				inventoryService.generateStockMove(inventory)
+				StockMove stockMove = inventoryService.generateStockMove(inventory)
+				stockMove.setRealDate(inventory.getDateT().toLocalDate());
+				stockMove.save()
+				inventory.setStatusSelect(3);
 				return inventory
 	        }catch(Exception e){
 	            e.printStackTrace()

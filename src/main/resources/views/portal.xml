@@ -28,7 +28,7 @@
 	
 	<action-view name="portal.salesman.dashboard.leads" title="My Current Leads"
 		model="com.axelor.apps.crm.db.Lead">
-		<view type="grid" name="lead-grid" />
+		<view type="grid" name="my-lead-grid" />
 		<view type="form" name="lead-form" />
 		<domain>self.userInfo.internalUser = :user_info and self.statusSelect in (1, 2)</domain>
 		<context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
@@ -36,7 +36,7 @@
 	
 	<action-view name="portal.salesman.dashboard.activities" title="My Today Activities"
 		model="com.axelor.apps.crm.db.Event">
-		<view type="grid" name="event-grid"/>
+		<view type="grid" name="my-event-grid"/>
 		<view type="form" />
 	    <domain>self.startDateTime between :_today and :_tomorrow and self.userInfo =:_activeUser</domain>
 	    <context name="_tomorrow" expr="eval: __date__.plusDays(1).toDateTimeAtStartOfDay()"/>
@@ -46,7 +46,7 @@
 	
 	<action-view name="portal.salesman.dashboard.opportunities" title="My Opportunities"
 		model="com.axelor.apps.crm.db.Opportunity">
-		<view type="grid" name="opportunity-grid" />
+		<view type="grid" name="my-opportunity-grid" />
 		<view type="form" name="opportunity-form" />
 		<domain>self.userInfo.internalUser = :user_info</domain>
 		<context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
@@ -57,7 +57,8 @@
 	<!-- 	SALES MANAGER DASHBOARD -->
 	
 	<portal title="Dashboard" name="supplychain.sales.manager.dashboard.portal.sample" cols="2">
-		<portlet action="portal.sales.turnover.ytd.vs.lastyear" height="350"/>  	
+		<portlet action="portal.sales.turnover.ytd.vs.previous.years.by.month" height="350"/>
+		<portlet action="portal.sales.turnover.ytd.vs.past.year" height="350"/>  	
 		<portlet action="portal.sales.turnover.by.product.ytd.vs.lastyear" height="350"/>
 		<portlet action="portal.sales.turnover.ytd.vs.lastyear.by.family" height="350" />
 		<portlet action="portal.sales.turnover.by.family.ytd.vs.lastyear" height="350" />		
@@ -75,10 +76,21 @@
    	    <portlet action="portal.stockMove.average.delivery.time.delay" height="350"/> 
 	</portal>
 	
+	<action-view title="Sales turnover comparison per month this year vs past years" model="com.axelor.apps.supplychain.db.SalesOrder" name="portal.sales.turnover.ytd.vs.previous.years.by.month">
+	  <view type="chart" name="chart.sales.turnover.ytd.vs.previous.years.by.month"/>
+	  <context name="_user_id" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+	</action-view>
+
 	<action-view name="portal.sales.turnover.ytd.vs.lastyear" title="Sales Turnover This year vs Last year" model="com.axelor.apps.supplychain.db.SalesOrder">
-	    <view type="chart" name="chart.sales.turnover.ytd.vs.lastyear"/>        
-	    <domain>self.company=:active_company</domain>
-	    <context name="active_company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
+	    <view type="chart" name="chart.sales.turnover.ytd.vs.lastyear"/>
+	    <context name="_user_id" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
+	</action-view>
+	
+	<action-view title="Sales turnover this year vs past years" model="com.axelor.apps.supplychain.db.SalesOrder" name="portal.sales.turnover.ytd.vs.past.year">
+	  <view type="chart" name="chart.sales.turnover.ytd.vs.past.year"/>
+	  <context name="_user_id" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
 	</action-view>
 	
 	<action-view name="portal.sales.turnover.by.product.ytd.vs.lastyear" title="Sales TurnOver by Product this year vs last year" model="com.axelor.apps.supplychain.db.SalesOrder">
@@ -174,18 +186,18 @@
 		<portlet action="portal.purchase.buyer.dashboard.validated.orders" height="350" canSearch="true" />
 		<portlet action="portal.purchase.buyer.dashboard.orders" canSearch="true" height="350" />
 		<portlet action="portal.purchase.buyer.dashboard.order.to.validate" canSearch="true" height="350" />
-		<portlet action="portal.purchase.buyer.dashboard.family.product.purchase.volume" height="350"/>
-	    <portlet action="portal.purchase.buyer.dashboard.family.product.purchase.turnover" height="350"/>
-		<portlet action="portal.supplier.order.per.month" canSearch="true" height="350"/>
-		<portlet action="portal.supplier.orders.per.month"  canSearch="true" height="350" />
-		<portlet action="portal.prod.amout.purchases.last.12m" canSearch="true" height="350"/>
-		<portlet action="portal.prod.qty.purchases.last.12m" canSearch="true" height="350"/>
+		<portlet action="portal.my.purchases.per.product.family.volume" height="350"/>
+	    <portlet action="portal.my.purchase.amount.per.product.family" height="350"/>
+		<portlet action="portal.purchase.amount.per.product.family" canSearch="true" height="350"/>
+		<portlet action="portal.nbr.of.po.per.month"  canSearch="true" height="350" />
+		<portlet action="portal.total.purchase.amount" canSearch="true" height="350"/>
+		<portlet action="portal.total.purchase.qty" canSearch="true" height="350"/>
 	</portal>
 
 
 	<action-view name="portal.purchase.buyer.dashboard.validated.orders" title="My Validated Purchase Orders"
 		model="com.axelor.apps.supplychain.db.PurchaseOrder">
-		<view type="grid" name="purchase-order-grid" />
+		<view type="grid" name="my-purchase-order-grid" />
 		<view type="form" name="purchase-order-form" />
 		<domain>self.buyerUserInfo =:_user_info and self.statusSelect = 4</domain>
     	<context name="_user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" /> 
@@ -193,7 +205,7 @@
 	
 	<action-view name="portal.purchase.buyer.dashboard.orders" title="My Purchase Orders"
 		model="com.axelor.apps.supplychain.db.PurchaseOrder">
-		<view type="grid" name="purchase-order-grid" />
+		<view type="grid" name="my-purchase-order-grid" />
 		<view type="form" name="purchase-order-form" />
 		<domain>self.buyerUserInfo =:_user_info</domain>
     	<context name="_user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" /> 
@@ -201,39 +213,44 @@
 
 	<action-view name="portal.purchase.buyer.dashboard.order.to.validate" title="My RFQ And PO To Validate"
 		model="com.axelor.apps.supplychain.db.PurchaseOrder">
-		<view type="grid" name="purchase-order-grid" />
+		<view type="grid" name="my-purchase-order-grid" />
 		<view type="form" name="purchase-order-form" />
 		<domain>self.buyerUserInfo =:_user_info and self.statusSelect in (2,3)</domain>
     	<context name="_user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" /> 
 	</action-view>
 	
-	<action-view name="portal.purchase.buyer.dashboard.family.product.purchase.volume" title="My Purchases orders per buyer over past month in volume">
-		<view type="chart" name="chart.purchase.buyer.dashboard.family.product.purchase.volume"/>
+	<action-view title="My Purchases per product family in volume" name="portal.my.purchases.per.product.family.volume">
+	  <view type="chart" name="chart.my.purchases.per.product.family.volume"/>
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+	  <context name="activeUser" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" />
 	</action-view>
 
-	<action-view name="portal.purchase.buyer.dashboard.family.product.purchase.turnover" title="My purchases orders per product family over past month">
-		<view type="chart" name="chart.purchase.buyer.dashboard.family.product.purchase.turnover"/>
+	<action-view title="My purchase amount per product family" name="portal.my.purchase.amount.per.product.family">
+	  <view type="chart" name="chart.my.purchase.amount.per.product.family"/>
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+	  <context name="activeUser" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" />
 	</action-view>
 
-	<action-view name="portal.supplier.order.per.month" title="Purchase Orders last 6 month per product family"
-		model="com.axelor.apps.supplychain.db.PurchaseOrder">
-		<view type="chart" name="chart.partner.by.industry.sector"/>
+	<action-view title="Purchase amount per product family" model="com.axelor.apps.supplychain.db.PurchaseOrder" name="portal.purchase.amount.per.product.family">
+	  <view type="chart" name="chart.purchase.amount.per.product.family"/>
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
 	</action-view>
 
-	<action-view name="portal.supplier.orders.per.month" title="Number Of Supplier Orders Per Month">
-		<view type="chart" name="chart.purchase.manager.dashboard.portal.supplier.order.per.month"/>
+	<action-view title="Nbr of PO per month" name="portal.nbr.of.po.per.month">
+	  <view type="chart" name="chart.nbr.of.po.per.month"/>
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
 	</action-view>
 	
-	<action-view name="portal.prod.amout.purchases.last.12m" title="Turnover On Purchase orders on Last 12 Month"
-		model="com.axelor.apps.supplychain.db.PurchaseOrder">
-		<view type="chart" name="chart.purchase.buyer.dashboard.prod.amout.purchases.last.12m"/>
+	<action-view title="Total Purchase amount" model="com.axelor.apps.supplychain.db.PurchaseOrder" name="portal.total.purchase.amount">
+	  <view type="chart" name="chart.total.purchase.amount"/>
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
 	</action-view>
 	
 	
-	<action-view name="portal.prod.qty.purchases.last.12m" title="Number Of Units Purchase orders on Last 12 Month"
-		model="com.axelor.apps.supplychain.db.PurchaseOrder">
-		<view type="chart" name="chart.purchase.buyer.dashboard.prod.qty.purchases.last.12m"/>
-	</action-view>	
+	<action-view title="Total Purchase Qty" model="com.axelor.apps.supplychain.db.PurchaseOrder" name="portal.total.purchase.qty">
+	  <view type="chart" name="chart.total.purchase.qty"/>
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+	</action-view>
 
 	
 	<!-- 	Purchase Manager Dashboard -->
@@ -418,7 +435,7 @@
 	</portal>
 	
 	<action-view title="My Orders to process" model="com.axelor.apps.supplychain.db.PurchaseOrder" name="portal.my.purchase.orders.to.execute">
-	    <view type="grid" name="purchase-order-grid"/>
+	    <view type="grid" name="my-purchase-order-grid"/>
 	    <view type="form" name="purchase-order-form"/>
 	    <domain>self.statusSelect=3 AND self.buyerUserInfo =:user_info</domain>
 	    <context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
@@ -431,7 +448,7 @@
 	</action-view>
 	
 	<action-view title="My Ongoing Purchase Orders" model="com.axelor.apps.supplychain.db.PurchaseOrder" name="portal.my.ongoing.purchase.orders">
-	    <view type="grid" name="purchase-order-grid"/>
+	    <view type="grid" name="my-purchase-order-grid"/>
 	    <view type="form" name="purchase-order-form"/>
 	    <domain>self.statusSelect=4 AND self.buyerUserInfo =:user_info</domain>
 	    <context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
@@ -444,7 +461,7 @@
 	</action-view>
 	
 	<action-view title="My Closed Purchase Orders" model="com.axelor.apps.supplychain.db.PurchaseOrder" name="portal.my.closed.purchase.orders">
-	    <view type="grid" name="purchase-order-grid"/>
+	    <view type="grid" name="my-purchase-order-grid"/>
 	    <view type="form" name="purchase-order-form"/>
 	    <domain>self.statusSelect=5 AND self.buyerUserInfo =:user_info</domain>
 	    <context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
@@ -457,12 +474,12 @@
 		<portlet action="portal.purchase.buyer.dashboard.validated.orders" canSearch="true" height="350" />
 		<portlet action="portal.purchase.buyer.dashboard.orders" canSearch="true" height="350" />
 		<portlet action="portal.purchase.buyer.dashboard.order.to.validate" canSearch="true" height="350" />
-		<portlet action="portal.purchase.buyer.dashboard.family.product.purchase.volume" canSearch="true" height="350" />
-		<portlet action="portal.purchase.buyer.dashboard.family.product.purchase.turnover" canSearch="true" height="350" />
-		<portlet action="portal.supplier.order.per.month" canSearch="true" height="350" />
-		<portlet action="portal.supplier.orders.per.month" canSearch="true" height="350" />
-		<portlet action="portal.prod.amout.purchases.last.12m" canSearch="true" height="350" />
-		<portlet action="portal.prod.qty.purchases.last.12m" canSearch="true" height="350" />
+		<portlet action="portal.my.purchases.per.product.family.volume" canSearch="true" height="350" />
+		<portlet action="portal.my.purchase.amount.per.product.family" canSearch="true" height="350" />
+		<portlet action="portal.purchase.amount.per.product.family" canSearch="true" height="350" />
+		<portlet action="portal.nbr.of.po.per.month" canSearch="true" height="350" />
+		<portlet action="portal.total.purchase.amount" canSearch="true" height="350" />
+		<portlet action="portal.total.purchase.qty" canSearch="true" height="350" />
 		<portlet action="portal.purchase.manager.dashboard.validated.orders" canSearch="true" height="350" />
 		</portal>
 	
@@ -501,7 +518,9 @@
 	
 	<portal name="supplychain.sales.dashboard.2.portal.view" title="Sales Dashboard 2">
 		<portlet action="portal.sales.turnover.by.product.ytd.vs.lastyear" canSearch="true" height="350" />
+		<portlet action="portal.sales.turnover.ytd.vs.previous.years.by.month" height="350"/>
 		<portlet action="portal.sales.turnover.ytd.vs.lastyear" canSearch="true" height="350" />
+		<portlet action="portal.sales.turnover.ytd.vs.past.year" height="350" />
 		<portlet action="portal.sales.turnover.ytd.vs.lastyear.by.family" canSearch="true" height="350" />
 		<portlet action="portal.sales.turnover.by.family.ytd.vs.lastyear" canSearch="true" height="350" />
 		<portlet action="portal.turnover.per.month.per.salesman.over.6mth" canSearch="true" height="350"/>

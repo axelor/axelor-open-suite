@@ -33,11 +33,13 @@ package com.axelor.csv.script
 import com.axelor.apps.account.db.Invoice
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.supplychain.service.SalesOrderInvoiceService;
+import com.axelor.apps.supplychain.service.SalesOrderLineService;
 import com.axelor.apps.supplychain.service.SalesOrderService;
 import com.axelor.apps.supplychain.service.SalesOrderStockMoveService;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService
 import com.axelor.apps.supplychain.service.StockMoveService;
 import com.axelor.apps.supplychain.db.SalesOrder;
+import com.axelor.apps.supplychain.db.SalesOrderLine;
 import com.axelor.apps.supplychain.db.StockMove
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -63,11 +65,16 @@ class ImportSalesOrder {
 		@Inject
 		InvoiceService invoiceService;
 		
+		@Inject
+		SalesOrderLineService salesOrderLineService;
+		
 		@Transactional
 		Object importSalesOrder(Object bean, Map values) {
 			assert bean instanceof SalesOrder
 	        try{
 				SalesOrder salesOrder = (SalesOrder) bean
+				for(SalesOrderLine line : salesOrder.getSalesOrderLineList())
+					line.setTaxLine(salesOrderLineService.getTaxLine(salesOrder, line));
 				salesOrderService.computeSalesOrder(salesOrder);
 				if(salesOrder.statusSelect == 3){
 					salesOrderStockMoveService.createStocksMovesFromSalesOrder(salesOrder)
@@ -85,6 +92,7 @@ class ImportSalesOrder {
 						stockMove.realDate = salesOrder.validationDate
 						if(salesOrder.invoicingTypeSelect == 4){
 							Invoice invoice = stockMoveInvoiceService.createInvoiceFromSalesOrder(stockMove, salesOrder)
+							invoice.setInvoiceDate(salesOrder.validationDate)
 							invoiceService.compute(invoice)
 							invoiceService.validate(invoice)
 							invoiceService.ventilate(invoice)

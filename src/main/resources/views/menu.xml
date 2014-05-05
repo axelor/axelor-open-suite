@@ -176,7 +176,10 @@
 	</action-view>	
 	
 
-	<menuitem name="top-sales" title="Sales" groups="admins,erp,crm" top="true" left="false"/>
+	<menuitem name="top-sales" title="Sales" groups="admins,erp,crm" top="true" left="false" priority="160"/>
+	
+	<menuitem name="top-sales-orders-all" title="All Sales Docs" action="sc.root.sales.orders" parent="top-sales" groups="admins,erp" top="true" left="false"/>
+	
 	
 	<menuitem name="top-sales-offers" title="Quotes" action="top.sales.offers" parent="top-sales" groups="admins,erp" top="true" left="false"/>
 	<action-view name="top.sales.offers" title="Quotes"
@@ -184,7 +187,7 @@
 		<view type="grid" name="sales-order-grid" />
 		<view type="form" name="sales-order-form" />
 		<view-param name="search-filters" value="sales-order-filters"/>
-		<domain>self.statusSelect = 1</domain>
+		<domain>self.statusSelect = 2</domain>
 		<context name="_internalUser" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
 	</action-view>	
@@ -197,11 +200,14 @@
 		<view type="grid" name="sales-order-grid" />
 		<view type="form" name="sales-order-form" />
 		<view-param name="search-filters" value="sales-order-filters"/>
+		<domain>self.statusSelect = 3</domain>
 		<context name="_internalUser" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
 	</action-view>	
 	
-	<menuitem name="top-purchase" title="Purchases" groups="admins,erp" top="true" left="false"/>
+	<menuitem name="top-purchase" title="Purchases" groups="admins,erp" top="true" left="false" priority="150"/>
+	
+	<menuitem name="top-purchase-orders-all" title="All Purchases Docs" action="sc.root.purchase.orders" parent="top-purchase" groups="admins,erp" top="true" left="false"/>		
 	
 	<menuitem name="top-purchase-quotes" title="RFQ" action="top.purchase.quotes" parent="top-purchase" groups="admins,erp" top="true" left="false"/>		
 	
@@ -210,7 +216,7 @@
 		<view type="grid" name="purchase-order-grid" />
 		<view type="form" name="purchase-order-form" />
 		<view-param name="search-filters" value="purchases-order-filters"/>
-		<domain>self.statusSelect = 1 </domain>
+		<domain>self.statusSelect in (2,3) </domain>
 	</action-view>	
 	
 	<menuitem name="top-purchase-orders" title="Orders" action="top.purchase.orders" parent="top-purchase" groups="admins,erp" top="true" left="false"/>		
@@ -220,10 +226,19 @@
 		<view type="grid" name="purchase-order-grid" />
 		<view type="form" name="purchase-order-form" />
 		<view-param name="search-filters" value="purchases-order-filters"/>
-		<domain>self.statusSelect = 2 </domain>
+		<domain>self.statusSelect in (4,5) </domain>
 	</action-view>		
 	
-	<menuitem name="top-stock" title="Stock" groups="admins,erp" top="true" left="false"/>	
+	<menuitem name="top-stock" title="Stock" groups="admins,erp" top="true" left="false" priority="140"/>
+	
+	<menuitem name="top-stock-moves-all" title="Stock moves" action="top.stock.moves.all" parent="top-stock" groups="admins,erp" top="true" left="false"/>	
+	
+	<action-view name="top.stock.moves.all" title="Stock moves"
+		model="com.axelor.apps.supplychain.db.StockMove" icon="img/16px/productSmall_16px.png">
+		<view type="grid" name="stock-move-grid"/>
+		<view type="form" />
+		<view-param name="search-filters" value="internal-stock-move-filters"/>
+	</action-view>	
 	
 	<menuitem name="top-stock-cust-deliveries" title="Customer deliveries" action="top.stock.cust.deliveries" parent="top-stock" groups="admins,erp" top="true" left="false"/>		
 	

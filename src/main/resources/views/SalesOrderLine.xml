@@ -39,7 +39,7 @@
 	            <group colSpan="4" cols="4" colWidths="30%,10%,30%,10%">
 	                <field name="saleSupplySelect" onChange="action-sales-order-line-get-production-information"/>
 	                <break/>
-	                <field name="supplierPartner" domain="self.isContact = false" showIf="saleSupplySelect == 2"/>
+	                <field name="supplierPartner" domain="self.isContact = false AND self.supplierTypeSelect in (2,3)" showIf="saleSupplySelect == 2"/>
 	                <field name="task"/>
 	                <field name="billOfMaterial" onSelect="action-sales-order-line-attrs-bill-of-material-domain" showIf="saleSupplySelect == 3"/>
 	                <button name="customizeBOM" title="Customize BOM" colSpan="2" onClick="action-method-customize-bill-of-material" showIf="saleSupplySelect == 3"/>
