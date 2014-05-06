@@ -337,7 +337,7 @@
 	</action-view>
 
 	<action-view name="portal.open.ticket.priority.distribution"
-		title="Ticket distribution by Priority">
+		title="Open tickets distribution by Priority">
 		<view type="chart" name="chart.open.ticket.priority.distribution.bar" />
 	</action-view>
 

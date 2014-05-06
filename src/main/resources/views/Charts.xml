@@ -433,7 +433,7 @@
 	    <series key="_total_calls" type="bar"/>
 	</chart>  	
 	
-	<chart name="chart.open.ticket.priority.distribution.bar" title="Ticket distribution by Priority">
+	<chart name="chart.open.ticket.priority.distribution.bar" title="Open tickets distribution by Priority">
 		<dataset type="sql">
 		    <![CDATA[
 			    select
