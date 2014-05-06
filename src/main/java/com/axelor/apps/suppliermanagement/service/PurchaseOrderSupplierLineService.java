@@ -55,7 +55,10 @@ public class PurchaseOrderSupplierLineService {
 		
 		purchaseOrderLine.setPrice(purchaseOrderSupplierLine.getPrice());
 		purchaseOrderLine.setExTaxTotal(PurchaseOrderLineService.computeAmount(purchaseOrderLine.getQty(), purchaseOrderLine.getPrice()));
-		purchaseOrderLine.save();
+		
+		purchaseOrderSupplierLine.setStateSelect(IPurchaseOrderSupplierLine.ACCEPTED);
+		
+		purchaseOrderSupplierLine.save();
 		
 	}
 	
