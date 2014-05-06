@@ -51,56 +51,73 @@
 		<series key="_turn_over"  type="bar" title="TurnOver" />
 	</chart>
     
-	<chart stacked="true" name="chart.prod.turnover.cust.invoices.last.12m" title="Turnover On Customer Invoices on Last 12 Month">
-	  <dataset type="sql">
-	  
-	  SELECT 
-	    date_part('year',_invoice.invoice_date) || '-' || date_part('mon',_invoice.invoice_date) || '-01' AS _month_no,
-	    coalesce(_product._product_type,'other') AS product,
-	    coalesce(SUM(_invoice._turn_over), 00) AS _turn_over
-	  FROM
-	    (SELECT 
-	      _invoice.id AS _invoice_id,
-	      _invoice.invoice_date as invoice_date,
-	      date_part('mon', _invoice.invoice_date) AS _month,
-	      _line.ex_tax_total AS _turn_over,
-	      _line.product AS _line_product
-	    FROM
-	      account_invoice AS _invoice
-	    JOIN
-	      account_invoice_line AS _line 
-	      ON _line.invoice=_invoice.id
-	    LEFT JOIN
-	      base_status AS _status
-	      ON _status.id = _invoice.status AND _status.code != 'dra'        
-	    WHERE
-	      _invoice.invoice_date &gt;= now() - INTERVAL '12 month' 
-	      AND _invoice.operation_type_select=3
-	      
-	    GROUP BY 
-	      _invoice_id, _line_product, _turn_over, _month) AS _invoice
-	  
-	  JOIN
 	
-	    (SELECT 
-	      _category.name AS _product_type, _product.id AS _product_id
-	    FROM
-	      base_product AS _product
-	    JOIN
-	      base_product_category AS _category 
-	      ON _product.product_category=_category.id AND _category.name IS NOT NULL) AS _product
 	
-	  ON _invoice._line_product=_product._product_id
-	  GROUP BY _month_no, _product._product_type
-	  ORDER BY _month_no, _turn_over DESC
-	   
-	  </dataset>
-	  <category key="_month_no" type="month" title="Month"/>
-	  <series key="_turn_over" groupBy="product" type="bar" title="TurnOver" aggregate="sum"/>
+	<chart stacked="true" name="chart.invoice.turnover.cust.history" title="Customer Turnover history by month (on invoices)" onInit="action.account.portal.set.from.to.date.month">	
+	  	    <search-fields>
+			  <field type="date" name="fromDate" title="From Date"/>
+	 	        <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
+	 	    </search-fields>	 
+	
+		 <dataset type="sql">
+		  
+		 SELECT 
+		    date_part('year',_invoice.invoice_date) || '-' || date_part('mon',_invoice.invoice_date) || '-01' AS _month_no,
+		    coalesce(_product._product_type,'other') AS product,
+		    coalesce(SUM(_invoice._turn_over), 00) AS _turn_over
+		  FROM
+		    (SELECT 
+		      _invoice.id AS _invoice_id,
+		      _invoice.invoice_date as invoice_date,
+		      date_part('mon', _invoice.invoice_date) AS _month,
+		      _line.ex_tax_total AS _turn_over,
+		      _line.product AS _line_product
+		    FROM
+		      account_invoice AS _invoice
+		    JOIN
+		      account_invoice_line AS _line 
+		      ON _line.invoice=_invoice.id
+		    JOIN
+			base_user_info _user
+			ON _user.id = :_user_id
+			AND _invoice.company = _user.active_company	
+		    LEFT JOIN
+		      base_status AS _status
+		      ON _status.id = _invoice.status AND _status.code != 'dra'        
+		    WHERE
+		      _invoice.invoice_date BETWEEN DATE(:fromDate) AND  DATE(:fromDate) + CAST(:monthSelect as int) * INTERVAL '1 month' 
+		      AND _invoice.operation_type_select=3
+		      
+		    GROUP BY 
+		      _invoice_id, _line_product, _turn_over, _month) AS _invoice
+		  
+		  JOIN
+		
+		    (SELECT 
+		      _category.name AS _product_type, _product.id AS _product_id
+		    FROM
+		      base_product AS _product
+		    JOIN
+		      base_product_category AS _category 
+		      ON _product.product_category=_category.id AND _category.name IS NOT NULL) AS _product
+		
+		  ON _invoice._line_product=_product._product_id
+		  GROUP BY _month_no, _product._product_type
+		  ORDER BY _month_no, _turn_over DESC
+		   
+		   
+		  </dataset>
+		  <category key="_month_no" type="month" title="Month"/>
+		  <series key="_turn_over" groupBy="product" type="bar" title="TurnOver" aggregate="sum"/>
 	</chart>
 
+
 	
-	<chart stacked="true" name="chart.prod.qty.cust.invoices.last.12m" title="Number Of Units On Customer Invoices on Last 12 Month">
+	<chart stacked="true" name="chart.invoice.prod.qty.sold.history" title="Total Product Qty sold history by month by category" onInit="action.account.portal.set.from.to.date.month">
+	   <search-fields>
+			<field type="date" name="fromDate" title="From Date"/>
+ 	        <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
+ 	    </search-fields>	
 	  <dataset type="sql">
 	  
 	  SELECT 
@@ -118,11 +135,15 @@
 	    JOIN
 	      account_invoice_line AS _line 
 	      ON _line.invoice=_invoice.id
+	    JOIN
+			base_user_info _user
+			ON _user.id = :_user_id
+			AND _invoice.company = _user.active_company	  
 	    LEFT JOIN
 	      base_status AS _status
 	      ON _status.id = _invoice.status AND _status.code != 'dra'        
-	    WHERE
-	      _invoice.invoice_date &gt;= now() - INTERVAL '12 month' 
+	     WHERE
+	      _invoice.invoice_date BETWEEN DATE(:fromDate) AND  DATE(:fromDate) + CAST(:monthSelect as int) * INTERVAL '1 month' 
 	      AND _invoice.operation_type_select=3
 	      
 	    GROUP BY 
@@ -150,16 +171,26 @@
 	  <series key="_turn_over" groupBy="product" type="bar" title="No of Units" aggregate="sum"/>
 	</chart>
       
-	<chart name="chart.total.revenue.by.each.product" title="Total Revenue Generated By Each Product" >
-	  <dataset type="sql">
+	<chart name="chart.invoice.total.revenue.by.product" title="Total Revenue Distribution by Product" onInit="action.account.portal.set.from.to.date.month">
+	 <search-fields>
+		<field type="date" name="fromDate" title="From Date"/>
+		<field type="date" name="toDate" title="To Date"/>
+	 </search-fields>	 
+ 	<dataset type="sql">
 	  <![CDATA[
 		SELECT 
-			_category.name AS _product_category, 
+		_category.name AS _product_category, 
 			coalesce(SUM(_line.ex_tax_total), 0) AS _revenue
 		FROM
 			account_invoice_line AS _line
 		JOIN
-			account_invoice AS _invoice ON _invoice.id = _line.invoice AND _invoice.operation_type_select=3
+			account_invoice AS _invoice ON _invoice.id = _line.invoice 
+			AND _invoice.operation_type_select=3
+			AND _invoice.invoice_date BETWEEN DATE(:fromDate) AND  DATE(:toDate) 
+		JOIN
+			base_user_info _user
+			ON _user.id = :_user_id
+			AND _invoice.company = _user.active_company		
 		JOIN
 			base_product AS _product ON _line.product = _product.id
 		JOIN
@@ -172,7 +203,7 @@
 	  </dataset>
 	  <category key="_product_category" type="text" title="Product Category"/>
 	  <series key="_revenue" type="donut" title="Revenue" />
-	</chart>      
+	</chart>   
 	
 	<chart name="chart.total.revenue.by.geo.region" title="Revenue Genenerated by Geographical Region" >
 	  <dataset type="sql">
@@ -356,13 +387,19 @@
  	      <field name="fromDate" expr="eval:LocalDate.parse(todayDate).withDayOfMonth(1).withMonthOfYear(1)"/>
  	  </action-record>
  	  
+ 	  <action-record name="action.account.portal.set.from.to.date.month" model="com.axelor.apps.account.db.Account">
+ 	      <field name="toDate" expr="eval:todayDate" />
+ 	      <field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusYears(1)"/>
+ 	      <field name="monthSelect" expr="eval:12"/>
+ 	  </action-record>
+ 	  
 	  <action-record model="com.axelor.apps.account.db.Account" name="action.account.portal.default.month.value">
 	      <field name="monthSelect" expr="eval:12"/>
 	  </action-record>
  	  
  	  <chart name="chart.paymentVoucher.customer.paymentMode.distribution.amount" onInit="action.account.portal.default.month.value" title="Customer Payment mode distribution by amount">
  	    <search-fields> 	        
- 	        <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
+ 	         <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select"/>
  	    </search-fields>
 	    <dataset type="jpql">
 	     <![CDATA[
