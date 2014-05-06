@@ -454,6 +454,7 @@
 	<input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company" search="self.importId = :importId" update="true"/> 	
 	
 	<input file="supplychain_inventory.csv" separator=";" type="com.axelor.apps.supplychain.db.Inventory">
+	    <bind to="statusSelect" eval="3" />
 		<bind column="dateT" to="dateT" eval="call:com.axelor.csv.script.ImportDateTime:importDate(dateT)"/>
 	</input>
 	
@@ -461,11 +462,11 @@
 	
 	<input file="supplychain_inventoryLine.csv" separator=";" type="com.axelor.apps.supplychain.db.InventoryLine" />
 	
-	<input file="supplychain_inventory.csv" separator=";" type="com.axelor.apps.supplychain.db.Inventory"  
-	search="self.inventorySeq = :inventorySeq" call="com.axelor.csv.script.ImportInventory:importInventory" update="true">
-		<bind to="statusSelect" eval="3" />
-		<bind column="dateT" to="dateT" eval="call:com.axelor.csv.script.ImportDateTime:importDate(dateT)"/>
-	</input>
+<!-- 	<input file="supplychain_inventory.csv" separator=";" type="com.axelor.apps.supplychain.db.Inventory"   -->
+<!-- 	search="self.inventorySeq = :inventorySeq" call="com.axelor.csv.script.ImportInventory:importInventory" update="true"> -->
+<!-- 		<bind to="statusSelect" eval="3" /> -->
+<!-- 		<bind column="dateT" to="dateT" eval="call:com.axelor.csv.script.ImportDateTime:importDate(dateT)"/> -->
+<!-- 	</input> -->
 	
 <!-- 	<input file="supplychain_inventory.csv" separator=";" type="com.axelor.apps.supplychain.db.Inventory"   -->
 <!-- 	search="self.inventorySeq = :inventorySeq" call="com.axelor.csv.script.ImportInventory:realizeMove" update="true"> -->
@@ -483,11 +484,11 @@
  		<bind to="estimatedDelivDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(estimatedDelivDate)" column="estimatedDelivDate"/>
  	</input>
  	
- 	<input file="supplychain_purchaseOrder.csv" separator=";" type="com.axelor.apps.supplychain.db.PurchaseOrder" search="self.importId = :importId" update="true" call="com.axelor.csv.script.ImportPurchaseOrder:importPurchaseOrder">
- 		<bind to="createdOn" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(creationDate)" column="creationDate"/>
- 		<bind to="deliveryDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(deliveryDate)" column="deliveryDate"/>
- 		<bind to="orderDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(orderDate)" column="orderDate"/>
- 	</input>
+<!--  	<input file="supplychain_purchaseOrder.csv" separator=";" type="com.axelor.apps.supplychain.db.PurchaseOrder" search="self.importId = :importId" update="true" call="com.axelor.csv.script.ImportPurchaseOrder:importPurchaseOrder"> -->
+<!--  		<bind to="createdOn" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(creationDate)" column="creationDate"/> -->
+<!--  		<bind to="deliveryDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(deliveryDate)" column="deliveryDate"/> -->
+<!--  		<bind to="orderDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(orderDate)" column="orderDate"/> -->
+<!--  	</input> -->
 	
 	<input file="supplychain_salesOrder.csv" separator=";" type="com.axelor.apps.supplychain.db.SalesOrder">
 		<bind to="creationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(creationDate)" column="creationDate"/>
@@ -497,13 +498,14 @@
 	
 	<input file="supplychain_salesOrderLine.csv" separator=";" type="com.axelor.apps.supplychain.db.SalesOrderLine" />
 	
-	<input file="supplychain_salesOrder.csv" separator=";" type="com.axelor.apps.supplychain.db.SalesOrder" call="com.axelor.csv.script.ImportSalesOrder:importSalesOrder" search="self.importId = :importId" update="true">
-		<bind to="creationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(creationDate)" column="creationDate"/>
-		<bind to="validationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(validationDate)" column="validationDate"/>
-		<bind to="shipmentDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(shipmentDate)" column="shipmentDate"/>
-	</input>
+	<input file="base_general.csv" separator=";" type="com.axelor.apps.base.db.General" update="true" search="self.importId = :importId" call="com.axelor.csv.script.ValidateSupplyChain:validateSupplyChain" />
 	
-	  	
+<!-- 	<input file="supplychain_salesOrder.csv" separator=";" type="com.axelor.apps.supplychain.db.SalesOrder" call="com.axelor.csv.script.ImportSalesOrder:importSalesOrder" search="self.importId = :importId" update="true"> -->
+<!-- 		<bind to="creationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(creationDate)" column="creationDate"/> -->
+<!-- 		<bind to="validationDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(validationDate)" column="validationDate"/> -->
+<!-- 		<bind to="shipmentDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(shipmentDate)" column="shipmentDate"/> -->
+<!-- 	</input> -->
+	
  	<input file="base_spentTime.csv" separator=";" type="com.axelor.apps.base.db.SpentTime">
  	    <bind to="date" column="date" eval="call:com.axelor.csv.script.ImportDateTime:importDate(date)"/>
  	</input>
@@ -554,6 +556,7 @@
 	
 <!-- 	Update default BOM -->
 	<input file="base_product.csv" separator=";" type="com.axelor.apps.base.db.Product" search="self.importId = :importId" update="true"/>
+	
 	
 </csv-inputs>
 
