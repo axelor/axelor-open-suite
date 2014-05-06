@@ -23,7 +23,7 @@
 	<action-view title="My Turnover per month" name="portal.my.turnover.per.month">
 	  <view type="chart" name="chart.my.turnover.per.month"/>
 	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
-	  <context name="id" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()" />
+	  <context name="_user_id" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()" />
 	</action-view>
 	
 	<action-view name="portal.salesman.dashboard.leads" title="My Current Leads"
@@ -111,39 +111,46 @@
 	  <context name="active_company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
 	</action-view>
 
-	<action-view name="portal.sales.manager.dashboard.turnover.per.team" title="Turnover per team">
+	<action-view name="portal.sales.manager.dashboard.turnover.per.team" title="Turnover (excl. Tax) per team">
 	  <view type="chart" name="chart.sales.manager.dashboard.turnover.per.team"/>
 	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+	  <context name="_user_id" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
 	
-	<action-view name="portal.sales.manager.dashboard.turnover.per.salesman" title="Turnover per salesman">
+	<action-view name="portal.sales.manager.dashboard.turnover.per.salesman" title="Turnover (excl. Tax) per salesman">
 	  <view type="chart" name="chart.sales.manager.dashboard.turnover.per.salesman"/>
 	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+	  <context name="_user_id" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
 	
 	<action-view name="portal.sales.manager.dashboard.sales.distribution.per.family" title="Sales distribution per product family">
 	  <view type="chart" name="chart.sales.manager.dashboard.sales.distribution.per.family"/>
 	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+	  <context name="_user_id" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
 	
 	<action-view name="portal.sales.manager.dashboard.product.sales.per.category" title="Sales distribution per product category">
 	  <view type="chart" name="chart.sales.manager.dashboard.product.sales.per.category"/>
 	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+	  <context name="_user_id" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
 	
 	<action-view name="portal.sales.manager.dashboard.sales.per.country" title="Sales per country">
 	  <view type="chart" name="chart.sales.manager.dashboard.sales.per.country"/>
 	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+	  <context name="_user_id" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
 	
-	<action-view name="portal.turnover.sales.by.month.by.category" title="Turnover amount on customer sales by month by category">
+	<action-view name="portal.turnover.sales.by.month.by.category" title="Sales Turnover (Orders) by month by category">
 	  <view type="chart" name="chart.turnover.sales.by.month.by.category"/>
 	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+	  <context name="_user_id" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
-
-	<action-view name="portal.units.sold.on.cust.sales.by.category" title="Nbr of Units sold on Cust. Sales by category" >
+	
+	<action-view name="portal.units.sold.on.cust.sales.by.category" title="Nbr of Units sold (Orders) by category">
 	  <view type="chart" name="chart.units.sold.on.cust.sales.by.category"/>
 	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+	  <context name="_user_id" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
  		
 	<action-record model="com.axelor.apps.supplychain.db.SalesOrder" name="action.supplychain.portal.default.month.value">
