@@ -324,10 +324,10 @@
 	
 	<portal title="Dashboard" name="stock.dashboard.portal.sample" cols="2">		
 		<portlet action="portal.stock.dashboard.upcoming.deliveries" canSearch="true" height="350" />
-		<portlet action="portal.stock.dashboard.late.deliveries" canSearch="true" height="350" />
-		<portlet action="portal.stock.dashboard.upcoming.arrivals" height="350" canSearch="true" />
-		<portlet action="portal.stock.dashboard.late.arrivals" canSearch="true" height="350" />
-		<portlet action="portal.stock.dashboard.product.out.stock.bylocation" canSearch="true" height="350" />
+		<portlet action="portal.stock.move.late.cust.late.deliveries" canSearch="true" height="350" />
+		<portlet action="portal.stock.move.upcoming.suppl.arrivals" height="350" canSearch="true" />
+		<portlet action="portal.stock.move.late.suppl.arrivals" canSearch="true" height="350" />
+		<portlet action="portal.location.line.product.out.stock.bylocation" canSearch="true" height="350" />
 	    <portlet action="portal.production.stock.move.in.planned"  height="350" canSearch="true"/>    
 	    <portlet action="portal.production.stock.move.out.planned" height="350" canSearch="true"/>       			
 	    <portlet action="portal.production.stock.move.in.realized" height="350" canSearch="true"/>
@@ -337,13 +337,14 @@
 
 	<portal title="Dashboard" name="stock.dashboard.portal.one" cols="2">	
 		<portlet action="portal.stock.dashboard.upcoming.deliveries" canSearch="true" height="350" />	
-		<portlet action="portal.stock.dashboard.late.deliveries" canSearch="true" height="350" />	
-		<portlet action="portal.stock.dashboard.upcoming.arrivals" canSearch="true" height="350" />	
-		<portlet action="portal.stock.dashboard.late.arrivals" canSearch="true" height="350" />	
+		<portlet action="portal.stock.move.late.cust.late.deliveries" canSearch="true" height="350" />	
+		<portlet action="portal.stock.move.upcoming.suppl.arrivals" canSearch="true" height="350" />	
+		<portlet action="portal.stock.move.late.suppl.arrivals" canSearch="true" height="350" />	
 		<portlet action="portal.production.stock.move.in.planned" canSearch="true" height="350" />	
 		<portlet action="portal.production.stock.move.in.realized" canSearch="true" height="350" />	
 		<portlet action="portal.production.stock.move.out.planned" canSearch="true" height="350" />	
 		<portlet action="portal.production.stock.move.out.realized" canSearch="true" height="350" />	
+		<portlet action="portal.location.line.product.out.stock.bylocation" canSearch="true" height="350" />
 	</portal>
 
 	<portal title="Dashboard" name="stock.dashboard.portal.two" cols="2">
@@ -361,32 +362,32 @@
 		<domain>self.toLocation.typeSelect = 3 AND (self.estimatedDate between CURRENT_DATE and CURRENT_DATE + 5) AND self.statusSelect = 2</domain>
 	</action-view>
 
-	<action-view name="portal.stock.dashboard.late.deliveries" title="Late deliveries"
-		model="com.axelor.apps.supplychain.db.StockMove">
-		<view type="grid" name="stock-move-grid" />
-		<view type="form" name="stock-move-form" />
-		<domain>self.toLocation.typeSelect = 3 AND self.estimatedDate &lt; CURRENT_DATE</domain>
+	<action-view title="Late customer deliveries" model="com.axelor.apps.supplychain.db.StockMove" name="portal.stock.move.late.cust.late.deliveries">
+	   <view type="grid" name="stock-move-grid"/>
+	   <view type="form" name="stock-move-form"/>
+	   <domain>self.toLocation.typeSelect = 3 AND self.estimatedDate &lt; CURRENT_DATE AND self.statusSelect= 2 AND self.company=:active_company</domain>
+	   <context name="active_company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
 	</action-view>
 
-	<action-view name="portal.stock.dashboard.upcoming.arrivals" title="Upcoming arrivals"
-		model="com.axelor.apps.supplychain.db.StockMove">
-		<view type="grid" name="stock-move-grid"/>
-		<view type="form" name="stock-move-form"/>
-		<domain>self.fromLocation.typeSelect = 2 AND (self.estimatedDate between CURRENT_DATE and CURRENT_DATE + 5) AND self.statusSelect = 2</domain>
+	<action-view title="Upcoming supplier arrivals" model="com.axelor.apps.supplychain.db.StockMove" name="portal.stock.move.upcoming.suppl.arrivals">
+		  <view type="grid" name="stock-move-grid"/>
+		  <view type="form" name="stock-move-form"/>
+		  <domain>self.fromLocation.typeSelect = 2 AND (self.estimatedDate between CURRENT_DATE and CURRENT_DATE + 5) AND self.statusSelect = 2 AND self.company=:active_company</domain>
+		  <context name="active_company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
 	</action-view>
 
-	<action-view name="portal.stock.dashboard.late.arrivals" title="Late arrivals"
-		model="com.axelor.apps.supplychain.db.StockMove">
-		<view type="grid" name="stock-move-grid" />
-		<view type="form" name="stock-move-form" />
-		<domain>self.fromLocation.typeSelect = 2 AND self.estimatedDate &lt; CURRENT_DATE</domain>
+	<action-view title="Late supplier arrivals" model="com.axelor.apps.supplychain.db.StockMove" name="portal.stock.move.late.suppl.arrivals">
+		  <view type="grid" name="stock-move-grid"/>
+		  <view type="form" name="stock-move-form"/>
+		  <domain>self.fromLocation.typeSelect = 2 AND self.estimatedDate &lt; CURRENT_DATE AND self.statusSelect = 2 AND self.company=:active_company</domain>
+		  <context name="active_company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
 	</action-view>
 
-	<action-view name="portal.stock.dashboard.product.out.stock.bylocation" title="Product out of stock"
-		model="com.axelor.apps.supplychain.db.LocationLine">
-		<view type="grid" name="location-line-grid" />
-		<view type="form" name="location-line-form" />
-		<domain>self.futureQty &lt; 0</domain>
+	<action-view title="Product soon out of stock by location" model="com.axelor.apps.supplychain.db.LocationLine" name="portal.location.line.product.out.stock.bylocation">
+		  <view type="grid" name="location-line-grid"/>
+		  <view type="form" name="location-line-form"/>
+		  <domain>self.futureQty &lt; 0 AND self.location.company=:active_company</domain>
+		  <context name="active_company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
 	</action-view>
 	
 	<action-view title="Production Stock Move in Planned" icon="img/16px/productSmall_16px.png" model="com.axelor.apps.supplychain.db.StockMove" name="portal.production.stock.move.in.planned">
