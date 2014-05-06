@@ -190,7 +190,10 @@
 		JOIN
 			base_user_info _user
 			ON _user.id = :_user_id
-			AND _invoice.company = _user.active_company		
+			AND _invoice.company = _user.active_company	
+		LEFT JOIN
+	        base_status AS _status
+	        ON _status.id = _invoice.status AND _status.code != 'dra'  		
 		JOIN
 			base_product AS _product ON _line.product = _product.id
 		JOIN
