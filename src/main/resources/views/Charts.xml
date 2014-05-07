@@ -231,7 +231,7 @@
 		<dataset type="sql">
 		    <![CDATA[
 		    SELECT
-			    SUM(self.opportunity_amount) AS _opportunity_amount,
+			    COUNT(self.id) AS _leads,
 			    team.name AS _team,
 			    selection_item.title as _status
 			FROM
@@ -253,8 +253,8 @@
 			   	_team	
     ]]>
 	    </dataset>
-	    <category key="_team" type="text"/>
-	    <series key="_opportunity_amount" groupBy="_status" type="bar"/>
+	    <category key="_team" type="text" title="Team"/>
+	    <series key="_leads" groupBy="_status" type="bar" title="Leads"/>
 	</chart>
 	
 	<chart onInit="action.crm.portal.set.date" name="chart.leads.by.salesman.by.status.bar" title="Leads by Salesman by Status" stacked="true">
@@ -265,7 +265,7 @@
 		<dataset type="sql">
 		    <![CDATA[
 		    SELECT
-			    SUM(self.opportunity_amount)    AS _opportunity_amount,
+			    COUNT(self.id)    AS _leads,
 			    sales_man.full_name as _sales_man,
 			    selection_item.title as _status
 			FROM
@@ -287,8 +287,8 @@
 			   	_sales_man	
 			  ]]>
 	    </dataset>
-	    <category key="_sales_man" type="text"/>
-	    <series key="_opportunity_amount" groupBy="_status" type="bar"/>
+	    <category key="_sales_man" type="text" title="Salesman"/>
+	    <series key="_leads" groupBy="_status" type="bar" title="Leads"/>
 	</chart>
 	
 	<chart onInit="action.crm.portal.set.date" name="chart.calls.types.by.user.bar" title="Calls type by user" stacked="true">
