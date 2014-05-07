@@ -105,6 +105,7 @@
 				<break/>
 				<portlet colSpan="4" action="action-product-view-stock"/>
 				<portlet action="chart:chart.stock.report.for.product" height="200" colSpan="4"/>
+				<portlet action="chart:chart.stock.history.report.for.product" height="200" colSpan="4"/>
 			</page>
 
 			<page title="Production informations" showIf="productTypeSelect != 'service'">
