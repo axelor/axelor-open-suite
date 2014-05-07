@@ -242,5 +242,55 @@
 	  <series key="_amount" type="bar" title="Turnover"/>
 	</chart>
 	
+	<chart name="chart.partner.prospects.by.country" title="Prospects by country">
+	  <dataset type="sql">
+	  SELECT
+	    COUNT(self.id) AS _total_partner,
+	    addressCountry.name as _address_country
+	  FROM
+	    base_partner as self
+	  LEFT JOIN
+	    base_address as baseAddress ON baseAddress.id=self.main_invoicing_address
+	  LEFT JOIN  
+	    base_country AS addressCountry ON addressCountry.id=baseAddress.addressl7country
+	  WHERE
+	    self.customer_type_select=2 AND is_contact=false
+	  GROUP BY
+	   _address_country	
+	  ORDER BY
+	   _address_country
+	  </dataset>
+	  <category key="_address_country" type="text" title="Country"/>
+	  <series key="_total_partner" type="donut" title="Partners"/>
+	</chart>
+	
+	<chart name="chart.partner.prospects.by.industrySector" title="Prospects by Industry Sector">
+	  <dataset type="sql">
+		  SELECT
+		    COUNT(self.id) AS _total_partner,
+		    selection_item.title as _industry_sector
+		  FROM
+		    base_partner as self
+		  LEFT JOIN
+		    meta_select as selection ON selection.name = 'partner.industry.sectory.select'
+		  LEFT JOIN 
+		    meta_select_item as selection_item ON selection_item.select_id = selection.id
+		  JOIN
+			base_user_info _user
+			ON _user.id = :_user_id
+		  JOIN
+			base_partner_company_set m2m_companySet
+			ON m2m_companySet.base_partner=self.id
+			AND m2m_companySet.company_set=_user.active_company	
+		  WHERE
+		    cast(selection_item.value as decimal) = self.industry_sector_select AND self.customer_type_select=2 AND is_contact=true
+		  GROUP BY
+		   _industry_sector	
+		  ORDER BY
+		   _industry_sector
+	  </dataset>
+	  <category key="_industry_sector" type="text" title="Industry Sector"/>
+	  <series key="_total_partner" type="donut" title="Partners"/>
+	</chart>
 	
 </object-views>
