@@ -120,6 +120,12 @@
 	
 	<input file="account_cashRegister.csv" separator=";" type="com.axelor.apps.account.db.CashRegister"/>
 	
+	<input file="account_accountingBatch.csv" separator=";" type="com.axelor.apps.account.db.AccountingBatch">
+		<bind to="debitDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(debitDate)" column="debitDate"/>
+		<bind to="startDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)" column="startDate"/>
+		<bind to="endDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(endDate)" column="endDate"/>
+	</input>
+	
 	<input file="base_userInfo.csv" separator=";" type="com.axelor.apps.base.db.UserInfo" />
 <!--       TODO A COMPLETER -->
 <!-- 		<bind column="firstName" to="name" /> -->
@@ -336,6 +342,8 @@
 	
 <!--     IMPORT DU PACKAGE 'CRM' --> 	
 	
+	<input file="crm_crmBatch.csv" separator=";" type="com.axelor.apps.crm.db.CrmBatch" />
+	
 	<input file="crm_eventCategory.csv" separator=";" type="com.axelor.apps.crm.db.EventCategory" />
 	
 	<input file="crm_lead.csv" separator=";" type="com.axelor.apps.crm.db.Lead">
@@ -452,6 +460,8 @@
 	
 <!--     IMPORT DU PACKAGE 'SUPPLY CHAIN' -->
 	<input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company" search="self.importId = :importId" update="true"/> 	
+	
+	<input file="supplychain_supplychainBatch.csv" separator=";" type="com.axelor.apps.supplychain.db.SupplychainBatch" />
 	
 	<input file="supplychain_inventory.csv" separator=";" type="com.axelor.apps.supplychain.db.Inventory">
 	    <bind to="statusSelect" eval="3" />
