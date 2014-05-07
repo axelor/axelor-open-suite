@@ -13,11 +13,12 @@
 		<portlet action="portal.salesman.dashboard.opportunities" canSearch="true" height="350" />
 	</portal>
 	
-	<action-view title="My Sales Orders" model="com.axelor.apps.supplychain.db.SalesOrder" name="portal.salesman.dashboard.orders">
-	    <view type="grid" name="sales-order-grid"/>
-	    <view type="form" name="sales-order-form"/>
-	    <domain>self.salesmanUserInfo.internalUser = :user_info and self.statusSelect in (1, 2)</domain>
-	    <context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+	<action-view name="portal.salesman.dashboard.orders" title="My Sales Orders" model="com.axelor.apps.supplychain.db.SalesOrder">
+	  <view type="grid" name="sales-order-grid"/>
+	  <view type="form" name="sales-order-form"/>
+	  <domain>self.salesmanUserInfo = :user_info and self.statusSelect in (1, 2) and self.company = :active_company</domain>
+	  <context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+	  <context name="active_company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
 	</action-view>
 	
 	<action-view title="My Turnover per month" name="portal.my.turnover.per.month">
@@ -26,12 +27,13 @@
 	  <context name="_user_id" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()" />
 	</action-view>
 	
-	<action-view name="portal.salesman.dashboard.leads" title="My Current Leads"
-		model="com.axelor.apps.crm.db.Lead">
-		<view type="grid" name="my-lead-grid" />
-		<view type="form" name="lead-form" />
-		<domain>self.userInfo.internalUser = :user_info and self.statusSelect in (1, 2)</domain>
-		<context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+	<action-view name="portal.salesman.dashboard.leads" title="My Current Leads" model="com.axelor.apps.crm.db.Lead">
+	  <view type="grid" name="my-lead-grid"/>
+	  <view type="form" name="lead-form"/>
+	  <domain>self.userInfo = :user_info and self.updatedOn >= :fromDate and self.updatedOn &lt;= :todayDate</domain>
+	  <context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+	  <context name="fromDate" expr="eval:todayDate.minusMonths(1)"/>  
 	</action-view>
 	
 	<action-view name="portal.salesman.dashboard.activities" title="My Today Activities"
@@ -44,12 +46,11 @@
 	    <context name="_activeUser" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()" />
 	</action-view>
 	
-	<action-view name="portal.salesman.dashboard.opportunities" title="My Opportunities"
-		model="com.axelor.apps.crm.db.Opportunity">
-		<view type="grid" name="my-opportunity-grid" />
-		<view type="form" name="opportunity-form" />
-		<domain>self.userInfo.internalUser = :user_info</domain>
-		<context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+	<action-view name="portal.salesman.dashboard.opportunities" title="My Opportunities" model="com.axelor.apps.crm.db.Opportunity">
+	  <view type="grid" name="my-opportunity-grid"/>
+	  <view type="form" name="opportunity-form"/>
+	  <domain>self.userInfo = :user_info</domain>
+	  <context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
 	</action-view>
 	
 	
