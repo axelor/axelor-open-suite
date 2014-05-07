@@ -12,7 +12,7 @@
 "menu-view-action-menus";"Action Menus";"admins"
 "menu-wkf-nodes-root-NodeTask";"Activities";"admins|ERP|BPM"
 "menu-wkf-NodeTask";"Activities";"admins|ERP|BPM"
-"top-menu-crm-activities";"Activity";"admins|ERP|MGT|BPM"
+"top-menu-crm-activities";"Activity";"admins|ERP|MGT|CRM"
 "contact-conf-address";"Addresses";"admins|ERP|MGT|BPM"
 "menu-admin";"Administration";"admins|ERP|CST|CRM|VTE|HRM|OPS|MGT"
 "alarm-conf-alarm-engine-batch";"Alarm batches";"admins"
