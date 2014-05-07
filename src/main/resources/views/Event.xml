@@ -24,7 +24,7 @@
     	<field name="subject" />
  	</calendar>
  	
- 	<calendar name="event-calendar-color-by-calendar" title="Meetings" mode="month" colorBy="calendar" 
+ 	<calendar name="event-calendar-color-by-calendar" title="My Calendar" mode="month" colorBy="typeSelect" 
     	eventStart="startDateTime" eventStop="endDateTime" eventLength="1" model="com.axelor.apps.crm.db.Event"
     	onChange="action-event-method-compute-from-calendar">
     	<field name="subject" />

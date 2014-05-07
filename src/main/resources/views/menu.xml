@@ -149,7 +149,7 @@
 	<menuitem name="crm-root-meeting-my-calendar" parent="crm-root"
 		title="My Calendar" action="crm.root.meeting.my.calendar" icon="img/16px/calendarTask_16px.png"/>
 
-	<action-view name="crm.root.meeting.my.calendar" title="My Meetings Calendar"
+	<action-view name="crm.root.meeting.my.calendar" title="My Calendar"
 		model="com.axelor.apps.crm.db.Event" icon="img/16px/calendarTask_16px.png">
 		<view type="calendar" name="event-calendar-color-by-calendar"/>
 		<view type="grid" name="event-grid"/>
