@@ -90,25 +90,25 @@
 	
 	
 	<action-record name="action-check-string-camel-case-first-name-clear" model="com.axelor.apps.base.db.General">
-		<field name="firstName"  expr="eval:null"/>
+		<field name="firstName"  expr="eval:com.axelor.apps.tool.StringTool.deleteAccent(firstName.toFirstUpper())"/>
 	</action-record>
 	<action-record name="action-check-string-capital-case-name-clear" model="com.axelor.apps.base.db.General">
-		<field name="name"  expr="eval:null"/>
+		<field name="name"  expr="eval:com.axelor.apps.tool.StringTool.deleteAccent(name.toUpperCase())"/>
 	</action-record>
 	<action-record name="action-check-string-capital-case-name-addressL2" model="com.axelor.apps.base.db.General">
-		<field name="addressL2"  expr="eval:null"/>
+		<field name="addressL2"  expr="eval:com.axelor.apps.tool.StringTool.deleteAccent(addressL2.toUpperCase())"/>
 	</action-record>
 	<action-record name="action-check-string-capital-case-name-addressL3" model="com.axelor.apps.base.db.General">
-		<field name="addressL3"  expr="eval:null"/>
+		<field name="addressL3"  expr="eval:com.axelor.apps.tool.StringTool.deleteAccent(addressL3.toUpperCase())"/>
 	</action-record>
 	<action-record name="action-check-string-capital-case-name-addressL4" model="com.axelor.apps.base.db.General">
-		<field name="addressL4"  expr="eval:null"/>
+		<field name="addressL4"  expr="eval:com.axelor.apps.tool.StringTool.deleteAccent(addressL4.toUpperCase())"/>
 	</action-record>
 	<action-record name="action-check-string-capital-case-name-addressL5" model="com.axelor.apps.base.db.General">
-		<field name="addressL5"  expr="eval:null"/>
+		<field name="addressL5"  expr="eval:com.axelor.apps.tool.StringTool.deleteAccent(addressL5.toUpperCase())"/>
 	</action-record>
 	<action-record name="action-check-string-capital-case-name-addressL6" model="com.axelor.apps.base.db.General">
-		<field name="addressL6"  expr="eval:null"/>
+		<field name="addressL6" expr="eval:com.axelor.apps.tool.StringTool.deleteAccent(addressL6.toUpperCase())"/>
 	</action-record>
 	
 </object-views>

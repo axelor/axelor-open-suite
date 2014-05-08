@@ -15,5 +15,6 @@
         <field name="nbInhCommune"/>
         <field name="canton"/>
         <field name="artmin"/>
+        <field name="hasZipOnRight" />
     </form>
 </object-views>

@@ -15,6 +15,7 @@
     <string name="importId" title="Import identifier"/>
     <integer name="nbInhCommune" title="Nb. of Inhabitants"/>
     <string name="zip" title="Zip code"/>
+    <boolean name="hasZipOnRight" title="Zip On Right ?" />
     
   </entity>
 
