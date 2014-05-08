@@ -33,7 +33,7 @@
         <field name="salePrice" hidden="true"/>
     </grid>
     
-    <form name="purchase-order-line-form" title="PO line" model="com.axelor.apps.supplychain.db.PurchaseOrderLine" cols="4" 
+    <form name="purchase-order-line-form" title="PO line" model="com.axelor.apps.supplychain.db.PurchaseOrderLine" cols="4" colWidths="400,*"
     onNew="action-purchase-order-line-record-new,action-purchase-order-line-attrs-hide-product-variant"
     onLoad="action-purchase-order-line-attrs-task-readonly,action-purchase-order-line-attrs-hide-product-variant,action-purchase-order-line-record-dummy-sale-price">
 	    <field name="product" onChange="action-purchase-order-line-method-get-product-information,action-purchase-order-line-method-compute,action-purchase-order-line-record-product-variant,action-purchase-order-line-attrs-hide-product-variant" domain="self.endDate = null or self.endDate &gt; :__date__"/>

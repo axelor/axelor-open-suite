@@ -237,7 +237,7 @@ public class PurchaseOrderService {
 			
 			SupplychainConfig supplychainConfig = supplychainConfigService.getSupplychainConfig(company);
 			
-			Location startLocation = Location.all().filter("self.partner = ?1", purchaseOrder.getSupplierPartner()).fetchOne();
+			Location startLocation = Location.filter("self.partner = ?1", purchaseOrder.getSupplierPartner()).fetchOne();
 			
 			if(startLocation == null)  {
 				startLocation = supplychainConfigService.getSupplierVirtualLocation(supplychainConfig);
@@ -279,7 +279,7 @@ public class PurchaseOrderService {
 	
 	public Location getLocation(Company company)  {
 		
-		return Location.all().filter("company = ? and isDefaultLocation = ? and typeSelect = ?", company, true, ILocation.INTERNAL).fetchOne();
+		return Location.filter("company = ? and isDefaultLocation = ? and typeSelect = ?", company, true, ILocation.INTERNAL).fetchOne();
 	}
 	
 	

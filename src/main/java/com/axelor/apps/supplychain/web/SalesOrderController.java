@@ -97,7 +97,7 @@ public class SalesOrderController {
 		// in this line change the Class as per the Module requirement i.e SalesOrder class here used
 		SalesOrder dataObject = request.getContext().asType(SalesOrder.class);
 		User currentUser = 	AuthUtils.getUser();
-		UserInfo currentUserInfo = UserInfo.all().filter("self.internalUser = ?1", currentUser).fetchOne();
+		UserInfo currentUserInfo = UserInfo.filter("self.internalUser = ?1", currentUser).fetchOne();
 
 		GoogleFile documentData = documentSeriveObj.get().createDocumentWithTemplate(currentUserInfo,dataObject);
 		if(documentData == null) {
@@ -284,7 +284,7 @@ public class SalesOrderController {
 		
 		if(salesOrder != null) {
 			
-			Location location = Location.all().filter("self.company = ?1 and self.isDefaultLocation = ?2 and self.typeSelect = ?3", 
+			Location location = Location.filter("self.company = ?1 and self.isDefaultLocation = ?2 and self.typeSelect = ?3", 
 					salesOrder.getCompany(), true, ILocation.INTERNAL).fetchOne();
 			
 			if(location != null) {
