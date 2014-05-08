@@ -103,9 +103,6 @@ public class ReimbursementExportService {
 	@Inject
 	private ReconcileService reconcileService;
 	
-	@Inject 
-	private CfonbService cfonbService;
-	
 	@Inject
 	private UserInfoService userInfoService;
 	
@@ -170,10 +167,10 @@ public class ReimbursementExportService {
 			
 			if(total.compareTo(accountConfig.getUpperThresholdReimbursement()) > 0 || reimbursement.getBankDetails() == null)  {
 			// Seuil haut dépassé	
-				reimbursement.setStatus(Status.all().filter("self.code = 'tov'").fetchOne());
+				reimbursement.setStatus(Status.findByCode("tov"));
 			}
 			else  {
-				reimbursement.setStatus(Status.all().filter("self.code = 'val'").fetchOne());
+				reimbursement.setStatus(Status.findByCode("val"));
 			}
 			
 			reimbursement.save();
@@ -288,7 +285,7 @@ public class ReimbursementExportService {
 	public void reimburse(Reimbursement reimbursement, Company company) throws AxelorException  {
 		reimbursement.setAmountReimbursed(reimbursement.getAmountToReimburse());
 		this.createReimbursementMove(reimbursement, company);
-		reimbursement.setStatus(Status.all().filter("self.code = 'rei'").fetchOne());
+		reimbursement.setStatus(Status.findByCode("rei"));
 		reimbursement.save();
 	}
 	
@@ -537,11 +534,11 @@ public class ReimbursementExportService {
 				
 			if(total.compareTo(company.getAccountConfig().getUpperThresholdReimbursement()) > 0 || reimbursement.getBankDetails() == null)  {
 			// Seuil haut dépassé	
-				reimbursement.setStatus(Status.all().filter("self.code = 'tov'").fetchOne());
+				reimbursement.setStatus(Status.findByCode("tov"));
 			}
 			else  {
 			// Seuil haut non dépassé
-				reimbursement.setStatus(Status.all().filter("self.code = 'val'").fetchOne());
+				reimbursement.setStatus(Status.findByCode("val"));
 			}
 			reimbursement.save();
 		}
@@ -561,7 +558,7 @@ public class ReimbursementExportService {
 		Partner partner = invoice.getPartner();
 		
 		// récupération des trop-perçus du tiers
-		List<MoveLine> moveLineList = MoveLine.all().filter("self.account.reconcileOk = 'true' AND self.fromSchedulePaymentOk = 'false' " +
+		List<MoveLine> moveLineList = MoveLine.filter("self.account.reconcileOk = 'true' AND self.fromSchedulePaymentOk = 'false' " +
 				"AND self.move.state = ?1 AND self.amountRemaining > 0 AND self.credit > 0 AND self.partner = ?2 AND self.reimbursementStateSelect = ?3 "
 				,IAccount.VALIDATED_MOVE , partner, IAccount.NULL).fetch();
 		

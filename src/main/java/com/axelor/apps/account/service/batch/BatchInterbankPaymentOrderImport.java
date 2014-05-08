@@ -40,9 +40,9 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.PaymentVoucher;
-import com.axelor.apps.account.service.CfonbService;
 import com.axelor.apps.account.service.InterbankPaymentOrderImportService;
 import com.axelor.apps.account.service.RejectImportService;
+import com.axelor.apps.account.service.cfonb.CfonbImportService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -61,10 +61,10 @@ public class BatchInterbankPaymentOrderImport extends BatchStrategy {
 
 	
 	@Inject
-	public BatchInterbankPaymentOrderImport(InterbankPaymentOrderImportService interbankPaymentOrderImportService, CfonbService cfonbService, 
+	public BatchInterbankPaymentOrderImport(InterbankPaymentOrderImportService interbankPaymentOrderImportService, CfonbImportService cfonbImportService, 
 			RejectImportService rejectImportService, BatchAccountCustomer batchAccountCustomer) {
 		
-		super(interbankPaymentOrderImportService, cfonbService, rejectImportService, batchAccountCustomer);
+		super(interbankPaymentOrderImportService, cfonbImportService, rejectImportService, batchAccountCustomer);
 		
 	}
 
@@ -103,7 +103,7 @@ public class BatchInterbankPaymentOrderImport extends BatchStrategy {
 				String dest = rejectImportService.getDestCFONBFile(accountConfig.getInterbankPaymentOrderImportPathCFONB(), accountConfig.getTempInterbankPaymentOrderImportPathCFONB());
 				
 				// Récupération des enregistrements
-				paymentFile = cfonbService.importCFONB(dest, company, 3, 4);	
+				paymentFile = cfonbImportService.importCFONB(dest, company, 3, 4);	
 				
 				if(paymentFile != null)  {
 					this.runInterbankPaymentOrderImport(paymentFile, company);

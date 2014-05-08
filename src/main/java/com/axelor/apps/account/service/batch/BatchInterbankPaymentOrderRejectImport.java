@@ -39,7 +39,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.service.CfonbService;
 import com.axelor.apps.account.service.InterbankPaymentOrderRejectImportService;
 import com.axelor.apps.account.service.RejectImportService;
 import com.axelor.apps.base.db.Company;
@@ -60,10 +59,10 @@ public class BatchInterbankPaymentOrderRejectImport extends BatchStrategy {
 
 	
 	@Inject
-	public BatchInterbankPaymentOrderRejectImport(InterbankPaymentOrderRejectImportService interbankPaymentOrderRejectImportService, CfonbService cfonbService, 
+	public BatchInterbankPaymentOrderRejectImport(InterbankPaymentOrderRejectImportService interbankPaymentOrderRejectImportService, 
 			RejectImportService rejectImportService, BatchAccountCustomer batchAccountCustomer) {
 		
-		super(interbankPaymentOrderRejectImportService, cfonbService, rejectImportService, batchAccountCustomer);
+		super(interbankPaymentOrderRejectImportService, rejectImportService, batchAccountCustomer);
 		
 	}
 

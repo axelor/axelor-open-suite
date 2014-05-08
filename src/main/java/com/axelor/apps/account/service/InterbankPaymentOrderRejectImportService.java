@@ -44,6 +44,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.service.cfonb.CfonbImportService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.Company;
@@ -63,7 +64,7 @@ public class InterbankPaymentOrderRejectImportService {
 	private RejectImportService rejectImportService;
 	
 	@Inject
-	private CfonbService cfonbService;
+	private CfonbImportService cfonbImportService;
 	
 	@Inject
 	private PaymentModeService paymentModeService;
@@ -87,7 +88,7 @@ public class InterbankPaymentOrderRejectImportService {
 		// copie du fichier d'import dans un repetoire temporaire
 		FileTool.copy(accountConfig.getInterbankPaymentOrderRejectImportPathCFONB(), dest);
 		
-		return cfonbService.importCFONB(dest, company, 2);
+		return cfonbImportService.importCFONB(dest, company, 2);
 	}
 	
 	
@@ -105,7 +106,7 @@ public class InterbankPaymentOrderRejectImportService {
 			BigDecimal amountReject = new BigDecimal(reject[2]);
 			InterbankCodeLine causeReject = rejectImportService.getInterbankCodeLine(reject[3], 0);
 			
-			Invoice invoice = Invoice.all().filter("UPPER(self.invoiceId) = ?1 AND self.company = ?2", refReject, company).fetchOne();
+			Invoice invoice = Invoice.filter("UPPER(self.invoiceId) = ?1 AND self.company = ?2", refReject, company).fetchOne();
 			if(invoice == null)  {
 				throw new AxelorException(String.format("%s \nAucune facture trouvée pour le numéro de facture %s et la société %s",
 						GeneralService.getExceptionAccountingMsg(), refReject, company.getName()), IException.INCONSISTENCY);
@@ -151,14 +152,14 @@ public class InterbankPaymentOrderRejectImportService {
 		PaymentMode paymentMode = null;
 		
 		if(isTIPCheque)  {
-			paymentMode = PaymentMode.all().filter("self.code = 'TIC'").fetchOne();
+			paymentMode = PaymentMode.findByCode("TIC");
 			if(paymentMode == null)  {
 				throw new AxelorException(String.format("%s :\n Le mode de paiement dont le code est 'TIC' n'a pas été trouvé",
 						GeneralService.getExceptionAccountingMsg()), IException.CONFIGURATION_ERROR);
 			}
 		}
 		else  {
-			paymentMode = PaymentMode.all().filter("self.code = 'TIP'").fetchOne();
+			paymentMode = PaymentMode.findByCode("TIP");
 			if(paymentMode == null)  {
 				throw new AxelorException(String.format("%s :\n Le mode de paiement dont le code est 'TIP' n'a pas été trouvé",
 						GeneralService.getExceptionAccountingMsg()), IException.CONFIGURATION_ERROR);

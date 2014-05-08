@@ -49,6 +49,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
+import com.axelor.apps.account.service.cfonb.CfonbImportService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.debtrecovery.ReminderService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
@@ -91,7 +92,7 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 	private PaymentModeService pms;
 
 	@Inject
-	private CfonbService cs;
+	private CfonbImportService cfonbImportService;
 	
 	@Inject
 	private RejectImportService ris;
@@ -166,10 +167,10 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 	public List<PaymentScheduleLine> getPaymentScheduleLinesToReject(String refDebitReject, Company company)  {
 		
 		// Identification de la ligne d'échéance correspondant au rejet
-		PaymentScheduleLine pslRequested = PaymentScheduleLine.all().filter("UPPER(self.debitNumber) = ?1 AND self.paymentSchedule.company = ?2", refDebitReject, company).fetchOne();
+		PaymentScheduleLine pslRequested = PaymentScheduleLine.filter("UPPER(self.debitNumber) = ?1 AND self.paymentSchedule.company = ?2", refDebitReject, company).fetchOne();
 		
 		// Identification de l'objet de gestion de prélèvement (cas des export bancaire dont plusieurs échéances ont été consolidées)
-		DirectDebitManagement directDebitManagementRequested = DirectDebitManagement.all().filter("UPPER(self.debitNumber) = ?1 AND company = ?2", refDebitReject, company).fetchOne();
+		DirectDebitManagement directDebitManagementRequested = DirectDebitManagement.filter("UPPER(self.debitNumber) = ?1 AND company = ?2", refDebitReject, company).fetchOne();
 		
 		List<PaymentScheduleLine> paymentScheduleLinesToRejectList = new ArrayList<PaymentScheduleLine>();
 
@@ -231,10 +232,10 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 	public List<Invoice> getInvoicesToReject(String refDebitReject, Company company)  {
 		
 		// Identification de la facture correspondant au rejet
-		Invoice invoiceRequested = Invoice.all().filter("UPPER(self.debitNumber) = ?1 AND company = ?2", refDebitReject, company).fetchOne();
+		Invoice invoiceRequested = Invoice.filter("UPPER(self.debitNumber) = ?1 AND company = ?2", refDebitReject, company).fetchOne();
 				
 		// Identification de l'objet de gestion de prélèvement (cas des export bancaire dont plusieurs échéances où plusieurs factures ont été consolidés)
-		DirectDebitManagement directDebitManagementRequested = DirectDebitManagement.all().filter("UPPER(self.debitNumber) = ?1 AND company = ?2", refDebitReject, company).fetchOne();
+		DirectDebitManagement directDebitManagementRequested = DirectDebitManagement.filter("UPPER(self.debitNumber) = ?1 AND company = ?2", refDebitReject, company).fetchOne();
 				
 		List<Invoice> invoicesToRejectList = new ArrayList<Invoice>();
 		
@@ -261,7 +262,7 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 			LOG.debug("une facture trouvée");
 			
 			// Afin de pouvoir associer le montant rejeté à la facture
-			amountReject = this.setAmountRejected(invoice, amountReject, cs.getAmountRemainingFromPaymentMove(invoice));
+			amountReject = this.setAmountRejected(invoice, amountReject, cfonbImportService.getAmountRemainingFromPaymentMove(invoice));
 			
 			if(invoice.getAmountRejected().compareTo(BigDecimal.ZERO) == 1)  {
 				invoice.setRejectDate(dateReject);
@@ -279,11 +280,11 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 	
 	
 	public Status getStatusUpr()  {
-		return Status.all().filter("code = 'upr'").fetchOne();
+		return Status.findByCode("upr");
 	}
 	
 	public Status getStatusClo()  {
-		return Status.all().filter("code = 'clo'").fetchOne();
+		return Status.findByCode("clo");
 	}
 	
 	public BigDecimal setAmountRejected(PaymentScheduleLine paymentScheduleLine, BigDecimal amountReject, BigDecimal amountPaid)  {
@@ -478,7 +479,7 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public MoveLine createRejectOppositeMoveLine(Company company, Move move, int ref, LocalDate rejectDate) throws AxelorException  {
 		//On récupère l'objet mode de paiement pour pouvoir retrouver le numéro de compte associé
-		PaymentMode pm = PaymentMode.all().filter("self.code = 'DD'").fetchOne();
+		PaymentMode pm = PaymentMode.findByCode("DD");  //TODO utilsier celui de account config
 		Account paymentModeAccount = pms.getCompanyAccount(pm, company);
 		
 		// Création d'une seule contrepartie

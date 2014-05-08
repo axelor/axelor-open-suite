@@ -42,8 +42,8 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.IAccount;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reimbursement;
-import com.axelor.apps.account.service.CfonbService;
 import com.axelor.apps.account.service.ReimbursementExportService;
+import com.axelor.apps.account.service.cfonb.CfonbExportService;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -64,9 +64,9 @@ public class BatchReimbursementExport extends BatchStrategy {
 	private String updateCustomerAccountLog = "";
 	
 	@Inject
-	public BatchReimbursementExport(ReimbursementExportService reimbursementExportService, CfonbService cfonbService, BatchAccountCustomer batchAccountCustomer) {
+	public BatchReimbursementExport(ReimbursementExportService reimbursementExportService, CfonbExportService cfonbExportService, BatchAccountCustomer batchAccountCustomer) {
 		
-		super(reimbursementExportService, cfonbService, batchAccountCustomer);
+		super(reimbursementExportService, cfonbExportService, batchAccountCustomer);
 		
 	}
 
@@ -94,7 +94,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 			try {
 				this.testAccountingBatchBankDetails(batch.getAccountingBatch());
 				reimbursementExportService.testCompanyField(company);
-				cfonbService.testCompanyExportCFONBField(company);
+				cfonbExportService.testCompanyExportCFONBField(company);
 			} catch (AxelorException e) {
 				TraceBackService.trace(new AxelorException("", e, e.getcategory()), IException.REIMBURSEMENT, batch.getId());
 				incrementAnomaly();
@@ -141,9 +141,9 @@ public class BatchReimbursementExport extends BatchStrategy {
 	
 	public void runCreateReimbursementExport(Company company)  {
 		
-		List<Reimbursement> reimbursementList = Reimbursement.all().filter("self.status.code != 'rei' AND self.status.code != 'can' AND self.company = ?1", company).fetch();
+		List<Reimbursement> reimbursementList = Reimbursement.filter("self.status.code != 'rei' AND self.status.code != 'can' AND self.company = ?1", company).fetch();
 		
-		List<Partner> partnerList = Partner.all().filter("?1 IN self.companySet = ?1", company).fetch();
+		List<Partner> partnerList = Partner.filter("?1 IN self.companySet = ?1", company).fetch();
 		
 		int i=0;
 
@@ -208,17 +208,17 @@ public class BatchReimbursementExport extends BatchStrategy {
 		int i=0;
 		
 		// On récupère les remboursements dont les trop perçu ont été annulés
-		List<Reimbursement> reimbursementToCancelList = Reimbursement.all()
+		List<Reimbursement> reimbursementToCancelList = Reimbursement
 				.filter("self.company = ?1 and self.status.code = 'val' and self.amountToReimburse = 0", company).fetch();
 		
 		// On annule les remboursements
-		Status statusCan = Status.all().filter("self.code = 'can'").fetchOne();
+		Status statusCan = Status.findByCode("can");
 		for(Reimbursement reimbursement : reimbursementToCancelList)  {
 			reimbursement.setStatus(statusCan);
 		}
 		
 		// On récupère les remboursement à rembourser
-		List<Reimbursement> reimbursementList = Reimbursement.all()
+		List<Reimbursement> reimbursementList = Reimbursement
 				.filter("self.company = ?1 and self.status.code = 'val' and self.amountToReimburse > 0", company).fetch();
 		
 		List<Reimbursement> reimbursementToExport = new ArrayList<Reimbursement>();
@@ -275,7 +275,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 			
 			try {
 				
-				cfonbService.exportCFONB(Company.find(company.getId()), Batch.find(batch.getId()).getStartDate(), reimbursementToExport, Batch.find(batch.getId()).getAccountingBatch().getBankDetails());
+				cfonbExportService.exportCFONB(Company.find(company.getId()), Batch.find(batch.getId()).getStartDate(), reimbursementToExport, Batch.find(batch.getId()).getAccountingBatch().getBankDetails());
 				
 			} catch (Exception e) {
 				

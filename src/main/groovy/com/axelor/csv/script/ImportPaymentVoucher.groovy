@@ -1,25 +1,26 @@
 package com.axelor.csv.script
 
-import java.util.Map;
-
-import com.axelor.apps.account.db.PaymentInvoice
-import com.axelor.apps.account.db.PaymentVoucher;
-import com.axelor.apps.account.service.payment.PaymentVoucherService;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
+import com.axelor.apps.account.db.IPaymentVoucher
+import com.axelor.apps.account.db.PaymentVoucher
+import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherConfirmService
+import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherLoadService
+import com.google.inject.Inject
 
 class ImportPaymentVoucher {
 	
 	@Inject
-	PaymentVoucherService pvs;
+	PaymentVoucherLoadService paymentVoucherLoadService;
+	
+	@Inject
+	PaymentVoucherConfirmService paymentVoucherConfirmService;
 	
 	Object importPaymentVoucher(Object bean, Map values) {
 		assert bean instanceof PaymentVoucher
 		try{
 			PaymentVoucher paymentVoucher = (PaymentVoucher)bean
-			pvs.loadMoveLines(paymentVoucher);
-			if(paymentVoucher.state.equals("2"))
-				pvs.confirmPaymentVoucher(paymentVoucher, false);
+			paymentVoucherLoadService.loadMoveLines(paymentVoucher);
+			if(paymentVoucher.stateSelect == IPaymentVoucher.STATE_CONFIRMED)
+				paymentVoucherConfirmService.confirmPaymentVoucher(paymentVoucher, false);
 			return paymentVoucher
 		}catch(Exception e){
 	            e.printStackTrace()

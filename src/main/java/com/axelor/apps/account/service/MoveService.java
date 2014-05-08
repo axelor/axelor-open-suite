@@ -413,11 +413,11 @@ public class MoveService {
 	public MoveLine getInvoiceCustomerMoveLineByQuery(Invoice invoice) throws AxelorException  {
 		
 		if(this.isDebitCustomer(invoice))  {
-			return MoveLine.all().filter("self.move = ?1 AND self.account = ?2 AND self.debit > 0 AND self.amountRemaining > 0", 
+			return MoveLine.filter("self.move = ?1 AND self.account = ?2 AND self.debit > 0 AND self.amountRemaining > 0", 
 					invoice.getMove(), invoice.getPartnerAccount()).fetchOne();
 		}
 		else  {
-			return MoveLine.all().filter("self.move = ?1 AND self.account = ?2 AND self.credit > 0 AND self.amountRemaining > 0", 
+			return MoveLine.filter("self.move = ?1 AND self.account = ?2 AND self.credit > 0 AND self.amountRemaining > 0", 
 				invoice.getMove(), invoice.getPartnerAccount()).fetchOne();
 		}
 	}

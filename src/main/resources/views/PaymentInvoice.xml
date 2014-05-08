@@ -3,19 +3,17 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
     <grid name="payment-invoice-grid" title="Invoices to pay" model="com.axelor.apps.account.db.PaymentInvoice">
-        <field name="dueDate"/>
+        <field name="moveLine.dueDate"/>
         <field name="moveLine"/>
-        <field name="invoice"/>
-        <field name="company"/>
+        <field name="moveLine.move.invoice"/>
         <field name="invoiceAmount"/>
         <field name="paidAmount"/>
         <field name="amountRemaining"/>
     </grid>
     <form name="payment-invoice-form" title="Invoices to pay" model="com.axelor.apps.account.db.PaymentInvoice" cols="4">
         <field name="moveLine"/>
-        <field name="invoice" grid-view="invoice-grid" form-view="invoice-form"/>
-        <field name="dueDate"/>
-        <field name="company" widget="SuggestBox"/>
+        <field name="moveLine.move.invoice" grid-view="invoice-grid" form-view="invoice-form"/>
+        <field name="moveLine.dueDate"/>
         <field name="invoiceAmount"/>
         <field name="paidAmount"/>
         <field name="amountRemaining"/>

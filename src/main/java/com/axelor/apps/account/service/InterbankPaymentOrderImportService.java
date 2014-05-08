@@ -42,8 +42,9 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentVoucher;
+import com.axelor.apps.account.service.cfonb.CfonbImportService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.payment.PaymentVoucherService;
+import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherCreateService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -59,10 +60,10 @@ public class InterbankPaymentOrderImportService {
 	private static final Logger LOG = LoggerFactory.getLogger(InterbankPaymentOrderImportService.class); 
 	
 	@Inject
-	private PaymentVoucherService pvs;
+	private PaymentVoucherCreateService paymentVoucherCreateService;
 	
 	@Inject
-	private CfonbService cs;
+	private CfonbImportService cfonbImportService;
 	
 	@Inject
 	private RejectImportService ris;
@@ -91,7 +92,7 @@ public class InterbankPaymentOrderImportService {
 		String dest = ris.getDestCFONBFile(accountConfig.getInterbankPaymentOrderImportPathCFONB(), accountConfig.getTempInterbankPaymentOrderImportPathCFONB());
 		
 		// Récupération des enregistrements
-		List<String[]> file = cs.importCFONB(dest, company, 3, 4);	
+		List<String[]> file = cfonbImportService.importCFONB(dest, company, 3, 4);	
 		for(String[] payment : file)  {
 			
 			this.runInterbankPaymentOrder(payment, company);
@@ -102,7 +103,7 @@ public class InterbankPaymentOrderImportService {
 	public PaymentVoucher runInterbankPaymentOrder(String[] payment, Company company) throws AxelorException  {
 		Invoice invoice = this.getInvoice(payment[1], company);
 		
-		PaymentMode paymentMode = cs.getPaymentMode(invoice.getCompany(), payment[0]);
+		PaymentMode paymentMode = cfonbImportService.getPaymentMode(invoice.getCompany(), payment[0]);
 		LOG.debug("Mode de paiement récupéré depuis l'enregistrement CFONB : {}", new Object[]{paymentMode.getName()});
 		
 		BigDecimal amount = new BigDecimal(payment[5]);
@@ -111,7 +112,7 @@ public class InterbankPaymentOrderImportService {
 			this.updateBankDetails(payment, invoice, paymentMode);
 		}
 		
-		return pvs.createPaymentVoucherIPO(invoice, this.dateTime, amount, paymentMode);
+		return paymentVoucherCreateService.createPaymentVoucherIPO(invoice, this.dateTime, amount, paymentMode);
 	}
 	
 	
@@ -141,7 +142,7 @@ public class InterbankPaymentOrderImportService {
 	
 	
 	public Invoice getInvoice(String ref, Company company) throws AxelorException  {
-		Invoice invoice = Invoice.all().filter("UPPER(self.invoiceId) = ?1", ref).fetchOne();
+		Invoice invoice = Invoice.filter("UPPER(self.invoiceId) = ?1", ref).fetchOne();
 		if(invoice == null)  {
 			throw new AxelorException(String.format("%s :\n La facture n°%s n'a pas été trouvée pour la société %s",
 					GeneralService.getExceptionAccountingMsg(), ref, company.getName()), IException.INCONSISTENCY);

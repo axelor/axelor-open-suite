@@ -154,16 +154,16 @@
 	
 	<search-filters name="move-line-filters" model="com.axelor.apps.account.db.MoveLine" title="Move line filters">
 		<filter title="Sale Entries">
-			<domain>self.invoice.operationTypeSelect = 3 OR self.invoice.operationTypeSelect = 4</domain>
+			<domain>self.move.invoice.operationTypeSelect = 3 OR self.move.invoice.operationTypeSelect = 4</domain>
 		</filter>
 		<filter title="Due Sale Entries">
-			<domain>(self.invoice.operationTypeSelect = 3 OR self.invoice.operationTypeSelect = 4) AND self.dueDate &lt; CURRENT_DATE AND self.amountRemaining &gt; 0</domain>
+			<domain>(self.move.invoice.operationTypeSelect = 3 OR self.move.invoice.operationTypeSelect = 4) AND self.dueDate &lt; CURRENT_DATE AND self.amountRemaining &gt; 0</domain>
 		</filter>
 		<filter title="Payment Schedule Entries">
 			<domain>self.fromSchedulePaymentOk = true</domain>
 		</filter>
 		<filter title="Purchase Entries">
-			<domain>self.invoice.operationTypeSelect = 1 OR self.invoice.operationTypeSelect = 2</domain>
+			<domain>self.move.invoice.operationTypeSelect = 1 OR self.move.invoice.operationTypeSelect = 2</domain>
 		</filter>
 	</search-filters>
 	

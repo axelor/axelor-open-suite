@@ -38,53 +38,41 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.app.AppSettings;
 import com.axelor.apps.AxelorSettings;
-import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PaymentVoucher;
-import com.axelor.apps.account.service.payment.PayboxService;
-import com.axelor.apps.account.service.payment.PaymentVoucherService;
-import com.axelor.apps.base.db.IAdministration;
-import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherConfirmService;
+import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherLoadService;
+import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherSequenceService;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
 public class PaymentVoucherController {
 
-	@Inject
-	private Provider<PaymentVoucherService> pvs;
-	
-	@Inject
-	private Provider<PayboxService> pbs;
-	
-	@Inject
-	private Provider<SequenceService> sgs;
-	
 	private static final Logger LOG = LoggerFactory.getLogger(PaymentVoucherController.class);
 	
+	@Inject
+	private Provider<PaymentVoucherLoadService> paymentVoucherLoadProvider;
+	
+	@Inject
+	private Provider<PaymentVoucherConfirmService> paymentVoucherConfirmProvider;
+	
+	@Inject
+	private Provider<PaymentVoucherSequenceService> paymentVoucherSequenceProvider;
+
+	
 	//Called on onSave event
-	public void paymentVoucherSetNum(ActionRequest request, ActionResponse response){
-		
+	public void paymentVoucherSetNum(ActionRequest request, ActionResponse response) throws AxelorException{
+
 		PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
-		
-		if (paymentVoucher.getRef() == null || paymentVoucher.getRef().isEmpty()){
-			
-			Journal journal = paymentVoucher.getPaymentMode().getBankJournal();
-			if(journal == null)  {
-				response.setFlash("Merci de paramétrer un journal pour le mode de paiement "+paymentVoucher.getPaymentMode().getName());
-			}
-			else  {
-				
-				String num = sgs.get().getSequence(IAdministration.PAYMENT_VOUCHER,paymentVoucher.getCompany(), journal, false);
-				
-				if (num == null || num.isEmpty()){
-					response.setFlash("Veuillez configurer une séquence de saisie paiement pour la société "+ paymentVoucher.getCompany().getName() +" et le journal "+journal.getName());
-				}
-				else  {	
-					response.setValue("ref", num);					
-				}
-			}
+
+		if (Strings.isNullOrEmpty(paymentVoucher.getRef()))  {
+
+			response.setValue("ref", paymentVoucherSequenceProvider.get().getReference(paymentVoucher));
+
 		}
 	}
 	
@@ -95,7 +83,7 @@ public class PaymentVoucherController {
 		paymentVoucher = PaymentVoucher.find(paymentVoucher.getId());
 		
 		try {
-			pvs.get().loadMoveLines(paymentVoucher);
+			paymentVoucherLoadProvider.get().loadMoveLines(paymentVoucher);
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
@@ -108,7 +96,7 @@ public class PaymentVoucherController {
 		PaymentVoucher paymentVoucher = PaymentVoucher.find(paymentVoucherContext.getId());
 			
 		try {
-			pvs.get().loadSelectedLines(paymentVoucher,paymentVoucherContext);
+			paymentVoucherLoadProvider.get().loadSelectedLines(paymentVoucher,paymentVoucherContext);
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
@@ -121,7 +109,7 @@ public class PaymentVoucherController {
 		paymentVoucher = PaymentVoucher.find(paymentVoucher.getId());
 		
 		try{				
-			pvs.get().confirmPaymentVoucher(paymentVoucher, false);
+			paymentVoucherConfirmProvider.get().confirmPaymentVoucher(paymentVoucher, false);
 			response.setReload(true);	
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }

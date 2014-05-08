@@ -28,36 +28,34 @@
  * All portions of the code written by Axelor are
  * Copyright (c) 2012-2014 Axelor. All Rights Reserved.
  */
-package com.axelor.apps.account.web;
+package com.axelor.apps.account.service.payment.paymentvoucher;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.math.BigDecimal;
 
-import com.axelor.apps.account.db.MoveLine;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.account.db.PaymentVoucher;
-import com.axelor.rpc.ActionRequest;
-import com.axelor.rpc.ActionResponse;
+import com.axelor.exception.AxelorException;
+import com.google.inject.persist.Transactional;
 
-public class PaymentVoucherControllerSimple {
-
+public class PaymentVoucherPayboxService  {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(PaymentVoucherPayboxService.class); 
+	
 	/**
-	 * Shows moveLines
-	 * @param request
-	 * @param response
+	 * Procédure permettant d'autauriser la confirmation de la saisie paiement
+	 * @param paymentVoucher
+	 * 			Une saisie paiement
 	 */
-	public void showMoveLines(ActionRequest request, ActionResponse response) {
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void authorizeConfirmPaymentVoucher(PaymentVoucher paymentVoucher, String bankCardTransactionNumber, String payboxAmountPaid)  {
 		
-		PaymentVoucher pv = request.getContext().asType(PaymentVoucher.class);
+		paymentVoucher.setPayboxPaidOk(true);
+		paymentVoucher.setBankCardTransactionNumber(bankCardTransactionNumber);
+		paymentVoucher.setPayboxAmountPaid(new BigDecimal(payboxAmountPaid).divide(new BigDecimal("100")));
 		
-		if (pv.getGeneratedMove() != null && pv.getGeneratedMove().getId() != null) {
-			
-			Map<String,Object> mapView = new HashMap<String,Object>();
-			mapView.put("title", "Ecriture saisie paiement No "+pv.getRef());
-			mapView.put("resource", MoveLine.class.getName());
-			mapView.put("domain",  "self.move.id = "+pv.getGeneratedMove().getId());
-			response.setView(mapView);			
-		}
-		else 
-			response.setFlash("Aucune ligne d'écriture");
+		paymentVoucher.save();
 	}
+	
 }

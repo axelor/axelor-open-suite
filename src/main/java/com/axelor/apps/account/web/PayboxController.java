@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.service.payment.PayboxService;
-import com.axelor.apps.account.service.payment.PaymentVoucherService;
+import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherPayboxService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
@@ -52,7 +52,7 @@ import com.google.inject.Provider;
 public class PayboxController {
 
 	@Inject
-	private Provider<PaymentVoucherService> pvs;
+	private Provider<PaymentVoucherPayboxService> paymentVoucherPayboxProvider;
 	
 	@Inject
 	private Provider<PayboxService> ps;
@@ -140,7 +140,7 @@ public class PayboxController {
             }
             if(verified) {       
                 if(operation == "1" && (String) context.get("idtrans") != null && (String) context.get("montant") != null ) {
-                        pvs.get().authorizeConfirmPaymentVoucher(paymentVoucher, (String) context.get("idtrans"), (String) context.get("montant"));
+                        paymentVoucherPayboxProvider.get().authorizeConfirmPaymentVoucher(paymentVoucher, (String) context.get("idtrans"), (String) context.get("montant"));
                         response.setFlash("Paiement réalisé"); 
                         LOG.debug("Paiement réalisé");
                 }

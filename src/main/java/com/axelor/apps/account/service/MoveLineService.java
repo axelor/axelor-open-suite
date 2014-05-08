@@ -436,7 +436,7 @@ public class MoveLineService {
 	@Transactional
 	public void usherProcess(MoveLine moveLine)  {
 		
-		Invoice invoice = moveLine.getInvoice();
+		Invoice invoice = moveLine.getMove().getInvoice();
 		if(invoice != null)  {
 			if(moveLine.getUsherPassageOk())  {
 				invoice.setUsherPassageOk(true);
