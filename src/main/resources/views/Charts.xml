@@ -80,7 +80,7 @@
 	    ]]>
 	    </dataset>
 		<category key="estimatedate" type="date" title="Estimated Date"/>
-		<series key="qty" groupBy="locat" type="bar" aggregate="sum" title="Quantity"/>
+		<series key="qty" groupBy="locat" type="line" aggregate="sum" title="Quantity"/>
 	</chart>
 
 		 <action-record name="action-product-set-today-date" model="com.axelor.apps.base.db.Product">
@@ -146,7 +146,7 @@
       	    ]]>  
 		</dataset>
 	    <category key="real_date" type="date" title="Date"/>
-		<series key="qty" groupBy="locat" type="bar" aggregate="sum" title="Quantity"/>
+		<series key="qty" groupBy="locat" type="line" aggregate="sum" title="Quantity"/>
 	 </chart>
 	 
 	 

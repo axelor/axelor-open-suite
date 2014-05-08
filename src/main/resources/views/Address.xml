@@ -18,6 +18,7 @@
 				<field name="addressL3" onChange="action-check-string-capital-case"/>
 				<field name="addressL4" onChange="action-check-string-capital-case"/>
 				<field name="addressL5" onChange="action-check-string-capital-case"/>
+				<field name="commune" onChange="action-address-change-commune"/>
 				<field name="addressL6" required="true" onChange="action-check-string-capital-case"/>
 				<field name="addressL7Country" required="true" />
 				<field name="inseeCode"/>
@@ -50,6 +51,11 @@
 
 	<action-record name="default-address-record" model="com.axelor.apps.base.db.Address">
 		<field name="addressL7Country" expr="action:default-address-country-record" />
+	</action-record>
+	
+	<action-record name="action-address-change-commune" model="com.axelor.apps.base.db.Address">
+		<field name="addressL6" expr="eval:commune != null ? commune.hasZipOnRight ? commune.name+' '+commune.zip :commune.zip+' '+commune.name: ''" />
+		<field name="addressL7Country" expr="eval:commune.department != null ? commune.department.region != null ? : commune.department.region.country : null" if="commune != null"/>
 	</action-record>
 
 	<action-record name="default-address-country-record"
