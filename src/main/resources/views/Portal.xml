@@ -70,12 +70,48 @@
 		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
 	</action-view>
 
+	<action-view name="portal.opportunities.my.top.deals" title="My Best Open Deals"
+		model="com.axelor.apps.crm.db.Opportunity">
+		<view type="grid" name="opportunity-top-deal-grid" />
+		<view type="form" name="opportunity-form" />
+		<domain>self.salesStageSelect not in (9, 10) and self.userInfo =:user_info</domain>
+		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
+		<context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+	</action-view>
+
+	<action-view name="portal.opportunities.my.team.top.deals" title="My Team Best Open Deals"
+		model="com.axelor.apps.crm.db.Opportunity">
+		<view type="grid" name="opportunity-top-deal-grid" />
+		<view type="form" name="opportunity-form" />
+		<domain>self.salesStageSelect not in (9, 10) and self.team =:active_team</domain>
+		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
+		<context name="active_team" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
+	</action-view>
+	
 	<action-view name="portal.opportunities.key.account" title="Key accounts"
 		model="com.axelor.apps.crm.db.Opportunity">
 		<view type="grid" name="opportunity-key-account-grid" />
 		<view type="form" name="opportunity-form" />
 		<domain>self.salesStageSelect in (9, 10)</domain>
 		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
+	</action-view>
+
+	<action-view name="portal.opportunities.my.key.account" title="My Key accounts"
+		model="com.axelor.apps.crm.db.Opportunity">
+		<view type="grid" name="opportunity-key-account-grid" />
+		<view type="form" name="opportunity-form" />
+		<domain>self.salesStageSelect in (9, 10) and self.userInfo =:user_info</domain>
+		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
+		<context name="user_info" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+	</action-view>
+
+	<action-view name="portal.opportunities.my.team.key.account" title="My Team Key accounts"
+		model="com.axelor.apps.crm.db.Opportunity">
+		<view type="grid" name="opportunity-key-account-grid" />
+		<view type="form" name="opportunity-form" />
+		<domain>self.salesStageSelect in (9, 10) and self.team =:active_team</domain>
+		<context name="_internalUserInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfoId()"/>
+		<context name="active_team" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveTeam()"/>
 	</action-view>
 
 	<action-view name="portal.opportunities.recent.opps" title="Recently created opportunities"
@@ -115,37 +151,37 @@
 
 
 	<portal title="Dashboard" name="crm.opportunities.dashboard.1.portal" cols="2">
-		<portlet action="portal.salesman.dashboard.opportunities" height="350" />
-		<portlet action="portal.closed.opportunities" height="350" />
-		<portlet action="portal.open.opportunities" height="350" />
-		<portlet action="portal.my.closed.opportunities" height="350" />
-		<portlet action="portal.my.open.opportunities" height="350" />
-		<portlet action="portal.unassigned.opportunities" height="350" />
-		<portlet action="portal.team.closed.opportunities" height="350" />
-		<portlet action="portal.team.open.opportunities" height="350" />
-		<portlet action="portal.opportunities.by.source" height="350" />
-		<portlet action="portal.opportunities.by.salestage" height="350" />
+		<portlet action="portal.salesman.dashboard.opportunities" height="350" canSearch="true"/>
+		<portlet action="portal.closed.opportunities" height="350" canSearch="true"/>
+		<portlet action="portal.open.opportunities" height="350" canSearch="true"/>
+		<portlet action="portal.my.closed.opportunities" height="350" canSearch="true"/>
+		<portlet action="portal.my.open.opportunities" height="350" canSearch="true"/>
+		<portlet action="portal.unassigned.opportunities" height="350" canSearch="true"/>
+		<portlet action="portal.team.closed.opportunities" height="350" canSearch="true"/>
+		<portlet action="portal.team.open.opportunities" height="350" canSearch="true"/>
+		<portlet action="portal.opportunities.by.source" height="350" canSearch="true"/>
+		<portlet action="portal.opportunities.by.salestage" height="350" canSearch="true"/>
 	</portal>
 	
 	<portal title="Dashboard" name="crm.opportunities.dashboard.2.portal" cols="2">
 		<portlet action="portal.opportunities.by.type" height="350" />
 		<portlet action="portal.opportunities.byStage.byType" height="350" />
-		<portlet action="portal.opportunities.won.by.partner" height="350" />
+		<portlet action="portal.opportunities.won.by.partner" height="350" canSearch="true"/>
 		<portlet action="portal.opportunities.won.by.leadsource" height="350" />
 		<portlet action="portal.opportunities.won.by.salesman" height="350" />
 		<portlet action="portal.opportunities.by.origin.by.stage" height="350" />
-		<portlet action="portal.opportunities.recent.opps" height="350" />
-		<portlet action="portal.opportunities.top.deals" height="350" />
-		<portlet action="portal.opportunities.key.account" height="350" />
-		<portlet action="portal.opportunities.lost.deals" height="350" />
+		<portlet action="portal.opportunities.recent.opps" height="350" canSearch="true"/>
+		<portlet action="portal.opportunities.top.deals" height="350" canSearch="true"/>
+		<portlet action="portal.opportunities.key.account" height="350" canSearch="true"/>
+		<portlet action="portal.opportunities.lost.deals" height="350" canSearch="true"/>
 	</portal>
 	
 	<portal title="Dashboard" name="crm.opportunities.dashboard.3.portal" cols="2">
 		<portlet action="portal.opportunities.pipeline.next.90d" height="350" />
-		<portlet action="portal.opportunities.my.top.deals" height="350" />
-		<portlet action="portal.opportunities.my.team.top.deals" height="350" />
-		<portlet action="portal.opportunities.my.key.account" height="350" />
-		<portlet action="portal.opportunities.my.team.key.account" height="350" />
+		<portlet action="portal.opportunities.my.top.deals" height="350" canSearch="true"/>
+		<portlet action="portal.opportunities.my.team.top.deals" height="350" canSearch="true"/>
+		<portlet action="portal.opportunities.my.key.account" height="350" canSearch="true"/>
+		<portlet action="portal.opportunities.my.team.key.account" height="350" canSearch="true"/>
 	</portal>
 
 	<action-view name="portal.opportunities.by.source" title="Chart">
