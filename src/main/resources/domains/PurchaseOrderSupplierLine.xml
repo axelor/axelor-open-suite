@@ -15,8 +15,6 @@
   	
   	<string name="comment" title="Comment" large="true"/>
   	
-  	<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
-  	
 	<date name="estimatedDelivDate" title="Estim. delivery date" help="Estimated by supplier"/>  	
   	
   	<integer name="stateSelect" title="State" selection="isuppliermanagement.purchase.order.supplier.line.state.select" initParam="true"/>

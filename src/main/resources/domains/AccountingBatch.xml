@@ -27,7 +27,9 @@
     <integer name="directDebitTypeSelect" title="Direct Debit batch type" selection="iaccount.account.schedule.type.select"/>
     <integer name="directDebitExportTypeSelect" title="Datatype" selection="iaccount.account.schedule.export.type.select"/>
     <date name="debitDate" title="Reference Due Date"/>
-
+	<boolean name="isSepaDirectDebit" title="SEPA ?" default="false"/>
+	<boolean name="hasToReExportCfbonb" title="Re-export the bank file"/>
+	<many-to-one name="batchToReExport" ref="com.axelor.apps.base.db.Batch" title="Batch to re-export"/>
     
     <!--  INTERBANK PAYMENT ORDER -->
     <integer name="interbankPaymentOrderTypeSelect" title="Interbank Payment Orders batch type" selection="iinterbank.account.order.batch.type.select"/>

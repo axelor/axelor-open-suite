@@ -26,6 +26,7 @@
     <decimal name="amountRejected" title="Amount rejected"/> 
    	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
     
+    <decimal name="directDebitAmount" title="Debited amount" readonly="true"/> 
     
     <string name="name" namecolumn="true" search="paymentSchedule,scheduleLineSeq">
 	    <![CDATA[

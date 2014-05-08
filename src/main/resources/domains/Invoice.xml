@@ -78,7 +78,7 @@
     <decimal name="amountRejected" title="Reject amount"/> 
     <date name="rejectDate" title="Reject Date"/>
     <many-to-one name="interbankCodeLine" ref="com.axelor.apps.account.db.InterbankCodeLine" title="Reject reason"/>
-    <decimal name="directDebitAmount" title="Debited amount"/> 
+    <decimal name="directDebitAmount" title="Debited amount" readonly="true"/> 
     <many-to-one name="paymentMove" ref="com.axelor.apps.account.db.Move" title="Payment Move"/>
     
 	<!--     Note -->

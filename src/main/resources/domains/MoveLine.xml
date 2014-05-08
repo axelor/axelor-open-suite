@@ -66,12 +66,6 @@
 		else return BigDecimal.ZERO;
 	    ]]>
     </decimal>
-    <many-to-one name="invoice" ref="com.axelor.apps.account.db.Invoice" title="Invoice">
-	    <![CDATA[
- 		    if (move != null && move.getInvoice() != null) return move.getInvoice();
-		    else return null;
- 	     ]]>
-    </many-to-one>
   
   </entity>
 
