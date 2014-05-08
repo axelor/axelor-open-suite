@@ -6,7 +6,9 @@ import javax.persistence.Query;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.accountorganisation.service.TaskSalesOrderService;
 import com.axelor.apps.base.service.user.UserInfoService;
+//import com.axelor.apps.production.service.ProductionOrderSalesOrderService;
 import com.axelor.apps.supplychain.db.Inventory;
 import com.axelor.apps.supplychain.db.PurchaseOrder;
 import com.axelor.apps.supplychain.db.SalesOrder;
@@ -17,6 +19,7 @@ import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.PurchaseOrderService;
 import com.axelor.apps.supplychain.service.SalesOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SalesOrderLineService;
+import com.axelor.apps.supplychain.service.SalesOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SalesOrderService;
 import com.axelor.apps.supplychain.service.SalesOrderStockMoveService;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
@@ -62,6 +65,15 @@ public class ValidateSupplyChain {
 	
 	@Inject
 	SalesOrderLineService salesOrderLineService;
+	
+	@Inject
+	TaskSalesOrderService taskSalesOrderService;
+	
+	@Inject
+	SalesOrderPurchaseService salesOrderPurchaseService;
+	
+//	@Inject
+//	ProductionOrderSalesOrderService productionOrderSalesOrderService;
 	
 	public Object validateSupplyChain(Object bean, Map values) {
 		String objectQuery = "(SELECT 'inv' as type,id,datet as date from supplychain_inventory) " +
@@ -131,7 +143,11 @@ public class ValidateSupplyChain {
 				line.setTaxLine(salesOrderLineService.getTaxLine(salesOrder, line));
 			salesOrderService.computeSalesOrder(salesOrder);
 			if(salesOrder.getStatusSelect() == 3){
+				taskSalesOrderService.createTasks(salesOrder);
 				salesOrderStockMoveService.createStocksMovesFromSalesOrder(salesOrder);
+				salesOrderPurchaseService.createPurchaseOrders(salesOrder);
+//				productionOrderSalesOrderService.generateProductionOrder(salesOrder);
+				salesOrder.setClientPartner(salesOrderService.validateCustomer(salesOrder));
 				if(salesOrder.getInvoicingTypeSelect() == 1 || salesOrder.getInvoicingTypeSelect() == 5){
 					Invoice invoice = salesOrderInvoiceService.generatePerOrderInvoice(salesOrder);
 					invoice.setInvoiceDate(salesOrder.getValidationDate());
