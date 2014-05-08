@@ -1,0 +1,179 @@
+package com.axelor.csv.script;
+
+import java.util.Map;
+
+import javax.persistence.Query;
+
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.accountorganisation.service.TaskSalesOrderService;
+import com.axelor.apps.base.service.user.UserInfoService;
+//import com.axelor.apps.production.service.ProductionOrderSalesOrderService;
+import com.axelor.apps.supplychain.db.Inventory;
+import com.axelor.apps.supplychain.db.PurchaseOrder;
+import com.axelor.apps.supplychain.db.SalesOrder;
+import com.axelor.apps.supplychain.db.SalesOrderLine;
+import com.axelor.apps.supplychain.db.StockMove;
+import com.axelor.apps.supplychain.service.InventoryService;
+import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
+import com.axelor.apps.supplychain.service.PurchaseOrderService;
+import com.axelor.apps.supplychain.service.SalesOrderInvoiceService;
+import com.axelor.apps.supplychain.service.SalesOrderLineService;
+import com.axelor.apps.supplychain.service.SalesOrderPurchaseService;
+import com.axelor.apps.supplychain.service.SalesOrderService;
+import com.axelor.apps.supplychain.service.SalesOrderStockMoveService;
+import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
+import com.axelor.apps.supplychain.service.StockMoveService;
+import com.axelor.db.JPA;
+import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
+
+public class ValidateSupplyChain {
+	
+	@Inject
+	InventoryService inventoryService;
+	
+	@Inject
+	PurchaseOrderService purchaseOrderService;
+	
+	@Inject
+	StockMoveService stockMoveSerivce;
+	
+	@Inject
+	PurchaseOrderInvoiceService purchaseOrderInvoiceService;
+	
+	@Inject
+	UserInfoService userInfoSerivce;
+	
+	@Inject
+	InvoiceService invoiceService;
+	
+	@Inject
+	SalesOrderService salesOrderService;
+	
+	@Inject
+	SalesOrderStockMoveService salesOrderStockMoveService;
+	
+	@Inject
+	SalesOrderInvoiceService salesOrderInvoiceService;
+	
+	@Inject
+	StockMoveService stockMoveService;
+	
+	@Inject
+	StockMoveInvoiceService stockMoveInvoiceService;
+	
+	@Inject
+	SalesOrderLineService salesOrderLineService;
+	
+	@Inject
+	TaskSalesOrderService taskSalesOrderService;
+	
+	@Inject
+	SalesOrderPurchaseService salesOrderPurchaseService;
+	
+//	@Inject
+//	ProductionOrderSalesOrderService productionOrderSalesOrderService;
+	
+	public Object validateSupplyChain(Object bean, Map values) {
+		String objectQuery = "(SELECT 'inv' as type,id,datet as date from supplychain_inventory) " +
+		"UNION ALL(SELECT 'so' as type,id,validation_date as date from supplychain_sales_order) " +
+		"UNION ALL(SELECT 'po' as type,id,order_date as date from supplychain_purchase_order) order by date";
+
+		Query query = JPA.em().createNativeQuery(objectQuery);
+		for(Object objects : query.getResultList()){
+			Object[] object = (Object[]) objects;
+			if(object[0].toString().equals("inv"))
+				validateInventory(Long.parseLong(object[1].toString()));
+			else if(object[0].toString().equals("po"))
+				validatePurchaseOrder(Long.parseLong(object[1].toString()));
+			else
+				validateSalesOrder(Long.parseLong(object[1].toString()));
+		}
+		return bean;
+	}
+	
+	@Transactional
+	void validateInventory(Long inventoryId){
+		try{
+			Inventory inventory = Inventory.find(inventoryId);
+			StockMove stockMove = inventoryService.generateStockMove(inventory);
+			stockMove.setRealDate(inventory.getDateT().toLocalDate());
+			stockMove.save();
+			inventory.setStatusSelect(3);
+			inventory.save();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	@Transactional
+	void validatePurchaseOrder(Long poId){
+		try{
+			PurchaseOrder purchaseOrder = PurchaseOrder.find(poId);
+			purchaseOrderService.computePurchaseOrder(purchaseOrder);
+			if(purchaseOrder.getStatusSelect() == 4 || purchaseOrder.getStatusSelect() == 5 && purchaseOrder.getLocation() == null){
+				purchaseOrderService.createStocksMoves(purchaseOrder);
+				StockMove stockMove = StockMove.all_().filter("purchaseOrder.id = ?1",purchaseOrder.getId()).fetchOne();
+				if(stockMove != null){
+					stockMoveService.copyQtyToRealQty(stockMove);
+					stockMoveService.realize(stockMove);
+					stockMove.setRealDate(purchaseOrder.getDeliveryDate());
+				}
+				purchaseOrder.setValidationDate(purchaseOrder.getOrderDate());
+				purchaseOrder.setValidatedByUserInfo(userInfoSerivce.getUserInfo());
+				purchaseOrder.setSupplierPartner(purchaseOrderService.validateSupplier(purchaseOrder));
+				Invoice invoice = purchaseOrderInvoiceService.generateInvoice(purchaseOrder);
+				invoice.setInvoiceDate(purchaseOrder.getValidationDate());
+				invoiceService.compute(invoice);
+				invoiceService.validate(invoice);
+				invoiceService.ventilate(invoice);
+			}
+			purchaseOrder.save();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	@Transactional
+	void validateSalesOrder(Long soId){
+		try{
+			SalesOrder salesOrder = SalesOrder.find(soId);
+			for(SalesOrderLine line : salesOrder.getSalesOrderLineList())
+				line.setTaxLine(salesOrderLineService.getTaxLine(salesOrder, line));
+			salesOrderService.computeSalesOrder(salesOrder);
+			if(salesOrder.getStatusSelect() == 3){
+				taskSalesOrderService.createTasks(salesOrder);
+				salesOrderStockMoveService.createStocksMovesFromSalesOrder(salesOrder);
+				salesOrderPurchaseService.createPurchaseOrders(salesOrder);
+//				productionOrderSalesOrderService.generateProductionOrder(salesOrder);
+				salesOrder.setClientPartner(salesOrderService.validateCustomer(salesOrder));
+				if(salesOrder.getInvoicingTypeSelect() == 1 || salesOrder.getInvoicingTypeSelect() == 5){
+					Invoice invoice = salesOrderInvoiceService.generatePerOrderInvoice(salesOrder);
+					invoice.setInvoiceDate(salesOrder.getValidationDate());
+					invoiceService.compute(invoice);
+					invoiceService.validate(invoice);
+					invoiceService.ventilate(invoice);
+				}
+				StockMove stockMove = StockMove.all_().filter("salesOrder = ?1",salesOrder).fetchOne();
+				if(stockMove != null && stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()){
+					stockMoveService.copyQtyToRealQty(stockMove);
+					stockMoveService.validate(stockMove);
+					stockMove.setRealDate(salesOrder.getValidationDate());
+					if(salesOrder.getInvoicingTypeSelect() == 4){
+						Invoice invoice = stockMoveInvoiceService.createInvoiceFromSalesOrder(stockMove, salesOrder);
+						invoice.setInvoiceDate(salesOrder.getValidationDate());
+						invoiceService.compute(invoice);
+						invoiceService.validate(invoice);
+						invoiceService.ventilate(invoice);
+					}
+				}
+			}
+			salesOrder.save();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+	}
+
+}
