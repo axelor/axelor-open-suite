@@ -74,9 +74,10 @@
 	</action-view>
   	
   	<!-- This Portlet is called in Partner-Form -->
-	<action-view name="portal.customer.sales.lastYear.vs.ytd.by.family" title="Customer Sales turnover this year vs last year by family" model="com.axelor.apps.supplychain.db.SalesOrderLine">
+	<action-view name="portal.customer.sales.lastYear.vs.ytd.by.family" title="Sales turnover comparison per month this year vs past years by family" model="com.axelor.apps.supplychain.db.SalesOrderLine">
 	  <view type="chart" name="chart.customer.sales.lastYear.vs.ytd.by.family"/>
-	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
+	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>  
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>  
 	</action-view>
   	
 </object-views>
