@@ -183,9 +183,8 @@
 	</input>
 	
 	<input file="base_product.csv" separator=";" type="com.axelor.apps.base.db.Product">
-		<bind column="name" to="name"/>
-		<bind column="code" to="code"/>
-		<bind column="description" to="description"/>
+		<bind to="startDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)" column="startDate"/>
+		<bind to="createdOn" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)" column="startDate"/>
 	</input>
 	
 	<input file="base_supplierCatalog.csv" separator=";" type="com.axelor.apps.base.db.SupplierCatalog"/>
@@ -402,6 +401,8 @@
 	
 	<input file="crm_opportunity.csv" separator=";" type="com.axelor.apps.crm.db.Opportunity">
 		<bind to="expectedCloseDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(expectedCloseDate)" column="expectedCloseDate"/>
+		<bind to="createdBy" eval="call:com.axelor.csv.script.ImportLead:importCreatedBy(userInfo)"/>
+		<bind to="userInfo" search="self.importId = :userInfo" update="true" column="userInfo"/>
 	</input>
 	
 	
@@ -565,8 +566,10 @@
 	</input>
 	
 <!-- 	Update default BOM -->
-	<input file="base_product.csv" separator=";" type="com.axelor.apps.base.db.Product" search="self.importId = :importId" update="true"/>
-	
+	<input file="base_product.csv" separator=";" type="com.axelor.apps.base.db.Product" search="self.importId = :importId" update="true">
+	    <bind to="startDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)" column="startDate"/>
+		<bind to="createdOn" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)" column="startDate"/>
+	</input>
 	
 </csv-inputs>
 
