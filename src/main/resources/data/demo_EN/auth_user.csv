@@ -1,23 +1,23 @@
 "code";"name";"password";"group.code";"language";"homeAction"
 "admin";"Admin";"axadmin";"admins";"en";
 "demo";"Demo";"axdemo";"user";"en";
-"ceo";"Yoann MARQUES";"ceo";"MNGT";"en";
+"psdt";"Yoann MARQUES";"ceo";"MNGT";"en";
 "assist";"Lucy ROBERT";"assist";"MNGT";"en";
 "projdir";"Lucas RICHARD";"projdir";"MNGT";"en";
 "projmg";"Daniel SILVA";"projmg";"ERP";"en";
 "consultant";"Charles MARTIN";"consultant";"CST";"en";
 "demoerp";"Kevin DEMOERP";"demoerp";"ERP";"en";"portal.opportunity.graph.dashboard.view"
 "democrm";"Charles DEMOCRM";"democrm";"CRM";"en";"crm.portal.opportunities.dashboard.2.view"
-"smn";"Tony RAYMOND";"smn";"SALE";"en";
+"smn2";"Tony RAYMOND";"smn";"SALE";"en";
 "sms1";"Thomas LAMY";"sms1";"SALE";"en";
 "sms2";"Anne GIRAULT";"sms2";"SALE";"en";
-"smi";"Dimitri GEOFFROY";"smi";"SALE";"en";
+"smi1";"Dimitri GEOFFROY";"smi";"SALE";"en";
 "purch";"Alex DAVID";"purch";"PURCH";"en";
 "prod";"William ANDRE";"prod";"OPTS";"en";
 "suppmg";"David MAURIN";"suppmg";"OPTS";"en";
 "supp1";"Cyril MARCHAL";"supp1";"OPTS";"en";
 "supp2";"Robin COSTA";"supp2";"OPTS";"en";
-"hr";"Romane COLIN";"hr";"HRSC";"en";
+"hrmg";"Romane COLIN";"hr";"HRSC";"en";
 "account";"Victoria LOUIS";"account";"ACCO";"en";
 "client";"123 Service";"client";"CLT";"en";"wizard-client-view"
 "supplier";"TOP Components";"supplier";"SUP";"en";
