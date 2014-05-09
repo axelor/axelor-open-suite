@@ -12,3 +12,4 @@
 11;"HRSC";"Human Resources";;;"false";"role.hr"
 12;"OPTS";"Operations";;;"false";"role.operations"
 13;"MNGT";"Management";;;"false";"role.manager"
+14;"SUP";"Supplier";"hidden";"perms.user-info";"false";"role.supplier"
