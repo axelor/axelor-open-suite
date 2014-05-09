@@ -22,6 +22,7 @@
 		<portlet action="portal.hr.employees.contract.type.distribution" height="350" />	
 		<portlet action="portal.hr.employees.turnover.ytd.vs.lastYear" height="350" />
 		<portlet action="portal.hr.nbr.of.employees.evolution" height="350" />
+		<portlet action="portal.employees.age.pyramid" height="350" />		
 	</portal>
 
 	
@@ -115,6 +116,12 @@
 	
 	<action-view  name="portal.hr.nbr.of.employees.evolution" model="com.axelor.apps.organisation.db.Employee"  title="Number of Employees">
   		<view type="chart" name="chart.hr.nbr.of.employees.evolution"/>
+  		<context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
+	</action-view>
+	
+	<action-view name="portal.employees.age.pyramid" title="Employees age pyramid" model="com.axelor.apps.organisation.db.PersonalInfo">
+	  <view type="chart" name="chart.employees.age.pyramid"/>
+	  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" />
 	</action-view>
 	
 	<portal title="Project Dashboard" name="org.project.dashboard.portal.sample" cols="2">
@@ -153,6 +160,7 @@
 		<portlet action="portal.hr.employees.contract.type.distribution" height="350" />	
 		<portlet action="portal.hr.employees.turnover.ytd.vs.lastYear" height="350" />
 		<portlet action="portal.hr.nbr.of.employees.evolution" height="350" />
+		<portlet action="portal.employees.age.pyramid" height="350" />		
 	</portal>
 
 

@@ -145,7 +145,7 @@
 	
 	      when 
 	        _employee.exit_date &lt;= DATE(:todayDate)
-	        AND DATE_PART('year', _employee.exit_date) = DATE_PART('year', DATE(:todayDate))
+	        AND DATE_PART('year', _employee.exit_date) &lt;= DATE_PART('year', DATE(:todayDate))
 	      then 'Departed'
 	
 	      when
@@ -163,25 +163,60 @@
 	  <series key="_count" type="bar" title="Employees"/>
 	</chart>
 	
-	<chart onInit="action-product-set-today-date" name="chart.hr.nbr.of.employees.evolution" title="Number of Employees">
+	<action-record name="action.org.portal.set.date.effective" model="com.axelor.apps.organisation.db.Employee">
+	  <field name="effectiveDate" expr="eval:todayDate"/>  
+	</action-record>
+	
+	<chart onInit="action.org.portal.set.date.effective" name="chart.hr.nbr.of.employees.evolution" title="Number of Employees">
 	  <search-fields>
-	    <field name="todayDate" title="End Date" type="date" widget="[default='2014-12-31']"/>
+	    <field type="date" name="effectiveDate" title="Report Date" />
 	  </search-fields>
 	  <dataset type="sql">
 	    SELECT 
 	       date_part('year',self.entry_date) As _year,
-	       COUNT(self.id) AS _num_emp
+	       SUM(COUNT(self.id)) OVER (ORDER BY date_part('year',self.entry_date)) AS _num_emp
 	    FROM organisation_employee self
-	    WHERE   
-	       date_part('year',self.entry_date)&gt;date_part('year',DATE(:todayDate))-6  
-	       AND date_part('year',self.entry_date) &lt; date_part('year',DATE(:todayDate)) 
-	       AND (date_part('year',self.exit_date)&gt;date_part('year',self.entry_date) 
-	       OR date_part('year',self.exit_date) IS NULL)
+	    WHERE
+	        self.entry_date &lt; DATE(:effectiveDate)
+	        AND (self.exit_date IS NULL OR self.exit_date > DATE(:effectiveDate))
 	    GROUP BY 
 	       date_part('year',self.entry_date)
 	   </dataset>
 	  <category key="_year" type="text"/>
 	  <series key="_num_emp" type="bar"/>
+	</chart>
+	
+	<chart onInit="action.org.portal.set.date.effective" name="chart.employees.age.pyramid" title="Employees age pyramid">
+	  <search-fields>    
+	    <field type="date" name="effectiveDate" title="Effective Date"/>
+	  </search-fields>	  
+	  <dataset type="sql">	    
+	    SELECT 
+	      COUNT(self.id) AS _employees,
+	      (CASE
+	      WHEN DATE_PART('year', DATE(:effectiveDate)) - DATE_PART('year', self.dob) BETWEEN 1 AND 19 THEN '&lt; 20'
+	      WHEN DATE_PART('year', DATE(:effectiveDate)) - DATE_PART('year', self.dob) BETWEEN 20 AND 29 THEN '20 TO 30'
+	      WHEN DATE_PART('year', DATE(:effectiveDate)) - DATE_PART('year', self.dob) BETWEEN 30 AND 39 THEN '30 TO 40'
+	      WHEN DATE_PART('year', DATE(:effectiveDate)) - DATE_PART('year', self.dob) BETWEEN 40 AND 49 THEN '40 TO 50'
+	      WHEN DATE_PART('year', DATE(:effectiveDate)) - DATE_PART('year', self.dob) BETWEEN 50 AND 59 THEN '50 To 60'
+	      WHEN DATE_PART('year', DATE(:effectiveDate)) - DATE_PART('year', self.dob) >= 60 THEN '>= 60'
+	      end) AS _age_group	
+	    FROM 
+	      organisation_personal_info self
+	    JOIN
+	      organisation_employee employee
+	      ON self.employee = employee.id	    
+	    WHERE
+	      self.employee IS NOT NULL
+	      AND employee.entry_date &lt;= DATE(:effectiveDate)
+	      AND (employee.exit_date IS NULL OR employee.exit_date >= DATE(:effectiveDate))
+	    GROUP BY
+	      _age_group
+	    ORDER BY
+	      _employees	      
+	  </dataset>
+	  <category key="_age_group" type="text"/>
+	  <series key="_employees" type="hbar"/>
 	</chart>
 	
 </object-views>
