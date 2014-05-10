@@ -28,49 +28,54 @@
  * All portions of the code written by Axelor are
  * Copyright (c) 2012-2014 Axelor. All Rights Reserved.
  */
-package com.axelor.csv.script
+package com.axelor.csv.script;
 
-import org.joda.time.LocalDate
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
-import com.axelor.apps.account.db.Account
-import com.axelor.apps.account.db.AccountingSituation
-import com.axelor.apps.base.db.Period
-import com.axelor.apps.base.db.Year
-import com.axelor.apps.base.db.General
-import com.axelor.apps.base.db.Partner
-import com.axelor.apps.base.db.Status
-import com.axelor.apps.base.db.Company
+import org.joda.time.LocalDate;
+
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountingSituation;
+import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.db.Year;
+import com.axelor.apps.base.db.General;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Status;
+import com.axelor.apps.base.db.Company;
 import com.axelor.auth.db.Group;
-import com.axelor.auth.db.Permission
+import com.axelor.auth.db.Permission;
 import com.axelor.internal.cglib.util.StringSwitcher;
-import com.google.inject.persist.Transactional
+import com.google.inject.persist.Transactional;
 
 
-class ImportPermission {
+public class ImportPermission {
 		
 		@Transactional
-		Object importPermission(Object bean, Map values) {
-			assert bean instanceof Permission
+		public Object importPermission(Object bean, Map values) {
+			assert bean instanceof Permission;
 	        try{
-	            Permission permission = (Permission) bean
-				String groups = values.get("group")
-				if(permission.id != null){
-					if(groups != null && !groups.empty){
+	            Permission permission = (Permission) bean;
+				String groups = (String) values.get("group");
+				if(permission.getId()!= null){
+					if(groups != null && !groups.isEmpty()){
 						for(Group group: Group.all().filter("code in ?1",Arrays.asList(groups.split("\\|"))).fetch()){
-							Set<Permission> permissions = group.permissions
+							Set<Permission> permissions = group.getPermissions();
 							if(permissions == null)
-								permissions = new HashSet<Permission>()
-							permissions.add(Permission.find(permission.id))
-							group.permissions = permissions
-							group.save()
+								permissions = new HashSet<Permission>();
+							permissions.add(Permission.find(permission.getId()));
+							group.setPermissions(permissions);
+							group.save();
 						}
 					}
 				}
-				return permission
+				return permission;
 	        }catch(Exception e){
-	            e.printStackTrace()
+	            e.printStackTrace();
 	        }
-			
+			return bean;
 		}
 		
 }

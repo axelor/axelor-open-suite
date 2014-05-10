@@ -30,7 +30,7 @@
  */
 package com.axelor.apps.base.test;
 
-import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.CacheManager; 
 
 import com.axelor.auth.AuthModule;
 import com.axelor.db.JpaModule;

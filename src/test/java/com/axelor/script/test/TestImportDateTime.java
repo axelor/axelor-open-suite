@@ -34,6 +34,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.axelor.apps.base.test.TestModule;
+//import com.axelor.csv.script.ImportDate;
 import com.axelor.csv.script.ImportDateTime;
 import com.axelor.test.GuiceModules;
 import com.axelor.test.GuiceRunner;
@@ -42,8 +43,10 @@ import com.axelor.test.GuiceRunner;
 public class TestImportDateTime {
 	@Test
 	public void testDateTimeImport(){
+//		ImportDate idd = new ImportDate();
 		ImportDateTime idt = new ImportDateTime();
-		System.out.println(idt.importDate("2013-01-01"));
-		System.out.println(idt.importDateTime("2013-05-10 10:00:10"));
+//		System.out.println("Groovy\n"+idt.importDate("TODAY[-2y]"));
+		System.out.println("JAVA \n"+idt.importDateTime("NOW[-2y]"));
+//		System.out.println(idt.importDateTime("TODAY[2013y-2M] 10:00:10"));
 	}
 }
