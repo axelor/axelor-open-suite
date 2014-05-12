@@ -82,8 +82,8 @@
     	<field name="unit" expr="eval: product?.unit"/>
     </action-record>
     
-     <action-record name="action-bill-of-material-record-name" model="com.axelor.apps.production.db.ProdProcess">
-    	<field name="name" expr="eval: product.name + ' - ' + qty + unit.code + ' - ' + id"/>
+     <action-record name="action-bill-of-material-record-name" model="com.axelor.apps.production.db.BillOfMaterial">
+    	<field name="name" expr="eval: product.name + ' - ' + qty + unit.code + ' - ' + id" if="name == null"/>
     </action-record>
     
     <action-method name="action-bill-of-material-method-compute-cost-price">
