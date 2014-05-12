@@ -63,17 +63,7 @@
 			<break />
 			<button name="loadMoveLines" title="Load invoice and display other invoices to pay" colSpan="6" onClick="save,com.axelor.apps.account.web.PaymentVoucherController:loadMoveLines,save" />
 		</group>
-		<field name="paymentInvoiceList" colSpan="4">
-			<grid orderBy="dueDate" title="Invoices to pay">
-				<field name="dueDate" />
-				<field name="moveLine" />
-				<field name="invoice" />
-				<field name="company" />
-				<field name="invoiceAmount" />
-				<field name="paidAmount" />
-				<field name="amountRemaining" />
-			</grid>
-		</field>
+		<field name="paymentInvoiceList" grid-view="payment-invoice-grid" form-view="payment-invoice-form" colSpan="4"/>
 		<break />
 		<button name="loadSelectedLines" title="Load selected lines" colSpan="4"
 			onClick="com.axelor.apps.account.web.PaymentVoucherController:loadSelectedLines,save" />

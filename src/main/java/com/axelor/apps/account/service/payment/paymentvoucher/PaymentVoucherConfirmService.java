@@ -68,6 +68,7 @@ public class PaymentVoucherConfirmService  {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(PaymentVoucherConfirmService.class); 
 	
+	@Inject
 	private ReconcileService reconcileService;
 
 	@Inject
@@ -297,7 +298,7 @@ public class PaymentVoucherConfirmService  {
 		paymentMove.getMoveLineList().add(moveLine);
 		paymentInvoiceToPay.setMoveLineGenerated(moveLine);
 		
-		Reconcile reconcile = reconcileService.createGenericReconcile(moveLineToPay,moveLine,amountToPay,true, false, !isDebitToPay);
+		Reconcile reconcile = reconcileService.createGenericReconcile(moveLineToPay, moveLine, amountToPay, true, false, !isDebitToPay);
 		LOG.debug("Reconcile : : : {}", reconcile);
 		reconcileService.confirmReconcile(reconcile, updateCustomerAccount);
 		return moveLine;

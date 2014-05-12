@@ -155,59 +155,58 @@ public class PaymentVoucherLoadService  {
 	public List<PaymentInvoiceToPay> loadOneLine(PaymentVoucher paymentVoucher,MoveLine moveLine,int lineSeq) throws AxelorException{
 		LOG.debug("In loadOneLine ....");
 
-		List<PaymentInvoiceToPay> piToPayLine = new ArrayList<PaymentInvoiceToPay>();
+		List<PaymentInvoiceToPay> paymentInvoiceToPayList = new ArrayList<PaymentInvoiceToPay>();
 		
-		PaymentInvoiceToPay piToPay = new PaymentInvoiceToPay();
+		PaymentInvoiceToPay paymentInvoiceToPay = new PaymentInvoiceToPay();
 		if (paymentVoucher.getPaidAmount() == null)  {
 			throw new AxelorException(String.format("%s :\n Merci de renseigner le montant payé svp.", GeneralService.getExceptionAccountingMsg()), IException.MISSING_FIELD);
 		}
 		
-		if(moveLine != null)  {
+		if(moveLine == null)  {  return paymentInvoiceToPayList;  }
 			
-			Move move = moveLine.getMove();
+		Move move = moveLine.getMove();
+		
+		BigDecimal paidAmount = null;
+		
+		// Si la facture a une devise différente du tiers (de l'écriture)
+		if(move.getInvoice() != null && move.getInvoice().getCurrency() != move.getCurrency())  {
+			LOG.debug("La facture a une devise différente du tiers (de l'écriture)");
+			paymentInvoiceToPay.setCurrency(move.getInvoice().getCurrency());
+			paymentInvoiceToPay.setTotalAmount(move.getInvoice().getInvoiceInTaxTotal());
+			paymentInvoiceToPay.setRemainingAmount(move.getInvoice().getInvoiceInTaxTotal().subtract(move.getInvoice().getInvoiceAmountPaid()));
 			
-			BigDecimal paidAmount = null;
-			
-			// Si la facture a une devise différente du tiers (de l'écriture)
-			if(move.getInvoice() != null && move.getInvoice().getCurrency() != move.getCurrency())  {
-				LOG.debug("La facture a une devise différente du tiers (de l'écriture)");
-				piToPay.setCurrency(move.getInvoice().getCurrency());
-				piToPay.setTotalAmount(move.getInvoice().getInvoiceInTaxTotal());
-				piToPay.setRemainingAmount(move.getInvoice().getInvoiceInTaxTotal().subtract(move.getInvoice().getInvoiceAmountPaid()));
-				
-				// on convertit le montant imputé de la devise de la saisie paiement vers la devise de la facture
-				paidAmount = currencyService.getAmountCurrencyConverted(move.getInvoice().getCurrency(), paymentVoucher.getCurrency(), piToPay.getRemainingAmount(), paymentVoucher.getPaymentDateTime().toLocalDate());
+			// on convertit le montant imputé de la devise de la saisie paiement vers la devise de la facture
+			paidAmount = currencyService.getAmountCurrencyConverted(move.getInvoice().getCurrency(), paymentVoucher.getCurrency(), paymentInvoiceToPay.getRemainingAmount(), paymentVoucher.getPaymentDateTime().toLocalDate());
 
-			}
-			// sinon la facture à une devise identique à l'écriture, ou l'écriture ne possède pas de facture
-			else  {
-				LOG.debug("La facture à une devise identique à l'écriture, ou l'écriture ne possède pas de facture");
-				piToPay.setCurrency(move.getCurrency());
-				if(moveLine.getDebit().compareTo(moveLine.getCredit()) == 1)  {
-					piToPay.setTotalAmount(moveLine.getDebit());
-				}
-				else  {
-					piToPay.setTotalAmount(moveLine.getCredit());
-				}
-				piToPay.setRemainingAmount(moveLine.getAmountRemaining());
-				
-				paidAmount = currencyService.getAmountCurrencyConverted(move.getCurrency(), paymentVoucher.getCurrency(), moveLine.getAmountRemaining(), paymentVoucher.getPaymentDateTime().toLocalDate());
-			}
-			
-			LOG.debug("Montant de la créance {}",paidAmount);
-			LOG.debug("Montant réglée de la saisie paiement {}",paymentVoucher.getPaidAmount());
-			BigDecimal amountToPay = paidAmount.min(paymentVoucher.getPaidAmount());
-
-			piToPay.setSequence(lineSeq);
-			piToPay.setMoveLine(moveLine);
-			
-			piToPay.setAmountToPay(amountToPay);
-			piToPay.setPaymentVoucher(paymentVoucher);
-			piToPayLine.add(piToPay);
-			LOG.debug("END loadOneLine.");
-			return piToPayLine;
 		}
-		return piToPayLine;
+		// sinon la facture à une devise identique à l'écriture, ou l'écriture ne possède pas de facture
+		else  {
+			LOG.debug("La facture à une devise identique à l'écriture, ou l'écriture ne possède pas de facture");
+			paymentInvoiceToPay.setCurrency(move.getCurrency());
+			if(moveLine.getDebit().compareTo(moveLine.getCredit()) == 1)  {
+				paymentInvoiceToPay.setTotalAmount(moveLine.getDebit());
+			}
+			else  {
+				paymentInvoiceToPay.setTotalAmount(moveLine.getCredit());
+			}
+			paymentInvoiceToPay.setRemainingAmount(moveLine.getAmountRemaining());
+			
+			paidAmount = currencyService.getAmountCurrencyConverted(move.getCurrency(), paymentVoucher.getCurrency(), moveLine.getAmountRemaining(), paymentVoucher.getPaymentDateTime().toLocalDate());
+		}
+		
+		LOG.debug("Montant de la créance {}",paidAmount);
+		LOG.debug("Montant réglée de la saisie paiement {}",paymentVoucher.getPaidAmount());
+		BigDecimal amountToPay = paidAmount.min(paymentVoucher.getPaidAmount());
+
+		paymentInvoiceToPay.setSequence(lineSeq);
+		paymentInvoiceToPay.setMoveLine(moveLine);
+		
+		paymentInvoiceToPay.setAmountToPay(amountToPay);
+		paymentInvoiceToPay.setPaymentVoucher(paymentVoucher);
+		paymentInvoiceToPayList.add(paymentInvoiceToPay);
+		
+		LOG.debug("END loadOneLine.");
+		return paymentInvoiceToPayList;
 		
 	}
 	
