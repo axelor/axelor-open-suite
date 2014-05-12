@@ -38,12 +38,12 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.app.AppSettings;
-import com.axelor.apps.AxelorSettings;
+import com.axelor.apps.ReportSettings;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.supplychain.db.IReport;
 import com.axelor.apps.supplychain.db.StockMove;
 import com.axelor.apps.supplychain.db.StockMoveLine;
 import com.axelor.apps.supplychain.service.StockMoveService;
@@ -126,15 +126,14 @@ public class StockMoveController {
 		}	
 			
 		if(!stockMoveIds.equals("")){
-			stockMoveIds = "&StockMoveId="+stockMoveIds.substring(0, stockMoveIds.length()-1);	
+			stockMoveIds = stockMoveIds.substring(0, stockMoveIds.length()-1);	
 			stockMove = StockMove.find(new Long(lstSelectedMove.get(0)));
 		}else if(stockMove.getId() != null){
-			stockMoveIds = "&StockMoveId="+stockMove.getId();			
+			stockMoveIds = stockMove.getId().toString();			
 		}
 		
 		if(!stockMoveIds.equals("")){
 			StringBuilder url = new StringBuilder();			
-			AppSettings appSettings = AppSettings.get();
 			
 			String language="";
 			try{
@@ -143,9 +142,14 @@ public class StockMoveController {
 				language = "en";
 			}
 			language = language.equals("")? "en": language;
-
-			url.append(appSettings.get("axelor.report.engine", "")+"/frameset?__report=report/StockMove.rptdesign&__format=pdf&Locale="+language+stockMoveIds+"&__locale=fr_FR"+AxelorSettings.getAxelorReportEngineDatasource());
-
+			
+			url.append(
+					new ReportSettings(IReport.REPORT_STOCK_MOVE)
+					.addParam("Locale", language)
+					.addParam("__locale", "fr_FR")
+					.addParam("StockMoveId", stockMoveIds)
+					.getUrl());
+			
 			LOG.debug("URL : {}", url);
 			
 			String urlNotExist = URLService.notExist(url.toString());

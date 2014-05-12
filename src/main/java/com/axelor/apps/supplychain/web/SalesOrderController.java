@@ -36,13 +36,13 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.app.AppSettings;
-import com.axelor.apps.AxelorSettings;
+import com.axelor.apps.ReportSettings;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.UserInfo;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.googleapps.db.GoogleFile;
 import com.axelor.apps.supplychain.db.ILocation;
+import com.axelor.apps.supplychain.db.IReport;
 import com.axelor.apps.supplychain.db.Location;
 import com.axelor.apps.supplychain.db.SalesOrder;
 import com.axelor.apps.supplychain.service.SalesOrderPurchaseService;
@@ -132,7 +132,6 @@ public class SalesOrderController {
 		SalesOrder salesOrder = request.getContext().asType(SalesOrder.class);
 
 		StringBuilder url = new StringBuilder();
-		AppSettings appSettings = AppSettings.get();
 		
 		String language="";
 		try{
@@ -141,9 +140,14 @@ public class SalesOrderController {
 			language = "en";
 		}
 		language = language.equals("")? "en": language;
-
-		url.append(appSettings.get("axelor.report.engine", "")+"/frameset?__report=report/SalesOrder.rptdesign&__format=pdf&Locale="+language+"&SalesOrderId="+salesOrder.getId()+"&__locale=fr_FR"+AxelorSettings.getAxelorReportEngineDatasource());
 		
+		url.append(
+				new ReportSettings(ReportSettings.REPORT_SALES_ORDER, ReportSettings.FORMAT_PDF)
+				.addParam("Locale", language)
+				.addParam("__locale", "fr_FR")
+				.addParam("SalesOrderId", salesOrder.getId().toString())
+				.getUrl());
+
 		LOG.debug("URL : {}", url);
 		String urlNotExist = URLService.notExist(url.toString());
 		
@@ -173,7 +177,6 @@ public class SalesOrderController {
 		SalesOrder salesOrder = request.getContext().asType(SalesOrder.class);
 
 		StringBuilder url = new StringBuilder();
-		AppSettings appSettings = AppSettings.get();
 		
 		String language="";
 		try{
@@ -183,8 +186,13 @@ public class SalesOrderController {
 		}
 		language = language.equals("")? "en": language;
 
-		url.append(appSettings.get("axelor.report.engine", "")+"/frameset?__report=report/SalesOrder.rptdesign&__format=xls&Locale="+language+"&SalesOrderId="+salesOrder.getId()+"&__locale=fr_FR"+AxelorSettings.getAxelorReportEngineDatasource());
-		
+		url.append(
+				new ReportSettings(ReportSettings.REPORT_SALES_ORDER, ReportSettings.FORMAT_XLS)
+				.addParam("Locale", language)
+				.addParam("__locale", "fr_FR")
+				.addParam("SalesOrderId", salesOrder.getId().toString())
+				.getUrl());
+
 		LOG.debug("URL : {}", url);
 		String urlNotExist = URLService.notExist(url.toString());
 		
@@ -215,7 +223,6 @@ public class SalesOrderController {
 		SalesOrder salesOrder = request.getContext().asType(SalesOrder.class);
 
 		StringBuilder url = new StringBuilder();
-		AppSettings appSettings = AppSettings.get();
 		
 		String language="";
 		try{
@@ -225,7 +232,12 @@ public class SalesOrderController {
 		}
 		language = language.equals("")? "en": language;
 
-		url.append(appSettings.get("axelor.report.engine", "")+"/frameset?__report=report/SalesOrder.rptdesign&__format=doc&Locale="+language+"&SalesOrderId="+salesOrder.getId()+"&__locale=fr_FR"+AxelorSettings.getAxelorReportEngineDatasource());
+		url.append(
+				new ReportSettings(IReport.REPORT_SALES_ORDER, ReportSettings.FORMAT_DOC)
+				.addParam("Locale", language)
+				.addParam("__locale", "fr_FR")
+				.addParam("SalesOrderId", salesOrder.getId().toString())
+				.getUrl());
 		
 		LOG.debug("URL : {}", url);
 		String urlNotExist = URLService.notExist(url.toString());
