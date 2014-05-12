@@ -523,7 +523,10 @@
 	          AND _company.id = self.company
 	    WHERE self.operation_type_select=3 AND self.invoice_date &lt; DATE(:todayDate) 
 	        AND self.invoice_date &gt; DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month'  
-	    GROUP BY _month
+	    GROUP BY 
+	          _month
+	    ORDER BY
+	          _month
 	  </dataset>
 	  <category key="_month" type="month"/>
 	  <series key="ex_tax_total" type="bar"/>
