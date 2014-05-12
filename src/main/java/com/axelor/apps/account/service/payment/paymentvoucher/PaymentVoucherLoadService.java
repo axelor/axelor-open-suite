@@ -50,6 +50,7 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -251,10 +252,10 @@ public class PaymentVoucherLoadService  {
 	 * @throws AxelorException 
 	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public PaymentVoucher loadSelectedLines(PaymentVoucher paymentVoucher,PaymentVoucher paymentVoucherContext) throws AxelorException {
+	public PaymentVoucher loadSelectedLines(PaymentVoucher paymentVoucher, PaymentVoucher paymentVoucherContext) throws AxelorException {
 		LOG.debug("In loadSelectedLinesService ...");
 
-		List<PaymentInvoice> newPiList = new ArrayList<PaymentInvoice>();
+		List<PaymentInvoice> newPiList = Lists.newArrayList();
 
 		if (paymentVoucherContext.getPaymentInvoiceList() != null){
 			List<PaymentInvoiceToPay> piToPayLine = new ArrayList<PaymentInvoiceToPay>();
