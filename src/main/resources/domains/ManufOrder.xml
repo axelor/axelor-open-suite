@@ -13,7 +13,7 @@
   	
   	<many-to-one name="productionOrder" ref="com.axelor.apps.production.db.ProductionOrder" title="Production order"/>
   	
-  	<one-to-many name="operationOrderList" ref="com.axelor.apps.production.db.OperationOrder" title="Operation orders"/>
+  	<one-to-many name="operationOrderList" ref="com.axelor.apps.production.db.OperationOrder" mappedBy="manufOrder" title="Operation orders"/>
   
   	<decimal name="qty" title="Qty" initParam="true"/>
   
