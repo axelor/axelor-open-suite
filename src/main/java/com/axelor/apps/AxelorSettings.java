@@ -32,6 +32,7 @@ package com.axelor.apps;
 
 import com.axelor.app.AppSettings;
 
+@Deprecated
 public class AxelorSettings {
 
 	public static String getAxelorReportEngineDatasource()  {
