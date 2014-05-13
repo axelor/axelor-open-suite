@@ -37,9 +37,9 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.app.AppSettings;
-import com.axelor.apps.AxelorSettings;
+import com.axelor.apps.ReportSettings;
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.IReport;
 import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -246,10 +246,11 @@ public class MoveLineReportController {
 
 					StringBuilder url = new StringBuilder();
 					moveLineReportService.setPublicationDateTime(moveLineReport);
-					int typeSelect = moveLineReport.getTypeSelect();
 
-					AppSettings appSettings = AppSettings.get();
-					url.append(appSettings.get("axelor.report.engine", "")+"/frameset?__report=report/MoveLineReportType"+typeSelect+".rptdesign&__format="+moveLineReport.getExportTypeSelect()+"&MoveLineReportId="+moveLineReport.getId()+"&__locale=fr_FR"+AxelorSettings.getAxelorReportEngineDatasource());
+					url.append(new ReportSettings(String.format(IReport.REPORT_MOVE_LINE_REPORT_TYPE, moveLineReport.getTypeSelect()), moveLineReport.getExportTypeSelect())
+								.addParam("__locale", "fr_FR")
+								.addParam("MoveLineReportId", moveLineReport.getId().toString())
+								.getUrl());
 
 					LOG.debug("URL : {}", url);
 

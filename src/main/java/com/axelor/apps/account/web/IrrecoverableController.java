@@ -36,8 +36,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.app.AppSettings;
-import com.axelor.apps.AxelorSettings;
+import com.axelor.apps.ReportSettings;
+import com.axelor.apps.account.db.IReport;
 import com.axelor.apps.account.db.Irrecoverable;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.exception.service.TraceBackService;
@@ -99,10 +99,11 @@ public class IrrecoverableController {
 			response.setFlash("Veuillez selectionner un type d'impression"); 
 		} 
 		else {
-			AppSettings appSettings = AppSettings.get();
 			StringBuilder url = new StringBuilder();
 			
-			url.append(appSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Irrecoverable.rptdesign&__format="+irrecoverable.getExportTypeSelect()+"&IrrecoverableID="+irrecoverable.getId()+AxelorSettings.getAxelorReportEngineDatasource());
+			url.append(new ReportSettings(IReport.REPORT_IRRECOVERABLE, irrecoverable.getExportTypeSelect())
+						.addParam("IrrecoverableID", irrecoverable.getId().toString())
+						.getUrl());
 			
 			LOG.debug("URL : {}", url);
 

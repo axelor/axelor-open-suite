@@ -36,8 +36,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.app.AppSettings;
-import com.axelor.apps.AxelorSettings;
+import com.axelor.apps.ReportSettings;
+import com.axelor.apps.account.db.IReport;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherConfirmService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherLoadService;
@@ -120,8 +120,10 @@ public class PaymentVoucherController {
 		
 		PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
 		StringBuilder url = new StringBuilder();
-		AppSettings appSettings = AppSettings.get();
-		url.append(appSettings.get("axelor.report.engine","")+"/frameset?__report=report/PaymentVoucher.rptdesign&__format=pdf&PaymentVoucherId="+paymentVoucher.getId()+AxelorSettings.getAxelorReportEngineDatasource());
+		
+		url.append(new ReportSettings(IReport.REPORT_PAYMENT_VOUCHER)
+					.addParam("PaymentVoucherId", paymentVoucher.getId().toString())
+					.getUrl());
 		
 		LOG.debug("Follow the URL: "+url);
 		
