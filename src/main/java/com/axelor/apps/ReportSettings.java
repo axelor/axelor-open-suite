@@ -40,9 +40,6 @@ public class ReportSettings {
 	
 	private static String BIRT_PATH = "birt";
 
-	public static String REPORT_SALES_ORDER = "SalesOrder.rptdesign";
-	public static String REPORT_STOCK_MOVE = "StockMove.rptdesign";
-
 	private String url = "";
 	
 	public ReportSettings(String rptdesign, String format)  {
