@@ -142,7 +142,7 @@ public class SalesOrderController {
 		language = language.equals("")? "en": language;
 		
 		url.append(
-				new ReportSettings(ReportSettings.REPORT_SALES_ORDER, ReportSettings.FORMAT_PDF)
+				new ReportSettings(IReport.REPORT_SALES_ORDER, ReportSettings.FORMAT_PDF)
 				.addParam("Locale", language)
 				.addParam("__locale", "fr_FR")
 				.addParam("SalesOrderId", salesOrder.getId().toString())
@@ -187,7 +187,7 @@ public class SalesOrderController {
 		language = language.equals("")? "en": language;
 
 		url.append(
-				new ReportSettings(ReportSettings.REPORT_SALES_ORDER, ReportSettings.FORMAT_XLS)
+				new ReportSettings(IReport.REPORT_SALES_ORDER, ReportSettings.FORMAT_XLS)
 				.addParam("Locale", language)
 				.addParam("__locale", "fr_FR")
 				.addParam("SalesOrderId", salesOrder.getId().toString())
