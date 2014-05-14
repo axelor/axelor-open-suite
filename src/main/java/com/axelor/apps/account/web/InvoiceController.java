@@ -37,9 +37,9 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.app.AppSettings;
-import com.axelor.apps.AxelorSettings;
+import com.axelor.apps.ReportSettings;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
@@ -239,25 +239,29 @@ public class InvoiceController {
 		}	
 			
 		if(!invoiceIds.equals("")){
-			invoiceIds = "&InvoiceId="+invoiceIds.substring(0, invoiceIds.length()-1);	
+			invoiceIds = invoiceIds.substring(0, invoiceIds.length()-1);	
 			invoice = Invoice.find(new Long(lstSelectedPartner.get(0)));
 		}else if(invoice.getId() != null){
-			invoiceIds = "&InvoiceId="+invoice.getId();			
+			invoiceIds = invoice.getId().toString();			
 		}
 		
 		System.out.println("SS" +invoiceIds);
 		if(!invoiceIds.equals("")){
 			System.out.println("INvoice ids. "+ invoiceIds);
 			StringBuilder url = new StringBuilder();			
-			AppSettings appSettings = AppSettings.get();
 			String language;
 			try{
 				language = invoice.getPartner().getLanguageSelect() != null? invoice.getPartner().getLanguageSelect() : invoice.getCompany().getPrintingSettings().getLanguageSelect() != null ? invoice.getCompany().getPrintingSettings().getLanguageSelect() : "en" ;
 			}catch (NullPointerException e){
 				language = "en";
 			}	 
-			url.append(appSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Invoice.rptdesign&__format=pdf&Locale="+language+invoiceIds+"&__locale=fr_FR"+AxelorSettings.getAxelorReportEngineDatasource());
-	
+			
+			url.append(new ReportSettings(IReport.INVOICE)
+						.addParam("InvoiceId", invoiceIds)
+						.addParam("Locale", language)
+						.addParam("__locale", "fr_FR")
+						.getUrl());
+			
 			LOG.debug("URL : {}", url);
 			
 			String urlNotExist = URLService.notExist(url.toString());

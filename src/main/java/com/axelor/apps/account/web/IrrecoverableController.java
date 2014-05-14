@@ -37,8 +37,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportSettings;
-import com.axelor.apps.account.db.IReport;
 import com.axelor.apps.account.db.Irrecoverable;
+import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
@@ -101,7 +101,7 @@ public class IrrecoverableController {
 		else {
 			StringBuilder url = new StringBuilder();
 			
-			url.append(new ReportSettings(IReport.REPORT_IRRECOVERABLE, irrecoverable.getExportTypeSelect())
+			url.append(new ReportSettings(IReport.IRRECOVERABLE, irrecoverable.getExportTypeSelect())
 						.addParam("IrrecoverableID", irrecoverable.getId().toString())
 						.getUrl());
 			

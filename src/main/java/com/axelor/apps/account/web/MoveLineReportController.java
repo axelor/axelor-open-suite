@@ -39,11 +39,11 @@ import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportSettings;
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.IReport;
 import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineReport;
+import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.MoveLineExportService;
 import com.axelor.apps.account.service.MoveLineReportService;
 import com.axelor.exception.service.TraceBackService;
@@ -247,7 +247,7 @@ public class MoveLineReportController {
 					StringBuilder url = new StringBuilder();
 					moveLineReportService.setPublicationDateTime(moveLineReport);
 
-					url.append(new ReportSettings(String.format(IReport.REPORT_MOVE_LINE_REPORT_TYPE, moveLineReport.getTypeSelect()), moveLineReport.getExportTypeSelect())
+					url.append(new ReportSettings(String.format(IReport.MOVE_LINE_REPORT_TYPE, moveLineReport.getTypeSelect()), moveLineReport.getExportTypeSelect())
 								.addParam("__locale", "fr_FR")
 								.addParam("MoveLineReportId", moveLineReport.getId().toString())
 								.getUrl());
