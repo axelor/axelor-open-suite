@@ -38,8 +38,7 @@ import java.util.Random;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.app.AppSettings;
-import com.axelor.apps.AxelorSettings;
+import com.axelor.apps.ReportSettings;
 import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.BirtTemplateParameter;
 import com.axelor.apps.base.db.Template;
@@ -178,20 +177,18 @@ public class TemplateMessageService {
 	
 	public String generatePdfFile(TemplateMaker maker, String name, String modelPath, String generatedFilePath, String format, List<BirtTemplateParameter> birtTemplateParameterList) throws AxelorException {
 
-		AppSettings appSettings = AppSettings.get();
-		
 		if(modelPath != null && !modelPath.isEmpty())  {
 			
-			String parameters = "";
+			ReportSettings reportSettings = new ReportSettings(modelPath, format);
+			
 			for(BirtTemplateParameter birtTemplateParameter : birtTemplateParameterList)  {
 				
 				maker.setTemplate(birtTemplateParameter.getValue());
-				String value = maker.make();
-				parameters += "&"+birtTemplateParameter.getName()+"="+value;
+
+				reportSettings.addParam(birtTemplateParameter.getName(), maker.make());
 			}
 			
-			
-			String url = appSettings.get("axelor.report.engine", "")+"/frameset?__report=report/"+modelPath+"&__format="+format+parameters+AxelorSettings.getAxelorReportEngineDatasource();
+			String url = reportSettings.getUrl();
 			
 			LOG.debug("URL : {}", url);
 			
