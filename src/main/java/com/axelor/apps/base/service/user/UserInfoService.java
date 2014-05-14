@@ -117,6 +117,23 @@ public class UserInfoService {
 		return null;
 	}
     
+
+	/**
+	 * Méthode qui retourne la société active de l'utilisateur connecté
+	 * 
+	 * @return Company
+	 * 		La société
+	 */
+	public Long getUserActiveCompanyId() {
+		
+		UserInfo userInfo = getUserInfo();
+		if (userInfo != null && userInfo.getActiveCompany() != null){
+			return userInfo.getActiveCompany().getId();
+		}
+	
+		return null;
+	}
+	
 	
 	/**
 	 * Méthode qui retourne l'équipe active de l'utilisateur connecté
