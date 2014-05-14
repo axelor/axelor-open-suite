@@ -33,10 +33,10 @@ package com.axelor.apps.organisation.web;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.axelor.app.AppSettings;
-import com.axelor.apps.AxelorSettings;
+import com.axelor.apps.ReportSettings;
 import com.axelor.apps.organisation.db.ITask;
 import com.axelor.apps.organisation.db.Task;
+import com.axelor.apps.organisation.report.IReport;
 import com.axelor.apps.organisation.service.FinancialInformationHistoryLineService;
 import com.axelor.apps.organisation.service.FinancialInformationHistoryService;
 import com.axelor.apps.organisation.service.TaskService;
@@ -136,14 +136,17 @@ public class TaskController {
 		User user = AuthUtils.getUser();
 
 		StringBuilder url = new StringBuilder();
-		AppSettings appSettings = AppSettings.get();
 		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
 
-		url.append(appSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Task.rptdesign&__format="+task.getExportTypeSelect()+"&TaskId="+task.getId()+"&Local="+language+"&__locale=fr_FR"+AxelorSettings.getAxelorReportEngineDatasource());
-
+		url.append(
+				new ReportSettings(IReport.TASK, task.getExportTypeSelect())
+				.addParam("Local", language)
+				.addParam("__locale", "fr_FR")
+				.addParam("TaskId", task.getId().toString())
+				.getUrl());
+		
 		String urlNotExist = URLService.notExist(url.toString());
 		if (urlNotExist == null){
-
 
 			Map<String,Object> mapView = new HashMap<String,Object>();
 			mapView.put("title", "Name "+task.getName());

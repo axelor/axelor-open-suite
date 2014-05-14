@@ -33,9 +33,9 @@ package com.axelor.apps.organisation.web;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.axelor.app.AppSettings;
-import com.axelor.apps.AxelorSettings;
+import com.axelor.apps.ReportSettings;
 import com.axelor.apps.organisation.db.Project;
+import com.axelor.apps.organisation.report.IReport;
 import com.axelor.apps.organisation.service.ProjectService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
@@ -109,12 +109,16 @@ public class ProjectController {
 		Project project = request.getContext().asType(Project.class);
 
 		StringBuilder url = new StringBuilder();
-		AppSettings appSettings = AppSettings.get();
 
 		User user = AuthUtils.getUser();
 		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
 
-		url.append(appSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Project.rptdesign&__format="+project.getExportTypeSelect()+"&Locale="+language+"&ProjectId="+project.getId()+"&__locale=fr_FR"+AxelorSettings.getAxelorReportEngineDatasource());
+		url.append(
+				new ReportSettings(IReport.PROJECT, project.getExportTypeSelect())
+				.addParam("Locale", language)
+				.addParam("__locale", "fr_FR")
+				.addParam("ProjectId", project.getId().toString())
+				.getUrl());
 		
 		String urlNotExist = URLService.notExist(url.toString());
 		if (urlNotExist == null){
