@@ -42,9 +42,9 @@ import com.axelor.apps.base.db.UserInfo;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.googleapps.db.GoogleFile;
 import com.axelor.apps.supplychain.db.ILocation;
-import com.axelor.apps.supplychain.db.IReport;
 import com.axelor.apps.supplychain.db.Location;
 import com.axelor.apps.supplychain.db.SalesOrder;
+import com.axelor.apps.supplychain.report.IReport;
 import com.axelor.apps.supplychain.service.SalesOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SalesOrderService;
 import com.axelor.apps.supplychain.service.SalesOrderStockMoveService;
@@ -142,7 +142,7 @@ public class SalesOrderController {
 		language = language.equals("")? "en": language;
 		
 		url.append(
-				new ReportSettings(IReport.REPORT_SALES_ORDER, ReportSettings.FORMAT_PDF)
+				new ReportSettings(IReport.SALES_ORDER, ReportSettings.FORMAT_PDF)
 				.addParam("Locale", language)
 				.addParam("__locale", "fr_FR")
 				.addParam("SalesOrderId", salesOrder.getId().toString())
@@ -187,7 +187,7 @@ public class SalesOrderController {
 		language = language.equals("")? "en": language;
 
 		url.append(
-				new ReportSettings(IReport.REPORT_SALES_ORDER, ReportSettings.FORMAT_XLS)
+				new ReportSettings(IReport.SALES_ORDER, ReportSettings.FORMAT_XLS)
 				.addParam("Locale", language)
 				.addParam("__locale", "fr_FR")
 				.addParam("SalesOrderId", salesOrder.getId().toString())
@@ -233,7 +233,7 @@ public class SalesOrderController {
 		language = language.equals("")? "en": language;
 
 		url.append(
-				new ReportSettings(IReport.REPORT_SALES_ORDER, ReportSettings.FORMAT_DOC)
+				new ReportSettings(IReport.SALES_ORDER, ReportSettings.FORMAT_DOC)
 				.addParam("Locale", language)
 				.addParam("__locale", "fr_FR")
 				.addParam("SalesOrderId", salesOrder.getId().toString())

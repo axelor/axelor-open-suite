@@ -25,9 +25,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.app.AppSettings;
-import com.axelor.apps.AxelorSettings;
+import com.axelor.apps.ReportSettings;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.supplychain.db.PurchaseOrder;
+import com.axelor.apps.supplychain.report.IReport;
 import com.axelor.apps.supplychain.service.PurchaseOrderService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.exception.AxelorException;
@@ -134,10 +135,10 @@ public class PurchaseOrderController {
 		}
 			
 		if(!purchaseOrderIds.equals("")){
-			purchaseOrderIds = "&PurchaseOrderId="+purchaseOrderIds.substring(0,purchaseOrderIds.length()-1);
+			purchaseOrderIds = purchaseOrderIds.substring(0,purchaseOrderIds.length()-1);
 			purchaseOrder = purchaseOrder.find(new Long(lstSelectedPurchaseOrder.get(0)));
 		}else if(purchaseOrder.getId() != null){
-			purchaseOrderIds = "&PurchaseOrderId="+purchaseOrder.getId();
+			purchaseOrderIds = purchaseOrder.getId().toString();
 		}
 		String language="";
 		try{
@@ -147,8 +148,13 @@ public class PurchaseOrderController {
 		}
 		language = language.equals("")? "en": language;
 		
-		url.append(appSettings.get("axelor.report.engine", "")+"/frameset?__report=report/PurchaseOrder.rptdesign&__format=pdf"+purchaseOrderIds+"&__locale=fr_FR&Locale="+language+AxelorSettings.getAxelorReportEngineDatasource());
-	
+		url.append(
+				new ReportSettings(IReport.PURCHASE_ORDER)
+				.addParam("Locale", language)
+				.addParam("__locale", "fr_FR")
+				.addParam("PurchaseOrderId", purchaseOrderIds)
+				.getUrl());
+		
 		LOG.debug("URL : {}", url);
 		String urlNotExist = URLService.notExist(url.toString());
 		

@@ -38,13 +38,13 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.app.AppSettings;
-import com.axelor.apps.AxelorSettings;
+import com.axelor.apps.ReportSettings;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.ProductFamily;
 import com.axelor.apps.supplychain.db.Inventory;
 import com.axelor.apps.supplychain.db.Location;
+import com.axelor.apps.supplychain.report.IReport;
 import com.axelor.apps.supplychain.service.InventoryService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
@@ -67,7 +67,7 @@ public class LocationController {
 		
 		if(location != null && location.getIsDefaultLocation() && location.getCompany() != null && location.getTypeSelect() != null) {
 			
-			Location findLocation = Location.all().filter("company = ? and typeSelect = ? and isDefaultLocation = ?", location.getCompany(),location.getTypeSelect(),location.getIsDefaultLocation()).fetchOne();
+			Location findLocation = Location.filter("company = ? and typeSelect = ? and isDefaultLocation = ?", location.getCompany(),location.getTypeSelect(),location.getIsDefaultLocation()).fetchOne();
 			
 			if(findLocation != null) {
 				response.setFlash("Il existe déjà un entrepot par défaut, veuillez d'abord désactiver l'entrepot "+findLocation.getName());
@@ -139,15 +139,14 @@ public class LocationController {
 		}	
 			
 		if(!locationIds.equals("")){
-			locationIds = "&StockLocationId="+locationIds.substring(0, locationIds.length()-1);	
+			locationIds = locationIds.substring(0, locationIds.length()-1);	
 			location = Location.find(new Long(lstSelectedLocations.get(0)));
 		}else if(location.getId() != null){
-			locationIds = "&StockLocationId="+location.getId();			
+			locationIds = location.getId().toString();			
 		}
 		
 		if(!locationIds.equals("")){
 			StringBuilder url = new StringBuilder();			
-			AppSettings appSettings = AppSettings.get();
 			
 			User user = AuthUtils.getUser();
 			Company company = location.getCompany();
@@ -160,7 +159,12 @@ public class LocationController {
 				language = company.getPrintingSettings().getLanguageSelect();
 			}
 
-			url.append(appSettings.get("axelor.report.engine", "")+"/frameset?__report=report/StockLocation.rptdesign&__format=pdf&Locale="+language+locationIds+"&__locale=fr_FR"+AxelorSettings.getAxelorReportEngineDatasource());
+			url.append(
+					new ReportSettings(IReport.STOCK_LOCATION)
+					.addParam("Locale", language)
+					.addParam("__locale", "fr_FR")
+					.addParam("StockLocationId", locationIds)
+					.getUrl());
 			
 			LOG.debug("URL : {}", url);
 			

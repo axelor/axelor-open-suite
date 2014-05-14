@@ -39,10 +39,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.app.AppSettings;
-import com.axelor.apps.AxelorSettings;
+import com.axelor.apps.ReportSettings;
 import com.axelor.apps.supplychain.db.Inventory;
 import com.axelor.apps.supplychain.db.InventoryLine;
 import com.axelor.apps.supplychain.db.Location;
+import com.axelor.apps.supplychain.report.IReport;
 import com.axelor.apps.supplychain.service.InventoryService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
@@ -77,7 +78,11 @@ public class InventoryController {
 		User user = AuthUtils.getUser();
 		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
 
-		url.append(appSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Inventory.rptdesign&__format="+((format == 1) ? "pdf":(format == 2) ? "xls":"pdf")+"&InventoryId="+inventory.getId()+"&Locale="+language+AxelorSettings.getAxelorReportEngineDatasource());
+		url.append(
+				new ReportSettings(IReport.INVENTORY, ((format == 1) ? "pdf":(format == 2) ? "xls":"pdf"))
+				.addParam("Locale", language)
+				.addParam("InventoryId", inventory.getId().toString())
+				.getUrl());
 		
 		LOG.debug("URL : {}", url);
 		String urlNotExist = URLService.notExist(url.toString());

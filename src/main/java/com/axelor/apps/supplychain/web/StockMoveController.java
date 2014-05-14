@@ -43,9 +43,9 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.apps.supplychain.db.IReport;
 import com.axelor.apps.supplychain.db.StockMove;
 import com.axelor.apps.supplychain.db.StockMoveLine;
+import com.axelor.apps.supplychain.report.IReport;
 import com.axelor.apps.supplychain.service.StockMoveService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.exception.service.TraceBackService;
@@ -144,7 +144,7 @@ public class StockMoveController {
 			language = language.equals("")? "en": language;
 			
 			url.append(
-					new ReportSettings(IReport.REPORT_STOCK_MOVE)
+					new ReportSettings(IReport.STOCK_MOVE)
 					.addParam("Locale", language)
 					.addParam("__locale", "fr_FR")
 					.addParam("StockMoveId", stockMoveIds)

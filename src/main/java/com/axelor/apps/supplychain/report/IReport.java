@@ -28,13 +28,16 @@
  * All portions of the code written by Axelor are
  * Copyright (c) 2012-2014 Axelor. All Rights Reserved.
  */
-package com.axelor.apps.supplychain.db;
+package com.axelor.apps.supplychain.report;
 
 public interface IReport {
 
 	
-	public static final String REPORT_SALES_ORDER = "SalesOrder.rptdesign";
-	public static final String REPORT_STOCK_MOVE = "StockMove.rptdesign";
+	public static final String SALES_ORDER = "SalesOrder.rptdesign";
+	public static final String STOCK_MOVE = "StockMove.rptdesign";
+	public static final String INVENTORY = "Inventory.rptdesign";
+	public static final String PURCHASE_ORDER = "PurchaseOrder.rptdesign";
+	public static final String STOCK_LOCATION = "StockLocation.rptdesign";
 	
 	
 }
