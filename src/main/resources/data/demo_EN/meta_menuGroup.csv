@@ -430,6 +430,7 @@
 "top-sales-orders-all";"All Sales Docs";"admins|ERP|CRM|VTE|MGT"
 "top-purchase-orders-all";"All Purchases Docs";"admins|ERP|ACH|MGT|OPS"
 "top-stock-moves-all";"Stock moves";"admins|ERP|MGT|OPS"
+"top-payments";"Payments";"admins|ERP|MGT|CPT"
 "top-payments-all";"All Payments";"admins|ERP|MGT|CPT"
 "top-payments-customers";"Cust. Payments";"admins|ERP|MGT|CPT"
 "top-payments-suppliers";"Supplier Payments";"admins|ERP|MGT|CPT"
