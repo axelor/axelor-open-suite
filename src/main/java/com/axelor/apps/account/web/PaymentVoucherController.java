@@ -37,8 +37,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportSettings;
-import com.axelor.apps.account.db.IReport;
 import com.axelor.apps.account.db.PaymentVoucher;
+import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherConfirmService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherLoadService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherSequenceService;
@@ -121,7 +121,7 @@ public class PaymentVoucherController {
 		PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
 		StringBuilder url = new StringBuilder();
 		
-		url.append(new ReportSettings(IReport.REPORT_PAYMENT_VOUCHER)
+		url.append(new ReportSettings(IReport.PAYMENT_VOUCHER)
 					.addParam("PaymentVoucherId", paymentVoucher.getId().toString())
 					.getUrl());
 		
