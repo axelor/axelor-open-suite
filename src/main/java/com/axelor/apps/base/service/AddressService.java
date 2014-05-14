@@ -51,13 +51,16 @@ import wslite.json.JSONObject;
 import wslite.rest.ContentType;
 import wslite.rest.RESTClient;
 import wslite.rest.Response;
-
 import au.com.bytecode.opencsv.CSVWriter;
 
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.IAdministration;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.supplychain.db.SalesOrder;
+import com.axelor.apps.supplychain.db.StockMove;
 import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
 
@@ -330,5 +333,20 @@ public class AddressService {
 		}
 			
 		return null;
+	}
+	
+	public boolean checkAddressUsed(Long addressId){
+		LOG.debug("Address Id to be checked = {}",addressId);
+		if(addressId != null){
+			if(Partner.all_().filter("self.mainInvoicingAddress.id = ?1 OR self.deliveryAddress.id = ?1",addressId).fetchOne() != null)
+				return true;
+			if(SalesOrder.all_().filter("self.mainInvoicingAddress.id = ?1 OR self.deliveryAddress.id = ?1",addressId).fetchOne() != null)
+				return true;
+			if(Invoice.all_().filter("self.address.id = ?1",addressId).fetchOne() != null)
+				return true;
+			if(StockMove.all_().filter("self.fromAddress.id = ?1 OR self.toAddress.id = ?1",addressId).fetchOne() != null)
+				return true;
+		}
+		return false;
 	}
 }

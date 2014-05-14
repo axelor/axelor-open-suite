@@ -11,7 +11,9 @@
 	
 	<form name="address-form" title="Address" model="com.axelor.apps.base.db.Address"
 		cols="2" colWidths="*,200"
-		onNew="default-address-record">
+		onNew="default-address-record"
+		onSave="action-base-address-set-address-used,action-base-address-check-address-used">
+		<field name="isUsed" widget="BOOLEAN" hidden="true" /> 
 		<group name="main" title="Address details" cols="1" colSpan="1">
 			<group colSpan="4" cols="2" colWidths="25%,*">
 				<field name="addressL2" onChange="action-check-string-capital-case"/>
@@ -55,7 +57,7 @@
 	
 	<action-record name="action-address-change-commune" model="com.axelor.apps.base.db.Address">
 		<field name="addressL6" expr="eval:commune != null ? commune.hasZipOnRight ? commune.name+' '+commune.zip :commune.zip+' '+commune.name: ''" />
-		<field name="addressL7Country" expr="eval:commune.department != null ? commune.department.region != null ? : commune.department.region.country : null" if="commune != null"/>
+		<field name="addressL7Country"  expr="eval:commune.department != null ? commune.department.region != null ? commune.department.region.country : null : null" if="commune != null"/>
 	</action-record>
 
 	<action-record name="default-address-country-record"
@@ -63,4 +65,12 @@
 		<field name="code" expr="FRA" />
 		<field name="name" expr="FRANCE" />
 	</action-record>
+	
+	<action-record name="action-base-address-set-address-used" model="com.axelor.apps.base.db.Address">
+		<field name="isUsed" expr="call:com.axelor.apps.base.service.AddressService:checkAddressUsed(id)" />
+	</action-record>
+	
+	<action-validate name="action-base-address-check-address-used">
+		<alert message="Be aware that the address is already in use on other documents, do you still want to modify it ?" if="isUsed == true"/>
+	</action-validate>
 </object-views>
