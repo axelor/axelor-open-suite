@@ -39,8 +39,6 @@ import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.app.AppSettings;
-import com.axelor.apps.AxelorSettings;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -49,14 +47,10 @@ import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.IEvent;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.service.EventService;
-import com.axelor.apps.tool.net.URLService;
-import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 
@@ -220,7 +214,7 @@ public class EventController {
 			eventService.saveLead(lead);
 		}
 		else if(!((List)request.getContext().get("_ids")).isEmpty()){
-			for(Lead lead : Lead.all().filter("id in ?1",request.getContext().get("_ids")).fetch()){
+			for(Lead lead : Lead.filter("id in ?1",request.getContext().get("_ids")).fetch()){
 				lead.setUserInfo(uis.getUserInfo());
 				if(lead.getStatusSelect() == 1)
 					lead.setStatusSelect(2);
@@ -238,85 +232,13 @@ public class EventController {
 			eventService.saveEvent(event);
 		}
 		else if(!((List)request.getContext().get("_ids")).isEmpty()){
-			for(Event event : Event.all().filter("id in ?1",request.getContext().get("_ids")).fetch()){
+			for(Event event : Event.filter("id in ?1",request.getContext().get("_ids")).fetch()){
 				event.setUserInfo(uis.getUserInfo());
 				eventService.saveEvent(event);
 			}
 		}
 		response.setReload(true);
 		
-	}
-	
-	/**
-	 * Fonction appeler par le bouton imprimer
-	 *
-	 * @param request
-	 * @param response
-	 * @return
-	 */
-	public void print(ActionRequest request, ActionResponse response) {
-
-
-		Lead lead = request.getContext().asType(Lead.class );
-		String leadIds = "";
-
-		@SuppressWarnings("unchecked")
-		List<Integer> lstSelectedleads = (List<Integer>) request.getContext().get("_ids");
-		if(lstSelectedleads != null){
-			for(Integer it : lstSelectedleads) {
-				leadIds+= it.toString()+",";
-			}
-		}	
-			
-		if(!leadIds.equals("")){
-			leadIds = "&LeadId="+leadIds.substring(0, leadIds.length()-1);	
-			lead = Lead.find(new Long(lstSelectedleads.get(0)));
-		}else if(lead.getId() != null){
-			leadIds = "&LeadId="+lead.getId();			
-		}
-		
-		if(!leadIds.equals("")){
-			StringBuilder url = new StringBuilder();			
-			AppSettings appSettings = AppSettings.get();
-			
-			User user = AuthUtils.getUser();
-			String language = "en";
-			try {
-			
-				if(user != null && !Strings.isNullOrEmpty(user.getLanguage()))  {
-					language = user.getLanguage();
-				}
-				else if (lead.getPartner().getLanguageSelect()!= null){
-					language = lead.getPartner().getLanguageSelect()!= null? lead.getPartner().getLanguageSelect():"en";
-				} 
-			}catch(Exception e){}
-			
-			url.append(appSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Lead.rptdesign&__format=pdf&Locale="+language+leadIds+"&__locale=fr_FR"+AxelorSettings.getAxelorReportEngineDatasource());
-
-			LOG.debug("URL : {}", url);
-			
-			String urlNotExist = URLService.notExist(url.toString());
-			if (urlNotExist == null){
-				LOG.debug("Impression de l'O.F.  "+lead.getFullName()+" : "+url.toString());
-				
-				String title = " ";
-				if(lead.getFirstName() != null)  {
-					title += lstSelectedleads == null ? "Lead "+lead.getFirstName():"Leads";
-				}
-				
-				Map<String,Object> mapView = new HashMap<String,Object>();
-				mapView.put("title", title);
-				mapView.put("resource", url);
-				mapView.put("viewType", "html");
-				response.setView(mapView);	
-					
-			}
-			else {
-				response.setFlash(urlNotExist);
-			}
-		}else{
-			response.setFlash("Please select the Lead(s) to print.");
-		}	
 	}
 	
 	

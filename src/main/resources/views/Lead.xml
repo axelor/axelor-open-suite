@@ -165,7 +165,7 @@
 	</action-method>
 	
 	<action-method name="action-crm-lead-method-print">
-		<call method="print" class="com.axelor.apps.crm.web.EventController"/>
+		<call method="print" class="com.axelor.apps.crm.web.LeadController"/>
 	</action-method>
     
     <action-record name="action-lead-record-new" model="com.axelor.apps.crm.db.Lead">
