@@ -41,8 +41,7 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.app.AppSettings;
-import com.axelor.apps.AxelorSettings;
+import com.axelor.apps.ReportSettings;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.CashRegisterLine;
@@ -319,7 +318,7 @@ public class MailService {
 	public List<ReminderHistory> getReminderHistoryList(Partner partner, Company company)  {
 		
 		
-		AccountingSituation accountingSituation = AccountingSituation.all().filter("self.partner = ?1 and self.company = ?2", partner, company).fetchOne();
+		AccountingSituation accountingSituation = AccountingSituation.filter("self.partner = ?1 and self.company = ?2", partner, company).fetchOne();
 		if(accountingSituation != null && accountingSituation.getReminder() != null)  {
 			return accountingSituation.getReminder().getReminderHistoryList();
 		}
@@ -405,7 +404,7 @@ public class MailService {
 	public void generateAllPdfMail()  {
 		LOG.debug("Génération en masse des emails et courriers au format Pdf");
 		
-		List<Mail> mailList = Mail.all().filter("(self.pdfFilePath IS NULL or self.pdfFilePath = '') AND self.sendRealDate IS NULL AND self.mailModel.pdfModelPath IS NOT NULL").fetch();
+		List<Mail> mailList = Mail.filter("(self.pdfFilePath IS NULL or self.pdfFilePath = '') AND self.sendRealDate IS NULL AND self.mailModel.pdfModelPath IS NOT NULL").fetch();
 		
 		LOG.debug("Nombre de fichiers à générer : {}",mailList.size());
 		for(Mail mail : mailList)  {
@@ -425,8 +424,6 @@ public class MailService {
 	
 	public void generatePdfMail(Mail mail) throws AxelorException {
 
-		AppSettings appSettings = AppSettings.get();
-		
 		MailModel mailModel = mail.getMailModel();
 		
 		if(mailModel == null )  {
@@ -441,7 +438,11 @@ public class MailService {
 //					GeneralService.getExceptionMailMsg(), mail.getName()), IException.CONFIGURATION_ERROR);
 		}
 		else  {
-			String url = appSettings.get("axelor.report.engine", "")+"/frameset?__report=report/"+pdfName+"&__format=pdf&MailId="+mail.getId()+"&__locale=fr_FR"+AxelorSettings.getAxelorReportEngineDatasource();
+			
+			String url = new ReportSettings(pdfName)
+							.addParam("__locale", "fr_FR")
+							.addParam("MailId", mail.getId().toString())
+							.getUrl();
 			
 			LOG.debug("URL : {}", url);
 			

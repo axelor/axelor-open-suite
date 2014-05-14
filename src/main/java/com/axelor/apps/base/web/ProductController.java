@@ -37,10 +37,10 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.app.AppSettings;
-import com.axelor.apps.AxelorSettings;
+import com.axelor.apps.ReportSettings;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.UserInfo;
+import com.axelor.apps.base.report.IReport;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.user.UserInfoService;
@@ -88,8 +88,6 @@ public class ProductController {
 	
 	public void printProductCatelog(ActionRequest request, ActionResponse response) {
 
-		AppSettings appSettings = AppSettings.get();
-
 		StringBuilder url = new StringBuilder();
 		User user =  AuthUtils.getUser();
 		
@@ -102,11 +100,18 @@ public class ProductController {
 		}
 
 		if(!productIds.equals("")){
-			productIds = "&ProductIds="+productIds.substring(0, productIds.length()-1);	
+			productIds = productIds.substring(0, productIds.length()-1);	
 		}
 
 		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
-		url.append(appSettings.get("axelor.report.engine", "")+"/frameset?__report=report/ProductCatalog_PGQL.rptdesign&Locale="+language+"&__format=pdf"+productIds+"&UserId="+user.getId()+"&CurrYear="+currentYear+"&__locale=fr_FR"+AxelorSettings.getAxelorReportEngineDatasource());
+		
+		url.append(new ReportSettings(IReport.PRODUCT_CATALOG)
+					.addParam("Locale", language)
+					.addParam("__locale", "fr_FR")
+					.addParam("UserId", user.getId().toString())
+					.addParam("CurrYear", Integer.toString(currentYear))
+					.addParam("ProductIds", productIds)
+					.getUrl());
 		
 		LOG.debug("URL : {}", url);
 		String urlNotExist = URLService.notExist(url.toString());
@@ -127,8 +132,6 @@ public class ProductController {
 	
 	public void printProductSheet(ActionRequest request, ActionResponse response) {
 
-		AppSettings appSettings = AppSettings.get();
-	
 		Product product = request.getContext().asType(Product.class);
 		UserInfo userInfo =  userInfoService.getUserInfo();
 	
@@ -136,7 +139,13 @@ public class ProductController {
 				
 		User user = AuthUtils.getUser();
 		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
-		url.append(appSettings.get("axelor.report.engine", "")+"/frameset?__report=report/ProductSheet.rptdesign&Locale="+language+"&__format=pdf&ProductId="+product.getId()+"&CompanyId="+userInfo.getActiveCompany().getId()+"&__locale=fr_FR"+AxelorSettings.getAxelorReportEngineDatasource());
+		
+		url.append(new ReportSettings(IReport.PRODUCT_SHEET)
+					.addParam("Locale", language)
+					.addParam("__locale", "fr_FR")
+					.addParam("ProductId", product.getId().toString())
+					.addParam("CompanyId", userInfo.getActiveCompany().getId().toString())
+					.getUrl());
 		
 		LOG.debug("URL : {}", url);
 		String urlNotExist = URLService.notExist(url.toString());

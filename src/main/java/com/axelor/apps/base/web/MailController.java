@@ -36,8 +36,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.app.AppSettings;
-import com.axelor.apps.AxelorSettings;
+import com.axelor.apps.ReportSettings;
 import com.axelor.apps.base.db.Mail;
 import com.axelor.apps.base.db.MailModel;
 import com.axelor.apps.tool.net.URLService;
@@ -98,7 +97,6 @@ public class MailController {
 		Mail mail = request.getContext().asType(Mail.class);
 
 		StringBuilder url = new StringBuilder();
-		AppSettings appSettings = AppSettings.get();
 		
 		MailModel mailModel = mail.getMailModel();
 		
@@ -112,7 +110,10 @@ public class MailController {
 			response.setFlash("Aucun modèle d'impression Birt de défini dans le modèle de Courrier/Email");
 		}
 		
-		url.append(appSettings.get("axelor.report.engine", "")+"/frameset?__report=report/"+pdfName+"&__format=pdf&MailId="+mail.getId()+"&__locale=fr_FR"+AxelorSettings.getAxelorReportEngineDatasource());
+		url.append(new ReportSettings(pdfName)
+					.addParam("__locale", "fr_FR")
+					.addParam("MailId", mail.getId().toString())
+					.getUrl());
 		
 		LOG.debug("URL : {}", url);
 		

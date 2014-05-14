@@ -37,6 +37,7 @@ public class ReportSettings {
 	public static String FORMAT_PDF = "pdf";
 	public static String FORMAT_XLS = "xls";
 	public static String FORMAT_DOC = "doc";
+	public static String FORMAT_HTML = "html";
 	
 	private static String BIRT_PATH = "birt";
 
@@ -66,10 +67,15 @@ public class ReportSettings {
 	
 	private ReportSettings addAxelorReportPath(String rptdesign)  {
 		
-		String appsUrl = AppSettings.get().getBaseURL();
-		appsUrl = appsUrl.substring(0, appsUrl.lastIndexOf('/'));
+		AppSettings appsSettings = AppSettings.get();
 		
-		this.url +=  appsUrl + "/" + BIRT_PATH + "/frameset?__report=report/" + rptdesign;
+		String defaultUrl = appsSettings.getBaseURL();
+		defaultUrl = defaultUrl.substring(0, defaultUrl.lastIndexOf('/'));
+		defaultUrl += "/" + BIRT_PATH ;
+		
+		String appsUrl = appsSettings.get("axelor.report.engine", defaultUrl);
+		
+		this.url +=  appsUrl + "/frameset?__report=report/" + rptdesign;
 		return this;
 		
 	}	

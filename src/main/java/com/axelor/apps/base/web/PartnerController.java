@@ -38,11 +38,11 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.app.AppSettings;
-import com.axelor.apps.AxelorSettings;
+import com.axelor.apps.ReportSettings;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.report.IReport;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserInfoService;
 import com.axelor.apps.tool.net.URLService;
@@ -90,10 +90,14 @@ public class PartnerController {
 		User user = AuthUtils.getUser();
 
 		StringBuilder url = new StringBuilder();
-		AppSettings appSettings = AppSettings.get();
 		
 		String language = (partner.getLanguageSelect() == null || partner.getLanguageSelect().equals(""))? user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en" : partner.getLanguageSelect(); 
-		url.append(appSettings.get("axelor.report.engine", "")+"/frameset?__report=report/Partner.rptdesign&__format=pdf&Locale="+language+"&PartnerId="+partner.getId()+"&__locale=fr_FR"+AxelorSettings.getAxelorReportEngineDatasource());
+		
+		url.append(new ReportSettings(IReport.PARTNER)
+					.addParam("Locale", language)
+					.addParam("__locale", "fr_FR")
+					.addParam("PartnerId", partner.getId().toString())
+					.getUrl());
 		
 		LOG.debug("URL : {}", url);
 
@@ -122,12 +126,15 @@ public class PartnerController {
 	 */
 	public void printContactPhonebook(ActionRequest request, ActionResponse response) {
 
-		AppSettings appSettings = AppSettings.get();
-
 		StringBuilder url = new StringBuilder();
 		User user = AuthUtils.getUser();
 		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
-		url.append(appSettings.get("axelor.report.engine", "")+"/frameset?__report=report/PhoneBook.rptdesign&__format=html&Locale="+language+"&UserId="+user.getId()+"&__locale=fr_FR"+AxelorSettings.getAxelorReportEngineDatasource());
+		
+		url.append(new ReportSettings(IReport.PARTNER, ReportSettings.FORMAT_HTML)
+					.addParam("Locale", language)
+					.addParam("__locale", "fr_FR")
+					.addParam("UserId", user.getId().toString())
+					.getUrl());
 		
 		LOG.debug("URL : {}", url);
 		String urlNotExist = URLService.notExist(url.toString());
@@ -155,15 +162,17 @@ public class PartnerController {
 	 */
 	public void printCompanyPhonebook(ActionRequest request, ActionResponse response) {
 
-		AppSettings appSettings = AppSettings.get();
-
 		StringBuilder url = new StringBuilder();
 
 		User user = AuthUtils.getUser();
 		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
 
-		url.append(appSettings.get("axelor.report.engine", "")+"/frameset?__report=report/CompanyPhoneBook.rptdesign&__format=html&Locale="+language+"&UserId="+user.getId()+"&__locale=fr_FR"+AxelorSettings.getAxelorReportEngineDatasource());
-
+		url.append(new ReportSettings(IReport.COMPANY_PHONE_BOOK, ReportSettings.FORMAT_HTML)
+					.addParam("Locale", language)
+					.addParam("__locale", "fr_FR")
+					.addParam("UserId", user.getId().toString())
+					.getUrl());
+		
 		LOG.debug("URL : {}", url);
 		String urlNotExist = URLService.notExist(url.toString());
 		if (urlNotExist == null){
@@ -190,13 +199,18 @@ public class PartnerController {
 	 */
 	public void printClientSituation(ActionRequest request, ActionResponse response) {
 
-		AppSettings appSettings = AppSettings.get();
 		Partner partner = request.getContext().asType(Partner.class);
 
 		StringBuilder url = new StringBuilder();
 		User user = AuthUtils.getUser();
 		String language = (partner.getLanguageSelect() == null || partner.getLanguageSelect().equals(""))? user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en" : partner.getLanguageSelect(); 
-		url.append(appSettings.get("axelor.report.engine", "")+"/frameset?__report=report/ClientSituation.rptdesign&__format=pdf&PartnerId="+partner.getId()+"&Locale="+language+"&UserId="+user.getId()+"&__locale=fr_FR"+AxelorSettings.getAxelorReportEngineDatasource());
+		
+		url.append(new ReportSettings(IReport.CLIENT_SITUATION)
+		.addParam("Locale", language)
+		.addParam("__locale", "fr_FR")
+		.addParam("UserId", user.getId().toString())
+		.addParam("PartnerId", partner.getId().toString())
+		.getUrl());
 		
 		LOG.debug("URL : {}", url);
 		String urlNotExist = URLService.notExist(url.toString());
