@@ -40,9 +40,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.app.AppSettings;
-import com.axelor.apps.AxelorSettings;
+import com.axelor.apps.ReportSettings;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.report.IReport;
 import com.axelor.apps.production.service.OperationOrderWorkflowService;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
@@ -168,10 +169,10 @@ public class OperationOrderController {
 		}	
 			
 		if(!operationOrderIds.equals("")){
-			operationOrderIds = "&OperationOrderId="+operationOrderIds.substring(0, operationOrderIds.length()-1);	
+			operationOrderIds = operationOrderIds.substring(0, operationOrderIds.length()-1);	
 			operationOrder = OperationOrder.find(new Long(lstSelectedOperationOrder.get(0)));
 		}else if(operationOrder.getId() != null){
-			operationOrderIds = "&OperationOrderId="+operationOrder.getId();			
+			operationOrderIds = operationOrder.getId().toString();			
 		}
 		
 		if(!operationOrderIds.equals("")){
@@ -193,8 +194,12 @@ public class OperationOrderController {
 				language = company.getPrintingSettings().getLanguageSelect();
 			}
 
-			url.append(appSettings.get("axelor.report.engine", "")+"/frameset?__report=report/OperationOrder.rptdesign&__format=pdf&Locale="+language+operationOrderIds+"&__locale=fr_FR"+AxelorSettings.getAxelorReportEngineDatasource());
-
+			url.append(new ReportSettings(IReport.OPERATION_ORDER)
+						.addParam("Locale", language)
+						.addParam("__locale", "fr_FR")
+						.addParam("OperationOrderId", operationOrderIds)
+						.getUrl());
+			
 			LOG.debug("URL : {}", url);
 			
 			String urlNotExist = URLService.notExist(url.toString());

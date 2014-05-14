@@ -39,10 +39,10 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.app.AppSettings;
-import com.axelor.apps.AxelorSettings;
+import com.axelor.apps.ReportSettings;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.production.db.ManufOrder;
+import com.axelor.apps.production.report.IReport;
 import com.axelor.apps.production.service.ManufOrderService;
 import com.axelor.apps.production.service.ManufOrderWorkflowService;
 import com.axelor.apps.tool.net.URLService;
@@ -171,15 +171,14 @@ public class ManufOrderController {
 		}	
 			
 		if(!manufOrderIds.equals("")){
-			manufOrderIds = "&ManufOrderId="+manufOrderIds.substring(0, manufOrderIds.length()-1);	
+			manufOrderIds = manufOrderIds.substring(0, manufOrderIds.length()-1);	
 			manufOrder = ManufOrder.find(new Long(lstSelectedManufOrder.get(0)));
 		}else if(manufOrder.getId() != null){
-			manufOrderIds = "&ManufOrderId="+manufOrder.getId();			
+			manufOrderIds = manufOrder.getId().toString();			
 		}
 		
 		if(!manufOrderIds.equals("")){
 			StringBuilder url = new StringBuilder();			
-			AppSettings appSettings = AppSettings.get();
 			
 			User user = AuthUtils.getUser();
 			Company company = manufOrder.getCompany();
@@ -192,8 +191,12 @@ public class ManufOrderController {
 				language = company.getPrintingSettings().getLanguageSelect();
 			}
 
-			url.append(appSettings.get("axelor.report.engine", "")+"/frameset?__report=report/ManufOrder.rptdesign&__format=pdf&Locale="+language+manufOrderIds+"&__locale=fr_FR"+AxelorSettings.getAxelorReportEngineDatasource());
-
+			url.append(new ReportSettings(IReport.MANUF_ORDER)
+						.addParam("Locale", language)
+						.addParam("__locale", "fr_FR")
+						.addParam("ManufOrderId", manufOrderIds)
+						.getUrl());
+			
 			LOG.debug("URL : {}", url);
 			
 			String urlNotExist = URLService.notExist(url.toString());
