@@ -12,7 +12,8 @@
 	<form name="address-form" title="Address" model="com.axelor.apps.base.db.Address"
 		cols="2" colWidths="*,200"
 		onNew="default-address-record"
-		onSave="action-base-address-set-address-used,action-base-address-check-address-used">
+		onSave="action-base-address-set-address-used,action-base-address-check-address-used"
+		readonlyIf="id != null &amp;&amp; fromMain == null">
 		<field name="isUsed" widget="BOOLEAN" hidden="true" /> 
 		<group name="main" title="Address details" cols="1" colSpan="1">
 			<group colSpan="4" cols="2" colWidths="25%,*">
