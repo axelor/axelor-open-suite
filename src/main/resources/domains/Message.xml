@@ -18,6 +18,9 @@
 	<integer name="statusSelect" title="Status" selection="message.status.select" readonly="true"/>
 	<string name="filePath" title="File path"/>
   	
+  	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" help="Company Header" />
+  	<integer name="mediaTypeSelect" title="Media Type" selection="message.media.type.select"/>
+	
   <!--   	Email -->
   	<many-to-many name="toEmailAddressSet" ref="com.axelor.apps.message.db.EmailAddress" title="To"/>
   	<many-to-many name="ccEmailAddressSet" ref="com.axelor.apps.message.db.EmailAddress" title="Cc" help="Carbon copy"/>
