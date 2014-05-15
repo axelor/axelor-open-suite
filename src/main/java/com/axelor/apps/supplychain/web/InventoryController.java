@@ -38,7 +38,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.app.AppSettings;
 import com.axelor.apps.ReportSettings;
 import com.axelor.apps.supplychain.db.Inventory;
 import com.axelor.apps.supplychain.db.InventoryLine;
@@ -73,7 +72,6 @@ public class InventoryController {
 		int format = inventory.getFormatSelect();
 
 		StringBuilder url = new StringBuilder();
-		AppSettings appSettings = AppSettings.get();
 
 		User user = AuthUtils.getUser();
 		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
