@@ -157,6 +157,7 @@
 "stock-root-inventories-draft";"Inventories";"admins|ERP|OPS|MGT"
 "invoice-root";"Invoice";"admins|ERP|VTE|ACH|MGT|CPT"
 "top-invoice";"Invoices/Refunds";"admins|ERP|VTE|ACH|MGT|CPT"
+"top-invoice-all";"Invoices/Refunds";"admins|ERP|VTE|ACH|MGT|CPT"
 "menu-job-management";"Job Management";"admins|ERP|MGT|HRM"
 "hr-root-recruitment-jobOffer";"Job Offer";"admins|ERP|MGT|HRM"
 "account-conf-financial-journal";"Journals";"admins|ERP|CPT|MGT"
