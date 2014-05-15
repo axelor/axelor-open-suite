@@ -123,6 +123,7 @@
 	        	crm_opportunity self
 	    	LEFT JOIN
 	        	base_user_info as sales_man ON self.user_info = sales_man.id
+	        	AND sales_man.full_name IS NOT NULL
 	    	GROUP BY
 		    	_sales_man
 			ORDER BY
@@ -599,6 +600,7 @@
 	  </dataset>
 	  <category key="_month" type="month"/>
 	  <series key="_leads" type="bar" title="Leads"/>
+	  <config name="xFormat" value="MM-YYYY"/>
 	</chart>
 
 
@@ -653,6 +655,7 @@
 	  </dataset>
 	  <category key="_month" type="month" title="Month"/>
 	  <series key="_tickets" groupBy="_priority" type="bar" title="No of Tickets" aggregate="sum"/>
+	  <config name="xFormat" value="MM-YYYY"/>
 	</chart>
 	
 	<chart stacked="true" name="chart.created.tickets.by.month.by.status" title="Total created tickets by month by status">
@@ -691,6 +694,7 @@
 	  </dataset>
 	  <category key="_month" type="month" title="Month"/>
 	  <series key="_tickets" groupBy="_status" type="bar" title="Tickets"/>
+	  <config name="xFormat" value="MM-YYYY"/>
 	</chart>
 	
 	<chart stacked="true" name="chart.open.tickets.by.month.by.agent" title="Total open tickets by month by user">
@@ -717,6 +721,7 @@
 	  </dataset>
 	  <category key="_month" type="month" title="Month"/>
 	  <series key="_tickets" groupBy="_agent" type="bar" title="Tickets"/>
+	  <config name="xFormat" value="MM-YYYY"/>
 	</chart>
 	
 	<!-- 	  Target user charts -->
