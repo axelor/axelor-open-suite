@@ -37,12 +37,12 @@
 	    <notebook colSpan="4">
 	        <page title="Settings">
 	            <group colSpan="4" cols="4" colWidths="30%,10%,30%,10%">
-	                <field name="saleSupplySelect" onChange="action-sales-order-line-get-production-information"/>
+	                <field name="saleSupplySelect" onChange="action-sales-order-line-get-production-information,action-sales-order-line-attrs-hide-product-variant"/>
 	                <break/>
 	                <field name="supplierPartner" domain="self.isContact = false AND self.supplierTypeSelect in (2,3)" showIf="saleSupplySelect == 2"/>
 	                <field name="task"/>
-	                <field name="billOfMaterial" onSelect="action-sales-order-line-attrs-bill-of-material-domain" showIf="saleSupplySelect == 3"/>
-	                <button name="customizeBOM" title="Customize BOM" colSpan="2" onClick="action-method-customize-bill-of-material" showIf="saleSupplySelect == 3"/>
+	                <field name="billOfMaterial" onSelect="action-sales-order-line-attrs-bill-of-material-domain" />
+	                <button name="customizeBOM" title="Customize BOM" colSpan="2" onClick="action-method-customize-bill-of-material" />
 	            </group>
 	        </page>
 	        <page title="Notes">
@@ -116,6 +116,8 @@
     
     <action-attrs name="action-sales-order-line-attrs-hide-product-variant">
     	<attribute name="hidden" for="productVariant" expr="eval: product?.productVariantConfiguration == null"/>
+    	<attribute name="hidden" for="billOfMaterial" expr="eval: saleSupplySelect != 3 || product?.productTypeSelect == 'service' "/>
+    	<attribute name="hidden" for="customizeBOM" expr="eval: saleSupplySelect != 3 || product?.productTypeSelect == 'service' "/>
     </action-attrs>
     
     <action-attrs name="action-sales-order-line-attrs-task-readonly">
