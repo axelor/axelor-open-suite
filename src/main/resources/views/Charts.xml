@@ -45,6 +45,7 @@
 	  </dataset>
 	  <category key="_month" type="number" title="Month"/>
 	  <series key="_turn_over" type="bar" title="TurnOver" groupBy="_year"/>
+	  <config name="xFormat" value="MM-YYYY"/>
 	</chart>
 	  
 	<chart name="chart.sales.turnover.ytd.vs.lastyear" title="Sales turnover this year vs last year">
@@ -411,6 +412,7 @@
 	  </dataset>
 	  <category key="_month" type="month" title="Month"/>
 	  <series key="_amount" type="bar" title="Amount"/>
+	  <config name="xFormat" value="MM-YYYY"/>
 	</chart>
 
 	<chart stacked="true" onInit="action.supplychain.portal.set.date" name="chart.turnover.sales.by.month.by.category" title="Sales Turnover (Orders) by month by category">
@@ -463,6 +465,7 @@
 	  </dataset>
 	  <category key="_month" type="month" title="Month"/>
 	  <series key="_turn_over" groupBy="product" type="bar" title="TurnOver" aggregate="sum"/>
+	  <config name="xFormat" value="MM-YYYY"/>
 	</chart>
 
 	
@@ -515,6 +518,7 @@
 	  </dataset>
 	  <category key="_month" type="month" title="Month"/>
 	  <series key="_turn_over" groupBy="product" type="bar" title="No Of Units" aggregate="sum"/>
+	  <config name="xFormat" value="MM-YYYY"/>
 	</chart>
 	
 	<chart onInit="action.supplychain.portal.default.month.value" name="chart.stockMove.nbr.delivery.by.country" title="Customer deliveries by country">
@@ -891,7 +895,7 @@
 	<chart onInit="action.supplychain.portal.set.date" name="chart.total.purchase.amount" title="Total Purchased Amount by month">
 	  <search-fields>
 	    <field type="date" name="fromDate" title="From Date"/>
-	    <field name="monthSelect" selection="account.year.period.duration.select" title="Nbr of Months"/>
+	    <field name="monthSelect" selection="account.year.period.duration.select" title="Historical Period"/>
 	  </search-fields>
 	  <dataset type="sql">
 	  
@@ -911,16 +915,18 @@
 	    AND _order.status_select IN (4,5)
 	  GROUP BY
 	     _month  
-	  
+	  ORDER BY
+	  	 _month
 	  </dataset>
 	  <category key="_month" type="month" title="Month"/>
 	  <series key="_turn_over" type="bar" title="Turn Over"/>
+	  <config name="xFormat" value="MM-YYYY"/>
 	</chart>
 	
 	<chart onInit="action.supplychain.portal.set.date" name="chart.total.purchase.qty" title="Total Purchased Qty by month">
 	  <search-fields>
 	    <field type="date" name="fromDate" title="From Date"/>
-	    <field name="monthSelect" selection="account.year.period.duration.select" title="Nbr of Months"/>
+	    <field name="monthSelect" selection="account.year.period.duration.select" title="Historical Period"/>
 	  </search-fields>
 	  <dataset type="sql">
 	  
@@ -943,16 +949,18 @@
 	    AND _order.status_select IN (4,5)
 	  GROUP BY 
 	    _month
-	  
+	  ORDER BY
+	  	_month
 	  </dataset>
 	  <category key="_month" type="month" title="Month"/>
 	  <series key="_qty" type="bar" title="Units"/>
+	  <config name="xFormat" value="MM-YYYY"/>
 	</chart>
 	  
 	<chart onInit="action.supplychain.portal.set.date.6m" name="chart.nbr.of.po.per.month" title="Nbr of PO by month">
 	  <search-fields>
 	    <field type="date" name="fromDate" title="From Date"/>
-	    <field name="monthSelect" selection="account.year.period.duration.select" title="Nbr of Months"/>
+	    <field name="monthSelect" selection="account.year.period.duration.select" title="Historical Period"/>
 	  </search-fields>
 	  <dataset type="sql">
 	  
@@ -972,10 +980,12 @@
 	    AND _order.status_select IN (4,5)
 	  GROUP BY 
 	    _month
-	  
+	  ORDER BY
+	  	_month
 	  </dataset>
 	  <category key="_month" type="month" title="Month"/>
 	  <series key="_orders" type="bar" title="Orders"/>
+	  <config name="xFormat" value="MM-YYYY"/>
 	</chart>
 	
 	<chart onInit="action.supplychain.portal.set.date.6m" name="chart.purchase.amount.per.product.family" title="Purchased amount by product family">
@@ -1128,6 +1138,7 @@
 	  </dataset>
 	  <category key="_month" type="month" title="Month"/>
 	  <series key="_num_prod" groupBy="_label" type="bar" title="Products"/>
+	  <config name="xFormat" value="MM-YYYY"/>
 	</chart>
 
 	
@@ -1155,6 +1166,7 @@
 	  </dataset>
 	  <category key="_month" type="month" title="Month"/>
 	  <series key="_amount" type="bar" title="Turnover"/>
+	  <config name="xFormat" value="MM-YYYY"/>
 	</chart>
 
 	
@@ -1183,6 +1195,7 @@
 	  </dataset>
 	  <category key="_month" type="month" title="Month"/>
 	  <series key="_amount" type="bar" title="Turnover"/>
+	  <config name="xFormat" value="MM-YYYY"/>
 	</chart>
 	
 	<!-- This chart is used in location-form -->
@@ -1227,6 +1240,7 @@
 	  </dataset>
 	  <category key="_month" type="month" title="Month"/>
 	  <series key="_amount" type="bar" title="Turnover"/>
+	  <config name="xFormat" value="MM-YYYY"/>
 	</chart>
 	
 	<action-record model="com.axelor.apps.supplychain.db.SalesOrder" name="action.supplychain.portal.set.from.date.and.salesman.6m">
@@ -1260,6 +1274,7 @@
 	  </dataset>
 	  <category key="_month" type="month" title="Month"/>
 	  <series key="_amount" type="bar" title="Turnover"/>
+	  <config name="xFormat" value="MM-YYYY"/>
 	</chart>
 
 	
