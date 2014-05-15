@@ -20,3 +20,9 @@
 "perm.account.invoiceLine.r";"com.axelor.apps.account.db.InvoiceLine";"true";"false";"false";"false";"false";;;;;;;;
 "perm.account.invoiceLineTax.r";"com.axelor.apps.account.db.InvoiceLineTax";"true";"false";"false";"false";"false";;;;;;;;
 "perm.base.partner.r";"com.axelor.apps.base.db.Partner";"true";"false";"false";"false";"false";;;;;;;;
+"perm.supplyChain.purchaseOrder.r";"com.axelor.apps.supplychain.db.PurchaseOrder";"true";"false";"false";"false";"false";;;;;;;;
+"perm.supplyChain.purchaseOrderLine.r";"com.axelor.apps.supplychain.db.PurchaseOrderLine";"true";"false";"false";"false";"false";;;;;;;;
+"perm.supplyChain.purchaseOrderLineTax.r";"com.axelor.apps.supplychain.db.PurchaseOrderLineTax";"true";"false";"false";"false";"false";;;;;;;;
+"perm.suppliermanagement.PurchaseOrderSupplierLine.rw";"com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine";"true";"true";"false";"false";"false";;;;;;;;
+"perm.supplyChain.stockMove.r";"com.axelor.apps.supplychain.db.StockMove";"true";"false";"false";"false";"false";;;;;;;;
+"perm.supplyChain.stockMoveLine.r";"com.axelor.apps.supplychain.db.StockMoveLine";"true";"true";"false";"false";"false";;;;;;;;

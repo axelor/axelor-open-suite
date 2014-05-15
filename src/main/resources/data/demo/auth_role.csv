@@ -7,3 +7,4 @@
 6;"role.manager";"Accès à l'ensemble des fonctionnalités";"perm.base.all|perm.account.all|perm.organisation.all|perm.production.all|perm.crm.all|perm.supplychain.all"
 7;"role.client";"Accès au portail client";"perms.user-info|perm.base.partner.r|perm.supplyChain.salesOrder.r|perm.supplyChain.salesOrderLine.r|perm.supplyChain.salesOrderLineTax.r|perm.crm.event.r|perm.crm.eventCategory.r|perm.account.invoice.r|perm.account.invoiceLine.r|perm.account.invoiceLineTax.r"
 8;"role.consultant";"Accès au portail consultant";
+9;"role.supplier";"Accès au portail fournisseur";"perms.user-info|perm.base.partner.r|perm.supplyChain.purchaseOrder.r|perm.supplyChain.purchaseOrderLine.r|perm.supplyChain.purchaseOrderLineTax.r|perm.suppliermanagement.PurchaseOrderSupplierLine.rw|perm.supplyChain.stockMove.r|perm.supplyChain.stockMoveLine.r"

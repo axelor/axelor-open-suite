@@ -19,4 +19,5 @@
 "supp2";
 "dirrh";
 "compta";
-"client";"Wizard-client-view"
+"client";"wizard-client-view"
+"fournisseur";"wizard-supplier-view"

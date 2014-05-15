@@ -6,7 +6,7 @@
 "projdir";"Lucas RICHARD";"projdir";"MNGT";"en";
 "projmg";"Daniel SILVA";"projmg";"ERP";"en";
 "consultant";"Charles MARTIN";"consultant";"CST";"en";
-"demoerp";"Kevin DEMOERP";"demoerp";"ERP";"en";"portal.opportunity.graph.dashboard.view"
+"demoerp";"Kevin DEMOERP";"demoerp";"ERP";"en";"portal.salesman.dashboard.view.sample"
 "democrm";"Charles DEMOCRM";"democrm";"CRM";"en";"crm.portal.opportunities.dashboard.2.view"
 "smn2";"Tony RAYMOND";"smn2";"SALE";"en";
 "sms1";"Thomas LAMY";"sms1";"SALE";"en";
@@ -20,4 +20,4 @@
 "hrmg";"Romane COLIN";"hrmg";"HRSC";"en";
 "account";"Victoria LOUIS";"account";"ACCO";"en";
 "client";"123 Service";"client";"CLT";"en";"wizard-client-view"
-"supplier";"TOP Components";"supplier";"SUP";"en";
+"supplier";"TOP Components";"supplier";"SUP";"en";"wizard-supplier-view"

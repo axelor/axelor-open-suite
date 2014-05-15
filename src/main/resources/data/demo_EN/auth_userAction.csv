@@ -6,8 +6,8 @@
 "projdir";
 "projmg";
 "consultant";
-"demoerp";"crm.portal.opportunities.dashboard.2.view"
-"democrm";"portal.lead.dashboard.view"
+"demoerp";"portal.salesman.dashboard.view.sample"
+"democrm";"crm.portal.opportunities.dashboard.2.view"
 "smn";
 "sms1";
 "sms2";
@@ -19,5 +19,5 @@
 "supp2";
 "hr";
 "account";
-"client";"Wizard-client-view"
-"supplier";
+"client";"wizard-client-view"
+"supplier";"wizard-supplier-view"
