@@ -74,7 +74,8 @@
         		<field name="realDate"/>
         		<field name="fromAddress" showIf="typeSelect == 3"/>
         		<field name="toAddress" showIf="typeSelect == 2"/>
-        		<field name="isBackSurplusToSupplier" showIf="typeSelect &gt;= 2"/>
+        		<field name="isWithReturnSurplus" showIf="typeSelect &gt;= 2"/>
+        		<field name="isWithBackorder" />
     		</group>
     		<group title="Action(s)" colSpan="2" cols="2">
             	<button name="plan" title="Plan" showIf="statusSelect == 1" colSpan="1" onClick="save,action-stock-move-method-plan,action-stock-move-group-read-only,save"/>

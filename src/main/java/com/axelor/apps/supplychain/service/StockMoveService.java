@@ -255,10 +255,12 @@ public class StockMoveService {
 	}
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
-	public StockMove realize(StockMove stockMove) throws AxelorException  {
-	
+	public String realize(StockMove stockMove) throws AxelorException  {
 		LOG.debug("Réalisation du mouvement de stock : {} ", new Object[] { stockMove.getStockMoveSeq() });
-		
+		String newStockSeq = null;
+		if(!stockMove.getIsWithBackorder() && !stockMove.getIsWithReturnSurplus())
+			return null;
+
 		stockMoveLineService.updateLocations(
 				stockMove.getFromLocation(), 
 				stockMove.getToLocation(), 
@@ -272,12 +274,19 @@ public class StockMoveService {
 		stockMove.setStatusSelect(IStockMove.STATUS_REALIZED);
 		stockMove.setRealDate(this.today);
 		stockMove.save();
-		
-		if(this.mustBeSplit(stockMove.getStockMoveLineList()))  {
-			return this.copyAndSplitStockMove(stockMove);
+		if(stockMove.getIsWithBackorder() && this.mustBeSplit(stockMove.getStockMoveLineList()))  {
+			StockMove newStockMove = this.copyAndSplitStockMove(stockMove);
+			newStockSeq = newStockMove.getStockMoveSeq();
+		}
+		if(stockMove.getIsWithReturnSurplus() && this.mustBeSplit(stockMove.getStockMoveLineList()))  {
+			StockMove newStockMove = this.copyAndSplitStockMoveReverse(stockMove);
+			if(newStockSeq != null)
+				newStockSeq = newStockSeq+" "+newStockMove.getStockMoveSeq();
+			else
+				newStockSeq = newStockMove.getStockMoveSeq();
 		}
 		
-		return null;
+		return newStockSeq;
 	}
 	
 	public boolean mustBeSplit(List<StockMoveLine> stockMoveLineList)  {
@@ -303,7 +312,7 @@ public class StockMoveService {
 		
 		for(StockMoveLine stockMoveLine : stockMove.getStockMoveLineList())  {
 			
-			if(stockMoveLine.getQty().compareTo(stockMoveLine.getRealQty()) != 0)   {
+			if(stockMoveLine.getQty().compareTo(stockMoveLine.getRealQty()) > 0)   {
 				StockMoveLine newStockMoveLine = JPA.copy(stockMoveLine, false);
 				
 				newStockMoveLine.setRealQty(BigDecimal.ZERO);
@@ -322,6 +331,48 @@ public class StockMoveService {
 		
 	}
 	
+	
+	public StockMove copyAndSplitStockMoveReverse(StockMove stockMove) throws AxelorException  {
+		
+		StockMove newStockMove = new StockMove();
+		
+		newStockMove.setCompany(stockMove.getCompany());
+		newStockMove.setPartner(stockMove.getPartner());
+		newStockMove.setFromLocation(stockMove.getToLocation());
+		newStockMove.setToLocation(stockMove.getFromLocation());
+		newStockMove.setEstimatedDate(stockMove.getEstimatedDate());
+		newStockMove.setFromAddress(stockMove.getFromAddress());
+		if(stockMove.getToAddress() != null)
+			newStockMove.setFromAddress(stockMove.getToAddress());
+		if(stockMove.getTypeSelect() == 3)
+			newStockMove.setTypeSelect(2);
+		if(stockMove.getTypeSelect() == 2)
+			newStockMove.setTypeSelect(3);
+		if(stockMove.getTypeSelect() == 1)
+			newStockMove.setTypeSelect(1);
+		newStockMove.setStatusSelect(1);
+		newStockMove.setStockMoveSeq(getSequenceStockMove(newStockMove.getTypeSelect(),newStockMove.getCompany()));
+		
+		for(StockMoveLine stockMoveLine : stockMove.getStockMoveLineList())  {
+			
+			if(stockMoveLine.getRealQty().compareTo(stockMoveLine.getQty()) > 0)   {
+				StockMoveLine newStockMoveLine = JPA.copy(stockMoveLine, false);
+				
+				newStockMoveLine.setRealQty(BigDecimal.ZERO);
+				newStockMoveLine.setQty(stockMoveLine.getRealQty().subtract(stockMoveLine.getQty()));
+				
+				newStockMove.addStockMoveLineListItem(newStockMoveLine);
+			}
+		}
+		
+		newStockMove.setStatusSelect(IStockMove.STATUS_PLANNED);
+		newStockMove.setRealDate(null);
+		newStockMove.setStockMoveSeq(this.getSequenceStockMove(newStockMove.getTypeSelect(), newStockMove.getCompany()));
+		newStockMove.setName(newStockMove.getStockMoveSeq() + " Partial stock move (From " + stockMove.getStockMoveSeq() + " )" );
+		
+		return newStockMove.save();
+		
+	}
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})

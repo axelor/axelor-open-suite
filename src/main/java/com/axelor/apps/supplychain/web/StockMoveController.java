@@ -79,13 +79,13 @@ public class StockMoveController {
 		StockMove stockMove = request.getContext().asType(StockMove.class);
 
 		try {
-			StockMove newStockMove = stockMoveService.realize(StockMove.find(stockMove.getId()));
+			String newSeq = stockMoveService.realize(StockMove.find(stockMove.getId()));
 			
 			response.setReload(true);
 			
-			if(newStockMove != null)  {
+			if(newSeq != null)  {
 				
-				response.setFlash(String.format("A partial stock move has been generated (%s)", newStockMove.getStockMoveSeq()));
+				response.setFlash(String.format("A partial stock move has been generated (%s)", newSeq));
 				
 			}
 		}
