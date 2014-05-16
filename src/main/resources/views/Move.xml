@@ -15,6 +15,9 @@
     <form name="move-form" title="Account move" model="com.axelor.apps.account.db.Move" cols="4" 
     onLoad="action-move-attrs-status,action-move-attrs-hidden-date,action-move-attrs-hidden-get-info-from-first-move-line-ok"
     onNew="action-move-attrs-status,default-move-record,action-move-attrs-hidden-get-info-from-first-move-line-ok,action-move-attrs-hidden-date,action-move-method-get-period">
+    	<toolbar>
+    		<button name="reverse" title="Reverse" onClick="action-move-method-generate-reverse-move" icon="fa-exchange"/>
+    	</toolbar>
     	<notebook colSpan="4">
     	<page title="Informations" colSpan="4">
 	        <group title="Move header" colSpan="4" readonlyIf="state == 'validated'">
@@ -122,6 +125,9 @@
 		<call class="com.axelor.apps.account.web.MoveController" method="validate"/>
 	</action-method>
 	
+	<action-method name="action-move-method-generate-reverse-move">
+		<call class="com.axelor.apps.account.web.MoveController" method="generateReverse"/> 
+	</action-method>
 	
 	<action-method name="action-move-method-get-period">
 		<call class="com.axelor.apps.account.web.MoveController" method="getPeriod"/>

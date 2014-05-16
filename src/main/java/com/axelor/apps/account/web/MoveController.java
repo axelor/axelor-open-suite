@@ -30,12 +30,18 @@
  */
 package com.axelor.apps.account.web;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.service.MoveService;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
+import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
@@ -71,6 +77,21 @@ public class MoveController {
 			else {
 				response.setValue("period", null);
 			}
+		}
+		catch (Exception e){ TraceBackService.trace(response, e); }
+	}
+	
+	public void generateReverse(ActionRequest request, ActionResponse response) {
+		
+		Move move = request.getContext().asType(Move.class);
+		
+		try {
+			Move newMove = moveService.get().generateReverse(Move.find(move.getId()));
+			Map<String, Object> viewMap = Maps.newHashMap();
+			viewMap.put("title", "Account move");
+			viewMap.put("resource", "com.axelor.apps.account.db.Move");
+			viewMap.put("domain", "self.id = "+newMove.getId());
+			response.setView(viewMap);
 		}
 		catch (Exception e){ TraceBackService.trace(response, e); }
 	}

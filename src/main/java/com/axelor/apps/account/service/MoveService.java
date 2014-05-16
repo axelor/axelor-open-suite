@@ -979,4 +979,29 @@ public class MoveService {
 		return null;
 	}	
 	
+	@Transactional
+	public Move generateReverse(Move move) throws AxelorException{
+		Move newMove = createMove(move.getJournal(), 
+								  move.getCompany(),
+								  move.getInvoice(),
+								  move.getPartner(), 
+								  toDay, 
+								  move.getPaymentMode(),
+								  move.getIgnoreInReminderOk(), 
+								  move.getIgnoreInAccountingOk(),
+								  false);
+		List<MoveLine> moveLines = new ArrayList<MoveLine>();
+		for(MoveLine line: move.getMoveLineList()){
+			LOG.debug("Moveline {}",line);
+			Boolean isDebit = true;
+			BigDecimal amount = line.getCredit();
+			if(amount.compareTo(BigDecimal.ZERO) == 0){
+				isDebit = false;
+				amount = line.getDebit();
+			}
+			moveLines.add(mls.createMoveLine(newMove, newMove.getPartner(), line.getAccount(), amount, isDebit, false, null, 0, null));
+		}
+		newMove.setMoveLineList(moveLines);
+		return newMove.save();
+	}
 }
