@@ -28,7 +28,8 @@
     
     <one-to-many name="stockMoveLineList" ref="com.axelor.apps.supplychain.db.StockMoveLine" mappedBy="stockMove" title="Stock move content"/>
     
-    <boolean name="isBackSurplusToSupplier" title="Return surplus to supplier"/>
+    <boolean name="isWithReturnSurplus" title="Return surplus"/>
+    <boolean name="isWithBackorder" title="Manage BackOrder "/>
     
     
     <!-- Onglet Configuration -->
