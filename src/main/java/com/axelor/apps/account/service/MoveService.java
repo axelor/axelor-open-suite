@@ -197,6 +197,7 @@ public class MoveService {
 			}
 			if (partner != null)  {
 				move.setPartner(partner);
+				move.setCurrency(partner.getCurrency());
 			}	
 			move.setPaymentMode(paymentMode);
 			
@@ -232,8 +233,6 @@ public class MoveService {
 			move = this.createMove(journal, company, invoice, partner, invoice.getInvoiceDate(), invoice.getPaymentMode(), false);
 			
 			if (move != null)  {
-				
-				move.setCurrency(partner.getCurrency());
 				
 				boolean isPurchase = this.isPurchase(invoice);
 				

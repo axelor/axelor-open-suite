@@ -6,16 +6,18 @@
         <field name="moveLine.dueDate"/>
         <field name="moveLine"/>
         <field name="moveLine.move.invoice"/>
+        <field name="currency"/>
         <field name="invoiceAmount"/>
         <field name="paidAmount"/>
-        <field name="amountRemaining"/>
+        <field name="moveLine.amountRemaining"/>
     </grid>
     <form name="payment-invoice-form" title="Invoices to pay" model="com.axelor.apps.account.db.PaymentInvoice" cols="4">
         <field name="moveLine"/>
         <field name="moveLine.move.invoice" grid-view="invoice-grid" form-view="invoice-form"/>
         <field name="moveLine.dueDate"/>
+        <field name="currency"/>
         <field name="invoiceAmount"/>
         <field name="paidAmount"/>
-        <field name="amountRemaining"/>
+        <field name="moveLine.amountRemaining"/>
     </form>
 </object-views>

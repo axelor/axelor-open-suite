@@ -45,7 +45,6 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentInvoiceToPay;
 import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.service.MoveLineService;
@@ -150,8 +149,6 @@ public class PaymentVoucherConfirmService  {
 		
 		if(paymentVoucher.getMoveLine() == null || (paymentVoucher.getMoveLine() != null && !allRight) || (scheduleToBePaid && !allRight && paymentVoucher.getMoveLine() != null))  {
 		
-			PaymentScheduleLine lastPaymentScheduleLine = null;
-			
 			//Manage all the cases in the same way. As if a move line (Excess payment) is selected, we cancel it first
 			Move move = moveService.createMove(paymentVoucher.getPaymentMode().getBankJournal(),company,null,payerPartner, paymentDate, paymentMode,false, paymentVoucher.getCashRegister());
 			
@@ -204,14 +201,20 @@ public class PaymentVoucherConfirmService  {
 			if (paymentVoucher.getPaidAmount().compareTo(paidLineTotal) > 0){
 				BigDecimal remainingPaidAmount = paymentVoucher.getRemainingAmount();
 				
+				//TODO rajouter le process d'imputation automatique
+//				if(paymentVoucher.getHasAutoInput())  {
+//					
+//					List<MoveLine> debitMoveLines = Lists.newArrayList(pas.getDebitLinesToPay(contractLine, paymentVoucher.getPaymentScheduleToPay()));
+//					pas.createExcessPaymentWithAmount(debitMoveLines, remainingPaidAmount, move, moveLineNo,
+//							paymentVoucher.getPayerPartner(), company, contractLine, null, paymentDate, updateCustomerAccount);
+//				}
+//				else  {
 				moveLine = moveLineService.createMoveLine(move,paymentVoucher.getPartner(), company.getAccountConfig().getCustomerAccount(),
 						remainingPaidAmount,!isDebitToPay, false, paymentDate, moveLineNo++, null);
 				move.getMoveLineList().add(moveLine);
 				
-				if(lastPaymentScheduleLine == null || paymentScheduleService.isLastSchedule(lastPaymentScheduleLine))  {
-					if(isDebitToPay)  {
-						reconcileService.balanceCredit(moveLine, company, updateCustomerAccount);
-					}
+				if(isDebitToPay)  {
+					reconcileService.balanceCredit(moveLine, company, updateCustomerAccount);
 				}
 				
 			}

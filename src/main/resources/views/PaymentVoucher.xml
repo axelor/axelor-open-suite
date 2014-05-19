@@ -28,7 +28,7 @@
 			<field name="paymentDateTime" />
 			<field name="company" widget="SuggestBox" form-view="company-lite-form"/>
 			<field name="cashRegister" />
-			<field name="autoOk" />
+			<field name="hasAutoInput" />
 		</group>
         <group title="Actions" colSpan="1" cols="1">
             <button name="confirmPaymentVoucher" title="Confirm payment" onClick="save,com.axelor.apps.account.web.PaymentVoucherController:confirmPaymentVoucher,action-attrs-payment-voucher-readonly-status"/>

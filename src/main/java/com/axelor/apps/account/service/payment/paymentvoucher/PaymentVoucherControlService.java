@@ -76,7 +76,7 @@ public class PaymentVoucherControlService  {
 		}
 		
 		// Si on a des lignes à payer (dans le deuxième tableau)
-		if(!paymentVoucher.getAutoOk() && (paymentVoucher.getPaymentInvoiceToPayList() == null || paymentVoucher.getPaymentInvoiceToPayList().size() == 0))  {
+		if(!paymentVoucher.getHasAutoInput() && (paymentVoucher.getPaymentInvoiceToPayList() == null || paymentVoucher.getPaymentInvoiceToPayList().size() == 0))  {
 			throw new AxelorException(String.format("%s :\n Aucune ligne à payer.", GeneralService.getExceptionAccountingMsg()), IException.INCONSISTENCY);
 		}	
 		

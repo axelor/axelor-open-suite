@@ -169,14 +169,14 @@ public class PaymentVoucherLoadService  {
 		BigDecimal paidAmount = null;
 		
 		// Si la facture a une devise différente du tiers (de l'écriture)
-		if(move.getInvoice() != null && move.getInvoice().getCurrency() != move.getCurrency())  {
+		if(move.getInvoice() != null && !move.getInvoice().getCurrency().equals(move.getCurrency()))  {
 			LOG.debug("La facture a une devise différente du tiers (de l'écriture)");
 			paymentInvoiceToPay.setCurrency(move.getInvoice().getCurrency());
 			paymentInvoiceToPay.setTotalAmount(move.getInvoice().getInvoiceInTaxTotal());
 			paymentInvoiceToPay.setRemainingAmount(move.getInvoice().getInvoiceInTaxTotal().subtract(move.getInvoice().getInvoiceAmountPaid()));
 			
 			// on convertit le montant imputé de la devise de la saisie paiement vers la devise de la facture
-			paidAmount = currencyService.getAmountCurrencyConverted(move.getInvoice().getCurrency(), paymentVoucher.getCurrency(), paymentInvoiceToPay.getRemainingAmount(), paymentVoucher.getPaymentDateTime().toLocalDate());
+			paidAmount = currencyService.getAmountCurrencyConverted(paymentVoucher.getCurrency(), move.getInvoice().getCurrency(), paymentInvoiceToPay.getRemainingAmount(), paymentVoucher.getPaymentDateTime().toLocalDate());
 
 		}
 		// sinon la facture à une devise identique à l'écriture, ou l'écriture ne possède pas de facture
@@ -191,7 +191,7 @@ public class PaymentVoucherLoadService  {
 			}
 			paymentInvoiceToPay.setRemainingAmount(moveLine.getAmountRemaining());
 			
-			paidAmount = currencyService.getAmountCurrencyConverted(move.getCurrency(), paymentVoucher.getCurrency(), moveLine.getAmountRemaining(), paymentVoucher.getPaymentDateTime().toLocalDate());
+			paidAmount = currencyService.getAmountCurrencyConverted(paymentVoucher.getCurrency(), move.getCurrency(), moveLine.getAmountRemaining(), paymentVoucher.getPaymentDateTime().toLocalDate());
 		}
 		
 		LOG.debug("Montant de la créance {}",paidAmount);
@@ -268,13 +268,13 @@ public class PaymentVoucherLoadService  {
 				paidAmount = paymentVoucherContext.getPaidAmount();
 				BigDecimal amountToPay = BigDecimal.ZERO;
 				int lineSeq = 1;
-				List<PaymentInvoice> pilSelected = new ArrayList<PaymentInvoice>();
+				List<PaymentInvoice> paymentInvoiceSelectedList = new ArrayList<PaymentInvoice>();
 				for (PaymentInvoice pilContext : paymentVoucherContext.getPaymentInvoiceList())  {
 					PaymentInvoice paymentInvoiceFromContext = PaymentInvoice.find(pilContext.getId());
 					LOG.debug("Selected line : : : : {}",paymentInvoiceFromContext);
 					LOG.debug("pilContext.isSelected() : : : : {}",pilContext.isSelected());
 					if (pilContext.isSelected()){
-						pilSelected.add(paymentInvoiceFromContext);
+						paymentInvoiceSelectedList.add(paymentInvoiceFromContext);
 					}
 					else{//creation du nouveau tableau des lignes restant à payer sans les lignes déjà sélectionnées
 						PaymentInvoice paymentInvoice = new PaymentInvoice();
@@ -291,7 +291,7 @@ public class PaymentVoucherLoadService  {
 				paymentVoucher.getPaymentInvoiceList().clear();
 				paymentVoucher.getPaymentInvoiceToPayList().clear();
 				
-				if (pilSelected != null && !pilSelected.isEmpty())  {
+				if (paymentInvoiceSelectedList != null && !paymentInvoiceSelectedList.isEmpty())  {
 					//récupérer les lignes déjà remplies
 					// + initialiser le restant à payer
 					// + initialiser la sequence
@@ -316,44 +316,63 @@ public class PaymentVoucherLoadService  {
 						}
 					}
 					LOG.debug("PITOPAY LINE AFTER first FOR : : : : : {}",piToPayLine);
-					LOG.debug("Nombre de ligne selectionné {}",pilSelected.size());
+					LOG.debug("Nombre de ligne selectionné {}", paymentInvoiceSelectedList.size());
 					//Ajouter les nouvelles lignes sélectionnées
 					//Incrementation de la liste avec les lignes récupérées au dessus piToPayLine
-					for (PaymentInvoice pil : pilSelected)  {
-						PaymentInvoiceToPay piToPay = new PaymentInvoiceToPay();
+					for (PaymentInvoice paymentInvoice : paymentInvoiceSelectedList)  {
+						PaymentInvoiceToPay paymentInvoiceToPay = new PaymentInvoiceToPay();
 						
-						MoveLine moveLine = pil.getMoveLine();
+						MoveLine moveLine = paymentInvoice.getMoveLine();
 						Move move = moveLine.getMove();
 						
 //						BigDecimal paidAmount = null;
 						
 						BigDecimal amountRemainingConverted = null;
 						
+						paymentInvoiceToPay.setSequence(lineSeq);
+						paymentInvoiceToPay.setMoveLine(moveLine);
+						paymentInvoiceToPay.setTotalAmount(paymentInvoice.getInvoiceAmount());
+						paymentInvoiceToPay.setRemainingAmount(paymentInvoice.getInvoiceAmount().subtract(paymentInvoice.getPaidAmount()));
+						
+						paymentInvoiceToPay.setPaymentVoucher(paymentVoucher);
+						
 						if(move.getInvoice() != null)  {
-							amountRemainingConverted = currencyService.getAmountCurrencyConverted(move.getInvoice().getCurrency(), 
-									paymentVoucher.getCurrency(), 
-									pil.getInvoiceAmount().subtract(pil.getPaidAmount()), 
-									paymentVoucher.getPaymentDateTime().toLocalDate());
-							piToPay.setCurrency(move.getInvoice().getCurrency());
+							paymentInvoiceToPay.setCurrency(move.getInvoice().getCurrency());
 						}
 						else  {
-							amountRemainingConverted = currencyService.getAmountCurrencyConverted(move.getCurrency(), 
-									paymentVoucher.getCurrency(), 
-									pil.getInvoiceAmount().subtract(pil.getPaidAmount()), 
-									paymentVoucher.getPaymentDateTime().toLocalDate());
-							piToPay.setCurrency(move.getCurrency());
+							paymentInvoiceToPay.setCurrency(move.getCurrency());
 						}
 						
+						BigDecimal paidAmountConverted = currencyService.getAmountCurrencyConverted(
+								paymentVoucher.getCurrency(),
+								paymentInvoiceToPay.getCurrency(), 
+								paymentInvoiceToPay.getRemainingAmount(), 
+								paymentVoucher.getPaymentDateTime().toLocalDate());
+						
+						//On convertit dans la devise de la saisie paiement, pour comparer le restant à payer de la facture avec le restant à utilsier de la saisie paiement
+						
+//						if(move.getInvoice() != null)  {
+//							amountRemainingConverted = currencyService.getAmountCurrencyConverted(
+//									move.getInvoice().getCurrency(), 
+//									paymentVoucher.getCurrency(),
+//									paymentInvoice.getInvoiceAmount().subtract(paymentInvoice.getPaidAmount()), 
+//									paymentVoucher.getPaymentDateTime().toLocalDate());
+//							piToPay.setCurrency(move.getInvoice().getCurrency());
+//						}
+//						else  {
+//							amountRemainingConverted = currencyService.getAmountCurrencyConverted(
+//									move.getCurrency(), 
+//									paymentVoucher.getCurrency(), 
+//									paymentInvoice.getInvoiceAmount().subtract(paymentInvoice.getPaidAmount()), 
+//									paymentVoucher.getPaymentDateTime().toLocalDate());
+//							piToPay.setCurrency(move.getCurrency());
+//						}
+						
 //						amountToPay = paidAmount.min(pil.getInvoiceAmount().subtract(pil.getPaidAmount()));
-						amountToPay = paidAmount.min(amountRemainingConverted);
-
-						piToPay.setSequence(lineSeq);
-						piToPay.setMoveLine(moveLine);
-						piToPay.setTotalAmount(pil.getInvoiceAmount());
-						piToPay.setRemainingAmount(pil.getInvoiceAmount().subtract(pil.getPaidAmount()));
-						piToPay.setAmountToPay(amountToPay);
-						piToPay.setPaymentVoucher(paymentVoucher);
-						piToPayLine.add(piToPay);
+						amountToPay = paidAmountConverted.min(paymentInvoiceToPay.getRemainingAmount());
+						paymentInvoiceToPay.setAmountToPay(amountToPay);
+						
+						piToPayLine.add(paymentInvoiceToPay);
 						paidAmount = paidAmount.subtract(amountToPay);
 						lineSeq += 1;
 					}
@@ -383,21 +402,29 @@ public class PaymentVoucherLoadService  {
 	 * @throws AxelorException 
 	 */
 	public List<PaymentInvoice> setPaymentInvoiceList(PaymentVoucher paymentVoucher, MoveLine moveLineToPay) throws AxelorException  {
-		List<MoveLine> moveLineList = this.getMoveLines(paymentVoucher,moveLineToPay);
-		List<PaymentInvoice> pil = new ArrayList<PaymentInvoice>();
-		for (MoveLine moveLine : moveLineList){
+		List<PaymentInvoice> paymentInvoiceList = new ArrayList<PaymentInvoice>();
+		
+		for (MoveLine moveLine : this.getMoveLines(paymentVoucher,moveLineToPay))  {
 			PaymentInvoice paymentInvoice = new PaymentInvoice();
+			
 			paymentInvoice.setMoveLine(moveLine);
-			paymentInvoice.setInvoiceAmount(moveLine.getDebit());
+			
+			if(moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0)  {
+				paymentInvoice.setInvoiceAmount(moveLine.getDebit());
+			}
+			else  {
+				paymentInvoice.setInvoiceAmount(moveLine.getCredit());
+			}	
 			paymentInvoice.setPaidAmount(moveLine.getAmountPaid());
 			paymentInvoice.setPaymentVoucher(paymentVoucher);
 			Move move = moveLine.getMove();
 			if(move.getInvoice() != null)  {  paymentInvoice.setCurrency(move.getInvoice().getCurrency());  }
 			else  {  paymentInvoice.setCurrency(move.getCurrency());  }
 			
-			pil.add(paymentInvoice);
+			paymentInvoiceList.add(paymentInvoice);
 		}
-		return pil;
+		
+		return paymentInvoiceList;
 	}
 
 	

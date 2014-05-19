@@ -104,7 +104,7 @@ public class PaymentVoucherCreateService  {
 				null, 
 				null);
 		
-		paymentVoucher.setAutoOk(true);
+		paymentVoucher.setHasAutoInput(true);
 		
 		List<PaymentInvoiceToPay> lines = new ArrayList<PaymentInvoiceToPay>();
 	
