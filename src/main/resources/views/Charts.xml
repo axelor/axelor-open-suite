@@ -415,6 +415,7 @@
 	  </dataset>
 	  <category key="_month" type="month" title="Month"/>
 	  <series key="_amount" type="bar" title="Turnover"/>
+	  <config name="xFormat" value="MM-YYYY"/>
 	</chart>
 	
 	<chart onInit="action.supplychain.portal.set.date.6m" name="chart.family.sales.turnover.per.month" title="Family sales turnover (Excl. Tax) per month">
@@ -435,9 +436,12 @@
 		  AND self.salesOrder.validationDate BETWEEN DATE(:fromDate) AND DATE(:toDate)
 	  GROUP BY
 		  YEAR(self.salesOrder.validationDate) || '-' || MONTH(self.salesOrder.validationDate) || '-01'  
+	  ORDER BY
+	  	  _month
 	  </dataset>
 	  <category key="_month" type="month" title="Month"/>
 	  <series key="_amount" type="bar" title="Turnover"/>
+	  <config name="xFormat" value="MM-YYYY"/>
 	</chart>
 	
 	<chart name="chart.partner.prospects.by.country" title="Prospects by country">

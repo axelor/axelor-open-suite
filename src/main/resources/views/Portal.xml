@@ -68,9 +68,9 @@
 	<action-view title="My Prospects" model="com.axelor.apps.base.db.Partner" name="portal.my.prospects">
 		  <view type="grid" name="partner-grid"/>
 		  <view type="form" name="partner-form"/>
-		  <domain>self.userInfo = :userInfoId AND self.customerTypeSelect=2 AND self.companySet=:active_company</domain>
-		  <context name="userInfoId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
-		  <context name="active_company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()" />
+		  <domain>self.userInfo = :userInfo AND self.customerTypeSelect=2 AND :activeCompanyId MEMBER OF self.companySet</domain>
+		  <context name="userInfo" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserInfo()"/>
+		  <context name="activeCompanyId" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompanyId()"/>  
 	</action-view>
   	
   	<!-- This Portlet is called in Partner-Form -->

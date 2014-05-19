@@ -77,6 +77,7 @@
 		model="com.axelor.apps.base.db.Address" icon="img/16px/addressBook_16px.png">
 		<view type="grid" />
 		<view type="form" />
+		<context name="fromMain" expr="eval:true"/>
 	</action-view>
 	
 	<menuitem name="contact-conf-invoice-rib" parent="contact-conf"
