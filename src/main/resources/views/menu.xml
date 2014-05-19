@@ -282,19 +282,7 @@
 	<menuitem name="business-root" title="Business" priority="120"
 		icon="img/Other/business_53px.png" groups="admins,erp"/>
 		
-	<menuitem name="business-root-site" parent="business-root"
-		title="Sites" action="business.root.site" />
-
-	<action-view name="business.root.site" title="Sites"
-		model="com.axelor.apps.consulting.db.Site" icon="img/16px/businessSmall_16px.png">
-		<view type="grid" name="site-grid" />
-		<view type="form" name="site-form" />
-	</action-view>	
-	
-	<menuitem name="business-root-project" parent="business-root"
-		title="Business" />
-		
-	<menuitem name="business-root-project-new-business" parent="business-root-project" icon="img/16px/create_16px.png"
+	<menuitem name="business-root-project-new-business" parent="business-root" icon="img/16px/create_16px.png"
 		title="New Business" action="business.root.project.new.business" />
 
 	<action-view name="business.root.project.new.business" title="New Business"
@@ -304,7 +292,7 @@
 		<domain>self.isBusiness = true</domain>
 	</action-view>	
 		
-	<menuitem name="business-root-project-all-business" parent="business-root-project"
+	<menuitem name="business-root-project-all-business" parent="business-root"
 		title="Business" action="business.root.project.all.business" />
 
 	<action-view name="business.root.project.all.business" title="Business"
