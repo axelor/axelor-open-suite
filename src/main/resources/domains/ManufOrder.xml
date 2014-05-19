@@ -57,5 +57,11 @@
     
     <integer name="statusSelect" title="Status" selection="production.manuf.order.status.select" initParam="true"/>
     
+    <!--   MUST BE DELETED AFTER DEMO COFELY -->
+    <many-to-one name="picture" ref="com.axelor.meta.db.MetaFile" title="Picture"/>
+    <string name="observation" title="Observations (état des filetages, aspect général, état des surfaces d'appuis...) :" large="true"/>
+    <one-to-many name="manufOrderSheetLineList" ref="com.axelor.apps.production.db.ManufOrderSheetLine" mappedBy="manufOrder" title="Manuf order accordance"/>
+    
+    
   </entity>
 </domain-models>
