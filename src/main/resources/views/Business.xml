@@ -131,6 +131,9 @@
 	            <field name="specificationFile"/>
 	            <field name="needDescription"/>
 	        </page>
+	        <page title="Analytic axis">
+	        	<field name="analyticAxisSet" colSpan="4" showTitle="false"/>
+	        </page>
 	    </notebook>    
 	</form>
 	
