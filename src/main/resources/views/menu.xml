@@ -1,17 +1,17 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+<!-- <?xml version="1.0" encoding="UTF-8" standalone="yes"?> -->
+<!-- <object-views xmlns="http://apps.axelor.com/xml/ns/object-views" -->
+<!-- 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" -->
+<!-- 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd"> -->
 	
 	
-	<menuitem name="sc-root-purchase-order-supplier-lines" title="Purchase orders" priority="1" 
-		groups="admins,erp" action="sc.root.purchase.orders.supplier.lines" parent="sc-root-purchases"/>
+<!-- 	<menuitem name="sc-root-purchase-order-supplier-lines" title="Purchase orders" priority="1"  -->
+<!-- 		groups="admins,erp" action="sc.root.purchase.orders.supplier.lines" parent="sc-root-purchases"/> -->
 
-	<action-view name="sc.root.purchase.orders.supplier.lines" title="Purchase orders"
-		model="com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine" icon="img/16px/orderSmall_16px.png">
-		<view type="grid" name="purchase-order-supplier-line-supplier-grid" />
-		<view type="form" name="purchase-order-supplier-line-supplier-form" />
-	</action-view>
+<!-- 	<action-view name="sc.root.purchase.orders.supplier.lines" title="Purchase orders" -->
+<!-- 		model="com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine" icon="img/16px/orderSmall_16px.png"> -->
+<!-- 		<view type="grid" name="purchase-order-supplier-line-supplier-grid" /> -->
+<!-- 		<view type="form" name="purchase-order-supplier-line-supplier-form" /> -->
+<!-- 	</action-view> -->
 
 	
-</object-views>
+<!-- </object-views> -->
