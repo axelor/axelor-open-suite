@@ -122,12 +122,11 @@
 				         	           	CASE WHEN move.from_location = location.id THEN -1*line.qty
 				                        WHEN move.to_location = location.id THEN line.qty
 				                        END AS qty
-				                     FROM supplychain_stock_move_line line, 
-				                     	  base_product prod
+				                     FROM supplychain_stock_move_line line 
 				                     LEFT JOIN supplychain_stock_move move ON (line.stock_move = move.id)
 				                     LEFT JOIN supplychain_location location ON (move.from_location = location.id OR move.to_location = location.id)
-		      	             		 WHERE  line.product = prod.id
-		      	             		 	 AND prod.parent_product = :id 
+				                     LEFT JOIN base_product prod ON (line.product = prod.id)
+		      	             		 WHERE prod.parent_product = :id 
 					                     AND move.estimated_date > DATE(:todayDate)
 					                     AND location.type_select = 1) location
               						 GROUP BY estimated_date,locat) ORDER BY locat,estimatedate) location_stock;  
