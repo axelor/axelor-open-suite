@@ -19,13 +19,6 @@
 <!-- 	<decimal name="amountToPayCurrency" title="Montant imputé en devise"/> -->
 
 
-	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" readonly="true">
-		<![CDATA[
-		    if (moveLine != null && moveLine.getMove() != null) return moveLine.getMove().getCompany();
-		    else return null;
-	    ]]>
-	</many-to-one>
-		
 	<decimal name="remainingAmountAfterPayment" title="Remaining to pay after cashing" readonly="true">
 		<![CDATA[
 			if(remainingAmount != null && amountToPay != null) {

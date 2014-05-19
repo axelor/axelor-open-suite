@@ -23,7 +23,7 @@
 		<many-to-one name="generatedMove" ref="com.axelor.apps.account.db.Move" title="Generated move" readonly="true"/>
 		<many-to-one name="invoiceToPay" ref="com.axelor.apps.account.db.Invoice" title="Invoice/Refund"/>
 		<many-to-one name="rejectToPay" ref="com.axelor.apps.account.db.MoveLine" title="Reject"/>
-		<boolean name="autoOk" title="Auto" default="false" help="Indicates if the voucher has been manually or automatically input. This has an impact on overdue management."/>
+		<boolean name="hasAutoInput" title="Auto. input." default="false" help="Indicates if the voucher has been manually or automatically input. This has an impact on overdue management."/>
 	 	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
 	 	<string name="bankCardTransactionNumber" title="CC Transaction N°" readonly="true"/>
 	 	<string name="receiptNo" title="Receipt N°" readonly="true"/>

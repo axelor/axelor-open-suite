@@ -74,6 +74,10 @@
 <!-- 	TODO : A DEPLACER DANS LE MODULE PRODUCTION -->
 	<integer name="prodInvTypeSelect" title="Production invoicing type" selection="iproduction.project.prod.inv.type.select"/>
 	
+<!-- TODO : COMPTA	 -->
+    <many-to-many name="analyticAxisSet" ref="com.axelor.apps.account.db.AnalyticAxis" title="Analytic axis"/>
+
+	
   </entity>
 
 </domain-models>

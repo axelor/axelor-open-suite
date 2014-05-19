@@ -15,12 +15,6 @@
   	
   	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
   	
-	<decimal name="amountRemaining" title="Amount remaining">
-		<![CDATA[
-			if (moveLine != null) return moveLine.getAmountRemaining();
-		    else return BigDecimal.ZERO;
-		 ]]>	    
-	</decimal>
   </entity>
   
 </domain-models>
