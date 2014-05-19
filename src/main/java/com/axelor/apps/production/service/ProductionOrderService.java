@@ -104,6 +104,16 @@ public class ProductionOrderService {
 	}
 	
 	
+	/**
+	 * Generate a Production Order
+	 * @param product
+	 * 		Product must be passed in param because product can be different of bill of material product (Product variant)
+	 * @param billOfMaterial
+	 * @param qtyRequested
+	 * @param businessProject
+	 * @return
+	 * @throws AxelorException
+	 */
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public ProductionOrder generateProductionOrder(Product product, BillOfMaterial billOfMaterial, BigDecimal qtyRequested, Project businessProject) throws AxelorException  {
 		

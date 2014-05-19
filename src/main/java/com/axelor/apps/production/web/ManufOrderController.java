@@ -147,6 +147,16 @@ public class ManufOrderController {
 		
 	}
 	
+	public void plan (ActionRequest request, ActionResponse response) throws AxelorException {
+		
+		ManufOrder manufOrder = request.getContext().asType( ManufOrder.class );
+
+		manufOrderWorkflowProvider.get().plan(ManufOrder.find(manufOrder.getId()));
+		
+		response.setReload(true);
+		
+	}
+	
 	
 	
 	/**

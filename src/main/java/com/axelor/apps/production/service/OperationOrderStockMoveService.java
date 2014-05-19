@@ -37,6 +37,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.service.config.ProductionConfigService;
+import com.axelor.apps.supplychain.db.ILocation;
 import com.axelor.apps.supplychain.db.IStockMove;
 import com.axelor.apps.supplychain.db.Location;
 import com.axelor.apps.supplychain.db.StockMove;
@@ -89,12 +90,24 @@ public class OperationOrderStockMoveService {
 		
 		Location virtualLocation = productionConfigService.getProductionVirtualLocation(productionConfigService.getProductionConfig(company));
 		
+		Location fromLocation = null;
+		
+		if(operationOrder.getProdProcessLine() != null && operationOrder.getProdProcessLine().getProdProcess() != null 
+				&& operationOrder.getProdProcessLine().getProdProcess().getLocation() != null)  {
+			
+			fromLocation = operationOrder.getProdProcessLine().getProdProcess().getLocation();
+		}
+		else  {
+			fromLocation = Location.filter("self.company = ?1 and self.isDefaultLocation = ?2 and self.typeSelect = ?3", 
+					company, true, ILocation.INTERNAL).fetchOne();
+		}
+		
 		StockMove stockMove = stockMoveService.createStockMove(
 				null, 
 				null, 
 				company, 
 				null, 
-				operationOrder.getProdProcessLine().getProdProcess().getLocation(), 
+				fromLocation, 
 				virtualLocation, 
 				operationOrder.getPlannedStartDateT().toLocalDate());
 		

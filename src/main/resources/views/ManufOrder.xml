@@ -17,8 +17,8 @@
         <field name="realStartDateT"/>
         <field name="realEndDateT"/>
         <field name="statusSelect"/>
-        <button name="plan" icon="fa-calendar" help="Plan" onClick="action-manuf-order-method-plan" readonlyIf="statusSelect > 2"/>
-        <button name="start" icon="fa-play" help="Start" onClick="action-manuf-order-method-start-or-resume" readonlyIf="statusSelect != 3"/>
+        <button name="plan" icon="fa-calendar" help="Plan" onClick="action-manuf-order-method-plan" readonlyIf="statusSelect >= 3"/>
+        <button name="start" icon="fa-play" help="Start" onClick="action-manuf-order-method-start-or-resume" readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
    		<button name="pause" icon="fa-pause" help="Pause" onClick="action-manuf-order-method-pause" readonlyIf="statusSelect != 4"/>
    		<button name="finish" icon="fa-power-off" help="Finish" onClick="action-manuf-order-method-finish" readonlyIf="statusSelect != 4"/>
    		<button name="cancel" icon="fa-times-circle" help="Cancel" onClick="action-manuf-order-method-cancel" readonlyIf="statusSelect == 2"/>

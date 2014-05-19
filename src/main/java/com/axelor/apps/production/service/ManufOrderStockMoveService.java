@@ -37,12 +37,14 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.service.config.ProductionConfigService;
+import com.axelor.apps.supplychain.db.ILocation;
 import com.axelor.apps.supplychain.db.IStockMove;
 import com.axelor.apps.supplychain.db.Location;
 import com.axelor.apps.supplychain.db.StockMove;
 import com.axelor.apps.supplychain.db.StockMoveLine;
 import com.axelor.apps.supplychain.service.StockMoveLineService;
 import com.axelor.apps.supplychain.service.StockMoveService;
+import com.axelor.apps.supplychain.service.config.SupplychainConfigService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
@@ -89,12 +91,23 @@ public class ManufOrderStockMoveService {
 		
 		Location virtualLocation = productionConfigService.getProductionVirtualLocation(productionConfigService.getProductionConfig(company));
 		
+		Location fromLocation = null;
+		
+		if(manufOrder.getProdProcess() != null && manufOrder.getProdProcess().getLocation() != null)  {
+			
+			fromLocation = manufOrder.getProdProcess().getLocation();
+		}
+		else  {
+			fromLocation = Location.filter("self.company = ?1 and self.isDefaultLocation = ?2 and self.typeSelect = ?3", 
+					company, true, ILocation.INTERNAL).fetchOne();
+		}
+		
 		StockMove stockMove = stockMoveService.createStockMove(
 				null, 
 				null, 
 				company, 
 				null, 
-				manufOrder.getProdProcess().getLocation(), 
+				fromLocation, 
 				virtualLocation, 
 				manufOrder.getPlannedStartDateT().toLocalDate());
 		
