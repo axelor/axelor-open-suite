@@ -103,11 +103,17 @@
 				<button name="showAllStockMoveLine" title="Show all stock move" colSpan="2" onClick="action-product-view-stock-move-line"/>
 				<spacer/>
 				<break/>
-				<portlet colSpan="4" action="action-product-view-stock"/>
-				<portlet action="chart:chart.stock.report.for.product" height="200" colSpan="4"/>
-				<portlet action="chart:chart.stock.history.report.for.product" height="200" colSpan="4"/>
+				<group showIf="parentProduct" colSpan="4">
+					<portlet action="action-product-view-stock" colSpan="4"/>
+					<portlet action="chart:chart.stock.report.for.product" height="200" colSpan="4"/>
+					<portlet action="chart:chart.stock.history.report.for.product" height="200" colSpan="4"/>
+				</group>
+				<group showIf="!parentProduct" colSpan="4">
+					<portlet action="action-product-view-stock-product-variant" colSpan="4"/>
+					<portlet action="chart:chart.stock.report.for.product.variant" height="200" colSpan="4"/>
+					<portlet action="chart:chart.stock.history.report.for.product.variant" height="200" colSpan="4"/>
+				</group>
 			</page>
-
 			<page title="Production informations" showIf="productTypeSelect != 'service'">
 				<field name="defaultBillOfMaterial" domain="self.product.id = :id" onSelect="action-product-attrs-bill-of-material-domain"/>
 				<field name="lastProductionPrice" readonly="true"/>
@@ -128,7 +134,7 @@
 	        </page>
 	        <page title="Variants">
 	        	<group name="parentVariant" showIf="!parentProduct" colSpan="4">
-	        		<field name="productVariantConfig" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="product-variant-config-form" summary-view="true"/>
+	        		<field name="productVariantConfig" showTitle="false" widget="NestedEditor" canSelect="false" edit-window="self" form-view="product-variant-config-form" summary-view="true" colSpan="4"/>
 	            	<button name="generateProductVariant" title="Generate product variants" colSpan="2" onClick="save,action-product-method-generate-product-variant"/>
 	        		<portlet action="action-product-view-product-variant" colSpan="4"/>
 	        	</group>
@@ -149,6 +155,12 @@
     	<view type="grid" name="location-line-product-grid"/>
     	<view type="form" name="location-line-product-form"/>
     	<domain>self.product.id = :id and self.location.typeSelect = 1</domain>
+    </action-view>
+    
+    <action-view name="action-product-view-stock-product-variant" title="Stock" model="com.axelor.apps.supplychain.db.LocationLine">
+    	<view type="grid" name="location-line-product-grid"/>
+    	<view type="form" name="location-line-product-form"/>
+    	<domain>self.product.parentProduct.id = :id and self.location.typeSelect = 1</domain>
     </action-view>
     
     <action-record name="action-product-record-default-new" model="com.axelor.apps.base.db.Product">
