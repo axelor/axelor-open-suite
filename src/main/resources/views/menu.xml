@@ -141,8 +141,8 @@
 
 	<action-view name="account.root.move.move.line" title="Move Lines"
 		model="com.axelor.apps.account.db.MoveLine" icon="img/16px/accountSmall_16px.png">
-		<view type="move-line-grid" />
-		<view type="move-line-form" />
+		<view type="grid" name="move-line-grid" />
+		<view type="form" name="move-line-form" />
 		<view-param name="search-filters" value="move-line-filters"/>
 	</action-view>
 	
@@ -648,10 +648,16 @@
 		<view type="form" name="fiscal-position-form" />
 	</action-view>	
 	
+	<menuitem name="top-invoice" title="Invoices/Refunds" groups="admins,erp" top="true" left="false" priority="130"/>
 	
+	<menuitem name="top-invoice-all" title="Invoices/Refunds" action="top.invoice.all" parent="top-invoice" groups="admins,erp" top="true" left="false"/>
 	
-	<menuitem name="top-invoice" title="Invoices/Refunds" groups="admins,erp" top="true" left="false" priority="130"/>	
-	
+	<action-view name="top.invoice.all" title="Invoices/Refunds"
+		model="com.axelor.apps.account.db.Invoice" >
+		<view type="grid" name="invoice-grid" />
+		<view type="form" name="invoice-form" />
+	</action-view>
+		
 	<menuitem name="top-invoice-custinvoices" title="Cust. Invoices" action="top.invoice.custinvoices" parent="top-invoice" groups="admins,erp" top="true" left="false"/>		
 	
 	<action-view name="top.invoice.custinvoices" title="Cust. Invoices"

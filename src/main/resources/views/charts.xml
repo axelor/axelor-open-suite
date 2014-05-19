@@ -109,6 +109,7 @@
 		  </dataset>
 		  <category key="_month_no" type="month" title="Month"/>
 		  <series key="_turn_over" groupBy="product" type="bar" title="TurnOver" aggregate="sum"/>
+		  <config name="xFormat" value="MM-YYYY"/>
 	</chart>
 
 
@@ -169,6 +170,7 @@
 	  </dataset>
 	  <category key="_month_no" type="month" title="Month"/>
 	  <series key="_turn_over" groupBy="product" type="bar" title="No of Units" aggregate="sum"/>
+	  <config name="xFormat" value="MM-YYYY"/>
 	</chart>
       
 	<chart name="chart.invoice.total.revenue.by.product" title="Total Revenue Distribution by Product" onInit="action.account.portal.set.from.to.date.month">
@@ -278,6 +280,7 @@
 	  </dataset>
 	  <category key="_month" type="month"/>
 	  <series key="_qty" groupBy="_product" type="bar" title="Units"/>
+	  <config name="xFormat" value="MM-YYYY"/>
 	</chart>
 
 	  
@@ -327,6 +330,7 @@
 	  </dataset>
 	  <category key="_month" type="month"/>
 	  <series key="_turn_over" groupBy="_product" type="bar" title="Units"/>
+	  <config name="xFormat" value="MM-YYYY"/>
 	</chart>
 	  
 	 <chart name="chart.purchase.buyer.dashboard.supplier.invoices.per.month" title="Number Of Supplier Invoices Per Month">
@@ -354,6 +358,7 @@
 	  </dataset>
 	  <category key="_month" type="month"/>
 	  <series key="_amount" type="bar" title="Units"/>
+	  <config name="xFormat" value="MM-YYYY"/>
 	</chart>
 
 	  
@@ -530,6 +535,7 @@
 	  </dataset>
 	  <category key="_month" type="month"/>
 	  <series key="ex_tax_total" type="bar"/>
+	  <config name="xFormat" value="MM-YYYY"/>
 	</chart>
 
 	<chart onInit="action.account.portal.default.month.value"  name="chart.invoice.sale.amount.by.currency" title="Invoice Sale by currency (tax excl.)">
@@ -632,6 +638,7 @@
 	  </dataset>
 	  <category key="_month" type="month"/>
 	  <series key="ex_tax_total" type="bar"/>
+	  <config name="xFormat" value="MM-YYYY"/>
 	</chart>
 
 	
