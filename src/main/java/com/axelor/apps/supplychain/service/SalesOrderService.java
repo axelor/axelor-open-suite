@@ -33,16 +33,28 @@ package com.axelor.apps.supplychain.service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.IPartner;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.UserInfo;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.organisation.db.Project;
+import com.axelor.apps.supplychain.db.ILocation;
+import com.axelor.apps.supplychain.db.IPurchaseOrder;
+import com.axelor.apps.supplychain.db.Location;
 import com.axelor.apps.supplychain.db.SalesOrder;
 import com.axelor.apps.supplychain.db.SalesOrderLine;
 import com.axelor.apps.supplychain.db.SalesOrderLineTax;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -58,6 +70,9 @@ public class SalesOrderService {
 
 	@Inject
 	private SalesOrderLineTaxService salesOrderLineTaxService;
+	
+	@Inject
+	private SequenceService sequenceService;
 
 
 	public SalesOrder _computeSalesOrderLineList(SalesOrder salesOrder) throws AxelorException  {
@@ -162,5 +177,51 @@ public class SalesOrderService {
 		return clientPartner.save();
 	}
 	
+	
+	public Location getLocation(Company company)  {
+		
+		return Location.filter("self.company = ?1 and self.isDefaultLocation = ?2 and self.typeSelect = ?3", 
+				company, true, ILocation.INTERNAL).fetchOne();
+	}
+	
+	
+	public String getSequence(Company company) throws AxelorException  {
+		String seq = sequenceService.getSequence(IAdministration.SALES_ORDER, company, false);
+		if (seq == null)  {
+			throw new AxelorException(String.format("La société %s n'a pas de séquence de configurée pour les devis clients",company.getName()),
+							IException.CONFIGURATION_ERROR);
+		}
+		return seq;
+	}
+	
+
+	public SalesOrder createSalesOrder(Project project, UserInfo buyerUserInfo, Company company, Partner contactPartner, Currency currency, 
+			LocalDate deliveryDate, String internalReference, String externalReference, int invoicingTypeSelect, Location location, LocalDate orderDate, 
+			PriceList priceList, Partner clientPartner) throws AxelorException  {
+		
+		LOG.debug("Création d'une commande fournisseur : Société = {},  Reference externe = {}, Client = {}",
+				new Object[] { company.getName(), externalReference, clientPartner.getFullName() });
+		
+		SalesOrder salesOrder = new SalesOrder();
+		salesOrder.setProject(project);
+		salesOrder.setCompany(company);
+		salesOrder.setContactPartner(contactPartner);
+		salesOrder.setCurrency(currency);
+		salesOrder.setExternalReference(externalReference);
+		salesOrder.setInvoicingTypeSelect(invoicingTypeSelect);
+		salesOrder.setLocation(location);
+		salesOrder.setOrderDate(orderDate);
+		salesOrder.setPriceList(priceList);
+		salesOrder.setSalesOrderLineList(new ArrayList<SalesOrderLine>());
+		
+		salesOrder.setSalesOrderSeq(this.getSequence(company));
+		salesOrder.setStatusSelect(IPurchaseOrder.STATUS_DRAFT);
+		salesOrder.setClientPartner(clientPartner);
+		
+		return salesOrder;
+	}
+	
 }
+
+
 

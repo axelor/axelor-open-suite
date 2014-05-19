@@ -57,6 +57,8 @@ import com.axelor.apps.supplychain.db.Location;
 import com.axelor.apps.supplychain.db.PurchaseOrder;
 import com.axelor.apps.supplychain.db.PurchaseOrderLine;
 import com.axelor.apps.supplychain.db.PurchaseOrderLineTax;
+import com.axelor.apps.supplychain.db.SalesOrder;
+import com.axelor.apps.supplychain.db.SalesOrderLine;
 import com.axelor.apps.supplychain.db.StockMove;
 import com.axelor.apps.supplychain.db.StockMoveLine;
 import com.axelor.apps.supplychain.db.SupplychainConfig;
@@ -279,7 +281,7 @@ public class PurchaseOrderService {
 	
 	public Location getLocation(Company company)  {
 		
-		return Location.filter("company = ? and isDefaultLocation = ? and typeSelect = ?", company, true, ILocation.INTERNAL).fetchOne();
+		return Location.filter("self.company = ?1 and self.isDefaultLocation = ?2 and self.typeSelect = ?3", company, true, ILocation.INTERNAL).fetchOne();
 	}
 	
 	
@@ -305,7 +307,6 @@ public class PurchaseOrderService {
 		
 		
 	}
-	
 	
 	
 	

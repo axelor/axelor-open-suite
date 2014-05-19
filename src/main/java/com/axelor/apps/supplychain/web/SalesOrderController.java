@@ -37,11 +37,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.ReportSettings;
-import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.UserInfo;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.googleapps.db.GoogleFile;
-import com.axelor.apps.supplychain.db.ILocation;
 import com.axelor.apps.supplychain.db.Location;
 import com.axelor.apps.supplychain.db.SalesOrder;
 import com.axelor.apps.supplychain.report.IReport;
@@ -52,7 +50,6 @@ import com.axelor.apps.tool.net.URLService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.googleapps.document.DocumentService;
 import com.axelor.googleapps.userutils.Utils;
@@ -66,19 +63,19 @@ public class SalesOrderController {
 	private static final Logger LOG = LoggerFactory.getLogger(SalesOrderController.class);
 	
 	@Inject
-	private Provider<SalesOrderService> salesOrderService;
+	private Provider<SalesOrderService> salesOrderProvider;
 	
 	@Inject
-	private Provider<SalesOrderStockMoveService> salesOrderStockMoveService;
+	private Provider<SalesOrderStockMoveService> salesOrderStockMoveProvider;
 	
 	@Inject
-	private Provider<SalesOrderPurchaseService> salesOrderPurchaseService;
+	private Provider<SalesOrderPurchaseService> salesOrderPurchaseProvider;
 	
 	@Inject
-	private Provider<SequenceService> sequenceService;
+	private Provider<SequenceService> sequenceProvider;
 
 	@Inject 
-	private Provider<DocumentService> documentSeriveObj;
+	private Provider<DocumentService> documentProvider;
 
 	@Inject 
 	private Provider<Utils> userUtils;
@@ -99,7 +96,7 @@ public class SalesOrderController {
 		User currentUser = 	AuthUtils.getUser();
 		UserInfo currentUserInfo = UserInfo.filter("self.internalUser = ?1", currentUser).fetchOne();
 
-		GoogleFile documentData = documentSeriveObj.get().createDocumentWithTemplate(currentUserInfo,dataObject);
+		GoogleFile documentData = documentProvider.get().createDocumentWithTemplate(currentUserInfo,dataObject);
 		if(documentData == null) {
 			response.setFlash("The Document Can't be created because the template for this type of Entity not Found..!");
 			return;
@@ -113,7 +110,7 @@ public class SalesOrderController {
 		SalesOrder salesOrder = request.getContext().asType(SalesOrder.class);
 
 		try {		
-			salesOrderService.get().computeSalesOrder(salesOrder);
+			salesOrderProvider.get().computeSalesOrder(salesOrder);
 			response.setReload(true);
 		}
 		catch(Exception e)  { TraceBackService.trace(response, e); }
@@ -269,12 +266,9 @@ public class SalesOrderController {
 		SalesOrder salesOrder = request.getContext().asType(SalesOrder.class);
 
 		if(salesOrder != null && salesOrder.getSalesOrderSeq() ==  null && salesOrder.getCompany() != null) {
-			String ref = sequenceService.get().getSequence(IAdministration.SALES_ORDER,salesOrder.getCompany(),false);
-			if (ref == null)
-				throw new AxelorException(String.format("La société %s n'a pas de séquence de configurée pour les devis",salesOrder.getCompany().getName()),
-								IException.CONFIGURATION_ERROR);
-			else
-				response.setValue("salesOrderSeq", ref);
+			
+			response.setValue("salesOrderSeq", salesOrderProvider.get().getSequence(salesOrder.getCompany()));
+			
 		}
 	}
 	
@@ -286,7 +280,7 @@ public class SalesOrderController {
 		
 		if(salesOrder.getId() != null) {
 			
-			salesOrderStockMoveService.get().createStocksMovesFromSalesOrder(SalesOrder.find(salesOrder.getId()));
+			salesOrderStockMoveProvider.get().createStocksMovesFromSalesOrder(SalesOrder.find(salesOrder.getId()));
 		}
 	}
 	
@@ -296,8 +290,7 @@ public class SalesOrderController {
 		
 		if(salesOrder != null) {
 			
-			Location location = Location.filter("self.company = ?1 and self.isDefaultLocation = ?2 and self.typeSelect = ?3", 
-					salesOrder.getCompany(), true, ILocation.INTERNAL).fetchOne();
+			Location location = salesOrderProvider.get().getLocation(salesOrder.getCompany());
 			
 			if(location != null) {
 				response.setValue("location", location);
@@ -310,7 +303,7 @@ public class SalesOrderController {
 		
 		SalesOrder salesOrder = request.getContext().asType(SalesOrder.class);
 		
-		response.setValue("clientPartner", salesOrderService.get().validateCustomer(salesOrder));
+		response.setValue("clientPartner", salesOrderProvider.get().validateCustomer(salesOrder));
 		
 	}
 	
@@ -320,7 +313,7 @@ public class SalesOrderController {
 		
 		if(salesOrder.getId() != null) {
 			
-			salesOrderPurchaseService.get().createPurchaseOrders(SalesOrder.find(salesOrder.getId()));
+			salesOrderPurchaseProvider.get().createPurchaseOrders(SalesOrder.find(salesOrder.getId()));
 		}
 	}
 	
