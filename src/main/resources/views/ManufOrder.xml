@@ -66,8 +66,8 @@
         	</page>
         	<page title="Stock moves">
 	        	<group title="Moves In/Out" colSpan="4" readonlyIf="statusSelect == 6">
-			        <field name="inStockMove"/>
-			        <field name="outStockMove"/>
+			        <field name="inStockMove" form-view="stock-move-form" grid-view="stock-move-grid"/>
+			        <field name="outStockMove" form-view="stock-move-form" grid-view="stock-move-grid"/>
 		        </group>
 		        <group title="Production waste" colSpan="4">
 			        <button name="generateWasteStockMove" title="Generate waste stock move" colSpan="2" onClick="Non implemented yet"/>
@@ -84,13 +84,17 @@
         		<portlet colSpan="2" action="action-manuf-order-view-operation-order-diff-consume-product"/>
         		<portlet colSpan="2" action="action-manuf-order-view-operation-order-consumed-product" readonlyIf="statusSelect == 6"/>
         	</page>
-        	<page title="Finished products">
+        	<page name="producedProductPage" title="Finished products">
 	        	<field name="toProduceProdProductList" colSpan="2" readonlyIf="statusSelect >= 4"/>
 	        	<field name="producedStockMoveLineList" colSpan="2" form-view="stock-move-line-production-form" grid-view="stock-move-line-production-grid" readonlyIf="statusSelect == 6"/>
 	        	<field name="wasteProdProductList" colSpan="2"/>
 	        	<group title="Description" colSpan="2" cols="2">
 	        		<field name="wasteProdDescription" showTitle="false" colSpan="2"/>
 	        	</group>
+        	</page>
+<!--         	MUST BE DELETED AFTER DEMO COFELY -->
+        	<page title="Conformité" colSpan="4">
+        		<include view="manuf-order-sheet-form"/>
         	</page>
         
         </notebook>

@@ -97,7 +97,7 @@
 		        </group>
         	</page>
         	<page title="Stock moves" readonlyIf="statusSelect == 6">
-		        <field name="inStockMove"/>
+		        <field name="inStockMove" form-view="stock-move-form" grid-view="stock-move-grid"/>
         	</page>
         	<page name="consumedProductPage" title="Consumed products" readonlyIf="statusSelect == 6">
         		<field name="toConsumeProdProductList" colSpan="2" readonlyIf="statusSelect >= 4"/>

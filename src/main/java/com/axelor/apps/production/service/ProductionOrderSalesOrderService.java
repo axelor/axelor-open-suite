@@ -30,16 +30,25 @@
  */
 package com.axelor.apps.production.service;
 
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.axelor.apps.base.db.IProduct;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.UserInfo;
+import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.apps.base.service.user.UserInfoService;
+import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.supplychain.db.IPurchaseOrder;
 import com.axelor.apps.supplychain.db.SalesOrder;
 import com.axelor.apps.supplychain.db.SalesOrderLine;
+import com.axelor.apps.supplychain.service.SalesOrderService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
@@ -52,6 +61,20 @@ public class ProductionOrderSalesOrderService {
 	
 	@Inject
 	private ProductionOrderService productionOrderService;
+	
+	@Inject
+	private SalesOrderService salesOrderService;
+	
+	private LocalDate today;
+	
+	private UserInfo user;
+	
+	@Inject
+	public ProductionOrderSalesOrderService(UserInfoService userInfoService) {
+
+		this.today = GeneralService.getTodayDate();
+		this.user = userInfoService.getUserInfo();
+	}
 	
 	
 	public void generateProductionOrder(SalesOrder salesOrder) throws AxelorException  {
@@ -107,7 +130,49 @@ public class ProductionOrderSalesOrderService {
 	}
 	
 	
-	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void createSalesOrder(ProductionOrder productionOrder) throws AxelorException  {
+		
+		logger.debug("Création d'un devis client pour l'ordre de production : {}",
+				new Object[] { productionOrder.getProductionOrderSeq() });
+		
+		Project businessProject = productionOrder.getBusinessProject();
+		
+		Partner partner = businessProject.getClientPartner();
+		
+		if(businessProject.getCompany() != null)  {
+		
+			SalesOrder salesOrder = salesOrderService.createSalesOrder(
+					businessProject, 
+					user, 
+					businessProject.getCompany(), 
+					null, 
+					partner.getCurrency(), 
+					null, 
+					null,
+					null, 
+					IPurchaseOrder.INVOICING_FREE, 
+					salesOrderService.getLocation(businessProject.getCompany()), 
+					today, 
+					PriceList.filter("self.partner = ?1 AND self.typeSelect = 1", partner).fetchOne(), 
+					partner);
+			
+			salesOrder.save();
+			
+		}
+		
+		//TODO 
+		
+//		for(SalesOrderLine salesOrderLine : salesOrderLineList)  {
+//			
+//			purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLineService.createPurchaseOrderLine(purchaseOrder, salesOrderLine));
+//			
+//		}
+//		
+//		purchaseOrderService.computePurchaseOrder(purchaseOrder);
+//		
+//		purchaseOrder.save();
+	}
 	
 	
 }
