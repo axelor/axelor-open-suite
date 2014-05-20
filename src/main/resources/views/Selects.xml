@@ -256,7 +256,7 @@
 	
 	<selection name="organisation.project.need.type.select">
 		<option value="1">Fixed fee</option>
-		<option value="2">Onsite</option>
+		<option value="2">On site</option>
 		<option value="3">TMA</option>
 	</selection>
 	
@@ -265,6 +265,14 @@
 	<selection name="iorganisation.timesheet.line.type.select">
 		<option value="0">Day</option>
 		<option value="1">Night</option>
+	</selection>
+	
+	<selection name="organisation.leave.request.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Confirmed</option>
+		<option value="3">Validated</option>
+		<option value="4">Canceled</option>
+		<option value="5">Refused</option>
 	</selection>
 	
 </object-views>
