@@ -42,7 +42,6 @@ import org.joda.time.LocalDateTime;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.SpentTime;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.organisation.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.UnitConversionService;
@@ -53,11 +52,12 @@ import com.axelor.apps.organisation.db.ITaskUpdateLine;
 import com.axelor.apps.organisation.db.PlanningLine;
 import com.axelor.apps.organisation.db.Project;
 import com.axelor.apps.organisation.db.Task;
+import com.axelor.apps.organisation.exceptions.IExceptionMessage;
 import com.axelor.apps.tool.date.DurationTool;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
-import com.axelor.meta.service.MetaTranslations;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -72,9 +72,6 @@ public class TaskService {
 	
 	@Inject
 	private PriceListService priceListService;
-	
-	@Inject
-	private MetaTranslations metaTranslations;
 	
 	private LocalDateTime todayTime;
 	
@@ -99,7 +96,7 @@ public class TaskService {
 	
 	public void checkTaskProject(Task task) throws AxelorException  {
 		if(task.getProject() == null)  {
-			throw new AxelorException(metaTranslations.get(IExceptionMessage.TASK_1), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(I18n.get(IExceptionMessage.TASK_1), IException.CONFIGURATION_ERROR);
 		}
 	}
 	
