@@ -5,11 +5,11 @@
 	<module name="googleapps" package="com.axelor.apps.googleapps.db" />
 	<entity name="TemplateSpreadSheet">
 	
-			<string name="templateName" title="Template Name" unique="true" namecolumn="true" help="Template Spreadsheet Name"/>
-			<many-to-one name="creatorUser" ref="com.axelor.auth.db.User" help="creator of Template" />
-			<many-to-one name="templateModel" ref="com.axelor.meta.db.MetaModel" title="Model" orphan="true" help="Model"/>
+			<string name="templateName" title="Template Name" unique="true" namecolumn="true" help="true"/>
+			<many-to-one name="creatorUser" ref="com.axelor.auth.db.User" help="true" />
+			<many-to-one name="templateModel" ref="com.axelor.meta.db.MetaModel" title="Model" orphan="true" help="true"/>
 			<many-to-many name="templateFields" ref="com.axelor.meta.db.MetaField" title="Template Fields"/>		
-			<one-to-many name="criteria" ref="com.axelor.apps.googleapps.db.TemplateSpreadSheetCriteria" mappedBy="templateSpreadSheet" help="Criteria to Export SpreadSheet" />
+			<one-to-many name="criteria" ref="com.axelor.apps.googleapps.db.TemplateSpreadSheetCriteria" mappedBy="templateSpreadSheet" help="true" />
 			<boolean name="share" default="false" />
 			
 	</entity>

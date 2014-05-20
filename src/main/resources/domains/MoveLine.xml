@@ -11,7 +11,7 @@
     <many-to-one name="account" ref="Account" required="true" title="Account" initParam="true"/>
     <date name="date" title="Input Date" initParam="true"/>
     <date name="dueDate" title="Due Date" initParam="true"/>
-    <integer name="counter" title="Line Nbr." initParam="true" help="This sequence is unique per Move, automatically reset to 1 for a new moveline"/>
+    <integer name="counter" title="Line Nbr." initParam="true" help="true"/>
     <decimal name="debit" title="Debit" initParam="true"/>
     <decimal name="credit" title="Credit" initParam="true"/>
     <string name="description" title="Description" initParam="true"/>

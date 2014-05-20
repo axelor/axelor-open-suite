@@ -10,15 +10,15 @@
 	 	It contains data that we could get but there aren't stored in database.
 	    @author David Nguyen
 	    ]]>
-		<string name="userRef" help="Facebook Generated Unique User's ID"/>
-		<string name="userName" help="User Name" title="User name" readonly="true"/>
-		<string name="firstName" help="First Name of Person" title="First name" readonly="true"/>
-		<string name="lastName" help="Last Name of Person" title="Last name" readonly="true"/>
+		<string name="userRef" help="true"/>
+		<string name="userName" help="true"/>
+		<string name="firstName" help="true"/>
+		<string name="lastName" help="true"/>
 		<string name="gender" title="Gender" readonly="true"/>
-		<string name="link" help="Profile Link" title="Profile Link" readonly="true"/>
-		<string name="companyName" help="Name of Company" title="Company name" readonly="true"/>
-		<string name="location" help="Location" title="Location" readonly="true"/>
-		<string name="locale" help="Locale" title="Locale" readonly="true"/>
+		<string name="link" help="true"/>
+		<string name="companyName" help="true"/>
+		<string name="location" help="true"/>
+		<string name="locale" help="true"/>
 		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo"/>
  		<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" orphan="true" />
  		<!-- <binary name="picture" image="true" title="Photo"/> -->

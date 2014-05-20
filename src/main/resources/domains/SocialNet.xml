@@ -13,7 +13,7 @@
 	    website : www.facebook.com
 	    @author David Nguyen
 	    ]]>
-		<string name="name" title="Name" help="Name of Social Networking"/>
-		<string name="website" title="Website" help="Website for Social Networking"/>
+		<string name="name" title="Name" help="true"/>
+		<string name="website" title="Website" help="true"/>
 	</entity>
 </domain-models>

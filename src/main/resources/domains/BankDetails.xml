@@ -9,15 +9,15 @@
   
   	<integer name="importId"/>
     <many-to-one name="partner" ref="Partner" title="tiers"/>
-    <string name="ownerName" title="Owner name" max="255" help="Name of the bank account owner"/>
-    <string name="bankAddress" title="SWIFT address" max="255" help="Address of the bank"/>
+    <string name="ownerName" title="Owner name" max="255" help="true"/>
+    <string name="bankAddress" title="SWIFT address" max="255" help="true"/>
     <string name="bic" title="BIC (Bank Identifier)"/>
-    <string name="iban" title="IBAN" help="For more information regarding IBAN, please refer to the norm ISO13616 (a sum up is introduced here http://fr.wikipedia.org/wiki/ISO_13616)"/>
-    <string name="bankCode" title="Bank Code" max="255" help="Refers to the bank code where the account owner has his account."/>
-    <string name="sortCode" title="Code Guichet" max="255" help="Refers to the branch code where the account is registered."/>
+    <string name="iban" title="IBAN" help="true"/>
+    <string name="bankCode" title="Bank Code" max="255" help="true"/>
+    <string name="sortCode" title="Code Guichet" max="255" help="true"/>
     <string name="accountNbr" title="Account Number" max="255" />
-    <string name="bbanKey" title="BBan Key" max="255" help=""/>
-    <string name="countryCode" title="Country Code" max="255" help="Refers to the country code expressed within the first 2 caracters of the IBAN."/>
+    <string name="bbanKey" title="BBan Key" max="255" help="true"/>
+    <string name="countryCode" title="Country Code" max="255" help="true"/>
     <string name="ibanBic" title="IBAN + BIC" max="255"/>
     <string name="fullName" title="Bank Details" search="ownerName" namecolumn="true">
         <![CDATA[

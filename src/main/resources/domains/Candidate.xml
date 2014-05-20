@@ -23,7 +23,7 @@
 		<!-- Candidate queries -->
 		<integer name="contractTypeSelect" title="Contract Type" selection="organisation.working.contract.type.select"/>
 		<many-to-one name="searchedJobKeyword" ref="com.axelor.apps.base.db.Keyword" title="Function searched"/>
-		<integer name="relocationSelect" title="Relocation choice" selection="organisation.candidate.relocation.select" help="Non modifiable, automatique en fonction du champs 'Mobilité Géographique' dans l'onglet 'autres infos'" />
+		<integer name="relocationSelect" title="Relocation choice" selection="organisation.candidate.relocation.select" help="true" />
 		<integer name="salaryExpectation" title="Salary expectation"/>
 		<binary name="resume" title="CV" />
 		<binary name="coverLetter" title="Cover Letter" />
@@ -37,7 +37,7 @@
 		<many-to-one name="userInfo" ref="com.axelor.apps.base.db.UserInfo" title="Followed by"/>
 		<integer name="recruitmentStatusSelect" title="Recruitment state" selection="organisation.candidate.recruitment.state.select"/>
 		<date name="recruitementDate" title="Recruitment date"/>		
-		<decimal name="globalEvaluation" title="Global grade" help="The grade is calculated based on the page 'Appraisal'" />
+		<decimal name="globalEvaluation" title="Global grade" help="true" />
 		<string name="note" title="Note" multiline="true"/>	
 		<one-to-many name="recruitmentProcessAdvancementList" ref="RecuitmentProcessAdvancement" title="Recruitment Process Progress" mappedBy="candidate" orderBy="dateT" />
 		
@@ -62,7 +62,7 @@
 		<decimal name="evaluationGrade" title="Global grade / 20" precision="5" scale="2"/>
 			
 		<!-- Candidate additionnal info -->
-		<string name="drivingLicence" title="Driving licence" help="Format: Car DL / Moto DL / Truck DL ..."/>
+		<string name="drivingLicence" title="Driving licence" help="true"/>
 		<many-to-one name="source" ref="com.axelor.apps.base.db.Source" title="Source"/>
 		<many-to-one name="personalInfo" ref="PersonalInfo" title="Additionnal informations " mappedBy="candidate"/>
 		

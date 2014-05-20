@@ -9,8 +9,8 @@
   	
   	<string name="name" title="Name"/>
   	<string name="templateLink" title="Template file name"/>
-  	<string name="format" title="Format" help="Pdf"/>
-  	<string name="generatedFilePath" title="Generated file path" help="Example : /home/axelor/temp/"/>
+  	<string name="format" title="Format" help="true"/>
+  	<string name="generatedFilePath" title="Generated file path" help="true"/>
   	<one-to-many name="birtTemplateParameterList" ref="com.axelor.apps.base.db.BirtTemplateParameter" mappedBy="birtTemplate" title="Parameters"/>
     
   </entity>

@@ -5,10 +5,10 @@
 	<module name="googleapps" package="com.axelor.apps.googleapps.db" />
 		<entity name="FilePermission">	
 		
-			<boolean name="editable"  help="Reader &amp; Writer Role"/>
-			<boolean name="notifyEmail" default="false" help="Notify email to user"/>
-			<many-to-one name="sharingUser" ref="com.axelor.apps.googleapps.db.UserProfile"  orphan="true" help="Sharing User Profile"/>
-			<many-to-one name="googleFile" ref="com.axelor.apps.googleapps.db.GoogleFile" orphan="true" help="Google File to share"/>
+			<boolean name="editable"  help="true"/>
+			<boolean name="notifyEmail" default="false" help="true"/>
+			<many-to-one name="sharingUser" ref="com.axelor.apps.googleapps.db.UserProfile"  orphan="true" help="true"/>
+			<many-to-one name="googleFile" ref="com.axelor.apps.googleapps.db.GoogleFile" orphan="true" help="true"/>
 			<string name="shareToEmail"/>
 			
 		</entity>

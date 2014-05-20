@@ -18,13 +18,13 @@
 	<integer name="statusSelect" title="Status" selection="message.status.select" readonly="true"/>
 	<string name="filePath" title="File path"/>
   	
-  	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" help="Company Header" />
+  	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" help="true" />
   	<integer name="mediaTypeSelect" title="Media Type" selection="message.media.type.select"/>
 	
   <!--   	Email -->
   	<many-to-many name="toEmailAddressSet" ref="com.axelor.apps.message.db.EmailAddress" title="To"/>
-  	<many-to-many name="ccEmailAddressSet" ref="com.axelor.apps.message.db.EmailAddress" title="Cc" help="Carbon copy"/>
-  	<many-to-many name="bccEmailAddressSet" ref="com.axelor.apps.message.db.EmailAddress" title="Bcc" help="Blind carbon copy"/>
+  	<many-to-many name="ccEmailAddressSet" ref="com.axelor.apps.message.db.EmailAddress" title="Cc" help="true"/>
+  	<many-to-many name="bccEmailAddressSet" ref="com.axelor.apps.message.db.EmailAddress" title="Bcc" help="true"/>
   	<many-to-one name="fromEmailAddress" ref="com.axelor.apps.message.db.EmailAddress" title="Sender (Email)" readonly="true"/>
   	<boolean name="sentByEmail" title="Sent by email"/>
   	<many-to-one name="mailAccount" ref="com.axelor.apps.message.db.MailAccount" title="Mail account"/>

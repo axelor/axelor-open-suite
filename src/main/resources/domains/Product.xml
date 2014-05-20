@@ -40,7 +40,7 @@
     
     <many-to-one name="invoiceLineType" ref="com.axelor.apps.account.db.InvoiceLineType" title="Invoice line type" initParam="true"/>
         
-    <one-to-many name="accountManagementList" ref="com.axelor.apps.account.db.AccountManagement" mappedBy="product" title="Accounts configuration" help="If this table is empty, the default account configuration will be retrieved from the product family 'Accounts configurations' table. However, this table will has the highest priority if filled."/>
+    <one-to-many name="accountManagementList" ref="com.axelor.apps.account.db.AccountManagement" mappedBy="product" title="Accounts configuration" help="true"/>
   
   	<one-to-many name="priceList" ref="com.axelor.apps.base.db.Price" mappedBy="product" title="Prices" />
   	
@@ -57,7 +57,7 @@
     
     <many-to-one name="productVariantConfig" ref="com.axelor.apps.base.db.ProductVariantConfig"/>
     <many-to-one name="productVariant" ref="com.axelor.apps.base.db.ProductVariant"/>
-   	<many-to-one name="parentProduct" ref="com.axelor.apps.base.db.Product" title="Parent product" help="Used for variants"/>
+   	<many-to-one name="parentProduct" ref="com.axelor.apps.base.db.Product" title="Parent product" help="true"/>
   	<boolean name="isModel" title="Is model?"/>
   
   	<many-to-one name="defaultSupplierPartner" ref="com.axelor.apps.base.db.Partner" title="Default supplier" />

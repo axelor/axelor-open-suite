@@ -7,7 +7,7 @@
 	<entity name="General" lang="java" cachable="true">
 
 		<integer name="importId"/>
-		<datetime name="today" title="Today date" tz="true" help="If empty, the today date will be the server date." />
+		<datetime name="today" title="Today date" tz="true" help="true" />
 		<boolean name="logOk" title="Activate Logs ?" default="true" />
 		<many-to-one name="defaultProjectUnit" title="Project unit" ref="com.axelor.apps.base.db.Unit"/>
 		
@@ -31,7 +31,7 @@
 		<many-to-one name="defaultExemptionTax" ref="com.axelor.apps.account.db.Tax" title="Tax 0%" />
 
 		<!-- Interfaces QAS et SVI -->
-		<string name="qasWsdlUrl" title="URL to QAS WSDL" help="http://{serveur}:{port}/proweb.wsdl" />
+		<string name="qasWsdlUrl" title="URL to QAS WSDL" help="true" />
 
 		<!-- Mapping API -->
 		<integer name="mapApiSelect" title="Mapping service provider" selection="base.general.map.api.select" default="1" />

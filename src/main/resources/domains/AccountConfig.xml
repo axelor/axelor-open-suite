@@ -33,7 +33,7 @@
 <!--     ACCOUNT -->
     <many-to-one name="customerAccount" ref="com.axelor.apps.account.db.Account" title="Customer account"/>
     <many-to-one name="supplierAccount" ref="com.axelor.apps.account.db.Account" title="Supplier account"/>
-    <many-to-one name="doubtfulCustomerAccount" ref="com.axelor.apps.account.db.Account" title="Doubtful customers account" help="Utiliser pour le passage en client douteux"/>    
+    <many-to-one name="doubtfulCustomerAccount" ref="com.axelor.apps.account.db.Account" title="Doubtful customers account" help="true"/>    
     <many-to-one name="irrecoverableAccount" ref="com.axelor.apps.account.db.Account" title="Irrecoverable account"/>
     <many-to-one name="cashPositionVariationAccount" ref="com.axelor.apps.account.db.Account" title="Cashier Regulation account"/>
     
@@ -57,27 +57,27 @@
    	<integer name="mailTransitTime" title="Mail transit time"/>
 
 	<!-- Reimbursement -->
-   	<string name="reimbursementExportFolderPathCFONB" title="Path for reimbursement files (CFONB)" help="example : /home/axelor/reject.dat"/>
-   	<string name="reimbursementExportFolderPath" title="Path for reimbursement files (SEPA)" help="example : /home/axelor/reject.dat"/>
+   	<string name="reimbursementExportFolderPathCFONB" title="Path for reimbursement files (CFONB)" help="true"/>
+   	<string name="reimbursementExportFolderPath" title="Path for reimbursement files (SEPA)" help="true"/>
    	<decimal name="lowerThresholdReimbursement" title="Lower reimbursement limit"/>
    	<decimal name="upperThresholdReimbursement" title="Upper reimbursement limit"/>
    	<many-to-one name="reimbursementAccount" ref="com.axelor.apps.account.db.Account" title="Reimbursement account"/>
    	<many-to-one name="reimbursementMailModel" ref="com.axelor.apps.base.db.MailModel" title="Reimbursement mail model"/>
 	
-    <string name="reimbursementImportFolderPathCFONB" title="Filepath for rejected reimbursements"  help="example : /home/axelor/reject.dat"/>
-    <string name="tempReimbImportFolderPathCFONB" title="Filepath for temporary rejected reimbursements import" help="example : /home/axelor/reject.dat"/>
+    <string name="reimbursementImportFolderPathCFONB" title="Filepath for rejected reimbursements"  help="true"/>
+    <string name="tempReimbImportFolderPathCFONB" title="Filepath for temporary rejected reimbursements import" help="true"/>
    
    	<string name="exportPath" title="Filepath for exported files (Accounting)"/>
    	
    	<!-- Onglet Prélèvements -->
-   	<string name="paymentScheduleExportFolderPathCFONB" title="Filepath for direct debit exports (CFONB)" help="exemple : /home/axelor/"/>
+   	<string name="paymentScheduleExportFolderPathCFONB" title="Filepath for direct debit exports (CFONB)" help="true"/>
    	
    	<many-to-one name="directDebitPaymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode for direct debit"/>
   	<many-to-one name="rejectionPaymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode after rejection"/>
     <integer name="paymentScheduleRejectNumLimit" title="Max Nbr. for payment schedule rejection"/>
     <integer name="invoiceRejectNumLimit" title="Max Nbr. of invoices rejection"/>
-    <string name="rejectImportPathAndFileName" title="Filepath to import rejected records"  help="example : /home/axelor/reject.dat"/>
-    <string name="tempImportPathAndFileName" title="Temporary filepath to import rejected records" help="example : /home/axelor/reject.dat"/>
+    <string name="rejectImportPathAndFileName" title="Filepath to import rejected records"  help="true"/>
+    <string name="tempImportPathAndFileName" title="Temporary filepath to import rejected records" help="true"/>
    	<many-to-one name="rejectPaymentScheduleMailModel" ref="com.axelor.apps.base.db.MailModel" title="Mail model for invoice and payment schedule rejections"/>
    	
    	<!--  Onglet Apurements -->
@@ -92,11 +92,11 @@
 	<many-to-one name="payboxConfig" ref="com.axelor.apps.account.db.PayboxConfig" title="Paybox configuration"/>
 	  
 	<!-- Onglet Import des paiements par TIP et TIP chèque-->
-   	<string name="interbankPaymentOrderImportPathCFONB" title="Filepath to import IPO, and IPO and Cheque payments"  help="example : /home/axelor/reject.dat"/>
-    <string name="tempInterbankPaymentOrderImportPathCFONB" title="Temporary filepath to import IPO, and IPO and Cheque payments" help="example : /home/axelor/reject.dat"/>
+   	<string name="interbankPaymentOrderImportPathCFONB" title="Filepath to import IPO, and IPO and Cheque payments"  help="true"/>
+    <string name="tempInterbankPaymentOrderImportPathCFONB" title="Temporary filepath to import IPO, and IPO and Cheque payments" help="true"/>
   	
-  	<string name="interbankPaymentOrderRejectImportPathCFONB" title="Filepath to import IPO, and IPO and Cheque payments rejects"  help="example : /home/axelor/reject.dat"/>
-    <string name="tempInterbankPaymentOrderRejectImportPathCFONB" title="Temporary filepath to import IPO, and IPO and Cheque payments rejects" help="example : /home/axelor/reject.dat"/>
+  	<string name="interbankPaymentOrderRejectImportPathCFONB" title="Filepath to import IPO, and IPO and Cheque payments rejects"  help="true"/>
+    <string name="tempInterbankPaymentOrderRejectImportPathCFONB" title="Temporary filepath to import IPO, and IPO and Cheque payments rejects" help="true"/>
   
     <!-- Onglet Facturation -->
     <boolean name="showDetailsInInvoice" title="Show details in invoice"/>

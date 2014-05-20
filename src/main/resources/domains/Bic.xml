@@ -8,10 +8,10 @@
   <entity name="Bic" lang="java">
   
     <string name="code" title="BIC (Bank Identifier)" namecolumn="true"/>
-    <string name="bankCode" title="Bank Code" max="255" help=""/>
-    <string name="bankName" title="Branch Name" max="255" help=""/>
-    <string name="sortCode" title="Sort Code" max="255" help=""/>
-    <string name="countryCode" title="Country Code" max="255" help="This code is expressed with 2 caracters (e.g. : EN, FR ...)"/>
+    <string name="bankCode" title="Bank Code" max="255" help="true"/>
+    <string name="bankName" title="Branch Name" max="255" help="true"/>
+    <string name="sortCode" title="Sort Code" max="255" help="true"/>
+    <string name="countryCode" title="Country Code" max="255" help="true"/>
 
   </entity>
 

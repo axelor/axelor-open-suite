@@ -16,7 +16,7 @@
     <many-to-one name="administration" ref="com.axelor.apps.base.db.General" title="Administration"/>
     
     <string name="notes" large="true" title="Notes"/>
-    <string name="logoPath" title="Path to company logo" help="Fill inside this field the path to the company logo"/>
+    <string name="logoPath" title="Path to company logo" help="true"/>
 
 
 	<one-to-one name="accountConfig" ref="com.axelor.apps.account.db.AccountConfig" title="Account config" mappedBy="company"/>
@@ -29,10 +29,10 @@
 	<many-to-many name="bankDetailsSet" ref="com.axelor.apps.base.db.BankDetails" title="Bank accounts"/>
 
   	<!--  Onglet Email/Courrier -->
-    <string name="generatedMailFilePath" title="Filepath to export generated mails" help="example : /home/axelor/mail/"/>
-    <string name="generatedEmailFilePath" title="Filepath to export generated emails" help="example : /home/axelor/email/"/>
-    <string name="generatedMailFileName" title="Generated mail files name prefix" help="exemple : letter_"/>
-    <string name="generatedEmailFileName" title="Generated email files name prefix" help="exemple : email_"/>
+    <string name="generatedMailFilePath" title="Filepath to export generated mails" help="true"/>
+    <string name="generatedEmailFilePath" title="Filepath to export generated emails" help="true"/>
+    <string name="generatedMailFileName" title="Generated mail files name prefix" help="true"/>
+    <string name="generatedEmailFileName" title="Generated email files name prefix" help="true"/>
     
   	<many-to-one name="printingSettings" ref="PrintingSettings" title="Printing Settings"/>
   	

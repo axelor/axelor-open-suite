@@ -8,7 +8,7 @@
 		<many-to-one name="driveUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="Drive User" orphan="true" />
 		<string name="emailId" title="Email Id" />
 		<string name="name" title="Name" namecolumn="true" />		
-		<string name="permissionId" title="Account Id" hidden="true" help="Google Account Id/Permission Id to share File"/>
+		<string name="permissionId" title="Account Id" hidden="true" help="true"/>
 	
 	</entity>
 </domain-models>

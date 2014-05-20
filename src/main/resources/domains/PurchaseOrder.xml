@@ -26,7 +26,7 @@
   	<many-to-one name="invoice" ref="com.axelor.apps.account.db.Invoice" title="Invoice" readonly="true"/>
   	<many-to-one name="location" ref="com.axelor.apps.supplychain.db.Location" title="Location"/>
   	<string name="externalReference" title="Supplier ref."/>
-    <string name="internalReference" title="Internal Ref." help="Refers to an internal document like a SO, PO, Stock Picking reference..."/>
+    <string name="internalReference" title="Internal Ref." help="true"/>
 	<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode"/>
     <many-to-one name="paymentCondition" ref="com.axelor.apps.account.db.PaymentCondition" title="Payment condition"/>
   	

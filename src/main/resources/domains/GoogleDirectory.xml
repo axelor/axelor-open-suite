@@ -5,12 +5,12 @@
 		<module name="googleapps" package="com.axelor.apps.googleapps.db" />
 		<entity name="GoogleDirectory">
 			
-			<string name="directoryId" title="Directory Id" help="Google Directory Id" />
-			<string name="directoryName" title="directory Name" namecolumn="true"  help="Directory Name"/> 
-			<boolean name="trashed" title="Trashed" default="false" help="Check file is Trashed or not" />
-			<many-to-one name="parentGoogleDirectory" ref="com.axelor.apps.googleapps.db.GoogleDirectory" title="Parent Directory" help="Parent Directory name" />
-			<many-to-one name="driveUserInfo" ref="com.axelor.apps.base.db.UserInfo" orphan="true" help="Google Apps User" />
-			<one-to-many name="googleFilesList" ref="GoogleFile" mappedBy="googleDirectory" orphan="true"  help="Google Files in Directory"/>	
+			<string name="directoryId" title="Directory Id" help="true" />
+			<string name="directoryName" title="directory Name" namecolumn="true"  help="true"/> 
+			<boolean name="trashed" title="Trashed" default="false" help="true" />
+			<many-to-one name="parentGoogleDirectory" ref="com.axelor.apps.googleapps.db.GoogleDirectory" title="Parent Directory" help="true" />
+			<many-to-one name="driveUserInfo" ref="com.axelor.apps.base.db.UserInfo" orphan="true" help="true" />
+			<one-to-many name="googleFilesList" ref="GoogleFile" mappedBy="googleDirectory" orphan="true"  help="true"/>	
 				
 	    </entity>
 </domain-models>

@@ -5,7 +5,7 @@
 	<module name="googleapps" package="com.axelor.apps.googleapps.db" />
 	<entity name="TemplateFile">
 	
-		<many-to-one name="googleFile" ref="com.axelor.apps.googleapps.db.GoogleFile" title="Google File" orphan="true" help="Google File as Template"/>
+		<many-to-one name="googleFile" ref="com.axelor.apps.googleapps.db.GoogleFile" title="Google File" orphan="true" help="true"/>
 		<boolean name="share" title="Share" />
 		<many-to-one name="dataModel" ref="com.axelor.meta.db.MetaModel" title="Model" orphan="true"  />
 	

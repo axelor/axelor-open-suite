@@ -10,7 +10,7 @@
     <many-to-many name="indicatorGeneratorSet" ref="com.axelor.apps.base.db.IndicatorGenerator" title="Indicator generator list"/>
     <string name="result" title="Result" multiline="true" large="true" readonly="true"/>
     <string name="log" title="Log" multiline="true" large="true" readonly="true"/>
-    <string name="path" title="Path to export folder" help="Path to the export folder where the indicator report values will be exported." max="2048"/>
+    <string name="path" title="Path to export folder" help="true"/>
     
   </entity>
 
