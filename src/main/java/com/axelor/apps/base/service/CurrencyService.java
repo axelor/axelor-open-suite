@@ -44,15 +44,12 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
-import com.axelor.meta.service.MetaTranslations;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
 public class CurrencyService {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(CurrencyService.class);
-	
-	@Inject
-	private MetaTranslations metaTranslations;
 	
 	private LocalDate today;
 
@@ -80,7 +77,7 @@ public class CurrencyService {
 		}
 		
 		if(currencyConversionLine == null)  {
-			throw new AxelorException(String.format(metaTranslations.get(IExceptionMessage.CURRENCY_1), startCurrency, endCurrency, today), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.CURRENCY_1), startCurrency, endCurrency, today), IException.CONFIGURATION_ERROR);
 		}
 		
 		return currencyConversionLine.getExchangeRate();
@@ -120,14 +117,14 @@ public class CurrencyService {
 			}
 			
 			if(currencyConversionLine == null)  {
-				throw new AxelorException(String.format(metaTranslations.get(IExceptionMessage.CURRENCY_1), 
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.CURRENCY_1), 
 						currencyStart.getName(), currencyEnd.getName(), today), IException.CONFIGURATION_ERROR);
 			}
 			
 			BigDecimal exchangeRate = currencyConversionLine.getExchangeRate();
 			
 			if(exchangeRate == null || exchangeRate.compareTo(BigDecimal.ZERO) == 0)  {
-				throw new AxelorException(String.format(metaTranslations.get(IExceptionMessage.CURRENCY_2), 
+				throw new AxelorException(String.format(I18n.get(IExceptionMessage.CURRENCY_2), 
 						currencyStart.getName(), currencyEnd.getName(), today), IException.CONFIGURATION_ERROR);
 			}
 			

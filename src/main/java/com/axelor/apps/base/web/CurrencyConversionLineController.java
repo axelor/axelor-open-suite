@@ -30,11 +30,8 @@
  */
 package com.axelor.apps.base.web;
 
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.HashMap;
-import java.util.Map;
 
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
@@ -43,11 +40,9 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.General;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.CurrencyConversionService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.administration.GeneralService;
-import com.axelor.meta.service.MetaTranslations;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
@@ -62,8 +57,6 @@ public class CurrencyConversionLineController {
 	@Inject
 	GeneralService gs;
 	
-	@Inject
-	private MetaTranslations metaTranslations;
 	
 	public void checkDate(ActionRequest request, ActionResponse response) {
 	
@@ -71,11 +64,11 @@ public class CurrencyConversionLineController {
 		
 		LOG.debug("Currency Conversion Line Id : {}",ccl.getId());
 
-		if (ccl.getId() != null && CurrencyConversionLine.all().filter("self.startCurrency.id = ?1 and self.endCurrency.id = ?2 and (self.toDate = null OR  self.toDate >= ?3) and self.id != ?4)",ccl.getStartCurrency().getId(),ccl.getEndCurrency().getId(),ccl.getFromDate(),ccl.getId()).count() > 0) {
+		if (ccl.getId() != null && CurrencyConversionLine.filter("self.startCurrency.id = ?1 and self.endCurrency.id = ?2 and (self.toDate = null OR  self.toDate >= ?3) and self.id != ?4)",ccl.getStartCurrency().getId(),ccl.getEndCurrency().getId(),ccl.getFromDate(),ccl.getId()).count() > 0) {
 			response.setFlash("ATTENTION : Veuillez clôturer la période actuelle de conversion pour en créer une nouvelle.");
 //			response.setValue("fromDate", "");
 		}
-		else if(ccl.getId() == null && CurrencyConversionLine.all().filter("self.startCurrency.id = ?1 and self.endCurrency.id = ?2 and (self.toDate = null OR  self.toDate >= ?3))",ccl.getStartCurrency().getId(),ccl.getEndCurrency().getId(),ccl.getFromDate()).count() > 0) {
+		else if(ccl.getId() == null && CurrencyConversionLine.filter("self.startCurrency.id = ?1 and self.endCurrency.id = ?2 and (self.toDate = null OR  self.toDate >= ?3))",ccl.getStartCurrency().getId(),ccl.getEndCurrency().getId(),ccl.getFromDate()).count() > 0) {
 			response.setFlash("ATTENTION : Veuillez clôturer la période actuelle de conversion pour en créer une nouvelle.");
 //			response.setValue("fromDate", "");
 		}
@@ -99,10 +92,10 @@ public class CurrencyConversionLineController {
 			Currency fromCurrency = Currency.find(Long.parseLong(currencyFrom.get("id").toString()));
 			Currency toCurrency  = Currency.find(Long.parseLong(currencyTo.get("id").toString()));
 			LocalDate today = gs.getTodayDate();
-			CurrencyConversionLine cclCoverd = CurrencyConversionLine.all().filter("startCurrency = ?1 AND endCurrency = ?2 AND fromDate >= ?3 AND (toDate <= ?3 OR toDate = null)",fromCurrency,toCurrency,today).fetchOne();
+			CurrencyConversionLine cclCoverd = CurrencyConversionLine.filter("startCurrency = ?1 AND endCurrency = ?2 AND fromDate >= ?3 AND (toDate <= ?3 OR toDate = null)",fromCurrency,toCurrency,today).fetchOne();
 			
 			if(cclCoverd == null){
-				CurrencyConversionLine ccl = CurrencyConversionLine.all().filter("startCurrency = ?1 AND endCurrency = ?2",fromCurrency,toCurrency).order("-fromDate").fetchOne();
+				CurrencyConversionLine ccl = CurrencyConversionLine.filter("startCurrency = ?1 AND endCurrency = ?2",fromCurrency,toCurrency).order("-fromDate").fetchOne();
 				LOG.debug("Last conversion line {}",ccl);
 				
 				if(ccl != null && ccl.getToDate() == null){
@@ -140,9 +133,9 @@ public class CurrencyConversionLineController {
 		if(fromCurrency.getId() != null && toCurrency.getId() != null){
 			
 			if(context.get("id") != null)
-				prevLine = CurrencyConversionLine.all().filter("startCurrency.id = ?1 AND endCurrency.id = ?2 AND id != ?3",fromCurrency.getId(),toCurrency.getId(),context.get("id")).order("-fromDate").fetchOne();
+				prevLine = CurrencyConversionLine.filter("startCurrency.id = ?1 AND endCurrency.id = ?2 AND id != ?3",fromCurrency.getId(),toCurrency.getId(),context.get("id")).order("-fromDate").fetchOne();
 			else
-				prevLine = CurrencyConversionLine.all().filter("startCurrency.id = ?1 AND endCurrency.id = ?2",fromCurrency.getId(),toCurrency.getId()).order("-fromDate").fetchOne();
+				prevLine = CurrencyConversionLine.filter("startCurrency.id = ?1 AND endCurrency.id = ?2",fromCurrency.getId(),toCurrency.getId()).order("-fromDate").fetchOne();
 
 			LOG.debug("Previous currency conversion line: {}",prevLine);
 			fromCurrency = Currency.find(fromCurrency.getId());
