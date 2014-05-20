@@ -1,0 +1,58 @@
+"key","message","comment","context"
+"Chart","","","resources/views/Selects.xml:39"
+"Configuration","","","resources/views/menu.xml:73"
+"Configurations","","","resources/views/MailAccount.xml:25"
+"Content","","","resources/views/Message.xml:32"
+"Delete","","","resources/views/Message.xml:45"
+"Deleted","","","resources/views/Selects.xml:28"
+"Draft","","","resources/views/Selects.xml:26"
+"Draft emails","","","resources/views/menu.xml:38
+resources/views/menu.xml:42"
+"Email","","","resources/views/Message.xml:13
+resources/views/Selects.xml:38"
+"Email account","","","resources/views/menu.xml:75
+resources/views/menu.xml:78"
+"Email address","","","resources/views/EmailAddress.xml:15
+resources/views/EmailAddress.xml:10"
+"Email addresses","","","resources/views/EmailAddress.xml:6
+resources/views/menu.xml:93
+resources/views/menu.xml:96"
+"Email box","","","resources/views/menu.xml:13"
+"Emails","","","resources/views/Message.xml:6"
+"Event","","","resources/views/Selects.xml:14"
+"Generate message","","","resources/views/GenerateMessageWizard.xml:8"
+"IMAP","","","resources/views/Selects.xml:33"
+"Inbox","","","resources/views/menu.xml:16
+resources/views/menu.xml:20"
+"Informations","","","resources/views/Message.xml:17
+resources/views/MailAccount.xml:15"
+"Internal Message","","","resources/views/Message.xml:30"
+"Lead","","","resources/views/Selects.xml:11"
+"Login","","","resources/views/MailAccount.xml:21"
+"Mail","","","resources/views/Selects.xml:37"
+"Mail account","","","resources/views/MailAccount.xml:14"
+"Mail accounts","","","resources/views/MailAccount.xml:6"
+"New email","","","resources/views/menu.xml:32
+resources/views/menu.xml:28"
+"Opportunity","","","resources/views/Selects.xml:12"
+"POP","","","resources/views/Selects.xml:32"
+"Partner/Contact","","","resources/views/Selects.xml:10"
+"Print","","","resources/views/Message.xml:15"
+"Product","","","resources/views/Selects.xml:13"
+"Project/Business","","","resources/views/Selects.xml:16"
+"Quote/Order","","","resources/views/Selects.xml:15"
+"Received","","","resources/views/Selects.xml:21"
+"Recipients","","","resources/views/Message.xml:25"
+"Related to","","","resources/views/Message.xml:37"
+"Routings","","","resources/views/menu.xml:85
+resources/views/menu.xml:88"
+"Send","","","resources/views/Message.xml:44"
+"Sent","","","resources/views/Selects.xml:27
+resources/views/Selects.xml:22"
+"Sentbox","","","resources/views/menu.xml:54
+resources/views/menu.xml:50"
+"Task (Project)","","","resources/views/Selects.xml:17"
+"Template","","","resources/views/GenerateMessageWizard.xml:9"
+"Trash","","","resources/views/menu.xml:66
+resources/views/menu.xml:62"
+"Validate","","","resources/views/GenerateMessageWizard.xml:10"
