@@ -1,8 +1,0 @@
-"importId";"typeSelect";"subject";"statusSelect";"startDateTime";"endDateTime";"durationHours";"durationMinutesSelect";"eventCategory";"prioritySelect";"relatedToSelect";"relatedToSelectId";"description";"userInfo.importId";"team.importId";"clientPartner.importId";"contactPartner.importId";"lead.importId";"callStatusSelect";"meetingType.importId";"location";"taskStatusSelect";"ticketNumberSeq";"ticketStatusSelect";"Project.importId";"task.importId"
-29;1;"Appeler 123 Services test";1;"2013-05-10 10:00:10";"2013-05-10 10:00:10[+1H]";1;0;;;;;;14;1;88;89;;2;;;;;;;
-30;1;"Appeler APOLLO test";1;"2013-05-10 10:00:10[+1d]";"2013-05-10 10:00:10[+1d+1H]";1;0;;;;;;15;2;20;21;;2;;;;;;;
-31;1;"Appeler BLUEBERRY TELECOM test";1;"2013-05-10 10:00:10[+2d]";"2013-05-10 10:00:10[+2d+1H]";1;0;;;;;;16;2;44;45;;2;;;;;;;
-32;1;"Appeler MASSON Logistics test";1;"2013-05-10 10:00:10[+3d]";"2013-05-10 10:00:10[+3d+1H]";1;0;;;;;;16;2;70;71;;2;;;;;;;
-33;1;"Appeler GERARD Solutions test";1;"2013-05-10 10:00:10[+4d]";"2013-05-10 10:00:10[+4d+1H]";1;0;;;;;;15;2;77;78;;2;;;;;;;
-35;1;"Test today";1;"NOW";"NOW[+1d]";24;0;;;;;;15;2;77;78;;2;;;;;;;
-36;1;"Test duration";1;"NOW[01H00m00s]";"NOW[02H00m00s]";1;0;;;;;;15;2;77;78;;2;;;;;;;
