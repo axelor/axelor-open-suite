@@ -50,7 +50,7 @@ import com.axelor.apps.supplychain.exceptions.IExceptionMessage;
 import com.axelor.apps.supplychain.service.config.SupplychainConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
-import com.axelor.meta.service.MetaTranslations;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
 public class SalesOrderStockMoveService {
@@ -161,7 +161,7 @@ public class SalesOrderStockMoveService {
 	public void checkStockMoveProduct(SalesOrderLine salesOrderLine) throws AxelorException  {
 		
 		if(!this.isStockMoveProduct(salesOrderLine))  {
-			throw new AxelorException(new MetaTranslations().get(IExceptionMessage.SALES_ORDER_STOCK_MOVE_1), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(I18n.get(IExceptionMessage.SALES_ORDER_STOCK_MOVE_1), IException.CONFIGURATION_ERROR);
 		}
 		
 	}
