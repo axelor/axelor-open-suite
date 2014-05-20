@@ -258,8 +258,6 @@ public class StockMoveService {
 	public String realize(StockMove stockMove) throws AxelorException  {
 		LOG.debug("Réalisation du mouvement de stock : {} ", new Object[] { stockMove.getStockMoveSeq() });
 		String newStockSeq = null;
-		if(!stockMove.getIsWithBackorder() && !stockMove.getIsWithReturnSurplus())
-			return null;
 
 		stockMoveLineService.updateLocations(
 				stockMove.getFromLocation(), 
@@ -274,6 +272,8 @@ public class StockMoveService {
 		stockMove.setStatusSelect(IStockMove.STATUS_REALIZED);
 		stockMove.setRealDate(this.today);
 		stockMove.save();
+		if(!stockMove.getIsWithBackorder() && !stockMove.getIsWithReturnSurplus())
+			return null;
 		if(stockMove.getIsWithBackorder() && this.mustBeSplit(stockMove.getStockMoveLineList()))  {
 			StockMove newStockMove = this.copyAndSplitStockMove(stockMove);
 			newStockSeq = newStockMove.getStockMoveSeq();
