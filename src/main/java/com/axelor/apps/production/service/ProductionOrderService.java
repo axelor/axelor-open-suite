@@ -119,6 +119,16 @@ public class ProductionOrderService {
 		
 		ProductionOrder productionOrder = this.createProductionOrder(businessProject, false);
 		
+		this.addManufOrder(productionOrder, product, billOfMaterial, qtyRequested);
+		
+		return productionOrder.save();
+		
+	}
+	
+	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public ProductionOrder addManufOrder(ProductionOrder productionOrder, Product product, BillOfMaterial billOfMaterial, BigDecimal qtyRequested) throws AxelorException  {
+		
 		BigDecimal qty = qtyRequested.divide(billOfMaterial.getQty());
 		
 		ManufOrder manufOrder = manufOrderService.generateManufOrder(

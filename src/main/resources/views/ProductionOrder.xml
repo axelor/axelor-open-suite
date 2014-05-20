@@ -12,6 +12,15 @@
         <field name="productionOrderSeq"/>
         <field name="businessProject"/>
         <field name="isToInvoice" onChange="save,action-production-order-method-is-to-invoice"/>
+        <button name="showManufOrderWizard" title="Add Manuf. Order" colSpan="2" onClick="action-production-order-attrs-add-manuf-order-wizard,action-production-order-record-default-wizard"/>
+        <group name="addManufOrderWizard" title="Add Manu. Order" hidden="true" colSpan="2">
+	        <field name="product" widget="ManyToOne" x-target="com.axelor.apps.base.db.Product" title="Product"/>
+	        <field name="billOfMaterial" widget="ManyToOne" x-target="com.axelor.apps.production.db.BillOfMaterial" title="BOM" 
+			onSelect="action-production-order-wizard-attrs-bill-of-material-domain"
+			onChange="action-production-order-wizard-record-product"/>
+			<field name="qty" widget="decimal" title="Quantity"/>
+	        <button name="AddManufOrder" title="Add Manuf. Order" colSpan="2" onClick="action-production-order-method-add-manuf-order"/>
+        </group>
         <button name="generateSalesOrder" title="Generate sales order" colSpan="2" onClick="action-production-order-method-generate-sales-order" showIf="businessProject"/>
         <field name="manufOrderList" colSpan="4"/>
         <portlet colSpan="4" action="action-production-order-view-operation-order"/>
@@ -25,6 +34,19 @@
     <action-method name="action-production-order-method-generate-sales-order">
     	<call class="com.axelor.apps.production.web.ProductionOrderController" method="generateSalesOrder"/>
     </action-method>
+    
+   	<action-method name="action-production-order-method-add-manuf-order">
+    	<call class="com.axelor.apps.production.web.ProductionOrderController" method="addManufOrder"/>
+    </action-method>
+    
+    <action-record name="action-production-order-record-default-wizard" model="com.axelor.apps.base.db.Wizard">
+		<field name="qty" expr="eval: 1.0"/>
+	</action-record>
+    
+    <action-attrs name="action-production-order-attrs-add-manuf-order-wizard">
+    	<attribute name="hidden" for="addManufOrderWizard" expr="eval: false"/>
+    	<attribute name="hidden" for="showManufOrderWizard" expr="eval: true"/>
+    </action-attrs>
     
     <action-view name="action-production-order-view-operation-order" title="Operation orders" model="com.axelor.apps.production.db.OperationOrder">
   		<view type="grid" name="operation-order-group-grid"/>
