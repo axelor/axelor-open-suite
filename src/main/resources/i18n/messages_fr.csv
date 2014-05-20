@@ -24,8 +24,8 @@ resources/views/menu.xml:96"
 "IMAP","IMAP","","resources/views/Selects.xml:33"
 "Inbox","Boîte de réception","","resources/views/menu.xml:16
 resources/views/menu.xml:20"
-"Informations","Informations","","resources/views/Message.xml:17
-resources/views/MailAccount.xml:15"
+"Informations","Informations","","resources/views/MailAccount.xml:15
+resources/views/Message.xml:17"
 "Internal Message","","","resources/views/Message.xml:30"
 "Lead","Prospect","","resources/views/Selects.xml:11"
 "Login","","","resources/views/MailAccount.xml:21"
