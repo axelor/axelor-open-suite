@@ -56,7 +56,7 @@ import com.axelor.apps.organisation.db.Timesheet;
 import com.axelor.apps.organisation.db.TimesheetLine;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
-import com.axelor.meta.service.MetaTranslations;
+import com.axelor.i18n.I18n;
 import com.google.inject.persist.Transactional;
 
 public class TaskInvoiceService {
@@ -110,19 +110,19 @@ public class TaskInvoiceService {
 	
 	public void checkTaskToInvoice(Task task) throws AxelorException  {
 		if(task.getProduct() == null)  {
-			throw new AxelorException(new MetaTranslations().get(IExceptionMessage.TASK_INVOICE_2), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(I18n.get(IExceptionMessage.TASK_INVOICE_2), IException.CONFIGURATION_ERROR);
 		}
 		if(task.getQty() == null)  {
-			throw new AxelorException(new MetaTranslations().get(IExceptionMessage.TASK_INVOICE_3), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(I18n.get(IExceptionMessage.TASK_INVOICE_3), IException.CONFIGURATION_ERROR);
 		}
 		if(task.getPrice() == null)  {
-			throw new AxelorException(new MetaTranslations().get(IExceptionMessage.TASK_INVOICE_4), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(I18n.get(IExceptionMessage.TASK_INVOICE_4), IException.CONFIGURATION_ERROR);
 		}
 		if(task.getAmountToInvoice() == null)  {
-			throw new AxelorException(new MetaTranslations().get(IExceptionMessage.TASK_INVOICE_5), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(I18n.get(IExceptionMessage.TASK_INVOICE_5), IException.CONFIGURATION_ERROR);
 		}
 		if(this.computeAmount(task.getQty(), task.getPrice()).compareTo(task.getAmountToInvoice()) != 0)  {
-			throw new AxelorException(new MetaTranslations().get(IExceptionMessage.TASK_INVOICE_6), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(I18n.get(IExceptionMessage.TASK_INVOICE_6), IException.CONFIGURATION_ERROR);
 		}
 	}
 	
@@ -261,7 +261,7 @@ public class TaskInvoiceService {
 		Employee employee = timesheet.getUserInfo().getEmployee();
 		
 		if(employee == null)  {
-			throw new AxelorException(String.format(new MetaTranslations().get(IExceptionMessage.TASK_INVOICE_1), timesheet.getUserInfo().getFullName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TASK_INVOICE_1), timesheet.getUserInfo().getFullName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return employee;
@@ -274,7 +274,7 @@ public class TaskInvoiceService {
 		Product profileProduct = employee.getProfileProduct();
 		
 		if(profileProduct == null)  {
-			throw new AxelorException(String.format(new MetaTranslations().get(IExceptionMessage.TASK_INVOICE_7), employee.getName(), employee.getFirstName()), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(String.format(I18n.get(IExceptionMessage.TASK_INVOICE_7), employee.getName(), employee.getFirstName()), IException.CONFIGURATION_ERROR);
 		}
 		
 		return profileProduct;

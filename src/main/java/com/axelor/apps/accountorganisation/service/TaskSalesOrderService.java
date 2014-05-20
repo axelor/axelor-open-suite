@@ -58,7 +58,7 @@ import com.axelor.apps.supplychain.db.SalesOrderLine;
 import com.axelor.apps.supplychain.db.SalesOrderSubLine;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
-import com.axelor.meta.service.MetaTranslations;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -359,7 +359,7 @@ public class TaskSalesOrderService {
 	public void checkProductType(SalesOrderLine salesOrderLine) throws AxelorException  {
 		
 		if(!this.isTaskProduct(salesOrderLine))  {
-			throw new AxelorException(new MetaTranslations().get(IExceptionMessage.TASK_SALES_ORDER_1), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(I18n.get(IExceptionMessage.TASK_SALES_ORDER_1), IException.CONFIGURATION_ERROR);
 		}
 		
 	}
