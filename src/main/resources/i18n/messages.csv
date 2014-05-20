@@ -1,0 +1,45 @@
+"key","message","comment","context"
+"Accept","","","resources/views/PurchaseOrderLine.xml:25
+resources/views/PurchaseOrderSupplierLine.xml:25"
+"Accepted","","","resources/views/Selects.xml:12"
+"Cancel","","","resources/views/PurchaseOrderSupplierLine.xml:27
+resources/views/PurchaseOrderLine.xml:27"
+"Canceled","","","resources/views/Selects.xml:14"
+"Generate suppliers purchases orders","","","resources/views/PurchaseOrder.xml:10"
+"My R.F.Q.","","","resources/views/SupplierView.xml:16
+resources/views/SupplierView.xml:37"
+"My R.F.Q. to complete","","","resources/views/SupplierView.xml:29
+resources/views/SupplierView.xml:15"
+"My deliveries","","","resources/views/SupplierView.xml:45
+resources/views/SupplierView.xml:17"
+"My purchases orders","","","resources/views/SupplierView.xml:21
+resources/views/SupplierView.xml:14"
+"My space","","","resources/views/SupplierView.xml:6
+resources/views/SupplierView.xml:11"
+"Not accept","","","resources/views/PurchaseOrderLine.xml:26
+resources/views/PurchaseOrderSupplierLine.xml:26"
+"Not accepted","","","resources/views/Selects.xml:13"
+"Receipt date","","","resources/views/SupplierView.xml:74"
+"Request","","","resources/views/PurchaseOrderLine.xml:28
+resources/views/PurchaseOrderSupplierLine.xml:28"
+"Requested","","","resources/views/Selects.xml:10"
+"Show suppliers purchases orders","","","resources/views/PurchaseOrder.xml:11"
+"Stock move","","","resources/views/SupplierView.xml:63"
+"Stock move informations","","","resources/views/SupplierView.xml:72"
+"Stock move line","","","resources/views/SupplierView.xml:88"
+"Stock move lines","","","resources/views/SupplierView.xml:81"
+"Stock move reference","","","resources/views/SupplierView.xml:66"
+"Stock moves","","","resources/views/SupplierView.xml:53"
+"Submit","","","resources/views/PurchaseOrderLine.xml:56
+resources/views/PurchaseOrderSupplierLine.xml:56"
+"Submitted","","","resources/views/Selects.xml:11"
+"Supplier RFQ/PO","","","resources/views/PurchaseOrder.xml:6"
+"Supplier request","","","resources/views/PurchaseOrderSupplierLine.xml:45
+resources/views/PurchaseOrderSupplierLine.xml:16
+resources/views/PurchaseOrderLine.xml:45
+resources/views/PurchaseOrderLine.xml:16"
+"Suppliers purchases","","","resources/views/PurchaseOrder.xml:19"
+"suppliers requests","","","resources/views/PurchaseOrderSupplierLine.xml:32
+resources/views/PurchaseOrderLine.xml:6
+resources/views/PurchaseOrderSupplierLine.xml:6
+resources/views/PurchaseOrderLine.xml:32"
