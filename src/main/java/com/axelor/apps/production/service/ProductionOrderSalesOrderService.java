@@ -49,9 +49,9 @@ import com.axelor.apps.supplychain.db.IPurchaseOrder;
 import com.axelor.apps.supplychain.db.SalesOrder;
 import com.axelor.apps.supplychain.db.SalesOrderLine;
 import com.axelor.apps.supplychain.service.SalesOrderService;
-import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -116,7 +116,7 @@ public class ProductionOrderSalesOrderService {
 			if(billOfMaterial == null)  {
 				
 				throw new AxelorException(
-						String.format(JPA.translate(IExceptionMessage.PRODUCTION_ORDER_SALES_ORDER_NO_BOM), product.getName(), product.getCode()), 
+						String.format(I18n.get(IExceptionMessage.PRODUCTION_ORDER_SALES_ORDER_NO_BOM), product.getName(), product.getCode()), 
 						IException.CONFIGURATION_ERROR);
 				
 			}

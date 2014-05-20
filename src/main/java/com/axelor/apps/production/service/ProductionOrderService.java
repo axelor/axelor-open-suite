@@ -44,9 +44,9 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
-import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -97,7 +97,7 @@ public class ProductionOrderService {
 		String seq = sequenceService.getSequence(IAdministration.PRODUCTION_ORDER, false);
 		
 		if(seq == null)  {
-			throw new AxelorException(JPA.translate(IExceptionMessage.PRODUCTION_ORDER_SEQ), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(I18n.get(IExceptionMessage.PRODUCTION_ORDER_SEQ), IException.CONFIGURATION_ERROR);
 		}
 		
 		return seq;

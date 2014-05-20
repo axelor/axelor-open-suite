@@ -53,9 +53,9 @@ import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.ProdRemains;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
-import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -232,7 +232,7 @@ public class ManufOrderService {
 		String seq = sequenceService.getSequence(IAdministration.MANUF_ORDER, false);
 		
 		if(seq == null)  {
-			throw new AxelorException(JPA.translate(IExceptionMessage.MANUF_ORDER_SEQ), IException.CONFIGURATION_ERROR);
+			throw new AxelorException(I18n.get(IExceptionMessage.MANUF_ORDER_SEQ), IException.CONFIGURATION_ERROR);
 		}
 		
 		return seq;
