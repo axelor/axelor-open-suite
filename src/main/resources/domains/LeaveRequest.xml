@@ -24,7 +24,7 @@
   	
   	<decimal name="remainingDaysOnPeriod" title="Remaining days for the period"/>
   	
-  	<integer name="statusSelect" title="Request status" selection="default.status.select" readonly="true"/>
+  	<integer name="statusSelect" title="Request status" selection="organisation.leave.request.status.select" readonly="true"/>
   
   	<boolean name="accounted" title="Accounted"/>
   
