@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csv-inputs xmlns="http://apps.axelor.com/xml/ns/data-import"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/data-import http://apps.axelor.com/xml/ns/data-import/data-import_0.9.xsd">
+
+	<input file="axelor-organisation-wkf.csv" separator="," type="com.axelor.wkf.db.Workflow">
+		<bind column="name" to="name" />
+		<bind column="metaModel" to="metaModel" search="self.name = :metaModel" />
+		<bind column="bpmn" to="bpmn" />
+		<bind column="xmlData" to="xmlData" />
+	</input>
+
+	<input file="axelor-organisation-wkf.csv" separator="," type="com.axelor.wkf.db.Workflow" update="true" search="self.name = :name" call="com.axelor.csv.script.ImportWorklow:generateMonthlyPayment" />
+
+</csv-inputs>
+
