@@ -1,11 +1,11 @@
 "key","message","comment","context"
 "50 Latest Supplier Orders","","","resources/views/portal.xml:319"
 "Action(s)","","","resources/views/PurchaseOrder.xml:68
-resources/views/SalesOrder.xml:69
-resources/views/StockMove.xml:80"
+resources/views/StockMove.xml:80
+resources/views/SalesOrder.xml:69"
 "Actions","","","resources/views/SalesOrder.xml:37
-resources/views/Inventory.xml:40
-resources/views/SalesOrder.xml:8"
+resources/views/SalesOrder.xml:8
+resources/views/Inventory.xml:40"
 "Alert","","","resources/views/Selects.xml:52"
 "All Purchases Docs","","","resources/views/menu.xml:210"
 "All Sales Docs","","","resources/views/menu.xml:181"
@@ -93,8 +93,8 @@ resources/views/PurchaseOrderLine.xml:51"
 resources/views/Inventory.xml:44
 resources/views/Selects.xml:27
 resources/views/Selects.xml:34
-resources/views/Selects.xml:58
-resources/views/PurchaseOrder.xml:71"
+resources/views/PurchaseOrder.xml:71
+resources/views/Selects.xml:58"
 "Draft invoice N days after order validation","","","resources/views/Selects.xml:68"
 "Excel Export","","","resources/views/SalesOrder.xml:33"
 "Exclude out of stock products ?","","","resources/views/CreateInventoryWizard.xml:22"
@@ -138,8 +138,8 @@ resources/views/Charts.xml:1221"
 "FromStock","","","resources/views/Selects.xml:10"
 "Future","","","resources/views/Selects.xml:48"
 "Generate control invoice","","","resources/views/PurchaseOrder.xml:78"
-"Generate invoice","","","resources/views/SalesOrder.xml:75
-resources/views/StockMove.xml:85"
+"Generate invoice","","","resources/views/StockMove.xml:85
+resources/views/SalesOrder.xml:75"
 "Generate suppliers requests","","","resources/views/PurchaseOrderLine.xml:69"
 "Historical Period","","","resources/views/Charts.xml:560
 resources/views/Charts.xml:527
@@ -249,8 +249,8 @@ resources/views/menu.xml:98"
 "No Of Units","","","resources/views/Charts.xml:520"
 "Notes","","","resources/views/SalesOrderLine.xml:48
 resources/views/PurchaseOrder.xml:105"
-"Number of Product per Category","","","resources/views/portal.xml:422
-resources/views/Charts.xml:1047"
+"Number of Product per Category","","","resources/views/Charts.xml:1047
+resources/views/portal.xml:422"
 "Number of Product per Family","","","resources/views/portal.xml:418
 resources/views/Charts.xml:1025"
 "Ongoing Purchase orders","","","resources/views/portal.xml:470"
@@ -287,18 +287,18 @@ resources/views/Selects.xml:28"
 "Planned Inventories","","","resources/views/Inventory.xml:91"
 "Print","","","resources/views/SalesOrder.xml:22
 resources/views/StockMove.xml:86
+resources/views/PurchaseOrder.xml:30
+resources/views/PurchaseOrder.xml:18
 resources/views/SalesOrder.xml:158
 resources/views/PurchaseOrder.xml:8
 resources/views/StockMove.xml:36
-resources/views/PurchaseOrder.xml:38
-resources/views/StockMove.xml:54
-resources/views/PurchaseOrder.xml:18
-resources/views/PurchaseOrder.xml:30
 resources/views/Location.xml:8
 resources/views/Inventory.xml:20
 resources/views/SalesOrder.xml:31
+resources/views/PurchaseOrder.xml:38
 resources/views/SalesOrder.xml:150
-resources/views/StockMove.xml:18"
+resources/views/StockMove.xml:18
+resources/views/StockMove.xml:54"
 "Print StockMove(s)","","","resources/views/StockMove.xml:8
 resources/views/StockMove.xml:42
 resources/views/StockMove.xml:24"
@@ -332,8 +332,8 @@ resources/views/portal.xml:442"
 "Product sales turnover (Excl. Tax) per month","","","resources/views/Charts.xml:1147
 resources/views/portal.xml:436"
 "Product soon out of stock by location","","","resources/views/portal.xml:387"
-"Product type distribution","","","resources/views/portal.xml:426
-resources/views/Charts.xml:1069"
+"Product type distribution","","","resources/views/Charts.xml:1069
+resources/views/portal.xml:426"
 "Production Stock Move in Planned","","","resources/views/portal.xml:394"
 "Production Stock Move out Planned","","","resources/views/portal.xml:400"
 "Production order","","","resources/views/Selects.xml:54"
@@ -467,8 +467,8 @@ resources/views/StockMove.xml:94"
 "Split in Qty of","","","resources/views/StockMove.xml:107"
 "Status","","","resources/views/Charts.xml:667"
 "Stock","","","resources/views/menu.xml:232
-resources/views/menu.xml:334
-resources/views/Location.xml:39"
+resources/views/Location.xml:39
+resources/views/menu.xml:334"
 "Stock Dashboard","","","resources/views/menu.xml:327"
 "Stock Dashboard 1","","","resources/views/menu.xml:340"
 "Stock Dashboard 2","","","resources/views/menu.xml:349"
@@ -493,8 +493,8 @@ resources/views/menu.xml:62"
 "Stock management","","","resources/views/menu.xml:7"
 "Stock move","","","resources/views/StockMove.xml:60"
 "Stock move details","","","resources/views/StockMove.xml:92"
-"Stock move informations","","","resources/views/SupplychainConfig.xml:23
-resources/views/StockMove.xml:70"
+"Stock move informations","","","resources/views/StockMove.xml:70
+resources/views/SupplychainConfig.xml:23"
 "Stock move line","","","resources/views/StockMoveLine.xml:64
 resources/views/StockMoveLine.xml:38
 resources/views/StockMoveLine.xml:16"
@@ -502,9 +502,9 @@ resources/views/StockMoveLine.xml:16"
 resources/views/StockMoveLine.xml:56
 resources/views/StockMoveLine.xml:25"
 "Stock move reference","","","resources/views/StockMove.xml:64"
-"Stock moves","","","resources/views/menu.xml:237
+"Stock moves","","","resources/views/StockMove.xml:40
 resources/views/StockMove.xml:22
-resources/views/StockMove.xml:40
+resources/views/menu.xml:237
 resources/views/menu.xml:234
 resources/views/StockMove.xml:6"
 "Subscription","","","resources/views/SalesOrder.xml:127"
@@ -549,8 +549,8 @@ resources/views/Charts.xml:994
 resources/views/Charts.xml:1338
 resources/views/Charts.xml:220"
 "Today Arrivals","","","resources/views/StockMove.xml:230"
-"Total Purchased Amount by month","","","resources/views/portal.xml:262
-resources/views/Charts.xml:895"
+"Total Purchased Amount by month","","","resources/views/Charts.xml:895
+resources/views/portal.xml:262"
 "Total Purchased Qty by month","","","resources/views/portal.xml:268
 resources/views/Charts.xml:926"
 "Totals","","","resources/views/PurchaseOrder.xml:88"
@@ -575,8 +575,8 @@ resources/views/Charts.xml:1357"
 resources/views/Charts.xml:247"
 "Turnover (excl. Tax) per team","","","resources/views/Charts.xml:217
 resources/views/portal.xml:115"
-"Turnover per customer category","","","resources/views/portal.xml:577
-resources/views/Charts.xml:1313"
+"Turnover per customer category","","","resources/views/Charts.xml:1313
+resources/views/portal.xml:577"
 "Turnover per customer sector","","","resources/views/Charts.xml:1335
 resources/views/portal.xml:583"
 "Turnover per customer type","","","resources/views/Charts.xml:1287
