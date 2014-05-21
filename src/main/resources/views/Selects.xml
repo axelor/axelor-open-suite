@@ -591,4 +591,12 @@
 	</selection>
 
 
+	<selection name="base.product.version.select">
+		<option value="1">v1</option>
+		<option value="2">v2</option>
+		<option value="3">v3</option>
+		<option value="4">v4</option>
+		<option value="5">v5</option>
+	</selection>
+
 </object-views>

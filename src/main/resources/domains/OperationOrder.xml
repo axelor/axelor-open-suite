@@ -56,6 +56,11 @@
     </boolean>
     
 <!--     temp en heure et temp pour un cycle ?? -->
+
+  <!--   MUST BE DELETED AFTER DEMO COFELY -->
+    <many-to-one name="picture" ref="com.axelor.meta.db.MetaFile" title="Picture"/>
+    <string name="observation" title="Observations (état des filetages, aspect général, état des surfaces d'appuis...) :" large="true"/>
+    <one-to-many name="manufOrderSheetLineList" ref="com.axelor.apps.production.db.ManufOrderSheetLine" mappedBy="operationOrder" title="Conformités"/>
     
   </entity>
 </domain-models>

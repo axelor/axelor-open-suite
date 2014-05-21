@@ -527,7 +527,7 @@ resources/domains/Template.xml:15"
 "Belonging to a payment schedule","","","resources/domains/Invoice.xml:39"
 "Best case","","","resources/domains/Opportunity.xml:16"
 "Beverage","","","resources/views/Selects.xml:230"
-"Bill of materials","","","resources/views/Product.xml:295"
+"Bill of materials","","","resources/views/Product.xml:300"
 "Biotechnologies","","","resources/views/Selects.xml:219"
 "Birt Template","","","resources/views/BirtTemplate.xml:12
 resources/domains/PrintingSettings.xml:13
@@ -911,6 +911,7 @@ resources/views/menu.xml:589
 resources/views/menu.xml:244"
 "Confirmed","","","resources/views/Selects.xml:453"
 "Conforme","","","resources/domains/ManufOrderSheetLine.xml:13"
+"Conformités","","","resources/domains/OperationOrder.xml:63"
 "Consolidate invoice movelines ?","","","resources/domains/General.xml:15"
 "Consultation Date","","","resources/domains/Project.xml:65"
 "Consumed products","","","resources/domains/OperationOrder.xml:30
@@ -1021,8 +1022,8 @@ resources/views/Resource.xml:39"
 resources/views/Partner.xml:327
 resources/views/Partner.xml:224"
 "Create personalized offer","","","resources/views/Selects.xml:420"
-"Create production order","","","resources/views/Product.xml:287
-resources/views/Product.xml:120"
+"Create production order","","","resources/views/Product.xml:125
+resources/views/Product.xml:292"
 "Create proposition","","","resources/views/Resource.xml:40"
 "Create task","","","resources/views/Partner.xml:53
 resources/views/Partner.xml:321
@@ -1080,7 +1081,7 @@ resources/domains/Overtime.xml:12"
 "Currency conversion lines","","","resources/views/CurrencyConversionLine.xml:6"
 "Currency conversion table","","","resources/domains/General.xml:20"
 "Current Function","","","resources/domains/Candidate.xml:16"
-"Current Products","","","resources/views/Product.xml:258"
+"Current Products","","","resources/views/Product.xml:263"
 "Current Qty","","","resources/domains/InventoryLine.xml:12
 resources/domains/LocationLine.xml:13"
 "Cust. Credit note Journal","","","resources/domains/AccountConfig.xml:17"
@@ -1437,7 +1438,7 @@ resources/views/IndicatorGeneratorGrouping.xml:16"
 "Expense","","","resources/domains/ExpenseLine.xml:10
 resources/views/Selects.xml:256"
 "Expense lines","","","resources/domains/Expense.xml:14"
-"Expenses","","","resources/views/Product.xml:276
+"Expenses","","","resources/views/Product.xml:281
 resources/views/MenuConsultant.xml:94"
 "Expenses list","","","resources/domains/Employee.xml:45"
 "Experience","","","resources/domains/JobOffer.xml:28"
@@ -1598,7 +1599,7 @@ resources/views/menu.xml:419"
 "Generate out. moves for non storable products ?","","","resources/domains/SupplychainConfig.xml:20"
 "Generate out. moves for storable products ?","","","resources/domains/SupplychainConfig.xml:19"
 "Generate product variant wizard","","","resources/views/GenerateProductVariantWizard.xml:8"
-"Generate product variants","","","resources/views/Product.xml:139"
+"Generate product variants","","","resources/views/Product.xml:144"
 "Generated PDF file path","","","resources/domains/Mail.xml:25"
 "Generated email files name prefix","","","resources/domains/Company.xml:35"
 "Generated file path","","","resources/domains/BirtTemplate.xml:13"
@@ -1976,7 +1977,7 @@ resources/domains/SnSearchResult.xml:18"
 "LinkedIn profile link","","","resources/domains/SnProfile.xml:22"
 "Linkedin","","","resources/domains/SnStatusUpdates.xml:19"
 "Linkedin update ref","","","resources/domains/SnStatusUpdates.xml:21"
-"Links","","","resources/views/Product.xml:152"
+"Links","","","resources/views/Product.xml:157"
 "List of invoices to pay","","","resources/domains/PaymentVoucher.xml:21"
 "List of invoices/schedule lines with remaining amount to pay","","","resources/domains/PaymentVoucher.xml:20"
 "Liste des RUM","","","resources/domains/Partner.xml:88"
@@ -2047,8 +2048,6 @@ resources/domains/LeaveRequest.xml:21"
 "Manager Profile","","","resources/domains/Employee.xml:51"
 "Manager Type","","","resources/domains/AlarmEngine.xml:14"
 "Manual validation","","","resources/domains/ReminderMethodLine.xml:16"
-"Manuf order","","","resources/domains/ManufOrderSheetLine.xml:10"
-"Manuf order accordance","","","resources/domains/ManufOrder.xml:63"
 "Manufacturing","","","resources/views/Selects.xml:234"
 "Manufacturing order","","","resources/domains/StockMoveLine.xml:26
 resources/domains/StockMoveLine.xml:27
@@ -2296,7 +2295,6 @@ resources/views/Selects.xml:169
 resources/views/Selects.xml:175"
 "Nom","","","resources/domains/Target.xml:10"
 "Nom du débiteur","","","resources/domains/Rum.xml:11"
-"Non conforme","","","resources/domains/ManufOrderSheetLine.xml:14"
 "Non-profit","","","resources/views/Selects.xml:235"
 "None","","","resources/views/Selects.xml:260"
 "Not contains","","","resources/views/Selects.xml:480"
@@ -2323,8 +2321,8 @@ resources/domains/Task.xml:40"
 "Object","","","resources/domains/RoutingActionCreate.xml:10"
 "Object Name","","","resources/domains/ObjectList.xml:10"
 "Objectives","","","resources/domains/Position.xml:23"
-"Observations (état des filetages, aspect général, état des surfaces d'appuis...) :","","","resources/domains/ManufOrder.xml:62"
-"Obsolete Products","","","resources/views/Product.xml:279"
+"Observations (état des filetages, aspect général, état des surfaces d'appuis...) :","","","resources/domains/OperationOrder.xml:62"
+"Obsolete Products","","","resources/views/Product.xml:284"
 "October","","","resources/views/Selects.xml:295"
 "Offer title","","","resources/domains/JobOffer.xml:9"
 "Office name","","","resources/domains/Lead.xml:16"
@@ -2340,7 +2338,8 @@ resources/domains/Task.xml:40"
 "Operation order","","","resources/domains/ProdHumanResource.xml:17
 resources/domains/StockMoveLine.xml:29
 resources/domains/ProdResource.xml:33
-resources/domains/TimesheetLine.xml:24"
+resources/domains/TimesheetLine.xml:24
+resources/domains/ManufOrderSheetLine.xml:10"
 "Operation orders","","","resources/domains/ManufOrder.xml:16"
 "Operations","","","resources/domains/ProdProcess.xml:12"
 "Operator","","","resources/domains/TemplateSpreadSheetCriteria.xml:8"
@@ -2357,7 +2356,7 @@ resources/domains/PurchaseOrder.xml:22"
 "Organization","","","resources/views/menu.xml:291"
 "Other","","","resources/views/Selects.xml:240"
 "Other Partner","","","resources/domains/CandidateOtherOpportunity.xml:10"
-"Other variants","","","resources/views/Product.xml:246"
+"Other variants","","","resources/views/Product.xml:251"
 "Overdue moveline","","","resources/domains/PaymentVoucher.xml:17"
 "Overdue payment","","","resources/domains/Reimbursement.xml:14"
 "Overpayment before","","","resources/domains/AccountClearance.xml:16"
@@ -2529,8 +2528,8 @@ resources/domains/Candidate.xml:12"
 "Pick list","","","resources/views/Address.xml:46"
 "Picklist QAS","","","resources/domains/PickListEntry.xml:10"
 "Picture","","","resources/domains/Lead.xml:41
-resources/domains/ManufOrder.xml:61
-resources/domains/Product.xml:16"
+resources/domains/Product.xml:16
+resources/domains/OperationOrder.xml:61"
 "Picture Link","","","resources/domains/SnSearchResult.xml:25"
 "Picture Url","","","resources/domains/SnProfile.xml:29
 resources/domains/SnProfile.xml:30
@@ -2638,6 +2637,7 @@ resources/views/menu.xml:190"
 resources/views/ProductFamily.xml:11
 resources/domains/Inventory.xml:19"
 "Product launch Date","","","resources/domains/Product.xml:37"
+"Product model","","","resources/domains/StockMoveLine.xml:37"
 "Product name","","","resources/domains/SalesOrderLine.xml:16"
 "Product pulled off market Date","","","resources/domains/Product.xml:38"
 "Product sheet","","","resources/views/Product.xml:31"
@@ -2685,7 +2685,7 @@ resources/domains/ProductVariantConfig.xml:13"
 "ProductSheet.title","","","java/com/axelor/apps/base/report/ITranslation.java:35"
 "ProductSheet.warranty","","","java/com/axelor/apps/base/report/ITranslation.java:38"
 "Production Qty by tracking","","","resources/domains/TrackingNumberConfiguration.xml:23"
-"Production informations","","","resources/views/Product.xml:117"
+"Production informations","","","resources/views/Product.xml:122"
 "Production invoicing type","","","resources/domains/Project.xml:78"
 "Production location","","","resources/domains/ProdProcess.xml:16"
 "Production order","","","resources/domains/ManufOrder.xml:14
@@ -2703,9 +2703,9 @@ resources/views/menu.xml:149
 resources/views/ProductCategory.xml:35
 resources/views/Product.xml:6
 resources/views/menu.xml:155"
-"Products With Variant","","","resources/views/Product.xml:267"
+"Products With Variant","","","resources/views/Product.xml:272"
 "Products families","","","resources/views/ProductFamily.xml:6"
-"Products filters","","","resources/views/Product.xml:257"
+"Products filters","","","resources/views/Product.xml:262"
 "Products list","","","resources/domains/PurchaseOrder.xml:23"
 "Products models","","","resources/views/menu.xml:165
 resources/views/menu.xml:168"
@@ -2713,7 +2713,7 @@ resources/views/menu.xml:168"
 resources/domains/ProdProcessLine.xml:18
 resources/domains/OperationOrder.xml:29"
 "Products to produce","","","resources/domains/ManufOrder.xml:32"
-"Products variants","","","resources/views/Product.xml:239"
+"Products variants","","","resources/views/Product.xml:244"
 "Products/Goods","","","resources/views/menu.xml:33"
 "Prof.","","","resources/views/Selects.xml:165"
 "Professional experience","","","resources/domains/Candidate.xml:49"
@@ -2726,8 +2726,8 @@ resources/views/Selects.xml:255
 resources/domains/ProdHumanResource.xml:13
 resources/domains/Resource.xml:20"
 "Profile catagory","","","resources/domains/Price.xml:9"
-"Profiles","","","resources/views/Partner.xml:302
-resources/views/Product.xml:273"
+"Profiles","","","resources/views/Product.xml:278
+resources/views/Partner.xml:302"
 "Profit accounts","","","resources/domains/AccountConfig.xml:85"
 "Progress","","","resources/domains/Expense.xml:16
 resources/domains/Training.xml:20
@@ -2767,8 +2767,8 @@ resources/domains/StockMove.xml:37
 resources/domains/PurchaseOrderLineTax.xml:8
 resources/domains/PurchaseOrderSupplierLine.xml:10
 resources/views/Selects.xml:387"
-"Purchase order historical","","","resources/views/Product.xml:346"
-"Purchase order in progress","","","resources/views/Product.xml:338"
+"Purchase order historical","","","resources/views/Product.xml:351"
+"Purchase order in progress","","","resources/views/Product.xml:343"
 "Purchase order line","","","resources/domains/StockMoveLine.xml:23"
 "Purchase order?","","","resources/domains/PurchaseOrder.xml:52"
 "Purchase price W.T.","","","resources/domains/Product.xml:30"
@@ -2826,7 +2826,7 @@ resources/domains/AlarmEngine.xml:19"
 resources/domains/TaxLine.xml:14"
 "Rate Date","","","resources/views/CurrencyConversionLine.xml:38"
 "Rate updation","","","resources/views/CurrencyConversionLine.xml:41"
-"Raw Materials","","","resources/views/Product.xml:270"
+"Raw Materials","","","resources/views/Product.xml:275"
 "Raw material","","","resources/domains/BillOfMaterial.xml:15
 resources/domains/Product.xml:26"
 "Re-export the bank file","","","resources/domains/AccountingBatch.xml:31"
@@ -3166,7 +3166,7 @@ resources/views/menu.xml:489"
 "Server Type","","","resources/domains/MailAccount.xml:11"
 "Service","","","resources/domains/Training.xml:14
 resources/views/Selects.xml:244"
-"Service Products","","","resources/views/Product.xml:264"
+"Service Products","","","resources/views/Product.xml:269"
 "Services","","","resources/views/Selects.xml:223"
 "Settings","","","resources/views/Partner.xml:129
 resources/views/Partner.xml:265"
@@ -3311,15 +3311,15 @@ resources/domains/Project.xml:25"
 "Step","","","resources/domains/Resource.xml:12"
 "Stock","","","resources/views/Charts.xml:87
 resources/views/Product.xml:99
-resources/views/Product.xml:164
 resources/views/Charts.xml:40
-resources/views/Product.xml:170"
+resources/views/Product.xml:175
+resources/views/Product.xml:169"
 "Stock History","","","resources/views/Charts.xml:146
 resources/views/Charts.xml:206"
-"Stock Moves consumption historical","","","resources/views/Product.xml:330"
-"Stock Moves consumption planned","","","resources/views/Product.xml:322"
-"Stock Moves historical","","","resources/views/Product.xml:306"
-"Stock Moves planned","","","resources/views/Product.xml:314"
+"Stock Moves consumption historical","","","resources/views/Product.xml:335"
+"Stock Moves consumption planned","","","resources/views/Product.xml:327"
+"Stock Moves historical","","","resources/views/Product.xml:311"
+"Stock Moves planned","","","resources/views/Product.xml:319"
 "Stock move","","","resources/domains/StockMoveLine.xml:10"
 "Stock move content","","","resources/domains/StockMove.xml:29"
 "Stock move in","","","resources/domains/OperationOrder.xml:43
@@ -3328,7 +3328,7 @@ resources/domains/ManufOrder.xml:51"
 resources/domains/ManufOrder.xml:54"
 "Stock prévisionnel","","","resources/views/Charts.xml:7"
 "Storable","","","resources/views/Selects.xml:245"
-"Storable Products","","","resources/views/Product.xml:261"
+"Storable Products","","","resources/views/Product.xml:266"
 "Sub total","","","resources/domains/OvertimeLine.xml:15"
 "Subject","","","resources/domains/MailModel.xml:14
 resources/domains/Message.xml:11
@@ -3369,7 +3369,7 @@ resources/views/SupplierCatalog.xml:6"
 resources/domains/AccountConfig.xml:35"
 "Supplier invoice","","","resources/views/Selects.xml:367"
 "Supplier ref.","","","resources/domains/PurchaseOrder.xml:28"
-"Supplier requests historical","","","resources/views/Product.xml:356"
+"Supplier requests historical","","","resources/views/Product.xml:361"
 "Supplier virtual location","","","resources/domains/SupplychainConfig.xml:16"
 "Suppliers","","","resources/views/Charts.xml:393"
 "Suppliers by country","","","resources/views/Charts.xml:374
@@ -3613,7 +3613,7 @@ resources/domains/TrackingNumber.xml:14"
 resources/views/TrackingNumber.xml:6"
 "Tracking Number Configuration","","","resources/views/TrackingNumberConfiguration.xml:21
 resources/views/TrackingNumberConfiguration.xml:6"
-"Tracking number","","","resources/views/Product.xml:123"
+"Tracking number","","","resources/views/Product.xml:128"
 "Tracking number configuration","","","resources/views/menu.xml:202
 resources/views/menu.xml:199"
 "Tracking page","","","resources/domains/MarketingSettings.xml:10"
@@ -3718,8 +3718,8 @@ resources/domains/OvertimeLine.xml:13"
 "Upcoming events","","","resources/views/Partner.xml:334"
 "Update & Historize conversion rate","","","resources/views/General.xml:40"
 "Update Time","","","resources/domains/SnStatusUpdates.xml:25"
-"Update current product prices and variants","","","resources/views/Product.xml:147"
-"Update products prices","","","resources/views/Product.xml:147"
+"Update current product prices and variants","","","resources/views/Product.xml:152"
+"Update products prices","","","resources/views/Product.xml:152"
 "Upper reimbursement limit","","","resources/domains/AccountConfig.xml:63"
 "Url","","","resources/domains/Calendar.xml:11"
 "Url returned by Paybox once payment cancelled","","","resources/domains/PayboxConfig.xml:24"
@@ -3786,11 +3786,12 @@ resources/domains/RoutingRule.xml:14
 resources/domains/IrrecoverableReportLine.xml:14
 resources/domains/BirtTemplateParameter.xml:11"
 "Variables list returned by Paybox","","","resources/domains/PayboxConfig.xml:21"
-"Variants","","","resources/views/Product.xml:136
+"Variants","","","resources/views/Product.xml:141
 resources/domains/InvoiceLine.xml:27"
 "Variation","","","resources/views/CurrencyConversionLine.xml:43
 resources/domains/CurrencyConversionLine.xml:17"
 "Vehicle Fiscal Power","","","resources/domains/Employee.xml:42"
+"Version","","","resources/domains/Product.xml:68"
 "View Products","","","resources/views/ProductFamily.xml:13
 resources/views/ProductCategory.xml:15"
 "View map","","","resources/views/Address.xml:34"
@@ -3967,6 +3968,11 @@ resources/views/Selects.xml:176"
 "or Available from","","","resources/domains/Candidate.xml:33"
 "tiers","","","resources/domains/BankDetails.xml:11"
 "type","","","resources/domains/PaymentMode.xml:16"
+"v1","","","resources/views/Selects.xml:595"
+"v2","","","resources/views/Selects.xml:596"
+"v3","","","resources/views/Selects.xml:597"
+"v4","","","resources/views/Selects.xml:598"
+"v5","","","resources/views/Selects.xml:599"
 "week(s)","","","resources/views/Scheduler.xml:29"
 "year(s)","","","resources/views/Scheduler.xml:52"
 "Ø1","","","resources/domains/ManufOrderSheetLine.xml:12"

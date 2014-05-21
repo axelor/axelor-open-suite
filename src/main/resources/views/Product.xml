@@ -38,7 +38,7 @@
 					<field name="name" showTitle="false" colSpan="3" css="highlight" placeholder="Name"/>
 					<spacer/>
 					<field name="code" showTitle="false" css="highlight" placeholder="Code"/>
-					<spacer/>
+					<field name="versionSelect"/>
 					<break/>
 					<group title="Product typology" colSpan="3" cols="2" colWidths="30%,70%">
 						<field name="productTypeSelect" onChange="action-product-record-sale-supply-select,action-product-validate-sale-supply-select"/>
@@ -103,16 +103,21 @@
 				<button name="showAllStockMoveLine" title="Show all stock move" colSpan="2" onClick="action-product-view-stock-move-line"/>
 				<spacer/>
 				<break/>
-				<group showIf="true" colSpan="4">
+				<group colSpan="4">
 					<portlet action="action-product-view-stock" colSpan="4"/>
 					<portlet action="chart:chart.stock.report.for.product" height="200" colSpan="4"/>
 					<portlet action="chart:chart.stock.history.report.for.product" height="200" colSpan="4"/>
 				</group>
-				<group showIf="false" colSpan="4">
-					<portlet action="action-product-view-stock-product-variant" colSpan="4"/>
-					<portlet action="chart:chart.stock.report.for.product.variant" height="200" colSpan="4"/>
-					<portlet action="chart:chart.stock.history.report.for.product.variant" height="200" colSpan="4"/>
-				</group>
+<!-- 				<group showIf="true" colSpan="4"> -->
+<!-- 					<portlet action="action-product-view-stock" colSpan="4"/> -->
+<!-- 					<portlet action="chart:chart.stock.report.for.product" height="200" colSpan="4"/> -->
+<!-- 					<portlet action="chart:chart.stock.history.report.for.product" height="200" colSpan="4"/> -->
+<!-- 				</group> -->
+<!-- 				<group showIf="false" colSpan="4"> -->
+<!-- 					<portlet action="action-product-view-stock-product-variant" colSpan="4"/> -->
+<!-- 					<portlet action="chart:chart.stock.report.for.product.variant" height="200" colSpan="4"/> -->
+<!-- 					<portlet action="chart:chart.stock.history.report.for.product.variant" height="200" colSpan="4"/> -->
+<!-- 				</group> -->
 			</page>
 			<page title="Production informations" showIf="productTypeSelect != 'service'">
 				<field name="defaultBillOfMaterial" domain="self.product.id = :id" onSelect="action-product-attrs-bill-of-material-domain"/>

@@ -37,6 +37,5 @@
     <many-to-one name="purchaseOrder" ref="com.axelor.apps.supplychain.db.PurchaseOrder" title="Purchase order"/>
     <many-to-one name="invoice" ref="com.axelor.apps.account.db.Invoice" title="Invoice"/>
     
-    
   </entity>
 </domain-models>

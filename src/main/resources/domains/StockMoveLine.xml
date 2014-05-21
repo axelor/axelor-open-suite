@@ -34,5 +34,7 @@
     <decimal name="shippedQty" title="Shipped qty"/>
     <date name="shippedDate" title="Shipped date"/>
     
+    <many-to-one name="productModel" ref="com.axelor.apps.base.db.Product" title="Product model"/>
+    
   </entity>
 </domain-models>

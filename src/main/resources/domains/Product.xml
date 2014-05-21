@@ -65,6 +65,8 @@
 	<decimal name="lastProductionPrice" title="Last production price" precision="20" scale="5"/>
 	<many-to-one name="defaultBillOfMaterial" ref="com.axelor.apps.production.db.BillOfMaterial" title="Default BOM"/>
   
+  	<integer name="versionSelect" title="Version" selection="base.product.version.select"/>
+  
   </entity>
 
 </domain-models>
