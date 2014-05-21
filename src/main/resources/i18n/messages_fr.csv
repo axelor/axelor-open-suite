@@ -148,7 +148,7 @@ resources/views/EventAttendee.xml:6
 resources/views/Event.xml:207
 resources/views/Event.xml:113
 resources/views/Event.xml:288"
-"Content","","","resources/views/Event.xml:444"
+"Content","Contenu","","resources/views/Event.xml:444"
 "Context","Contexte","","resources/views/Opportunity.xml:80
 resources/views/ConvertLeadWizard.xml:318"
 "Convert into Contact ?","Convertir en Contact ?","","resources/views/ConvertLeadWizard.xml:13"
