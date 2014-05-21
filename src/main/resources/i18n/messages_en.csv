@@ -5,6 +5,7 @@ resources/views/PurchaseOrderSupplierLine.xml:25"
 "Cancel","","","resources/views/PurchaseOrderSupplierLine.xml:27
 resources/views/PurchaseOrderLine.xml:27"
 "Canceled","","","resources/views/Selects.xml:14"
+"Generate all suppliers requests","","","resources/views/PurchaseOrder.xml:12"
 "Generate suppliers purchases orders","","","resources/views/PurchaseOrder.xml:10"
 "My R.F.Q.","","","resources/views/SupplierView.xml:16
 resources/views/SupplierView.xml:37"
@@ -31,15 +32,22 @@ resources/views/PurchaseOrderSupplierLine.xml:28"
 "Stock move reference","","","resources/views/SupplierView.xml:66"
 "Stock moves","","","resources/views/SupplierView.xml:53"
 "Submit","","","resources/views/PurchaseOrderLine.xml:56
-resources/views/PurchaseOrderSupplierLine.xml:56"
+resources/views/PurchaseOrderSupplierLine.xml:57"
 "Submitted","","","resources/views/Selects.xml:11"
 "Supplier RFQ/PO","","","resources/views/PurchaseOrder.xml:6"
-"Supplier request","","","resources/views/PurchaseOrderSupplierLine.xml:45
-resources/views/PurchaseOrderSupplierLine.xml:16
+"Supplier request","","","resources/views/PurchaseOrderSupplierLine.xml:16
+resources/views/PurchaseOrderLine.xml:16
 resources/views/PurchaseOrderLine.xml:45
-resources/views/PurchaseOrderLine.xml:16"
-"Suppliers purchases","","","resources/views/PurchaseOrder.xml:19"
-"suppliers requests","","","resources/views/PurchaseOrderSupplierLine.xml:32
-resources/views/PurchaseOrderLine.xml:6
+resources/views/PurchaseOrderSupplierLine.xml:46"
+"Supplier requests","","","resources/views/menu.xml:11
+resources/views/menu.xml:8"
+"Supplier requests completed","","","resources/views/menu.xml:21
+resources/views/menu.xml:18"
+"Supplier requests historical","","","resources/views/menu.xml:31
+resources/views/menu.xml:28"
+"Suppliers purchases","","","resources/views/PurchaseOrder.xml:24"
+"Write to the supplier","","","resources/views/PurchaseOrderSupplierLine.xml:29"
+"suppliers requests","","","resources/views/PurchaseOrderSupplierLine.xml:33
 resources/views/PurchaseOrderSupplierLine.xml:6
+resources/views/PurchaseOrderLine.xml:6
 resources/views/PurchaseOrderLine.xml:32"
