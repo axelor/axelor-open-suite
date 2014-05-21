@@ -1,11 +1,11 @@
 "key","message","comment","context"
 "50 Latest Supplier Orders","","","resources/views/portal.xml:319"
 "Action(s)","Action(s)","","resources/views/PurchaseOrder.xml:68
-resources/views/StockMove.xml:80
-resources/views/SalesOrder.xml:69"
+resources/views/SalesOrder.xml:69
+resources/views/StockMove.xml:80"
 "Actions","Actions","","resources/views/SalesOrder.xml:37
-resources/views/SalesOrder.xml:8
-resources/views/Inventory.xml:40"
+resources/views/Inventory.xml:40
+resources/views/SalesOrder.xml:8"
 "Alert","Alerte","","resources/views/Selects.xml:52"
 "All Purchases Docs","Tous les achats","","resources/views/menu.xml:210"
 "All Sales Docs","Ttes les ventes","","resources/views/menu.xml:181"
@@ -20,7 +20,7 @@ resources/views/Charts.xml:414
 resources/views/Charts.xml:385"
 "Arrivals History","Historique réceptions","","resources/views/StockMove.xml:236"
 "Buyer","","","resources/views/Charts.xml:801"
-"Cancel","","","resources/views/PurchaseOrder.xml:76
+"Cancel","Annuler","","resources/views/PurchaseOrder.xml:76
 resources/views/SalesOrder.xml:74
 resources/views/StockMove.xml:83
 resources/views/Inventory.xml:43"
@@ -32,32 +32,32 @@ resources/views/Selects.xml:63"
 resources/views/menu.xml:416"
 "Category Dashboard","","","resources/views/menu.xml:428"
 "Category Db","","","resources/views/menu.xml:419"
-"Clear purchase order","","","resources/views/PurchaseOrder.xml:79"
+"Clear purchase order","Supprimer le contenu Cmde","","resources/views/PurchaseOrder.xml:79"
 "Closed Purchase orders","","","resources/views/portal.xml:483"
-"Completed","","","resources/views/PurchaseOrder.xml:75"
-"Compute","","","resources/views/SalesOrder.xml:71
+"Completed","Terminer","","resources/views/PurchaseOrder.xml:75"
+"Compute","Calculer","","resources/views/SalesOrder.xml:71
 resources/views/PurchaseOrder.xml:70"
 "Configuration","Configuration","","resources/views/menu.xml:71
 resources/views/StockMove.xml:98"
-"Confirm","","","resources/views/SalesOrder.xml:72"
+"Confirm","Confirmer","","resources/views/SalesOrder.xml:72"
 "Contacts","Contacts","","resources/views/PurchaseOrder.xml:52"
 "Country","","","resources/views/Charts.xml:590
 resources/views/Charts.xml:553
 resources/views/Charts.xml:631
 resources/views/Charts.xml:384"
 "Create SO","Créer Devis","","resources/views/menu.xml:170"
-"Create inventory","","","resources/views/CreateInventoryWizard.xml:7
+"Create inventory","Créer inventaire","","resources/views/CreateInventoryWizard.xml:7
 resources/views/Location.xml:22
 resources/views/Location.xml:63"
-"Created by","","","resources/views/SupplychainBatch.xml:27"
-"Created on","","","resources/views/SupplychainBatch.xml:26"
+"Created by","Créé par","","resources/views/SupplychainBatch.xml:27"
+"Created on","Créé le","","resources/views/SupplychainBatch.xml:26"
 "Current","Actuel","","resources/views/Selects.xml:47"
 "Current Purchase Orders","","","resources/views/portal.xml:288"
-"Customer Deliveries","","","resources/views/menu.xml:13
+"Customer Deliveries","Livraisons Client","","resources/views/menu.xml:13
 resources/views/menu.xml:10"
 "Customer average delivery delay","","","resources/views/Charts.xml:672
 resources/views/portal.xml:185"
-"Customer deliveries","","","resources/views/menu.xml:246
+"Customer deliveries","Livraisons clients","","resources/views/menu.xml:246
 resources/views/menu.xml:243"
 "Customer deliveries by country","","","resources/views/portal.xml:161
 resources/views/Charts.xml:524"
@@ -82,19 +82,19 @@ resources/views/portal.xml:8"
 "Delivery","Livraison","","resources/views/PurchaseOrder.xml:60
 resources/views/SalesOrderLine.xml:51
 resources/views/PurchaseOrderLine.xml:60"
-"Description","","","resources/views/Inventory.xml:27
+"Description","Description","","resources/views/Inventory.xml:27
 resources/views/CreateInventoryWizard.xml:16
 resources/views/SalesOrder.xml:115"
 "Details","Détails","","resources/views/PurchaseOrderLine.xml:56"
 "Discount","Remise","","resources/views/SalesOrderLine.xml:33
 resources/views/SalesOrderSubLine.xml:32
 resources/views/PurchaseOrderLine.xml:51"
-"Draft","","","resources/views/StockMove.xml:84
+"Draft","Brouillon","","resources/views/StockMove.xml:84
 resources/views/Inventory.xml:44
 resources/views/Selects.xml:27
 resources/views/Selects.xml:34
-resources/views/PurchaseOrder.xml:71
-resources/views/Selects.xml:58"
+resources/views/Selects.xml:58
+resources/views/PurchaseOrder.xml:71"
 "Draft invoice N days after order validation","Facture brouillons N jrs après validation Cmde","","resources/views/Selects.xml:68"
 "Excel Export","Export Excel","","resources/views/SalesOrder.xml:33"
 "Exclude out of stock products ?","Exclure produits sans stock ?","","resources/views/CreateInventoryWizard.xml:22"
@@ -105,7 +105,7 @@ resources/views/Selects.xml:58"
 resources/views/portal.xml:599
 resources/views/menu.xml:433"
 "Family Db","","","resources/views/menu.xml:425"
-"Fill inventory","","","resources/views/Inventory.xml:37"
+"Fill inventory","Compléter l'inventaire","","resources/views/Inventory.xml:37"
 "Fill inventory with","Remplir l'inventaire avec","","resources/views/CreateInventoryWizard.xml:19
 resources/views/Inventory.xml:31"
 "Financial terms","Termes financiers","","resources/views/SalesOrder.xml:105
@@ -137,9 +137,9 @@ resources/views/Charts.xml:249
 resources/views/Charts.xml:1221"
 "FromStock","Stock","","resources/views/Selects.xml:10"
 "Future","Futur","","resources/views/Selects.xml:48"
-"Generate control invoice","","","resources/views/PurchaseOrder.xml:78"
-"Generate invoice","","","resources/views/StockMove.xml:85
-resources/views/SalesOrder.xml:75"
+"Generate control invoice","Générer facture","","resources/views/PurchaseOrder.xml:78"
+"Generate invoice","Générer facture","","resources/views/SalesOrder.xml:75
+resources/views/StockMove.xml:85"
 "Generate suppliers requests","","","resources/views/PurchaseOrderLine.xml:69"
 "Historical Period","","","resources/views/Charts.xml:560
 resources/views/Charts.xml:527
@@ -157,10 +157,10 @@ resources/views/Inventory.xml:25"
 "Information","","","resources/views/SupplychainBatch.xml:25"
 "Internal","Interne","","resources/views/Selects.xml:16"
 "Internal Stock Move filters","Filtres Mvt Stock internes","","resources/views/StockMove.xml:244"
-"Internal Stock Moves","","","resources/views/menu.xml:39
+"Internal Stock Moves","Mouvements Internes","","resources/views/menu.xml:39
 resources/views/menu.xml:36"
 "Internal move","Mouvement Interne","","resources/views/Selects.xml:41"
-"Internal moves","","","resources/views/menu.xml:257
+"Internal moves","Mouvements internes","","resources/views/menu.xml:257
 resources/views/menu.xml:254"
 "Inventories","Inventaires","","resources/views/menu.xml:52
 resources/views/menu.xml:55"
@@ -178,7 +178,7 @@ resources/views/Inventory.xml:6"
 resources/views/SalesOrder.xml:195
 resources/views/SalesOrder.xml:123
 resources/views/SalesOrder.xml:112"
-"Invoicing batch","","","resources/views/SupplychainBatch.xml:23"
+"Invoicing batch","Batch Facturation","","resources/views/SupplychainBatch.xml:23"
 "Invoicing follow-up","Suivi facturation","","resources/views/SalesOrderLine.xml:60"
 "Invoicing informations","Informations Facturation","","resources/views/SupplychainConfig.xml:29"
 "Invoicing page","Facturation","","resources/views/SupplychainBatch.xml:22"
@@ -187,7 +187,7 @@ resources/views/SalesOrder.xml:112"
 "Late customer deliveries","","","resources/views/portal.xml:366"
 "Late supplier arrivals","","","resources/views/portal.xml:380"
 "Links","Liens","","resources/views/PurchaseOrderLine.xml:65"
-"Location","","","resources/views/Charts.xml:1214
+"Location","Emplacement stock","","resources/views/Charts.xml:1214
 resources/views/CreateInventoryWizard.xml:13"
 "Location Lines","","","resources/views/Location.xml:38"
 "Location content","","","resources/views/Location.xml:68"
@@ -247,14 +247,14 @@ resources/views/menu.xml:123"
 "New Sale order","Nouv. Devis/Cmde client","","resources/views/menu.xml:95
 resources/views/menu.xml:98"
 "No Of Units","","","resources/views/Charts.xml:520"
-"Notes","","","resources/views/SalesOrderLine.xml:48
+"Notes","Remarques","","resources/views/SalesOrderLine.xml:48
 resources/views/PurchaseOrder.xml:105"
-"Number of Product per Category","","","resources/views/Charts.xml:1047
-resources/views/portal.xml:422"
+"Number of Product per Category","","","resources/views/portal.xml:422
+resources/views/Charts.xml:1047"
 "Number of Product per Family","","","resources/views/portal.xml:418
 resources/views/Charts.xml:1025"
 "Ongoing Purchase orders","","","resources/views/portal.xml:470"
-"Orders","","","resources/views/menu.xml:196
+"Orders","Commandes","","resources/views/menu.xml:196
 resources/views/menu.xml:222
 resources/views/Charts.xml:987
 resources/views/menu.xml:225
@@ -271,7 +271,7 @@ resources/views/portal.xml:301"
 "Partner Type","","","resources/views/Charts.xml:1308"
 "Percent","","","resources/views/Charts.xml:892"
 "Periodical processing","Traitements Périodiques","","resources/views/menu.xml:49"
-"Plan","","","resources/views/StockMove.xml:81
+"Plan","Planifier","","resources/views/StockMove.xml:81
 resources/views/Inventory.xml:41"
 "Plan a call","Plannifier un appel","","resources/views/SalesOrder.xml:10
 resources/views/SalesOrder.xml:39
@@ -285,20 +285,20 @@ resources/views/SalesOrder.xml:11"
 "Planned","Planifié","","resources/views/Selects.xml:35
 resources/views/Selects.xml:28"
 "Planned Inventories","Inventaires Planifiés","","resources/views/Inventory.xml:91"
-"Print","","","resources/views/SalesOrder.xml:22
+"Print","Imprimer","","resources/views/SalesOrder.xml:22
 resources/views/StockMove.xml:86
-resources/views/PurchaseOrder.xml:30
-resources/views/PurchaseOrder.xml:18
 resources/views/SalesOrder.xml:158
 resources/views/PurchaseOrder.xml:8
 resources/views/StockMove.xml:36
+resources/views/PurchaseOrder.xml:38
+resources/views/StockMove.xml:54
+resources/views/PurchaseOrder.xml:18
+resources/views/PurchaseOrder.xml:30
 resources/views/Location.xml:8
 resources/views/Inventory.xml:20
 resources/views/SalesOrder.xml:31
-resources/views/PurchaseOrder.xml:38
 resources/views/SalesOrder.xml:150
-resources/views/StockMove.xml:18
-resources/views/StockMove.xml:54"
+resources/views/StockMove.xml:18"
 "Print StockMove(s)","Imprimer","","resources/views/StockMove.xml:8
 resources/views/StockMove.xml:42
 resources/views/StockMove.xml:24"
@@ -319,12 +319,12 @@ resources/views/Charts.xml:1021"
 "Product Family Sales Turnover this year vs last year","","","resources/views/portal.xml:109
 resources/views/Charts.xml:174"
 "Product Type","","","resources/views/Charts.xml:1088"
-"Product category","","","resources/views/CreateInventoryWizard.xml:21"
+"Product category","Catégorie produit","","resources/views/CreateInventoryWizard.xml:21"
 "Product deliveries in qty by country","","","resources/views/Charts.xml:557
 resources/views/portal.xml:167"
 "Product deliveries in qty by country by family","","","resources/views/Charts.xml:595
 resources/views/portal.xml:173"
-"Product family","","","resources/views/CreateInventoryWizard.xml:20"
+"Product family","Famille produit","","resources/views/CreateInventoryWizard.xml:20"
 "Product launches/withdrawal each month","","","resources/views/portal.xml:430
 resources/views/Charts.xml:1098"
 "Product sales turnover (Excl. Tax) last 12 month","","","resources/views/Charts.xml:1174
@@ -332,8 +332,8 @@ resources/views/portal.xml:442"
 "Product sales turnover (Excl. Tax) per month","","","resources/views/Charts.xml:1147
 resources/views/portal.xml:436"
 "Product soon out of stock by location","","","resources/views/portal.xml:387"
-"Product type distribution","","","resources/views/Charts.xml:1069
-resources/views/portal.xml:426"
+"Product type distribution","","","resources/views/portal.xml:426
+resources/views/Charts.xml:1069"
 "Production Stock Move in Planned","","","resources/views/portal.xml:394"
 "Production Stock Move out Planned","","","resources/views/portal.xml:400"
 "Production order","Ordre de fabrication","","resources/views/Selects.xml:54"
@@ -352,7 +352,7 @@ resources/views/Charts.xml:1089"
 "Purchase Manager Db","","","resources/views/menu.xml:308"
 "Purchase Order Dashboard","","","resources/views/menu.xml:319"
 "Purchase Order Db","","","resources/views/menu.xml:316"
-"Purchase order","","","resources/views/Selects.xml:53"
+"Purchase order","Devis fournisseurs","","resources/views/Selects.xml:53"
 "Purchase orders","Devis/Cmdes fournisseurs","","resources/views/menu.xml:132
 resources/views/menu.xml:135"
 "Purchased amount by family","","","resources/views/Charts.xml:806
@@ -378,18 +378,18 @@ resources/views/menu.xml:397"
 resources/views/Charts.xml:591
 resources/views/Charts.xml:733
 resources/views/Charts.xml:632"
-"Quotes","","","resources/views/menu.xml:184
+"Quotes","Devis","","resources/views/menu.xml:184
 resources/views/menu.xml:186"
-"RFQ","","","resources/views/menu.xml:215
+"RFQ","Demandes de cotation","","resources/views/menu.xml:215
 resources/views/menu.xml:212"
 "RFQ And PO To Validate","","","resources/views/portal.xml:295"
-"Realize","","","resources/views/Inventory.xml:42
+"Realize","Réalisé","","resources/views/Inventory.xml:42
 resources/views/StockMove.xml:82"
 "Realized","Réalisé","","resources/views/Selects.xml:29
 resources/views/Selects.xml:36"
-"Receipt","","","resources/views/PurchaseOrder.xml:73"
+"Receipt","Reçu","","resources/views/PurchaseOrder.xml:73"
 "Received","Reçu","","resources/views/Selects.xml:60"
-"Requested","","","resources/views/PurchaseOrder.xml:72
+"Requested","Demandé","","resources/views/PurchaseOrder.xml:72
 resources/views/Selects.xml:59"
 "Ressources Planning","Planning des ressources","","resources/views/SalesOrderLine.xml:68"
 "SO Tax line","Ligne de TVA","","resources/views/PurchaseOrderLineTax.xml:14
@@ -435,7 +435,7 @@ resources/views/portal.xml:133"
 "Sales distribution per product family","","","resources/views/portal.xml:127
 resources/views/Charts.xml:282"
 "Sales follow-up","Suivi devis","","resources/views/SalesOrder.xml:101"
-"Sales order","","","resources/views/menu.xml:173"
+"Sales order","Devis/Cmdes clients","","resources/views/menu.xml:173"
 "Sales per country","","","resources/views/portal.xml:139
 resources/views/Charts.xml:355"
 "Sales turnover comparison per month this year vs past years","","","resources/views/Charts.xml:11
@@ -457,7 +457,7 @@ resources/views/PurchaseOrder.xml:39"
 "Settings","Configurations","","resources/views/SalesOrderLine.xml:38"
 "Ship/Receive all products","","","resources/views/StockMove.xml:95"
 "Show Invoices","Les factures","","resources/views/SalesOrder.xml:124"
-"Show invoice","","","resources/views/PurchaseOrder.xml:77"
+"Show invoice","Factures fournisseurs","","resources/views/PurchaseOrder.xml:77"
 "Special split","","","resources/views/StockMove.xml:112
 resources/views/StockMove.xml:106
 resources/views/StockMove.xml:94"
@@ -467,8 +467,8 @@ resources/views/StockMove.xml:94"
 "Split in Qty of","","","resources/views/StockMove.xml:107"
 "Status","","","resources/views/Charts.xml:667"
 "Stock","Stock","","resources/views/menu.xml:232
-resources/views/Location.xml:39
-resources/views/menu.xml:334"
+resources/views/menu.xml:334
+resources/views/Location.xml:39"
 "Stock Dashboard","","","resources/views/menu.xml:327"
 "Stock Dashboard 1","","","resources/views/menu.xml:340"
 "Stock Dashboard 2","","","resources/views/menu.xml:349"
@@ -480,7 +480,7 @@ resources/views/menu.xml:334"
 "Stock Location content","Contenu emplacement","","resources/views/LocationLine.xml:25
 resources/views/LocationLine.xml:12
 resources/views/LocationLine.xml:39"
-"Stock Locations","","","resources/views/menu.xml:77
+"Stock Locations","Emplacements de stock","","resources/views/menu.xml:77
 resources/views/Location.xml:6
 resources/views/menu.xml:74"
 "Stock Locations content","Contenus emplacement","","resources/views/LocationLine.xml:6
@@ -493,8 +493,8 @@ resources/views/menu.xml:62"
 "Stock management","Stocks","","resources/views/menu.xml:7"
 "Stock move","Mouvement de stock","","resources/views/StockMove.xml:60"
 "Stock move details","Détails mouvement de stock","","resources/views/StockMove.xml:92"
-"Stock move informations","Informations sur Stocks Internes","","resources/views/StockMove.xml:70
-resources/views/SupplychainConfig.xml:23"
+"Stock move informations","Informations sur Stocks Internes","","resources/views/SupplychainConfig.xml:23
+resources/views/StockMove.xml:70"
 "Stock move line","Ligne mvt. de stock","","resources/views/StockMoveLine.xml:64
 resources/views/StockMoveLine.xml:38
 resources/views/StockMoveLine.xml:16"
@@ -502,20 +502,20 @@ resources/views/StockMoveLine.xml:16"
 resources/views/StockMoveLine.xml:56
 resources/views/StockMoveLine.xml:25"
 "Stock move reference","Références mouvement de stock","","resources/views/StockMove.xml:64"
-"Stock moves","Mvts de stock","","resources/views/StockMove.xml:40
+"Stock moves","Mvts de stock","","resources/views/menu.xml:237
 resources/views/StockMove.xml:22
-resources/views/menu.xml:237
+resources/views/StockMove.xml:40
 resources/views/menu.xml:234
 resources/views/StockMove.xml:6"
 "Subscription","Abonnement","","resources/views/SalesOrder.xml:127"
 "Subscription dates","Date d'abonnement","","resources/views/SalesOrder.xml:128"
-"Supplier Arrivals","","","resources/views/menu.xml:22
+"Supplier Arrivals","Receptions Fournisseur","","resources/views/menu.xml:22
 resources/views/menu.xml:25"
 "Supplier RFQ/PO","Dv/Cmde Fourn.","","resources/views/PurchaseOrder.xml:36"
 "Supplier RFQs/POs","Devis/Cmdes Fourn.","","resources/views/PurchaseOrder.xml:22
 resources/views/PurchaseOrder.xml:6"
 "Supplier arrivals filters","Filtres Arrivages fournisseurs","","resources/views/StockMove.xml:229"
-"Supplier deliveries","","","resources/views/menu.xml:265
+"Supplier deliveries","Receptions fournisseurs","","resources/views/menu.xml:265
 resources/views/menu.xml:268"
 "Supplier invoices","Factures fournisseur","","resources/views/PurchaseOrder.xml:197"
 "Suppliers managements","","","resources/views/PurchaseOrder.xml:108"
@@ -549,8 +549,8 @@ resources/views/Charts.xml:994
 resources/views/Charts.xml:1338
 resources/views/Charts.xml:220"
 "Today Arrivals","Réceptions du jour","","resources/views/StockMove.xml:230"
-"Total Purchased Amount by month","","","resources/views/Charts.xml:895
-resources/views/portal.xml:262"
+"Total Purchased Amount by month","","","resources/views/portal.xml:262
+resources/views/Charts.xml:895"
 "Total Purchased Qty by month","","","resources/views/portal.xml:268
 resources/views/Charts.xml:926"
 "Totals","Totaux","","resources/views/PurchaseOrder.xml:88"
@@ -575,8 +575,8 @@ resources/views/Charts.xml:1357"
 resources/views/Charts.xml:247"
 "Turnover (excl. Tax) per team","","","resources/views/Charts.xml:217
 resources/views/portal.xml:115"
-"Turnover per customer category","","","resources/views/Charts.xml:1313
-resources/views/portal.xml:577"
+"Turnover per customer category","","","resources/views/portal.xml:577
+resources/views/Charts.xml:1313"
 "Turnover per customer sector","","","resources/views/Charts.xml:1335
 resources/views/portal.xml:583"
 "Turnover per customer type","","","resources/views/Charts.xml:1287
@@ -586,15 +586,15 @@ resources/views/portal.xml:565"
 "Turnover per month per salesman (6 month)","","","resources/views/portal.xml:559
 resources/views/Charts.xml:1219"
 "Units","","","resources/views/Charts.xml:956"
-"Upcoming arrivals","","","resources/views/StockMove.xml:233"
+"Upcoming arrivals","Réceptions à venir","","resources/views/StockMove.xml:233"
 "Upcoming deliveries","","","resources/views/portal.xml:360"
 "Upcoming supplier arrivals","","","resources/views/portal.xml:373"
-"Validate","","","resources/views/CreateInventoryWizard.xml:32
+"Validate","Valider","","resources/views/CreateInventoryWizard.xml:32
 resources/views/SalesOrder.xml:73
 resources/views/PurchaseOrder.xml:74"
 "Validated","Validé","","resources/views/Selects.xml:61"
 "Value","","","resources/views/Charts.xml:1215"
-"View Direction","","","resources/views/StockMove.xml:87
+"View Direction","Voir itinéraire","","resources/views/StockMove.xml:87
 resources/views/StockMove.xml:55
 resources/views/StockMove.xml:37"
 "View location content","Voir contenu de l'emplacement","","resources/views/Location.xml:34"
