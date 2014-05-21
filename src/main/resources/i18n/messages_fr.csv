@@ -32,12 +32,12 @@ resources/views/Expense.xml:49
 resources/views/Overtime.xml:38"
 "Actions","Actions","","resources/views/Project.xml:32
 resources/views/Business.xml:29"
-"Additionnal information","Informations Personnelles","","resources/views/PersonalInfo.xml:8
-resources/views/Candidate.xml:121
+"Additionnal information","Informations Personnelles","","resources/views/Candidate.xml:121
+resources/views/PersonalInfo.xml:8
 resources/views/Employee.xml:54"
-"Advance","","","resources/views/Advance.xml:15"
+"Advance","Avance","","resources/views/Advance.xml:15"
 "Advances","Avances","","resources/views/Advance.xml:7"
-"Advantages","","","resources/views/Employee.xml:63"
+"Advantages","Avantages","","resources/views/Employee.xml:63"
 "Agencies","Agences","","resources/views/Agency.xml:6"
 "Agency","Agence","","resources/views/Agency.xml:11"
 "All Candidates","Tous les candidats","","resources/views/portal.xml:31"
@@ -48,21 +48,23 @@ resources/views/Employee.xml:54"
 "Analytic axis","","","resources/views/Business.xml:134"
 "Availability and Decision","Dispo et Décision","","resources/views/Candidate.xml:62"
 "Awareness","Notions","","resources/views/Competence.xml:33"
+"Back to draft","","","resources/views/LeaveRequest.xml:62"
 "Billable","Facturable","","resources/views/Project.xml:141"
 "Bonus","Bonus","","resources/views/Bonus.xml:14"
 "Bonuses","Les Bonus","","resources/views/Bonus.xml:7"
-"Business","Affaire","","resources/views/menu.xml:296
-resources/views/Business.xml:17
+"Business","Affaire","","resources/views/Business.xml:17
+resources/views/menu.xml:296
 resources/views/Business.xml:6
 resources/views/menu.xml:283
 resources/views/menu.xml:299"
 "CD","CD","","resources/views/Selects.xml:69"
 "CEA","CEA","","resources/views/Selects.xml:72"
-"Cancel","","","resources/views/Timesheet.xml:64
+"Cancel","Annuler","","resources/views/Timesheet.xml:64
 resources/views/LeaveRequest.xml:59"
 "Canceled","Annulé","","resources/views/Selects.xml:105
+resources/views/Selects.xml:274
 resources/views/Selects.xml:135"
-"Candidate","","","resources/views/Candidate.xml:23"
+"Candidate","Candidat","","resources/views/Candidate.xml:23"
 "Candidates","Candidats","","resources/views/menu.xml:43
 resources/views/Candidate.xml:7
 resources/views/menu.xml:46"
@@ -70,7 +72,7 @@ resources/views/menu.xml:46"
 "Civility","Civilité","","resources/views/Candidate.xml:35
 resources/views/Employee.xml:29"
 "Communication","Communication","","resources/views/Selects.xml:216"
-"Company","","","resources/views/Timesheet.xml:36"
+"Company","Société","","resources/views/Timesheet.xml:36"
 "Competences","Compétences","","resources/views/Competence.xml:38
 resources/views/Competence.xml:21
 resources/views/Candidate.xml:127"
@@ -80,53 +82,55 @@ resources/views/Planning.xml:26"
 "Complete time sheet configuration","Compléter la config. Feuille de Tps.","","resources/views/Timesheet.xml:49
 resources/views/Planning.xml:20"
 "Completed","Terminer","","resources/views/Selects.xml:104"
-"Compute","","","resources/views/Expense.xml:57
-resources/views/Candidate.xml:117"
+"Compute","Calculer","","resources/views/Candidate.xml:117
+resources/views/Expense.xml:57"
 "Configuration","Configuration","","resources/views/Planning.xml:18
 resources/views/menu.xml:234
 resources/views/Timesheet.xml:41"
-"Confirm","","","resources/views/Expense.xml:55
+"Confirm","Confirmer","","resources/views/Expense.xml:55
 resources/views/Timesheet.xml:62
 resources/views/Overtime.xml:44
 resources/views/LeaveRequest.xml:58"
-"Confirmed","Confirmé","","resources/views/Selects.xml:102"
+"Confirmed","Confirmé","","resources/views/Selects.xml:272
+resources/views/Selects.xml:102"
 "Confirmed Manager(5 - 10 ans)","Cadre Confirmé (5 - 10 ans)","","resources/views/Selects.xml:43"
 "Confirmed Worker (5 - 10 ans)","Non-Cadre Confirmé (5 - 10 ans)","","resources/views/Selects.xml:46"
-"Contact","","","resources/views/Employee.xml:28
+"Contact","Coordonnées","","resources/views/Employee.xml:28
 resources/views/Candidate.xml:34"
-"Context","","","resources/views/Task.xml:35
+"Context","Contexte","","resources/views/Task.xml:35
 resources/views/ExpenseLine.xml:44
 resources/views/Task.xml:154"
 "Contract Details","Détails contact","","resources/views/Employee.xml:55"
-"Cost","","","resources/views/Selects.xml:242"
+"Cost","Coût","","resources/views/Selects.xml:242"
 "Create pre-sales task","Créer Tâche avant vente","","resources/views/Business.xml:33"
 "Create production order","","","resources/views/Business.xml:35
 resources/views/Business.xml:246"
 "Current Employees","Employés actuels","","resources/views/Employee.xml:135"
-"Customer invoice lines","Lignes de facture client","","resources/views/Business.xml:209
-resources/views/Task.xml:284"
+"Customer invoice lines","Lignes de facture client","","resources/views/Task.xml:284
+resources/views/Business.xml:209"
 "Dashboard","Tableau de bord","","resources/views/portal.xml:7"
-"Date","","","resources/views/ExpenseLine.xml:39"
+"Date","Date","","resources/views/ExpenseLine.xml:39"
 "Day","Jour","","resources/views/Selects.xml:194
 resources/views/Selects.xml:114
 resources/views/Selects.xml:15
 resources/views/Selects.xml:266"
 "Day/Hour of generation","Jour/heure de génération","","resources/views/TimesheetPeriodConfig.xml:29
 resources/views/TimesheetPeriodConfig.xml:23"
-"Department","","","resources/views/Employee.xml:36"
-"Description","","","resources/views/Task.xml:132
+"Department","Département","","resources/views/Employee.xml:36"
+"Description","Description","","resources/views/Task.xml:132
 resources/views/Task.xml:169
 resources/views/Project.xml:48
 resources/views/Business.xml:47"
 "Details","Détails","","resources/views/ExpenseLine.xml:48"
 "Details of time spent on project/tasks","Lignes de temps passé sur les projets/tâche","","resources/views/Timesheet.xml:40"
 "Divorced","Divorcé(e)","","resources/views/Selects.xml:79"
-"Draft","","","resources/views/Selects.xml:101
+"Draft","Brouillon","","resources/views/Selects.xml:101
 resources/views/Selects.xml:184
+resources/views/Selects.xml:271
 resources/views/Expense.xml:51
 resources/views/Selects.xml:153
 resources/views/Overtime.xml:40"
-"Duration","","","resources/views/TimesheetLine.xml:16
+"Duration","Durée","","resources/views/TimesheetLine.xml:16
 resources/views/TimesheetLine.xml:113
 resources/views/TimesheetLine.xml:27
 resources/views/TimesheetLine.xml:60
@@ -139,10 +143,10 @@ resources/views/TimesheetLine.xml:38"
 "Education/Trainings","Éducation / Formations","","resources/views/Candidate.xml:107"
 "Effective Date","","","resources/views/Charts.xml:191"
 "Elements to invoice","Eléments à facturer","","resources/views/Task.xml:123"
-"Email","","","resources/views/Employee.xml:44
+"Email","Email","","resources/views/Employee.xml:44
 resources/views/Employee.xml:13"
 "Emergency","Urgence","","resources/views/Employee.xml:47"
-"Employee","","","resources/views/Employee.xml:18
+"Employee","Employé","","resources/views/Employee.xml:18
 resources/views/TimesheetLine.xml:101
 resources/views/TimesheetLine.xml:111
 resources/views/Employee.xml:6"
@@ -152,10 +156,10 @@ resources/views/Employee.xml:6"
 "Employees","Employés","","resources/views/Charts.xml:163
 resources/views/menu.xml:12
 resources/views/menu.xml:15"
-"Employees age pyramid","","","resources/views/Charts.xml:189
-resources/views/portal.xml:122"
-"Employees by gender","","","resources/views/Charts.xml:34
-resources/views/portal.xml:97"
+"Employees age pyramid","","","resources/views/portal.xml:122
+resources/views/Charts.xml:189"
+"Employees by gender","","","resources/views/portal.xml:97
+resources/views/Charts.xml:34"
 "Employees by macro-category","","","resources/views/portal.xml:101
 resources/views/Charts.xml:53
 resources/views/portal.xml:105
@@ -199,19 +203,19 @@ resources/views/Business.xml:202
 resources/views/Task.xml:256
 resources/views/Business.xml:181
 resources/views/Business.xml:237"
-"First Name","Prénom","","resources/views/Employee.xml:33
-resources/views/Candidate.xml:39"
-"First interview","","","resources/views/Selects.xml:174"
+"First Name","Prénom","","resources/views/Candidate.xml:39
+resources/views/Employee.xml:33"
+"First interview","1ère entretien","","resources/views/Selects.xml:174"
 "Fixed fee","Forfait","","resources/views/Selects.xml:258"
 "Fixed salary","Salaire fixe","","resources/views/Employee.xml:93"
 "Fixed-term","","","resources/views/Selects.xml:201"
 "Follow-up","Suivi","","resources/views/Candidate.xml:67"
-"Function","","","resources/views/Employee.xml:35
+"Function","Fonction","","resources/views/Employee.xml:35
 resources/views/Candidate.xml:41
 resources/views/Employee.xml:34"
 "General","Général","","resources/views/Candidate.xml:53"
 "Generate Timesheets","Générer les feuilles de temps","","resources/views/TimesheetPeriodConfig.xml:45"
-"Generate draft invoice","","","resources/views/Task.xml:126
+"Generate draft invoice","Générer facture brouillon","","resources/views/Task.xml:126
 resources/views/Project.xml:34
 resources/views/Task.xml:68"
 "Generate new project instance","Générer nouvelle instance du projet","","resources/views/Project.xml:33"
@@ -221,8 +225,8 @@ resources/views/MobilityChoice.xml:8"
 "Grade by skills","Note par critère évalué","","resources/views/Candidate.xml:195"
 "Hierarchy","Hiérarchie","","resources/views/Employee.xml:66"
 "High","Élevé","","resources/views/Selects.xml:95"
-"History","Historique","","resources/views/menu.xml:220
-resources/views/Task.xml:83
+"History","Historique","","resources/views/Task.xml:83
+resources/views/menu.xml:220
 resources/views/Employee.xml:111"
 "Hour","Heure","","resources/views/Selects.xml:16"
 "Human Resources","RH","","resources/views/menu.xml:9
@@ -238,10 +242,10 @@ resources/views/menu.xml:385"
 "Immediate","Immédiat","","resources/views/Selects.xml:20"
 "Included","Inclus","","resources/views/Selects.xml:10"
 "Initial estimated","Initial estimé","","resources/views/Selects.xml:246
-resources/views/Business.xml:76
 resources/views/Task.xml:103
-resources/views/Business.xml:94
-resources/views/Task.xml:79"
+resources/views/Business.xml:76
+resources/views/Task.xml:79
+resources/views/Business.xml:94"
 "Input forms","Formulaires de saisie","","resources/views/menu.xml:87"
 "Internal","Interne","","resources/views/Selects.xml:166"
 "International","International","","resources/views/Selects.xml:31"
@@ -314,7 +318,7 @@ resources/views/menu.xml:114"
 resources/views/menu.xml:90"
 "My timesheet calendar","Calendrier Feuille de Tps","","resources/views/menu.xml:73
 resources/views/menu.xml:76"
-"Name","","","resources/views/Candidate.xml:37
+"Name","Intitulé","","resources/views/Candidate.xml:37
 resources/views/Project.xml:23
 resources/views/Business.xml:19
 resources/views/Employee.xml:31"
@@ -324,13 +328,13 @@ resources/views/Employee.xml:31"
 "New Business","Nouv. Affaire","","resources/views/menu.xml:286
 resources/views/menu.xml:289"
 "New application","Nouv. Application","","resources/views/Selects.xml:172"
-"New candidate","","","resources/views/Candidate.xml:76"
+"New candidate","Nouv. candidat","","resources/views/Candidate.xml:76"
 "Night","Nuit","","resources/views/Selects.xml:267"
 "No","Non","","resources/views/Selects.xml:145"
 "No feedback (orange)","Pas de réponse","","resources/views/Selects.xml:90"
 "None","Aucun","","resources/views/Selects.xml:252"
 "Not reinvoiceable","Non refacturable","","resources/views/Selects.xml:162"
-"Notes","","","resources/views/Task.xml:166
+"Notes","Remarques","","resources/views/Task.xml:166
 resources/views/Task.xml:70"
 "Number of Employees","","","resources/views/portal.xml:117
 resources/views/Charts.xml:170"
@@ -350,7 +354,7 @@ resources/views/Candidate.xml:84"
 "Olds timesheets","Mes anciennes feuilles de temps","","resources/views/menu.xml:223
 resources/views/menu.xml:226"
 "On going","En cours","","resources/views/Selects.xml:131"
-"Onsite","Régie","","resources/views/Selects.xml:259"
+"On site","","","resources/views/Selects.xml:259"
 "Order form market","Marché à bon de commande","","resources/views/Selects.xml:126"
 "Organisation Dashboard","","","resources/views/menu.xml:343
 resources/views/menu.xml:346"
@@ -377,11 +381,11 @@ resources/views/PaySheet.xml:12"
 "Pay sheets","Fiches de paie","","resources/views/PaySheet.xml:18
 resources/views/PaySheet.xml:6"
 "Payment forms","Paiements à réaliser","","resources/views/menu.xml:195"
-"Period","","","resources/views/TimesheetPeriodConfig.xml:19"
+"Period","Période","","resources/views/TimesheetPeriodConfig.xml:19"
 "Permanent","","","resources/views/Selects.xml:200"
 "Planification and realization","Planification et réalisation","","resources/views/Task.xml:163
 resources/views/Task.xml:56"
-"Planning","","","resources/views/Planning.xml:13
+"Planning","Planification","","resources/views/Planning.xml:13
 resources/views/Planning.xml:6"
 "Planning line","Ligne de planification","","resources/views/PlanningLine.xml:41
 resources/views/PlanningLine.xml:18"
@@ -393,7 +397,7 @@ resources/views/menu.xml:246"
 "Pre-selected","Pré-sélectionné","","resources/views/Selects.xml:173
 resources/views/Candidate.xml:77"
 "Previous job","Ancien métier","","resources/views/Selects.xml:167"
-"Print","","","resources/views/Timesheet.xml:22"
+"Print","Imprimer","","resources/views/Timesheet.xml:22"
 "Print CV","Imprimer CV","","resources/views/Employee.xml:20
 resources/views/Candidate.xml:25"
 "Production informations","Information production","","resources/views/Business.xml:114"
@@ -401,11 +405,11 @@ resources/views/Candidate.xml:25"
 resources/views/Position.xml:8"
 "Profil candidat","Profil candidat(e) recherché(e)","","resources/views/JobOffer.xml:38"
 "Profile","Profil","","resources/views/Selects.xml:52
-resources/views/Employee.xml:79
-resources/views/Candidate.xml:93"
-"Progress","","","resources/views/Selects.xml:253
+resources/views/Candidate.xml:93
+resources/views/Employee.xml:79"
+"Progress","Avancement","","resources/views/Selects.xml:253
 resources/views/Task.xml:49"
-"Project","","","resources/views/menu.xml:307
+"Project","Projet","","resources/views/menu.xml:307
 resources/views/Timesheet.xml:33
 resources/views/Selects.xml:121
 resources/views/Project.xml:21"
@@ -417,27 +421,27 @@ resources/views/Project.xml:21"
 "Project/Business Dashboard","","","resources/views/portal.xml:131"
 "Project/Business Db","","","resources/views/menu.xml:354
 resources/views/menu.xml:356"
-"Projects","Les projets","","resources/views/menu.xml:318
-resources/views/Project.xml:6
+"Projects","Les projets","","resources/views/Project.xml:6
+resources/views/menu.xml:318
 resources/views/menu.xml:321"
 "Projects by Client Partner","Projets par Client","","resources/views/Project.xml:13
 resources/views/portal.xml:135"
 "Proofs","Preuves","","resources/views/ExpenseLine.xml:58"
 "Proposal(red)","Proposition","","resources/views/Selects.xml:87"
 "Public holiday","Jour Férié","","resources/views/PublicHolidaysLine.xml:11"
-"Public holidays","","","resources/views/PublicHolidaysLine.xml:6
+"Public holidays","Jours Fériés","","resources/views/PublicHolidaysLine.xml:6
 resources/views/menu.xml:264
 resources/views/PublicHolidays.xml:10
 resources/views/PublicHolidays.xml:6
 resources/views/menu.xml:267"
 "Real estimated","Réel estimé","","resources/views/Business.xml:99
-resources/views/Selects.xml:247
 resources/views/Task.xml:87
-resources/views/Business.xml:81
-resources/views/Task.xml:108"
+resources/views/Selects.xml:247
+resources/views/Task.xml:108
+resources/views/Business.xml:81"
 "Real invoiced","Réel facturé","","resources/views/Business.xml:86
-resources/views/Business.xml:105
 resources/views/Task.xml:114
+resources/views/Business.xml:105
 resources/views/Task.xml:92
 resources/views/Selects.xml:248"
 "Recruitment","Recrutement","","resources/views/menu.xml:30
@@ -448,10 +452,12 @@ resources/views/RecruitmentProcessAdvancement.xml:12"
 "Recruitment process progress","Avancement du recrutement","","resources/views/RecruitmentProcessAdvancement.xml:26"
 "Recruitment process progresses","Avancement des processus de recrutement","","resources/views/RecruitmentProcessAdvancement.xml:19"
 "Reduced","Réduite","","resources/views/Selects.xml:32"
-"Refuse","","","resources/views/Overtime.xml:45
-resources/views/Expense.xml:56"
+"Refuse","Refuser","","resources/views/Expense.xml:56
+resources/views/Overtime.xml:45
+resources/views/LeaveRequest.xml:61"
 "Refused","Refusée","","resources/views/Selects.xml:187
-resources/views/Selects.xml:157"
+resources/views/Selects.xml:157
+resources/views/Selects.xml:275"
 "Reinvoiceable","Refacturable","","resources/views/Selects.xml:161"
 "Rejected","Rejeté(e)/Refusé(e)","","resources/views/Candidate.xml:81
 resources/views/Selects.xml:177"
@@ -462,8 +468,8 @@ resources/views/Selects.xml:177"
 "Salary","Salaires","","resources/views/Employee.xml:92"
 "Satisfaction","Satisfaction","","resources/views/Timesheet.xml:32"
 "Search criterias","Critères de recherche","","resources/views/Candidate.xml:54"
-"Second interview","","","resources/views/Selects.xml:175"
-"Send by email","","","resources/views/Employee.xml:14
+"Second interview","2ème entretien","","resources/views/Selects.xml:175"
+"Send by email","Envoyer par email","","resources/views/Employee.xml:14
 resources/views/Candidate.xml:17"
 "Send email","Envoyer email","","resources/views/Candidate.xml:26
 resources/views/Employee.xml:21"
@@ -471,7 +477,7 @@ resources/views/Employee.xml:21"
 "Senior Manager ( > 10 ans)","Cadre Senior ( > 10 ans)","","resources/views/Selects.xml:44"
 "Senior Worker ( > 10 ans)","Non-Cadre Senior ( > 10 ans)","","resources/views/Selects.xml:47"
 "Sent","Envoyé","","resources/views/Selects.xml:188"
-"Show invoices","","","resources/views/Task.xml:127"
+"Show invoices","Voir factures associées","","resources/views/Task.xml:127"
 "Show tasks","Voir les tâches","","resources/views/Project.xml:35"
 "Signature (red)","Signature","","resources/views/Selects.xml:88"
 "Single","Célibataire","","resources/views/Selects.xml:76"
@@ -479,15 +485,15 @@ resources/views/Employee.xml:21"
 "Skill workers","Employés","","resources/views/Employee.xml:144"
 "Skills","Compétences","","resources/views/Competence.xml:11
 resources/views/Competence.xml:6"
-"Specific settings","Configuration spécifique","","resources/views/Business.xml:50
-resources/views/Project.xml:51"
+"Specific settings","Configuration spécifique","","resources/views/Project.xml:51
+resources/views/Business.xml:50"
 "Spent times","Temps passés","","resources/views/Task.xml:135
 resources/views/Task.xml:172"
 "Started","Démarré","","resources/views/Selects.xml:103"
 "Status","","","resources/views/Charts.xml:162"
 "Straight recruitment","Besoin interne","","resources/views/Selects.xml:56"
-"Submit","","","resources/views/Overtime.xml:41
-resources/views/Expense.xml:52"
+"Submit","Envoyer","","resources/views/Expense.xml:52
+resources/views/Overtime.xml:41"
 "Submited","A valider","","resources/views/Selects.xml:154"
 "Submitted","Soumis(e)","","resources/views/Selects.xml:185"
 "Subscription","Abonnement","","resources/views/Selects.xml:254"
@@ -495,7 +501,7 @@ resources/views/Expense.xml:52"
 resources/views/Task.xml:291"
 "TImesheet project/task time input","Saisie feuille de temps","","resources/views/TimesheetLine.xml:7"
 "TMA","TMA","","resources/views/Selects.xml:260"
-"Task","","","resources/views/Selects.xml:120
+"Task","Tâche","","resources/views/Selects.xml:120
 resources/views/Task.xml:147
 resources/views/Task.xml:30"
 "Task name","Nom tâche","","resources/views/Task.xml:149
@@ -505,14 +511,14 @@ resources/views/Task.xml:14
 resources/views/Task.xml:22
 resources/views/menu.xml:329
 resources/views/Task.xml:10
-resources/views/Project.xml:83
 resources/views/Task.xml:141
+resources/views/Project.xml:83
 resources/views/Project.xml:73
 resources/views/Business.xml:64"
 "Tasks To Invoice","Tâches à facturer","","resources/views/Task.xml:353"
 "Tasks Underevaluated","Tâches sous-évaluées","","resources/views/Task.xml:350"
 "Tasks filters","Filtres Tâches","","resources/views/Task.xml:340"
-"Third interview","","","resources/views/Selects.xml:176"
+"Third interview","3ème entretien","","resources/views/Selects.xml:176"
 "Times","Temps","","resources/views/Task.xml:44
 resources/views/Project.xml:39
 resources/views/Business.xml:38"
@@ -547,20 +553,21 @@ resources/views/Training.xml:13"
 "Trainings","Formations","","resources/views/menu.xml:237
 resources/views/menu.xml:240"
 "Transform into employee","Transformer en employé","","resources/views/Candidate.xml:27"
-"Transform to project","","","resources/views/Business.xml:32"
+"Transform to project","Transformer en projet","","resources/views/Business.xml:32"
 "Unfavourable (red)","Défavorable","","resources/views/Selects.xml:64"
 "Update and historize","MàJ et Historiser","","resources/views/Task.xml:84"
 "Update financial information","MàJ infos. financières","","resources/views/Task.xml:99"
 "Update task progress","MàJ avancement tâche","","resources/views/Project.xml:36
 resources/views/Business.xml:34"
-"Validate","","","resources/views/Timesheet.xml:63
+"Validate","Valider","","resources/views/OvertimeLine.xml:23
+resources/views/Timesheet.xml:63
 resources/views/Overtime.xml:43
 resources/views/Overtime.xml:42
-resources/views/LeaveRequest.xml:60
-resources/views/OvertimeLine.xml:23
 resources/views/Expense.xml:54
+resources/views/LeaveRequest.xml:60
 resources/views/Expense.xml:53"
-"Validated","Validé","","resources/views/Selects.xml:155"
+"Validated","Validé","","resources/views/Selects.xml:155
+resources/views/Selects.xml:273"
 "Validated Customer order lines","Lignes de Cmde Validées","","resources/views/Business.xml:188
 resources/views/Task.xml:263"
 "Validated supplier order lines","Lignes de Cmde Fournisseur","","resources/views/Task.xml:277
