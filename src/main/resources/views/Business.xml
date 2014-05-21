@@ -38,7 +38,7 @@
         	<group title="Times" colSpan="6" cols="6">
         		<field name="totalTime"/>
         		<field name="unit"/>  
-        		<spacer colSpan="2"/>
+        		<field name="progress"/>
         		<separator colSpan="6"/>
 	            <field name="plannedTime"/>
 	            <field name="spentTime"/>
