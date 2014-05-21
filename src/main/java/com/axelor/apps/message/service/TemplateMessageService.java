@@ -106,7 +106,7 @@ public class TemplateMessageService {
 		}
 		
 		
-		if(template.getContent() != null)  {
+		if(template.getAddressBlock() != null)  {
 			//Set template
 			addressMaker.setTemplate(template.getAddressBlock());
 			//Make it
