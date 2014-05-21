@@ -30,10 +30,10 @@
 "Action(s)","Action(s)","","resources/views/Timesheet.xml:61
 resources/views/Expense.xml:49
 resources/views/Overtime.xml:38"
-"Actions","Actions","","resources/views/Project.xml:32
+"Actions","Actions","","resources/views/Project.xml:33
 resources/views/Business.xml:29"
-"Additionnal information","Informations Personnelles","","resources/views/PersonalInfo.xml:8
-resources/views/Candidate.xml:121
+"Additionnal information","Informations Personnelles","","resources/views/Candidate.xml:121
+resources/views/PersonalInfo.xml:8
 resources/views/Employee.xml:54"
 "Advance","Avance","","resources/views/Advance.xml:15"
 "Advances","Avances","","resources/views/Advance.xml:7"
@@ -49,28 +49,14 @@ resources/views/Employee.xml:54"
 "Availability and Decision","Dispo et Décision","","resources/views/Candidate.xml:62"
 "Awareness","Notions","","resources/views/Competence.xml:33"
 "Back to draft","","","resources/views/LeaveRequest.xml:62"
-"Billable","Facturable","","resources/views/Project.xml:141"
+"Billable","Facturable","","resources/views/Project.xml:142"
 "Bonus","Bonus","","resources/views/Bonus.xml:14"
 "Bonuses","Les Bonus","","resources/views/Bonus.xml:7"
-"Business","Affaire","","resources/views/menu.xml:296
-resources/views/Business.xml:17
+"Business","Affaire","","resources/views/Business.xml:17
+resources/views/menu.xml:296
 resources/views/Business.xml:6
 resources/views/menu.xml:283
 resources/views/menu.xml:299"
-"BusinessSituation.contact","","","java/com/axelor/apps/organisation/report/ITranslation.java:39"
-"BusinessSituation.currency","","","java/com/axelor/apps/organisation/report/ITranslation.java:37"
-"BusinessSituation.description","","","java/com/axelor/apps/organisation/report/ITranslation.java:40"
-"BusinessSituation.estimated","","","java/com/axelor/apps/organisation/report/ITranslation.java:45"
-"BusinessSituation.expenses","","","java/com/axelor/apps/organisation/report/ITranslation.java:42"
-"BusinessSituation.financialData","","","java/com/axelor/apps/organisation/report/ITranslation.java:48"
-"BusinessSituation.followedBy","","","java/com/axelor/apps/organisation/report/ITranslation.java:36"
-"BusinessSituation.margin","","","java/com/axelor/apps/organisation/report/ITranslation.java:43"
-"BusinessSituation.marginPercent","","","java/com/axelor/apps/organisation/report/ITranslation.java:44"
-"BusinessSituation.partner","","","java/com/axelor/apps/organisation/report/ITranslation.java:38"
-"BusinessSituation.realEstimated","","","java/com/axelor/apps/organisation/report/ITranslation.java:46"
-"BusinessSituation.realInvoiced","","","java/com/axelor/apps/organisation/report/ITranslation.java:47"
-"BusinessSituation.revenues","","","java/com/axelor/apps/organisation/report/ITranslation.java:41"
-"BusinessSituation.title","","","java/com/axelor/apps/organisation/report/ITranslation.java:35"
 "CD","CD","","resources/views/Selects.xml:69"
 "CEA","CEA","","resources/views/Selects.xml:72"
 "Cancel","Annuler","","resources/views/Timesheet.xml:64
@@ -79,42 +65,6 @@ resources/views/LeaveRequest.xml:59"
 resources/views/Selects.xml:274
 resources/views/Selects.xml:135"
 "Candidate","Candidat","","resources/views/Candidate.xml:23"
-"Candidate.citizenshipCountry","","","java/com/axelor/apps/organisation/report/ITranslation.java:166"
-"Candidate.coefficient","","","java/com/axelor/apps/organisation/report/ITranslation.java:180"
-"Candidate.comment","","","java/com/axelor/apps/organisation/report/ITranslation.java:198"
-"Candidate.competence","","","java/com/axelor/apps/organisation/report/ITranslation.java:183"
-"Candidate.competenceAreaSet","","","java/com/axelor/apps/organisation/report/ITranslation.java:185"
-"Candidate.criteriaEvaluated","","","java/com/axelor/apps/organisation/report/ITranslation.java:179"
-"Candidate.degree","","","java/com/axelor/apps/organisation/report/ITranslation.java:173"
-"Candidate.dob","","","java/com/axelor/apps/organisation/report/ITranslation.java:165"
-"Candidate.educationTraining","","","java/com/axelor/apps/organisation/report/ITranslation.java:172"
-"Candidate.employer","","","java/com/axelor/apps/organisation/report/ITranslation.java:171"
-"Candidate.enddate","","","java/com/axelor/apps/organisation/report/ITranslation.java:170"
-"Candidate.evaluationLineList","","","java/com/axelor/apps/organisation/report/ITranslation.java:178"
-"Candidate.globalGrade","","","java/com/axelor/apps/organisation/report/ITranslation.java:182"
-"Candidate.grade","","","java/com/axelor/apps/organisation/report/ITranslation.java:181"
-"Candidate.interventionTypeSet","","","java/com/axelor/apps/organisation/report/ITranslation.java:184"
-"Candidate.languageAware","","","java/com/axelor/apps/organisation/report/ITranslation.java:191"
-"Candidate.languageExpert","","","java/com/axelor/apps/organisation/report/ITranslation.java:189"
-"Candidate.languageLavel","","","java/com/axelor/apps/organisation/report/ITranslation.java:188"
-"Candidate.languageMaster","","","java/com/axelor/apps/organisation/report/ITranslation.java:190"
-"Candidate.languageName","","","java/com/axelor/apps/organisation/report/ITranslation.java:187"
-"Candidate.languageSet","","","java/com/axelor/apps/organisation/report/ITranslation.java:186"
-"Candidate.maritalStatusSelect","","","java/com/axelor/apps/organisation/report/ITranslation.java:167"
-"Candidate.mobilityChoiceSet","","","java/com/axelor/apps/organisation/report/ITranslation.java:168"
-"Candidate.personalInfo","","","java/com/axelor/apps/organisation/report/ITranslation.java:163"
-"Candidate.positionList","","","java/com/axelor/apps/organisation/report/ITranslation.java:164"
-"Candidate.significantDegree","","","java/com/axelor/apps/organisation/report/ITranslation.java:175"
-"Candidate.skillAware","","","java/com/axelor/apps/organisation/report/ITranslation.java:197"
-"Candidate.skillExpert","","","java/com/axelor/apps/organisation/report/ITranslation.java:195"
-"Candidate.skillLavel","","","java/com/axelor/apps/organisation/report/ITranslation.java:194"
-"Candidate.skillLineList","","","java/com/axelor/apps/organisation/report/ITranslation.java:192"
-"Candidate.skillMaster","","","java/com/axelor/apps/organisation/report/ITranslation.java:196"
-"Candidate.skillName","","","java/com/axelor/apps/organisation/report/ITranslation.java:193"
-"Candidate.startdate","","","java/com/axelor/apps/organisation/report/ITranslation.java:169"
-"Candidate.trainingCenter","","","java/com/axelor/apps/organisation/report/ITranslation.java:176"
-"Candidate.trainingLineList","","","java/com/axelor/apps/organisation/report/ITranslation.java:174"
-"Candidate.year","","","java/com/axelor/apps/organisation/report/ITranslation.java:177"
 "Candidates","Candidats","","resources/views/menu.xml:43
 resources/views/Candidate.xml:7
 resources/views/menu.xml:46"
@@ -132,8 +82,8 @@ resources/views/Planning.xml:26"
 "Complete time sheet configuration","Compléter la config. Feuille de Tps.","","resources/views/Timesheet.xml:49
 resources/views/Planning.xml:20"
 "Completed","Terminer","","resources/views/Selects.xml:104"
-"Compute","Calculer","","resources/views/Expense.xml:57
-resources/views/Candidate.xml:117"
+"Compute","Calculer","","resources/views/Candidate.xml:117
+resources/views/Expense.xml:57"
 "Configuration","Configuration","","resources/views/Planning.xml:18
 resources/views/menu.xml:234
 resources/views/Timesheet.xml:41"
@@ -156,8 +106,8 @@ resources/views/Task.xml:154"
 "Create production order","","","resources/views/Business.xml:35
 resources/views/Business.xml:246"
 "Current Employees","Employés actuels","","resources/views/Employee.xml:135"
-"Customer invoice lines","Lignes de facture client","","resources/views/Business.xml:209
-resources/views/Task.xml:284"
+"Customer invoice lines","Lignes de facture client","","resources/views/Task.xml:284
+resources/views/Business.xml:209"
 "Dashboard","Tableau de bord","","resources/views/portal.xml:7"
 "Date","Date","","resources/views/ExpenseLine.xml:39"
 "Day","Jour","","resources/views/Selects.xml:194
@@ -169,7 +119,7 @@ resources/views/TimesheetPeriodConfig.xml:23"
 "Department","Département","","resources/views/Employee.xml:36"
 "Description","Description","","resources/views/Task.xml:132
 resources/views/Task.xml:169
-resources/views/Project.xml:48
+resources/views/Project.xml:49
 resources/views/Business.xml:47"
 "Details","Détails","","resources/views/ExpenseLine.xml:48"
 "Details of time spent on project/tasks","Lignes de temps passé sur les projets/tâche","","resources/views/Timesheet.xml:40"
@@ -203,64 +153,13 @@ resources/views/Employee.xml:6"
 "Employee filters","Filtres recherche employés","","resources/views/Employee.xml:134"
 "Employee leave","Congé / Absence","","resources/views/EmployeeLeave.xml:13"
 "Employee leaves","Congés / Absences","","resources/views/EmployeeLeave.xml:6"
-"Employee.category","","","java/com/axelor/apps/organisation/report/ITranslation.java:73"
-"Employee.citizenshipCountry","","","java/com/axelor/apps/organisation/report/ITranslation.java:76"
-"Employee.company","","","java/com/axelor/apps/organisation/report/ITranslation.java:100"
-"Employee.companyDepartment","","","java/com/axelor/apps/organisation/report/ITranslation.java:71"
-"Employee.competence","","","java/com/axelor/apps/organisation/report/ITranslation.java:102"
-"Employee.competenceArea","","","java/com/axelor/apps/organisation/report/ITranslation.java:85"
-"Employee.contractDetails","","","java/com/axelor/apps/organisation/report/ITranslation.java:67"
-"Employee.dailySalaryCost","","","java/com/axelor/apps/organisation/report/ITranslation.java:68"
-"Employee.dob","","","java/com/axelor/apps/organisation/report/ITranslation.java:75"
-"Employee.emergencyContact","","","java/com/axelor/apps/organisation/report/ITranslation.java:81"
-"Employee.emergencyNumber","","","java/com/axelor/apps/organisation/report/ITranslation.java:82"
-"Employee.endDate","","","java/com/axelor/apps/organisation/report/ITranslation.java:99"
-"Employee.entryDate","","","java/com/axelor/apps/organisation/report/ITranslation.java:69"
-"Employee.exitDate","","","java/com/axelor/apps/organisation/report/ITranslation.java:70"
-"Employee.internalContact","","","java/com/axelor/apps/organisation/report/ITranslation.java:79"
-"Employee.intervention","","","java/com/axelor/apps/organisation/report/ITranslation.java:84"
-"Employee.language","","","java/com/axelor/apps/organisation/report/ITranslation.java:86"
-"Employee.languageAware","","","java/com/axelor/apps/organisation/report/ITranslation.java:91"
-"Employee.languageExpert","","","java/com/axelor/apps/organisation/report/ITranslation.java:89"
-"Employee.languageLavel","","","java/com/axelor/apps/organisation/report/ITranslation.java:88"
-"Employee.languageMastered","","","java/com/axelor/apps/organisation/report/ITranslation.java:90"
-"Employee.languageName","","","java/com/axelor/apps/organisation/report/ITranslation.java:87"
-"Employee.macroCategory","","","java/com/axelor/apps/organisation/report/ITranslation.java:72"
-"Employee.maritalStatus","","","java/com/axelor/apps/organisation/report/ITranslation.java:77"
-"Employee.mobilityChoice","","","java/com/axelor/apps/organisation/report/ITranslation.java:78"
-"Employee.personalInfo","","","java/com/axelor/apps/organisation/report/ITranslation.java:74"
-"Employee.phoneAtCustomer","","","java/com/axelor/apps/organisation/report/ITranslation.java:80"
-"Employee.positionList","","","java/com/axelor/apps/organisation/report/ITranslation.java:83"
-"Employee.positionName","","","java/com/axelor/apps/organisation/report/ITranslation.java:101"
-"Employee.skillAware","","","java/com/axelor/apps/organisation/report/ITranslation.java:97"
-"Employee.skillExpert","","","java/com/axelor/apps/organisation/report/ITranslation.java:95"
-"Employee.skillLavel","","","java/com/axelor/apps/organisation/report/ITranslation.java:94"
-"Employee.skillLine","","","java/com/axelor/apps/organisation/report/ITranslation.java:92"
-"Employee.skillMastered","","","java/com/axelor/apps/organisation/report/ITranslation.java:96"
-"Employee.skillName","","","java/com/axelor/apps/organisation/report/ITranslation.java:93"
-"Employee.startDate","","","java/com/axelor/apps/organisation/report/ITranslation.java:98"
-"EmployeeConsultant.balance","","","java/com/axelor/apps/organisation/report/ITranslation.java:115"
-"EmployeeConsultant.cash","","","java/com/axelor/apps/organisation/report/ITranslation.java:106"
-"EmployeeConsultant.cashing","","","java/com/axelor/apps/organisation/report/ITranslation.java:112"
-"EmployeeConsultant.company","","","java/com/axelor/apps/organisation/report/ITranslation.java:117"
-"EmployeeConsultant.currEur","","","java/com/axelor/apps/organisation/report/ITranslation.java:104"
-"EmployeeConsultant.date","","","java/com/axelor/apps/organisation/report/ITranslation.java:107"
-"EmployeeConsultant.description","","","java/com/axelor/apps/organisation/report/ITranslation.java:109"
-"EmployeeConsultant.disbursed","","","java/com/axelor/apps/organisation/report/ITranslation.java:113"
-"EmployeeConsultant.income","","","java/com/axelor/apps/organisation/report/ITranslation.java:110"
-"EmployeeConsultant.operation","","","java/com/axelor/apps/organisation/report/ITranslation.java:105"
-"EmployeeConsultant.origine","","","java/com/axelor/apps/organisation/report/ITranslation.java:108"
-"EmployeeConsultant.outgone","","","java/com/axelor/apps/organisation/report/ITranslation.java:111"
-"EmployeeConsultant.situation","","","java/com/axelor/apps/organisation/report/ITranslation.java:118"
-"EmployeeConsultant.title","","","java/com/axelor/apps/organisation/report/ITranslation.java:116"
-"EmployeeConsultant.totalPeriod","","","java/com/axelor/apps/organisation/report/ITranslation.java:114"
 "Employees","Employés","","resources/views/Charts.xml:163
 resources/views/menu.xml:12
 resources/views/menu.xml:15"
-"Employees age pyramid","","","resources/views/Charts.xml:189
-resources/views/portal.xml:122"
-"Employees by gender","","","resources/views/Charts.xml:34
-resources/views/portal.xml:97"
+"Employees age pyramid","","","resources/views/portal.xml:122
+resources/views/Charts.xml:189"
+"Employees by gender","","","resources/views/portal.xml:97
+resources/views/Charts.xml:34"
 "Employees by macro-category","","","resources/views/portal.xml:101
 resources/views/Charts.xml:53
 resources/views/portal.xml:105
@@ -271,34 +170,18 @@ resources/views/portal.xml:109"
 resources/views/Charts.xml:6"
 "Employees turnover per year","","","resources/views/Charts.xml:125
 resources/views/portal.xml:113"
-"End Date","","","resources/views/Charts.xml:128"
+"End Date","Date de fin","","resources/views/Charts.xml:128"
 "Evaluation","Évaluation","","resources/views/Candidate.xml:113"
 "Evaluation lines","Lignes d'évaluation","","resources/views/EvaluationLine.xml:16
 resources/views/EvaluationLine.xml:8"
 "Excluded","Exclus","","resources/views/Selects.xml:11"
-"Expense","NDF","","resources/views/Expense.xml:36
-resources/views/Project.xml:61"
+"Expense","NDF","","resources/views/Project.xml:62
+resources/views/Expense.xml:36"
 "Expense Line","Lignes de NdF","","resources/views/ExpenseLine.xml:25
 resources/views/ExpenseLine.xml:37"
 "Expense lines","Lignes de NDF","","resources/views/Task.xml:326
 resources/views/Task.xml:305
 resources/views/Business.xml:230"
-"Expense.amount","","","java/com/axelor/apps/organisation/report/ITranslation.java:59"
-"Expense.client","","","java/com/axelor/apps/organisation/report/ITranslation.java:54"
-"Expense.currency","","","java/com/axelor/apps/organisation/report/ITranslation.java:65"
-"Expense.date","","","java/com/axelor/apps/organisation/report/ITranslation.java:52"
-"Expense.description","","","java/com/axelor/apps/organisation/report/ITranslation.java:56"
-"Expense.employeeName","","","java/com/axelor/apps/organisation/report/ITranslation.java:51"
-"Expense.employeeSignature","","","java/com/axelor/apps/organisation/report/ITranslation.java:63"
-"Expense.employerSignature","","","java/com/axelor/apps/organisation/report/ITranslation.java:64"
-"Expense.paymentPeriod","","","java/com/axelor/apps/organisation/report/ITranslation.java:53"
-"Expense.product","","","java/com/axelor/apps/organisation/report/ITranslation.java:55"
-"Expense.quantity","","","java/com/axelor/apps/organisation/report/ITranslation.java:57"
-"Expense.tax","","","java/com/axelor/apps/organisation/report/ITranslation.java:60"
-"Expense.timesheetOf","","","java/com/axelor/apps/organisation/report/ITranslation.java:50"
-"Expense.totalATI","","","java/com/axelor/apps/organisation/report/ITranslation.java:61"
-"Expense.totalExpensesAmount","","","java/com/axelor/apps/organisation/report/ITranslation.java:62"
-"Expense.unit","","","java/com/axelor/apps/organisation/report/ITranslation.java:58"
 "Expenses","Notes de frais","","resources/views/Employee.xml:102
 resources/views/Expense.xml:14
 resources/views/Expense.xml:7"
@@ -320,8 +203,8 @@ resources/views/Business.xml:202
 resources/views/Task.xml:256
 resources/views/Business.xml:181
 resources/views/Business.xml:237"
-"First Name","Prénom","","resources/views/Employee.xml:33
-resources/views/Candidate.xml:39"
+"First Name","Prénom","","resources/views/Candidate.xml:39
+resources/views/Employee.xml:33"
 "First interview","1ère entretien","","resources/views/Selects.xml:174"
 "Fixed fee","Forfait","","resources/views/Selects.xml:258"
 "Fixed salary","Salaire fixe","","resources/views/Employee.xml:93"
@@ -333,17 +216,17 @@ resources/views/Employee.xml:34"
 "General","Général","","resources/views/Candidate.xml:53"
 "Generate Timesheets","Générer les feuilles de temps","","resources/views/TimesheetPeriodConfig.xml:45"
 "Generate draft invoice","Générer facture brouillon","","resources/views/Task.xml:126
-resources/views/Project.xml:34
+resources/views/Project.xml:35
 resources/views/Task.xml:68"
-"Generate new project instance","Générer nouvelle instance du projet","","resources/views/Project.xml:33"
+"Generate new project instance","Générer nouvelle instance du projet","","resources/views/Project.xml:34"
 "Geographical mobility","Mobilité Géographique","","resources/views/MobilityChoice.xml:14
 resources/views/MobilityChoice.xml:8"
 "Get past time","Récupérer les temps passés","","resources/views/Timesheet.xml:45"
 "Grade by skills","Note par critère évalué","","resources/views/Candidate.xml:195"
 "Hierarchy","Hiérarchie","","resources/views/Employee.xml:66"
 "High","Élevé","","resources/views/Selects.xml:95"
-"History","Historique","","resources/views/menu.xml:220
-resources/views/Task.xml:83
+"History","Historique","","resources/views/Task.xml:83
+resources/views/menu.xml:220
 resources/views/Employee.xml:111"
 "Hour","Heure","","resources/views/Selects.xml:16"
 "Human Resources","RH","","resources/views/menu.xml:9
@@ -359,10 +242,10 @@ resources/views/menu.xml:385"
 "Immediate","Immédiat","","resources/views/Selects.xml:20"
 "Included","Inclus","","resources/views/Selects.xml:10"
 "Initial estimated","Initial estimé","","resources/views/Selects.xml:246
-resources/views/Business.xml:76
 resources/views/Task.xml:103
-resources/views/Business.xml:94
-resources/views/Task.xml:79"
+resources/views/Business.xml:76
+resources/views/Task.xml:79
+resources/views/Business.xml:94"
 "Input forms","Formulaires de saisie","","resources/views/menu.xml:87"
 "Internal","Interne","","resources/views/Selects.xml:166"
 "International","International","","resources/views/Selects.xml:31"
@@ -400,7 +283,7 @@ resources/views/Candidate.xml:43"
 "Married","Marié(e)","","resources/views/Selects.xml:77"
 "Mastered Skills","Compétences Maîtrisées","","resources/views/Competence.xml:30"
 "Medium","Moyen","","resources/views/Selects.xml:96"
-"Members","","","resources/views/Project.xml:76"
+"Members","","","resources/views/Project.xml:77"
 "Mission information","Information mission","","resources/views/MissionOrder.xml:26"
 "Mission order","Ordre de mission","","resources/views/menu.xml:22
 resources/views/menu.xml:25
@@ -408,7 +291,7 @@ resources/views/MissionOrder.xml:18
 resources/views/MissionOrder.xml:17"
 "Mission orders","Ordres de mission","","resources/views/MissionOrder.xml:6"
 "Mixed opinion (orange)","Mitigé","","resources/views/Selects.xml:63"
-"Models","Projets modèles","","resources/views/Project.xml:138"
+"Models","Projets modèles","","resources/views/Project.xml:139"
 "Month","Mois","","resources/views/Selects.xml:115
 resources/views/Selects.xml:195"
 "Monthly","Mensuel","","resources/views/TimesheetPeriodConfig.xml:28
@@ -417,7 +300,7 @@ resources/views/Selects.xml:110"
 "My Leave requests","","","resources/views/LeaveRequest.xml:28"
 "My Overtimes","Mes heures supplémentaires","","resources/views/portal.xml:77
 resources/views/Overtime.xml:16"
-"My Projects","Mes Projets","","resources/views/Project.xml:135"
+"My Projects","Mes Projets","","resources/views/Project.xml:136"
 "My Tasks","Mes Tâches","","resources/views/Task.xml:341"
 "My Timesheets","Mes feuilles de temps","","resources/views/Timesheet.xml:13
 resources/views/portal.xml:61"
@@ -436,9 +319,9 @@ resources/views/menu.xml:90"
 "My timesheet calendar","Calendrier Feuille de Tps","","resources/views/menu.xml:73
 resources/views/menu.xml:76"
 "Name","Intitulé","","resources/views/Candidate.xml:37
-resources/views/Project.xml:23
+resources/views/Employee.xml:31
 resources/views/Business.xml:19
-resources/views/Employee.xml:31"
+resources/views/Project.xml:24"
 "National","National","","resources/views/Selects.xml:30"
 "Need","Besoin","","resources/views/Business.xml:122"
 "Negative (vert)","Négatif","","resources/views/Selects.xml:91"
@@ -522,38 +405,24 @@ resources/views/Candidate.xml:25"
 resources/views/Position.xml:8"
 "Profil candidat","Profil candidat(e) recherché(e)","","resources/views/JobOffer.xml:38"
 "Profile","Profil","","resources/views/Selects.xml:52
-resources/views/Employee.xml:79
-resources/views/Candidate.xml:93"
+resources/views/Candidate.xml:93
+resources/views/Employee.xml:79"
 "Progress","Avancement","","resources/views/Selects.xml:253
 resources/views/Task.xml:49"
 "Project","Projet","","resources/views/menu.xml:307
 resources/views/Timesheet.xml:33
 resources/views/Selects.xml:121
-resources/views/Project.xml:21"
+resources/views/Project.xml:22"
 "Project Dashboard","Tableau de bord Projet","","resources/views/portal.xml:127"
-"Project filters","Filtres projets","","resources/views/Project.xml:134"
-"Project model","Projet modèle ?","","resources/views/Project.xml:56"
+"Project filters","Filtres projets","","resources/views/Project.xml:135"
+"Project model","Projet modèle ?","","resources/views/Project.xml:57"
 "Project recruitment","Besoin projet","","resources/views/Selects.xml:57"
-"Project.amount","","","java/com/axelor/apps/organisation/report/ITranslation.java:124"
-"Project.client","","","java/com/axelor/apps/organisation/report/ITranslation.java:122"
-"Project.commercial","","","java/com/axelor/apps/organisation/report/ITranslation.java:125"
-"Project.cost","","","java/com/axelor/apps/organisation/report/ITranslation.java:128"
-"Project.date","","","java/com/axelor/apps/organisation/report/ITranslation.java:121"
-"Project.expectedRevenue","","","java/com/axelor/apps/organisation/report/ITranslation.java:120"
-"Project.forecastMargin","","","java/com/axelor/apps/organisation/report/ITranslation.java:133"
-"Project.productName","","","java/com/axelor/apps/organisation/report/ITranslation.java:123"
-"Project.purchaser","","","java/com/axelor/apps/organisation/report/ITranslation.java:127"
-"Project.purchases","","","java/com/axelor/apps/organisation/report/ITranslation.java:129"
-"Project.supplier","","","java/com/axelor/apps/organisation/report/ITranslation.java:126"
-"Project.totalCost","","","java/com/axelor/apps/organisation/report/ITranslation.java:131"
-"Project.totalMargin","","","java/com/axelor/apps/organisation/report/ITranslation.java:132"
-"Project.totalTurnover","","","java/com/axelor/apps/organisation/report/ITranslation.java:130"
 "Project/Business","","","resources/views/menu.xml:351"
 "Project/Business Dashboard","","","resources/views/portal.xml:131"
 "Project/Business Db","","","resources/views/menu.xml:354
 resources/views/menu.xml:356"
-"Projects","Les projets","","resources/views/menu.xml:318
-resources/views/Project.xml:6
+"Projects","Les projets","","resources/views/Project.xml:6
+resources/views/menu.xml:318
 resources/views/menu.xml:321"
 "Projects by Client Partner","Projets par Client","","resources/views/Project.xml:13
 resources/views/portal.xml:135"
@@ -566,13 +435,13 @@ resources/views/PublicHolidays.xml:10
 resources/views/PublicHolidays.xml:6
 resources/views/menu.xml:267"
 "Real estimated","Réel estimé","","resources/views/Business.xml:99
-resources/views/Selects.xml:247
 resources/views/Task.xml:87
-resources/views/Business.xml:81
-resources/views/Task.xml:108"
+resources/views/Selects.xml:247
+resources/views/Task.xml:108
+resources/views/Business.xml:81"
 "Real invoiced","Réel facturé","","resources/views/Business.xml:86
-resources/views/Business.xml:105
 resources/views/Task.xml:114
+resources/views/Business.xml:105
 resources/views/Task.xml:92
 resources/views/Selects.xml:248"
 "Recruitment","Recrutement","","resources/views/menu.xml:30
@@ -583,8 +452,8 @@ resources/views/RecruitmentProcessAdvancement.xml:12"
 "Recruitment process progress","Avancement du recrutement","","resources/views/RecruitmentProcessAdvancement.xml:26"
 "Recruitment process progresses","Avancement des processus de recrutement","","resources/views/RecruitmentProcessAdvancement.xml:19"
 "Reduced","Réduite","","resources/views/Selects.xml:32"
-"Refuse","Refuser","","resources/views/Overtime.xml:45
-resources/views/Expense.xml:56
+"Refuse","Refuser","","resources/views/Expense.xml:56
+resources/views/Overtime.xml:45
 resources/views/LeaveRequest.xml:61"
 "Refused","Refusée","","resources/views/Selects.xml:187
 resources/views/Selects.xml:157
@@ -609,22 +478,22 @@ resources/views/Employee.xml:21"
 "Senior Worker ( > 10 ans)","Non-Cadre Senior ( > 10 ans)","","resources/views/Selects.xml:47"
 "Sent","Envoyé","","resources/views/Selects.xml:188"
 "Show invoices","Voir factures associées","","resources/views/Task.xml:127"
-"Show tasks","Voir les tâches","","resources/views/Project.xml:35"
+"Show tasks","Voir les tâches","","resources/views/Project.xml:36"
 "Signature (red)","Signature","","resources/views/Selects.xml:88"
 "Single","Célibataire","","resources/views/Selects.xml:76"
 "Skill","Compétence","","resources/views/Competence.xml:16"
 "Skill workers","Employés","","resources/views/Employee.xml:144"
 "Skills","Compétences","","resources/views/Competence.xml:11
 resources/views/Competence.xml:6"
-"Specific settings","Configuration spécifique","","resources/views/Business.xml:50
-resources/views/Project.xml:51"
+"Specific settings","Configuration spécifique","","resources/views/Project.xml:52
+resources/views/Business.xml:50"
 "Spent times","Temps passés","","resources/views/Task.xml:135
 resources/views/Task.xml:172"
 "Started","Démarré","","resources/views/Selects.xml:103"
 "Status","","","resources/views/Charts.xml:162"
 "Straight recruitment","Besoin interne","","resources/views/Selects.xml:56"
-"Submit","Envoyer","","resources/views/Overtime.xml:41
-resources/views/Expense.xml:52"
+"Submit","Envoyer","","resources/views/Expense.xml:52
+resources/views/Overtime.xml:41"
 "Submited","A valider","","resources/views/Selects.xml:154"
 "Submitted","Soumis(e)","","resources/views/Selects.xml:185"
 "Subscription","Abonnement","","resources/views/Selects.xml:254"
@@ -637,38 +506,24 @@ resources/views/Task.xml:147
 resources/views/Task.xml:30"
 "Task name","Nom tâche","","resources/views/Task.xml:149
 resources/views/Task.xml:32"
-"Task.amount","","","java/com/axelor/apps/organisation/report/ITranslation.java:139"
-"Task.client","","","java/com/axelor/apps/organisation/report/ITranslation.java:137"
-"Task.commercial","","","java/com/axelor/apps/organisation/report/ITranslation.java:140"
-"Task.cost","","","java/com/axelor/apps/organisation/report/ITranslation.java:143"
-"Task.date","","","java/com/axelor/apps/organisation/report/ITranslation.java:136"
-"Task.expectedRevenue","","","java/com/axelor/apps/organisation/report/ITranslation.java:135"
-"Task.forecastMargin","","","java/com/axelor/apps/organisation/report/ITranslation.java:148"
-"Task.productName","","","java/com/axelor/apps/organisation/report/ITranslation.java:138"
-"Task.purchaser","","","java/com/axelor/apps/organisation/report/ITranslation.java:142"
-"Task.purchases","","","java/com/axelor/apps/organisation/report/ITranslation.java:144"
-"Task.supplier","","","java/com/axelor/apps/organisation/report/ITranslation.java:141"
-"Task.totalCost","","","java/com/axelor/apps/organisation/report/ITranslation.java:146"
-"Task.totalMargin","","","java/com/axelor/apps/organisation/report/ITranslation.java:147"
-"Task.totalTurnover","","","java/com/axelor/apps/organisation/report/ITranslation.java:145"
 "Tasks","Tâches","","resources/views/menu.xml:332
 resources/views/Task.xml:14
 resources/views/Task.xml:22
 resources/views/menu.xml:329
 resources/views/Task.xml:10
-resources/views/Project.xml:83
+resources/views/Project.xml:74
 resources/views/Task.xml:141
-resources/views/Project.xml:73
+resources/views/Project.xml:84
 resources/views/Business.xml:64"
 "Tasks To Invoice","Tâches à facturer","","resources/views/Task.xml:353"
 "Tasks Underevaluated","Tâches sous-évaluées","","resources/views/Task.xml:350"
 "Tasks filters","Filtres Tâches","","resources/views/Task.xml:340"
 "Third interview","3ème entretien","","resources/views/Selects.xml:176"
 "Times","Temps","","resources/views/Task.xml:44
-resources/views/Project.xml:39
+resources/views/Project.xml:40
 resources/views/Business.xml:38"
 "Timesheet","Feuille de temps","","resources/views/Timesheet.xml:20
-resources/views/Project.xml:67"
+resources/views/Project.xml:68"
 "Timesheet Period Config","Configuration période feuille de temps","","resources/views/TimesheetPeriodConfig.xml:16"
 "Timesheet lines","Lignes de Feuille de Tps","","resources/views/Business.xml:223
 resources/views/Task.xml:319
@@ -683,18 +538,6 @@ resources/views/TimesheetLine.xml:78
 resources/views/TimesheetLine.xml:11
 resources/views/TimesheetLine.xml:99
 resources/views/TimesheetLine.xml:55"
-"Timesheet.Business","","","java/com/axelor/apps/organisation/report/ITranslation.java:153"
-"Timesheet.Date","","","java/com/axelor/apps/organisation/report/ITranslation.java:157"
-"Timesheet.Desclaimer","","","java/com/axelor/apps/organisation/report/ITranslation.java:160"
-"Timesheet.FromDate","","","java/com/axelor/apps/organisation/report/ITranslation.java:150"
-"Timesheet.Project","","","java/com/axelor/apps/organisation/report/ITranslation.java:154"
-"Timesheet.ProjectSpentTime","","","java/com/axelor/apps/organisation/report/ITranslation.java:158"
-"Timesheet.SpentTime","","","java/com/axelor/apps/organisation/report/ITranslation.java:156"
-"Timesheet.Task","","","java/com/axelor/apps/organisation/report/ITranslation.java:155"
-"Timesheet.ToDate","","","java/com/axelor/apps/organisation/report/ITranslation.java:151"
-"Timesheet.TotalDuration","","","java/com/axelor/apps/organisation/report/ITranslation.java:161"
-"Timesheet.TotalSpentTime","","","java/com/axelor/apps/organisation/report/ITranslation.java:159"
-"Timesheet.Unit","","","java/com/axelor/apps/organisation/report/ITranslation.java:152"
 "Timesheets","Feuilles de temps","","resources/views/Timesheet.xml:6"
 "Timesheets Period Config","Configuration période feuilles de temps","","resources/views/TimesheetPeriodConfig.xml:6"
 "Timesheets to validate","Feuilles de temps à valider","","resources/views/menu.xml:140
@@ -714,14 +557,14 @@ resources/views/menu.xml:240"
 "Unfavourable (red)","Défavorable","","resources/views/Selects.xml:64"
 "Update and historize","MàJ et Historiser","","resources/views/Task.xml:84"
 "Update financial information","MàJ infos. financières","","resources/views/Task.xml:99"
-"Update task progress","MàJ avancement tâche","","resources/views/Project.xml:36
+"Update task progress","MàJ avancement tâche","","resources/views/Project.xml:37
 resources/views/Business.xml:34"
-"Validate","Valider","","resources/views/Timesheet.xml:63
+"Validate","Valider","","resources/views/OvertimeLine.xml:23
+resources/views/Timesheet.xml:63
 resources/views/Overtime.xml:43
 resources/views/Overtime.xml:42
-resources/views/LeaveRequest.xml:60
-resources/views/OvertimeLine.xml:23
 resources/views/Expense.xml:54
+resources/views/LeaveRequest.xml:60
 resources/views/Expense.xml:53"
 "Validated","Validé","","resources/views/Selects.xml:155
 resources/views/Selects.xml:273"
