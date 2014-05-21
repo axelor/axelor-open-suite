@@ -69,7 +69,7 @@ public class ProductionOrderWizardController {
 			
 			Product product = null;
 			
-			if(context.get("product") == null)  {
+			if(context.get("product") != null)  {
 				Map<String, Object> productContext = (Map<String, Object>) context.get("product");
 				product = Product.find(((Integer) productContext.get("id")).longValue());
 			}
