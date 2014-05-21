@@ -35,6 +35,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
+import net.sf.ehcache.store.disk.ods.AATreeSet;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,25 +82,35 @@ public class TemplateMessageService {
 		
 		//Init the maker
 		TemplateMaker maker = new TemplateMaker(new Locale("fr"), '$', '$');
+		TemplateMaker addressMaker = new TemplateMaker(new Locale("fr"), '$', '$');
 		
 		Class<? extends Model> myClass = (Class<? extends Model>) Class.forName( model );
 
 		//Set context
 		maker.setContext(JPA.find(myClass.newInstance().getClass(), objectId), tag);
-		
+		addressMaker.setContext(JPA.find(myClass.newInstance().getClass(), objectId), tag);
 		
 		String content = "";
 		String subject = "";
 		String toRecipients = "";
 		String ccRecipients = "";
 		String bccRecipients = "";
-		
+		String addressBlock="";
+		int mediaTypeSelect;
 		
 		if(template.getContent() != null)  {
 			//Set template
 			maker.setTemplate(template.getContent());
 			//Make it
 			content = maker.make();
+		}
+		
+		
+		if(template.getContent() != null)  {
+			//Set template
+			addressMaker.setTemplate(template.getAddressBlock());
+			//Make it
+			addressBlock = addressMaker.make();
 		}
 		
 		MailAccount mailAccount = mailAccountService.getDefaultMailAccount();
@@ -123,6 +135,8 @@ public class TemplateMessageService {
 			maker.setTemplate(template.getBccRecipients());
 			bccRecipients = maker.make();
 		}
+		
+		mediaTypeSelect=template.getMediaTypeSelect();
 		
 		String filePath = null;
 		BirtTemplate birtTemplate = template.getBirtTemplate();
@@ -150,7 +164,9 @@ public class TemplateMessageService {
 				this.getEmailAddress(ccRecipients),
 				this.getEmailAddress(bccRecipients),
 				mailAccount,
-				filePath
+				filePath,
+				addressBlock,
+				mediaTypeSelect
 				);
 		
 		return message;
@@ -212,8 +228,6 @@ public class TemplateMessageService {
 			
 		}
 		return "";
-		
 	}
 	
 }
-

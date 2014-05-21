@@ -10,9 +10,9 @@
     </grid>
     
     <form name="message-form" title="Email" model="com.axelor.apps.message.db.Message" cols="4"
-    onNew="action-message-record-default,action-message-record-mail-account,action-message-record-get-signature">
+    onNew="action-message-record-default,action-message-record-mail-account,action-message-record-get-signature,action-message-record-active-company">
       <toolbar>
-	        <button name="print" title="Print" icon="fa-print" onClick="save" readonlyIf="id == null"/>
+	        <button name="print" title="Print" icon="fa-print" onClick="save,action-message-method-print-pdf-email" readonlyIf="id == null"/>
 	  </toolbar>
     	<group title="Informations" colSpan="4" readonlyIf="statusSelect == 2 || statusSelect == 3">
             <field name="sentDateT"/>
@@ -20,12 +20,15 @@
             <field name="senderUserInfo"/>
             <field name="mailAccount" widget="SuggestBox" onChange="action-message-record-get-signature"/>
             <field name="statusSelect"/>
+            <field name="mediaTypeSelect"/>
 <!--             <field name="sentByEmail"/> -->
         </group>
         <group title="Recipients" colSpan="4" readonlyIf="statusSelect == 2 || statusSelect == 3">
         	<field name="toEmailAddressSet" widget="TagSelect" x-create="emailAddress" form-view="email-address-form" colSpan="4"/>
         	<field name="ccEmailAddressSet" widget="TagSelect" x-create="emailAddress" form-view="email-address-form" colSpan="4"/>
         	<field name="bccEmailAddressSet" widget="TagSelect" x-create="emailAddress" form-view="email-address-form" colSpan="4"/>
+        	<separator title="Address Block" colSpan="4"/>
+        	<field name="addressBlock" colSpan="4" showTitle="false" widget="html"/>
         	<separator title="" colSpan="4"/>
         	<field name="recipientUserInfo" widget="TagSelect" x-create="name" colSpan="4" help="Internal Message"/>
         </group>
@@ -45,6 +48,13 @@
         <button name="delete" title="Delete" icon="fa-trash" onClick="save,action-message-record-delete-status,save" showIf="statusSelect != 3"/>
     </form>
     
+    <action-method name="action-message-method-print-pdf-email">
+		<call class="com.axelor.apps.message.web.MessageController" method="print"/>
+	</action-method>
+    
+    <action-record model="com.axelor.apps.message.db.Message" name="action-message-record-active-company">
+      <field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+    </action-record>
     
 	<action-record name="action-message-record-default" model="com.axelor.apps.message.db.Message">
     	<field name="sentDateT" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()"/>
