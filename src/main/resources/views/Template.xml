@@ -21,10 +21,13 @@
 		<field name="birtTemplate"/>
 		<field name="filePath" widget="url"/>
 		<field name="templateContext" colSpan="4"/>
+		<field name="mediaTypeSelect" />
 		<group name="recipientGroup" title="Destinated to" colSpan="4" cols="2">
 			<field name="toRecipients"/>
 			<field name="ccRecipients"/>
 			<field name="bccRecipients"/>
+			<separator title="Address Block" colSpan="4"/>
+			<field name="addressBlock" showTitle="false" colSpan="4" widget="Html" x-lite="false" />
 		</group>
 		<group name="recipientGroup" colSpan="4" cols="2">
 			<separator title="Subject" colSpan="4"/>

@@ -39,6 +39,6 @@ public interface IReport {
 	public static final String PHONE_BOOK = "PhoneBook.rptdesign";
 	public static final String COMPANY_PHONE_BOOK = "CompanyPhoneBook.rptdesign";
 	public static final String CLIENT_SITUATION = "ClientSituation.rptdesign";
-	
+	public static final String MESSAGE_PDF = "MessagePDF.rptdesign";
 	
 }
