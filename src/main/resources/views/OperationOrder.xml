@@ -107,7 +107,10 @@
         	<page title="Timesheet lines">
         		<field name="timesheetLineList" showTitle="false" form-view="timesheet-line-production-form" grid-view="timesheet-line-production-grid" colSpan="4"/>
         	</page>
-        	
+      	<!--         	MUST BE DELETED AFTER DEMO COFELY -->
+        	<page title="Conformité" colSpan="4">
+        		<include view="manuf-order-sheet-form"/>
+        	</page>
         
         </notebook>
     </form>

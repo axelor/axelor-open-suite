@@ -5,13 +5,13 @@
     
     <form name="business-project-production-form" title="Business" model="com.axelor.apps.organisation.db.Project" cols="6">
        	<field name="prodInvTypeSelect"/>
-       	<portlet colSpan="4" action="action-business-project-view-production-operation-order"/>
+       	<portlet colSpan="4" action="action-business-project-view-production-manuf-order"/>
 	</form>
 	
-	<action-view name="action-business-project-view-production-operation-order" title="Operation orders" model="com.axelor.apps.production.db.OperationOrder">
-  		<view type="grid" name="operation-order-grid"/>
-		<view type="form" name="operation-order-form"/>
-  		<domain>self.manufOrder.productionOrder.businessProject.id = :id</domain>
+	<action-view name="action-business-project-view-production-manuf-order" title="Operation orders" model="com.axelor.apps.production.db.ManufOrder">
+  		<view type="grid" name="manuf-order-business-grid"/>
+		<view type="form" name="manuf-order-form"/>
+  		<domain>self.productionOrder.businessProject.id = :id</domain>
   		<context name="id" expr="eval: id"/>
   	</action-view>
 		
