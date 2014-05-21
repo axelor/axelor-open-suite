@@ -205,47 +205,7 @@
 	</action-view>
 	
 
-	<menuitem name="alarm-root" title="Alarmes" priority="80"
-		icon="img/Other/alert_60px.png" groups="admins,erp"/>
 
-	<menuitem name="alarm-root-alarm-other" parent="alarm-root" title="All Alarms"
-		action="alarm.root.alarm.other" />
-
-	<action-view name="alarm.root.alarm.other" title="All Alarms"
-		model="com.axelor.apps.base.db.Alarm" icon="img/16px/alertSmall_16px.png">
-		<view type="grid" name="alarm-grid" />
-		<view type="form" name="alarm-form" />
-	</action-view>
-
-	<menuitem name="alarm-conf" parent="alarm-root" title="Configuration"
-		icon="img/Other/parameter_59px.png" />
-	
-	<menuitem name="alarm-conf-alarm-engine" parent="alarm-conf"
-		title="Alarm engines" action="alarm.conf.alarm.engine" />
-
-	<action-view name="alarm.conf.alarm.engine" title="Alarm engines"
-		model="com.axelor.apps.base.db.AlarmEngine" icon="img/16px/parameterSmall_16px.png">
-		<view type="grid" />
-		<view type="form" />
-	</action-view>
-
-	<menuitem name="alarm-conf-message" parent="alarm-conf" title="All Messages"
-		action="alarm.conf.message" />
-
-	<action-view name="alarm.conf.message" title="All Messages"
-		model="com.axelor.apps.base.db.AlarmMessage" icon="img/16px/parameterSmall_16px.png">
-		<view type="grid" />
-		<view type="form" />
-	</action-view>
-	
-	<menuitem name="alarm-conf-alarm-engine-batch" parent="alarm-conf"
-		title="Alarm batches" action="alarm.conf.alarm.engine.batch" />
-
-	<action-view name="alarm.conf.alarm.engine.batch" title="Alarm batches"
-		model="com.axelor.apps.base.db.AlarmEngineBatch" icon="img/16px/parameterSmall_16px.png">
-		<view type="grid" />
-		<view type="form" />
-	</action-view>
 	
 	
 
@@ -596,6 +556,7 @@
 	</action-view>
 	
 	
+	
 	<menuitem name="admin-root-batch" parent="admin-root"
 		title="Batches" />
 	
@@ -610,6 +571,50 @@
 	
 	<menuitem name="admin-root-conf" parent="admin-root"
 		title="Modules configurations" icon="img/Other/parameter_59px.png"/>
+	
+	
+		<menuitem name="alarm-root" title="Alarmes" priority="80"
+		icon="img/Other/alert_60px.png" groups="admins,erp" parent="admin-root"/>
+
+	<menuitem name="alarm-root-alarm-other" parent="alarm-root" title="All Alarms"
+		action="alarm.root.alarm.other" />
+
+	<action-view name="alarm.root.alarm.other" title="All Alarms"
+		model="com.axelor.apps.base.db.Alarm" icon="img/16px/alertSmall_16px.png">
+		<view type="grid" name="alarm-grid" />
+		<view type="form" name="alarm-form" />
+	</action-view>
+
+	<menuitem name="alarm-conf" parent="alarm-root" title="Configuration"
+		icon="img/Other/parameter_59px.png" />
+	
+	<menuitem name="alarm-conf-alarm-engine" parent="alarm-conf"
+		title="Alarm engines" action="alarm.conf.alarm.engine" />
+
+	<action-view name="alarm.conf.alarm.engine" title="Alarm engines"
+		model="com.axelor.apps.base.db.AlarmEngine" icon="img/16px/parameterSmall_16px.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
+
+	<menuitem name="alarm-conf-message" parent="alarm-conf" title="All Messages"
+		action="alarm.conf.message" />
+
+	<action-view name="alarm.conf.message" title="All Messages"
+		model="com.axelor.apps.base.db.AlarmMessage" icon="img/16px/parameterSmall_16px.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
+	
+	<menuitem name="alarm-conf-alarm-engine-batch" parent="alarm-conf"
+		title="Alarm batches" action="alarm.conf.alarm.engine.batch" />
+
+	<action-view name="alarm.conf.alarm.engine.batch" title="Alarm batches"
+		model="com.axelor.apps.base.db.AlarmEngineBatch" icon="img/16px/parameterSmall_16px.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
+	
 	
 
 	<!-- Top Menu for Create new objects.... -->
