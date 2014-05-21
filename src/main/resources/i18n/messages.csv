@@ -51,28 +51,28 @@ resources/views/AccountingBatch.xml:6"
 "Accounting details","","","resources/views/Invoice.xml:69"
 "Accounting export","","","resources/views/Move.xml:87
 resources/views/MoveLineReport.xml:93"
-"Accounting exports","","","resources/views/menu.xml:341
-resources/views/MoveLineReport.xml:75
+"Accounting exports","","","resources/views/MoveLineReport.xml:75
+resources/views/menu.xml:341
 resources/views/menu.xml:344"
 "Accounting report","","","resources/views/MoveLineReport.xml:29"
-"Accounting reports","","","resources/views/menu.xml:331
-resources/views/MoveLineReport.xml:8
+"Accounting reports","","","resources/views/MoveLineReport.xml:8
+resources/views/menu.xml:331
 resources/views/menu.xml:334"
 "Accounting situation","","","resources/views/AccountingSituation.xml:39
 resources/views/AccountingSituation.xml:15"
 "Accounting situations","","","resources/views/AccountingSituation.xml:29
 resources/views/AccountingSituation.xml:6"
-"Accounts","","","resources/views/Account.xml:6
-resources/views/AccountConfig.xml:39"
+"Accounts","","","resources/views/AccountConfig.xml:39
+resources/views/Account.xml:6"
 "Action","","","resources/views/Irrecoverable.xml:35
 resources/views/ChequeRejection.xml:47"
 "Action(s)","","","resources/views/Invoice.xml:127"
 "Actions","","","resources/views/AccountClearance.xml:29
 resources/views/Reimbursement.xml:29
-resources/views/Move.xml:80
-resources/views/PaymentVoucher.xml:33
 resources/views/Partner.xml:16
 resources/views/CashRegisterLine.xml:33
+resources/views/Move.xml:80
+resources/views/PaymentVoucher.xml:33
 resources/views/ReminderMethodLine.xml:25"
 "Activities","","","resources/views/Partner.xml:145"
 "Add an email for payment through Paybox","","","resources/views/PaymentVoucher.xml:73"
@@ -128,8 +128,8 @@ resources/views/InterbankCode.xml:26
 resources/views/InterbankCodeLine.xml:5
 resources/views/InterbankCode.xml:10
 resources/views/InterbankCode.xml:20"
-"Blockings","","","resources/views/Invoice.xml:90
-resources/views/Partner.xml:117"
+"Blockings","","","resources/views/Partner.xml:117
+resources/views/Invoice.xml:90"
 "CFONB","","","resources/views/AccountConfig.xml:59"
 "CFONB Export","","","resources/views/CfonbConfig.xml:16"
 "CFONB Import","","","resources/views/CfonbConfig.xml:25"
@@ -152,8 +152,8 @@ resources/views/menu.xml:231"
 resources/views/menu.xml:562"
 "Cash register mails","","","resources/views/menu.xml:607
 resources/views/menu.xml:610"
-"Cash registers","","","resources/views/menu.xml:354
-resources/views/CashRegister.xml:5
+"Cash registers","","","resources/views/CashRegister.xml:5
+resources/views/menu.xml:354
 resources/views/menu.xml:357"
 "Cashiers","","","resources/views/AccountConfig.xml:50"
 "Cfonb configuration","","","resources/views/CfonbConfig.xml:11"
@@ -179,8 +179,8 @@ resources/views/Selects.xml:52"
 "Compute","","","resources/views/Invoice.xml:129"
 "Conditions","","","resources/views/ReminderMethodLine.xml:20"
 "Configuration","","","resources/views/menu.xml:283
-resources/views/AccountConfig.xml:108
-resources/views/menu.xml:351"
+resources/views/menu.xml:351
+resources/views/AccountConfig.xml:108"
 "Confirm payment","","","resources/views/PaymentVoucher.xml:34"
 "Confirmed","","","resources/views/Selects.xml:16
 resources/views/Selects.xml:51
@@ -219,8 +219,8 @@ resources/views/menu.xml:775"
 resources/views/menu.xml:52
 resources/views/menu.xml:672
 resources/views/menu.xml:55"
-"Customer","","","resources/views/IrrecoverableCustomerLine.xml:10
-resources/views/Selects.xml:107"
+"Customer","","","resources/views/Selects.xml:107
+resources/views/IrrecoverableCustomerLine.xml:10"
 "Customer Invoices remaining To Collect","","","resources/views/portal.xml:133"
 "Customer Paybox payments","","","resources/views/PaymentVoucher.xml:231"
 "Customer Payment mode by amount","","","resources/views/charts.xml:437
@@ -254,8 +254,8 @@ resources/views/Reconcile.xml:8"
 resources/views/InterbankCode.xml:16
 resources/views/InterbankCode.xml:31"
 "Direct Debit Batch","","","resources/views/AccountingBatch.xml:69"
-"Direct debit","","","resources/views/AccountConfig.xml:86
-resources/views/Selects.xml:190
+"Direct debit","","","resources/views/Selects.xml:190
+resources/views/AccountConfig.xml:86
 resources/views/Selects.xml:129
 resources/views/Invoice.xml:111"
 "Direct debit blocking","","","resources/views/Invoice.xml:94"
@@ -316,8 +316,8 @@ resources/views/menu.xml:646"
 "Fiscal positions","","","resources/views/FiscalPosition.xml:6
 resources/views/menu.xml:643"
 "Fiscal year","","","resources/views/Year.xml:17"
-"Fiscal years","","","resources/views/menu.xml:366
-resources/views/Year.xml:6
+"Fiscal years","","","resources/views/Year.xml:6
+resources/views/menu.xml:366
 resources/views/menu.xml:369"
 "Follow-up","","","resources/views/CashRegisterLine.xml:29"
 "From Date","","","resources/views/charts.xml:178
@@ -367,8 +367,8 @@ resources/views/charts.xml:912"
 "Informations","","","resources/views/Move.xml:49
 resources/views/Partner.xml:50
 resources/views/InvoiceLine.xml:20
-resources/views/Move.xml:22
 resources/views/MoveLine.xml:31
+resources/views/Move.xml:22
 resources/views/MoveLine.xml:78
 resources/views/InvoiceBatch.xml:37"
 "Interbank Payment Order Batch","","","resources/views/AccountingBatch.xml:71"
@@ -436,9 +436,9 @@ resources/views/Invoice.xml:182"
 "Invoicing/Payment","","","resources/views/Partner.xml:92"
 "Irrecoverable","","","resources/views/Irrecoverable.xml:14
 resources/views/Invoice.xml:83
+resources/views/PaymentSchedule.xml:45
 resources/views/MoveLine.xml:99
-resources/views/MoveLine.xml:53
-resources/views/PaymentSchedule.xml:45"
+resources/views/MoveLine.xml:53"
 "Irrecoverable Execution","","","resources/views/Irrecoverable.xml:34"
 "Irrecoverable report","","","resources/views/Irrecoverable.xml:24"
 "Irrecoverables","","","resources/views/Irrecoverable.xml:5"
@@ -471,11 +471,11 @@ resources/views/menu.xml:143"
 "Move filters","","","resources/views/Move.xml:136"
 "Move header","","","resources/views/Move.xml:23"
 "Move line","","","resources/views/MoveLine.xml:29
-resources/views/MoveLine.xml:76
-resources/views/Move.xml:47"
+resources/views/Move.xml:47
+resources/views/MoveLine.xml:76"
 "Move line filters","","","resources/views/MoveLine.xml:155"
-"Move lines","","","resources/views/AccountingSituation.xml:57
-resources/views/MoveLine.xml:6
+"Move lines","","","resources/views/MoveLine.xml:6
+resources/views/AccountingSituation.xml:57
 resources/views/Move.xml:37
 resources/views/MoveLine.xml:17"
 "Move lines generated","","","resources/views/AccountClearance.xml:34"
@@ -494,8 +494,8 @@ resources/views/menu.xml:15"
 "New sup. invoice","","","resources/views/menu.xml:24
 resources/views/menu.xml:27"
 "No of Units","","","resources/views/charts.xml:172"
-"Notes","","","resources/views/InvoiceLine.xml:39
-resources/views/Partner.xml:89
+"Notes","","","resources/views/Partner.xml:89
+resources/views/InvoiceLine.xml:39
 resources/views/Invoice.xml:122"
 "Number Of Supplier Invoices Per Month","","","resources/views/portal.xml:117
 resources/views/charts.xml:336"
@@ -507,8 +507,8 @@ resources/views/charts.xml:237"
 "Options","","","resources/views/InvoiceBatch.xml:26"
 "Other","","","resources/views/Selects.xml:189"
 "Others","","","resources/views/Move.xml:93
-resources/views/MoveLine.xml:113
 resources/views/Move.xml:73
+resources/views/MoveLine.xml:113
 resources/views/MoveLine.xml:67"
 "Out","","","resources/views/Selects.xml:202"
 "Overpayments clearances","","","resources/views/menu.xml:241
@@ -519,9 +519,9 @@ resources/views/menu.xml:238"
 "Partner information","","","resources/views/ReminderHistory.xml:29"
 "Payable","","","resources/views/Selects.xml:29"
 "Paybox","","","resources/views/PaymentVoucher.xml:72
+resources/views/Paybox.xml:10
 resources/views/Paybox.xml:6
 resources/views/AccountConfig.xml:104
-resources/views/Paybox.xml:10
 resources/views/menu.xml:490
 resources/views/PaymentVoucher.xml:80
 resources/views/menu.xml:493"
@@ -588,8 +588,8 @@ resources/views/menu.xml:375"
 "Please close this notebook to go back to the payment voucher. Please refresh the payment voucher to see the changes.","","","resources/views/Paybox.xml:12"
 "Postal addresses","","","resources/views/Partner.xml:77"
 "Print","","","resources/views/Invoice.xml:25
-resources/views/Invoice.xml:170
 resources/views/MoveLineReport.xml:39
+resources/views/Invoice.xml:170
 resources/views/Irrecoverable.xml:31
 resources/views/Invoice.xml:179
 resources/views/Invoice.xml:33"
@@ -620,14 +620,14 @@ resources/views/menu.xml:217"
 resources/views/Reconcile.xml:6
 resources/views/Reconcile.xml:18"
 "Reconcile filters","","","resources/views/Reconcile.xml:56"
-"Reconcile list","","","resources/views/MoveLine.xml:59
-resources/views/Move.xml:64
+"Reconcile list","","","resources/views/Move.xml:64
+resources/views/MoveLine.xml:59
 resources/views/MoveLine.xml:105"
 "Reference documents","","","resources/views/Invoice.xml:57"
 "Refund","","","resources/views/Invoice.xml:74"
 "Reimbursed","","","resources/views/Selects.xml:40"
-"Reimbursement","","","resources/views/AccountConfig.xml:67
-resources/views/Selects.xml:128
+"Reimbursement","","","resources/views/Selects.xml:128
+resources/views/AccountConfig.xml:67
 resources/views/Reimbursement.xml:14"
 "Reimbursement Batch","","","resources/views/AccountingBatch.xml:68"
 "Reimbursement Export","","","resources/views/Selects.xml:138"
@@ -670,8 +670,8 @@ resources/views/menu.xml:523"
 "Reminder history","","","resources/views/ReminderHistory.xml:21"
 "Reminder level","","","resources/views/ReminderLevel.xml:12
 resources/views/ReminderMethodLine.xml:13"
-"Reminder levels","","","resources/views/ReminderLevel.xml:6
-resources/views/menu.xml:300
+"Reminder levels","","","resources/views/menu.xml:300
+resources/views/ReminderLevel.xml:6
 resources/views/menu.xml:297"
 "Reminder mail models","","","resources/views/menu.xml:310
 resources/views/menu.xml:307"
@@ -695,14 +695,14 @@ resources/views/ReminderHistory.xml:54
 resources/views/menu.xml:274
 resources/views/menu.xml:277"
 "Report execution","","","resources/views/Irrecoverable.xml:25"
-"Reported balance","","","resources/views/ReportedBalance.xml:9
-resources/views/Partner.xml:125
+"Reported balance","","","resources/views/Partner.xml:125
+resources/views/ReportedBalance.xml:9
 resources/views/Partner.xml:120"
 "Reported balance line","","","resources/views/Partner.xml:132
 resources/views/ReportedBalance.xml:17
 resources/views/ReportedBalanceLine.xml:10"
-"Reported balance lines","","","resources/views/ReportedBalance.xml:13
-resources/views/ReportedBalanceLine.xml:5
+"Reported balance lines","","","resources/views/ReportedBalanceLine.xml:5
+resources/views/ReportedBalance.xml:13
 resources/views/Partner.xml:128"
 "Reported balance list","","","resources/views/ReportedBalance.xml:5"
 "Reported balances","","","resources/views/Partner.xml:122"
@@ -735,15 +735,15 @@ resources/views/PaymentScheduleLine.xml:41"
 "Search","","","resources/views/MoveLineReport.xml:95
 resources/views/MoveLineReport.xml:38
 resources/views/MoveLineReport.xml:106"
-"Send email","","","resources/views/Invoice.xml:34
-resources/views/Partner.xml:11
+"Send email","","","resources/views/Partner.xml:11
+resources/views/Invoice.xml:34
 resources/views/Invoice.xml:26"
 "Settings","","","resources/views/Partner.xml:104"
 "Shift to irrecoverable","","","resources/views/Irrecoverable.xml:36
 resources/views/MoveLine.xml:56
 resources/views/MoveLine.xml:102
-resources/views/menu.xml:248
 resources/views/AccountConfig.xml:53
+resources/views/menu.xml:248
 resources/views/menu.xml:251
 resources/views/Invoice.xml:86"
 "Shift to irrecoverablePassage en irrécouvrable","","","resources/views/PaymentSchedule.xml:48"
@@ -782,9 +782,9 @@ resources/views/menu.xml:785"
 "Supplier's Invoices Due","","","resources/views/portal.xml:127"
 "Tax","","","resources/views/Tax.xml:6
 resources/views/Tax.xml:11
+resources/views/Selects.xml:94
 resources/views/AccountManagement.xml:57
 resources/views/Selects.xml:33
-resources/views/Selects.xml:94
 resources/views/AccountManagement.xml:29"
 "Tax Line","","","resources/views/InvoiceLineTax.xml:14"
 "Tax Lines","","","resources/views/InvoiceLineTax.xml:6"
@@ -837,8 +837,8 @@ resources/views/Invoice.xml:412"
 resources/views/menu.xml:442"
 "VAT Statement","","","resources/views/Selects.xml:65"
 "Validate","","","resources/views/Invoice.xml:130
-resources/views/PaymentSchedule.xml:41
 resources/views/PaymentVoucher.xml:77
+resources/views/PaymentSchedule.xml:41
 resources/views/Move.xml:83
 resources/views/Selects.xml:169
 resources/views/Reimbursement.xml:34
