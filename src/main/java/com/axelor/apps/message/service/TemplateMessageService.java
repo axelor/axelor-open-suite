@@ -80,13 +80,11 @@ public class TemplateMessageService {
 		
 		//Init the maker
 		TemplateMaker maker = new TemplateMaker(new Locale("fr"), '$', '$');
-		TemplateMaker addressMaker = new TemplateMaker(new Locale("fr"), '$', '$');
 		
 		Class<? extends Model> myClass = (Class<? extends Model>) Class.forName( model );
 
 		//Set context
 		maker.setContext(JPA.find(myClass.newInstance().getClass(), objectId), tag);
-		addressMaker.setContext(JPA.find(myClass.newInstance().getClass(), objectId), tag);
 		
 		String content = "";
 		String subject = "";
@@ -105,10 +103,9 @@ public class TemplateMessageService {
 		
 		
 		if(template.getAddressBlock() != null)  {
-			//Set template
-			addressMaker.setTemplate(template.getAddressBlock());
+			maker.setTemplate(template.getAddressBlock());
 			//Make it
-			addressBlock = addressMaker.make();
+			addressBlock = maker.make();
 		}
 		
 		MailAccount mailAccount = mailAccountService.getDefaultMailAccount();
