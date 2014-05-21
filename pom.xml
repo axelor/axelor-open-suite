@@ -13,12 +13,6 @@
 	<name>Axelor :: Base</name>
 	
 	<dependencies>
-	
-		<dependency>
-			<groupId>com.axelor</groupId>
-			<artifactId>axelor-wkf</artifactId>
-			<version>${project.version}</version>
-		</dependency>
 
 		<!-- Axelor-exception -->
 		<dependency>
