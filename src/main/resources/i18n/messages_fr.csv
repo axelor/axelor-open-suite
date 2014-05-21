@@ -1,9 +1,10 @@
 "key","message","comment","context"
+"Address Block","","","resources/views/Message.xml:30"
 "Chart","","","resources/views/Selects.xml:39"
 "Configuration","Configuration","","resources/views/menu.xml:73"
 "Configurations","Configurations","","resources/views/MailAccount.xml:25"
-"Content","Contenu","","resources/views/Message.xml:32"
-"Delete","Supprimer","","resources/views/Message.xml:45"
+"Content","Contenu","","resources/views/Message.xml:35"
+"Delete","Supprimer","","resources/views/Message.xml:48"
 "Deleted","Supprimée","","resources/views/Selects.xml:28"
 "Draft","Brouillon","","resources/views/Selects.xml:26"
 "Draft emails","Emails Brouillon","","resources/views/menu.xml:38
@@ -24,9 +25,9 @@ resources/views/menu.xml:96"
 "IMAP","IMAP","","resources/views/Selects.xml:33"
 "Inbox","Boîte de réception","","resources/views/menu.xml:16
 resources/views/menu.xml:20"
-"Informations","Informations","","resources/views/Message.xml:17
-resources/views/MailAccount.xml:15"
-"Internal Message","","","resources/views/Message.xml:30"
+"Informations","Informations","","resources/views/MailAccount.xml:15
+resources/views/Message.xml:17"
+"Internal Message","","","resources/views/Message.xml:33"
 "Lead","Prospect","","resources/views/Selects.xml:11"
 "Login","Identifiant","","resources/views/MailAccount.xml:21"
 "Mail","","","resources/views/Selects.xml:37"
@@ -42,11 +43,11 @@ resources/views/menu.xml:28"
 "Project/Business","Projet/Affaire","","resources/views/Selects.xml:16"
 "Quote/Order","Devis/Commande","","resources/views/Selects.xml:15"
 "Received","Reçu","","resources/views/Selects.xml:21"
-"Recipients","Destinataires","","resources/views/Message.xml:25"
-"Related to","Relatif à","","resources/views/Message.xml:37"
+"Recipients","Destinataires","","resources/views/Message.xml:26"
+"Related to","Relatif à","","resources/views/Message.xml:40"
 "Routings","Gamme","","resources/views/menu.xml:85
 resources/views/menu.xml:88"
-"Send","Envoyer","","resources/views/Message.xml:44"
+"Send","Envoyer","","resources/views/Message.xml:47"
 "Sent","Envoyé","","resources/views/Selects.xml:27
 resources/views/Selects.xml:22"
 "Sentbox","Emails Envoyés","","resources/views/menu.xml:54

@@ -1,9 +1,10 @@
 "key","message","comment","context"
+"Address Block","","","resources/views/Message.xml:30"
 "Chart","","","resources/views/Selects.xml:39"
 "Configuration","","","resources/views/menu.xml:73"
 "Configurations","","","resources/views/MailAccount.xml:25"
-"Content","","","resources/views/Message.xml:32"
-"Delete","","","resources/views/Message.xml:45"
+"Content","","","resources/views/Message.xml:35"
+"Delete","","","resources/views/Message.xml:48"
 "Deleted","","","resources/views/Selects.xml:28"
 "Draft","","","resources/views/Selects.xml:26"
 "Draft emails","","","resources/views/menu.xml:38
@@ -24,9 +25,9 @@ resources/views/menu.xml:96"
 "IMAP","","","resources/views/Selects.xml:33"
 "Inbox","","","resources/views/menu.xml:16
 resources/views/menu.xml:20"
-"Informations","","","resources/views/Message.xml:17
-resources/views/MailAccount.xml:15"
-"Internal Message","","","resources/views/Message.xml:30"
+"Informations","","","resources/views/MailAccount.xml:15
+resources/views/Message.xml:17"
+"Internal Message","","","resources/views/Message.xml:33"
 "Lead","","","resources/views/Selects.xml:11"
 "Login","","","resources/views/MailAccount.xml:21"
 "Mail","","","resources/views/Selects.xml:37"
@@ -42,11 +43,11 @@ resources/views/menu.xml:28"
 "Project/Business","","","resources/views/Selects.xml:16"
 "Quote/Order","","","resources/views/Selects.xml:15"
 "Received","","","resources/views/Selects.xml:21"
-"Recipients","","","resources/views/Message.xml:25"
-"Related to","","","resources/views/Message.xml:37"
+"Recipients","","","resources/views/Message.xml:26"
+"Related to","","","resources/views/Message.xml:40"
 "Routings","","","resources/views/menu.xml:85
 resources/views/menu.xml:88"
-"Send","","","resources/views/Message.xml:44"
+"Send","","","resources/views/Message.xml:47"
 "Sent","","","resources/views/Selects.xml:27
 resources/views/Selects.xml:22"
 "Sentbox","","","resources/views/menu.xml:54
