@@ -26,7 +26,7 @@
 		<button name="notAccept" title="Not accept" colSpan="2" onClick="save,action-purchase-order-supplier-line-record-not-accept,save" showIf="stateSelect == 1 || stateSelect == 2"/>
 		<button name="cancel" title="Cancel" colSpan="2" onClick="save,action-purchase-order-supplier-line-record-cancel,save" hideIf="stateSelect == 5"/>
 		<button name="request" title="Request" colSpan="2" onClick="save,action-purchase-order-supplier-line-record-request,save" showIf="stateSelect == 5"/>
-		<button name="sendByEmail" title="Write to the supplier" icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
+		<button name="sendByEmail" title="Write to the supplier" colSpan="2" icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
 	</form>
 	
 	
