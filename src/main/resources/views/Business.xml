@@ -33,12 +33,16 @@
 	        <button name="createPreSalesTask" title="Create pre-sales task" colSpan="1" onClick="save,action-business-project-method-create-pre-sales-task"/>
 	        <button name="updateTaskProgression" title="Update task progress" colSpan="1" onClick="action-project-method-update-task-progress"/>
 	        <button name="createProductionOrder" title="Create production order" colSpan="2" onClick="save,action-product-view-create-production-order"/>
+	        
+<!-- 	        MUST BE DELETED -->
+	        <button name="generateSalesOrder" title="Créer devis" colSpan="2" onClick="action-business-project-view-generate-sales-order"/>
+	        <button name="updateSalesOrder" title="Mettre à jour devis" colSpan="2" onClick="action-business-project-view-update-sales-order"/>
 	    </group>
 	    <group showTitle="false" colSpan="6">
         	<group title="Times" colSpan="6" cols="6">
         		<field name="totalTime"/>
         		<field name="unit"/>  
-        		<field name="progress"/>
+        		<field name="progress" widget="SelectProgress"/>
         		<separator colSpan="6"/>
 	            <field name="plannedTime"/>
 	            <field name="spentTime"/>
@@ -114,7 +118,7 @@
 	        <page title="Production informations">
 <!-- 	        	<include view="business-project-production-form" from="axelor-production"/> -->
 	        	<field name="prodInvTypeSelect"/>
-   				<portlet colSpan="4" action="action-business-project-view-production-operation-order"/>
+   				<portlet colSpan="4" action="action-business-project-view-production-manuf-order"/>
 	        </page>
 	        <page title="members" colSpan="4">
 	            <field name="memberUserInfoSet" colSpan="6"/>
@@ -250,6 +254,21 @@
   		<view-param name="show-confirm" value="false" />
   		<context name="_businessId" expr="eval: __self__"/>
 	</action-view>
+	
+	
+<!-- 	MUST BE DELETED -->
+    
+    <action-view name="action-business-project-view-generate-sales-order" title="Sales order" model="com.axelor.apps.supplychain.db.SalesOrder">
+  		<view type="grid" name="sales-order-grid"/>
+		<view type="form" name="sales-order-form"/>
+		<domain>self.id = 12</domain>
+  	</action-view>
+  	
+  	 <action-view name="action-business-project-view-update-sales-order" title="Sales order" model="com.axelor.apps.supplychain.db.SalesOrder">
+  		<view type="grid" name="sales-order-grid"/>
+		<view type="form" name="sales-order-form"/>
+		<domain>self.id = 13</domain>
+  	</action-view>
   	
   	
 </object-views>

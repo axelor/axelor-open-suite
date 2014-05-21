@@ -45,7 +45,7 @@ resources/views/Employee.xml:54"
 "All Timesheets","","","resources/views/portal.xml:37"
 "All Travel Expenses","","","resources/views/portal.xml:43"
 "All leave requests","","","resources/views/portal.xml:55"
-"Analytic axis","","","resources/views/Business.xml:134"
+"Analytic axis","","","resources/views/Business.xml:138"
 "Availability and Decision","","","resources/views/Candidate.xml:62"
 "Awareness","","","resources/views/Competence.xml:33"
 "Back to draft","","","resources/views/LeaveRequest.xml:62"
@@ -154,10 +154,11 @@ resources/views/Task.xml:154"
 "Cost","","","resources/views/Selects.xml:242"
 "Create pre-sales task","","","resources/views/Business.xml:33"
 "Create production order","","","resources/views/Business.xml:35
-resources/views/Business.xml:246"
+resources/views/Business.xml:250"
+"Créer devis","","","resources/views/Business.xml:38"
 "Current Employees","","","resources/views/Employee.xml:135"
-"Customer invoice lines","","","resources/views/Task.xml:284
-resources/views/Business.xml:209"
+"Customer invoice lines","","","resources/views/Business.xml:213
+resources/views/Task.xml:284"
 "Dashboard","","","resources/views/portal.xml:7"
 "Date","","","resources/views/ExpenseLine.xml:39"
 "Day","","","resources/views/Selects.xml:194
@@ -170,7 +171,7 @@ resources/views/TimesheetPeriodConfig.xml:23"
 "Description","","","resources/views/Task.xml:132
 resources/views/Task.xml:169
 resources/views/Project.xml:49
-resources/views/Business.xml:47"
+resources/views/Business.xml:51"
 "Details","","","resources/views/ExpenseLine.xml:48"
 "Details of time spent on project/tasks","","","resources/views/Timesheet.xml:40"
 "Divorced","","","resources/views/Selects.xml:79"
@@ -282,7 +283,7 @@ resources/views/Expense.xml:36"
 resources/views/ExpenseLine.xml:37"
 "Expense lines","","","resources/views/Task.xml:326
 resources/views/Task.xml:305
-resources/views/Business.xml:230"
+resources/views/Business.xml:234"
 "Expense.amount","","","java/com/axelor/apps/organisation/report/ITranslation.java:59"
 "Expense.client","","","java/com/axelor/apps/organisation/report/ITranslation.java:54"
 "Expense.currency","","","java/com/axelor/apps/organisation/report/ITranslation.java:65"
@@ -310,16 +311,16 @@ resources/views/menu.xml:151"
 resources/views/menu.xml:164"
 "Expert","","","resources/views/Selects.xml:38"
 "Expertises","","","resources/views/Competence.xml:27"
-"Financial information","","","resources/views/Task.xml:73
-resources/views/Business.xml:68"
+"Financial information","","","resources/views/Business.xml:72
+resources/views/Task.xml:73"
 "Financial information historical","","","resources/views/FinancialInformationHistoryLine.xml:14"
 "Financial information historicals","","","resources/views/FinancialInformationHistoryLine.xml:6"
 "Financial information updates","","","resources/views/Task.xml:270
 resources/views/Task.xml:312
-resources/views/Business.xml:202
+resources/views/Business.xml:185
 resources/views/Task.xml:256
-resources/views/Business.xml:181
-resources/views/Business.xml:237"
+resources/views/Business.xml:241
+resources/views/Business.xml:206"
 "First Name","","","resources/views/Candidate.xml:39
 resources/views/Employee.xml:33"
 "First interview","","","resources/views/Selects.xml:174"
@@ -359,10 +360,10 @@ resources/views/menu.xml:385"
 "Immediate","","","resources/views/Selects.xml:20"
 "Included","","","resources/views/Selects.xml:10"
 "Initial estimated","","","resources/views/Selects.xml:246
+resources/views/Business.xml:98
 resources/views/Task.xml:103
-resources/views/Business.xml:76
-resources/views/Task.xml:79
-resources/views/Business.xml:94"
+resources/views/Business.xml:80
+resources/views/Task.xml:79"
 "Input forms","","","resources/views/menu.xml:87"
 "Internal","","","resources/views/Selects.xml:166"
 "International","","","resources/views/Selects.xml:31"
@@ -389,7 +390,7 @@ resources/views/menu.xml:183"
 "Leaves","","","resources/views/Employee.xml:108"
 "Limit","","","resources/views/TimesheetPeriodConfig.xml:40"
 "Links","","","resources/views/Task.xml:98
-resources/views/Business.xml:92"
+resources/views/Business.xml:96"
 "Lost","","","resources/views/Selects.xml:190"
 "Low","","","resources/views/Selects.xml:97"
 "Main Contact details","","","resources/views/Employee.xml:39
@@ -401,6 +402,7 @@ resources/views/Candidate.xml:43"
 "Mastered Skills","","","resources/views/Competence.xml:30"
 "Medium","","","resources/views/Selects.xml:96"
 "Members","","","resources/views/Project.xml:77"
+"Mettre à jour devis","","","resources/views/Business.xml:39"
 "Mission information","","","resources/views/MissionOrder.xml:26"
 "Mission order","","","resources/views/menu.xml:22
 resources/views/menu.xml:25
@@ -440,7 +442,7 @@ resources/views/Employee.xml:31
 resources/views/Business.xml:19
 resources/views/Project.xml:24"
 "National","","","resources/views/Selects.xml:30"
-"Need","","","resources/views/Business.xml:122"
+"Need","","","resources/views/Business.xml:126"
 "Negative (vert)","","","resources/views/Selects.xml:91"
 "New Business","","","resources/views/menu.xml:286
 resources/views/menu.xml:289"
@@ -517,7 +519,7 @@ resources/views/Candidate.xml:77"
 "Print","","","resources/views/Timesheet.xml:22"
 "Print CV","","","resources/views/Employee.xml:20
 resources/views/Candidate.xml:25"
-"Production informations","","","resources/views/Business.xml:114"
+"Production informations","","","resources/views/Business.xml:118"
 "Professional background","","","resources/views/Position.xml:29
 resources/views/Position.xml:8"
 "Profil candidat","","","resources/views/JobOffer.xml:38"
@@ -565,15 +567,15 @@ resources/views/menu.xml:264
 resources/views/PublicHolidays.xml:10
 resources/views/PublicHolidays.xml:6
 resources/views/menu.xml:267"
-"Real estimated","","","resources/views/Business.xml:99
-resources/views/Task.xml:87
+"Real estimated","","","resources/views/Task.xml:87
 resources/views/Selects.xml:247
+resources/views/Business.xml:103
 resources/views/Task.xml:108
-resources/views/Business.xml:81"
-"Real invoiced","","","resources/views/Business.xml:86
+resources/views/Business.xml:85"
+"Real invoiced","","","resources/views/Business.xml:90
 resources/views/Task.xml:114
-resources/views/Business.xml:105
 resources/views/Task.xml:92
+resources/views/Business.xml:109
 resources/views/Selects.xml:248"
 "Recruitment","","","resources/views/menu.xml:30
 resources/views/Employee.xml:112"
@@ -597,6 +599,8 @@ resources/views/Selects.xml:177"
 "Revenue","","","resources/views/Selects.xml:241"
 "SD","","","resources/views/Selects.xml:70"
 "Salary","","","resources/views/Employee.xml:92"
+"Sales order","","","resources/views/Business.xml:261
+resources/views/Business.xml:267"
 "Satisfaction","","","resources/views/Timesheet.xml:32"
 "Search criterias","","","resources/views/Candidate.xml:54"
 "Second interview","","","resources/views/Selects.xml:175"
@@ -617,7 +621,7 @@ resources/views/Employee.xml:21"
 "Skills","","","resources/views/Competence.xml:11
 resources/views/Competence.xml:6"
 "Specific settings","","","resources/views/Project.xml:52
-resources/views/Business.xml:50"
+resources/views/Business.xml:54"
 "Spent times","","","resources/views/Task.xml:135
 resources/views/Task.xml:172"
 "Started","","","resources/views/Selects.xml:103"
@@ -628,7 +632,7 @@ resources/views/Overtime.xml:41"
 "Submited","","","resources/views/Selects.xml:154"
 "Submitted","","","resources/views/Selects.xml:185"
 "Subscription","","","resources/views/Selects.xml:254"
-"Supplier invoice lines","","","resources/views/Business.xml:216
+"Supplier invoice lines","","","resources/views/Business.xml:220
 resources/views/Task.xml:291"
 "TImesheet project/task time input","","","resources/views/TimesheetLine.xml:7"
 "TMA","","","resources/views/Selects.xml:260"
@@ -653,24 +657,24 @@ resources/views/Task.xml:32"
 "Task.totalTurnover","","","java/com/axelor/apps/organisation/report/ITranslation.java:145"
 "Tasks","","","resources/views/menu.xml:332
 resources/views/Task.xml:14
+resources/views/Business.xml:68
 resources/views/Task.xml:22
 resources/views/menu.xml:329
 resources/views/Task.xml:10
 resources/views/Project.xml:74
 resources/views/Task.xml:141
-resources/views/Project.xml:84
-resources/views/Business.xml:64"
+resources/views/Project.xml:84"
 "Tasks To Invoice","","","resources/views/Task.xml:353"
 "Tasks Underevaluated","","","resources/views/Task.xml:350"
 "Tasks filters","","","resources/views/Task.xml:340"
 "Third interview","","","resources/views/Selects.xml:176"
 "Times","","","resources/views/Task.xml:44
 resources/views/Project.xml:40
-resources/views/Business.xml:38"
+resources/views/Business.xml:42"
 "Timesheet","","","resources/views/Timesheet.xml:20
 resources/views/Project.xml:68"
 "Timesheet Period Config","","","resources/views/TimesheetPeriodConfig.xml:16"
-"Timesheet lines","","","resources/views/Business.xml:223
+"Timesheet lines","","","resources/views/Business.xml:227
 resources/views/Task.xml:319
 resources/views/Task.xml:298"
 "Timesheet project/task time input","","","resources/views/TimesheetLine.xml:88
@@ -725,10 +729,10 @@ resources/views/LeaveRequest.xml:60
 resources/views/Expense.xml:53"
 "Validated","","","resources/views/Selects.xml:155
 resources/views/Selects.xml:273"
-"Validated Customer order lines","","","resources/views/Business.xml:188
+"Validated Customer order lines","","","resources/views/Business.xml:192
 resources/views/Task.xml:263"
 "Validated supplier order lines","","","resources/views/Task.xml:277
-resources/views/Business.xml:195"
+resources/views/Business.xml:199"
 "Validation forms","","","resources/views/menu.xml:137"
 "Validation/Invoicing","","","resources/views/ExpenseLine.xml:62"
 "Verified","","","resources/views/Selects.xml:139"
@@ -760,4 +764,4 @@ resources/views/Selects.xml:196"
 "from 75 to 85 k€","","","resources/views/Selects.xml:210"
 "from 85 to 95 k€","","","resources/views/Selects.xml:211"
 "from 95 to 100 k€ or more","","","resources/views/Selects.xml:212"
-"members","","","resources/views/Business.xml:119"
+"members","","","resources/views/Business.xml:123"
