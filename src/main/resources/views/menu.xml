@@ -12,7 +12,7 @@
 	<action-view name="stock.root.custdeliveries" title="Customer Deliveries"
 		model="com.axelor.apps.supplychain.db.StockMove" icon="img/16px/productSmall_16px.png">
 		<view type="grid" name="stock-move-out-grid"/>
-		<view type="form" />
+		<view type="form" name="stock-move-form"/>
 		<view-param name="search-filters" value="customer-deliveries-filters"/>
 		<domain>self.toLocation.typeSelect = 2</domain>
 		<context name="_typeSelect" expr="2"/>
@@ -24,7 +24,7 @@
 	<action-view name="stock.root.suparrivals" title="Supplier Arrivals"
 		model="com.axelor.apps.supplychain.db.StockMove" icon="img/16px/productSmall_16px.png">
 		<view type="grid" name="stock-move-in-grid"/>
-		<view type="form" />
+		<view type="form" name="stock-move-form"/>
 		<view-param name="search-filters" value="supplier-arrivals-filters"/>
 		<domain>self.fromLocation.typeSelect = 2</domain>
 		<context name="_typeSelect" expr="3"/>
@@ -38,7 +38,7 @@
 	<action-view name="stock.root.internal" title="Internal Stock Moves"
 		model="com.axelor.apps.supplychain.db.StockMove" icon="img/16px/productSmall_16px.png">
 		<view type="grid" name="stock-move-grid"/>
-		<view type="form" />
+		<view type="form" name="stock-move-form"/>
 		<view-param name="search-filters" value="internal-stock-move-filters"/>
 		<domain>self.fromLocation.typeSelect = 1 OR self.toLocation.typeSelect = 1</domain>
 		<context name="_typeSelect" expr="1"/>

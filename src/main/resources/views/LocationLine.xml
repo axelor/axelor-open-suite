@@ -29,6 +29,13 @@
         <field name="lastFutureStockMoveDate"/>
     </form>
     
+     <grid name="location-line-product-group-by-variant-grid" title="Stock Locations content" model="com.axelor.apps.supplychain.db.LocationLine" groupBy="product">
+        <field name="location"/>
+        <field name="currentQty"/>
+        <field name="futureQty"/>
+        <field name="lastFutureStockMoveDate"/>
+    </grid>
+    
     <grid name="location-line-details-grid" title="Stock Locations content" model="com.axelor.apps.supplychain.db.LocationLine">
         <field name="product"/>
         <field name="currentQty"/>

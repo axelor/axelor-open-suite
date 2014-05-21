@@ -10,6 +10,7 @@
         <field name="unit"/>
         <field name="price"/>
         <field name="trackingNumber"/>
+        <field name="accordanceSelect"/>
     </grid>
     
     <form name="stock-move-line-form" title="Stock move line" model="com.axelor.apps.supplychain.db.StockMoveLine" cols="4"
@@ -20,6 +21,7 @@
         <field name="unit"/>
         <field name="price"/>
         <field name="trackingNumber" onChange="action-stock-move-line-record-product"/>
+        <field name="accordanceSelect"/>
     </form>
     
     <grid name="stock-move-line-all-grid" title="Stock move lines" model="com.axelor.apps.supplychain.db.StockMoveLine">

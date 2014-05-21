@@ -72,4 +72,9 @@
 		<option value="1">Invoicing</option>
 	</selection>
 	
+	<selection name="supplychain.stock.move.line.accordance.select">
+		<option value="1">Compliant</option>
+		<option value="2">Non compliant</option>
+	</selection>
+	
 </object-views>

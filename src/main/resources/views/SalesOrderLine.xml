@@ -22,7 +22,7 @@
 		    <field name="isToPrintLineSubTotal"/>
 	    </group>
 	    <separator colSpan="4"/>
-	    <field name="product" onChange="action-sales-order-line-record-product-variant,action-sales-order-line-method-get-product-information,action-sales-order-line-method-compute,action-sales-order-line-attrs-ressources-planning,action-sales-order-line-attrs-hide-product-variant,action-sales-order-line-get-production-information" domain="self.endDate = null or self.endDate &gt; :__date__"/>
+	    <field name="product" onChange="action-sales-order-line-record-product-variant,action-sales-order-line-method-get-product-information,action-sales-order-line-method-compute,action-sales-order-line-attrs-ressources-planning,action-sales-order-line-attrs-hide-product-variant,action-sales-order-line-get-production-information" domain="(self.applicationTypeSelect = 1 or self.applicationTypeSelect = 2) and (self.endDate = null or self.endDate &gt; :__date__) "/>
 	    <field name="productName"/>
 	    <field name="qty" onChange="action-sales-order-line-method-get-discount,action-sales-order-line-method-compute"/>
 	    <field name="unit"/>

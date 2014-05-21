@@ -19,7 +19,7 @@
     onNew="action-sales-order-sub-line-record-new,action-sales-order-sub-line-record-sequence,action-sales-order-sub-line-attrs-hide-product-variant"
     onLoad="action-sales-order-sub-line-attrs-hide-product-variant">
     	<field name="sequence"/>
-    	<field name="product" domain="self.endDate = null or self.endDate &gt; :__date__" onChange="action-sales-order-sub-line-method-get-product-information,action-sales-order-sub-line-method-compute,action-sales-order-sub-line-record-product-variant,action-sales-order-sub-line-attrs-hide-product-variant"/>
+    	<field name="product" domain="(self.applicationTypeSelect = 1 or self.applicationTypeSelect = 2) and (self.endDate = null or self.endDate &gt; :__date__) " onChange="action-sales-order-sub-line-method-get-product-information,action-sales-order-sub-line-method-compute,action-sales-order-sub-line-record-product-variant,action-sales-order-sub-line-attrs-hide-product-variant"/>
     	<field name="productName"/>
     	<field name="employee"/>
     	<field name="description" colSpan="4"/>
