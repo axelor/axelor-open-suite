@@ -44,6 +44,7 @@ import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.UserInfo;
 import com.axelor.apps.base.service.administration.GeneralService;
@@ -102,7 +103,7 @@ public class MessageService {
 				event.getRelatedToSelectId(), 
 				todayTime.toLocalDateTime(), 
 				event.getResponsibleUserInfo(), 
-				false, 
+				null, false, 
 				IMessage.STATUS_SENT, 
 				"Remind : "+event.getSubject(), 
 				IMessage.TYPE_RECEIVED,
@@ -110,7 +111,7 @@ public class MessageService {
 				null,
 				null,
 				mailAccount,
-				null
+				null, null, 0
 				)
 				.save();
 	}	
@@ -118,7 +119,7 @@ public class MessageService {
 	
 	@Transactional
 	public Message createMessage(String model, int id, String subject, String content, List<EmailAddress> toEmailAddressList, List<EmailAddress> ccEmailAddressList, 
-			List<EmailAddress> bccEmailAddressList, MailAccount mailAccount, String linkPath)  {
+			List<EmailAddress> bccEmailAddressList, MailAccount mailAccount, String linkPath,String addressBlock,int mediaTypeSelect)  {
 		
 		return this.createMessage(
 				content, 
@@ -129,7 +130,8 @@ public class MessageService {
 				null, 
 				0, 
 				todayTime.toLocalDateTime(), 
-				userInfoService.getUserInfo(), 
+				userInfoService.getUserInfo(),
+				userInfoService.getUserActiveCompany(),
 				false, 
 				IMessage.STATUS_DRAFT, 
 				subject, 
@@ -138,15 +140,17 @@ public class MessageService {
 				ccEmailAddressList,
 				bccEmailAddressList,
 				mailAccount,
-				linkPath)
+				linkPath,
+				addressBlock,
+				mediaTypeSelect)
 				.save();
 	}	
 	
 	
 	private Message createMessage(String content, EmailAddress fromEmailAddress, UserInfo recipientUserInfo, String relatedTo1Select, int relatedTo1SelectId,
-			String relatedTo2Select, int relatedTo2SelectId, LocalDateTime sentDate, UserInfo senderUserInfo, boolean sentByEmail, int statusSelect, 
+			String relatedTo2Select, int relatedTo2SelectId, LocalDateTime sentDate, UserInfo senderUserInfo,Company company, boolean sentByEmail, int statusSelect, 
 			String subject, int typeSelect, List<EmailAddress> toEmailAddressList, List<EmailAddress> ccEmailAddressList, List<EmailAddress> bccEmailAddressList, 
-			MailAccount mailAccount, String filePath)  {
+			MailAccount mailAccount, String filePath,String addressBlock,int mediaTypeSelect)  {
 		Message message = new Message();
 		message.setContent(content);
 		message.setFromEmailAddress(fromEmailAddress);
@@ -161,6 +165,9 @@ public class MessageService {
 		message.setStatusSelect(statusSelect);
 		message.setSubject(subject);
 		message.setTypeSelect(typeSelect);
+		message.setCompany(company);
+		message.setAddressBlock(addressBlock);
+		message.setMediaTypeSelect(mediaTypeSelect);
 		
 		Set<EmailAddress> toEmailAddressSet = Sets.newHashSet();
 		if(toEmailAddressList != null)  {
