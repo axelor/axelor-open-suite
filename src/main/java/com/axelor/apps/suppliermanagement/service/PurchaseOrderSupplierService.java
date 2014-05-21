@@ -46,6 +46,7 @@ import com.axelor.apps.base.db.SupplierCatalog;
 import com.axelor.apps.base.db.UserInfo;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.user.UserInfoService;
+import com.axelor.apps.supplychain.db.IPurchaseOrder;
 import com.axelor.apps.supplychain.db.PurchaseOrder;
 import com.axelor.apps.supplychain.db.PurchaseOrderLine;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineService;
@@ -81,6 +82,17 @@ public class PurchaseOrderSupplierService {
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void generateAllSuppliersRequests(PurchaseOrder purchaseOrder)  {
+		
+		for(PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList())  {
+			
+			this.generateSuppliersRequests(purchaseOrderLine);
+			
+		}
+		purchaseOrder.save();
+	}
+	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void generateSuppliersRequests(PurchaseOrderLine purchaseOrderLine)  {
 		
 		Product product = purchaseOrderLine.getProduct();
@@ -89,7 +101,7 @@ public class PurchaseOrderSupplierService {
 			
 			for(SupplierCatalog supplierCatalog : product.getSupplierCatalogList())  {
 				
-				purchaseOrderLine.addPurchaseOrderSupplierLineListItem(purchaseOrderSupplierLineService.create(supplierCatalog.getSupplierPartner()));
+				purchaseOrderLine.addPurchaseOrderSupplierLineListItem(purchaseOrderSupplierLineService.create(supplierCatalog.getSupplierPartner(), supplierCatalog.getPrice()));
 				
 			}
 		}
@@ -173,6 +185,8 @@ public class PurchaseOrderSupplierService {
 		}
 		
 		purchaseOrderService.computePurchaseOrder(purchaseOrder);
+		
+		purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_RECEIVED);
 		
 		purchaseOrder.save();
 	}

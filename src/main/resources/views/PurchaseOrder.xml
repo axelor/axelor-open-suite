@@ -9,11 +9,16 @@
 		<field name="parentPurchaseOrder" hideIf="isPurchaseParent"/>
 		<button name="generateSuppliersPurchaseOrder" title="Generate suppliers purchases orders" colSpan="2" onClick="save,action-purchase-order-method-generate-suppliers-purchase-order,save"/>
 		<button name="showSuppliersPurchaseOrder" title="Show suppliers purchases orders" colSpan="2" onClick="action-purchase-order-view-show-suppliers-purchase-order"/>
+		<button name="generatePurchaseOrderSupplierLine" title="Generate all suppliers requests" colSpan="2" onClick="save,action-purchase-order-method-generate-purchase-order-supplier-line,save"/>
 
 	</form>
     
     <action-method name="action-purchase-order-method-generate-suppliers-purchase-order">
     	<call class="com.axelor.apps.suppliermanagement.web.PurchaseOrderController" method="generateSuppliersPurchaseOrder"/>
+    </action-method>
+    
+    <action-method name="action-purchase-order-method-generate-purchase-order-supplier-line">
+    	<call class="com.axelor.apps.suppliermanagement.web.PurchaseOrderController" method="generateSuppliersRequests"/>
     </action-method>
     
     <action-view name="action-purchase-order-view-show-suppliers-purchase-order" model="com.axelor.apps.supplychain.db.PurchaseOrder" title="Suppliers purchases">

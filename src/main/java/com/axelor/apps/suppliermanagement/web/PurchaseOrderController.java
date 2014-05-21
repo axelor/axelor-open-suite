@@ -30,6 +30,7 @@
  */
 package com.axelor.apps.suppliermanagement.web;
 
+import com.axelor.apps.suppliermanagement.service.PurchaseOrderSupplierLineService;
 import com.axelor.apps.suppliermanagement.service.PurchaseOrderSupplierService;
 import com.axelor.apps.supplychain.db.PurchaseOrder;
 import com.axelor.exception.service.TraceBackService;
@@ -42,12 +43,27 @@ public class PurchaseOrderController {
 	@Inject
 	private PurchaseOrderSupplierService purchaseOrderSupplierService;
 	
+	@Inject
+	private PurchaseOrderSupplierLineService purchaseOrderSupplierLineService;
+	
 	public void generateSuppliersPurchaseOrder(ActionRequest request, ActionResponse response){
 		
 		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 		
 		try {
 			purchaseOrderSupplierService.generateSuppliersPurchaseOrder(PurchaseOrder.find(purchaseOrder.getId()));
+			response.setReload(true);
+		}
+		catch (Exception e) { TraceBackService.trace(response, e); }
+	}
+	
+	
+	public void generateSuppliersRequests(ActionRequest request, ActionResponse response){
+		
+		PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+		
+		try {
+			purchaseOrderSupplierService.generateAllSuppliersRequests(PurchaseOrder.find(purchaseOrder.getId()));
 			response.setReload(true);
 		}
 		catch (Exception e) { TraceBackService.trace(response, e); }

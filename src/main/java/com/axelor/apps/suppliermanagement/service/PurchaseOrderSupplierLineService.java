@@ -30,6 +30,8 @@
  */
 package com.axelor.apps.suppliermanagement.service;
 
+import java.math.BigDecimal;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,9 +65,9 @@ public class PurchaseOrderSupplierLineService {
 	}
 	
 	
-	public PurchaseOrderSupplierLine create(Partner supplierPartner)  {
+	public PurchaseOrderSupplierLine create(Partner supplierPartner, BigDecimal price)  {
 		
-		return new PurchaseOrderSupplierLine(IPurchaseOrderSupplierLine.REQUESTED, supplierPartner);
+		return new PurchaseOrderSupplierLine(price, IPurchaseOrderSupplierLine.REQUESTED, supplierPartner);
 	}
 	
 	

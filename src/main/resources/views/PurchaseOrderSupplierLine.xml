@@ -15,17 +15,18 @@
 	<form name="purchase-order-supplier-line-form" title="Supplier request" model="com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine" cols="4" 
 		onNew="action-purchase-order-supplier-line-record-request,action-purchase-order-supplier-line-attrs-new">
 		<field name="stateSelect" widget="NavSelect" showTitle="false" readonly="true" colSpan="4"/>
-		<field name="supplierPartner" readonly="true"/>
-		<field name="availableQty" readonly="true"/>
+		<field name="supplierPartner"/>
+		<field name="availableQty"/>
 		<field name="purchaseOrderLine.unit"/>
-		<field name="price" readonly="true"/>
-		<field name="estimatedDelivDate" readonly="true"/>
+		<field name="price"/>
+		<field name="estimatedDelivDate"/>
 		<break/>
 		<field name="comment" colSpan="4"/>
-		<button name="accept" title="Accept" colSpan="2" onClick="save,action-purchase-order-supplier-line-method-accept,save" showIf="stateSelect == 2"/>
-		<button name="notAccept" title="Not accept" colSpan="2" onClick="save,action-purchase-order-supplier-line-record-not-accept,save" showIf="stateSelect == 2"/>
+		<button name="accept" title="Accept" colSpan="2" onClick="save,action-purchase-order-supplier-line-method-accept,save" showIf="stateSelect == 1 || stateSelect == 2"/>
+		<button name="notAccept" title="Not accept" colSpan="2" onClick="save,action-purchase-order-supplier-line-record-not-accept,save" showIf="stateSelect == 1 || stateSelect == 2"/>
 		<button name="cancel" title="Cancel" colSpan="2" onClick="save,action-purchase-order-supplier-line-record-cancel,save" hideIf="stateSelect == 5"/>
 		<button name="request" title="Request" colSpan="2" onClick="save,action-purchase-order-supplier-line-record-request,save" showIf="stateSelect == 5"/>
+		<button name="sendByEmail" title="Write to the supplier" icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
 	</form>
 	
 	
