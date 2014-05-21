@@ -52,6 +52,7 @@ public class PurchaseOrderController {
 		
 		try {
 			purchaseOrderSupplierService.generateSuppliersPurchaseOrder(PurchaseOrder.find(purchaseOrder.getId()));
+			response.setFlash("Demande de consultations fournisseurs créées");
 			response.setReload(true);
 		}
 		catch (Exception e) { TraceBackService.trace(response, e); }
@@ -64,6 +65,7 @@ public class PurchaseOrderController {
 		
 		try {
 			purchaseOrderSupplierService.generateAllSuppliersRequests(PurchaseOrder.find(purchaseOrder.getId()));
+			response.setFlash("Génération des devis fournisseurs terminée");
 			response.setReload(true);
 		}
 		catch (Exception e) { TraceBackService.trace(response, e); }
