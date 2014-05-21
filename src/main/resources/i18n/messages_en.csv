@@ -218,6 +218,7 @@ resources/views/Selects.xml:42"
 "Academic background/Trainings","","","resources/domains/Candidate.xml:53"
 "Access Token","","","resources/domains/AppsCredentials.xml:10
 resources/domains/GoogleAppsConfig.xml:15"
+"Accordance","","","resources/domains/StockMoveLine.xml:31"
 "Account","","","resources/domains/TaxAccount.xml:12
 resources/domains/MoveLineReport.xml:15
 resources/domains/MoveLine.xml:11"
@@ -247,8 +248,8 @@ resources/views/Product.xml:92"
 resources/domains/Reminder.xml:10"
 "Accounting situations","","","resources/views/Batch.xml:30
 resources/views/Batch.xml:99"
-"Accounts","","","resources/views/menu.xml:39
-resources/views/menu.xml:642
+"Accounts","","","resources/views/menu.xml:647
+resources/views/menu.xml:39
 resources/views/menu.xml:42"
 "Accounts Configurations","","","resources/domains/ProductFamily.xml:11"
 "Accounts by paymentMode","","","resources/domains/PaymentMode.xml:13"
@@ -296,6 +297,9 @@ resources/domains/Lead.xml:32
 resources/domains/Invoice.xml:24
 resources/domains/Lead.xml:25
 resources/domains/PickListEntry.xml:19"
+"Address Block","","","resources/domains/Message.xml:23
+resources/views/Template.xml:29
+resources/domains/Template.xml:18"
 "Address certified by QAS engine","","","resources/domains/Address.xml:22"
 "Address details","","","resources/views/Address.xml:18"
 "Address list","","","resources/views/Address.xml:6"
@@ -324,37 +328,37 @@ resources/views/Alarm.xml:46"
 "Alarm Engine","","","resources/domains/AlarmEngineBatch.xml:13"
 "Alarm Message","","","resources/views/AlarmMessage.xml:12"
 "Alarm Messages","","","resources/views/AlarmMessage.xml:6"
-"Alarm batches","","","resources/views/menu.xml:245
-resources/views/menu.xml:242"
+"Alarm batches","","","resources/views/menu.xml:613
+resources/views/menu.xml:610"
 "Alarm engine","","","resources/views/AlarmEngine.xml:26
 resources/views/AlarmEngineBatch.xml:12
 resources/domains/Alarm.xml:11"
 "Alarm engine batch","","","resources/domains/Batch.xml:13"
 "Alarm engine batches","","","resources/views/AlarmEngineBatch.xml:6"
-"Alarm engines","","","resources/views/menu.xml:227
-resources/views/menu.xml:224
+"Alarm engines","","","resources/views/menu.xml:592
+resources/views/menu.xml:595
 resources/views/AlarmEngine.xml:14"
-"Alarmes","","","resources/views/menu.xml:209"
+"Alarmes","","","resources/views/menu.xml:577"
 "Alarms","","","resources/views/Alarm.xml:6"
 "Algorithm hashing type to calculate footprint","","","resources/domains/PayboxConfig.xml:18"
-"All Alarms","","","resources/views/menu.xml:215
-resources/views/menu.xml:212"
+"All Alarms","","","resources/views/menu.xml:583
+resources/views/menu.xml:580"
 "All Clients","","","resources/views/Partner.xml:453"
-"All Emails","","","resources/views/menu.xml:261
-resources/views/menu.xml:258"
+"All Emails","","","resources/views/menu.xml:218
+resources/views/menu.xml:221"
 "All Enterprises","","","resources/views/Partner.xml:444"
 "All Individuals","","","resources/views/Partner.xml:447"
-"All Mails","","","resources/views/menu.xml:273"
-"All Messages","","","resources/views/menu.xml:236
-resources/views/menu.xml:233"
+"All Mails","","","resources/views/menu.xml:233"
+"All Messages","","","resources/views/menu.xml:604
+resources/views/menu.xml:601"
 "All Prospects","","","resources/views/Partner.xml:450"
-"All Status","","","resources/views/menu.xml:475
-resources/views/menu.xml:472"
+"All Status","","","resources/views/menu.xml:435
+resources/views/menu.xml:432"
 "All Suppliers","","","resources/views/Partner.xml:456"
-"All batchs emails","","","resources/views/menu.xml:255"
-"All batchs mails","","","resources/views/menu.xml:270"
+"All batchs emails","","","resources/views/menu.xml:215"
+"All batchs mails","","","resources/views/menu.xml:230"
 "All friends","","","resources/views/Selects.xml:497"
-"All mails","","","resources/views/menu.xml:276"
+"All mails","","","resources/views/menu.xml:236"
 "All qualified supplier","","","resources/views/Partner.xml:459"
 "All status","","","resources/views/Status.xml:6"
 "Allocated amount","","","resources/domains/PaymentVoucher.xml:19"
@@ -410,14 +414,14 @@ resources/domains/SalesOrderScheduleLine.xml:12"
 "Analytic Axis","","","resources/domains/AnalyticAccount.xml:13"
 "Analytic account","","","resources/domains/MoveLine.xml:27"
 "Analytic accounts","","","resources/domains/AccountManagement.xml:17"
-"Analytic axis","","","resources/domains/Project.xml:78"
+"Analytic axis","","","resources/domains/Project.xml:81"
 "Anniversary date","","","resources/views/Selects.xml:432"
 "Annually","","","resources/domains/Scheduler.xml:12
 resources/views/Scheduler.xml:50"
 "Anomalies","","","resources/views/Batch.xml:25
 resources/views/Batch.xml:50"
 "Anomaly","","","resources/domains/Batch.xml:24"
-"Answer Date","","","resources/domains/Project.xml:70"
+"Answer Date","","","resources/domains/Project.xml:73"
 "Apparel","","","resources/views/Selects.xml:239"
 "Applicable dates","","","resources/views/CurrencyConversionLine.xml:22"
 "Application","","","resources/domains/FinancialInformationUpdate.xml:16
@@ -446,7 +450,7 @@ resources/domains/Event.xml:29"
 "Associated Invoice lines","","","resources/domains/PurchaseOrderLine.xml:35"
 "Associated Profile","","","resources/domains/Employee.xml:52"
 "Associated invoice lines","","","resources/domains/SalesOrderLine.xml:44"
-"Attach specification","","","resources/domains/Project.xml:69"
+"Attach specification","","","resources/domains/Project.xml:72"
 "Attendee","","","resources/domains/EventAttendee.xml:16"
 "Attendees","","","resources/domains/Event.xml:32"
 "August","","","resources/views/Selects.xml:293"
@@ -494,16 +498,16 @@ resources/domains/InvoiceLineTax.xml:11
 resources/domains/SalesOrderLineTax.xml:10"
 "Base W.T. in Acc. Currency.","","","resources/domains/InvoiceLineTax.xml:14"
 "Base batch","","","resources/domains/Batch.xml:15"
-"Base batches","","","resources/views/menu.xml:603
-resources/views/menu.xml:606
-resources/views/BaseBatch.xml:6"
+"Base batches","","","resources/views/menu.xml:564
+resources/views/BaseBatch.xml:6
+resources/views/menu.xml:567"
 "Based on","","","resources/domains/PriceList.xml:20"
 "Batch","","","resources/views/Batch.xml:17"
 "Batch to re-export","","","resources/domains/AccountingBatch.xml:32"
 "Batches","","","resources/domains/InvoiceBatch.xml:25
 resources/views/AlarmEngineBatch.xml:19
 resources/views/Batch.xml:6
-resources/views/menu.xml:600"
+resources/views/menu.xml:561"
 "Batchs","","","resources/domains/Reimbursement.xml:23
 resources/domains/SalesOrder.xml:20
 resources/domains/AccountingSituation.xml:27
@@ -518,15 +522,16 @@ resources/domains/AlarmEngineBatch.xml:15
 resources/domains/CrmBatch.xml:17
 resources/domains/PaymentVoucher.xml:35
 resources/domains/BaseBatch.xml:17"
-"Bcc","","","resources/domains/Message.xml:27
+"Bcc","","","resources/domains/Message.xml:28
 resources/domains/Template.xml:15"
 "Belonging to a payment schedule","","","resources/domains/Invoice.xml:39"
 "Best case","","","resources/domains/Opportunity.xml:16"
 "Beverage","","","resources/views/Selects.xml:230"
+"Bill of materials","","","resources/views/Product.xml:294"
 "Biotechnologies","","","resources/views/Selects.xml:219"
 "Birt Template","","","resources/views/BirtTemplate.xml:12
 resources/domains/PrintingSettings.xml:13
-resources/domains/Template.xml:19"
+resources/domains/Template.xml:20"
 "Birt Template parameter","","","resources/views/BirtTemplateParameter.xml:11"
 "Birt Template parameters","","","resources/views/BirtTemplateParameter.xml:6"
 "Birt Templates","","","resources/views/BirtTemplate.xml:6"
@@ -620,9 +625,9 @@ resources/domains/PersonalInfo.xml:10"
 "Candidates other position proposals","","","resources/domains/Candidate.xml:70"
 "Canton","","","resources/views/Canton.xml:12"
 "Canton Code","","","resources/domains/Commune.xml:12"
-"Cantons","","","resources/views/Canton.xml:5
-resources/views/menu.xml:388
-resources/views/menu.xml:385"
+"Cantons","","","resources/views/menu.xml:348
+resources/views/menu.xml:345
+resources/views/Canton.xml:5"
 "Capacity / cycle","","","resources/domains/ProdResource.xml:16"
 "Cash Advances","","","resources/domains/Employee.xml:41"
 "Cash Register","","","resources/domains/CashRegisterLine.xml:16"
@@ -651,7 +656,7 @@ resources/domains/AccountCategoryLine.xml:12
 resources/domains/Candidate.xml:58"
 "Category sales turnover (Excl. Tax) per month","","","resources/views/Charts.xml:396
 resources/views/ProductCategory.xml:29"
-"Cc","","","resources/domains/Message.xml:26
+"Cc","","","resources/domains/Message.xml:27
 resources/domains/Template.xml:14"
 "Center","","","resources/domains/TrainingCenter.xml:10"
 "Cfonb configuration","","","resources/domains/AccountConfig.xml:47"
@@ -667,8 +672,8 @@ resources/domains/Template.xml:14"
 "Children sn status comments list","","","resources/domains/SnStatusComments.xml:18"
 "Choose","","","resources/views/Address.xml:44"
 "Cities-Communes","","","resources/views/Commune.xml:5"
-"Cities/Communes","","","resources/views/menu.xml:348
-resources/views/menu.xml:345"
+"Cities/Communes","","","resources/views/menu.xml:305
+resources/views/menu.xml:308"
 "City","","","resources/domains/Lead.xml:26
 resources/domains/Lead.xml:33"
 "City-Commune","","","resources/views/Commune.xml:9"
@@ -785,9 +790,9 @@ resources/views/PriceList.xml:34"
 "Commute Fee Refund %","","","resources/domains/Employee.xml:47"
 "Companies","","","resources/domains/Candidate.xml:74
 resources/views/Company.xml:6
-resources/views/menu.xml:415
+resources/views/menu.xml:375
 resources/domains/Employee.xml:34
-resources/views/menu.xml:418"
+resources/views/menu.xml:378"
 "Companies associated to","","","resources/domains/Partner.xml:55"
 "Companies/Contacts","","","resources/views/menu.xml:36"
 "Company","","","resources/domains/Blocking.xml:12
@@ -849,23 +854,23 @@ resources/domains/PrintingSettings.xml:11"
 "Competence type","","","resources/domains/Competence.xml:33"
 "Competences","","","resources/domains/Candidate.xml:73
 resources/domains/Employee.xml:35"
-"Competition","","","resources/domains/Project.xml:66"
+"Competition","","","resources/domains/Project.xml:69"
 "Complement","","","resources/domains/PickListEntry.xml:11"
 "Complementary information","","","resources/views/Mail.xml:41"
 "Complete lines","","","resources/domains/Planning.xml:16
 resources/domains/Timesheet.xml:34"
-"Complexity","","","resources/domains/Project.xml:65"
+"Complexity","","","resources/domains/Project.xml:68"
 "Compute payers quality","","","resources/views/General.xml:38"
-"Configuration","","","resources/views/menu.xml:469
-resources/views/menu.xml:284
-resources/views/menu.xml:62
-resources/views/menu.xml:221
+"Configuration","","","resources/views/menu.xml:62
 resources/views/menu.xml:178
-resources/views/AlarmEngineBatch.xml:15"
+resources/views/menu.xml:429
+resources/views/AlarmEngineBatch.xml:15
+resources/views/menu.xml:589
+resources/views/menu.xml:244"
 "Confirmed","","","resources/views/Selects.xml:453"
 "Conforme","","","resources/domains/ManufOrderSheetLine.xml:13"
 "Consolidate invoice movelines ?","","","resources/domains/General.xml:15"
-"Consultation Date","","","resources/domains/Project.xml:62"
+"Consultation Date","","","resources/domains/Project.xml:65"
 "Consumed products","","","resources/domains/OperationOrder.xml:30
 resources/domains/ManufOrder.xml:28"
 "Contact","","","resources/views/Partner.xml:198
@@ -892,8 +897,8 @@ resources/domains/Position.xml:28"
 "Contacts","","","resources/views/menu.xml:23
 resources/views/menu.xml:52
 resources/domains/MailingList.xml:13
-resources/views/menu.xml:643
 resources/views/menu.xml:55
+resources/views/menu.xml:648
 resources/views/Partner.xml:156
 resources/domains/Campaign.xml:20
 resources/views/Partner.xml:21
@@ -901,9 +906,9 @@ resources/domains/Partner.xml:35"
 "Contacts Db","","","resources/views/menu.xml:26"
 "Contains","","","resources/views/Selects.xml:479"
 "Content","","","resources/domains/SnSendMessage.xml:18
-resources/views/Template.xml:32
 resources/domains/Mail.xml:17
 resources/views/Mail.xml:29
+resources/views/Template.xml:35
 resources/domains/MailModel.xml:15
 resources/domains/SnStatusUpdates.xml:24
 resources/domains/Message.xml:12
@@ -934,8 +939,8 @@ resources/domains/BillOfMaterial.xml:22"
 "Costs","","","resources/views/Product.xml:82"
 "Counter","","","resources/domains/TrackingNumber.xml:15"
 "Countries","","","resources/views/Country.xml:5
-resources/views/menu.xml:378
-resources/views/menu.xml:375"
+resources/views/menu.xml:335
+resources/views/menu.xml:338"
 "Country","","","resources/domains/Lead.xml:29
 resources/domains/TrainingCenter.xml:11
 resources/domains/Lead.xml:36
@@ -953,15 +958,15 @@ resources/domains/BankDetails.xml:20"
 "Country name","","","resources/domains/Country.xml:12"
 "Cover Letter","","","resources/domains/Candidate.xml:29"
 "Create","","","resources/domains/RoutingAction.xml:14
-resources/views/menu.xml:618"
-"Create Contact","","","resources/views/menu.xml:635
-resources/views/menu.xml:637"
+resources/views/menu.xml:623"
+"Create Contact","","","resources/views/menu.xml:640
+resources/views/menu.xml:642"
 "Create Expense","","","resources/views/MenuConsultant.xml:91"
-"Create Individual Partner","","","resources/views/menu.xml:630
-resources/views/menu.xml:628"
+"Create Individual Partner","","","resources/views/menu.xml:635
+resources/views/menu.xml:633"
 "Create Leave request","","","resources/views/MenuConsultant.xml:113"
-"Create Partner","","","resources/views/menu.xml:622
-resources/views/menu.xml:620"
+"Create Partner","","","resources/views/menu.xml:625
+resources/views/menu.xml:627"
 "Create Timesheet","","","resources/views/MenuConsultant.xml:69"
 "Create call","","","resources/views/Partner.xml:221
 resources/views/Partner.xml:51
@@ -974,7 +979,7 @@ resources/views/Resource.xml:39"
 resources/views/Partner.xml:327
 resources/views/Partner.xml:224"
 "Create personalized offer","","","resources/views/Selects.xml:420"
-"Create production order","","","resources/views/Product.xml:277
+"Create production order","","","resources/views/Product.xml:286
 resources/views/Product.xml:120"
 "Create proposition","","","resources/views/Resource.xml:40"
 "Create task","","","resources/views/Partner.xml:53
@@ -1008,9 +1013,9 @@ resources/views/RoutingActionCreate.xml:6"
 "Cumulate ?","","","resources/domains/Task.xml:67"
 "Cumulated invoiced %","","","resources/domains/SalesOrderScheduleLine.xml:15"
 "Cumulation","","","resources/domains/EmployeeLeave.xml:13"
-"Currencies","","","resources/views/menu.xml:490
+"Currencies","","","resources/views/menu.xml:453
 resources/views/Currency.xml:6
-resources/views/menu.xml:493"
+resources/views/menu.xml:450"
 "Currency","","","resources/domains/PurchaseOrder.xml:20
 resources/domains/Invoice.xml:45
 resources/domains/PaymentSchedule.xml:22
@@ -1033,7 +1038,7 @@ resources/domains/Overtime.xml:12"
 "Currency conversion lines","","","resources/views/CurrencyConversionLine.xml:6"
 "Currency conversion table","","","resources/domains/General.xml:20"
 "Current Function","","","resources/domains/Candidate.xml:16"
-"Current Products","","","resources/views/Product.xml:248"
+"Current Products","","","resources/views/Product.xml:257"
 "Current Qty","","","resources/domains/InventoryLine.xml:12
 resources/domains/LocationLine.xml:13"
 "Cust. Credit note Journal","","","resources/domains/AccountConfig.xml:17"
@@ -1102,7 +1107,7 @@ resources/domains/PaymentCondition.xml:15"
 "Day of month","","","resources/domains/Scheduler.xml:29
 resources/domains/Scheduler.xml:33"
 "Day/Night","","","resources/domains/TimesheetLine.xml:23"
-"Deadline","","","resources/domains/Project.xml:64"
+"Deadline","","","resources/domains/Project.xml:67"
 "Debit","","","resources/domains/MoveLine.xml:15"
 "Debit Nbr.","","","resources/domains/DirectDebitManagement.xml:9"
 "Debit Reconcile list","","","resources/domains/MoveLine.xml:19"
@@ -1117,7 +1122,7 @@ resources/views/Selects.xml:186"
 "Debt recovery message","","","resources/domains/General.xml:26"
 "December","","","resources/views/Selects.xml:297"
 "Decision Date","","","resources/domains/Candidate.xml:34"
-"Default ?","","","resources/domains/Template.xml:21"
+"Default ?","","","resources/domains/Template.xml:22"
 "Default BOM","","","resources/domains/Product.xml:66"
 "Default Bank Account","","","resources/domains/Company.xml:28"
 "Default Machine","","","resources/domains/ProdResource.xml:14"
@@ -1154,10 +1159,10 @@ resources/domains/Employee.xml:17"
 "Department Cantons List","","","resources/domains/Department.xml:15"
 "Department Communes List","","","resources/domains/Department.xml:14"
 "Department Name","","","resources/domains/Department.xml:11"
-"Departments","","","resources/views/menu.xml:358
-resources/views/menu.xml:355
-resources/views/CompanyDepartment.xml:6
-resources/views/Department.xml:6"
+"Departments","","","resources/views/CompanyDepartment.xml:6
+resources/views/menu.xml:318
+resources/views/Department.xml:6
+resources/views/menu.xml:315"
 "Departure Date","","","resources/domains/Employee.xml:16"
 "Departure cause","","","resources/domains/Position.xml:17"
 "Deposited Amount","","","resources/domains/CashRegisterLine.xml:19"
@@ -1204,7 +1209,7 @@ resources/domains/PublicHolidaysLine.xml:13
 resources/domains/IndicatorGenerator.xml:9
 resources/domains/Opportunity.xml:22"
 "Desired delivery date","","","resources/domains/PurchaseOrderLine.xml:38"
-"Destinated to","","","resources/views/Template.xml:24"
+"Destinated to","","","resources/views/Template.xml:25"
 "Destination Currency","","","resources/views/CurrencyConversionLine.xml:35
 resources/domains/CurrencyConversionLine.xml:13"
 "Detailed","","","resources/domains/MoveLineReport.xml:29"
@@ -1285,7 +1290,7 @@ resources/domains/Planning.xml:20"
 resources/domains/EventReminder.xml:13"
 "E-mail","","","resources/domains/Candidate.xml:20"
 "EAN13 Code","","","resources/domains/Product.xml:12"
-"ERP Administration","","","resources/views/menu.xml:329"
+"ERP Administration","","","resources/views/menu.xml:289"
 "Edit","","","resources/views/General.xml:8"
 "Edit receipt ?","","","resources/domains/Journal.xml:16"
 "Editable","","","resources/domains/FilePermission.xml:8"
@@ -1307,14 +1312,14 @@ resources/views/Selects.xml:273"
 "Email model","","","resources/views/MailModel.xml:14"
 "Email model tag","","","resources/views/MailModelTag.xml:10"
 "Email model tags","","","resources/views/MailModelTag.xml:5"
-"Email models","","","resources/views/menu.xml:287
-resources/views/menu.xml:290
-resources/views/MailModel.xml:5"
+"Email models","","","resources/views/menu.xml:247
+resources/views/MailModel.xml:5
+resources/views/menu.xml:250"
 "Email sent ?","","","resources/domains/CashRegisterLine.xml:22"
 "Email to use","","","resources/domains/PaymentVoucher.xml:31"
-"Email/Mail model tags","","","resources/views/menu.xml:309"
+"Email/Mail model tags","","","resources/views/menu.xml:269"
 "Emails models","","","resources/views/MailModel.xml:31"
-"Emails/Mails","","","resources/views/menu.xml:253"
+"Emails/Mails","","","resources/views/menu.xml:213"
 "Emergency Contact","","","resources/domains/Employee.xml:36"
 "Emergency Contact Phone Nbr.","","","resources/domains/Employee.xml:37"
 "Employee","","","resources/domains/Position.xml:10
@@ -1368,7 +1373,7 @@ resources/views/Charts.xml:135"
 "Estimated delivery date","","","resources/domains/SalesOrderLine.xml:38"
 "Estimated profitability","","","resources/domains/Resource.xml:13"
 "Evaluation/Appraisal form","","","resources/domains/Candidate.xml:61"
-"Event","","","resources/domains/Message.xml:38
+"Event","","","resources/domains/Message.xml:39
 resources/domains/EventAttendee.xml:10
 resources/domains/EventReminder.xml:10"
 "Event category","","","resources/domains/Campaign.xml:32"
@@ -1390,7 +1395,7 @@ resources/views/IndicatorGeneratorGrouping.xml:16"
 "Expense","","","resources/domains/ExpenseLine.xml:10
 resources/views/Selects.xml:256"
 "Expense lines","","","resources/domains/Expense.xml:14"
-"Expenses","","","resources/views/Product.xml:266
+"Expenses","","","resources/views/Product.xml:275
 resources/views/MenuConsultant.xml:94"
 "Expenses list","","","resources/domains/Employee.xml:45"
 "Experience","","","resources/domains/JobOffer.xml:28"
@@ -1403,7 +1408,7 @@ resources/views/MenuConsultant.xml:94"
 "Export Date","","","resources/domains/Move.xml:22
 resources/domains/AddressExport.xml:10"
 "Export Type","","","resources/domains/Task.xml:70
-resources/domains/Project.xml:72"
+resources/domains/Project.xml:75"
 "Export addresses","","","resources/views/AddressExport.xml:6"
 "Export code","","","resources/domains/Journal.xml:14"
 "Export comptable","","","resources/views/Batch.xml:32"
@@ -1444,8 +1449,8 @@ resources/domains/RoutingActionCreateLine.xml:12"
 "File Size","","","resources/domains/GoogleFile.xml:12"
 "File Type","","","resources/domains/GoogleFile.xml:11"
 "File content","","","resources/domains/GoogleFile.xml:14"
-"File path","","","resources/domains/Template.xml:22
-resources/domains/Message.xml:19"
+"File path","","","resources/domains/Message.xml:19
+resources/domains/Template.xml:23"
 "File permissions list","","","resources/domains/GoogleFile.xml:25"
 "File received","","","resources/domains/ExpenseLine.xml:22"
 "Filepath for direct debit exports (CFONB)","","","resources/domains/AccountConfig.xml:73"
@@ -1530,16 +1535,16 @@ resources/domains/Employee.xml:14"
 "Function description","","","resources/domains/Position.xml:16"
 "Function name","","","resources/domains/Position.xml:11"
 "Function searched","","","resources/domains/Candidate.xml:25"
-"Future Qty","","","resources/domains/LocationLine.xml:14"
+"Future Qty","Quantité futur","","resources/domains/LocationLine.xml:14"
 "Gender","","","resources/domains/SnSearchResult.xml:17
 resources/domains/SnProfile.xml:31"
-"General","","","resources/views/menu.xml:456
+"General","","","resources/views/menu.xml:416
 resources/views/CurrencyConversionLine.xml:36"
 "General Accounts","","","resources/domains/AccountCategory.xml:13"
-"General admin","","","resources/views/menu.xml:462
-resources/views/menu.xml:459
-resources/views/General.xml:18
-resources/views/General.xml:6"
+"General admin","","","resources/views/General.xml:18
+resources/views/menu.xml:422
+resources/views/General.xml:6
+resources/views/menu.xml:419"
 "General discount (%)","","","resources/domains/PriceList.xml:17"
 "Generate","","","resources/views/GenerateProductVariantWizard.xml:15"
 "Generate inc. moves for non storable products ?","","","resources/domains/SupplychainConfig.xml:22"
@@ -1551,7 +1556,7 @@ resources/views/General.xml:6"
 "Generate out. moves for non storable products ?","","","resources/domains/SupplychainConfig.xml:20"
 "Generate out. moves for storable products ?","","","resources/domains/SupplychainConfig.xml:19"
 "Generate product variant wizard","","","resources/views/GenerateProductVariantWizard.xml:8"
-"Generate product variants","","","resources/views/Product.xml:138"
+"Generate product variants","","","resources/views/Product.xml:139"
 "Generated PDF file path","","","resources/domains/Mail.xml:25"
 "Generated email files name prefix","","","resources/domains/Company.xml:35"
 "Generated file path","","","resources/domains/BirtTemplate.xml:13"
@@ -1695,13 +1700,13 @@ resources/domains/PaymentMode.xml:10"
 "Import identifier","","","resources/domains/Commune.xml:15"
 "Import permission","","","resources/views/ImportPermission.xml:6
 resources/views/ImportPermission.xml:15"
-"Import permissions","","","resources/views/menu.xml:427
-resources/views/menu.xml:424"
+"Import permissions","","","resources/views/menu.xml:387
+resources/views/menu.xml:384"
 "Import type","","","resources/domains/Import.xml:8"
 "Importer","","","resources/views/ImportAddress.xml:13
 resources/views/ImportPermission.xml:12"
-"Imports","","","resources/views/menu.xml:570
-resources/views/menu.xml:573"
+"Imports","","","resources/views/menu.xml:533
+resources/views/menu.xml:530"
 "In %","","","resources/views/Selects.xml:513"
 "In % / fixed","","","resources/domains/PurchaseOrderLine.xml:23
 resources/domains/SalesOrderSubLine.xml:24
@@ -1717,10 +1722,10 @@ resources/domains/SalesOrderLine.xml:31"
 "Indicator generators","","","resources/views/IndicatorGenerator.xml:6"
 "Indicators generators","","","resources/views/IndicatorGeneratorGrouping.xml:12
 resources/views/IndicatorGeneratorGrouping.xml:6
-resources/views/menu.xml:590
-resources/views/menu.xml:593"
-"Indicators groups","","","resources/views/menu.xml:581
-resources/views/menu.xml:584"
+resources/views/menu.xml:553
+resources/views/menu.xml:550"
+"Indicators groups","","","resources/views/menu.xml:544
+resources/views/menu.xml:541"
 "Individual","","","resources/views/Selects.xml:208
 resources/views/Selects.xml:182"
 "Industry","","","resources/domains/Partner.xml:79"
@@ -1845,9 +1850,9 @@ resources/views/Keyword.xml:11"
 "Keyword sector","","","resources/domains/Training.xml:26"
 "Keyword tool","","","resources/domains/Training.xml:25"
 "Keywords","","","resources/views/Keyword.xml:6
-resources/views/menu.xml:542
-resources/views/Site.xml:21
-resources/views/menu.xml:539"
+resources/views/menu.xml:499
+resources/views/menu.xml:502
+resources/views/Site.xml:21"
 "Ko","","","resources/views/Resource.xml:43"
 "LCR/BOR","","","resources/domains/InterbankCodeLine.xml:16"
 "LIFO","","","resources/views/Selects.xml:491"
@@ -1913,7 +1918,7 @@ resources/domains/Campaign.xml:21"
 "Leave request calendar","","","resources/views/MenuConsultant.xml:124"
 "Leave request in progress","","","resources/domains/EmployeeLeave.xml:12"
 "Legal form","","","resources/views/Selects.xml:330"
-"Les balises de modèles de courrier","","","resources/views/menu.xml:312"
+"Les balises de modèles de courrier","","","resources/views/menu.xml:272"
 "Les lignes de plannification","","","resources/domains/Planning.xml:14"
 "Level","","","resources/domains/ReminderMethodLine.xml:11
 resources/domains/ReminderLevel.xml:11"
@@ -1929,6 +1934,7 @@ resources/domains/SnSearchResult.xml:18"
 "LinkedIn profile link","","","resources/domains/SnProfile.xml:22"
 "Linkedin","","","resources/domains/SnStatusUpdates.xml:19"
 "Linkedin update ref","","","resources/domains/SnStatusUpdates.xml:21"
+"Links","","","resources/views/Product.xml:152"
 "List of invoices to pay","","","resources/domains/PaymentVoucher.xml:21"
 "List of invoices/schedule lines with remaining amount to pay","","","resources/domains/PaymentVoucher.xml:20"
 "Liste des RUM","","","resources/domains/Partner.xml:88"
@@ -1975,13 +1981,13 @@ resources/domains/MailAccount.xml:12"
 "Mail","","","resources/views/Mail.xml:19
 resources/views/Selects.xml:302
 resources/views/Selects.xml:422"
-"Mail account","","","resources/domains/Message.xml:30"
+"Mail account","","","resources/domains/Message.xml:31"
 "Mail and Email message","","","resources/domains/General.xml:27"
 "Mail model","","","resources/domains/ReminderMethodLine.xml:15"
 "Mail model filters","","","resources/views/MailModel.xml:30"
 "Mail model for invoice and payment schedule rejections","","","resources/domains/AccountConfig.xml:81"
-"Mail models","","","resources/views/menu.xml:301
-resources/views/menu.xml:298"
+"Mail models","","","resources/views/menu.xml:261
+resources/views/menu.xml:258"
 "Mail transit time","","","resources/domains/AccountConfig.xml:57"
 "Mailing lists","","","resources/domains/Campaign.xml:18"
 "Mails / Emails","","","resources/views/Company.xml:37"
@@ -2022,7 +2028,7 @@ resources/domains/OfferLine.xml:12"
 "Margin %","","","resources/domains/OfferLine.xml:13"
 "Margin coef","","","resources/domains/Project.xml:28"
 "Marital status","","","resources/domains/PersonalInfo.xml:15"
-"Market Type","","","resources/domains/Project.xml:71"
+"Market Type","","","resources/domains/Project.xml:74"
 "Marketing Campaign","","","resources/domains/Lead.xml:51"
 "Mastered competence","","","resources/domains/Competence.xml:28"
 "Mastered skill set","","","resources/domains/Competence.xml:41"
@@ -2032,7 +2038,8 @@ resources/domains/OfferLine.xml:12"
 "Max. capacity / cycle","","","resources/domains/ProdResource.xml:17"
 "May","","","resources/views/Selects.xml:290"
 "Media","","","resources/views/Selects.xml:228"
-"Media Type","","","resources/domains/Message.xml:22"
+"Media Type","","","resources/domains/Message.xml:22
+resources/domains/Template.xml:17"
 "Meeting Nbr","","","resources/domains/TargetConfiguration.xml:27"
 "Meeting Nbr.","","","resources/domains/Target.xml:35
 resources/domains/Target.xml:33"
@@ -2060,13 +2067,13 @@ resources/domains/Lead.xml:18"
 resources/domains/AlarmEngineBatch.xml:12
 resources/domains/Mail.xml:14
 resources/domains/MailingList.xml:12
-resources/domains/Template.xml:20
+resources/domains/Template.xml:21
 resources/domains/TemplateSpreadSheet.xml:10
 resources/domains/TemplateRule.xml:12
 resources/domains/Querie.xml:14
 resources/domains/AlarmEngine.xml:12"
 "Model ?","","","resources/domains/Project.xml:17"
-"Modules configurations","","","resources/views/menu.xml:612"
+"Modules configurations","","","resources/views/menu.xml:573"
 "Monday","","","resources/domains/Scheduler.xml:20
 resources/views/Selects.xml:579"
 "Month","","","resources/views/Charts.xml:441
@@ -2232,7 +2239,7 @@ resources/domains/TimesheetPeriodConfig.xml:24"
 "Nbr. of hours","","","resources/domains/TimesheetPeriodConfig.xml:20
 resources/domains/TimesheetPeriodConfig.xml:23"
 "Nbr. of terms","","","resources/domains/PaymentSchedule.xml:12"
-"Need Description","","","resources/domains/Project.xml:68"
+"Need Description","","","resources/domains/Project.xml:71"
 "Network Type","","","resources/domains/ApplicationCredentials.xml:18
 resources/domains/PersonalCredential.xml:13"
 "New","","","resources/views/General.xml:9
@@ -2275,7 +2282,7 @@ resources/domains/Task.xml:40"
 "Object Name","","","resources/domains/ObjectList.xml:10"
 "Objectives","","","resources/domains/Position.xml:23"
 "Observations (état des filetages, aspect général, état des surfaces d'appuis...) :","","","resources/domains/ManufOrder.xml:62"
-"Obsolete Products","","","resources/views/Product.xml:269"
+"Obsolete Products","","","resources/views/Product.xml:278"
 "October","","","resources/views/Selects.xml:295"
 "Offer title","","","resources/domains/JobOffer.xml:9"
 "Office name","","","resources/domains/Lead.xml:16"
@@ -2305,10 +2312,10 @@ resources/domains/PurchaseOrder.xml:22"
 "Order Number","","","resources/domains/SalesOrder.xml:66"
 "Ordered ?","","","resources/domains/PurchaseOrderLine.xml:25"
 "Organisation","","","resources/views/Company.xml:46"
-"Organization","","","resources/views/menu.xml:331"
+"Organization","","","resources/views/menu.xml:291"
 "Other","","","resources/views/Selects.xml:240"
 "Other Partner","","","resources/domains/CandidateOtherOpportunity.xml:10"
-"Other variants","","","resources/views/Product.xml:236"
+"Other variants","","","resources/views/Product.xml:245"
 "Overdue moveline","","","resources/domains/PaymentVoucher.xml:17"
 "Overdue payment","","","resources/domains/Reimbursement.xml:14"
 "Overpayment before","","","resources/domains/AccountClearance.xml:16"
@@ -2388,8 +2395,8 @@ resources/views/Charts.xml:494
 resources/views/Batch.xml:91
 resources/domains/PartnerList.xml:12"
 "Partners by Industry Sector","","","resources/views/Portal.xml:47"
-"Partners lists","","","resources/views/menu.xml:318
-resources/views/menu.xml:321"
+"Partners lists","","","resources/views/menu.xml:278
+resources/views/menu.xml:281"
 "Partners/Contacts","","","resources/views/menu.xml:14"
 "Password","","","resources/domains/Calendar.xml:13
 resources/domains/MailAccount.xml:13"
@@ -2466,8 +2473,8 @@ resources/views/Period.xml:6"
 "Period duration","","","resources/domains/Year.xml:18"
 "Period type","","","resources/domains/TargetConfiguration.xml:29
 resources/domains/Target.xml:37"
-"Periods","","","resources/views/menu.xml:522
-resources/views/menu.xml:519"
+"Periods","","","resources/views/menu.xml:479
+resources/views/menu.xml:482"
 "Periods list","","","resources/domains/Year.xml:15"
 "Perishable ?","","","resources/domains/Product.xml:54"
 "Perishable expiration date","","","resources/domains/TrackingNumber.xml:13"
@@ -2487,7 +2494,7 @@ resources/domains/SnProfile.xml:30
 resources/domains/SnProfile.xml:28"
 "Picture url","","","resources/domains/SnPage.xml:21"
 "Pièce","","","resources/domains/ManufOrderSheetLine.xml:11"
-"Planned budget","","","resources/domains/Project.xml:67"
+"Planned budget","","","resources/domains/Project.xml:70"
 "Planned duration","","","resources/domains/OperationOrder.xml:47"
 "Planned end date","","","resources/domains/ManufOrder.xml:46
 resources/domains/OperationOrder.xml:38"
@@ -2628,7 +2635,7 @@ resources/domains/ProductVariantConfig.xml:13"
 "Product variants","","","resources/views/ProductVariant.xml:6"
 "Production Qty by tracking","","","resources/domains/TrackingNumberConfiguration.xml:23"
 "Production informations","","","resources/views/Product.xml:117"
-"Production invoicing type","","","resources/domains/Project.xml:75"
+"Production invoicing type","","","resources/domains/Project.xml:78"
 "Production location","","","resources/domains/ProdProcess.xml:16"
 "Production order","","","resources/domains/ManufOrder.xml:14
 resources/views/Selects.xml:395"
@@ -2645,9 +2652,9 @@ resources/views/menu.xml:149
 resources/views/ProductCategory.xml:35
 resources/views/Product.xml:6
 resources/views/menu.xml:155"
-"Products With Variant","","","resources/views/Product.xml:257"
+"Products With Variant","","","resources/views/Product.xml:266"
 "Products families","","","resources/views/ProductFamily.xml:6"
-"Products filters","","","resources/views/Product.xml:247"
+"Products filters","","","resources/views/Product.xml:256"
 "Products list","","","resources/domains/PurchaseOrder.xml:23"
 "Products models","","","resources/views/menu.xml:165
 resources/views/menu.xml:168"
@@ -2655,7 +2662,7 @@ resources/views/menu.xml:168"
 resources/domains/ProdProcessLine.xml:18
 resources/domains/OperationOrder.xml:29"
 "Products to produce","","","resources/domains/ManufOrder.xml:32"
-"Products variants","","","resources/views/Product.xml:229"
+"Products variants","","","resources/views/Product.xml:238"
 "Products/Goods","","","resources/views/menu.xml:33"
 "Prof.","","","resources/views/Selects.xml:165"
 "Professional experience","","","resources/domains/Candidate.xml:49"
@@ -2669,11 +2676,12 @@ resources/domains/ProdHumanResource.xml:13
 resources/domains/Resource.xml:20"
 "Profile catagory","","","resources/domains/Price.xml:9"
 "Profiles","","","resources/views/Partner.xml:302
-resources/views/Product.xml:263"
+resources/views/Product.xml:272"
 "Profit accounts","","","resources/domains/AccountConfig.xml:85"
 "Progress","","","resources/domains/Expense.xml:16
 resources/domains/Training.xml:20
-resources/domains/Event.xml:55"
+resources/domains/Event.xml:55
+resources/domains/Project.xml:61"
 "Project","","","resources/domains/TimesheetLine.xml:11
 resources/domains/Event.xml:60
 resources/domains/Task.xml:14
@@ -2708,6 +2716,8 @@ resources/domains/StockMove.xml:37
 resources/domains/PurchaseOrderLineTax.xml:8
 resources/domains/PurchaseOrderSupplierLine.xml:10
 resources/views/Selects.xml:387"
+"Purchase order historical","","","resources/views/Product.xml:337"
+"Purchase order in progress","","","resources/views/Product.xml:329"
 "Purchase order line","","","resources/domains/StockMoveLine.xml:23"
 "Purchase order?","","","resources/domains/PurchaseOrder.xml:52"
 "Purchase price W.T.","","","resources/domains/Product.xml:30"
@@ -2765,7 +2775,7 @@ resources/domains/AlarmEngine.xml:19"
 resources/domains/TaxLine.xml:14"
 "Rate Date","","","resources/views/CurrencyConversionLine.xml:38"
 "Rate updation","","","resources/views/CurrencyConversionLine.xml:41"
-"Raw Materials","","","resources/views/Product.xml:260"
+"Raw Materials","","","resources/views/Product.xml:269"
 "Raw material","","","resources/domains/BillOfMaterial.xml:15
 resources/domains/Product.xml:26"
 "Re-export the bank file","","","resources/domains/AccountingBatch.xml:31"
@@ -2788,7 +2798,7 @@ resources/domains/Overtime.xml:18"
 "Receipt N°(Payment voucher)","","","resources/views/Selects.xml:376"
 "Receipt stock move","","","resources/views/Selects.xml:391"
 "Recently created partners","","","resources/views/Portal.xml:34"
-"Recipient","","","resources/domains/Message.xml:34
+"Recipient","","","resources/domains/Message.xml:35
 resources/domains/Mail.xml:20
 resources/views/Mail.xml:37"
 "Recipient details","","","resources/domains/Address.xml:11"
@@ -2838,8 +2848,8 @@ resources/views/Region.xml:10"
 "Region code","","","resources/domains/Region.xml:12"
 "Region name","","","resources/domains/Region.xml:11"
 "Regions","","","resources/views/Region.xml:5
-resources/views/menu.xml:365
-resources/views/menu.xml:368"
+resources/views/menu.xml:328
+resources/views/menu.xml:325"
 "Registration code","","","resources/domains/Partner.xml:82"
 "Reimbursed","","","resources/views/Selects.xml:335"
 "Reimbursed amount","","","resources/domains/Reimbursement.xml:15"
@@ -2899,7 +2909,7 @@ resources/domains/RoutingAction.xml:12"
 "Related to select","","","resources/domains/Event.xml:25"
 "Related to1 select","","","resources/domains/Message.xml:15"
 "Related to2 select","","","resources/domains/Message.xml:17"
-"Relations","","","resources/views/menu.xml:641"
+"Relations","","","resources/views/menu.xml:646"
 "Relocation choice","","","resources/domains/Candidate.xml:26"
 "Remaining days for the period","","","resources/domains/LeaveRequest.xml:25"
 "Remaining time","","","resources/domains/Task.xml:18
@@ -3080,14 +3090,14 @@ resources/views/Partner.xml:18"
 "Send email","","","resources/views/Partner.xml:45
 resources/views/Partner.xml:215
 resources/views/Partner.xml:170"
-"Sender (Email)","","","resources/domains/Message.xml:28"
-"Sender (User)","","","resources/domains/Message.xml:33"
+"Sender (Email)","","","resources/domains/Message.xml:29"
+"Sender (User)","","","resources/domains/Message.xml:34"
 "Sender Name","","","resources/domains/CfonbConfig.xml:16"
 "Sender Nbr","","","resources/domains/CfonbConfig.xml:15"
 "Sender record code","","","resources/domains/CfonbConfig.xml:14"
 "Sending dates","","","resources/views/Mail.xml:33"
 "Sent Date","","","resources/domains/Mail.xml:19"
-"Sent by email","","","resources/domains/Message.xml:29"
+"Sent by email","","","resources/domains/Message.xml:30"
 "Sent date","","","resources/domains/Message.xml:13"
 "September","","","resources/views/Selects.xml:294"
 "Seq.","","","resources/domains/PaymentInvoiceToPay.xml:10
@@ -3099,13 +3109,13 @@ resources/domains/PurchaseOrderLine.xml:11"
 resources/views/Sequence.xml:22"
 "Sequence Definition","","","resources/views/Sequence.xml:34"
 "Sequences","","","resources/views/Sequence.xml:6
-resources/views/menu.xml:532
-resources/views/menu.xml:529"
+resources/views/menu.xml:492
+resources/views/menu.xml:489"
 "Serial Nbr","","","resources/domains/Machine.xml:13"
 "Server Type","","","resources/domains/MailAccount.xml:11"
 "Service","","","resources/domains/Training.xml:14
 resources/views/Selects.xml:244"
-"Service Products","","","resources/views/Product.xml:254"
+"Service Products","","","resources/views/Product.xml:263"
 "Services","","","resources/views/Selects.xml:223"
 "Settings","","","resources/views/Partner.xml:129
 resources/views/Partner.xml:265"
@@ -3125,8 +3135,8 @@ resources/domains/TemplateSpreadSheet.xml:13"
 "Shift to irrecoverable","","","resources/domains/Reminder.xml:16
 resources/views/Selects.xml:378
 resources/domains/ReminderHistory.xml:15"
-"Shipped date","","","resources/domains/StockMoveLine.xml:33"
-"Shipped qty","","","resources/domains/StockMoveLine.xml:32"
+"Shipped date","","","resources/domains/StockMoveLine.xml:35"
+"Shipped qty","","","resources/domains/StockMoveLine.xml:34"
 "Short description","","","resources/domains/ExpenseLine.xml:15"
 "Short term debt duration (month)","","","resources/domains/AccountConfig.xml:53"
 "Show all stock move","","","resources/views/Product.xml:103"
@@ -3177,8 +3187,8 @@ resources/views/Source.xml:11"
 resources/views/CurrencyConversionLine.xml:34"
 "Source description","","","resources/domains/Lead.xml:50"
 "Sources","","","resources/views/menu.xml:102
-resources/views/menu.xml:552
-resources/views/menu.xml:549
+resources/views/menu.xml:509
+resources/views/menu.xml:512
 resources/views/menu.xml:105"
 "Spatial information","","","resources/domains/Address.xml:12
 resources/domains/PickListEntry.xml:12"
@@ -3250,12 +3260,14 @@ resources/domains/Project.xml:25"
 "Step","","","resources/domains/Resource.xml:12"
 "Stock","","","resources/views/Charts.xml:87
 resources/views/Product.xml:99
-resources/views/Product.xml:154
+resources/views/Product.xml:163
 resources/views/Charts.xml:40
-resources/views/Product.xml:160"
+resources/views/Product.xml:169"
 "Stock History","","","resources/views/Charts.xml:146
 resources/views/Charts.xml:206"
-"Stock Moves Lines","","","resources/views/Product.xml:289"
+"Stock Moves consumption historical","","","resources/views/Product.xml:321"
+"Stock Moves historical","","","resources/views/Product.xml:305"
+"Stock Moves planned","","","resources/views/Product.xml:313"
 "Stock move","","","resources/domains/StockMoveLine.xml:10"
 "Stock move content","","","resources/domains/StockMove.xml:29"
 "Stock move in","","","resources/domains/OperationOrder.xml:43
@@ -3264,11 +3276,11 @@ resources/domains/ManufOrder.xml:51"
 resources/domains/ManufOrder.xml:54"
 "Stock prévisionnel","","","resources/views/Charts.xml:7"
 "Storable","","","resources/views/Selects.xml:245"
-"Storable Products","","","resources/views/Product.xml:251"
+"Storable Products","","","resources/views/Product.xml:260"
 "Sub total","","","resources/domains/OvertimeLine.xml:15"
-"Subject","","","resources/views/Template.xml:30
-resources/domains/MailModel.xml:14
+"Subject","","","resources/domains/MailModel.xml:14
 resources/domains/Message.xml:11
+resources/views/Template.xml:33
 resources/domains/SnSendMessage.xml:20
 resources/domains/Event.xml:13
 resources/domains/Mail.xml:16"
@@ -3305,6 +3317,7 @@ resources/views/SupplierCatalog.xml:6"
 resources/domains/AccountConfig.xml:35"
 "Supplier invoice","","","resources/views/Selects.xml:367"
 "Supplier ref.","","","resources/domains/PurchaseOrder.xml:28"
+"Supplier requests historical","","","resources/views/Product.xml:347"
 "Supplier virtual location","","","resources/domains/SupplychainConfig.xml:16"
 "Suppliers","","","resources/views/Charts.xml:393"
 "Suppliers by country","","","resources/views/Charts.xml:374
@@ -3381,23 +3394,23 @@ resources/domains/TargetConfiguration.xml:13
 resources/domains/Target.xml:13
 resources/domains/Lead.xml:60"
 "Teams","","","resources/domains/UserInfo.xml:17
-resources/views/menu.xml:406
+resources/views/menu.xml:366
+resources/views/menu.xml:369
 resources/views/Team.xml:5
-resources/views/menu.xml:409
 resources/views/UserInfo.xml:33"
 "Technical Rejection","","","resources/domains/InterbankCodeLine.xml:19"
 "Technical environment","","","resources/domains/Position.xml:27
 resources/domains/Training.xml:21"
-"Technical maintenance","","","resources/views/menu.xml:558"
+"Technical maintenance","","","resources/views/menu.xml:518"
 "Technical manager","","","resources/views/AlarmEngine.xml:11"
 "Technical topic","","","resources/domains/Topic.xml:9"
 "Technical topics","","","resources/domains/TrainingLine.xml:14"
 "Telecom","","","resources/views/Selects.xml:238"
 "Template","","","resources/domains/TemplateRuleLine.xml:12
 resources/domains/Campaign.xml:25
-resources/views/menu.xml:450
 resources/views/Template.xml:15
-resources/views/menu.xml:447"
+resources/views/menu.xml:407
+resources/views/menu.xml:410"
 "Template Context","","","resources/views/TemplateContext.xml:11
 resources/views/TemplateContext.xml:6"
 "Template Context Line","","","resources/views/TemplateContextLine.xml:11
@@ -3405,10 +3418,10 @@ resources/domains/TemplateContext.xml:12"
 "Template Context Lines","","","resources/views/TemplateContextLine.xml:6"
 "Template Fields","","","resources/domains/TemplateSpreadSheet.xml:11"
 "Template Name","","","resources/domains/TemplateSpreadSheet.xml:8"
-"Template Rules","","","resources/views/menu.xml:440
-resources/views/menu.xml:437"
+"Template Rules","","","resources/views/menu.xml:400
+resources/views/menu.xml:397"
 "Template context","","","resources/domains/TemplateContextLine.xml:15
-resources/domains/Template.xml:18"
+resources/domains/Template.xml:19"
 "Template file name","","","resources/domains/BirtTemplate.xml:11"
 "Template rule","","","resources/domains/TemplateRuleLine.xml:16
 resources/domains/Campaign.xml:26
@@ -3419,13 +3432,13 @@ resources/views/TemplateRule.xml:11"
 "Template rules","","","resources/views/TemplateRule.xml:6"
 "Template spread sheet","","","resources/domains/TemplateSpreadSheetCriteria.xml:10"
 "Templates","","","resources/views/Template.xml:6"
-"Templating","","","resources/views/menu.xml:433"
+"Templating","","","resources/views/menu.xml:393"
 "Temporary filepath to import IPO, and IPO and Cheque payments","","","resources/domains/AccountConfig.xml:96"
 "Temporary filepath to import IPO, and IPO and Cheque payments rejects","","","resources/domains/AccountConfig.xml:99"
 "Temporary filepath to import rejected records","","","resources/domains/AccountConfig.xml:80"
 "Territories","","","resources/views/Territory.xml:6
-resources/views/menu.xml:335
-resources/views/menu.xml:338"
+resources/views/menu.xml:298
+resources/views/menu.xml:295"
 "Territory","","","resources/views/Territory.xml:11"
 "Test connection to QAS webservice","","","resources/views/General.xml:51"
 "Test mapping service connection","","","resources/views/General.xml:47"
@@ -3453,10 +3466,10 @@ resources/domains/Calendar.xml:10
 resources/domains/PriceList.xml:12"
 "To","","","resources/domains/Period.xml:15
 resources/domains/Year.xml:13
+resources/domains/Message.xml:26
 resources/domains/MissionOrder.xml:22
 resources/domains/Invoice.xml:36
 resources/domains/Template.xml:13
-resources/domains/Message.xml:25
 resources/views/Charts.xml:209
 resources/views/Charts.xml:149
 resources/domains/JobOffer.xml:13
@@ -3534,8 +3547,8 @@ resources/domains/PaymentInvoiceToPay.xml:12"
 "Total record code","","","resources/domains/CfonbConfig.xml:20"
 "Total time","","","resources/domains/Task.xml:15
 resources/domains/Project.xml:44"
-"Tracebacks","","","resources/views/menu.xml:564
-resources/views/menu.xml:561"
+"Tracebacks","","","resources/views/menu.xml:524
+resources/views/menu.xml:521"
 "Tracker","","","resources/domains/TrackerLine.xml:10"
 "Tracker Line","","","resources/domains/Campaign.xml:29"
 "Tracker key","","","resources/domains/TrackerInfo.xml:12"
@@ -3548,7 +3561,7 @@ resources/domains/TrackingNumber.xml:14"
 resources/views/TrackingNumber.xml:6"
 "Tracking Number Configuration","","","resources/views/TrackingNumberConfiguration.xml:21
 resources/views/TrackingNumberConfiguration.xml:6"
-"Tracking number","","","resources/views/Product.xml:122"
+"Tracking number","","","resources/views/Product.xml:123"
 "Tracking number configuration","","","resources/views/menu.xml:202
 resources/views/menu.xml:199"
 "Tracking page","","","resources/domains/MarketingSettings.xml:10"
@@ -3574,7 +3587,6 @@ resources/domains/Task.xml:46
 resources/domains/Project.xml:37
 resources/views/Charts.xml:323
 resources/domains/Project.xml:34
-resources/views/Product.xml:148
 resources/domains/Partner.xml:81
 resources/domains/Project.xml:31"
 "Turnover + Discount + Expenses","","","resources/domains/OfferLine.xml:11"
@@ -3590,10 +3602,10 @@ resources/domains/Keyword.xml:11
 resources/domains/Campaign.xml:12
 resources/domains/Mail.xml:12
 resources/domains/PriceList.xml:19
-resources/domains/Project.xml:63
 resources/domains/Journal.xml:13
 resources/domains/Calendar.xml:14
 resources/domains/EventReminder.xml:11
+resources/domains/Project.xml:66
 resources/domains/AlarmMessage.xml:9
 resources/domains/AccountType.xml:9
 resources/domains/OfferLine.xml:7
@@ -3627,9 +3639,9 @@ resources/views/Unit.xml:9
 resources/domains/SalesOrderSubLine.xml:17
 resources/domains/PlanningLine.xml:18"
 "Unit conversion","","","resources/views/UnitConversion.xml:10"
-"Unit conversions","","","resources/views/menu.xml:504
-resources/views/menu.xml:501
-resources/views/UnitConversion.xml:5"
+"Unit conversions","","","resources/views/menu.xml:461
+resources/views/UnitConversion.xml:5
+resources/views/menu.xml:464"
 "Unit cost price in company currency","","","resources/domains/SalesOrderSubLine.xml:30
 resources/domains/SalesOrderLine.xml:57"
 "Unit price","","","resources/domains/Task.xml:60
@@ -3644,9 +3656,9 @@ resources/domains/ExpenseLine.xml:18
 resources/domains/InvoiceLineEvent.xml:16
 resources/domains/InvoiceLineEvent.xml:18
 resources/domains/OvertimeLine.xml:14"
-"Units","","","resources/views/menu.xml:484
-resources/views/Unit.xml:5
-resources/views/menu.xml:481"
+"Units","","","resources/views/Unit.xml:5
+resources/views/menu.xml:444
+resources/views/menu.xml:441"
 "Unpaid IPO operation code","","","resources/domains/CfonbConfig.xml:34"
 "Unpaid direct debit operation code","","","resources/domains/CfonbConfig.xml:33"
 "UoM","","","resources/domains/ExpenseLine.xml:14
@@ -3654,8 +3666,8 @@ resources/domains/OvertimeLine.xml:13"
 "Upcoming events","","","resources/views/Partner.xml:334"
 "Update & Historize conversion rate","","","resources/views/General.xml:40"
 "Update Time","","","resources/domains/SnStatusUpdates.xml:25"
-"Update current product prices and variants","","","resources/views/Product.xml:146"
-"Update products prices","","","resources/views/Product.xml:146"
+"Update current product prices and variants","","","resources/views/Product.xml:147"
+"Update products prices","","","resources/views/Product.xml:147"
 "Upper reimbursement limit","","","resources/domains/AccountConfig.xml:63"
 "Url","","","resources/domains/Calendar.xml:11"
 "Url returned by Paybox once payment cancelled","","","resources/domains/PayboxConfig.xml:24"
@@ -3687,10 +3699,10 @@ resources/views/UserInfo.xml:20"
 resources/domains/SnSearchResult.xml:14"
 "User ref","","","resources/domains/SnSearchResult.xml:13"
 "Username","","","resources/domains/PersonalCredential.xml:17"
-"Users","","","resources/views/menu.xml:400
-resources/views/menu.xml:397"
+"Users","","","resources/views/menu.xml:357
+resources/views/menu.xml:360"
 "Users list","","","resources/views/UserInfo.xml:5"
-"Users/Companies","","","resources/views/menu.xml:394"
+"Users/Companies","","","resources/views/menu.xml:354"
 "Users/Employees","","","resources/domains/Team.xml:13"
 "Utilities","","","resources/views/Selects.xml:226"
 "V.A.T.","","","resources/domains/PurchaseOrderLineTax.xml:9"
@@ -3722,8 +3734,8 @@ resources/domains/RoutingRule.xml:14
 resources/domains/IrrecoverableReportLine.xml:14
 resources/domains/BirtTemplateParameter.xml:11"
 "Variables list returned by Paybox","","","resources/domains/PayboxConfig.xml:21"
-"Variants","","","resources/domains/InvoiceLine.xml:27
-resources/views/Product.xml:135"
+"Variants","","","resources/views/Product.xml:136
+resources/domains/InvoiceLine.xml:27"
 "Variation","","","resources/views/CurrencyConversionLine.xml:43
 resources/domains/CurrencyConversionLine.xml:17"
 "Vehicle Fiscal Power","","","resources/domains/Employee.xml:42"
@@ -3761,8 +3773,8 @@ resources/views/Scheduler.xml:27"
 "Year 2 To Date","","","resources/views/Charts.xml:277"
 "Year of completion","","","resources/domains/TrainingLine.xml:15"
 "Yearly reset","","","resources/domains/Sequence.xml:20"
-"Years","","","resources/views/menu.xml:513
-resources/views/menu.xml:510"
+"Years","","","resources/views/menu.xml:470
+resources/views/menu.xml:473"
 "Yes","","","resources/views/Selects.xml:193
 resources/views/Selects.xml:171
 resources/views/Selects.xml:176"
@@ -3775,130 +3787,130 @@ resources/views/Selects.xml:176"
 "cost price","","","resources/views/Selects.xml:590"
 "day(s)","","","resources/views/Scheduler.xml:24"
 "directory Name","","","resources/domains/GoogleDirectory.xml:9"
-"help:Account.accountType","The account type is an attribute attached to the account that will impact the way accounting documents will be printed or filtered. Account Types are as follow : asset, cash, commitment, current asset (stock), debt, equity, expense, immobilisation, income, payable, provision, receivable, special, tax, view",,"resources/domains/Account.xml:14"
-"help:Account.code","The account code is usually a number (e.g. : 101000). The account code help to locate the account in the chart of account. This code must be unique per company account chart.",,"resources/domains/Account.xml:12"
-"help:Account.company","Each account is linked to a chart of account, and thus to a company.",,"resources/domains/Account.xml:16"
-"help:Account.parent","The parent account helps to define the company chart of accounts. Depending on the company field, you will be only entitled to select parent accounts associated to the same company.",,"resources/domains/Account.xml:13"
-"help:Account.reconcileOk","The checkbox reconcilable helps to filter, within the reconcile interface the entrylines to reconcile. The accounts of type receivable and payable will usually be ticked as reconcilable.",,"resources/domains/Account.xml:15"
-"help:AccountConfig.doubtfulCustomerAccount","Utiliser pour le passage en client douteux",,"resources/domains/AccountConfig.xml:36"
-"help:AccountConfig.interbankPaymentOrderImportPathCFONB","example : /home/axelor/reject.dat",,"resources/domains/AccountConfig.xml:95"
-"help:AccountConfig.interbankPaymentOrderRejectImportPathCFONB","example : /home/axelor/reject.dat",,"resources/domains/AccountConfig.xml:98"
-"help:AccountConfig.paymentScheduleExportFolderPathCFONB","example : /home/axelor/",,"resources/domains/AccountConfig.xml:73"
-"help:AccountConfig.reimbursementExportFolderPath","example : /home/axelor/reject.dat",,"resources/domains/AccountConfig.xml:61"
-"help:AccountConfig.reimbursementExportFolderPathCFONB","example : /home/axelor/reject.dat",,"resources/domains/AccountConfig.xml:60"
-"help:AccountConfig.reimbursementImportFolderPathCFONB","example : /home/axelor/reject.dat",,"resources/domains/AccountConfig.xml:67"
-"help:AccountConfig.rejectImportPathAndFileName","example : /home/axelor/reject.dat",,"resources/domains/AccountConfig.xml:79"
-"help:AccountConfig.tempImportPathAndFileName","example : /home/axelor/reject.dat",,"resources/domains/AccountConfig.xml:80"
-"help:AccountConfig.tempInterbankPaymentOrderImportPathCFONB","example : /home/axelor/reject.dat",,"resources/domains/AccountConfig.xml:96"
-"help:AccountConfig.tempInterbankPaymentOrderRejectImportPathCFONB","example : /home/axelor/reject.dat",,"resources/domains/AccountConfig.xml:99"
-"help:AccountConfig.tempReimbImportFolderPathCFONB","example : /home/axelor/reject.dat",,"resources/domains/AccountConfig.xml:68"
-"help:ApplicationCredentials.apikey","API Application's Key",,"resources/domains/ApplicationCredentials.xml:14"
-"help:ApplicationCredentials.apisecret","API Application's Secret Key",,"resources/domains/ApplicationCredentials.xml:16"
-"help:ApplicationCredentials.redirectUrl","You must Specify Same URL which you specify under Social Networking API Applicaton's ,eg:- FOR Facebook WEBSITE WITH FACEBOOK LOGIN",,"resources/domains/ApplicationCredentials.xml:20"
-"help:ApplicationCredentials.socialNet","Social Networking Type",,"resources/domains/ApplicationCredentials.xml:18"
-"help:AppsCredentials.accessToken","Access Token retrived by google",,"resources/domains/AppsCredentials.xml:10"
-"help:AppsCredentials.driveUserInfo","Google Apps User",,"resources/domains/AppsCredentials.xml:9"
-"help:AppsCredentials.lastAccessTime","Last access time of Authorization",,"resources/domains/AppsCredentials.xml:12"
-"help:AppsCredentials.refreshToken","Refresh Token retrived by Google to get Access Token",,"resources/domains/AppsCredentials.xml:11"
-"help:BankDetails.bankAddress","Address of the bank",,"resources/domains/BankDetails.xml:13"
-"help:BankDetails.bankCode","Refers to the bank code where the account owner has his account.",,"resources/domains/BankDetails.xml:16"
-"help:BankDetails.bbanKey",,,"resources/domains/BankDetails.xml:19"
-"help:BankDetails.countryCode","Refers to the country code expressed within the first 2 caracters of the IBAN.",,"resources/domains/BankDetails.xml:20"
-"help:BankDetails.iban","For more information regarding IBAN, please refer to the norm ISO13616 (a sum up is introduced here http://fr.wikipedia.org/wiki/ISO_13616)",,"resources/domains/BankDetails.xml:15"
-"help:BankDetails.ownerName","Name of the bank account owner",,"resources/domains/BankDetails.xml:12"
-"help:BankDetails.sortCode","Refers to the branch code where the account is registered.",,"resources/domains/BankDetails.xml:17"
-"help:Bic.bankCode",,,"resources/domains/Bic.xml:11"
-"help:Bic.bankName",,,"resources/domains/Bic.xml:12"
-"help:Bic.countryCode","This code is expressed with 2 caracters (e.g. : EN, FR …)",,"resources/domains/Bic.xml:14"
-"help:Bic.sortCode",,,"resources/domains/Bic.xml:13"
-"help:BirtTemplate.format","Pdf",,"resources/domains/BirtTemplate.xml:12"
-"help:BirtTemplate.generatedFilePath","Example : /home/axelor/temp/",,"resources/domains/BirtTemplate.xml:13"
-"help:Candidate.drivingLicence","Format: Car DL / Moto DL / Truck DL …",,"resources/domains/Candidate.xml:65"
-"help:Candidate.globalEvaluation","The grade is calculated based on the page 'Appraisal'",,"resources/domains/Candidate.xml:40"
-"help:Candidate.relocationSelect","Non modifiable, automatique en fonction du champs 'Mobilité Géographique' dans l'onglet 'autres infos'",,"resources/domains/Candidate.xml:26"
-"help:CandidateOtherOpportunity.ets","Etablissement",,"resources/domains/CandidateOtherOpportunity.xml:10"
-"help:Company.generatedEmailFileName","exemple : email_",,"resources/domains/Company.xml:35"
-"help:Company.generatedEmailFilePath","example : /home/axelor/email/",,"resources/domains/Company.xml:33"
-"help:Company.generatedMailFileName","exemple : letter_",,"resources/domains/Company.xml:34"
-"help:Company.generatedMailFilePath","example : /home/axelor/mail/",,"resources/domains/Company.xml:32"
-"help:Company.logoPath","Fill inside this field the path to the company logo",,"resources/domains/Company.xml:19"
-"help:FilePermission.editable","Reader &amp; Writer Role",,"resources/domains/FilePermission.xml:8"
-"help:FilePermission.googleFile","Google File to share",,"resources/domains/FilePermission.xml:11"
-"help:FilePermission.notifyEmail","Notify email to user",,"resources/domains/FilePermission.xml:9"
-"help:FilePermission.sharingUser","Sharing User Profile",,"resources/domains/FilePermission.xml:10"
-"help:General.qasWsdlUrl","http://{serveur}:{port}/proweb.wsdl",,"resources/domains/General.xml:34"
-"help:General.today","If empty, the today date will be the server date.",,"resources/domains/General.xml:10"
-"help:GoogleAppsConfig.accessToken","Access Token retrived by google",,"resources/domains/GoogleAppsConfig.xml:15"
-"help:GoogleAppsConfig.clientEmail","Client Email Id in Api Console",,"resources/domains/GoogleAppsConfig.xml:8"
-"help:GoogleAppsConfig.clientId","Cliend Id in Api Console",,"resources/domains/GoogleAppsConfig.xml:9"
-"help:GoogleAppsConfig.clientSecret","Client Secret in Api Console",,"resources/domains/GoogleAppsConfig.xml:10"
-"help:GoogleAppsConfig.driveUserInfo","Google Apps User",,"resources/domains/GoogleAppsConfig.xml:14"
-"help:GoogleAppsConfig.lastAccessTime","Last Access time of Authorization",,"resources/domains/GoogleAppsConfig.xml:17"
-"help:GoogleAppsConfig.redirectURI","Redirect Url to get auth code",,"resources/domains/GoogleAppsConfig.xml:11"
-"help:GoogleAppsConfig.refreshToken","Refresh Token retrived by Google to get Access Token",,"resources/domains/GoogleAppsConfig.xml:16"
-"help:GoogleDirectory.directoryId","Google Directory Id",,"resources/domains/GoogleDirectory.xml:8"
-"help:GoogleDirectory.directoryName","Directory Name",,"resources/domains/GoogleDirectory.xml:9"
-"help:GoogleDirectory.driveUserInfo","Google Apps User",,"resources/domains/GoogleDirectory.xml:12"
-"help:GoogleDirectory.googleFilesList","Google files in directory",,"resources/domains/GoogleDirectory.xml:13"
-"help:GoogleDirectory.parentGoogleDirectory","Parent Directory name",,"resources/domains/GoogleDirectory.xml:11"
-"help:GoogleDirectory.trashed","Check file is Trashed or not",,"resources/domains/GoogleDirectory.xml:10"
-"help:GoogleFile.driveUserInfo","Google apps User",,"resources/domains/GoogleFile.xml:23"
-"help:GoogleFile.fileContent","File Content, Not storing",,"resources/domains/GoogleFile.xml:14"
-"help:GoogleFile.fileId","Google File Id",,"resources/domains/GoogleFile.xml:9"
-"help:GoogleFile.fileName","File name",,"resources/domains/GoogleFile.xml:10"
-"help:GoogleFile.filePermissionsList","File permission to share File",,"resources/domains/GoogleFile.xml:25"
-"help:GoogleFile.fileSize","File Size in bytes",,"resources/domains/GoogleFile.xml:12"
-"help:GoogleFile.fileType","File type",,"resources/domains/GoogleFile.xml:11"
-"help:GoogleFile.googleDirectory","Google Directory Id",,"resources/domains/GoogleFile.xml:24"
-"help:GoogleFile.lastModified","Last modified Time of File",,"resources/domains/GoogleFile.xml:13"
-"help:GoogleFile.sharedBy","Name of user who has shared file",,"resources/domains/GoogleFile.xml:21"
-"help:GoogleFile.sharedWithMe","Set if file is shared with me file",,"resources/domains/GoogleFile.xml:19"
-"help:GoogleFile.trashed","Check file is trahsed or not",,"resources/domains/GoogleFile.xml:15"
-"help:GoogleFile.writable","Set if file is shared with me file",,"resources/domains/GoogleFile.xml:20"
-"help:Import.configPath","Complete path to the XML import mapping file (example : /home/ERP/csv-config.xml)",,"resources/domains/Import.xml:11"
-"help:IndicatorGeneratorGrouping.path","Path to the export folder where the indicator report values will be exported.",,"resources/domains/IndicatorGeneratorGrouping.xml:13"
-"help:Invoice.alreadyPrintedOk","Field allowing to distinguish the original invoice from a copy/duplicata.",,"resources/domains/Invoice.xml:53"
-"help:Invoice.currency","This currency defined the currency of the invoice. If the company accounting currency or journal currency is different from the invoice currency, the system will automatically convert the amounts into the accounting or journal currency.",,"resources/domains/Invoice.xml:45"
-"help:Invoice.exTaxTotal","Total without Tax",,"resources/domains/Invoice.xml:91"
-"help:Invoice.externalReference","Refers to an external document like a Customer or Supplier Order, Supplier invoice, Bill of lading...",,"resources/domains/Invoice.xml:28"
-"help:Invoice.inTaxTotal","Total all taxes included.",,"resources/domains/Invoice.xml:93"
-"help:Invoice.internalReference","Refers to an internal document like a SO, PO, Stock Picking reference...",,"resources/domains/Invoice.xml:27"
-"help:Invoice.taxTotal","Total Tax amount is a result of the sum of the Tax lines Amount.",,"resources/domains/Invoice.xml:92"
-"help:Message.bccEmailAddressSet","Blind carbon copy",,"resources/domains/Message.xml:27"
-"help:Message.ccEmailAddressSet","Carbon copy",,"resources/domains/Message.xml:26"
-"help:Message.company","Company Header",,"resources/domains/Message.xml:21"
-"help:MoveLine.counter","This sequence is unique per Move, automatically reset to 1 for a new moveline",,"resources/domains/MoveLine.xml:14"
-"help:PaymentMode.invoiceLabel","Label to be displayed on invoice PDF",,"resources/domains/PaymentMode.xml:15"
-"help:PaymentVoucher.hasAutoInput","Indicates if the voucher has been manually or automatically input. This has an impact on overdue management.",,"resources/domains/PaymentVoucher.xml:26"
-"help:PersonalCredential.publicUserToken","User token to access protected resources",,"resources/domains/PersonalCredential.xml:14"
-"help:PersonalCredential.secretUserToken","User token secret required to access protected resources",,"resources/domains/PersonalCredential.xml:16"
-"help:PersonalCredential.snUserName","User name who gets granted access",,"resources/domains/PersonalCredential.xml:17"
-"help:PersonalCredential.socialNet","Network Type",,"resources/domains/PersonalCredential.xml:13"
-"help:PrintingSettings.defaultMailBirtTemplate","Default Mail Birt Template",,"resources/domains/PrintingSettings.xml:13"
-"help:Product.accountManagementList","If this table is empty, the default account configuration will be retrieved from the product family 'Accounts configurations' table. However, this table will has the highest priority if filled.",,"resources/domains/Product.xml:43"
-"help:Product.parentProduct","Used for variants",,"resources/domains/Product.xml:60"
-"help:PurchaseOrder.internalReference","Refers to an internal document like a SO, PO, Stock Picking reference...",,"resources/domains/PurchaseOrder.xml:29"
-"help:PurchaseOrderLine.estimatedDelivDate","Estimated by supplier",,"resources/domains/PurchaseOrderLine.xml:37"
-"help:PurchaseOrderSupplierLine.estimatedDelivDate","Estimated by supplier",,"resources/domains/PurchaseOrderSupplierLine.xml:18"
-"help:SalesOrderScheduleLine.nbOfDay","If invoicing based on Nbr. of days",,"resources/domains/SalesOrderScheduleLine.xml:16"
-"help:SalesOrderScheduleLine.salesOrderLine","If invoicing based on task(s).",,"resources/domains/SalesOrderScheduleLine.xml:14"
-"help:SnSearchResult.companyName","Name of Company",,"resources/domains/SnSearchResult.xml:19"
-"help:SnSearchResult.firstName","First Name of Person",,"resources/domains/SnSearchResult.xml:15"
-"help:SnSearchResult.lastName","Last Name of Person",,"resources/domains/SnSearchResult.xml:16"
-"help:SnSearchResult.link","Profile Link",,"resources/domains/SnSearchResult.xml:18"
-"help:SnSearchResult.locale","Locale",,"resources/domains/SnSearchResult.xml:21"
-"help:SnSearchResult.location","Location",,"resources/domains/SnSearchResult.xml:20"
-"help:SnSearchResult.userName","User Name",,"resources/domains/SnSearchResult.xml:14"
-"help:SnSearchResult.userRef","Facebook Generated Unique User's ID",,"resources/domains/SnSearchResult.xml:13"
-"help:SocialNet.name","Name of Social Networking",,"resources/domains/SocialNet.xml:16"
-"help:SocialNet.website","Website for Social Networking",,"resources/domains/SocialNet.xml:17"
-"help:Task.isLeaveRequest","Is used as a leave request reason",,"resources/domains/Task.xml:34"
-"help:TemplateFile.googleFile","Google File as Template",,"resources/domains/TemplateFile.xml:8"
-"help:TemplateSpreadSheet.creatorUser","Creator of Template",,"resources/domains/TemplateSpreadSheet.xml:9"
-"help:TemplateSpreadSheet.criteria","Criteria to Export SpreadSheet",,"resources/domains/TemplateSpreadSheet.xml:12"
-"help:TemplateSpreadSheet.templateModel","Model",,"resources/domains/TemplateSpreadSheet.xml:10"
-"help:TemplateSpreadSheet.templateName","Template Spreadsheet Name",,"resources/domains/TemplateSpreadSheet.xml:8"
-"help:UserProfile.permissionId","Google Account Id/Permission Id to share File",,"resources/domains/UserProfile.xml:11"
+"help:Account.accountType","The account type is an attribute attached to the account that will impact the way accounting documents will be printed or filtered. Account Types are as follow : asset, cash, commitment, current asset (stock), debt, equity, expense, immobilisation, income, payable, provision, receivable, special, tax, view","","resources/domains/Account.xml:14"
+"help:Account.code","The account code is usually a number (e.g. : 101000). The account code help to locate the account in the chart of account. This code must be unique per company account chart.","","resources/domains/Account.xml:12"
+"help:Account.company","Each account is linked to a chart of account, and thus to a company.","","resources/domains/Account.xml:16"
+"help:Account.parent","The parent account helps to define the company chart of accounts. Depending on the company field, you will be only entitled to select parent accounts associated to the same company.","","resources/domains/Account.xml:13"
+"help:Account.reconcileOk","The checkbox reconcilable helps to filter, within the reconcile interface the entrylines to reconcile. The accounts of type receivable and payable will usually be ticked as reconcilable.","","resources/domains/Account.xml:15"
+"help:AccountConfig.doubtfulCustomerAccount","Utiliser pour le passage en client douteux","","resources/domains/AccountConfig.xml:36"
+"help:AccountConfig.interbankPaymentOrderImportPathCFONB","example : /home/axelor/reject.dat","","resources/domains/AccountConfig.xml:95"
+"help:AccountConfig.interbankPaymentOrderRejectImportPathCFONB","example : /home/axelor/reject.dat","","resources/domains/AccountConfig.xml:98"
+"help:AccountConfig.paymentScheduleExportFolderPathCFONB","example : /home/axelor/","","resources/domains/AccountConfig.xml:73"
+"help:AccountConfig.reimbursementExportFolderPath","example : /home/axelor/reject.dat","","resources/domains/AccountConfig.xml:61"
+"help:AccountConfig.reimbursementExportFolderPathCFONB","example : /home/axelor/reject.dat","","resources/domains/AccountConfig.xml:60"
+"help:AccountConfig.reimbursementImportFolderPathCFONB","example : /home/axelor/reject.dat","","resources/domains/AccountConfig.xml:67"
+"help:AccountConfig.rejectImportPathAndFileName","example : /home/axelor/reject.dat","","resources/domains/AccountConfig.xml:79"
+"help:AccountConfig.tempImportPathAndFileName","example : /home/axelor/reject.dat","","resources/domains/AccountConfig.xml:80"
+"help:AccountConfig.tempInterbankPaymentOrderImportPathCFONB","example : /home/axelor/reject.dat","","resources/domains/AccountConfig.xml:96"
+"help:AccountConfig.tempInterbankPaymentOrderRejectImportPathCFONB","example : /home/axelor/reject.dat","","resources/domains/AccountConfig.xml:99"
+"help:AccountConfig.tempReimbImportFolderPathCFONB","example : /home/axelor/reject.dat","","resources/domains/AccountConfig.xml:68"
+"help:ApplicationCredentials.apikey","API Application's Key","","resources/domains/ApplicationCredentials.xml:14"
+"help:ApplicationCredentials.apisecret","API Application's Secret Key","","resources/domains/ApplicationCredentials.xml:16"
+"help:ApplicationCredentials.redirectUrl","You must Specify Same URL which you specify under Social Networking API Applicaton's ,eg:- FOR Facebook WEBSITE WITH FACEBOOK LOGIN","","resources/domains/ApplicationCredentials.xml:20"
+"help:ApplicationCredentials.socialNet","Social Networking Type","","resources/domains/ApplicationCredentials.xml:18"
+"help:AppsCredentials.accessToken","Access Token retrived by google","","resources/domains/AppsCredentials.xml:10"
+"help:AppsCredentials.driveUserInfo","Google Apps User","","resources/domains/AppsCredentials.xml:9"
+"help:AppsCredentials.lastAccessTime","Last access time of Authorization","","resources/domains/AppsCredentials.xml:12"
+"help:AppsCredentials.refreshToken","Refresh Token retrived by Google to get Access Token","","resources/domains/AppsCredentials.xml:11"
+"help:BankDetails.bankAddress","Address of the bank","","resources/domains/BankDetails.xml:13"
+"help:BankDetails.bankCode","Refers to the bank code where the account owner has his account.","","resources/domains/BankDetails.xml:16"
+"help:BankDetails.bbanKey","","","resources/domains/BankDetails.xml:19"
+"help:BankDetails.countryCode","Refers to the country code expressed within the first 2 caracters of the IBAN.","","resources/domains/BankDetails.xml:20"
+"help:BankDetails.iban","For more information regarding IBAN, please refer to the norm ISO13616 (a sum up is introduced here http://fr.wikipedia.org/wiki/ISO_13616)","","resources/domains/BankDetails.xml:15"
+"help:BankDetails.ownerName","Name of the bank account owner","","resources/domains/BankDetails.xml:12"
+"help:BankDetails.sortCode","Refers to the branch code where the account is registered.","","resources/domains/BankDetails.xml:17"
+"help:Bic.bankCode","","","resources/domains/Bic.xml:11"
+"help:Bic.bankName","","","resources/domains/Bic.xml:12"
+"help:Bic.countryCode","This code is expressed with 2 caracters (e.g. : EN, FR …)","","resources/domains/Bic.xml:14"
+"help:Bic.sortCode","","","resources/domains/Bic.xml:13"
+"help:BirtTemplate.format","Pdf","","resources/domains/BirtTemplate.xml:12"
+"help:BirtTemplate.generatedFilePath","Example : /home/axelor/temp/","","resources/domains/BirtTemplate.xml:13"
+"help:Candidate.drivingLicence","Format: Car DL / Moto DL / Truck DL …","","resources/domains/Candidate.xml:65"
+"help:Candidate.globalEvaluation","The grade is calculated based on the page 'Appraisal'","","resources/domains/Candidate.xml:40"
+"help:Candidate.relocationSelect","Non modifiable, automatique en fonction du champs 'Mobilité Géographique' dans l'onglet 'autres infos'","","resources/domains/Candidate.xml:26"
+"help:CandidateOtherOpportunity.ets","Etablissement","","resources/domains/CandidateOtherOpportunity.xml:10"
+"help:Company.generatedEmailFileName","exemple : email_","","resources/domains/Company.xml:35"
+"help:Company.generatedEmailFilePath","example : /home/axelor/email/","","resources/domains/Company.xml:33"
+"help:Company.generatedMailFileName","exemple : letter_","","resources/domains/Company.xml:34"
+"help:Company.generatedMailFilePath","example : /home/axelor/mail/","","resources/domains/Company.xml:32"
+"help:Company.logoPath","Fill inside this field the path to the company logo","","resources/domains/Company.xml:19"
+"help:FilePermission.editable","Reader &amp; Writer Role","","resources/domains/FilePermission.xml:8"
+"help:FilePermission.googleFile","Google File to share","","resources/domains/FilePermission.xml:11"
+"help:FilePermission.notifyEmail","Notify email to user","","resources/domains/FilePermission.xml:9"
+"help:FilePermission.sharingUser","Sharing User Profile","","resources/domains/FilePermission.xml:10"
+"help:General.qasWsdlUrl","http://{serveur}:{port}/proweb.wsdl","","resources/domains/General.xml:34"
+"help:General.today","If empty, the today date will be the server date.","","resources/domains/General.xml:10"
+"help:GoogleAppsConfig.accessToken","Access Token retrived by google","","resources/domains/GoogleAppsConfig.xml:15"
+"help:GoogleAppsConfig.clientEmail","Client Email Id in Api Console","","resources/domains/GoogleAppsConfig.xml:8"
+"help:GoogleAppsConfig.clientId","Cliend Id in Api Console","","resources/domains/GoogleAppsConfig.xml:9"
+"help:GoogleAppsConfig.clientSecret","Client Secret in Api Console","","resources/domains/GoogleAppsConfig.xml:10"
+"help:GoogleAppsConfig.driveUserInfo","Google Apps User","","resources/domains/GoogleAppsConfig.xml:14"
+"help:GoogleAppsConfig.lastAccessTime","Last Access time of Authorization","","resources/domains/GoogleAppsConfig.xml:17"
+"help:GoogleAppsConfig.redirectURI","Redirect Url to get auth code","","resources/domains/GoogleAppsConfig.xml:11"
+"help:GoogleAppsConfig.refreshToken","Refresh Token retrived by Google to get Access Token","","resources/domains/GoogleAppsConfig.xml:16"
+"help:GoogleDirectory.directoryId","Google Directory Id","","resources/domains/GoogleDirectory.xml:8"
+"help:GoogleDirectory.directoryName","Directory Name","","resources/domains/GoogleDirectory.xml:9"
+"help:GoogleDirectory.driveUserInfo","Google Apps User","","resources/domains/GoogleDirectory.xml:12"
+"help:GoogleDirectory.googleFilesList","Google files in directory","","resources/domains/GoogleDirectory.xml:13"
+"help:GoogleDirectory.parentGoogleDirectory","Parent Directory name","","resources/domains/GoogleDirectory.xml:11"
+"help:GoogleDirectory.trashed","Check file is Trashed or not","","resources/domains/GoogleDirectory.xml:10"
+"help:GoogleFile.driveUserInfo","Google apps User","","resources/domains/GoogleFile.xml:23"
+"help:GoogleFile.fileContent","File Content, Not storing","","resources/domains/GoogleFile.xml:14"
+"help:GoogleFile.fileId","Google File Id","","resources/domains/GoogleFile.xml:9"
+"help:GoogleFile.fileName","File name","","resources/domains/GoogleFile.xml:10"
+"help:GoogleFile.filePermissionsList","File permission to share File","","resources/domains/GoogleFile.xml:25"
+"help:GoogleFile.fileSize","File Size in bytes","","resources/domains/GoogleFile.xml:12"
+"help:GoogleFile.fileType","File type","","resources/domains/GoogleFile.xml:11"
+"help:GoogleFile.googleDirectory","Google Directory Id","","resources/domains/GoogleFile.xml:24"
+"help:GoogleFile.lastModified","Last modified Time of File","","resources/domains/GoogleFile.xml:13"
+"help:GoogleFile.sharedBy","Name of user who has shared file","","resources/domains/GoogleFile.xml:21"
+"help:GoogleFile.sharedWithMe","Set if file is shared with me file","","resources/domains/GoogleFile.xml:19"
+"help:GoogleFile.trashed","Check file is trahsed or not","","resources/domains/GoogleFile.xml:15"
+"help:GoogleFile.writable","Set if file is shared with me file","","resources/domains/GoogleFile.xml:20"
+"help:Import.configPath","Complete path to the XML import mapping file (example : /home/ERP/csv-config.xml)","","resources/domains/Import.xml:11"
+"help:IndicatorGeneratorGrouping.path","Path to the export folder where the indicator report values will be exported.","","resources/domains/IndicatorGeneratorGrouping.xml:13"
+"help:Invoice.alreadyPrintedOk","Field allowing to distinguish the original invoice from a copy/duplicata.","","resources/domains/Invoice.xml:53"
+"help:Invoice.currency","This currency defined the currency of the invoice. If the company accounting currency or journal currency is different from the invoice currency, the system will automatically convert the amounts into the accounting or journal currency.","","resources/domains/Invoice.xml:45"
+"help:Invoice.exTaxTotal","Total without Tax","","resources/domains/Invoice.xml:91"
+"help:Invoice.externalReference","Refers to an external document like a Customer or Supplier Order, Supplier invoice, Bill of lading...","","resources/domains/Invoice.xml:28"
+"help:Invoice.inTaxTotal","Total all taxes included.","","resources/domains/Invoice.xml:93"
+"help:Invoice.internalReference","Refers to an internal document like a SO, PO, Stock Picking reference...","","resources/domains/Invoice.xml:27"
+"help:Invoice.taxTotal","Total Tax amount is a result of the sum of the Tax lines Amount.","","resources/domains/Invoice.xml:92"
+"help:Message.bccEmailAddressSet","Blind carbon copy","","resources/domains/Message.xml:28"
+"help:Message.ccEmailAddressSet","Carbon copy","","resources/domains/Message.xml:27"
+"help:Message.company","Company Header","","resources/domains/Message.xml:21"
+"help:MoveLine.counter","This sequence is unique per Move, automatically reset to 1 for a new moveline","","resources/domains/MoveLine.xml:14"
+"help:PaymentMode.invoiceLabel","Label to be displayed on invoice PDF","","resources/domains/PaymentMode.xml:15"
+"help:PaymentVoucher.hasAutoInput","Indicates if the voucher has been manually or automatically input. This has an impact on overdue management.","","resources/domains/PaymentVoucher.xml:26"
+"help:PersonalCredential.publicUserToken","User token to access protected resources","","resources/domains/PersonalCredential.xml:14"
+"help:PersonalCredential.secretUserToken","User token secret required to access protected resources","","resources/domains/PersonalCredential.xml:16"
+"help:PersonalCredential.snUserName","User name who gets granted access","","resources/domains/PersonalCredential.xml:17"
+"help:PersonalCredential.socialNet","Network Type","","resources/domains/PersonalCredential.xml:13"
+"help:PrintingSettings.defaultMailBirtTemplate","Default Mail Birt Template","","resources/domains/PrintingSettings.xml:13"
+"help:Product.accountManagementList","If this table is empty, the default account configuration will be retrieved from the product family 'Accounts configurations' table. However, this table will has the highest priority if filled.","","resources/domains/Product.xml:43"
+"help:Product.parentProduct","Used for variants","","resources/domains/Product.xml:60"
+"help:PurchaseOrder.internalReference","Refers to an internal document like a SO, PO, Stock Picking reference...","","resources/domains/PurchaseOrder.xml:29"
+"help:PurchaseOrderLine.estimatedDelivDate","Estimated by supplier","","resources/domains/PurchaseOrderLine.xml:37"
+"help:PurchaseOrderSupplierLine.estimatedDelivDate","Estimated by supplier","","resources/domains/PurchaseOrderSupplierLine.xml:18"
+"help:SalesOrderScheduleLine.nbOfDay","If invoicing based on Nbr. of days","","resources/domains/SalesOrderScheduleLine.xml:16"
+"help:SalesOrderScheduleLine.salesOrderLine","If invoicing based on task(s).","","resources/domains/SalesOrderScheduleLine.xml:14"
+"help:SnSearchResult.companyName","Name of Company","","resources/domains/SnSearchResult.xml:19"
+"help:SnSearchResult.firstName","First Name of Person","","resources/domains/SnSearchResult.xml:15"
+"help:SnSearchResult.lastName","Last Name of Person","","resources/domains/SnSearchResult.xml:16"
+"help:SnSearchResult.link","Profile Link","","resources/domains/SnSearchResult.xml:18"
+"help:SnSearchResult.locale","Locale","","resources/domains/SnSearchResult.xml:21"
+"help:SnSearchResult.location","Location","","resources/domains/SnSearchResult.xml:20"
+"help:SnSearchResult.userName","User Name","","resources/domains/SnSearchResult.xml:14"
+"help:SnSearchResult.userRef","Facebook Generated Unique User's ID","","resources/domains/SnSearchResult.xml:13"
+"help:SocialNet.name","Name of Social Networking","","resources/domains/SocialNet.xml:16"
+"help:SocialNet.website","Website for Social Networking","","resources/domains/SocialNet.xml:17"
+"help:Task.isLeaveRequest","Is used as a leave request reason","","resources/domains/Task.xml:34"
+"help:TemplateFile.googleFile","Google File as Template","","resources/domains/TemplateFile.xml:8"
+"help:TemplateSpreadSheet.creatorUser","Creator of Template","","resources/domains/TemplateSpreadSheet.xml:9"
+"help:TemplateSpreadSheet.criteria","Criteria to Export SpreadSheet","","resources/domains/TemplateSpreadSheet.xml:12"
+"help:TemplateSpreadSheet.templateModel","Model","","resources/domains/TemplateSpreadSheet.xml:10"
+"help:TemplateSpreadSheet.templateName","Template Spreadsheet Name","","resources/domains/TemplateSpreadSheet.xml:8"
+"help:UserProfile.permissionId","Google Account Id/Permission Id to share File","","resources/domains/UserProfile.xml:11"
 "month","","","resources/views/Scheduler.xml:47"
 "or Available from","","","resources/domains/Candidate.xml:33"
 "tiers","","","resources/domains/BankDetails.xml:11"

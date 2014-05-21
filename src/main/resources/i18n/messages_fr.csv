@@ -20,7 +20,7 @@ resources/views/Selects.xml:218"
 resources/views/Selects.xml:10
 resources/views/Selects.xml:19
 resources/views/Selects.xml:33"
-"0 --> infinite","","","resources/views/TrackingNumberConfiguration.xml:34
+"0 --> infinite","0 --> infini","","resources/views/TrackingNumberConfiguration.xml:34
 resources/views/TrackingNumberConfiguration.xml:45
 resources/views/TrackingNumberConfiguration.xml:26"
 "00","00","","resources/views/Selects.xml:552
@@ -218,6 +218,7 @@ resources/views/Selects.xml:42"
 "Academic background/Trainings","Formations académiques et professionnelles suivies","","resources/domains/Candidate.xml:53"
 "Access Token","Clé d'accès","","resources/domains/AppsCredentials.xml:10
 resources/domains/GoogleAppsConfig.xml:15"
+"Accordance","","","resources/domains/StockMoveLine.xml:31"
 "Account","Compte comptable","","resources/domains/TaxAccount.xml:12
 resources/domains/MoveLineReport.xml:15
 resources/domains/MoveLine.xml:11"
@@ -225,13 +226,13 @@ resources/domains/MoveLine.xml:11"
 "Account Number","N° de compte","","resources/domains/BankDetails.xml:18"
 "Account Type","Type","","resources/domains/Account.xml:14"
 "Account category","Catégorie de compte","","resources/domains/AccountCategoryLine.xml:10"
-"Account clearance","Apurement","","resources/domains/MoveLine.xml:44"
+"Account clearance","Apurement des comptes","","resources/domains/MoveLine.xml:44"
 "Account clearance date","Date de l'apurement des trop-perçu","","resources/domains/AccountClearance.xml:11"
 "Account clearance journal","Journal Apurages","","resources/domains/AccountConfig.xml:23"
 "Account config","Config. Comptes","","resources/domains/Company.xml:22"
-"Account configuration","Config. Comptes","","resources/views/Company.xml:30
+"Account configuration","Configuration comptable","","resources/views/Company.xml:30
 resources/domains/ReminderConfigLine.xml:13"
-"Account equivalences","","","resources/domains/FiscalPosition.xml:14"
+"Account equivalences","Equivalences de compte","","resources/domains/FiscalPosition.xml:14"
 "Account management Line","Paramétrage de compte comptable","","resources/domains/AnalyticAccountManagement.xml:11"
 "Accounted","Pris en compte","","resources/domains/LeaveRequest.xml:29"
 "Accounting","Comptabilité","","resources/views/General.xml:30
@@ -243,16 +244,16 @@ resources/views/Product.xml:92"
 "Accounting export","Export comptable","","resources/views/Selects.xml:384"
 "Accounting message","Message pour comptabilité","","resources/domains/General.xml:25"
 "Accounting reports","Rapports comptables","","resources/views/Selects.xml:374"
-"Accounting situation","Situation comptable","","resources/domains/Partner.xml:56
+"Accounting situation","Situations comptables","","resources/domains/Partner.xml:56
 resources/domains/Reminder.xml:10"
 "Accounting situations","Situations comptables","","resources/views/Batch.xml:30
 resources/views/Batch.xml:99"
-"Accounts","Tiers","","resources/views/menu.xml:39
-resources/views/menu.xml:642
+"Accounts","Tiers","","resources/views/menu.xml:647
+resources/views/menu.xml:39
 resources/views/menu.xml:42"
-"Accounts Configurations","","","resources/domains/ProductFamily.xml:11"
+"Accounts Configurations","Configuration comptes","","resources/domains/ProductFamily.xml:11"
 "Accounts by paymentMode","Paramétrages comptes comptables","","resources/domains/PaymentMode.xml:13"
-"Accounts configuration","","","resources/domains/Product.xml:43"
+"Accounts configuration","Configuration comptes","","resources/domains/Product.xml:43"
 "Accreditation","Habilitation","","resources/domains/PersonalInfo.xml:14"
 "Action","Action","","resources/views/Resource.xml:37
 resources/domains/BaseBatch.xml:12
@@ -272,15 +273,15 @@ resources/views/Routing.xml:23"
 "Active ?","Actif ?","","resources/domains/Routing.xml:13
 resources/domains/AlarmEngine.xml:15"
 "Active Team","Equipe active","","resources/domains/UserInfo.xml:20"
-"Active bank details","","","resources/domains/Rum.xml:20"
+"Active bank details","Détail banque active","","resources/domains/Rum.xml:20"
 "Active company","Société active","","resources/domains/UserInfo.xml:13"
 "Active?","Active ?","","resources/domains/PriceList.xml:13"
 "Activities","Activités","","resources/views/Partner.xml:275
 resources/views/Partner.xml:139"
 "Add Move line N° in the description","Ajouter le n° pièce dans la description","","resources/domains/Journal.xml:18"
 "Additionnal","Ajout","","resources/views/Selects.xml:508"
-"Additionnal information","Informations Complémentaires","","resources/domains/Employee.xml:29"
-"Additionnal informations","","","resources/domains/Candidate.xml:67"
+"Additionnal information","Informations Personnelles","","resources/domains/Employee.xml:29"
+"Additionnal informations","Informations additionnelles","","resources/domains/Candidate.xml:67"
 "Address","Adresse","","resources/domains/Site.xml:12
 resources/domains/PickListEntry.xml:21
 resources/domains/MissionOrder.xml:17
@@ -296,6 +297,9 @@ resources/domains/Lead.xml:32
 resources/domains/Invoice.xml:24
 resources/domains/Lead.xml:25
 resources/domains/PickListEntry.xml:19"
+"Address Block","","","resources/domains/Message.xml:23
+resources/views/Template.xml:29
+resources/domains/Template.xml:18"
 "Address certified by QAS engine","Adresse certifiée par moteur QAS","","resources/domains/Address.xml:22"
 "Address details","Détails adresse","","resources/views/Address.xml:18"
 "Address list","Liste d'adresses","","resources/views/Address.xml:6"
@@ -308,7 +312,7 @@ resources/views/menu.xml:74"
 resources/domains/Company.xml:16"
 "Administrative ?","Administratif ?","","resources/domains/Project.xml:59"
 "Adresse du débiteur","","","resources/domains/Rum.xml:12"
-"Advance","Avance / tps prévu","","resources/domains/Task.xml:20"
+"Advance","Avance","","resources/domains/Task.xml:20"
 "Advance move line","Ligne d'acompte","","resources/domains/PaymentScheduleLine.xml:20"
 "Advance payment date","Date d'avance","","resources/domains/Advance.xml:10"
 "Advance/Payment move","Ecriture d'acompte / de paiement","","resources/domains/PaymentScheduleLine.xml:24"
@@ -324,48 +328,48 @@ resources/views/Alarm.xml:46"
 "Alarm Engine","Moteur d'alarmes","","resources/domains/AlarmEngineBatch.xml:13"
 "Alarm Message","Message de l'alarme","","resources/views/AlarmMessage.xml:12"
 "Alarm Messages","Les messages de l'alarme","","resources/views/AlarmMessage.xml:6"
-"Alarm batches","Batchs d'Alarme","","resources/views/menu.xml:245
-resources/views/menu.xml:242"
+"Alarm batches","Batchs d'Alarme","","resources/views/menu.xml:613
+resources/views/menu.xml:610"
 "Alarm engine","Moteur d'alarme","","resources/views/AlarmEngine.xml:26
 resources/views/AlarmEngineBatch.xml:12
 resources/domains/Alarm.xml:11"
 "Alarm engine batch","Batch du moteur d'alarme","","resources/domains/Batch.xml:13"
 "Alarm engine batches","Routine Moteur d'alarme","","resources/views/AlarmEngineBatch.xml:6"
-"Alarm engines","Le Moteur d'Alarme","","resources/views/menu.xml:227
-resources/views/menu.xml:224
+"Alarm engines","Le Moteur d'Alarme","","resources/views/menu.xml:592
+resources/views/menu.xml:595
 resources/views/AlarmEngine.xml:14"
-"Alarmes","Alarmes","","resources/views/menu.xml:209"
+"Alarmes","Alarmes","","resources/views/menu.xml:577"
 "Alarms","Alarmes","","resources/views/Alarm.xml:6"
-"Algorithm hashing type to calculate footprint","","","resources/domains/PayboxConfig.xml:18"
-"All Alarms","Les Alarmes","","resources/views/menu.xml:215
-resources/views/menu.xml:212"
+"Algorithm hashing type to calculate footprint","Algorithme de hashage pour le calcul de pied de page","","resources/domains/PayboxConfig.xml:18"
+"All Alarms","Les Alarmes","","resources/views/menu.xml:583
+resources/views/menu.xml:580"
 "All Clients","Clients","","resources/views/Partner.xml:453"
-"All Emails","Emails","","resources/views/menu.xml:261
-resources/views/menu.xml:258"
+"All Emails","Emails","","resources/views/menu.xml:218
+resources/views/menu.xml:221"
 "All Enterprises","Entreprises","","resources/views/Partner.xml:444"
 "All Individuals","Particuliers","","resources/views/Partner.xml:447"
-"All Mails","Emails","","resources/views/menu.xml:273"
-"All Messages","Messages","","resources/views/menu.xml:236
-resources/views/menu.xml:233"
+"All Mails","Emails","","resources/views/menu.xml:233"
+"All Messages","Messages","","resources/views/menu.xml:604
+resources/views/menu.xml:601"
 "All Prospects","Prospects","","resources/views/Partner.xml:450"
-"All Status","Statuts","","resources/views/menu.xml:475
-resources/views/menu.xml:472"
+"All Status","Statuts","","resources/views/menu.xml:435
+resources/views/menu.xml:432"
 "All Suppliers","Fournisseurs","","resources/views/Partner.xml:456"
-"All batchs emails","Batch d'emails","","resources/views/menu.xml:255"
-"All batchs mails","Batch d'emails","","resources/views/menu.xml:270"
+"All batchs emails","Batch d'emails","","resources/views/menu.xml:215"
+"All batchs mails","Batch d'emails","","resources/views/menu.xml:230"
 "All friends","Amis","","resources/views/Selects.xml:497"
-"All mails","Tous les Courriers","","resources/views/menu.xml:276"
+"All mails","Tous les Courriers","","resources/views/menu.xml:236"
 "All qualified supplier","Fournisseurs qualifiés","","resources/views/Partner.xml:459"
 "All status","Les statuts","","resources/views/Status.xml:6"
 "Allocated amount","Montant affecté","","resources/domains/PaymentVoucher.xml:19"
-"Allow calls ?","","","resources/domains/Lead.xml:53"
-"Allow emails ?","","","resources/domains/Lead.xml:54"
-"Allow expenses input ?","","","resources/domains/Project.xml:56"
+"Allow calls ?","Accepter appels ?","","resources/domains/Lead.xml:53"
+"Allow emails ?","Accepter les emails ?","","resources/domains/Lead.xml:54"
+"Allow expenses input ?","Accepter les entrées des frais","","resources/domains/Project.xml:56"
 "Allow payments greater than due amount ?","Autoriser règlement supérieur aux montants dus ?","","resources/domains/Journal.xml:15"
 "Allowed Payment range","Seuil d'écart des règlements","","resources/domains/AccountConfig.xml:40"
-"Already imputed on timesheet","","","resources/domains/SpentTime.xml:11"
+"Already imputed on timesheet","Déjà imputé feuille de temps","","resources/domains/SpentTime.xml:11"
 "Already printed ?","Impression générée ?","","resources/domains/Invoice.xml:53"
-"Amount","Montant","","resources/views/Selects.xml:354
+"Amount","","","resources/views/Selects.xml:354
 resources/domains/FinancialInformationUpdate.xml:14
 resources/domains/PaymentSchedule.xml:21
 resources/domains/Bonus.xml:12
@@ -381,8 +385,8 @@ resources/domains/InvoiceLineTax.xml:13"
 "Amount Remaining to allocate","Montant restant à affecter","","resources/domains/PaymentVoucher.xml:18"
 "Amount Tax","Montant T.V.A.","","resources/domains/SalesOrderLineTax.xml:11
 resources/domains/InvoiceLineTax.xml:12"
-"Amount Tax in Acc. Currency","","","resources/domains/InvoiceLineTax.xml:15"
-"Amount Won","","","resources/domains/Target.xml:19
+"Amount Tax in Acc. Currency","Montant taxe en compte devise","","resources/domains/InvoiceLineTax.xml:15"
+"Amount Won","Montant gagné","","resources/domains/Target.xml:19
 resources/domains/TargetConfiguration.xml:16"
 "Amount already paid","Déjà payé","","resources/domains/PaymentInvoice.xml:14"
 "Amount charged","Montant imputé","","resources/domains/PaymentInvoiceToPay.xml:15"
@@ -390,7 +394,7 @@ resources/domains/TargetConfiguration.xml:16"
 "Amount in Currency","Montant en devise","","resources/domains/MoveLine.xml:34"
 "Amount invoiced","Montant facturé","","resources/domains/PurchaseOrderLine.xml:27
 resources/domains/SalesOrderLine.xml:35"
-"Amount paid","Montant réglé","","resources/domains/PaymentVoucher.xml:14
+"Amount paid","","","resources/domains/PaymentVoucher.xml:14
 resources/domains/Invoice.xml:100"
 "Amount paid A.T.I.","Montant payé (TTC)","","resources/domains/PaymentScheduleLine.xml:13"
 "Amount paid in currency","Montant réglé en devise","","resources/domains/PaymentVoucher.xml:37"
@@ -408,16 +412,16 @@ resources/domains/SalesOrderScheduleLine.xml:12"
 "Amount/%","Montant/%","","resources/domains/PriceListLine.xml:14"
 "Analytic Acc.","Compte analytique","","resources/domains/AnalyticAccountManagement.xml:13"
 "Analytic Axis","Axe analytique","","resources/domains/AnalyticAccount.xml:13"
-"Analytic account","Comptes analytiques","","resources/domains/MoveLine.xml:27"
+"Analytic account","Compte analytique","","resources/domains/MoveLine.xml:27"
 "Analytic accounts","Comptes analytiques","","resources/domains/AccountManagement.xml:17"
-"Analytic axis","","","resources/domains/Project.xml:78"
+"Analytic axis","","","resources/domains/Project.xml:81"
 "Anniversary date","Date d'anniversaire","","resources/views/Selects.xml:432"
 "Annually","Annuel","","resources/domains/Scheduler.xml:12
 resources/views/Scheduler.xml:50"
 "Anomalies","Anomalies","","resources/views/Batch.xml:25
 resources/views/Batch.xml:50"
 "Anomaly","Anomalie","","resources/domains/Batch.xml:24"
-"Answer Date","Date de réponse","","resources/domains/Project.xml:70"
+"Answer Date","Date de réponse","","resources/domains/Project.xml:73"
 "Apparel","Textile","","resources/views/Selects.xml:239"
 "Applicable dates","Dates d'application","","resources/views/CurrencyConversionLine.xml:22"
 "Application","Domaine d'applicabilité","","resources/domains/FinancialInformationUpdate.xml:16
@@ -446,17 +450,17 @@ resources/domains/Event.xml:29"
 "Associated Invoice lines","Lignes de Factures associées","","resources/domains/PurchaseOrderLine.xml:35"
 "Associated Profile","Produit profil associé","","resources/domains/Employee.xml:52"
 "Associated invoice lines","","","resources/domains/SalesOrderLine.xml:44"
-"Attach specification","Documents de spécifications","","resources/domains/Project.xml:69"
+"Attach specification","Documents de spécifications","","resources/domains/Project.xml:72"
 "Attendee","Nom","","resources/domains/EventAttendee.xml:16"
-"Attendees","Liste participants","","resources/domains/Event.xml:32"
+"Attendees","Participants","","resources/domains/Event.xml:32"
 "August","Aout","","resources/views/Selects.xml:293"
 "Authority Partner","Nom","","resources/domains/Territory.xml:15"
-"Authorized users to follow me","","","resources/domains/UserInfo.xml:28"
-"Auto sale tracking Nbr. order","","","resources/domains/TrackingNumberConfiguration.xml:19"
-"Auto select sale tracking Nbr. ?","","","resources/domains/TrackingNumberConfiguration.xml:18"
+"Authorized users to follow me","Utilisateurs autorisés à me suivre","","resources/domains/UserInfo.xml:28"
+"Auto sale tracking Nbr. order","Sélection automatique numéro de série ventes","","resources/domains/TrackingNumberConfiguration.xml:19"
+"Auto select sale tracking Nbr. ?","Sélection automatique numéro de série ventes","","resources/domains/TrackingNumberConfiguration.xml:18"
 "Auto. input.","","","resources/domains/PaymentVoucher.xml:26"
 "Availability date","Date de disponibilité","","resources/domains/Resource.xml:11"
-"Available qty","","","resources/domains/PurchaseOrderSupplierLine.xml:12"
+"Available qty","Quantité disponible","","resources/domains/PurchaseOrderSupplierLine.xml:12"
 "Available within","Disponible sous","","resources/domains/Candidate.xml:32"
 "Avancement date","Etat d'avancement","","resources/domains/RecruitmentProcessAdvancement.xml:10"
 "Aware competence","Connaissances","","resources/domains/Competence.xml:29"
@@ -467,10 +471,10 @@ resources/domains/Event.xml:29"
 "BBan Key","Clé RIB","","resources/domains/BankDetails.xml:19"
 "BIC (Bank Identifier)","BIC (Identifiant Banque)","","resources/domains/Bic.xml:10
 resources/domains/BankDetails.xml:14"
-"BOM","Nomenclature","","resources/views/GenerateProductVariantWizard.xml:14"
+"BOM","","","resources/views/GenerateProductVariantWizard.xml:14"
 "BOMs","Lignes de nomenclature","","resources/domains/BillOfMaterial.xml:18"
 "Back","Retour","","resources/views/General.xml:22"
-"Balance","Solde","","resources/domains/MoveLineReport.xml:34"
+"Balance","Balance","","resources/domains/MoveLineReport.xml:34"
 "Balance due remindable","Solde exigible (relançable)","","resources/domains/ReminderHistory.xml:18
 resources/domains/Reminder.xml:19"
 "Bank Code","Code Banque","","resources/domains/Bic.xml:11
@@ -487,23 +491,23 @@ resources/domains/Reimbursement.xml:16"
 resources/views/menu.xml:84
 resources/views/menu.xml:87
 resources/views/Company.xml:33"
-"Banking","","","resources/views/Selects.xml:218"
+"Banking","Banques","","resources/views/Selects.xml:218"
 "Base Batch","Traitement de masse module Base","","resources/views/BaseBatch.xml:16"
 "Base W.T.","Base H.T.","","resources/domains/PurchaseOrderLineTax.xml:10
 resources/domains/InvoiceLineTax.xml:11
 resources/domains/SalesOrderLineTax.xml:10"
 "Base W.T. in Acc. Currency.","","","resources/domains/InvoiceLineTax.xml:14"
 "Base batch","Traitements par lots Base","","resources/domains/Batch.xml:15"
-"Base batches","Traitements de masse module Base","","resources/views/menu.xml:603
-resources/views/menu.xml:606
-resources/views/BaseBatch.xml:6"
+"Base batches","Traitements de masse module Base","","resources/views/menu.xml:564
+resources/views/BaseBatch.xml:6
+resources/views/menu.xml:567"
 "Based on","Basé sur","","resources/domains/PriceList.xml:20"
 "Batch","Batch","","resources/views/Batch.xml:17"
-"Batch to re-export","","","resources/domains/AccountingBatch.xml:32"
+"Batch to re-export","Batch à ré-exporter","","resources/domains/AccountingBatch.xml:32"
 "Batches","Les batchs","","resources/domains/InvoiceBatch.xml:25
 resources/views/AlarmEngineBatch.xml:19
 resources/views/Batch.xml:6
-resources/views/menu.xml:600"
+resources/views/menu.xml:561"
 "Batchs","Traitements de masse associés","","resources/domains/Reimbursement.xml:23
 resources/domains/SalesOrder.xml:20
 resources/domains/AccountingSituation.xml:27
@@ -518,15 +522,16 @@ resources/domains/AlarmEngineBatch.xml:15
 resources/domains/CrmBatch.xml:17
 resources/domains/PaymentVoucher.xml:35
 resources/domains/BaseBatch.xml:17"
-"Bcc","Cci","","resources/domains/Message.xml:27
+"Bcc","Cci","","resources/domains/Message.xml:28
 resources/domains/Template.xml:15"
 "Belonging to a payment schedule","Sélectionnée dans un échéancier","","resources/domains/Invoice.xml:39"
 "Best case","Au mieux","","resources/domains/Opportunity.xml:16"
-"Beverage","","","resources/views/Selects.xml:230"
+"Beverage","Boissons","","resources/views/Selects.xml:230"
+"Bill of materials","","","resources/views/Product.xml:294"
 "Biotechnologies","Biotechnologies","","resources/views/Selects.xml:219"
 "Birt Template","Modèle BIRT","","resources/views/BirtTemplate.xml:12
 resources/domains/PrintingSettings.xml:13
-resources/domains/Template.xml:19"
+resources/domains/Template.xml:20"
 "Birt Template parameter","Paramètre template Birt","","resources/views/BirtTemplateParameter.xml:11"
 "Birt Template parameters","Paramètres modèles Birt","","resources/views/BirtTemplateParameter.xml:6"
 "Birt Templates","Modèles Birt","","resources/views/BirtTemplate.xml:6"
@@ -567,7 +572,7 @@ resources/domains/SalesOrderLine.xml:61"
 "Branch Name","Nom établissement bancaire","","resources/domains/Bic.xml:12"
 "Browser","Navigateur","","resources/domains/TrackerInfo.xml:15"
 "Burden (weight)","Poids","","resources/domains/PayerQualityConfigLine.xml:21"
-"Business","Projet","","resources/domains/Expense.xml:22
+"Business","Affaire","","resources/domains/Expense.xml:22
 resources/domains/ProductionOrder.xml:14
 resources/domains/SalesOrder.xml:13
 resources/domains/OvertimeLine.xml:11
@@ -579,12 +584,12 @@ resources/domains/Invoice.xml:29
 resources/domains/JobOffer.xml:11"
 "Business ?","Affaire ?","","resources/domains/Project.xml:19"
 "Buy","Acheter","","resources/views/Selects.xml:249"
-"Buyer","Acheteur","","resources/domains/PurchaseOrder.xml:19"
+"Buyer","","","resources/domains/PurchaseOrder.xml:19"
 "By","","","resources/domains/SnStatusComments.xml:19"
 "By delivery","Par livraison","","resources/views/Selects.xml:460"
 "CC Transaction N°","N° transaction CB","","resources/domains/PaymentVoucher.xml:28"
 "COG","COG","","resources/domains/Country.xml:13"
-"CRM Activities","","","resources/views/Partner.xml:438"
+"CRM Activities","Activités CRM","","resources/views/Partner.xml:438"
 "CSV File","Fichiers CSV","","resources/views/Selects.xml:280"
 "CV","CV","","resources/domains/Candidate.xml:28"
 "Calculated price/Qty","Prix calculé","","resources/domains/SupplierCatalog.xml:17"
@@ -616,19 +621,19 @@ resources/domains/Competence.xml:34
 resources/domains/Position.xml:9
 resources/domains/PersonalInfo.xml:10"
 "Candidate (job application)","Candidature associée","","resources/domains/Employee.xml:38"
-"Candidates","Candidats préssentis","","resources/domains/SalesOrderLine.xml:24"
+"Candidates","Candidats","","resources/domains/SalesOrderLine.xml:24"
 "Candidates other position proposals","Autres pistes","","resources/domains/Candidate.xml:70"
 "Canton","Canton","","resources/views/Canton.xml:12"
 "Canton Code","Code Canton","","resources/domains/Commune.xml:12"
-"Cantons","Cantons","","resources/views/Canton.xml:5
-resources/views/menu.xml:388
-resources/views/menu.xml:385"
+"Cantons","Cantons","","resources/views/menu.xml:348
+resources/views/menu.xml:345
+resources/views/Canton.xml:5"
 "Capacity / cycle","Capacité par cycle","","resources/domains/ProdResource.xml:16"
 "Cash Advances","Avances","","resources/domains/Employee.xml:41"
 "Cash Register","Caisse","","resources/domains/CashRegisterLine.xml:16"
 "Cash Register Amount","Solde de la caisse","","resources/domains/CashRegisterLine.xml:20"
 "Cash journal type","Type journal Encaissements","","resources/domains/AccountConfig.xml:30"
-"Cash register","Caisse active","","resources/domains/Move.xml:15
+"Cash register","Caisse","","resources/domains/Move.xml:15
 resources/domains/MoveLineReport.xml:21
 resources/domains/PaymentVoucher.xml:16
 resources/domains/UserInfo.xml:15"
@@ -649,12 +654,12 @@ resources/domains/Event.xml:21
 resources/domains/Employee.xml:22
 resources/domains/AccountCategoryLine.xml:12
 resources/domains/Candidate.xml:58"
-"Category sales turnover (Excl. Tax) per month","","","resources/views/Charts.xml:396
+"Category sales turnover (Excl. Tax) per month","CA par Catégorie (HT) par mois","","resources/views/Charts.xml:396
 resources/views/ProductCategory.xml:29"
-"Cc","Cci","","resources/domains/Message.xml:26
+"Cc","Cci","","resources/domains/Message.xml:27
 resources/domains/Template.xml:14"
 "Center","","","resources/domains/TrainingCenter.xml:10"
-"Cfonb configuration","Config. CFONB","","resources/domains/AccountConfig.xml:47"
+"Cfonb configuration","Configuration CFONB","","resources/domains/AccountConfig.xml:47"
 "Chart","Graphique","","resources/views/welcome.xml:14"
 "Check / Update rate","Vérifier / Màj le taux","","resources/views/CurrencyConversionLine.xml:44"
 "Check currency exhange rate","","","resources/views/CurrencyConversionLine.xml:82"
@@ -662,13 +667,13 @@ resources/domains/Template.xml:14"
 "Check query","Tester la requête","","resources/views/Querie.xml:18"
 "Check rate","Vérifier taux","","resources/views/CurrencyConversionLine.xml:14"
 "Chemistry","Chimie","","resources/views/Selects.xml:220"
-"Cheque","Chèque","","resources/domains/InterbankCodeLine.xml:17"
+"Cheque","","","resources/domains/InterbankCodeLine.xml:17"
 "Cheque reject","Rejet de chèque","","resources/views/Selects.xml:379"
 "Children sn status comments list","Commentaires sur le statut","","resources/domains/SnStatusComments.xml:18"
 "Choose","Choisir","","resources/views/Address.xml:44"
 "Cities-Communes","Les communes","","resources/views/Commune.xml:5"
-"Cities/Communes","Communes","","resources/views/menu.xml:348
-resources/views/menu.xml:345"
+"Cities/Communes","Communes","","resources/views/menu.xml:305
+resources/views/menu.xml:308"
 "City","Ville","","resources/domains/Lead.xml:26
 resources/domains/Lead.xml:33"
 "City-Commune","Ville-Commune","","resources/views/Commune.xml:9"
@@ -785,9 +790,9 @@ resources/views/PriceList.xml:34"
 "Commute Fee Refund %","% de prise en charge","","resources/domains/Employee.xml:47"
 "Companies","Sociétés","","resources/domains/Candidate.xml:74
 resources/views/Company.xml:6
-resources/views/menu.xml:415
+resources/views/menu.xml:375
 resources/domains/Employee.xml:34
-resources/views/menu.xml:418"
+resources/views/menu.xml:378"
 "Companies associated to","Sociétés","","resources/domains/Partner.xml:55"
 "Companies/Contacts","Tiers/Contacts","","resources/views/menu.xml:36"
 "Company","Société","","resources/domains/Blocking.xml:12
@@ -849,26 +854,26 @@ resources/domains/PrintingSettings.xml:11"
 "Competence type","Type de compétence","","resources/domains/Competence.xml:33"
 "Competences","Compétences","","resources/domains/Candidate.xml:73
 resources/domains/Employee.xml:35"
-"Competition","Niveau de Concurrence","","resources/domains/Project.xml:66"
+"Competition","Niveau de Concurrence","","resources/domains/Project.xml:69"
 "Complement","Complément","","resources/domains/PickListEntry.xml:11"
 "Complementary information","Informations complémentaires","","resources/views/Mail.xml:41"
 "Complete lines","Assistant de saisie des lignes","","resources/domains/Planning.xml:16
 resources/domains/Timesheet.xml:34"
-"Complexity","Complexité","","resources/domains/Project.xml:65"
+"Complexity","Complexité","","resources/domains/Project.xml:68"
 "Compute payers quality","Calculer les qualités payeurs","","resources/views/General.xml:38"
-"Configuration","Configuration","","resources/views/menu.xml:469
-resources/views/menu.xml:284
-resources/views/menu.xml:62
-resources/views/menu.xml:221
+"Configuration","Configuration","","resources/views/menu.xml:62
 resources/views/menu.xml:178
-resources/views/AlarmEngineBatch.xml:15"
+resources/views/menu.xml:429
+resources/views/AlarmEngineBatch.xml:15
+resources/views/menu.xml:589
+resources/views/menu.xml:244"
 "Confirmed","Confirmé","","resources/views/Selects.xml:453"
 "Conforme","","","resources/domains/ManufOrderSheetLine.xml:13"
 "Consolidate invoice movelines ?","Consolidation des écritures de factures ?","","resources/domains/General.xml:15"
-"Consultation Date","Date de consultation","","resources/domains/Project.xml:62"
+"Consultation Date","Date de consultation","","resources/domains/Project.xml:65"
 "Consumed products","Produits consommés","","resources/domains/OperationOrder.xml:30
 resources/domains/ManufOrder.xml:28"
-"Contact","Contact","","resources/views/Partner.xml:198
+"Contact","Coordonnées","","resources/views/Partner.xml:198
 resources/domains/SalesOrder.xml:24
 resources/views/Selects.xml:465
 resources/domains/EventAttendee.xml:13
@@ -892,18 +897,18 @@ resources/domains/Position.xml:28"
 "Contacts","Contacts","","resources/views/menu.xml:23
 resources/views/menu.xml:52
 resources/domains/MailingList.xml:13
-resources/views/menu.xml:643
 resources/views/menu.xml:55
+resources/views/menu.xml:648
 resources/views/Partner.xml:156
 resources/domains/Campaign.xml:20
 resources/views/Partner.xml:21
 resources/domains/Partner.xml:35"
 "Contacts Db","","","resources/views/menu.xml:26"
 "Contains","Contient","","resources/views/Selects.xml:479"
-"Content","Contenu","","resources/domains/SnSendMessage.xml:18
-resources/views/Template.xml:32
+"Content","","","resources/domains/SnSendMessage.xml:18
 resources/domains/Mail.xml:17
 resources/views/Mail.xml:29
+resources/views/Template.xml:35
 resources/domains/MailModel.xml:15
 resources/domains/SnStatusUpdates.xml:24
 resources/domains/Message.xml:12
@@ -918,7 +923,7 @@ resources/domains/Employee.xml:24"
 "Copy","Copier","","resources/views/General.xml:23
 resources/views/General.xml:11"
 "Copy primary address","Dupliquer 1ère adresse ?","","resources/domains/Lead.xml:37"
-"Cost","Dépenses","","resources/domains/Task.xml:44
+"Cost","Coût","","resources/domains/Task.xml:44
 resources/domains/Project.xml:38
 resources/domains/Project.xml:35
 resources/domains/FinancialInformationHistoryLine.xml:13
@@ -932,10 +937,10 @@ resources/domains/Product.xml:33
 resources/domains/BillOfMaterial.xml:22"
 "Cost type","","","resources/domains/ProdResource.xml:25"
 "Costs","Coûts","","resources/views/Product.xml:82"
-"Counter","","","resources/domains/TrackingNumber.xml:15"
+"Counter","Compteur","","resources/domains/TrackingNumber.xml:15"
 "Countries","Pays","","resources/views/Country.xml:5
-resources/views/menu.xml:378
-resources/views/menu.xml:375"
+resources/views/menu.xml:335
+resources/views/menu.xml:338"
 "Country","Pays","","resources/domains/Lead.xml:29
 resources/domains/TrainingCenter.xml:11
 resources/domains/Lead.xml:36
@@ -953,15 +958,15 @@ resources/domains/BankDetails.xml:20"
 "Country name","Nom Pays","","resources/domains/Country.xml:12"
 "Cover Letter","Lettre de Motivation","","resources/domains/Candidate.xml:29"
 "Create","Créer","","resources/domains/RoutingAction.xml:14
-resources/views/menu.xml:618"
-"Create Contact","Créer Contact","","resources/views/menu.xml:635
-resources/views/menu.xml:637"
+resources/views/menu.xml:623"
+"Create Contact","Créer Contact","","resources/views/menu.xml:640
+resources/views/menu.xml:642"
 "Create Expense","Créer une note de frais","","resources/views/MenuConsultant.xml:91"
-"Create Individual Partner","Créer Tiers Individuels","","resources/views/menu.xml:630
-resources/views/menu.xml:628"
+"Create Individual Partner","Créer Tiers Individuels","","resources/views/menu.xml:635
+resources/views/menu.xml:633"
 "Create Leave request","Créer une demande de congé","","resources/views/MenuConsultant.xml:113"
-"Create Partner","Créer Tiers","","resources/views/menu.xml:622
-resources/views/menu.xml:620"
+"Create Partner","Créer Tiers","","resources/views/menu.xml:625
+resources/views/menu.xml:627"
 "Create Timesheet","Créer une feuille de temps","","resources/views/MenuConsultant.xml:69"
 "Create call","Créer Appel","","resources/views/Partner.xml:221
 resources/views/Partner.xml:51
@@ -974,20 +979,20 @@ resources/views/Resource.xml:39"
 resources/views/Partner.xml:327
 resources/views/Partner.xml:224"
 "Create personalized offer","Construction d'une offre personnalisée","","resources/views/Selects.xml:420"
-"Create production order","Créer ordre production","","resources/views/Product.xml:277
+"Create production order","","","resources/views/Product.xml:286
 resources/views/Product.xml:120"
 "Create proposition","Créer Proposition","","resources/views/Resource.xml:40"
 "Create task","Créer Tâche","","resources/views/Partner.xml:53
 resources/views/Partner.xml:321
 resources/views/Partner.xml:223"
-"Created Nbr","","","resources/domains/TargetConfiguration.xml:17"
+"Created Nbr","Nombre crée","","resources/domains/TargetConfiguration.xml:17"
 "Created Nbr.","","","resources/domains/Target.xml:17
 resources/domains/Target.xml:20"
 "Created Won","","","resources/domains/TargetConfiguration.xml:18
 resources/domains/Target.xml:21
 resources/domains/Target.xml:18"
-"Created by","Créé par","","resources/views/BaseBatch.xml:28"
-"Created on","Créé le","","resources/views/BaseBatch.xml:27"
+"Created by","","","resources/views/BaseBatch.xml:28"
+"Created on","Créé par","","resources/views/BaseBatch.xml:27"
 "Creation","Création","","resources/views/RoutingActionCreate.xml:11
 resources/views/RoutingActionCreateLine.xml:11"
 "Creation Date","Date de création","","resources/domains/PaymentSchedule.xml:9
@@ -1005,12 +1010,12 @@ resources/views/RoutingActionCreate.xml:6"
 "Criteria","Critères/Conditions","","resources/domains/TemplateSpreadSheet.xml:12"
 "Criteria evaluated","Libellé","","resources/domains/EvaluationLine.xml:10"
 "Crm batch","Batch CRM","","resources/domains/Batch.xml:14"
-"Cumulate ?","","","resources/domains/Task.xml:67"
+"Cumulate ?","Cumuler ?","","resources/domains/Task.xml:67"
 "Cumulated invoiced %","","","resources/domains/SalesOrderScheduleLine.xml:15"
 "Cumulation","Qté cumulée","","resources/domains/EmployeeLeave.xml:13"
-"Currencies","Devises","","resources/views/menu.xml:490
+"Currencies","Devises","","resources/views/menu.xml:453
 resources/views/Currency.xml:6
-resources/views/menu.xml:493"
+resources/views/menu.xml:450"
 "Currency","Devise","","resources/domains/PurchaseOrder.xml:20
 resources/domains/Invoice.xml:45
 resources/domains/PaymentSchedule.xml:22
@@ -1033,10 +1038,10 @@ resources/domains/Overtime.xml:12"
 "Currency conversion lines","Lignes de conversion de devise","","resources/views/CurrencyConversionLine.xml:6"
 "Currency conversion table","Tableau de conversion des devises","","resources/domains/General.xml:20"
 "Current Function","Fonction actuelle","","resources/domains/Candidate.xml:16"
-"Current Products","Produits actuels","","resources/views/Product.xml:248"
-"Current Qty","","","resources/domains/InventoryLine.xml:12
+"Current Products","Produits actuels","","resources/views/Product.xml:257"
+"Current Qty","Quantité actuelle","","resources/domains/InventoryLine.xml:12
 resources/domains/LocationLine.xml:13"
-"Cust. Credit note Journal","","","resources/domains/AccountConfig.xml:17"
+"Cust. Credit note Journal","Journal note de crédit client","","resources/domains/AccountConfig.xml:17"
 "Customer","Client","","resources/domains/Event.xml:39
 resources/domains/IrrecoverableInvoiceLine.xml:10
 resources/domains/SalesOrder.xml:23
@@ -1053,7 +1058,7 @@ resources/domains/AccountingSituation.xml:14"
 "Customer invoice","Facture client","","resources/views/Selects.xml:366"
 "Customer reference","Réf. client","","resources/domains/SalesOrder.xml:15"
 "Customer virtual location","Emplacement Virt. Client","","resources/domains/SupplychainConfig.xml:15"
-"Customers","","","resources/views/Charts.xml:346
+"Customers","Clients","","resources/views/Charts.xml:346
 resources/views/Charts.xml:371"
 "Customers by Industry Sector","","","resources/views/Charts.xml:349"
 "Customers by country","Clients par pays","","resources/views/Portal.xml:51
@@ -1102,7 +1107,7 @@ resources/domains/PaymentCondition.xml:15"
 "Day of month","Tous les","","resources/domains/Scheduler.xml:29
 resources/domains/Scheduler.xml:33"
 "Day/Night","Jour/Nuit","","resources/domains/TimesheetLine.xml:23"
-"Deadline","Date limite réponse","","resources/domains/Project.xml:64"
+"Deadline","Date limite réponse","","resources/domains/Project.xml:67"
 "Debit","Débit","","resources/domains/MoveLine.xml:15"
 "Debit Nbr.","N° de prélèvement","","resources/domains/DirectDebitManagement.xml:9"
 "Debit Reconcile list","Lettrages au Débit","","resources/domains/MoveLine.xml:19"
@@ -1117,7 +1122,7 @@ resources/views/Selects.xml:186"
 "Debt recovery message","Message pour recouvrement","","resources/domains/General.xml:26"
 "December","Décembre","","resources/views/Selects.xml:297"
 "Decision Date","Date de prise de décision","","resources/domains/Candidate.xml:34"
-"Default ?","Par défaut ?","","resources/domains/Template.xml:21"
+"Default ?","Par défaut ?","","resources/domains/Template.xml:22"
 "Default BOM","Nomenclature par defaut","","resources/domains/Product.xml:66"
 "Default Bank Account","RIB par défaut","","resources/domains/Company.xml:28"
 "Default Machine","Machine","","resources/domains/ProdResource.xml:14"
@@ -1138,8 +1143,8 @@ resources/views/General.xml:21"
 "Delete menu entrie","Supprimer entrée menu","","resources/views/CalendarConfiguration.xml:18"
 "Delivery Address","Adresse de livraison","","resources/domains/Partner.xml:31"
 "Delivery Date","Date de livraison","","resources/domains/PurchaseOrder.xml:21"
-"Delivery address","Adresse de livraison","","resources/domains/SalesOrder.xml:27"
-"Delivery date","","","resources/domains/SalesOrderLine.xml:48"
+"Delivery address","Adresse livraison","","resources/domains/SalesOrder.xml:27"
+"Delivery date","Date de livraison","","resources/domains/SalesOrderLine.xml:48"
 "Delivery delay (day)","Délai livraison","","resources/domains/Partner.xml:33"
 "Delivery stock move","Mvt Stock Livraison","","resources/views/Selects.xml:390"
 "Dep./Div.","","","resources/domains/Partner.xml:50
@@ -1154,12 +1159,12 @@ resources/domains/Employee.xml:17"
 "Department Cantons List","Cantons du département","","resources/domains/Department.xml:15"
 "Department Communes List","Communes du département","","resources/domains/Department.xml:14"
 "Department Name","Nom département","","resources/domains/Department.xml:11"
-"Departments","Départements","","resources/views/menu.xml:358
-resources/views/menu.xml:355
-resources/views/CompanyDepartment.xml:6
-resources/views/Department.xml:6"
+"Departments","Départements","","resources/views/CompanyDepartment.xml:6
+resources/views/menu.xml:318
+resources/views/Department.xml:6
+resources/views/menu.xml:315"
 "Departure Date","Date de départ","","resources/domains/Employee.xml:16"
-"Departure cause","","","resources/domains/Position.xml:17"
+"Departure cause","Cause de départ","","resources/domains/Position.xml:17"
 "Deposited Amount","Dépot du jour","","resources/domains/CashRegisterLine.xml:19"
 "Description","Description","","resources/domains/AccountingBatch.xml:48
 resources/domains/Event.xml:27
@@ -1204,7 +1209,7 @@ resources/domains/PublicHolidaysLine.xml:13
 resources/domains/IndicatorGenerator.xml:9
 resources/domains/Opportunity.xml:22"
 "Desired delivery date","Date Livr. Souhaitée","","resources/domains/PurchaseOrderLine.xml:38"
-"Destinated to","Destiné à","","resources/views/Template.xml:24"
+"Destinated to","Destiné à","","resources/views/Template.xml:25"
 "Destination Currency","Devise arrivée","","resources/views/CurrencyConversionLine.xml:35
 resources/domains/CurrencyConversionLine.xml:13"
 "Detailed","Détaillé","","resources/domains/MoveLineReport.xml:29"
@@ -1216,7 +1221,7 @@ resources/views/Alarm.xml:28"
 "Diff consume manuf order","Ordre de production (diff conso)","","resources/domains/ProdProduct.xml:23"
 "Diff consume operation order","Opération (Différence conso.)","","resources/domains/ProdProduct.xml:19"
 "Difference","Différences","","resources/domains/ManufOrder.xml:29"
-"Differences","","","resources/domains/OperationOrder.xml:31"
+"Differences","Différence","","resources/domains/OperationOrder.xml:31"
 "Diploma","Diplôme","","resources/domains/Degree.xml:10"
 "Diploma/Degree","Diplôme","","resources/domains/TrainingLine.xml:11"
 "Direct Debit Blocking ?","Blocage Prélèvement","","resources/domains/Blocking.xml:16"
@@ -1229,7 +1234,7 @@ resources/views/Selects.xml:318"
 "Direct debit blocking","Blocage prélèvement","","resources/domains/Invoice.xml:63
 resources/views/Blocking.xml:23"
 "Direct debit list","Gestion de prélèvement","","resources/domains/Invoice.xml:75"
-"Direct debit management","Gestion de prélèvement","","resources/domains/PaymentScheduleLine.xml:22"
+"Direct debit management","Gestion des prélèvements","","resources/domains/PaymentScheduleLine.xml:22"
 "Direct debit operation code","Code Opér. Prélèvement","","resources/domains/CfonbConfig.xml:23"
 "Direct debit reject","Rejet des prélèvements","","resources/views/Selects.xml:373"
 "Direct debit/IPO/Electronic Payment Order (EPO) CFONB","Prélèvement/TIP/Télèrèglement","","resources/domains/InterbankCodeLine.xml:14"
@@ -1284,8 +1289,8 @@ resources/domains/Planning.xml:20"
 "Duration type","Type durée","","resources/domains/CrmBatch.xml:19
 resources/domains/EventReminder.xml:13"
 "E-mail","E-mail","","resources/domains/Candidate.xml:20"
-"EAN13 Code","","","resources/domains/Product.xml:12"
-"ERP Administration","Administration Axelor","","resources/views/menu.xml:329"
+"EAN13 Code","Code EAN13","","resources/domains/Product.xml:12"
+"ERP Administration","Administration Axelor","","resources/views/menu.xml:289"
 "Edit","Éditer","","resources/views/General.xml:8"
 "Edit receipt ?","Editer un reçu ?","","resources/domains/Journal.xml:16"
 "Editable","Editable","","resources/domains/FilePermission.xml:8"
@@ -1302,22 +1307,22 @@ resources/domains/Partner.xml:41
 resources/views/Selects.xml:421
 resources/views/Selects.xml:273"
 "Email Id","Identifiant Email","","resources/domains/UserProfile.xml:9"
-"Email address","Adresse(s) email","","resources/domains/Mail.xml:15"
+"Email address","Adresse Email","","resources/domains/Mail.xml:15"
 "Email and paper","Email et papier","","resources/views/Selects.xml:275"
 "Email model","Modèle de Mail","","resources/views/MailModel.xml:14"
 "Email model tag","Balise de modèle de Mail","","resources/views/MailModelTag.xml:10"
 "Email model tags","Balises de modèle de Mail","","resources/views/MailModelTag.xml:5"
-"Email models","Modèles d'email","","resources/views/menu.xml:287
-resources/views/menu.xml:290
-resources/views/MailModel.xml:5"
+"Email models","Modèles d'email","","resources/views/menu.xml:247
+resources/views/MailModel.xml:5
+resources/views/menu.xml:250"
 "Email sent ?","Email envoyé ?","","resources/domains/CashRegisterLine.xml:22"
 "Email to use","Email à utiliser","","resources/domains/PaymentVoucher.xml:31"
-"Email/Mail model tags","Balises de modèles de courrier","","resources/views/menu.xml:309"
+"Email/Mail model tags","Balises de modèles de courrier","","resources/views/menu.xml:269"
 "Emails models","Modèles d'Emails","","resources/views/MailModel.xml:31"
-"Emails/Mails","Emails / Courriers","","resources/views/menu.xml:253"
+"Emails/Mails","Emails / Courriers","","resources/views/menu.xml:213"
 "Emergency Contact","Personne à prévenir","","resources/domains/Employee.xml:36"
 "Emergency Contact Phone Nbr.","N° d'urgence","","resources/domains/Employee.xml:37"
-"Employee","Employés","","resources/domains/Position.xml:10
+"Employee","Employé","","resources/domains/Position.xml:10
 resources/domains/PaySheet.xml:9
 resources/domains/UserInfo.xml:18
 resources/domains/Timesheet.xml:10
@@ -1337,8 +1342,8 @@ resources/domains/EmployeeLeave.xml:9
 resources/domains/PersonalInfo.xml:11"
 "Employee Bonuses","Primes/Bonus","","resources/domains/Employee.xml:40"
 "Employee Daily Cost","Coût salarié / jour","","resources/domains/Employee.xml:20"
-"Employee leaves","Liste des congés","","resources/domains/Employee.xml:56"
-"Employees","Employés préssentis","","resources/domains/SalesOrderLine.xml:23"
+"Employee leaves","Congés / Absences","","resources/domains/Employee.xml:56"
+"Employees","Employés","","resources/domains/SalesOrderLine.xml:23"
 "Employer","","","resources/domains/Position.xml:15"
 "End Date","Date de fin","","resources/domains/InvoiceLineEvent.xml:14
 resources/domains/Event.xml:16
@@ -1352,9 +1357,9 @@ resources/domains/AccountingBatch.xml:45"
 "End of cycle","Fin de cycle","","resources/domains/Invoice.xml:25"
 "Ending duration (hh:mm)","Temps d'arrêt","","resources/domains/ProdResource.xml:21"
 "Ending record code","Code Enreg. fin","","resources/domains/CfonbConfig.xml:30"
-"Energy","","","resources/views/Selects.xml:226"
+"Energy","Energie","","resources/views/Selects.xml:226"
 "Enterprise Partner","Entreprise","","resources/domains/Site.xml:10"
-"Enterprise name","Entreprise","","resources/domains/Lead.xml:15"
+"Enterprise name","","","resources/domains/Lead.xml:15"
 "Entertainment","Divertissement","","resources/views/Selects.xml:227"
 "Entry Date","Date d'embauche","","resources/domains/Employee.xml:15"
 "Environment Url","URL Environnement","","resources/domains/PayboxConfig.xml:13"
@@ -1368,12 +1373,12 @@ resources/views/Charts.xml:135"
 "Estimated delivery date","Date Livr. Estimée","","resources/domains/SalesOrderLine.xml:38"
 "Estimated profitability","Rentabilité estimé","","resources/domains/Resource.xml:13"
 "Evaluation/Appraisal form","Grille d'évaluation","","resources/domains/Candidate.xml:61"
-"Event","Evènement","","resources/domains/Message.xml:38
+"Event","Evènement","","resources/domains/Message.xml:39
 resources/domains/EventAttendee.xml:10
 resources/domains/EventReminder.xml:10"
-"Event category","Catégorie d'évènement","","resources/domains/Campaign.xml:32"
+"Event category","","","resources/domains/Campaign.xml:32"
 "Event date","Date de l'évènement","","resources/domains/Campaign.xml:33"
-"Events","","","resources/views/Partner.xml:150"
+"Events","Événements","","resources/views/Partner.xml:150"
 "Every","Tous","","resources/views/Scheduler.xml:51
 resources/views/Scheduler.xml:28
 resources/views/Scheduler.xml:46
@@ -1389,11 +1394,11 @@ resources/views/IndicatorGeneratorGrouping.xml:16"
 "Expected close date","Date prévue clôture","","resources/domains/Opportunity.xml:13"
 "Expense","NDF","","resources/domains/ExpenseLine.xml:10
 resources/views/Selects.xml:256"
-"Expense lines","Ligne de frais","","resources/domains/Expense.xml:14"
-"Expenses","Notes de frais","","resources/views/Product.xml:266
+"Expense lines","Lignes de NDF","","resources/domains/Expense.xml:14"
+"Expenses","Notes de frais","","resources/views/Product.xml:275
 resources/views/MenuConsultant.xml:94"
 "Expenses list","Notes de frais","","resources/domains/Employee.xml:45"
-"Experience","","","resources/domains/JobOffer.xml:28"
+"Experience","Expérience","","resources/domains/JobOffer.xml:28"
 "Experience type","Type d'expérience","","resources/domains/Training.xml:10"
 "Expert competence","Expertises","","resources/domains/Competence.xml:27"
 "Expert skill set","Expertises","","resources/domains/Competence.xml:40"
@@ -1403,7 +1408,7 @@ resources/views/MenuConsultant.xml:94"
 "Export Date","Date Export","","resources/domains/Move.xml:22
 resources/domains/AddressExport.xml:10"
 "Export Type","Format export","","resources/domains/Task.xml:70
-resources/domains/Project.xml:72"
+resources/domains/Project.xml:75"
 "Export addresses","Exporter les adresses","","resources/views/AddressExport.xml:6"
 "Export code","Code d'export","","resources/domains/Journal.xml:14"
 "Export comptable","","","resources/views/Batch.xml:32"
@@ -1444,8 +1449,8 @@ resources/domains/RoutingActionCreateLine.xml:12"
 "File Size","Taille fichier","","resources/domains/GoogleFile.xml:12"
 "File Type","Type fichier","","resources/domains/GoogleFile.xml:11"
 "File content","Contenu du fichier","","resources/domains/GoogleFile.xml:14"
-"File path","Chemin vers fichier","","resources/domains/Template.xml:22
-resources/domains/Message.xml:19"
+"File path","Chemin vers fichier","","resources/domains/Message.xml:19
+resources/domains/Template.xml:23"
 "File permissions list","Liste des permissions","","resources/domains/GoogleFile.xml:25"
 "File received","Fichier reçu","","resources/domains/ExpenseLine.xml:22"
 "Filepath for direct debit exports (CFONB)","Dossier","","resources/domains/AccountConfig.xml:73"
@@ -1457,19 +1462,19 @@ resources/domains/Message.xml:19"
 "Filepath to import IPO, and IPO and Cheque payments","Chemin d'import des paiements par TIP et TIP Chèque","","resources/domains/AccountConfig.xml:95"
 "Filepath to import IPO, and IPO and Cheque payments rejects","Chemin d'import des rejets de paiement par TIP et TIP Chèque","","resources/domains/AccountConfig.xml:98"
 "Filepath to import rejected records","Chemin du fichier d'import","","resources/domains/AccountConfig.xml:79"
-"Filter","Filtre","","resources/domains/FilterList.xml:11
+"Filter","Filtrer","","resources/domains/FilterList.xml:11
 resources/domains/Campaign.xml:39"
 "Filter code","Code filtre","","resources/domains/FilterList.xml:12"
 "Filters","Filtres","","resources/views/Routing.xml:20"
 "Finance","Finance","","resources/views/Selects.xml:229"
 "Financial information history","Historique des infos. financières","","resources/domains/Task.xml:53"
-"Financial information updates","MàJ Information Financières","","resources/domains/Task.xml:55"
+"Financial information updates","MàJ Infos. Financières","","resources/domains/Task.xml:55"
 "First Name","Prénom","","resources/domains/Employee.xml:12
 resources/domains/Partner.xml:18
 resources/domains/Candidate.xml:15"
 "First day of week","1er jour de la semaine","","resources/domains/TimesheetPeriodConfig.xml:11"
 "First execution date","Date 1ère exécution","","resources/domains/SchedulerInstance.xml:12"
-"First name","Prénom","","resources/views/Partner.xml:244
+"First name","","","resources/views/Partner.xml:244
 resources/domains/SnSearchResult.xml:15
 resources/views/Partner.xml:74
 resources/domains/Lead.xml:14"
@@ -1488,7 +1493,7 @@ resources/domains/MoveLineReport.xml:22"
 "Folder path containing files to import","Chemin vers le dossier contenant les fichiers","","resources/domains/Import.xml:10"
 "Follow ?","Campagne suivie ?","","resources/domains/Campaign.xml:31"
 "Followed by","Titulaire","","resources/domains/Candidate.xml:37"
-"Followers users","","","resources/domains/UserInfo.xml:27"
+"Followers users","Utilisateurs suiveurs","","resources/domains/UserInfo.xml:27"
 "Food","","","resources/views/Selects.xml:230"
 "Forecasted Sent Date","Date d'envoi prévue","","resources/domains/Mail.xml:18"
 "Format","Format d'export","","resources/domains/BirtTemplate.xml:12"
@@ -1510,7 +1515,7 @@ resources/domains/Year.xml:12
 resources/domains/MoveLineReport.xml:9
 resources/domains/Employee.xml:43"
 "From Account","Compte à remplacer","","resources/domains/AccountEquiv.xml:11"
-"From Date","De","","resources/domains/CurrencyConversionLine.xml:15
+"From Date","","","resources/domains/CurrencyConversionLine.xml:15
 resources/domains/Timesheet.xml:35
 resources/domains/Timesheet.xml:11
 resources/domains/Planning.xml:17
@@ -1533,13 +1538,13 @@ resources/domains/Employee.xml:14"
 "Future Qty","","","resources/domains/LocationLine.xml:14"
 "Gender","Sexe","","resources/domains/SnSearchResult.xml:17
 resources/domains/SnProfile.xml:31"
-"General","Général","","resources/views/menu.xml:456
+"General","Général","","resources/views/menu.xml:416
 resources/views/CurrencyConversionLine.xml:36"
 "General Accounts","Compte","","resources/domains/AccountCategory.xml:13"
-"General admin","Administration Générale","","resources/views/menu.xml:462
-resources/views/menu.xml:459
-resources/views/General.xml:18
-resources/views/General.xml:6"
+"General admin","Administration Générale","","resources/views/General.xml:18
+resources/views/menu.xml:422
+resources/views/General.xml:6
+resources/views/menu.xml:419"
 "General discount (%)","Remise systématique (%)","","resources/domains/PriceList.xml:17"
 "Generate","","","resources/views/GenerateProductVariantWizard.xml:15"
 "Generate inc. moves for non storable products ?","","","resources/domains/SupplychainConfig.xml:22"
@@ -1551,7 +1556,7 @@ resources/views/General.xml:6"
 "Generate out. moves for non storable products ?","","","resources/domains/SupplychainConfig.xml:20"
 "Generate out. moves for storable products ?","","","resources/domains/SupplychainConfig.xml:19"
 "Generate product variant wizard","","","resources/views/GenerateProductVariantWizard.xml:8"
-"Generate product variants","","","resources/views/Product.xml:138"
+"Generate product variants","Générer variantes produits","","resources/views/Product.xml:139"
 "Generated PDF file path","Chemin du document pdf généré","","resources/domains/Mail.xml:25"
 "Generated email files name prefix","Chemin d'export des emails générés","","resources/domains/Company.xml:35"
 "Generated file path","Chemin dossier de génération","","resources/domains/BirtTemplate.xml:13"
@@ -1563,7 +1568,7 @@ resources/views/General.xml:6"
 "Geographical area","Zone géographique","","resources/domains/Site.xml:14
 resources/views/GeographicalArea.xml:11
 resources/views/GeographicalArea.xml:7"
-"Geographical mobility","Mobilité","","resources/domains/PersonalInfo.xml:18"
+"Geographical mobility","Mobilité Géographique","","resources/domains/PersonalInfo.xml:18"
 "Get Files Modified Within","Fichiers modifiés dans","","resources/domains/GoogleAppsSyncSettings.xml:8"
 "Get Files Shared With Me","Récupérer les fichiers partagés avec moi","","resources/domains/GoogleAppsSyncSettings.xml:9"
 "Get directions","Voir l'itinéraire","","resources/views/Address.xml:36"
@@ -1598,8 +1603,8 @@ resources/views/GeographicalArea.xml:7"
 "Hour of generation","Heure de génération","","resources/domains/TimesheetPeriodConfig.xml:15"
 "Human resources","Ressources humaines","","resources/domains/ProdResource.xml:28
 resources/domains/OperationOrder.xml:27"
-"IBAN","IBAN","","resources/domains/BankDetails.xml:15"
-"IBAN + BIC","IBAN + BIC","","resources/domains/BankDetails.xml:21"
+"IBAN","","","resources/domains/BankDetails.xml:15"
+"IBAN + BIC","","","resources/domains/BankDetails.xml:21"
 "INSEE Code","Code INSEE","","resources/domains/PickListEntry.xml:16"
 "IPO and Cheque operation code","Code Opér. TIP + Chèque","","resources/domains/CfonbConfig.xml:36"
 "IPO operation code","Code Opér. TIP","","resources/domains/CfonbConfig.xml:35"
@@ -1695,13 +1700,13 @@ resources/domains/PaymentMode.xml:10"
 "Import identifier","Id Import","","resources/domains/Commune.xml:15"
 "Import permission","Permission Import","","resources/views/ImportPermission.xml:6
 resources/views/ImportPermission.xml:15"
-"Import permissions","Importer permissions","","resources/views/menu.xml:427
-resources/views/menu.xml:424"
+"Import permissions","Importer permissions","","resources/views/menu.xml:387
+resources/views/menu.xml:384"
 "Import type","Type de fichier source","","resources/domains/Import.xml:8"
 "Importer","Importer","","resources/views/ImportAddress.xml:13
 resources/views/ImportPermission.xml:12"
-"Imports","Imports","","resources/views/menu.xml:570
-resources/views/menu.xml:573"
+"Imports","Imports","","resources/views/menu.xml:533
+resources/views/menu.xml:530"
 "In %","En %","","resources/views/Selects.xml:513"
 "In % / fixed","Type remise","","resources/domains/PurchaseOrderLine.xml:23
 resources/domains/SalesOrderSubLine.xml:24
@@ -1717,10 +1722,10 @@ resources/domains/SalesOrderLine.xml:31"
 "Indicator generators","Générateurs d'indicateurs","","resources/views/IndicatorGenerator.xml:6"
 "Indicators generators","Générateurs d'indicateurs","","resources/views/IndicatorGeneratorGrouping.xml:12
 resources/views/IndicatorGeneratorGrouping.xml:6
-resources/views/menu.xml:590
-resources/views/menu.xml:593"
-"Indicators groups","Groupements d'indicateurs","","resources/views/menu.xml:581
-resources/views/menu.xml:584"
+resources/views/menu.xml:553
+resources/views/menu.xml:550"
+"Indicators groups","Groupements d'indicateurs","","resources/views/menu.xml:544
+resources/views/menu.xml:541"
 "Individual","Individu","","resources/views/Selects.xml:208
 resources/views/Selects.xml:182"
 "Industry","Secteur d'Activité","","resources/domains/Partner.xml:79"
@@ -1730,7 +1735,7 @@ resources/views/Charts.xml:493"
 "Informations","Informations","","resources/views/Partner.xml:84
 resources/views/Mail.xml:20
 resources/views/Partner.xml:188"
-"Initial purchase order","","","resources/domains/PurchaseOrder.xml:51"
+"Initial purchase order","DA initiale","","resources/domains/PurchaseOrder.xml:51"
 "Input Date","Date de saisie","","resources/domains/MoveLine.xml:12"
 "Input from timesheet ?","Imputable feuille de temps ?","","resources/domains/Task.xml:23"
 "Insurance","","","resources/views/Selects.xml:218"
@@ -1749,7 +1754,7 @@ resources/domains/Competence.xml:9"
 "Inventory","Inventaires","","resources/domains/InventoryLine.xml:10
 resources/views/Selects.xml:392"
 "Inventory N°","","","resources/domains/Inventory.xml:10"
-"Inventory lines","Contenu de l'inventaire","","resources/domains/Inventory.xml:15"
+"Inventory lines","Lignes d'inventaire","","resources/domains/Inventory.xml:15"
 "Inventory virtual location","Emplacement Virt. Inventaire","","resources/domains/SupplychainConfig.xml:17"
 "Invoice","Facture","","resources/domains/StockMove.xml:38
 resources/domains/InvoiceLine.xml:8
@@ -1768,7 +1773,7 @@ resources/domains/PurchaseOrder.xml:26"
 "Invoice Direct Debit Journal","Journal Prélèvements","","resources/domains/AccountConfig.xml:20"
 "Invoice Lines","Lignes de facture","","resources/domains/Invoice.xml:49"
 "Invoice N°","N° de facture","","resources/domains/Invoice.xml:13"
-"Invoice batch","Batch des factures","","resources/domains/Batch.xml:11"
+"Invoice batch","Batch de facturation","","resources/domains/Batch.xml:11"
 "Invoice concerned by the reminder","Factures concernées à relancer","","resources/domains/Reminder.xml:21"
 "Invoice controlled","","","resources/domains/SalesOrderLine.xml:51"
 "Invoice final status","Statut final à obtenir","","resources/domains/InvoiceBatch.xml:17"
@@ -1797,7 +1802,7 @@ resources/views/Batch.xml:26"
 "Invoicing Date","Date de la facturation","","resources/domains/SalesOrderLine.xml:27
 resources/domains/Task.xml:28"
 "Invoicing Management","Gestionnaire facturation","","resources/views/AlarmEngine.xml:8"
-"Invoicing address","Adresse de facturation","","resources/domains/SalesOrder.xml:25"
+"Invoicing address","Adresse facturation","","resources/domains/SalesOrder.xml:25"
 "Invoicing blocking","Blocage facturation","","resources/views/Blocking.xml:18"
 "Invoicing message","Message pour facturation","","resources/domains/General.xml:24"
 "Invoicing trigger","Déclenchement échéance facturation","","resources/domains/SalesOrder.xml:54"
@@ -1845,9 +1850,9 @@ resources/views/Keyword.xml:11"
 "Keyword sector","Mots clés secteurs","","resources/domains/Training.xml:26"
 "Keyword tool","Mots clés outils","","resources/domains/Training.xml:25"
 "Keywords","Mots clés","","resources/views/Keyword.xml:6
-resources/views/menu.xml:542
-resources/views/Site.xml:21
-resources/views/menu.xml:539"
+resources/views/menu.xml:499
+resources/views/menu.xml:502
+resources/views/Site.xml:21"
 "Ko","KO","","resources/views/Resource.xml:43"
 "LCR/BOR","LCR/BOR","","resources/domains/InterbankCodeLine.xml:16"
 "LIFO","LIFO","","resources/views/Selects.xml:491"
@@ -1899,7 +1904,7 @@ resources/domains/ReminderHistory.xml:13"
 "Latitude","Latitude","","resources/domains/Address.xml:18"
 "Launch","Importer","","resources/views/Import.xml:24"
 "Le","Le","","resources/views/Scheduler.xml:54"
-"Lead","Piste","","resources/domains/Event.xml:41
+"Lead","","","resources/domains/Event.xml:41
 resources/domains/TrackerInfo.xml:11
 resources/domains/EmailAddress.xml:12
 resources/domains/SnProfile.xml:18
@@ -1908,12 +1913,12 @@ resources/domains/EventAttendee.xml:14"
 "Leads","Pistes","","resources/domains/MailingList.xml:14
 resources/domains/Campaign.xml:21"
 "Leave balances","Solde congés","","resources/domains/EmployeeLeave.xml:11"
-"Leave request","Demande de congé","","resources/views/MenuConsultant.xml:116"
+"Leave request","Demande de congé(s)","","resources/views/MenuConsultant.xml:116"
 "Leave request ?","Associée à une demande congé ?","","resources/domains/Task.xml:34"
 "Leave request calendar","Calendrier des demandes de congé","","resources/views/MenuConsultant.xml:124"
 "Leave request in progress","Demandes en cours","","resources/domains/EmployeeLeave.xml:12"
 "Legal form","Forme juridique","","resources/views/Selects.xml:330"
-"Les balises de modèles de courrier","Les balises de modèles de courrier","","resources/views/menu.xml:312"
+"Les balises de modèles de courrier","Les balises de modèles de courrier","","resources/views/menu.xml:272"
 "Les lignes de plannification","Lignes de planification","","resources/domains/Planning.xml:14"
 "Level","Niveau","","resources/domains/ReminderMethodLine.xml:11
 resources/domains/ReminderLevel.xml:11"
@@ -1929,6 +1934,7 @@ resources/domains/SnSearchResult.xml:18"
 "LinkedIn profile link","Lien profil LinkedIn","","resources/domains/SnProfile.xml:22"
 "Linkedin","LinkedIn","","resources/domains/SnStatusUpdates.xml:19"
 "Linkedin update ref","","","resources/domains/SnStatusUpdates.xml:21"
+"Links","","","resources/views/Product.xml:152"
 "List of invoices to pay","Liste des factures à régler","","resources/domains/PaymentVoucher.xml:21"
 "List of invoices/schedule lines with remaining amount to pay","Liste des factures/échéances non soldées","","resources/domains/PaymentVoucher.xml:20"
 "Liste des RUM","","","resources/domains/Partner.xml:88"
@@ -1936,7 +1942,7 @@ resources/domains/SnSearchResult.xml:18"
 "Locale","","","resources/domains/SnSearchResult.xml:21
 resources/domains/SnProfile.xml:33"
 "Locate","Localiser","","resources/views/Address.xml:8"
-"Location","Emplacement","","resources/domains/SnProfile.xml:25
+"Location","","","resources/domains/SnProfile.xml:25
 resources/domains/Inventory.xml:11
 resources/domains/LocationLine.xml:10
 resources/domains/SnProfile.xml:26
@@ -1972,16 +1978,16 @@ resources/domains/MailAccount.xml:12"
 "Machines","Machines","","resources/domains/ProdResource.xml:30"
 "Macro Category","Macro-Catégorie","","resources/domains/Candidate.xml:57"
 "Macro-Category","Macro-Catégorie","","resources/domains/Employee.xml:21"
-"Mail","Mail","","resources/views/Mail.xml:19
+"Mail","","","resources/views/Mail.xml:19
 resources/views/Selects.xml:302
 resources/views/Selects.xml:422"
-"Mail account","Compte Email","","resources/domains/Message.xml:30"
+"Mail account","Compte email","","resources/domains/Message.xml:31"
 "Mail and Email message","Message pour email et courrier","","resources/domains/General.xml:27"
 "Mail model","Modèle de mail","","resources/domains/ReminderMethodLine.xml:15"
 "Mail model filters","Filtres de modèle courrier","","resources/views/MailModel.xml:30"
 "Mail model for invoice and payment schedule rejections","Modèle de courrier rejet Facture et Echéancier de paiement","","resources/domains/AccountConfig.xml:81"
-"Mail models","Modèles de courrier","","resources/views/menu.xml:301
-resources/views/menu.xml:298"
+"Mail models","Modèles de courrier","","resources/views/menu.xml:261
+resources/views/menu.xml:258"
 "Mail transit time","Délai envoi courrier","","resources/domains/AccountConfig.xml:57"
 "Mailing lists","Mailing lists","","resources/domains/Campaign.xml:18"
 "Mails / Emails","Courriers / Emails","","resources/views/Company.xml:37"
@@ -1994,7 +2000,7 @@ resources/views/menu.xml:298"
 "Manage purchase tracking Nbr. ?","","","resources/domains/TrackingNumberConfiguration.xml:10"
 "Manage sale tracking Nbr. ?","","","resources/domains/TrackingNumberConfiguration.xml:12"
 "Management coef.","Coef. de gestion","","resources/domains/Product.xml:35"
-"Manager","Responsable","","resources/domains/Employee.xml:50
+"Manager","Cadre","","resources/domains/Employee.xml:50
 resources/domains/LeaveRequest.xml:21"
 "Manager Profile","Profil responsable","","resources/domains/Employee.xml:51"
 "Manager Type","Type de gestionnaire","","resources/domains/AlarmEngine.xml:14"
@@ -2002,7 +2008,7 @@ resources/domains/LeaveRequest.xml:21"
 "Manuf order","","","resources/domains/ManufOrderSheetLine.xml:10"
 "Manuf order accordance","","","resources/domains/ManufOrder.xml:63"
 "Manufacturing","Production","","resources/views/Selects.xml:234"
-"Manufacturing order","Ordre de Production","","resources/domains/StockMoveLine.xml:26
+"Manufacturing order","Ordre de fabrication","","resources/domains/StockMoveLine.xml:26
 resources/domains/StockMoveLine.xml:27
 resources/domains/OperationOrder.xml:20
 resources/views/Selects.xml:396"
@@ -2022,7 +2028,7 @@ resources/domains/OfferLine.xml:12"
 "Margin %","","","resources/domains/OfferLine.xml:13"
 "Margin coef","Coef. de marge","","resources/domains/Project.xml:28"
 "Marital status","Situation Maritale","","resources/domains/PersonalInfo.xml:15"
-"Market Type","Type de marché","","resources/domains/Project.xml:71"
+"Market Type","Type de marché","","resources/domains/Project.xml:74"
 "Marketing Campaign","Campagne","","resources/domains/Lead.xml:51"
 "Mastered competence","Compétences maîtrisées","","resources/domains/Competence.xml:28"
 "Mastered skill set","Compétences maîtrisées","","resources/domains/Competence.xml:41"
@@ -2032,13 +2038,14 @@ resources/domains/OfferLine.xml:12"
 "Max. capacity / cycle","Capacité max par cycle","","resources/domains/ProdResource.xml:17"
 "May","Mai","","resources/views/Selects.xml:290"
 "Media","Média","","resources/views/Selects.xml:228"
-"Media Type","","","resources/domains/Message.xml:22"
+"Media Type","","","resources/domains/Message.xml:22
+resources/domains/Template.xml:17"
 "Meeting Nbr","","","resources/domains/TargetConfiguration.xml:27"
 "Meeting Nbr.","","","resources/domains/Target.xml:35
 resources/domains/Target.xml:33"
-"Meeting type","Type rendez-vous","","resources/domains/Event.xml:47"
+"Meeting type","","","resources/domains/Event.xml:47"
 "Meetings","Rendez-vous","","resources/views/welcome.xml:25"
-"Members","Membres","","resources/domains/Project.xml:52"
+"Members","","","resources/domains/Project.xml:52"
 "Menu(s)","Menus","","resources/domains/ViewController.xml:7"
 "Message","Message","","resources/domains/AlarmMessage.xml:10
 resources/domains/AlarmEngine.xml:13
@@ -2060,13 +2067,13 @@ resources/domains/Lead.xml:18"
 resources/domains/AlarmEngineBatch.xml:12
 resources/domains/Mail.xml:14
 resources/domains/MailingList.xml:12
-resources/domains/Template.xml:20
+resources/domains/Template.xml:21
 resources/domains/TemplateSpreadSheet.xml:10
 resources/domains/TemplateRule.xml:12
 resources/domains/Querie.xml:14
 resources/domains/AlarmEngine.xml:12"
 "Model ?","Modèle ?","","resources/domains/Project.xml:17"
-"Modules configurations","Configurations par module","","resources/views/menu.xml:612"
+"Modules configurations","Configurations par module","","resources/views/menu.xml:573"
 "Monday","Lundi","","resources/domains/Scheduler.xml:20
 resources/views/Selects.xml:579"
 "Month","Mois","","resources/views/Charts.xml:441
@@ -2096,10 +2103,10 @@ resources/domains/Move.xml:12"
 "My Customers","Mes Clients","","resources/views/Portal.xml:40"
 "My DashBord","Mon Tableau de bord","","resources/views/MenuConsultant.xml:7
 resources/views/MenuConsultant.xml:10"
-"My Expenses","Mes Notes de frais","","resources/views/MenuConsultant.xml:80"
+"My Expenses","","","resources/views/MenuConsultant.xml:80"
 "My Leave request","Mes demandes de congé","","resources/views/MenuConsultant.xml:105"
 "My Leave request calendar","Calendrier de mes demandes de congé","","resources/views/MenuConsultant.xml:121"
-"My Leave requests","Mes Demandes de congés","","resources/views/MenuConsultant.xml:102"
+"My Leave requests","","","resources/views/MenuConsultant.xml:102"
 "My Prospects","","","resources/views/Portal.xml:68"
 "My Recent Customers","Mes Clients récents","","resources/views/Portal.xml:21"
 "My Tasks","Mes Tâches","","resources/views/MenuConsultant.xml:132
@@ -2116,11 +2123,11 @@ resources/views/ClientView.xml:15"
 "My leave requests","Mes demandes de congé","","resources/views/MenuConsultant.xml:48"
 "My sales orders","Mes devis clients","","resources/views/ClientView.xml:14
 resources/views/ClientView.xml:20"
-"My space","Mon espace","","resources/views/ClientView.xml:11
+"My space","","","resources/views/ClientView.xml:11
 resources/views/ClientView.xml:6"
 "My tickets","Mes tickets","","resources/views/ClientView.xml:35
 resources/views/ClientView.xml:16"
-"Name","Nom","","resources/domains/AnalyticAxis.xml:12
+"Name","Intitulé","","resources/domains/AnalyticAxis.xml:12
 resources/domains/IrrecoverablePaymentScheduleLineLine.xml:15
 resources/domains/ProductVariant.xml:22
 resources/domains/UnitConversion.xml:14
@@ -2232,7 +2239,7 @@ resources/domains/TimesheetPeriodConfig.xml:24"
 "Nbr. of hours","","","resources/domains/TimesheetPeriodConfig.xml:20
 resources/domains/TimesheetPeriodConfig.xml:23"
 "Nbr. of terms","Nombre d'échéances","","resources/domains/PaymentSchedule.xml:12"
-"Need Description","Description du besoin","","resources/domains/Project.xml:68"
+"Need Description","Description du besoin","","resources/domains/Project.xml:71"
 "Network Type","Réseaux sociaux","","resources/domains/ApplicationCredentials.xml:18
 resources/domains/PersonalCredential.xml:13"
 "New","Nouveau","","resources/views/General.xml:9
@@ -2275,7 +2282,7 @@ resources/domains/Task.xml:40"
 "Object Name","Nom de l'objet","","resources/domains/ObjectList.xml:10"
 "Objectives","","","resources/domains/Position.xml:23"
 "Observations (état des filetages, aspect général, état des surfaces d'appuis...) :","","","resources/domains/ManufOrder.xml:62"
-"Obsolete Products","Produits obsolètes","","resources/views/Product.xml:269"
+"Obsolete Products","Produits obsolètes","","resources/views/Product.xml:278"
 "October","Octobre","","resources/views/Selects.xml:295"
 "Offer title","Intitulé offre","","resources/domains/JobOffer.xml:9"
 "Office name","Nom bureau","","resources/domains/Lead.xml:16"
@@ -2286,14 +2293,14 @@ resources/domains/Task.xml:40"
 "Only Me","Seulement moi","","resources/views/Selects.xml:498"
 "Only label","Libellé uniquement","","resources/views/Selects.xml:413"
 "Open from","Valide de","","resources/domains/JobOffer.xml:12"
-"Operation","Opération de gamme","","resources/domains/OperationOrder.xml:35"
+"Operation","","","resources/domains/OperationOrder.xml:35"
 "Operation name","Nom de l'opération","","resources/domains/OperationOrder.xml:16"
 "Operation order","Opération Fabr.","","resources/domains/ProdHumanResource.xml:17
 resources/domains/StockMoveLine.xml:29
 resources/domains/ProdResource.xml:33
 resources/domains/TimesheetLine.xml:24"
-"Operation orders","Listes des operations","","resources/domains/ManufOrder.xml:16"
-"Operations","Lignes de gamme","","resources/domains/ProdProcess.xml:12"
+"Operation orders","Opération de fabrication","","resources/domains/ManufOrder.xml:16"
+"Operations","","","resources/domains/ProdProcess.xml:12"
 "Operator","Opérateur","","resources/domains/TemplateSpreadSheetCriteria.xml:8"
 "Opportunities","Opportunités","","resources/views/Partner.xml:350
 resources/views/welcome.xml:19"
@@ -2305,16 +2312,16 @@ resources/domains/PurchaseOrder.xml:22"
 "Order Number","N° Cmde client","","resources/domains/SalesOrder.xml:66"
 "Ordered ?","Cmde confirmée ?","","resources/domains/PurchaseOrderLine.xml:25"
 "Organisation","","","resources/views/Company.xml:46"
-"Organization","Organisation","","resources/views/menu.xml:331"
+"Organization","Organisation","","resources/views/menu.xml:291"
 "Other","Autre","","resources/views/Selects.xml:240"
 "Other Partner","Entreprise","","resources/domains/CandidateOtherOpportunity.xml:10"
-"Other variants","","","resources/views/Product.xml:236"
+"Other variants","","","resources/views/Product.xml:245"
 "Overdue moveline","Trop-perçu","","resources/domains/PaymentVoucher.xml:17"
 "Overdue payment","Trop-perçus","","resources/domains/Reimbursement.xml:14"
 "Overpayment before","Trop-perçus antérieurs à","","resources/domains/AccountClearance.xml:16"
 "Overpayment clearance","Apurement des trop-perçus","","resources/views/Selects.xml:377"
 "Overpayments collected","Trop-perçus récupérés","","resources/domains/AccountClearance.xml:17"
-"Overtime lines","Lignes d'heures sup.","","resources/domains/Overtime.xml:13"
+"Overtime lines","Heures supplémentaires","","resources/domains/Overtime.xml:13"
 "Owner","Titulaire","","resources/views/Selects.xml:344"
 "Owner deceased","Titulaire décédé","","resources/domains/Reminder.xml:23"
 "Owner name","Titulaire du compte","","resources/domains/BankDetails.xml:12"
@@ -2338,7 +2345,7 @@ resources/domains/SnStatusUpdates.xml:29"
 "Parent product","Produit parent","","resources/domains/Product.xml:60"
 "Parent project","Projet parent","","resources/domains/Project.xml:46"
 "Partial address","Adresse partielle","","resources/domains/PickListEntry.xml:13"
-"Partner","Tiers","","resources/domains/MoveLine.xml:10
+"Partner","","","resources/domains/MoveLine.xml:10
 resources/domains/Reimbursement.xml:12
 resources/views/menu.xml:17
 resources/domains/UserInfo.xml:14
@@ -2368,7 +2375,7 @@ resources/domains/Reminder.xml:18"
 "Partner Db","","","resources/views/menu.xml:20"
 "Partner Details","Détails du tiers","","resources/views/Partner.xml:89"
 "Partner List Report","","","resources/views/menu.xml:28"
-"Partner Type","Type de tiers","","resources/domains/Partner.xml:15"
+"Partner Type","","","resources/domains/Partner.xml:15"
 "Partner account","","","resources/domains/PaymentVoucher.xml:11"
 "Partner categories","Catégories de tiers","","resources/views/menu.xml:65
 resources/views/PartnerCategory.xml:6
@@ -2388,8 +2395,8 @@ resources/views/Charts.xml:494
 resources/views/Batch.xml:91
 resources/domains/PartnerList.xml:12"
 "Partners by Industry Sector","Tiers par Secteur d'activité","","resources/views/Portal.xml:47"
-"Partners lists","Liste Tiers","","resources/views/menu.xml:318
-resources/views/menu.xml:321"
+"Partners lists","Liste Tiers","","resources/views/menu.xml:278
+resources/views/menu.xml:281"
 "Partners/Contacts","","","resources/views/menu.xml:14"
 "Password","Mot de passe","","resources/domains/Calendar.xml:13
 resources/domains/MailAccount.xml:13"
@@ -2406,7 +2413,7 @@ resources/views/SpentTime.xml:51"
 "Path to company logo","Chemin vers le logo société","","resources/domains/Company.xml:19"
 "Path to export file","Chemin fichier de sortie","","resources/domains/AddressExport.xml:11"
 "Path to export folder","Chemin vers le dossier d'export","","resources/domains/IndicatorGeneratorGrouping.xml:13"
-"Pay sheets","Liste fiches de paie","","resources/domains/Employee.xml:54"
+"Pay sheets","Fiches de paie","","resources/domains/Employee.xml:54"
 "Paybox configuration","Config. Paybox","","resources/domains/AccountConfig.xml:92"
 "Paybox transaction Amount","Montant de la transaction paybox","","resources/domains/PaymentVoucher.xml:34"
 "Payer","Payeur","","resources/views/Selects.xml:345"
@@ -2416,7 +2423,7 @@ resources/domains/Partner.xml:52"
 "Payment","Paiement","","resources/domains/PaymentInvoice.xml:10
 resources/domains/PaymentInvoiceToPay.xml:17
 resources/views/Selects.xml:411"
-"Payment Mode","Mode de règlement","","resources/domains/PaymentSchedule.xml:14
+"Payment Mode","Modes de paiement","","resources/domains/PaymentSchedule.xml:14
 resources/domains/MoveLineReport.xml:14
 resources/domains/Move.xml:16
 resources/domains/ChequeRejection.xml:19
@@ -2466,8 +2473,8 @@ resources/views/Period.xml:6"
 "Period duration","Durée Période","","resources/domains/Year.xml:18"
 "Period type","Type période","","resources/domains/TargetConfiguration.xml:29
 resources/domains/Target.xml:37"
-"Periods","Périodes comptables","","resources/views/menu.xml:522
-resources/views/menu.xml:519"
+"Periods","Périodes comptables","","resources/views/menu.xml:479
+resources/views/menu.xml:482"
 "Periods list","Périodes associées","","resources/domains/Year.xml:15"
 "Perishable ?","Périssable ?","","resources/domains/Product.xml:54"
 "Perishable expiration date","Date de péremption","","resources/domains/TrackingNumber.xml:13"
@@ -2487,7 +2494,7 @@ resources/domains/SnProfile.xml:30
 resources/domains/SnProfile.xml:28"
 "Picture url","URL Image","","resources/domains/SnPage.xml:21"
 "Pièce","","","resources/domains/ManufOrderSheetLine.xml:11"
-"Planned budget","Budget prévu","","resources/domains/Project.xml:67"
+"Planned budget","Budget prévu","","resources/domains/Project.xml:70"
 "Planned duration","Durée plannifiée","","resources/domains/OperationOrder.xml:47"
 "Planned end date","Date de fin","","resources/domains/ManufOrder.xml:46
 resources/domains/OperationOrder.xml:38"
@@ -2496,7 +2503,7 @@ resources/domains/OperationOrder.xml:37"
 "Planned time","Tps prévu","","resources/domains/Project.xml:41
 resources/domains/Task.xml:16"
 "Plannification","Planification","","resources/domains/PlanningLine.xml:10"
-"Planning","","","resources/domains/Machine.xml:20"
+"Planning","Planification","","resources/domains/Machine.xml:20"
 "Port","Port","","resources/domains/Calendar.xml:16
 resources/domains/MailAccount.xml:15"
 "Position title","Fonction Proposée","","resources/domains/CandidateOtherOpportunity.xml:11"
@@ -2572,19 +2579,19 @@ resources/domains/FinancialInformationUpdate.xml:13
 resources/domains/MinStockRules.xml:13
 resources/domains/SalesOrderSubLine.xml:13
 resources/domains/ExpenseLine.xml:13"
-"Product Family","Famille produit","","resources/domains/ProductCategory.xml:12"
+"Product Family","","","resources/domains/ProductCategory.xml:12"
 "Product Name","Nom du Produit","","resources/domains/InvoiceLine.xml:14"
 "Product categories","Catégories de produit","","resources/views/ProductCategory.xml:6
 resources/views/menu.xml:184
 resources/views/menu.xml:181"
-"Product category","Catégorie de produit","","resources/domains/Product.xml:17
+"Product category","Catégorie produit","","resources/domains/Product.xml:17
 resources/domains/PriceListLine.xml:11
 resources/views/ProductCategory.xml:13
 resources/domains/Inventory.xml:20"
 "Product dates","Dates produits","","resources/views/Product.xml:60"
 "Product families","Familles de produit","","resources/views/menu.xml:193
 resources/views/menu.xml:190"
-"Product family","Famille de produit","","resources/domains/AccountManagement.xml:21
+"Product family","Famille produit","","resources/domains/AccountManagement.xml:21
 resources/views/ProductFamily.xml:11
 resources/domains/Inventory.xml:19"
 "Product launch Date","Date de mise en application du produit","","resources/domains/Product.xml:37"
@@ -2601,7 +2608,7 @@ resources/domains/PurchaseOrderLine.xml:40
 resources/domains/Product.xml:59
 resources/domains/SalesOrderLine.xml:53"
 "Product variant attr","","","resources/domains/ProductVariantValue.xml:14"
-"Product variant attr1","","","resources/domains/ProductVariantConfig.xml:10
+"Product variant attr1","Attr1 variante produit","","resources/domains/ProductVariantConfig.xml:10
 resources/domains/ProductVariant.xml:11"
 "Product variant attr2","","","resources/domains/ProductVariantConfig.xml:11
 resources/domains/ProductVariant.xml:12"
@@ -2611,7 +2618,7 @@ resources/domains/ProductVariantConfig.xml:12"
 resources/domains/ProductVariantConfig.xml:13"
 "Product variant attribute","Attributs Variantes Produits","","resources/views/ProductVariantAttr.xml:12"
 "Product variant attributes","Attributs variantes produits","","resources/views/ProductVariantAttr.xml:6"
-"Product variant config","","","resources/domains/Product.xml:58"
+"Product variant config","Config. variantes produit","","resources/domains/Product.xml:58"
 "Product variant configuration","Configuration variantes produit","","resources/views/ProductVariantConfig.xml:18"
 "Product variant configurations","Configuration variantes produit","","resources/views/ProductVariantConfig.xml:6"
 "Product variant value","Valeur Attribut","","resources/views/ProductVariantValue.xml:13"
@@ -2627,10 +2634,10 @@ resources/domains/ProductVariantConfig.xml:13"
 "Product variant values","Valeurs des attributs de variante produit","","resources/views/ProductVariantValue.xml:6"
 "Product variants","Variantes produit","","resources/views/ProductVariant.xml:6"
 "Production Qty by tracking","","","resources/domains/TrackingNumberConfiguration.xml:23"
-"Production informations","Informations de production","","resources/views/Product.xml:117"
-"Production invoicing type","Type de fact. de la prod.","","resources/domains/Project.xml:75"
+"Production informations","Information production","","resources/views/Product.xml:117"
+"Production invoicing type","Type de fact. de la prod.","","resources/domains/Project.xml:78"
 "Production location","","","resources/domains/ProdProcess.xml:16"
-"Production order","Ordre de fabrication","","resources/domains/ManufOrder.xml:14
+"Production order","Ordre de production","","resources/domains/ManufOrder.xml:14
 resources/views/Selects.xml:395"
 "Production process","Gamme","","resources/domains/ProdProcessLine.xml:12
 resources/domains/ManufOrder.xml:43
@@ -2645,9 +2652,9 @@ resources/views/menu.xml:149
 resources/views/ProductCategory.xml:35
 resources/views/Product.xml:6
 resources/views/menu.xml:155"
-"Products With Variant","Produits avec variante","","resources/views/Product.xml:257"
+"Products With Variant","Produits avec variante","","resources/views/Product.xml:266"
 "Products families","Familles de produits","","resources/views/ProductFamily.xml:6"
-"Products filters","Filtres produits","","resources/views/Product.xml:247"
+"Products filters","Filtres produits","","resources/views/Product.xml:256"
 "Products list","","","resources/domains/PurchaseOrder.xml:23"
 "Products models","","","resources/views/menu.xml:165
 resources/views/menu.xml:168"
@@ -2655,7 +2662,7 @@ resources/views/menu.xml:168"
 resources/domains/ProdProcessLine.xml:18
 resources/domains/OperationOrder.xml:29"
 "Products to produce","Produits à produire","","resources/domains/ManufOrder.xml:32"
-"Products variants","","","resources/views/Product.xml:229"
+"Products variants","","","resources/views/Product.xml:238"
 "Products/Goods","","","resources/views/menu.xml:33"
 "Prof.","Prof.","","resources/views/Selects.xml:165"
 "Professional experience","Parcours professionel","","resources/domains/Candidate.xml:49"
@@ -2669,21 +2676,22 @@ resources/domains/ProdHumanResource.xml:13
 resources/domains/Resource.xml:20"
 "Profile catagory","Catégorie de profile","","resources/domains/Price.xml:9"
 "Profiles","Profils","","resources/views/Partner.xml:302
-resources/views/Product.xml:263"
+resources/views/Product.xml:272"
 "Profit accounts","Compte de profits","","resources/domains/AccountConfig.xml:85"
-"Progress","Progression","","resources/domains/Expense.xml:16
+"Progress","Avancement","","resources/domains/Expense.xml:16
 resources/domains/Training.xml:20
-resources/domains/Event.xml:55"
+resources/domains/Event.xml:55
+resources/domains/Project.xml:61"
 "Project","Projet","","resources/domains/TimesheetLine.xml:11
 resources/domains/Event.xml:60
 resources/domains/Task.xml:14
 resources/domains/TimesheetTotalByType.xml:12"
 "Project ?","Projet ?","","resources/domains/Project.xml:18"
-"Project model","Modèle utilisé","","resources/domains/Project.xml:54"
+"Project model","Projet modèle ?","","resources/domains/Project.xml:54"
 "Project satisfaction","Satisfaction projet","","resources/domains/Timesheet.xml:13"
 "Project unit","Unité","","resources/domains/Project.xml:47
 resources/domains/General.xml:12"
-"Projects","Projets","","resources/domains/UserInfo.xml:19
+"Projects","Les projets","","resources/domains/UserInfo.xml:19
 resources/views/UserInfo.xml:37"
 "Prospect","Prospect","","resources/views/Selects.xml:170"
 "Prospects by Industry Sector","","","resources/views/Charts.xml:468
@@ -2691,8 +2699,8 @@ resources/views/Portal.xml:63"
 "Prospects by country","","","resources/views/Charts.xml:446
 resources/views/Portal.xml:59"
 "Public","Publique","","resources/views/Selects.xml:495"
-"Public holiday","Les jours fériés","","resources/domains/PublicHolidaysLine.xml:11"
-"Public holidays","Les jours fériés","","resources/domains/PublicHolidays.xml:12"
+"Public holiday","Jour Férié","","resources/domains/PublicHolidaysLine.xml:11"
+"Public holidays","Jours Fériés","","resources/domains/PublicHolidays.xml:12"
 "Public holidays list","Les jours fériés","","resources/domains/Schedule.xml:12"
 "Purchase","Achat","","resources/views/Selects.xml:262
 resources/views/Selects.xml:503"
@@ -2708,8 +2716,10 @@ resources/domains/StockMove.xml:37
 resources/domains/PurchaseOrderLineTax.xml:8
 resources/domains/PurchaseOrderSupplierLine.xml:10
 resources/views/Selects.xml:387"
+"Purchase order historical","","","resources/views/Product.xml:337"
+"Purchase order in progress","","","resources/views/Product.xml:329"
 "Purchase order line","Ligne Cmde Fourn.","","resources/domains/StockMoveLine.xml:23"
-"Purchase order?","","","resources/domains/PurchaseOrder.xml:52"
+"Purchase order?","DA initiale","","resources/domains/PurchaseOrder.xml:52"
 "Purchase price W.T.","Prix d'achat HT","","resources/domains/Product.xml:30"
 "Purchase tracking management","Suivi Achats","","resources/views/TrackingNumberConfiguration.xml:24"
 "Purchase/Costs","Achat/Coûts","","resources/views/Product.xml:80"
@@ -2765,7 +2775,7 @@ resources/domains/AlarmEngine.xml:19"
 resources/domains/TaxLine.xml:14"
 "Rate Date","Date de début d'application","","resources/views/CurrencyConversionLine.xml:38"
 "Rate updation","Mise à jour du taux","","resources/views/CurrencyConversionLine.xml:41"
-"Raw Materials","Matières premières","","resources/views/Product.xml:260"
+"Raw Materials","Matières premières","","resources/views/Product.xml:269"
 "Raw material","Matière première","","resources/domains/BillOfMaterial.xml:15
 resources/domains/Product.xml:26"
 "Re-export the bank file","","","resources/domains/AccountingBatch.xml:31"
@@ -2788,7 +2798,7 @@ resources/domains/Overtime.xml:18"
 "Receipt N°(Payment voucher)","N° de reçu (Saisie paiement)","","resources/views/Selects.xml:376"
 "Receipt stock move","Mvt Stock Réception","","resources/views/Selects.xml:391"
 "Recently created partners","Tiers créés récemment","","resources/views/Portal.xml:34"
-"Recipient","Destinataire","","resources/domains/Message.xml:34
+"Recipient","Destinataire","","resources/domains/Message.xml:35
 resources/domains/Mail.xml:20
 resources/views/Mail.xml:37"
 "Recipient details","Complément","","resources/domains/Address.xml:11"
@@ -2838,8 +2848,8 @@ resources/views/Region.xml:10"
 "Region code","Code Région","","resources/domains/Region.xml:12"
 "Region name","Nom Région","","resources/domains/Region.xml:11"
 "Regions","Régions","","resources/views/Region.xml:5
-resources/views/menu.xml:365
-resources/views/menu.xml:368"
+resources/views/menu.xml:328
+resources/views/menu.xml:325"
 "Registration code","N° SIRET","","resources/domains/Partner.xml:82"
 "Reimbursed","Remboursé","","resources/views/Selects.xml:335"
 "Reimbursed amount","Montant remboursé","","resources/domains/Reimbursement.xml:15"
@@ -2879,7 +2889,7 @@ resources/domains/PaymentScheduleLine.xml:19
 resources/domains/MoveLine.xml:25
 resources/domains/Invoice.xml:80"
 "Reject type","Type de Rejet","","resources/domains/PayerQualityConfigLine.xml:10"
-"Rejected","Rejetée","","resources/domains/PaymentScheduleLine.xml:15"
+"Rejected","Rejeté(e)/Refusé(e)","","resources/domains/PaymentScheduleLine.xml:15"
 "Rejected Schedule line","","","resources/domains/IrrecoverableReportLine.xml:11
 resources/domains/IrrecoverablePaymentScheduleLineLine.xml:12"
 "Rejected Wire transfer operation code","Code Opér. Virement rejetés","","resources/domains/CfonbConfig.xml:32"
@@ -2891,7 +2901,7 @@ resources/domains/IrrecoverablePaymentScheduleLineLine.xml:12"
 "Rejects reasons and codes list","Listes des codes et motifs de rejets","","resources/views/General.xml:33"
 "Rejects/Return Reason Code List","Liste des codes motifs de rejet/retour","","resources/domains/InterbankCode.xml:14"
 "Rejects/Return reason code list","Liste des codes motifs de rejet/retour","","resources/domains/InterbankCodeLine.xml:18"
-"Related to","Lié à ","","resources/domains/Message.xml:14
+"Related to","Associé à ","","resources/domains/Message.xml:14
 resources/domains/Event.xml:24
 resources/domains/RoutingAction.xml:13
 resources/domains/Message.xml:16
@@ -2899,7 +2909,7 @@ resources/domains/RoutingAction.xml:12"
 "Related to select","Relatif à","","resources/domains/Event.xml:25"
 "Related to1 select","Relatif à","","resources/domains/Message.xml:15"
 "Related to2 select","Relatif à","","resources/domains/Message.xml:17"
-"Relations","Tiers","","resources/views/menu.xml:641"
+"Relations","Tiers","","resources/views/menu.xml:646"
 "Relocation choice","Mobilité Géographique","","resources/domains/Candidate.xml:26"
 "Remaining days for the period","Reste à prendre sur la période","","resources/domains/LeaveRequest.xml:25"
 "Remaining time","","","resources/domains/Task.xml:18
@@ -2923,19 +2933,19 @@ resources/views/Blocking.xml:33"
 "Reminder method","Méthode de relance","","resources/domains/ReminderConfigLine.xml:12
 resources/domains/Reminder.xml:11
 resources/domains/ReminderHistory.xml:11"
-"Reminder method line","Ligne de niveau de relance","","resources/domains/Reminder.xml:20"
+"Reminder method line","Ligne de la méthode de relance","","resources/domains/Reminder.xml:20"
 "Reminder method line reached by active contract","Niveau de relance atteint (contrat actif)","","resources/domains/Reminder.xml:12"
-"Reminder method lines","Lignes de relances","","resources/domains/ReminderMethod.xml:12"
+"Reminder method lines","Lignes de la méthode de relance","","resources/domains/ReminderMethod.xml:12"
 "Reminder type","Type de relance","","resources/domains/MailModel.xml:13"
 "Reminders","Rappels","","resources/domains/Event.xml:37"
 "Reminders history list","Historique des relances","","resources/domains/Reminder.xml:15"
 "Reopen period","Rouvrir la période","","resources/views/Period.xml:29"
 "Replace","Remplace","","resources/views/Selects.xml:509"
 "Reported Balance","Reports à nouveaux","","resources/domains/Partner.xml:53"
-"Reported balance","Report à nouveau","","resources/domains/ReportedBalanceLine.xml:10"
+"Reported balance","A nouveau","","resources/domains/ReportedBalanceLine.xml:10"
 "Reported balance Date","Date Report à nouveau","","resources/domains/Year.xml:14"
-"Reported balance lines","Lignes de reports à nouveaux","","resources/domains/ReportedBalance.xml:12"
-"Reportings","Reportings","","resources/domains/IrrecoverableInvoiceLine.xml:13
+"Reported balance lines","Les Lignes de reports à nouveaux","","resources/domains/ReportedBalance.xml:12"
+"Reportings","Rapports","","resources/domains/IrrecoverableInvoiceLine.xml:13
 resources/domains/IrrecoverablePaymentScheduleLineLine.xml:13"
 "Reports to","Rapporte à","","resources/domains/Partner.xml:77"
 "Request Date","Date","","resources/domains/LeaveRequest.xml:12"
@@ -3010,9 +3020,9 @@ resources/domains/SalesOrderLineTax.xml:8"
 resources/domains/PurchaseOrderLine.xml:46
 resources/views/Selects.xml:589"
 "Sale price W.T.","Prix de vente HT","","resources/domains/Product.xml:28"
-"Sale supply default method","","","resources/domains/Product.xml:22"
+"Sale supply default method","Méthode d'appro. par défaut","","resources/domains/Product.xml:22"
 "Sale tracking management","Suivi à la vente","","resources/views/TrackingNumberConfiguration.xml:40"
-"Sales","Ventes","","resources/views/Product.xml:59
+"Sales","Vente","","resources/views/Product.xml:59
 resources/views/Partner.xml:147"
 "Sales Journal","Journal Ventes","","resources/domains/AccountConfig.xml:16"
 "Sales Manager","Gestionnaire commercial","","resources/views/AlarmEngine.xml:10"
@@ -3023,7 +3033,7 @@ resources/views/ProductFamily.xml:21"
 "Sales map","Carte ventes","","resources/views/PartnerList.xml:20
 resources/views/PartnerList.xml:27"
 "Sales maps","Carte des ventes","","resources/views/PartnerList.xml:16"
-"Sales order","Devis clients","","resources/views/Selects.xml:468
+"Sales order","Devis/Cmdes clients","","resources/views/Selects.xml:468
 resources/views/Selects.xml:386"
 "Sales order invoicing type","Type facturation Ventes","","resources/domains/SupplychainConfig.xml:24"
 "Sales order line","Ligne Cmde Client","","resources/domains/StockMoveLine.xml:22"
@@ -3032,7 +3042,7 @@ resources/views/Partner.xml:295"
 "Sales stage","Etape vente","","resources/domains/Opportunity.xml:18"
 "Sales turnover comparison per month this year vs past years by family","","","resources/views/Charts.xml:274
 resources/views/Portal.xml:77"
-"Salesman","Commercial","","resources/domains/SalesOrder.xml:47"
+"Salesman","","","resources/domains/SalesOrder.xml:47"
 "Sample","","","resources/views/menu.xml:11"
 "Saturday","Samedi","","resources/domains/Scheduler.xml:25
 resources/views/Selects.xml:584"
@@ -3077,17 +3087,17 @@ resources/views/Partner.xml:28
 resources/views/Partner.xml:18"
 "Send campaign from","Envoyer campagne à partir du","","resources/domains/Campaign.xml:16"
 "Send cv by mail","Envoyer CV par mail","","resources/views/Resource.xml:38"
-"Send email","Envoyer Email","","resources/views/Partner.xml:45
+"Send email","Envoyer email","","resources/views/Partner.xml:45
 resources/views/Partner.xml:215
 resources/views/Partner.xml:170"
-"Sender (Email)","De (email)","","resources/domains/Message.xml:28"
-"Sender (User)","De (utilisateur)","","resources/domains/Message.xml:33"
+"Sender (Email)","De (email)","","resources/domains/Message.xml:29"
+"Sender (User)","De (utilisateur)","","resources/domains/Message.xml:34"
 "Sender Name","Nom/Raison sociale émetteur","","resources/domains/CfonbConfig.xml:16"
 "Sender Nbr","N° d'émetteur","","resources/domains/CfonbConfig.xml:15"
 "Sender record code","Code enregistrement émetteur","","resources/domains/CfonbConfig.xml:14"
 "Sending dates","Dates d'envoi","","resources/views/Mail.xml:33"
 "Sent Date","Date d'envoi réelle","","resources/domains/Mail.xml:19"
-"Sent by email","Envoyé par email","","resources/domains/Message.xml:29"
+"Sent by email","Envoyé par email","","resources/domains/Message.xml:30"
 "Sent date","Date d'envoi","","resources/domains/Message.xml:13"
 "September","Septembre","","resources/views/Selects.xml:294"
 "Seq.","","","resources/domains/PaymentInvoiceToPay.xml:10
@@ -3099,13 +3109,13 @@ resources/domains/PurchaseOrderLine.xml:11"
 resources/views/Sequence.xml:22"
 "Sequence Definition","Configuration Séquences","","resources/views/Sequence.xml:34"
 "Sequences","Séquences","","resources/views/Sequence.xml:6
-resources/views/menu.xml:532
-resources/views/menu.xml:529"
+resources/views/menu.xml:492
+resources/views/menu.xml:489"
 "Serial Nbr","","","resources/domains/Machine.xml:13"
 "Server Type","Type synchronisation","","resources/domains/MailAccount.xml:11"
 "Service","Service","","resources/domains/Training.xml:14
 resources/views/Selects.xml:244"
-"Service Products","Produits services","","resources/views/Product.xml:254"
+"Service Products","Produits services","","resources/views/Product.xml:263"
 "Services","Services","","resources/views/Selects.xml:223"
 "Settings","Configurations","","resources/views/Partner.xml:129
 resources/views/Partner.xml:265"
@@ -3125,8 +3135,8 @@ resources/domains/TemplateSpreadSheet.xml:13"
 "Shift to irrecoverable","Passage en irrécouvrable","","resources/domains/Reminder.xml:16
 resources/views/Selects.xml:378
 resources/domains/ReminderHistory.xml:15"
-"Shipped date","","","resources/domains/StockMoveLine.xml:33"
-"Shipped qty","","","resources/domains/StockMoveLine.xml:32"
+"Shipped date","","","resources/domains/StockMoveLine.xml:35"
+"Shipped qty","","","resources/domains/StockMoveLine.xml:34"
 "Short description","Description courte","","resources/domains/ExpenseLine.xml:15"
 "Short term debt duration (month)","Nbre de mois (créance + 3 mois)","","resources/domains/AccountConfig.xml:53"
 "Show all stock move","Mouvements de stock","","resources/views/Product.xml:103"
@@ -3165,7 +3175,7 @@ resources/domains/SnStatusUpdates.xml:31"
 "Solde client","Mettre à jour Compte client ?","","resources/domains/AccountingBatch.xml:38"
 "Solde exigible","MàJ solde dû compte client ?","","resources/domains/AccountingBatch.xml:39"
 "Solde exigible relançable","Mettre à jour le solde relançable client","","resources/domains/AccountingBatch.xml:40"
-"Sort Code","Code Guichet","","resources/domains/Bic.xml:13"
+"Sort Code","Code guichet","","resources/domains/Bic.xml:13"
 "Source","Source","","resources/domains/Lead.xml:47
 resources/domains/Candidate.xml:66
 resources/domains/SalesOrder.xml:51
@@ -3177,8 +3187,8 @@ resources/views/Source.xml:11"
 resources/views/CurrencyConversionLine.xml:34"
 "Source description","Description provenance","","resources/domains/Lead.xml:50"
 "Sources","Sources","","resources/views/menu.xml:102
-resources/views/menu.xml:552
-resources/views/menu.xml:549
+resources/views/menu.xml:509
+resources/views/menu.xml:512
 resources/views/menu.xml:105"
 "Spatial information","Point Géographique","","resources/domains/Address.xml:12
 resources/domains/PickListEntry.xml:12"
@@ -3188,7 +3198,7 @@ resources/domains/Address.xml:14"
 "Spent time","Temps passés","","resources/domains/Task.xml:17
 resources/domains/Project.xml:42
 resources/domains/TimesheetLine.xml:13"
-"Spent times","Travail effectué","","resources/domains/Task.xml:63
+"Spent times","Temps passés","","resources/domains/Task.xml:63
 resources/domains/Event.xml:62"
 "Spouse occupation","Profession du Conjoint","","resources/domains/PersonalInfo.xml:17"
 "Standard Invoice","Facture normale","","resources/domains/Invoice.xml:59"
@@ -3206,10 +3216,10 @@ resources/domains/AccountingBatch.xml:44"
 "Start hour period 2","Heure début période 2","","resources/domains/ScheduleSubLine.xml:14"
 "Starting duration (hh:mm)","Temps de mise en service","","resources/domains/ProdResource.xml:19"
 "Starting duration (min)","Tps démarrage (min)","","resources/domains/Machine.xml:16"
-"State","Etat/Province","","resources/domains/Lead.xml:34
+"State","Statut","","resources/domains/Lead.xml:34
 resources/domains/Lead.xml:27
 resources/domains/PurchaseOrderSupplierLine.xml:20"
-"Status","Statut","","resources/domains/Event.xml:44
+"Status","","","resources/domains/Event.xml:44
 resources/domains/Task.xml:25
 resources/domains/Reconcile.xml:11
 resources/domains/StockMove.xml:20
@@ -3250,12 +3260,14 @@ resources/domains/Project.xml:25"
 "Step","Etape","","resources/domains/Resource.xml:12"
 "Stock","Stock","","resources/views/Charts.xml:87
 resources/views/Product.xml:99
-resources/views/Product.xml:154
+resources/views/Product.xml:163
 resources/views/Charts.xml:40
-resources/views/Product.xml:160"
+resources/views/Product.xml:169"
 "Stock History","","","resources/views/Charts.xml:146
 resources/views/Charts.xml:206"
-"Stock Moves Lines","Lignes Mvt Stock","","resources/views/Product.xml:289"
+"Stock Moves consumption historical","","","resources/views/Product.xml:321"
+"Stock Moves historical","","","resources/views/Product.xml:305"
+"Stock Moves planned","","","resources/views/Product.xml:313"
 "Stock move","Mouvement de stock","","resources/domains/StockMoveLine.xml:10"
 "Stock move content","Contenu du mouvement","","resources/domains/StockMove.xml:29"
 "Stock move in","Entrée","","resources/domains/OperationOrder.xml:43
@@ -3264,11 +3276,11 @@ resources/domains/ManufOrder.xml:51"
 resources/domains/ManufOrder.xml:54"
 "Stock prévisionnel","","","resources/views/Charts.xml:7"
 "Storable","Stockable","","resources/views/Selects.xml:245"
-"Storable Products","Produits stockables","","resources/views/Product.xml:251"
+"Storable Products","Produits stockables","","resources/views/Product.xml:260"
 "Sub total","Sous-total","","resources/domains/OvertimeLine.xml:15"
-"Subject","Sujet","","resources/views/Template.xml:30
-resources/domains/MailModel.xml:14
+"Subject","","","resources/domains/MailModel.xml:14
 resources/domains/Message.xml:11
+resources/views/Template.xml:33
 resources/domains/SnSendMessage.xml:20
 resources/domains/Event.xml:13
 resources/domains/Mail.xml:16"
@@ -3305,13 +3317,14 @@ resources/views/SupplierCatalog.xml:6"
 resources/domains/AccountConfig.xml:35"
 "Supplier invoice","Facture fournisseur","","resources/views/Selects.xml:367"
 "Supplier ref.","","","resources/domains/PurchaseOrder.xml:28"
+"Supplier requests historical","","","resources/views/Product.xml:347"
 "Supplier virtual location","Emplacement Virt. Fournisseur","","resources/domains/SupplychainConfig.xml:16"
 "Suppliers","","","resources/views/Charts.xml:393"
 "Suppliers by country","","","resources/views/Charts.xml:374
 resources/views/Portal.xml:55"
 "Suppliers catalog","Catalogues fournisseurs","","resources/views/Product.xml:89"
 "Suppliers requests","","","resources/domains/PurchaseOrderLine.xml:50"
-"Supply chain configuration","Supply Chain","","resources/views/Company.xml:43"
+"Supply chain configuration","Config. Supply Chain","","resources/views/Company.xml:43"
 "Supply chain message","Message pour les exception supply chain","","resources/domains/General.xml:28"
 "Supply method","","","resources/domains/SalesOrderLine.xml:17"
 "Supplychain batch","Traitements par lots Supply Chain","","resources/domains/Batch.xml:16"
@@ -3325,11 +3338,11 @@ resources/views/Portal.xml:55"
 "Target","Objectifs","","resources/views/Selects.xml:438
 resources/domains/Campaign.xml:13"
 "Target URL","Valeur","","resources/domains/Tracker.xml:10"
-"Target batch","Batch objectifs","","resources/views/BaseBatch.xml:24"
+"Target batch","","","resources/views/BaseBatch.xml:24"
 "Target page","Page obejctif","","resources/views/BaseBatch.xml:22"
 "Target price for X% of profitability","Tarif cible pour X% de rentabilité","","resources/domains/Resource.xml:14"
 "Target receptor","Cible","","resources/domains/Template.xml:16"
-"Targets configurations","Listes des configurations","","resources/domains/CrmBatch.xml:21"
+"Targets configurations","Configuration des objectifs","","resources/domains/CrmBatch.xml:21"
 "Task","Tâche","","resources/domains/FinancialInformationUpdate.xml:10
 resources/domains/Project.xml:55
 resources/domains/InvoiceLine.xml:10
@@ -3343,11 +3356,11 @@ resources/domains/Event.xml:61
 resources/domains/SalesOrderLine.xml:22
 resources/domains/PlanningLine.xml:14"
 "Task Progress","Avancement réel","","resources/domains/Task.xml:21"
-"Task name","Nom de la tâche","","resources/domains/Task.xml:13"
+"Task name","Nom tâche","","resources/domains/Task.xml:13"
 "Task product","Produit tâche","","resources/domains/Company.xml:40"
 "Tasks","Tâches","","resources/views/welcome.xml:31
 resources/domains/Project.xml:49"
-"Tax","T.V.A.","","resources/domains/SalesOrderLine.xml:19
+"Tax","TVA","","resources/domains/SalesOrderLine.xml:19
 resources/domains/ExpenseLine.xml:20
 resources/domains/InvoiceLine.xml:21
 resources/domains/MoveLine.xml:31
@@ -3358,7 +3371,7 @@ resources/domains/SalesOrderLineTax.xml:9
 resources/domains/TaxLine.xml:11
 resources/domains/InvoiceLineTax.xml:17"
 "Tax 0%","T.V.A. 0%","","resources/domains/General.xml:31"
-"Tax Lines","Lignes de TVA","","resources/domains/SalesOrder.xml:38
+"Tax Lines","Les lignes de TVA","","resources/domains/SalesOrder.xml:38
 resources/domains/Invoice.xml:50
 resources/domains/PurchaseOrder.xml:36"
 "Tax N°","N° TVA","","resources/domains/Partner.xml:83"
@@ -3370,7 +3383,7 @@ resources/domains/PurchaseOrder.xml:36"
 "Tax equivalences","","","resources/domains/FiscalPosition.xml:15"
 "Tax for management fee","TVA pour frais de gestion","","resources/domains/AccountConfig.xml:44"
 "Tax versions","Versions de TVA","","resources/domains/Tax.xml:15"
-"Team","Équipe","","resources/views/Team.xml:9
+"Team","","","resources/views/Team.xml:9
 resources/domains/Opportunity.xml:30
 resources/domains/SalesOrder.xml:48
 resources/domains/Partner.xml:76
@@ -3381,23 +3394,23 @@ resources/domains/TargetConfiguration.xml:13
 resources/domains/Target.xml:13
 resources/domains/Lead.xml:60"
 "Teams","Equipes","","resources/domains/UserInfo.xml:17
-resources/views/menu.xml:406
+resources/views/menu.xml:366
+resources/views/menu.xml:369
 resources/views/Team.xml:5
-resources/views/menu.xml:409
 resources/views/UserInfo.xml:33"
 "Technical Rejection","Rejet technique","","resources/domains/InterbankCodeLine.xml:19"
 "Technical environment","Environnement technique","","resources/domains/Position.xml:27
 resources/domains/Training.xml:21"
-"Technical maintenance","Maintenance applicative","","resources/views/menu.xml:558"
+"Technical maintenance","Maintenance applicative","","resources/views/menu.xml:518"
 "Technical manager","Gestionnaire technique","","resources/views/AlarmEngine.xml:11"
 "Technical topic","Dominante technique","","resources/domains/Topic.xml:9"
 "Technical topics","Dominantes techniques","","resources/domains/TrainingLine.xml:14"
 "Telecom","Télécom","","resources/views/Selects.xml:238"
 "Template","Modèle","","resources/domains/TemplateRuleLine.xml:12
 resources/domains/Campaign.xml:25
-resources/views/menu.xml:450
 resources/views/Template.xml:15
-resources/views/menu.xml:447"
+resources/views/menu.xml:407
+resources/views/menu.xml:410"
 "Template Context","Contexte Modèle","","resources/views/TemplateContext.xml:11
 resources/views/TemplateContext.xml:6"
 "Template Context Line","Règle associées au modèle","","resources/views/TemplateContextLine.xml:11
@@ -3405,10 +3418,10 @@ resources/domains/TemplateContext.xml:12"
 "Template Context Lines","Règles associées au modèle","","resources/views/TemplateContextLine.xml:6"
 "Template Fields","Tags du template","","resources/domains/TemplateSpreadSheet.xml:11"
 "Template Name","Nom du template","","resources/domains/TemplateSpreadSheet.xml:8"
-"Template Rules","Règles du template","","resources/views/menu.xml:440
-resources/views/menu.xml:437"
+"Template Rules","Règles du template","","resources/views/menu.xml:400
+resources/views/menu.xml:397"
 "Template context","Contexte Modèle","","resources/domains/TemplateContextLine.xml:15
-resources/domains/Template.xml:18"
+resources/domains/Template.xml:19"
 "Template file name","Lien vers modèle","","resources/domains/BirtTemplate.xml:11"
 "Template rule","Règle du modèle","","resources/domains/TemplateRuleLine.xml:16
 resources/domains/Campaign.xml:26
@@ -3419,13 +3432,13 @@ resources/views/TemplateRule.xml:11"
 "Template rules","Règles du modèle","","resources/views/TemplateRule.xml:6"
 "Template spread sheet","Template tableur","","resources/domains/TemplateSpreadSheetCriteria.xml:10"
 "Templates","Modèles","","resources/views/Template.xml:6"
-"Templating","Modèle","","resources/views/menu.xml:433"
+"Templating","Modèle","","resources/views/menu.xml:393"
 "Temporary filepath to import IPO, and IPO and Cheque payments","Chemin d'import temporaire des paiements par TIP et TIP Chèque","","resources/domains/AccountConfig.xml:96"
 "Temporary filepath to import IPO, and IPO and Cheque payments rejects","Chemin d'import temporaire des rejets de paiement par TIP et TIP Chèque","","resources/domains/AccountConfig.xml:99"
 "Temporary filepath to import rejected records","Chemin du fichier d'import temporaire","","resources/domains/AccountConfig.xml:80"
 "Territories","Territoires","","resources/views/Territory.xml:6
-resources/views/menu.xml:335
-resources/views/menu.xml:338"
+resources/views/menu.xml:298
+resources/views/menu.xml:295"
 "Territory","Territoire","","resources/views/Territory.xml:11"
 "Test connection to QAS webservice","Tester la connexion vers le service web QAS","","resources/views/General.xml:51"
 "Test mapping service connection","Tester le service de connexion","","resources/views/General.xml:47"
@@ -3434,7 +3447,7 @@ resources/views/menu.xml:338"
 resources/domains/Scheduler.xml:23"
 "Ticket","Ticket","","resources/domains/SpentTime.xml:10
 resources/views/Selects.xml:388"
-"Ticket N°","","","resources/domains/Event.xml:56"
+"Ticket N°","Ticket N°","","resources/domains/Event.xml:56"
 "Tickets","Tickets","","resources/views/Partner.xml:364"
 "Time","Date/Heure","","resources/domains/SnStatusComments.xml:24"
 "Time before expiry (in months)","Durée avant péremption (Mois)","","resources/domains/Product.xml:56"
@@ -3443,7 +3456,7 @@ resources/domains/PlanningLine.xml:19
 resources/domains/TimesheetTotalByType.xml:10"
 "Timesheet input required ?","Imputation feuille de temps ?","","resources/domains/Project.xml:20"
 "Timesheet line","Lignes de temps","","resources/domains/Timesheet.xml:22"
-"Timesheet lines","Temps passés","","resources/domains/OperationOrder.xml:45"
+"Timesheet lines","Lignes de Feuille de Tps","","resources/domains/OperationOrder.xml:45"
 "Timesheet period config","Configuration période feuille de temps","","resources/domains/UserInfo.xml:24"
 "Timesheets","Feuilles de temps","","resources/views/MenuConsultant.xml:72"
 "Timetable","Les horaires","","resources/domains/PublicHolidays.xml:11"
@@ -3453,10 +3466,10 @@ resources/domains/Calendar.xml:10
 resources/domains/PriceList.xml:12"
 "To","à","","resources/domains/Period.xml:15
 resources/domains/Year.xml:13
+resources/domains/Message.xml:26
 resources/domains/MissionOrder.xml:22
 resources/domains/Invoice.xml:36
 resources/domains/Template.xml:13
-resources/domains/Message.xml:25
 resources/views/Charts.xml:209
 resources/views/Charts.xml:149
 resources/domains/JobOffer.xml:13
@@ -3464,7 +3477,7 @@ resources/domains/PlanningLine.xml:16
 resources/domains/Position.xml:13
 resources/domains/MoveLineReport.xml:10"
 "To Account","Compte de remplacement","","resources/domains/AccountEquiv.xml:12"
-"To Date","à","","resources/domains/Timesheet.xml:12
+"To Date","","","resources/domains/Timesheet.xml:12
 resources/views/Charts.xml:423
 resources/domains/CurrencyConversionLine.xml:16
 resources/domains/Timesheet.xml:36
@@ -3534,8 +3547,8 @@ resources/domains/PaymentInvoiceToPay.xml:12"
 "Total record code","Code Enreg. total","","resources/domains/CfonbConfig.xml:20"
 "Total time","Temps total","","resources/domains/Task.xml:15
 resources/domains/Project.xml:44"
-"Tracebacks","Tracebacks","","resources/views/menu.xml:564
-resources/views/menu.xml:561"
+"Tracebacks","Tracebacks","","resources/views/menu.xml:524
+resources/views/menu.xml:521"
 "Tracker","Traceur","","resources/domains/TrackerLine.xml:10"
 "Tracker Line","Ligne de tracker","","resources/domains/Campaign.xml:29"
 "Tracker key","Clé tracker","","resources/domains/TrackerInfo.xml:12"
@@ -3548,7 +3561,7 @@ resources/domains/TrackingNumber.xml:14"
 resources/views/TrackingNumber.xml:6"
 "Tracking Number Configuration","Configuration N° suivi/lots","","resources/views/TrackingNumberConfiguration.xml:21
 resources/views/TrackingNumberConfiguration.xml:6"
-"Tracking number","N° Suivi","","resources/views/Product.xml:122"
+"Tracking number","N° Suivi","","resources/views/Product.xml:123"
 "Tracking number configuration","N° de suivi","","resources/views/menu.xml:202
 resources/views/menu.xml:199"
 "Tracking page","URL du Tracker","","resources/domains/MarketingSettings.xml:10"
@@ -3565,7 +3578,7 @@ resources/domains/GoogleFile.xml:15"
 "Treatment/Operation type","Type de traitement","","resources/domains/AccountingBatch.xml:20"
 "Tuesday","Mardi","","resources/domains/Scheduler.xml:21
 resources/views/Selects.xml:580"
-"Turnover","CA","","resources/views/Charts.xml:442
+"Turnover","","","resources/views/Charts.xml:442
 resources/views/Charts.xml:416
 resources/domains/Task.xml:43
 resources/domains/FinancialInformationHistoryLine.xml:12
@@ -3574,7 +3587,6 @@ resources/domains/Task.xml:46
 resources/domains/Project.xml:37
 resources/views/Charts.xml:323
 resources/domains/Project.xml:34
-resources/views/Product.xml:148
 resources/domains/Partner.xml:81
 resources/domains/Project.xml:31"
 "Turnover + Discount + Expenses","","","resources/domains/OfferLine.xml:11"
@@ -3590,10 +3602,10 @@ resources/domains/Keyword.xml:11
 resources/domains/Campaign.xml:12
 resources/domains/Mail.xml:12
 resources/domains/PriceList.xml:19
-resources/domains/Project.xml:63
 resources/domains/Journal.xml:13
 resources/domains/Calendar.xml:14
 resources/domains/EventReminder.xml:11
+resources/domains/Project.xml:66
 resources/domains/AlarmMessage.xml:9
 resources/domains/AccountType.xml:9
 resources/domains/OfferLine.xml:7
@@ -3627,9 +3639,9 @@ resources/views/Unit.xml:9
 resources/domains/SalesOrderSubLine.xml:17
 resources/domains/PlanningLine.xml:18"
 "Unit conversion","Conversion d'unités","","resources/views/UnitConversion.xml:10"
-"Unit conversions","Conversions d'unités","","resources/views/menu.xml:504
-resources/views/menu.xml:501
-resources/views/UnitConversion.xml:5"
+"Unit conversions","Conversions d'unités","","resources/views/menu.xml:461
+resources/views/UnitConversion.xml:5
+resources/views/menu.xml:464"
 "Unit cost price in company currency","Coût de revient","","resources/domains/SalesOrderSubLine.xml:30
 resources/domains/SalesOrderLine.xml:57"
 "Unit price","Prix à l'unité","","resources/domains/Task.xml:60
@@ -3644,9 +3656,9 @@ resources/domains/ExpenseLine.xml:18
 resources/domains/InvoiceLineEvent.xml:16
 resources/domains/InvoiceLineEvent.xml:18
 resources/domains/OvertimeLine.xml:14"
-"Units","Unités","","resources/views/menu.xml:484
-resources/views/Unit.xml:5
-resources/views/menu.xml:481"
+"Units","","","resources/views/Unit.xml:5
+resources/views/menu.xml:444
+resources/views/menu.xml:441"
 "Unpaid IPO operation code","Code Opér. TIP impayés","","resources/domains/CfonbConfig.xml:34"
 "Unpaid direct debit operation code","Code Opér. Prélèvement impayés","","resources/domains/CfonbConfig.xml:33"
 "UoM","","","resources/domains/ExpenseLine.xml:14
@@ -3654,8 +3666,8 @@ resources/domains/OvertimeLine.xml:13"
 "Upcoming events","Prochains Evènements","","resources/views/Partner.xml:334"
 "Update & Historize conversion rate","MàJ & Historiser le taux actuel","","resources/views/General.xml:40"
 "Update Time","Date/Heure Màj","","resources/domains/SnStatusUpdates.xml:25"
-"Update current product prices and variants","","","resources/views/Product.xml:146"
-"Update products prices","","","resources/views/Product.xml:146"
+"Update current product prices and variants","","","resources/views/Product.xml:147"
+"Update products prices","Maj prix produits","","resources/views/Product.xml:147"
 "Upper reimbursement limit","Seuil sup. de remboursement","","resources/domains/AccountConfig.xml:63"
 "Url","URL","","resources/domains/Calendar.xml:11"
 "Url returned by Paybox once payment cancelled","URL retournée par Paybox une fois le paiement annulé","","resources/domains/PayboxConfig.xml:24"
@@ -3663,7 +3675,7 @@ resources/domains/OvertimeLine.xml:13"
 "Url returned by Paybox once payment refused","URL retournée par Paybox une fois le paiement refusé","","resources/domains/PayboxConfig.xml:23"
 "Usage rule","Règles d'utilisation","","resources/domains/InterbankCodeLine.xml:12"
 "Use for stock only","Utiliser en stock ?","","resources/domains/ProductVariant.xml:20"
-"User","Utilisateurs","","resources/views/UserInfo.xml:12
+"User","","","resources/views/UserInfo.xml:12
 resources/domains/MailAccount.xml:17
 resources/domains/FinancialInformationUpdate.xml:12
 resources/domains/SpentTime.xml:12
@@ -3687,10 +3699,10 @@ resources/views/UserInfo.xml:20"
 resources/domains/SnSearchResult.xml:14"
 "User ref","Réf. Util.","","resources/domains/SnSearchResult.xml:13"
 "Username","Identifiant Réseaux sociaux","","resources/domains/PersonalCredential.xml:17"
-"Users","Utilisateurs","","resources/views/menu.xml:400
-resources/views/menu.xml:397"
+"Users","Utilisateurs","","resources/views/menu.xml:357
+resources/views/menu.xml:360"
 "Users list","Les utilisateurs","","resources/views/UserInfo.xml:5"
-"Users/Companies","Utilisateurs/Sociétés","","resources/views/menu.xml:394"
+"Users/Companies","Utilisateurs/Sociétés","","resources/views/menu.xml:354"
 "Users/Employees","Utilisateurs/Employés","","resources/domains/Team.xml:13"
 "Utilities","","","resources/views/Selects.xml:226"
 "V.A.T.","T.V.A.","","resources/domains/PurchaseOrderLineTax.xml:9"
@@ -3722,8 +3734,8 @@ resources/domains/RoutingRule.xml:14
 resources/domains/IrrecoverableReportLine.xml:14
 resources/domains/BirtTemplateParameter.xml:11"
 "Variables list returned by Paybox","Liste des variables à retourner par Paybox","","resources/domains/PayboxConfig.xml:21"
-"Variants","Variantes","","resources/domains/InvoiceLine.xml:27
-resources/views/Product.xml:135"
+"Variants","Variantes","","resources/views/Product.xml:136
+resources/domains/InvoiceLine.xml:27"
 "Variation","Variation","","resources/views/CurrencyConversionLine.xml:43
 resources/domains/CurrencyConversionLine.xml:17"
 "Vehicle Fiscal Power","Puissance fiscale véhicule (CV)","","resources/domains/Employee.xml:42"
@@ -3756,13 +3768,13 @@ resources/views/Scheduler.xml:27"
 "XLS","Excel","","resources/views/Selects.xml:360"
 "XML","XML","","resources/views/Selects.xml:276"
 "XML File","Fichiers XML","","resources/views/Selects.xml:281"
-"Year","Année fiscale","","resources/domains/Period.xml:12"
+"Year","Année","","resources/domains/Period.xml:12"
 "Year 1 To Date","","","resources/views/Charts.xml:276"
 "Year 2 To Date","","","resources/views/Charts.xml:277"
 "Year of completion","Année d'obtention","","resources/domains/TrainingLine.xml:15"
 "Yearly reset","Remise à zéro annuelle","","resources/domains/Sequence.xml:20"
-"Years","Années","","resources/views/menu.xml:513
-resources/views/menu.xml:510"
+"Years","Années","","resources/views/menu.xml:470
+resources/views/menu.xml:473"
 "Yes","Oui","","resources/views/Selects.xml:193
 resources/views/Selects.xml:171
 resources/views/Selects.xml:176"
@@ -3864,8 +3876,8 @@ resources/views/Selects.xml:176"
 "help:Invoice.inTaxTotal","Egal à la somme du total H.T. Et du total T.V.A.","","resources/domains/Invoice.xml:93"
 "help:Invoice.internalReference","Réfère à un N° ou Séquence de document présente sur l'ERP (N° Devis, N° Commande, N° BL...).","","resources/domains/Invoice.xml:27"
 "help:Invoice.taxTotal","Egal à la somme des montants TVA des lignes de T.V.A.","","resources/domains/Invoice.xml:92"
-"help:Message.bccEmailAddressSet","Destinataires en copie cachée de l'email.","","resources/domains/Message.xml:27"
-"help:Message.ccEmailAddressSet","Destinataires en copie de l'email.","","resources/domains/Message.xml:26"
+"help:Message.bccEmailAddressSet","Destinataires en copie cachée de l'email.","","resources/domains/Message.xml:28"
+"help:Message.ccEmailAddressSet","Destinataires en copie de l'email.","","resources/domains/Message.xml:27"
 "help:Message.company","En-tête société","","resources/domains/Message.xml:21"
 "help:MoveLine.counter","This sequence is unique per Move, automatically reset to 1 for a new moveline","","resources/domains/MoveLine.xml:14"
 "help:PaymentMode.invoiceLabel","Libellé qui sera affiché sur le PDF.","","resources/domains/PaymentMode.xml:15"

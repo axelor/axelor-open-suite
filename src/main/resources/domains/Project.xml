@@ -58,6 +58,9 @@
   	
   	<boolean name="isAdministrative" title="Administrative ?"/>
   	
+  	<integer name="progress" title="Progress" selection="grade.0.up.to.100.select"/>
+  	
+  	
     <!-- Need -->
     <date name="consultationDate" title="Consultation Date"/>
     <string name="needTypeSelect" title="Type" selection="organisation.project.need.type.select"/>
