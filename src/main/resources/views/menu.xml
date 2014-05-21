@@ -43,6 +43,73 @@
 		<domain>self.fromLocation.typeSelect = 1 OR self.toLocation.typeSelect = 1</domain>
 		<context name="_typeSelect" expr="1"/>
 	</action-view>		
+	
+<!-- 	MUST BE DELETED -->
+	
+	<menuitem name="stock-root-planned" parent="stock-root"
+		title="Prévisions"  />
+	
+	<menuitem name="stock-root-incoming-production" parent="stock-root-planned"
+		title="Besoins de production" action="stock.root.incoming.production" />
+
+	<action-view name="stock.root.incoming.production" title="Besoins de production"
+		model="com.axelor.apps.supplychain.db.StockMove" icon="img/16px/productSmall_16px.png">
+		<view type="grid" name="stock-move-grid"/>
+		<view type="form" name="stock-move-form"/>
+		<domain>self.statusSelect = 2 and self.toLocation.id = 5</domain>
+	</action-view>	
+	
+	<menuitem name="stock-root-outcoming-production" parent="stock-root-planned"
+		title="Prévisions de production" action="stock.root.outcoming.production" />
+
+	<action-view name="stock.root.outcoming.production" title="Prévisions de production"
+		model="com.axelor.apps.supplychain.db.StockMove" icon="img/16px/productSmall_16px.png">
+		<view type="grid" name="stock-move-grid"/>
+		<view type="form" name="stock-move-form"/>
+		<domain>self.statusSelect = 2 and self.fromLocation.id = 5</domain>
+	</action-view>	
+	
+	<menuitem name="stock-root-incoming-supplier" parent="stock-root-planned"
+		title="Receptions fournisseurs" action="stock.root.incoming.production" />
+
+	<action-view name="stock.root.incoming.production" title="Receptions fournisseurs"
+		model="com.axelor.apps.supplychain.db.StockMove" icon="img/16px/productSmall_16px.png">
+		<view type="grid" name="stock-move-grid"/>
+		<view type="form" name="stock-move-form"/>
+		<domain>self.statusSelect = 2 and self.toLocation.id = 3</domain>
+	</action-view>	
+	
+	<menuitem name="stock-root-outcoming-supplier" parent="stock-root-planned"
+		title="Retours fournisseurs" action="stock.root.outcoming.production" />
+
+	<action-view name="stock.root.outcoming.production" title="Retours fournisseurs"
+		model="com.axelor.apps.supplychain.db.StockMove" icon="img/16px/productSmall_16px.png">
+		<view type="grid" name="stock-move-grid"/>
+		<view type="form" name="stock-move-form"/>
+		<domain>self.statusSelect = 2 and self.fromLocation.id = 3</domain>
+	</action-view>	
+	
+	<menuitem name="stock-root-incoming-supplier" parent="stock-root-planned"
+		title="Expéditions clients" action="stock.root.incoming.production" />
+
+	<action-view name="stock.root.incoming.production" title="Expéditions clients"
+		model="com.axelor.apps.supplychain.db.StockMove" icon="img/16px/productSmall_16px.png">
+		<view type="grid" name="stock-move-grid"/>
+		<view type="form" name="stock-move-form"/>
+		<domain>self.statusSelect = 2 and self.toLocation.id = 2</domain>
+	</action-view>	
+	
+	<menuitem name="stock-root-outcoming-supplier" parent="stock-root-planned"
+		title="Retours clients" action="stock.root.outcoming.production" />
+
+	<action-view name="stock.root.outcoming.production" title="Retours clients"
+		model="com.axelor.apps.supplychain.db.StockMove" icon="img/16px/productSmall_16px.png">
+		<view type="grid" name="stock-move-grid"/>
+		<view type="form" name="stock-move-form"/>
+		<domain>self.statusSelect = 2 and self.fromLocation.id = 2</domain>
+	</action-view>	
+	
+<!-- END MUST BE DELETED -->
 		
 		
 	<menuitem name="stock-root-inventories" parent="stock-root"

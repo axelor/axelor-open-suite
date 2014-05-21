@@ -279,7 +279,7 @@ public class StockMoveService {
 			newStockSeq = newStockMove.getStockMoveSeq();
 		}
 		if(stockMove.getIsWithReturnSurplus() && this.mustBeSplit(stockMove.getStockMoveLineList()))  {
-			StockMove newStockMove = this.copyAndSplitStockMoveReverse(stockMove);
+			StockMove newStockMove = this.copyAndSplitStockMoveReverse(stockMove, true);
 			if(newStockSeq != null)
 				newStockSeq = newStockSeq+" "+newStockMove.getStockMoveSeq();
 			else
@@ -332,7 +332,7 @@ public class StockMoveService {
 	}
 	
 	
-	public StockMove copyAndSplitStockMoveReverse(StockMove stockMove) throws AxelorException  {
+	public StockMove copyAndSplitStockMoveReverse(StockMove stockMove, boolean split) throws AxelorException  {
 		
 		StockMove newStockMove = new StockMove();
 		
@@ -359,7 +359,10 @@ public class StockMoveService {
 				StockMoveLine newStockMoveLine = JPA.copy(stockMoveLine, false);
 				
 				newStockMoveLine.setRealQty(BigDecimal.ZERO);
-				newStockMoveLine.setQty(stockMoveLine.getRealQty().subtract(stockMoveLine.getQty()));
+				
+				if(!split)  {
+					newStockMoveLine.setQty(stockMoveLine.getRealQty().subtract(stockMoveLine.getQty()));
+				}
 				
 				newStockMove.addStockMoveLineListItem(newStockMoveLine);
 			}
@@ -368,7 +371,7 @@ public class StockMoveService {
 		newStockMove.setStatusSelect(IStockMove.STATUS_PLANNED);
 		newStockMove.setRealDate(null);
 		newStockMove.setStockMoveSeq(this.getSequenceStockMove(newStockMove.getTypeSelect(), newStockMove.getCompany()));
-		newStockMove.setName(newStockMove.getStockMoveSeq() + " Partial stock move (From " + stockMove.getStockMoveSeq() + " )" );
+		newStockMove.setName(newStockMove.getStockMoveSeq() + " Reverse stock move (From " + stockMove.getStockMoveSeq() + " )" );
 		
 		return newStockMove.save();
 		
@@ -464,6 +467,16 @@ public class StockMoveService {
 		for(StockMoveLine line : stockMove.getStockMoveLineList())
 			line.setRealQty(line.getQty());
 		stockMove.save();
+	}
+	
+	
+	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
+	public void generateReversion(StockMove stockMove) throws AxelorException  {
+	
+		LOG.debug("Creation d'un mouvement de stock inverse pour le mouvement de stock: {} ", new Object[] { stockMove.getStockMoveSeq() });
+		
+		this.copyAndSplitStockMoveReverse(stockMove, false).save();
+		
 	}
 	
 }

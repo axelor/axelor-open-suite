@@ -252,4 +252,15 @@ public class StockMoveController {
 		response.setReload(true);
 	}
 	
+	public void generateReversion(ActionRequest request, ActionResponse response)  {
+		
+		StockMove stockMove = request.getContext().asType(StockMove.class);
+
+		try {
+			stockMoveService.generateReversion(StockMove.find(stockMove.getId()));		
+			response.setReload(true);
+		}
+		catch(Exception e)  { TraceBackService.trace(response, e); }
+	}
+	
 }
