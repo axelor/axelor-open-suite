@@ -322,7 +322,7 @@ public class AddressController {
 			File file = new File("/home/axelor/www/HTML/latlng_"+partnerList.getId()+".csv");
 			//file.write("latitude,longitude,fullName,turnover\n");
 
-			Iterator<Partner> it = (Iterator<Partner>) partnerList.getPartnerSet();
+			Iterator<Partner> it = (Iterator<Partner>) partnerList.getPartnerSet().iterator();
 
 			while(it.hasNext()) {
 
