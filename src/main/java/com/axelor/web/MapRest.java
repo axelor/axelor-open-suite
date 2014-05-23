@@ -13,6 +13,7 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.crm.db.Lead;
+import com.axelor.apps.crm.db.Opportunity;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -94,4 +95,157 @@ public class MapRest {
 		mainNode.put("data", arrayNode);
 		return mainNode;
 	}
+	@Path("/lead")
+	@GET
+	@Transactional
+	@Produces(MediaType.APPLICATION_JSON)
+	public JsonNode getLeads() {
+
+		List<Lead> leads = Lead.all().fetch();
+		JsonNodeFactory factory = JsonNodeFactory.instance;
+		ObjectNode mainNode = factory.objectNode();
+		ArrayNode arrayNode = factory.arrayNode();
+
+		for (Lead lead : leads) {
+			
+			Partner partner = lead.getPartner();
+			if (partner == null) continue;
+			String fullName = null;
+			
+			if (lead.getEnterpriseName() == null) {
+				fullName = lead.getFirstName();
+			}			
+			else {
+				fullName = new String(lead.getEnterpriseName() + "</br>" + lead.getFirstName());
+			}
+			ObjectNode objectNode = factory.objectNode();
+			objectNode.put("fullName", fullName);
+			objectNode.put("fixedPhone", partner.getFixedPhone() != null ? partner.getFixedPhone() : " ");
+			
+			if (partner.getEmailAddress() != null) {
+				objectNode.put("emailAddress", partner.getEmailAddress().getAddress());
+			}
+			
+			if (partner.getMainInvoicingAddress() != null) {
+				Address address = partner.getMainInvoicingAddress();
+				BigDecimal latit = address.getLatit();
+				BigDecimal longit = address.getLongit();
+				
+				if (BigDecimal.ZERO.compareTo(latit) == 0 || BigDecimal.ZERO.compareTo(longit) == 0) {
+					
+					String qString = address.getFullName();					
+ 					Map<String,Object> latlng =  addressService.getMapGoogle(qString, latit, longit);
+ 					latit = (BigDecimal) latlng.get("latitude");
+ 					longit = (BigDecimal) latlng.get("longitude");
+ 					address.setLatit(latit);
+ 					address.setLongit(longit);
+ 					address.save();
+				}
+				
+				objectNode.put("latit", latit);
+				objectNode.put("longit", longit);
+				StringBuilder addressString = new StringBuilder();
+				
+				if (address.getAddressL2() != null) {
+					addressString.append(address.getAddressL2() + "</br>");
+				}
+				if (address.getAddressL3() != null) {
+					addressString.append(address.getAddressL3() + "</br>");
+				}
+				if (address.getAddressL4() != null) {
+					addressString.append(address.getAddressL4() + "</br>");
+				}
+				if (address.getAddressL5() != null) {
+					addressString.append(address.getAddressL5() + "</br>");
+				}
+				if (address.getAddressL6() != null) {
+					addressString.append(address.getAddressL6());
+				}						 
+				if (address.getAddressL7Country() != null) {
+					addressString = addressString.append("</br>" + address.getAddressL7Country().getName());
+				}
+				objectNode.put("address", addressString.toString());				
+			}
+			
+			objectNode.put("pinColor", "yellow");
+			objectNode.put("pinChar", "L");			
+			arrayNode.add(objectNode);	
+		}
+		mainNode.put("status", 0);
+		mainNode.put("data", arrayNode);
+		return mainNode;
+	}
+	@Path("/opportunity")
+	@GET
+	@Transactional
+	@Produces(MediaType.APPLICATION_JSON)
+	public JsonNode getOpportunities() {
+
+		List<Opportunity> opportunities = Opportunity.all().fetch();
+		JsonNodeFactory factory = JsonNodeFactory.instance;
+		ObjectNode mainNode = factory.objectNode();
+		ArrayNode arrayNode = factory.arrayNode();
+
+		for (Opportunity opportunity : opportunities) {
+			
+			Partner partner = opportunity.getPartner();
+			if (partner == null) continue;
+			
+			ObjectNode objectNode = factory.objectNode();
+			objectNode.put("fullName", opportunity.getName() + "</br>" + opportunity.getAmount());
+			objectNode.put("fixedPhone", partner.getFixedPhone() != null ? partner.getFixedPhone() : " ");
+			
+			if (partner.getEmailAddress() != null) {
+				objectNode.put("emailAddress", partner.getEmailAddress().getAddress());
+			}
+			
+			if (partner.getMainInvoicingAddress() != null) {
+				Address address = partner.getMainInvoicingAddress();
+				BigDecimal latit = address.getLatit();
+				BigDecimal longit = address.getLongit();
+				
+				if (BigDecimal.ZERO.compareTo(latit) == 0 || BigDecimal.ZERO.compareTo(longit) == 0) {
+					
+					String qString = address.getFullName();					
+ 					Map<String,Object> latlng =  addressService.getMapGoogle(qString, latit, longit);
+ 					latit = (BigDecimal) latlng.get("latitude");
+ 					longit = (BigDecimal) latlng.get("longitude");
+ 					address.setLatit(latit);
+ 					address.setLongit(longit);
+ 					address.save();
+				}
+				
+				objectNode.put("latit", latit);
+				objectNode.put("longit", longit);
+				StringBuilder addressString = new StringBuilder();
+				
+				if (address.getAddressL2() != null) {
+					addressString.append(address.getAddressL2() + "</br>");
+				}
+				if (address.getAddressL3() != null) {
+					addressString.append(address.getAddressL3() + "</br>");
+				}
+				if (address.getAddressL4() != null) {
+					addressString.append(address.getAddressL4() + "</br>");
+				}
+				if (address.getAddressL5() != null) {
+					addressString.append(address.getAddressL5() + "</br>");
+				}
+				if (address.getAddressL6() != null) {
+					addressString.append(address.getAddressL6());
+				}						 
+				if (address.getAddressL7Country() != null) {
+					addressString = addressString.append("</br>" + address.getAddressL7Country().getName());
+				}
+				objectNode.put("address", addressString.toString());				
+			}
+			
+			objectNode.put("pinColor", "pink");
+			objectNode.put("pinChar", "O");			
+			arrayNode.add(objectNode);	
+		}
+		mainNode.put("status", 0);
+		mainNode.put("data", arrayNode);
+		return mainNode;
+	}	
 }

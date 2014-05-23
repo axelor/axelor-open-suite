@@ -45,6 +45,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.report.IReport;
+import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserInfoService;
 import com.axelor.apps.tool.net.URLService;
@@ -64,6 +65,9 @@ public class PartnerController {
 	
 	@Inject
 	UserInfoService userInfoService;
+	
+	@Inject
+	AddressService addressService;
 
 	private static final Logger LOG = LoggerFactory.getLogger(PartnerController.class);
 
@@ -242,8 +246,12 @@ public class PartnerController {
 		
 		String appHome = AppSettings.get().get("application.home");
 		if (Strings.isNullOrEmpty(appHome)) {
-			response.setFlash("Can not open map, Please Configure Application Home First.");
+			response.setFlash("Can not open map, Please Configure application.home property first.");
 			return;
+		}
+		if (!addressService.isInternetAvailable()) {
+			response.setFlash("Can not open map, Please Check your Internet connection.");
+			return;			
 		}
 		String mapUrl = new String(appHome + "/map/gmap-objs.html?apphome=" + appHome + "&object=partner");
 		Map<String, Object> mapView = new HashMap<String, Object>();
