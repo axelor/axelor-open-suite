@@ -30,8 +30,13 @@
  */
 package com.axelor.apps.crm.web;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.axelor.app.AppSettings;
+import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.user.UserInfoService;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.Opportunity;
@@ -39,6 +44,7 @@ import com.axelor.apps.crm.service.OpportunityService;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 public class OpportunityController {
@@ -47,6 +53,9 @@ public class OpportunityController {
 	
 	@Inject
 	UserInfoService uis;
+	
+	@Inject
+	AddressService addressService;
 	
 	public void saveOpportunitySalesStage(ActionRequest request, ActionResponse response) throws AxelorException {
 		Opportunity opportunity = request.getContext().asType(Opportunity.class);
@@ -70,4 +79,22 @@ public class OpportunityController {
 		response.setReload(true);
 	}
 	
+	public void showOpportunitiesOnMap(ActionRequest request, ActionResponse response) throws IOException {
+		
+		String appHome = AppSettings.get().get("application.home");
+		if (Strings.isNullOrEmpty(appHome)) {
+			response.setFlash("Can not open map, Please Configure Application Home First.");
+			return;
+		}
+		if (!addressService.isInternetAvailable()) {
+			response.setFlash("Can not open map, Please Check your Internet connection.");
+			return;			
+		}		
+		String mapUrl = new String(appHome + "/map/gmap-objs.html?apphome=" + appHome + "&object=opportunity");
+		Map<String, Object> mapView = new HashMap<String, Object>();
+		mapView.put("title", "Opportunities");
+		mapView.put("resource", mapUrl);
+		mapView.put("viewType", "html");		
+		response.setView(mapView);
+	}	
 }
