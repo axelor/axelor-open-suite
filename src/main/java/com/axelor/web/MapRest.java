@@ -14,10 +14,16 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.Opportunity;
+import com.axelor.db.Model;
+import com.axelor.i18n.I18n;
+import com.axelor.i18n.I18nBundle;
+import com.axelor.i18n.I18nControl;
+import com.axelor.meta.db.MetaModel;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -110,14 +116,11 @@ public class MapRest {
 			
 			Partner partner = lead.getPartner();
 			if (partner == null) continue;
-			String fullName = null;
+			String fullName = lead.getFirstName() + " " + lead.getName();
 			
-			if (lead.getEnterpriseName() == null) {
-				fullName = lead.getFirstName();
+			if (lead.getEnterpriseName() != null) {
+				fullName = lead.getEnterpriseName() + "</br>" + fullName;
 			}			
-			else {
-				fullName = new String(lead.getEnterpriseName() + "</br>" + lead.getFirstName());
-			}
 			ObjectNode objectNode = factory.objectNode();
 			objectNode.put("fullName", fullName);
 			objectNode.put("fixedPhone", partner.getFixedPhone() != null ? partner.getFixedPhone() : " ");
@@ -192,7 +195,19 @@ public class MapRest {
 			if (partner == null) continue;
 			
 			ObjectNode objectNode = factory.objectNode();
-			objectNode.put("fullName", opportunity.getName() + "</br>" + opportunity.getAmount());
+			
+			String currencyCode = "";
+			if (opportunity.getCurrency() != null) {
+				currencyCode = opportunity.getCurrency().getCode();
+			}
+			
+			String amtLabel = "Amount";
+			if (!Strings.isNullOrEmpty(I18n.get("amount"))) {
+				amtLabel = I18n.get("amount");				
+			}
+			String amount = amtLabel + " : " +opportunity.getAmount() + " " + currencyCode;
+			
+			objectNode.put("fullName", opportunity.getName() + "</br>" + amount);
 			objectNode.put("fixedPhone", partner.getFixedPhone() != null ? partner.getFixedPhone() : " ");
 			
 			if (partner.getEmailAddress() != null) {
