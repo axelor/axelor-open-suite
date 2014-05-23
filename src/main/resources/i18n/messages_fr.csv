@@ -1,59 +1,59 @@
-"key","message","comment","context"
-"Address Block","","","resources/views/Message.xml:30"
-"Chart","Graphique","","resources/views/Selects.xml:39"
-"Configuration","Configuration","","resources/views/menu.xml:73"
-"Configurations","Configurations","","resources/views/MailAccount.xml:25"
-"Content","","","resources/views/Message.xml:35"
-"Delete","Supprimer","","resources/views/Message.xml:48"
-"Deleted","Supprimée","","resources/views/Selects.xml:28"
-"Draft","Brouillon","","resources/views/Selects.xml:26"
-"Draft emails","Emails Brouillon","","resources/views/menu.xml:38
+"key";"message";"comment";"context"
+"Address Block";"Bloc d'adresse";;"resources/views/Message.xml:30"
+"Chart";"Graphique";;"resources/views/Selects.xml:39"
+"Configuration";"Configuration";;"resources/views/menu.xml:73"
+"Configurations";"Configurations";;"resources/views/MailAccount.xml:25"
+"Content";"Contenu";;"resources/views/Message.xml:35"
+"Delete";"Supprimer";;"resources/views/Message.xml:48"
+"Deleted";"Supprimée";;"resources/views/Selects.xml:28"
+"Draft";"Brouillon";;"resources/views/Selects.xml:26"
+"Draft emails";"Emails Brouillon";;"resources/views/menu.xml:38
 resources/views/menu.xml:42"
-"Email","Email","","resources/views/Message.xml:13
+"Email";"Email";;"resources/views/Message.xml:13
 resources/views/Selects.xml:38"
-"Email account","Compte email","","resources/views/menu.xml:75
+"Email account";"Compte email";;"resources/views/menu.xml:75
 resources/views/menu.xml:78"
-"Email address","Adresse Email","","resources/views/EmailAddress.xml:15
+"Email address";"Adresse Email";;"resources/views/EmailAddress.xml:15
 resources/views/EmailAddress.xml:10"
-"Email addresses","Adresses email","","resources/views/EmailAddress.xml:6
+"Email addresses";"Adresses email";;"resources/views/EmailAddress.xml:6
 resources/views/menu.xml:93
 resources/views/menu.xml:96"
-"Email box","Boîte Email","","resources/views/menu.xml:13"
-"Emails","Emails","","resources/views/Message.xml:6"
-"Event","Evènement","","resources/views/Selects.xml:14"
-"Generate message","Générer message","","resources/views/GenerateMessageWizard.xml:8"
-"IMAP","IMAP","","resources/views/Selects.xml:33"
-"Inbox","Boîte de réception","","resources/views/menu.xml:16
+"Email box";"Boîte Email";;"resources/views/menu.xml:13"
+"Emails";"Emails";;"resources/views/Message.xml:6"
+"Event";"Evènement";;"resources/views/Selects.xml:14"
+"Generate message";"Générer message";;"resources/views/GenerateMessageWizard.xml:8"
+"IMAP";"IMAP";;"resources/views/Selects.xml:33"
+"Inbox";"Boîte de réception";;"resources/views/menu.xml:16
 resources/views/menu.xml:20"
-"Informations","Informations","","resources/views/Message.xml:17
+"Informations";"Informations";;"resources/views/Message.xml:17
 resources/views/MailAccount.xml:15"
-"Internal Message","","","resources/views/Message.xml:33"
-"Lead","","","resources/views/Selects.xml:11"
-"Login","Identifiant","","resources/views/MailAccount.xml:21"
-"Mail","","","resources/views/Selects.xml:37"
-"Mail account","Compte email","","resources/views/MailAccount.xml:14"
-"Mail accounts","Comptes email","","resources/views/MailAccount.xml:6"
-"New email","Nouvel email","","resources/views/menu.xml:32
+"Internal Message";"Message interne";;"resources/views/Message.xml:33"
+"Lead";"Piste";;"resources/views/Selects.xml:11"
+"Login";"Identifiant";;"resources/views/MailAccount.xml:21"
+"Mail";"Courrier";;"resources/views/Selects.xml:37"
+"Mail account";"Compte email";;"resources/views/MailAccount.xml:14"
+"Mail accounts";"Comptes email";;"resources/views/MailAccount.xml:6"
+"New email";"Nouvel email";;"resources/views/menu.xml:32
 resources/views/menu.xml:28"
-"Opportunity","Opportunité","","resources/views/Selects.xml:12"
-"POP","POP","","resources/views/Selects.xml:32"
-"Partner/Contact","Tiers/Contact","","resources/views/Selects.xml:10"
-"Print","Imprimer","","resources/views/Message.xml:15"
-"Product","Produit","","resources/views/Selects.xml:13"
-"Project/Business","","","resources/views/Selects.xml:16"
-"Quote/Order","Devis/Commande","","resources/views/Selects.xml:15"
-"Received","Reçu","","resources/views/Selects.xml:21"
-"Recipients","Destinataires","","resources/views/Message.xml:26"
-"Related to","Associé à ","","resources/views/Message.xml:40"
-"Routings","Gamme","","resources/views/menu.xml:85
+"Opportunity";"Opportunité";;"resources/views/Selects.xml:12"
+"POP";"POP";;"resources/views/Selects.xml:32"
+"Partner/Contact";"Tiers/Contact";;"resources/views/Selects.xml:10"
+"Print";"Imprimer";;"resources/views/Message.xml:15"
+"Product";"Produit";;"resources/views/Selects.xml:13"
+"Project/Business";"Projet/Affaire";;"resources/views/Selects.xml:16"
+"Quote/Order";"Devis/Commande";;"resources/views/Selects.xml:15"
+"Received";"Reçu";;"resources/views/Selects.xml:21"
+"Recipients";"Destinataires";;"resources/views/Message.xml:26"
+"Related to";"Associé à ";;"resources/views/Message.xml:40"
+"Routings";"Gamme";;"resources/views/menu.xml:85
 resources/views/menu.xml:88"
-"Send","Envoyer","","resources/views/Message.xml:47"
-"Sent","Envoyé","","resources/views/Selects.xml:27
+"Send";"Envoyer";;"resources/views/Message.xml:47"
+"Sent";"Envoyé";;"resources/views/Selects.xml:27
 resources/views/Selects.xml:22"
-"Sentbox","Emails Envoyés","","resources/views/menu.xml:54
+"Sentbox";"Emails Envoyés";;"resources/views/menu.xml:54
 resources/views/menu.xml:50"
-"Task (Project)","Tâche (Projet)","","resources/views/Selects.xml:17"
-"Template","Modèle","","resources/views/GenerateMessageWizard.xml:9"
-"Trash","Corbeille","","resources/views/menu.xml:66
+"Task (Project)";"Tâche (Projet)";;"resources/views/Selects.xml:17"
+"Template";"Modèle";;"resources/views/GenerateMessageWizard.xml:9"
+"Trash";"Corbeille";;"resources/views/menu.xml:66
 resources/views/menu.xml:62"
-"Validate","Valider","","resources/views/GenerateMessageWizard.xml:10"
+"Validate";"Valider";;"resources/views/GenerateMessageWizard.xml:10"

@@ -91,7 +91,7 @@ public class TemplateMessageService {
 		String toRecipients = "";
 		String ccRecipients = "";
 		String bccRecipients = "";
-		String addressBlock="";
+		String addressBlock= "";
 		int mediaTypeSelect;
 		
 		if(template.getContent() != null)  {
