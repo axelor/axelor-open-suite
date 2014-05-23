@@ -36,6 +36,8 @@ import groovy.util.slurpersupport.Node;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -348,5 +350,23 @@ public class AddressService {
 				return true;
 		}
 		return false;
+	}
+	
+	public boolean isInternetAvailable() {
+		return testInternet("google.com") || testInternet("facebook.com") || testInternet("yahoo.com");
+	}
+	
+	private boolean testInternet(String site) {
+	    Socket socket = new Socket();
+	    InetSocketAddress address = new InetSocketAddress(site, 80);
+	    try {
+	    	socket.connect(address, 3000);
+	        return true;
+	    } catch (IOException e) {
+	        return false;
+	    } finally {
+	        try {socket.close();}
+	        catch (IOException e) {}	        
+	    }
 	}
 }
