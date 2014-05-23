@@ -30,6 +30,7 @@
  */
 package com.axelor.apps.crm.web;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +38,9 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.app.AppSettings;
 import com.axelor.apps.ReportSettings;
+import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.report.IReport;
 import com.axelor.apps.tool.net.URLService;
@@ -46,10 +49,14 @@ import com.axelor.auth.db.User;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
+import com.google.inject.Inject;
 
 
 public class LeadController {
 
+	@Inject
+	AddressService addressService;
+	
 	private static final Logger LOG = LoggerFactory.getLogger(LeadController.class);
 	
 	
@@ -129,5 +136,23 @@ public class LeadController {
 		}	
 	}
 	
+	public void showLeadsOnMap(ActionRequest request, ActionResponse response) throws IOException {
+		
+		String appHome = AppSettings.get().get("application.home");
+		if (Strings.isNullOrEmpty(appHome)) {
+			response.setFlash("Can not open map, Please Configure Application Home First.");
+			return;
+		}
+		if (!addressService.isInternetAvailable()) {
+			response.setFlash("Can not open map, Please Check your Internet connection.");
+			return;			
+		}		
+		String mapUrl = new String(appHome + "/map/gmap-objs.html?apphome=" + appHome + "&object=lead");
+		Map<String, Object> mapView = new HashMap<String, Object>();
+		mapView.put("title", "Leads");
+		mapView.put("resource", mapUrl);
+		mapView.put("viewType", "html");		
+		response.setView(mapView);
+	}	
 	
 }

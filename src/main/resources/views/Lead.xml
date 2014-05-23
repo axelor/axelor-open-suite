@@ -7,6 +7,7 @@
     	<toolbar>
     		<button name="grabLeads" help="Assign to me" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.EventController:assignToMeLead" />
     		<button name="print" title="Print" icon="fa-print" onClick="action-crm-lead-method-print"/>
+    		<button name="showMap" title="Map" onClick="action-show-leads-on-map-page" />
     	</toolbar>
     	<hilite color="warning" if="statusSelect == 1 &amp;&amp; (userInfo == null || contactDate == null) &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 15"/>
 	    <hilite color="primary" if="statusSelect == 1"/>
@@ -257,6 +258,10 @@
 		<domain>self.lead.id = :id AND self.typeSelect = 5</domain>
 		<context name="id" expr="eval: id"/>
 	</action-view>
+
+	<action-method name="action-show-leads-on-map-page">
+	  <call method="showLeadsOnMap" class="com.axelor.apps.crm.web.LeadController"/>
+	</action-method>	
 	
    	<search-filters name="lead-filters" model="com.axelor.apps.crm.db.Lead" title="Lead filters">
 		<filter title="My Leads">
