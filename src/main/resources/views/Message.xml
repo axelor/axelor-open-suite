@@ -10,7 +10,8 @@
     </grid>
     
     <form name="message-form" title="Email" model="com.axelor.apps.message.db.Message" cols="4"
-    onNew="action-message-record-default,action-message-record-mail-account,action-message-record-get-signature,action-message-record-active-company">
+    onNew="action-message-record-default,action-message-record-mail-account,action-message-record-get-signature,action-message-record-active-company"
+    onLoad="action-message-attrs-showhide-by-media-type">
       <toolbar>
 	        <button name="print" title="Print" icon="fa-print" onClick="save,action-message-method-print-pdf-email" readonlyIf="id == null"/>
 	  </toolbar>
@@ -27,9 +28,7 @@
         	<field name="toEmailAddressSet" widget="TagSelect" x-create="emailAddress" form-view="email-address-form" colSpan="4"/>
         	<field name="ccEmailAddressSet" widget="TagSelect" x-create="emailAddress" form-view="email-address-form" colSpan="4"/>
         	<field name="bccEmailAddressSet" widget="TagSelect" x-create="emailAddress" form-view="email-address-form" colSpan="4"/>
-        	<separator title="Address Block" colSpan="4"/>
-        	<field name="addressBlock" colSpan="4" showTitle="false" widget="html"/>
-        	<separator title="" colSpan="4"/>
+        	<field name="addressBlock" colSpan="4" widget="html"/>
         	<field name="recipientUserInfo" widget="TagSelect" x-create="name" colSpan="4" help="Internal Message"/>
         </group>
         <group title="Content" colSpan="4" readonlyIf="statusSelect == 2 || statusSelect == 3">
@@ -73,8 +72,20 @@
     
     <action-record name="action-message-record-delete-status" model="com.axelor.apps.message.db.Message">
     	<field name="statusSelect" expr="3"/>
-    
     </action-record>
+	
+	<action-attrs name="action-message-attrs-showhide-by-media-type">		
+	  	<attribute name="hidden" for="addressBlock" expr="false" if="eval: mediaTypeSelect == 1" />
+	   	<attribute name="hidden" for="addressBlock" expr="true" if="eval: mediaTypeSelect == 2 || mediaTypeSelect == 3" />
+	    <attribute name="hidden" for="toEmailAddressSet" expr="true" if="eval: mediaTypeSelect == 1 || mediaTypeSelect == 3" />
+	   	<attribute name="hidden" for="toEmailAddressSet" expr="false" if="eval: mediaTypeSelect == 2" />
+	    <attribute name="hidden" for="ccEmailAddressSet" expr="true" if="eval: mediaTypeSelect == 1 || mediaTypeSelect == 3" />
+	   	<attribute name="hidden" for="ccEmailAddressSet" expr="false" if="eval: mediaTypeSelect == 2" />
+	    <attribute name="hidden" for="bccEmailAddressSet" expr="true" if="eval: mediaTypeSelect == 1 || mediaTypeSelect == 3" />
+	   	<attribute name="hidden" for="bccEmailAddressSet" expr="false" if="eval: mediaTypeSelect == 2" />
+	   	<attribute name="hidden" for="recipientUserInfo" expr="true" if="eval: mediaTypeSelect == 2 ||  mediaTypeSelect == 1" />
+	  	<attribute name="hidden" for="recipientUserInfo" expr="false" if="eval: mediaTypeSelect == 3" /> 
+    </action-attrs>
     
     <!-- ACTION METHOD -->
 	<action-method name="action-message-method-send-by-email">
