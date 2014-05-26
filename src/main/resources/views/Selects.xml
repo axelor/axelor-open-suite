@@ -36,7 +36,6 @@
 	<selection name="message.media.type.select">
 		<option value="1">Mail</option>
 		<option value="2">Email</option>
-		<option value="3">Chart</option>
 	</selection>
 
 </object-views>

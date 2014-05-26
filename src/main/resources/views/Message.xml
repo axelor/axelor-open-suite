@@ -33,7 +33,7 @@
         	<field name="recipientUserInfo" widget="TagSelect" x-create="name" colSpan="4" help="Internal Message"/>
         </group>
         <group title="Content" colSpan="4" readonlyIf="statusSelect == 2 || statusSelect == 3">
-        	<field name="subject" colSpan="4"/>
+        	<field name="subject" title="Subject" colSpan="4"/>
         	<spacer/>
        	 	<field name="content" colSpan="4" showTitle="false" widget="html"/>
         </group>
