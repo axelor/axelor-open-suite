@@ -10,7 +10,7 @@
     </grid>
     
     <form name="message-form" title="Email" model="com.axelor.apps.message.db.Message" cols="4"
-    onNew="action-message-record-default,action-message-record-mail-account,action-message-record-get-signature,action-message-record-active-company"
+    onNew="action-message-record-default,action-message-record-mail-account,action-message-record-get-signature,action-message-record-active-company,action-message-record-default-media-type"
     onLoad="action-message-attrs-showhide-by-media-type">
       <toolbar>
 	        <button name="print" title="Print" icon="fa-print" onClick="save,action-message-method-print-pdf-email" readonlyIf="id == null"/>
@@ -50,7 +50,11 @@
     <action-method name="action-message-method-print-pdf-email">
 		<call class="com.axelor.apps.message.web.MessageController" method="print"/>
 	</action-method>
-    
+	
+	<action-record name="action-message-record-default-media-type" model="com.axelor.apps.message.db.Message">
+    	<field name="mediaTypeSelect" expr="3"/>
+    </action-record>
+	
     <action-record model="com.axelor.apps.message.db.Message" name="action-message-record-active-company">
       <field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
     </action-record>
