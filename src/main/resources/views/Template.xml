@@ -12,22 +12,23 @@
     
 	<form name="template-form" title="Template" model="com.axelor.apps.base.db.Template" cols="4" 
 		onSave="action-template-check-receptor" 
-		onNew="action-template-record-new">
-		
+		onNew="action-template-record-new"
+		onLoad="action-template-attrs-showhide-by-media-type">
 		<field name="name"/>
 		<field name="isDefault"/>
+		<field name="mediaTypeSelect" onChange="action-template-attrs-showhide-by-media-type" />
 		<field name="metaModel"/>
 		<field name="target"/>
-		<field name="birtTemplate"/>
-		<field name="filePath" widget="url"/>
 		<field name="templateContext" colSpan="4"/>
-		<field name="mediaTypeSelect" />
+		<group name="attachedFiles" title="Attached files" colSpan="4" cols="2">
+			    <field name="birtTemplate"/>
+			    <field name="filePath" widget="url"/>
+  		</group>
 		<group name="recipientGroup" title="Destinated to" colSpan="4" cols="2">
+			<field name="addressBlock" colSpan="4" widget="Html" x-lite="false" />
 			<field name="toRecipients"/>
 			<field name="ccRecipients"/>
 			<field name="bccRecipients"/>
-			<separator title="Address Block" colSpan="4"/>
-			<field name="addressBlock" showTitle="false" colSpan="4" widget="Html" x-lite="false" />
 		</group>
 		<group name="recipientGroup" colSpan="4" cols="2">
 			<separator title="Subject" colSpan="4"/>
@@ -48,4 +49,11 @@
     	<call class="com.axelor.apps.base.web.TemplateController" method="checkTargetReceptor"/>
     </action-method>
     
+    <action-attrs name="action-template-attrs-showhide-by-media-type">		
+		<attribute name="hidden" for="addressBlock" expr="eval: mediaTypeSelect != 1" />
+		<attribute name="hidden" for="toRecipients" expr="eval: mediaTypeSelect != 2" />
+		<attribute name="hidden" for="ccRecipients" expr="eval: mediaTypeSelect != 2" />
+		<attribute name="hidden" for="bccRecipients" expr="eval: mediaTypeSelect != 2" />
+	</action-attrs>
+	
 </object-views>
