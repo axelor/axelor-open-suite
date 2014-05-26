@@ -321,10 +321,9 @@ WHERE self.media_type_select in (1,2)
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select LangTranslate.key, LangTranslate.translation
+            <xml-property name="queryText"><![CDATA[select LangTranslate.key, LangTranslate.message as "translation" 
 from meta_translation as LangTranslate 
-where LangTranslate.key = ? and LangTranslate.language = ? and 
-LangTranslate.domain = 'axelor-message' and LangTranslate.type = 'other']]></xml-property>
+where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
