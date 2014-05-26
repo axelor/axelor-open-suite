@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.2.2.v201301221637 Build &lt;4.2.2.v20130206-1509></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.3.2.v20140211-1400 Build &lt;4.3.2.v20140225-1404></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -155,7 +155,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-erp</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-en</property>
             <property name="odaUser">axelor</property>
         </oda-data-source>
     </data-sources>
@@ -1158,10 +1158,9 @@ left outer join public.account_tax_line as TaxLine on (InvoiceLineTax.tax_line =
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select LangTranslate.key, LangTranslate.translation
-from meta_translation as LangTranslate
-where LangTranslate.key = ? and LangTranslate.language = ? and
-LangTranslate.domain = 'axelor-account' and LangTranslate.type = 'other']]></xml-property>
+            <xml-property name="queryText"><![CDATA[select LangTranslate.key, LangTranslate.message as "translation" 
+from meta_translation as LangTranslate 
+where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -1246,8 +1245,8 @@ LangTranslate.domain = 'axelor-account' and LangTranslate.type = 'other']]></xml
                 <grid id="3692">
                     <column id="3693"/>
                     <column id="3714">
-                        <property name="width">2cm</property>
                         <property name="textAlign">right</property>
+                        <property name="width">2cm</property>
                     </column>
                     <row id="3695">
                         <property name="height">0.5cm</property>
@@ -1718,10 +1717,10 @@ LangTranslate.domain = 'axelor-account' and LangTranslate.type = 'other']]></xml
                                 <property name="width">2.8575cm</property>
                             </column>
                             <row id="3349">
-                                <property name="height">1.5cm</property>
                                 <property name="borderBottomColor">#68B022</property>
                                 <property name="borderBottomStyle">solid</property>
                                 <property name="borderBottomWidth">thin</property>
+                                <property name="height">1.5cm</property>
                                 <cell id="3350">
                                     <property name="colSpan">2</property>
                                     <property name="rowSpan">1</property>
