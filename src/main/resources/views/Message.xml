@@ -10,7 +10,7 @@
     </grid>
     
     <form name="message-form" title="Email" model="com.axelor.apps.message.db.Message" cols="4"
-    onNew="action-message-record-default,action-message-record-mail-account,action-message-record-get-signature,action-message-record-active-company,action-message-record-default-media-type"
+    onNew="action-message-record-default,action-message-record-mail-account,action-message-record-get-signature,action-message-record-active-company,action-message-record-default-media-type,action-message-attrs-showhide-by-media-type"
     onLoad="action-message-attrs-showhide-by-media-type">
       <toolbar>
 	        <button name="print" title="Print" icon="fa-print" onClick="save,action-message-method-print-pdf-email" readonlyIf="id == null"/>
