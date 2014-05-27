@@ -155,6 +155,15 @@
 		<view type="form" />
 	</action-view>
 	
+	<menuitem name="stock-root-conf-stock-tracking-numbers" parent="stock-root-conf"
+		title="Tracking Numbers" action="stock.root.conf.stock.tracking.numbers" />
+	
+	<action-view name="stock.root.conf.stock.tracking.numbers" title="Tracking Numbers"
+		model="com.axelor.apps.base.db.TrackingNumber" icon="img/16px/addressBook_16px.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
+	
 	<menuitem name="sc-root-sales" title="Sales" priority="150"
 		icon="img/32px/order_32px.png" groups="admins,erp,crm"/>
 			
