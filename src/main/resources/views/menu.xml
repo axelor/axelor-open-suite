@@ -98,6 +98,12 @@
 		<view type="form" />
 	</action-view>
 	
-
+    <menuitem name="mail-root-email-conf-smtp-account" parent="mail-conf" title="SMTP Account" action="mail.root.email.conf.smtp.account" />	
+		
+	<action-view name="mail.root.email.conf.smtp.account" title="SMTP Account" 
+		model="com.axelor.apps.message.db.MailAccount" icon="img/16px/parameterSmall_16px.png">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
 
 </object-views>
