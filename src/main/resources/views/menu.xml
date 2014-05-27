@@ -72,9 +72,9 @@
 
 	<menuitem name="mail-root-email-conf" parent="mail-root-email-box" title="Configuration"/>
 
-	<menuitem name="mail-root-email-conf-mail-account" parent="mail-root-email-conf" title="Email account" action="mail.root.email.conf.mail.account" />	
+	<menuitem name="mail-root-email-conf-mail-account" parent="mail-root-email-conf" title="SMTP Account" action="mail.root.email.conf.mail.account" />	
 		
-	<action-view name="mail.root.email.conf.mail.account" title="Email account" 
+	<action-view name="mail.root.email.conf.mail.account" title="SMTP Account" 
 		model="com.axelor.apps.message.db.MailAccount" icon="img/16px/parameterSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
@@ -94,14 +94,6 @@
 		
 	<action-view name="mail.root.email.conf.email.address" title="Email addresses" 
 		model="com.axelor.apps.message.db.EmailAddress" icon="img/16px/parameterSmall_16px.png">
-		<view type="grid" />
-		<view type="form" />
-	</action-view>
-	
-    <menuitem name="mail-root-email-conf-smtp-account" parent="mail-conf" title="SMTP Account" action="mail.root.email.conf.smtp.account" />	
-		
-	<action-view name="mail.root.email.conf.smtp.account" title="SMTP Account" 
-		model="com.axelor.apps.message.db.MailAccount" icon="img/16px/parameterSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
