@@ -30,7 +30,6 @@
  */
 package com.axelor.apps.base.web;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -39,7 +38,6 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.app.AppSettings;
 import com.axelor.apps.ReportSettings;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.IAdministration;
@@ -55,7 +53,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
 public class PartnerController {
@@ -240,24 +237,5 @@ public class PartnerController {
 		Set<Company> companySet = new HashSet<Company>();
 		companySet.add(userInfoService.getUserInfo().getActiveCompany());	
 		return companySet;
-	}
-	
-	public void showPartnersOnMap(ActionRequest request, ActionResponse response) throws IOException {
-		
-		String appHome = AppSettings.get().get("application.home");
-		if (Strings.isNullOrEmpty(appHome)) {
-			response.setFlash("Can not open map, Please Configure application.home property first.");
-			return;
-		}
-		if (!addressService.isInternetAvailable()) {
-			response.setFlash("Can not open map, Please Check your Internet connection.");
-			return;			
-		}
-		String mapUrl = new String(appHome + "/map/gmap-objs.html?apphome=" + appHome + "&object=partner");
-		Map<String, Object> mapView = new HashMap<String, Object>();
-		mapView.put("title", "Partners");
-		mapView.put("resource", mapUrl);
-		mapView.put("viewType", "html");		
-		response.setView(mapView);
 	}
 }

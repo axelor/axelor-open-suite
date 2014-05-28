@@ -58,6 +58,32 @@
 		<domain>self.isContact = true</domain>
 	</action-view>
 	
+	<menuitem name="contact-maps-partner" parent="contact-root" title="Maps"/>
+		
+	<menuitem name="contact-maps-partner-all-partners" parent="contact-maps-partner" 
+		title="All Partners" action="action-show-partners-on-map-page"/>
+	<action-view name="action-show-partners-on-map-page" title="All Partners">  		
+ 		<view type="html" name="map/gmap-objs.html?object=partner" /> 
+	</action-view>	
+	
+	<menuitem name="contact-maps-partner-customers" parent="contact-maps-partner" 
+		title="Customers" action="action-show-customers-on-map-page"/>
+	<action-view name="action-show-customers-on-map-page" title="Customers">  		
+ 		<view type="html" name="map/gmap-objs.html?object=customer" /> 
+	</action-view>	
+	
+	<menuitem name="contact-maps-partner-prospects" parent="contact-maps-partner" 
+		title="Prospects" action="action-show-prospects-on-map-page"/>
+	<action-view name="action-show-prospects-on-map-page" title="Prospects">  		
+ 		<view type="html" name="map/gmap-objs.html?object=prospect" /> 
+	</action-view>
+	
+	<menuitem name="contact-maps-partner-suppliers" parent="contact-maps-partner" 
+		title="Suppliers" action="action-show-suppliers-on-map-page"/>		
+	<action-view name="action-show-suppliers-on-map-page" title="Suppliers">  		
+ 		<view type="html" name="map/gmap-objs.html?object=supplier" /> 
+	</action-view>
+	
 	<menuitem name="contact-conf" parent="contact-root" title="Configuration" priority="1"
 		icon="img/Other/parameter_59px.png" />
 		
