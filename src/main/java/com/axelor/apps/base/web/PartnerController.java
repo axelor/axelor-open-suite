@@ -134,7 +134,7 @@ public class PartnerController {
 		User user = AuthUtils.getUser();
 		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
 		
-		url.append(new ReportSettings(IReport.PARTNER, ReportSettings.FORMAT_HTML)
+		url.append(new ReportSettings(IReport.PHONE_BOOK)
 					.addParam("Locale", language)
 					.addParam("__locale", "fr_FR")
 					.addParam("UserId", user.getId().toString())
@@ -171,7 +171,7 @@ public class PartnerController {
 		User user = AuthUtils.getUser();
 		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
 
-		url.append(new ReportSettings(IReport.COMPANY_PHONE_BOOK, ReportSettings.FORMAT_HTML)
+		url.append(new ReportSettings(IReport.COMPANY_PHONE_BOOK)
 					.addParam("Locale", language)
 					.addParam("__locale", "fr_FR")
 					.addParam("UserId", user.getId().toString())
