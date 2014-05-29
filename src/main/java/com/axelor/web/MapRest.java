@@ -32,6 +32,7 @@ public class MapRest {
 
 	@Inject AddressService addressService;
 	
+	@Transactional
 	@Path("/partner")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -55,6 +56,7 @@ public class MapRest {
 			if (partner.getMainInvoicingAddress() != null) {
 				Address address = partner.getMainInvoicingAddress();
 				String addressString = makeAddressString(address, objectNode);
+				address.save();
 				objectNode.put("address", addressString);				
 			}
 			
@@ -71,6 +73,7 @@ public class MapRest {
 		return mainNode;
 	}
 	
+	@Transactional
 	@Path("/customer")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -94,6 +97,7 @@ public class MapRest {
 			if (customer.getMainInvoicingAddress() != null) {
 				Address address = customer.getMainInvoicingAddress();
 				String addressString = makeAddressString(address, objectNode);
+				address.save();
 				objectNode.put("address", addressString);							
 			}
 			
@@ -106,6 +110,7 @@ public class MapRest {
 		return mainNode;
 	}
 
+	@Transactional
 	@Path("/prospect")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -129,6 +134,7 @@ public class MapRest {
 			if (prospect.getMainInvoicingAddress() != null) {
 				Address address = prospect.getMainInvoicingAddress();
 				String addressString = makeAddressString(address, objectNode);
+				address.save();
 				objectNode.put("address", addressString);							
 			}
 			
@@ -141,6 +147,7 @@ public class MapRest {
 		return mainNode;
 	}
 
+	@Transactional
 	@Path("/supplier")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -164,6 +171,7 @@ public class MapRest {
 			if (supplier.getMainInvoicingAddress() != null) {
 				Address address = supplier.getMainInvoicingAddress();
 				String addressString = makeAddressString(address, objectNode);
+				address.save();
 				objectNode.put("address", addressString);								
 			}
 			
@@ -239,6 +247,7 @@ public class MapRest {
 		return mainNode;
 	}
 	
+	@Transactional
 	@Path("/opportunity")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -277,6 +286,7 @@ public class MapRest {
 			if (partner.getMainInvoicingAddress() != null) {
 				Address address = partner.getMainInvoicingAddress();
 				String addressString = makeAddressString(address, objectNode);
+				address.save();
 				objectNode.put("address", addressString);							
 			}
 			
@@ -289,7 +299,6 @@ public class MapRest {
 		return mainNode;
 	}	
 
-	@Transactional
 	private String makeAddressString(Address address, ObjectNode objectNode) {
 
 		BigDecimal latit = address.getLatit();
@@ -303,7 +312,6 @@ public class MapRest {
 				longit = (BigDecimal) latlng.get("longitude");
 				address.setLatit(latit);
 				address.setLongit(longit);
-				address.save();
 		}
 		
 		objectNode.put("latit", latit);
