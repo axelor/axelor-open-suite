@@ -33,7 +33,7 @@ Merci de nous faire parvenir le complément de commande le plus rapidement possi
 ";"$StockMove.partner.emailAddress.address$";;;2
 "Facture Client";"Invoice";"fr";;;;"true";;"Votre facture N° $Invoice$";"<p>Bonjour,</p>
 
-<p>Vous trouverez ci-joint la facture N° $Facture.invoiceId.</p>
+<p>Vous trouverez ci-joint la facture N° $Facture.invoiceId$.</p>
 
 <p>Nous vous remercions pour votre fidélité et nous espérons que vous avez été pleinement satisfait.</p>
 
@@ -89,7 +89,7 @@ Please let us know when you estimate to deliver the remaining goods.</p>
 Axelor Team</p>";;;;2
 "Customer Invoice";"Invoice";"en";;;;"true";;"Invoice N° $Invoice.invoiceId$";"<p>Good morning,</p> 
 
-<p>Please find attached the invoice N° $Invoice.invoiceId.</p>
+<p>Please find attached the invoice N° $Invoice.invoiceId$.</p>
 
 <p>We are glad to count you as one of our customers and we hope you have been completely satisfied with our products and services.</p>
 
