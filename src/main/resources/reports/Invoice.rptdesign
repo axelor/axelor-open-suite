@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.3.2.v20140211-1400 Build &lt;4.3.2.v20140225-1404></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.3.2.v20140211-1400 Build &lt;4.3.2.v20140211-1526></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -1692,7 +1692,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
             <column id="3684"/>
             <detail>
                 <row id="3680">
-                    <property name="height">10.854166666666666in</property>
+                    <property name="height">16.03375cm</property>
                     <cell id="3681">
                         <grid id="3342">
                             <property name="marginLeft">2pt</property>
