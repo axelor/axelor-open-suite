@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.2.2.v201301221637 Build &lt;4.2.2.v20130206-1509></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.3.2.v20140211-1400 Build &lt;4.3.2.v20140211-1526></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -101,6 +101,17 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
+        <scalar-parameter name="Password" id="4030">
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
     </parameters>
     <data-sources>
         <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Data Source" id="209">
@@ -122,7 +133,6 @@
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
             <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-erp</property>
-            <property name="odaUser">axelor</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -583,7 +593,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                 </structure>
                 <structure>
                     <property name="columnName">is_customer</property>
-                    <property name="analysis">measure</property>
+                    <property name="analysis">dimension</property>
                     <text-property name="displayName">is_customer</text-property>
                     <text-property name="heading">is_customer</text-property>
                 </structure>
@@ -664,7 +674,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                     <structure>
                         <property name="position">3</property>
                         <property name="name">is_customer</property>
-                        <property name="dataType">integer</property>
+                        <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">4</property>
@@ -728,8 +738,8 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                     <property name="position">3</property>
                     <property name="name">is_customer</property>
                     <property name="nativeName">is_customer</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
@@ -788,7 +798,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select ExpenseLine.id, ExpenseLine.date,  ClientPartner.is_customer, Product.name as product_name,
+            <xml-property name="queryText"><![CDATA[select ExpenseLine.id, ExpenseLine.date,  MetaSelectItem.title as is_customer, Product.name as product_name,
 ExpenseLine.short_description, ExpenseLine.qty, Unit.code as unit_code, TaxLine.value as tax_value, 
 ExpenseLine.in_tax_total, ExpenseLine.price, Currency.code as currency
 from organisation_expense as Expense
@@ -796,12 +806,13 @@ inner join organisation_expense_line as ExpenseLine on (ExpenseLine.expense = Ex
 left join organisation_task as Task on (ExpenseLine.task = Task.id)
 left join organisation_project as Project on (Task.project = Project.id)
 left join base_partner as ClientPartner on (Project.client_partner = ClientPartner.id)
+left join meta_select as MetaSelect On MetaSelect.name='partner.customer.type.select'
+left join meta_select_item as MetaSelectItem On MetaSelectItem.select_id=MetaSelect.id and cast(MetaSelectItem.value as int)=ClientPartner.customer_type_select 
 left join base_product as Product on (ExpenseLine.product = Product.id)
 left join base_unit as Unit on (ExpenseLine.unit = Unit.id)
 left join account_tax_line as TaxLine on (ExpenseLine.tax_line = TaxLine.id)
 left join base_currency as Currency on (Expense.currency = Currency.id)
-where Expense.id = ?
-]]></xml-property>
+where Expense.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -1333,7 +1344,7 @@ where Expense.id = ?
                     <property name="name">is_customer</property>
                     <text-property name="displayName">is_customer</text-property>
                     <expression name="expression" type="javascript">dataSetRow["is_customer"]</expression>
-                    <property name="dataType">integer</property>
+                    <property name="dataType">string</property>
                 </structure>
                 <structure>
                     <property name="name">product_name</property>

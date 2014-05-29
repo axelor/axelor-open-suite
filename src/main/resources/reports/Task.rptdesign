@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.2.2.v201301221637 Build &lt;4.2.2.v20130206-1509></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.3.2.v20140211-1400 Build &lt;4.3.2.v20140211-1526></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaDriverClass</property>
@@ -100,6 +100,17 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
+        <scalar-parameter name="Password" id="4706">
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
     </parameters>
     <data-sources>
         <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Data Source" id="209">
@@ -121,7 +132,6 @@
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
             <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-erp</property>
-            <property name="odaUser">axelor</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -4616,10 +4626,10 @@ where Task.id = ? and PurchaseOrder.status_select = 3]]></xml-property>
                     <text-property name="heading">A</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">estimated_turnover</property>
+                    <property name="columnName">real_estimated_turnover</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">estimated_turnover</text-property>
-                    <text-property name="heading">estimated_turnover</text-property>
+                    <text-property name="displayName">real_estimated_turnover</text-property>
+                    <text-property name="heading">real_estimated_turnover</text-property>
                 </structure>
             </list-property>
             <list-property name="parameters">
@@ -4671,7 +4681,7 @@ where Task.id = ? and PurchaseOrder.status_select = 3]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">3</property>
-                        <property name="name">estimated_turnover</property>
+                        <property name="name">real_estimated_turnover</property>
                         <property name="dataType">decimal</property>
                     </structure>
                 </list-property>
@@ -4694,22 +4704,22 @@ where Task.id = ? and PurchaseOrder.status_select = 3]]></xml-property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
-                    <property name="name">estimated_turnover</property>
-                    <property name="nativeName">estimated_turnover</property>
+                    <property name="name">real_estimated_turnover</property>
+                    <property name="nativeName">real_estimated_turnover</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select 'Total CA' as "Total CA", 'A' as "A", Task.estimated_turnover
+            <xml-property name="queryText"><![CDATA[select 'Total CA' as "Total CA", 'A' as "A", Task.real_estimated_turnover
 from organisation_task as Task
 where Task.id = ?
 
 union all
-select 'Total coûts' as "Total coûts", 'B' as "B", estimated_cost
+select 'Total coûts' as "Total coûts", 'B' as "B", Task.real_estimated_cost
 from organisation_task as Task
 where Task.id = ?
 union all
-select 'Marge' as "Marge", 'C' as "C", Task.estimated_margin
+select 'Marge' as "Marge", 'C' as "C", Task.real_estimated_margin
 from organisation_task as Task
 where Task.id = ?
 
@@ -4797,22 +4807,22 @@ order by "A"]]></xml-property>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TaskDataDS" id="3837">
             <list-property name="columnHints">
                 <structure>
-                    <property name="columnName">estimated_turnover</property>
+                    <property name="columnName">real_estimated_turnover</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">estimated_turnover</text-property>
-                    <text-property name="heading">estimated_turnover</text-property>
+                    <text-property name="displayName">real_estimated_turnover</text-property>
+                    <text-property name="heading">real_estimated_turnover</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">estimated_margin</property>
+                    <property name="columnName">real_estimated_margin</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">estimated_margin</text-property>
-                    <text-property name="heading">estimated_margin</text-property>
+                    <text-property name="displayName">real_estimated_margin</text-property>
+                    <text-property name="heading">real_estimated_margin</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">estimated_cost</property>
+                    <property name="columnName">real_estimated_cost</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">estimated_cost</text-property>
-                    <text-property name="heading">estimated_cost</text-property>
+                    <text-property name="displayName">real_estimated_cost</text-property>
+                    <text-property name="heading">real_estimated_cost</text-property>
                 </structure>
             </list-property>
             <list-property name="parameters">
@@ -4831,17 +4841,17 @@ order by "A"]]></xml-property>
                 <list-property name="resultSet">
                     <structure>
                         <property name="position">1</property>
-                        <property name="name">estimated_turnover</property>
+                        <property name="name">real_estimated_turnover</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">2</property>
-                        <property name="name">estimated_margin</property>
+                        <property name="name">real_estimated_margin</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">3</property>
-                        <property name="name">estimated_cost</property>
+                        <property name="name">real_estimated_cost</property>
                         <property name="dataType">decimal</property>
                     </structure>
                 </list-property>
@@ -4850,27 +4860,27 @@ order by "A"]]></xml-property>
             <list-property name="resultSet">
                 <structure>
                     <property name="position">1</property>
-                    <property name="name">estimated_turnover</property>
-                    <property name="nativeName">estimated_turnover</property>
+                    <property name="name">real_estimated_turnover</property>
+                    <property name="nativeName">real_estimated_turnover</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
-                    <property name="name">estimated_margin</property>
-                    <property name="nativeName">estimated_margin</property>
+                    <property name="name">real_estimated_margin</property>
+                    <property name="nativeName">real_estimated_margin</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
-                    <property name="name">estimated_cost</property>
-                    <property name="nativeName">estimated_cost</property>
+                    <property name="name">real_estimated_cost</property>
+                    <property name="nativeName">real_estimated_cost</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select  Task.estimated_turnover, Task.estimated_margin, Task.estimated_cost
+            <xml-property name="queryText"><![CDATA[select  Task.real_estimated_turnover, Task.real_estimated_margin, Task.real_estimated_cost
 from organisation_task as Task
 where Task.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -5269,7 +5279,6 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                         </column>
                         <header>
                             <row id="3699">
-                                <property name="height">0.9260416666666667cm</property>
                                 <property name="backgroundColor">#3C3C3C</property>
                                 <property name="color">#3C3C3C</property>
                                 <property name="borderLeftColor">#3C3C3C</property>
@@ -5278,6 +5287,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                 <property name="borderRightStyle">solid</property>
                                 <property name="borderTopColor">#3C3C3C</property>
                                 <property name="borderTopStyle">solid</property>
+                                <property name="height">0.9260416666666667cm</property>
                                 <cell id="3700">
                                     <property name="borderBottomColor">#3C3C3C</property>
                                     <property name="borderBottomStyle">solid</property>
@@ -5770,7 +5780,6 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                         </column>
                         <header>
                             <row id="3741">
-                                <property name="height">0.9260416666666667cm</property>
                                 <property name="backgroundColor">#3C3C3C</property>
                                 <property name="color">#3C3C3C</property>
                                 <property name="borderBottomColor">#3C3C3C</property>
@@ -5781,6 +5790,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                 <property name="borderRightStyle">solid</property>
                                 <property name="borderTopColor">#3C3C3C</property>
                                 <property name="borderTopStyle">solid</property>
+                                <property name="height">0.9260416666666667cm</property>
                                 <cell id="3742">
                                     <property name="borderBottomColor">#3C3C3C</property>
                                     <property name="borderBottomStyle">solid</property>
@@ -6145,21 +6155,21 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
             <property name="dataSet">TaskDataDS</property>
             <list-property name="boundDataColumns">
                 <structure>
-                    <property name="name">estimated_turnover</property>
-                    <text-property name="displayName">estimated_turnover</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["estimated_turnover"]</expression>
+                    <property name="name">real_estimated_turnover</property>
+                    <text-property name="displayName">real_estimated_turnover</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["real_estimated_turnover"]</expression>
                     <property name="dataType">decimal</property>
                 </structure>
                 <structure>
-                    <property name="name">estimated_margin</property>
-                    <text-property name="displayName">estimated_margin</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["estimated_margin"]</expression>
+                    <property name="name">real_estimated_margin</property>
+                    <text-property name="displayName">real_estimated_margin</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["real_estimated_margin"]</expression>
                     <property name="dataType">decimal</property>
                 </structure>
                 <structure>
-                    <property name="name">estimated_cost</property>
-                    <text-property name="displayName">estimated_cost</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["estimated_cost"]</expression>
+                    <property name="name">real_estimated_cost</property>
+                    <text-property name="displayName">real_estimated_cost</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["real_estimated_cost"]</expression>
                     <property name="dataType">decimal</property>
                 </structure>
             </list-property>
@@ -6355,7 +6365,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                         <property name="marginLeft">10pt</property>
                         <property name="textAlign">center</property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["estimated_turnover"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["real_estimated_turnover"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="3824">
@@ -6376,7 +6386,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                         <property name="marginLeft">10pt</property>
                         <property name="textAlign">center</property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["estimated_cost"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["real_estimated_cost"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="3841">
@@ -6397,7 +6407,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                         <property name="marginLeft">10pt</property>
                         <property name="textAlign">center</property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["estimated_margin"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["real_estimated_margin"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
             </row>
@@ -7062,7 +7072,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
             <Visible>true</Visible>
           </Label>
           <DataDefinition>
-            <Definition>row[&quot;estimated_turnover&quot;]</Definition>
+            <Definition>row[&quot;real_estimated_turnover&quot;]</Definition>
             <Grouping>
               <Enabled>true</Enabled>
               <GroupType>Text</GroupType>
@@ -8076,23 +8086,26 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
 ]]></xml-property>
             <property name="outputFormat">SVG</property>
             <property name="inheritColumns">false</property>
-            <property name="dataSet">TaskDS</property>
             <property name="height">3.5208333333333335in</property>
             <property name="width">6.9375in</property>
+            <property name="dataSet">TaskDS</property>
             <list-property name="boundDataColumns">
                 <structure>
                     <property name="name">Total CA</property>
+                    <text-property name="displayName">Total CA</text-property>
                     <expression name="expression" type="javascript">dataSetRow["Total CA"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
                     <property name="name">A</property>
+                    <text-property name="displayName">A</text-property>
                     <expression name="expression" type="javascript">dataSetRow["A"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">estimated_turnover</property>
-                    <expression name="expression" type="javascript">dataSetRow["estimated_turnover"]</expression>
+                    <property name="name">real_estimated_turnover</property>
+                    <text-property name="displayName">real_estimated_turnover</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["real_estimated_turnover"]</expression>
                     <property name="dataType">decimal</property>
                 </structure>
             </list-property>
@@ -8392,7 +8405,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                 IiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiA
                 IiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiI
                 AiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgP//Z
-            </property>
+</property>
         </structure>
     </list-property>
 </report>

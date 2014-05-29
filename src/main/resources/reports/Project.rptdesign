@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.2.2.v201301221637 Build &lt;4.2.2.v20130206-1509></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.3.2.v20140211-1400 Build &lt;4.3.2.v20140211-1526></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaDriverClass</property>
@@ -101,6 +101,17 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
+        <scalar-parameter name="Password" id="4706">
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
     </parameters>
     <data-sources>
         <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Data Source" id="209">
@@ -122,7 +133,6 @@
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
             <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-erp</property>
-            <property name="odaUser">axelor</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -163,6 +173,12 @@
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">product_name</text-property>
                     <text-property name="heading">product_name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">task_name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">task_name</text-property>
+                    <text-property name="heading">task_name</text-property>
                 </structure>
             </list-property>
             <list-property name="parameters">
@@ -208,6 +224,11 @@
                     <structure>
                         <property name="position">6</property>
                         <property name="name">product_name</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">task_name</property>
                         <property name="dataType">string</property>
                     </structure>
                 </list-property>
@@ -256,9 +277,16 @@
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
+                <structure>
+                    <property name="position">7</property>
+                    <property name="name">task_name</property>
+                    <property name="nativeName">task_name</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select SalesOrderLine.id, SalesOrder.order_date, ClientPartner.full_name as "client_name", SalesOrderLine.ex_tax_total,
-UserInfo.full_name as "user_name", SalesOrderLine.product_name
+UserInfo.full_name as "user_name", SalesOrderLine.product_name,Project.name as task_name
 from organisation_project as Project 
 left outer join supplychain_sales_order as SalesOrder on (SalesOrder.project = Project.id)
 
@@ -2405,6 +2433,12 @@ where Project.id = ? and SalesOrder.status_select = 2]]></xml-property>
                     <text-property name="displayName">product_name</text-property>
                     <text-property name="heading">product_name</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">task_name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">task_name</text-property>
+                    <text-property name="heading">task_name</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -2448,6 +2482,11 @@ where Project.id = ? and SalesOrder.status_select = 2]]></xml-property>
                     <structure>
                         <property name="position">6</property>
                         <property name="name">product_name</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">task_name</property>
                         <property name="dataType">string</property>
                     </structure>
                 </list-property>
@@ -2496,9 +2535,16 @@ where Project.id = ? and SalesOrder.status_select = 2]]></xml-property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
+                <structure>
+                    <property name="position">7</property>
+                    <property name="name">task_name</property>
+                    <property name="nativeName">task_name</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select distinct PurchaseOrderLine.id, PurchaseOrder.order_date, SupplierPartner.full_name as "client_name", PurchaseOrderLine.ex_tax_total,
-UserInfo.full_name as "user_name", PurchaseOrderLine.product_name
+UserInfo.full_name as "user_name", PurchaseOrderLine.product_name, Project.name as task_name
 from organisation_project as Project 
 
 left outer join supplychain_purchase_order as PurchaseOrder on (PurchaseOrder.project = Project.id)
@@ -4622,10 +4668,10 @@ where Project.id = ? and PurchaseOrder.status_select = 2]]></xml-property>
                     <text-property name="heading">A</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">estimated_turnover</property>
+                    <property name="columnName">real_estimated_turnover</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">estimated_turnover</text-property>
-                    <text-property name="heading">estimated_turnover</text-property>
+                    <text-property name="displayName">real_estimated_turnover</text-property>
+                    <text-property name="heading">real_estimated_turnover</text-property>
                 </structure>
             </list-property>
             <list-property name="parameters">
@@ -4674,7 +4720,7 @@ where Project.id = ? and PurchaseOrder.status_select = 2]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">3</property>
-                        <property name="name">estimated_turnover</property>
+                        <property name="name">real_estimated_turnover</property>
                         <property name="dataType">decimal</property>
                     </structure>
                 </list-property>
@@ -4697,22 +4743,22 @@ where Project.id = ? and PurchaseOrder.status_select = 2]]></xml-property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
-                    <property name="name">estimated_turnover</property>
-                    <property name="nativeName">estimated_turnover</property>
+                    <property name="name">real_estimated_turnover</property>
+                    <property name="nativeName">real_estimated_turnover</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select 'Total CA' as "Total CA", 'A' as "A", Project.estimated_turnover
+            <xml-property name="queryText"><![CDATA[select 'Total CA' as "Total CA", 'A' as "A", Project.real_estimated_turnover
 from organisation_project as Project
 where Project.id = ?
 
 union all
-select 'Total coûts' as "Total coûts", 'B' as "B", Project.estimated_cost
+select 'Total coûts' as "Total coûts", 'B' as "B", Project.real_estimated_cost
 from organisation_project as Project
 where Project.id = ?
 union all
-select 'Marge' as "Marge", 'C' as "C", Project.estimated_margin
+select 'Marge' as "Marge", 'C' as "C", Project.real_estimated_margin
 from organisation_project as Project
 where Project.id = ?
 
@@ -4800,22 +4846,22 @@ order by "A"]]></xml-property>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TaskDataDS" id="3837">
             <list-property name="columnHints">
                 <structure>
-                    <property name="columnName">estimated_turnover</property>
+                    <property name="columnName">real_estimated_turnover</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">estimated_turnover</text-property>
-                    <text-property name="heading">estimated_turnover</text-property>
+                    <text-property name="displayName">real_estimated_turnover</text-property>
+                    <text-property name="heading">real_estimated_turnover</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">estimated_margin</property>
+                    <property name="columnName">real_estimated_margin</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">estimated_margin</text-property>
-                    <text-property name="heading">estimated_margin</text-property>
+                    <text-property name="displayName">real_estimated_margin</text-property>
+                    <text-property name="heading">real_estimated_margin</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">estimated_cost</property>
+                    <property name="columnName">real_estimated_cost</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">estimated_cost</text-property>
-                    <text-property name="heading">estimated_cost</text-property>
+                    <text-property name="displayName">real_estimated_cost</text-property>
+                    <text-property name="heading">real_estimated_cost</text-property>
                 </structure>
             </list-property>
             <list-property name="parameters">
@@ -4834,17 +4880,17 @@ order by "A"]]></xml-property>
                 <list-property name="resultSet">
                     <structure>
                         <property name="position">1</property>
-                        <property name="name">estimated_turnover</property>
+                        <property name="name">real_estimated_turnover</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">2</property>
-                        <property name="name">estimated_margin</property>
+                        <property name="name">real_estimated_margin</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">3</property>
-                        <property name="name">estimated_cost</property>
+                        <property name="name">real_estimated_cost</property>
                         <property name="dataType">decimal</property>
                     </structure>
                 </list-property>
@@ -4853,27 +4899,27 @@ order by "A"]]></xml-property>
             <list-property name="resultSet">
                 <structure>
                     <property name="position">1</property>
-                    <property name="name">estimated_turnover</property>
-                    <property name="nativeName">estimated_turnover</property>
+                    <property name="name">real_estimated_turnover</property>
+                    <property name="nativeName">real_estimated_turnover</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
-                    <property name="name">estimated_margin</property>
-                    <property name="nativeName">estimated_margin</property>
+                    <property name="name">real_estimated_margin</property>
+                    <property name="nativeName">real_estimated_margin</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
-                    <property name="name">estimated_cost</property>
-                    <property name="nativeName">estimated_cost</property>
+                    <property name="name">real_estimated_cost</property>
+                    <property name="nativeName">real_estimated_cost</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select  Project.estimated_turnover, Project.estimated_margin, Project.estimated_cost
+            <xml-property name="queryText"><![CDATA[select  Project.real_estimated_turnover, Project.real_estimated_margin, Project.real_estimated_cost
 from organisation_project as Project
 where Project.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -5225,12 +5271,6 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                 <property name="dataType">decimal</property>
                             </structure>
                             <structure>
-                                <property name="name">task_name</property>
-                                <text-property name="displayName">task_name</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["task_name"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
                                 <property name="name">order_date</property>
                                 <text-property name="displayName">order_date</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["order_date"]</expression>
@@ -5260,6 +5300,12 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                 <expression name="expression" type="javascript">dataSetRow["product_name"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
+                            <structure>
+                                <property name="name">task_name</property>
+                                <text-property name="displayName">task_name</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["task_name"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
                         </list-property>
                         <column id="3717">
                             <property name="width">2.2754166666666666cm</property>
@@ -5278,7 +5324,6 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                         </column>
                         <header>
                             <row id="3699">
-                                <property name="height">0.9260416666666667cm</property>
                                 <property name="backgroundColor">#3C3C3C</property>
                                 <property name="color">#3C3C3C</property>
                                 <property name="borderLeftColor">#3C3C3C</property>
@@ -5287,6 +5332,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                 <property name="borderRightStyle">solid</property>
                                 <property name="borderTopColor">#3C3C3C</property>
                                 <property name="borderTopStyle">solid</property>
+                                <property name="height">0.9260416666666667cm</property>
                                 <cell id="3700">
                                     <property name="borderBottomColor">#3C3C3C</property>
                                     <property name="borderBottomStyle">solid</property>
@@ -5533,7 +5579,6 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                             <property name="hideDetail">false</property>
                             <header>
                                 <row id="3845">
-                                    <property name="height">0.3854166666666667in</property>
                                     <property name="backgroundColor">#B1B1B1</property>
                                     <property name="borderBottomColor">#3C3C3C</property>
                                     <property name="borderBottomStyle">solid</property>
@@ -5547,16 +5592,14 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                     <property name="borderTopColor">#3C3C3C</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
+                                    <property name="height">0.3854166666666667in</property>
                                     <cell id="3846">
                                         <property name="colSpan">3</property>
                                         <property name="rowSpan">1</property>
-                                        <data id="3857">
-                                            <property name="fontWeight">bold</property>
-                                            <property name="color">#000000</property>
-                                            <property name="marginTop">3pt</property>
-                                            <property name="marginLeft">5pt</property>
-                                            <property name="resultSetColumn">task_name</property>
-                                        </data>
+                                        <text id="4708">
+                                            <property name="contentType">auto</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>row["task_name"]</VALUE-OF>]]></text-property>
+                                        </text>
                                     </cell>
                                     <cell id="3849"/>
                                     <cell id="3850"/>
@@ -5771,12 +5814,6 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                 <property name="dataType">decimal</property>
                             </structure>
                             <structure>
-                                <property name="name">task_name</property>
-                                <text-property name="displayName">task_name</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["task_name"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
                                 <property name="name">order_date</property>
                                 <text-property name="displayName">order_date</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["order_date"]</expression>
@@ -5806,6 +5843,12 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                 <expression name="expression" type="javascript">dataSetRow["product_name"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
+                            <structure>
+                                <property name="name">task_name</property>
+                                <text-property name="displayName">task_name</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["task_name"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
                         </list-property>
                         <column id="3763">
                             <property name="width">2.2754166666666666cm</property>
@@ -5824,7 +5867,6 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                         </column>
                         <header>
                             <row id="3741">
-                                <property name="height">0.9260416666666667cm</property>
                                 <property name="backgroundColor">#3C3C3C</property>
                                 <property name="color">#3C3C3C</property>
                                 <property name="borderBottomColor">#3C3C3C</property>
@@ -5835,6 +5877,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                 <property name="borderRightStyle">solid</property>
                                 <property name="borderTopColor">#3C3C3C</property>
                                 <property name="borderTopStyle">solid</property>
+                                <property name="height">0.9260416666666667cm</property>
                                 <cell id="3742">
                                     <property name="borderBottomColor">#3C3C3C</property>
                                     <property name="borderBottomStyle">solid</property>
@@ -6082,17 +6125,15 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                             <property name="hideDetail">false</property>
                             <header>
                                 <row id="3859">
-                                    <property name="height">0.3854166666666667in</property>
                                     <property name="backgroundColor">#B1B1B1</property>
+                                    <property name="height">0.3854166666666667in</property>
                                     <cell id="3860">
                                         <property name="colSpan">3</property>
                                         <property name="rowSpan">1</property>
-                                        <data id="3871">
-                                            <property name="fontWeight">bold</property>
-                                            <property name="marginTop">3pt</property>
-                                            <property name="marginLeft">5pt</property>
-                                            <property name="resultSetColumn">task_name</property>
-                                        </data>
+                                        <text id="4709">
+                                            <property name="contentType">auto</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>row["task_name"]</VALUE-OF>]]></text-property>
+                                        </text>
                                     </cell>
                                     <cell id="3863"/>
                                     <cell id="3864"/>
@@ -6226,21 +6267,21 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
             <property name="dataSet">TaskDataDS</property>
             <list-property name="boundDataColumns">
                 <structure>
-                    <property name="name">estimated_turnover</property>
-                    <text-property name="displayName">estimated_turnover</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["estimated_turnover"]</expression>
+                    <property name="name">real_estimated_turnover</property>
+                    <text-property name="displayName">real_estimated_turnover</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["real_estimated_turnover"]</expression>
                     <property name="dataType">decimal</property>
                 </structure>
                 <structure>
-                    <property name="name">estimated_margin</property>
-                    <text-property name="displayName">estimated_margin</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["estimated_margin"]</expression>
+                    <property name="name">real_estimated_margin</property>
+                    <text-property name="displayName">real_estimated_margin</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["real_estimated_margin"]</expression>
                     <property name="dataType">decimal</property>
                 </structure>
                 <structure>
-                    <property name="name">estimated_cost</property>
-                    <text-property name="displayName">estimated_cost</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["estimated_cost"]</expression>
+                    <property name="name">real_estimated_cost</property>
+                    <text-property name="displayName">real_estimated_cost</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["real_estimated_cost"]</expression>
                     <property name="dataType">decimal</property>
                 </structure>
             </list-property>
@@ -6436,7 +6477,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                         <property name="marginLeft">10pt</property>
                         <property name="textAlign">center</property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["estimated_turnover"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["real_estimated_turnover"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="3824">
@@ -6457,7 +6498,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                         <property name="marginLeft">10pt</property>
                         <property name="textAlign">center</property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["estimated_cost"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["real_estimated_cost"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="3841">
@@ -6478,7 +6519,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                         <property name="marginLeft">10pt</property>
                         <property name="textAlign">center</property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["estimated_margin"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["real_estimated_margin"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
             </row>
@@ -6525,7 +6566,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
         </text>
         <extended-item extensionName="Chart" id="3804">
             <xml-property name="xmlRepresentation"><![CDATA[<model:ChartWithAxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:attribute="http://www.birt.eclipse.org/ChartModelAttribute" xmlns:data="http://www.birt.eclipse.org/ChartModelData" xmlns:layout="http://www.birt.eclipse.org/ChartModelLayout" xmlns:model="http://www.birt.eclipse.org/ChartModel" xmlns:type="http://www.birt.eclipse.org/ChartModelType">
-  <Version>2.5.3</Version>
+  <Version>2.6.1</Version>
   <Type>Tube Chart</Type>
   <SubType>Side-by-side</SubType>
   <Block>
@@ -7142,7 +7183,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
             <Visible>true</Visible>
           </Label>
           <DataDefinition>
-            <Definition>row[&quot;estimated_turnover&quot;]</Definition>
+            <Definition>row[&quot;real_estimated_turnover&quot;]</Definition>
             <Grouping>
               <Enabled>true</Enabled>
               <GroupType>Text</GroupType>
@@ -8156,9 +8197,10 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
 ]]></xml-property>
             <property name="outputFormat">SVG</property>
             <property name="inheritColumns">false</property>
-            <property name="dataSet">TaskDS</property>
             <property name="height">3.5208333333333335in</property>
             <property name="width">6.9375in</property>
+            <structure name="toc"/>
+            <property name="dataSet">TaskDS</property>
             <list-property name="boundDataColumns">
                 <structure>
                     <property name="name">Total CA</property>
@@ -8171,8 +8213,8 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">estimated_turnover</property>
-                    <expression name="expression" type="javascript">dataSetRow["estimated_turnover"]</expression>
+                    <property name="name">real_estimated_turnover</property>
+                    <expression name="expression" type="javascript">dataSetRow["real_estimated_turnover"]</expression>
                     <property name="dataType">decimal</property>
                 </structure>
             </list-property>
@@ -8472,7 +8514,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                 IiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiA
                 IiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiI
                 AiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgCIiAIiIAiIgP//Z
-            </property>
+</property>
         </structure>
     </list-property>
 </report>
