@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.2.2.v201301221637 Build &lt;4.2.2.v20130206-1509></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.3.2.v20140211-1400 Build &lt;4.3.2.v20140211-1526></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -128,8 +128,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-erp-1</property>
-            <property name="odaUser">axelor</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-erp</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -2130,11 +2129,11 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                 <property name="hideDetail">false</property>
                 <header>
                     <row id="4623">
-                        <property name="height">0.23958333333333334in</property>
                         <property name="style">rounded</property>
                         <property name="backgroundColor">#FFFFFF</property>
                         <property name="pageBreakAfter">always</property>
                         <property name="pageBreakInside">auto</property>
+                        <property name="height">0.23958333333333334in</property>
                         <cell id="4624">
                             <property name="style">rounded</property>
                             <property name="color">#FFFFFF</property>
@@ -2153,11 +2152,11 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                         </cell>
                     </row>
                     <row id="3817">
-                        <property name="height">0.375in</property>
                         <property name="style">rounded</property>
                         <property name="backgroundColor">#FFFFFF</property>
                         <property name="pageBreakAfter">always</property>
                         <property name="pageBreakInside">auto</property>
+                        <property name="height">0.375in</property>
                         <cell id="3818">
                             <property name="colSpan">4</property>
                             <property name="rowSpan">1</property>
@@ -2172,10 +2171,10 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                         </cell>
                     </row>
                     <row id="4089">
-                        <property name="height">1.46875in</property>
                         <property name="style">rounded</property>
                         <property name="backgroundColor">#FFFFFF</property>
                         <property name="pageBreakAfter">always</property>
+                        <property name="height">1.46875in</property>
                         <cell id="4090">
                             <property name="colSpan">2</property>
                             <property name="rowSpan">1</property>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.2.2.v201301221637 Build &lt;4.2.2.v20130206-1509></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.3.2.v20140211-1400 Build &lt;4.3.2.v20140211-1526></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -133,7 +133,6 @@
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
             <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-erp</property>
-            <property name="odaUser">axelor</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -3281,8 +3280,8 @@ row["first_name"]
                 <property name="width">3.33375cm</property>
             </column>
             <row id="4233">
-                <property name="height">0.8466666666666667cm</property>
                 <property name="backgroundColor">#7F7F7F</property>
+                <property name="height">0.8466666666666667cm</property>
                 <cell id="4234">
                     <property name="colSpan">6</property>
                     <property name="rowSpan">1</property>
@@ -6087,8 +6086,8 @@ row["first_name"]
                 <property name="width">1.28125in</property>
             </column>
             <row id="4460">
-                <property name="height">0.873125cm</property>
                 <property name="backgroundColor">#7F7F7F</property>
+                <property name="height">0.873125cm</property>
                 <cell id="4461">
                     <property name="colSpan">6</property>
                     <property name="rowSpan">1</property>
@@ -6432,10 +6431,10 @@ row["first_name"]
             </column>
             <header>
                 <row id="4397">
-                    <property name="height">0.6614583333333334cm</property>
                     <property name="borderBottomColor">#000000</property>
                     <property name="borderBottomStyle">solid</property>
                     <property name="borderBottomWidth">thin</property>
+                    <property name="height">0.6614583333333334cm</property>
                     <cell id="4398">
                         <property name="colSpan">9</property>
                         <property name="rowSpan">1</property>

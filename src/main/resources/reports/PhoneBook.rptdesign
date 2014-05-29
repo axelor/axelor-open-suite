@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.2.2.v201301221637 Build &lt;4.2.2.v20130206-1509></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.3.2.v20140211-1400 Build &lt;4.3.2.v20140211-1526></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -130,8 +130,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-erp-1</property>
-            <property name="odaUser">axelor</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-erp</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -821,8 +820,8 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
             </column>
             <header>
                 <row id="4600">
-                    <property name="height">0.3229166666666667in</property>
                     <property name="pageBreakInside">avoid</property>
+                    <property name="height">0.3229166666666667in</property>
                     <cell id="4601">
                         <property name="colSpan">4</property>
                         <property name="rowSpan">1</property>
@@ -881,8 +880,8 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                     </cell>
                 </row>
                 <row id="4595">
-                    <property name="height">0.3229166666666667in</property>
                     <property name="pageBreakInside">avoid</property>
+                    <property name="height">0.3229166666666667in</property>
                     <cell id="4596">
                         <property name="colSpan">4</property>
                         <property name="rowSpan">1</property>
@@ -920,8 +919,8 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                     </cell>
                 </row>
                 <row id="4065">
-                    <property name="height">0.3229166666666667in</property>
                     <property name="pageBreakInside">avoid</property>
+                    <property name="height">0.3229166666666667in</property>
                     <cell id="4066">
                         <property name="colSpan">4</property>
                         <property name="rowSpan">1</property>
@@ -2063,12 +2062,12 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                 <property name="hideDetail">false</property>
                 <header>
                     <row id="3817">
-                        <property name="height">0.16666666666666666in</property>
                         <property name="style">rounded</property>
                         <property name="backgroundColor">#FFFFFF</property>
                         <property name="pageBreakAfter">always</property>
                         <property name="pageBreakBefore">always</property>
                         <property name="pageBreakInside">avoid</property>
+                        <property name="height">0.16666666666666666in</property>
                         <cell id="3818">
                             <property name="colSpan">2</property>
                             <property name="rowSpan">1</property>
@@ -2085,10 +2084,10 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                         <cell id="3975"/>
                     </row>
                     <row id="4089">
-                        <property name="height">1.6458333333333333in</property>
                         <property name="style">rounded</property>
                         <property name="backgroundColor">#FFFFFF</property>
                         <property name="pageBreakInside">auto</property>
+                        <property name="height">1.6458333333333333in</property>
                         <cell id="4090">
                             <property name="colSpan">2</property>
                             <property name="rowSpan">1</property>
@@ -2204,8 +2203,8 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                 </column>
                                 <detail>
                                     <row id="4548">
-                                        <property name="height">0.23958333333333334in</property>
                                         <property name="pageBreakInside">avoid</property>
+                                        <property name="height">0.23958333333333334in</property>
                                         <cell id="4549"/>
                                         <cell id="4550">
                                             <text id="4551">
@@ -2214,8 +2213,8 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                                         </cell>
                                     </row>
                                     <row id="4109">
-                                        <property name="height">1.3020833333333333in</property>
                                         <property name="pageBreakInside">avoid</property>
+                                        <property name="height">1.3020833333333333in</property>
                                         <cell id="4110">
                                             <grid id="4706">
                                                 <property name="height">1.21875in</property>
@@ -2568,8 +2567,8 @@ if(row["fax"] != null){row["fax"]}}</VALUE-OF>]]></text-property>
                                 </column>
                                 <detail>
                                     <row id="4552">
-                                        <property name="height">0.23958333333333334in</property>
                                         <property name="pageBreakInside">avoid</property>
+                                        <property name="height">0.23958333333333334in</property>
                                         <cell id="4553"/>
                                         <cell id="4554">
                                             <text id="4555">
@@ -2578,8 +2577,8 @@ if(row["fax"] != null){row["fax"]}}</VALUE-OF>]]></text-property>
                                         </cell>
                                     </row>
                                     <row id="4513">
-                                        <property name="height">1.3020833333333333in</property>
                                         <property name="pageBreakInside">avoid</property>
+                                        <property name="height">1.3020833333333333in</property>
                                         <cell id="4514">
                                             <grid id="4515">
                                                 <property name="height">1.21875in</property>

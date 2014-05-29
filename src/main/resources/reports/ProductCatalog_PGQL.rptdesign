@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 3.7.2.v20120213 Build &lt;3.7.2.v20120214-1408></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.3.2.v20140211-1400 Build &lt;4.3.2.v20140211-1526></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -136,7 +136,6 @@
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
             <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-erp</property>
-            <property name="odaUser">axelor</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -703,8 +702,8 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                         <property name="width">0.16666666666666666in</property>
                     </column>
                     <row id="296">
-                        <property name="height">0.03125in</property>
                         <property name="fontSize">3pt</property>
+                        <property name="height">0.03125in</property>
                         <cell id="297">
                             <property name="borderBottomColor">#68B022</property>
                             <property name="borderBottomStyle">solid</property>
@@ -955,9 +954,9 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                 </cell>
             </row>
             <row id="3677">
-                <property name="height">0.4895833333333333in</property>
                 <property name="backgroundColor">#1A1A1A</property>
                 <property name="pageBreakAfter">auto</property>
+                <property name="height">0.4895833333333333in</property>
                 <cell id="3678">
                     <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
@@ -990,9 +989,9 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                 </cell>
             </row>
             <row id="3450">
-                <property name="height">2.78125in</property>
                 <property name="backgroundColor">#1A1A1A</property>
                 <property name="pageBreakAfter">auto</property>
+                <property name="height">2.78125in</property>
                 <cell id="3451">
                     <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
@@ -1020,7 +1019,6 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                 </cell>
             </row>
             <row id="3460">
-                <property name="height">0.3125in</property>
                 <property name="backgroundColor">#1A1A1A</property>
                 <property name="borderBottomColor">#FFFFFF</property>
                 <property name="borderBottomStyle">solid</property>
@@ -1031,6 +1029,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                 <property name="borderTopColor">#FFFFFF</property>
                 <property name="borderTopStyle">solid</property>
                 <property name="pageBreakAfter">always</property>
+                <property name="height">0.3125in</property>
                 <cell id="3461">
                     <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
@@ -1270,8 +1269,8 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                             <property name="hideDetail">false</property>
                             <header>
                                 <row id="358">
-                                    <property name="height">0.2708333333333333in</property>
                                     <property name="backgroundColor">#E5E5E5</property>
+                                    <property name="height">0.2708333333333333in</property>
                                     <cell id="359">
                                         <property name="backgroundColor">#E5E5E5</property>
                                         <data id="366">
@@ -1387,8 +1386,8 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                             <property name="hideDetail">false</property>
                             <header>
                                 <row id="368">
-                                    <property name="height">0.23958333333333334in</property>
                                     <property name="backgroundColor">#E5E5E5</property>
+                                    <property name="height">0.23958333333333334in</property>
                                     <cell id="369">
                                         <property name="colSpan">2</property>
                                         <property name="rowSpan">1</property>
@@ -1579,8 +1578,8 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                                 <property name="width">2.625in</property>
                             </column>
                             <row id="243">
-                                <property name="height">1.0729166666666667in</property>
                                 <property name="backgroundColor">#F5F5F5</property>
+                                <property name="height">1.0729166666666667in</property>
                                 <cell id="244">
                                     <property name="colSpan">3</property>
                                     <property name="rowSpan">1</property>
@@ -1669,8 +1668,8 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                                 </cell>
                             </row>
                             <row id="285">
-                                <property name="height">0.3333333333333333in</property>
                                 <property name="backgroundColor">#F5F5F5</property>
+                                <property name="height">0.3333333333333333in</property>
                                 <cell id="286"/>
                                 <cell id="287">
                                     <text id="289">
@@ -1774,8 +1773,8 @@ BirtMath.roundDown(BirtMath.divide(row["PrevCategoryCount"], 5), 0) + 2
                 <property name="width">2.65625in</property>
             </column>
             <row id="397">
-                <property name="height">3.40625in</property>
                 <property name="pageBreakBefore">always</property>
+                <property name="height">3.40625in</property>
                 <cell id="398">
                     <property name="colSpan">3</property>
                     <property name="rowSpan">2</property>
@@ -1938,7 +1937,7 @@ Email : <VALUE-OF>row["email"]</VALUE-OF>]]></text-property>
                 AAAAAACjQFkoARyqAjdIFOy6nodk/E8BUgXxpAkjWBIogXAAAAAAAAAAAAAAAAAAAAAAAAAABTIBkBTZ
                 AbIDZArkBUAAAAAAAAAAAAAACgFQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQAAAAVAAAAAAAAAAAAAA
                 AAAAAAAAAAAAAAAAUAAMwP/Z
-            </property>
+</property>
         </structure>
         <structure>
             <property name="name">Logo.jpg</property>
@@ -2945,7 +2944,7 @@ Email : <VALUE-OF>row["email"]</VALUE-OF>]]></text-property>
                 17r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/d
                 e697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3X
                 uv/Z
-            </property>
+</property>
         </structure>
         <structure>
             <property name="name">download.jpg</property>
@@ -3001,7 +3000,7 @@ Email : <VALUE-OF>row["email"]</VALUE-OF>]]></text-property>
                 RQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQB8tUVm5PvRQBnDJOBkkkAADJJPQADPJ7V7v8KvhSLULeXa
                 g3BGUiPItwR1PYynv6dB3NO+FfwrFqFu7pQbgjMcZwRbg9z2MpHU9ug7k+n0AFFFFABRRRQAUUUUAFFF
                 FABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFAHyNxRVv+xrr/n3n/78y/8AxNFAH//Z
-            </property>
+</property>
         </structure>
         <structure>
             <property name="name">images.jpg</property>
@@ -3047,7 +3046,7 @@ Email : <VALUE-OF>row["email"]</VALUE-OF>]]></text-property>
                 hPhZ8H/sn2fxN4hT5+GggYfc7h5Qf4vQfw9Tz09poAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAC
                 iiigAooooAKKKKACiiigAooooAKKKKAPh2iiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKK
                 ACiiigAooooAKKKKACiiigAq5pP/AB8af/13j/8AQxRRQB//2Q==
-            </property>
+</property>
         </structure>
         <structure>
             <property name="name">Loose Black Triangle Lopt.jpg</property>
@@ -3425,7 +3424,7 @@ Email : <VALUE-OF>row["email"]</VALUE-OF>]]></text-property>
                 UAFFABRQAUUAFFABRQAUUAFFABRQAUUAFFABRQAUUAFFABRQAUUAFFAH8Wj+GNa8IeLNb8LeKdJvPD3i
                 Hw/Jdabq2jajaSW95YXkFxCs0MttIPlwRlWDsrgh0LIwJ/pE/bX/AGZvhZ8S4/D3xA1fT7/R/GUF9F4d
                 ufEHhyez0+91fRpLK9u4bPWBc2F/BdfYJLZPssjQrLGjPGJTGVRWuy91RBabaH//2Q==
-            </property>
+</property>
         </structure>
         <structure>
             <property name="name">images (1).jpg</property>
@@ -3471,7 +3470,7 @@ Email : <VALUE-OF>row["email"]</VALUE-OF>]]></text-property>
                 hPhZ8H/sn2fxN4hT5+GggYfc7h5Qf4vQfw9Tz09poAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAC
                 iiigAooooAKKKKACiiigAooooAKKKKAPh2iiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKK
                 ACiiigAooooAKKKKACiiigAq5pP/AB8af/13j/8AQxRRQB//2Q==
-            </property>
+</property>
         </structure>
     </list-property>
 </report>

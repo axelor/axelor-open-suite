@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.2.2.v201301221637 Build &lt;4.2.2.v20130206-1509></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.3.2.v20140211-1400 Build &lt;4.3.2.v20140211-1526></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -147,8 +147,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-erp-1</property>
-            <property name="odaUser">axelor</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-erp</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -677,9 +676,9 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
     </page-setup>
     <body>
         <grid id="3342">
-            <property name="marginLeft">2pt</property>
+            <property name="marginLeft">0pt</property>
             <property name="height">2.0729166666666665in</property>
-            <property name="width">19.446875cm</property>
+            <property name="width">19.420416666666664cm</property>
             <property name="dataSet">ProductSheetDS</property>
             <list-property name="boundDataColumns">
                 <structure>
@@ -747,24 +746,27 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                 <property name="width">1.984375cm</property>
             </column>
             <column id="3344">
-                <property name="width">1.7604166666666667in</property>
+                <property name="width">2.9166666666666665in</property>
+            </column>
+            <column id="4114">
+                <property name="width">0.20833333333333334in</property>
             </column>
             <column id="3345">
-                <property name="width">1.34375in</property>
+                <property name="width">0.238125cm</property>
             </column>
             <column id="3346">
-                <property name="width">1.5833333333333333in</property>
+                <property name="width">6.614583333333333cm</property>
             </column>
             <column id="3347">
-                <property name="width">1.65625in</property>
+                <property name="width">1.4552083333333332cm</property>
             </column>
             <column id="3348">
-                <property name="width">1.349375cm</property>
+                <property name="width">1.11125cm</property>
             </column>
             <row id="3349">
                 <property name="height">1.4166666666666667in</property>
                 <cell id="3350">
-                    <property name="colSpan">3</property>
+                    <property name="colSpan">4</property>
                     <property name="rowSpan">1</property>
                     <image id="3419">
                         <property name="height">2.169583333333333cm</property>
@@ -811,7 +813,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
             <row id="3836">
                 <property name="height">0.84375in</property>
                 <cell id="3837">
-                    <property name="colSpan">6</property>
+                    <property name="colSpan">7</property>
                     <property name="rowSpan">1</property>
                     <property name="backgroundColor">#606062</property>
                     <text id="3426">
@@ -864,6 +866,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                 <property name="height">0.2708333333333333in</property>
                 <cell id="4043"/>
                 <cell id="4044"/>
+                <cell id="4109"/>
                 <cell id="4045"/>
                 <cell id="4046"/>
                 <cell id="4047"/>
@@ -887,11 +890,15 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                         <property name="borderTopColor">#606062</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <property name="height">18px</property>
+                        <property name="height">48px</property>
                         <property name="width">330px</property>
                         <property name="source">url</property>
                         <expression name="uri" type="constant">http://localhost:8080/barbecue/BarcodeServlet?data=1212312356&amp;type=Code128B</expression>
                     </image>
+                </cell>
+                <cell id="4110">
+                    <property name="colSpan">1</property>
+                    <property name="rowSpan">4</property>
                 </cell>
                 <cell id="4065">
                     <property name="colSpan">4</property>
@@ -933,7 +940,7 @@ where LangTranslate.key = ? and LangTranslate.language = ?]]></xml-property>
                 </cell>
             </row>
             <row id="3370">
-                <property name="height">1.1458333333333333in</property>
+                <property name="height">1.0208333333333333in</property>
                 <cell id="4050">
                     <property name="colSpan">4</property>
                     <property name="rowSpan">3</property>
