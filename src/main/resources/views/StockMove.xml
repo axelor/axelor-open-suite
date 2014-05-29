@@ -79,7 +79,7 @@
     		</group>
     		<group title="Action(s)" colSpan="2" cols="2">
             	<button name="plan" title="Plan" showIf="statusSelect == 1" colSpan="1" onClick="save,action-stock-move-method-plan,action-stock-move-group-read-only,save"/>
-				<button name="realize" title="Realize" showIf="statusSelect == 2" colSpan="1" onClick="save,action-stock-move-method-realize,action-stock-move-group-read-only,action-stock-move-attrs-hide-button-generate-invoice,save"/>
+				<button name="realize" title="Realize" showIf="statusSelect == 2" colSpan="1" onClick="save,action-stock-move-check-stock-move-line-real-qty,action-stock-move-method-realize,action-stock-move-group-read-only,action-stock-move-attrs-hide-button-generate-invoice,save"/>
 				<button name="cancel" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3" colSpan="1" onClick="save,action-stock-move-method-cancel,action-stock-move-attrs-canceled-read-only,save"/>
 	        	<button name="draft" title="Draft" showIf="statusSelect == 4" onClick="save,action-stock-move-record-draft,save"/>
             	<button name="generateInvoice" title="Generate invoice" onClick="save,action-stock-move-method-generate-invoice"/>
@@ -164,6 +164,7 @@
     <action-record name="action-stock-move-record-new" model="com.axelor.apps.supplychain.db.StockMove">
     	<field name="company"  expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
 	    <field name="statusSelect" expr="eval: 1"/>
+	    <field name="isWithBackorder" expr="eval:true" />
 	    <field name="estimatedDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
 	    <field name="typeSelect" expr="eval: _typeSelect"/>
 	</action-record>
@@ -215,6 +216,10 @@
 	<action-attrs name="action-stock-move-attrs-hide-button-generate-invoice">
 		<attribute name="hidden" for="generateInvoice" expr="eval: (salesOrder == null &amp;&amp; purchaseOrder == null) || (salesOrder != null &amp;&amp; salesOrder?.invoicingTypeSelect != 4 &amp;&amp; salesOrder?.invoicingTypeSelect != 5) || (purchaseOrder != null &amp;&amp; purchaseOrder.invoicingTypeSelect != 2) || invoice != null || statusSelect != 3"/>
 	</action-attrs>
+	
+	<action-validate name="action-stock-move-check-stock-move-line-real-qty">
+		<alert message="The move doesn't contain any product, do you wish to continue ?" if="stockMoveLineList != null &amp;&amp; stockMoveLineList.sum{it->it.realQty} == 0"/>
+	</action-validate>
 	
 	<search-filters name="customer-deliveries-filters" model="com.axelor.apps.supplychain.db.StockMove" title="Customer deliveries filters">
 		<filter title="Deliveries to prepare">
