@@ -38,7 +38,7 @@ public interface IReport {
 	public static final String PROJECT = "Project.rptdesign";
 	public static final String TASK = "Task.rptdesign";
 	public static final String TIMESHEET = "Timesheet.rptdesign";
-	
-	
+	public static final String BUSINESS_SITUATION = "BusinessSituation.rptdesign";
+    public static final String EXPENSE="Expense.rptdesign";
 	
 }

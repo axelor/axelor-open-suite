@@ -20,6 +20,9 @@
 	
     <form cols="6" onNew="action-project-group-default" name="project-form" title="Project" model="com.axelor.apps.organisation.db.Project"
     onSave="action-project-method-create-default-task-on-save">
+	    <toolbar>
+    		<button name="printProject" colSpan="2" title="Print" onClick="action-print-project" icon="fa-print"/>
+    	</toolbar>
 	    <group showTitle="false" colSpan="4">
 	   		<field name="name" showTitle="false" css="highlight" placeholder="Name" colSpan="4"/>
 	        <field name="responsibleUserInfo"/>
@@ -80,6 +83,9 @@
 	    </notebook>
 	</form>
 
+	<action-method name="action-print-project">
+		<call class="com.axelor.apps.organisation.web.ProjectController" method="printProjectReport"/>
+	</action-method>
 	
     <action-view name="action-project-view-task" title="Tasks" model="com.axelor.apps.organisation.db.Task">
 		<view type="grid" name="task-grid"/>

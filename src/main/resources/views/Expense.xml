@@ -34,7 +34,10 @@
     
     <form name="expense-form" title="Expense" model="com.axelor.apps.organisation.db.Expense" cols="4"
     onNew="action-expense-group-default" onLoad="action-expense-method-check-validation-status">
-		<field name="userInfo"/>
+    	<toolbar>
+    		<button name="printExpense" colSpan="2" title="Print" onClick="action-print-expenses" icon="fa-print"/>
+    	</toolbar>
+    	<field name="userInfo"/>
    	 	<field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="2"/>
         <field name="date" />
         <field name="company" form-view="company-lite-form" widget="SuggestBox"/>
@@ -119,6 +122,10 @@
     
     <action-method name="action-expense-method-check-validation-status">
     	<call class="com.axelor.apps.organisation.web.ExpenseController" method="checkValidationStatus"/>
+    </action-method>
+    
+    <action-method name="action-print-expenses">
+    	<call class="com.axelor.apps.organisation.web.ExpenseController" method="printExpenses"/>
     </action-method>
     
 </object-views>

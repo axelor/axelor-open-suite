@@ -30,15 +30,30 @@
  */
 package com.axelor.apps.organisation.web;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.axelor.apps.ReportSettings;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.organisation.db.Expense;
 import com.axelor.apps.organisation.db.ExpenseLine;
+import com.axelor.apps.organisation.db.Project;
+import com.axelor.apps.organisation.report.IReport;
+import com.axelor.apps.tool.net.URLService;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.common.base.Strings;
 
 public class ExpenseController {
-
+	
+	private static final Logger LOG = LoggerFactory.getLogger(ExpenseController.class);
+	
 	public void checkValidationStatus(ActionRequest request, ActionResponse response) {
 	
 		Expense expense = request.getContext().asType(Expense.class);
@@ -61,4 +76,43 @@ public class ExpenseController {
 			response.setValue("validationStatusSelect", 1);
 		}
 	}
+	
+	/**
+	 * Fonction appeler par le notes de frais
+	 *
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	public void printExpenses(ActionRequest request, ActionResponse response) {
+
+
+		Expense expense = request.getContext().asType(Expense.class);
+
+		StringBuilder url = new StringBuilder();
+
+		User user = AuthUtils.getUser();
+		String language = user != null? (user.getLanguage() == null || user.getLanguage().equals(""))? "en" : user.getLanguage() : "en"; 
+
+		url.append(
+				new ReportSettings(IReport.EXPENSE)
+				.addParam("Locale", language)
+				.addParam("__locale", "fr_FR")
+				.addParam("ExpenseId", expense.getId().toString())
+				.getUrl());
+		
+		String urlNotExist = URLService.notExist(url.toString());
+		if (urlNotExist == null){
+
+			Map<String,Object> mapView = new HashMap<String,Object>();
+			mapView.put("title", "Name "+expense.getUserInfo().getFullName());
+			mapView.put("resource", url);
+			mapView.put("viewType", "html");
+			response.setView(mapView);	
+		}
+		else {
+			response.setFlash(urlNotExist);
+		}
+	}
+	
 }

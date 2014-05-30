@@ -4,6 +4,10 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
     
     <grid name="business-project-grid" title="Business" model="com.axelor.apps.organisation.db.Project">
+       	<toolbar>
+    		<button name="printBusinesses" colSpan="2" title="Business Situation" onClick="action-print-business-situation" icon="fa-print"/>
+    	</toolbar>
+    	
         <field name="clientPartner"/>
         <field name="contactPartner"/>
         <field name="company"/>
@@ -15,6 +19,10 @@
     onLoad="action-project-method-update-financial-information,save"
     onNew="action-business-project-group-default"
     onSave="save,action-business-project-method-create-default-task-on-save">
+    	<toolbar>
+    		<button name="printBusiness" colSpan="2" title="Business Situation" onClick="action-print-business-situation" icon="fa-print"/>
+    	</toolbar>
+    	
     	<group showTitle="false" cols="6" colSpan="6">
 	    	<field name="name" showTitle="false" css="highlight" placeholder="Name" colSpan="4"/>
 	       	<field name="businessStatusSelect" widget="NavSelect" showTitle="false"/>
@@ -178,6 +186,10 @@
 		<call class="com.axelor.apps.organisation.web.ProjectController" method="printProjectReport"/>
 	</action-method>
 	
+	<action-method name="action-print-business-situation"> 
+		<call class="com.axelor.apps.organisation.web.ProjectController" method="printBusinessSituation"/>
+	</action-method>
+		
 	<action-method name="action-project-method-update-financial-information">
 		<call class="com.axelor.apps.organisation.web.ProjectController" method="updateFinancialInformation"/>
 	</action-method>
