@@ -26,8 +26,8 @@
          	 _gender
          	 
  		 </dataset>
-		 <category key="_gender" type="text"/>
-		 <series key="_num_emp" type="donut"/>
+		 <category key="_gender" type="text" title="Gender"/>
+		 <series key="_num_emp" type="donut" title="Employees"/>
 	</chart>
 	  
 	  
@@ -46,8 +46,8 @@
 	      _gender
 	    
 	  </dataset>
-	  <category key="_gender" type="text"/>
-	  <series key="_num_emp" type="bar"/>
+	  <category key="_gender" type="text" title="Gender"/>
+	  <series key="_num_emp" type="bar" title="Employees"/>
 	</chart>
 	
 	<chart name="chart.hr.employees.by.category.distribution" title="Employees by macro-category">
@@ -68,8 +68,8 @@
 			  GROUP BY
 			      _macro_Category
 	  </dataset>
-	 <category key="_macro_category" type="text"/>
-	 <series key="_num_emp" type="donut"/>
+	 <category key="_macro_category" type="text" title="Macro Category"/>
+	 <series key="_num_emp" type="donut" title="Employees"/>
 	</chart>
 	
 	<chart name="chart.hr.nbr.of.employees.by.category" title="Employees by macro-category">
@@ -95,8 +95,8 @@
 			_item.order_seq    
 			
 	  </dataset>
-	  <category key="_macro_category" type="text"/>
-	  <series key="_num_emp" type="bar"/>
+	  <category key="_macro_category" type="text" title="Macro Category"/>
+	  <series key="_num_emp" type="bar" title="Employees"/>
 	</chart>	  
 	
 	
@@ -118,8 +118,8 @@
         GROUP BY
           contract_type
   </dataset>
- <category key="contract_type" type="text"/>
- <series key="_num_emp" type="donut"/>
+ <category key="contract_type" type="text" title="Contract Type"/>
+ <series key="_num_emp" type="donut" title="Employees"/>
 </chart>
 
 	<chart onInit="action-product-set-today-date" name="chart.hr.employees.turnover.ytd.vs.lastYear" title="Employees turnover per year">
@@ -182,8 +182,8 @@
 	    GROUP BY 
 	       date_part('year',self.entry_date)
 	   </dataset>
-	  <category key="_year" type="text"/>
-	  <series key="_num_emp" type="bar"/>
+	  <category key="_year" type="text" title="Year"/>
+	  <series key="_num_emp" type="bar" title="Employees"/>
 	</chart>
 	
 	<chart onInit="action.org.portal.set.date.effective" name="chart.employees.age.pyramid" title="Employees age pyramid">
@@ -215,8 +215,8 @@
 	    ORDER BY
 	      _employees	      
 	  </dataset>
-	  <category key="_age_group" type="text"/>
-	  <series key="_employees" type="hbar"/>
+	  <category key="_age_group" type="text" title="Age Group"/>
+	  <series key="_employees" type="hbar" title="Employees"/>
 	</chart>
 	
 </object-views>
