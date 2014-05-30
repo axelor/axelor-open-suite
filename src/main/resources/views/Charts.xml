@@ -25,8 +25,8 @@
 			   selection_item.id
 	    ]]>
 	    </dataset>
-	    <category key="_sales_stage" type="text"/>
-    	<series key="amount" type="bar"/>
+	    <category key="_sales_stage" type="text" title="Sales Stage"/>
+    	<series key="amount" type="bar" title="Amount"/>
 	 </chart>
 	 
 	  <chart name="chart.dashboard.opportunities.by.stage.type.bar" title="Pipeline by Stage and Type">
@@ -49,8 +49,8 @@
 			   selection_item.id
 	    ]]>
 	    </dataset>
-	    <category key="_sales_stage" type="text"/>
-    	<series key="amount" type="bar"/>
+	    <category key="_sales_stage" type="text" title="Sales Stage"/>
+    	<series key="amount" type="bar" title="Amount"/>
 	 </chart>
 	
 	 <chart name="chart.dashboard.opportunities.source.amount.bar" title="Opportunities By Source">
@@ -69,8 +69,8 @@
 			    _source
 		    ]]>
 	    </dataset>
-	    <category key="_source" type="text"/>
-    	<series key="amount" type="bar"/>
+	    <category key="_source" type="text" title="Source"/>
+    	<series key="amount" type="bar" title="Amount"/>
 	  </chart>
 	  
 	   <chart name="chart.dashboard.opportunities.type.amount.bar" title="Opportunities By Type">
@@ -89,8 +89,8 @@
 		   		opportunity_type.name
 		 ]]>
 	    </dataset>
-	    <category key="_opportunity_type" type="text"/>
-    	<series key="amount" type="bar"/>
+	    <category key="_opportunity_type" type="text" title="Opportunity Type"/>
+    	<series key="amount" type="bar" title="Amount"/>
 	  </chart>
 	  	
 	  <chart name="chart.dashboard.opportunities.won.by.leadsource.bar" title="Opportunities Won By Lead Source">
@@ -109,8 +109,8 @@
     			_source
 		 ]]>
 	    </dataset>
-	    <category key="_source" type="text"/>
-    	<series key="lead_won" type="donut"/>
+	    <category key="_source" type="text" title="Source"/>
+    	<series key="lead_won" type="donut" title="Opportunities"/>
 	  </chart>
 	  	  
 	  	  <chart name="chart.dashboard.opportunities.won.by.salesman.bar" title="Opportunities Won By Salesman">
@@ -130,8 +130,8 @@
 		   		_sales_man
 		 ]]>
 	    </dataset>
-	    <category key="_sales_man" type="text"/>
-    	<series key="amount" type="bar"/>
+	    <category key="_sales_man" type="text" title="Salesman"/>
+    	<series key="amount" type="bar" title="Amount"/>
 	  </chart>
 	  
 	  <chart name="chart.opportunities.by.origin.by.stage" title="Opportunities By Origin By Stage" stacked="true">
@@ -159,8 +159,8 @@
 			    src.name
 		    ]]>
 	    </dataset>
-	    <category key="source" type="text"/>
-	    <series key="amount" groupBy="stage" type="bar"/>
+	    <category key="source" type="text" title="Source"/>
+	    <series key="amount" groupBy="stage" type="bar" title="Amount"/>
 	</chart>
 	
 	<chart name="chart.opportunities.pipeline.next.90d" title="Pipeline next 90 days" stacked="true">
@@ -190,8 +190,8 @@
 
 		    ]]>
 	    </dataset>
-	    <category key="pipeline" type="text"/>
-	    <series key="amount" groupBy="stage" type="bar"/>
+	    <category key="pipeline" type="text" title="Pipeline"/>
+	    <series key="amount" groupBy="stage" type="bar" title="Amount"/>
 	</chart>
 	
 	<action-record model="com.axelor.apps.crm.db.Lead" name="action.crm.portal.set.date">
@@ -220,8 +220,8 @@
 		        self.source.name
 		    ]]>
 	    </dataset>
-	    <category key="source" type="text"/>
-	    <series key="leads"  type="bar"/>
+	    <category key="source" type="text" title="Source"/>
+	    <series key="leads"  type="bar" title="Leads"/>
 	</chart>
 	
 	 <chart onInit="action.crm.portal.set.date" name="chart.leads.by.team.by.status.bar" title="Leads by Team by Status" stacked="true">
@@ -331,8 +331,8 @@
 					_user_name, _total_calls DESC	
 			  ]]>
 	    </dataset>
-	    <category key="_user_name" type="text"/>
-	    <series key="_total_calls" groupBy="_call_status" type="bar"/>
+	    <category key="_user_name" type="text" title="User"/>
+	    <series key="_total_calls" groupBy="_call_status" type="bar" title="Calls"/>
 	</chart>
 	  	
 	<chart onInit="action.crm.portal.set.date" name="chart.calls.types.by.team.bar" title="Calls type by team" stacked="true">
@@ -374,14 +374,14 @@
 					_team_name, _total_calls DESC
 		  ]]>
 	    </dataset>
-	    <category key="_team_name" type="text"/>
-	    <series key="_total_calls" groupBy="_call_status" type="bar"/>
+	    <category key="_team_name" type="text" title="Team"/>
+	    <series key="_total_calls" groupBy="_call_status" type="bar" title="Calls"/>
 	</chart>  	
 	  	
 	<chart onInit="action.crm.portal.set.date" name="chart.calls.types.by.team.by.user.bar" title="Calls by team by user">
 		<search-fields> 	        
 		    <field type="datetime" name="fromDateT" title="From Date" />
-		    <field type="reference" name="team" target="com.axelor.apps.base.db.Team" widget="[required=true]" />
+		    <field type="reference" name="team" target="com.axelor.apps.base.db.Team" widget="[required=true]" title="Team" />
 		</search-fields>
 		<dataset type="jpql">
 		    <![CDATA[
@@ -403,8 +403,8 @@
 			         salesMan.fullName
 			  ]]>
 	    </dataset>
-	    <category key="_sales_man" type="text"/>
-	    <series key="_total_calls" type="bar"/>
+	    <category key="_sales_man" type="text" title="Salesman"/>
+	    <series key="_total_calls" type="bar" title="Calls"/>
 	</chart> 
 	
 	
@@ -412,7 +412,7 @@
 		<dataset type="sql">
 		    <![CDATA[
 				SELECT
-				    COUNT(self.id)  AS _total_calls,
+				    COUNT(self.id)  AS _tickets,
 				    selection_item.title AS _priority
 				FROM
 				    crm_event as self
@@ -430,15 +430,15 @@
 				    _priority    
 			  ]]>
 	    </dataset>
-	    <category key="_priority" type="text"/>
-	    <series key="_total_calls" type="bar"/>
+	    <category key="_priority" type="text" title="Priority"/>
+	    <series key="_tickets" type="bar" title="Tickets"/>
 	</chart>  	
 	
 	<chart name="chart.open.ticket.priority.distribution.bar" title="Open tickets distribution by Priority">
 		<dataset type="sql">
 		    <![CDATA[
 			    select
-			        (count(self.id)*100/(select CASE WHEN count(*)=0 THEN 1 ELSE count(*) END from crm_event where ticket_status_select!=5 and priority_select is not null)) as _total_calls,
+			        (count(self.id)*100/(select CASE WHEN count(*)=0 THEN 1 ELSE count(*) END from crm_event where ticket_status_select!=5 and priority_select is not null)) as _tickets,
 			        selection_item.title as _priority
 			    from
 			        crm_event self
@@ -455,8 +455,8 @@
 			        _priority
 			  ]]>
 	    </dataset>
-	    <category key="_priority" type="text"/>
-	    <series key="_total_calls" type="donut"/>
+	    <category key="_priority" type="text" title="Priority"/>
+	    <series key="_tickets" type="donut" title="Tickets"/>
 	</chart>  	
 	
 	
@@ -464,7 +464,7 @@
 		<dataset type="sql">
 		    <![CDATA[
 			    SELECT
-			      COUNT(self.id)    AS     _total_calls,
+			      COUNT(self.id)    AS     _tickets,
 			      selection_item.title     AS     _status
 			    FROM
 			        crm_event as self
@@ -484,8 +484,8 @@
 			        _status     
 			  ]]>
 	    </dataset>
-	    <category key="_status" type="text"/>
-	    <series key="_total_calls" type="bar"/>
+	    <category key="_status" type="text" title="Status"/>
+	    <series key="_tickets" type="bar" title="Tickets"/>
 	</chart>  	
 	  	
 	<chart name="chart.user.by.open.cases.bar" title="Open Cases by Agents" stacked="true">
@@ -515,8 +515,8 @@
 	         _sales_man
 	      
 	  </dataset>
-	  <category key="_sales_man" type="text"/>
-	  <series key="_cases" type="bar" groupBy="_status"/>
+	  <category key="_sales_man" type="text" title="Salesman"/>
+	  <series key="_cases" type="bar" groupBy="_status" title="Cases"/>
 	</chart>
 	
 	<chart onInit="action.crm.portal.set.date" name="chart.customer.by.open.cases.bar" title="New Cases by Customer" stacked="true">
@@ -547,8 +547,8 @@
 	         self.clientPartner.fullName
 	      
 	  </dataset>
-	  <category key="_partner" type="text"/>
-	  <series key="_cases" groupBy="_status" type="bar"/>
+	  <category key="_partner" type="text" title="Customer"/>
+	  <series key="_cases" groupBy="_status" type="bar" title="Cases"/>
 	</chart>	
 	
 	<chart onInit="action.crm.portal.set.date" name="chart.leads.by.country.bar" title="Leads by Country">
@@ -573,8 +573,8 @@
 			   	_country
 			  ]]>
 	    </dataset>
-	    <category key="_country" type="text"/>
-	    <series key="_total_leads"  type="bar"/>
+	    <category key="_country" type="text" title="Country"/>
+	    <series key="_total_leads"  type="bar" title="Leads"/>
 	</chart>  		
 	
 	<action-record model="com.axelor.apps.crm.db.Lead" name="action.crm.portal.default.month.value.6m">
@@ -598,7 +598,7 @@
 	  ORDER BY
   		_month    
 	  </dataset>
-	  <category key="_month" type="month"/>
+	  <category key="_month" type="month" title="Month"/>
 	  <series key="_leads" type="bar" title="Leads"/>
 	  <config name="xFormat" value="MM-YYYY"/>
 	</chart>
@@ -1395,8 +1395,8 @@
 		      GROUP BY
 		            _type    
 		  </dataset>
-		  <category key="_type" type="text" title="Events"/>
-		  <series key="_num_event" type="bar" />
+		  <category key="_type" type="text" title="Type"/>
+		  <series key="_num_event" type="bar" title="Activities"/>
 		</chart>
 		
 </object-views>
