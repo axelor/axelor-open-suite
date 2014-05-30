@@ -23,8 +23,8 @@
 				_meta._type
     	    ]]>
 	    </dataset>
-	    <category key="_invoice_type" type="text"/>
-	    <series key="_amount"  type="bar"/>
+	    <category key="_invoice_type" type="text" title="Invoice"/>
+	    <series key="_amount"  type="bar" title="Amount"/>
 	</chart>
 
 	<chart name="chart.invoiced.turnover.ytd.vs.lastyear" title="Invoiced Turnover This year vs Last year">
@@ -278,7 +278,7 @@
 	      ORDER BY _month  
 	  
 	  </dataset>
-	  <category key="_month" type="month"/>
+	  <category key="_month" type="month" title="Month"/>
 	  <series key="_qty" groupBy="_product" type="bar" title="Units"/>
 	  <config name="xFormat" value="MM-YYYY"/>
 	</chart>
@@ -328,7 +328,7 @@
 	  ORDER BY _month    
 	  
 	  </dataset>
-	  <category key="_month" type="month"/>
+	  <category key="_month" type="month" title="Month"/>
 	  <series key="_turn_over" groupBy="_product" type="bar" title="Units"/>
 	  <config name="xFormat" value="MM-YYYY"/>
 	</chart>
@@ -356,7 +356,7 @@
 	    ORDER BY 
 	      _month  
 	  </dataset>
-	  <category key="_month" type="month"/>
+	  <category key="_month" type="month" title="Month"/>
 	  <series key="_amount" type="bar" title="Units"/>
 	  <config name="xFormat" value="MM-YYYY"/>
 	</chart>
@@ -386,8 +386,8 @@
 	     	
 	    ]]>
 	    </dataset>
-	    <category key="paymentMode" type="text" />
-	    <series key="total" type="donut" title="Payments" />
+	    <category key="paymentMode" type="text" title="Payment Mode"/>
+	    <series key="total" type="donut" title="Amount" />
 	  </chart>
 	  
  	  <action-record name="action.account.portal.set.date" model="com.axelor.apps.account.db.Account">
@@ -429,7 +429,7 @@
 	     	
 	    ]]>
 	    </dataset>
-	    <category key="paymentMode" type="text" />
+	    <category key="paymentMode" type="text" title="Payment Mode"/>
 	    <series key="total" type="donut" title="Amount paid" />
 	  </chart>
 	  
@@ -458,7 +458,7 @@
 	     	
 	    ]]>
 	    </dataset>
-	    <category key="paymentMode" type="text" />
+	    <category key="paymentMode" type="text" title="Payment Mode"/>
 	    <series key="total" type="bar" title="Amount paid" />
 	  </chart>
 
@@ -503,7 +503,7 @@
 	    
 	  </dataset>
 	  <category key="_label" type="text"/>
-	  <series key="_amount" type="bar"/>
+	  <series key="_amount" type="bar" title="Amount"/>
 	</chart>
 	     
 	 <chart onInit="action.account.portal.default.month.value" name="chart.invoice.sale.amount.by.month" title="Invoice Sale by month (tax excl.)">
@@ -533,8 +533,8 @@
 	    ORDER BY
 	          _month
 	  </dataset>
-	  <category key="_month" type="month"/>
-	  <series key="ex_tax_total" type="bar"/>
+	  <category key="_month" type="month" title="Month"/>
+	  <series key="ex_tax_total" type="bar" title="Amount"/>
 	  <config name="xFormat" value="MM-YYYY"/>
 	</chart>
 
@@ -568,8 +568,8 @@
 		WHERE _currency.id=_account_invoice._currency	 
 		GROUP BY _currency.name
 	  </dataset>
-	  <category key="_currency" type="month"/>
-	  <series key="ex_tax_total" type="bar"/>
+	  <category key="_currency" type="month" title="Month"/>
+	  <series key="ex_tax_total" type="bar" title="Amount"/>
 	</chart>
 	
 	<chart onInit="action.account.portal.default.month.value"  name="chart.invoice.sale.paymentCondition.distribution" title="Invoice Sale Payment Condition distribution">
@@ -605,8 +605,8 @@
 	    GROUP BY 
 	        _payment_condition.name
 	 </dataset>
-	  <category key="_payment_condition" type="month"/>
-	  <series key="ex_tax_total" type="donut"/>
+	  <category key="_payment_condition" type="month" title="Month"/>
+	  <series key="ex_tax_total" type="donut" title="Amount"/>
 	</chart>
 	
 	<chart onInit="action.account.portal.default.month.value" name="chart.invoice.purchase.amount.by.month" title="Invoice Purchase by month (tax excl.)">
@@ -636,8 +636,8 @@
 	  ORDER BY
     	_month
 	  </dataset>
-	  <category key="_month" type="month"/>
-	  <series key="ex_tax_total" type="bar"/>
+	  <category key="_month" type="month" title="Month"/>
+	  <series key="ex_tax_total" type="bar" title="Amount"/>
 	  <config name="xFormat" value="MM-YYYY"/>
 	</chart>
 
@@ -672,8 +672,8 @@
 	   WHERE _currency.id=_account_invoice._currency	 
 	   GROUP BY _currency.name
 	  </dataset>
-	  <category key="_currency" type="text"/>
-	  <series key="ex_tax_total" type="bar"/>
+	  <category key="_currency" type="text" title="Currency"/>
+	  <series key="ex_tax_total" type="bar" title="Amount"/>
 	</chart>
 	
 	<chart onInit="action.account.portal.default.month.value" name="chart.invoice.purchase.paymentCondition.distribution" title="Invoice Purchase Payment Condition distribution">
@@ -707,8 +707,8 @@
 	    GROUP BY 
 	        _payment_condition.name
 	 </dataset>
-	  <category key="_payment_condition" type="month"/>
-	  <series key="ex_tax_total" type="donut"/>
+	  <category key="_payment_condition" type="text" title="Payment Condition"/>
+	  <series key="ex_tax_total" type="donut" title="Amount"/>
 	</chart>
 	<chart onInit="action.account.portal.default.month.value" name="chart.invoice.sale.refund.situation" title="Invoice and Refunds Sale situation (tax incl.)">
 	
