@@ -20,6 +20,7 @@
     	onNew="action-location-record-new">
     	<toolbar>
     		<button name="createInventory" title="Create inventory" onClick="action-location-view-create-inventory" colSpan="1"/>
+    		<button name="print" title="Print" icon="fa-print" onClick="action-stock-location-method-print"/>
     	</toolbar>
         <field name="name"/>
         <field name="parent"/>        
