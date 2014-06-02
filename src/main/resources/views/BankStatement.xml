@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+  
+     <grid name="bank-statement-grid" title="Bank Statements" model="com.axelor.apps.account.db.BankStatement">
+        <field name="name"/>
+        <field name="company"/>
+        <field name="fromDate"/>
+        <field name="toDate"/>
+        <field name="journal"/>
+        <field name="period"/>
+        <field name="currency"/>
+        <field name="cashAccount"/>
+        <field name="openingBalance"/>
+        <field name="endingBalance"/>
+        <field name="bankStatementLineList"/>
+        <field name="computedBalance"/>
+     </grid>
+  
+     <form name="bank-statement-form" cols="2"  title="Bank Statement" model="com.axelor.apps.account.db.BankStatement" >
+        <field name="name"/>
+        <field name="company"/>
+        <field name="fromDate"/>
+        <field name="toDate"/>
+        <field name="journal"/>
+        <field name="period"/>
+        <field name="currency"/>
+        <field name="cashAccount"/>
+        <field name="openingBalance"/>
+        <field name="endingBalance"/>
+        <field name="bankStatementLineList" colSpan="2"/>
+        <field name="computedBalance"/>
+    </form>
+    
+</object-views>

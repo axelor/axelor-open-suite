@@ -202,4 +202,11 @@
 		<option value="2">Out</option>
 	</selection>	
 
+	<selection name="account.bank.statement.type.select">
+		<option value="1">General</option>
+		<option value="2">Customer</option>
+		<option value="3">Supplier</option>
+	</selection>	
+	
+
 </object-views>
