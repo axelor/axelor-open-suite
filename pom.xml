@@ -15,24 +15,31 @@
 
 	<dependencies>
 	
-	       <dependency>
-                        <groupId>com.axelor</groupId>
-                        <artifactId>axelor-exception</artifactId>
-                        <version>${project.version}</version>
-                </dependency>
+       	<dependency>
+           <groupId>com.axelor</groupId>
+           <artifactId>axelor-exception</artifactId>
+           <version>${project.version}</version>
+        </dependency>
 
  
 		<dependency>
-                        <groupId>com.axelor</groupId>
-                        <artifactId>axelor-tool</artifactId>
-                        <version>${project.version}</version>
-                </dependency>
+           <groupId>com.axelor</groupId>
+           <artifactId>axelor-tool</artifactId>
+           <version>${project.version}</version>
+       	</dependency>
 
 		
 		<!-- Axelor-base -->
 		<dependency>
 			<groupId>com.axelor</groupId>
 			<artifactId>axelor-base</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
+		<!-- Axelor-message -->
+		<dependency>
+			<groupId>com.axelor</groupId>
+			<artifactId>axelor-message</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		

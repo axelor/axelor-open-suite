@@ -1,33 +1,21 @@
 /**
- * Copyright (c) 2012-2014 Axelor. All Rights Reserved.
+ * Axelor Business Solutions
  *
- * The contents of this file are subject to the Common Public
- * Attribution License Version 1.0 (the "License"); you may not use
- * this file except in compliance with the License. You may obtain a
- * copy of the License at:
+ * Copyright (C) 2012-2014 Axelor (<http://axelor.com>).
  *
- * http://license.axelor.com/.
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
  *
- * The License is based on the Mozilla Public License Version 1.1 but
- * Sections 14 and 15 have been added to cover use of software over a
- * computer network and provide for limited attribution for the
- * Original Developer. In addition, Exhibit A has been modified to be
- * consistent with Exhibit B.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
- * the License for the specific language governing rights and limitations
- * under the License.
- *
- * The Original Code is part of "Axelor Business Suite", developed by
- * Axelor exclusively.
- *
- * The Original Developer is the Initial Developer. The Initial Developer of
- * the Original Code is Axelor.
- *
- * All portions of the code written by Axelor are
- * Copyright (c) 2012-2014 Axelor. All Rights Reserved.
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.axelor.apps.account.service.debtrecovery;
 
 import java.util.Map;
@@ -40,12 +28,16 @@ import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.Reminder;
 import com.axelor.apps.account.db.ReminderHistory;
 import com.axelor.apps.account.db.ReminderMethodLine;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Mail;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Template;
 import com.axelor.apps.base.service.MailService;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.base.service.user.UserInfoService;
+import com.axelor.apps.message.db.Message;
+import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.google.inject.Inject;
@@ -60,6 +52,9 @@ public class ReminderActionService {
 	
 	@Inject
 	private AlarmEngineService<Partner> aes;
+	
+	@Inject
+	private TemplateMessageService templateMessageService;
 	
 	@Inject
 	private MailService ms;
@@ -130,13 +125,49 @@ public class ReminderActionService {
 			
 			this.saveReminder(reminder);
 						
-			Mail mail = ms.runMailStandard(reminder.getReminderMethodLine(), reminder.getAccountingSituation().getPartner(), reminder.getAccountingSituation().getCompany()).save();
+//			Message message = this.runStandardMessage(reminder.getReminderMethodLine(), reminder.getAccountingSituation().getPartner(), reminder.getAccountingSituation().getCompany()).save();
 			
-			this.updateReminderHistory(reminder, mail);
+//			this.updateReminderHistory(reminder, mail);
 							
 		}
 		
 		LOG.debug("End runAction service");
+	}
+	
+	
+	
+	/**
+	 * Fonction permettant de créer un courrier à destination des tiers pour un contrat standard
+	 * @param contractLine
+	 * 			Un contrat
+	 * @param reminderMatrixLine
+	 * 			Une ligne de relance
+	 * @param partnerConcerned
+	 * 			Le tiers concerné
+	 * @return
+	 * 			Un email
+	 * @throws AxelorException
+	 */
+	public Message runStandardMessage(ReminderMethodLine reminderMethodLine, Partner partner, Company company, Reminder reminder) throws AxelorException  {
+		LOG.debug("Begin runMailStandard service ...");	
+		if(reminderMethodLine.getMessageTemplate() == null )  {
+			throw new AxelorException(String.format("%s :\nContrat %s: Modèle de courrier absent pour la matrice de relance %s (Niveau %s).", 
+					GeneralService.getExceptionReminderMsg(), partner.getName(), reminderMethodLine.getReminderMethod().getName(), reminderMethodLine.getReminderLevel().getName()), IException.CONFIGURATION_ERROR);
+		}
+			
+			
+		Template template = reminderMethodLine.getMessageTemplate();
+		
+		return null; //TODO
+		
+//		Message message = templateMessageService.generateMessage(reminder, reminder.getId(), reminder.getClass().getCanonicalName(), reminder.getClass().getSimpleName(), template);
+		
+		
+//		Mail reminderMail = this.createGenericMail(reminderMailModel, null, today.plusDays(reminderMethodLine.getStandardDeadline()), partner.getMainInvoicingAddress(), company);
+		
+//		reminderMail.setReminderHistory(this.getReminderHistory(partner, company));
+		
+//		return this.replaceTag(reminderMail);
 	}
 	
 	

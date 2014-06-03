@@ -6,7 +6,7 @@
         <field name="reminderLevel"/>
         <field name="standardDeadline"/>
         <field name="minThreshold"/>
-        <field name="reminderMailModel"/>
+        <field name="messageTemplate"/>
         <field name="manualValidationOk"/>
     </grid>
     <form name="reminder-method-line-form" title="Reminder method line" model="com.axelor.apps.account.db.ReminderMethodLine" colWidths="*,400" cols="4">
@@ -23,7 +23,7 @@
 	        <field name="manualValidationOk"/>
 	    </group>
 	    <group title="Actions" cols="4" colSpan="4">
-	     	<field name="reminderMailModel"/>
+	     	<field name="messageTemplate"/>
 	    </group>
     </form>
     
