@@ -56,7 +56,7 @@
     <string name="ticketNumberSeq" title="Ticket N°"/>
     <many-to-many name="userInfoSet" ref="com.axelor.apps.base.db.UserInfo" title="Watchers"/>
     <many-to-one name="responsibleUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="User in charge of the issue"/>
-  	<one-to-many name="messageList" ref="com.axelor.apps.message.db.Message" mappedBy="event" title="Comments"/>
+<!--   	<one-to-many name="messageList" ref="com.axelor.apps.message.db.Message" mappedBy="event" title="Comments"/> -->
   	<many-to-one name="project" ref="com.axelor.apps.organisation.db.Project" title="Project"/>
 	<many-to-one name="task" ref="com.axelor.apps.organisation.db.Task" title="Task"/>
   	<one-to-many name="spentTimeList" ref="com.axelor.apps.base.db.SpentTime" mappedBy="event" title="Spent times"/>

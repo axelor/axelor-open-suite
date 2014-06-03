@@ -1,32 +1,19 @@
 /**
- * Copyright (c) 2012-2014 Axelor. All Rights Reserved.
+ * Axelor Business Solutions
  *
- * The contents of this file are subject to the Common Public
- * Attribution License Version 1.0 (the "License"); you may not use
- * this file except in compliance with the License. You may obtain a
- * copy of the License at:
+ * Copyright (C) 2012-2014 Axelor (<http://axelor.com>).
  *
- * http://license.axelor.com/.
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
  *
- * The License is based on the Mozilla Public License Version 1.1 but
- * Sections 14 and 15 have been added to cover use of software over a
- * computer network and provide for limited attribution for the
- * Original Developer. In addition, Exhibit A has been modified to be
- * consistent with Exhibit B.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
- * the License for the specific language governing rights and limitations
- * under the License.
- *
- * The Original Code is part of "Axelor Business Suite", developed by
- * Axelor exclusively.
- *
- * The Original Developer is the Initial Developer. The Initial Developer of
- * the Original Code is Axelor.
- *
- * All portions of the code written by Axelor are
- * Copyright (c) 2012-2014 Axelor. All Rights Reserved.
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.service;
 
@@ -56,6 +43,7 @@ import com.axelor.apps.base.db.Mail;
 import com.axelor.apps.base.db.MailModel;
 import com.axelor.apps.base.db.MailModelTag;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Template;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.tool.ObjectTool;
 import com.axelor.apps.tool.net.URLService;
@@ -300,13 +288,15 @@ public class MailService {
 	 */
 	public Mail runMailStandard(ReminderMethodLine reminderMethodLine, Partner partner, Company company) throws AxelorException  {
 		LOG.debug("Begin runMailStandard service ...");	
-		if(reminderMethodLine.getReminderMailModel() != null )  {
-			MailModel reminderMailModel = reminderMethodLine.getReminderMailModel();
-			Mail reminderMail = this.createGenericMail(reminderMailModel, null, today.plusDays(reminderMethodLine.getStandardDeadline()), partner.getMainInvoicingAddress(), company);
+		if(reminderMethodLine.getMessageTemplate() != null )  {
+			Template messageTemplate = reminderMethodLine.getMessageTemplate();
+//			Mail reminderMail = this.createGenericMail(messageTemplate, null, today.plusDays(reminderMethodLine.getStandardDeadline()), partner.getMainInvoicingAddress(), company);
+//			
+//			reminderMail.setReminderHistory(this.getReminderHistory(partner, company));
+//			
+//			return this.replaceTag(reminderMail);
 			
-			reminderMail.setReminderHistory(this.getReminderHistory(partner, company));
-			
-			return this.replaceTag(reminderMail);
+			return null;  //TODO
 		}
 		else {
 			throw new AxelorException(String.format("%s :\nContrat %s: Modèle de courrier absent pour la matrice de relance %s (Niveau %s).", 
