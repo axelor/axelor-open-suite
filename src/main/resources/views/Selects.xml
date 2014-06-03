@@ -208,5 +208,10 @@
 		<option value="3">Supplier</option>
 	</selection>	
 	
+	<selection name="account.bank.statement.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Validated</option>
+	</selection>	
+	
 
 </object-views>
