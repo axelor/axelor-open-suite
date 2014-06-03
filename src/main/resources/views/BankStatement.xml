@@ -14,7 +14,7 @@
             <field name="statusSelect"/> 
      </grid>
   
-    <form name="bank-statement-form" cols="4"  title="Bank Statement" model="com.axelor.apps.account.db.BankStatement" onNew="action-bank-statement-active-company,action-bank-statement-set-months,action-bank-statement-set-currency,action-bank-statement-method-get-period">
+    <form name="bank-statement-form" cols="4"  title="Bank Statement" model="com.axelor.apps.account.db.BankStatement" onNew="action-bank-statement-active-company,action-bank-statement-set-months,action-bank-statement-set-currency,action-bank-statement-default-status,action-bank-statement-method-get-period">
 			<group name="header" colSpan="3" cols="4">
 				<field name="name" colSpan="2" />
 				<break />
@@ -56,6 +56,10 @@
      
    <action-record model="com.axelor.apps.account.db.BankStatement" name="action-bank-statement-set-currency">
        <field name="currency" expr="eval: company?.currency"/>
+   </action-record>
+   
+   <action-record model="com.axelor.apps.account.db.BankStatement" name="action-bank-statement-default-status">
+       <field name="statusSelect" expr="1"/>
    </action-record>
    	
 	<action-method name="action-bank-statement-method-get-period">
