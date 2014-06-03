@@ -4,27 +4,38 @@
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
    
     <grid name="bank-statement-line-grid" title="Bank Statement Lines" model="com.axelor.apps.account.db.BankStatementLine">
-        <field name="name"/>
-        <field name="bankStatement"/>
         <field name="effectDate"/>
+        <field name="name"/>
         <field name="reference"/>
         <field name="partner"/>
         <field name="typeSelect"/>
         <field name="account"/>
         <field name="amount"/>
-        <field name="moves"/>
     </grid>
   
-     <form name="bank-statement-line-form" title="Bank Statement Line" model="com.axelor.apps.account.db.BankStatementLine" >
-        <field name="name"/>
-        <field name="bankStatement"/>
-        <field name="effectDate"/>
-        <field name="reference"/>
-        <field name="partner"/>
-        <field name="typeSelect"/>
-        <field name="account"/>
-        <field name="amount"/>
-        <field name="moves"/>
-    </form>
+     <form name="bank-statement-line-form" title="Bank Statement Line" cols="4" model="com.axelor.apps.account.db.BankStatementLine"  onNew="action-bank-statement-line-parent">
+			<field name="name" />
+			<break />
+			<field name="reference" />
+			<field name="effectDate" />
+			<field name="partner" />
+			<field name="typeSelect" onChange="action-bank-statement-line-set-account"/>
+			<field name="account" />
+			<field name="amount" />
+			<separator title="Associated MoveLine" colSpan="3" />
+			<field name="moveLine" colSpan="3" domain="self.move.company = :company AND self.partner = partner AND self.account = account"/>
+	</form>
+    
+   <action-record model="com.axelor.apps.account.db.BankStatementLine" name="action-bank-statement-line-set-account">
+       <field name="account" expr="eval: com.axelor.apps.account.db.AccountingSituation.all().filter('self.partner=?1 AND self.company=?2',partner,bankStatement.getCompany()).fetchOne().getCustomerAccount()" if="typeSelect==2"/>
+       <field name="account" expr="eval: com.axelor.apps.account.db.AccountingSituation.all().filter('self.partner=?1 AND self.company=?2',partner,bankStatement.getCompany()).fetchOne().getSupplierAccount()" if="typeSelect==3"/>
+   </action-record>
+ 
+    <action-record name="action-bank-statement-line-parent" model="com.axelor.apps.account.db.BankStatement">
+		<field name="bankStatement" expr="eval:_parent"/>
+		<field name="company" expr="eval: bankStatement.company" />
+	</action-record> 
+    
+    
     
 </object-views>

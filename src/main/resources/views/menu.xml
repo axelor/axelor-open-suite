@@ -266,6 +266,32 @@
 		<context name="_newDate2" expr="eval: __date__.minusDays(30)"/>
 	</action-view>
 
+	
+	<menuitem name="account-root-bank-statement" parent="account-root"
+		title="Bank Statement" />
+
+	<menuitem name="account-root-bank-statement-bank-statement"
+		parent="account-root-bank-statement" title="Bank Statement"
+		action="account.bank.statement" />
+
+	<action-view name="account.bank.statement"
+		title="Bank Statement" model="com.axelor.apps.account.db.BankStatement" icon="img/16px/reminderSmall_16px.png">
+		<view type="grid" name="bank-statement-grid"/>
+		<view type="form" name="bank-statement-form"/>
+	    <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+	</action-view>
+	
+	<menuitem name="account-root-bank-statement-bank-statement-line"
+		parent="account-root-bank-statement" title="Bank Statement Line"
+		action="account.bank.statement.line" />
+
+	<action-view name="account.bank.statement.line"
+		title="Bank Statement Line" model="com.axelor.apps.account.db.BankStatementLine" icon="img/16px/reminderSmall_16px.png">
+		<view type="grid" name="bank-statement-line-grid" />
+		<view type="form" name="bank-statement-line-form" />
+	</action-view>
+	
+
 	<menuitem name="account-root-debt-recovery" parent="account-root"
 		title="Debt recovery" icon="img/Other/reminder_55px.png" />
 
