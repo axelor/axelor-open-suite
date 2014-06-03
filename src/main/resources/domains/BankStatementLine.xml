@@ -5,15 +5,15 @@
 
   <entity name="BankStatementLine" lang="java">
 
-	<string name="name" title="Label"/>
+	<string name="name" title="Label" namecolumn="true"/>
     <many-to-one name="bankStatement" ref="com.axelor.apps.account.db.BankStatement" title="Bank Statement" />
     <date name="effectDate" title="Effect Date" />
-    <string name="reference" title="Reference"/>
+    <string name="reference" title="Reference" required="true"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner" />
-    <integer name="typeSelect" title="Type" selection="account.bank.statement.type.select"/>
-    <many-to-one name="account" ref="com.axelor.apps.account.db.Account" title="Account" />
-    <decimal name="amount" title="Amount" /> 
-    <many-to-one name="moves" ref="com.axelor.apps.account.db.Move" title="Moves" />
+    <integer name="typeSelect" title="Type" selection="account.bank.statement.type.select" required="true"/>
+    <many-to-one name="account" ref="com.axelor.apps.account.db.Account" title="Account" required="true"/>
+    <decimal name="amount" title="Amount" required="true"/> 
+    <many-to-one name="moveLine" ref="com.axelor.apps.account.db.MoveLine" title="Move Line" />
     
   </entity>
   
