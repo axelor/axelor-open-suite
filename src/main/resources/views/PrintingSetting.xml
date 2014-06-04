@@ -5,6 +5,7 @@
     
 	<form name="printing-setting-form" title="Printing Setting" model="com.axelor.apps.base.db.PrintingSettings" cols="6">
 		<field name="languageSelect"/>
+		<field name="defaultMailBirtTemplate" />
 		<spacer colSpan="4"/>
 		<break/>
 		<separator title="Company Header" colSpan="6"/>
