@@ -18,7 +18,7 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.BankStatement;
-import com.axelor.apps.base.service.PeriodService;
+import com.axelor.apps.account.service.BankStatementService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -28,21 +28,31 @@ import com.google.inject.Provider;
 public class BankStatementController {
 
 	@Inject
-	private Provider<PeriodService> periodService;
+	private Provider<BankStatementService> BankStatementProvider;
 	
 
-	public void getPeriod(ActionRequest request, ActionResponse response) {
+	public void compute(ActionRequest request, ActionResponse response) {
 		
 		BankStatement bankStatement = request.getContext().asType(BankStatement.class);
 	
 		try {
-			if(bankStatement.getFromDate() != null && bankStatement.getCompany() != null) {
-				
-				response.setValue("period", periodService.get().rightPeriod(bankStatement.getFromDate(), bankStatement.getCompany()));				
-			}
-			else {
-				response.setValue("period", null);
-			}
+			
+			BankStatementProvider.get().compute(BankStatement.find(bankStatement.getId()));
+			response.setReload(true);
+			
+		}
+		catch (Exception e){ TraceBackService.trace(response, e); }
+	}
+	
+	public void validate(ActionRequest request, ActionResponse response) {
+		
+		BankStatement bankStatement = request.getContext().asType(BankStatement.class);
+	
+		try {
+			
+			BankStatementProvider.get().validate(BankStatement.find(bankStatement.getId()));
+			response.setReload(true);
+			
 		}
 		catch (Exception e){ TraceBackService.trace(response, e); }
 	}

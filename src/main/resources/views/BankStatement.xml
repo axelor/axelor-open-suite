@@ -7,42 +7,41 @@
 			<field name="name" />
 			<field name="fromDate" />
 			<field name="toDate" />
-			<field name="period" />
 			<field name="journal" />
-			<field name="openingBalance" />
+			<field name="startingBalance" />
 			<field name="endingBalance" />
             <field name="statusSelect"/> 
      </grid>
   
-    <form name="bank-statement-form" cols="4"  title="Bank Statement" model="com.axelor.apps.account.db.BankStatement" onNew="action-bank-statement-active-company,action-bank-statement-set-months,action-bank-statement-set-currency,action-bank-statement-default-status,action-bank-statement-method-get-period">
-			<group name="header" colSpan="3" cols="4">
-				<field name="name" colSpan="2" />
-				<break />
-				<field name="company" onChange="action-bank-statement-set-currency" />
-				<field name="currency" />
-				<field name="fromDate" />
-				<field name="toDate" />
-				<field name="journal" />
-				<field name="period" />
-				<field name="cashAccount" domain="self.company = :company AND self.accountType.nameSelect='cash'"/>
-			</group>
-			<group title="Status" colSpan="1" cols="1">
-				<field name="statusSelect" title="Status" />
-				<button name="validated" title="Validated" onClick="save" />
-				<button name="cancel" title="Cancel" onClick="save" />
-			</group>
-			<group title="Balance" colSpan="3" cols="4">
-				<field name="openingBalance" />
-				<field name="endingBalance" />
-			</group>
+    <form name="bank-statement-form" cols="4" title="Bank Statement" model="com.axelor.apps.account.db.BankStatement" 
+    onNew="action-bank-statement-active-company,action-bank-statement-set-months,action-bank-statement-set-currency,action-bank-statement-default-status"
+    readonlyIf="statusSelect == 2">
+		<group name="header" colSpan="3" cols="4">
+			<field name="name" colSpan="2" />
 			<break />
-			<separator title="" colSpan="4" />
-			<field name="bankStatementLineList" colSpan="4" />
-			<separator title="" colSpan="4" />
-			<group colSpan="2" cols="4">
-				<field name="computedBalance" />
-				<button name="compute" title="Compute" onClick="save" />
-			</group> 
+			<field name="company" onChange="action-bank-statement-set-currency" widget="SuggestBox"/>
+			<field name="currency" />
+			<field name="fromDate" />
+			<field name="toDate" />
+			<field name="journal" />
+			<field name="cashAccount" domain="self.company = :company AND self.accountType.nameSelect='cash'"/>
+		</group>
+		<group title="Status" colSpan="1" cols="1">
+			<field name="statusSelect" title="Status"/>
+			<button name="validated" title="Validated" onClick="save,action-bank-statement-method-compute,action-bank-statement-method-validate" hideIf="statusSelect == 2"/>
+		</group>
+		<group title="Balance" colSpan="3" cols="4">
+			<field name="startingBalance" />
+			<field name="endingBalance" />
+		</group>
+		<break />
+		<separator title="" colSpan="4" />
+		<field name="bankStatementLineList" colSpan="4"/>
+		<separator title="" colSpan="4" />
+		<group colSpan="2" cols="4">
+			<field name="computedBalance" />
+			<button name="compute" title="Compute" onClick="save,action-bank-statement-method-compute" hideIf="statusSelect == 2"/>
+		</group> 
 	</form>
  
    <action-record model="com.axelor.apps.account.db.BankStatement" name="action-bank-statement-active-company">
@@ -62,8 +61,12 @@
        <field name="statusSelect" expr="1"/>
    </action-record>
    	
-	<action-method name="action-bank-statement-method-get-period">
-		<call class="com.axelor.apps.account.web.BankStatementController" method="getPeriod"/>
+	<action-method name="action-bank-statement-method-compute">
+		<call class="com.axelor.apps.account.web.BankStatementController" method="compute"/>
+	</action-method>
+	
+	<action-method name="action-bank-statement-method-validate">
+		<call class="com.axelor.apps.account.web.BankStatementController" method="validate"/>
 	</action-method>
 	 
     
