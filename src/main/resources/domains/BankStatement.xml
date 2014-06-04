@@ -9,15 +9,14 @@
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" title="Company" />
     <date name="fromDate" title="From Date" />
     <date name="toDate" title="To Date" />
-    <many-to-one name="journal" ref="com.axelor.apps.account.db.Journal" title="Journal" />
-    <many-to-one name="period" ref="com.axelor.apps.base.db.Period"  title="Period" />
+    <many-to-one name="journal" ref="com.axelor.apps.account.db.Journal" title="Journal" required="true"/>
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency"  title="Currency" />
-    <many-to-one name="cashAccount" ref="com.axelor.apps.account.db.Account"  title="Cash account" />
-    <decimal name="openingBalance" title="Starting Balance" /> 
+    <many-to-one name="cashAccount" ref="com.axelor.apps.account.db.Account"  title="Cash account" required="true"/>
+    <decimal name="startingBalance" title="Starting Balance" /> 
     <decimal name="endingBalance" title="Ending Balance" /> 
     <one-to-many name="bankStatementLineList" ref="com.axelor.apps.account.db.BankStatementLine" mappedBy="bankStatement" title="Bank Statement Lines"/>
-    <decimal name="computedBalance" title="Computed Balance" /> 
-    <integer name="statusSelect" title="Status" selection="account.bank.statement.status.select"/>
+    <decimal name="computedBalance" title="Computed Balance" readonly="true"/> 
+    <integer name="statusSelect" title="Status" selection="account.bank.statement.status.select" readonly="true"/>
 
   </entity>
   
