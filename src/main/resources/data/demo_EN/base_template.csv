@@ -42,13 +42,13 @@ Merci de nous faire parvenir le complément de commande le plus rapidement possi
 <p>Cordialement<br/>
 L'équipe Axelor</p>
 
-";;;;2
+";"$Invoice.partner.emailAddress.address$";;;2
 "Demande de prix";"PurchaseOrder";"fr";;;;"true";;"Demande de cotation N° $PurchaseOrder.PurchaseOrderSeq$";"<p>Bonjour, </p>
 
 <p>Vous trouverez ci-joint notre demande de cotation N° $PurchaseOrder.PurchaseOrderSeq$.</p>
 
 <p>Merci de nous indiquer pour chaque produit le délai de livraison et les conditions de paiements.</p>
-";;;;2
+";"$PurchaseOrder.contactPartner.emailAddress.address$";;;2
 "Contact details confirmation";"Partner";"en";;;;"true";;"Contact details update";"<p>Dear $Partner.firstName$,<br/>
 We are currently proceeding to an update of  our contact database. Can you please confirm the following information about you are up to date :  </p>
  
@@ -62,7 +62,7 @@ $Partner.mainInvoicingAddress.fullName$</p>
 <p>If among those information upwards, some are biased, please do inform us by reply thie email.</p>
 
 <p>Best regards<br/>
-Axelor Team</p>";;;;2
+Axelor Team</p>";"$Partner.emailAddress.address$";;;2
 "Sale order";"SalesOrder";"en";;;;"true";;"Quote N° $SalesOrder.salesOrderSeq$";"<p>Good morning,</p> 
 
 <p>Following our conversations, please find attached our quote $SalesOrder.salesOrderSeq$.</p>
@@ -71,14 +71,14 @@ Axelor Team</p>";;;;2
 
 <p>Best regards<br/>
 $SalesOrder.userInfo.partner.firstName$ $SalesOrder.userInfo.partner.name$</p>
-";;;;2
+";"$SalesOrder.clientPartner.emailAddress.address$";;;2
 "Delivery Order";"StockMove";"en";;;;"true";;"Order $StockMove.SalesOrder.SalesOrderSeq$ shipped";"<p>Good morning,</p>
 
 <p>We are pleased to inform you that your order $StockMove.salesOrder.salesOrderSeq$ has been shipped.<br/>
 Please find attached to this mail the delivery order associated. If goods are missing, the remaining goods will be shipped in the next coming days.</p>
 
 <p>Best regards<br/>
-Axelor Team</p>";;;;2
+Axelor Team</p>";"$StockMove.partner.emailAddress.address$";;;2
 "Goods Reception Slip";"StockMove";"en";;;;"false";;"Order $StockMove.PurchaseOrder.PurchaseOrderSeq$ received";"<p>Good morning,</p>
 
 <p>We confirm the reception of our order $StockMove.purchaseOrder.purchaseOrderSeq$ (your reference $StockMove.purchaseOrder.externalReference$).<br/>
@@ -86,7 +86,7 @@ However, as per the attached receipt slip, the order is incomplete.<br/>
 Please let us know when you estimate to deliver the remaining goods.</p>
 
 <p>Best regards<br/>
-Axelor Team</p>";;;;2
+Axelor Team</p>";"$StockMove.partner.emailAddress.address$";;;2
 "Customer Invoice";"Invoice";"en";;;;"true";;"Invoice N° $Invoice.invoiceId$";"<p>Good morning,</p> 
 
 <p>Please find attached the invoice N° $Invoice.invoiceId$.</p>
@@ -94,7 +94,7 @@ Axelor Team</p>";;;;2
 <p>We are glad to count you as one of our customers and we hope you have been completely satisfied with our products and services.</p>
 
 <p>Best regards<br/>
-Axelor Team</p>";;;;2
+Axelor Team</p>";"$Invoice.partner.emailAddress.address$";;;2
 "Price inquiry";"PurchaseOrder";"en";;;;"true";;"Request for quotation N° $PurchaseOrder.PurchaseOrderSeq$";"<p>Good morning,</p>
 
 <p>Please find attached our request for quotation N° $PurchaseOrder.PurchaseOrderSeq$.</p>
@@ -103,4 +103,4 @@ Axelor Team</p>";;;;2
 
 <p>Best regards<br/>
 $PurchaseOrder.buyerUserInfo.partner.firstName$ $PurchaseOrder.buyerUserInfo.partner.name$</p>
-";;;;2
+";"$PurchaseOrder.contactPartner.emailAddress.address$";;;2
