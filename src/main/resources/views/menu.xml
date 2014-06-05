@@ -418,6 +418,16 @@
 
 	<menuitem name="admin-root-templating" parent="admin-root"
 		title="Templating"/>
+	
+	<menuitem name="admin-root-templating-template"
+		parent="admin-root-templating" title="Template"
+		action="admin.root.templating.template" />
+		
+	<action-view name="admin.root.templating.template"
+		title="Template" model="com.axelor.apps.base.db.Template">
+		<view type="grid" />
+		<view type="form" />
+	</action-view>
 		
 	<menuitem name="admin-root-templating-template-rules"
 		parent="admin-root-templating" title="Template Rules"
@@ -429,15 +439,16 @@
 		<view type="form" />
 	</action-view>
 	
-	<menuitem name="admin-root-templating-template"
-		parent="admin-root-templating" title="Template"
-		action="admin.root.templating.template" />
+	<menuitem name="admin-root-templating-pdf-templates"
+		parent="admin-root-templating" title="PDF Templates"
+		action="admin.root.templating.pdf.templates" />
 		
-	<action-view name="admin.root.templating.template"
-		title="Template" model="com.axelor.apps.base.db.Template">
+	<action-view name="admin.root.templating.pdf.templates"
+		title="PDF Templates" model="com.axelor.apps.base.db.BirtTemplate">
 		<view type="grid" />
 		<view type="form" />
 	</action-view>
+	
 
 	<menuitem name="admin-root-general" parent="admin-root"
 		title="General"/>
