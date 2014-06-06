@@ -18,8 +18,10 @@
 package com.axelor.apps.message.service;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Random;
 
 import org.slf4j.Logger;
@@ -123,14 +125,7 @@ public class TemplateMessageService {
 		String filePath = null;
 		BirtTemplate birtTemplate = template.getBirtTemplate();
 		if(birtTemplate != null)  {
-			filePath = this.generatePdfFile(
-					maker, 
-					birtTemplate.getName(),
-					birtTemplate.getTemplateLink(), 
-					birtTemplate.getGeneratedFilePath(), 
-					birtTemplate.getFormat(), 
-					birtTemplate.getBirtTemplateParameterList());
-					
+			filePath = this.generatePdfFromBirtTemplate(maker, birtTemplate, "filePath");
 		}
 		if(filePath == null)  {
 			filePath = template.getFilePath();
@@ -173,8 +168,8 @@ public class TemplateMessageService {
 	}
 	
 	
-	public String generatePdfFile(TemplateMaker maker, String name, String modelPath, String generatedFilePath, String format, List<BirtTemplateParameter> birtTemplateParameterList) throws AxelorException {
-
+	public Map<String,String> generatePdfFile(TemplateMaker maker, String name, String modelPath, String generatedFilePath, String format, List<BirtTemplateParameter> birtTemplateParameterList) throws AxelorException {
+		Map<String,String> result = new HashMap<String,String>();
 		if(modelPath != null && !modelPath.isEmpty())  {
 			
 			ReportSettings reportSettings = new ReportSettings(modelPath, format);
@@ -189,12 +184,12 @@ public class TemplateMessageService {
 			String url = reportSettings.getUrl();
 			
 			LOG.debug("URL : {}", url);
-			
 			String urlNotExist = URLService.notExist(url.toString());
 			if (urlNotExist != null){
 				throw new AxelorException(String.format("%s : Le chemin vers le template Birt est incorrect", 
 						GeneralService.getExceptionMailMsg()), IException.CONFIGURATION_ERROR);
 			}
+			result.put("url",url);
 			final int random = new Random().nextInt();
 			String filePath = generatedFilePath;
 			String fileName = name+"_"+random+"."+format;
@@ -206,10 +201,23 @@ public class TemplateMessageService {
 						GeneralService.getExceptionMailMsg(), e), IException.CONFIGURATION_ERROR);
 			}
 			
-			return filePath+fileName;
+			result.put("filePath",filePath+fileName);
 			
 		}
-		return "";
+		return result;
+	}
+	
+	public String generatePdfFromBirtTemplate(TemplateMaker maker, BirtTemplate birtTemplate, String value) throws AxelorException{
+		Map<String,String> result =  this.generatePdfFile(
+				maker, 
+				birtTemplate.getName(),
+				birtTemplate.getTemplateLink(), 
+				birtTemplate.getGeneratedFilePath(), 
+				birtTemplate.getFormat(), 
+				birtTemplate.getBirtTemplateParameterList());
+		if(result != null)
+			return result.get(value);
+		return null;
 	}
 	
 }

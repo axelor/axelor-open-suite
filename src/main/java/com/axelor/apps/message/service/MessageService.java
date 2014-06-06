@@ -19,7 +19,9 @@ package com.axelor.apps.message.service;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -31,8 +33,11 @@ import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axelor.apps.base.db.BirtTemplate;
+import com.axelor.apps.base.db.BirtTemplateParameter;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.UserInfo;
 import com.axelor.apps.base.service.administration.GeneralService;
 import com.axelor.apps.base.service.user.UserInfoService;
@@ -42,6 +47,9 @@ import com.axelor.apps.message.db.IMessage;
 import com.axelor.apps.message.db.MailAccount;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.mail.MailSender;
+import com.axelor.db.JPA;
+import com.axelor.exception.AxelorException;
+import com.axelor.tool.template.TemplateMaker;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -56,6 +64,9 @@ public class MessageService {
 	
 	@Inject
 	private UserInfoService userInfoService;
+	
+	@Inject
+	private TemplateMessageService templateMessageService;
 
 	@Inject
 	public MessageService(UserInfoService userInfoService) {
@@ -270,6 +281,27 @@ public class MessageService {
 		}
 		
 		return "";
+	}
+	
+	public String printMessage(Message message){
+		Company company = message.getCompany();
+		if(company == null)
+			return null;
+		PrintingSettings printSettings = company.getPrintingSettings();
+		printSettings = company.getPrintingSettings();
+		if(printSettings == null || printSettings.getDefaultMailBirtTemplate() == null)
+			return null;
+		BirtTemplate birtTemplate = printSettings.getDefaultMailBirtTemplate();
+		LOG.debug("Default BirtTemplate : {}",birtTemplate);
+		TemplateMaker maker = new TemplateMaker(new Locale("fr"), '$', '$');
+		maker.setContext(JPA.find(message.getClass(), message.getId()), "Message");
+		try {
+			return templateMessageService.generatePdfFromBirtTemplate(maker, birtTemplate, "url");
+		} catch (AxelorException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 }

@@ -76,6 +76,20 @@ public class MessageController {
 	 * @param response
 	 * @return
 	 */
+	public void printMessage(ActionRequest request, ActionResponse response) {
+		Message message = request.getContext().asType(Message.class);
+		String pdfPath = messageService.get().printMessage(message);
+		if(pdfPath != null){
+			Map<String,Object> mapView = new HashMap<String,Object>();
+			mapView.put("title", "Message "+message.getSubject());
+			mapView.put("resource", pdfPath);
+			mapView.put("viewType", "html");
+			response.setView(mapView);	
+		}
+		else
+			response.setFlash("Error in print. Please check report configuration and print setting.");
+	}
+	
 	public void print(ActionRequest request, ActionResponse response) {
 
 
