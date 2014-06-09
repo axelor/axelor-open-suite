@@ -30,6 +30,8 @@ import javax.xml.parsers.SAXParser;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -40,10 +42,14 @@ import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.XMLReader;
 
+import com.axelor.apps.crm.service.LeadService;
 import com.axelor.apps.tool.file.CsvTool;
+import com.google.common.base.CaseFormat;
 import com.google.inject.Inject;
 
 public class PrepareCsv {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(LeadService.class);
 	
 	@Inject
 	CsvTool cTool;
@@ -62,14 +68,16 @@ public class PrepareCsv {
 				DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 				if(xDir.isDirectory() && cDir.isDirectory()){
 					for(File xf : xDir.listFiles()){
-						System.out.println("INFO# Processing XML: "+xf.getName());
+						LOG.info("Processing XML: "+xf.getName());
 						List<String> fieldList = new ArrayList<String>();
 						Document doc = dBuilder.parse(xf);
-						NodeList nList = doc.getElementsByTagName("entity");
+						NodeList nList = doc.getElementsByTagName("module");
+						String module = nList.item(0).getAttributes().getNamedItem("name").getNodeValue();
+						nList = doc.getElementsByTagName("entity");
 						if(nList != null){
 							NodeList fields = nList.item(0).getChildNodes();
 							Integer count = 0;
-							String csvFileName = xf.getName().replace(".xml", ".csv");
+							String csvFileName = module+"_"+CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, xf.getName().replace(".xml", ".csv"));
 							while(count < fields.getLength()){
 								Node field = fields.item(count);
 								NamedNodeMap attrs = field.getAttributes();
@@ -84,7 +92,7 @@ public class PrepareCsv {
 											fieldList.add(fieldName+"."+nameColumn);
 										else{
 											fieldList.add(fieldName);
-											System.out.println("#Warrning: No name column found for "+refName+", field '"+attrs.getNamedItem("name").getNodeValue()+"'");
+											LOG.error("No name column found for "+refName+", field '"+attrs.getNamedItem("name").getNodeValue()+"'");
 										}
 									}
 									else
@@ -94,16 +102,16 @@ public class PrepareCsv {
 								count++;
 							}
 							cTool.csvWriter(csvDir, csvFileName, ';',StringUtils.join(fieldList,",").split(","), blankData);
-							System.out.println("INFO# CSV file prepared: "+csvFileName);
+							LOG.info("CSV file prepared: "+csvFileName);
 						}
 					}
 					
 				}
 				else 
-					System.out.println("ERROR: XML and CSV paths must be directory");
+					LOG.error("XML and CSV paths must be directory");
 			}
 			else
-				System.out.println("ERROR: Please input XML and CSV directory path");
+				LOG.error("Please input XML and CSV directory path");
 		}catch(Exception e){
 			e.printStackTrace();
 		}
