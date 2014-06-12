@@ -11,7 +11,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>axelor-account-organisation</artifactId>
 	<name>Axelor :: Account-Organisation</name>
-
+	
+	<properties>
+    	<axelor.module.removable>true</axelor.module.removable>
+  	</properties>
 
 	<dependencies>
 
