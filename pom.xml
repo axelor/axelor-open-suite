@@ -12,7 +12,10 @@
 	<artifactId>axelor-account</artifactId>
 	<name>Axelor :: Account</name>
 
-
+	<properties>
+    	<axelor.module.removable>true</axelor.module.removable>
+  	</properties>
+  	
 	<dependencies>
 	
        	<dependency>
