@@ -12,6 +12,10 @@
 	<artifactId>axelor-base</artifactId>
 	<name>Axelor :: Base</name>
 	
+	<properties>
+    	<axelor.module.removable>false</axelor.module.removable>
+  	</properties>
+	
 	<dependencies>
 
 		<!-- Axelor-exception -->

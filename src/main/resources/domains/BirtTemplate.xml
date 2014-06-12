@@ -7,6 +7,7 @@
 
   <entity name="BirtTemplate" lang="java">
   	
+  	<string name="importId"/>
   	<string name="name" title="Name"/>
   	<string name="templateLink" title="Template file name"/>
   	<string name="format" title="Format" help="true"/>

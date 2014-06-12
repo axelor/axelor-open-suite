@@ -6,7 +6,7 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="BirtTemplateParameter" lang="java">
-  	
+  	<string name="importId"/>
   	<string name="name" title="Name"/>
 	<string name="value" title="Value"/>
 	<many-to-one name="birtTemplate" ref="com.axelor.apps.base.db.BirtTemplate"/>
