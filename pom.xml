@@ -11,7 +11,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>axelor-supplychain</artifactId>
 	<name>Axelor :: Supply chain</name>
-
+	
+	<properties>
+    	<axelor.module.removable>true</axelor.module.removable>
+  	</properties>
+  	
 	<dependencies>
 
 		<!-- Axelor-exception -->
