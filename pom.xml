@@ -1,0 +1,87 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+  
+	<repositories>
+		<repository>
+			<id>axelor-public-repository-group</id>
+			<name>Axelor Public Maven Repository Group</name>
+			<url>http://repository.axelor.com/nexus/content/groups/public/</url>
+		</repository>
+	</repositories>
+  
+	<parent>
+		<artifactId>axelor-erp-parent</artifactId>
+		<groupId>com.axelor</groupId>
+		<version>2.0.0-SNAPSHOT</version>
+		<relativePath>../axelor-parent/pom.xml</relativePath>
+	</parent>
+
+	<artifactId>axelor-demo-en</artifactId>
+	<name>Axelor :: Data EN</name>
+	
+    <properties>
+    	<axelor.module.removable>true</axelor.module.removable>
+  	</properties>	
+
+	<dependencies>
+	
+		<!-- Axelor App Modules -->
+		
+		<dependency>
+			<groupId>com.axelor</groupId>
+			<artifactId>axelor-account</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.axelor</groupId>
+			<artifactId>axelor-base</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.axelor</groupId>
+			<artifactId>axelor-consulting</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.axelor</groupId>
+			<artifactId>axelor-crm</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.axelor</groupId>
+			<artifactId>axelor-organisation</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.axelor</groupId>
+			<artifactId>axelor-message</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.axelor</groupId>
+			<artifactId>axelor-production</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.axelor</groupId>
+			<artifactId>axelor-supplychain</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.axelor</groupId>
+			<artifactId>axelor-l10n-en</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+	</dependencies>
+
+</project>

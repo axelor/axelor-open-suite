@@ -1,0 +1,16 @@
+"importId";"titleSelect";"firstName";"name";"mobilePhone";"fixedPhone";"email";"recruitmentTypeSelect";"address.importId";"contractTypeSelect";"availabilitySelect";"availabilityDate";"decisionDate";"salaryExpectation";"relocationSelect";"globalEvaluation";"macroCategorySelect";"categorySelect";"degree.id";"educationLevel";"toolKeywordSet_importId";"fieldKeywordSet_importId";"jobKeywordSet_importId";"evaluationGrade";"personalInfo.id";"userInfo.importId";"drivingLicence";"source.importId"
+1;1;"Alexander";"SIMPSON";"07.63.38.75.99";;"a.simpson@free.fr";1;75045;1;4;;;35000;2;;1;1;49;5;"18|50";94;114;13;1;19;"Permis A, B";6
+2;1;"Kieran";"MCCALL";"07.24.72.43.99";;"k.mccall@yahoo.fr";1;75046;1;2;;;33000;1;;1;1;51;5;"81|82|54|50|51";94;103;12;2;19;"Permis A";7
+3;2;"Lisa";"PRITCHARD";"07.53.67.51.99";;"l.pritchard@free.fr";1;75047;1;5;;;40000;1;;2;2;63;5;"51|61|84|25|76|66";89;107;15;3;19;"Permis A";8
+4;1;"Bruno";"SANDOVAL";"07.17.43.97.99";;"b.sandoval@gmail.fr";1;75048;1;2;;;45000;3;;3;3;64;5;"66|25|18|36|37|38";94;110;12;4;19;"Permis A";6
+5;1;"Dominic";"BEASLEY";"07.59.67.22.99";;"d.beasley@free.fr";2;75049;1;1;;;34000;1;;1;1;63;5;"51|84|25|76|66";94;107;9;5;19;"Permis A";6
+6;2;"Martina";"PHILLIPS";"07.22.91.50.99";;"m.phillips@yahoo.fr";1;75050;1;7;;;32000;2;;1;1;51;5;"81|54|50|51";94;137;14;6;19;"Permis A";7
+7;1;"Simon";"RITCHIE";"07.50.64.73.99";;"s.ritchie@yahoo.fr";2;75051;1;7;;;38000;3;;2;2;63;5;"66|25|18|36|37|62";94;110;18;7;19;"Permis A";7
+8;2;"Catherine";"PUTNAM";"07.22.76.87.99";;"c.putnam@sfr.fr";1;75052;2;8;"2013-06-08";;46000;1;;3;3;64;5;"51|61|84|25|76|66|14|78";89;"107|110";17;8;19;"Permis A";6
+9;1;"Leo";"CALHOUN";"07.68.74.53.99";;"l.calhoun@sfr.fr";1;13007;1;4;;;37000;3;;2;2;51;5;"81|82|54|50|51|45|61";94;103;8;9;19;"Permis A";7
+10;1;"Brian";"HICKMAN";"07.90.65.40.99";;"b.hickman@free.fr";1;13008;1;4;;;34000;3;;1;1;63;5;"66|25|18|36|62";94;110;17;10;19;"Permis A, B";8
+11;2;"Veronica";"HAHN";"07.57.18.70.99";;"v.hahn@free.fr";1;13009;1;6;;;27000;1;;4;1;1;3;"82|54|50";86;138;15;11;19;"Permis A";6
+12;1;"Sebastian";"CONNOLLY";"07.61.67.41.99";;"s.connolly@gmail.com";1;4005;1;2;;;29000;3;;4;1;9;3;"50|67";93;102;19;12;19;"Permis A";7
+13;1;"Stephen";"STEPHENS";"07.82.39.28.99";;"s.stephens@yahoo.co.uk";1;4006;1;4;;;32000;3;;5;2;10;3;"82|54|50|45";86;138;15;13;19;"Permis A";7
+14;1;"Philip";"MCKENNA";"07.63.84.31.99";;"p.mckenna@yahoo.co.uk";2;4007;2;5;;;35000;3;;6;3;26;3;"4|25|36|37|38|43|62";94;132;16;14;19;"Permis A";7
+15;1;"Kenny";"STRICKLAND";"07.30.40.98.99";;"k.strickland@msn.com";2;4008;2;1;;;28000;3;;4;1;26;3;"4|25|36|43|62";94;132;9;15;19;"Permis A";6

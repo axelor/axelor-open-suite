@@ -1,0 +1,3 @@
+"code";"actionSelect";"company.importId";"durationTypeSelect";"description"
+"AX_EVENT_REMINDER";21;1;2;"Permet de générer des rappels d’événements toutes les heures."
+"AX_TARGET";22;1;;"Permet de générer les objectifs en fonction des configurations."

@@ -1,0 +1,17 @@
+"importId";"name";"code";"bankJournal.importId";"invoiceLabel";"inOutSelect";"typeSelect"
+1;"Other Cashing";"IN_OTH";13;"Other payment methods";1;1
+2;"Direct Debit Cashing";"IN_DD";12;"Direct debit";1;2
+3;"IPO Cashing";"IN_IPO";9;"IPO";1;3
+4;"Cash Cashing";"IN_CSH";5;"Cash";1;5
+5;"Credit Card Cashing";"IN_CC";7;"Credit card";1;6
+6;"Cheque Cashing";"IN_CHQ";6;"Cheque";1;7
+7;"Internet Cashing";"IN_WEB";8;"Internet";1;8
+8;"Wire Transfer Cashing";"IN_WT";11;"Wire transfer";1;9
+9;"IPO + Cheque Cashing";"IN_IPOC";10;"IPO + Cheque";1;4
+10;"Direct Debit Payments";"OUT_DD";20;"Direct debit";2;2
+11;"IPO Payments";"OUT_IPO";18;"IPO";2;3
+12;"Cash Payments";"OUT_CSH";15;"Cash";2;5
+13;"Credit Card Payments";"OUT_CC";17;"Credit card";2;6
+14;"Cheque Payments";"OUT_CHQ";16;"Cheque";2;7
+15;"Wire Transfer Payments";"OUT_WT";19;"Wire transfer";2;9
+16;"Other Payments";"OUT_OTH";21;"Other payment methods";2;1
