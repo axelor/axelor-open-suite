@@ -90,7 +90,7 @@
 	
 	
 	<action-record name="action-check-string-camel-case-first-name-clear" model="com.axelor.apps.base.db.General">
-		<field name="firstName"  expr="eval:com.axelor.apps.tool.StringTool.deleteAccent(firstName.toFirstUpper())"/>
+		<field name="firstName"  expr="eval:com.axelor.apps.tool.StringTool.deleteAccent(com.axelor.apps.tool.StringTool.toFirstUpper(firstName))"/>
 	</action-record>
 	<action-record name="action-check-string-capital-case-name-clear" model="com.axelor.apps.base.db.General">
 		<field name="name"  expr="eval:com.axelor.apps.tool.StringTool.deleteAccent(name.toUpperCase())"/>
