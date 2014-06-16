@@ -137,9 +137,9 @@
 	                </form>
 	            </field>
 	        </page>
-         	<page title="Prélèvement SEPA" cols="4" showIf="paymentMode.typeSelect == 2">   
+         	<page title="SEPA Direct Debit" cols="4" showIf="paymentMode.typeSelect == 2">   
                  <field name="activeRum" colSpan="2" canNew="false" domain="self.partner.id = :id"/>
-                 <separator title="Historique" colSpan="4"/>
+                 <separator title="History" colSpan="4"/>
                  <field name="rumList" showTitle="false" colSpan="4"/>
             </page>
 		    <page name="activities" title="Activities" showIf="id != null">
