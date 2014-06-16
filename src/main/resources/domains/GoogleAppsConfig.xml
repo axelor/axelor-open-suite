@@ -1,20 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://apps.axelor.com/xml/ns/domain-models"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_2.0.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://apps.axelor.com/xml/ns/domain-models http://apps.axelor.com/xml/ns/domain-models/domain-models_2.0.xsd">
 	<module name="googleapps" package="com.axelor.apps.googleapps.db" />
-		<entity name="GoogleAppsConfig" sequential="true" lang="groovy">
-		
-			<string name="clientEmail"  required="true" title="Client Email Id" help="true"/>
-			<string name="clientId" required="true" title="Client Id" help="true" />
-			<string name="clientSecret" required="true" title="Client Secret" help="true" />
-			<string name="redirectURI" required="true" title="Redirect Uri" help="true"/>
-		
-			<!-- Authorization -->
-			<many-to-one name="driveUserInfo" ref="com.axelor.apps.base.db.UserInfo" title="Drive User"  help="true"/>		
-			<string name="accessToken" required="false" title="Access Token" help="true" />
-			<string name="refreshToken" required="false"  title="Refresh Token" help="true" />
-			<string name="lastAccessTime" required="false" title="Last Access Time" help="true"/>
-		
+		<entity name="GoogleAppsConfig" sequential="true" >
+					<string name="clientEmail"  required="true" title="Client Email Id" help="Client Email Id in Api Console"/>
+					<string name="clientId" required="true" title="Client Id" help="Cliend Id in Api Console " />
+					<string name="clientSecret" required="true" title="Client Secret" help="Client Secret in Api Console" />
+					<string name="redirectURI" required="true" title="Redirect Uri" help="Redirect Url to get auth code"></string>
 		</entity>
 </domain-models>
