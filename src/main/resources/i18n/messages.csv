@@ -5,8 +5,8 @@ resources/views/ProductionOrder.xml:22"
 "All Current Manufacturing Orders","","","resources/views/ManufacturingDashboard.xml:27"
 "All Manufacturing Order Plannings","","","resources/views/ManufacturingDashboard.xml:35"
 "All Upcoming Manufacturing Orders","","","resources/views/ManufacturingDashboard.xml:19"
-"BOM","","","resources/views/ProductionOrderWizard.xml:14
-resources/views/ProductionOrder.xml:20"
+"BOM","","","resources/views/ProductionOrder.xml:20
+resources/views/ProductionOrderWizard.xml:14"
 "Bill of material","","","resources/views/BillOfMaterial.xml:61
 resources/views/BillOfMaterial.xml:52
 resources/views/BillOfMaterial.xml:24
@@ -16,11 +16,11 @@ resources/views/BillOfMaterial.xml:39"
 "Bills of materials","","","resources/views/menu.xml:12
 resources/views/menu.xml:15"
 "Business","","","resources/views/Business.xml:6"
-"Cancel","","","resources/views/ManufOrder.xml:60
-resources/views/ManufOrder.xml:47
+"Cancel","","","resources/views/ManufOrder.xml:47
+resources/views/ManufOrder.xml:60
 resources/views/OperationOrder.xml:54
-resources/views/ManufOrder.xml:24
 resources/views/OperationOrder.xml:67
+resources/views/ManufOrder.xml:24
 resources/views/OperationOrder.xml:36"
 "Canceled","","","resources/views/Selects.xml:11"
 "Cancelled MOs","","","resources/views/ManufOrder.xml:224"
@@ -57,12 +57,12 @@ resources/views/ManufOrder.xml:114"
 "Draft","","","resources/views/Selects.xml:10"
 "Draft MOs","","","resources/views/ManufOrder.xml:209"
 "Draft Operations","","","resources/views/OperationOrder.xml:179"
-"Finish","","","resources/views/ManufOrder.xml:59
-resources/views/ManufOrder.xml:46
+"Finish","","","resources/views/ManufOrder.xml:46
+resources/views/ManufOrder.xml:59
 resources/views/OperationOrder.xml:35
 resources/views/OperationOrder.xml:53
-resources/views/ManufOrder.xml:23
-resources/views/OperationOrder.xml:68"
+resources/views/OperationOrder.xml:68
+resources/views/ManufOrder.xml:23"
 "Finished","","","resources/views/Selects.xml:15"
 "Finished MOs","","","resources/views/ManufOrder.xml:221"
 "Finished Operations","","","resources/views/OperationOrder.xml:191"
@@ -85,28 +85,28 @@ resources/views/Selects.xml:21"
 "Machines","","","resources/views/menu.xml:107
 resources/views/ProdResource.xml:39
 resources/views/ProdResource.xml:45
-resources/views/Machine.xml:6
-resources/views/menu.xml:104"
-"ManufOrder.billOfMaterial","","","java/com/axelor/apps/production/report/ITranslation.java:62"
-"ManufOrder.effective","","","java/com/axelor/apps/production/report/ITranslation.java:66"
-"ManufOrder.endDate","","","java/com/axelor/apps/production/report/ITranslation.java:71"
-"ManufOrder.forecast","","","java/com/axelor/apps/production/report/ITranslation.java:65"
-"ManufOrder.machine","","","java/com/axelor/apps/production/report/ITranslation.java:68"
-"ManufOrder.num","","","java/com/axelor/apps/production/report/ITranslation.java:67"
-"ManufOrder.operation","","","java/com/axelor/apps/production/report/ITranslation.java:69"
-"ManufOrder.operations","","","java/com/axelor/apps/production/report/ITranslation.java:64"
-"ManufOrder.origin","","","java/com/axelor/apps/production/report/ITranslation.java:61"
-"ManufOrder.plannedStartDate","","","java/com/axelor/apps/production/report/ITranslation.java:58"
-"ManufOrder.product","","","java/com/axelor/apps/production/report/ITranslation.java:59"
-"ManufOrder.productCode","","","java/com/axelor/apps/production/report/ITranslation.java:74"
-"ManufOrder.productName","","","java/com/axelor/apps/production/report/ITranslation.java:75"
-"ManufOrder.productionProcess","","","java/com/axelor/apps/production/report/ITranslation.java:63"
-"ManufOrder.productsToPrepare","","","java/com/axelor/apps/production/report/ITranslation.java:73"
-"ManufOrder.quantity","","","java/com/axelor/apps/production/report/ITranslation.java:60"
-"ManufOrder.startDate","","","java/com/axelor/apps/production/report/ITranslation.java:70"
-"ManufOrder.status","","","java/com/axelor/apps/production/report/ITranslation.java:72"
-"ManufOrder.title","","","java/com/axelor/apps/production/report/ITranslation.java:57"
-"ManufOrder.trackingNumber","","","java/com/axelor/apps/production/report/ITranslation.java:76"
+resources/views/menu.xml:104
+resources/views/Machine.xml:6"
+"ManufOrder.billOfMaterial","","","java/com/axelor/apps/production/report/ITranslation.java:49"
+"ManufOrder.effective","","","java/com/axelor/apps/production/report/ITranslation.java:53"
+"ManufOrder.endDate","","","java/com/axelor/apps/production/report/ITranslation.java:58"
+"ManufOrder.forecast","","","java/com/axelor/apps/production/report/ITranslation.java:52"
+"ManufOrder.machine","","","java/com/axelor/apps/production/report/ITranslation.java:55"
+"ManufOrder.num","","","java/com/axelor/apps/production/report/ITranslation.java:54"
+"ManufOrder.operation","","","java/com/axelor/apps/production/report/ITranslation.java:56"
+"ManufOrder.operations","","","java/com/axelor/apps/production/report/ITranslation.java:51"
+"ManufOrder.origin","","","java/com/axelor/apps/production/report/ITranslation.java:48"
+"ManufOrder.plannedStartDate","","","java/com/axelor/apps/production/report/ITranslation.java:45"
+"ManufOrder.product","","","java/com/axelor/apps/production/report/ITranslation.java:46"
+"ManufOrder.productCode","","","java/com/axelor/apps/production/report/ITranslation.java:61"
+"ManufOrder.productName","","","java/com/axelor/apps/production/report/ITranslation.java:62"
+"ManufOrder.productionProcess","","","java/com/axelor/apps/production/report/ITranslation.java:50"
+"ManufOrder.productsToPrepare","","","java/com/axelor/apps/production/report/ITranslation.java:60"
+"ManufOrder.quantity","","","java/com/axelor/apps/production/report/ITranslation.java:47"
+"ManufOrder.startDate","","","java/com/axelor/apps/production/report/ITranslation.java:57"
+"ManufOrder.status","","","java/com/axelor/apps/production/report/ITranslation.java:59"
+"ManufOrder.title","","","java/com/axelor/apps/production/report/ITranslation.java:44"
+"ManufOrder.trackingNumber","","","java/com/axelor/apps/production/report/ITranslation.java:63"
 "Manufacturing","","","resources/views/menu.xml:135
 resources/views/menu.xml:8"
 "Manufacturing Dashboard","","","resources/views/menu.xml:141
@@ -116,8 +116,8 @@ resources/views/menu.xml:125"
 "Manufacturing order","","","resources/views/ManufOrderSheet.xml:11
 resources/views/ManufOrder.xml:52"
 "Manufacturing order filters","","","resources/views/ManufOrder.xml:208"
-"Manufacturing orders","","","resources/views/ManufOrder.xml:6
-resources/views/menu.xml:44
+"Manufacturing orders","","","resources/views/menu.xml:44
+resources/views/ManufOrder.xml:6
 resources/views/ManufOrder.xml:28
 resources/views/menu.xml:41
 resources/views/ManufOrderSheet.xml:6"
@@ -129,31 +129,31 @@ resources/views/menu.xml:25"
 "Observations (état des filetages, aspect général, état des surfaces d'appuis...) :","","","resources/views/ManufOrderSheet.xml:13"
 "Operation","","","resources/views/OperationOrder.xml:63"
 "Operation order filters","","","resources/views/OperationOrder.xml:178"
-"Operation orders","","","resources/views/Business.xml:11
-resources/views/ManufOrder.xml:75
-resources/views/ProductionOrder.xml:51
-resources/views/menu.xml:55"
-"OperationOrder.associatedBOM","","","java/com/axelor/apps/production/report/ITranslation.java:38"
-"OperationOrder.cycleDuration","","","java/com/axelor/apps/production/report/ITranslation.java:46"
-"OperationOrder.dates","","","java/com/axelor/apps/production/report/ITranslation.java:39"
-"OperationOrder.delayBtwCycle","","","java/com/axelor/apps/production/report/ITranslation.java:49"
-"OperationOrder.machine","","","java/com/axelor/apps/production/report/ITranslation.java:45"
-"OperationOrder.num","","","java/com/axelor/apps/production/report/ITranslation.java:55"
-"OperationOrder.operationDetails","","","java/com/axelor/apps/production/report/ITranslation.java:50"
-"OperationOrder.operationName","","","java/com/axelor/apps/production/report/ITranslation.java:36"
-"OperationOrder.operationRequirement","","","java/com/axelor/apps/production/report/ITranslation.java:44"
-"OperationOrder.plannedEndDate","","","java/com/axelor/apps/production/report/ITranslation.java:41"
-"OperationOrder.plannedStartDate","","","java/com/axelor/apps/production/report/ITranslation.java:40"
-"OperationOrder.productName","","","java/com/axelor/apps/production/report/ITranslation.java:52"
-"OperationOrder.productToPrepare","","","java/com/axelor/apps/production/report/ITranslation.java:51"
-"OperationOrder.qty","","","java/com/axelor/apps/production/report/ITranslation.java:53"
-"OperationOrder.realEndDate","","","java/com/axelor/apps/production/report/ITranslation.java:43"
-"OperationOrder.realStartDate","","","java/com/axelor/apps/production/report/ITranslation.java:42"
-"OperationOrder.relatedToProduct","","","java/com/axelor/apps/production/report/ITranslation.java:37"
-"OperationOrder.startTime","","","java/com/axelor/apps/production/report/ITranslation.java:47"
-"OperationOrder.stopTime","","","java/com/axelor/apps/production/report/ITranslation.java:48"
-"OperationOrder.title","","","java/com/axelor/apps/production/report/ITranslation.java:35"
-"OperationOrder.trackingNumber","","","java/com/axelor/apps/production/report/ITranslation.java:54"
+"Operation orders","","","resources/views/ProductionOrder.xml:51
+resources/views/Business.xml:11
+resources/views/menu.xml:55
+resources/views/ManufOrder.xml:75"
+"OperationOrder.associatedBOM","","","java/com/axelor/apps/production/report/ITranslation.java:25"
+"OperationOrder.cycleDuration","","","java/com/axelor/apps/production/report/ITranslation.java:33"
+"OperationOrder.dates","","","java/com/axelor/apps/production/report/ITranslation.java:26"
+"OperationOrder.delayBtwCycle","","","java/com/axelor/apps/production/report/ITranslation.java:36"
+"OperationOrder.machine","","","java/com/axelor/apps/production/report/ITranslation.java:32"
+"OperationOrder.num","","","java/com/axelor/apps/production/report/ITranslation.java:42"
+"OperationOrder.operationDetails","","","java/com/axelor/apps/production/report/ITranslation.java:37"
+"OperationOrder.operationName","","","java/com/axelor/apps/production/report/ITranslation.java:23"
+"OperationOrder.operationRequirement","","","java/com/axelor/apps/production/report/ITranslation.java:31"
+"OperationOrder.plannedEndDate","","","java/com/axelor/apps/production/report/ITranslation.java:28"
+"OperationOrder.plannedStartDate","","","java/com/axelor/apps/production/report/ITranslation.java:27"
+"OperationOrder.productName","","","java/com/axelor/apps/production/report/ITranslation.java:39"
+"OperationOrder.productToPrepare","","","java/com/axelor/apps/production/report/ITranslation.java:38"
+"OperationOrder.qty","","","java/com/axelor/apps/production/report/ITranslation.java:40"
+"OperationOrder.realEndDate","","","java/com/axelor/apps/production/report/ITranslation.java:30"
+"OperationOrder.realStartDate","","","java/com/axelor/apps/production/report/ITranslation.java:29"
+"OperationOrder.relatedToProduct","","","java/com/axelor/apps/production/report/ITranslation.java:24"
+"OperationOrder.startTime","","","java/com/axelor/apps/production/report/ITranslation.java:34"
+"OperationOrder.stopTime","","","java/com/axelor/apps/production/report/ITranslation.java:35"
+"OperationOrder.title","","","java/com/axelor/apps/production/report/ITranslation.java:22"
+"OperationOrder.trackingNumber","","","java/com/axelor/apps/production/report/ITranslation.java:41"
 "Operations","","","resources/views/OperationOrder.xml:41
 resources/views/OperationOrder.xml:19"
 "Operations Finished late","","","resources/views/OperationOrder.xml:203"
@@ -162,8 +162,8 @@ resources/views/OperationOrder.xml:19"
 "Operations orders","","","resources/views/menu.xml:52"
 "Operations to invoice","","","resources/views/OperationOrder.xml:197"
 "Operations with difference","","","resources/views/OperationOrder.xml:206"
-"Pause","","","resources/views/ManufOrder.xml:45
-resources/views/ManufOrder.xml:22
+"Pause","","","resources/views/ManufOrder.xml:22
+resources/views/ManufOrder.xml:45
 resources/views/ManufOrder.xml:57
 resources/views/OperationOrder.xml:69
 resources/views/OperationOrder.xml:34
@@ -187,12 +187,12 @@ resources/views/OperationOrder.xml:8"
 "Print","","","resources/views/ManufOrder.xml:48
 resources/views/OperationOrder.xml:21
 resources/views/ManufOrder.xml:8
-resources/views/ManufOrder.xml:61
 resources/views/ManufOrder.xml:30
+resources/views/ManufOrder.xml:61
 resources/views/OperationOrder.xml:55
 resources/views/ManufOrder.xml:25
-resources/views/OperationOrder.xml:37
-resources/views/OperationOrder.xml:71"
+resources/views/OperationOrder.xml:71
+resources/views/OperationOrder.xml:37"
 "Prod. Human resource","","","resources/views/ProdHumanResource.xml:12"
 "Prod. Human resources","","","resources/views/ProdHumanResource.xml:6"
 "Product","","","resources/views/ProductionOrder.xml:17
@@ -208,9 +208,9 @@ resources/views/ProductionConfig.xml:6"
 "Production orders","","","resources/views/ProductionOrder.xml:6"
 "Production orders closed","","","resources/views/ProductionOrder.xml:62"
 "Production orders to invoice","","","resources/views/ProductionOrder.xml:59"
-"Production process","","","resources/views/ProdProcessLine.xml:14
+"Production process","","","resources/views/ProdProcess.xml:14
+resources/views/ProdProcessLine.xml:14
 resources/views/ProdProcess.xml:6
-resources/views/ProdProcess.xml:14
 resources/views/ProdProcessLine.xml:6"
 "Production remains","","","resources/views/ProdRemains.xml:12
 resources/views/ProdRemains.xml:6"
@@ -218,8 +218,8 @@ resources/views/ProdRemains.xml:6"
 "Productions orders","","","resources/views/menu.xml:34
 resources/views/menu.xml:31"
 "Products","","","resources/views/ProdProduct.xml:6"
-"Quantity","","","resources/views/ProductionOrderWizard.xml:11
-resources/views/ProductionOrder.xml:21"
+"Quantity","","","resources/views/ProductionOrder.xml:21
+resources/views/ProductionOrderWizard.xml:11"
 "Real dates","","","resources/views/ManufOrder.xml:85
 resources/views/OperationOrder.xml:94"
 "Real operations","","","resources/views/menu.xml:73
@@ -235,8 +235,8 @@ resources/views/ProdResource.xml:6"
 resources/views/OperationOrder.xml:70"
 "Standby","","","resources/views/Selects.xml:14"
 "Start","","","resources/views/OperationOrder.xml:51
-resources/views/ManufOrder.xml:21
 resources/views/OperationOrder.xml:33
+resources/views/ManufOrder.xml:21
 resources/views/ManufOrder.xml:56
 resources/views/OperationOrder.xml:66
 resources/views/ManufOrder.xml:44"
