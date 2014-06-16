@@ -23,7 +23,7 @@
   	<string name="twitterUpdateRef"/>
     <string name="content" namecolumn="true" multiline="true" required="true" max="60000" title="Content"/>
     <datetime name="updateDateT" tz="true" title="Update Time"/>
-    <one-to-many name="snPagePostRefList" ref="com.axelor.apps.socialnetwork.db.SnPagePostRef"/>
+    <one-to-many name="snPagePostRefList" ref="com.axelor.apps.socialnetwork.db.SnPagePostRef" mappedBy="snStatusUpdates" orphan="true"/>
     <many-to-one name="snProfile" ref="com.axelor.apps.socialnetwork.db.SnProfile"/>
 	<many-to-many name="snPageSet" ref="com.axelor.apps.socialnetwork.db.SnPage" title="Pages"/>
 	<many-to-one name="commentSnPage" ref="com.axelor.apps.socialnetwork.db.SnPage" title="Page"/>

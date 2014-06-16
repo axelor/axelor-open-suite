@@ -13,7 +13,7 @@
     @author David Nguyen
     ]]>
   	<string name="messageUpdateRef"/>
-  	<many-to-one name="snStatusUpdates" ref="com.axelor.apps.socialnetwork.db.SnStatusUpdates"/>
+  	<many-to-one name="snStatusUpdates" ref="com.axelor.apps.socialnetwork.db.SnStatusUpdates" orphan="true"/>
 	<many-to-one name="snPage" ref="com.axelor.apps.socialnetwork.db.SnPage"/>
   </entity>
  
