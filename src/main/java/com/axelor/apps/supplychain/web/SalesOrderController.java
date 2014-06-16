@@ -38,8 +38,8 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
-import com.axelor.googleapps.document.DocumentService;
-import com.axelor.googleapps.userutils.Utils;
+import com.axelor.googleapps.connector.utils.Utils;
+import com.axelor.googleapps.service.DocumentService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -62,7 +62,7 @@ public class SalesOrderController {
 	private Provider<SequenceService> sequenceProvider;
 
 	@Inject 
-	private Provider<DocumentService> documentProvider;
+	private Provider<DocumentService> documentSeriveObj;
 
 	@Inject 
 	private Provider<Utils> userUtils;
@@ -73,17 +73,16 @@ public class SalesOrderController {
 	 * saves the document for any type of entity using template
 	 * @param request
 	 * @param response
+	 * @throws Exception 
 	 */
-	public void saveDocumentForOrder(ActionRequest request,ActionResponse response) {
+	public void saveDocumentForOrder(ActionRequest request,ActionResponse response) throws Exception {
 
 		userUtils.get().validAppsConfig(request, response);
 
 		// in this line change the Class as per the Module requirement i.e SalesOrder class here used
 		SalesOrder dataObject = request.getContext().asType(SalesOrder.class);
-		User currentUser = 	AuthUtils.getUser();
-		UserInfo currentUserInfo = UserInfo.filter("self.internalUser = ?1", currentUser).fetchOne();
 
-		GoogleFile documentData = documentProvider.get().createDocumentWithTemplate(currentUserInfo,dataObject);
+		GoogleFile documentData = documentSeriveObj.get().createDocumentWithTemplate(dataObject);
 		if(documentData == null) {
 			response.setFlash("The Document Can't be created because the template for this type of Entity not Found..!");
 			return;
