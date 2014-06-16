@@ -43,8 +43,8 @@
 	        <button name="createProductionOrder" title="Create production order" colSpan="2" onClick="save,action-product-view-create-production-order"/>
 	        
 <!-- 	        MUST BE DELETED -->
-	        <button name="generateSalesOrder" title="Créer devis" colSpan="2" onClick="action-business-project-view-generate-sales-order"/>
-	        <button name="updateSalesOrder" title="Mettre à jour devis" colSpan="2" onClick="action-business-project-view-update-sales-order"/>
+	        <button name="generateSalesOrder" title="Create quote" colSpan="2" onClick="action-business-project-view-generate-sales-order"/>
+	        <button name="updateSalesOrder" title="Update quote" colSpan="2" onClick="action-business-project-view-update-sales-order"/>
 	    </group>
 	    <group showTitle="false" colSpan="6">
         	<group title="Times" colSpan="6" cols="6">
