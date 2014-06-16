@@ -8,9 +8,9 @@
   <entity name="ManufOrderSheetLine" lang="java">
   
   	<many-to-one name="operationOrder" ref="com.axelor.apps.production.db.OperationOrder"/>
-  	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Pièce"/>
+  	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Part"/>
   	<decimal name="diameter" title="Ø1"/>
-  	<integer name="accordingSelect" title="Conforme" selection="production.manuf.order.sheet.line.according.select"/>
+  	<integer name="accordingSelect" title="Compliance" selection="production.manuf.order.sheet.line.according.select"/>
     
   </entity>
 </domain-models>

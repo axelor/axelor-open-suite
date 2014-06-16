@@ -19,7 +19,7 @@
 		    </group>
 		    <group colSpan="3" cols="4" showTitle="false">
 		    	<group name="dailyGroup" showTitle="false" hideIf="!daily" >
-		            <separator title="Quotidienne" colSpan="4"/> 
+		            <separator title="Daily" colSpan="4"/> 
 		    		<field title="Every" name="dayDaily" colSpan="1" />
 		    		<label title="day(s)"/>
 		    	</group>

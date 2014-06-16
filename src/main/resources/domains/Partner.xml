@@ -85,7 +85,7 @@
 	 <string name="fullName" title="Name" namecolumn="true"/>
 	 
 	 <!-- PAGE SEPA -->
-	<one-to-many name="rumList" ref="com.axelor.apps.account.db.Rum" mappedBy="partner" title="Liste des RUM"/>
+	<one-to-many name="rumList" ref="com.axelor.apps.account.db.Rum" mappedBy="partner" title="UMR List"/>
 	<many-to-one name="activeRum" ref="com.axelor.apps.account.db.Rum" title="Rum active"/>
 	    
   </entity>

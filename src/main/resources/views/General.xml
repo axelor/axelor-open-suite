@@ -50,7 +50,7 @@
 	                <field name="qasWsdlUrl"/>
 	                <button name="checkQasWsdl" title="Test connection to QAS webservice" colSpan="2" onClick="com.axelor.apps.base.web.AddressController:check"/>
 	            </group>
-	            <group name="ws" title="Webserivces" colSpan="4">
+	            <group name="ws" title="Webservices" colSpan="4">
 	            	<field name="currencyWsURL" colSpan="4"/>
 	            </group>
 	        </page>
