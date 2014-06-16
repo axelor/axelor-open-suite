@@ -47,12 +47,12 @@
 <!-- 	MUST BE DELETED -->
 	
 	<menuitem name="stock-root-planned" parent="stock-root"
-		title="Prévisions"  />
+		title="Forecasts"  />
 	
 	<menuitem name="stock-root-incoming-production" parent="stock-root-planned"
-		title="Besoins de production" action="stock.root.incoming.production" />
+		title="Production needs" action="stock.root.incoming.production" />
 
-	<action-view name="stock.root.incoming.production" title="Besoins de production"
+	<action-view name="stock.root.incoming.production" title="Production needs"
 		model="com.axelor.apps.supplychain.db.StockMove" icon="img/16px/productSmall_16px.png">
 		<view type="grid" name="stock-move-grid"/>
 		<view type="form" name="stock-move-form"/>
@@ -60,9 +60,9 @@
 	</action-view>	
 	
 	<menuitem name="stock-root-outcoming-production" parent="stock-root-planned"
-		title="Prévisions de production" action="stock.root.outcoming.production" />
+		title="Production forecasts" action="stock.root.outcoming.production" />
 
-	<action-view name="stock.root.outcoming.production" title="Prévisions de production"
+	<action-view name="stock.root.outcoming.production" title="Production forecasts"
 		model="com.axelor.apps.supplychain.db.StockMove" icon="img/16px/productSmall_16px.png">
 		<view type="grid" name="stock-move-grid"/>
 		<view type="form" name="stock-move-form"/>
