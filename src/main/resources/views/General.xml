@@ -65,6 +65,22 @@
 	    </notebook>
 	</form>
 	
+	<form model="com.axelor.apps.base.db.Wizard" title="Check duplicate" name="wizard-check-duplicate-form" cols="4" onNew="action-general-check-duplicate-set-fields-set">
+		<field name="fieldsSet" title="Fields" widget="MANY_TO_MANY" x-target="com.axelor.meta.db.MetaField" colSpan="4" readonly="true" help="Key fields to check duplicate records">
+			<grid title="Fields">
+				<field name="name"/>
+				<field name="label" title="Field"/>
+			</grid>
+			<form title="Fields">
+				<field name="name"/>
+				<field name="label" title="Field"/>
+			</form>
+		</field>
+		<button name="showDuplicate" onClick="action-general-method-show-duplicate" title="Show" colSpan="1"/>
+        <group colSpan="3"></group>
+	</form>
+	
+	
 	<!-- ACTION METHOD -->
 
 	<action-method name="action-general-method-payer-quality-process">
@@ -73,6 +89,10 @@
 	
 	<action-method name="action-general-method-update-currency-conversion">
 		<call class="com.axelor.apps.account.web.GeneralController" method="updateCurrencyConversion" />
+	</action-method>
+	
+	<action-method name="action-general-method-show-duplicate">
+		<call method="showDuplicate" class="com.axelor.apps.base.web.GeneralController"/>
 	</action-method>
 	
 	<action-validate name="action-check-string-camel-case">
@@ -88,7 +108,10 @@
 		<error message="Please input all character as capital" if="addressL6 != null &amp;&amp; !addressL6.matches('^[A-Z \\-,.;_0-9]*')"  action="action-check-string-capital-case-name-addressL6"/>
 	</action-validate>
 	
-	
+	<action-record name="action-general-check-duplicate-set-fields-set" model="com.axelor.apps.base.db.Wizard">
+    		<field name="fieldsSet" expr="call:com.axelor.apps.base.web.GeneralController:setFields(object)" />
+    </action-record>
+    
 	<action-record name="action-check-string-camel-case-first-name-clear" model="com.axelor.apps.base.db.General">
 		<field name="firstName"  expr="eval:com.axelor.apps.tool.StringTool.deleteAccent(com.axelor.apps.tool.StringTool.toFirstUpper(firstName))"/>
 	</action-record>
@@ -111,4 +134,10 @@
 		<field name="addressL6" expr="eval:com.axelor.apps.tool.StringTool.deleteAccent(addressL6.toUpperCase())"/>
 	</action-record>
 	
+	<action-view name="action-general-check-duplicate-records" title="Check duplicate" model="com.axelor.apps.base.db.Wizard">
+		<view type="form" name="wizard-check-duplicate-form" />
+		<view-param name="show-toolbar" value="false"/>
+		<view-param name="width" value="500" />
+		<context name="object" expr="eval:_model"/>
+	</action-view>
 </object-views>
