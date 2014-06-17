@@ -7,8 +7,8 @@
     	<toolbar>
     		<button name="grabLeads" help="Assign to me" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.EventController:assignToMeLead" />
     		<button name="print" title="Print" icon="fa-print" onClick="action-crm-lead-method-print"/>
-<!--     		<button name="showMap" title="Map" onClick="action-show-leads-on-map-page" /> -->    		
-    		<button name="checkDuplicate" title="Check duplicate" onClick="action-lead-check-duplicate-records" help=""/>
+<!--     		<button name="showMap" title="Map" onClick="action-show-leads-on-map-page" /> -->
+    		<button name="checkDuplicate" title="Check duplicate" onClick="action-general-check-duplicate-records" help=""/>
     	</toolbar>
     	<hilite color="warning" if="statusSelect == 1 &amp;&amp; (userInfo == null || contactDate == null) &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 15"/>
 	    <hilite color="primary" if="statusSelect == 1"/>
@@ -162,20 +162,6 @@
 		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
 	</grid>
 	
-	<form model="com.axelor.apps.base.db.Wizard" title="Check duplicate" name="wizard-check-duplicate-form" cols="4" onNew="action-lead-check-duplicate-set-fields-set">
-		<field name="fieldsSet" title="Fields" widget="MANY_TO_MANY" x-target="com.axelor.meta.db.MetaField" colSpan="4" readonly="true" help="Key fields to check duplicate records">
-			<grid title="Fields">
-				<field name="name"/>
-				<field name="label" title="Field"/>
-			</grid>
-			<form title="Fields">
-				<field name="name"/>
-				<field name="label" title="Field"/>
-			</form>
-		</field>
-		<button name="showDuplicate" onClick="action-lead-method-show-duplicate" title="Show" colSpan="1"/>
-        <group colSpan="3"></group>
-	</form>
 	
 	<action-method name="action-lead-event-add-attendee">
 		<call class="com.axelor.apps.crm.web.EventController" method="addLeadAttendee"/>
@@ -202,10 +188,6 @@
     	<field name="otherState" expr="eval: primaryState" if="isCopyAddress"/>
     	<field name="otherPostalCode" expr="eval: primaryPostalCode" if="isCopyAddress"/>
     	<field name="otherCountry" expr="eval: primaryCountry" if="isCopyAddress"/>
-    </action-record>
-    
-    <action-record name="action-lead-check-duplicate-set-fields-set" model="com.axelor.apps.base.db.Wizard">
-    		<field name="fieldsSet" expr="call:com.axelor.apps.crm.web.LeadController:setFields(object)" />
     </action-record>
     
    	<action-attrs name="action-lead-attrs-readonly-other-address">
@@ -279,20 +261,9 @@
 		<context name="id" expr="eval: id"/>
 	</action-view>
 	
-	<action-view name="action-lead-check-duplicate-records" title="Check duplicate" model="com.axelor.apps.base.db.Wizard">
-		<view type="form" name="wizard-check-duplicate-form" />
-		<view-param name="show-toolbar" value="false"/>
-		<view-param name="width" value="500" />
-		<context name="object" expr="com.axelor.apps.crm.db.Lead"/>
-	</action-view>
-
 	<action-method name="action-show-leads-on-map-page">
 	  <call method="showLeadsOnMap" class="com.axelor.apps.crm.web.LeadController"/>
 	</action-method>	
-	
-	<action-method name="action-lead-method-show-duplicate">
-		<call method="showDuplicate" class="com.axelor.apps.crm.web.LeadController"/>
-	</action-method>
 	
    	<search-filters name="lead-filters" model="com.axelor.apps.crm.db.Lead" title="Lead filters">
 		<filter title="My Leads">
