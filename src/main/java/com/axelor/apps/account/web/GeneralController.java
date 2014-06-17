@@ -17,11 +17,15 @@
  */
 package com.axelor.apps.account.web;
 
+import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import javax.swing.text.html.CSS;
+import javax.persistence.Query;
 
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
@@ -33,9 +37,15 @@ import com.axelor.apps.base.db.General;
 import com.axelor.apps.base.service.CurrencyConversionService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.administration.GeneralService;
+import com.axelor.db.JPA;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.meta.db.MetaField;
+import com.axelor.meta.db.MetaModel;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.common.base.CaseFormat;
+import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
@@ -63,10 +73,10 @@ public class GeneralController {
 	
 	public void updateCurrencyConversion(ActionRequest request, ActionResponse response){
 		 General general = request.getContext().asType(General.class);
-		 LocalDate today = gs.getTodayDate();
+		 LocalDate today = GeneralService.getTodayDate();
 		 
 		 for(CurrencyConversionLine ccl : general.getCurrencyConversionLineList()){
-			CurrencyConversionLine cclCoverd = CurrencyConversionLine.all().filter("startCurrency = ?1 AND endCurrency = ?2 AND fromDate >= ?3 AND (toDate <= ?3 OR toDate = null)",ccl.getStartCurrency(),ccl.getEndCurrency(),today).fetchOne();
+			CurrencyConversionLine cclCoverd = CurrencyConversionLine.all_().filter("startCurrency = ?1 AND endCurrency = ?2 AND fromDate >= ?3 AND (toDate <= ?3 OR toDate = null)",ccl.getStartCurrency(),ccl.getEndCurrency(),today).fetchOne();
 			LOG.info("Currency Conversion Line for {} already covered : {}",today,ccl);
 			if(ccl.isSelected() && ccl.getToDate() == null & cclCoverd == null){
 				BigDecimal currentRate = ccs.convert(ccl.getStartCurrency(), ccl.getEndCurrency());
