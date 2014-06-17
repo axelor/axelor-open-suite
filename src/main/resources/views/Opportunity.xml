@@ -6,7 +6,7 @@
     <grid name="opportunity-grid" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" orderBy="salesStageSelect,expectedCloseDate">
     	<toolbar>
     		<button name="grabLeads" help="Assign to me" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe" />
-    		<button name="showMap" title="Map" onClick="action-show-opportunities-on-map-page"/>
+<!--     		<button name="showMap" title="Map" onClick="action-show-opportunities-on-map-page"/> -->
     	</toolbar>
     	<hilite color="danger" if="salesStageSelect != 9 &amp;&amp; salesStageSelect != 10 &amp;&amp;  $moment(expectedCloseDate).diff(todayDate,'days') &lt;= 7"/>
   		<hilite color="warning" if="salesStageSelect != 9 &amp;&amp; salesStageSelect != 10 &amp;&amp; $moment(expectedCloseDate).diff(todayDate,'days') &lt;= 15" />

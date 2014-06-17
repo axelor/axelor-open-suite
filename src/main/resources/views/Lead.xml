@@ -7,7 +7,7 @@
     	<toolbar>
     		<button name="grabLeads" help="Assign to me" icon="fa-suitcase" onClick="com.axelor.apps.crm.web.EventController:assignToMeLead" />
     		<button name="print" title="Print" icon="fa-print" onClick="action-crm-lead-method-print"/>
-    		<button name="showMap" title="Map" onClick="action-show-leads-on-map-page" />
+<!--     		<button name="showMap" title="Map" onClick="action-show-leads-on-map-page" /> -->    		
     		<button name="checkDuplicate" title="Check duplicate" onClick="action-lead-check-duplicate-records" help=""/>
     	</toolbar>
     	<hilite color="warning" if="statusSelect == 1 &amp;&amp; (userInfo == null || contactDate == null) &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 15"/>
