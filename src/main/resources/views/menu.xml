@@ -220,6 +220,7 @@
 		model="com.axelor.apps.base.db.ProductFamily" icon="img/16px/parameterSmall_16px.png">
 		<view type="grid" />
 		<view type="form" />
+		<context name="fromMenu" expr="eval:true"/>		
 	</action-view>
 
 	<menuitem name="product-conf-tracking-number-config" parent="product-conf"

@@ -9,32 +9,20 @@
     </grid>
     
     <form name="product-family-form" title="Product family" model="com.axelor.apps.base.db.ProductFamily" cols="4">
-    <toolbar>
-		<button name="viewProducts" title="View Products" onClick="action-view-product-by-family"/>
-	</toolbar>
+	    <toolbar>
+			<button name="viewProducts" title="View Products" onClick="action-view-product-by-family"/>
+		</toolbar>
         <field name="name"/>
         <field name="code"/>
         <field name="accountManagementList" grid-view="account-management-product-grid" form-view="account-management-product-form"
         domain="self.typeSelect = 1" colSpan="4"/>
-	<break />
-	<notebook colSpan="3">
-		<page title="Sales Turnover" cols="2" colWidths="20%,30%,20%,30%">
-			<portlet action="portal.family.sales.turnover.per.month" colSpan="3" height="350" />
-		</page>
-	</notebook>
     </form>
     
-    
-	<action-view title="Family sales turnover (Excl. Tax) per month" model="com.axelor.apps.base.db.Product" name="portal.family.sales.turnover.per.month">
-		  <view type="chart" name="chart.family.sales.turnover.per.month"/>
-		  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
-		  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
-	</action-view>
-    
-     <action-view name="action-view-product-by-family" title="Products" model="com.axelor.apps.base.db.Product">
+    <action-view name="action-view-product-by-family" title="Products" model="com.axelor.apps.base.db.Product">
 		<view type="grid" name="product-grid"/>
 		<view type="form" name="product-form"/>
 		<domain>self.productFamily.id = :_productFamilyId</domain>
 		<context name="_productFamilyId" expr="eval: __this__.id"/>
 	</action-view>
+	
 </object-views>
