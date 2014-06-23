@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+
+    <form name="product-family-form" title="Product family" model="com.axelor.apps.base.db.ProductFamily" cols="4" id="product-faimly-form">
+	    <include view="product-family-form" from="axelor-base" />
+		<notebook colSpan="4" hideIf="fromMenu == null">
+			<page title="Sales Turnover" cols="2" colWidths="20%,30%,20%,30%">
+				<portlet action="portal.family.sales.turnover.per.month" colSpan="3" height="350" />
+			</page>
+		</notebook>
+    </form>
+    
+	<action-view title="Family sales turnover (Excl. Tax) per month" model="com.axelor.apps.base.db.Product" name="portal.family.sales.turnover.per.month">
+		  <view type="chart" name="chart.family.sales.turnover.per.month"/>
+		  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+		  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+	</action-view>
+	
+</object-views>

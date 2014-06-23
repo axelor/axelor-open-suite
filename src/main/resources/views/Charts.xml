@@ -7,7 +7,39 @@
 	  <field name="toDate" expr="eval:LocalDate.parse(todayDate)"/>
 	  <field name="toDateLY" expr="eval:LocalDate.parse(todayDate).minusYears(1).withMonthOfYear(12).withDayOfMonth(31)"/>  
 	</action-record>
-
+	
+	<action-record model="com.axelor.apps.supplychain.db.SalesOrder" name="action.supplychain.portal.set.date.6m">
+	  <field name="toDate" expr="eval:LocalDate.parse(todayDate)"/>
+	  <field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusMonths(6)"/>
+	  <field name="monthSelect" expr="eval:6" />
+	</action-record>
+	
+	<chart onInit="action.supplychain.portal.set.date.6m" name="chart.family.sales.turnover.per.month" title="Family sales turnover (Excl. Tax) per month">
+	  <search-fields>
+	    <field type="date" name="fromDate" title="From Date" widget="required" x-required="true" />
+	    <field type="date" name="toDate" title="To Date" widget="required" x-required="true" />
+	  </search-fields>
+	  <dataset type="jpql">
+	  SELECT
+		  SUM(self.exTaxTotal) AS _amount,
+		  YEAR(self.salesOrder.validationDate) || '-' || MONTH(self.salesOrder.validationDate) || '-01' AS _month
+	  FROM
+	 	 SalesOrderLine self
+	  WHERE
+		  self.salesOrder.statusSelect = 3
+		  AND self.salesOrder.company = :activeCompany
+		  AND self.product.productFamily.id = :id
+		  AND self.salesOrder.validationDate BETWEEN DATE(:fromDate) AND DATE(:toDate)
+	  GROUP BY
+		  YEAR(self.salesOrder.validationDate) || '-' || MONTH(self.salesOrder.validationDate) || '-01'  
+	  ORDER BY
+	  	  _month
+	  </dataset>
+	  <category key="_month" type="month" title="Month"/>
+	  <series key="_amount" type="bar" title="Turnover"/>
+	  <config name="xFormat" value="MM-YYYY"/>
+	</chart>
+	
 	<chart onInit="action.supplychain.portal.set.dates.this.last.year" name="chart.sales.turnover.ytd.vs.previous.years.by.month" title="Sales turnover comparison per month this year vs past years">
 	  <search-fields>
 	    <field name="toDateLY" type="date" title="Year 1 To Date"/>
@@ -1088,12 +1120,6 @@
 	  <category key="_type" type="text" title="Product Type"/>
 	  <series key="_num_prod" type="donut" title="Products"/>
 	</chart>
-	
-	<action-record model="com.axelor.apps.supplychain.db.SalesOrder" name="action.supplychain.portal.set.date.6m">
-	  <field name="toDate" expr="eval:LocalDate.parse(todayDate)"/>
-	  <field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusMonths(6)"/>
-	  <field name="monthSelect" expr="eval:6" />
-	</action-record>
 	
 	<chart onInit="action.supplychain.portal.set.date.6m" name="chart.product.launches.withdrawal.each.month" title="Product launches/withdrawal each month">
 	  <search-fields>
