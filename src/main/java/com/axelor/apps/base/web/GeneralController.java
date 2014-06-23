@@ -60,42 +60,27 @@ public class GeneralController {
 	public void showDuplicate(ActionRequest request, ActionResponse response){
 		String object = (String) request.getContext().get("object");
 		LOG.debug("Duplicate record model: {}",object);
-		MetaModel model =  MetaModel.all_().filter("fullName = ?1", object).fetchOne();
-		if(model == null){
-			response.setFlash("No meta model");
-			return;
-		}
-		String table = model.getTableName();
-		LOG.debug("Duplicate record table: {}",table);
-		List<String> fieldList = new ArrayList<String>();
 		List<String> joinList = new ArrayList<String>();
+		joinList.add("m.id <> m1.id");
 		for(HashMap<String,Object> field:(List<HashMap<String,Object>>) request.getContext().get("fieldsSet")){
-			if((Boolean)field.get("selected")){
-				String name = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, (String)field.get("name"));
-				fieldList.add(name);
-				joinList.add(String.format("model.%s=dmodel.%s",name,name));
-			}
+			if((Boolean)field.get("selected"))
+				joinList.add("m."+field.get("name")+" = m1."+field.get("name"));
+			
 		}
-		if(fieldList.isEmpty()){
+		if(joinList.size() > 1){
+			LOG.debug("Duplicate record joinList: {}",joinList);
+			Query query = JPA.em().createQuery("SELECT DISTINCT(m.id) FROM "+object+" m,"+object+" m1 WHERE "+Joiner.on(" AND ").join(joinList));
+			String ids = Joiner.on(",").join(query.getResultList());
+			if(ids.isEmpty())
+				response.setFlash("No duplicate records found");
+			else
+				response.setView(ActionView
+						  .define("Duplicate records")
+						  .model(object)
+						  .domain("self.id in ("+ids+")")
+						  .map());
+		}
+		else 
 			response.setFlash("Please select key fields to check duplicate");
-			return;
-		}
-		String fields =  Joiner.on(",").join(fieldList);
-		LOG.debug("Duplicate record fieldList: {}",fields);
-		LOG.debug("Duplicate record joinList: {}",joinList);
-		Query query = JPA.em().createNativeQuery(String.format("SELECT id FROM %s model join (SELECT %s FROM %s GROUP BY %s HAVING COUNT(*) > 1) dmodel on (%s)", table,fields,table,fields,Joiner.on(" AND ").join(joinList)));
-		List<String> ids = new ArrayList<String>();
-		for(Object id : query.getResultList())
-			ids.add(id.toString());
-		if(ids.isEmpty())
-			response.setFlash("No duplicate records found");
-		else
-			response.setView(ActionView
-					  .define("Duplicate records")
-					  .model(object)
-					  .add("grid", "lead-grid")
-					  .add("form", "lead-form")
-					  .domain("self.id in ("+Joiner.on(",").join(ids)+")")
-					  .map());
 	}
 }
