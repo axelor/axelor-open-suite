@@ -25,7 +25,7 @@
 	    <field name="salePrice" width="120"/>
     </grid>
 
-    <form cols="2" onNew="action-product-record-default-new,action-product-record-sale-supply-select" name="product-form" title="Product" model="com.axelor.apps.base.db.Product" >
+    <form cols="2" onNew="action-product-record-default-new,action-product-record-sale-supply-select" name="product-form" id="base-product-form" title="Product" model="com.axelor.apps.base.db.Product" >
     	<toolbar>
     		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
 			<button name="showProductSheet" title="Product sheet" icon="fa-print" onClick="save,action-product-method-show-product-sheet"/>
@@ -96,30 +96,7 @@
 	<!--             	<button name="showBillsOfMaterial" title="Show bills of material"/> -->
 	<!--             	 <portlet action="chart:chart.planned.qty.by.location" height="200" colSpan="2"/> -->
 	<!--             </page> -->
-	        <page title="Stock" showIf="productTypeSelect == 'storable'" colSpan="2" cols="4">
-            <separator title="Procurement settings" colSpan="4"/>
-				<field name="procurementMethodSelect" requiredIf="productTypeSelect == 'storable'"/>
-				<field name="isRawMaterial" showIf="productTypeSelect != 'service'"/>
-				<button name="showAllStockMoveLine" title="Show all stock move" colSpan="2" onClick="action-product-view-stock-move-line"/>
-				<spacer/>
-				<break/>
-				<group colSpan="4">
-					<portlet action="action-product-view-stock" colSpan="4"/>
-					<portlet action="chart:chart.stock.report.for.product" height="200" colSpan="4"/>
-					<portlet action="chart:chart.stock.history.report.for.product" height="200" colSpan="4"/>
-				</group>
-<!-- 				<group showIf="true" colSpan="4"> -->
-<!-- 					<portlet action="action-product-view-stock" colSpan="4"/> -->
-<!-- 					<portlet action="chart:chart.stock.report.for.product" height="200" colSpan="4"/> -->
-<!-- 					<portlet action="chart:chart.stock.history.report.for.product" height="200" colSpan="4"/> -->
-<!-- 				</group> -->
-<!-- 				<group showIf="false" colSpan="4"> -->
-<!-- 					<portlet action="action-product-view-stock-product-variant" colSpan="4"/> -->
-<!-- 					<portlet action="chart:chart.stock.report.for.product.variant" height="200" colSpan="4"/> -->
-<!-- 					<portlet action="chart:chart.stock.history.report.for.product.variant" height="200" colSpan="4"/> -->
-<!-- 				</group> -->
-			</page>
-			<page title="Production informations" showIf="productTypeSelect != 'service'">
+	      	<page title="Production informations" showIf="productTypeSelect != 'service'">
 				<field name="defaultBillOfMaterial" domain="self.product.id = :id" onSelect="action-product-attrs-bill-of-material-domain"/>
 				<field name="lastProductionPrice" readonly="true"/>
 				<button name="createProductionOrder" title="Create production order" colSpan="2" onClick="save,action-product-view-create-production-order"/>
@@ -154,16 +131,7 @@
 <!-- 	        <page title="Turnover"> -->
 <!--   				<portlet action="portal.product.sales.turnover.per.month" height="350" colSpan="4" />       -->
 <!-- 			</page>	         -->
- 			<page title="Links">
- 				<portlet action="action-product-view-stock-move-line-incoming-planned" colSpan="4"/>
- 				<portlet action="action-product-view-stock-move-line-consumption-planned" colSpan="4"/>
- 				<portlet action="action-product-view-stock-move-line" colSpan="4"/>
- 				<portlet action="action-product-view-supplier-requests-historical" colSpan="4"/>
- 				<portlet action="action-product-view-purchase-order-line-in-progress" colSpan="4"/>
- 				<portlet action="action-product-view-purchase-order-line-historical" colSpan="4"/>
- 				<portlet action="action-product-view-stock-move-line-consumption-historical" colSpan="4"/>
-	        </page>
-	    </notebook>
+ 		  </notebook>
 	</form>    
     
     <action-view name="action-product-view-stock" title="Stock" model="com.axelor.apps.supplychain.db.LocationLine">
@@ -303,67 +271,5 @@
 		<domain>self.product.id = :productId</domain>
 		<context name="productId" expr="eval: id"/>
 	</action-view>
-	
-	
-<!-- 	SUPPLYCHAIN -->
-
-	<action-view name="action-product-view-stock-move-line" title="Stock Moves historical"
-		model="com.axelor.apps.supplychain.db.StockMoveLine">
-		<view type="grid" name="stock-move-line-all-grid"/>
-		<view type="form" name="stock-move-line-all-form"/>
-		<domain>self.product.id = :_id</domain>
-		<context name="_id" expr="eval: id"/>
-	</action-view>	
-	
-	<action-view name="action-product-view-stock-move-line-incoming-planned" title="Stock Moves planned"
-		model="com.axelor.apps.supplychain.db.StockMoveLine">
-		<view type="grid" name="stock-move-line-all-grid"/>
-		<view type="form" name="stock-move-line-all-form"/>
-		<domain>self.product.id = :_id AND self.stockMove.statusSelect = 2 and self.stockMove.typeSelect = 3</domain>
-		<context name="_id" expr="eval: id"/>
-	</action-view>	
-	
-	<action-view name="action-product-view-stock-move-line-consumption-planned" title="Stock Moves consumption planned"
-		model="com.axelor.apps.supplychain.db.StockMoveLine">
-		<view type="grid" name="stock-move-line-all-grid"/>
-		<view type="form" name="stock-move-line-all-form"/>
-		<domain>self.product.id = :_id and self.stockMove.statusSelect = 2 and self.stockMove.toLocation.typeSelect = 3</domain>
-		<context name="_id" expr="eval: id"/>
-	</action-view>	
-	
-	<action-view name="action-product-view-stock-move-line-consumption-historical" title="Stock Moves consumption historical"
-		model="com.axelor.apps.supplychain.db.StockMoveLine">
-		<view type="grid" name="stock-move-line-all-grid"/>
-		<view type="form" name="stock-move-line-all-form"/>
-		<domain>self.product.id = :_id and self.stockMove.toLocation.typeSelect = 3</domain>
-		<context name="_id" expr="eval: id"/>
-	</action-view>	
-	
-	<action-view name="action-product-view-purchase-order-line-in-progress" title="Purchase order in progress"
-		model="com.axelor.apps.supplychain.db.PurchaseOrderLine">
-		<view type="grid" name="purchase-order-line-grid"/>
-		<view type="form" name="purchase-order-line-form"/>
-		<domain>self.product.id = :_id and self.purchaseOrder.statusSelect in (1,2,3)</domain>
-		<context name="_id" expr="eval: id"/>
-	</action-view>	
-	
-	<action-view name="action-product-view-purchase-order-line-historical" title="Purchase order historical"
-		model="com.axelor.apps.supplychain.db.PurchaseOrderLine">
-		<view type="grid" name="purchase-order-line-grid"/>
-		<view type="form" name="purchase-order-line-form"/>
-		<domain>self.product.id = :_id</domain>
-		<context name="_id" expr="eval: id"/>
-	</action-view>	
-	
-	
-<!-- 	SUPPLIER MANAGEMENT -->
-	<action-view name="action-product-view-supplier-requests-historical" title="Supplier requests historical"
-		model="com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine">
-		<view type="grid" name="purchase-order-supplier-line-supplier-grid" />
-		<view type="form" name="purchase-order-supplier-line-supplier-form" />
-		<domain>self.purchaseOrderLine.product.id = :_id</domain>
-		<context name="_id" expr="eval: id"/>
-	</action-view>
-	
 	
 </object-views>
