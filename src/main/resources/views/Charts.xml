@@ -290,31 +290,6 @@
 	  <series key="partners" type="donut" title="Suppliers"/>
 	</chart>
 	
-	<chart onInit="action.supplychain.portal.set.date.6m" name="chart.category.sales.turnover.per.month" title="Category sales turnover (Excl. Tax) per month">
-	  <search-fields>
-	    <field type="date" name="fromDate" title="From Date"/>
-	    <field type="date" name="toDate" title="To Date"/>
-	  </search-fields>
-	  <dataset type="jpql">
-	  SELECT
-		  SUM(self.exTaxTotal) AS _amount,
-		  YEAR(self.salesOrder.validationDate) || '-' || MONTH(self.salesOrder.validationDate) || '-01' AS _month
-	  FROM
-		  SalesOrderLine self
-	  WHERE
-		  self.salesOrder.statusSelect = 3
-		  AND self.salesOrder.company = :activeCompany
-		  AND self.product.productCategory.id = :id
-		  AND self.salesOrder.validationDate BETWEEN DATE(:fromDate) AND DATE(:toDate)
-	  GROUP BY
-	 	 YEAR(self.salesOrder.validationDate) || '-' || MONTH(self.salesOrder.validationDate) || '-01'  
-	  </dataset>
-	  <category key="_month" type="month" title="Month"/>
-	  <series key="_amount" type="bar" title="Turnover"/>
-	  <config name="xFormat" value="MM-YYYY"/>
-	</chart>
-	
-	
 	<chart name="chart.partner.prospects.by.country" title="Prospects by country">
 	  <dataset type="sql">
 	  SELECT
