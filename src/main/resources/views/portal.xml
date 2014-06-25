@@ -604,4 +604,82 @@
 		<portlet action="portal.nbr.product.per.category" canSearch="true" height="350" />
 	</portal>
 		
+	
+	<!-- 	Product-form Actions Portlets -->
+	
+	<action-view name="action-product-view-stock" title="Stock" model="com.axelor.apps.supplychain.db.LocationLine">
+    	<view type="grid" name="location-line-product-grid"/>
+    	<view type="form" name="location-line-product-form"/>
+    	<domain>self.product.id = :id and self.location.typeSelect = 1</domain>
+    </action-view>
+    
+    <action-view name="action-stock-report-for-product" title="Stock" model="com.axelor.apps.supplychain.db.LocationLine">
+    	<view type="chart" name="chart.stock.report.for.product"/>
+     </action-view>
+  	
+  	 <action-view name="action-stock-history-report-for-product" title="Stock History" model="com.axelor.apps.supplychain.db.LocationLine">
+    	<view type="chart" name="chart.stock.history.report.for.product"/>
+     </action-view>	
+     
+     <!-- 	Product-form Actions Portlets -->
+		
+	 <action-view name="action-product-view-stock-move-line-incoming-planned" title="Stock Moves planned"
+		model="com.axelor.apps.supplychain.db.StockMoveLine">
+		<view type="grid" name="stock-move-line-all-grid"/>
+		<view type="form" name="stock-move-line-all-form"/>
+		<domain>self.product.id = :_id AND self.stockMove.statusSelect = 2 and self.stockMove.typeSelect = 3</domain>
+		<context name="_id" expr="eval: id"/>
+	</action-view>	
+	
+	<action-view name="action-product-view-stock-move-line-consumption-planned" title="Stock Moves consumption planned"
+		model="com.axelor.apps.supplychain.db.StockMoveLine">
+		<view type="grid" name="stock-move-line-all-grid"/>
+		<view type="form" name="stock-move-line-all-form"/>
+		<domain>self.product.id = :_id and self.stockMove.statusSelect = 2 and self.stockMove.toLocation.typeSelect = 3</domain>
+		<context name="_id" expr="eval: id"/>
+	</action-view>
+	
+	<action-view name="action-product-view-stock-move-line-consumption-historical" title="Stock Moves consumption historical"
+		model="com.axelor.apps.supplychain.db.StockMoveLine">
+		<view type="grid" name="stock-move-line-all-grid"/>
+		<view type="form" name="stock-move-line-all-form"/>
+		<domain>self.product.id = :_id and self.stockMove.toLocation.typeSelect = 3</domain>
+		<context name="_id" expr="eval: id"/>
+	</action-view>	
+	
+ 	<action-view name="action-product-view-stock-move-line" title="Stock Moves historical"
+		model="com.axelor.apps.supplychain.db.StockMoveLine">
+		<view type="grid" name="stock-move-line-all-grid"/>
+		<view type="form" name="stock-move-line-all-form"/>
+		<domain>self.product.id = :_id</domain>
+		<context name="_id" expr="eval: id"/>
+	</action-view>	
+	
+	<action-view name="action-product-view-supplier-requests-historical" title="Supplier requests historical"
+		model="com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine">
+		<view type="grid" name="purchase-order-supplier-line-supplier-grid" />
+		<view type="form" name="purchase-order-supplier-line-supplier-form" />
+		<domain>self.purchaseOrderLine.product.id = :_id</domain>
+		<context name="_id" expr="eval: id"/>
+	</action-view>
+	
+	<action-view name="action-product-view-purchase-order-line-in-progress" title="Purchase order in progress"
+		model="com.axelor.apps.supplychain.db.PurchaseOrderLine">
+		<view type="grid" name="purchase-order-line-grid"/>
+		<view type="form" name="purchase-order-line-form"/>
+		<domain>self.product.id = :_id and self.purchaseOrder.statusSelect in (1,2,3)</domain>
+		<context name="_id" expr="eval: id"/>
+	</action-view>	
+	
+	<action-view name="action-product-view-purchase-order-line-historical" title="Purchase order historical"
+		model="com.axelor.apps.supplychain.db.PurchaseOrderLine">
+		<view type="grid" name="purchase-order-line-grid"/>
+		<view type="form" name="purchase-order-line-form"/>
+		<domain>self.product.id = :_id</domain>
+		<context name="_id" expr="eval: id"/>
+	</action-view>	
+	
+	
+		
+		
 </object-views>
