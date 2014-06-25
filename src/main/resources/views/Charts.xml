@@ -166,60 +166,6 @@
 	 </chart>
 	 
 	 
-
-	<chart onInit="action.supplychain.portal.set.dates.this.last.year" name="chart.customer.sales.lastYear.vs.ytd.by.family" 
-			title="Sales turnover comparison per month this year vs past years by family" stacked="true">
-	  <search-fields>
-	    <field type="date" name="toDateLY" title="Year 1 To Date"/>
-	    <field type="date" name="toDate" title="Year 2 To Date"/>
-	  </search-fields>
-	  
-	  <dataset type="jpql">
-	  
-	    SELECT
-	      COALESCE(SUM(salesOrderLine.exTaxTotal), 0.00) AS turnOver,
-	      productFamily.name AS family,
-	      YEAR(salesOrder.validationDate) || '-' || MONTH(salesOrder.validationDate) || '-01' AS _month    
-	
-	    FROM
-	      SalesOrderLine salesOrderLine,
-	      SalesOrder salesOrder,
-	      Product product,
-	      ProductFamily productFamily
-	
-	    WHERE  
-	      salesOrder = salesOrderLine.salesOrder
-	    AND
-	      salesOrder.statusSelect=3
-	    AND
-	      salesOrder.company =:activeCompany
-	    AND
-	      product = salesOrderLine.product
-	    AND
-	      productFamily = product.productFamily
-	    AND
-	      YEAR(salesOrder.validationDate) IN (YEAR(CURRENT_DATE), YEAR(CURRENT_DATE) - 1)
-	    AND
-	      salesOrder.clientPartner.id=:id
-	    AND(
-	      ( salesOrder.validationDate &gt;= TO_DATE(YEAR(DATE(:toDate)) || '-01-01','YYYY-MM-DD') 
-	      AND salesOrder.validationDate &lt;= DATE(:toDate))
-	    OR
-	      (salesOrder.validationDate &gt;= TO_DATE(YEAR(DATE(:toDateLY)) || '-01-01','YYYY-MM-DD') 
-	      AND salesOrder.validationDate &lt;= DATE(:toDateLY))
-	     )        
-	    
-	    GROUP BY
-	      productFamily.name,
-	      YEAR(salesOrder.validationDate) || '-' || MONTH(salesOrder.validationDate) || '-01'
-	    ORDER BY
-	      YEAR(salesOrder.validationDate) || '-' || MONTH(salesOrder.validationDate) || '-01'
-	  
-	  </dataset>
-	  <category key="_month" type="month" title="Month"/>
-	  <series key="turnOver" type="bar" title="Turnover" aggregate="sum" groupBy="family"/>
-	  <config name="xFormat" value="MM-YYYY" />
-	</chart>
 	
 	<chart name="chart.customers.by.country.bar" title="Customers by country">
 		<dataset type="sql">
