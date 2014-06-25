@@ -608,4 +608,9 @@
 		<view type="chart" name="chart.team.opportunity.created.won.target.bar"/>
 	</action-view>
 
+	<!-- CRM EVENTS REPORT FOR PARTNER called from partner-form axelor-base and axelor-account -->
+	<action-view title="CRM Activities" model="com.axelor.apps.base.db.Partner" name="portal.customer.crm.activities">
+  		<view type="chart" name="chart.customer.crm.activities"/>  		
+	</action-view>
+	
 </object-views>
