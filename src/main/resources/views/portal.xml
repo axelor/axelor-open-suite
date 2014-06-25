@@ -603,6 +603,13 @@
 	<portal name="supplychain.products.category.dashboard.1.portal.view" title="Family Dashboard">
 		<portlet action="portal.nbr.product.per.category" canSearch="true" height="350" />
 	</portal>
+
+	<!-- This portlet is called from Product-Category-Form Axelor Base -->
+    <action-view title="Category sales turnover (Excl. Tax) per month" model="com.axelor.apps.base.db.Product" name="portal.category.sales.turnover.per.month">
+		  <view type="chart" name="chart.category.sales.turnover.per.month"/>
+		  <context name="todayDate" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()"/>
+		  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
+	</action-view>
 		
 	
 	<!-- 	Product-form Actions Portlets -->
