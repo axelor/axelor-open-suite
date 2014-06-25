@@ -18,12 +18,14 @@
         <field name="code"/>
         <field name="productFamily"/>
         <field name="parentProductCategory"/>
-    </form>
-    
-     <action-view name="action-view-product-by-category" title="Products" model="com.axelor.apps.base.db.Product">
-		<view type="grid" name="product-grid"/>
-		<view type="form" name="product-form"/>
-		<domain>self.productCategory.id = :_productCategoryId</domain>
-		<context name="_productCategoryId" expr="eval: __this__.id"/>
-	</action-view>
+		<break />
+		<!-- if anyone add new page in this notebook, please remove this if-module attribute from notebook tag and add it to page tag -->
+		<!-- for the time it has only one page so I have added if-module to notebook, -->
+		<!-- if it has multiple pages, we should add if-module to pages with valid module-name -->
+		<notebook colSpan="4" if-module="axelor-supplychain">
+			<page title="Sales Turnover" cols="3" colWidths="20%,30%,20%,30%">
+				<portlet action="portal.category.sales.turnover.per.month" colSpan="4" height="350" />
+			</page>
+		</notebook>
+    </form>    
 </object-views>
