@@ -100,8 +100,11 @@
   
     <!-- Onglet Facturation -->
     <boolean name="showDetailsInInvoice" title="Show details in invoice"/>
-   
-  	
+    
+    <!--  Account chart template-->
+	<many-to-one name="accountChart" ref="com.axelor.apps.account.db.AccountChart" title="Account chart" />
+	<boolean name="hasChartImported"  title="Chart imported?" />
+	   
   </entity>
   
 </domain-models>
