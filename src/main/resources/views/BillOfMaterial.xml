@@ -23,6 +23,7 @@
         <notebook colSpan="4">
         	<page title="Bill of material">
         		<field name="billOfMaterialList" colSpan="4" form-view="bill-of-material-line-form"  grid-view="bill-of-material-line-grid" domain="self.isRawMaterial = false"/>
+        		<portlet action="action-bill-of-material-view-tree" colSpan="4"/>
         	</page>
         	<page title="Remains">
         		<field name="prodRemainsList" colSpan="4"/>
@@ -66,6 +67,36 @@
         	</page>
         </notebook>
     </form>
+    
+    <action-view name="action-bill-of-material-view-tree" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">
+    	<view type="tree" name="bill-of-material-tree"/>
+    	<view type="form" name="bill-of-material-line-form"/>
+    	<domain>self.parentBillOfMaterial.id = :id</domain>
+     	<context name="id" expr="eval: id"/>
+    </action-view>
+    
+    <tree name="bill-of-material-tree" title="Bills of material">
+    	
+    	<column name="product" type="reference"/>
+    	<column name="qty" type="decimal"/>
+    	<column name="unit" type="reference"/>
+    	<column name="prodProcess" type="reference"/>
+		
+		<node model="com.axelor.apps.production.db.BillOfMaterial" domain="self.parentBillOfMaterial.id = :id">
+			<field name="product" as="product"/>
+			<field name="qty" as="qty"/>
+			<field name="unit" as="unit"/>
+			<field name="prodProcess" as="prodProcess"/>
+		</node>    	
+		
+		<node model="com.axelor.apps.production.db.BillOfMaterial" parent="parentBillOfMaterial" draggable="true">
+			<field name="product" as="product"/>
+			<field name="qty" as="qty"/>
+			<field name="unit" as="unit"/>
+			<field name="prodProcess" as="prodProcess"/>
+		</node>
+    
+	</tree>
     
     <action-record name="action-bill-of-material-default-record" model="com.axelor.apps.production.db.BillOfMaterial">
     	<field name="qty" expr="1"/>
