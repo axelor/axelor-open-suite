@@ -17,6 +17,9 @@
         <field name="name"/>
         <field name="code"/>
         <field name="company"/>
+        <field name="hasChartImported" />
+       	<field name="accountChart" readonlyIf="hasChartImported"/>
+       	<button name="installTemplate" colSpan="1" title="Import a chart" readonlyIf="hasChartImported || company == null || accountChart == null" onClick="save,com.axelor.apps.account.web.AccountChartController:installChart" icon="fa-arrow-down"/>
         <notebook colSpan="4">
             <page title="Accounting" cols="4" colWidths="20%,30%,20%,30%">
             	<separator title="Journals" colSpan="4"/>
