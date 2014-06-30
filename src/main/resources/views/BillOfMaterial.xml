@@ -82,14 +82,14 @@
     	<column name="unit" type="reference"/>
     	<column name="prodProcess" type="reference"/>
 		
-		<node model="com.axelor.apps.production.db.BillOfMaterial" domain="self.parentBillOfMaterial.id = :id">
+		<node model="com.axelor.apps.production.db.BillOfMaterial" domain="self.parentBillOfMaterial.id = :id" onClick="action-bill-of-material-line-view">
 			<field name="product" as="product"/>
 			<field name="qty" as="qty"/>
 			<field name="unit" as="unit"/>
 			<field name="prodProcess" as="prodProcess"/>
 		</node>    	
 		
-		<node model="com.axelor.apps.production.db.BillOfMaterial" parent="parentBillOfMaterial" draggable="true">
+		<node model="com.axelor.apps.production.db.BillOfMaterial" parent="parentBillOfMaterial" draggable="true" onClick="action-bill-of-material-line-view">
 			<field name="product" as="product"/>
 			<field name="qty" as="qty"/>
 			<field name="unit" as="unit"/>
@@ -97,6 +97,15 @@
 		</node>
     
 	</tree>
+	
+	
+	<action-view name="action-bill-of-material-line-view" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">
+    	<view type="form" name="bill-of-material-line-form"/>
+        <view-param name="popup" value="reload"/>
+        <view-param name="show-toolbar" value="false"/>
+  		<view-param name="show-confirm" value="false" />
+    	<context name="_showRecord" expr="eval: id"/>
+    </action-view>
     
     <action-record name="action-bill-of-material-default-record" model="com.axelor.apps.production.db.BillOfMaterial">
     	<field name="qty" expr="1"/>
