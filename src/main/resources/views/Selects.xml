@@ -211,6 +211,11 @@
 	<selection name="account.bank.statement.status.select">
 		<option value="1">Draft</option>
 		<option value="2">Validated</option>
+	</selection>
+	
+	<selection name="move.template.line.debit.credit.select">
+		<option value="0">Debit</option>
+		<option value="1">Credit</option>
 	</selection>	
 	
 

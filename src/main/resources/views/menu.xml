@@ -815,4 +815,44 @@
 		<domain>self.operationTypeSelect in (1,2)</domain>
 	</action-view>
 	
+	<!-- Move template -->
+	
+	<menuitem name="move-template" title="Move templates" parent="account-root-move" action="move.template" groups="admins,erp" top="true" />
+	
+	<action-view name="move.template"
+		title="Move templates" model="com.axelor.apps.account.db.MoveTemplate">
+		<view type="grid" name="move-template-grid" />
+		<view type="form" name="move-template-form"  />
+	</action-view>
+
+
+	<menuitem name="move-template-line" title="Move template lines" parent="account-root-move" action="move.template.line" groups="admins,erp" top="true" />
+	
+	<action-view name="move.template.line"
+		title="Move template lines" model="com.axelor.apps.account.db.MoveTemplateLine">
+		<view type="grid" name="move-template-line-grid" />
+		<view type="form" name="move-template-line-form"  />
+	</action-view>
+	
+	<menuitem name="move-template-type" title="Move template types" parent="account-root-move" action="move.template.type" groups="admins,erp" top="true" />
+	
+	<action-view name="move.template.type"
+		title="Move template types" model="com.axelor.apps.account.db.MoveTemplateType">
+		<view type="grid" name="move-template-type-grid" />
+		<view type="form" name="move-template-type-form"  />
+	</action-view>
+	
+	<menuitem name="move-template-wizard" title="Generate move from template" parent="account-root-move" action="move.template.wizard" groups="admins,erp" top="true" />
+	
+	<action-view name="move.template.wizard"
+		title="Generate move from template" model="com.axelor.apps.base.db.Wizard">
+		<view type="form" name="move-template-wizard-form"  />
+		<view-param name="popup" value="reload"/>
+	    <view-param name="forceEdit" value="true"/> 
+	    <view-param name="width" value="800" />
+	    <view-param name="show-confirm" value="false" />
+	    <view-param name="show-toolbar" value="false" />
+	</action-view>
+	
+	
 </object-views>

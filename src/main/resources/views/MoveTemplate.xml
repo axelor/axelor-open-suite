@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
+    
+    <grid name="move-template-grid" title="Move template" model="com.axelor.apps.account.db.MoveTemplate">
+        <field name="name"/>
+        <field name="code" />
+        <field name="typeSelect"/>
+        <field name="company"/>
+        <field name="journal"/>
+        <field name="isValid"/>
+    </grid>
+    
+    <form name="move-template-form" title="Move template" model="com.axelor.apps.account.db.MoveTemplate">
+        <field name="name"/>
+        <field name="code" />
+        <field name="typeSelect"/>
+        <group colSpan="2" cols="3">
+          <field name="isValid" />
+          <button name="checkValidity" onClick="save,action-move-template-method-check-validity" title="Check validity" readonlyIf="isValid"/>
+        </group>
+        <field name="company"/>
+        <field name="journal"/>
+        <field name="moveTemplateLineList" colSpan="4">
+        	<grid title="Move template line" >
+        		<field name="name" />
+                <field name="debitCredit" />
+                <field name="product"/>
+                <field name="account"/>
+                <field name="percentage"/>
+            </grid>
+            <form title="Move template line" onNew="action-move-template-set-domain" onLoad="action-move-template-set-domain">
+              <field name="name" readonlyIf="isValid"/>
+              <field name="debitCreditSelect" onChange="action-move-template-line-get-account" readonlyIf="isValid"/>
+              <field name="product" onChange="action-move-template-line-get-account" readonlyIf="isValid"/>
+              <field name="account" readonlyIf="isValid"/>
+              <field name="percentage" placeholder="80" readonlyIf="isValid"/>
+              <field name="partnerToDebit" showIf="debitCreditSelect == '0'" readonlyIf="isValid"/>
+              <field name="partnerToCredit" showIf="debitCreditSelect == '1'" readonlyIf="isValid"/>
+              <field name="isValid" />
+            </form>
+        </field>
+    </form>
+    
+     <form name="move-template-wizard-form" title="Generate move from template" model="com.axelor.apps.base.db.Wizard" onNew="move-template-wizard-set-template-domain">
+        <field name="typeSelect" title="Type" widget="MANY_TO_ONE" x-target="com.axelor.apps.account.db.MoveTemplateType" onChange="move-template-wizard-set-template-domain"/>
+        <field name="company" widget="MANY_TO_ONE" x-target="com.axelor.apps.base.db.Company" title="Company" onChange="move-template-wizard-set-template-domain"/>
+        <field name="journal" widget="MANY_TO_ONE" x-target="com.axelor.apps.account.db.Journal" title="Journal"/>
+        <field name="moveTemplate" widget="MANY_TO_ONE" x-target="com.axelor.apps.account.db.MoveTemplate" title="Template" />
+        <field name="dataInputList" widget="ONE_TO_MANY" x-target="com.axelor.apps.base.db.Wizard" title="Saisie des données d'écriture" colSpan="4">
+        	<grid title="Saisie des données d'écriture" editable="true">
+        		<field name="date" widget="DATE" title="Date" onChange="action-move-template-wizard-check-value"/>
+        		<field name="moveBalance" widget="DECIMAL" title="Montant Ecriture" onChange="action-move-template-wizard-check-value" />
+        		<field name="debitPartner" widget="MANY_TO_ONE" x-target="com.axelor.apps.base.db.Partner" title="Tiers à Débiter"/>
+        		<field name="creditPartner" widget="MANY_TO_ONE" x-target="com.axelor.apps.base.db.Partner" title="Tiers à Créditer"/>
+        	</grid>
+        	<form title="Saisie des données d'écriture">
+        		<field name="date" widget="DATE" title="Date" onChange="action-move-template-wizard-check-value"/>
+        		<field name="moveBalance" widget="DECIMAL" title="Montant Ecriture" onChange="action-move-template-wizard-check-value"  />
+        		<field name="debitPartner" widget="MANY_TO_ONE" x-target="com.axelor.apps.base.db.Partner" title="Tiers à Débiter"/>
+        		<field name="creditPartner" widget="MANY_TO_ONE" x-target="com.axelor.apps.base.db.Partner" title="Tiers à Créditer"/>
+        	</form>
+        </field>
+        <button name="generateMoves" title="Generate Moves" onClick="action-move-template-wizard-method-generate-move" />
+    </form>
+    
+    <action-attrs name="move-template-wizard-set-template-domain" >
+    	<attribute name="domain" expr="eval:'self.company.id = '+company.id+' AND self.isValid = true AND (self.typeSelect = null OR self.typeSelect.id = '+typeSelect.id+')' " for="moveTemplate"/>
+    </action-attrs>
+    
+    <action-validate name="action-move-template-wizard-check-value">
+    	<error if="date &gt; __date__" message="Date can't be ahead of today" action="action-move-template-wizard-reset-value" />
+    	<error if="moveBalance != null &amp;&amp; moveBalance &lt; 0" message="The Move Balance must be positive" action="action-move-template-wizard-reset-value" />
+    </action-validate>
+    
+    <action-record model="com.axelor.apps.base.db.Wizard" name="action-move-template-wizard-reset-value">
+    	<field name="date" expr="eval:null" if="date &gt; __date__" />
+    	<field name="moveBalance" expr="eval:0" if="moveBalance != null &amp;&amp; moveBalance &lt; 0" />
+    </action-record>
+    
+    <action-method name="action-move-template-method-check-validity">
+    	<call method="checkValidity" class="com.axelor.apps.account.web.MoveTemplateController" />
+    </action-method>
+    
+    <action-method name="action-move-template-wizard-method-generate-move">
+    	<call method="generateMove" class="com.axelor.apps.account.web.MoveTemplateController" />
+    </action-method>
+    
+</object-views>
