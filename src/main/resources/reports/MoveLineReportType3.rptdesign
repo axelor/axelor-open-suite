@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.2.0.v20120611 Build &lt;4.2.0.v20120612-1721></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.2.2.v201301221637 Build &lt;4.2.2.v20130206-1509></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -28,10 +28,10 @@
         <scalar-parameter name="MoveLineReportId" id="896">
             <property name="valueType">static</property>
             <property name="isRequired">true</property>
-            <property name="dataType">decimal</property>
+            <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">546</value>
+                <value type="constant">1</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -93,9 +93,8 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/evolutis_fr</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-erp</property>
             <property name="odaUser">axelor</property>
-            
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -104,18 +103,21 @@
             <list-property name="computedColumns">
                 <structure>
                     <property name="name">Invoice</property>
-                    <expression name="expression">if(row["invoice_name"]!=null)  {
-row["invoice_name"]
+                    <expression name="expression">if(row["invoice_reconciled_name"]!=null)  {
+row["invoice_reconciled_name"]
 }
 else  {
-row["invoice_reconciled_name"]
+row["invoice_name"]
 }</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
                     <property name="name">credit_to_use</property>
-                    <expression name="expression">if(row["invoice_reconciled_name"])  {
-row["amountreconciled"]
+                    <expression name="expression">if(row["amountreconciled"] > 0.00  )  {
+  row["amountreconciled"]
+}
+else  if(row["invoice_name"]==null &amp;&amp; row["countmoveline"] > 1 ){
+row["credit"]/row["countmoveline"]
 }
 else  {
 row["credit"]
@@ -138,22 +140,22 @@ row["amount_remaining"]/row["countmoveline"]
                     <text-property name="heading">MoveLineName</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">contact_name</property>
+                    <property name="columnName">partner_name</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">contact_name</text-property>
-                    <text-property name="heading">contact_name</text-property>
+                    <text-property name="displayName">partner_name</text-property>
+                    <text-property name="heading">partner_name</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">contact_first_name</property>
+                    <property name="columnName">partner_first_name</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">contact_first_name</text-property>
-                    <text-property name="heading">contact_first_name</text-property>
+                    <text-property name="displayName">partner_first_name</text-property>
+                    <text-property name="heading">partner_first_name</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">contact_id</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">contact_id</text-property>
-                    <text-property name="heading">contact_id</text-property>
+                    <property name="columnName">partner_seq</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">partner_seq</text-property>
+                    <text-property name="heading">partner_seq</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">ref</property>
@@ -184,12 +186,6 @@ row["amount_remaining"]/row["countmoveline"]
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">invoice_reconciled_name</text-property>
                     <text-property name="heading">invoice_reconciled_name</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">contract_id</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">contract_id</text-property>
-                    <text-property name="heading">contract_id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">ReportedBalanceAmount</property>
@@ -228,6 +224,7 @@ row["amount_remaining"]/row["countmoveline"]
                     <text-property name="heading">countmoveline</text-property>
                 </structure>
             </list-property>
+            <list-property name="filter"/>
             <list-property name="parameters">
                 <structure>
                     <property name="name">param_1</property>
@@ -236,6 +233,17 @@ row["amount_remaining"]/row["countmoveline"]
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
                     <property name="position">1</property>
+                    <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_2</property>
+                    <property name="paramName">MoveLineReportId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">2</property>
                     <property name="isOptional">false</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
@@ -250,18 +258,18 @@ row["amount_remaining"]/row["countmoveline"]
                     </structure>
                     <structure>
                         <property name="position">2</property>
-                        <property name="name">contact_name</property>
+                        <property name="name">partner_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">3</property>
-                        <property name="name">contact_first_name</property>
+                        <property name="name">partner_first_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">4</property>
-                        <property name="name">contact_id</property>
-                        <property name="dataType">decimal</property>
+                        <property name="name">partner_seq</property>
+                        <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">5</property>
@@ -290,51 +298,46 @@ row["amount_remaining"]/row["countmoveline"]
                     </structure>
                     <structure>
                         <property name="position">10</property>
-                        <property name="name">contract_id</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">11</property>
                         <property name="name">ReportedBalanceAmount</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">12</property>
+                        <property name="position">11</property>
                         <property name="name">reported_balance_date</property>
                         <property name="dataType">date</property>
                     </structure>
                     <structure>
-                        <property name="position">13</property>
+                        <property name="position">12</property>
                         <property name="name">date_from</property>
                         <property name="dataType">date</property>
                     </structure>
                     <structure>
-                        <property name="position">14</property>
+                        <property name="position">13</property>
                         <property name="name">amountreconciled</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">15</property>
+                        <property name="position">14</property>
                         <property name="name">amount_remaining</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">16</property>
+                        <property name="position">15</property>
                         <property name="name">countmoveline</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">17</property>
+                        <property name="position">16</property>
                         <property name="name">Invoice</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">18</property>
+                        <property name="position">17</property>
                         <property name="name">credit_to_use</property>
                         <property name="dataType">float</property>
                     </structure>
                     <structure>
-                        <property name="position">19</property>
+                        <property name="position">18</property>
                         <property name="name">excess_payment</property>
                         <property name="dataType">float</property>
                     </structure>
@@ -352,24 +355,24 @@ row["amount_remaining"]/row["countmoveline"]
                 </structure>
                 <structure>
                     <property name="position">2</property>
-                    <property name="name">contact_name</property>
-                    <property name="nativeName">contact_name</property>
+                    <property name="name">partner_name</property>
+                    <property name="nativeName">partner_name</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
-                    <property name="name">contact_first_name</property>
-                    <property name="nativeName">contact_first_name</property>
+                    <property name="name">partner_first_name</property>
+                    <property name="nativeName">partner_first_name</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
-                    <property name="name">contact_id</property>
-                    <property name="nativeName">contact_id</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
+                    <property name="name">partner_seq</property>
+                    <property name="nativeName">partner_seq</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
@@ -408,92 +411,99 @@ row["amount_remaining"]/row["countmoveline"]
                 </structure>
                 <structure>
                     <property name="position">10</property>
-                    <property name="name">contract_id</property>
-                    <property name="nativeName">contract_id</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">11</property>
                     <property name="name">ReportedBalanceAmount</property>
                     <property name="nativeName">ReportedBalanceAmount</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">12</property>
+                    <property name="position">11</property>
                     <property name="name">reported_balance_date</property>
                     <property name="nativeName">reported_balance_date</property>
                     <property name="dataType">date</property>
                     <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
-                    <property name="position">13</property>
+                    <property name="position">12</property>
                     <property name="name">date_from</property>
                     <property name="nativeName">date_from</property>
                     <property name="dataType">date</property>
                     <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
-                    <property name="position">14</property>
+                    <property name="position">13</property>
                     <property name="name">amountreconciled</property>
                     <property name="nativeName">amountreconciled</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">15</property>
+                    <property name="position">14</property>
                     <property name="name">amount_remaining</property>
                     <property name="nativeName">amount_remaining</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">16</property>
+                    <property name="position">15</property>
                     <property name="name">countmoveline</property>
                     <property name="nativeName">countmoveline</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[Select MoveLine.name as "MoveLineName", Contact.name as contact_name, Contact.first_name as contact_first_name, Contact.id as contact_id, MoveLineReport.ref, MoveLine.credit, MoveLine.debit,
-Invoice.invoice_name, InvoiceReconciled.invoice_name as "invoice_reconciled_name", Contract.contract_id, ReportedBalanceLine.amount as "ReportedBalanceAmount", YYear.reported_balance_date, 
-MoveLineReport.date_from, Reconcile.amount as amountReconciled, MoveLine.amount_remaining, Move2.countMoveLine     
+            <xml-property name="queryText"><![CDATA[Select MoveLine.name as "MoveLineName", Partner.name as partner_name, Partner.first_name as partner_first_name, Partner.partner_seq, 
+MoveLineReport.ref, MoveLine.credit, MoveLine.debit,
+Invoice.invoice_id as invoice_name, InvoiceReconciled.invoice_id as "invoice_reconciled_name",  
+ReportedBalanceLine.amount as "ReportedBalanceAmount", YYear.reported_balance_date, 
+MoveLineReport.date_from, Reconcile.amount as amountReconciled, MoveLine.amount_remaining, MoveLine2.countMoveLine     
 from public.account_move_line_report as MoveLineReport 
-left outer join public.account_move_line as MoveLine on (MoveLineReport.id = ? AND MoveLine.ignore_in_accounting_ok = false)
+left outer join public.account_move_line as MoveLine on (MoveLineReport.id = ?)
 left outer join public.account_move as Move on (MoveLine.move = Move.id)
-left outer join public.contact_partner as Partner on (MoveLine.partner = Partner.id)
-left outer join public.contact_partner as FromPartner on (MoveLineReport.from_partner = FromPartner.id)
-left outer join public.contact_partner as ToPartner on (MoveLineReport.to_partner = ToPartner.id)
-left outer join public.contact_contact as Contact on (Partner.main_contact = Contact.id)
-left outer join public.invoice_invoice as Invoice on (Move.invoice = Invoice.id)
-left outer join public.contact_company as Company on (MoveLineReport.company = Company.id)
+left outer join public.base_partner as Partner on (MoveLine.partner = Partner.id)
+left outer join public.base_partner as FromPartner on (MoveLineReport.from_partner = FromPartner.id)
+left outer join public.base_partner as ToPartner on (MoveLineReport.to_partner = ToPartner.id)
+left outer join public.account_invoice as Invoice on (Move.invoice = Invoice.id)
+left outer join public.base_company as Company on (MoveLineReport.company = Company.id)
 left outer join public.account_account as MoveLineAccount on (MoveLine.account  = MoveLineAccount.id )
-left outer join public.contract_contract_line as ContractLine on (MoveLine.contract_line = ContractLine.id)
-left outer join public.contract_contract as Contract on (ContractLine.contract = Contract.id)
 left outer join public.account_reported_balance as ReportedBalance on (ReportedBalance.partner = Partner.id AND ReportedBalance.company = Company.id)
 left outer join public.account_reported_balance_line as ReportedBalanceLine on (ReportedBalanceLine.reported_balance = ReportedBalance.id) 
-left outer join public.account_year as YYear on (YYear.id = ReportedBalanceLine.year) 
-left outer join public.account_reconcile as Reconcile on (Reconcile.line_credit = MoveLine.id)
-left outer join public.account_move_line as MoveLineReconciled on (Reconcile.line_debit = MoveLineReconciled.id)
+left outer join public.base_year as YYear on (YYear.id = ReportedBalanceLine.year) 
+left outer join public.account_reconcile as Reconcile on (Reconcile.credit_move_line = MoveLine.id AND Reconcile.status_select = 2)
+left outer join public.account_move_line as MoveLineReconciled on (Reconcile.debit_move_line = MoveLineReconciled.id)
 left outer join public.account_move as MoveReconciled on (MoveLineReconciled.move = MoveReconciled.id)
-left outer join public.invoice_invoice as InvoiceReconciled on (MoveReconciled.invoice = InvoiceReconciled.id)
-left outer join (select count(Reconcile2.id) as countMoveLine, MoveLine2.move as mlid 
-				from public.account_move_line as MoveLine2 
-				left outer join public.account_account as Account2 on (Account2.id = MoveLine2.account) 
-				left outer join public.account_reconcile as Reconcile2 on (Reconcile2.line_credit = MoveLine2.id)
-				where MoveLine2.ignore_in_accounting_ok = false and Account2.reconcile_ok = true 
-				group by MoveLine2.move) as Move2 on (Move2.mlid = Move.id)  
+left outer join public.account_invoice as InvoiceReconciled on (MoveReconciled.invoice = InvoiceReconciled.id)
+left outer join (select count(Reconcile2.id) as countMoveLine, MoveLine2.id as mlid 
+				from public.account_move_line_report as MoveLineReport2 
+				left outer join public.account_move_line as MoveLine2 on (MoveLineReport2.id = ?)
+				left outer join public.account_move as Move2 on (Move2.id = MoveLine2.move)
+				left outer join public.base_partner as Partner2 on (MoveLine2.partner = Partner2.id)
+				left outer join public.base_partner as FromPartner2 on (MoveLineReport2.from_partner = FromPartner2.id)
+				left outer join public.base_partner as ToPartner2 on (MoveLineReport2.to_partner = ToPartner2.id)
+				left outer join public.account_account as MoveLineAccount2 on (MoveLineAccount2.id = MoveLine2.account) 
+				left outer join public.account_reconcile as Reconcile2 on (Reconcile2.credit_move_line = MoveLine2.id)
+				where 
+				(MoveLineReport2.date_from IS NULL OR MoveLine2.date >= MoveLineReport2.date_from) AND 
+				(MoveLineReport2.date_to IS NULL OR MoveLine2.date <= MoveLineReport2.date_to) AND
+				MoveLine2.date <= MoveLineReport2.date and 
+				Move2.company = MoveLineReport2.company AND
+				(MoveLineReport2.partner IS NULL OR MoveLineReport2.partner = MoveLine2.partner) AND
+				(MoveLineReport2.from_partner IS NULL OR (MoveLine2.partner IS NULL OR (FromPartner2.name <= Partner2.name))) AND 
+				(MoveLineReport2.to_partner IS NULL OR (MoveLine2.partner IS NULL OR (ToPartner2.name >= Partner2.name))) AND
+				((MoveLineReport2.account IS NULL and MoveLineAccount2.reconcile_ok = true) OR (MoveLine2.account = MoveLineReport2.account and MoveLineAccount2.reconcile_ok = true )) AND 
+				Move2.ignore_in_accounting_ok = false AND Reconcile2.status_select = 2
+				
+				group by MoveLine2.id) as MoveLine2 on (MoveLine2.mlid = MoveLine.id)  
 where 
 (MoveLineReport.date_from IS NULL OR MoveLine.date >= MoveLineReport.date_from) AND 
 (MoveLineReport.date_to IS NULL OR MoveLine.date <= MoveLineReport.date_to) AND
 MoveLine.date <= MoveLineReport.date and 
-MoveLine.company = MoveLineReport.company AND
+Move.company = MoveLineReport.company AND
 (MoveLineReport.partner IS NULL OR MoveLineReport.partner = MoveLine.partner) AND
 (MoveLineReport.from_partner IS NULL OR (MoveLine.partner IS NULL OR (FromPartner.name <= Partner.name))) AND 
 (MoveLineReport.to_partner IS NULL OR (MoveLine.partner IS NULL OR (ToPartner.name >= Partner.name))) AND
 ((MoveLineReport.account IS NULL and MoveLineAccount.reconcile_ok = true) OR (MoveLine.account = MoveLineReport.account and MoveLineAccount.reconcile_ok = true )) AND 
-MoveLine.ignore_in_accounting_ok = false]]></xml-property>
+Move.ignore_in_accounting_ok = false]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -518,6 +528,56 @@ MoveLine.ignore_in_accounting_ok = false]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="MoveLineReportDS" id="489">
             <property name="nullsOrdering">nulls lowest</property>
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">company_name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">company_name</text-property>
+                    <text-property name="heading">company_name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">period_name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">period_name</text-property>
+                    <text-property name="heading">period_name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">account_code</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">account_code</text-property>
+                    <text-property name="heading">account_code</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">global_by_partner</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">global_by_partner</text-property>
+                    <text-property name="heading">global_by_partner</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">date_to</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">date_to</text-property>
+                    <text-property name="heading">date_to</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">date_from</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">date_from</text-property>
+                    <text-property name="heading">date_from</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">ReportDate</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">ReportDate</text-property>
+                    <text-property name="heading">ReportDate</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">ReportDateEdition</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">ReportDateEdition</text-property>
+                    <text-property name="heading">ReportDateEdition</text-property>
+                </structure>
+            </list-property>
             <list-property name="parameters">
                 <structure>
                     <property name="name">param_1</property>
@@ -582,55 +642,63 @@ MoveLine.ignore_in_accounting_ok = false]]></xml-property>
                     <property name="name">company_name</property>
                     <property name="nativeName">company_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">period_name</property>
                     <property name="nativeName">period_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">account_code</property>
                     <property name="nativeName">account_code</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">global_by_partner</property>
                     <property name="nativeName">global_by_partner</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">date_to</property>
                     <property name="nativeName">date_to</property>
                     <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">date_from</property>
                     <property name="nativeName">date_from</property>
                     <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">ReportDate</property>
                     <property name="nativeName">ReportDate</property>
                     <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">ReportDateEdition</property>
                     <property name="nativeName">ReportDateEdition</property>
                     <property name="dataType">date-time</property>
+                    <property name="nativeDataType">93</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select Company.name as company_name, Period.name as period_name, Account.code as account_code, MoveLineReport.global_by_partner , 
 MoveLineReport.date_to, MoveLineReport.date_from, MoveLineReport.date as "ReportDate", MoveLineReport.publication_date_time as "ReportDateEdition" 
 from   public.account_move_line_report as MoveLineReport 
-inner join public.contact_company as Company on (MoveLineReport.id = ? and MoveLineReport.company = Company.id)
-left outer join public.account_period as Period on (MoveLineReport.period = Period.id)
+inner join public.base_company as Company on (MoveLineReport.id = ? and MoveLineReport.company = Company.id)
+left outer join public.base_period as Period on (MoveLineReport.period = Period.id)
 left outer join public.account_account as Account on (MoveLineReport.account = Account.id)
 ]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -650,9 +718,6 @@ left outer join public.account_account as Account on (MoveLineReport.account = A
           <design:scale>0</design:scale>
           <design:nullability>Unknown</design:nullability>
         </design:attributes>
-        <design:inputAttributes>
-          <design:elementAttributes/>
-        </design:inputAttributes>
       </design:ParameterDefinition>
     </parameter>
   </DataSetParameters>
@@ -1114,18 +1179,6 @@ left outer join public.account_account as Account on (MoveLineReport.account = A
                         <property name="dataSet">MoveLineDS</property>
                         <list-property name="boundDataColumns">
                             <structure>
-                                <property name="name">contact_name</property>
-                                <text-property name="displayName">contact_name</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["contact_name"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">contact_first_name</property>
-                                <text-property name="displayName">contact_first_name</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["contact_first_name"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
                                 <property name="name">ref</property>
                                 <text-property name="displayName">ref</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["ref"]</expression>
@@ -1148,7 +1201,7 @@ left outer join public.account_account as Account on (MoveLineReport.account = A
                                 <property name="name">SumCreditOnGroup</property>
                                 <property name="dataType">float</property>
                                 <simple-property-list name="aggregateOn">
-                                    <value>ContactPartnerGroup</value>
+                                    <value>PartnerGroup</value>
                                 </simple-property-list>
                                 <property name="aggregateFunction">SUM</property>
                                 <list-property name="arguments">
@@ -1163,7 +1216,7 @@ left outer join public.account_account as Account on (MoveLineReport.account = A
                                 <property name="name">SumDebitOnGroup</property>
                                 <property name="dataType">float</property>
                                 <simple-property-list name="aggregateOn">
-                                    <value>ContactPartnerGroup</value>
+                                    <value>PartnerGroup</value>
                                 </simple-property-list>
                                 <property name="aggregateFunction">SUM</property>
                                 <list-property name="arguments">
@@ -1175,7 +1228,7 @@ left outer join public.account_account as Account on (MoveLineReport.account = A
                                 <property name="allowExport">true</property>
                             </structure>
                             <structure>
-                                <property name="name">SumOnCreadit</property>
+                                <property name="name">SumOnCredit</property>
                                 <property name="dataType">float</property>
                                 <property name="aggregateFunction">SUM</property>
                                 <list-property name="arguments">
@@ -1212,12 +1265,6 @@ row["SumDebitOnGroup"] - row["SumCreditOnGroup"] - row["SumExcessPaymentOnGroup"
                                 <property name="name">MoveLineName</property>
                                 <text-property name="displayName">MoveLineName</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["MoveLineName"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">contract_id</property>
-                                <text-property name="displayName">contract_id</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["contract_id"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -1276,15 +1323,15 @@ row["SumCreditOnGroup"] + row["SumExcessPaymentOnGroup"]- row["SumDebitOnGroup"]
                             <structure>
                                 <property name="name">DiffCredit</property>
                                 <text-property name="displayName">DiffCredit</text-property>
-                                <expression name="expression" type="javascript">row["SumOnCreadit"]</expression>
+                                <expression name="expression" type="javascript">row["SumOnCredit"]</expression>
                                 <property name="dataType">float</property>
                                 <property name="allowExport">true</property>
                             </structure>
                             <structure>
                                 <property name="name">SumDiffDebit</property>
                                 <text-property name="displayName">SumDifDbt</text-property>
-                                <expression name="expression" type="javascript">if(row["SumOnDebit"] - row["SumOnCreadit"] > 0.00){
-	row["SumOnDebit"] - row["SumOnCreadit"]
+                                <expression name="expression" type="javascript">if(row["SumOnDebit"] - row["SumOnCredit"] > 0.00){
+	row["SumOnDebit"] - row["SumOnCredit"]
 }</expression>
                                 <property name="dataType">float</property>
                                 <property name="allowExport">true</property>
@@ -1292,8 +1339,8 @@ row["SumCreditOnGroup"] + row["SumExcessPaymentOnGroup"]- row["SumDebitOnGroup"]
                             <structure>
                                 <property name="name">SumDifCrd</property>
                                 <text-property name="displayName">SumDifCrd</text-property>
-                                <expression name="expression" type="javascript">if(row["SumOnCreadit"] - row["SumOnDebit"] > 0.00){
-	row["SumOnCreadit"] - row["SumOnDebit"]
+                                <expression name="expression" type="javascript">if(row["SumOnCredit"] - row["SumOnDebit"] > 0.00){
+	row["SumOnCredit"] - row["SumOnDebit"]
 }</expression>
                                 <property name="dataType">float</property>
                                 <property name="allowExport">true</property>
@@ -1312,7 +1359,7 @@ dataSetRow["ReportedBalanceAmount"]
                                 <text-property name="displayName">FirstRepBal</text-property>
                                 <property name="dataType">float</property>
                                 <simple-property-list name="aggregateOn">
-                                    <value>ContactPartnerGroup</value>
+                                    <value>PartnerGroup</value>
                                 </simple-property-list>
                                 <property name="aggregateFunction">FIRST</property>
                                 <list-property name="arguments">
@@ -1366,7 +1413,7 @@ row["ReportedBalanceAmount"]
                                 <text-property name="displayName">FirstRepBalOnDebit</text-property>
                                 <property name="dataType">float</property>
                                 <simple-property-list name="aggregateOn">
-                                    <value>ContactPartnerGroup</value>
+                                    <value>PartnerGroup</value>
                                 </simple-property-list>
                                 <property name="aggregateFunction">FIRST</property>
                                 <list-property name="arguments">
@@ -1382,7 +1429,7 @@ row["ReportedBalanceAmount"]
                                 <text-property name="displayName">FirstRepBalOnCredit</text-property>
                                 <property name="dataType">float</property>
                                 <simple-property-list name="aggregateOn">
-                                    <value>ContactPartnerGroup</value>
+                                    <value>PartnerGroup</value>
                                 </simple-property-list>
                                 <property name="aggregateFunction">FIRST</property>
                                 <list-property name="arguments">
@@ -1418,12 +1465,6 @@ row["ReportedBalanceAmount"]
                                     </structure>
                                 </list-property>
                                 <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">contact_id</property>
-                                <text-property name="displayName">contact_id</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["contact_id"]</expression>
-                                <property name="dataType">decimal</property>
                             </structure>
                             <structure>
                                 <property name="name">invoice_reconciled_name</property>
@@ -1484,7 +1525,7 @@ row["ReportedBalanceAmount"]
                                 <text-property name="displayName">SumExcessPaymentOnGroup</text-property>
                                 <property name="dataType">float</property>
                                 <simple-property-list name="aggregateOn">
-                                    <value>ContactPartnerGroup</value>
+                                    <value>PartnerGroup</value>
                                 </simple-property-list>
                                 <property name="aggregateFunction">SUM</property>
                                 <list-property name="arguments">
@@ -1495,12 +1536,29 @@ row["ReportedBalanceAmount"]
                                 </list-property>
                                 <property name="allowExport">true</property>
                             </structure>
-                        </list-property>
-                        <list-property name="filter">
                             <structure>
-                                <property name="operator">is-not-null</property>
-                                <expression name="expr" type="javascript">row["contact_id"]</expression>
-                                <property name="updateAggregation">true</property>
+                                <property name="name">countmoveline</property>
+                                <text-property name="displayName">countmoveline</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["countmoveline"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">partner_name</property>
+                                <text-property name="displayName">partner_name</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["partner_name"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">partner_first_name</property>
+                                <text-property name="displayName">partner_first_name</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["partner_first_name"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">partner_seq</property>
+                                <text-property name="displayName">partner_seq</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["partner_seq"]</expression>
+                                <property name="dataType">string</property>
                             </structure>
                         </list-property>
                         <column id="1168">
@@ -1798,12 +1856,12 @@ row["ReportedBalanceAmount"]
                             </row>
                         </header>
                         <group id="1187">
-                            <property name="groupName">ContactPartnerGroup</property>
-                            <expression name="keyExpr" type="javascript">row["contact_id"]+row["contract_id"]</expression>
+                            <property name="groupName">PartnerGroup</property>
+                            <expression name="keyExpr" type="javascript">row["partner_name"]+row["partner_first_name"]+row["partner_seq"]</expression>
                             <property name="hideDetail">false</property>
                             <list-property name="sort">
                                 <structure>
-                                    <expression name="key" type="javascript">row["contact_name"]+row["contact_first_name"]</expression>
+                                    <expression name="key" type="javascript">row["partner_name"]+row["partner_first_name"]+row["partner_seq"]</expression>
                                     <property name="direction">asc</property>
                                     <property name="strength">-1</property>
                                 </structure>
@@ -1825,7 +1883,7 @@ row["ReportedBalanceAmount"]
                                             <property name="marginRight">2pt</property>
                                             <property name="textAlign">left</property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>row["contact_name"]</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>row["partner_name"]</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="1537">
@@ -1840,7 +1898,7 @@ row["ReportedBalanceAmount"]
                                             <property name="marginRight">2pt</property>
                                             <property name="textAlign">left</property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>row["contact_first_name"]</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>row["partner_first_name"]</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="1191">
@@ -2220,18 +2278,6 @@ row["ReportedBalanceAmount"]
                         <property name="dataSet">MoveLineDS</property>
                         <list-property name="boundDataColumns">
                             <structure>
-                                <property name="name">contact_name</property>
-                                <text-property name="displayName">contact_name</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["contact_name"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">contact_first_name</property>
-                                <text-property name="displayName">contact_first_name</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["contact_first_name"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
                                 <property name="name">ref</property>
                                 <text-property name="displayName">ref</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["ref"]</expression>
@@ -2253,7 +2299,7 @@ row["ReportedBalanceAmount"]
                                 <property name="name">SumCreditOnGroup</property>
                                 <property name="dataType">float</property>
                                 <simple-property-list name="aggregateOn">
-                                    <value>ContactPartnerGroup</value>
+                                    <value>PartnerGroup</value>
                                 </simple-property-list>
                                 <property name="aggregateFunction">SUM</property>
                                 <list-property name="arguments">
@@ -2268,7 +2314,7 @@ row["ReportedBalanceAmount"]
                                 <property name="name">SumDebitOnGroup</property>
                                 <property name="dataType">float</property>
                                 <simple-property-list name="aggregateOn">
-                                    <value>ContactPartnerGroup</value>
+                                    <value>PartnerGroup</value>
                                 </simple-property-list>
                                 <property name="aggregateFunction">SUM</property>
                                 <list-property name="arguments">
@@ -2280,7 +2326,7 @@ row["ReportedBalanceAmount"]
                                 <property name="allowExport">true</property>
                             </structure>
                             <structure>
-                                <property name="name">SumOnCreadit</property>
+                                <property name="name">SumOnCredit</property>
                                 <property name="dataType">float</property>
                                 <property name="aggregateFunction">SUM</property>
                                 <list-property name="arguments">
@@ -2344,32 +2390,6 @@ row["SumDiffDebit"]
                                 <property name="allowExport">true</property>
                             </structure>
                             <structure>
-                                <property name="name">MoveLineName</property>
-                                <text-property name="displayName">MoveLineName</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["MoveLineName"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">contract_id</property>
-                                <text-property name="displayName">contract_id</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["contract_id"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">SumDebit</property>
-                                <text-property name="displayName">SumDebit</text-property>
-                                <expression name="expression" type="javascript">row["DebitOnInvoice"]</expression>
-                                <property name="dataType">float</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">SumCredit</property>
-                                <text-property name="displayName">SumCredit</text-property>
-                                <expression name="expression" type="javascript">row["CreditOnInvoice"]</expression>
-                                <property name="dataType">float</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
                                 <property name="name">DifDebit</property>
                                 <text-property name="displayName">DifDebit</text-property>
                                 <expression name="expression" type="javascript">if(row["DebitOnInvoice"] - row["CreditOnInvoice"] > 0.00){
@@ -2379,9 +2399,9 @@ row["SumDiffDebit"]
                                 <property name="allowExport">true</property>
                             </structure>
                             <structure>
-                                <property name="name">DiffCredit</property>
+                                <property name="name">DifCredit</property>
                                 <text-property name="displayName">DifCredit</text-property>
-                                <expression name="expression" type="javascript">if(dataSetRow["invoice_name"]&amp;&amp;row["CreditOnInvoice"] - row["DebitOnInvoice"] > 0.00){
+                                <expression name="expression" type="javascript">if(row["CreditOnInvoice"] - row["DebitOnInvoice"] > 0.00){
 row["CreditOnInvoice"] - row["DebitOnInvoice"]
 }</expression>
                                 <property name="dataType">float</property>
@@ -2399,8 +2419,20 @@ row["CreditOnInvoice"] - row["DebitOnInvoice"]
                             <structure>
                                 <property name="name">SumDifCrd</property>
                                 <text-property name="displayName">SumDifCrd</text-property>
-                                <expression name="expression" type="javascript">if(row["SumDiffCredit"] > 0.00||row["SumExcessPaymentOnGroup"]>0.00||row["FirstDiffExcessPayment"]>0.00){
-	row["SumDiffCredit"]+row["SumExcessPaymentOnGroup"]+row["FirstDiffExcessPayment"]
+                                <expression name="expression" type="javascript">total = null;
+if(row["SumDiffCredit"] > 0.00){
+if(total == null)  { total = 0.00; }
+	total += row["SumDiffCredit"];
+}
+if(row["SumExcessPaymentOnGroup"] > 0.00){
+if(total == null)  { total = 0.00; }
+	total += row["SumExcessPaymentOnGroup"];
+}
+//if(row["FirstDiffExcessPayment"] > 0.00){
+//	total += row["FirstDiffExcessPayment"];
+//}
+if(total > 0.00)  {
+total
 }</expression>
                                 <property name="dataType">float</property>
                                 <property name="allowExport">true</property>
@@ -2420,33 +2452,19 @@ row["CreditOnInvoice"] - row["DebitOnInvoice"]
                                 <property name="allowExport">true</property>
                             </structure>
                             <structure>
-                                <property name="name">SumOnDbt</property>
-                                <text-property name="displayName">SumOnDbt</text-property>
-                                <expression name="expression" type="javascript">row["SumOnDebit"]</expression>
-                                <property name="dataType">float</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">SumOnCrd</property>
-                                <text-property name="displayName">SumOnCrd</text-property>
-                                <expression name="expression" type="javascript">row["SumOnCreadit"]</expression>
-                                <property name="dataType">float</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">SumDiffDbt</property>
-                                <text-property name="displayName">SumDifDbt</text-property>
-                                <expression name="expression" type="javascript">if(row["SumOnDebit"] - row["SumOnCreadit"] > 0.00){
-	row["SumOnDebit"] - row["SumOnCreadit"]
+                                <property name="name">DebitBalance</property>
+                                <text-property name="displayName">DebitBalance</text-property>
+                                <expression name="expression" type="javascript">if(row["SumOnDebit"] - row["SumOnCredit"] > 0.00){
+	row["SumOnDebit"] - row["SumOnCredit"]
 }</expression>
                                 <property name="dataType">float</property>
                                 <property name="allowExport">true</property>
                             </structure>
                             <structure>
-                                <property name="name">SumDifCrdd</property>
-                                <text-property name="displayName">SumDifCrd</text-property>
-                                <expression name="expression" type="javascript">if(row["SumOnCreadit"] - row["SumOnDebit"] > 0.00){
-row["SumOnCreadit"] - row["SumOnDebit"]
+                                <property name="name">CreditBalance</property>
+                                <text-property name="displayName">CreditBalance</text-property>
+                                <expression name="expression" type="javascript">if(row["SumOnCredit"] - row["SumOnDebit"] > 0.00){
+row["SumOnCredit"] - row["SumOnDebit"]
 }</expression>
                                 <property name="dataType">float</property>
                                 <property name="allowExport">true</property>
@@ -2456,13 +2474,15 @@ row["SumOnCreadit"] - row["SumOnDebit"]
                                 <text-property name="displayName">SumDiffDebit</text-property>
                                 <property name="dataType">float</property>
                                 <simple-property-list name="aggregateOn">
-                                    <value>ContactPartnerGroup</value>
+                                    <value>PartnerGroup</value>
                                 </simple-property-list>
                                 <property name="aggregateFunction">SUM</property>
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["DifDebit"]</expression>
+                                        <expression name="value" type="javascript">if(row["DebitOnInvoice"]-row["CreditOnInvoice"]>0.00)  {
+row["DebitOnInvoice"]-row["CreditOnInvoice"]
+}</expression>
                                     </structure>
                                 </list-property>
                                 <property name="allowExport">true</property>
@@ -2472,13 +2492,15 @@ row["SumOnCreadit"] - row["SumOnDebit"]
                                 <text-property name="displayName">SumDiffCredit</text-property>
                                 <property name="dataType">float</property>
                                 <simple-property-list name="aggregateOn">
-                                    <value>ContactPartnerGroup</value>
+                                    <value>PartnerGroup</value>
                                 </simple-property-list>
                                 <property name="aggregateFunction">SUM</property>
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["DiffCredit"]</expression>
+                                        <expression name="value" type="javascript">if(row["CreditOnInvoice"]-row["DebitOnInvoice"] > 0.00)  {
+row["CreditOnInvoice"]-row["DebitOnInvoice"]
+}</expression>
                                     </structure>
                                 </list-property>
                                 <property name="allowExport">true</property>
@@ -2515,7 +2537,7 @@ row["ReportedBalanceAmount"]
                                 <text-property name="displayName">SumRepBalOnCredit</text-property>
                                 <property name="dataType">float</property>
                                 <simple-property-list name="aggregateOn">
-                                    <value>ContactPartnerGroup</value>
+                                    <value>PartnerGroup</value>
                                 </simple-property-list>
                                 <property name="aggregateFunction">FIRST</property>
                                 <list-property name="arguments">
@@ -2531,7 +2553,7 @@ row["ReportedBalanceAmount"]
                                 <text-property name="displayName">SumRepBalOnDebit</text-property>
                                 <property name="dataType">float</property>
                                 <simple-property-list name="aggregateOn">
-                                    <value>ContactPartnerGroup</value>
+                                    <value>PartnerGroup</value>
                                 </simple-property-list>
                                 <property name="aggregateFunction">FIRST</property>
                                 <list-property name="arguments">
@@ -2567,7 +2589,7 @@ row["ReportedBalanceAmount"]
                                 <text-property name="displayName">FirstRepBal</text-property>
                                 <property name="dataType">float</property>
                                 <simple-property-list name="aggregateOn">
-                                    <value>ContactPartnerGroup</value>
+                                    <value>PartnerGroup</value>
                                 </simple-property-list>
                                 <property name="aggregateFunction">FIRST</property>
                                 <list-property name="arguments">
@@ -2583,7 +2605,7 @@ row["ReportedBalanceAmount"]
                                 <text-property name="displayName">FirstRepBalCredit</text-property>
                                 <property name="dataType">float</property>
                                 <simple-property-list name="aggregateOn">
-                                    <value>ContactPartnerGroup</value>
+                                    <value>PartnerGroup</value>
                                 </simple-property-list>
                                 <property name="aggregateFunction">FIRST</property>
                                 <list-property name="arguments">
@@ -2599,7 +2621,7 @@ row["ReportedBalanceAmount"]
                                 <text-property name="displayName">FirstRepBalDebit</text-property>
                                 <property name="dataType">float</property>
                                 <simple-property-list name="aggregateOn">
-                                    <value>ContactPartnerGroup</value>
+                                    <value>PartnerGroup</value>
                                 </simple-property-list>
                                 <property name="aggregateFunction">FIRST</property>
                                 <list-property name="arguments">
@@ -2649,12 +2671,6 @@ dataSetRow["invoice_reconciled_name"]
                                 <property name="allowExport">true</property>
                             </structure>
                             <structure>
-                                <property name="name">contact_id</property>
-                                <text-property name="displayName">contact_id</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["contact_id"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
                                 <property name="name">invoice_reconciled_name</property>
                                 <text-property name="displayName">invoice_reconciled_name</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["invoice_reconciled_name"]</expression>
@@ -2670,12 +2686,6 @@ dataSetRow["invoice_reconciled_name"]
                                 <property name="name">reported_balance_date</property>
                                 <text-property name="displayName">reported_balance_date</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["reported_balance_date"]</expression>
-                                <property name="dataType">date</property>
-                            </structure>
-                            <structure>
-                                <property name="name">date_from</property>
-                                <text-property name="displayName">date_from</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["date_from"]</expression>
                                 <property name="dataType">date</property>
                             </structure>
                             <structure>
@@ -2709,27 +2719,11 @@ dataSetRow["invoice_reconciled_name"]
                                 <property name="dataType">float</property>
                             </structure>
                             <structure>
-                                <property name="name">SumExcessPayment</property>
-                                <text-property name="displayName">SumExcessPayment</text-property>
-                                <expression name="expression" type="javascript">row["CreditOnInvoice"]</expression>
-                                <property name="dataType">float</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">DiffExcessPayment</property>
-                                <text-property name="displayName">DiffExcessPayment</text-property>
-                                <expression name="expression" type="javascript">if(dataSetRow["invoice_name"]==null&amp;&amp;row["SumExcessPayment"] - row["DebitOnInvoice"] > 0.00){
-row["SumExcessPayment"] - row["DebitOnInvoice"]
-}</expression>
-                                <property name="dataType">float</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
                                 <property name="name">SumExcessPaymentOnGroup</property>
                                 <text-property name="displayName">SumExcessPaymentOnGroup</text-property>
                                 <property name="dataType">float</property>
                                 <simple-property-list name="aggregateOn">
-                                    <value>ContactPartnerGroup</value>
+                                    <value>PartnerGroup</value>
                                 </simple-property-list>
                                 <property name="aggregateFunction">SUM</property>
                                 <list-property name="arguments">
@@ -2741,18 +2735,11 @@ row["SumExcessPayment"] - row["DebitOnInvoice"]
                                 <property name="allowExport">true</property>
                             </structure>
                             <structure>
-                                <property name="name">SumCredirt</property>
-                                <text-property name="displayName">SumCredit</text-property>
-                                <expression name="expression" type="javascript">row["SumCredit"]</expression>
-                                <property name="dataType">float</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
                                 <property name="name">FirstDiffExcessPayment</property>
                                 <text-property name="displayName">FirstDiffExcessPayment</text-property>
                                 <property name="dataType">float</property>
                                 <simple-property-list name="aggregateOn">
-                                    <value>ContactPartnerGroup</value>
+                                    <value>PartnerGroup</value>
                                 </simple-property-list>
                                 <property name="aggregateFunction">FIRST</property>
                                 <list-property name="arguments">
@@ -2762,6 +2749,42 @@ row["SumExcessPayment"] - row["DebitOnInvoice"]
                                     </structure>
                                 </list-property>
                                 <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">MoveLineName</property>
+                                <text-property name="displayName">MoveLineName</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["MoveLineName"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">date_from</property>
+                                <text-property name="displayName">date_from</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["date_from"]</expression>
+                                <property name="dataType">date</property>
+                            </structure>
+                            <structure>
+                                <property name="name">countmoveline</property>
+                                <text-property name="displayName">countmoveline</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["countmoveline"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">partner_name</property>
+                                <text-property name="displayName">partner_name</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["partner_name"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">partner_first_name</property>
+                                <text-property name="displayName">partner_first_name</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["partner_first_name"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">partner_seq</property>
+                                <text-property name="displayName">partner_seq</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["partner_seq"]</expression>
+                                <property name="dataType">string</property>
                             </structure>
                         </list-property>
                         <column id="1446">
@@ -3106,13 +3129,13 @@ row["SumExcessPayment"] - row["DebitOnInvoice"]
                             </row>
                         </header>
                         <group id="1397">
-                            <property name="groupName">ContactPartnerGroup</property>
-                            <expression name="keyExpr" type="javascript">row["contact_id"]+row["contract_id"]</expression>
+                            <property name="groupName">PartnerGroup</property>
+                            <expression name="keyExpr" type="javascript">row["partner_name"]+row["partner_first_name"]+row["partner_seq"]</expression>
                             <property name="repeatHeader">false</property>
                             <property name="hideDetail">false</property>
                             <list-property name="sort">
                                 <structure>
-                                    <expression name="key" type="javascript">row["contact_name"]+row["contact_first_name"]</expression>
+                                    <expression name="key" type="javascript">row["partner_name"]+row["partner_first_name"]+row["partner_seq"]</expression>
                                     <property name="direction">asc</property>
                                     <property name="strength">-1</property>
                                 </structure>
@@ -3134,7 +3157,7 @@ row["SumExcessPayment"] - row["DebitOnInvoice"]
                                             <property name="marginRight">2pt</property>
                                             <property name="textAlign">left</property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>row["contact_name"]</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>row["partner_name"]</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="2693">
@@ -3149,7 +3172,7 @@ row["SumExcessPayment"] - row["DebitOnInvoice"]
                                             <property name="marginRight">2pt</property>
                                             <property name="textAlign">left</property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>row["contact_first_name"]</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>row["partner_first_name"]</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="1548">
@@ -3164,6 +3187,23 @@ row["SumExcessPayment"] - row["DebitOnInvoice"]
                                         <property name="borderTopColor">#9C9C9C</property>
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
+                                        <text id="2484">
+                                            <property name="fontSize">9pt</property>
+                                            <property name="textAlign">center</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">if(row["InvoiceName"] == null &amp;&amp; row["DifCredit"] > 0.00)  {
+true
+}
+else  {
+false
+}</expression>
+                                                </structure>
+                                            </list-property>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>row["partner_seq"]</VALUE-OF>]]></text-property>
+                                        </text>
                                     </cell>
                                     <cell id="2669">
                                         <property name="borderLeftColor">#000000</property>
@@ -3279,24 +3319,6 @@ row["SumExcessPayment"] - row["DebitOnInvoice"]
                                         <property name="borderRightColor">#000000</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <text id="3298">
-                                            <property name="fontSize">9pt</property>
-                                            <property name="color">#FF0000</property>
-                                            <property name="textAlign">center</property>
-                                            <list-property name="visibility">
-                                                <structure>
-                                                    <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">if(row["SumExcessPaymentOnGroup"]==null)  {
-true
-}
-else  {
-false
-}</expression>
-                                                </structure>
-                                            </list-property>
-                                            <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>row["contract_id"]</VALUE-OF>]]></text-property>
-                                        </text>
                                     </cell>
                                     <cell id="3291">
                                         <property name="borderLeftColor">#000000</property>
@@ -3507,41 +3529,6 @@ false
                                         <property name="borderRightColor">#000000</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <text id="2484">
-                                            <property name="fontSize">9pt</property>
-                                            <property name="textAlign">center</property>
-                                            <list-property name="visibility">
-                                                <structure>
-                                                    <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">if(row["InvoiceName"])  {
-false
-}
-else  {
-true
-}</expression>
-                                                </structure>
-                                            </list-property>
-                                            <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>row["contract_id"]</VALUE-OF>]]></text-property>
-                                        </text>
-                                        <text id="2697">
-                                            <property name="fontSize">9pt</property>
-                                            <property name="color">#FF0000</property>
-                                            <property name="textAlign">center</property>
-                                            <list-property name="visibility">
-                                                <structure>
-                                                    <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">if(row["InvoiceName"])  {
-true
-}
-else  {
-false
-}</expression>
-                                                </structure>
-                                            </list-property>
-                                            <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>row["contract_id"]</VALUE-OF>]]></text-property>
-                                        </text>
                                     </cell>
                                     <cell id="1474">
                                         <property name="borderLeftColor">#000000</property>
@@ -3583,15 +3570,15 @@ false
                                             <list-property name="visibility">
                                                 <structure>
                                                     <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">if(row["InvoiceName"])  {
-false
+                                                    <expression name="valueExpr" type="javascript">if(row["InvoiceName"] == null &amp;&amp; row["DifCredit"] > 0.00)  {
+true
 }
 else  {
-true
+false
 }</expression>
                                                 </structure>
                                             </list-property>
-                                            <property name="resultSetColumn">SumDebit</property>
+                                            <property name="resultSetColumn">DebitOnInvoice</property>
                                         </data>
                                         <data id="2695">
                                             <property name="fontSize">9pt</property>
@@ -3605,15 +3592,15 @@ true
                                             <list-property name="visibility">
                                                 <structure>
                                                     <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">if(row["InvoiceName"])  {
-true
+                                                    <expression name="valueExpr" type="javascript">if(row["InvoiceName"] == null &amp;&amp; row["DifCredit"] > 0.00)  {
+false
 }
 else  {
-false
+true
 }</expression>
                                                 </structure>
                                             </list-property>
-                                            <property name="resultSetColumn">SumDebit</property>
+                                            <property name="resultSetColumn">DebitOnInvoice</property>
                                         </data>
                                     </cell>
                                     <cell id="1477">
@@ -3634,15 +3621,15 @@ false
                                             <list-property name="visibility">
                                                 <structure>
                                                     <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">if(row["InvoiceName"])  {
-false
+                                                    <expression name="valueExpr" type="javascript">if(row["InvoiceName"] == null &amp;&amp; row["DifCredit"] > 0.00)  {
+true
 }
 else  {
-true
+false
 }</expression>
                                                 </structure>
                                             </list-property>
-                                            <property name="resultSetColumn">SumCredit</property>
+                                            <property name="resultSetColumn">CreditOnInvoice</property>
                                         </data>
                                         <data id="2696">
                                             <property name="fontSize">9pt</property>
@@ -3656,15 +3643,15 @@ true
                                             <list-property name="visibility">
                                                 <structure>
                                                     <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">if(row["InvoiceName"])  {
-true
+                                                    <expression name="valueExpr" type="javascript">if(row["InvoiceName"] == null &amp;&amp; row["DifCredit"] > 0.00)  {
+false
 }
 else  {
-false
+true
 }</expression>
                                                 </structure>
                                             </list-property>
-                                            <property name="resultSetColumn">SumExcessPayment</property>
+                                            <property name="resultSetColumn">CreditOnInvoice</property>
                                         </data>
                                     </cell>
                                     <cell id="1478">
@@ -3703,19 +3690,19 @@ false
                                             <list-property name="visibility">
                                                 <structure>
                                                     <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">if(row["InvoiceName"])  {
-false
+                                                    <expression name="valueExpr" type="javascript">if(row["InvoiceName"] == null &amp;&amp; row["DifCredit"] > 0.00)  {
+true
 }
 else  {
-true
+false
 }</expression>
                                                 </structure>
                                             </list-property>
-                                            <property name="resultSetColumn">DiffCredit</property>
+                                            <property name="resultSetColumn">DifCredit</property>
                                         </data>
-                                        <data id="2698">
+                                        <data id="3303">
                                             <property name="fontSize">9pt</property>
-                                            <property name="color">red</property>
+                                            <property name="color">#FF0000</property>
                                             <property name="numberAlign">right</property>
                                             <structure name="numberFormat">
                                                 <property name="category">Custom</property>
@@ -3725,15 +3712,15 @@ true
                                             <list-property name="visibility">
                                                 <structure>
                                                     <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">if(row["InvoiceName"])  {
-true
+                                                    <expression name="valueExpr" type="javascript">if(row["InvoiceName"] == null &amp;&amp; row["DifCredit"] > 0.00)  {
+false
 }
 else  {
-false
+true
 }</expression>
                                                 </structure>
                                             </list-property>
-                                            <property name="resultSetColumn">DiffExcessPayment</property>
+                                            <property name="resultSetColumn">DifCredit</property>
                                         </data>
                                     </cell>
                                 </row>
@@ -3876,7 +3863,7 @@ false
                                             <property name="pattern">###,##0.00</property>
                                         </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">SumOnDbt</property>
+                                        <property name="resultSetColumn">SumOnDebit</property>
                                     </data>
                                 </cell>
                                 <cell id="1433">
@@ -3901,7 +3888,7 @@ false
                                             <property name="pattern">###,##0.00</property>
                                         </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">SumOnCrd</property>
+                                        <property name="resultSetColumn">SumOnCredit</property>
                                     </data>
                                 </cell>
                             </row>
@@ -3952,7 +3939,7 @@ false
                                             <property name="pattern">###,##0.00</property>
                                         </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">SumDiffDbt</property>
+                                        <property name="resultSetColumn">DebitBalance</property>
                                     </data>
                                 </cell>
                                 <cell id="1444">
@@ -3977,7 +3964,7 @@ false
                                             <property name="pattern">###,##0.00</property>
                                         </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">SumDifCrdd</property>
+                                        <property name="resultSetColumn">CreditBalance</property>
                                     </data>
                                 </cell>
                             </row>
