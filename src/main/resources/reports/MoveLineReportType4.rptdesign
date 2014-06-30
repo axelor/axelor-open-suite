@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.2.0.v20120611 Build &lt;4.2.0.v20120612-1721></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.2.2.v201301221637 Build &lt;4.2.2.v20130206-1509></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -30,7 +30,7 @@
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">398217</value>
+                <value type="constant">1</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -92,38 +92,83 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/evolutis_fr</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-erp</property>
             <property name="odaUser">axelor</property>
-            
         </oda-data-source>
     </data-sources>
     <data-sets>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="MoveLineDS" id="210">
             <property name="nullsOrdering">nulls lowest</property>
+            <list-property name="computedColumns">
+                <structure>
+                    <property name="name">Invoice</property>
+                    <expression name="expression">if(row["invoice_reconciled_name"]!=null)  {
+row["invoice_reconciled_name"]
+}
+else  {
+row["invoice_name"]
+}</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">credit_to_use</property>
+                    <expression name="expression">if(row["amountreconciled"] > 0.00  )  {
+  row["amountreconciled"]
+}
+else  if(row["invoice_name"]==null &amp;&amp; row["countmoveline"] > 1 ){
+row["credit"]/row["countmoveline"]
+}
+else  {
+row["credit"]
+}</expression>
+                    <property name="dataType">float</property>
+                </structure>
+                <structure>
+                    <property name="name">excess_payment</property>
+                    <expression name="expression">if(row["credit"] > 0 &amp;&amp; row["amount_remaining"] > 0 &amp;&amp;row["amount_remaining"]!=row["credit"] &amp;&amp; row["countmoveline"] > 0)  {
+row["amount_remaining"]/row["countmoveline"]
+}
+else  {
+0
+}</expression>
+                    <property name="dataType">float</property>
+                </structure>
+                <structure>
+                    <property name="name">date</property>
+                    <expression name="expression">if(row["invoice_reconciled_name"] != null)  {
+row["invoice_reconciled_date"]
+
+}
+else  {
+row["MoveLineDate"]
+}</expression>
+                    <property name="dataType">date</property>
+                </structure>
+            </list-property>
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">MoveLineID</property>
-                    <property name="analysis">measure</property>
+                    <property name="analysis">dimension</property>
                     <text-property name="displayName">MoveLineID</text-property>
                     <text-property name="heading">MoveLineID</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">contact_name</property>
+                    <property name="columnName">partner_name</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">contact_name</text-property>
-                    <text-property name="heading">contact_name</text-property>
+                    <text-property name="displayName">partner_name</text-property>
+                    <text-property name="heading">partner_name</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">contact_first_name</property>
+                    <property name="columnName">partner_first_name</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">contact_first_name</text-property>
-                    <text-property name="heading">contact_first_name</text-property>
+                    <text-property name="displayName">partner_first_name</text-property>
+                    <text-property name="heading">partner_first_name</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">contact_id</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">contact_id</text-property>
-                    <text-property name="heading">contact_id</text-property>
+                    <property name="columnName">partner_seq</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">partner_seq</text-property>
+                    <text-property name="heading">partner_seq</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">ref</property>
@@ -132,10 +177,16 @@
                     <text-property name="heading">ref</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">amount_remaining</property>
+                    <property name="columnName">credit</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">amount_remaining</text-property>
-                    <text-property name="heading">amount_remaining</text-property>
+                    <text-property name="displayName">credit</text-property>
+                    <text-property name="heading">credit</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">debit</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">debit</text-property>
+                    <text-property name="heading">debit</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">invoice_name</property>
@@ -144,22 +195,58 @@
                     <text-property name="heading">invoice_name</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">date</property>
+                    <property name="columnName">invoice_reconciled_name</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">date</text-property>
-                    <text-property name="heading">date</text-property>
+                    <text-property name="displayName">invoice_reconciled_name</text-property>
+                    <text-property name="heading">invoice_reconciled_name</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">contract_id</property>
+                    <property name="columnName">invoice_reconciled_date</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">contract_id</text-property>
-                    <text-property name="heading">contract_id</text-property>
+                    <text-property name="displayName">invoice_reconciled_date</text-property>
+                    <text-property name="heading">invoice_reconciled_date</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">ReportedBalanceAmount</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">ReportedBalanceAmount</text-property>
+                    <text-property name="heading">ReportedBalanceAmount</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">reported_balance_date</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">reported_balance_date</text-property>
+                    <text-property name="heading">reported_balance_date</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">report_date</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">report_date</text-property>
                     <text-property name="heading">report_date</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">amountreconciled</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">amountreconciled</text-property>
+                    <text-property name="heading">amountreconciled</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">amount_remaining</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">amount_remaining</text-property>
+                    <text-property name="heading">amount_remaining</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">countmoveline</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">countmoveline</text-property>
+                    <text-property name="heading">countmoveline</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">MoveLineDate</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">MoveLineDate</text-property>
+                    <text-property name="heading">MoveLineDate</text-property>
                 </structure>
             </list-property>
             <list-property name="parameters">
@@ -174,28 +261,39 @@
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
+                <structure>
+                    <property name="name">param_2</property>
+                    <property name="paramName">MoveLineReportId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">2</property>
+                    <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
             </list-property>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
                     <structure>
                         <property name="position">1</property>
                         <property name="name">MoveLineID</property>
-                        <property name="dataType">decimal</property>
+                        <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">2</property>
-                        <property name="name">contact_name</property>
+                        <property name="name">partner_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">3</property>
-                        <property name="name">contact_first_name</property>
+                        <property name="name">partner_first_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">4</property>
-                        <property name="name">contact_id</property>
-                        <property name="dataType">decimal</property>
+                        <property name="name">partner_seq</property>
+                        <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">5</property>
@@ -204,27 +302,82 @@
                     </structure>
                     <structure>
                         <property name="position">6</property>
-                        <property name="name">amount_remaining</property>
+                        <property name="name">credit</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">7</property>
+                        <property name="name">debit</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
                         <property name="name">invoice_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">8</property>
-                        <property name="name">date</property>
-                        <property name="dataType">date</property>
-                    </structure>
-                    <structure>
                         <property name="position">9</property>
-                        <property name="name">contract_id</property>
+                        <property name="name">invoice_reconciled_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">10</property>
+                        <property name="name">invoice_reconciled_date</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">11</property>
+                        <property name="name">ReportedBalanceAmount</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">12</property>
+                        <property name="name">reported_balance_date</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">13</property>
                         <property name="name">report_date</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">14</property>
+                        <property name="name">amountreconciled</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">15</property>
+                        <property name="name">amount_remaining</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">16</property>
+                        <property name="name">countmoveline</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">17</property>
+                        <property name="name">MoveLineDate</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">18</property>
+                        <property name="name">Invoice</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">19</property>
+                        <property name="name">credit_to_use</property>
+                        <property name="dataType">float</property>
+                    </structure>
+                    <structure>
+                        <property name="position">20</property>
+                        <property name="name">excess_payment</property>
+                        <property name="dataType">float</property>
+                    </structure>
+                    <structure>
+                        <property name="position">21</property>
+                        <property name="name">date</property>
                         <property name="dataType">date</property>
                     </structure>
                 </list-property>
@@ -236,29 +389,29 @@
                     <property name="position">1</property>
                     <property name="name">MoveLineID</property>
                     <property name="nativeName">MoveLineID</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
-                    <property name="name">contact_name</property>
-                    <property name="nativeName">contact_name</property>
+                    <property name="name">partner_name</property>
+                    <property name="nativeName">partner_name</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
-                    <property name="name">contact_first_name</property>
-                    <property name="nativeName">contact_first_name</property>
+                    <property name="name">partner_first_name</property>
+                    <property name="nativeName">partner_first_name</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
-                    <property name="name">contact_id</property>
-                    <property name="nativeName">contact_id</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
+                    <property name="name">partner_seq</property>
+                    <property name="nativeName">partner_seq</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
@@ -269,66 +422,142 @@
                 </structure>
                 <structure>
                     <property name="position">6</property>
-                    <property name="name">amount_remaining</property>
-                    <property name="nativeName">amount_remaining</property>
+                    <property name="name">credit</property>
+                    <property name="nativeName">credit</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
+                    <property name="name">debit</property>
+                    <property name="nativeName">debit</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">8</property>
                     <property name="name">invoice_name</property>
                     <property name="nativeName">invoice_name</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">8</property>
-                    <property name="name">date</property>
-                    <property name="nativeName">date</property>
-                    <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
-                </structure>
-                <structure>
                     <property name="position">9</property>
-                    <property name="name">contract_id</property>
-                    <property name="nativeName">contract_id</property>
+                    <property name="name">invoice_reconciled_name</property>
+                    <property name="nativeName">invoice_reconciled_name</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
+                    <property name="name">invoice_reconciled_date</property>
+                    <property name="nativeName">invoice_reconciled_date</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">11</property>
+                    <property name="name">ReportedBalanceAmount</property>
+                    <property name="nativeName">ReportedBalanceAmount</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">12</property>
+                    <property name="name">reported_balance_date</property>
+                    <property name="nativeName">reported_balance_date</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">13</property>
                     <property name="name">report_date</property>
                     <property name="nativeName">report_date</property>
                     <property name="dataType">date</property>
                     <property name="nativeDataType">91</property>
                 </structure>
+                <structure>
+                    <property name="position">14</property>
+                    <property name="name">amountreconciled</property>
+                    <property name="nativeName">amountreconciled</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">15</property>
+                    <property name="name">amount_remaining</property>
+                    <property name="nativeName">amount_remaining</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">16</property>
+                    <property name="name">countmoveline</property>
+                    <property name="nativeName">countmoveline</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                </structure>
+                <structure>
+                    <property name="position">17</property>
+                    <property name="name">MoveLineDate</property>
+                    <property name="nativeName">MoveLineDate</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select MoveLine.id as "MoveLineID", Contact.name as contact_name, Contact.first_name as contact_first_name, Contact.id as contact_id, MoveLineReport.ref, MoveLine.amount_remaining,
-Invoice.invoice_name, MoveLine.date, Contract.contract_id, MoveLineReport.date as report_date
+            <xml-property name="queryText"><![CDATA[Select MoveLine.name as "MoveLineID", Partner.name as partner_name, Partner.first_name as partner_first_name, Partner.partner_seq, 
+MoveLineReport.ref, MoveLine.credit, MoveLine.debit,
+Invoice.invoice_id as invoice_name, InvoiceReconciled.invoice_id as "invoice_reconciled_name", InvoiceReconciled.invoice_date as "invoice_reconciled_date", 
+ReportedBalanceLine.amount as "ReportedBalanceAmount", YYear.reported_balance_date, 
+MoveLineReport.date_to as "report_date", Reconcile.amount as amountReconciled, MoveLine.amount_remaining, MoveLine2.countMoveLine,    
+MoveLine.date as "MoveLineDate"  
 from public.account_move_line_report as MoveLineReport 
-left outer join public.account_move_line as MoveLine on (MoveLineReport.id = ? AND MoveLine.ignore_in_accounting_ok = false AND MoveLine.amount_remaining != 0)
+left outer join public.account_move_line as MoveLine on (MoveLineReport.id = ?)
 left outer join public.account_move as Move on (MoveLine.move = Move.id)
-left outer join public.account_account as Account on (MoveLineReport.account  = Account.id )
-left outer join public.contact_partner as Partner on (MoveLine.partner = Partner.id)
-left outer join public.contact_partner as FromPartner on (MoveLineReport.from_partner = FromPartner.id)
-left outer join public.contact_partner as ToPartner on (MoveLineReport.to_partner = ToPartner.id)
-left outer join public.contact_contact as Contact on (Partner.main_contact = Contact.id)
-left outer join public.invoice_invoice as Invoice on (Move.invoice = Invoice.id)
-left outer join public.contact_company as Company on (MoveLineReport.company = Company.id)
+left outer join public.base_partner as Partner on (MoveLine.partner = Partner.id)
+left outer join public.base_partner as FromPartner on (MoveLineReport.from_partner = FromPartner.id)
+left outer join public.base_partner as ToPartner on (MoveLineReport.to_partner = ToPartner.id)
+left outer join public.account_invoice as Invoice on (Move.invoice = Invoice.id)
+left outer join public.base_company as Company on (MoveLineReport.company = Company.id)
 left outer join public.account_account as MoveLineAccount on (MoveLine.account  = MoveLineAccount.id )
-left outer join public.contract_contract_line as ContractLine on (MoveLine.contract_line = ContractLine.id)
-left outer join public.contract_contract as Contract on (ContractLine.contract = Contract.id)
+left outer join public.account_reported_balance as ReportedBalance on (ReportedBalance.partner = Partner.id AND ReportedBalance.company = Company.id)
+left outer join public.account_reported_balance_line as ReportedBalanceLine on (ReportedBalanceLine.reported_balance = ReportedBalance.id) 
+left outer join public.base_year as YYear on (YYear.id = ReportedBalanceLine.year) 
+left outer join public.account_reconcile as Reconcile on (Reconcile.credit_move_line = MoveLine.id AND Reconcile.status_select = 2)
+left outer join public.account_move_line as MoveLineReconciled on (Reconcile.debit_move_line = MoveLineReconciled.id)
+left outer join public.account_move as MoveReconciled on (MoveLineReconciled.move = MoveReconciled.id)
+left outer join public.account_invoice as InvoiceReconciled on (MoveReconciled.invoice = InvoiceReconciled.id)
+left outer join (select count(Reconcile2.id) as countMoveLine, MoveLine2.id as mlid 
+				from public.account_move_line_report as MoveLineReport2 
+				left outer join public.account_move_line as MoveLine2 on (MoveLineReport2.id = ?)
+				left outer join public.account_move as Move2 on (Move2.id = MoveLine2.move)
+				left outer join public.base_partner as Partner2 on (MoveLine2.partner = Partner2.id)
+				left outer join public.base_partner as FromPartner2 on (MoveLineReport2.from_partner = FromPartner2.id)
+				left outer join public.base_partner as ToPartner2 on (MoveLineReport2.to_partner = ToPartner2.id)
+				left outer join public.account_account as MoveLineAccount2 on (MoveLineAccount2.id = MoveLine2.account) 
+				left outer join public.account_reconcile as Reconcile2 on (Reconcile2.credit_move_line = MoveLine2.id)
+				where 
+				(MoveLineReport2.date_from IS NULL OR MoveLine2.date >= MoveLineReport2.date_from) AND 
+				(MoveLineReport2.date_to IS NULL OR MoveLine2.date <= MoveLineReport2.date_to) AND
+				MoveLine2.date <= MoveLineReport2.date and 
+				Move2.company = MoveLineReport2.company AND
+				(MoveLineReport2.partner IS NULL OR MoveLineReport2.partner = MoveLine2.partner) AND
+				(MoveLineReport2.from_partner IS NULL OR (MoveLine2.partner IS NULL OR (FromPartner2.name <= Partner2.name))) AND 
+				(MoveLineReport2.to_partner IS NULL OR (MoveLine2.partner IS NULL OR (ToPartner2.name >= Partner2.name))) AND
+				((MoveLineReport2.account IS NULL and MoveLineAccount2.reconcile_ok = true) OR (MoveLine2.account = MoveLineReport2.account and MoveLineAccount2.reconcile_ok = true )) AND 
+				Move2.ignore_in_accounting_ok = false AND Reconcile2.status_select = 2
+				
+				group by MoveLine2.id) as MoveLine2 on (MoveLine2.mlid = MoveLine.id)  
 where 
 (MoveLineReport.date_from IS NULL OR MoveLine.date >= MoveLineReport.date_from) AND 
 (MoveLineReport.date_to IS NULL OR MoveLine.date <= MoveLineReport.date_to) AND
-MoveLine.date <= MoveLineReport.date AND 
-MoveLine.company = MoveLineReport.company AND
+MoveLine.date <= MoveLineReport.date and 
+Move.company = MoveLineReport.company AND
 (MoveLineReport.partner IS NULL OR MoveLineReport.partner = MoveLine.partner) AND
 (MoveLineReport.from_partner IS NULL OR (MoveLine.partner IS NULL OR (FromPartner.name <= Partner.name))) AND 
-(MoveLineReport.to_partner IS NULL OR (MoveLine.partner IS NULL OR (ToPartner.name >= Partner.name))) AND 
-(MoveLineReport.account IS NULL OR (MoveLineReport.account = MoveLine.account)) AND
-(MoveLine.account IS NULL OR (MoveLineAccount.reconcile_ok = true )) AND 
-MoveLine.debit != 0]]></xml-property>
+(MoveLineReport.to_partner IS NULL OR (MoveLine.partner IS NULL OR (ToPartner.name >= Partner.name))) AND
+((MoveLineReport.account IS NULL and MoveLineAccount.reconcile_ok = true) OR (MoveLine.account = MoveLineReport.account and MoveLineAccount.reconcile_ok = true )) AND 
+Move.ignore_in_accounting_ok = false]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -340,6 +569,21 @@ MoveLine.debit != 0]]></xml-property>
           <design:identifier>
             <design:name></design:name>
             <design:position>1</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>2</design:position>
           </design:identifier>
           <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
           <design:precision>0</design:precision>
@@ -522,10 +766,9 @@ MoveLine.debit != 0]]></xml-property>
             <xml-property name="queryText"><![CDATA[select Company.name as comapny_name, Period.name as period_name, MoveLineReport.detailed , 
 MoveLineReport.date_to, MoveLineReport.date_from, MoveLineReport.date, Account.code as account_code, MoveLineReport.publication_date_time as "ReportDateEdition" 
 from public.account_move_line_report as MoveLineReport
-inner join public.contact_company as Company on (MoveLineReport.id = ? and MoveLineReport.company = Company.id)
+inner join public.base_company as Company on (MoveLineReport.id = ? and MoveLineReport.company = Company.id)
 left outer join public.account_account as Account  on (MoveLineReport.account = Account.id)
-left outer join public.account_period as Period on (MoveLineReport.period = Period.id)
-left outer join public.contact_agency as Agency on (MoveLineReport.agency = Agency.id)
+left outer join public.base_period as Period on (MoveLineReport.period = Period.id)
 ]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -1019,18 +1262,6 @@ left outer join public.contact_agency as Agency on (MoveLineReport.agency = Agen
                         <property name="dataSet">MoveLineDS</property>
                         <list-property name="boundDataColumns">
                             <structure>
-                                <property name="name">contact_name</property>
-                                <text-property name="displayName">contact_name</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["contact_name"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">contact_first_name</property>
-                                <text-property name="displayName">contact_first_name</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["contact_first_name"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
                                 <property name="name">ref</property>
                                 <text-property name="displayName">ref</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["ref"]</expression>
@@ -1046,14 +1277,14 @@ left outer join public.contact_agency as Agency on (MoveLineReport.agency = Agen
                                 <property name="name">&lt;60days</property>
                                 <property name="dataType">float</property>
                                 <simple-property-list name="aggregateOn">
-                                    <value>ContactPartnerGroup</value>
+                                    <value>PartnerGroup</value>
                                 </simple-property-list>
                                 <property name="aggregateFunction">SUM</property>
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
                                         <expression name="value" type="javascript">if(BirtDateTime.diffDay(dataSetRow["date"],dataSetRow["report_date"]) &lt; 60){
-dataSetRow["amount_remaining"]
+row["amount_remaining"]
 }</expression>
                                     </structure>
                                 </list-property>
@@ -1063,14 +1294,14 @@ dataSetRow["amount_remaining"]
                                 <property name="name">60&lt;days&lt;90</property>
                                 <property name="dataType">float</property>
                                 <simple-property-list name="aggregateOn">
-                                    <value>ContactPartnerGroup</value>
+                                    <value>PartnerGroup</value>
                                 </simple-property-list>
                                 <property name="aggregateFunction">SUM</property>
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
                                         <expression name="value" type="javascript">if(BirtDateTime.diffDay(dataSetRow["date"], dataSetRow["report_date"]) > 60 &amp;&amp; BirtDateTime.diffDay(dataSetRow["date"],dataSetRow["report_date"]) &lt;= 90){
-dataSetRow["amount_remaining"]
+row["amount_remaining"]
 }</expression>
                                     </structure>
                                 </list-property>
@@ -1086,14 +1317,14 @@ dataSetRow["amount_remaining"]
                                 <property name="name">90&lt;days&lt;120</property>
                                 <property name="dataType">float</property>
                                 <simple-property-list name="aggregateOn">
-                                    <value>ContactPartnerGroup</value>
+                                    <value>PartnerGroup</value>
                                 </simple-property-list>
                                 <property name="aggregateFunction">SUM</property>
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
                                         <expression name="value" type="javascript">if(BirtDateTime.diffDay(dataSetRow["date"], dataSetRow["report_date"]) > 90 &amp;&amp; BirtDateTime.diffDay(dataSetRow["date"], dataSetRow["report_date"]) &lt;= 120){
-dataSetRow["amount_remaining"]
+row["amount_remaining"]
 }</expression>
                                     </structure>
                                 </list-property>
@@ -1103,14 +1334,14 @@ dataSetRow["amount_remaining"]
                                 <property name="name">120&lt;days&lt;150</property>
                                 <property name="dataType">float</property>
                                 <simple-property-list name="aggregateOn">
-                                    <value>ContactPartnerGroup</value>
+                                    <value>PartnerGroup</value>
                                 </simple-property-list>
                                 <property name="aggregateFunction">SUM</property>
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
                                         <expression name="value" type="javascript">if(BirtDateTime.diffDay(dataSetRow["date"],dataSetRow["report_date"]) > 120 &amp;&amp; BirtDateTime.diffDay(dataSetRow["date"],dataSetRow["report_date"]) &lt;= 150 ){
-dataSetRow["amount_remaining"]
+row["amount_remaining"]
 }</expression>
                                     </structure>
                                 </list-property>
@@ -1120,14 +1351,14 @@ dataSetRow["amount_remaining"]
                                 <property name="name">150&lt;days180</property>
                                 <property name="dataType">float</property>
                                 <simple-property-list name="aggregateOn">
-                                    <value>ContactPartnerGroup</value>
+                                    <value>PartnerGroup</value>
                                 </simple-property-list>
                                 <property name="aggregateFunction">SUM</property>
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
                                         <expression name="value" type="javascript">if(BirtDateTime.diffDay(dataSetRow["date"], dataSetRow["report_date"]) > 150 &amp;&amp; BirtDateTime.diffDay(dataSetRow["date"],dataSetRow["report_date"]) &lt;= 180 ){
-dataSetRow["amount_remaining"]
+row["amount_remaining"]
 }</expression>
                                     </structure>
                                 </list-property>
@@ -1137,14 +1368,14 @@ dataSetRow["amount_remaining"]
                                 <property name="name">180&lt;days</property>
                                 <property name="dataType">float</property>
                                 <simple-property-list name="aggregateOn">
-                                    <value>ContactPartnerGroup</value>
+                                    <value>PartnerGroup</value>
                                 </simple-property-list>
                                 <property name="aggregateFunction">SUM</property>
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
                                         <expression name="value" type="javascript">if(BirtDateTime.diffDay(dataSetRow["date"],dataSetRow["report_date"]) > 180){
-dataSetRow["amount_remaining"]
+row["amount_remaining"]
 }</expression>
                                     </structure>
                                 </list-property>
@@ -1158,7 +1389,7 @@ dataSetRow["amount_remaining"]
                                     <structure>
                                         <property name="name">Expression</property>
                                         <expression name="value" type="javascript">if(BirtDateTime.diffDay(dataSetRow["date"], dataSetRow["report_date"]) &lt;= 60){
-dataSetRow["amount_remaining"]
+row["amount_remaining"]
 }</expression>
                                     </structure>
                                 </list-property>
@@ -1172,7 +1403,7 @@ dataSetRow["amount_remaining"]
                                     <structure>
                                         <property name="name">Expression</property>
                                         <expression name="value" type="javascript">if(BirtDateTime.diffDay(dataSetRow["date"], dataSetRow["report_date"]) > 90 &amp;&amp; BirtDateTime.diffDay(dataSetRow["date"],dataSetRow["report_date"]) &lt;= 120 ){
-dataSetRow["amount_remaining"]
+row["amount_remaining"]
 }</expression>
                                     </structure>
                                 </list-property>
@@ -1186,7 +1417,7 @@ dataSetRow["amount_remaining"]
                                     <structure>
                                         <property name="name">Expression</property>
                                         <expression name="value" type="javascript">if(BirtDateTime.diffDay(dataSetRow["date"],dataSetRow["report_date"]) > 60 &amp;&amp; BirtDateTime.diffDay(dataSetRow["date"], dataSetRow["report_date"]) &lt;= 90){
-dataSetRow["amount_remaining"]
+row["amount_remaining"]
 }</expression>
                                     </structure>
                                 </list-property>
@@ -1200,7 +1431,7 @@ dataSetRow["amount_remaining"]
                                     <structure>
                                         <property name="name">Expression</property>
                                         <expression name="value" type="javascript">if(BirtDateTime.diffDay(dataSetRow["date"],dataSetRow["report_date"]) > 150 &amp;&amp; BirtDateTime.diffDay(dataSetRow["date"], dataSetRow["report_date"]) &lt;= 180 ){
-dataSetRow["amount_remaining"]
+row["amount_remaining"]
 }</expression>
                                     </structure>
                                 </list-property>
@@ -1214,7 +1445,7 @@ dataSetRow["amount_remaining"]
                                     <structure>
                                         <property name="name">Expression</property>
                                         <expression name="value" type="javascript">if(BirtDateTime.diffDay(dataSetRow["date"], dataSetRow["report_date"]) > 180){
-dataSetRow["amount_remaining"]
+row["amount_remaining"]
 }</expression>
                                     </structure>
                                 </list-property>
@@ -1228,28 +1459,18 @@ dataSetRow["amount_remaining"]
                                     <structure>
                                         <property name="name">Expression</property>
                                         <expression name="value" type="javascript">if(BirtDateTime.diffDay(dataSetRow["date"], dataSetRow["report_date"]) > 120 &amp;&amp; BirtDateTime.diffDay(dataSetRow["date"], dataSetRow["report_date"]) &lt;= 150 ){
-dataSetRow["amount_remaining"]
+row["amount_remaining"]
 }</expression>
                                     </structure>
                                 </list-property>
                                 <property name="allowExport">true</property>
                             </structure>
                             <structure>
-                                <property name="name">contract_id</property>
-                                <text-property name="displayName">contract_id</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["contract_id"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">MoveLineID</property>
-                                <text-property name="displayName">MoveLineID</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["MoveLineID"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
                                 <property name="name">&lt;60 days</property>
                                 <text-property name="displayName">&lt;60 days</text-property>
-                                <expression name="expression" type="javascript">row["&lt;60days"]</expression>
+                                <expression name="expression" type="javascript">if(row["&lt;60days"]>= 0.01 || row["&lt;60days"] &lt;= -0.01)  {
+row["&lt;60days"]
+}</expression>
                                 <property name="dataType">float</property>
                                 <property name="allowExport">true</property>
                             </structure>
@@ -1263,35 +1484,45 @@ dataSetRow["amount_remaining"]
                             <structure>
                                 <property name="name">60&lt;days&lt;90days</property>
                                 <text-property name="displayName">60&lt;days&lt;90</text-property>
-                                <expression name="expression" type="javascript">row["60&lt;days&lt;90"]</expression>
+                                <expression name="expression" type="javascript">if(row["60&lt;days&lt;90"]>= 0.01 || row["60&lt;days&lt;90"] &lt;= -0.01)  {
+row["60&lt;days&lt;90"]
+}</expression>
                                 <property name="dataType">float</property>
                                 <property name="allowExport">true</property>
                             </structure>
                             <structure>
                                 <property name="name">90&lt;days&lt;120days</property>
                                 <text-property name="displayName">90&lt;days&lt;120</text-property>
-                                <expression name="expression" type="javascript">row["90&lt;days&lt;120"]</expression>
+                                <expression name="expression" type="javascript">if(row["90&lt;days&lt;120"]>= 0.01 || row["90&lt;days&lt;120"] &lt;= -0.01)  {
+row["90&lt;days&lt;120"]
+}</expression>
                                 <property name="dataType">float</property>
                                 <property name="allowExport">true</property>
                             </structure>
                             <structure>
                                 <property name="name">120&lt;days&lt;150days</property>
                                 <text-property name="displayName">120&lt;days&lt;150</text-property>
-                                <expression name="expression" type="javascript">row["120&lt;days&lt;150"]</expression>
+                                <expression name="expression" type="javascript">if(row["120&lt;days&lt;150"]>= 0.01 || row["120&lt;days&lt;150"] &lt;= -0.01)  {
+row["120&lt;days&lt;150"]
+}</expression>
                                 <property name="dataType">float</property>
                                 <property name="allowExport">true</property>
                             </structure>
                             <structure>
                                 <property name="name">150&lt;days180 days</property>
                                 <text-property name="displayName">150&lt;days180</text-property>
-                                <expression name="expression" type="javascript">row["150&lt;days180"]</expression>
+                                <expression name="expression" type="javascript">if(row["150&lt;days180"]>= 0.01 || row["150&lt;days180"] &lt;= -0.01)  {
+row["150&lt;days180"]
+}</expression>
                                 <property name="dataType">float</property>
                                 <property name="allowExport">true</property>
                             </structure>
                             <structure>
                                 <property name="name">180 days &lt;days</property>
                                 <text-property name="displayName">180&lt;days</text-property>
-                                <expression name="expression" type="javascript">row["180&lt;days"]</expression>
+                                <expression name="expression" type="javascript">if(row["180&lt;days"]>= 0.01 || row["180&lt;days"] &lt;= -0.01)  {
+row["180&lt;days"]
+}</expression>
                                 <property name="dataType">float</property>
                                 <property name="allowExport">true</property>
                             </structure>
@@ -1354,7 +1585,7 @@ dataSetRow["amount_remaining"]
                             <structure>
                                 <property name="name">amount_remaining</property>
                                 <text-property name="displayName">amount_remaining</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["amount_remaining"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["debit"]-dataSetRow["credit_to_use"]-dataSetRow["excess_payment"]</expression>
                                 <property name="dataType">float</property>
                                 <property name="allowExport">true</property>
                             </structure>
@@ -1376,7 +1607,7 @@ dataSetRow["amount_remaining"]
                                 <text-property name="displayName">SumOnGroupAmountRemaining</text-property>
                                 <property name="dataType">float</property>
                                 <simple-property-list name="aggregateOn">
-                                    <value>ContactPartnerGroup</value>
+                                    <value>PartnerGroup</value>
                                 </simple-property-list>
                                 <property name="aggregateFunction">SUM</property>
                                 <list-property name="arguments">
@@ -1388,9 +1619,75 @@ dataSetRow["amount_remaining"]
                                 <property name="allowExport">true</property>
                             </structure>
                             <structure>
-                                <property name="name">contact_id</property>
-                                <text-property name="displayName">contact_id</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["contact_id"]</expression>
+                                <property name="name">report_date</property>
+                                <text-property name="displayName">report_date</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["report_date"]</expression>
+                                <property name="dataType">date</property>
+                            </structure>
+                            <structure>
+                                <property name="name">MoveLineID_1</property>
+                                <text-property name="displayName">MoveLineID</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["MoveLineID"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">partner_name</property>
+                                <text-property name="displayName">partner_name</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["partner_name"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">partner_first_name</property>
+                                <text-property name="displayName">partner_first_name</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["partner_first_name"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">partner_seq</property>
+                                <text-property name="displayName">partner_seq</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["partner_seq"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">credit</property>
+                                <text-property name="displayName">credit</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["credit"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">debit</property>
+                                <text-property name="displayName">debit</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["debit"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">invoice_reconciled_name</property>
+                                <text-property name="displayName">invoice_reconciled_name</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["invoice_reconciled_name"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">invoice_reconciled_date</property>
+                                <text-property name="displayName">invoice_reconciled_date</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["invoice_reconciled_date"]</expression>
+                                <property name="dataType">date</property>
+                            </structure>
+                            <structure>
+                                <property name="name">ReportedBalanceAmount</property>
+                                <text-property name="displayName">ReportedBalanceAmount</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["ReportedBalanceAmount"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">reported_balance_date</property>
+                                <text-property name="displayName">reported_balance_date</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["reported_balance_date"]</expression>
+                                <property name="dataType">date</property>
+                            </structure>
+                            <structure>
+                                <property name="name">amountreconciled</property>
+                                <text-property name="displayName">amountreconciled</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["amountreconciled"]</expression>
                                 <property name="dataType">decimal</property>
                             </structure>
                             <structure>
@@ -1400,10 +1697,34 @@ dataSetRow["amount_remaining"]
                                 <property name="dataType">decimal</property>
                             </structure>
                             <structure>
-                                <property name="name">report_date</property>
-                                <text-property name="displayName">report_date</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["report_date"]</expression>
+                                <property name="name">countmoveline</property>
+                                <text-property name="displayName">countmoveline</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["countmoveline"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">MoveLineDate</property>
+                                <text-property name="displayName">MoveLineDate</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["MoveLineDate"]</expression>
                                 <property name="dataType">date</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Invoice</property>
+                                <text-property name="displayName">Invoice</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["Invoice"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">credit_to_use</property>
+                                <text-property name="displayName">credit_to_use</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["credit_to_use"]</expression>
+                                <property name="dataType">float</property>
+                            </structure>
+                            <structure>
+                                <property name="name">excess_payment</property>
+                                <text-property name="displayName">excess_payment</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["excess_payment"]</expression>
+                                <property name="dataType">float</property>
                             </structure>
                         </list-property>
                         <column id="1168">
@@ -1669,13 +1990,20 @@ dataSetRow["amount_remaining"]
                             </row>
                         </header>
                         <group id="1187">
-                            <property name="groupName">ContactPartnerGroup</property>
-                            <expression name="keyExpr" type="javascript">row["contact_id"]+row["contract_id"]</expression>
+                            <property name="groupName">PartnerGroup</property>
+                            <expression name="keyExpr" type="javascript">row["partner_name"]+row["partner_first_name"]+row["partner_seq"]</expression>
                             <property name="hideDetail">false</property>
+                            <list-property name="sort">
+                                <structure>
+                                    <expression name="key" type="javascript">row["partner_name"]+row["partner_first_name"]+row["partner_seq"]</expression>
+                                    <property name="direction">asc</property>
+                                    <property name="strength">-1</property>
+                                </structure>
+                            </list-property>
                             <list-property name="filter">
                                 <structure>
                                     <property name="operator">is-not-null</property>
-                                    <expression name="expr" type="javascript">row["contact_id"]+row["contract_id"]</expression>
+                                    <expression name="expr" type="javascript">row["partner_name"]+row["partner_first_name"]+row["partner_seq"]</expression>
                                     <property name="updateAggregation">true</property>
                                 </structure>
                             </list-property>
@@ -1698,7 +2026,7 @@ dataSetRow["amount_remaining"]
                                             <property name="fontSize">8pt</property>
                                             <property name="textAlign">center</property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>row["contact_name"]</VALUE-OF> <VALUE-OF format="^">" "</VALUE-OF> <VALUE-OF>row["contact_first_name"]</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>row["partner_name"]</VALUE-OF> <VALUE-OF format="^">" "</VALUE-OF> <VALUE-OF>row["partner_first_name"]</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="1538">
@@ -1715,7 +2043,7 @@ dataSetRow["amount_remaining"]
                                             <property name="fontSize">8pt</property>
                                             <property name="textAlign">center</property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>row["contract_id"]</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>row["partner_seq"]</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="1191">
@@ -2227,18 +2555,6 @@ dataSetRow["amount_remaining"]
                         <property name="dataSet">MoveLineDS</property>
                         <list-property name="boundDataColumns">
                             <structure>
-                                <property name="name">contact_name</property>
-                                <text-property name="displayName">contact_name</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["contact_name"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">contact_first_name</property>
-                                <text-property name="displayName">contact_first_name</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["contact_first_name"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
                                 <property name="name">ref</property>
                                 <text-property name="displayName">ref</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["ref"]</expression>
@@ -2247,21 +2563,22 @@ dataSetRow["amount_remaining"]
                             <structure>
                                 <property name="name">invoice_name</property>
                                 <text-property name="displayName">invoice_name</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["invoice_name"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["Invoice"]</expression>
                                 <property name="dataType">string</property>
+                                <property name="allowExport">true</property>
                             </structure>
                             <structure>
                                 <property name="name">&lt;60days</property>
                                 <property name="dataType">float</property>
                                 <simple-property-list name="aggregateOn">
-                                    <value>GroupOnInvoiceDetai</value>
+                                    <value>InvoiceGroup</value>
                                 </simple-property-list>
                                 <property name="aggregateFunction">SUM</property>
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
                                         <expression name="value" type="javascript">if(BirtDateTime.diffDay(dataSetRow["date"], dataSetRow["report_date"]) &lt; 60){
-dataSetRow["amount_remaining"]
+row["amount_remaining"]
 }</expression>
                                     </structure>
                                 </list-property>
@@ -2271,14 +2588,14 @@ dataSetRow["amount_remaining"]
                                 <property name="name">60&lt;days&lt;90</property>
                                 <property name="dataType">float</property>
                                 <simple-property-list name="aggregateOn">
-                                    <value>GroupOnInvoiceDetai</value>
+                                    <value>InvoiceGroup</value>
                                 </simple-property-list>
                                 <property name="aggregateFunction">SUM</property>
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
                                         <expression name="value" type="javascript">if(BirtDateTime.diffDay(dataSetRow["date"], dataSetRow["report_date"]) > 60 &amp;&amp; BirtDateTime.diffDay(dataSetRow["date"], dataSetRow["report_date"]) &lt;= 90){
-dataSetRow["amount_remaining"]
+row["amount_remaining"]
 }</expression>
                                     </structure>
                                 </list-property>
@@ -2294,14 +2611,14 @@ dataSetRow["amount_remaining"]
                                 <property name="name">90&lt;days&lt;120</property>
                                 <property name="dataType">float</property>
                                 <simple-property-list name="aggregateOn">
-                                    <value>GroupOnInvoiceDetai</value>
+                                    <value>InvoiceGroup</value>
                                 </simple-property-list>
                                 <property name="aggregateFunction">SUM</property>
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
                                         <expression name="value" type="javascript">if(BirtDateTime.diffDay(dataSetRow["date"],dataSetRow["report_date"]) > 90 &amp;&amp; BirtDateTime.diffDay(dataSetRow["date"], dataSetRow["report_date"]) &lt;= 120){
-dataSetRow["amount_remaining"]
+row["amount_remaining"]
 }</expression>
                                     </structure>
                                 </list-property>
@@ -2311,14 +2628,14 @@ dataSetRow["amount_remaining"]
                                 <property name="name">120&lt;days&lt;150</property>
                                 <property name="dataType">float</property>
                                 <simple-property-list name="aggregateOn">
-                                    <value>GroupOnInvoiceDetai</value>
+                                    <value>InvoiceGroup</value>
                                 </simple-property-list>
                                 <property name="aggregateFunction">SUM</property>
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
                                         <expression name="value" type="javascript">if(BirtDateTime.diffDay(dataSetRow["date"],dataSetRow["report_date"]) > 120 &amp;&amp; BirtDateTime.diffDay(dataSetRow["date"], dataSetRow["report_date"]) &lt;= 150 ){
-dataSetRow["amount_remaining"]
+row["amount_remaining"]
 }</expression>
                                     </structure>
                                 </list-property>
@@ -2328,14 +2645,14 @@ dataSetRow["amount_remaining"]
                                 <property name="name">150&lt;days180</property>
                                 <property name="dataType">float</property>
                                 <simple-property-list name="aggregateOn">
-                                    <value>GroupOnInvoiceDetai</value>
+                                    <value>InvoiceGroup</value>
                                 </simple-property-list>
                                 <property name="aggregateFunction">SUM</property>
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
                                         <expression name="value" type="javascript">if(BirtDateTime.diffDay(dataSetRow["date"], dataSetRow["report_date"]) > 150 &amp;&amp; BirtDateTime.diffDay(dataSetRow["date"],dataSetRow["report_date"]) &lt;= 180 ){
-dataSetRow["amount_remaining"]
+row["amount_remaining"]
 }</expression>
                                     </structure>
                                 </list-property>
@@ -2345,14 +2662,14 @@ dataSetRow["amount_remaining"]
                                 <property name="name">180&lt;days</property>
                                 <property name="dataType">float</property>
                                 <simple-property-list name="aggregateOn">
-                                    <value>GroupOnInvoiceDetai</value>
+                                    <value>InvoiceGroup</value>
                                 </simple-property-list>
                                 <property name="aggregateFunction">SUM</property>
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
                                         <expression name="value" type="javascript">if(BirtDateTime.diffDay(dataSetRow["date"], dataSetRow["report_date"]) > 180){
-dataSetRow["amount_remaining"]
+row["amount_remaining"]
 }</expression>
                                     </structure>
                                 </list-property>
@@ -2366,7 +2683,7 @@ dataSetRow["amount_remaining"]
                                     <structure>
                                         <property name="name">Expression</property>
                                         <expression name="value" type="javascript">if(BirtDateTime.diffDay(dataSetRow["date"],dataSetRow["report_date"]) &lt;= 60){
-dataSetRow["amount_remaining"] 
+row["amount_remaining"] 
 }</expression>
                                     </structure>
                                 </list-property>
@@ -2380,7 +2697,7 @@ dataSetRow["amount_remaining"]
                                     <structure>
                                         <property name="name">Expression</property>
                                         <expression name="value" type="javascript">if(BirtDateTime.diffDay(dataSetRow["date"], dataSetRow["report_date"]) > 90 &amp;&amp; BirtDateTime.diffDay(dataSetRow["date"], dataSetRow["report_date"]) &lt;= 120 ){
-dataSetRow["amount_remaining"]
+row["amount_remaining"]
 }</expression>
                                     </structure>
                                 </list-property>
@@ -2394,7 +2711,7 @@ dataSetRow["amount_remaining"]
                                     <structure>
                                         <property name="name">Expression</property>
                                         <expression name="value" type="javascript">if(BirtDateTime.diffDay(dataSetRow["date"], dataSetRow["report_date"]) > 60 &amp;&amp; BirtDateTime.diffDay(dataSetRow["date"],dataSetRow["report_date"]) &lt;= 90){
-dataSetRow["amount_remaining"]
+row["amount_remaining"]
 }</expression>
                                     </structure>
                                 </list-property>
@@ -2408,7 +2725,7 @@ dataSetRow["amount_remaining"]
                                     <structure>
                                         <property name="name">Expression</property>
                                         <expression name="value" type="javascript">if(BirtDateTime.diffDay(dataSetRow["date"], dataSetRow["report_date"]) > 150 &amp;&amp; BirtDateTime.diffDay(dataSetRow["date"], dataSetRow["report_date"]) &lt;= 180 ){
-dataSetRow["amount_remaining"]
+row["amount_remaining"]
 }</expression>
                                     </structure>
                                 </list-property>
@@ -2422,7 +2739,7 @@ dataSetRow["amount_remaining"]
                                     <structure>
                                         <property name="name">Expression</property>
                                         <expression name="value" type="javascript">if(BirtDateTime.diffDay(dataSetRow["date"], dataSetRow["report_date"]) > 180){
-dataSetRow["amount_remaining"]
+row["amount_remaining"]
 }</expression>
                                     </structure>
                                 </list-property>
@@ -2436,23 +2753,11 @@ dataSetRow["amount_remaining"]
                                     <structure>
                                         <property name="name">Expression</property>
                                         <expression name="value" type="javascript">if(BirtDateTime.diffDay(dataSetRow["date"],dataSetRow["report_date"]) > 120 &amp;&amp; BirtDateTime.diffDay(dataSetRow["date"], dataSetRow["report_date"]) &lt;= 150 ){
-dataSetRow["amount_remaining"]
+row["amount_remaining"]
 }</expression>
                                     </structure>
                                 </list-property>
                                 <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">contract_id</property>
-                                <text-property name="displayName">contract_id</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["contract_id"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">MoveLineID</property>
-                                <text-property name="displayName">MoveLineID</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["MoveLineID"]</expression>
-                                <property name="dataType">decimal</property>
                             </structure>
                             <structure>
                                 <property name="name">Column Binding</property>
@@ -2563,13 +2868,13 @@ dataSetRow["amount_remaining"]
                                 <property name="name">SumAmountRemaining</property>
                                 <property name="dataType">float</property>
                                 <simple-property-list name="aggregateOn">
-                                    <value>ContactPartnerGroup</value>
+                                    <value>PartnerGroup</value>
                                 </simple-property-list>
                                 <property name="aggregateFunction">SUM</property>
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">dataSetRow["amount_remaining"]</expression>
+                                        <expression name="value" type="javascript">row["amount_remaining"]</expression>
                                     </structure>
                                 </list-property>
                                 <property name="allowExport">true</property>
@@ -2577,15 +2882,9 @@ dataSetRow["amount_remaining"]
                             <structure>
                                 <property name="name">amount_remaining</property>
                                 <text-property name="displayName">amount_remaining</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["amount_remaining"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["debit"]-dataSetRow["credit_to_use"]-dataSetRow["excess_payment"]</expression>
                                 <property name="dataType">float</property>
                                 <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">contact_id</property>
-                                <text-property name="displayName">contact_id</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["contact_id"]</expression>
-                                <property name="dataType">decimal</property>
                             </structure>
                             <structure>
                                 <property name="name">amount_remaining_1</property>
@@ -2598,6 +2897,128 @@ dataSetRow["amount_remaining"]
                                 <text-property name="displayName">report_date</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["report_date"]</expression>
                                 <property name="dataType">date</property>
+                            </structure>
+                            <structure>
+                                <property name="name">SumAmountRemainingByInvoice</property>
+                                <text-property name="displayName">SumAmountRemaining</text-property>
+                                <property name="dataType">float</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>InvoiceGroup</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["amount_remaining"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">MoveLineID_1</property>
+                                <text-property name="displayName">MoveLineID</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["MoveLineID"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">partner_name</property>
+                                <text-property name="displayName">partner_name</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["partner_name"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">partner_first_name</property>
+                                <text-property name="displayName">partner_first_name</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["partner_first_name"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">partner_seq</property>
+                                <text-property name="displayName">partner_seq</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["partner_seq"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">credit</property>
+                                <text-property name="displayName">credit</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["credit"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">debit</property>
+                                <text-property name="displayName">debit</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["debit"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">invoice_name_1</property>
+                                <text-property name="displayName">invoice_name</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["invoice_name"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">invoice_reconciled_name</property>
+                                <text-property name="displayName">invoice_reconciled_name</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["invoice_reconciled_name"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">invoice_reconciled_date</property>
+                                <text-property name="displayName">invoice_reconciled_date</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["invoice_reconciled_date"]</expression>
+                                <property name="dataType">date</property>
+                            </structure>
+                            <structure>
+                                <property name="name">ReportedBalanceAmount</property>
+                                <text-property name="displayName">ReportedBalanceAmount</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["ReportedBalanceAmount"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">reported_balance_date</property>
+                                <text-property name="displayName">reported_balance_date</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["reported_balance_date"]</expression>
+                                <property name="dataType">date</property>
+                            </structure>
+                            <structure>
+                                <property name="name">amountreconciled</property>
+                                <text-property name="displayName">amountreconciled</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["amountreconciled"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">countmoveline</property>
+                                <text-property name="displayName">countmoveline</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["countmoveline"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">MoveLineDate</property>
+                                <text-property name="displayName">MoveLineDate</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["MoveLineDate"]</expression>
+                                <property name="dataType">date</property>
+                            </structure>
+                            <structure>
+                                <property name="name">credit_to_use</property>
+                                <text-property name="displayName">credit_to_use</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["credit_to_use"]</expression>
+                                <property name="dataType">float</property>
+                            </structure>
+                            <structure>
+                                <property name="name">excess_payment</property>
+                                <text-property name="displayName">excess_payment</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["excess_payment"]</expression>
+                                <property name="dataType">float</property>
+                            </structure>
+                        </list-property>
+                        <list-property name="filter">
+                            <structure>
+                                <property name="operator">ne</property>
+                                <expression name="expr" type="javascript">row["SumAmountRemainingByInvoice"]</expression>
+                                <simple-property-list name="value1">
+                                    <value>0.0</value>
+                                </simple-property-list>
+                                <property name="updateAggregation">true</property>
                             </structure>
                         </list-property>
                         <column id="1716">
@@ -2888,13 +3309,20 @@ dataSetRow["amount_remaining"]
                             </row>
                         </header>
                         <group id="1640">
-                            <property name="groupName">ContactPartnerGroup</property>
-                            <expression name="keyExpr" type="javascript">row["contact_id"]+row["contract_id"]</expression>
+                            <property name="groupName">PartnerGroup</property>
+                            <expression name="keyExpr" type="javascript">row["partner_name"]+row["partner_first_name"]+row["partner_seq"]</expression>
                             <property name="hideDetail">false</property>
+                            <list-property name="sort">
+                                <structure>
+                                    <expression name="key" type="javascript">row["partner_name"]+row["partner_first_name"]+row["partner_seq"]</expression>
+                                    <property name="direction">asc</property>
+                                    <property name="strength">-1</property>
+                                </structure>
+                            </list-property>
                             <list-property name="filter">
                                 <structure>
                                     <property name="operator">is-not-null</property>
-                                    <expression name="expr" type="javascript">row["contact_id"]+row["contract_id"]</expression>
+                                    <expression name="expr" type="javascript">row["partner_name"]+row["partner_first_name"]+row["partner_seq"]</expression>
                                     <property name="updateAggregation">true</property>
                                 </structure>
                             </list-property>
@@ -2917,7 +3345,7 @@ dataSetRow["amount_remaining"]
                                             <property name="fontSize">8pt</property>
                                             <property name="textAlign">center</property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>row["contact_name"]</VALUE-OF> <VALUE-OF format="^">" "</VALUE-OF> <VALUE-OF>row["contact_first_name"]</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>row["partner_name"]</VALUE-OF> <VALUE-OF format="^">" "</VALUE-OF> <VALUE-OF>row["partner_first_name"]</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="1646">
@@ -2934,7 +3362,7 @@ dataSetRow["amount_remaining"]
                                             <property name="fontSize">8pt</property>
                                             <property name="textAlign">center</property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>row["contract_id"]</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>row["partner_seq"]</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="1648">
@@ -3039,12 +3467,19 @@ dataSetRow["amount_remaining"]
                             </header>
                         </group>
                         <group id="1737">
-                            <property name="groupName">GroupOnInvoiceDetai</property>
-                            <expression name="keyExpr" type="javascript">row["MoveLineID"]</expression>
+                            <property name="groupName">InvoiceGroup</property>
+                            <expression name="keyExpr" type="javascript">row["invoice_name"]</expression>
                             <structure name="toc">
-                                <expression name="expressionValue" type="javascript">row["MoveLineID"]</expression>
+                                <expression name="expressionValue" type="javascript">row["invoice_name"]</expression>
                             </structure>
                             <property name="hideDetail">false</property>
+                            <list-property name="sort">
+                                <structure>
+                                    <expression name="key" type="javascript">row["invoice_name"]</expression>
+                                    <property name="direction">asc</property>
+                                    <property name="strength">-1</property>
+                                </structure>
+                            </list-property>
                             <header>
                                 <row id="1738">
                                     <property name="height">0.10416666666666667in</property>
