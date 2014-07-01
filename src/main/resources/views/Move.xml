@@ -2,7 +2,7 @@
 <object-views xmlns="http://apps.axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://apps.axelor.com/xml/ns/object-views http://apps.axelor.com/xml/ns/object-views/object-views_2.0.xsd">
-    <grid name="move-grid" orderBy="-date" title="Account moves" model="com.axelor.apps.account.db.Move">
+    <grid name="move-grid" orderBy="-date" title="Account moves" model="com.axelor.apps.account.db.Move" canDelete="false">
         <field name="reference"/>
         <field name="journal"/>
         <field name="period"/>
@@ -14,7 +14,7 @@
     </grid>
     <form name="move-form" title="Account move" model="com.axelor.apps.account.db.Move" cols="4" 
     onLoad="action-move-attrs-status,action-move-attrs-hidden-date,action-move-attrs-hidden-get-info-from-first-move-line-ok"
-    onNew="action-move-attrs-status,default-move-record,action-move-attrs-hidden-get-info-from-first-move-line-ok,action-move-attrs-hidden-date,action-move-method-get-period">
+    onNew="action-move-attrs-status,default-move-record,action-move-attrs-hidden-get-info-from-first-move-line-ok,action-move-attrs-hidden-date,action-move-method-get-period" canDelete="false">
     	<toolbar>
     		<button name="reverse" title="Reverse" onClick="action-move-method-generate-reverse-move" icon="fa-exchange"/>
     	</toolbar>
