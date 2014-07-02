@@ -34,7 +34,7 @@
 	    			<field name="hasToReExportCfbonb" showIf="directDebitExportTypeSelect != 2"/>
 	    			<field name="batchToReExport" showIf="hasToReExportCfbonb" domain="self.accountingBatch.id = :id"/>
     			</group>
-    			<field name="sepaDirectDebitOk"/>
+    			<field name="isSepaDirectDebit"/>
     		</page>
     		<page name="reminderPage" title="Reminder configuration" cols="4" hideIf="actionSelect != 14">
     			<field name="reminderTypeSelect"/>
