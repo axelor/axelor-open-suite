@@ -247,25 +247,25 @@ public class MoveLineExportService {
 		
 		Company company = moveLineReport.getCompany();
 		
-		String dateQueryStr = " WHERE " + String.format("company = %s", company.getId());
+		String dateQueryStr = String.format(" WHERE self.company = %s", company.getId());
 		JournalType journalType = moveLineReportService.getJournalType(moveLineReport);
 		if(moveLineReport.getJournal()!=null) {
-			dateQueryStr += " AND " + String.format("journal = %s", moveLineReport.getJournal().getId());
+			dateQueryStr += String.format(" AND self.journal = %s", moveLineReport.getJournal().getId());
 		}
 		else  {
-			dateQueryStr += " AND " + String.format("journal.type = %s", journalType.getId());
+			dateQueryStr += String.format(" AND self.journal.type = %s", journalType.getId());
 		}
 		if(moveLineReport.getPeriod() != null)	{
-			dateQueryStr += " AND " + String.format("period = %s", moveLineReport.getPeriod().getId());
+			dateQueryStr += String.format(" AND self.period = %s", moveLineReport.getPeriod().getId());
 		}
 		if(replay)  {
-			dateQueryStr += " AND accountingOk = true AND " + String.format("moveLineReport = %s", moveLineReport.getId());
+			dateQueryStr += String.format(" AND self.accountingOk = true AND self.moveLineReport = %s", moveLineReport.getId());
 		}
 		else  {
-			dateQueryStr += " AND accountingOk = false ";
+			dateQueryStr += " AND self.accountingOk = false ";
 		}
-		dateQueryStr += " AND ignoreInAccountingOk = false AND journal.notExportOk = false  ";
-		Query dateQuery = JPA.em().createQuery("SELECT mv.date from Move mv" + dateQueryStr + "group by mv.date order by mv.date");
+		dateQueryStr += " AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false  ";
+		Query dateQuery = JPA.em().createQuery("SELECT self.date from Move self" + dateQueryStr + "group by self.date order by self.date");
 
 		List<LocalDate> allDates = new ArrayList<LocalDate>();
 		allDates = dateQuery.getResultList();
@@ -283,28 +283,22 @@ public class MoveLineExportService {
 		}
 		if(company != null) {
 			companyCode = company.getCode();
-			moveQueryStr += " AND ";
-			moveQueryStr += String.format("self.company = %s", company.getId()); 
+			moveQueryStr += String.format(" AND self.company = %s", company.getId()); 
 		}
 		if(moveLineReport.getPeriod() != null)	{
-			moveQueryStr += " AND ";
-			moveQueryStr += String.format("self.period = %s", moveLineReport.getPeriod().getId());  
+			moveQueryStr += String.format(" AND self.period = %s", moveLineReport.getPeriod().getId());  
 		}
 		if(moveLineReport.getDateFrom() != null)  {
-			moveLineQueryStr += " AND ";
-			moveLineQueryStr += String.format("self.date >= '%s'", moveLineReport.getDateFrom().toString());  
+			moveLineQueryStr += String.format(" AND self.date >= '%s'", moveLineReport.getDateFrom().toString());  
 		}
 		if(moveLineReport.getDateTo() != null)  {
-			moveLineQueryStr += " AND ";
-			moveLineQueryStr += String.format("self.date <= '%s'", moveLineReport.getDateTo().toString());  
+			moveLineQueryStr += String.format(" AND self.date <= '%s'", moveLineReport.getDateTo().toString());  
 		}
 		if(moveLineReport.getDate() != null)  {
-			moveLineQueryStr += " AND ";
-			moveLineQueryStr += String.format("self.date <= '%s'", moveLineReport.getDate().toString());  
+			moveLineQueryStr += String.format(" AND self.date <= '%s'", moveLineReport.getDate().toString());  
 		}
 		if(replay)  {
-			moveQueryStr += " AND self.accountingOk = true AND ";
-			moveQueryStr += String.format("self.moveLineReport = %s", moveLineReport.getId());  
+			moveQueryStr += String.format(" AND self.accountingOk = true AND self.moveLineReport = %s", moveLineReport.getId());  
 		}
 		else  {
 			moveQueryStr += " AND self.accountingOk = false ";
@@ -314,7 +308,7 @@ public class MoveLineExportService {
 		
 		for(LocalDate dt : allDates) {				
 			
-			List<Journal> journalList = Journal.all().filter("self.type = ?1 AND self.notExportOk = false", journalType).fetch();
+			List<Journal> journalList = Journal.filter("self.type = ?1 AND self.notExportOk = false", journalType).fetch();
 			
 			if(moveLineReport.getJournal() != null)  {
 				journalList = new ArrayList<Journal>();
@@ -323,13 +317,13 @@ public class MoveLineExportService {
 			
 			for(Journal journal : journalList)  {
 			
-				List<Move> moveList = Move.all().filter("self.date = ?1 AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false AND self.journal = ?2" + moveQueryStr, dt, journal).fetch();
+				List<Move> moveList = Move.filter("self.date = ?1 AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false AND self.journal = ?2" + moveQueryStr, dt, journal).fetch();
 				
 				String journalCode = journal.getExportCode();
 				
 				if (moveList.size() > 0) {
 						
-					BigDecimal sumDebit = this.getSumDebit("self.account.reconcileOk = true AND self.debit!=0.00 AND self.move in ?1 "+moveLineQueryStr, moveList);
+					BigDecimal sumDebit = this.getSumDebit("self.account.reconcileOk = true AND self.debit != 0.00 AND self.move in ?1 "+ moveLineQueryStr, moveList);
 					
 					if(sumDebit.compareTo(BigDecimal.ZERO) == 1)  {
 						
@@ -399,25 +393,25 @@ public class MoveLineExportService {
 		
 		Company company = moveLineReport.getCompany();
 		
-		String dateQueryStr = " WHERE " + String.format("company = %s", company.getId());
+		String dateQueryStr = String.format(" WHERE self.company = %s", company.getId());
 		JournalType journalType = moveLineReportService.getJournalType(moveLineReport);
 		if(moveLineReport.getJournal()!=null) {
-			dateQueryStr += " AND " + String.format("journal = %s", moveLineReport.getJournal().getId());
+			dateQueryStr += String.format(" AND self.journal = %s", moveLineReport.getJournal().getId());
 		}
 		else  {
-			dateQueryStr += " AND " + String.format("journal.type = %s", journalType.getId());
+			dateQueryStr += String.format(" AND self.journal.type = %s", journalType.getId());
 		}
 		if(moveLineReport.getPeriod() != null)	{
-			dateQueryStr += " AND " + String.format("period = %s", moveLineReport.getPeriod().getId());
+			dateQueryStr += String.format(" AND self.period = %s", moveLineReport.getPeriod().getId());
 		}
 		if(replay)  {
-			dateQueryStr += " AND accountingOk = true AND " + String.format("moveLineReport = %s", moveLineReport.getId());
+			dateQueryStr += String.format(" AND self.accountingOk = true AND self.moveLineReport = %s", moveLineReport.getId());
 		}
 		else  {
-			dateQueryStr += " AND accountingOk = false ";
+			dateQueryStr += " AND self.accountingOk = false ";
 		}
-		dateQueryStr += " AND ignoreInAccountingOk = false AND journal.notExportOk = false ";
-		Query dateQuery = JPA.em().createQuery("SELECT mv.date from Move mv" + dateQueryStr + "group by mv.date order by mv.date");
+		dateQueryStr += " AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false ";
+		Query dateQuery = JPA.em().createQuery("SELECT self.date from Move self" + dateQueryStr + "group by self.date order by self.date");
 
 		List<LocalDate> allDates = new ArrayList<LocalDate>();
 		allDates = dateQuery.getResultList();
@@ -435,28 +429,22 @@ public class MoveLineExportService {
 		}
 		if(moveLineReport.getCompany()!=null) {
 			companyCode = moveLineReport.getCompany().getCode();
-			moveQueryStr += " AND ";
-			moveQueryStr += String.format("self.company = %s", moveLineReport.getCompany().getId()); 
+			moveQueryStr += String.format(" AND self.company = %s", moveLineReport.getCompany().getId()); 
 		}
 		if(moveLineReport.getPeriod() != null)	{
-			moveQueryStr += " AND ";
-			moveQueryStr += String.format("self.period = %s", moveLineReport.getPeriod().getId());  
+			moveQueryStr += String.format(" AND self.period = %s", moveLineReport.getPeriod().getId());  
 		}
 		if(moveLineReport.getDateFrom() != null)  {
-			moveLineQueryStr += " AND ";
-			moveLineQueryStr += String.format("self.date >= '%s'", moveLineReport.getDateFrom().toString());  
+			moveLineQueryStr += String.format(" AND self.date >= '%s'", moveLineReport.getDateFrom().toString());  
 		}
 		if(moveLineReport.getDateTo() != null)  {
-			moveLineQueryStr += " AND ";
-			moveLineQueryStr += String.format("self.date <= '%s'", moveLineReport.getDateTo().toString());  
+			moveLineQueryStr += String.format(" AND self.date <= '%s'", moveLineReport.getDateTo().toString());  
 		}
 		if(moveLineReport.getDate() != null)  {
-			moveLineQueryStr += " AND ";
-			moveLineQueryStr += String.format("self.date <= '%s'", moveLineReport.getDate().toString());  
+			moveLineQueryStr += String.format(" AND self.date <= '%s'", moveLineReport.getDate().toString());  
 		}
 		if(replay)  {
-			moveQueryStr += " AND self.accountingOk = true AND ";
-			moveQueryStr += String.format("self.moveLineReport = %s", moveLineReport.getId());  
+			moveQueryStr += String.format(" AND self.accountingOk = true AND self.moveLineReport = %s", moveLineReport.getId());  
 		}
 		else  {
 			moveQueryStr += " AND self.accountingOk = false ";
@@ -466,7 +454,7 @@ public class MoveLineExportService {
 		
 		for(LocalDate dt : allDates) {				
 			
-			List<Journal> journalList = Journal.all().filter("self.type = ?1 AND self.notExportOk = false", journalType).fetch();
+			List<Journal> journalList = Journal.filter("self.type = ?1 AND self.notExportOk = false", journalType).fetch();
 			
 			if(moveLineReport.getJournal()!=null)  {
 				journalList = new ArrayList<Journal>();
@@ -475,13 +463,13 @@ public class MoveLineExportService {
 			
 			for(Journal journal : journalList)  {
 			
-				List<Move> moveList = Move.all().filter("self.date = ?1 AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false AND self.journal = ?2" + moveQueryStr, dt, journal).fetch();
+				List<Move> moveList = Move.filter("self.date = ?1 AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false AND self.journal = ?2" + moveQueryStr, dt, journal).fetch();
 				
 				String journalCode = journal.getExportCode();
 				
 				if (moveList.size() > 0) {
 
-					BigDecimal sumCredit = this.getSumCredit("self.account.reconcileOk = true AND self.credit!=0.00 AND self.move in ?1 "+moveLineQueryStr, moveList);
+					BigDecimal sumCredit = this.getSumCredit("self.account.reconcileOk = true AND self.credit != 0.00 AND self.move in ?1 "+moveLineQueryStr, moveList);
 
 					if(sumCredit.compareTo(BigDecimal.ZERO) == 1)  {
 						
@@ -550,25 +538,25 @@ public class MoveLineExportService {
 		
 		Company company = moveLineReport.getCompany();
 		
-		String dateQueryStr = " WHERE " + String.format("company = %s", company.getId());
+		String dateQueryStr = String.format(" WHERE self.company = %s", company.getId());
 		JournalType journalType = moveLineReportService.getJournalType(moveLineReport);
 		if(moveLineReport.getJournal()!=null) {
-			dateQueryStr += " AND " + String.format("journal = %s", moveLineReport.getJournal().getId());
+			dateQueryStr += String.format(" AND self.journal = %s", moveLineReport.getJournal().getId());
 		}
 		else  {
-			dateQueryStr += " AND " + String.format("journal.type = %s", journalType.getId());
+			dateQueryStr += String.format(" AND self.journal.type = %s", journalType.getId());
 		}
 		if(moveLineReport.getPeriod() != null)	{
-			dateQueryStr += " AND " + String.format("period = %s", moveLineReport.getPeriod().getId());
+			dateQueryStr += String.format(" AND self.period = %s", moveLineReport.getPeriod().getId());
 		}
 		if(replay)  {
-			dateQueryStr += " AND accountingOk = true AND " + String.format("moveLineReport = %s", moveLineReport.getId());
+			dateQueryStr += String.format(" AND self.accountingOk = true AND self.moveLineReport = %s", moveLineReport.getId());
 		}
 		else  {
-			dateQueryStr += " AND accountingOk = false ";
+			dateQueryStr += " AND self.accountingOk = false ";
 		}
-		dateQueryStr += " AND ignoreInAccountingOk = false AND journal.notExportOk = false ";
-		Query dateQuery = JPA.em().createQuery("SELECT mv.date from Move mv" + dateQueryStr + "group by mv.date order by mv.date");
+		dateQueryStr += " AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false ";
+		Query dateQuery = JPA.em().createQuery("SELECT self.date from Move self" + dateQueryStr + "group by self.date order by self.date");
 
 		List<LocalDate> allDates = new ArrayList<LocalDate>();
 		allDates = dateQuery.getResultList();
@@ -586,28 +574,22 @@ public class MoveLineExportService {
 		}
 		if(company != null) {
 			companyCode = moveLineReport.getCompany().getCode();
-			moveQueryStr += " AND ";
-			moveQueryStr += String.format("self.company = %s", company.getId()); 
+			moveQueryStr += String.format(" AND self.company = %s", company.getId()); 
 		}
 		if(moveLineReport.getPeriod() != null)	{
-			moveQueryStr += " AND ";
-			moveQueryStr += String.format("self.period = %s", moveLineReport.getPeriod().getId());  
+			moveQueryStr += String.format(" AND self.period = %s", moveLineReport.getPeriod().getId());  
 		}
 		if(moveLineReport.getDateFrom() != null)  {
-			moveLineQueryStr += " AND ";
-			moveLineQueryStr += String.format("self.date >= '%s'", moveLineReport.getDateFrom().toString());  
+			moveLineQueryStr += String.format(" AND self.date >= '%s'", moveLineReport.getDateFrom().toString());  
 		}
 		if(moveLineReport.getDateTo() != null)  {
-			moveLineQueryStr += " AND ";
-			moveLineQueryStr += String.format("self.date <= '%s'", moveLineReport.getDateTo().toString());  
+			moveLineQueryStr += String.format(" AND self.date <= '%s'", moveLineReport.getDateTo().toString());  
 		}
 		if(moveLineReport.getDate() != null)  {
-			moveLineQueryStr += " AND ";
-			moveLineQueryStr += String.format("self.date <= '%s'", moveLineReport.getDate().toString());  
+			moveLineQueryStr += String.format(" AND self.date <= '%s'", moveLineReport.getDate().toString());  
 		}
 		if(replay)  {
-			moveQueryStr += " AND self.accountingOk = true AND ";
-			moveQueryStr += String.format("self.moveLineReport = %s", moveLineReport.getId());  
+			moveQueryStr += String.format(" AND self.accountingOk = true AND self.moveLineReport = %s", moveLineReport.getId());  
 		}
 		else  {
 			moveQueryStr += " AND self.accountingOk = false ";
@@ -617,7 +599,7 @@ public class MoveLineExportService {
 		
 		for(LocalDate dt : allDates) {				
 			
-			List<Journal> journalList = Journal.all().filter("self.type = ?1 AND self.notExportOk = false", journalType).fetch();
+			List<Journal> journalList = Journal.filter("self.type = ?1 AND self.notExportOk = false", journalType).fetch();
 			
 			if(moveLineReport.getJournal()!=null)  {
 				journalList = new ArrayList<Journal>();
@@ -626,13 +608,13 @@ public class MoveLineExportService {
 			
 			for(Journal journal : journalList)  {
 			
-				List<Move> moveList = Move.all().filter("self.date = ?1 AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false AND self.journal = ?2" + moveQueryStr, dt, journal).fetch();
+				List<Move> moveList = Move.filter("self.date = ?1 AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false AND self.journal = ?2" + moveQueryStr, dt, journal).fetch();
 				
 				String journalCode = journal.getExportCode();
 				
 				if (moveList.size() > 0) {
 						
-					long moveLineListSize = MoveLine.all().filter("self.move in ?1 AND (self.debit > 0 OR self.credit > 0) " + moveLineQueryStr, moveList).count();
+					long moveLineListSize = MoveLine.filter("self.move in ?1 AND (self.debit > 0 OR self.credit > 0) " + moveLineQueryStr, moveList).count();
 					
 					if(moveLineListSize > 0) {
 						
@@ -699,25 +681,25 @@ public class MoveLineExportService {
 		LOG.info("In export service 9 FILE 1:");
 		
 		Company company = moveLineReport.getCompany();
-		String dateQueryStr = " WHERE " + String.format("company = %s", company.getId());
+		String dateQueryStr = String.format(" WHERE self.company = %s", company.getId());
 		JournalType journalType = moveLineReportService.getJournalType(moveLineReport);
 		if(moveLineReport.getJournal() != null) {
-			dateQueryStr += " AND " + String.format("journal = %s", moveLineReport.getJournal().getId());
+			dateQueryStr += String.format(" AND self.journal = %s", moveLineReport.getJournal().getId());
 		}
 		else  {
-			dateQueryStr += " AND " + String.format("journal.type = %s", journalType.getId());
+			dateQueryStr += String.format(" AND self.journal.type = %s", journalType.getId());
 		}
 		if(moveLineReport.getPeriod() != null)	{
-			dateQueryStr += " AND " + String.format("period = %s", moveLineReport.getPeriod().getId());
+			dateQueryStr += String.format(" AND self.period = %s", moveLineReport.getPeriod().getId());
 		}
 		if(replay)  {
-			dateQueryStr += " AND accountingOk = true AND " + String.format("moveLineReport = %s", moveLineReport.getId());
+			dateQueryStr += String.format(" AND self.accountingOk = true AND self.moveLineReport = %s", moveLineReport.getId());
 		}
 		else  {
-			dateQueryStr += " AND accountingOk = false ";
+			dateQueryStr += " AND self.accountingOk = false ";
 		}
-		dateQueryStr += " AND ignoreInAccountingOk = false AND journal.notExportOk = false ";
-		Query dateQuery = JPA.em().createQuery("SELECT mv.date from Move mv" + dateQueryStr + "group by mv.date order by mv.date");
+		dateQueryStr += " AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false ";
+		Query dateQuery = JPA.em().createQuery("SELECT self.date from Move self" + dateQueryStr + "group by self.date order by self.date");
 
 		List<LocalDate> allDates = new ArrayList<LocalDate>();
 		allDates = dateQuery.getResultList();
@@ -735,28 +717,22 @@ public class MoveLineExportService {
 		}
 		if(company != null) {
 			companyCode = company.getCode();
-			moveQueryStr += " AND ";
-			moveQueryStr += String.format("self.company = %s", company.getId()); 
+			moveQueryStr += String.format(" AND self.company = %s", company.getId()); 
 		}
 		if(moveLineReport.getPeriod() != null)	{
-			moveQueryStr += " AND ";
-			moveQueryStr += String.format("self.period = %s", moveLineReport.getPeriod().getId());  
+			moveQueryStr += String.format(" AND self.period = %s", moveLineReport.getPeriod().getId());  
 		}
 		if(moveLineReport.getDateFrom() != null)  {
-			moveLineQueryStr += " AND ";
-			moveLineQueryStr += String.format("self.date >= '%s'", moveLineReport.getDateFrom().toString());  
+			moveLineQueryStr += String.format(" AND self.date >= '%s'", moveLineReport.getDateFrom().toString());  
 		}
 		if(moveLineReport.getDateTo() != null)  {
-			moveLineQueryStr += " AND ";
-			moveLineQueryStr += String.format("self.date <= '%s'", moveLineReport.getDateTo().toString());  
+			moveLineQueryStr += String.format(" AND self.date <= '%s'", moveLineReport.getDateTo().toString());  
 		}
 		if(moveLineReport.getDate() != null)  {
-			moveLineQueryStr += " AND ";
-			moveLineQueryStr += String.format("self.date <= '%s'", moveLineReport.getDate().toString());  
+			moveLineQueryStr += String.format(" AND self.date <= '%s'", moveLineReport.getDate().toString());  
 		}
 		if(replay)  {
-			moveQueryStr += " AND self.accountingOk = true AND ";
-			moveQueryStr += String.format("self.moveLineReport = %s", moveLineReport.getId());  
+			moveQueryStr += String.format(" AND self.accountingOk = true AND self.moveLineReport = %s", moveLineReport.getId());  
 		}
 		else  {
 			moveQueryStr += " AND self.accountingOk = false ";
@@ -766,7 +742,7 @@ public class MoveLineExportService {
 		
 		for(LocalDate dt : allDates) {				
 			
-			List<Journal> journalList = Journal.all().filter("self.type = ?1 AND self.notExportOk = false", journalType).fetch();
+			List<Journal> journalList = Journal.filter("self.type = ?1 AND self.notExportOk = false", journalType).fetch();
 			
 			if(moveLineReport.getJournal()!=null)  {
 				journalList = new ArrayList<Journal>();
@@ -775,7 +751,7 @@ public class MoveLineExportService {
 			
 			for(Journal journal : journalList)  {
 			
-				List<Move> moveList = Move.all().filter("self.date = ?1 AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false AND self.journal = ?2" + moveQueryStr, dt, journal).fetch();
+				List<Move> moveList = Move.filter("self.date = ?1 AND self.ignoreInAccountingOk = false AND self.journal.notExportOk = false AND self.journal = ?2" + moveQueryStr, dt, journal).fetch();
 				
 				String journalCode = journal.getExportCode();
 				
@@ -787,7 +763,7 @@ public class MoveLineExportService {
 					
 					for(Move move : moveList)  {
 						
-						List<MoveLine> moveLineList = MoveLine.all().filter("self.account.reconcileOk = true AND self.credit!=0.00 AND self.move in ?1" + moveLineQueryStr, moveList).fetch();
+						List<MoveLine> moveLineList = MoveLine.filter("self.account.reconcileOk = true AND self.credit != 0.00 AND self.move in ?1" + moveLineQueryStr, moveList).fetch();
 						
 						if(moveLineList.size() > 0) {
 							
@@ -861,42 +837,34 @@ public class MoveLineExportService {
 		
 		if(company != null) {
 			companyCode = company.getCode();
-			moveLineQueryStr += " AND ";
-			moveLineQueryStr += String.format("move.company = %s", company.getId());  
+			moveLineQueryStr += String.format(" AND self.move.company = %s", company.getId());  
 		}
 		if(moveLineReport.getJournal() != null)	{
-			moveLineQueryStr += " AND ";
-			moveLineQueryStr += String.format("move.journal = %s", moveLineReport.getJournal().getId());  
+			moveLineQueryStr += String.format(" AND self.move.journal = %s", moveLineReport.getJournal().getId());  
 		}
 		else  {
-			moveLineQueryStr += " AND ";
-			moveLineQueryStr += String.format("move.journal.type = %s", moveLineReportService.getJournalType(moveLineReport).getId());  
+			moveLineQueryStr += String.format(" AND self.move.journal.type = %s", moveLineReportService.getJournalType(moveLineReport).getId());  
 		}
 		
 		if(moveLineReport.getPeriod() != null)	{
-			moveLineQueryStr += " AND ";
-			moveLineQueryStr += String.format("move.period = %s", moveLineReport.getPeriod().getId());  
+			moveLineQueryStr += String.format(" AND self.move.period = %s", moveLineReport.getPeriod().getId());  
 		}
 		if(moveLineReport.getDateFrom() != null)  {
-			moveLineQueryStr += " AND ";
-			moveLineQueryStr += String.format("date >= '%s'", moveLineReport.getDateFrom().toString());  
+			moveLineQueryStr += String.format(" AND self.date >= '%s'", moveLineReport.getDateFrom().toString());  
 		}
 		
 		if(moveLineReport.getDateTo() != null)  {
-			moveLineQueryStr += " AND ";
-			moveLineQueryStr += String.format("date <= '%s'", moveLineReport.getDateTo().toString());  
+			moveLineQueryStr += String.format(" AND self.date <= '%s'", moveLineReport.getDateTo().toString());  
 		}
 		if(moveLineReport.getDate() != null)  {
-			moveLineQueryStr += " AND ";
-			moveLineQueryStr += String.format("date <= '%s'", moveLineReport.getDate().toString());  
+			moveLineQueryStr += String.format(" AND self.date <= '%s'", moveLineReport.getDate().toString());  
 		}
 		if(typeSelect != 8 )  {
-			moveLineQueryStr += " AND ";
-			moveLineQueryStr += String.format("account.reconcileOk = false ");  
+			moveLineQueryStr += String.format(" AND self.account.reconcileOk = false ");  
 		}
-		moveLineQueryStr += String.format("AND move.accountingOk = true AND move.ignoreInAccountingOk = false AND move.moveLineReport = %s", moveLineReport.getId());  
+		moveLineQueryStr += String.format("AND self.move.accountingOk = true AND self.move.ignoreInAccountingOk = false AND self.move.moveLineReport = %s", moveLineReport.getId());  
 		
-		Query queryDate = JPA.em().createQuery("SELECT mvl.date from MoveLine mvl where mvl.account!=null AND (mvl.debit > 0 OR mvl.credit > 0) " + moveLineQueryStr + " group by date ORDER BY mvl.date");
+		Query queryDate = JPA.em().createQuery("SELECT self.date from MoveLine self where self.account != null AND (self.debit > 0 OR self.credit > 0) " + moveLineQueryStr + " group by self.date ORDER BY self.date");
 		
 		List<LocalDate> dates = new ArrayList<LocalDate>();
 		dates = queryDate.getResultList();
@@ -907,8 +875,8 @@ public class MoveLineExportService {
 		
 		for (LocalDate localDate : dates)  {
 			
-			Query queryExportAgressoRef = JPA.em().createQuery("SELECT DISTINCT move.exportNumber from MoveLine mvl where mvl.account!=null " +
-					"AND (mvl.debit > 0 OR mvl.credit > 0) AND mvl.date = '"+ localDate.toString() +"'"+ moveLineQueryStr);
+			Query queryExportAgressoRef = JPA.em().createQuery("SELECT DISTINCT self.move.exportNumber from MoveLine self where self.account != null " +
+					"AND (self.debit > 0 OR self.credit > 0) AND self.date = '"+ localDate.toString() +"'"+ moveLineQueryStr);
 			List<String> exportAgressoRefs = new ArrayList<String>();
 			exportAgressoRefs = queryExportAgressoRef.getResultList();
 			for(String exportAgressoRef : exportAgressoRefs)  {
@@ -917,9 +885,9 @@ public class MoveLineExportService {
 					
 					int sequence = 1;
 					
-					Query query = JPA.em().createQuery("SELECT account.id from MoveLine mvl where mvl.account != null AND (mvl.debit > 0 OR mvl.credit > 0) " +
-							"AND mvl.date = '"+ localDate.toString() +"' AND mvl.move.exportNumber = '"+ exportAgressoRef + "'" + moveLineQueryStr +
-							" group by account.id");
+					Query query = JPA.em().createQuery("SELECT self.account.id from MoveLine self where self.account != null AND (self.debit > 0 OR self.credit > 0) " +
+							"AND self.date = '"+ localDate.toString() +"' AND self.move.exportNumber = '"+ exportAgressoRef + "'" + moveLineQueryStr +
+							" group by self.account.id");
 					
 					List<Long> accountIds = new ArrayList<Long>();
 					accountIds = query.getResultList();
@@ -929,8 +897,8 @@ public class MoveLineExportService {
 					for (Long accountId : accountIds) {
 						if(accountId!=null) {
 							String accountCode = Account.find(accountId).getCode();
-							List<MoveLine> moveLines = MoveLine.all().filter("account.id = ?1 AND (self.debit > 0 OR self.credit > 0) AND self.date = '"+ 
-							localDate.toString() +"' AND move.exportNumber = '"+ exportAgressoRef +"'" + moveLineQueryStr, accountId).fetch();
+							List<MoveLine> moveLines = MoveLine.filter("self.account.id = ?1 AND (self.debit > 0 OR self.credit > 0) AND self.date = '"+ 
+							localDate.toString() +"' AND self.move.exportNumber = '"+ exportAgressoRef +"'" + moveLineQueryStr, accountId).fetch();
 							
 							LOG.debug("movelines  : {} " , moveLines);
 
@@ -1210,7 +1178,7 @@ public class MoveLineExportService {
 		moveLineReport.setTypeSelect(exportTypeSelect);
 		moveLineReport.setDateFrom(startDate);
 		moveLineReport.setDateTo(endDate);
-		moveLineReport.setStatus(Status.all().filter("self.code = 'dra'").fetchOne());
+		moveLineReport.setStatus(Status.findByCode("dra"));
 		moveLineReport.setDate(todayTime.toLocalDate());
 		moveLineReport.setRef(moveLineReportService.getSequence(moveLineReport));
 		

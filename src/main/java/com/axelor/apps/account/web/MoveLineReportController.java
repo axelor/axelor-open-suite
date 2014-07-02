@@ -61,9 +61,11 @@ public class MoveLineReportController {
 		try  {
 			MoveLineReportService moveLineReportService = moveLineReportProvider.get();
 			
-			String queryFilter = moveLineReportService.getMoveLineList(MoveLineReport.find(moveLineReport.getId()));
+			moveLineReport = MoveLineReport.find(moveLineReport.getId());
+			
+			String queryFilter = moveLineReportService.getMoveLineList(moveLineReport);
 			BigDecimal debitBalance = moveLineReportService.getDebitBalance(queryFilter);
-			BigDecimal creditBalance = moveLineReportService.getCreditBalance(queryFilter);
+			BigDecimal creditBalance = moveLineReportService.getCreditBalance(moveLineReport, queryFilter);
 			
 			if (moveLineReport.getRef() == null) {
 				response.setValue("ref", moveLineReportService.getSequence(moveLineReport));

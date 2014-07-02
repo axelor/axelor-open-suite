@@ -259,7 +259,7 @@ public class MoveLineReportService {
 	
 	public Account getAccount(MoveLineReport moveLineReport)  {
 		if(moveLineReport.getTypeSelect() ==  13 && moveLineReport.getCompany() != null)  {
-			return Account.all().filter("self.company = ?1 AND self.code LIKE '58%'", moveLineReport.getCompany()).fetchOne();
+			return Account.filter("self.company = ?1 AND self.code LIKE '58%'", moveLineReport.getCompany()).fetchOne();
 		}
 		return null;
 	}
@@ -267,7 +267,7 @@ public class MoveLineReportService {
 
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public void setStatus(MoveLineReport moveLineReport)  {
-		moveLineReport.setStatus(Status.all().filter("self.code = 'val'").fetchOne());
+		moveLineReport.setStatus(Status.findByCode("val"));
 		moveLineReport.save();
 	}
 
@@ -321,4 +321,41 @@ public class MoveLineReportService {
 		}
 
 	}
+	
+	
+	public BigDecimal getDebitBalanceType4(String queryFilter) {
+		
+		Query q = JPA.em().createQuery("select SUM(self.amountRemaining) FROM MoveLine as self WHERE " + queryFilter, BigDecimal.class);
+		
+		BigDecimal result = (BigDecimal) q.getSingleResult();
+		LOG.debug("Total debit : {}", result);
+		
+		if(result != null) {
+			return result;
+		}
+		else {
+			return BigDecimal.ZERO;
+		}
+		
+	}
+		
+		
+	public BigDecimal getCreditBalance(MoveLineReport moveLineReport, String queryFilter) {
+		
+		if(moveLineReport.getTypeSelect() == 4) {
+			return this.getCreditBalanceType4(queryFilter);
+		}
+		
+		else {
+			return this.getCreditBalance(queryFilter);
+		}
+		
+	}
+	
+	public BigDecimal getCreditBalanceType4(String queryFilter) {
+		
+		return this.getDebitBalance(queryFilter).subtract(this.getDebitBalanceType4(queryFilter));
+		
+	}
+	
 }
