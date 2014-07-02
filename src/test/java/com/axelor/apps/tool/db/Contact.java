@@ -224,7 +224,6 @@ public class Contact extends JpaModel {
 	
 	public String getLanguageTitle() {
 //		MetaSelectItem item = MetaSelectItem
-//				.all()
 //				.filter("self.select.name = ?1 AND self.value = ?2",
 //						"select.language", this.language).fetchOne();
 //

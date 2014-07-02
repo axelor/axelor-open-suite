@@ -184,7 +184,6 @@ public class TemplateMaker {
 				return "";
 			}
 			MetaSelectItem item = MetaSelectItem
-					.all()
 					.filter("self.select.name = ?1 AND self.value = ?2",
 							prop.getSelection(), value).fetchOne();
 			
