@@ -36,7 +36,7 @@ public class ProductionConfigService {
 		
 //		ProductionConfig productionConfig = company.getProductionConfig();  // TODO après heritage
 		
-		ProductionConfig productionConfig = ProductionConfig.filter("self.company = ?1", company).fetchOne();
+		ProductionConfig productionConfig = ProductionConfig.findByCompany(company);
 		
 		if(productionConfig == null)  {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer la production pour la société %s",
