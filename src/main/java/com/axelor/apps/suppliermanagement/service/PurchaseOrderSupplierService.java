@@ -159,7 +159,7 @@ public class PurchaseOrderSupplierService {
 				parentPurchaseOrder.getInvoicingTypeSelect(), 
 				purchaseOrderService.getLocation(parentPurchaseOrder.getCompany()), 
 				today, 
-				PriceList.all().filter("self.partner = ?1 AND self.typeSelect = 2", supplierPartner).fetchOne(), 
+				PriceList.filter("self.partner = ?1 AND self.typeSelect = 2", supplierPartner).fetchOne(), 
 				supplierPartner);
 		
 		purchaseOrder.setParentPurchaseOrder(parentPurchaseOrder);
