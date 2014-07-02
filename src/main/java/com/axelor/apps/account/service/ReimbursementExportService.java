@@ -214,7 +214,7 @@ public class ReimbursementExportService {
 					moveLine.setReimbursementStateSelect(IAccount.REIMBURSED);
 					
 					if(first)  {
-						newMove = moveService.createMove(accountConfig.getReimbursementJournal(), company, null, partner, null, false);
+						newMove = moveService.createMove(accountConfig.getReimbursementJournal(), company, null, partner, null);
 						first = false;
 					}
 					// Création d'une ligne au débit

@@ -109,7 +109,7 @@ public class InterbankPaymentOrderRejectImportService {
 			
 			AccountConfig accountConfig = company.getAccountConfig();
 			
-			Move move = moveService.createMove(accountConfig.getRejectJournal(), company, null, partner, null, true);
+			Move move = moveService.createMove(accountConfig.getRejectJournal(), company, null, partner, null);
 			
 			// Création d'une ligne au crédit
 			MoveLine debitMoveLine = moveLineService.createMoveLine(move , partner, accountConfig.getCustomerAccount(), amountReject, true, false, rejectImportService.createRejectDate(dateReject), 1, refReject);

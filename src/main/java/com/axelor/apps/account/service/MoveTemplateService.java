@@ -69,7 +69,7 @@ public class MoveTemplateService {
 					creditPartner = Partner.find(Long.parseLong(((HashMap<String,Object>) data.get("creditPartner")).get("id").toString()));
 					partner = creditPartner;
 				}
-				Move move = moveService.createMove(moveTemplate.getJournal(), moveTemplate.getCompany(), null, partner,moveDate, null,false);
+				Move move = moveService.createMove(moveTemplate.getJournal(), moveTemplate.getCompany(), null, partner,moveDate, null);
 				List<MoveLine> moveLineList = new ArrayList<MoveLine>();  
 				for(MoveTemplateLine line : moveTemplate.getMoveTemplateLineList()){
 					partner = null;

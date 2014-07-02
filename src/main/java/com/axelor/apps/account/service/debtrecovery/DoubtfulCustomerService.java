@@ -136,7 +136,7 @@ public class DoubtfulCustomerService {
 		BigDecimal totalAmountRemaining = BigDecimal.ZERO;
 		Company company = move.getCompany();
 		Partner partner = move.getPartner();
-		Move newMove = ms.createMove(company.getAccountConfig().getMiscOperationJournal(), company, move.getInvoice(), partner, move.getPaymentMode(), false);
+		Move newMove = ms.createMove(company.getAccountConfig().getMiscOperationJournal(), company, move.getInvoice(), partner, move.getPaymentMode());
 
 		int ref = 1;
 		List<Reconcile> reconcileList = new ArrayList<Reconcile>();
@@ -207,7 +207,7 @@ public class DoubtfulCustomerService {
 		Company company = moveLine.getMove().getCompany();
 		Partner partner = moveLine.getPartner();
 		
-		Move newMove = ms.createMove(company.getAccountConfig().getMiscOperationJournal(), company, null, partner, moveLine.getMove().getPaymentMode(), false);
+		Move newMove = ms.createMove(company.getAccountConfig().getMiscOperationJournal(), company, null, partner, moveLine.getMove().getPaymentMode());
 
 		List<Reconcile> reconcileList = new ArrayList<Reconcile>();
 

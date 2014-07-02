@@ -12,9 +12,10 @@
         <field name="invoice"/>
         <field name="state"/>
     </grid>
-    <form name="move-form" title="Account move" model="com.axelor.apps.account.db.Move" cols="4" 
+    <form name="move-form" title="Account move" model="com.axelor.apps.account.db.Move" cols="4" canDelete="false"
     onLoad="action-move-attrs-status,action-move-attrs-hidden-date,action-move-attrs-hidden-get-info-from-first-move-line-ok"
-    onNew="action-move-attrs-status,default-move-record,action-move-attrs-hidden-get-info-from-first-move-line-ok,action-move-attrs-hidden-date,action-move-method-get-period" canDelete="false">
+    onNew="action-move-attrs-status,default-move-record,action-move-attrs-hidden-get-info-from-first-move-line-ok,action-move-attrs-hidden-date,action-move-method-get-period"
+    onSave="save,action-move-record-draft-sequence">
     	<toolbar>
     		<button name="reverse" title="Reverse" onClick="action-move-method-generate-reverse-move" icon="fa-exchange"/>
     	</toolbar>
@@ -105,6 +106,10 @@
 		<field name="company" expr="call:com.axelor.apps.base.service.user.UserInfoService:getUserActiveCompany()"/>
 		<field name="getInfoFromFirstMoveLineOk" expr="eval: true"/>
 		<field name="date" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDate()" if="date == null"/>
+    </action-record>
+    
+    <action-record name="action-move-record-draft-sequence" model="com.axelor.apps.account.db.Move">
+    	<field name="reference" expr="eval: '*'+id"/>
     </action-record>
    
 	<!-- ACTION ATTRS -->

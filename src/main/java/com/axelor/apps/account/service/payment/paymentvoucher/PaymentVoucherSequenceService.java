@@ -54,19 +54,19 @@ public class PaymentVoucherSequenceService  {
 			
 		PaymentMode paymentMode = paymentVoucher.getPaymentMode();
 		
-		if(paymentMode.getBankJournal() == null)  {
+		Journal bankJournal = paymentMode.getBankJournal();
+		
+		if(bankJournal == null)  {
 			throw new AxelorException(String.format("%s :\n Merci de paramétrer un journal pour le mode de paiement {}", 
 					GeneralService.getExceptionAccountingMsg(), paymentMode.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
-		String sequence = sequenceService.getSequence(IAdministration.PAYMENT_VOUCHER, paymentVoucher.getCompany(), paymentMode.getBankJournal(), false);
-		if(sequence != null)  {
-			return sequence;
-		}
-		else  {
+		if(bankJournal.getSequence() == null)  {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer une séquence de saisie paiement pour la société %s et le journal %s.", 
 					GeneralService.getExceptionAccountingMsg(), paymentVoucher.getCompany().getName(), paymentMode.getBankJournal().getName()), IException.CONFIGURATION_ERROR);
 		}
+		
+		return sequenceService.getSequenceNumber(bankJournal.getSequence(), false);
 	}
 	
 	

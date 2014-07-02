@@ -41,7 +41,6 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.debtrecovery.ReminderService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Status;
 import com.axelor.apps.base.service.MailService;
@@ -133,8 +132,7 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 		
 		Journal rejectJournal = accountConfigService.getRejectJournal(accountConfig);
 		
-		String seq = sgs.getSequence(IAdministration.DEBIT_REJECT, company, rejectJournal, true);
-		if(seq == null)  {
+		if(rejectJournal.getSequence() == null)  {
 			throw new AxelorException(String.format("%s :\n Veuillez configurer une séquence de rejet des prélèvements\n pour la société %s pour le journal %s", 
 					GeneralService.getExceptionAccountingMsg(), company.getName(), rejectJournal.getName()), IException.CONFIGURATION_ERROR);
 		}
@@ -442,7 +440,7 @@ private static final Logger LOG = LoggerFactory.getLogger(PaymentScheduleImportS
 	public Move createRejectMove(Company company, LocalDate date) throws AxelorException  {
 		Journal rejectJournal = company.getAccountConfig().getRejectJournal();
 		
-		Move move = ms.createMove(rejectJournal, company, null, null, date, null, true);
+		Move move = ms.createMove(rejectJournal, company, null, null, date, null);
 		move.setRejectOk(true);
 		move.save();
 		return move;

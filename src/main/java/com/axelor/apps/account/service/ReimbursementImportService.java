@@ -128,7 +128,7 @@ public class ReimbursementImportService {
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})
 	public Move createMoveReject(Company company, LocalDate date) throws AxelorException  {
-		return ms.createMove(company.getAccountConfig().getRejectJournal(), company, null, null, date, null, false).save();
+		return ms.createMove(company.getAccountConfig().getRejectJournal(), company, null, null, date, null).save();
 
 	}
 	

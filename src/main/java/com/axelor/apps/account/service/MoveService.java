@@ -37,7 +37,6 @@ import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.service.PeriodService;
@@ -59,7 +58,7 @@ public class MoveService {
 	private MoveLineService mls;
 	
 	@Inject
-	private SequenceService sgs;
+	private SequenceService sequenceService;
 	
 	@Inject
 	private PaymentService pas;
@@ -95,9 +94,9 @@ public class MoveService {
 	 * @return
 	 * @throws AxelorException 
 	 */
-	public Move createMove(Journal journal, Company company, Invoice invoice, Partner partner, PaymentMode paymentMode, boolean isReject) throws AxelorException{
+	public Move createMove(Journal journal, Company company, Invoice invoice, Partner partner, PaymentMode paymentMode) throws AxelorException{
 		
-		return this.createMove(journal, company, invoice, partner, toDay, paymentMode, isReject);
+		return this.createMove(journal, company, invoice, partner, toDay, paymentMode);
 	}
 	
 	
@@ -116,9 +115,9 @@ public class MoveService {
 	 * @return
 	 * @throws AxelorException 
 	 */
-	public Move createMove(Journal journal, Company company, Invoice invoice, Partner partner, LocalDate date, PaymentMode paymentMode, boolean isReject) throws AxelorException{
+	public Move createMove(Journal journal, Company company, Invoice invoice, Partner partner, LocalDate date, PaymentMode paymentMode) throws AxelorException{
 		
-		return this.createMove(journal, company, invoice, partner, date, paymentMode, false, false, isReject);
+		return this.createMove(journal, company, invoice, partner, date, paymentMode, false, false);
 		
 	}
 	
@@ -140,55 +139,35 @@ public class MoveService {
 	 * @throws AxelorException 
 	 */
 	public Move createMove(Journal journal, Company company, Invoice invoice, Partner partner, LocalDate date, PaymentMode paymentMode, boolean ignoreInReminderOk, 
-			boolean ignoreInAccountingOk, boolean isReject) throws AxelorException{
+			boolean ignoreInAccountingOk) throws AxelorException{
 		
 		LOG.debug("Création d'une écriture comptable (journal : {}, société : {}", new Object[]{journal.getName(), company.getName()});
 		
-		Move move = null;
+		Move move = new Move();
+
+		move.setJournal(journal);
+		move.setCompany(company);
 		
-		//create the move
-		if (journal != null){
-
-			move = new Move();
-
-			move.setJournal(journal);
-			move.setCompany(company);
+		move.setIgnoreInReminderOk(ignoreInReminderOk);
+		move.setIgnoreInAccountingOk(ignoreInAccountingOk);
+		
+		Period period = ps.rightPeriod(date, company);
 			
-			move.setIgnoreInReminderOk(ignoreInReminderOk);
-			move.setIgnoreInAccountingOk(ignoreInAccountingOk);
-			
-			String code = "";
-			if (isReject)  {
-				code = IAdministration.DEBIT_REJECT;
-			}
-			else  { 
-				code = IAdministration.MOVE;
-			}
-			
-			String ref = sgs.getSequence(code, company, journal, false);
-			if (ref == null)  {
-				throw new AxelorException(String.format("La société %s n'a pas de séquence d'écriture comptable configurée pour le journal %s", 
-						company.getName(), journal.getName()), IException.CONFIGURATION_ERROR);
-			}
-				
-			move.setReference(ref);
-			
-			Period period = ps.rightPeriod(date, company);
-				
-			move.setPeriod(period);
-			move.setDate(date);
-			move.setMoveLineList(new ArrayList<MoveLine>());
-			
-			if (invoice != null)  {
-				move.setInvoice(invoice);
-			}
-			if (partner != null)  {
-				move.setPartner(partner);
-				move.setCurrency(partner.getCurrency());
-			}	
-			move.setPaymentMode(paymentMode);
-			
+		move.setPeriod(period);
+		move.setDate(date);
+		move.setMoveLineList(new ArrayList<MoveLine>());
+		
+		if (invoice != null)  {
+			move.setInvoice(invoice);
 		}
+		if (partner != null)  {
+			move.setPartner(partner);
+			move.setCurrency(partner.getCurrency());
+		}	
+		move.setPaymentMode(paymentMode);
+		
+		move.save();
+		move.setReference("*"+move.getId());
 		
 		return move;
 		
@@ -217,7 +196,7 @@ public class MoveService {
 			
 			LOG.debug("Création d'une écriture comptable spécifique à la facture {} (Société : {}, Journal : {})", new Object[]{invoice.getInvoiceId(), company.getName(), journal.getCode()});
 			
-			move = this.createMove(journal, company, invoice, partner, invoice.getInvoiceDate(), invoice.getPaymentMode(), false);
+			move = this.createMove(journal, company, invoice, partner, invoice.getInvoiceDate(), invoice.getPaymentMode());
 			
 			if (move != null)  {
 				
@@ -261,9 +240,9 @@ public class MoveService {
 	 * @return
 	 * @throws AxelorException 
 	 */
-	public Move createMove(Journal journal, Company company, Invoice invoice, Partner partner, LocalDate date, PaymentMode paymentMode, boolean isReject, CashRegister cashRegister) throws AxelorException{
+	public Move createMove(Journal journal, Company company, Invoice invoice, Partner partner, LocalDate date, PaymentMode paymentMode, CashRegister cashRegister) throws AxelorException{
 		
-		Move move = this.createMove(journal, company, invoice, partner, date, paymentMode, isReject);
+		Move move = this.createMove(journal, company, invoice, partner, date, paymentMode);
 		move.setCashRegister(cashRegister);
 		return move;
 	}
@@ -586,7 +565,7 @@ public class MoveService {
 
 				LOG.debug("Création d'une écriture comptable O.D. spécifique à l'emploie des trop-perçus {} (Société : {}, Journal : {})", new Object[]{invoice.getInvoiceId(), company.getName(), journal.getCode()});
 				
-				move = this.createMove(journal, company, null, partner, invoice.getInvoiceDate(), null, false);
+				move = this.createMove(journal, company, null, partner, invoice.getInvoiceDate(), null);
 				
 				if (move != null){
 					BigDecimal totalCreditAmount = this.getTotalCreditAmount(creditMoveLineList);
@@ -675,7 +654,7 @@ public class MoveService {
 		
 		LOG.debug("Montant à payer avec l'avoir récupéré : {}", remainingAmount);
 		
-		Move oDmove = this.createMove(journal, company, null, partner, invoice.getInvoiceDate(), null, false);
+		Move oDmove = this.createMove(journal, company, null, partner, invoice.getInvoiceDate(), null);
 		
 		if (oDmove != null){
 			BigDecimal totalDebitAmount = this.getTotalDebitAmount(debitMoveLines);
@@ -716,7 +695,7 @@ public class MoveService {
 		
 		Journal journal = accountConfigService.getMiscOperationJournal(accountConfigService.getAccountConfig(company));
 		
-		Move excessMove = this.createMove(journal, company, refund, partner, null, false);
+		Move excessMove = this.createMove(journal, company, refund, partner, null);
 		
 		MoveLine debitMoveLine = mls.createMoveLine(excessMove,
 				partner,
@@ -783,13 +762,12 @@ public class MoveService {
 			throw new AxelorException(String.format("Veuillez selectionner une période pour l'écriture"),IException.CONFIGURATION_ERROR);
 		}
 		
-		String ref = sgs.getSequence(IAdministration.MOVE, company, journal, false);
-		if (ref == null)  {
-			throw new AxelorException(String.format("La société %s n'a pas de séquence d'écriture comptable configurée pour le journal %s", company.getName(), journal.getName()),
-					IException.CONFIGURATION_ERROR);
+		if (journal.getSequence() == null)  {
+			throw new AxelorException(String.format("Le journal %s n'a pas de séquence d'écriture comptable configurée", 
+					journal.getName()), IException.CONFIGURATION_ERROR);
 		}
-			
-		move.setReference(ref);
+		
+		move.setReference(sequenceService.getSequenceNumber(journal.getSequence(), false));
 		
 		LocalDate date = move.getDate();
 		Partner partner = move.getPartner();
@@ -974,8 +952,8 @@ public class MoveService {
 								  toDay, 
 								  move.getPaymentMode(),
 								  move.getIgnoreInReminderOk(), 
-								  move.getIgnoreInAccountingOk(),
-								  false);
+								  move.getIgnoreInAccountingOk());
+		
 		List<MoveLine> moveLines = new ArrayList<MoveLine>();
 		for(MoveLine line: move.getMoveLineList()){
 			LOG.debug("Moveline {}",line);

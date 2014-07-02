@@ -105,7 +105,7 @@ public class ChequeRejectionService {
 		LocalDate rejectionDate = chequeRejection.getRejectionDate();
 		
 		// Move
-		Move move = moveService.createMove(journal, company, null, partner, rejectionDate, null, false);
+		Move move = moveService.createMove(journal, company, null, partner, rejectionDate, null);
 		
 		int ref = 1;
 		

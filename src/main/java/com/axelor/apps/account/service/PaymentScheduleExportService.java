@@ -48,7 +48,6 @@ import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Status;
 import com.axelor.apps.base.service.BlockingService;
@@ -257,7 +256,7 @@ public class PaymentScheduleExportService {
 		BigDecimal amount =  paymentScheduleLine.getInTaxAmount();
 		Partner partner = paymentSchedule.getPartner();
 		
-		Move move = moveService.createMove(accountConfig.getScheduleDirectDebitJournal(), company, null, partner, paymentMode, false);
+		Move move = moveService.createMove(accountConfig.getScheduleDirectDebitJournal(), company, null, partner, paymentMode);
 		
 		this.setDebitNumber(paymentScheduleLineList, paymentScheduleLine, company, accountConfig.getScheduleDirectDebitJournal());
 		
@@ -418,13 +417,15 @@ public class PaymentScheduleExportService {
 	 * @throws AxelorException
 	 */
 	public String getDirectDebitSequence(Company company, Journal journal) throws AxelorException  {
-		String seq = sequenceService.getSequence(IAdministration.DEBIT,company,journal, false);
-		if(seq == null)  {
+		
+		if(journal.getSequence() == null)  {
 			throw new AxelorException(String.format(
 							"%s :\n Veuillez configurer une séquence Numéro de prélèvement pour la société %s pour le journal %s ",
 							GeneralService.getExceptionAccountingMsg(),company.getName(),journal.getName()), IException.CONFIGURATION_ERROR);
 		}
-		return seq;
+		
+		return sequenceService.getSequenceNumber(journal.getSequence(), false);
+		
 	}
 	
 	
@@ -704,7 +705,7 @@ public class PaymentScheduleExportService {
 		LOG.debug("Create payment move");
 		
 		Move paymentMove = moveService.createMove(
-				company.getAccountConfig().getInvoiceDirectDebitJournal(), company, null, null, paymentMode, false);
+				company.getAccountConfig().getInvoiceDirectDebitJournal(), company, null, null, paymentMode);
 			
 		BigDecimal amountExported = moveLine.getAmountRemaining();
 		
@@ -813,17 +814,15 @@ public class PaymentScheduleExportService {
 		
 		Journal invoiceDirectDebitJournal = company.getAccountConfig().getInvoiceDirectDebitJournal();
 		
-		String seqInvoice = sequenceService.getSequence(IAdministration.DEBIT, company, invoiceDirectDebitJournal, false);
-		if(seqInvoice == null)  {
+		if(invoiceDirectDebitJournal.getSequence() == null)  {
 			throw new AxelorException(String.format(
 							"%s :\n Erreur : Veuillez configurer une séquence Numéro de prélèvement pour la société %s et le journal %s",
 							GeneralService.getExceptionAccountingMsg(), company.getName(), invoiceDirectDebitJournal.getName()), IException.CONFIGURATION_ERROR);
 		}
 		
-		return seqInvoice;
+		return sequenceService.getSequenceNumber(invoiceDirectDebitJournal.getSequence(), false);
 		
 	}
-	
 	
 	
 	@Transactional(rollbackOn = {AxelorException.class, Exception.class})

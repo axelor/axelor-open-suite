@@ -759,7 +759,7 @@ public class IrrecoverableService {
 		AccountConfig accountConfig = company.getAccountConfig();
 		
 		// Move
-		Move move = moveService.createMove(accountConfig.getIrrecoverableJournal(), company, null, payerPartner, null, false);
+		Move move = moveService.createMove(accountConfig.getIrrecoverableJournal(), company, null, payerPartner, null);
 		
 		int seq = 1;
 		
@@ -827,7 +827,7 @@ public class IrrecoverableService {
 		AccountConfig accountConfig = company.getAccountConfig();
 		
 		// Move
-		Move move = moveService.createMove(accountConfig.getIrrecoverableJournal(), company, null, payerPartner, null, false);
+		Move move = moveService.createMove(accountConfig.getIrrecoverableJournal(), company, null, payerPartner, null);
 
 		int seq = 1;
 		

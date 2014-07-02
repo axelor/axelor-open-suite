@@ -367,7 +367,7 @@ public class ReconcileService {
 				
 				Journal miscOperationJournal = accountConfigService.getMiscOperationJournal(accountConfig);
 				
-				Move newMove = moveService.createMove(miscOperationJournal, company, null, partner, null, false);
+				Move newMove = moveService.createMove(miscOperationJournal, company, null, partner, null);
 				
 				// Création de la ligne au crédit
 				MoveLine newCreditMoveLine = moveLineService.createMoveLine(newMove, partner, account, debitAmountRemaining, false, false, today, 1, null);
@@ -416,7 +416,7 @@ public class ReconcileService {
 					
 					Journal miscOperationJournal = accountConfigService.getMiscOperationJournal(accountConfig);
 					
-					Move newMove = moveService.createMove(miscOperationJournal, company, null, partner, null, false);
+					Move newMove = moveService.createMove(miscOperationJournal, company, null, partner, null);
 					
 					
 					// Création de la ligne au crédit
