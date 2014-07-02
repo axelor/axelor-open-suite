@@ -493,7 +493,7 @@ public class CalendarService {
 		
 		for(VEvent vEvent : vEventList)  {
 			
-			Event event = Event.all().filter("self.calendarEventUid = ?1", vEvent.getUid().getValue()).fetchOne(); 
+			Event event = Event.filter("self.calendarEventUid = ?1", vEvent.getUid().getValue()).fetchOne(); 
 			if(event != null)  {
 				
 				this.updateEvent(event, vEvent);
@@ -517,10 +517,10 @@ public class CalendarService {
 		List<Event> eventList = null;
 		
 		if(uidList != null && uidList.size() > 0)  {
-			eventList = Event.all().filter("self.typeSelect = ?1 AND self.calendar = ?2 AND self.calendarEventUid not in ?3", 6, internalCalendar, uidList).fetch();
+			eventList = Event.filter("self.typeSelect = ?1 AND self.calendar = ?2 AND self.calendarEventUid not in ?3", 6, internalCalendar, uidList).fetch();
 		}
 		else  {
-			eventList = Event.all().filter("self.typeSelect = ?1 AND self.calendar = ?2", 6, internalCalendar).fetch();
+			eventList = Event.filter("self.typeSelect = ?1 AND self.calendar = ?2", 6, internalCalendar).fetch();
 		}
 		
 		for(Event event : eventList)  {

@@ -57,7 +57,7 @@ public class CrmBatchService {
 	public Batch run(String batchCode) throws AxelorException {
 				
 		Batch batch;
-		CrmBatch crmBatch = CrmBatch.all().filter("code = ?1", batchCode).fetchOne();
+		CrmBatch crmBatch = CrmBatch.findByCode(batchCode);
 		
 		if (crmBatch != null){
 			switch (crmBatch.getActionSelect()) {

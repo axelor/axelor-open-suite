@@ -56,7 +56,7 @@ public class TargetService {
 			
 			for(LocalDate date = oldDate ; date.isBefore(targetConfiguration.getToDate()) || date.isEqual(targetConfiguration.getToDate()); date = this.getNextDate(targetConfiguration.getPeriodTypeSelect(), date))  {
 			
-				Target target2 = Target.all().filter("self.userInfo = ?1 AND self.team = ?2 AND self.periodTypeSelect = ?3 AND self.fromDate >= ?4 AND self.toDate <= ?5 AND " +
+				Target target2 = Target.filter("self.userInfo = ?1 AND self.team = ?2 AND self.periodTypeSelect = ?3 AND self.fromDate >= ?4 AND self.toDate <= ?5 AND " +
 						"((self.callEmittedNumberTarget > 0 AND ?6 > 0) OR (self.meetingNumberTarget > 0 AND ?7 > 0) OR " +
 						"(self.opportunityAmountWonTarget > 0.00 AND ?8 > 0.00) OR (self.opportunityCreatedNumberTarget > 0 AND ?9 > 0) OR (self.opportunityCreatedWonTarget > 0 AND ?10 > 0))", 
 						targetConfiguration.getUserInfo(), targetConfiguration.getTeam(), targetConfiguration.getPeriodTypeSelect(), targetConfiguration.getFromDate(), targetConfiguration.getToDate(),
@@ -137,12 +137,12 @@ public class TargetService {
 					
 			BigDecimal opportunityAmountWon = (BigDecimal) q.getSingleResult();
 			
-			Long callEmittedNumber = Event.all().filter("self.typeSelect = ?1 AND self.userInfo = ?2 AND self.startDateTime >= ?3 AND self.endDateTime <= ?4 AND self.callStatusSelect = 2",
+			Long callEmittedNumber = Event.filter("self.typeSelect = ?1 AND self.userInfo = ?2 AND self.startDateTime >= ?3 AND self.endDateTime <= ?4 AND self.callStatusSelect = 2",
 					1, userInfo, fromDateTime, toDateTime).count();
 			
 			target.setCallEmittedNumber(callEmittedNumber.intValue());
 			
-			Long meetingNumber = Event.all().filter("self.typeSelect = ?1 AND self.userInfo = ?2 AND self.startDateTime >= ?3 AND self.endDateTime <= ?4",
+			Long meetingNumber = Event.filter("self.typeSelect = ?1 AND self.userInfo = ?2 AND self.startDateTime >= ?3 AND self.endDateTime <= ?4",
 					1, userInfo, fromDateTime, toDateTime).count();
 			
 			target.setMeetingNumber(meetingNumber.intValue());
@@ -150,12 +150,12 @@ public class TargetService {
 			
 			target.setOpportunityAmountWon(opportunityAmountWon);
 			
-			Long opportunityCreatedNumber = Opportunity.all().filter("self.userInfo = ?1 AND self.createdOn >= ?2 AND self.createdOn <= ?3",
+			Long opportunityCreatedNumber = Opportunity.filter("self.userInfo = ?1 AND self.createdOn >= ?2 AND self.createdOn <= ?3",
 					userInfo, fromDateTime, toDateTime).count();
 			
 			target.setOpportunityCreatedNumber(opportunityCreatedNumber.intValue());
 			
-			Long opportunityCreatedWon = Opportunity.all().filter("self.userInfo = ?1 AND self.createdOn >= ?2 AND self.createdOn <= ?3 AND self.salesStageSelect = 9",
+			Long opportunityCreatedWon = Opportunity.filter("self.userInfo = ?1 AND self.createdOn >= ?2 AND self.createdOn <= ?3 AND self.salesStageSelect = 9",
 					userInfo, fromDateTime, toDateTime).count();
 			
 			target.setOpportunityCreatedWon(opportunityCreatedWon.intValue());
@@ -169,12 +169,12 @@ public class TargetService {
 					
 			BigDecimal opportunityAmountWon = (BigDecimal) q.getResultList();
 			
-			Long callEmittedNumber = Event.all().filter("self.typeSelect = ?1 AND self.team = ?2 AND self.startDateTime >= ?3 AND self.endDateTime <= ?4 AND self.callStatusSelect = 2",
+			Long callEmittedNumber = Event.filter("self.typeSelect = ?1 AND self.team = ?2 AND self.startDateTime >= ?3 AND self.endDateTime <= ?4 AND self.callStatusSelect = 2",
 					1, userInfo, fromDateTime, toDateTime).count();
 			
 			target.setCallEmittedNumber(callEmittedNumber.intValue());
 			
-			Long meetingNumber = Event.all().filter("self.typeSelect = ?1 AND self.team = ?2 AND self.startDateTime >= ?3 AND self.endDateTime <= ?4",
+			Long meetingNumber = Event.filter("self.typeSelect = ?1 AND self.team = ?2 AND self.startDateTime >= ?3 AND self.endDateTime <= ?4",
 					1, userInfo, fromDateTime, toDateTime).count();
 			
 			target.setMeetingNumber(meetingNumber.intValue());
@@ -182,12 +182,12 @@ public class TargetService {
 			
 			target.setOpportunityAmountWon(opportunityAmountWon);
 			
-			Long opportunityCreatedNumber = Opportunity.all().filter("self.team = ?1 AND self.createdOn >= ?2 AND self.createdOn <= ?3",
+			Long opportunityCreatedNumber = Opportunity.filter("self.team = ?1 AND self.createdOn >= ?2 AND self.createdOn <= ?3",
 					userInfo, fromDateTime, toDateTime).count();
 			
 			target.setOpportunityCreatedNumber(opportunityCreatedNumber.intValue());
 			
-			Long opportunityCreatedWon = Opportunity.all().filter("self.team = ?1 AND self.createdOn >= ?2 AND self.createdOn <= ?3 AND self.salesStageSelect = 9",
+			Long opportunityCreatedWon = Opportunity.filter("self.team = ?1 AND self.createdOn >= ?2 AND self.createdOn <= ?3 AND self.salesStageSelect = 9",
 					userInfo, fromDateTime, toDateTime).count();
 			
 			target.setOpportunityCreatedWon(opportunityCreatedWon.intValue());

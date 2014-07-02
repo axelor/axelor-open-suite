@@ -60,14 +60,13 @@ public class CalendarConfigurationService {
 		
 		String menuName = NAME+calendarConfiguration.getId();
 		
-		MetaMenu metaMenu = MetaMenu.all().filter("self.name = ",menuName).fetchOne();
+		MetaMenu metaMenu = MetaMenu.findByName(menuName);
 		
 		metaMenu.remove();
 		
-		MetaAction metaAction = MetaAction.all().filter("self.name = ", menuName.replaceAll("-", ".")).fetchOne();
+		MetaAction metaAction = MetaAction.findByName(menuName.replaceAll("-", "."));
 		
 		metaAction.remove();
-		
 		
 	}
 	
