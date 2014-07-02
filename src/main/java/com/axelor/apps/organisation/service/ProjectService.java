@@ -21,8 +21,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Map;
 
-import javassist.compiler.ast.InstanceOfExpr;
-
 import javax.persistence.Query;
 
 import org.joda.time.LocalDateTime;
@@ -98,7 +96,7 @@ public class ProjectService {
 	public Task createPreSalesTask(Project project) {
 
 		if(project.getName() != null && !project.getName().isEmpty()) {
-			Task findTask = Task.all().filter("self.project = ?1 AND self.name = ?2", project, "Avant vente "+project.getName()).fetchOne();
+			Task findTask = Task.filter("self.project = ?1 AND self.name = ?2", project, "Avant vente "+project.getName()).fetchOne();
 			if(findTask == null) {
 				Task preSalestask = new Task();
 

@@ -459,7 +459,7 @@ public class TaskService {
 									multiply(unitConversionService.
 											convert(
 													planningLine.getUnit(), 
-													Unit.all().filter("self.code = 'JR'").fetchOne(), 
+													Unit.findByCode("JR"), 
 													planningLine.getDuration())));
 				}
 				else if(profil != null)  {

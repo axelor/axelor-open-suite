@@ -56,14 +56,14 @@ public class PlanningLineService {
 
 	public LocalDateTime computeStartDateTime(BigDecimal duration, LocalDateTime endDateTime, Unit unit) throws AxelorException  {
 			
-		return endDateTime.minusMinutes(unitConversionService.convert(unit, Unit.all().filter("self.code = 'MIN'").fetchOne(), duration).intValue());
+		return endDateTime.minusMinutes(unitConversionService.convert(unit, Unit.findByCode("MIN"), duration).intValue());
 		
 	}
 	
 	
 	public LocalDateTime computeEndDateTime(LocalDateTime startDateTime, BigDecimal duration, Unit unit) throws AxelorException  {
 		
-		return startDateTime.plusMinutes(unitConversionService.convert(unit, Unit.all().filter("self.code = 'MIN'").fetchOne(), duration).intValue());
+		return startDateTime.plusMinutes(unitConversionService.convert(unit, Unit.findByCode("MIN"), duration).intValue());
 		
 	}
 	
@@ -71,7 +71,7 @@ public class PlanningLineService {
 	public BigDecimal getDuration(LocalDateTime startDateTime, LocalDateTime endDateTime, Unit unit) throws AxelorException  {
 		
 		return unitConversionService.convert(
-				Unit.all().filter("self.code = 'MIN'").fetchOne(), 
+				Unit.findByCode("MIN"), 
 				unit, 
 				new BigDecimal(
 						DurationTool.getMinutesDuration(

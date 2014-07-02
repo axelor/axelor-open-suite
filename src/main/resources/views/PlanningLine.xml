@@ -51,7 +51,7 @@
     
     <action-record name="action-planning-line-default-record" model="com.axelor.apps.organisation.db.PlanningLine">
     	<field name="fromDateTime" expr="call:com.axelor.apps.base.service.administration.GeneralService:getTodayDateTime()" if="fromDateTime == null"/> 	
-    	<field name="unit" expr="eval: com.axelor.apps.base.db.Unit.all().filter(&quot;self.code = 'HRE'&quot;).fetchOne()"/>
+    	<field name="unit" expr="eval: com.axelor.apps.base.db.Unit.findByCode(&quot;HRE&quot;)"/>
     	<field name="employee" expr="eval: _parent?.userInfo?.employee"/>
     </action-record>
     
