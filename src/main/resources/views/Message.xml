@@ -67,7 +67,7 @@
     </action-record>
     
     <action-record name="action-message-record-mail-account" model="com.axelor.apps.message.db.Message">
-    	<field name="mailAccount" expr="eval: com.axelor.apps.message.db.MailAccount.all().filter('self.isDefault = true and self.userInfo = ?1',senderUserInfo).fetchOne()"/>
+    	<field name="mailAccount" expr="eval: com.axelor.apps.message.db.MailAccount.filter('self.isDefault = true and self.userInfo = ?1',senderUserInfo).fetchOne()"/>
     </action-record>
     
     <action-record name="action-message-record-get-signature" model="com.axelor.apps.message.db.Message">

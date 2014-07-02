@@ -35,7 +35,7 @@ public class MailAccountService {
 	
 	public MailAccount getDefaultMailAccount()  {
 		
-		MailAccount mailAccount = MailAccount.all().filter("self.userInfo = ?1 AND self.isDefault = true", uis.getUserInfo()).fetchOne();
+		MailAccount mailAccount = MailAccount.filter("self.userInfo = ?1 AND self.isDefault = true", uis.getUserInfo()).fetchOne();
 		
 		return mailAccount;
 	}

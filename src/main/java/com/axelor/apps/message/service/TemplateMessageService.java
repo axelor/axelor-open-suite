@@ -157,7 +157,7 @@ public class TemplateMessageService {
 		if(recipients!=null && !recipients.isEmpty())  {
 			String[] toTab = recipients.split(";");
 			for(String s : toTab)  {
-				EmailAddress emailAddress = EmailAddress.all().filter("address = ?1",s).fetchOne();
+				EmailAddress emailAddress = EmailAddress.findByAddress(s);
 				if(emailAddress != null)  {
 					emailAddressList.add(emailAddress);
 				}
